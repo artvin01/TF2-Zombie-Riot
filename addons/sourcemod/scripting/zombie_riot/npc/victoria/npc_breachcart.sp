@@ -108,7 +108,6 @@ methodmap VictoriaBreachcart < CClotBody
 		
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_RIDER_RUN");
-		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
@@ -143,9 +142,7 @@ methodmap VictoriaBreachcart < CClotBody
 		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/w_models/w_bat.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/sum20_hazard_headgear/sum20_hazard_headgear.mdl");
-		SetVariantString("1.2");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/sum20_hazard_headgear/sum20_hazard_headgear.mdl", .model_size=3.5);
 
 		if(npc.g_TimesSummoned == 0)
 		{

@@ -180,7 +180,7 @@ methodmap Blocker < CClotBody
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
 		
 		func_NPCDeath[npc.index] = Blocker_NPCDeath;
@@ -362,8 +362,6 @@ static Action Blocker_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 			RemoveEntity(npc.m_iWearable5);
 
 		float Cooltime = 7.5;
-		if(NpcStats_IsEnemySilenced(npc.index))
-			Cooltime += 4.0;
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + Cooltime;
 		damage = 0.0;
 		npc.PlayDeflectSound();

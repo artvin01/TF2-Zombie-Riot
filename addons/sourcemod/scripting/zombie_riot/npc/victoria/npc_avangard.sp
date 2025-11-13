@@ -13,6 +13,14 @@ static const char g_HurtSounds[][] = {
 };
 static int NPCId;
 
+static int MechanizedProtector[MAXENTITIES];
+static int LifeSupportDevice[MAXENTITIES];
+static int i_LinkStat[MAXENTITIES];
+static bool b_Already_Link[MAXENTITIES];
+static bool b_AdvansedConstruction[MAXENTITIES];
+
+static float fActivationSound;
+
 void VictorianOfflineAvangard_MapStart()
 {
 	NPCData data;
@@ -24,7 +32,7 @@ void VictorianOfflineAvangard_MapStart()
 	data.Category = Type_Victoria;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 static void ClotPrecache()
@@ -58,7 +66,11 @@ methodmap VictorianOfflineAvangard < CClotBody
 	}
 	public void PlayActivationSound()
  	{
-		EmitSoundToAll(g_ActivationSounds, this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, _);
+		if(fActivationSound > GetGameTime())
+			return;
+			
+		fActivationSound = GetGameTime() + 3.0;
+		EmitSoundToAll(g_ActivationSounds, this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.8, _);
 	}
 	public void PlayHurtSound() 
 	{
@@ -68,7 +80,11 @@ methodmap VictorianOfflineAvangard < CClotBody
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,110));
-		
+	}
+	property int m_i_linkStat
+	{
+		public get()							{ return i_LinkStat[this.index]; }
+		public set(int TempValueForProperty) 	{ i_LinkStat[this.index] = TempValueForProperty; }
 	}
 	
 	public VictorianOfflineAvangard(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -88,15 +104,20 @@ methodmap VictorianOfflineAvangard < CClotBody
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = ClotDeath;
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
-		func_NPCThink[npc.index] = ClotThink;
+		func_NPCDeath[npc.index] = VictorianOfflineAvangard_ClotDeath;
+		func_NPCOnTakeDamage[npc.index] = VictorianOfflineAvangard_OnTakeDamage;
+		func_NPCThink[npc.index] = VictorianOfflineAvangard_ClotThink;
 		
 		npc.m_flSpeed = 100.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_flAttackHappens = 0.0;
+		npc.m_bFUCKYOU = false;
+		Is_a_Medic[npc.index]=true;
+		b_Already_Link[npc.index] = false;
+		npc.m_fbRangedSpecialOn = false;
+		b_AdvansedConstruction[npc.index] = false;
 
 		npc.m_flMeleeArmor = 1.00;
 		npc.m_flRangedArmor = 0.90;
@@ -106,11 +127,18 @@ methodmap VictorianOfflineAvangard < CClotBody
 		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		
-		if(!StrContains(data, "only"))
+		if(StrContains(data, "only") != -1)
 		{
 			i_AttacksTillMegahit[npc.index]=600;
 			npc.m_bFUCKYOU = true;
 		}
+		
+		//Maybe used for special waves
+		if(StrContains(data, "link_majorsteam") != -1)
+			npc.m_fbRangedSpecialOn = true;
+		
+		if(StrContains(data, "awaiting_mechanist") != -1)
+			b_AdvansedConstruction[npc.index] = true;
 
 		SetEntityRenderColor(npc.index, 80, 50, 50, 255);
 
@@ -135,7 +163,7 @@ methodmap VictorianOfflineAvangard < CClotBody
 		{
 			float flPos[3];
 			float flAng[3];
-					
+			
 			npc.GetAttachment("m_vecAbsOrigin", flPos, flAng);
 
 			npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "teleporter_mvm_bot_persist", npc.index, "", {0.0,0.0,0.0});
@@ -145,13 +173,13 @@ methodmap VictorianOfflineAvangard < CClotBody
 	}
 }
 
-static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictorianOfflineAvangard_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictorianWelder npc = view_as<VictorianWelder>(victim);
-		
+	
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -161,7 +189,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	return Plugin_Changed;
 }
 
-static void ClotThink(int iNPC)
+static void VictorianOfflineAvangard_ClotThink(int iNPC)
 {
 	VictorianOfflineAvangard npc = view_as<VictorianOfflineAvangard>(iNPC);
 
@@ -202,6 +230,62 @@ static void ClotThink(int iNPC)
 			SetEntityRenderColor(npc.m_iWearable2, 100, 100, 100, 255);
 			SetVariantString("1.5");
 			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+			Is_a_Medic[npc.index]=false;
+		}
+		
+		if(npc.m_fbRangedSpecialOn && npc.m_flNextRangedAttack < gameTime)
+		{
+			switch(npc.m_i_linkStat)
+			{
+				case 0:
+				{
+					bool Link_MajorSteam=false;
+					for(int i; i < i_MaxcountNpcTotal; i++)
+					{
+						int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+						if(IsValidEntity(entity))
+						{
+							char npc_classname[60];
+							NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+							if(entity != INVALID_ENT_REFERENCE && StrEqual(npc_classname, "npc_majorsteam") && IsEntityAlive(entity) && !b_Already_Link[entity])
+							{
+								LifeSupportDevice[npc.index] = EntIndexToEntRef(entity);
+								b_Already_Link[entity] = true;
+								int TempEntity = ConnectWithBeam(npc.index, entity, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM);
+								if(IsValidEntity(TempEntity))
+								{
+									SetEntityRenderMode(TempEntity, RENDER_TRANSCOLOR);
+									SetEntityRenderColor(TempEntity, 0, 205, 255, 255);
+								}
+								MechanizedProtector[npc.index] = EntIndexToEntRef(TempEntity);
+								Link_MajorSteam=true;
+								break;
+							}
+						}
+					}
+					if(Link_MajorSteam)
+						npc.m_i_linkStat=1;
+					npc.m_flNextRangedAttack = gameTime + 1.0;
+				}
+				case 1:
+				{
+					int entity = EntRefToEntIndex(LifeSupportDevice[npc.index]);
+					if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
+					{
+						IncreaseEntityDamageTakenBy(npc.index, 0.5, 0.25);
+						HealEntityGlobal(npc.index, npc.index, 4000.0, 1.0);
+						HealEntityGlobal(npc.index, entity, 75.0, 1.0);
+						npc.m_flNextRangedAttack = gameTime + 0.25;
+					}
+					else
+					{
+						npc.m_i_linkStat=2;
+						if(IsValidEntity(MechanizedProtector[npc.index]))
+							RemoveEntity(MechanizedProtector[npc.index]);
+						b_Already_Link[entity]=false;
+					}
+				}
+			}
 		}
 
 		int target = npc.m_iTarget;
@@ -254,7 +338,7 @@ static void ClotThink(int iNPC)
 					int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,"models/buildables/sentry3_rockets.mdl",_,_,60.0);
 					if(entity != -1)
 					{
-						//max duration of 4 seconds beacuse of simply how fast they fire
+						//max duration of 2.5 seconds beacuse of simply how fast they fire
 						CreateTimer(2.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 					}
 
@@ -293,7 +377,7 @@ static void ClotThink(int iNPC)
 			npc.StopPathing();
 		}
 	}
-	else
+	else if(!b_AdvansedConstruction[npc.index])
 	{
 		bool villagerexists = false;
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
@@ -312,7 +396,7 @@ static void ClotThink(int iNPC)
 	}
 }
 
-static void ClotDeath(int entity)
+static void VictorianOfflineAvangard_ClotDeath(int entity)
 {
 	VictorianOfflineAvangard npc = view_as<VictorianOfflineAvangard>(entity);
 

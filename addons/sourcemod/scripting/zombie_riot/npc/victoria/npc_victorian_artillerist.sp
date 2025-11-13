@@ -6,43 +6,44 @@ static const char g_IdleAlertedSounds[][] = {
 	")vo/medic_mvm_heal_shield02.mp3",
 	")vo/medic_mvm_heal_shield03.mp3",
 	")vo/medic_mvm_heal_shield04.mp3",
-	")vo/medic_mvm_heal_shield05.mp3",
+	")vo/medic_mvm_heal_shield05.mp3"
 };
 
-static const char g_RageAttackSounds[][] = {
-	"weapons/doom_rocket_launcher.wav",
+static const char g_ExplosionSounds[][]= {
+	"weapons/explode1.wav",
+	"weapons/explode2.wav",
+	"weapons/explode3.wav"
 };
 
-static const char g_MeleeHitSounds[][] = {
-	"weapons/cleaver_hit_02.wav",
-	"weapons/cleaver_hit_03.wav",
-	"weapons/cleaver_hit_05.wav",
-	"weapons/cleaver_hit_06.wav",
-	"weapons/cleaver_hit_07.wav",
-};
+static const char g_RageAttackSounds[] = "weapons/doom_rocket_launcher.wav";
 
 void VictoriaArtillerist_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DefaultMedic_DeathSounds));	   i++) { PrecacheSound(g_DefaultMedic_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_DefaultMedic_HurtSounds));		i++) { PrecacheSound(g_DefaultMedic_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RageAttackSounds)); i++) { PrecacheSound(g_RageAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victorian Artillerist");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victorian_artillerist");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_Artillerist");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_mortar");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
-
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static void ClotPrecache()
 {
-	return VictoriaArtillerist(vecPos, vecAng, ally);
+	PrecacheSoundArray(g_DefaultMedic_DeathSounds);
+	PrecacheSoundArray(g_DefaultMedic_HurtSounds);
+	PrecacheSoundArray(g_ExplosionSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSound(g_RageAttackSounds);
+	PrecacheModel("models/player/medic.mdl");
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return VictoriaArtillerist(vecPos, vecAng, ally, data);
 }
 
 methodmap VictoriaArtillerist < CClotBody
@@ -54,44 +55,46 @@ methodmap VictoriaArtillerist < CClotBody
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
 	public void PlayRangeSound()
 	{
-		EmitSoundToAll(g_RageAttackSounds[GetRandomInt(0, sizeof(g_RageAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.2);
-	}
-	public void PlayMeleeHitSound() 
-	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
+		EmitSoundToAll(g_RageAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.2);
 	}
 	property float m_flWeaponSwitchCooldown
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
-	
-	
-	public VictoriaArtillerist(float vecPos[3], float vecAng[3], int ally)
+	property float m_flExplosionRadius
 	{
-		VictoriaArtillerist npc = view_as<VictoriaArtillerist>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "4000", ally));
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flInAttackDelay
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float m_flImpactDelay
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	
+	public VictoriaArtillerist(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	{
+		VictoriaArtillerist npc = view_as<VictoriaArtillerist>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "3000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -100,25 +103,51 @@ methodmap VictoriaArtillerist < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		npc.m_flNextMeleeAttack = 0.0;
-		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(VictoriaArtillerist_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaArtillerist_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictoriaArtillerist_ClotThink);
-		
+		func_NPCDeath[npc.index] = VictoriaArtillerist_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictoriaArtillerist_OnTakeDamage;
+		func_NPCThink[npc.index] = VictoriaArtillerist_ClotThink;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 		npc.m_iState = 0;
+		npc.m_iChanged_WalkCycle=-2;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.StartPathing();
+		npc.m_flNextRangedAttack = 0.0;
+		npc.m_flWeaponSwitchCooldown = 0.0;
+		npc.m_flExplosionRadius = EXPLOSION_RADIUS*1.25;
+		npc.m_flInAttackDelay = 1.0;
+		npc.m_flImpactDelay = 3.0;
 		npc.m_flSpeed = 100.0;
+		npc.StartPathing();
 		
 		npc.m_flMeleeArmor = 1.0;
+		npc.m_flRangedArmor = 1.0;
+		
+		static char countext[20][1024];
+		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
+		for(int i = 0; i < count; i++)
+		{
+			if(i>=count)break;
+			else if(StrContains(countext[i], "radius") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "radius", "");
+				npc.m_flExplosionRadius = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "inattack") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "inattack", "");
+				npc.m_flInAttackDelay = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "impact") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "impact", "");
+				npc.m_flImpactDelay = StringToFloat(countext[i]);
+			}
+		}
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -150,9 +179,7 @@ static void VictoriaArtillerist_ClotThink(int iNPC)
 {
 	VictoriaArtillerist npc = view_as<VictoriaArtillerist>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
-	{
 		return;
-	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
@@ -164,18 +191,9 @@ static void VictoriaArtillerist_ClotThink(int iNPC)
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
-	{
 		return;
-	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-	}
 	
-	//Swtich modes depending on area.
 	if(npc.m_flWeaponSwitchCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flWeaponSwitchCooldown = GetGameTime(npc.index) + 5.0;
@@ -184,49 +202,48 @@ static void VictoriaArtillerist_ClotThink(int iNPC)
 		static float hullcheckmaxs[3];
 		static float hullcheckmins[3];
 
-		//Defaults:
-		//hullcheckmaxs = view_as<float>( { 24.0, 24.0, 72.0 } );
-		//hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );
-
 		hullcheckmaxs = view_as<float>( { 35.0, 35.0, 500.0 } ); //check if above is free
 		hullcheckmins = view_as<float>( { -35.0, -35.0, 17.0 } );
 
-		if(!IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, npc.index))
-		{
-			if(npc.m_iChanged_WalkCycle != 1)
-			{
-				npc.m_bisWalking = true;
-				npc.m_iChanged_WalkCycle = 1;
-				npc.SetActivity("ACT_MP_RUN_MELEE");
-				npc.StartPathing();
-				npc.m_flSpeed = 100.0;
-			}
-		}
-		else
-		{
-			if(npc.m_iChanged_WalkCycle != 2)
-			{
-				npc.m_bisWalking = true;
-				npc.m_iChanged_WalkCycle = 2;
-				npc.SetActivity("ACT_MP_RUN_PRIMARY");
-				npc.StartPathing();
-				npc.m_flSpeed = 100.0;
-			}
-		}
+		npc.m_iState=(IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, npc.index) ? 0 : 1);
 	}
+
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	{
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+	}
+
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-	
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = VictoriaArtilleristSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
-		switch(ActionDo)
+		switch(VictoriaArtilleristSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget))
 		{
+			case -1:
+			{
+				if(npc.m_iChanged_WalkCycle != -1)
+				{
+					npc.m_bisWalking = false;
+					npc.m_bAllowBackWalking = false;
+					npc.m_iChanged_WalkCycle = -1;
+					npc.SetActivity("ACT_MP_CROUCH_MELEE");
+					npc.m_flSpeed = 0.0;
+					npc.StopPathing();
+				}
+			}
 			case 0:
 			{
-				npc.StartPathing();
-				//We run at them.
+				if(npc.m_iChanged_WalkCycle != 0)
+				{
+					npc.m_bisWalking = true;
+					npc.m_bAllowBackWalking = false;
+					npc.m_iChanged_WalkCycle = 0;
+					npc.SetActivity("ACT_MP_RUN_MELEE");
+					npc.m_flSpeed = 100.0;
+					npc.StartPathing();
+				}
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3];
@@ -237,12 +254,52 @@ static void VictoriaArtillerist_ClotThink(int iNPC)
 				{
 					npc.SetGoalEntity(npc.m_iTarget);
 				}
-				npc.m_flSpeed = 100.0;
 			}
 			case 1:
 			{
-				npc.m_flSpeed = 50.0;
-				//Move slower.
+				if(npc.m_iChanged_WalkCycle != 1)
+				{
+					npc.m_bisWalking = false;
+					npc.m_bAllowBackWalking = false;
+					npc.m_iChanged_WalkCycle = 1;
+					npc.SetActivity("ACT_MP_STAND_MELEE");
+					npc.m_flSpeed = 0.0;
+					npc.StopPathing();
+				}
+			}
+			case 2:
+			{
+				if(npc.m_iChanged_WalkCycle != 2)
+				{
+					npc.m_bisWalking = true;
+					npc.m_bAllowBackWalking = false;
+					npc.m_iChanged_WalkCycle = 2;
+					npc.SetActivity("ACT_MP_RUN_PRIMARY");
+					npc.m_flSpeed = 150.0;
+					npc.StartPathing();
+				}
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3];
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
+				}
+				else 
+				{
+					npc.SetGoalEntity(npc.m_iTarget);
+				}
+			}
+			case 3:
+			{
+				if(npc.m_iChanged_WalkCycle != 3)
+				{
+					npc.m_bisWalking = false;
+					npc.m_bAllowBackWalking = false;
+					npc.m_iChanged_WalkCycle = 3;
+					npc.SetActivity("ACT_MP_STAND_PRIMARY");
+					npc.m_flSpeed = 0.0;
+					npc.StopPathing();
+				}
 			}
 		}
 	}
@@ -274,9 +331,7 @@ static void VictoriaArtillerist_NPCDeath(int entity)
 {
 	VictoriaArtillerist npc = view_as<VictoriaArtillerist>(entity);
 	if(!npc.m_bGib)
-	{
 		npc.PlayDeathSound();	
-	}
 		
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
@@ -296,84 +351,144 @@ static void VictoriaArtillerist_NPCDeath(int entity)
 
 static int VictoriaArtilleristSelfDefense(VictoriaArtillerist npc, float gameTime, float distance)
 {
-	//Direct mode
-	if(gameTime > npc.m_flNextMeleeAttack)
+	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+	int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+	if(gameTime > npc.m_flNextRangedAttack && IsValidEnemy(npc.index, Enemy_I_See))
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 125.0))
+		npc.FaceTowards(vecTarget, 20000.0);
+		if(!npc.m_flAttackHappenswillhappen)
 		{
-			float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
-			npc.FaceTowards(VecAim, 20000.0);
-			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-			if(IsValidEnemy(npc.index, Enemy_I_See))
-			{
-				npc.m_iTarget = Enemy_I_See;
-				npc.PlayRangeSound();
-				float RocketDamage = 200.0;
-				float RocketSpeed = 650.0;
-				if(NpcStats_VictorianCallToArms(npc.index))
-				{
-					RocketDamage *= 0.5;
-				}
-				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
-				if(npc.m_iChanged_WalkCycle == 1)
-				{
-					float SpeedReturn[3];
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.25);
-
-					int RocketGet = npc.FireRocket(vecTarget, RocketDamage, RocketSpeed,_,1.5);
-					SetEntProp(RocketGet, Prop_Send, "m_bCritical", true);
-					//Reducing gravity, reduces speed, lol.
-					SetEntityGravity(RocketGet, 1.0); 	
-					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
-					PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, RocketSpeed,_,vecTarget);
-					ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.5, 1.0);
-					SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
-					TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
-
-					//This will return vecTarget as the speed we need.
-				}
-				else
-				{
-					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY",_,_,_,0.75);
-					//They do a direct attack, slow down the rocket and make it deal less damage.
-					RocketDamage *= 0.75;
-					RocketSpeed *= 0.75;
-				//	npc.PlayRangedSound();
-					npc.FireRocket(vecTarget, RocketDamage, RocketSpeed);
-				}
-				
-				float RocketCooldown = 5.00;
-				if(NpcStats_VictorianCallToArms(npc.index))
-				{
-					RocketCooldown *= 0.2;
-				}
-				npc.m_flNextMeleeAttack = gameTime + RocketCooldown;
-				//Launch something to target, unsure if rocket or something else.
-				//idea:launch fake rocket with noclip or whatever that passes through all
-				//then whereever the orginal goal was, land there.
-				//it should be a Artillerist.
-			}
+			npc.m_flAttackHappens = gameTime+(npc.m_iState ? npc.m_flInAttackDelay : 0.2);
+			npc.m_flAttackHappenswillhappen = true;
 		}
+		if(npc.m_flAttackHappenswillhappen && gameTime > npc.m_flAttackHappens)
+		{
+			npc.m_iTarget = Enemy_I_See;
+			npc.PlayRangeSound();
+			float RocketDamage = 200.0;
+			float RocketSpeed = 650.0;
+			float CoolDown = 5.0;
+			if(NpcStats_VictorianCallToArms(npc.index))
+			{
+				RocketDamage *= 0.5;
+				CoolDown *= 0.5;
+			}
+			float VecStart[3]; WorldSpaceCenter(npc.index, VecStart);
+			if(npc.m_iState)
+			{
+				float SpeedReturn[3];
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.25);
+				WorldSpaceCenter(npc.m_iTarget, vecTarget);
+				//Rockets do no damage
+				int RocketGet = npc.FireRocket(vecTarget, 0.0, RocketSpeed,_,1.5);
+				if(RocketGet != -1)
+				{
+					SetEntProp(RocketGet, Prop_Send, "m_bCritical", true);
+					vecTarget[0] += GetRandomFloat(-200.0, 200.0);
+					vecTarget[1] += GetRandomFloat(-200.0, 200.0);
+					ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 5.0, 2.0);
+					float ang[3]; GetVectorAngles(SpeedReturn, ang);
+					SetEntPropVector(RocketGet, Prop_Data, "m_angRotation", ang);
+					TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+					SetEntityMoveType(RocketGet, MOVETYPE_NOCLIP);
+					WorldSpaceCenter(npc.m_iTarget, vecTarget);
+					//This function actually does damage
+					Engage_HE_Strike(npc.index, vecTarget, RocketDamage, npc.m_flImpactDelay, npc.m_flExplosionRadius);
+					CreateTimer(2.5, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
+				}
+			}
+			else
+			{
+				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY",_,_,_,0.75);
+				//They do a direct attack, slow down the rocket and make it deal less damage.
+				RocketDamage *= 0.75;
+				RocketSpeed *= 0.9;
+				CoolDown *= 0.9;
+				WorldSpaceCenter(npc.m_iTarget, vecTarget);
+				int RocketGet = npc.FireRocket(vecTarget, RocketDamage, RocketSpeed);
+				if(RocketGet != -1)
+				{
+					fl_rocket_particle_dmg[RocketGet] = RocketDamage;
+					fl_Extra_Damage[RocketGet] = fl_Extra_Damage[npc.index];
+				}
+			}
+			npc.m_flNextRangedAttack = gameTime + CoolDown;
+			npc.m_flAttackHappenswillhappen = false;
+		}
+		return (npc.m_iState ? -1 : 3);
 	}
+	else
+		npc.m_flAttackHappenswillhappen = false;
+	if(gameTime < npc.m_flNextRangedAttack-3.5)
+		return (npc.m_iState ? -1 : 3);
+	else if(gameTime < npc.m_flNextRangedAttack-3.0)
+		return (npc.m_iState ? 1 : 3);
 	//No can shooty.
 	//Enemy is close enough.
-	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
+	else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
 	{
 		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
-		{
-			/*
-			float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
-			npc.FaceTowards(VecAim, 20000.0);
-			*/
-			//walk slower
-			return 1;
-		}
-		//cant see enemy somewhy.
-		return 0;
+			return (npc.m_iState ? 1 : 3);
+		return (npc.m_iState ? 0 : 2);
 	}
-	else //enemy is too far away.
+	else
 	{
-		return 0;
+		return (npc.m_iState ? 0 : 2);
 	}
+}
+
+static void Engage_HE_Strike(int entity, float targetpos[3], float damage, float delay, float radius)
+{
+	DataPack HEStrike = new DataPack();
+	HEStrike.WriteCell(EntIndexToEntRef(entity));
+	HEStrike.WriteFloatArray(targetpos, 3);
+	HEStrike.WriteFloat(damage);
+	HEStrike.WriteFloat(GetGameTime()+delay);
+	HEStrike.WriteFloat(delay);
+	HEStrike.WriteFloat(radius);
+	RequestFrame(HE_StrikeThink, HEStrike);
+}
+
+static void HE_StrikeThink(DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	float targetpos[3]; pack.ReadFloatArray(targetpos, 3);
+	float damage = pack.ReadFloat();
+	float delay = pack.ReadFloat();
+	float maxdelay = pack.ReadFloat();
+	float radius = pack.ReadFloat();
+	if(!IsValidEntity(entity))
+		return;
+	if(GetGameTime() >= delay)
+	{
+		DataPack pack_boom = new DataPack();
+		pack_boom.WriteFloat(targetpos[0]);
+		pack_boom.WriteFloat(targetpos[1]);
+		pack_boom.WriteFloat(targetpos[2]);
+		pack_boom.WriteCell(1);
+		RequestFrame(MakeExplosionFrameLater, pack_boom);
+		
+		CreateEarthquake(targetpos, 1.0, radius * 2.5, 16.0, 255.0);
+		Explode_Logic_Custom(damage, entity, entity, -1, targetpos, radius,_,0.8, true, 100, false, 25.0);
+		return;
+	}
+	else
+	{
+		spawnRing_Vectors(targetpos, radius * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 100, 50, 100, 1, 0.1, 2.0, 0.1, 3);
+		spawnRing_Vectors(targetpos, ((radius)*((delay-GetGameTime())/maxdelay))* 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 100, 50, 100, 1, 0.1, 2.0, 0.1, 3);
+	}
+	delete pack;
+	DataPack pack2 = new DataPack();
+	pack2.WriteCell(EntIndexToEntRef(entity));
+	pack2.WriteFloatArray(targetpos, 3);
+	pack2.WriteFloat(damage);
+	pack2.WriteFloat(delay);
+	pack2.WriteFloat(maxdelay);
+	pack2.WriteFloat(radius);
+	float Throttle = 0.04;	//0.025
+	int frames_offset = RoundToCeil(66.0*Throttle);	//no need to call this every frame if avoidable
+	if(frames_offset < 0)
+		frames_offset = 1;
+	RequestFrames(HE_StrikeThink, frames_offset, pack2);
 }

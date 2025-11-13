@@ -61,9 +61,9 @@ static void ClotPrecache()
 	PrecacheModel(LASERBEAM);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianHardener(vecPos, vecAng, ally);
+	return VictorianHardener(vecPos, vecAng, ally, data);
 }
 
 methodmap VictorianHardener < CClotBody
@@ -106,8 +106,24 @@ methodmap VictorianHardener < CClotBody
 	{
 		EmitSoundToAll(g_FuckyouSounds[GetRandomInt(0, sizeof(g_FuckyouSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
+	
+	property float m_flMaxArmorGive
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flArmorResist
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flArmorToGive
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
 
-	public VictorianHardener(float vecPos[3], float vecAng[3], int ally)
+	public VictorianHardener(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianHardener npc = view_as<VictorianHardener>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1500", ally));
 		
@@ -137,9 +153,35 @@ methodmap VictorianHardener < CClotBody
 		Is_a_Medic[npc.index] = true;
 		npc.m_bFUCKYOU = false;
 		npc.m_bFUCKYOU_move_anim = false;
+		npc.m_flArmorResist=0.75;
+		npc.m_flMaxArmorGive=1.0;
+		npc.m_flArmorToGive=1.0;
 		
 		npc.m_bnew_target = false;
 		npc.StartPathing();
+		
+		//Maybe used for special waves
+		static char countext[20][1024];
+		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
+		for(int i = 0; i < count; i++)
+		{
+			if(i>=count)break;
+			else if(StrContains(countext[i], "maxarmor") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "maxarmor", "");
+				npc.m_flMaxArmorGive = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "armor") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "armor", "");
+				npc.m_flArmorToGive = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "resist") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "resist", "");
+				npc.m_flArmorResist = StringToFloat(countext[i]);
+			}
+		}
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -238,11 +280,40 @@ static void VictorianHardener_ClotThink(int iNPC)
 		npc.m_iTarget = (npc.m_bFUCKYOU ? GetClosestTarget(npc.index) : GetClosestAlly(npc.index));
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + (npc.m_bFUCKYOU ? GetRandomRetargetTime() : 5000.0);
 	}
+	if(IsValidAlly(npc.index, npc.m_iTarget) && Is_a_Medic[npc.m_iTarget])
+	{
+		if(IsValidEntity(npc.m_iWearable4))
+			RemoveEntity(npc.m_iWearable4);
+		npc.StopHealing();
+		npc.Healing = false;
+		npc.m_bnew_target = false;
+		npc.m_flGetClosestTargetTime = 5000.0;
+		npc.m_iTarget = GetClosestAlly(npc.index);
+	}
 	
 	bool GotoWork;
 	if(!npc.m_bFUCKYOU&&IsValidAlly(npc.index, npc.m_iTarget))
 		GotoWork=true;
-	else
+	else if(npc.m_bFUCKYOU&&IsValidAlly(npc.index, GetClosestAlly(npc.index)))
+	{
+		if(IsValidEntity(npc.m_iWearable3))
+			RemoveEntity(npc.m_iWearable3);
+			
+		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_medigun/c_medigun.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+	
+		if(IsValidEntity(npc.m_iWearable4))
+			RemoveEntity(npc.m_iWearable4);
+			
+		npc.StopHealing();
+		npc.Healing = false;
+		npc.m_bnew_target = false;
+		npc.m_bFUCKYOU = false;
+		npc.m_flGetClosestTargetTime = 5000.0;
+		npc.m_iTarget = GetClosestAlly(npc.index);
+	}
+	else if(!npc.m_bFUCKYOU)
 	{
 		if(IsValidEntity(npc.m_iWearable3))
 			RemoveEntity(npc.m_iWearable3);
@@ -282,7 +353,6 @@ static void VictorianHardener_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_RUN_SECONDARY");
 					npc.m_flSpeed = 300.0;
 					npc.m_iChanged_WalkCycle = 0;
-					Is_a_Medic[npc.index] = true;
 				}
 				if(flDistanceToTarget < npc.GetLeadRadius())
 				{
@@ -301,7 +371,6 @@ static void VictorianHardener_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_STAND_SECONDARY");
 					npc.m_flSpeed = 0.0;
 					npc.m_iChanged_WalkCycle = 1;
-					Is_a_Medic[npc.index] = true;
 				}
 			}
 			case 2:
@@ -313,7 +382,6 @@ static void VictorianHardener_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_RUN_MELEE");
 					npc.m_flSpeed = 450.0;
 					npc.m_iChanged_WalkCycle = 2;
-					Is_a_Medic[npc.index] = false;
 				}
 				if(flDistanceToTarget < npc.GetLeadRadius())
 				{
@@ -332,7 +400,6 @@ static void VictorianHardener_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_STAND_MELEE");
 					npc.m_flSpeed = 0.0;
 					npc.m_iChanged_WalkCycle = 3;
-					Is_a_Medic[npc.index] = false;
 				}
 			}
 		}
@@ -384,10 +451,45 @@ static void VictorianHardener_NPCDeath(int entity)
 	npc.StopHealing();
 }
 
-static int VictorianHardener_Work(VictorianBooster npc, float gameTime, float distance)
+static int VictorianHardener_Work(VictorianHardener npc, float gameTime, float distance)
 {
 	if(npc.m_bFUCKYOU)
 	{
+		if(npc.m_flNextRangedAttack < gameTime)
+		{
+			ExpidonsaGroupHeal(npc.index, 200.0, 5, 2500.0, 0.0, false,Expidonsa_DontHealSameIndex);
+			IberiaArmorEffect(npc.index, 200.0);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			int MAXEffect;
+			for(int entitycount; entitycount<MAXENTITIES; entitycount++)
+			{
+				if(MAXEffect>=3)
+					break;
+				if(IsValidEntity(entitycount) && entitycount != npc.index && !b_NpcHasDied[entitycount])
+				{
+					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
+					{
+						static float vecTarget[3]; WorldSpaceCenter(entitycount, vecTarget);
+						if(GetVectorDistance(VecSelfNpc, vecTarget, true) < (200.0 * 200.0))
+						{
+							int MaxHealth = ReturnEntityMaxHealth(entitycount);
+							if(b_thisNpcIsABoss[entitycount])
+								MaxHealth = RoundToCeil(float(MaxHealth) * 0.05);
+								
+							if(NpcStats_VictorianCallToArms(npc.index))
+							{
+								MaxHealth *= 2.0;
+								ApplyStatusEffect(npc.index, entitycount, "Defensive Backup", 3.0);
+							}
+							GrantEntityArmor(entitycount, false, npc.m_flMaxArmorGive, npc.m_flArmorResist, 0, (float(MaxHealth / 400)*npc.m_flArmorToGive));
+							MAXEffect++;
+						}
+					}
+				}
+			}
+			npc.m_flNextRangedAttack = gameTime + 2.5;
+		}
+	
 		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 		{
 			if(npc.m_flNextMeleeAttack < gameTime)
@@ -422,6 +524,8 @@ static int VictorianHardener_Work(VictorianBooster npc, float gameTime, float di
 							if(!IsValidEnemy(npc.index, target))
 							{
 								npc.m_flGetClosestTargetTime=0.0;
+								npc.m_flNextMeleeAttack = gameTime + 0.6;
+								npc.m_flAttackHappenswillhappen = false;
 								return 3;
 							}
 						} 
@@ -448,7 +552,7 @@ static int VictorianHardener_Work(VictorianBooster npc, float gameTime, float di
 				if(!npc.m_bnew_target)
 				{
 					npc.StartHealing();
-					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTarget, 255, 0, 0, 3.0, 3.0, 1.35, LASERBEAM);
+					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTarget, 255, 255, 0, 3.0, 3.0, 1.35, LASERBEAM);
 					npc.Healing = true;
 					npc.m_bnew_target = true;
 				}
@@ -457,10 +561,13 @@ static int VictorianHardener_Work(VictorianBooster npc, float gameTime, float di
 					MaxHealth = RoundToCeil(float(MaxHealth) * 0.05);
 					
 				if(NpcStats_VictorianCallToArms(npc.index))
+				{
 					MaxHealth *= 2.0;
+					ApplyStatusEffect(npc.index, npc.m_iTarget, "Defensive Backup", 3.0);
+				}
 
 				HealEntityGlobal(npc.index, npc.m_iTarget, float(MaxHealth / 80), 1.0);
-				GrantEntityArmor(npc.m_iTarget, false, 1.5, 0.75, 0, float(MaxHealth / 400));
+				GrantEntityArmor(npc.m_iTarget, false, npc.m_flMaxArmorGive, npc.m_flArmorResist, 0, (float(MaxHealth / 400)*npc.m_flArmorToGive));
 				
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
 				

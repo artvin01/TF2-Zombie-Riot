@@ -21,20 +21,8 @@ static const char g_DronPingSounds[] = "misc/rd_finale_beep01.wav";
 
 static const char g_MeleeHitSounds[] = "npc/scanner/cbot_discharge1.wav";
 
-
-
-
-static bool Fragments[MAXENTITIES];
-
 void Victorian_TacticalProtector_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	PrecacheSound(g_MeleeAttackSounds);
-	PrecacheSound(g_MeleeHitSounds);
-	PrecacheSound(g_DronPingSounds);
-	PrecacheModel("models/bots/heavy/bot_heavy.mdl");
-	PrecacheModel(LASERBEAM);
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Tactical Protector");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victoria_protector");
@@ -42,8 +30,19 @@ void Victorian_TacticalProtector_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSound(g_MeleeAttackSounds);
+	PrecacheSound(g_MeleeHitSounds);
+	PrecacheSound(g_DronPingSounds);
+	PrecacheModel("models/bots/heavy/bot_heavy.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -57,9 +56,7 @@ methodmap VictoriaProtector < CClotBody
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 	}
@@ -79,6 +76,28 @@ methodmap VictoriaProtector < CClotBody
 	{
 		EmitSoundToAll(g_DronPingSounds, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
+	
+	property int m_iStand
+	{
+		public get()							{ return i_AmountProjectiles[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AmountProjectiles[this.index] = TempValueForProperty; }
+	}
+	property float m_flLifeTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flWait_I
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flWait_II
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	
 	public VictoriaProtector(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictoriaProtector npc = view_as<VictoriaProtector>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.45", "15000", ally, false, true));
@@ -93,29 +112,53 @@ methodmap VictoriaProtector < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
-		func_NPCDeath[npc.index] = view_as<Function>(VictoriaProtector_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaProtector_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictoriaProtector_ClotThink);
+		func_NPCDeath[npc.index] = VictoriaProtector_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictoriaProtector_OnTakeDamage;
+		func_NPCThink[npc.index] = VictoriaProtector_ClotThink;
 		
-		FactorySpawn[npc.index]=false;
-		MK2[npc.index]=false;
-		Limit[npc.index]=false;
-		Fragments[npc.index]=false;
+		npc.m_flLifeTime=20.0;
+		npc.m_iStand=0;
+		i_GunAmmo[npc.index]=0;
+		b_we_are_reloading[npc.index]=false;
+		i_ammo_count[npc.index]=0;
 		static char countext[20][1024];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
 			if(i>=count)break;
-			if(!StrContains(countext[i], "factory"))FactorySpawn[npc.index]=true;
-			else if(!StrContains(countext[i], "mk2"))MK2[npc.index]=true;
-			else if(!StrContains(countext[i], "limit"))Limit[npc.index]=true;
-			else if(!StrContains(countext[i], "fragments"))Fragments[npc.index]=true;
+			else if(StrContains(countext[i], "lifetime") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "lifetime", "");
+				npc.m_flLifeTime = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "mk2") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "mk2", "");
+				b_we_are_reloading[npc.index] = true;
+			}
+			else if(StrContains(countext[i], "factory") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "factory", "");
+				i_GunAmmo[npc.index]=1;
+			}
+			else if(StrContains(countext[i], "fragments") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "fragments", "");
+				i_ammo_count[npc.index] = 1;
+			}
+			else if(StrContains(countext[i], "tracking") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "tracking", "");
+				npc.m_iStand = 1;
+			}
 		}
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
+		npc.m_flWait_I = 0.0;
+		npc.m_flWait_II = 0.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_bFUCKYOU = false;
 		npc.Anger = false;
@@ -172,7 +215,10 @@ static void VictoriaProtector_ClotThink(int iNPC)
 	float DistanceToTarget = GetVectorDistance(VecEnemy, VecSelfNpc, true);
 	
 	if(npc.m_flGetClosestTargetTime < gameTime)
-		target = VictoriaProtectorGetTarget(npc.index, gameTime);
+	{
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
+	}
 		
 	if(!IsValidEnemy(npc.index,target))
 	{
@@ -189,7 +235,9 @@ static void VictoriaProtector_ClotThink(int iNPC)
 
 	if(!npc.m_bFUCKYOU)
 	{
-		if(FactorySpawn[npc.index])
+		int HowManyFactory[6];
+		//└There won't be more cases than this
+		if(i_GunAmmo[npc.index])
 		{
 			bool NoFactory=true;
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
@@ -198,7 +246,7 @@ static void VictoriaProtector_ClotThink(int iNPC)
 				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
 				{
 					NoFactory=false;
-					WorldSpaceCenter(entity, VecSelfNpc);
+					HowManyFactory[entitycount]=entity;
 				}
 			}
 			if(NoFactory)
@@ -212,7 +260,7 @@ static void VictoriaProtector_ClotThink(int iNPC)
 		{
 			if(IsValidEntity(npc.m_iWearable4))
 			{
-				if(gameTime > npc.m_flNextMeleeAttack)
+				if(gameTime > npc.m_flWait_I)
 				{
 					if(npc.m_iChanged_WalkCycle != 4)
 					{
@@ -224,44 +272,82 @@ static void VictoriaProtector_ClotThink(int iNPC)
 						npc.StopPathing();
 					}
 					char Adddeta[512];
-					if(FactorySpawn[npc.index])
-						FormatEx(Adddeta, sizeof(Adddeta), "factory");
-					if(MK2[npc.index])
+					if(b_we_are_reloading[npc.index])
 						FormatEx(Adddeta, sizeof(Adddeta), "%s;mk2", Adddeta);
-					if(Limit[npc.index])
-						FormatEx(Adddeta, sizeof(Adddeta), "%s;limit", Adddeta);
-					VecSelfNpc[2]+=45.0;
-					int spawn_index;
-					if(Fragments[npc.index])
-						spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
-					else
-						spawn_index = NPC_CreateByName("npc_victoria_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
-					if(spawn_index > MaxClients)
+					FormatEx(Adddeta, sizeof(Adddeta), "%s;lifetime%.1f", Adddeta, npc.m_flLifeTime);
+					if(i_ammo_count[npc.index] && npc.m_iStand==1)
+						FormatEx(Adddeta, sizeof(Adddeta), "%s;tracking", Adddeta);
+					
+					if(i_GunAmmo[npc.index])
 					{
-						int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.35);
-						NpcAddedToZombiesLeftCurrently(spawn_index, true);
-						SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-						IncreaseEntityDamageTakenBy(spawn_index, 0.05, 1.0);
+						for(int entitycount; entitycount<6; entitycount++)
+						{
+							int entity=HowManyFactory[entitycount];
+							if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
+							{
+								WorldSpaceCenter(entity, VecSelfNpc);
+								VecSelfNpc[2]+=45.0;
+								int spawn_index;
+								if(i_ammo_count[npc.index])
+									spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+								else
+									spawn_index = NPC_CreateByName("npc_victoria_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+								if(spawn_index > MaxClients)
+								{
+									int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.35);
+									NpcAddedToZombiesLeftCurrently(spawn_index, true);
+									SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+									SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+									fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
+									fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
+									fl_Extra_Speed[spawn_index] = fl_Extra_Speed[npc.index];
+									fl_Extra_Damage[spawn_index] = fl_Extra_Damage[npc.index];
+									FreezeNpcInTime(spawn_index, 3.0, true);
+									IncreaseEntityDamageTakenBy(spawn_index, 0.000001, 3.0);
+								}
+							}
+						}
+					}
+					else
+					{
+						VecSelfNpc[2]+=45.0;
+						int spawn_index;
+						if(i_ammo_count[npc.index])
+							spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+						else
+							spawn_index = NPC_CreateByName("npc_victoria_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+						if(spawn_index > MaxClients)
+						{
+							int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.35);
+							NpcAddedToZombiesLeftCurrently(spawn_index, true);
+							SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+							SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+							fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
+							fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
+							fl_Extra_Speed[spawn_index] = fl_Extra_Speed[npc.index];
+							fl_Extra_Damage[spawn_index] = fl_Extra_Damage[npc.index];
+							IncreaseEntityDamageTakenBy(spawn_index, 0.05, 1.0);
+						}
 					}
 					npc.m_bFUCKYOU=true;
 					npc.m_flNextThinkTime = gameTime + 1.0;
 				}
-				else if(gameTime > npc.m_flNextRangedAttack)
+				else if(gameTime > npc.m_flWait_II)
 				{
 					npc.m_bisWalking = false;
 					npc.StopPathing();
 					npc.SetActivity("ACT_MP_STAND_MELEE");
 					npc.AddGesture("ACT_MP_STUN_MIDDLE");
-					npc.m_flNextRangedAttack = gameTime + 0.9;
+					npc.m_flWait_II = gameTime + 0.9;
 				}
 			}
 			else
 			{
-				VecSelfNpc[2]+=85.0;
+				WorldSpaceCenter(npc.index, VecSelfNpc);
+				VecSelfNpc[2]+=80.0;
 				npc.m_iWearable4 = ParticleEffectAt_Parent(VecSelfNpc, "cart_flashinglight_red", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0});
 				npc.PlayDronPingSound();
-				npc.m_flNextMeleeAttack = gameTime + 5.0;
+				npc.m_flWait_I = gameTime + 5.0;
 			}
 			return;
 		}
@@ -370,26 +456,7 @@ static void VictoriaProtector_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable8);
 }
 
-
-int VictoriaProtectorGetTarget(int iNPC, float gameTime)
-{
-	VictoriaProtector npc = view_as<VictoriaProtector>(iNPC);
-	if(!IsValidEnemy(npc.index,npc.m_iTarget))
-	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		if(!IsValidEnemy(npc.index,npc.m_iTarget))
-		{
-			npc.m_iTarget = GetClosestTarget(npc.index);
-			if(!IsValidEnemy(npc.index,npc.m_iTarget))
-				return -1;
-		}	
-	}
-
-	npc.m_flGetClosestTargetTime = gameTime + 1.0;
-	return npc.m_iTarget;
-}
-
-int VictoriaProtectorAssaultMode(int iNPC, float gameTime, int target, float distance)
+static int VictoriaProtectorAssaultMode(int iNPC, float gameTime, int target, float distance)
 {
 	VictoriaProtector npc = view_as<VictoriaProtector>(iNPC);
 	if(distance < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
@@ -404,7 +471,6 @@ int VictoriaProtectorAssaultMode(int iNPC, float gameTime, int target, float dis
 				npc.m_flAttackHappens_bullshit = gameTime+0.54;
 				npc.m_flAttackHappenswillhappen = true;
 			}
-				
 			if (npc.m_flAttackHappens < gameTime && npc.m_flAttackHappens_bullshit >= gameTime && npc.m_flAttackHappenswillhappen)
 			{
 				Handle swingTrace;
@@ -417,13 +483,13 @@ int VictoriaProtectorAssaultMode(int iNPC, float gameTime, int target, float dis
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					
-					if(Hittarget > 0) 
+					if(IsValidEnemy(npc.index, Hittarget))
 					{
+						float damageDealt = 85.0;
 						if(ShouldNpcDealBonusDamage(Hittarget))
-							SDKHooks_TakeDamage(Hittarget, npc.index, npc.index, 255.0, DMG_CLUB, -1, _, vecHit);
-						else
-							SDKHooks_TakeDamage(Hittarget, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
-						// Hit sound
+							damageDealt*=3.0;
+						SDKHooks_TakeDamage(Hittarget, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+						
 						npc.PlayMeleeHitSound();
 					} 
 				}

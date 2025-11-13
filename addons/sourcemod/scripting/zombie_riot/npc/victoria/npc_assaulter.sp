@@ -199,16 +199,16 @@ methodmap VictoriaAssaulter < CClotBody
 		npc.m_flSpeed = 250.0;
 		npc.m_iOverlordComboAttack = 2;
 		npc.m_iMovement = 1;
-		npc.m_iJamChance = 5;
+		npc.m_iJamChance = (GetRandomInt(0,100)==1 ? 1 : 0);
 		npc.m_iCountSounds = 0;
 		npc.m_flChangeMovement = 0.0;
 		npc.Anger = GetRandomInt(0,100)>50 ? false : true;
 		
-		if(StrContains(data, "jamChance") != -1)
+		if(StrContains(data, "jamchance") != -1)
 		{
 			char buffers[3][64];
 			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
-			ReplaceString(buffers[0], 64, "jamChance", "");
+			ReplaceString(buffers[0], 64, "jamchance", "");
 			npc.m_iJamChance = StringToInt(buffers[0]);
 		}
 		
@@ -433,7 +433,7 @@ static Action VictoriaAssaulter_OnTakeDamage(int victim, int &attacker, int &inf
 	}
 
 	return Plugin_Changed;
-}
+	}
 
 static void VictoriaAssaulter_NPCDeath(int entity)
 {

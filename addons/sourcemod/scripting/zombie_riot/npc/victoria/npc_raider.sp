@@ -4,7 +4,7 @@
 static const char g_DeathSounds[][] = {
 	"vo/mvm/norm/soldier_mvm_paincrticialdeath01.mp3",
 	"vo/mvm/norm/soldier_mvm_paincrticialdeath02.mp3",
-	"vo/mvm/norm/soldier_mvm_paincrticialdeath03.mp3",
+	"vo/mvm/norm/soldier_mvm_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSounds[][] = {
@@ -21,34 +21,22 @@ static const char g_HurtSounds[][] = {
 	"vo/mvm/norm/soldier_mvm_painsharp05.mp3",
 	"vo/mvm/norm/soldier_mvm_painsharp06.mp3",
 	"vo/mvm/norm/soldier_mvm_painsharp07.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp08.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp08.mp3"
 };
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/mvm/norm/taunts/soldier_mvm_taunts18.mp3",
 	"vo/mvm/norm/taunts/soldier_mvm_taunts19.mp3",
 	"vo/mvm/norm/taunts/soldier_mvm_taunts20.mp3",
-	"vo/mvm/norm/taunts/soldier_mvm_taunts21.mp3",
+	"vo/mvm/norm/taunts/soldier_mvm_taunts21.mp3"
 };
 
-static const char g_ReloadSound[][] = {
-	"weapons/ar2/npc_ar2_reload.wav",
-};
+static const char g_ReloadSound[] = "weapons/ar2/npc_ar2_reload.wav";
 
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/doom_rocket_launcher.wav",
-};
-
+static const char g_RangeAttackSounds[] = "weapons/doom_rocket_launcher.wav";
 
 void VictorianRaider_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_ReloadSound)); i++) { PrecacheSound(g_ReloadSound[i]); }
-	PrecacheModel("models/bots/soldier_boss/bot_soldier_boss.mdl");
-	PrecacheModel("models/player/Soldier.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Raider");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_raider");
@@ -56,8 +44,20 @@ void VictorianRaider_OnMapStart_NPC()
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSound(g_ReloadSound);
+	PrecacheSound(g_RangeAttackSounds);
+	PrecacheModel("models/bots/soldier_boss/bot_soldier_boss.mdl");
+	PrecacheModel("models/player/Soldier.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -71,35 +71,27 @@ methodmap VictorianRaider < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	public void PlayReloadSound() 
-	{
-		EmitSoundToAll(g_ReloadSound[GetRandomInt(0, sizeof(g_ReloadSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
-	public void PlayMeleeSound()
+	public void PlayReloadSound() 
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.2);
+		EmitSoundToAll(g_ReloadSound, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	public void PlayRangeSound()
+	{
+		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.2);
 	}
 
 	public VictorianRaider(float vecPos[3], float vecAng[3], int ally)
@@ -115,25 +107,24 @@ methodmap VictorianRaider < CClotBody
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
+		func_NPCDeath[npc.index] = VictorianRaider_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictorianRaider_OnTakeDamage;
+		func_NPCThink[npc.index] = VictorianRaider_ClotThink;
 		
-		func_NPCDeath[npc.index] = view_as<Function>(VictorianRaider_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictorianRaider_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictorianRaider_ClotThink);
-		
-		npc.m_flNextMeleeAttack = 0.0;
-		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		npc.m_iOverlordComboAttack = 3;
-		
+		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		
 		//IDLE
+		KillFeed_SetKillIcon(npc.index, "cow_mangler");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.StartPathing();
+		npc.m_iOverlordComboAttack = 3;
+		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flSpeed = 250.0;
+		npc.StartPathing();
 		
+		ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -171,7 +162,7 @@ methodmap VictorianRaider < CClotBody
 	}
 }
 
-public void VictorianRaider_ClotThink(int iNPC)
+static void VictorianRaider_ClotThink(int iNPC)
 {
 	VictorianRaider npc = view_as<VictorianRaider>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -199,43 +190,49 @@ public void VictorianRaider_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	if(npc.m_iOverlordComboAttack <= 0)
-	{
-		if(npc.m_iChanged_WalkCycle != 6)
-		{
-			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 2.0;
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 6;
-			npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY", true,_,_,0.5);
-			npc.m_flSpeed = 0.0;
-			npc.StopPathing();
-			npc.PlayReloadSound();
-			npc.m_iOverlordComboAttack = 3;
-		}
-		return;
-	}
-	if(npc.m_flNextChargeSpecialAttack > GetGameTime(npc.index))
-	{
-		return;
-	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-	
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		switch(VictorianRaiderSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget))
 		{
-			float vPredictedPos[3];
-			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			npc.SetGoalVector(vPredictedPos);
+			case 0:
+			{
+				if(npc.m_iChanged_WalkCycle != 0)
+				{
+					npc.m_bisWalking = true;
+					npc.m_bAllowBackWalking = false;
+					npc.m_iChanged_WalkCycle = 0;
+					npc.SetActivity("ACT_MP_RUN_PRIMARY");
+					npc.m_flSpeed = 250.0;
+					npc.StartPathing();
+				}
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3];
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
+				}
+				else 
+				{
+					npc.SetGoalEntity(npc.m_iTarget);
+				}
+			}
+			case 1:
+			{
+				if(npc.m_iChanged_WalkCycle != 1)
+				{
+					npc.m_bisWalking = false;
+					npc.m_bAllowBackWalking = false;
+					npc.m_iChanged_WalkCycle = 1;
+					npc.SetActivity("ACT_MP_STAND_PRIMARY");
+					npc.m_flSpeed = 0.0;
+					npc.StopPathing();
+				}
+			}
 		}
-		else 
-		{
-			npc.SetGoalEntity(npc.m_iTarget);
-		}
-		VictorianRaiderSelfDefense(npc,GetGameTime(npc.index)); 
 	}
 	else
 	{
@@ -245,7 +242,7 @@ public void VictorianRaider_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action VictorianRaider_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictorianRaider_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictorianRaider npc = view_as<VictorianRaider>(victim);
 		
@@ -261,7 +258,7 @@ public Action VictorianRaider_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-public void VictorianRaider_NPCDeath(int entity)
+static void VictorianRaider_NPCDeath(int entity)
 {
 	VictorianRaider npc = view_as<VictorianRaider>(entity);
 	if(!npc.m_bGib)
@@ -284,97 +281,46 @@ public void VictorianRaider_NPCDeath(int entity)
 
 }
 
-void VictorianRaiderSelfDefense(VictorianRaider npc, float gameTime)
+static int VictorianRaiderSelfDefense(VictorianRaider npc, float gameTime, float distance)
 {
-	int target;
-	//some Ranged units will behave differently.
-	//not this one.
-	target = npc.m_iTarget;
-	if(!IsValidEnemy(npc.index,target))
+	if(npc.m_flAttackHappens || !npc.m_iOverlordComboAttack)
 	{
-		if(npc.m_iChanged_WalkCycle != 4)
+		if(!npc.m_flAttackHappens)
 		{
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 4;
-			npc.SetActivity("ACT_MP_RUN_PRIMARY");
-			npc.m_flSpeed = 250.0;
-			npc.StartPathing();
+			npc.m_flAttackHappens=gameTime+2.0;
+			npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY", true,_,_,0.5);
+			npc.PlayReloadSound();
 		}
-		return;
+		if(gameTime > npc.m_flAttackHappens)
+		{
+			npc.m_iOverlordComboAttack=3;
+			npc.m_flAttackHappens=0.0;
+		}
+		return 1;
 	}
-	float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-
-	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.0))
+	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
 	{
 		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
-		if(IsValidEnemy(npc.index, Enemy_I_See))
+		if(gameTime > npc.m_flNextMeleeAttack && IsValidEnemy(npc.index, Enemy_I_See))
 		{
-			if(npc.m_iChanged_WalkCycle != 5)
-			{
-				npc.m_bisWalking = false;
-				npc.m_iChanged_WalkCycle = 5;
-				npc.SetActivity("ACT_MP_STAND_PRIMARY");
-				npc.m_flSpeed = 0.0;
-				npc.StopPathing();
-			}	
-			if(gameTime > npc.m_flNextMeleeAttack)
-			{
-				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
-				{	
-					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", true);
-					npc.m_iOverlordComboAttack --;
-					npc.PlayMeleeSound();
-					npc.FaceTowards(vecTarget, 20000.0);
-					Handle swingTrace;
-					if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
-					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-						npc.PlayMeleeSound();
-						//after we fire, we will have a short delay beteween the actual laser, and when it happens
-						//This will predict as its relatively easy to dodge
-						float projectile_speed = 500.0;
-						float Hitdamage = 40.0;
+			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", true);
+			npc.PlayRangeSound();
+			npc.FaceTowards(vecTarget, 20000.0);
+			
+			float projectile_speed = 500.0;
+			float Hitdamage = 40.0;
+			WorldSpaceCenter(npc.m_iTarget, vecTarget);
 
-						WorldSpaceCenter(target, vecTarget);
+			if(NpcStats_VictorianCallToArms(npc.index))
+				Hitdamage *= 2.0;
+				
+			npc.FireParticleRocket(vecTarget, Hitdamage , projectile_speed , 150.0 , "drg_cow_rockettrail_normal_blue");
 
-						if(NpcStats_VictorianCallToArms(npc.index))
-						{
-							Hitdamage *= 2.0;
-						}
-
-						npc.FaceTowards(vecTarget, 20000.0);
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
-						npc.FireParticleRocket(vecTarget, Hitdamage , projectile_speed , 150.0 , "drg_cow_rockettrail_normal_blue");
-						npc.PlayIdleAlertSound();
-					}
-					delete swingTrace;
-				}
-			}
-		}
-		else
-		{
-			if(npc.m_iChanged_WalkCycle != 4)
-			{
-				npc.m_bisWalking = true;
-				npc.m_iChanged_WalkCycle = 4;
-				npc.SetActivity("ACT_MP_RUN_PRIMARY");
-				npc.m_flSpeed = 250.0;
-				npc.StartPathing();
-			}
+			npc.m_flNextMeleeAttack=gameTime+1.0;
+			npc.m_iOverlordComboAttack--;
+			return 1;
 		}
 	}
-	else
-	{
-		if(npc.m_iChanged_WalkCycle != 4)
-		{
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 4;
-			npc.SetActivity("ACT_MP_RUN_PRIMARY");
-			npc.m_flSpeed = 250.0;
-			npc.StartPathing();
-		}
-	}
+	return (distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.0) ? 1 : 0;
 }

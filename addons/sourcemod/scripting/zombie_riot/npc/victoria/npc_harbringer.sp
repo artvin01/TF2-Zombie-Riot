@@ -39,9 +39,8 @@ static const char g_RangeAttackSounds[] = "weapons/csgo_awp_shoot.wav";
 
 static bool b_TheGoons;
 static bool b_KillIconSwitch[MAXENTITIES];
-static int BatteryModels;
+static int CanteenModels;
 static int BeamIndex;
-static int i_signaller_particle[MAXENTITIES];
 static float fl_Har_Delay[MAXENTITIES];
 static float fl_Har_Duration[MAXENTITIES];
 
@@ -67,7 +66,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_ExplosionSounds);
 	PrecacheSound(g_RangeAttackSounds);
 	PrecacheModel("models/player/soldier.mdl");
-	BatteryModels = PrecacheModel("models/Items/battery.mdl");
+	CanteenModels = PrecacheModel("models/workshop/player/items/scout/robo_all_mvm_canteen/robo_all_mvm_canteen.mdl");
 	BeamIndex = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 }
 
@@ -216,12 +215,8 @@ methodmap VictoriaHarbringer < CClotBody
 			npc.m_iWearable6 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl");
 			SetVariantString("1.75");
 			AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-			
-			float flPos[3], flAng[3];
-					
-			npc.GetAttachment("m_vecAbsOrigin", flPos, flAng);
-			i_signaller_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_teamcolor_blue", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0}));
-			npc.GetAttachment("", flPos, flAng);
+
+			npc.m_iWearable7 = ParticleEffectAt_Parent(vecPos, "utaunt_aestheticlogo_teamcolor_blue", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0});
 			npc.m_flRangedArmor -= 0.3;
 			npc.m_flFlashGrenade = GetGameTime(npc.index)+10.0;
 			npc.m_flArmorGrenade = GetGameTime(npc.index)+8.0;
@@ -266,7 +261,6 @@ static void VictoriaHarbringer_ClotThink(int iNPC)
 				}
 			}
 		}
-
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
@@ -381,13 +375,6 @@ static void VictoriaHarbringer_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-		
-	int particle = EntRefToEntIndex(i_signaller_particle[npc.index]);
-	if(IsValidEntity(particle))
-	{
-		RemoveEntity(particle);
-		i_signaller_particle[npc.index]=INVALID_ENT_REFERENCE;
-	}
 }
 
 static void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime)
@@ -441,7 +428,7 @@ static void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime
 				
 			for(int i; i<4; i++)
 			{
-				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", BatteryModels, _, i);
+				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", CanteenModels, _, i);
 			}
 			
 			SetVariantInt(team);
@@ -459,7 +446,7 @@ static void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime
 			fl_Har_Duration[entity] = GetGameTime() + 12.0;
 			
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
-			 
+			
 			DataPack pack;
 			CreateDataTimer(0.1, Timer_NPC_Armor_Grenade, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			pack.WriteCell(EntIndexToEntRef(entity));
@@ -519,9 +506,10 @@ static void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime
 			
 			fl_Har_Delay[entity] = GetGameTime() + 1.0;
 			fl_Har_Duration[entity] = GetGameTime() + 4.5;
+			fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
 			
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
-			 
+			SDKHook(entity, SDKHook_StartTouch, Flash_Grenade_StartTouch);
 			DataPack pack;
 			CreateDataTimer(0.1, Timer_NPC_Flash_Grenade, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			pack.WriteCell(EntIndexToEntRef(entity));
@@ -663,6 +651,27 @@ static Action Timer_NPC_Armor_Grenade(Handle timer, DataPack pack)
 	}
 }
 
+static Action Flash_Grenade_StartTouch(int entity, int target)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+		owner = 0;
+	int inflictor = h_ArrowInflictorRef[entity];
+	if(inflictor != -1)
+		inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+
+	if(inflictor == -1)
+		inflictor = owner;
+	float powerup_pos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", powerup_pos);
+	ParticleEffectAt(powerup_pos, "ExplosionCore_MidAir", 1.0);
+	EmitSoundToAll(g_ExplosionSounds[GetRandomInt(0, sizeof(g_ExplosionSounds) - 1)], 0, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _, -1, powerup_pos);
+	Explode_Logic_Custom(0.0, owner, inflictor, -1, powerup_pos, 400.0, _, _, true, _, false, _, FlashGrenade);
+
+	RemoveEntity(entity);
+	return Plugin_Handled;
+}
+
 static Action Timer_NPC_Flash_Grenade(Handle timer, DataPack pack)
 {
 	pack.Reset();
@@ -720,8 +729,8 @@ static void FlashGrenade(int entity, int victim, float damage, int weapon)
 			b_KillIconSwitch[entity]=false;
 		}
 		SDKHooks_TakeDamage(victim, entity, inflictor, damage, DMG_BLAST, -1, _, vecHit);
-		if(!HasSpecificBuff(victim, "Fluid Movement") && victim <= MaxClients)
+		if(!HasSpecificBuff(victim, "Fluid Movement") && IsValidClient(victim))
 			TF2_StunPlayer(victim, 3.0, 0.3, TF_STUNFLAG_SLOWDOWN);
-		ApplyStatusEffect(entity, victim, "Silenced", (b_thisNpcIsARaid[victim] || b_thisNpcIsABoss[victim] ? 3.0 : 6.0));
+		ApplyStatusEffect(entity, victim, "Silenced", (IsValidClient(victim) ? 6.0 : (b_thisNpcIsARaid[victim] || b_thisNpcIsABoss[victim] ? 3.0 : 6.0)));
 	}
 }

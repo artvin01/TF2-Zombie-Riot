@@ -64,11 +64,12 @@ methodmap VictorianHumbee < CClotBody
 		func_NPCThink[npc.index] = ClotThink;
 		
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
-		npc.m_flSpeed = 210.0;
+		npc.m_flSpeed = 231.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_flAttackHappens = 0.0;
+		f_NpcTurnPenalty[npc.index] = 0.7;
 
 		npc.m_flMeleeArmor = 1.75;
 		npc.m_flRangedArmor = 0.75;
@@ -137,17 +138,17 @@ static void ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			npc.SetGoalEntity(target);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		npc.StartPathing();
 		

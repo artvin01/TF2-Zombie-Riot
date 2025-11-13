@@ -99,8 +99,7 @@ static const char g_LaserBeamSoundsStart[][] = {
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
 
-static float Delay_Attribute[MAXENTITIES];
-static int I_cant_do_this_all_day[MAXENTITIES];
+static bool PLZPlayMusic;
 static bool YaWeFxxked[MAXENTITIES];
 static bool GETBFG[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
@@ -160,6 +159,7 @@ static void ClotPrecache()
 	PrecacheModel("models/player/sniper.mdl");
 	PrecacheSoundCustom("#zombiesurvival/victoria/raid_harrison.mp3");
 	PrecacheSound("mvm/ambient_mp3/mvm_siren.mp3");
+	PrecacheSound("weapons/ar2/npc_ar2_reload.wav");
 	
 	PrecacheModel(LASERBEAM);
 	gRedPoint = PrecacheModel("sprites/redglow1.vmt");
@@ -177,10 +177,21 @@ static int i_Harrison_eye_particle[MAXENTITIES];
 
 methodmap Harrison < CClotBody
 {
-	property int i_GunMode
+	public void PlayIdleAlertSound() 
 	{
-		public get()							{ return i_TimesSummoned[this.index]; }
-		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
+			return;
+	
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+		
+	}
+	public void PlayHurtSound() 
+	{
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
+			return;
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
 	public void PlayRocketshotready() {
 	
@@ -212,15 +223,6 @@ methodmap Harrison < CClotBody
 		EmitSoundToAll(g_LasershotReady[GetRandomInt(0, sizeof(g_LasershotReady) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_LasershotReady[GetRandomInt(0, sizeof(g_LasershotReady) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayIdleAlertSound() 
-	{
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-	
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-	}
 	public void PlayBoomSound()
 	{
 		EmitSoundToAll(g_BoomSounds, _, _, _, _, 0.7);
@@ -229,22 +231,10 @@ methodmap Harrison < CClotBody
 	{
 		EmitSoundToAll(g_IncomingBoomSounds, _, _, _, _, 0.7);
 	}
-	public void PlayHurtSound() 
-	{
-		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		
-	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	
 	public void PlayRangedSound()
 	{
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,125));
@@ -275,6 +265,13 @@ methodmap Harrison < CClotBody
 	{
 		EmitSoundToAll(g_LaserBeamSoundsStart[GetRandomInt(0, sizeof(g_LaserBeamSoundsStart) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 110);
 	}
+	
+	property int i_GunMode
+	{
+		public get()							{ return i_TimesSummoned[this.index]; }
+		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+	}
+
 	property float m_flTimeUntillSummonRocket
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
@@ -299,6 +296,16 @@ methodmap Harrison < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+	property float m_flAbilityDuration
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
+	property float m_flDelaySounds
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
 	}
 	property int m_iAmountProjectiles
 	{
@@ -368,12 +375,10 @@ methodmap Harrison < CClotBody
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.StartPathing();
 			npc.m_flSpeed = 300.0;
-			Delay_Attribute[npc.index] = 0.0;
 			YaWeFxxked[npc.index] = false;
 			GETBFG[npc.index] = false;
 			ParticleSpawned[npc.index] = false;
 			npc.m_bFUCKYOU = false;
-			I_cant_do_this_all_day[npc.index] = 0;
 			npc.i_GunMode = 0;
 			npc.m_flTimeUntillNextRailgunShots = GetGameTime(npc.index) + 22.5;
 			npc.m_flTimeUntillSummonRocket = 0.0;
@@ -394,8 +399,9 @@ methodmap Harrison < CClotBody
 			Victoria_Support_RechargeTimeMax(npc.index, 20.0);
 			Vs_Stats[npc.index] = 0;
 			
-			EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
-			EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+			EmitSoundToAll("weapons/ar2/npc_ar2_reload.wav", _, _, _, _, 1.0);
+			EmitSoundToAll("weapons/ar2/npc_ar2_reload.wav", _, _, _, _, 1.0);
+			npc.m_flDelaySounds=GetGameTime()+1.0;
 			b_thisNpcIsARaid[npc.index] = true;
 			b_angered_twice[npc.index] = false;
 			for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -459,18 +465,8 @@ methodmap Harrison < CClotBody
 				RaidModeTime = GetGameTime(npc.index) + 220.0;
 				RaidModeScaling *= 0.85;
 			}
-			
 			if(StrContains(data, "nomusic") == -1)
-			{
-				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_harrison.mp3");
-				music.Time = 92;
-				music.Volume = 1.0;
-				music.Custom = true;
-				strcopy(music.Name, sizeof(music.Name), "RAGE");
-				strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
-				Music_SetRaidMusic(music);
-			}
+				PLZPlayMusic=true;
 			
 			npc.m_iChanged_WalkCycle = -1;
 		}
@@ -539,7 +535,7 @@ static void Clone_ClotThink(int iNPC)
 	if(!IsValidEntity(OverrideOwner))OverrideOwner = npc.index;
 	
 	bool playsounds=false;
-	switch(I_cant_do_this_all_day[npc.index])
+	switch(npc.m_iState)
 	{
 		case 0:
 		{
@@ -554,7 +550,7 @@ static void Clone_ClotThink(int iNPC)
 			npc.m_iChanged_WalkCycle = 0;
 			npc.m_flDoingAnimation = gameTime + 1.5;
 			npc.m_flTimeUntillSummonRocket = 0.15;
-			I_cant_do_this_all_day[npc.index]=1;
+			npc.m_iState=1;
 		}
 		case 1:
 		{
@@ -576,12 +572,12 @@ static void Clone_ClotThink(int iNPC)
 					}
 				}
 			}
-			I_cant_do_this_all_day[npc.index]=2;
+			npc.m_iState=2;
 		}
 		case 2:
 		{
 			if(playsounds)npc.PlayHomerunSound();
-			I_cant_do_this_all_day[npc.index]=0;
+			npc.m_iState=0;
 			npc.m_flTimeUntillSummonRocket = 0.0;
 			float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 				
@@ -633,6 +629,26 @@ static void Internal_ClotThink(int iNPC)
 	if(!YaWeFxxked[npc.index] && !AirRaidStart[npc.index] && NpcStats_VictorianCallToArms(npc.index) && Victoria_Support(npc))
 	{
 	
+	}
+	
+	if(npc.m_flDelaySounds&&npc.m_flDelaySounds<GetGameTime(npc.index))
+	{
+		EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", _, SNDCHAN_AUTO, 90, _, 1.0);
+		EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", _, SNDCHAN_AUTO, 90, _, 1.0);
+		
+		if(PLZPlayMusic)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_harrison.mp3");
+			music.Time = 92;
+			music.Volume = 1.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "What Lies Unseen - Arena FIght - Wave 3");
+			strcopy(music.Artist, sizeof(music.Artist), "Serious Sam 4: Reborn mod");
+			Music_SetRaidMusic(music);
+		}
+		
+		npc.m_flDelaySounds=0.0;
 	}
 	
 	if(npc.m_flNextDelayTime > gameTime)
@@ -722,7 +738,7 @@ static void Internal_ClotThink(int iNPC)
 
 	if(npc.m_bFUCKYOU)
 	{
-		switch(I_cant_do_this_all_day[npc.index])
+		switch(npc.m_iState)
 		{
 			case 0:
 			{
@@ -736,7 +752,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.StartPathing();
 				}
 				*/
-				CPrintToChatAll("{skyblue}Harrison{default}: Hide if you can. I'll get some ammo for my gun.");
+				CPrintToChatAll("{skyblue}해리슨{default}: 숨어보시던가. 그러는 동안 난 내 총의 탄약을 보급할테니.");
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/taunt_most_wanted/taunt_most_wanted.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 				npc.StopPathing();
@@ -749,12 +765,12 @@ static void Internal_ClotThink(int iNPC)
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 0.75;	
-				Delay_Attribute[npc.index] = gameTime + 0.75;
-				I_cant_do_this_all_day[npc.index]=1;
+				npc.m_flAbilityDuration = gameTime + 0.75;
+				npc.m_iState=1;
 			}
 			case 1:
 			{
-				if(Delay_Attribute[npc.index] < gameTime)
+				if(npc.m_flAbilityDuration < gameTime)
 				{
 					npc.AddActivityViaSequence("layer_taunt_most_wanted");
 					npc.m_flAttackHappens = 0.0;
@@ -768,13 +784,13 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_bisWalking = false;
 					AirRaidStart[npc.index] = true;
 					npc.m_flDoingAnimation = gameTime + 15.0;	
-					Delay_Attribute[npc.index] = gameTime + 15.0;
-					I_cant_do_this_all_day[npc.index]=2;
+					npc.m_flAbilityDuration = gameTime + 15.0;
+					npc.m_iState=2;
 				}
 			}
 			case 2:
 			{
-				if(Delay_Attribute[npc.index] < gameTime)
+				if(npc.m_flAbilityDuration < gameTime)
 				{
 					npc.PlayAngerSound();
 					npc.PlayAngerReaction();
@@ -789,7 +805,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_flSpeed = 300.0;
 					if(IsValidEntity(npc.m_iWearable8))
 						RemoveEntity(npc.m_iWearable8);
-					I_cant_do_this_all_day[npc.index]=0;
+					npc.m_iState=0;
 					npc.m_flTimeUntillDroneSniperShot += 4.0;
 					npc.m_flTimeUntillNextRailgunShots += 4.0;
 					npc.m_flNextRangedSpecialAttackHappens += 4.0;
@@ -923,7 +939,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		if(!npc.m_fbRangedSpecialOn)
 		{
-			I_cant_do_this_all_day[npc.index]=0;
+			npc.m_iState=0;
 			IncreaseEntityDamageTakenBy(npc.index, 0.05, 1.0);
 			npc.m_fbRangedSpecialOn = true;
 			npc.m_bFUCKYOU=true;
@@ -1076,7 +1092,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 	if(npc.m_flNextRangedSpecialAttackHappens < gameTime && (npc.m_iCurrentAbilityDo == -1 || npc.m_iCurrentAbilityDo == 1))
 	{
 		bool playsounds=false;
-		switch(I_cant_do_this_all_day[npc.index])
+		switch(npc.m_iState)
 		{
 			case 0:
 			{
@@ -1099,7 +1115,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 1.5;
 				npc.m_flTimeUntillSummonRocket = 0.15;
-				I_cant_do_this_all_day[npc.index]=1;
+				npc.m_iState=1;
 			}
 			case 1:
 			{
@@ -1121,13 +1137,13 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 						}
 					}
 				}
-				I_cant_do_this_all_day[npc.index]=2;
+				npc.m_iState=2;
 			}
 			case 2:
 			{
 				npc.m_iCurrentAbilityDo = -1;
 				if(playsounds)npc.PlayHomerunSound();
-				I_cant_do_this_all_day[npc.index]=0;
+				npc.m_iState=0;
 				npc.m_flTimeUntillSummonRocket = 0.0;
 				npc.m_flNextRangedSpecialAttackHappens = gameTime + 12.0;
 				npc.m_flTimeUntillNextRailgunShots = gameTime + 2.0;

@@ -1,32 +1,23 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-
-static const char g_DeathSounds[][] = {
-	")vo/pyro_negativevocalization01.mp3",
-};
-
 static const char g_HurtSounds[][] = {
 	"vo/pyro_painsharp01.mp3",
 	"vo/pyro_painsharp02.mp3",
 	"vo/pyro_painsharp03.mp3",
 	"vo/pyro_painsharp04.mp3",
-	"vo/pyro_painsharp05.mp3",
+	"vo/pyro_painsharp05.mp3"
 };
 static const char g_IdleAlertedSounds[][] = {
 	"vo/taunts/pyro_taunts01.mp3",
 	"vo/taunts/pyro_taunts02.mp3",
-	"vo/taunts/pyro_taunts03.mp3",
+	"vo/taunts/pyro_taunts03.mp3"
 };
 
+static const char g_DeathSounds[] = ")vo/pyro_negativevocalization01.mp3";
 
 void VictoriaScorcher_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	PrecacheSound("weapons/flame_thrower_loop.wav");
-	PrecacheSound("weapons/flame_thrower_pilot.wav");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Scorcher");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_scorcher");
@@ -34,9 +25,20 @@ void VictoriaScorcher_OnMapStart_NPC()
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
 	Rogue_Paradox_AddWinterNPC(id);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSound(g_DeathSounds);
+	PrecacheSound("weapons/flame_thrower_loop.wav");
+	PrecacheSound("weapons/flame_thrower_pilot.wav");
+	PrecacheModel("models/player/pyro.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -46,37 +48,20 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 
 methodmap VictoriaScorcher < CClotBody
 {
-
-	property int i_GunMode
-	{
-		public get()							{ return i_TimesSummoned[this.index]; }
-		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
-	}
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-	}
-	
-	property float m_flPulveriserAttackDelay
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
 	public void PlayDeathSound() 
 	{
@@ -104,6 +89,17 @@ methodmap VictoriaScorcher < CClotBody
 		}
 	}
 	
+	property float m_flScorcherAttackDelay
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property int i_GunMode
+	{
+		public get()							{ return i_TimesSummoned[this.index]; }
+		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+	}
+	
 	public VictoriaScorcher(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictoriaScorcher npc = view_as<VictoriaScorcher>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "6300", ally));
@@ -117,25 +113,22 @@ methodmap VictoriaScorcher < CClotBody
 		SetVariantInt(5);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		
-		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(VictoriaScorcher_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaScorcher_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictoriaScorcher_ClotThink);
-		
+		func_NPCDeath[npc.index] = VictoriaScorcher_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictoriaScorcher_OnTakeDamage;
+		func_NPCThink[npc.index] = VictoriaScorcher_ClotThink;
 		
 		//IDLE
+		KillFeed_SetKillIcon(npc.index, "degreaser");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 230.0;
-		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -146,7 +139,6 @@ methodmap VictoriaScorcher < CClotBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/pyro/hwn2023_dead_heat/hwn2023_dead_heat.mdl");
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/spr18_tundra_top/spr18_tundra_top_pyro.mdl");
 		npc.m_iWearable6 = npc.EquipItem("head", "models/player/items/mvm_loot/pyro/pyrobo_backpack.mdl");
-		
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
@@ -161,7 +153,7 @@ methodmap VictoriaScorcher < CClotBody
 	}
 }
 
-public void VictoriaScorcher_ClotThink(int iNPC)
+static void VictoriaScorcher_ClotThink(int iNPC)
 {
 	VictoriaScorcher npc = view_as<VictoriaScorcher>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -217,7 +209,7 @@ public void VictoriaScorcher_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action VictoriaScorcher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictoriaScorcher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictoriaScorcher npc = view_as<VictoriaScorcher>(victim);
 		
@@ -233,14 +225,14 @@ public Action VictoriaScorcher_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-public void VictoriaScorcher_NPCDeath(int entity)
+static void VictoriaScorcher_NPCDeath(int entity)
 {
 	VictoriaScorcher npc = view_as<VictoriaScorcher>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-		
+	
 	StopSound(npc.index, SNDCHAN_STATIC, "weapons/flame_thrower_loop.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, "weapons/flame_thrower_pilot.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, "weapons/flame_thrower_loop.wav");
@@ -308,24 +300,22 @@ public void VictoriaScorcher_NPCDeath(int entity)
 		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable5), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable6), TIMER_FLAG_NO_MAPCHANGE);
 	}
-	if(!NpcStats_IsEnemySilenced(npc.index))
-	{
-		float startPosition[3];
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition); 
-		startPosition[2] += 45;
+	
+	float startPosition[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition); 
+	startPosition[2] += 45;
 
-		KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
-		b_NpcIsTeamkiller[npc.index] = true;
-		Explode_Logic_Custom(20.0, -1, npc.index, -1, startPosition, 100.0, _, _, true, _, true);
-		b_NpcIsTeamkiller[npc.index] = false;
+	KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
+	b_NpcIsTeamkiller[npc.index] = true;
+	Explode_Logic_Custom(20.0, -1, npc.index, -1, startPosition, 100.0, _, _, true, _, true);
+	b_NpcIsTeamkiller[npc.index] = false;
 
-		DataPack pack_boom = new DataPack();
-		pack_boom.WriteFloat(startPosition[0]);
-		pack_boom.WriteFloat(startPosition[1]);
-		pack_boom.WriteFloat(startPosition[2]);
-		pack_boom.WriteCell(1);
-		RequestFrame(MakeExplosionFrameLater, pack_boom);
-	}
+	DataPack pack_boom = new DataPack();
+	pack_boom.WriteFloat(startPosition[0]);
+	pack_boom.WriteFloat(startPosition[1]);
+	pack_boom.WriteFloat(startPosition[2]);
+	pack_boom.WriteCell(1);
+	RequestFrame(MakeExplosionFrameLater, pack_boom);
 
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
@@ -340,19 +330,13 @@ public void VictoriaScorcher_NPCDeath(int entity)
 
 }
 
-void VictoriaScorcherSelfDefense(VictoriaScorcher npc)
+static void VictoriaScorcherSelfDefense(VictoriaScorcher npc)
 {
-	if(npc.m_flPulveriserAttackDelay > GetGameTime(npc.index))
-	{
+	if(npc.m_flScorcherAttackDelay > GetGameTime(npc.index))
 		return;
-	}
-	npc.m_flPulveriserAttackDelay = GetGameTime(npc.index) + 0.2;
+	npc.m_flScorcherAttackDelay = GetGameTime(npc.index) + 0.2;
 
-	int target;
-	target = npc.m_iTarget;
-	//some Ranged units will behave differently.
-	//not this one.
-	float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 	bool SpinSound = true;
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
@@ -372,8 +356,6 @@ void VictoriaScorcherSelfDefense(VictoriaScorcher npc)
 	if(SpinSound)
 		npc.PlayMinigunSound(false);
 }
-
-
 
 public void VictoriaScorcher_Rocket_Particle_StartTouch(int entity, int target)
 {

@@ -2,32 +2,34 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	")vo/soldier_negativevocalization01.mp3",
-	")vo/soldier_negativevocalization02.mp3",
-	")vo/soldier_negativevocalization03.mp3",
-	")vo/soldier_negativevocalization04.mp3",
-	")vo/soldier_negativevocalization05.mp3",
-	")vo/soldier_negativevocalization06.mp3"
+	"vo/mvm/norm/soldier_mvm_paincrticialdeath01.mp3",
+	"vo/mvm/norm/soldier_mvm_paincrticialdeath02.mp3",
+	"vo/mvm/norm/soldier_mvm_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/soldier_painsharp01.mp3",
-	"vo/soldier_painsharp02.mp3",
-	"vo/soldier_painsharp03.mp3",
-	"vo/soldier_painsharp04.mp3",
-	"vo/soldier_painsharp05.mp3",
-	"vo/soldier_painsharp06.mp3",
-	"vo/soldier_painsharp07.mp3",
-	"vo/soldier_painsharp08.mp3"
+	"vo/mvm/norm/soldier_mvm_painsevere01.mp3",
+	"vo/mvm/norm/soldier_mvm_painsevere02.mp3",
+	"vo/mvm/norm/soldier_mvm_painsevere03.mp3",
+	"vo/mvm/norm/soldier_mvm_painsevere04.mp3",
+	"vo/mvm/norm/soldier_mvm_painsevere05.mp3",
+	"vo/mvm/norm/soldier_mvm_painsevere06.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp01.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp02.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp03.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp04.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp05.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp06.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp07.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp08.mp3"
 };
 
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/taunts/soldier_taunts19.mp3",
-	"vo/taunts/soldier_taunts20.mp3",
-	"vo/taunts/soldier_taunts21.mp3",
-	"vo/taunts/soldier_taunts18.mp3",
-	"vo/compmode/cm_soldier_pregamefirst_03.mp3"
+	"vo/mvm/norm/taunts/soldier_mvm_taunts18.mp3",
+	"vo/mvm/norm/taunts/soldier_mvm_taunts19.mp3",
+	"vo/mvm/norm/taunts/soldier_mvm_taunts20.mp3",
+	"vo/mvm/norm/taunts/soldier_mvm_taunts21.mp3"
 };
 
 static const char g_ReloadSound[] = "weapons/ar2/npc_ar2_reload.wav";
@@ -42,7 +44,7 @@ void VictorianBallista_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_ballistas");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Interitus;
+	data.Category = Type_Victoria;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -113,9 +115,9 @@ methodmap VictorianBallista < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		npc.m_iOverlordComboAttack = 3;
 		
 		//IDLE
@@ -125,6 +127,7 @@ methodmap VictorianBallista < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 250.0;
 		
+		ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -183,36 +186,7 @@ static void VictorianBallista_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	if(npc.m_iOverlordComboAttack <= 0)
-	{
-		if(npc.m_iChanged_WalkCycle != 6)
-		{
-			if(!NpcStats_IsEnemySilenced(npc.index))
-			{
-				if(NpcStats_VictorianCallToArms(npc.index))
-				{
-					npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 1.5;
-				}
-				else
-				{
-					npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 2.0;
-				}
-			}
-			else
-			{
-				npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 4.0;
-			}
-			
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 6;
-			npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY", true,_,_,0.5);
-			npc.m_flSpeed = 0.0;
-			npc.StopPathing();
-			npc.PlayReloadSound();
-			npc.m_iOverlordComboAttack = 3;
-		}
-		return;
-	}
+
 	if(npc.m_flNextChargeSpecialAttack > GetGameTime(npc.index))
 	{
 		return;
@@ -224,22 +198,47 @@ static void VictorianBallista_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		switch(VictorianBallistaSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget))
 		{
-			float vPredictedPos[3];
-			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			npc.SetGoalVector(vPredictedPos);
+			case 0:
+			{
+				if(npc.m_iChanged_WalkCycle != 0)
+				{
+					npc.m_bisWalking = true;
+					npc.m_bAllowBackWalking = false;
+					npc.m_iChanged_WalkCycle = 0;
+					npc.SetActivity("ACT_MP_RUN_PRIMARY");
+					npc.m_flSpeed = 250.0;
+					npc.StartPathing();
+				}
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3];
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
+				}
+				else 
+				{
+					npc.SetGoalEntity(npc.m_iTarget);
+				}
+			}
+			case 1:
+			{
+				if(npc.m_iChanged_WalkCycle != 1)
+				{
+					npc.m_bisWalking = false;
+					npc.m_bAllowBackWalking = false;
+					npc.m_iChanged_WalkCycle = 1;
+					npc.SetActivity("ACT_MP_STAND_PRIMARY");
+					npc.m_flSpeed = 0.0;
+					npc.StopPathing();
+				}	
+			}
 		}
-		else 
-		{
-			npc.SetGoalEntity(npc.m_iTarget);
-		}
-		VictorianBallistaSelfDefense(npc,GetGameTime(npc.index)); 
 	}
 	else
 	{
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
 }
@@ -264,9 +263,7 @@ static void VictorianBallista_NPCDeath(int entity)
 {
 	VictorianBallista npc = view_as<VictorianBallista>(entity);
 	if(!npc.m_bGib)
-	{
 		npc.PlayDeathSound();	
-	}
 	
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
@@ -278,94 +275,47 @@ static void VictorianBallista_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
 }
 
-static void VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime)
+static int VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime, float distance)
 {
-	int target;
-	//some Ranged units will behave differently.
-	//not this one.
-	target = npc.m_iTarget;
-	if(!IsValidEnemy(npc.index,target))
+	if(npc.m_flAttackHappens || !npc.m_iOverlordComboAttack)
 	{
-		if(npc.m_iChanged_WalkCycle != 4)
+		if(!npc.m_flAttackHappens)
 		{
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 4;
-			npc.SetActivity("ACT_MP_RUN_PRIMARY");
-			npc.m_flSpeed = 250.0;
-			npc.StartPathing();
+			npc.m_flAttackHappens=gameTime+(NpcStats_VictorianCallToArms(npc.index) ? 1.5 : 2.0);
+			npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY", true,_,_,0.5);
+			npc.m_flAttackHappenswillhappen=false;
+			npc.PlayReloadSound();
 		}
-		return;
+		if(gameTime > npc.m_flAttackHappens)
+		{
+			npc.m_iOverlordComboAttack=3;
+			npc.m_flAttackHappens=0.0;
+		}
+		return 1;
 	}
-	float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-
-	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.0))
+	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0) || npc.m_flAttackHappenswillhappen)
 	{
 		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
-		if(IsValidEnemy(npc.index, Enemy_I_See))
+		if((gameTime > npc.m_flNextMeleeAttack && IsValidEnemy(npc.index, Enemy_I_See)) || npc.m_flAttackHappenswillhappen)
 		{
-			if(npc.m_iChanged_WalkCycle != 5)
-			{
-				npc.m_bisWalking = false;
-				npc.m_iChanged_WalkCycle = 5;
-				npc.SetActivity("ACT_MP_STAND_PRIMARY");
-				npc.m_flSpeed = 0.0;
-				npc.StopPathing();
-			}	
-			if(gameTime > npc.m_flNextMeleeAttack)
-			{
-				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
-				{	
-					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", true);
-					npc.m_iOverlordComboAttack --;
-					npc.PlayRangeSound();
-					npc.FaceTowards(vecTarget, 20000.0);
-					Handle swingTrace;
-					if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
-					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-						npc.PlayRangeSound();
-						//after we fire, we will have a short delay beteween the actual laser, and when it happens
-						//This will predict as its relatively easy to dodge
-						float projectile_speed = 900.0;
+			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", true);
+			npc.PlayRangeSound();
+			npc.FaceTowards(vecTarget, 20000.0);
+			
+			float projectile_speed = 900.0;
+			float Hitdamage = 20.0;
+			WorldSpaceCenter(npc.m_iTarget, vecTarget);
+				
+			npc.FireParticleRocket(vecTarget, Hitdamage , projectile_speed , 150.0 , "flaregun_energyfield_red");
 
-						WorldSpaceCenter(target, vecTarget);
-
-						npc.FaceTowards(vecTarget, 20000.0);
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.1;
-						npc.FireParticleRocket(vecTarget, 20.0 , projectile_speed , 150.0 , "flaregun_energyfield_red");
-						npc.PlayIdleAlertSound();
-					}
-					delete swingTrace;
-				}
-			}
-		}
-		else
-		{
-			if(npc.m_iChanged_WalkCycle != 4)
-			{
-				npc.m_bisWalking = true;
-				npc.m_iChanged_WalkCycle = 4;
-				npc.SetActivity("ACT_MP_RUN_PRIMARY");
-				npc.m_flSpeed = 250.0;
-				npc.StartPathing();
-			}
+			npc.m_flNextMeleeAttack=gameTime+0.1;
+			npc.m_flAttackHappenswillhappen = true;
+			npc.m_iOverlordComboAttack--;
+			return 1;
 		}
 	}
-	else
-	{
-		if(npc.m_iChanged_WalkCycle != 4)
-		{
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 4;
-			npc.SetActivity("ACT_MP_RUN_PRIMARY");
-			npc.m_flSpeed = 250.0;
-			npc.StartPathing();
-		}
-	}
+	return (distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.0) ? 1 : 0;
 }

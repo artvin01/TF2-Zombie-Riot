@@ -13,7 +13,7 @@ static const char g_DeathSounds[][] = {
 	")vo/engineer_negativevocalization09.mp3",
 	")vo/engineer_negativevocalization10.mp3",
 	")vo/engineer_negativevocalization11.mp3",
-	")vo/engineer_negativevocalization12.mp3",
+	")vo/engineer_negativevocalization12.mp3"
 };
 
 static const char g_HurtSounds[][] = {
@@ -24,30 +24,22 @@ static const char g_HurtSounds[][] = {
 	"vo/engineer_painsharp05.mp3",
 	"vo/engineer_painsharp06.mp3",
 	"vo/engineer_painsharp07.mp3",
-	"vo/engineer_painsharp08.mp3",
+	"vo/engineer_painsharp08.mp3"
 };
 static const char g_IdleAlertedSounds[][] = {
 	"vo/engineer_standonthepoint01.mp3",
 	"vo/engineer_standonthepoint02.mp3",
-	"vo/engineer_standonthepoint04.mp3",
+	"vo/engineer_standonthepoint04.mp3"
 };
 
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/gunslinger_swing.wav",
-};
+static const char g_MeleeAttackSounds[] = "weapons/gunslinger_swing.wav";
 
-static const char g_MeleeHitSounds[][] = {
-	"weapons/bat_baseball_hit_flesh.wav",
-};
+static const char g_MeleeHitSounds[] = "weapons/bat_baseball_hit_flesh.wav";
+
+static const char g_MeleeThreeHitSounds[] = "weapons/gunslinger_three_hit.wav";
 
 void VictorianMechafist_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	PrecacheModel("models/player/engineer.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Mechafist");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mechafist");
@@ -55,13 +47,25 @@ void VictorianMechafist_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static void ClotPrecache()
 {
-	return VictorianMechafist(vecPos, vecAng, ally);
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSound(g_MeleeHitSounds);
+	PrecacheSound(g_MeleeAttackSounds);
+	PrecacheSound(g_MeleeThreeHitSounds);
+	PrecacheModel("models/player/engineer.mdl");
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return VictorianMechafist(vecPos, vecAng, ally, data);
 }
 
 methodmap VictorianMechafist < CClotBody
@@ -70,40 +74,40 @@ methodmap VictorianMechafist < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
+		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	public void PlayMeleeThreeHitSound() 
+	{
+		EmitSoundToAll(g_MeleeThreeHitSounds, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
+	property int m_iThirdPunch
+	{
+		public get()							{ return i_AttacksTillMegahit[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
+	}
 	
-	public VictorianMechafist(float vecPos[3], float vecAng[3], int ally)
+	public VictorianMechafist(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianMechafist npc = view_as<VictorianMechafist>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.15", "9000", ally,false));
 		
@@ -116,25 +120,31 @@ methodmap VictorianMechafist < CClotBody
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		
-		
-		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_iOverlordComboAttack = 3;
-		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
-		
+
+		func_NPCDeath[npc.index] =  VictorianMechafist_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictorianMechafist_OnTakeDamage;
+		func_NPCThink[npc.index] = VictorianMechafist_ClotThink;
 		
 		//IDLE
 		npc.m_iState = 0;
+		npc.m_flSpeed = 280.0;
+		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_iOverlordComboAttack = 0;
+		npc.m_iThirdPunch = 1;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 280.0;
 		
+		if(StrContains(data, "combo") != -1)
+		{
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			ReplaceString(buffers[0], 64, "combo", "");
+			npc.m_iThirdPunch = StringToInt(buffers[0]);
+		}
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -158,13 +168,11 @@ methodmap VictorianMechafist < CClotBody
 	}
 }
 
-static void Internal_ClotThink(int iNPC)
+static void VictorianMechafist_ClotThink(int iNPC)
 {
 	VictorianMechafist npc = view_as<VictorianMechafist>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
-	{
 		return;
-	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
@@ -176,9 +184,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
-	{
 		return;
-	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
@@ -203,24 +209,23 @@ static void Internal_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VictorianMechafistSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		VictorianMechafistSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget); 
 	}
 	else
 	{
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
 }
 
-static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictorianMechafist_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictorianMechafist npc = view_as<VictorianMechafist>(victim);
-		
+	
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+	
+	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
@@ -229,14 +234,11 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	return Plugin_Changed;
 }
 
-static void Internal_NPCDeath(int entity)
+static void VictorianMechafist_NPCDeath(int entity)
 {
 	VictorianMechafist npc = view_as<VictorianMechafist>(entity);
 	if(!npc.m_bGib)
-	{
 		npc.PlayDeathSound();	
-	}
-		
 	
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
@@ -246,104 +248,83 @@ static void Internal_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
 }
 
-void VictorianMechafistSelfDefense(VictorianMechafist npc, float gameTime, int target, float distance)
+static void VictorianMechafistSelfDefense(VictorianMechafist npc, float gameTime, float distance)
 {
-	if(npc.m_flAttackHappens)
+	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 	{
-		if(npc.m_flAttackHappens < GetGameTime(npc.index))
+		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			npc.m_flAttackHappens = 0.0;
-			
-			Handle swingTrace;
-			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			if(!npc.m_flAttackHappenswillhappen)
 			{
-							
-				target = TR_GetEntityIndex(swingTrace);	
-				
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-				
-				if(IsValidEnemy(npc.index, target))
+				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2");
+				npc.PlayMeleeSound();
+				npc.m_flAttackHappens = gameTime+0.25;
+				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flAttackHappens_bullshit = gameTime+0.39;
+				npc.m_flAttackHappenswillhappen = true;
+			}
+			if(npc.m_flAttackHappens < gameTime && npc.m_flAttackHappens_bullshit >= gameTime && npc.m_flAttackHappenswillhappen)
+			{
+				Handle swingTrace;
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+				npc.FaceTowards(vecTarget, 15000.0);
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 				{
-					float damageDealt = 50.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.0;
-
-
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-
-					// Hit sound
-					npc.PlayMeleeHitSound();
-					if(target <= MaxClients)
+					int target = TR_GetEntityIndex(swingTrace);
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					if(IsValidEnemy(npc.index, target))
 					{
-						if(!NpcStats_IsEnemySilenced(npc.index))
+						if(npc.m_iOverlordComboAttack <= npc.m_iThirdPunch)
 						{
-							bool Knocked = false;
-								
-							if(IsValidClient(target))
+							KillFeed_SetKillIcon(npc.index, "robot_arm_kill");
+							if(!HasSpecificBuff(target, "Solid Stance"))
 							{
-								Knocked = true;
-								if(npc.m_iOverlordComboAttack <= 0)
+								Custom_Knockback(npc.index, target, (NpcStats_VictorianCallToArms(npc.index) ? -750.0 : -500.0), true);
+								if(IsValidClient(target))
 								{
-									npc.m_iOverlordComboAttack = 3;
-									if(NpcStats_VictorianCallToArms(npc.index))
-									{
-										Custom_Knockback(npc.index, target, 1000.0, true);
-									}
-									else
-									{
-										Custom_Knockback(npc.index, target, 750.0, true);										
-									}
 									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 								}
-								else
+							}
+							npc.m_iOverlordComboAttack++;
+						}
+						else
+						{
+							npc.PlayMeleeThreeHitSound();
+							KillFeed_SetKillIcon(npc.index, "robot_arm_combo_kill");
+							if(!HasSpecificBuff(target, "Solid Stance"))
+							{
+								Custom_Knockback(npc.index, target, (NpcStats_VictorianCallToArms(npc.index) ? 1000.0 : 750.0), true);
+								if(IsValidClient(target))
 								{
-									npc.m_iOverlordComboAttack --;
-									if(NpcStats_VictorianCallToArms(npc.index))
-									{
-										Custom_Knockback(npc.index, target, -750.0, true);
-									}
-									else
-									{
-										Custom_Knockback(npc.index, target, -500.0, true);										
-									}
-									TF2_AddCondition(target, TFCond_LostFooting, 0.2);
-									TF2_AddCondition(target, TFCond_AirCurrent, 0.2);
+									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 								}
 							}
-										
-							if(!Knocked)
-								Custom_Knockback(npc.index, target, -75.0, true); 
+							npc.m_iOverlordComboAttack = 0;
 						}
-					}		
-				} 
-			}
-			delete swingTrace;
-		}
-	}
-
-	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
-	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
-		{
-			int Enemy_I_See;
-								
-			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
-			if(IsValidEnemy(npc.index, Enemy_I_See))
-			{
-				npc.m_iTarget = Enemy_I_See;
-				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2");
+						float damageDealt = 50.0;
+						if(ShouldNpcDealBonusDamage(target))
+							damageDealt*=2.0;
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+						npc.PlayMeleeHitSound();
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
+						if(!IsValidEnemy(npc.index, target))
+						{
+							npc.m_flGetClosestTargetTime=0.0;
+						}
+					}
+				}
+				delete swingTrace;
+				npc.m_flNextMeleeAttack = gameTime + 1.0;
+				npc.m_flAttackHappenswillhappen = false;
+			}
+			else if(npc.m_flAttackHappens_bullshit < gameTime && npc.m_flAttackHappenswillhappen)
+			{
+				npc.m_flAttackHappenswillhappen = false;
 				npc.m_flNextMeleeAttack = gameTime + 1.0;
 			}
 		}

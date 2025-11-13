@@ -42,6 +42,7 @@ static const char g_RangeAttackSounds[] = "mvm/giant_demoman/giant_demoman_grena
 static const char g_ReloadSound[] = "weapons/ar2/npc_ar2_reload.wav";
 
 static bool b_TheGoons;
+static int i_IntimidatingFire[MAXENTITIES];
 
 void VictoriaBigpipe_OnMapStart_NPC()
 {
@@ -67,6 +68,7 @@ static void ClotPrecache()
 	PrecacheSound(g_RangeAttackSounds);
 	PrecacheSound(g_ReloadSound);
 	PrecacheSound("weapons/ar2/fire1.wav");
+	PrecacheModel("models/weapons/w_models/w_grenade_grenadelauncher.mdl");
 	PrecacheModel("models/player/demo.mdl");
 }
 
@@ -161,8 +163,8 @@ methodmap VictoriaBigpipe < CClotBody
 	}
 	property int m_iIntimidatingFire
 	{
-		public get()							{ return i_ArmorSetting[this.index][1]; }
-		public set(int TempValueForProperty) 	{ i_ArmorSetting[this.index][1] = TempValueForProperty; }
+		public get()							{ return i_IntimidatingFire[this.index]; }
+		public set(int TempValueForProperty) 	{ i_IntimidatingFire[this.index] = TempValueForProperty; }
 	}
 	property float m_flSpeedModify
 	{
@@ -173,6 +175,11 @@ methodmap VictoriaBigpipe < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float m_flReloadTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
 	
 	public VictoriaBigpipe(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -187,7 +194,7 @@ methodmap VictoriaBigpipe < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextRangedAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -225,9 +232,9 @@ methodmap VictoriaBigpipe < CClotBody
 			}
 		}
 
-		func_NPCDeath[npc.index] = view_as<Function>(VictoriaBigpipe_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaBigpipe_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictoriaBigpipe_ClotThink);
+		func_NPCDeath[npc.index] = VictoriaBigpipe_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictoriaBigpipe_OnTakeDamage;
+		func_NPCThink[npc.index] = VictoriaBigpipe_ClotThink;
 		
 		//IDLE
 		npc.m_iChanged_WalkCycle=1;
@@ -242,9 +249,12 @@ methodmap VictoriaBigpipe < CClotBody
 		npc.Anger=true;
 		npc.m_flSpeedModify=1.0;
 		npc.m_flModifyTime=0.0;
+		npc.m_flReloadTime=0.0;
 		
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		GiveNpcOutLineLastOrBoss(npc.index, true);
+		
+		ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -371,7 +381,7 @@ static void VictoriaBigpipe_ClotThink(int iNPC)
 			npc.SetWeaponModel("models/weapons/c_models/c_tfc_sniperrifle/c_tfc_sniperrifle.mdl", 1.25);
 			npc.m_iChanged_WalkCycle=2;
 		}
-		if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
+		if(GetGameTime(npc.index) > npc.m_flNextRangedAttack)
 		{
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 			vecTarget[0] += GetRandomFloat(-50.0, 50.0);
@@ -380,7 +390,7 @@ static void VictoriaBigpipe_ClotThink(int iNPC)
 			view_as<CClotBody>(npc.index).GetAttachment("effect_hand_r", origin, angles);
 			ShootLaser(npc.index, "bullet_tracer01_red", origin, vecTarget, false);
 			npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY",_,_,_,1.5);
-			npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.1;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.1;
 			npc.PlayARSound();
 			npc.PlayIntimidatingFireSound(npc.m_iTarget);
 			npc.m_iIntimidatingFire++;
@@ -473,7 +483,7 @@ static void VictoriaBigpipe_ClotThink(int iNPC)
 			{
 				if(npc.m_bReloaded)
 				{
-					if(npc.m_flNextMeleeAttack > GetGameTime(npc.index))
+					if(npc.m_flNextRangedAttack > GetGameTime(npc.index))
 					{
 						npc.StartPathing();
 						npc.m_flSpeed = 350.0*npc.m_flSpeedModify;
@@ -712,14 +722,14 @@ static int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float
 		return 3;
 	}
 
-	if(gameTime > npc.m_flNextMeleeAttack)
+	if(gameTime > npc.m_flNextRangedAttack)
 	{
 		if(npc.m_iOverlordComboAttack < 1)
 		{
 			if(b_TheGoons)
 			{
 				npc.m_flWeaponSwitchCooldown = gameTime + 0.2;
-				npc.m_flNextMeleeAttack = gameTime + 1.5;
+				npc.m_flNextRangedAttack = gameTime + 1.5;
 				if(npc.m_iChanged_WalkCycle==1)
 				{
 					npc.m_iOverlordComboAttack = 6;
@@ -748,20 +758,36 @@ static int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float
 			{
 				if(npc.m_iChanged_WalkCycle==1)
 				{
-					npc.m_flNextMeleeAttack = gameTime + 2.5;
-					npc.m_flWeaponSwitchCooldown = gameTime + 2.5;
-					npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY", true,_,_,0.37);
-					npc.PlayReloadSound();
-					npc.m_iOverlordComboAttack = 6;
+					if(!npc.m_flReloadTime)
+					{
+						npc.m_flReloadTime = gameTime + 2.5;
+						npc.m_flNextRangedAttack = gameTime + 3.0;
+						npc.m_flWeaponSwitchCooldown = gameTime + 3.0;
+						npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY", true,_,_,0.37);
+						npc.PlayReloadSound();
+					}
+					else if(gameTime > npc.m_flReloadTime)
+					{
+						npc.m_flReloadTime = 0.0;
+						npc.m_iOverlordComboAttack = 6;
+					}
 				}
 				else if(npc.m_iChanged_WalkCycle==2)
 				{
-					npc.m_bReloaded=true;
-					npc.m_flNextMeleeAttack = gameTime + 1.5;
-					npc.m_flWeaponSwitchCooldown = gameTime + 1.5;
-					npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY", true,_,_,0.5);
-					npc.PlayReloadSound();
-					npc.m_iOverlordComboAttack = 31;
+					if(!npc.m_flReloadTime)
+					{
+						npc.m_bReloaded=true;
+						npc.m_flReloadTime = gameTime + 1.5;
+						npc.m_flNextRangedAttack = gameTime + 2.0;
+						npc.m_flWeaponSwitchCooldown = gameTime + 2.0;
+						npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY", true,_,_,0.5);
+						npc.PlayReloadSound();
+					}
+					else if(gameTime > npc.m_flReloadTime)
+					{
+						npc.m_flReloadTime = 0.0;
+						npc.m_iOverlordComboAttack = 31;
+					}
 				}
 				return 1;
 			}
@@ -792,6 +818,7 @@ static int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float
 					float SpeedReturn[3];
 					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 					int RocketGet = npc.FireRocket(vecDest, 0.0, RocketSpeed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl", 1.2);
+					fl_Extra_Damage[RocketGet] = fl_Extra_Damage[npc.index];
 					SDKHook(RocketGet, SDKHook_StartTouch, HEGrenade_StartTouch);
 					SetEntProp(RocketGet, Prop_Send, "m_nSkin", 1);
 					//Reducing gravity, reduces speed, lol.
@@ -804,7 +831,7 @@ static int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float
 
 					//This will return vecTarget as the speed we need.
 					npc.m_iOverlordComboAttack--;
-					npc.m_flNextMeleeAttack = gameTime + 0.25;
+					npc.m_flNextRangedAttack = gameTime + 0.25;
 					npc.PlayGrenadeSound();
 				}
 				else
@@ -831,7 +858,7 @@ static int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 						}
 						npc.PlayARSound();
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.1;
+						npc.m_flNextRangedAttack = gameTime + 0.1;
 						npc.m_iOverlordComboAttack--;
 					}
 					delete swingTrace;
@@ -861,7 +888,7 @@ static int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float
 			}
 		}
 	}
-	if(npc.m_flNextMeleeAttack > gameTime)
+	if(npc.m_flNextRangedAttack > gameTime)
 		return b_TheGoons ? 4 : 1;
 	//No can shooty.
 	//Enemy is close enough.
@@ -897,7 +924,7 @@ static Action HEGrenade_StartTouch(int entity, int target)
 		
 	float ProjectileLoc[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-	Explode_Logic_Custom(0.0, owner, inflictor, -1, ProjectileLoc, 146.0, _, _, true, _, false, _, HEGrenade);
+	Explode_Logic_Custom(0.0, owner, inflictor, -1, ProjectileLoc, EXPLOSION_RADIUS, _, _, true, _, false, _, HEGrenade);
 	ParticleEffectAt(ProjectileLoc, "ExplosionCore_MidAir", 1.0);
 	EmitSoundToAll(g_ExplosionSounds[GetRandomInt(0, sizeof(g_ExplosionSounds) - 1)], 0, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _, -1, ProjectileLoc);
 	RemoveEntity(entity);

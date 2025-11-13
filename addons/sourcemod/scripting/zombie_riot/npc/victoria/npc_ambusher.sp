@@ -63,43 +63,33 @@ methodmap VIctorianAmbusher < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
+	}
+	public void PlayHurtSound() 
+	{
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
+			return;
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
+	}
+	public void PlayDeathSound() 
+	{
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	public void PlayChargeSound() 
+	{
+		EmitSoundToAll(g_charge_sound, this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80, 85));
+	}
+	public void PlayRangeSound()
+	{
+		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayReloadSound() 
 	{
 		EmitSoundToAll(g_ReloadSound, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public void PlayHurtSound() 
-	{
-		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-	}
-	
-	public void PlayDeathSound() 
-	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-	}
-	
-	public void PlayRangeSound()
-	{
-		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-	}
-
-	public void PlayChargeSound() 
-	{
-		EmitSoundToAll(g_charge_sound, this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80, 85));
-
-	}
-
 	public VIctorianAmbusher(float vecPos[3], float vecAng[3], int ally)
 	{
 		VIctorianAmbusher npc = view_as<VIctorianAmbusher>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "12000", ally));
@@ -113,24 +103,24 @@ methodmap VIctorianAmbusher < CClotBody
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		
 		func_NPCDeath[npc.index] = view_as<Function>(VIctorianAmbusher_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VIctorianAmbusher_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(VIctorianAmbusher_ClotThink);
 		
-		npc.m_flNextMeleeAttack = 0.0;
-		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		npc.m_iOverlordComboAttack = 30;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "the_classic");
 		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flAttackHappens = 0.0;
+		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_iOverlordComboAttack = 30;
+		
+		npc.StartPathing();
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -262,11 +252,10 @@ static void VIctorianAmbusher_ClotThink(int iNPC)
 					npc.m_flSpeed = 350.0;
 					npc.PlayReloadSound();
 
-					DataPack ReloadAmmo;
-					CreateDataTimer(2.5, Timer_Runaway, ReloadAmmo, TIMER_FLAG_NO_MAPCHANGE);
-					ReloadAmmo.WriteCell(npc.index);
-					ReloadAmmo.WriteCell(30);
+					npc.m_flAttackHappens = GetGameTime(npc.index) + 2.5;
 				}
+				if(GetGameTime(npc.index) > npc.m_flAttackHappens)
+					npc.m_iOverlordComboAttack=30;
 				int Enemy_I_See;
 				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				if(IsValidEnemy(npc.index, Enemy_I_See)) 
@@ -286,14 +275,6 @@ static void VIctorianAmbusher_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
-}
-
-public Action Timer_Runaway(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	VIctorianAmbusher npc = view_as<VIctorianAmbusher>(pack.ReadCell());
-	if(IsValidEntity(npc.index)) npc.m_iOverlordComboAttack = pack.ReadCell();
-	return Plugin_Stop;
 }
 
 static Action VIctorianAmbusher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

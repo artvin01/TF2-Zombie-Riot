@@ -82,7 +82,6 @@ methodmap VictorianCharger < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
@@ -90,9 +89,7 @@ methodmap VictorianCharger < CClotBody
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayDeathSound() 
@@ -109,7 +106,14 @@ methodmap VictorianCharger < CClotBody
 	}
 	public void PlayAngerSound() 
 	{
-		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 75);
+		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+	}
+	
+	property float m_flSpawnTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
 	public VictorianCharger(float vecPos[3], float vecAng[3], int ally)
@@ -125,25 +129,23 @@ methodmap VictorianCharger < CClotBody
 		SetVariantInt(0);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		
-		npc.m_flNextMeleeAttack = 0.0;
-		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(VictorianCharger_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictorianCharger_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictorianCharger_ClotThink);
+		func_NPCDeath[npc.index] = VictorianCharger_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictorianCharger_OnTakeDamage;
+		func_NPCThink[npc.index] = VictorianCharger_ClotThink;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "bushwacka");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.StartPathing();
+		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flSpeed = 50.0;
-		npc.m_flNextRangedAttack = GetGameTime();
+		npc.m_flSpawnTime = GetGameTime();
 		npc.Anger = false;
+		npc.StartPathing();
 		
 		npc.m_flMeleeArmor = 1.5;
 		npc.m_flRangedArmor = 0.9;
@@ -199,13 +201,17 @@ static void VictorianCharger_ClotThink(int iNPC)
 	}
 
 	float TimeMultiplier = 1.0;
-	TimeMultiplier = GetGameTime(npc.index) - npc.m_flNextRangedAttack;
+	TimeMultiplier = GetGameTime(npc.index) - npc.m_flSpawnTime;
 
 	TimeMultiplier *= 0.50;
 
 	if(TimeMultiplier > 20.0)
 	{
 		TimeMultiplier = 20.0;
+	}
+	else if(TimeMultiplier > 8.0)
+	{
+		TimeMultiplier = 8.0;
 		if(!npc.Anger)
 		{
 			KillFeed_SetKillIcon(npc.index, "splendid_screen");
@@ -213,7 +219,7 @@ static void VictorianCharger_ClotThink(int iNPC)
 			npc.Anger = true;
 		}
 	}
-	if(TimeMultiplier < 1.0)
+	else if(TimeMultiplier < 1.0)
 	{
 		KillFeed_SetKillIcon(npc.index, "bushwacka");
 		TimeMultiplier = 1.0;
@@ -292,7 +298,6 @@ static void VictorianChargerSelfDefense(VictorianCharger npc, float gameTime, in
 			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
-							
 				target = TR_GetEntityIndex(swingTrace);	
 				
 				float vecHit[3];
@@ -312,18 +317,17 @@ static void VictorianChargerSelfDefense(VictorianCharger npc, float gameTime, in
 				} 
 			}
 			delete swingTrace;
-			npc.m_flNextRangedAttack = GetGameTime(npc.index);
+			npc.m_flSpawnTime = gameTime;
 		}
 	}
-
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED) * 0.6)
 		{
 			int Enemy_I_See;
-								
+			
 			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
+			
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.m_iTarget = Enemy_I_See;

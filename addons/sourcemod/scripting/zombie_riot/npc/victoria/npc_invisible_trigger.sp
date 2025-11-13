@@ -55,12 +55,18 @@ methodmap Invisible_TRIGGER < CClotBody
 		npc.i_NPCStats=0;
 		
 		bool fVerify=false;
-		func_NPCDeath[npc.index] = view_as<Function>(Invisible_TRIGGER_NPCDeath);
+		func_NPCDeath[npc.index] = Invisible_TRIGGER_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = INVALID_FUNCTION;
-		func_NPCThink[npc.index] = view_as<Function>(Invisible_TRIGGER_ClotThink);
-		if(!StrContains(data, "factory_emergency_extraction"))
+		func_NPCThink[npc.index] = Invisible_TRIGGER_ClotThink;
+		if(StrContains(data, "factory_emergency_extraction") != -1)
 		{
 			npc.i_NPCStats=1;
+			fVerify=true;
+		}
+		
+		if(StrContains(data, "factory_extraction_now") != -1)
+		{
+			npc.i_NPCStats=2;
 			fVerify=true;
 		}
 		
@@ -145,6 +151,26 @@ static void Invisible_TRIGGER_ClotThink(int iNPC)
 						i_AttacksTillMegahit[vFactory.index] = 608;
 						bExtraction=true;
 					}
+				}
+			}
+			if(bExtraction)
+			{
+				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+				SmiteNpcToDeath(npc.index);
+			}
+		}
+		case 2:
+		{
+			bool bExtraction=false;
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+			{
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+				if (IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Blue)
+				{
+					VictorianFactory vFactory = view_as<VictorianFactory>(entity);
+					i_AttacksTillMegahit[vFactory.index] = 608;
+					bExtraction=true;
 				}
 			}
 			if(bExtraction)

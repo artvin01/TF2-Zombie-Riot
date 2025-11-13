@@ -63,12 +63,10 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 }
 methodmap VictorianCaffeinator < CClotBody
 {
-
 	public void PlayIdleAlertSound()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
@@ -76,10 +74,8 @@ methodmap VictorianCaffeinator < CClotBody
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
 	public void PlayDeathSound()
 	{
@@ -96,12 +92,6 @@ methodmap VictorianCaffeinator < CClotBody
 	public void PlayMeleeMissSound()
 	{
 		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-	}
-	
-	property float m_flArmorToGive
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
 	public VictorianCaffeinator(float vecPos[3], float vecAng[3], int ally)
@@ -125,7 +115,7 @@ methodmap VictorianCaffeinator < CClotBody
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
+		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
 		//IDLE
@@ -244,11 +234,41 @@ static void VictorianCaffeinator_ClotThink(int iNPC)
 		npc.m_iTarget = (npc.m_bFUCKYOU ? GetClosestTarget(npc.index) : GetClosestAlly(npc.index));
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + (npc.m_bFUCKYOU ? GetRandomRetargetTime() : 5000.0);
 	}
+	if(IsValidAlly(npc.index, npc.m_iTarget) && Is_a_Medic[npc.m_iTarget])
+	{
+		if(IsValidEntity(npc.m_iWearable4))
+			RemoveEntity(npc.m_iWearable4);
+		npc.StopHealing();
+		npc.Healing = false;
+		npc.m_bnew_target = false;
+		npc.m_flGetClosestTargetTime = 5000.0;
+		npc.m_iTarget = GetClosestAlly(npc.index);
+	}
 	
 	bool GotoWork;
 	if(!npc.m_bFUCKYOU&&IsValidAlly(npc.index, npc.m_iTarget))
 		GotoWork=true;
-	else
+	else if(npc.m_bFUCKYOU&&IsValidAlly(npc.index, GetClosestAlly(npc.index)))
+	{
+		if(IsValidEntity(npc.m_iWearable3))
+			RemoveEntity(npc.m_iWearable3);
+			
+		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_proto_medigun/c_proto_medigun.mdl");
+		SetVariantString("1.25");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
+	
+		if(IsValidEntity(npc.m_iWearable4))
+			RemoveEntity(npc.m_iWearable4);
+			
+		npc.StopHealing();
+		npc.Healing = false;
+		npc.m_bnew_target = false;
+		npc.m_bFUCKYOU = false;
+		npc.m_flGetClosestTargetTime = 5000.0;
+		npc.m_iTarget = GetClosestAlly(npc.index);
+	}
+	else if(!npc.m_bFUCKYOU)
 	{
 		if(IsValidEntity(npc.m_iWearable3))
 			RemoveEntity(npc.m_iWearable3);
@@ -287,7 +307,6 @@ static void VictorianCaffeinator_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_RUN_SECONDARY");
 					npc.m_flSpeed = 400.0;
 					npc.m_iChanged_WalkCycle = 0;
-					Is_a_Medic[npc.index] = true;
 				}
 				if(flDistanceToTarget < npc.GetLeadRadius())
 				{
@@ -306,7 +325,6 @@ static void VictorianCaffeinator_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_STAND_SECONDARY");
 					npc.m_flSpeed = 0.0;
 					npc.m_iChanged_WalkCycle = 1;
-					Is_a_Medic[npc.index] = true;
 				}
 			}
 			case 2:
@@ -318,7 +336,6 @@ static void VictorianCaffeinator_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_RUN_MELEE");
 					npc.m_flSpeed = 275.0;
 					npc.m_iChanged_WalkCycle = 2;
-					Is_a_Medic[npc.index] = false;
 				}
 				if(flDistanceToTarget < npc.GetLeadRadius())
 				{
@@ -337,7 +354,6 @@ static void VictorianCaffeinator_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_STAND_MELEE");
 					npc.m_flSpeed = 0.0;
 					npc.m_iChanged_WalkCycle = 3;
-					Is_a_Medic[npc.index] = false;
 				}
 			}
 		}
@@ -395,8 +411,8 @@ static int VictorianCaffeinator_Work(VictorianCaffeinator npc, float gameTime, f
 	{
 		if(npc.m_flNextRangedAttack < gameTime)
 		{
-			ExpidonsaGroupHeal(npc.index, 400.0, 5, 2500.0, 0.0, false,Expidonsa_DontHealSameIndex);
-			DesertYadeamDoHealEffect(npc.index, 100.0);
+			ExpidonsaGroupHeal(npc.index, 200.0, 5, 2500.0, 0.0, false,Expidonsa_DontHealSameIndex);
+			DesertYadeamDoHealEffect(npc.index, 200.0);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
 			{
@@ -405,13 +421,13 @@ static int VictorianCaffeinator_Work(VictorianCaffeinator npc, float gameTime, f
 					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
 					{
 						static float vecTarget[3]; WorldSpaceCenter(entitycount, vecTarget);
-						if(GetVectorDistance(VecSelfNpc, vecTarget, true) < (150 * 150))
+						if(GetVectorDistance(VecSelfNpc, vecTarget, true) < (200.0 * 200.0))
 						{
 							ApplyStatusEffect(npc.index, entitycount, "Caffinated", 2.6);
-							ApplyStatusEffect(npc.index, entitycount, "Caffinated Drain", 1.1);
+							ApplyStatusEffect(npc.index, entitycount, "Caffinated Drain", 2.6);
 							if(NpcStats_VictorianCallToArms(npc.index))
 							{
-								ApplyStatusEffect(npc.index, entitycount, "War Cry", 2.6);
+								ApplyStatusEffect(npc.index, entitycount, "Taurine", 2.6);
 							}
 						}
 					}
@@ -454,6 +470,8 @@ static int VictorianCaffeinator_Work(VictorianCaffeinator npc, float gameTime, f
 							if(!IsValidEnemy(npc.index, target))
 							{
 								npc.m_flGetClosestTargetTime=0.0;
+								npc.m_flNextMeleeAttack = gameTime + 0.6;
+								npc.m_flAttackHappenswillhappen = false;
 								return 3;
 							}
 						} 
@@ -492,7 +510,7 @@ static int VictorianCaffeinator_Work(VictorianCaffeinator npc, float gameTime, f
 				ApplyStatusEffect(npc.index, npc.m_iTarget, "Caffinated", 1.1);
 				ApplyStatusEffect(npc.index, npc.m_iTarget, "Caffinated Drain", 1.1);
 				if(NpcStats_VictorianCallToArms(npc.index))
-					ApplyStatusEffect(npc.index, npc.m_iTarget, "Hussar's Warscream", 1.1);
+					ApplyStatusEffect(npc.index, npc.m_iTarget, "Taurine", 1.1);
 				
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
 				npc.FaceTowards(WorldSpaceVec, 2000.0);

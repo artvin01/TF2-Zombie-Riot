@@ -79,6 +79,7 @@ static const char g_RangeAttackSounds[] = "weapons/csgo_awp_shoot_crit.wav";
 static const char g_ReloadSound[] = "weapons/ar2/npc_ar2_reload.wav";
 
 static bool b_GotBuilding[MAXENTITIES];
+static int i_AttackCount[MAXENTITIES];
 
 static bool b_TheGoons;
 
@@ -184,8 +185,8 @@ methodmap VictoriaBirdeye < CClotBody
 	}
 	property int m_iAttackCount
 	{
-		public get()							{ return i_ArmorSetting[this.index][1]; }
-		public set(int TempValueForProperty) 	{ i_ArmorSetting[this.index][1] = TempValueForProperty; }
+		public get()							{ return i_AttackCount[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AttackCount[this.index] = TempValueForProperty; }
 	}
 	
 	public VictoriaBirdeye(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -200,9 +201,9 @@ methodmap VictoriaBirdeye < CClotBody
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		func_NPCDeath[npc.index] = view_as<Function>(VictoriaBirdeye_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaBirdeye_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictoriaBirdeye_ClotThink);
+		func_NPCDeath[npc.index] = VictoriaBirdeye_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictoriaBirdeye_OnTakeDamage;
+		func_NPCThink[npc.index] = VictoriaBirdeye_ClotThink;
 		
 		npc.m_iChanged_WalkCycle = 0;
 		npc.g_TimesSummoned = 0;
@@ -232,6 +233,7 @@ methodmap VictoriaBirdeye < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flDelaySounds = 0.0;
+		npc.m_flAttackHappens = 0.0;
 		//npc.m_iCountSounds = 0;
 		npc.m_iBurst = 0;
 		npc.m_iAttackCount = 0;
@@ -448,6 +450,7 @@ static void VictoriaBirdeye_ClotThink(int iNPC)
 				case 1:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_04-2", false, false);
 				case 2:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_04-3", false, false);
 			}
+			ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 			npc.m_bFUCKYOU=true;
 		}
 	}
@@ -561,11 +564,10 @@ static void VictoriaBirdeye_ClotThink(int iNPC)
 					npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY", true,_,_,0.37);
 					npc.m_flSpeed = 350.0;
 					npc.PlayReloadSound();
-					DataPack ReloadAmmo;
-					CreateDataTimer(2.5, Timer_Runaway, ReloadAmmo, TIMER_FLAG_NO_MAPCHANGE);
-					ReloadAmmo.WriteCell(npc.index);
-					ReloadAmmo.WriteCell(31);
+					npc.m_flAttackHappens = GetGameTime(npc.index) + 2.5;
 				}
+				if(GetGameTime(npc.index) > npc.m_flAttackHappens)
+					npc.m_iOverlordComboAttack=31;
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTargetWalkTo,_,vBackoffPos);
@@ -694,6 +696,7 @@ static Action Timer_BirdEyeTele(Handle timer, int iNPC)
 			case 1:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_07-2", false, false);
 			case 2:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_07-3", false, false);
 		}
+		ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 		npc.m_flMeleeArmor -= 0.3;
 		npc.m_flRangedArmor -= 0.3;
 		npc.m_flAttackHappens = 0.0;
@@ -718,6 +721,7 @@ static Action Timer_BirdEyeTele(Handle timer, int iNPC)
 				case 1:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_07-2", false, false);
 				case 2:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_07-3", false, false);
 			}
+			ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 			TeleportEntity(npc.index, VecOld);
 			return Plugin_Stop;
 		}
@@ -873,10 +877,8 @@ int VictoriaBirdeyeSniperMode(VictoriaBirdeye npc, float gameTime)
 				}
 				else
 				{
-					if(IsValidClient(target))
-						IncreaseEntityDamageTakenBy(target, 0.5, 5.0, true);
-					else
-						ApplyStatusEffect(npc.index, target, "Silenced", (b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target] ? 30.0 : 60.0));
+					IncreaseEntityDamageTakenBy(target, 0.5, 5.0, true);
+					ApplyStatusEffect(npc.index, target, "Silenced", (IsValidClient(target) ? 5.0 : (b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target] ? 3.0 : 5.0)));
 				}
 			}
 		}
@@ -965,10 +967,8 @@ static int VictoriaBirdeyeAssaultMode(VictoriaBirdeye npc, float gameTime, int t
 						}
 						else
 						{
-							if(IsValidClient(target))
-								IncreaseEntityDamageTakenBy(target, 0.5, 5.0, true);
-							else
-								ApplyStatusEffect(npc.index, target, "Silenced", (b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target] ? 15.0 : 30.0));
+							IncreaseEntityDamageTakenBy(target, 0.5, 5.0, true);
+							ApplyStatusEffect(npc.index, target, "Silenced", (IsValidClient(target) ? 5.0 : (b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target] ? 3.0 : 5.0)));
 						}
 					}
 					if(b_TheGoons)

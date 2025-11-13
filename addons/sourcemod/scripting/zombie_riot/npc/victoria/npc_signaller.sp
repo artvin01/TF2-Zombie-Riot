@@ -35,8 +35,6 @@ static const char g_hornsound[][] = {
 	"weapons/buff_banner_horn_blue.wav",
 };
 
-static int i_signaller_particle[MAXENTITIES];
-
 void VictorianSignaller_OnMapStart_NPC()
 {
 	NPCData data;
@@ -46,8 +44,18 @@ void VictorianSignaller_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
-	NPC_Add(data);  
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_hornsound);
+	PrecacheModel("models/player/soldier.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -61,7 +69,6 @@ methodmap VictorianSignaller < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
@@ -105,12 +112,7 @@ methodmap VictorianSignaller < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		float flPos[3], flAng[3];
-				
-		npc.GetAttachment("m_vecAbsOrigin", flPos, flAng);
-		i_signaller_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_teamcolor_blue", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0}));
-		npc.GetAttachment("", flPos, flAng);
-
+		npc.m_iWearable7 = ParticleEffectAt_Parent(vecPos, "utaunt_aestheticlogo_teamcolor_blue", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0});
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_bugle/c_battalion_bugle.mdl");
 		SetVariantString("1.2");
@@ -139,7 +141,7 @@ methodmap VictorianSignaller < CClotBody
 	}
 }
 
-public void VictorianSignaller_ClotThink(int iNPC)
+static void VictorianSignaller_ClotThink(int iNPC)
 {
 	VictorianSignaller npc = view_as<VictorianSignaller>(iNPC);
 	float gameTime = GetGameTime(npc.index);
@@ -173,7 +175,6 @@ public void VictorianSignaller_ClotThink(int iNPC)
 			SmiteNpcToDeath(npc.index);
 			return;
 		}
-		
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;	
 	}
 
@@ -183,8 +184,6 @@ public void VictorianSignaller_ClotThink(int iNPC)
 		npc.PlayHornSound();
 		npc.m_flNextMeleeAttack = gameTime + 7.50;
 	}
-
-	gameTime = GetGameTime() + 0.5;
 
 	int team = GetTeam(npc.index);
 	if(team == 2)
@@ -197,7 +196,6 @@ public void VictorianSignaller_ClotThink(int iNPC)
 			}
 		}
 	}
-
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
@@ -213,16 +211,17 @@ public void VictorianSignaller_ClotThink(int iNPC)
 	{
 		npc.SetGoalEntity(npc.m_iTargetAlly);
 	}
-
 	npc.PlayIdleSound();
 }
 
-void VictorianSignaller_NPCDeath(int entity)
+static void VictorianSignaller_NPCDeath(int entity)
 {
 	VictorianSignaller npc = view_as<VictorianSignaller>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable5))
@@ -235,11 +234,4 @@ void VictorianSignaller_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
-	int particle = EntRefToEntIndex(i_signaller_particle[npc.index]);
-	if(IsValidEntity(particle))
-	{
-		RemoveEntity(particle);
-		i_signaller_particle[npc.index]=INVALID_ENT_REFERENCE;
-	}
 }

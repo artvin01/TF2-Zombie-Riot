@@ -40,7 +40,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cleaver_hit_07.wav"
 };
 
-static const char g_RangedAttackSounds[] = "weapons/frontier_justice_shoot.wav";
+static const char g_RangeAttackSounds[] = "weapons/frontier_justice_shoot.wav";
 
 static const char g_MeleeAttackSounds[] = "weapons/machete_swing.wav";
 
@@ -66,14 +66,11 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
-	PrecacheSound(g_RangedAttackSounds);
+	PrecacheSound(g_RangeAttackSounds);
 	PrecacheSound(g_MeleeAttackSounds);
 	PrecacheSound(g_suitup);
 	PrecacheModel("models/player/engineer.mdl");
 }
-
-static int I_cant_do_this_all_day[MAXENTITIES];
-static float Delay_Attribute[MAXENTITIES];
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
@@ -107,7 +104,7 @@ methodmap Aviator < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayRangedSound() {
-		EmitSoundToAll(g_RangedAttackSounds, this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangeAttackSounds, this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -124,6 +121,21 @@ methodmap Aviator < CClotBody
 		public get()							{ return i_TimesSummoned[this.index]; }
 		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
 	}
+	property int m_iSuitupCycle
+	{
+		public get()							{ return i_AttacksTillMegahit[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
+	}
+	property float m_flDelaySuitup
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flChargeAttack
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	
 	public Aviator(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -139,6 +151,7 @@ methodmap Aviator < CClotBody
 		npc.m_iChanged_WalkCycle = 2;
 		
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextRangedAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -148,9 +161,11 @@ methodmap Aviator < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Aviator_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Aviator_ClotThink);
 		
+		npc.m_flChargeAttack = GetGameTime() + 7.5;
 		npc.m_flAngerDelay = GetGameTime() + 15.0;
-		I_cant_do_this_all_day[npc.index] = 0;
-		Delay_Attribute[npc.index] = 0.0;
+		npc.i_GunMode = 0;
+		npc.m_iSuitupCycle = 0;
+		npc.m_flDelaySuitup = 0.0;
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 250.0;
@@ -223,12 +238,22 @@ static void Aviator_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gametime + GetRandomRetargetTime();
 	}
 
+	//SuiT UP
 	if(npc.m_flAngerDelay < gametime)
 	{
-		switch(I_cant_do_this_all_day[npc.index])
+		switch(npc.m_iSuitupCycle)
 		{
 			case 0:
 			{
+				if(npc.i_GunMode != 2)
+				{
+					if(IsValidEntity(npc.m_iWearable1))
+						RemoveEntity(npc.m_iWearable1);
+					npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_pda_engineer/c_pda_engineer.mdl");
+					SetVariantString("0.8");
+					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+					npc.i_GunMode=2;
+				}
 				npc.StopPathing();
 				
 				npc.m_bisWalking = false;
@@ -237,12 +262,13 @@ static void Aviator_ClotThink(int iNPC)
 				npc.SetCycle(0.01);
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
-				Delay_Attribute[npc.index] = gametime + 2.0;
-				I_cant_do_this_all_day[npc.index]=1;
+				npc.m_flSpeed = 0.0;
+				npc.m_flDelaySuitup = gametime + 2.0;
+				npc.m_iSuitupCycle=1;
 			}
 			case 1:
 			{
-				if(Delay_Attribute[npc.index] < gametime)
+				if(npc.m_flDelaySuitup < gametime)
 				{
 					npc.PlaySuitUpSound();
 					int Health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index))* 1.5);	
@@ -270,7 +296,7 @@ static void Aviator_ClotThink(int iNPC)
 						b_thisNpcHasAnOutline[entity] = b_thisNpcHasAnOutline[npc.index];
 						view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
 					}
-					I_cant_do_this_all_day[npc.index]=0;
+					npc.m_iSuitupCycle=0;
 					b_NpcForcepowerupspawn[npc.index] = 0;
 					i_RaidGrantExtra[npc.index] = 0;
 					b_DissapearOnDeath[npc.index] = true;
@@ -287,15 +313,47 @@ static void Aviator_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int SetGoalVectorIndex = 0;
-		SetGoalVectorIndex = AviatorSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
-
-		switch(SetGoalVectorIndex)
+		//Cooldown is reduced out of range.
+		if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.5))
+			npc.m_flChargeAttack -= 0.076;
+		
+		switch(AviatorSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget))
 		{
 			case 0:
 			{
+				if(npc.i_GunMode != 0)
+				{
+					if(IsValidEntity(npc.m_iWearable1))
+						RemoveEntity(npc.m_iWearable1);
+					KillFeed_SetKillIcon(npc.index, "frontier_kill");
+					npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_frontierjustice/c_frontierjustice_xmas.mdl");
+					SetVariantInt(1);
+					AcceptEntityInput(npc.index, "SetBodyGroup");
+					npc.i_GunMode=0;
+				}
+				if(npc.IsOnGround())
+				{
+					if(npc.m_iChanged_WalkCycle != 0)
+					{
+						npc.m_bisWalking = true;
+						npc.m_iChanged_WalkCycle = 0;
+						npc.m_flSpeed = 250.0;
+						npc.SetActivity("ACT_MP_RUN_PRIMARY");
+						npc.StartPathing();
+					}	
+				}
+				else
+				{
+					if(npc.m_iChanged_WalkCycle != 1)
+					{
+						npc.m_bisWalking = false;
+						npc.m_iChanged_WalkCycle = 1;
+						npc.m_flSpeed = 250.0;
+						npc.SetActivity("ACT_MP_JUMP_FLOAT_PRIMARY");
+						npc.StartPathing();
+					}	
+				}
 				npc.m_bAllowBackWalking = false;
-				//Get the normal prediction code.
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3];
@@ -309,20 +367,97 @@ static void Aviator_ClotThink(int iNPC)
 			}
 			case 1:
 			{
+				if(npc.i_GunMode != 0)
+				{
+					if(IsValidEntity(npc.m_iWearable1))
+						RemoveEntity(npc.m_iWearable1);
+					KillFeed_SetKillIcon(npc.index, "frontier_kill");
+					npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_frontierjustice/c_frontierjustice_xmas.mdl");
+					SetVariantInt(1);
+					AcceptEntityInput(npc.index, "SetBodyGroup");
+					npc.i_GunMode=0;
+				}
+				if(npc.IsOnGround())
+				{
+					if(npc.m_iChanged_WalkCycle != 0)
+					{
+						npc.m_bisWalking = true;
+						npc.m_iChanged_WalkCycle = 0;
+						npc.m_flSpeed = 250.0;
+						npc.SetActivity("ACT_MP_RUN_PRIMARY");
+						npc.StartPathing();
+					}	
+				}
+				else
+				{
+					if(npc.m_iChanged_WalkCycle != 1)
+					{
+						npc.m_bisWalking = false;
+						npc.m_iChanged_WalkCycle = 1;
+						npc.m_flSpeed = 250.0;
+						npc.SetActivity("ACT_MP_JUMP_FLOAT_PRIMARY");
+						npc.StartPathing();
+					}	
+				}
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true);
+			}
+			case 2:
+			{
+				if(npc.i_GunMode != 1)
+				{
+					if(IsValidEntity(npc.m_iWearable1))
+						RemoveEntity(npc.m_iWearable1);
+					KillFeed_SetKillIcon(npc.index, "frontier_kill");
+					KillFeed_SetKillIcon(npc.index, "sledgehammer");
+					npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_sledgehammer/c_sledgehammer.mdl");
+					SetVariantString("0.8");
+					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+					SetVariantInt(3);
+					AcceptEntityInput(npc.index, "SetBodyGroup");
+					npc.i_GunMode=1;
+				}
+				if(npc.IsOnGround())
+				{
+					if(npc.m_iChanged_WalkCycle != 2)
+					{
+						npc.m_bisWalking = true;
+						npc.m_iChanged_WalkCycle = 2;
+						npc.m_flSpeed = 375.0;
+						npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+						npc.StartPathing();
+					}	
+				}
+				else
+				{
+					if(npc.m_iChanged_WalkCycle != 3)
+					{
+						npc.m_bisWalking = false;
+						npc.m_iChanged_WalkCycle = 3;
+						npc.m_flSpeed = 375.0;
+						npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE_ALLCLASS");
+						npc.StartPathing();
+					}	
+				}
+				npc.m_bAllowBackWalking = false;
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3];
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
+				}
+				else 
+				{
+					npc.SetGoalEntity(npc.m_iTarget);
+				}
 			}
 		}
 	}
 	else
-	{
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
-	}
 
-	AviatorAnimationChange(npc);
 	npc.PlayIdleAlertSound();
 }
 
@@ -364,156 +499,86 @@ static void Aviator_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static void AviatorAnimationChange(Aviator npc)
+static int AviatorSelfDefense(Aviator npc, float gameTime, float distance)
 {
-	if(npc.m_iChanged_WalkCycle == 0)
-		npc.m_iChanged_WalkCycle = -1;
-	switch(npc.i_GunMode)
+	if(npc.m_flChargeAttack < gameTime)
 	{
-		case 1: //primary
+		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 		{
-			if(npc.IsOnGround())
+			if(npc.m_flNextMeleeAttack < gameTime)
 			{
-				if(npc.m_iChanged_WalkCycle != 1)
+				if(!npc.m_flAttackHappenswillhappen)
 				{
-					ResetAviatorWeapon(npc, 1);
-					SetVariantInt(1);
-					AcceptEntityInput(npc.index, "SetBodyGroup");
-					npc.m_bisWalking = true;
-					npc.m_iChanged_WalkCycle = 1;
-					npc.SetActivity("ACT_MP_RUN_PRIMARY");
-					npc.StartPathing();
-				}	
-			}
-			else
-			{
-				if(npc.m_iChanged_WalkCycle != 2)
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+					npc.PlayMeleeSound();
+					npc.m_flAttackHappens = gameTime+0.4;
+					npc.m_flAttackHappens_bullshit = gameTime+0.54;
+					npc.m_flAttackHappenswillhappen = true;
+				}
+				if(npc.m_flAttackHappens < gameTime && npc.m_flAttackHappens_bullshit >= gameTime && npc.m_flAttackHappenswillhappen)
 				{
-					ResetAviatorWeapon(npc, 1);
-					SetVariantInt(1);
-					AcceptEntityInput(npc.index, "SetBodyGroup");
-					npc.m_bisWalking = false;
-					npc.m_iChanged_WalkCycle = 2;
-					npc.SetActivity("ACT_MP_JUMP_FLOAT_PRIMARY");
-					npc.StartPathing();
-				}	
+					Handle swingTrace;
+					float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+					npc.FaceTowards(vecTarget, 20000.0);
+					if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
+					{
+						int target = TR_GetEntityIndex(swingTrace);
+						float vecHit[3];
+						TR_GetEndPosition(vecHit, swingTrace);
+						if(IsValidEnemy(npc.index, target))
+						{
+							float damageDealt = 100.0;
+							if(ShouldNpcDealBonusDamage(target))
+								damageDealt*=10.0;
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+							npc.PlayMeleeHitSound();
+							
+							if(!IsValidEnemy(npc.index, target))
+							{
+								npc.m_flGetClosestTargetTime=0.0;
+							}
+							else
+							{
+								if(IsValidClient(target) && !HasSpecificBuff(target, "Fluid Movement"))
+								{
+									TF2_StunPlayer(target, 1.5, 0.5, TF_STUNFLAG_SLOWDOWN);
+									Client_Shake(target, 0, 25.0, 12.5, 1.5);
+								}
+							}
+						}
+					}
+					delete swingTrace;
+					npc.m_flNextMeleeAttack = gameTime + 0.6;
+					npc.m_flChargeAttack = gameTime + 7.5;
+					npc.m_flAttackHappenswillhappen = false;
+				}
+				else if(npc.m_flAttackHappens_bullshit < gameTime && npc.m_flAttackHappenswillhappen)
+				{
+					npc.m_flAttackHappenswillhappen = false;
+					npc.m_flNextMeleeAttack = gameTime + 0.6;
+				}
 			}
 		}
-		case 0: //Melee
-		{
-			if (npc.IsOnGround())
-			{
-				if(npc.m_iChanged_WalkCycle != 3)
-				{
-					ResetAviatorWeapon(npc, 0);
-					SetVariantInt(3);
-					AcceptEntityInput(npc.index, "SetBodyGroup");
-					npc.m_bisWalking = true;
-					npc.m_iChanged_WalkCycle = 3;
-					npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-					npc.StartPathing();
-				}	
-			}
-			else
-			{
-				if(npc.m_iChanged_WalkCycle != 4)
-				{
-					ResetAviatorWeapon(npc, 0);
-					SetVariantInt(3);
-					AcceptEntityInput(npc.index, "SetBodyGroup");
-					npc.m_bisWalking = false;
-					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE_ALLCLASS");
-					npc.StartPathing();
-				}	
-			}
-		}
+		return 2;
 	}
-
-}
-
-static int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
-{
-	if(npc.m_flAttackHappens)
+	
+	if(npc.m_flNextRangedAttack < gameTime)
 	{
-		npc.i_GunMode = 0;
-		if(gameTime > npc.m_flAttackHappens)
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.5))
 		{
-			npc.m_flAttackHappens = 0.0;
-			Handle swingTrace;
-			float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
-			npc.FaceTowards(WorldSpaceVec, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, target, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
-			{
-				int target_hit = TR_GetEntityIndex(swingTrace);	
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-
-				if(target_hit > 0) 
-				{
-					float damageDealt = 100.0; //Extreme melee damage
-					if(ShouldNpcDealBonusDamage(target_hit))
-						damageDealt *= 10.0; //basically oneshots buildings or atleast deals heavy damage
-
-					SDKHooks_TakeDamage(target_hit, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);									
-
-					npc.PlayMeleeHitSound();
-					if(target_hit <= MaxClients)
-						if(!HasSpecificBuff(target, "Fluid Movement"))
-							TF2_StunPlayer(target, 1.5, 0.5, TF_STUNFLAG_SLOWDOWN);
-				} 
-			}
-			delete swingTrace;
-		}
-		//A melee attack is happening, lets just follow the target_hit
-		return 0;
-	}
-
-	//This ranged unit is more of an intruder, so we will get whatever enemy its pathing
-	if(npc.m_flNextMeleeAttack < gameTime && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0))
-	{
-		//close enough to concider as a melee range attack.
-		npc.i_GunMode = 0;
-		//We can melee!
-		//Are we close enough?
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.35))
-		{
-			npc.m_flAttackHappens = gameTime + 0.25;
-			npc.m_flDoingAnimation = gameTime + 0.25;
-			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
-			npc.m_flNextMeleeAttack = gameTime + 2.00;
-			npc.PlayMeleeSound();
-			//We are close enough to melee attack, lets melee.
-		}
-		//no? Chase target
-		return 0;
-	}
-	npc.i_GunMode = 1;
-	//isnt melee anymore
-	if((distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.5)) && gameTime > npc.m_flNextRangedAttack)
-	{	
-		if(Can_I_See_Enemy_Only(npc.index, target))
-		{
-			int Enemy_I_See;
-									
-			Enemy_I_See = Can_I_See_Enemy(npc.index, target);
-
+			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+					
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
-				if(IsValidEntity(npc.m_iWearable1))
-					RemoveEntity(npc.m_iWearable1);
-				npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_pda_engineer/c_pda_engineer.mdl");
-				SetVariantString("0.8");
-				AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", false);
+				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayRangedSound();
-				float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 				npc.FaceTowards(vecTarget, 20000.0);
 				Handle swingTrace;
-				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, { 9999.0, 9999.0, 9999.0 }))
 				{
-					target = TR_GetEntityIndex(swingTrace);	
+					int target = TR_GetEntityIndex(swingTrace);	
 						
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
@@ -526,61 +591,48 @@ static int AviatorSelfDefense(Aviator npc, float gameTime, int target, float dis
 						float damageDealt = 60.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 7.5;
-
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 					}
+					npc.m_flNextRangedAttack = gameTime + 1.0;
 				}
 				delete swingTrace;
 			}
-			npc.m_flNextRangedAttack = gameTime + 1.0;
+			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0))
+				return 0;
+			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
+			{
+				if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+					return 1;
+			}
+			return 0;
 		}
-	}
-	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0))
-	{
-		//target is too far, try to close in
-		return 0;
-	}
-	else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
-	{
-		if(Can_I_See_Enemy_Only(npc.index, target))
+		else
 		{
-			//target is too close, try to keep distance
-			return 1;
+			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0))
+				return 0;
+			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
+			{
+				if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+					return 1;
+			}
 		}
 	}
-	//Chase target
+	else
+	{
+		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0))
+			return 0;
+		else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
+		{
+			if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+				return 1;
+		}
+	}
 	return 0;
-}
-
-
-static void ResetAviatorWeapon(Aviator npc, int weapon_Type)
-{
-	if(IsValidEntity(npc.m_iWearable1))
-	{
-		RemoveEntity(npc.m_iWearable1);
-	}
-	switch(weapon_Type)
-	{
-		case 1:
-		{
-			KillFeed_SetKillIcon(npc.index, "frontier_kill");
-			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_frontierjustice/c_frontierjustice_xmas.mdl");
-			SetVariantString("1.0");
-			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		}
-		case 0:
-		{
-			KillFeed_SetKillIcon(npc.index, "sledgehammer");
-			npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_sledgehammer/c_sledgehammer.mdl");
-			SetVariantString("0.8");
-			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		}
-	}
 }
 
 static void NPC_Go_away(int entity, int victim, float damage, int weapon)
 {
-	Huscarls npc = view_as<Huscarls>(entity);
+	Aviator npc = view_as<Aviator>(entity);
 	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
 	if(IsValidEntity(npc.index) && IsValidEntity(victim) && !IsValidClient(victim) && GetTeam(npc.index) != GetTeam(victim))
 	{

@@ -6,14 +6,14 @@ static const char g_HurtSounds[][] = {
 	"vo/pyro_painsharp02.mp3",
 	"vo/pyro_painsharp03.mp3",
 	"vo/pyro_painsharp04.mp3",
-	"vo/pyro_painsharp05.mp3",
+	"vo/pyro_painsharp05.mp3"
 };
 
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/taunts/pyro_taunts01.mp3",
 	"vo/taunts/pyro_taunts02.mp3",
-	"vo/taunts/pyro_taunts03.mp3",
+	"vo/taunts/pyro_taunts03.mp3"
 };
 
 static const char g_DeathSounds[] = ")vo/pyro_negativevocalization01.mp3";
@@ -157,17 +157,41 @@ static void VictoriaIgniter_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		switch(VictoriaIgniterSelfDefense(npc,GetGameTime(npc.index),flDistanceToTarget))
 		{
-			float vPredictedPos[3];
-			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			npc.SetGoalVector(vPredictedPos);
+			case 0:
+			{
+				if(npc.m_iChanged_WalkCycle != 0)
+				{
+					npc.m_bisWalking = false;
+					npc.m_iChanged_WalkCycle = 5;
+					npc.SetActivity("ACT_MP_STAND_ITEM1");
+					npc.m_flSpeed = 0.0;
+					npc.StopPathing();
+				}
+			}
+			case 1:
+			{
+				if(npc.m_iChanged_WalkCycle != 1)
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 1;
+					npc.SetActivity("ACT_MP_RUN_ITEM1");
+					npc.m_flSpeed = 250.0;
+					npc.StartPathing();
+				}
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3];
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
+				}
+				else 
+				{
+					npc.SetGoalEntity(npc.m_iTarget);
+				}
+			}
 		}
-		else 
-		{
-			npc.SetGoalEntity(npc.m_iTarget);
-		}
-		VictoriaIgniterSelfDefense(npc,GetGameTime(npc.index),flDistanceToTarget); 
 	}
 	else
 	{
@@ -200,7 +224,6 @@ static void VictoriaIgniter_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-		
 	
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
@@ -210,23 +233,10 @@ static void VictoriaIgniter_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
 }
 
-static void VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime, float distance)
+static int VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime, float distance)
 {
-	if(!IsValidEnemy(npc.index,npc.m_iTarget))
-	{
-		if(npc.m_iChanged_WalkCycle != 4)
-		{
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 4;
-			npc.SetActivity("ACT_MP_RUN_ITEM1");
-			npc.m_flSpeed = 250.0;
-			npc.StartPathing();
-		}
-		return;
-	}
 	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 	{
@@ -234,14 +244,6 @@ static void VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime, floa
 					
 		if(IsValidEnemy(npc.index, Enemy_I_See))
 		{
-			if(npc.m_iChanged_WalkCycle != 5)
-			{
-				npc.m_bisWalking = false;
-				npc.m_iChanged_WalkCycle = 5;
-				npc.SetActivity("ACT_MP_STAND_ITEM1");
-				npc.m_flSpeed = 0.0;
-				npc.StopPathing();
-			}	
 			if(gameTime > npc.m_flNextMeleeAttack)
 			{
 				if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
@@ -257,32 +259,16 @@ static void VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime, floa
 					CreateTimer(8.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 					
 					SDKHook(projectile, SDKHook_StartTouch, VictoriaIgniter_Rocket_Particle_StartTouch);
+					return 0;
 				}
 			}
 		}
 		else
 		{
-			if(npc.m_iChanged_WalkCycle != 4)
-			{
-				npc.m_bisWalking = true;
-				npc.m_iChanged_WalkCycle = 4;
-				npc.SetActivity("ACT_MP_RUN_ITEM1");
-				npc.m_flSpeed = 250.0;
-				npc.StartPathing();
-			}
+			return (distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*10.0 ? 1 : 0);
 		}
 	}
-	else
-	{
-		if(npc.m_iChanged_WalkCycle != 4)
-		{
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 4;
-			npc.SetActivity("ACT_MP_RUN_ITEM1");
-			npc.m_flSpeed = 250.0;
-			npc.StartPathing();
-		}
-	}
+	return (distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*10.0 ? 1 : 0);
 }
 
 static void VictoriaIgniter_Rocket_Particle_StartTouch(int entity, int target)

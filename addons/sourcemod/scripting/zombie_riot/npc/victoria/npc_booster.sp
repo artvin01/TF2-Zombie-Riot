@@ -81,19 +81,13 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 methodmap VictorianBooster < CClotBody
 {
 
-	public void PlayIdleAlertSound() {
+	public void PlayIdleAlertSound()
+	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
-	property float m_flArmorToGive
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
-	}
-
 	public void PlayHurtSound()
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -119,9 +113,18 @@ methodmap VictorianBooster < CClotBody
 	{
 		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
+	
+	property float m_flFuckDelaySound
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	public void PlayFuckyouSound()
 	{
+		if(this.m_flFuckDelaySound > GetGameTime(this.index))
+			return;
 		EmitSoundToAll(g_FuckyouSounds[GetRandomInt(0, sizeof(g_FuckyouSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		this.m_flFuckDelaySound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 
 	public VictorianBooster(float vecPos[3], float vecAng[3], int ally)
@@ -145,7 +148,7 @@ methodmap VictorianBooster < CClotBody
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
+		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "battleneedle");
@@ -252,11 +255,40 @@ static void VictorianBooster_ClotThink(int iNPC)
 		npc.m_iTarget = (npc.m_bFUCKYOU ? GetClosestTarget(npc.index) : GetClosestAlly(npc.index));
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + (npc.m_bFUCKYOU ? GetRandomRetargetTime() : 5000.0);
 	}
+	if(IsValidAlly(npc.index, npc.m_iTarget) && Is_a_Medic[npc.m_iTarget])
+	{
+		if(IsValidEntity(npc.m_iWearable4))
+			RemoveEntity(npc.m_iWearable4);
+		npc.StopHealing();
+		npc.Healing = false;
+		npc.m_bnew_target = false;
+		npc.m_flGetClosestTargetTime = 5000.0;
+		npc.m_iTarget = GetClosestAlly(npc.index);
+	}
 	
 	bool GotoWork;
 	if(!npc.m_bFUCKYOU&&IsValidAlly(npc.index, npc.m_iTarget))
 		GotoWork=true;
-	else
+	else if(npc.m_bFUCKYOU&&IsValidAlly(npc.index, GetClosestAlly(npc.index)))
+	{
+		if(IsValidEntity(npc.m_iWearable3))
+			RemoveEntity(npc.m_iWearable3);
+			
+		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_medigun/c_medigun.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+	
+		if(IsValidEntity(npc.m_iWearable4))
+			RemoveEntity(npc.m_iWearable4);
+			
+		npc.StopHealing();
+		npc.Healing = false;
+		npc.m_bnew_target = false;
+		npc.m_bFUCKYOU = false;
+		npc.m_flGetClosestTargetTime = 5000.0;
+		npc.m_iTarget = GetClosestAlly(npc.index);
+	}
+	else if(!npc.m_bFUCKYOU)
 	{
 		if(IsValidEntity(npc.m_iWearable3))
 			RemoveEntity(npc.m_iWearable3);
@@ -296,7 +328,6 @@ static void VictorianBooster_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_RUN_SECONDARY");
 					npc.m_flSpeed = 300.0;
 					npc.m_iChanged_WalkCycle = 0;
-					Is_a_Medic[npc.index] = true;
 				}
 				if(flDistanceToTarget < npc.GetLeadRadius())
 				{
@@ -315,7 +346,6 @@ static void VictorianBooster_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_STAND_SECONDARY");
 					npc.m_flSpeed = 0.0;
 					npc.m_iChanged_WalkCycle = 1;
-					Is_a_Medic[npc.index] = true;
 				}
 			}
 			case 2:
@@ -327,7 +357,6 @@ static void VictorianBooster_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_RUN_MELEE");
 					npc.m_flSpeed = 450.0;
 					npc.m_iChanged_WalkCycle = 2;
-					Is_a_Medic[npc.index] = false;
 				}
 				if(flDistanceToTarget < npc.GetLeadRadius())
 				{
@@ -346,7 +375,6 @@ static void VictorianBooster_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_STAND_MELEE");
 					npc.m_flSpeed = 0.0;
 					npc.m_iChanged_WalkCycle = 3;
-					Is_a_Medic[npc.index] = false;
 				}
 			}
 		}
@@ -400,6 +428,30 @@ static int VictorianBooster_Work(VictorianBooster npc, float gameTime, float dis
 {
 	if(npc.m_bFUCKYOU)
 	{
+		if(npc.m_flNextRangedAttack < gameTime)
+		{
+			ExpidonsaGroupHeal(npc.index, 200.0, 5, 2500.0, 0.0, false,Expidonsa_DontHealSameIndex);
+			DesertYadeamDoHealEffect(npc.index, 200.0);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
+			{
+				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
+				{
+					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
+					{
+						static float vecTarget[3]; WorldSpaceCenter(entitycount, vecTarget);
+						if(GetVectorDistance(VecSelfNpc, vecTarget, true) < (200.0 * 200.0))
+						{
+							ApplyStatusEffect(npc.index, entitycount, "Oceanic Scream", 1.1);
+							if(NpcStats_VictorianCallToArms(npc.index))
+								ApplyStatusEffect(npc.index, entitycount, "War Cry", 1.1);
+						}
+					}
+				}
+			}
+			npc.m_flNextRangedAttack = gameTime + 2.5;
+		}
+	
 		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 		{
 			if(npc.m_flNextMeleeAttack < gameTime)
@@ -434,6 +486,8 @@ static int VictorianBooster_Work(VictorianBooster npc, float gameTime, float dis
 							if(!IsValidEnemy(npc.index, target))
 							{
 								npc.m_flGetClosestTargetTime=0.0;
+								npc.m_flNextMeleeAttack = gameTime + 0.6;
+								npc.m_flAttackHappenswillhappen = false;
 								return 3;
 							}
 						} 
@@ -460,7 +514,7 @@ static int VictorianBooster_Work(VictorianBooster npc, float gameTime, float dis
 				if(!npc.m_bnew_target)
 				{
 					npc.StartHealing();
-					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTarget, 255, 0, 0, 3.0, 3.0, 1.35, LASERBEAM);
+					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTarget, 0, 0, 255, 3.0, 3.0, 1.35, LASERBEAM);
 					npc.Healing = true;
 					npc.m_bnew_target = true;
 				}
@@ -471,9 +525,7 @@ static int VictorianBooster_Work(VictorianBooster npc, float gameTime, float dis
 				HealEntityGlobal(npc.index, npc.m_iTarget, float(MaxHealth / 80), 1.0);
 				ApplyStatusEffect(npc.index, npc.m_iTarget, "Oceanic Scream", 1.1);
 				if(NpcStats_VictorianCallToArms(npc.index))
-				{
 					ApplyStatusEffect(npc.index, npc.m_iTarget, "War Cry", 1.1);
-				}
 				
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
 				

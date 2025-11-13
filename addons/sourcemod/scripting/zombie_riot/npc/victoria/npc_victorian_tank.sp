@@ -2,19 +2,15 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[] = "mvm/giant_soldier/giant_soldier_explode.wav";
-static const char g_MeleeAttackSounds[] = "player/taunt_tank_shoot.wav";
+static const char g_RangeAttackSounds[] = "player/taunt_tank_shoot.wav";
 static const char g_MeleeHitSounds[][] = {
-	"mvm/melee_impacts/bottle_hit_robo01.wav",
-	"mvm/melee_impacts/bottle_hit_robo02.wav",
-	"mvm/melee_impacts/bottle_hit_robo03.wav"
+	"weapons/demo_charge_hit_world1.wav",
+	"weapons/demo_charge_hit_world2.wav",
+	"weapons/demo_charge_hit_world3.wav"
 };
 
 void VictoriaTank_MapStart()
 {
-	PrecacheModel("models/player/items/taunts/tank/tank.mdl");
-	PrecacheSound(g_DeathSounds);
-	PrecacheSound(g_MeleeAttackSounds);
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Tank");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victorian_tank");
@@ -22,10 +18,18 @@ void VictoriaTank_MapStart()
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSound(g_DeathSounds);
+	PrecacheSound(g_RangeAttackSounds);
+	PrecacheModel("models/player/items/taunts/tank/tank.mdl");
+}
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -38,9 +42,9 @@ methodmap VictoriaTank < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds, this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayMeleeSound()
+	public void PlayRangeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayMeleeHitSound()
 	{
@@ -58,15 +62,12 @@ methodmap VictoriaTank < CClotBody
 		npc.m_iStepNoiseType = 0;
 		npc.m_iNpcStepVariation = 0;
 		npc.m_bDissapearOnDeath = true;
-		
-	//	SetVariantInt(1);
-	//	AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = ClotDeath;
+		func_NPCDeath[npc.index] = VictoriaTank_ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = ClotThink;
+		func_NPCThink[npc.index] = VictoriaTank_ClotThink;
 		
 		f_NpcTurnPenalty[npc.index] = 0.5;
 		npc.m_flSpeed = 90.0;
@@ -85,7 +86,7 @@ methodmap VictoriaTank < CClotBody
 	}
 }
 
-static void ClotThink(int iNPC)
+static void VictoriaTank_ClotThink(int iNPC)
 {
 	VictoriaTank npc = view_as<VictoriaTank>(iNPC);
 
@@ -103,145 +104,38 @@ static void ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	int target = npc.m_iTarget;
-	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
+	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
-		i_Target[npc.index] = -1;
-		npc.m_flAttackHappens = 0.0;
-	}
-	
-	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
-	{
-		target = GetClosestTarget(npc.index);
-		npc.m_iTarget = target;
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 	}
 
-	if(target > 0)
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
-		
+		VictoriaTank_Work(npc, gameTime, distance);
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			npc.SetGoalEntity(target);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
-
 		npc.StartPathing();
 		
-		if(npc.m_flNextRangedAttack < gameTime)
-		{
-
-			float damageDeal = 600.0;
-			float ProjectileSpeed = 1400.0;
-
-			if(NpcStats_VictorianCallToArms(npc.index))
-				ProjectileSpeed *= 1.25;
-
-
-			npc.PlayMeleeSound();
-
-			int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,_,_,_,45.0);
-			if(entity != -1)
-			{
-				//max duration of 4 seconds beacuse of simply how fast they fire
-				CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-			}
-			npc.m_flNextRangedAttack = gameTime + 3.00;
-		}
 	}
 	else
 	{
 		npc.StopPathing();
-	}
-
-	if(IsValidEnemy(npc.index, target))
-	{
-		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-	
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		
-		//Predict their pos.
-		if(flDistanceToTarget < npc.GetLeadRadius()) {
-			
-			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-			
-			npc.SetGoalVector(vPredictedPos);
-		} else {
-			npc.SetGoalEntity(target);
-		}
-
-		//Target close enough to hit
-		if((flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
-		{
-		//	npc.FaceTowards(vecTarget, 1000.0);
-			
-			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
-			{
-				if (!npc.m_flAttackHappenswillhappen)
-				{
-					npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
-					npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
-					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
-					npc.m_flAttackHappenswillhappen = true;
-				}
-					
-				if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-				{
-					Handle swingTrace;
-					npc.FaceTowards(vecTarget, 20000.0);
-					if(npc.DoSwingTrace(swingTrace, target, _, _, _, 1))
-					{
-						target = TR_GetEntityIndex(swingTrace);	
-						
-						float vecHit[3];
-						TR_GetEndPosition(vecHit, swingTrace);
-						
-						if(target > 0) 
-						{
-							if(!ShouldNpcDealBonusDamage(target))
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
-							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 1000.0, DMG_CLUB, -1, _, vecHit);
-							
-							// Hit particle
-							
-							
-							// Hit sound
-							ParticleEffectAt(vecHit, "drg_cow_explosion_sparkles_blue", 1.5);
-							npc.PlayMeleeHitSound();
-						} 
-					}
-					delete swingTrace;
-					npc.m_flAttackHappenswillhappen = false;
-				}
-				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-				{
-					npc.m_flAttackHappenswillhappen = false;
-				}
-			}
-		}
-		if (npc.m_flReloadDelay < GetGameTime(npc.index))
-			npc.StartPathing();
-	}
-	else
-	{
-		npc.StopPathing();
-		
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 }
 
-static void ClotDeath(int entity)
+static void VictoriaTank_ClotDeath(int entity)
 {
 	VictoriaTank npc = view_as<VictoriaTank>(entity);
 
@@ -301,3 +195,74 @@ static void ClotDeath(int entity)
 	}
 }
 
+static void VictoriaTank_Work(VictoriaTank npc, float gameTime, float distance)
+{
+	if(npc.m_flNextRangedAttack < gameTime)
+	{
+		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+		if(IsValidEnemy(npc.index, Enemy_I_See))
+		{
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+			float damageDeal = 600.0;
+			float ProjectileSpeed = 1400.0;
+
+			if(NpcStats_VictorianCallToArms(npc.index))
+				ProjectileSpeed *= 1.25;
+
+			npc.PlayRangeSound();
+
+			int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,_,_,_,45.0);
+			if(entity != -1)
+			{
+				//max duration of 4 seconds beacuse of simply how fast they fire
+				CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			}
+			npc.m_flNextRangedAttack = gameTime + 3.00;
+		}
+	}
+	
+	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
+	{
+		if(npc.m_flNextMeleeAttack < gameTime)
+		{
+			if(!npc.m_flAttackHappenswillhappen)
+			{
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+				npc.m_flAttackHappens = gameTime+0.4;
+				npc.m_flAttackHappens_bullshit = gameTime+0.54;
+				npc.m_flAttackHappenswillhappen = true;
+			}
+			if(npc.m_flAttackHappens < gameTime && npc.m_flAttackHappens_bullshit >= gameTime && npc.m_flAttackHappenswillhappen)
+			{
+				Handle swingTrace;
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+				npc.FaceTowards(vecTarget, 20000.0);
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
+				{
+					int target = TR_GetEntityIndex(swingTrace);	
+					
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					
+					if(IsValidEnemy(npc.index, target))
+					{
+						float damageDealt = 100.0;
+						if(ShouldNpcDealBonusDamage(target))
+							damageDealt=19721121.0;
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+						npc.PlayMeleeHitSound();
+						ParticleEffectAt(vecHit, "drg_cow_explosion_sparkles_blue", 1.5);
+					} 
+				}
+				delete swingTrace;
+				npc.m_flNextMeleeAttack = gameTime + 1.0;
+				npc.m_flAttackHappenswillhappen = false;
+			}
+			else if(npc.m_flAttackHappens_bullshit < gameTime && npc.m_flAttackHappenswillhappen)
+			{
+				npc.m_flAttackHappenswillhappen = false;
+				npc.m_flNextMeleeAttack = gameTime + 1.0;
+			}
+		}
+	}
+}

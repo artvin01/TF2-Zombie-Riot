@@ -144,16 +144,13 @@ static void VictoriaDestructor_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))
-		npc.m_iTarget = 0;
-	
-	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
+	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 	
-	if(npc.m_iTarget > 0)
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -177,36 +174,24 @@ static void VictoriaDestructor_ClotThink(int iNPC)
 
 			float radius = 250.0;
 			if(NpcStats_VictorianCallToArms(npc.index))
-			{
 				radius *= 1.5;
-			}
-			float pradius = 250.0;
-			if(NpcStats_VictorianCallToArms(npc.index))
-			{
-				pradius *= 1.5;
-			}
 
 			npc.PlayExplosionSound();
-			
-			spawnRing_Vectors(vecMe, pradius, 0.0, 0.0, 50.0, "materials/sprites/laserbeam.vmt", 100, 150, 255, 175, 1, 0.5, 6.0, 0.1, 1, 640.0);
-			
-			Explode_Logic_Custom(35.0, -1, npc.index, -1, vecMe, radius, _, 0.75, true, _, false, _, VictoriaDestructor_ExplodePost);
+			spawnRing_Vectors(vecMe, radius, 0.0, 0.0, 50.0, "materials/sprites/laserbeam.vmt", 100, 150, 255, 175, 1, 0.5, 6.0, 0.1, 1, 640.0);
+			Explode_Logic_Custom(25.0, -1, npc.index, -1, vecMe, radius, _, 0.75, true, _, false, _, VictoriaDestructor_ExplodePost);
 		}
 	}
 	else
 	{
 		npc.StopPathing();
+		npc.m_flGetClosestTargetTime=0.0;
 	}
-
 	npc.PlayIdleSound();
 }
 
 static void VictoriaDestructor_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
-	if(!NpcStats_IsEnemySilenced(attacker))
-	{
-		NPC_Ignite(victim, attacker,8.0, -1, 5.50);
-	}
+	NPC_Ignite(victim, attacker,8.0, -1, 5.5);
 }
 
 static Action VictoriaDestructor_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

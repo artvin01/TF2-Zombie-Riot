@@ -5,18 +5,10 @@ static const char g_DeathSounds[] = "misc/rd_robot_explosion01.wav";
 static char g_EmergencyExtractionSound[] = "weapons/rocket_ll_shoot.wav";
 static int NPCId;
 static bool SilentDestruction;
+static float g_CD_LandingSound;
 
 void VictorianFactory_MapStart()
 {
-	PrecacheSound("misc/rd_points_return01.wav");
-	PrecacheSound("misc/doomsday_lift_start.wav");
-	PrecacheSound("misc/hologram_start.wav");
-	PrecacheSound("items/bomb_warning.wav");
-	PrecacheSound(g_DeathSounds);
-	PrecacheSound(g_EmergencyExtractionSound);
-	PrecacheModel("models/props_c17/substation_transformer01a.mdl");
-	PrecacheModel("models/props_c17/lockers001a.mdl");
-	PrecacheModel("models/props_skybox/train_building004_skybox.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Factory");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victoria_factory");
@@ -24,8 +16,22 @@ void VictorianFactory_MapStart()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSound(g_DeathSounds);
+	PrecacheSound(g_EmergencyExtractionSound);
+	PrecacheSound("misc/rd_points_return01.wav");
+	PrecacheSound("misc/doomsday_lift_start.wav");
+	PrecacheSound("misc/hologram_start.wav");
+	PrecacheSound("items/bomb_warning.wav");
+	PrecacheModel("models/props_c17/substation_transformer01a.mdl");
+	PrecacheModel("models/props_c17/lockers001a.mdl");
+	PrecacheModel("models/props_skybox/train_building004_skybox.mdl");
 }
 
 int VictorianFactory_ID()
@@ -33,12 +39,12 @@ int VictorianFactory_ID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
 	vecAng[0]=0.0;
 	vecAng[1]=0.0;
 	vecAng[2]=0.0;
-	return VictorianFactory(vecPos, vecAng, ally);
+	return VictorianFactory(vecPos, vecAng, ally, data);
 }
 
 static char[] GetBuildingHealth()
@@ -83,14 +89,37 @@ methodmap VictorianFactory < CClotBody
 		EmitSoundToAll(g_EmergencyExtractionSound, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_EmergencyExtractionSound, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
+	public void PlayLandingSound()
+	{
+		if(g_CD_LandingSound > GetGameTime())
+			return;
+		EmitSoundToAll("misc/hologram_start.wav", _, _, _, _, 1.0);
+		EmitSoundToAll("misc/hologram_start.wav", _, _, _, _, 1.0);
+		g_CD_LandingSound = GetGameTime() + 10.0;
+	}
 	
-	property int i_GetWave
+	/*property int i_GetWave
 	{
 		public get()							{ return i_MedkitAnnoyance[this.index]; }
 		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
+	}*/
+	property float m_flBaseBuildTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flLastManAdvantage
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flLifeTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
 	
-	public VictorianFactory (float vecPos[3], float vecAng[3], int ally)
+	public VictorianFactory (float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianFactory npc = view_as<VictorianFactory>(CClotBody(vecPos, vecAng, "models/props_skybox/train_building004_skybox.mdl", "2.0", GetBuildingHealth(), ally, _, true, .NpcTypeLogic = 1));
 		
@@ -113,6 +142,8 @@ methodmap VictorianFactory < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_flAttackHappens = 0.0;
+		npc.m_flBaseBuildTime = 10.0;
+		npc.m_flLastManAdvantage = 2.5;
 		i_AttacksTillMegahit[npc.index] = 0;
 
 		npc.m_flMeleeArmor = 0.0;
@@ -126,16 +157,78 @@ methodmap VictorianFactory < CClotBody
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = false;
-		b_DoNotUnStuck[npc.index] = true;
-		b_NoKnockbackFromSources[npc.index] = true;
+		f_ExtraOffsetNpcHudAbove[npc.index] = 1.0;
 		b_NpcIsInvulnerable[npc.index] = true;
 		b_ThisEntityIgnored[npc.index] = true;
-		MakeObjectIntangeable(npc.index);
-		f_ExtraOffsetNpcHudAbove[npc.index] = 1.0;
-		AddNpcToAliveList(npc.index, 1);
+		b_DoNotUnStuck[npc.index] = true;
+		b_NoKnockbackFromSources[npc.index] = true;
 		
-		npc.i_GetWave = Waves_GetRound();
+		i_GunAmmo[npc.index]=0;
+		b_we_are_reloading[npc.index]=false;
+		npc.m_flLifeTime=20.0;
+		i_ammo_count[npc.index]=0;
 		
+		//default: type-a (old ver)
+		//Maybe used for special waves
+		static char countext[20][1024];
+		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
+		for(int i = 0; i < count; i++)
+		{
+			if(i>=count)break;
+			else if(StrContains(countext[i], "type-b") != -1)
+			{
+				//Automatic Fragments Spawn
+				ReplaceString(countext[i], sizeof(countext[]), "type-b", "");
+				npc.m_iState = 1;
+			}
+			else if(StrContains(countext[i], "type-c") != -1)
+			{
+				//Automatic Anvil Spawn
+				ReplaceString(countext[i], sizeof(countext[]), "type-c", "");
+				npc.m_iState = 2;
+			}
+			else if(StrContains(countext[i], "type-d") != -1)
+			{
+				//Spawn Disable - Victoria Wave uses this setting.
+				ReplaceString(countext[i], sizeof(countext[]), "type-d", "");
+				npc.m_iState = -4;
+			}
+			else if(StrContains(countext[i], "buildtime") != -1)
+			{
+				//For Automatic Spawn
+				ReplaceString(countext[i], sizeof(countext[]), "buildtime", "");
+				npc.m_flBaseBuildTime = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "lastmanadvantage") != -1)
+			{
+				//For Automatic Spawn
+				ReplaceString(countext[i], sizeof(countext[]), "lastmanadvantage", "");
+				npc.m_flLastManAdvantage = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "lifetime") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "lifetime", "");
+				npc.m_flLifeTime = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "mk2") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "mk2", "");
+				b_we_are_reloading[npc.index] = true;
+			}
+			else if(StrContains(countext[i], "tracking") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "tracking", "");
+				i_GunAmmo[npc.index]=1;
+			}
+		}
+		
+		if(npc.m_iState!=0)
+		{
+			MakeObjectIntangeable(npc.index);
+			AddNpcToAliveList(npc.index, 1);
+		}
+		
+		i_current_wave[npc.index]=(Waves_GetRoundScale()+1);
 		if(ally != TFTeam_Red)
 		{
 			if(LastSpawnDiversio < GetGameTime())
@@ -213,8 +306,8 @@ static void ClotThink(int iNPC)
 
 	if(i_AttacksTillMegahit[npc.index] >= 600)
 	{
-		float BuildTime=10.0;
-		if(LastMann) BuildTime=25.0;
+		float BuildTime=npc.m_flBaseBuildTime;
+		if(LastMann) BuildTime*=npc.m_flLastManAdvantage;
 		if(i_AttacksTillMegahit[npc.index] <= 600)
 		{
 			float Vec[3], Ang[3];
@@ -300,34 +393,182 @@ static void ClotThink(int iNPC)
 			SetVariantString("!activator");
 			AcceptEntityInput(npc.m_iWearable2, "SetParent", npc.index);
 			MakeObjectIntangeable(npc.m_iWearable2);
-			EmitSoundToAll("misc/hologram_start.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("misc/hologram_start.wav", _, _, _, _, 1.0);
+			npc.PlayLandingSound();
 			npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 			SetVariantColor(view_as<int>({255, 255, 255, 200}));
 			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-			npc.m_flNextRangedAttack = gameTime + BuildTime;
+			npc.m_flAttackHappens = gameTime + BuildTime;
 			i_AttacksTillMegahit[npc.index] = 607;
+			if(npc.m_iState==0)
+			{
+				npc.m_flMeleeArmor = 2.0;
+				npc.m_flRangedArmor = 0.5;
+				b_NpcIsInvulnerable[npc.index] = false;
+				b_ThisEntityIgnored[npc.index] = false;
+				npc.m_flAttackHappens = gameTime + 1.0;
+			}
 			return;
 		}
 		if(i_AttacksTillMegahit[npc.index] <= 607)
 		{
-			if(Waves_InSetup() || npc.i_GetWave!=Waves_GetRound())
+			switch(npc.m_iState)
 			{
-				npc.m_flNextRangedAttack = gameTime + BuildTime;
-				npc.i_GetWave=Waves_GetRound();
-				return;
-			}
-			int iColor[4];
-			iColor[0]=145+RoundToCeil(((npc.m_flNextRangedAttack-gameTime)/BuildTime)*110.0);
-			iColor[1]=10+RoundToCeil(((npc.m_flNextRangedAttack-gameTime)/BuildTime)*245.0);
-			iColor[2]=0+RoundToCeil(((npc.m_flNextRangedAttack-gameTime)/BuildTime)*255.0);
-			iColor[3]=200+RoundToCeil(((npc.m_flNextRangedAttack-gameTime)/BuildTime)*55.0);
-			SetVariantColor(iColor);
-			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-			if(npc.m_flNextRangedAttack < gameTime)
-			{
-				npc.m_flNextRangedAttack = gameTime + BuildTime;
-				EmitSoundToAll("items/bomb_warning.wav", npc.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+				//Old ver
+				case -4:
+				{
+					//none
+				}
+				case -1, -2, -3:
+				{
+					float Vec[3];
+					GetAbsOrigin(npc.m_iWearable3, Vec);
+					if(IsValidEntity(npc.m_iWearable4))
+					{
+						if(gameTime > npc.m_flAttackHappens)
+						{
+							GetAbsOrigin(npc.m_iWearable3, Vec);
+							int spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), "factory;mk2;isvoli");
+							if(spawn_index > MaxClients)
+							{
+								NpcStats_CopyStats(npc.index, spawn_index);
+								int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.25);
+								NpcAddedToZombiesLeftCurrently(spawn_index, true);
+								SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+								SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+								fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
+								fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
+								fl_Extra_Speed[spawn_index] = fl_Extra_Speed[npc.index];
+								fl_Extra_Damage[spawn_index] = fl_Extra_Damage[npc.index];
+								IncreaseEntityDamageTakenBy(spawn_index, 0.000001, 1.0);
+							}
+							npc.m_flAttackHappens = gameTime + 1.0;
+							npc.m_iState -= 1;
+						}
+					}
+					else
+					{
+						float Ang[3];
+						npc.GetAttachment("m_vecAbsOrigin", Vec, Ang);
+						Vec[2]+=140.0;
+						npc.m_iWearable4 = ParticleEffectAt_Parent(Vec, "cart_flashinglight_red", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0});
+						npc.GetAttachment("", Vec, Ang);
+						EmitSoundToAll("items/bomb_warning.wav", npc.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+					}
+				}
+				case 0:
+				{
+					bool GetClosed=false;
+					float Vec[3], entitypos[3], distance;
+					GetAbsOrigin(npc.m_iWearable3, Vec);
+					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+					{
+						int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+						if(IsValidEntity(entity) && entity!=npc.index && GetTeam(entity) != GetTeam(npc.index))
+						{
+							GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);
+							distance = GetVectorDistance(Vec, entitypos, true);
+							if(distance<(400.0*400.0)) GetClosed=true;
+						}
+					}
+					for(int target=1; target<=MaxClients; target++)
+					{
+						if(IsValidClient(target) && IsPlayerAlive(target) && TeutonType[target] == TEUTON_NONE && GetTeam(target) != GetTeam(npc.index))
+						{
+							GetEntPropVector(target, Prop_Send, "m_vecOrigin", entitypos);
+							distance = GetVectorDistance(Vec, entitypos, true);
+							if(distance<=(400.0*400.0)) GetClosed=true;
+						}
+					}
+					if(GetClosed)
+						npc.m_iState = -1;
+				}
+				//New ver
+				case 1, 2:
+				{
+					if(Waves_InSetup() || i_current_wave[npc.index]!=(Waves_GetRoundScale()+1))
+					{
+						npc.m_flAttackHappens = gameTime + BuildTime;
+						i_current_wave[npc.index]=(Waves_GetRoundScale()+1);
+						return;
+					}
+					int iColor[4];
+					iColor[0]=145+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*110.0);
+					iColor[1]=10+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*245.0);
+					iColor[2]=0+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*255.0);
+					iColor[3]=200+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*55.0);
+					SetVariantColor(iColor);
+					AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+					if(npc.m_flAttackHappens < gameTime)
+					{
+						float Vec[3]; GetAbsOrigin(npc.m_iWearable3, Vec);
+						char Adddeta[512];
+						if(b_we_are_reloading[npc.index])
+							FormatEx(Adddeta, sizeof(Adddeta), "%s;mk2", Adddeta);
+						FormatEx(Adddeta, sizeof(Adddeta), "%s;lifetime%.1f", Adddeta, npc.m_flLifeTime);
+						if(npc.m_iState==1 && i_GunAmmo[npc.index])
+							FormatEx(Adddeta, sizeof(Adddeta), "%s;tracking", Adddeta);
+						Vec[2]+=45.0;
+						int spawn_index;
+						if(npc.m_iState==1)
+							spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+						else
+							spawn_index = NPC_CreateByName("npc_victoria_anvil", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+						if(spawn_index > MaxClients)
+						{
+							int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.7);
+							NpcAddedToZombiesLeftCurrently(spawn_index, true);
+							SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+							SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+							fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
+							fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
+							fl_Extra_Speed[spawn_index] = fl_Extra_Speed[npc.index];
+							fl_Extra_Damage[spawn_index] = fl_Extra_Damage[npc.index];
+							FreezeNpcInTime(spawn_index, 3.0, true);
+							IncreaseEntityDamageTakenBy(spawn_index, 0.000001, 3.0);
+						}
+						
+						npc.m_flAttackHappens = gameTime + BuildTime;
+						EmitSoundToAll("items/bomb_warning.wav", npc.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+					}
+				}
+				case 3, 4, 5, 6:
+				{
+					int iColor[4];
+					iColor[0]=145+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*110.0);
+					iColor[1]=10+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*245.0);
+					iColor[2]=0+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*255.0);
+					iColor[3]=200+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*55.0);
+					SetVariantColor(iColor);
+					AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+					if(npc.m_flAttackHappens < gameTime)
+					{
+						float Vec[3]; GetAbsOrigin(npc.m_iWearable3, Vec);
+						char Adddeta[512];
+						/*if(MK2[npc.index])
+							FormatEx(Adddeta, sizeof(Adddeta), "%s;mk2", Adddeta);
+						if(Limit[npc.index])
+							FormatEx(Adddeta, sizeof(Adddeta), "%s;limit", Adddeta);
+						FormatEx(Adddeta, sizeof(Adddeta), "%s;%i", Adddeta, target);*/
+						Vec[2]+=45.0;
+						int spawn_index;
+						if(npc.m_iState==1)
+							spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+						else
+							spawn_index = NPC_CreateByName("npc_victoria_anvil", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+						if(spawn_index > MaxClients)
+						{
+							int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.7);
+							NpcAddedToZombiesLeftCurrently(spawn_index, true);
+							SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+							SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+							FreezeNpcInTime(spawn_index, 3.0, true);
+							IncreaseEntityDamageTakenBy(spawn_index, 0.000001, 3.0);
+						}
+						
+						npc.m_flAttackHappens = gameTime + BuildTime;
+						EmitSoundToAll("items/bomb_warning.wav", npc.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+					}
+				}
 			}
 			return;
 		}
@@ -361,13 +602,13 @@ static void ClotThink(int iNPC)
 			npc.m_iWearable1=ParticleEffectAt(Vec, "rockettrail", 0.0);
 			SetVariantString("!activator");
 			AcceptEntityInput(npc.m_iWearable1, "SetParent", npc.m_iWearable3);
-			npc.m_flNextRangedAttack = gameTime + 3.0;
+			npc.m_flAttackHappens_bullshit = gameTime + 3.0;
 			i_AttacksTillMegahit[npc.index] = 614;
 			return;
 		}
 		if(i_AttacksTillMegahit[npc.index] <= 614)
 		{
-			if(npc.m_flNextRangedAttack >= gameTime)
+			if(npc.m_flAttackHappens_bullshit >= gameTime)
 				return;
 			npc.PlayEmergencyExtractionSound();
 			i_AttacksTillMegahit[npc.index] = 615;
