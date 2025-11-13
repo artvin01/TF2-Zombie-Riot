@@ -7,6 +7,18 @@
 
 //As per usual, I'm using arrays for stats on different pap levels. First entry is unpapped, then first pap, then second pap, etc.
 
+//KINETIC ENERGY: Gained by hitting and killing enemies with the primary attack, as well as by being hit while charging Raigeki. Up to 100.0 can be held at a time. 
+//Kinetic Energy buffs Static Electricity, and also buffs the primary attack while Supercharged.
+//Additionally, it makes Raigeki (the giant thunderbolt) stronger if the user uses the Mortal Blackout PaP path.
+static float Energy_OnHit[4] = { 0.5, 0.65, 0.8, 1.0 };						//Kinetic Energy given for every enemy hit by the primary attack.
+static float Energy_OnKill[4] = { 1.0, 1.35, 1.65, 2.0 };					//Kinetic Energy given for every enemy killed by the primary attack.
+static float Energy_OnHurt[4] = { 0.25, 0.325, 0.4, 0.5 };					//Kinetic Energy given every time the user is hurt while charging Raigeki.
+
+//ELECTRIC BLADE: Sweeps across the screen from left to right, damaging every enemy it passes through.
+//Multiple blades can sweep in rapid succession, but only the first one consumes mana.
+//Becomes X% weaker for every enemy it passes through, but will always deal full damage to the enemy the user was aiming at when they summoned the blade.
+//Range and width scale with projectile lifespan and velocity modifiers.
+//Sweep speed scales with attack speed modifiers.
 static int M1_NumBlades[4] = { 1, 2, 3, 4 };			    //Number of blade sweeps to perform in a row per M1.
 static float M1_Cost[4] = { 40.0, 60.0, 120.0, 240.0 };		//Primary attack base mana cost.
 static float M1_Range[4] = { 180.0, 200.0, 220.0, 240.0 };  //Electric blade range.
@@ -15,6 +27,9 @@ static float M1_Damage[4] = { 200.0, 400.0, 600.0, 900.0 }; //Electric blade dam
 static float M1_Falloff[4] = { 0.825, 0.85, 0.875, 0.9 };   //Amount to multiply electric blade damage per target hit.
 static float M1_Interval[4] = { 0.5, 0.4, 0.3, 0.2 };       //Time it takes for electric blades to sweep across the screen.
 
+//STATIC ELECTRICITY: Holding M2 allows the user to charge up Raigeki. This imposes a huge speed penalty, prevents Burst Pack from being used, and prevents the user from using their primary attack.
+//In exchange: the user gains damage resistance, plus additional damage resistance based on the ability's charge, and emits Static Electricity, which damages nearby enemies.
+//Charging drains mana. If the user does not have enough mana, they may continue to hold M2 to keep the resistance, but Static Electricity will stop working, and they will still be unable to attack.
 static int Charge_MaxTargets[4] = { 6, 8, 10, 12 };						//Max targets hit at once by Static Electricity ticks.
 static float Charge_Cost[4] = { 6.0, 12.0, 24.0, 48.0 };				//Mana drained per interval while charging the M2 ability.
 static float Charge_CostAtFullCharge[4] = { 3.0, 6.0, 12.0, 24.0 };		//Mana drained per interval while charging the M2 ability, while it is already fully-charged. This is needed so that the user can't just charge to full, and then keep holding M2 to have Static Electricity and resistance forever at no cost.
@@ -27,7 +42,11 @@ static float Charge_BonusRes[4] = { 0.2, 0.225, 0.25, 0.3 };			//Maximum bonus d
 static float Charge_DMG[4] = { 24.0, 48.0, 90.0, 135.0 };				//Base damage per interval dealt per Static Electricity tick while charging.
 static float Charge_Radius[4] = { 100.0, 105.0, 110.0, 115.0 };			//Radius in which Static Electricity deals damage.
 static float Charge_Falloff[4] = { 0.7, 0.75, 0.8, 0.85 };				//Amount to multiply Static Electricity damage per target hit.
+static float Charge_EnergyMult[4] = { 3.0, 3.5, 4.0, 5.0 };				//Maximum Static Electricity bonus damage multiplier based on Kinetic Energy (example: this is 5.0 and the user has 100% Kinetic Energy, a Static Electricity tick will deal 500% extra damage, for a total of 600% damage).
+static float Charge_EnergyDrain[4] = { 0.3, 0.3, 0.3, 0.3 };			//Kinetic Energy drained every time Static Electricity hits an enemy.
 
+//RAIGEKI: Once the user has charged their M2 enough, they may release M2 to summon Raigeki. This stuns them, during which their resistance is boosted.
+//After X second(s), Raigeki will strike, dealing enormous damage within a huge radius. This ends the stun and removes the user's resistance.
 static int Raigeki_MaxTargets[4] = { 9, 10, 11, 12 };						//Maximum number of enemies hit at once with Raigeki.
 static float Raigeki_Delay[4] = { 3.0, 3.0, 3.0, 3.0 };						//Duration for which the user is stunned upon casting Raigeki. After this time passes, Raigeki's giant thunderbolt will strike, supercharging the user and ending the stun.
 static float Raigeki_ResMult[4] = { 0.8, 0.8, 0.8, 0.8 };					//Amount to multiply damage taken during the stun state while casting Raigeki. This is stacked multiplicatively with the user's current damage resistance granted by charging Raigeki.
@@ -37,6 +56,15 @@ static float Raigeki_Falloff_MultiHit[4] = { 0.825, 0.85, 0.875, 0.9 };		//Amoun
 static float Raigeki_Falloff_Radius[4] = { 0.75, 0.8, 0.85, 0.9 };			//Distance-based falloff. Lower numbers = more damage is lost based on distance.
 static float Raigeki_Cooldown[4] = { 90.0, 90.0, 90.0, 90.0 };				//Raigeki's cooldown.
 static float Raigeki_Cooldown_Failed[4] = { 45.0, 45.0, 45.0, 45.0 };		//Raigeki's cooldown if the user fails to cast it (releases M2 without enough charge, is downed/dies while charging).
+
+//OVERCHARGE: After Raigeki hits, if the user has enough Kinetic Energy, they will become Supercharged.
+//While Supercharged, the user's Kinetic Energy drains rapidly, and they cannot gain more Kinetic Energy, but their primary attack is massively buffed.
+//Supercharged ends as soon as the user runs out of Kinetic Energy. Also, getting downed while Supercharged instantly removes all Kinetic Energy.
+static float Supercharge_DMGMult[4] = { 2.0, 2.35, 2.65, 3.0 };				//Amount to multiply primary attack damage while Supercharged.
+static float Supercharge_SpeedMult[4] = { 2.0, 2.15, 2.3, 2.5 };			//Amount to multiply attack speed and beam sweep speed while Supercharged.
+static float Supercharge_RangeMult[4] = { 2.0, 2.5, 3.0, 3.5 };				//Amount to multiply beam range while Supercharged.
+static float Supercharge_WidthMult[4] = { 1.35, 1.65, 2.0, 2.0 };			//Amount to multiply beam arc width while Supercharged.
+static float Supercharge_Drain[4] = { 1.0, 1.0, 1.0, 1.0 };					//Amount of Kinetic Energy to drain per 0.1s while Supercharged.
 
 static float ability_cooldown[MAXPLAYERS + 1] = {0.0, ...};
 static bool b_ChargingRaigeki[MAXPLAYERS + 1] = { false, ... };
