@@ -42,7 +42,6 @@ static float Charge_CostAtFullCharge[6] = { 3.0, 4.5, 6.0, 12.0, 3.0, 24.0 };			
 static float Charge_Requirement[6] = { 300.0, 600.0, 800.0, 1400.0, 750.0, 2000.0  };	//Total mana spent to fully charge the M2 ability.
 static float Charge_Min[6] = { 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 };						//Minimum charge percentage needed to cast Raigeki. Releasing M2 or running out of mana below this threshold immediately cancels the ability and does not refund anything.
 static float Charge_Interval[6] = { 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };					//Interval between Static Electricity shocks and charge gain while charging the M2 ability.
-static float Charge_SpeedMod[6] = { 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 };					//Base move speed multiplier while charging Raigeki.
 static float Charge_InstantRes[6] = { 0.1, 0.125, 0.15, 0.2, 0.35, 0.1 };			//Instant damage resistance given as soon as you begin charging Raigeki.
 static float Charge_BonusRes[6] = { 0.2, 0.225, 0.25, 0.3, 0.35, 0.1 };				//Maximum bonus damage resistance given based on the ability's charge level.
 static float Charge_DMG[6] = { 24.0, 48.0, 90.0, 135.0, 200.0, 48.0 };				//Base damage per interval dealt per Static Electricity tick while charging.
@@ -198,14 +197,6 @@ void Raigeki_OnKill(int attacker, int victim)
 	}
 }
 
-float Player_OnTakeDamage_Raigeki(int victim, float &damage, int attacker)
-{
-	if (b_ChargingRaigeki[victim])
-		Energy_Give(victim, Energy_OnHurt[i_ChargeTier[victim]], attacker, i_ChargeTier[victim]);
-
-	return damage;
-}
-
 Handle Timer_Raigeki[MAXPLAYERS + 1] = { INVALID_HANDLE, ... };
 static float f_NextRaigekiHUD[MAXPLAYERS + 1] = { 0.0, ... };
 
@@ -313,7 +304,7 @@ public void Raigeki_DelayAttack(int id)
     if (IsValidEntity(weapon))
     {
 		float current = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack");
-		if (current <= gt)
+		if (current < gt)
 			current = gt;
 
 		current += (gt - f_LastGT[client]);
@@ -397,12 +388,11 @@ void Raigeki_StartCharging(int client, int weapon, int tier)
 		i_ChargeTier[client] = tier;
 		f_ChargeAmt[client] = 0.0;
 		b_ChargingRaigeki[client] = true;
-		f_ChargeCurrentRes[client] = 0.0;
+		f_ChargeCurrentRes[client] = 1.0;
 		b_DoChargeVFX[client] = true;
-		Raigeki_AttachParticle(client, PARTICLE_RAIGEKI_CHARGEUP_AURA_START);
+		ApplyStatusEffect(client, client, "Charging Raigeki", 9999.0);
 
-		Attributes_SetMulti(client, 442, Charge_SpeedMod[tier]);
-		SDKCall_SetSpeed(client);
+		Raigeki_AttachParticle(client, PARTICLE_RAIGEKI_CHARGEUP_AURA_START);
 
 		EmitSoundToClient(client, SOUND_CHARGE_LOOP, client, _, _, _, _, 80);
 
@@ -513,7 +503,7 @@ void Raigeki_ChargeLogic(int id)
 	}
 	else	//If the user is not holding M2: we know from the earlier checks that they have enough charge to cast Raigeki. Therefore, stun them and begin casting Raigeki.
 	{
-		Raigeki_SetRes(client, f_ChargeCurrentRes[client] * Raigeki_ResMult[i_ChargeTier[client]]);
+		f_ChargeCurrentRes[client] *= Raigeki_ResMult[i_ChargeTier[client]];
 
 		TF2_StunPlayer(client, Raigeki_Delay[i_ChargeTier[client]] - 0.33, _, TF_STUNFLAG_BONKSTUCK);
 
@@ -943,7 +933,7 @@ void Raigeki_AddCharge(int client)
 		Raigeki_AttachParticle(client, PARTICLE_RAIGEKI_CHARGEUP_AURA_MAX);
 	}
 
-	Raigeki_SetRes(client, 1.0 - (f_ChargeBaseRes[client] + (f_ChargeBonusRes[client] * amtCharged)));
+	f_ChargeCurrentRes[client] = 1.0 - (f_ChargeBaseRes[client] + (f_ChargeBonusRes[client] * amtCharged));
 
 	//Trigger Static Electricity shockwave:
 	float pos[3];
@@ -1058,22 +1048,6 @@ public void Raigeki_ChargeTrailVFX(int ref)
 	RequestFrame(Raigeki_ChargeTrailVFX, ref);
 }
 
-public void Raigeki_SetRes(int client, float amt)
-{
-	//Remove current res modifier if there already is one:
-	if (f_ChargeCurrentRes[client] != 0.0)
-	{
-		Attributes_SetMulti(client, 206, (1.0 / f_ChargeCurrentRes[client]));
-		Attributes_SetMulti(client, 205, (1.0 / f_ChargeCurrentRes[client]));
-	}
-
-	f_ChargeCurrentRes[client] = amt;
-
-	//Give resistance:
-	Attributes_SetMulti(client, 206, f_ChargeCurrentRes[client]);
-	Attributes_SetMulti(client, 205, f_ChargeCurrentRes[client]);
-}
-
 public void Raigeki_StaticElectricity_OnHit(int attacker, int victim, float damage)
 {
 	float startPos[3], endPos[3];
@@ -1092,17 +1066,9 @@ public void Raigeki_StaticElectricity_OnHit(int attacker, int victim, float dama
 
 void Raigeki_TerminateCharge(int client)
 {
-	if (f_ChargeCurrentRes[client] != 0.0)
-	{
-		Attributes_SetMulti(client, 206, (1.0 / f_ChargeCurrentRes[client]));
-		Attributes_SetMulti(client, 205, (1.0 / f_ChargeCurrentRes[client]));
-	}
-
-	Attributes_SetMulti(client, 442, (1.0 / Charge_SpeedMod[i_ChargeTier[client]]));
-	SDKCall_SetSpeed(client);
-
+	f_ChargeCurrentRes[client] = 1.0;
+	RemoveSpecificBuff(client, "Charging Raigeki");
 	Raigeki_TerminateChargeFX(client);
-
 	b_ChargingRaigeki[client] = false;
 }
 
@@ -2025,4 +1991,62 @@ public void Raigeki_HUD(int client, int weapon, bool forced)
 
 		f_NextRaigekiHUD[client] = GetGameTime() + 0.5;
 	}
+}
+
+float Player_OnTakeDamage_Raigeki(int victim, float &damage, int attacker)
+{
+	if (!b_ChargingRaigeki[victim])
+		return damage;
+
+	if (!CheckInHud())
+	{
+		Energy_Give(victim, Energy_OnHurt[i_ChargeTier[victim]], attacker, i_ChargeTier[victim]);
+	}
+
+	return damage * f_ChargeCurrentRes[victim];
+}
+
+void StatusEffects_Raigeki()
+{
+	StatusEffect data;
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Charging Raigeki");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "RGKI");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.5;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func 			= Func_RaigekiText;
+	data.OnBuffStarted				= Raigeki_OnBuffApplied;
+	data.OnBuffStoreRefresh			= Raigeki_OnBuffApplied;
+	data.OnBuffEndOrDeleted			= Raigeki_OnBuffEnd;
+	StatusEffect_AddGlobal(data);
+}
+
+void Func_RaigekiText(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	Format(HudToDisplay, SizeOfChar,"RGKI [%0.f%%]", 100.0 * (f_ChargeAmt[victim] / f_ChargeRequirement[victim]));
+}
+
+static void Raigeki_OnBuffApplied(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+		
+	Attributes_SetMulti(victim, 442, 0.5);
+	SDKCall_SetSpeed(victim);
+}
+
+static void Raigeki_OnBuffEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+		
+	Attributes_SetMulti(victim, 442, 2.0);
+	SDKCall_SetSpeed(victim);
 }

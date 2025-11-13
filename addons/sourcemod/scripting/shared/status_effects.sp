@@ -213,6 +213,7 @@ void InitStatusEffects()
 	StatusEffects_Rogue3();
 	StatusEffects_SkullServants();
 	StatusEffects_GamemodeMadnessSZF();
+	StatusEffects_Raigeki();
 #endif
 }
 

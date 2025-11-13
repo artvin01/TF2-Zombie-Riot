@@ -890,8 +890,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_RAIGEKI:
 		{
-			if(!CheckInHud())
-				Player_OnTakeDamage_Raigeki(victim, damage, attacker);
+			return Player_OnTakeDamage_Raigeki(victim, damage, attacker);
 		}
 		case WEAPON_YAKUZA:
 		{
