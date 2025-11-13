@@ -711,6 +711,8 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 	if(validAlly)
 	{
 		int healing = RoundToFloor(maxhealth * (HealLevel[client] > 1 ? 0.35 : 0.25));
+		if(LastMann)
+			healing /= 2;
 		healing = RoundToNearest(float(healing) * FLAGGELANT_GLOBAL_HP_NERF);
 		TriggerDeathDoor(client, healing);
 		if(healing > 0)
