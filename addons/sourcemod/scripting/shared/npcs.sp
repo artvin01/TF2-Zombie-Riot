@@ -2489,6 +2489,10 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		{
 			CastleBreakerCashOnKill(attacker);
 		}
+		case WEAPON_RAIGEKI:
+		{
+			Raigeki_OnKill(attacker, victim);
+		}
 	}
 }
 #endif

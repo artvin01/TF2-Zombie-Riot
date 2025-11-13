@@ -888,6 +888,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 				if(!CheckInHud())
 					Player_OnTakeDamage_Magnesis(victim, damage, attacker);
 		}
+		case WEAPON_RAIGEKI:
+		{
+			return Player_OnTakeDamage_Raigeki(victim, damage, attacker);
+		}
 		case WEAPON_YAKUZA:
 		{
 			Yakuza_SelfTakeDamage(victim, attacker, damage, damagetype, equipped_weapon);
