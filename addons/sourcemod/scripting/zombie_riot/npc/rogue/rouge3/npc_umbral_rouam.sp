@@ -44,7 +44,7 @@ void Umbral_Rouam_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "rouam");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Mutation;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -173,7 +173,7 @@ methodmap Umbral_Rouam < CClotBody
 		SetEntityRenderFx(npc.m_iWearable1, RENDERFX_DISTORT);
 		SetEntityRenderColor(npc.m_iWearable1, 0, 0, 0, 125);
 		npc.m_flRoamCooldown = GetGameTime() + 1.0;
-		npc.m_flAutoEnrage = GetGameTime() + 160.0;
+		npc.m_flAutoEnrage = GetGameTime() + 100.0;
 
 		func_NPCDeath[npc.index] = view_as<Function>(Umbral_Rouam_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Umbral_Rouam_OnTakeDamage);
@@ -196,7 +196,8 @@ methodmap Umbral_Rouam < CClotBody
 		
 		npc.m_flSpeed = 330.0;
 		fl_TotalArmor[npc.index] = 0.25;
-		if(ally != TFTeam_Red && Rogue_Mode() && Rogue_GetUmbralLevel() == 0)
+		ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 2.0);
+		if(ally != TFTeam_Red && Rogue_Mode())
 		{
 			if(Rogue_GetUmbralLevel() == 0)
 			{
@@ -210,9 +211,38 @@ methodmap Umbral_Rouam < CClotBody
 			{
 				//if completly hated.
 				//no need to adjust HP scaling, so it can be done here.
-				fl_Extra_Damage[npc.index] *= 1.5;
+				fl_Extra_Damage[npc.index] *= 1.25;
 				fl_Extra_MeleeArmor[npc.index] *= 0.75;
 				fl_Extra_RangedArmor[npc.index] *= 0.75;
+				fl_Extra_Speed[npc.index] *= 1.05;
+				ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 4.0);
+			}
+			switch(Rogue_GetFloor() + 1)
+			{
+				//floor 3
+				//10% dmg, 20% res
+				//think 10% faster
+				case 3:
+				{
+					fl_Extra_Damage[npc.index] *= 1.05;
+					fl_Extra_MeleeArmor[npc.index] *= 0.8;
+					fl_Extra_RangedArmor[npc.index] *= 0.8;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.1);
+				}
+				case 4,5:
+				{
+					fl_Extra_Damage[npc.index] *= 1.10;
+					fl_Extra_MeleeArmor[npc.index] *= 0.7;
+					fl_Extra_RangedArmor[npc.index] *= 0.7;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.15);
+				}
+				case 6:
+				{
+					fl_Extra_Damage[npc.index] *= 1.20;
+					fl_Extra_MeleeArmor[npc.index] *= 0.5;
+					fl_Extra_RangedArmor[npc.index] *= 0.5;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.20);
+				}
 			}
 		}
 		return npc;
@@ -316,7 +346,7 @@ public Action Umbral_Rouam_OnTakeDamage(int victim, int &attacker, int &inflicto
 
 	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	int CurrentHealth = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-	if(float(maxhealth) * 0.9 > float(CurrentHealth))
+	if(float(maxhealth) * 0.95 > float(CurrentHealth))
 	{
 		npc.EnrageUmbral();
 	}
@@ -373,8 +403,6 @@ void Umbral_RouamSelfDefense(Umbral_Rouam npc, float gameTime, int target, float
 				if(IsValidEnemy(npc.index, target))
 				{
 					float damageDealt = 300.0;
-					if(GetTeam(target) != TFTeam_Red)
-						damageDealt *= 50.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 

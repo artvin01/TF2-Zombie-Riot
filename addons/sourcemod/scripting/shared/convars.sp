@@ -58,6 +58,9 @@ void ConVar_PluginStart()
 #endif
 
 	ConVar_Add("mp_friendlyfire", "1.0");
+	ConVar_Add("mp_flashlight", "0.0"); 
+	//disable flashlight as it looks buggy and causes fps issues
+	//you need to set a setting beforehand to make it work, so its really bad.
 
 #if defined ZR
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "-1", "How many players can play at once?");
@@ -87,6 +90,8 @@ void ConVar_PluginStart()
 	CvarRogueSpecialLogic = CreateConVar("zr_roguespeciallogic", "0", "Incase your server wants to remove some restrictions off the roguemode.");
 	CvarLeveling = CreateConVar("zr_playerlevels", "1", "If player levels are enabled");
 	CvarAutoSelectWave = CreateConVar("zr_autoselectwave", "0", "If to automatically set a wave on map start instead of running a vote");
+	CvarAutoSelectDiff = CreateConVar("zr_autoselectdiff", "0", "If to automatically set a difficulty on map start instead of running a vote");
+	CvarVoteLimit = CreateConVar("zr_wavevotelimit", "0", "Max amount of options to put in waveset voting, 0 to disable");
 
 	HookConVarChange(zr_tagblacklist, StoreCvarChanged);
 	HookConVarChange(zr_tagwhitelist, StoreCvarChanged);
@@ -94,6 +99,8 @@ void ConVar_PluginStart()
 	HookConVarChange(zr_voteconfig, WavesCvarChanged);
 	HookConVarChange(zr_minibossconfig, WavesCvarChanged);
 	HookConVarChange(CvarAutoSelectWave, WavesCvarChanged);
+	HookConVarChange(CvarAutoSelectDiff, WavesCvarChanged);
+	HookConVarChange(CvarVoteLimit, WavesCvarChanged);
 	HookConVarChange(zr_ignoremapconfig, DownloadCvarChanged);
 	HookConVarChange(zr_downloadconfig, DownloadCvarChanged);
 #endif

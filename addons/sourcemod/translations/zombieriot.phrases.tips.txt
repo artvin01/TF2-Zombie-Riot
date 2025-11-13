@@ -3,142 +3,151 @@
 	"Setup Chat Tip 1"
 	{
 		"en"	"Reviving teammates restores your health! ''Regene Berry'' doubles this effect!"
+		"it"	"Rianimare i compagni di squadra ripristina la salute! La ''Bacca di Regene'' raddoppia questo effetto!"
 	}
 	"Setup Chat Tip 2"
 	{
 		"en"	"You can cure yourself of Elemental Damage with armor gain!"
+		"it"	"Puoi curarti dal Danno Elementale con l'aumento dell'armatura!"
 	}
 	"Setup Chat Tip 3"
 	{
 		"en"	"When getting armor, use Stockpile Stout tempomarily to gain overarmor, then switch back for free Extra armor!"
+		"it"	"Quando ottieni un'armatura, usa temporaneamente Scorta di Birra scura per ottenere un'armatura superiore, poi torna indietro per ottenere un'armatura extra gratuita!"
 	}
 	"Setup Chat Tip 4"
 	{
 		"en"	"If you have the money to spare, remember to purchase Extra Gear to give a boost to yourself or your team."
+		"it"	"Se avete soldi da spendere, ricordatevi di acquistare l'equipaggiamento extra per dare una spinta a voi stessi o alla vostra squadra."
 	}
 	"Setup Chat Tip 5"
 	{
 		"en"	"Touching most enemies will make them focus on attacking you!"
+		"it"	"Toccando la maggior parte dei nemici, questi si concentreranno sull'attacco a voi!"
 	}
 	"Setup Chat Tip 6"
 	{
 		"en"	"You deal significantly less damage while downed. Prioritize getting to safety over fighting."
+		"it"	"Quando si è a terra si infligge una quantità di danni nettamente inferiore. Date la priorità al raggiungimento della salvezza piuttosto che al combattimento."
 	}
 	"Setup Chat Tip 7"
 	{
 		"en"	"Try to lure enemies away from the base to relief pressure of your barricades!"
+		"it"	"Cercate di attirare i nemici lontano dalla base per alleggerire la pressione delle vostre barricate!"
 	}
 	"Setup Chat Tip 8"
 	{
 		"en"	"You gain money and ammosupplies from allies using your buildings, build atleast one!"
+		"it"	"Ottenete denaro e rifornimenti di munizioni dagli alleati che utilizzano i vostri edifici, costruitene almeno uno!"
 	}
 	"Setup Chat Tip 9"
 	{
 		"en"	"You unlock and can equip Level Perks as you level up, which offer changes to suit your playstyle, take a look and experiment!"
+		"it"	"Man mano che si sale di livello si sbloccano e si possono equipaggiare i Perk di livello, che offrono modifiche per adattarsi al proprio stile di gioco, date un'occhiata e sperimentate!"
 	}
 	"Setup Chat Tip 10"
 	{
 		"en"	"Confused about the Skill Tree? Don't worry about it too much, look at it once you understand the gamemode better." 
+		"it"	"Sei confuso sull'albero delle abilità? Non preoccuparti troppo, guardalo quando avrai capito meglio la modalità di gioco."
 	}
 	"Setup Chat Tip 11"
 	{
 		"en"	"Paps are usually more worth it then upgrades!"
+		"it"	"Di solito le fotocopie valgono di più degli aggiornamenti!"
 	}
 	"Setup Chat Tip 12"
 	{
 		"en"	"Sales might be good but if the situation requires for it, buy upgrades now!"
+		"it"	"Le vendite potrebbero essere buone, ma se la situazione lo richiede, acquistate subito gli aggiornamenti!"
 	}
 	"Setup Chat Tip 13"
 	{
 		"en"	"You can talk to the rebel to asign them roles for if your team doesnt want to play them!"
+		"it"	"Puoi parlare con il ribelle per assegnargli dei ruoli se la tua squadra non vuole giocarci!"
 	}
 	"Setup Chat Tip 14"
 	{
 		"en"	"As a melee your damage is not as valueable as the distraction of enemies aggro!"
+		"it"	"Come corpo a corpo, il tuo danno non ha lo stesso valore della distrazione dell'aggro dei nemici!"
 	}
 	"Setup Chat Tip 15"
 	{
 		"en"	"Multiclassing isnt ideal unless youre sure on what youre doing!"
+		"it"	"Il multiclassamento non è l'ideale se non si è sicuri di quello che si sta facendo!"
 	}
 	"Setup Chat Tip 16"
 	{
 		"en"	"All bullet shooting guns can headshot, dealing extra damage, be rewarded for your accuracy!"
+		"it"	"Tutte le pistole spara-proiettili possono sparare alla testa, infliggendo un danno extra, e la tua precisione sarà premiata!"
 	}
 	"Setup Chat Tip 17"
 	{
-		"en"	"Balance your weapon upgrades with passive upgrades, no use dealing more damage if you can barely take any!"
+		"en"	"Balance your weapon upgrades with Survival upgrades, no use dealing more damage if you can barely take any!"
+		"it"	"Bilanciate i potenziamenti delle armi con i potenziamenti passivi: non serve a nulla infliggere più danni se poi si riesce a malapena a subirne!"
 	}
 	"Setup Chat Tip 18"
 	{
 		"en"	"Armor tables help you take less damage, so make sure you have some armor before going into battle!"
+		"it"	"I tavoli di armatura aiutano a subire meno danni, quindi assicuratevi di avere un'armatura prima di andare in battaglia!"
 	}
 	"Setup Chat Tip 19"
 	{
 		"en"	"You may not be a healer, but you can still put down a food fridge to give a little extra health, every HP matters!"
+		"it"	"Non sarai un guaritore, ma puoi comunque mettere un frigorifero di cibo per dare un po' di salute in più, ogni HP è importante!"
 	}
 	"Setup Chat Tip 20"
 	{
 		"en"	"Sometimes its better to buy upgrades if they are on sale instead of pack a punching your weapon!"
+		"it"	"A volte è meglio acquistare i potenziamenti se sono in vendita, invece di prendere a pugni la tua arma!"
 	}
 	"Setup Chat Tip 21"
 	{
 		"en"	"Certain weapons can inflict debuffs on enemies and buff your allies, check the glossary of effects to learn what each does!"
+		"it"	"Alcune armi possono infliggere debuff ai nemici e buffare i tuoi alleati, consulta il glossario degli effetti per sapere cosa fa ciascuna di esse!"
 	}
 	"Setup Chat Tip 22"
 	{
 		"en"	"Adjust your weapon choice to the enemies that come, itll greatly help in defeating them!"
+		"it"	"Adattare la scelta dell'arma ai nemici che si presentano, sarà di grande aiuto per sconfiggerli!"
 	}
 	"Setup Chat Tip 23"
 	{
 		"en"	"Running low on armor as a melee player? You can use ammo boxes to give you a small amount of armor!"
+		"it"	"Siete a corto di armatura come giocatore di mischia? Potete usare le scatole di munizioni per ottenere una piccola quantità di armatura!"
 	}
 	"Setup Chat Tip 24"
 	{
 		"en"	"Running low on mana as a mage? You can use ammo boxes to give you mana, even overcharge your mana with ammo boxes!"
+		"it"	"Siete a corto di mana come mago? Potete usare le scatole di munizioni per darvi il mana, e persino sovraccaricare il vostro mana con le scatole di munizioni!"
 	}
 	"Setup Chat Tip 25"
 	{
 		"en"	"Weapon kits give you a unique playstyle, without having to buy class upgrades. Pack-a-punch them to increase the whole kit's stats!"
+		"it"	"I kit di armi vi danno uno stile di gioco unico, senza dover acquistare i potenziamenti di classe. Impacchettateli per aumentare le statistiche dell'intero kit!"
 	}
 	"Setup Chat Tip 26"
 	{
 		"en"	"Remember. {crimson}He watches."
+		"it"	"Ricorda. {crimson}Lui osserva."
 	}
 	"Setup Chat Tip 27"
 	{
 		"en"	"While you have Elemental Damage, your Armor will change from a number into a meter filling up!"
+		"it"	"Quando si ha un danno elementare, l'armatura si trasforma da un numero in un contatore che si riempie!"
 	}
 	"Setup Chat Tip 28"
 	{
 		"en"	"Certain enemies and mechanics can summon Creep with adverse effects on the ground. Watch where you step!"
+		"it"	"Alcuni nemici e meccaniche possono evocare Creep con effetti negativi sul terreno. Attenti a dove mettete i piedi!"
 	}
 	"Setup Chat Tip 29"
 	{
 		"en"	"Even as a Teutonic Knight you can deal small but consistent damage to enemies. Keep up the fight!"
+		"it"	"Anche come Cavaliere Teutonico potete infliggere danni piccoli ma consistenti ai nemici. Continuate a combattere!"
 	}
 	"Setup Chat Tip 30"
 	{
 		"en"	"Raidbosses completely ignore buildings, try not to stay in the same place for too long!"
-	}
-	//remove these once rogue3 is out!!!
-	"Setup Chat Tip 31"
-	{
-		"en"	"{darkgray}I am still here. {default}Whiteflower, {darkgray}where are you..?"
-	}
-	"Setup Chat Tip 32"
-	{
-		"en"	"{purple}YOU ARE NO LONGER THE ONE IN CONTROL HERE"
-	}
-	"Setup Chat Tip 33"
-	{
-		"en"	"Standing tall in the center of {purple}the Curtain, the Void's palace lies."
-	}
-	"Setup Chat Tip 34"
-	{
-		"en"	"Legends say whoever held the {darkgray}Throne {default}within would gain power over {purple}the Curtain itself."
-	}
-	"Setup Chat Tip 35"
-	{
-		"en"	"The corpses were fully crystallized. Must have been from the {darkblue}Chaos {default}and {purple}Void {default}mixing..."
+		"it"	"I Boss dei Raid ignorano completamente gli edifici, cercate di non rimanere nello stesso posto per troppo tempo!"
 	}
 }

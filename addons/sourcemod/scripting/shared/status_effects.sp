@@ -197,6 +197,7 @@ void InitStatusEffects()
 	StatusEffects_BubbleWand1();
 	StatusEffects_BubbleWand2();
 	StatusEffects_Plasm();
+	StatusEffects_Challenger();
 
 	//freeplay last.
 	StatusEffects_Freeplay1();
@@ -3229,7 +3230,7 @@ void StatusEffects_Aperture()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Time Warp");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Mind Warp");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⭮");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -3362,7 +3363,7 @@ void TimeWarp_ApplyAll(int inflictor, float duration = 99999.0)
 				Convars_FixClientsideIssues(i);
 			}
 			
-			ApplyStatusEffect(inflictor, i, "Time Warp", duration);
+			ApplyStatusEffect(inflictor, i, "Mind Warp", duration);
 		}
 	}
 	
@@ -3371,7 +3372,7 @@ void TimeWarp_ApplyAll(int inflictor, float duration = 99999.0)
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if (entity != INVALID_ENT_REFERENCE)
 		{
-			ApplyStatusEffect(inflictor, entity, "Time Warp", duration);
+			ApplyStatusEffect(inflictor, entity, "Mind Warp", duration);
 		}
 	}
 	
@@ -3391,7 +3392,7 @@ void TimeWarp_RemoveAll()
 				Convars_FixClientsideIssues(i);
 			}
 			
-			RemoveSpecificBuff(i, "Time Warp");
+			RemoveSpecificBuff(i, "Mind Warp");
 		}
 	}
 	
@@ -3400,7 +3401,7 @@ void TimeWarp_RemoveAll()
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if (entity != INVALID_ENT_REFERENCE)
 		{
-			RemoveSpecificBuff(entity, "Time Warp");
+			RemoveSpecificBuff(entity, "Mind Warp");
 		}
 	}
 	
@@ -3484,6 +3485,19 @@ void StatusEffects_SupportWeapons()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.5;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Extreamly Defensive Backup");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⛨⛨⛨");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.1;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
@@ -3763,7 +3777,8 @@ float AdaptiveMedigun_MeleeFunc(int attacker, int victim, StatusEffect Apply_Mas
 {
 	if(damagetype & (DMG_CLUB)) // if its melee
 	{
-		return 0.85;
+		if(!(damagetype & DMG_TRUEDAMAGE)) //dont block true damage lol
+			return 0.85;
 	}
 	
 	return 1.0;
@@ -4063,6 +4078,18 @@ void RuinaBatteryHud_Func(int attacker, int victim, StatusEffect Apply_MasterSta
 	}
 }
 
+
+void VintulumBombHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	float TimeDisplay = Apply_StatusEffect.TimeUntillOver - GetGameTime();
+	if(TimeDisplay <= 0.0)
+	{
+		Format(HudToDisplay, SizeOfChar, "");
+		return;
+	}
+	Format(HudToDisplay, SizeOfChar, "[V %.1fs]", Apply_StatusEffect.TimeUntillOver - GetGameTime());
+}
+
 stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)
 {
 	if(!E_AL_StatusEffects[victim])
@@ -4281,6 +4308,20 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Nightmareish Sawing");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "N");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Crafted Potion");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⅋");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -4390,6 +4431,51 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= OsmosisHud_Func;
 	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Vuntulum Bomb EMP");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "V");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func			= VintulumBombHud_Func;
+	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Hand of Spark");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "HS");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func			= HandOfSparkHud_Func;
+	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
+}
+
+void HandOfSparkHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	int owner = GetEntPropEnt(victim, Prop_Data, "m_hOwnerEntity");
+	if(owner <= 0)
+		return;
+	float TimeDisplay = GetGameTime() - Hand2HunterLastTime_Return(owner);
+	if(TimeDisplay >= 25.0)
+	{
+		Format(HudToDisplay, SizeOfChar, "[HS]");
+		return;
+	}
+	Format(HudToDisplay, SizeOfChar, "[HS %.0f％]", TimeDisplay * 4.0);
 }
 
 stock bool NpcStats_KazimierzDodge(int victim)
@@ -5366,6 +5452,21 @@ void StatusEffects_Plasm()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Plasma Heal Prevent");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Plasmatic Rampage");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ϙ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -5408,6 +5509,24 @@ void StatusEffects_Plasm()
 	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 }
+
+void StatusEffects_Challenger()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Challenger");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⸸");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+}
+
 stock void StatusEffects_SetCustomValue(int victim, float NewBuffValue, int Index)
 {
 	if(!E_AL_StatusEffects[victim])
@@ -6217,6 +6336,9 @@ void VoidAffliction_End(int victim, StatusEffect Apply_MasterStatusEffect, E_Sta
 void VoidAffliction_TakeDamageAttackerPost(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
 #if defined ZR
+	if(attacker == victim)
+		return;
+		
 	Elemental_AddVoidDamage(victim, attacker, RoundToNearest(damage * 3.0), true, true);
 #endif
 }
@@ -6238,7 +6360,8 @@ static void UnstableUmbralRift_Start(int victim, StatusEffect Apply_MasterStatus
 
 static void UnstableUmbralRift_StartOnce(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
-	i_Client_Gravity[victim] /= 2;
+	if(victim <= MaxClients)
+		i_Client_Gravity[victim] /= 2;
 	if(!IsValidClient(victim))
 		return;
 		
@@ -6250,7 +6373,8 @@ static void UnstableUmbralRift_StartOnce(int victim, StatusEffect Apply_MasterSt
 
 static void UnstableUmbralRift_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
-	i_Client_Gravity[victim] *= 2;
+	if(victim <= MaxClients)
+		i_Client_Gravity[victim] *= 2;
 	if(!IsValidClient(victim))
 		return;
 		

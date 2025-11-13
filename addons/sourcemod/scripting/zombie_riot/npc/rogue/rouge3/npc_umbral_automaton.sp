@@ -150,6 +150,14 @@ methodmap Umbral_Automaton < CClotBody
 			InstantWakeup = true;
 		else if(StrContains(data, "giant_shadow_statue_3") != -1)
 			InstantWakeup = true;
+		else if(StrContains(data, "giant_shadow_statue_wakeup_1_41") != -1)
+			InstantWakeup = true;
+		else if(StrContains(data, "giant_shadow_statue_wakeup_1_40") != -1)
+			InstantWakeup = true;
+		else if(StrContains(data, "small_shadow_statue_wakeup_3_32") != -1)
+			InstantWakeup = true;
+		else if(StrContains(data, "small_shadow_statue_wakeup_3_31") != -1)
+			InstantWakeup = true;
 
 		bool FoundstatueToReplace = false;
 		
@@ -714,6 +722,8 @@ void UmbralAutomaton_MakeInvulnerable(int statue, bool Wakeup)
 	b_CannotBeHeadshot[statue] = true;
 	b_CannotBeBackstabbed[statue] = true;
 	b_DoNotUnStuck[statue] = true;
+	b_thisNpcIsABoss[statue] = true;
+	b_thisNpcHasAnOutline[statue] = true;
 	ApplyStatusEffect(statue, statue, "Fluid Movement", 999999.0);	
 	ApplyStatusEffect(statue, statue, "Solid Stance", 999999.0);	
 	ApplyStatusEffect(statue, statue, "Clear Head", 999999.0);	
@@ -817,7 +827,7 @@ void Umbral_Automaton_Melee_Small(Umbral_Automaton npc, float gameTime, float di
 	}
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.85))
 		{
 			int Enemy_I_See;
 								

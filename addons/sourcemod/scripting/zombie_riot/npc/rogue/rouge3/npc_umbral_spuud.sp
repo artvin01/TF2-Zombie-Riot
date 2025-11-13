@@ -73,7 +73,7 @@ void Umbral_Spuud_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "spuud");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Mutation;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -178,7 +178,8 @@ methodmap Umbral_Spuud < CClotBody
 		SetEntityRenderFx(npc.m_iWearable2, RENDERFX_DISTORT);
 		SetEntityRenderColor(npc.m_iWearable2, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 125);
 		
-		if(ally != TFTeam_Red && Rogue_Mode() && Rogue_GetUmbralLevel() == 0)
+		ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 2.0);
+		if(ally != TFTeam_Red && Rogue_Mode())
 		{
 			if(Rogue_GetUmbralLevel() == 0)
 			{
@@ -192,9 +193,38 @@ methodmap Umbral_Spuud < CClotBody
 			{
 				//if completly hated.
 				//no need to adjust HP scaling, so it can be done here.
-				fl_Extra_Damage[npc.index] *= 1.5;
+				fl_Extra_Damage[npc.index] *= 1.25;
 				fl_Extra_MeleeArmor[npc.index] *= 0.75;
 				fl_Extra_RangedArmor[npc.index] *= 0.75;
+				fl_Extra_Speed[npc.index] *= 1.05;
+				ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 4.0);
+			}
+			switch(Rogue_GetFloor() + 1)
+			{
+				//floor 3
+				//10% dmg, 20% res
+				//think 10% faster
+				case 3:
+				{
+					fl_Extra_Damage[npc.index] *= 1.05;
+					fl_Extra_MeleeArmor[npc.index] *= 0.8;
+					fl_Extra_RangedArmor[npc.index] *= 0.8;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.1);
+				}
+				case 4,5:
+				{
+					fl_Extra_Damage[npc.index] *= 1.10;
+					fl_Extra_MeleeArmor[npc.index] *= 0.7;
+					fl_Extra_RangedArmor[npc.index] *= 0.7;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.15);
+				}
+				case 6:
+				{
+					fl_Extra_Damage[npc.index] *= 1.20;
+					fl_Extra_MeleeArmor[npc.index] *= 0.5;
+					fl_Extra_RangedArmor[npc.index] *= 0.5;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.20);
+				}
 			}
 		}
 		return npc;
@@ -227,7 +257,7 @@ public void Umbral_Spuud_ClotThink(int iNPC)
 		npc.m_flSpeedIncreaceMeter = 0.1;
 	}
 	npc.m_flMeleeArmor = (1.0 / npc.m_flSpeedIncreaceMeter);
-	npc.m_flMeleeArmor -= 5.0;
+	npc.m_flMeleeArmor -= 7.35;
 	if(npc.m_flMeleeArmor <= 1.0)
 	{
 		npc.m_flMeleeArmor = 1.0;

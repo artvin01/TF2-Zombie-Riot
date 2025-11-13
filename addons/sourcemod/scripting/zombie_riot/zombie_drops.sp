@@ -539,7 +539,7 @@ public Action Timer_Detect_Player_Near_Health(Handle timer, any entid)
 				if (GetVectorDistance(powerup_pos, client_pos, true) <= PLAYER_DETECT_RANGE_DROPS)
 				{
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
-					if(Rogue_Mode())
+					if(!Rogue_Mode())
 						EmitSoundToAll(HEALTH_SOUND, _, SNDCHAN_STATIC, 100, _,0.65);
 					for (int client_Hud = 1; client_Hud <= MaxClients; client_Hud++)
 					{

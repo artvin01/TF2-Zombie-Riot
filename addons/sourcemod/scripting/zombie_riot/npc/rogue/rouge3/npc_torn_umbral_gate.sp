@@ -23,8 +23,9 @@ void TornUmbralGate_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "void_gate");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = 0; 
+	data.Category = Type_Curtain; 
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
 	PrecacheModel("models/zombie_riot/btd/bloons_hitbox.mdl");
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
@@ -39,6 +40,11 @@ void TornUmbralGate_OnMapStart_NPC()
 }
 
 
+static void ClotPrecache()
+{
+	NPC_GetByPlugin("npc_umbral_whiteflowers");
+
+}
 
 #define TORN_UMBRAL_GATEWAY 600.0
 #define TORN_UMBRAL_DURATION 1.04
@@ -73,7 +79,7 @@ methodmap TornUmbralGate < CClotBody
 		
 		i_NpcWeight[npc.index] = 999;
 
-		//not visible hitbox
+		//not visible hitbox, error doesnt matter.
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
 
@@ -91,6 +97,9 @@ methodmap TornUmbralGate < CClotBody
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_DoNotUnStuck[npc.index] = true;
 		npc.m_flGateSpawnEnemies = GetGameTime() + 2.0;
+
+		//This gate is fyling, we cant really have npcs target this one
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 
 		func_NPCDeath[npc.index] = view_as<Function>(TornUmbralGate_NPCDeath);
 		func_NPCThink[npc.index] = view_as<Function>(TornUmbralGate_ClotThink);

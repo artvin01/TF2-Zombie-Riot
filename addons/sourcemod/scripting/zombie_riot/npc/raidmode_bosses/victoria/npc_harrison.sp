@@ -99,7 +99,7 @@ static const char g_LaserBeamSoundsStart[][] = {
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
 
-static bool PLZPlayMusic;
+static bool PLZDoNOTPlayMusic;
 static bool YaWeFxxked[MAXENTITIES];
 static bool GETBFG[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
@@ -466,7 +466,7 @@ methodmap Harrison < CClotBody
 				RaidModeScaling *= 0.85;
 			}
 			if(StrContains(data, "nomusic") == -1)
-				PLZPlayMusic=true;
+				PLZDoNOTPlayMusic=true;
 			
 			npc.m_iChanged_WalkCycle = -1;
 		}
@@ -636,7 +636,7 @@ static void Internal_ClotThink(int iNPC)
 		EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", _, SNDCHAN_AUTO, 90, _, 1.0);
 		EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", _, SNDCHAN_AUTO, 90, _, 1.0);
 		
-		if(PLZPlayMusic)
+		if(!PLZDoNOTPlayMusic)
 		{
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_harrison.mp3");

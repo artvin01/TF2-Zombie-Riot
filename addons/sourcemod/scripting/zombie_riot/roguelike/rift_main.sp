@@ -11,6 +11,7 @@ static bool CurseCorrupt;
 static bool BookOfNature;
 static bool BookOfWeakness;
 //static bool Keycard;
+char c_SupersaleThisItem[64];
 
 stock void Rogue_Rift_MultiScale(float &multi)
 {
@@ -172,7 +173,7 @@ public float Rogue_Encounter_RiftShop()
 	ShopListing = new ArrayList(sizeof(Artifact));
 
 	Artifact artifact;
-
+	c_SupersaleThisItem[0] = 0;
 	bool rare = Rogue_GetFloor() > 0;
 	bool easyMode = DifficultyLevel < 1;
 	bool found;
@@ -207,6 +208,28 @@ public float Rogue_Encounter_RiftShop()
 	if(Rogue_GetRandomArtifact(artifact, true, 18) != -1)
 		ShopListing.PushArray(artifact);
 
+	if(!Rogue_HasNamedArtifact("Rift Level 1"))
+	{
+		//if already have fractured, show 12 cost item IF we are NOT on rift level 1
+		if(!Rogue_HasNamedArtifact("Fractured") && !Rogue_HasNamedArtifact("We Are Fractured"))
+		{
+			if(found && Rogue_GetNamedArtifact("Fractured", artifact))
+			{
+				ShopListing.PushArray(artifact);
+			}
+			else
+			{
+				if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
+					ShopListing.PushArray(artifact);
+			}
+		}
+		else
+		{
+			if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
+				ShopListing.PushArray(artifact);
+		}
+	}
+
 	if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
 		ShopListing.PushArray(artifact);
 
@@ -214,10 +237,6 @@ public float Rogue_Encounter_RiftShop()
 	{
 		if(Rogue_GetRandomArtifact(artifact, true, 30) != -1)
 			ShopListing.PushArray(artifact);
-	}
-	else if(found && Rogue_GetNamedArtifact("Fractured", artifact))
-	{
-		ShopListing.PushArray(artifact);
 	}
 
 	int entity = -1;
@@ -250,16 +269,32 @@ static void StartShopVote(bool first)
 
 	Artifact artifact;
 	int ingots = Rogue_GetIngots();
+	int SupersaleThisItem = -1;
+	if(first)
+	{
+		c_SupersaleThisItem[0] = 0;
+		SupersaleThisItem = GetRandomInt(0, length);
+	}
 	for(int i; i < length; i++)
 	{
 		ShopListing.GetArray(i, artifact);
 
-		int cost = artifact.ShopCost;
 		
+		bool sale = false;
+		if(SupersaleThisItem == i || StrEqual(artifact.Name, c_SupersaleThisItem[0], false))
+		{
+			Format(c_SupersaleThisItem, sizeof(c_SupersaleThisItem), "%s", artifact.Name);
+			sale = true;
+		}	
+		else
+		{
+			sale = false;
+		}
+		int cost = sale ? (artifact.ShopCost * 7 / 10) : artifact.ShopCost;
 		Rogue_ParadoxGeneric_ShopCost(cost);
 
 		strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
-		Format(vote.Append, sizeof(vote.Append), " △%d", cost);
+		Format(vote.Append, sizeof(vote.Append), " △%d%s", cost, sale ? " {$}" : "");
 		strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
 		IntToString(i, vote.Config, sizeof(vote.Config));
 		vote.Locked = ingots < cost;
@@ -323,15 +358,22 @@ static void FinishShopVote(const Vote vote)
 		default:
 		{
 			ShopListing.GetArray(index, artifact);
-			ShopListing.Erase(index);
 
-			Rogue_GiveNamedArtifact(artifact.Name);
 
 			int cost = artifact.ShopCost;
 
 			Rogue_ParadoxGeneric_ShopCost(cost);
+
+			if(StrEqual(artifact.Name, c_SupersaleThisItem, false))
+				cost = cost * 7 / 10;
 			
-			Rogue_AddIngots(-cost, true);
+			//Silent voting prevention
+			if(cost <= Rogue_GetIngots())
+			{
+				Rogue_GiveNamedArtifact(artifact.Name);
+				Rogue_AddIngots(-cost, true);
+				ShopListing.Erase(index);
+			}
 
 			StartShopVote(false);
 			Rogue_SetProgressTime(20.0, false);
@@ -403,7 +445,7 @@ static bool StartRiftVote(bool first)
 	Vote vote;
 
 	int needToUseNow;
-	if(Rogue_GetFloor() == 4 && Rogue_HasNamedArtifact("Wordless Deed") && !Rogue_HasNamedArtifact("The Shadow"))
+	if(Rogue_GetFloor() == 4 && Rogue_HasNamedArtifact("Wordless Deed"))
 		needToUseNow = ConsumeLimit == 1 ? 2 : 1;
 	
 	if(!needToUseNow)
@@ -537,6 +579,8 @@ static void FinishRiftVote(const Vote vote)
 				Rogue_StartThisBattle(5.0);
 				Rogue_SetBattleIngots(1);
 				Rogue_SetRequiredBattle(true);
+				EndRiftVote(true);
+				
 			}
 			else
 			{
@@ -557,9 +601,9 @@ static void FinishRiftVote(const Vote vote)
 	}
 }
 
-static void EndRiftVote()
+static void EndRiftVote(bool WasRacist = false)
 {
-	if(Rogue_HasNamedArtifact("Twirl Guidance"))
+	if(Rogue_HasNamedArtifact("Twirl Guidance") || WasRacist)
 	{
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
@@ -570,14 +614,15 @@ static void EndRiftVote()
 				break;
 			}
 		}
-
-		Rogue_SetProgressTime(10.0, false);
-
-		Rogue_RemoveNamedArtifact("Twirl Guidance");
-		CPrintToChatAll("{purple}Twirl{snow} : I'm sorry, i have to stay behind, i don't want my higherups to end like lelouch, i'm sure youll be fine without me.");	// Add Twirl leave dialogue
-		CPrintToChatAll("{purple}Twirl{snow} : Hey and if you die, i'll take care of everything, not joking.");
-		CPrintToChatAll("{black}Izan{default} : Bye.");
-		CPrintToChatAll("{white}Bob{default} : We'll be fine, we have the entirety of Irln invading, you can make sure our home is fine.");
+		if(!WasRacist)
+			Rogue_SetProgressTime(10.0, false);
+		if(Rogue_HasNamedArtifact("Twirl Guidance"))
+		{
+			Rogue_RemoveNamedArtifact("Twirl Guidance");
+			CPrintToChatAll("{purple}Twirl{snow} : I'm sorry, i have to stay behind, i don't want my higherups to end like lelouch, i'm sure youll be fine without me.");	// Add Twirl leave dialogue
+			CPrintToChatAll("{black}Izan{default} : Bye.");
+			CPrintToChatAll("{white}Bob{default} : We'll be fine, we have the entirety of Irln invading, you can make sure our home is fine.");
+		}
 	}
 	else
 	{
@@ -603,13 +648,6 @@ public void Rogue_RiftEasy_Collect()
 		Rogue_GiveNamedArtifact("Twirl Guidance", true, true);
 }
 
-public void Rogue_RiftEasy_Enemy(int entity)
-{
-	fl_Extra_Speed[entity] *= 0.8;
-	fl_Extra_MeleeArmor[entity] *= 1.35;
-	fl_Extra_RangedArmor[entity] *= 1.35;
-	fl_Extra_Damage[entity] *= 0.65;
-}
 
 public void Rogue_RiftNormal_Collect()
 {
@@ -622,16 +660,15 @@ public void Rogue_RiftNormal_Collect()
 		Rogue_GiveNamedArtifact("Twirl Guidance", true, true);
 }
 
-public void Rogue_RiftNormal_Enemy(int entity)
+public void Rogue_RiftEasy_Enemy(int entity)
 {
-	if(Rogue_GetFloor() == 6)
-		return;
-	float stats = Pow(1.02, float(Rogue_GetFloor() + 1));
+	float stats = 0.9;
 
 	fl_Extra_Damage[entity] *= stats;
 	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * stats));
 }
+
 
 public void Rogue_RiftHard_Collect()
 {
@@ -649,7 +686,29 @@ public void Rogue_RiftHard_Enemy(int entity)
 {
 	if(Rogue_GetFloor() == 6)
 		return;
+	float stats = Pow(1.02, float(Rogue_GetFloor() + 1));
+
+	fl_Extra_Damage[entity] *= stats;
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * stats));
+}
+public void Rogue_RiftVeryHard_Enemy(int entity)
+{
+	if(Rogue_GetFloor() == 6)
+		return;
+		
 	float stats = Pow(1.04, float(Rogue_GetFloor() + 1));
+
+	fl_Extra_Damage[entity] *= stats;
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * stats));
+}
+
+public void Rogue_RiftStupidHard_Enemy(int entity)
+{
+	if(Rogue_GetFloor() == 6)
+		return;
+	float stats = Pow(1.1, float(Rogue_GetFloor() + 1));
 
 	fl_Extra_Damage[entity] *= stats;
 	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
@@ -748,7 +807,10 @@ public void Rogue_Reila_Remove()
 
 public void Rogue_Rift1_Collect()
 {
-	Rogue_AddUmbral(-20, true);
+	Artifact artifact;
+	if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
+		Rogue_GiveNamedArtifact(artifact.Name);
+	Rogue_AddUmbral(-15, true);
 }
 
 public void Rogue_Rift1_Remove()
@@ -756,7 +818,7 @@ public void Rogue_Rift1_Remove()
 	if(Rogue_Started())
 	{
 		Rogue_GiveNamedArtifact("Keycard");
-		Rogue_AddUmbral(20);
+		Rogue_AddUmbral(15);
 	}
 }
 
@@ -947,8 +1009,9 @@ public void Rogue_Vote_Rift2(const Vote vote, int index)
 		case 0:
 		{
 			Rogue_StartThisBattle(5.0);
-			Rogue_GiveNamedArtifact("The Shadow");
+			Rogue_AddUmbral(-15, false);
 			PrintToChatAll("%t", "We Are Fractured Lore 1");
+			Rogue_GiveNamedArtifact("Map around the Castle");
 		}
 		case 1:
 		{
@@ -968,24 +1031,23 @@ public void Rogue_Vote_Rift2(const Vote vote, int index)
 	}
 }
 
-
+/*
 public void Rogue_Rift2_Collect(int entity)
 {
-	Rogue_AddUmbral(-15, false);
+//	Rogue_AddUmbral(-15, false);
 
-	/*
-	if(!Rogue_HasNamedArtifact("Reila Assistance"))
-		Rogue_GiveNamedArtifact("Reila Assistance", true);
-	*/
+	
+//	if(!Rogue_HasNamedArtifact("Reila Assistance"))
+//		Rogue_GiveNamedArtifact("Reila Assistance", true);
 	
 }
-
+*/
 public void Rogue_BookOfNature_Collect(int entity)
 {
+	BookOfNature = true;
 	if(Rogue_HasNamedArtifact("Umbral Hate"))
 		Rogue_RemoveNamedArtifact("Umbral Hate");
-	Rogue_AddUmbral(40);
-	BookOfNature = true;
+	Rogue_AddUmbral(10);
 }
 public void Rogue_BookOfNature_Remove(int entity)
 {

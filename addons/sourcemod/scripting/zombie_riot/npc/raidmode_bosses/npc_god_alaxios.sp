@@ -420,9 +420,9 @@ methodmap GodAlaxios < CClotBody
 		
 		npc.Anger = false;
 
-		npc.m_flAlaxiosBuffEffect = GetGameTime() + 25.0;
-		npc.m_flRangedSpecialDelay = GetGameTime() + 10.0;
-		npc.m_flNextRangedAttack = GetGameTime() + 15.0;
+		npc.m_flAlaxiosBuffEffect = GetGameTime() + 7.0;
+		npc.m_flRangedSpecialDelay = GetGameTime() + 5.0;
+		npc.m_flNextRangedAttack = GetGameTime() + 8.0;
 		npc.m_flNextRangedAttackHappening = 0.0;
 		npc.g_TimesSummoned = 0;
 		f_AlaxiosCantDieLimit[npc.index] = 0.0;
@@ -464,6 +464,7 @@ methodmap GodAlaxios < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/soldier/soldier_spartan.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		NpcColourCosmetic_ViaPaint(npc.m_iWearable2, 16777215);
 
 		if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
 		{
@@ -1180,6 +1181,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 			RaidModeTime += 5.0;
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			npc.PlaySummonSound();
+			//BOOKMARK TODO
 			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(6.0 * MultiGlobalEnemy));
 			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_archer",_, RoundToCeil(7.0 * MultiGlobalEnemy));
 		}
@@ -1491,6 +1493,7 @@ public void GodAlaxios_NPCDeath(int entity)
 	Citizen_MiniBossDeath(entity);
 }
 
+//BOOKMARK TODO
 void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int count, bool is_a_boss = false)
 {
 	if(GetTeam(alaxios) == TFTeam_Red)

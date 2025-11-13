@@ -20,11 +20,20 @@ void Randomizer_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Randomizer!");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_randomizer");
 	strcopy(data.Icon, sizeof(data.Icon), "unknown");
-	data.IconCustom = true;
+	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	// Precache sub-NPCs
+	NPC_GetByPlugin("npc_aperture_sentry");
+	NPC_GetByPlugin("npc_aperture_dispenser");
+	NPC_GetByPlugin("npc_aperture_teleporter");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)

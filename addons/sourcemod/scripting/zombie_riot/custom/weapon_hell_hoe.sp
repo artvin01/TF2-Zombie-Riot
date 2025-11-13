@@ -283,9 +283,10 @@ public Action Weapon_Junker_Staff_PAP1(int client, int weapon, bool crit, int sl
 		time *= Attributes_Get(weapon, 101, 1.0);
 		time *= Attributes_Get(weapon, 102, 1.0);
 		
-		if (isPlayerMad(client) && i_CustomWeaponEquipLogic[weapon] == WEAPON_HELL_HOE_3) {
+		if (isPlayerMad(client) && i_CustomWeaponEquipLogic[weapon] == WEAPON_HELL_HOE_3) 
+		{
 			EmitSoundToAll(SOUND_HELL_HOE, client, 80, _, _, 1.0);
-			HellHoeLaunch(client, weapon, damage, speed/2, time/2, 5, 50.0, "spell_teleport_red", 0.008);
+			HellHoeLaunch(client, weapon, damage, speed, time/2, 5, 50.0, "spell_teleport_red", 0.008);
 		}
 		else {
 			EmitSoundToAll(SOUND_WAND_JUNKER_SHOT, client, 80, _, _, 1.0);
@@ -484,7 +485,8 @@ public Action Weapon_Hell_Hoe(int client, int weapon, bool crit, int slot)
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Health", HealthToUse);
 			}
 		}
-		else {
+		else 
+		{
 			EmitSoundToAll(SOUND_HELL_HOE, client, 80, _, _, 1.0);
 			HellHoeLaunch(client, weapon, damage, speed, time, 5, 50.0, "spell_teleport_red", -1.0);
 		}
@@ -725,7 +727,7 @@ public void Weapon_DRMad_Reload(int client, int weapon, bool crit, int slot)
 						if (playerMaxHp<clientMaxHp)
 							playerMaxHp=clientMaxHp;
 							
-						HealEntityGlobal(client, ally, playerMaxHp * 0.2, 1.0, 0.5);
+						HealEntityGlobal(client, ally, playerMaxHp * 0.4, 1.0, 0.5);
 						
 						ClientCommand(ally, "playgamesound player/taunt_medic_heroic.wav");
 					}
@@ -761,7 +763,7 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 		if (health > clientMaxHp/2)
 		{
 			int HealAlly;
-			HealAlly = GetClosestAlly(client, 200.0 * 200.0, client, DRMad_ChargeValidityFunction);
+			HealAlly = GetClosestAlly(client, 250.0 * 250.0, client, DRMad_ChargeValidityFunction);
 			if(IsValidEntity(HealAlly))
 			{
 				int BeamIndex = ConnectWithBeam(client, HealAlly, 250, 50, 50, 2.0, 2.0, 1.35, "sprites/laserbeam.vmt");
@@ -772,13 +774,13 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 				ClientCommand(client, "playgamesound weapons/grappling_hook_impact_flesh.wav");
 				Ability_Apply_Cooldown(client, slot, 1.0);
 				if(dieingstate[client] == 0)
-					HealEntityGlobal(client, client,-(clientMaxHp * 0.1), 1.0, 0.5);
+					HealEntityGlobal(client, client,-(float(clientMaxHp) * 0.1), 99.9, 0.5);
 				int playerMaxHp = ReturnEntityMaxHealth(HealAlly);
 				if (playerMaxHp<clientMaxHp)
 					playerMaxHp=clientMaxHp;
 
 				if(HealAlly >= MaxClients || dieingstate[HealAlly] == 0)
-					HealEntityGlobal(client, HealAlly, playerMaxHp * 0.1, 1.0, 0.5);
+					HealEntityGlobal(client, HealAlly, float(playerMaxHp) * 0.2, 1.0, 0.5);
 			}
 			else
 			{
@@ -787,38 +789,14 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 		}
 		else if (health > clientMaxHp*0.20)
 		{
-			health-=RoundFloat(clientMaxHp*0.2);
+			health-=RoundFloat(float(clientMaxHp)*0.2);
 			SetEntProp(client, Prop_Data, "m_iHealth", health);
 
 			float flClientPos[3];
 			GetEntPropVector(client, Prop_Send, "m_vecOrigin", flClientPos);
-			for(int targ; targ<i_MaxcountNpc; targ++)
-			{
-				int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
-				if (IsValidEntity(baseboss_index))
-				{
-					if(!b_NpcHasDied[baseboss_index])
-					{
-						if (GetTeam(client)!=GetTeam(baseboss_index)) 
-						{
-							float targPos[3];
-							WorldSpaceCenter(baseboss_index, targPos);
-							if (GetVectorDistance(flClientPos, targPos) <= NIGHTMARE_RADIUS)
-							{
-								//Code to do damage position and ragdolls
-								static float angles[3];
-								GetEntPropVector(baseboss_index, Prop_Send, "m_angRotation", angles);
-								float vecForward[3];
-								GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-								//Code to do damage position and ragdolls
-								float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
-								SDKHooks_TakeDamage(baseboss_index, client, client, clientMaxHp*0.05*(clientMaxHp-health), DMG_PLASMA, -1, damage_force, targPos, _, ZR_DAMAGE_LASER_NO_BLAST);
-							}
-						}
-					}
-				}
-			}
+			Explode_Logic_Custom(float(clientMaxHp)*0.06*float(clientMaxHp-health), client, client, -1, flClientPos, NIGHTMARE_RADIUS, _, _, false, 10);
 			ClientCommand(client, "playgamesound weapons/grappling_hook_impact_flesh.wav");
+			spawnRing_Vectors(flClientPos, /*RANGE*/ 1.0, 0.0, 0.0, 15.0, EMPOWER_MATERIAL, 231, 125, 125, 125, 1, /*DURATION*/ 0.12, 3.0, 2.5, 5, NIGHTMARE_RADIUS * 2.0);
 			Ability_Apply_Cooldown(client, slot, 12.0);
 		}
 		

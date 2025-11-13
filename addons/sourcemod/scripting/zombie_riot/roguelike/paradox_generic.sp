@@ -225,6 +225,7 @@ public void Rogue_Vote_Shop2Encounter_Ruina(const Vote vote)
 		}
 		case -3:
 		{
+			
 			Rogue_GiveNamedArtifact("Great Within from Ruina's Great Crystal");
 
 			CPrintToChatAll("%t", "Shop Ruina Happy");

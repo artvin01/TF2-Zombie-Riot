@@ -250,7 +250,15 @@ bool ProjectileTraceHitTargets(int entity, int contentsMask, DataPack packFilter
 	{
 		return false;
 	}
-	int target = Target_Hit_Wand_Detection(iExclude, entity);
+	int target = entity;
+	if(GetTeam(iExclude) == TFTeam_Red)
+		target = Target_Hit_Wand_Detection(iExclude, entity);
+	else
+	{
+		if(!IsValidEnemy(iExclude, target, true, true))
+			target = 0;
+	}
+		
 	if(target > 0)
 	{
 		//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
@@ -289,7 +297,9 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 
 public void Wand_Base_StartTouch(int entity, int other)
 {
-	int target = Target_Hit_Wand_Detection(entity, other);
+	int target = other;
+	if(GetTeam(entity) == TFTeam_Red)
+		target = Target_Hit_Wand_Detection(entity, other);
 	Function func = func_WandOnTouch[entity];
 	if(func && func != INVALID_FUNCTION)
 	{
@@ -460,6 +470,10 @@ static void OnDestroy_Proj(CClotBody body)
 	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[body.index]);
 	if(IsValidEntity(extra_index))
 		RemoveEntity(extra_index);
+	if(IsValidEntity(f_ArrowTrailParticle[body.index]))
+		RemoveEntity(f_ArrowTrailParticle[body.index]);
+	if(IsValidEntity(i_WandParticle[body.index]))
+		RemoveEntity(i_WandParticle[body.index]);
 
 	iref_PropAppliedToRocket[body.index] = INVALID_ENT_REFERENCE;
 #if defined ZR || defined RPG
@@ -477,7 +491,7 @@ stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, f
 	int entity = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity))
 	{
-		DispatchKeyValue(entity, "targetname", "ApplyCustomModelToWandProjectile");
+		DispatchKeyValue(entity, "targetname", "rpg_fortress");
 		DispatchKeyValue(entity, "model", modelstringname);
 		
 		

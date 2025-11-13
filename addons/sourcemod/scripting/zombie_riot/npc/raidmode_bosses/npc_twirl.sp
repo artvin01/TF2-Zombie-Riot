@@ -255,7 +255,10 @@ methodmap Twirl < CClotBody
 		Ruina_Color(color, i_current_wave[this.index]);
 
 		float Thickness = 6.0;
-		TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, color, 1, 0);
+		int Tempcolor[4];
+		Tempcolor = color;
+		Tempcolor [3] = 80;
+		TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, Tempcolor, 1, 0);
 		TE_SendToAll();
 		TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.1, color, 1, 0);
 		TE_SendToAll();
@@ -279,12 +282,12 @@ methodmap Twirl < CClotBody
 		laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, Predicted_Pos, Sky_Loc);
 
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
-		int loop_for = 5;
+		int loop_for = 4;
 		float Add_Height = 500.0/loop_for;
 		for(int i=0 ; i < loop_for ; i++)
 		{
 			Predicted_Pos[2]+=Add_Height;
-			TE_SetupBeamRingPoint(Predicted_Pos, (Radius*2.0)/(i+1), 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, color, 1, 0);
+			TE_SetupBeamRingPoint(Predicted_Pos, (Radius*2.0)/(i+1), 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, Tempcolor, 1, 0);
 			TE_SendToAll();
 		}
 		
@@ -942,6 +945,8 @@ methodmap Twirl < CClotBody
 		float flPos[3], flAng[3];
 		npc.GetAttachment("head", flPos, flAng);	
 		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "unusual_invasion_boogaloop_2", npc.index, "head", {0.0,0.0,0.0});
+		
+		NpcColourCosmetic_ViaPaint(npc.m_iWearable4, 16777215);
 		
 		SetVariantInt(npc.i_weapon_type());
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
@@ -3235,7 +3240,7 @@ static void On_LaserHit(int client, int target, int damagetype, float damage)
 	Ruina_Add_Mana_Sickness(npc.index, target, 0.1, (npc.Anger ? 55 : 45), true);
 }
 static float fl_ionic_fracture_range = 1000.0;
-static float fl_ionic_fracture_detionation_radius = 1500.0;
+static float fl_ionic_fracture_detionation_radius = 800.0;
 static int 	 i_ionic_fracture_amt = 12;
 static float fl_ionic_fracture_det_timer = 2.5;
 static float fl_ionic_fracture_windup = 2.0;
@@ -3294,9 +3299,8 @@ static bool IonicFracture(Twirl npc)
 
 	float Origin[3]; GetAbsOrigin(npc.index, Origin); Origin[2]+=5.0;
 
-	float Radius = fl_ionic_fracture_detionation_radius;
 	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
-	TE_SetupBeamRingPoint(Origin, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, windup , 50.0, 0.75, color, 1, 0);
+	TE_SetupBeamRingPoint(Origin, 0.0, fl_ionic_fracture_detionation_radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, windup , 50.0, 0.75, color, 1, 0);
 	TE_SendToAll();
 
 	SDKUnhook(npc.index, SDKHook_Think, IonicFracture_Think);
@@ -3398,9 +3402,8 @@ static Action IonicFracture_Think(int iNPC)
 
 		Origin[2]-=45.0;
 
-		float Radius = fl_ionic_fracture_detionation_radius;
 		int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
-		TE_SetupBeamRingPoint(Origin, Radius*2.0, Radius*2.0 + 0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, (npc.m_flIonicFractureEndTimer - GameTime) , 50.0, 0.75, color, 1, 0);
+		TE_SetupBeamRingPoint(Origin, fl_ionic_fracture_detionation_radius*2.0, fl_ionic_fracture_detionation_radius*2.0 + 0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, (npc.m_flIonicFractureEndTimer - GameTime) , 50.0, 0.75, color, 1, 0);
 		TE_SendToAll();
 
 		Origin[2]+=45.0;
@@ -3450,13 +3453,12 @@ static Action IonicFracture_Think(int iNPC)
 	if(npc.m_flIonicFractureChargeTimer < GameTime)
 	{
 		int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
-		float Radius = fl_ionic_fracture_detionation_radius;
 		float Thickness = 20.0;
 		float ground[3]; GetAbsOrigin(npc.index, ground);
 
 		ground[2] += fl_BEAM_DurationTime[npc.index];
 
-		TE_SetupBeamRingPoint(ground, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, TWIRL_TE_DURATION , Thickness, 0.75, color, 1, 0);
+		TE_SetupBeamRingPoint(ground, fl_ionic_fracture_detionation_radius*2.0, fl_ionic_fracture_detionation_radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, TWIRL_TE_DURATION , Thickness, 0.75, color, 1, 0);
 		TE_SendToAll();
 
 		fl_BEAM_DurationTime[npc.index]+=3.0;
@@ -3470,6 +3472,7 @@ static Action IonicFracture_Think(int iNPC)
 		npc.SetPlaybackRate(1.0);
 
 		float Origin[3]; GetAbsOrigin(npc.index, Origin);
+		Origin[2] += 5.0;
 
 		fl_ruina_battery_timeout[npc.index] = GameTime + 0.6;
 		npc.m_flDoingAnimation = GameTime + 0.6;
@@ -3484,10 +3487,9 @@ static Action IonicFracture_Think(int iNPC)
 		int loop_for = 15;		//15
 		float height = 1500.0;	//1500
 		float sky_loc[3]; sky_loc = Origin; sky_loc[2]+=height;
-		float radius = fl_ionic_fracture_detionation_radius;
 
-		Explode_Logic_Custom(Modify_Damage(-1, 200.0), npc.index, npc.index, -1, Origin, radius,_,0.8, true);
-		Ruina_AOE_Add_Mana_Sickness(Origin, npc.index, radius, 0.5, 200, true);
+		Explode_Logic_Custom(Modify_Damage(-1, 200.0), npc.index, npc.index, -1, Origin, fl_ionic_fracture_detionation_radius,_,0.8, true);
+		Ruina_AOE_Add_Mana_Sickness(Origin, npc.index, fl_ionic_fracture_detionation_radius, 0.5, 200, true);
 
 		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND);
 		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND);
@@ -3501,7 +3503,7 @@ static Action IonicFracture_Think(int iNPC)
 
 		EmitAmbientSound(TWIRL_IONIC_FRACTURE_EXPLOSION, Origin, _, 120, _, _, GetRandomInt(55, 75));
 		EmitAmbientSound(TWIRL_IONIC_FRACTURE_EXPLOSION, Origin, _, 120, _, _, GetRandomInt(55, 75));
-		TE_SetupBeamRingPoint(Origin, 1.0, radius*2.0, g_Ruina_Laser_BEAM, g_Ruina_HALO_Laser, 0, 1, 1.0, 20.0, 1.0, color, 1, 0);
+		TE_SetupBeamRingPoint(Origin, 1.0, fl_ionic_fracture_detionation_radius*2.0, g_Ruina_Laser_BEAM, g_Ruina_HALO_Laser, 0, 1, 1.0, 20.0, 1.0, color, 1, 0);
 		TE_SendToAll();
 		
 		float start = 75.0;
@@ -3531,7 +3533,7 @@ static Action IonicFracture_Think(int iNPC)
 			if(timer<=0.02)
 				timer=0.02;
 			float end_ratio = (((loop_for/2.0)/i));
-			float final_radius = radius*end_ratio;
+			float final_radius = fl_ionic_fracture_detionation_radius*end_ratio;
 			if(final_radius > 4096.0)	//so apperantly there is a max endradius, these are the types of things you only findout if you are dumb enough to even try...
 				final_radius= 4095.0;
 			TE_SetupBeamRingPoint(Origin, 0.0, final_radius, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, timer, thicc, 0.1, color, 1, 0);

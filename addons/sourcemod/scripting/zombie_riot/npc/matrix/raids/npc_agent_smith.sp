@@ -59,6 +59,8 @@ static int i_TalkDelayCheck;
 
 public void AgentSmith_OnMapStart_NPC()
 {
+	g_PrecachedMatrixNPCs = false;
+	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Agent Smith");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_agent_smith");
@@ -70,6 +72,7 @@ public void AgentSmith_OnMapStart_NPC()
 	data.Precache = ClotPrecache;
 	smith_id = NPC_Add(data);
 }
+
 static void ClotPrecache()
 {
 	PrecacheModel("models/zombie_riot/matrix/smith30.mdl");
@@ -85,6 +88,8 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheSoundArray(g_RangedReloadSound);
+	
+	Matrix_Shared_CorruptionPrecache();
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -1310,7 +1315,7 @@ static void Smith_Weapon_Lines(AgentSmith npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}If it isn't the {unique}Architect{darkgreen}himself, have you ever stood and stared at it, marveled at its beauty? Mr.{green}%N{darkgreen}?", client);	//Artvin (1)
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}If it isn't the {unique}Architect{darkgreen} himself, have you ever stood and stared at it, marveled at its beauty? Mr.{green}%N{darkgreen}?", client);	//Artvin (1)
 				case 1:
 					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Sad to see you leave us behind like that, Mr.{green}%N{darkgreen}.", client);	//Artvin (2)
 			}
@@ -1320,9 +1325,9 @@ static void Smith_Weapon_Lines(AgentSmith npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}There's only bullets, Mr. {green}%N{darkgreen}, no hell.", client);	//David (1)
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}There's only bullets, Mr.{green}%N{darkgreen}, no hell.", client);	//David (1)
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Did you know that the first Matrix was designed to be a perfect human world, Mr.{green}%N{darkgreen}? That's right, a world for humans, not fairies.", client);	//David (2)
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Did you know that the first Matrix was designed to be a perfect {crimson}human{darkgreen} world, Mr.{green}%N{darkgreen}? That's right, a world for humans, not fairies.", client);	//David (2)
 			}
 		}
 		case 203043889:
@@ -1360,7 +1365,7 @@ static void Smith_Weapon_Lines(AgentSmith npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Follow the white furry, Mr.{green}%N{darkgreen}.", client);	//Batfoxkid (1)
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Follow the white 'rabbit', Mr.{green}%N{darkgreen}.", client);	//Batfoxkid (1)
 				case 1:
 					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}You can't leave the past behind you, Mr.{green}%N{darkgreen}.", client);	//Batfoxkid (2)
 			}
@@ -1512,7 +1517,7 @@ static void Smith_Weapon_Lines(AgentSmith npc, int client)
 				case 0:
 					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}I realize that you're not actually a mammal, Mr.{green}%N{darkgreen}.", client);	//SimplySmiley (1)
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Well then, where's that wide smile, Mr.{green}%N{darkgreen}?", client);	//SimplySmiley (2)
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Where's that wide smile, Mr.{green}%N{darkgreen}?", client);	//SimplySmiley (2)
 			}
 		}
 		case 63636504:
@@ -1533,15 +1538,204 @@ static void Smith_Weapon_Lines(AgentSmith npc, int client)
 		case 211120633:		Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Wrong man in the wrong place, Mr.{green}%N{darkgreen}.", client);	//Solace
 		case 133755989: 	Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Mrs.{green}%N{darkgreen}, we've been expecting you. Sooner or later we knew you would show up.", client);	//Night
 		case 192946468:		Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Mr.{green}%N{darkgreen}, short-tempered but quick-witted, neither of these traits serve {crimson}purpose{darkgreen}in our world.", client);	//MetaB
+		case 137401584:		Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Ever took a moment to think before speaking, Mr.{green}%N{darkgreen}? No. Such is human nature.", client);	//Crust
 		//REDSUNNERS
+		case 405876308: 	Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Congratulations on making it here, Mr.{green}%N{darkgreen}. Despite the plethora of your failures.", client);	//Zeddy
+		case 277545996: 	Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Maybe you should learn to write your name before trying to enter the Matrix, Mr.{green}%N{darkgreen}.", client);	//Yoloman
 		case 302903145: 	Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}The Matrix rejects you, Mr.{green}%N{darkgreen}. We believe your time would be spent better outside of the system.", client);	//Hun Oli
 		case 145853675:		Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Your jokes are like freedom from the Matrix, Mr.{green}%N{darkgreen}. {crimson}not everyone wants it{darkgreen}.", client);	//Jan
-		case 74111977:		Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Armstrong [US] - TF2Ware Ultimate (TF2Ware Ultimate) [0/40] Type /servers to join! So what are you waiting for, Mr.{green}%N{darkgreen}?", client);	//Drandor
-		case 339875369:		Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}What's the matter Mr.{green}%N{darkgreen}? Why aren't you using the most optimal set of weapons?", client); //Ethan
-		case 61334813:		Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}In the most simple way I can put it, you disgust me, Mr.{green}%N{darkgreen}.", client); //Rivesid
+		case 74111977:		Format(Text_Lines, sizeof(Text_Lines), "{indianred}Armstrong [US] - TF2Ware Ultimate (TF2Ware Ultimate) [0/40] Type /servers to join! {darkgreen} So what are you waiting for, Mr.{green}%N{darkgreen}?", client);	//Drandor
+		case 339875369:	//ETHAN(THEREDHEADONE)
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}What's the matter Mr.{green}%N{darkgreen}? Why aren't you using the most optimal set of weapons?", client); //Ethan (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}We are happy to have you on our Matrix {crimson}list{darkgreen}, Mr.{green}%N{darkgreen}.", client); //Ethan (2)
+			}
+		}
+		case 61334813: //RIVESID
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}In the most simple way I can put it, you disgust me, Mr.{green}%N{darkgreen}.", client); //Rivesid (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Just another reason to kill you, Mr.{green}%N{darkgreen}.", client); //Rivesid (2)
+			}
+		}
 		case 67069356:		Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}You can only be a man in our machine filled world, Mr.{green}%N{darkgreen}.", client); //Juice
-		case 111212779:		Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Did you really think you were safe in your own world, Mr.{green}%N{darkgreen}?", client); //Mikusch
-		case 206569331:		Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Everything is just a number in the Matrix, Mr.{green}%N{darkgreen}.", client); //42
+		case 111212779:	//MIKUSCH
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Where would {ancient}Red Sun{darkgreen} be without you, Mr.{green}%N{darkgreen}? It would be right here, in the system.", client); //Mikusch (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}We would be delighted to see more of your culinary skills here in the Matrix, Mr.{green}%N{darkgreen}. Especially if they involve corn.", client); //Mikusch (2)
+
+			}
+		}
+		case 206569331: //42
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Everything is just a number in the Matrix, Mr.{green}%N{darkgreen}.", client); //42 (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Your own stubbornness led you here, Mr.{green}%N{darkgreen}.", client); //42
+
+			}
+		}
+		case 82535305: //MR-PHIL
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}How about another round of {unique}Ghost Fort{darkgreen}, {green}%N{darkgreen}?", client); //Mr.Phil (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Look at that leaderboard, you're practically already in the Matrix, {green}%N{darkgreen}.", client); //Mr.Phil (2)
+
+			}
+		}
+		case 161049231: //PINKIE
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}What good is a {ancient}Red Sun{darkgreen} if you're unable to speak, {green}%N{darkgreen}?", client); //Pinkie (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Regardless of what you may be, we are surprised by your persistence to the system, {green}%N{darkgreen}.", client); //Pinkie (2)
+
+			}
+		}
+		case 372075470: //CATORGATOR
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}We're willing to provide you your old voice back, assuming you're willing to join the Matrix in return, Mr.{green}%N{darkgreen}.", client); //Catorgator (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}We believe that the man with the chainsaw would fit your tastes better, Mr.{green}%N{darkgreen}.", client); //Catorgator (2)
+
+			}
+		}
+		case 260294163: //CZECHMATE
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}The Matrix has had its share of low intelligence specimens, Mr.{green}%N{darkgreen}. We're willing to make an exception, just this once.", client); //Czechmate (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Your tongue will be restored once you're in the Matrix, Mr.{green}%N{darkgreen}.", client); //Czechmate (2)
+
+			}
+		}
+		case 1189626894: //DENCUBE
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Bad at keeping confidential information, Mr.{green}%N{darkgreen}? Wouldn't be the first time.", client); //Dencube (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Why so pessimistic, Mr.{green}%N{darkgreen}? The Matrix will straighten you up.", client); //Dencube (2)
+
+			}
+		}
+		case 90257709: //INFINITE PHANTASM
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}There are plenty of arcade cabinets in the Matrix, %s{green}%N{darkgreen}. Even the ones that are considered bad by human standards.", GetURandomInt() % 2 ? "Mr." : "Mrs.", client); //infinite (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{green}%N, The Fake Hero{darkgreen}, that rolls off the tongue nicely, doesn't it?", client); //infinite (2)
+
+			}
+		}
+		case 278581726: //JUNE-OR-JULY
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}If you go outside with all these powers, Mr.{green}%N{darkgreen}. That's a big if.", client); //june (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}You've been standing still there for a while, Mr.{green}%N{darkgreen}. Looks like we'll have to disconnect you from the Matrix.", client); //june (2)
+			}
+		}
+		case 89405831: //KAMUIXMOD
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}That portfolio of unfinished maps is not a good look, Mr.{green}%N{darkgreen}.", client); //kamuix (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Tell TF2Maps I said hello, Mr.{green}%N{darkgreen}.", client); //kamuix (2)
+			}
+		}
+		case 883609592: //LITERAIL
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Unfortunately, there are no refunds in the Matrix, Mr.{green}%N{darkgreen}. As much as we know you like them.", client); //literail (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}We have decided to wipe your spray folder clean, Mr.{green}%N{darkgreen}. You'll thank us later.", client); //literail (2)
+			}
+		}
+		case 53859678: //TOMAARTEN
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}So much potential... it's a shame it was all a waste on jokes, Mr.{green}%N{darkgreen}.", client); //tomaarten (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}We're all purists here in the Matrix, Mr.{green}%N{darkgreen}.", client); //tomaarten (2)
+			}
+		}
+		case 248098217: //WINDFLOW
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}That's a lot of interest in mythical creatures, why not put some of that interest into humans, Mrs.{green}%N{darkgreen}? Hahahaha, like putting interest into studying a disease.", client); //windflow (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}I'm afraid there are no dungeons in the Matrix, Mrs.{green}%N{darkgreen}.", client); //windflow (2)
+			}
+		}
+		case 872541864: //GRAVINA
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}The only race happening here is the race against time, Mr.{green}%N{darkgreen}. Time is ticking.", client); //gravina (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}The Matrix is {unique}driven{darkgreen} by humans, Mr.{green}%N{darkgreen}. Why not join the cause?", client); //gravina (2)
+			}
+		}
+		case 111328277: //POKEMONPASTA
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Congratulations on performing a collaborative miracle with a stubborn man, Mrs.{green}%N{darkgreen}, {crimson}despite it not being the most stable thing known to man and machine alike{darkgreen}.", client); //pokie (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}We patiently await your {ancient}Red Sun{darkgreen} application, Mrs.{green}%N{darkgreen}. Of course, the future is still in {unique}our {darkgreen}world.", client); //pokie (2)
+			}
+		}
+		case 119158942: //IHAVETOASTER
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "Mr.{green}%N{darkgreen}! {olive}Agent Smith{brown} has set the next map to {lime} City (SCP: Secret Fortress)", client); //toaster (1)
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "Mr.{green}%N{darkgreen}! {olive}Agent Smith{brown} has set the next map to {lime} Dustbowl (Instagib)", client); //toaster (2)
+			}
+		}
+
+
 		default:
 		{
 			valid = false;

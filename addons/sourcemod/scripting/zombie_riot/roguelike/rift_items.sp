@@ -155,8 +155,9 @@ public void Rogue_UmbralKeycardBuffAlly(int entity, StringMap map)
 		{
 
 		//	fl_Extra_Speed[entity] 				*= 1.1;
-			fl_Extra_Damage[entity] 			*= 1.2;
-			RogueHelp_BodyHealth(entity, null, 1.2);
+			fl_Extra_Damage[entity] 			*= 1.1;
+			fl_Extra_MeleeArmor[entity]			*= 0.9;
+			fl_Extra_RangedArmor[entity] 		*= 0.9;
 		}
 	}
 }
@@ -167,16 +168,17 @@ public void Rogue_UmbralKeycardBuffEnemy(int entity)
 	{
 
 	//	fl_Extra_Speed[entity] 				*= 1.1;
-		fl_Extra_Damage[entity] 			*= 1.2;
-		RogueHelp_BodyHealth(entity, null, 1.2);
+		fl_Extra_Damage[entity] 			*= 1.1;
+		fl_Extra_MeleeArmor[entity]			*= 0.9;
+		fl_Extra_RangedArmor[entity] 		*= 0.9;
 	}
 }
 public void Rogue_Mazeat3_Enemy(int entity)
 {
 	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
 	{
-		RogueHelp_BodyHealth(entity, null, 0.65);
-		fl_Extra_Damage[entity] *= 0.65;
+		RogueHelp_BodyHealth(entity, null, 0.75);
+		fl_Extra_Damage[entity] *= 0.75;
 
 		for(int i; i < Element_MAX; i++)
 		{
@@ -212,12 +214,12 @@ public void Rogue_Umbral6_Collect()
 
 public void Rogue_OldFan_Ally(int entity, StringMap map)
 {
-	RogueHelp_BodyDamage(entity, map, 1.5);
+	RogueHelp_BodyDamage(entity, map, 1.4);
 }
 
 public void Rogue_OldFan_Weapon(int entity)
 {
-	RogueHelp_WeaponDamage(entity, 1.5);
+	RogueHelp_WeaponDamage(entity, 1.4);
 }
 
 public void Rogue_ScoutScope_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
@@ -351,13 +353,23 @@ public void Rogue_GravityDefying_Enemy(int entity)
 		i_NpcWeight[entity] = 0;
 }
 
+float f_DevilbaneAntiSpam[MAXENTITIES];
 public void Rogue_Devilbane_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
+	if(weapon == -1)
+		return;
+	if(view_as<CClotBody>(victim).m_iBleedType != BLEEDTYPE_UMBRAL)
+		return;
+	//dont give twice a frame!
+	if(f_DevilbaneAntiSpam[weapon] == GetGameTime())
+		return;
+		
 	if(attacker > 0 && attacker <= MaxClients && IsValidEntity(weapon))
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
 			Saga_ChargeReduction(attacker, weapon, 2.0);
+			f_DevilbaneAntiSpam[weapon] = GetGameTime();
 		}
 	}
 }

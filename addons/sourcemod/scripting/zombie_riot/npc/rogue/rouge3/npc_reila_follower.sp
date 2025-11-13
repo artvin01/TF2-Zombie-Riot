@@ -16,6 +16,7 @@ void ReilaFollower_Setup()
 	NPCId = NPC_Add(data);
 }
 
+
 int ReilaFollower_ID()
 {
 	return NPCId;
@@ -233,7 +234,7 @@ methodmap ReilaFollower < CClotBody
 	public void Speech(const char[] speechtext, const char[] endingtextscroll = "")
 	{
 		static int color[4] = {255, 200, 255, 255};
-		NpcSpeechBubble(this.index, speechtext, 5, color, {0.0,0.0,120.0}, endingtextscroll);
+		NpcSpeechBubble(this.index, speechtext, 5, color, {0.0,0.0,100.0}, endingtextscroll);
 	}
 	
 	public ReilaFollower(float vecPos[3], float vecAng[3])

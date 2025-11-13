@@ -42,7 +42,7 @@ void Umbral_Refract_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "refract");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Mutation;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -164,8 +164,9 @@ methodmap Umbral_Refract < CClotBody
 		SetEntityRenderFx(npc.m_iWearable2, RENDERFX_DISTORT);
 		SetEntityRenderColor(npc.m_iWearable2, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 125);
 		
-		
-		if(ally != TFTeam_Red && Rogue_Mode() && Rogue_GetUmbralLevel() == 0)
+
+		ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 2.0);
+		if(ally != TFTeam_Red && Rogue_Mode())
 		{
 			if(Rogue_GetUmbralLevel() == 0)
 			{
@@ -179,9 +180,39 @@ methodmap Umbral_Refract < CClotBody
 			{
 				//if completly hated.
 				//no need to adjust HP scaling, so it can be done here.
-				fl_Extra_Damage[npc.index] *= 1.5;
+				fl_Extra_Damage[npc.index] *= 1.25;
 				fl_Extra_MeleeArmor[npc.index] *= 0.75;
 				fl_Extra_RangedArmor[npc.index] *= 0.75;
+				fl_Extra_Speed[npc.index] *= 1.05;
+				ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 4.0);
+			}
+
+			switch(Rogue_GetFloor() + 1)
+			{
+				//floor 3
+				//10% dmg, 20% res
+				//think 10% faster
+				case 3:
+				{
+					fl_Extra_Damage[npc.index] *= 1.05;
+					fl_Extra_MeleeArmor[npc.index] *= 0.8;
+					fl_Extra_RangedArmor[npc.index] *= 0.8;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.1);
+				}
+				case 4,5:
+				{
+					fl_Extra_Damage[npc.index] *= 1.10;
+					fl_Extra_MeleeArmor[npc.index] *= 0.7;
+					fl_Extra_RangedArmor[npc.index] *= 0.7;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.15);
+				}
+				case 6:
+				{
+					fl_Extra_Damage[npc.index] *= 1.20;
+					fl_Extra_MeleeArmor[npc.index] *= 0.5;
+					fl_Extra_RangedArmor[npc.index] *= 0.5;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.20);
+				}
 			}
 		}
 		return npc;
@@ -258,7 +289,7 @@ public void Umbral_Refract_ClotThink(int iNPC)
 		{
 			spawnRing_Vectors(f3_NpcSavePos[npc.index], 0.1, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.15, 8.0, 1.5, 1, RadiusDamage*2.0);
 			spawnRing_Vectors(f3_NpcSavePos[npc.index], 0.1, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.15, 8.0, 1.5, 1, RadiusDamage*2.0);
-			Explode_Logic_Custom(150.0, 0, npc.index, -1, f3_NpcSavePos[npc.index],RadiusDamage, 1.0, _, true);
+			Explode_Logic_Custom(100.0, 0, npc.index, -1, f3_NpcSavePos[npc.index],RadiusDamage, 1.0, _, true);
 			EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], -1, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 1.0, 60, -1, f3_NpcSavePos[npc.index]);
 			EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], -1, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 1.0, 60, -1, f3_NpcSavePos[npc.index]);
 			npc.m_flCauseDamage = 0.0;
@@ -367,7 +398,7 @@ void Umbral_RefractSelfDefense(Umbral_Refract npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 140.0;
+					float damageDealt = 120.0;
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
@@ -390,9 +421,9 @@ void Umbral_RefractSelfDefense(Umbral_Refract npc, float gameTime, int target, f
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,1.5);
-				npc.m_flAttackHappens = gameTime + 0.2;
-				npc.m_flDoingAnimation = gameTime + 0.2;
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,1.25);
+				npc.m_flAttackHappens = gameTime + 0.3;
+				npc.m_flDoingAnimation = gameTime + 0.3;
 				npc.m_flNextMeleeAttack = gameTime + 0.75;
 			}
 		}

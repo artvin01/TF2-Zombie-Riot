@@ -310,7 +310,7 @@ public void Weapon_Wand_PotionBasicTouch(int entity, int target)
 	_,
 	_,
 	_,
-	6,
+	4,
 	_,
 	_,
 	WandPotion_DoTrueDamageBleed,
@@ -330,7 +330,7 @@ public void WandPotion_DoTrueDamageBleed(int entity, int enemy, float damage, in
 	if (!IsValidEntity(owner))
 		return;
 
-	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 32.0, 5, weapon, DMG_BULLET);
+	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 12.0, 8, weapon, DMG_BULLET);
 }
 
 
@@ -470,7 +470,7 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 				{
 					i_ExtraPlayerPoints[owner] += 20;
 
-					ApplyStatusEffect(client, client, "Mystery Brew", 300.0);
+					ApplyStatusEffect(client, client, "Mystery Brew", 100.0);
 				}
 			}
 		}
@@ -485,7 +485,7 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 			{
 				i_ExtraPlayerPoints[owner] += 20;
 
-				ApplyStatusEffect(entity1, entity1, "Mystery Brew", 300.0);
+				ApplyStatusEffect(entity1, entity1, "Mystery Brew", 100.0);
 			}
 		}
 	}
@@ -525,7 +525,7 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 	_,
 	_,
 	_,
-	6,
+	4,
 	_,
 	_,
 	WandPotion_UnstableTouchDo,
@@ -548,7 +548,7 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 	char npc_classname[60];
 	float damage = f_WandDamage[entity];
 	
-	StartBleedingTimer(enemy, owner, damage / 16.0, 8, weapon, DMG_BULLET);
+	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 12.0, 8, weapon, DMG_BULLET);
 	NPC_GetPluginById(i_NpcInternalId[enemy], npc_classname, sizeof(npc_classname));
 	if(StrEqual(npc_classname, "npc_bloon"))
 	{
@@ -729,7 +729,7 @@ public void Weapon_Wand_PotionLeadTouch(int entity, int target)
 	_,
 	_,
 	_,
-	6,
+	4,
 	_,
 	_,
 	WandPotion_PotionLead,
@@ -749,14 +749,7 @@ public void WandPotion_PotionLead(int entity, int enemy, float damage_Dontuse, i
 	if (!IsValidEntity(owner))
 		return;
 
-	if(view_as<CClotBody>(enemy).m_iBleedType == BLEEDTYPE_METAL)
-	{
-		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 10, weapon, DMG_BULLET);
-	}
-	else
-	{
-		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_BULLET);
-	}
+	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 12.0, 8, weapon, DMG_BULLET);
 }
 
 public void Weapon_Wand_PotionGoldTouch(int entity, int target)
@@ -791,7 +784,7 @@ public void Weapon_Wand_PotionGoldTouch(int entity, int target)
 	_,
 	_,
 	_,
-	6,
+	4,
 	_,
 	_,
 	WandPotion_PotionGoldDo,
@@ -811,14 +804,7 @@ public void WandPotion_PotionGoldDo(int entity, int enemy, float damage_Dontuse,
 	if (!IsValidEntity(owner))
 		return;
 
-	if(view_as<CClotBody>(enemy).m_iBleedType == BLEEDTYPE_METAL)
-	{
-		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 10, weapon, DMG_BULLET);
-	}
-	else
-	{
-		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_BULLET);
-	}
+	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 12.0, 8, weapon, DMG_BULLET);
 	ApplyStatusEffect(owner, enemy, "Golden Curse", 1.5);
 }
 

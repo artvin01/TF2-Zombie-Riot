@@ -239,7 +239,7 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 			{
 				damageMulti = 1.0;
 			}
-			damageMulti += 0.35;
+			damageMulti += 0.25;
 
 			if(damageMulti > 1.0)
 			{
@@ -397,4 +397,10 @@ public void Dimensional_Turbulence_Ally(int entity, StringMap map)
 public void Rogue_Chicken_Nugget_Box_Ally(int entity, StringMap map)
 {
 	RogueHelp_BodyHealth(entity, map, 1.15);
+}
+
+public void Rogue_AscensionStack_Enemy(int entity)
+{
+	RogueHelp_BodyHealth(entity, null, 1.3);
+	RogueHelp_BodyDamage(entity, null, 1.2);
 }

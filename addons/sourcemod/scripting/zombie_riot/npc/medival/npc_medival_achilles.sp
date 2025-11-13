@@ -203,6 +203,7 @@ methodmap MedivalAchilles < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/player/items/soldier/soldier_spartan.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		NpcColourCosmetic_ViaPaint(npc.m_iWearable1, 1644825);
 
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/weapons/c_models/c_persian_shield/c_persian_shield.mdl");
 		SetVariantString("1.0");

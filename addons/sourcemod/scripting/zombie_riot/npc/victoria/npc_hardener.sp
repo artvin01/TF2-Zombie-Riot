@@ -552,7 +552,7 @@ static int VictorianHardener_Work(VictorianHardener npc, float gameTime, float d
 				if(!npc.m_bnew_target)
 				{
 					npc.StartHealing();
-					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTarget, 255, 255, 0, 3.0, 3.0, 1.35, LASERBEAM);
+					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTarget, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM);
 					npc.Healing = true;
 					npc.m_bnew_target = true;
 				}

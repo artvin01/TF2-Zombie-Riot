@@ -58,7 +58,7 @@ void AlmagestJkei_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "jkei");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Interitus;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
@@ -71,6 +71,7 @@ int Almagest_JkeiID()
 static void ClotPrecache()
 {
 	PrecacheSoundCustom("#zombiesurvival/rogue3/rogue3_almagestboss.mp3");
+	NPC_GetByPlugin("npc_jkei_drone");
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
@@ -239,14 +240,15 @@ methodmap AlmagestJkei < CClotBody
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != -1 && i_NpcInternalId[other] == Almagest_JkeiID() && IsEntityAlive(other))
 				{
-					fl_Extra_Damage[other] 	*= (1.0 / 0.75);
+					if(HasSpecificBuff(other, "Unstoppable Force"))
+						fl_Extra_Damage[other] 	*= (1.0 / 0.75);
 					RemoveSpecificBuff(other, "Unstoppable Force");
 					view_as<AlmagestJkei>(other).SetJkeiSpeed(330.0);
 					if(view_as<AlmagestJkei>(other).m_flMegaSlashDoing)
 						view_as<AlmagestJkei>(other).SetJkeiSpeed(150.0);
 					CPrintToChatAll("{black}Jkei{crimson} gains more strength.");
 					f_AttackSpeedNpcIncrease[other] *= 0.85;
-					fl_Extra_Speed[other] 	*= 1.1;
+				//	fl_Extra_Speed[other] 	*= 1.05;
 					fl_Extra_Damage[other] 	*= 1.2;
 					fl_TotalArmor[other] *= 0.85;
 					i_OverlordComboAttack[other] = 2;
@@ -261,7 +263,8 @@ methodmap AlmagestJkei < CClotBody
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != -1 && i_NpcInternalId[other] == Almagest_JkeiID() && IsEntityAlive(other))
 				{
-					fl_Extra_Damage[other] 	*= (1.0 / 0.75);
+					if(!HasSpecificBuff(other, "Unstoppable Force"))
+						fl_Extra_Damage[other] 	*= (1.0 / 0.75);
 					RemoveSpecificBuff(other, "Unstoppable Force");
 					view_as<AlmagestJkei>(other).SetJkeiSpeed(330.0);
 					if(view_as<AlmagestJkei>(other).m_flMegaSlashDoing)
@@ -270,8 +273,8 @@ methodmap AlmagestJkei < CClotBody
 					RemoveFromNpcAliveList(other);
 					AddNpcToAliveList(other, 0);
 					f_AttackSpeedNpcIncrease[other] *= 0.8;
-					fl_Extra_Speed[other] 	*= 1.1;
-					fl_Extra_Damage[other] 	*= 1.35;
+				//s	fl_Extra_Speed[other] 	*= 1.05;
+					fl_Extra_Damage[other] 	*= 1.25;
 					fl_TotalArmor[other] *= 0.7;
 					i_OverlordComboAttack[other] = 3;
 					return view_as<AlmagestJkei>(-1);
@@ -290,6 +293,10 @@ methodmap AlmagestJkei < CClotBody
 		
 		if(StrContains(data, "force_final_battle") != -1)
 		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidAllowsBuildings = true;
+			RaidModeScaling = 0.0;
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/rogue3_almagestboss.mp3");
 			music.Time = 101;
@@ -322,6 +329,10 @@ methodmap AlmagestJkei < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
 			RaidModeScaling = 0.0;
+		}
+		if(StrContains(data, "force_final_battle") != -1)
+		{
+			RaidAllowsBuildings = false;
 		}
 		npc.StartPathing();
 		npc.SetJkeiSpeed(330.0);

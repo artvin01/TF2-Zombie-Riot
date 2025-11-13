@@ -76,6 +76,7 @@ void VoidUnspeakable_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NpcID = NPC_Add(data);
+	Zero(i_LaserEntityIndex);
 }
 
 static void ClotPrecache()

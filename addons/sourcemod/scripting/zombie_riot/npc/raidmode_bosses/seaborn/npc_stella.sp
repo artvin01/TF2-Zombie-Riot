@@ -739,7 +739,7 @@ methodmap Stella < CClotBody
 		f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE, //She CANT stuck you, so dont make players not unstuck in cant bve stuck ? what ?
 		b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 		
-		RaidModeTime = GetGameTime() + 200.0;
+		RaidModeTime = GetGameTime() + 220.0;
 		
 	
 		char buffers[3][64];
@@ -862,6 +862,7 @@ methodmap Stella < CClotBody
 		npc.m_iWearable8 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_4);
 		//9 is used by a special item.
 		npc.m_iWingSlot =  npc.EquipItem("head", WINGS_MODELS_1);
+		NpcColourCosmetic_ViaPaint(npc.m_iWearable2, 16777215);
 
 		SetVariantInt(RUINA_STELLA_CREST);
 		AcceptEntityInput(npc.m_iWearable8, "SetBodyGroup");

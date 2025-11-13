@@ -66,7 +66,7 @@ public void Umbral_WF_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "whiteflower");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = 0;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -218,7 +218,7 @@ methodmap Umbral_WF < CClotBody
 		SetEntityRenderColor(npc.m_iWearable4, Rand_R, Rand_G, Rand_B, 125);
 		
 		npc.StartPathing();
-		if(ally != TFTeam_Red && Rogue_Mode() && Rogue_GetUmbralLevel() == 0)
+		if(ally != TFTeam_Red && Rogue_Mode())
 		{
 			if(Rogue_GetUmbralLevel() == 0)
 			{
@@ -232,9 +232,9 @@ methodmap Umbral_WF < CClotBody
 			{
 				//if completly hated.
 				//no need to adjust HP scaling, so it can be done here.
-				fl_Extra_Damage[npc.index] *= 1.5;
-				fl_Extra_MeleeArmor[npc.index] *= 0.75;
-				fl_Extra_RangedArmor[npc.index] *= 0.75;
+				fl_Extra_Damage[npc.index] *= 1.25;
+				fl_Extra_MeleeArmor[npc.index] *= 0.85;
+				fl_Extra_RangedArmor[npc.index] *= 0.85;
 			}
 		}
 		
@@ -614,7 +614,7 @@ static void Umbral_WF_KickTouched(int entity, int enemy)
 	float targPos[3];
 	WorldSpaceCenter(enemy, targPos);
 	float damage = 60.0;
-	damage *= 0.50;
+	damage *= 0.4;
 	damage *= RaidModeScaling;
 	SDKHooks_TakeDamage(enemy, entity, entity, damage, DMG_CLUB, -1, NULL_VECTOR, targPos);
 	ParticleEffectAt(targPos, "skull_island_embers", 2.0);
