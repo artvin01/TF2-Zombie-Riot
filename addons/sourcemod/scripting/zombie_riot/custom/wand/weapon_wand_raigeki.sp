@@ -11,8 +11,12 @@
 //Kinetic Energy buffs Static Electricity, and also buffs the primary attack while Supercharged.
 //Additionally, it makes Raigeki (the giant thunderbolt) stronger if the user uses the Mortal Blackout PaP path.
 static float Energy_OnHit[4] = { 0.5, 0.65, 0.8, 1.0 };						//Kinetic Energy given for every enemy hit by the primary attack.
-static float Energy_OnKill[4] = { 1.0, 1.35, 1.65, 2.0 };					//Kinetic Energy given for every enemy killed by the primary attack.
-static float Energy_OnHurt[4] = { 0.25, 0.325, 0.4, 0.5 };					//Kinetic Energy given every time the user is hurt while charging Raigeki.
+static float Energy_OnKill[4] = { 1.0, 1.5, 2.0, 2.5 };						//Kinetic Energy given for every enemy killed by the primary attack.
+static float Energy_OnHit_Raigeki[4] = { 5.0, 6.0, 7.0, 8.0 };				//Kinetic Energy given for every enemy hit by Raigeki (the big thunderbolt).
+static float Energy_OnKill_Raigeki[4] = { 10.0, 15.0, 20.0, 25.0 };			//Kinetic Energy given for every enemy killed by Raigeki (the big thunderbolt).
+static float Energy_OnHurt[4] = { 1.0, 1.25, 1.5, 1.75 };					//Kinetic Energy given every time the user is hurt while charging Raigeki.
+static float Energy_FromBossesMult[4] = { 1.5, 1.5, 1.5, 1.5 };				//Amount to multiply all Kinetic Energy gained from interactions with bosses.
+static float Energy_FromRaidsMult[4] = { 2.5, 2.5, 2.5, 2.5 };				//Amount to multiply all Kinetic Energy gained from interactions with raids.
 
 //ELECTRIC BLADE: Sweeps across the screen from left to right, damaging every enemy it passes through.
 //Multiple blades can sweep in rapid succession, but only the first one consumes mana.
@@ -43,11 +47,12 @@ static float Charge_DMG[4] = { 24.0, 48.0, 90.0, 135.0 };				//Base damage per i
 static float Charge_Radius[4] = { 100.0, 105.0, 110.0, 115.0 };			//Radius in which Static Electricity deals damage.
 static float Charge_Falloff[4] = { 0.7, 0.75, 0.8, 0.85 };				//Amount to multiply Static Electricity damage per target hit.
 static float Charge_EnergyMult[4] = { 3.0, 3.5, 4.0, 5.0 };				//Maximum Static Electricity bonus damage multiplier based on Kinetic Energy (example: this is 5.0 and the user has 100% Kinetic Energy, a Static Electricity tick will deal 500% extra damage, for a total of 600% damage).
-static float Charge_EnergyDrain[4] = { 0.3, 0.3, 0.3, 0.3 };			//Kinetic Energy drained every time Static Electricity hits an enemy.
+static float Charge_EnergyDrain[4] = { 0.33, 0.33, 0.33, 0.33 };		//Kinetic Energy drained every time Static Electricity hits an enemy.
+static float Charge_ManaOnKill[4] = { 10.0, 15.0, 20.0, 25.0 };			//Mana to immediately regenerate whenever Static Electricity kills an enemy.
 
 //RAIGEKI: Once the user has charged their M2 enough, they may release M2 to summon Raigeki. This stuns them, during which their resistance is boosted.
 //After X second(s), Raigeki will strike, dealing enormous damage within a huge radius. This ends the stun and removes the user's resistance.
-static int Raigeki_MaxTargets[4] = { 9, 10, 11, 12 };						//Maximum number of enemies hit at once with Raigeki.
+static int Raigeki_MaxTargets[4] = { 18, 20, 22, 24 };						//Maximum number of enemies hit at once with Raigeki. I recommend keeping this higher than other sources, because of the ability's inherently risky nature.
 static float Raigeki_Delay[4] = { 3.0, 3.0, 3.0, 3.0 };						//Duration for which the user is stunned upon casting Raigeki. After this time passes, Raigeki's giant thunderbolt will strike, supercharging the user and ending the stun.
 static float Raigeki_ResMult[4] = { 0.8, 0.8, 0.8, 0.8 };					//Amount to multiply damage taken during the stun state while casting Raigeki. This is stacked multiplicatively with the user's current damage resistance granted by charging Raigeki.
 static float Raigeki_Damage[4] = { 15000.0, 20000.0, 25000.0, 30000.0 };	//Raigeki's base damage at max charge.
@@ -57,9 +62,10 @@ static float Raigeki_Falloff_Radius[4] = { 0.75, 0.8, 0.85, 0.9 };			//Distance-
 static float Raigeki_Cooldown[4] = { 90.0, 90.0, 90.0, 90.0 };				//Raigeki's cooldown.
 static float Raigeki_Cooldown_Failed[4] = { 45.0, 45.0, 45.0, 45.0 };		//Raigeki's cooldown if the user fails to cast it (releases M2 without enough charge, is downed/dies while charging).
 
-//OVERCHARGE: After Raigeki hits, if the user has enough Kinetic Energy, they will become Supercharged.
+//SUPERCHARGED: After Raigeki hits, if the user has enough Kinetic Energy, they will become Supercharged.
 //While Supercharged, the user's Kinetic Energy drains rapidly, and they cannot gain more Kinetic Energy, but their primary attack is massively buffed.
 //Supercharged ends as soon as the user runs out of Kinetic Energy. Also, getting downed while Supercharged instantly removes all Kinetic Energy.
+static int Supercharge_ExtraBlades[4] = { 2, 3, 4, 5 };						//Number of extra blades to swing per cast whil Supercharged.
 static float Supercharge_DMGMult[4] = { 2.0, 2.35, 2.65, 3.0 };				//Amount to multiply primary attack damage while Supercharged.
 static float Supercharge_SpeedMult[4] = { 2.0, 2.15, 2.3, 2.5 };			//Amount to multiply attack speed and beam sweep speed while Supercharged.
 static float Supercharge_RangeMult[4] = { 2.0, 2.5, 3.0, 3.5 };				//Amount to multiply beam range while Supercharged.
@@ -68,10 +74,20 @@ static float Supercharge_Drain[4] = { 1.0, 1.0, 1.0, 1.0 };					//Amount of Kine
 
 static float ability_cooldown[MAXPLAYERS + 1] = {0.0, ...};
 static bool b_ChargingRaigeki[MAXPLAYERS + 1] = { false, ... };
+static bool b_Supercharged[MAXPLAYERS + 1] = { false, ... };
+static float f_Energy[MAXPLAYERS + 1] = { 0.0, ... };
+static bool b_BladeHitting[MAXPLAYERS + 1] = { false, ... };
+static bool b_RaigekiHitting[MAXPLAYERS + 1] = { false, ... };
+static bool b_StaticHitting[MAXPLAYERS + 1] = { false, ... };
+static int i_BladeTier[MAXPLAYERS + 1] = { 0, ... };
+static int i_ChargeTier[MAXPLAYERS + 1] = { 0, ... };
 
 public void Raigeki_ResetAll()
 {
 	Zero(ability_cooldown);
+	Zero(i_ChargeTier);
+	Zero(i_BladeTier);
+	ZeroFloat(f_Energy);
 }
 
 #define PARTICLE_RAIGEKI_STRIKE			"drg_cow_explosioncore_charged"
@@ -80,11 +96,10 @@ public void Raigeki_ResetAll()
 #define PARTICLE_RAIGEKI_CHARGEUP_AURA_MID 		 "teleporter_red_exit_level1"
 #define PARTICLE_RAIGEKI_CHARGEUP_AURA_HIGH 	 "teleporter_red_exit_level2"
 #define PARTICLE_RAIGEKI_CHARGEUP_AURA_MAX 		 "teleporter_red_exit_level3"
-#define PARTICLE_RAIGEKI_CASTING_AURA	 		 "utaunt_poweraura_teamcolor_red"
+#define PARTICLE_RAIGEKI_CASTING_AURA	 		 "eyeboss_vortex_red"
+#define PARTICLE_SUPERCHARGED_AURA				 "soldierbuff_red_buffed"
 
-#define SOUND_RAIGEKI_BLADE_SWEEP       ")weapons/samurai/tf_katana_crit_miss_01.wav"
-#define SOUND_CHARGE_LOOP				")player/quickfix_invulnerable_on.wav"
-#define SOUND_CHARGE_LOOP_MAX			")weapons/weapon_crit_charged_on.wav"
+#define SOUND_RAIGEKI_BLADE_SWEEP       ")weapons/batsaber_swing_crit3.wav"
 #define SOUND_CHARGE_MAX_NOTIF			")weapons/vaccinator_charge_tier_04.wav"
 #define SOUND_RAIGEKI_FAILED			")player/taunt_sorcery_fail.wav"
 #define SOUND_RAIGEKI_CAST_1			")ambient/hell/hell_rumbles_01.wav"
@@ -92,6 +107,12 @@ public void Raigeki_ResetAll()
 #define SOUND_RAIGEKI_INCOMING			")ambient/halloween/thunder_04.wav"
 #define SOUND_RAIGEKI_STRIKE_1			")misc/halloween/spell_spawn_boss.wav"
 #define SOUND_RAIGEKI_STRIKE_2			")misc/doomsday_missile_explosion.wav"
+#define SOUND_SUPERCHARGE_EXPIRE		")player/invuln_off_vaccinator.wav"
+#define SOUND_SUPERCHARGED_SWING		")weapons/samurai/tf_katana_crit_miss_01.wav"
+
+#define SOUND_CHARGE_LOOP				")player/quickfix_invulnerable_on.wav"
+#define SOUND_ELECTRICITY_LOOP			")weapons/weapon_crit_charged_on.wav"
+#define SOUND_SUPERCHARGED_LOOP			")weapons/man_melter_alt_fire_lp.wav"
 
 static char g_StaticSounds[][] = {
 	")weapons/stunstick/spark1.wav",
@@ -111,7 +132,7 @@ void Raigeki_Precache()
 
     PrecacheSound(SOUND_RAIGEKI_BLADE_SWEEP, true);
 	PrecacheSound(SOUND_CHARGE_LOOP, true);
-	PrecacheSound(SOUND_CHARGE_LOOP_MAX, true);
+	PrecacheSound(SOUND_ELECTRICITY_LOOP, true);
 	PrecacheSound(SOUND_CHARGE_MAX_NOTIF, true);
 	PrecacheSound(SOUND_RAIGEKI_FAILED, true);
 	PrecacheSound(SOUND_RAIGEKI_CAST_1, true);
@@ -119,8 +140,13 @@ void Raigeki_Precache()
 	PrecacheSound(SOUND_RAIGEKI_INCOMING, true);
 	PrecacheSound(SOUND_RAIGEKI_STRIKE_1, true);
 	PrecacheSound(SOUND_RAIGEKI_STRIKE_2, true);
+	PrecacheSound(SOUND_SUPERCHARGED_LOOP, true);
+	PrecacheSound(SOUND_SUPERCHARGE_EXPIRE, true);
+	PrecacheSound(SOUND_SUPERCHARGED_SWING, true);
 
 	for (int i = 0; i < sizeof(g_StaticSounds); i++) { PrecacheSound(g_StaticSounds[i]); }
+
+	Raigeki_ResetAll();
 }
 
 //Block Burst Pack while charging Raigeki.
@@ -129,24 +155,51 @@ public bool Raigeki_OnBurstPack(int client)
 	return !b_ChargingRaigeki[client];
 }
 
+void Energy_Give(int client, float amt, int source = -1, int tier = 0)
+{
+	if (amt > 0.0 && b_Supercharged[client])
+		return;
+
+	if (IsEntityAlive(source) && amt > 0.0)
+	{
+		if (b_thisNpcIsABoss[source])
+			amt *= Energy_FromBossesMult[tier];
+		else if (b_thisNpcIsARaid[source])
+			amt *= Energy_FromRaidsMult[tier];
+	}
+
+	f_Energy[client] += amt;
+	if (f_Energy[client] <= 0.0)
+		f_Energy[client] = 0.0;
+	if (f_Energy[client] >= 100.0)
+		f_Energy[client] = 100.0;
+
+	Raigeki_HUD(client, Raigeki_GetWeapon(client), true);
+}
+
 void Raigeki_OnKill(int attacker, int victim)
 {
+	float amt = 0.0;
+	if (b_BladeHitting[attacker])
+		amt = Energy_OnKill[i_BladeTier[attacker]];
+	else if (b_RaigekiHitting[attacker])
+		amt = Energy_OnKill_Raigeki[i_ChargeTier[attacker]];
+
+	if (amt > 0.0)
+		Energy_Give(attacker, amt, victim, b_BladeHitting[attacker] ? i_BladeTier[attacker] : i_ChargeTier[attacker]);
+
+	if (b_StaticHitting[attacker] && b_ChargingRaigeki[attacker] && Current_Mana[attacker] < RoundToCeil(max_mana[attacker]))
+	{
+		Current_Mana[attacker] = RoundToCeil(fmin(float(Current_Mana[attacker]) + Charge_ManaOnKill[i_ChargeTier[attacker]], max_mana[attacker]));
+	}
 }
 
 float Player_OnTakeDamage_Raigeki(int victim, float &damage, int attacker)
 {
-	/*int grabber = Raigeki_GetGrabTarget(victim);
-	if (IsValidEnemy(victim, grabber) && grabber == attacker)
-	{
-		damage *= Raigeki_Resistance[Raigeki_Tier[victim]];
-	}
+	if (b_ChargingRaigeki[victim])
+		Energy_Give(victim, Energy_OnHurt[i_ChargeTier[victim]], attacker, i_ChargeTier[victim]);
 
-	return damage;*/
-}
-
-public void Raigeki_OnNPCDamaged(int victim, float damage)
-{
-	//Raigeki_DamageTakenWhileGrabbed[victim] += damage;
+	return damage;
 }
 
 Handle Timer_Raigeki[MAXPLAYERS + 1] = { INVALID_HANDLE, ... };
@@ -156,7 +209,7 @@ public void Enable_Raigeki(int client, int weapon)
 {
 	if (Timer_Raigeki[client] != null)
 	{
-		/*if(i_CustomWeaponEquipLogic[weapon] == WEAPON_RAIGEKI)
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_RAIGEKI)
 		{
 			delete Timer_Raigeki[client];
 			Timer_Raigeki[client] = null;
@@ -165,22 +218,22 @@ public void Enable_Raigeki(int client, int weapon)
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
-		return;*/
+		return;
 	}
 		
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_RAIGEKI)
 	{
-		/*DataPack pack;
+		DataPack pack;
 		Timer_Raigeki[client] = CreateDataTimer(0.1, Timer_RaigekiControl, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
-		f_NextRaigekiHUD[client] = 0.0;*/
+		f_NextRaigekiHUD[client] = 0.0;
 	}
 }
 
 public Action Timer_RaigekiControl(Handle timer, DataPack pack)
 {
-	/*pack.Reset();
+	pack.Reset();
 	int client = pack.ReadCell();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
@@ -189,35 +242,9 @@ public Action Timer_RaigekiControl(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	Raigeki_HUD(client, weapon, false);*/
+	Raigeki_HUD(client, weapon, false);
 
 	return Plugin_Continue;
-}
-
-public void Raigeki_HUD(int client, int weapon, bool forced)
-{
-	/*if(f_NextRaigekiHUD[client] < GetGameTime() || forced)
-	{
-		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-
-		if(weapon_holding == weapon)
-		{
-			char HUDText[255];
-
-			int grabTarget = Raigeki_GetGrabTarget(client);
-			if (IsValidEnemy(client, grabTarget))
-			{
-				float mult = Raigeki_GetThrowVelMultiplier(client);
-				Format(HUDText, sizeof(HUDText), "[%i Mana] M2: Psycho-Toss (%.2fx Power)!\nGrab cooldown upon releasing enemy: %.2fs", RoundFloat(Raigeki_Grab_ThrowCost[Raigeki_Tier[client]]), mult, Raigeki_CooldownToApply[client]);
-			}
-
-			PrintHintText(client, HUDText);
-
-			
-		}
-
-		f_NextRaigekiHUD[client] = GetGameTime() + 0.5;
-	}*/
 }
 
 static int i_RaigekiWeapon[MAXPLAYERS + 1] = { 0, ... };
@@ -299,7 +326,6 @@ public void Raigeki_Charge_0(int client, int weapon, bool &result, int slot)
 }
 
 static int i_ChargeMaxTargets[MAXPLAYERS + 1] = { 0, ... };
-static int i_ChargeTier[MAXPLAYERS + 1] = { 0, ... };
 static int i_RaigekiParticle[MAXPLAYERS + 1] = { 0, ... };
 static int i_RaigekiParticleOwner[2049] = { -1, ... };
 
@@ -325,7 +351,7 @@ static float f_RaigekiStrikesAt[MAXPLAYERS + 1] = { 0.0, ... };
 void Raigeki_StartCharging(int client, int weapon, int tier)
 {
 	//This should never be able to happen in-game, but just to be safe...
-	if (b_ChargingRaigeki[client])
+	if (b_ChargingRaigeki[client] || b_Supercharged[client])
 		return;
 
 	if (dieingstate[client] > 0)
@@ -381,13 +407,13 @@ void Raigeki_AttachParticle(int client, char[] particle)
 
 	float pos[3];
 	GetClientAbsOrigin(client, pos);
-	int particle = ParticleEffectAt_Parent(pos, particle, client);
-	if (IsValidEntity(particle))
+	int effect = ParticleEffectAt_Parent(pos, particle, client);
+	if (IsValidEntity(effect))
 	{
-		i_RaigekiParticle[client] = EntIndexToEntRef(particle);
-		i_RaigekiParticleOwner[particle] = GetClientUserId(client);
-		SetEdictFlags(particle, GetEdictFlags(particle)&(~FL_EDICT_ALWAYS));
-		SDKHook(particle, SDKHook_SetTransmit, Raigeki_ParticleTransmit);
+		i_RaigekiParticle[client] = EntIndexToEntRef(effect);
+		i_RaigekiParticleOwner[effect] = GetClientUserId(client);
+		SetEdictFlags(effect, GetEdictFlags(effect)&(~FL_EDICT_ALWAYS));
+		SDKHook(effect, SDKHook_SetTransmit, Raigeki_ParticleTransmit);
 	}
 }
 
@@ -550,8 +576,11 @@ void Raigeki_MoveTrailToTarg(int ref)
 	float distance = f_TrailDistance[trail] - (f_TrailDistance[trail] * progress);
 	GetPointInDirection(vec_TrailTarg[trail], ang, distance, pos);
 
-	pos[0] += GetRandomFloat(-f_TrailIntensity[trail], f_TrailIntensity[trail]);
-	pos[1] += GetRandomFloat(-f_TrailIntensity[trail], f_TrailIntensity[trail]);
+	if (progress < 1.0)
+	{
+		pos[0] += GetRandomFloat(-f_TrailIntensity[trail], f_TrailIntensity[trail]);
+		pos[1] += GetRandomFloat(-f_TrailIntensity[trail], f_TrailIntensity[trail]);
+	}
 
 	TeleportEntity(trail, pos);
 
@@ -606,8 +635,6 @@ void Raigeki_SummonBolt(int id)
 
 	if (gt >= f_RaigekiStrikesAt[client])
 	{
-		//TODO Add Overcharge
-
 		float amtCharged = f_ChargeAmt[client] / f_ChargeRequirement[client];
 
 		float pos[3], skyPos[3];
@@ -646,12 +673,65 @@ void Raigeki_SummonBolt(int id)
 
 		float damage = Raigeki_Damage[i_ChargeTier[client]] * Attributes_Get(weapon, 410, 1.0) * amtCharged;
 		//I skipped scaling radius because Raigeki already has an enormous radius, and scaling it with bonuses would make it functionally the same as being map-wide in 99% of scenarios.
-		Explode_Logic_Custom(damage, client, client, weapon, pos, Raigeki_Radius[i_ChargeTier[client]] * amtCharged, Raigeki_Falloff_MultiHit[i_ChargeTier[client]], Raigeki_Falloff_Radius[i_ChargeTier[client]], _, Raigeki_MaxTargets[i_ChargeTier[client]]);
+
+		b_RaigekiHitting[client] = true;
+		Explode_Logic_Custom(damage, client, client, weapon, pos, Raigeki_Radius[i_ChargeTier[client]] * amtCharged, Raigeki_Falloff_MultiHit[i_ChargeTier[client]], Raigeki_Falloff_Radius[i_ChargeTier[client]], _, Raigeki_MaxTargets[i_ChargeTier[client]], _, _, view_as<Function>(Raigeki_OnHit));
+		b_RaigekiHitting[client] = false;
+
+		if (f_Energy[client] > 0.0)
+		{
+			b_Supercharged[client] = true;
+
+			//Problem: charging the ability which lets us go ham with M1 consumes mana a lot of mana. Going ham with M1 also consumes a lot of mana. Therefore, it is highly likely players will spend all of their mana charging the ability, then be unable to make full use of the Supercharged buff.
+			//Solution: if the client has less mana than the product of their charge percentage, energy percentage, and max mana: give them that product. In layman's terms: using the ability at full charge with full Kinetic Energy immediately restores 100% mana.
+			if (Current_Mana[client] < RoundToCeil(max_mana[client] * amtCharged * (f_Energy[client] / 100.0)))
+				Current_Mana[client] = RoundToCeil(max_mana[client] * amtCharged * (f_Energy[client] / 100.0));
+
+			DataPack pack = new DataPack();
+			CreateDataTimer(0.1, Supercharge_DrainEnergy, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+			WritePackCell(pack, GetClientUserId(client));
+			WritePackFloat(pack, Supercharge_Drain[i_ChargeTier[client]]);
+
+			Raigeki_AttachParticle(client, PARTICLE_SUPERCHARGED_AURA);
+			EmitSoundToClient(client, SOUND_SUPERCHARGED_LOOP, _, _, _, _, _, 140);
+			EmitSoundToClient(client, SOUND_ELECTRICITY_LOOP);
+		}
 
 		return;
 	}
 
 	RequestFrame(Raigeki_SummonBolt, id);
+}
+
+public void Raigeki_OnHit(int attacker, int victim, float damage)
+{
+	Energy_Give(attacker, Energy_OnHit_Raigeki[i_ChargeTier[attacker]], victim, i_ChargeTier[attacker]);
+}
+
+public Action Supercharge_DrainEnergy(Handle timer, DataPack pack)
+{
+	ResetPack(pack);
+	int client = GetClientOfUserId(ReadPackCell(pack));
+	float drainAmt = ReadPackFloat(pack);
+
+	if (!IsValidClient(client))
+		return Plugin_Stop;
+
+	Energy_Give(client, -drainAmt);
+	if (f_Energy[client] <= 0.0 || !IsPlayerAlive(client) || dieingstate[client] > 0)
+	{
+		f_Energy[client] = 0.0;
+		b_Supercharged[client] = false;
+
+		Raigeki_RemoveParticle(client);
+		StopSound(client, SNDCHAN_AUTO, SOUND_SUPERCHARGED_LOOP);
+		StopSound(client, SNDCHAN_AUTO, SOUND_ELECTRICITY_LOOP);
+		EmitSoundToClient(client, SOUND_SUPERCHARGE_EXPIRE, _, _, 110);
+
+		return Plugin_Stop;
+	}
+
+	return Plugin_Continue;
 }
 
 static int i_RaigekiBeamStart[2049] = { -1, ... };
@@ -816,7 +896,7 @@ void Raigeki_AddCharge(int client)
 	{
 		StopSound(client, SNDCHAN_AUTO, SOUND_CHARGE_LOOP);
 		EmitSoundToClient(client, SOUND_CHARGE_LOOP, client, _, _, _, _, 140);
-		EmitSoundToClient(client, SOUND_CHARGE_LOOP_MAX, client, _, _, _, _, 120);
+		EmitSoundToClient(client, SOUND_ELECTRICITY_LOOP, client, _, _, _, _, 120);
 		EmitSoundToClient(client, SOUND_CHARGE_MAX_NOTIF, client, _, _, _, _, 120);
 		TF2_AddCondition(client, TFCond_FocusBuff);
 		Utility_HUDNotification_Translation(client, "Raigeki Fully Charged");
@@ -828,9 +908,17 @@ void Raigeki_AddCharge(int client)
 	//Trigger Static Electricity shockwave:
 	float pos[3];
 	WorldSpaceCenter(client, pos);
-	Explode_Logic_Custom(f_ChargeDMG[client], client, client, weapon, pos, f_ChargeRadius[client], f_ChargeFalloff[client], 1.0, _, i_ChargeMaxTargets[client], false, 1.0, view_as<Function>(Raigeki_StaticElectricity_OnHit));
+
+	float dmg = f_ChargeDMG[client];
+	if (f_Energy[client] > 0.0)
+		dmg *= (1.0 + ((f_Energy[client] / 100.0) * Charge_EnergyMult[i_ChargeTier[client]]));
+
+	b_StaticHitting[client] = true;
+	Explode_Logic_Custom(dmg, client, client, weapon, pos, f_ChargeRadius[client], f_ChargeFalloff[client], 1.0, _, i_ChargeMaxTargets[client], false, 1.0, view_as<Function>(Raigeki_StaticElectricity_OnHit));
+	b_StaticHitting[client] = false;
 
 	f_NextCharge[client] = GetGameTime() + f_ChargeInterval[client];
+	Raigeki_HUD(client, weapon, true);
 }
 
 void Raigeki_DoChargeVFX(int client)
@@ -957,6 +1045,8 @@ public void Raigeki_StaticElectricity_OnHit(int attacker, int victim, float dama
 	SpawnBeam_Vectors(startPos, endPos, 0.2, 160, 160, 255, 255, Model_Lightning, 3.0, 3.0, _, 12.0);
 
 	EmitSoundToAll(g_StaticSounds[GetRandomInt(0, sizeof(g_StaticSounds) - 1)], attacker, _, 80, _, _, GetRandomInt(80, 120));
+
+	Energy_Give(attacker, -Charge_EnergyDrain[i_ChargeTier[attacker]], victim, i_ChargeTier[attacker]);
 	return;
 }
 
@@ -979,7 +1069,7 @@ void Raigeki_TerminateCharge(int client)
 void Raigeki_TerminateChargeFX(int client)
 {
 	StopSound(client, SNDCHAN_AUTO, SOUND_CHARGE_LOOP);
-	StopSound(client, SNDCHAN_AUTO, SOUND_CHARGE_LOOP_MAX);
+	StopSound(client, SNDCHAN_AUTO, SOUND_ELECTRICITY_LOOP);
 	TF2_RemoveCondition(client, TFCond_FocusBuff);
 	Raigeki_RemoveParticle(client);
 }
@@ -1051,7 +1141,6 @@ static int i_BladeStartEnt[MAXPLAYERS + 1] = { 0, ... };
 static int i_BladeEndEnt[MAXPLAYERS + 1] = { 0, ... };
 static int i_BladeBeamEnt[MAXPLAYERS + 1] = { 0, ... };
 static int i_BladeIntendedTarget[MAXPLAYERS + 1] = { -1, ... };
-static int i_BladeTier[MAXPLAYERS + 1] = { 0, ... };
 
 static float f_BladeRange[MAXPLAYERS + 1] = { 0.0, ... };
 static float f_BladeBaseDMG[MAXPLAYERS + 1] = { 0.0, ... };
@@ -1122,6 +1211,8 @@ void Raigeki_FireWave(int client, int weapon, int tier)
 	{
         i_BladeTier[client] = tier;
         i_RemainingBlades[client] = M1_NumBlades[tier];
+		if (b_Supercharged[client])
+			i_RemainingBlades[client] += Supercharge_ExtraBlades[tier];
 
 		Raigeki_StartDelayingAttacks(client, weapon);
 		Blade_StartSwing(client);
@@ -1150,6 +1241,14 @@ void Blade_ReadStats(int client, int tier)
     f_BladeBaseDMG[client] = M1_Damage[tier];
     f_BladeWidth[client] = M1_Width[tier];
     f_BladeInterval[client] = M1_Interval[tier];
+
+	if (b_Supercharged[client])
+	{
+		f_BladeBaseDMG[client] *= Supercharge_DMGMult[tier];
+		f_BladeInterval[client] /= Supercharge_SpeedMult[tier];
+		f_BladeRange[client] *= Supercharge_RangeMult[tier];
+		f_BladeWidth[client] *= Supercharge_WidthMult[tier];
+	}
 
     //Range scales with both projectile velocity *and* projectile lifespan modifiers.
     if (IsValidEntity(weapon))
@@ -1234,7 +1333,9 @@ void Blade_StartSwing(int client)
     f_BladeEndTime[client] = GetGameTime() + f_BladeInterval[client];
     f_BladeProgressPrevious[client] = 0.0;
 
-    EmitSoundToAll(SOUND_RAIGEKI_BLADE_SWEEP, client, _, _, _, 0.65, GetRandomInt(110, 140));
+    EmitSoundToAll(SOUND_RAIGEKI_BLADE_SWEEP, client, _, 120, _, _, GetRandomInt(80, 120));
+	if (b_Supercharged[client])
+		EmitSoundToAll(SOUND_SUPERCHARGED_SWING, client, _, 120, _, _, GetRandomInt(80, 120));
 
     for (int i = 0; i < 2049; i++)
     {
@@ -1322,7 +1423,10 @@ public void Blade_OnHit(int victim, int attacker)
     WorldSpaceCenter(victim, pos);
 
     int weapon = Raigeki_GetWeapon(attacker);
+	b_BladeHitting[attacker] = true;
     SDKHooks_TakeDamage(victim, attacker, attacker, dmg, DMG_PLASMA, (IsValidEntity(weapon) ? weapon : -1), force, pos, false, ZR_DAMAGE_LASER_NO_BLAST);
+	b_BladeHitting[attacker] = true;
+	Energy_Give(attacker, Energy_OnHit[i_BladeTier[attacker]], victim, i_BladeTier[attacker]);
 
     Raigeki_Hit[attacker][victim] = true;
     f_BladeDMG[attacker] *= f_BladeFalloff[attacker];
@@ -1831,3 +1935,28 @@ stock void RemoveAura(int target, char effect[255])
 	TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
 	TE_SendToAll();
 }*/
+
+public void Raigeki_HUD(int client, int weapon, bool forced)
+{
+	if(f_NextRaigekiHUD[client] < GetGameTime() || forced)
+	{
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+		if(weapon_holding == weapon)
+		{
+			char HUDText[255];
+
+			Format(HUDText, sizeof(HUDText), "Kinetic Energy: %iPCNTG%s", RoundToFloor(100.0 * (f_Energy[client] / 100.0)), f_Energy[client] >= 100.0 ? " (MAX)" : "");
+
+			if (b_Supercharged[client])
+				Format(HUDText, sizeof(HUDText), "SUPERCHARGED!\n%s", HUDText);
+			else if (b_ChargingRaigeki[client])
+				Format(HUDText, sizeof(HUDText), "CHARGING RAIGEKI: %iPCNTG%s\n%s", RoundToFloor(100.0 * (f_ChargeAmt[client] / f_ChargeRequirement[client])), f_ChargeAmt[client] >= f_ChargeRequirement[client] ? " (MAX)" : "", HUDText);
+
+			ReplaceString(HUDText, sizeof(HUDText), "PCNTG", "%%");
+			PrintHintText(client, HUDText);
+		}
+
+		f_NextRaigekiHUD[client] = GetGameTime() + 0.5;
+	}
+}

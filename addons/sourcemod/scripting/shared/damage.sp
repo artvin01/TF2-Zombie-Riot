@@ -890,7 +890,8 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_RAIGEKI:
 		{
-			Player_OnTakeDamage_Raigeki(victim, damage, attacker);
+			if(!CheckInHud())
+				Player_OnTakeDamage_Raigeki(victim, damage, attacker);
 		}
 		case WEAPON_YAKUZA:
 		{
@@ -1206,11 +1207,6 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			if(!CheckInHud())
 				Magnesis_OnNPCDamaged(victim, damage);
-		}
-		case WEAPON_RAIGEKI:
-		{
-			if(!CheckInHud())
-				Raigeki_OnNPCDamaged(victim, damage);
 		}
 		case WEAPON_WRATHFUL_BLADE:
 		{
