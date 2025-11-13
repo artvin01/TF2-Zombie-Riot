@@ -853,6 +853,7 @@ float fl_StopDodgeCD[MAXENTITIES];
 
 int i_GunMode[MAXENTITIES];
 int i_GunAmmo[MAXENTITIES];
+int i_GunAmmoMAX[MAXENTITIES];
 float f_NemesisImmuneToInfection[MAXENTITIES];
 float f_NemesisSpecialDeathAnimation[MAXENTITIES];
 float f_NemesisRandomInfectionCycle[MAXENTITIES];
