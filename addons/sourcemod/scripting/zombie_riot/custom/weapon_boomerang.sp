@@ -404,6 +404,8 @@ static void BoomerRangThrow(int client, int weapon, char[] modelstringname = WOO
 	time *= Attributes_Get(weapon, 101, 1.0);
 	time *= Attributes_Get(weapon, 102, 1.0);
 	float TimeReturnToplayer = time;
+	if(extraability == 1)
+		time *= 1.5;
 
 	time *= 5.0;
 	float fAng[3];
