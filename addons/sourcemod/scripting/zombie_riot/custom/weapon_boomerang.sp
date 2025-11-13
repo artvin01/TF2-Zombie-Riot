@@ -531,10 +531,13 @@ public Action Timer_ActivateHoming(Handle timer, any entid)
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		float fAng[3];
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", fAng);
+		float speed = 1.0;
+		speed *= Attributes_Get(weapon, 103, 1.0);
+		speed *= Attributes_Get(weapon, 104, 1.0);
 		Initiate_HomingProjectile(entity,
 		owner,
 			360.0,			// float lockonAngleMax,
-			20.0,				//float homingaSec,
+			20.0 * speed,				//float homingaSec,
 			true,				// bool LockOnlyOnce,
 			false,				// bool changeAngles,
 			fAng
