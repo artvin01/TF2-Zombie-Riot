@@ -1527,7 +1527,7 @@ stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflic
 			{
 				//no change for 0 and 1 players
 				case 0,1:
-					damage = damage;
+					damage *= 1.0;
 				case 2:
 					damage *= 1.15;
 				case 3:					
