@@ -1400,17 +1400,10 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 					vecTarget[0] += GetRandomFloat(-10.0, 10.0);
 					vecTarget[1] += GetRandomFloat(-10.0, 10.0);
 					vecTarget[2] += GetRandomFloat(-10.0, 10.0);
-					switch(GetRandomInt(1,2))
-					{
-						case 1:
-						{
-							projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1200.0, 150.0, "raygun_projectile_blue_crit", false);
-						}
-						case 2:
-						{
-							projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1200.0, 150.0, "raygun_projectile_red_crit", false);
-						}
-					}
+					if(i_RaidGrantExtra[npc.index] <= 2)
+						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1200.0, 150.0, "raygun_projectile_red_crit", false);
+					else
+						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1200.0, 150.0, "raygun_projectile_blue_crit", false);
 			
 					SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 					int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
