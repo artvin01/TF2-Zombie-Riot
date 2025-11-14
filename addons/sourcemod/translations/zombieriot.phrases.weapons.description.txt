@@ -794,13 +794,13 @@
 	
 	"Hammer Desc"
 	{
-		"en"	"-Massive Damage\n-Slow attackspeed\n(Due to this, easier to gib enemies)"
+		"en"	"-Massive Damage\n(Due to this, easier to gib enemies)\n-Slow attackspeed\n-Cleave hits upto 2 targets\nThis cleave deals 0.5x damage with each enemy aftewards"
 		"it"	"Attacca molto lentamente, ma infligge danni ingenti, per questo motivo, è più facile imbrogliare i nemici."
 	}
 	
 	"Hammer Pap 1"
 	{
-		"en"	"-Increased damage\n-Increased attackspeed"
+		"en"	"-Increased damage\n-Increased attackspeed\n-Cleave Hits 1 more target"
 		"fr"	"Dégats et cadence des attaques améliorés"
 		"ru"	"Увеличенный урон."
 		"chi"	"增加伤害和攻速"
@@ -826,7 +826,7 @@
 	
 	"Fire Axe Desc"
 	{
-		"en"	"-Deals 50％ more damage to burning enemies."
+		"en"	"-Deals 30％ more damage to burning enemies.\n-M2 ignites 5 enemies around you"
 		"fr"	"50％ plus de dégats contre les ennemis en feu."
 		"ru"	"Вы наносите на 50％ больше урона горящим врагам."
 		"chi"   "你对燃烧的敌人造成的伤害提高50％。"
@@ -834,7 +834,7 @@
 	}
 	"Fire Axe Pap 1"
 	{
-		"en"	"-Increased damage\n-Increased attackspeed"
+		"en"	"-Increased damage\n-Increased attackspeed\n-Ability has less cooldown"
 		"fr"	"Dégats et cadence des attaques améliorés"
 		"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
@@ -842,7 +842,7 @@
 	}
 	"Fire Axe Pap 2"
 	{
-		"en"	"-Increased damage\n-Increased attackspeed\n-M2 ignites 5 enemies around you\n-Burn damage bonus reduced to 20％"
+		"en"	"-Increased damage\n-Increased attackspeed\n-Abbility deals more damage\n-Burn damage bonus reduced to 20％"
 		"it"	"Aumento dei danni e della velocità d'attacco Con M2 puoi incendiare fino a 5 bersagli intorno a te.\nIl bonus ai danni da postcombustione è ora di 20％ invece di 50％."
 	}
 	"Fire Axe Pap 3"
@@ -1904,13 +1904,13 @@
 	
 	"Fusion Blade Desc"
 	{
-		"en"	"-Fast attacking melee.\n-Medium damage."
+		"en"	"-Fast attacking melee.\n-Medium damage.\n-On M2 Ability:\nCreate an aura that buffs allies and yourself with damage and resistance.\nStacks once with eachother."
 		"it"	"Lama di Expidonsan ad attacco rapido."
 	}
 	
 	"Fusion Blade Pap 1"
 	{
-		"en"	"-Increased Damage\n-M2 buffs your damage and resistance\n-Allies gain a weaker version\n-Stacks once with eachother."
+		"en"	"-Increased Damage\n-Ability has more range and lasts much longer, but has a slight increase in cooldown."
 		"it"	"M2 potenzia il tuo danno e un po' meno la resistenza di 15％, e gli alleati di 10％ questo si impila con 2 su ogni altro."
 	}
 	"Expidonsan Explorer Pap 1"
@@ -2219,7 +2219,7 @@
 	}
 	"Specter Pap 1"
 	{
-		"en"	"-Reduced Attackspeed\n-Hits two targets at once.\n-Damage Increased.\n-Faction changed to ''Seaborn''."
+		"en"	"-Reduced Attackspeed\n-Hits two targets at once.\n-Damage Increased.\n-Faction changed to ''Seaborn''.\n-Ability is removed in exchange for multi target."
 		"it"	"Attacca più lentamente ma colpisce due bersagli alla volta.\nDanno aumentato.\nFazione cambiata in Seaborn."
 	}
 	"Specter Pap 2a"
@@ -2483,14 +2483,14 @@
 	}
 	"Steel Dagger Desc"
 	{
-		"en"		"-Slow attacking Steel Dagger\n-provides overall resistances."
+		"en"		"-Slow attacking Steel Dagger\n-provides overall resistances.\n-M2 ability Heals allies over time with 'heal on kill' stat"
 		"fr"		"Un poignard en acier lent. Donne de la résistance."
 		"chi"		"低攻速，提供抗性。"
 		"it"		"Pugnale d'acciaio ad attacco lento, fornisce resistenze complessive."
 	}
 	"Steel Dagger Desc 1"
 	{
-		"en"		"-Increased resistances\n-Increased damage\n.-m2 ability Heals allies over time with 'heal on kill' statt\n-stun enemies around you on ability use.\n-You gain resistances and damage during ability usage\nDeal 35％ more damage against stunned enemies."
+		"en"		"-Increased resistances\n-Increased damage\n-stun enemies around you on ability use.\n-You gain resistances and damage during ability usage\nDeal 35％ more damage against stunned enemies."
 		"fr"		"Dégats et résistance améliorés. Appuyez sur M2 pour soigner vos alliés avec votre attribut santé par victime et étonner les ennemis proches.\nDégats et résistance améliorés pour la durée de l'abilité. +35％ dégats contre les ennemis étonnés."
 		"chi"		"更多抗性与伤害，M2激活能力，附近队友获得击杀治疗效果。激活时眩晕附近的敌人。\n使用时获得更高的抗性和伤害，对眩晕的敌人造成额外35％伤害。"
 		"it"		"aumenta le resistenze e i danni, guadagna la capacità di m2 di curare gli alleati nel tempo con la statt guarisci su uccisione, stordisce i nemici intorno a te durante l'uso dell'abilità.\nAumenta le resistenze e i danni durante l'uso dell'abilità, infliggi sempre 35％ danni in più contro i nemici storditi."
@@ -3681,14 +3681,10 @@
 	}
 	"Pinus Knight Desc"
 	{
-		"en"	"Fast attacking Melee with low damage."
+		"en"	"Fast attacking Melee with low damage.\n-M2 ability, when used allows you to dodge one melee hit (does not stack).\n-Generates money on ability use."
 		"it"	"Attacco rapido in mischia"
 	}
-	"Pinus Knight Pap 1"
-	{
-		"en"	"-Increased damage.\n-Adds an ability, when used allows you to dodge one melee hit (does not stack).\n-Generates money on ability use."
-		"it"	"Aumenta i danni.\nAggiunge un'abilità che, se usata, permette di schivare un colpo in mischia (non è cumulabile).\nGenera denaro con l'uso dell'abilità."
-	}
+
 	"Pinus Knight Pap 2"
 	{
 		"en"	"Increased damage.\nAbility now also grants 4 seconds of a 40％ (x0.5 vs Raids) chance to dodge melee attacks.\nDodging an attack makes the next melee hit deal double damage."
