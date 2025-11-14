@@ -132,7 +132,7 @@ void Raigeki_Precache()
 	PrecacheModel("materials/effects/repair_claw_trail_red.vmt");
 	PrecacheModel("materials/sprites/laser.vmt", false);
 
-    PrecacheSound(SOUND_RAIGEKI_BLADE_SWEEP, true);
+	PrecacheSound(SOUND_RAIGEKI_BLADE_SWEEP, true);
 	PrecacheSound(SOUND_CHARGE_LOOP, true);
 	PrecacheSound(SOUND_ELECTRICITY_LOOP, true);
 	PrecacheSound(SOUND_CHARGE_MAX_NOTIF, true);
@@ -251,12 +251,12 @@ public int Raigeki_GetWeapon(int client) { return EntRefToEntIndex(i_RaigekiWeap
 
 public bool Raigeki_IsHoldingCorrectWeapon(int client)
 {
-    int weapon = Raigeki_GetWeapon(client);
-    if (!IsValidEntity(weapon))
-        return false;
+	int weapon = Raigeki_GetWeapon(client);
+	if (!IsValidEntity(weapon))
+		return false;
 
-    int acWep = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-    return acWep == weapon;
+	int acWep = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	return acWep == weapon;
 }
 
 //Infinitely delays the weapon's next attack by extending m_flNextPrimaryAttack by delta time every frame.
@@ -300,48 +300,48 @@ public void Raigeki_DelayAttack(int id)
 
 	float gt = GetGameTime();
 	int weapon = Raigeki_GetWeapon(client);
-    if (IsValidEntity(weapon))
-    {
+	if (IsValidEntity(weapon))
+	{
 		float current = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack");
 		if (current < gt)
 			current = gt;
 
 		current += (gt - f_LastGT[client]);
 		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", current);
-    }
+	}
 
-    f_LastGT[client] = gt;
+	f_LastGT[client] = gt;
 	RequestFrame(Raigeki_DelayAttack, id);
 }
 
 public void Raigeki_Charge_0(int client, int weapon, bool &result, int slot)
 {
-    Raigeki_StartCharging(client, weapon, 0);
+	Raigeki_StartCharging(client, weapon, 0);
 }
 
 public void Raigeki_Charge_1(int client, int weapon, bool &result, int slot)
 {
-    Raigeki_StartCharging(client, weapon, 1);
+	Raigeki_StartCharging(client, weapon, 1);
 }
 
 public void Raigeki_Charge_2(int client, int weapon, bool &result, int slot)
 {
-    Raigeki_StartCharging(client, weapon, 2);
+	Raigeki_StartCharging(client, weapon, 2);
 }
 
 public void Raigeki_Charge_3(int client, int weapon, bool &result, int slot)
 {
-    Raigeki_StartCharging(client, weapon, 3);
+	Raigeki_StartCharging(client, weapon, 3);
 }
 
 public void Raigeki_Charge_4(int client, int weapon, bool &result, int slot)
 {
-    Raigeki_StartCharging(client, weapon, 4);
+	Raigeki_StartCharging(client, weapon, 4);
 }
 
 public void Raigeki_Charge_5(int client, int weapon, bool &result, int slot)
 {
-    Raigeki_StartCharging(client, weapon, 5);
+	Raigeki_StartCharging(client, weapon, 5);
 }
 
 static int i_ChargeMaxTargets[MAXPLAYERS + 1] = { 0, ... };
@@ -369,6 +369,9 @@ static float f_RaigekiStrikesAt[MAXPLAYERS + 1] = { 0.0, ... };
 
 void Raigeki_StartCharging(int client, int weapon, int tier)
 {
+	//this is a holding one, dont.
+	f_CooldownForAbilities[client][0] = FAR_FUTURE;
+	
 	//This should never be able to happen in-game, but just to be safe...
 	if (b_ChargingRaigeki[client] || b_Supercharged[client])
 		return;
@@ -435,17 +438,17 @@ void Raigeki_AttachParticle(int client, char[] particle)
 	}
 }
 
- public Action Raigeki_ParticleTransmit(int entity, int client)
- {
- 	SetEdictFlags(entity, GetEdictFlags(entity)&(~FL_EDICT_ALWAYS));
- 	
- 	int owner = GetClientOfUserId(i_RaigekiParticleOwner[entity]);
- 		
- 	if (client != owner || (client == owner && (GetEntProp(client, Prop_Send, "m_nForceTauntCam") || TF2_IsPlayerInCondition(client, TFCond_Taunting) || TF2_IsPlayerInCondition(client, TFCond_Dazed))))
- 		return Plugin_Continue;
- 		
- 	return Plugin_Handled;
- }
+public Action Raigeki_ParticleTransmit(int entity, int client)
+{
+	SetEdictFlags(entity, GetEdictFlags(entity)&(~FL_EDICT_ALWAYS));
+	
+	int owner = GetClientOfUserId(i_RaigekiParticleOwner[entity]);
+		
+	if (client != owner || (client == owner && (GetEntProp(client, Prop_Send, "m_nForceTauntCam") || TF2_IsPlayerInCondition(client, TFCond_Taunting) || TF2_IsPlayerInCondition(client, TFCond_Dazed))))
+		return Plugin_Continue;
+		
+	return Plugin_Handled;
+}
 
 //This returns true if the player is dead or downed.
 //If holdingM2 is set to true, it also returns true if the player is not holding M2, and doesn't have enough charge to cast Raigeki.
@@ -859,19 +862,19 @@ void Raigeki_DissipateBeam(int ref)
 	SetEntityRenderColor(beam, r, g, b, a);
 
 	float amplitude = GetEntPropFloat(beam, Prop_Data, "m_fAmplitude");
-    if (amplitude > 0.0)
-    {
-        amplitude = LerpCurve(amplitude, 0.0, 0.33, 0.66);
-        SetEntPropFloat(beam, Prop_Data, "m_fAmplitude", amplitude);
-    }
+	if (amplitude > 0.0)
+	{
+		amplitude = LerpCurve(amplitude, 0.0, 0.33, 0.66);
+		SetEntPropFloat(beam, Prop_Data, "m_fAmplitude", amplitude);
+	}
 
 	float width = GetEntPropFloat(beam, Prop_Data, "m_fWidth");
-    if (width > 0.0)
-    {
-        width = LerpCurve(amplitude, 0.0, 0.33, 0.66);
-        SetEntPropFloat(beam, Prop_Data, "m_fWidth", width);
-    	SetEntPropFloat(beam, Prop_Data, "m_fEndWidth", width);
-    }
+	if (width > 0.0)
+	{
+		width = LerpCurve(amplitude, 0.0, 0.33, 0.66);
+		SetEntPropFloat(beam, Prop_Data, "m_fWidth", width);
+		SetEntPropFloat(beam, Prop_Data, "m_fEndWidth", width);
+	}
 
 	RequestFrame(Raigeki_DissipateBeam, ref);
 }
@@ -1152,15 +1155,15 @@ void Raigeki_ReadStats(int client, int weapon, int tier)
 	float mult = 1.0;
 	//Radius scales with both projectile velocity *and* projectile lifespan modifiers.
 	if (IsValidEntity(weapon))
-    {
-        mult *= Attributes_Get(weapon, 103, 1.0);
-        mult *= Attributes_Get(weapon, 104, 1.0);
-        mult *= Attributes_Get(weapon, 475, 1.0);
-        mult *= Attributes_Get(weapon, 101, 1.0);
-        mult *= Attributes_Get(weapon, 102, 1.0);
-    }
-    if (i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
-        mult *= 1.2;
+	{
+		mult *= Attributes_Get(weapon, 103, 1.0);
+		mult *= Attributes_Get(weapon, 104, 1.0);
+		mult *= Attributes_Get(weapon, 475, 1.0);
+		mult *= Attributes_Get(weapon, 101, 1.0);
+		mult *= Attributes_Get(weapon, 102, 1.0);
+	}
+	if (i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
+		mult *= 1.2;
 
 	f_ChargeRadius[client] *= mult;
 	mult = 1.0;
@@ -1175,18 +1178,18 @@ void Raigeki_ReadStats(int client, int weapon, int tier)
 	f_ChargeMin[client] *= mult;
 	mult = 1.0;
 
-    //Damage scales with damage modifiers. Obviously.
+	//Damage scales with damage modifiers. Obviously.
 	if (IsValidEntity(weapon))
-        mult = Attributes_Get(weapon, 410, 1.0);
+		mult = Attributes_Get(weapon, 410, 1.0);
 
 	f_ChargeDMG[client] *= mult;
 	mult = 1.0;
 
-    //Charge interval (rate at which mana is consumed, charge is given, and Static Electricity deals damage) scales with attack rate modifiers:
+	//Charge interval (rate at which mana is consumed, charge is given, and Static Electricity deals damage) scales with attack rate modifiers:
 	if (IsValidEntity(weapon))
-        mult = Attributes_Get(weapon, 6, 1.0);
-    if (i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE)
-        mult *= 0.83;
+		mult = Attributes_Get(weapon, 6, 1.0);
+	if (i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE)
+		mult *= 0.83;
 
 	f_ChargeInterval[client] *= mult;
 	f_NextCharge[client] = GetGameTime() + f_ChargeInterval[client];
@@ -1194,32 +1197,32 @@ void Raigeki_ReadStats(int client, int weapon, int tier)
 
 public void Raigeki_Attack_0(int client, int weapon, bool &result, int slot)
 {
-    Raigeki_FireWave(client, weapon, 0);
+	Raigeki_FireWave(client, weapon, 0);
 }
 
 public void Raigeki_Attack_1(int client, int weapon, bool &result, int slot)
 {
-    Raigeki_FireWave(client, weapon, 1);
+	Raigeki_FireWave(client, weapon, 1);
 }
 
 public void Raigeki_Attack_2(int client, int weapon, bool &result, int slot)
 {
-    Raigeki_FireWave(client, weapon, 2);
+	Raigeki_FireWave(client, weapon, 2);
 }
 
 public void Raigeki_Attack_3(int client, int weapon, bool &result, int slot)
 {
-    Raigeki_FireWave(client, weapon, 3);
+	Raigeki_FireWave(client, weapon, 3);
 }
 
 public void Raigeki_Attack_4(int client, int weapon, bool &result, int slot)
 {
-    Raigeki_FireWave(client, weapon, 4);
+	Raigeki_FireWave(client, weapon, 4);
 }
 
 public void Raigeki_Attack_5(int client, int weapon, bool &result, int slot)
 {
-    Raigeki_FireWave(client, weapon, 5);
+	Raigeki_FireWave(client, weapon, 5);
 }
 
 static int i_RemainingBlades[MAXPLAYERS + 1] = { 0, ... };
@@ -1295,15 +1298,15 @@ void Raigeki_FireWave(int client, int weapon, int tier)
 
 	if(mana_cost <= Current_Mana[client])
 	{
-        i_BladeTier[client] = tier;
-        i_RemainingBlades[client] = M1_NumBlades[tier];
+		i_BladeTier[client] = tier;
+		i_RemainingBlades[client] = M1_NumBlades[tier];
 		if (b_Supercharged[client] && Energy_Enabled[tier])
 			i_RemainingBlades[client] += Supercharge_ExtraBlades[tier];
 
 		Raigeki_StartDelayingAttacks(client, weapon);
 		Blade_StartSwing(client);
-        
-        Utility_RemoveMana(client, mana_cost, (f_BladeInterval[client] * float(M1_NumBlades[tier])) + 1.25);
+		
+		Utility_RemoveMana(client, mana_cost, (f_BladeInterval[client] * float(M1_NumBlades[tier])) + 1.25);
 	}
 	else
 	{
@@ -1321,12 +1324,12 @@ public bool Blade_OnlyEnemies(int entity, int contentsMask, int user)
 
 void Blade_ReadStats(int client, int tier)
 {
-    int weapon = Raigeki_GetWeapon(client);
+	int weapon = Raigeki_GetWeapon(client);
 
-    f_BladeRange[client] = M1_Range[tier];
-    f_BladeBaseDMG[client] = M1_Damage[tier];
-    f_BladeWidth[client] = M1_Width[tier];
-    f_BladeInterval[client] = M1_Interval[tier];
+	f_BladeRange[client] = M1_Range[tier];
+	f_BladeBaseDMG[client] = M1_Damage[tier];
+	f_BladeWidth[client] = M1_Width[tier];
+	f_BladeInterval[client] = M1_Interval[tier];
 
 	if (b_Supercharged[client] && Energy_Enabled[tier])
 	{
@@ -1336,15 +1339,15 @@ void Blade_ReadStats(int client, int tier)
 		f_BladeWidth[client] *= Supercharge_WidthMult[tier];
 	}
 
-    //Range scales with both projectile velocity *and* projectile lifespan modifiers, but receives 40% less scaling from attributes because otherwise it snowballs WAY too quickly and gets insane BS range like 800 HU from just a couple buffs.
-    if (IsValidEntity(weapon))
-    {
-        f_BladeRange[client] *= Attributes_Get(weapon, 103, 1.0);
-        f_BladeRange[client] *= Attributes_Get(weapon, 104, 1.0);
-        f_BladeRange[client] *= Attributes_Get(weapon, 475, 1.0);
-        f_BladeRange[client] *= Attributes_Get(weapon, 101, 1.0);
-        f_BladeRange[client] *= Attributes_Get(weapon, 102, 1.0);
-    }
+	//Range scales with both projectile velocity *and* projectile lifespan modifiers, but receives 40% less scaling from attributes because otherwise it snowballs WAY too quickly and gets insane BS range like 800 HU from just a couple buffs.
+	if (IsValidEntity(weapon))
+	{
+		f_BladeRange[client] *= Attributes_Get(weapon, 103, 1.0);
+		f_BladeRange[client] *= Attributes_Get(weapon, 104, 1.0);
+		f_BladeRange[client] *= Attributes_Get(weapon, 475, 1.0);
+		f_BladeRange[client] *= Attributes_Get(weapon, 101, 1.0);
+		f_BladeRange[client] *= Attributes_Get(weapon, 102, 1.0);
+	}
 
 	float diff = f_BladeRange[client] - M1_Range[tier];
 	if (fabs(diff) > 0.0)
@@ -1352,34 +1355,34 @@ void Blade_ReadStats(int client, int tier)
 
 	//Beer gets full scaling, because otherwise there's really no point in using it.
 	if (i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
-        f_BladeRange[client] *= 1.2;
+		f_BladeRange[client] *= 1.2;
 
-    //Damage scales with damage modifiers. Obviously.
-    if (IsValidEntity(weapon))
-        f_BladeBaseDMG[client] *= Attributes_Get(weapon, 410, 1.0);
+	//Damage scales with damage modifiers. Obviously.
+	if (IsValidEntity(weapon))
+		f_BladeBaseDMG[client] *= Attributes_Get(weapon, 410, 1.0);
 
-    //Arc width scales with radius modifiers, but is capped to 360.0.
-    if (IsValidEntity(weapon))
-    {
-        f_BladeWidth[client] *= Attributes_Get(weapon, 103, 1.0);
-        f_BladeWidth[client] *= Attributes_Get(weapon, 104, 1.0);
-        f_BladeWidth[client] *= Attributes_Get(weapon, 475, 1.0);
-        f_BladeWidth[client] *= Attributes_Get(weapon, 101, 1.0);
-        f_BladeWidth[client] *= Attributes_Get(weapon, 102, 1.0);
-    }
-    if (f_BladeWidth[client] > 360.0)
-        f_BladeWidth[client] = 360.0;
+	//Arc width scales with radius modifiers, but is capped to 360.0.
+	if (IsValidEntity(weapon))
+	{
+		f_BladeWidth[client] *= Attributes_Get(weapon, 103, 1.0);
+		f_BladeWidth[client] *= Attributes_Get(weapon, 104, 1.0);
+		f_BladeWidth[client] *= Attributes_Get(weapon, 475, 1.0);
+		f_BladeWidth[client] *= Attributes_Get(weapon, 101, 1.0);
+		f_BladeWidth[client] *= Attributes_Get(weapon, 102, 1.0);
+	}
+	if (f_BladeWidth[client] > 360.0)
+		f_BladeWidth[client] = 360.0;
 
-    //Sweep speed scales with attack rate modifiers, but for optimization purposes, can NEVER go below 0.15.
-    if (IsValidEntity(weapon))
-        f_BladeInterval[client] *= Attributes_Get(weapon, 6, 1.0);
-    if (i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE)
-        f_BladeInterval[client] *= 0.83;
-    if (f_BladeInterval[client] < 0.15)
-        f_BladeInterval[client] = 0.15;
+	//Sweep speed scales with attack rate modifiers, but for optimization purposes, can NEVER go below 0.15.
+	if (IsValidEntity(weapon))
+		f_BladeInterval[client] *= Attributes_Get(weapon, 6, 1.0);
+	if (i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE)
+		f_BladeInterval[client] *= 0.83;
+	if (f_BladeInterval[client] < 0.15)
+		f_BladeInterval[client] = 0.15;
 
-    f_BladeDMG[client] = f_BladeBaseDMG[client];
-    f_BladeFalloff[client] = M1_Falloff[tier];
+	f_BladeDMG[client] = f_BladeBaseDMG[client];
+	f_BladeFalloff[client] = M1_Falloff[tier];
 }
 
 void Blade_StartSwing(int client)
@@ -1388,51 +1391,51 @@ void Blade_StartSwing(int client)
 		return;
 
 	Blade_ReadStats(client, i_BladeTier[client]);
-    
-    float ang[3], pos[3];
-    GetClientEyePosition(client, pos);
-    GetClientEyeAngles(client, ang);
+	
+	float ang[3], pos[3];
+	GetClientEyePosition(client, pos);
+	GetClientEyeAngles(client, ang);
 
 	b_LagCompNPC_ExtendBoundingBox = true;
 	StartLagCompensation_Base_Boss(client);
 
 	Handle trace = TR_TraceRayFilterEx(pos, ang, MASK_SHOT, RayType_Infinite, Blade_OnlyEnemies, client);
-    if (TR_DidHit(trace))
-    {
-        int targ = TR_GetEntityIndex(trace);
-        if (IsValidEnemy(targ, client))
-            i_BladeIntendedTarget[client] = EntIndexToEntRef(targ);
-    }
-    delete trace;
+	if (TR_DidHit(trace))
+	{
+		int targ = TR_GetEntityIndex(trace);
+		if (IsValidEnemy(targ, client))
+			i_BladeIntendedTarget[client] = EntIndexToEntRef(targ);
+	}
+	delete trace;
 
 	FinishLagCompensation_Base_boss();
 
 	if (ang[0] > 60.0)
-        ang[0] = 60.0;
-    if (ang[0] < -60.0)
-        ang[0] = -60.0;
+		ang[0] = 60.0;
+	if (ang[0] < -60.0)
+		ang[0] = -60.0;
 
-    float startAng = ang[1] + (f_BladeWidth[client] * 0.5);
-    float targAng = ang[1] - (f_BladeWidth[client] * 0.5);
+	float startAng = ang[1] + (f_BladeWidth[client] * 0.5);
+	float targAng = ang[1] - (f_BladeWidth[client] * 0.5);
 
-    for (int i = 0; i < 3; i++)
-        vec_BladeSwingAng[client][i] = ang[i];
+	for (int i = 0; i < 3; i++)
+		vec_BladeSwingAng[client][i] = ang[i];
 
-    f_BladeStartAng[client] = startAng;
-    f_BladeTargAng[client] = targAng;
+	f_BladeStartAng[client] = startAng;
+	f_BladeTargAng[client] = targAng;
 
-    f_BladeStartTime[client] = GetGameTime();
-    f_BladeEndTime[client] = GetGameTime() + f_BladeInterval[client];
-    f_BladeProgressPrevious[client] = 0.0;
+	f_BladeStartTime[client] = GetGameTime();
+	f_BladeEndTime[client] = GetGameTime() + f_BladeInterval[client];
+	f_BladeProgressPrevious[client] = 0.0;
 
-    EmitSoundToAll(SOUND_RAIGEKI_BLADE_SWEEP, client, _, 120, _, _, GetRandomInt(80, 120));
+	EmitSoundToAll(SOUND_RAIGEKI_BLADE_SWEEP, client, _, 120, _, _, GetRandomInt(80, 120));
 	if (b_Supercharged[client])
 		EmitSoundToAll(SOUND_SUPERCHARGED_SWING, client, _, 120, _, _, GetRandomInt(80, 120));
 
-    for (int i = 0; i < 2049; i++)
-    {
-        Raigeki_Hit[client][i] = false;
-    }
+	for (int i = 0; i < 2049; i++)
+	{
+		Raigeki_Hit[client][i] = false;
+	}
 
 	RequestFrame(Blade_Sweep, GetClientUserId(client));
 }
@@ -1445,15 +1448,15 @@ public void Blade_Sweep(int id)
 	if (!IsValidMulti(client) || gt >= f_BladeEndTime[client])
 	{
 		if (IsValidClient(client))
-        {
+		{
 			Blade_DeleteBeam(client);
 
 			i_RemainingBlades[client]--;
-            if (i_RemainingBlades[client] > 0 && Raigeki_IsHoldingCorrectWeapon(client))
-                Blade_StartSwing(client);
+			if (i_RemainingBlades[client] > 0 && Raigeki_IsHoldingCorrectWeapon(client))
+				Blade_StartSwing(client);
 			else
 				Raigeki_StopDelayingAttacks(client);
-        }
+		}
 
 		return;
 	}
@@ -1476,16 +1479,16 @@ public void Blade_Sweep(int id)
 	//To "fix" this, we just run a bunch of extra traces between the beam's previous and current points.
 	float diff = f_BladeProgress[client] - f_BladeProgressPrevious[client];
 	if (diff > 0.02)
-    {
-        for (float i = 0.02; i <= diff; i += 0.02)
-        {
-            float diffAng[3];
-            diffAng = ang;
-            diffAng[1] = f_BladeStartAng[client] + ((f_BladeProgress[client] - i) * totalMove);
+	{
+		for (float i = 0.02; i <= diff; i += 0.02)
+		{
+			float diffAng[3];
+			diffAng = ang;
+			diffAng[1] = f_BladeStartAng[client] + ((f_BladeProgress[client] - i) * totalMove);
 
-            Utility_FireLaser(client, eyePos, diffAng, 0.0, f_BladeRange[client], 0.0, DMG_GENERIC, _, _, Blade_OnHit, _, Blade_OnlyThoseNotHit);
-        }
-    }
+			Utility_FireLaser(client, eyePos, diffAng, 0.0, f_BladeRange[client], 0.0, DMG_GENERIC, _, _, Blade_OnHit, _, Blade_OnlyThoseNotHit);
+		}
+	}
 
 	Utility_FireLaser(client, eyePos, ang, 0.0, f_BladeRange[client], 0.0, DMG_GENERIC, _, _, Blade_OnHit, Blade_MoveBeam, Blade_OnlyThoseNotHit);
 
@@ -1496,32 +1499,32 @@ public void Blade_Sweep(int id)
 
 public void Blade_OnHit(int victim, int attacker)
 {
-    if (Raigeki_Hit[attacker][victim] || !Can_I_See_Enemy_Only(attacker, victim))
-        return;
+	if (Raigeki_Hit[attacker][victim] || !Can_I_See_Enemy_Only(attacker, victim))
+		return;
 
-    float dmg = f_BladeDMG[attacker];
-    if (victim == EntRefToEntIndex(i_BladeIntendedTarget[attacker]))
-    {
-        dmg = f_BladeBaseDMG[attacker];
-    }
+	float dmg = f_BladeDMG[attacker];
+	if (victim == EntRefToEntIndex(i_BladeIntendedTarget[attacker]))
+	{
+		dmg = f_BladeBaseDMG[attacker];
+	}
 
-    float force[3], pos[3], forceAng[3];
+	float force[3], pos[3], forceAng[3];
 
-    for (int i = 0; i < 3; i++)
-	    forceAng[i] = vec_BladeSwingAng[attacker][i];
+	for (int i = 0; i < 3; i++)
+		forceAng[i] = vec_BladeSwingAng[attacker][i];
 	forceAng[1] = f_BladeStartAng[attacker] + ((f_BladeProgress[attacker]) * (f_BladeTargAng[attacker] - f_BladeStartAng[attacker]));
-    
+	
 	CalculateDamageForce(forceAng, 10000.0, force);
-    WorldSpaceCenter(victim, pos);
+	WorldSpaceCenter(victim, pos);
 
-    int weapon = Raigeki_GetWeapon(attacker);
+	int weapon = Raigeki_GetWeapon(attacker);
 	b_BladeHitting[attacker] = true;
-    SDKHooks_TakeDamage(victim, attacker, attacker, dmg, DMG_PLASMA, (IsValidEntity(weapon) ? weapon : -1), force, pos, false, ZR_DAMAGE_LASER_NO_BLAST);
+	SDKHooks_TakeDamage(victim, attacker, attacker, dmg, DMG_PLASMA, (IsValidEntity(weapon) ? weapon : -1), force, pos, false, ZR_DAMAGE_LASER_NO_BLAST);
 	b_BladeHitting[attacker] = true;
 	Energy_Give(attacker, Energy_OnHit[i_BladeTier[attacker]], victim, i_BladeTier[attacker]);
 
-    Raigeki_Hit[attacker][victim] = true;
-    f_BladeDMG[attacker] *= f_BladeFalloff[attacker];
+	Raigeki_Hit[attacker][victim] = true;
+	f_BladeDMG[attacker] *= f_BladeFalloff[attacker];
 }
 
 public bool Blade_OnlyThoseNotHit(int victim, int attacker) { return !Raigeki_Hit[attacker][victim]; }
@@ -1591,8 +1594,8 @@ public void Blade_MoveBeam(int client, float startPos[3], float endPos[3], float
 				GetPointInDirection(endPos, ang, float(i) * 75.0, trailPos);
 
 				trailPos[0] += GetRandomFloat(-5.0, 5.0);
-               	trailPos[1] += GetRandomFloat(-5.0, 5.0);
-                trailPos[2] += GetRandomFloat(-12.0, 12.0);
+				trailPos[1] += GetRandomFloat(-5.0, 5.0);
+				trailPos[2] += GetRandomFloat(-12.0, 12.0);
 
 				TeleportEntity(trail, trailPos);
 
@@ -1685,7 +1688,7 @@ stock void Utility_FireLaser(int client, float startPos[3], float ang[3], float 
 			}
 
 			if (damage > 0.0)
-			    SDKHooks_TakeDamage(target, IsValidEntity(inflictor) ? inflictor : client, client, damage, damagetype, IsValidEntity(weapon) ? weapon : -1);
+				SDKHooks_TakeDamage(target, IsValidEntity(inflictor) ? inflictor : client, client, damage, damagetype, IsValidEntity(weapon) ? weapon : -1);
 
 			if (onHitFunc != INVALID_FUNCTION)
 			{
@@ -1788,20 +1791,20 @@ stock void ShrinkTrailIntoNothing(int trail, float rate)
 	DataPack pack = new DataPack();
 	RequestFrame(Shrink_Trail, pack);
 	WritePackCell(pack, EntIndexToEntRef(trail));
-    WritePackFloat(pack, rate);
+	WritePackFloat(pack, rate);
 }
 
 stock void Shrink_Trail(DataPack pack)
 {
-    ResetPack(pack);
+	ResetPack(pack);
 	int entity = EntRefToEntIndex(ReadPackCell(pack));
 	float rate = ReadPackFloat(pack);
 
 	if (!IsValidEntity(entity))
-    {
-        delete pack;
+	{
+		delete pack;
 		return;
-    }
+	}
 	
 	float width = GetEntPropFloat(entity, Prop_Data, "m_flStartWidth");
 	width -= rate;
@@ -1824,22 +1827,22 @@ stock void MakeEntityFadeOut(int entity, int rate, bool remove = true)
 	DataPack pack = new DataPack();
 	RequestFrame(Fade_Out, pack);
 	WritePackCell(pack, EntIndexToEntRef(entity));
-    WritePackCell(pack, rate);
-    WritePackCell(pack, remove);
+	WritePackCell(pack, rate);
+	WritePackCell(pack, remove);
 }
 
 stock void Fade_Out(DataPack pack)
 {
-    ResetPack(pack);
+	ResetPack(pack);
 	int entity = EntRefToEntIndex(ReadPackCell(pack));
 	int rate = ReadPackCell(pack);
-    bool remove = ReadPackCell(pack);
+	bool remove = ReadPackCell(pack);
 	
 	if (!IsValidEntity(entity))
-    {
-        delete pack;
+	{
+		delete pack;
 		return;
-    }
+	}
 	
 	int r, g, b, a;
 	GetEntityRenderColor(entity, r, g, b, a);
@@ -1973,7 +1976,7 @@ stock int CreateEnvBeam(int startEnt, int endEnt, float startPos[3] = NULL_VECTO
 
 public void Utility_RemoveMana(int client, int amount, float regenDelay)
 {
-    Current_Mana[client] -= amount;
+	Current_Mana[client] -= amount;
 
 	SDKhooks_SetManaRegenDelayTime(client, regenDelay);
 	Mana_Hud_Delay[client] = 0.0;

@@ -743,7 +743,7 @@ void Music_Update(int client)
 			Give_Cond_Timer[client] = GetGameTime() + 1.0;
 		}
 	}
-	if(LastMann)
+	if(LastMann && !b_IsAloneOnServer)
 	{
 		if(Give_Cond_Timer[client] < GetGameTime())
 		{
