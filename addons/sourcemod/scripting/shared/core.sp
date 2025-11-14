@@ -1923,7 +1923,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 #if defined ZR
 		b_IgnoreWarningForReloadBuidling[client] = false;
 #endif
-		f_CooldownForAbilities[client][0] = GetGameTime() + 1.0;
+		f_CooldownForAbilities[client][0] = GetGameTime() + 0.5;
 		// force wait 1 second so it isnt activated automatically
 
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -2044,7 +2044,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				return Plugin_Continue;
 		}
 
-		f_CooldownForAbilities[client][1] = GetGameTime() + 1.0;
+		f_CooldownForAbilities[client][1] = GetGameTime() + 0.5;
 		// force wait 1 second so it isnt activated automatically
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding != -1)
