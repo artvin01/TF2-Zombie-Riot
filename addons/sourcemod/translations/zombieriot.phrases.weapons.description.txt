@@ -2606,12 +2606,12 @@
 	}
 	"Sensal Scythe Wep Desc"
 	{
-		"en"	"-Slow attacking scythe.\n-High damage."
+		"en"	"-Slow attacking scythe.\n-High damage.\n-Gain the ability to shoot projetiles with R, they home onto targets.\n-they will focus the target you look at when using this ability\n-Charges with melee hits"
 		"it"	"Falce d'attacco lenta."
 	}
 	"Sensal Desc 1"
 	{
-		"en"	"-Increased damage\n-Gain the ability to shoot projetiles with R, they home onto targets.\n-they will focus the target you look at when using this ability.\n-Charges with melee hits"
+		"en"	"-Increased damage\n-Ability Improved, shoots 1 more scythe."
 		"it"	"Danni aumentati Guadagna la capacità di sparare proiettili con R, che si concentrano sui bersagli.\nSi concentra il bersaglio che si guarda quando si usa questa abilità.\nCarica con colpi in mischia"
 	}
 	"Sensal Desc 2"
