@@ -4581,7 +4581,10 @@
 		"en"	"Fat HHH"
 		"it"	"HHH grasso"
 	}
-	"Iberia
+	"Iberia & Expi Desc"
+	{
+	  "en" "Iberia and expidonsa offer training to help against the true final battle against the void... But our main trainer, and her partner aren't here to train us."
+	}
 	"Iberia & Nemal"
 	{
 		"en" "Iberia & Nemal"
@@ -4796,6 +4799,9 @@
 		"en"	"Crowbar"
 		"it"	"Piede di porco"
 	}
+	"Victoria Survival Desc"
+	{
+	  "en"  "
 	"Victoria Raid Desc"
 	{
 		"en" 	"(11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
