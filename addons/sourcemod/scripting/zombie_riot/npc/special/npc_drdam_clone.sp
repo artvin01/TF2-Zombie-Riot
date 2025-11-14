@@ -19,10 +19,18 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/ubersaw_hit3.wav",
 	"weapons/ubersaw_hit4.wav",
 };
+static const char g_ChargeExplode[][] = {
+	"weapons/loose_cannon_charge.wav",
+};
+static const char g_ExplodeMe[][] = {
+	"weapons/sentry_explode.wav",
+};
 
 
 void DrDamClone_OnMapStart_NPC()
 {
+	for (int i = 0; i < (sizeof(g_ChargeExplode));	   i++) { PrecacheSound(g_ChargeExplode[i]);	   }
+	for (int i = 0; i < (sizeof(g_ExplodeMe));	   i++) { PrecacheSound(g_ExplodeMe[i]);	   }
 	for (int i = 0; i < (sizeof(g_DefaultMedic_DeathSounds));	   i++) { PrecacheSound(g_DefaultMedic_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_DefaultMedic_HurtSounds));		i++) { PrecacheSound(g_DefaultMedic_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
@@ -47,6 +55,11 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 
 methodmap DrDamClone < CClotBody
 {
+	property float m_flDetonateTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -68,6 +81,14 @@ methodmap DrDamClone < CClotBody
 		
 	}
 	
+	public void PlayChargeSound() 
+	{
+		EmitSoundToAll(g_ChargeExplode[GetRandomInt(0, sizeof(g_ChargeExplode) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, 170);
+	}
+	public void PlayBoomSound() 
+	{
+		EmitSoundToAll(g_ExplodeMe[GetRandomInt(0, sizeof(g_ExplodeMe) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+	}
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -98,6 +119,7 @@ methodmap DrDamClone < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
+		npc.m_iOverlordComboAttack = 255;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -122,6 +144,7 @@ methodmap DrDamClone < CClotBody
 		wave *= 0.133333;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
+		npc.m_bDissapearOnDeath = true;
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_uberneedle/c_uberneedle.mdl");
 		
@@ -137,6 +160,7 @@ methodmap DrDamClone < CClotBody
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		NpcColourCosmetic_ViaPaint(npc.m_iWearable3, 3342130);
 		NpcColourCosmetic_ViaPaint(npc.m_iWearable5, 3342130);
+		b_NpcUnableToDie[npc.index] = true;
 		
 		return npc;
 	}
@@ -152,6 +176,50 @@ public void DrDamClone_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
+	if(npc.m_flDetonateTime)
+	{
+		npc.m_iOverlordComboAttack -= 2;
+		if(npc.m_iOverlordComboAttack < 0)
+			npc.m_iOverlordComboAttack = 0;
+		if(IsValidEntity(npc.m_iWearable1))
+			RemoveEntity(npc.m_iWearable1);
+		if(IsValidEntity(npc.m_iWearable2))
+			SetEntityRenderColor(npc.m_iWearable2, 255, npc.m_iOverlordComboAttack, npc.m_iOverlordComboAttack, 255);
+		if(IsValidEntity(npc.m_iWearable3))
+			SetEntityRenderColor(npc.m_iWearable3, 255, npc.m_iOverlordComboAttack, npc.m_iOverlordComboAttack, 255);
+		if(IsValidEntity(npc.m_iWearable4))
+			SetEntityRenderColor(npc.m_iWearable4, 255, npc.m_iOverlordComboAttack, npc.m_iOverlordComboAttack, 255);
+		if(IsValidEntity(npc.m_iWearable5))
+			SetEntityRenderColor(npc.m_iWearable5, 255, npc.m_iOverlordComboAttack, npc.m_iOverlordComboAttack, 255);
+
+		SetEntityRenderColor(npc.index, 255, npc.m_iOverlordComboAttack, npc.m_iOverlordComboAttack, 255);
+		if(npc.m_flDetonateTime < GetGameTime(npc.index))
+		{
+			b_ThisEntityIgnored[npc.index] = false;
+			npc.PlayBoomSound();
+			float damage = 50.0;
+			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_CLUB_DAMAGE;
+			float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
+			Explode_Logic_Custom(damage * npc.m_flWaveScale,
+			npc.index,
+			npc.index,
+			-1,
+			_,
+			70.0,
+			_,
+			_,
+			true,
+			99,
+			false,
+			3.0,
+			_);
+
+			SmiteNpcToDeath(npc.index);
+			TE_Particle("ExplosionCore_MidAir", npc_vec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0); //particle that spawns after his death
+			npc.m_flDetonateTime = 0.0;
+		}
+		return;
+	}
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -235,17 +303,36 @@ public Action DrDamClone_OnTakeDamage(int victim, int &attacker, int &inflictor,
 	}
 	//each HIT gives more. 
 	
+
+	//DETONATE!!!!!!!!
+	if(!npc.m_flDetonateTime && RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+	{
+		npc.PlayChargeSound();
+		npc.m_flDetonateTime = GetGameTime(npc.index) + 1.5;
+		ApplyStatusEffect(npc.index, npc.index, "Intangible", 999999.0);
+		f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE;
+		b_ThisEntityIgnoredBeingCarried[npc.index] = true;
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+		b_DoNotUnStuck[npc.index] = true;
+		b_ThisEntityIgnored[npc.index] = true;
+		SetEntityCollisionGroup(npc.index, 1);
+		npc.StopPathing();
+		npc.m_bisWalking = false;
+		npc.SetActivity("ACT_DIEVIOLENT");
+		npc.m_flSpeed = 0.0;
+	}
 	return Plugin_Changed;
 }
 
 public void DrDamClone_NPCDeath(int entity)
 {
 	DrDamClone npc = view_as<DrDamClone>(entity);
+	/*
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-		
+	*/	
 	
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);

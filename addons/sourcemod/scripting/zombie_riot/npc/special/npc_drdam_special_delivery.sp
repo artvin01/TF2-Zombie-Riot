@@ -1,9 +1,11 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+/*
 static const char g_DeathSounds[][] = {
 	"ui/killsound_squasher.wav",
 };
+*/
 static const char g_HurtSounds[][] = {
 	"physics/metal/metal_box_impact_bullet1.wav",
 };
@@ -21,7 +23,7 @@ static const char g_DeployedDams[][] = {
 #define TANKMODEL_DRDAM "models/bots/tw2/boss_bot/boss_tank.mdl"
 void DrDamSpecialDelivery_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
+//	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_DeployDams));	   i++) { PrecacheSound(g_DeployDams[i]);	   }
 	for (int i = 0; i < (sizeof(g_LoudHornSound));	   i++) { PrecacheSound(g_LoudHornSound[i]);	   }
 	for (int i = 0; i < (sizeof(g_DeployedDams));	   i++) { PrecacheSound(g_DeployedDams[i]);	   }
@@ -84,7 +86,7 @@ methodmap DrDamSpecialDelivery < CClotBody
 			
 		this.m_flLoudMVMSound = GetGameTime(this.index) + 8.0;
 		
-		EmitSoundToAll(g_LoudHornSound[GetRandomInt(0, sizeof(g_LoudHornSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.7);
+		EmitSoundToAll(g_LoudHornSound[GetRandomInt(0, sizeof(g_LoudHornSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.6);
 		
 	}
 	
@@ -92,7 +94,7 @@ methodmap DrDamSpecialDelivery < CClotBody
 	{
 		if(loopPlay)
 		{
-			EmitSoundToAll(TANK_SOUND_LOOP, this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.7);
+			EmitSoundToAll(TANK_SOUND_LOOP, this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.6);
 		}
 		else
 		{
@@ -107,10 +109,12 @@ methodmap DrDamSpecialDelivery < CClotBody
 	{
 		EmitSoundToAll(g_DeployedDams[GetRandomInt(0, sizeof(g_DeployedDams) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, 200);
 	}
+	/*
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 50);
 	}
+	*/
 
 	
 	public DrDamSpecialDelivery(float vecPos[3], float vecAng[3], int ally)
@@ -142,7 +146,6 @@ methodmap DrDamSpecialDelivery < CClotBody
 		f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE;
 		b_ThisEntityIgnoredBeingCarried[npc.index] = true;
 		//prevent stucking or blocking at all times. 
-		b_ThisEntityIgnoredBeingCarried[npc.index] = true;
 		npc.m_flDeployTheDams = GetGameTime() + 25.0;
 		npc.m_flRoamCooldown = GetGameTime() + 1.0;
 		TeleportDiversioToRandLocation(npc.index);
@@ -178,7 +181,6 @@ public void DrDamSpecialDelivery_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
-	npc.PlayHornSound();
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
@@ -193,13 +195,21 @@ public void DrDamSpecialDelivery_ClotThink(int iNPC)
 		int PlayerCountSpawn = CountPlayersOnRed();
 
 		PlayerCountSpawn *= 2;
-		PlayerCountSpawn = 24; //testing
 
 		if(PlayerCountSpawn >= 30)
 			PlayerCountSpawn = 30;
 		if(PlayerCountSpawn <= 3)
 			PlayerCountSpawn = 3;
 		//never less then 3
+		float pos1[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
+		TE_Particle("grenade_smoke_cycle", pos1, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		pos1[2] += 20.0;
+		TE_Particle("grenade_smoke_cycle", pos1, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		pos1[2] += 20.0;
+		TE_Particle("grenade_smoke_cycle", pos1, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		pos1[2] += 20.0;
+		TE_Particle("grenade_smoke_cycle", pos1, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+
 		for(int loop=1; loop<=(PlayerCountSpawn); loop++)
 		{
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -235,14 +245,10 @@ public void DrDamSpecialDelivery_ClotThink(int iNPC)
 		npc.StopPathing();
 		return;
 	}
+	npc.PlayHornSound();
 	if(DrDamSpecialDelivery_Roam(npc, GetGameTime(npc.index)))
 	{
 		return;
-	}
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 }
@@ -266,7 +272,7 @@ public Action DrDamSpecialDelivery_OnTakeDamage(int victim, int &attacker, int &
 public void DrDamSpecialDelivery_NPCDeath(int entity)
 {
 	DrDamSpecialDelivery npc = view_as<DrDamSpecialDelivery>(entity);
-	npc.PlayDeathSound();	
+//	npc.PlayDeathSound();	
 
 	npc.PlayLoopSound(false);
 	if(IsValidEntity(npc.m_iWearable5))
