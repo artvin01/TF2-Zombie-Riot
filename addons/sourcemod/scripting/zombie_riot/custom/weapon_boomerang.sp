@@ -308,6 +308,7 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 				true, 
 				ang, 
 				EnemyFound);
+				TriggerTimerHoming(entity);
 				SetEntityMoveType(entity, MOVETYPE_NOCLIP);
 				//make it phase through everything to get to its owner.
 			}
@@ -522,6 +523,7 @@ public Action Timer_ReturnToOwner(Handle timer, any entid)
 	true, 
 	ang, 
 	owner);
+	TriggerTimerHoming(entity);
 	return Plugin_Stop;
 }
 
@@ -547,6 +549,7 @@ public Action Timer_ActivateHoming(Handle timer, any entid)
 			false,				// bool changeAngles,
 			fAng
 			);	
+		TriggerTimerHoming(entity);
 	}
 	return Plugin_Stop;
 }
