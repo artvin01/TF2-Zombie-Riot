@@ -4104,7 +4104,7 @@
 	}
 	"Alternative Desc"
 	{
-		"en"	"Fight with a new twist on the classic with magical new enemies!"
+		"en"	"Blitz sends his army to attack you. Blitz itself does not see you worthy enough to fight it."
 		"fr"	"Une tournure sur le mode classique aves des nouveaux ennemis mystérieux!"
 		"chi"	"经典模式，但出现了掌握魔法的心敌人…"
 		"it"	"Combatti con una nuova versione del classico con nuovi nemici magici!"
@@ -4182,7 +4182,7 @@
 	}
 	"Interitus Desc"
 	{
-		"en"	"Lore order: (7) Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
+		"en"	"A group made up of many cities, all afflicted with Chaos."
 		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
 		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 		"it"	"Ordine Lore: (7) Il caos ha afflitto molte città, il suo gruppo è pronto a servire voi giusti. Preparatevi."
@@ -4206,14 +4206,14 @@
 	}
 	"Void Desc"
 	{
-		"en"	"Help Kahmlstein agains the void!"
+		"en"	"Creatures from a different dimension. They are here to take over ours"
 		"fr"	"Aidez Kahmlstein contre le Void!"
 		"chi"	"帮卡姆斯坦因击退深渊！"
 		"it"	"Aiuta Kahmlstein contro il vuoto!"
 	}
 	"Unspeakable Raid Desc"
 	{
-		"en"	"Lore order: (9) Directly after you release the void in rogue2..."
+		"en"	"Lore order: (9) Directly after you release the void in rogue2. Help Kahmlstein agains the void!"
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
 		"chi"	"深渊已被释放。"
 		"it"	"Ordine Lore: (9) Subito dopo aver liberato il vuoto in rogue2..."
@@ -4581,6 +4581,7 @@
 		"en"	"Fat HHH"
 		"it"	"HHH grasso"
 	}
+	"Iberia
 	"Iberia & Nemal"
 	{
 		"en" "Iberia & Nemal"
