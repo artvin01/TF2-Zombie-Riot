@@ -16,7 +16,7 @@ static float Energy_OnHit[6] = { 0.5, 0.65, 0.8, 1.0, 2.0, 0.5 };						//Kinetic
 static float Energy_OnKill[6] = { 1.0, 1.5, 2.0, 2.5, 5.0, 1.25 };						//Kinetic Energy given for every enemy killed by the primary attack.
 static float Energy_OnHit_Raigeki[6] = { 5.0, 6.0, 7.0, 8.0, 16.0, 4.0 };				//Kinetic Energy given for every enemy hit by Raigeki (the big thunderbolt).
 static float Energy_OnKill_Raigeki[6] = { 10.0, 15.0, 20.0, 25.0, 50.0, 12.5 };			//Kinetic Energy given for every enemy killed by Raigeki (the big thunderbolt).
-static float Energy_OnHurt[6] = { 1.0, 1.25, 1.5, 1.75, 3.5, 0.875 };					//Kinetic Energy given every time the user is hurt while charging Raigeki.
+static float Energy_OnHurt[6] = { 1.5, 1.75, 2.0, 3.25, 3.5, 0.875 };					//Kinetic Energy given every time the user is hurt while charging Raigeki.
 static float Energy_FromBossesMult[6] = { 1.5, 1.5, 1.5, 1.5, 2.0, 1.5 };				//Amount to multiply all Kinetic Energy gained from interactions with bosses.
 static float Energy_FromRaidsMult[6] = { 2.5, 2.5, 2.5, 2.5, 3.5, 2.5 };				//Amount to multiply all Kinetic Energy gained from interactions with raids.
 
