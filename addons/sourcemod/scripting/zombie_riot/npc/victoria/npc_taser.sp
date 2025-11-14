@@ -85,11 +85,6 @@ methodmap VictoriaTaser < CClotBody
 		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_AUTO, 60, _, 0.5, 80);
 	}
 	
-	property int m_iMaxClip
-	{
-		public get()							{ return this.m_iState; }
-		public set(int TempValueForProperty) 	{ this.m_iState = TempValueForProperty; }
-	}
 	property float m_flCustomProjectileSpeed
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
@@ -133,7 +128,7 @@ methodmap VictoriaTaser < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flSpeed = 310.0;
 		
-		npc.m_iMaxClip = 1;
+		npc.m_iMaxAmmo = 1;
 		npc.m_flCustomProjectileSpeed = 600.0;
 		npc.m_flCustomSlowDown = 0.8;
 		npc.m_flCustomDuration = 1.0;
@@ -168,10 +163,10 @@ methodmap VictoriaTaser < CClotBody
 			else if(StrContains(countext[i], "maxclip") != -1)
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "maxclip", "");
-				npc.m_iMaxClip = StringToInt(countext[i]);
+				npc.m_iMaxAmmo = StringToInt(countext[i]);
 			}
 		}
-		npc.m_iOverlordComboAttack = npc.m_iMaxClip;
+		npc.m_iAmmo = npc.m_iMaxAmmo;
 		
 		ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 		
@@ -322,7 +317,7 @@ static void VictoriaTaser_NPCDeath(int entity)
 
 static int VictoriaTaserSelfDefense(VictoriaTaser npc, float gameTime, float distance)
 {
-	if(npc.m_flAttackHappens || !npc.m_iOverlordComboAttack)
+	if(npc.m_flAttackHappens || !npc.m_iAmmo)
 	{
 		if(!npc.m_flAttackHappens)
 		{
@@ -333,7 +328,7 @@ static int VictoriaTaserSelfDefense(VictoriaTaser npc, float gameTime, float dis
 		}
 		if(gameTime > npc.m_flAttackHappens)
 		{
-			npc.m_iOverlordComboAttack=npc.m_iMaxClip;
+			npc.m_iAmmo=npc.m_iMaxAmmo;
 			npc.m_flAttackHappens=0.0;
 		}
 		return 1;
@@ -355,11 +350,11 @@ static int VictoriaTaserSelfDefense(VictoriaTaser npc, float gameTime, float dis
 			SDKHook(projectile, SDKHook_StartTouch, VictoriaTaser_Rocket_Particle_StartTouch);
 
 			npc.m_flNextRangedAttack=gameTime+(NpcStats_VictorianCallToArms(npc.index) ? 0.75 : 1.0);
-			npc.m_iOverlordComboAttack--;
+			npc.m_iAmmo--;
 			return 1;
 		}
 	}
-	return (distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.0 ? 1 : 0));
+	return(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.0 && Can_I_See_Enemy_Only(npc.index, npc.m_iTarget)) ? 1 : 0;
 }
 
 static void VictoriaTaser_Rocket_Particle_StartTouch(int entity, int target)

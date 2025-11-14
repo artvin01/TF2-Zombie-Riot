@@ -237,7 +237,8 @@ methodmap VictoriaBirdeye < CClotBody
 		//npc.m_iCountSounds = 0;
 		npc.m_iBurst = 0;
 		npc.m_iAttackCount = 0;
-		npc.m_iOverlordComboAttack = 31;
+		npc.m_iAmmo = 31;
+		npc.m_iMaxAmmo = 31;
 		npc.m_iBigPipe=-2;
 		npc.m_iHarbringer=-2;
 		
@@ -567,7 +568,7 @@ static void VictoriaBirdeye_ClotThink(int iNPC)
 					npc.m_flAttackHappens = GetGameTime(npc.index) + 2.5;
 				}
 				if(GetGameTime(npc.index) > npc.m_flAttackHappens)
-					npc.m_iOverlordComboAttack=31;
+					npc.m_iAmmo=31;
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTargetWalkTo,_,vBackoffPos);
@@ -920,7 +921,7 @@ int VictoriaBirdeyeSniperMode(VictoriaBirdeye npc, float gameTime)
 
 static int VictoriaBirdeyeAssaultMode(VictoriaBirdeye npc, float gameTime, int target, float distance)
 {
-	if(npc.m_iOverlordComboAttack < 1)
+	if(npc.m_iAmmo < 1)
 		return 4;
 	if(gameTime > npc.m_flNextRangedAttack)
 	{
@@ -988,7 +989,7 @@ static int VictoriaBirdeyeAssaultMode(VictoriaBirdeye npc, float gameTime, int t
 					}
 					npc.m_flNextMeleeAttack = gameTime + 2.5;
 					npc.m_flCharge_delay = gameTime + 0.8;
-					npc.m_iOverlordComboAttack--;
+					npc.m_iAmmo--;
 				}
 				delete swingTrace;
 			}
@@ -1045,7 +1046,7 @@ static int VictoriaBirdeyeAssaultMode(VictoriaBirdeye npc, float gameTime, int t
 							}
 						}
 					}
-					npc.m_iOverlordComboAttack--;
+					npc.m_iAmmo--;
 				}
 				delete swingTrace;
 			}

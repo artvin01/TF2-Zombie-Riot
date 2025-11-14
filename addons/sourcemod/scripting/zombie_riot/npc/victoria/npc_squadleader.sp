@@ -145,8 +145,11 @@ methodmap VictorianSquadleader < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedAttackHappening = 0.0;
-		npc.m_iOverlordComboAttack = 10;
 		npc.m_iChanged_WalkCycle = 1;
+		npc.m_iAmmo = 10;
+		npc.m_iMaxAmmo = 10;
+		
+		ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 
 		npc.m_iWearable6 = ParticleEffectAt_Parent(vecPos, "utaunt_pedalfly_blue_spins", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0});
 		
@@ -283,7 +286,7 @@ static void VictorianSquadleader_NPCDeath(int entity)
 static int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, int target, float distance)
 {
 
-	if(npc.m_iOverlordComboAttack <= 0)
+	if(npc.m_iAmmo <= 0)
 	{
 		if(npc.m_iChanged_WalkCycle != 2)
 		{
@@ -370,7 +373,7 @@ static int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameT
 				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 				{
 					if(!NpcStats_VictorianCallToArms(npc.index))
-						npc.m_iOverlordComboAttack--;
+						npc.m_iAmmo--;
 					target = TR_GetEntityIndex(swingTrace);	
 					
 					float vecHit[3];

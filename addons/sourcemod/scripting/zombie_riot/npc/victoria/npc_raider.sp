@@ -119,8 +119,9 @@ methodmap VictorianRaider < CClotBody
 		KillFeed_SetKillIcon(npc.index, "cow_mangler");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iOverlordComboAttack = 3;
-		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_iAmmo = 3;
+		npc.m_iMaxAmmo = 3;
+		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flSpeed = 250.0;
 		npc.StartPathing();
 		
@@ -283,7 +284,7 @@ static void VictorianRaider_NPCDeath(int entity)
 
 static int VictorianRaiderSelfDefense(VictorianRaider npc, float gameTime, float distance)
 {
-	if(npc.m_flAttackHappens || !npc.m_iOverlordComboAttack)
+	if(npc.m_flAttackHappens || !npc.m_iAmmo)
 	{
 		if(!npc.m_flAttackHappens)
 		{
@@ -293,7 +294,7 @@ static int VictorianRaiderSelfDefense(VictorianRaider npc, float gameTime, float
 		}
 		if(gameTime > npc.m_flAttackHappens)
 		{
-			npc.m_iOverlordComboAttack=3;
+			npc.m_iAmmo=3;
 			npc.m_flAttackHappens=0.0;
 		}
 		return 1;
@@ -302,7 +303,7 @@ static int VictorianRaiderSelfDefense(VictorianRaider npc, float gameTime, float
 	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
 	{
 		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-		if(gameTime > npc.m_flNextMeleeAttack && IsValidEnemy(npc.index, Enemy_I_See))
+		if(gameTime > npc.m_flNextRangedAttack && IsValidEnemy(npc.index, Enemy_I_See))
 		{
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", true);
 			npc.PlayRangeSound();
@@ -317,10 +318,10 @@ static int VictorianRaiderSelfDefense(VictorianRaider npc, float gameTime, float
 				
 			npc.FireParticleRocket(vecTarget, Hitdamage , projectile_speed , 150.0 , "drg_cow_rockettrail_normal_blue");
 
-			npc.m_flNextMeleeAttack=gameTime+1.0;
-			npc.m_iOverlordComboAttack--;
+			npc.m_flNextRangedAttack=gameTime+1.0;
+			npc.m_iAmmo--;
 			return 1;
 		}
 	}
-	return (distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.0) ? 1 : 0;
+	return (distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.0 && Can_I_See_Enemy_Only(npc.index, npc.m_iTarget)) ? 1 : 0;
 }

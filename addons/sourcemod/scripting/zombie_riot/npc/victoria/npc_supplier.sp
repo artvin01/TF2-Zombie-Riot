@@ -359,7 +359,7 @@ static int VictorianSupplier_Work(VictorianSupplier npc, float gameTime)
 	}
 	else if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		return (GetVectorDistance(vecTarget, VecSelfNpc, true) > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0) ? 2 : 1);
+		return (GetVectorDistance(vecTarget, VecSelfNpc, true) > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0) && Can_I_See_Enemy_Only(npc.index, npc.m_iTarget)) ? 2 : 1;
 	}
 	else
 		return 1;

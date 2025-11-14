@@ -113,12 +113,13 @@ methodmap VictorianBallista < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictorianBallista_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(VictorianBallista_ClotThink);
 		
-		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextRangedAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
-		npc.m_iOverlordComboAttack = 3;
+		npc.m_iAmmo = 3;
+		npc.m_iMaxAmmo = 3;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "passtime_pass");
@@ -279,7 +280,7 @@ static void VictorianBallista_NPCDeath(int entity)
 
 static int VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime, float distance)
 {
-	if(npc.m_flAttackHappens || !npc.m_iOverlordComboAttack)
+	if(npc.m_flAttackHappens || !npc.m_iAmmo)
 	{
 		if(!npc.m_flAttackHappens)
 		{
@@ -290,7 +291,7 @@ static int VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime, f
 		}
 		if(gameTime > npc.m_flAttackHappens)
 		{
-			npc.m_iOverlordComboAttack=3;
+			npc.m_iAmmo=3;
 			npc.m_flAttackHappens=0.0;
 		}
 		return 1;
@@ -299,7 +300,7 @@ static int VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime, f
 	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0) || npc.m_flAttackHappenswillhappen)
 	{
 		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-		if((gameTime > npc.m_flNextMeleeAttack && IsValidEnemy(npc.index, Enemy_I_See)) || npc.m_flAttackHappenswillhappen)
+		if((gameTime > npc.m_flNextRangedAttack && IsValidEnemy(npc.index, Enemy_I_See)) || npc.m_flAttackHappenswillhappen)
 		{
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", true);
 			npc.PlayRangeSound();
@@ -311,11 +312,11 @@ static int VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime, f
 				
 			npc.FireParticleRocket(vecTarget, Hitdamage , projectile_speed , 150.0 , "flaregun_energyfield_red");
 
-			npc.m_flNextMeleeAttack=gameTime+0.1;
+			npc.m_flNextRangedAttack=gameTime+0.1;
 			npc.m_flAttackHappenswillhappen = true;
-			npc.m_iOverlordComboAttack--;
+			npc.m_iAmmo--;
 			return 1;
 		}
 	}
-	return (distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.0) ? 1 : 0;
+	return (distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.0 && Can_I_See_Enemy_Only(npc.index, npc.m_iTarget)) ? 1 : 0;
 }

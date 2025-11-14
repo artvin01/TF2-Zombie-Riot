@@ -131,7 +131,8 @@ methodmap VictorianDroneFragments < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flAttackHappens_bullshit = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_iOverlordComboAttack = 2;
+		npc.m_iAmmo = 3;
+		npc.m_iMaxAmmo=3;
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextPosDelay = 0.0;
 		
@@ -395,7 +396,7 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 			}
 			else
 			{
-				npc.m_iOverlordComboAttack = 2;
+				npc.m_iAmmo = 3;
 				npc.m_flGetClosestTargetTime=0.0;
 				npc.m_bFUCKYOU = false;
 			}
@@ -492,7 +493,7 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 			}
 			else
 			{
-				npc.m_iOverlordComboAttack = 2;
+				npc.m_iAmmo = 3;
 				npc.m_flGetClosestTargetTime=0.0;
 				npc.m_bFUCKYOU = false;
 			}
@@ -556,11 +557,11 @@ static void VictoriaFragmentsAssaultMode(VictorianDroneFragments npc, float game
 					WorldSpaceCenter(npc.index, origin);
 					ShootLaser(npc.index, "bullet_tracer02_blue", origin, vecHit, false );
 					float Cooldown = 3.0;
-					if(npc.m_iOverlordComboAttack <= 0)
-						npc.m_iOverlordComboAttack = 2;
+					if(npc.m_iAmmo < 1)
+						npc.m_iAmmo = 3;
 					else
 					{
-						npc.m_iOverlordComboAttack --;
+						npc.m_iAmmo --;
 						Cooldown = 0.3;
 					}
 					npc.m_flNextRangedAttack = gameTime + Cooldown;

@@ -241,7 +241,8 @@ methodmap VictoriaBigpipe < CClotBody
 		npc.m_flGetClosestTargetTime=0.0;
 		npc.StartPathing();
 		npc.m_flSpeed=180.0;
-		npc.m_iOverlordComboAttack=6;
+		npc.m_iAmmo=6;
+		npc.m_iMaxAmmo=6;
 		npc.m_iSaveClip=31;
 		npc.g_TimesSummoned=0;
 		npc.m_iIntimidatingFire=0;
@@ -375,8 +376,9 @@ static void VictoriaBigpipe_ClotThink(int iNPC)
 		if(npc.m_iChanged_WalkCycle != 2)
 		{
 			int LaterUpdate=npc.m_iSaveClip;
-			npc.m_iSaveClip=npc.m_iOverlordComboAttack;
-			npc.m_iOverlordComboAttack=LaterUpdate;
+			npc.m_iSaveClip=npc.m_iAmmo;
+			npc.m_iAmmo=LaterUpdate;
+			npc.m_iMaxAmmo=31;
 			KillFeed_SetKillIcon(npc.index, "the_classic");
 			npc.SetWeaponModel("models/weapons/c_models/c_tfc_sniperrifle/c_tfc_sniperrifle.mdl", 1.25);
 			npc.m_iChanged_WalkCycle=2;
@@ -394,7 +396,7 @@ static void VictoriaBigpipe_ClotThink(int iNPC)
 			npc.PlayARSound();
 			npc.PlayIntimidatingFireSound(npc.m_iTarget);
 			npc.m_iIntimidatingFire++;
-			npc.m_iOverlordComboAttack--;
+			npc.m_iAmmo--;
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			if(GetVectorDistance(vecTarget, VecSelfNpc, true) < npc.GetLeadRadius()) 
 			{
@@ -431,9 +433,9 @@ static void VictoriaBigpipe_ClotThink(int iNPC)
 			if(npc.m_iChanged_WalkCycle != 1)
 			{
 				int LaterUpdate=npc.m_iSaveClip;
-				npc.m_iSaveClip=npc.m_iOverlordComboAttack;
-				npc.m_iOverlordComboAttack=LaterUpdate;
-				
+				npc.m_iSaveClip=npc.m_iAmmo;
+				npc.m_iAmmo=LaterUpdate;
+				npc.m_iMaxAmmo=6;
 				KillFeed_SetKillIcon(npc.index, "tf_projectile_pipe");
 				npc.SetWeaponModel("models/weapons/c_models/c_grenadelauncher/c_grenadelauncher.mdl", 1.25);
 				SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 3);
@@ -446,8 +448,9 @@ static void VictoriaBigpipe_ClotThink(int iNPC)
 			if(npc.m_iChanged_WalkCycle != 2)
 			{
 				int LaterUpdate=npc.m_iSaveClip;
-				npc.m_iSaveClip=npc.m_iOverlordComboAttack;
-				npc.m_iOverlordComboAttack=LaterUpdate;
+				npc.m_iSaveClip=npc.m_iAmmo;
+				npc.m_iAmmo=LaterUpdate;
+				npc.m_iMaxAmmo=31;
 				KillFeed_SetKillIcon(npc.index, "the_classic");
 				npc.SetWeaponModel("models/weapons/c_models/c_tfc_sniperrifle/c_tfc_sniperrifle.mdl", 1.25);
 				npc.m_iChanged_WalkCycle=2;
@@ -724,7 +727,7 @@ static int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float
 
 	if(gameTime > npc.m_flNextRangedAttack)
 	{
-		if(npc.m_iOverlordComboAttack < 1)
+		if(npc.m_iAmmo < 1)
 		{
 			if(b_TheGoons)
 			{
@@ -732,12 +735,12 @@ static int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float
 				npc.m_flNextRangedAttack = gameTime + 1.5;
 				if(npc.m_iChanged_WalkCycle==1)
 				{
-					npc.m_iOverlordComboAttack = 6;
+					npc.m_iAmmo = 6;
 					npc.Anger=false;
 				}
 				else if(npc.m_iChanged_WalkCycle==2)
 				{
-					npc.m_iOverlordComboAttack = 31;
+					npc.m_iAmmo = 31;
 					npc.Anger=true;
 				}
 				if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
@@ -769,7 +772,7 @@ static int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float
 					else if(gameTime > npc.m_flReloadTime)
 					{
 						npc.m_flReloadTime = 0.0;
-						npc.m_iOverlordComboAttack = 6;
+						npc.m_iAmmo = 6;
 					}
 				}
 				else if(npc.m_iChanged_WalkCycle==2)
@@ -786,7 +789,7 @@ static int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float
 					else if(gameTime > npc.m_flReloadTime)
 					{
 						npc.m_flReloadTime = 0.0;
-						npc.m_iOverlordComboAttack = 31;
+						npc.m_iAmmo = 31;
 					}
 				}
 				return 1;
@@ -830,7 +833,7 @@ static int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float
 					Better_Gravity_Rocket(RocketGet, 55.0);
 
 					//This will return vecTarget as the speed we need.
-					npc.m_iOverlordComboAttack--;
+					npc.m_iAmmo--;
 					npc.m_flNextRangedAttack = gameTime + 0.25;
 					npc.PlayGrenadeSound();
 				}
@@ -859,7 +862,7 @@ static int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float
 						}
 						npc.PlayARSound();
 						npc.m_flNextRangedAttack = gameTime + 0.1;
-						npc.m_iOverlordComboAttack--;
+						npc.m_iAmmo--;
 					}
 					delete swingTrace;
 					if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))

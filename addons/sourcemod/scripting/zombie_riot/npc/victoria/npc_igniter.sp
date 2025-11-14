@@ -161,17 +161,6 @@ static void VictoriaIgniter_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				if(npc.m_iChanged_WalkCycle != 0)
-				{
-					npc.m_bisWalking = false;
-					npc.m_iChanged_WalkCycle = 5;
-					npc.SetActivity("ACT_MP_STAND_ITEM1");
-					npc.m_flSpeed = 0.0;
-					npc.StopPathing();
-				}
-			}
-			case 1:
-			{
 				if(npc.m_iChanged_WalkCycle != 1)
 				{
 					npc.m_bisWalking = true;
@@ -189,6 +178,17 @@ static void VictoriaIgniter_ClotThink(int iNPC)
 				else 
 				{
 					npc.SetGoalEntity(npc.m_iTarget);
+				}
+			}
+			case 1:
+			{
+				if(npc.m_iChanged_WalkCycle != 0)
+				{
+					npc.m_bisWalking = false;
+					npc.m_iChanged_WalkCycle = 5;
+					npc.SetActivity("ACT_MP_STAND_ITEM1");
+					npc.m_flSpeed = 0.0;
+					npc.StopPathing();
 				}
 			}
 		}
@@ -259,16 +259,12 @@ static int VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime, float
 					CreateTimer(8.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 					
 					SDKHook(projectile, SDKHook_StartTouch, VictoriaIgniter_Rocket_Particle_StartTouch);
-					return 0;
+					return 1;
 				}
 			}
 		}
-		else
-		{
-			return (distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*10.0 ? 1 : 0);
-		}
 	}
-	return (distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*10.0 ? 1 : 0);
+	return (distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*10.0 && Can_I_See_Enemy_Only(npc.index, npc.m_iTarget)) ? 1 : 0;
 }
 
 static void VictoriaIgniter_Rocket_Particle_StartTouch(int entity, int target)

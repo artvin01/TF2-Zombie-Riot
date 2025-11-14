@@ -1154,7 +1154,7 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 
 		if(Apply_MasterStatusEffect.HudDisplay_Func != INVALID_FUNCTION && Apply_MasterStatusEffect.HudDisplay_Func)
 		{
-			char HudDisplayCustom[12];
+			char HudDisplayCustom[14];
 			//We have a valid function ignore the original value.
 			Call_StartFunction(null, Apply_MasterStatusEffect.HudDisplay_Func);
 			Call_PushCell(attacker);
@@ -2814,7 +2814,10 @@ stock bool NpcStats_VictorianCallToArms(int victim)
 
 void AmmoTM_Visual_Hud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
-	if(i_OverlordComboAttack[victim])
+	if(!i_GunAmmoMAX[victim])
+		RemoveSpecificBuff(victim, "Ammo_TM Visualization");
+	/* is old Version */
+	/*if(i_GunAmmo[victim])
 	{
 		Format(HudToDisplay, SizeOfChar, "|");
 		for(int i = 1; i < i_OverlordComboAttack[victim]; i++)
@@ -2828,7 +2831,8 @@ void AmmoTM_Visual_Hud_Func(int attacker, int victim, StatusEffect Apply_MasterS
 				Format(HudToDisplay, SizeOfChar, "%s|", HudToDisplay);
 		}
 		Format(HudToDisplay, SizeOfChar, "[A™ %s]", HudToDisplay);
-	}
+	}*/
+	Format(HudToDisplay, SizeOfChar, "[A™ %i/%i]", i_GunAmmo[victim], i_GunAmmoMAX[victim]);
 }
 
 void Charge_BatteryTM_Hud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
