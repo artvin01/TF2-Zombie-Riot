@@ -4286,6 +4286,22 @@
 		"en"		"Protects the lighthouse, If the lighthouse dies, gets stronger, eliminate him before the lighthouse.\nHas bad predictive aiming and summons holy lights like grigori."
 		"it"		"Protegge il faro, se il faro muore, diventa più forte, eliminatelo prima del faro.\nHa una pessima mira predittiva ed evoca luci sacre come Grigori."
 	}
+	"Dr Dam Clone"
+	{
+		"en"		"Dr Dam Clone"
+	}
+	"Dr Dam Clone Desc"
+	{
+		"en"		"A clone of the one who harnessed luck.\n-Does a triple combo attack, 3rd hit deals 2x damage\n-The further away the target is, the more speed he gains.\n-If far enough away, gains massive resistances."
+	}
+	"Dr Dam's Special Delivery"
+	{
+		"en"		"Dr Dam's Special Delivery"
+	}
+	"Dr Dam's Special Delivery Desc"
+	{
+		"en"		"Dr Dam's special delivery! How nice!.\n-Cannot be killed.\n-After some time, deploys a ''Bomb'' that summons a bunch of ''Dr Dam's''."
+	}
 	"Cambino"
 	{
 		"en"		"Cambino"

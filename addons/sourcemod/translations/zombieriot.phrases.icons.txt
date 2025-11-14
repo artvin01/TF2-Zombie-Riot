@@ -535,6 +535,18 @@
 	{
 		"en"		"An agent of Necropolis has arrived."
 	}
+	"Dr Dam Deliver Spawn 1"
+	{
+		"en"		"Oh wow! How nice, a gift!"
+	}
+	"Dr Dam Deliver Spawn 2"
+	{
+		"en"		"Messing with luck has its downsides."
+	}
+	"Dr Dam Deliver Spawn 3"
+	{
+		"en"		"Well Dr Dam, ill be dammed!"
+	}
 	"Zmain spawn Text 1"
 	{
 		"en"		"A group of highly intelligent zombies appear."
