@@ -888,6 +888,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 				if(!CheckInHud())
 					Player_OnTakeDamage_Magnesis(victim, damage, attacker);
 		}
+		case WEAPON_RAIGEKI:
+		{
+			return Player_OnTakeDamage_Raigeki(victim, damage, attacker);
+		}
 		case WEAPON_YAKUZA:
 		{
 			Yakuza_SelfTakeDamage(victim, attacker, damage, damagetype, equipped_weapon);
@@ -1519,25 +1523,42 @@ stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflic
 	{
 		ExtraDamageDealt = 0.35;
 	}
-	if(LastMann && GetTeam(victim) != TFTeam_Red)
+	if(!b_IsAloneOnServer)
 	{
-		damage *= 1.35;
-		int DisplayCritSoundTo;
-		if(attacker <= MaxClients)
-			DisplayCritSoundTo = attacker;
-		else if(inflictor <= MaxClients)
-			DisplayCritSoundTo = inflictor;
-
-		if(DisplayCritSoundTo > 0 && DisplayCritSoundTo <= MaxClients)
+		if(LastMann && GetTeam(victim) != TFTeam_Red)
 		{
-			bool PlaySound = false;
-			if(f_MinicritSoundDelay[DisplayCritSoundTo] < GetGameTime())
+			switch(CountPlayersOnRed(0, true))
 			{
-				PlaySound = true;
-				f_MinicritSoundDelay[DisplayCritSoundTo] = GetGameTime() + 0.25;
+				//no change for 0 and 1 players
+				case 0,1:
+					damage *= 1.0;
+				case 2:
+					damage *= 1.15;
+				case 3:					
+					damage *= 1.2;
+				case 4:					
+					damage *= 1.25;
+				default:
+					damage *= 1.35;
+
 			}
-			
-			DisplayCritAboveNpc(victim, DisplayCritSoundTo, PlaySound,_,_,true); //Display crit above head
+			int DisplayCritSoundTo;
+			if(attacker <= MaxClients)
+				DisplayCritSoundTo = attacker;
+			else if(inflictor <= MaxClients)
+				DisplayCritSoundTo = inflictor;
+
+			if(DisplayCritSoundTo > 0 && DisplayCritSoundTo <= MaxClients)
+			{
+				bool PlaySound = false;
+				if(f_MinicritSoundDelay[DisplayCritSoundTo] < GetGameTime())
+				{
+					PlaySound = true;
+					f_MinicritSoundDelay[DisplayCritSoundTo] = GetGameTime() + 0.25;
+				}
+				
+				DisplayCritAboveNpc(victim, DisplayCritSoundTo, PlaySound,_,_,true); //Display crit above head
+			}
 		}
 	}
 	if(IsValidEntity(weapon))

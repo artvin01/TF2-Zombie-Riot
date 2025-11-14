@@ -148,8 +148,17 @@ stock void ResetToZero2(any[][] array, int length1, int length2)
     }
 }
 
+stock void ResetFloatToZero(any[] array, int length)
+{
+    for(int i; i<length; i++)
+    {
+        array[i] = 0.0;
+    }
+}
+
 #define Zero(%1)        ResetToZero(%1, sizeof(%1))
 #define Zero2(%1)    ResetToZero2(%1, sizeof(%1), sizeof(%1[]))
+#define ZeroFloat(%1)        ResetFloatToZero(%1, sizeof(%1))
 
 #define TF2_RemoveWeaponSlot RemoveSlotWeapons
 #define TF2_RemoveAllWeapons RemoveAllWeapons

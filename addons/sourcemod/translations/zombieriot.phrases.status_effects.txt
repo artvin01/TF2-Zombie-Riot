@@ -1928,6 +1928,14 @@
 		"en"	"+30％ damage dealt, healing done, and +20％ damage reduction"
 		"it"	"+30％ danni inflitti, guarigione effettuata e +20％ riduzione dei danni"
 	}
+	"Charging Raigeki"
+	{
+		"en"	"CHARGING RAIGEKI"
+	}
+	"Charging Raigeki Desc"
+	{
+		"en"	"Reduces movement speed, prevents attacking, and drains mana to charge a devastating blast of lightning from the heavens. Grants resistance, which increases as charge level rises, and electrocutes nearby foes with Static Electricity."
+	}
 	"Xeno's Territory"
 	{
 		"en"	"Xeno's Territory"
