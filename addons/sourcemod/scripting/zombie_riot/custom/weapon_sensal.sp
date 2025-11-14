@@ -478,52 +478,9 @@ void SummonScytheSensalProjectile(int client, int weapon)
 	}
 	spawnRing_Vectors(RingSpawnVec, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", red, green, blue, 200, 1, 0.25, 6.0, 2.1, 1, 65.0 * 2.0);	
 	EmitSoundToAll("weapons/mortar/mortar_explode3.wav", client, SNDCHAN_AUTO, 80, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Pos_player);	
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SENSAL_SCYTHE)
+	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, false , Pos_player);
-
-		int ModelApply = ApplyCustomModelToWandProjectile(projectile, WEAPON_CUSTOM_WEAPONRY_1, 1.35, "scythe_spin");
-
-		if(b_ClientPossesBattery[client] && i_CosmeticScytheThing[client] == 0)
-		{
-			SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
-		}
-		else
-		{
-			if(i_CosmeticScytheThing[client] == 1)
-			{
-				SetEntityRenderColor(ModelApply, 255, 255, 255, 2);
-			}
-			else if(i_CosmeticScytheThing[client] == 2)
-			{
-				SetEntityRenderColor(ModelApply, 255, 255, 255, 3);
-			}
-			else if(i_CosmeticScytheThing[client] == 4)
-			{
-				SetEntityRenderColor(ModelApply, 255, 255, 255, 4);
-			}
-			else
-			{
-				SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
-			}
-		}
-		SetVariantInt(2);
-		AcceptEntityInput(ModelApply, "SetBodyGroup");
-
-		CreateTimer(time, Timer_RemoveEntityWeaponSensal, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
-		
-		Initiate_HomingProjectile(projectile,
-		client,
-			90.0,			// float lockonAngleMax,
-			45.0,				//float homingaSec,
-			false,				// bool LockOnlyOnce,
-			true,				// bool changeAngles,
-			fAng,
-			target);			// float AnglesInitiate[3]);
-	}
-	else if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SENSAL_SCYTHE_PAP_2 || i_CustomWeaponEquipLogic[weapon] == WEAPON_SENSAL_SCYTHE_PAP_3)
-	{
-		for(int Repeat; Repeat <= 2; Repeat++)
+		case WEAPON_SENSAL_SCYTHE:
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, false , Pos_player);
 
@@ -565,67 +522,113 @@ void SummonScytheSensalProjectile(int client, int weapon)
 				true,				// bool changeAngles,
 				fAng,
 				target);			// float AnglesInitiate[3]);
-			
-			if(Repeat == 0)
-			{
-				fAng[1] -= 50.0;
-			}
-			else if(Repeat == 1)
-			{
-				fAng[1] += (50.0 * 2.0);
-			}
-			else
-			{
-				fAng[1] += 50.0;
-			}
-		}		
-	}
-	else
-	{
-		fAng[1] += 45.0;
-		for(int Repeat; Repeat <= 1; Repeat++)
+		}
+		case WEAPON_SENSAL_SCYTHE_PAP_2, WEAPON_SENSAL_SCYTHE_PAP_3:
 		{
-			int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, false , Pos_player);
-
-			int ModelApply = ApplyCustomModelToWandProjectile(projectile, WEAPON_CUSTOM_WEAPONRY_1, 1.35, "scythe_spin");
-
-			if(b_ClientPossesBattery[client] && i_CosmeticScytheThing[client] == 0)
+			for(int Repeat; Repeat <= 2; Repeat++)
 			{
-				SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
-			}
-			else
-			{
-				if(i_CosmeticScytheThing[client] == 1)
+				int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, false , Pos_player);
+
+				int ModelApply = ApplyCustomModelToWandProjectile(projectile, WEAPON_CUSTOM_WEAPONRY_1, 1.35, "scythe_spin");
+
+				if(b_ClientPossesBattery[client] && i_CosmeticScytheThing[client] == 0)
 				{
-					SetEntityRenderColor(ModelApply, 255, 255, 255, 2);
-				}
-				else if(i_CosmeticScytheThing[client] == 2)
-				{
-					SetEntityRenderColor(ModelApply, 255, 255, 255, 3);
-				}
-				else if(i_CosmeticScytheThing[client] == 4)
-				{
-					SetEntityRenderColor(ModelApply, 255, 255, 255, 4);
+					SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
 				}
 				else
 				{
-					SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
+					if(i_CosmeticScytheThing[client] == 1)
+					{
+						SetEntityRenderColor(ModelApply, 255, 255, 255, 2);
+					}
+					else if(i_CosmeticScytheThing[client] == 2)
+					{
+						SetEntityRenderColor(ModelApply, 255, 255, 255, 3);
+					}
+					else if(i_CosmeticScytheThing[client] == 4)
+					{
+						SetEntityRenderColor(ModelApply, 255, 255, 255, 4);
+					}
+					else
+					{
+						SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
+					}
 				}
-			}
-			SetVariantInt(2);
-			AcceptEntityInput(ModelApply, "SetBodyGroup");
+				SetVariantInt(2);
+				AcceptEntityInput(ModelApply, "SetBodyGroup");
 
-			CreateTimer(time, Timer_RemoveEntityWeaponSensal, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
-			
-			Initiate_HomingProjectile(projectile,
-			client,
-				90.0,			// float lockonAngleMax,
-				45.0,				//float homingaSec,
-				false,				// bool LockOnlyOnce,
-				true,				// bool changeAngles,
-				fAng,
-				target);			// float AnglesInitiate[3]);
-			fAng[1] -= 90.0;
+				CreateTimer(time, Timer_RemoveEntityWeaponSensal, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
+				
+				Initiate_HomingProjectile(projectile,
+				client,
+					90.0,			// float lockonAngleMax,
+					45.0,				//float homingaSec,
+					false,				// bool LockOnlyOnce,
+					true,				// bool changeAngles,
+					fAng,
+					target);			// float AnglesInitiate[3]);
+				
+				if(Repeat == 0)
+				{
+					fAng[1] -= 50.0;
+				}
+				else if(Repeat == 1)
+				{
+					fAng[1] += (50.0 * 2.0);
+				}
+				else
+				{
+					fAng[1] += 50.0;
+				}
+			}		
+		}
+		case WEAPON_SENSAL_SCYTHE_PAP_1:
+		{
+			fAng[1] += 45.0;
+			for(int Repeat; Repeat <= 1; Repeat++)
+			{
+				int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, false , Pos_player);
+
+				int ModelApply = ApplyCustomModelToWandProjectile(projectile, WEAPON_CUSTOM_WEAPONRY_1, 1.35, "scythe_spin");
+
+				if(b_ClientPossesBattery[client] && i_CosmeticScytheThing[client] == 0)
+				{
+					SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
+				}
+				else
+				{
+					if(i_CosmeticScytheThing[client] == 1)
+					{
+						SetEntityRenderColor(ModelApply, 255, 255, 255, 2);
+					}
+					else if(i_CosmeticScytheThing[client] == 2)
+					{
+						SetEntityRenderColor(ModelApply, 255, 255, 255, 3);
+					}
+					else if(i_CosmeticScytheThing[client] == 4)
+					{
+						SetEntityRenderColor(ModelApply, 255, 255, 255, 4);
+					}
+					else
+					{
+						SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
+					}
+				}
+				SetVariantInt(2);
+				AcceptEntityInput(ModelApply, "SetBodyGroup");
+
+				CreateTimer(time, Timer_RemoveEntityWeaponSensal, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
+				
+				Initiate_HomingProjectile(projectile,
+				client,
+					90.0,			// float lockonAngleMax,
+					45.0,				//float homingaSec,
+					false,				// bool LockOnlyOnce,
+					true,				// bool changeAngles,
+					fAng,
+					target);			// float AnglesInitiate[3]);
+				fAng[1] -= 90.0;
+			}
 		}
 	}
 }
