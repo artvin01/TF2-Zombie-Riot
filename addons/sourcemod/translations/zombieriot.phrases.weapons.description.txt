@@ -1188,7 +1188,7 @@
 	{
 		"en"	"-Causes bleed on hit\n-Causes burn on hit\n-5％ extra melee resistance\n-Debuffs enemies on hit."
 		"it"	"Causa emorragia, 5％ resistenza extra in mischia. Provoca un debuff sul nemico che lo rallenta e gli fa subire più danni, 25％ danni in più per i nemici colpiti."
-		"ko"	"근접 저항력 +5％. 적중시, 대상에게 출혈+둔화 및 받는 피해 증가 디버프 부여. 이 무기로 해당 디버프가 있는 적에게 주는 피해량 +25％."
+		"ko"	"적중시, 대상에게 출혈+둔화 및 받는 피해 증가 디버프 부여.\n이 무기로 해당 디버프가 있는 적에게 주는 피해량 +25％.\n근접 저항력 +5％."
 	}
 	"Medusa Teslar Stick Pap 1"
 	{
@@ -1210,7 +1210,7 @@
 	{
 		"en"	"-Each 3rd hit deals 2.75x damage\n-R Ability summons a clone that attacks what you look at\n-During ability, you throw projectiles on attack instead."
 		"it"	"il suo regno sulle città e sugli stati non ha fine. Ogni terzo colpo infligge 2,75x danni.\nLa tua abilità R evoca un clone che attacca ciò che tu attacchi e tu spari solo proiettili."
-		"ko"	"매 3번째 공격의 피해량이 +2.75배 증가.\nR 키를 누르면 클론을 소환합니다. 클론은 당신이 공격하는 대상을 같이 공격하며, 이 동안 당신은 투사체만 발사하게 됩니다."
+		"ko"	"매 3번째 공격의 피해량이 +2.75배 증가.\n앉아서 R 키를 누르면 클론을 소환합니다. 클론은 당신이 공격하는 대상을 같이 공격하며, 이 동안 당신은 투사체만 발사하게 됩니다."
 	}
 	"Bad Wand Desc"
 	{
@@ -3509,7 +3509,7 @@
 		"fr"	"Vous vous soignez pour chaque ennemi frappé,\nces soins peuvent vous donner du santé bonus.\nVous recevez 75％ de tous soins donnés à vous.Vous ferez un double-attaque tous les 4 attaques.\nAbilité améliore vos dégats et la fréquence de double-attaques."
 		"chi"	"外界的霰弹枪\n大部分治疗-85％。\n可击中多名敌人，带穿透。\n每4发司是双击。\n自疗可以超量。\n技能保证双击，增加伤害。\n有随机暴击。"
 		"it"	"Un fucile da caccia di Expidonsa.\nLa maggior parte della guarigione che ricevi è tagliata del 75％.\nColpisci più nemici e guarisci al colpo.\nOgni quarto attacco è un doppio attacco.\nLa guarigione al colpo permette di surriscaldare.\nL'abilità permette doppi colpi e più danni."
-		"ko"	"받는 치유 효과가 최대 75％로 감소합니다.\n다수의 적을 타격할 수 있으며, 적중시 체력 회복.(이 효과로 과치료 획득 가능)\n매 4번째 공격은 2연 공격이 됨.\n능력 사용시 2연 공격이 되며 피해량 증가."
+		"ko"	"받는 치유 효과가 75％ 감소합니다.\n다수의 적을 타격할 수 있으며, 적중시 체력 회복.(이 효과로 과치료 획득 가능)\n매 4번째 공격은 2연 공격이 됨.\n능력 사용시 2연 공격이 되며 피해량 증가."
 	}
 	"Angelic Shotgonnus Desc Pap 1"
 	{
@@ -4365,7 +4365,7 @@
 		"en"	"-Mini-crits against burning enemies.\n-INFERNAL FURY: Hold M2 to burn everything nearby and gain buffs, at the\n-cost of rapidly draining HP. Kills during this grant HP, given when the effect ends.\n-CD is based on use time. Kills while not active reduce CD."
 		"chi"	"对点燃的敌人造成迷你暴击。\n[M2]火愤:长按M2以血量为代价在自身附近生成一个火圈并且获得增益。\n效果生效时击杀敌人积攒回血量，解除后回复。\n效果不激活时击杀敌人降低技能冷却。"
 		"it"	"Mini-criteri contro i nemici in fiamme.\nINFERNAL FURY: Tenere premuto M2 per bruciare tutto ciò che si trova nelle vicinanze e guadagnare buff, al costo di prosciugare rapidamente gli HP.\nLe uccisioni durante questa fase garantiscono HP, dati quando l'effetto termina.\nCD si basa sul tempo di utilizzo.\nLe uccisioni quando non sono attive riducono la CD."
-		"ko"	"불타고 있는 적에게 소형 치명타 피해를 줌.\n지옥의 분노: M2를 꾹 누르면 버프를 얻고 주변을 불태우지만, 체력이 빠르게 감소.\n발동 중에 적 처치시 포인트가 저장되고, 효과가 종료되면 저장된 포인트만큼 체력을 회복.\n쿨타임은 사용한 시간에 비례하며, 능력이 아닌 공격으로 적 처치시 쿨타임 감소."
+		"ko"	"불타는적 소형치명타\nM2를 꾹 누르면 버프를 얻고 주변을 불태우지만, 체력이 빠르게 감소.\n발동 중에 적 처치시 포인트가 저장되고, 효과가 종료되면 저장된 포인트만큼 체력을 회복.\n쿨타임은 사용한 시간에 비례하며, 적 처치시 쿨타임 감소."
 	}
 	"Wrathful Blade PaP 1"
 	{
