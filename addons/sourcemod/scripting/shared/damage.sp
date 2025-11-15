@@ -1276,6 +1276,30 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 			if(!CheckInHud())
 				SherrifRevolver_NPCTakeDamage(attacker, victim, damage,weapon, i_CustomWeaponEquipLogic[weapon]);
 		}
+		case WEAPON_KIT_OMEGA:
+        {
+            if(!CheckInHud())
+            KitOmega_NPCTakeDamage_Melee(attacker, victim, damage, weapon);
+        }
+        case WEAPON_KIT_OMEGA_GAUSS:
+        {
+            if(!CheckInHud())
+            KitOmega_NPCTakeDamage_Gauss(attacker, victim, damage, weapon);
+        }
+        case WEAPON_KIT_PURGE_ANNAHILATOR:
+        {
+            return Npc_OnTakeDamage_Purging_Annahilator(attacker, victim, damage, weapon, damagetype);
+        }
+        case WEAPON_KIT_PURGE_CRUSHER:
+        {
+            if(!CheckInHud())
+            PurgeKit_NPCTakeDamage_Crusher(attacker, victim, damage, weapon);
+        }
+        case WEAPON_KIT_PURGE_RAMPAGER:
+        {
+            if(!CheckInHud())
+            PurgeKit_NPCTakeDamage_Rampager(attacker, victim, damage, weapon);
+		}
 	}
 #endif
 
