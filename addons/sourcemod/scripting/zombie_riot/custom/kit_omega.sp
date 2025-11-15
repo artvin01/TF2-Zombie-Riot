@@ -47,7 +47,8 @@ public void Enable_KitOmega(int client, int weapon)
 		{
 			i_KitOmega_WeaponPap[client] = RoundToFloor(Attributes_Get(weapon, 391, 0.0));
 			b_KitOmega_Toggle[client] = false;
-			delete h_KitOmega_Timer[client];
+			if(IsValidHandle(h_KitOmega_Timer[client]))
+				delete h_KitOmega_Timer[client];
 			h_KitOmega_Timer[client] = null;
 			
 			h_KitOmega_Timer[client] = CreateDataTimer(0.1, Timer_KitOmega, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -278,13 +279,13 @@ static void KitOmega_GUN_Selector_Function(int client, int OverrideGunType=-1)
 		{
 			weapon_new = Store_GiveSpecificItem(client, "KitOmega Shotgun");
 			firingRate *= 1.5;
-			multi *= 2.5;
+			multi *= 2.0;
 		}
 		case 3:
 		{
 			weapon_new = Store_GiveSpecificItem(client, "KitOmega AR2");
 			firingRate *= 1.0 - i_KitOmega_WeaponPap[client] / 10;
-			multi *= 2.0;
+			multi *= 5.0;
 		}
 		case 4:
 		{
@@ -313,8 +314,8 @@ static void KitOmega_GUN_Selector_Function(int client, int OverrideGunType=-1)
 		Attributes_Set(weapon_new, 2, multi);
 		Attributes_Set(weapon_new, 6, firingRate);
 		ResetClipOfWeaponStore(weapon_new, client, RoundToFloor(Attributes_Get(weapon_new, 303, 1.0)));
-		PrintToConsoleAll(" attribute? %f", Attributes_Get(weapon_new, 2, -1.0));
-		PrintToConsoleAll(" attribute? %f", Attributes_Get(weapon_new, 6, -1.0));
+		//PrintToConsoleAll(" attribute? %f", Attributes_Get(weapon_new, 2, -1.0));
+		//PrintToConsoleAll(" attribute? %f", Attributes_Get(weapon_new, 6, -1.0));
 	}
 }
 
@@ -444,7 +445,7 @@ public void KitOmega_Weapon_Fire(int client, int weapon, bool crit, int slot, in
 		case 3:
 			KitOmega_AddCharge(client, -2.0);
 		case 4:
-			KitOmega_AddCharge(client, -20.0);
+			KitOmega_AddCharge(client, -12.5);
 	}
 }
 

@@ -393,7 +393,8 @@ public void Weapon_Purging_Rampager_R(int client, int weapon, bool crit, int slo
 		Attributes_Set(weaponN, Attrib_PapNumber, Attributes_Get(weapon, Attrib_PapNumber, 1.0));
 		if(QuadLauncher_Remove_Timer[client] != null)
 		{
-			delete QuadLauncher_Remove_Timer[client];
+			if(IsValidHandle(QuadLauncher_Remove_Timer[client]))
+				delete QuadLauncher_Remove_Timer[client];
 			QuadLauncher_Remove_Timer[client] = null;
 		}
 		QuadLauncher_Remove_Timer[client] = 
@@ -446,7 +447,8 @@ public void Weapon_Purging_Crusher_R(int client, int weapon, bool crit, int slot
 		fl_KitPurge_Annahilator_Tookout_Time[client] = GetGameTime();
 		if(Annahilator_Remove_Timer[client] != null)
 		{
-			delete Annahilator_Remove_Timer[client];
+			if(IsValidHandle(Annahilator_Remove_Timer[client]))
+				delete Annahilator_Remove_Timer[client];
 			Annahilator_Remove_Timer[client] = null;
 		}
 		DataPack pack = new DataPack();
@@ -488,7 +490,8 @@ public float Npc_OnTakeDamage_Purging_Annahilator(int attacker, int victim, floa
 				fl_KitPurge_Annahilator_Bonus_Damage_Stack[attacker] = PURGE_ANNAHILATOR_BONUS_DAMAGE_MAXPERCENT;
 			if(Annahilator_Damage_Revert_Timer[attacker] != null)
 			{
-				delete Annahilator_Damage_Revert_Timer[attacker];
+				if(IsValidHandle(Annahilator_Damage_Revert_Timer[attacker]))
+					delete Annahilator_Damage_Revert_Timer[attacker];
 				Annahilator_Damage_Revert_Timer[attacker] = null;
 			}
 			
@@ -710,7 +713,8 @@ public void Weapon_Purging_Annahilator_Remove(int ref, int owner)
 	fl_KitPurge_Annahilator_Tookout_Time[owner] = GetGameTime() - fl_KitPurge_Annahilator_Max_Hold_Time[pap] + 0.5;
 	if(Annahilator_Remove_Timer[owner] != null)
 	{
-		delete Annahilator_Remove_Timer[owner];
+		if(IsValidHandle(Annahilator_Remove_Timer[owner]))
+			delete Annahilator_Remove_Timer[owner];
 		Annahilator_Remove_Timer[owner] = null;
 	}
 	DataPack pack = new DataPack();
