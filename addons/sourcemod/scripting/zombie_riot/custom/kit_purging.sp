@@ -126,17 +126,20 @@ public Action Timer_PurgeKit(Handle timer, DataPack pack)
 		
 		if(Annahilator_Remove_Timer[client] != null)
 		{
-			delete Annahilator_Remove_Timer[client];
+			if(IsValidHandle(Annahilator_Remove_Timer[client]))
+				delete Annahilator_Remove_Timer[client];
 			Annahilator_Remove_Timer[client] = null;
 		}
 		if(Annahilator_Damage_Revert_Timer[client] != null)
 		{
-			delete Annahilator_Damage_Revert_Timer[client];
+			if(IsValidHandle(Annahilator_Damage_Revert_Timer[client]))
+				delete Annahilator_Damage_Revert_Timer[client];
 			Annahilator_Damage_Revert_Timer[client] = null;
 		}
 		if(QuadLauncher_Remove_Timer[client] != null)
 		{
-			delete QuadLauncher_Remove_Timer[client];
+			if(IsValidHandle(QuadLauncher_Remove_Timer[client]))
+				delete QuadLauncher_Remove_Timer[client];
 			QuadLauncher_Remove_Timer[client] = null;
 		}
 		
