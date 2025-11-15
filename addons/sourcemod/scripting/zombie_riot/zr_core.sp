@@ -956,7 +956,6 @@ void ZR_MapStart()
 	KitOmega_OnMapStart();
     Wand_Sigil_Blade_MapStart();
     PurgeKit_MapStart();
-    the_pda_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
