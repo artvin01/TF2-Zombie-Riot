@@ -569,6 +569,12 @@ void Music_EndLastmann(bool Reinforce=false)
 							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/wave_music/bat_rglk2boss1.mp3", 2.0);
 						case 11:
 							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/cheese_lastman.mp3", 2.0);
+						case 12:
+                            StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/expidonsa_waves/wave_45_music_1.mp3", 2.0);
+                        case 13:
+                            StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/combinehell/escalationP2.mp3", 2.0);
+                        case 14:
+                            StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/internius/chaos_engineered_cyborg.mp3", 2.0);
 					}
 					SetMusicTimer(client, 0);
 					MusicLastmann.StopMusic(client);
@@ -1022,6 +1028,21 @@ void Music_Update(int client)
 				{
 					EmitCustomToClient(client, "#zombiesurvival/cheese_lastman.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					SetMusicTimer(client, GetTime() + 170);
+				}
+				case 12:
+                {
+                    EmitCustomToClient(client, "#zombiesurvival/expidonsa_waves/wave_45_music_1.mp3",client, SNDCHAN_STATIC, SNDLEVELNONE, , 1.2);
+                    SetMusicTimer(client, GetTime() + 280);
+                }
+                case 13:
+                {
+                    EmitCustomToClient(client, "#zombiesurvival/combinehell/escalationP2.mp3",client, SNDCHAN_STATIC, SNDLEVELNONE, , 1.2);
+                    SetMusicTimer(client, GetTime() + 150);
+                }
+                case 14:
+                {
+                    EmitCustomToClient(client, "#zombiesurvival/internius/chaos_engineered_cyborg.mp3",client, SNDCHAN_STATIC, SNDLEVELNONE, , 1.2);
+                    SetMusicTimer(client, GetTime() + 190);
 				}
 				default:
 				{	
