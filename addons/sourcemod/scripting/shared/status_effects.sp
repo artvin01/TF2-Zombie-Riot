@@ -2947,10 +2947,10 @@ void StatusEffects_SevenHeavySouls()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "♥");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.5;
-	data.DamageDealMulti			= 0.5;
+	data.DamageTakenMulti 			= 0.25;
+	data.DamageDealMulti			= 1.0;
 	data.MovementspeedModif			= 1.5;
-	data.AttackspeedBuff			= 0.5;
+	data.AttackspeedBuff			= 0.25;
 	
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false; //lol why was it on yes

@@ -678,10 +678,6 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 	}
 	if(npc.g_TimesSummoned < 3)
 	{
-		if(i_RaidGrantExtra[npc.index] >= 4)
-		{
-			SensalGiveShield(npc.index, CountPlayersOnRed(1) * 3);
-		}
 		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int nextLoss = (maxhealth/ 10) * (3 - npc.g_TimesSummoned) / 3;
@@ -689,6 +685,10 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 
 		if((health / 10) < nextLoss)
 		{
+			if(i_RaidGrantExtra[npc.index] >= 4)
+			{
+				SensalGiveShield(npc.index, CountPlayersOnRed(1) * 3);
+			}
 			npc.g_TimesSummoned++;
 			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 5.0);
 			npc.m_flResistanceBuffs = GetGameTime() + 2.0;
