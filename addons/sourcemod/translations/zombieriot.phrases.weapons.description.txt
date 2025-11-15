@@ -298,7 +298,7 @@
 	{
 		"en"		"Deagle that throws objects with m2, shoot them to deal even more damage.\n-Time correctly after a blue flash, and throw multiple for even more damage.\n-This projectile always counts as a HEADSHOT.\n-Has less damage falloff."
 		"it"		"Deagle che lancia oggetti con m2, sparateli per infliggere ancora più danni.\nTemporizzate correttamente dopo un lampo blu e lanciate più oggetti per infliggere ancora più danni.\nQuesto proiettile conta sempre come un COLPO ALLA TESTA.\nHa una caduta dei danni inferiore."
-		"ko"		"M2로 포물선형 물체를 투척. 물체를 쏴서 맞추면 추가 피해를 입힘.\n물체에 파란 섬광이 발생한 후에 쏴맞추면 피해량이 더욱 증가.\n이 물체는 항상 헤드샷 판정으로 취급됨.\n거리 비례 피해 감소량이 적음."
+		"ko"		"M2로 포물선형 물체를 투척. 물체를 쏴서 맞추면 추가 피해.\n물체에 파란 섬광이 발생한 후에 쏴맞추면 피해량 증가.\n이 물체는 항상 헤드샷 판정임.\n거리 비례 피해 감소량이 적음."
 	}
 	"Deagle Pap 1"
 	{
@@ -501,7 +501,7 @@
 	{
 		"en"		"Engi says to not touch his stuff, but you don't care\n-Full charge to attack.\n-Projectile speed actually makes it slower.\n-Reload speed and attackspeed buff its damage.\n-2x dmg vs raids."
 		"it"		"Engi dice di non toccare la sua roba, ma a voi non interessa.\nLa velocità del proiettile lo rende in realtà più lento.\nLa velocità di ricarica e la velocità d'attacco aumentano i suoi danni."
-		"ko"		"완전히 충전해야만 공격 가능.\n투사체 속도 속성은 이 무기의 투사체 속도를 느리게 만듬.\n재장전 속도와 공격 속도 속성은 이 무기의 피해량을 증가시.\n레이드 보스에게 주는 피해량 2배."
+		"ko"		"완전히 충전해야만 공격 가능.\n투사체 속도 속성은 이 무기의 투사체 속도를 느리게 만듬.\n재장전 속도와 공격 속도 속성은 이 무기의 피해량을 증가시킴.\n레이드 보스대상 피해량 2배."
 	}
 	"IEM Launcher Pap 1"
 	{
@@ -715,6 +715,7 @@
 		"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
 		"it"	"Aumento dei danni e della velocità d'attacco"
+		"ko"	"적중 시, 화상 피해"
 	}
 	"Flaregun Pap 1"
 	{
@@ -4306,7 +4307,7 @@
 		"en"	"Developed after Guln's fall and designed to honor his passing, this contraption is capable of infinite fire, with occasional random effects that may occur with each shot."
 		"fr"	"Développé après la chute de Guln et conçu pour honorer son décès, cet engin est capable de tirer à l'infini, avec des effets aléatoires occasionnels pouvant se produire à chaque tir."
 		"it"	"Sviluppato dopo la caduta di Guln e progettato per onorare la sua scomparsa, questo congegno è in grado di sparare all'infinito, con occasionali effetti casuali che possono verificarsi a ogni colpo."
-		"ko"	"귄의 몰락 이후 개발되어 그의 죽음을 기리기 위해 설계된 이 기계는 소총수의 상위 유닛입니다. 끝없이 사격 공격을 가하며, 매 공격마다 무작위 효과가 부여될 확률이 있습니다."
+		"ko"	"글룬의 몰락 이후 개발되어 그의 죽음을 기리기 위해 설계된 이 기계는 소총수의 상위 유닛입니다. 끝없이 사격 공격을 가하며, 매 공격마다 무작위 효과가 부여될 확률이 있습니다."
 	}
 	"Barracks Peacekeeper Desc"
 	{

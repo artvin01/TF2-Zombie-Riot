@@ -1036,7 +1036,7 @@
 		"nl"		"Vuisten van Kahmlstein"
 		"chi"       	"卡姆拳套"
 		"it"		"Pugni di Kahmlstein"
-		"ko"		"캄르스타인의 주먹"
+		"ko"		"카멜스타인의 주먹"
 	}
 	"Infinity Blade"
 	{
@@ -2806,7 +2806,7 @@
 	"Guln's Dying Wish"
 	{
 		"en"		"Guln's Companions"
-		"ko"		"귄의 부대원들"
+		"ko"		"글룬의 부대원들"
 	}
 	"Builder Gear"
 	{
@@ -3954,7 +3954,7 @@
 	{
 		"en" "Waldch's Railgun Rounds"
 		"it" "Proiettili per fucili a rotaia Waldch"
-		"ko" "월드치의 레일건 탄약"
+		"ko" "왈츠의 레일건 탄약"
 	}
 	"Cheesy Doomsday Pack"
 	{
