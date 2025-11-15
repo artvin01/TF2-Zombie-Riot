@@ -103,7 +103,6 @@ int i_khamlCutscene;
 float f_khamlCutscene;
 
 
-static float f_KahmlResTemp[MAXENTITIES];
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
 
@@ -852,25 +851,6 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 	if(Kahmlstein_Attack_TempPowerup(npc))
 		return;
 
-	if(f_KahmlResTemp[npc.index] > GetGameTime())
-	{
-		if(NpcStats_IsEnemySilenced(npc.index))
-		{
-			npc.m_flMeleeArmor = 0.65;
-			npc.m_flRangedArmor = 0.5;	
-		}
-		else
-		{
-			npc.m_flMeleeArmor = 0.75;
-			npc.m_flRangedArmor = 0.6;	
-		}
-	}
-	else
-	{
-		npc.m_flMeleeArmor = 1.25;
-		npc.m_flRangedArmor = 1.0;	
-	}	
-
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		if(i_RaidGrantExtra[npc.index] < 2)
@@ -1420,17 +1400,10 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 					vecTarget[0] += GetRandomFloat(-10.0, 10.0);
 					vecTarget[1] += GetRandomFloat(-10.0, 10.0);
 					vecTarget[2] += GetRandomFloat(-10.0, 10.0);
-					switch(GetRandomInt(1,2))
-					{
-						case 1:
-						{
-							projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1200.0, 150.0, "raygun_projectile_blue_crit", false);
-						}
-						case 2:
-						{
-							projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1200.0, 150.0, "raygun_projectile_red_crit", false);
-						}
-					}
+					if(i_RaidGrantExtra[npc.index] <= 2)
+						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1200.0, 150.0, "raygun_projectile_red_crit", false);
+					else
+						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1200.0, 150.0, "raygun_projectile_blue_crit", false);
 			
 					SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 					int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
@@ -1547,7 +1520,7 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 								}
 							}
 
-							Elemental_AddChaosDamage(targetTrace, npc.index, 100, true, true);
+							Elemental_AddChaosDamage(targetTrace, npc.index, 200, true, true);
 
 							if(!Knocked)
 								Custom_Knockback(npc.index, targetTrace, 650.0); 
@@ -1580,7 +1553,7 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",true, 1.0, _, f_MessengerSpeedUp[npc.index]);
 							
 					npc.m_flAttackHappens = gameTime + (0.25 * (1.0 / f_MessengerSpeedUp[npc.index]));
-					npc.m_flNextMeleeAttack = gameTime + (0.7 * (1.0 / f_MessengerSpeedUp[npc.index]));
+					npc.m_flNextMeleeAttack = gameTime + (0.5 * (1.0 / f_MessengerSpeedUp[npc.index]));
 					npc.m_flDoingAnimation = gameTime + (0.25 * (1.0 / f_MessengerSpeedUp[npc.index]));
 				}
 			}
@@ -1626,7 +1599,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 						CPrintToChatAll("{darkblue}Kahmlstein{default}: Keep running, that'll help.");
 					}
 				}
-				f_KahmlResTemp[npc.index] = GetGameTime() + 3.5;
+				ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 3.5);
 			}
 			npc.m_flNextChargeSpecialAttack -= 0.25;
 			npc.m_flRangedSpecialDelay -= 0.25;
@@ -1637,6 +1610,9 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		f_MessengerSpeedUp[npc.index] *= 1.15;
+		ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 5.0);
+		ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 5.0);
+		ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 5.0);
 		switch(GetRandomInt(0,3))
 		{
 			case 0:

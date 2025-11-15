@@ -148,10 +148,14 @@ void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 	{
 		return; //do not give shield.
 	}
+	int WhatIsHigher = MaxShieldCapacity;
+	if(amount >= WhatIsHigher)
+		WhatIsHigher = amount;
+	
 	i_ExpidonsaShieldCapacity[entity] += amount;
-	if(i_ExpidonsaShieldCapacity[entity] >= MaxShieldCapacity)
+	if(i_ExpidonsaShieldCapacity[entity] >= WhatIsHigher)
 	{
-		i_ExpidonsaShieldCapacity[entity] = MaxShieldCapacity;
+		i_ExpidonsaShieldCapacity[entity] = WhatIsHigher;
 	}
 	int alpha = i_ExpidonsaShieldCapacity[entity];
 	alpha = alpha * 20;

@@ -1248,21 +1248,20 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 
 		if(i_RaidGrantExtra[owner] <= 2)
 		{
-			NPC_Ignite(target, owner,2.5, -1, DamageDeal * 0.1);
+			if(i_NpcInternalId[owner] == NPCId)
+				NPC_Ignite(target, owner,2.5, -1, DamageDeal * 0.1);
+			else
+				NPC_Ignite(target, owner,2.5, -1, DamageDeal * 0.2);
 		}
 		else
 		{
-			int ChaosDamage = 75;
-			if(NpcStats_IsEnemySilenced(owner))
-				ChaosDamage = 65;
+			int ChaosDamage = 100;
 			//above is kahmlstein
 
 			if(i_NpcInternalId[owner] == NPCId)
 			{
 				//This is messenger
 				ChaosDamage = 60;
-				if(NpcStats_IsEnemySilenced(owner))
-					ChaosDamage = 50;
 					
 				ApplyStatusEffect(owner, target, "Near Zero", 3.5);
 			}

@@ -211,7 +211,7 @@ public void DrDamClone_ClotThink(int iNPC)
 			true,
 			99,
 			false,
-			3.0,
+			8.0,
 			_);
 
 			SmiteNpcToDeath(npc.index);
@@ -377,7 +377,7 @@ void DrDamCloneSelfDefense(DrDamClone npc, float gameTime, int target, float dis
 						Custom_Knockback(npc.index, target, 360.0);
 					}
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.5;
+						damageDealt *= 5.0;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);

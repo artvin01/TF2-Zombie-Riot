@@ -10,6 +10,10 @@ static bool RWI_AlterRocketActualAngle[MAXENTITIES];
 static float RWI_RocketRotation[MAXENTITIES][3];
 static Handle RWI_HandleHome[MAXENTITIES];
 
+void TriggerTimerHoming(int entity)
+{
+	TriggerTimer(RWI_HandleHome[entity]);
+}
 #if defined ZR
 void GetRocketAngles(int entity, float angles[3])
 {
@@ -63,7 +67,7 @@ void Initiate_HomingProjectile(int projectile, int owner, float lockonAngleMax, 
 	RWI_HandleHome[projectile] = CreateDataTimer(0.1, Projectile_NonPerfectHoming, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(projectile));
 	pack.WriteCell(projectile);
-	TriggerTimer(RWI_HandleHome[projectile]);
+	//TriggerTimer(RWI_HandleHome[entity]);
 	/*
 		dont bother using EntRef for RMR_CurrentHomingTarget, it has a 0.1 timer
 		and the same entity cannot be repeated/id cant be replaced in under 1 second
