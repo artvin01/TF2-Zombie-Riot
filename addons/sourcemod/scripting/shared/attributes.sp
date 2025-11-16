@@ -57,6 +57,7 @@ enum
 	Attrib_FinalBuilder = 4051,
 	Attrib_GlassBuilder = 4052,
 	Attrib_WildingenBuilder = 4053,
+	Attrib_TauntRangeValue = 4054,
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
@@ -72,7 +73,7 @@ bool Attribute_ServerSide(int attribute)
 
 		Various attributes that are not needed as actual attributes.
 		*/
-		case 526,733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287 , 95 , 93,8:
+		case 526,733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287 , 95 , 93,8, 734:
 		{
 			return true;
 		}
