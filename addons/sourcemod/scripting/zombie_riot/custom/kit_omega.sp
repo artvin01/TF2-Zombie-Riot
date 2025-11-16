@@ -366,8 +366,8 @@ static void KitOmega_GUN_Selector_Function(int client, int OverrideGunType=-1)
 		//	SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
 		if(i_KitOmega_GunType[client] != 1)
 			b_KitOmega_Using_Gauss[client] = false;
-		SetEntPropFloat(weapon_new, Prop_Send, "m_flNextPrimaryAttack", Time+1.5);//1.5秒后允许进行攻击(allow to attack after 1.5s)
-		SetEntPropFloat(client, Prop_Send, "m_flNextAttack", Time+1.5);//1.5秒后允许进行攻击(allow to attack after 1.5s)
+		SetEntPropFloat(weapon_new, Prop_Send, "m_flNextPrimaryAttack", Time+0.7);//1.5秒后允许进行攻击(allow to attack after 1.5s)
+		SetEntPropFloat(client, Prop_Send, "m_flNextAttack", Time+0.7);//1.5秒后允许进行攻击(allow to attack after 1.5s)
 		i_KitOmega_GunRef[client] = EntIndexToEntRef(weapon_new);//存储刚刚拿出的武器(save weapon you just took out)
 	//	Attributes_Set(weapon_new, 2, multi);
 	//	Attributes_Set(weapon_new, 6, firingRate);
