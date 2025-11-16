@@ -27,10 +27,9 @@ static int fl_KitPurge_QuadLauncher_Rockets[9]=			{2,		2,		2,		2,		2,		3,		4,		4
 static float fl_KitPurge_QuadLauncher_FireSpeed[9]=		{1.0,	1.0,	1.0,	1.0,	1.0,	0.85,	0.85,	0.85,	0.85};
 static float fl_KitPurge_Ram_Max_Time[9]=				{3.0,	3.0,	3.0,	3.0,	3.0,	3.0,	6.0,	6.0,	6.0};
 
-static Handle Revert_Weapon_Back_Timer[MAXPLAYERS];
+static Handle Revert_Weapon_Back_Timer[MAXPLAYERS]={null, ...};
 static int attacks_mode[MAXPLAYERS]={12, ...};
 static int weapon_id[MAXPLAYERS]={0, ...};
-static bool Handle_on[MAXPLAYERS]={false, ...};
 static float QuadSinceLastRemove[MAXPLAYERS]={0.0, ...};
 
 #define PURGE_MAX_ENERGY 500.0
@@ -247,12 +246,9 @@ public void Weapon_Purging_Rampager(int client, int weapon, bool crit, int slot)
 		if(attacks_mode[client] < 8)
 			Attributes_Set(weapon, 1, dmgBalance);
 		Attributes_Set(weapon, 396, PurgingRampagerAttackSpeed(attacks_mode[client]));
-		if(Handle_on[client])
-		{
+		if(Revert_Weapon_Back_Timer[client] != null)
 			delete Revert_Weapon_Back_Timer[client];
-		}
 		Revert_Weapon_Back_Timer[client] = CreateTimer(3.0, Reset_weapon_purging_rampager, client, TIMER_FLAG_NO_MAPCHANGE);
-		Handle_on[client] = true;
 	}
 }
 
@@ -534,7 +530,7 @@ public Action Reset_weapon_purging_rampager(Handle cut_timer, int client)
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 		}
 	}
-	Handle_on[client] = false;
+	Revert_Weapon_Back_Timer[client] = null;
 	return Plugin_Handled;
 }
 
