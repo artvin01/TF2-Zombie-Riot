@@ -1279,7 +1279,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_KIT_OMEGA:
         {
             if(!CheckInHud())
-            KitOmega_NPCTakeDamage_Melee(attacker, victim, damage, weapon);
+           		KitOmega_NPCTakeDamage_Melee(attacker, victim, damage, weapon, damagetype);
         }
         case WEAPON_KIT_OMEGA_GAUSS:
         {

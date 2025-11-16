@@ -433,8 +433,11 @@ public void KitOmega_NPCTakeDamage_Gauss(int attacker, int victim, float &damage
 	}
 }
 
-public void KitOmega_NPCTakeDamage_Melee(int attacker, int victim, float &damage, int weapon)
+public void KitOmega_NPCTakeDamage_Melee(int attacker, int victim, float &damage, int weapon, int damagetype)
 {
+	if(!(damagetype & DMG_CLUB))
+		return;
+		
 	float energy;
 	energy = OMEGA_PREHITGAIN;
 	
