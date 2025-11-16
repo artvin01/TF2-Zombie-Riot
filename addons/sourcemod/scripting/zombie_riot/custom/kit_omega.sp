@@ -371,7 +371,7 @@ static void KitOmega_GUN_Selector_Function(int client, int OverrideGunType=-1)
 		i_KitOmega_GunRef[client] = EntIndexToEntRef(weapon_new);//存储刚刚拿出的武器(save weapon you just took out)
 	//	Attributes_Set(weapon_new, 2, multi);
 	//	Attributes_Set(weapon_new, 6, firingRate);
-		int AmmoLeft = RoundToNearest(OMEGA_ENERGY[client] / OmegaWeaponCosts(i_KitOmega_GunType[client]));
+		int AmmoLeft = RoundToCeil(OMEGA_ENERGY[client] / OmegaWeaponCosts(i_KitOmega_GunType[client]));
 		ResetClipOfWeaponStore(weapon_new, client, AmmoLeft);
 		SetEntData(weapon_new, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), AmmoLeft);
 		//PrintToConsoleAll(" attribute? %f", Attributes_Get(weapon_new, 2, -1.0));
