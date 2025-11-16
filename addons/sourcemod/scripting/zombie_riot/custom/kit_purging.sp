@@ -248,7 +248,7 @@ public void Weapon_Purging_Rampager(int client, int weapon, bool crit, int slot)
 		Attributes_Set(weapon, 396, PurgingRampagerAttackSpeed(attacks_mode[client]));
 		if(Revert_Weapon_Back_Timer[client] != null)
 			delete Revert_Weapon_Back_Timer[client];
-		Revert_Weapon_Back_Timer[client] = CreateTimer(3.0, Reset_weapon_purging_rampager, client, TIMER_FLAG_NO_MAPCHANGE);
+		Revert_Weapon_Back_Timer[client] = CreateTimer(3.0, Reset_weapon_purging_rampager, client);
 	}
 }
 
