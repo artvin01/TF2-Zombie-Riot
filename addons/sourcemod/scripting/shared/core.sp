@@ -101,6 +101,8 @@ ConVar CvarSkillPoints;
 ConVar CvarRogueSpecialLogic;
 ConVar CvarLeveling;
 ConVar CvarAutoSelectWave;
+ConVar CvarAutoSelectDiff;
+ConVar CvarVoteLimit;
 #endif
 ConVar CvarCustomModels;
 ConVar CvarFileNetworkDisable;
@@ -426,6 +428,64 @@ char g_TankStepSound[][] = {
 	"infected_riot/tank/tank_walk_1_fix.mp3",
 };
 
+#if defined BONEZONE_BASE
+
+#define BONEZONE_MODEL		"models/zombie_riot/the_bone_zone/basic_bones.mdl"
+#define BONEZONE_MODEL_BOSS	"models/zombie_riot/the_bone_zone/boss_bones.mdl"
+#define MODEL_SSB   		"models/zombie_riot/the_bone_zone/supreme_spookmaster_bones.mdl"
+#define PARTICLE_SSB_SPAWN	"doomsday_tentpole_vanish01"
+#define SND_TRANSFORM		")vo/halloween_boss/knight_alert.mp3"
+#define PARTICLE_TRANSFORM	"ghost_appearation"
+#define SND_GIB_SKELETON	")misc/halloween/skeleton_break.wav"
+
+char g_BoneZoneBuffDefaultSFX[][] = {
+	"vo/halloween_boo1.mp3",
+	"vo/halloween_boo2.mp3",
+	"vo/halloween_boo3.mp3",
+	"vo/halloween_boo4.mp3",
+	"vo/halloween_boo5.mp3",
+	"vo/halloween_boo6.mp3",
+	"vo/halloween_boo7.mp3"
+};
+
+char g_HHHGrunts[][] = {
+	")vo/halloween_boss/knight_alert01.mp3",
+	")vo/halloween_boss/knight_alert02.mp3"
+};
+
+char g_HHHYells[][] = {
+	")vo/halloween_boss/knight_attack01.mp3",
+	")vo/halloween_boss/knight_attack02.mp3",
+	")vo/halloween_boss/knight_attack03.mp3",
+	")vo/halloween_boss/knight_attack04.mp3",
+};
+
+char g_HHHLaughs[][] = {
+	")vo/halloween_boss/knight_laugh01.mp3",
+	")vo/halloween_boss/knight_laugh02.mp3",
+	")vo/halloween_boss/knight_laugh03.mp3",
+	")vo/halloween_boss/knight_laugh04.mp3",
+};
+
+char g_HHHPain[][] = {
+	")vo/halloween_boss/knight_pain01.mp3",
+	")vo/halloween_boss/knight_pain02.mp3",
+	")vo/halloween_boss/knight_pain03.mp3"
+};
+
+char g_WitchLaughs[][] = {
+	")items/halloween/witch01.wav",
+	")items/halloween/witch02.wav",
+	")items/halloween/witch03.wav"
+};
+
+#define SOUND_HHH_DEATH												")vo/halloween_boss/knight_dying.mp3"
+#define SOUND_DANGER_BIG_GUY_IS_HERE								")mvm/mvm_cpoint_klaxon.wav"
+#define SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY						")vo/announcer_security_alert.mp3"
+#define PARTICLE_DANGER_BIG_GUY_IS_HERE								"teleportedin_blue"
+
+#endif
+
 float f_ArrowDamage[MAXENTITIES];
 int h_ArrowInflictorRef[MAXENTITIES];
 Function i_ProjectileExtraFunction[MAXENTITIES] = {INVALID_FUNCTION, ...};
@@ -614,6 +674,7 @@ float f_RoleplayTalkLimit[MAXENTITIES] = {0.0, ...};
 bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
 float f_StuckOutOfBoundsCheck[MAXENTITIES];
+float f_CooldownForAbilities[MAXENTITIES][2];
 
 int g_particleImpactMetal;
 
@@ -782,6 +843,7 @@ public void OnPluginStart()
 	SDKCall_Setup();
 	ConVar_PluginStart();
 	NPC_PluginStart();
+	NPCStats_PluginStart();
 	SDKHook_PluginStart();
 	OnPluginStart_LagComp();
 	NPC_Base_InitGamedata();
@@ -1206,6 +1268,7 @@ public void OnMapEnd()
 	Waves_MapEnd();
 	Spawns_MapEnd();
 	Vehicle_MapEnd();
+	NPC_MapEnd();
 #endif
 
 #if defined RPG
@@ -1824,6 +1887,34 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		if(!(buttons & IN_ATTACK2))
 			holding[client] &= ~IN_ATTACK2;
+		else
+		{
+			if(f_CooldownForAbilities[client][0] < GetGameTime())
+			{
+				f_CooldownForAbilities[client][0] = GetGameTime() + 0.1;
+				if(Ability_Check_Cooldown(client, 2) < 0.0)
+				{
+					f_CooldownForAbilities[client][0] = GetGameTime() + 0.5;
+					int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+					if(weapon_holding != -1)
+					{
+						if(EntityFuncAttack2[weapon_holding] && EntityFuncAttack2[weapon_holding]!=INVALID_FUNCTION)
+						{
+							bool result = false; //ignore crit.
+							int slot = 2;
+							Action action;
+							Call_StartFunction(null, EntityFuncAttack2[weapon_holding]);
+							Call_PushCell(client);
+							Call_PushCell(weapon_holding);
+							Call_PushCellRef(result);
+							Call_PushCell(slot); //This is attack 2 :)
+							Call_Finish(action);
+						}
+					}
+				}
+			}
+		}
+			
 	}
 	else if(buttons & IN_ATTACK2)
 	{
@@ -1832,6 +1923,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 #if defined ZR
 		b_IgnoreWarningForReloadBuidling[client] = false;
 #endif
+		f_CooldownForAbilities[client][0] = GetGameTime() + 0.5;
+		// force wait 1 second so it isnt activated automatically
 
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding != -1)
@@ -1855,6 +1948,66 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		if(!(buttons & IN_RELOAD))
 			holding[client] &= ~IN_RELOAD;
+		else
+		{
+			if(f_CooldownForAbilities[client][1] < GetGameTime())
+			{
+				f_CooldownForAbilities[client][1] = GetGameTime() + 0.1;
+				if(Ability_Check_Cooldown(client, 3) < 0.0)
+				{
+					f_CooldownForAbilities[client][1] = GetGameTime() + 0.5;
+					bool AllowImpulse = true;
+				
+					AllowImpulse = false;
+					//if the cvar is on, but we want spray again
+					if(zr_interactforcereload.BoolValue)
+					{
+						AllowImpulse = true;
+					}
+
+					if(AllowImpulse)
+					{
+						if(b_InteractWithReload[client])
+							AllowImpulse = false;
+						else
+							AllowImpulse = true;
+					}
+					else
+					{
+						if(b_InteractWithReload[client])
+							AllowImpulse = true;
+						else
+							AllowImpulse = false;
+					}
+
+					
+					if(AllowImpulse)
+					{
+						f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
+						if(DoInteractKeyLogic(angles, client))
+							return Plugin_Continue;
+					}
+
+					// force wait 1 second so it isnt activated automatically
+					int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+					if(weapon_holding != -1)
+					{
+						if(EntityFuncAttack3[weapon_holding] && EntityFuncAttack3[weapon_holding]!=INVALID_FUNCTION)
+						{
+							bool result = false; //ignore crit.
+							int slot = 3;
+							Action action;
+							Call_StartFunction(null, EntityFuncAttack3[weapon_holding]);
+							Call_PushCell(client);
+							Call_PushCell(weapon_holding);
+							Call_PushCellRef(result);
+							Call_PushCell(slot);	//This is R :)
+							Call_Finish(action);
+						}
+					}
+				}
+			}
+		}
 	}
 	else if(buttons & IN_RELOAD)
 	{
@@ -1891,6 +2044,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				return Plugin_Continue;
 		}
 
+		f_CooldownForAbilities[client][1] = GetGameTime() + 0.5;
+		// force wait 1 second so it isnt activated automatically
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding != -1)
 		{
@@ -3058,6 +3213,8 @@ public void CheckIfAloneOnServer()
 #endif
 		{
 			if(!b_AntiLateSpawn_Allow[client])
+				continue;
+			if(!b_HasBeenHereSinceStartOfWave[client])
 				continue;
 			players += 1;
 #if defined ZR 

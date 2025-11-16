@@ -116,6 +116,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	BlacksmithGrill_RoundStart();
 	Zealot_RoundStart();
 	Drops_ResetChances();
+	NPCStats_HandlePaintedWearables();
 
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -160,7 +161,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR
 public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 {
-	if(CvarAutoSelectWave.BoolValue && !Waves_Started())
+	if(CvarAutoSelectDiff.BoolValue && !Waves_Started())
 	{
 		//Do this only once!
 		char mapname[64];

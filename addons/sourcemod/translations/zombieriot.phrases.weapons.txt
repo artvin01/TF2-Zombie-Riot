@@ -1420,12 +1420,12 @@
 		"chi"       	"鲍勃的魔法"
 		"it"		"La magia di Bob"
 	}
-	"Passive Upgrades"//Passive Upgrades HERE!!!
+	"Survival Upgrades"//Survival Upgrades HERE!!!
 	{
-		"en"		"Passive Upgrades"
+		"en"		"Survival Upgrades"
 		"fr"		"Améliorations Passives"
 		"ru"		"Пассивные улучшения"
-		"de"		"Passive Upgrades"
+		"de"		"Survival Upgrades"
 		"pt"		"Melhorias Passivas"
 		"nl"		"Passieve Upgrades"
 		"chi"       	"被动升级"
@@ -3650,5 +3650,41 @@
 	{
 		"en"	"Adds the Kazimierz faction"
 		"it"	"Aggiunge la fazione Kazimierz"
+	}
+	"Crystal Shard"
+	{
+		"en"	"Crystal Shard"
+		"chi"	"水晶碎片"
+		"ru"	"Осколок Кристалла"
+	}
+	"Mana Fusions"
+	{
+		"en"	"Mana Fusions"
+		"chi"	"魔力融合"
+		"ru"	"Слияние Маны"
+	}
+	"Insanity Sigil"
+	{
+		"en"	"Insanity Sigil"
+		"chi"	"疯狂印记"
+		"ru"	"Сигил Безумия"
+	}
+	"Sanity Sigil Blade"
+	{
+		"en"	"Sanity Sigil Blade"
+		"chi"	"理智印记剑"
+		"ru"	"Сигильный Клинок Рассудка"
+	}
+	"The Arsenal"
+	{
+		"en"	      "The Arsenal"
+		"chi"	"武器库"
+		"ru"	"Арсенал"
+	}
+	"Mechanized Terror"
+	{
+		"en"	      "Mechanized Terror"
+		"chi"	"机械恐怖"
+		"ru"	"Механический Террор"
 	}
 }

@@ -88,6 +88,15 @@ Function func_NPCActorEmoted[MAXENTITIES];
 Function func_NPCInteract[MAXENTITIES];
 Function FuncShowInteractHud[MAXENTITIES];
 
+enum struct WearableColor
+{
+	int color;
+	int wearableRef;
+	ArrayList entities;
+}
+
+ArrayList h_ColoredWearables;
+
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
 #define NPC_DEFAULT_YAWRATE 225.0
@@ -109,6 +118,52 @@ static const char g_HurtArmorSounds[][] = {
 	")physics/metal/metal_box_impact_bullet2.wav",
 	")physics/metal/metal_box_impact_bullet3.wav",
 };
+
+#if defined  BONEZONE_BASE
+
+char        c_BoneZoneBuffedName[MAXENTITIES][255];
+char        c_BoneZoneNonBuffedName[MAXENTITIES][255];
+
+bool         b_BoneZoneNaturallyBuffed[MAXENTITIES];
+bool         b_SetBuffedSkeletonAnimation[MAXENTITIES];
+bool         b_SetNonBuffedSkeletonAnimation[MAXENTITIES];
+bool         b_IsSkeleton[MAXENTITIES];
+bool         b_BonesBuffed[MAXENTITIES];
+int          i_BoneZoneSummoner[MAXENTITIES];
+int          i_BoneZoneNonBuffedMaxHealth[MAXENTITIES];
+int          i_BoneZoneBuffedMaxHealth[MAXENTITIES];
+float        f_BoneZoneSummonValue[MAXENTITIES];
+float        f_BoneZoneNumSummons[MAXENTITIES];
+float        f_BoneZoneBuffedScale[MAXENTITIES];
+float        f_BoneZoneNonBuffedScale[MAXENTITIES];
+float        f_BoneZoneBuffedSpeed[MAXENTITIES];
+float        f_BoneZoneNonBuffedSpeed[MAXENTITIES];
+Handle       g_BoneZoneBuffers[MAXENTITIES];
+Function     g_BoneZoneBuffFunction[MAXENTITIES];
+Function     g_BoneZoneBuffVFX[MAXENTITIES];
+
+// This is used exclusively for handling skeleton spawns via wave or command.
+// If we spawn a NON-BUFFED skeleton with health different from its default max health, and the random buff chance succeeds and forces the buff,
+// we need to make sure the buffed form's HP reflects the change. IE if Basic Bones, which normally has 300 HP, is spawned via wave config with 600 HP,
+// that means it has double max HP. If the random buff chance happens, we need to make sure the buffed form also has double HP.
+public void BoneZone_SetRandomBuffedHP(CClotBody npc)
+{
+    if (!IsValidEntity(npc.index))
+        return;
+
+    if (!npc.BoneZone_GetBuffedState())
+        return;
+
+    float current    = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+    float defaultMax = float(npc.m_iBoneZoneNonBuffedMaxHealth);
+    float targetMax  = float(npc.m_iBoneZoneBuffedMaxHealth);
+    float multiplier = current / defaultMax;
+
+    SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundFloat(targetMax * multiplier));
+    SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+}
+
+#endif
 
 public Action Command_RemoveAll(int client, int args)
 {
@@ -215,6 +270,19 @@ float ReturnEntityAttackspeed(int iNpc)
 	return f_AttackSpeedNpcIncrease[iNpc];
 }
 
+//I moved these up here so they can be precached, because the server crashes if a skeleton is gibbed and these aren't precached:
+static char m_cGibModelSkeleton[][] = {
+    "models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl",
+    "models/bots/skeleton_sniper/skeleton_sniper_gib_leg_l.mdl",
+    "models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl"
+};
+
+void NPCStats_PluginStart()
+{
+	h_ColoredWearables = new ArrayList(sizeof(WearableColor));
+	CreateTimer(5.0, NPCStats_Timer_HandlePaintedWearables, _, TIMER_REPEAT);
+}
+
 void OnMapStart_NPC_Base()
 {
 	for (int i = 0; i < (sizeof(g_GibSound));   i++) { PrecacheSound(g_GibSound[i]);   }
@@ -273,6 +341,50 @@ void OnMapStart_NPC_Base()
 	{
 		g_NpcPathFollower[NpcIndexNumber] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
 	}
+
+	#if defined BONEZONE_BASE
+	for (int i = 0; i < (sizeof(g_BoneZoneBuffDefaultSFX)); i++)
+	{
+		PrecacheSound(g_BoneZoneBuffDefaultSFX[i]);
+	}
+	for (int i = 0; i < (sizeof(g_HHHGrunts)); i++)
+	{
+		PrecacheSound(g_HHHGrunts[i]);
+	}
+	for (int i = 0; i < (sizeof(g_HHHYells)); i++)
+	{
+		PrecacheSound(g_HHHYells[i]);
+	}
+	for (int i = 0; i < (sizeof(g_HHHLaughs)); i++)
+	{
+		PrecacheSound(g_HHHLaughs[i]);
+	}
+	for (int i = 0; i < (sizeof(g_HHHLaughs)); i++)
+	{
+		PrecacheSound(g_HHHLaughs[i]);
+	}
+	for (int i = 0; i < (sizeof(g_HHHPain)); i++)
+	{
+		PrecacheSound(g_HHHPain[i]);
+	}
+	for (int i = 0; i < (sizeof(g_WitchLaughs)); i++)
+	{
+		PrecacheSound(g_WitchLaughs[i]);
+	}
+	PrecacheSound(SOUND_DANGER_BIG_GUY_IS_HERE);
+	PrecacheSound(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY);
+	PrecacheSound(SOUND_HHH_DEATH);
+	PrecacheModel(BONEZONE_MODEL);
+	PrecacheModel(BONEZONE_MODEL_BOSS);
+	PrecacheModel(MODEL_SSB);
+	PrecacheSound(SND_TRANSFORM);
+	PrecacheSound(SND_GIB_SKELETON);
+
+	for (int i = 0; i < sizeof(m_cGibModelSkeleton); i++)
+	{
+		PrecacheModel(m_cGibModelSkeleton[i], true);
+	}
+	#endif
 }
 
 void NpcStats_OnMapEnd()
@@ -1447,6 +1559,261 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()				{ return b_AllowBackWalking[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_AllowBackWalking[this.index] = TempValueForProperty; }
 	}
+
+	#if defined BONEZONE_BASE
+
+	property int m_iBoneZoneNonBuffedMaxHealth
+    {
+		public get() { return i_BoneZoneNonBuffedMaxHealth[this.index]; }
+		public set(int value) { i_BoneZoneNonBuffedMaxHealth[this.index] = value; }
+	}
+
+	property int m_iBoneZoneBuffedMaxHealth
+    {
+		public get() { return i_BoneZoneBuffedMaxHealth[this.index]; }
+		public set(int value) { i_BoneZoneBuffedMaxHealth[this.index] = value; }
+	}
+
+	property float m_flBoneZoneBuffedScale
+    {
+		public get() { return f_BoneZoneBuffedScale[this.index]; }
+		public set(float value) { f_BoneZoneBuffedScale[this.index] = value; }
+	}
+
+	property float m_flBoneZoneNonBuffedScale
+    {
+		public get() { return f_BoneZoneNonBuffedScale[this.index]; }
+		public set(float value) { f_BoneZoneNonBuffedScale[this.index] = value; }
+	}
+
+	property float m_flBoneZoneBuffedSpeed
+    {
+		public get() { return f_BoneZoneBuffedSpeed[this.index]; }
+		public set(float value) { f_BoneZoneBuffedSpeed[this.index] = value; }
+	}
+
+	property float m_flBoneZoneNonBuffedSpeed
+    {
+		public get() { return f_BoneZoneNonBuffedSpeed[this.index]; }
+		public set(float value) { f_BoneZoneNonBuffedSpeed[this.index] = value; }
+	}
+
+	property bool m_bBoneZoneNaturallyBuffed
+	{
+		public get() { return b_BoneZoneNaturallyBuffed[this.index]; }
+		public set(bool TempValueForProperty) { b_BoneZoneNaturallyBuffed[this.index] = TempValueForProperty; }
+	}
+
+	property bool m_blSetBuffedSkeletonAnimation
+	{
+		public get() { return b_SetBuffedSkeletonAnimation[this.index]; }
+		public set(bool TempValueForProperty) { b_SetBuffedSkeletonAnimation[this.index] = TempValueForProperty; }
+	}
+
+	property bool m_blSetNonBuffedSkeletonAnimation
+	{
+		public get() { return b_SetNonBuffedSkeletonAnimation[this.index]; }
+		public set(bool TempValueForProperty) { b_SetNonBuffedSkeletonAnimation[this.index] = TempValueForProperty; }
+	}
+
+	property bool m_bIsSkeleton
+	{
+		public get() { return b_IsSkeleton[this.index]; }
+		public set(bool TempValueForProperty) { b_IsSkeleton[this.index] = TempValueForProperty; }
+	}
+
+	property int m_iBoneZoneSummoner
+    {
+		public get() { return i_BoneZoneSummoner[this.index]; }
+		public set(int value) { i_BoneZoneSummoner[this.index] = value; }
+	}
+
+	property float m_flBoneZoneSummonValue
+    {
+		public get() { return f_BoneZoneSummonValue[this.index]; }
+		public set(float value) { f_BoneZoneSummonValue[this.index] = value; }
+	}
+
+	property float m_flBoneZoneNumSummons
+    {
+		public get() { return f_BoneZoneNumSummons[this.index]; }
+		public set(float value) { f_BoneZoneNumSummons[this.index] = value; }
+	}
+
+	property Handle g_BoneZoneBuffers
+	{
+		public get() { return g_BoneZoneBuffers[this.index]; }
+		public set(Handle TempValueForProperty) { g_BoneZoneBuffers[this.index] = TempValueForProperty; }
+	}
+
+		// Updates the skeleton's name, depending on whether or not it is in its buffed form.
+	public void BoneZone_UpdateName()
+	{
+		strcopy(c_NpcName[this.index], sizeof(c_NpcName[]), (b_BonesBuffed[this.index] ? c_BoneZoneBuffedName[this.index] : c_BoneZoneNonBuffedName[this.index]));
+	}
+
+	// Returns whether or not the NPC is a skeleton. This function is redundant, but was made before m_bIsSkeleton was implemented and I don't want to go back and edit all the NPCs that already use it.
+	public bool BoneZone_IsASkeleton()
+	{
+		return this.m_bIsSkeleton;
+	}
+
+	//Returns whether or not the NPC is any type of medic.
+	public bool BoneZone_IsASaint()
+	{
+		return Is_a_Medic[this.index];
+	}
+
+	// Returns whether or not the NPC is a buffed skeleton.
+	public bool BoneZone_GetBuffedState()
+	{
+		return b_BonesBuffed[this.index];
+	}
+
+	// Retrieves the number of NPCs who are currently providing this skeleton with a buff.
+	public int BoneZone_GetNumBuffers()
+	{
+		if (this.g_BoneZoneBuffers == null || !this.BoneZone_IsASkeleton())
+			return 0;
+
+		return GetArraySize(this.g_BoneZoneBuffers);
+	}
+
+	// Turns a non-buffed skeleton into a buffed one, or vice-versa.
+	// Passing an invalid buffer will force the effect to go through
+	// TODO: The max health set by this will need to account for later waves where skeletons have higher HP. Probably do this by comparing
+	// its current max health to its actual max health, and then multiply the target max health accordingly.
+	public void BoneZone_SetBuffedState(bool buffed, int buffer = -1)
+	{
+		// Skeletons which are already buffed when they spawn are completely ignored by this so that we don't accidentally remove their natural buff.
+		// Maybe we can change this in the future so players can remove buffs via Silence, but that may be way too strong, so for now it stays like this.
+		if (this.m_bBoneZoneNaturallyBuffed)
+			return;
+
+		bool AllBuffersGone = false;
+		bool hadBuffAtStart = this.BoneZone_GetBuffedState();
+		// If buffer is a valid entity, add it to the list of buffers or remove it.
+		// This way, we can force the buffed state without specifying a buffer if we so choose.
+		if (IsValidEntity(buffer))
+		{
+			// Add the buffer to the list if we are applying the buffed form:
+			if (buffed)
+			{
+				if (this.g_BoneZoneBuffers == null)
+					this.g_BoneZoneBuffers = CreateArray(16);
+
+				bool DoNotAdd = false;
+				for (int i = 0; i < GetArraySize(this.g_BoneZoneBuffers) && !DoNotAdd; i++)
+				{
+					int index = EntRefToEntIndex(GetArrayCell(this.g_BoneZoneBuffers, i));
+					if (index == buffer)
+					{
+						DoNotAdd = true;
+					}
+				}
+
+				if (!DoNotAdd)
+					PushArrayCell(this.g_BoneZoneBuffers, EntIndexToEntRef(buffer));
+			}
+			else if (this.g_BoneZoneBuffers != null)    // Remove the buffer from the list if we are removing the buffed form, and then delete the list if it is empty:
+			{
+				for (int i = 0; i < GetArraySize(this.g_BoneZoneBuffers); i++)
+				{
+					int index = EntRefToEntIndex(GetArrayCell(this.g_BoneZoneBuffers, i));
+					if (index == buffer)
+					{
+						RemoveFromArray(this.g_BoneZoneBuffers, i);
+					}
+				}
+
+				if (GetArraySize(this.g_BoneZoneBuffers) < 1)
+				{
+					AllBuffersGone = true;
+					delete this.g_BoneZoneBuffers;
+				}
+			}
+		}
+
+		// Add the buff if we are adding one, or remove it if we are trying to remove the buff and the list of buffers is empty:
+		if (((buffed && !hadBuffAtStart) || AllBuffersGone) && g_BoneZoneBuffFunction[this.index] != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, g_BoneZoneBuffFunction[this.index]);
+			Call_PushCell(this.index);
+			Call_PushCell(buffed);
+			Call_Finish();
+
+			bool hasBuffNow = this.BoneZone_GetBuffedState();
+
+			if (hasBuffNow != hadBuffAtStart)
+			{
+				// Calculates the max health to give a skeleton based on scaling.
+				// Example: In the waves config I specify Basic Bones should spawn with 1000 max health, when he normally has 500. This means he has double his max health.
+				// Therefore, if we convert him to his buffed state, he needs to have double the buffed state's max health too.
+				// Without this, wave config based health scaling does not play nice with the buffed forms gimmick. Also, barracks would be monstrously OP!
+				// NOTE: DO NOT MODIFY MAX HEALTH IN THE SKELETON'S BUFF FUNCTION! THIS WILL CAUSE UNINTENDED RESULTS!
+				float current    = float(GetEntProp(this.index, Prop_Data, "m_iMaxHealth"));
+				float defaultMax = float((hadBuffAtStart ? this.m_iBoneZoneBuffedMaxHealth : this.m_iBoneZoneNonBuffedMaxHealth));
+				float targetMax  = float((hasBuffNow ? this.m_iBoneZoneBuffedMaxHealth : this.m_iBoneZoneNonBuffedMaxHealth));
+				float multiplier = current / defaultMax;
+
+				SetEntProp(this.index, Prop_Data, "m_iMaxHealth", RoundFloat(targetMax * multiplier));
+				// Don't let skeletons keep excess health when they lose their buffed state.
+				if (!buffed && GetEntProp(this.index, Prop_Data, "m_iHealth") > GetEntProp(this.index, Prop_Data, "m_iMaxHealth"))
+				{
+					SetEntProp(this.index, Prop_Data, "m_iHealth", GetEntProp(this.index, Prop_Data, "m_iMaxHealth"));
+				}
+
+				SetEntPropFloat(this.index, Prop_Send, "m_flModelScale", (hasBuffNow ? this.m_flBoneZoneBuffedScale : this.m_flBoneZoneNonBuffedScale));
+				this.m_flSpeed = (hasBuffNow ? this.m_flBoneZoneBuffedSpeed : this.m_flBoneZoneNonBuffedSpeed);
+
+				this.BoneZone_UpdateName();
+
+				float skeleBuffPos[3];
+				this.GetAbsOrigin(skeleBuffPos);
+
+				if (g_BoneZoneBuffVFX[this.index] != INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, g_BoneZoneBuffVFX[this.index]);
+					Call_PushCell(this.index);
+					Call_PushCell(hasBuffNow);
+					Call_PushArray(skeleBuffPos, sizeof(skeleBuffPos));
+					Call_Finish();
+				}
+				else
+				{
+					if (hasBuffNow)
+					{
+						ParticleEffectAt(skeleBuffPos, "spell_batball_impact_blue_3", 2.0);
+						EmitSoundToAll(g_BoneZoneBuffDefaultSFX[GetRandomInt(0, sizeof(g_BoneZoneBuffDefaultSFX) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, _, GetRandomInt(90, 110));
+					}
+					else
+					{
+						WorldSpaceCenter(this.index, skeleBuffPos);
+						ParticleEffectAt(skeleBuffPos, "bombinomicon_burningdebris_halloween_4", 2.0);
+					}
+				}
+			}
+		}
+	}
+
+	public void BoneZone_SetExtremeDangerState(bool dangerous)
+	{
+		if (dangerous)
+		{
+			EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, this.index, _, 120, _, _, 80);
+			EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, this.index, _, 120, _, _, 80);
+			EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, this.index, _, 120);
+			EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, this.index, _, 120);
+			float pos[3];
+			WorldSpaceCenter(this.index, pos);
+			ParticleEffectAt(pos, PARTICLE_DANGER_BIG_GUY_IS_HERE);
+		}
+
+		b_thisNpcIsABoss[this.index] = dangerous;
+		GiveNpcOutLineLastOrBoss(this.index, dangerous);
+	}
+	#endif
+
 	public void SetPoseParameter_Easy(char[] PoseParam = "", float Value)//For the future incase we want to alter it easier
 	{
 		int iPitch = this.LookupPoseParameter(PoseParam);
@@ -2997,6 +3364,23 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		return -1;
 	}
+	public void RemoveAllWearables()
+    {
+        if (IsValidEntity(this.m_iWearable1))
+            RemoveEntity(this.m_iWearable1);
+        if (IsValidEntity(this.m_iWearable2))
+            RemoveEntity(this.m_iWearable2);
+        if (IsValidEntity(this.m_iWearable3))
+            RemoveEntity(this.m_iWearable3);
+        if (IsValidEntity(this.m_iWearable4))
+            RemoveEntity(this.m_iWearable4);
+        if (IsValidEntity(this.m_iWearable5))
+            RemoveEntity(this.m_iWearable5);
+        if (IsValidEntity(this.m_iWearable6))
+            RemoveEntity(this.m_iWearable6);
+        if (IsValidEntity(this.m_iWearable7))
+            RemoveEntity(this.m_iWearable7);
+    }
 	public int FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE, int entitytofirefrom = -1) //No defaults, otherwise i cant even judge.
 	{
 		//ITS NOT actually an arrow, because of an ANNOOOOOOOOOOOYING sound.
@@ -3675,6 +4059,20 @@ static void OnDestroy_Global(CClotBody body, int Type)
 	if(IsValidEntity(body.m_iWearable9))
 		RemoveEntity(body.m_iWearable9);
 
+	#if defined BONEZONE_BASE
+	b_IsSkeleton[body.index] = false;
+
+	int summoner = EntRefToEntIndex(i_BoneZoneSummoner[body.index]);
+	if (IsValidEntity(summoner))
+	{
+		f_BoneZoneNumSummons[summoner] -= f_BoneZoneSummonValue[body.index];
+		if (f_BoneZoneNumSummons[summoner] < 0.0)
+			f_BoneZoneNumSummons[summoner] = 0.0;
+
+		i_BoneZoneSummoner[body.index] = -1;
+	}
+	#endif
+
 }
 
 //Ragdoll
@@ -3798,6 +4196,12 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	
 #if defined EXPIDONSA_BASE
 		VausMagicaRemoveShield(pThis, true);
+#endif
+
+#if defined BONEZONE_BASE
+	delete g_BoneZoneBuffers[pThis];
+	b_SetBuffedSkeletonAnimation[pThis]    = false;
+	b_SetNonBuffedSkeletonAnimation[pThis] = false;
 #endif
 
 
@@ -4008,7 +4412,6 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	}
 	return MRES_Ignored;
 }
-
 stock bool IsLengthGreaterThan(float vector[3], float length)
 {
 	return (SquareRoot(GetVectorLength(vector, false)) > length * length);
@@ -4777,12 +5180,6 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 				}
 			}
 
-#if defined RTS
-			if(RTS_IsEntAlly(index, enemy))
-			{
-				return false;
-			}
-#else
 			if(!b_NpcIsTeamkiller[index] && GetTeam(index) == GetTeam(enemy))
 			{
 #if defined RPG
@@ -4794,7 +5191,6 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 				return false;
 #endif
 			}
-#endif
 
 #if defined RPG
 			if(GetTeam(index) != GetTeam(enemy))
@@ -5778,11 +6174,6 @@ public bool TraceRayCanSeeAllySpecific(int entity,int mask,any data)
 	if(b_ThisEntityIgnored[entity])
 	{
 		return false;
-	}
-	
-	if(entity == Entity_to_Respect)
-	{
-		return true;
 	}
 	
 	return false;
@@ -6907,7 +7298,7 @@ static char m_cGibModelMetal[][] =
 	"models/gibs/scanner_gib01.mdl",
 	"models/gibs/metal_gib2.mdl"
 };
-void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
+void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = false)
 {
 	CClotBody npc = view_as<CClotBody>(pThis);
 	if(npc.m_iBleedType == 0)
@@ -6925,6 +7316,9 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 		Limit_Gibs = true;
 	}
 	if(EnableSilentMode)
+		Limit_Gibs = true;
+
+	if(forcesilentMode)
 		Limit_Gibs = true;
 
 	if(npc.m_iBleedType == BLEEDTYPE_METAL)
@@ -6980,6 +7374,11 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 
 		if(npc.m_iBleedType == BLEEDTYPE_METAL)
 			DispatchKeyValue(prop, "model", m_cGibModelMetal[GibLoop]);
+		else if (npc.m_iBleedType == BLEEDTYPE_SKELETON)
+		{
+			DispatchKeyValue(prop, "model", m_cGibModelSkeleton[GibLoop]);
+			SetEntProp(prop, Prop_Send, "m_nSkin", GetEntProp(npc.index, Prop_Send, "m_nSkin", 1));
+		}
 		else
 			DispatchKeyValue(prop, "model", m_cGibModelDefault[GibLoop]);
 
@@ -7068,10 +7467,10 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 					ParticleSet = ParticleEffectAt(TempPosition, "blood_impact_green_01", Random_time); 
 				SetEntityRenderColor(prop, 0, 255, 0, 255);
 			}
-			case BLEEDTYPE_SKELETON:
+			/*case BLEEDTYPE_SKELETON:
 			{
-				//insert.
-			}
+				Skeletons don't bleed, so I'm leaving this blank.
+			}*/
 			case BLEEDTYPE_SEABORN:
 			{
 				if(!EnableSilentMode)
@@ -8648,6 +9047,11 @@ public void NPCStats_SetFuncsToZero(int entity)
 	func_NPCActorEmoted[entity] = INVALID_FUNCTION;
 	func_NPCInteract[entity] = INVALID_FUNCTION;
 	FuncShowInteractHud[entity] = INVALID_FUNCTION;
+
+	#if defined BONEZONE_BASE
+    g_BoneZoneBuffFunction[entity] = INVALID_FUNCTION;
+    g_BoneZoneBuffVFX[entity]      = INVALID_FUNCTION;
+	#endif
 }
 public void SetDefaultValuesToZeroNPC(int entity)
 {
@@ -11533,4 +11937,173 @@ void StuckFixNpc_Ledge(CClotBody npc, bool TeleportDo = true, int LaunchForward 
 	}
 	npc.SetVelocity(Vectorspeed);
 	SetEntPropFloat(npc.index, Prop_Data, "f_JumpedRecently", GetGameTime() + 0.5);
+}
+
+/*
+https://steamcommunity.com/sharedfiles/filedetails/?id=1911160067
+
+Website for own RGB stuff:
+https://www.webfx.com/web-design/color-picker/?colorcode=E7B53B
+http://www.shodor.org/stella2java/rgbint.html
+
+Here is a table of RGB integer values for the paints in TF2:
+Indubitably Green
+7511618
+Zepheniah's Greed
+4345659
+Noble Hatter's Violet
+5322826
+Color No. 216-190-216
+14204632
+A deep Commitment to Purple
+8208497
+Mann Co. Orange
+13595446
+Muskelmannbraun
+10843461
+Peculiarly Drab Tincture
+12955537
+Radigan Conagher Brown
+6901050
+Ye Olde Rustic Colour
+8154199
+Australium Gold
+15185211
+Aged Moustache Grey
+8289918
+An Extraordinary Abundance of Tinge
+15132390
+A Distinctive Lack of Hue
+1315860
+Pink as Hell
+16738740
+A Color Similar to Slate
+3100495
+Drably Olive
+8421376
+The Bitter Taste of Defeat and Lime
+3329330
+The Color of a Gentlemann's Business Pants
+15787660
+Dark Salmon Injustice
+15308410
+Mann's Mint
+12377523
+After Eight
+2960676
+Team Spirit (RED)
+12073019
+Team Spirit (BLU)
+5801378
+Operator's Overalls (RED)
+4732984
+Operator's Overalls (BLU)
+3686984
+Waterlogged Lab Coat (RED)
+11049612
+Waterlogged Lab Coat (BLU)
+8626083
+Balaclavas are Forever (RED)
+3874595
+Balaclavas are Forever (BLU)
+1581885
+The Value of Teamwork (RED)
+8400928
+The Value of Teamwork (BLU)
+2452877
+Cream Spirit (RED)
+12807213
+Cream Spirit (BLU)
+12091445
+An Air of Debonair (RED)
+6637376
+An Air of Debonair (BLU)
+2636109
+*/
+int NpcColourCosmetic_ViaPaint(int entity, int color, bool halloweenSpell = false)
+{
+	// To paint NPC cosmetics a certain color, we need an econ entity painted this color, then make the econ entity own the NPC cosmetic entity
+	// To avoid creating many edicts, only create one econ entity per color, then reuse it in case other cosmetics use the same color
+	
+	WearableColor wearableColor;
+	wearableColor.wearableRef = INVALID_ENT_REFERENCE;
+	
+	int index = h_ColoredWearables.FindValue(color);
+	if (index != -1)
+	{
+		h_ColoredWearables.GetArray(index, wearableColor);
+		if (IsValidEntity(wearableColor.wearableRef))
+		{
+			// Found an econ entity using this color, reuse it
+			SetEntityOwner(entity, wearableColor.wearableRef);
+			wearableColor.entities.Push(EntIndexToEntRef(entity));
+			return wearableColor.wearableRef;
+		}
+		else
+		{
+			// This can happen if the wearable was deleted by something out of our control
+			// and the color handler hasn't been updated yet
+			return -1;
+		}
+	}
+	
+	// We have yet to use this color, create an econ entity for this
+	int Wearable = CreateEntityByName("tf_wearable");
+	if(Wearable == -1)
+		return -1;
+	
+	SetEntProp(Wearable, Prop_Send, "m_bInitialized", true);
+	TF2Attrib_SetByName(Wearable, halloweenSpell ? "SPELL: set item tint RGB" : "set item tint RGB", float(color));
+	SetEntityOwner(entity, Wearable);
+	DispatchSpawn(Wearable);
+	ActivateEntity(Wearable);	
+	SetEdictFlags(Wearable, GetEdictFlags(Wearable) | FL_EDICT_ALWAYS);
+	b_IsEntityAlwaysTranmitted[Wearable] = true;
+	
+	wearableColor.color = color;
+	wearableColor.wearableRef = EntIndexToEntRef(Wearable);
+	
+	wearableColor.entities = new ArrayList();
+	wearableColor.entities.Push(EntIndexToEntRef(entity));
+	
+	h_ColoredWearables.PushArray(wearableColor);
+	
+	return Wearable;
+}
+
+Action NPCStats_Timer_HandlePaintedWearables(Handle timer)
+{
+	NPCStats_HandlePaintedWearables();
+	return Plugin_Continue;
+}
+
+void NPCStats_HandlePaintedWearables()
+{
+	// Check if each color is still being used by a cosmetic
+	for (int i = h_ColoredWearables.Length - 1; i >= 0; i--)
+	{
+		WearableColor wearableColor;
+		h_ColoredWearables.GetArray(i, wearableColor);
+		
+		bool foundValidEntity;
+		
+		// This color is still being used, but are the cosmetics in here still valid?
+		for (int j = wearableColor.entities.Length - 1; j >= 0; j--)
+		{
+			if (IsValidEntity(wearableColor.entities.Get(j)))
+				foundValidEntity = true;
+			else
+				wearableColor.entities.Erase(j);
+		}
+		
+		// None of the cosmetics using this color are valid, we can erase this color from the list
+		if (!foundValidEntity)
+		{
+			if (IsValidEntity(wearableColor.wearableRef))
+				RemoveEntity(wearableColor.wearableRef);
+			
+			delete wearableColor.entities;
+			h_ColoredWearables.Erase(i);
+		}
+	}
 }

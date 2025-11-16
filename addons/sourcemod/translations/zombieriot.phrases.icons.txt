@@ -121,6 +121,14 @@
 		"chi"       "闪电战已经到来"
 		"it"		"La Guerra lampo è arrivata."
 	}
+	"SSB Spawn"
+	{
+		"en"		"SSB is here to wreak havoc!"
+	}
+	"SSB Spawn Finale"
+	{
+		"en"		"SSB is here to- wait, why is he in a chair?"
+	}
 	"You have alerted the horde..."
 	{
 		"en" 		"You have alerted the horde..."
@@ -512,8 +520,32 @@
 		"en"		"3650 makes an appearance."
 		"ru" 		"3650 появляется."
 		"chi"		"欧米茄现身了。"
-		"fr"		"3650 apparaît."
+		"fr"		"Omega apparaît."
 		"it"		"3650 fa la sua comparsa."
+	}
+	"Reaper Spawn 1"
+	{
+		"en"		"''Don't fear the reaper'', they say... They're wrong."
+	}
+	"Reaper Spawn 2"
+	{
+		"en"		"Death itself has come for you."
+	}
+	"Reaper Spawn 3"
+	{
+		"en"		"An agent of Necropolis has arrived."
+	}
+	"Dr Dam Deliver Spawn 1"
+	{
+		"en"		"Oh wow! How nice, a gift!"
+	}
+	"Dr Dam Deliver Spawn 2"
+	{
+		"en"		"Messing with luck has its downsides."
+	}
+	"Dr Dam Deliver Spawn 3"
+	{
+		"en"		"Well Dr Dam, ill be dammed!"
 	}
 	"Zmain spawn Text 1"
 	{

@@ -1088,6 +1088,8 @@ void DestroyBuildingDo(int entity, bool DontCheckAgain = false)
 		Call_PushCell(entity);
 		Call_Finish();
 	}
+	//no more hp.
+	SetEntProp(objstats.index, Prop_Data, "m_iHealth", 0);
 	objstats.PlayDeathSound();
 	float VecOrigin[3];
 	GetAbsOrigin(entity, VecOrigin);

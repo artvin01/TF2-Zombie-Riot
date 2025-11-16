@@ -916,7 +916,7 @@
 	}
 	"Barracks Commander"
 	{
-		"en" 		"Combine Commander"
+		"en" 		"Mazeat Commander"
 		"ru" 		"Комбайн Командир"
 		"en" 		"Barracks Commander"
 		"it"		"Comandante della combinazione"
@@ -3939,6 +3939,10 @@
 		"en" "Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
 		"it" "Xeno Seaborn W.F. Chaos Voided Acclamato Spadaccino Il Primo"
 	}
+	"Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First esc"
+	{
+		"en" "The merc's worst n1ghtmare. \n-Very fast. \n-Pulse attack one shots. \n-Melee attacks one shot. \n-The nightmare won't last forever."
+	}
 	"Chaos Mercenaries"
 	{
 		"en"	"Chaos Mercenaries"
@@ -3951,7 +3955,7 @@
 	}
 	"Chaos Knight? Desc"
 	{
-		"en"	"a very sick knight, who knows what he could do if not for his sickness.\nDeals heavy chaos damage, Very slow but strong attacks.\nCan go into a defensive state and heal up abit.\nAfter some time, recives a coughting fit, attack it during it, or heal up."
+		"en"	"a very sick knight, who knows what he could do if not for his sickness. \n-Attacks deal chaos affliction. \n-Can go into a defensive state and heal up a bit. \n-After some time, receives a coughing fit"
 		"it"	"un cavaliere molto malato, chissà cosa potrebbe fare se non fosse per la sua malattia.\nSubisce pesanti danni da caos, attacchi molto lenti ma forti.\nPuò entrare in uno stato difensivo e guarire un po'.\nDopo un po' di tempo, recupera una crisi di astinenza, attaccando durante la stessa o guarendo."
 	}
 	"Chaos Injured Cultist"
@@ -3973,6 +3977,170 @@
 	{
 		"en"	"Fallen. to the void."
 		"it"	"Caduto. nel vuoto."
+	}
+	"Basic Bones"
+	{
+		"en"	"Basic Bones"
+	}
+	"Buffed Basic Bones"
+	{
+		"en"	"Buffed Basic Bones"
+	}
+	"Beefy Bones"
+	{
+		"en"	"Beefy Bones"
+	}
+	"Buffed Beefy Bones"
+	{
+		"en"	"Buffed Beefy Bones"
+	}
+	"Big Bones"
+	{
+		"en"	"Big Bones"
+	}
+	"Buffed Big Bones"
+	{
+		"en"	"Buffed Big Bones"
+	}
+	"Brittle Bones"
+	{
+		"en"	"Brittle Bones"
+	}
+	"Buffed Brittle Bones"
+	{
+		"en"	"Buffed Brittle Bones"
+	}
+	"Spelleton"
+	{
+		"en"	"Spelleton"
+	}
+	"Alakablaster"
+	{
+		"en"	"Alakablaster"
+	}
+	"Profaned Priest"
+	{
+		"en"	"Profaned Priest"
+	}
+	"Blighted Bones"
+	{
+		"en"	"Blighted Bones"
+	}
+	"Novice Necromancer"
+	{
+		"en"	"Novice Necromancer"
+	}
+	"Bringer of Bones"
+	{
+		"en"	"Bringer of Bones"
+	}
+	"Brigadier Bones"
+	{
+		"en"	"Brigadier Bones"
+	}
+	"Boner Bomber"
+	{
+		"en"	"Boner Bomber"
+	}
+	"Buccaneer Bones"
+	{
+		"en"	"Buccaneer Bones"
+	}
+	"Calcium Corsair"
+	{
+		"en"	"Calcium Corsair"
+	}
+	"Undead Deckhand"
+	{
+		"en"	"Undead Deckhand"
+	}
+	"Aleraiser"
+	{
+		"en"	"Aleraiser"
+	}
+	"Bone Brewer"
+	{
+		"en"	"Bone Brewer"
+	}
+	"Unpleasant Peasant"
+	{
+		"en"	"Unpleasant Peasant"
+	}
+	"Skeletal Squire"
+	{
+		"en"	"Skeletal Squire"
+	}
+	"Knightmare"
+	{
+		"en"	"Knightmare"
+	}
+	"Fearsome Fool"
+	{
+		"en"	"Fearsome Fool"
+	}
+	"Servant of Mondo"
+	{
+		"en"	"Servant of Mondo"
+	}
+	"Mr. Molotov"
+	{
+		"en"	"Mr. Molotov"
+	}
+	"Rattler"
+	{
+		"en"	"Rattler"
+	}
+	"Hollow Hitman"
+	{
+		"en"	"Hollow Hitman"
+	}
+	"Bone Breaker"
+	{
+		"en"	"Bone Breaker"
+	}
+	"Spinal Slugger"
+	{
+		"en"	"Spinal Slugger"
+	}
+	"Calcium Criminal"
+	{
+		"en"	"Calcium Criminal"
+	}
+	"Swashbuckler Skelebones"
+	{
+		"en"	"Swashbuckler Skelebones"
+	}
+	"Deadeye"
+	{
+		"en"	"Deadeye"
+	}
+	"The Reaper"
+	{
+		"en"	"The Reaper"
+	}
+	"Godfather Grimme"
+	{
+		"en"	"Godfather Grimme, Kingpin of Calcium"
+	}
+	"Captain Faux-Beard, Terror of the Dead Sea"
+	{
+		"en"	"Captain Faux-Beard, Terror of the Dead Sea"
+	}
+	"Lordread, Royal Executioner of Necropolis"
+	{
+		"en"	"Lordread, Royal Executioner of Necropolis"
+	}
+	"Supreme Spookmaster Bones"
+	{
+		"en"	"Supreme Spookmaster Bones"
+	}
+	"Supreme Spookmaster Bones, Magistrate of the Dead"
+	{
+		"en"	"Supreme Spookmaster Bones, Magistrate of the Dead"
+	}
+	"Supreme Spookmaster Bones, Eternal Master of the Damned"
+	{
+		"en"	"Supreme Spookmaster Bones, Eternal Master of the Damned"
 	}
 	"Sphynx"
 	{
@@ -4117,6 +4285,22 @@
 	{
 		"en"		"Protects the lighthouse, If the lighthouse dies, gets stronger, eliminate him before the lighthouse.\nHas bad predictive aiming and summons holy lights like grigori."
 		"it"		"Protegge il faro, se il faro muore, diventa più forte, eliminatelo prima del faro.\nHa una pessima mira predittiva ed evoca luci sacre come Grigori."
+	}
+	"Dr Dam Clone"
+	{
+		"en"		"Dr Dam Clone"
+	}
+	"Dr Dam Clone Desc"
+	{
+		"en"		"A clone of the one who harnessed luck.\n-Does a triple combo attack, 3rd hit deals 2x damage\n-The further away the target is, the more speed he gains.\n-If far enough away, gains massive resistances."
+	}
+	"Dr Dam's Special Delivery"
+	{
+		"en"		"Dr Dam's Special Delivery"
+	}
+	"Dr Dam's Special Delivery Desc"
+	{
+		"en"		"Dr Dam's special delivery! How nice!.\n-Cannot be killed.\n-After some time, deploys a ''Bomb'' that summons a bunch of ''Dr Dam's''."
 	}
 	"Cambino"
 	{

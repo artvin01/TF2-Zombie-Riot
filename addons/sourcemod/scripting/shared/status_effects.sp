@@ -197,6 +197,7 @@ void InitStatusEffects()
 	StatusEffects_BubbleWand1();
 	StatusEffects_BubbleWand2();
 	StatusEffects_Plasm();
+	StatusEffects_Challenger();
 
 	//freeplay last.
 	StatusEffects_Freeplay1();
@@ -212,6 +213,7 @@ void InitStatusEffects()
 	StatusEffects_Rogue3();
 	StatusEffects_SkullServants();
 	StatusEffects_GamemodeMadnessSZF();
+	StatusEffects_Raigeki();
 #endif
 }
 
@@ -2670,7 +2672,7 @@ static bool CheckBuffIndex(int victim, int buffIndex)
 void StatusEffects_CombineCommander()
 {
 	StatusEffect data;
-	strcopy(data.BuffName, sizeof(data.BuffName), "Combine Command");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Mazeat Command");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⛠");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -2945,10 +2947,10 @@ void StatusEffects_SevenHeavySouls()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "♥");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.5;
-	data.DamageDealMulti			= 0.5;
+	data.DamageTakenMulti 			= 0.25;
+	data.DamageDealMulti			= 1.0;
 	data.MovementspeedModif			= 1.5;
-	data.AttackspeedBuff			= 0.5;
+	data.AttackspeedBuff			= 0.25;
 	
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false; //lol why was it on yes
@@ -4216,6 +4218,20 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Nightmareish Sawing");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "N");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Crafted Potion");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⅋");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -5403,6 +5419,24 @@ void StatusEffects_Plasm()
 	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 }
+
+void StatusEffects_Challenger()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Challenger");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⸸");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+}
+
 stock void StatusEffects_SetCustomValue(int victim, float NewBuffValue, int Index)
 {
 	if(!E_AL_StatusEffects[victim])
@@ -5571,6 +5605,19 @@ void StatusEffects_Explainelemental()
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Overmana Overload");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Mana Overflow");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	//-1.0 means unused

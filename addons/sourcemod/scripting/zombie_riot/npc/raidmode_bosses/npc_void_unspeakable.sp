@@ -378,7 +378,7 @@ methodmap VoidUnspeakable < CClotBody
 			else if(value > 35.0)
 			{
 				RaidModeTime = GetGameTime(npc.index) + 220.0;
-				RaidModeScaling *= 0.85;
+			//	RaidModeScaling *= 0.85;
 			}
 			
 			int color[4] = { 25, 0, 25, 50 };
@@ -666,7 +666,13 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) 
 	{
 		npc.Anger = true;
-		SensalGiveShield(npc.index, CountPlayersOnRed(1) * 12);
+		if(i_RaidGrantExtra[npc.index] >= 4)
+		{
+			SensalGiveShield(npc.index, CountPlayersOnRed(1) * 24);
+		}
+		else
+			SensalGiveShield(npc.index, CountPlayersOnRed(1) * 12);
+			
 		CPrintToChatAll("{purple}It's Angered.");
 		RaidModeScaling *= 1.1;
 	}
@@ -679,6 +685,10 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 
 		if((health / 10) < nextLoss)
 		{
+			if(i_RaidGrantExtra[npc.index] >= 4)
+			{
+				SensalGiveShield(npc.index, CountPlayersOnRed(1) * 3);
+			}
 			npc.g_TimesSummoned++;
 			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 5.0);
 			npc.m_flResistanceBuffs = GetGameTime() + 2.0;

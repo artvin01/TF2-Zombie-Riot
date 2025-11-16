@@ -10,6 +10,8 @@ enum ZRSpecialMode
 	Mode_Standard = 0,
 	Mode_Rogue1,
 	Mode_Rogue2,
+	Mode_Rogue3,
+	Mode_BetWars,
 	Mode_Construction,
 }
 

@@ -170,7 +170,7 @@ public void ApertureSpokesman_ClotThink(int iNPC)
 			float DurationGive = 9999.0;
 			npc.m_flMeleeArmor = 0.50;
 			npc.m_flRangedArmor = 0.50;
-			ApplyStatusEffect(npc.index, npc.index, "Combine Command", DurationGive);
+			ApplyStatusEffect(npc.index, npc.index, "Mazeat Command", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "War Cry", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", DurationGive);
