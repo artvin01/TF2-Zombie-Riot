@@ -1029,20 +1029,22 @@ void Music_Update(int client)
 					EmitCustomToClient(client, "#zombiesurvival/cheese_lastman.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					SetMusicTimer(client, GetTime() + 170);
 				}
+				/*
 				case 12:
                 {
                     EmitCustomToClient(client, "#zombiesurvival/expidonsa_waves/wave_45_music_1.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.2);
                     SetMusicTimer(client, GetTime() + 280);
                 }
+				*/
                 case 13:
                 {
                     EmitCustomToClient(client, "#zombiesurvival/combinehell/escalationP2.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.2);
-                    SetMusicTimer(client, GetTime() + 150);
+                    SetMusicTimer(client, GetTime() + 147);
                 }
                 case 14:
                 {
                     EmitCustomToClient(client, "#zombiesurvival/internius/chaos_engineered_cyborg.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.2);
-                    SetMusicTimer(client, GetTime() + 190);
+                    SetMusicTimer(client, GetTime() + 183);
 				}
 				default:
 				{	

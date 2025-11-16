@@ -252,6 +252,7 @@ enum
     WEAPON_KIT_PURGE_CRUSHER = 160,
     WEAPON_KIT_PURGE_RAMPAGER = 161,
     WEAPON_KIT_PURGE_ANNAHILATOR = 162,
+    WEAPON_KIT_PURGE_MISC = 163,
 }
 
 enum
@@ -954,8 +955,8 @@ void ZR_MapStart()
 	BubbleWand_MapStart();
 	Cheese_MapStart();
 	KitOmega_OnMapStart();
-    Wand_Sigil_Blade_MapStart();
-    PurgeKit_MapStart();
+	Wand_Sigil_Blade_MapStart();
+	PurgeKit_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -2163,21 +2164,23 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							CPrintToChatAll("{darkviolet}%N decides to inject themselves with plasma as a last resort...", client);
 							Yakuza_Lastman(11);
 						}
+						/*
 						if(Sigil_LastMann(client))
-                        {
-                            CPrintToChatAll("{blue}Diabolus Ex Machina.",client);
-                            Yakuza_Lastman(12);
-                        }
-                        if(Wkit_Omega_LastMann(client))
-                        {
-                            CPrintToChatAll("{gold}%N are now alone,however,he won't given up that early.",client);
-                            Yakuza_Lastman(13);
-                        }
-                        if(PurgeKit_LastMann(client))
-                        {
-                            CPrintToChatAll("{crimson}%N's purging protocol activates.",client);
-                            Yakuza_Lastman(14);
-                        }
+						{
+							CPrintToChatAll("{blue}Diabolus Ex Machina.",client);
+							Yakuza_Lastman(12);
+						}
+						*/
+						if(Wkit_Omega_LastMann(client))
+						{
+							CPrintToChatAll("{gold}%N is now alone, however giving up isn't in their vocabulary.",client);
+							Yakuza_Lastman(13);
+						}
+						if(PurgeKit_LastMann(client))
+						{
+							CPrintToChatAll("{crimson}%N's purging protocol activates.",client);
+							Yakuza_Lastman(14);
+						}
 						
 						for(int i=1; i<=MaxClients; i++)
 						{

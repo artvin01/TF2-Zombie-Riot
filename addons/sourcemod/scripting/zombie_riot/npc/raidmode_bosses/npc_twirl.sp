@@ -3703,14 +3703,7 @@ static bool Magia_Overflow(Twirl npc)
 	npc.m_flRetreatLaserThrottle = GameTime + 0.7;
 	npc.m_flMagiaOverflowRecharge = GameTime + Duration + 0.7 + (npc.Anger ? 30.0 : 45.0);
 
-	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	int color[4]; 
-	Ruina_Color(color, i_current_wave[npc.index]);
-	float Thickness = 6.0;
-	VecSelfNpc[2]-=2.5;
 	//create a ring around twirl showing the radius for her special "if you're near me, my laser turns faster"
-	TE_SetupBeamRingPoint(VecSelfNpc, (npc.Anger ? 350.0 : 275.0)*2.0, (npc.Anger ? 350.0 : 275.0)*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Duration+0.7, Thickness, 0.75, color, 1, 0);
-	TE_SendToAll();
 
 	npc.m_bAnimationSet = false;
 
@@ -3745,7 +3738,8 @@ static Action Magia_Overflow_Tick(int iNPC)
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
-
+		npc.m_flDoingAnimation = 1.0;
+		
 		npc.m_bInKame = false;
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
@@ -3756,6 +3750,8 @@ static Action Magia_Overflow_Tick(int iNPC)
 
 		return Plugin_Stop;
 	}
+
+
 	ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 0.25);
 	ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);
 
@@ -3821,6 +3817,14 @@ static Action Magia_Overflow_Tick(int iNPC)
 	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
 	if(update)
 	{
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		int color[4]; 
+		Ruina_Color(color, i_current_wave[npc.index]);
+		float Thickness = 6.0;
+		VecSelfNpc[2]-=2.5;
+		TE_SetupBeamRingPoint(VecSelfNpc, (npc.Anger ? 350.0 : 275.0)*2.0, (npc.Anger ? 350.0 : 275.0)*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.1, Thickness, 0.75, color, 1, 0);
+		TE_SendToAll();
+	
 		float Duration = fl_ruina_battery_timeout[npc.index] - GameTime;
 		float Ratio = (1.0 - (Duration / TWIRL_MAGIA_OVERFLOW_DURATION));
 		if(Ratio<0.1)

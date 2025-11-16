@@ -20,10 +20,9 @@ static Handle Annahilator_Remove_Timer[MAXPLAYERS]={INVALID_HANDLE, ...};
 static Handle QuadLauncher_Remove_Timer[MAXPLAYERS]={INVALID_HANDLE, ...};
 
 //			check out cfg file						pap	 0		n		2		3		4		5		6		n		n
-static float fl_KitPurge_Annahilator_Max_Hold_Time[9]=	{30.0,	30.0,	45.0,	45.0,	45.0,	45.0,	45.0,	45.0,	45.0};
-static float fl_KitPurge_Annahilator_Min_Hold_Time[9]=	{0.0,	0.0,	5.0,	4.0,	3.0,	3.0,	3.0,	3.0,	3.0};
-static float fl_KitPurge_Annahilator_Speed_Penality[9]=	{0.001,	0.001,	0.001,	0.001,	0.001,	0.5,	0.85,	0.85,	0.85};//inverted_percentage, attribute 183
-static float fl_KitPurge_Annahilator_Resistance[9]=		{0.5,	0.5,	0.5,	0.5,	0.5,	0.65,	0.85,	0.85,	0.85};//attribute 412
+static float fl_KitPurge_Annahilator_Max_Hold_Time[9]=	{10.0,	10.0,	12.0,	12.0,	12.0,	12.0,	12.0,	12.0,	15.0};
+static float fl_KitPurge_Annahilator_Speed_Penality[9]=	{0.001,	0.001,	0.001,	0.001,	0.001,	0.35,	0.4,	0.4,	0.4};//inverted_percentage, attribute 183
+static float fl_KitPurge_Annahilator_Resistance[9]=		{0.5,	0.5,	0.5,	0.5,	0.5,	0.5,	0.5,	0.5,	0.5};//attribute 412
 static int fl_KitPurge_QuadLauncher_Rockets[9]=			{2,		2,		2,		2,		2,		3,		4,		4,		4};
 static float fl_KitPurge_QuadLauncher_FireSpeed[9]=		{1.0,	1.0,	1.0,	1.0,	1.0,	0.85,	0.85,	0.85,	0.85};
 static float fl_KitPurge_Ram_Max_Time[9]=				{3.0,	3.0,	3.0,	3.0,	3.0,	3.0,	6.0,	6.0,	6.0};
@@ -32,12 +31,13 @@ static Handle Revert_Weapon_Back_Timer[MAXPLAYERS];
 static int attacks_mode[MAXPLAYERS]={12, ...};
 static int weapon_id[MAXPLAYERS]={0, ...};
 static bool Handle_on[MAXPLAYERS]={false, ...};
+static float QuadSinceLastRemove[MAXPLAYERS]={0.0, ...};
 
 #define PURGE_MAX_ENERGY 500.0
 #define PURGE_ENERGY_CLOSE_RANGE 400.0
 #define PURGE_ENERGY_CLOSE_RANGE_MULTI_GAIN 1.2
-#define PURGE_ENERGY_SHOTGUN 10.0
-#define PURGE_ENERGY_RIFLE 1.0
+#define PURGE_ENERGY_SHOTGUN 5.0
+#define PURGE_ENERGY_RIFLE 0.5
 
 #define PURGE_RAM_BASE_DMG 200.0
 #define PURGE_RAM_RADIUS 150.0
@@ -50,42 +50,50 @@ static bool Handle_on[MAXPLAYERS]={false, ...};
 #define PURGE_ANNAHILATOR_ENERGY_REQUIRE 300.0
 #define PURGE_QUAD_LAUNCHER_ENERGY_REQUIRE 500.0
 
-#define PURGE_QUADLAUNCHER_COOLDOWN 110.0
-#define PURGE_ANNAHILATOR_COOLDOWN 120.0
+#define PURGE_QUADLAUNCHER_COOLDOWN 80.0
+#define PURGE_ANNAHILATOR_COOLDOWN 90.0
 
 #define PURGE_ANNAHILATOR_VALID_RANGE 1500.0
 #define PURGE_ANNAHILATOR_BONUS_DAMAGE_MAXPERCENT 1.0	//+100% dmg
 #define PURGE_ANNAHILATOR_BONUS_DAMAGE_FADE 5.0
 
-#define PURGE_MINIGUN_FIRE_SOUND "mvm/giant_heavy/giant_heavy_gunfire.wav"
-#define PURGE_MINIGUN_LOOP_SOUND "mvm/giant_heavy/giant_heavy_gunspin.wav"
-#define PURGE_MINIGUN_WINDUP_SOUND "mvm/giant_heavy/giant_heavy_gunwindup.wav"
-#define PURGE_MINIGUN_WINDDOWN_SOUND "mvm/giant_heavy/giant_heavy_gunwinddown.wav"
+#define PURGE_EQUIPMINIGUN "mvm/giant_heavy/giant_heavy_gunwindup.wav"
+#define PURGE_REMOVEMINIGUN "mvm/giant_heavy7giant_heavy_gunwinddown.wav"
 #define PURGE_QUAD_LAUNCHER_SOUND "mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
 #define PURGE_EXPLOSION_SOUND "mvm/mvm_tank_explode.wav"
 #define PURGE_SWITCH_SOUND "items/gunpickup2.wav"
-#define PURGE_LMS_MUSIC "#zombiesurvival/internius/chaos_engineered_cyborg.mp3"
 #define PURGE_ARMOR_HURT_SOUND "physics/metal/metal_box_impact_bullet1.wav"
+#define PURGE_EQUIP_GRENADE "mvm/giant_pyro/giant_pyro_flamethrower_start.wav"
 
 public void PurgeKit_MapStart()
 {
-
-    PrecacheSound(PURGE_MINIGUN_FIRE_SOUND);
-    PrecacheSound(PURGE_MINIGUN_LOOP_SOUND);
-    PrecacheSound(PURGE_MINIGUN_WINDUP_SOUND);
-    PrecacheSound(PURGE_MINIGUN_WINDDOWN_SOUND);
+    PrecacheSound(PURGE_EQUIPMINIGUN);
+    PrecacheSound(PURGE_REMOVEMINIGUN);
     PrecacheSound(PURGE_QUAD_LAUNCHER_SOUND);
     PrecacheSound(PURGE_EXPLOSION_SOUND);
     PrecacheSound(PURGE_SWITCH_SOUND);
-    PrecacheSound(PURGE_LMS_MUSIC);
+    PrecacheSound(PURGE_EQUIP_GRENADE);
 }
 
 public void Enable_PurgeKit(int client, int weapon)
 {
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_KIT_PURGE_ANNAHILATOR || i_CustomWeaponEquipLogic[weapon] == WEAPON_KIT_PURGE_MISC)
+	{
+		//this is a weapon attached to omega, we want to delay getting the stats of the base weapon, 
+		//and then apply any and all changes we need.
+		int WhatTypeDo = RoundToFloor(Attributes_Get(weapon, 391, 0.0));
+		if(WhatTypeDo >= 999)
+		{
+			KitPurgeGiveAttributes(client, weapon, WhatTypeDo);
+			return;
+		}
+		
+	}
 	if(h_KitPurge_Timer[client] != null)
 	{
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_KIT_PURGE_CRUSHER)
 		{
+			i_KitPurge_Crusher_Ref[client] = EntIndexToEntRef(weapon);
 			SDKUnhook(client, SDKHook_OnTakeDamage, Weapon_Purging_Owner_OnTakeDamage);
 			SDKHook(client, SDKHook_OnTakeDamage, Weapon_Purging_Owner_OnTakeDamage);
 			if(IsValidHandle(h_KitPurge_Timer[client]))
@@ -101,6 +109,7 @@ public void Enable_PurgeKit(int client, int weapon)
 	
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_KIT_PURGE_CRUSHER)
 	{
+		i_KitPurge_Crusher_Ref[client] = EntIndexToEntRef(weapon);
 		SDKHook(client, SDKHook_OnTakeDamage, Weapon_Purging_Owner_OnTakeDamage);
 		DataPack pack;
 		h_KitPurge_Timer[client] = CreateDataTimer(0.1, Timer_PurgeKit, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
@@ -123,7 +132,7 @@ public Action Timer_PurgeKit(Handle timer, DataPack pack)
 		SDKUnhook(client, SDKHook_OnTakeDamage, Weapon_Purging_Owner_OnTakeDamage);
 		
 		h_KitPurge_Timer[client] = null;
-		
+		/*
 		if(Annahilator_Remove_Timer[client] != null)
 		{
 			if(IsValidHandle(Annahilator_Remove_Timer[client]))
@@ -142,6 +151,7 @@ public Action Timer_PurgeKit(Handle timer, DataPack pack)
 				delete QuadLauncher_Remove_Timer[client];
 			QuadLauncher_Remove_Timer[client] = null;
 		}
+		*/
 		
 		return Plugin_Stop;
 	}
@@ -212,11 +222,11 @@ public void PurgeKit_HUD(int client, int weapon, bool forced)
 		else
 			quadStat = "Online";
 		if(Attributes_Get(weapon, Attrib_PapNumber, 1.0) < 2.0)
-			PrintHintText(client, "Purge System Actived.\nEnergy: [%.0f/%.0f]", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY);
+			PrintHintText(client, "Purge System Activated.\nEnergy: [%.0f/%.0f]", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY);
 		else if(Attributes_Get(weapon, Attrib_PapNumber, 1.0) < 4.0)
-			PrintHintText(client, "Purge System Actived.\nEnergy: [%.0f/%.0f]\nAnnahilator:%s", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat);
+			PrintHintText(client, "Purge System Activated.\nEnergy: [%.0f/%.0f]\nAnnahilator:%s", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat);
 		else
-			PrintHintText(client, "Purge System Actived.\nEnergy: [%.0f/%.0f]\nAnnahilator:%s\nQuad-Launcher:%s", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat, quadStat);
+			PrintHintText(client, "Purge System Activated.\nEnergy: [%.0f/%.0f]\nAnnahilator:%s\nQuad-Launcher:%s", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat, quadStat);
 		fl_KitPurge_NextHUD[client] = GetGameTime() + 0.4;
 	}
 }
@@ -250,13 +260,15 @@ public void Weapon_Purging_QuadLauncher(int client, int weapon, bool crit, int s
 {
 	if(!IsValidEntity(client))
 		return;
-	int pap = RoundToFloor(Attributes_Get(weapon, Attrib_PapNumber, 1.0));
+	int pap = 0;
+	int KitWeaponMain = EntRefToEntIndex(i_KitPurge_Crusher_Ref[client]);
+	if(IsValidEntity(KitWeaponMain))
+		pap = RoundToFloor(Attributes_Get(KitWeaponMain, Attrib_PapNumber, 1.0));
 	EmitSoundToAll(PURGE_QUAD_LAUNCHER_SOUND, client, SNDCHAN_STATIC, 80, _, 0.8);
 	//Client_Shake(client, 0, 35.0, 20.0, 0.8);
 		
 	float speed = 1500.0;
 	float damage = 100.0;
-			
 	damage *= Attributes_Get(weapon, 1, 1.0);
 
 	damage *= Attributes_Get(weapon, 2, 1.0);
@@ -384,21 +396,20 @@ public void Weapon_Purging_Rampager_R(int client, int weapon, bool crit, int slo
 		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, PURGE_QUADLAUNCHER_COOLDOWN);
 		int weaponN = Store_GiveSpecificItem(client, "Purging QuadLauncher");
-		SetAmmo(client, 1, 0);
-		CurrentAmmo[client][1] = 0;
+		EmitSoundToAll(PURGE_EQUIP_GRENADE, client, SNDCHAN_STATIC, 80, _, 0.8);
 		ResetClipOfWeaponStore(weaponN, client, 9999);
-		Attributes_Set(weaponN, 1, 0.1);
-		Attributes_Set(weaponN, 2, Attributes_Get(weapon, 2, 1.0));
-		Attributes_Set(weaponN, 6, fl_KitPurge_QuadLauncher_FireSpeed[pap]);
-		Attributes_Set(weaponN, Attrib_PapNumber, Attributes_Get(weapon, Attrib_PapNumber, 1.0));
+		SetEntData(weaponN, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), 100);
 		if(QuadLauncher_Remove_Timer[client] != null)
 		{
 			if(IsValidHandle(QuadLauncher_Remove_Timer[client]))
 				delete QuadLauncher_Remove_Timer[client];
 			QuadLauncher_Remove_Timer[client] = null;
 		}
+		QuadSinceLastRemove[client] = GetGameTime() + PURGE_QUADLAUNCHER_MAX_HOLD;
 		QuadLauncher_Remove_Timer[client] = 
-			CreateTimer(PURGE_QUADLAUNCHER_MAX_HOLD, Weapon_Purging_QuadLauncher_Remove_Later, EntIndexToEntRef(weaponN), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(QuadSinceLastRemove[client] - GetGameTime(), Weapon_Purging_QuadLauncher_Remove_Later, EntIndexToEntRef(weaponN), TIMER_FLAG_NO_MAPCHANGE);
+
+			
 	}
 }
 
@@ -435,42 +446,30 @@ public void Weapon_Purging_Crusher_R(int client, int weapon, bool crit, int slot
 		PurgeKit_GainEnergy(client, -PURGE_ANNAHILATOR_ENERGY_REQUIRE);
 		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, PURGE_ANNAHILATOR_COOLDOWN);
-		//Ability_Apply_Cooldown(client, slot, fl_KitPurge_Annahilator_Max_Hold_Time[pap]);
 		int weaponN = Store_GiveSpecificItem(client, "Purging Annihilator");
-		SetAmmo(client, 1, 0);
-		CurrentAmmo[client][1] = 0;
 		ResetClipOfWeaponStore(weaponN, client, 9999);
-		Attributes_Set(weaponN, 2, Attributes_Get(weapon, 2, 1.0));
-		Attributes_Set(weaponN, 107, fl_KitPurge_Annahilator_Speed_Penality[pap]);
-		Attributes_Set(weaponN, 412, fl_KitPurge_Annahilator_Resistance[pap]);
-		Attributes_Set(weaponN, Attrib_PapNumber, Attributes_Get(weapon, Attrib_PapNumber, 1.0));
-		fl_KitPurge_Annahilator_Tookout_Time[client] = GetGameTime();
+		fl_KitPurge_Annahilator_Tookout_Time[client] = (GetGameTime() + fl_KitPurge_Annahilator_Max_Hold_Time[pap]);
 		if(Annahilator_Remove_Timer[client] != null)
 		{
 			if(IsValidHandle(Annahilator_Remove_Timer[client]))
 				delete Annahilator_Remove_Timer[client];
 			Annahilator_Remove_Timer[client] = null;
 		}
+		EmitSoundToAll(PURGE_EQUIPMINIGUN, client, SNDCHAN_STATIC, 80, _, 0.8);
 		DataPack pack = new DataPack();
 		Annahilator_Remove_Timer[client] = 
 			CreateTimer(0.1, Weapon_Purging_Annahilator_Remove_Later, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(weaponN));
-		pack.WriteCell(0);
 	}
 }
 
 public void Weapon_Purging_Annahilator_R(int client, int weapon, bool crit, int slot)
 {
-	int pap = RoundToFloor(Attributes_Get(weapon, Attrib_PapNumber, 1.0));
-	if(GetGameTime() - fl_KitPurge_Annahilator_Tookout_Time[client] < fl_KitPurge_Annahilator_Min_Hold_Time[pap])
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		return;
-	}
 	FakeClientCommandEx(client, "use tf_weapon_shotgun_hwg");
 	Store_RemoveSpecificItem(client, "Purging Annihilator");
 	
 	Weapon_Purging_Annahilator_Remove(EntIndexToEntRef(weapon), client);
+	TF2_RemoveItem(client, weapon);
 }
 
 public float Npc_OnTakeDamage_Purging_Annahilator(int attacker, int victim, float damage, int weapon, int damagetype)
@@ -661,7 +660,6 @@ public Action Purging_Annahilator_damageBonus_Fade(Handle timer, DataPack pack)
 	}
 	
 	Annahilator_Damage_Revert_Timer[client] = null;
-	delete pack;
 	return Plugin_Stop;
 }
 
@@ -673,22 +671,12 @@ public Action Weapon_Purging_QuadLauncher_Remove_Later(Handle h,int ref)
 		return Plugin_Stop;
 	}
 	int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
-	int pap = RoundToFloor(Attributes_Get(weapon, Attrib_PapNumber, 1.0));
-	int weaponN = Store_GiveSpecificItem(owner, "Purging Grinder");
-	Attributes_Set(weaponN, 2, Attributes_Get(weapon, 2, 1.0));
-	Attributes_Set(weaponN, 107, 1.4);
-	Attributes_Set(weaponN, 252, 0.5);
-	if(pap <= 6)
-		Attributes_Set(weaponN, 412, 1.2);
-	//IncreaseEntityDamageTakenBy(client, 1.2, fl_KitPurge_Ram_Max_Time[paplevel]);
-	Attributes_Set(weaponN, Attrib_PapNumber, Attributes_Get(weapon, Attrib_PapNumber, 1.0));
-	FakeClientCommand(owner, "use tf_weapon_fists");
 	float ownerPos[3];
 	WorldSpaceCenter(owner, ownerPos);
+	int weaponN = Store_GiveSpecificItem(owner, "Purging Grinder");
 	TE_Particle("hightower_explosion", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = owner);
 	TE_Particle("mvm_soldier_shockwave", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	EmitSoundToClient(owner, PURGE_EXPLOSION_SOUND, owner, SNDCHAN_AUTO, 80, _, 0.8);
-	Weapon_Purging_Crush(owner, EntIndexToEntRef(weaponN));
 	if (IsValidEntity(weapon))
 	{
 		if(IsValidClient(owner))
@@ -697,6 +685,8 @@ public Action Weapon_Purging_QuadLauncher_Remove_Later(Handle h,int ref)
 			TF2_RemoveItem(owner, weapon);
 		}
 	}
+	FakeClientCommand(owner, "use tf_weapon_fists");
+	Weapon_Purging_Crush(owner, EntIndexToEntRef(weaponN));
 	QuadLauncher_Remove_Timer[owner] = null;
 	return Plugin_Stop;
 }
@@ -704,13 +694,7 @@ public Action Weapon_Purging_QuadLauncher_Remove_Later(Handle h,int ref)
 public void Weapon_Purging_Annahilator_Remove(int ref, int owner)
 {
 	int weapon = EntRefToEntIndex(ref);
-	int pap;
-	pap = RoundToFloor(Attributes_Get(weapon, Attrib_PapNumber, 1.0));
-	float extra = fl_KitPurge_Annahilator_Max_Hold_Time[pap] + fl_KitPurge_Annahilator_Tookout_Time[owner] - GetGameTime();
-	if(extra < 0.0)
-		extra = 0.0;
-	//PrintToConsoleAll("Weapon_Purging_Annahilator_Remove, extra :%.1f", extra);
-	fl_KitPurge_Annahilator_Tookout_Time[owner] = GetGameTime() - fl_KitPurge_Annahilator_Max_Hold_Time[pap] + 0.5;
+	
 	if(Annahilator_Remove_Timer[owner] != null)
 	{
 		if(IsValidHandle(Annahilator_Remove_Timer[owner]))
@@ -721,39 +705,42 @@ public void Weapon_Purging_Annahilator_Remove(int ref, int owner)
 	Annahilator_Remove_Timer[owner] = 
 		CreateTimer(0.1, Weapon_Purging_Annahilator_Remove_Later, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(weapon));
-	pack.WriteCell(extra);
 }
 
 public Action Weapon_Purging_Annahilator_Remove_Later(Handle h, DataPack pack)
 {
 	pack.Reset();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
-	float extra = pack.ReadCell();
 	if(!IsValidEntity(weapon))
 	{
 		delete pack;
 		return Plugin_Stop;
 	}
 	int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
-	float gettime = fl_KitPurge_Annahilator_Tookout_Time[owner];
-	int pap;
-	//PrintToConsoleAll("Weapon_Purging_Annahilator_Remove_Later, extra :%.1f", extra);
-	
-	pap = RoundToFloor(Attributes_Get(weapon, Attrib_PapNumber, 1.0));
-	if(GetGameTime() - gettime < fl_KitPurge_Annahilator_Max_Hold_Time[pap])
+	if(IsValidClient(owner))
 	{
-		int crusherWeapon = EntRefToEntIndex(i_KitPurge_Crusher_Ref[owner]);
-		Ability_Apply_Cooldown(owner, 3, PURGE_ANNAHILATOR_COOLDOWN, crusherWeapon);
-		if(LastMann)
+		int KitWeaponMain = EntRefToEntIndex(i_KitPurge_Crusher_Ref[owner]);
+		if(IsValidEntity(KitWeaponMain))
 		{
-			Attributes_Set(weapon, 107, 1.0);
+			int pap = RoundToFloor(Attributes_Get(KitWeaponMain, Attrib_PapNumber, 1.0));
+			if(GetGameTime() < fl_KitPurge_Annahilator_Tookout_Time[owner])
+			{
+				//timer still going, we fine
+				int crusherWeapon = EntRefToEntIndex(i_KitPurge_Crusher_Ref[owner]);
+				Ability_Apply_Cooldown(owner, 3, PURGE_ANNAHILATOR_COOLDOWN, crusherWeapon);
+				if(LastMann)
+				{
+					Attributes_Set(weapon, 107, 1.0);
+				}
+				else
+				{
+					Attributes_Set(weapon, 107, fl_KitPurge_Annahilator_Speed_Penality[pap]);
+				}
+				return Plugin_Continue;
+			}
 		}
-		else
-		{
-			Attributes_Set(weapon, 107, fl_KitPurge_Annahilator_Speed_Penality[pap]);
-		}
-		return Plugin_Continue;
 	}
+	//timer ran out ding ding ding
 	if(IsValidEntity(weapon))
 	{
 		Attributes_Set(weapon, 107, 1.0);
@@ -763,16 +750,11 @@ public Action Weapon_Purging_Annahilator_Remove_Later(Handle h, DataPack pack)
 			
 			//PrintToConsoleAll("crusherWeapon %d", crusherWeapon);
 			float Ability_CD = Ability_Check_Cooldown(owner, 3, crusherWeapon);
-			//PrintToConsoleAll("Ability_CD: %.1f, extra :%.1f", Ability_CD, extra);
-			if(Ability_CD - extra > 0.0)
-				Ability_CD -= extra;
-			else
-				Ability_CD = 0.0;
-			//PrintToConsoleAll("Ability_CD - extra: %.1f, extra :%.1f", Ability_CD, extra);
 			Ability_Apply_Cooldown(owner, 3, Ability_CD, crusherWeapon);
-			FakeClientCommand(owner, "use tf_weapon_shotgun_hwg");
+			EmitSoundToAll(PURGE_REMOVEMINIGUN, owner, SNDCHAN_STATIC, 80, _, 0.8);
 			Store_RemoveSpecificItem(owner, "Purging Annihilator");
 			TF2_RemoveItem(owner, weapon);
+			FakeClientCommand(owner, "use tf_weapon_shotgun_hwg");
 		}
 	}
 	Annahilator_Remove_Timer[owner] = null;
@@ -796,7 +778,7 @@ public void Weapon_Purging_Crush(int client, int weaponRef)
 	ScaleVector(velocity, PURGE_RAM_SPEED);
 	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	float Time = GetGameTime(client);
-	SetEntPropFloat(client, Prop_Send, "m_flNextAttack", Time+1.5);
+	SetEntPropFloat(client, Prop_Send, "m_flNextAttack", Time+0.75);
 			
 	DataPack pack = new DataPack();
 	CreateTimer(0.1, Weapon_Purging_Crush_Think, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
@@ -821,7 +803,7 @@ public Action Weapon_Purging_Crush_Think(Handle h, DataPack pack)
 	if(Time < crushStartTime + fl_KitPurge_Ram_Max_Time[paplvl] && IsValidEntity(weapon))
 	{
 		int team = GetTeam(client);
-		SetEntPropFloat(client, Prop_Send, "m_flNextAttack", Time+1.5);
+		SetEntPropFloat(client, Prop_Send, "m_flNextAttack", Time+0.75);
 		
 		FakeClientCommand(client, "use tf_weapon_fists");
 		
@@ -848,7 +830,7 @@ public Action Weapon_Purging_Crush_Think(Handle h, DataPack pack)
 				entHit++;
 				float damage = PURGE_RAM_BASE_DMG;
 				damage *= Attributes_Get(weapon, 2, 1.0);
-				damage *= 0.1;
+				damage *= 0.075;
 
 				SDKHooks_TakeDamage(entity, client, client, damage, DMG_CLUB, weapon, _, vecHitPos);
 				if(view_as<CClotBody>(entity).IsOnGround())
@@ -888,9 +870,9 @@ public Action Weapon_Purging_Crush_Think(Handle h, DataPack pack)
 	if(GetAmmo(client, 14) < 10)
 		SetAmmo(client, 14, 10);
 	
-	FakeClientCommand(client, "use tf_weapon_smg");
 	Store_RemoveSpecificItem(client, "Purging Grinder");
 	TF2_RemoveItem(client, weapon);
+	FakeClientCommandEx(client, "use tf_weapon_shotgun_hwg");
 	
 	delete pack;
 	return Plugin_Stop;
@@ -899,4 +881,81 @@ public Action Weapon_Purging_Crush_Think(Handle h, DataPack pack)
 bool PurgeKit_LastMann(int client)
 {
 	return h_KitPurge_Timer[client] != null;	
+}
+
+
+
+void KitPurgeGiveAttributes(int client, int weapon, int WhatTypeWeapon)
+{
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteCell(EntIndexToEntRef(weapon));
+	pack.WriteCell(WhatTypeWeapon);
+	RequestFrame(KitPurgeGiveAttributesData, pack);
+	//well sucks to suck
+	
+}
+
+
+void KitPurgeGiveAttributesData(DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	int WhatTypeWeapon = pack.ReadCell();
+	delete pack;
+	if(!IsValidEntity(weapon) || !IsValidClient(client))
+		return;
+
+	int KitWeaponMain = EntRefToEntIndex(i_KitPurge_Crusher_Ref[client]);
+	if(!IsValidEntity(KitWeaponMain))
+		return;
+
+	//we get and use attribute 1 for damage, we dont use 2
+	//we dont want tinkers and other buffs to affect it.
+	float MeleeWeaponMulti = Attributes_Get(KitWeaponMain, 1, 1.0);
+
+	//force switch to these always.
+	SetPlayerActiveWeapon(client, weapon);
+	SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
+	int pap = RoundToFloor(Attributes_Get(KitWeaponMain, Attrib_PapNumber, 1.0));
+	switch(WhatTypeWeapon)
+	{
+		//Annihilator minigun
+		case 1000:
+		{
+			Attributes_SetMulti(weapon, 2, MeleeWeaponMulti);
+			Attributes_Set(weapon, 107, fl_KitPurge_Annahilator_Speed_Penality[pap]);
+			Attributes_Set(weapon, 412, fl_KitPurge_Annahilator_Resistance[pap]);
+			Attributes_Set(weapon, 698, 1.0);
+			Weapon_Purging_Annahilator_Remove(EntIndexToEntRef(weapon), client);
+		}
+		//Quad Launcher
+		case 1001:
+		{
+			Attributes_SetMulti(weapon, 2, MeleeWeaponMulti);
+			Attributes_SetMulti(weapon, 6, fl_KitPurge_QuadLauncher_FireSpeed[pap]);
+			Attributes_Set(weapon, 698, 1.0);
+			if(QuadLauncher_Remove_Timer[client] != null)
+			{
+				if(IsValidHandle(QuadLauncher_Remove_Timer[client]))
+					delete QuadLauncher_Remove_Timer[client];
+				QuadLauncher_Remove_Timer[client] = null;
+			}
+			QuadLauncher_Remove_Timer[client] = 
+				CreateTimer(QuadSinceLastRemove[client] - GetGameTime(), Weapon_Purging_QuadLauncher_Remove_Later, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		//Grinder melee thing
+		case 1002:
+		{
+			Attributes_SetMulti(weapon, 2, MeleeWeaponMulti);
+			Attributes_Set(weapon, 107, 1.4);
+			Attributes_Set(weapon, 252, 0.5);
+			if(pap <= 6)
+				Attributes_Set(weapon, 412, 1.5);
+			else
+				Attributes_Set(weapon, 412, 1.25);
+			Attributes_Set(weapon, 698, 1.0);
+		}
+	}
 }

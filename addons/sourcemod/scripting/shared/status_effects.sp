@@ -2672,7 +2672,7 @@ static bool CheckBuffIndex(int victim, int buffIndex)
 void StatusEffects_CombineCommander()
 {
 	StatusEffect data;
-	strcopy(data.BuffName, sizeof(data.BuffName), "Combine Command");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Mazeat Command");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⛠");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused

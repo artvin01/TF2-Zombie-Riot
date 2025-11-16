@@ -587,12 +587,12 @@
 		"en"	"Attack 25％ faster."
 		"it"	"Attacco 25％ più veloce."
 	}
-	"Combine Command"
+	"Mazeat Command"
 	{
-		"en"	"Combine Command"
+		"en"	"Mazeat Command"
 		"it"	"Comando di combinazione"
 	}
-	"Combine Command Desc"
+	"Mazeat Command Desc"
 	{
 		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 25％"
 		"it"	"Riduce i danni subiti del 20％ \naumenta i danni inflitti del 25％"

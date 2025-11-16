@@ -206,7 +206,7 @@ public void AgentChad_ClotThink(int iNPC)
 		vecTarget2[2] += 300.0;
 		ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", 5.0);
 		ApplyStatusEffect(npc.index, npc.index, "Ally Empowerment", 5.0);
-		ApplyStatusEffect(npc.index, npc.index, "Combine Command", 5.0);
+		ApplyStatusEffect(npc.index, npc.index, "Mazeat Command", 5.0);
 		ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 5.0);
 		ApplyStatusEffect(npc.index, npc.index, "Oceanic Scream", 5.0);
 		ApplyStatusEffect(npc.index, npc.index, "War Cry", 5.0);

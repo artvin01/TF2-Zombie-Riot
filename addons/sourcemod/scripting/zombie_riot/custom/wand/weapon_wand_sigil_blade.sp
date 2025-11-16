@@ -22,7 +22,7 @@ static float fl_Sigil_Melee_Range = 130.0;
 static float fl_Sigil_Crystal_ManaCost_Percent = 0.35;
 static float fl_Sigil_Crystal_LifeSpan = 6.0;
 static float fl_Sigil_Crystal_Spawn_Cooldown = 180.0;
-static float fl_Slash_ManaCost_Max_Percent = 0.5;
+//static float fl_Slash_ManaCost_Max_Percent = 0.5;
 static float fl_Slash_Time_Max = 3.0;
 static float fl_Slash_Increase_Time = 2.0;
 static float fl_Slash_Increase_Max = 2.5;
@@ -36,6 +36,7 @@ static float fl_ManaFlow_Dmg_Percent[4] = {0.0, 0.2, 0.25, 0.3};
 static float fl_ManaFlow_ION_BaseDmg[4] = {0.0, 90.0, 105.0, 125.0};
 
 static int i_sigil_color[4] = {34, 177, 76, 255};
+static int i_sigil_colorInner[4] = {34, 177, 76, 100};
 
 #define SIGIL_PLACED "items/spawn_item.wav"
 
@@ -59,7 +60,7 @@ static const char g_SIGIL_TELE[][] = {
 
 #define SIGIL_CRYSTAL	"models/props_moonbase/moon_gravel_crystal_blue.mdl"
 
-#define SIGIL_LASTMANN "#zombiesurvival/expidonsa_waves/wave_45_music_1.mp3"
+//#define SIGIL_LASTMANN "#zombiesurvival/expidonsa_waves/wave_45_music_1.mp3"
 
 static const char Sigil_Melee_Hit_World[][] = {
 	"weapons/samurai/tf_katana_impact_object_01.wav",
@@ -91,7 +92,7 @@ public void Wand_Sigil_Blade_MapStart()
 	PrecacheSound(SIGIL_SLASH_SOUND);
 	PrecacheSound(SIGIL_SLASH_CHARGE1);
 	PrecacheSound(SIGIL_SLASH_CHARGE2);
-	PrecacheSound(SIGIL_LASTMANN);
+//	PrecacheSound(SIGIL_LASTMANN);
 	
 	PrecacheParticleEffect("player_sparkles_red");
   
@@ -233,13 +234,13 @@ public void Weapon_Sigil_Blade_M1(int client, int weapon, bool crit, int slot)
 					Force_ExplainBuffToClient(client, "Mana Overflow");
 					Weapon_Sigil_Blade_Manaflow(client, target, weapon);
 				}
-		    }
-		    if(Ability_Check_Cooldown(client, 2) > 0.0 && fl_Sigil_Tele_Cooldown_Return[currentPap] > 0.0)
-		    {
-		    	float cooldown = Ability_Check_Cooldown(client, 2);
-		    	cooldown -= fl_Sigil_Tele_Cooldown_Return[currentPap];
-		    	Ability_Apply_Cooldown(client, 2, cooldown);
-		    }
+			}
+			if(Ability_Check_Cooldown(client, 2) > 0.0 && fl_Sigil_Tele_Cooldown_Return[currentPap] > 0.0)
+			{
+				float cooldown = Ability_Check_Cooldown(client, 2);
+				cooldown -= fl_Sigil_Tele_Cooldown_Return[currentPap];
+				Ability_Apply_Cooldown(client, 2, cooldown,_, true);
+			}
 			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, _, vicPos);
 		}
 		else
@@ -804,7 +805,7 @@ public void Weapon_Sigil_Blade_Manaflow(int attacker, int victim, int weapon)
 	end_point[2]-=25.0;	
 
 	float Thickness = 6.0;
-	TE_SetupBeamRingPoint(end_point, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.75, i_sigil_color, 1, 0);
+	TE_SetupBeamRingPoint(end_point, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.75, i_sigil_colorInner, 1, 0);
 	TE_SendToAll();
 	TE_SetupBeamRingPoint(end_point, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.1, i_sigil_color, 1, 0);
 	TE_SendToAll();
@@ -962,61 +963,61 @@ void Weapon_Sigil_Blade_Hit_World_Effect(int client, float clientEyePos[3], floa
 	//float r = GetVectorIncludedAngle(clientEyeDir, vecEyeToHit);
 	//if(r > 0.017453)
 	//{
-		float signX, signY, signZ;
+	float signX, signY, signZ;
+	
+	if(clientEyeDir[0] == 0)
+		signX = 1.0;
+	else
+		signX = FloatAbs(clientEyeDir[0]) / clientEyeDir[0];
+	if(clientEyeDir[1] == 0)
+		signY = 1.0;
+	else
+		signY = FloatAbs(clientEyeDir[1]) / clientEyeDir[1];
+	if(clientEyeDir[2] == 0)
+		signZ = 1.0;
+	else
+		signZ = FloatAbs(clientEyeDir[2]) / clientEyeDir[2];
+	float sqrtXY = SquareRoot(clientEyeDir[0] * clientEyeDir[0] + clientEyeDir[1] * clientEyeDir[1]);
+	//PrintToConsoleAll("sqrtXY : %.1f", sqrtXY);
+	rotateAxis[0] = (-signX) * FloatAbs(clientEyeDir[0]) * FloatAbs(clientEyeDir[2]) / sqrtXY;
+	rotateAxis[1] = (-signY) * FloatAbs(clientEyeDir[1]) * FloatAbs(clientEyeDir[2]) / sqrtXY;
+	rotateAxis[2] = signZ * sqrtXY;
+	NormalizeVector(rotateAxis, rotateAxis);
+	//GetVectorCrossProduct(clientEyeDir, vecEyeToHit, rotateAxis);
+	float 	rotateRad = 3.14159265 / 3,//60
+			inirotateRad = rotateRad / 2;
+	for(int i = 0; i < 8; i++)
+	{
+		float vicPos[3];
+		float rot = inirotateRad - (rotateRad / 7) * i;
+		GetRotatedVectorV(clientEyeDir, rotateAxis, rot, vecRay);
+		GetRotatedVectorV(vecRay, clientEyeDir, -0.197395, vecRay);//arctan(1/5), 0.2 slope
+		NormalizeVector(vecRay, vecRay);
+		ScaleVector(vecRay, fl_Sigil_Melee_Range);
+		AddVectors(clientEyePos, vecRay, vicPos);
 		
-		if(clientEyeDir[0] == 0)
-			signX = 1.0;
-		else
-			signX = FloatAbs(clientEyeDir[0]) / clientEyeDir[0];
-		if(clientEyeDir[1] == 0)
-			signY = 1.0;
-		else
-			signY = FloatAbs(clientEyeDir[1]) / clientEyeDir[1];
-		if(clientEyeDir[2] == 0)
-			signZ = 1.0;
-		else
-			signZ = FloatAbs(clientEyeDir[2]) / clientEyeDir[2];
-		float sqrtXY = SquareRoot(clientEyeDir[0] * clientEyeDir[0] + clientEyeDir[1] * clientEyeDir[1]);
-		//PrintToConsoleAll("sqrtXY : %.1f", sqrtXY);
-		rotateAxis[0] = (-signX) * FloatAbs(clientEyeDir[0]) * FloatAbs(clientEyeDir[2]) / sqrtXY;
-		rotateAxis[1] = (-signY) * FloatAbs(clientEyeDir[1]) * FloatAbs(clientEyeDir[2]) / sqrtXY;
-		rotateAxis[2] = signZ * sqrtXY;
-		NormalizeVector(rotateAxis, rotateAxis);
-		//GetVectorCrossProduct(clientEyeDir, vecEyeToHit, rotateAxis);
-		float 	rotateRad = 3.14159265 / 3,//60
-				inirotateRad = rotateRad / 2;
-		for(int i = 0; i < 8; i++)
+		Handle trace = TR_TraceRayFilterEx(clientEyePos, vicPos, MASK_SHOT, RayType_EndPoint, Weapon_Sigil_Blade_Effect_TraceFilter, client);
+		TR_GetEndPosition(vicPos, trace);
+		float traceFraction = TR_GetFraction(trace);
+		int target = TR_GetEntityIndex(trace);
+		delete trace;
+		
+		if(traceFraction != 1.0 && !IsEntityAlive(target))
 		{
-			float vicPos[3];
-			float rot = inirotateRad - (rotateRad / 7) * i;
-			GetRotatedVectorV(clientEyeDir, rotateAxis, rot, vecRay);
-			GetRotatedVectorV(vecRay, clientEyeDir, -0.197395, vecRay);//arctan(1/5), 0.2 slope
-			NormalizeVector(vecRay, vecRay);
-			ScaleVector(vecRay, fl_Sigil_Melee_Range);
-			AddVectors(clientEyePos, vecRay, vicPos);
-			
-			Handle trace = TR_TraceRayFilterEx(clientEyePos, vicPos, MASK_SHOT, RayType_EndPoint, Weapon_Sigil_Blade_Effect_TraceFilter, client);
-			TR_GetEndPosition(vicPos, trace);
-			float traceFraction = TR_GetFraction(trace);
-			int target = TR_GetEntityIndex(trace);
-			delete trace;
-			
-			if(traceFraction != 1.0 && !IsEntityAlive(target))
+			if(GetVectorLength(vecPointStart, true) == 0.0)
 			{
-				if(GetVectorLength(vecPointStart, true) == 0.0)
-				{
-					vecPointStart[0] = vicPos[0];vecPointStart[1] = vicPos[1];vecPointStart[2] = vicPos[2];
-				}
-				else
-				{
-					vecPointEnd[0] = vicPos[0];vecPointEnd[1] = vicPos[1];vecPointEnd[2] = vicPos[2];
-					int laser = ConnectWithBeam(-1, -1, i_sigil_color[0], i_sigil_color[1], i_sigil_color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK, vecPointStart, vecPointEnd);
-					CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
-					vecPointStart[0] = vecPointEnd[0];vecPointStart[1] = vecPointEnd[1];vecPointStart[2] = vecPointEnd[2];
-					lines++;
-				}
+				vecPointStart[0] = vicPos[0];vecPointStart[1] = vicPos[1];vecPointStart[2] = vicPos[2];
+			}
+			else
+			{
+				vecPointEnd[0] = vicPos[0];vecPointEnd[1] = vicPos[1];vecPointEnd[2] = vicPos[2];
+				int laser = ConnectWithBeam(-1, -1, i_sigil_color[0], i_sigil_color[1], i_sigil_color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK, vecPointStart, vecPointEnd);
+				CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+				vecPointStart[0] = vecPointEnd[0];vecPointStart[1] = vecPointEnd[1];vecPointStart[2] = vecPointEnd[2];
+				lines++;
 			}
 		}
+	}
 	//}
 	
 	if(lines == 0 /*|| r < 0.017453*/)
@@ -1086,7 +1087,7 @@ public float GetVectorIncludedAngle(float vec1[3], float vec2[3])
  ****************************************************************************
 **/
 
-
+/*
 bool Sigil_LastMann(int client)
 {
 	bool SigilTHEME=false;
@@ -1097,3 +1098,5 @@ bool Sigil_LastMann(int client)
 	}
 	return SigilTHEME;
 }
+
+*/
