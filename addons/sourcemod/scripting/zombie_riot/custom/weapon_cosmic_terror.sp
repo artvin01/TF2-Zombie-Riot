@@ -1293,7 +1293,7 @@ public void Cosmic_Terror_RailCannon(int client, int weapon, bool crit, int slot
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.");
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Your Weapon is not charged enough None");	
 	}
 }
 

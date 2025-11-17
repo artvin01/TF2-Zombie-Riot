@@ -5,471 +5,556 @@
 		"en"		"Real-Time Camera"
 		"pt"		"Câmera de Tempo-Real"
 		"it"		"Telecamera in tempo reale"
+		"ko"		"실시간 카메라"
 	}
 	"Disable Camera"
 	{
 		"en"		"Disable Camera"
 		"pt"		"Desligar Câmera"
 		"it"		"Disabilita Telecamera"
+		"ko"		"카메라 비활성화"
 	}
 	"Enable Camera"
 	{
 		"en"		"Enable Camera"
 		"pt"		"Ligar Câmera"
 		"it"		"Abilita Telecamera"
+		"ko"		"카메라 활성화"
 	}
 	"Mouse Settings"
 	{
 		"en"		"Mouse Settings"
 		"pt"		"Opções de Mouse"
 		"it"		"Impostazioni del Mouse"
+		"ko"		"마우스 설정"
 	}
 	"Bind Settings"
 	{
 		"en"		"Bind Settings"
 		"pt"		"Opções de Binds"
 		"it"		"Impostazioni di associazione"
+		"ko"		"바인드 설정"
 	}
 	"Screen Aspect Ratio"
 	{
 		"en"		"Screen Aspect Ratio"
 		"pt"		"Proporção da Tela"
 		"it"		"Proporzioni dello schermo"
+		"ko"		"화면 비율"
 	}
 	"Mouse Sensitivity"
 	{
 		"en"		"Mouse Sensitivity"
 		"pt"		"Sensibilidade do Mouse"
 		"it"		"Sensibilità del Mouse"
+		"ko"		"마우스 감도"
 	}
 	"Scroll Speed"
 	{
 		"en"		"Scroll Speed"
 		"pt"		"Velocidade do Scroll"
 		"it"		"Velocità di scorrimento"
+		"ko"		"스크롤 속도"
 	}
 	"Zoom Speed"
 	{
 		"en"		"Zoom Speed"
 		"pt"		"Velocidade do Zoom"
 		"it"		"Velocità dello Zoom"
+		"ko"		"줌 속도"
 	}
 	"Left-Click"
 	{
 		"en"		"Left-Click"
 		"pt"		"Clique Esquerdo"
 		"it"		"Click sinistro"
+		"ko"		"마우스 좌클릭"
 	}
 	"Right-Click"
 	{
 		"en"		"Right-Click"
 		"pt"		"Clique Direito"
 		"it"		"Click destro"
+		"ko"		"마우스 우클릭"
 	}
 	"Add To Selection"
 	{
 		"en"		"Add To Selection"
 		"pt"		"Adicionar a Seleção"
 		"it"		"Aggiungi alla Selezione"
+		"ko"		"선택 항목에 추가"
 	}
 	"Clear Selection"
 	{
 		"en"		"Clear Selection"
 		"pt"		"Limpar Seleção"
 		"it"		"Pulisci Selezione"
+		"ko"		"선택 취소"
 	}
 	"Select All Units"
 	{
 		"en"		"Select All Units"
 		"pt"		"Selecionar Tudo"
 		"it"		"Seleziona tutte le unità"
+		"ko"		"모든 유닛 선택"
 	}
 	"Select Idle Worker"
 	{
 		"en"		"Select Idle Worker"
 		"pt"		"Selecionar Trabalhador Ocioso"
 		"it"		"Seleziona lavoratore inattivo"
+		"ko"		"놀고 있는 일꾼 선택"
 	}
 	"Delete Selected"
 	{
 		"en"		"Delete Selected"
 		"pt"		"Excluir Selecionados"
 		"it"		"Elimina selezionato"
+		"ko"		"선택한 것을 제거"
 	}
 	"Adjust Camera"
 	{
 		"en"		"Adjust Camera"
 		"pt"		"Ajustar Câmera"
 		"it"		"Regola la telecamera"
+		"ko"		"카메라 조정"
 	}
 	"Zoom In"
 	{
 		"en"		"Zoom In"
 		"pt"		"Aumentar Zoom"
 		"it"		"Ingradisci"
+		"ko"		"줌 인"
 	}
 	"Zoom Out"
 	{
 		"en"		"Zoom Out"
 		"pt"		"Diminuir Zoom"
 		"it"		"Riduci"
+		"ko"		"줌 아웃"
 	}
 	"Scroll Up"
 	{
 		"en"		"Scroll Up"
 		"pt"		"Rolar pra Cima"
 		"it"		"Scorri verso l'alto"
+		"ko"		"위쪽으로 스크롤"
 	}
 	"Scroll Down"
 	{
 		"en"		"Scroll Down"
 		"pt"		"Rolar pra Baixo"
 		"it"		"Scorri verso il basso"
+		"ko"		"아래쪽으로 스크롤"
 	}
 	"Scroll Left"
 	{
 		"en"		"Scroll Left"
 		"pt"		"Rolar pra Esquerda"
 		"it"		"Scorri verso sinistra"
+		"ko"		"왼쪽으로 스크롤"
 	}
 	"Scroll Right"
 	{
 		"en"		"Scroll Right"
 		"pt"		"Rolar pra Direita"
 		"it"		"Scorri verso destra"
+		"ko"		"오른쪽으로 스크롤"
 	}
 	"Q (Skill 1)"
 	{
 		"en"		"Q (Skill 1)"
 		"pt"		"Q (Poder 1)"
 		"it"		"Q (Abilità 1)"
+		"ko"		"Q (스킬 1)"
 	}
 	"W (Skill 2)"
 	{
 		"en"		"W (Skill 2)"
 		"pt"		"W (Poder 2)"
 		"it"		"W (Abilità 2)"
+		"ko"		"W (스킬 2)"
 	}
 	"E (Skill 3)"
 	{
 		"en"		"E (Skill 3)"
 		"pt"		"E (Poder 3)"
 		"it"		"E (Abilità 3)"
+		"ko"		"E (스킬 3)"
 	}
 	"R (Skill 4)"
 	{
 		"en"		"R (Skill 4)"
 		"pt"		"R (Poder 4)"
 		"it"		"R (Abilità 4)"
+		"ko"		"R (스킬 4)"
 	}
 	"T (Skill 5)"
 	{
 		"en"		"T (Skill 5)"
 		"pt"		"T (Poder 5)"
 		"it"		"T (Abilità 5)"
+		"ko"		"T (스킬 5)"
 	}
 	"A (Attack Move)"
 	{
 		"en"		"A (Attack Move)"
 		"pt"		"A (Atacar)"
 		"it"		"A (Attaccare)"
+		"ko"		"A (공격 이동)"
 	}
 	"S (Stand Ground)"
 	{
 		"en"		"S (Stand Ground)"
 		"pt"		"S (Manter Posição)"
 		"it"		"S (Mantenere Posizione)"
+		"ko"		"S (제자리 사수)"
 	}
 	"D (Patrol Area)"
 	{
 		"en"		"D (Patrol Area)"
 		"pt"		"D (Patrulhar Área)"
 		"it"		"D (Area di pattugliamento)"
+		"ko"		"D (순찰)"
 	}
 	"F (Skill 9)"
 	{
 		"en"		"F (Skill 9)"
 		"pt"		"F (Poder 9)"
 		"it"		"F (Abilità 9)"
+		"ko"		"F (스킬 9)"
 	}
 	"G (Skill 10)"
 	{
 		"en"		"G (Skill 10)"
 		"pt"		"G (Poder 10)"
 		"it"		"G (Abilità 10)"
+		"ko"		"G (스킬 10)"
 	}
 	"Press a key to bind"
 	{
 		"en"		"Press a key to bind"
 		"pt"		"Pressione tecla para anexa-la"
 		"it"		"Premere un tasto per associare"
+		"ko"		"바인드 설정을 할 키를 누르세요"
 	}
 	"Valid Key Info 1"
 	{
 		"en"		"Valid keys include most +/- related keys."
 		"pt"		"Teclas válidas são geralmente +/- relacionadas."
 		"it"		"I tasti validi includono la maggior parte dei tasti relativi a +/-."
+		"ko"		"유효한 키는 +/- 를 포함한 대부분의 키가 포함됩니다."
 	}
 	"Valid Key Info 2"
 	{
 		"en"		"impulse works with any number and voicemenu as itself."
 		"pt"		"impulse funciona com qualquer número e voicemenu por si só."
 		"it"		"impulse funziona con qualsiasi numero e menu vocale come se fosse esso stesso."
+		"ko"		"impulse 명령어는 아무 숫자 또는 음성 명령과 함께 작동합니다."
 	}
 	"Valid Key Info 3"
 	{
 		"en"		"dropitem, voicemenu, lastinv can also be used."
 		"it"		"È possibile utilizzare anche dropitem, voicemenu e lastinv."
+		"ko"		"서류 가방 버리기 (기본 L키), 음성 명령, 마지막으로 사용한 무기(기본 Q) 버튼도 사용할 수 있습니다."
 	}
 	"RTS Help 1"
 	{
 		"en"		"TIP: Move your mouse and click on a unit"
 		"it"		"SUGGERIMENTO: sposta il mouse e clicca su un'unità"
+		"ko"		"팁: 마우스를 움직여 유닛을 클릭하세요"
 	}
 	"RTS Help 2"
 	{
 		"en"		"TIP: Command units by selecting\nthem and right-click the ground"
 		"it"		"SUGGERIMENTO: Comanda le\n unità selezionandole e cliccando con\n il tasto destro del mouse sul terreno."
+		"ko"		"팁: 유닛을 선택한 상태에서 땅에 대고 우클릭을 하면\n명령을 내릴 수 있습니다"
 	}
 	"RTS Help 3"
 	{
 		"en"		"TIP: Use skills using\nQ, W, and other keys"
 		"it"		"SUGGERIMENTO: usa le\n abilità con i tasti Q, W e altri tasti."
+		"ko"		"팁: Q, W, 그리고 다른 키들을 누르면\n스킬을 사용할 수 있습니다"
 	}
 	"RTS Help 4"
 	{
 		"en"		"TIP: Press 0 to open the\noptions menu to customize\nbinds and mouse settings"
 		"it"		"SUGGERIMENTO: premi 0\n per aprire il menu delle opzioni\n e personalizzare i comandi e le\n impostazioni del mouse."
+		"ko"		"팁: 숫자 0 을 눌러\n옵션 메뉴를 열면\n마우스 설정과 바인드 설정을 할 수 있습니다"
 	}
 	"RTS Tooltip 1"
 	{
 		"en"		"TIP: With a combat unit,\npress A before right-clicking\nto make them auto attack\nwhile moving"
 		"it"		"SUGGERIMENTO: con un'unità da combattimento,\npremi A prima di cliccare con il tasto destro\nper farla attaccare automaticamente\nmentre si muove."
+		"ko"		"팁: 전투 유닛은,\n우클릭 직전에 A 키를 누르면\n해당 유닛들은 움직이면서\n전투하게 됩니다"
 	}
 	"RTS Tooltip 2"
 	{
 		"en"		"TIP: With a combat unit,\npress S before right-clicking\nto make them hold that\nposition and don't move"
 		"it"		"SUGGERIMENTO: con un'unità\n di combattimento,premi S prima di\n cliccare con il tasto destro\nper farle mantenere quella\nposizione e non muoversi"
+		"ko"		"팁: 전투 유닛은,\n우클릭 직전에 S 키를 누르면\n해당 유닛들이 해당 자리에 고정되고\n움직이지 않게 됩니다"
 	}
 	"RTS Tooltip 3"
 	{
 		"en"		"TIP: With a combat unit,\npress D before right-clicking\nto make them patrol back\nand forth between two\nlocations"
 		"it"		"SUGGERIMENTO: con un'unità\n di combattimento,premi D prima di\n cliccare con il tasto destro\nper farla pattugliare avanti e indietro\ntra due posizioni."
+		"ko"		"팁: 전투 유닛은,\n우클릭 직전에 D 키를 누르면\n현 위치와 클릭 위치 사이를\n오가며\n순찰하게 됩니다"
 	}
 	"RTS Tooltip 4"
 	{
 		"en"		"TIP: You can press jump\nto clear your selection\nor cancel special moves"
 		"it"		"SUGGERIMENTO: puoi premere Salta\nper cancellare la selezione\no annullare le mosse speciali"
+		"ko"		"팁: 점프 키를 누르면\n선택을 취소하거나\nor 특수한 행동을 취소할 수 있습니다"
 	}
 	"RTS Tooltip 5"
 	{
 		"en"		"TIP: You can press drop item\nto delete a selected unit,\nhold crouch to delete all\nat once"
 		"it"		"SUGGERIMENTO: puoi premere\n rilascia oggetto per eliminare un'unità\n selezionata, tenere premuto accovacciati\n per eliminare tutto in una volta."
+		"ko"		"팁: 서류 가방 버리기 (기본 L키)를 누르면\n선택한 유닛을 제거하고,\n앉기 키를 오래 누르고 있으면\n전부 제거합니다"
 	}
 	"RTS Tooltip 6"
 	{
 		"en"		"TIP: Hold crouch to queue up\ncommands such as ordering a\nset of commands or buildings"
 		"it"		"SUGGERIMENTO: tieni premuto il\n tasto per accovacciarti per mettere in coda\n comandi come l'ordinamento di una serie di comandi\n o edifici."
+		"ko"		"팁: 앉기 키를 꾹 누른 상태라면\n유닛 명령이나 건설 등을\n대기열 방식으로 사용할 수 있습니다."
 	}
 	"RTS Tooltip 7"
 	{
 		"en"		"TIP: You can adjust your\ncamera with commands such\nas +moveup/down and\nspecial attack"
 		"it"		"SUGGERIMENTO: puoi regolare\n la tua telecamera con comandi come\n +moveup/down e attacco speciale."
+		"ko"		"팁: 카메라를 조정하려면\n위로 수영,\n아래로 수영 또는\n특수 공격 키를 누르세요"
 	}
 	"RTS Tooltip 8"
 	{
 		"en"		"TIP: Hold crouch and a\nnumber to set your selection\nto a control group, you\ncan later select this group\nby pressing the same number"
 		"it"		"SUGGERIMENTO: tieni premuto il tasto\n per accovacciarti e un numero per impostare\n la tua selezione su un gruppo di controllo, in\n seguito potrai selezionare questo gruppo premendo\n lo stesso numero."
+		"ko"		"팁: 앉은 상태에서 유닛을 선택한 상태로\n숫자 키를 누르면\n부대 지정이 됩니다.\n부대 지정된 유닛은\n해당 숫자 키를 누르면 선택됩니다."
 	}
 	"Team Of"
 	{
 		"#format"	"{1:s}"
 		"en"		"Team {1}"
 		"it"		"Squadra {1}"
+		"ko"		"팀 {1}"
 	}
 	"Health Of"
 	{
 		"#format"	"{1:d},{2:d}"
 		"en"		"Health: {1} / {2}"
 		"it"		"Salute: {1} / {2}"
+		"ko"		"체력: {1} / {2}"
 	}
 	"Armor Of"
 	{
 		"#format"	"{1:s}"
 		"en"		"Armor: {1}"
 		"it"		"Armatura: {1}"
+		"ko"		"방어력: {1}"
 	}
 	"Range Of"
 	{
 		"#format"	"{1:s}"
 		"en"		"Range: {1}"
 		"it"		"Portata : {1}"
+		"ko"		"사거리: {1}"
 	}
 	"Damage Of"
 	{
 		"#format"	"{1:s}"
 		"en"		"Damage: {1}"
 		"it"		"Danno: {1}"
+		"ko"		"공격력: {1}"
 	}
 	"vs Type of"
 	{
 		"#format"	"{1:t},{2:s}"
 		"en"		"vs {1}: {2}"
 		"it"		"contro {1}: {2}"
+		"ko"		"vs {1}: {2}"
 	}
 	"Spectating"
 	{
 		"en"		"Spectating"
 		"it"		"Osservando"
+		"ko"		"관전중"
 	}
 	"Resource Of"
 	{
 		"#format"	"{1:s}"
 		"en"		"Resource: {1}"
 		"it"		"Risorsa: {1}"
+		"ko"		"자원: {1}"
 	}
 	"Create Of"
 	{
 		"#format"	"{1:t}"
 		"en"		"Create {1}"
 		"it"		"Crea {1}"
+		"ko"		"생성: {1}"
 	}
 	"Cancel Of"
 	{
 		"#format"	"{1:t}"
 		"en"		"Cancel {1}"
 		"it"		"Cancella {1}"
+		"ko"		"취소: {1}"
 	}
 	"Build Of"
 	{
 		"#format"	"{1:t}"
 		"en"		"Build {1}"
 		"it"		"Costruzione {1}"
+		"ko"		"건설: {1}"
 	}
 	"Research Of"
 	{
 		"#format"	"{1:t}"
 		"en"		"Research {1}"
 		"it"		"Ricerca {1}"
+		"ko"		"연구: {1}"
 	}
 	"Cancel All"
 	{
 		"en"		"Cancel All"
 		"it"		"Cancella Tutto"
+		"ko"		"전부 취소"
 	}
 	"Too many issued commands"
 	{
 		"en"		"Too many issued commands"
 		"it"		"Troppi comandi emessi"
+		"ko"		"명령이 너무 많습니다"
 	}
 	"Building queue is full"
 	{
 		"en"		"Building queue is full"
 		"it"		"La coda di costruzione è piena"
+		"ko"		"건설 명령이 꽉 찼습니다"
 	}
 	"Not enough supply"
 	{
 		"en"		"Not enough supply"
 		"it"		"Fornitura insufficiente"
+		"ko"		"보급품이 부족합니다"
 	}
 	"At maximum supply"
 	{
 		"en"		"At maximum supply"
 		"it"		"Fornitura al massimo"
+		"ko"		"보급품이 한계에 도달했습니다"
 	}
 	"Not enough resources"
 	{
 		"en"		"Not enough resources"
 		"it"		"Risorse insufficienti"
+		"ko"		"자원이 부족합니다"
 	}
 	"Light"
 	{
 		"en"		"Light"
 		"it"		"Leggero"
+		"ko"		"경장갑"
 	}
 	"Heavy"
 	{
 		"en"		"Heavy"
 		"it"		"Grosso"
+		"ko"		"중장갑"
 	}
 	"Biological"
 	{
 		"en"		"Biological"
 		"it"		"Biologico"
+		"ko"		"생체"
 	}
 	"Mechanical"
 	{
 		"en"		"Mechanical"
 		"it"		"Meccanico"
+		"ko"		"기계"
 	}
 	"Structure"
 	{
 		"en"		"Structure"
 		"it"		"Struttura"
+		"ko"		"구조물"
 	}
 	"Unique"
 	{
 		"en"		"Unique"
 		"it"		"Unico"
+		"ko"		"유니크"
 	}
 	"Heroic"
 	{
 		"en"		"Heroic"
 		"it"		"Eroico"
+		"ko"		"영웅"
 	}
 	"Summoned"
 	{
 		"en"		"Summoned"
 		"it"		"Convocato"
+		"ko"		"소환물"
 	}
 	"Worker"
 	{
 		"en"		"Worker"
 		"it"		"Lavoratore"
+		"ko"		"일꾼"
 	}
 	"Converted"
 	{
 		"en"		"Converted"
 		"it"		"Convertito"
+		"ko"		"전환됨"
 	}
 	"Supply"
 	{
 		"en"		"Supply"
 		"it"		"Fornitura"
+		"ko"		"보급품"
 	}
 	"Supply Short"
 	{
 		"en"		"S"
 		"it"		"F"
+		"ko"		"S"
 	}
 	"Wood"
 	{
 		"en"		"Wood"
 		"it"		"Legno"
+		"ko"		"나무"
 	}
 	"Wood Short"
 	{
 		"en"		"W"
 		"it"		"L"
+		"ko"		"W"
 	}
 	"Gold"
 	{
 		"en"		"Gold"
 		"it"		"Oro"
+		"ko"		"금"
 	}
 	"Gold Short"
 	{
 		"en"		"G"
 		"it"		"O"
+		"ko"		"G"
 	}
 	"Food"
 	{
 		"en"		"Food"
 		"it"		"Cibo"
+		"ko"		"식량"
 	}
 	"Food Short"
 	{
 		"en"		"F"
 		"it"		"C"
+		"ko"		"F"
 	}
 }

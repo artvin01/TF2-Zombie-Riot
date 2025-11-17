@@ -852,7 +852,7 @@ static Action OmegaRaid_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			CPrintToChatAll("{gold}Omega{default}: God damn it! Just die already!");
 		}
 		npc.Anger = true;
-		ApplyStatusEffect(npc.index, npc.index, "Combine Command", 10.0);
+		ApplyStatusEffect(npc.index, npc.index, "Mazeat Command", 10.0);
 		ParticleEffectAt(vecTarget, "hammer_bell_ring_shockwave", 1.0);
 	}
 	OmegaRaid_Weapon_Lines(npc, attacker);

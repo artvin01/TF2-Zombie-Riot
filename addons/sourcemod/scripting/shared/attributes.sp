@@ -59,6 +59,7 @@ enum
 	Attrib_WildingenBuilder = 4053,
 	Attrib_TauntRangeValue = 4054,
 	Attrib_DamageTakenFromRaid = 4055,
+	Attrib_RegenHpOutOfBattle_MaxHealthScaling = 4056,
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];

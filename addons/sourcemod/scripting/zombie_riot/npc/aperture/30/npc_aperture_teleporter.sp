@@ -78,6 +78,7 @@ methodmap ApertureTeleporter < CClotBody
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		
 		npc.Anger = false;
+		npc.m_bCamo = true;
 		npc.m_flDoingAnimation = 0.0;
 		
 		int skin = 1;

@@ -1,0 +1,38 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "test\color_green.vtf"
+	"$bumpmap" "weaponry_trans_white.vtf"
+	"$basemapalphaphongmask" "0"
+	
+	"$selfillum" "1"
+    "$phong"	"1"
+	"$phongboost"	"1"
+	"$phongexponent"	"15"
+	"$phongfresnelranges"	"[.5 .91 2]"
+    "$phongtint"   "[0 1 0]"
+
+	"$glowcolor" "0"
+
+    "$nocull" "1"
+	
+	"$tempvar" "0"
+
+ 	"$blendtintbybasealpha" "0" 
+ 	"$blendtintcoloroverbase" "1" 
+	
+	"$basephongexponent" "15"
+	"$basephongboost" "5"
+
+	"$additive" "1"
+	"$commadd_phongexponent" "30"
+	"$commadd_phongboost" 	"10.5"
+	"$commweapon"		"0"
+    
+    // Cloaking
+	"$cloakPassEnabled" "1"
+	"$yellow" "0"
+
+	"Proxies"
+	{
+	}
+}
