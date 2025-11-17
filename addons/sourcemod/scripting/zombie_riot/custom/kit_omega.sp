@@ -278,8 +278,8 @@ public void KitOmega_M2(int client, int weapon, bool crit, int slot)
 	if(Ability_Check_Cooldown(client, slot) >0.0)
 		return;
 
-	
-	Ability_Apply_Cooldown(client, slot, 0.5);
+	//absolute CD
+	Ability_Apply_Cooldown(client, slot, 0.5, _, true);
 	if(OMEGA_ENERGY[client] >= 100.0)
 	{
 		//b_KitOmega_Using_Guns[client] = true;
