@@ -916,7 +916,7 @@
 	}
 	"Barracks Commander"
 	{
-		"en" 		"Combine Commander"
+		"en" 		"Mazeat Commander"
 		"ru" 		"Комбайн Командир"
 		"en" 		"Barracks Commander"
 		"it"		"Comandante della combinazione"

@@ -1,3 +1,6 @@
+
+<img width="1625" height="1501" alt="outline4x" src="https://github.com/user-attachments/assets/633f1f05-84ae-426e-aee1-336d8a8c75fa" />
+
 If you wish to donate to support this project then concider subscribing to the patron, cus i like money.
 
 [Patreon](https://www.patreon.com/user?u=95717000)
@@ -121,6 +124,7 @@ Current coders that in anyway actively helped, in order of how much:
 - [backwards] (backwards#8236) on discord. (Helped with sdkcall lag compensation.)
 
 Some Code is borrowed/just takes from other plugins i or friends made, often with permission,
+Banner by @sun_tonic on discord
 rarely without because i couldnt contact the person or it was just open sourcecode, credited anyways when i did that inside the code.
 All was under the GLP3.0 lisence.
 

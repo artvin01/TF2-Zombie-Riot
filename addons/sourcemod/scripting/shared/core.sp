@@ -1891,21 +1891,25 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		{
 			if(f_CooldownForAbilities[client][0] < GetGameTime())
 			{
-				f_CooldownForAbilities[client][0] = GetGameTime() + 0.5;
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding != -1)
+				f_CooldownForAbilities[client][0] = GetGameTime() + 0.1;
+				if(Ability_Check_Cooldown(client, 2) < 0.0)
 				{
-					if(EntityFuncAttack2[weapon_holding] && EntityFuncAttack2[weapon_holding]!=INVALID_FUNCTION)
+					f_CooldownForAbilities[client][0] = GetGameTime() + 0.5;
+					int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+					if(weapon_holding != -1)
 					{
-						bool result = false; //ignore crit.
-						int slot = 2;
-						Action action;
-						Call_StartFunction(null, EntityFuncAttack2[weapon_holding]);
-						Call_PushCell(client);
-						Call_PushCell(weapon_holding);
-						Call_PushCellRef(result);
-						Call_PushCell(slot); //This is attack 2 :)
-						Call_Finish(action);
+						if(EntityFuncAttack2[weapon_holding] && EntityFuncAttack2[weapon_holding]!=INVALID_FUNCTION)
+						{
+							bool result = false; //ignore crit.
+							int slot = 2;
+							Action action;
+							Call_StartFunction(null, EntityFuncAttack2[weapon_holding]);
+							Call_PushCell(client);
+							Call_PushCell(weapon_holding);
+							Call_PushCellRef(result);
+							Call_PushCell(slot); //This is attack 2 :)
+							Call_Finish(action);
+						}
 					}
 				}
 			}
@@ -1919,7 +1923,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 #if defined ZR
 		b_IgnoreWarningForReloadBuidling[client] = false;
 #endif
-		f_CooldownForAbilities[client][0] = GetGameTime() + 1.0;
+		f_CooldownForAbilities[client][0] = GetGameTime() + 0.5;
 		// force wait 1 second so it isnt activated automatically
 
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -1948,58 +1952,61 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		{
 			if(f_CooldownForAbilities[client][1] < GetGameTime())
 			{
-				f_CooldownForAbilities[client][1] = GetGameTime() + 0.5;
-				bool AllowImpulse = true;
-			
-				AllowImpulse = false;
-				//if the cvar is on, but we want spray again
-				if(zr_interactforcereload.BoolValue)
+				f_CooldownForAbilities[client][1] = GetGameTime() + 0.1;
+				if(Ability_Check_Cooldown(client, 3) < 0.0)
 				{
-					AllowImpulse = true;
-				}
-
-				if(AllowImpulse)
-				{
-					if(b_InteractWithReload[client])
-						AllowImpulse = false;
-					else
-						AllowImpulse = true;
-				}
-				else
-				{
-					if(b_InteractWithReload[client])
-						AllowImpulse = true;
-					else
-						AllowImpulse = false;
-				}
-
+					f_CooldownForAbilities[client][1] = GetGameTime() + 0.5;
+					bool AllowImpulse = true;
 				
-				if(AllowImpulse)
-				{
-					f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
-					if(DoInteractKeyLogic(angles, client))
-						return Plugin_Continue;
-				}
-
-				// force wait 1 second so it isnt activated automatically
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding != -1)
-				{
-					if(EntityFuncAttack3[weapon_holding] && EntityFuncAttack3[weapon_holding]!=INVALID_FUNCTION)
+					AllowImpulse = false;
+					//if the cvar is on, but we want spray again
+					if(zr_interactforcereload.BoolValue)
 					{
-						bool result = false; //ignore crit.
-						int slot = 3;
-						Action action;
-						Call_StartFunction(null, EntityFuncAttack3[weapon_holding]);
-						Call_PushCell(client);
-						Call_PushCell(weapon_holding);
-						Call_PushCellRef(result);
-						Call_PushCell(slot);	//This is R :)
-						Call_Finish(action);
+						AllowImpulse = true;
+					}
+
+					if(AllowImpulse)
+					{
+						if(b_InteractWithReload[client])
+							AllowImpulse = false;
+						else
+							AllowImpulse = true;
+					}
+					else
+					{
+						if(b_InteractWithReload[client])
+							AllowImpulse = true;
+						else
+							AllowImpulse = false;
+					}
+
+					
+					if(AllowImpulse)
+					{
+						f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
+						if(DoInteractKeyLogic(angles, client))
+							return Plugin_Continue;
+					}
+
+					// force wait 1 second so it isnt activated automatically
+					int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+					if(weapon_holding != -1)
+					{
+						if(EntityFuncAttack3[weapon_holding] && EntityFuncAttack3[weapon_holding]!=INVALID_FUNCTION)
+						{
+							bool result = false; //ignore crit.
+							int slot = 3;
+							Action action;
+							Call_StartFunction(null, EntityFuncAttack3[weapon_holding]);
+							Call_PushCell(client);
+							Call_PushCell(weapon_holding);
+							Call_PushCellRef(result);
+							Call_PushCell(slot);	//This is R :)
+							Call_Finish(action);
+						}
 					}
 				}
 			}
-
 		}
 	}
 	else if(buttons & IN_RELOAD)
@@ -2037,7 +2044,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				return Plugin_Continue;
 		}
 
-		f_CooldownForAbilities[client][1] = GetGameTime() + 1.0;
+		f_CooldownForAbilities[client][1] = GetGameTime() + 0.5;
 		// force wait 1 second so it isnt activated automatically
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding != -1)

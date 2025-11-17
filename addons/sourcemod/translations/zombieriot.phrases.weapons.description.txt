@@ -913,14 +913,14 @@
 	
 	"Hammer Desc"
 	{
-		"en"	"-Massive Damage\n-Slow attackspeed\n(Due to this, easier to gib enemies)"
+		"en"	"-Massive Damage\n(Due to this, easier to gib enemies)\n-Slow attackspeed\n-Cleave hits upto 2 targets\nThis cleave deals 0.5x damage with each enemy aftewards"
 		"it"	"Attacca molto lentamente, ma infligge danni ingenti, per questo motivo, è più facile imbrogliare i nemici."
 		"ko"	"공격 속도는 매우 느리지만 피해량이 매우 높고, 이 무기로는 처치한 대상의 시체를 쉽게 조각낼 수 있음."
 	}
 	
 	"Hammer Pap 1"
 	{
-		"en"	"-Increased damage\n-Increased attackspeed"
+		"en"	"-Increased damage\n-Increased attackspeed\n-Cleave Hits 1 more target"
 		"fr"	"Dégats et cadence des attaques améliorés"
 		"ru"	"Увеличенный урон."
 		"chi"	"增加伤害和攻速"
@@ -949,7 +949,7 @@
 	
 	"Fire Axe Desc"
 	{
-		"en"	"-Deals 50％ more damage to burning enemies."
+		"en"	"-Deals 30％ more damage to burning enemies.\n-M2 ignites 5 enemies around you"
 		"fr"	"50％ plus de dégats contre les ennemis en feu."
 		"ru"	"Вы наносите на 50％ больше урона горящим врагам."
 		"chi"   "你对燃烧的敌人造成的伤害提高50％。"
@@ -958,7 +958,7 @@
 	}
 	"Fire Axe Pap 1"
 	{
-		"en"	"-Increased damage\n-Increased attackspeed"
+		"en"	"-Increased damage\n-Increased attackspeed\n-Ability has less cooldown"
 		"fr"	"Dégats et cadence des attaques améliorés"
 		"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
@@ -967,7 +967,7 @@
 	}
 	"Fire Axe Pap 2"
 	{
-		"en"	"-Increased damage\n-Increased attackspeed\n-M2 ignites 5 enemies around you\n-Burn damage bonus reduced to 20％"
+		"en"	"-Increased damage\n-Increased attackspeed\n-Abbility deals more damage\n-Burn damage bonus reduced to 20％"
 		"it"	"Aumento dei danni e della velocità d'attacco Con M2 puoi incendiare fino a 5 bersagli intorno a te.\nIl bonus ai danni da postcombustione è ora di 20％ invece di 50％."
 		"ko"	"피해량, 공격 속도 증가.\nM2 사용시 주변에 있는 최대 5명의 적을 불태움.\n화상 피해량이 50％에서 20％로 감소."
 	}
@@ -1338,37 +1338,37 @@
 
 	"Raigeki Desc 0"
 	{
-		"en"	"M1 swings an electric blade which hits multiple targets.\nHolding M2 drains mana to charge a huge lightning bolt (Raigeki), which strikes your position when released.\nCharging grants resistance and damages nearby enemies with Static Electricity."
+		"en"	"-M1 swings an electric blade which hits multiple targets.\n-Holding M2 drains mana to charge a huge lightning bolt (Raigeki), which strikes your position when released.\n-Charging grants resistance and damages nearby enemies with Static Electricity."
 	}
 
 	"Raigeki Extra Desc 0"
 	{
-		"en"	"Resistance granted while charging Raigeki increases based on charge amount.\nRaigeki takes 3s to strike once cast, during which you are stunned, but resistance is increased."
+		"en"	"-Resistance granted while charging Raigeki increases based on charge amount.\n-Raigeki takes 3s to strike once cast, during which you are stunned, but resistance is increased."
 	}
 
 	"Raigeki Desc 1"
 	{
-		"en"	"General stat buffs.\nUnlocks {yellow}Kinetic Energy{default}: attack and kill enemies with M1 or get hit while charging Raigeki to build it up.\nKinetic Energy buffs Static Electricity, and supercharges your electric blades after Raigeki strikes."
+		"en"	"-General stat buffs.\n-Unlocks {yellow}Kinetic Energy{default}: attack and kill enemies with M1 or get hit while charging Raigeki to build it up.\n-Kinetic Energy buffs Static Electricity, and supercharges your electric blades after Raigeki strikes."
 	}
 
 	"Raigeki Desc 2"
 	{
-		"en"	"General stat buffs."
+		"en"	"-General stat buffs."
 	}
 
 	"Raigeki Desc 3"
 	{
-		"en"	"{green}General stat buffs.\n{yellow}''Imagine the power bill...''"
+		"en"	"-General stat buffs.\n{yellow}''Imagine the power bill...''"
 	}
 
 	"Crisis Conductor Desc"
 	{
-		"en"	"{green}Damage resistance provided while charging Raigeki goes way up, Raigeki drains less mana, Static Electricity becomes more powerful, and all Kinetic Energy gain is doubled.\n{red}Electric blades and Raigeki become drastically weaker, a{red}nd Raigeki takes longer to strike once cast.\n{yellow}''Your team's lights will never go out.''"
+		"en"	"-Damage resistance provided while charging Raigeki goes way up.\n-Raigeki drains less mana.\n-Static Electricity becomes more powerful.\n-All Kinetic Energy gain is doubled.\n-Electric blades and Raigeki become drastically weaker.\n-Raigeki takes longer to strike once cast.\n{yellow}''Your team's lights will never go out.''"
 	}
 
 	"Mortal Blackout Desc"
 	{
-		"en"	"{green}Electric blades and Raigeki both become far stronger, Raigeki's damage and radius are both now boosted by Kinetic Energy, and primary attack now swings 2 electric blades.\n{red}Raigeki now charges slower, costs more mana, and provide{red}s far less resistance, and Static Electricity becomes far weaker.\n{yellow}''Shut their lights off, for good.''"
+		"en"	"-Electric blades and Raigeki both become far stronger.\n-Raigeki's damage and radius are both now boosted by Kinetic Energy.\n-Primary attack now swings 2 electric blades.\n-Raigeki now charges slower, costs more mana, and provides far less resistance.\n-Static Electricity becomes far weaker.\n{yellow}''Shut their lights off, for good.''"
 	}
 	
 	"Homing Staff Desc"
@@ -1962,34 +1962,34 @@
 	}
 	"Doctor Certificate Desc"
 	{
-		"en"	"-Gain 1.5x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.5x Medigun Heal rate\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.5x Medigun Heal, 20％ danni extra alle armi di supporto\n5％ resistenza in mischia con Healing Support Weapons disattivata"
 		"ko"	"메디건 치유 속도 1.5배, 지원 무기의 피해량 +20％\n치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％"
 	}
 	"Professor Certificate Desc"
 	{
-		"en"	"-Gain 1.5x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.5x Medigun Heal rate\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.5x Medigun Heal, 20％ danni extra alle armi di supporto\n5％ resistenza in mischia con Healing Support Weapons disattivata"
 		"ko"	"메디건 치유 속도 1.5배, 지원 무기의 피해량 +20％\n치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％"
 	}
 
 	"Death Certificate Desc"
 	{
-		"en"	"-Gain 1.4x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 2 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.4x Medigun Heal rate\n-Gain 35％ extra support weapon damage\n-Gain 2 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.4x Medigun Heal, 20％ danni extra da arma di supporto\n+2 secondi di uber e 5％ resistenza in mischia con Healing Support Weapons out"
 		"ko"	"메디건 치유 속도 1.4배, 지원 무기의 피해량 +20％\n우버차지 지속 시간 +2초 및 치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％ 증가"
 	}
 	
 	"Reaper's Certificate Desc"
 	{
-		"en"	"-Gain 1.45x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 1 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.45x Medigun Heal rate\n-Gain 45％ extra support weapon damage\n-Gain 1 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.45x Guarigione Medigun, 20％ danni extra da arma di supporto,\n+1 secondi di resistenza uber e 5％ in mischia con le armi di supporto guarite"
 		"ko"	"메디건 치유 속도 1.45배, 지원 무기의 피해량 +20％\n우버차지 지속 시간 +1초 및 치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％ 증가"
 	}
 	
 	"Hell's Certificate Desc"
 	{
-		"en"	"-Gain 1.45x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 1 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.45x Medigun Heal rate\n-Gain 35％ extra support weapon damage\n-Gain 1 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.45x Guarigione Medigun, 20％ danni extra da arma di supporto,\n+1 secondi di resistenza uber e 5％ in mischia con le armi di supporto guarite"
 		"ko"	"메디건 치유 속도 1.45배, 지원 무기의 피해량 +20％\n우버차지 지속 시간 +1초 및 치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％ 증가"
 	}
@@ -2179,14 +2179,14 @@
 	
 	"Fusion Blade Desc"
 	{
-		"en"	"-Fast attacking melee.\n-Medium damage."
+		"en"	"-Fast attacking melee.\n-Medium damage.\n-On M2 Ability:\nCreate an aura that buffs allies and yourself with damage and resistance.\nStacks once with eachother."
 		"it"	"Lama di Expidonsan ad attacco rapido."
 		"ko"	"빠르게 공격하는 엑스피돈사 출신 검입니다."
 	}
 	
 	"Fusion Blade Pap 1"
 	{
-		"en"	"-Increased Damage\n-M2 buffs your damage and resistance\n-Allies gain a weaker version\n-Stacks once with eachother."
+		"en"	"-Increased Damage\n-Ability has more range and lasts much longer, but has a slight Increased in cooldown."
 		"it"	"M2 potenzia il tuo danno e un po' meno la resistenza di 15％, e gli alleati di 10％ questo si impila con 2 su ogni altro."
 		"ko"	"M2 사용시 피해량이 15％ 증가하는 대신 저항력이 15％ 감소. 아군은 10％만 적용되며, 최대 2회까지 중첩됩니다."
 	}
@@ -2314,7 +2314,7 @@
 	}
 	"Alchemist Potion Pap 5"
 	{
-		"en"	"-Increased Damage\n-M2 will now increase your fire rate heavily but lower your damage and prevent mana gain for the duration."
+		"en"	"-Increased Damage\n-M2 will now Increased your fire rate heavily but lower your damage and prevent mana gain for the duration."
 		"fr"	"M2 accélère la cadence des attaques, mais réduit vos dégats et arrête la regénération de Mana pour une courte période."
 		"ru"	"M2 теперь сильно повышает вашу скорострельность, но снижает урон и препятствует получению маны на время действия."
 		"chi"   "M2现在会大大提高你的射速，但会降低你的伤害，并在持续时间内阻止你获得法力值。"
@@ -2539,7 +2539,7 @@
 	}
 	"Specter Pap 1"
 	{
-		"en"	"-Reduced Attackspeed\n-Hits two targets at once.\n-Damage Increased.\n-Faction changed to ''Seaborn''."
+		"en"	"-Reduced Attackspeed\n-Hits two targets at once.\n-Damage Increased.\n-Faction changed to ''Seaborn''.\n-Ability is removed in exchange for multi target."
 		"it"	"Attacca più lentamente ma colpisce due bersagli alla volta.\nDanno aumentato.\nFazione cambiata in Seaborn."
 		"ko"	"공격 속도가 감소하지만 \n동시에 두 대상에게 타격하며 피해량이 증가하고, \n소속이 ‘Seaborn’ 으로 변경됩니다."
 	}
@@ -2839,7 +2839,7 @@
 	}
 	"Steel Dagger Desc"
 	{
-		"en"		"-Slow attacking Steel Dagger\n-provides overall resistances."
+		"en"		"-Slow attacking Steel Dagger\n-provides overall resistances.\n-M2 ability Heals allies over time with 'heal on kill' stat"
 		"fr"		"Un poignard en acier lent. Donne de la résistance."
 		"chi"		"低攻速，提供抗性。"
 		"it"		"Pugnale d'acciaio ad attacco lento, fornisce resistenze complessive."
@@ -2847,7 +2847,7 @@
 	}
 	"Steel Dagger Desc 1"
 	{
-		"en"		"-Increased resistances\n-Increased damage\n.-m2 ability Heals allies over time with 'heal on kill' statt\n-stun enemies around you on ability use.\n-You gain resistances and damage during ability usage\nDeal 35％ more damage against stunned enemies."
+		"en"		"-Increased resistances\n-Increased damage\n-stun enemies around you on ability use.\n-You gain resistances and damage during ability usage\nDeal 35％ more damage against stunned enemies."
 		"fr"		"Dégats et résistance améliorés. Appuyez sur M2 pour soigner vos alliés avec votre attribut santé par victime et étonner les ennemis proches.\nDégats et résistance améliorés pour la durée de l'abilité. +35％ dégats contre les ennemis étonnés."
 		"chi"		"更多抗性与伤害，M2激活能力，附近队友获得击杀治疗效果。激活时眩晕附近的敌人。\n使用时获得更高的抗性和伤害，对眩晕的敌人造成额外35％伤害。"
 		"it"		"aumenta le resistenze e i danni, guadagna la capacità di m2 di curare gli alleati nel tempo con la statt guarisci su uccisione, stordisce i nemici intorno a te durante l'uso dell'abilità.\nAumenta le resistenze e i danni durante l'uso dell'abilità, infliggi sempre 35％ danni in più contro i nemici storditi."
@@ -2981,13 +2981,13 @@
 	}
 	"Sensal Scythe Wep Desc"
 	{
-		"en"	"-Slow attacking scythe.\n-High damage."
+		"en"	"-Slow attacking scythe.\n-High damage.\n-Gain the ability to shoot projetiles with R, they home onto targets.\n-they will focus the target you look at when using this ability\n-Charges with melee hits"
 		"it"	"Falce d'attacco lenta."
 		"ko"	"공격 속도가 느린 낫입니다."
 	}
 	"Sensal Desc 1"
 	{
-		"en"	"-Increased damage\n-Gain the ability to shoot projetiles with R, they home onto targets.\n-they will focus the target you look at when using this ability.\n-Charges with melee hits"
+		"en"	"-Increased damage\n-Ability Improved, shoots 1 more scythe."
 		"it"	"Danni aumentati Guadagna la capacità di sparare proiettili con R, che si concentrano sui bersagli.\nSi concentra il bersaglio che si guarda quando si usa questa abilità.\nCarica con colpi in mischia"
 		"ko"	"R키로 적을 추적하는 유도탄 투사체를 발사할 수 있음.\n해당 능력 사용 도중엔 투사체가 당신이 바라보는 적을 집중적으로 추격함.\n근접 공격 적중시, 낫을 1개 획득."
 	}
@@ -3252,43 +3252,43 @@
 	}
 	"Leper Sword Desc Pap 1"
 	{
-		"en"	"Increase all stats, Hew has less cooldown."
+		"en"	"Increased all stats, Hew has less cooldown."
 		"it"	"Aumenta tutte le statistiche, Hew ha un cooldown minore."
 		"ko"	"전체 능력치 증가 및 가르기 능력의 쿨타임이 감소."
 	}
 	"Leper Sword Desc Pap 2"
 	{
-		"en"	"Increase all stats.\nDamage taken during animations is reduced by 33％.\nUnlocks Solemity, Charge with hits and press (M2) to use it\nHeals 33％ of your max health and armor"
+		"en"	"Increased all stats.\nDamage taken during animations is reduced by 33％.\nUnlocks Solemity, Charge with hits and press (M2) to use it\nHeals 33％ of your max health and armor"
 		"it"	"Aumenta tutte le statistiche.\nIl danno subito durante le animazioni è ridotto del 33％.\nSblocca Solemity, Carica con i colpi e premi (M2) per usarla.\nGuarisce il 33％ della tua salute e armatura massima"
 		"ko"	"이제 능력 사용 도중 받는 피해량이 33％ 감소.\n평온 능력 해금: 적중시 충전이 차오르며, 전부 충전되면 M2로 사용 가능.\n사용시 최대 체력의 33％만큼 체력과 아머를 회복."
 	}
 	"Leper Sword Desc Pap 3"
 	{
-		"en"	"Increase all stats.\nUnlocks King's Wrath, press (R + M2) to use it, When hurt, gain more damage, Applies self bleed aswell"
+		"en"	"Increased all stats.\nUnlocks King's Wrath, press (R + M2) to use it, When hurt, gain more damage, Applies self bleed aswell"
 		"it"	"Aumenta tutte le statistiche.\nSblocca l'Ira del Re, premere (R + M2) per usarla, quando si viene feriti si subiscono più danni, si applica anche l'autosanguinamento"
 		"ko"	"왕의 분노 해금. (R + M2) 키를 같이 누르면 사용 가능. 사용 이후 피해를 받으면 자신에게 출혈이 부여되는 대신, 공격 피해량이 증가."
 	}
 	"Leper Sword Desc Pap 4"
 	{
-		"en"	"Increase all stats.\nSolemity heals 50％"
+		"en"	"Increased all stats.\nSolemity heals 50％"
 		"it"	"Aumenta tutte le statistiche.\nSolemità cura 50％"
 		"ko"	"평온의 회복량이 50％로 증가."
 	}
 	"Leper Sword Desc Pap 5"
 	{
-		"en"	"Increase all stats, Hew has less cooldown"
+		"en"	"Increased all stats, Hew has less cooldown"
 		"it"	"Aumenta tutte le statistiche, Hew ha un cooldown minore"
 		"ko"	"전체 능력치 증가 및 가르기 능력의 쿨타임이 감소."
 	}
 	"Leper Sword Desc Pap 6"
 	{
-		"en"	"Increase all stats, Solemity heals for 66%.\nWrath gives more damage per attack received."
+		"en"	"Increased all stats, Solemity heals for 66%.\nWrath gives more damage per attack received."
 		"it"	"Aumenta tutte le statistiche, Solemity guarisce del 66%.\nL'ira dà più danni per ogni attacco ricevuto."
 		"ko"	"전체 능력치 증가 및 평온의 회복량이 66％로 증가.\n왕의 분노 상태일때, 공격 받을때마다 증가하는 피해량 수치가 더욱 증가."
 	}
 	"Leper Sword Desc Pap 7"
 	{
-		"en"	"Increase all stats."
+		"en"	"Increased all stats."
 		"it"	"Aumenta tutte le statistiche."
 		"ko"	"전체 능력치 증가."
 	}
@@ -4006,7 +4006,7 @@
 	}
 	"West Pap 2 Desc"
 	{
-		"en"	"-Increased damage\n-M2 ability will make you jump backwards on usage\n-New ability: M3 Your aim will be fixed to nearby enemy and damage and firerate will increase dramatically."
+		"en"	"-Increased damage\n-M2 ability will make you jump backwards on usage\n-New ability: M3 Your aim will be fixed to nearby enemy and damage and firerate will Increased dramatically."
 		"fr"	"Dégats améliorés.\nAbilité vous fera reculer avec un saut.\nAppuyez sur M3 pour viser automatiquement un ennemi. Votre cadence de tir s'améliorera considérablement."
 		"chi"	"增加伤害。\nM2技能发动时会你将会后撤一步。\n新技能：[M3]锁定附近一位敌人，大幅度增加开火速度以及伤害。"
 		"it"	"Aumento del danno\nl'abilità M2 vi farà saltare all'indietro durante l'utilizzo della nuova abilità\nM3 La mira sarà fissata sul nemico vicino e i danni e la potenza di fuoco aumenteranno drasticamente."
@@ -4219,15 +4219,9 @@
 	}
 	"Pinus Knight Desc"
 	{
-		"en"	"Fast attacking Melee with low damage."
+		"en"	"Fast attacking Melee with low damage.\n-M2 ability, when used allows you to dodge one melee hit (does not stack).\n-Generates money on ability use."
 		"it"	"Attacco rapido in mischia"
-		"ko"	"매우 빠른 공격 속도를 지닌 근접 무기입니다."
-	}
-	"Pinus Knight Pap 1"
-	{
-		"en"	"-Increased damage.\n-Adds an ability, when used allows you to dodge one melee hit (does not stack).\n-Generates money on ability use."
-		"it"	"Aumenta i danni.\nAggiunge un'abilità che, se usata, permette di schivare un colpo in mischia (non è cumulabile).\nGenera denaro con l'uso dell'abilità."
-		"ko"	"피해량 증가.\n새로운 능력 획득. 사용시, 근접 피해를 1회 회피. (중첩되지 않음)\n사용시 자금이 생성됨."
+		"ko"	"공격 속도가 빠르지만 피해량이 낮은 근접 무기 입니다.\nM2. 사용시, 근접 피해를 1회 회피. (중첩되지 않음)\n사용시 자금이 생성됨."
 	}
 	"Pinus Knight Pap 2"
 	{
@@ -4339,7 +4333,7 @@
 	}
 	"Barracks Commander Desc"
 	{
-		"en"	"Not the strongest himself, but will increase the movement speed of other allies near him, greatly complimenting their mobility."
+		"en"	"Not the strongest himself, but will Increased the movement speed of other allies near him, greatly complimenting their mobility."
 		"fr"	"Ce n'est pas le plus fort lui-même, mais il augmentera la vitesse de déplacement des autres alliés proches de lui, complétant grandement leur mobilité."
 		"it"	"Non è il più forte in assoluto, ma aumenta la velocità di movimento degli altri alleati che gli sono vicini, favorendo la loro mobilità."
 		"ko"	"자기 자신 자체는 그리 강하진 않지만, 주변의 모든 아군의 이동 속도를 증가시켜서 기동성을 증가시켜줍니다."
@@ -4717,7 +4711,7 @@
 	}
 	"Magia Fractal Desc"
 	{
-		"en"	"Primary:\nM1:enter an animation where you shoot a big laser of doom.\nHold M2: Increase distance, faster turn speed. uses 10 crystals/s and does 10%% more damage \nSecondary:\nM1: Harvester, gain mana on targets hit.\nM2: Summon an Ion that bounces\nMelee:\nM1: Energy Wave. Costs Crystals. On hit gain crystals"
+		"en"	"Primary:\nM1:enter an animation where you shoot a big laser of doom.\nHold M2: Increased distance, faster turn speed. uses 10 crystals/s and does 10%% more damage \nSecondary:\nM1: Harvester, gain mana on targets hit.\nM2: Summon an Ion that bounces\nMelee:\nM1: Energy Wave. Costs Crystals. On hit gain crystals"
 		"it"	"Primario:\nM1: attiva un'animazione in cui spari un potente raggio laser distruttivo.\nTieni premuto M2: aumenta la distanza e la velocità di rotazione.\nConsuma 10 cristalli al secondo e infligge il 10% di danni in più. \nSecondario:\nM1: Mietitore, ottieni mana dai bersagli colpiti.\nM2: evoca uno ione che rimbalza\nCorpo a corpo:\nM1: Onda energetica. Costa cristalli. Quando colpisci guadagni cristalli."
 		"ko"	"주 무기:\nM1:애니메이션 이후 거대한 레이저를 발사.\nM2 꾹 누름: 회전 속도+사거리 증가. 수정을 초당 10 소모+피해량 10%% \n보조 무기:\nM1: 적중한 만큼 마나 획득.\nM2: 여러 대상에게 튕기는 이온 발사.\n근접 무기:\nM1: 파동 발사. 수정을 소모하지만, 적중시 수정 획득."
 	}
@@ -5249,5 +5243,77 @@
 	{
 		"en"	"-Increased Damage"
 		"ko"	"피해량 증가."
+	}
+	"Arsenal Desc"
+	{
+		"en"	"One of Mazeat's Troops.\n-Charge energy on melee hits\n-On max charge, melee deals 30％ extra ranged damage.\n-With M2 equip a weapon, needs 100％ energy."
+	}
+	"Arsenal Pap 1"
+	{
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health & melee resistance\n-Ability weapons gain more attackspeed\n-R allows you to switch between weapons now.\n-You gain a shotgun"
+	}
+	"Arsenal Pap 2"
+	{
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health & melee resistance\n-Ability weapons gain more attackspeed\n-Gain AR2."
+	}
+	"Arsenal Pap 3"
+	{
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health\n-Ability weapons gain more attackspeed\n-Gain Rapid RPG."
+	}
+	"Arsenal Pap 4"
+	{
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health\n-Ability weapons gain more attackspeed\n-Your gauss pistol now debuffs enemies on hit."
+	}
+	"Arsenal Pap 5"
+	{
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health\n-Ability weapons gain more attackspeed\n-You energy can go upto 200％ now."
+	}
+	"Arsenal Pap 6"
+	{
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health & melee resistance\n-Ability weapons gain more attackspeed"
+	}
+	"Arsenal Pap 7"
+	{
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health\n-Ability weapons gain more attackspeed"
+	}
+	"Purging Desc"
+	{
+		"en"	"Become the Ziberian greatest invention... A monster.\n-Gain 2 weapons, Shotgun and Rampager minigun\n-Press M2 To easy switch between them\n-Charge energy on hit, used for later paps"
+    }
+	"Purging Pap N"
+	{
+		"en"	"-Increased damage\n-Increased Health"
+	}
+	"Purging Pap 2"
+	{
+		"en"	"-Increased damage\n-Increased Health\n-While your shotgun is out, your M2 will give you a minigun.\n-Minigun Abilities:\nHeavy Resistance while out\nAttacking the same target massively boosts damage, upto 2x\nAfter some time, or by pressing R, minigun unequips\nTakes 30％ more damage from raids\nDeals 35％ less damage to raids"
+	}
+	"Purging Pap 3"
+	{
+		"en"	"-Increased damage\n-Increased Health\n-Minigun now lasts longer, and Holsters faster."
+	}
+	"Purging Pap 4"
+	{
+		"en"	"-Increased damage\n-Increased Health\n-While your Rampager Miniguni s out, M2 will give you a Quad Rocket Launcher.\n-Quad launcher Abilities:\nShoots 2 rockets at once\nWhen depleted, explodes, dealing damage\nForce fully equips fists and makes you deal ram damage while running\nYou take more damage while ramming"
+    }
+	"Purging Pap 5"
+	{
+		"en"	"-Increased damage\n-Increased Health\n-You store more power\n-You can move during your annihilator phase\n-Quad Launcher fires 1 more rocket at once now, fires faster."
+	}
+	"Purging Pap 6"
+	{
+		"en"	"-Increased damage\n-Increased Health\n-You move faster in your annihilator phase\n-Ram Phase deals more damage, and has less vulnerabilities"
+	}
+	"Sigil Blade Pap 1"
+	{
+		"en"	"Some crystal shard from Ruina.\n-Has High Melee Res\n-When hitting an enemy, apply mana overflow\n-When reaching max overflow, cause an ION strike.\n-Applies paralize for a short time\n-Applies silence for a medium time"
+	}
+	"Sigil Blade Pap 2"
+	{
+		"en"	"-Increased damage\n-Increased melee resistance\n-Slower attackspeed\n-Summon a floating crystal with M2\n-You need atleast 35％ of your max mana to teleport back with m2\n-Needs LOS.\n-Hitting enemies reduces M2 cooldown."
+	}
+	"Sigil Blade Pap 3"
+	{
+		"en"	"-Increased damage\n-Increased melee resistance\n-Slower attackspeed\n-You gain the ability to done an Lock Slash onto enemy(By R)\n-The more you travel with your ability, the more damage you deal\n-Sigil cd reduction buffed a bit.\n-You can return to your crystal while charging"
 	}
 }
