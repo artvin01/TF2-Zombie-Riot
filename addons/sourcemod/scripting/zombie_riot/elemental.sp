@@ -1658,7 +1658,7 @@ bool Elemental_AddManaOverflowDamage(int victim, int attacker, int damagebase, i
 				f_ArmorCurrosionImmunity[victim][Element_ManaOverflow] = GetGameTime() + (9.5 + (type * 0.5));
 				float duration;
 				if(b_thisNpcIsARaid[victim] || b_thisNpcIsABoss[victim])
-					duration = 1.5;
+					duration = 1.0;
 				else
 					duration = 3.0;
 				ApplyStatusEffect(attacker,victim,"Silenced",duration * 2.0);
