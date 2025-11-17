@@ -1712,30 +1712,30 @@
 	}
 	"Doctor Certificate Desc"
 	{
-		"en"	"-Gain 1.5x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.5x Medigun Heal rate\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.5x Medigun Heal, 20％ danni extra alle armi di supporto\n5％ resistenza in mischia con Healing Support Weapons disattivata"
 	}
 	"Professor Certificate Desc"
 	{
-		"en"	"-Gain 1.5x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.5x Medigun Heal rate\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.5x Medigun Heal, 20％ danni extra alle armi di supporto\n5％ resistenza in mischia con Healing Support Weapons disattivata"
 	}
 
 	"Death Certificate Desc"
 	{
-		"en"	"-Gain 1.4x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 2 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.4x Medigun Heal rate\n-Gain 35％ extra support weapon damage\n-Gain 2 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.4x Medigun Heal, 20％ danni extra da arma di supporto\n+2 secondi di uber e 5％ resistenza in mischia con Healing Support Weapons out"
 	}
 	
 	"Reaper's Certificate Desc"
 	{
-		"en"	"-Gain 1.45x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 1 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.45x Medigun Heal rate\n-Gain 45％ extra support weapon damage\n-Gain 1 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.45x Guarigione Medigun, 20％ danni extra da arma di supporto,\n+1 secondi di resistenza uber e 5％ in mischia con le armi di supporto guarite"
 	}
 	
 	"Hell's Certificate Desc"
 	{
-		"en"	"-Gain 1.45x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 1 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.45x Medigun Heal rate\n-Gain 35％ extra support weapon damage\n-Gain 1 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.45x Guarigione Medigun, 20％ danni extra da arma di supporto,\n+1 secondi di resistenza uber e 5％ in mischia con le armi di supporto guarite"
 	}
 	
@@ -1910,7 +1910,7 @@
 	
 	"Fusion Blade Pap 1"
 	{
-		"en"	"-Increased Damage\n-Ability has more range and lasts much longer, but has a slight increase in cooldown."
+		"en"	"-Increased Damage\n-Ability has more range and lasts much longer, but has a slight Increased in cooldown."
 		"it"	"M2 potenzia il tuo danno e un po' meno la resistenza di 15％, e gli alleati di 10％ questo si impila con 2 su ogni altro."
 	}
 	"Expidonsan Explorer Pap 1"
@@ -2021,7 +2021,7 @@
 	}
 	"Alchemist Potion Pap 5"
 	{
-		"en"	"-Increased Damage\n-M2 will now increase your fire rate heavily but lower your damage and prevent mana gain for the duration."
+		"en"	"-Increased Damage\n-M2 will now Increased your fire rate heavily but lower your damage and prevent mana gain for the duration."
 		"fr"	"M2 accélère la cadence des attaques, mais réduit vos dégats et arrête la regénération de Mana pour une courte période."
 		"ru"	"M2 теперь сильно повышает вашу скорострельность, но снижает урон и препятствует получению маны на время действия."
 		"chi"   "M2现在会大大提高你的射速，但会降低你的伤害，并在持续时间内阻止你获得法力值。"
@@ -2839,37 +2839,37 @@
 	}
 	"Leper Sword Desc Pap 1"
 	{
-		"en"	"Increase all stats, Hew has less cooldown."
+		"en"	"Increased all stats, Hew has less cooldown."
 		"it"	"Aumenta tutte le statistiche, Hew ha un cooldown minore."
 	}
 	"Leper Sword Desc Pap 2"
 	{
-		"en"	"Increase all stats.\nDamage taken during animations is reduced by 33％.\nUnlocks Solemity, Charge with hits and press (M2) to use it\nHeals 33％ of your max health and armor"
+		"en"	"Increased all stats.\nDamage taken during animations is reduced by 33％.\nUnlocks Solemity, Charge with hits and press (M2) to use it\nHeals 33％ of your max health and armor"
 		"it"	"Aumenta tutte le statistiche.\nIl danno subito durante le animazioni è ridotto del 33％.\nSblocca Solemity, Carica con i colpi e premi (M2) per usarla.\nGuarisce il 33％ della tua salute e armatura massima"
 	}
 	"Leper Sword Desc Pap 3"
 	{
-		"en"	"Increase all stats.\nUnlocks King's Wrath, press (R + M2) to use it, When hurt, gain more damage, Applies self bleed aswell"
+		"en"	"Increased all stats.\nUnlocks King's Wrath, press (R + M2) to use it, When hurt, gain more damage, Applies self bleed aswell"
 		"it"	"Aumenta tutte le statistiche.\nSblocca l'Ira del Re, premere (R + M2) per usarla, quando si viene feriti si subiscono più danni, si applica anche l'autosanguinamento"
 	}
 	"Leper Sword Desc Pap 4"
 	{
-		"en"	"Increase all stats.\nSolemity heals 50％"
+		"en"	"Increased all stats.\nSolemity heals 50％"
 		"it"	"Aumenta tutte le statistiche.\nSolemità cura 50％"
 	}
 	"Leper Sword Desc Pap 5"
 	{
-		"en"	"Increase all stats, Hew has less cooldown"
+		"en"	"Increased all stats, Hew has less cooldown"
 		"it"	"Aumenta tutte le statistiche, Hew ha un cooldown minore"
 	}
 	"Leper Sword Desc Pap 6"
 	{
-		"en"	"Increase all stats, Solemity heals for 66%.\nWrath gives more damage per attack received."
+		"en"	"Increased all stats, Solemity heals for 66%.\nWrath gives more damage per attack received."
 		"it"	"Aumenta tutte le statistiche, Solemity guarisce del 66%.\nL'ira dà più danni per ogni attacco ricevuto."
 	}
 	"Leper Sword Desc Pap 7"
 	{
-		"en"	"Increase all stats."
+		"en"	"Increased all stats."
 		"it"	"Aumenta tutte le statistiche."
 	}
 	"The Flagellant Desc"
@@ -3486,7 +3486,7 @@
 	}
 	"West Pap 2 Desc"
 	{
-		"en"	"-Increased damage\n-M2 ability will make you jump backwards on usage\n-New ability: M3 Your aim will be fixed to nearby enemy and damage and firerate will increase dramatically."
+		"en"	"-Increased damage\n-M2 ability will make you jump backwards on usage\n-New ability: M3 Your aim will be fixed to nearby enemy and damage and firerate will Increased dramatically."
 		"fr"	"Dégats améliorés.\nAbilité vous fera reculer avec un saut.\nAppuyez sur M3 pour viser automatiquement un ennemi. Votre cadence de tir s'améliorera considérablement."
 		"chi"	"增加伤害。\nM2技能发动时会你将会后撤一步。\n新技能：[M3]锁定附近一位敌人，大幅度增加开火速度以及伤害。"
 		"it"	"Aumento del danno\nl'abilità M2 vi farà saltare all'indietro durante l'utilizzo della nuova abilità\nM3 La mira sarà fissata sul nemico vicino e i danni e la potenza di fuoco aumenteranno drasticamente."
@@ -3779,7 +3779,7 @@
 	}
 	"Barracks Commander Desc"
 	{
-		"en"	"Not the strongest himself, but will increase the movement speed of other allies near him, greatly complimenting their mobility."
+		"en"	"Not the strongest himself, but will Increased the movement speed of other allies near him, greatly complimenting their mobility."
 		"fr"	"Ce n'est pas le plus fort lui-même, mais il augmentera la vitesse de déplacement des autres alliés proches de lui, complétant grandement leur mobilité."
 		"it"	"Non è il più forte in assoluto, ma aumenta la velocità di movimento degli altri alleati che gli sono vicini, favorendo la loro mobilità."
 	}
@@ -4120,7 +4120,7 @@
 	}
 	"Magia Fractal Desc"
 	{
-		"en"	"Primary:\nM1:enter an animation where you shoot a big laser of doom.\nHold M2: Increase distance, faster turn speed. uses 10 crystals/s and does 10%% more damage \nSecondary:\nM1: Harvester, gain mana on targets hit.\nM2: Summon an Ion that bounces\nMelee:\nM1: Energy Wave. Costs Crystals. On hit gain crystals"
+		"en"	"Primary:\nM1:enter an animation where you shoot a big laser of doom.\nHold M2: Increased distance, faster turn speed. uses 10 crystals/s and does 10%% more damage \nSecondary:\nM1: Harvester, gain mana on targets hit.\nM2: Summon an Ion that bounces\nMelee:\nM1: Energy Wave. Costs Crystals. On hit gain crystals"
 		"it"	"Primario:\nM1: attiva un'animazione in cui spari un potente raggio laser distruttivo.\nTieni premuto M2: aumenta la distanza e la velocità di rotazione.\nConsuma 10 cristalli al secondo e infligge il 10% di danni in più. \nSecondario:\nM1: Mietitore, ottieni mana dai bersagli colpiti.\nM2: evoca uno ione che rimbalza\nCorpo a corpo:\nM1: Onda energetica. Costa cristalli. Quando colpisci guadagni cristalli."
 	}
 	"Fractal Kit Desc 1"
@@ -4565,5 +4565,77 @@
 	"Boomerang PaP Generic Final Pap"
 	{
 		"en"	"-Increased Damage"
+	}
+	"Arsenal Desc"
+	{
+		"en"	"One of Mazeat's Troops.\n-Charge energy on melee hits\n-On max charge, melee deals 30％ extra ranged damage.\n-With M2 equip a weapon, needs 100％ energy."
+	}
+	"Arsenal Pap 1"
+	{
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health & melee resistance\n-Ability weapons gain more attackspeed\n-R allows you to switch between weapons now.\n-You gain a shotgun"
+	}
+	"Arsenal Pap 2"
+	{
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health & melee resistance\n-Ability weapons gain more attackspeed\n-Gain AR2."
+	}
+	"Arsenal Pap 3"
+	{
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health\n-Ability weapons gain more attackspeed\n-Gain Rapid RPG."
+	}
+	"Arsenal Pap 4"
+	{
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health\n-Ability weapons gain more attackspeed\n-Your gauss pistol now debuffs enemies on hit."
+	}
+	"Arsenal Pap 5"
+	{
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health\n-Ability weapons gain more attackspeed\n-You energy can go upto 200％ now."
+	}
+	"Arsenal Pap 6"
+	{
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health & melee resistance\n-Ability weapons gain more attackspeed"
+	}
+	"Arsenal Pap 7"
+	{
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health\n-Ability weapons gain more attackspeed"
+	}
+	"Purging Desc"
+	{
+		"en"	"Become the Ziberian greatest invention... A monster.\n-Gain 2 weapons, Shotgun and Rampager minigun\n-Press M2 To easy switch between them\n-Charge energy on hit, used for later paps"
+    }
+	"Purging Pap N"
+	{
+		"en"	"-Increased damage\n-Increased Health"
+	}
+	"Purging Pap 2"
+	{
+		"en"	"-Increased damage\n-Increased Health\n-While your shotgun is out, your M2 will give you a minigun.\n-Minigun Abilities:\nHeavy Resistance while out\nAttacking the same target massively boosts damage, upto 2x\nAfter some time, or by pressing R, minigun unequips\nTakes 30％ more damage from raids\nDeals 35％ less damage to raids"
+	}
+	"Purging Pap 3"
+	{
+		"en"	"-Increased damage\n-Increased Health\n-Minigun now lasts longer, and Holsters faster."
+	}
+	"Purging Pap 4"
+	{
+		"en"	"-Increased damage\n-Increased Health\n-While your Rampager Miniguni s out, M2 will give you a Quad Rocket Launcher.\n-Quad launcher Abilities:\nShoots 2 rockets at once\nWhen depleted, explodes, dealing damage\nForce fully equips fists and makes you deal ram damage while running\nYou take more damage while ramming"
+    }
+	"Purging Pap 5"
+	{
+		"en"	"-Increased damage\n-Increased Health\n-You store more power\n-You can move during your annihilator phase\n-Quad Launcher fires 1 more rocket at once now, fires faster."
+	}
+	"Purging Pap 6"
+	{
+		"en"	"-Increased damage\n-Increased Health\n-You move faster in your annihilator phase\n-Ram Phase deals more damage, and has less vulnerabilities"
+	}
+	"Sigil Blade Pap 1"
+	{
+		"en"	"Some crystal shard from Ruina.\n-Has High Melee Res\n-When hitting an enemy, apply mana overflow\n-When reaching max overflow, cause an ION strike.\n-Applies paralize for a short time\n-Applies silence for a medium time"
+	}
+	"Sigil Blade Pap 2"
+	{
+		"en"	"-Increased damage\n-Increased melee resistance\n-Slower attackspeed\n-Summon a floating crystal with M2\n-You need atleast 35％ of your max mana to teleport back with m2\n-Needs LOS.\n-Hitting enemies reduces M2 cooldown."
+	}
+	"Sigil Blade Pap 3"
+	{
+		"en"	"-Increased damage\n-Increased melee resistance\n-Slower attackspeed\n-You gain the ability to done an Lock Slash onto enemy(By R)\n-The more you travel with your ability, the more damage you deal\n-Sigil cd reduction buffed a bit.\n-You can return to your crystal while charging"
 	}
 }

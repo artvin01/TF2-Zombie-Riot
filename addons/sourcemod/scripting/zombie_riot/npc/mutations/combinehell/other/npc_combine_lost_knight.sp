@@ -257,7 +257,7 @@ public void LostKnight_ClotThink(int iNPC)
 			float DurationGive = 9999.0;
 			npc.m_flMeleeArmor = 0.25;
 			npc.m_flRangedArmor = 0.25;
-			ApplyStatusEffect(npc.index, npc.index, "Combine Command", DurationGive);
+			ApplyStatusEffect(npc.index, npc.index, "Mazeat Command", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "War Cry", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "Godly Motivation", DurationGive);
@@ -285,7 +285,7 @@ public void LostKnight_ClotThink(int iNPC)
 		{
 			if(GetTeam(npc.index) == GetTeam(entitycount))
 			{
-				ApplyStatusEffect(npc.index, entitycount, "Combine Command", DurationGive);
+				ApplyStatusEffect(npc.index, entitycount, "Mazeat Command", DurationGive);
 				ApplyStatusEffect(npc.index, entitycount, "War Cry", DurationGive);
 				ApplyStatusEffect(npc.index, entitycount, "Defensive Backup", DurationGive);
 			}

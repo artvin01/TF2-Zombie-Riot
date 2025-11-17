@@ -30,8 +30,10 @@ static float M1_Cost[6] = { 40.0, 60.0, 80.0, 100.0, 120.0, 200.0 };			//Primary
 static float M1_Range[6] = { 140.0, 150.0, 160.0, 180.0, 140.0, 200.0 };  		//Electric blade range.
 static float M1_Width[6] = { 120.0, 140.0, 160.0, 180.0, 120.0, 220.0 };  		//Electric blade arc swing angle.
 static float M1_Damage[6] = { 750.0, 1000.0, 1250.0, 1500.0, 750.0, 1500.0 }; 	//Electric blade damage.
+static float M1_RaidMult[6] = { 1.5, 1.4, 1.3, 1.25, 1.25, 1.1 };				//Amount to multiply electric blade damage against raids.
 static float M1_Falloff[6] = { 0.825, 0.85, 0.875, 0.9, 0.825, 0.9 };   		//Amount to multiply electric blade damage per target hit.
 static float M1_Interval[6] = { 0.8, 0.85, 0.8, 0.75, 0.8, 0.675 };     		//Time it takes for electric blades to sweep across the screen.
+static float Passive_Res[6] = { 0.9, 0.875, 0.85, 0.85, 0.775, 0.9 };			//Passive damage resistance provided while NOT charging Raigeki (1.0 - this = res mult, so 0.9 would be 10% res, etc)
 
 //STATIC ELECTRICITY: Holding M2 allows the user to charge up Raigeki. This imposes a huge speed penalty, prevents Burst Pack from being used, and prevents the user from using their primary attack.
 //In exchange: the user gains damage resistance, plus additional damage resistance based on the ability's charge, and emits Static Electricity, which damages nearby enemies.
@@ -1509,6 +1511,9 @@ public void Blade_OnHit(int victim, int attacker)
 		dmg = f_BladeBaseDMG[attacker];
 	}
 
+	if (b_thisNpcIsARaid[victim])
+		dmg *= M1_RaidMult[i_BladeTier[attacker]];
+
 	float force[3], pos[3], forceAng[3];
 
 	for (int i = 0; i < 3; i++)
@@ -2062,10 +2067,9 @@ public void Raigeki_HUD(int client, int weapon, bool forced)
 
 float Player_OnTakeDamage_Raigeki(int victim, float &damage, int attacker)
 {
-	if (!b_ChargingRaigeki[victim])
-		return damage;
+	float res = (b_ChargingRaigeki[victim] ? f_ChargeCurrentRes[victim] : Passive_Res[i_BladeTier[victim]]);
 
-	if (!CheckInHud())
+	if (!CheckInHud() && b_ChargingRaigeki[victim])
 	{
 		Energy_Give(victim, Energy_OnHurt[i_ChargeTier[victim]], attacker, i_ChargeTier[victim]);
 
@@ -2073,7 +2077,7 @@ float Player_OnTakeDamage_Raigeki(int victim, float &damage, int attacker)
 			damage *= Charge_DMGFromRaids[i_ChargeTier[victim]];
 	}
 
-	return damage * f_ChargeCurrentRes[victim];
+	return damage * res;
 }
 
 void StatusEffects_Raigeki()

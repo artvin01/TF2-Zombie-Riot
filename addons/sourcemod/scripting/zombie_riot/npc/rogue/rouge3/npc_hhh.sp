@@ -295,7 +295,7 @@ methodmap HHH < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_bigaxe/c_bigaxe.mdl");
 		
 		int color[4] = { 155, 0, 155, 50 };
-		SetCustomFog(FogType_NPC, color, color, 400.0, 100.0, 0.9);
+		SetCustomFog(FogType_NPC, color, color, 50.0, 800.0, 0.75);
 		
 		npc.PlaySpawnSound();
 		
@@ -387,24 +387,16 @@ public void HHH_ClotThink(int iNPC)
 						UTIL_ScreenFade(client, 66, 1, FFADE_IN | FFADE_PURGE, 0, 0, 0, 255);
 				}
 				
+				// Teleport EVERYONE
+				ShuffleAllPlayerPositions();
+				
 				// Teleport EVERYTHING
-				for (int entitycount = 1; entitycount < MAXENTITIES; entitycount++)
+				for (int entitycount = MaxClients + 1; entitycount < MAXENTITIES; entitycount++)
 				{
-					bool teleported;
-					if (IsValidEnemy(npc.index, entitycount)) //Check for players
-					{
-						teleported = true;
-						TeleportDiversioToRandLocation(entitycount,_,1750.0, 1250.0);
-					}
-					else if (IsValidAlly(npc.index, entitycount)) //Check for NPCs
-					{
-						teleported = true;
-						TeleportDiversioToRandLocation(entitycount,_,1750.0, 1250.0);
-					}
-					
-					if (teleported && entitycount <= MaxClients)
-						EmitSoundToClient(entitycount, "misc/halloween/spell_teleport.wav");
+					if (IsValidEnemy(npc.index, entitycount) || IsValidAlly(npc.index, entitycount))
+						TeleportDiversioToRandLocation(entitycount,_,1750.0, 250.0);
 				}
+				
 				npc.PlayTeleSound();
 				
 				npc.StartPathing();
@@ -733,4 +725,46 @@ void VSHJokeSpawnMessage(int iNPC, const char[] boss)
 		if (IsClientInGame(client) && !IsFakeClient(client))
 			ShowGameText(client, "leaderboard_streak", 0, message);
 	}
+}
+
+void ShuffleAllPlayerPositions()
+{
+	ArrayList clients = new ArrayList();
+	ArrayList positions = new ArrayList(3);
+	
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!IsClientInGame(client) || IsFakeClient(client) || !IsPlayerAlive(client) || TeutonType[client] != TEUTON_NONE)
+			continue;
+		
+		clients.Push(client);
+		
+		float pos[3];
+		GetAbsOrigin(client, pos);
+		positions.PushArray(pos);
+	}
+	
+	int length = clients.Length;
+	if (length > 1)
+	{
+		clients.Sort(Sort_Random, Sort_Integer);
+		
+		for (int i = 0; i < length; i++)
+		{
+			int client = clients.Get(i);
+			float pos[3];
+			positions.GetArray(i, pos);
+			
+			TeleportEntity(client, pos);
+			EmitSoundToClient(client, "misc/halloween/spell_teleport.wav");
+			
+			// Force them to crouch to prevent them from getting stuck
+			SetEntProp(client, Prop_Send, "m_bDucking", true);
+			SetEntProp(client, Prop_Send, "m_bDucked", true);
+			SetEntityFlags(client, GetEntityFlags(client) | FL_DUCKING);
+		}
+	}
+	
+	delete clients;
+	delete positions;
 }
