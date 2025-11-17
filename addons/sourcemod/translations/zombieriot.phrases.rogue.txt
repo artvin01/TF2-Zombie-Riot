@@ -147,6 +147,7 @@
 		"it"	"Lingotti di australium: {1}"
 		"pt"	"Barras de Australium: {1}"
 		"ru"	"Слитков австралия: {1}"
+		"ko"	"오스트레일륨 주괴: {1}"
 	}
 	"Encounter"
 	{
@@ -466,6 +467,7 @@
 		"en"	"{green}Gain 4 Australium Ingots"
 		"it"	"{green}Guadagni 4 lingotti di australium"
 		"ru"	"{green}Получить 4 слитков австралия"
+		"ko"	"{green}오스트레일륨 주괴를 4 얻습니다."
 	}
 	"Eccentric Lore 1-4"
 	{
@@ -490,6 +492,7 @@
 		"en"	"{yellow}Receive an unknown artifact{default}"
 		"it"	"{yellow}Ricevere un artefatto sconosciuto{default}"
 		"ru"	"{yellow}Получить неизвестный артефакт{default}"
+		"ko"	"{yellow}무작위 소장품 1개를 얻습니다.{default}"
 	}
 	"Crimson Troupe Title"
 	{
@@ -520,6 +523,7 @@
 		"en"	"{green}Fully heal allies and gain 30 ammo supplies"
 		"it"	"{green}Guarisce completamente gli alleati e guadagna 30 munizioni"
 		"ru"	"{green}Полностью вылечить союзников и получить 30 боеприпасов"
+		"ko"	"{green}아군 전체의 체력을 전부 회복하고 탄약 보급을 30 얻습니다."
 	}
 	"Camp Lore"
 	{
@@ -562,6 +566,7 @@
 		"en"	"{green}Gain 8 Australium Ingots"
 		"it"	"{green}Guadagni 8 lingotti di australium"
 		"ru"	"{green}Получить 8 слитков австралия"
+		"ko"	"{green}오스트레일륨 주괴를 8 얻습니다."
 	}
 	"Coffin of Evil Lore 2"
 	{
@@ -586,6 +591,7 @@
 		"en"	"{green}Gain 30 Australium Ingots"
 		"it"	"{green}Guadagni 30 lingotti di australium"
 		"ru"	"{green}Получить 30 слитков австралия"
+		"ko"	"{green}오스트레일륨 주괴를 30 얻습니다"
 	}
 	"Eye for an Eye Lore 1"
 	{
@@ -622,6 +628,7 @@
 		"en"	"{green}Gain 30 ammo supplies"
 		"it"	"{green}Guadagni 30 scorte di munizioni"
 		"ru"	"{green}Получить 30 боеприпасов"
+		"ko"	"{green}탄약 보급을 30 얻습니다."
 	}
 	"Eye for an Eye Lore 3"
 	{
@@ -664,6 +671,7 @@
 		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
 		"it"	"{yellow}Ricevi un manufatto sconosciuto {blue} e cambiare il finale"
 		"ru"	"{yellow}Получить неизвестный артифакт и {blue}Поменять концовку"
+		"ko"	"{yellow}정체불명의 소장품을 얻습니다. {blue}게임 엔딩이 변경됩니다."
 	}
 	"Broken Crown Lore 1"
 	{
@@ -1580,6 +1588,7 @@
 		"en"	"{green}Start with +20 Australium Ignots and +250 Cash.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
 		"it"	"{green}Inizia con +20 Ignot Australium e +250 Cash.\n{green}Quando si perde una battaglia non-boss, si continua l'avventura {yellow}(una sola volta)"
 		"ru"	"{green}Начните с +20 слитками австралия и +250 кредитов.\n{green}Когда проигран бой без босса, продолжите приключение {yellow}(только один раз)"
+		"ko"	"{green}추가 자금을 +250 얻고 추가 오스트레일륨을 +20 얻은채로 게임을 시작합니다.\n{green}보스전이 아닌 전투에서 패배하더라도, 계속 진행합니다. {yellow}(1회성)"
 	}
 	"Spearhead Squad"
 	{
@@ -1603,6 +1612,7 @@
 		"en"	"{green}Store items are 10％ off outside of combat"
 		"it"	"{green}Gli articoli del negozio sono scontati del 10％ al di fuori del combattimento"
 		"ru"	"{green}Скидка на товары в магазине 10％ вне боя"
+		"ko"	"{green}전투 상황이 아니라면, 상점의 모든 아이템의 가격이 10％ 감소합니다."
 	}
 	"First Class Squad"
 	{
@@ -1873,6 +1883,7 @@
 		"en"	"Authorization approved. Increasing Barracks funding.\n{green}Barracks gain +2 units and +1 supplies."
 		"it"	"Autorizzazione approvata. Aumento dei fondi per le caserme.\n{green}Le caserme guadagnano +2 unità e +1 rifornimenti."
 		"ru"	"''Требуются дополнительные хранилища.''\n{green}+1 к припасам для казарм, +2 к максимуму союзников."
+		"ko"	"''보급고가 부족합니다.''\n{green}배럭의 보급품이 +1 증가하고, 최대 아군 수가 +2 증가합니다."
 	}
 	"Al-Hallam's Fortress Blueprints"
 	{
@@ -1895,6 +1906,7 @@
 		"en"	"A medieval-grade armor plate.\n{green}Barracks units gain a flat 10 damage taken reduction."
 		"it"	"Armatura medievale.\n{green}Le unità della caserma ottengono una riduzione fissa di 10 ai danni subiti."
 		"ru"	"Средневековая броня, баланс кажется нарушенным.\n{green}Войска из казарм получают плоское снижение урона на 10 ед."
+		"ko"	"중세 시대의 갑옷. 균형이 굉장히 잘 잡혔다.\n{green}모든 배럭 유닛들이 피해를 고정적으로 10만큼 덜 받습니다."
 	}
 	"Neosteal Plating"
 	{
@@ -1907,6 +1919,7 @@
 		"en"	"A space-grade armor plate.\n{green}Barrack units gain a flat 20 damage taken reduction."
 		"it"	"{green}Le unità della baracca ottengono una riduzione forfettaria di 20 danni subiti."
 		"ru"	"Космическая броня строения, баланс кажется нарушенным.\n{green}Войска из казарм получают плоское снижение урона на 20 ед."
+		"ko"	"우주 전쟁 속 건물들의 장갑. 균형이 굉장히 잘 잡혔다.\n{green}모든 배럭 유닛들이 피해를 고정적으로 20만큼 덜 받습니다."
 	}
 	"Thumb Ring"
 	{
@@ -1919,6 +1932,7 @@
 		"en"	"A medieval ring used to aim and hit faraway (stationary) targets.\n{green}Player bow-line and crossbow-line weapons Shoot and reload 33％ faster."
 		"it"	"Un anello medievale usato per mirare e colpire bersagli lontani (stazionari).\n{green}Armi a linea d'arco e a linea di balestra dei giocatori Sparano e ricaricano 33％ più velocemente."
 		"ru"	"Средневековая технология, которая каким-то образом сделала вас на 100％ метким (в стоящие цели).\n{green}Все луки и арбалеты стреляют и перезаряжаются на 33％ быстрее."
+		"ko"	"이 중세 시대의 물건은 화살 명중률이 100％ 증가하게 만들어주는 효과가 있는 것 같다.\n{green}모든 궁사와 석궁병 계열 아군 유닛들의 공격 속도와 재장전 속도 +33％ ."
 	}
 	"Blademace"
 	{
@@ -2011,6 +2025,7 @@
 		"en"	"As long as a new cycle has not been reached, there is still time to fix your mistakes.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
 		"it"	"Finché non è stato raggiunto un nuovo ciclo, c'è ancora tempo per rimediare ai propri errori.\n{green}Quando si perde una battaglia non-boss, si continua l'avventura {yellow}(una sola volta)"
 		"ru"	"Пока новый цикл не достигнут, ещё есть время исправить свои ошибки.\n{green}Когда проигран бой без босса, продолжите приключение {yellow}(только один раз)"
+		"ko"	"새로운 순환이 시작되지 않은 한 아직 잘못을 만회할 기회가 있다.\n{green}보스전이 아닌 전투에서 패배하더라도, 계속 진행합니다. {yellow}(1회성)"
 	}
 	"Proof of Friendship"
 	{
@@ -2023,6 +2038,7 @@
 		"en"	"When they extend to others their exalted friendship, they do not allow it to be sullied.\n{green}+1 Australium Ingot drop from combats, doubled on Elite combats."
 		"it"	"Quando estendono ad altri la loro eccelsa amicizia, non permettono che venga macchiata.\n{green}+1 Lingotto di australium lasciato cadere dai combattimenti, raddoppiato nei combattimenti d'Elite."
 		"ru"	"Когда они распространяют на других свою дружбу, они не позволяют ей быть запятнанной.\n{green}+1 слиток австралиума выпадает из сражений, удваивается в элитных сражениях."
+		"ko"	"그들은 깊은 우정을 대가로 함부로 무례를 범하는 걸 용납하지 않는다.\n{green}전투 종료시, 오스트레일륨 주괴 획득량이 +1 개 증가합니다. 정예 전투일시 효과가 2배로 증가."
 	}
 	"Broken Combine Crown"
 	{

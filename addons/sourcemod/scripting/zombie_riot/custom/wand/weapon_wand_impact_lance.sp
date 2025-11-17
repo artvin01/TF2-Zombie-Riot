@@ -145,7 +145,7 @@ public void Impact_Lance_Impact_Driver(int client, int weapon, bool crit, int sl
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "No Targets Detected");
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "No Targets Detected");
 				return;
 			}
 

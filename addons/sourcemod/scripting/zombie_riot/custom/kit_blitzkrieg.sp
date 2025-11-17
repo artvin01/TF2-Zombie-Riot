@@ -665,7 +665,7 @@ static void Blitzkrieg_Kit_ion_trace(int client, int patern, int weapon)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n[%i/%i]", RoundToFloor(fl_ion_charge[client]), RoundToFloor(BLITZKREIG_KIT_ION_COST_CHARGE));
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Your Weapon is not charged enough", RoundToFloor(fl_ion_charge[client]), RoundToFloor(BLITZKREIG_KIT_ION_COST_CHARGE));
 		return;
 	}
 	float GameTime = GetGameTime();
@@ -720,7 +720,6 @@ static float fl_ion_chargeup[MAXPLAYERS+1];
 static float fl_ion_loc[MAXPLAYERS+1][3];
 static float fl_ion_throttle[MAXPLAYERS+1];
 static float fl_ion_damage[MAXPLAYERS+1];
-
 public void Blitzkrieg_Kit_IOC_Invoke(int client, float vecTarget[3], float ion_damage)	//Ion cannon from above
 {
 
@@ -866,7 +865,7 @@ void Blitzkrieg_Kit_ModifyMeleeDmg(int client, float &damage)
 	}
 }
 
-void Blitzkrieg_Kit_OnHitEffect(int client)
+void Blitzkrieg_Kit_OnHitEffect(int client, int target)
 {
 	float GameTime = GetGameTime();
 
@@ -881,9 +880,25 @@ void Blitzkrieg_Kit_OnHitEffect(int client)
 		else
 		*/
 		{
-			fl_ion_timer_recharge[client] -=BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;
-			fl_primary_reloading[client] -= BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;	//Reduce the cooldowns by a bit if you hit something!
+			if (b_thisNpcIsARaid[target])	//during raids make the CD reduction higher
+			{
+				fl_ion_timer_recharge[client] -=BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION*4.0;
+				fl_primary_reloading[client] -= BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION*4.0;	//Reduce the cooldowns by a bit if you hit something!
+			}
+			else
+			{
+				fl_ion_timer_recharge[client] -=BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;
+				fl_primary_reloading[client] -= BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;	//Reduce the cooldowns by a bit if you hit something!
+
+				//during normal rounds make the melee deal KB
+
+				DisplayCritAboveNpc(target, client, true);
+				SensalCauseKnockback(client, target, 1.0, false);	//make them take KB but no stun
+			}
+			
 		}
+
+		
 	}
 }
 static void spawnRing_Vector(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location

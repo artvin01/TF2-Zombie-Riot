@@ -5,11 +5,13 @@
 		"en" 		"Example Text!"
 		"pt"		"Texto de Exemplo."
 		"it"		"Testo di esempio!"
+		"ko" 		"예시 텍스트!"
 	}
 	"Current Enemies Alive"
 	{
 		"en" 		"Current Enemies Alive"
 		"it"		"Nemici attuali vivi"
+		"ko"		"현재 생존 중인 적"
 	}
 	"Allies"
 	{
@@ -18,6 +20,7 @@
 		"pt"		"Aliados"
 		"ru"            "Союзники"
 		"it"		"Alleati"
+		"ko" 		"아군"
 	}
 	"Raid Bosses"
 	{
@@ -25,6 +28,7 @@
 		"fr" 		"Boss de Raid"
 		"pt"		"Chefes de Invasão"
 		"it"		"Boss dell'incursione"
+		"ko" 		"레이드 보스"
 	}
 	"Special Enemies"
 	{
@@ -32,6 +36,7 @@
 		"fr" 		"Ennemis Spéciaux"
 		"pt"		"Inimigos Especiais"
 		"it"		"Nemici speciali"
+		"ko" 		"특수형 적군"
 	}
 	"Common Infection"
 	{
@@ -39,6 +44,7 @@
 		"fr" 		"Infectés Communs"
 		"pt"		"Infectados Comuns"
 		"it"		"Infezione comune"
+		"ko" 		"일반 감염체들"
 	}
 	"Blitz Controlled"
 	{
@@ -46,6 +52,7 @@
 		"fr" 		"Controllés par Blitz"
 		"pt"		"Controlados por Blitz"
 		"it"		"Blitz controllato"
+		"ko" 		"블리츠의 하수인들"
 	}
 	"Xeno Infection"
 	{
@@ -53,6 +60,7 @@
 		"fr" 		"Infectés par Xéno"
 		"pt"		"Xeno Infecção"
 		"it"		"Infezione Xeno"
+		"ko" 		"제노 감염체들"
 	}
 	"Medieval Empire"
 	{
@@ -60,6 +68,7 @@
 		"fr" 		"Empire du Moyen-Âge"
 		"pt"		"Império Medieval"
 		"it"		"Impero medievale"
+		"ko" 		"중세 제국"
 	}
 	"Seaborn Infection"
 	{
@@ -67,6 +76,7 @@
 		"fr" 		"Infectés par Seaborn"
 		"pt"		"Infecção do Mar"
 		"it"		"Infezione di Seaborn"
+		"ko" 		"시본 감염체들"
 	}
 	"Bloons"
 	{
@@ -74,6 +84,7 @@
 		"fr" 		"Bloons"
 		"pt"		"Balões"
 		"it"		"Bloons"
+		"ko" 		"풍선들"
 	}
 	"Cry of Fear"
 	{
@@ -81,259 +92,310 @@
 		"fr" 		"Cry of Fear"
 		"pt"		"Cry of Fear"
 		"it"		"Cry of Fear"
+		"ko" 		"Cry of Fear"
 	}
 	"Voided Subjects"
 	{
 		"en" 		"Voided Subjects"
 		"fr" 		"Disciples du Void"
 		"it"		"Soggetti non registrati"
+		"ko" 		"공허의 하수인들"
 	}
 	"Ruina"
 	{
 		"en" 		"Ruina"
 		"it"		"Ruina"
+		"ko" 		"루이나"
 	}
 	"Iberia Expidonsa Alliance"
 	{
 		"en" 		"Iberia Expidonsa Alliance"
 		"it"		"Alleanza Iberia Expidonsa"
+		"ko" 		"이베리아 - 엑스피돈사 연합"
 	}
 	"Whiteflower Specials"
 	{
 		"en" 		"Whiteflower Specials"
 		"it"		"Offerte di fiori bianchi"
+		"ko" 		"배풍등의 정예군"
 	}
 	"Chaos Allience"
 	{
 		"en" 		"Chaos Allience"
 		"fr" 		"Alliance du Chaos"
 		"it"		"Caos Allience"
+		"ko" 		"혼돈 연합"
 	}
 	"Expidonsa"
 	{
 		"en" 		"Expidonsa"
 		"pt"		"Expidonsa"
 		"it"		"Expidonsa"
+		"ko" 		"엑스피돈사"
 	}
 	"Interitus Alliances"
 	{
 		"en"		"interitus Alliances"
 		"fr"		"Alliés de Interitus"
 		"it"		"Alleanze interitus"
+		"ko"		"인테리투스 연합"
 	}
 	"Necropolains"
 	{
 		"en"		"Necropolains"
+		"ko"		"네크로폴레인즈"
 	}
 	"Mutations"
 	{
 		"en"		"Mutations"
 		"it"		"Mutazioni"
+		"ko"		"변이체들"
 	}
 	"Curtain Occupants"
 	{
 		"en"		"Curtain Occupants"
 		"it"		"Occupanti della tenda"
+		"ko"		"베일 속의 자들"
 	}
 	"Headcrab Zombie Desc"
 	{
 		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around.\n-No special Effects."
 		"it"		"Normale Zombie che non ha nulla di speciale. Ma questo è il più comune tra quelli che si vedono in giro.\n-Nessun effetto speciale."
+		"ko" 		"특별할게 없는 일반적인 좀비입니다. 하지만 이 좀비가 주변에서 가장 흔히 보이는 좀비이기도 합니다."
 	}
 	"Fortified Headcrab Zombie Desc"
 	{
 		"en" 		"Stronger version of the normal Headcrab Zombie.\n-No special Effects."
 		"it"		"Versione più robusta del normale Headcrab Zombie.\n-Nessun effetto speciale."
+		"ko" 		"이 개체는 일반 헤드크랩 좀비보다 더 강해졌습니다.\n특수능력 없음"
 	}
 	"Fast Zombie Desc"
 	{
 		"en" 		"A very fast zombie.\n-Jumps at you when in view."
 		"it"		"Uno zombie molto veloce.\n-Salta verso di voi quando siete in vista."
+		"ko" 		"매우 빠른 좀비, 시야에 들어오면 뛰어듦"
 	}
 	"Fortified Fast Zombie Desc"
 	{
 		"en" 		"Stronger version of the normal Fast Zombie.\n-Jumps at you when in view."
 		"it"		"Versione più forte del normale Zombie veloce.\n-Salta verso di voi quando siete in vista."
+		"ko" 		"이 개체는 일반 패스트 좀비보다 더 강해졌습니다.\n매우 빠른 좀비, 시야에 들어오면 뛰어듦"
 	}
 	"Torsoless Headcrab Zombie Desc"
 	{
 		"en" 		"A Zombie with his legs cut off, sentries cant hit him.\nTheir health and damage is lower then the normal counterpart.\n-No special Effects."
 		"it"		"Uno zombie con le gambe tagliate, le sentinelle non possono colpirlo.\nLa loro salute e i danni sono inferiori alla controparte normale.\n-Nessun effetto speciale."
+		"ko" 		"다리가 없는 좀비로, 센트리들은 이 적을 공격할 수 없습니다.\n하지만 일반 좀비보다 체력과 공격력이 낮습니다.\n특수능력 없음"
 	}
 	"Poison Zombie Desc"
 	{
 		"en" 		"A Slow Zombie with alot of damage and health.\nHitting their head is quite easy.\n-No special Effects."
 		"it"		"Uno zombie lento con molti danni e salute. colpire la testa è abbastanza facile. nessun effetto speciale."
+		"ko" 		"높은 체력과 공격력을 보유한 느린 좀비입니다.\n머리를 노리면 그나마 쉽게 정리할 수 있습니다.\n특수능력 없음"
 	}
 	"Fortified Poison Zombie Desc"
 	{
 		"en" 		"Stronger version of the normal Poison Zombie.\n-No special Effects."
 		"it"		"Versione più forte del normale Zombie velenoso.\n-Nessun effetto speciale."
+		"ko" 		"이 개체는 일반 포이즌 좀비보다 더 강해졌습니다.\n특수능력 없음"
 	}
 	"Fortified Giant Poison Zombie Desc"
 	{
 		"en" 		"Giants that are extreamly slow but very heavy hitting.\n-No special Effects."
 		"it"		"Giganti estremamente lenti ma che colpiscono molto pesantemente.\n-Nessun effetto speciale."
+		"ko" 		"이 개체들은 매우 느리지만 매우 높은 공격력을 보유했습니다. 후반 웨이브 또는 늦은 타이밍에 주로 등장합니다.\n특수능력 없음"
 	}
 	"Father Grigori Desc"
 	{
 		"en" 		"Father Grigori from Ravenholm seems to have succumb to the zombie sideeffects.\n-Has a ranged attack\n-Summons lighting strikes on himself\n-On half health: more stats."
 		"it"		"Padre Grigori di Ravenholm sembra aver ceduto agli effetti collaterali degli zombi.\n-Ha un attacco a distanza\n-Somministra colpi di luce su di sé\n-A metà salute: più statistiche."
+		"ko" 		"레이븐홈 출신 인물인 그리고리 신부. 아무래도 그는 좀비 바이러스의 부작용에 굴복해버린것 같습니다.\n총탄을 발사하고 자신을 기준으로 성스러운 빛 레이저를 방출합니다.\n또한 수류탄을 던질 수도 있으며, 그의 체력이 절반 이하가 되면 격노 상태가 됩니다."
 	}
 	"Metro Cop Desc"
 	{
 		"en" 		"W.F. Cops roaming around.\n-Has a ranged attack and reloads."
 		"it"		"Poliziotti W.F. in giro.\n-Ha un attacco a distanza e ricarica."
+		"ko" 		"W.F. 경찰들이 배회함, 원거리 공격을 사용하며 재장전함."
 	}
 	"Metro Raider Desc"
 	{
 		"en" 		"Raiders are unable to melee you, thus will only shoot at close range.\nMelee resistances will not help against this enemy.\n-Has a ranged attack."
 		"it"		"Gli incursori non sono in grado di attaccare in mischia, quindi sparano solo a distanza ravvicinata.\nLe resistenze in mischia non sono utili contro questo nemico.\nHa un attacco a distanza."
+		"ko" 		"시민 보호 특공대는 근접 공격을 할 수 없어 근거리에서도 총격만 가함.\n이 적에게는 근접 저항이 효과가 없음.\n원거리 공격을 사용함."
 	}
 	"W.F. Rifler Desc"
 	{
 		"en" 		"A rifler on a mission to kill any who apose W.F.\n-Has a ranged attack and reloads."
 		"it"		"Un fuciliere in missione per uccidere chiunque si opponga al W.F.\n Ha un attacco a distanza e può ricaricare."
+		"ko" 		"W.F.에 맞서는 자들을 제거하기 위해 파견된 소총수, 원거리 공격을 사용하며 재장전함."
 	}
 	"W.F. Shotgunner Desc"
 	{
 		"en" 		"-Deals only Ranged damage\n-Very Fast"
 		"it"		"-Infligge solo danni a distanza\n-Molto veloce"
+		"ko" 		"원거리 피해만 주며, 매우 빠름."
 	}
 	"W.F. Swordsman Desc"
 	{
 		"en" 		"Combine imbued with Knightly powers.\n-Performs pulse attack, gives resistance during usage."
 		"it"		"Combinazione impregnata di poteri cavallereschi.\n-Performa l'attacco a impulsi, conferisce resistenza durante l'uso."
+		"ko"		"기사의 힘이 깃든 콤바인\n사용 중 펄스 공격을 수행하며 저항력을 부여함."
 	}
 	"W.F. Elite Desc"
 	{
 		"en" 		"Elites trained to elimitate.\n-Has a ranged attack and reloads.\n-Shoots explosive projectiles."
 		"it"		"Elite addestrate all'eliminazione.\n-Ha un attacco a distanza e ricarica.\n-Spara proiettili esplosivi."
+		"ko" 		"콤바인 엘리트들은 인지 저하를 조금이나마 견뎌냈습니다.\n그들은 사격과 더불어 코어 에너지볼도 발사할 수 있습니다.\n전체적으로 더 나은 콤바인 소총수입니다."
 	}
 	"W.F. Giant Swordsman Desc"
 	{
 		"en" 		"Giant Swordsman genetically enhanced to be more resistable.\n-Performs pulse attack, gives resistance during usage."
 		"it"		"Spadaccino gigante geneticamente migliorato per essere più resistente.\n-Esegue attacchi a impulsi, conferisce resistenza durante l'uso."
+		"ko" 		"이 거대 검객은 유전적으로 더욱 강화되었습니다.\n펄스 폭발 공격의 추가 저항력 부여 기능도 여전합니다. (침묵으로 해당 효과 제거 가능)"
 	}
 	"W.F. DDT Desc"
 	{
 		"en" 		"Robot Build by W.F. against all.\n-Very Fast"
 		"it"		"Robot costruito da W.F. contro tutti.\nMolto veloce"
+		"ko" 		"W.F.가 모든 적에 맞서기 위해 제작한 로봇, 매우 빠름."
 	}
 	"W.F. Golden Collos Desc"
 	{
 		"en" 		"W.f. Collos giants, failed to imitate constructs.\n-Performs pulse attack, gives resistance during usage."
 		"it"		"W.f. Giganti di Collos, non è riuscito a imitare i costrutti.\n-Performa l'attacco a impulsi, conferisce resistenza durante l'uso."
+		"ko"		"W.F.의 거대한 콜로스 자이언트, 구조체 모방에 실패한 존재\n펄스 공격을 사용하며 사용 중 저항력을 부여함."
 	}
 	"W.F. Overlord Desc"
 	{
 		"en" 		"One of many ''overlords''\n-Performs pulse attack, gives resistance during usage.\n-Rages with cooldown: Damage, attackspeed, resistance."
 		"it"		"Uno dei tanti ''overlord'' \n-Performa un attacco a impulsi, conferisce resistenza durante l'uso.\n-Ragisce con cooldown: Danno, velocità d'attacco, resistenza."
+		"ko"		"다수의 ‘군주’ 중 하나.펄스 공격을 사용하며 사용 중 저항력을 부여함.\n쿨다운이 있는 분노 상태: 피해량, 공격 속도, 저항력 증가."
 	}
 	"Scout Assaulter Desc"
 	{
 		"en" 		"Zombified Scout who is fast and attacks quickly too.\n-Very Fast"
 		"it"		"Scout zombificato che è veloce e attacca anche rapidamente.\nMolto veloce"
+		"ko" 		"빠르고 신속하게 공격하는 좀비화된 스카웃입니다."
 	}
 	"Engineer Deconstructor Desc"
 	{
 		"en" 		"This zombie will deal heavy bonus damage to any building.\n-High damage to buildings"
 		"it"		"Questo zombie infligge ingenti danni bonus a qualsiasi edificio.\n-Alto danno agli edifici"
+		"ko" 		"이 좀비는 구조물에게 높은 추가 피해를 줍니다."
 	}
 	"Heavy Brawler Desc"
 	{
 		"en" 		"Heavy's are boosted in power by the infection.\nTheir pure power is incredible.\n-No Special Abilities."
 		"it"		"I Pesanti sono potenziati dall'infezione.\nLa loro potenza pura è incredibile.\nNessuna abilità speciale."
+		"ko" 		"이 헤비는 감염화로 인하여 힘이 크게 증가했습니다.\n그의 순수 힘 자체는 무지막지합니다."
 	}
 	"Flying Armor Desc"
 	{
 		"en" 		"Mysterious flying magical armor.\n-On death, splits into smaller pieces."
 		"it"		"Misteriosa armatura magica volante.\nAlla morte, si divide in pezzi più piccoli."
+		"ko" 		"신비로운 비행 마법 갑옷, 사망 시 더 작은 조각들로 분리됨."
 	}
 	"Tiny Flying Armor Desc"
 	{
 		"en" 		"Magical armor's even split into smaller ones when dying.\n-No Special Abilities."
 		"it"		"Le armature magiche si dividono addirittura in altre più piccole quando muoiono.\n-Nessuna abilità speciale."
+		"ko"		"마법 갑옷은 죽을 때 더 작은 갑옷들로 나뉨, 특수 능력 없음"
 	}
 	"Kamikaze Demo Desc"
 	{
 		"en" 		"Very Fast, Very high damage, but low health zombies\n-On death, explodes."
 		"it"		"Molto veloce, danno molto elevato, ma salute bassa zombie, morte immediata, esplode."
+		"ko"		"매우 빠르고 높은 피해를 주지만 체력이 낮은 좀비\n사망 시 폭발함."
 	}
 	"Medic Supporter Desc"
 	{
 		"en" 		"This medic will heal any zombie near it.\n-Touching medic enrages it\n-Enrages on Patient death.\n-Enrage: No longer heals, instead attacks.\n-Heals one ally when not enraged."
 		"it"		"Questo medico guarisce qualsiasi zombi nelle sue vicinanze.\n-Toccando il medico si infuria.\n-Si infuria alla morte del paziente.\n-Rabbia: Non guarisce più, ma attacca.\n-Si cura un alleato quando non è infuriato."
+		"ko" 		"이 좀비는 주변 좀비들을 회복시켜줍니다. (침묵으로 치유 저지 가능) 이 개체의 치유 대상을 먼저 처치하면, 이 좀비가 분노합니다.\n상황에 따라서는 분노한 지원병 메딕이 훨씬 더 강하므로, 이들을 먼저 처치하는 것이 좋을 수도 있습니다."
 	}
 	"Giant Heavy Brawler Desc"
 	{
 		"en" 		"Giant Brawlers, Massive meat to attack.\n-No Special Abilities."
 		"it"		"Giganti attaccabrighe, carne massiccia da attaccare.\n-Nessuna abilità speciale."
+		"ko" 		"메라즈무스의 실험으로 인해 탄생한 거대 헤비입니다만, 이들도 역시 감염 되었습니다.\n 메라즈무스는 감염되기 직전에 무사히 도주할 수 있었습니다..."
 	}
 	"Spy Facestabber Desc"
 	{
 		"en" 		"These spies wont even try to backstab you and outright go for your forehead.\n-No Special Abilities"
 		"it"		"Queste spie non cercheranno nemmeno di pugnalarvi alle spalle e punteranno direttamente alla vostra fronte.\n-Nessuna abilità speciale"
+		"ko"		"이 스파이들은 등 뒤를 노리지 않고, 정면으로 이마를 향해 공격함.\n특수 능력 없음."																											  
 	}
 	"Soldier Rocketeer Desc"
 	{
 		"en" 		"These soldiers seem to have retained the ability to shoot.\n-Has a ranged attack."
 		"it"		"Questi soldati sembrano aver mantenuto la capacità di sparare.\n-Ha un attacco a distanza."
+		"ko" 		"이 솔저들은 감염된 후에도 사격 능력을 여전히 보존해두고 있습니다.\n원거리 공격을 사용함"																																																			   
 	}
 	"Soldier Minion Desc"
 	{
 		"en" 		"Tiny minions from the boss, they are weak alone but in high numbers they will instakill everything."
 		"it"		"Minuscoli servitori del boss, da soli sono deboli ma in numero elevato instakillano tutto."
+		"ko" 		"보스에게서 생성된 소형 하수인. 혼자서는 약하지만, 물량이 모일수록 모든걸 한 방에 즉사시킬 정도가 됩니다."
 	}
 	"Soldier Giant Summoner Desc"
 	{
 		"en" 		"This is another boss Zombie, He spawns rockets and shoots them at you.\n-When hurt enough at threshholds, summons minions.\n-If he cant summon, gains temp resistance instead."
 		"it"		"Si tratta di un altro boss Zombie, che genera razzi e li spara contro di voi.\n-Se viene ferito a sufficienza alle soglie, evoca i servitori.\n-Se non può evocare, guadagna invece resistenza alla tempesta."
+		"ko"		"로켓을 발사하는 보스 좀비로 일정 피해를 입으면 하수인을 소환하며\n불가할 경우 임시 저항을 얻음."																																																																					 
 	}
 	"Spy Thief Desc"
 	{
 		"en" 		"The infection seems to be boosting the powers of spies specifically.\n-No Special Abilities."
 		"it"		"L'infezione sembra potenziare i poteri delle spie in particolare.\n-Nessuna abilità speciale."
+		"ko" 		"보아하니 이 감염은 특히 스파이의 능력을 강화해주는 것 같습니다.\n특수능력 없음"																							 
 	}
 	"Spy Trickstabber Desc"
 	{
 		"en" 		"They backstab you no matter what. You cannot outturn the backstabbing.\n-More Range."
 		"it"		"Ti pugnalano alle spalle in ogni caso. Non si può superare la pugnalata alle spalle.\n-Maggior raggio d'azione."
+		"ko" 		"이들은 무슨 일이 있어도 당신을 백스탭하고 싶어합니다. 당신은 이들의 백스탭을 막을 수 없습니다.\n사거리 증가"																																		 
 	}
 	"Half Cloaked Spy Desc"
 	{
 		"en" 		"The infection broke the cloak and thus transformed them into skeletons as the rest is invis.\n-Half invis\n-Shoots only once."
 		"it"		"L'infezione ha rotto il mantello e li ha trasformati in scheletri, mentre il resto è invisibile.\nSpara solo una volta."
+		"ko"		"감염으로 인해 망토가 찢어지고 나머지 부분이 투명한 해골로 변함.\n반투명 상태이며 단 한 번만 발사함."
 	}
 	"Sniper Main Desc"
 	{
 		"en" 		"These snipers lost their function to snipe you.\n-Ranged attack untill enraged\n-Enrages when half health."
 		"it"		"Questi cecchini hanno perso la loro funzione di cecchino.\n-Attacco a distanza fino a quando non sono infuriati\n-Enfragia a metà salute."
+		"ko"		"이 스나이퍼들은 저격 기능을 상실했으며\n체력이 절반이 되기 전까지 원거리 공격만 하다가 절반 이하가 되면 광폭화함."
 	}
 	"Demoknight Main Desc"
 	{
 		"en" 		"A knight with a habit of jumping.\n-Jumps at you when far away."
 		"it"		"Un cavaliere con l'abitudine di saltare.\n-Salta verso di voi quando siete lontani."
+		"ko"		"멀리 있을 때 플레이어에게 점프해 달려드는 습관이 있는 기사."
 	}
 	"Battle Medic Main Desc"
 	{
 		"en" 		"The Strongest Zombie that exists without any Modifications.\nMedics pure rage caused this with the infection.\n-No special abilities"
 		"it"		"Lo Zombie più forte che esista senza alcuna modifica.\nLa pura rabbia dei medici ha causato questo con l'infezione.\nNessuna abilità speciale"
-	}	
+		"ko"		"개조 없이 존재하는 가장 강한 좀비로\n메딕의 순수한 분노와 감염으로 탄생\n특별한 능력은 없음."
+	}
 	"Giant Pyro Main Desc"
 	{
 		"en" 		"Giant Menaces high of all stats..\n-No special abilities"
 		"it"		"Minacce giganti alte di tutte le statistiche..\n-Nessuna abilità speciale"
+		"ko"		"모든 능력치가 매우 높은 거대한 위협.\n특수 능력 없음."
 	}
 	"W.F. Deutsch Ritter Desc"
 	{
 		"en" 		"An extreamly powerfull and tanky w.f. Soldier.\n-High stats, low movement."
 		"it"		"Un soldato w.f. estremamente potente e tanky.\nStatistiche elevate, movimento ridotto."
+		"ko"		"매우 강력하고 단단한 W.F. 병사\n높은 능력치지만 이동 속도는 느림"
 	}
 	"X10 Spy Main Desc"
 	{
 		"en" 		"Infections cancers all around.\nWhen hit, activates deadringer and gives Extreamly high res in duration.\nWhen Above half health:\n-Has a ranged bullet attack\nWhen below half health:\n-Ranged rocket attack, deals more damage, is faster, gains resistances."
 		"it"		"Infezioni e tumori ovunque.\nQuando viene colpito, attiva il deadringer e conferisce una res estremamente elevata in termini di durata.\nQuando supera la metà della salute: ha un attacco a distanza con proiettile.\nQuando è al di sotto della metà della salute:\nha un attacco a distanza con razzo, infligge più danni, è più veloce e guadagna resistenze."
+		"ko"		"감염성 암이 온몸에 퍼져 있음.\n피격 시 데드링거가 발동하며 지속 시간 동안 매우 높은 저항을 얻음.\n체력이 절반 이상일 때: 원거리 총알 공격을 사용함\n체력이 절반 이하일 때: 원거리 로켓 공격으로 전환되며\n더 높은 피해, 더 빠른 속도, 추가 저항을 얻음."
 	}
 		
 	//XENO
@@ -342,11 +404,10 @@
 	{
 		"en" 		"The Xeno infection made these zombies not like getting hit. \n-When first hit, gains a speed boost for a short period."
 		"it"		"Una volta ferito, questo zombie raggiunge velocità molto elevate."
-
 	}
 	"Xeno Fortified Headcrab Zombie Desc"
 	{
-		"en" 		"The Xeno infection treats them the same as their unfortified variant, since they are the same type of zombie. \n-When first hit, gains a speed boost for a short period.
+		"en" 		"The Xeno infection treats them the same as their unfortified variant, since they are the same type of zombie. \n-When first hit, gains a speed boost for a short period."
 		"it"		"Gli esseri Fortificati hanno una versione mutata dell'infezione xeno, che rende le loro capacità ancora più grandi."
 	}
 	"Xeno Fast Zombie Desc"

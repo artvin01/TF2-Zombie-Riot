@@ -20,7 +20,7 @@ static int i_Max_ION_Hit = 5;
 
 static float fl_Sigil_Melee_Range = 130.0;
 static float fl_Sigil_Crystal_ManaCost_Percent = 0.35;
-static float fl_Sigil_Crystal_LifeSpan = 6.0;
+static float fl_Sigil_Crystal_LifeSpan = 8.0;
 static float fl_Sigil_Crystal_Spawn_Cooldown = 180.0;
 //static float fl_Slash_ManaCost_Max_Percent = 0.5;
 static float fl_Slash_Time_Max = 3.0;
@@ -1098,5 +1098,6 @@ bool Sigil_LastMann(int client)
 	}
 	return SigilTHEME;
 }
+
 
 */

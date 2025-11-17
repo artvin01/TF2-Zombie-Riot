@@ -4,10 +4,12 @@
 	{
 		"en" 	"Loom"
 		"it" 	"Telaio"
+		"ko" 	"베틀"
 	}
 	"Loom Desc"
 	{
 		"en" 	"Loom Desc"
 		"it" 	"Descrizione Telaio"
+		"ko" 	"베틀 설명"
 	}
 }
