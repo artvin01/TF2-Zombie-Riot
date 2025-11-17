@@ -671,17 +671,6 @@ public void OnPostThink(int client)
 		{
 			ApplyStatusEffect(client, client, "Fluid Movement", 1.0);
 		}
-		attrib = Attributes_GetOnPlayer(client, Attrib_RegenHpOutOfBattle_MaxHealthScaling, true,_, 0.0);	// rage on kill
-		if(attrib != 0.0)
-		{
-			if(f_TimeUntillNormalHeal[client] < GetGameTime())
-			{
-				float MaxHealth = float(SDKCall_GetMaxHealth(client));
-				if(MaxHealth > 3000.0)
-					MaxHealth = 3000.0;
-				HealEntityGlobal(client, client, MaxHealth / attrib, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
-			}
-		}
 
 		attrib = Attributes_Get(client, 57, 0.0);
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -700,6 +689,18 @@ public void OnPostThink(int client)
 				HealEntityGlobal(client, client, attrib, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 
 			//This heal will show in the hud.
+			attrib = Attributes_GetOnPlayer(client, Attrib_RegenHpOutOfBattle_MaxHealthScaling, true,_, 0.0);	// rage on kill
+			if(attrib)
+			{
+				if(f_TimeUntillNormalHeal[client] < GetGameTime())
+				{
+					float MaxHealth = float(SDKCall_GetMaxHealth(client));
+					if(MaxHealth > 3000.0)
+						MaxHealth = 3000.0;
+					//show this healing.
+					HealEntityGlobal(client, client, MaxHealth * attrib, 1.0, 0.0, HEAL_SELFHEAL);	
+				}
+			}
 			attrib = 0.0;
 			if(ClientPossesesVoidBlade(client) >= 2 && (NpcStats_WeakVoidBuff(client) || NpcStats_StrongVoidBuff(client)))
 			{
@@ -716,6 +717,7 @@ public void OnPostThink(int client)
 			{
 				HealEntityGlobal(client, client, attrib, 1.25, 0.0, HEAL_SELFHEAL);
 			}
+			
 		}
 		
 		Armor_regen_delay[client] = GameTime + 1.0;
