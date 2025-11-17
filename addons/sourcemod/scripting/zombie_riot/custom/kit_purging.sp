@@ -859,17 +859,20 @@ public Action Weapon_Purging_Crush_Think(Handle h, DataPack pack)
 		return Plugin_Continue;
 	}
 	
-	TF2_RemoveCondition(client, TFCond_LostFooting);
-	TF2_RemoveCondition(client, TFCond_AirCurrent);
-	//SetEntityGravity(client, 1.0);
-	
-	if(GetAmmo(client, 14) < 10)
-		SetAmmo(client, 14, 10);
-	
-	Store_RemoveSpecificItem(client, "Purging Grinder");
-	TF2_RemoveItem(client, weapon);
-	FakeClientCommandEx(client, "use tf_weapon_shotgun_hwg");
-	
+	if(IsValidClient(client))
+	{
+		TF2_RemoveCondition(client, TFCond_LostFooting);
+		TF2_RemoveCondition(client, TFCond_AirCurrent);
+		//SetEntityGravity(client, 1.0);
+		
+		if(GetAmmo(client, 14) < 10)
+			SetAmmo(client, 14, 10);
+		
+		Store_RemoveSpecificItem(client, "Purging Grinder");
+		if(IsValidEntity(weapon))
+			TF2_RemoveItem(client, weapon);
+		FakeClientCommandEx(client, "use tf_weapon_shotgun_hwg");
+	}
 	delete pack;
 	return Plugin_Stop;
 }
