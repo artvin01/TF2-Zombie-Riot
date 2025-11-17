@@ -362,6 +362,8 @@ static void KitOmega_GUN_Selector_Function(int client, int OverrideGunType=-1)
 	//	Attributes_Set(weapon_new, 6, firingRate);
 		int AmmoLeft = RoundToCeil(OMEGA_ENERGY[client] / OmegaWeaponCosts(i_KitOmega_GunType[client]));
 		ResetClipOfWeaponStore(weapon_new, client, AmmoLeft);
+		AmmoLeft += 1000;
+		//emergency add 1000 over limit hehe
 		SetEntData(weapon_new, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), AmmoLeft);
 	}
 }
