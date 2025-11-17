@@ -1178,6 +1178,38 @@
 		"chi"		"目标最近已经被抓了！ "
 		"it"		"Quel nemico è stato catturato troppo di recente!"
 	}
+	"Raigeki Primary Attack Blocked By Charge"
+	{
+		"en"		"You cannot attack while charging Raigeki."
+	}
+	"Raigeki Gear Blocked By Charge"
+	{
+		"en"		"You cannot use that while charging Raigeki."
+	}
+	"Raigeki Blocked Because Downed"
+	{
+		"en"		"You cannot charge Raigeki while downed."
+	}
+	"Raigeki Failed Low Charge"
+	{
+		"en"		"Raigeki failed: not enough charge!"
+	}
+	"Raigeki Failed Downed"
+	{
+		"en"		"Raigeki failed: you were downed!"
+	}
+	"Raigeki Failed Killed"
+	{
+		"en"		"Raigeki failed: you died!"
+	}
+	"Raigeki Failed Wrong Weapon"
+	{
+		"en"		"Raigeki failed: you switched weapons!"
+	}
+	"Raigeki Fully Charged"
+	{
+		"en"		"RAIGEKI IS FULLY CHARGED!"
+	}
 	"Gamemode Credits"
 	{
 		"en" 		"Gamemode Credits"

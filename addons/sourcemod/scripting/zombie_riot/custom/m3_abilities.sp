@@ -261,6 +261,12 @@ public void WeakDash(int client)
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Burstpack Already Used This Round, Recharging");	
 				return;
 			}
+			if (!Raigeki_OnBurstPack(client))	//Block Burst Pack while charging Raigeki. I intentionally did not copy/paste this to the downed version of Burst Pack, because Raigeki cannot even be charged while downed.
+			{
+				Utility_HUDNotification_Translation(client, "Raigeki Gear Blocked By Charge", true);
+				return;
+			}
+
 			i_BurstpackUsedThisRound[client] += 1;
 			ability_cooldown[client] = GetGameTime() + (60.0 * CooldownReductionAmount(client));
 			WeakDashLogic(client);

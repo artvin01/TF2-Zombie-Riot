@@ -58,6 +58,7 @@ enum
 	Attrib_GlassBuilder = 4052,
 	Attrib_WildingenBuilder = 4053,
 	Attrib_TauntRangeValue = 4054,
+	Attrib_DamageTakenFromRaid = 4055,
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
@@ -332,6 +333,27 @@ int Attributes_Airdashes(int client)
 #endif
 
 float PreventSameFrameGivearmor[MAXPLAYERS];
+void Attributes_HitTaken(int victim, int attacker, float &damage)
+{
+	if(victim > MaxClients)
+		return;
+
+	int active = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+	if(active < 1)
+	{
+		return;
+	}
+	float value;
+	
+	if(b_thisNpcIsARaid[attacker])
+	{
+		value = Attributes_Get(active, Attrib_DamageTakenFromRaid, 0.0);
+		if(value != 0.0)
+		{
+			damage *= value;
+		}
+	}
+}
 void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype)
 {
 	{
@@ -339,6 +361,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		{
 			return;
 		}
+		
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
 			float value = Attributes_Get(weapon, 16, 0.0) +

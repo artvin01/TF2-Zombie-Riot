@@ -41,6 +41,9 @@ void ThePurge_MapStart()
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
+
+	//used in a kit
+	PrecacheSoundCustom("#zombiesurvival/internius/chaos_engineered_cyborg.mp3");
 }
 
 static void ClotPrecache()
@@ -57,7 +60,6 @@ static void ClotPrecache()
 	PrecacheSound("mvm/giant_heavy/giant_heavy_gunwinddown.wav");
 	PrecacheSound("mvm/giant_soldier/giant_soldier_rocket_shoot.wav");
 	PrecacheSound("mvm/giant_demoman/giant_demoman_grenade_shoot.wav");
-	PrecacheSoundCustom("#zombiesurvival/internius/chaos_engineered_cyborg.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)

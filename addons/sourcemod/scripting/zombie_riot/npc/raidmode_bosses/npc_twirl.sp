@@ -1322,11 +1322,17 @@ static void ClotThink(int iNPC)
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 
 			float Turn_Speed = (npc.Anger ? 30.0 : 19.0);
+			Turn_Speed *= 1.25;
 			//if there are more then 3 players near twirl, her laser starts to turn faster.
 			int Nearby = Nearby_Players(npc, (npc.Anger ? 300.0 : 250.0));
 			if(Nearby > 3)
 			{
 				Turn_Speed *= (Nearby/2.0)*1.2;
+				Turn_Speed *= 1.25;
+			}
+			if(Nearby > 6)
+			{
+				Turn_Speed *= 1.15;
 			}
 			npc.FaceTowards(vecTarget, Turn_Speed);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -3677,9 +3683,9 @@ static bool Magia_Overflow(Twirl npc)
 	fl_ruina_shield_break_timeout[npc.index] = 0.0;		//make 100% sure she WILL get the shield.
 	//give the shield to itself.
 	if(Waves_InFreeplay())
-		Ruina_Npc_Give_Shield(npc.index, 0.65);
+		Ruina_Npc_Give_Shield(npc.index, 0.50, true);
 	else
-		Ruina_Npc_Give_Shield(npc.index, 0.45);
+		Ruina_Npc_Give_Shield(npc.index, 0.315, true);
 	
 	npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 	npc.SetPlaybackRate(1.0);	
@@ -3697,14 +3703,7 @@ static bool Magia_Overflow(Twirl npc)
 	npc.m_flRetreatLaserThrottle = GameTime + 0.7;
 	npc.m_flMagiaOverflowRecharge = GameTime + Duration + 0.7 + (npc.Anger ? 30.0 : 45.0);
 
-	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	int color[4]; 
-	Ruina_Color(color, i_current_wave[npc.index]);
-	float Thickness = 6.0;
-	VecSelfNpc[2]-=2.5;
 	//create a ring around twirl showing the radius for her special "if you're near me, my laser turns faster"
-	TE_SetupBeamRingPoint(VecSelfNpc, (npc.Anger ? 350.0 : 275.0)*2.0, (npc.Anger ? 350.0 : 275.0)*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Duration+0.7, Thickness, 0.75, color, 1, 0);
-	TE_SendToAll();
 
 	npc.m_bAnimationSet = false;
 
@@ -3727,8 +3726,9 @@ static Action Magia_Overflow_Tick(int iNPC)
 	Twirl npc = view_as<Twirl>(iNPC);
 	float GameTime = GetGameTime(npc.index);
 
-	if(fl_ruina_battery_timeout[npc.index] < GameTime)
+	if(fl_ruina_battery_timeout[npc.index] < GameTime || npc.m_flArmorCount <= 0.0)
 	{
+		//either timer over or no more armor
 		SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 
 		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_LASER_SOUND);
@@ -3738,7 +3738,8 @@ static Action Magia_Overflow_Tick(int iNPC)
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
-
+		npc.m_flDoingAnimation = 1.0;
+		
 		npc.m_bInKame = false;
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
@@ -3749,6 +3750,8 @@ static Action Magia_Overflow_Tick(int iNPC)
 
 		return Plugin_Stop;
 	}
+
+
 	ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 0.25);
 	ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);
 
@@ -3814,6 +3817,14 @@ static Action Magia_Overflow_Tick(int iNPC)
 	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
 	if(update)
 	{
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		int color[4]; 
+		Ruina_Color(color, i_current_wave[npc.index]);
+		float Thickness = 6.0;
+		VecSelfNpc[2]-=2.5;
+		TE_SetupBeamRingPoint(VecSelfNpc, (npc.Anger ? 350.0 : 275.0)*2.0, (npc.Anger ? 350.0 : 275.0)*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.1, Thickness, 0.75, color, 1, 0);
+		TE_SendToAll();
+	
 		float Duration = fl_ruina_battery_timeout[npc.index] - GameTime;
 		float Ratio = (1.0 - (Duration / TWIRL_MAGIA_OVERFLOW_DURATION));
 		if(Ratio<0.1)

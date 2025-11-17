@@ -308,6 +308,7 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 				true, 
 				ang, 
 				EnemyFound);
+				TriggerTimerHoming(entity);
 				SetEntityMoveType(entity, MOVETYPE_NOCLIP);
 				//make it phase through everything to get to its owner.
 			}
@@ -404,6 +405,8 @@ static void BoomerRangThrow(int client, int weapon, char[] modelstringname = WOO
 	time *= Attributes_Get(weapon, 101, 1.0);
 	time *= Attributes_Get(weapon, 102, 1.0);
 	float TimeReturnToplayer = time;
+	if(extraability == 1)
+		time *= 1.5;
 
 	time *= 5.0;
 	float fAng[3];
@@ -520,6 +523,7 @@ public Action Timer_ReturnToOwner(Handle timer, any entid)
 	true, 
 	ang, 
 	owner);
+	TriggerTimerHoming(entity);
 	return Plugin_Stop;
 }
 
@@ -529,16 +533,23 @@ public Action Timer_ActivateHoming(Handle timer, any entid)
 	if(IsValidEntity(entity))
 	{
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+		if(!IsValidEntity(weapon))
+			return Plugin_Stop;
 		float fAng[3];
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", fAng);
+		float speed = 1.0;
+		speed *= Attributes_Get(weapon, 103, 1.0);
+		speed *= Attributes_Get(weapon, 104, 1.0);
 		Initiate_HomingProjectile(entity,
 		owner,
 			360.0,			// float lockonAngleMax,
-			20.0,				//float homingaSec,
+			20.0 * speed,				//float homingaSec,
 			true,				// bool LockOnlyOnce,
 			false,				// bool changeAngles,
 			fAng
 			);	
+		TriggerTimerHoming(entity);
 	}
 	return Plugin_Stop;
 }

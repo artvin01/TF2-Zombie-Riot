@@ -242,7 +242,17 @@ enum
 	WEAPON_SHERRIF = 150,
 	WEAPON_SHERRIF_LEVERACTION = 151,
 	WEAPON_BOOMERANG = 152,
-	WEAPON_CHEESY_SECONDARY = 153
+	WEAPON_CHEESY_SECONDARY = 153,
+	WEAPON_RAIGEKI = 154,
+	WEAPON_HAMMER_NONPAP = 155,
+	WEAPON_HAMMER_PAP_1 = 156,
+	WEAPON_SIGIL_BLADE = 157,
+    WEAPON_KIT_OMEGA_GAUSS = 158,
+    WEAPON_KIT_OMEGA = 159,
+    WEAPON_KIT_PURGE_CRUSHER = 160,
+    WEAPON_KIT_PURGE_RAMPAGER = 161,
+    WEAPON_KIT_PURGE_ANNAHILATOR = 162,
+    WEAPON_KIT_PURGE_MISC = 163,
 }
 
 enum
@@ -268,8 +278,8 @@ enum
 	Type_WhiteflowerSpecial,
 	Type_Victoria,
 	Type_Matrix,
-	Type_Mutation,
 	Type_Aperture,
+	Type_Mutation,
 	Type_Curtain,
 	Type_Necropolain
 }
@@ -612,6 +622,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_flametail.sp"
 #include "custom/weapon_ulpianus.sp"
 #include "custom/wand/weapon_wand_magnesis.sp"
+#include "custom/wand/weapon_wand_raigeki.sp"
 #include "custom/kit_blacksmith_brew.sp"
 #include "custom/weapon_yakuza.sp"
 #include "custom/weapon_skadi.sp"
@@ -628,6 +639,9 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_flamethrower_chemical.sp"
 #include "custom/wand/weapon_ritualist.sp"
 #include "custom/weapon_boomerang.sp"
+#include "custom/wand/weapon_wand_sigil_blade.sp"
+#include "custom/kit_omega.sp"
+#include "custom/kit_purging.sp"
 
 void ZR_PluginLoad()
 {
@@ -929,6 +943,7 @@ void ZR_MapStart()
 	Obuch_Mapstart();
 	Ulpianus_MapStart();
 	Magnesis_Precache();
+	Raigeki_Precache();
 	Wrathful_Blade_Precache();
 	Yakuza_MapStart();
 	ResetMapStartSkadiWeapon();
@@ -940,6 +955,9 @@ void ZR_MapStart()
 	Kritzkrieg_OnMapStart();
 	BubbleWand_MapStart();
 	Cheese_MapStart();
+	KitOmega_OnMapStart();
+	Wand_Sigil_Blade_MapStart();
+	PurgeKit_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -2147,7 +2165,23 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							CPrintToChatAll("{darkviolet}%N decides to inject themselves with plasma as a last resort...", client);
 							Yakuza_Lastman(11);
 						}
-						
+						/*
+						if(Sigil_LastMann(client))
+						{
+							CPrintToChatAll("{blue}Diabolus Ex Machina.",client);
+							Yakuza_Lastman(12);
+						}
+						*/
+						if(Wkit_Omega_LastMann(client))
+						{
+							CPrintToChatAll("{gold}%N is now alone, however giving up isn't in their vocabulary.",client);
+							Yakuza_Lastman(13);
+						}
+						if(PurgeKit_LastMann(client))
+						{
+							CPrintToChatAll("{crimson}%N's purging protocol activates.",client);
+							Yakuza_Lastman(14);
+						}
 						
 						for(int i=1; i<=MaxClients; i++)
 						{

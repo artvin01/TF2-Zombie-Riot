@@ -674,6 +674,7 @@ float f_RoleplayTalkLimit[MAXENTITIES] = {0.0, ...};
 bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
 float f_StuckOutOfBoundsCheck[MAXENTITIES];
+float f_CooldownForAbilities[MAXENTITIES][2];
 
 int g_particleImpactMetal;
 
@@ -1886,6 +1887,34 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		if(!(buttons & IN_ATTACK2))
 			holding[client] &= ~IN_ATTACK2;
+		else
+		{
+			if(f_CooldownForAbilities[client][0] < GetGameTime())
+			{
+				f_CooldownForAbilities[client][0] = GetGameTime() + 0.1;
+				if(Ability_Check_Cooldown(client, 2) < 0.0)
+				{
+					f_CooldownForAbilities[client][0] = GetGameTime() + 0.5;
+					int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+					if(weapon_holding != -1)
+					{
+						if(EntityFuncAttack2[weapon_holding] && EntityFuncAttack2[weapon_holding]!=INVALID_FUNCTION)
+						{
+							bool result = false; //ignore crit.
+							int slot = 2;
+							Action action;
+							Call_StartFunction(null, EntityFuncAttack2[weapon_holding]);
+							Call_PushCell(client);
+							Call_PushCell(weapon_holding);
+							Call_PushCellRef(result);
+							Call_PushCell(slot); //This is attack 2 :)
+							Call_Finish(action);
+						}
+					}
+				}
+			}
+		}
+			
 	}
 	else if(buttons & IN_ATTACK2)
 	{
@@ -1894,6 +1923,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 #if defined ZR
 		b_IgnoreWarningForReloadBuidling[client] = false;
 #endif
+		f_CooldownForAbilities[client][0] = GetGameTime() + 0.5;
+		// force wait 1 second so it isnt activated automatically
 
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding != -1)
@@ -1917,6 +1948,66 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		if(!(buttons & IN_RELOAD))
 			holding[client] &= ~IN_RELOAD;
+		else
+		{
+			if(f_CooldownForAbilities[client][1] < GetGameTime())
+			{
+				f_CooldownForAbilities[client][1] = GetGameTime() + 0.1;
+				if(Ability_Check_Cooldown(client, 3) < 0.0)
+				{
+					f_CooldownForAbilities[client][1] = GetGameTime() + 0.5;
+					bool AllowImpulse = true;
+				
+					AllowImpulse = false;
+					//if the cvar is on, but we want spray again
+					if(zr_interactforcereload.BoolValue)
+					{
+						AllowImpulse = true;
+					}
+
+					if(AllowImpulse)
+					{
+						if(b_InteractWithReload[client])
+							AllowImpulse = false;
+						else
+							AllowImpulse = true;
+					}
+					else
+					{
+						if(b_InteractWithReload[client])
+							AllowImpulse = true;
+						else
+							AllowImpulse = false;
+					}
+
+					
+					if(AllowImpulse)
+					{
+						f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
+						if(DoInteractKeyLogic(angles, client))
+							return Plugin_Continue;
+					}
+
+					// force wait 1 second so it isnt activated automatically
+					int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+					if(weapon_holding != -1)
+					{
+						if(EntityFuncAttack3[weapon_holding] && EntityFuncAttack3[weapon_holding]!=INVALID_FUNCTION)
+						{
+							bool result = false; //ignore crit.
+							int slot = 3;
+							Action action;
+							Call_StartFunction(null, EntityFuncAttack3[weapon_holding]);
+							Call_PushCell(client);
+							Call_PushCell(weapon_holding);
+							Call_PushCellRef(result);
+							Call_PushCell(slot);	//This is R :)
+							Call_Finish(action);
+						}
+					}
+				}
+			}
+		}
 	}
 	else if(buttons & IN_RELOAD)
 	{
@@ -1953,6 +2044,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				return Plugin_Continue;
 		}
 
+		f_CooldownForAbilities[client][1] = GetGameTime() + 0.5;
+		// force wait 1 second so it isnt activated automatically
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding != -1)
 		{
@@ -3120,6 +3213,8 @@ public void CheckIfAloneOnServer()
 #endif
 		{
 			if(!b_AntiLateSpawn_Allow[client])
+				continue;
+			if(!b_HasBeenHereSinceStartOfWave[client])
 				continue;
 			players += 1;
 #if defined ZR 
