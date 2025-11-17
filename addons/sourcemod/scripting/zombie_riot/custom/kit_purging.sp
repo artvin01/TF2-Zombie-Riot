@@ -954,5 +954,5 @@ void KitPurgeGiveAttributesData(DataPack pack)
 			Attributes_Set(weapon, 698, 1.0);
 		}
 	}
-
 }
+
