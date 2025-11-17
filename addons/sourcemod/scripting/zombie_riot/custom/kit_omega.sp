@@ -235,30 +235,13 @@ static void KitOmega_Function(int client, int weapon, bool holding)
 
 public void KitOmega_RKey(int client, int weapon, bool crit, int slot)//按下r键(press R)
 {
-	if(Ability_Check_Cooldown(client, slot) < 0.0 || CvarInfiniteCash.BoolValue)
-	{
-		//KitOmega_GUN_Selector_Function(client);
-		EmitSoundToAll(WEAPON_SELECTSOUND, client, SNDCHAN_STATIC, SNDLEVEL_NORMAL, _, 1.0, 100);
-		KitOmega_GUN_Swap_Select(client);//开始切换(Start switch)
-	//	Ability_Apply_Cooldown(client, slot, 0.5);
+	//KitOmega_GUN_Selector_Function(client);
+	EmitSoundToAll(WEAPON_SELECTSOUND, client, SNDCHAN_STATIC, SNDLEVEL_NORMAL, _, 1.0, 100);
+	KitOmega_GUN_Swap_Select(client);//开始切换(Start switch)
 
-		//update hud instantly
-		f_KitOmega_HUDDelay[client] = 0.0;
-		KitOmega_HUD(client);
-	}
-	else
-	{
-		float Ability_CD = Ability_Check_Cooldown(client, slot);
-		
-		if(Ability_CD <= 0.0)
-			Ability_CD = 0.0;
-			
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
-		return;
-	}
+	//update hud instantly
+	f_KitOmega_HUDDelay[client] = 0.0;
+	KitOmega_HUD(client);
 }
 
 static void KitOmega_GUN_Swap_Select(int client, bool CheckIfValid = false)//切换选择的武器(Switch the weapon)
@@ -290,8 +273,13 @@ static void KitOmega_GUN_Swap_Select(int client, bool CheckIfValid = false)//切
 	}
 }
 
-public void KitOmega_M2(int client)
+public void KitOmega_M2(int client, int weapon, bool crit, int slot)
 {
+	if(Ability_Check_Cooldown(client, slot) >0.0)
+		return;
+
+	
+	Ability_Apply_Cooldown(client, slot, 0.5);
 	if(OMEGA_ENERGY[client] >= 100.0)
 	{
 		//b_KitOmega_Using_Guns[client] = true;
