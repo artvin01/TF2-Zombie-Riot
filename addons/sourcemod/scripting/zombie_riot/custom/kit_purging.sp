@@ -379,6 +379,7 @@ public void Weapon_Purging_Rampager_R(int client, int weapon, bool crit, int slo
 	
 	if(fl_KitPurge_Energy[client] < PURGE_QUAD_LAUNCHER_ENERGY_REQUIRE && !CvarInfiniteCash.BoolValue)
 	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "You need %.0f energy to take out QuadLauncher!", PURGE_QUAD_LAUNCHER_ENERGY_REQUIRE);
@@ -430,6 +431,7 @@ public void Weapon_Purging_Crusher_R(int client, int weapon, bool crit, int slot
 	
 	if(fl_KitPurge_Energy[client] < PURGE_ANNAHILATOR_ENERGY_REQUIRE && !CvarInfiniteCash.BoolValue)
 	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "You need %.0f energy to take out Annihilator!", PURGE_ANNAHILATOR_ENERGY_REQUIRE);

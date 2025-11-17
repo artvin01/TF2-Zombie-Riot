@@ -299,6 +299,7 @@ public void KitOmega_M2(int client)
 	}
 	else
 	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "You need full energy to take out another weapon!");
