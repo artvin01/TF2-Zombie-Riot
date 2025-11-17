@@ -893,12 +893,9 @@ void Blitzkrieg_Kit_OnHitEffect(int client, int target)
 				//during normal rounds make the melee deal KB
 
 				DisplayCritAboveNpc(target, client, true);
-				SensalCauseKnockback(client, target, 1.0, false);	//make them take KB but no stun
+				SensalCauseKnockback(client, target, 0.35, false);	//make them take KB but no stun
 			}
-			
 		}
-
-		
 	}
 }
 static void spawnRing_Vector(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
