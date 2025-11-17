@@ -36,7 +36,7 @@ static float QuadSinceLastRemove[MAXPLAYERS]={0.0, ...};
 #define PURGE_ENERGY_CLOSE_RANGE 400.0
 #define PURGE_ENERGY_CLOSE_RANGE_MULTI_GAIN 1.2
 #define PURGE_ENERGY_SHOTGUN 5.0
-#define PURGE_ENERGY_RIFLE 0.5
+#define PURGE_ENERGY_RIFLE 1.0
 
 #define PURGE_RAM_BASE_DMG 200.0
 #define PURGE_RAM_RADIUS 150.0
@@ -231,7 +231,7 @@ public void PurgeKit_HUD(int client, int weapon, bool forced)
 }
 
 public void Weapon_Purging_Rampager(int client, int weapon, bool crit, int slot)
-{//from origional rampager
+{//from original rampager
 	if(weapon >= MaxClients)
 	{
 		weapon_id[client] = EntIndexToEntRef(weapon);
@@ -954,4 +954,5 @@ void KitPurgeGiveAttributesData(DataPack pack)
 			Attributes_Set(weapon, 698, 1.0);
 		}
 	}
+
 }
