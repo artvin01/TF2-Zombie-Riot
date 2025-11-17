@@ -417,6 +417,8 @@ public void KitOmega_NPCTakeDamage_Gauss(int attacker, int victim, float &damage
 	if(GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon") != GetPlayerWeaponSlot(attacker, TFWeaponSlot_Melee) && b_KitOmega_Using_Gauss[attacker])
 	{
 		float duration = 5.0;
+		if(b_thisNpcIsARaid[victim] || b_thisNpcIsABoss[victim])
+              duration = 2.0;
 		switch(GetRandomInt(0, 3))
 		{
 			case 0:
