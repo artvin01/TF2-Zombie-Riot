@@ -4,6 +4,7 @@
 static Handle h_Reiuji_WeaponHudTimer[MAXPLAYERS] = {null, ...};
 static float fl_hud_timer[MAXPLAYERS];
 static float fl_ammo_timer[MAXPLAYERS];
+static float fl_sub_ammo_timer[MAXPLAYERS];
 static int i_ammo[MAXPLAYERS];
 static int 		i_max_ammo				[6] = {10, 15, 20, 25, 30, 40};
 static float 	fl_ammogain_timerbase	[6] = {1.0, 1.0, 0.8, 0.7, 0.6, 0.45};
@@ -15,6 +16,9 @@ static float 	fl_barrage_maxrange		[6] = {1250.0, 1250.0, 1250.0, 1250.0, 1250.0
 static float 	fl_barrage_maxcharge	[6] = {600.0, 750.0, 1000.0, 1250.0, 1500.0, 1500.0};
 
 static int 		i_ALT_m1_amounts		[6] = {3, 3, 3, 4, 5, 6};
+
+#define REIUJI_REDIRECT_DMG_BONUS 1.35
+#define REIUJI_REDIRECT_SPEED_BONUS 1.2
 
 //charge gained will depend on mana consumed.
 static float fl_barrage_charge[MAXPLAYERS];
@@ -62,6 +66,7 @@ void Reiuji_Wand_OnMapStart()
 	Zero(i_ammo);
 	Zero(fl_hud_timer);
 	Zero(fl_ammo_timer);
+	Zero(fl_sub_ammo_timer);
 	PrecacheSound(REIUJI_WAND_TOUCH_SOUND, true);
 	PrecacheSound(REIUJI_WAND_M2_CAST_SOUND, true);
 	PrecacheSoundArray(WandAttackSounds);
@@ -89,7 +94,7 @@ void Enable_Reiuji_Wand(int client, int weapon)
 }
 static int i_pap(int weapon) {return RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));}
 
-static Action Timer_Reiuji_Wand(Handle timer, DataPack pack)
+static Action Timer_Reiuji_Wand(Handle timer_handle, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
@@ -108,15 +113,24 @@ static Action Timer_Reiuji_Wand(Handle timer, DataPack pack)
 	{
 		int pap = i_pap(weapon_holding);
 
+		float timer = 1.0;
+
 		if(Current_Mana[client] > max_mana[client]/2 && pap>0)
 		{
 			if(Current_Mana[client] > max_mana[client]*0.9)
-				fl_ammo_timer[client] = GameTime + fl_ammogain_timerbase[pap]*0.25;
+				timer = fl_ammogain_timerbase[pap]*0.25;
 			else
-				fl_ammo_timer[client] = GameTime + fl_ammogain_timerbase[pap]*0.7;
+				timer = fl_ammogain_timerbase[pap]*0.7;
 		}
 		else
-			fl_ammo_timer[client] = GameTime + fl_ammogain_timerbase[pap];
+			timer = fl_ammogain_timerbase[pap];
+
+		if(fl_sub_ammo_timer[client] > GameTime)
+		{
+			timer*= 1.5;
+		}
+
+		fl_ammo_timer[client] = GameTime + timer;
 		
 
 		if(i_ammo[client] < i_max_ammo[pap])
@@ -238,6 +252,8 @@ public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, in
 		if(enemy <= 0)
 			break;
 
+		//CPrintToChatAll("Pre Pre enemy: %i", enemy);
+
 		float EnemyAngles[3], EnemyLoc[3]; GetAbsOrigin(enemy, EnemyLoc);
 		MakeVectorFromPoints(Origin, EnemyLoc, EnemyAngles);
 		GetVectorAngles(EnemyAngles, EnemyAngles);
@@ -262,12 +278,12 @@ public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, in
 		//TE_SendToAll();
 
 		int enemy_slot = GetClosestTarget_RelativeAngle(tolerance_angle, fixAngle(BufferAng[1]), TargetArray, client);
+		//CPrintToChatAll("Post enemy: %i", enemy_slot);
 		if(enemy_slot == -1)
 		{
 			valid_targets[i] = -1;
 			continue;
 		}
-
 
 		Reiuji_Target_Info enum_Target;
 		TargetArray.GetArray(enemy_slot, enum_Target);
@@ -298,7 +314,7 @@ public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, in
 	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, CvarInfiniteCash.BoolValue ? 0.0 : base_cd);
 
-	float damage = 200.0 * Attributes_Get(weapon, 410, 1.0);
+	float damage = 100.0 * Attributes_Get(weapon, 410, 1.0);
 	float speed = 1100.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
 	speed *= Attributes_Get(weapon, 104, 1.0);
@@ -357,11 +373,19 @@ static int GetClosestTarget_RelativeAngle(float Tolerance, float Angle_Fixed, Ar
 		Reiuji_Target_Info Closest_Enemy;
 		TargetArray.GetArray(i, enum_Target);
 		TargetArray.GetArray(Closest, Closest_Enemy);
+
+		//CPrintToChatAll("Inbetween loop[%i] enemy: %i", i, enum_Target.index);
+		//CPrintToChatAll("Inbetween loop[%i] close_enemy: %i", i, Closest_Enemy.index);
 	
 		float yawOffset = fabs((enum_Target.Angle_Relative) - (Angle_Fixed));
 		float yawOffset_Close = fabs((Closest_Enemy.Angle_Relative) - (Angle_Fixed));
 
-		if(yawOffset < Tolerance && yawOffset < yawOffset_Close)
+		//CPrintToChatAll("Inbetween loop[%i] yawOffset: %.1f", i, yawOffset);
+		//CPrintToChatAll("Inbetween loop[%i] yawOffset_Close: %.1f", i, yawOffset_Close);
+
+		//CPrintToChatAll("Inbetween loop[%i] Tolerance: %.1f", i, Tolerance);
+
+		if(yawOffset <= Tolerance && yawOffset <= yawOffset_Close)
 		{
 			//float npc_pos[3]; GetAbsOrigin(enum_Target.index, npc_pos); npc_pos[2]+=50.0;
 			//float Vic_Pos[3]; GetAbsOrigin(client, Vic_Pos); Vic_Pos[2]+=50.0;
@@ -743,12 +767,7 @@ void Reiuji_Wand_AmmomodeInternal(int client, int weapon, bool Toggle = false)
 		Attributes_Set(weapon, 5, 1.0);
 		if(!Toggle)
 		{
-			float Offset = 1.0;
-			float GameTime = GetGameTime();
-			if(fl_ammo_timer[client] < GameTime + Offset)
-			{
-				fl_ammo_timer[client] += 0.75;
-			}
+			fl_sub_ammo_timer[client] = GetGameTime() + fl_ammogain_timerbase[pap]*0.75;
 		}
 	}
 }
@@ -806,6 +825,8 @@ public void Reiuji_Wand_Primary_Attack_ALT(int client, int weapon, bool crit, in
 		
 	}
 
+	
+
 	Current_Mana[client] -= mana_cost;
 	SDKhooks_SetManaRegenDelayTime(client, 2.0);
 	Mana_Hud_Delay[client] = 0.0;
@@ -814,6 +835,8 @@ public void Reiuji_Wand_Primary_Attack_ALT(int client, int weapon, bool crit, in
 	//no barrage, do normal stuff!
 	if(!b_BarrageModeOn[client])
 	{
+		fl_sub_ammo_timer[client] = GetGameTime() + fl_ammogain_timerbase[pap] * 0.75;
+		
 		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "drg_manmelter_trail_blue");
 
 		if(!IsValidEntity(projectile))
@@ -905,17 +928,18 @@ static Action Redirect_Reiuji_Projectile_HandleVecPre(Handle timer, int ref)
 	Player_Laser_Logic Laser;
 	Laser.client = client;
 	//make sure the range is the exact same as what the projectile would theoretically be able to achive if it flew in a straight line
-	i_maxtargets_hit = 3;
 	Zero(i_Ruina_Laser_BEAM_HitDetected);
-	Laser.DoForwardTrace_Basic(fl_BEAM_ThrottleTime[client], RayCastTraceEnemies);	//so if we find an enemy across our trace path. attach the vector to their abs location.
+	i_AmountProjectiles[client] = INVALID_ENT_REFERENCE;
+	Laser.max_targets = 3;
+	Laser.Radius = 17.5;
+	Laser.DoForwardTrace_Basic(fl_BEAM_ThrottleTime[client]);	//so if we find an enemy across our trace path. attach the vector to their abs location.
+	Laser.Enumerate_Simple();
 	for(int i = 0 ; i < sizeof(i_Ruina_Laser_BEAM_HitDetected) ; i++)
 	{
 		int enemy = i_Ruina_Laser_BEAM_HitDetected[i];
 		if(enemy > 0)
 		{
-			float EnemyLoc[3];
-			WorldSpaceCenter(enemy, EnemyLoc);
-			fl_AbilityVectorData[client] = EnemyLoc;
+			i_AmountProjectiles[client] = EntIndexToEntRef(enemy);
 			return Plugin_Stop;
 		}
 		if(i > i_maxtargets_hit)
@@ -938,16 +962,42 @@ static Action Redirect_Reiuji_Projectile(Handle timer, int ref)
 		return Plugin_Stop;
 
 	float Origin[3]; GetAbsOrigin(projectile, Origin);
+
+	int enemy = -1;
 	float EndLoc[3]; EndLoc = fl_AbilityVectorData[owner];
+	//our trace has an enemy, lock onto their location AND make the projectile home onto them!
+	if(i_AmountProjectiles[owner] != INVALID_ENT_REFERENCE)
+	{
+		enemy = EntRefToEntIndex(i_AmountProjectiles[owner]);
+		WorldSpaceCenter(enemy, EndLoc);
+	}
 
 	ReplaceWandParticle(projectile, "drg_manmelter_trail_blue");
 
-	f_WandDamage[projectile] *=1.2;
+	f_WandDamage[projectile] *=REIUJI_REDIRECT_DMG_BONUS;
 
 	float Angles[3];
 	MakeVectorFromPoints(Origin, EndLoc, Angles);
 	GetVectorAngles(Angles, Angles);
-	SetProjectileSpeed(projectile, fl_BEAM_ThrottleTime[projectile] * 1.25, Angles);
+	float Proj_Speed = fl_BEAM_ThrottleTime[projectile] * REIUJI_REDIRECT_SPEED_BONUS;
+	SetProjectileSpeed(projectile, Proj_Speed, Angles);
+	HomingProjectile_SetProjectileSpeed(projectile, Proj_Speed);
+
+	if(enemy == -1)
+		return Plugin_Stop;
+
+	float 	Homing_Power = 5.0,
+			Homing_Lockon = 45.0;
+
+	Initiate_HomingProjectile(projectile,
+	owner,
+	Homing_Lockon,			// float lockonAngleMax,
+	Homing_Power,			// float homingaSec,
+	true,					// bool LockOnlyOnce,
+	true,					// bool changeAngles,
+	Angles,
+	enemy
+	);
 
 
 	return Plugin_Stop;
@@ -1020,6 +1070,28 @@ public void Reiuji_Wand_Primary_Attack(int client, int weapon, bool crit, int sl
 	if(fl_barrage_charge[client] < fl_barrage_maxcharge[pap]*0.5 || pap <= 2)
 		return;
 
+	//get where the player is looking at
+	Player_Laser_Logic Laser;
+	Laser.client = client;
+	//make sure the range is the exact same as what the projectile would theoretically be able to achive if it flew in a straight line
+	Zero(i_Ruina_Laser_BEAM_HitDetected);
+	Laser.max_targets = 2;
+	Laser.Radius = 5.0;
+	Laser.DoForwardTrace_Basic(time*speed + 100.0); //so if we find an enemy across our trace path. attach the vector to their abs location.
+	Laser.Enumerate_Simple();
+	int target = -1;
+	for(int i = 0 ; i < sizeof(i_Ruina_Laser_BEAM_HitDetected) ; i++)
+	{
+		int enemy = i_Ruina_Laser_BEAM_HitDetected[i];
+		if(enemy > 0)
+		{
+			target = enemy;
+			break;
+		}
+		if(i > i_maxtargets_hit)
+			break;
+	}
+
 	float 	Homing_Power = 1.75 * pap,
 			Homing_Lockon = 45.0,
 			AttackAngles[3];
@@ -1032,7 +1104,8 @@ public void Reiuji_Wand_Primary_Attack(int client, int weapon, bool crit, int sl
 	Homing_Power,			// float homingaSec,
 	true,					// bool LockOnlyOnce,
 	true,					// bool changeAngles,
-	AttackAngles
+	AttackAngles,
+	target
 	);
 }
 static int FireBarrageProjectile(int client, int weapon, float Angles[3], int victim)
