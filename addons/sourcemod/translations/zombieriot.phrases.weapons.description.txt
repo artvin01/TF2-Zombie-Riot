@@ -4365,7 +4365,7 @@
 		"en"	"-Mini-crits against burning enemies.\n-INFERNAL FURY: Hold M2 to burn everything nearby and gain buffs, at the\n-cost of rapidly draining HP. Kills during this grant HP, given when the effect ends.\n-CD is based on use time. Kills while not active reduce CD."
 		"chi"	"对点燃的敌人造成迷你暴击。\n[M2]火愤:长按M2以血量为代价在自身附近生成一个火圈并且获得增益。\n效果生效时击杀敌人积攒回血量，解除后回复。\n效果不激活时击杀敌人降低技能冷却。"
 		"it"	"Mini-criteri contro i nemici in fiamme.\nINFERNAL FURY: Tenere premuto M2 per bruciare tutto ciò che si trova nelle vicinanze e guadagnare buff, al costo di prosciugare rapidamente gli HP.\nLe uccisioni durante questa fase garantiscono HP, dati quando l'effetto termina.\nCD si basa sul tempo di utilizzo.\nLe uccisioni quando non sono attive riducono la CD."
-		"ko"	"불타는적 소형치명타\nM2를 꾹 누르면 버프를 얻고 주변을 불태우지만, 체력이 빠르게 감소.\n발동 중에 적 처치시 포인트가 저장되고, 효과가 종료되면 저장된 포인트만큼 체력을 회복.\n쿨타임은 사용한 시간에 비례하며, 적 처치시 쿨타임 감소."
+		"ko"	"불타는적 추가피해\nM2를 꾹 누르면 버프및 주변을 불태움, HP 지속 감소.\n발동 중에 처치시 포인트 증가, 효과 종료시 포인트만큼 HP을 회복.\nCD은 사용한 시간에 비례함, 적 처치시 CD 감소."
 	}
 	"Wrathful Blade PaP 1"
 	{
