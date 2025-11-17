@@ -376,6 +376,14 @@ public void Weapon_Purging_Rampager_R(int client, int weapon, bool crit, int slo
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		return;
 	}
+	if(!(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
+		return;
+	}
 	
 	if(fl_KitPurge_Energy[client] < PURGE_QUAD_LAUNCHER_ENERGY_REQUIRE && !CvarInfiniteCash.BoolValue)
 	{
@@ -426,6 +434,14 @@ public void Weapon_Purging_Crusher_R(int client, int weapon, bool crit, int slot
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		return;
+	}
+	if(!(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
 		return;
 	}
 	
