@@ -223,9 +223,9 @@ public void PurgeKit_HUD(int client, int weapon, bool forced)
 		if(Attributes_Get(weapon, Attrib_PapNumber, 1.0) < 2.0)
 			PrintHintText(client, "Purge System Activated.\nEnergy: [%.0f/%.0f]", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY);
 		else if(Attributes_Get(weapon, Attrib_PapNumber, 1.0) < 4.0)
-			PrintHintText(client, "Purge System Activated.\nEnergy: [%.0f/%.0f]\nAnnahilator:%s", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat);
+			PrintHintText(client, "Purge System Activated.\nEnergy: [%.0f/%.0f]\nAnnihilator:%s", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat);
 		else
-			PrintHintText(client, "Purge System Activated.\nEnergy: [%.0f/%.0f]\nAnnahilator:%s\nQuad-Launcher:%s", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat, quadStat);
+			PrintHintText(client, "Purge System Activated.\nEnergy: [%.0f/%.0f]\nAnnihilator:%s\nQuad-Launcher:%s", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat, quadStat);
 		fl_KitPurge_NextHUD[client] = GetGameTime() + 0.4;
 	}
 }
