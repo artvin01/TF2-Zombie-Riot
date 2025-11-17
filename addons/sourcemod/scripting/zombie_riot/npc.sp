@@ -1135,6 +1135,9 @@ void NPC_ConfigSetup()
 	SupremeSpookmasterBones_OnMapStart_NPC();
 	SSBChair_OnMapStart_NPC();
 	#endif
+
+	DrDamSpecialDelivery_OnMapStart_NPC();
+	DrDamClone_OnMapStart_NPC();
 }
 
 void NPC_MapEnd()
@@ -1593,6 +1596,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/special/npc_phantom_knight.sp"
 #include "npc/special/npc_beheaded_kamikaze.sp"
 #include "npc/special/npc_doctor.sp"
+#include "npc/special/npc_drdam_special_delivery.sp"
+#include "npc/special/npc_drdam_clone.sp"
 #include "npc/special/npc_wandering_spirit.sp"
 #include "npc/special/npc_vengefull_spirit.sp"
 #include "npc/special/npc_fallen_warrior.sp"
