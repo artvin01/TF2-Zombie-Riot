@@ -29,7 +29,7 @@ static int M1_NumBlades[6] = { 1, 1, 1, 1, 1, 2 };			    				//Number of blade s
 static float M1_Cost[6] = { 40.0, 60.0, 80.0, 100.0, 120.0, 100.0 };			//Primary attack base mana cost.
 static float M1_Range[6] = { 140.0, 150.0, 160.0, 180.0, 140.0, 200.0 };  		//Electric blade range.
 static float M1_Width[6] = { 120.0, 140.0, 160.0, 180.0, 120.0, 220.0 };  		//Electric blade arc swing angle.
-static float M1_Damage[6] = { 750.0, 1000.0, 1250.0, 1500.0, 750.0, 1500.0 }; 	//Electric blade damage.
+static float M1_Damage[6] = { 750.0, 1000.0, 1250.0, 1500.0, 750.0, 2000.0 }; 	//Electric blade damage.
 static float M1_RaidMult[6] = { 1.5, 1.4, 1.3, 1.25, 1.25, 1.1 };				//Amount to multiply electric blade damage against raids.
 static float M1_Falloff[6] = { 0.825, 0.85, 0.875, 0.9, 0.825, 0.9 };   		//Amount to multiply electric blade damage per target hit.
 static float M1_Interval[6] = { 0.8, 0.85, 0.8, 0.75, 0.8, 0.675 };     		//Time it takes for electric blades to sweep across the screen.
@@ -72,7 +72,7 @@ static float Raigeki_Cooldown_Failed[6] = { 45.0, 45.0, 45.0, 45.0, 22.5, 45.0 }
 //While Supercharged, the user's Kinetic Energy drains rapidly, and they cannot gain more Kinetic Energy, but their primary attack is massively buffed.
 //Supercharged ends as soon as the user runs out of Kinetic Energy. Also, getting downed while Supercharged instantly removes all Kinetic Energy.
 static int Supercharge_ExtraBlades[6] = { 1, 1, 2, 2, 1, 3 };							//Number of extra blades to swing per cast whil Supercharged.
-static float Supercharge_DMGMult[6] = { 2.5, 2.5, 3.0, 3.25, 2.5, 3.5 };				//Amount to multiply primary attack damage while Supercharged.
+static float Supercharge_DMGMult[6] = { 2.5, 2.5, 3.0, 3.25, 2.5, 2.5 };				//Amount to multiply primary attack damage while Supercharged.
 static float Supercharge_SpeedMult[6] = { 1.25, 1.25, 1.3, 1.35, 1.25, 1.45 };			//Amount to multiply attack speed and beam sweep speed while Supercharged.
 static float Supercharge_RangeMult[6] = { 1.1, 1.125, 1.15, 1.15, 1.0, 1.2 };			//Amount to multiply beam range while Supercharged.
 static float Supercharge_WidthMult[6] = { 1.25, 1.3, 1.35, 1.4, 1.25, 1.5 };			//Amount to multiply beam arc width while Supercharged.
