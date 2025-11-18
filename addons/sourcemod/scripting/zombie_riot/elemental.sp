@@ -1621,6 +1621,12 @@ bool Elemental_AddManaOverflowDamage(int victim, int attacker, int damagebase, i
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
 	{
+		if(LastMann)
+   		 	TE_SendToAll();
+		else
+    		TE_SendToClient(attacker);
+	}
+	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
 	if(!b_NpcHasDied[victim])	// NPCs
