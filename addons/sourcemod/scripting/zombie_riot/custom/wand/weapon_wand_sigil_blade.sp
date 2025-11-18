@@ -806,13 +806,20 @@ public void Weapon_Sigil_Blade_Manaflow(int attacker, int victim, int weapon)
 
 	float Thickness = 6.0;
 	TE_SetupBeamRingPoint(end_point, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.75, i_sigil_colorInner, 1, 0);
-	TE_SendToClient(Attacker);
+	Send_Te_Client_ZR(attacker);
 	TE_SetupBeamRingPoint(end_point, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.1, i_sigil_color, 1, 0);
-	TE_SendToClient(Attacker);
+	Send_Te_Client_ZR(attacker);
 
 	EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_SPAWN, attacker, SNDCHAN_STATIC, SNDLEVEL_NORMAL, _, 1.0);
-
-	Ruina_IonSoundInvoke(end_point);
+	if(LastMann)
+	{
+		Ruina_IonSoundInvoke(end_point);
+	}
+	else
+	{
+		EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, endpoint);
+		EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, endpoint);
+	}
 
 	DataPack pack;
 	CreateDataTimer(time, Sigil_Blade_Manaflow_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -864,10 +871,18 @@ Action Sigil_Blade_Manaflow_Ion(Handle Timer, DataPack data)
 	
 	float Thickness = 6.0;
 	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.75, Thickness, 0.75, i_sigil_color, 1, 0);
-	TE_SendToClient(Attacker);
-
-	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
-	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+	Send_Te_Client_ZR(attacker);//Why isn't this in stock folder?
+	if(LastMann)
+	{
+		EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+		EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+	}
+	else
+	{
+		EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, endpoint);
+		EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, endpoint);
+	}
+	
 	
 	EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_ATTACK);
 	EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_ATTACK);
@@ -908,7 +923,9 @@ Action Sigil_Blade_Manaflow_Ion(Handle Timer, DataPack data)
 
 	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=1000.0; end_point[2]-=100.0;
 
-	int laser;
+	//Convert this into normal TE usage later on DO NOT UPLOAD IT YET. - Fish
+
+	/*int laser;
 	laser = ConnectWithBeam(-1, -1, i_sigil_color[0], i_sigil_color[1], i_sigil_color[2], 7.0, 7.0, 1.0, BEAM_COMBINE_BLACK, end_point, Sky_Loc);
 	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 	laser = ConnectWithBeam(-1, -1, i_sigil_color[0], i_sigil_color[1], i_sigil_color[2], 5.0, 5.0, 0.1, LASERBEAM, end_point, Sky_Loc);
@@ -916,7 +933,7 @@ Action Sigil_Blade_Manaflow_Ion(Handle Timer, DataPack data)
 
 	int particle = ParticleEffectAt(Sky_Loc, "kartimpacttrail", 1.0);
 	SetEdictFlags(particle, (GetEdictFlags(particle) | FL_EDICT_ALWAYS));	
-	CreateTimer(0.25, Nearl_Falling_Shot, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.25, Nearl_Falling_Shot, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);*/
 
 	return Plugin_Stop;
 }
