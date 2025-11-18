@@ -26,10 +26,10 @@ static float Energy_FromRaidsMult[6] = { 2.5, 2.5, 2.5, 2.5, 3.5, 2.5 };				//Am
 //Range and width scale with projectile lifespan and velocity modifiers.
 //Sweep speed scales with attack speed modifiers.
 static int M1_NumBlades[6] = { 1, 1, 1, 1, 1, 2 };			    				//Number of blade sweeps to perform in a row per M1.
-static float M1_Cost[6] = { 40.0, 60.0, 80.0, 100.0, 120.0, 100.0 };			//Primary attack base mana cost.
+static float M1_Cost[6] = { 40.0, 60.0, 80.0, 100.0, 120.0, 140.0 };			//Primary attack base mana cost.
 static float M1_Range[6] = { 140.0, 150.0, 160.0, 180.0, 140.0, 200.0 };  		//Electric blade range.
 static float M1_Width[6] = { 120.0, 140.0, 160.0, 180.0, 120.0, 220.0 };  		//Electric blade arc swing angle.
-static float M1_Damage[6] = { 750.0, 1000.0, 1250.0, 1500.0, 750.0, 2000.0 }; 	//Electric blade damage.
+static float M1_Damage[6] = { 750.0, 1000.0, 1250.0, 1500.0, 750.0, 1800.0 }; 	//Electric blade damage.
 static float M1_RaidMult[6] = { 1.5, 1.4, 1.3, 1.25, 1.25, 1.1 };				//Amount to multiply electric blade damage against raids.
 static float M1_Falloff[6] = { 0.825, 0.85, 0.875, 0.9, 0.825, 0.9 };   		//Amount to multiply electric blade damage per target hit.
 static float M1_Interval[6] = { 0.8, 0.85, 0.8, 0.75, 0.8, 0.675 };     		//Time it takes for electric blades to sweep across the screen.
