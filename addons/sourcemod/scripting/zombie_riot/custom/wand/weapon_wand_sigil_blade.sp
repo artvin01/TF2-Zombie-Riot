@@ -806,9 +806,9 @@ public void Weapon_Sigil_Blade_Manaflow(int attacker, int victim, int weapon)
 
 	float Thickness = 6.0;
 	TE_SetupBeamRingPoint(end_point, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.75, i_sigil_colorInner, 1, 0);
-	TE_SendToClient(client);
+	TE_SendToClient(Attacker);
 	TE_SetupBeamRingPoint(end_point, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.1, i_sigil_color, 1, 0);
-	TE_SendToClient(client);
+	TE_SendToClient(Attacker);
 
 	EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_SPAWN, attacker, SNDCHAN_STATIC, SNDLEVEL_NORMAL, _, 1.0);
 
@@ -864,7 +864,7 @@ Action Sigil_Blade_Manaflow_Ion(Handle Timer, DataPack data)
 	
 	float Thickness = 6.0;
 	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.75, Thickness, 0.75, i_sigil_color, 1, 0);
-	TE_SendToClient(client);
+	TE_SendToClient(Attacker);
 
 	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
 	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
@@ -1101,4 +1101,5 @@ bool Sigil_LastMann(int client)
 
 
 */
+
 
