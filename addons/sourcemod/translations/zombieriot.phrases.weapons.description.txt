@@ -1368,7 +1368,7 @@
 
 	"Mortal Blackout Desc"
 	{
-		"en"	"-Electric blades and Raigeki both become far stronger.\n-Raigeki's damage and radius are both now boosted by Kinetic Energy.\n-Primary attack now swings 2 electric blades.\n-Raigeki now charges slower, costs more mana, and provides far less resistance.\n-Static Electricity becomes far weaker.\n{yellow}''Shut their lights off, for good.''"
+		"en"	"-Electric blades and Raigeki both become far stronger.\n-Raigeki's damage and radius are both now boosted by Kinetic Energy.\n-Primary attack now swings 2 electric blades.\n-Raigeki now costs a lot of mana and provides far less resistance.\n-Static Electricity becomes far weaker.\n{yellow}''Shut their lights off, for good.''"
 	}
 	
 	"Homing Staff Desc"
