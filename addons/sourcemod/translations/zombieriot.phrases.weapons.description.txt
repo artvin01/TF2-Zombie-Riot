@@ -5318,7 +5318,7 @@
 	}
 	"Sigil Blade Pap 2"
 	{
-		"en"	"-Increased damage\n-Increased melee resistance\n-Slower attackspeed\n-Summon a floating crystal with M2\n-You need atleast 35％ of your max mana to teleport back with m2\n-Needs LOS.\n-Hitting enemies reduces M2 cooldown."
+		"en"	"-Increased damage\n-Increased melee resistance\n-Slower attackspeed\n-Summon a floating crystal with M2\n-You need atleast 35％ of your max mana to teleport back with m2\n-Needs LOS.\n-Hitting enemies reduces M2 cooldown\n-If enemies is between you and crystal they will get hit heavily."
 	}
 	"Sigil Blade Pap 3"
 	{
