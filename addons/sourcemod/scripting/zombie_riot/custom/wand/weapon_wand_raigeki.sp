@@ -372,9 +372,8 @@ static float f_RaigekiStrikesAt[MAXPLAYERS + 1] = { 0.0, ... };
 
 void Raigeki_StartCharging(int client, int weapon, int tier)
 {
-	//this is a holding one, dont.
 	f_CooldownForAbilities[client][0] = FAR_FUTURE;
-	
+
 	//This should never be able to happen in-game, but just to be safe...
 	if (b_ChargingRaigeki[client] || b_Supercharged[client])
 		return;

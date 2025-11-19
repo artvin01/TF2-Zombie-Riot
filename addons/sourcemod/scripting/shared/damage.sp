@@ -7,11 +7,7 @@
 #define DMG_MEDIGUN_LOW 1.25
 #define DMG_WIDOWS_WINE 1.35
 
-float BarbariansMindNotif[MAXPLAYERS];
-void DamageModifMapStart()
-{
-	Zero(BarbariansMindNotif);
-}
+
 
 stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -80,6 +76,10 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &dama
 
 stock void Damage_AnyVictimPost(int victim, float &damage, int &damagetype)
 {
+	//the hud shouzldnt check this.
+	if(CheckInHud())
+		return;
+
 	if(!HasSpecificBuff(victim, "Expert's Mind"))
 		return;
 
@@ -259,8 +259,8 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	}
 	
 #if defined ZR || defined NOG
-		//true damage does NOT Ignore this.
-		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,damagetype, i_HexCustomDamageTypes[victim], weapon);
+	//true damage does NOT Ignore this.
+	VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,damagetype, i_HexCustomDamageTypes[victim], weapon);
 #endif
 	OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon);
 	if(!CheckInHud())

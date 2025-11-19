@@ -1129,7 +1129,6 @@ public void OnMapStart()
 	{
 		EntityKilled_HitDetectionCooldown(i);
 	}
-	DamageModifMapStart();
 	SDKHooks_ClearAll();
 	InitStatusEffects();
 

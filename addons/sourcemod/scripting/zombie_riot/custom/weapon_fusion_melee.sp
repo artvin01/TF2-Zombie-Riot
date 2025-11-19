@@ -373,6 +373,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
+		f_CooldownForAbilities[client][0] = FAR_FUTURE;
 		i_NearlWeaponUsedWith[client] = EntIndexToEntRef(weapon);
 		if(f_NearlDurationCheckApply[client] > GetGameTime())
 		{

@@ -376,9 +376,18 @@ public void Weapon_Purging_Rampager_R(int client, int weapon, bool crit, int slo
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		return;
 	}
+	if(!(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
+		return;
+	}
 	
 	if(fl_KitPurge_Energy[client] < PURGE_QUAD_LAUNCHER_ENERGY_REQUIRE && !CvarInfiniteCash.BoolValue)
 	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "You need %.0f energy to take out QuadLauncher!", PURGE_QUAD_LAUNCHER_ENERGY_REQUIRE);
@@ -427,9 +436,18 @@ public void Weapon_Purging_Crusher_R(int client, int weapon, bool crit, int slot
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		return;
 	}
+	if(!(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
+		return;
+	}
 	
 	if(fl_KitPurge_Energy[client] < PURGE_ANNAHILATOR_ENERGY_REQUIRE && !CvarInfiniteCash.BoolValue)
 	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "You need %.0f energy to take out Annihilator!", PURGE_ANNAHILATOR_ENERGY_REQUIRE);
@@ -859,17 +877,20 @@ public Action Weapon_Purging_Crush_Think(Handle h, DataPack pack)
 		return Plugin_Continue;
 	}
 	
-	TF2_RemoveCondition(client, TFCond_LostFooting);
-	TF2_RemoveCondition(client, TFCond_AirCurrent);
-	//SetEntityGravity(client, 1.0);
-	
-	if(GetAmmo(client, 14) < 10)
-		SetAmmo(client, 14, 10);
-	
-	Store_RemoveSpecificItem(client, "Purging Grinder");
-	TF2_RemoveItem(client, weapon);
-	FakeClientCommandEx(client, "use tf_weapon_shotgun_hwg");
-	
+	if(IsValidClient(client))
+	{
+		TF2_RemoveCondition(client, TFCond_LostFooting);
+		TF2_RemoveCondition(client, TFCond_AirCurrent);
+		//SetEntityGravity(client, 1.0);
+		
+		if(GetAmmo(client, 14) < 10)
+			SetAmmo(client, 14, 10);
+		
+		Store_RemoveSpecificItem(client, "Purging Grinder");
+		if(IsValidEntity(weapon))
+			TF2_RemoveItem(client, weapon);
+		FakeClientCommandEx(client, "use tf_weapon_shotgun_hwg");
+	}
 	delete pack;
 	return Plugin_Stop;
 }
