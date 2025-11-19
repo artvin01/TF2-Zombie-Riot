@@ -308,6 +308,7 @@ public void Weapon_Sigil_Blade_M2(int client, int weapon, bool crit, int slot)
 			pack.WriteCell(GetClientUserId(client));
 			pack.WriteCell(EntIndexToEntRef(i_Sigil[client]));
 			pack.WriteCell(EntIndexToEntRef(i_Sigil_Prop[client]));
+			pack.WriteCell(EntIndexToEntRef(weapon));
 			pack.WriteCell(0);
 			
 			fl_Slash_duration[client] = GetGameTime() + fl_Slash_Time_Max;
@@ -451,6 +452,12 @@ public void Weapon_Sigil_Blade_R(int client, int weapon, bool crit, int slot)
 			float speed = 750.0;
 			ScaleVector(velocity, speed);
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+
+			int trail = EntRefToEntIndex(i_Sigil_Slash_Trail[client]);
+			if(IsValidEntity(trail))
+			{
+				RemoveEntity(trail);
+			}
 
 			int entIndex = CreateEntityByName("env_spritetrail");
 			if (entIndex > 0 && IsValidEntity(entIndex))
@@ -743,6 +750,7 @@ public void Sigil_Crystal_Teleport(DataPack pack)
 	int client = GetClientOfUserId(pack.ReadCell());
 	int projectile = EntRefToEntIndex(pack.ReadCell());
 	int prop = EntRefToEntIndex(pack.ReadCell());
+	int weapon = EntRefToEntIndex(pack.ReadCell());
 	int time = pack.ReadCell();
 	
 	if(time < 2)
@@ -765,6 +773,9 @@ public void Sigil_Crystal_Teleport(DataPack pack)
 	if(IsValidEntity(projectile))
 	{
 		RemoveEntity(projectile);
+		//float crystalAngles[3];
+		
+		//GetEntPropVector(prop, Prop_Data, "m_angRotation", crystalAngles);
 		
 		if(IsValidEntity(prop))
 			RemoveEntity(prop);
@@ -775,6 +786,7 @@ public void Sigil_Crystal_Teleport(DataPack pack)
 		ShowSyncHudText(client, SyncHud_Notifaction, "You are back to sigil.");
 		float clientVel[3];
 		GetEntPropVector(client, Prop_Data, "m_vecVelocity", clientVel);
+		Sigil_Teleport_Damage(client, weapon, fl_Sigilpos[client]);
 		TeleportEntity(client, fl_Sigilpos[client], NULL_VECTOR, clientVel);
 		ParticleEffectAt(fl_Sigilpos[client], "teleportedin_red", 1.0);
 		Ability_Apply_Cooldown(client, 2, fl_Sigil_Crystal_Spawn_Cooldown);
@@ -783,6 +795,45 @@ public void Sigil_Crystal_Teleport(DataPack pack)
 		//EmitSoundToClient(client, g_SIGIL_CRYSTAL[0], client, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	delete pack;
+}
+
+static void Sigil_Teleport_Damage(int client, int weapon, float crystalAngles[3])
+{
+	if(!IsValidClient(client) || !IsPlayerAlive(client))
+		return;
+
+	if(!IsValidEntity(weapon))
+		return;
+	
+	float vecMe[3]; WorldSpaceCenter(client, vecMe);//GetClientEyePosition(client, vecMe);
+	int max_hit_targets = 3;
+	
+	Player_Laser_Logic Laser;
+	Laser.client = client;
+	Laser.Start_Point = vecMe;
+	Laser.End_Point = crystalAngles;
+	Laser.Radius = 25.0;
+	Laser.Damage = Sigil_TeleDamage(weapon);
+	Laser.max_targets = max_hit_targets;
+	//Laser.DoForwardTrace_Custom(crystalAngles, vecMe);
+	//Laser.Enumerate_Simple();
+	Laser.Deal_Damage(Sigil_Tele_Effect);
+}
+
+static void Sigil_Tele_Effect(int client, int victims, int damagetype, float &damage)
+{
+	float clientEyePos[3], vecEnemy[3];
+	float angle[3];
+	angle[0] = 0.0;angle[1] = GetRandomFloat(-180.0,180.0);angle[2] = 0.0;
+	GetClientEyePosition(client, clientEyePos); WorldSpaceCenter(victims, vecEnemy);
+	Weapon_Sigil_Blade_Hit_Target_Effect(victims, clientEyePos, angle, vecEnemy);
+}
+
+static float Sigil_TeleDamage(int weapon)
+{
+	float dmg = 100.0;//Blame pandora if it is too much. it was originally 65
+	dmg *= Attributes_Get(weapon, 410, 1.0);
+	return dmg;
 }
 
 public void Weapon_Sigil_Blade_Manaflow(int attacker, int victim, int weapon)
@@ -922,8 +973,6 @@ Action Sigil_Blade_Manaflow_Ion(Handle Timer, DataPack data)
 		return Plugin_Stop; 
 
 	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=1000.0; end_point[2]-=100.0;
-
-	//Convert this into normal TE usage later on DO NOT UPLOAD IT YET. - Fish
 
 	/*int laser;
 	laser = ConnectWithBeam(-1, -1, i_sigil_color[0], i_sigil_color[1], i_sigil_color[2], 7.0, 7.0, 1.0, BEAM_COMBINE_BLACK, end_point, Sky_Loc);
@@ -1118,7 +1167,6 @@ bool Sigil_LastMann(int client)
 
 
 */
-
 
 
 
