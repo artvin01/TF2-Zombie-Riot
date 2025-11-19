@@ -772,7 +772,7 @@ public void Sigil_Crystal_Teleport(DataPack pack)
 		i_Sigil[client] = 0;
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "You back to sigil.");
+		ShowSyncHudText(client, SyncHud_Notifaction, "You are back to sigil.");
 		float clientVel[3];
 		GetEntPropVector(client, Prop_Data, "m_vecVelocity", clientVel);
 		TeleportEntity(client, fl_Sigilpos[client], NULL_VECTOR, clientVel);
@@ -1118,6 +1118,7 @@ bool Sigil_LastMann(int client)
 
 
 */
+
 
 
 
