@@ -817,8 +817,8 @@ public void Weapon_Sigil_Blade_Manaflow(int attacker, int victim, int weapon)
 	}
 	else
 	{
-		EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, endpoint);
-		EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, endpoint);
+		EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+		EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
 	}
 
 	DataPack pack;
