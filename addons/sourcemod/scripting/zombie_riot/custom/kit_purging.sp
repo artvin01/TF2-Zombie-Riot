@@ -38,7 +38,7 @@ static float QuadSinceLastRemove[MAXPLAYERS]={0.0, ...};
 #define PURGE_ENERGY_SHOTGUN 5.0
 #define PURGE_ENERGY_RIFLE 1.0
 
-#define PURGE_RAM_BASE_DMG 200.0
+#define PURGE_RAM_BASE_DMG 300.0
 #define PURGE_RAM_RADIUS 150.0
 #define PURGE_RAM_TIME 3.0
 #define PURGE_RAM_SPEED 500.0
@@ -976,4 +976,5 @@ void KitPurgeGiveAttributesData(DataPack pack)
 		}
 	}
 }
+
 
