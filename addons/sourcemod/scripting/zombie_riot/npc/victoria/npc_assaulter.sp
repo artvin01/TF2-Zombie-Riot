@@ -213,9 +213,7 @@ methodmap VictoriaAssaulter < CClotBody
 		}
 		
 		if(StrContains(data, "block_movement") != -1)
-		{
 			npc.m_iMovement = 0;
-		}
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -457,7 +455,6 @@ static void VictoriaAssaulter_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
 }
 
 static int VictoriaAssaulterSelfDefense(VictoriaAssaulter npc, float gameTime, float distance)

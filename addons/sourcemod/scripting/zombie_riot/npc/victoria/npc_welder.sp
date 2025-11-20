@@ -159,7 +159,7 @@ methodmap VictorianWelder < CClotBody
 		npc.StartPathing();
 		
 		//Maybe used for special waves
-		static char countext[20][1024];
+		static char countext[5][256];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
@@ -291,9 +291,8 @@ static void VictorianWelder_NPCDeath(int entity)
 {
 	VictorianWelder npc = view_as<VictorianWelder>(entity);
 	if(!npc.m_bGib)
-	{
 		npc.PlayDeathSound();	
-	}
+
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))

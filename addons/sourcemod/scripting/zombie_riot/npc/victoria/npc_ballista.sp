@@ -60,9 +60,9 @@ static void ClotPrecache()
 	PrecacheModel("models/player/soldier.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianBallista(vecPos, vecAng, ally);
+	return VictorianBallista(vecPos, vecAng, ally, data);
 }
 
 methodmap VictorianBallista < CClotBody
@@ -96,7 +96,7 @@ methodmap VictorianBallista < CClotBody
 		EmitSoundToAll(g_ReloadSound, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public VictorianBallista(float vecPos[3], float vecAng[3], int ally)
+	public VictorianBallista(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianBallista npc = view_as<VictorianBallista>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1000", ally));
 		
@@ -118,7 +118,6 @@ methodmap VictorianBallista < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
-		npc.m_iAmmo = 3;
 		npc.m_iMaxAmmo = 3;
 		
 		//IDLE
@@ -127,6 +126,15 @@ methodmap VictorianBallista < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 250.0;
+		
+		if(StrContains(data, "maxclip") != -1)
+		{
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			ReplaceString(buffers[0], 64, "maxclip", "");
+			npc.m_iMaxAmmo = StringToInt(buffers[0]);
+		}
+		npc.m_iAmmo = npc.m_iMaxAmmo;
 		
 		ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 		
@@ -291,7 +299,7 @@ static int VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime, f
 		}
 		if(gameTime > npc.m_flAttackHappens)
 		{
-			npc.m_iAmmo=3;
+			npc.m_iAmmo = npc.m_iMaxAmmo;
 			npc.m_flAttackHappens=0.0;
 		}
 		return 1;

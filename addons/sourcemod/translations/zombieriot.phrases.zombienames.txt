@@ -4890,6 +4890,11 @@
 		"ko"	"브라스벙커 아방가르드"
 		"it"	"Brassbunker Avangard"
 	}
+	"Imcomplete Avangard"
+	{
+		"en"	"Imcomplete Avangard"
+		"ko"	"미완성 아방가르드"
+	}
 	"Tanker"
 	{
 		"en"	"Brassbunker Tanker"

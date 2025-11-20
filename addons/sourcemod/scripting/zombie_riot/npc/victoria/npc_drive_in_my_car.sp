@@ -140,8 +140,8 @@ methodmap VictorianAssaultVehicle < CClotBody
 		npc.m_flSpeed = 50.0;
 		npc.m_flStartSpeed = 50.0;
 		npc.m_flSpeedModify = 1.0;
-		npc.m_flStartSpeed_ForData = 50.0;
-		npc.m_flSpeedModify_ForData = 1.0;
+		npc.m_flStartSpeed_ForData = 75.0;
+		npc.m_flSpeedModify_ForData = 1.2;
 		npc.m_flSpawnMeleeArmor = 1.0;
 		npc.m_flSpawnRangedArmor = 1.0;
 		npc.m_flSpawnHealth = 1.0;
@@ -159,16 +159,6 @@ methodmap VictorianAssaultVehicle < CClotBody
 		for(int i = 0; i < count; i++)
 		{
 			if(i>=count)break;
-			else if(StrContains(countext[i], "startspeed") != -1)
-			{
-				ReplaceString(countext[i], sizeof(countext[]), "startspeed", "");
-				npc.m_flStartSpeed = StringToFloat(countext[i]);
-			}
-			else if(StrContains(countext[i], "speedmodify") != -1)
-			{
-				ReplaceString(countext[i], sizeof(countext[]), "speedmodify", "");
-				npc.m_flSpeedModify = StringToFloat(countext[i]);
-			}
 			else if(StrContains(countext[i], "halfstartspeed") != -1)
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "halfstartspeed", "");
@@ -178,6 +168,16 @@ methodmap VictorianAssaultVehicle < CClotBody
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "halfspeedmodify", "");
 				npc.m_flSpeedModify_ForData = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "startspeed") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "startspeed", "");
+				npc.m_flStartSpeed = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "speedmodify") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "speedmodify", "");
+				npc.m_flSpeedModify = StringToFloat(countext[i]);
 			}
 			else if(StrContains(countext[i], "player_priority") != -1)
 			{
@@ -213,6 +213,11 @@ methodmap VictorianAssaultVehicle < CClotBody
 				//PrintToChatAll("NPC ID: %i", npc.g_TimesSummoned);
 			}
 		}
+		
+		fl_ruina_battery_max[npc.index] = 20.0;
+		fl_ruina_battery[npc.index] = 0.0;
+		
+		ApplyStatusEffect(npc.index, npc.index, "Battery_TM Charge", 999.0);
 		
 		float Vec[3], Ang[3]={0.0,0.0,0.0};
 		GetAbsOrigin(npc.index, Vec);
@@ -332,6 +337,7 @@ public void VictorianAssaultVehicle_ClotThink(int iNPC)
 			npc.m_iChanged_WalkCycle=0;
 		}
 	}
+	fl_ruina_battery[npc.index] = TimeMultiplier;
 	npc.m_flSpeed = (npc.m_flStartSpeed * TimeMultiplier * npc.m_flSpeedModify);
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))

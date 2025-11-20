@@ -101,6 +101,11 @@ methodmap VictoriaBreachcart < CClotBody
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
+	property float m_flBombCartSpawnTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 
 	public VictoriaBreachcart(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -129,6 +134,7 @@ methodmap VictoriaBreachcart < CClotBody
 		
 		npc.m_flSpeed = 150.0;
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flBombCartSpawnTime = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -270,7 +276,7 @@ static void VictoriaBreachcart_ClotDeath(int entity)
 
 static void VictoriaBreachcart_Work(VictoriaBreachcart npc, float gameTime, float distance)
 {
-	if(npc.m_flNextRangedAttack < gameTime)
+	if(npc.m_flBombCartSpawnTime < gameTime)
 	{
 		int health = ReturnEntityMaxHealth(npc.index) / 15;
 
@@ -299,7 +305,7 @@ static void VictoriaBreachcart_Work(VictoriaBreachcart npc, float gameTime, floa
 				float Cooldown = 5.0;
 				if(NpcStats_VictorianCallToArms(npc.index))
 					Cooldown *= 0.75;
-				npc.m_flNextRangedAttack = gameTime + Cooldown;
+				npc.m_flBombCartSpawnTime = gameTime + Cooldown;
 			}
 		}
 	}

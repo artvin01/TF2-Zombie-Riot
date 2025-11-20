@@ -67,9 +67,9 @@ static void ClotPrecache()
 	PrecacheModel("models/player/demo.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianSquadleader(vecPos, vecAng, ally);
+	return VictorianSquadleader(vecPos, vecAng, ally, data);
 }
 
 #define LEADER_BUFF_MAXRANGE 250.0 		
@@ -114,7 +114,7 @@ methodmap VictorianSquadleader < CClotBody
 		f_GlobalSoundCD = GetGameTime() + 5.0;
 	}
 	
-	public VictorianSquadleader(float vecPos[3], float vecAng[3], int ally)
+	public VictorianSquadleader(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianSquadleader npc = view_as<VictorianSquadleader>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "15000", ally, false, true));
 		
@@ -146,8 +146,16 @@ methodmap VictorianSquadleader < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedAttackHappening = 0.0;
 		npc.m_iChanged_WalkCycle = 1;
-		npc.m_iAmmo = 10;
 		npc.m_iMaxAmmo = 10;
+		
+		if(StrContains(data, "maxclip") != -1)
+		{
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			ReplaceString(buffers[0], 64, "maxclip", "");
+			npc.m_iMaxAmmo = StringToInt(buffers[0]);
+		}
+		npc.m_iAmmo = npc.m_iMaxAmmo;
 		
 		ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 
@@ -208,13 +216,10 @@ static void VictorianSquadleader_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-	
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int SetGoalVectorIndex = 0;
-		SetGoalVectorIndex = VictorianSquadleaderSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
-		switch(SetGoalVectorIndex)
+		switch(VictorianSquadleaderSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -285,7 +290,6 @@ static void VictorianSquadleader_NPCDeath(int entity)
 
 static int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, int target, float distance)
 {
-
 	if(npc.m_iAmmo <= 0)
 	{
 		if(npc.m_iChanged_WalkCycle != 2)
@@ -296,9 +300,8 @@ static int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameT
 			npc.m_flSpeed = 310.0;
 			npc.StartPathing();	
 			if(IsValidEntity(npc.m_iWearable1))
-			{
 				RemoveEntity(npc.m_iWearable1);
-			}		
+			npc.m_flNextMeleeAttack = gameTime + 1.5;
 			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_battleaxe/c_battleaxe.mdl");
 			KillFeed_SetKillIcon(npc.index, "battleaxe");
 		}
@@ -356,7 +359,7 @@ static int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameT
 		}		
 		return 0;
 	}
-	if(gameTime > npc.m_flNextMeleeAttack)
+	if(gameTime > npc.m_flNextRangedAttack)
 	{
 		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0))
 		{
@@ -381,7 +384,7 @@ static int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameT
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 					ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
-					npc.m_flNextMeleeAttack = gameTime + 1.0;
+					npc.m_flNextRangedAttack = gameTime + 1.0;
 
 					if(IsValidEnemy(npc.index, target))
 					{

@@ -52,16 +52,16 @@ methodmap VictorianHumbee < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = 0;
 
-		npc.g_TimesSummoned = 0;
-
 		if(data[0])
-			npc.g_TimesSummoned = StringToInt(data);
+		{
+		
+		}
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = ClotDeath;
+		func_NPCDeath[npc.index] = VictorianHumbee_ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = ClotThink;
+		func_NPCThink[npc.index] = VictorianHumbee_ClotThink;
 		
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 		npc.m_flSpeed = 231.0;
@@ -84,39 +84,17 @@ methodmap VictorianHumbee < CClotBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_siberian_tigerstripe/fall17_siberian_tigerstripe.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 
-		if(npc.g_TimesSummoned == 0)
-		{
-			npc.m_iWearable2 = npc.EquipItemSeperate("models/workshop/player/items/heavy/road_rager/road_rager.mdl");
-			SetVariantString("1.5");
-			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		}
+		npc.m_iWearable2 = npc.EquipItemSeperate("models/workshop/player/items/heavy/road_rager/road_rager.mdl");
+		SetVariantString("1.5");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		return npc;
 	}
 }
 
-static void ClotThink(int iNPC)
+static void VictorianHumbee_ClotThink(int iNPC)
 {
 	VictorianHumbee npc = view_as<VictorianHumbee>(iNPC);
-
-	if(npc.g_TimesSummoned == 0)
-	{
-		if(npc.m_fbRangedSpecialOn)
-		{
-			if(!IsValidEntity(npc.m_iWearable2))
-			{
-				npc.m_iWearable2 = npc.EquipItemSeperate("models/workshop/player/items/heavy/road_rager/road_rager.mdl");
-				SetVariantString("1.5");
-				AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-			}
-			else
-			{
-				float vecTarget[3];
-				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", vecTarget);
-				Custom_SDKCall_SetLocalOrigin(npc.m_iWearable2, vecTarget);
-			}
-		}
-	}
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -183,7 +161,7 @@ static void ClotThink(int iNPC)
 	}
 }
 
-static void ClotDeath(int entity)
+static void VictorianHumbee_ClotDeath(int entity)
 {
 	VictorianHumbee npc = view_as<VictorianHumbee>(entity);
 

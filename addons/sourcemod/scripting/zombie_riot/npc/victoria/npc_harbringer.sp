@@ -509,7 +509,8 @@ static void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime
 			fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
 			
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
-			SDKHook(entity, SDKHook_StartTouch, Flash_Grenade_StartTouch);
+			SetEntityCollisionGroup(entity, COLLISION_GROUP_DEBRIS);
+			//SDKHook(entity, SDKHook_StartTouch, Flash_Grenade_StartTouch);
 			DataPack pack;
 			CreateDataTimer(0.1, Timer_NPC_Flash_Grenade, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			pack.WriteCell(EntIndexToEntRef(entity));
@@ -651,7 +652,7 @@ static Action Timer_NPC_Armor_Grenade(Handle timer, DataPack pack)
 	}
 }
 
-static Action Flash_Grenade_StartTouch(int entity, int target)
+/*static Action Flash_Grenade_StartTouch(int entity, int target)
 {
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	if(!IsValidEntity(owner))
@@ -670,7 +671,7 @@ static Action Flash_Grenade_StartTouch(int entity, int target)
 
 	RemoveEntity(entity);
 	return Plugin_Handled;
-}
+}*/
 
 static Action Timer_NPC_Flash_Grenade(Handle timer, DataPack pack)
 {

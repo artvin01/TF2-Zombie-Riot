@@ -60,9 +60,9 @@ static void ClotPrecache()
 	PrecacheModel("models/player/Soldier.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianRaider(vecPos, vecAng, ally);
+	return VictorianRaider(vecPos, vecAng, ally, data);
 }
 
 methodmap VictorianRaider < CClotBody
@@ -94,7 +94,7 @@ methodmap VictorianRaider < CClotBody
 		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.2);
 	}
 
-	public VictorianRaider(float vecPos[3], float vecAng[3], int ally)
+	public VictorianRaider(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianRaider npc = view_as<VictorianRaider>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "2250", ally));
 		
@@ -119,11 +119,19 @@ methodmap VictorianRaider < CClotBody
 		KillFeed_SetKillIcon(npc.index, "cow_mangler");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iAmmo = 3;
 		npc.m_iMaxAmmo = 3;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flSpeed = 250.0;
 		npc.StartPathing();
+		
+		if(StrContains(data, "maxclip") != -1)
+		{
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			ReplaceString(buffers[0], 64, "maxclip", "");
+			npc.m_iMaxAmmo = StringToInt(buffers[0]);
+		}
+		npc.m_iAmmo = npc.m_iMaxAmmo;
 		
 		ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 		
@@ -294,7 +302,7 @@ static int VictorianRaiderSelfDefense(VictorianRaider npc, float gameTime, float
 		}
 		if(gameTime > npc.m_flAttackHappens)
 		{
-			npc.m_iAmmo=3;
+			npc.m_iAmmo = npc.m_iMaxAmmo;
 			npc.m_flAttackHappens=0.0;
 		}
 		return 1;

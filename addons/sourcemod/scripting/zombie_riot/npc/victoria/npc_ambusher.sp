@@ -52,9 +52,9 @@ static void ClotPrecache()
 	PrecacheModel("models/player/sniper.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VIctorianAmbusher(vecPos, vecAng, ally);
+	return VIctorianAmbusher(vecPos, vecAng, ally, data);
 }
 
 methodmap VIctorianAmbusher < CClotBody
@@ -90,7 +90,18 @@ methodmap VIctorianAmbusher < CClotBody
 		EmitSoundToAll(g_ReloadSound, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public VIctorianAmbusher(float vecPos[3], float vecAng[3], int ally)
+	property float m_flEditCharge
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flEditCTVCharge
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	
+	public VIctorianAmbusher(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VIctorianAmbusher npc = view_as<VIctorianAmbusher>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "12000", ally));
 		
@@ -107,9 +118,9 @@ methodmap VIctorianAmbusher < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VIctorianAmbusher_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(VIctorianAmbusher_ClotThink);
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "the_classic");
@@ -118,9 +129,36 @@ methodmap VIctorianAmbusher < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_iOverlordComboAttack = 30;
-		
+		npc.m_flEditCharge = 90.0;
+		npc.m_flEditCTVCharge = 3.5;
+		npc.m_iMaxAmmo = 30;
 		npc.StartPathing();
+		
+		//Maybe used for special waves
+		static char countext[4][256];
+		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
+		for(int i = 0; i < count; i++)
+		{
+			if(i>=count)break;
+			else if(StrContains(countext[i], "maxclip") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "maxclip", "");
+				npc.m_iMaxAmmo = StringToInt(countext[i]);
+			}
+			else if(StrContains(countext[i], "jetpack") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "jetpack", "");
+				npc.m_flEditCharge = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "jetpack_cvt") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "jetpack_cvt", "");
+				npc.m_flEditCTVCharge = StringToFloat(countext[i]);
+			}
+		}
+		npc.m_iAmmo = npc.m_iMaxAmmo;
+		
+		ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -183,7 +221,7 @@ static void VIctorianAmbusher_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
-		int NowIDO = VIctorianAmbusherSelfDefense(npc.index, npc.m_iTarget, GetGameTime(npc.index));
+		int NowIDO = VIctorianAmbusherSelfDefense(npc, npc.m_iTarget, GetGameTime(npc.index));
 		switch(NowIDO)
 		{
 			case 0:
@@ -255,7 +293,7 @@ static void VIctorianAmbusher_ClotThink(int iNPC)
 					npc.m_flAttackHappens = GetGameTime(npc.index) + 2.5;
 				}
 				if(GetGameTime(npc.index) > npc.m_flAttackHappens)
-					npc.m_iOverlordComboAttack=30;
+					npc.m_iAmmo=npc.m_iMaxAmmo;
 				int Enemy_I_See;
 				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				if(IsValidEnemy(npc.index, Enemy_I_See)) 
@@ -315,10 +353,9 @@ static void VIctorianAmbusher_NPCDeath(int entity)
 
 }
 
-static int VIctorianAmbusherSelfDefense(int iNPC, int target, float gameTime)
+static int VIctorianAmbusherSelfDefense(VIctorianAmbusher npc, int target, float gameTime)
 {
-	VIctorianAmbusher npc = view_as<VIctorianAmbusher>(iNPC);
-	if(npc.m_iOverlordComboAttack < 1)
+	if(npc.m_iAmmo < 1)
 		return 3;
 	float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -329,13 +366,9 @@ static int VIctorianAmbusherSelfDefense(int iNPC, int target, float gameTime)
 		{
 			npc.PlayChargeSound();
 			if(NpcStats_VictorianCallToArms(npc.index))
-			{
 				npc.m_flCharge_delay = GetGameTime(npc.index) + 3.5;
-			}
 			else
-			{
 				npc.m_flCharge_delay = GetGameTime(npc.index) + 90.0;
-			}
 			
 			PluginBot_Jump(npc.index, vecTarget);
 			float flPos[3];
@@ -356,7 +389,7 @@ static int VIctorianAmbusherSelfDefense(int iNPC, int target, float gameTime)
 				npc.PlayRangeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", true);
 				npc.m_iTarget = Enemy_I_See;
-				npc.m_iOverlordComboAttack--;
+				npc.m_iAmmo--;
 				npc.FaceTowards(vecTarget, 20000.0);
 				Handle swingTrace;
 				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))

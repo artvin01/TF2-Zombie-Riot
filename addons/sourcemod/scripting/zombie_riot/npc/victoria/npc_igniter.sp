@@ -269,7 +269,7 @@ static int VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime, float
 
 static void VictoriaIgniter_Rocket_Particle_StartTouch(int entity, int target)
 {
-	if(target > 0 && target < MAXENTITIES)	//did we hit something???
+	if(target > 0 && target < MAXENTITIES)
 	{
 		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 		if(!IsValidEntity(owner))
@@ -290,8 +290,7 @@ static void VictoriaIgniter_Rocket_Particle_StartTouch(int entity, int target)
 		if(ShouldNpcDealBonusDamage(target))
 			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
 
-
-		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
+		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
 		
 		if(NpcStats_VictorianCallToArms(owner))
 		{
@@ -311,7 +310,6 @@ static void VictoriaIgniter_Rocket_Particle_StartTouch(int entity, int target)
 	else
 	{
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
-		//we uhh, missed?
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);

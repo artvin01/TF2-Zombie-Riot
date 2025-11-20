@@ -559,6 +559,7 @@ static void Clone_ClotThink(int iNPC)
 	else if(npc.m_flDelay_Attribute < gameTime)
 	{
 		float damageDealt = 50.0 * RaidModeScaling;
+		KillFeed_SetKillIcon(npc.index, "bonk");
 		Explode_Logic_Custom(damageDealt, 0, npc.index, -1, ProjLocBase, 250.0 , 1.0, _, true, 20,_,_,_,SuperAttack);
 		for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 		{
@@ -975,6 +976,7 @@ static void Atomizer_ClotThink(int iNPC)
 		else if(npc.m_flDelay_Attribute < gameTime)
 		{
 			float damageDealt = 50.0 * RaidModeScaling;
+			KillFeed_SetKillIcon(npc.index, "bonk");
 			Explode_Logic_Custom(damageDealt, 0, npc.index, -1, ProjLocBase, 250.0 , 1.0, _, true, 20,_,_,_,SuperAttack);
 			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 			{
@@ -1430,7 +1432,7 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 									damage*=1.25;
 								if(ShouldNpcDealBonusDamage(target))
 									damage *= 7.0;
-
+								KillFeed_SetKillIcon(npc.index, "atomizer");
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 								
 								bool Knocked = false;
@@ -1543,7 +1545,7 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 		float DamageDeal = fl_rocket_particle_dmg[entity];
 		if(ShouldNpcDealBonusDamage(target))
 			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
-
+		KillFeed_SetKillIcon(owner, "ball");
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		if(target <= MaxClients && !IsInvuln(target))
 			if(!HasSpecificBuff(target, "Fluid Movement"))
@@ -1605,13 +1607,7 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 
 static bool ONLYBSP(int entity, int contentsMask, any data)
 {
-	if(entity == data)
-		return false;
-
-	if(1 <= entity <= MaxClients)
-		return false;
-
-	return true;
+	return !entity;
 }
 
 static int Victoria_Melee_or_Ranged(Atomizer npc)
@@ -1760,8 +1756,6 @@ static bool Victoria_Support(Atomizer npc)
 		TE_SendToAll();
 		if(Vs_RechargeTime[npc.index] > (Vs_RechargeTimeMax[npc.index] - 1.0) && !IsValidEntity(Vs_ParticleSpawned[npc.index]))
 		{
-			position[0] = 525.0;
-			position[1] = 1600.0;
 			Vs_ParticleSpawned[npc.index] = EntIndexToEntRef(ParticleEffectAt(position, "kartimpacttrail", 2.0));
 			SetEdictFlags(Vs_ParticleSpawned[npc.index], (GetEdictFlags(Vs_ParticleSpawned[npc.index]) | FL_EDICT_ALWAYS));
 			SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
@@ -1778,6 +1772,7 @@ static bool Victoria_Support(Atomizer npc)
 		position[2] += 700.0;
 		
 		i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_TRUE_DAMAGE;
+		KillFeed_SetKillIcon(npc.index, "megaton");
 		Explode_Logic_Custom(125.0*RaidModeScaling, 0, npc.index, -1, position, 500.0, 1.0, _, true, 20);
 		
 		ParticleEffectAt(position, "hightower_explosion", 1.0);

@@ -309,27 +309,25 @@ static void VictorianSupplier_ClotThink(int iNPC)
 
 static int VictorianSupplier_Work(VictorianSupplier npc, float gameTime)
 {
-	int GetClosestEnemyToAttack;
 	//Ranged units will behave differently.
 	//Get the closest visible target via distance checks, not via pathing check.
 	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	GetClosestEnemyToAttack = GetClosestTarget(npc.index,_,_,_,_,_,_,true,_,_,true);
+	int GetClosestEnemyToAttack = GetClosestTarget(npc.index, .CanSee=true);
 	if(IsValidEnemy(npc.index,GetClosestEnemyToAttack))
 	{
 		if(gameTime > npc.m_flNextMeleeAttack)
 		{
-			int Enemy_I_See = Can_I_See_Enemy(npc.index, GetClosestEnemyToAttack);
-			WorldSpaceCenter(Enemy_I_See, vecTarget);
+			WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-			if(IsValidEnemy(npc.index, Enemy_I_See) && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.0))
+			if(IsValidEnemy(npc.index, GetClosestEnemyToAttack) && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.0))
 			{	
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
 				npc.PlayRangeSound();
 				npc.m_bAllowBackWalking = true;
 				npc.FaceTowards(vecTarget, 20000.0);
 				Handle swingTrace;
-				if(npc.DoSwingTrace(swingTrace, Enemy_I_See, { 9999.0, 9999.0, 9999.0 }))
+				if(npc.DoSwingTrace(swingTrace, GetClosestEnemyToAttack, { 9999.0, 9999.0, 9999.0 }))
 				{
 					int target = TR_GetEntityIndex(swingTrace);
 					float vecHit[3];

@@ -150,6 +150,11 @@ methodmap VictorianCharger < CClotBody
 		npc.m_flMeleeArmor = 1.5;
 		npc.m_flRangedArmor = 0.9;
 		
+		fl_ruina_battery_max[npc.index] = 20.0;
+		fl_ruina_battery[npc.index] = 0.0;
+		
+		ApplyStatusEffect(npc.index, npc.index, "Battery_TM Charge", 999.0);
+		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
@@ -211,7 +216,6 @@ static void VictorianCharger_ClotThink(int iNPC)
 	}
 	else if(TimeMultiplier > 8.0)
 	{
-		TimeMultiplier = 8.0;
 		if(!npc.Anger)
 		{
 			KillFeed_SetKillIcon(npc.index, "splendid_screen");
@@ -225,7 +229,7 @@ static void VictorianCharger_ClotThink(int iNPC)
 		TimeMultiplier = 1.0;
 		npc.Anger = false;
 	}
-
+	fl_ruina_battery[npc.index] = TimeMultiplier;
 	npc.m_flSpeed = (50.0 * TimeMultiplier);
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget))

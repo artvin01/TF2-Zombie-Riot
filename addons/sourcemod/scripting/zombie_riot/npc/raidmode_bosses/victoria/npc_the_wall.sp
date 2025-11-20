@@ -56,6 +56,7 @@ static const char g_PowerAttackSounds[] = "weapons/physcannon/energy_sing_explos
 static const char g_SuperJumpSound[] = "weapons/rocket_ll_shoot.wav";
 static const char g_AngerSoundsPassed[] = "vo/heavy_specialcompleted08.mp3";
 static const char g_StartAdaptiveArmorSounds[] = "vo/heavy_specialcompleted06.mp3";
+static const char g_ThrowSounds[] = "weapons/cleaver_throw.wav";
 
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_KaboomSounds[] = "items/cart_explode.wav";
@@ -98,15 +99,15 @@ void Huscarls_OnMapStart_NPC()
 
 static void ClotPrecache()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_AdaptiveArmorSounds)); i++) { PrecacheSound(g_AdaptiveArmorSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RushSounds)); i++) { PrecacheSound(g_RushSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RushHitSounds)); i++) { PrecacheSound(g_RushHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_AngerSounds)); i++) { PrecacheSound(g_AngerSounds[i]); }
-	for (int i = 0; i < (sizeof(g_BotArrivedSounds)); i++) { PrecacheSound(g_BotArrivedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_ExplodSounds)); i++) { PrecacheSound(g_ExplodSounds[i]); }
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_AdaptiveArmorSounds);
+	PrecacheSoundArray(g_RushSounds);
+	PrecacheSoundArray(g_RushHitSounds);
+	PrecacheSoundArray(g_AngerSounds);
+	PrecacheSoundArray(g_BotArrivedSounds);
+	PrecacheSoundArray(g_ExplodSounds);
 	PrecacheSound(g_PowerAttackSounds);
 	PrecacheSound(g_SuperJumpSound);
 	PrecacheSound(g_AngerSoundsPassed);
@@ -114,10 +115,12 @@ static void ClotPrecache()
 	PrecacheSound(g_BoomSounds);
 	PrecacheSound(g_KaboomSounds);
 	PrecacheSound(g_IncomingBoomSounds);
+	PrecacheSound(g_ThrowSounds);
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav", true);
 	PrecacheSound("weapons/medi_shield_deploy.wav", true);
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("items/powerup_pickup_knockout.wav", true);
+	PrecacheSound("items/powerup_pickup_resistance.wav", true);
 	PrecacheSoundCustom("#zombiesurvival/victoria/huscarl_ost_new.mp3");
 
 	PrecacheModel("models/props_mvm/mvm_player_shield.mdl", true);
@@ -172,7 +175,6 @@ methodmap Huscarls < CClotBody
 	{
 		EmitSoundToAll(g_IncomingBoomSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	
 	public void PlayBotArrivedSound()
 	{
 		int sound = GetRandomInt(0, sizeof(g_BotArrivedSounds) - 1);
@@ -220,6 +222,14 @@ methodmap Huscarls < CClotBody
 		EmitSoundToAll(g_SuperJumpSound, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_SuperJumpSound, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
+	public void PlayThrowSound()
+	{
+		EmitSoundToAll(g_ThrowSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.2);
+	}
+	public void PlayDMGTypeArmorSound()
+	{
+		EmitSoundToAll("items/powerup_pickup_resistance.wav", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+	}
 	
 	property float m_flHuscarlsRushCoolDown
 	{
@@ -257,6 +267,43 @@ methodmap Huscarls < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
 	
+	property int iLifeSupportDevice_1
+	{
+		public get()							{ return i_TimesSummoned[this.index]; }
+		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+	}
+	property int iLifeSupportDevice_2
+	{
+		public get()							{ return i_AttacksTillMegahit[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
+	}
+	property int iLifeSupportDevice_3
+	{
+		public get()							{ return i_OverlordComboAttack[this.index]; }
+		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
+	}
+	
+	public void SaveLifeSupportDevice(int entity, int slot)
+	{
+		switch(slot)
+		{
+			case 1:this.iLifeSupportDevice_1=entity;
+			case 2:this.iLifeSupportDevice_2=entity;
+			case 3:this.iLifeSupportDevice_3=entity;
+			default:this.iLifeSupportDevice_3=entity;
+		}
+	}
+	public int LoadLifeSupportDevice(int slot)
+	{
+		switch(slot)
+		{
+			case 1:return this.iLifeSupportDevice_1;
+			case 2:return this.iLifeSupportDevice_2;
+			case 3:return this.iLifeSupportDevice_3;
+			default:return this.iLifeSupportDevice_3;
+		}
+	}
+	
 	property int m_iOverrideOwner
 	{
 		public get()							{ return i_AmountProjectiles[this.index]; }
@@ -265,7 +312,7 @@ methodmap Huscarls < CClotBody
 	
 	public Huscarls(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Huscarls npc = view_as<Huscarls>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
+		Huscarls npc = view_as<Huscarls>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "48000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -303,7 +350,7 @@ methodmap Huscarls < CClotBody
 		npc.m_flDoingAnimation=0.0;
 		float gametime = GetGameTime(npc.index);
 		npc.m_iOverrideOwner = 0;
-		static char countext[2][1024];
+		static char countext[2][512];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		float MAXHitCharge=3500.0;
 		for(int i = 0; i < count; i++)
@@ -349,6 +396,12 @@ methodmap Huscarls < CClotBody
 			//IDLE
 			npc.m_iState = 0;
 			npc.m_flSpeed = 330.0;
+			npc.m_iChanged_WalkCycle = -1;
+			npc.m_bLostHalfHealth = false;
+			b_NpcIsInvulnerable[npc.index] = false;
+			npc.Anger = false;
+			npc.m_bFUCKYOU_move_anim = false;
+			npc.m_bFUCKYOU = false;
 
 			npc.m_flHuscarlsRushCoolDown = gametime + 11.0;
 			npc.m_flHuscarlsRushDuration = 0.0;
@@ -360,8 +413,8 @@ methodmap Huscarls < CClotBody
 			
 			npc.m_flHuscarlsGroundSlamCoolDown = gametime + 10.0;
 			
-			npc.m_flNextRangedBarrage_Singular = gametime + 30.0;
-			npc.m_flNextRangedBarrage_Spam = gametime + 30.0;
+			npc.m_flNextRangedBarrage_Singular = gametime + 20.0;
+			npc.m_flNextRangedBarrage_Spam = 0.0;
 			
 			Vs_RechargeTimeMax[npc.index] = 15.0;
 			Victoria_Support_RechargeTimeMax(npc.index, 15.0);
@@ -400,8 +453,6 @@ methodmap Huscarls < CClotBody
 				strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 				Music_SetRaidMusic(music);
 			}
-			
-			npc.m_iChanged_WalkCycle = -1;
 
 			NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_01-1", false, true);
 			
@@ -586,13 +637,13 @@ static void Huscarls_ClotThink(int iNPC)
 		float flPos[3], flAng[3];
 				
 		npc.GetAttachment("eyeglow_L", flPos, flAng);
-		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyeglow_L", {0.0,0.0,0.0});
+		npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyeglow_L", {0.0,0.0,0.0});
 		npc.GetAttachment("", flPos, flAng);
 		ParticleSpawned[npc.index] = true;
 	}
-	/*bool GETVictoria_Support=false;
-	if(npc.Anger && npc.m_fbRangedSpecialOn && !MyGundammmmmm[npc.index] && Victoria_Support(npc))
-		GETVictoria_Support=true;*/
+	bool GETVictoria_Support=false;
+	if(npc.m_bLostHalfHealth && Victoria_Support(npc))
+		GETVictoria_Support=true;
 	if(LastMann)
 	{
 		if(!npc.m_fbGunout)
@@ -719,6 +770,8 @@ static void Huscarls_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
+		if(npc.m_iState == -1)
+			npc.m_iState = 0;
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
@@ -750,6 +803,8 @@ static void Huscarls_ClotThink(int iNPC)
 			}
 			case 1:
 			{
+				if(npc.m_iChanged_WalkCycle != 1)
+					npc.m_iChanged_WalkCycle = 1;
 				ReAnim=true;
 			}
 			case 2:
@@ -766,10 +821,16 @@ static void Huscarls_ClotThink(int iNPC)
 			}
 			case 3:
 			{
-				npc.StartPathing();
-				
-				npc.m_bisWalking = true;
-				npc.m_bAllowBackWalking = false;
+				//I didn't fix the 'Kansei Dorifto' bug
+				//because it's fun.
+				if(npc.m_iChanged_WalkCycle != 3)
+				{
+					npc.m_iChanged_WalkCycle = 3;
+					npc.StartPathing();
+					npc.m_flSpeed = 630.0;
+					npc.m_bisWalking = true;
+					npc.m_bAllowBackWalking = false;
+				}
 				static float vOrigin[3], vAngles[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
 				vAngles[0]=5.0;
@@ -787,22 +848,166 @@ static void Huscarls_ClotThink(int iNPC)
 
 static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], float vecTarget[3], float distance)
 {
+	if(npc.m_bFUCKYOU_move_anim && TinCan_Raid(npc, gameTime))
+		return 2;
+
 	if(npc.m_flHuscarlsAdaptiveArmorDuration && npc.m_flHuscarlsAdaptiveArmorDuration < gameTime)
 	{
 		if(fl_ruina_battery[npc.index])
-		{
 			NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_07-2", false, false);
-			npc.m_flHuscarlsAdaptiveArmorDuration=0.0;
-			npc.m_flHuscarlsAdaptiveArmorCoolDown = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 15.0 : 20.0);
-		}
 		else
 			RemoveSpecificBuff(npc.index, "Battery_TM Charge");
+		npc.m_flHuscarlsAdaptiveArmorDuration=0.0;
+		npc.m_flHuscarlsAdaptiveArmorCoolDown = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 20.0 : 30.0);
 	}
 
 	if(npc.m_flHuscarlsRushCoolDown < gameTime)
 	{
-		npc.m_flHuscarlsRushCoolDown = gameTime + 30.0;
-	
+		switch(npc.m_iState)
+		{
+			case 0:
+			{
+				EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
+				npc.AddActivityViaSequence("layer_taunt_soviet_showoff");
+				npc.SetCycle(0.5);
+				npc.SetPlaybackRate(1.0);
+				npc.m_flDoingAnimation = gameTime + 1.1;
+				npc.m_flAttackHappens = 0.0;
+				npc.m_iState = 1;
+			}
+			case 1:
+			{
+				if(npc.m_flDoingAnimation < gameTime)
+				{
+					npc.PlayRushSound();
+					npc.SetActivity("ACT_MP_RUN_MELEE");
+					int AnimLayer = npc.AddGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
+					ApplyStatusEffect(npc.index, npc.index, "Intangible", 5.0);
+					npc.SetLayerPlaybackRate(AnimLayer, (0.01));
+					npc.SetLayerCycle(AnimLayer, (0.9));
+					npc.m_flDoingAnimation = gameTime + 5.0;
+					npc.m_iState = 2;
+				}
+			}
+			case 2:
+			{
+				ApplyStatusEffect(npc.index, npc.index, "Intangible", 999999.0);
+				Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 125.0, _, _, true, _, false, _, Got_it_fucking_shit);
+				Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 200.0, _, _, true, _, false, _, NPC_Go_away);
+				if(npc.m_flDoingAnimation < gameTime)
+				{
+					npc.RemoveGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
+					npc.m_iState = 3;
+				}
+				else
+				{
+					float vAngles[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
+					EntityLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget);
+					if(GetVectorDistance(VecSelfNpc, vecTarget, true)<15625.0)
+					{
+						npc.RemoveGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
+						npc.m_iState = 5;
+					}
+				}
+				npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
+				npc.m_flHuscarlsGroundSlamCoolDown += 0.1;
+				npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
+				npc.m_flNextRangedBarrage_Singular += 0.1;
+				return 3;
+			}
+			case 3:
+			{
+				static float hullcheckmaxs[3];
+				static float hullcheckmins[3];
+
+				hullcheckmaxs = view_as<float>( { 35.0, 35.0, 500.0 } ); //check if above is free
+				hullcheckmins = view_as<float>( { -35.0, -35.0, 17.0 } );
+				if(!IsSpaceOccupiedWorldOnly(VecSelfNpc, hullcheckmins, hullcheckmaxs, npc.index))
+				{
+					npc.StopPathing();
+					npc.AddActivityViaSequence("layer_taunt_bare_knuckle_beatdown_outro");
+					npc.m_flAttackHappens = 0.0;
+					npc.SetCycle(0.01);
+					npc.SetPlaybackRate(1.0);
+					
+					float flPos[3];
+					float flAng[3];
+					int Particle;
+					npc.GetAttachment("foot_L", flPos, flAng);
+					Particle = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "foot_L", {0.0,0.0,0.0});
+					CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle), TIMER_FLAG_NO_MAPCHANGE);
+					npc.GetAttachment("foot_R", flPos, flAng);
+					Particle = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "foot_R", {0.0,0.0,0.0});
+					CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle), TIMER_FLAG_NO_MAPCHANGE);
+					ParticleEffectAt(VecSelfNpc, "mvm_soldier_shockwave", 1.0);
+					Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 125.0, _, _, true, _, false, _, ToTheMoon);
+					VecSelfNpc[2] += 800.0;
+
+					VecSelfNpc[0] = vecTarget[0];
+					VecSelfNpc[1] = vecTarget[1];
+					PluginBot_Jump(npc.index, VecSelfNpc);
+					SetEntityCollisionGroup(npc.index, COLLISION_GROUP_DEBRIS);
+					npc.PlaySuperJumpSound();
+					npc.m_flDoingAnimation = gameTime + 1.5;
+					npc.m_iState = 4;
+				}
+				else
+					npc.m_iState = 5;
+			}
+			case 4:
+			{
+				if(npc.m_flDoingAnimation < gameTime)
+				{
+					Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 400.0, _, _, true, _, false, _, Ground_pound);
+					npc.PlayExplodSound();
+					npc.SetVelocity({0.0,0.0,-1500.0});
+					ParticleEffectAt(VecSelfNpc, "mvm_soldier_shockwave", 1.0);
+					float vAngles[3];
+					vAngles[0]=90.0;
+					EntityLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget);
+					CreateEarthquake(vecTarget, 0.5, 350.0, 16.0, 255.0);
+					npc.PlayRushHitSound();
+					npc.m_flDoingAnimation = gameTime + 1.0;
+					npc.m_iState = 6;
+				}
+			}
+			case 5:
+			{
+				Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 125.0, _, _, true, _, false, _, Compressor);
+				CreateEarthquake(VecSelfNpc, 0.5, 350.0, 16.0, 255.0);
+				npc.PlayRushHitSound();
+				npc.m_flDoingAnimation = gameTime + 1.0;
+				npc.m_iState = 6;
+			}
+			case 6:
+			{
+				if(npc.m_flDoingAnimation < gameTime)
+				{
+					if(HasSpecificBuff(npc.index, "Intangible"))
+						RemoveSpecificBuff(npc.index, "Intangible");
+					npc.m_flHuscarlsRushCoolDown = gameTime+(NpcStats_VictorianCallToArms(npc.index) ? 14.0 : 15.0);
+					npc.m_iState = -1;
+					SetEntityCollisionGroup(npc.index, COLLISION_GROUP_PLAYER);
+					for(int client_check=1; client_check<=MaxClients; client_check++)
+					{
+						if(IsValidClient(client_check) && Frozen_Player[client_check])
+						{
+							SetEntProp(client_check, Prop_Send, "m_bDucked", true);
+							SetEntityFlags(client_check, GetEntityFlags(client_check) | FL_DUCKING);
+							TF2_AddCondition(client_check, TFCond_LostFooting, 1.0);
+							TF2_AddCondition(client_check, TFCond_AirCurrent, 1.0);
+							SetEntityCollisionGroup(client_check, COLLISION_GROUP_PLAYER);
+							Frozen_Player[client_check]=false;
+						}
+					}
+				}
+			}
+		}
+		npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
+		npc.m_flHuscarlsGroundSlamCoolDown += 0.1;
+		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
+		npc.m_flNextRangedBarrage_Singular += 0.1;
+		return 2;
 	}
 	else if(npc.m_flHuscarlsAdaptiveArmorCoolDown < gameTime)
 	{
@@ -825,43 +1030,141 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 				{
 					ApplyStatusEffect(npc.index, npc.index, "Battery_TM Charge", 999.0);
 					fl_ruina_battery[npc.index]=0.0;
+					bool IgniteFist;
 					if(b_NpcIsInvulnerable[npc.index])
 					{
-						if(IsValidEntity(npc.m_iWearable2))
-						{
-							ExtinguishTarget(npc.m_iWearable2);
-							IgniteTargetEffect(npc.m_iWearable2);
-						}
+						IgniteFist=true;
 						fl_ruina_battery[npc.index]+=fl_ruina_battery_max[npc.index]*0.2;
 					}
 					if(NpcStats_VictorianCallToArms(npc.index))
 					{
-						if(IsValidEntity(npc.m_iWearable2))
-						{
-							ExtinguishTarget(npc.m_iWearable2);
-							IgniteTargetEffect(npc.m_iWearable2);
-						}
+						IgniteFist=true;
 						fl_ruina_battery[npc.index]+=fl_ruina_battery_max[npc.index]*0.15;
+					}
+					if(IsValidEntity(npc.m_iWearable2))
+					{
+						ExtinguishTarget(npc.m_iWearable2);
+						if(IgniteFist)
+							IgniteTargetEffect(npc.m_iWearable2);
 					}
 					npc.m_flHuscarlsAdaptiveArmorDuration = gameTime + 5.0;
 				}
 				if(npc.m_flDoingAnimation < gameTime)
 				{
 					npc.m_flHuscarlsAdaptiveArmorCoolDown = gameTime + 999.0;
-					npc.m_iState = 2;
+					npc.m_iState = -1;
 				}
 			}
 		}
 		npc.m_flHuscarlsRushCoolDown += 0.1;
 		npc.m_flHuscarlsGroundSlamCoolDown += 0.1;
 		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
+		npc.m_flNextRangedBarrage_Singular += 0.1;
 		return 2;
 	}
 	else if(npc.m_flHuscarlsDeployEnergyShieldCoolDown < gameTime)
 	{
+		if(npc.m_flAttackHappens_bullshit > gameTime && !npc.m_flAttackHappenswillhappen)
+			npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 		npc.PlayShieldSound();
 		Fire_Shield_Projectile(npc, 10.0);
-		npc.m_flHuscarlsDeployEnergyShieldCoolDown = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 10.0 : 15.0);
+		npc.m_flHuscarlsDeployEnergyShieldCoolDown = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 15.0 : 21.0);
+	}
+	else if(npc.m_flNextRangedBarrage_Singular < gameTime)
+	{
+		static int GET_RAGED_TARGET;
+		switch(npc.m_iState)
+		{
+			case 0:
+			{
+				GET_RAGED_TARGET=Victoria_GetTargetDistance(npc.index, true, true);
+				npc.AddActivityViaSequence("layer_taunt_cyoa_PDA_intro");
+				npc.SetCycle(0.0);
+				npc.SetPlaybackRate(0.8);
+				npc.m_flDoingAnimation = gameTime + 0.5;
+				npc.m_iState = 1;
+				
+				npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
+				npc.m_flHuscarlsGroundSlamCoolDown += 0.1;
+				npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
+				npc.m_flHuscarlsRushCoolDown += 0.1;
+				return 2;
+			}
+			case 1:
+			{
+				if(npc.m_flDoingAnimation < gameTime)
+				{
+					npc.SetActivity("ACT_MP_RUN_MELEE");
+					npc.m_iState = 2;
+				}
+				npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
+				npc.m_flHuscarlsGroundSlamCoolDown += 0.1;
+				npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
+				npc.m_flHuscarlsRushCoolDown += 0.1;
+				return 2;
+			}
+			case 2,3,4:
+			{
+				if(npc.m_flDoingAnimation < gameTime)
+				{
+					if(Can_I_See_Enemy_Only(npc.index, GET_RAGED_TARGET))
+					{
+						WorldSpaceCenter(GET_RAGED_TARGET, vecTarget);
+						int RocketGet = npc.FireRocket(vecTarget, 0.0, 1100.0,_,1.5);
+						if(RocketGet != -1)
+						{
+							npc.AddGesture("ACT_MP_THROW");
+							npc.SetCycle(0.0);
+							npc.SetPlaybackRate(1.2);
+							float SpeedReturn[3];
+							SetEntProp(RocketGet, Prop_Send, "m_bCritical", true);
+							vecTarget[0] += GetRandomFloat(-200.0, 200.0);
+							vecTarget[1] += GetRandomFloat(-200.0, 200.0);
+							ArcToLocationViaSpeedProjectile(VecSelfNpc, vecTarget, SpeedReturn, 5.0, 2.0);
+							float ang[3]; GetVectorAngles(SpeedReturn, ang);
+							SetEntPropVector(RocketGet, Prop_Data, "m_angRotation", ang);
+							TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+							SetEntityMoveType(RocketGet, MOVETYPE_NOCLIP);
+							WorldSpaceCenter(GET_RAGED_TARGET, vecTarget);
+							if(IsValidClient(GET_RAGED_TARGET) && !(GetEntityFlags(GET_RAGED_TARGET)&FL_ONGROUND))
+							{
+								SpeedReturn[0]=90.0;
+								SpeedReturn[1]=0.0;
+								SpeedReturn[2]=0.0;
+								EntityLookPoint(GET_RAGED_TARGET, SpeedReturn, vecTarget, vecTarget);
+								vecTarget[2] += (b_IsGiant[GET_RAGED_TARGET] ? 64.0 : 42.0);
+							}
+							Engage_HE_Strike(npc.index, vecTarget, 85.0 * RaidModeScaling, 2.0, EXPLOSION_RADIUS*1.25);
+							CreateTimer(2.5, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
+							npc.PlayThrowSound();
+						}
+						npc.m_flDoingAnimation = gameTime + 0.32;
+						npc.m_iState++;
+					}
+					else
+					{
+						npc.m_flNextRangedBarrage_Spam+=2.5*float(4-npc.m_iState);
+						npc.m_iState=5;
+					}
+				}
+			}
+			case 5:
+			{
+				npc.m_flDoingAnimation = 0.0;
+				npc.m_flNextRangedBarrage_Singular = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 25.0 : 30.0);
+				if(npc.m_flNextRangedBarrage_Spam>0.0)
+				{
+					npc.m_flNextRangedBarrage_Singular += npc.m_flNextRangedBarrage_Spam;
+					npc.m_flNextRangedBarrage_Spam=0.0;
+				}
+				npc.m_iState = -1;
+			}
+		}
+		npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
+		npc.m_flHuscarlsGroundSlamCoolDown += 0.1;
+		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
+		npc.m_flHuscarlsRushCoolDown += 0.1;
+		return 0;
 	}
 	else if(npc.m_flHuscarlsGroundSlamCoolDown < gameTime)
 	{
@@ -871,10 +1174,8 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 			{
 				npc.AddActivityViaSequence("layer_taunt_yeti_prop");
 				EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
-				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.9);
 				npc.SetPlaybackRate(1.0);
-				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 0.6;
 				npc.m_iState = 1;
 			}
@@ -884,10 +1185,11 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 				{
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					float SlamDMG = 50.0;
-					float Range = 400.0;
+					float Range = 250.0;
 					ParticleEffectAt(WorldSpaceVec, "mvm_soldier_shockwave", 1.0);
 					ParticleEffectAt(WorldSpaceVec, "ExplosionCore_MidAir", 1.0);
 					CreateEarthquake(WorldSpaceVec, 1.0, Range * 1.25, 16.0, 255.0);
+					KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 					Explode_Logic_Custom(SlamDMG * RaidModeScaling, 0, npc.index, -1, _, Range, 1.0, 0.75, true, 20, _, _, Ground_Slam);
 					npc.m_flDoingAnimation = gameTime + 0.2;
 					npc.PlayKaboomSound();
@@ -898,14 +1200,15 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 			{
 				if(npc.m_flDoingAnimation < gameTime)
 				{
-					npc.m_flHuscarlsGroundSlamCoolDown = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 20.0 : 25.0);
-					npc.m_iState=3;
+					npc.m_flHuscarlsGroundSlamCoolDown = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 17.0 : 18.0);
+					npc.m_iState = -1;
 				}
 			}
 		}
 		npc.m_flHuscarlsRushCoolDown += 0.1;
 		npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
 		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
+		npc.m_flNextRangedBarrage_Singular += 0.1;
 		return 2;
 	}
 	
@@ -943,18 +1246,19 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 								
 								WorldSpaceCenter(targetTrace, vecHit);
 								float damage = 50.0 * RaidModeScaling;
-								if(fl_ruina_battery[npc.index] && npc.m_flHuscarlsAdaptiveArmorDuration < gameTime)
+								if(fl_ruina_battery[npc.index] && !npc.m_flHuscarlsAdaptiveArmorDuration)
 								{
 									damage+=fl_ruina_battery[npc.index]*0.1;
 									fl_ruina_battery[npc.index]=0.0;
 									ExtinguishTarget(npc.m_iWearable2);
 									CreateEarthquake(vecTarget, 0.5, 350.0, 16.0, 255.0);
-									RemoveSpecificBuff(npc.index, "Battery_TM Charge");
+									if(HasSpecificBuff(npc.index, "Battery_TM Charge"))
+										RemoveSpecificBuff(npc.index, "Battery_TM Charge");
 									PlayPOWERSound = true;
 								}
 								if(ShouldNpcDealBonusDamage(targetTrace))
 									damage *= 7.0;
-
+								KillFeed_SetKillIcon(npc.index, "apocofists");
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 								bool Knocked = false;
 											
@@ -996,31 +1300,6 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 	
 	npc.m_iState = 0;
 	return 0;
-}
-
-static void Ground_Slam(int entity, int victim, float damage, int weapon)
-{
-	Huscarls npc = view_as<Huscarls>(entity);
-	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
-	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(entity) != GetTeam(victim))
-	{
-		if(IsValidClient(victim))
-		{
-			TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 0.2, 0);
-			TF2_AddCondition(victim, TFCond_CompetitiveLoser, 0.2, 0);
-			TF2_AddCondition(victim, TFCond_LostFooting, 1.0);
-			TF2_AddCondition(victim, TFCond_AirCurrent, 1.0);
-		}
-		else FreezeNpcInTime(victim, 0.2, true);
-		if(!IsInvuln(victim))
-		{
-			if(IsValidClient(victim))
-				if(!HasSpecificBuff(victim, "Fluid Movement"))
-					TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
-			Custom_Knockback(entity, victim, 70.0, true);
-		}
-		else Custom_Knockback(entity, victim, 140.0, true);
-	}
 }
 
 static Action Huscarls_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -1074,11 +1353,24 @@ static Action Huscarls_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		BulletArmor[npc.index] = false;
 		switch(Huscarls_Get_HighDMGType(npc.index))
 		{
-			case 0: BlastArmor[npc.index]=true;
-			case 1:	MagicArmor[npc.index]=true;
-			default:BulletArmor[npc.index]=true;
+			case 0:
+			{
+				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_08-3", false, false);
+				BlastArmor[npc.index]=true;
+			}
+			case 1:
+			{
+				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_08-2", false, false);
+				MagicArmor[npc.index]=true;
+			}
+			default:
+			{
+				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_08-1", false, false);
+				BulletArmor[npc.index]=true;
+			}
 		}
-		GrantEntityArmor(npc.index, false, 0.075, 0.5, 0);
+		GrantEntityArmor(npc.index, false, 0.08, 0.5, 0);
+		npc.PlayDMGTypeArmorSound();
 		npc.m_flDMGTypeArmorDuration = gameTime + 30.0;
 		GetArmor[npc.index] = 0.0;
 		BlastDMG[npc.index] = 0.0;
@@ -1160,6 +1452,14 @@ static Action Huscarls_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			npc.m_bFUCKYOU_move_anim = true;
 		}
 	}
+	else if(ratio<0.5 || (float(health)-damage)<(maxhealth*0.5))
+	{
+		if(!npc.m_bLostHalfHealth)
+		{
+			NPCPritToChat_Override("Victoria Harrison", "{skyblue}", "Harrison_Talk_Support-1", false);
+			npc.m_bLostHalfHealth = true;
+		}
+	}
 	
 	return Plugin_Changed;
 }
@@ -1206,7 +1506,9 @@ static void Huscarls_NPCDeath(int entity)
 	
 	Vs_RechargeTime[npc.index]=0.0;
 	Vs_RechargeTimeMax[npc.index]=0.0;
-	
+
+	if(IsValidEntity(npc.m_iWearable9))
+		RemoveEntity(npc.m_iWearable9);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	if(IsValidEntity(npc.m_iWearable7))
@@ -1227,7 +1529,16 @@ static void Huscarls_NPCDeath(int entity)
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsValidClient(client) && !IsFakeClient(client))
+		{
 			Vs_LockOn[client]=false;
+			if(Frozen_Player[client])
+			{
+				TF2_AddCondition(client, TFCond_LostFooting, 1.0);
+				TF2_AddCondition(client, TFCond_AirCurrent, 1.0);
+				SetEntityCollisionGroup(client, 5);
+				Frozen_Player[client]=false;
+			}
+		}
 	}
 
 	npc.PlayDeathSound();	
@@ -1235,9 +1546,9 @@ static void Huscarls_NPCDeath(int entity)
 		return;
 	switch(GetRandomInt(0,2))
 	{
-		case 0:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_08-1", false, false);
-		case 1:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_08-2", false, false);
-		case 2:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_08-3", false, false);
+		case 0:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_09-1", false, false);
+		case 1:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_09-2", false, false);
+		case 2:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_09-3", false, false);
 	}
 }
 
@@ -1342,6 +1653,7 @@ static void Shield_Knockback(int entity, int victim, float damage, int weapon)
 	{
 		damage = 1.0 * RaidModeScaling;
 		if(damage<1.0)damage=1.0;
+		KillFeed_SetKillIcon(npc.index, "infection_emp");
 		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_BULLET, -1, _, vecHit);
 		if(!IsInvuln(victim))
 		{
@@ -1436,7 +1748,7 @@ static bool Victoria_Support(Huscarls npc)
 		return false;
 	Vs_DelayTime[npc.index] = GameTime + 0.1;
 	
-	Vs_Target[npc.index] = Victoria_GetTargetDistance(npc.index, true, false);
+	Vs_Target[npc.index] = Victoria_GetTargetDistance(npc.index, false, false);
 	if(!IsValidEnemy(npc.index, Vs_Target[npc.index]))
 		return false;
 	if(Vs_RechargeTime[npc.index] >= 1.0 && Vs_RechargeTime[npc.index] <= 3.0 && IsValidEntity(Vs_ParticleSpawned[npc.index]))
@@ -1476,7 +1788,6 @@ static bool Victoria_Support(Huscarls npc)
 			}
 		}
 		spawnRing_Vectors(Vs_Temp_Pos[npc.index], (1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0)), 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
-		TE_SendToAll();
 		float position2[3];
 		position2[0] = Vs_Temp_Pos[npc.index][0];
 		position2[1] = Vs_Temp_Pos[npc.index][1];
@@ -1489,8 +1800,6 @@ static bool Victoria_Support(Huscarls npc)
 		TE_SendToAll();
 		if(Vs_RechargeTime[npc.index] > (Vs_RechargeTimeMax[npc.index] - 1.0) && !IsValidEntity(Vs_ParticleSpawned[npc.index]))
 		{
-			position[0] = 525.0;
-			position[1] = 1600.0;
 			Vs_ParticleSpawned[npc.index] = EntIndexToEntRef(ParticleEffectAt(position, "kartimpacttrail", 2.0));
 			SetEdictFlags(Vs_ParticleSpawned[npc.index], (GetEdictFlags(Vs_ParticleSpawned[npc.index]) | FL_EDICT_ALWAYS));
 			SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
@@ -1507,6 +1816,7 @@ static bool Victoria_Support(Huscarls npc)
 		position[2] += 100.0;
 		
 		i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_TRUE_DAMAGE;
+		KillFeed_SetKillIcon(npc.index, "megaton");
 		Explode_Logic_Custom(125.0*RaidModeScaling, 0, npc.index, -1, position, 500.0, 1.0, _, true, 20);
 		
 		ParticleEffectAt(position, "hightower_explosion", 1.0);
@@ -1514,6 +1824,312 @@ static bool Victoria_Support(Huscarls npc)
 		npc.PlayBoomSound();
 		Vs_RechargeTime[npc.index]=0.0;
 		Vs_RechargeTime[npc.index]=0.0;
+		return true;
+	}
+	return false;
+}
+
+static void Got_it_fucking_shit(int entity, int victim, float damage, int weapon)
+{
+	Huscarls npc = view_as<Huscarls>(entity);
+	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim) && Can_I_See_Enemy(npc.index, victim))
+	{
+		if(IsValidClient(victim))
+		{
+			float flPos[3]; WorldSpaceCenter(entity, flPos);
+			TeleportEntity(victim, flPos, NULL_VECTOR, {0.0,0.0,0.0});
+			TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 1.0, 0);
+			TF2_AddCondition(victim, TFCond_CompetitiveLoser, 1.0, 0);
+			SetEntityCollisionGroup(victim, 1);
+			Frozen_Player[victim]=true;
+		}
+	}
+}
+static void NPC_Go_away(int entity, int victim, float damage, int weapon)
+{
+	Huscarls npc = view_as<Huscarls>(entity);
+	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+	if(IsValidEntity(npc.index) && IsValidEntity(victim) && !IsValidClient(victim) && GetTeam(npc.index) != GetTeam(victim))
+	{
+		KillFeed_SetKillIcon(npc.index, "vehicle");
+		SDKHooks_TakeDamage(victim, npc.index, npc.index, 1000.0, DMG_TRUEDAMAGE, -1, _, vecHit);
+		Custom_Knockback(npc.index, victim, 1500.0, true);
+	}
+}
+
+static void Compressor(int entity, int victim, float damage, int weapon)
+{
+	Huscarls npc = view_as<Huscarls>(entity);
+	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim))
+	{
+		float flPos[3]; GetAbsOrigin(npc.index, flPos);
+		flPos[2]+=5.0;
+		TeleportEntity(victim, flPos, NULL_VECTOR, NULL_VECTOR);
+		damage = 50.0 * RaidModeScaling;
+		damage += ReturnEntityMaxHealth(victim)*0.33;
+		KillFeed_SetKillIcon(npc.index, "vehicle");
+		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+		ApplyStatusEffect(victim, victim, "Intangible", 1.0);
+		if(IsValidClient(victim))
+		{
+			//Attempt teleport twice to avoid getting stuck in walls.
+			GetAbsOrigin(victim, flPos);
+			Player_Teleport_Safe(victim, flPos);
+			Player_Teleport_Safe(victim, flPos);
+			TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 1.0, 0);
+			TF2_AddCondition(victim, TFCond_CompetitiveLoser, 1.0, 0);
+		}
+		else FreezeNpcInTime(victim, 1.0, true);
+		Custom_Knockback(npc.index, victim, 1500.0, true);
+	}
+}
+
+static void ToTheMoon(int entity, int victim, float damage, int weapon)
+{
+	Huscarls npc = view_as<Huscarls>(entity);
+	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim))
+	{
+		damage = 40.0 * RaidModeScaling;
+		damage += ReturnEntityMaxHealth(victim)*0.165;
+		KillFeed_SetKillIcon(npc.index, "apocofists");
+		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+		float fVelocity[3];
+		fVelocity[2] = 1000.0;
+		if(IsValidClient(victim))
+		{
+			TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 2.0, 0);
+			TF2_AddCondition(victim, TFCond_CompetitiveLoser, 2.0, 0);
+			TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, fVelocity);
+		}
+		else
+		{
+			PluginBot_Jump(victim, fVelocity);
+			FreezeNpcInTime(victim, 1.0, true);
+		}
+	}
+}
+
+static void Ground_pound(int entity, int victim, float damage, int weapon)
+{
+	Huscarls npc = view_as<Huscarls>(entity);
+	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim))
+	{
+		damage = 40.0 * RaidModeScaling;
+		damage += ReturnEntityMaxHealth(victim)*0.165;
+		KillFeed_SetKillIcon(npc.index, "mentreads");
+		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+		float fVelocity[3];
+		fVelocity[2] = -2000.0;
+		if(IsValidClient(victim))
+		{
+			TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 1.0, 0);
+			TF2_AddCondition(victim, TFCond_CompetitiveLoser, 1.0, 0);
+		}
+		else FreezeNpcInTime(victim, 1.0, true);
+		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, fVelocity);
+	}
+}
+
+static void Ground_Slam(int entity, int victim, float damage, int weapon)
+{
+	Huscarls npc = view_as<Huscarls>(entity);
+	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(entity) != GetTeam(victim))
+	{
+		if(IsValidClient(victim))
+		{
+			TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 0.2, 0);
+			TF2_AddCondition(victim, TFCond_CompetitiveLoser, 0.2, 0);
+			TF2_AddCondition(victim, TFCond_LostFooting, 1.0);
+			TF2_AddCondition(victim, TFCond_AirCurrent, 1.0);
+		}
+		else FreezeNpcInTime(victim, 0.2, true);
+		if(!IsInvuln(victim))
+		{
+			if(IsValidClient(victim))
+				if(!HasSpecificBuff(victim, "Fluid Movement"))
+					TF2_StunPlayer(victim, 1.5, 0.85, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
+			Custom_Knockback(entity, victim, 140.0, true);
+		}
+		else Custom_Knockback(entity, victim, 280.0, true);
+	}
+}
+
+static bool TinCan_Raid(Huscarls npc, float gameTime)
+{
+	static bool FullySpawnTinCan;
+	static bool MyGundammmmmm;
+	if(!FullySpawnTinCan)
+	{
+		MyGundammmmmm=false;
+		switch(npc.m_iState)
+		{
+			case 0:
+			{
+				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_05-1", false, false);
+				npc.AddActivityViaSequence("tauntrussian_rubdown");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.5);
+				npc.SetPlaybackRate(1.0);
+				npc.m_flDoingAnimation = gameTime + 0.5;
+				npc.m_iState=1;
+			}
+			case 1, 2, 3:
+			{
+				if(npc.m_flDoingAnimation < gameTime)
+				{
+					npc.SetPlaybackRate(0.0);
+					float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+					int spawn_index = NPC_CreateByName("npc_avangard", -1, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), "only imcomplete");
+					if(spawn_index > MaxClients)
+					{
+						if(GetTeam(npc.index) != TFTeam_Red)
+							Zombies_Currently_Still_Ongoing++;
+						NpcStats_CopyStats(npc.index, spawn_index);
+						int health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 0.15);
+						fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
+						fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
+						fl_Extra_Speed[spawn_index] = fl_Extra_Speed[npc.index];
+						fl_Extra_Damage[spawn_index] = fl_Extra_Damage[npc.index];
+						if(GetTeam(npc.index) != TFTeam_Red)
+							NpcAddedToZombiesLeftCurrently(spawn_index, true);
+						i_AttacksTillMegahit[spawn_index] = 600;
+						SetEntProp(spawn_index, Prop_Data, "m_iHealth", health);
+						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
+						strcopy(c_NpcName[spawn_index], sizeof(c_NpcName[]), "Imcomplete Avangard");
+						npc.SaveLifeSupportDevice(spawn_index, npc.m_iState);
+						view_as<CClotBody>(spawn_index).m_iWearable7=ConnectWithBeam(npc.index, spawn_index, 255, 215, 0, 1.5, 1.5, 0.0, LASERBEAM);
+						
+						int Decicion = TeleportDiversioToRandLocation(spawn_index,_,2500.0, 1750.0);
+
+						if(Decicion == 2)
+							Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1750.0, 500.0);
+
+						if(Decicion == 2)
+							Decicion = TeleportDiversioToRandLocation(spawn_index, _, 500.0, 0.0);
+
+						npc.PlayTeleportSound();
+					}
+					for(int i = 1; i <= 3; i++)
+					{
+						int TinCan=npc.LoadLifeSupportDevice(i);
+						if(IsValidEntity(TinCan)&& i_NpcInternalId[TinCan] == VictorianAvangard_ID()
+						&& !b_NpcHasDied[TinCan] && GetTeam(TinCan) == GetTeam(npc.index))
+						{
+							FreezeNpcInTime(TinCan, 1.6, true);
+							IncreaseEntityDamageTakenBy(TinCan, 0.000001, 1.6);
+						}
+					}
+					npc.m_flDoingAnimation = gameTime + 1.5;
+					npc.m_iState++;
+				}
+			}
+			case 4:
+			{
+				if(npc.m_flDoingAnimation < gameTime)
+				{
+					npc.AddActivityViaSequence("tauntrussian_rubdown_outro");
+					npc.SetPlaybackRate(1.0);
+					npc.m_flDoingAnimation = gameTime + 1.5;
+					npc.m_iState=5;
+					for(int i = 1; i <= 3; i++)
+					{
+						int TinCan=npc.LoadLifeSupportDevice(i);
+						if(IsValidEntity(TinCan)&& i_NpcInternalId[TinCan] == VictorianAvangard_ID()
+						&& !b_NpcHasDied[TinCan] && GetTeam(TinCan) == GetTeam(npc.index))
+						{
+							FreezeNpcInTime(TinCan, 1.6, true);
+							IncreaseEntityDamageTakenBy(TinCan, 0.000001, 1.6);
+						}
+					}
+				}
+			}
+			case 5:
+			{
+				if(npc.m_flDoingAnimation < gameTime)
+				{
+					EmitSoundToAll("mvm/mvm_tank_horn.wav", _, _, _, _, 1.0);
+					npc.PlayBotArrivedSound();
+					npc.m_iState=-1;
+					FullySpawnTinCan=true;
+				}
+			}
+		}
+		npc.m_flHuscarlsRushCoolDown += 0.1;
+		npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
+		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
+		npc.m_flHuscarlsGroundSlamCoolDown += 0.1;
+		npc.m_flNextRangedBarrage_Singular += 0.1;
+		return true;
+	}
+	else if(!MyGundammmmmm)
+	{
+		bool StillAlive=false;
+		for(int i = 1; i <= 3; i++)
+		{
+			int TinCan=npc.LoadLifeSupportDevice(i);
+			if(IsValidEntity(TinCan)&& i_NpcInternalId[TinCan] == VictorianAvangard_ID()
+			&& !b_NpcHasDied[TinCan] && GetTeam(TinCan) == GetTeam(npc.index))
+				StillAlive=true;
+		}
+		if(!StillAlive)
+		{
+			MyGundammmmmm=true;
+			npc.m_iState=0;
+		}
+	}
+	else
+	{
+		switch(npc.m_iState)
+		{
+			case 0:
+			{
+				if((RaidModeTime - GetGameTime()) < 60.0)
+					RaidModeTime += 60.0;
+				RaidModeTime += 21.0;
+				npc.m_fbRangedSpecialOn = true;
+				npc.m_flHuscarlsRushCoolDown += 4.0;
+				npc.m_flHuscarlsAdaptiveArmorCoolDown += 4.0;
+				npc.m_flHuscarlsDeployEnergyShieldCoolDown += 4.0;
+				npc.m_flHuscarlsGroundSlamCoolDown += 4.0;
+				npc.m_flNextRangedBarrage_Singular += 4.0;
+				npc.m_flAttackHappens = 0.0;
+				npc.m_flDoingAnimation = gameTime + 1.0;
+				switch(GetRandomInt(0, 1))
+				{
+					case 0:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_06-1", false, false);
+					case 1:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_06-2", false, false);
+				}
+				npc.RemoveGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
+				npc.AddActivityViaSequence("layer_taunt_soviet_showoff");
+				npc.SetCycle(0.6);
+				npc.SetPlaybackRate(1.2);
+				npc.PlayAngerSound();
+				npc.m_iState=1;
+			}
+			case 1:
+			{
+				if(npc.m_flDoingAnimation < gameTime)
+				{
+					int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+					SetEntProp(npc.index, Prop_Data, "m_iHealth", health+RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 0.1));
+					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)+RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 0.25));
+					b_NpcIsInvulnerable[npc.index] = false;
+					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
+					FullySpawnTinCan=false;
+					npc.m_bFUCKYOU_move_anim=false;
+				}
+			}
+		}
+		npc.m_flHuscarlsRushCoolDown += 0.1;
+		npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
+		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
+		npc.m_flHuscarlsGroundSlamCoolDown += 0.1;
+		npc.m_flNextRangedBarrage_Singular += 0.1;
 		return true;
 	}
 	return false;

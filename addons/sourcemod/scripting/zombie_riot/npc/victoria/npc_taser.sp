@@ -140,7 +140,7 @@ methodmap VictoriaTaser < CClotBody
 		npc.StartPathing();
 		
 		//Maybe used for special waves
-		static char countext[20][1024];
+		static char countext[5][512];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{

@@ -392,6 +392,14 @@ static int VictoriaArtilleristSelfDefense(VictoriaArtillerist npc, float gameTim
 					TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 					SetEntityMoveType(RocketGet, MOVETYPE_NOCLIP);
 					WorldSpaceCenter(npc.m_iTarget, vecTarget);
+					if(IsValidClient(npc.m_iTarget) && !(GetEntityFlags(npc.m_iTarget)&FL_ONGROUND))
+					{
+						SpeedReturn[0]=90.0;
+						SpeedReturn[1]=0.0;
+						SpeedReturn[2]=0.0;
+						EntityLookPoint(npc.m_iTarget, SpeedReturn, vecTarget, vecTarget);
+						vecTarget[2] += (b_IsGiant[npc.m_iTarget] ? 64.0 : 42.0);
+					}
 					//This function actually does damage
 					Engage_HE_Strike(npc.index, vecTarget, RocketDamage, npc.m_flImpactDelay, npc.m_flExplosionRadius);
 					CreateTimer(2.5, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
@@ -437,7 +445,7 @@ static int VictoriaArtilleristSelfDefense(VictoriaArtillerist npc, float gameTim
 	}
 }
 
-static void Engage_HE_Strike(int entity, float targetpos[3], float damage, float delay, float radius)
+stock void Engage_HE_Strike(int entity, float targetpos[3], float damage, float delay, float radius)
 {
 	DataPack HEStrike = new DataPack();
 	HEStrike.WriteCell(EntIndexToEntRef(entity));
@@ -470,6 +478,7 @@ static void HE_StrikeThink(DataPack pack)
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		
 		CreateEarthquake(targetpos, 1.0, radius * 2.5, 16.0, 255.0);
+		KillFeed_SetKillIcon(entity, "tf_projectile_rocket");
 		Explode_Logic_Custom(damage, entity, entity, -1, targetpos, radius,_,0.8, true, 100, false, 25.0);
 		return;
 	}

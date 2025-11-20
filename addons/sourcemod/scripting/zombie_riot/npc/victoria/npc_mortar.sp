@@ -96,7 +96,6 @@ methodmap VictoriaMortar < CClotBody
 		func_NPCOnTakeDamage[npc.index] = VictoriaMortar_OnTakeDamage;
 		func_NPCThink[npc.index] = VictoriaMortar_ClotThink;
 		
-		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "quake_rl");
 		npc.m_iState = 0;
