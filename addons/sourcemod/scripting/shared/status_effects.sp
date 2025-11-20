@@ -2697,6 +2697,7 @@ void StatusEffects_Victoria()
 	data.DamageTakenMulti 			= 0.9;
 	data.DamageDealMulti			= 0.1;
 	data.MovementspeedModif			= 1.33;
+	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
@@ -2724,6 +2725,7 @@ void StatusEffects_Victoria()
 	data.DamageTakenMulti 			= 0.25; //take 25% more damage
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
@@ -2738,6 +2740,7 @@ void StatusEffects_Victoria()
 	data.DamageTakenMulti 			= 0.8;
 	data.DamageDealMulti			= 0.2;
 	data.MovementspeedModif			= 1.15;
+	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
@@ -2780,9 +2783,9 @@ void StatusEffects_Victoria()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Battery_TM Charge");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "B™");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
-	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
+	data.AttackspeedBuff			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
@@ -2795,9 +2798,9 @@ void StatusEffects_Victoria()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Ammo_TM Visualization");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "A™");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
-	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
+	data.AttackspeedBuff			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
