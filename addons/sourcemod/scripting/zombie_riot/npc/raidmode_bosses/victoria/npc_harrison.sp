@@ -662,7 +662,7 @@ static void Harrison_ClotThink(int iNPC)
 			}
 		}
 	}
-	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	if(!YaWeFxxked[npc.index] && i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
 		DeleteAndRemoveAllNpcs = 3.0;
 		npc.m_bisWalking = false;
@@ -1318,24 +1318,14 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 								damage *= 1.15;
 								if(ShouldNpcDealBonusDamage(target))
 									damage *= 7.0;
-
-								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
-									
-								
-								// Hit particle
-								
-							
-								
+								KillFeed_SetKillIcon(npc.index, "bushwacka");
+								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 								bool Knocked = false;
-											
 								if(IsValidClient(targetTrace))
 								{
 									if(!NpcStats_IsEnemySilenced(npc.index))
-									{
 										StartBleedingTimer(targetTrace, npc.index, damage * 0.1, 4, -1, DMG_TRUEDAMAGE, 0);
-									}
 								}
-											
 								if(!Knocked)
 									Custom_Knockback(npc.index, targetTrace, 150.0, true); 
 							} 
@@ -1513,7 +1503,7 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 	Handle trace;
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Harrison_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
-			
+	
 	float CloseDamage = 70.0 * RaidModeScaling;
 	float FarDamage = 60.0 * RaidModeScaling;
 	float MaxDistance = 5000.0;
@@ -1527,13 +1517,11 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 			float damage = CloseDamage + (FarDamage-CloseDamage) * (distance/MaxDistance);
 			if (damage < 0)
 				damage *= -1.0;
-
 			
 			if(victim > MaxClients) //make sure barracks units arent bad, they now get targetted too.
 				damage *= 0.25;
-
+			KillFeed_SetKillIcon(entity, "player_penetration");
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
-				
 		}
 	}
 	delete pack;
@@ -1710,6 +1698,7 @@ static Action Delay_Drop_Rocket(Handle Smite_Logic, DataPack pack)
 		pack_boom.WriteCell(1);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		
+		KillFeed_SetKillIcon(entity, "tf_projectile_rocket");
 		CreateEarthquake(spawnLoc, 1.0, BombRange * 2.5, 16.0, 255.0);
 		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BombRange * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increase
 	
@@ -1826,6 +1815,7 @@ static bool Victoria_Support(Harrison npc)
 			position[2] += 100.0;
 			
 			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_TRUE_DAMAGE;
+			KillFeed_SetKillIcon(npc.index, "megaton");
 			if(YaWeFxxked[npc.index])
 				Explode_Logic_Custom(9001.0, 0, npc.index, -1, position, 1000.0, 1.0, _, true, 20, _, _, FxxkOFF);
 			else
@@ -1881,6 +1871,7 @@ static Action Dron_Laser_Particle_StartTouch(int entity, int target)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 	float damage = 10.0;
 	damage *= RaidModeScaling;
+	KillFeed_SetKillIcon(owner, "infection_emp");
 	Explode_Logic_Custom(damage, owner, inflictor, -1, ProjectileLoc, 150.0, _, _, true, _, false, _);
 	ParticleEffectAt(ProjectileLoc, "mvm_soldier_shockwave", 1.0);
 	ParticleEffectAt(ProjectileLoc, "drg_cow_explosion_sparkles_blue", 1.5);

@@ -657,7 +657,7 @@ static void Huscarls_ClotThink(int iNPC)
 			}
 		}
 	}
-	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	if(!npc.m_bFUCKYOU && i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
 		DeleteAndRemoveAllNpcs = 3.0;
 		npc.m_bisWalking = false;

@@ -781,7 +781,6 @@ static void Atomizer_ClotThink(int iNPC)
 				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.3);
 		}
 	}
-	
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);

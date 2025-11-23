@@ -740,6 +740,93 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 		npc.m_flTimeUntillSupportSpawn = gameTime + 20.0;
 	}
 
+	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
+	{
+		if(npc.m_flNextMeleeAttack < gameTime)
+		{
+			if(!npc.m_flAttackHappenswillhappen)
+			{
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+				npc.PlayMeleeSound();
+				npc.m_flAttackHappens = gameTime+0.25;
+				npc.m_flAttackHappens_bullshit = gameTime+0.39;
+				npc.m_flAttackHappenswillhappen = true;
+			}
+			if(npc.m_flAttackHappens < gameTime && npc.m_flAttackHappens_bullshit >= gameTime && npc.m_flAttackHappenswillhappen)
+			{
+				if(IsValidEnemy(npc.index, npc.m_iTarget))
+				{
+					int HowManyEnemeisAoeMelee = 64;
+					Handle swingTrace;
+					npc.FaceTowards(vecTarget, 15000.0);
+					npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
+					delete swingTrace;
+					bool PlaySound = false, PlayPOWERSound = false;
+					for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+					{
+						if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
+						{
+							if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+							{
+								PlaySound = true;
+								int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
+								float vecHit[3];
+								
+								WorldSpaceCenter(targetTrace, vecHit);
+								float damage = 40.0 * RaidModeScaling;
+								if(fl_ruina_battery[npc.index] && !npc.m_flHuscarlsAdaptiveArmorDuration)
+								{
+									damage+=fl_ruina_battery[npc.index]*0.1;
+									fl_ruina_battery[npc.index]=0.0;
+									ExtinguishTarget(npc.m_iWearable2);
+									CreateEarthquake(vecTarget, 0.5, 350.0, 16.0, 255.0);
+									if(HasSpecificBuff(npc.index, "Battery_TM Charge"))
+										RemoveSpecificBuff(npc.index, "Battery_TM Charge");
+									PlayPOWERSound = true;
+								}
+								if(ShouldNpcDealBonusDamage(targetTrace))
+									damage *= 7.0;
+								KillFeed_SetKillIcon(npc.index, "apocofists");
+								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+								bool Knocked = false;
+											
+								if(IsValidClient(targetTrace))
+								{
+									if(IsInvuln(targetTrace))
+									{
+										Knocked = true;
+										Custom_Knockback(npc.index, targetTrace, 750.0, true);
+									}
+									TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+								}
+								
+								if(!Knocked)
+									Custom_Knockback(npc.index, targetTrace, 375.0, true); 
+							} 
+						}
+					}
+					if(PlaySound)
+						npc.PlayMeleeHitSound();
+					if(PlayPOWERSound)
+					{
+						ParticleEffectAt(vecTarget, "rd_robot_explosion", 1.0);
+						npc.PlayPowerHitSound();
+					}
+				}
+				npc.m_flAttackHappens = 0.0;
+				npc.m_flNextMeleeAttack = gameTime + 1.2;
+				npc.m_flAttackHappenswillhappen = false;
+			}
+			else if(npc.m_flAttackHappens_bullshit < gameTime && npc.m_flAttackHappenswillhappen)
+			{
+				npc.m_flAttackHappenswillhappen = false;
+				npc.m_flNextMeleeAttack = gameTime + 1.2;
+			}
+		}
+	}
+	npc.m_iState = 0;
+	return 0;
 }
 
 static void ResetCastellanWeapon(Castellan npc, int weapon_Type)
