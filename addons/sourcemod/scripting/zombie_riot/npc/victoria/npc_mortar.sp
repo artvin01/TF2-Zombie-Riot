@@ -221,12 +221,12 @@ static void VictoriaMortar_ClotThink(int iNPC)
 			{
 				if(npc.m_iChanged_WalkCycle != 2)
 				{
-					npc.m_bisWalking = false;
+					npc.m_bisWalking = true;
 					npc.m_bAllowBackWalking = false;
 					npc.m_iChanged_WalkCycle = 2;
 					npc.SetActivity("ACT_MP_RUN_PRIMARY");
 					npc.m_flSpeed = 150.0;
-					npc.StopPathing();
+					npc.StartPathing();
 				}
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
