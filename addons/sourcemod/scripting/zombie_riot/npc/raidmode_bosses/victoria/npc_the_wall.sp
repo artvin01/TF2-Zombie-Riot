@@ -1353,7 +1353,7 @@ static Action Huscarls_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		{
 			case 0:
 			{
-				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_BulletArmor", false, false);
+				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_BlastArmor", false, false);
 				BlastArmor[npc.index]=true;
 			}
 			case 1:
@@ -1363,7 +1363,7 @@ static Action Huscarls_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			}
 			default:
 			{
-				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_BlastArmor", false, false);
+				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_BulletArmor", false, false);
 				BulletArmor[npc.index]=true;
 			}
 		}
@@ -1799,7 +1799,7 @@ static bool Victoria_Support(Huscarls npc)
 		position2[2] = Vs_Temp_Pos[npc.index][2] + 65.0;
 		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
 		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
-		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 1.0, {145, 47, 47, 150}, 3);
+		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
 		TE_SendToAll();
 		TE_SetupGlowSprite(Vs_Temp_Pos[npc.index], g_RedPoint, 0.1, 1.0, 255);
 		TE_SendToAll();
@@ -1959,9 +1959,9 @@ static void Ground_Slam(int entity, int victim, float damage, int weapon)
 			if(IsValidClient(victim))
 				if(!HasSpecificBuff(victim, "Fluid Movement"))
 					TF2_StunPlayer(victim, 1.5, 0.85, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
-			Custom_Knockback(entity, victim, 140.0, true);
+			Custom_Knockback(entity, victim, 720.0, true);
 		}
-		else Custom_Knockback(entity, victim, 280.0, true);
+		else Custom_Knockback(entity, victim, 1440.0, true);
 	}
 }
 

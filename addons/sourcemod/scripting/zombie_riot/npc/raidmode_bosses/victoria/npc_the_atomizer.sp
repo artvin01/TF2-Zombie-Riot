@@ -1746,7 +1746,7 @@ static bool Victoria_Support(Atomizer npc)
 		position2[2] = Vs_Temp_Pos[npc.index][2] + 65.0;
 		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
 		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
-		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 1.0, {145, 47, 47, 150}, 3);
+		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
 		TE_SendToAll();
 		TE_SetupGlowSprite(Vs_Temp_Pos[npc.index], g_RedPoint, 0.1, 1.0, 255);
 		TE_SendToAll();

@@ -160,7 +160,6 @@ methodmap Harrison < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-	
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
@@ -216,20 +215,20 @@ methodmap Harrison < CClotBody
 	}
 	public void PlayRangedSound()
 	{
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,125));
+		EmitSoundToAll(g_RangedAttackSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,125));
 	}
 	public void PlayRangedSoundPrepare()
 	{
-		EmitSoundToAll(g_RangedAttackSoundsPrepare[GetRandomInt(0, sizeof(g_RangedAttackSoundsPrepare) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 140);
-		EmitSoundToAll(g_RangedAttackSoundsPrepare[GetRandomInt(0, sizeof(g_RangedAttackSoundsPrepare) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 140);
+		EmitSoundToAll(g_RangedAttackSoundsPrepare, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 140);
+		EmitSoundToAll(g_RangedAttackSoundsPrepare, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 140);
 	}
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayGunSound()
 	{
-		EmitSoundToAll(g_MG42AttackSounds[GetRandomInt(0, sizeof(g_MG42AttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 85);
+		EmitSoundToAll(g_MG42AttackSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 85);
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -238,11 +237,11 @@ methodmap Harrison < CClotBody
 	}
 	public void PlayLaserBeamSound()
 	{
-		EmitSoundToAll(g_LaserBeamSounds[GetRandomInt(0, sizeof(g_LaserBeamSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,125));
+		EmitSoundToAll(g_LaserBeamSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,125));
 	}
 	public void PlayLaserBeamSoundStart()
 	{
-		EmitSoundToAll(g_LaserBeamSoundsStart[GetRandomInt(0, sizeof(g_LaserBeamSoundsStart) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 110);
+		EmitSoundToAll(g_LaserBeamSoundsStart, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 110);
 	}
 	
 	property int i_GunMode
@@ -369,7 +368,9 @@ methodmap Harrison < CClotBody
 			npc.m_flTimeUntillGunReload = GetGameTime(npc.index) + 12.5;
 			npc.m_iOverlordComboAttack = 0;
 			npc.m_iAmountProjectiles = 0;
-			npc.m_iAttacksTillReload = 0;
+			npc.m_iMaxAmmo =  RoundToNearest(float(CountPlayersOnRed(2)) * 5);
+			npc.m_iAmmo = 0;
+			ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 			
 			npc.m_fbRangedSpecialOn = false;
 			AirRaidStart[npc.index] = false;
@@ -717,7 +718,8 @@ static void Harrison_ClotThink(int iNPC)
 	
 	if(npc.m_flTimeUntillGunReload < gameTime)
 	{
-		npc.m_iAttacksTillReload =  RoundToNearest(float(CountPlayersOnRed(2)) * 5); 
+		npc.m_iMaxAmmo =  RoundToNearest(float(CountPlayersOnRed(2)) * 5);
+		npc.m_iAmmo = npc.m_iMaxAmmo;
 		npc.m_flTimeUntillGunReload = 30.0 + gameTime;
 	}
 
@@ -1238,7 +1240,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 			}
 		}
 	}
-	if(npc.m_iAttacksTillReload > 0)
+	if(npc.m_iAmmo > 0)
 	{
 		if(gameTime > npc.m_flNextMeleeAttack)
 		{
@@ -1279,7 +1281,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				damage *= 3.5;
 				FireBullet(npc.index, npc.m_iWearable2, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer02_blue_crit");
 				npc.m_flNextMeleeAttack = gameTime + 0.1;
-				npc.m_iAttacksTillReload -= 1;
+				npc.m_iAmmo -= 1;
 			}
 		}
 	}
@@ -1349,12 +1351,11 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		{
 			if(IsValidEnemy(npc.index, target)) 
 			{
-				if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5) && npc.m_iAttacksTillReload > 0)
+				if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5) && npc.m_iAmmo > 0)
 				{
 					int Enemy_I_See;
-										
 					Enemy_I_See = Can_I_See_Enemy(npc.index, target);
-							
+					
 					if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 					{
 						target = Enemy_I_See;
@@ -1375,16 +1376,16 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 				{
 					int Enemy_I_See;
-										
+					
 					Enemy_I_See = Can_I_See_Enemy(npc.index, target);
-							
+					
 					if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 					{
 						target = Enemy_I_See;
 
 						npc.PlayMeleeSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-								
+						
 						npc.m_flAttackHappens = gameTime + 0.25;
 						npc.m_flNextMeleeAttack = gameTime + 1.0;
 						npc.m_flDoingAnimation = gameTime + 0.25;
@@ -1398,7 +1399,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 			}	
 		}
 	}
-	if(npc.m_iAttacksTillReload >0)
+	if(npc.m_iAmmo >0)
 	{
 		npc.i_GunMode = 1;
 	}
@@ -1804,7 +1805,7 @@ static bool Victoria_Support(Harrison npc)
 			position2[2] = Vs_Temp_Pos[enemy[i]][2] + 65.0;
 			spawnRing_Vectors(position2, Vs_Raged, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
 			spawnRing_Vectors(Vs_Temp_Pos[enemy[i]], Vs_Raged, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
-			TE_SetupBeamPoints(Vs_Temp_Pos[enemy[i]], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 1.0, {145, 47, 47, 150}, 3);
+			TE_SetupBeamPoints(Vs_Temp_Pos[enemy[i]], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
 			TE_SendToAll();
 			TE_SetupGlowSprite(Vs_Temp_Pos[enemy[i]], g_RedPoint, 0.1, 1.0, 255);
 			TE_SendToAll();
