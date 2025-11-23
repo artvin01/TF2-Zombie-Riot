@@ -5,6 +5,7 @@ static const char g_DeathSounds[] = "misc/rd_robot_explosion01.wav";
 static char g_EmergencyExtractionSound[] = "weapons/rocket_ll_shoot.wav";
 static int NPCId;
 static bool SilentDestruction;
+static bool OneCaramelldansen;
 static float g_CD_LandingSound;
 
 void VictorianFactory_MapStart()
@@ -32,6 +33,7 @@ static void ClotPrecache()
 	PrecacheModel("models/props_c17/substation_transformer01a.mdl");
 	PrecacheModel("models/props_c17/lockers001a.mdl");
 	PrecacheModel("models/props_skybox/train_building004_skybox.mdl");
+	PrecacheSoundCustom("#zombiesurvival/aprilfools/caramelldansen.mp3");
 }
 
 int VictorianFactory_ID()
@@ -118,6 +120,11 @@ methodmap VictorianFactory < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
+	property float m_flMusicEnd
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
 	
 	public VictorianFactory (float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -131,9 +138,9 @@ methodmap VictorianFactory < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
-		func_NPCDeath[npc.index] = ClotDeath;
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
-		func_NPCThink[npc.index] = ClotThink;
+		func_NPCDeath[npc.index] = Factory_Got_Explod;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		func_NPCThink[npc.index] = FactoryCPU;
 		
 		npc.m_flSpeed = 0.0;
 		npc.m_iState = 0;
@@ -145,6 +152,7 @@ methodmap VictorianFactory < CClotBody
 		npc.m_flBaseBuildTime = 10.0;
 		npc.m_flLastManAdvantage = 2.5;
 		i_AttacksTillMegahit[npc.index] = 0;
+		npc.Anger = false;
 
 		npc.m_flMeleeArmor = 0.0;
 		npc.m_flRangedArmor = 0.0;
@@ -170,7 +178,7 @@ methodmap VictorianFactory < CClotBody
 		
 		//default: type-a (old ver)
 		//Maybe used for special waves
-		static char countext[20][1024];
+		static char countext[7][1024];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
@@ -219,6 +227,20 @@ methodmap VictorianFactory < CClotBody
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "tracking", "");
 				i_GunAmmo[npc.index]=1;
+			}
+			else if(StrContains(countext[i], "caramelldansen") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "caramelldansen", "");
+				if(!OneCaramelldansen)
+				{
+					int RollRandom = StringToInt(countext[i]);
+					if(!RollRandom)RollRandom=300;
+					if(!(GetURandomInt() % RollRandom))
+					{
+						OneCaramelldansen=true;
+						npc.Anger=true;
+					}
+				}
 			}
 		}
 		
@@ -272,23 +294,7 @@ methodmap VictorianFactory < CClotBody
 	}
 }
 
-static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	VictorianFactory npc = view_as<VictorianFactory>(victim);
-		
-	if(attacker <= 0)
-		return Plugin_Continue;
-		
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
-	}
-	
-	return Plugin_Changed;
-}
-
-static void ClotThink(int iNPC)
+static void FactoryCPU(int iNPC)
 {
 	VictorianFactory npc = view_as<VictorianFactory>(iNPC);
 
@@ -413,11 +419,60 @@ static void ClotThink(int iNPC)
 		{
 			switch(npc.m_iState)
 			{
-				//Old ver
+				case -5:
+				{
+					//I was lazy to make a smooth RGB loop
+					int iColor[4];
+					iColor[0]=145+RoundToCeil((gameTime/10.0)*110.0);
+					iColor[1]=10+RoundToCeil((npc.m_flAttackHappens/10.0)*245.0);
+					iColor[2]=0+RoundToCeil(((npc.m_flAttackHappens-gameTime)/10.0)*255.0);
+					iColor[3]=200;
+					SetVariantColor(iColor);
+					AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+					if(npc.m_flMusicEnd < gameTime)
+					{
+						OneCaramelldansen=false;
+						npc.Anger=false;
+						SetVariantColor(view_as<int>({255, 255, 255, 200}));
+						AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+						for(int client=1; client<=MaxClients; client++)
+						{
+							if(IsClientInGame(client) && !IsFakeClient(client))
+							{
+								SetMusicTimer(client, GetTime() + 1);
+								StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/aprilfools/caramelldansen.mp3");
+								StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/aprilfools/caramelldansen.mp3");
+							}
+						}
+						npc.m_iState = -4;
+					}
+				}
 				case -4:
 				{
-					//none
+					if(npc.Anger)
+					{
+						MusicEnum CustomMusic;
+						strcopy(CustomMusic.Path, sizeof(CustomMusic.Path), "#zombiesurvival/aprilfools/caramelldansen.mp3");
+						CustomMusic.Time = 175;
+						CustomMusic.Volume = 1.0;
+						CustomMusic.Custom = true;
+						npc.m_flMusicEnd = gameTime+175.0;
+						if(CustomMusic.Path[0])
+						{
+							for(int client=1; client<=MaxClients; client++)
+							{
+								if(IsClientInGame(client) && !IsFakeClient(client))
+								{
+									Music_Stop_All(client);
+									EmitCustomToClient(client, CustomMusic.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, CustomMusic.Volume);
+								}
+							}
+						}
+						npc.m_flAttackHappens=gameTime;
+						npc.m_iState = -5;
+					}
 				}
+				//Old ver
 				case -1, -2, -3:
 				{
 					float Vec[3];
@@ -683,7 +738,7 @@ static void ClotThink(int iNPC)
 }
 
 
-static void ClotDeath(int entity)
+static void Factory_Got_Explod(int entity)
 {
 	VictorianFactory npc = view_as<VictorianFactory>(entity);
 
@@ -691,6 +746,20 @@ static void ClotDeath(int entity)
 	if(!SilentDestruction)
 		npc.PlayDeathSound();
 	SilentDestruction=false;
+	
+	if(OneCaramelldansen && npc.Anger)
+	{
+		OneCaramelldansen=false;
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client) && !IsFakeClient(client))
+			{
+				SetMusicTimer(client, GetTime() + 1);
+				StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/aprilfools/caramelldansen.mp3");
+				StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/aprilfools/caramelldansen.mp3");
+			}
+		}
+	}
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

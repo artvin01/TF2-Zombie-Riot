@@ -301,7 +301,7 @@ methodmap Atomizer < CClotBody
 			npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 99.0;
 			npc.m_flAngerDelay = GetGameTime() + 99.0;
 			npc.PlaySupportSpawnSound();
-			NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_01-2", false, true);
+			NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-1", false, true);
 		}
 		else
 		{
@@ -368,7 +368,7 @@ methodmap Atomizer < CClotBody
 				Music_SetRaidMusic(music);
 			}
 			
-			NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_01-1", false, true);
+			NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Intro", false, true);
 			Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);
 			
 			char buffers[3][64];
@@ -658,15 +658,15 @@ static void Atomizer_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_02-1", false, false);
+					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Lastman-1", false, false);
 				}
 				case 1:
 				{
-					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_02-2", false, false);
+					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Lastman-2", false, false);
 				}
 				case 2:
 				{
-					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_02-3", false, false);
+					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Lastman-3", false, false);
 				}
 			}
 		}
@@ -680,7 +680,7 @@ static void Atomizer_ClotThink(int iNPC)
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		BlockLoseSay = true;
 		
-		NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_03-1", false, false);
+		NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_GameEnd", false, false);
 		return;
 	}
 	npc.m_flSpeed = 300.0+(((npc.m_flFTL-(RaidModeTime - GetGameTime()))/npc.m_flFTL)*150.0);
@@ -693,10 +693,10 @@ static void Atomizer_ClotThink(int iNPC)
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", MaxHealth);
 		switch(GetRandomInt(1, 4))
 		{
-			case 1:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_03-1", false, false);
-			case 2:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_03-2", false, false);
-			case 3:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_03-3", false, false);
-			case 4:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_03-4", false, false);
+			case 1:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_TimeUp-1", false, false);
+			case 2:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_TimeUp-2", false, false);
+			case 3:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_TimeUp-3", false, false);
+			case 4:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_TimeUp-4", false, false);
 		}
 		for(int i=1; i<=15; i++)
 		{
@@ -809,7 +809,7 @@ static void Atomizer_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_05-1", false, false);
+				NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Pre_2_Phase", false, false);
 				if(IsValidEntity(npc.m_iWearable2))
 					RemoveEntity(npc.m_iWearable2);
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/taunt_cheers/taunt_cheers_pyro.mdl");
@@ -855,7 +855,7 @@ static void Atomizer_ClotThink(int iNPC)
 					AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
-					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_05-2", false, false);
+					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_2_Phase", false, false);
 					npc.m_iState=0;
 					npc.m_flNextRangedAttack += 2.0;
 					npc.m_flRangedSpecialDelay += 2.0;
@@ -880,7 +880,7 @@ static void Atomizer_ClotThink(int iNPC)
 		float ProjLocBase[3];
 		if(npc.m_iState <= 0)
 		{
-			NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_06-1", false, false);
+			NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Ability", false, false);
 			npc.AddActivityViaSequence("taunt05");
 			npc.SetCycle(0.01);
 			npc.SetPlaybackRate(1.4);
@@ -1110,10 +1110,6 @@ static Action Atomizer_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 static void Atomizer_NPCDeath(int entity)
 {
 	Atomizer npc = view_as<Atomizer>(entity);
-	/*
-		Explode on death code here please
-
-	*/
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
@@ -1157,9 +1153,9 @@ static void Atomizer_NPCDeath(int entity)
 
 	switch(GetRandomInt(0,2))
 	{
-		case 0:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_07-1", false, false);
-		case 1:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_07-2", false, false);
-		case 2:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_07-3", false, false);
+		case 0:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_EscapePlan-1", false, false);
+		case 1:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_EscapePlan-2", false, false);
+		case 2:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_EscapePlan-3", false, false);
 	}
 
 }

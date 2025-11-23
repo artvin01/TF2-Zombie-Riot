@@ -56,23 +56,7 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/sniper_specialcompleted45.mp3",
 	"vo/sniper_specialcompleted46.mp3",
 };
-static const char g_RangedAttackSounds[][] = {
-	"weapons/capper_shoot.wav",
-};
-static const char g_RangedAttackSoundsPrepare[][] = {
-	"weapons/cow_mangler_over_charge_shot.wav",
-};
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/machete_swing.wav",
-};
-static const char g_MG42AttackSounds[][] = {
-	"weapons/csgo_awp_shoot.wav",
-};
-static const char g_MeleeHitSounds[] = "weapons/cbar_hitbod1.wav";
-static const char g_AngerSounds[] = "mvm/mvm_tele_activate.wav";
-static const char g_AngerReaction[] = "vo/sniper_specialcompleted43.mp3";
-static const char g_HomerunHitSounds[] = "mvm/melee_impacts/bat_baseball_hit_robo01.wav";
-static const char g_DronShotHitSounds[] = "weapons/drg_pomson_drain_01.wav";
+
 static const char g_HomerunSounds[][]= {
 	"vo/sniper_jaratetoss02/mp3",
 	"vo/sniper_jaratetoss03/mp3",
@@ -89,13 +73,17 @@ static const char g_PlayRocketshotready[][] = {
 
 };
 
-static const char g_LaserBeamSounds[][] = {
-	"weapons/bumper_car_speed_boost_start.wav",
-};
-static const char g_LaserBeamSoundsStart[][] = {
-	"weapons/cow_mangler_over_charge_shot.wav",
-};
-
+static const char g_RangedAttackSounds[] = "weapons/capper_shoot.wav";
+static const char g_RangedAttackSoundsPrepare[] = "weapons/cow_mangler_over_charge_shot.wav";
+static const char g_MeleeAttackSounds[] = "weapons/machete_swing.wav";
+static const char g_MG42AttackSounds[] = "weapons/csgo_awp_shoot.wav";
+static const char g_MeleeHitSounds[] = "weapons/cbar_hitbod1.wav";
+static const char g_AngerSounds[] = "mvm/mvm_tele_activate.wav";
+static const char g_AngerReaction[] = "vo/sniper_specialcompleted43.mp3";
+static const char g_HomerunHitSounds[] = "mvm/melee_impacts/bat_baseball_hit_robo01.wav";
+static const char g_DronShotHitSounds[] = "weapons/drg_pomson_drain_01.wav";
+static const char g_LaserBeamSounds[] = "weapons/bumper_car_speed_boost_start.wav";
+static const char g_LaserBeamSoundsStart[] = "weapons/cow_mangler_over_charge_shot.wav";
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
 
@@ -104,7 +92,6 @@ static bool YaWeFxxked[MAXENTITIES];
 static bool GETBFG[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 static bool AirRaidStart[MAXENTITIES];
-
 
 static float Vs_DelayTime[MAXENTITIES];
 static int Vs_Stats[MAXENTITIES];
@@ -115,10 +102,8 @@ static float Vs_IncomingBoom_Its_Too_Loud;
 
 static int OverrideOwner;
 
-static int gLaser1;
-static int gRedPoint;
-static int g_BeamIndex_heal;
-static int g_HALO_Laser;
+static int g_RedPoint;
+static int g_Laser;
 
 void Harrison_OnMapStart_NPC()
 {
@@ -136,16 +121,11 @@ void Harrison_OnMapStart_NPC()
 
 static void ClotPrecache()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedAttackSoundsPrepare)); i++) { PrecacheSound(g_RangedAttackSoundsPrepare[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MG42AttackSounds)); i++) { PrecacheSound(g_MG42AttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_LaserBeamSounds)); i++) { PrecacheSound(g_LaserBeamSounds[i]); }
-	for (int i = 0; i < (sizeof(g_LaserBeamSoundsStart)); i++) { PrecacheSound(g_LaserBeamSoundsStart[i]); }
-
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_HomerunSounds);
+	PrecacheSoundArray(g_PlayRocketshotready);
+	PrecacheSoundArray(g_LasershotReady);
 	PrecacheSound(g_DronShotHitSounds);
 	PrecacheSound(g_MeleeHitSounds);
 	PrecacheSound(g_AngerSounds);
@@ -153,27 +133,26 @@ static void ClotPrecache()
 	PrecacheSound(g_HomerunHitSounds);
 	PrecacheSound(g_BoomSounds);
 	PrecacheSound(g_IncomingBoomSounds);
-	for (int i = 0; i < (sizeof(g_HomerunSounds));   i++) { PrecacheSound(g_HomerunSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_PlayRocketshotready));   i++) { PrecacheSound(g_PlayRocketshotready[i]);   }
-	for (int i = 0; i < (sizeof(g_LasershotReady));   i++) { PrecacheSound(g_LasershotReady[i]);   }
-	PrecacheModel("models/player/sniper.mdl");
-	PrecacheSoundCustom("#zombiesurvival/victoria/raid_harrison.mp3");
+	PrecacheSound(g_MG42AttackSounds);
+	PrecacheSound(g_MeleeAttackSounds);
+	PrecacheSound(g_RangedAttackSoundsPrepare);
+	PrecacheSound(g_RangedAttackSounds);
+	PrecacheSound(g_LaserBeamSounds);
+	PrecacheSound(g_LaserBeamSoundsStart);
 	PrecacheSound("mvm/ambient_mp3/mvm_siren.mp3");
 	PrecacheSound("weapons/ar2/npc_ar2_reload.wav");
+	PrecacheSoundCustom("#zombiesurvival/victoria/raid_harrison.mp3");
 	
+	PrecacheModel("models/player/sniper.mdl");
 	PrecacheModel(LASERBEAM);
-	gRedPoint = PrecacheModel("sprites/redglow1.vmt");
-	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
-	g_BeamIndex_heal = PrecacheModel("materials/sprites/laserbeam.vmt", true);
-	g_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
+	g_RedPoint = PrecacheModel("sprites/redglow1.vmt");
+	g_Laser = PrecacheModel("materials/sprites/laser.vmt");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
 	return Harrison(client, vecPos, vecAng, ally, data);
 }
-
-static int i_Harrison_eye_particle[MAXENTITIES];
 
 methodmap Harrison < CClotBody
 {
@@ -362,13 +341,14 @@ methodmap Harrison < CClotBody
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
-			CPrintToChatAll("{skyblue}Harrison{default}: I see you Intruders.");
+			NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-2", false, true);
 		}
 		else
 		{
-			func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
-			func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
-			func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+			func_NPCDeath[npc.index] = Harrison_NPCDeath;
+			func_NPCOnTakeDamage[npc.index] = Harrison_OnTakeDamage;
+			func_NPCThink[npc.index] = Harrison_ClotThink;
+			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
 			RemoveAllDamageAddition();
 			//IDLE
 			npc.m_iState = 0;
@@ -416,7 +396,7 @@ methodmap Harrison < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 200.0;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
-			CPrintToChatAll("{skyblue}Harrison{default}: Spotted the Intruders. I guess they leave me no chance but to do it myself");
+			NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Intro-2", false, true);
 			
 			char buffers[3][64];
 			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
@@ -602,6 +582,8 @@ static void Clone_NPCDeath(int entity)
 {
 	Harrison npc = view_as<Harrison>(entity);
 
+	if(IsValidEntity(npc.m_iWearable9))
+		RemoveEntity(npc.m_iWearable9);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	if(IsValidEntity(npc.m_iWearable7))
@@ -620,7 +602,7 @@ static void Clone_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static void Internal_ClotThink(int iNPC)
+static void Harrison_ClotThink(int iNPC)
 {
 	Harrison npc = view_as<Harrison>(iNPC);
 	float gameTime = GetGameTime(npc.index);
@@ -661,7 +643,7 @@ static void Internal_ClotThink(int iNPC)
 		float flPos[3], flAng[3];
 				
 		npc.GetAttachment("eyeglow_L", flPos, flAng);
-		i_Harrison_eye_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "eye_powerup_blue_lvl_3", npc.index, "eyeglow_L", {0.0,0.0,0.0}));
+		npc.m_iWearable9 = ParticleEffectAt_Parent(flPos, "eye_powerup_blue_lvl_3", npc.index, "eyeglow_L", {0.0,0.0,0.0});
 		npc.GetAttachment("", flPos, flAng);
 		ParticleSpawned[npc.index] = true;
 	}
@@ -673,20 +655,23 @@ static void Internal_ClotThink(int iNPC)
 			npc.m_fbGunout = true;
 			switch(GetRandomInt(0,2))
 			{
-				case 0:
-				{
-					CPrintToChatAll("{skyblue}Harrison{default}: You guys are weaker than I expected");
-				}
-				case 1:
-				{
-					CPrintToChatAll("{skyblue}Harrison{default}: Comeon, where is your 'adrenaline'?");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{skyblue}Harrison{default}: Can't believe {lightblue}Huscarls{default} and {blue}Atomizer{default} was defeated by these weaklings.");
-				}
+				case 0:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Lastman-1", false, false);
+				case 1:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Lastman-2", false, false);
+				case 2:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Lastman-3", false, false);
 			}
 		}
+	}
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		DeleteAndRemoveAllNpcs = 3.0;
+		npc.m_bisWalking = false;
+		npc.AddActivityViaSequence("layer_taunt_flag_sniper");
+		npc.SetCycle(0.3);
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		BlockLoseSay = true;
+		
+		NPCPritToChat(npc.index, "{lightblue}", "Harrison_Talk_GameEnd", false, false);
+		return;
 	}
 	if(!YaWeFxxked[npc.index] && RaidBossActive != INVALID_ENT_REFERENCE && IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
@@ -695,10 +680,10 @@ static void Internal_ClotThink(int iNPC)
 		BlockLoseSay = true;
 		switch(GetRandomInt(1, 4))
 		{
-			case 1:CPrintToChatAll("{skyblue}Harrison{default}: That's it. Calling in for special forces.");
-			case 2:CPrintToChatAll("{skyblue}Harrison{default}: Your small knight pals won't save you now");
-			case 3:CPrintToChatAll("{skyblue}Harrison{default}: The artilleries are fully loaded. Bombardment in 3...2...1...");
-			case 4:CPrintToChatAll("{skyblue}Harrison{default}: {unique}I need beer.{default}");
+			case 1:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_TimeUp-1", false, false);
+			case 2:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_TimeUp-2", false, false);
+			case 3:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_TimeUp-3", false, false);
+			case 4:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_TimeUp-4", false, false);
 		}
 		YaWeFxxked[npc.index] = true;
 		Vs_RechargeTimeMax[npc.index] = 3.0;
@@ -752,7 +737,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.StartPathing();
 				}
 				*/
-				CPrintToChatAll("{skyblue}해리슨{default}: 숨어보시던가. 그러는 동안 난 내 총의 탄약을 보급할테니.");
+				NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Pre_2_Phase", false, false);
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/taunt_most_wanted/taunt_most_wanted.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 				npc.StopPathing();
@@ -916,7 +901,7 @@ static void Internal_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Harrison_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Harrison npc = view_as<Harrison>(victim);
 		
@@ -950,13 +935,9 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	return Plugin_Changed;
 }
 
-static void Internal_NPCDeath(int entity)
+static void Harrison_NPCDeath(int entity)
 {
 	Harrison npc = view_as<Harrison>(entity);
-	/*
-		Explode on death code here please
-
-	*/
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
@@ -995,11 +976,10 @@ static void Internal_NPCDeath(int entity)
 
 	switch(GetRandomInt(0,2))
 	{
-		case 0:CPrintToChatAll("{skyblue}Harrison{default}: Dammit it hurts!");
-		case 1:CPrintToChatAll("{skyblue}Harrison{default}: I should've brought more Explosives...");
-		case 2:CPrintToChatAll("{skyblue}Harrison{default}: You intruders will soon face the {crimson}Real Deal.{default}");
+		case 0:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_EscapePlan-1", false, false);
+		case 1:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_EscapePlan-2", false, false);
+		case 2:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_EscapePlan-3", false, false);
 	}
-
 }
 
 static void HarrisonAnimationChange(Harrison npc)
@@ -1099,10 +1079,10 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				npc.m_iCurrentAbilityDo = 1;
 				switch(GetRandomInt(1, 4))
 				{
-					case 1:CPrintToChatAll("{skyblue}Harrison{default}: Do you think I would miss?");
-					case 2:CPrintToChatAll("{skyblue}Harrison{default}: I see you.");
-					case 3:CPrintToChatAll("{skyblue}Harrison{default}: They won't miss you. Probably.");
-					case 4:CPrintToChatAll("{skyblue}Harrison{default}: Auto Rockets are fully charged");
+					case 1:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Ability1-1", false, false);
+					case 2:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Ability1-2", false, false);
+					case 3:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Ability1-3", false, false);
+					case 4:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Ability1-4", false, false);
 				}
 				npc.StopPathing();
 				
@@ -1817,19 +1797,16 @@ static bool Victoria_Support(Harrison npc)
 						Vs_LockOn[client]=false;
 				}
 			}
-			TE_SetupBeamRingPoint(Vs_Temp_Pos[enemy[i]], Vs_Raged- ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*Vs_Raged), (Vs_Raged - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*Vs_Raged))+0.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {255, 255, 255, 150}, 0, 0);
-			TE_SendToAll();
+			spawnRing_Vectors(Vs_Temp_Pos[enemy[i]], (Vs_Raged - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*Vs_Raged)), 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
 			float position2[3];
 			position2[0] = Vs_Temp_Pos[enemy[i]][0];
 			position2[1] = Vs_Temp_Pos[enemy[i]][1];
 			position2[2] = Vs_Temp_Pos[enemy[i]][2] + 65.0;
-			TE_SetupBeamRingPoint(position2, Vs_Raged, Vs_Raged+0.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
+			spawnRing_Vectors(position2, Vs_Raged, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
+			spawnRing_Vectors(Vs_Temp_Pos[enemy[i]], Vs_Raged, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
+			TE_SetupBeamPoints(Vs_Temp_Pos[enemy[i]], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 1.0, {145, 47, 47, 150}, 3);
 			TE_SendToAll();
-			TE_SetupBeamRingPoint(Vs_Temp_Pos[enemy[i]], Vs_Raged, Vs_Raged+0.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
-			TE_SendToAll();
-			TE_SetupBeamPoints(Vs_Temp_Pos[enemy[i]], position, gLaser1, -1, 0, 0, 0.1, 0.0, 25.0, 0, 1.0, {145, 47, 47, 150}, 3);
-			TE_SendToAll();
-			TE_SetupGlowSprite(Vs_Temp_Pos[enemy[i]], gRedPoint, 0.1, 1.0, 255);
+			TE_SetupGlowSprite(Vs_Temp_Pos[enemy[i]], g_RedPoint, 0.1, 1.0, 255);
 			TE_SendToAll();
 			if(Vs_RechargeTime[npc.index] > (Vs_RechargeTimeMax[npc.index] - 1.0))
 			{
