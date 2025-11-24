@@ -17,12 +17,7 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/taunts/heavy_taunts19.mp3",
 };
 
-static const char g_RangeAttackSounds[][] = {
-	"mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav",
-	"mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav",
-};
-
-static const char g_ReloadSound[]="weapons/ar2/npc_ar2_reload.wav";
+static const char g_RangeAttackSounds[] = "mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav";
 
 static int i_radioguard_particle[MAXENTITIES];
 
@@ -45,8 +40,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
-	PrecacheSoundArray(g_RangeAttackSounds);
-	PrecacheSound(g_ReloadSound);
+	PrecacheSound(g_RangeAttackSounds);
 	PrecacheModel("models/player/heavy.mdl");
 }
 
@@ -71,17 +65,13 @@ methodmap Victorian_Radioguard < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
-	public void PlayReloadSound() 
-	{
-		EmitSoundToAll(g_ReloadSound[GetRandomInt(0, sizeof(g_ReloadSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-	}
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayRangeSound()
 	{
-		EmitSoundToAll(g_RangeAttackSounds[GetRandomInt(0, sizeof(g_RangeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 60, _, 0.5, 80);
+		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.7, 80);
 	}
 	
 	property int m_iMainTarget
@@ -408,6 +398,7 @@ static void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 		{
 			float ProjectileLoc[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 			Explode_Logic_Custom(0.0, owner, inflictor, -1, ProjectileLoc, 100.0, _, _, true, _, false, _, Weeeeeeeeeiiiiii);
+			ParticleEffectAt(ProjectileLoc, "mvm_soldier_shockwave", 1.0);
 		}
 		
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
@@ -430,6 +421,7 @@ static void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 		{
 			float ProjectileLoc[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 			Explode_Logic_Custom(0.0, owner, inflictor, -1, ProjectileLoc, 100.0, _, _, true, _, false, _, Weeeeeeeeeiiiiii);
+			ParticleEffectAt(ProjectileLoc, "mvm_soldier_shockwave", 1.0);
 		}
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))

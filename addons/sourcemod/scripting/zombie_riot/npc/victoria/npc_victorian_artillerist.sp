@@ -124,8 +124,8 @@ methodmap VictoriaArtillerist < CClotBody
 		npc.m_flSpeed = 100.0;
 		npc.StartPathing();
 		
-		npc.m_flMeleeArmor = 1.0;
-		npc.m_flRangedArmor = 1.0;
+		npc.m_flMeleeArmor = 1.5;
+		npc.m_flRangedArmor = 0.6;
 		
 		static char countext[20][1024];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));

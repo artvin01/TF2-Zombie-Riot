@@ -136,20 +136,33 @@ methodmap VictoriaRepair < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
-	property float m_flSavePos_I
+	property float m_fXPosSave
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
-	property float m_flSavePos_II
+	property float m_fZPosSave
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
-	property float m_flSavePos_III
+	property float m_fYPosSave
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	
+	public void SaveTreePos(float VecTarget[3])
+	{
+		this.m_fXPosSave=VecTarget[0];
+		this.m_fZPosSave=VecTarget[1];
+		this.m_fYPosSave=VecTarget[2];
+	}
+	public void LoadTreePos(float VecTarget[3])
+	{
+		VecTarget[0]=this.m_fXPosSave;
+		VecTarget[1]=this.m_fZPosSave;
+		VecTarget[2]=this.m_fYPosSave;
 	}
 
 	public VictoriaRepair(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -185,9 +198,9 @@ methodmap VictoriaRepair < CClotBody
 		npc.m_bnew_target = false;
 		npc.m_iMainTarget = -1;
 		npc.m_flChangeMovement = 0.0;
-		npc.m_flSavePos_I = 0.0;
-		npc.m_flSavePos_II = 0.0;
-		npc.m_flSavePos_III = 0.0;
+		npc.m_fXPosSave = 0.0;
+		npc.m_fZPosSave = 0.0;
+		npc.m_fYPosSave = 0.0;
 		npc.StartPathing();
 		
 		if(StrContains(data, "target") != -1)
@@ -437,9 +450,7 @@ static void VictoriaRepair_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius())
 				{
 					float vPredictedPos[3];
-					vPredictedPos[0]=npc.m_flSavePos_I;
-					vPredictedPos[1]=npc.m_flSavePos_II;
-					vPredictedPos[2]=npc.m_flSavePos_III;
+					npc.LoadTreePos(vPredictedPos);
 					npc.SetGoalVector(vPredictedPos);
 				}
 				else
@@ -559,9 +570,7 @@ static int VictoriaRepair_Work(VictoriaRepair npc, float gameTime, float distanc
 				npc.m_flChangeMovement=gameTime+GetRandomFloat(4.0, 6.0);
 				float RNGPos[3];
 				VictoriaRepair_Move(npc, 800.0, 1024.0, RNGPos);
-				npc.m_flSavePos_I=RNGPos[0];
-				npc.m_flSavePos_II=RNGPos[1];
-				npc.m_flSavePos_III=RNGPos[2];
+				npc.SaveTreePos(RNGPos);
 			}
 			return (gameTime > npc.m_flChangeMovement-2.0) ? 1 : 4;
 		}

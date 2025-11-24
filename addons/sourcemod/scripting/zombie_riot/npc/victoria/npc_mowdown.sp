@@ -46,7 +46,8 @@ static void ClotPrecache()
 	PrecacheModel("models/bots/heavy/bot_heavy.mdl");
 	PrecacheSound("mvm/giant_heavy/giant_heavy_gunspin.wav");
 	PrecacheSound("mvm/giant_heavy/giant_heavy_gunfire.wav");
-	PrecacheModel("models/bots/heavy/bot_heavy.mdl");
+	//PrecacheModel("models/bots/heavy/bot_heavy.mdl");
+	PrecacheModel("models/bots/heavy_boss/bot_heavy_boss.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -86,7 +87,7 @@ methodmap VictoriaMowdown < CClotBody
             if(this.i_GunMode != 0)
             {
                 StopSound(this.index, SNDCHAN_STATIC, "mvm/giant_heavy/giant_heavy_gunspin.wav");
-                EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunfire.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 20, _, 0.70);
+                EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunfire.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
             }
             this.i_GunMode = 0;
         }
@@ -103,7 +104,7 @@ methodmap VictoriaMowdown < CClotBody
 
 	public VictoriaMowdown(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaMowdown npc = view_as<VictoriaMowdown>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.4", "26000", ally, .isGiant = true));
+		VictoriaMowdown npc = view_as<VictoriaMowdown>(CClotBody(vecPos, vecAng, "models/bots/heavy_boss/bot_heavy_boss.mdl", "1.4", "26000", ally, .isGiant = true));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

@@ -146,8 +146,10 @@ methodmap VictorianDroneFragments < CClotBody
 		npc.m_flMeleeArmor = 1.00;
 		npc.m_flRangedArmor = 1.00;
 		
+		ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
 		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
+		
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
 		b_IgnoreAllCollisionNPC[npc.index] = true;
@@ -256,8 +258,10 @@ methodmap VictorianDroneFragments < CClotBody
 		AcceptEntityInput(npc.m_iWearable4, "SetParent", npc.index);
 		MakeObjectIntangeable(npc.m_iWearable4);
 		
-		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
+		if(IsValidEntity(npc.m_iTeamGlow))
+			RemoveEntity(npc.m_iTeamGlow);
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		SetVariantColor(view_as<int>({229, 235, 52, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
@@ -396,7 +400,7 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 			}
 			else
 			{
-				npc.m_iAmmo = 3;
+				npc.m_iAmmo = npc.m_iMaxAmmo;
 				npc.m_flGetClosestTargetTime=0.0;
 				npc.m_bFUCKYOU = false;
 			}
@@ -493,7 +497,7 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 			}
 			else
 			{
-				npc.m_iAmmo = 3;
+				npc.m_iAmmo = npc.m_iMaxAmmo;
 				npc.m_flGetClosestTargetTime=0.0;
 				npc.m_bFUCKYOU = false;
 			}
@@ -558,7 +562,7 @@ static void VictoriaFragmentsAssaultMode(VictorianDroneFragments npc, float game
 					ShootLaser(npc.index, "bullet_tracer02_blue", origin, vecHit, false );
 					float Cooldown = 3.0;
 					if(npc.m_iAmmo < 1)
-						npc.m_iAmmo = 3;
+						npc.m_iAmmo = npc.m_iMaxAmmo;
 					else
 					{
 						npc.m_iAmmo --;

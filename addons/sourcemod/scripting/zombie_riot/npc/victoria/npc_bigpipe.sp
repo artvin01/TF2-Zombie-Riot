@@ -801,91 +801,113 @@ static int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float
 			npc.m_bReloaded = false;
 		}
 		
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
+		switch(npc.m_iChanged_WalkCycle)
 		{
-			float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
-			npc.FaceTowards(VecAim, 20000.0);
-			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-			if(IsValidEnemy(npc.index, Enemy_I_See))
+			case 1:
 			{
-				npc.m_iTarget = Enemy_I_See;
-				float RocketSpeed = 1500.0;
-				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
-				float vecDest[3];
-				vecDest = vecTarget;
-				vecDest[0] += GetRandomFloat(-50.0, 50.0);
-				vecDest[1] += GetRandomFloat(-50.0, 50.0);
-				if(npc.m_iChanged_WalkCycle==1)
+				if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 45.0))
 				{
-					float SpeedReturn[3];
-					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
-					int RocketGet = npc.FireRocket(vecDest, 0.0, RocketSpeed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl", 1.2);
-					fl_Extra_Damage[RocketGet] = fl_Extra_Damage[npc.index];
-					SDKHook(RocketGet, SDKHook_StartTouch, HEGrenade_StartTouch);
-					SetEntProp(RocketGet, Prop_Send, "m_nSkin", 1);
-					//Reducing gravity, reduces speed, lol.
-					//SetEntityGravity(RocketGet, 1.0); 	
-					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
-					ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.75, 1.0);
-					//SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
-					TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
-					Better_Gravity_Rocket(RocketGet, 55.0);
-
-					//This will return vecTarget as the speed we need.
-					npc.m_iAmmo--;
-					npc.m_flNextRangedAttack = gameTime + 0.25;
-					npc.PlayGrenadeSound();
-				}
-				else
-				{
-					int target = npc.m_iTarget;
-					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY",_,_,_,1.5);
-					Handle swingTrace;
-					if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
+					float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
+					npc.FaceTowards(VecAim, 20000.0);
+					int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+					if(IsValidEnemy(npc.index, Enemy_I_See))
 					{
-						target = TR_GetEntityIndex(swingTrace);	
-							
-						float vecHit[3];
-						TR_GetEndPosition(vecHit, swingTrace);
-						float origin[3], angles[3];
-						view_as<CClotBody>(npc.index).GetAttachment("effect_hand_r", origin, angles);
-						ShootLaser(npc.index, "bullet_tracer01_red", origin, vecHit, false);
-						if(IsValidEnemy(npc.index, target))
-						{
-							float damageDealt = 30.0;
+						npc.m_iTarget = Enemy_I_See;
+						float RocketSpeed = 1500.0;
+						float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+						float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
+						float vecDest[3];
+						vecDest = vecTarget;
+						vecDest[0] += GetRandomFloat(-50.0, 50.0);
+						vecDest[1] += GetRandomFloat(-50.0, 50.0);
+						float SpeedReturn[3];
+						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
+						int RocketGet = npc.FireRocket(vecDest, 0.0, RocketSpeed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl", 1.2);
+						fl_Extra_Damage[RocketGet] = fl_Extra_Damage[npc.index];
+						SDKHook(RocketGet, SDKHook_StartTouch, HEGrenade_StartTouch);
+						SetEntProp(RocketGet, Prop_Send, "m_nSkin", 1);
+						//Reducing gravity, reduces speed, lol.
+						//SetEntityGravity(RocketGet, 1.0); 	
+						//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
+						ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.75, 1.0);
+						//SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
+						TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+						Better_Gravity_Rocket(RocketGet, 55.0);
 
-							if(ShouldNpcDealBonusDamage(target))
-								damageDealt *= 3.0;
-
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
-						}
-						npc.PlayARSound();
-						npc.m_flNextRangedAttack = gameTime + 0.1;
+						//This will return vecTarget as the speed we need.
 						npc.m_iAmmo--;
-					}
-					delete swingTrace;
-					if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
-					{
-						//target is too far, try to close in
-						return 2;
-					}
-					else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 14.0))
-					{
-						if(Can_I_See_Enemy_Only(npc.index, target))
+						npc.m_flNextRangedAttack = gameTime + 0.25;
+						npc.PlayGrenadeSound();
+						if(!IsValidEnemy(npc.index, npc.m_iTarget))
 						{
-							//target is too close, try to keep distance
-							return 4;
+							switch(GetRandomInt(0, 2))
+							{
+								case 0:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_05-1", false, false);
+								case 1:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_05-2", false, false);
+								case 2:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_05-3", false, false);
+							}
 						}
 					}
 				}
-				if(!IsValidEnemy(npc.index, npc.m_iTarget))
+			}
+			default:
+			{
+				if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
 				{
-					switch(GetRandomInt(0, 2))
+					float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
+					npc.FaceTowards(VecAim, 20000.0);
+					int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+					if(IsValidEnemy(npc.index, Enemy_I_See))
 					{
-						case 0:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_05-1", false, false);
-						case 1:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_05-2", false, false);
-						case 2:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_05-3", false, false);
+						npc.m_iTarget = Enemy_I_See;
+						int target = npc.m_iTarget;
+						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY",_,_,_,1.5);
+						Handle swingTrace;
+						if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
+						{
+							target = TR_GetEntityIndex(swingTrace);	
+								
+							float vecHit[3];
+							TR_GetEndPosition(vecHit, swingTrace);
+							float origin[3], angles[3];
+							view_as<CClotBody>(npc.index).GetAttachment("effect_hand_r", origin, angles);
+							ShootLaser(npc.index, "bullet_tracer01_red", origin, vecHit, false);
+							if(IsValidEnemy(npc.index, target))
+							{
+								float damageDealt = 30.0;
+
+								if(ShouldNpcDealBonusDamage(target))
+									damageDealt *= 3.0;
+
+								SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
+							}
+							npc.PlayARSound();
+							npc.m_flNextRangedAttack = gameTime + 0.1;
+							npc.m_iAmmo--;
+						}
+						delete swingTrace;
+						if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
+						{
+							//target is too far, try to close in
+							return 2;
+						}
+						else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 14.0))
+						{
+							if(Can_I_See_Enemy_Only(npc.index, target))
+							{
+								//target is too close, try to keep distance
+								return 4;
+							}
+						}
+						if(!IsValidEnemy(npc.index, npc.m_iTarget))
+						{
+							switch(GetRandomInt(0, 2))
+							{
+								case 0:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_05-1", false, false);
+								case 1:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_05-2", false, false);
+								case 2:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_05-3", false, false);
+							}
+						}
 					}
 				}
 			}

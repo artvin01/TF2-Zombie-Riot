@@ -944,12 +944,12 @@ static int VictoriaBirdeyeAssaultMode(VictoriaBirdeye npc, float gameTime, int t
 				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 				{
 					target = TR_GetEntityIndex(swingTrace);	
-						
+					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-					ShootLaser(npc.m_iWearable1, "bullet_tracer01_red", origin, vecHit, false);
+					ShootLaser(npc.m_iWearable1, "bullet_tracer01_red_crit", origin, vecHit, false);
 					if(IsValidEnemy(npc.index, target))
 					{
 						float damageDealt = 195.0;

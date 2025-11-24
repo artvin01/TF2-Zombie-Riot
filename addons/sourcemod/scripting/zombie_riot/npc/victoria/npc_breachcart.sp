@@ -65,9 +65,9 @@ static void ClotPrecache()
 	PrecacheModel("models/bots/tw2/boss_bot/static_boss_tank.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaBreachcart(vecPos, vecAng, ally, data);
+	return VictoriaBreachcart(vecPos, vecAng, ally);
 }
 
 methodmap VictoriaBreachcart < CClotBody
@@ -107,7 +107,7 @@ methodmap VictoriaBreachcart < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 
-	public VictoriaBreachcart(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictoriaBreachcart(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictoriaBreachcart npc = view_as<VictoriaBreachcart>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, _, true));
 		
@@ -120,11 +120,6 @@ methodmap VictoriaBreachcart < CClotBody
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
-
-		npc.g_TimesSummoned = 0;
-
-		if(data[0])
-			npc.g_TimesSummoned = StringToInt(data);
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
@@ -150,12 +145,9 @@ methodmap VictoriaBreachcart < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/w_models/w_bat.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/sum20_hazard_headgear/sum20_hazard_headgear.mdl", .model_size=3.5);
 
-		if(npc.g_TimesSummoned == 0)
-		{
-			npc.m_iWearable2 = npc.EquipItemSeperate("models/bots/tw2/boss_bot/static_boss_tank.mdl");
-			SetVariantString("0.3");
-			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		}
+		npc.m_iWearable2 = npc.EquipItemSeperate("models/bots/tw2/boss_bot/static_boss_tank.mdl");
+		SetVariantString("0.3");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		return npc;
 
@@ -167,25 +159,6 @@ static void VictoriaBreachcart_ClotThink(int iNPC)
 	VictoriaBreachcart npc = view_as<VictoriaBreachcart>(iNPC);
 
 	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 10.0);
-
-	if(npc.g_TimesSummoned == 0)
-	{
-		if(npc.m_fbRangedSpecialOn)
-		{
-			if(!IsValidEntity(npc.m_iWearable2))
-			{
-				npc.m_iWearable2 = npc.EquipItemSeperate("models/bots/tw2/boss_bot/static_boss_tank.mdl");
-				SetVariantString("0.3");
-				AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-			}
-			else
-			{
-				float vecTarget[3];
-				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", vecTarget);
-				Custom_SDKCall_SetLocalOrigin(npc.m_iWearable2, vecTarget);
-			}
-		}
-	}
 
 	if(npc.m_blPlayHurtAnimation)
 	{

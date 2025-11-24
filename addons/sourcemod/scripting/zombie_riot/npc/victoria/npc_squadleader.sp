@@ -342,15 +342,13 @@ static int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameT
 			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 			{
 				int Enemy_I_See;
-									
 				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-						
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;
 					npc.PlayMeleeSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
-							
+					
 					npc.m_flAttackHappens = gameTime + 0.25;
 					npc.m_flDoingAnimation = gameTime + 0.25;
 					npc.m_flNextMeleeAttack = gameTime + 1.5;
@@ -391,7 +389,6 @@ static int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameT
 						float damageDealt = 40.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 8.0;
-
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 						IncreaseEntityDamageTakenBy(target, 0.1, 3.5, true);

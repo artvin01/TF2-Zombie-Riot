@@ -106,7 +106,7 @@ methodmap VictoriaMortar < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 100.0;
 		
-		npc.m_flMeleeArmor = 1.50;
+		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 0.7;
 
 		int skin = 1;
@@ -304,7 +304,7 @@ static int VictoriaMortarSelfDefense(VictoriaMortar npc, float gameTime, float d
 	//Direct mode
 	if(gameTime > npc.m_flNextRangedAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 125.0))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
 		{
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 			npc.FaceTowards(vecTarget, 20000.0);

@@ -125,7 +125,7 @@ methodmap VictorianAssaultVehicle < CClotBody
 		func_NPCOnTakeDamage[npc.index] = VictorianAssaultVehicle_OnTakeDamage;
 		func_NPCThink[npc.index] = VictorianAssaultVehicle_ClotThink;
 
-		KillFeed_SetKillIcon(npc.index, "bushwacka");
+		KillFeed_SetKillIcon(npc.index, "resurfacer");
 		npc.m_iState = 0;
 		npc.g_TimesSummoned = 0;
 		npc.m_iChanged_WalkCycle=-1;

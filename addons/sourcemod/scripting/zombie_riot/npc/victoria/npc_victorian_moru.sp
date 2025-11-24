@@ -149,8 +149,10 @@ methodmap VictorianDroneAnvil < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetParent", npc.index);
 		MakeObjectIntangeable(npc.m_iWearable2);
 		
-		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
+		if(IsValidEntity(npc.m_iTeamGlow))
+			RemoveEntity(npc.m_iTeamGlow);
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		SetVariantColor(view_as<int>({45, 237, 164, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
