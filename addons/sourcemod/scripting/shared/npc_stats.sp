@@ -3197,7 +3197,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*speed;
 		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-speed;
 
-		int entity = CreateEntityByName("zr_projectile_base");
+		int entity = CreateEntityByName("tf_projectile_rocket");
 		if(IsValidEntity(entity))
 		{
 			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];

@@ -1120,6 +1120,8 @@ enum struct Ruina_Projectiles
 				SetEntityModel(entity, ENERGY_BALL_MODEL);
 			}
 
+			Hook_DHook_UpdateTransmitState(entity);
+
 			RunScriptCode(entity, -1, -1, "self.SetMoveType(Constants.EMoveType.MOVETYPE_FLY, Constants.EMoveCollide.MOVECOLLIDE_FLY_CUSTOM)");	//do some weird script magic?
 			Custom_SetAbsVelocity(entity, Velocity);	//set speed
 			SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
@@ -1184,9 +1186,12 @@ enum struct Ruina_Projectiles
 	}
 	void Velocity(float Vel[3])
 	{
-		Vel[0] = Cosine(DegToRad(this.Angles[0]))*Cosine(DegToRad(this.Angles[1]))*this.speed;
-		Vel[1] = Cosine(DegToRad(this.Angles[0]))*Sine(DegToRad(this.Angles[1]))*this.speed;
-		Vel[2] = Sine(DegToRad(this.Angles[0]))*-this.speed;
+		float speed = this.speed;
+		Rogue_Paradox_ProjectileSpeed(this.iNPC, speed);
+
+		Vel[0] = Cosine(DegToRad(this.Angles[0]))*Cosine(DegToRad(this.Angles[1]))*speed;
+		Vel[1] = Cosine(DegToRad(this.Angles[0]))*Sine(DegToRad(this.Angles[1]))*speed;
+		Vel[2] = Sine(DegToRad(this.Angles[0]))*-speed;
 	}
 }
 void Ruina_Projectile_Touch(int entity, int target)
