@@ -921,7 +921,7 @@ void Cat_Rocket_Particle_Think(int entity)
 	{
 		ScaleVector(vecVelocity, 0.95);
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelocity);
-		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecVelocity);
+		SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecVelocity);
 	}
 	
 	KillFeed_SetKillIcon(owner, "spellbook_lightning");

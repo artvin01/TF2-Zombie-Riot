@@ -175,7 +175,7 @@ public void Weapon_Spike_Layer(int client, int weapon, bool crit, int slot)
 			Entity 69 (class 'tf_projectile_pipe_remote') reported ENTITY_CHANGE_NONE but 'm_hLauncher' changed.
 		
 		*/
-			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vel);
+			SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vel);
 
 			TeleportEntity(entity, pos, ang, NULL_VECTOR);
 			DispatchSpawn(entity);
@@ -276,7 +276,7 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, bool crit, int slot)
 			Entity 69 (class 'tf_projectile_pipe_remote') reported ENTITY_CHANGE_NONE but 'm_hLauncher' changed.
 		
 		*/
-			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vel);
+			SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vel);
 
 			TeleportEntity(entity, pos, ang, NULL_VECTOR);
 			DispatchSpawn(entity);

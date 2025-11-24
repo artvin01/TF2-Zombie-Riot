@@ -895,7 +895,7 @@ void Jester_ShootProjectile(JesterBones npc, float bombPos[3], float bombAng[3],
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
 		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
-		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+		SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
 		
 		TeleportEntity(entity, bombPos, bombAng, NULL_VECTOR, true);
 		DispatchSpawn(entity);

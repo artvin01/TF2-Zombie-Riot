@@ -1229,7 +1229,7 @@ if (IsValidEntity(prop))
 	}
 		
 	TeleportEntity(prop, pos, ang, propVel);
-	SetEntPropVector(prop, Prop_Send, "m_vInitialVelocity", propVel);
+	SetEntPropVector(prop, Prop_Data, "m_vInitialVelocity", propVel);
 	
 	if (Spin)
 	{

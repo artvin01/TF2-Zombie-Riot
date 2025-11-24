@@ -1098,7 +1098,7 @@ enum struct Ruina_Projectiles
 		if(IsValidEntity(entity))
 		{
 			this.Projectile_Index = entity;
-			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", Velocity);
+			SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", Velocity);
 
 			fl_ruina_Projectile_dmg[entity] = this.damage;
 			fl_ruina_Projectile_radius[entity] = this.radius;

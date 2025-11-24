@@ -2314,7 +2314,7 @@ int SSBChair_CreateProjectile(SSBChair owner, char model[255], float pos[3], flo
 		propVel[2] = buffer[2]*velocity;
 			
 		TeleportEntity(prop, pos, ang, propVel);
-		SetEntPropVector(prop, Prop_Send, "m_vInitialVelocity", propVel);
+		SetEntPropVector(prop, Prop_Data, "m_vInitialVelocity", propVel);
 		
 		if (h_NpcSolidHookType[prop] != 0)
 			DHookRemoveHookID(h_NpcSolidHookType[prop]);

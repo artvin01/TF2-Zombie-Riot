@@ -970,7 +970,7 @@ void HomingProjectile_TurnToTarget(int enemy, int Projectile)
 	GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", flRocketPos);
 
 	float flInitialVelocity[3];
-	GetEntPropVector(Projectile, Prop_Send, "m_vInitialVelocity", flInitialVelocity);
+	GetEntPropVector(Projectile, Prop_Data, "m_vInitialVelocity", flInitialVelocity);
 	float flSpeedInit = GetVectorLength(flInitialVelocity);
 	
 	//flTargetPos[2] += 50.0;

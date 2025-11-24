@@ -86,7 +86,6 @@ public void Enable_PurgeKit(int client, int weapon)
 			KitPurgeGiveAttributes(client, weapon, WhatTypeDo);
 			return;
 		}
-		
 	}
 	if(h_KitPurge_Timer[client] != null)
 	{

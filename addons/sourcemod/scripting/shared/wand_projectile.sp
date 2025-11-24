@@ -2,12 +2,11 @@
 #pragma newdecls required
 
 #if defined ZR || defined RPG
-static int i_ProjectileIndex;
 Function func_WandOnTouch[MAXENTITIES];
 
 void WandStocks_Map_Precache()
 {
-	i_ProjectileIndex = PrecacheModel(ENERGY_BALL_MODEL);
+	PrecacheModel(ENERGY_BALL_MODEL);
 }
 
 stock void WandProjectile_ApplyFunctionToEntity(int projectile, Function Function)
@@ -24,8 +23,9 @@ stock Function func_WandOnTouchReturn(int entity)
 void WandProjectile_GamedataInit()
 {
 	CEntityFactory EntityFactory = new CEntityFactory("zr_projectile_base", OnCreate_Proj, OnDestroy_Proj);
-	EntityFactory.DeriveFromClass("tf_projectile_rocket");
+	EntityFactory.DeriveFromClass("prop_dynamic");
 	EntityFactory.BeginDataMapDesc()
+		.DefineFloatField("m_vInitialVelocity")
 	.EndDataMapDesc(); 
 
 	EntityFactory.Install();
@@ -105,27 +105,22 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		f_WandDamage[entity] = damage;
 		i_WandIdNumber[entity] = WandId;
 		b_EntityIsArrow[entity] = true;
+		DispatchKeyValue(entity, "model", ENERGY_BALL_MODEL);
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
 		//Edit: Need owner entity, otheriwse you can actuall hit your own god damn rocket and make a ding sound. (Really annoying.)
-		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage should be nothing. if it somehow goes boom.
 		SetTeam(entity, GetTeam(client));
 		int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
-		SetEntPropVector(entity, Prop_Data, "m_angRotation", fAng); 
 		Custom_SDKCall_SetLocalOrigin(entity, fPos);
 		DispatchSpawn(entity);
-		Custom_SetAbsVelocity(entity, fVel);
-		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", fVel);
-	//	SetEntProp(entity, Prop_Send, "m_flDestroyableTime", GetGameTime());
-		//make rockets visible on spawn.
-		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", GetGameTime());
-		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
+		SetEntPropVector(entity, Prop_Send, "m_angRotation", fAng); //set it so it can be used
+		SetEntPropVector(entity, Prop_Data, "m_angRotation", fAng); 
 		
 		SetEntityCollisionGroup(entity, 27);
-		for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
-		{
-			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", i_ProjectileIndex, _, i);
-		}
+
 		SetEntityModel(entity, ENERGY_BALL_MODEL);
+		RunScriptCode(entity, -1, -1, "self.SetMoveType(Constants.EMoveType.MOVETYPE_FLY, Constants.EMoveCollide.MOVECOLLIDE_FLY_CUSTOM)");
+		Custom_SetAbsVelocity(entity, fVel);	
+		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
 
 		//Make it entirely invis. Shouldnt even render these 8 polygons.
 	//	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
@@ -172,11 +167,8 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 
 		SDKHook(entity, SDKHook_Think, ProjectileBaseThink);
 		SDKHook(entity, SDKHook_ThinkPost, ProjectileBaseThinkPost);
+		CBaseCombatCharacter(entity).SetNextThink(GetGameTime());
 
-		if(h_NpcSolidHookType[entity] != 0)
-			DHookRemoveHookID(h_NpcSolidHookType[entity]);
-		h_NpcSolidHookType[entity] = 0;
-		h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Wand_DHook_RocketExplodePre); 
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		SDKHook(entity, SDKHook_StartTouch, Wand_Base_StartTouch);
 
@@ -211,9 +203,9 @@ public void ProjectileBaseThink(int Projectile)
 	static float CurrentVelocity[3];
 	GetEntPropVector(Projectile, Prop_Data, "m_vecAbsVelocity", CurrentVelocity);
 
-	CurrentVelocity[0] *= 0.05;
-	CurrentVelocity[1] *= 0.05;
-	CurrentVelocity[2] *= 0.05;
+	CurrentVelocity[0] *= 0.02;
+	CurrentVelocity[1] *= 0.02;
+	CurrentVelocity[2] *= 0.02;
 
 	static float VecEndLocation[3];
 	VecEndLocation[0] = AbsOrigin[0] + CurrentVelocity[0];
@@ -227,22 +219,26 @@ public void ProjectileBaseThink(int Projectile)
 	delete packFilter;
 	delete trace;
 
+	bool HitWorld = false;
 	int length = Projec_HitEntitiesInTheWay.Length;
 	for (int i = 0; i < length; i++)
 	{
 		int entity_traced = Projec_HitEntitiesInTheWay.Get(i);
+		if(entity_traced == 0)
+		{
+			HitWorld = true;
+			continue;
+		}
 		Wand_Base_StartTouch(Projectile, entity_traced);
 	}
+	if(HitWorld)
+		Wand_Base_StartTouch(Projectile, 0);
 	delete Projec_HitEntitiesInTheWay;
 	
 }
 
 bool ProjectileTraceHitTargets(int entity, int contentsMask, DataPack packFilter)
 {
-	if(entity == 0)
-	{
-		return false;
-	}
 	packFilter.Reset();
 	ArrayList Projec_HitEntitiesInTheWay = packFilter.ReadCell();
 	int iExclude = packFilter.ReadCell();
@@ -258,8 +254,7 @@ bool ProjectileTraceHitTargets(int entity, int contentsMask, DataPack packFilter
 		if(!IsValidEnemy(iExclude, target, true, true))
 			target = 0;
 	}
-		
-	if(target > 0)
+	if(target > 0 || target == 0)
 	{
 		//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
 		//Add a new entity to the arrray list
@@ -270,13 +265,8 @@ bool ProjectileTraceHitTargets(int entity, int contentsMask, DataPack packFilter
 
 public void ProjectileBaseThinkPost(int Projectile)
 {
-	CBaseCombatCharacter(Projectile).SetNextThink(GetGameTime() + 0.05);
+	CBaseCombatCharacter(Projectile).SetNextThink(GetGameTime() + 0.02);
 }
-public MRESReturn Wand_DHook_RocketExplodePre(int arrow)
-{
-	return MRES_Supercede; //DONT.
-}
-
 public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pack)
 {
 	pack.Reset();

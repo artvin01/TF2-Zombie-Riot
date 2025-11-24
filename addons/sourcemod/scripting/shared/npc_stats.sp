@@ -3206,7 +3206,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, rocket_damage, true);	// Damage
 			SetTeam(entity, GetTeam(this.index));
-			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+			SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
 
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
 			DispatchSpawn(entity);
@@ -3270,7 +3270,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			fl_rocket_particle_dmg[entity] = rocket_damage;
 			fl_rocket_particle_radius[entity] = damage_radius;
 			b_rocket_particle_from_blue_npc[entity] = FromBlueNpc;
-			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+			SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
 			
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
@@ -3419,7 +3419,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
 			SetTeam(entity, GetTeam(this.index));
-			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+			SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
 			DispatchSpawn(entity);
 			if(rocket_model[0])
