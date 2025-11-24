@@ -911,7 +911,7 @@ void Blitzkrieg_Kit_OnHitEffect(int client, int target)
 				//during normal rounds make the melee deal KB
 
 				DisplayCritAboveNpc(target, client, true);
-				SensalCauseKnockback(client, target, 0.35, false);	//make them take KB but no stun
+				SensalCauseKnockback(client, target, 0.27, false);	//make them take KB but no stun
 			}
 		}
 	}
