@@ -805,7 +805,7 @@ public void Reiuji_Wand_Primary_Attack_ALT(int client, int weapon, bool crit, in
 	if(b_BarrageModeOn[client])
 	{
 		if(i_ammo[client] < projectile_amt)
-			Reiuji_Wand_AmmoMode_ALT(client, 0, 0, 0);
+			Reiuji_Wand_AmmoMode_ALT(client, 0, false, 0);
 		else
 		{
 			int sub_mana_cost = projectile_amt * mana_cost;
@@ -814,7 +814,7 @@ public void Reiuji_Wand_Primary_Attack_ALT(int client, int weapon, bool crit, in
 				SetDefaultHudPosition(client, _, _, _, 3.0);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reiuji Not Enough Mana", sub_mana_cost);
-				Reiuji_Wand_AmmoMode_ALT(client, 0, 0, 0);
+				Reiuji_Wand_AmmoMode_ALT(client, 0, false, 0);
 			}
 			else
 			{

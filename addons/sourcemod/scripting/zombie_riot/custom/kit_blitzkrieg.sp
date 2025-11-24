@@ -547,11 +547,29 @@ static void Add_One_Ammo(int entity)
 
 static void Blitzkrieg_Kit_Rocket_Fire(int client, float speed, float damage, int weapon, float fAng[3], float fPos[3])
 {
-	int projectile = Wand_Projectile_Spawn(client, speed, 30.0, damage, WEAPON_KIT_BLITZKRIEG_CORE, weapon, "", fAng, false , fPos);
+	int projectile = Wand_Projectile_Spawn(client, speed, 30.0, damage, WEAPON_KIT_BLITZKRIEG_CORE, weapon, "raygun_projectile_red_trail", fAng, false , fPos);
 
+	int particle = EntRefToEntIndex(i_WandParticle[projectile]);
+	if(IsValidEntity(particle))
+	{
+		i_OwnerEntityEnvLaser[particle] = EntIndexToEntRef(client);
+		SDKHook(particle, SDKHook_SetTransmit, TransmitToOwnerOnly);
+	}
 	ApplyCustomModelToWandProjectile(projectile, BLITZKRIEG_KIT_ROCKET_MODEL, 1.0, "");
 }
 
+public Action TransmitToOwnerOnly(int entity, int client)
+{
+	if(client > 0 && client <= MaxClients)
+	{
+		int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
+		if(owner == client)
+		{
+			return Plugin_Continue;
+		}
+	}
+	return Plugin_Stop;
+}
 
 public void Blitzkrieg_Kit_Rocket_StartTouch(int entity, int target)
 {
@@ -893,12 +911,9 @@ void Blitzkrieg_Kit_OnHitEffect(int client, int target)
 				//during normal rounds make the melee deal KB
 
 				DisplayCritAboveNpc(target, client, true);
-				SensalCauseKnockback(client, target, 1.0, false);	//make them take KB but no stun
+				SensalCauseKnockback(client, target, 0.35, false);	//make them take KB but no stun
 			}
-			
 		}
-
-		
 	}
 }
 static void spawnRing_Vector(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location

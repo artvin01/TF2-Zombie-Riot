@@ -38,13 +38,13 @@ static float QuadSinceLastRemove[MAXPLAYERS]={0.0, ...};
 #define PURGE_ENERGY_SHOTGUN 5.0
 #define PURGE_ENERGY_RIFLE 1.0
 
-#define PURGE_RAM_BASE_DMG 200.0
+#define PURGE_RAM_BASE_DMG 300.0
 #define PURGE_RAM_RADIUS 150.0
 #define PURGE_RAM_TIME 3.0
 #define PURGE_RAM_SPEED 500.0
 #define PURGE_RAM_MAX_HIT 10.0
 
-#define PURGE_QUADLAUNCHER_MAX_HOLD 10.0
+#define PURGE_QUADLAUNCHER_MAX_HOLD 7.0
 
 #define PURGE_ANNAHILATOR_ENERGY_REQUIRE 250.0
 #define PURGE_QUAD_LAUNCHER_ENERGY_REQUIRE 400.0
@@ -376,9 +376,18 @@ public void Weapon_Purging_Rampager_R(int client, int weapon, bool crit, int slo
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		return;
 	}
+	if(!(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
+		return;
+	}
 	
 	if(fl_KitPurge_Energy[client] < PURGE_QUAD_LAUNCHER_ENERGY_REQUIRE && !CvarInfiniteCash.BoolValue)
 	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "You need %.0f energy to take out QuadLauncher!", PURGE_QUAD_LAUNCHER_ENERGY_REQUIRE);
@@ -427,9 +436,18 @@ public void Weapon_Purging_Crusher_R(int client, int weapon, bool crit, int slot
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		return;
 	}
+	if(!(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
+		return;
+	}
 	
 	if(fl_KitPurge_Energy[client] < PURGE_ANNAHILATOR_ENERGY_REQUIRE && !CvarInfiniteCash.BoolValue)
 	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "You need %.0f energy to take out Annihilator!", PURGE_ANNAHILATOR_ENERGY_REQUIRE);
@@ -661,30 +679,36 @@ public Action Purging_Annahilator_damageBonus_Fade(Handle timer, DataPack pack)
 
 public Action Weapon_Purging_QuadLauncher_Remove_Later(Handle h,int ref)
 {
-	int weapon = EntRefToEntIndex(ref);
-	if(!IsValidEntity(weapon))
-	{
-		return Plugin_Stop;
-	}
-	int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
-	float ownerPos[3];
-	WorldSpaceCenter(owner, ownerPos);
-	int weaponN = Store_GiveSpecificItem(owner, "Purging Grinder");
-	TE_Particle("hightower_explosion", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = owner);
-	TE_Particle("mvm_soldier_shockwave", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-	EmitSoundToClient(owner, PURGE_EXPLOSION_SOUND, owner, SNDCHAN_AUTO, 80, _, 0.8);
-	if (IsValidEntity(weapon))
-	{
-		if(IsValidClient(owner))
-		{
-			Store_RemoveSpecificItem(owner, "Purging QuadLauncher");
-			TF2_RemoveItem(owner, weapon);
-		}
-	}
-	FakeClientCommand(owner, "use tf_weapon_fists");
-	Weapon_Purging_Crush(owner, EntIndexToEntRef(weaponN));
-	QuadLauncher_Remove_Timer[owner] = null;
-	return Plugin_Stop;
+    int weapon = EntRefToEntIndex(ref);
+    if(!IsValidEntity(weapon))
+    {
+        return Plugin_Stop;
+    }
+    int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
+    float ownerPos[3];
+    WorldSpaceCenter(owner, ownerPos);
+    bool IsDowned = (dieingstate[owner] != 0);
+    int weaponN = -1;
+    if(!IsDowned)
+        weaponN = Store_GiveSpecificItem(owner, "Purging Grinder");
+
+    TE_Particle("hightower_explosion", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = owner);
+    TE_Particle("mvm_soldier_shockwave", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+    EmitSoundToClient(owner, PURGE_EXPLOSION_SOUND, owner, SNDCHAN_AUTO, 80, _, 0.8);
+    if (IsValidEntity(weapon))
+    {
+        if(IsValidClient(owner))
+        {
+            Store_RemoveSpecificItem(owner, "Purging QuadLauncher");
+            TF2_RemoveItem(owner, weapon);
+        }
+    }
+    FakeClientCommand(owner, "use tf_weapon_fists");
+    if(!IsDowned && weaponN != -1)
+        Weapon_Purging_Crush(owner, EntIndexToEntRef(weaponN));
+
+    QuadLauncher_Remove_Timer[owner] = null;
+    return Plugin_Stop;
 }
 
 public void Weapon_Purging_Annahilator_Remove(int ref, int owner)
@@ -859,17 +883,20 @@ public Action Weapon_Purging_Crush_Think(Handle h, DataPack pack)
 		return Plugin_Continue;
 	}
 	
-	TF2_RemoveCondition(client, TFCond_LostFooting);
-	TF2_RemoveCondition(client, TFCond_AirCurrent);
-	//SetEntityGravity(client, 1.0);
-	
-	if(GetAmmo(client, 14) < 10)
-		SetAmmo(client, 14, 10);
-	
-	Store_RemoveSpecificItem(client, "Purging Grinder");
-	TF2_RemoveItem(client, weapon);
-	FakeClientCommandEx(client, "use tf_weapon_shotgun_hwg");
-	
+	if(IsValidClient(client))
+	{
+		TF2_RemoveCondition(client, TFCond_LostFooting);
+		TF2_RemoveCondition(client, TFCond_AirCurrent);
+		//SetEntityGravity(client, 1.0);
+		
+		if(GetAmmo(client, 14) < 10)
+			SetAmmo(client, 14, 10);
+		
+		Store_RemoveSpecificItem(client, "Purging Grinder");
+		if(IsValidEntity(weapon))
+			TF2_RemoveItem(client, weapon);
+		FakeClientCommandEx(client, "use tf_weapon_shotgun_hwg");
+	}
 	delete pack;
 	return Plugin_Stop;
 }
@@ -955,4 +982,7 @@ void KitPurgeGiveAttributesData(DataPack pack)
 		}
 	}
 }
+
+
+
 

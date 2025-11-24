@@ -1040,17 +1040,17 @@ static void TinkerHastyMage(int rarity, TinkerEnum tinker)
 	{
 		case 0:
 		{
-			tinker.Value[0] = 0.8 - AttackspeedLuck;
+			tinker.Value[0] = 0.8 + AttackspeedLuck;
 			tinker.Value[1] = 1.25 + MageShootExtraCost;
 		}
 		case 1:
 		{
-			tinker.Value[0] = 0.75 - AttackspeedLuck;
+			tinker.Value[0] = 0.75 + AttackspeedLuck;
 			tinker.Value[1] = 1.35 + MageShootExtraCost;
 		}
 		case 2:
 		{
-			tinker.Value[0] = 0.7 - AttackspeedLuck;
+			tinker.Value[0] = 0.7 + AttackspeedLuck;
 			tinker.Value[1] = 1.45 + MageShootExtraCost;
 		}
 	}

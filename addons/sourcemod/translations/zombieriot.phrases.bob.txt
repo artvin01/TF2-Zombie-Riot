@@ -11,6 +11,7 @@
 		"nl"	"Bob De Tweede"
 		"chi"	"鲍勃二代"
 		"it"	"Bob II"
+		"ko"	"밥 2세"
 	}
 	"Bob The Second:"
 	{
@@ -23,6 +24,7 @@
 		"nl"	"Bob De Tweede:"
 		"chi"	"鲍勃二代:"
 		"it"	"Bob II:"
+		"ko"	"밥 2세:"
 	}
 	"Pistol Ammo"
 	{
@@ -35,6 +37,7 @@
 		"nl"	"Pistool Ammunitie"
 		"chi"	"手枪弹药"
 		"it"	"Munizioni della Pistola"
+		"ko"	"권총 탄약"
 	}
 	"Bob The Second is not friendly and follows you!"
 	{
@@ -47,6 +50,7 @@
 		"nl"	"Bob De Tweede is niet vriendelijk en volgt je!"
 		"chi"	"鲍勃二代是友好的，并会跟着你！"
 		"it"	"Bob Il Secondo non è amichevole e ti segue!"
+		"ko"	"밥 2세는 당신과 친하지 않지만 당신을 따라갑니다!"
 	}
 	"Use voice Commands to command him!"
 	{
@@ -59,6 +63,7 @@
 		"nl"	"Gebruik Stemcommando's om commando's te geven aan hem!"
 		"chi"	"使用语音指令来命令鲍勃"
 		"it"	"Usa i comandi vocali per dargli ordini!"
+		"ko"	"음성 명령을 사용하여 그에게 명령을 내리세요!"
 	}
 	"Bob The Second is friendly and follows you!"
 	{
@@ -71,6 +76,7 @@
 		"nl"	"Bob De Tweede is vriendelijk en volgt je!"
 		"chi"	"鲍勃二代不是友好的，但会跟着你！"
 		"it"	"Bob Il Secondo è amichevole e ti segue!"
+		"ko"	"밥 2세는 당신과 친하며 당신을 따라갑니다!"
 	}
 	"Bob The Second is not friendly and doesn't follow you!"
 	{
@@ -83,6 +89,7 @@
 		"nl"	"Bob De Tweede is niet vriendelijk en volgt je niet!"
 		"chi"	"鲍勃二代不是友好的，也不会跟着你！"
 		"it"	"Bob Il Secondo non è amichevole e non ti segue!"
+		"ko"	"밥 2세는 당신과 친하지 않으며 당신을 따라오지 않습니다!"
 	}
 	"Bob The Second is friendly and doesn't follow you!"
 	{
@@ -95,6 +102,7 @@
 		"nl"	"Bob De Tweede is vriendelijk en volgt je niet!"
 		"chi"	"鲍勃二代是友好的，但不会跟着你！"
 		"it"	"Bob Il Secondo è amichevole e non ti segue!"
+		"ko"	"밥 2세는 당신과 친하지만 당신을 따라오지 않습니다!"
 	}
 	"Bob The Second is not friendly and follows you! BUT stands still."
 	{
@@ -107,6 +115,7 @@
 		"nl"	"Bob De Tweede is niet vriendelijk en volgt je! MAAR staat stil."
 		"chi"	"鲍勃二代不是友好的，会跟着你，并且坚守此地！"
 		"it"	"Bob Il Secondo non è amichevole e ti segue! MA rimane fermo."
+		"ko"	"밥 2세는 당신과 친하지 않지만 당신을 따를 것이며, 자리에 머무를 것입니다."
 	}
 	"Bob The Second is friendly and follows you! BUT stands still"
 	{
@@ -119,6 +128,7 @@
 		"nl"	"Bob De Tweede is vriendelijk en volgt je! MAAR staat stil."
 		"chi"	"鲍勃二代是友好的，会跟着你，并且坚守此地！"
 		"it"	"Bob Il Secondo non è amichevole e ti segue! MA rimane fermo."
+		"ko"	"밥 2세는 당신과 친하고 당신을 따를 것이며, 자리에 머무를 것입니다."
 	}
 	"Bob The Second is not friendly and doesn't follow you! BUT stands still"
 	{
@@ -131,6 +141,7 @@
 		"nl"	"Bob De Tweede is niet vriendelijk en volgt je niet! MAAR staat stil."
 		"chi"	"鲍勃二代不是友好的，不会跟着你，但会坚守此地！"
 		"it"	"Bob Il Secondo non è amichevole e non ti segue! MA rimane fermo."
+		"ko"	"밥 2세는 당신과 친하지 않으며 당신을 따라오지 않지만, 자리에 머무를 것입니다."
 	}
 	"Bob The Second is friendly and doesn't follow you! BUT stands still"
 	{
@@ -143,6 +154,7 @@
 		"nl"	"Bob De Tweede is vriendelijk en volgt je niet! MAAR staat stil."
 		"chi"	"鲍勃二代是友好的，不会跟着你，但会坚守此地！"
 		"it"	"Bob Il Secondo è amichevole e non ti segue! MA rimane fermo."
+		"ko"	"밥 2세는 당신과 친하지만 당신을 따라오지 않고, 자리에 머무를 것입니다."
 	}
 
 
@@ -157,6 +169,7 @@
 		"nl"	"Ik heb ze!"
 		"chi"   "解决了！"
 		"it"	"Li ho presi!"
+		"ko"	"알겠습니다!"
 	}
 	"Take This!"
 	{
@@ -169,6 +182,7 @@
 		"nl"	"Pak aan!"
 		"chi"   "接招！"
 		"it"	"Prendi questo!"
+		"ko"	"받으시죠!"
 	}
 	"I'll stand beside you, sir!"
 	{
@@ -181,6 +195,7 @@
 		"nl"	"Ik sta naast je, heer!"
 		"chi"   "放心，我会在你身边的！"
 		"it"	"Sarò al suo fianco, signore!"
+		"ko"	"당신 옆에 있겠습니다!"
 	}
 	"I'll guard you, sir!"
 	{
@@ -193,6 +208,7 @@
 		"nl"	"Ik bescherm je, heer!"
 		"chi"   "我会保护你的，先生!"
 		"it"	"La proteggerò, signore!"
+		"ko"	"당신을 지켜드리겠습니다!"
 	}
 	"I'm pretty bored..."
 	{
@@ -205,6 +221,7 @@
 		"nl"	"Ik verveel me..."
 		"chi"   "好无聊..."
 		"it"	"Sono piuttosto annoiato..."
+		"ko"	"좀 지루하군요..."
 	}
 	"Reloading near you, sir!"
 	{
@@ -217,6 +234,7 @@
 		"nl"	"Ik herlaad dicht bij je, heer!"
 		"chi"   "装弹中!"
 		"it"	"Ricarica in corso, signore!"
+		"ko"	"저 지금 재장전 중입니다!"
 	}
 	"I hope your day is going well!"
 	{
@@ -229,6 +247,7 @@
 		"nl"	"Ik hoop dat uw dag goed aan het verlopen is!"
 		"chi"   "祝你今天过得愉快!"
 		"it"	"Spero che la tua giornata stia andando bene!"
+		"ko"	"오늘 하루 잘 보내시길 바랍니다!"
 	}
 	"Sometimes i wonder why this war exists."
 	{
@@ -241,6 +260,7 @@
 		"nl"	"Soms vraag ik me af waarom deze oorlog bestaat."
 		"chi"   "有时我想知道这场战争的意义。"
 		"it"	"A volte mi chiedo perché esista questa guerra."
+		"ko"	"가끔씩 이 전쟁이 도대체 왜 존재하는지 알 수가 없군요."
 	}
 	"Just saying, never give up!"
 	{
@@ -253,6 +273,7 @@
 		"nl"	"Ik zeg maar, geef niet op!"
 		"chi"   "永不放弃!"
 		"it"	"Dico solo questo: non mollare mai!"
+		"ko"	"우린 절대 포기하지 맙시다!"
 	}
 	"Could i borrow your gun perhaps?"
 	{
@@ -265,6 +286,7 @@
 		"nl"	"Mag ik je wapen lenen misschien?"
 		"chi"   "我能借下你的枪吗?"
 		"it"	"Potrei prendere in prestito la tua pistola, per favore?"
+		"ko"	"혹시 당신의 총을 빌려도 되겠습니까?"
 	}
 	"Im pretty confident in my abilities!"
 	{
@@ -277,6 +299,7 @@
 		"nl"	"Ik ben redelijk zelfzeker van mijn vaardigheden!"
 		"chi"   "我对自己的能力很有信心!"
 		"it"	"Sono piuttosto fiducioso nelle mie capacità!"
+		"ko"	"이래봬도 전 제 자신의 능력에 자신이 있습니다!"
 	}
 	"Pick up that can."
 	{
@@ -289,6 +312,7 @@
 		"nl"	"Pak dat blik op."
 		"chi"   "捡起那个罐子。"
 		"it"	"Prendi quella lattina."
+		"ko"	"저 캔을 집으시죠."
 	}
 	"On my way, sir!"
 	{
@@ -301,6 +325,7 @@
 		"nl"	"Ik kom eraan, heer!"
 		"chi"   "马上来!"
 		"it"	"Sto arrivando, signore!"
+		"ko"	"가는 중입니다!"
 	}
 	"Im watching there, dont worry!"
 	{
@@ -313,6 +338,7 @@
 		"nl"	"Ik wacht hier, geen zorgen!"
 		"chi"   "我正在看呢，别担心!"
 		"it"	"Sto guardando lì, non preoccuparti!"
+		"ko"	"걱정 마시죠, 제가 저 곳을 감시할테니!"
 	}
 	"Spy? I'm keeping my eye there."
 	{
@@ -325,6 +351,7 @@
 		"nl"	"Spion? Ik hou mijn ogen daar wel op."
 		"chi"   "间谍?我会盯着那里的!"
 		"it"	"Spia? Terrò d'occhio la situazione."
+		"ko"	"스파이라고요? 제가 저 곳을 감시하겠습니다."
 	}
 	"Sentry here? Its better to wait for teammates to engage so i'll look."
 	{
@@ -336,6 +363,7 @@
 		"pt"	"Sentinela Aqui? É melhor esperar o resto dos aliados antes de entrar em combate então ficarei de olho."
 		"nl"	"Schildwacht hier? Het is beter om te wachten tot teamgenoten aanvallen, dus ik kijk wel."
 		"it"	"Sentinella qui? È meglio aspettare che i compagni di squadra entrino in azione, quindi mi guarderò intorno."
+		"ko"	"여기 센트리? 팀원들이 교전할 때까지 기다리는 게 낫겠어, 내가 주변을 살펴볼게."
 	}
 	"I cant build a teleporter, sorry."
 	{
@@ -348,6 +376,7 @@
 		"nl"	"Ik kan geen teleporter plaatsen, sorry."
 		"chi"   "我不会造传送器，抱歉..."
 		"it"	"Non posso costruire un teletrasporto, mi dispiace."
+		"ko"	"죄송하지만 전 텔레포터를 건설할 수 없어요."
 	}
 	"I cant build a dispenser, sorry."
 	{
@@ -360,6 +389,7 @@
 		"nl"	"Ik kan geen dispenser plaatsen, sorry."
 		"chi"   "对不起，我不能造一个补给器。"
 		"it"	"Non posso costruire un distributore, mi dispiace."
+		"ko"	"죄송하지만 전 디스펜서를 건설할 수 없어요."
 	}
 	"I cant build a sentry, sorry."
 	{
@@ -372,6 +402,7 @@
 		"nl"	"Ik kan geen schildwacht plaatsen, sorry."
 		"chi"   "对不起，我不能造一个炮台....."
 		"it"	"Non posso costruire una sentinella, mi dispiace."
+		"ko"	"죄송하지만 전 센트리 건을 건설할 수 없어요."
 	}
 	"I can't give you ubercharge..."
 	{
@@ -384,6 +415,7 @@
 		"nl"	"Ik kan geen Uberlading aan je geven..."
 		"chi"   "我给不了你ubercharge...."
 		"it"	"Non posso darti l'ubercarica..."
+		"ko"	"죄송하지만 전 당신에게 우버차지를 줄 수 없습니다..."
 	}
 	"Standing right here!"
 	{
@@ -396,6 +428,7 @@
 		"nl"	"Ik sta hier wel!"
 		"chi"   "就站在这里!"
 		"it"	"Sono proprio qui!"
+		"ko"	"여기에 서있겠습니다!"
 	}
 	"I'm on my move again!"
 	{
@@ -408,6 +441,7 @@
 		"nl"	"Ik ga weer bewegen!"
 		"chi"   "我要行动了!"
 		"it"	"Sono di nuovo in movimento!"
+		"ko"	"다시 이동하겠습니다!"
 	}
 	"I am coming !"
 	{
@@ -420,6 +454,7 @@
 		"nl"	"Ik kom!"
 		"chi"   "我来了!"
 		"it"	"Sto arrivando!"
+		"ko"	"제가 가고 있습니다!"
 	}
 	"I'm already here!"
 	{
@@ -432,6 +467,7 @@
 		"nl"	"Ik ben hier al!"
 		"chi"   "我已经在这里了!"
 		"it"	"Sono già qui!"
+		"ko"	"전 이미 여기 있습니다!"
 	}
 	"Follow? Sure!"
 	{
@@ -444,6 +480,7 @@
 		"nl"	"Volgen? Zeker!"
 		"chi"   "跟随你？好的！"
 		"it"	"Seguirti? Certo!"
+		"ko"	"따라오라고요? 물론이죠!"
 	}
 	"My left or yours?"
 	{
@@ -456,6 +493,7 @@
 		"nl"	"Mijn linkse of de jouwe?"
 		"chi"   "我的左手还是你的左手?"
 		"it"	"La mia sinistra o la tua?"
+		"ko"	"제 기준으로 왼쪽인 겁니까, 아니면 당신 기준으로 왼쪽인 겁니까?"
 	}
 	"My right or yours?"
 	{
@@ -468,6 +506,7 @@
 		"nl"	"Mijn rechtse of de jouwe?"
 		"chi"   "我的y右手还是你的右手?"
 		"it"	"Il mio destro o il tuo?"
+		"ko"	"제 기준으로 오른쪽인 겁니까, 아니면 당신 기준으로 오른쪽인 겁니까?"
 	}
 	"Cheers to you too, like a drink, get it?"
 	{
@@ -480,6 +519,7 @@
 		"nl"	"Proost voor je ook, zoals een drankje, snap je het?"
 		"chi"   "干杯,你也喜欢喝一杯,明白了吗?"
 		"it"	"Salute anche a te, come un brindisi, capito?"
+		"ko"	"예, 격려 감사합니다. 이럴땐 한 잔 해야죠, 안 그래요?"
 	}
 	"Ah come on, lighten your mood!"
 	{
@@ -492,6 +532,7 @@
 		"nl"	"Oh kom aan dan, licht wat op!"
 		"chi"   "啊，来吧，放松一下心情!"
 		"it"	"Dai, rilassati un po'!"
+		"ko"	"오 이런, 기운 좀 차려봐요!"
 	}
 	"Positivity is the way to go!"
 	{
@@ -504,6 +545,7 @@
 		"nl"	"Positief denken is de manier om voort te gaan!"
 		"chi"   "积极向上才是正确的方向!"
 		"it"	"La positività è la strada da seguire!"
+		"ko"	"긍정적인건 언제나 옳죠!"
 	}
 	"Why negative? Nothing to worry about!"
 	{
@@ -516,6 +558,7 @@
 		"nl"	"Waarom negatief? Er is niets om je zorgen over te maken!"
 		"chi"   "为什么emo?没什么好担心的!"
 		"it"	"Perché negativo? Non c'è nulla di cui preoccuparsi!"
+		"ko"	"왜 이리 부정적이시죠? 걱정할 거 하나도 없습니다!"
 	}
 	"Not Follow? Sure!"
 	{
@@ -528,6 +571,7 @@
 		"nl"	"Niet volgen? Zeker!"
 		"chi"   "不跟着你？好的！"
 		"it"	"Non seguire? Certo!"
+		"ko"	"따라오지 말라고요? 알겠습니다!"
 	}
 	"I'll hurt no one!"
 	{
@@ -540,6 +584,7 @@
 		"nl"	"Ik doe niemand pijn!"
 		"chi"   "我不会伤害任何人!"
 		"it"	"Non farò del male a nessuno!"
+		"ko"	"아무도 다치지 않게 하겠습니다!"
 	}
 	"I'll attack once more!"
 	{
@@ -552,6 +597,7 @@
 		"nl"	"Ik val nogmaals aan!"
 		"chi"   "我会再次攻击!"
 		"it"	"Attaccherò ancora una volta!"
+		"ko"	"다시 전투를 시작하겠습니다!"
 	}
 	"I try my best to aim well!"
 	{
@@ -564,6 +610,7 @@
 		"nl"	"Ik probeer mijn best om te mikken!"
 		"chi"   "我尽我所能瞄准!"
 		"it"	"Faccio del mio meglio per mirare bene!"
+		"ko"	"최선을 다 해서 조준하겠습니다!"
 	}
 	"You are doing a good job aswell!"
 	{
@@ -575,6 +622,7 @@
 		"nl"	"Je doet ook uw best!"
 		"chi"   "你也做得很好!"
 		"it"	"Anche tu stai facendo un ottimo lavoro!"
+		"ko"	"당신도 정말 잘 하셨습니다!"
 	}
 	"Here, have this medkit!"
 	{
@@ -587,6 +635,7 @@
 		"nl"	"Hier, een Medikit!"
 		"chi"   "给，拿着这个医疗包!"
 		"it"	"Tieni, prendi questo kit di pronto soccorso!"
+		"ko"	"여기, 치료킷을 받으시죠!"
 	}
 	"Sorry, i dont have a medkit on me..."
 	{
@@ -599,6 +648,7 @@
 		"nl"	"Sorry, ik heb geen medikit bij me..."
 		"chi"   "对不起，我身上没带医疗包......"
 		"it"	"Mi dispiace, non ho un kit di pronto soccorso con me"
+		"ko"	"죄송하지만 저한텐 치료킷이 없습니다..."
 	}
 	"Sorry, i dont have a medkit on me, please wait."
 	{
@@ -611,6 +661,7 @@
 		"nl"	"Sorry, ik heb geen medikit bij me, wacht alstublieft."
 		"chi"   "对不起，我身上没带医疗包...请稍等"
 		"it"	"Mi dispiace, non ho un kit di pronto soccorso con me, attendi."
+		"ko"	"죄송하지만 저한텐 치료킷이 없습니다... 조금만 기다리세요."
 	}
 	"I do not have a medkit."
 	{
@@ -623,6 +674,7 @@
 		"nl"	"Ik heb geen medikit."
 		"chi"   "我没有医疗包。"
 		"it"	"Non ho un kit di pronto soccorso."
+		"ko"	"저한테 치료킷이 없습니다."
 	}
 	"I dont have a medkit, have patience."
 	{
@@ -635,6 +687,7 @@
 		"nl"	"Ik heb geen medikit, heb geduld."
 		"chi"   "我没有医疗箱，耐心点。"
 		"it"	"Non ho un kit medico, abbi pazienza."
+		"ko"	"저한테 치료킷이 없다니까요, 좀만 참아봐요."
 	}
 	"I told you i do not have a medikit!!!"
 	{
@@ -647,6 +700,7 @@
 		"nl"	"Ik zeg je toch dat ik geen medikit heb!!!"
 		"chi"   "我告诉过你我没有医疗包!!"
 		"it"	"Ti ho detto che non ho un kit di pronto soccorso!!!"
+		"ko"	"전 치료킷이 없다고 몇 번을 말해야됩니까!!!"
 	}
 	"Youre too far away!"
 	{
@@ -659,6 +713,7 @@
 		"nl"	"Je bent te ver weg!"
 		"chi"   "你离得太远了!"
 		"it"	"Sei troppo lontano!"
+		"ko"	"너무 멀리 계시는군요!"
 	}
 	"This can't be..."
 	{
@@ -671,6 +726,7 @@
 		"nl"	"Dit kan niet waar zijn..."
 		"chi"   "怎么会这样..."
 		"it"	"Non può essere..."
+		"ko"	"어떻게 이런 일이..."
 	}
 	"I will protect you!"
 	{
@@ -683,6 +739,7 @@
 		"nl"	"Ik bescherm je!"
 		"chi"   "我会保护你的!"
 		"it"	"Ti proteggerò!"
+		"ko"	"당신을 지키겠습니다!"
 	}
 	"You told me to be friendly."
 	{
@@ -695,6 +752,7 @@
 		"nl"	"Je vertelde mij om vriendelijk te zijn. Ik val ze niet aan maar ik hou ze wel in mijn achterhoofd..."
 		"chi"   "你告诉过我要友好的。所以我不会攻击他们。但我会记住他们……"
 		"it"	"Mi hai detto di essere gentile."
+		"ko"	"저 놈들을 공격하지 말라고 하셨으니까, 공격하지 않겠습니다만, 저 놈들을 계속 지켜보겠습니다..."
 	}
 	"I'm glad to help!"
 	{
@@ -705,5 +763,6 @@
 		"nl"	"Ik ben blij om te helpen!"
 		"chi"   "我很乐意帮忙!"
 		"it"	"Sono felice di aiutarti!"
+		"ko"	"당신을 도와드릴 수 있어서 기쁩니다!"
 	}
 }

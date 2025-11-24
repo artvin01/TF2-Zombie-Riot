@@ -20,7 +20,7 @@ static int i_Max_ION_Hit = 5;
 
 static float fl_Sigil_Melee_Range = 130.0;
 static float fl_Sigil_Crystal_ManaCost_Percent = 0.35;
-static float fl_Sigil_Crystal_LifeSpan = 6.0;
+static float fl_Sigil_Crystal_LifeSpan = 8.0;
 static float fl_Sigil_Crystal_Spawn_Cooldown = 180.0;
 //static float fl_Slash_ManaCost_Max_Percent = 0.5;
 static float fl_Slash_Time_Max = 3.0;
@@ -308,6 +308,7 @@ public void Weapon_Sigil_Blade_M2(int client, int weapon, bool crit, int slot)
 			pack.WriteCell(GetClientUserId(client));
 			pack.WriteCell(EntIndexToEntRef(i_Sigil[client]));
 			pack.WriteCell(EntIndexToEntRef(i_Sigil_Prop[client]));
+			pack.WriteCell(EntIndexToEntRef(weapon));
 			pack.WriteCell(0);
 			
 			fl_Slash_duration[client] = GetGameTime() + fl_Slash_Time_Max;
@@ -451,6 +452,12 @@ public void Weapon_Sigil_Blade_R(int client, int weapon, bool crit, int slot)
 			float speed = 750.0;
 			ScaleVector(velocity, speed);
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+
+			int trail = EntRefToEntIndex(i_Sigil_Slash_Trail[client]);
+			if(IsValidEntity(trail))
+			{
+				RemoveEntity(trail);
+			}
 
 			int entIndex = CreateEntityByName("env_spritetrail");
 			if (entIndex > 0 && IsValidEntity(entIndex))
@@ -723,7 +730,7 @@ public Action Sigil_Crystal_Teleport_H(Handle h, DataPack pack)
 		i_Sigil[client] = 0;
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "You back to sigil.");
+		ShowSyncHudText(client, SyncHud_Notifaction, "You are back to sigil.");
 		float clientVel[3];
 		GetEntPropVector(client, Prop_Data, "m_vecVelocity", clientVel);
 		TeleportEntity(client, fl_Sigilpos[client], NULL_VECTOR, clientVel);
@@ -743,6 +750,7 @@ public void Sigil_Crystal_Teleport(DataPack pack)
 	int client = GetClientOfUserId(pack.ReadCell());
 	int projectile = EntRefToEntIndex(pack.ReadCell());
 	int prop = EntRefToEntIndex(pack.ReadCell());
+	int weapon = EntRefToEntIndex(pack.ReadCell());
 	int time = pack.ReadCell();
 	
 	if(time < 2)
@@ -765,6 +773,9 @@ public void Sigil_Crystal_Teleport(DataPack pack)
 	if(IsValidEntity(projectile))
 	{
 		RemoveEntity(projectile);
+		//float crystalAngles[3];
+		
+		//GetEntPropVector(prop, Prop_Data, "m_angRotation", crystalAngles);
 		
 		if(IsValidEntity(prop))
 			RemoveEntity(prop);
@@ -772,9 +783,10 @@ public void Sigil_Crystal_Teleport(DataPack pack)
 		i_Sigil[client] = 0;
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "You back to sigil.");
+		ShowSyncHudText(client, SyncHud_Notifaction, "You are back to sigil.");
 		float clientVel[3];
 		GetEntPropVector(client, Prop_Data, "m_vecVelocity", clientVel);
+		Sigil_Teleport_Damage(client, weapon, fl_Sigilpos[client]);
 		TeleportEntity(client, fl_Sigilpos[client], NULL_VECTOR, clientVel);
 		ParticleEffectAt(fl_Sigilpos[client], "teleportedin_red", 1.0);
 		Ability_Apply_Cooldown(client, 2, fl_Sigil_Crystal_Spawn_Cooldown);
@@ -783,6 +795,45 @@ public void Sigil_Crystal_Teleport(DataPack pack)
 		//EmitSoundToClient(client, g_SIGIL_CRYSTAL[0], client, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	delete pack;
+}
+
+static void Sigil_Teleport_Damage(int client, int weapon, float crystalAngles[3])
+{
+	if(!IsValidClient(client) || !IsPlayerAlive(client))
+		return;
+
+	if(!IsValidEntity(weapon))
+		return;
+	
+	float vecMe[3]; WorldSpaceCenter(client, vecMe);//GetClientEyePosition(client, vecMe);
+	int max_hit_targets = 3;
+	
+	Player_Laser_Logic Laser;
+	Laser.client = client;
+	Laser.Start_Point = vecMe;
+	Laser.End_Point = crystalAngles;
+	Laser.Radius = 25.0;
+	Laser.Damage = Sigil_TeleDamage(weapon);
+	Laser.max_targets = max_hit_targets;
+	//Laser.DoForwardTrace_Custom(crystalAngles, vecMe);
+	//Laser.Enumerate_Simple();
+	Laser.Deal_Damage(Sigil_Tele_Effect);
+}
+
+static void Sigil_Tele_Effect(int client, int victims, int damagetype, float &damage)
+{
+	float clientEyePos[3], vecEnemy[3];
+	float angle[3];
+	angle[0] = 0.0;angle[1] = GetRandomFloat(-180.0,180.0);angle[2] = 0.0;
+	GetClientEyePosition(client, clientEyePos); WorldSpaceCenter(victims, vecEnemy);
+	Weapon_Sigil_Blade_Hit_Target_Effect(victims, clientEyePos, angle, vecEnemy);
+}
+
+static float Sigil_TeleDamage(int weapon)
+{
+	float dmg = 100.0;//Blame pandora if it is too much. it was originally 65
+	dmg *= Attributes_Get(weapon, 410, 1.0);
+	return dmg;
 }
 
 public void Weapon_Sigil_Blade_Manaflow(int attacker, int victim, int weapon)
@@ -806,13 +857,20 @@ public void Weapon_Sigil_Blade_Manaflow(int attacker, int victim, int weapon)
 
 	float Thickness = 6.0;
 	TE_SetupBeamRingPoint(end_point, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.75, i_sigil_colorInner, 1, 0);
-	TE_SendToAll();
+	Send_Te_Client_ZR(attacker);
 	TE_SetupBeamRingPoint(end_point, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.1, i_sigil_color, 1, 0);
-	TE_SendToAll();
+	Send_Te_Client_ZR(attacker);
 
 	EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_SPAWN, attacker, SNDCHAN_STATIC, SNDLEVEL_NORMAL, _, 1.0);
-
-	Ruina_IonSoundInvoke(end_point);
+	if(LastMann)
+	{
+		Ruina_IonSoundInvoke(end_point);
+	}
+	else
+	{
+		EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+		EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+	}
 
 	DataPack pack;
 	CreateDataTimer(time, Sigil_Blade_Manaflow_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -864,10 +922,18 @@ Action Sigil_Blade_Manaflow_Ion(Handle Timer, DataPack data)
 	
 	float Thickness = 6.0;
 	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.75, Thickness, 0.75, i_sigil_color, 1, 0);
-	TE_SendToAll();
-
-	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
-	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+	Send_Te_Client_ZR(attacker);//Why isn't this in stock folder?
+	if(LastMann)
+	{
+		EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+		EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+	}
+	else
+	{
+		EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+		EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+	}
+	
 	
 	EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_ATTACK);
 	EmitSoundToClient(attacker, RUINA_ION_CANNON_SOUND_ATTACK);
@@ -908,7 +974,7 @@ Action Sigil_Blade_Manaflow_Ion(Handle Timer, DataPack data)
 
 	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=1000.0; end_point[2]-=100.0;
 
-	int laser;
+	/*int laser;
 	laser = ConnectWithBeam(-1, -1, i_sigil_color[0], i_sigil_color[1], i_sigil_color[2], 7.0, 7.0, 1.0, BEAM_COMBINE_BLACK, end_point, Sky_Loc);
 	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 	laser = ConnectWithBeam(-1, -1, i_sigil_color[0], i_sigil_color[1], i_sigil_color[2], 5.0, 5.0, 0.1, LASERBEAM, end_point, Sky_Loc);
@@ -916,7 +982,7 @@ Action Sigil_Blade_Manaflow_Ion(Handle Timer, DataPack data)
 
 	int particle = ParticleEffectAt(Sky_Loc, "kartimpacttrail", 1.0);
 	SetEdictFlags(particle, (GetEdictFlags(particle) | FL_EDICT_ALWAYS));	
-	CreateTimer(0.25, Nearl_Falling_Shot, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.25, Nearl_Falling_Shot, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);*/
 
 	return Plugin_Stop;
 }
@@ -1099,4 +1165,8 @@ bool Sigil_LastMann(int client)
 	return SigilTHEME;
 }
 
+
 */
+
+
+
