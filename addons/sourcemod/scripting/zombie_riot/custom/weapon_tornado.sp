@@ -1,12 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int i_tornado_index[MAXENTITIES+1];
-static int i_tornado_wep[MAXENTITIES+1];
-static float fl_tornado_dmg[MAXENTITIES+1];
-static int g_ProjectileModel;
-
-
 static int i_RocketsSaved[MAXENTITIES+1];
 static int i_RocketsSavedMax[MAXENTITIES+1];
 
@@ -44,10 +38,6 @@ public void Weapon_Tornado_Blitz_Precache()
 	PrecacheSound(SOUND_IMPACT_5);
 	PrecacheSound(")weapons/doom_rocket_launcher.wav");
 	Zero(HudCooldown);
-	
-	static char model[PLATFORM_MAX_PATH];
-	model = "models/weapons/w_bullet.mdl";
-	g_ProjectileModel = PrecacheModel(model);
 }
 float Tornado_WeaponSavedAttribute[MAXPLAYERS+1];
 public void Enable_TornadoBlitz(int client, int weapon)
@@ -186,86 +176,34 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 
 void BlitzRocket(int client, float speed, float damage, int weapon)
 {
-	float fAng[3], fPos[3];
+	float fAng[3];
 	GetClientEyeAngles(client, fAng);
-	GetClientEyePosition(client, fPos);
-	
+
+	float ModelSizeAdd = 2.0;
 	if(bl_tornado_barrage_mode[client])	//we randomise the barrage so it doesn't become a direct upgrade.
 	{
 		fAng[0] = fAng[0]+GetRandomFloat(-6.0,6.0);
 		fAng[1] = fAng[1]+GetRandomFloat(-6.0,6.0);
 		fAng[2] = fAng[2]+GetRandomFloat(-0.25,0.25);
+
+		ModelSizeAdd = 2.0;
 	}
-
-
-	float tmp[3];
-	float actualBeamOffset[3];
-	float BEAM_BeamOffset[3];
-	BEAM_BeamOffset[0] = 0.0;
-	BEAM_BeamOffset[1] = -8.0;
-	BEAM_BeamOffset[2] = -10.0;
-
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(tmp, fAng, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	fPos[0] += actualBeamOffset[0];
-	fPos[1] += actualBeamOffset[1];
-	fPos[2] += actualBeamOffset[2];
-
-
-	float fVel[3], fBuf[3];
-	GetAngleVectors(fAng, fBuf, NULL_VECTOR, NULL_VECTOR);
-	fVel[0] = fBuf[0]*speed;
-	fVel[1] = fBuf[1]*speed;
-	fVel[2] = fBuf[2]*speed;
-
-	int entity = CreateEntityByName("zr_projectile_base");
-	if(IsValidEntity(entity))
+	else
 	{
-		fl_tornado_dmg[entity]=damage;
-		i_tornado_wep[entity]=EntIndexToEntRef(weapon);
-		i_tornado_index[entity]=EntIndexToEntRef(client);
-		b_EntityIsArrow[entity] = true;
-		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
-		
-		SetTeam(entity, GetTeam(client));
-		int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
-		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
-		DispatchSpawn(entity);
-		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
-		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", GetGameTime());
-		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
-		for(int i; i<4; i++)
-		{
-			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
-		}
-		float ModelSizeAdd = 2.0;
-		if(bl_tornado_barrage_mode[client])	//we make the rocket smaller on barrage mode.
-		{
-			ModelSizeAdd = 2.0;
-		}
-		else
-		{
-			ModelSizeAdd = 3.0;
-		}
-		if(h_NpcSolidHookType[entity] != 0)
-			DHookRemoveHookID(h_NpcSolidHookType[entity]);
-		h_NpcSolidHookType[entity] = 0;
-		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Tornado_RocketExplodePre); //In this case I reused code that was reused due to laziness, I am the ultiamte lazy. *yawn*
-		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-		SDKHook(entity, SDKHook_StartTouch, Tornado_Blitz_StartTouch);
-		ApplyCustomModelToWandProjectile(entity, "models/weapons/w_bullet.mdl", ModelSizeAdd, "");
+		ModelSizeAdd = 3.0;
 	}
-	return;
+
+	int projectile = Wand_Projectile_Spawn(client, speed, 10.0, damage, 0, weapon, "", fAng);
+
+	if(!IsValidEntity(projectile))
+		return;
+
+	WandProjectile_ApplyFunctionToEntity(projectile, Tornado_Blitz_StartTouch);
+
+	ApplyCustomModelToWandProjectile(projectile, "models/weapons/w_bullet.mdl", ModelSizeAdd, "");
+
 }
-public MRESReturn Tornado_RocketExplodePre(int entity)
-{
-	//CPrintToChatAll("explode pre");
-	return MRES_Supercede;
-}
-public void Tornado_Blitz_StartTouch(int entity, int other)
+static void Tornado_Blitz_StartTouch(int entity, int other)
 {
 	int target = Target_Hit_Wand_Detection(entity, other);
 	if (target > 0)	
@@ -278,15 +216,15 @@ public void Tornado_Blitz_StartTouch(int entity, int other)
 		static float Entity_Position[3];
 		WorldSpaceCenter(target, Entity_Position);
 		
-		int owner = EntRefToEntIndex(i_tornado_index[entity]);
-		int weapon = EntRefToEntIndex(i_tornado_wep[entity]);
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
 		float pos1[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 		TE_ParticleInt(g_particleImpactTornado, pos1);
 		TE_SendToAll();
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(target, owner, owner, fl_tornado_dmg[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		//CPrintToChatAll("sdk_dmg");
 		

@@ -450,7 +450,7 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 		Overheat = 0.0;
 	else RocketDMG*=0.5;
 	VictoriaLauncher_HUDDelay[client]=0.0;
-	int entity = CreateEntityByName("zr_projectile_base");
+	int entity = CreateEntityByName("tf_projectile_rocket");
 	if(IsValidEntity(entity))
 	{
 		bHESH_BIG_BOOM[entity]=false;
@@ -513,7 +513,7 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 		if(h_NpcSolidHookType[entity] != 0)
 			DHookRemoveHookID(h_NpcSolidHookType[entity]);
 		h_NpcSolidHookType[entity] = 0;
-		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Tornado_RocketExplodePre);//I reused*2 code. I'm too lazy.
+		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre);//I reused*2 code. I'm too lazy.
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		SDKHook(entity, SDKHook_StartTouch, Victorian_HESH_Touch);
 		Better_Gravity_Rocket(entity, 55.0);
