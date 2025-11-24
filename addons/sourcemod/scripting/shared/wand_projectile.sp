@@ -114,17 +114,13 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		DispatchSpawn(entity);
 		SetEntPropVector(entity, Prop_Send, "m_angRotation", fAng); //set it so it can be used
 		SetEntPropVector(entity, Prop_Data, "m_angRotation", fAng); 
-		
 		SetEntityCollisionGroup(entity, 27);
-
+		
 		SetEntityModel(entity, ENERGY_BALL_MODEL);
 		RunScriptCode(entity, -1, -1, "self.SetMoveType(Constants.EMoveType.MOVETYPE_FLY, Constants.EMoveCollide.MOVECOLLIDE_FLY_CUSTOM)");
 		Custom_SetAbsVelocity(entity, fVel);	
 		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
 
-		//Make it entirely invis. Shouldnt even render these 8 polygons.
-	//	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
-		
 		if(hideprojectile)
 		{
 			SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
