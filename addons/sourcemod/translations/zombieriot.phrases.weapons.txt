@@ -3606,10 +3606,6 @@
 	{
 		"en"	"Fractal Reiuji"
 	}
-	"Fractal Reiuji"
-	{
-		"en"	"Fractal Reiuji"
-	}
 	"Heavy Particle Rifle"
 	{
 		"en"	"Heavy Particle Rifle"
