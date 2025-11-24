@@ -438,7 +438,7 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 
 	switch(i_patten_type[client])
 	{
-		case 0:
+		case 0:	//alpha
 		{
 			int type=3;
 			for(int i=0 ; i<spread ; i++)
@@ -459,7 +459,7 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 					type=3;
 			}
 		}
-		case 1:
+		case 1:	//beta
 		{
 			int type=3;
 			Handle swingTrace;
