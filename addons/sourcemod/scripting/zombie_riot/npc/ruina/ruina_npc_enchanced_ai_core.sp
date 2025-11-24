@@ -1106,39 +1106,39 @@ enum struct Ruina_Projectiles
 			Func_Ruina_Proj_Touch[entity] = Custom_Projectile_Touch;
 			
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.iNPC);
-			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
 			SetTeam(entity, GetTeam(this.iNPC));
+			DispatchKeyValue(entity, "model", ENERGY_BALL_MODEL);
 			
-			TeleportEntity(entity, this.Start_Loc, this.Angles, NULL_VECTOR, true);
+			TeleportEntity(entity, NULL_VECTOR, this.Angles, NULL_VECTOR, true);
+			int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
+			Custom_SDKCall_SetLocalOrigin(entity, this.Start_Loc);
 			DispatchSpawn(entity);
-
+			SetEntPropVector(entity, Prop_Send, "m_angRotation", this.Angles); //set it so it can be used
+			SetEntPropVector(entity, Prop_Data, "m_angRotation", this.Angles); 
 			if(!this.visible)
 			{
-				for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
-				{
-					SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_rocket_particle, _, i);
-				}
-				SetEntityModel(entity, PARTICLE_ROCKET_MODEL);
-		
-				//Make it entirely invis. Shouldnt even render these 8 polygons.
-				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
-
-				SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
-				SetEntityRenderColor(entity, 255, 255, 255, 0);
+				SetEntityModel(entity, ENERGY_BALL_MODEL);
 			}
 
-			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, Velocity, true);
+			RunScriptCode(entity, -1, -1, "self.SetMoveType(Constants.EMoveType.MOVETYPE_FLY, Constants.EMoveCollide.MOVECOLLIDE_FLY_CUSTOM)");	//do some weird script magic?
+			Custom_SetAbsVelocity(entity, Velocity);	//set speed
+			SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
+
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
 
-			if(h_NpcSolidHookType[entity] != 0)
-				DHookRemoveHookID(h_NpcSolidHookType[entity]);
-			h_NpcSolidHookType[entity] = 0;
-			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Ruina_RocketExplodePre);
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			SDKHook(entity, SDKHook_StartTouch, Ruina_Projectile_Touch);
+			//so they dont get stuck on entities in the air.
+			SetEntProp(entity, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID | FSOLID_TRIGGER); 
 
-			
+			//detection
+			SDKHook(entity, SDKHook_Think, ProjectileBaseThink);
+			SDKHook(entity, SDKHook_ThinkPost, ProjectileBaseThinkPost);
+			CBaseCombatCharacter(entity).SetNextThink(GetGameTime());
+
+			WandProjectile_ApplyFunctionToEntity(entity, Ruina_Projectile_Touch);
+
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			SDKHook(entity, SDKHook_StartTouch, Wand_Base_StartTouch);
 
 			if(this.Time>0.0)
 			{
@@ -1245,10 +1245,6 @@ void Ruina_Remove_Projectile(int entity)
 		RemoveEntity(particle);
 	}
 	RemoveEntity(entity);
-}
-public MRESReturn Ruina_RocketExplodePre(int entity)
-{
-	return MRES_Supercede;	//Don't even think about it mate
 }
 enum struct Ruina_Self_Defense
 {
