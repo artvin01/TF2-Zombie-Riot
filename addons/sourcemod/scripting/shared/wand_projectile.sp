@@ -110,10 +110,10 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage should be nothing. if it somehow goes boom.
 		SetTeam(entity, GetTeam(client));
 		int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
-		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
+		SetEntPropVector(entity, Prop_Data, "m_angRotation", fAng); 
+		Custom_SDKCall_SetLocalOrigin(entity, fPos);
 		DispatchSpawn(entity);
-		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
-		SetEntPropVector(entity, Prop_Send, "m_angRotation", fAng); //set it so it can be used
+		Custom_SetAbsVelocity(entity, fVel);
 		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", fVel);
 	//	SetEntProp(entity, Prop_Send, "m_flDestroyableTime", GetGameTime());
 		//make rockets visible on spawn.

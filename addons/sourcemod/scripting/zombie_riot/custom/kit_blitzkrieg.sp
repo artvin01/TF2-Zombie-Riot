@@ -547,11 +547,29 @@ static void Add_One_Ammo(int entity)
 
 static void Blitzkrieg_Kit_Rocket_Fire(int client, float speed, float damage, int weapon, float fAng[3], float fPos[3])
 {
-	int projectile = Wand_Projectile_Spawn(client, speed, 30.0, damage, WEAPON_KIT_BLITZKRIEG_CORE, weapon, "", fAng, false , fPos);
+	int projectile = Wand_Projectile_Spawn(client, speed, 30.0, damage, WEAPON_KIT_BLITZKRIEG_CORE, weapon, "raygun_projectile_red_trail", fAng, false , fPos);
 
+	int particle = EntRefToEntIndex(i_WandParticle[projectile]);
+	if(IsValidEntity(particle))
+	{
+		i_OwnerEntityEnvLaser[particle] = EntIndexToEntRef(client);
+		SDKHook(particle, SDKHook_SetTransmit, TransmitToOwnerOnly);
+	}
 	ApplyCustomModelToWandProjectile(projectile, BLITZKRIEG_KIT_ROCKET_MODEL, 1.0, "");
 }
 
+public Action TransmitToOwnerOnly(int entity, int client)
+{
+	if(client > 0 && client <= MaxClients)
+	{
+		int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
+		if(owner == client)
+		{
+			return Plugin_Continue;
+		}
+	}
+	return Plugin_Stop;
+}
 
 public void Blitzkrieg_Kit_Rocket_StartTouch(int entity, int target)
 {
