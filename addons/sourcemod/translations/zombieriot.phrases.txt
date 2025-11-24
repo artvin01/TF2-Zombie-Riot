@@ -5645,27 +5645,4 @@
 		"#format"	"{1:d}"
 		"en"	"Your Weapon is not charged enough. {1}"
 	}
-	"Reiuji Not Enough Mana"
-	{
-		"#format"	"{1:d}"
-		"en" 		"Not Enough Mana To use MultiShot You need {1} Mana!\nReverting to base wand!"
-	}
-	"No Targets Detected"
-	{
-		"en"	"No Targets Detected"
-	}
-	"Your Weapon is not charged enough None"
-	{
-		"en"	"Your Weapon is not charged enough."
-	}
-	"Your Weapon is not charged enough"
-	{
-		"#format"	"{1:d},{2:d}"
-		"en"	"Your Weapon is not charged enough. [{1}/{2}]"
-	}
-	"Your Weapon is not charged enough Single"
-	{
-		"#format"	"{1:d}"
-		"en"	"Your Weapon is not charged enough. {1}"
-	}
 }
