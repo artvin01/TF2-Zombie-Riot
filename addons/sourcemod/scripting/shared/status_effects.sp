@@ -1015,7 +1015,7 @@ void Force_ExplainBuffToClient(int client, const char[] name, bool IgnoreCooldow
 	ExplainBuffToClient(client, Apply_MasterStatusEffect, false, index, IgnoreCooldown);
 }
 
-bool WasAlreadyExplainedToClient(int client, const char[] name)
+stock bool WasAlreadyExplainedToClient(int client, const char[] name)
 {
 	int index;
 	index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);

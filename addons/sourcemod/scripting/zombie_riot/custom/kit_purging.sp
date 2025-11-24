@@ -687,7 +687,7 @@ public Action Weapon_Purging_QuadLauncher_Remove_Later(Handle h,int ref)
     int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
     float ownerPos[3];
     WorldSpaceCenter(owner, ownerPos);
-    bool IsDowned = (dieingstate[client] != 0);
+    bool IsDowned = (dieingstate[owner] != 0);
     int weaponN = -1;
     if(!IsDowned)
         weaponN = Store_GiveSpecificItem(owner, "Purging Grinder");
