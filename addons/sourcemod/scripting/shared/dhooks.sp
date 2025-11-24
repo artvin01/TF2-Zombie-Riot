@@ -1540,7 +1540,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 
 		//not allowed to spawn.
 		if(!b_AntiLateSpawn_Allow[client])
-			return MRES_Supercede;
+			TeutonType[client] = TEUTON_DEAD;
 	}
 #endif
 
