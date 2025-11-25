@@ -57,7 +57,10 @@ void Initiate_HomingProjectile(int projectile, int owner, float lockonAngleMax, 
 	RWI_RocketRotation[projectile][2] = AnglesInitiate[2];
 
 	float vecVelocityCurrent[3];
-	GetEntPropVector(projectile, Prop_Data, "m_vInitialVelocity", vecVelocityCurrent);
+	if(b_IsCustomProjectile[projectile])
+		GetEntPropVector(projectile, Prop_Data, "m_vInitialVelocity", vecVelocityCurrent);
+	else
+		GetEntPropVector(projectile, Prop_Send, "m_vInitialVelocity", vecVelocityCurrent);
 	RWI_RocketSpeed[projectile] = getLinearVelocity(vecVelocityCurrent);
 	//homing will always be 0.1 seconds, thats the delay.
 	if(RWI_HandleHome[projectile] != null)
