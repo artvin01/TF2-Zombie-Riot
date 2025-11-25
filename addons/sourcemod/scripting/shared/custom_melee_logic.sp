@@ -250,6 +250,14 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				Board_DoSwingTrace(enemies_hit_aoe, CustomMeleeRange);
 			}
+			case WEAPON_HAMMER_NONPAP:
+			{
+				enemies_hit_aoe = 2;
+			}
+			case WEAPON_HAMMER_PAP_1:
+			{
+				enemies_hit_aoe = 3;
+			}
 		}	
 	}
 #endif
@@ -815,7 +823,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 						}
 						case WEAPON_KIT_BLITZKRIEG_CORE:
 						{
-							Blitzkrieg_Kit_OnHitEffect(client);
+							Blitzkrieg_Kit_OnHitEffect(client, i_EntitiesHitAoeSwing[counter]);
 						}
 						case WEAPON_FULLMOON:
 						{
@@ -833,7 +841,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 #if defined ZR
 					switch(i_CustomWeaponEquipLogic[weapon])
 					{
-						case WEAPON_SEABORNMELEE:
+						case WEAPON_SEABORNMELEE, WEAPON_HAMMER_NONPAP, WEAPON_HAMMER_PAP_1:
 						{
 							damage *= 0.5;
 						}

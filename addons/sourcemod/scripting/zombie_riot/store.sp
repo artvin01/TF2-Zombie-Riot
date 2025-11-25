@@ -6277,6 +6277,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Flagellant_Enable(client, entity);
 		Enable_Impact_Lance(client, entity);
 		Enable_Trash_Cannon(client, entity);
+		Enable_Raigeki(client, entity);
 		Enable_TornadoBlitz(client, entity);
 		Enable_Rusty_Rifle(client, entity);
 		Enable_Blitzkrieg_Kit(client, entity);
@@ -6313,6 +6314,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Medigun_SetModeDo(client, entity);
 		Cheese_Enable(client, entity);
 		Ritualist_Enable(client, entity);
+		Enable_Sigil_Blade(client, entity);
+		Enable_KitOmega(client, entity);
+		Enable_PurgeKit(client, entity);
 
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);
@@ -6351,7 +6355,7 @@ int Store_GiveSpecificItem(int client, const char[] name)
 	return -1;
 }
 
-void Store_RemoveSpecificItem(int client, const char[] name, bool UpdateSlots = false)
+void Store_RemoveSpecificItem(int client, const char[] name, bool UpdateSlots = false, int CompareWeaponArray = -1)
 {
 	if(!StoreItems)
 		return;
@@ -6361,7 +6365,7 @@ void Store_RemoveSpecificItem(int client, const char[] name, bool UpdateSlots = 
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(StrEqual(name, item.Name, false))
+		if(StrEqual(name, item.Name, false) || CompareWeaponArray == i)
 		{
 			static ItemInfo info;
 			item.GetItemInfo(0, info);

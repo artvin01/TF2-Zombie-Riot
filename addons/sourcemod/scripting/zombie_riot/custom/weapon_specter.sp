@@ -141,15 +141,23 @@ int SpecterHowManyEnemiesHit(int client, int weapon)
 	return (survival ? 4 : ((flags & SPECTER_THREE) ? 3 : 2));
 }
 
-#define FIREAXE_EXPLOSION 100.0
+#define FIREAXE_EXPLOSION 150.0
 
-public void Weapon_FireAxeBoomM2(int client, int weapon, bool &result, int slot)
+public void Weapon_FireAxeBoomM2PrePap(int client, int weapon, bool &result, int slot)
 {
 	Weapon_FireAxeBoomM2_Internal(client, weapon, result, slot, 0);
 }
-public void Weapon_FireAxeBoomM2_Pap(int client, int weapon, bool &result, int slot)
+public void Weapon_FireAxeBoomM21stpap(int client, int weapon, bool &result, int slot)
 {
 	Weapon_FireAxeBoomM2_Internal(client, weapon, result, slot, 1);
+}
+public void Weapon_FireAxeBoomM2(int client, int weapon, bool &result, int slot)
+{
+	Weapon_FireAxeBoomM2_Internal(client, weapon, result, slot, 2);
+}
+public void Weapon_FireAxeBoomM2_Pap(int client, int weapon, bool &result, int slot)
+{
+	Weapon_FireAxeBoomM2_Internal(client, weapon, result, slot, 3);
 }
 public void Weapon_FireAxeBoomM2_Internal(int client, int weapon, bool &result, int slot, int Pap)
 {
@@ -169,13 +177,24 @@ public void Weapon_FireAxeBoomM2_Internal(int client, int weapon, bool &result, 
 
 	flPos[2] += 45.0;
 	float damage = 65.0;
+	if(Pap == 0 || Pap == 1)
+	{
+		damage *= 0.65;
+	}
 
 	damage *= Attributes_Get(weapon, 1, 1.0);
 
 	damage *= Attributes_Get(weapon, 2, 1.0);
 
 	damage *= 2.0;
-	Ability_Apply_Cooldown(client, slot, 20.0);
+	if(Pap == 0)
+	{
+		Ability_Apply_Cooldown(client, slot, 25.0);
+	}
+	else
+	{
+		Ability_Apply_Cooldown(client, slot, 20.0);
+	}
 
 	b_LagCompNPC_No_Layers = true;
 	b_LagCompNPC_OnlyAllies = false;
@@ -187,7 +206,7 @@ public void Weapon_FireAxeBoomM2_Internal(int client, int weapon, bool &result, 
 	EmitSoundToAll(WAND_FIREBALL_SOUND, client, SNDCHAN_AUTO, 80, _, 0.7, 90);
 
 	FinishLagCompensation_Base_boss();
-	if(Pap)
+	if(Pap == 3)
 	{
 		float vel = 1500.0;
 

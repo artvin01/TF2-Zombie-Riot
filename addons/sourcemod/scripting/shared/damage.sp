@@ -7,11 +7,7 @@
 #define DMG_MEDIGUN_LOW 1.25
 #define DMG_WIDOWS_WINE 1.35
 
-float BarbariansMindNotif[MAXPLAYERS];
-void DamageModifMapStart()
-{
-	Zero(BarbariansMindNotif);
-}
+
 
 stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -80,6 +76,10 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &dama
 
 stock void Damage_AnyVictimPost(int victim, float &damage, int &damagetype)
 {
+	//the hud shouzldnt check this.
+	if(CheckInHud())
+		return;
+
 	if(!HasSpecificBuff(victim, "Expert's Mind"))
 		return;
 
@@ -259,10 +259,12 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	}
 	
 #if defined ZR || defined NOG
-		//true damage does NOT Ignore this.
-		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,damagetype, i_HexCustomDamageTypes[victim], weapon);
+	//true damage does NOT Ignore this.
+	VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,damagetype, i_HexCustomDamageTypes[victim], weapon);
 #endif
 	OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon);
+	if(!CheckInHud())
+		Attributes_HitTaken(victim, attacker, damage);
 
 	int vehicle = Vehicle_Driver(victim);
 
@@ -886,6 +888,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 				if(!CheckInHud())
 					Player_OnTakeDamage_Magnesis(victim, damage, attacker);
 		}
+		case WEAPON_RAIGEKI:
+		{
+			return Player_OnTakeDamage_Raigeki(victim, damage, attacker);
+		}
 		case WEAPON_YAKUZA:
 		{
 			Yakuza_SelfTakeDamage(victim, attacker, damage, damagetype, equipped_weapon);
@@ -1270,6 +1276,30 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 			if(!CheckInHud())
 				SherrifRevolver_NPCTakeDamage(attacker, victim, damage,weapon, i_CustomWeaponEquipLogic[weapon]);
 		}
+		case WEAPON_KIT_OMEGA:
+        {
+            if(!CheckInHud())
+           		KitOmega_NPCTakeDamage_Melee(attacker, victim, damage, weapon, damagetype);
+        }
+        case WEAPON_KIT_OMEGA_GAUSS:
+        {
+            if(!CheckInHud())
+            KitOmega_NPCTakeDamage_Gauss(attacker, victim, damage, weapon);
+        }
+        case WEAPON_KIT_PURGE_ANNAHILATOR:
+        {
+            return Npc_OnTakeDamage_Purging_Annahilator(attacker, victim, damage, weapon, damagetype);
+        }
+        case WEAPON_KIT_PURGE_CRUSHER:
+        {
+            if(!CheckInHud())
+            PurgeKit_NPCTakeDamage_Crusher(attacker, victim, damage, weapon);
+        }
+        case WEAPON_KIT_PURGE_RAMPAGER:
+        {
+            if(!CheckInHud())
+            PurgeKit_NPCTakeDamage_Rampager(attacker, victim, damage, weapon);
+		}
 	}
 #endif
 
@@ -1517,25 +1547,42 @@ stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflic
 	{
 		ExtraDamageDealt = 0.35;
 	}
-	if(LastMann && GetTeam(victim) != TFTeam_Red)
+	if(!b_IsAloneOnServer)
 	{
-		damage *= 1.35;
-		int DisplayCritSoundTo;
-		if(attacker <= MaxClients)
-			DisplayCritSoundTo = attacker;
-		else if(inflictor <= MaxClients)
-			DisplayCritSoundTo = inflictor;
-
-		if(DisplayCritSoundTo > 0 && DisplayCritSoundTo <= MaxClients)
+		if(LastMann && GetTeam(victim) != TFTeam_Red)
 		{
-			bool PlaySound = false;
-			if(f_MinicritSoundDelay[DisplayCritSoundTo] < GetGameTime())
+			switch(CountPlayersOnRed(0, true))
 			{
-				PlaySound = true;
-				f_MinicritSoundDelay[DisplayCritSoundTo] = GetGameTime() + 0.25;
+				//no change for 0 and 1 players
+				case 0,1:
+					damage *= 1.0;
+				case 2:
+					damage *= 1.15;
+				case 3:					
+					damage *= 1.2;
+				case 4:					
+					damage *= 1.25;
+				default:
+					damage *= 1.35;
+
 			}
-			
-			DisplayCritAboveNpc(victim, DisplayCritSoundTo, PlaySound,_,_,true); //Display crit above head
+			int DisplayCritSoundTo;
+			if(attacker <= MaxClients)
+				DisplayCritSoundTo = attacker;
+			else if(inflictor <= MaxClients)
+				DisplayCritSoundTo = inflictor;
+
+			if(DisplayCritSoundTo > 0 && DisplayCritSoundTo <= MaxClients)
+			{
+				bool PlaySound = false;
+				if(f_MinicritSoundDelay[DisplayCritSoundTo] < GetGameTime())
+				{
+					PlaySound = true;
+					f_MinicritSoundDelay[DisplayCritSoundTo] = GetGameTime() + 0.25;
+				}
+				
+				DisplayCritAboveNpc(victim, DisplayCritSoundTo, PlaySound,_,_,true); //Display crit above head
+			}
 		}
 	}
 	if(IsValidEntity(weapon))

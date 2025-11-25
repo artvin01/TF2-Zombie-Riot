@@ -218,7 +218,7 @@ public void GiantRegeneration_ClotThink(int iNPC)
 			vecTarget2[2] += 300.0;
 			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", 10.0);
 			ApplyStatusEffect(npc.index, npc.index, "Ally Empowerment", 10.0);
-			ApplyStatusEffect(npc.index, npc.index, "Combine Command", 10.0);
+			ApplyStatusEffect(npc.index, npc.index, "Mazeat Command", 10.0);
 			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 10.0);
 			npc.m_flRangedArmor = 0.65;
 			npc.m_flMeleeArmor = 0.65;
@@ -229,7 +229,7 @@ public void GiantRegeneration_ClotThink(int iNPC)
 			vecTarget2[2] += 300.0;
 			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", 10.0);
 			ApplyStatusEffect(npc.index, npc.index, "Ally Empowerment", 10.0);
-			ApplyStatusEffect(npc.index, npc.index, "Combine Command", 10.0);
+			ApplyStatusEffect(npc.index, npc.index, "Mazeat Command", 10.0);
 			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 10.0);
 			ApplyStatusEffect(npc.index, npc.index, "Oceanic Scream", 10.0);
 			ApplyStatusEffect(npc.index, npc.index, "War Cry", 10.0);
@@ -242,7 +242,7 @@ public void GiantRegeneration_ClotThink(int iNPC)
 			vecTarget2[2] += 300.0;
 			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", 10.0);
 			ApplyStatusEffect(npc.index, npc.index, "Ally Empowerment", 10.0);
-			ApplyStatusEffect(npc.index, npc.index, "Combine Command", 10.0);
+			ApplyStatusEffect(npc.index, npc.index, "Mazeat Command", 10.0);
 			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 10.0);
 			ApplyStatusEffect(npc.index, npc.index, "False Therapy", 10.0);
 			npc.m_flRangedArmor = 0.40;

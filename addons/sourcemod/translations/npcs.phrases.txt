@@ -4,6 +4,7 @@
 	{
 		"en" 		"Example Text!"
 		"it"		"Esempio di Testo!"
+		"ko" 		"예시 텍스트!"
 	}
 	"Headcrab Zombie"
 	{
@@ -12,11 +13,13 @@
 		"ru" 		"Зомби"
 		"fr" 		"Zombie"
 		"it"		"Zombie Headcrab"
+		"ko" 		"헤드크랩 좀비"
 	}
 	"Z-Main"
 	{
 		"en" 		"Z-Main"
 		"it"		"Z-Main"
+		"ko" 		"Z-Main"
 	}
 	"Metro Cop"
 	{
@@ -25,6 +28,7 @@
 		"ru" 		"Метро Коп"
 		"fr"		"Métro-police"
 		"it"		"Polizia della Metro"
+		"ko"		"시민 보호 기동대"
 	}
 	"Sensal"
 	{
@@ -32,6 +36,7 @@
 		"ru" 		"Сенсал"
 		"fr"		"Sensal"
 		"it"		"Sensal"
+		"ko"		"센살"
 	}
 	"Bob The First"
 	{
@@ -40,6 +45,7 @@
 		"ru" 		"боб первый"
 		"fr"		"Bob I"
 		"it"		"Bob il Primo"
+		"ko"		"밥 1세"
 	}
 	"??????? First"
 	{
@@ -48,6 +54,7 @@
 		"ru" 		"??????? Первый"
 		"fr"		"??????? I"
 		"it"		"??????? Primo"
+		"ko"		"? 1세"
 	}
 	"??? the First"
 	{
@@ -56,6 +63,7 @@
 		"ru" 		"??? Первый"
 		"fr"		"??? I"
 		"it"		"??? il Primo"
+		"ko"		"? ?세"
 	}
 	"Chaos Kahmlstein"
 	{
@@ -63,6 +71,7 @@
 		"ru" 		"Хаос Кахмлстейн"
 		"fr"		"Kahmlstein Chaos"
 		"it"		"Caos Kahmlstein"
+		"ko"		"카오스 캄르스타인"
 	}
 	"Donnerkrieg"
 	{
@@ -72,6 +81,7 @@
 		"ru"		"Доннеркриг"
 		"nl"		"Donnerkrieg"
 		"it"		"Donnerkrieg"
+		"ko"		"도너크리그"
 	}
 	"Schwertkrieg"
 	{
@@ -81,5 +91,6 @@
 		"ru"		"Шверткриг"
 		"nl"		"Schwertkrieg"
 		"it"		"Schwertkrieg"
+		"ko"		"슈베르트크리그"
 	}
 }

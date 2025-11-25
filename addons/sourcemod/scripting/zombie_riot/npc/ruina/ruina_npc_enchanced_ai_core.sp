@@ -368,7 +368,7 @@ public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &infl
 	Ruina_Npc_Shield_Logic(victim, damage, damageForce, GameTime);
 	Ruina_OnTakeDamage_Extra_Logic(victim, GameTime, damage);
 }
-void Ruina_Npc_Give_Shield(int client, float strenght)
+void Ruina_Npc_Give_Shield(int client, float strenght, bool ScaleWithPlayersAlive = false)
 {
 	float GameTime = GetGameTime();
 	if(fl_ruina_shield_break_timeout[client] > GameTime && !b_ruina_buff_override[client])
@@ -390,6 +390,10 @@ void Ruina_Npc_Give_Shield(int client, float strenght)
 			Shield_Power = 0.06;
 	}
 
+	if(ScaleWithPlayersAlive)
+	{
+		Shield_Power *= NpcDoHealthRegenScaling(client);
+	}
 	GrantEntityArmor(client, false, Shield_Power, strenght, 1);
 	
 	Ruina_Update_Shield(client);

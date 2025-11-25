@@ -13,6 +13,7 @@
 		"en"		"{green}Lost {1} Chaos Infliction!"
 		"it"		"{green}Perso {1} Inflizione del Caos!"
 		"ru"		"{green}Потеряно {1} Хаосовой нестабильности!"
+		"ko"		"{green}혼돈의 고통이 {1} 감소했습니다!"
 	}
 	"Heavy Rain"
 	{
@@ -25,6 +26,7 @@
 		"en"	"{yellow}All units gain -20％ movement speed, Seaborn units instead gain +10％ movement speed"
 		"it"	"{yellow}Tutte le unità guadagnano -20％ di velocità di movimento, le unità Seaborn invece guadagnano +10％ di velocità di movimento"
 		"ru"	"{yellow}Все юниты двигають медленее на 20％,Морерождённые двигаются на 10％ быстрее"
+		"ko"	"{yellow}모든 유닛의 이동 속도가 20％ 감소합니다. 시본은 대신 이동 속도가 10％ 증가합니다."
 	}
 	"Gate to the Curtain"
 	{

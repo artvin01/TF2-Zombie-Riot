@@ -266,7 +266,7 @@ public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.");
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Your Weapon is not charged enough", RoundToFloor(fl_hyper_arrow_charge[client]), RoundToFloor(QUINCY_BOW_HYPER_CHARGE));
 	}
 }
 static bool TraceWalls(int entity, int contentsMask)

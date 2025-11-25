@@ -297,8 +297,8 @@ void CommanderAOEBuff(Barrack_Combine_Commander npc, float gameTime)
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
 					if(GetVectorDistance(pos1, pos2, true) < (700 * 700))
 					{
-						ApplyStatusEffect(npc.index, npc.index, "Combine Command", 20.0);
-						ApplyStatusEffect(npc.index, entitycount, "Combine Command", 20.0);
+						ApplyStatusEffect(npc.index, npc.index, "Mazeat Command", 20.0);
+						ApplyStatusEffect(npc.index, entitycount, "Mazeat Command", 20.0);
 						npc.m_flRangedSpecialDelay = GetGameTime() + 50.0;
 						buffing = true;
 						npc.PlayWarCry();

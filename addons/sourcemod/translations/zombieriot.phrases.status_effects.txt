@@ -395,6 +395,7 @@
 		"en"	"Immune to any and ALL that debuffs.\n{yellow}Elemental Is excluded from this.\n{yellow}Stuns and movement displacements are not counted as debuffs."
 		"it"	"Immune a tutti i debuff.\n{yellow}Elementale è escluso da questo.\n{yellow}Stun e spostamenti di movimento non sono contati come debuff."
 		"es"	"Inmune a cualquier debuff Y cualquer cosa que inflinga debuffs.\n{yellow}(No incluye buffs elementales, aturdimientos y desplazamientos)"
+		"ko"	"모든 디버프에 면역이 됩니다.\n{yellow}원소 피해는 이 효과에서 제외됩니다.\n{yellow}기절과 이동 변위는 디버프 판정이 아닙니다."
 	}
 	"Intangible"
 	{
@@ -587,12 +588,12 @@
 		"en"	"Attack 25％ faster."
 		"it"	"Attacco 25％ più veloce."
 	}
-	"Combine Command"
+	"Mazeat Command"
 	{
-		"en"	"Combine Command"
+		"en"	"Mazeat Command"
 		"it"	"Comando di combinazione"
 	}
-	"Combine Command Desc"
+	"Mazeat Command Desc"
 	{
 		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 25％"
 		"it"	"Riduce i danni subiti del 20％ \naumenta i danni inflitti del 25％"
@@ -600,42 +601,70 @@
 	"Squad Leader"
 	{
 		"en"	"Squad Leader"
+		"ko"	"분대장"
 		"it"	"Caposquadra"
 	}
 	"Squad Leader Desc"
 	{
 		"en"	"Reduces damage taken by 10％\nBoosts damage dealt by 10％\nBoosts NPC'S Movementspeed by 33％"
+		"ko"	"받는 피해량 -10％, 피해량 +10％\nNpc 이동속도 +33％"
 		"it"	"Riduce i danni subiti del 10％\nAumenta i danni inflitti del 10％\nAumenta la velocità di movimento degli NPC del 33％"
 	}
 	"Caffinated"
 	{
 		"en"	"Caffinated"
+		"ko"	"카페인"
 		"it"	"Caffinato"
 	}
 	"Caffinated Desc"
 	{
 		"en"	"Boosts damage dealt by 50％\nBoosts NPC'S Movementspeed by 50％, See Caffinated Drain for more info as it a combined effect..."
+		"ko"	"피해량 +50％\nNpc 이동속도 +50％\n효과가 지속되는 동안 카페인 드레인 효과가 적용됨"
 		"it"	"Aumenta i danni inflitti di 50％ \nAumenta la velocità di movimento degli NPC di 50％, Vedere Scolo Caffinato per maggiori informazioni, poiché si tratta di un effetto combinato..."
 	}
 	"Caffinated Drain"
 	{
 		"en"	"Caffinated Drain"
+		"ko"	"카페인 드레인"
 		"it"	"Scolo Caffinato"
 	}
 	"Caffinated Drain Desc"
 	{
 		"en"	"Increas damage taken by 25％"
+		"ko"	"받는 피해 +25％"
 		"it"	"Aumenta i danni subiti di 25％"
 	}
 	"Call To Victoria"
 	{
 		"en"	"Call To Victoria"
+		"ko"	"빅토리아의 부름"
 		"it"	"Chiamata a Vittoria"
 	}
 	"Call To Victoria Desc"
 	{
 		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 20％\nBoosts NPC'S Movementspeed by 15％\nAll Victorian enemeies gain extra abilities upon reciving this buff."
+		"ko"	"받는 피해량 -20％, 피해량 +20％\nNpc 이동속도 +15％\n해당 버프를 받은 빅토리아 적들은 추가 능력을 얻습니다."
 		"it"	"Riduce i danni subiti del 20％\nAumenta i danni inflitti del 20％\nAumenta la velocità di movimento degli NPC del 15％\nTutti i nemici vittoriani ottengono abilità extra quando ricevono questo buff."
+	}
+	"Taurine"
+	{
+		"en"	"Taurine"
+		"ko"	"타우린"
+	}
+	"Taurine Desc"
+	{
+		"en"	"Boosts damage dealt by 20％\nBoosts Attack Speed by 20％"
+		"ko"	"피해량 +20％, 공속 +20％"
+	}
+	"Battery_TM Charge"
+	{
+		"en"	"Battery Charge"
+		"ko"	"배터리 충전"
+	}
+	"Ammo_TM Visualization"
+	{
+		"en"	"Ammo Visualization"
+		"ko"	"탄약 시각화"
 	}
 	"False Therapy"
 	{
@@ -786,6 +815,7 @@
 		"en"	"Decreases damage taken by 90％.\n{yellow}During raids, you take 50％ reduced damage instead."
 		"it"	"Diminuisce i danni subiti di 90％.\n{yellow}Durante le incursioni, si subiscono invece danni ridotti del 50％."
 		"es"	"Reduce el daño recibido en un 90％.\n{yellow}Durante un raid, recibes 50％ en lugar de 90％."
+		"ko"	"받는 피해량이 90％ 감소합니다.\n{yellow}레이드 상태라면, 이 효과가 50％로 감소합니다."
 	}
 	"Unstoppable Force"
 	{
@@ -1720,7 +1750,7 @@
 	"Weapon Overclock"
 	{
 		"en"	"Overclock"
-		"ko"	"과부하"
+		"ko"	"무기 과부하"
 		"es"	"Overclock"
 		"it"	"Overclock"
 	}
@@ -1733,7 +1763,7 @@
 	"Weapon Clocking"
 	{
 		"en"	"Weapon Clocking"
-		"ko"	"과부하"
+		"ko"	"무기 증폭"
 		"es" 	"Arma-ficiencia"
 		"it"	"Orologio dell'arma"
 	}
@@ -1899,6 +1929,14 @@
 	{
 		"en"	"+30％ damage dealt, healing done, and +20％ damage reduction"
 		"it"	"+30％ danni inflitti, guarigione effettuata e +20％ riduzione dei danni"
+	}
+	"Charging Raigeki"
+	{
+		"en"	"CHARGING RAIGEKI"
+	}
+	"Charging Raigeki Desc"
+	{
+		"en"	"Reduces movement speed, prevents attacking, and drains mana to charge a devastating blast of lightning from the heavens. Grants resistance, which increases as charge level rises, and electrocutes nearby foes with Static Electricity."
 	}
 	"Xeno's Territory"
 	{

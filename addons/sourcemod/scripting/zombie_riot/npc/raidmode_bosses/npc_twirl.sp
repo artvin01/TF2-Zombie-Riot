@@ -280,17 +280,31 @@ methodmap Twirl < CClotBody
 
 		int laser;
 		laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, Predicted_Pos, Sky_Loc);
-
-		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+		if(IsValidEntity(laser))
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+			
 		int loop_for = 4;
+
+		Predicted_Pos[2] +=100.0;
+
+		//float ring_min = Radius * 0.25;
+		//float ring_max = Radius * 0.75;
 		float Add_Height = 500.0/loop_for;
 		for(int i=0 ; i < loop_for ; i++)
 		{
+			float radius_ratio = 1.0 - (float(i)/float(loop_for));
+			if(radius_ratio<= 0.0)
+				radius_ratio = 0.001;
 			Predicted_Pos[2]+=Add_Height;
-			TE_SetupBeamRingPoint(Predicted_Pos, (Radius*2.0)/(i+1), 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, Tempcolor, 1, 0);
+			//float AdjustRadius = ring_min + (ring_max - ring_min) * radius_ratio;
+
+			//float AdjustRadius = Radius * (Pow(2.0, (Logarithm(radius_ratio))));
+
+			float AdjustRadius = Radius / (i + 2);
+			
+			TE_SetupBeamRingPoint(Predicted_Pos, AdjustRadius * 2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, Tempcolor, 1, 0);
 			TE_SendToAll();
 		}
-		
 	}
 	public bool Add_Combo(int amt)
 	{
@@ -1322,11 +1336,17 @@ static void ClotThink(int iNPC)
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 
 			float Turn_Speed = (npc.Anger ? 30.0 : 19.0);
+			Turn_Speed *= 1.25;
 			//if there are more then 3 players near twirl, her laser starts to turn faster.
 			int Nearby = Nearby_Players(npc, (npc.Anger ? 300.0 : 250.0));
 			if(Nearby > 3)
 			{
 				Turn_Speed *= (Nearby/2.0)*1.2;
+				Turn_Speed *= 1.25;
+			}
+			if(Nearby > 6)
+			{
+				Turn_Speed *= 1.15;
 			}
 			npc.FaceTowards(vecTarget, Turn_Speed);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -2191,7 +2211,7 @@ static Action Projectile_ParticleCannonThink(int entity)
 }
 //since homing only sets speeds every 0.1s and this is a every tick operation, in some instances the projectile will have uneven acceleration, and even won't accelerate fully.
 //as such, we need to also manually set the speed real time every tick.
-static void SetProjectileSpeed(int projectile, float speed, float angles[3])
+void SetProjectileSpeed(int projectile, float speed, float angles[3])
 {
 	float forward_direction[3];
 	GetAngleVectors(angles, forward_direction, NULL_VECTOR, NULL_VECTOR);
@@ -2220,6 +2240,7 @@ static float Modify_Damage(int Target, float damage)
 
 	return damage;
 }
+static float fl_cosmic_gaze_animation_ratio;
 static float fl_cosmic_gaze_range = 1500.0;
 static float fl_cosmic_gaze_radius = 750.0;
 static void Cosmic_Gaze(Twirl npc, int Target)
@@ -2255,14 +2276,15 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
-	float Windup = 2.0;
+	float Windup = 2.0;	//2.0
 	float Duration;
 	float Baseline = 1.75;
 
-	float Ratio = (Baseline/Windup);
+	float anim_ratio = (Baseline/Windup);
 
-	float anim_ratio = Ratio;
-	Duration = 1.3 * (Windup/Baseline);
+	Duration = 1.3 * anim_ratio;
+
+	fl_cosmic_gaze_animation_ratio = anim_ratio;
 
 	npc.m_bisWalking = false; 
 	npc.m_flDoingAnimation = GameTime + Duration + Windup + 0.2;
@@ -2353,7 +2375,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 	{
 		if(!npc.m_bAnimationSet)
 		{
-			npc.SetPlaybackRate(0.25);
+			npc.SetPlaybackRate(0.25 * fl_cosmic_gaze_animation_ratio);
 
 			EmitSoundToAll(g_DefaultLaserLaunchSound[GetRandomInt(0, sizeof(g_DefaultLaserLaunchSound) - 1)], npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
 			EmitSoundToAll(g_DefaultLaserLaunchSound[GetRandomInt(0, sizeof(g_DefaultLaserLaunchSound) - 1)], npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
@@ -2463,7 +2485,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 		else if(npc.m_flCosmicGazeDurationOffset != FAR_FUTURE)
 		{
 			npc.m_flCosmicGazeDurationOffset = FAR_FUTURE;
-			npc.SetPlaybackRate(1.36*0.72);
+			npc.SetPlaybackRate(1.36 * fl_cosmic_gaze_animation_ratio);
 
 			Ruina_Laser_Logic Laser;
 			Laser.client = npc.index;
@@ -2578,8 +2600,8 @@ static Action Delayed_Explosion(Handle Timer, DataPack data)
 			TE_SendToAll(0.0);
 		}
 	}
-
-	Explode_Logic_Custom(Modify_Damage(-1, 60.0), iNPC, iNPC, -1, Loc, Radius, _, _, true, _, false, _, Cosmic_Gaze_Boom_OnHit);
+	//the ability itself doesn't deal much damage, but what it does is it gives the target hit the telsar debuff.
+	Explode_Logic_Custom(Modify_Damage(-1, 60.0), iNPC, iNPC, -1, Loc, Radius, _, _, true, _, false, _, _, Cosmic_Gaze_Boom_OnHit);
 
 	return Plugin_Stop;
 }
@@ -2613,6 +2635,10 @@ static Action Timer_Repeat_Sound(Handle Timer, DataPack data)
 }
 static void Cosmic_Gaze_Boom_OnHit(int entity, int victim, float damage, int weapon)
 {
+	Twirl npc = view_as<Twirl>(entity);
+	
+	ApplyStatusEffect(npc.index, victim, "Teslar Shock", (npc.Anger ? 7.5 : 5.0));
+
 	if(IsValidClient(victim))
 		Client_Shake(victim, 0, 7.5, 7.5, 3.0);
 }
@@ -3430,7 +3456,7 @@ static Action IonicFracture_Think(int iNPC)
 			Laser.DoForwardTrace_Custom(Angles, Origin, fl_ionic_fracture_range);
 
 			float distance = GetVectorDistance(Laser.Start_Point, Laser.End_Point);	//get the distance from start to end loc, adjust for what distance we want
-			float speed = distance / fl_ionic_fracture_charge_time;	//then adjust speed acordingly.
+			float speed = (distance / fl_ionic_fracture_charge_time) / ReturnEntityAttackspeed(npc.index);	//then adjust speed acordingly.
 			Projectile.speed = speed;
 			Projectile.Angles = Angles;
 			int projectile = Projectile.Launch_Projectile(FuncTwirlIonicFractalProjectileTouch);
@@ -3613,7 +3639,7 @@ static Action IonicFracture_ProjectileThink(int entity)
 			float Angles[3];
 			MakeVectorFromPoints(ProjectileLoc, Origin, Angles);
 			GetVectorAngles(Angles, Angles);
-			float speed = Distance / (fl_ionic_fracture_det_timer);
+			float speed = Distance / (fl_ionic_fracture_det_timer) / ReturnEntityAttackspeed(npc.index);
 			SetProjectileSpeed(entity, speed, Angles);
 			fl_BEAM_ChargeUpTime[entity] = 2.0;
 		}
@@ -3677,9 +3703,9 @@ static bool Magia_Overflow(Twirl npc)
 	fl_ruina_shield_break_timeout[npc.index] = 0.0;		//make 100% sure she WILL get the shield.
 	//give the shield to itself.
 	if(Waves_InFreeplay())
-		Ruina_Npc_Give_Shield(npc.index, 0.65);
+		Ruina_Npc_Give_Shield(npc.index, 0.50, true);
 	else
-		Ruina_Npc_Give_Shield(npc.index, 0.45);
+		Ruina_Npc_Give_Shield(npc.index, 0.315, true);
 	
 	npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 	npc.SetPlaybackRate(1.0);	
@@ -3697,14 +3723,7 @@ static bool Magia_Overflow(Twirl npc)
 	npc.m_flRetreatLaserThrottle = GameTime + 0.7;
 	npc.m_flMagiaOverflowRecharge = GameTime + Duration + 0.7 + (npc.Anger ? 30.0 : 45.0);
 
-	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	int color[4]; 
-	Ruina_Color(color, i_current_wave[npc.index]);
-	float Thickness = 6.0;
-	VecSelfNpc[2]-=2.5;
 	//create a ring around twirl showing the radius for her special "if you're near me, my laser turns faster"
-	TE_SetupBeamRingPoint(VecSelfNpc, (npc.Anger ? 350.0 : 275.0)*2.0, (npc.Anger ? 350.0 : 275.0)*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Duration+0.7, Thickness, 0.75, color, 1, 0);
-	TE_SendToAll();
 
 	npc.m_bAnimationSet = false;
 
@@ -3727,8 +3746,9 @@ static Action Magia_Overflow_Tick(int iNPC)
 	Twirl npc = view_as<Twirl>(iNPC);
 	float GameTime = GetGameTime(npc.index);
 
-	if(fl_ruina_battery_timeout[npc.index] < GameTime)
+	if(fl_ruina_battery_timeout[npc.index] < GameTime || npc.m_flArmorCount <= 0.0)
 	{
+		//either timer over or no more armor
 		SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 
 		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_LASER_SOUND);
@@ -3738,7 +3758,8 @@ static Action Magia_Overflow_Tick(int iNPC)
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
-
+		npc.m_flDoingAnimation = 1.0;
+		
 		npc.m_bInKame = false;
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
@@ -3749,6 +3770,8 @@ static Action Magia_Overflow_Tick(int iNPC)
 
 		return Plugin_Stop;
 	}
+
+
 	ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 0.25);
 	ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);
 
@@ -3814,6 +3837,14 @@ static Action Magia_Overflow_Tick(int iNPC)
 	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
 	if(update)
 	{
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		int color[4]; 
+		Ruina_Color(color, i_current_wave[npc.index]);
+		float Thickness = 6.0;
+		VecSelfNpc[2]-=2.5;
+		TE_SetupBeamRingPoint(VecSelfNpc, (npc.Anger ? 350.0 : 275.0)*2.0, (npc.Anger ? 350.0 : 275.0)*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.1, Thickness, 0.75, color, 1, 0);
+		TE_SendToAll();
+	
 		float Duration = fl_ruina_battery_timeout[npc.index] - GameTime;
 		float Ratio = (1.0 - (Duration / TWIRL_MAGIA_OVERFLOW_DURATION));
 		if(Ratio<0.1)

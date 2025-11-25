@@ -23,7 +23,46 @@ void Reset_stats_Blemishine_Singular(int client) //This is on disconnect/connect
 {
 	f_Blemishine_AbilityActive[client] = 0.0;
 }
+public void Weapon_BlemishineAttackM2BasePre(int client, int weapon, bool &result, int slot)
+{
+	//This melee is too unique, we have to code it in a different way.
+	if (Ability_Check_Cooldown(client, slot) < 0.0 || CvarInfiniteCash.BoolValue)
+	{
+		Rogue_OnAbilityUse(client, weapon);
+		Ability_Apply_Cooldown(client, slot, BLEMISHINE_COOLDOWN);
+		f_Blemishine_AbilityActive[client] = GetGameTime() + BLEMISHINE_ABILITY_ACTIVE;
+		float flPos[3];
+		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
+		ParticleEffectAt(flPos, "bombinomicon_flash", 1.0);
+		int particle_Sing = ParticleEffectAt(flPos, "utaunt_arcane_yellow_parent", BLEMISHINE_ABILITY_ACTIVE);
+		SetParent(client, particle_Sing);
+		EmitSoundToAll("player/taunt_medic_heroic.wav", client, SNDCHAN_AUTO, 75,_,1.0,100);
+		EmitSoundToAll("weapons/vaccinator_charge_tier_04.wav", client, SNDCHAN_AUTO, 75,_,1.0,100);
+		MakePlayerGiveResponseVoice(client, 1); //haha!
+		
+		i_BlemishineWhichAbility[client] = 1;
+		float value = Attributes_Get(weapon, 180, 0.0);
+		f_AbilityHealAmmount[client] = value * 2.0;
+		SDKUnhook(client, SDKHook_PreThink, Blemishine_Think);
+		SDKHook(client, SDKHook_PreThink, Blemishine_Think);
+		/*
+			utaunt_arcane_yellow_parent
 
+		*/
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+	}
+}
 public void Weapon_BlemishineAttackM2Base(int client, int weapon, bool &result, int slot)
 {
 	//This melee is too unique, we have to code it in a different way.

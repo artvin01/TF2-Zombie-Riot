@@ -173,6 +173,37 @@ public float Npc_OnTakeDamage_PaP_Fusion(int attacker, int victim, float damage,
 	return damage;
 }
 
+public void Fusion_Melee_Empower_StatePre(int client, int weapon, bool crit, int slot)
+{
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		Rogue_OnAbilityUse(client, weapon);
+		Ability_Apply_Cooldown(client, slot, 50.0); //Semi long cooldown, this is a strong buff.
+
+		Duration[client] = GetGameTime() + 5.0; //Just a test.
+
+		EmitSoundToAll(EMPOWER_SOUND, client, SNDCHAN_STATIC, 90, _, 0.4);
+		Weapon_Id[client] = EntIndexToEntRef(weapon);
+		CreateTimer(0.1, Empower_ringTracker, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.5, Empower_ringTracker_effect, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.0, Empower_ringTracker_effect, client, TIMER_FLAG_NO_MAPCHANGE); //Make it happen atleast once instantly
+		ApplyStatusEffect(client, client, "Self Empowerment", 0.6);
+		spawnRing(client, EMPOWER_RANGE * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 30, 0.51, EMPOWER_WIDTH, 6.0, 10);
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+	}
+}
+
 public void Fusion_Melee_Empower_State(int client, int weapon, bool crit, int slot)
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
@@ -184,11 +215,14 @@ public void Fusion_Melee_Empower_State(int client, int weapon, bool crit, int sl
 
 		EmitSoundToAll(EMPOWER_SOUND, client, SNDCHAN_STATIC, 90, _, 0.6);
 		Weapon_Id[client] = EntIndexToEntRef(weapon);
+		float EmpowerRange = EMPOWER_RANGE;
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_FUSION) 
+			EmpowerRange *= 0.85;
 		CreateTimer(0.1, Empower_ringTracker, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Empower_ringTracker_effect, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.0, Empower_ringTracker_effect, client, TIMER_FLAG_NO_MAPCHANGE); //Make it happen atleast once instantly
 		ApplyStatusEffect(client, client, "Self Empowerment", 0.6);
-		spawnRing(client, EMPOWER_RANGE * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 30, 0.51, EMPOWER_WIDTH, 6.0, 10);
+		spawnRing(client, EmpowerRange * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 30, 0.51, EMPOWER_WIDTH, 6.0, 10);
 	}
 	else
 	{
@@ -256,7 +290,11 @@ static Action Empower_ringTracker(Handle ringTracker, int client)
 
 		if(EntRefToEntIndex(Weapon_Id[client]) == ActiveWeapon)
 		{
-			spawnRing(client, EMPOWER_RANGE * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 10, 0.11, EMPOWER_WIDTH, 6.0, 10);
+			float EmpowerRange = EMPOWER_RANGE;
+			if(i_CustomWeaponEquipLogic[ActiveWeapon] == WEAPON_FUSION) 
+				EmpowerRange *= 0.85;
+
+			spawnRing(client, EmpowerRange * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 10, 0.11, EMPOWER_WIDTH, 6.0, 10);
 			
 			ApplyStatusEffect(client, client, "Self Empowerment", 0.6);
 
@@ -268,7 +306,7 @@ static Action Empower_ringTracker(Handle ringTracker, int client)
 				if (IsValidClient(targ) && IsValidClient(client))
 				{
 					GetClientAbsOrigin(targ, targPos);
-					if (targ != client && GetVectorDistance(chargerPos, targPos, true) <= (EMPOWER_RANGE * EMPOWER_RANGE))
+					if (targ != client && GetVectorDistance(chargerPos, targPos, true) <= (EmpowerRange * EmpowerRange))
 					{
 						ApplyStatusEffect(client, targ, "Ally Empowerment", 0.6);
 					}
@@ -282,7 +320,7 @@ static Action Empower_ringTracker(Handle ringTracker, int client)
 				if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TFTeam_Red)
 				{
 					GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", chargerPos);
-					if (GetVectorDistance(chargerPos, targPos, true) <= (EMPOWER_RANGE * EMPOWER_RANGE))
+					if (GetVectorDistance(chargerPos, targPos, true) <= (EmpowerRange * EmpowerRange))
 					{
 						ApplyStatusEffect(client, baseboss_index_allied, "Ally Empowerment", 0.6);
 					}
@@ -311,8 +349,11 @@ static Action Empower_ringTracker_effect(Handle ringTracker, int client)
 
 		if(EntRefToEntIndex(Weapon_Id[client]) == ActiveWeapon)
 		{
+			float EmpowerRange = EMPOWER_RANGE;
+			if(i_CustomWeaponEquipLogic[ActiveWeapon] == WEAPON_FUSION) 
+				EmpowerRange *= 0.85;
 			//	spawnRing(client, EMPOWER_RANGE * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 30, 0.5, EMPOWER_WIDTH, 6.0, 10);
-			spawnRing(client, 0.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 1, 0.51, EMPOWER_WIDTH, 6.1, 1, EMPOWER_RANGE * 2.0);
+			spawnRing(client, 0.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 1, 0.51, EMPOWER_WIDTH, 6.1, 1, EmpowerRange * 2.0);
 		}
 		else
 		{
@@ -332,6 +373,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
+		f_CooldownForAbilities[client][0] = FAR_FUTURE;
 		i_NearlWeaponUsedWith[client] = EntIndexToEntRef(weapon);
 		if(f_NearlDurationCheckApply[client] > GetGameTime())
 		{

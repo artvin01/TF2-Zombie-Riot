@@ -323,7 +323,7 @@ static float Fantasy_Blade_Tele(int client, int weapon, float damage, float rang
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "No Targets Detected");
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "No Targets Detected");
 		return 0.0;
 	}
 	
