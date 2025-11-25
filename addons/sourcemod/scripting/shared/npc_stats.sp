@@ -3459,13 +3459,11 @@ methodmap CClotBody < CBaseCombatCharacter
 			{
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", model_scale); // ZZZZ i sleep
 			}
-			RunScriptCode(entity, -1, -1, "self.SetMoveType(Constants.EMoveType.MOVETYPE_FLY, Constants.EMoveCollide.MOVECOLLIDE_FLY_CUSTOM)");
 			Custom_SetAbsVelocity(entity, vecForward);	
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
 
-			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			SDKHook(entity, SDKHook_StartTouch, ArrowStartTouch);
+			WandProjectile_ApplyFunctionToEntity(entity, ArrowStartTouch);
 		}
 		return entity;
 	}
