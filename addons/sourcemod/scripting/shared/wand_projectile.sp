@@ -25,7 +25,7 @@ void WandProjectile_GamedataInit()
 	CEntityFactory EntityFactory = new CEntityFactory("zr_projectile_base", OnCreate_Proj, OnDestroy_Proj);
 	EntityFactory.DeriveFromClass("prop_dynamic");
 	EntityFactory.BeginDataMapDesc()
-		.DefineFloatField("m_vInitialVelocity")
+		.DefineVectorField("m_vInitialVelocity", 3)
 	.EndDataMapDesc(); 
 
 	EntityFactory.Install();
