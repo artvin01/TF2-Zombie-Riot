@@ -38,11 +38,11 @@ static float QuadSinceLastRemove[MAXPLAYERS]={0.0, ...};
 #define PURGE_ENERGY_SHOTGUN 5.0
 #define PURGE_ENERGY_RIFLE 1.0
 
-#define PURGE_RAM_BASE_DMG 300.0
+#define PURGE_RAM_BASE_DMG 270.0
 #define PURGE_RAM_RADIUS 150.0
 #define PURGE_RAM_TIME 3.0
 #define PURGE_RAM_SPEED 500.0
-#define PURGE_RAM_MAX_HIT 10.0
+#define PURGE_RAM_MAX_HIT 10
 
 #define PURGE_QUADLAUNCHER_MAX_HOLD 7.0
 
@@ -831,6 +831,9 @@ public Action Weapon_Purging_Crush_Think(Handle h, DataPack pack)
 		float velocity[3];
 		GetAngleVectors(clientAngle, velocity, NULL_VECTOR, NULL_VECTOR);
 		int entHit = 0;
+		float damage = PURGE_RAM_BASE_DMG;
+		damage *= Attributes_Get(weapon, 2, 1.0);
+		damage *= 0.075;
 		for(int a; a < i_MaxcountNpcTotal; a++)
 		{
 			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
@@ -847,11 +850,9 @@ public Action Weapon_Purging_Crush_Think(Handle h, DataPack pack)
 					continue;
 	
 				entHit++;
-				float damage = PURGE_RAM_BASE_DMG;
-				damage *= Attributes_Get(weapon, 2, 1.0);
-				damage *= 0.075;
 
 				SDKHooks_TakeDamage(entity, client, client, damage, DMG_CLUB, weapon, _, vecHitPos);
+				damage *= LASER_AOE_DAMAGE_FALLOFF;
 				if(view_as<CClotBody>(entity).IsOnGround())
 				{
 					float knockback = 350.0;
