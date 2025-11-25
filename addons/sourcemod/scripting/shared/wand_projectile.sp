@@ -206,9 +206,9 @@ public void ProjectileBaseThinkInternal(int Projectile, float Multi)
 	VecEndLocation[1] = AbsOrigin[1] + CurrentVelocity[1];
 	VecEndLocation[2] = AbsOrigin[2] + CurrentVelocity[2];
 
-//	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-//	TE_SetupBeamPoints(AbsOrigin, VecEndLocation, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
-//	TE_SendToAll();
+	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	TE_SetupBeamPoints(AbsOrigin, VecEndLocation, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+	TE_SendToAll();
 	Handle trace = TR_TraceRayFilterEx( AbsOrigin, VecEndLocation, ( MASK_SOLID ), RayType_EndPoint, ProjectileTraceHitTargets, packFilter );
 	delete packFilter;
 	delete trace;
@@ -452,7 +452,7 @@ static void OnCreate_Proj(CClotBody body)
 }
 void ApplyLateLogic_ProjectileBase(int Projectile)
 {
-		//so they dont get stuck on entities in the air.
+	//so they dont get stuck on entities in the air.
 	SetEntProp(Projectile, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID | FSOLID_TRIGGER); 
 
 	SDKHook(Projectile, SDKHook_Think, ProjectileBaseThink);

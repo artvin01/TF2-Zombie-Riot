@@ -65,7 +65,6 @@ int i_FailedTriesUnstuck[MAXENTITIES][2];
 //float f_MasterSequenceNpcPlayBackRate[MAXENTITIES];
 bool b_should_explode[MAXENTITIES];
 bool b_rocket_particle_from_blue_npc[MAXENTITIES];
-int g_rocket_particle;
 int i_rocket_particle[MAXENTITIES];
 float fl_rocket_particle_dmg[MAXENTITIES];
 float fl_rocket_particle_radius[MAXENTITIES];
@@ -313,7 +312,6 @@ void OnMapStart_NPC_Base()
 	g_particleImpactRubber = PrecacheParticleSystem("halloween_explosion_bits");
 	g_particleImpactPortal = PrecacheParticleSystem("drg_cow_explosion_sparkles_blue");
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
-	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
 	Shared_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	Shared_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	PrecacheModel(ARROW_TRAIL);
@@ -3254,15 +3252,10 @@ methodmap CClotBody < CBaseCombatCharacter
 #if defined ZR
 		Rogue_Paradox_ProjectileSpeed(this.index, speed);
 #endif
-		
-		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*speed;
-		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*speed;
-		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-speed;
 
-		int entity = CreateEntityByName("zr_projectile_base");
+		int entity = Wand_Projectile_Spawn(this.index, rocket_speed, 10.0, rocket_damage, _, -1, rocket_particle, _,hide_projectile,vecSwingStart);
 		if(IsValidEntity(entity))
 		{
-			DispatchKeyValue(entity, "model", ENERGY_BALL_MODEL);
 			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
 			h_BonusDmgToSpecialArrow[entity] = bonusdmg;
 			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
@@ -3271,45 +3264,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			fl_rocket_particle_dmg[entity] = rocket_damage;
 			fl_rocket_particle_radius[entity] = damage_radius;
 			b_rocket_particle_from_blue_npc[entity] = FromBlueNpc;
-			SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
-			
-			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
-			SetTeam(entity, GetTeam(this.index));
-			
-			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
-			DispatchSpawn(entity);
-			for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
-			{
-				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_rocket_particle, _, i);
-			}
-			SetEntityModel(entity, PARTICLE_ROCKET_MODEL);
-	
-			//Make it entirely invis. Shouldnt even render these 8 polygons.
-			if(hide_projectile)
-			{
-				SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
-				SetEntityRenderColor(entity, 255, 255, 255, 0);
-			}
-			Hook_DHook_UpdateTransmitState(entity);
-			
-			int particle = 0;
-	
-			if(rocket_particle[0]) //If it has something, put it in. usually it has one. but if it doesn't base model it remains.
-			{
-				particle = ParticleEffectAt(vecSwingStart, rocket_particle, 0.0); //Inf duartion
-				i_rocket_particle[entity]= EntIndexToEntRef(particle);
-				TeleportEntity(particle, NULL_VECTOR, vecAngles, NULL_VECTOR);
-				SetParent(entity, particle);	
-				SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
-				SetEntityRenderColor(entity, 255, 255, 255, 0);
-			}
-			
-			Custom_SetAbsVelocity(entity, vecForward);	
-			SetEntityCollisionGroup(entity, 24); //our savior
-			Set_Projectile_Collision(entity); //If red, set to 27
 
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-		//	SDKHook(entity, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+
 			return entity;
 		}
 		return -1;
@@ -3414,7 +3370,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			f_ArrowDamage[entity] = rocket_damage;
 			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
-			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
 			SetTeam(entity, GetTeam(this.index));
 			SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
