@@ -38,13 +38,13 @@ static float QuadSinceLastRemove[MAXPLAYERS]={0.0, ...};
 #define PURGE_ENERGY_SHOTGUN 5.0
 #define PURGE_ENERGY_RIFLE 1.0
 
-#define PURGE_RAM_BASE_DMG 200.0
+#define PURGE_RAM_BASE_DMG 270.0
 #define PURGE_RAM_RADIUS 150.0
 #define PURGE_RAM_TIME 3.0
 #define PURGE_RAM_SPEED 500.0
-#define PURGE_RAM_MAX_HIT 10.0
+#define PURGE_RAM_MAX_HIT 10
 
-#define PURGE_QUADLAUNCHER_MAX_HOLD 10.0
+#define PURGE_QUADLAUNCHER_MAX_HOLD 7.0
 
 #define PURGE_ANNAHILATOR_ENERGY_REQUIRE 250.0
 #define PURGE_QUAD_LAUNCHER_ENERGY_REQUIRE 400.0
@@ -679,30 +679,36 @@ public Action Purging_Annahilator_damageBonus_Fade(Handle timer, DataPack pack)
 
 public Action Weapon_Purging_QuadLauncher_Remove_Later(Handle h,int ref)
 {
-	int weapon = EntRefToEntIndex(ref);
-	if(!IsValidEntity(weapon))
-	{
-		return Plugin_Stop;
-	}
-	int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
-	float ownerPos[3];
-	WorldSpaceCenter(owner, ownerPos);
-	int weaponN = Store_GiveSpecificItem(owner, "Purging Grinder");
-	TE_Particle("hightower_explosion", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = owner);
-	TE_Particle("mvm_soldier_shockwave", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-	EmitSoundToClient(owner, PURGE_EXPLOSION_SOUND, owner, SNDCHAN_AUTO, 80, _, 0.8);
-	if (IsValidEntity(weapon))
-	{
-		if(IsValidClient(owner))
-		{
-			Store_RemoveSpecificItem(owner, "Purging QuadLauncher");
-			TF2_RemoveItem(owner, weapon);
-		}
-	}
-	FakeClientCommand(owner, "use tf_weapon_fists");
-	Weapon_Purging_Crush(owner, EntIndexToEntRef(weaponN));
-	QuadLauncher_Remove_Timer[owner] = null;
-	return Plugin_Stop;
+    int weapon = EntRefToEntIndex(ref);
+    if(!IsValidEntity(weapon))
+    {
+        return Plugin_Stop;
+    }
+    int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
+    float ownerPos[3];
+    WorldSpaceCenter(owner, ownerPos);
+    bool IsDowned = (dieingstate[owner] != 0);
+    int weaponN = -1;
+    if(!IsDowned)
+        weaponN = Store_GiveSpecificItem(owner, "Purging Grinder");
+
+    TE_Particle("hightower_explosion", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = owner);
+    TE_Particle("mvm_soldier_shockwave", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+    EmitSoundToClient(owner, PURGE_EXPLOSION_SOUND, owner, SNDCHAN_AUTO, 80, _, 0.8);
+    if (IsValidEntity(weapon))
+    {
+        if(IsValidClient(owner))
+        {
+            Store_RemoveSpecificItem(owner, "Purging QuadLauncher");
+            TF2_RemoveItem(owner, weapon);
+        }
+    }
+    FakeClientCommand(owner, "use tf_weapon_fists");
+    if(!IsDowned && weaponN != -1)
+        Weapon_Purging_Crush(owner, EntIndexToEntRef(weaponN));
+
+    QuadLauncher_Remove_Timer[owner] = null;
+    return Plugin_Stop;
 }
 
 public void Weapon_Purging_Annahilator_Remove(int ref, int owner)
@@ -826,6 +832,9 @@ public Action Weapon_Purging_Crush_Think(Handle h, DataPack pack)
 		float velocity[3];
 		GetAngleVectors(clientAngle, velocity, NULL_VECTOR, NULL_VECTOR);
 		int entHit = 0;
+		float damage = PURGE_RAM_BASE_DMG;
+		damage *= Attributes_Get(weapon, 2, 1.0);
+		damage *= 0.075;
 		for(int a; a < i_MaxcountNpcTotal; a++)
 		{
 			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
@@ -842,11 +851,9 @@ public Action Weapon_Purging_Crush_Think(Handle h, DataPack pack)
 					continue;
 	
 				entHit++;
-				float damage = PURGE_RAM_BASE_DMG;
-				damage *= Attributes_Get(weapon, 2, 1.0);
-				damage *= 0.075;
 
 				SDKHooks_TakeDamage(entity, client, client, damage, DMG_CLUB, weapon, _, vecHitPos);
+				damage *= LASER_AOE_DAMAGE_FALLOFF;
 				if(view_as<CClotBody>(entity).IsOnGround())
 				{
 					float knockback = 350.0;
@@ -976,4 +983,7 @@ void KitPurgeGiveAttributesData(DataPack pack)
 		}
 	}
 }
+
+
+
 

@@ -156,6 +156,7 @@ methodmap ARISBeacon < CClotBody
 		vecTargetPos[2] += 50.0;
 		f3_NpcSavePos[npc.index] = vecTargetPos;
 		npc.m_flRadius = 256.0 + (npc.m_iCharges * 64.0);
+		b_NpcUnableToDie[npc.index] = true;
 		
 		int color[4];
 		char particle[64];
@@ -213,6 +214,7 @@ public void ARISBeacon_ClotThink(int iNPC)
 	if(!IsValidAlly(npc.index, GetClosestAlly(npc.index)))
 	{
 		//there is no more valid ally, suicide.
+		b_NpcUnableToDie[npc.index] = false;
 		SmiteNpcToDeath(npc.index);
 		return;
 	}
