@@ -794,7 +794,7 @@ public void Buccaneer_NonBuffedLogic(BuccaneerBones npc, int closest)
 
 void Buccaneer_ShootProjectile(BuccaneerBones npc, float vicLoc[3], float vel, bool useoverride = false, float angoverride[3] = NULL_VECTOR)
 {
-	int entity = CreateEntityByName("zr_projectile_base");
+	int entity = CreateEntityByName("tf_projectile_rocket");
 			
 	if (IsValidEntity(entity))
 	{

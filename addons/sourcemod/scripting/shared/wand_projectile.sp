@@ -12,6 +12,7 @@ void WandStocks_Map_Precache()
 stock void WandProjectile_ApplyFunctionToEntity(int projectile, Function Function)
 {
 	func_WandOnTouch[projectile] = Function;
+	ProjectileBaseThinkInternal(projectile, 3.0);
 }
 
 stock Function func_WandOnTouchReturn(int entity)
@@ -111,6 +112,8 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		SetTeam(entity, GetTeam(client));
 		int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
 		Custom_SDKCall_SetLocalOrigin(entity, fPos);
+		SDKCall_SetAbsOrigin(entity, fPos);
+		Custom_SetAbsVelocity(entity, fVel);	
 		DispatchSpawn(entity);
 		SetEntPropVector(entity, Prop_Send, "m_angRotation", fAng); //set it so it can be used
 		SetEntPropVector(entity, Prop_Data, "m_angRotation", fAng); 
@@ -118,7 +121,6 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		
 		SetEntityModel(entity, ENERGY_BALL_MODEL);
 		RunScriptCode(entity, -1, -1, "self.SetMoveType(Constants.EMoveType.MOVETYPE_FLY, Constants.EMoveCollide.MOVECOLLIDE_FLY_CUSTOM)");
-		Custom_SetAbsVelocity(entity, fVel);	
 		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
 
 		if(hideprojectile)
@@ -158,15 +160,6 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 			pack.WriteCell(EntIndexToEntRef(entity));
 			pack.WriteCell(EntIndexToEntRef(particle));
 		}
-		//so they dont get stuck on entities in the air.
-		SetEntProp(entity, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID | FSOLID_TRIGGER); 
-
-		SDKHook(entity, SDKHook_Think, ProjectileBaseThink);
-		SDKHook(entity, SDKHook_ThinkPost, ProjectileBaseThinkPost);
-		CBaseCombatCharacter(entity).SetNextThink(GetGameTime());
-
-		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-		SDKHook(entity, SDKHook_StartTouch, Wand_Base_StartTouch);
 
 		return entity;
 	}
@@ -177,6 +170,10 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 #endif
 
 public void ProjectileBaseThink(int Projectile)
+{	
+	ProjectileBaseThinkInternal(Projectile,1.0);
+}
+public void ProjectileBaseThinkInternal(int Projectile, float Multi)
 {	
 	/*
 		Why does this exist?
@@ -199,9 +196,9 @@ public void ProjectileBaseThink(int Projectile)
 	static float CurrentVelocity[3];
 	GetEntPropVector(Projectile, Prop_Data, "m_vecAbsVelocity", CurrentVelocity);
 
-	CurrentVelocity[0] *= 0.02;
-	CurrentVelocity[1] *= 0.02;
-	CurrentVelocity[2] *= 0.02;
+	CurrentVelocity[0] *= 0.02 * Multi;
+	CurrentVelocity[1] *= 0.02 * Multi;
+	CurrentVelocity[2] *= 0.02 * Multi;
 
 	static float VecEndLocation[3];
 	VecEndLocation[0] = AbsOrigin[0] + CurrentVelocity[0];
@@ -211,7 +208,7 @@ public void ProjectileBaseThink(int Projectile)
 //	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 //	TE_SetupBeamPoints(AbsOrigin, VecEndLocation, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
 //	TE_SendToAll();
-	Handle trace = TR_TraceRayFilterEx( AbsOrigin, VecEndLocation, ( MASK_ALL ), RayType_EndPoint, ProjectileTraceHitTargets, packFilter );
+	Handle trace = TR_TraceRayFilterEx( AbsOrigin, VecEndLocation, ( MASK_SOLID ), RayType_EndPoint, ProjectileTraceHitTargets, packFilter );
 	delete packFilter;
 	delete trace;
 
@@ -261,7 +258,7 @@ bool ProjectileTraceHitTargets(int entity, int contentsMask, DataPack packFilter
 
 public void ProjectileBaseThinkPost(int Projectile)
 {
-	CBaseCombatCharacter(Projectile).SetNextThink(GetGameTime() + 0.02);
+	CBaseCombatCharacter(Projectile).SetNextThink(GetGameTime());
 }
 public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pack)
 {
@@ -449,7 +446,23 @@ static void OnCreate_Proj(CClotBody body)
 		RemoveEntity(extra_index);
 
 	iref_PropAppliedToRocket[body.index] = INVALID_ENT_REFERENCE;
+	
 	return;
+}
+void ApplyLateLogic_ProjectileBase(int Projectile)
+{
+		//so they dont get stuck on entities in the air.
+	SetEntProp(Projectile, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID | FSOLID_TRIGGER); 
+
+	SDKHook(Projectile, SDKHook_Think, ProjectileBaseThink);
+	SDKHook(Projectile, SDKHook_ThinkPost, ProjectileBaseThinkPost);
+	CBaseCombatCharacter(Projectile).SetNextThink(GetGameTime());
+
+	SDKHook(Projectile, SDKHook_ShouldCollide, Never_ShouldCollide);
+	SDKHook(Projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
+	ProjectileBaseThinkInternal(Projectile, 3.0);
+//do our own logic entirely
+	RunScriptCode(Projectile, -1, -1, "self.SetMoveType(Constants.EMoveType.MOVETYPE_FLY, Constants.EMoveCollide.MOVECOLLIDE_FLY_CUSTOM)");
 }
 static void OnDestroy_Proj(CClotBody body)
 {

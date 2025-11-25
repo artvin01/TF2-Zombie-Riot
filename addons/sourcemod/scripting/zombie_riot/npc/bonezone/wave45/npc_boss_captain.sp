@@ -1001,7 +1001,7 @@ public MRESReturn Captain_AnchorCollide(int entity)
 
 void Captain_ShootProjectile(Captain npc, float vicLoc[3], float startPos[3], float startAng[3])
 {
-	int entity = CreateEntityByName("zr_projectile_base");
+	int entity = CreateEntityByName("tf_projectile_rocket");
 			
 	if (IsValidEntity(entity))
 	{

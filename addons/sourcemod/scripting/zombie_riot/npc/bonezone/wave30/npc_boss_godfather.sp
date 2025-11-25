@@ -946,7 +946,7 @@ public void Godfather_AnimEvent(int entity, int event)
 
 void Godfather_ShootProjectile(Godfather npc, float vicLoc[3], float startPos[3], float startAng[3], bool molotov = false)
 {
-	int entity = CreateEntityByName("zr_projectile_base");
+	int entity = CreateEntityByName("tf_projectile_rocket");
 			
 	if (IsValidEntity(entity))
 	{

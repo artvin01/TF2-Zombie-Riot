@@ -879,7 +879,7 @@ public void Mondo_AnimEvent(int entity, int event)
 
 void Jester_ShootProjectile(JesterBones npc, float bombPos[3], float bombAng[3], float launchAng[3], bool buffed, bool MondoDeathBomb = false)
 {
-	int entity = CreateEntityByName("zr_projectile_base");
+	int entity = CreateEntityByName("tf_projectile_rocket");
 			
 	if (IsValidEntity(entity))
 	{

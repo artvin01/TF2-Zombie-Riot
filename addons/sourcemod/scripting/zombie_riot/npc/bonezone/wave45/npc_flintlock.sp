@@ -544,7 +544,7 @@ public void Flintlock_CheckShoot(FlintlockBones npc, int closest)
 
 public void Flintlock_ShootProjectile(FlintlockBones npc, float vicLoc[3], float vel, float damage, float startPos[3])
 {
-	int entity = CreateEntityByName("zr_projectile_base");
+	int entity = CreateEntityByName("tf_projectile_rocket");
 			
 	if (IsValidEntity(entity))
 	{

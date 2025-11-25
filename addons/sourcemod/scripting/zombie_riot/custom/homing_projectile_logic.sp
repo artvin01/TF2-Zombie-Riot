@@ -76,6 +76,7 @@ void Initiate_HomingProjectile(int projectile, int owner, float lockonAngleMax, 
 	*/
 }
 
+
 public Action Projectile_NonPerfectHoming(Handle timer, DataPack pack)
 {
 	pack.Reset();
@@ -189,9 +190,15 @@ void HomingProjectile_TurnToTarget_NonPerfect(int projectile, int Target)
 
 	// Apply only both if we want to, angle doesnt matter mostly
 	if(RWI_AlterRocketActualAngle[projectile])
-		TeleportEntity(projectile, NULL_VECTOR, rocketAngle, vecVelocity);
+	{
+		Custom_SetAbsVelocity(projectile, vecVelocity);
+		SetEntPropVector(projectile, Prop_Data, "m_angRotation", rocketAngle); 
+	}
 	else
-		TeleportEntity(projectile, NULL_VECTOR, NULL_VECTOR, vecVelocity);
+	{
+		
+		Custom_SetAbsVelocity(projectile, vecVelocity);
+	}
 }
 
 bool HomingProjectile_ValidTargetCheck(int projectile, int Target)

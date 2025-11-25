@@ -559,7 +559,7 @@ public void Archmage_CheckLaunch(ArchmageBones npc, int closest)
 
 public void Archmage_ShootProjectile(ArchmageBones npc, float vicLoc[3], float vel, float damage)
 {
-	int entity = CreateEntityByName("zr_projectile_base");
+	int entity = CreateEntityByName("tf_projectile_rocket");
 			
 	if (IsValidEntity(entity))
 	{

@@ -541,7 +541,7 @@ public void Rattler_CheckShoot(RattlerBones npc, int closest)
 
 public void Rattler_ShootProjectile(RattlerBones npc, float vicLoc[3], float vel, float damage, float startPos[3])
 {
-	int entity = CreateEntityByName("zr_projectile_base");
+	int entity = CreateEntityByName("tf_projectile_rocket");
 			
 	if (IsValidEntity(entity))
 	{

@@ -1162,13 +1162,12 @@ return Plugin_Continue;
 
 int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocity, int weapon, int tier, DHookCallback CollideCallback, bool ForceRandomAngles, bool Spin, float angOverride[3] = NULL_VECTOR, bool useAngOverride = false, int skin = 0, float posOverride[3] = NULL_VECTOR, bool usePosOverride = false)
 {
-int prop = CreateEntityByName("zr_projectile_base");
+int prop = CreateEntityByName("tf_projectile_rocket");
 		
 if (IsValidEntity(prop))
 {
 	DispatchKeyValue(prop, "targetname", "trash_projectile"); 
 			
-	SetEntDataFloat(prop, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
 	SetTeam(prop, GetTeam(client));
 			
 	DispatchSpawn(prop);

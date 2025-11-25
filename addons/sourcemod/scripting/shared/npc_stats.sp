@@ -3262,6 +3262,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
 		{
+			DispatchKeyValue(entity, "model", ENERGY_BALL_MODEL);
 			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
 			h_BonusDmgToSpecialArrow[entity] = bonusdmg;
 			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
@@ -3273,7 +3274,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
 			
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
-			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
 			SetTeam(entity, GetTeam(this.index));
 			
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
@@ -3304,16 +3304,12 @@ methodmap CClotBody < CBaseCombatCharacter
 				SetEntityRenderColor(entity, 255, 255, 255, 0);
 			}
 			
-			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
+			Custom_SetAbsVelocity(entity, vecForward);	
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
 
-			if(h_NpcSolidHookType[entity] != 0)
-				DHookRemoveHookID(h_NpcSolidHookType[entity]);
-			h_NpcSolidHookType[entity] = 0;
-			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre); //*yawn*
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			SDKHook(entity, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+		//	SDKHook(entity, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 			return entity;
 		}
 		return -1;
@@ -3412,6 +3408,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
 		{
+			DispatchKeyValue(entity, "model", ENERGY_BALL_MODEL);
 			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
 			b_EntityIsArrow[entity] = true;
 			f_ArrowDamage[entity] = rocket_damage;
@@ -3462,15 +3459,11 @@ methodmap CClotBody < CBaseCombatCharacter
 			{
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", model_scale); // ZZZZ i sleep
 			}
-			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
+			RunScriptCode(entity, -1, -1, "self.SetMoveType(Constants.EMoveType.MOVETYPE_FLY, Constants.EMoveCollide.MOVECOLLIDE_FLY_CUSTOM)");
+			Custom_SetAbsVelocity(entity, vecForward);	
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
 
-			if(h_NpcSolidHookType[entity] != 0)
-				DHookRemoveHookID(h_NpcSolidHookType[entity]);
-			h_NpcSolidHookType[entity] = 0;
-
-			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
 			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, ArrowStartTouch);
 		}

@@ -2928,11 +2928,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SetEntityRenderMode(entity, RENDER_NORMAL); //Make it entirely invis.
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
-			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Rocket);
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
+			SDKHook(entity, SDKHook_SpawnPost, ApplyLateLogic_ProjectileBase);
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			Hook_DHook_UpdateTransmitState(entity);
 			b_IsAProjectile[entity] = true;
 			

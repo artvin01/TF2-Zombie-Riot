@@ -2278,7 +2278,7 @@ public void SSBChair_NPCDeath(int entity)
 
 int SSBChair_CreateProjectile(SSBChair owner, char model[255], float pos[3], float ang[3], float velocity, float scale, DHookCallback CollideCallback, int skin = 0)
 {
-	int prop = CreateEntityByName("zr_projectile_base");
+	int prop = CreateEntityByName("tf_projectile_rocket");
 			
 	if (IsValidEntity(prop))
 	{

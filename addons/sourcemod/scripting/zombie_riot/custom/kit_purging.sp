@@ -282,7 +282,7 @@ public void Weapon_Purging_QuadLauncher(int client, int weapon, bool crit, int s
 			
 	for (int repeat = 1; repeat <= fl_KitPurge_QuadLauncher_Rockets[pap]; repeat++)
 	{
-		int entity = CreateEntityByName("zr_projectile_base");
+		int entity = CreateEntityByName("tf_projectile_rocket");
 		if(IsValidEntity(entity))
 		{
 			static float pos[3], ang[3], vel_2[3], shootPos[3];

@@ -879,23 +879,10 @@ static float RocketJumpManualDo(int attacker, int victim, float damage, int weap
 	return (-damage); //Remove dmg
 }
 #endif
-/*
-public MRESReturn CH_PassServerEntityFilter(DHookReturn ret, DHookParam params) 
-{
-	int toucher = DHookGetParam(params, 1);
-	int passer  = DHookGetParam(params, 2);
-	if(passer == -1)
-		return MRES_Ignored;
-		
-	if(PassfilterGlobal(toucher, passer, true))
-		return MRES_Ignored;
-	
-	ret.Value = false;
-	return MRES_Supercede;
-}
-*/
+
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
+	return Plugin_Continue;
 	if(!(ent1 >= 0 && ent1 <= MAXENTITIES && ent2 >= 0 && ent2 <= MAXENTITIES))
 		return Plugin_Continue;
 
