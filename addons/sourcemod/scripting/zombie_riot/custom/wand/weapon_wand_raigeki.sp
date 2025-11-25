@@ -65,7 +65,7 @@ static float Raigeki_EnergyMult_DMG[6] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.6 };					/
 static float Raigeki_EnergyMult_Radius[6] = { 0.0, 0.0, 0.0, 0.0, 0.25 };					//Maximum bonus radius percentage added to Raigeki by Kinetic Energy.
 static float Raigeki_Falloff_MultiHit[6] = { 0.825, 0.85, 0.875, 0.9, 0.825, 0.9 };			//Amount to multiply damage dealt by Raigeki per target hit.
 static float Raigeki_Falloff_Radius[6] = { 0.65, 0.7, 0.75, 0.8, 0.65, 0.8 };				//Distance-based falloff. Lower numbers = more damage is lost based on distance.
-static float Raigeki_Cooldown[6] = { 40.0, 40.0, 40.0, 40.0, 20.0, 40.0 };					//Raigeki's cooldown.
+static float Raigeki_Cooldown[6] = { 45.0, 45.0, 45.0, 45.0, 20.0, 45.0 };					//Raigeki's cooldown.
 static float Raigeki_Cooldown_Failed[6] = { 20.0, 20.0, 20.0, 20.0, 10.0, 20.0 };			//Raigeki's cooldown if the user fails to cast it (releases M2 without enough charge, is downed/dies while charging).
 
 //SUPERCHARGED: After Raigeki hits, if the user has enough Kinetic Energy, they will become Supercharged.
