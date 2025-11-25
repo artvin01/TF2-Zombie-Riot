@@ -65,7 +65,6 @@ int i_FailedTriesUnstuck[MAXENTITIES][2];
 //float f_MasterSequenceNpcPlayBackRate[MAXENTITIES];
 bool b_should_explode[MAXENTITIES];
 bool b_rocket_particle_from_blue_npc[MAXENTITIES];
-int g_rocket_particle;
 int i_rocket_particle[MAXENTITIES];
 float fl_rocket_particle_dmg[MAXENTITIES];
 float fl_rocket_particle_radius[MAXENTITIES];
@@ -313,7 +312,6 @@ void OnMapStart_NPC_Base()
 	g_particleImpactRubber = PrecacheParticleSystem("halloween_explosion_bits");
 	g_particleImpactPortal = PrecacheParticleSystem("drg_cow_explosion_sparkles_blue");
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
-	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
 	Shared_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	Shared_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	PrecacheModel(ARROW_TRAIL);
@@ -3232,7 +3230,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	 bool do_aoe_dmg=false , bool FromBlueNpc=true, bool Override_Spawn_Loc = false,
 	 float Override_VEC[3] = {0.0,0.0,0.0}, int flags = 0, int inflictor = INVALID_ENT_REFERENCE, float bonusdmg = 1.0, bool hide_projectile = true)
 	{
-		float vecForward[3], vecSwingStart[3], vecAngles[3];
+		float vecSwingStart[3], vecAngles[3];
 		//this.GetVectors(vecForward, vecSwingStart, vecAngles);
 		
 		if(Override_Spawn_Loc)
@@ -3254,15 +3252,10 @@ methodmap CClotBody < CBaseCombatCharacter
 #if defined ZR
 		Rogue_Paradox_ProjectileSpeed(this.index, speed);
 #endif
-		
-		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*speed;
-		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*speed;
-		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-speed;
 
-		int entity = CreateEntityByName("zr_projectile_base");
+		int entity = Wand_Projectile_Spawn(this.index, rocket_speed, 10.0, rocket_damage, -1, -1, rocket_particle, vecAngles,hide_projectile,vecSwingStart);
 		if(IsValidEntity(entity))
 		{
-			DispatchKeyValue(entity, "model", ENERGY_BALL_MODEL);
 			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
 			h_BonusDmgToSpecialArrow[entity] = bonusdmg;
 			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
@@ -3271,45 +3264,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			fl_rocket_particle_dmg[entity] = rocket_damage;
 			fl_rocket_particle_radius[entity] = damage_radius;
 			b_rocket_particle_from_blue_npc[entity] = FromBlueNpc;
-			SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
 			
-			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
-			SetTeam(entity, GetTeam(this.index));
-			
-			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
-			DispatchSpawn(entity);
-			for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
-			{
-				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_rocket_particle, _, i);
-			}
-			SetEntityModel(entity, PARTICLE_ROCKET_MODEL);
-	
-			//Make it entirely invis. Shouldnt even render these 8 polygons.
-			if(hide_projectile)
-			{
-				SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
-				SetEntityRenderColor(entity, 255, 255, 255, 0);
-			}
-			Hook_DHook_UpdateTransmitState(entity);
-			
-			int particle = 0;
-	
-			if(rocket_particle[0]) //If it has something, put it in. usually it has one. but if it doesn't base model it remains.
-			{
-				particle = ParticleEffectAt(vecSwingStart, rocket_particle, 0.0); //Inf duartion
-				i_rocket_particle[entity]= EntIndexToEntRef(particle);
-				TeleportEntity(particle, NULL_VECTOR, vecAngles, NULL_VECTOR);
-				SetParent(entity, particle);	
-				SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
-				SetEntityRenderColor(entity, 255, 255, 255, 0);
-			}
-			
-			Custom_SetAbsVelocity(entity, vecForward);	
-			SetEntityCollisionGroup(entity, 24); //our savior
-			Set_Projectile_Collision(entity); //If red, set to 27
-
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-		//	SDKHook(entity, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+			WandProjectile_ApplyFunctionToEntity(entity, Rocket_Particle_StartTouch);
 			return entity;
 		}
 		return -1;
@@ -3380,7 +3336,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	public int FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE, int entitytofirefrom = -1) //No defaults, otherwise i cant even judge.
 	{
 		//ITS NOT actually an arrow, because of an ANNOOOOOOOOOOOYING sound.
-		float vecForward[3], vecSwingStart[3], vecAngles[3];
+		float vecSwingStart[3], vecAngles[3];
 		//this.GetVectors(vecForward, vecSwingStart, vecAngles);
 
 		if(entitytofirefrom == -1)
@@ -3400,25 +3356,15 @@ methodmap CClotBody < CBaseCombatCharacter
 #if defined ZR
 		Rogue_Paradox_ProjectileSpeed(this.index, speed);
 #endif
-		
-		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*speed;
-		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*speed;
-		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-speed;
 
-		int entity = CreateEntityByName("zr_projectile_base");
+		int entity = Wand_Projectile_Spawn(this.index, rocket_speed, 10.0, rocket_damage, -1, -1, "", vecAngles,false,vecSwingStart);
 		if(IsValidEntity(entity))
 		{
-			DispatchKeyValue(entity, "model", ENERGY_BALL_MODEL);
 			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
 			b_EntityIsArrow[entity] = true;
 			f_ArrowDamage[entity] = rocket_damage;
 			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
-			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
-			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-			SetTeam(entity, GetTeam(this.index));
-			SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
-			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
-			DispatchSpawn(entity);
+			
 			if(rocket_model[0])
 			{
 				int g_ProjectileModelRocket = PrecacheModel(rocket_model);
@@ -3459,13 +3405,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			{
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", model_scale); // ZZZZ i sleep
 			}
-			RunScriptCode(entity, -1, -1, "self.SetMoveType(Constants.EMoveType.MOVETYPE_FLY, Constants.EMoveCollide.MOVECOLLIDE_FLY_CUSTOM)");
-			Custom_SetAbsVelocity(entity, vecForward);	
-			SetEntityCollisionGroup(entity, 24); //our savior
-			Set_Projectile_Collision(entity); //If red, set to 27
 
-			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			SDKHook(entity, SDKHook_StartTouch, ArrowStartTouch);
+			WandProjectile_ApplyFunctionToEntity(entity, ArrowStartTouch);
+			return entity;
 		}
 		return entity;
 	}
@@ -9334,16 +9276,14 @@ public void ArrowStartTouch(int arrow, int entity)
 	{
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
 	}
-	//Delay deletion for particles to not break.
-	SDKUnhook(arrow, SDKHook_StartTouch, ArrowStartTouch);
 	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow), TIMER_FLAG_NO_MAPCHANGE);
 	SetEntityRenderMode(arrow, RENDER_NONE);
 	SetEntityMoveType(arrow, MOVETYPE_NONE);
+	WandProjectile_ApplyFunctionToEntity(arrow, INVALID_FUNCTION);
 }
 
 public void Rocket_Particle_StartTouch(int entity, int target)
 {
-	
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
 		

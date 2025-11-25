@@ -320,6 +320,7 @@ public void ApertureHuntsmanV2_Particle_StartTouch(int entity, int target)
 			inflictor = owner;
 
 	
+		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], entity, _, 80, _, 0.8, 100);
 		StartBleedingTimer(target, owner, 10.0, 4, -1, DMG_TRUEDAMAGE, 0);
 	}
 	RemoveEntity(entity);

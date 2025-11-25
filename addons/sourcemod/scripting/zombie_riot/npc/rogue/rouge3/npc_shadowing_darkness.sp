@@ -292,10 +292,6 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 			DispatchSpawn(entity);
 			SetEntPropVector(entity, Prop_Send, "m_angRotation", VecAnglesDo); //set it so it can be used
 			SetEntPropVector(entity, Prop_Data, "m_angRotation", VecAnglesDo); 
-			for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
-			{
-				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_rocket_particle, _, i);
-			}
 			SetEntityModel(entity, PARTICLE_ROCKET_MODEL);
 
 			SetEntityRenderColor(entity, 255, 255, 255, 0);

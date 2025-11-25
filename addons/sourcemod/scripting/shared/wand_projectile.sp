@@ -12,7 +12,8 @@ void WandStocks_Map_Precache()
 stock void WandProjectile_ApplyFunctionToEntity(int projectile, Function Function)
 {
 	func_WandOnTouch[projectile] = Function;
-	ProjectileBaseThinkInternal(projectile, 3.0);
+	if(Function != INVALID_FUNCTION)
+		ProjectileBaseThinkInternal(projectile, 3.0);
 }
 
 stock Function func_WandOnTouchReturn(int entity)
@@ -121,7 +122,6 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		SetEntityCollisionGroup(entity, 27);
 		
 		SetEntityModel(entity, ENERGY_BALL_MODEL);
-		RunScriptCode(entity, -1, -1, "self.SetMoveType(Constants.EMoveType.MOVETYPE_FLY, Constants.EMoveCollide.MOVECOLLIDE_FLY_CUSTOM)");
 		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
 
 		if(hideprojectile)
@@ -236,17 +236,20 @@ bool ProjectileTraceHitTargets(int entity, int contentsMask, DataPack packFilter
 	packFilter.Reset();
 	ArrayList Projec_HitEntitiesInTheWay = packFilter.ReadCell();
 	int iExclude = packFilter.ReadCell();
-	if(entity == iExclude)
+	int Owner = GetEntPropEnt(iExclude, Prop_Send, "m_hOwnerEntity");
+	if(entity == iExclude || Owner == iExclude)
 	{
 		return false;
 	}
+	if(!IsValidEntity(Owner))
+		Owner = iExclude;
 	int target = entity;
 	if(GetTeam(iExclude) == TFTeam_Red)
 		target = Target_Hit_Wand_Detection(iExclude, entity);
 	else
 	{
-		if(!IsValidEnemy(iExclude, target, true, true))
-			target = 0;
+		if(!IsValidEnemy(Owner, target, true, true))
+			target = -1;
 	}
 	if(target > 0 || target == 0)
 	{
@@ -453,7 +456,7 @@ static void OnCreate_Proj(CClotBody body)
 }
 void ApplyLateLogic_ProjectileBase(int Projectile)
 {
-		//so they dont get stuck on entities in the air.
+	//so they dont get stuck on entities in the air.
 	SetEntProp(Projectile, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID | FSOLID_TRIGGER); 
 
 	SDKHook(Projectile, SDKHook_Think, ProjectileBaseThink);
