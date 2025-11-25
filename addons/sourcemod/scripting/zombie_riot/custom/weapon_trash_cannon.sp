@@ -1162,89 +1162,89 @@ return Plugin_Continue;
 
 int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocity, int weapon, int tier, DHookCallback CollideCallback, bool ForceRandomAngles, bool Spin, float angOverride[3] = NULL_VECTOR, bool useAngOverride = false, int skin = 0, float posOverride[3] = NULL_VECTOR, bool usePosOverride = false)
 {
-int prop = CreateEntityByName("tf_projectile_rocket");
+	int prop = CreateEntityByName("tf_projectile_rocket");
+			
+	if (IsValidEntity(prop))
+	{
+		DispatchKeyValue(prop, "targetname", "trash_projectile"); 
+				
+		SetTeam(prop, GetTeam(client));
+				
+		DispatchSpawn(prop);
+				
+		ActivateEntity(prop);
 		
-if (IsValidEntity(prop))
-{
-	DispatchKeyValue(prop, "targetname", "trash_projectile"); 
-			
-	SetTeam(prop, GetTeam(client));
-			
-	DispatchSpawn(prop);
-			
-	ActivateEntity(prop);
-	
-	SetEntityModel(prop, model);
-	char scaleChar[16];
-	Format(scaleChar, sizeof(scaleChar), "%f", scale);
-	DispatchKeyValue(prop, "modelscale", scaleChar);
-	
-	SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", client);
-	SetEntProp(prop, Prop_Data, "m_takedamage", 0, 1);
-	
-	char skinChar[16];
-	Format(skinChar, 16, "%i", skin);
-	DispatchKeyValue(prop, "skin", skinChar);
-	
-	float pos[3], ang[3], propVel[3], buffer[3];
-	GetClientEyePosition(client, pos);
-	GetClientEyeAngles(client, ang);
-	
-	if (useAngOverride)
-	{
-		ang = angOverride;
-	}
-	
-	if (usePosOverride)
-	{
-		pos = posOverride;
-	}
-
-	GetAngleVectors(ang, buffer, NULL_VECTOR, NULL_VECTOR);
-	
-	if (IsValidEntity(weapon))
-	{
-		velocity *= Attributes_Get(weapon, 103, 1.0);
-	
-		velocity *= Attributes_Get(weapon, 104, 1.0);
-	
-		velocity *= Attributes_Get(weapon, 475, 1.0);
+		SetEntityModel(prop, model);
+		char scaleChar[16];
+		Format(scaleChar, sizeof(scaleChar), "%f", scale);
+		DispatchKeyValue(prop, "modelscale", scaleChar);
 		
-		i_TrashWeapon[prop] = EntIndexToEntRef(weapon);
-	}
-	
-	SetEntityMoveType(prop, MOVETYPE_FLYGRAVITY);
-	
-	propVel[0] = buffer[0]*velocity;
-	propVel[1] = buffer[1]*velocity;
-	propVel[2] = buffer[2]*velocity;
-	
-	if (ForceRandomAngles)
-	{
-		for (int i = 0; i < 3; i++)
+		SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", client);
+		SetEntProp(prop, Prop_Data, "m_takedamage", 0, 1);
+		
+		char skinChar[16];
+		Format(skinChar, 16, "%i", skin);
+		DispatchKeyValue(prop, "skin", skinChar);
+		
+		float pos[3], ang[3], propVel[3], buffer[3];
+		GetClientEyePosition(client, pos);
+		GetClientEyeAngles(client, ang);
+		
+		if (useAngOverride)
 		{
-			ang[i] = GetRandomFloat(0.0, 360.0);
+			ang = angOverride;
 		}
-	}
 		
-	TeleportEntity(prop, pos, ang, propVel);
-	SetEntPropVector(prop, Prop_Data, "m_vInitialVelocity", propVel);
-	
-	if (Spin)
-	{
-		RequestFrame(SpinEffect, EntIndexToEntRef(prop));
-	}
-	
-	i_TrashTier[prop] = tier;
-	if(h_NpcSolidHookType[prop] != 0)
-		DHookRemoveHookID(h_NpcSolidHookType[prop]);
-	h_NpcSolidHookType[prop] = 0;
-	h_NpcSolidHookType[prop] = g_DHookRocketExplode.HookEntity(Hook_Pre, prop, CollideCallback);
-	
-	return prop;
-}
+		if (usePosOverride)
+		{
+			pos = posOverride;
+		}
 
-return -1;
+		GetAngleVectors(ang, buffer, NULL_VECTOR, NULL_VECTOR);
+		
+		if (IsValidEntity(weapon))
+		{
+			velocity *= Attributes_Get(weapon, 103, 1.0);
+		
+			velocity *= Attributes_Get(weapon, 104, 1.0);
+		
+			velocity *= Attributes_Get(weapon, 475, 1.0);
+			
+			i_TrashWeapon[prop] = EntIndexToEntRef(weapon);
+		}
+		
+		SetEntityMoveType(prop, MOVETYPE_FLYGRAVITY);
+		
+		propVel[0] = buffer[0]*velocity;
+		propVel[1] = buffer[1]*velocity;
+		propVel[2] = buffer[2]*velocity;
+		
+		if (ForceRandomAngles)
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				ang[i] = GetRandomFloat(0.0, 360.0);
+			}
+		}
+			
+		TeleportEntity(prop, pos, ang, propVel);
+	//	SetEntPropVector(prop, Prop_Data, "m_vInitialVelocity", propVel);
+		
+		if (Spin)
+		{
+			RequestFrame(SpinEffect, EntIndexToEntRef(prop));
+		}
+		
+		i_TrashTier[prop] = tier;
+		if(h_NpcSolidHookType[prop] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[prop]);
+		h_NpcSolidHookType[prop] = 0;
+		h_NpcSolidHookType[prop] = g_DHookRocketExplode.HookEntity(Hook_Pre, prop, CollideCallback);
+		
+		return prop;
+	}
+
+	return -1;
 }
 
 public int Trash_GetClosestVictim(float position[3], float radius, bool shock)

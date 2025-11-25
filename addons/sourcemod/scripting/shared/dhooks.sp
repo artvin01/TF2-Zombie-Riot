@@ -882,7 +882,6 @@ static float RocketJumpManualDo(int attacker, int victim, float damage, int weap
 
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
-	return Plugin_Continue;
 	if(!(ent1 >= 0 && ent1 <= MAXENTITIES && ent2 >= 0 && ent2 <= MAXENTITIES))
 		return Plugin_Continue;
 

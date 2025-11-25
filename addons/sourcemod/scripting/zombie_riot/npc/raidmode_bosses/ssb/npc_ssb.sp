@@ -4227,7 +4227,7 @@ int SSB_CreateProjectile(SupremeSpookmasterBones owner, char model[255], float p
 		propVel[2] = buffer[2]*velocity;
 			
 		TeleportEntity(prop, pos, ang, propVel);
-		SetEntPropVector(prop, Prop_Data, "m_vInitialVelocity", propVel);
+	//	SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
 		
 		if (h_NpcSolidHookType[prop] != 0)
 			DHookRemoveHookID(h_NpcSolidHookType[prop]);

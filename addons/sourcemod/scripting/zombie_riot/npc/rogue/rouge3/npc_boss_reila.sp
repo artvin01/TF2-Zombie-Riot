@@ -624,8 +624,7 @@ void ReilaSpawnBalls(int iNpc, float vecTarget[3])
 			true,				// bool changeAngles,
 			ang_Look);// float AnglesInitiate[3]);
 
-		SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-		SDKHook(projectile, SDKHook_StartTouch, Reila_Rocket_Particle_StartTouch);
+		WandProjectile_ApplyFunctionToEntity(projectile, Reila_Rocket_Particle_StartTouch);	
 		SDKHook(projectile, SDKHook_ThinkPost, Reila_Rocket_Particle_Think);
 		npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 		npc.PlaySpawnSound();

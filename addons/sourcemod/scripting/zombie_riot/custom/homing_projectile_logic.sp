@@ -196,7 +196,6 @@ void HomingProjectile_TurnToTarget_NonPerfect(int projectile, int Target)
 	}
 	else
 	{
-		
 		Custom_SetAbsVelocity(projectile, vecVelocity);
 	}
 }

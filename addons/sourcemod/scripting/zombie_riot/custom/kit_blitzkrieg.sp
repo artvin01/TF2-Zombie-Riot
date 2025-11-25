@@ -555,7 +555,7 @@ static void Blitzkrieg_Kit_Rocket_Fire(int client, float speed, float damage, in
 		i_OwnerEntityEnvLaser[particle] = EntIndexToEntRef(client);
 		SDKHook(particle, SDKHook_SetTransmit, TransmitToOwnerOnly);
 	}
-	ApplyCustomModelToWandProjectile(projectile, BLITZKRIEG_KIT_ROCKET_MODEL, 1.0, "");
+	ApplyCustomModelToWandProjectile(projectile, BLITZKRIEG_KIT_ROCKET_MODEL, 1.0, "", _ , true);
 }
 
 public Action TransmitToOwnerOnly(int entity, int client)

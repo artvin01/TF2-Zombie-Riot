@@ -30,6 +30,7 @@ void WandProjectile_GamedataInit()
 	.EndDataMapDesc(); 
 
 	EntityFactory.Install();
+
 }
 
 #if defined ZR || defined RPG
@@ -113,10 +114,10 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
 		Custom_SDKCall_SetLocalOrigin(entity, fPos);
 		SDKCall_SetAbsOrigin(entity, fPos);
+		SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", fVel);
 		Custom_SetAbsVelocity(entity, fVel);	
+		SDKCall_SetAbsAngle(entity, fAng);
 		DispatchSpawn(entity);
-		SetEntPropVector(entity, Prop_Send, "m_angRotation", fAng); //set it so it can be used
-		SetEntPropVector(entity, Prop_Data, "m_angRotation", fAng); 
 		SetEntityCollisionGroup(entity, 27);
 		
 		SetEntityModel(entity, ENERGY_BALL_MODEL);
@@ -136,7 +137,7 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		if(WandParticle[0]) //If it has something, put it in. usually it has one, but incase its invis for some odd reason, allow it to be that.
 		{
 			particle = ParticleEffectAt(fPos, WandParticle, 0.0); //Inf duartion
-			TeleportEntity(particle, NULL_VECTOR, fAng, NULL_VECTOR);
+			SDKCall_SetAbsAngle(particle, fAng);
 			SetParent(entity, particle);	
 			SetEntityCollisionGroup(particle, 27);
 			i_WandParticle[entity] = EntIndexToEntRef(particle);
@@ -481,8 +482,20 @@ static void OnDestroy_Proj(CClotBody body)
 	return;
 }
 
-stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, float ModelSize, char[] defaultAnimation, float OffsetDown = 0.0)
+stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, float ModelSize, char[] defaultAnimation, float OffsetDown = 0.0, bool UseOriginalModel = false)
 {
+	if(UseOriginalModel)
+	{
+		SetEntityModel(rocket, modelstringname);
+		SetEntPropFloat(rocket, Prop_Send, "m_flModelScale", ModelSize);
+		if(defaultAnimation[0])
+		{
+			CClotBody npc = view_as<CClotBody>(rocket);
+			npc.AddActivityViaSequence(defaultAnimation);
+		}
+
+		return -1;
+	}
 	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[rocket]);
 	if(IsValidEntity(extra_index))
 		RemoveEntity(extra_index);
@@ -522,5 +535,6 @@ stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, f
 		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", ModelSize);
 		return entity;
 	}
+	
 	return -1;
 }
