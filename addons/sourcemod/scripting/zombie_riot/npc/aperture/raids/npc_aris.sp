@@ -75,7 +75,6 @@ static const char g_MalfunctionParticleAttachments[][] = {
 };
 
 static const char g_DeployBeaconSound[] = "mvm/sentrybuster/mvm_sentrybuster_intro.wav";
-static const char g_MeleeHitChargeSound[] = "weapons/vaccinator_charge_tier_02.wav";
 
 static const char g_RocketFiringSound[] = "weapons/sentry_rocket.wav";
 static const char g_RocketLandingSound[] = "weapons/flare_detonator_launch.wav";
@@ -170,7 +169,6 @@ static void ClotPrecache()
 	PrecacheSound(g_SpecialRangedAttackSound);
 	
 	PrecacheSound(g_DeployBeaconSound);
-	PrecacheSound(g_MeleeHitChargeSound);
 	
 	PrecacheSound(g_SelfLaunchingSound);
 	
