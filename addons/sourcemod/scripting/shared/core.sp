@@ -2913,7 +2913,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "tf_projectile_rocket"))
 		{
-			b_IsTfRocket[entity] = true;
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Rocket);
 			npc.bCantCollidie = true;
