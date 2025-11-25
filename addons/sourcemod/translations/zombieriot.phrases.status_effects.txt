@@ -1206,6 +1206,14 @@
 		"en"	"Cant make any Unique buildings while this is active."
 		"it"	"Non è possibile creare edifici Unici mentre questo è attivo."
 	}
+	"Vuntulum Bomb EMP Death"
+	{
+		"en"	"Vuntulum Bomb EMP Death"
+	}
+	"Vuntulum Bomb EMP Death Desc"
+	{
+		"en"	"You died to the Vuntulum Bomb, you can not be revived this round."
+	}
 	"Ruina Battery Charge"
 	{
 		"en"	"Ruina Battery Charge"

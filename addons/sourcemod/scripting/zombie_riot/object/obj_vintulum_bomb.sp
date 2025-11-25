@@ -266,6 +266,7 @@ bool VintulumBombSelf(int entity, int victim, float &healingammount)
 		return false;
 	healingammount = 0.0;
 	ApplyStatusEffect(victim, victim, "Nightmare Terror", 0.1);
+	ApplyStatusEffect(victim, victim, "Vuntulum Bomb EMP Death", 99999.9);
 	HealEntityGlobal(victim, victim, -9999999.9, _, _, HEAL_ABSOLUTE);
 	return false;
 }
