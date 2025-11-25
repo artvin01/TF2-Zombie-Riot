@@ -61,6 +61,7 @@ void CastleBreaker_DoSwingTrace(int client, float &CustomMeleeRange, float &Cust
 public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 {
 	float attackspeed = Attributes_Get(weapon, 6, 1.0);
+	PrintHintText(client,"Attack!");
 	if(b_AbilityActivated[client])
 	{
 		b_AbilityDone[client] = false;
@@ -109,6 +110,37 @@ public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 		new_ammo -= 12;
 		SetAmmo(client, 8, new_ammo);
 		CurrentAmmo[client][8] = GetAmmo(client, 8);
+	}
+}
+
+void WeaponCastleBreaker_Extra(int client, int victim, int weapon, float &damage)
+{
+	CastleBreaker_WeaponPap[client] = RoundToFloor(Attributes_Get(weapon, 391, 0.0));
+	switch (CastleBreaker_WeaponPap[client])
+	{
+		case 0: //base pap
+		{
+			damage *= 0.05;
+		}
+		case 1: //base pap
+		{
+			damage *= 0.1;
+		}
+		case 2: //base pap
+		{
+			damage *= 0.15;
+		}
+		case 3: //base pap
+		{
+			damage *= 0.2;
+		}
+	}
+	if(IsValidEnemy(client, victim))
+	{
+		float vecHit[3];
+		WorldSpaceCenter(victim, vecHit);
+		PrintHintText(client,"TrueHit!");
+		SDKHooks_TakeDamage(victim, client, client, damage, DMG_TRUEDAMAGE, -1, _, vecHit);
 	}
 }
 
@@ -318,8 +350,14 @@ void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage
 			damage *= 1.15;
 		}
 	}
+	if(!Change[attacker]&& (damagetype & DMG_CLUB))
+	{
+		PrintHintText(attacker,"Piercehit!");
+		WeaponCastleBreaker_Extra(attacker, victim, weapon, damage);
+	}
 	if(Change[attacker]&& (damagetype & DMG_CLUB))
 	{
+		PrintHintText(attacker,"ExplosionHit!");
 		damage *= 0.5;
 		static float angles[3];
 		GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
