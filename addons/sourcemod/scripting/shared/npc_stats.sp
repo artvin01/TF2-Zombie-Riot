@@ -3230,7 +3230,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	 bool do_aoe_dmg=false , bool FromBlueNpc=true, bool Override_Spawn_Loc = false,
 	 float Override_VEC[3] = {0.0,0.0,0.0}, int flags = 0, int inflictor = INVALID_ENT_REFERENCE, float bonusdmg = 1.0, bool hide_projectile = true)
 	{
-		float vecForward[3], vecSwingStart[3], vecAngles[3];
+		float vecSwingStart[3], vecAngles[3];
 		//this.GetVectors(vecForward, vecSwingStart, vecAngles);
 		
 		if(Override_Spawn_Loc)
@@ -3253,7 +3253,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		Rogue_Paradox_ProjectileSpeed(this.index, speed);
 #endif
 
-		int entity = Wand_Projectile_Spawn(this.index, rocket_speed, 10.0, rocket_damage, _, -1, rocket_particle, _,hide_projectile,vecSwingStart);
+		int entity = Wand_Projectile_Spawn(this.index, rocket_speed, 10.0, rocket_damage, -1, -1, rocket_particle, vecAngles,hide_projectile,vecSwingStart);
 		if(IsValidEntity(entity))
 		{
 			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
@@ -3264,8 +3264,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			fl_rocket_particle_dmg[entity] = rocket_damage;
 			fl_rocket_particle_radius[entity] = damage_radius;
 			b_rocket_particle_from_blue_npc[entity] = FromBlueNpc;
-
-
+			
+			WandProjectile_ApplyFunctionToEntity(entity, Rocket_Particle_StartTouch);
 			return entity;
 		}
 		return -1;
@@ -3336,7 +3336,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	public int FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE, int entitytofirefrom = -1) //No defaults, otherwise i cant even judge.
 	{
 		//ITS NOT actually an arrow, because of an ANNOOOOOOOOOOOYING sound.
-		float vecForward[3], vecSwingStart[3], vecAngles[3];
+		float vecSwingStart[3], vecAngles[3];
 		//this.GetVectors(vecForward, vecSwingStart, vecAngles);
 
 		if(entitytofirefrom == -1)
@@ -3356,24 +3356,15 @@ methodmap CClotBody < CBaseCombatCharacter
 #if defined ZR
 		Rogue_Paradox_ProjectileSpeed(this.index, speed);
 #endif
-		
-		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*speed;
-		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*speed;
-		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-speed;
 
-		int entity = CreateEntityByName("zr_projectile_base");
+		int entity = Wand_Projectile_Spawn(this.index, rocket_speed, 10.0, rocket_damage, -1, -1, "", vecAngles,false,vecSwingStart);
 		if(IsValidEntity(entity))
 		{
-			DispatchKeyValue(entity, "model", ENERGY_BALL_MODEL);
 			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
 			b_EntityIsArrow[entity] = true;
 			f_ArrowDamage[entity] = rocket_damage;
 			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
-			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
-			SetTeam(entity, GetTeam(this.index));
-			SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
-			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
-			DispatchSpawn(entity);
+			
 			if(rocket_model[0])
 			{
 				int g_ProjectileModelRocket = PrecacheModel(rocket_model);
@@ -3414,11 +3405,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			{
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", model_scale); // ZZZZ i sleep
 			}
-			Custom_SetAbsVelocity(entity, vecForward);	
-			SetEntityCollisionGroup(entity, 24); //our savior
-			Set_Projectile_Collision(entity); //If red, set to 27
 
 			WandProjectile_ApplyFunctionToEntity(entity, ArrowStartTouch);
+			return entity;
 		}
 		return entity;
 	}
@@ -9287,16 +9276,14 @@ public void ArrowStartTouch(int arrow, int entity)
 	{
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
 	}
-	//Delay deletion for particles to not break.
-	SDKUnhook(arrow, SDKHook_StartTouch, ArrowStartTouch);
 	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow), TIMER_FLAG_NO_MAPCHANGE);
 	SetEntityRenderMode(arrow, RENDER_NONE);
 	SetEntityMoveType(arrow, MOVETYPE_NONE);
+	WandProjectile_ApplyFunctionToEntity(arrow, INVALID_FUNCTION);
 }
 
 public void Rocket_Particle_StartTouch(int entity, int target)
 {
-	
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
 		

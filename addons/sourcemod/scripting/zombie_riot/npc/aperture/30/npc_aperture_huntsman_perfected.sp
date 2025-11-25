@@ -319,6 +319,7 @@ public void ApertureHuntsmanPerfected_Particle_StartTouch(int entity, int target
 			inflictor = owner;
 
 	
+		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], entity, _, 80, _, 0.8, 100);
 		NPC_Ignite(target, owner, 4.0, -1, 25.0);
 	}
 	RemoveEntity(entity);
