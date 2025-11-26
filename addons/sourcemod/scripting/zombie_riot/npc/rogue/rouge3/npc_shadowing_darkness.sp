@@ -313,7 +313,6 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
 			
-			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, Wand_Base_StartTouch);
 			CBaseCombatCharacter(entity).SetNextThink(GetGameTime());
 

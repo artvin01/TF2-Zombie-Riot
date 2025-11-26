@@ -514,7 +514,6 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 			DHookRemoveHookID(h_NpcSolidHookType[entity]);
 		h_NpcSolidHookType[entity] = 0;
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre);//I reused*2 code. I'm too lazy.
-		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		SDKHook(entity, SDKHook_StartTouch, Victorian_HESH_Touch);
 		Better_Gravity_Rocket(entity, 55.0);
 		GetAbsOrigin(entity, Position);

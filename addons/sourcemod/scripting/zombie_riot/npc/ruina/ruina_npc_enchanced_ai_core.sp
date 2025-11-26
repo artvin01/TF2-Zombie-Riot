@@ -1140,7 +1140,6 @@ enum struct Ruina_Projectiles
 
 			WandProjectile_ApplyFunctionToEntity(entity, Ruina_Projectile_Touch);
 
-			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, Wand_Base_StartTouch);
 
 			if(this.Time>0.0)

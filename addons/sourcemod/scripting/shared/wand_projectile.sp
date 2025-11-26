@@ -463,7 +463,6 @@ void ApplyLateLogic_ProjectileBase(int Projectile)
 	SDKHook(Projectile, SDKHook_ThinkPost, ProjectileBaseThinkPost);
 	CBaseCombatCharacter(Projectile).SetNextThink(GetGameTime());
 
-	SDKHook(Projectile, SDKHook_ShouldCollide, Never_ShouldCollide);
 	SDKHook(Projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
 	ProjectileBaseThinkInternal(Projectile, 3.0);
 
