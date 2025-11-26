@@ -87,9 +87,9 @@ public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 
 	if(Change[client])
 	{
-		int Ammo_Cost = 12;
+		int Ammo_Cost = 8;
 		int new_ammo = GetAmmo(client, 8); //rocket ammo
-		if(new_ammo < 12)
+		if(new_ammo < 8)
 		{
 			ClientCommand(client, "playgamesound weapons/shotgun_empty.wav");
 			SetDefaultHudPosition(client);
@@ -107,14 +107,16 @@ public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 			}
 			return;
 		}
-		new_ammo -= 12;
+		new_ammo -= 8;
 		SetAmmo(client, 8, new_ammo);
 		CurrentAmmo[client][8] = GetAmmo(client, 8);
 	}
 }
 
-void WeaponCastleBreaker_Extra(int client, int victim, int weapon, float &damage)
+void WeaponCastleBreaker_Extra(int client, int victim, int weapon)
 {
+	float damage = 65.0;
+	damage *= Attributes_Get(weapon, 2, 1.0);
 	CastleBreaker_WeaponPap[client] = RoundToFloor(Attributes_Get(weapon, 391, 0.0));
 	switch (CastleBreaker_WeaponPap[client])
 	{
@@ -352,12 +354,10 @@ void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage
 	}
 	if(!Change[attacker]&& (damagetype & DMG_CLUB))
 	{
-		PrintHintText(attacker,"Piercehit!");
-		WeaponCastleBreaker_Extra(attacker, victim, weapon, damage);
+		WeaponCastleBreaker_Extra(attacker, victim, weapon);
 	}
 	if(Change[attacker]&& (damagetype & DMG_CLUB))
 	{
-		PrintHintText(attacker,"ExplosionHit!");
 		damage *= 0.5;
 		static float angles[3];
 		GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
