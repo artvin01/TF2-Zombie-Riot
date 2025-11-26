@@ -1063,17 +1063,17 @@ return MRES_Supercede; //DONT.
 
 public Action Missiles_BeginHoming(Handle begin, int ref)
 {
-int ent = EntRefToEntIndex(ref);
-if (IsValidEntity(ent))
-{
-	int owner = GetEntPropEnt(ent, Prop_Send, "m_hOwnerEntity");
-	float ang[3];
-	GetEntPropVector(ent, Prop_Data, "m_angRotation", ang);
-	Initiate_HomingProjectile(ent, owner, 360.0, 120.0, false, true, ang);
-	EmitSoundToAll(SOUND_MISSILES_BEGIN_HOMING, ent, SNDCHAN_STATIC, 80, _, 0.8);
-}
+	int ent = EntRefToEntIndex(ref);
+	if (IsValidEntity(ent))
+	{
+		int owner = GetEntPropEnt(ent, Prop_Send, "m_hOwnerEntity");
+		float ang[3];
+		GetEntPropVector(ent, Prop_Data, "m_angRotation", ang);
+		Initiate_HomingProjectile(ent, owner, 360.0, 120.0, false, true, ang);
+		EmitSoundToAll(SOUND_MISSILES_BEGIN_HOMING, ent, SNDCHAN_STATIC, 80, _, 0.8);
+	}
 
-return Plugin_Stop;
+	return Plugin_Stop;
 }
 
 public bool Trash_Mondo(int client, int weapon, int tier)
@@ -1228,7 +1228,7 @@ int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocit
 		}
 			
 		TeleportEntity(prop, pos, ang, propVel);
-	//	SetEntPropVector(prop, Prop_Data, "m_vInitialVelocity", propVel);
+		SetEntPropVector(prop, Prop_Send, "m_vInitialVelocity", propVel);
 		
 		if (Spin)
 		{
