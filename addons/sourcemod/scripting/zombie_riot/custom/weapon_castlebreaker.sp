@@ -61,6 +61,7 @@ void CastleBreaker_DoSwingTrace(int client, float &CustomMeleeRange, float &Cust
 public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 {
 	float attackspeed = Attributes_Get(weapon, 6, 1.0);
+	PrintHintText(client,"Attack!");
 	if(b_AbilityActivated[client])
 	{
 		b_AbilityDone[client] = false;
@@ -86,9 +87,9 @@ public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 
 	if(Change[client])
 	{
-		int Ammo_Cost = 12;
+		int Ammo_Cost = 8;
 		int new_ammo = GetAmmo(client, 8); //rocket ammo
-		if(new_ammo < 12)
+		if(new_ammo < 8)
 		{
 			ClientCommand(client, "playgamesound weapons/shotgun_empty.wav");
 			SetDefaultHudPosition(client);
@@ -106,9 +107,42 @@ public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 			}
 			return;
 		}
-		new_ammo -= 12;
+		new_ammo -= 8;
 		SetAmmo(client, 8, new_ammo);
 		CurrentAmmo[client][8] = GetAmmo(client, 8);
+	}
+}
+
+void WeaponCastleBreaker_Extra(int client, int victim, int weapon)
+{
+	float damage = 65.0;
+	damage *= Attributes_Get(weapon, 2, 1.0);
+	CastleBreaker_WeaponPap[client] = RoundToFloor(Attributes_Get(weapon, 391, 0.0));
+	switch (CastleBreaker_WeaponPap[client])
+	{
+		case 0: //base pap
+		{
+			damage *= 0.05;
+		}
+		case 1: //base pap
+		{
+			damage *= 0.1;
+		}
+		case 2: //base pap
+		{
+			damage *= 0.15;
+		}
+		case 3: //base pap
+		{
+			damage *= 0.2;
+		}
+	}
+	if(IsValidEnemy(client, victim))
+	{
+		float vecHit[3];
+		WorldSpaceCenter(victim, vecHit);
+		PrintHintText(client,"TrueHit!");
+		SDKHooks_TakeDamage(victim, client, client, damage, DMG_TRUEDAMAGE, -1, _, vecHit);
 	}
 }
 
@@ -317,6 +351,10 @@ void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage
 		{
 			damage *= 1.15;
 		}
+	}
+	if(!Change[attacker]&& (damagetype & DMG_CLUB))
+	{
+		WeaponCastleBreaker_Extra(attacker, victim, weapon);
 	}
 	if(Change[attacker]&& (damagetype & DMG_CLUB))
 	{
