@@ -107,7 +107,7 @@ public void Ability_SentryThrow(int client, int level, int weapon)
 	//	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.5);
 	//	SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher", weapon);
 	//	SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
-		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vel);
+		SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vel);
 
 		TeleportEntity(entity, pos, ang, NULL_VECTOR);
 		DispatchSpawn(entity);

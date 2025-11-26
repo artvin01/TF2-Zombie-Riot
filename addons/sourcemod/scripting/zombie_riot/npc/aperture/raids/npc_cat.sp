@@ -836,7 +836,6 @@ static void OrbSpam_Ability_Fire(CAT npc)
 	
 	int projectile = npc.FireParticleRocket(vecOrbPos, 10.0, GetRandomFloat(100.0, 400.0), 150.0, "dxhr_lightningball_parent_blue", true);
 	
-	SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 	SDKHook(projectile, SDKHook_ThinkPost, Cat_Rocket_Particle_Think);
 	
 	NextOrbDamage[projectile] = 0.0;
@@ -921,7 +920,7 @@ void Cat_Rocket_Particle_Think(int entity)
 	{
 		ScaleVector(vecVelocity, 0.95);
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelocity);
-		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecVelocity);
+		SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecVelocity);
 	}
 	
 	KillFeed_SetKillIcon(owner, "spellbook_lightning");

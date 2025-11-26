@@ -559,7 +559,7 @@ public void Archmage_CheckLaunch(ArchmageBones npc, int closest)
 
 public void Archmage_ShootProjectile(ArchmageBones npc, float vicLoc[3], float vel, float damage)
 {
-	int entity = CreateEntityByName("zr_projectile_base");
+	int entity = CreateEntityByName("tf_projectile_rocket");
 			
 	if (IsValidEntity(entity))
 	{
@@ -579,7 +579,7 @@ public void Archmage_ShootProjectile(ArchmageBones npc, float vicLoc[3], float v
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
 		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
-		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+	//	SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
 		
 		f_ArchmageFireballDMG[entity] = damage;
 
