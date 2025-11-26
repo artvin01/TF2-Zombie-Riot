@@ -318,8 +318,7 @@ void Victorian_RadioguardSelfDefense(Victorian_Radioguard npc, float gameTime)
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 5.0;
 						int projectile = npc.FireParticleRocket(vecTarget, Hitdamage , projectile_speed , 450.0 , "spell_fireball_small_blue", true);
-						SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-						SDKHook(projectile, SDKHook_StartTouch, Victoria_RadioGuard_Particle_StartTouch);
+						WandProjectile_ApplyFunctionToEntity(projectile, Victoria_RadioGuard_Particle_StartTouch);	
 						npc.PlayIdleAlertSound();
 					}
 					delete swingTrace;

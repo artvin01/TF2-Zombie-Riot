@@ -541,7 +541,7 @@ public void Rattler_CheckShoot(RattlerBones npc, int closest)
 
 public void Rattler_ShootProjectile(RattlerBones npc, float vicLoc[3], float vel, float damage, float startPos[3])
 {
-	int entity = CreateEntityByName("zr_projectile_base");
+	int entity = CreateEntityByName("tf_projectile_rocket");
 			
 	if (IsValidEntity(entity))
 	{
@@ -565,7 +565,7 @@ public void Rattler_ShootProjectile(RattlerBones npc, float vicLoc[3], float vel
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
 		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
-		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+	//	SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
 		
 		f_RattlerFireballDMG[entity] = damage;
 

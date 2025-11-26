@@ -57,6 +57,7 @@ enum struct StatusEffect
 		this.OnBuffStarted				= INVALID_FUNCTION;
 		this.OnBuffStoreRefresh			= INVALID_FUNCTION;
 		this.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+		this.HudDisplay_Func			= INVALID_FUNCTION;
 		this.DamageTakenMulti 			= -1.0;
 		this.DamageDealMulti 			= -1.0;
 		this.MovementspeedModif 		= -1.0;
@@ -4356,6 +4357,21 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= VintulumBombHud_Func;
+	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
+	
+	data.HudDisplay_Func			= INVALID_FUNCTION;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Vuntulum Bomb EMP Death");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "DEAD");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Hand of Spark");

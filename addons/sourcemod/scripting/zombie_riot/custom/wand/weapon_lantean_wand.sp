@@ -628,7 +628,10 @@ static void Lantean_HomingProjectile_TurnToTarget(float Vec[3], int Projectile)
 	GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", flRocketPos);
 
 	float flInitialVelocity[3];
-	GetEntPropVector(Projectile, Prop_Send, "m_vInitialVelocity", flInitialVelocity);
+	if(b_IsCustomProjectile[Projectile])
+		GetEntPropVector(Projectile, Prop_Data, "m_vInitialVelocity", flInitialVelocity);
+	else
+		GetEntPropVector(Projectile, Prop_Send, "m_vInitialVelocity", flInitialVelocity);
 	float flSpeedInit = GetVectorLength(flInitialVelocity);
 
 	float Ratio = (GetVectorDistance(flTargetPos, flRocketPos))/750.0;

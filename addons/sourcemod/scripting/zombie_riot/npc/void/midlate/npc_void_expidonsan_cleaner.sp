@@ -260,13 +260,12 @@ int VoudExpidonsanCleanerSelfDefense(VoudExpidonsanCleaner npc, float gameTime, 
 				npc.PlayMeleeHitSound();
 				float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 				int projectile = npc.FireParticleRocket(vecTarget, 12.0, 1000.0, 150.0, "unusual_icetornado_blue_parent", true);
-				SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 				int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
 				CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 				CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 				npc.m_flNextMeleeAttack = gameTime + 0.2;
 				
-				SDKHook(projectile, SDKHook_StartTouch, ExpidonsaCleaner_Rocket_Particle_StartTouch);	
+				WandProjectile_ApplyFunctionToEntity(projectile, ExpidonsaCleaner_Rocket_Particle_StartTouch);		
 			}
 			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
 			{

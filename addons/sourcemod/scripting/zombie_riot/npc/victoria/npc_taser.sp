@@ -332,9 +332,9 @@ void VictoriaTaserSelfDefense(VictoriaTaser npc, float gameTime)
 						}
 						npc.m_flNextMeleeAttack = gameTime + ShootFaster;
 						int projectile = npc.FireParticleRocket(vecTarget, 75.0 , projectile_speed , 100.0 , "raygun_projectile_blue_crit");
-						SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+			
 						npc.PlayIdleAlertSound();
-						SDKHook(projectile, SDKHook_StartTouch, VictoriaTaser_Rocket_Particle_StartTouch);
+						WandProjectile_ApplyFunctionToEntity(projectile, VictoriaTaser_Rocket_Particle_StartTouch);		
 					}
 					delete swingTrace;
 				}
