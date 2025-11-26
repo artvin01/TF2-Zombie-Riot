@@ -129,7 +129,17 @@ static Action Timer_KitOmega(Handle timer, DataPack pack)
 			PrintToConsoleAll("IsPlayerAlive(client)");
 		if(!IsValidEntity(weapon))
 			PrintToConsoleAll("IsValidEntity(weapon)");*/
-			
+		int Gun = EntRefToEntIndex(i_KitOmega_GunRef[client]);
+		if(IsValidEntity(Gun))
+		{
+			int ClipLeft = GetEntData(Gun, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"));
+			if(ClipLeft < 1)
+			{
+				ResetClipOfWeaponStore(Gun, client, 1);
+				//emergency add 1000 over limit hehe
+				SetEntData(Gun, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), 1);
+			}
+		}
 		KitOmega_Weapon_Remove_All(client);
 		
 		//SetDefaultHudPosition(client);
@@ -361,7 +371,7 @@ static void KitOmega_GUN_Selector_Function(int client, int OverrideGunType=-1)
 	//	Attributes_Set(weapon_new, 2, multi);
 	//	Attributes_Set(weapon_new, 6, firingRate);
 		int AmmoLeft = RoundToCeil(OMEGA_ENERGY[client] / OmegaWeaponCosts(i_KitOmega_GunType[client]));
-		AmmoLeft += 1000;
+		AmmoLeft += 20;
 		ResetClipOfWeaponStore(weapon_new, client, AmmoLeft);
 		//emergency add 1000 over limit hehe
 		SetEntData(weapon_new, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), AmmoLeft);
@@ -432,7 +442,7 @@ public void KitOmega_NPCTakeDamage_Melee(int attacker, int victim, float &damage
 	energy = OMEGA_PREHITGAIN;
 	
 	if(b_thisNpcIsARaid[victim])//击中的是raidboss(if is raid)
-		energy *= 1.1;
+		energy *= 1.15;
 	if(LastMann)//最后一人状态(last manm buff)
 		energy *= 1.2;
 	int Gun = EntRefToEntIndex(i_KitOmega_GunRef[attacker]);
@@ -542,6 +552,17 @@ public void KitOmega_Weapon_Fire(int client, int weapon, bool crit, int slot, in
 			KitOmega_AddCharge(client, -OmegaWeaponCosts(3));
 		case 4:
 			KitOmega_AddCharge(client, -OmegaWeaponCosts(4));
+	}
+	if(OMEGA_ENERGY[client] > 0.0)
+	{
+		int ClipLeft = GetEntData(weapon, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"));
+		PrintToChatAll("%i ClipLeft",ClipLeft);
+		if(ClipLeft <= 2)
+		{
+			ResetClipOfWeaponStore(weapon, client, 2);
+			//emergency add 1000 over limit hehe
+			SetEntData(weapon, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), 2);
+		}
 	}
 	if(h_KitOmega_Timer[client] == null)
 	{
