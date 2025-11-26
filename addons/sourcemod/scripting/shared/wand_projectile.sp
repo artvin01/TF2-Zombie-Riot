@@ -465,8 +465,11 @@ void ApplyLateLogic_ProjectileBase(int Projectile)
 	SDKHook(Projectile, SDKHook_ShouldCollide, Never_ShouldCollide);
 	SDKHook(Projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
 	ProjectileBaseThinkInternal(Projectile, 3.0);
+
+	SetEntityMoveType(Projectile, MOVETYPE_FLY);
 //do our own logic entirely
-	RunScriptCode(Projectile, -1, -1, "self.SetMoveType(Constants.EMoveType.MOVETYPE_FLY, Constants.EMoveCollide.MOVECOLLIDE_FLY_CUSTOM)");
+//	RunScriptCode(Projectile, -1, -1, "self.SetMoveType(Constants.EMoveType.MOVETYPE_FLY, Constants.EMoveCollide.MOVECOLLIDE_FLY_CUSTOM)");
+	
 }
 static void OnDestroy_Proj(CClotBody body)
 {

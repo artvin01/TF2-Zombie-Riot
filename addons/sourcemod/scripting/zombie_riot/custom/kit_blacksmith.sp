@@ -401,6 +401,7 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 			}
 			case WEAPON_SIGIL_BLADE:
 			{
+				BlockNormal = true;
 				// Mage Weapon
 				switch(GetURandomInt() % 3)
 				{
