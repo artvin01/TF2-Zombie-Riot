@@ -556,7 +556,6 @@ public void KitOmega_Weapon_Fire(int client, int weapon, bool crit, int slot, in
 	if(OMEGA_ENERGY[client] > 0.0)
 	{
 		int ClipLeft = GetEntData(weapon, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"));
-		PrintToChatAll("%i ClipLeft",ClipLeft);
 		if(ClipLeft <= 2)
 		{
 			ResetClipOfWeaponStore(weapon, client, 2);
