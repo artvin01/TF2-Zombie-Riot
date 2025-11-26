@@ -1122,7 +1122,8 @@ enum struct Ruina_Projectiles
 
 			Hook_DHook_UpdateTransmitState(entity);
 
-			RunScriptCode(entity, -1, -1, "self.SetMoveType(Constants.EMoveType.MOVETYPE_FLY, Constants.EMoveCollide.MOVECOLLIDE_FLY_CUSTOM)");	//do some weird script magic?
+			SetEntityMoveType(entity, MOVETYPE_FLY);
+		//	RunScriptCode(entity, -1, -1, "self.SetMoveType(Constants.EMoveType.MOVETYPE_FLY, Constants.EMoveCollide.MOVECOLLIDE_FLY_CUSTOM)");	//do some weird script magic?
 			Custom_SetAbsVelocity(entity, Velocity);	//set speed
 			SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
 

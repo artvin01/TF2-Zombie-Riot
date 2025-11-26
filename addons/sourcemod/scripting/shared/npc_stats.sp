@@ -3252,8 +3252,9 @@ methodmap CClotBody < CBaseCombatCharacter
 #if defined ZR
 		Rogue_Paradox_ProjectileSpeed(this.index, speed);
 #endif
-
+		
 		int entity = Wand_Projectile_Spawn(this.index, rocket_speed, 10.0, rocket_damage, -1, -1, rocket_particle, vecAngles,hide_projectile,vecSwingStart);
+		
 		if(IsValidEntity(entity))
 		{
 			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
@@ -3268,6 +3269,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			WandProjectile_ApplyFunctionToEntity(entity, Rocket_Particle_StartTouch);
 			return entity;
 		}
+		
+		
 		return -1;
 	}
 	public int FireGrenade(float vecTarget[3], float grenadespeed = 800.0, float damage, char[] model)
