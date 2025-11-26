@@ -836,17 +836,21 @@ static void OrbSpam_Ability_Fire(CAT npc)
 	
 	int projectile = npc.FireParticleRocket(vecOrbPos, 10.0, GetRandomFloat(100.0, 400.0), 150.0, "dxhr_lightningball_parent_blue", true);
 	
+	WandProjectile_ApplyFunctionToEntity(projectile, INVALID_FUNCTION);
+	SDKUnhook(projectile, SDKHook_ThinkPost, ProjectileBaseThinkPost);
 	SDKHook(projectile, SDKHook_ThinkPost, Cat_Rocket_Particle_Think);
 	
-	NextOrbDamage[projectile] = 0.0;
 	
+	NextOrbDamage[projectile] = 0.0;
 	// Make its collision box bigger, so it's prettier
+
 	SetEntityModel(projectile, CAT_ORB_SPAM_ABILITY_COLLISION_MODEL);
 	SetVariantString("6.0");
 	AcceptEntityInput(projectile, "SetModelScale");
 	SetEntProp(projectile, Prop_Data, "m_nSolidType", 6); // refreshes collision
 	
 	SetEntityCollisionGroup(projectile, TFCOLLISION_GROUP_ROCKET_BUT_NOT_WITH_OTHER_ROCKETS);
+	
 	CreateTimer(15.0, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 }
 
@@ -907,32 +911,33 @@ void Cat_Rocket_Particle_Think(int entity)
 		return;
 	}
 	
-	float vecPos[3];
-	GetAbsOrigin(entity, vecPos);
-	
-	TR_EnumerateEntitiesSphere(vecPos, 100.0, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_CAT_FindProjectiles, entity);
-	
-	float vecVelocity[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelocity);
-	
-	float speed = getLinearVelocity(vecVelocity);
-	if (speed > 40.0)
-	{
-		ScaleVector(vecVelocity, 0.95);
-		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelocity);
-		SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecVelocity);
-	}
-	
-	KillFeed_SetKillIcon(owner, "spellbook_lightning");
-	
 	if (NextOrbDamage[entity] <= gameTime)
 	{
+		float vecPos[3];
+		GetAbsOrigin(entity, vecPos);
+		
+		TR_EnumerateEntitiesSphere(vecPos, 100.0, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_CAT_FindProjectiles, entity);
+		
+		float vecVelocity[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelocity);
+		
+		float speed = getLinearVelocity(vecVelocity);
+		if (speed > 40.0)
+		{
+			ScaleVector(vecVelocity, 0.95);
+			Custom_SetAbsVelocity(entity, vecVelocity);	
+			SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecVelocity);
+		}
+		
+		KillFeed_SetKillIcon(owner, "spellbook_lightning");
+
 		float damage = 40.0 * RaidModeScaling;
+		damage *= 0.333;
 		Explode_Logic_Custom(damage, owner, owner, -1, vecPos, 60.0, _, _, b_rocket_particle_from_blue_npc[entity]);
-		NextOrbDamage[entity] = gameTime + 0.3;
+		NextOrbDamage[entity] = gameTime + 0.1;
 	}
 	
-	CBaseCombatCharacter(entity).SetNextThink(gameTime + 0.1);
+	CBaseCombatCharacter(entity).SetNextThink(gameTime);
 }
 
 static void SelfDegradation_Ability_Start(CAT npc, bool yap = true)
