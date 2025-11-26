@@ -703,8 +703,10 @@ public Action Weapon_Purging_QuadLauncher_Remove_Later(Handle h,int ref)
         }
     }
     if(!IsDowned && weaponN != -1)
-	FakeClientCommand(owner, "use tf_weapon_fists");
+	{
+		FakeClientCommand(owner, "use tf_weapon_fists");
         Weapon_Purging_Crush(owner, EntIndexToEntRef(weaponN));
+	}
 
     QuadLauncher_Remove_Timer[owner] = null;
     return Plugin_Stop;
@@ -982,6 +984,7 @@ void KitPurgeGiveAttributesData(DataPack pack)
 		}
 	}
 }
+
 
 
 
