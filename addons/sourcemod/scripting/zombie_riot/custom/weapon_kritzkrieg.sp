@@ -55,6 +55,15 @@ static void OnKritzkriegDeployed(Event event, const char[] name, bool dontBroadc
 		GiveArmorViaPercentage(target, 0.5, 1.0,_,_,client);
 	}
 	GiveArmorViaPercentage(client, 0.5, 1.0,_,_,client);
+	if(RaidbossIgnoreBuildingsLogic(1))
+	{
+		float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
+		flChargeLevel *= 0.65;
+		SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
+	}
+
+
+
 }
 static int GetHealingTarget(int client)
 {

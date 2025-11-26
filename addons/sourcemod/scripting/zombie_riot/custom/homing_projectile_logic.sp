@@ -57,7 +57,10 @@ void Initiate_HomingProjectile(int projectile, int owner, float lockonAngleMax, 
 	RWI_RocketRotation[projectile][2] = AnglesInitiate[2];
 
 	float vecVelocityCurrent[3];
-	GetEntPropVector(projectile, Prop_Send, "m_vInitialVelocity", vecVelocityCurrent);
+	if(b_IsCustomProjectile[projectile])
+		GetEntPropVector(projectile, Prop_Data, "m_vInitialVelocity", vecVelocityCurrent);
+	else
+		GetEntPropVector(projectile, Prop_Send, "m_vInitialVelocity", vecVelocityCurrent);
 	RWI_RocketSpeed[projectile] = getLinearVelocity(vecVelocityCurrent);
 	//homing will always be 0.1 seconds, thats the delay.
 	if(RWI_HandleHome[projectile] != null)
@@ -75,6 +78,7 @@ void Initiate_HomingProjectile(int projectile, int owner, float lockonAngleMax, 
 		todo perhaps: Use requestframes and make a loop of it, thats basically OnGameFrame!
 	*/
 }
+
 
 public Action Projectile_NonPerfectHoming(Handle timer, DataPack pack)
 {
@@ -189,9 +193,14 @@ void HomingProjectile_TurnToTarget_NonPerfect(int projectile, int Target)
 
 	// Apply only both if we want to, angle doesnt matter mostly
 	if(RWI_AlterRocketActualAngle[projectile])
-		TeleportEntity(projectile, NULL_VECTOR, rocketAngle, vecVelocity);
+	{
+		Custom_SetAbsVelocity(projectile, vecVelocity);
+		SetEntPropVector(projectile, Prop_Data, "m_angRotation", rocketAngle); 
+	}
 	else
-		TeleportEntity(projectile, NULL_VECTOR, NULL_VECTOR, vecVelocity);
+	{
+		Custom_SetAbsVelocity(projectile, vecVelocity);
+	}
 }
 
 bool HomingProjectile_ValidTargetCheck(int projectile, int Target)

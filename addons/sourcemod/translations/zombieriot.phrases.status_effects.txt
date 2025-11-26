@@ -1206,6 +1206,14 @@
 		"en"	"Cant make any Unique buildings while this is active."
 		"it"	"Non è possibile creare edifici Unici mentre questo è attivo."
 	}
+	"Vuntulum Bomb EMP Death"
+	{
+		"en"	"Vuntulum Bomb EMP Death"
+	}
+	"Vuntulum Bomb EMP Death Desc"
+	{
+		"en"	"You died to the Vuntulum Bomb, you can not be revived this round."
+	}
 	"Ruina Battery Charge"
 	{
 		"en"	"Ruina Battery Charge"
@@ -1756,7 +1764,7 @@
 	}
 	"Weapon Overclock Desc"
 	{
-		"en"	"Increases damage by 40％\nBoosts attack/reload speed & healrate by 33％ and mana is continuously restored."
+		"en"	"Increases damage by 40％\nBoosts attack/reload speed & healrate by 33％ and mana is continuously restored.\n-During raids, uber duration is cut by 35％"
 		"es"	"Aumenta el daño hecho en un 40％.\nAumenta la velocidad de ataque/recarga y curacion medica en un 33％.\nOtorga regeneracion continua de mana."
 		"it"	"Aumenta i danni del 40％ e aumenta la velocità di attacco/ricarica e la velocità di guarigione del 33％ \nil mana viene ripristinato continuamente."
 	}

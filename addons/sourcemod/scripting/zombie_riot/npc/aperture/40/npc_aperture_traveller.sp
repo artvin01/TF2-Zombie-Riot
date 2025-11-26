@@ -299,8 +299,7 @@ int ApertureTravellerSelfDefense(ApertureTraveller npc, float gameTime, int targ
 						float vecHit[3];
 						TR_GetEndPosition(vecHit, swingTrace);
 						int projectile = npc.FireArrow(vecTarget, 25.0, 1200.0);
-						SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-						SDKHook(projectile, SDKHook_StartTouch, ApertureTraveller_Particle_StartTouch);
+						WandProjectile_ApplyFunctionToEntity(projectile, ApertureTraveller_Particle_StartTouch);	
 						npc.m_flNextMeleeAttack = gameTime + 0.75;
 						npc.m_iAttacksTillReload--;
 

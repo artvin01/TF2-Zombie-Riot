@@ -2228,24 +2228,28 @@
 		"en"	"-Infinite Fire\n-Projectile hit weapon."
 		"it"	"Fuoco infinito, arma a proiettile."
 		"ko"	"풀오토 계열이며 투사체를 발사하는 무기입니다."
+		"lt"	"-Begalinis Šovimas\n-''Kulko'' Šovimo ginklas'
 	}
 	"Tornado Blitz Desc Spam1"
 	{
 		"en" 	"-Increased damage\n-Increased attackspeed"
 		"it"	"Danno e velocità d'attacco extra"
 		"ko"	"피해량, 공격 속도 증가."
+		"lt"	"-Daugiau Žalos\n-Greičiau šaundo"
 	}
 	"Tornado Blitz Desc Spam2"
 	{
 		"en" 	"-Increased damage\n-Increased attackspeed\n-M2 Triggers barrage on m1 attacks\n-Barrage charges with m1 shots."
 		"it"	"Danno e attacchi extra velocità \nM2 ora permette di sparare una raffica.\nLa raffica si carica con i colpi di M1."
 		"ko"	"피해량, 공격 속도 증가.\nM2로 폭격 스킬 사용 가능.\nM1로 폭격 스킬의 코스트를 채울수 있음."
+		"lt"	"-Daugiau Žalos\n-Greičiau šaundo\nM2: Paspaudus, tavo M1 atakos šauna daugelis ''Kulku'' - Užtvara\n-Užtvara kraunasi su M1 atakomis"
 	}
 	"Tornado Blitz Desc Spam3"
 	{
 		"en" 	"-Increased damage\n-Increased attackspeed"
 		"it"	"Danno e velocità d'attacco extra."
 		"ko"	"피해량, 공격 속도 증가."
+		"lt"	"-Daugiau Žalos\n-Greičiau šaundo"
 	}
 	
 	"Irene Weapon Desc"
@@ -2871,11 +2875,12 @@
 	}
 	"Fantasy Blade pap 0"
 	{
-		"en"	"A blade of those who dare to Fantasize and dream...\nHold mouse 2 to fire a Fantasmal wave forward.\nThis action requires ''Shards'', you gain them by hitting stuff"
+		"en"	"A blade of those who dare to Fantasize and dream...\n-Hold mouse 2 to fire a Fantasmal wave forward.\n-This costs ''Shards'', you gain them by hitting stuff"
 		"fr"	"Recevez des Shards quand vous frappez les ennemis.\nAppuyez sur M2 pour utiliser les Shards et lancer une onde Fantasmale.\nUne lame pour ceux qui osent rêver..."
 		"chi"	"幻想与奇异之剑...\n按住M2发射幻刃，消耗梦幻碎片。\n攻击敌人获得碎片。"
 		"it"	"Una lama di coloro che osano fantasticare e sognare...\nTenere premuto il mouse 2 per lanciare un'onda fantasmatica in avanti.\nQuesta azione richiede ''Frammenti'', si ottengono colpendo cose"
 		"ko"	"우클릭을 꾹 누르면 환상의 물결을 발사.\n이 능력을 사용하려면 ''조각''이 필요하며, 조각은 적에게 공격을 적중하면 획득합니다."
+		"lt"	"Specialus kardas tiems, kurie išdrista fantazuoti ir sapnuoti...\n-Laikyk M2, kad įšaukti 'Fantasmalinė' banga priekin\n-Šitai kainuoja ''Shards'', juos gauni kai kardas atsitrenkia į priešus"
 	}
 	"Fantasy Blade pap 1"
 	{
@@ -2884,12 +2889,14 @@
 		"chi"	"梦想正在成真...\n按住R+M2发射远程幻刃。"
 		"it"	"Si ha la sensazione che la Fantasia stia lentamente diventando reale...\nPotete ora tenere premuto R+Mouse 2 per sparare un'onda fantasmatica a lungo raggio...\nNe guadagnate anche un alone fantasmatico"
 		"ko"	"이제 R+우클릭을 꾹 누르면 더 멀리 나가는 환상의 물결을 발사.\n또한 환상의 헤일로를 획득."
+		"lt"	"-Dabar gali lakyti R+M2, kad iššauti ilgesnio nuotolio 'Fantasmalinė' banga, tačiau tą banga yra vertikali\n-Gauni 'Fantasmalinė' aureolė (Vizsualinė)"
 	}
 	"Fantasy Blade pap 2"
 	{
-		"en"	"-By Crouching And pressing Mouse 2 you can teleport to a npc, Costs 3 shards to use\nNote: This ability WILL only work if you are looking at an enemy"
+		"en"	"-By Crouching And pressing Mouse 2 you can teleport to a npc, Costs 3 shards to use\n-Note: This ability WILL only work if you are looking at an enemy"
 		"it"	"Accovacciandosi e premendo il tasto 2 del mouse è possibile teletrasportarsi verso un npc, costa 3 frammenti per utilizzarla\nFunziona se guardi un nemico"
 		"ko"	"이제 앉은 상태로 우클릭을 꾹 누르면 조각 3개를 소모해 적대 NPC에게 순간이동함.\n아군에겐 사용할 수 없고, 오직 적을 쳐다보고 있을때만 사용 가능."
+		"lt"	"-Tupėdamas ir spaudasmas M2, gali teleportuotis priekin. Kainuoja 3 'Shards'\nPastaba: Šis teleportavimas tik veikia kai žiūri tiesiai į priešą."
 	}
 	"Ancient Banner Desc"
 	{
@@ -3075,31 +3082,29 @@
 	// todo: translate prismatic wand properly
 	"Neuv pap0"
 	{
-		"en"	"''Prismatic Beam Singularity Generator'', such is the full name of this spell\nCreated long ago before contact with the Ruanians...\nThe Witch who created the spell is unknown...\n-Constant fire, hard to controll laser beam."
-		"fr"	""
+		"en"	"-Piecring Laser\n-Constant fire\n-hard to controll laser beam."
 		"chi"	"这个法术名为''棱形奇点光柱''，它的来源早已丢失..."
 		"it"	"Incrementa i danni.\n''Generatore di Singolarità a Raggio Prismatico'', questo è il nome completo dell'incantesimo.\nCreato molto tempo fa, prima del contatto con i Ruaniani...\nLa Strega che ha creato l'incantesimo è ignota..."
 		"ko"	"''무지개 광선 특이점 발전장'', 그것이 이 마법의 진명입니다."
 	}
 	"Neuv pap1"
 	{
-		"en"	"-Increased damage.\nYour Understanding of the spell improves\nImages of a city flood your mind...\nOne things for certain though, this spell has become far more powerfull"
-		"fr"	""
+		"en"	"-Increased damage.\n-Additional Skill Point."
 		"chi"	"你逐渐开始熟练这个法术。\n你脑海中浮现出了一个城市的画面...\n虽然不明原因，但能肯定的是，光柱的力量大幅度提升了。"
 		"it"	"Incrementa il danno.\nLa tua comprensione dell'incantesimo migliora... Le immagini di una città si affollano nella tua mente... Una cosa è certa, questo incantesimo è diventato molto più potente"
 		"ko"	"피해량이 증가합니다.\n마법의 힘이 강화되고 무지개 광선의 힘이 점점 강해지는 것 같습니다..."
 	}
 	"Neuv pap2"
 	{
-		"en"	"-Increased damage.\nScience And Witches\nHow could something so contradictory to one another be so intertwined with a spell"
-		"fr"	""
+		"en"	"-Increased damage.\n-Additional Skill Point."
+
 		"chi"	"''科学''    ''巫术''\n明明是两个相对的东西，在这个法术中却缺一不可。"
 		"it"	"Incrementa il danno.\nScienza e streghe Come può una cosa così contraddittoria essere così intrecciata con un incantesimo?"
 		"ko"	"피해량이 증가합니다.\n과학과 마녀, 어떻게 이 둘이 서로 협력을 할 수 있던 걸까요?"
 	}
 	"Neuv pap3"
 	{
-		"en"	"-Increased damage.\nA new spell manifests into your mind\nHold M2 to charge up a Hexagonal Cannon\nUnfortunately you are unable to fully reconstruct it, even then, its quite potent"
+		"en"	"-Increased damage.\n-Additional Skill Point.\n-Hold M2 to charge up a Hexagonal Cannon"
 		"fr"	"Appuyez M2 pour charger un Hexa-Cannon."
 		"chi"	"你发现了新的法术。\n长按M2招出一个六边形的巨炮。\n虽然你还不熟练，它依旧十分强力。"
 		"it"	"Incrementa il danno.\nUn nuovo incantesimo si manifesta nella tua mente. Tieni premuto M2 per caricare un Cannone Esagonale. Purtroppo non sei in grado di ricostruirlo completamente, anche se è piuttosto potente"
@@ -3107,16 +3112,14 @@
 	}
 	"Neuv pap4"
 	{
-		"en"	"-Increased damage.\nTruth or false, it’s the logic that dictates it all\nRising edge,\nTicks the clock\nStimulates your flip flop\nGenerate, Oscillate\nLet your blood fill the gates\nMultiplex, process registration"
-		"fr"	""
+		"en"	"-Increased damage.\n-Additional Skill Point."
 		"chi"	"是与否：这是个被伦理所支配的世界。\n上升沿驱动着时钟频率\n激励着你的双稳态触发器\n生成，摆动\n让你的血液充棉逻辑门\n多路化，程序注册。"
 		"it"	"Incrementa il danno.\nVero o falso che sia, è la logica a dettare il tutto\nRising edge,\nticchetta l'orologio\nStimola il tuo flip flop\nGenera, oscilla\nLascia che il sangue riempia i gate\nMultiplex, registra il processo"
 		"ko"	"피해량이 증가합니다.\n갤러헤드 1호와 과학적 흑마법(Ga1ahad and Scientific Witchery) 노래를 부르게 만드는군요."
 	}
 	"Neuv pap5"
 	{
-		"en"	"-Increased damage.\nAnd thus you finally the see the image of the Witch who create this spell\nBut you also see that she is the one who taught ''Stella'' all that she knows..."
-		"fr"	""
+		"en"	"-Increased damage.\n-No Skill points added."
 		"chi"	"终于，你看到了女巫的样貌。\n貌似，''Donnerkrieg''的技巧也是从她这学的..."
 		"it"	"Incrementa il danno.\nIncide sui danni.\nE così si vede finalmente l'immagine della Strega che ha creato questo incantesimo\nMa si vede anche che è lei che ha insegnato a ''Donnerkrieg'' tutto quello che sa..."
 		"ko"	"피해량이 증가합니다.\n그리고 이제 이 마법을 만든 자의 형상이 보이기 시작합니다.\n그녀는 ''스텔라''를 가르친 존재이기도 합니다..."
@@ -3382,13 +3385,13 @@
 	}
 	"Impact Lance Desc 1"
 	{
-		"en"	"A Magic Lance, acts like a melee weapon, consumes mana to attack, slow attack speed\nIf you don't have enough mana, it just doesn't deal damage\nHas longer reach\nLess Melee Width\nProjectile speed/Range affect manacost."
+		"en"	"A Magic Lance, acts like a melee weapon, consumes mana to attack, slow attack speed\nIf you don't have enough mana, it just doesn't deal damage\n-Longer reach\n-Less Melee Width\n-Projectile speed/Range affect manacost."
 		"it"	"Una lancia magica, agisce come un'arma da mischia, consuma mana per attaccare, velocità d'attacco lenta.\nSe non si ha abbastanza mana, non infligge danni.\nVelocita dei proiettili affliggono il consumo del mana"
 		"ko"	"근접 무기처럼 작동하지만, 공격시 마나를 소모하며 공속이 느림.\n마나가 충분하지 않으면, 공격으로 피해를 줄 수 없음.\n근접 공격 사거리가 길지만, 근접 공격 범위가 좁습니다.\n투사체 속도와 사거리 속성은 이 무기의 마나 소모량을 감소시킴."
 	}
 	"Impact Lance Desc 2"
 	{
-		"en"	"Increased damage\nYou have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\n25％ melee Resistance"
+		"en"	"-Increased damage\n-You have the ability to accelerate a particle to high speeds\n-You will be knocked backwards, can only be used if you are facing a enemy\n-25％ melee Resistance"
 		"fr"	"+25％ résistance contre les dégats corps-à-corps\nAbilité accélère un particule vers l'ennemi que vous visez.\nAbilité vous inflige du recul."
 		"chi"	"你现在可以加速能量，发射出去。只能面对敌人时使用，会对你造成击退。\+25%近战抗性。"
 		"it"	"Aumenta i danni\nSi ha la possibilità di accelerare una particella ad alta velocità\nSi viene sbalzati all'indietro, si può usare solo se si affronta un nemico\n25％ Resistenza in mischia"
@@ -3396,7 +3399,7 @@
 	}
 	"Impact Lance Desc 3"
 	{
-		"en"	"Increased damage\nLarger range\nSlightly more melee width\nHigher Mana Cost"
+		"en"	"-Increased damage\n-Larger range\n-Slightly more melee width\n-Higher Mana Cost"
 		"fr"	"Portée et grandeur de l'attaque améliorées.\nCoût de Mana plus haut."
 		"chi"	"扩大范围，增加判定宽度。\n增加蓝耗。"
 		"it"	"Danni aumentati\nGamma più ampia\nLievemente più ampia in mischia\nCosto di mana più alto"
@@ -3404,7 +3407,7 @@
 	}
 	"Impact Lance Desc 4"
 	{
-		"en"	"Increased damage\nThe Impact Lance, a true work of Magical engineering, with it at full power\nIts power can nearly pierce the heavens!"
+		"en"	"-Increased damage\n-The Impact Lance, a true work of Magical engineering, with it at full power\nIts power can nearly pierce the heavens!"
 		"fr"	"La lance a atteint son potentiel maximum.\nSa puissance peut percer les cieux!"
 		"chi"	"能量纯度达到巅峰，足以刺穿天国！"
 		"it"	"La Lancia d'Impatto, una vera opera di ingegneria magica, con la sua massima potenza può quasi perforare il cielo!"
@@ -3412,7 +3415,7 @@
 	}
 	"Impact Lance Desc 5"
 	{
-		"en"	"very slightly reduced damage, massively increased attackspeed\nUsing M2 will allow you to throw your lance, Costs 2x primary attack in mana\n5％ Melee resistance"
+		"en"	"-Slightly Reduced Damage\n-Massively increased attackspeed\nUsing M2 will allow you to throw your lance, Costs 2x primary attack in mana\n-5％ Melee resistance"
 		"fr"	"+5％ résistance contre les dégats corps-à-corps\nAbilité lance votre lance, "
 		"chi"	"M2可以丢出长矛，消耗双倍蓝。\n丢出后两秒无法使用，除非你有某位神的祝福...\n+5%近战抗性"
 		"it"	"danno leggermente ridotto, velocità d'attacco massicciamente aumentata\nl'uso di M2 permette di lanciare la lancia, costa 2x attacco primario in mana"
@@ -3420,7 +3423,7 @@
 	}
 	"Impact Lance Desc 6"
 	{
-		"en"	"Increased damage\Larger range\nSlightly more melee width"
+		"en"	"-Increased damage\-Larger range\n-Slightly more melee width"
 		"fr"	"Portée et grandeur de l'attaque améliorées."
 		"chi"	"全面增加范围"
 		"it"	"Aumento dei danni, maggiore raggio d'azione, maggiore ampiezza in mischia"
@@ -3428,80 +3431,27 @@
 	}
 	"Impact Lance Desc 7"
 	{
-		"en"	"Increased damage\nThe Impact Lance, a true work of Magical engineering, Fast, agile, and deadly!\nIt can almost scratch the heavens"
+		"en"	"-Increased damage\nThe Impact Lance, a true work of Magical engineering, Fast, agile, and deadly!\nIt can almost scratch the heavens"
 		"fr"	"La lance a atteint son potentiel maximum.\nSon agilité peut percer les cieux!"
 		"chi"	"灵活又致命，神都畏惧的武器。"
 		"it"	"Incrementa il danno\nLa Lancia d'impatto, una vera e propria opera di ingegneria magica, veloce, agile e letale!"
 		"ko"	"창이 더욱 민첩하고, 빨라지고, 치명적이게 됩니다!\n천국에 스크래치를 낼 정도죠!"
 	}
-	"Hurricane Blitz desc 1"
-	{
-		"en"	"A fast firing Rocket Launcher, Must be manually reloaded!\nOnce you start reloading you become unable to fire the weapon\nHowever you can still use your melee while it is ''reloading''\nFires multiple rockets in 1 shot!"
-		"fr"	"Une lance-roquettes rapide, qui tire plusieurs roquettes à la fois!\nLa recharge se fait manuellement, et vous empêche de tirer l'arme.\nVous pouvez utiliser une attaque corps-à-corps pendant la recharge."
-		"chi"	"高速火箭筒，必须手动填装弹药。填装时无法使用。\n一次性发射多个火箭！"
-		"it"	"Un lanciarazzi a fuoco rapido, che deve essere ricaricato manualmente!\nUna volta iniziato a ricaricare non è più possibile sparare con l'arma, ma si può ancora usare il corpo a corpo mentre è in fase di ricarica!"
-		"ko"	"연발 고속 사격이 가능하지만, 수동으로 재장전해야함.\n한 번 재장전을 시작하면, 장전이 끝날때까지 이 무기를 발사할 수 없음.\n하지만 재장전 도중에도 당신의 근접 무기를 사용할 수 있습니다.\n한 번에 여러 발의 로켓을 발사합니다!"
-	}
-	"Blitz Blade Desc 1"
-	{
-		"en"	"When your primary is reloading, this melee gains the ability to hit multiple targets\nAlso gains a damage bonus and larger range/width\nScales from Ranged Damage Upgrades"
-		"fr"	"Dégats et grandeur de l'attaque corps-à-corps améliorés.\nL'attaque corps-à-corps de la recharge est capable de frapper plusieurs ennemis à la fois.\nL'attaque corps-à-corps s'améliore avec les améliorations Armes à Portée."
-		"chi"	"火箭筒装弹时，获得aoe效果，加强伤害和范围。\n随着远程升级加强。"
-		"it"	"Quando la primaria sta ricaricando, questo corpo a corpo guadagna la capacità di colpire più bersagli\nComprende anche un bonus ai danni e una portata/larghezza maggiore\nScala dai potenziamenti dei danni a distanza"
-		"ko"	"주 무기가 장전 중일시, 이 무기는 다수의 적을 타격할 수 있게 됨.\n또한 공격 범위와 공격 사정거리가 더욱 증가.\n이 무기는 원거리 개선의 영향을 받음."
-	}
-	"Ion Blitz Desc 1"
-	{
-		"en"	"Once you have enough charges you can summon an ION cannon"
-		"fr"	"Convoque un cannon à ION avec assez de charges."
-		"chi"	"通过造成伤害获得蓄能。足够时可以发射离子炮。"
-		"it"	"Una volta ottenute abbastanza cariche, è possibile evocare un cannone a Ioni"
-		"ko"	"주 무기로 게이지를 충전하며, 충분히 채웠다면 이온 캐논을 발사할 수 있게 됩니다."
-	}
 	"Blitz Kit Desc"
 	{
-		"en"	"You have 3 weapons, a rocket launcher that shoots fast.\nA secondary that fires an ION if you have enough charge, you get that from hitting npc's with your primary\nAnd a melee that becomes stronger when your primary is reloading"
+		"en"	"-A glass cannon kit\n-Primary: Rocket launcher, shoots multiple rockets.\n-Reload is manual.\n-Reload time scales on how many rockets you have left in your clip.\n-On targets hit you gain ION Charges\n-On Pap 0 the patterns do nothing!\n-Secondary: M1 Casts ION. Uses Charges\nMelee: Base state is weak. When primary is reloading its buffed:\n-Increased dmg\n-Increased Width\n-AOE Melee\n-Knockback on non raids"
 		"fr"	"Vous donne un lance-roquettes rapide qui charge votra arme secondaire,\nune arme secondaire qui convoque un cannon à ION avec assez de charges,\net une arme corps-à-corps qui est plus puissant lorsque votre arme principale se recharge."
 		"chi"	"三个武器 - 高速火箭筒，离子炮，和一把装弹时加强的近战。"
 		"it"	"Hai 3 armi, un lanciarazzi che spara velocemente\nuna secondaria che spara uno ION se hai abbastanza carica, la ottieni colpendo gli npc con la primaria.\nUna da mischia che diventa più forte quando la primaria si sta ricaricando"
 		"ko"	"3종류의 무기 획득. 공속이 매우 빠른 로켓 발사기 주 무기.\n주 무기로 피해를 주면 게이지가 증가하며, 소모해서 이온 캐논을 발사하는 보조 무기\n주 무기가 재장전 중일시 강력해지는 근접 무기"
 	}
-	"Hurricane Blitz desc 2"
+	"Blitz Kit Generic Upgrade Pre"
 	{
-		"en" 	"Higher damage, more rockets per shot, higher ammo efficiency"
-		"fr" 	"Dégats et nombre de roquettes par tir améliorés. Utilise moins de munitions."
-		"chi"	"更高伤害，更多火箭，更加节省弹药。"
-		"it"	"Danno più elevato, più razzi per colpo, maggiore efficienza delle munizioni"
-		"ko" 	"피해량 증가 및 한 번에 더 많은 로켓을 발사하게 되며, 탄약 효율성이 증가합니다."
+		"en"	"Patterns: While holding your primary you can press M2 to change from Alpha and Beta patterns:\nAlpha: All Rockets Shoot directly forward\nBeta: All rockets shoot TOWARDS the point that your cursor is looking at\n-Increased Damage\n-More Rockets Fired\n-Large Clipsize"
 	}
-	"Hurricane Blitz desc 3"
+	"Blitz Kit Generic Upgrade"
 	{
-		"en" 	"Simple Damage buff"
-		"fr" 	"Dégats améliorés."
-		"chi"	"加伤害。没了。"
-		"it"	"Semplice buff del danno"
-		"ko" 	"피해량 증가."
-	}
-	//"Hurricane Blitz desc 3"
-	//{
-	//	"en" 	"Simple Damage buff"
-	//	"fr" 	"Dégats améliorés."
-	//}
-	"Ion Blitz Desc 2"
-	{
-		"en"	"Higher Damage, More effects!"
-		"fr" 	"Dégats améliorés. Plus d'effets!"
-		"chi"	"更多伤害，更多效果！"
-		"it"	"Danno più elevato, più effetti!"
-		"ko" 	"피해량 증가 및 이펙트가 커집니다."
-	}
-	"Blitz Blade Desc 2"
-	{
-		"en"	"More Damage"
-		"fr" 	"Dégats améliorés."
-		"chi"	"伤！害！"
-		"it"	"Altri danni"
-		"ko" 	"피해량 증가."
+		"en"	"-Increased Damage\n-More Rockets Fired\n-Large Clipsize"
 	}
 	"Angelic Shotgonnus Desc"
 	{
@@ -3635,7 +3585,7 @@
 	}
 	"Reiuji Desc 0"
 	{
-		"en"	"Your wand has ammo. While ammo is above 0 you gain a sizeable firerate bonus.\nPress R to toggle it on and off to recharge it."
+		"en"	"Your wand uses ammo. While ammo is above 0 you gain a sizeable firerate bonus.\n-Press R to toggle it on and off to recharge it."
 		"it"	"La bacchetta ha delle munizioni. Quando le munizioni sono superiori a 0, si ottiene un bonus di potenza di fuoco considerevole.\nPremi R per attivarle e disattivarle per ricaricarle."
 		"ko"	"당신의 완드는 탄약을 소모합니다. 탄약이 0보다 많으면 공격 속도가 증가합니다.\nR로 효과를 ON/OFF할 수 있음. "
 	}
@@ -3681,21 +3631,24 @@
 	}
 	"Heavy Particle Rifle Desc 1"
 	{
-		"en"	"-The longer you hold down fire, the more damage your weapon deals"
+		"en"	"-Projectile Weapon\n-The longer you hold down fire, the more damage your weapon deals"
 		"it"	"Più a lungo si tiene premuto il tasto di fuoco, più danni infligge l'arma.\nTuttavia, si inizia con una penalità ai danni all'inizio del fuoco!"
 		"ko"	"공격 버튼을 오래 누르고 있을수록, 이 무기의 공격 피해량이 증가.\n하지만 사격을 시작할때는 피해량 페널티가 적용됩니다!"
+		"lt"	"-Sviedinio Ginklas\n-Kuo ilgiau šauni, tuo daugiau žalos daro tavo ginklas"
 	}
 	"Heavy Particle Rifle Desc 2"
 	{
 		"en"	"-Increased Damage\n-Increased Clip size\n-Increased attackspeed"
 		"it"	"Più danni, caricatore più grande, fuoco più veloce"
 		"ko"	"피해량, 장탄수, 공격 속도 증가."
+		"lt"	"-Daugiau Žalos\n-Didesnis klipas\n-Greičiau Šauna"
 	}
 	"Heavy Particle Rifle Desc 3"
 	{
 		"en"	"-Increased Damage\n-Increased Clip size\n-Increased attackspeed"
 		"it"	"Più danni, caricatore ancora più grande, fuoco più veloce"
 		"ko"	"피해량, 장탄수, 공격 속도 증가."
+		"lt"	"-Daugiau Žalos\n-Didesnis klipas\n-Greičiau Šauna"
 	}
 	"Autoshotgun Pap 1"
 	{
@@ -4719,13 +4672,13 @@
 	}
 	"Magia Fractal Desc"
 	{
-		"en"	"Primary:\nM1:enter an animation where you shoot a big laser of doom.\nHold M2: Increased distance, faster turn speed. uses 10 crystals/s and does 10%% more damage \nSecondary:\nM1: Harvester, gain mana on targets hit.\nM2: Summon an Ion that bounces\nMelee:\nM1: Energy Wave. Costs Crystals. On hit gain crystals"
+		"en"	"Primary:\nM1:\n-Enter an animation, and shoot a laser.\n-Hold M2:\n-Increased distance. \n-Faster turning. \n-Yses 10 crystals/s and does 10%% more damage \nSecondary:\nM1:\n-Gain mana on targets hit.\nM2:\n-Summon an Ion that bounces\nMelee:\nM1:\n-Fire an Energy Wave.\n-Costs Crystals.\n-On hit gain crystals"
 		"it"	"Primario:\nM1: attiva un'animazione in cui spari un potente raggio laser distruttivo.\nTieni premuto M2: aumenta la distanza e la velocità di rotazione.\nConsuma 10 cristalli al secondo e infligge il 10% di danni in più. \nSecondario:\nM1: Mietitore, ottieni mana dai bersagli colpiti.\nM2: evoca uno ione che rimbalza\nCorpo a corpo:\nM1: Onda energetica. Costa cristalli. Quando colpisci guadagni cristalli."
 		"ko"	"주 무기:\nM1:애니메이션 이후 거대한 레이저를 발사.\nM2 꾹 누름: 회전 속도+사거리 증가. 수정을 초당 10 소모+피해량 10%% \n보조 무기:\nM1: 적중한 만큼 마나 획득.\nM2: 여러 대상에게 튕기는 이온 발사.\n근접 무기:\nM1: 파동 발사. 수정을 소모하지만, 적중시 수정 획득."
 	}
 	"Fractal Kit Desc 1"
 	{
-		"en"	"More Damage! And crystal capacity. Lower StarFall Cooldown."
+		"en"	"-Increased Damage\n-Increased crystal capacity\n-Lower StarFall Cooldown."
 		"it"	"Più danni! E capacità dei cristalli. Riduzione del tempo di ricarica di StarFall."
 		"ko"	"피해량과 수정 저장량 증가 및 별똥별 쿨타임 감소."
 	}
