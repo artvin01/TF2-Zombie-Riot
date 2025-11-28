@@ -354,9 +354,6 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 }
 void BarracksCheckItems(int client)
 {
-	if(!WasAlreadyExplainedToClient(client, "Barracks Building Explain"))
-		return;
-
 	i_NormalBarracks_HexBarracksUpgrades[client] = Store_HasNamedItem(client, "Barracks Hex Upgrade 1");
 	i_NormalBarracks_HexBarracksUpgrades_2[client] = Store_HasNamedItem(client, "Barracks Hex Upgrade 2");
 	WoodAmount[client] = float(Store_HasNamedItem(client, "Barracks Wood"));
@@ -1363,9 +1360,6 @@ int Building_GetFollowerCommand(int owner)
 
 void BarracksSaveResources(int client)
 {
-	if(!WasAlreadyExplainedToClient(client, "Barracks Building Explain"))
-		return;
-
 	Store_SetNamedItem(client, "Barracks Wood", RoundToCeil(WoodAmount[client]));
 	Store_SetNamedItem(client, "Barracks Food", RoundToCeil(FoodAmount[client]));
 	Store_SetNamedItem(client, "Barracks Gold", RoundToCeil(GoldAmount[client]));

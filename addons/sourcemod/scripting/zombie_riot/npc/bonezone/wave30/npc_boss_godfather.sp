@@ -946,7 +946,7 @@ public void Godfather_AnimEvent(int entity, int event)
 
 void Godfather_ShootProjectile(Godfather npc, float vicLoc[3], float startPos[3], float startAng[3], bool molotov = false)
 {
-	int entity = CreateEntityByName("zr_projectile_base");
+	int entity = CreateEntityByName("tf_projectile_rocket");
 			
 	if (IsValidEntity(entity))
 	{
@@ -975,7 +975,7 @@ void Godfather_ShootProjectile(Godfather npc, float vicLoc[3], float startPos[3]
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
 		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
-		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+	//	SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
 
 		TeleportEntity(entity, startPos, vecAngles, NULL_VECTOR, true);
 		DispatchSpawn(entity);

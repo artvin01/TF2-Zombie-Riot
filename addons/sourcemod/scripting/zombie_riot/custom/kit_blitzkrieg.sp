@@ -438,7 +438,7 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 
 	switch(i_patten_type[client])
 	{
-		case 0:
+		case 0:	//alpha
 		{
 			int type=3;
 			for(int i=0 ; i<spread ; i++)
@@ -459,7 +459,7 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 					type=3;
 			}
 		}
-		case 1:
+		case 1:	//beta
 		{
 			int type=3;
 			Handle swingTrace;
@@ -547,11 +547,29 @@ static void Add_One_Ammo(int entity)
 
 static void Blitzkrieg_Kit_Rocket_Fire(int client, float speed, float damage, int weapon, float fAng[3], float fPos[3])
 {
-	int projectile = Wand_Projectile_Spawn(client, speed, 30.0, damage, WEAPON_KIT_BLITZKRIEG_CORE, weapon, "", fAng, false , fPos);
+	int projectile = Wand_Projectile_Spawn(client, speed, 30.0, damage, WEAPON_KIT_BLITZKRIEG_CORE, weapon, "raygun_projectile_red_trail", fAng, false , fPos);
 
-	ApplyCustomModelToWandProjectile(projectile, BLITZKRIEG_KIT_ROCKET_MODEL, 1.0, "");
+	int particle = EntRefToEntIndex(i_WandParticle[projectile]);
+	if(IsValidEntity(particle))
+	{
+		i_OwnerEntityEnvLaser[particle] = EntIndexToEntRef(client);
+		SDKHook(particle, SDKHook_SetTransmit, TransmitToOwnerOnly);
+	}
+	ApplyCustomModelToWandProjectile(projectile, BLITZKRIEG_KIT_ROCKET_MODEL, 1.0, "", _ , true);
 }
 
+public Action TransmitToOwnerOnly(int entity, int client)
+{
+	if(client > 0 && client <= MaxClients)
+	{
+		int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
+		if(owner == client)
+		{
+			return Plugin_Continue;
+		}
+	}
+	return Plugin_Stop;
+}
 
 public void Blitzkrieg_Kit_Rocket_StartTouch(int entity, int target)
 {
@@ -893,7 +911,7 @@ void Blitzkrieg_Kit_OnHitEffect(int client, int target)
 				//during normal rounds make the melee deal KB
 
 				DisplayCritAboveNpc(target, client, true);
-				SensalCauseKnockback(client, target, 0.35, false);	//make them take KB but no stun
+				SensalCauseKnockback(client, target, 0.27, false);	//make them take KB but no stun
 			}
 		}
 	}

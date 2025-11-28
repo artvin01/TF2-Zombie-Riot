@@ -1492,8 +1492,8 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		int Projectile = npc.FireParticleRocket(FloatVector, damage , 400.0 , 100.0 , "",_,_,true,origin_altered,_,_,_,false);
 		b_RageProjectile[Projectile] = npc.Anger;
 		//dont exist !
-		SDKUnhook(Projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-		SDKHook(Projectile, SDKHook_StartTouch, Sensal_Particle_StartTouch);
+		//dont exist !
+		WandProjectile_ApplyFunctionToEntity(Projectile, Sensal_Particle_StartTouch);
 		CreateTimer(15.0, Timer_RemoveEntitySensal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
 		static float ang_Look[3];
 		GetEntPropVector(Projectile, Prop_Send, "m_angRotation", ang_Look);
@@ -1961,8 +1961,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 				b_RageProjectile[Projectile] = npc.Anger;
 
 				//dont exist !
-				SDKUnhook(Projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-				SDKHook(Projectile, SDKHook_StartTouch, Sensal_Particle_StartTouch);
+				WandProjectile_ApplyFunctionToEntity(Projectile, Sensal_Particle_StartTouch);
 				
 				CreateTimer(15.0, Timer_RemoveEntitySensal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
 				static float ang_Look[3];

@@ -1090,9 +1090,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					int projectile = npc.FireParticleRocket(vecTarget, 3000.0, GetRandomFloat(175.0, 225.0), 150.0, "utaunt_glitter_teamcolor_blue", true);
 					npc.DispatchParticleEffect(npc.index, "rd_robot_explosion_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
-					SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-					
-					SDKHook(projectile, SDKHook_StartTouch, Bob_Rocket_Particle_StartTouch);
+					WandProjectile_ApplyFunctionToEntity(projectile, Bob_Rocket_Particle_StartTouch);	
 					npc.PlayRocketHoming();
 					float ang_Look[3];
 					GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);

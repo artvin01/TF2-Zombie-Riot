@@ -879,7 +879,7 @@ public void Mondo_AnimEvent(int entity, int event)
 
 void Jester_ShootProjectile(JesterBones npc, float bombPos[3], float bombAng[3], float launchAng[3], bool buffed, bool MondoDeathBomb = false)
 {
-	int entity = CreateEntityByName("zr_projectile_base");
+	int entity = CreateEntityByName("tf_projectile_rocket");
 			
 	if (IsValidEntity(entity))
 	{
@@ -895,7 +895,7 @@ void Jester_ShootProjectile(JesterBones npc, float bombPos[3], float bombAng[3],
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
 		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
-		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+	//	SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
 		
 		TeleportEntity(entity, bombPos, bombAng, NULL_VECTOR, true);
 		DispatchSpawn(entity);

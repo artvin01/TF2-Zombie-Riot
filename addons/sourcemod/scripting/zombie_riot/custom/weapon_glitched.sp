@@ -265,7 +265,7 @@ public void Glitched_Attack2(int client, int weapon, bool crit)
 		
 		switch(typeProjectile)
 		{
-			case 2.0: projectile = CreateEntityByName("zr_projectile_base");
+			case 2.0: projectile = CreateEntityByName("tf_projectile_rocket");
 			case 6.0: projectile = CreateEntityByName("tf_projectile_flare");
 			case 5.0: projectile = CreateEntityByName("tf_projectile_syringe");
 		}

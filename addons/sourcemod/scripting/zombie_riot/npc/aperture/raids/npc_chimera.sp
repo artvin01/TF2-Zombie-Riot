@@ -1064,8 +1064,7 @@ bool CHIMERA_RefractSpawners(int iNPC)
 			vecHit[0] += GetRandomInt(-50,50);
 			int projectile = npc.FireParticleRocket(vecHit, 0.0, 700.0, 1.0, "spell_teleport_black", false,_,true, vecHitPart);
 			
-			SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-			SDKHook(projectile, SDKHook_StartTouch, Chimera_RefragmentedProjectileSpawner);		
+			WandProjectile_ApplyFunctionToEntity(projectile, Chimera_RefragmentedProjectileSpawner);			
 			static float ang_Look[3];
 			GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
 			Initiate_HomingProjectile(projectile,

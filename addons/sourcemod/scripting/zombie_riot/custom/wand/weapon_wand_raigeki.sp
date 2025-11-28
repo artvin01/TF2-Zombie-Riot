@@ -26,12 +26,12 @@ static float Energy_FromRaidsMult[6] = { 2.5, 2.5, 2.5, 2.5, 3.5, 2.5 };				//Am
 //Range and width scale with projectile lifespan and velocity modifiers.
 //Sweep speed scales with attack speed modifiers.
 static int M1_NumBlades[6] = { 1, 1, 1, 1, 1, 2 };			    				//Number of blade sweeps to perform in a row per M1.
-static float M1_Cost[6] = { 40.0, 60.0, 80.0, 100.0, 120.0, 200.0 };			//Primary attack base mana cost.
+static float M1_Cost[6] = { 40.0, 60.0, 80.0, 100.0, 120.0, 140.0 };			//Primary attack base mana cost.
 static float M1_Range[6] = { 140.0, 150.0, 160.0, 180.0, 140.0, 200.0 };  		//Electric blade range.
 static float M1_Width[6] = { 120.0, 140.0, 160.0, 180.0, 120.0, 220.0 };  		//Electric blade arc swing angle.
-static float M1_Damage[6] = { 750.0, 1000.0, 1250.0, 1500.0, 750.0, 1500.0 }; 	//Electric blade damage.
-static float M1_RaidMult[6] = { 1.5, 1.4, 1.3, 1.25, 1.25, 1.1 };				//Amount to multiply electric blade damage against raids.
-static float M1_Falloff[6] = { 0.825, 0.85, 0.875, 0.9, 0.825, 0.9 };   		//Amount to multiply electric blade damage per target hit.
+static float M1_Damage[6] = { 1000.0, 2000.0, 3000.0, 4000.0, 1500.0, 5000.0 }; //Electric blade damage.
+static float M1_RaidMult[6] = { 2.0, 2.0, 2.0, 2.0, 2.0, 2.0 };				//Amount to multiply electric blade damage against raids.
+static float M1_Falloff[6] = { 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 };   		//Amount to multiply electric blade damage per target hit.
 static float M1_Interval[6] = { 0.8, 0.85, 0.8, 0.75, 0.8, 0.675 };     		//Time it takes for electric blades to sweep across the screen.
 static float Passive_Res[6] = { 0.9, 0.875, 0.85, 0.85, 0.775, 0.9 };			//Passive damage resistance provided while NOT charging Raigeki (1.0 - this = res mult, so 0.9 would be 10% res, etc)
 
@@ -39,7 +39,7 @@ static float Passive_Res[6] = { 0.9, 0.875, 0.85, 0.85, 0.775, 0.9 };			//Passiv
 //In exchange: the user gains damage resistance, plus additional damage resistance based on the ability's charge, and emits Static Electricity, which damages nearby enemies.
 //Charging drains mana. If the user does not have enough mana, they may continue to hold M2 to keep the resistance, but Static Electricity will stop working, and they will still be unable to attack.
 static int Charge_MaxTargets[6] = { 6, 8, 10, 12, 12, 6 };								//Max targets hit at once by Static Electricity ticks.
-static float Charge_Cost[6] = { 6.0, 9.0, 12.0, 24.0, 6.0, 24.0 };						//Mana drained per interval while charging the M2 ability.
+static float Charge_Cost[6] = { 6.0, 9.0, 12.0, 24.0, 6.0, 48.0 };						//Mana drained per interval while charging the M2 ability.
 static float Charge_CostAtFullCharge[6] = { 3.0, 4.5, 6.0, 12.0, 3.0, 24.0 };			//Mana drained per interval while charging the M2 ability, while it is already fully-charged. This is needed so that the user can't just charge to full, and then keep holding M2 to have Static Electricity and resistance forever at no cost.
 static float Charge_Requirement[6] = { 300.0, 600.0, 800.0, 1400.0, 750.0, 2000.0  };	//Total mana spent to fully charge the M2 ability.
 static float Charge_Min[6] = { 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 };							//Minimum charge percentage needed to cast Raigeki. Releasing M2 or running out of mana below this threshold immediately cancels the ability and does not refund anything.
@@ -57,22 +57,22 @@ static float Charge_ManaOnKill[6] = { 15.0, 18.0, 22.0, 26.0, 30.0, 18.0 };				/
 //RAIGEKI: Once the user has charged their M2 enough, they may release M2 to summon Raigeki. This stuns them, during which their resistance is boosted.
 //After X second(s), Raigeki will strike, dealing enormous damage within a huge radius. This ends the stun and removes the user's resistance.
 static int Raigeki_MaxTargets[6] = { 18, 20, 22, 24, 16, 24 };								//Maximum number of enemies hit at once with Raigeki. I recommend keeping this higher than other sources, because of the ability's inherently risky nature.
-static float Raigeki_Delay[6] = { 3.0, 3.0, 3.0, 3.0, 4.0, 3.0 };							//Duration for which the user is stunned upon casting Raigeki. After this time passes, Raigeki's giant thunderbolt will strike, supercharging the user and ending the stun.
+static float Raigeki_Delay[6] = { 2.5, 2.5, 2.5, 2.5, 3.0, 1.8 };							//Duration for which the user is stunned upon casting Raigeki. After this time passes, Raigeki's giant thunderbolt will strike, supercharging the user and ending the stun.
 static float Raigeki_ResMult[6] = { 0.8, 0.8, 0.8, 0.8, 0.6, 1.0 };							//Amount to multiply damage taken during the stun state while casting Raigeki. This is stacked multiplicatively with the user's current damage resistance granted by charging Raigeki.
-static float Raigeki_Damage[6] = { 15000.0, 20000.0, 25000.0, 30000.0, 20000.0, 30000.0 };	//Raigeki's base damage at max charge.
+static float Raigeki_Damage[6] = { 9000.0, 12000.0, 15000.0, 18000.0, 15000.0, 18000.0 };	//Raigeki's base damage at max charge.
 static float Raigeki_Radius[6] = { 450.0, 550.0, 650.0, 800.0, 500.0, 1000.0 };				//Raigeki's radius at max charge.
 static float Raigeki_EnergyMult_DMG[6] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.6 };					//Maximum bonus damage percentage added to Raigeki by Kinetic Energy.
 static float Raigeki_EnergyMult_Radius[6] = { 0.0, 0.0, 0.0, 0.0, 0.25 };					//Maximum bonus radius percentage added to Raigeki by Kinetic Energy.
 static float Raigeki_Falloff_MultiHit[6] = { 0.825, 0.85, 0.875, 0.9, 0.825, 0.9 };			//Amount to multiply damage dealt by Raigeki per target hit.
 static float Raigeki_Falloff_Radius[6] = { 0.65, 0.7, 0.75, 0.8, 0.65, 0.8 };				//Distance-based falloff. Lower numbers = more damage is lost based on distance.
-static float Raigeki_Cooldown[6] = { 90.0, 90.0, 90.0, 90.0, 45.0, 90.0 };					//Raigeki's cooldown.
-static float Raigeki_Cooldown_Failed[6] = { 45.0, 45.0, 45.0, 45.0, 22.5, 45.0 };			//Raigeki's cooldown if the user fails to cast it (releases M2 without enough charge, is downed/dies while charging).
+static float Raigeki_Cooldown[6] = { 45.0, 45.0, 45.0, 45.0, 20.0, 45.0 };					//Raigeki's cooldown.
+static float Raigeki_Cooldown_Failed[6] = { 20.0, 20.0, 20.0, 20.0, 10.0, 20.0 };			//Raigeki's cooldown if the user fails to cast it (releases M2 without enough charge, is downed/dies while charging).
 
 //SUPERCHARGED: After Raigeki hits, if the user has enough Kinetic Energy, they will become Supercharged.
 //While Supercharged, the user's Kinetic Energy drains rapidly, and they cannot gain more Kinetic Energy, but their primary attack is massively buffed.
 //Supercharged ends as soon as the user runs out of Kinetic Energy. Also, getting downed while Supercharged instantly removes all Kinetic Energy.
 static int Supercharge_ExtraBlades[6] = { 1, 1, 2, 2, 1, 3 };							//Number of extra blades to swing per cast whil Supercharged.
-static float Supercharge_DMGMult[6] = { 2.5, 2.5, 3.0, 3.25, 2.5, 3.5 };				//Amount to multiply primary attack damage while Supercharged.
+static float Supercharge_DMGMult[6] = { 2.0, 2.0, 2.5, 2.75, 2.0, 2.0 };				//Amount to multiply primary attack damage while Supercharged.
 static float Supercharge_SpeedMult[6] = { 1.25, 1.25, 1.3, 1.35, 1.25, 1.45 };			//Amount to multiply attack speed and beam sweep speed while Supercharged.
 static float Supercharge_RangeMult[6] = { 1.1, 1.125, 1.15, 1.15, 1.0, 1.2 };			//Amount to multiply beam range while Supercharged.
 static float Supercharge_WidthMult[6] = { 1.25, 1.3, 1.35, 1.4, 1.25, 1.5 };			//Amount to multiply beam arc width while Supercharged.

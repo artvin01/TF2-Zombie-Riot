@@ -1038,12 +1038,11 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 					else
 						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_blue", false);
 			
-					SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 					int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
 					CreateTimer(3.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 					CreateTimer(3.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 					
-					SDKHook(projectile, SDKHook_StartTouch, TheMessenger_Rocket_Particle_StartTouch);		
+					WandProjectile_ApplyFunctionToEntity(projectile, TheMessenger_Rocket_Particle_StartTouch);
 					
 				}
 				if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
@@ -1320,9 +1319,7 @@ void MessengerInitiateGroupAttack(TheMessenger npc)
 			else
 				projectile = npc.FireParticleRocket(vecHit, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_blue", false,_,true, vecHitPart);
 	
-			SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-			
-			SDKHook(projectile, SDKHook_StartTouch, TheMessenger_Rocket_Particle_StartTouch);		
+			WandProjectile_ApplyFunctionToEntity(projectile, TheMessenger_Rocket_Particle_StartTouch);		
 			static float ang_Look[3];
 			GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
 			Initiate_HomingProjectile(projectile,

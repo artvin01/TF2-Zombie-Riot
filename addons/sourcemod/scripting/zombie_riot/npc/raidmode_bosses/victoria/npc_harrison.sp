@@ -1223,8 +1223,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				vecDest[1] += GetRandomFloat(-50.0, 50.0);
 				vecDest[2] += GetRandomFloat(-50.0, 50.0);
 				int DronShot = npc.FireParticleRocket(vecDest, 0.0, RocketSpeed, 0.0, "raygun_projectile_blue_crit", true,_, true, flPosEdit);
-				SDKUnhook(DronShot, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-				SDKHook(DronShot, SDKHook_StartTouch, Dron_Laser_Particle_StartTouch);
+				WandProjectile_ApplyFunctionToEntity(DronShot, Dron_Laser_Particle_StartTouch);	
 			}
 		
 	

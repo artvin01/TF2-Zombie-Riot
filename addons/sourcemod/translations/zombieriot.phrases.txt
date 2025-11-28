@@ -4621,7 +4621,7 @@
 	}
 	"Default Desc"
 	{
-		"en"	"Fight against the classic zombies and combine!"
+		"en"	"Fight against the classic zombies and W.F. soldiers!"
 		"fr"	"Allez face-à-face contre les zombies et Combine classiques!"
 		"chi"	"击败尸群，打败联合军！"
 		"it"	"Combatti contro i classici zombie e combatti contro le combinazioni!"
@@ -4629,13 +4629,13 @@
 	}
 	"True Fusion Warrior Wave Desc"
 	{
-		"en"	"Lore order: (1) ''Silvester'' Is infected with the xeno virus, his gear prevents spreading of it."
+		"en"	"Lore order: (1) ''Silvester'' Is infected with the xeno virus, his gear prevents the spreading of it. how can we save him from the infection."
 		"it"	"Ordine Lore: (1) ''Silvester'' È infettato dal virus xeno, il suo equipaggiamento ne impedisce la diffusione."
 		"ko"	"설정 순서: (1) ‘실베스터’는 제노 바이러스에 감염되어 있으며, 그의 장비가 감염 확산을 막고 있다."
 	}
 	"Alternative Desc"
 	{
-		"en"	"Fight with a new twist on the classic with magical new enemies!"
+		"en"	"Blitz sends his army to attack you. Blitz itself does not see you worthy enough to fight it."
 		"fr"	"Une tournure sur le mode classique aves des nouveaux ennemis mystérieux!"
 		"chi"	"经典模式，但出现了掌握魔法的心敌人…"
 		"it"	"Combatti con una nuova versione del classico con nuovi nemici magici!"
@@ -4649,14 +4649,14 @@
 	}
 	"Blitzkrieg Hard Desc"
 	{
-		"en"	"Do not dare fight him."
+		"en"	"Save the Expidonsan small base from Blitzkrieg, if you can.\nThe machine is much stronger here."
 		"fr"	"Le combat est futile."
 		"it"	"Non osate opporvi a lui."
 		"ko" 	"그와 감히 싸우려고 하지 마십시오."
 	}
 	"Xeno Desc"
 	{
-		"en"	"The Xeno infection has arrived, mutating enemies with new abilities!"
+		"en"	"A new infection is here, the Xeno infection. It seems to be mutating enemies with new abilities!"
 		"fr"	"Les ennemis sont infectés avec l'infection Xéno, et reçoivent de nouvelles abilités!"
 		"chi"	"外界感染到来，僵尸们的变异也更加严重了。"
 		"it"	"L'infezione Xeno è arrivata, mutando i nemici con nuove abilità!"
@@ -4712,7 +4712,7 @@
 	}
 	"Sensal Wave Desc"
 	{
-		"en"	"Lore order: (5) The scouting party operative, you harmed silvester and waldch, but they were unable to tell sensal that this was a false alarm, brace yourself."
+		"en"	"Lore order: (5) The scouting party operative, you harmed Silvester and Waldch, but they were unable to tell Sensal that this was a false alarm, brace yourself."
 		"it"	"Ordine Lore: (5) L'agente del gruppo di esplorazione, hai danneggiato silvester e waldch, ma non sono stati in grado di dire a sensal che si trattava di un falso allarme, tieniti forte."
 		"ko"	"설정 순서: (5) 정찰 부대 요원. 너는 실베스터와 월드치를 해쳤지만, 그들은 센살에게 이것이 오경보였다는 것을 전달하지 못했다. 준비해라."
 	}
@@ -4726,7 +4726,7 @@
 	}
 	"Interitus Desc"
 	{
-		"en"	"Lore order: (7) Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
+		"en"	"A group made up of many cities, all afflicted with Chaos."
 		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
 		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 		"it"	"Ordine Lore: (7) Il caos ha afflitto molte città, il suo gruppo è pronto a servire voi giusti. Preparatevi."
@@ -4734,7 +4734,7 @@
 	}
 	"Schwert Donner Desc"
 	{
-		"en"	"Lore order: (6) Invade the seaborn and kill them off while alaxios distracts them... however, it seems another party missunderstands this temporary alliance."
+		"en"	"Lore order: (6) Invade the seaborn and kill them off while Alaxios distracts them... however, it seems another party missunderstands this temporary alliance."
 		"it"	"Ordine Lore: (6) Invadi i seaborn e ucciderli mentre alaxios li distrae... tuttavia, sembra che un'altra parte non capisca questa alleanza temporanea."
 		"ko"	"설정 순서: (6) 알락시오스가 그들을 유인하는 동안 시본을 침공해 처치하라…\n그러나 다른 세력이 이 일시적인 동맹을 오해한 것 같다."
 	}
@@ -4754,7 +4754,7 @@
 	}
 	"Void Desc"
 	{
-		"en"	"Help Kahmlstein agains the void!"
+		"en"	"One of many void outbrakes. Luckily, we were nearby to help out."
 		"fr"	"Aidez Kahmlstein contre le Void!"
 		"chi"	"帮卡姆斯坦因击退深渊！"
 		"it"	"Aiuta Kahmlstein contro il vuoto!"
@@ -4762,11 +4762,15 @@
 	}
 	"Unspeakable Raid Desc"
 	{
-		"en"	"Lore order: (9) Directly after you release the void in rogue2..."
+		"en"	"Lore order: (9) Directly after you release the void in rogue2. Creatures from a different dimension are here to take over ours. Help Kahmlstein against the void!"
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
 		"chi"	"深渊已被释放。"
 		"it"	"Ordine Lore: (9) Subito dopo aver liberato il vuoto in rogue2..."
 		"ko"	"설정 순서: (9) 진정한 심연이 풀려나고 말았습니다..."
+	}
+	"Aperture Desc"
+	{
+		"en"	"You find yourself on the outskirts of an old facility. The inhabitants see you as a threat and attack you. Hopefully, we won't have to come back here after this."
 	}
 	"Laboratories Raid Desc"
 	{
@@ -5185,6 +5189,10 @@
 		"it"	"HHH grasso"
 		"ko"	"뚱뚱한 말도 없고 머리도 없는 기만병"
 	}
+	"Iberia Expi Desc"
+	{
+	  "en" "Iberia and expidonsa offer training to help against the true final battle against the void... But our main trainer and her partner aren't here to train us. Their probably on vacation."
+	}
 	"Iberia & Nemal"
 	{
 		"en" "Iberia & Nemal"
@@ -5440,6 +5448,10 @@
 		"en"	"Crowbar"
 		"it"	"Piede di porco"
 		"ko"	"쇠지렛대"
+	}
+	"Victoria Survival Desc"
+	{
+		"en" 	"On our way to meet up with Bob the First we see a Victoria outpost. They decide to attack us. Guess they're pissed off about beating them before."
 	}
 	"Victoria Raid Desc"
 	{
