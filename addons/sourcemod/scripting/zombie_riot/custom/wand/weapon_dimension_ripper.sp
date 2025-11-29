@@ -142,15 +142,6 @@ public void Weapon_Dimension_Wand(int client, int weapon, bool crit)
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 3, weapon, "raygun_projectile_blue_crit");
 
-			if(Can_I_See_Enemy_Only(target,projectile)) //Insta home!
-			{
-				HomingProjectile_TurnToTarget(target, projectile);
-			}
-
-			DataPack pack;
-			CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-			pack.WriteCell(EntIndexToEntRef(projectile)); //projectile
-			pack.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
 			//We have found a victim.
 		}
 		else

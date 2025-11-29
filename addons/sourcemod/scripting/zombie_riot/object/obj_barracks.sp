@@ -1260,10 +1260,17 @@ void Barracks_BuildingThink(int entity)
 
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CRENELLATIONS)
 			{
-				DataPack pack;
-				CreateDataTimer(0.21, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-				pack.WriteCell(EntIndexToEntRef(arrow)); //projectile
-				pack.WriteCell(EntIndexToEntRef(ValidEnemyToTarget));		//victim to annihilate :)
+				float fAng[3];
+				GetEntPropVector(arrow, Prop_Send, "m_angRotation", fAng);
+				Initiate_HomingProjectile(arrow,
+					npc.index,
+						180.0,			// float lockonAngleMax,
+						90.0,				//float homingaSec,
+						true,				// bool LockOnlyOnce,
+						true,				// bool changeAngles,
+						fAng,
+						ValidEnemyToTarget);			// float AnglesInitiate[3]);
+				TriggerTimerHoming(arrow);
 			}
 		}
 	}
