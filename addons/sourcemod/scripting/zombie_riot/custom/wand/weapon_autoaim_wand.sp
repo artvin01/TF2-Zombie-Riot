@@ -233,46 +233,6 @@ public void Weapon_autoaim_Wand(int client, int weapon, bool crit, int slot)
 //Sarysapub1 code but fixed and altered to make it work for our base bosses
 #define TARGET_Z_OFFSET 40.0
 
-public Action Homing_Shots_Repeat_Timer(Handle timer, int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if(IsValidEntity(entity))
-	{
-		if(!IsValidClient(RMR_RocketOwner[entity]))
-		{
-			RemoveEntity(entity);
-			return Plugin_Stop;
-		}
-
-		if(IsValidEnemy(entity, RMR_CurrentHomingTarget[entity]))
-		{
-			if(Can_I_See_Enemy_Only(RMR_CurrentHomingTarget[entity],entity)) //Insta home!
-			{
-				HomingProjectile_TurnToTarget(RMR_CurrentHomingTarget[entity], entity);
-			}
-			return Plugin_Continue;
-		}
-		int Closest = GetClosestTarget(entity, _, _, true);
-		if(IsValidEnemy(RMR_RocketOwner[entity], Closest))
-		{
-			RMR_CurrentHomingTarget[entity] = Closest;
-			if(IsValidEnemy(entity, RMR_CurrentHomingTarget[entity]))
-			{
-				if(Can_I_See_Enemy_Only(RMR_CurrentHomingTarget[entity],entity)) //Insta home!
-				{
-					HomingProjectile_TurnToTarget(RMR_CurrentHomingTarget[entity], entity);
-				}
-				return Plugin_Continue;
-			}
-		}
-	}
-	else
-	{
-		return Plugin_Stop;
-	}
-	return Plugin_Continue;
-}	
-
 public void Want_HomingWandTouch(int entity, int target)
 {
 	if (target > 0)	

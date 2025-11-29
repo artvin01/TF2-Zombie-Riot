@@ -402,72 +402,25 @@ void Ark_Lauch_projectile(int client, int weapon, bool multi, float speed, float
 			}
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 15/*ark*/, weapon, Particle, Angles);
 				
-			CreateTimer(0.1, Ark_Homing_Repeat_Timer, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-			RMR_HomingPerSecond[projectile] = 150.0;
-			RMR_RocketOwner[projectile] = client;
-			RMR_HasTargeted[projectile] = false;
-			RWI_HomeAngle[projectile] = 180.0;
-			RWI_LockOnAngle[projectile] = 180.0;
-			RMR_RocketVelocity[projectile] = speed;
-			RMR_CurrentHomingTarget[projectile] = -1;	
+
+			float fAng[3];
+			GetEntPropVector(projectile, Prop_Send, "m_angRotation", fAng);
+			Initiate_HomingProjectile(projectile,
+			client,
+				180.0,			// float lockonAngleMax,
+				90.0,				//float homingaSec,
+				true,				// bool LockOnlyOnce,
+				true,				// bool changeAngles,
+				fAng,
+				_);			// float AnglesInitiate[3]);
 		}
 	}
 	else
 	{
 		Format(Particle, sizeof(Particle), "%s", "unusual_robot_radioactive");
 		Wand_Projectile_Spawn(client, speed, time, damage, 15/*ark*/, weapon, Particle);
-		/*
-		CreateTimer(0.1, Ark_Homing_Repeat_Timer, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-		RMR_HomingPerSecond[projectile] = 150.0;
-		RMR_RocketOwner[projectile] = client;
-		RMR_HasTargeted[projectile] = false;
-		RWI_HomeAngle[projectile] = 180.0;
-		RWI_LockOnAngle[projectile] = 180.0;
-		RMR_RocketVelocity[projectile] = speed;
-		RMR_CurrentHomingTarget[projectile] = -1;	
-		*/	
 	}
 }
-public Action Ark_Homing_Repeat_Timer(Handle timer, int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if(IsValidEntity(entity))
-	{
-		if(!IsValidClient(RMR_RocketOwner[entity]))
-		{
-			RemoveEntity(entity);
-			return Plugin_Stop;
-		}
-
-		if(IsValidEnemy(entity, RMR_CurrentHomingTarget[entity]))
-		{
-			if(Can_I_See_Enemy_Only(RMR_CurrentHomingTarget[entity],entity)) //Insta home!
-			{
-				HomingProjectile_TurnToTarget(RMR_CurrentHomingTarget[entity], entity);
-			}
-			return Plugin_Continue;
-		}
-		int Closest = GetClosestTarget(entity, _, _, true);
-		if(IsValidEnemy(RMR_RocketOwner[entity], Closest))
-		{
-			RMR_CurrentHomingTarget[entity] = Closest;
-			if(IsValidEnemy(entity, RMR_CurrentHomingTarget[entity]))
-			{
-				if(Can_I_See_Enemy_Only(RMR_CurrentHomingTarget[entity],entity)) //Insta home!
-				{
-					HomingProjectile_TurnToTarget(RMR_CurrentHomingTarget[entity], entity);
-				}
-				return Plugin_Continue;
-			}
-		}
-	}
-	else
-	{
-		return Plugin_Stop;
-	}
-	return Plugin_Continue;
-}	
-
 public Action Event_Ark_OnHatTouch(int entity, int other)// code responsible for doing damage to the enemy
 {
 	int target = Target_Hit_Wand_Detection(entity, other);
@@ -836,16 +789,17 @@ void Weapon_ark_LapplandRangedAttack(int client, int weapon)
 		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_LAPPLAND, weapon, "manmelter_projectile_trail");
 		
 
-		if(Can_I_See_Enemy_Only(target,projectile)) //Insta home!
-		{
-			HomingProjectile_TurnToTarget(target, projectile);
-		}
-
-		DataPack pack;
-		CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-		pack.WriteCell(EntIndexToEntRef(projectile)); //projectile
-		pack.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
-		//We have found a victim.
+		float fAng[3];
+		GetEntPropVector(projectile, Prop_Send, "m_angRotation", fAng);
+		Initiate_HomingProjectile(projectile,
+		client,
+			180.0,			// float lockonAngleMax,
+			90.0,				//float homingaSec,
+			true,				// bool LockOnlyOnce,
+			true,				// bool changeAngles,
+			fAng,
+			target);			// float AnglesInitiate[3]);
+		TriggerTimerHoming(projectile);
 	}
 	else
 	{
@@ -937,54 +891,6 @@ public void Melee_LapplandArkTouch(int entity, int target)
 		}
 		RemoveEntity(entity);
 	}
-}
-
-public Action PerfectHomingShot(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int Projectile = EntRefToEntIndex(pack.ReadCell());
-	int Target = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidEntity(Projectile) && IsValidEntity(Target))
-	{
-		if(!b_NpcHasDied[Target])
-		{
-			if(Can_I_See_Enemy_Only(Target,Projectile))
-			{
-				HomingProjectile_TurnToTarget(Target, Projectile);
-			}
-			return Plugin_Continue;
-		}
-		else
-		{
-			return Plugin_Stop;
-		}
-	}
-	return Plugin_Stop;
-}
-
-void HomingProjectile_TurnToTarget(int enemy, int Projectile)
-{
-	float flTargetPos[3];
-	WorldSpaceCenter(enemy, flTargetPos);
-	float flRocketPos[3];
-	GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", flRocketPos);
-
-	float flInitialVelocity[3];
-	GetEntPropVector(Projectile, Prop_Data, "m_vInitialVelocity", flInitialVelocity);
-	float flSpeedInit = GetVectorLength(flInitialVelocity);
-	
-	//flTargetPos[2] += 50.0;
-	//flTargetPos[2] += 1 + Pow(GetVectorDistance(flTargetPos, flRocketPos), 2.0) / 10000;
-	
-	float flNewVec[3];
-	SubtractVectors(flTargetPos, flRocketPos, flNewVec);
-	NormalizeVector(flNewVec, flNewVec);
-	
-	float flAng[3];
-	GetVectorAngles(flNewVec, flAng);
-	
-	ScaleVector(flNewVec, flSpeedInit);
-	TeleportEntity(Projectile, NULL_VECTOR, flAng, flNewVec, true);
 }
 
 public void Enable_LappLand(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
@@ -1340,16 +1246,18 @@ void Weapon_ark_QuibaiRangedAttack(int client, int weapon, bool Firedshotalready
 		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_QUIBAI, weapon, "rockettrail_airstrike_line");
 		
 
-		if(Can_I_See_Enemy_Only(target,projectile)) //Insta home!
-		{
-			HomingProjectile_TurnToTarget(target, projectile);
-		}
 
-		DataPack pack;
-		CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-		pack.WriteCell(EntIndexToEntRef(projectile)); //projectile
-		pack.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
-		//We have found a victim.
+		float fAng[3];
+		GetEntPropVector(projectile, Prop_Send, "m_angRotation", fAng);
+		Initiate_HomingProjectile(projectile,
+		client,
+			180.0,			// float lockonAngleMax,
+			90.0,				//float homingaSec,
+			true,				// bool LockOnlyOnce,
+			true,				// bool changeAngles,
+			fAng,
+			target);			// float AnglesInitiate[3]);
+		TriggerTimerHoming(projectile);
 	}
 	else
 	{
