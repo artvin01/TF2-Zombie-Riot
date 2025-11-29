@@ -140,7 +140,7 @@ public void Weapon_Dimension_Wand(int client, int weapon, bool crit)
 		
 		if(IsValidEnemy(client, target))
 		{
-			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 3, weapon, "raygun_projectile_blue_crit");
+			Wand_Projectile_Spawn(client, speed, time, damage, 3, weapon, "raygun_projectile_blue_crit");
 
 			//We have found a victim.
 		}
