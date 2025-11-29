@@ -2,13 +2,6 @@
 #pragma newdecls required
 
 //no idea how those work but they are needed from what i see
-static float RMR_HomingPerSecond[MAXENTITIES];
-static int RMR_CurrentHomingTarget[MAXENTITIES];
-static bool RMR_HasTargeted[MAXENTITIES];
-static int RMR_RocketOwner[MAXENTITIES];
-static float RWI_HomeAngle[MAXENTITIES];
-static float RWI_LockOnAngle[MAXENTITIES];
-static float RMR_RocketVelocity[MAXENTITIES];
 static int weapon_id[MAXPLAYERS+1]={0, ...};
 static int Ark_Hits[MAXPLAYERS+1]={0, ...};
 static int Ark_AlreadyParried[MAXPLAYERS+1]={0, ...};
