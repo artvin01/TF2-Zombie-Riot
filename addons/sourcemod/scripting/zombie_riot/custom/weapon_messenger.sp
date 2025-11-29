@@ -182,6 +182,10 @@ public void Gun_MessengerTouch(int entity, int target)
 			{
 				NPC_Ignite(target, owner, 3.0, weapon);
 			}
+			else if(pap > 2)
+			{
+				ApplyStatusEffect(owner, target, "Near Zero", 1.0);
+			}
 			else if(pap > 1)
 			{
 				ApplyStatusEffect(owner, target, "Cryo", 0.6);
