@@ -61,7 +61,7 @@ void CastleBreaker_DoSwingTrace(int client, float &CustomMeleeRange, float &Cust
 public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 {
 	float attackspeed = Attributes_Get(weapon, 6, 1.0);
-	PrintHintText(client,"Attack!");
+	//PrintHintText(client,"Attack!");
 	if(b_AbilityActivated[client])
 	{
 		b_AbilityDone[client] = false;
@@ -141,7 +141,7 @@ void WeaponCastleBreaker_Extra(int client, int victim, int weapon)
 	{
 		float vecHit[3];
 		WorldSpaceCenter(victim, vecHit);
-		PrintHintText(client,"TrueHit!");
+		//PrintHintText(client,"TrueHit!");
 		SDKHooks_TakeDamage(victim, client, client, damage, DMG_TRUEDAMAGE, -1, _, vecHit);
 	}
 }
