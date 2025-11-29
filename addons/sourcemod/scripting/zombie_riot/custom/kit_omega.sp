@@ -442,9 +442,9 @@ public void KitOmega_NPCTakeDamage_Melee(int attacker, int victim, float &damage
 	energy = OMEGA_PREHITGAIN;
 	
 	if(b_thisNpcIsARaid[victim])//击中的是raidboss(if is raid)
-		energy *= 1.15;
+		energy *= 1.25;
 	if(LastMann)//最后一人状态(last manm buff)
-		energy *= 1.2;
+		energy *= 1.25;
 	int Gun = EntRefToEntIndex(i_KitOmega_GunRef[attacker]);
 	if(IsValidEntity(Gun))
 	{

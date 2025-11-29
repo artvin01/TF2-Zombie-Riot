@@ -849,6 +849,10 @@ public void Weapon_Sigil_Blade_Manaflow(int attacker, int victim, int weapon)
 	
 	if(b_thisNpcIsARaid[victim])
 		dmg *= 1.2;//its hard to keep raid bosses standing inside ION
+	if(dieingstate[attacker] != 0)
+    {
+        dmg *= 0.5;//fk u stinky aperture engi and ur building
+    }
 	
 	//Force_ExplainBuffToClient(Target, "Overmana Overload");
 	float end_point[3];
@@ -1167,6 +1171,7 @@ bool Sigil_LastMann(int client)
 
 
 */
+
 
 
 
