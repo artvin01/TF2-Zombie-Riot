@@ -77,16 +77,17 @@ public void Fists_of_Kahml(int client, int weapon, bool crit, int slot)
 
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_KAHMLFIST, weapon, ProjectileParticle);
 			
-
-			if(Can_I_See_Enemy_Only(target,projectile)) //Insta home!
-			{
-				HomingProjectile_TurnToTarget(target, projectile);
-			}
-
-			DataPack pack;
-			CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-			pack.WriteCell(EntIndexToEntRef(projectile)); //projectile
-			pack.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
+			float fAng[3];
+			GetEntPropVector(projectile, Prop_Send, "m_angRotation", fAng);
+			Initiate_HomingProjectile(projectile,
+				client,
+					180.0,			// float lockonAngleMax,
+					90.0,				//float homingaSec,
+					true,				// bool LockOnlyOnce,
+					true,				// bool changeAngles,
+					fAng,
+					target);			// float AnglesInitiate[3]);
+			TriggerTimerHoming(projectile);
 			//We have found a victim.
 		}
 		else
