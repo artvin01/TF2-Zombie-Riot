@@ -1093,7 +1093,7 @@ public Action Chimera_Removehoming(Handle timer, int ref)
 
 public void Chimera_RefragmentedProjectileSpawner(int entity, int target)
 {
-	int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	//we uhh, missed?
 	if(IsValidEntity(particle))
 	{

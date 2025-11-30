@@ -394,7 +394,7 @@ public void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 			StartBleedingTimer(target, owner, 12.0, 5, -1, DMG_TRUEDAMAGE, 0);
 		}
 
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -402,7 +402,7 @@ public void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		if(IsValidEntity(particle))
 		{

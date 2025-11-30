@@ -302,7 +302,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 			if(rocket_particle[0]) //If it has something, put it in. usually it has one. but if it doesn't base model it remains.
 			{
 				particle = ParticleEffectAt(vecSwingStart, rocket_particle, 0.0); //Inf duartion
-				i_rocket_particle[entity]= EntIndexToEntRef(particle);
+				i_WandParticle[entity]= EntIndexToEntRef(particle);
 				TeleportEntity(particle, NULL_VECTOR, VecAnglesDo, NULL_VECTOR);
 				SetParent(entity, particle);	
 				SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
@@ -1059,7 +1059,7 @@ public void Shadowing_Darkness_ReflectProjectiles(int entity, int target)
 	}
 	if(npc.m_iState >= MAX_BOUNCES_SHADOWING_DARKNESS)
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);

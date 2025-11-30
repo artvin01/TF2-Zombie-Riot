@@ -341,7 +341,7 @@ public Action Impact_Lance_StartTouch(int entity, int other)
 		case 3:
 			EmitSoundToAll(IMPACT_WAND_PARTICLE_LANCE_BOOM3, client, SNDCHAN_STATIC, 90, _, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, pos1);
 	}
-	int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 
 	Impact_Lance_CosmeticRemoveEffects_Projectile(entity);
 	if(IsValidEntity(particle))

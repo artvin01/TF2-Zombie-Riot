@@ -348,7 +348,7 @@ void VictorianPulverizerSelfDefense(VictorianPulverizer npc)
 		SpinSound = false;
 		npc.FaceTowards(vecTarget, 20000.0);
 		int projectile = npc.FireParticleRocket(vecTarget, 18.0, 1000.0, 150.0, "superrare_burning2", true);
-		int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
+		int particle = EntRefToEntIndex(i_WandParticle[projectile]);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 		
@@ -393,7 +393,7 @@ public void VictorianPulverizer_Rocket_Particle_StartTouch(int entity, int targe
 		BurninHell *= 0.5;
 		NPC_Ignite(target, owner,20.0, -1, BurninHell);
 
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -401,7 +401,7 @@ public void VictorianPulverizer_Rocket_Particle_StartTouch(int entity, int targe
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		if(IsValidEntity(particle))
 		{

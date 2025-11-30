@@ -259,7 +259,7 @@ void RandomizerBaseFlamethrowerSelfDefense(RandomizerBaseFlamethrower npc)
 		SpinSound = false;
 		npc.FaceTowards(vecTarget, 20000.0);
 		int projectile = npc.FireParticleRocket(vecTarget, 8.0, 1000.0, 150.0, "m_brazier_flame", true);
-		int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
+		int particle = EntRefToEntIndex(i_WandParticle[projectile]);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 		
@@ -298,7 +298,7 @@ public void RandomizerBaseFlamethrower_Rocket_Particle_StartTouch(int entity, in
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE|DMG_PLASMA, -1);	//acts like a kinetic rocket	
 		NPC_Ignite(target, owner, 5.0, -1, DamageDeal);
 		
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -306,7 +306,7 @@ public void RandomizerBaseFlamethrower_Rocket_Particle_StartTouch(int entity, in
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		if(IsValidEntity(particle))
 		{

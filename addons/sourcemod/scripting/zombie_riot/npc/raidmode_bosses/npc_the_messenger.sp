@@ -1038,7 +1038,7 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 					else
 						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_blue", false);
 			
-					int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
+					int particle = EntRefToEntIndex(i_WandParticle[projectile]);
 					CreateTimer(3.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 					CreateTimer(3.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 					
@@ -1267,7 +1267,7 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 
 			Elemental_AddChaosDamage(target, owner, ChaosDamage, true, true);
 		}
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -1275,7 +1275,7 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		if(IsValidEntity(particle))
 		{

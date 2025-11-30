@@ -682,5 +682,5 @@ static void Fire_Hyper_Arrow(Aetherianus npc, float Npc_Vec[3], int target, floa
 	//int beam_start = EntRefToEntIndex(i_particle_ref_id[npc.index][0]);
 			
 	int beam = ConnectWithBeamClient(npc.m_iWearable6, Proj, color[0], color[1], color[2], f_start, f_end, amp, LASERBEAM);
-	i_rocket_particle[Proj] = EntIndexToEntRef(beam);
+	i_WandParticle[Proj] = EntIndexToEntRef(beam);
 }

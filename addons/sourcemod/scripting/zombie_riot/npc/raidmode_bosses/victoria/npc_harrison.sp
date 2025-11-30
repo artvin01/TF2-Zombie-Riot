@@ -1891,7 +1891,7 @@ static Action Dron_Laser_Particle_StartTouch(int entity, int target)
 	ParticleEffectAt(ProjectileLoc, "mvm_soldier_shockwave", 1.0);
 	ParticleEffectAt(ProjectileLoc, "drg_cow_explosion_sparkles_blue", 1.5);
 	EmitSoundToAll(g_DronShotHitSounds, 0, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _, -1, ProjectileLoc);
-	int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if(IsValidEntity(particle))
 		RemoveEntity(particle);
 	RemoveEntity(entity);

@@ -1157,7 +1157,7 @@ enum struct Ruina_Projectiles
 		if(!IsValidEntity(particle))
 			return -1;
 
-		i_rocket_particle[this.Projectile_Index]= EntIndexToEntRef(particle);
+		i_WandParticle[this.Projectile_Index]= EntIndexToEntRef(particle);
 		TeleportEntity(particle, NULL_VECTOR, this.Angles, NULL_VECTOR);
 		SetParent(this.Projectile_Index, particle);	
 		SetEntityRenderMode(this.Projectile_Index, RENDER_NONE); //Make it entirely invis.
@@ -1244,7 +1244,7 @@ static Action Remove_Projectile_Timer(Handle Timer, int Ref)
 }
 void Ruina_Remove_Projectile(int entity)
 {
-	int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if(IsValidEntity(particle))
 	{
 		RemoveEntity(particle);

@@ -1596,7 +1596,7 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 			if(!HasSpecificBuff(target, "Fluid Movement"))
 				TF2_StunPlayer(target, 2.0, 0.4, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
 
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 			RemoveEntity(particle);
 	}
@@ -1642,7 +1642,7 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 				return Plugin_Handled;
 			}
 		}
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 			RemoveEntity(particle);
 	}
