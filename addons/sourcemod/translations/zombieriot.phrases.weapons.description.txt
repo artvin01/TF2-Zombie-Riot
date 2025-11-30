@@ -5212,11 +5212,11 @@
 	}
 	"Arsenal Desc"
 	{
-		"en"	"One of Mazeat's Troops.\n-Charge energy on melee hits\n-On max charge, melee deals 30％ extra ranged damage.\n-With M2 equip a weapon, needs 100％ energy.\n-When not taking damage for a while, regen 5％ max health every second."
+		"en"	"One of Mazeat's Troops.\n-Charge energy on melee hits\n-On max charge, melee deals 30％ extra ranged damage.\n-With M2 equip a weapon, needs 100％ energy.\n-When not taking damage for a while, regen 2.5％ max health every second."
 	}
 	"Arsenal Pap 1"
 	{
-		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health & melee resistance & Health regen to 10％\n-Ability weapons gain more attackspeed\n-R allows you to switch between weapons now.\n-You gain a shotgun"
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health & melee resistance & Health regen to 5％\n-Ability weapons gain more attackspeed\n-R allows you to switch between weapons now.\n-You gain a shotgun"
 	}
 	"Arsenal Pap 2"
 	{
