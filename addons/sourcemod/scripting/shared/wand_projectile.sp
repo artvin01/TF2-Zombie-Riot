@@ -445,7 +445,6 @@ public void Wand_Base_StartTouch(int entity, int other)
 
 static void OnCreate_Proj(CClotBody body)
 {
-	b_IsCustomProjectile[body.index] = true;
 	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[body.index]);
 	if(IsValidEntity(extra_index))
 		RemoveEntity(extra_index);
@@ -473,7 +472,6 @@ void ApplyLateLogic_ProjectileBase(int Projectile)
 }
 static void OnDestroy_Proj(CClotBody body)
 {
-	b_IsCustomProjectile[body.index] = false;
 	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[body.index]);
 	if(IsValidEntity(extra_index))
 		RemoveEntity(extra_index);
