@@ -471,9 +471,12 @@ public Action lantean_Wand_Touch_World(int entity, int other)
 				case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
 			}
 			b_is_lantean[entity]=false;
-			lantean_Wand_Drone_Count[owner] -= 1;
-			if(lantean_Wand_Drone_Count[owner] <= 0)
-				lantean_Wand_Drone_Count[owner] = 0;
+			if(owner >= 0)
+			{
+				lantean_Wand_Drone_Count[owner] -= 1;
+				if(lantean_Wand_Drone_Count[owner] <= 0)
+					lantean_Wand_Drone_Count[owner] = 0;
+			}
 			RemoveEntity(entity);
 		}
 	}
