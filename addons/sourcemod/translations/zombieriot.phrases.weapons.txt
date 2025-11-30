@@ -454,6 +454,11 @@
 		"it"		"RPG"
 		"ko" 		"RPG"
 	}
+	"Nuke Launcher"
+	{
+		"en"		"Nuke Launcher"
+		"ko" 		"핵 발사기"
+	}
 	"Peacock's Screw Ball Cannon"
 	{
 		"en"		"Peacock's Screw Ball Cannon"
@@ -915,6 +920,21 @@
 		"it"		"Martello"
 		"ko"		"망치"
 	}
+	"Mega Masher"
+	{
+		"en"		"Mega Masher"
+		"ko"		"메가 스매셔"
+	}
+	"Omega Mega Masher"
+	{
+		"en"		"Omega Mega Masher"
+		"ko"		"오메가 메가 매셔"
+	}
+	"Obuch's Hammer"
+	{
+		"en"		"Obuch's Hammer"
+		"ko"		"오부치의 망치"
+	}
 	"Fire Axe"
 	{
 		"en"		"Fire Axe"
@@ -950,6 +970,21 @@
 		"chi"       	"苦无"
 		"it"		"Kunai"
 		"ko"		"쿠나이"
+	}
+	"Backstabbers Favorit"
+	{
+		"en"		"Backstabbers Favorit"
+		"ko"		"백스탭 사랑꾼"
+	}
+	"x10 Spy Main's Personal ''Knife''"
+	{
+		"en"		"x10 Spy Main's Personal ''Knife''"
+		"ko"		"x10배 모드 스파이 메인의 ''칼''"
+	}
+	"Ruina Drone's Knife"
+	{
+		"en"		"Ruina Drone's Knife"
+		"ko"		"루이나 드론의 칼"
 	}
 	"Broken Rapier"
 	{
@@ -4459,40 +4494,96 @@
 		"it"	"Aggiunge la fazione Kazimierz"
 		"ko"	"카시미어 진영을 추가함"
 	}
+	"Chaos Infected Launcher"
+	{
+		"en"		"Chaos Infected Launcher"
+		"ko"		"카오스 침식 발사기"
+	}
+	"Major Steam's Launcher"
+	{
+		"en"		"Major Steam's Launcher"
+		"ko"		"증기 소령의 발사기"
+	}
+	"LockDown Staff"
+	{
+		"en"		"LockDown Staff"
+		"ko"		"자물쇠 스태프"
+	}
+	"Pixel Sword"
+	{
+		"en"		"Pixel Sword"
+		"ko"		"픽셀 나무 검"
+	}
+	"Task Stone Age"
+	{
+		"en"		"Stone Age"
+		"ko"		"석기 시대"
+	}
+	"Task Isn't It Iron Pick"
+	{
+		"en"		"Isn't It Iron Pick"
+		"ko"		"이젠 철 좀 들어라"
+	}
+	"Task Enchanter"
+	{
+		"en"		"Enchanter"
+		"ko"		"마법 부여자"
+	}
+	"Task Enchanted Gold Sword"
+	{
+		"en"		"Enchanted Gold Sword"
+		"ko"		"인첸트된 금 검"
+	}
+	"Task Diamonds!"
+	{
+		"en"		"Diamonds!"
+		"ko"		"다이아몬드다!"
+	}
+	"Task Cover Me in Debris"
+	{
+		"en"		"Cover Me in Debris"
+		"ko"		"잔해로 날 감싸줘"
+	}
 	"Crystal Shard"
 	{
 		"en"	"Crystal Shard"
 		"chi"	"水晶碎片"
 		"ru"	"Осколок Кристалла"
+		"ko"	"크리스탈 샤드"
 	}
 	"Mana Fusions"
 	{
 		"en"	"Mana Fusions"
 		"chi"	"魔力融合"
 		"ru"	"Слияние Маны"
+		"ko"	"마나 퓨전"
 	}
 	"Insanity Sigil"
 	{
 		"en"	"Insanity Sigil"
 		"chi"	"疯狂印记"
 		"ru"	"Сигил Безумия"
+		"ko"	"광기의 상징"
 	}
 	"Sanity Sigil Blade"
 	{
 		"en"	"Sanity Sigil Blade"
 		"chi"	"理智印记剑"
 		"ru"	"Сигильный Клинок Рассудка"
+		"ko"	"정신력의 상징 블레이드"
 	}
 	"The Arsenal"
 	{
 		"en"	      "The Arsenal"
 		"chi"	"武器库"
 		"ru"	"Арсенал"
+		"ko"	"아스날"
 	}
 	"Mechanized Terror"
 	{
 		"en"	      "Mechanized Terror"
 		"chi"	"机械恐怖"
 		"ru"	"Механический Террор"
+		"ko"	"기계화 테러"
 	}
 }

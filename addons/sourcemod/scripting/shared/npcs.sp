@@ -2493,6 +2493,7 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		{
 			Raigeki_OnKill(attacker, victim);
 		}
+		default:Weapon_AddonsCustom_OnKill(attacker);
 	}
 }
 #endif
