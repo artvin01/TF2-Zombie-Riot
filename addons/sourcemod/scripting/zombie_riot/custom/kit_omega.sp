@@ -380,30 +380,32 @@ static void KitOmega_GUN_Selector_Function(int client, int OverrideGunType=-1)
 
 public void KitOmega_AddCharge(int client, float amount)
 {
-	if(amount)
-	{
-		OMEGA_ENERGY[client] += amount;
+	if(!amount)
+		return;
 
-		if(OMEGA_ENERGY[client] < 0.0)
+	OMEGA_ENERGY[client] += amount;
+
+	if(OMEGA_ENERGY[client] < 0.0)
+	{
+		OMEGA_ENERGY[client] = 0.0;
+	}
+	else
+	{
+		if(i_KitOmega_WeaponPap[client] >= 5)
 		{
-			OMEGA_ENERGY[client] = 0.0;
+			if(OMEGA_ENERGY[client] > OMEGA_MAXENERGY_PAP)
+				OMEGA_ENERGY[client] = OMEGA_MAXENERGY_PAP;
+
 		}
 		else
 		{
-			if(i_KitOmega_WeaponPap[client] >= 5)
-			{
-				if(OMEGA_ENERGY[client] > OMEGA_MAXENERGY_PAP)
-					OMEGA_ENERGY[client] = OMEGA_MAXENERGY_PAP;
+			if(OMEGA_ENERGY[client] > OMEGA_MAXENERGY)
+				OMEGA_ENERGY[client] = OMEGA_MAXENERGY;
 
-			}
-			else
-			{
-				if(OMEGA_ENERGY[client] > OMEGA_MAXENERGY)
-					OMEGA_ENERGY[client] = OMEGA_MAXENERGY;
-
-			}
 		}
 	}
+	f_KitOmega_HUDDelay[client] = 0.0;
+	KitOmega_HUD(client);
 
 	//TriggerTimer(WeaponTimer[client], true);
 }
