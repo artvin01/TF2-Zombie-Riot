@@ -22,6 +22,10 @@ public void Weapon_AddonsCustom_Enable(int client, int weapon)
 
 void Weapon_AddonsCustomLastMan(int client)
 {
+	if(client)
+	{
+		/*에러 제거용*/
+	}
 	/*라스맨일때 트리거됨*/
 	/*if(Wkit_Omega_LastMann(client))
 	{
@@ -37,6 +41,10 @@ void Weapon_AddonsCustomLastMan(int client)
 
 bool Weapon_AddonsStartCustomSoundForLastMan(int client, int WhatSoundPlay)
 {
+	if(client)
+	{
+		/*에러 제거용*/
+	}
 	bool CompleteFailure;
 	switch(WhatSoundPlay)
 	{
@@ -54,6 +62,10 @@ bool Weapon_AddonsStartCustomSoundForLastMan(int client, int WhatSoundPlay)
 
 void Weapon_AddonsStopCustomSoundForLastMan(int client, int WhatSoundPlay)
 {
+	if(client)
+	{
+		/*에러 제거용*/
+	}
 	/*라스맨 종료되면 트리거됨*/
 	switch(WhatSoundPlay)
 	{
