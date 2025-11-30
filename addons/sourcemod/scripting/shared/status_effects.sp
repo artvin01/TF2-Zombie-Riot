@@ -560,11 +560,7 @@ float Slowdown_Func(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusE
 {
 	float f_Speed = 0.15;
 	if(b_thisNpcIsARaid[victim])f_Speed = 0.05;
-	if(CheckBuffIndex(victim, Slowdown_I_Index))
-	{
-		f_Speed += 0.1;
-		if(b_thisNpcIsARaid[victim])f_Speed += 0.05;
-	}
+	if(CheckBuffIndex(victim, Slowdown_I_Index)) f_Speed += (b_thisNpcIsARaid[victim] ? 0.05 : 0.1);
 	if(CheckBuffIndex(victim, Slowdown_III_Index))f_Speed = 0.0;
 	return f_Speed;
 }
@@ -573,16 +569,8 @@ float SubjectiveTimeDilation_Func(int victim, StatusEffect Apply_MasterStatusEff
 {
 	float f_Speed = 0.35;
 	if(b_thisNpcIsARaid[victim])f_Speed = 0.1;
-	if(CheckBuffIndex(victim, Slowdown_I_Index))
-	{
-		f_Speed += 0.1;
-		if(b_thisNpcIsARaid[victim])f_Speed += 0.05;
-	}
-	if(CheckBuffIndex(victim, Slowdown_II_Index))
-	{
-		f_Speed += 0.15;
-		if(b_thisNpcIsARaid[victim])f_Speed += 0.05;
-	}
+	if(CheckBuffIndex(victim, Slowdown_I_Index)) f_Speed += (b_thisNpcIsARaid[victim] ? 0.05 : 0.1);
+	if(CheckBuffIndex(victim, Slowdown_II_Index)) f_Speed += (b_thisNpcIsARaid[victim] ? 0.05 : 0.15);
 	return f_Speed;
 }
 

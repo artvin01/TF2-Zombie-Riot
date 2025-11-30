@@ -253,6 +253,9 @@ enum
     WEAPON_KIT_PURGE_RAMPAGER = 161,
     WEAPON_KIT_PURGE_ANNAHILATOR = 162,
     WEAPON_KIT_PURGE_MISC = 163,
+	WEAPON_MAJORSTEAM_LAUNCHER = 1000,
+	WEAPON_LOCKDOWN = 1001,
+	WEAPON_MINECRAFT_SWORD = 1002
 }
 
 enum
@@ -631,6 +634,10 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_walter.sp"
 #include "custom/wand/weapon_wand_nymph.sp"
 #include "custom/weapon_castlebreaker.sp"
+#include "custom/addons/cw_base.sp"
+#include "custom/addons/weapon_majorsteam_launcher.sp"
+#include "custom/addons/weapon_mostima.sp"
+#include "custom/addons/weapon_minecraft_sword.sp"
 #include "custom/kit_soldine.sp"
 #include "custom/weapon_kritzkrieg.sp"
 #include "custom/wand/weapon_bubble_wand.sp"
@@ -707,6 +714,7 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_spawn_vehicle", Command_PropVehicle, ADMFLAG_ROOT, "Spawn Vehicle"); 	//DEBUG
 	RegAdminCmd("sm_loadbgmusic", CommandBGTest, ADMFLAG_RCON, "Load a config containing a music field as passive music");
 	RegAdminCmd("sm_forceset_team", Command_SetTeamCustom, ADMFLAG_ROOT, "Set Team custom to a player"); 	//DEBUG
+	RegAdminCmd("sm_rein", CommandAdminReinforce, ADMFLAG_ROOT, "Deploying Reinforce");
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 
@@ -852,6 +860,7 @@ void ZR_MapStart()
 	Reset_stats_Mlynar_Global();
 //	Reset_stats_Casino_Global();
 	Blemishine_Map_Precache();
+	Weapon_AddonsCustom_OnMapStart();
 	
 	Waves_MapStart();
 	Freeplay_OnMapStart();
@@ -2165,6 +2174,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							CPrintToChatAll("{darkviolet}%N decides to inject themselves with plasma as a last resort...", client);
 							Yakuza_Lastman(11);
 						}
+						Weapon_AddonsCustomLastMan(client);
 						/*
 						if(Sigil_LastMann(client))
 						{
