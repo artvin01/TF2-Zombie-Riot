@@ -11,8 +11,6 @@ static float KeyofOrdered_duration[MAXPLAYERS];
 static float Passive_delay[MAXPLAYERS];
 static float f3_LastGravitonHitLoc[MAXPLAYERS][3];
 
-static int g_Laser;
-
 static const char Energy_Sound[][] = {
 	"weapons/physcannon/energy_sing_flyby1.wav",
 	"weapons/physcannon/energy_sing_flyby2.wav"
@@ -24,7 +22,6 @@ public void LockDown_Wand_MapStart()
 	PrecacheSoundCustom("baka_zr/keyofordered_1.mp3");
 	PrecacheSoundCustom("baka_zr/keyofordered_2.mp3");
 	PrecacheSoundArray(Energy_Sound);
-	g_Laser = PrecacheModel(LASERBEAM);
 
 	Zero(fl_hud_timer);
 	Zero(Key_HitEntities);
@@ -261,24 +258,6 @@ public void LockDown_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		if(WeakerCast)
 		{
 			color[3] = 60;
-		}
-
-		int viewmodelModel;
-		viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
-
-		if(IsValidEntity(viewmodelModel))
-		{
-			float fPos[3], fAng[3];
-			GetAttachment(viewmodelModel, "effect_hand_l", fPos, fAng);
-			TE_SetupBeamPoints(fPos, vec, g_Laser, 0, 0, 0, 0.25, 2.5, 2.5, 1, 4.0, color, 0);
-			TE_SendToAll();
-		}
-		else
-		{
-			float pos[3];
-			GetClientEyePosition(client, pos);
-			TE_SetupBeamPoints(pos, vec, g_Laser, 0, 0, 0, 0.25, 2.5, 2.5, 1, 4.0, color, 0);
-			TE_SendToAll();
 		}
 		
 		Explode_Logic_Custom(damage, client, client, weapon, vec, Radius,_,_,_,i_Current_Pap[client]+3, _, 1.0, UGotSlowDown);
