@@ -3,6 +3,7 @@
 
 #if defined ZR || defined RPG
 Function func_WandOnTouch[MAXENTITIES];
+Function func_WandOnDestroy[MAXENTITIES] = {INVALID_FUNCTION, ...};
 
 void WandStocks_Map_Precache()
 {
@@ -19,6 +20,15 @@ stock void WandProjectile_ApplyFunctionToEntity(int projectile, Function Functio
 stock Function func_WandOnTouchReturn(int entity)
 {
 	return func_WandOnTouch[entity];
+}
+
+stock void WandProjectile_Apply_OnDestroyFunction_ToEntity(int projectile, Function Function)
+{
+	func_WandOnDestroy[projectile] = Function;
+}
+stock Function func_WandOnDestroyReturn(int entity)
+{
+	return func_WandOnDestroy[entity];
 }
 #endif
 
@@ -484,6 +494,14 @@ static void OnDestroy_Proj(CClotBody body)
 #if defined ZR || defined RPG
 	func_WandOnTouch[body.index] = INVALID_FUNCTION;
 #endif
+
+	if(func_WandOnDestroy[body.index] && func_WandOnDestroy[body.index] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func_WandOnDestroy[body.index]);
+		Call_PushCell(body.index);
+		Call_Finish();
+	}
+	func_WandOnDestroy[body.index] = INVALID_FUNCTION;
 	return;
 }
 
