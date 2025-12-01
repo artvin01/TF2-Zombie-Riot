@@ -12,6 +12,8 @@ enum struct TinkerEnum
 	float Luck[TINKER_LIMIT];
 	char Name[64];
 	int Rarity;
+	bool Addition[TINKER_LIMIT];
+	int CustomMode[TINKER_LIMIT];
 }
 
 static const int SupportBuildings[] = { 2, 2, 5, 9, 14, 14, 15 };
@@ -86,7 +88,7 @@ void Blacksmith_ExtraDesc(int client, int index)
 						if(!tinker.Attrib[b])
 							break;
 						
-						Blacksmith_PrintAttribValue(client, tinker.Attrib[b], tinker.Value[b], tinker.Luck[b]);
+						Blacksmith_PrintAttribValue(client, tinker.Attrib[b], tinker.Value[b], tinker.Luck[b],  tinker.Addition[b], tinker.CustomMode[b]);
 					}
 
 					break;
@@ -297,7 +299,8 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 	}
 	
 	Zero(tinker.Attrib);
-
+	Zero(tinker.CustomMode);
+	Zero(tinker.Addition);
 	tinker.Rarity = 0;
 	if(reset)
 	{
@@ -411,6 +414,106 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 						TinkerHeavyMage(tinker.Rarity, tinker);
 					case 2:
 						TinkerTankMage(tinker.Rarity, tinker);
+				}
+			}
+			case WEAPON_MINECRAFT_SWORD:
+			{
+				BlockNormal = true;
+				switch(SmithLevel[owner])
+				{
+					case 0:
+					{
+						tinker.Rarity = 0;
+					}
+					case 1:
+					{
+						if((GetURandomInt() % 4) == 0)
+							tinker.Rarity = 1;
+						else tinker.Rarity = 0;
+					}
+					case 2:
+					{
+						int rand = GetURandomInt();
+						if((rand % 7) == 0)
+						{
+							tinker.Rarity = 2;
+						}
+						else if((rand % 3) == 0)
+						{
+							tinker.Rarity = 1;
+						}
+						else tinker.Rarity = 0;
+					}
+					case 3:
+					{
+						int rand = GetURandomInt();
+						if((rand % 12) == 0)
+						{
+							tinker.Rarity = 3;
+						}
+						else if((rand % 7) == 0)
+						{
+							tinker.Rarity = 2;
+						}
+						else if((rand % 3) == 0)
+						{
+							tinker.Rarity = 1;
+						}
+						else tinker.Rarity = 0;
+					}
+					case 4:
+					{
+						int rand = GetURandomInt();
+						if((rand % 12) == 0)
+						{
+							tinker.Rarity = 4;
+						}
+						if((rand % 7) == 0)
+						{
+							tinker.Rarity = 3;
+						}
+						else if((rand % 5) == 0)
+						{
+							tinker.Rarity = 2;
+						}
+						else if((rand % 2) == 0)
+						{
+							tinker.Rarity = 1;
+						}
+						else tinker.Rarity = 0;
+					}
+					default:
+					{
+						int rand = GetURandomInt();
+						if((rand % 7) == 0)
+						{
+							tinker.Rarity = 4;
+						}
+						else if((rand % 5) == 0)
+						{
+							tinker.Rarity = 3;
+						}
+						else if((rand % 3) == 0)
+						{
+							tinker.Rarity = 2;
+						}
+						else if((rand % 2) == 0)
+						{
+							tinker.Rarity = 1;
+						}
+						else tinker.Rarity = 0;
+					}
+				}
+				switch(GetURandomInt() % 7)
+				{
+					case 0:Tinker_MS_Sharpness(tinker.Rarity, tinker);
+					case 1:Tinker_MS_Smite(tinker.Rarity, tinker);
+					case 2:Tinker_MS_SweepingEdge(tinker.Rarity, tinker);
+					case 3:Tinker_MS_BaneofArthropods(tinker.Rarity, tinker);
+					case 4:Tinker_MS_FireAspect(tinker.Rarity, tinker);
+					case 5:Tinker_MS_QuickCharge(tinker.Rarity, tinker);
+					case 6:Tinker_MS_CurseofGlassy(tinker.Rarity, tinker);
+					default:Tinker_MS_Sharpness(tinker.Rarity, tinker);
 				}
 			}
 		}
@@ -668,7 +771,7 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 			if(!tinker.Attrib[i])
 				break;
 			
-			Blacksmith_PrintAttribValue(client, tinker.Attrib[i], tinker.Value[i], tinker.Luck[i]);
+			Blacksmith_PrintAttribValue(client, tinker.Attrib[i], tinker.Value[i], tinker.Luck[i],  tinker.Addition[i], tinker.CustomMode[i]);
 		}
 
 		if(found == -1)
@@ -745,7 +848,7 @@ static bool AttribIsInverse(int attrib)
 	return false;
 }
 
-void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck, bool addition = false)
+void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck, bool addition = false, int CustomMode = 0)
 {
 	if(attrib == 264)
 	{
@@ -773,6 +876,8 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 	{
 		inverse_color = true;
 	}
+	if(attrib == 41 && CustomMode==1)
+		inverse=true;
 
 	if(((value < (addition ? 0.0 : 1.0)) ^ inverse))
 	{
@@ -806,7 +911,12 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 			Format(buffer, sizeof(buffer), "%s 기본 피해량", buffer);
 		
 		case 3, 4:
-			Format(buffer, sizeof(buffer), "%s 장탄수", buffer);
+		{
+			if(CustomMode==1)
+				Format(buffer, sizeof(buffer), "%s 휩쓸기 최대 적중수", buffer);
+			else
+				Format(buffer, sizeof(buffer), "%s 장탄수", buffer);
+		}
 		
 		case 5, 6:
 			Format(buffer, sizeof(buffer), "%s 공격 속도", buffer);
@@ -822,6 +932,12 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 		
 		case 26:
 			Format(buffer, sizeof(buffer), "%s 최대 체력", buffer);
+			
+		case 41:
+		{
+			if(CustomMode==1)
+				Format(buffer, sizeof(buffer), "%s 휩쓸기 충전속도", buffer);
+		}
 		
 		case 45:
 			Format(buffer, sizeof(buffer), "%s 발사되는 탄환 수", buffer);
@@ -839,7 +955,12 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 			Format(buffer, sizeof(buffer), "%s 재장전 속도", buffer);
 		
 		case 99, 100:
-			Format(buffer, sizeof(buffer), "%s 폭발 반경", buffer);
+		{
+			if(CustomMode==1)
+				Format(buffer, sizeof(buffer), "%s 휩쓸기 사거리", buffer);
+			else
+				Format(buffer, sizeof(buffer), "% 폭발 반경", buffer);
+		}
 		
 		case 101, 102:
 			Format(buffer, sizeof(buffer), "%s 투사체 날아가는 거리", buffer);
@@ -873,12 +994,35 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 		
 		case 343:
 			Format(buffer, sizeof(buffer), "%s 센트리 공격 속도", buffer);
+			
+		case 397:
+		{
+			if(CustomMode==1)
+				Format(buffer, sizeof(buffer), "%s초 동안 적이 불에 탐", buffer);
+		}
 		
 		case 410:
-			Format(buffer, sizeof(buffer), "%s 기본 피해량", buffer);
+		{
+			if(CustomMode==1)
+				Format(buffer, sizeof(buffer), "%s 점프 치명타 피해량", buffer);
+			else
+				Format(buffer, sizeof(buffer), "%s 기본 피해량", buffer);
+		}
+		
+		case 411:
+		{
+			if(CustomMode==1)
+				Format(buffer, sizeof(buffer), "%s초 동안 적이 침묵 디버프가 적용됨.", buffer);
+		}
 		
 		case 412:
 			Format(buffer, sizeof(buffer), "%s 모든 피해 저항력", buffer);
+			
+		case 425:
+		{
+			if(CustomMode==1)
+				Format(buffer, sizeof(buffer), "%s 휩쓸기 피해량", buffer);
+		}
 
 		case 733:
 			Format(buffer, sizeof(buffer), "%s 마나 소모량", buffer);
@@ -1717,4 +1861,151 @@ public int Anvil_MenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 	}
 	return 0;
+}
+
+static void Tinker_MS_Sharpness(int rarity, TinkerEnum tinker)
+{
+	strcopy(tinker.Name, sizeof(tinker.Name), "날카로움");
+	tinker.Attrib[0] = 2;
+	float DamageLuck = (0.1 * (tinker.Luck[0]));
+	
+	switch(rarity)
+	{
+		case 0:tinker.Value[0] = 1.1 + DamageLuck;
+		case 1:tinker.Value[0] = 1.15 + DamageLuck;
+		case 2:tinker.Value[0] = 1.2 + DamageLuck;
+		case 3:tinker.Value[0] = 1.25 + DamageLuck;
+		case 4:tinker.Value[0] = 1.32 + DamageLuck;
+	}
+}
+
+static void Tinker_MS_Smite(int rarity, TinkerEnum tinker)
+{
+	strcopy(tinker.Name, sizeof(tinker.Name), "강타");
+	tinker.Attrib[0] = 2;
+	tinker.Attrib[1] = 410;
+	tinker.Attrib[2] = 41;
+	tinker.CustomMode[1]=1;
+	tinker.CustomMode[2]=1;
+	float DamageLuck = (0.01 * (tinker.Luck[0]));
+	float CritLuck = (0.025 * (tinker.Luck[1]));
+	float ChargeRate = (0.1 * (tinker.Luck[2]));
+	
+	switch(rarity)
+	{
+		case 0:{tinker.Value[0] = 1.1 + DamageLuck;tinker.Value[1] = 1.2 + CritLuck;tinker.Value[2] = 2.0 + ChargeRate;}
+		case 1:{tinker.Value[0] = 1.12 + DamageLuck;tinker.Value[1] = 1.26 + CritLuck;tinker.Value[2] = 1.75 + ChargeRate;}
+		case 2:{tinker.Value[0] = 1.15 + DamageLuck;tinker.Value[1] = 1.31 + CritLuck;tinker.Value[2] = 1.5 + ChargeRate;}
+		case 3:{tinker.Value[0] = 1.2 + DamageLuck;tinker.Value[1] = 1.35 + CritLuck;tinker.Value[2] = 1.25 + ChargeRate;}
+		case 4:{tinker.Value[0] = 1.35 + DamageLuck;tinker.Value[1] = 1.43 + CritLuck;tinker.Value[2] = 1.1 + ChargeRate;}
+	}
+}
+
+static void Tinker_MS_SweepingEdge(int rarity, TinkerEnum tinker)
+{
+	strcopy(tinker.Name, sizeof(tinker.Name), "휩쓸기");
+	tinker.Attrib[0] = 99;
+	tinker.Attrib[1] = 4;
+	tinker.Attrib[2] = 425;
+	tinker.CustomMode[0]=1;
+	tinker.CustomMode[1]=1;
+	tinker.CustomMode[2]=1;
+	tinker.Addition[1]=true;
+	float RangeLuck = (0.1 * (tinker.Luck[0]));
+	float MaxTargetLuck = (0.5 * (tinker.Luck[1]));
+	float DamageLuck = (0.1 * (tinker.Luck[2]));
+
+	switch(rarity)
+	{
+		case 0:{tinker.Value[0] = 1.25 + RangeLuck;tinker.Value[1] = 1.0 + MaxTargetLuck;tinker.Value[2] = 1.05 + DamageLuck;}
+		case 1:{tinker.Value[0] = 1.5 + RangeLuck;tinker.Value[1] = 2.0 + MaxTargetLuck;tinker.Value[2] = 1.1 + DamageLuck;}
+		case 2:{tinker.Value[0] = 1.75 + RangeLuck;tinker.Value[1] = 3.0 + MaxTargetLuck;tinker.Value[2] = 1.2 + DamageLuck;}
+		case 3:{tinker.Value[0] = 2.0 + RangeLuck;tinker.Value[1] = 4.0 + MaxTargetLuck;tinker.Value[2] = 1.25 + DamageLuck;}
+		case 4:{tinker.Value[0] = 2.5 + RangeLuck;tinker.Value[1] = 4.5 + MaxTargetLuck;tinker.Value[2] = 1.3 + DamageLuck;}
+	}
+}
+
+static void Tinker_MS_QuickCharge(int rarity, TinkerEnum tinker)
+{
+	strcopy(tinker.Name, sizeof(tinker.Name), "빠른 충전");
+	tinker.Attrib[0] = 41;
+	tinker.Attrib[1] = 6;
+	tinker.Attrib[2] = 425;
+	tinker.CustomMode[0]=1;
+	tinker.CustomMode[2]=1;
+	float ChargeRate = (0.01 * (1.0 + (-1.0*(tinker.Luck[0]))));
+	float AttackSpeedLuck = (0.1 * (tinker.Luck[1]));
+	float DamageLuck = (0.1 * (tinker.Luck[2]));
+
+	switch(rarity)
+	{
+		case 0:{tinker.Value[0] = 0.9 + ChargeRate;tinker.Value[1] = 0.9 - AttackSpeedLuck;tinker.Value[2] = 0.7 + DamageLuck;}
+		case 1:{tinker.Value[0] = 0.87 + ChargeRate;tinker.Value[1] = 0.87 - AttackSpeedLuck;tinker.Value[2] = 0.72 + DamageLuck;}
+		case 2:{tinker.Value[0] = 0.8 + ChargeRate;tinker.Value[1] = 0.85 - AttackSpeedLuck;tinker.Value[2] = 0.75 + DamageLuck;}
+		case 3:{tinker.Value[0] = 0.65 + ChargeRate;tinker.Value[1] = 0.8 - AttackSpeedLuck;tinker.Value[2] = 0.77 + DamageLuck;}
+		case 4:{tinker.Value[0] = 0.5 + ChargeRate;tinker.Value[1] = 0.75 - AttackSpeedLuck;tinker.Value[2] = 0.8 + DamageLuck;}
+	}
+}
+
+static void Tinker_MS_BaneofArthropods(int rarity, TinkerEnum tinker)
+{
+	strcopy(tinker.Name, sizeof(tinker.Name), "살충");
+	tinker.Attrib[0] = 2;
+	tinker.Attrib[1] = 411;
+	tinker.Addition[1]=true;
+	tinker.CustomMode[1]=1;
+	float DamageLuck = (0.1 * (tinker.Luck[0]));
+	float SilencedLuck = (0.5 * (tinker.Luck[1]));
+
+	switch(rarity)
+	{
+		case 0:{tinker.Value[0] = 0.65 + DamageLuck;tinker.Value[1] = 1.0 + SilencedLuck;}
+		case 1:{tinker.Value[0] = 0.7 + DamageLuck;tinker.Value[1] = 1.5 + SilencedLuck;}
+		case 2:{tinker.Value[0] = 0.72 + DamageLuck;tinker.Value[1] = 2.0 + SilencedLuck;}
+		case 3:{tinker.Value[0] = 0.75 + DamageLuck;tinker.Value[1] = 3.0 + SilencedLuck;}
+		case 4:{tinker.Value[0] = 0.79 + DamageLuck;tinker.Value[1] = 4.0 + SilencedLuck;}
+	}
+}
+
+static void Tinker_MS_FireAspect(int rarity, TinkerEnum tinker)
+{
+	strcopy(tinker.Name, sizeof(tinker.Name), "발화");
+	tinker.Attrib[0] = 2;
+	tinker.Attrib[1] = 397;
+	tinker.Addition[1]=true;
+	tinker.CustomMode[1]=1;
+	float DamageLuck = (0.1 * (tinker.Luck[0]));
+	float FireLuck = (0.5 * (tinker.Luck[1]));
+
+	switch(rarity)
+	{
+		case 0:{tinker.Value[0] = 0.62 + DamageLuck;tinker.Value[1] = 1.0 + FireLuck;}
+		case 1:{tinker.Value[0] = 0.66 + DamageLuck;tinker.Value[1] = 2.0 + FireLuck;}
+		case 2:{tinker.Value[0] = 0.71 + DamageLuck;tinker.Value[1] = 3.0 + FireLuck;}
+		case 3:{tinker.Value[0] = 0.73 + DamageLuck;tinker.Value[1] = 5.0 + FireLuck;}
+		case 4:{tinker.Value[0] = 0.76 + DamageLuck;tinker.Value[1] = 8.0 + FireLuck;}
+	}
+}
+
+static void Tinker_MS_CurseofGlassy(int rarity, TinkerEnum tinker)
+{
+	strcopy(tinker.Name, sizeof(tinker.Name), "유리 저주");
+	tinker.Attrib[0] = 2;
+	tinker.Attrib[1] = 425;
+	tinker.Attrib[2] = 205;
+	tinker.Attrib[3] = 206;
+	tinker.CustomMode[1]=1;
+	float DamageLuck = (0.1 * (tinker.Luck[0]));
+	float SweepingLuck = (0.1 * (tinker.Luck[1]));
+	float RangedDmgVulLuck = (0.05 * (1.0 + (-1.0*(tinker.Luck[2]))));
+	float MeleeDmgVulLuck = (0.05 * (1.0 + (-1.0*(tinker.Luck[3]))));
+
+	switch(rarity)
+	{
+		case 0:{tinker.Value[0] = 1.1 + DamageLuck;tinker.Value[1] = 1.25 + SweepingLuck;tinker.Value[2] = 1.05 + RangedDmgVulLuck;tinker.Value[3] = 1.05 + MeleeDmgVulLuck;}
+		case 1:{tinker.Value[0] = 1.3 + DamageLuck;tinker.Value[1] = 1.3 + SweepingLuck;tinker.Value[2] = 1.075 + RangedDmgVulLuck;tinker.Value[3] = 1.075 + MeleeDmgVulLuck;}
+		case 2:{tinker.Value[0] = 1.4 + DamageLuck;tinker.Value[1] = 1.35 + SweepingLuck;tinker.Value[2] = 1.1 + RangedDmgVulLuck;tinker.Value[3] = 1.1 + MeleeDmgVulLuck;}
+		case 3:{tinker.Value[0] = 1.5 + DamageLuck;tinker.Value[1] = 1.4 + SweepingLuck;tinker.Value[2] = 1.25 + RangedDmgVulLuck;tinker.Value[3] = 1.25 + MeleeDmgVulLuck;}
+		case 4:{tinker.Value[0] = 1.6 + DamageLuck;tinker.Value[1] = 1.45 + SweepingLuck;tinker.Value[2] = 1.35 + RangedDmgVulLuck;tinker.Value[3] = 1.35 + MeleeDmgVulLuck;}
+	}
 }

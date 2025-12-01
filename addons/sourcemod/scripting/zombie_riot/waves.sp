@@ -3044,6 +3044,7 @@ void WaveEndLogicExtra()
 
 void ResetAbilitiesWaveEnd()
 {
+	Weapon_AddonsCustom_WaveEnd();
 	M3_AbilitiesWaveEnd();
 	Specter_AbilitiesWaveEnd();	
 	Rapier_CashWaveEnd();

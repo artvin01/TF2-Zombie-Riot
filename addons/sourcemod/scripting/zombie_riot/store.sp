@@ -6239,6 +6239,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Management_Banner_1(client, entity);		//Buffbanner PAP
 		Enable_Management_Banner_2(client, entity); 	//Battilons
 		Enable_Management_Banner_3(client, entity); 	//Ancient Banner
+		Weapon_AddonsCustom_Enable(client, entity);
 		
 		Enable_StarShooter(client, entity);
 		Enable_Passanger(client, entity);

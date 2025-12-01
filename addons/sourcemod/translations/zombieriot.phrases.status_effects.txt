@@ -1,5 +1,55 @@
 "Phrases"
 {
+	"Major Steam's Launcher Resistance"
+	{
+		"en"	"Major Steam's Resistance"
+		"ko"	"증기 소령의 저항"
+	}
+	"Major Steam's Launcher Resistance Desc"
+	{
+		"en"	"Reduces all damage received proportional to the shield amount."
+		"ko"	"실드량 비례 받는 모든 피해를 경감합니다."
+	}
+	"Cybergrind EX-Hard Enemy Buff"
+	{
+		"en"	"Cybergrind EX Hard Enemy Buff"
+		"ko"	"Cybergrind EX Hard 적 버프"
+	}
+	"Cybergrind EX-Hard Enemy Buff Desc"
+	{
+		"en"	"Enemies gain additional effects..."
+		"ko"	"적이 추가적인 효과를 얻습니다..."
+	}
+	"Subjective Time Dilation"
+	{
+		"en"	"Subjective Time Dilation"
+		"ko"	"시간인지둔화"
+	}
+	"Subjective Time Dilation Desc"
+	{
+		"en"	"Movement speed reduced by 10％\nHowever, movement speed reduction only applies to raid bosses by 5％."
+		"ko"	"이동 속도 10％ 감소\n단 이속감소는 레이드 보스 대상에겐 5％만 적용됨."
+	}
+	"Slowdown"
+	{
+		"en"	"Slowdown"
+		"ko"	"둔화"
+	}
+	"Slowdown Desc"
+	{
+		"en"	"Movement speed reduced by 10％\nHowever, movement speed reduction only applies to raid bosses by 5％."
+		"ko"	"이동 속도 10％ 감소\n단 이속감소는 레이드 보스 대상에겐 5％만 적용됨."
+	}
+	"Power Slowdown"
+	{
+		"en"	"Power Slowdown"
+		"ko"	"강한 둔화"
+	}
+	"Power Slowdown Desc"
+	{
+		"en"	"Movement speed reduced by 35％\nHowever, movement speed reduction only applies to raid bosses by 10％."
+		"ko"	"이동 속도 35％ 감소\n단 이속감소는 레이드 보스 대상에겐 10％만 적용됨."
+	}
 	"Is Elemental"
 	{
 		"en"	"This is an Elemental status effect."
