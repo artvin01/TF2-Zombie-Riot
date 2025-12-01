@@ -3,9 +3,6 @@
 
 static int i_Current_Pap[MAXPLAYERS+1];
 static float fl_thorwn_lance[MAXPLAYERS+1];
-static float f_projectile_dmg[MAXENTITIES];
-static int i_Impact_Lance_index[MAXENTITIES+1];
-static int i_Impact_Lance_wep[MAXENTITIES+1];
 static int i_current_pap_projectile[MAXENTITIES];
 
 
@@ -297,118 +294,25 @@ public void Impact_Lance_Throw_Lance(int client, int weapon, bool crit, int slot
 
 static void Throw_Lance(int client, float speed, float damage, int weapon)
 {
-	float fAng[3], fPos[3];
-	GetClientEyeAngles(client, fAng);
-	GetClientEyePosition(client, fPos);
+	int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, 0, weapon, "raygun_projectile_blue");
 
-	float tmp[3];
-	float actualBeamOffset[3];
-	float BEAM_BeamOffset[3];
-	BEAM_BeamOffset[0] = 0.0;
-	BEAM_BeamOffset[1] = -8.0;
-	BEAM_BeamOffset[2] = -10.0;
+	if(!IsValidEntity(projectile))
+		return;
 
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(tmp, fAng, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	fPos[0] += actualBeamOffset[0];
-	fPos[1] += actualBeamOffset[1];
-	fPos[2] += actualBeamOffset[2];
+	WandProjectile_ApplyFunctionToEntity(projectile, Impact_Lance_StartTouch);
 
+	i_current_pap_projectile[projectile] = i_Current_Pap[client];
 
-	float fVel[3], fBuf[3];
-	GetAngleVectors(fAng, fBuf, NULL_VECTOR, NULL_VECTOR);
-	fVel[0] = fBuf[0]*speed;
-	fVel[1] = fBuf[1]*speed;
-	fVel[2] = fBuf[2]*speed;
+	//we need to use our own deletion timer due to having custom particles / entities parrented to it.
+	CreateTimer(10.0, Timer_RemoveEntity_Impact_Lance_Projectile, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 
-	int entity = CreateEntityByName("zr_projectile_base");
-	if(IsValidEntity(entity))
-	{
-		
-		i_current_pap_projectile[entity] = i_Current_Pap[client];
-		f_projectile_dmg[entity] = damage;
-		
-		i_Impact_Lance_wep[entity]= EntIndexToEntRef(weapon);
-		i_Impact_Lance_index[entity]= EntIndexToEntRef(client);
-		
-		b_EntityIsArrow[entity] = true;
-		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
-		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-		SetTeam(entity, GetTeam(client));
-		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
-		DispatchSpawn(entity);
-		int particle = 0;
-
-		particle = ParticleEffectAt(fPos, "raygun_projectile_blue", 0.0); //Inf duartion
-		i_rocket_particle[entity]= EntIndexToEntRef(particle);
-		TeleportEntity(particle, NULL_VECTOR, fAng, NULL_VECTOR);
-		SetParent(entity, particle);	
-		SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
-		SetEntityRenderColor(entity, 255, 255, 255, 0);
-
-		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
-		
-		for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
-		{
-			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_rocket_particle, _, i);
-		}
-		SetEntityModel(entity, PARTICLE_ROCKET_MODEL);
-	
-		//Make it entirely invis. Shouldnt even render these 8 polygons.
-		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
-
-		DataPack pack;
-		CreateDataTimer(10.0, Timer_RemoveEntity_Impact_Lance_Projectile, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteCell(EntIndexToEntRef(entity));
-		pack.WriteCell(EntIndexToEntRef(particle));
-
-		if(h_NpcSolidHookType[entity] != 0)
-			DHookRemoveHookID(h_NpcSolidHookType[entity]);
-		h_NpcSolidHookType[entity] = 0;
-
-		h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Impact_Lance_RocketExplodePre); 
-		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-		SDKHook(entity, SDKHook_StartTouch, Impact_Lance_StartTouch);
-		Impact_Lance_Effects_Projectile(client, entity);
-		/*
-		if(!Items_HasNamedItem(client, "Alaxios's Godly assistance"))
-		{
-
-			DataPack pack2;
-			CreateDataTimer(0.0, Impact_Lance_Timer_Update, pack2, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-			pack2.WriteCell(EntIndexToEntRef(client));
-			pack2.WriteCell(EntIndexToEntRef(entity));
-		}
-		*/
-	}
-	return;
-}
-
-public Action Impact_Lance_Timer_Update(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int client = EntRefToEntIndex(pack.ReadCell());
-	int Entity = EntRefToEntIndex(pack.ReadCell());
-	if (IsValidEntity(Entity) && IsValidClient(client))
-	{
-		fl_thorwn_lance[client] = GetGameTime()+2.0;
-		return Plugin_Continue;
-	}
-	return Plugin_Stop;
-}
-
-public MRESReturn Impact_Lance_RocketExplodePre(int entity)
-{
-	return MRES_Supercede;	//Do. Not.
+	Impact_Lance_Effects_Projectile(client, projectile);
 }
 
 public Action Impact_Lance_StartTouch(int entity, int other)
 {
-	int client = EntRefToEntIndex(i_Impact_Lance_index[entity]);
-	int weapon = EntRefToEntIndex(i_Impact_Lance_wep[entity]);
+	int client = EntRefToEntIndex(i_WandOwner[entity]);
+	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
 	float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
@@ -419,7 +323,7 @@ public Action Impact_Lance_StartTouch(int entity, int other)
 
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
-	Explode_Logic_Custom(f_projectile_dmg[entity], client, client, weapon, pos1, 250.0);
+	Explode_Logic_Custom(f_WandDamage[entity], client, client, weapon, pos1, 250.0);
 	FinishLagCompensation_Base_boss();
 
 	pos1[2]-=30.0;
@@ -437,7 +341,7 @@ public Action Impact_Lance_StartTouch(int entity, int other)
 		case 3:
 			EmitSoundToAll(IMPACT_WAND_PARTICLE_LANCE_BOOM3, client, SNDCHAN_STATIC, 90, _, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, pos1);
 	}
-	int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 
 	Impact_Lance_CosmeticRemoveEffects_Projectile(entity);
 	if(IsValidEntity(particle))
@@ -448,19 +352,13 @@ public Action Impact_Lance_StartTouch(int entity, int other)
 
 	return Plugin_Handled;
 }
-public Action Timer_RemoveEntity_Impact_Lance_Projectile(Handle timer, DataPack pack)
+static Action Timer_RemoveEntity_Impact_Lance_Projectile(Handle timer, int ref)
 {
-	pack.Reset();
-	int Projectile = EntRefToEntIndex(pack.ReadCell());
-	int Particle = EntRefToEntIndex(pack.ReadCell());
+	int Projectile = EntRefToEntIndex(ref);
 	if(IsValidEntity(Projectile))
 	{
 		RemoveEntity(Projectile);
 		Impact_Lance_CosmeticRemoveEffects_Projectile(Projectile);
-	}
-	if(IsValidEntity(Particle))
-	{
-		RemoveEntity(Particle);
 	}
 	return Plugin_Stop; 
 }

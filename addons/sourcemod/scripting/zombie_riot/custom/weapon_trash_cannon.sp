@@ -597,32 +597,32 @@ return true;
 
 public void Trash_Arrows(int client, int weapon, int tier)
 {
-float ang[3], pos[3];
-GetClientEyePosition(client, pos);
+	float ang[3], pos[3];
+	GetClientEyePosition(client, pos);
 
-float damage = f_ArrowsDMG[tier] * Attributes_Get(weapon, 2, 1.0);
-float vel = f_ArrowsVelocity[tier] * Attributes_Get(weapon, 103, 1.0) * Attributes_Get(weapon, 104, 1.0) * Attributes_Get(weapon, 475, 1.0);
+	float damage = f_ArrowsDMG[tier] * Attributes_Get(weapon, 2, 1.0);
+	float vel = f_ArrowsVelocity[tier] * Attributes_Get(weapon, 103, 1.0) * Attributes_Get(weapon, 104, 1.0) * Attributes_Get(weapon, 475, 1.0);
 
-for (int i = 0; i < GetRandomInt(i_ArrowsMinArrows[tier], i_ArrowsMaxArrows[tier]); i++)
-{
-	GetClientEyeAngles(client, ang);
-	ang[0] += GetRandomFloat(-f_ArrowsSpread[tier], f_ArrowsSpread[tier]);
-	ang[1] += GetRandomFloat(-f_ArrowsSpread[tier], f_ArrowsSpread[tier]);
-	ang[2] += GetRandomFloat(-f_ArrowsSpread[tier], f_ArrowsSpread[tier]);
-	
-	int arrow = SDKCall_CTFCreateArrow(pos, ang, vel, 0.1, 8, client, client);
-	if (IsValidEntity(arrow))
+	for (int i = 0; i < GetRandomInt(i_ArrowsMinArrows[tier], i_ArrowsMaxArrows[tier]); i++)
 	{
+		GetClientEyeAngles(client, ang);
+		ang[0] += GetRandomFloat(-f_ArrowsSpread[tier], f_ArrowsSpread[tier]);
+		ang[1] += GetRandomFloat(-f_ArrowsSpread[tier], f_ArrowsSpread[tier]);
+		ang[2] += GetRandomFloat(-f_ArrowsSpread[tier], f_ArrowsSpread[tier]);
 		
-		SetEntityCollisionGroup(arrow, 27);
-		SetEntDataFloat(arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, damage, true);	// Damage
-		SetEntPropEnt(arrow, Prop_Send, "m_hOriginalLauncher", weapon);
-		SetEntPropEnt(arrow, Prop_Send, "m_hLauncher", weapon);
-		SetEntProp(arrow, Prop_Send, "m_bCritical", false);
+		int arrow = SDKCall_CTFCreateArrow(pos, ang, vel, 0.1, 8, client, client);
+		if (IsValidEntity(arrow))
+		{
+			
+			SetEntityCollisionGroup(arrow, 27);
+			SetEntDataFloat(arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, damage, true);	// Damage
+			SetEntPropEnt(arrow, Prop_Send, "m_hOriginalLauncher", weapon);
+			SetEntPropEnt(arrow, Prop_Send, "m_hLauncher", weapon);
+			SetEntProp(arrow, Prop_Send, "m_bCritical", false);
+		}
 	}
-}
 
-EmitSoundToAll(SOUND_ARROWS_FIRE, client, SNDCHAN_STATIC, 110, _, 1.0);
+	EmitSoundToAll(SOUND_ARROWS_FIRE, client, SNDCHAN_STATIC, 110, _, 1.0);
 }
 
 public bool Trash_RollPyre(int client, int tier)
@@ -638,36 +638,36 @@ return true;
 
 public void Trash_Pyre(int client, int weapon, int tier)
 {
-float damage = f_PyreDMG[tier] * Attributes_Get(weapon, 2, 1.0);
-float vel = f_PyreVel[tier] * Attributes_Get(weapon, 103, 1.0) * Attributes_Get(weapon, 104, 1.0) * Attributes_Get(weapon, 475, 1.0);
+	float damage = f_PyreDMG[tier] * Attributes_Get(weapon, 2, 1.0);
+	float vel = f_PyreVel[tier] * Attributes_Get(weapon, 103, 1.0) * Attributes_Get(weapon, 104, 1.0) * Attributes_Get(weapon, 475, 1.0);
 
-int entity = CreateEntityByName("tf_projectile_spellfireball");
-if(IsValidEntity(entity))
-{
-	float ang[3], pos[3], velVec[3], buffer[3];
-	GetClientEyePosition(client, pos);
-	GetClientEyeAngles(client, ang);
+	int entity = CreateEntityByName("tf_projectile_spellfireball");
+	if(IsValidEntity(entity))
+	{
+		float ang[3], pos[3], velVec[3], buffer[3];
+		GetClientEyePosition(client, pos);
+		GetClientEyeAngles(client, ang);
 
-	GetAngleVectors(ang, buffer, NULL_VECTOR, NULL_VECTOR);
-	velVec[0] = buffer[0] * vel;
-	velVec[1] = buffer[1] * vel;
-	velVec[2] = buffer[2] * vel;
+		GetAngleVectors(ang, buffer, NULL_VECTOR, NULL_VECTOR);
+		velVec[0] = buffer[0] * vel;
+		velVec[1] = buffer[1] * vel;
+		velVec[2] = buffer[2] * vel;
 
-	SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
-	SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-	SetTeam(entity, GetTeam(client));
-	
-	DispatchSpawn(entity);
-	
-	SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
-	SetEntityGravity(entity, f_PyreGravity[tier]);
-	TeleportEntity(entity, pos, ang, velVec);
-	
-	f_CustomGrenadeDamage[entity] = damage;
-	SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
-}
-	
-EmitSoundToAll(SOUND_PYRE_FIRE, client, SNDCHAN_STATIC, 90, _, 1.0);
+		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
+		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
+		SetTeam(entity, GetTeam(client));
+		
+		DispatchSpawn(entity);
+		
+		SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
+		SetEntityGravity(entity, f_PyreGravity[tier]);
+		TeleportEntity(entity, pos, ang, velVec);
+		
+		f_CustomGrenadeDamage[entity] = damage;
+		SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
+	}
+		
+	EmitSoundToAll(SOUND_PYRE_FIRE, client, SNDCHAN_STATIC, 90, _, 1.0);
 }
 
 public bool Trash_RollSkeleton(int client, int tier)
@@ -1063,17 +1063,17 @@ return MRES_Supercede; //DONT.
 
 public Action Missiles_BeginHoming(Handle begin, int ref)
 {
-int ent = EntRefToEntIndex(ref);
-if (IsValidEntity(ent))
-{
-	int owner = GetEntPropEnt(ent, Prop_Send, "m_hOwnerEntity");
-	float ang[3];
-	GetEntPropVector(ent, Prop_Data, "m_angRotation", ang);
-	Initiate_HomingProjectile(ent, owner, 360.0, 120.0, false, true, ang);
-	EmitSoundToAll(SOUND_MISSILES_BEGIN_HOMING, ent, SNDCHAN_STATIC, 80, _, 0.8);
-}
+	int ent = EntRefToEntIndex(ref);
+	if (IsValidEntity(ent))
+	{
+		int owner = GetEntPropEnt(ent, Prop_Send, "m_hOwnerEntity");
+		float ang[3];
+		GetEntPropVector(ent, Prop_Data, "m_angRotation", ang);
+		Initiate_HomingProjectile(ent, owner, 360.0, 120.0, false, true, ang);
+		EmitSoundToAll(SOUND_MISSILES_BEGIN_HOMING, ent, SNDCHAN_STATIC, 80, _, 0.8);
+	}
 
-return Plugin_Stop;
+	return Plugin_Stop;
 }
 
 public bool Trash_Mondo(int client, int weapon, int tier)
@@ -1162,90 +1162,89 @@ return Plugin_Continue;
 
 int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocity, int weapon, int tier, DHookCallback CollideCallback, bool ForceRandomAngles, bool Spin, float angOverride[3] = NULL_VECTOR, bool useAngOverride = false, int skin = 0, float posOverride[3] = NULL_VECTOR, bool usePosOverride = false)
 {
-int prop = CreateEntityByName("zr_projectile_base");
+	int prop = CreateEntityByName("tf_projectile_rocket");
+			
+	if (IsValidEntity(prop))
+	{
+		DispatchKeyValue(prop, "targetname", "trash_projectile"); 
+				
+		SetTeam(prop, GetTeam(client));
+				
+		DispatchSpawn(prop);
+				
+		ActivateEntity(prop);
 		
-if (IsValidEntity(prop))
-{
-	DispatchKeyValue(prop, "targetname", "trash_projectile"); 
-			
-	SetEntDataFloat(prop, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-	SetTeam(prop, GetTeam(client));
-			
-	DispatchSpawn(prop);
-			
-	ActivateEntity(prop);
-	
-	SetEntityModel(prop, model);
-	char scaleChar[16];
-	Format(scaleChar, sizeof(scaleChar), "%f", scale);
-	DispatchKeyValue(prop, "modelscale", scaleChar);
-	
-	SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", client);
-	SetEntProp(prop, Prop_Data, "m_takedamage", 0, 1);
-	
-	char skinChar[16];
-	Format(skinChar, 16, "%i", skin);
-	DispatchKeyValue(prop, "skin", skinChar);
-	
-	float pos[3], ang[3], propVel[3], buffer[3];
-	GetClientEyePosition(client, pos);
-	GetClientEyeAngles(client, ang);
-	
-	if (useAngOverride)
-	{
-		ang = angOverride;
-	}
-	
-	if (usePosOverride)
-	{
-		pos = posOverride;
-	}
-
-	GetAngleVectors(ang, buffer, NULL_VECTOR, NULL_VECTOR);
-	
-	if (IsValidEntity(weapon))
-	{
-		velocity *= Attributes_Get(weapon, 103, 1.0);
-	
-		velocity *= Attributes_Get(weapon, 104, 1.0);
-	
-		velocity *= Attributes_Get(weapon, 475, 1.0);
+		SetEntityModel(prop, model);
+		char scaleChar[16];
+		Format(scaleChar, sizeof(scaleChar), "%f", scale);
+		DispatchKeyValue(prop, "modelscale", scaleChar);
 		
-		i_TrashWeapon[prop] = EntIndexToEntRef(weapon);
-	}
-	
-	SetEntityMoveType(prop, MOVETYPE_FLYGRAVITY);
-	
-	propVel[0] = buffer[0]*velocity;
-	propVel[1] = buffer[1]*velocity;
-	propVel[2] = buffer[2]*velocity;
-	
-	if (ForceRandomAngles)
-	{
-		for (int i = 0; i < 3; i++)
+		SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", client);
+		SetEntProp(prop, Prop_Data, "m_takedamage", 0, 1);
+		
+		char skinChar[16];
+		Format(skinChar, 16, "%i", skin);
+		DispatchKeyValue(prop, "skin", skinChar);
+		
+		float pos[3], ang[3], propVel[3], buffer[3];
+		GetClientEyePosition(client, pos);
+		GetClientEyeAngles(client, ang);
+		
+		if (useAngOverride)
 		{
-			ang[i] = GetRandomFloat(0.0, 360.0);
+			ang = angOverride;
 		}
-	}
 		
-	TeleportEntity(prop, pos, ang, propVel);
-	SetEntPropVector(prop, Prop_Send, "m_vInitialVelocity", propVel);
-	
-	if (Spin)
-	{
-		RequestFrame(SpinEffect, EntIndexToEntRef(prop));
-	}
-	
-	i_TrashTier[prop] = tier;
-	if(h_NpcSolidHookType[prop] != 0)
-		DHookRemoveHookID(h_NpcSolidHookType[prop]);
-	h_NpcSolidHookType[prop] = 0;
-	h_NpcSolidHookType[prop] = g_DHookRocketExplode.HookEntity(Hook_Pre, prop, CollideCallback);
-	
-	return prop;
-}
+		if (usePosOverride)
+		{
+			pos = posOverride;
+		}
 
-return -1;
+		GetAngleVectors(ang, buffer, NULL_VECTOR, NULL_VECTOR);
+		
+		if (IsValidEntity(weapon))
+		{
+			velocity *= Attributes_Get(weapon, 103, 1.0);
+		
+			velocity *= Attributes_Get(weapon, 104, 1.0);
+		
+			velocity *= Attributes_Get(weapon, 475, 1.0);
+			
+			i_TrashWeapon[prop] = EntIndexToEntRef(weapon);
+		}
+		
+		SetEntityMoveType(prop, MOVETYPE_FLYGRAVITY);
+		
+		propVel[0] = buffer[0]*velocity;
+		propVel[1] = buffer[1]*velocity;
+		propVel[2] = buffer[2]*velocity;
+		
+		if (ForceRandomAngles)
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				ang[i] = GetRandomFloat(0.0, 360.0);
+			}
+		}
+			
+		TeleportEntity(prop, pos, ang, propVel);
+		SetEntPropVector(prop, Prop_Send, "m_vInitialVelocity", propVel);
+		
+		if (Spin)
+		{
+			RequestFrame(SpinEffect, EntIndexToEntRef(prop));
+		}
+		
+		i_TrashTier[prop] = tier;
+		if(h_NpcSolidHookType[prop] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[prop]);
+		h_NpcSolidHookType[prop] = 0;
+		h_NpcSolidHookType[prop] = g_DHookRocketExplode.HookEntity(Hook_Pre, prop, CollideCallback);
+		
+		return prop;
+	}
+
+	return -1;
 }
 
 public int Trash_GetClosestVictim(float position[3], float radius, bool shock)

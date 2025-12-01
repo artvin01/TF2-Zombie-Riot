@@ -1492,8 +1492,8 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		int Projectile = npc.FireParticleRocket(FloatVector, damage , 400.0 , 100.0 , "",_,_,true,origin_altered,_,_,_,false);
 		b_RageProjectile[Projectile] = npc.Anger;
 		//dont exist !
-		SDKUnhook(Projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-		SDKHook(Projectile, SDKHook_StartTouch, Sensal_Particle_StartTouch);
+		//dont exist !
+		WandProjectile_ApplyFunctionToEntity(Projectile, Sensal_Particle_StartTouch);
 		CreateTimer(15.0, Timer_RemoveEntitySensal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
 		static float ang_Look[3];
 		GetEntPropVector(Projectile, Prop_Send, "m_angRotation", ang_Look);
@@ -1602,7 +1602,7 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 		EmitSoundToAll(g_SyctheHitSound[GetRandomInt(0, sizeof(g_SyctheHitSound) - 1)], entity, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		TE_Particle(b_RageProjectile[entity] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -1610,7 +1610,7 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		float ProjectileLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
@@ -1961,8 +1961,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 				b_RageProjectile[Projectile] = npc.Anger;
 
 				//dont exist !
-				SDKUnhook(Projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-				SDKHook(Projectile, SDKHook_StartTouch, Sensal_Particle_StartTouch);
+				WandProjectile_ApplyFunctionToEntity(Projectile, Sensal_Particle_StartTouch);
 				
 				CreateTimer(15.0, Timer_RemoveEntitySensal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
 				static float ang_Look[3];

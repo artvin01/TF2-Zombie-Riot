@@ -2278,7 +2278,7 @@ public void SSBChair_NPCDeath(int entity)
 
 int SSBChair_CreateProjectile(SSBChair owner, char model[255], float pos[3], float ang[3], float velocity, float scale, DHookCallback CollideCallback, int skin = 0)
 {
-	int prop = CreateEntityByName("zr_projectile_base");
+	int prop = CreateEntityByName("tf_projectile_rocket");
 			
 	if (IsValidEntity(prop))
 	{
@@ -2314,7 +2314,7 @@ int SSBChair_CreateProjectile(SSBChair owner, char model[255], float pos[3], flo
 		propVel[2] = buffer[2]*velocity;
 			
 		TeleportEntity(prop, pos, ang, propVel);
-		SetEntPropVector(prop, Prop_Send, "m_vInitialVelocity", propVel);
+	//	SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
 		
 		if (h_NpcSolidHookType[prop] != 0)
 			DHookRemoveHookID(h_NpcSolidHookType[prop]);

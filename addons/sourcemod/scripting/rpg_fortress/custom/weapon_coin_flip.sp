@@ -141,7 +141,6 @@ public Action flip_extra(Handle timer, int client)
 		if(entity != -1)
 		{
 		//	SetEntityCollisionGroup(entity, 2); //COLLISION_GROUP_DEBRIS_TRIGGER
-		//	SDKHook(entity, SDKHook_ShouldCollide, Gib_ShouldCollide);
 			AddEntityToLagCompList(entity);
 			b_DoNotIgnoreDuringLagCompAlly[entity] = true;
 			Entity_Owner[entity] = client;

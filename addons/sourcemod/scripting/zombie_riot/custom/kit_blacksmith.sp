@@ -399,6 +399,20 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 						TinkerRangedFastProj(tinker.Rarity, tinker);
 				}
 			}
+			case WEAPON_SIGIL_BLADE:
+			{
+				BlockNormal = true;
+				// Mage Weapon
+				switch(GetURandomInt() % 3)
+				{
+					case 0:
+						TinkerHastyMage(tinker.Rarity, tinker);
+					case 1:
+						TinkerHeavyMage(tinker.Rarity, tinker);
+					case 2:
+						TinkerTankMage(tinker.Rarity, tinker);
+				}
+			}
 		}
 		if(!BlockNormal)
 		{

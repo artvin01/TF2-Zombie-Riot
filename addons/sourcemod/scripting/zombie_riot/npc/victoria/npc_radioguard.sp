@@ -318,8 +318,7 @@ void Victorian_RadioguardSelfDefense(Victorian_Radioguard npc, float gameTime)
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 5.0;
 						int projectile = npc.FireParticleRocket(vecTarget, Hitdamage , projectile_speed , 450.0 , "spell_fireball_small_blue", true);
-						SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-						SDKHook(projectile, SDKHook_StartTouch, Victoria_RadioGuard_Particle_StartTouch);
+						WandProjectile_ApplyFunctionToEntity(projectile, Victoria_RadioGuard_Particle_StartTouch);	
 						npc.PlayIdleAlertSound();
 					}
 					delete swingTrace;
@@ -395,7 +394,7 @@ public void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 			StartBleedingTimer(target, owner, 12.0, 5, -1, DMG_TRUEDAMAGE, 0);
 		}
 
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -403,7 +402,7 @@ public void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		if(IsValidEntity(particle))
 		{

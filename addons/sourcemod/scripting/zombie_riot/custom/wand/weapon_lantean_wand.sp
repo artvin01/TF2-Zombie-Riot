@@ -359,6 +359,8 @@ static void Nuke_Old_Drone(int client)
 	if(IsValidEntity(lowest_id))
 	{
 		lantean_Wand_Drone_Count[client] -= 1;
+		if(lantean_Wand_Drone_Count[client] <= 0)
+			lantean_Wand_Drone_Count[client] = 0;
 		b_is_lantean[lowest_id] = false;
 		RemoveEntity(lowest_id);
 	}
@@ -434,6 +436,8 @@ public Action Timer_RemoveEntity_CustomProjectileWand_Lanteen(Handle timer, Data
 	if(IsValidEntity(Projectile))
 	{
 		lantean_Wand_Drone_Count[clientindex] -= 1;
+		if(lantean_Wand_Drone_Count[clientindex] <= 0)
+			lantean_Wand_Drone_Count[clientindex] = 0;
 		b_is_lantean[Projectile]=false;
 		RemoveEntity(Projectile);
 	}
@@ -467,7 +471,12 @@ public Action lantean_Wand_Touch_World(int entity, int other)
 				case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
 			}
 			b_is_lantean[entity]=false;
-			lantean_Wand_Drone_Count[owner] -= 1;
+			if(owner >= 0)
+			{
+				lantean_Wand_Drone_Count[owner] -= 1;
+				if(lantean_Wand_Drone_Count[owner] <= 0)
+					lantean_Wand_Drone_Count[owner] = 0;
+			}
 			RemoveEntity(entity);
 		}
 	}
@@ -531,6 +540,8 @@ public void lantean_Wand_Touch(int entity, int target)
 			{
 				b_is_lantean[entity]=false;
 				lantean_Wand_Drone_Count[owner] -= 1;
+				if(lantean_Wand_Drone_Count[owner] <= 0)
+					lantean_Wand_Drone_Count[owner] = 0;
 				RemoveEntity(entity);
 				if(IsValidEntity(particle))
 				{
@@ -628,7 +639,10 @@ static void Lantean_HomingProjectile_TurnToTarget(float Vec[3], int Projectile)
 	GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", flRocketPos);
 
 	float flInitialVelocity[3];
-	GetEntPropVector(Projectile, Prop_Send, "m_vInitialVelocity", flInitialVelocity);
+	if(b_IsCustomProjectile[Projectile])
+		GetEntPropVector(Projectile, Prop_Data, "m_vInitialVelocity", flInitialVelocity);
+	else
+		GetEntPropVector(Projectile, Prop_Send, "m_vInitialVelocity", flInitialVelocity);
 	float flSpeedInit = GetVectorLength(flInitialVelocity);
 
 	float Ratio = (GetVectorDistance(flTargetPos, flRocketPos))/750.0;
@@ -658,6 +672,9 @@ void LeanteanWandCheckDeletion(int entity)
 		if(IsValidClient(Owner))
 		{
 			lantean_Wand_Drone_Count[Owner] -= 1;
+			if(lantean_Wand_Drone_Count[Owner] <= 0)
+				lantean_Wand_Drone_Count[Owner] = 0;
+				
 			b_is_lantean[entity]=false;
 		}
 	}

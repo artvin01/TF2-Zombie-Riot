@@ -483,10 +483,17 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 					rocket = npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_trail", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 				//	npc.DispatchParticleEffect(npc.index, "utaunt_firework_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
 
-					DataPack pack;
-					CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-					pack.WriteCell(EntIndexToEntRef(rocket)); //projectile
-					pack.WriteCell(EntIndexToEntRef(EnemyToAttack));		//victim to annihilate :)
+					float fAng[3];
+					GetEntPropVector(rocket, Prop_Send, "m_angRotation", fAng);
+					Initiate_HomingProjectile(rocket,
+					npc.index,
+						180.0,			// float lockonAngleMax,
+						90.0,				//float homingaSec,
+						true,				// bool LockOnlyOnce,
+						true,				// bool changeAngles,
+						fAng,
+						EnemyToAttack);			// float AnglesInitiate[3]);
+					TriggerTimerHoming(rocket);	
 				}
 			}
 		}
@@ -571,11 +578,17 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 					int rocket;
 					rocket = npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 				
-					DataPack pack;
-					CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-					pack.WriteCell(EntIndexToEntRef(rocket)); //projectile
-					pack.WriteCell(EntIndexToEntRef(EnemyToAttack));		//victim to annihilate :)
-				
+					float fAng[3];
+					GetEntPropVector(rocket, Prop_Send, "m_angRotation", fAng);
+					Initiate_HomingProjectile(rocket,
+					npc.index,
+						180.0,			// float lockonAngleMax,
+						90.0,				//float homingaSec,
+						true,				// bool LockOnlyOnce,
+						true,				// bool changeAngles,
+						fAng,
+						EnemyToAttack);			// float AnglesInitiate[3]);
+					TriggerTimerHoming(rocket);		
 				}
 			}
 		}

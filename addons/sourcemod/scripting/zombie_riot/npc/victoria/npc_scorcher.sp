@@ -362,12 +362,11 @@ void VictoriaScorcherSelfDefense(VictoriaScorcher npc)
 		SpinSound = false;
 		npc.FaceTowards(vecTarget, 20000.0);
 		int projectile = npc.FireParticleRocket(vecTarget, 8.0, 1000.0, 150.0, "m_brazier_flame", true);
-		SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-		int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
+		int particle = EntRefToEntIndex(i_WandParticle[projectile]);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 		
-		SDKHook(projectile, SDKHook_StartTouch, VictoriaScorcher_Rocket_Particle_StartTouch);		
+		WandProjectile_ApplyFunctionToEntity(projectile, VictoriaScorcher_Rocket_Particle_StartTouch);		
 	}
 	if(SpinSound)
 		npc.PlayMinigunSound(false);
@@ -418,7 +417,7 @@ public void VictoriaScorcher_Rocket_Particle_StartTouch(int entity, int target)
 			}
 		}
 
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -426,7 +425,7 @@ public void VictoriaScorcher_Rocket_Particle_StartTouch(int entity, int target)
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		if(IsValidEntity(particle))
 		{

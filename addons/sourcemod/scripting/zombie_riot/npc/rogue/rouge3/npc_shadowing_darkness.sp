@@ -282,18 +282,16 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 			fl_rocket_particle_dmg[entity] = rocket_damage;
 			fl_rocket_particle_radius[entity] = 0.0;
 			b_rocket_particle_from_blue_npc[entity] = true;
-			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+			SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", vecForward);
+			DispatchKeyValue(entity, "model", ENERGY_BALL_MODEL);
 			
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
-			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
 			SetTeam(entity, GetTeam(this.index));
 			
-			TeleportEntity(entity, vecSwingStart, VecAnglesDo, NULL_VECTOR, true);
+			Custom_SDKCall_SetLocalOrigin(entity, vecSwingStart);
 			DispatchSpawn(entity);
-			for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
-			{
-				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_rocket_particle, _, i);
-			}
+			SetEntPropVector(entity, Prop_Send, "m_angRotation", VecAnglesDo); //set it so it can be used
+			SetEntPropVector(entity, Prop_Data, "m_angRotation", VecAnglesDo); 
 			SetEntityModel(entity, PARTICLE_ROCKET_MODEL);
 
 			SetEntityRenderColor(entity, 255, 255, 255, 0);
@@ -304,7 +302,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 			if(rocket_particle[0]) //If it has something, put it in. usually it has one. but if it doesn't base model it remains.
 			{
 				particle = ParticleEffectAt(vecSwingStart, rocket_particle, 0.0); //Inf duartion
-				i_rocket_particle[entity]= EntIndexToEntRef(particle);
+				i_WandParticle[entity]= EntIndexToEntRef(particle);
 				TeleportEntity(particle, NULL_VECTOR, VecAnglesDo, NULL_VECTOR);
 				SetParent(entity, particle);	
 				SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
@@ -314,14 +312,9 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
-
-
-			if(h_NpcSolidHookType[entity] != 0)
-				DHookRemoveHookID(h_NpcSolidHookType[entity]);
-			h_NpcSolidHookType[entity] = 0;
-			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Wand_DHook_RocketExplodePre); 
-			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			
 			SDKHook(entity, SDKHook_StartTouch, Wand_Base_StartTouch);
+			CBaseCombatCharacter(entity).SetNextThink(GetGameTime());
 
 
 			//extras:
@@ -1066,7 +1059,7 @@ public void Shadowing_Darkness_ReflectProjectiles(int entity, int target)
 	}
 	if(npc.m_iState >= MAX_BOUNCES_SHADOWING_DARKNESS)
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);

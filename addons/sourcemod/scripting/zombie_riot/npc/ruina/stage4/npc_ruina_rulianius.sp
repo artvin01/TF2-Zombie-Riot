@@ -508,7 +508,6 @@ static void Rulianius_Special(CClotBody npc, int PrimaryThreatIndex)
 
 		int Proj = Projectile.Launch_Projectile();
 		SDKUnhook(Proj, SDKHook_StartTouch, Ruina_Projectile_Touch);
-		SDKHook(Proj, SDKHook_ShouldCollide, Never_ShouldCollide);
 
 		int color[3] = {255, 150, 150};
 

@@ -1090,9 +1090,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					int projectile = npc.FireParticleRocket(vecTarget, 3000.0, GetRandomFloat(175.0, 225.0), 150.0, "utaunt_glitter_teamcolor_blue", true);
 					npc.DispatchParticleEffect(npc.index, "rd_robot_explosion_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
-					SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-					
-					SDKHook(projectile, SDKHook_StartTouch, Bob_Rocket_Particle_StartTouch);
+					WandProjectile_ApplyFunctionToEntity(projectile, Bob_Rocket_Particle_StartTouch);	
 					npc.PlayRocketHoming();
 					float ang_Look[3];
 					GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
@@ -2208,7 +2206,7 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 		EmitSoundToAll("mvm/mvm_tank_explode.wav", entity, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		ParticleEffectAt(ProjectileLoc, "hightower_explosion", 1.0);
 				
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -2216,7 +2214,7 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		if(IsValidEntity(particle))
 		{

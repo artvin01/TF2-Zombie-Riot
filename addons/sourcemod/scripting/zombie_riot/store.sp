@@ -3088,6 +3088,9 @@ void Store_OpenGiftStore(int client, int entity, int price, bool barney)
 int PassClientBoughtLateGame(int client)
 {
 
+	//its too early in the wave, dont force clients to buy
+	if(CurrentCash <= 5000)
+		return 0;
 	int CashUsedMust = RoundToNearest(float(CurrentCash) * 0.5);
 	if(CashUsedMust >= 40000)
 	{

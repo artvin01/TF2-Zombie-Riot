@@ -1223,8 +1223,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				vecDest[1] += GetRandomFloat(-50.0, 50.0);
 				vecDest[2] += GetRandomFloat(-50.0, 50.0);
 				int DronShot = npc.FireParticleRocket(vecDest, 0.0, RocketSpeed, 0.0, "raygun_projectile_blue_crit", true,_, true, flPosEdit);
-				SDKUnhook(DronShot, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-				SDKHook(DronShot, SDKHook_StartTouch, Dron_Laser_Particle_StartTouch);
+				WandProjectile_ApplyFunctionToEntity(DronShot, Dron_Laser_Particle_StartTouch);	
 			}
 		
 	
@@ -1892,7 +1891,7 @@ static Action Dron_Laser_Particle_StartTouch(int entity, int target)
 	ParticleEffectAt(ProjectileLoc, "mvm_soldier_shockwave", 1.0);
 	ParticleEffectAt(ProjectileLoc, "drg_cow_explosion_sparkles_blue", 1.5);
 	EmitSoundToAll(g_DronShotHitSounds, 0, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _, -1, ProjectileLoc);
-	int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if(IsValidEntity(particle))
 		RemoveEntity(particle);
 	RemoveEntity(entity);

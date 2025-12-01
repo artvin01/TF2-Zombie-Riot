@@ -27,9 +27,10 @@ static void ClotPrecache()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	
-	PrecacheParticleSystem("powerup_icon_resist");
-	PrecacheParticleSystem("powerup_icon_strength");
-	PrecacheParticleSystem("powerup_icon_agility");
+	PrecacheModel("models/pickups/pickup_powerup_defense.mdl");
+	PrecacheModel("models/pickups/pickup_powerup_strength.mdl");
+	PrecacheModel("models/pickups/pickup_powerup_agility.mdl");
+	
 	PrecacheParticleSystem("mvm_pow_gold_seq_wood3mid");
 }
 
@@ -144,9 +145,6 @@ methodmap ARISBeacon < CClotBody
 		if (npc.m_iCharges < 0)
 			npc.m_iCharges = 0;
 		
-		char model[128];
-		
-		// Since one of the models "offsets" the entire and we can't change its position after spawning, we do a trace to get the ground position
 		float vecTargetPos[3];
 		
 		Handle trace = TR_TraceRayFilterEx(vecPos, view_as<float>({90.0, 0.0, 0.0}), MASK_SOLID, RayType_Infinite, TraceEntityFilter_ARISBeacon_OnlyWorld);
@@ -155,11 +153,11 @@ methodmap ARISBeacon < CClotBody
 		
 		vecTargetPos[2] += 50.0;
 		f3_NpcSavePos[npc.index] = vecTargetPos;
-		npc.m_flRadius = 256.0 + (npc.m_iCharges * 64.0);
+		npc.m_flRadius = 512.0 + (npc.m_iCharges * 32.0); // as of writing this comment, m_iCharges is unused by ARIS, but it'll still be left there
 		b_NpcUnableToDie[npc.index] = true;
 		
+		char model[128], powerup[128];
 		int color[4];
-		char particle[64];
 		
 		switch (npc.m_iType)
 		{
@@ -167,19 +165,19 @@ methodmap ARISBeacon < CClotBody
 			{
 				model = "models/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl";
 				color = { 125, 125, 255, 200 };
-				particle = "powerup_icon_resist";
+				powerup = "models/pickups/pickup_powerup_defense.mdl";
 			}
 			case ARIS_MELEE_DAMAGE:
 			{
 				model = "models/workshop/weapons/c_models/c_rr_crossing_sign/c_rr_crossing_sign.mdl";
 				color = { 255, 125, 125, 200 };
-				particle = "powerup_icon_strength";
+				powerup = "models/pickups/pickup_powerup_strength.mdl";
 			}
 			case ARIS_MELEE_SPEED:
 			{
 				model = "models/weapons/c_models/c_picket/c_picket.mdl";
 				color = { 125, 255, 125, 200 };
-				particle = "powerup_icon_agility";
+				powerup = "models/pickups/pickup_powerup_agility.mdl";
 			}
 		}
 		
@@ -188,8 +186,7 @@ methodmap ARISBeacon < CClotBody
 		
 		spawnRing_Vectors(vecTargetPos, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, /*duration*/ ARISBEACON_BUILDUP_TIME + 0.05, 7.0, 2.0, 1, npc.m_flRadius * 2.0);
 		
-		vecTargetPos[2] += 170.0;
-		npc.m_iWearable1 = ParticleEffectAt_Parent(vecTargetPos, particle, npc.index);
+		npc.m_iWearable1 = npc.EquipItemSeperate(powerup, "spin", 2, _, 200.0);
 		
 		return npc;
 	}
@@ -256,7 +253,6 @@ void ARISBeacon_GiveArmor(int entity, int victim, float &healingammount)
 		case ARIS_MELEE_RESISTANCE: ApplyStatusEffect(entity, victim, "A.R.I.S. ARMOR MODE", 0.6);
 		case ARIS_MELEE_DAMAGE: ApplyStatusEffect(entity, victim, "A.R.I.S. DAMAGE MODE", 0.6);
 		case ARIS_MELEE_SPEED: ApplyStatusEffect(entity, victim, "A.R.I.S. SPEED MODE", 0.6);
-
 	}
 	
 	int red = 100;
@@ -281,18 +277,11 @@ void ARISBeacon_GiveArmor(int entity, int victim, float &healingammount)
 
 public Action ARISBeacon_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	ARISBeacon npc = view_as<ARISBeacon>(victim);
-		
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
-	}
 	
-	return Plugin_Changed;
+	damage = 0.0;
+	return Plugin_Stop;
 }
 
 public void ARISBeacon_NPCDeath(int entity)

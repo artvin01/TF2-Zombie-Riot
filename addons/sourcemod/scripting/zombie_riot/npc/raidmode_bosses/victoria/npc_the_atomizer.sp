@@ -1361,8 +1361,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 									ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
 									SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 									TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
-									SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-									SDKHook(RocketGet, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
+									WandProjectile_ApplyFunctionToEntity(RocketGet, Atomizer_Rocket_Particle_StartTouch);	
 									npc.m_iOverlordComboAttack-=1;
 								}
 								else break;
@@ -1597,7 +1596,7 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 			if(!HasSpecificBuff(target, "Fluid Movement"))
 				TF2_StunPlayer(target, 2.0, 0.4, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
 
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 			RemoveEntity(particle);
 	}
@@ -1643,7 +1642,7 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 				return Plugin_Handled;
 			}
 		}
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 			RemoveEntity(particle);
 	}

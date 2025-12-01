@@ -2697,6 +2697,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		TextStore_EntityCreated(entity);
 #endif
 		b_IsAProjectile[entity] = false; 	
+		b_IsCustomProjectile[entity] = false;
 		if(!StrContains(classname, "entity_revive_marker")
 		  || !StrContains(classname, "tf_projectile_energy_ring")
 		  || !StrContains(classname, "entity_medigun_shield")
@@ -2752,7 +2753,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			b_IsAProjectile[entity] = true;
 			
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		//	ApplyExplosionDhook_Rocket(entity);
 			//SDKHook_SpawnPost doesnt work
 		}
@@ -2802,7 +2802,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team_Player);
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			//SDKHook_SpawnPost doesnt work
 			b_IsAProjectile[entity] = true;
 			b_ProjectileCollideWithPlayerOnly[entity] = true;
@@ -2814,7 +2813,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_SpawnPost, PipeApplyDamageCustom);
 			ApplyExplosionDhook_Pipe(entity, true);
 			//SDKHook_SpawnPost doesnt work
@@ -2843,14 +2841,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "prop_physics_multiplayer"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
 		else if(!StrContains(classname, "prop_physics_override"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
@@ -2918,7 +2914,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			Hook_DHook_UpdateTransmitState(entity);
 			b_IsAProjectile[entity] = true;
 			
@@ -2926,13 +2921,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 		else if(!StrContains(classname, "zr_projectile_base"))
 		{
+			b_IsCustomProjectile[entity] = true;
 			SetEntityRenderMode(entity, RENDER_NORMAL); //Make it entirely invis.
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
-			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Rocket);
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
+			SDKHook(entity, SDKHook_SpawnPost, ApplyLateLogic_ProjectileBase);
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			Hook_DHook_UpdateTransmitState(entity);
 			b_IsAProjectile[entity] = true;
 			

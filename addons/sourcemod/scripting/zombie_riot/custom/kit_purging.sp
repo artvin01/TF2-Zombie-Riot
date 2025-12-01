@@ -66,12 +66,12 @@ static float QuadSinceLastRemove[MAXPLAYERS]={0.0, ...};
 
 public void PurgeKit_MapStart()
 {
-    PrecacheSound(PURGE_EQUIPMINIGUN);
-    PrecacheSound(PURGE_REMOVEMINIGUN);
-    PrecacheSound(PURGE_QUAD_LAUNCHER_SOUND);
-    PrecacheSound(PURGE_EXPLOSION_SOUND);
-    PrecacheSound(PURGE_SWITCH_SOUND);
-    PrecacheSound(PURGE_EQUIP_GRENADE);
+	PrecacheSound(PURGE_EQUIPMINIGUN);
+	PrecacheSound(PURGE_REMOVEMINIGUN);
+	PrecacheSound(PURGE_QUAD_LAUNCHER_SOUND);
+	PrecacheSound(PURGE_EXPLOSION_SOUND);
+	PrecacheSound(PURGE_SWITCH_SOUND);
+	PrecacheSound(PURGE_EQUIP_GRENADE);
 }
 
 public void Enable_PurgeKit(int client, int weapon)
@@ -86,7 +86,6 @@ public void Enable_PurgeKit(int client, int weapon)
 			KitPurgeGiveAttributes(client, weapon, WhatTypeDo);
 			return;
 		}
-		
 	}
 	if(h_KitPurge_Timer[client] != null)
 	{
@@ -283,7 +282,7 @@ public void Weapon_Purging_QuadLauncher(int client, int weapon, bool crit, int s
 			
 	for (int repeat = 1; repeat <= fl_KitPurge_QuadLauncher_Rockets[pap]; repeat++)
 	{
-		int entity = CreateEntityByName("zr_projectile_base");
+		int entity = CreateEntityByName("tf_projectile_rocket");
 		if(IsValidEntity(entity))
 		{
 			static float pos[3], ang[3], vel_2[3], shootPos[3];
@@ -679,36 +678,38 @@ public Action Purging_Annahilator_damageBonus_Fade(Handle timer, DataPack pack)
 
 public Action Weapon_Purging_QuadLauncher_Remove_Later(Handle h,int ref)
 {
-    int weapon = EntRefToEntIndex(ref);
-    if(!IsValidEntity(weapon))
-    {
-        return Plugin_Stop;
-    }
-    int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
-    float ownerPos[3];
-    WorldSpaceCenter(owner, ownerPos);
-    bool IsDowned = (dieingstate[owner] != 0);
-    int weaponN = -1;
-    if(!IsDowned)
-        weaponN = Store_GiveSpecificItem(owner, "Purging Grinder");
+	int weapon = EntRefToEntIndex(ref);
+	if(!IsValidEntity(weapon))
+	{
+		return Plugin_Stop;
+	}
+	int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
+	float ownerPos[3];
+	WorldSpaceCenter(owner, ownerPos);
+	bool IsDowned = (dieingstate[owner] != 0);
+	int weaponN = -1;
+	if(!IsDowned)
+		weaponN = Store_GiveSpecificItem(owner, "Purging Grinder");
 
-    TE_Particle("hightower_explosion", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = owner);
-    TE_Particle("mvm_soldier_shockwave", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-    EmitSoundToClient(owner, PURGE_EXPLOSION_SOUND, owner, SNDCHAN_AUTO, 80, _, 0.8);
-    if (IsValidEntity(weapon))
-    {
-        if(IsValidClient(owner))
-        {
-            Store_RemoveSpecificItem(owner, "Purging QuadLauncher");
-            TF2_RemoveItem(owner, weapon);
-        }
-    }
-    FakeClientCommand(owner, "use tf_weapon_fists");
-    if(!IsDowned && weaponN != -1)
-        Weapon_Purging_Crush(owner, EntIndexToEntRef(weaponN));
+	TE_Particle("hightower_explosion", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = owner);
+	TE_Particle("mvm_soldier_shockwave", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	EmitSoundToClient(owner, PURGE_EXPLOSION_SOUND, owner, SNDCHAN_AUTO, 80, _, 0.8);
+	if (IsValidEntity(weapon))
+	{
+		if(IsValidClient(owner))
+		{
+			Store_RemoveSpecificItem(owner, "Purging QuadLauncher");
+			TF2_RemoveItem(owner, weapon);
+		}
+	}
+	if(!IsDowned && weaponN != -1)
+	{
+		FakeClientCommand(owner, "use tf_weapon_fists");
+		Weapon_Purging_Crush(owner, EntIndexToEntRef(weaponN));
+	}
 
-    QuadLauncher_Remove_Timer[owner] = null;
-    return Plugin_Stop;
+	QuadLauncher_Remove_Timer[owner] = null;
+	return Plugin_Stop;
 }
 
 public void Weapon_Purging_Annahilator_Remove(int ref, int owner)
@@ -983,6 +984,8 @@ void KitPurgeGiveAttributesData(DataPack pack)
 		}
 	}
 }
+
+
 
 
 

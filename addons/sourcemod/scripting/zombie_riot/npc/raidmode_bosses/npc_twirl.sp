@@ -2220,14 +2220,14 @@ void SetProjectileSpeed(int projectile, float speed, float angles[3])
 }
 static void ReplaceProjectileParticle(int projectile, const char[] particle_string)
 {
-	int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
+	int particle = EntRefToEntIndex(i_WandParticle[projectile]);
 	if(IsValidEntity(particle))
 		RemoveEntity(particle);
 
 	float ProjLoc[3];
 	WorldSpaceCenter(projectile, ProjLoc);
 	particle = ParticleEffectAt(ProjLoc, particle_string, 0.0); //Inf duartion
-	i_rocket_particle[projectile]= EntIndexToEntRef(particle);
+	i_WandParticle[projectile]= EntIndexToEntRef(particle);
 	SetParent(projectile, particle);	
 }
 
@@ -2761,7 +2761,7 @@ static void Fractal_Attack(int iNPC, float VecTarget[3], float dmg, float speed,
 		Ruina_Color(color, i_current_wave[iNPC]);
 		Twirl npc = view_as<Twirl>(iNPC);
 		int beam = ConnectWithBeamClient(npc.m_iWearable1, Proj, color[0], color[1], color[2], f_start, f_end, amp, LASERBEAM);
-		i_rocket_particle[Proj] = EntIndexToEntRef(beam);
+		i_WandParticle[Proj] = EntIndexToEntRef(beam);
 		DataPack pack;
 		CreateDataTimer(0.1, Laser_Projectile_Timer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		pack.WriteCell(EntIndexToEntRef(iNPC));
@@ -2782,11 +2782,11 @@ static void Func_On_Proj_Touch(int entity, int other)
 		return;
 	}
 
-	int beam = EntRefToEntIndex(i_rocket_particle[entity]);
+	int beam = EntRefToEntIndex(i_WandParticle[entity]);
 	if(IsValidEntity(beam))
 		RemoveEntity(beam);
 
-	i_rocket_particle[entity] = INVALID_ENT_REFERENCE;
+	i_WandParticle[entity] = INVALID_ENT_REFERENCE;
 	
 	float ProjectileLoc[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
@@ -3632,7 +3632,7 @@ static Action IonicFracture_ProjectileThink(int entity)
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, {0.0, 0.0, 0.0});
 		if(npc.m_flIonicFractureHoverTimer < GameTime)
 		{
-			int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+			int particle = EntRefToEntIndex(i_WandParticle[entity]);
 			if(IsValidEntity(particle))
 				RemoveEntity(particle);
 

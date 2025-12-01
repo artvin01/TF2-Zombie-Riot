@@ -40,7 +40,6 @@ public void Weapon_Chlorophite(int client, int weapon, bool crit)
 	
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 9/*Default wand*/, weapon, "raygun_projectile_blue_trail");
 	
-	CreateTimer(0.1, Homing_Shots_Repeat_Timer_Chlorophite, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 //	RMR_NextDeviationAt[iCarrier] = GetGameTime() + 0.4;
 	RMR_HomingPerSecond[projectile] = 359.0;
 	RMR_RocketOwner[projectile] = client;
@@ -50,43 +49,3 @@ public void Weapon_Chlorophite(int client, int weapon, bool crit)
 	RMR_RocketVelocity[projectile] = speed;
 	RMR_CurrentHomingTarget[projectile] = -1;
 }
-
-public Action Homing_Shots_Repeat_Timer_Chlorophite(Handle timer, int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if(IsValidEntity(entity))
-	{
-		if(!IsValidClient(RMR_RocketOwner[entity]))
-		{
-			RemoveEntity(entity);
-			return Plugin_Stop;
-		}
-
-		if(IsValidEnemy(entity, RMR_CurrentHomingTarget[entity]))
-		{
-			if(Can_I_See_Enemy_Only(RMR_CurrentHomingTarget[entity],entity)) //Insta home!
-			{
-				HomingProjectile_TurnToTarget(RMR_CurrentHomingTarget[entity], entity);
-			}
-			return Plugin_Continue;
-		}
-		int Closest = GetClosestTarget(entity, _, _, true);
-		if(IsValidEnemy(RMR_RocketOwner[entity], Closest))
-		{
-			RMR_CurrentHomingTarget[entity] = Closest;
-			if(IsValidEnemy(entity, RMR_CurrentHomingTarget[entity]))
-			{
-				if(Can_I_See_Enemy_Only(RMR_CurrentHomingTarget[entity],entity)) //Insta home!
-				{
-					HomingProjectile_TurnToTarget(RMR_CurrentHomingTarget[entity], entity);
-				}
-				return Plugin_Continue;
-			}
-		}
-	}
-	else
-	{
-		return Plugin_Stop;
-	}
-	return Plugin_Continue;
-}	

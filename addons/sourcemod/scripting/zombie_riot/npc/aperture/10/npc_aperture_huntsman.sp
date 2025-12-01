@@ -238,8 +238,7 @@ public void ApertureHuntsman_ClotThink(int iNPC)
 						npc.PlayMeleeSound();
 						int projectile = npc.FireArrow(vecTarget, 25.0, 1200.0);
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
-						SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-						SDKHook(projectile, SDKHook_StartTouch, ApertureHuntsman_Particle_StartTouch);
+						WandProjectile_ApplyFunctionToEntity(projectile, ApertureHuntsman_Particle_StartTouch);	
 					}
 					npc.StopPathing();
 					npc.m_bPathing = false;
@@ -320,8 +319,8 @@ public void ApertureHuntsman_Particle_StartTouch(int entity, int target)
 		if(inflictor == -1)
 			inflictor = owner;
 
-	
 		
+		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], entity, _, 80, _, 0.8, 100);
 		StartBleedingTimer(target, owner, 5.0, 5, -1, DMG_TRUEDAMAGE, 0);
 	}
 	RemoveEntity(entity);
