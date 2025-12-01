@@ -3867,6 +3867,11 @@
 		"it"	"Con questo lanciatore vi sentite più sicuri di controllare il caos o vi sta consumando?\nAumento del caricatore, del danno e della velocità di fuoco. ⇒ Più crio applicato in modalità Caos e più danni da postcombustione."
 		"ko"	"피해량, 탄창, 공속 증가\nChaos는 냉기 강화·Fire는 연소 피해 증가."
 	}
+	"Messenger Launcher PAP PAP Desc"
+	{
+		"en"	"The level which Messenger might have reached if he was alive\n-Increased Clip size\n-Increased attackspeed& reloadspeed\n-more cryo applied on Chaos mode\n-more afterburn damage on fire mode."
+		"ko"	"메신저가 죽지만 않았다면 도달했을 경지입니다. \n피해량, 탄창, 공속, 재장전 속도 증가\nChaos는 냉기 강화·Fire는 연소 피해 증가."
+	}
 	"The Tinker Desc"
 	{
 		"en"	"A Blacksmith builder, can only make an anvil as a unique building.\n-Anvil can upgrade weapons.\n-Primary: Heals buildings, hurts enemies, infinite range building pickup.\n-Secondary: Generates metal."
@@ -5277,11 +5282,11 @@
 	}
 	"Arsenal Desc"
 	{
-		"en"	"One of Mazeat's Troops.\n-Charge energy on melee hits\n-On max charge, melee deals 30％ extra ranged damage.\n-With M2 equip a weapon, needs 100％ energy.\n-When not taking damage for a while, regen 5％ max health every second."
+		"en"	"One of Mazeat's Troops.\n-Charge energy on melee hits\n-On max charge, melee deals 30％ extra ranged damage.\n-With M2 equip a weapon, needs 100％ energy.\n-When not taking damage for a while, regen 2.5％ max health every second."
 	}
 	"Arsenal Pap 1"
 	{
-		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health & melee resistance & Health regen to 10％\n-Ability weapons gain more attackspeed\n-R allows you to switch between weapons now.\n-You gain a shotgun"
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased health & melee resistance & Health regen to 5％\n-Ability weapons gain more attackspeed\n-R allows you to switch between weapons now.\n-You gain a shotgun"
 	}
 	"Arsenal Pap 2"
 	{
@@ -5317,7 +5322,7 @@
 	}
 	"Purging Pap 2"
 	{
-		"en"	"-Increased damage\n-Increased Health\n-While your shotgun is out, your M2 will give you a minigun.\n-Minigun Abilities:\nHeavy Resistance while out\nAttacking the same target massively boosts damage, upto 2x\nAfter some time, or by pressing R, minigun unequips\nTakes 30％ more damage from raids\n-Deals 20% less damage to raids."
+		"en"	"-Increased damage\n-Increased Health\n-While your shotgun is out, your M2 will give you a minigun.\n-Minigun Abilities:\nHeavy Resistance while out\nAttacking the same target massively boosts damage, upto 2x\nAfter some time, or by pressing R, minigun unequips\nTakes 30％ more damage from raids\nDeals 20% less damage to raids."
 	}
 	"Purging Pap 3"
 	{

@@ -380,30 +380,32 @@ static void KitOmega_GUN_Selector_Function(int client, int OverrideGunType=-1)
 
 public void KitOmega_AddCharge(int client, float amount)
 {
-	if(amount)
-	{
-		OMEGA_ENERGY[client] += amount;
+	if(!amount)
+		return;
 
-		if(OMEGA_ENERGY[client] < 0.0)
+	OMEGA_ENERGY[client] += amount;
+
+	if(OMEGA_ENERGY[client] < 0.0)
+	{
+		OMEGA_ENERGY[client] = 0.0;
+	}
+	else
+	{
+		if(i_KitOmega_WeaponPap[client] >= 5)
 		{
-			OMEGA_ENERGY[client] = 0.0;
+			if(OMEGA_ENERGY[client] > OMEGA_MAXENERGY_PAP)
+				OMEGA_ENERGY[client] = OMEGA_MAXENERGY_PAP;
+
 		}
 		else
 		{
-			if(i_KitOmega_WeaponPap[client] >= 5)
-			{
-				if(OMEGA_ENERGY[client] > OMEGA_MAXENERGY_PAP)
-					OMEGA_ENERGY[client] = OMEGA_MAXENERGY_PAP;
+			if(OMEGA_ENERGY[client] > OMEGA_MAXENERGY)
+				OMEGA_ENERGY[client] = OMEGA_MAXENERGY;
 
-			}
-			else
-			{
-				if(OMEGA_ENERGY[client] > OMEGA_MAXENERGY)
-					OMEGA_ENERGY[client] = OMEGA_MAXENERGY;
-
-			}
 		}
 	}
+	f_KitOmega_HUDDelay[client] = 0.0;
+	KitOmega_HUD(client);
 
 	//TriggerTimer(WeaponTimer[client], true);
 }
@@ -442,9 +444,9 @@ public void KitOmega_NPCTakeDamage_Melee(int attacker, int victim, float &damage
 	energy = OMEGA_PREHITGAIN;
 	
 	if(b_thisNpcIsARaid[victim])//击中的是raidboss(if is raid)
-		energy *= 1.15;
+		energy *= 1.25;
 	if(LastMann)//最后一人状态(last manm buff)
-		energy *= 1.2;
+		energy *= 1.25;
 	int Gun = EntRefToEntIndex(i_KitOmega_GunRef[attacker]);
 	if(IsValidEntity(Gun))
 	{

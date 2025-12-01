@@ -65,7 +65,6 @@ int i_FailedTriesUnstuck[MAXENTITIES][2];
 //float f_MasterSequenceNpcPlayBackRate[MAXENTITIES];
 bool b_should_explode[MAXENTITIES];
 bool b_rocket_particle_from_blue_npc[MAXENTITIES];
-int i_rocket_particle[MAXENTITIES];
 float fl_rocket_particle_dmg[MAXENTITIES];
 float fl_rocket_particle_radius[MAXENTITIES];
 static float f_PredictPos[MAXENTITIES][3];
@@ -9332,7 +9331,7 @@ public void Rocket_Particle_StartTouch(int entity, int target)
 			SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DamageTypes, -1);	//acts like a kinetic rocket
 		}
 		
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -9340,7 +9339,7 @@ public void Rocket_Particle_StartTouch(int entity, int target)
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		if(IsValidEntity(particle))
 		{

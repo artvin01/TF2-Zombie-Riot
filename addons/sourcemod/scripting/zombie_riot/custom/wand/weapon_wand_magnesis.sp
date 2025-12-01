@@ -1179,16 +1179,18 @@ public void Magnesis_DelayHoming(DataPack pack)
 	int target = EntRefToEntIndex(ReadPackCell(pack));
 	if (!IsValidEntity(projectile) || !IsValidEntity(target))
 		return;
-
-	if(Can_I_See_Enemy_Only(target, projectile)) //Insta home!
-	{
-		HomingProjectile_TurnToTarget(target, projectile);
-	}
-
-	DataPack pack2;
-	CreateDataTimer(0.1, PerfectHomingShot, pack2, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-	pack2.WriteCell(EntIndexToEntRef(projectile)); //projectile
-	pack2.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
+	
+	float fAng[3];
+	GetEntPropVector(projectile, Prop_Send, "m_angRotation", fAng);
+	Initiate_HomingProjectile(projectile,
+	projectile,
+		180.0,			// float lockonAngleMax,
+		90.0,				//float homingaSec,
+		true,				// bool LockOnlyOnce,
+		true,				// bool changeAngles,
+		fAng,
+		target);			// float AnglesInitiate[3]);
+	TriggerTimerHoming(projectile);
 
 	EmitSoundToAll(SND_MAGNESIS_HOMING_BEGIN, projectile, _, _, _, 0.66, GetRandomInt(60, 80));
 }

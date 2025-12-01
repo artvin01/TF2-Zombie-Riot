@@ -811,7 +811,7 @@ public void Reila_Rocket_Particle_StartTouch(int entity, int target)
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
 				
 		Reila_Rocket_Particle_Think(entity);
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -819,7 +819,7 @@ public void Reila_Rocket_Particle_StartTouch(int entity, int target)
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		Reila_Rocket_Particle_Think(entity);
 		if(IsValidEntity(particle))

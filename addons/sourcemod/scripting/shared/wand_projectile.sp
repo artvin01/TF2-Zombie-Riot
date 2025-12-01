@@ -12,8 +12,8 @@ void WandStocks_Map_Precache()
 stock void WandProjectile_ApplyFunctionToEntity(int projectile, Function Function)
 {
 	func_WandOnTouch[projectile] = Function;
-	if(Function != INVALID_FUNCTION)
-		ProjectileBaseThinkInternal(projectile, 3.0);
+//	if(Function != INVALID_FUNCTION)
+//		ProjectileBaseThinkInternal(projectile, 3.0);
 }
 
 stock Function func_WandOnTouchReturn(int entity)
@@ -445,7 +445,6 @@ public void Wand_Base_StartTouch(int entity, int other)
 
 static void OnCreate_Proj(CClotBody body)
 {
-	b_IsCustomProjectile[body.index] = true;
 	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[body.index]);
 	if(IsValidEntity(extra_index))
 		RemoveEntity(extra_index);
@@ -464,7 +463,7 @@ void ApplyLateLogic_ProjectileBase(int Projectile)
 	CBaseCombatCharacter(Projectile).SetNextThink(GetGameTime());
 
 	SDKHook(Projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
-	ProjectileBaseThinkInternal(Projectile, 3.0);
+//	ProjectileBaseThinkInternal(Projectile, 3.0);
 
 	SetEntityMoveType(Projectile, MOVETYPE_FLY);
 //do our own logic entirely
@@ -473,7 +472,6 @@ void ApplyLateLogic_ProjectileBase(int Projectile)
 }
 static void OnDestroy_Proj(CClotBody body)
 {
-	b_IsCustomProjectile[body.index] = false;
 	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[body.index]);
 	if(IsValidEntity(extra_index))
 		RemoveEntity(extra_index);

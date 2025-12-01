@@ -483,7 +483,7 @@ void SummonScytheSensalProjectile(int client, int weapon)
 		case WEAPON_SENSAL_SCYTHE:
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, false , Pos_player);
-
+ 
 			int ModelApply = ApplyCustomModelToWandProjectile(projectile, WEAPON_CUSTOM_WEAPONRY_1, 1.35, "scythe_spin");
 
 			if(b_ClientPossesBattery[client] && i_CosmeticScytheThing[client] == 0)

@@ -405,7 +405,7 @@ int AnarchyAbominationSelfDefense(AnarchyAbomination npc, bool &SpinSound)
 				projectile = npc.FireParticleRocket(vecTarget, 30.0, ProjectileSpeed, 150.0, "superrare_burning1", true);
 			}
 			SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-			int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
+			int particle = EntRefToEntIndex(i_WandParticle[projectile]);
 			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 			
@@ -479,7 +479,7 @@ public void AnarchyAbomination_Rocket_Particle_StartTouch(int entity, int target
 
 		NPC_Ignite(target, owner,12.0, -1, 8.0);
 
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -487,7 +487,7 @@ public void AnarchyAbomination_Rocket_Particle_StartTouch(int entity, int target
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		if(IsValidEntity(particle))
 		{

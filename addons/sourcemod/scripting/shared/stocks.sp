@@ -3306,7 +3306,7 @@ int inflictor = 0)
 	if(entityToEvaluateFrom < 1)
 	{
 		//something went wrong, evacuate.
-		LogError("something went wrong, entity was : [%i] | Client if any: [%i]",entityToEvaluateFrom, client);
+		LogStackTrace("something went wrong, entity was : [%i] | Client if any: [%i]",entityToEvaluateFrom, client);
 		return;
 	}
 	//I exploded, do custom logic additionally if neccecary.

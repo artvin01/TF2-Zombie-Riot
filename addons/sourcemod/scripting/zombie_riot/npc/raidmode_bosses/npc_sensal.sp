@@ -1602,7 +1602,7 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 		EmitSoundToAll(g_SyctheHitSound[GetRandomInt(0, sizeof(g_SyctheHitSound) - 1)], entity, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		TE_Particle(b_RageProjectile[entity] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -1610,7 +1610,7 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		float ProjectileLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
