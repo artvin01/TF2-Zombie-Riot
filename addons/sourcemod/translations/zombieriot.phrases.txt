@@ -3162,6 +3162,10 @@
 		"it"		"Gli Expidonsan stanno cercando di inviare aiuti, ma il vuoto interferisce, solo i guardiani possono arrivare qui."
 		"ko"		"엑스피돈사 세력이 지원을 보내려고 했지만, 공허 세력의 방해로 인하여, 경비병들만 이 곳에 도착할 수 있었습니다."
 	}
+	"Void_Survival_Help_Message"
+	{
+		"en"		"Expidonsan's are here to help us defeat this void outbreak."
+	}
 	"Silvester Shares His Power"
 	{
 		"en"		"Silvester shares his power with you..."
