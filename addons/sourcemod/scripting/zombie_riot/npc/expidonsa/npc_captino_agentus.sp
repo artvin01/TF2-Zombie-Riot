@@ -520,7 +520,7 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 600.0;
+					float damageDealt = 400.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 1.0);
@@ -726,11 +726,11 @@ void CaptinoShield(int entity, int victim, float damage, int weapon)
 
 	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
 	{
-		CaptinoShieldInternal(entity,victim);
+		CaptinoShieldInternal(victim);
 	}
 }
 
-void CaptinoShieldInternal(int shielder, int victim)
+void CaptinoShieldInternal(int victim)
 {
 	VausMagicaGiveShield(victim, 1);
 }
