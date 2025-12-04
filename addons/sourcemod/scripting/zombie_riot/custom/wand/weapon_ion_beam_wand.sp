@@ -287,12 +287,7 @@ public void Activate_Neuvellete(int client, int weapon)
 			//Yes?
 			delete h_TimerNeuvellete_Management[client];
 			h_TimerNeuvellete_Management[client] = null;
-			
-			int pap = Get_Pap(weapon);
-			if(pap!=0 && pap < 5)
-				Give_Skill_Points(client, pap);
-
-			i_pap[client] = pap;
+			i_pap[client] = Get_Pap(weapon);
 
 			DataPack pack;
 			h_TimerNeuvellete_Management[client] = CreateDataTimer(0.1, Timer_Management_Neuvellete, pack, TIMER_REPEAT);
@@ -304,11 +299,7 @@ public void Activate_Neuvellete(int client, int weapon)
 		
 	if(IsPrismatic(weapon))
 	{
-		int pap = Get_Pap(weapon);
-		if(pap!=0 && pap < 5)
-			Give_Skill_Points(client, pap);
-
-		i_pap[client] = pap;
+		i_pap[client] = Get_Pap(weapon);
 		
 		DataPack pack;
 		h_TimerNeuvellete_Management[client] = CreateDataTimer(0.1, Timer_Management_Neuvellete, pack, TIMER_REPEAT);
@@ -910,6 +901,19 @@ public void Ion_Beam_On_Buy_Reset(int client)
 static int Get_Pap(int weapon)
 {
 	return RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
+}
+void GivePrismaricSkillPoint(int client)
+{
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(!IsValidEntity(weapon))
+		return;
+
+	if(!IsPrismatic(weapon))
+		return;
+
+	int pap = Get_Pap(weapon);
+	if(pap > 0 && pap < 5)
+		Give_Skill_Points(client, pap);
 }
 static void Give_Skill_Points(int client, int pap)
 {
