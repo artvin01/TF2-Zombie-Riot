@@ -181,7 +181,7 @@ methodmap CaptinoAgentus < CClotBody
 		
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 340.0;
+		npc.m_flSpeed = 330.0;
 		b_TryToAvoidTraverse[npc.index] = true;
 		DiversionSpawnNpcReset(npc.index);
 		
@@ -325,11 +325,11 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 						bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
 						if(Succeed)
 						{
-							if(npc.g_TimesSummoned < 1)
+							if(npc.g_TimesSummoned < 5)
 							{
 								//only spawn 5
 								int maxhealth = ReturnEntityMaxHealth(npc.index);
-								maxhealth /= 20;
+								maxhealth /= 40;
 								float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 								float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 								
@@ -342,7 +342,10 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 									TeleportEntity(spawn_index, pos, ang);
 									SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 									SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-									fl_Extra_Damage[spawn_index] *= 1.5; //1.5x dmg so they are scary
+									fl_Extra_Damage[spawn_index] *= fl_Extra_Damage[npc.index];
+									fl_Extra_Damage[spawn_index] *= 4.0;
+									ApplyStatusEffect(spawn_index, spawn_index, "Tonic Affliction", 3.0);
+									ApplyStatusEffect(spawn_index, spawn_index, "Very Defensive Backup", 2.0);
 								}
 							}
 							npc.PlayTeleportSound();
@@ -352,8 +355,10 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 							ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 							float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 							npc.FaceTowards(VecEnemy, 15000.0);
-							npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 12.5;
-							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7; //so they cant instastab you!
+							npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 18.5;
+							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.4; //so they cant instastab you
+							//adjust cooldowns for turbulence buff
+							ApplyStatusEffect(npc.index, npc.index, "Tonic Affliction", 3.0);
 						}
 						else
 						{
@@ -506,7 +511,7 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
 			Handle swingTrace;
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Ignore barricades
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 			{
 				target = TR_GetEntityIndex(swingTrace);	
 				
@@ -518,7 +523,28 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 					float damageDealt = 400.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+					ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 1.0);
 
+					float flPos[3];
+					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+					flPos[2] += 5.0;
+					spawnRing_Vectors(flPos, /*RANGE start*/ 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, /*DURATION*/ 0.5, 6.0, 0.1, 1,  /*RANGE END*/300 * 2.0);
+	
+					b_NpcIsTeamkiller[npc.index] = true;
+					Explode_Logic_Custom(0.0,
+					npc.index,
+					npc.index,
+					-1,
+					_,
+					300.0,
+					_,
+					_,
+					true,
+					99,
+					false,
+					_,
+					CaptinoShield);
+					b_NpcIsTeamkiller[npc.index] = false;
 					// Hit sound
 					npc.PlaySapperHitSound();
 				} 
@@ -558,7 +584,7 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 				}
 				npc.m_flAttackHappens = 1.0;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.2;
+				npc.m_flNextMeleeAttack = gameTime + 0.9;
 			}
 		}
 	}
@@ -596,6 +622,8 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 					{
 						damageDealt *= 0.5;
 					}
+					if(!BackstabDone)
+						npc.f_CaptinoAgentusTeleport -= 1.5;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
@@ -641,8 +669,6 @@ void CaptinoAgentusAnimationChange(CaptinoAgentus npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 1)
 				{
-					fl_RangedArmor[npc.index] = 1.0;
-					fl_MeleeArmor[npc.index] = 1.0;
 					ResetCaptinoAgentusWeapon(npc, 1);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 1;
@@ -654,8 +680,6 @@ void CaptinoAgentusAnimationChange(CaptinoAgentus npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 2)
 				{
-					fl_RangedArmor[npc.index] = 1.0;
-					fl_MeleeArmor[npc.index] = 1.0;
 					ResetCaptinoAgentusWeapon(npc, 1);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 2;
@@ -670,8 +694,6 @@ void CaptinoAgentusAnimationChange(CaptinoAgentus npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 3)
 				{
-					fl_RangedArmor[npc.index] = 0.65;
-					fl_MeleeArmor[npc.index] = 0.65;
 					ResetCaptinoAgentusWeapon(npc, 0);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 3;
@@ -683,8 +705,6 @@ void CaptinoAgentusAnimationChange(CaptinoAgentus npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 4)
 				{
-					fl_RangedArmor[npc.index] = 0.65;
-					fl_MeleeArmor[npc.index] = 0.65;
 					ResetCaptinoAgentusWeapon(npc, 0);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 4;
@@ -695,4 +715,22 @@ void CaptinoAgentusAnimationChange(CaptinoAgentus npc)
 		}
 	}
 
+}
+
+
+
+void CaptinoShield(int entity, int victim, float damage, int weapon)
+{
+	if(entity == victim)
+		return;
+
+	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
+	{
+		CaptinoShieldInternal(victim);
+	}
+}
+
+void CaptinoShieldInternal(int victim)
+{
+	VausMagicaGiveShield(victim, 1);
 }
