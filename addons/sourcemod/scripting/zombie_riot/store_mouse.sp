@@ -30,7 +30,12 @@ public Action Access_StoreMouseViaCommand(int client, int args)
 		return Plugin_Handled;
 	}
 	
-	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_HEALTH | HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN);
+	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_PIPES_AND_CHARGE | 
+	HIDEHUD_HEALTH | 
+	HIDEHUD_BUILDING_STATUS | 
+	HIDEHUD_CLOAK_AND_FEIGN |
+	HIDEHUD_MISCSTATUS | 
+	HIDEHUD_WEAPONSELECTION);
 	LastMousePos[client] = {0.5, 0.5};
 	b_InsideMenu[client] = true;
 	i_NextRenderMouse[client] = CURSOR_WHITE;
@@ -54,11 +59,11 @@ void StoreMouse_PlayerRunCmdPre(int client, int buttons, int impulse, const floa
 		if(i == 0)
 		{
 			//assume 16 : 9 ratio for now
-			mouse[i] = LastMousePos[client][i] + (float(rawMouse[i]) * (0.00025 * (9.0 / 16.0) * TickrateModify));
+			mouse[i] = LastMousePos[client][i] + (float(rawMouse[i]) * (0.0005 * (9.0 / 16.0) * TickrateModify));
 		}
 		else
 		{
-			mouse[i] = LastMousePos[client][i] + (float(rawMouse[i]) * (0.00025 * TickrateModify));
+			mouse[i] = LastMousePos[client][i] + (float(rawMouse[i]) * (0.0005 * TickrateModify));
 		}
 
 		mouse[i] = fClamp(mouse[i], 0.02, 0.99);
