@@ -4755,7 +4755,7 @@
 	}
 	"Void Desc"
 	{
-		"en"	"One of many void outbrakes. Luckily, we were nearby to help out."
+		"en"	"One of many void outbreaks. Luckily, we were nearby to help out."
 		"fr"	"Aidez Kahmlstein contre le Void!"
 		"chi"	"帮卡姆斯坦因击退深渊！"
 		"it"	"Aiuta Kahmlstein contro il vuoto!"
