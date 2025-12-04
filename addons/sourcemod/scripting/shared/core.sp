@@ -858,6 +858,7 @@ public void OnPluginStart()
 #if defined RTS_CAMERA
 	RTSCamera_PluginStart();
 #endif
+	ZR_StoreMouse_PluginStart();
 	
 	SyncHud_Notifaction = CreateHudSynchronizer();
 	SyncHud_WandMana = CreateHudSynchronizer();
@@ -1720,12 +1721,11 @@ public void OnClientDisconnect_Post(int client)
 #endif
 }
 
-#if defined RTS_CAMERA
 public void OnPlayerRunCmdPre(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
 {
 	RTSCamera_PlayerRunCmdPre(client, buttons, impulse, vel, weapon, mouse);
+	StoreMouse_PlayerRunCmdPre(client, buttons, impulse, vel, weapon, mouse);
 }
-#endif
 
 #if defined ZR
 static bool was_reviving[MAXPLAYERS];

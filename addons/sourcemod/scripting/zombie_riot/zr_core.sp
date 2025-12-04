@@ -484,6 +484,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "skilltree.sp"
 #include "spawns.sp"
 #include "store.sp"
+#include "store_mouse.sp"
 #include "teuton_sound_override.sp"
 #include "barney_sound_override.sp"
 #include "kleiner_sound_override.sp"
