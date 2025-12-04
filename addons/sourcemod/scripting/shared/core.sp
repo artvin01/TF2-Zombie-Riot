@@ -1724,7 +1724,6 @@ public void OnClientDisconnect_Post(int client)
 public void OnPlayerRunCmdPre(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
 {
 	RTSCamera_PlayerRunCmdPre(client, buttons, impulse, vel, weapon, mouse);
-	StoreMouse_PlayerRunCmdPre(client, buttons, impulse, vel, weapon, mouse);
 }
 
 #if defined ZR
@@ -1737,6 +1736,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	if(b_IsPlayerABot[client])
 	{
 		return Plugin_Continue;
+	}
+	if(StoreMouse_PlayerRunCmdPre(client, buttons, impulse, vel, weapon, mouse))
+	{
+		if(f_PreventMovementClient[client] < GetGameTime())
+			f_PreventMovementClient[client] = GetGameTime() + 0.1;
 	}
 	if(f_PreventMedigunCrashMaybe[client] > GetGameTime())
 	{

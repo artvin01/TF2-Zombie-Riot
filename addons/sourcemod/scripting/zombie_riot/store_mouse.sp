@@ -3,7 +3,6 @@
 
 static bool b_InsideMenu[MAXPLAYERS];
 static float LastMousePos[MAXPLAYERS][2];
-static float f_Throttle[MAXPLAYERS];
 static int i_NextRenderMouse[MAXPLAYERS];
 
 enum
@@ -30,6 +29,12 @@ public Action Access_StoreMouseViaCommand(int client, int args)
 		return Plugin_Handled;
 	}
 	
+	if(f_PreventMovementClient[client] < GetGameTime())
+	{
+		f_PreventMovementClient[client] = GetGameTime() + 0.1;
+		Store_ApplyAttribs(client); //update.
+	}
+	SetEntityFlags(client, GetEntityFlags(client)|FL_FROZEN|FL_ATCONTROLS);
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_PIPES_AND_CHARGE | 
 	HIDEHUD_HEALTH | 
 	HIDEHUD_BUILDING_STATUS | 
@@ -39,19 +44,23 @@ public Action Access_StoreMouseViaCommand(int client, int args)
 	LastMousePos[client] = {0.5, 0.5};
 	b_InsideMenu[client] = true;
 	i_NextRenderMouse[client] = CURSOR_WHITE;
-	f_Throttle[client] = GetGameTime();
 	return Plugin_Handled;
 }
-void StoreMouse_PlayerRunCmdPre(int client, int buttons, int impulse, const float vel[3], int weapon, const int rawMouse[2])
+bool StoreMouse_PlayerRunCmdPre(int client, int buttons, int impulse, const float vel[3], int weapon, const int rawMouse[2])
 {
 	if(!b_InsideMenu[client])
-		return;
+		return false;
 
 	if((buttons & IN_JUMP))
 	{
+		SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN);
 		//we jumped, cancel menu!
 		b_InsideMenu[client] = false;
-		return;
+		if(f_PreventMovementClient[client] + 0.1 < GetGameTime())
+			f_PreventMovementClient[client] = 0.0;
+		SetEntityFlags(client, GetEntityFlags(client)& ~(FL_FROZEN|FL_ATCONTROLS));
+		Store_ApplyAttribs(client); //update.
+		return true;
 	}
 	float mouse[2];
 	for(int i; i < sizeof(mouse); i++)
@@ -75,13 +84,11 @@ void StoreMouse_PlayerRunCmdPre(int client, int buttons, int impulse, const floa
 	LastMousePos[client] = mouse;
 
 	StoreMouse_RenderMouse(client, mouse);
+	return true;
 }
 void StoreMouse_RenderMouse(int client, float mouse[2])
 {
-	if(f_Throttle[client] > GetGameTime())
-		return;
 	int color[4] = {255, 255, 255, 255};
-//	f_Throttle[client] = GetGameTime() + 0.01;
 	float cursorPos[3];
 	char cursor[8];
 
@@ -92,6 +99,8 @@ void StoreMouse_RenderMouse(int client, float mouse[2])
 		{
 			color = {255, 65, 65, 255};
 			cursor = CURSOR_MOVE;
+			mouse[0] += 0.01;
+			mouse[1] += 0.02;
 		}
 	}
 	i_NextRenderMouse[client] = CURSOR_WHITE;
