@@ -1280,7 +1280,7 @@ public void OnPostThink(int client)
 				HudY += -0.0345; //correct offset
 			}
 	#if defined ZR
-			if(!SkillTree_InMenu(client) && !Rogue_ShowStatus(client) && buffer[0])
+			if(!InsideShopMenu(client) && !SkillTree_InMenu(client) && !Rogue_ShowStatus(client) && buffer[0])
 	#else
 			if(buffer[0])
 	#endif
@@ -1546,7 +1546,7 @@ public void OnPostThink(int client)
 		}
 		
 #if defined ZR
-		if(!SkillTree_InMenu(client) && !BetWar_Mode() && GetTeam(client) == TFTeam_Red && TeutonType[client] == TEUTON_NONE)
+		if(!InsideShopMenu(client) && !SkillTree_InMenu(client) && !BetWar_Mode() && GetTeam(client) == TFTeam_Red && TeutonType[client] == TEUTON_NONE)
 #endif
 		{
 			SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.9 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
@@ -3455,7 +3455,8 @@ void RPG_Sdkhooks_StaminaBar(int client)
 		green -= RoundToFloor(165 * precent);
 		blue = RoundToFloor(255 * precent);
 	}
-
+	if(InsideShopMenu(client))
+		return;
 	SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.925 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
 	ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
 }

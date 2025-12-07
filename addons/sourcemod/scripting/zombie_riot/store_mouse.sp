@@ -15,6 +15,7 @@ static int i_NextRenderMouse[MAXPLAYERS];
 #define PLAYSOUND_CLICK "ui/buttonclick.wav"
 #define PLAYSOUND_CLICK_RELEASE "ui/buttonclickrelease.wav"
 #define PLAYSOUND_CLOSESHOP "ambient/levels/citadel/pod_close1.wav"
+#define PLAYSOUND_OPENSHOP "items/battery_pickup.wav"
 
 static int LastFOV[MAXPLAYERS];
 static int LastDefaultFOV[MAXPLAYERS];
@@ -35,6 +36,7 @@ void ZR_StoreMouse_PluginStart()
 	PrecacheSound(PLAYSOUND_CLICK);
 	PrecacheSound(PLAYSOUND_CLICK_RELEASE);
 	PrecacheSound(PLAYSOUND_CLOSESHOP);
+	PrecacheSound(PLAYSOUND_OPENSHOP);
 	SyncHud = CreateHudSynchronizer();
 	RegConsoleCmd("sm_new_shop", 		Access_StoreMouseViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 
@@ -65,6 +67,7 @@ public Action Access_StoreMouseViaCommand(int client, int args)
 		f_PreventMovementClient[client] = GetGameTime() + 0.1;
 		Store_ApplyAttribs(client); //update.
 	}
+	EmitSoundToClient(client, PLAYSOUND_OPENSHOP, client,_,_,_, _,80,.soundtime = GetGameTime() - (0.15 / 0.8));
 	DoOverlay(client, "zombie_riot/shopoverlay/shop_overlay_1", 0);
 	SetEntityFlags(client, GetEntityFlags(client)|FL_FROZEN|FL_ATCONTROLS);
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_PIPES_AND_CHARGE | 
@@ -150,7 +153,7 @@ bool StoreMouse_PlayerRunCmdPre(int client, int buttons, int impulse, const floa
 
 void CancelStoreMouseMenu(int client)
 {
-	EmitSoundToClient(client, PLAYSOUND_CLOSESHOP, client, .soundtime = GetGameTime() - 0.5);
+	EmitSoundToClient(client, PLAYSOUND_CLOSESHOP, client,_,_,_, _,80, .soundtime = GetGameTime() - (0.5 / 0.8));
 	DoOverlay(client, "", 0);
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN);
 	//we jumped, cancel menu!
@@ -186,11 +189,11 @@ void StoreMouse_RenderMouse(int client, float mouse[2])
 		{
 			color = {255, 65, 65, 255};
 			cursor = CURSOR_MOVE;
-			mouse[0] -= 0.0075;
+			mouse[0] -= 0.0085;
 			mouse[1] -= 0.01;
 		}
 	}
-	mouse[0] += 0.008;
+	mouse[0] += 0.006;
 	mouse[1] += 0.008;
 	i_NextRenderMouse[client] = CURSOR_WHITE;
 	
