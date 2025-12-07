@@ -1,0 +1,8 @@
+UnlitGeneric
+{
+	$basetexture 		"zombie_riot/shopoverlay/shop_overlay_1"
+	$alphatest 		"0"
+	$translucent 		"1"
+	$nolod 		"1"
+	$ignorez    		"1"
+}

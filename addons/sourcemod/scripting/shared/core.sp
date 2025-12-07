@@ -1114,6 +1114,7 @@ public void OnMapStart()
 	PrecacheModel(RUINA_CUSTOM_MODELS_4);
 	
 #if defined ZR
+	ZR_StoreMouse_MapStart();
 	PrecacheSound("npc/scanner/cbot_discharge1.wav");
 	Zero(i_CustomWeaponEquipLogic);
 	Zero(Mana_Hud_Delay);
