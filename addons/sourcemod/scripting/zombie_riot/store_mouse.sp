@@ -67,10 +67,12 @@ static Action StoreMouse_DebugText(int client, int args)
 
 			char message[256];
 			GetCmdArg(4, message, sizeof(message));
+			ReplaceString(message, sizeof(message), "\\n", "\n");
+			ReplaceString(message, sizeof(message), "|", "\n");
 
-			RemoveScreenItem(ScreenRef[client][0]);
-			CreateScreenText(ScreenRef[client][0], client, pos, scale);
-			DisplayScreenText(ScreenRef[client][0], message);
+			RemoveScreenItem(ScreenRef[client][1]);
+			CreateScreenText(ScreenRef[client][1], client, pos, scale);
+			DisplayScreenText(ScreenRef[client][1], message);
 			return Plugin_Handled;
 		}
 	}
@@ -340,7 +342,10 @@ static void CreateScreenText(int &ref, int client, const float pos[2], float sca
 static void DisplayScreenText(int ref, const char[] message)
 {
 	if(ref != -1)
-		DispatchKeyValue(ref, "message", message);
+	{
+		SetEntPropString(ref, Prop_Send, "m_szText", message);
+		SetEntProp(ref, Prop_Data, "m_bForcePurgeFixedupStrings", true);
+	}
 }
 
 static void CreateScreenSprite(int &ref, int client, const char[] material, const float pos[2], float scale = 100.0)
