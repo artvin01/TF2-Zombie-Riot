@@ -12,6 +12,8 @@ enum
 static bool b_InsideMenu[MAXPLAYERS];
 static float LastMousePos[MAXPLAYERS][2];
 static int i_NextRenderMouse[MAXPLAYERS];
+static float ClickMousePos[MAXPLAYERS][2];
+
 #define PLAYSOUND_CLICK "ui/buttonclick.wav"
 #define PLAYSOUND_CLICK_RELEASE "ui/buttonclickrelease.wav"
 #define PLAYSOUND_CLOSESHOP "ambient/levels/citadel/pod_close1.wav"
@@ -180,6 +182,7 @@ bool StoreMouse_PlayerRunCmdPre(int client, int buttons, int impulse, const floa
 			holding[client] |= IN_ATTACK;
 		}
 		i_NextRenderMouse[client] = CURSOR_RED;
+		ClickMousePos[client] = mouse;
 	}
 	else
 	{
@@ -188,6 +191,12 @@ bool StoreMouse_PlayerRunCmdPre(int client, int buttons, int impulse, const floa
 			PlaySoundClick(client, 1);
 		}
 		holding[client] &= ~IN_ATTACK;
+		
+		if(fabs(ClickMousePos[client][0] - mouse[0]) < 0.01 &&
+			fabs(ClickMousePos[client][1] - mouse[1]) < 0.01)
+		{
+			PrintToChat(client, "%f %f", ClickMousePos[client][0], ClickMousePos[client][1]);
+		}
 	}
 	LastMousePos[client] = mouse;
 	if(LastMousePos[client][1] >= 0.95
