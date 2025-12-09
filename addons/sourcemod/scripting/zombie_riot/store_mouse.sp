@@ -40,6 +40,9 @@ void ZR_StoreMouse_PluginStart()
 	SyncHud = CreateHudSynchronizer();
 	RegConsoleCmd("sm_new_shop", 		Access_StoreMouseViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 
+	RegConsoleCmd("zr_newshop_text", StoreMouse_DebugText, "Debug", FCVAR_HIDDEN);
+	RegConsoleCmd("zr_newshop_sprite", StoreMouse_DebugSprite, "Debug", FCVAR_HIDDEN);
+
 	for(int a; a < sizeof(ScreenRef); a++)
 	{
 		for(int b; b < sizeof(ScreenRef[]); b++)
@@ -47,6 +50,63 @@ void ZR_StoreMouse_PluginStart()
 			ScreenRef[a][b] = -1;
 		}
 	}
+}
+
+static Action StoreMouse_DebugText(int client, int args)
+{
+	if(args == 4)
+	{
+		float pos[2];
+		pos[0] = GetCmdArgFloat(1);
+		pos[1] = GetCmdArgFloat(2);
+
+		if(pos[0] >= 0.0 && pos[0] <= 1.0 &&
+			pos[1] >= 0.0 && pos[1] <= 1.0)
+		{
+			float scale = GetCmdArgFloat(3);
+
+			char message[256];
+			GetCmdArg(4, message, sizeof(message));
+			ReplaceString(message, sizeof(message), "\\n", "\n");
+			ReplaceString(message, sizeof(message), "|", "\n");
+
+			RemoveScreenItem(ScreenRef[client][1]);
+			CreateScreenText(ScreenRef[client][1], client, pos, scale);
+			DisplayScreenText(ScreenRef[client][1], message);
+			return Plugin_Handled;
+		}
+	}
+
+	ReplyToCommand(client, "[SM] Usage: zr_newshop_text <x> <y> <size> <text>");
+	return Plugin_Handled;
+}
+
+static Action StoreMouse_DebugSprite(int client, int args)
+{
+	if(args == 4)
+	{
+		float pos[2];
+		pos[0] = GetCmdArgFloat(1);
+		pos[1] = GetCmdArgFloat(2);
+
+		if(pos[0] >= 0.0 && pos[0] <= 1.0 &&
+			pos[1] >= 0.0 && pos[1] <= 1.0)
+		{
+			float scale = GetCmdArgFloat(3);
+			
+			char filepath[256];
+			GetCmdArg(4, filepath, sizeof(filepath));
+			if(!StrContains(filepath, "materials") && StrContains(filepath, ".vmt") != -1)
+			{
+				RemoveScreenItem(ScreenRef[client][0]);
+				CreateScreenSprite(ScreenRef[client][0], client, filepath, pos, scale);
+				return Plugin_Handled;
+			}
+		}
+	}
+
+	ReplyToCommand(client, "[SM] Usage: zr_newshop_sprite <x> <y> <size> <full filepath>");
+	return Plugin_Handled;
 }
 
 void ZR_StoreMouse_MapStart()
@@ -89,15 +149,7 @@ public Action Access_StoreMouseViaCommand(int client, int args)
 bool StoreMouse_PlayerRunCmdPre(int client, int buttons, int impulse, const float vel[3], int weapon, const int rawMouse[2])
 {
 	if(!b_InsideMenu[client])
-	{
-		// TODO: Make cleaning function
-		for(int a; a < sizeof(ScreenRef[]); a++)
-		{
-			RemoveScreenItem(ScreenRef[client][a]);
-		}
-
 		return false;
-	}
 
 	if((buttons & IN_JUMP))
 	{
@@ -155,12 +207,15 @@ bool StoreMouse_PlayerRunCmdPre(int client, int buttons, int impulse, const floa
 
 void CancelStoreMouseMenu(int client)
 {
-	
 	HideMenuInstantly(client);
 	//show a blank page to instantly hide it
 	CancelClientMenu(client);
 	ClientCommand(client, "slot10");
 	ResetStoreMenuLogic(client);
+	for(int a; a < sizeof(ScreenRef[]); a++)
+	{
+		RemoveScreenItem(ScreenRef[client][a]);
+	}
 
 	EmitSoundToClient(client, PLAYSOUND_CLOSESHOP, client,_,_,_, _,80, .soundtime = GetGameTime() - (0.5 / 0.8));
 	DoOverlay(client, "", 0);
@@ -218,7 +273,7 @@ void PlaySoundClick(int client, int clickmode)
 static void StoreMouse_RenderItems(int client)
 {
 	// Creates an item, if it doesn't already exist
-	CreateScreenText(ScreenRef[client][Screen_Title], client, {0.5, 0.2});
+	CreateScreenText(ScreenRef[client][Screen_Title], client, {0.5, 0.15}, 100.0);
 	// Updates text for the item
 	DisplayScreenText(ScreenRef[client][Screen_Title], "Store");
 
@@ -270,7 +325,7 @@ static void CreateScreenText(int &ref, int client, const float pos[2], float sca
 	GetClientEyePosition(client, eyePos);
 	AddVectors(eyePos, vec, vec);	// Add to position
 
-	ref = SpawnFormattedWorldText("ABC\n123", vec, 10, color, client, rainbow);
+	ref = SpawnFormattedWorldText("ABC\n123", vec, 10, color, -1, rainbow);
 	if(ref != -1)
 	{
 		DispatchKeyValueInt(ref, "font", 5);
@@ -278,12 +333,16 @@ static void CreateScreenText(int &ref, int client, const float pos[2], float sca
 		SDKHook(ref, SDKHook_SetTransmit, SetTransmit_Owner);
 		ref = EntIndexToEntRef(ref);
 	}
+
 }
 
 static void DisplayScreenText(int ref, const char[] message)
 {
 	if(ref != -1)
-		DispatchKeyValue(ref, "message", message);
+	{
+		SetEntPropString(ref, Prop_Send, "m_szText", message);
+		SetEntProp(ref, Prop_Data, "m_bForcePurgeFixedupStrings", true);
+	}
 }
 
 static void CreateScreenSprite(int &ref, int client, const char[] material, const float pos[2], float scale = 100.0)
@@ -310,7 +369,7 @@ static void CreateScreenSprite(int &ref, int client, const char[] material, cons
 		SetEdictFlags(ref, (GetEdictFlags(ref) & ~FL_EDICT_ALWAYS));
 
 		TeleportEntity(ref, vec, ang, NULL_VECTOR);
-		SetParent(client, ref, "", offset);
+		//SetParent(client, ref, "", offset);
 
 		AcceptEntityInput(ref, "ShowSprite");
 		
