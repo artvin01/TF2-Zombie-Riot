@@ -48,7 +48,7 @@ void ConVar_PluginStart()
 
 	ConVar_Add("sv_hudhint_sound", "0.0"); //Removes the wind sound when calling hint hunds
 #if defined ZR
-	ConVar_Add("mp_tournament", "1"); //NEEDS to be 1 , or else mvm logic seems to break in ZR.
+	ConVar_Add("mp_tournament", "1", true, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT)); //NEEDS to be 1 , or else mvm logic seems to break in ZR.
 	ConVar_Add("tf_mvm_defenders_team_size", "99");
 	ConVar_Add("tf_mvm_max_connected_players", "99");
 #endif

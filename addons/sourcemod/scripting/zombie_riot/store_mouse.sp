@@ -79,11 +79,13 @@ public Action Access_StoreMouseViaCommand(int client, int args)
 	LastMousePos[client] = {0.5, 0.5};
 	b_InsideMenu[client] = true;
 	i_NextRenderMouse[client] = CURSOR_WHITE;
+	StoreMouse_OpenMenu(client);
 
 	LastFOV[client] = GetEntProp(client, Prop_Send, "m_iFOV");
 	LastDefaultFOV[client] = GetEntProp(client, Prop_Send, "m_iDefaultFOV");
 	return Plugin_Handled;
 }
+#define DEFAULT_MOUSE_SENSIVITY 0.0006
 bool StoreMouse_PlayerRunCmdPre(int client, int buttons, int impulse, const float vel[3], int weapon, const int rawMouse[2])
 {
 	if(!b_InsideMenu[client])
@@ -108,11 +110,11 @@ bool StoreMouse_PlayerRunCmdPre(int client, int buttons, int impulse, const floa
 		if(i == 0)
 		{
 			//assume 16 : 9 ratio for now
-			mouse[i] = LastMousePos[client][i] + (float(rawMouse[i]) * (0.0005 * (9.0 / 16.0) * TickrateModify));
+			mouse[i] = LastMousePos[client][i] + (float(rawMouse[i]) * (DEFAULT_MOUSE_SENSIVITY * (9.0 / 16.0) * TickrateModify));
 		}
 		else
 		{
-			mouse[i] = LastMousePos[client][i] + (float(rawMouse[i]) * (0.0005 * TickrateModify));
+			mouse[i] = LastMousePos[client][i] + (float(rawMouse[i]) * (DEFAULT_MOUSE_SENSIVITY * TickrateModify));
 		}
 
 		mouse[i] = fClamp(mouse[i], 0.02, 0.99);
@@ -153,6 +155,13 @@ bool StoreMouse_PlayerRunCmdPre(int client, int buttons, int impulse, const floa
 
 void CancelStoreMouseMenu(int client)
 {
+	
+	HideMenuInstantly(client);
+	//show a blank page to instantly hide it
+	CancelClientMenu(client);
+	ClientCommand(client, "slot10");
+	ResetStoreMenuLogic(client);
+
 	EmitSoundToClient(client, PLAYSOUND_CLOSESHOP, client,_,_,_, _,80, .soundtime = GetGameTime() - (0.5 / 0.8));
 	DoOverlay(client, "", 0);
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN);
@@ -166,16 +175,6 @@ void CancelStoreMouseMenu(int client)
 	//RequestFrames(FixStandStillDelay, 3, EntIndexToEntRef(client));
 	Store_ApplyAttribs(client); //update.
 }
-/*
-void FixStandStillDelay(int ref)
-{
-	//This delay is needed due to being run inside player run cmd
-	int client = EntRefToEntIndex(ref);
-	if(!IsValidClient(client))
-		return;
-	SetEntityFlags(client, GetEntityFlags(client) & ~(FL_FROZEN | FL_ATCONTROLS));
-}
-*/
 void StoreMouse_RenderMouse(int client, float mouse[2])
 {
 	int color[4] = {255, 255, 255, 255};
@@ -341,4 +340,56 @@ static Action SetTransmit_Owner(int entity, int client)
 bool InsideShopMenu(int client)
 {
 	return b_InsideMenu[client];
+}
+
+
+
+void StoreMouse_OpenMenu(int client)
+{
+	if(!InsideShopMenu(client))
+		return;
+	
+	MenuPage(client);
+}
+static void MenuPage(int client)
+{
+	Menu menu = new Menu(StoreMouse_ButtonInput);
+	menu.SetTitle(" ");
+	
+	menu.AddItem("-1", "");
+	menu.AddItem("-1", "");
+	menu.AddItem("-1", "");
+	menu.AddItem("-1", "");
+	menu.AddItem("-1", "");
+	menu.AddItem("-1", "");
+	menu.AddItem("-1", "");
+	menu.AddItem("-1", "");
+	menu.AddItem("-1", "");
+	menu.ExitBackButton = true;
+	menu.Pagination = false;
+	SetMenuOptionFlags(menu, MENUFLAG_NO_SOUND);
+	menu.Display(client, MENU_TIME_FOREVER);
+}
+
+public int StoreMouse_ButtonInput(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			delete menu;
+		}
+		case MenuAction_Select:
+		{
+			choice++;
+			PrintToChatAll("choice %i",choice);
+			StoreMouse_OpenMenu(client);
+			PlaySoundClick(client, 0);
+			PlaySoundClick(client, 1);
+		}
+	}
 }
