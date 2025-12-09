@@ -178,6 +178,7 @@ ConVar sv_gravity;
 ConVar sv_cheats;
 ConVar nav_edit;
 ConVar tf_scout_air_dash_count;
+ConVar mp_tournament;
 //ConVar mp_friendlyfire;
 bool DoingLagCompensation;
 bool b_LagCompNPC_No_Layers;

@@ -1581,6 +1581,7 @@ public void OnClientPutInServer(int client)
 	SDKHook_HookClient(client);
 
 #if defined ZR
+	SendConVarValue(client, mp_tournament, "1");
 	PrepareMusicVolume[client] = 0.0;
 	SetMusicTimer(client, GetTime() + 1);
 	AdjustBotCount();

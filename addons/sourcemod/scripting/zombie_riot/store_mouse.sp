@@ -5,10 +5,10 @@ enum
 {
 	Screen_Title = 0,
 	Screen_Sprite1,
+	Screen_OwnedWeapons,
 
 	Screen_MAX
 }
-
 static bool b_InsideMenu[MAXPLAYERS];
 static float LastMousePos[MAXPLAYERS][2];
 static int i_NextRenderMouse[MAXPLAYERS];
@@ -127,6 +127,7 @@ public Action Access_StoreMouseViaCommand(int client, int args)
 		f_PreventMovementClient[client] = GetGameTime() + 0.1;
 		Store_ApplyAttribs(client); //update.
 	}
+	SendConVarValue(client, mp_tournament, "0");
 	EmitSoundToClient(client, PLAYSOUND_OPENSHOP, client,_,_,_, _,80,.soundtime = GetGameTime() - (0.15 / 0.8));
 	DoOverlay(client, "zombie_riot/shopoverlay/shop_overlay_1", 0);
 	SetEntityFlags(client, GetEntityFlags(client)|FL_FROZEN|FL_ATCONTROLS);
@@ -207,6 +208,7 @@ bool StoreMouse_PlayerRunCmdPre(int client, int buttons, int impulse, const floa
 
 void CancelStoreMouseMenu(int client)
 {
+	SendConVarValue(client, mp_tournament, "1");
 	HideMenuInstantly(client);
 	//show a blank page to instantly hide it
 	CancelClientMenu(client);
@@ -282,6 +284,7 @@ static void StoreMouse_RenderItems(int client)
 
 	// Removes an item, if it exists
 	//RemoveScrrenItem(ScreenRef[client][Screen_Sprite1]);
+	StoreMouse_RenderItems_Internal(client);
 }
 
 static void GetCursorVector(int client, const float angle[3], const float mouse[2], float cursorVector[3])
@@ -319,7 +322,7 @@ static void CreateScreenText(int &ref, int client, const float pos[2], float sca
 	GetClientEyeAngles(client, vec);
 	GetCursorVector(client, vec, pos, vec);
 
-	ScaleVector(vec, scale); // Higher = less text size
+	ScaleVector(vec, scale * 0.1); // Higher = less text size
 
 	float eyePos[3];
 	GetClientEyePosition(client, eyePos);
@@ -328,7 +331,8 @@ static void CreateScreenText(int &ref, int client, const float pos[2], float sca
 	ref = SpawnFormattedWorldText("ABC\n123", vec, 10, color, -1, rainbow);
 	if(ref != -1)
 	{
-		DispatchKeyValueInt(ref, "font", 5);
+		DispatchKeyValueInt(ref, "font", 8);
+		DispatchKeyValueFloat(ref, "textsize", 10.0 * 0.1);
 		SetEntPropEnt(ref, Prop_Send, "m_hOwnerEntity", client);
 		SDKHook(ref, SDKHook_SetTransmit, SetTransmit_Owner);
 		ref = EntIndexToEntRef(ref);
@@ -373,6 +377,7 @@ static void CreateScreenSprite(int &ref, int client, const char[] material, cons
 
 		AcceptEntityInput(ref, "ShowSprite");
 		
+		
 		SetEntPropEnt(ref, Prop_Send, "m_hOwnerEntity", client);
 		SDKHook(ref, SDKHook_SetTransmit, SetTransmit_Owner);
 		ref = EntIndexToEntRef(ref);
@@ -383,7 +388,7 @@ static void RemoveScreenItem(int &ref)
 {
 	if(ref != -1)
 	{
-		if(EntRefToEntIndex(ref) != -1)
+		if(IsValidEntity(EntRefToEntIndex(ref)))
 			RemoveEntity(ref);
 		
 		ref = -1;
@@ -440,7 +445,7 @@ public int StoreMouse_ButtonInput(Menu menu, MenuAction action, int client, int 
 		}
 		case MenuAction_Cancel:
 		{
-			delete menu;
+	//		delete menu;
 		}
 		case MenuAction_Select:
 		{
@@ -451,4 +456,10 @@ public int StoreMouse_ButtonInput(Menu menu, MenuAction action, int client, int 
 			PlaySoundClick(client, 1);
 		}
 	}
+}
+
+void StoreMouse_RenderItems_Internal(int client)
+{
+	CreateScreenText(ScreenRef[client][Screen_OwnedWeapons], client, {0.195, 0.27}, 200.0);
+	DisplayScreenText(ScreenRef[client][Screen_OwnedWeapons], "Owned Weapons");
 }
