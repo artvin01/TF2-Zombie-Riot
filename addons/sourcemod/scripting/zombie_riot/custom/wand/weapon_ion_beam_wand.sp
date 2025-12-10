@@ -31,7 +31,6 @@ static float fl_m2_timer[MAXPLAYERS + 1];
 static int i_Neuvellete_penetration[MAXPLAYERS + 1];
 
 static float fl_Neuvellete_Beam_Timeout[MAXPLAYERS + 1];
-static bool b_skill_points_give_at_pap[MAXPLAYERS + 1][5];
 static int i_skill_point_used[MAXPLAYERS + 1];
 static int i_Neuvellete_HEX_Array[MAXPLAYERS + 1];
 static int i_Neuvellete_Skill_Points[MAXPLAYERS + 1];
@@ -58,7 +57,6 @@ public void Ion_Beam_Wand_MapStart()
 	Zero(fl_hud_timer);
 	Zero(i_Neuvellete_Skill_Points);
 	Zero(i_Neuvellete_HEX_Array);
-	Zero2(b_skill_points_give_at_pap);
 	Zero(i_skill_point_used);
 	Zero(b_special_active);
 	Zero2(fl_beam_angle);
@@ -892,36 +890,16 @@ public void Ion_Beam_On_Buy_Reset(int client)
 	i_Neuvellete_HEX_Array[client] = 0;
 	i_Neuvellete_Skill_Points[client] = 0;
 	i_skill_point_used[client] = 0;
-	for(int i=0 ; i < 5 ; i++)
-	{
-		b_skill_points_give_at_pap[client][i] = false;
-	}
 }
 
 static int Get_Pap(int weapon)
 {
 	return RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 }
-void GivePrismaricSkillPoint(int client)
+//GivePrismaricSkillPoint(client);	
+public void GivePrismaricSkillPoint(int client, Item item)
 {
-	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(!IsValidEntity(weapon))
-		return;
-
-	if(!IsPrismatic(weapon))
-		return;
-
-	int pap = Get_Pap(weapon);
-	if(pap > 0 && pap < 5)
-		Give_Skill_Points(client, pap);
-}
-static void Give_Skill_Points(int client, int pap)
-{
-	if(!b_skill_points_give_at_pap[client][pap])	//no going back!
-	{
-		b_skill_points_give_at_pap[client][pap] = true;
-		i_Neuvellete_Skill_Points[client]++;
-	}
+	i_Neuvellete_Skill_Points[client]++;
 }
 
 public void Prismatic_Nightmare(int client, int weapon, bool crit)

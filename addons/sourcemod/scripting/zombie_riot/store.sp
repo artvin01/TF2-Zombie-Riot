@@ -83,6 +83,9 @@ enum struct ItemInfo
 	Function FuncReload4;
 	Function FuncOnDeploy;
 	Function FuncOnHolster;
+
+	Function FuncOnPap;
+
 	int WeaponSoundIndexOverride;
 	int WeaponModelIndexOverride;
 	float WeaponSizeOverride;
@@ -346,12 +349,13 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sfunc_onholster", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncOnHolster = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_onpap", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.FuncOnPap = GetFunctionByName(null, buffer);
 		
 		Format(buffer, sizeof(buffer), "%sint_ability_onequip", prefix);
 		this.CustomWeaponOnEquip 		= kv.GetNum(buffer);
-
-		
-
 
 		Format(buffer, sizeof(buffer), "%soverride_weapon_slot", prefix);
 		this.Weapon_Override_Slot 		= kv.GetNum(buffer, -1);
@@ -1481,7 +1485,15 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						if(IsValidClient(owner))
 							Building_GiveRewardsUse(client, owner, 150, true, 4.0, true);
 
-						GivePrismaricSkillPoint(client);	
+						Function Func = info.FuncOnPap;
+
+						if(Func && Func != INVALID_FUNCTION)
+						{
+							Call_StartFunction(null, Func);
+							Call_PushCell(client);
+							Call_PushArrayEx(item, sizeof(item), SM_PARAM_COPYBACK);
+							Call_Finish();
+						}
 							
 						CheckClientLateJoin(client);
 					}
