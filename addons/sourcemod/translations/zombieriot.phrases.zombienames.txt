@@ -3706,8 +3706,7 @@
 	}
 	"Speechless Desc"
 	{
-		"en"	"One of the first expidonsans to try to explore the void.\nEach hit it does gives it a shield.\nFires an expidonsan laser if too far away, that also regens it shield.\nHe ignores the shield cooldown if hitting a barricade, or anything with his laser.\nGains attackspeed as he attacks, lowers when he doesnt."
-		"it"	"Uno dei primi expidonsan a tentare di esplorare il vuoto.\nOgni colpo che subisce gli conferisce uno scudo.\nSe troppo lontano, spara un laser expidonsan che rigenera anche lo scudo.\nIgnora il cooldown dello scudo se colpisce una barricata o qualsiasi altra cosa con il suo laser.\nGuadagna velocità d'attacco mentre attacca, diminuisce quando non lo fa."
+		"en"	"One of the first expidonsans to try to explore the void.\n-Each hit it does gives it a shield.\n-Fires an laser if too far away, that also regens it shield.\n-He ignores the shield cooldown if hitting a barricade, or anything with his laser.\n-Gains attackspeed as he attacks, lowers when he doesnt\n-Slows down the faster he attacks."
 	}
 	"Unspeakable"
 	{
