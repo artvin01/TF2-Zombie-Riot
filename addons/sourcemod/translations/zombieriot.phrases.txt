@@ -82,11 +82,6 @@
 		"it"		"Modalità anteprima"
 		"ko"		"미리보기 모드"
 	}
-	"Late Join Pap Menu"
-	{
-		"en"		"Late Join Pap Menu\nThis menu fades once you are eligable to play."
-		"ko"		"늦게 합류한 플레이어용 Pap 메뉴\n플레이할 수 있는 상태가 되면 이 메뉴는 사라집니다."
-	}
 	"Credits"
 	{
 		"#format"	"{1:d}"
@@ -1940,41 +1935,23 @@
 	}
 	"Not Enough Money To Pap"
 	{
-		"en" 		"You do not have enough cash to Pack-a-Punch your Weapon."
-		"fr" 		"Vous n'avez pas assez d'Argent pour appliquer une amélioration Pack-a-Punch sur votre arme."
-		"ru" 		"У вас недостаточно кредитов на улучшение вашего оружия."
-		"de"		"Sie haben nicht genügend Geld um ihre Waffe zu Pack-A-Punchen."
-		"pt"		"Você não tem dinheiro suficiente para dar um Pack-a-Punch em sua arma."
-		"nl"		"Je hebt geen geld om uw huidige wapen te Pack-A-Punchen."
-		"chi"       "你的现金不足以升级这把武器"
-		"it"		"Non avete abbastanza denaro per imballare la vostra arma."
-		"ko" 		"당신의 무기를 개선하는데 필요한 자금이 부족합니다."
+		"en" 		"You do not have enough cash to Enchance your Weapon."
 	}
 	"Cannot Pap this"
 	{
-		"en" 		"Your weapon cannot be Pack-a-Punched."
-		"fr" 		"Vous ne pouvez pas appliquer une amélioration Pack-a-Punch sur votre arme."
-		"ru" 		"Ваше оружие не может быть улучшено."
-		"de"		"Ihre Waffe kann nicht Pack-A-Punched werden."
-		"pt"		"Está arma não pode ser melhorada."
-		"nl"		"Uw huidig wapen kan niet worden gePack-A-Punched."
-		"chi"       "你的武器不能升级"
-		"it"		"L'arma non può essere imbustata."
-		"ko" 		"이 무기는 개선이 불가능합니다."
+		"en" 		"Your weapon cannot be Enhanced."
 	}
 	"Pap Weapon Upgraded"
 	{
 		"#format"	"{1:s}"
-		"en"		"Your weapon has been upgraded to {1}:"
+		"en"		"Your weapon has been enhanced to {1}:"
 		"it"		"La tua arma è stata potenziata a {1}:"
 		"ko"		"당신의 무기가 {1} 로 개선됨:"
 	}
 	"Pap Weapon Preview"
 	{
 		"#format"	"{1:s}"
-		"en"		"Pack-a-Punch preview for {1}:"
-		"it"		"Anteprima di Pack-a-Punch per {1}:"
-		"ko"		"{1} 의 팩어펀치 개선 미리보기:"
+		"en"		"Enchancement preview for {1}:"
 	}
 	"Revive Teammate tooltip"
 	{
@@ -2316,19 +2293,6 @@
 		"it"		"Tutti gli articoli sono scontati del 10％ qui! {$}\nUn articolo è scontato del 15%! {$$}"
 		"ko"		"$ 로 표시된건 가격이 10％ 쌉니다!\n$$ 표시 가격이 15％ 쌉니다!"
 	}	
-	"Can Be Pack-A-Punched"
-	{
-		"en"		"Can Be Pack-A-Punched"
-		"es"		"Puede ser Mejorado"
-		"pr"		"Peut être amélioré avec Pack-a-Punch"
-		"ru"		"Можно улучшить"
-		"de"		"Kann man Pack-A-Punchen"
-		"pt"		"Compatível com Pack-A-Punch"
-		"nl"		"Kan Worden gePack-A-Punched"
-		"chi"       "可以升级"
-		"it"		"Può essere Pack-A-Punch-ato"
-		"ko"		"개선 가능"
-	}
 	"Your loadout has been equipped!"
 	{
 		"en"		"Your loadout has been equipped!"
@@ -4996,6 +4960,12 @@
 	"View PAP Upgrades"
 	{
 		"en"	"View PAP Upgrades"
+		"it"	"Visualizza gli aggiornamenti PAP"
+		"ko"	"팩펀 개선 효과 보기"
+	}
+	"Weapon Enhancement"
+	{
+		"en"	"Weapon Enhancement"
 		"it"	"Visualizza gli aggiornamenti PAP"
 		"ko"	"팩펀 개선 효과 보기"
 	}

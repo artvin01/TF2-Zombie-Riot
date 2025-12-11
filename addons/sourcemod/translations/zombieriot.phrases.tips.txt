@@ -122,7 +122,7 @@
 	}
 	"Setup Chat Tip 25"
 	{
-		"en"	"Weapon kits give you a unique playstyle, without having to buy class upgrades. Pack-a-punch them to increase the whole kit's stats!"
+		"en"	"Weapon kits give you a unique playstyle, without having to buy class upgrades. Enchance them to increase the whole kit's stats!"
 		"it"	"I kit di armi vi danno uno stile di gioco unico, senza dover acquistare i potenziamenti di classe. Impacchettateli per aumentare le statistiche dell'intero kit!"
 	}
 	"Setup Chat Tip 26"
