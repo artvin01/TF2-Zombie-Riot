@@ -1303,7 +1303,7 @@ static void ClotThink(int iNPC)
 
 	if(b_allow_final_invocation)
 	{
-		if(npc.m_flFinalInvocationTimer < GameTime && m_flFinalInvocationTimer != FAR_FUTURE)
+		if(npc.m_flFinalInvocationTimer < GameTime && npc.m_flFinalInvocationTimer != FAR_FUTURE)
 		{
 			npc.m_flFinalInvocationTimer = FAR_FUTURE;
 			//npc.m_flFinalInvocationLogic = GetGameTime() + 5.0;
