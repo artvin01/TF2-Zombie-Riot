@@ -92,7 +92,7 @@
 	}
 	"Red Moon Desc"
 	{
-		"en"	"{red}Wildingen units have their special traits enchanced"
+		"en"	"{red}Wildingen units have their special traits enhanced"
 		"it"	"{red}Le unità Wildingen hanno i loro tratti speciali incantati"
 	}
 	"Red Moon Lore"

@@ -1273,11 +1273,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 						cash = maxCash;
 					}
 					char buf[84];
-					if(!Preview && !b_AntiLateSpawn_Allow[client])
-					{
-						Format(buf, sizeof(buf), "%T", "Late Join Pap Menu", client);
-					}
-					else if(PapPreviewMode[client])
+					if(PapPreviewMode[client])
 					{
 						Format(buf, sizeof(buf), "%T", "Preview Mode Pap", client);
 						cash = 999999;
@@ -1476,14 +1472,12 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						
 						SetDefaultHudPosition(client);
 						
-						ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was boosted");
+						ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was Enhanced");
 						PrintPapDescription(client, item, info, PAP_DESC_BOUGHT);
 						
 						Store_ApplyAttribs(client);
 						Store_GiveAll(client, GetClientHealth(client));
 						owner = EntRefToEntIndex(values[2]);
-						if(IsValidClient(owner))
-							Building_GiveRewardsUse(client, owner, 150, true, 4.0, true);
 
 						Function Func = info.FuncOnPap;
 
@@ -1494,6 +1488,8 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 							Call_PushArrayEx(item, sizeof(item), SM_PARAM_COPYBACK);
 							Call_Finish();
 						}
+					//	if(IsValidClient(owner))
+					//		Building_GiveRewardsUse(client, owner, 150, true, 4.0, true);
 							
 						CheckClientLateJoin(client);
 					}
@@ -3425,7 +3421,7 @@ static void MenuPage(int client, int section)
 								break;
 							}
 						}
-						Format(buffer, sizeof(buffer), "%T", "View PAP Upgrades", client);
+						Format(buffer, sizeof(buffer), "%T", "Weapon Enhancement", client);
 						menu.AddItem(buffer2, buffer);
 					}
 					if(tinker || item.Tags[0] || info.ExtraDesc[0] || item.Author[0] || info.WeaponFaction1)
@@ -4794,7 +4790,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 							{
 								if(subItem.GetItemInfo(level, info2))
 								{
-									if(!b_AntiLateSpawn_Allow[client] && OwnedBefore)
+									if(OwnedBefore)
 										Store_PackMenu(client, i, level, client, false);
 									else
 										Store_PackMenu(client, i, level, client, true);
@@ -4806,7 +4802,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 					}
 					else if(item.GetItemInfo(level, info2))
 					{
-						if(!b_AntiLateSpawn_Allow[client] && OwnedBefore)
+						if(OwnedBefore)
 							Store_PackMenu(client, index, level, client, false);
 						else
 							Store_PackMenu(client, index, level, client, true);

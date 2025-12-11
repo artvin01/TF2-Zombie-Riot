@@ -6,6 +6,8 @@ bool b_LastWeaponCheckBias[MAXPLAYERS];
 
 void ObjectPackAPunch_MapStart()
 {
+	return;
+	/*
 	PrecacheModel("models/props_spytech/computer_low.mdl");
 
 	NPCData data;
@@ -25,7 +27,7 @@ void ObjectPackAPunch_MapStart()
 	build.Cooldown = 60.0;
 	build.Func = ObjectGeneric_CanBuild;
 	Building_Add(build);
-
+	*/
 	Zero(b_LastWeaponCheckBias);
 	Zero(f_CheckWeaponDelay);
 }
