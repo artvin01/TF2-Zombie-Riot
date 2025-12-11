@@ -4777,6 +4777,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 
 					//can be papped ? See if yes
 					ItemInfo info2;
+					
 
 					//allow inspecting kit children
 					if(item.ParentKit)
