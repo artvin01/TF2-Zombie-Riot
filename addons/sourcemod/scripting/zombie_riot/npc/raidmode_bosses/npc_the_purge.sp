@@ -181,6 +181,7 @@ methodmap ThePurge < CClotBody
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
 		
+		SDKHook(npc.index, SDKHook_Touch, PurgeDetectRiding);
 		SetVariantColor(view_as<int>({200, 200, 50, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
@@ -328,6 +329,7 @@ static void ClotThink(int iNPC)
 	{
 		if(IsValidEntity(npc.m_iTarget))
 			ApplyStatusEffect(npc.m_iTarget, npc.m_iTarget, "Purging Intention", 0.2);
+
 
 		float RangeSupport = 350.0;
 		float pos[3]; GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", pos);
@@ -573,6 +575,9 @@ static void ClotThink(int iNPC)
 						if(target > MaxClients)
 							npc.FaceTowards(vecTarget, 9999.0);
 
+						if(HasSpecificBuff(target, "Aimbot"))
+							npc.FaceTowards(vecTarget, 9999.0);
+
 						npc.PlayShotgunSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 
@@ -622,7 +627,11 @@ static void ClotThink(int iNPC)
 						
 						npc.PlaySMGSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
+						npc.FaceTowards(vecTarget, 100.0);
 						if(target > MaxClients)
+							npc.FaceTowards(vecTarget, 9999.0);
+
+						if(HasSpecificBuff(target, "Aimbot"))
 							npc.FaceTowards(vecTarget, 9999.0);
 
 						float eyePitch[3];
@@ -669,6 +678,9 @@ static void ClotThink(int iNPC)
 					
 					npc.FaceTowards(vecTarget, 4000.0);
 					if(target > MaxClients)
+						npc.FaceTowards(vecTarget, 9999.0);
+
+					if(HasSpecificBuff(target, "Aimbot"))
 						npc.FaceTowards(vecTarget, 9999.0);
 
 					npc.PlayMinigunSound();
@@ -985,4 +997,32 @@ void Purge_ApplyFearToEnemy(int entity, int victim, float damage, int weapon)
 		NpcStats_PrimalFearChange(victim, 0.02);
 	else
 		NpcStats_PrimalFearChange(victim, 0.01);
+}
+
+
+static void PurgeDetectRiding(int entity, int client)
+{
+	if(!IsValidClient(client))
+		return;
+
+	float Vec[3], vec2[3];
+	WorldSpaceCenter(entity, Vec);
+	Vec[2]+=20.0;
+	WorldSpaceCenter(client, vec2);
+	if(vec2[2] > Vec[2])	
+	{
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
+
+		newVel[2] = 500.0;
+
+		newVel[0] +=GetRandomFloat(-505.0, 505.0);
+		newVel[1] +=GetRandomFloat(-505.0, 505.0);
+		
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, newVel);
+		ApplyStatusEffect(client, client, "Aimbot", 3.0);
+	}
 }

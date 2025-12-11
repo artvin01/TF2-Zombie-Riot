@@ -1912,6 +1912,15 @@
 		"en" "Uncureable.\nPurge is after you.\nYou gain Primal fear much faster."
 		"it"	"Inguaribile.\nPurge ti insegue.\nAcquisti la Paura Primordiale molto più velocemente."
 	}
+	"Aimbot"
+	{
+		"en" 	"Aimbot"
+		"it"	"Intenzione di spurgo"
+	}
+	"Aimbot Desc"
+	{
+		"en" 	"Uncureable.\nStanding ontop of purge gives him aimbot to you."
+	}
 	"Primal Fear"
 	{
 		"en" "Primal Fear"
