@@ -1748,11 +1748,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		buttons &= ~IN_ATTACK;
 	}
-	if(f_PreventMovementClient[client] > GetGameTime())
-	{
-		buttons = 0;
-		return Plugin_Changed;
-	}
+	static int holding[MAXPLAYERS];
+
 	/*
 	Instant community feedback that T is very bad.
 	using idk what other button to use.
@@ -1795,11 +1792,81 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 #endif
-//Is player active? atleast somewhat.
+	
+	static float WasHoldingSore[MAXPLAYERS];
+	if(f_PreventMovementClient[client] < GetGameTime() || InsideShopMenu(client))
+	{
+		if(holding[client] & IN_SCORE)
+		{
+			if(!(buttons & IN_SCORE))
+			{
+				if(WasHoldingSore[client] > GetGameTime())
+				{
+					PrintToChatAll("ZR_OpenMouseStore");
+					ZR_OpenMouseStore(client);
+				}
+
+				holding[client] &= ~IN_SCORE;
+			}
+		}
+		else if(buttons & IN_SCORE)
+		{
+			if(!(holding[client] & IN_SCORE))
+			{
+				WasHoldingSore[client] = GetGameTime() + 0.2;
+			}
+			holding[client] |= IN_SCORE;
+			
+#if defined ZR
+			if(GetClientTeam(client) == 2)
+			{
+				if(dieingstate[client] == 0)
+				{
+					if(WaitingInQueue[client])
+					{
+						Queue_Menu(client);
+					}
+					else
+					{
+						Store_Menu(client);
+					}
+				}
+			}
+			else
+			{
+				
+				if(LastStoreMenu[client] || AnyMenuOpen[client])
+				{
+					HideMenuInstantly(client);
+					//show a blank page to instantly hide it
+					CancelClientMenu(client);
+					ClientCommand(client, "slot10");
+					ResetStoreMenuLogic(client);
+				}
+				else
+				{
+					c_WeaponUseAbilitiesHud[client][0] = 0;
+					Items_EncyclopediaMenu(client);
+				}
+			}
+#endif
+
+#if defined RPG
+			FakeClientCommandEx(client, "menuselect 0");
+#endif
+		}
+		
+	}
 	if(buttons > 0)
 	{
 		f_PlayerLastKeyDetected[client] = GetGameTime() + 2.0;
 	}
+	if(f_PreventMovementClient[client] > GetGameTime())
+	{
+		buttons = 0;
+		return Plugin_Changed;
+	}
+//Is player active? atleast somewhat.
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	
 #if defined RTS
@@ -1846,7 +1913,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 	
-	static int holding[MAXPLAYERS];
 	if(holding[client] & IN_ATTACK)
 	{
 		if(!(buttons & IN_ATTACK))
@@ -2067,54 +2133,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				Call_Finish(action);
 			}
 		}
-	}
-
-	if(holding[client] & IN_SCORE)
-	{
-		if(!(buttons & IN_SCORE))
-			holding[client] &= ~IN_SCORE;
-	}
-	else if(buttons & IN_SCORE)
-	{
-		holding[client] |= IN_SCORE;
-		
-#if defined ZR
-		if(GetClientTeam(client) == 2)
-		{
-			if(dieingstate[client] == 0)
-			{
-				if(WaitingInQueue[client])
-				{
-					Queue_Menu(client);
-				}
-				else
-				{
-					Store_Menu(client);
-				}
-			}
-		}
-		else
-		{
-			
-			if(LastStoreMenu[client] || AnyMenuOpen[client])
-			{
-				HideMenuInstantly(client);
-				//show a blank page to instantly hide it
-				CancelClientMenu(client);
-				ClientCommand(client, "slot10");
-				ResetStoreMenuLogic(client);
-			}
-			else
-			{
-				c_WeaponUseAbilitiesHud[client][0] = 0;
-				Items_EncyclopediaMenu(client);
-			}
-		}
-#endif
-
-#if defined RPG
-		FakeClientCommandEx(client, "menuselect 0");
-#endif
 	}
 	
 #if defined ZR
@@ -2709,7 +2727,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		  || !StrContains(classname, "entity_medigun_shield")
 		  || !StrContains(classname, "tf_projectile_energy_ball")
 		  || !StrContains(classname, "item_powerup_rune")
-		  || !StrContains(classname, "vgui_screen"))
+		 /* || !StrContains(classname, "vgui_screen")*/)
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}

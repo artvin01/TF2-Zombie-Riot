@@ -13,6 +13,7 @@ static bool b_InsideMenu[MAXPLAYERS];
 static float LastMousePos[MAXPLAYERS][2];
 static int i_NextRenderMouse[MAXPLAYERS];
 static float ClickMousePos[MAXPLAYERS][2];
+static float f_TranslateHoveredText[MAXPLAYERS];
 
 #define PLAYSOUND_CLICK "ui/buttonclick.wav"
 #define PLAYSOUND_CLICK_RELEASE "ui/buttonclickrelease.wav"
@@ -32,7 +33,9 @@ enum
 #define CURSOR_SELECTABLE	"［ ］"
 #define CURSOR_MOVE		" ◇ "
 static Handle SyncHud;
+static Handle SyncHudTrans;
 
+#define SCALE_FORITEMS 0.1
 void ZR_StoreMouse_PluginStart()
 {
 	PrecacheSound(PLAYSOUND_CLICK);
@@ -40,7 +43,9 @@ void ZR_StoreMouse_PluginStart()
 	PrecacheSound(PLAYSOUND_CLOSESHOP);
 	PrecacheSound(PLAYSOUND_OPENSHOP);
 	SyncHud = CreateHudSynchronizer();
+	SyncHudTrans = CreateHudSynchronizer();
 	RegConsoleCmd("sm_new_shop", 		Access_StoreMouseViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	Zero(f_TranslateHoveredText);
 
 	RegConsoleCmd("zr_newshop_text", StoreMouse_DebugText, "Debug", FCVAR_HIDDEN);
 	RegConsoleCmd("zr_newshop_sprite", StoreMouse_DebugSprite, "Debug", FCVAR_HIDDEN);
@@ -72,9 +77,9 @@ static Action StoreMouse_DebugText(int client, int args)
 			ReplaceString(message, sizeof(message), "\\n", "\n");
 			ReplaceString(message, sizeof(message), "|", "\n");
 
-			RemoveScreenItem(ScreenRef[client][1]);
-			CreateScreenText(ScreenRef[client][1], client, pos, scale);
-			DisplayScreenText(ScreenRef[client][1], message);
+			RemoveScreenItem(ScreenRef[client][Screen_Sprite1]);
+			CreateScreenText(ScreenRef[client][Screen_Sprite1], client, pos, scale);
+			DisplayScreenText(ScreenRef[client][Screen_Sprite1], message);
 			return Plugin_Handled;
 		}
 	}
@@ -85,7 +90,7 @@ static Action StoreMouse_DebugText(int client, int args)
 
 static Action StoreMouse_DebugSprite(int client, int args)
 {
-	if(args == 4)
+	if(args == 5)
 	{
 		float pos[2];
 		pos[0] = GetCmdArgFloat(1);
@@ -94,20 +99,21 @@ static Action StoreMouse_DebugSprite(int client, int args)
 		if(pos[0] >= 0.0 && pos[0] <= 1.0 &&
 			pos[1] >= 0.0 && pos[1] <= 1.0)
 		{
-			float scale = GetCmdArgFloat(3);
+			int width = GetCmdArgInt(3);
+			int height = GetCmdArgInt(4);
 			
 			char filepath[256];
-			GetCmdArg(4, filepath, sizeof(filepath));
-			if(!StrContains(filepath, "materials") && StrContains(filepath, ".vmt") != -1)
+			GetCmdArg(5, filepath, sizeof(filepath));
+		//	if(!StrContains(filepath, "materials") && StrContains(filepath, ".vmt") != -1)
 			{
-				RemoveScreenItem(ScreenRef[client][0]);
-				CreateScreenSprite(ScreenRef[client][0], client, filepath, pos, scale);
+				RemoveScreenItem(ScreenRef[client][Screen_Sprite1]);
+				CreateScreenVGUI(ScreenRef[client][Screen_Sprite1], client, filepath, pos, width, height);
 				return Plugin_Handled;
 			}
 		}
 	}
 
-	ReplyToCommand(client, "[SM] Usage: zr_newshop_sprite <x> <y> <size> <full filepath>");
+	ReplyToCommand(client, "[SM] Usage: zr_newshop_sprite <x> <y> <width> <height> <VGUI script> <filepath, no vmt or material>");
 	return Plugin_Handled;
 }
 
@@ -115,20 +121,22 @@ void ZR_StoreMouse_MapStart()
 {
 	AddToDownloadsTable("materials/zombie_riot/shopoverlay/shop_overlay_1.vmt");
 	AddToDownloadsTable("materials/zombie_riot/shopoverlay/shop_overlay_1.vtf");
+	Zero(f_TranslateHoveredText);
 }
 
-public Action Access_StoreMouseViaCommand(int client, int args)
+void ZR_OpenMouseStore(int client)
 {
-	if (!IsClientInGame(client))
-	{
-		return Plugin_Handled;
+	if(b_InsideMenu[client])
+	{	
+		CancelStoreMouseMenu(client);
+		return;
 	}
-	
 	if(f_PreventMovementClient[client] < GetGameTime())
 	{
 		f_PreventMovementClient[client] = GetGameTime() + 0.1;
 		Store_ApplyAttribs(client); //update.
 	}
+	SPrintToChat(client, "Please click tab instead to open the store.");
 	SendConVarValue(client, mp_tournament, "0");
 	EmitSoundToClient(client, PLAYSOUND_OPENSHOP, client,_,_,_, _,80,.soundtime = GetGameTime() - (0.15 / 0.8));
 	DoOverlay(client, "zombie_riot/shopoverlay/shop_overlay_1", 0);
@@ -146,6 +154,14 @@ public Action Access_StoreMouseViaCommand(int client, int args)
 
 	LastFOV[client] = GetEntProp(client, Prop_Send, "m_iFOV");
 	LastDefaultFOV[client] = GetEntProp(client, Prop_Send, "m_iDefaultFOV");
+}
+public Action Access_StoreMouseViaCommand(int client, int args)
+{
+	if (!IsClientInGame(client))
+	{
+		return Plugin_Handled;
+	}
+	ZR_OpenMouseStore(client);
 	return Plugin_Handled;
 }
 #define DEFAULT_MOUSE_SENSIVITY 0.0006
@@ -190,16 +206,17 @@ bool StoreMouse_PlayerRunCmdPre(int client, int buttons, int impulse, const floa
 		if(holding[client] & IN_ATTACK)
 		{
 			PlaySoundClick(client, 1);
+			if(fabs(ClickMousePos[client][0] - mouse[0]) < 0.01 &&
+				fabs(ClickMousePos[client][1] - mouse[1]) < 0.01)
+			{
+				PrintToChat(client, "%f %f", ClickMousePos[client][0], ClickMousePos[client][1]);
+			}
 		}
 		holding[client] &= ~IN_ATTACK;
 		
-		if(fabs(ClickMousePos[client][0] - mouse[0]) < 0.01 &&
-			fabs(ClickMousePos[client][1] - mouse[1]) < 0.01)
-		{
-			PrintToChat(client, "%f %f", ClickMousePos[client][0], ClickMousePos[client][1]);
-		}
 	}
 	LastMousePos[client] = mouse;
+	/*
 	if(LastMousePos[client][1] >= 0.95
 	 || LastMousePos[client][1] <= 0.05
 	 || LastMousePos[client][0] >= 0.95
@@ -208,7 +225,7 @@ bool StoreMouse_PlayerRunCmdPre(int client, int buttons, int impulse, const floa
 		CancelStoreMouseMenu(client);
 		return false;
 	 }
-
+	*/
 	
 	StoreMouse_RenderItems(client);
 	StoreMouse_RenderMouse(client, mouse);
@@ -244,7 +261,7 @@ void CancelStoreMouseMenu(int client)
 void StoreMouse_RenderMouse(int client, float mouse[2])
 {
 	int color[4] = {255, 255, 255, 255};
-	float cursorPos[3];
+//	float cursorPos[3];
 	char cursor[8];
 
 	cursor = CURSOR_DEFAULT;
@@ -262,8 +279,18 @@ void StoreMouse_RenderMouse(int client, float mouse[2])
 	mouse[1] += 0.008;
 	i_NextRenderMouse[client] = CURSOR_WHITE;
 	
-	SetHudTextParams(mouse[0]-0.01, mouse[1]-0.02, 0.5, color[0], color[1], color[2], color[3], 0, 0.0, 0.0, 0.0);
-	ShowSyncHudText(client, SyncHud, cursor);
+	if(f_TranslateHoveredText[client] < GetGameTime())
+	{
+		f_TranslateHoveredText[client] = GetGameTime() + 0.25;
+		//what do we hover over, translate for player.
+		SetHudTextParams(-1.0, 1.0, 0.5, 255, 255, 255, 255, 0, 0.0, 0.0, 0.0);
+		ShowSyncHudText(client, SyncHudTrans, "이 텍스트는 마우스를 올려 놓으면 무엇이든 번역됩니다.\n공백도 지원합니다!");
+	}
+	else
+	{
+		SetHudTextParams(mouse[0]-0.01, mouse[1]-0.02, 0.5, color[0], color[1], color[2], color[3], 0, 0.0, 0.0, 0.0);
+		ShowSyncHudText(client, SyncHud, cursor);
+	}
 }
 
 
@@ -289,7 +316,7 @@ static void StoreMouse_RenderItems(int client)
 	DisplayScreenText(ScreenRef[client][Screen_Title], "Store");
 
 	// Creates an item, if it doesn't already exist
-	CreateScreenSprite(ScreenRef[client][Screen_Sprite1], client, "materials/test_sprite_sniper2.vmt", {0.5, 0.5}, 100.0);
+	CreateScreenVGUI(ScreenRef[client][Screen_Sprite1], client, "materials/test_sprite_sniper2", {0.5, 0.5});
 
 	// Removes an item, if it exists
 	//RemoveScrrenItem(ScreenRef[client][Screen_Sprite1]);
@@ -331,7 +358,7 @@ static void CreateScreenText(int &ref, int client, const float pos[2], float sca
 	GetClientEyeAngles(client, vec);
 	GetCursorVector(client, vec, pos, vec);
 
-	ScaleVector(vec, scale * 0.1); // Higher = less text size
+	ScaleVector(vec, scale * SCALE_FORITEMS); // Higher = less text size
 
 	float eyePos[3];
 	GetClientEyePosition(client, eyePos);
@@ -341,7 +368,7 @@ static void CreateScreenText(int &ref, int client, const float pos[2], float sca
 	if(ref != -1)
 	{
 		DispatchKeyValueInt(ref, "font", 8);
-		DispatchKeyValueFloat(ref, "textsize", 10.0 * 0.1);
+		DispatchKeyValueFloat(ref, "textsize", 10.0 * SCALE_FORITEMS);
 		SetEntPropEnt(ref, Prop_Send, "m_hOwnerEntity", client);
 		SDKHook(ref, SDKHook_SetTransmit, SetTransmit_Owner);
 		ref = EntIndexToEntRef(ref);
@@ -358,7 +385,21 @@ static void DisplayScreenText(int ref, const char[] message)
 	}
 }
 
-static void CreateScreenSprite(int &ref, int client, const char[] material, const float pos[2], float scale = 100.0)
+
+
+enum
+{
+	VGUI_SCREEN_ACTIVE = 1,
+	VGUI_SCREEN_VISIBLE_TO_TEAMMATES = 2,
+	VGUI_SCREEN_ATTACHED_TO_VIEWMODEL = 4,
+	VGUI_SCREEN_TRANSPARENT = 8,
+	VGUI_SCREEN_ONLY_USABLE_BY_OWNER = 16,
+};
+
+#define MAX_MATERIAL_STRING_BITS 10
+#define MAX_MATERIAL_STRINGS (1 << MAX_MATERIAL_STRING_BITS)
+#define OVERLAY_MATERIAL_INVALID_STRING (MAX_MATERIAL_STRINGS - 1)
+static void CreateScreenVGUI(int &ref, int client, const char[] material, const float pos[2], int width = 1000, int height = 562)
 {
 	if(EntRefToEntIndex(ref) != -1)
 		return;
@@ -367,30 +408,47 @@ static void CreateScreenSprite(int &ref, int client, const char[] material, cons
 	GetClientEyeAngles(client, ang);
 	GetCursorVector(client, ang, pos, offset);
 
-	ScaleVector(offset, scale); // Higher = less text size
+	//infront of face!
+	ScaleVector(offset, 10.0); // Higher = less text size
 
 	float vec[3];
 	GetClientEyePosition(client, vec);
 	AddVectors(vec, offset, vec);	// Add to position
-
-	ref = CreateEntityByName("env_sprite_oriented");
+	/*
+	RunScriptCode(client, -1, -1, "local background = SpawnEntityFromTable(\"vgui_screen\","...
+									"{"...
+										"origin          = self.EyePosition(),"...
+										"angles          = QAngle(),"...
+										"panelname       = \"pda_panel_spy_invis\","...
+										"overlaymaterial = \"tf2ware_ultimate/grey\","...
+										"width           = 50,"...
+										"height          = 50.0,"...
+									"}); "...
+									"NetProps.SetPropInt(background, \"m_fScreenFlags\", 17);");
+	*/
+	
+	ref = CreateEntityByName("vgui_screen");
 	if(ref != -1)
 	{
-		DispatchKeyValue(ref, "model", material);
-		
+		ang[1] -= 90.0;
+		ang[2] += 90.0;
+		DispatchKeyValueVector(ref, "origin", vec);
+		DispatchKeyValueVector(ref, "angles", ang);
+		DispatchKeyValue(ref, "panelname", "pda_panel_spy_invis");
+		PrintToChatAll("%s material",material);
+	//	SetEntProp(ref, Prop_Send, "m_nOverlayMaterial", OVERLAY_MATERIAL_INVALID_STRING);
+		DispatchKeyValue(ref, "overlaymaterial", material);
+		DispatchKeyValueInt(ref, "width", width);
+		DispatchKeyValueInt(ref, "height", height);
 		DispatchSpawn(ref);
-		SetEdictFlags(ref, (GetEdictFlags(ref) & ~FL_EDICT_ALWAYS));
+	//	SetEdictFlags(ref, (GetEdictFlags(ref) & ~FL_EDICT_ALWAYS));^
+	//	SetEntPropEnt(ref, Prop_Send, "m_hOwnerEntity", client);
 
-		TeleportEntity(ref, vec, ang, NULL_VECTOR);
-		//SetParent(client, ref, "", offset);
-
-		AcceptEntityInput(ref, "ShowSprite");
-		
-		
-		SetEntPropEnt(ref, Prop_Send, "m_hOwnerEntity", client);
-		SDKHook(ref, SDKHook_SetTransmit, SetTransmit_Owner);
+		SetEntProp(ref, Prop_Send, "m_fScreenFlags", VGUI_SCREEN_ACTIVE | VGUI_SCREEN_ONLY_USABLE_BY_OWNER);
+	//	SDKHook(ref, SDKHook_SetTransmit, SetTransmit_Owner);
 		ref = EntIndexToEntRef(ref);
 	}
+
 }
 
 static void RemoveScreenItem(int &ref)

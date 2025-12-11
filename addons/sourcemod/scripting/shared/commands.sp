@@ -31,6 +31,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
 	char buffer[64];
 	KvGetSectionName(kv, buffer, sizeof(buffer));
+	PrintToChatAll(" CMD %s",buffer);
 	if(f_PreventMovementClient[client] > GetGameTime())
 	{
 #if defined ZR
