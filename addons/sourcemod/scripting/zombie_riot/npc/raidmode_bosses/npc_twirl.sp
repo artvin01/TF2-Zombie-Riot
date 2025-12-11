@@ -1303,10 +1303,15 @@ static void ClotThink(int iNPC)
 
 	if(b_allow_final_invocation)
 	{
-		if(npc.m_flFinalInvocationTimer != FAR_FUTURE)
+		if(npc.m_flFinalInvocationTimer < GameTime && m_flFinalInvocationTimer != FAR_FUTURE)
 		{
 			npc.m_flFinalInvocationTimer = FAR_FUTURE;
 			//npc.m_flFinalInvocationLogic = GetGameTime() + 5.0;
+
+			if(b_wonviatimer)
+			{
+				npc.m_flFinalInvocationTimer = GameTime + 300.0;
+			}
 			Final_Invocation(npc);
 		}
 	}
@@ -1575,32 +1580,34 @@ static void Final_Invocation(Twirl npc)
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToCeil(Tower_Health));
 		}
 	}
-	if(b_force_transformation)
+	if(!b_wonviatimer)
 	{
-		switch(GetRandomInt(0, 3))
+		if(b_force_transformation)
 		{
-			case 0: Twirl_Lines(npc, "I refuse to let you go beyond this point");
-			case 1: Twirl_Lines(npc, "{crimson}Perish.");
-			case 2: Twirl_Lines(npc, "{crimson}I Got a Glock in my rari.");
-			case 3: Twirl_Lines(npc, "{crimson}I'm going to mount your heads on a staff as a warning for others not to fuck with me");
+			switch(GetRandomInt(0, 3))
+			{
+				case 0: Twirl_Lines(npc, "I refuse to let you go beyond this point");
+				case 1: Twirl_Lines(npc, "{crimson}Perish.");
+				case 2: Twirl_Lines(npc, "{crimson}I Got a Glock in my rari.");
+				case 3: Twirl_Lines(npc, "{crimson}I'm going to mount your heads on a staff as a warning for others not to fuck with me");
+			}
 		}
-	}
-	else
-	{
-		switch(GetRandomInt(0, 7))
+		else
 		{
-			case 0: Twirl_Lines(npc, "If you think I’m all you have to deal with, {crimson}well then...");
-			case 1: Twirl_Lines(npc, "Ahahah, I am a ruler Afterall, {purple}and a ruler usually has an army");
-			case 2: Twirl_Lines(npc, "How's your aoe situation?");
-			case 3: Twirl_Lines(npc, "Don't worry, the {aqua}Stellar Weaver{snow} won't be showing up from them");
-			case 4: Twirl_Lines(npc, "Hmm, how about a bit of support, {crimson}for myself");
-			case 5: Twirl_Lines(npc, "Aye, this’ll do, now go forth my minion’s {crimson}and crush them{snow}!");
-			case 6: Twirl_Lines(npc, "The Final Invocation!");
-			case 7: Twirl_Lines(npc, "{lightblue}Alaxios{default} Oh HIM, yeah I maaay have borrowed this from him, heh, just don't tell him or his ''god''lines might get hurt.");
+			switch(GetRandomInt(0, 7))
+			{
+				case 0: Twirl_Lines(npc, "If you think I’m all you have to deal with, {crimson}well then...");
+				case 1: Twirl_Lines(npc, "Ahahah, I am a ruler Afterall, {purple}and a ruler usually has an army");
+				case 2: Twirl_Lines(npc, "How's your aoe situation?");
+				case 3: Twirl_Lines(npc, "Don't worry, the {aqua}Stellar Weaver{snow} won't be showing up from them");
+				case 4: Twirl_Lines(npc, "Hmm, how about a bit of support, {crimson}for myself");
+				case 5: Twirl_Lines(npc, "Aye, this’ll do, now go forth my minion’s {crimson}and crush them{snow}!");
+				case 6: Twirl_Lines(npc, "The Final Invocation!");
+				case 7: Twirl_Lines(npc, "{lightblue}Alaxios{default} Oh HIM, yeah I maaay have borrowed this from him, heh, just don't tell him or his ''god''lines might get hurt.");
+			}
 		}
+		RaidModeTime += 60.0;
 	}
-	
-	RaidModeTime += 60.0;
 
 	/*
 	simply un comment to readd.
@@ -2149,8 +2156,8 @@ static void Initiate_Projectile_ParticleAccelerator(Twirl npc, int projectile, i
 
 	fl_BEAM_DurationTime[projectile] = float(npc.m_iState);
 
-	float 	Homing_Power = 3.0,
-			Homing_Lockon = 80.0;
+	float 	Homing_Power = b_wonviatimer ? 30.0 : 3.0,
+			Homing_Lockon = b_wonviatimer ? 360.0 : 80.0;
 
 	float angles[3];
 	GetEntPropVector(projectile, Prop_Data, "m_angRotation", angles);
@@ -2159,7 +2166,7 @@ static void Initiate_Projectile_ParticleAccelerator(Twirl npc, int projectile, i
 	npc.index,
 	Homing_Lockon,			// float lockonAngleMax,
 	Homing_Power,			// float homingaSec,
-	true,				// bool LockOnlyOnce,
+	!b_wonviatimer,				// bool LockOnlyOnce,
 	true,					// bool changeAngles,
 	angles,
 	PrimaryThreatIndex
@@ -4202,7 +4209,7 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 		case WEAPON_RUINA_DRONE_KNIFE: switch(GetRandomInt(0,2)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "NICE KNIFE {gold}%N{snow}.", client); 																	case 1: Format(Text_Lines, sizeof(Text_Lines), "It's british shanking time {gold}%N{snow}!", client); case 2: Format(Text_Lines, sizeof(Text_Lines), "OI, {gold}%N{snow} YOU GOT A LOISCENCE FOR THAT KNOIFE?", client);}
 		case WEAPON_SIGIL_BLADE: switch(GetRandomInt(0,2)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Huh, how did you {gold}%N{snow} manage to turn that worthless thing into a somwhat competent weapon?", client); case 1: Format(Text_Lines, sizeof(Text_Lines), "Wait, isn't that Shard from my Airships's fog-lamps? How, where did you {gold}%N{snow} find that?", client); case 2: Format(Text_Lines, sizeof(Text_Lines), "I applaude you {gold}%N{snow} for turning that \"thing\" into a weapon", client);}
 		case WEAPON_IRENE: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh, so you know Irene {gold}%N{snow}? Do you perchance have a picture of her...?", client); 			case 1: Format(Text_Lines, sizeof(Text_Lines), "Such an interesting weapon, say {gold}%N{snow} Where did you get that from?", client);}
-		case WEAPON_RAIGEKI: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "ITS TIME TO, DU-DU-DU-DU-DUEL {gold}%N{snow}!", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "I use pot of greed {gold}%N{snow}", client);}
+		case WEAPON_RAIGEKI: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "ITS TIME TO, DU-DU-DU-DU-DUEL {gold}%N{snow}!", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "I use pot of greed {gold}%N{snow}.", client);}
 		case WEAPON_CHEMICAL_THROWER: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "I'm not quite fond of {gold}%N{snow} using chemical warfare, quite barbaric if I'm being honest", client); case 1: Format(Text_Lines, sizeof(Text_Lines), "Spread the chemicals {gold}%N{snow}, spread the that which will burn the world to nothing but pools of acid!", client);}
 		case WEAPON_KIT_PROTOTYPE, WEAPON_KIT_PROTOTYPE_MELEE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "uhhh, shouldn't you {gold}%N{snow}, be on my side? or did {gold}Expidonsa{snow} finally have enough of my \"Twirly Antics\"?", client); case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} has just gotta be a broken unit, hope {gold}Expidonsa{snow} won't mind too bad if I bust it up before they get a chance to recover it...", client);}
 		
@@ -4458,10 +4465,19 @@ static void HandleRaidTimer(Twirl npc)
 		*/
 		int wave = i_current_wave[npc.index];
 		b_wonviatimer = true;
-		RaidModeScaling *= 50.0;
+		RaidModeScaling *= 100.0;
+
+		for(int i=0 ; i < sizeof(fl_player_weapon_score) ; i++)
+		{
+			fl_player_weapon_score[i] = -111111.0;
+		}
+
+		npc.m_flFinalInvocationTimer = 0.0;
 		i_RaidGrantExtra[npc.index] = 1;
 		if(wave < 40)
 			i_current_wave[npc.index] = 40;
+
+		ApplyStatusEffect(npc.index, npc.index, "Dimensional Turbulence", 999.0);
 
 		int MaxHealth = ReturnEntityMaxHealth(npc.index);
 		HealEntityGlobal(npc.index, npc.index, float((MaxHealth)), 1.0, 10.0, HEAL_ABSOLUTE);
@@ -4475,11 +4491,11 @@ static void HandleRaidTimer(Twirl npc)
 		npc.m_iRangedAmmo = 999;
 
 		ApplyStatusEffect(npc.index, npc.index, "Ruina's Defense", 999.0);
-		NpcStats_RuinaDefenseStengthen(npc.index, 0.8);	//20% resistances
+		NpcStats_RuinaDefenseStengthen(npc.index, 0.5);	//50% resistances
 		ApplyStatusEffect(npc.index, npc.index, "Ruina's Agility", 999.0);
 		NpcStats_RuinaAgilityStengthen(npc.index, 1.2); //20% speed bonus, going bellow 1.0 will make npc's slower
 		ApplyStatusEffect(npc.index, npc.index, "Ruina's Damage", 999.0);
-		NpcStats_RuinaDamageStengthen(npc.index, 0.2);	//20% dmg bonus
+		NpcStats_RuinaDamageStengthen(npc.index, 0.5);	//50% dmg bonus
 
 		Kill_Abilities(npc);
 
@@ -4569,12 +4585,13 @@ void Twirl_OnStellaKarlasDeath()
 			fl_Extra_Speed[npc.index] = 1.0;
 		npc.m_iRangedAmmo += RoundToFloor(npc.m_iRangedAmmo*0.5);
 
+		ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 999.0);
 		ApplyStatusEffect(npc.index, npc.index, "Ruina's Defense", 999.0);
-		NpcStats_RuinaDefenseStengthen(npc.index, 0.8);	//20% resistances
+		NpcStats_RuinaDefenseStengthen(npc.index, 0.7);	//20% resistances
 		ApplyStatusEffect(npc.index, npc.index, "Ruina's Agility", 999.0);
 		NpcStats_RuinaAgilityStengthen(npc.index, 1.2); //20% speed bonus, going bellow 1.0 will make npc's slower
 		ApplyStatusEffect(npc.index, npc.index, "Ruina's Damage", 999.0);
-		NpcStats_RuinaDamageStengthen(npc.index, 0.2);	//20% dmg bonus
+		NpcStats_RuinaDamageStengthen(npc.index, 0.6);	//20% dmg bonus
 	}
 }
 static int[] i_GetAllPartiesInvolved()
