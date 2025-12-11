@@ -1007,7 +1007,7 @@ static void PurgeDetectRiding(int entity, int client)
 
 	float Vec[3], vec2[3];
 	WorldSpaceCenter(entity, Vec);
-	Vec[2]+=20.0;
+	Vec[2]+=50.0;
 	WorldSpaceCenter(client, vec2);
 	if(vec2[2] > Vec[2])	
 	{

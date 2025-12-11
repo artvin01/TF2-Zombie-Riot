@@ -1404,7 +1404,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 
 			if(OwnedItemIndex)
 			{
-				int owner = -1;
+				//int owner = -1;
 
 				ItemInfo info;
 				if(item.GetItemInfo(values[1], info) && info.Cost)
@@ -1477,7 +1477,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						
 						Store_ApplyAttribs(client);
 						Store_GiveAll(client, GetClientHealth(client));
-						owner = EntRefToEntIndex(values[2]);
+					//	owner = EntRefToEntIndex(values[2]);
 
 						Function Func = info.FuncOnPap;
 
