@@ -745,8 +745,8 @@ public void Rogue_Vote_FortituousOpportunity(const Vote vote, int index)
 {
 	if(StrEqual(vote.Config, "Unauthorized Ruina Gem"))
 	{
-		CPrintToChatAll("{purple}Twirl{snow}: ........................... So you all are traitors. Go to hell.");
-		CPrintToChatAll("{crimson}Twirl leaves you alone in the desert, bob the second also leaves you... Uh... did you think this one through?");
+		CPrintToChatAll("{purple}트윌{snow}: ........................... 배신자들 같으니. 나가 죽어버려.");
+		CPrintToChatAll("{crimson}트윌은 당신을 사막에 홀로 남겨두고, 밥 더 세컨드도 당신을 버리고 떠났습니다... 뭔... 이거 제대로 하고 있는게 맞으십니까?");
 		ForcePlayerLoss();
 		//If mercs give it away, you just auto loose.
 	}

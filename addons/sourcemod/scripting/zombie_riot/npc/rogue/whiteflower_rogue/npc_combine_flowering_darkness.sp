@@ -606,7 +606,7 @@ public void Whiteflower_FloweringDarkness_NPCDeath(int entity)
 
 	if(i_RaidGrantExtra[npc.index])
 	{
-		CPrintToChatAll("{crimson}어둠의 개화자가 그가 따르는 리더에게로 도주했습니다.\n그를 추적하십시오.");	
+		CPrintToChatAll("{crimson}어둠 개화자가 그가 따르는 리더에게로 도주했습니다.\n그를 추적하십시오.");	
 	}
 }
 

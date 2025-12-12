@@ -246,7 +246,7 @@ methodmap AlmagestJkei < CClotBody
 					view_as<AlmagestJkei>(other).SetJkeiSpeed(330.0);
 					if(view_as<AlmagestJkei>(other).m_flMegaSlashDoing)
 						view_as<AlmagestJkei>(other).SetJkeiSpeed(150.0);
-					CPrintToChatAll("{black}Jkei{crimson} gains more strength.");
+					CPrintToChatAll("{black}제이케이{crimson}가 힘을 얻고 있다.");
 					f_AttackSpeedNpcIncrease[other] *= 0.85;
 				//	fl_Extra_Speed[other] 	*= 1.05;
 					fl_Extra_Damage[other] 	*= 1.2;
@@ -269,7 +269,7 @@ methodmap AlmagestJkei < CClotBody
 					view_as<AlmagestJkei>(other).SetJkeiSpeed(330.0);
 					if(view_as<AlmagestJkei>(other).m_flMegaSlashDoing)
 						view_as<AlmagestJkei>(other).SetJkeiSpeed(150.0);
-					CPrintToChatAll("{black}Jkei{crimson} gains more strength, Now's the time to kill him off!");
+					CPrintToChatAll("{black}제이케이{crimson}가 힘을 얻고 있다. 이제 처치할 시간이다!");
 					RemoveFromNpcAliveList(other);
 					AddNpcToAliveList(other, 0);
 					f_AttackSpeedNpcIncrease[other] *= 0.8;
@@ -350,7 +350,7 @@ methodmap AlmagestJkei < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 2);
-		CPrintToChatAll("{black}Jkei{default} : ∴ᒷリリ ↸⚍ ⨅⚍ {black}Shadowing darkness{default}... ⍑ ∴ᔑ∷ℸ ̣ᒷ ᒲᔑꖎ, ↸⚍ ∴╎∷ᓭℸ ̣ ᒷ⍑ ⊣ꖎᒷ╎ᓵ⍑ ⍊ᒷ∷∷ᒷᓵꖌᒷリ.");
+		CPrintToChatAll("{black}제이케이{default} : ∴ᒷリリ ↸⚍ ⨅⚍ {black}그림자 응달{default}... ⍑ ∴ᔑ∷ℸ ̣ᒷ ᒲᔑꖎ, ↸⚍ ∴╎∷ᓭℸ ̣ ᒷ⍑ ⊣ꖎᒷ╎ᓵ⍑ ⍊ᒷ∷∷ᒷᓵꖌᒷリ.");
 		
 
 		return npc;
@@ -441,7 +441,7 @@ public Action AlmagestJkei_OnTakeDamage(int victim, int &attacker, int &inflicto
 		float CurrentRatio = (float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) + damage) / float(ReturnEntityMaxHealth(npc.index));
 		if(CurrentRatio <= MaxHealthRatioDamage)
 		{
-			CPrintToChatAll("{black}Jkei{crimson} gains a shield, his soldiers give him strength, kill them off.");
+			CPrintToChatAll("{black}제이케이{crimson}가 보호막을 얻고, 그의 병사가 그에게 힘을 주고 있다. 병사들을 제거하라.");
 			ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 9999.0);
 			fl_Extra_Damage[npc.index] 	*= 0.75;
 			view_as<AlmagestJkei>(npc.index).SetJkeiSpeed(330.0);

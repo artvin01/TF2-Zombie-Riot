@@ -1184,17 +1184,17 @@ bool Rogue_BattleLost()
 		{
 			if(RogueTheme == ReilaRift)
 			{
-				CPrintToChatAll("{green}Your terrible nightmare ends....");
+				CPrintToChatAll("{green}당신의 끔찍한 악몽이 끝났다....");
 			}
 			else
 			{
 				if(BonusLives > 1)
 				{
-					CPrintToChatAll("{green}You lost the battle but continued the adventure, {yellow}another retry is ready.");
+					CPrintToChatAll("{green}전투에서 패배했지만, 모험은 계속 됩니다. {yellow}아직 기회는 남아있습니다.");
 				}
 				else
 				{
-					CPrintToChatAll("{green}You lost the battle but continued the adventure, {red}this is your last chance!");
+					CPrintToChatAll("{green}전투에서 패배했지만, 모험은 계속 됩니다. {red}이게 마지막 기회입니다!");
 				}
 			}
 		}

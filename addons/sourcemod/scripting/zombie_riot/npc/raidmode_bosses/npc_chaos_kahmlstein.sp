@@ -605,7 +605,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				npc.StopPathing();
 				
 				i_khamlCutscene = 13;
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: I have seen enough.. I knew I should've stepped in from the start. {crimson} You made a mistake of sending him out alone.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 너희를 충분히 지켜보고 있었다. 그리고 그건 큰 실수였던 것 같다. {crimson} 처음부터 이 상황에 개입했어야 했는데.");
 				MusicEnum music;
 				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns_intro.mp3");
 				music.Time = 42;
@@ -653,7 +653,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 					strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 					Music_SetRaidMusic(music, false);
 					i_khamlCutscene = 12;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: You. Come closer and look me in the face... {crimson} Or are you too scared?");
+					CPrintToChatAll("{darkblue}캄르스타인{default}: 너. 와서 나와 정면으로 마주해라... {crimson} 아니면 두려운 거냐?");
 				}
 			}
 			case 12:
@@ -661,7 +661,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 37.0)
 				{
 					i_khamlCutscene = 11;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: Brave against some cheap copy, but too scared of the real deal?");
+					CPrintToChatAll("{darkblue}캄르스타인{default}: 그 싸구려 클론과는 잘만 맞서면서, 정작 진짜 본인과는 손 하나 대기 싫다고?");
 				}
 			}
 			case 11:
@@ -669,7 +669,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 33.0)
 				{
 					i_khamlCutscene = 10;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: You killed my men, {crimson}YOU KILLED MY PUP{default}, BUT YOU ARE TOO SCARED OF ME?!");
+					CPrintToChatAll("{darkblue}캄르스타인{default}: 넌 나의 사람들을 죽이고, {crimson}내 강아지도 죽였다.{default} 그런데 이제 와서 날 두려워 해?!");
 				}
 			}
 			case 10:
@@ -677,7 +677,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 30.0)
 				{
 					i_khamlCutscene = 9;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: I will burn everything until there's nothing left, but ash. And from that ash...");
+					CPrintToChatAll("{darkblue}캄르스타인{default}: 난 모든 것을 재만 남을때까지 태워버릴 것이다. 그리고 그 재에서...");
 				}
 			}
 			case 9:
@@ -685,7 +685,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 26.0)
 				{
 					i_khamlCutscene = 8;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: A BRAND NEW FREE WORLD WILL BE BORN!! A WORLD WITH NO ONE TO COMMAND YOU AGAIN!");
+					CPrintToChatAll("{darkblue}캄르스타인{default}: 완전히 새로운 자유의 세계가 탄생할 것이다!! 그 누구도 너희를 지배할 자가 없는 세계!");
 				}
 			}
 			case 8:
@@ -693,7 +693,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 22.0)
 				{
 					i_khamlCutscene = 7;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: A WORLD RID OF THESE FUCKING PARASITES CALLED POLITICIANS! FREE FROM GOVERNMENTS!");
+					CPrintToChatAll("{darkblue}캄르스타인{default}: 망할 놈의 '정치인'이라고 불리우는 썩어빠진 기생충을 제거한 세계 말이다! 정부에게서!");
 				}
 			}
 			case 7:
@@ -701,7 +701,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 18.0)
 				{
 					i_khamlCutscene = 6;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: AN IDEAL WORLD, A PARADISE!!! SO STOP RESISTING AND ACCEPT IT DAMMIT!!");
+					CPrintToChatAll("{darkblue}캄르스타인{default}: 그것이 이상적인 세계이자, 낙원이다! 그러니 저항하지 말고 받아들이란 말이다!!");
 				}
 			}
 			case 6:
@@ -709,7 +709,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 12.0)
 				{
 					i_khamlCutscene = 5;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: ....no, this new world isn't going to welcome you anyway...");
+					CPrintToChatAll("{darkblue}캄르스타인{default}: ....아니, 생각해보니까 너는 그 시대를 볼 수 없겠군...");
 				}
 			}
 			case 5:
@@ -717,7 +717,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 9.0)
 				{
 					i_khamlCutscene = 4;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: Because you know what I hate the most, more than governments? {crimson}Violence against animals..");
+					CPrintToChatAll("{darkblue}캄르스타인{default}: 내가 정부보다 더 싫어하는게 뭔지 아나? {crimson}동물학대.");
 				}
 			}
 			case 4:
@@ -725,7 +725,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 4.0)
 				{
 					i_khamlCutscene = 3;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: {crimson}You murdered these cats in cold blood. And now I'm going to do the same with you.");
+					CPrintToChatAll("{darkblue}캄르스타인{default}: {crimson}넌 이 고양이들을 포함한 동물들을 이유 없이 무자비하게 학살하고 다녔지. 그리고 내가 그 복수를 이룰테고.");
 				}
 			}
 			case 3:
@@ -733,7 +733,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 2.0)
 				{
 					i_khamlCutscene = 2;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: I will avenge you my dear companion, I will avenge everything.");
+					CPrintToChatAll("{darkblue}캄르스타인{default}: 내 동료들을 위해 복수하겠다. 네가 저지른 모든 짓에 대한 대가를 치를 시간이다.");
 				}
 			}
 			case 2:
@@ -741,7 +741,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 0.0)
 				{
 					i_khamlCutscene = 0;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's begin.");
+					CPrintToChatAll("{darkblue}캄르스타인{default}: 해보자고.");
 					RaidBossActive = EntIndexToEntRef(npc.index);
 					RaidAllowsBuildings = false;
 				}

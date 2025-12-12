@@ -1586,24 +1586,24 @@ static void Final_Invocation(Twirl npc)
 		{
 			switch(GetRandomInt(0, 3))
 			{
-				case 0: Twirl_Lines(npc, "I refuse to let you go beyond this point");
-				case 1: Twirl_Lines(npc, "{crimson}Perish.");
-				case 2: Twirl_Lines(npc, "{crimson}I Got a Glock in my rari.");
-				case 3: Twirl_Lines(npc, "{crimson}I'm going to mount your heads on a staff as a warning for others not to fuck with me");
+				case 0: Twirl_Lines(npc, "이제 이 이상으로는 못 넘어갈걸.");
+				case 1: Twirl_Lines(npc, "{crimson}스러져라.");
+				case 2: Twirl_Lines(npc, "{crimson}여기까지 온 건 처음이야.");
+				case 3: Twirl_Lines(npc, "{crimson}슬슬 끝낼때가 됐지?");
 			}
 		}
 		else
 		{
 			switch(GetRandomInt(0, 7))
 			{
-				case 0: Twirl_Lines(npc, "If you think I’m all you have to deal with, {crimson}well then...");
-				case 1: Twirl_Lines(npc, "Ahahah, I am a ruler Afterall, {purple}and a ruler usually has an army");
-				case 2: Twirl_Lines(npc, "How's your aoe situation?");
-				case 3: Twirl_Lines(npc, "Don't worry, the {aqua}Stellar Weaver{snow} won't be showing up from them");
-				case 4: Twirl_Lines(npc, "Hmm, how about a bit of support, {crimson}for myself");
-				case 5: Twirl_Lines(npc, "Aye, this’ll do, now go forth my minion’s {crimson}and crush them{snow}!");
-				case 6: Twirl_Lines(npc, "The Final Invocation!");
-				case 7: Twirl_Lines(npc, "{lightblue}Alaxios{default} Oh HIM, yeah I maaay have borrowed this from him, heh, just don't tell him or his ''god''lines might get hurt.");
+				case 0: Twirl_Lines(npc, "음, 이게 끝이라고 생각했어? {crimson}난 아닌데...");
+				case 1: Twirl_Lines(npc, "아하하, 내가 집정관이라는거 알고 있지? {purple}그럼 이것도 누구 물건이란것도 알겠네?");
+				case 2: Twirl_Lines(npc, "그래, 광역 공격은 잘 챙겼고?");
+				case 3: Twirl_Lines(npc, "어, 걱정 마. {aqua}스텔라 위버{snow}는 저기서 안 나와.");
+				case 4: Twirl_Lines(npc, "흐음, 지원이 필요하다고? 여기 있어! 비록 네 지원군은 아니지만.");
+				case 5: Twirl_Lines(npc, "이걸 첨가하는 싸움은 더 재밌어질거야!");
+				case 6: Twirl_Lines(npc, "마지막 호출!");
+				case 7: Twirl_Lines(npc, "{lightblue}알락시오스{default}? 아, 걔... 맞아, 걔한테서 좀 배운 기술이거든. 그러니까 이건 걔한테는 비밀이다?");
 			}
 		}
 		RaidModeTime += 60.0;
@@ -4187,31 +4187,31 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_MAGNESIS: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "I've had it up to here MISTER {gold}%N{snow}.", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "How would you feel {gold}%N{snow} if I grabbed YOU?", client);}
-		case WEAPON_YAKUZA: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh god another one. YOUR STRENGTH {gold}%N{snow} IS FAKE", client); 									case 1: Format(Text_Lines, sizeof(Text_Lines), "I would prefer if your arms did not touch me mr {gold}%N{snow}.", client);}
+		case WEAPON_MAGNESIS: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "계속 그렇게 날 만질거야, {gold}%N{snow} ?", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "내가 {gold}%N{snow} 널 그런식으로 붙잡으면 기분이 어떻겠니?", client);}
+		case WEAPON_YAKUZA: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "어... {gold}%N{snow} , 그거 만화에서 나오는 격투술이야?", client); 									case 1: Format(Text_Lines, sizeof(Text_Lines), "날 그렇게 함부로 만지지 말았으면 좋겠네, {gold}%N{snow} 씨?", client);}
 		
-		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh my, {gold}%N{snow}, you're trying to copy the Machine?", client); 									case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, how foolish {gold}%N{snow} Blitzkrieg was a poor mistake to copy...", client);}	//IT ACTUALLY WORKS, LMFAO
-		case WEAPON_COSMIC_TERROR: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, the Cosmic Terror, haven't seen that relic in a long while"); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "The moon is a deadly laser, am I right {gold}%N{snow}?",client);}
-		case WEAPON_LANTEAN: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, {gold}%N{snow}, Those drones, {crimson}how cute...", client); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "I applaud your efforts {gold}%N{snow} for trying to use the Lantean staff here...", client);}
-		case WEAPON_YAMATO: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh, {gold}%N{snow}'s a little {aqua}Motivated", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "Go fourth {gold}%N{snow}, AND BECOME {aqua}THE STORM THAT IS APROACHING{crimson}!", client);}
-		case WEAPON_BEAM_PAP: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, dual energy Pylons, nice choice {gold}%N", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "So, are you Team {aqua}Particle Cannon{snow} or Team{orange} Particle Beam{gold} %N{snow}?", client);}	
-		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh how {crimson}cute{gold} %N{snow}, you're using {crimson}Karlas's{snow} Old blade", client); 		case 1: Format(Text_Lines, sizeof(Text_Lines), "The Fantasy blade is quite the weapon, {gold}%N{snow} but you're not using it correctly.", client);}	
-		case WEAPON_QUINCY_BOW: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh, {gold}%N{snow}'s being a {aqua}Quincy{snow}, quick call the {crimson}Shinigami{snow}!", client);	case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, what a shame {gold}%N{snow} Here I thought you were a true {aqua}Quincy", client);}	
-		case WEAPON_ION_BEAM: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "That laser is still quite young {gold}%N{snow} It needs more upgrades",client); 						case 1: Format(Text_Lines, sizeof(Text_Lines), "Your Prismatic Laser has potential {gold}%N{snow}!", client);}	
-		case WEAPON_ION_BEAM_PULSE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "I see, {gold}%N{snow}, You decided to go down the pulse path!", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "I do quite enjoy a faster pulsating laser, just like you {gold}%N{snow} by the looks of it", client);}	
-		case WEAPON_ION_BEAM_NIGHT: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh my, are you {gold}%N{snow}, trying to cosplay as {aqua}Stella{snow}?", client); 					case 1: Format(Text_Lines, sizeof(Text_Lines), "That Laser Tickles {gold}%N{crimson} Get a bigger laser{aqua} NOW!", client);}
-		case WEAPON_ION_BEAM_FEED: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "A cascading feedback loop laser, ballsy {gold}%N", client); 											case 1: Format(Text_Lines, sizeof(Text_Lines), "Prismatic Feedback loop is a very powerful weapon, but its also quite hard to master... {gold}%N", client);}				
-		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You’re seriously trying to poke me with that thing {gold}%N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, You don't have the needed skills to properly use the lance.", client);}	
-		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "How does it feel to control a fraction of gravity{gold} %N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "The Gravaton wand was only a partial success, and yet {gold}%N{snow}, you’re using it...", client);}
-		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "BOBS GUN?! {crimson}GET AWAY FROM ME!!!!!!!!!! {gold}%N", client); 	
-		case WEAPON_REIUJI_WAND: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "So {gold}%N{snow}, you got ahold of Rulianas's Launcher huh?", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "Too bad that the weapon your using {gold}%N{snow}, is primarily meant for horde control", client);}
-		case 9:/*9 is passenger*/ switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "I'll be frank {gold}%N{snow}, even though that wand looks like one of ours, it ain't", client); 		case 1: Format(Text_Lines, sizeof(Text_Lines), "I'm somewhat ashamed to admit that the wand you're using {gold}%N{snow}, wasn't made by us, which is frankly a shock considering it has all the characteristics of our wands", client);}
-		case WEAPON_RUINA_DRONE_KNIFE: switch(GetRandomInt(0,2)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "NICE KNIFE {gold}%N{snow}.", client); 																	case 1: Format(Text_Lines, sizeof(Text_Lines), "It's british shanking time {gold}%N{snow}!", client); case 2: Format(Text_Lines, sizeof(Text_Lines), "OI, {gold}%N{snow} YOU GOT A LOISCENCE FOR THAT KNOIFE?", client);}
-		case WEAPON_SIGIL_BLADE: switch(GetRandomInt(0,2)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Huh, how did you {gold}%N{snow} manage to turn that worthless thing into a somwhat competent weapon?", client); case 1: Format(Text_Lines, sizeof(Text_Lines), "Wait, isn't that Shard from my Airships's fog-lamps? How, where did you {gold}%N{snow} find that?", client); case 2: Format(Text_Lines, sizeof(Text_Lines), "I applaude you {gold}%N{snow} for turning that \"thing\" into a weapon", client);}
-		case WEAPON_IRENE: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh, so you know Irene {gold}%N{snow}? Do you perchance have a picture of her...?", client); 			case 1: Format(Text_Lines, sizeof(Text_Lines), "Such an interesting weapon, say {gold}%N{snow} Where did you get that from?", client);}
-		case WEAPON_RAIGEKI: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "ITS TIME TO, DU-DU-DU-DU-DUEL {gold}%N{snow}!", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "I use pot of greed {gold}%N{snow}.", client);}
-		case WEAPON_CHEMICAL_THROWER: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "I'm not quite fond of {gold}%N{snow} using chemical warfare, quite barbaric if I'm being honest", client); case 1: Format(Text_Lines, sizeof(Text_Lines), "Spread the chemicals {gold}%N{snow}, spread the that which will burn the world to nothing but pools of acid!", client);}
-		case WEAPON_KIT_PROTOTYPE, WEAPON_KIT_PROTOTYPE_MELEE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "uhhh, shouldn't you {gold}%N{snow}, be on my side? or did {gold}Expidonsa{snow} finally have enough of my \"Twirly Antics\"?", client); case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} has just gotta be a broken unit, hope {gold}Expidonsa{snow} won't mind too bad if I bust it up before they get a chance to recover it...", client);}
+		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "어머나, {gold}%N{snow}, 그 고철덩어리를 따라하려는 거야?", client); 									case 1: Format(Text_Lines, sizeof(Text_Lines), "이런, {gold}%N{snow} . 블리츠크리그는 우리 인생 최악의 실수였단 말야...", client);}	//IT ACTUALLY WORKS, LMFAO
+		case WEAPON_COSMIC_TERROR: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "아, 코즈믹 테러, 그 유물을 본 지가 오래 전인데."); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "달은 정말 파괴적인 레이저야. 그렇지, {gold}%N{snow}?",client);}
+		case WEAPON_LANTEAN: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "아, {gold}%N{snow}, 그 드론들, {crimson}정말 귀엽네...", client); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} 네가 여기서 랜턴 스태프를 써주는 거에 대해 감사함을 표해야겠어...", client);}
+		case WEAPON_YAMATO: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "흠, {gold}%N{snow} 너 좀 {aqua}활기차보이네.", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "어서 진격해, {gold}%N{snow}. {aqua}폭풍이 되어{crimson} 모든 것을 몰아치렴!", client);}
+		case WEAPON_BEAM_PAP: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "아, 이중 에너지 수정탑, 그거 정말 완벽해, {gold}%N !", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "그러니까, 넌 {aqua}입자포{snow}를 좋아하니? 아니면{orange} 입자 광선{gold}을 좋아하니, %N{snow}?", client);}	
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "와, {crimson}좋은데,{gold} %N{snow}. {crimson}카를라스{snow}의 오래된 검을 쓰고 있다니.", client); 		case 1: Format(Text_Lines, sizeof(Text_Lines), "판타지 블레이드는 정말 좋은 무기야, {gold}%N{snow}. 근데 무기를 잘못 사용하고 있는것 같네.", client);}	
+		case WEAPON_QUINCY_BOW: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "응? {gold}%N{snow}가 {aqua}퀸시{snow}가 됐네? 우리도 {crimson}사신{snow}을 불러야하나봐!", client);	case 1: Format(Text_Lines, sizeof(Text_Lines), "어, {gold}%N{snow} 네가 {aqua}퀸시가 될 줄은 몰랐어.", client);}	
+		case WEAPON_ION_BEAM: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "그 레이저는 여전히 개선이 필요해, {gold}%N{snow}. 아직 미완성 단계란다.",client); 						case 1: Format(Text_Lines, sizeof(Text_Lines), "네 프리즘 레이저는 포텐셜이 아직 남아있어, {gold}%N{snow}!", client);}	
+		case WEAPON_ION_BEAM_PULSE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "좋아, {gold}%N{snow}, 펄스의 길을 따르고 있나보구나!", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "그래, 펄스 레이저가 리듬이 정말 신나긴 해. 그렇지 않아, {gold}%N{snow} ?", client);}	
+		case WEAPON_ION_BEAM_NIGHT: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "어머나, {gold}%N{snow}, 지금 {aqua}스텔라{snow}를 따라하는거니?", client); 					case 1: Format(Text_Lines, sizeof(Text_Lines), "레이저가 너무 약하잖아, {gold}%N{crimson}. 좀 더 크기를 키워봐,{aqua} 어서!", client);}
+		case WEAPON_ION_BEAM_FEED: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "우와, 프리즘 피드백 루프라니, 대단해, {gold}%N", client); 											case 1: Format(Text_Lines, sizeof(Text_Lines), "프리즘 피드백 루프는 매우 강력한 무기야. 물론 네가 사용하려면 더 연습해야겠지, {gold}%N ?", client);}				
+		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "그걸로 정말 날 찌를거니, {gold}%N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, 창은 사용법이 따로 필요가 없잖아.", client);}	
+		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "중력의 일부를 제어하는 기분은 어때, {gold} %N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "중력 완드는 아직 미완성인 물건인데, 그럼에도 {gold}%N{snow}, 네가 잘 쓰고 있는걸 보면 뭐...", client);}
+		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "밥의 총?! {crimson}당장 그거 치워! {gold}%N !", client); 	
+		case WEAPON_REIUJI_WAND: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "그래서, {gold}%N{snow}, 루리아나의 발사기를 뺏은거야?", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "아, {gold}%N{snow}, 무기를 이상하게 사용하네. 그건 무리 통제를 위해 쓰는건데.", client);}
+		case 9:/*9 is passenger*/ switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "솔직히 말할게, {gold}%N{snow}. 그 완드가 우리의 것과 비슷해보였는데, 아닌것 같네.", client); 		case 1: Format(Text_Lines, sizeof(Text_Lines), "솔직히 {gold}%N{snow} 당신이 지금 들고 있는 그 완드가 우리 물건인줄 알았는데, 아니라는게 좀 많이 충격이야. 그 완드가 우리가 만든 물건의 모든 특성을 가지고 있음에도 말이지.", client);}
+		case WEAPON_RUINA_DRONE_KNIFE: switch(GetRandomInt(0,2)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "참 무딘 칼이네, {gold}%N{snow}.", client); 																	case 1: Format(Text_Lines, sizeof(Text_Lines), "칼춤이라도 출 생각이야, {gold}%N{snow}?", client); case 2: Format(Text_Lines, sizeof(Text_Lines), "아니, {gold}%N{snow}, 그 칼에 대한 라이센스는 받은거야?", client);}
+		case WEAPON_SIGIL_BLADE: switch(GetRandomInt(0,2)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "와, {gold}%N{snow}. 그거 진짜 쓸모없는 물건이었는데, 그걸 네가 유용한 무기로 써먹고 있네? 어떻게 한 거야?", client); case 1: Format(Text_Lines, sizeof(Text_Lines), "잠깐만, 내 비행선의 안개등에 있는 조각이잖아? 그거 어디서 얻었어, {gold}%N{snow}?", client); case 2: Format(Text_Lines, sizeof(Text_Lines), "아, {gold}%N{snow}. 그 진짜 \"쓸모없는\" 걸 좋은 무기로 만든 선례는 너 뿐이었어. 아이디어 정말 고마워.", client);}
+		case WEAPON_IRENE: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "응? 아이린을 본 적이 있나봐, {gold}%N{snow}? 혹시 그녀랑 찍은 사진도 가지고 있니...?", client); 			case 1: Format(Text_Lines, sizeof(Text_Lines), "정말 신기한 무기야. {gold}%N{snow}, 그거 어디서 얻었는지 말해줄 수 있겠니?", client);}
+		case WEAPON_RAIGEKI: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "하, 듀얼 개시! {gold}%N{snow}!", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "그럼 난 욕망의 항아리를 사용하겠어, {gold}%N{snow} !", client);}
+		case WEAPON_CHEMICAL_THROWER: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "음, 솔직히 말해서... {gold}%N{snow} 가 그 화학 무기를 사용하는거 너무 싫어. 야만적이야.", client); case 1: Format(Text_Lines, sizeof(Text_Lines), "화학물질을 더 뿌리려는거야, {gold}%N{snow} ? 세상을 방사능 웅덩이로 만들 셈이구나!", client);}
+		case WEAPON_KIT_PROTOTYPE, WEAPON_KIT_PROTOTYPE_MELEE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "어라... {gold}%N{snow}, 우리들 서로 아군 아니었어? 아니면 {gold}엑스피돈사{snow}가 내 \"트윌 법칙\" 에 질린걸까?", client); case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} 라는 개체는 분명 고장난 개체겠네. 뭐, 그럼 부숴버려도 {gold}엑스피돈사{snow} 애들이 화 안 내려나...", client);}
 		
 		case WEAPON_KIT_FRACTAL: 
 		{

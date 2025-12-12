@@ -406,7 +406,7 @@ public void Vhxis_ClotThink(int iNPC)
 	{
 		if(npc.m_iChanged_WalkCycle != 10)
 		{
-			CPrintToChatAll("{purple}비히시스: {default}이런 멍청한 것들!... 내가 공허를 만들어낸 것처럼 보이나?!");
+			CPrintToChatAll("{purple}비히시스: {default}이런 멍청한 것들!... 난 공허를 막으려고 했단 말이다!");
 			if(IsValidEntity(npc.m_iWearable1))
 			{
 				AcceptEntityInput(npc.m_iWearable1, "Disable");

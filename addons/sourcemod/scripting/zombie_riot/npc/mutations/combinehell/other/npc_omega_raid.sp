@@ -552,7 +552,7 @@ public void OmegaRaid_ClotThink(int iNPC)
 					}
 					case 1:
 					{
-						CPrintToChatAll("{gold}오메가{default}: 그 녀석을 넘겨주면 넌 여기서 살안서 나갈수도 있어.");
+						CPrintToChatAll("{gold}오메가{default}: 그 녀석을 넘겨주면 넌 여기서 살아서 나갈수도 있어.");
 					}
 				}
 			}
@@ -957,7 +957,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 				switch(GetRandomInt(0,1))
 				{
 					case 0:
-						Format(Text_Lines, sizeof(Text_Lines), "메신저에게 무슨 일이 일어났는지는... {darkblue}그{default}놈만이 알 거다.");
+						Format(Text_Lines, sizeof(Text_Lines), "메신저에게 무슨 일이 일어났는지는... {darkblue}그{default}놈만이 알 걸.");
 					case 1:
 						Format(Text_Lines, sizeof(Text_Lines), "어우.");
 				}
@@ -992,7 +992,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 					case 0:
 						Format(Text_Lines, sizeof(Text_Lines), "귄... 자네의 검을 들고 자네를 기리는 자가 여기 있어.");
 					case 1:
-						Format(Text_Lines, sizeof(Text_Lines), "타임 머신이 있다면, 첫번쨰로 하고 싶은건 {crimson}해풍등이 귄을 죽이기 전에 내가 먼저 그 미친년을 찢어 죽이는거야{default}.");
+						Format(Text_Lines, sizeof(Text_Lines), "타임 머신이 있다면, 첫번째로 하고 싶은건 {crimson}배풍등이 귄을 죽이기 전에 내가 먼저 그 미친년을 찢어 죽이는거야{default}.");
 				}
 			}
 			else
@@ -1002,7 +1002,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 					case 0:
 						Format(Text_Lines, sizeof(Text_Lines), "{crimson}귄{default}... 안 돼...");
 					case 1:
-						Format(Text_Lines, sizeof(Text_Lines), "{crimson}귄{default}의 죽음이 날 이 곳으로 이끌었지. 그 {crimson}미친 해풍등{default}은 반드시 죽어야한다.");
+						Format(Text_Lines, sizeof(Text_Lines), "{crimson}귄{default}의 죽음이 날 이 곳으로 이끌었지. 그 {crimson}미친 배풍등{default}은 반드시 죽어야한다.");
 				}
 			}
 		}
@@ -1058,7 +1058,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 				switch(GetRandomInt(0,1))
 				{
 					case 0:
-						Format(Text_Lines, sizeof(Text_Lines), "내 눈 똑바로 봐라, {gold}%N{default}.",client);	
+						Format(Text_Lines, sizeof(Text_Lines), "전투에서 신문을 볼 시간이 있다고, {gold}%N{default}? 내가 우습나?",client);	
 					case 1:
 						Format(Text_Lines, sizeof(Text_Lines), "미친 놈. 지금 {white}밥{default}을 인질로 잡아놓고 신문이나 보시겠다, {gold}%N{default}? {red}도발이냐?",client);
 				}
@@ -1208,7 +1208,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 					case 0:
 						Format(Text_Lines, sizeof(Text_Lines), "어이쿠 무서워라. 불장난을 하면 오줌을 싼다는것도 안 배웠나?");
 					case 1:
-						Format(Text_Lines, sizeof(Text_Lines), "진지하게, 저런 무기로 도대체 어떻게 병사가 된 거지? 내가 모르는 숨겨진 뭐가 있나?",client);
+						Format(Text_Lines, sizeof(Text_Lines), "진심으로, 저런 무기로 도대체 어떻게 전투를 하는거지? 내가 모르는 숨겨진 뭐가 있나?",client);
 				}
 			}
 		}
@@ -1229,9 +1229,9 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 				switch(GetRandomInt(0,1))
 				{
 					case 0:
-						Format(Text_Lines, sizeof(Text_Lines), "너 혹시 {navy}칼춤{default} 을 만난 적이 있나? 그 놈도 나에게 빚진 게 있는데.");
+						Format(Text_Lines, sizeof(Text_Lines), "허, 너 혹시 {navy}칼춤{default} 을 만난 적이 있나? 그 놈도 나에게 빚진 게 있는데.");
 					case 1:
-						Format(Text_Lines, sizeof(Text_Lines), "오, {gold}%N{default}, 도박중독자인 네 영혼은 내가 구해주지.",client);
+						Format(Text_Lines, sizeof(Text_Lines), "하, {gold}%N{default}, 도박중독자인 네 영혼은 내가 구해주지.",client);
 				}
 			}
 		}
@@ -1252,7 +1252,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 				switch(GetRandomInt(0,1))
 				{
 					case 0:
-						Format(Text_Lines, sizeof(Text_Lines), "바로 그게 무섭다는거야. 마법은 그냥 상식을 벗어났거든.");
+						Format(Text_Lines, sizeof(Text_Lines), "바로 그게 마법이 무서운 이유야. 마법은 그냥 상식을 벗어났거든.");
 					case 1:
 						Format(Text_Lines, sizeof(Text_Lines), "나도 전에 그런 방식으로 사람을 집어드는 게임을 본 적 있어, {gold}%N{default}. 이름은 까먹었지만.");
 				}
@@ -1287,7 +1287,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 					case 0:
 						Format(Text_Lines, sizeof(Text_Lines), "그것보다 더 무서운 무기는 얼마든지 봐왔다.");
 					case 1:
-						Format(Text_Lines, sizeof(Text_Lines), "어이구, 참 무섭네. 사람 몸에서 불 나오는게 초능력이냐? {gold}%N{default}?",client);
+						Format(Text_Lines, sizeof(Text_Lines), "아주 참 무서워죽겠군, 사람 몸에서 불 나오는게 초능력이냐? {gold}%N{default}?",client);
 				}
 			}
 		}
@@ -1318,7 +1318,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 				case 0:
 					Format(Text_Lines, sizeof(Text_Lines), "내가 마법을 얼마나 싫어하는지 넌 모를걸.");
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "{gold}루이나인{default}들이 그 무기를 너한테 줬다고? {gold}%N{default}? 뭐, 네 활약을 보면 놀랄 것도 아니겠지만.",client);
+					Format(Text_Lines, sizeof(Text_Lines), "{gold}루이나인{default}들이 그 무기를 너한테 줬다고, {gold}%N{default}? 뭐, 네 활약을 보면 놀랄 것도 아니겠지만.",client);
 			}
 		}
 		case WEAPON_NECRO_WANDS:
@@ -1328,7 +1328,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 				case 0:
 					Format(Text_Lines, sizeof(Text_Lines), "마법이 그렇게까지 터무니 없을거란 생각은 못 했어.");
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "이걸 발로 차버리기 전에 빨리 그 해골들 치워, {gold}%N{default}.",client);
+					Format(Text_Lines, sizeof(Text_Lines), "발로 차버리기 전에 빨리 그 해골들 치워, {gold}%N{default}.",client);
 			}
 		}
 		case WEAPON_SPEEDFISTS:
@@ -1363,7 +1363,7 @@ static void OmegaRaid_GrantItem()
 		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 		{
 			Items_GiveNamedItem(client, "Omega's Medallion");
-			CPrintToChat(client,"{white}밥{default}은 {gold}오메가{default}에게 모습을 드러내어, 당신이 밥을 죽이려는 {crimson}해풍등{default}의 무리가 아닌것을 알려주었습니다. 그리고 당신은 {gold}오메가의 메달리온{default}을 받았습니다!");
+			CPrintToChat(client,"{white}밥{default}은 {gold}오메가{default}에게 모습을 드러내어, 당신이 밥을 죽이려는 {crimson}배풍등{default}의 무리가 아닌것을 알려주었습니다. 그리고 당신은 {gold}오메가의 메달리온{default}을 받았습니다!");
 		}
 	}
 }
@@ -1432,7 +1432,7 @@ static bool OmegasRabiling()
 			}
 			case 5:
 			{
-				CPrintToChatAll("{white}밥{default}: 뭐... 시체더미가 그 결과를 말해주고 있잖아?");
+				CPrintToChatAll("{white}밥{default}: 뭐... 널브러져있는 그놈들 시체더미가 그 결과를 말해주고 있잖아?");
 			}
 			case 6:
 			{
@@ -1525,7 +1525,7 @@ public void RaidMode_OmegaRaid_WinCondition(int entity)
 			}
 			case 5:
 			{
-				OmegaRaid_Reply("{crimson}배풍등 {default} 이 놈은 뭔 예산을 삭감하기라도 한 거냐?");
+				OmegaRaid_Reply("{crimson}배풍등 {default}이 드디어 돈이 쪼들리나보군. 이딴 허접쓰레기도 영입하다니.");
 			}
 			case 6:
 			{

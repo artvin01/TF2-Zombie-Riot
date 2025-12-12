@@ -709,7 +709,7 @@ static void ClotThink(int iNPC)
 			if(other != -1 && i_NpcInternalId[other] == FinalHunter_ID() && IsEntityAlive(other))
 			{
 				npc.Speech(chaos == 4 ? "..." : "This ends now!");
-				CPrintToChatAll("{darkblue}Waldch{default}: %s", chaos == 4 ? "..." : "This ends now!");
+				CPrintToChatAll("{darkblue}월드치{default}: %s", chaos == 4 ? "..." : "이게 마지막 전투다!");
 				KillFeed_SetKillIcon(npc.index, "sword");
 
 				//cannot heal

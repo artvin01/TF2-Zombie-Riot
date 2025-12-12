@@ -572,7 +572,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			case 2:
 			{
-				CPrintToChatAll("{blue}카스텔란{default}: 우리가 자이베리아를 공격하는 동안, 저들이 우릴 공격했습니다. 무슨 말이 더 필요한겁니까?");
+				CPrintToChatAll("{blue}카스텔란{default}: 우리가 자이베리아를 공격하는 동안, 저들이 우릴 공격했습니다. 정당방위인데 무슨 문제라도...?");
 			}
 			case 3:
 			{
@@ -588,7 +588,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			case 6:
 			{
-				CPrintToChatAll("{blue}센살{default}: 그래. 그 나라 자체에는 잘못이 없어. 이제 이 곳을 나가라. 빅토리아도 혼돈에 대처해야한다.");
+				CPrintToChatAll("{blue}센살{default}: 그래. 그 나라 자체에는 잘못이 없어. 이제 이 곳을 떠나라. 빅토리아도 혼돈에 대처해야한다.");
 			}
 			case 7:
 			{

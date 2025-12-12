@@ -375,8 +375,8 @@ methodmap Vincent < CClotBody
 			Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "V.I.N.C.E.N.T.");
 			EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.7, 80);
 			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
-			CPrintToChatAll("{rare}%t{default}: You want a death robot? {crimson}I'LL GIVE YOU ONE.", c_NpcName[npc.index]);
-			CPrintToChatAll("{fullred}Initating extermination of infection based organisms.");
+			CPrintToChatAll("{rare}%t{default}: 뭐. 무자비한 로봇을 원하는건가? {crimson}내가 되어주지.", c_NpcName[npc.index]);
+			CPrintToChatAll("{fullred}감염성 유기체 박멸 개시.");
 			npc.m_flRangedArmor *= 0.95;
 			npc.m_flMeleeArmor *= 0.95;	
 			npc.m_flOverrideMusicNow = 0.0;
@@ -395,7 +395,7 @@ methodmap Vincent < CClotBody
 			Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Vincent");
 			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
 			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
-			CPrintToChatAll("{rare}%t{default}: Not gonna leave? I'll make you leave myself.", c_NpcName[npc.index]);
+			CPrintToChatAll("{rare}%t{default}: 정말로 안 떠나시겠다고요? 힘으로라도 나가게 해드리지.", c_NpcName[npc.index]);
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_intro.mp3");
 			music.Time = 51;
@@ -482,23 +482,23 @@ public void Vincent_ClotThink(int iNPC)
 			{
 				if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 				{
-					CPrintToChatAll("{rare}%t{default}: I'm sorry it has come to this. I'm afraid you shouldn't have taken that job...", c_NpcName[npc.index]);
+					CPrintToChatAll("{rare}%t{default}: 이렇게 되어서 정말 유감입니다.", c_NpcName[npc.index]);
 				}
 				else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 				{
-					CPrintToChatAll("{rare}%t{crimson}: You are DONE.", c_NpcName[npc.index]);
+					CPrintToChatAll("{rare}%t{crimson}: 넌 끝났어.", c_NpcName[npc.index]);
 				}
 				else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 				{
-					CPrintToChatAll("{rare}%t{default}: You can't keep running away forever.", c_NpcName[npc.index]);
+					CPrintToChatAll("{rare}%t{default}: 계속 도망다닐 수는 없을텐데.", c_NpcName[npc.index]);
 				}
 			}
 			else
 			{
 				if (npc.Anger)
-					CPrintToChatAll("{rare}%t{crimson}: You are DONE.", c_NpcName[npc.index]);
+					CPrintToChatAll("{rare}%t{crimson}: 넌 끝났어.", c_NpcName[npc.index]);
 				else
-					CPrintToChatAll("{rare}%t{default}: You can't keep running away forever.", c_NpcName[npc.index]);
+					CPrintToChatAll("{rare}%t{default}: 계속 도망다닐 수는 없을텐데.", c_NpcName[npc.index]);
 			}
 		}
 	}
@@ -591,15 +591,15 @@ public void Vincent_ClotThink(int iNPC)
 			switch(GetRandomInt(0,4))
 			{
 				case 0:
-					CPrintToChatAll("{rare}%t{default}: Someone turn the heat up.", c_NpcName[npc.index]);
+					CPrintToChatAll("{rare}%t{default}: 좀 더 열을 올려야겠군.", c_NpcName[npc.index]);
 				case 1:
-					CPrintToChatAll("{rare}%t{default}: Is it just me or are you engulfed in flames?", c_NpcName[npc.index]);
+					CPrintToChatAll("{rare}%t{default}: 흠, 이거 당신도 불타오르시는 것 같은데?", c_NpcName[npc.index]);
 				case 2:
-					CPrintToChatAll("{rare}%t{default}: Spreading the inferno.", c_NpcName[npc.index]);
+					CPrintToChatAll("{rare}%t{default}: 불길 확산.", c_NpcName[npc.index]);
 				case 3:
-					CPrintToChatAll("{rare}%t{default}: Fire in the hole.", c_NpcName[npc.index]);
+					CPrintToChatAll("{rare}%t{default}: 불의 세례를.", c_NpcName[npc.index]);
 				case 4:
-					CPrintToChatAll("{rare}%t{default}: Lighting it up.", c_NpcName[npc.index]);
+					CPrintToChatAll("{rare}%t{default}: 점화 필요.", c_NpcName[npc.index]);
 			}
 		}
 	}
@@ -795,7 +795,7 @@ public Action Vincent_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 				ApplyStatusEffect(victim, victim, "Infinite Will", 30.0);
 				npc.m_flMegaEnrage = GetGameTime() + 30.0;
 				damage = 0.0;
-				CPrintToChatAll("{rare}%t:{crimson} ...IF YOU THINK I'LL GO DOWN WITHOUT A FIGHT...", c_NpcName[npc.index]);
+				CPrintToChatAll("{rare}%t:{crimson} ...내가 지금 싸우지도 않고 물러날 거라고 생각해?", c_NpcName[npc.index]);
 				EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.65, 90);
 				EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.65, 90);
 				ApplyStatusEffect(npc.index, npc.index, "Dimensional Turbulence", 30.0);
@@ -835,7 +835,7 @@ public Action Vincent_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 			SetVariantString("2.0");
 			AcceptEntityInput(npcBeacon.m_iWearable1, "SetModelScale");
 			
-			CPrintToChatAll("{rare}%t's armor hardens and fists strengthen, aided by the laboratory.", c_NpcName[npc.index]);
+			CPrintToChatAll("{rare}%t'가 연구실의 도움을 받아 장갑이 강화되고 주먹이 강해지고 있다.", c_NpcName[npc.index]);
 		}	
 	}
 	if(attacker <= 0)
@@ -895,12 +895,12 @@ static void Vincent_GrantItem(int entity)
 			if(!npc.Anger)
 			{
 				Items_GiveNamedItem(client, "Expidonsan Research Card");
-				CPrintToChat(client,"{default}Vincent permitted you to access the laboratories. You have obtained: {unique}Expidonsan Research Card.");
+				CPrintToChat(client,"{default}빈센트가 당신이 연구실에 진입할 수 있도록 허용해주었습니다. 당신이 얻은 것: {unique}엑스피돈산 연구 카드.");
 			}
 			if(npc.Anger)
 			{
 				Items_GiveNamedItem(client, "Expidonsan Research Card");
-				CPrintToChat(client,"{default}Vincent is gone...all that's left is this keycard on the floor. You have obtained: {crimson}Expidonsan Research Card.");
+				CPrintToChat(client,"{default}빈센트는 사라졌습니다...그 자리에 남은건 키카드 하나 뿐입니다. 당신이 얻은 것: {crimson}엑스피돈산 연구 카드.");
 			}
 		}
 	}
@@ -947,19 +947,19 @@ static bool Vincent_LoseConditions(int iNPC)
 					{
 						//yapping
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{crimson}: No...", c_NpcName[npc.index]);
+						CPrintToChatAll("{rare}%t{crimson}: 안 돼...", c_NpcName[npc.index]);
 					}
 					case 1:
 					{
 						//yapping
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{crimson}: I can't let you get away with this.", c_NpcName[npc.index]);
+						CPrintToChatAll("{rare}%t{crimson}: 네가 날뛰는걸 그냥 두고 볼 수는 없어.", c_NpcName[npc.index]);
 					}
 					case 2:
 					{
 						//yapping
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{crimson}: I WON'T let you get away with this!", c_NpcName[npc.index]);
+						CPrintToChatAll("{rare}%t{crimson}: 네가 날뛰는걸 그냥 두고 볼 수는 없다고!", c_NpcName[npc.index]);
 					}
 					case 3:
 					{
@@ -971,7 +971,7 @@ static bool Vincent_LoseConditions(int iNPC)
 						spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
 						spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
 						spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
-						CPrintToChatAll("{rare}%t{crimson}: I'M GONNA DELETE YOU!", c_NpcName[npc.index]);
+						CPrintToChatAll("{rare}%t{crimson}: 널 이 세상에서 제거해주지!", c_NpcName[npc.index]);
 						Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Old forgotten expidonsan robot");
 					}
 					case 4:
@@ -1008,32 +1008,32 @@ static bool Vincent_LoseConditions(int iNPC)
 					case 0:
 					{
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{default}: Ah.", c_NpcName[npc.index]);
+						CPrintToChatAll("{rare}%t{default}: 음.", c_NpcName[npc.index]);
 					}
 					case 1:
 					{
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{default}: It appears that I'm not strong enough to take you down.", c_NpcName[npc.index]);
+						CPrintToChatAll("{rare}%t{default}: 제가 당신을 쓰러뜨릴만큼 강하진 않은것 같군요.", c_NpcName[npc.index]);
 					}
 					case 2:
 					{
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{default}: I was hoping to keep the outside world safe with what was left behind here.", c_NpcName[npc.index]);
+						CPrintToChatAll("{rare}%t{default}: 저는 여기에 남겨진 것들이 바깥 세계를 망치게 두고 싶진 않았습니다만,", c_NpcName[npc.index]);
 					}
 					case 3:
 					{
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{default}: But if you're so persistent on taking this gear...", c_NpcName[npc.index]);
+						CPrintToChatAll("{rare}%t{default}: 만약 당신이 이 장비들을 계속 사용하고 싶으신거라면...", c_NpcName[npc.index]);
 					}
 					case 4:
 					{
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{default}: I won't try to stop you anymore, knowing that my attempts will be futile.", c_NpcName[npc.index]);
+						CPrintToChatAll("{rare}%t{default}: 더 이상 당신을 막지 않겠습니다. 그런 당신을 막아봤자 헛수고일테니.", c_NpcName[npc.index]);
 					}
 					case 5:
 					{
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{default}: Take this with you, and don't let it fall into the wrong hands, alright?", c_NpcName[npc.index]);
+						CPrintToChatAll("{rare}%t{default}: 이걸 받아주세요. 그리고 절대, 사악한 자의 손에 넘어가게 두어선 안 됩니다. 아시겠죠?", c_NpcName[npc.index]);
 					}
 					case 6:
 					{
@@ -1172,15 +1172,15 @@ static bool Vincent_LoseConditions(int iNPC)
 		//won normally
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			CPrintToChatAll("{rare}%t{default}: It's over, please don't come back.", c_NpcName[npc.index]);
+			CPrintToChatAll("{rare}%t{default}: 이제 끝. 제발 여기에 다시 들어오지 마세요.", c_NpcName[npc.index]);
 		}
 		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			CPrintToChatAll("{rare}%t{crimson}: Look at what you made me do. {default} At least I avenged {rare}them{default}.", c_NpcName[npc.index]);
+			CPrintToChatAll("{rare}%t{crimson}: 이런 짓까지 해서라도 널 막아야되겠나? {default} 적어도 {rare}그 자{default}들의 복수는 이뤘군.", c_NpcName[npc.index]);
 		}
 		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			CPrintToChatAll("{rare}%t{default}: Your reign of chaos ends here.", c_NpcName[npc.index]);
+			CPrintToChatAll("{rare}%t{default}: 네 광기도 여기서 끝이다.", c_NpcName[npc.index]);
 		}
 		return true;
 	}
@@ -1687,11 +1687,11 @@ bool Vincent_SlamThrow(int iNPC, int target)
 			switch(GetRandomInt(0,2))
 			{
 				case 0:
-					CPrintToChatAll("{rare}%t{default}: I'm gonna get you.", c_NpcName[npc.index]);
+					CPrintToChatAll("{rare}%t{default}: 이제 당신을 잡으러 가드리죠.", c_NpcName[npc.index]);
 				case 1:
-					CPrintToChatAll("{rare}%t{default}: Here I come!", c_NpcName[npc.index]);
+					CPrintToChatAll("{rare}%t{default}: 준비되셨죠!", c_NpcName[npc.index]);
 				case 2:
-					CPrintToChatAll("{rare}%t{default}: You better run!", c_NpcName[npc.index]);
+					CPrintToChatAll("{rare}%t{default}: 도망치시는게 좋을겁니다!", c_NpcName[npc.index]);
 			}
 		}
 		if(IsValidEntity(npc.m_iWearable4))

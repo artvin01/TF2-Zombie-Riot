@@ -920,23 +920,11 @@ void Ravaging_SaySpecialLine()
 			{
 				victim[victims++] = client;
 			}
-			else if(StrEqual(buffer, "JuneOrJuly", false))
+			else if(StrEqual(buffer, "Black_Knight", false))
 			{
 				victim[victims++] = client;
 			}
-			else if(StrEqual(buffer, "wo", false))
-			{
-				victim[victims++] = client;
-			}
-			else if(StrEqual(buffer, "Batfoxkid", false))
-			{
-				victim[victims++] = client;
-			}
-			else if(StrEqual(buffer, "ficool2", false))
-			{
-				victim[victims++] = client;
-			}
-			else if(StrEqual(buffer, "riversid", false))
+			else if(StrEqual(buffer, "samuu, the cheesy slime", false))
 			{
 				victim[victims++] = client;
 			}
@@ -944,11 +932,23 @@ void Ravaging_SaySpecialLine()
 			{
 				victim[victims++] = client;
 			}
+			else if(StrEqual(buffer, "riversid", false))
+			{
+				victim[victims++] = client;
+			}
+			else if(StrEqual(buffer, "ficool2", false))
+			{
+				victim[victims++] = client;
+			}
 			else if(StrEqual(buffer, "alex turtle", false))
 			{
 				victim[victims++] = client;
 			}
-			else if(StrEqual(buffer, "artvin", false))
+			else if(StrEqual(buffer, "JuneOrJuly", false))
+			{
+				victim[victims++] = client;
+			}
+			else if(StrEqual(buffer, "Batfoxkid", false))
 			{
 				victim[victims++] = client;
 			}
@@ -956,7 +956,7 @@ void Ravaging_SaySpecialLine()
 			{
 				victim[victims++] = client;
 			}
-			else if(StrEqual(buffer, "Bolaven", false))
+			else if(StrEqual(buffer, "wo", false))
 			{
 				victim[victims++] = client;
 			}
@@ -976,64 +976,64 @@ void Ravaging_SaySpecialLine()
 			if(StrEqual(buffer, "Mikusch", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: ... Looks like {crimson}%N{default} thinks they can impersonate me, {crimson}i will kill you.",client);
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: ... Looks like {crimson}%N{default} thinks they can impersonate me, {crimson}i will kill you.",client);
 			}
 			else if(StrEqual(buffer, "42", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: ... Hey {crimson}%N{default} why are you against me, arent we supposed to be a team?",client);
-			}
-			else if(StrEqual(buffer, "literail", false))
-			{
-				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Get back to work {crimson}%N{default} , cadets dont get stuff for free.",client);
-			}
-			else if(StrEqual(buffer, "JuneOrJuly", false))
-			{
-				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Get back to work {crimson}%N{default} , cadets dont get stuff for free.",client);
-			}
-			else if(StrEqual(buffer, "wo", false))
-			{
-				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: So about Bombermod {crimson}%N{default}...",client);
-			}
-			else if(StrEqual(buffer, "Batfoxkid", false))
-			{
-				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: When will you finally be done with your scp rework {crimson}%N{default}?",client);
-			}
-			else if(StrEqual(buffer, "ficool2", false))
-			{
-				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Aren't you supposed to be shilling vscript some more {crimson}%N{default}?",client);
-			}
-			else if(StrEqual(buffer, "riversid", false))
-			{
-				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: I hope you keep it up {crimson}%N{default}, or else.",client);
-			}
-			else if(StrEqual(buffer, "eno", false))
-			{
-				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: You did quite well so far {crimson}%N, but not well enough.{default}",client);
-			}
-			else if(StrEqual(buffer, "alex turtle", false))
-			{
-				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Your szf heros are not here to save you {crimson}%N{default}.",client);
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: ... Hey {crimson}%N{default} why are you against me, arent we supposed to be a team?",client);
 			}
 			else if(StrEqual(buffer, "artvin", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: I will not say what you tell me to say {crimson}%N{default}.",client);
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: Get back to work {crimson}%N{default} , cadets dont get stuff for free.",client);
+			}
+			else if(StrEqual(buffer, "Black_Knight", false))
+			{
+				
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: 여기 {crimson}%N{default} 란 놈이 업무방해죄로 수배 됐다던데 알고들 있냐? 저거 잡으면 꽁돈인데.",client);
+			}
+			else if(StrEqual(buffer, "samuu, the cheesy slime", false))
+			{
+				
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: 여기 {crimson}%N{default} 란 놈이 상관모욕로 수배 됐다던데 알고들 있냐? 하긴, 무식하니까 모르겠지.",client);
+			}
+			else if(StrEqual(buffer, "eno", false))
+			{
+				
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: {crimson}%N{default} 이 놈 지금 나 보더니 표정 썩는건 뭐냐?",client);
+			}
+			else if(StrEqual(buffer, "riversid", false))
+			{
+				
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: 어이, {crimson}%N{default} 인지 뭔지 하는 놈이 여기 총괄 대가리냐?",client);
+			}
+			else if(StrEqual(buffer, "ficool2", false))
+			{
+				
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: {crimson}%N{default} 인지 뭔지 하는 놈, 얘 지금 나한테 개기는거냐?",client);
+			}
+			else if(StrEqual(buffer, "alex turtle", false))
+			{
+				
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: 야, 지금 웃냐? {crimson}%N{default}? 지금 이게 웃기냐고.",client);
+			}
+			else if(StrEqual(buffer, "JuneOrJuly", false))
+			{
+				
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: 넌 또 뭐냐, {crimson}%N{default}? 왜 이리 입을 털어?",client);
+			}
+			else if(StrEqual(buffer, "Batfoxkid", false))
+			{
+				
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: {crimson}%N{default} 얜 뭐냐? 무슨 이상한 무기로 싸우냐?",client);
 			}
 			else if(StrEqual(buffer, "zerosiki__", false))
 			{
 				
-				CPrintToChatAll("{darkblue}황폐의 지식인{default}: {crimson}%N{default} 이 새끼는 할 줄 아는게 민폐밖에 없냐? 뭐 이리 나대?",client);
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: 무식하면 {crimson}%N{default} 처럼 멍청하기만 한 놈이 된다.",client);
 			}
-			else if(StrEqual(buffer, "Bolaven", false))
+			else if(StrEqual(buffer, "wo", false))
 			{
 				
 				CPrintToChatAll("{darkblue}황폐의 지식인{default}: 어이, {crimson}%N{default} 인지 뭔지 하는 너. 팀원 관리 좀 해보셨나봐?",client);

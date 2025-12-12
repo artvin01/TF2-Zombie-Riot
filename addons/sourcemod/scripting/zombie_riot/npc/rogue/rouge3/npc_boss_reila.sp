@@ -237,18 +237,18 @@ methodmap BossReila < CClotBody
 		
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Reila?");
 
-			CPrintToChatAll("{pink}?????{default}: Who are you?!");
+			CPrintToChatAll("{pink}?????{default}: 넌 누구야?!");
 		}
 		else if(badEnding)
 		{
-			CPrintToChatAll("{pink}Reila{default}: Is this what you wanted?!");
+			CPrintToChatAll("{pink}레일라{default}: 이게 네가 원하던 결말인거야?!");
 			fl_Extra_Damage[npc.index] *= 3.0;
 			fl_Extra_Speed[npc.index] *= 1.4;
 			f_AttackSpeedNpcIncrease[npc.index] *= 0.7;
 		}
 		else
 		{
-			CPrintToChatAll("{pink}Reila{default}: リᒷ╎リ リᒷ╎リ! リ╎ᓵ⍑ℸ ̣ ⋮ᒷℸ ̣⨅ℸ ̣!.");
+			CPrintToChatAll("{pink}레일라{default}: リᒷ╎リ リᒷ╎リ! リ╎ᓵ⍑ℸ ̣ ⋮ᒷℸ ̣⨅ℸ ̣!.");
 		}
 		if(data[0] && !altEnding && !badEnding && !Rogue_HasNamedArtifact("Ascension Stack"))
 			i_RaidGrantExtra[npc.index] = 1;
@@ -426,7 +426,7 @@ public Action BossReila_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			i_RaidGrantExtra[npc.index] = 2;
 			npc.m_bisWalking = false;
 			ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 50.0);
-			CPrintToChatAll("{pink}Reila {snow}Puts her hands up and gives up.");
+			CPrintToChatAll("{pink}레일라가 {snow}손을 위로 들고 항복한다.");
 			damage = 0.0;
 			return Plugin_Changed;
 		}
@@ -447,7 +447,7 @@ public Action BossReila_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 10.0);
 		//	ApplyStatusEffect(npc.index, npc.index, "Umbral Grace Debuff", 10.0);
 			ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 10.0);
-			CPrintToChatAll("{pink}Reila {snow}gets enveloped in an Umbral Aura...");
+			CPrintToChatAll("{pink}레일라가 {snow}엄브랄의 기운에 휩싸이고 있다...");
 		}
 	}
 		
@@ -985,33 +985,33 @@ bool Reila_LossAnimation(int iNpc)
 			{
 				case 2:
 				{
-					CPrintToChatAll("{pink}Reila {snow}she tries to talk but you understand nothing..");
-					CPrintToChatAll("{pink}Reila :{default} ∴╎ᒷᓭ𝙹 ⍊ᒷ∷ᓭ⚍ᓵ⍑ᓭℸ ̣ ↸⚍ ᒲ╎ᓵ⍑ ᔑ⚍⎓⨅⚍⍑ꖎℸ ̣ᒷリ??...");
+					CPrintToChatAll("{pink}레일라 {snow}가 당신에게 무언가 말하고 있는데, 도저히 알아들을 수가 없습니다...");
+					CPrintToChatAll("{pink}레일라 :{default} ∴╎ᒷᓭ𝙹 ⍊ᒷ∷ᓭ⚍ᓵ⍑ᓭℸ ̣ ↸⚍ ᒲ╎ᓵ⍑ ᔑ⚍⎓⨅⚍⍑ꖎℸ ̣ᒷリ??...");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{pink}Reila :{default} ∴ᔑ∷ℸ ̣ᒷ ᒲᔑꖎ, ʖ╎ᓭℸ ̣ ↸⚍ üʖᒷ∷⍑ᔑ!¡ℸ ̣ ⍊𝙹リ Almagest? ↸⚍ ꖌᔑリリᓭℸ ̣ ᒲ╎ᓵ⍑ リ╎ᓵ⍑ℸ ̣ ⍊ᒷ∷ᓭℸ ̣ᒷ⍑ᒷリ 𝙹↸ᒷ∷?");
+					CPrintToChatAll("{pink}레일라 :{default} ∴ᔑ∷ℸ ̣ᒷ ᒲᔑꖎ, ʖ╎ᓭℸ ̣ ↸⚍ üʖᒷ∷⍑ᔑ!¡ℸ ̣ ⍊𝙹リ 알마게스트? ↸⚍ ꖌᔑリリᓭℸ ̣ ᒲ╎ᓵ⍑ リ╎ᓵ⍑ℸ ̣ ⍊ᒷ∷ᓭℸ ̣ᒷ⍑ᒷリ 𝙹↸ᒷ∷?");
 				}
 				case 4:
 				{
-					CPrintToChatAll("{black}Izan :{default} ... Great, languge barrier.");
+					CPrintToChatAll("{black}이잔 :{default} ... 환장하겠네. 언어장벽이잖아, 이거.");
 				}
 				case 5:
 				{
-					CPrintToChatAll("{black}Izan {snow} Shakes his head and points at his ears, then shrugs.");
+					CPrintToChatAll("{black}이잔 {snow}이 손가락으로 그의 귀를 가리키고는 머리를 좌우로 흔들며 못 알아듣겠다는 표시를 합니다.");
 				}
 				case 6:
 				{
-					CPrintToChatAll("{snow}She hands over something, and asks to leave via gesture...");
+					CPrintToChatAll("{snow}그녀는 무언가를 건네주고는 여기서 떠나도 되는지 손짓으로 묻고 있습니다....");
 					npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
 				}
 				case 7:
 				{
-					CPrintToChatAll("{black}Izan {snow}Allows her to leave.");
+					CPrintToChatAll("{black}이잔 {snow}이 그녀를 떠나보냈습니다.");
 				}
 				case 8:
 				{
-					CPrintToChatAll("{black}Izan :{default} Now we have a whole other group to worry about.");
+					CPrintToChatAll("{black}이잔 :{default} 이제 우리가 걱정해야할 또 다른 문제가 생긴것 같네.");
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 				}
 			}

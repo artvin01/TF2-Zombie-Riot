@@ -294,7 +294,7 @@ public void Iberiainqusitor_irene_NPCDeath(int entity)
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();	
 	npc.m_bDissapearOnDeath = true;
-	CPrintToChatAll("{snow}아이린{default}: 저희가 정말 죽을거라고 생각하십니까? 우린 그저 죽음을 연기하고 있을 뿐입니다. 걱정하지 마십시오.");
+	CPrintToChatAll("{snow}아이린{default}: 저희가 정말 죽는것처럼 보이셨나요? 저희는 그저 그렇게 보이도록 연기하고 있을 뿐이랍니다. 걱정하지 마시길.");
 		
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);

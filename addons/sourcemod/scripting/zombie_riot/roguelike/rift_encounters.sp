@@ -525,29 +525,29 @@ static Action Timer_AdvanceGulnLore(Handle timer, int progress)
 	{
 		case 1:
 		{
-			CPrintToChatAll("{white}Bob {default}: I... This is just... {crimson} Guln...");
+			CPrintToChatAll("{white}밥 {default}: 아... 이건... {crimson} 귄...");
 			if(Rogue_HasNamedArtifact("Omega's Assistance"))
-				CPrintToChatAll("{gold}Omega{default}: Guln... shit.");
+				CPrintToChatAll("{gold}Omega{default}: 귄... 썅.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{snow}Bob leans his head onto Guln's now crystalized head.");
+			CPrintToChatAll("{snow}밥이 귄의 결정화된 머리를 보면서 힘없이 고개를 떨군다.");
 			if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
-				CPrintToChatAll("{purple}Vhxis{default}: He was a naive boy, but this... this was unprecedented.");
+				CPrintToChatAll("{purple}비히시스{default}: 그는 고지식한 자였지만, 이건... 이건 정말 전례가 없는 죽음이로군.");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{snow}He clenches his fist as he reads a paper near his body.");
+			CPrintToChatAll("{snow}그는 몸 가까이에 떨어져있는 종이를 읽으면서 주먹을 꽉 쥔다.");
 		}
 		case 4:
 		{
-			CPrintToChatAll("{snow}He Breaks apart the foundation holding the crystal body and picks him up.");
+			CPrintToChatAll("{snow}그는 결정화된 몸체를 지탱하던 기반을 부수고 그를 들어올린다.");
 			if(Rogue_HasNamedArtifact("Omega's Assistance"))
-				CPrintToChatAll("{gold}Omega{default}: What's on that paper, Bob?");
+				CPrintToChatAll("{gold}Omega{default}: 밥, 그 종이에 뭐라고 적혀있었어?");
 		}
 		case 5:
 		{
-			CPrintToChatAll("{snow}He leaves the room.");
+			CPrintToChatAll("{snow}그가 방을 나간다.");
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
@@ -559,44 +559,44 @@ static Action Timer_AdvanceGulnLore(Handle timer, int progress)
 			}
 			Rogue_RemoveNamedArtifact("Bob's Assistance");
 			if(Rogue_HasNamedArtifact("Omega's Assistance"))
-				CPrintToChatAll("{gold}Omega{default}: Bob, where are you going?");
+				CPrintToChatAll("{gold}오메가{default}: 밥, 어디 가는거야?");
 		}
 		case 6:
 		{
 			if(Rogue_HasNamedArtifact("Omega's Assistance"))
-				CPrintToChatAll("{purple}Vhxis{default} and {gold}Omega{default} find a note reading:");
+				CPrintToChatAll("{purple}비히시스{default}와 {gold}오메가{default}는 종이를 주워 읽어본다:");
 			else
-				CPrintToChatAll("{snow}You find a note reading:");
+				CPrintToChatAll("{snow}당신은 떨어져있는 종이를 주워 읽어본다:");
 		}
 		case 7:
 		{
-			CPrintToChatAll("{grey}Guln, we're surrounded, I'm surrounded, the umbral forces are too much. We have to run, just RUN, I'll hold them off.");
+			CPrintToChatAll("{grey}귄, 우린 완전히 포위됐어. 나도 포위됐고. 엄브랄의 세력이 너무 강해. 너라도 도망쳐야해. 지금 당장! 내가 저들을 막고 있을게!");
 		}
 		case 8:
 		{
-			CPrintToChatAll("{grey}Keep the ones I made for you close, they might save you, but I fear that we're done for.");
+			CPrintToChatAll("{grey}내가 만들어줬던 것들 기억나? 계속 가지고 있어. 널 구해줄 지도 모르니까. 하지만 우린 이제 끝난 것 같아.");
 		}
 		case 9:
 		{
-			CPrintToChatAll("{grey}Remember how you avoided death twice now? Can you do that again? For me?");
+			CPrintToChatAll("{grey}네가 두 번이나 죽음을 모면했던 거 기억해? 다시 한번 해줄 수 있어? 날 위해서?");
 		}
 		case 10:
 		{
-			CPrintToChatAll("{grey}Y'know, don't die on Bob and all, don't get angry, stay positive as usual yeah?");
+			CPrintToChatAll("{grey}그리고, 밥을 냅두고 너 혼자 죽지 마. 화내지 말고, 평소처럼 긍정적으로 생각해, 알았지?");
 		}
 		case 11:
 		{
-			CPrintToChatAll("{grey}if, no, WHEN we meet again, I'll make sure to hand you that cake recipe you loved so much from me okay?");
+			CPrintToChatAll("{grey}만약에... 아니, 다음에 우리 다시 만날 때, 네가 그렇게 좋아했던 케이크 레시피를 꼭 줄게. 약속할게.");
 		}
 		case 12:
 		{
-			CPrintToChatAll("{crimson}-Bladedance");
+			CPrintToChatAll("{crimson}-칼춤");
 			if(Rogue_HasNamedArtifact("Omega's Assistance"))
-				CPrintToChatAll("{purple}Vhxis{default} and {gold}Omega{default} seem visibly agitated.");
+				CPrintToChatAll("{purple}비히시스{default}와 {gold}오메가{default}가 크게 동요하고 있다.");
 		}
 		case 13:
 		{
-			CPrintToChatAll("{crimson}You leave the room with nothing obtained, aside from...");
+			CPrintToChatAll("{crimson}당신은 아무것도 얻지 못한 채 방을 나섭니다...");
 			
 			if(!Rogue_HasNamedArtifact("Immensive Guilt"))
 				Rogue_GiveNamedArtifact("Immensive Guilt", false, true);
@@ -626,19 +626,19 @@ public void Rogue_ImmensiveGuilt_FloorChange(int &floor, int &stage)
 	if(!Rogue_HasNamedArtifact("Bob's Assistance"))
 		Rogue_GiveNamedArtifact("Bob's Assistance", true, true);
 
-	CPrintToChatAll("{snow}Bob returns.");
-	CPrintToChatAll("{white}Bob {default}: ...");
+	CPrintToChatAll("{snow}밥이 돌아왔다.");
+	CPrintToChatAll("{white}밥 {default}: ...");
 	if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
 	{
-		CPrintToChatAll("{gold}Omega{default}: We will avenge Guln.");
-		CPrintToChatAll("{purple}Vhxis{default}: The three of us must prevail, for our comrade.");
+		CPrintToChatAll("{gold}오메가{default}: 우린 귄의 복수를 해야해. 반드시.");
+		CPrintToChatAll("{purple}비히시스{default}: 우리 셋은 반드시 승리해야한다. 우리의 동지를 위해서.");
 	}
 }
 public void Rogue_Crystalized_Warped_Subjects_Repeat()
 {
 	if((GetURandomInt() % 4) == 0)
 	{
-		CPrintToChatAll("{snow}As you look through the bodies, you notice one that seems familiar to you...");
+		CPrintToChatAll("{snow}시체들 속에서, 무언가 익숙한 인물이 보이는걸 알아차립니다...");
 		CreateTimer(4.0, Timer_AdvanceGulnLore, 1);
 		return;	
 	}
@@ -1066,23 +1066,23 @@ static Action Timer_OmegaVhxisYapping(Handle timer, int progress)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{gold}Omega{default}: Alright Vhxis, let's kick some ass, I'm surprised that these goons still associate themselves with that traitor.");
+					CPrintToChatAll("{gold}오메가{default}: 좋아, 비히시스, 가서 저 놈들 대갈통을 깨주자고. 저 미친 깡통들이 아직도 그 배신자를 따르다니 정말 어이가 없어.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{purple}Vhxis{default}: Of course, of course... wait a minute, traitor? What traitor?");
+					CPrintToChatAll("{purple}비히시스{default}: 그래, 당연하지... 잠깐, 배신자? 누가?");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}Omega{default}: You know, Whiteflower, the jackass? His whole big deal being his army?");
+					CPrintToChatAll("{gold}오메가{default}: 너도 알잖아? 배풍등. 그 미친 또라이년. 그 놈이 만든 군대가 한두개가 아니었잖아.");
 				}
 				case 4:
 				{
-					CPrintToChatAll("{purple}Vhxis{default}: That name doesn't ring a bell, we should probably deal with these guys first and get to the throne. You can tell me more once all of this blows over.");
+					CPrintToChatAll("{purple}비히시스{default}: 그 이름은 낯설군. 일단 저 놈들부터 처리하고 왕좌에 집중하는게 좋을것 같다. 이 모든 게 잠잠해지면 더 자세히 말해줘라.");
 				}
 				case 5:
 				{
-					CPrintToChatAll("{gold}Omega{default}: Not a bad idea. It's a long story anyway.");
+					CPrintToChatAll("{gold}오메가{default}: 알았어. 뭐 이건 얘기하자면 긴 이야기가 될테니 말이지.");
 					return Plugin_Stop;
 				}
 			}
@@ -1093,23 +1093,23 @@ static Action Timer_OmegaVhxisYapping(Handle timer, int progress)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{purple}Vhxis{default}: Damn, where do these guys keep on coming from?");
+					CPrintToChatAll("{purple}비히시스{default}: 제길, 이놈들이 도대체 어디서 이렇게 몰려오는거지?");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{gold}Omega{default}: I know right? I think I underestimated the amount of people that would devote their lives to Whiteflower.");
+					CPrintToChatAll("{gold}오메가{default}: 그러게 말이다? 그 배풍등놈한테 이렇게나 인생을 바쳐줄 사람들이 많다니, 어이가 없지.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{purple}Vhxis{default}: To...who? That name doesn't seem familiar to me.");
+					CPrintToChatAll("{purple}비히시스{default}: 누구...라고? 그 이름은 좀 낯선데.");
 				}
 				case 4:
 				{
-					CPrintToChatAll("{gold}Omega{default}: Shit, you don't know who Whiteflower is? I should tell you more once we take care of business at the throne. We're a little bit preoccupied right now.");
+					CPrintToChatAll("{gold}Omega{default}: 젠장, 배풍등이 누군지 모르는거야? 일단 왕좌에 관련된 일이 끝나면 자세히 말해줄게. 지금은 좀 바쁠것 같아.");
 				}
 				case 5:
 				{
-					CPrintToChatAll("{purple}Vhxis{default}: Right you are.");
+					CPrintToChatAll("{purple}비히시스{default}: 좋다.");
 					return Plugin_Stop;
 				}
 			}

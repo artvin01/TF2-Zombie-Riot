@@ -303,7 +303,7 @@
 	"The Trash Cannon"
 	{
 		"en"		"The Trash Cannon"
-		"ko"		"쓰레기 캐논"
+		"ko"		"폐기물 포"
 	}
 	"Outlaw's Railcannon"
 	{
@@ -519,6 +519,11 @@
 		"it"		"Lancia-Stelle"
 		"ko" 		"유성 발사기"
 	}
+	"Rusty Rifle"
+	{
+		"en"		"Rusty Rifle"
+		"ko" 		"녹슨 저격소총"
+	}
 	"Secondary Weapons"//Secondary here
 	{
 		"en"		"Secondary Weapons"
@@ -559,6 +564,21 @@
 	{
 		"en"		"Casino"
 		"ko"		"카지노"
+	}
+	"Barricader's SMG"
+	{
+		"en"		"Barricader's SMG"
+		"ko"		"바리케이드 관리자의 기관단총"
+	}
+	"Camper's Shotgun"
+	{
+		"en"		"Camper's Shotgun"
+		"ko"		"캠퍼의 산탄총"
+	}
+	"Builders Axe"
+	{
+		"en"		"Builders Axe"
+		"ko"		"건축가의 도끼"
 	}
 	"Nail Gun"
 	{
@@ -628,6 +648,16 @@
 		"en"		"Old Wooden Board"
 		"ko"		"낡은 나무 방패"
 	}
+	"Angered Messenger's Launcher"
+	{
+		"en"		"Angered Messenger's Launcher"
+		"ko"		"격분한 메신저의 발사기"
+	}
+	"Messenger's Potential"
+	{
+		"en"		"Messenger's Potential"
+		"ko"		"메신저의 잠재력"
+	}
 	"Magic Potion"
 	{
 		"en"		"Mage Potion"
@@ -653,12 +683,12 @@
 	"Support Weapons"
 	{
 		"en"		"Support Weapons"
-		"ko"		"서포트 무기"
+		"ko"		"지원 무기"
 	}
 	"Weapon Kits"
 	{
 		"en"		"Weapon Kits"
-		"ko"		"무기 세트"
+		"ko"		"무기 키트"
 	}
 	"Flaregun"
 	{
@@ -764,6 +794,26 @@
 	{
 		"en"		"The Health Hose"
 		"ko"		"치유의 호스"
+	}
+	"Health Hose Mk.II"
+	{
+		"en"		"Health Hose Mk.II"
+		"ko"		"치유의 호스 Mk.II"
+	}
+	"The Savior's Sprayer"
+	{
+		"en"		"The Savior's Sprayer"
+		"ko"		"구세주의 분사기"
+	}
+	"The Savior's Shotgun"
+	{
+		"en"		"The Savior's Shotgun"
+		"ko"		"구세주의 산탄총"
+	}
+	"Protecta's Peace"
+	{
+		"en"		"Protecta's Peace"
+		"ko"		"프로텍타의 평화"
 	}
 	"Medigun"
 	{
@@ -2310,6 +2360,151 @@
 		"en"		"Medikit from the Hood"
 		"ko"		"낙후된 의료 키트"
 	}
+	"Morphine"
+	{
+		"en"		"Morphine"
+		"ko"		"모르핀"
+	}
+	"Cured Silvester"
+	{
+		"en"		"Cured Silvester"
+		"ko"		"감염이 치유된 실베스터"
+	}
+	"Head Equipped Blue Goggles"
+	{
+		"en"		"Head Equipped Blue Goggles"
+		"ko"		"머리에 장착하는 파란 고글"
+	}
+	"Calmaticus' Heart Piece"
+	{
+		"en"		"Calmaticus' Heart Piece"
+		"ko"		"칼마티커스의 심장 조각"
+	}
+	"Medieval Crown"
+	{
+		"en"		"Medieval Crown"
+		"ko"		"중세 왕관"
+	}
+	"Alaxios's Godly assistance"
+	{
+		"en"		"Alaxios's Godly assistance"
+		"ko"		"알락시오스의 신성한 축복"
+	}
+	"Twirl's Hairpins"
+	{
+		"en"		"Twirl's Hairpins"
+		"ko"		"트윌의 헤어핀"
+	}
+	"Bob's Curing Hand"
+	{
+		"en"		"Bob's Curing Hand"
+		"ko"		"밥의 치유의 손길"
+	}
+	"Kahml's Contained Chaos"
+	{
+		"en"		"Kahml's Contained Chaos"
+		"ko"		"격리된 캄르스타인의 혼돈"
+	}
+	"Xeno Virus Vial"
+	{
+		"en"		"Xeno Virus Vial"
+		"ko"		"제노 바이러스 항생제"
+	}
+	"Chaos Machina Waldch Chip"
+	{
+		"en"		"Chaos Machina Waldch Chip"
+		"ko"		"혼돈 마키나 월드치의 칩"
+	}
+	"Corrupted Barney's Chainsaw"
+	{
+		"en"		"Corrupted Barney's Chainsaw"
+		"ko"		"타락한 바니 칼훈의 전기톱"
+	}
+	"Kahmlsteins Last Will"
+	{
+		"en"		"Kahmlsteins Last Will"
+		"ko"		"캄르스타인의 유언장"
+	}
+	"Matrix's Curse"
+	{
+		"en"		"Matrix's Curse"
+		"ko"		"매트릭스의 저주"
+	}
+	"Overlords Final Wish"
+	{
+		"en"		"Overlords Final Wish"
+		"ko"		"대군주의 마지막 소원"
+	}
+	"Bob's true fear"
+	{
+		"en"		"Bob's true fear"
+		"ko"		"밥의 진정한 공포"
+	}
+	"Major Steam's Rocket"
+	{
+		"en"		"Major Steam's Rocket"
+		"ko"		"증기 소령의 로켓"
+	}
+	"Waldch's Expidonsan Sword"
+	{
+		"en"		"Waldch's Expidonsan Sword"
+		"ko"		"월드치의 엑스피돈사 검"
+	}
+	"Expidonsan Battery Device"
+	{
+		"en"		"Expidonsan Battery Device"
+		"ko"		"엑스피돈사 배터리 장치"
+	}
+	"Gem from the Curtain"
+	{
+		"en"		"Gem from the Curtain"
+		"ko"		"장막 속의 보석"
+	}
+	"Foreign Expidonsan Chip"
+	{
+		"en"		"Foreign Expidonsan Chip"
+		"ko"		"외국풍 엑스피돈사 칩"
+	}
+	"Reila's Scorn Keycard"
+	{
+		"en"		"Reila's Scorn Keycard"
+		"ko"		"레일라의 스콘 키카드"
+	}
+	"Jkei's Broken Entry Chip"
+	{
+		"en"		"Jkei's Broken Entry Chip"
+		"ko"		"제이케이의 파괴된 진입용 칩"
+	}
+	"Shadow's Letter"
+	{
+		"en"		"Shadow's Letter"
+		"ko"		"그림자의 편지"
+	}
+	"Avangard's Processing Core-B"
+	{
+		"en"		"Avangard's Processing Core-B"
+		"ko"		"아방가르드의 프로세싱 코어-B"
+	}
+	"Iberian and Expidonsan Training"
+	{
+		"en"		"Iberian and Expidonsan Training"
+		"ko"		"엑스피돈사-이베리아 연합 훈련"
+	}
+	"Expidonsan Research Card"
+	{
+		"en"		"Expidonsan Research Card"
+		"ko"		"엑스피돈산 연구 카드"
+	}
+	"Whiteflower's Elite Grenade"
+	{
+		"en"		"Whiteflower's Elite Grenade"
+		"ko"		"배풍등의 정예 수류탄"
+	}
+	"Omega's Medallion"
+	{
+		"en"		"Omega's Medallion"
+		"ko"		"오메가의 메달"
+	}
 	"Inventory"//Inventory here
 	{
 		"en"		"Inventory"
@@ -2841,7 +3036,7 @@
 	"Guln's Dying Wish"
 	{
 		"en"		"Guln's Companions"
-		"ko"		"글룬의 부대원들"
+		"ko"		"귄의 부대원들"
 	}
 	"Builder Gear"
 	{
@@ -2887,7 +3082,22 @@
 		"ru"       "Пусковая установка ИЭМ"
 		"chi"       "超电磁炮"
 		"it"		"Lanciatore IEM"
-		"ko"		"IEM 런처"
+		"ko"		"IEM 발사기"
+	}
+	"Charged Laser Cutter"
+	{
+		"en"       "Charged Laser Cutter"
+		"ko"	   "충전된 레이저 커터"
+	}
+	"Charged Laser Cutter Mk2"
+	{
+		"en"       "Charged Laser Cutter Mk2"
+		"ko"	   "충전된 레이저 커터 MK2"
+	}
+	"The Laser Cure"
+	{
+		"en"       "레이저 치료기"
+		"ko"	   "레이저 치료기"
 	}
 	"Quad Launcher"
 	{
@@ -2896,7 +3106,7 @@
 		"ru"       "Счетверённая ракетница"
 		"chi"       "四管榴弹炮"
 		"it"		"Lanciatore quadruplo"
-		"ko"	   "4연장 런처"
+		"ko"	   "4연장 발사기"
 	}
 	"Terroriser Bomb lmplanter Sniperrifle"
 	{
@@ -3235,6 +3445,36 @@
 		"it"	"Pozione dell'alchimista"
 		"ko"	"연금술사의 포션"
 	}
+	"Whirling Glaive"
+	{
+		"en"	"Whirling Glaive"
+		"ko"	"회전형 글레이브"
+	}
+	"Kylie Boomerang"
+	{
+		"en"	"Kylie Boomerang"
+		"ko"	"킬리 부메랑"
+	}
+	"Glaive Lord"
+	{
+		"en"	"Glaive Lord"
+		"ko"	"글레이브 로드"
+	}
+	"Whirlwind Rang"
+	{
+		"en"	"Whirlwind Rang"
+		"ko"	"휠윈드 부메랑"
+	}
+	"Nightmare"
+	{
+		"en"	"Nightmare"
+		"ko"	"악몽"
+	}
+	"Sunswallower"
+	{
+		"en"	"Sunswallower"
+		"ko"	"햇살 흡수자"
+	}
 	"Deleting buildings refunds text"
 	{
 		"en"	"Deleting buildings returns spend metal dependant on remaining HP and repair HP"
@@ -3285,6 +3525,81 @@
 		"chi"	"兰亭法杖"
 		"it"	"Personale Lantean"
 		"ko"	"랜턴 스태프"
+	}
+	"Raigeki"
+	{
+		"en"		"Raigeki"
+		"ko"		"뇌격"
+	}
+	"Direct Current"
+	{
+		"en"		"Direct Current"
+		"ko"		"직류"
+	}
+	"Circuit Breaker"
+	{
+		"en"	"Circuit Breaker"
+		"ko"	"회로 차단기"
+	}
+	"Megawatt Massacre"
+	{
+		"en"	"Megawatt Massacre"
+		"ko"	"메가와트 대학살"
+	}
+	"Crisis Conductor"
+	{
+		"en"	"Crisis Conductor"
+		"ko"	"고비 지휘자"
+	}
+	"Mortal Blackout"
+	{
+		"en"	"Mortal Blackout"
+		"ko"	"필멸의 소등"
+	}
+	"Junker Staff"
+	{
+		"en"		"Junker Staff"
+		"ko"		"정커 스태프"
+	}
+	"Staff of the Skull Servants"
+	{
+		"en"		"Staff of the Skull Servants"
+		"ko"		"저주받은 하인 스태프"
+	}
+	"Impact Lance"
+	{
+		"en"		"Impact Lance"
+		"ko"		"임팩트 랜스"
+	}
+	"Psychokinesis"
+	{
+		"en"		"Psychokinesis"
+		"ko"		"염동력"
+	}
+	"Prismatic Wand"
+	{
+		"en"		"Prismatic Wand"
+		"ko"		"프리즘 완드"
+	}
+	"Wand of Osmosis"
+	{
+		"en"		"Wand of Osmosis"
+		"ko"		"삼투성 완드"
+	}
+	"Hel's Hoe"
+	{
+		"en"		"Hel's Hoe"
+		"ko"		"헬의 낫"
+	}
+	"Worn Expidonsan Repair Device"
+	{
+		"en"		"Worn Expidonsan Repair Device"
+		"ko"		"마모된 엑스피돈사 수리 장치"
+	}
+	"Pristine Expidonsan Repair Device"
+	{
+		"en"		"Pristine Expidonsan Repair Device"
+		"ko"		"최상급 엑스피돈사 수리 장치"
 	}
 	"Chainblade"
 	{
@@ -3640,6 +3955,7 @@
 	"Fractal Reiuji"
 	{
 		"en"	"Fractal Reiuji"
+		"ko"	"프랙탈 레이우지"
 	}
 	"Heavy Particle Rifle"
 	{
@@ -3900,7 +4216,7 @@
 	"Victorian Launcher"
 	{
 		"en"	"Victorian Launcher"
-		"ko"	"빅토리안 런쳐"
+		"ko"	"빅토리안 런처"
 		"it"	"Lanciatore vittoriano"
 	}
 	"Castle Breaker"
@@ -3933,7 +4249,7 @@
 	"The Soldine Launcher"
 	{
 		"en"		"The Soldine Launcher"
-		"ko"		"''솔딘 런쳐''"
+		"ko"		"''솔딘의 로켓 발사기''"
 	}
 	"Taurus Revolver"
 	{
@@ -4209,7 +4525,7 @@
 	"Braced Pistol"
 	{
 		"en" "Braced Pistol"
-		"ko" "브레이스드 권총"
+		"ko" "보호형 권총"
 	}
 	"Zealot's Potion"
 	{
@@ -4253,7 +4569,7 @@
 	"Therapy"
 	{
 		"en" "Therapy"
-		"ko" "테라피"
+		"ko" "심리치료사"
 	}
 	"The Blitzkrieg"
 	{
@@ -4549,7 +4865,7 @@
 		"en"	"Crystal Shard"
 		"chi"	"水晶碎片"
 		"ru"	"Осколок Кристалла"
-		"ko"	"크리스탈 샤드"
+		"ko"	"수정 조각"
 	}
 	"Mana Fusions"
 	{
@@ -4563,14 +4879,14 @@
 		"en"	"Insanity Sigil"
 		"chi"	"疯狂印记"
 		"ru"	"Сигил Безумия"
-		"ko"	"광기의 상징"
+		"ko"	"광기의 인장"
 	}
 	"Sanity Sigil Blade"
 	{
 		"en"	"Sanity Sigil Blade"
 		"chi"	"理智印记剑"
 		"ru"	"Сигильный Клинок Рассудка"
-		"ko"	"정신력의 상징 블레이드"
+		"ko"	"정신력 인장 검"
 	}
 	"The Arsenal"
 	{

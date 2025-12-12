@@ -209,23 +209,23 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{black}???{default}: Hah, I knew you'll fall for it.");
+			CPrintToChatAll("{black}???{default}: 하. 그따위 함정에도 속아넘어가다니.");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{black}???{default}: So that's where your located.");
+			CPrintToChatAll("{black}???{default}: 덕분에 네놈의 위치가 어딘지 알아냈다.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{black}???{default}: Now stay there and accept your fate.");
+			CPrintToChatAll("{black}???{default}: 거기 가만히 있어라. 네 목을 가지러 갈테니.");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{black}???{default}: Expidonsa was and always should be the only race on Irln.");
+			CPrintToChatAll("{black}???{default}: 오직 엑스피돈사만이 아를린의 유일한 종족으로 남아야만한다.");
 		}
 		case 4:
 		{
-			CPrintToChatAll("{black}???{default}: So die you damn forerunners.");
+			CPrintToChatAll("{black}???{default}: 그러니까 이제 그만 죽어라. 하등한 놈들아.");
 		}
 		default:
 		{

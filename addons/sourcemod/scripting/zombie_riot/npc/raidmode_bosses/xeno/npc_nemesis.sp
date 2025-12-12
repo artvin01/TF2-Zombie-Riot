@@ -301,7 +301,7 @@ methodmap RaidbossNemesis < CClotBody
 		if(XenoExtraLogic())
 		{
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Enraged Calmaticus");
-			CPrintToChatAll("{green}Calmaticus: YOU WILL BECOME DNA SUPLIMENTS.");
+			CPrintToChatAll("{green}칼마티커스: 너희도 DNA 공급체가 될 것이다.");
 		}
 		else
 		{

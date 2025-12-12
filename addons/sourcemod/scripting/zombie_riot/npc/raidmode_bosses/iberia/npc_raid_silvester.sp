@@ -1142,11 +1142,11 @@ static void Internal_NPCDeath(int entity)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{gold}Silvester{default}: 뭐... 그럼 이제 {blue}센살{default}을 도우러 가야겠어. 나중에 또 봐!");
+			CPrintToChatAll("{gold}실베스터{default}: 뭐... 그럼 이제 {blue}센살{default}을 도우러 가야겠어. 나중에 또 봐!");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{gold}Silvester{default}: 지금 할 일이 많아서 살짝 지쳐있거든.. 그러니까 나중에 또 하자.");
+			CPrintToChatAll("{gold}실베스터{default}: 지금 할 일이 많아서 살짝 지쳐있거든.. 그러니까 나중에 또 하자.");
 		}
 		case 2:
 		{
