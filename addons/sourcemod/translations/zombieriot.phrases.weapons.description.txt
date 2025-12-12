@@ -3082,10 +3082,7 @@
 	// todo: translate prismatic wand properly
 	"Neuv pap0"
 	{
-		"en"	"-Piecring Laser\n-Constant fire\n-hard to controll laser beam."
-		"chi"	"这个法术名为''棱形奇点光柱''，它的来源早已丢失..."
-		"it"	"Incrementa i danni.\n''Generatore di Singolarità a Raggio Prismatico'', questo è il nome completo dell'incantesimo.\nCreato molto tempo fa, prima del contatto con i Ruaniani...\nLa Strega che ha creato l'incantesimo è ignota..."
-		"ko"	"''무지개 광선 특이점 발전장'', 그것이 이 마법의 진명입니다."
+		"en"	"-Piecring Laser\n-Constant fire\n-hard to controll laser beam.\n-Access skill menu with R."
 	}
 	"Neuv pap1"
 	{

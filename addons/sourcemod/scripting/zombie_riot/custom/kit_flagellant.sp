@@ -500,12 +500,18 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 		{
 			float multi = Attributes_Get(weapon, 2, 1.0);
 			multi *= Attributes_GetOnWeapon(client, weapon, 8, true);
+			if(LastMann)
+			{
+				multi *= 0.25;
+				//he heals himself twice, nerf alot.
+			}
 			
 			float base = FLAGGELANT_BASE_HEAL + (HealLevel[client] * 7.5);
 			float cost = 1.0 - (HealLevel[client] * 0.1);
 
 			base *= FLAGGELANT_GLOBAL_HP_NERF;
 			cost *= FLAGGELANT_GLOBAL_HP_NERF;
+
 
 			float healing = base * multi;
 			float injured = float(maxhealth - health);

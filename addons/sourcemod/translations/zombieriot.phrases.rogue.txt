@@ -1496,7 +1496,7 @@
 	}
 	"Solitary Desc"
 	{
-		"en"	"{crimson}Store items cost 10％ more {green}but Pack-a-Punch upgrades cost 10％ less."
+		"en"	"{crimson}Store items cost 10％ more {green}but weapon enhancements cost 10％ less."
 		"it"	"{crimson}Gli oggetti del negozio costano 10％ in più {green} ma i potenziamenti di Pack-a-Punch costano 10％ in meno."
 	}
 	"Solitary Lore"

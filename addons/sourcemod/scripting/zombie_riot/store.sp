@@ -83,6 +83,9 @@ enum struct ItemInfo
 	Function FuncReload4;
 	Function FuncOnDeploy;
 	Function FuncOnHolster;
+
+	Function FuncOnPap;
+
 	int WeaponSoundIndexOverride;
 	int WeaponModelIndexOverride;
 	float WeaponSizeOverride;
@@ -346,12 +349,13 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sfunc_onholster", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncOnHolster = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_onpap", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.FuncOnPap = GetFunctionByName(null, buffer);
 		
 		Format(buffer, sizeof(buffer), "%sint_ability_onequip", prefix);
 		this.CustomWeaponOnEquip 		= kv.GetNum(buffer);
-
-		
-
 
 		Format(buffer, sizeof(buffer), "%soverride_weapon_slot", prefix);
 		this.Weapon_Override_Slot 		= kv.GetNum(buffer, -1);
@@ -1275,11 +1279,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 						cash = maxCash;
 					}
 					char buf[84];
-					if(!Preview && !b_AntiLateSpawn_Allow[client])
-					{
-						Format(buf, sizeof(buf), "%T", "Late Join Pap Menu", client);
-					}
-					else if(PapPreviewMode[client])
+					if(PapPreviewMode[client])
 					{
 						Format(buf, sizeof(buf), "%T", "Preview Mode Pap", client);
 						cash = 999999;
@@ -1410,7 +1410,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 
 			if(OwnedItemIndex)
 			{
-				int owner = -1;
+				//int owner = -1;
 
 				ItemInfo info;
 				if(item.GetItemInfo(values[1], info) && info.Cost)
@@ -1478,14 +1478,24 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						
 						SetDefaultHudPosition(client);
 						
-						ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was boosted");
+						ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was Enhanced");
 						PrintPapDescription(client, item, info, PAP_DESC_BOUGHT);
 						
 						Store_ApplyAttribs(client);
 						Store_GiveAll(client, GetClientHealth(client));
-						owner = EntRefToEntIndex(values[2]);
-						if(IsValidClient(owner))
-							Building_GiveRewardsUse(client, owner, 150, true, 4.0, true);
+					//	owner = EntRefToEntIndex(values[2]);
+
+						Function Func = info.FuncOnPap;
+
+						if(Func && Func != INVALID_FUNCTION)
+						{
+							Call_StartFunction(null, Func);
+							Call_PushCell(client);
+							Call_PushArrayEx(item, sizeof(item), SM_PARAM_COPYBACK);
+							Call_Finish();
+						}
+					//	if(IsValidClient(owner))
+					//		Building_GiveRewardsUse(client, owner, 150, true, 4.0, true);
 							
 						CheckClientLateJoin(client);
 					}
@@ -3413,7 +3423,7 @@ static void MenuPage(int client, int section)
 								break;
 							}
 						}
-						Format(buffer, sizeof(buffer), "%T", "View PAP Upgrades", client);
+						Format(buffer, sizeof(buffer), "%T", "Weapon Enhancement", client);
 						menu.AddItem(buffer2, buffer);
 					}
 					if(tinker || item.Tags[0] || info.ExtraDesc[0] || item.Author[0] || info.WeaponFaction1)
@@ -4769,6 +4779,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 
 					//can be papped ? See if yes
 					ItemInfo info2;
+					
 
 					//allow inspecting kit children
 					if(item.ParentKit)
@@ -4782,7 +4793,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 							{
 								if(subItem.GetItemInfo(level, info2))
 								{
-									if(!b_AntiLateSpawn_Allow[client] && OwnedBefore)
+									if(OwnedBefore)
 										Store_PackMenu(client, i, level, client, false);
 									else
 										Store_PackMenu(client, i, level, client, true);
@@ -4794,7 +4805,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 					}
 					else if(item.GetItemInfo(level, info2))
 					{
-						if(!b_AntiLateSpawn_Allow[client] && OwnedBefore)
+						if(OwnedBefore)
 							Store_PackMenu(client, index, level, client, false);
 						else
 							Store_PackMenu(client, index, level, client, true);

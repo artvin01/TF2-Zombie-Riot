@@ -109,7 +109,7 @@ static bool ClotInteract(int client, int weapon, ObjectArmorTable npc)
 		return true;
 	}
 	int owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
-	Building_GiveRewardsUse(client, owner, 30, true, 0.5, true);
+	Building_GiveRewardsUse(client, owner, 30, true, 0.75, true);
 	GiveArmorViaPercentage(client, 0.2, 1.0);
 	ApplyBuildingCollectCooldown(npc.index, client, 45.0);
 	ClientCommand(client, "playgamesound ambient/machines/machine1_hit2.wav");
