@@ -1256,9 +1256,169 @@ bool Status_Effects_GrantAttackspeedBonus(int entity, bool HasBuff, float BuffAm
 
 */
 
+static float BuffToASPD(float buff)
+{
+	return 1.0 - (1.0 / BuffOriginal);
+}
+
+static float ASPDToBuff(float aspd)
+{
+	if(aspd <= -1.0)
+		ThrowError("We weren't ready for this")
+	
+	return 1.0 / (1.0 + aspd);
+}
+
 static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBuff, float BuffOriginal, int BuffCheckerID, int BuffCheckerIDNPC, int FlagAttackspeedLogicInternal)
 {
-	if(type == 1)
+	if((type == 3) || (type == 1 && BuffOriginal < 1.0))
+	{
+		// Note this will break if two buffs share the same slot but have
+		// a buffed attackspeed and the other a nerfed attackspeed
+		// (The if statement above for "type == 1 && BuffOriginal < 1.0")
+
+		float ASPDOriginal = BuffToASPD(BuffOriginal);
+
+		int i, weapon;
+		while(TF2_GetItem(entity, weapon, i))
+		{
+			//They dont even have the buff.
+			if(!HasSpecificBuff(weapon, "", BuffCheckerID))
+			{
+				//We want to give the buff
+				if(GrantBuff)
+				{
+					//No extra logic needed
+					ApplyStatusEffect(entity, weapon, "", 9999999.9, BuffCheckerID);
+					StatusEffects_SetCustomValue(weapon, BuffOriginal, BuffCheckerID);
+					//inf
+					if(!(FlagAttackspeedLogicInternal & BUFF_ATTACKSPEED_BUFF_DISABLE))
+					{
+						float currentASPD = Attributes_Get(weapon, Attrib_ASPD_StatusCalc, 0.0);
+						float newAPSD = currentASPD + ASPDOriginal;
+						Attributes_Set(weapon, Attrib_ASPD_StatusCalc, newAPSD);
+
+						float currentBuff = ASPDToBuff(currentASPD);
+						float newBuff = ASPDToBuff(newAPSD);
+
+						float changedBuff = newBuff / currentBuff;
+
+						if(Attributes_Has(weapon, 6))
+							Attributes_SetMulti(weapon, 6, changedBuff);	// Fire Rate
+						
+						if(Attributes_Has(weapon, 97))
+							Attributes_SetMulti(weapon, 97, changedBuff);	// Reload Time
+
+						if(Attributes_Has(weapon, 733))
+							Attributes_SetMulti(weapon, 733, changedBuff);	// mana cost
+						
+						if(Attributes_Has(weapon, 8))
+							Attributes_SetMulti(weapon, 8, 1.0 / changedBuff);	// Heal Rate
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_SPEED))
+					{
+						if(Attributes_Has(weapon, 103))
+							Attributes_SetMulti(weapon, 103, BuffOriginal);	// Projectile Speed
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_RANGE))
+					{
+						if(Attributes_Has(weapon, 101))
+							Attributes_SetMulti(weapon, 101, 1.0 / BuffOriginal);	// Projectile Range
+					}
+				}
+			}
+			else
+			{
+				float BuffRevert = Status_Effects_GetCustomValue(weapon, BuffCheckerID);
+				//Is the buff still the same as before?
+				//if it changed, we need to update it.
+
+				//dont be null either.
+				if((BuffRevert != BuffOriginal || !GrantBuff) && BuffRevert != 0.0)
+				{
+					//Just remove the buff it had.
+					if(!(FlagAttackspeedLogicInternal & BUFF_ATTACKSPEED_BUFF_DISABLE))
+					{
+						float ASPDRevert = BuffToASPD(BuffRevert);
+
+						float currentASPD = Attributes_Get(weapon, Attrib_ASPD_StatusCalc, 0.0);
+						float newAPSD = currentASPD - ASPDRevert;
+						Attributes_Set(weapon, Attrib_ASPD_StatusCalc, newAPSD);
+
+						float currentBuff = ASPDToBuff(currentASPD);
+						float newBuff = ASPDToBuff(newAPSD);
+
+						float changedBuff = newBuff / currentBuff;
+
+						if(Attributes_Has(weapon, 6))
+							Attributes_SetMulti(weapon, 6, changedBuff);	// Fire Rate
+						
+						if(Attributes_Has(weapon, 97))
+							Attributes_SetMulti(weapon, 97, changedBuff);	// Reload Time
+							
+						if(Attributes_Has(weapon, 733))
+							Attributes_SetMulti(weapon, 733, changedBuff);	// mana cost
+
+						if(Attributes_Has(weapon, 8))
+							Attributes_SetMulti(weapon, 8, 1.0 / changedBuff);	// Heal Rate
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_SPEED))
+					{
+						if(Attributes_Has(weapon, 103))
+							Attributes_SetMulti(weapon, 103, 1.0 / (BuffRevert));	// Projectile Speed
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_RANGE))
+					{
+						if(Attributes_Has(weapon, 101))
+							Attributes_SetMulti(weapon, 101, BuffOriginal);	// Projectile Range
+					}
+				
+					RemoveSpecificBuff(weapon, "", BuffCheckerID, false);
+				}
+				if(GrantBuff && BuffRevert != BuffOriginal)
+				{
+					//No extra logic needed
+					ApplyStatusEffect(entity, weapon, "", 9999999.9, BuffCheckerID);
+					StatusEffects_SetCustomValue(weapon, BuffOriginal, BuffCheckerID);
+					//inf
+					if(!(FlagAttackspeedLogicInternal & BUFF_ATTACKSPEED_BUFF_DISABLE))
+					{
+						float currentASPD = Attributes_Get(weapon, Attrib_ASPD_StatusCalc, 0.0);
+						float newAPSD = currentASPD + ASPDOriginal;
+						Attributes_Set(weapon, Attrib_ASPD_StatusCalc, newAPSD);
+
+						float currentBuff = ASPDToBuff(currentASPD);
+						float newBuff = ASPDToBuff(newAPSD);
+
+						float changedBuff = newBuff / currentBuff;
+
+						if(Attributes_Has(weapon, 6))
+							Attributes_SetMulti(weapon, 6, changedBuff);	// Fire Rate
+						
+						if(Attributes_Has(weapon, 97))
+							Attributes_SetMulti(weapon, 97, changedBuff);	// Reload Time
+
+						if(Attributes_Has(weapon, 733))
+							Attributes_SetMulti(weapon, 733, changedBuff);	// mana cost
+
+						if(Attributes_Has(weapon, 8))
+							Attributes_SetMulti(weapon, 8, 1.0 / changedBuff);	// Heal Rate
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_SPEED))
+					{
+						if(Attributes_Has(weapon, 103))
+							Attributes_SetMulti(weapon, 103, BuffOriginal);	// Projectile Speed
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_RANGE))
+					{
+						if(Attributes_Has(weapon, 101))
+							Attributes_SetMulti(weapon, 101, 1.0 / BuffOriginal);	// Projectile Range
+					}
+				}
+			}
+		}
+	}
+	else if(type == 1)
 	{
 		int i, weapon;
 		while(TF2_GetItem(entity, weapon, i))
