@@ -990,9 +990,9 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 				switch(GetRandomInt(0,1))
 				{
 					case 0:
-						Format(Text_Lines, sizeof(Text_Lines), "귄... 자네의 검을 들고 자네를 기리는 자가 여기 있어.");
+						Format(Text_Lines, sizeof(Text_Lines), "굴른... 자네의 검을 들고 자네를 기리는 자가 여기 있어.");
 					case 1:
-						Format(Text_Lines, sizeof(Text_Lines), "타임 머신이 있다면, 첫번째로 하고 싶은건 {crimson}배풍등이 귄을 죽이기 전에 내가 먼저 그 미친년을 찢어 죽이는거야{default}.");
+						Format(Text_Lines, sizeof(Text_Lines), "타임 머신이 있다면, 첫번째로 하고 싶은건 {crimson}배풍등이 굴른을 죽이기 전에 내가 먼저 그 미친놈을 찢어 죽이는거야{default}.");
 				}
 			}
 			else
@@ -1000,9 +1000,9 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 				switch(GetRandomInt(0,1))
 				{
 					case 0:
-						Format(Text_Lines, sizeof(Text_Lines), "{crimson}귄{default}... 안 돼...");
+						Format(Text_Lines, sizeof(Text_Lines), "{crimson}굴른{default}... 안 돼...");
 					case 1:
-						Format(Text_Lines, sizeof(Text_Lines), "{crimson}귄{default}의 죽음이 날 이 곳으로 이끌었지. 그 {crimson}미친 배풍등{default}은 반드시 죽어야한다.");
+						Format(Text_Lines, sizeof(Text_Lines), "{crimson}굴른{default}의 죽음이 날 이 곳으로 이끌었지. 그 {crimson}미친 배풍등{default}은 반드시 죽어야한다.");
 				}
 			}
 		}

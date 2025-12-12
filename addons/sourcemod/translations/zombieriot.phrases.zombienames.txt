@@ -3673,7 +3673,7 @@
 	{
 		"en"	"Guln the Fallen One"
 		"it"	"Guln il Caduto"
-		"ko"	"타락한 자, 귄"
+		"ko"	"타락한 자, 굴른"
 	}
 	"Guln the Fallen One Desc"
 	{

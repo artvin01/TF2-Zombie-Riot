@@ -2556,13 +2556,13 @@
 	{
 		"en"	"You find the body of... Guln."
 		"it"	"Avete trovato il corpo di... Guln."
-		"ko"	"당신이 찾은 것은... 귄의... 시체입니다."
+		"ko"	"당신이 찾은 것은... 굴른의... 시체입니다."
 	}
 	"Crystalized Warped Subjects Guln"
 	{
 		"en"	"You find the body of... Guln."
 		"it"	"Avete trovato il corpo di... Guln."
-		"ko"	"당신이 찾은 것은... 귄의... 시체입니다."
+		"ko"	"당신이 찾은 것은... 굴른의... 시체입니다."
 	}
 	"Book of Nature"
 	{

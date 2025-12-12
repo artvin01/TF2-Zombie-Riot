@@ -4508,15 +4508,15 @@ static void HandleRaidTimer(Twirl npc)
 		{
 			switch(GetRandomInt(0, 8))
 			{
-				case 0: Twirl_Lines(npc, "Ahhh, that was a nice walk, {crimson}time to end it");
-				case 1: Twirl_Lines(npc, "Heh, I suppose that was somewhat fun, now for the cleanup...");
-				case 2: Twirl_Lines(npc, "I must say {aqua}Stella{snow} may have overhyped this.. Alass, time to kill you all");
-				case 3: Twirl_Lines(npc, "Amazingly you were all too slow to die. And I've got a meeting I need to catch");
-				case 4: Twirl_Lines(npc, "Times up, I’ve got better things to do, so here, {crimson}have this parting gift{snow}!");
-				case 5: Twirl_Lines(npc, "Clearly you all lack proper fighting spirit to take this long, that’s it, {crimson}I’m ending this");
-				case 6: Twirl_Lines(npc, "My oh my, even after having such a large amount of time, you still couldn't do it, shame");
-				case 7: Twirl_Lines(npc, "There is a difference being slow and being cautious or methodical, clearly you all are the former");
-				case 8: Twirl_Lines(npc, "Tell me why you're this slow?");
+				case 0: Twirl_Lines(npc, "아, 즐거운 산책이었어. {crimson}이제 끝내야지?");
+				case 1: Twirl_Lines(npc, "헤, 좀 즐겼으니까, 이제 끝낼 시간이야...");
+				case 2: Twirl_Lines(npc, "{aqua}스텔라{snow}가 좀 과장해서 말해준 것 같네... 그럼 이제 너희들을 영원히 재울 시간이구나.");
+				case 3: Twirl_Lines(npc, "느리구나. 죽는 것 조차도... 그럼 이제 안녕.");
+				case 4: Twirl_Lines(npc, "이런, 시간이 다 되어버렸네. 나도 바쁜 몸이란다. {crimson}그런 의미에서 여기 즐거운 선물을 받으렴{snow}!");
+				case 5: Twirl_Lines(npc, "이렇게까지 오래 끌었다는건 정신 교육이 덜 되었다는 뜻이겠네. {crimson}바보같기는.");
+				case 6: Twirl_Lines(npc, "어머나, 이렇게 많은 시간을 보냈음에도 불구하고 여전히 날 이길 수 없다니, 부끄러운 줄 알렴.");
+				case 7: Twirl_Lines(npc, "게으르거나, 신중하거나, 체계적이거나. 분명 차이가 있겠지만... 너희는 전자겠구나.");
+				case 8: Twirl_Lines(npc, "왜 이렇게 느려터졌는지 말해주지 않겠니?");
 			}
 		}
 		else	//freeplay

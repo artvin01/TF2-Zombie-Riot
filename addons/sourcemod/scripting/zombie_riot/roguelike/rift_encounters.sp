@@ -525,13 +525,13 @@ static Action Timer_AdvanceGulnLore(Handle timer, int progress)
 	{
 		case 1:
 		{
-			CPrintToChatAll("{white}밥 {default}: 아... 이건... {crimson} 귄...");
+			CPrintToChatAll("{white}밥 {default}: 아... 이건... {crimson} 굴른...");
 			if(Rogue_HasNamedArtifact("Omega's Assistance"))
-				CPrintToChatAll("{gold}Omega{default}: 귄... 썅.");
+				CPrintToChatAll("{gold}Omega{default}: 굴른... 썅.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{snow}밥이 귄의 결정화된 머리를 보면서 힘없이 고개를 떨군다.");
+			CPrintToChatAll("{snow}밥이 굴른의 결정화된 머리를 보면서 힘없이 고개를 떨군다.");
 			if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
 				CPrintToChatAll("{purple}비히시스{default}: 그는 고지식한 자였지만, 이건... 이건 정말 전례가 없는 죽음이로군.");
 		}
@@ -570,7 +570,7 @@ static Action Timer_AdvanceGulnLore(Handle timer, int progress)
 		}
 		case 7:
 		{
-			CPrintToChatAll("{grey}귄, 우린 완전히 포위됐어. 나도 포위됐고. 엄브랄의 세력이 너무 강해. 너라도 도망쳐야해. 지금 당장! 내가 저들을 막고 있을게!");
+			CPrintToChatAll("{grey}굴른, 우린 완전히 포위됐어. 나도 포위됐고. 엄브랄의 세력이 너무 강해. 너라도 도망쳐야해. 지금 당장! 내가 저들을 막고 있을게!");
 		}
 		case 8:
 		{
@@ -630,7 +630,7 @@ public void Rogue_ImmensiveGuilt_FloorChange(int &floor, int &stage)
 	CPrintToChatAll("{white}밥 {default}: ...");
 	if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
 	{
-		CPrintToChatAll("{gold}오메가{default}: 우린 귄의 복수를 해야해. 반드시.");
+		CPrintToChatAll("{gold}오메가{default}: 우린 굴른의 복수를 해야해. 반드시.");
 		CPrintToChatAll("{purple}비히시스{default}: 우리 셋은 반드시 승리해야한다. 우리의 동지를 위해서.");
 	}
 }
@@ -1074,7 +1074,7 @@ static Action Timer_OmegaVhxisYapping(Handle timer, int progress)
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}오메가{default}: 너도 알잖아? 배풍등. 그 미친 또라이년. 그 놈이 만든 군대가 한두개가 아니었잖아.");
+					CPrintToChatAll("{gold}오메가{default}: 너도 알잖아? 배풍등. 그 미친 또라이. 그 놈이 만든 군대가 한두개가 아니었잖아.");
 				}
 				case 4:
 				{

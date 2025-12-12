@@ -4283,7 +4283,7 @@
 		"en"	"Developed after Guln's fall and designed to honor his passing, this contraption is capable of infinite fire, with occasional random effects that may occur with each shot."
 		"fr"	"Développé après la chute de Guln et conçu pour honorer son décès, cet engin est capable de tirer à l'infini, avec des effets aléatoires occasionnels pouvant se produire à chaque tir."
 		"it"	"Sviluppato dopo la caduta di Guln e progettato per onorare la sua scomparsa, questo congegno è in grado di sparare all'infinito, con occasionali effetti casuali che possono verificarsi a ogni colpo."
-		"ko"	"귄의 몰락 이후 개발되어 그의 죽음을 기리기 위해 설계된 이 기계는 소총수의 상위 유닛입니다. 끝없이 사격 공격을 가하며, 매 공격마다 무작위 효과가 부여될 확률이 있습니다."
+		"ko"	"굴른의 몰락 이후 개발되어 그의 죽음을 기리기 위해 설계된 이 기계는 소총수의 상위 유닛입니다. 끝없이 사격 공격을 가하며, 매 공격마다 무작위 효과가 부여될 확률이 있습니다."
 	}
 	"Barracks Peacekeeper Desc"
 	{

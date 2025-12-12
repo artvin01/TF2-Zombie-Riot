@@ -897,7 +897,7 @@
 	{
 		"en"	"Those that we lost. Bladedance... Guln... Finish the job."
 		"it"	"Quelli che abbiamo perso. Bladedance... Guln... Finisci il lavoro."
-		"ko"	"우리가 잃어버린 자들. 칼춤... 귄... 일을 끝낼 시간이다."
+		"ko"	"우리가 잃어버린 자들. 칼춤... 굴른... 일을 끝낼 시간이다."
 	}
 	"Mediveal Ally Title"
 	{
@@ -2668,7 +2668,7 @@
 	{
 		"en"	"Guln"
 		"it"	"Guln"
-		"ko"	"귄"
+		"ko"	"굴른"
 	}
 	"Automatic Robot Defense"
 	{
@@ -2848,7 +2848,7 @@
 	{
 		"en"	"I got rid of Guln, tricked Bob to get rid of Bladedance...\nYou and Bob are the last ones."
 		"it"	"Mi sono sbarazzato di Guln, ho ingannato Bob per sbarazzarmi di Bladedance... \nTu e Bob siete gli ultimi."
-		"ko"	"난 귄을 죽였고, 밥을 속여서 칼춤도 제거했다...\n너와 밥이 마지막이다."
+		"ko"	"난 굴른을 죽였고, 밥을 속여서 칼춤도 제거했다...\n너와 밥이 마지막이다."
 	}
 	"Whiteflower Final Speech 2"
 	{

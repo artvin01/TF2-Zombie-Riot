@@ -1862,9 +1862,9 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			{
 				i_khamlCutscene = 9;
 				if(Rogue_HasNamedArtifact("Bob's Wrath"))
-					CPrintToChatAll("{white}밥{crimson}: 귄을 죽인건 네 놈이잖나.");
+					CPrintToChatAll("{white}밥{crimson}: 굴른을 죽인건 네 놈이잖나.");
 				else
-					CPrintToChatAll("{white}밥{default}: 귄이 어디로 사라졌는지 아직 찾지 못 했다.");
+					CPrintToChatAll("{white}밥{default}: 굴른이 어디로 사라졌는지 아직 찾지 못 했다.");
 			}
 		}
 		case 9:
@@ -1873,9 +1873,9 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			{
 				i_khamlCutscene = 8;
 				if(Rogue_HasNamedArtifact("Bob's Wrath"))
-					CPrintToChatAll("{darkgray}그림자 응달{default}: 귄이.. 죽었어..? ........");
+					CPrintToChatAll("{darkgray}그림자 응달{default}: 굴른이.. 죽었어..? ........");
 				else
-					CPrintToChatAll("{darkgray}그림자 응달{default}: 귄에게 정확히 무슨 일이 일어났는지는 모르겠어. 나도 직접 찾아보려고 노력해 봤단 말야.");
+					CPrintToChatAll("{darkgray}그림자 응달{default}: 굴른에게 정확히 무슨 일이 일어났는지는 모르겠어. 나도 직접 찾아보려고 노력해 봤단 말야.");
 			}
 		}
 		case 8:

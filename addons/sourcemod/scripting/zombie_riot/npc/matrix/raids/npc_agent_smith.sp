@@ -1316,7 +1316,7 @@ static void Smith_Weapon_Lines(AgentSmith npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}If it isn't the {unique}Architect{darkgreen} himself, have you ever stood and stared at it, marveled at its beauty? Mr.{green}%N{darkgreen}?", client);	//Artvin (1)
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}만약 {unique}아키텍트{darkgreen}가 없었다면, 자네가 만드는 것도 이해할 수 없었겠지? 미스터 {green}%N{darkgreen}?", client);	//Artvin (1)
 				case 1:
 					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}자네가 우리를 그렇게 남겨두고 가는 것은 참으로 슬픈 일이야, 미스터 {green}%N{darkgreen}.", client);	//baka 改
 			}
@@ -1366,7 +1366,7 @@ static void Smith_Weapon_Lines(AgentSmith npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Follow the white 'rabbit', Mr.{green}%N{darkgreen}.", client);	//Batfoxkid (1)
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}자네의 영상을 따라가게, 미스터 {green}%N{darkgreen}.", client);	//Batfoxkid (1)
 				case 1:
 					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}과거를 뒤로할 수는 없네, 미스터 {green}%N{darkgreen}.", client);	//notcoke
 			}
@@ -1518,7 +1518,7 @@ static void Smith_Weapon_Lines(AgentSmith npc, int client)
 				case 0:
 					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}자네는 팀을 수시로 비난하는군, 미스터 {green}%N{darkgreen}.", client);	//ateze
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}Where's that wide smile, Mr.{green}%N{darkgreen}?", client);	//SimplySmiley (2)
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}자네는 우리에게 필요가 없을것 같군, 미스터 {green}%N{darkgreen}?", client);	//SimplySmiley (2)
 			}
 		}
 		case 85385117:

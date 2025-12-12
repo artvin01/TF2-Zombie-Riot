@@ -344,7 +344,7 @@ public void FallenWarrior_ClotThink(int iNPC)
 				i_fallen_eyeparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "head", {0.0,5.0,-15.0}));
 				i_fallen_bodyparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "env_snow_light_001", npc.index, "m_vecAbsOrigin", {50.0,-200.0,0.0}));
 
-				CPrintToChatAll("{crimson}귄{default}: 너희라면 {white}배풍등{default} 그 년을 막을 수 있겠지! 그리고 그렇게 되면...");
+				CPrintToChatAll("{crimson}굴른{default}: 너희라면 {white}배풍등{default} 그 새끼를 막을 수 있겠지! 그리고 그렇게 되면...");
 			}
 		}
 	}
@@ -501,7 +501,7 @@ public void FallenWarrior_NPCDeath(int entity)
 
 	if(GetTeam(entity) == TFTeam_Red)
 	{
-		CPrintToChatAll("{crimson}귄{default}: 그리고... 이게... 이 {crimson}혼돈{default}... 너희라면 뭘 해야할지 알겠지...");
+		CPrintToChatAll("{crimson}굴른{default}: 그리고... 이게... 이 {crimson}혼돈{default}... 너희라면 뭘 해야할지 알겠지...");
 	}
 	else
 	{
@@ -509,19 +509,19 @@ public void FallenWarrior_NPCDeath(int entity)
 		{
 			case 1:
 			{
-				CPrintToChatAll("{crimson}귄{default}: 고맙... 다...");
+				CPrintToChatAll("{crimson}굴른{default}: 고맙... 다...");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{crimson}귄{default}: 이 기분...");
+				CPrintToChatAll("{crimson}굴른{default}: 이 기분...");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{crimson}귄{default}: 밥... 내 친구...");
+				CPrintToChatAll("{crimson}굴른{default}: 밥... 내 친구...");
 			}
 			case 4:
 			{
-				CPrintToChatAll("{crimson}귄{default}: 반드시... 그 여자를... 막아...");
+				CPrintToChatAll("{crimson}굴른{default}: 반드시... 그 놈을... 막아...");
 			}
 		}
 	}

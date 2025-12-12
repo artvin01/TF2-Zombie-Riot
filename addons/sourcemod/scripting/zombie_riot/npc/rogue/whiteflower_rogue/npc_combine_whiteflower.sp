@@ -1239,7 +1239,7 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 	}
 	if(!Waves_InFreeplay())
 	{
-		CPrintToChatAll("당신이 그녀의 무리를 파괴한 이후, 그녀는 훨씬 약해졌습니다.");	
+		CPrintToChatAll("당신이 그의 무리를 파괴한 이후, 그는 훨씬 약해졌습니다.");	
 	}
 }
 

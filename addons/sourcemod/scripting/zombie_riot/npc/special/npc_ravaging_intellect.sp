@@ -952,7 +952,7 @@ void Ravaging_SaySpecialLine()
 			{
 				victim[victims++] = client;
 			}
-			else if(StrEqual(buffer, "zerosiki__", false))
+			else if(StrEqual(buffer, "Spookmaster", false))
 			{
 				victim[victims++] = client;
 			}
@@ -1028,7 +1028,7 @@ void Ravaging_SaySpecialLine()
 				
 				CPrintToChatAll("{darkblue}황폐의 지식인{default}: {crimson}%N{default} 얜 뭐냐? 무슨 이상한 무기로 싸우냐?",client);
 			}
-			else if(StrEqual(buffer, "zerosiki__", false))
+			else if(StrEqual(buffer, "Spookmaster", false))
 			{
 				
 				CPrintToChatAll("{darkblue}황폐의 지식인{default}: 무식하면 {crimson}%N{default} 처럼 멍청하기만 한 놈이 된다.",client);
