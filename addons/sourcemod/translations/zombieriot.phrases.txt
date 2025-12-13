@@ -22,7 +22,7 @@
 	"Last Alive Alone"
 	{
 		"en"		"You are on your last breath."
-		"ko"		"너는 마지막 숨만 붙어 있다."
+		"ko"		"당신 혼자 살아남고 말았습니다."
 	}
 	"Last Alive"
 	{
@@ -381,7 +381,7 @@
 	{
 		"en"		"Return to loadout Menu"
 		"it"		"Ritorno al menu di caricamento"
-		"ko"		"로드아웃 메뉴로 돌아가기"
+		"ko"		"로드아웃 메뉴로 귀환"
 	}
 	"Confirm Loadout"
 	{
@@ -1114,7 +1114,7 @@
 	"SSB Teleport Warning"
 	{
 		"en"		"YOU'RE BONED!"
-		"ko"		"너 끝났어!"
+		"ko"		"넌 끝났어!"
 	}
 	"Reaper Target Warning"
 	{
@@ -1129,7 +1129,7 @@
 	"Reaper Tricked Alert"
 	{
 		"en"		"You've cheated death!"
-		"ko"		"죽음은 더 이상 너를 쫓지 않는다…"
+		"ko"		"당신은 죽음을 속였습니다…"
 	}
 	"Rusty Ability Blocked"
 	{
@@ -1299,35 +1299,42 @@
 	"Raigeki Primary Attack Blocked By Charge"
 	{
 		"en"		"You cannot attack while charging Raigeki."
+		"ko"		"뇌격을 충전하는 동안에는 공격할 수 없습니다."
 	}
 	"Raigeki Gear Blocked By Charge"
 	{
 		"en"		"You cannot use that while charging Raigeki."
+		"ko"		"뇌격을 충전하는 동안에는 사용할 수 없습니다."
 	}
 	"Raigeki Blocked Because Downed"
 	{
 		"en"		"You cannot charge Raigeki while downed."
+		"ko"		"다운 상태에선 뇌격을 충전할 수 없습니다."
 	}
 	"Raigeki Failed Low Charge"
 	{
 		"en"		"Raigeki failed: not enough charge!"
+		"ko"		"충전이 부족합니다. 뇌격 사용 불가능."
 	}
 	"Raigeki Failed Downed"
 	{
 		"en"		"Raigeki failed: you were downed!"
+		"ko"		"현재 당신은 다운 상태입니다. 뇌격 사용 불가능."
 	}
 	"Raigeki Failed Killed"
 	{
 		"en"		"Raigeki failed: you died!"
+		"ko"		"현재 당신은 죽어있습니다. 뇌격 사용 불가능."
 	}
 	"Raigeki Failed Wrong Weapon"
 	{
 		"en"		"Raigeki failed: you switched weapons!"
+		"ko"		"무기를 전환하셨습니다. 뇌격 사용 불가능."
 	}
 	"Raigeki Fully Charged"
 	{
 		"en"		"RAIGEKI IS FULLY CHARGED!"
-		"ko"		"그 적은 최근에 능력으로 잡혔었습니다!"
+		"ko"		"뇌격이 전부 충전되었습니다!"
 	}
 	"Gamemode Credits"
 	{
@@ -1454,6 +1461,11 @@
 		"it"		"Luppolo frettoloso"
 		"ko" 		"신속 홉"
 	}
+	"Energy Drink"
+	{
+		"en" 		"Energy Drink"
+		"ko" 		"에너지 드링크"
+	}
 	"Marksman Beer"
 	{
 		"en" 		"Marksman Beer"
@@ -1495,7 +1507,7 @@
 		"pt"		"RÁPIDA RESSUREIÇÃO! 2x velocidade de ressureição e cura 15％ a mais e x2 mais vida ao reviver"
 		"ru" 		"РЕАНИМАТОР! 2x скорость оживления и на 15％ быстрее скорость лечения и 2x здоровье при оживлении"
 		"it"		"Bacca Rigenerativa! velocità di rianimazione 2x e 15％ in più di velocità di guarigione e 2x Salute in rianimazione"
-		"ko" 		"재생형 열매! 부활 속도가 2배 증가 및 치유 속도가 15％ 증가하고 부활시 현재 체력이 2배로 증가."
+		"ko" 		"재생형 열매! 부활 속도가 2배 증가 및 치유 속도가 15％ 증가하고 아군 부활시 회복하는 체력이 2배로 증가"
 	}
 	"Obsidian Oaf Received"
 	{
@@ -1936,22 +1948,25 @@
 	"Not Enough Money To Pap"
 	{
 		"en" 		"You do not have enough cash to Enchance your Weapon."
+		"ko" 		"당신의 무기를 강화하는데 필요한 자금이 부족합니다."
 	}
 	"Cannot Pap this"
 	{
 		"en" 		"Your weapon cannot be Enhanced."
+		"ko" 		"이 무기는 강화가 불가능합니다."
 	}
 	"Pap Weapon Upgraded"
 	{
 		"#format"	"{1:s}"
-		"en"		"Your weapon has been enhanced to {1}:"
+		"en"		"Your weapon has been upgraded to {1}:"
 		"it"		"La tua arma è stata potenziata a {1}:"
-		"ko"		"당신의 무기가 {1} 로 개선됨:"
+		"ko"		"당신의 무기가 {1} 로 강화됨:"
 	}
 	"Pap Weapon Preview"
 	{
 		"#format"	"{1:s}"
 		"en"		"Enchancement preview for {1}:"
+		"ko"		"{1} 의 강화 미리보기:"
 	}
 	"Revive Teammate tooltip"
 	{
@@ -2004,6 +2019,7 @@
 		"nl"		"Gebruik dit om jezelf een beetje te genezen."
 		"chi"       "按下R键来恢复少量生命"
 		"it"		"Usatelo per curarvi un po'."
+		"ko" 		"이 구조물을 사용해 체력을 약간 회복하세요."
 	}
 	"Healing Station Used"
 	{
@@ -3105,19 +3121,19 @@
 	"Tower_Message"
 	{
 		"en"		"You see a giant radiotower at the distance."
-		"ko"		"저멀리 거대한 라디오 타워가 보입니다."
+		"ko"		"저 멀리 거대한 방송탑이 보입니다."
 		"it"		"Si vede in lontananza una gigantesca torre radio."
 	}
 	"Victoria_Help_Message"
 	{
 		"en"		"Ziberian Guerillas are here to help."
-		"ko"		"지베리안 게릴라의 지원이 도착했습니다."
+		"ko"		"자이베리안 게릴라의 지원이 도착했습니다."
 		"it"		"I Guerriglieri Ziberiani sono qui per aiutare."
 	}
 	"RadioTower_here_Message"
 	{
 		"en"		"Radiotower is here, Prepare."
-		"ko"		"라디오 타워가 여기있습니다, 전투 준비."
+		"ko"		"방송탑이 이 곳에 도착했습니다. 전투 준비."
 		"it"		"Radiotower è qui, Preparati."
 	}
 	"Void_Help_Message"
@@ -3129,6 +3145,7 @@
 	"Void_Survival_Help_Message"
 	{
 		"en"		"Expidonsan's are here to help us defeat this void outbreak."
+		"ko"		"엑스피돈사 세력이 공허 재앙을 막기 위해 당신과 합류합니다."
 	}
 	"Silvester Shares His Power"
 	{
@@ -3269,7 +3286,7 @@
 		"ru"		"Сильвестр и Валдч не нападали на вас без причины."
 		"chi"		"西尔维斯特和瓦德奇不是无缘无故攻击你的。"
 		"it"		"Silvester e Waldch non vi hanno attaccato senza motivo."
-		"ko"		"실베스터와 월드치가 당신을 아무런 이유도 없이 공격한게 아닙니다."
+		"ko"		"실베스터와 왈츠가 당신을 아무런 이유도 없이 공격한게 아닙니다."
 	}
 	"Xeno_Wave_3"
 	{
@@ -4543,12 +4560,14 @@
 		"#format"	"{1:t}"
 		"en"	"Archetype: {1}"
 		"it"	"Archetipo: {1}"
+		"ko"	"유형: {1}"
 	}
 	"Faction List"
 	{
 		"#format"	"{1:s}"
 		"en"	"Faction: {1}"
 		"it"	"Fazione: {1}"
+		"ko"	"진영: {1}"
 	}
 	"Tags List"
 	{
@@ -4600,7 +4619,7 @@
 	{
 		"en"	"Lore order: (1) ''Silvester'' Is infected with the xeno virus, his gear prevents the spreading of it. how can we save him from the infection."
 		"it"	"Ordine Lore: (1) ''Silvester'' È infettato dal virus xeno, il suo equipaggiamento ne impedisce la diffusione."
-		"ko"	"설정 순서: (1) ‘실베스터’는 제노 바이러스에 감염되어 있으며, 그의 장비가 감염 확산을 막고 있다."
+		"ko"	"설정 순서: (1) ‘실베스터’는 제노 바이러스에 감염되어 있으며, 그의 장비가 감염 확산을 막고 있습니다."
 	}
 	"Alternative Desc"
 	{
@@ -4614,7 +4633,7 @@
 	{
 		"en"	"Lore order: (2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
 		"it"	"Ordine Lore: (2) La macchina è stata hackerata da qualcuno... ti vuole morto.\nOriginalmente costruito da Kahmlstein insieme a Ruina e Expidonsa...\nNon affrontarlo in nessuna area expidonsan..."
-		"ko"	"설정 순서: (2) 기계가 누군가에게 해킹당했다… 이제 너를 죽이려고 한다.\n원래는 캄르스타인, 루이나, 엑스피돈사와 함께 만들어진 장치였지만…\n엑스피돈사 지역에서는 절대 그와 싸우지 마라."
+		"ko"	"설정 순서: (2) 누군가에게 해킹당한 기계입니다... 그리고 이제 당신을 죽이고 싶어합니다.\n원래는 캄르스타인, 루이나, 엑스피돈사와 함께 만들어진 장치였지만…\n엑스피돈사 지역에서 그와 전투하지 마십시오."
 	}
 	"Blitzkrieg Hard Desc"
 	{
@@ -4635,7 +4654,7 @@
 	{
 		"en"	"Lore order: (3) You trying to find out what xeno is... Silvester and waldch are here to stop you from getting infected."
 		"it"	"Ordine Lore: (3) Stai cercando di scoprire cos'è lo xeno... Silvester e waldch sono qui per impedirti di essere infettato."
-		"ko"	"설정 순서: (3) 너는 제노가 무엇인지 알아내려 하고 있다…\n실베스터와 월드치는 네가 감염되지 않도록 막으러 왔다."
+		"ko"	"설정 순서: (3) 당신은 제노가 무엇인지 알아내려 하고 있습니다…\n실베스터와 왈츠가 당신이 감염되는걸 막기 위해 찾아왔습니다."
 	}
 	"Xeno Hard Desc"
 	{
@@ -4664,12 +4683,12 @@
 	"Bone Zone Desc"
 	{
 		"en"	"The armies of Necropolis are attacking, send them back to the underworld before they buff themselves!"
-		"ko"	"네크로폴리스의 군대가 공격해오고 있다!\n그들이 스스로 강화하기 전에 저승으로 되돌려 보내라!"
+		"ko"	"네크로폴리스의 군대가 공격해오고 있습니다!\n그들이 강해지기 전에 저승으로 되돌려 보내십시오!"
 	}
 	"SSB Desc"
 	{
 		"en"	"The God of the Dead has finally lost it, and now he wants to eradicate all life on Earth so that he never has to work again - stop him!"
-		"ko"	"죽은 자들의 신이 마침내 이성을 잃고, 다시는 일을 하지 않기 위해 지상의 모든 생명을 말살하려 하고 있다 — 그를 막아라!"
+		"ko"	"죽은 자들의 신이 마침내 이성을 잃고, 다시는 일을 하지 않기 위해 지상의 모든 생명을 말살하려 하고 있다 — 그를 막아야합니다!"
 	}
 	"Expidonsa Desc"
 	{
@@ -4683,7 +4702,7 @@
 	{
 		"en"	"Lore order: (5) The scouting party operative, you harmed Silvester and Waldch, but they were unable to tell Sensal that this was a false alarm, brace yourself."
 		"it"	"Ordine Lore: (5) L'agente del gruppo di esplorazione, hai danneggiato silvester e waldch, ma non sono stati in grado di dire a sensal che si trattava di un falso allarme, tieniti forte."
-		"ko"	"설정 순서: (5) 정찰 부대 요원. 너는 실베스터와 월드치를 해쳤지만, 그들은 센살에게 이것이 오경보였다는 것을 전달하지 못했다. 준비해라."
+		"ko"	"설정 순서: (5) 당신은 정찰 부대 요원인 실베스터와 왈츠를 공격했지만, 그들은 센살에게 이것이 허위 경보란 사실을 알리지 못 했습니다. 준비하세요."
 	}
 	"Deep Sea Desc"
 	{
@@ -4705,7 +4724,7 @@
 	{
 		"en"	"Lore order: (6) Invade the seaborn and kill them off while Alaxios distracts them... however, it seems another party missunderstands this temporary alliance."
 		"it"	"Ordine Lore: (6) Invadi i seaborn e ucciderli mentre alaxios li distrae... tuttavia, sembra che un'altra parte non capisca questa alleanza temporanea."
-		"ko"	"설정 순서: (6) 알락시오스가 그들을 유인하는 동안 시본을 침공해 처치하라…\n그러나 다른 세력이 이 일시적인 동맹을 오해한 것 같다."
+		"ko"	"설정 순서: (6) 알락시오스가 그들을 유인하는 동안 시본을 침공해 처치하세요…\n그러나 다른 세력이 이 일시적인 동맹을 오해한 것 같습니다."
 	}
 	"Schwert Donner Alt Desc"
 	{
@@ -4727,7 +4746,7 @@
 		"fr"	"Aidez Kahmlstein contre le Void!"
 		"chi"	"帮卡姆斯坦因击退深渊！"
 		"it"	"Aiuta Kahmlstein contro il vuoto!"
-		"ko"	"캄르스타인을 도와 공허 세력을 대비하세요!"
+		"ko"	"자주 일어나는 공허 발발 재앙 중 하나입니다. 다행스럽게도, 이 근처에 우리가 있으니 방어를 도울 수 있겠군요."
 	}
 	"Unspeakable Raid Desc"
 	{
@@ -4735,17 +4754,18 @@
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
 		"chi"	"深渊已被释放。"
 		"it"	"Ordine Lore: (9) Subito dopo aver liberato il vuoto in rogue2..."
-		"ko"	"설정 순서: (9) 진정한 심연이 풀려나고 말았습니다..."
+		"ko"	"설정 순서: (9) 로그라이크2(Rogue2) 당시 공허가 해방되어버린 직후, 다른 차원의 생명체들이 이 세계를 점령하기 위해 몰려오고 있습니다. 캄르스타인을 도와 공허와 맞서십시오! "
 	}
 	"Aperture Desc"
 	{
 		"en"	"You find yourself on the outskirts of an old facility. The inhabitants see you as a threat and attack you. Hopefully, we won't have to come back here after this."
+		"ko"	"당신은 낡은 시설의 외곽에 도착했습니다 이 장소의 수호자들이 당신을 위협으로 여기고 공격해 옵니다. 당신은 이번 사건이 끝나면 다시는 이곳에 오지 않았으면 좋겠다는 생각만이 들었습니다."
 	}
 	"Laboratories Raid Desc"
 	{
 		"en"	"Lore order: (10) After construction and zilius's attack, Izan sends you to an old facility, it seems to have an exact replica of some places..."
 		"it"	"Ordine Lore: (10) Dopo la struttura e l'attacco di Zilius, Izan ti manda in una vecchia struttura, che sembra avere una replica esatta di alcuni luoghi..."
-		"ko"	"설정 순서: (10) 생존연산에서 질리우스의 공격 이후, 이잔은 너를 오래된 시설로 보낸다./n그곳에는 몇몇 장소와 완전히 동일한 복제물이 존재하는 것처럼 보인다…"
+		"ko"	"설정 순서: (10) 생존연산에서 질리우스의 습격을 버텨낸 후, 이잔은 당신을 오래된 연구소로 보냈습니다. 그곳에는 몇몇 장소와 완전히 동일한 복제물이 존재하는 것처럼 보입니다…"
 	}
 	"Twirl Raid Desc"
 	{
@@ -4965,13 +4985,13 @@
 	{
 		"en"	"View PAP Upgrades"
 		"it"	"Visualizza gli aggiornamenti PAP"
-		"ko"	"팩펀 개선 효과 보기"
+		"ko"	"강화 효과 보기"
 	}
 	"Weapon Enhancement"
 	{
 		"en"	"Weapon Enhancement"
 		"it"	"Visualizza gli aggiornamenti PAP"
-		"ko"	"팩펀 개선 효과 보기"
+		"ko"	"무기 강화하기"
 	}
 	"Bring up Class Change Menu"
 	{
@@ -5167,6 +5187,7 @@
 	"Iberia Expi Desc"
 	{
 	  "en" "Iberia and expidonsa offer training to help against the true final battle against the void... But our main trainer and her partner aren't here to train us. Their probably on vacation."
+	  "ko" "이베리아와 엑스피돈사 세력이 공허와의 마지막 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 그런데 보아하니 메인 트레이너와 그녀의 파트너가 여기에 없군요. 들려오는 말로는 둘 다 휴가 중이라던데 설마..."
 	}
 	"Iberia & Nemal"
 	{
@@ -5427,6 +5448,7 @@
 	"Victoria Survival Desc"
 	{
 		"en" 	"On our way to meet up with Bob the First we see a Victoria outpost. They decide to attack us. Guess they're pissed off about beating them before."
+		"ko" 	"당신은 밥 1세를 만나러 가던 도중, 빅토리아 전초기지를 발견합니다. 그리고... 그들이 당신을 공격해옵니다?! 아무래도 이전에 그들과 한바탕 싸운 탓에 이러는 것 같군요."
 	}
 	"Victoria Raid Desc"
 	{
@@ -5443,7 +5465,7 @@
 	"Barrack Unit not detected"
 	{
 		"en"	"Barrack Unit not detected"
-		"ko"	"배럭 유닛를 감지 할 수 없습니다."	
+		"ko"	"배럭 유닛을 감지 할 수 없습니다."	
 		"it"	"Unità baracca non rilevata"
 	}
 	"Player not detected"
@@ -5499,13 +5521,13 @@
 	{
 		"en"		"You're in the Starter Store!\nBuy the weapons and gear you need with a high discount!\nOnce done, exit the store to access your earned cash!\nPress [TAB] and exit the store with [1]!"
 		"it"		"Sei nel Negozio Iniziale! \nAcquista le armi e l'equipaggiamento di cui hai bisogno con un forte sconto! \nUna volta finito, esci dal negozio per accedere ai soldi guadagnati! \nPremi [TAB] e esci dal negozio con [1]!"
-		"ko"		"라운드가 시작되었고 당신은 아직 초기 상점에 있습니다!\n상점 메뉴에서 초기 장비 로드아웃을 설정하고 더 많은 무기와 자금을 얻으세요!\n[TAB] 을 눌러 [1] 과 함께 상점을 나가세요!"
+		"ko"		"상점 메뉴에서 초기 장비 로드아웃을 설정하고 더 많은 무기와 자금을 얻으세요!\n [TAB] 을 눌러 [1] 과 함께 초기 상점을 나가세요!"
 	}
 	"Latejoin Hint"
 	{
 		"#format"	"{1:d}"
 		"en"		"You joined a round in progress.\nBuy Equipment and use [{1:d}] more Cash to qualify.\nYou have access to upgrade your current weapons in your store.\nSales are ignored, but got extra cash."
-		"ko"		"진행 중인 라운드에 참가했습니다.\n장비를 구매하고 자격을 갖추기 위해 [{1:d}] 더 많은 캐시를 사용하세요.\n상점에서 현재 무기를 업그레이드할 수 있습니다.\n세일은 적용되지 않지만 추가 캐시를 받았습니다."
+		"ko"		"장비를 구매하고 자격을 갖추기 위해 [{1:d}] 더 많은 캐시를 사용하세요.\n상점에서 현재 무기를 업그레이드할 수 있습니다.\n세일은 적용되지 않지만 추가 캐시를 받았습니다."
 	}
 	"No Attack Info"
 	{
@@ -5600,7 +5622,7 @@
 	{
 		"en"		"You have too many perks, get rid of one."
 		"it"		"Avete troppi vantaggi, eliminatene uno."
-		"ko"		"너무 많은 퍼크를 가지고 있습니다, 하나를 제거하세요."
+		"ko"		"너무 많은 퍽을 가지고 있습니다, 하나를 제거하세요."
 	}
 	"You removed the current perk"
 	{
@@ -5612,23 +5634,28 @@
 	{
 		"#format"	"{1:d}"
 		"en" 		"Not Enough Mana To use MultiShot You need {1} Mana!\nReverting to base wand!"
+		"ko" 		"멀티샷을 쓰기 위한 마나가 부족합니다. 마나가 {1} 만큼 필요합니다! \n기본 완드로 복귀합니다!"
 	}
 	"No Targets Detected"
 	{
 		"en"	"No Targets Detected"
+		"ko"	"대상 감지 불가능."
 	}
 	"Your Weapon is not charged enough None"
 	{
 		"en"	"Your Weapon is not charged enough."
+		"ko"	"당신의 무기가 충분히 충전되지 않았습니다."
 	}
 	"Your Weapon is not charged enough"
 	{
 		"#format"	"{1:d},{2:d}"
 		"en"	"Your Weapon is not charged enough. [{1}/{2}]"
+		"ko"	"당신의 무기가 충분히 충전되지 않았습니다. [{1}/{2}]"
 	}
 	"Your Weapon is not charged enough Single"
 	{
 		"#format"	"{1:d}"
 		"en"	"Your Weapon is not charged enough. {1}"
+		"ko"	"당신의 무기가 충분히 충전되지 않았습니다. {1}"
 	}
 }

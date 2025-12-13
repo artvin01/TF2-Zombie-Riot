@@ -303,7 +303,7 @@
 	"The Trash Cannon"
 	{
 		"en"		"The Trash Cannon"
-		"ko"		"쓰레기 캐논"
+		"ko"		"폐기물 포"
 	}
 	"Outlaw's Railcannon"
 	{
@@ -454,6 +454,11 @@
 		"it"		"RPG"
 		"ko" 		"RPG"
 	}
+	"Nuke Launcher"
+	{
+		"en"		"Nuke Launcher"
+		"ko" 		"핵 발사기"
+	}
 	"Peacock's Screw Ball Cannon"
 	{
 		"en"		"Peacock's Screw Ball Cannon"
@@ -478,6 +483,11 @@
 		"it"		"Il Mutila-Mucche 6000"
 		"ko" 		"소도륙 6000"
 	}
+	"Cow Mangler 6000 Mk2"
+	{
+		"en"		"Cow Mangler 6000 Mk2"
+		"ko" 		"소도륙 6000 Mk2"
+	}
 	"Anti Material Rifle"
 	{
 		"en"		"Anti Material Rifle"
@@ -488,7 +498,7 @@
 		"nl"		"Anti-Materie Geweer"
 		"chi"      	"反物质步枪"
 		"it"		"Fucile anti materiale"
-		"ko" 		"반물질 소총"
+		"ko" 		"반물질 저격소총"
 	}
 	"Infected Rampager Assult Rifle"
 	{
@@ -513,6 +523,11 @@
 		"chi"		"行星发射器"
 		"it"		"Lancia-Stelle"
 		"ko" 		"유성 발사기"
+	}
+	"Rusty Rifle"
+	{
+		"en"		"Rusty Rifle"
+		"ko" 		"녹슨 저격소총"
 	}
 	"Secondary Weapons"//Secondary here
 	{
@@ -554,6 +569,81 @@
 	{
 		"en"		"Casino"
 		"ko"		"카지노"
+	}
+	"Casino - Walmart"
+	{
+		"en"		"Casino - Walmart"
+		"ko"		"카지노 - 월마트"
+	}
+	"Casino - Flush"
+	{
+		"en"		"Casino - Flush"
+		"ko"		"카지노 - 플러시"
+	}
+	"Casino - Flushed Away"
+	{
+		"en"		"Casino - Flushed Away"
+		"ko"		"카지노 - Flushed Away"
+	}
+	"Casino - Straight Flush"
+	{
+		"en"		"Casino - Straight Flush"
+		"ko"		"카지노 - 스트레이트 플러시"
+	}
+	"Casino - Sideways Flush"
+	{
+		"en"		"카지노 - Sideways Flush"
+		"ko"		"카지노 - 사이드웨이 플러시"
+	}
+	"Casino - Royal Flush"
+	{
+		"en"		"Casino - Royal Flush"
+		"ko"		"카지노 - 로얄 플러시"
+	}
+	"$$$BI$$$G WIN$$$S!!!!!!$$$$$$€€€€"
+	{
+		"en"		"$$$BI$$$G WIN$$$S!!!!!!$$$$$$€€€€"
+		"ko"		"$$$대$$$금 성$$$S!!!!!!$$$$$$€€€€"
+	}
+	"The Enforcer"
+	{
+		"en"		"The Enforcer"
+		"ko"		"집행자"
+	}
+	"The Enforcing Hell"
+	{
+		"en"		"The Enforcing Hell"
+		"ko"		"지옥의 집행관"
+	}
+	"The Enforcer To the Wall"
+	{
+		"en"		"The Enforcer To the Wall"
+		"ko"		"철벽의 집행관"
+	}
+	"Bold Action Rifle"
+	{
+		"en"		"Bold Action Rifle"
+		"ko"		"볼트액션 소총"
+	}
+	"The Manic Marksman"
+	{
+		"en"		"The Manic Marksman"
+		"ko"		"집중 명사수"
+	}
+	"Barricader's SMG"
+	{
+		"en"		"Barricader's SMG"
+		"ko"		"바리케이드 관리자의 기관단총"
+	}
+	"Camper's Shotgun"
+	{
+		"en"		"Camper's Shotgun"
+		"ko"		"캠퍼의 산탄총"
+	}
+	"Builders Axe"
+	{
+		"en"		"Builders Axe"
+		"ko"		"건축가의 도끼"
 	}
 	"Nail Gun"
 	{
@@ -608,6 +698,16 @@
 		"en"		"Super-Uber-Saw"
 		"ko"		"슈퍼 우버톱"
 	}
+	"Superer Uberer Sawer"
+	{
+		"en"		"Superer Uberer Sawer"
+		"ko"		"울트라 슈퍼 우버톱"
+	}
+	"Super Bolt Crusader"
+	{
+		"en"		"Super Bolt Crusader"
+		"ko"		"슈퍼 십자군의 쇠뇌"
+	}
 	"Sensal's Scythe"
 	{
 		"en"		"Sensal's Scythe"
@@ -622,6 +722,16 @@
 	{
 		"en"		"Old Wooden Board"
 		"ko"		"낡은 나무 방패"
+	}
+	"Angered Messenger's Launcher"
+	{
+		"en"		"Angered Messenger's Launcher"
+		"ko"		"격분한 메신저의 발사기"
+	}
+	"Messenger's Potential"
+	{
+		"en"		"Messenger's Potential"
+		"ko"		"메신저의 잠재력"
 	}
 	"Magic Potion"
 	{
@@ -648,12 +758,12 @@
 	"Support Weapons"
 	{
 		"en"		"Support Weapons"
-		"ko"		"서포트 무기"
+		"ko"		"지원 무기"
 	}
 	"Weapon Kits"
 	{
 		"en"		"Weapon Kits"
-		"ko"		"무기 세트"
+		"ko"		"무기 키트"
 	}
 	"Flaregun"
 	{
@@ -759,6 +869,31 @@
 	{
 		"en"		"The Health Hose"
 		"ko"		"치유의 호스"
+	}
+	"The Health Hose"
+	{
+		"en"		"The Health Hose"
+		"ko"		"치유의 호스"
+	}
+	"Health Blaster"
+	{
+		"en"		"Health Blaster"
+		"ko"		"치유 블래스터"
+	}
+	"The Savior's Sprayer"
+	{
+		"en"		"The Savior's Sprayer"
+		"ko"		"구세주의 분사기"
+	}
+	"The Savior's Shotgun"
+	{
+		"en"		"The Savior's Shotgun"
+		"ko"		"구세주의 산탄총"
+	}
+	"Protecta's Peace"
+	{
+		"en"		"Protecta's Peace"
+		"ko"		"프로텍타의 평화"
 	}
 	"Medigun"
 	{
@@ -915,6 +1050,21 @@
 		"it"		"Martello"
 		"ko"		"망치"
 	}
+	"Mega Masher"
+	{
+		"en"		"Mega Masher"
+		"ko"		"메가 스매셔"
+	}
+	"Omega Mega Masher"
+	{
+		"en"		"Omega Mega Masher"
+		"ko"		"오메가 메가 매셔"
+	}
+	"Obuch's Hammer"
+	{
+		"en"		"Obuch's Hammer"
+		"ko"		"오부치의 망치"
+	}
 	"Fire Axe"
 	{
 		"en"		"Fire Axe"
@@ -950,6 +1100,21 @@
 		"chi"       	"苦无"
 		"it"		"Kunai"
 		"ko"		"쿠나이"
+	}
+	"Backstabbers Favorit"
+	{
+		"en"		"Backstabbers Favorit"
+		"ko"		"백스탭 사랑꾼"
+	}
+	"x10 Spy Main's Personal ''Knife''"
+	{
+		"en"		"x10 Spy Main's Personal ''Knife''"
+		"ko"		"x10배 모드 스파이 메인의 ''칼''"
+	}
+	"Ruina Drone's Knife"
+	{
+		"en"		"Ruina Drone's Knife"
+		"ko"		"루이나 드론의 칼"
 	}
 	"Broken Rapier"
 	{
@@ -2234,6 +2399,36 @@
 		"it"		"Livello 15 Sparapiselli"
 		"ko"		"레벨 15 피슈터"
 	}
+	"Level 20 Peashooter"
+	{
+		"en"		"Level 20 Peashooter"
+		"ko"		"레벨 20 피슈터"
+	}
+	"Level 30 Peashooter"
+	{
+		"en"		"Level 30 Peashooter"
+		"ko"		"레벨 30 피슈터"
+	}
+	"Level 50 Peashooter"
+	{
+		"en"		"Level 50 Peashooter"
+		"ko"		"레벨 50 피슈터"
+	}
+	"Level 75 Peashooter"
+	{
+		"en"		"Level 75 Peashooter"
+		"ko"		"레벨 75 피슈터"
+	}
+	"Peashooter Singularity"
+	{
+		"en"		"Peashooter Singularity"
+		"ko"		"특이점 장전 피슈터"
+	}
+	"Peashooter Singularity Singularity"
+	{
+		"en"		"Peashooter Singularity Singularity"
+		"ko"		"특이점 강화 피슈터"
+	}
 	"Rusty Wrench"
 	{
 		"en"		"Rusty Wrench"
@@ -2274,6 +2469,151 @@
 	{
 		"en"		"Medikit from the Hood"
 		"ko"		"낙후된 의료 키트"
+	}
+	"Morphine"
+	{
+		"en"		"Morphine"
+		"ko"		"모르핀"
+	}
+	"Cured Silvester"
+	{
+		"en"		"Cured Silvester"
+		"ko"		"감염이 치유된 실베스터"
+	}
+	"Head Equipped Blue Goggles"
+	{
+		"en"		"Head Equipped Blue Goggles"
+		"ko"		"머리에 장착하는 파란 고글"
+	}
+	"Calmaticus' Heart Piece"
+	{
+		"en"		"Calmaticus' Heart Piece"
+		"ko"		"칼마티커스의 심장 조각"
+	}
+	"Medieval Crown"
+	{
+		"en"		"Medieval Crown"
+		"ko"		"중세 왕관"
+	}
+	"Alaxios's Godly assistance"
+	{
+		"en"		"Alaxios's Godly assistance"
+		"ko"		"알락시오스의 신성한 축복"
+	}
+	"Twirl's Hairpins"
+	{
+		"en"		"Twirl's Hairpins"
+		"ko"		"트윌의 헤어핀"
+	}
+	"Bob's Curing Hand"
+	{
+		"en"		"Bob's Curing Hand"
+		"ko"		"밥의 치유의 손길"
+	}
+	"Kahml's Contained Chaos"
+	{
+		"en"		"Kahml's Contained Chaos"
+		"ko"		"격리된 캄르스타인의 혼돈"
+	}
+	"Xeno Virus Vial"
+	{
+		"en"		"Xeno Virus Vial"
+		"ko"		"제노 바이러스 항생제"
+	}
+	"Chaos Machina Waldch Chip"
+	{
+		"en"		"Chaos Machina Waldch Chip"
+		"ko"		"혼돈 마키나 왈츠의 칩"
+	}
+	"Corrupted Barney's Chainsaw"
+	{
+		"en"		"Corrupted Barney's Chainsaw"
+		"ko"		"타락한 바니 칼훈의 전기톱"
+	}
+	"Kahmlsteins Last Will"
+	{
+		"en"		"Kahmlsteins Last Will"
+		"ko"		"캄르스타인의 유언장"
+	}
+	"Matrix's Curse"
+	{
+		"en"		"Matrix's Curse"
+		"ko"		"매트릭스의 저주"
+	}
+	"Overlords Final Wish"
+	{
+		"en"		"Overlords Final Wish"
+		"ko"		"대군주의 마지막 소원"
+	}
+	"Bob's true fear"
+	{
+		"en"		"Bob's true fear"
+		"ko"		"밥의 진정한 공포"
+	}
+	"Major Steam's Rocket"
+	{
+		"en"		"Major Steam's Rocket"
+		"ko"		"증기 소령의 로켓"
+	}
+	"Waldch's Expidonsan Sword"
+	{
+		"en"		"Waldch's Expidonsan Sword"
+		"ko"		"왈츠의 엑스피돈사 검"
+	}
+	"Expidonsan Battery Device"
+	{
+		"en"		"Expidonsan Battery Device"
+		"ko"		"엑스피돈사 배터리 장치"
+	}
+	"Gem from the Curtain"
+	{
+		"en"		"Gem from the Curtain"
+		"ko"		"장막 속의 보석"
+	}
+	"Foreign Expidonsan Chip"
+	{
+		"en"		"Foreign Expidonsan Chip"
+		"ko"		"외국풍 엑스피돈사 칩"
+	}
+	"Reila's Scorn Keycard"
+	{
+		"en"		"Reila's Scorn Keycard"
+		"ko"		"레일라의 스콘 키카드"
+	}
+	"Jkei's Broken Entry Chip"
+	{
+		"en"		"Jkei's Broken Entry Chip"
+		"ko"		"제이케이의 파괴된 진입용 칩"
+	}
+	"Shadow's Letter"
+	{
+		"en"		"Shadow's Letter"
+		"ko"		"그림자의 편지"
+	}
+	"Avangard's Processing Core-B"
+	{
+		"en"		"Avangard's Processing Core-B"
+		"ko"		"아방가르드의 프로세싱 코어-B"
+	}
+	"Iberian and Expidonsan Training"
+	{
+		"en"		"Iberian and Expidonsan Training"
+		"ko"		"엑스피돈사-이베리아 연합 훈련"
+	}
+	"Expidonsan Research Card"
+	{
+		"en"		"Expidonsan Research Card"
+		"ko"		"엑스피돈산 연구 카드"
+	}
+	"Whiteflower's Elite Grenade"
+	{
+		"en"		"Whiteflower's Elite Grenade"
+		"ko"		"배풍등의 정예 수류탄"
+	}
+	"Omega's Medallion"
+	{
+		"en"		"Omega's Medallion"
+		"ko"		"오메가의 메달리온"
 	}
 	"Inventory"//Inventory here
 	{
@@ -2806,7 +3146,7 @@
 	"Guln's Dying Wish"
 	{
 		"en"		"Guln's Companions"
-		"ko"		"글룬의 부대원들"
+		"ko"		"굴른의 부대원들"
 	}
 	"Builder Gear"
 	{
@@ -2852,7 +3192,22 @@
 		"ru"       "Пусковая установка ИЭМ"
 		"chi"       "超电磁炮"
 		"it"		"Lanciatore IEM"
-		"ko"		"IEM 런처"
+		"ko"		"IEM 발사기"
+	}
+	"Charged Laser Cutter"
+	{
+		"en"       "Charged Laser Cutter"
+		"ko"	   "충전된 레이저 커터"
+	}
+	"Charged Laser Cutter Mk2"
+	{
+		"en"       "Charged Laser Cutter Mk2"
+		"ko"	   "충전된 레이저 커터 MK2"
+	}
+	"The Laser Cure"
+	{
+		"en"       "레이저 치료기"
+		"ko"	   "레이저 치료기"
 	}
 	"Quad Launcher"
 	{
@@ -2861,7 +3216,7 @@
 		"ru"       "Счетверённая ракетница"
 		"chi"       "四管榴弹炮"
 		"it"		"Lanciatore quadruplo"
-		"ko"	   "4연장 런처"
+		"ko"	   "4연장 발사기"
 	}
 	"Terroriser Bomb lmplanter Sniperrifle"
 	{
@@ -3189,7 +3544,7 @@
 		"ru"	"Пассажирское устройство"
 		"chi"   "乘客设备"
 		"it"	"Dispositivo del passeggero"
-		"ko"	"패신저의 단말기"
+		"ko"	"패신저의 장치"
 	}
 	"Alchemist Potion"
 	{
@@ -3199,6 +3554,36 @@
 		"chi"   "炼金术士药水"
 		"it"	"Pozione dell'alchimista"
 		"ko"	"연금술사의 포션"
+	}
+	"Whirling Glaive"
+	{
+		"en"	"Whirling Glaive"
+		"ko"	"회전형 글레이브"
+	}
+	"Kylie Boomerang"
+	{
+		"en"	"Kylie Boomerang"
+		"ko"	"킬리 부메랑"
+	}
+	"Glaive Lord"
+	{
+		"en"	"Glaive Lord"
+		"ko"	"글레이브 로드"
+	}
+	"Whirlwind Rang"
+	{
+		"en"	"Whirlwind Rang"
+		"ko"	"휠윈드 부메랑"
+	}
+	"Nightmare"
+	{
+		"en"	"Nightmare"
+		"ko"	"악몽"
+	}
+	"Sunswallower"
+	{
+		"en"	"Sunswallower"
+		"ko"	"햇살 흡수자"
 	}
 	"Deleting buildings refunds text"
 	{
@@ -3250,6 +3635,781 @@
 		"chi"	"兰亭法杖"
 		"it"	"Personale Lantean"
 		"ko"	"랜턴 스태프"
+	}
+	"Raigeki"
+	{
+		"en"		"Raigeki"
+		"ko"		"뇌격"
+	}
+	"Direct Current"
+	{
+		"en"		"Direct Current"
+		"ko"		"직류"
+	}
+	"Circuit Breaker"
+	{
+		"en"	"Circuit Breaker"
+		"ko"	"회로 차단기"
+	}
+	"Megawatt Massacre"
+	{
+		"en"	"Megawatt Massacre"
+		"ko"	"메가와트 대학살"
+	}
+	"Crisis Conductor"
+	{
+		"en"	"Crisis Conductor"
+		"ko"	"고비 지휘자"
+	}
+	"Mortal Blackout"
+	{
+		"en"	"Mortal Blackout"
+		"ko"	"필멸의 소등"
+	}
+	"Junker Staff"
+	{
+		"en"		"Junker Staff"
+		"ko"		"정커 스태프"
+	}
+	"Staff of the Skull Servants"
+	{
+		"en"		"Staff of the Skull Servants"
+		"ko"		"저주받은 하인 스태프"
+	}
+	"Impact Lance"
+	{
+		"en"		"Impact Lance"
+		"ko"		"임팩트 랜스"
+	}
+	"Psychokinesis"
+	{
+		"en"		"Psychokinesis"
+		"ko"		"염동력"
+	}
+	"Prismatic Wand"
+	{
+		"en"		"Prismatic Wand"
+		"ko"		"프리즘 완드"
+	}
+	"Wand of Osmosis"
+	{
+		"en"		"Wand of Osmosis"
+		"ko"		"삼투성 완드"
+	}
+	"Hel's Hoe"
+	{
+		"en"		"Hel's Hoe"
+		"ko"		"헬의 낫"
+	}
+	"Worn Expidonsan Repair Device"
+	{
+		"en"		"Worn Expidonsan Repair Device"
+		"ko"		"마모된 엑스피돈사 수리 장치"
+	}
+	"Pristine Expidonsan Repair Device"
+	{
+		"en"		"Pristine Expidonsan Repair Device"
+		"ko"		"최상급 엑스피돈사 수리 장치"
+	}
+	"Cleanse Gun"
+	{
+		"en"		"Cleanse Gun"
+		"ko"		"정화총"
+	}
+	"Cleanse Gun"
+	{
+		"en"		"Purifying Cleaner"
+		"ko"		"정화총 클리너"
+	}
+	"Anti Chaos Container"
+	{
+		"en"		"Anti Chaos Container"
+		"ko"		"혼돈 격리자"
+	}
+	"Modified Pistol"
+	{
+		"en"		"Modified Pistol"
+		"ko"		"개조된 권총"
+	}
+	"Anti Chaos Container"
+	{
+		"en"		"Anti Chaos Container"
+		"ko"		"회복 자극제가 첨가된 슈퍼 USP"
+	}
+	"Whiteflower's Sidearm"
+	{
+		"en"		"Whiteflower's Sidearm"
+		"ko"		"배풍등의 부 무장"
+	}
+	"Slug Rifle"
+	{
+		"en"		"Slug Rifle"
+		"ko"		"대구경 저격소총"
+	}
+	"Uranium Rifle"
+	{
+		"en"		"Uranium Rifle"
+		"ko"		"우라늄 저격소총"
+	}
+	"MH Shotgun"
+	{
+		"en"		"MH Shotgun"
+		"ko"		"MH 산탄총"
+	}
+	"Automatic Shotgun"
+	{
+		"en"		"Automatic Shotgun"
+		"ko"		"자동 산탄총"
+	}
+	"Exquisite Shotgun"
+	{
+		"en"		"Exquisite Shotgun"
+		"ko"		"세련된 산탄총"
+	}
+	"Outstanding Shotgun"
+	{
+		"en"		"Outstanding Shotgun"
+		"ko"		"훌륭한 산탄총"
+	}
+	"Grigori's Personal Shotgun"
+	{
+		"en"		"Grigori's Personal Shotgun"
+		"ko"		"그리고리의 개인 소장용 산탄총"
+	}
+	"Automatic Shotgun Mk 1"
+	{
+		"en"		"Automatic Shotgun Mk 1"
+		"ko"		"자동 산탄총 Mk 1"
+	}
+	"Automatic Shotgun Mk 2"
+	{
+		"en"		"Automatic Shotgun Mk 2"
+		"ko"		"자동 산탄총 Mk 2"
+	}
+	"Full Auto Shotgun"
+	{
+		"en"		"Full Auto Shotgun"
+		"ko"		"풀 오토 산탄총"
+	}
+	"M4A1-Carbine"
+	{
+		"en"		"M4A1-Carbine"
+		"ko"		"M4A1-카빈"
+	}
+	"Mini Semi Gun"
+	{
+		"en"		"Mini Semi Gun"
+		"ko"		"미니 세미 건"
+	}
+	"H&K G36 Carbine"
+	{
+		"en"		"H&K G36 Carbine"
+		"ko"		"H&K G36 카빈"
+	}
+	"Maschinengewehr 42"
+	{
+		"en"		"Maschinengewehr 42"
+		"ko"		"Maschinengewehr 42"
+	}
+	"Crossbow"
+	{
+		"en"		"Crossbow"
+		"ko"		"석궁"
+	}
+	"Automatic Crossbow"
+	{
+		"en"		"Automatic Crossbow"
+		"ko"		"자동 석궁"
+	}
+	"High-Tech Crossbow"
+	{
+		"en"		"High-Tech Crossbow"
+		"ko"		"첨단 석궁"
+	}
+	"Zombie-Drill"
+	{
+		"en"		"Zombie-Drill"
+		"ko"		"좀비 드릴"
+	}
+	"Sheriff's Revolver"
+	{
+		"en"		"Sheriff's Revolver"
+		"ko"		"보안관의 리볼버"
+	}
+	"Heaven Deagle"
+	{
+		"en"		"Heaven Deagle"
+		"ko"		"천국의 데글"
+	}
+	"Brain Annihilator"
+	{
+		"en"		"Brain Annihilator"
+		"ko"		"뇌수 척결자"
+	}
+	"Wild West Revolver"
+	{
+		"en"		"Wild West Revolver"
+		"ko"		"서부의 리볼버"
+	}
+	"Merc's Revolver"
+	{
+		"en"		"Merc's Revolver"
+		"ko"		"용병의 리볼버"
+	}
+	"Greater Garbage"
+	{
+		"en"		"Greater Garbage"
+		"ko"		"대형 폐기물 포"
+	}
+	"Trash Metal"
+	{
+		"en"		"Trash Metal"
+		"ko"		"트래시 메탈"
+	}
+	"Maim MOAB"
+	{
+		"en"		"Maim MOAB"
+		"ko"		"MOAB 부상"
+	}
+	"Supply Drop"
+	{
+		"en"		"Supply Drop"
+		"ko"		"물품 드롭"
+	}
+	"Cripple MOAB"
+	{
+		"en"		"Cripple MOAB"
+		"ko"		"MOAB 손상"
+	}
+	"Experimental TAU Unit"
+	{
+		"en"		"Experimental TAU Unit"
+		"ko"		"실험형 타우 캐논"
+	}
+	"Completed TAU Unit"
+	{
+		"en"		"Completed TAU Unit"
+		"ko"		"완성형 타우 캐논"
+	}
+	"Lasering Beamstick"
+	{
+		"en"		"Lasering Beamstick"
+		"ko"		"레이저 빔스틱"
+	}
+	"Nukestick"
+	{
+		"en"		"Nukestick"
+		"ko"		"뉴크스틱"
+	}
+	"Super Star Shooter"
+	{
+		"en"		"Super Star Shooter"
+		"ko"		"슈퍼 유성 발사기"
+	}
+	"Mega Masher"
+	{
+		"en"		"Mega Masher"
+		"ko"		"메가 스매셔"
+	}
+	"Omega Mega Masher"
+	{
+		"en"		"Omega Mega Masher"
+		"ko"		"오메가 메가 매셔"
+	}
+	"Obuch's Hammer"
+	{
+		"en"		"Obuch's Hammer"
+		"ko"		"오부치의 망치"
+	}
+	"Blemishines Dagger"
+	{
+		"en"		"Blemishines Dagger"
+		"ko"		"블레미샤인의 단검"
+	}
+	"Blemishines Light"
+	{
+		"en"		"Blemishines Light"
+		"ko"		"블레미샤인의 빛"
+	}
+	"Blemishines Bright Light and Wings"
+	{
+		"en"		"Blemishines Bright Light and Wings"
+		"ko"		"블레미샤인의 찬란한 빛과 날개"
+	}
+	"Extra Light"
+	{
+		"en"		"Extra Light"
+		"ko"		"눈부신 빛"
+	}
+	"Complete Blade"
+	{
+		"en"		"Complete Blade"
+		"ko"		"완성된 검"
+	}
+	"Expidonsan Explorer's Blade"
+	{
+		"en"		"Expidonsan Explorer's Blade"
+		"ko"		"엑스피돈사인 탐험가의 검"
+	}
+	"Siccerino's Siccors"
+	{
+		"en"		"Siccerino's Siccors"
+		"ko"		"시커리노의 가위"
+	}
+	"Siccors of siccors"
+	{
+		"en"		"Siccors of siccors"
+		"ko"		"가위 두 쌍"
+	}
+	"Nearl Silvester Spear"
+	{
+		"en"		"Nearl Silvester Spear"
+		"ko"		"니어 실베스터의 창"
+	}
+	"Void assigned Blade"
+	{
+		"en"		"Void assigned Blade"
+		"ko"		"공허에 침식된 검"
+	}
+	"Contained Void Power"
+	{
+		"en"		"Contained Void Power"
+		"ko"		"격리된 공허의 힘"
+	}
+	"Spike Shield"
+	{
+		"en"		"Spike Shield"
+		"ko"		"가시 방패"
+	}
+	"Rookie Shield"
+	{
+		"en"		"Rookie Shield"
+		"ko"		"평범한 방패"
+	}
+	"Punishment"
+	{
+		"en"		"Punishment"
+		"ko"		"징벌"
+	}
+	"Cudgel"
+	{
+		"en"		"Cudgel"
+		"ko"		"뇌진탕 충격 방패"
+	}
+	"Purgatory"
+	{
+		"en"		"Purgatory"
+		"ko"		"연옥"
+	}
+	"Limbo"
+	{
+		"en"		"Limbo"
+		"ko"		"고성소"
+	}
+	"The Anti-Xtinquishing Axe"
+	{
+		"en"		"The Anti-Xtinquishing Axe"
+		"ko"		"반-소화도끼"
+	}
+	"Specter's Saw Blade"
+	{
+		"en"		"Specter's Saw Blade"
+		"ko"		"스펙터의 전기톱"
+	}
+	"Specter E2 S4"
+	{
+		"en"		"Specter E2 S4"
+		"ko"		"스펙터 2정 스킬 4렙"
+	}
+	"Specter E1 S7"
+	{
+		"en"		"Specter E1 S7"
+		"ko"		"스펙터 1정 스킬 7렙"
+	}
+	"Specter E2 S7"
+	{
+		"en"		"Specter E2 S7"
+		"ko"		"스펙터 2정 스킬 7렙"
+	}
+	"Specter the Unchained E1"
+	{
+		"en"		"Specter the Unchained E1"
+		"ko"		"스펙터 디 언체인드 1정"
+	}
+	"Specter the Unchained E2"
+	{
+		"en"		"Specter the Unchained E2"
+		"ko"		"스펙터 디 언체인드 2정"
+	}
+	"Combustion-Deletion Axe"
+	{
+		"en"		"Combustion-Deletion Axe"
+		"ko"		"연소 살해자"
+	}
+	"Bent Rapier"
+	{
+		"en"		"Bent Rapier"
+		"ko"		"구부러진 레이피어"
+	}
+	"Shoddy Rapier"
+	{
+		"en"		"Shoddy Rapier"
+		"ko"		"허술한 레이피어"
+	}
+	"Restored Rapier"
+	{
+		"en"		"Restored Rapier"
+		"ko"		"수리된 레이피어"
+	}
+	"Improved Rapier"
+	{
+		"en"		"Improved Rapier"
+		"ko"		"진보된 레이피어"
+	}
+	"Espada Ropera"
+	{
+		"en"		"Espada Ropera"
+		"ko"		"에스파다 로페라"
+	}
+	"Professional's Blade"
+	{
+		"en"		"Professional's Blade"
+		"ko"		"생존전문가의 검"
+	}
+	"Expert's Blade"
+	{
+		"en"		"Expert's Blade"
+		"ko"		"숙련자의 검"
+	}
+	"CBS's Blade"
+	{
+		"en"		"CBS's Blade"
+		"ko"		"잔혹한 기독교인 스나이퍼의 검"
+	}
+	"Steam Knight's Spear"
+	{
+		"en"		"Steam Knight's Spear"
+		"ko"		"증기 기사의 창"
+	}
+	"Полумесяц"
+	{
+		"en"		"Полумесяц"
+		"ko"		"반월"
+	}
+	"The Law's Order"
+	{
+		"en"		"The Law's Order"
+		"ko"		"법과 질서"
+	}
+	"Telum Pro Lege"
+	{
+		"en"		"Telum Pro Lege"
+		"ko"		"법적 심판 무기"
+	}
+	"Exactio Legis"
+	{
+		"en"		"Exactio Legis"
+		"ko"		"법 집행가"
+	}
+	"Полнолуние"
+	{
+		"en"		"Полнолуние"
+		"ko"		"만월"
+	}
+	"Затмение"
+	{
+		"en"		"Затмение"
+		"ko"		"일식"
+	}
+	"The Swift Slicer"
+	{
+		"en"		"The Swift Slicer"
+		"ko"		"신속 절단사"
+	}
+	"The Gore Gourmand"
+	{
+		"en"		"The Gore Gourmand"
+		"ko"		"살상 폭식가"
+	}
+	"The Superior Slasher"
+	{
+		"en"		"The Superior Slasher"
+		"ko"		"전문 살해범"
+	}
+	"The Champ's Chopper"
+	{
+		"en"		"The Champ's Chopper"
+		"ko"		"투사의 절단기"
+	}
+	"The World Over Heaven"
+	{
+		"en"		"The World Over Heaven"
+		"ko"		"더 월드 오버 헤븐"
+	}
+	"The Bloody Butcher"
+	{
+		"en"		"The Bloody Butcher"
+		"ko"		"피의 도살자"
+	}
+	"Repaired Ark"
+	{
+		"en"		"Repaired Ark"
+		"ko"		"수리된 방주"
+	}
+	"Ark of the Ancients"
+	{
+		"en"		"Ark of the Ancients"
+		"ko"		"고대의 방주"
+	}
+	"Lapplands Sword"
+	{
+		"en"		"Lapplands Sword"
+		"ko"		"라플란드의 검"
+	}
+	"Waterless Sword"
+	{
+		"en"		"Waterless Sword"
+		"ko"		"글래디아의 검"
+	}
+	"Waterless Sword E1 S7"
+	{
+		"en"		"Waterless Sword E1 S7"
+		"ko"		"글래디아의 검 1정 스킬 7렙"
+	}
+	"Waterless Sword E2 S8"
+	{
+		"en"		"Waterless Sword E2 S8"
+		"ko"		"글래디아의 검 2정 스킬 8렙"
+	}
+	"Waterless Sword E2 S10"
+	{
+		"en"		"Waterless Sword E2 S10"
+		"ko"		"글래디아의 검 2정 스킬 10렙"
+	}
+	"Waterless Sword E2 S10 HOK-X"
+	{
+		"en"		"Waterless Sword E2 S10 HOK-X"
+		"ko"		"글래디아의 검 2정 스킬 10렙 X 모듈"
+	}
+	"Waterless Sword E2 S20 HOK-X"
+	{
+		"en"		"Waterless Sword E2 S20 HOK-X"
+		"ko"		"글래디아의 검 2정 스킬 20렙 X 모듈"
+	}
+	"Waterless Sword E2 S30 HOK-X"
+	{
+		"en"		"Waterless Sword E2 S30 HOK-X"
+		"ko"		"글래디아의 검 2정 스킬 30렙 X 모듈"
+	}
+	"Quibai's Elegance"
+	{
+		"en"		"Quibai's Elegance"
+		"ko"		"치우바이의 검"
+	}
+	"Ark of the Elements"
+	{
+		"en"		"Ark of the Elements"
+		"ko"		"원소의 방주"
+	}
+	"Fuming Knight's Blade"
+	{
+		"en"		"Fuming Knight's Blade"
+		"ko"		"연기의 기사의 검"
+	}
+	"Harbinger of Hatred"
+	{
+		"en"		"Harbinger of Hatred"
+		"ko"		"증오의 사도"
+	}
+	"Guln's Blade"
+	{
+		"en"		"Guln's Blade"
+		"ko"		"굴른의 검"
+	}
+	"HHH's Juniors Mini Axe"
+	{
+		"en"		"HHH's Juniors Mini Axe"
+		"ko"		"말도 없고 머리도 없는 기만병의 도끼"
+	}
+	"Yamato"
+	{
+		"en"		"Yamato"
+		"ko"		"야마토"
+	}
+	"Newest Article"
+	{
+		"en"		"Newest Article"
+		"ko"		"최신 신문 기사"
+	}
+	"Ziberian Political News"
+	{
+		"en"		"Ziberian Political News"
+		"ko"		"자이베리아 정치 뉴스"
+	}
+	"Sawrunner's Chainsaw"
+	{
+		"en"		"Sawrunner's Chainsaw"
+		"ko"		"쏘우러너의 전기톱"
+	}
+	"Teslar Saber"
+	{
+		"en"		"Teslar Saber"
+		"ko"		"테슬라 광봉"
+	}
+	"Elite Teslar Saber"
+	{
+		"en"		"Elite Teslar Saber"
+		"ko"		"정예 테슬라 광봉"
+	}
+	"Abyssal Greatsword - The Corrupted"
+	{
+		"en"		"Abyssal Greatsword - The Corrupted"
+		"ko"		"심연의 대검 - 커럽팅 하트"
+	}
+	"Particle Wand"
+	{
+		"en"		"Particle Wand"
+		"ko"		"입자 완드"
+	}
+	"Completionist Wand"
+	{
+		"en"		"Completionist Wand"
+		"ko"		"완벽주의자 완드"
+	}
+	"A Little Bit Of A Fast Wand"
+	{
+		"en"		"A Little Bit Of A Fast Wand"
+		"ko"		"조금 빠른 완드"
+	}
+	"Gravaton Accelerator"
+	{
+		"en"		"Gravaton Accelerator"
+		"ko"		"중력 가속 마법"
+	}
+	"Wightmare"
+	{
+		"en"		"Wightmare"
+		"ko"		"저주받은 하인 메어"
+	}
+	"King of the Skull Servants"
+	{
+		"en"		"King of the Skull Servants"
+		"ko"		"저주받은 하인 킹"
+	}
+	"Ruilus Blade"
+	{
+		"en"		"Ruilus Blade"
+		"ko"		"루리우스의 검"
+	}
+	"Scrapped Engineer Staff"
+	{
+		"en"		"Scrapped Engineer Staff"
+		"ko"		"폐기처리된 엔지니어의 스태프"
+	}
+	"Ruina Elite Blade"
+	{
+		"en"		"Ruina Elite Blade"
+		"ko"		"루이나 정예병의 검"
+	}
+	"Dr DAM Staff"
+	{
+		"en"		"Dr DAM Staff"
+		"ko"		"된장 박사의 스태프"
+	}
+	"Nightmare Cannon"
+	{
+		"en"		"Nightmare Cannon"
+		"ko"		"악몽 포"
+	}
+	"Pulse Cannon"
+	{
+		"en"		"Pulse Cannon"
+		"ko"		"펄스 포"
+	}
+	"Feedback Loop"
+	{
+		"en"		"Feedback Loop"
+		"ko"		"피드백 루프"
+	}
+	"Increased Dosage"
+	{
+		"en"		"Increased Dosage"
+		"ko"		"투약력 가속기"
+	}
+	"Magnesis Staff"
+	{
+		"en"		"Magnesis Staff"
+		"ko"		"자기력 스태프"
+	}
+	"Lifetime Supply"
+	{
+		"en"		"Lifetime Supply"
+		"ko"		"수명 공급"
+	}
+	"Neodymium Nightmare"
+	{
+		"en"		"Neodymium Nightmare"
+		"ko"		"네오디뮴 악몽"
+	}
+	"Heavy Lance"
+	{
+		"en"		"Heavy Lance"
+		"ko"		"대형 랜스"
+	}
+	"Light Lance"
+	{
+		"en"		"Light Lance"
+		"ko"		"소형 랜스"
+	}
+	"Berserker Brew"
+	{
+		"en"		"Berserker Brew"
+		"ko"		"광전사 포션"
+	}
+	"Unstable Concoction"
+	{
+		"en"		"Unstable Concoction"
+		"ko"		"불안정한 혼합물"
+	}
+	"Lead to Australium"
+	{
+		"en"		"Lead to Australium"
+		"ko"		"오스트레일륨의 손길"
+	}
+	"Stronger Stimulant"
+	{
+		"en"		"Stronger Stimulant"
+		"ko"		"강력 각성제"
+	}
+	"Transforming Tonic"
+	{
+		"en"		"Transforming Tonic"
+		"ko"		"변형 강장제"
+	}
+	"Skin to Australium"
+	{
+		"en"		"Skin to Australium"
+		"ko"		"오스트레일륨 코팅"
+	}
+	"Permanent Brew"
+	{
+		"en"		"Permanent Brew"
+		"ko"		"영원의 포션"
+	}
+	"Transforming Tonic Pap"
+	{
+		"en"		"Transforming Tonic Pap"
+		"ko"		"변형 강장제 개선형"
+	}
+	"Skin Master Alchemist"
+	{
+		"en"		"Skin Master Alchemist"
+		"ko"		"약화 코팅 포션"
+	}
+	"Snowey Attraction Staff"
+	{
+		"en"		"Snowey Attraction Staff"
+		"ko"		"눈짓 이끌림의 스태프"
 	}
 	"Chainblade"
 	{
@@ -3605,6 +4765,7 @@
 	"Fractal Reiuji"
 	{
 		"en"	"Fractal Reiuji"
+		"ko"	"프랙탈 레이우지"
 	}
 	"Heavy Particle Rifle"
 	{
@@ -3850,6 +5011,41 @@
 		"it"	"''Pugni normali''"
 		"ko"	"''평범한 주먹''"
 	}
+	"Font of Zeal"
+	{
+		"en"	"Font of Zeal"
+		"ko"	"열정의 광신"
+	}
+	"Faith's Flurry"
+	{
+		"en"	"Faith's Flurry"
+		"ko"	"신앙의 돌풍"
+	}
+	"Saltzpyre's Apprentice"
+	{
+		"en"	"Saltzpyre's Apprentice"
+		"ko"	"빅터 솔츠파이어의 견습생"
+	}
+	"Sigmar's Herald"
+	{
+		"en"	"Sigmar's Herald"
+		"ko"	"시그마의 사자"
+	}
+	"Unbending Purpose"
+	{
+		"en"	"Unbending Purpose"
+		"ko"	"굽히지 않는 목적"
+	}
+	"Calloused Without and Within"
+	{
+		"en"	"Calloused Without and Within"
+		"ko"	"안팎으로 박힌 굳은살"
+	}
+	"Sigmar's Ancestor"
+	{
+		"en"	"Sigmar's Ancestor"
+		"ko"	"시그마의 시조"
+	}
 	"Whistle Stop"
 	{
 		"en"	"Whistle Stop"
@@ -3865,7 +5061,7 @@
 	"Victorian Launcher"
 	{
 		"en"	"Victorian Launcher"
-		"ko"	"빅토리안 런쳐"
+		"ko"	"빅토리안 런처"
 		"it"	"Lanciatore vittoriano"
 	}
 	"Castle Breaker"
@@ -3898,7 +5094,17 @@
 	"The Soldine Launcher"
 	{
 		"en"		"The Soldine Launcher"
-		"ko"		"''솔딘 런쳐''"
+		"ko"		"''솔딘의 로켓 발사기''"
+	}
+	"System: Prototype Soldine"
+	{
+		"en"		"System: Prototype Soldine"
+		"ko"		"시스템: 프로토타입 솔딘"
+	}
+	"Prototype Soldine"
+	{
+		"en"		"Prototype Soldine"
+		"ko"		"프로토타입 솔딘"
 	}
 	"Taurus Revolver"
 	{
@@ -4174,7 +5380,7 @@
 	"Braced Pistol"
 	{
 		"en" "Braced Pistol"
-		"ko" "브레이스드 권총"
+		"ko" "보호형 권총"
 	}
 	"Zealot's Potion"
 	{
@@ -4184,12 +5390,42 @@
 	"King's Broken Blade"
 	{
 		"en" "King's Broken Blade"
-		"ko" "왕의 부러진 칼날"
+		"ko" "왕의 부러진 검"
 	}
 	"Confess Your Fears"
 	{
 		"en"	"Confess Your Fears"
 		"ko"	"네 두려움에 굴복하라"
+	}
+	"Repaired Blade"
+	{
+		"en" "Repaired Blade"
+		"ko" "수리된 검"
+	}
+	"King's Revenge"
+	{
+		"en" "King's Revenge"
+		"ko" "왕의 복수"
+	}
+	"King's Sickness"
+	{
+		"en" "King's Sickness"
+		"ko" "왕의 고통"
+	}
+	"King's Wrath"
+	{
+		"en" "King's Wrath"
+		"ko" "왕의 분노"
+	}
+	"King's Leavage"
+	{
+		"en" "King's Leavage"
+		"ko" "왕의 휴가"
+	}
+	"King's Peace"
+	{
+		"en" "King's Peace"
+		"ko" "왕의 평화"
 	}
 	"Magia Fractal"
 	{
@@ -4218,7 +5454,7 @@
 	"Therapy"
 	{
 		"en" "Therapy"
-		"ko" "테라피"
+		"ko" "심리치료사"
 	}
 	"The Blitzkrieg"
 	{
@@ -4230,6 +5466,11 @@
 		"en"	"Chemical Spewer"
 		"it"	"Vomito chimico"
 		"ko"	"화학물질 분사기"
+	}
+	"Wand of Siphoning"
+	{
+		"en"	"Wand of Siphoning"
+		"ko"	"흡수의 완드"
 	}
 	"The Ritualist"
 	{
@@ -4464,35 +5705,41 @@
 		"en"	"Crystal Shard"
 		"chi"	"水晶碎片"
 		"ru"	"Осколок Кристалла"
+		"ko"	"수정 조각"
 	}
 	"Mana Fusions"
 	{
 		"en"	"Mana Fusions"
 		"chi"	"魔力融合"
 		"ru"	"Слияние Маны"
+		"ko"	"마나 퓨전"
 	}
 	"Insanity Sigil"
 	{
 		"en"	"Insanity Sigil"
 		"chi"	"疯狂印记"
 		"ru"	"Сигил Безумия"
+		"ko"	"광기의 인장"
 	}
 	"Sanity Sigil Blade"
 	{
 		"en"	"Sanity Sigil Blade"
 		"chi"	"理智印记剑"
 		"ru"	"Сигильный Клинок Рассудка"
+		"ko"	"정신력 인장 검"
 	}
 	"The Arsenal"
 	{
 		"en"	      "The Arsenal"
 		"chi"	"武器库"
 		"ru"	"Арсенал"
+		"ko"	"아스날"
 	}
 	"Mechanized Terror"
 	{
 		"en"	      "Mechanized Terror"
 		"chi"	"机械恐怖"
 		"ru"	"Механический Террор"
+		"ko"	"기계화 테러"
 	}
 }
