@@ -862,7 +862,7 @@ static void Internal_ClotThink(int iNPC)
 					if(!XenoExtraLogic())
 						CPrintToChatAll("{gold}실베스터{default}: 아, 안 돼!!");
 					else
-						CPrintToChatAll("{gold}실베스터{default}: {darkblue}월드치{default}..?");
+						CPrintToChatAll("{gold}실베스터{default}: {darkblue}왈츠{default}..?");
 				}
 				case 2:
 				{
@@ -2006,16 +2006,16 @@ bool SharedGiveupSilvester(int entity, int entity2)
 				case 1:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{darkblue}월드치{default}: 우리보다 훨씬 크고 강한 적이 있지만, 우린 그들을 이길 수 없어.");
+						CPrintToChatAll("{darkblue}왈츠{default}: 우리보다 훨씬 크고 강한 적이 있지만, 우린 그들을 이길 수 없어.");
 					else
-						CPrintToChatAll("{darkblue}월드치{default}: 너흰 꼭 마치 무엇에 뛰어들 것인지 알고 있는 듯하네.");
+						CPrintToChatAll("{darkblue}왈츠{default}: 너흰 꼭 마치 무엇에 뛰어들 것인지 알고 있는 듯하네.");
 
 					i_TalkDelayCheck += 1;
 				}
 				case 2:
 				{
 					
-					CPrintToChatAll("{darkblue}월드치{default}: 솔직히 네가 그 놈을 이길 수 있을지 의심스럽지만, 만약 이긴다면, 큰 혼란을 물리치는 데 큰 도움이 될 거다.");
+					CPrintToChatAll("{darkblue}왈츠{default}: 솔직히 네가 그 놈을 이길 수 있을지 의심스럽지만, 만약 이긴다면, 큰 혼란을 물리치는 데 큰 도움이 될 거다.");
 					i_TalkDelayCheck += 1;
 				}
 				case 3:
@@ -2508,11 +2508,11 @@ public void Raidmode_Shared_Xeno_Duo(int entity)
 	{
 		if(XenoExtraLogic())
 		{
-			CPrintToChatAll("{darkblue}월드치{default}: 너무 멀리 오셨군.");
+			CPrintToChatAll("{darkblue}왈츠{default}: 너무 멀리 오셨군.");
 		}
 		else
 		{
-			CPrintToChatAll("{darkblue}월드치{default}: {green}그 놈{default}에게 죽는 것보단 나을거다.");
+			CPrintToChatAll("{darkblue}왈츠{default}: {green}그 놈{default}에게 죽는 것보단 나을거다.");
 		}
 	}
 }

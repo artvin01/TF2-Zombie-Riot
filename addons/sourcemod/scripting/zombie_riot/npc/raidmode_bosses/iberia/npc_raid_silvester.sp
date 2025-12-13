@@ -386,7 +386,7 @@ methodmap Silvester < CClotBody
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}실베스터{default}: {darkblue}월드치{default}도 여기서 같이 훈련하면 좋았을텐데. 근데 자기 일 때문에 바쁘다고 하네.");
+					CPrintToChatAll("{gold}실베스터{default}: {darkblue}왈츠{default}도 여기서 같이 훈련하면 좋았을텐데. 근데 자기 일 때문에 바쁘다고 하네.");
 				}
 			}
 		}
@@ -668,7 +668,7 @@ static void Internal_ClotThink(int iNPC)
 					}
 					case 2:
 					{
-						CPrintToChatAll("{gold}실베스터{default}: {lightblue}네말{default}... 너 하는게 꼭 {darkblue}월드치{default}랑 똑같다?!");
+						CPrintToChatAll("{gold}실베스터{default}: {lightblue}네말{default}... 너 하는게 꼭 {darkblue}왈츠{default}랑 똑같다?!");
 					}
 					case 3:
 					{

@@ -2501,26 +2501,32 @@
 	"quincy pap0"
     {
         "en"    "A bow made of pure energy\n-Hold mouse1 to charge it\n-Damage dealt depends on how much mana you pump into it"
+		"ko"	"순수한 에너지로 제작된 활.\n-M1를 꾹 눌러 충전 가능\n-이 활에 충전시킨 마나량에 따라 피해량 증가"
     }
     "quincy pap"
     {
         "en"    "-Increased Damage\n-Your arrows gain the ability to home onto targets, if you can see one\n-Homing power is dependant on how raishi ％ charge"
+        "ko"    "-피해량 증가\n-화살이 시야 내의 적을 추적하는 유도탄이 됩니다.\n-충전량에 따라 유도력이 더욱 강화됩니다."
     }
     "quincy pap arrow"
     {
         "en"    "-Increased Damage\n-Once you charge you weapon enough you gain the ability to shoot more arrows at once!"
+        "ko"    "-피해량 증가\n-충분히 충전했다면, 한 번에 화살을 많이 사격하는 능력이 발동됩니다!"
     }
     "quincy pap1"
     {
         "en"    "-Increased Damage\n-Extra Arrows on Multi Shot."
+        "ko"    "-피해량 증가\n-다중 사격의 화살 발사량 증가."
     }
     "quincy pap hyper"
     {
         "en"    "-Increased Damage\n-You can now fire a constant stream of magic arrows!"
+        "ko"    "-피해량 증가\n-이제 끝없이 마법 화살을 발사할 수 있습니다!"
     }
     "quincy pap arrow hyper"
     {
         "en"    "-Increased Damage\n-After hitting enough enemy combatants, you gain the ability to fire a DEVESTATING hyper arrow."
+        "ko"    "-피해량 증가\n-적을 충분히 적중했다면, 아주 파괴적인 화살을 발사하는 능력이 발동됩니다."
     }
 	"Monk Desc"
 	{
@@ -5209,6 +5215,77 @@
 		"en"	"-Unlocks a special type of übercharge which temporarily triples your healing."
 		"ko"	"치유량을 일시적으로 3배로 증가시키는 특수한 우버차지를 해금함."
 	}
+	
+	"Chaos Infected Launcher desc"
+	{
+		"en"	"Increased Damage, Clip Size, Fire rate and Reloadspeed\nMovement speed reduced\nMust be loaded with at least 6 rocket to fire\n'Shield' gives you very high resistance, which decreases with each hit."
+		"ko"	"피해량, 탄창 크기, 발사 속도 및 재장전 속도가 증가\n이동속도 감소\n최소 6발을 장전해야 사격 가능\n'실드'는 매우 높은 저항력을 제공하며, 각 타격마다 감소합니다."
+	}
+	"Major Steam's Launcher desc"
+	{
+		"en"	"Increased Damage, Clip Size,Fire rate and Reloadspeed\nMovement speed reduced\nMust be loaded with at least 11 rocket to fire\nImproved shield performance\nShort freeze debuf\nWeapons are enhanced with ''Major Steam's Rocket'"
+		"ko"	"피해량, 탄창 크기, 발사 속도 및 재장전 속도가 증가\n이동속도 감소\n최소 11발을 장전해야 사격 가능\n실드의 성능 향상\n냉기 디버프 추가 피해\n''Major Steam's Rocket''가 있으면 무기가 강화됨"
+	}
+	
+	"LockDown Staff Desc"
+	{
+		"en"	"AoE attack, slow attack speed, high mana consumption"
+		"ko"	"범위공격, 느린공속, 높은 마나 소모량\n적중된 적에게 '둔화' 디버프 적용"
+	}
+	"LockDown Staff Desc pap1"
+	{
+		"en"	"Increased damage, decreased attack speed, increased mana consumption\nM2: When activated, consumes all mana and greatly increases mana regeneration speed, uses an enhanced attack method\nWhen the effect ends, all mana is consumed and mana regeneration stops for 5 seconds\nEnhanced attack: Requires 75％ of maximum mana, doubles damage, simultaneously hits enemies in a very wide area\nApplies a 'Power Slowdown' debuff"
+		"ko"	"피해량 증가, 공속 감소, 마나 소모량 증가\nM2:발동시 모든 마나를 소모및 마나 재생 속도 대폭 증가, 강화된 공격 방식을 사용\n효과 종료시, 마나가 전부 소모되고 5초동안 마나 재생이 멈춤\n강화된 공격: 최대 마나의 75％를 요구함, 피해량이 2배 증가하고, 매우 넓은 범위의 적을 동시 타격하며\n'강한 둔화' 디버프를 적용 시킴"
+	}
+	"LockDown Staff Desc pap2"
+	{
+		"en"	"Increased range and damage area, increased damage, slightly reduced attack speed, increased mana consumption\nPassive: When you are alive, apply 'Subjective Time Dilation' debuff to all enemies\nWhen M2 effect ends, passive does not work for 3 seconds."
+		"ko"	"사거리및 피해범위 증가, 피해량 증가, 공속 약간 감소, 마나 소모량 증가\n패시브:자신이 살아있을때 모든 적에게 '시간인지둔화' 디버프 적용\nM2 효과 종료시, 3초동안 패시브가 작동하지 않음."
+	}
+	
+	"Minecraft Sword Desc"
+	{
+		"en"	"A sword made of pixels that seem to come from another world\nLow damage. Good attack speed, can AoE Attack"
+		"ko"	"이계에서 온듯한 기이한 검입니다\n낮은 피해량. 나쁘지않은 공속, 범위 공격 가능, 전용 모루 효과 사용"
+	}
+	"Minecraft Sword Pap 1"
+	{
+		"en"	"It's made of stone and feels cheap. Increased damage"
+		"ko"	"돌로 만들었습니다. 피해량 증가"
+	}
+	"Minecraft Sword Pap 2"
+	{
+		"en"	"Forged from iron. Increased damage, increased attack speed"
+		"ko"	"철로 만들었습니다. 피해량 증가, 공속 증가"
+	}
+	"Minecraft Sword Pap 3"
+	{
+		"en"	"Increased damage, greatly increased attack speed, -50% cooldown on Sweeping Edge ability\nSome tinkering effects applied."
+		"ko"	"피해량 증가, 공속 대폭 증가, 휩쓸기 능력 재사용 대기시간 -50％\n전용 모루 효과 일부 적용"
+	}
+	"Minecraft Sword Pap 4"
+	{
+		"en"	"Diamond! Increased damage, attack speed, increased area damage."
+		"ko"	"다이아몬드! 피해량, 공속증가, 휩쓸기 충전 속도 +25％"
+	}
+	"Minecraft Sword Pap 5"
+	{
+		"en"	"Netherite! Damage increased, attack range and area damage increased."
+		"ko"	"네더라이트! 피해량 증가, 휩쓸기 범위 +17％, 점프 공격 피해량 +10％"
+	}
+	"Minecraft Sword Advancement"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"	"{1} has made the advancement {lime}{2}{default}"
+		"ko"	"{1}이(가) {lime}{2}{default} 발전 과제를 달성했습니다"
+	}
+	"Minecraft Sword Challenge"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"	"{1} has completed the challenge {valve}{2}{default}"
+		"ko"	"{1}이(가) {valve}{2}{default} 도전을 완료했습니다"
+	}
+
 	"Boomerang Desc"
 	{
 		"en"	"-Fires a boomerang which returns upon contant.\n-Doesn't use ammo.\n-High single target dps."

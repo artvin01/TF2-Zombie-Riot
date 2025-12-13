@@ -567,7 +567,7 @@
 		"en"	"{yellow}Receive an unknown artifact{default}"
 		"it"	"{yellow}Ricevere un artefatto sconosciuto{default}"
 		"ru"	"{yellow}Получить неизвестный артефакт{default}"
-		"ko"	"{yellow}무작위 소장품 1개를 얻습니다.{default}"
+		"ko"	"{yellow}정체불명의 소장품 1개를 얻습니다.{default}"
 	}
 	"Crimson Troupe Title"
 	{
@@ -1970,7 +1970,7 @@
 		"en"	"It plays a soothing, everlasting melody.\n- {green}All enemies gain -10％ movement speed."
 		"ru"	"Оно выпускает музыку, и его невозможно остановить.\n- Все враги станут медленнее на 10％."
 		"it"	"Suona una melodia rilassante ed eterna.\n- {green}Tutti i nemici guadagnano -10％ di velocità di movimento."
-		"ko"	"평온하고 진정되는 음악을 재생할 수 있다.\n- All enemies will be 10％ slower."
+		"ko"	"평온하고 진정되는 음악을 재생할 수 있다.\n- 모든 적의 이동 속도 10％ 감소."
 	}
 	"Wrath Of Itallians"
 	{

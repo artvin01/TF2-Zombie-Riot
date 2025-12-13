@@ -438,7 +438,7 @@ methodmap Nemal < CClotBody
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}네말{default}: 자꾸 {darkblue}월드치{default}가 {gold}실베스터{default}한테 끌려간다고? 아닌데? 월드치가 실베스터를 강제로 끌고 오던데?");
+					CPrintToChatAll("{lightblue}네말{default}: 자꾸 {darkblue}왈츠{default}가 {gold}실베스터{default}한테 끌려간다고? 아닌데? 왈츠가 실베스터를 강제로 끌고 오던데?");
 				}
 				case 2:
 				{
@@ -2255,9 +2255,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "아하! {darkblue}월드치{default}가 내 검을 버리진 않았구나!");
+					Format(Text_Lines, sizeof(Text_Lines), "아하! {darkblue}왈츠{default}가 내 검을 버리진 않았구나!");
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "{darkblue}월드치{default}... 저 무기 싫어한다더니 엄청 아꼈었구나.");
+					Format(Text_Lines, sizeof(Text_Lines), "{darkblue}왈츠{default}... 저 무기 싫어한다더니 엄청 아꼈었구나.");
 			}
 		}  
 		case WEAPON_NEARL:

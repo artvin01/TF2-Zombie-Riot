@@ -312,11 +312,11 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			npc.m_fbGunout = true;
 			if(!XenoExtraLogic())
 			{
-				CPrintToChatAll("{darkblue}월드치{default}: 여기든 아니든간에, 감염은 장난이 아니야.");
+				CPrintToChatAll("{darkblue}왈츠{default}: 여기든 아니든간에, 감염은 장난이 아니야.");
 			}
 			else
 			{
-				CPrintToChatAll("{darkblue}월드치{default}: 포기해서 목숨이라도 보존해.");		
+				CPrintToChatAll("{darkblue}왈츠{default}: 포기해서 목숨이라도 보존해.");		
 			}
 		}
 	}
@@ -367,15 +367,15 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					{
 						case 1:
 						{
-							CPrintToChatAll("{gold}실베스터{default}: {darkblue}월드치{default}!! 나랑 붙어있으라고 했잖아!");
+							CPrintToChatAll("{gold}실베스터{default}: {darkblue}왈츠{default}!! 나랑 붙어있으라고 했잖아!");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{gold}실베스터{default}: {darkblue}월드치{default}, 당장 이리 와!");
+							CPrintToChatAll("{gold}실베스터{default}: {darkblue}왈츠{default}, 당장 이리 와!");
 						}
 						case 3:
 						{
-							CPrintToChatAll("{gold}실베스터{default}: {darkblue}월드치{default}, 당장 이리 안 오면 널 내 근처로 순간이동 시킬 수 밖에 없어!");
+							CPrintToChatAll("{gold}실베스터{default}: {darkblue}왈츠{default}, 당장 이리 안 오면 널 내 근처로 순간이동 시킬 수 밖에 없어!");
 						}
 					}
 				}
@@ -390,15 +390,15 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					{
 						case 1:
 						{
-							CPrintToChatAll("{gold}실베스터{default}: 젠장, {darkblue}월드치{default}!");
+							CPrintToChatAll("{gold}실베스터{default}: 젠장, {darkblue}왈츠{default}!");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{gold}실베스터{default}: {darkblue}월드치{default}... 어서!");
+							CPrintToChatAll("{gold}실베스터{default}: {darkblue}왈츠{default}... 어서!");
 						}
 						case 3:
 						{
-							CPrintToChatAll("{gold}실베스터{default}: {darkblue}월드치{default}, 절대 내 곁에서 벗어나지마!");
+							CPrintToChatAll("{gold}실베스터{default}: {darkblue}왈츠{default}, 절대 내 곁에서 벗어나지마!");
 						}
 					}
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
@@ -521,15 +521,15 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{darkblue}월드치{default}: 그가 없으니, 이젠 내 차례다!");
+					CPrintToChatAll("{darkblue}왈츠{default}: 그가 없으니, 이젠 내 차례다!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}월드치{default}: 너희는 꼭 마치 그를 죽여버리려 한 것처럼 싸우는군!");
+					CPrintToChatAll("{darkblue}왈츠{default}: 너희는 꼭 마치 그를 죽여버리려 한 것처럼 싸우는군!");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{darkblue}월드치{default}: 너와 나 뿐이다!");
+					CPrintToChatAll("{darkblue}왈츠{default}: 너와 나 뿐이다!");
 				}
 			}
 		}
@@ -539,19 +539,19 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{darkblue}월드치{default}: 정말로 그러지 말아야했어!");
+					CPrintToChatAll("{darkblue}왈츠{default}: 정말로 그러지 말아야했어!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}월드치{default}: 그를 괴롭힌 대가를 치르게 해주마!");
+					CPrintToChatAll("{darkblue}왈츠{default}: 그를 괴롭힌 대가를 치르게 해주마!");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{darkblue}월드치{default}: 당장 여길 떠나라고!");
+					CPrintToChatAll("{darkblue}왈츠{default}: 당장 여길 떠나라고!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{darkblue}월드치{default}: 이 멍청한 놈들!");
+					CPrintToChatAll("{darkblue}왈츠{default}: 이 멍청한 놈들!");
 				}
 			}
 		}
@@ -1084,7 +1084,7 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(28.0);
 			damage = 0.0;
-			CPrintToChatAll("{darkblue}월드치{default}: 네가 이겼어. 이제 더 이상 막지 않을게...");
+			CPrintToChatAll("{darkblue}왈츠{default}: 네가 이겼어. 이제 더 이상 막지 않을게...");
 			return Plugin_Handled;
 		}
 

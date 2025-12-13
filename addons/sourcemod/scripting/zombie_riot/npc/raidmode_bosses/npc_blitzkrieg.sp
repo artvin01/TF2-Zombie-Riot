@@ -1710,7 +1710,7 @@ static void Spawn_Allies(Blitzkrieg npc)
 	}
 	if(i_current_wave[npc.index]>=40)	//Only spawns if the wave is 60 or beyond.
 	{
-		CPrintToChatAll("{crimson}%s{default}: And now its those two's turn", NpcStats_ReturnNpcName(npc.index, true));
+		CPrintToChatAll("{crimson}%s{default}: 이제 너희 둘이 나설 차례다.", NpcStats_ReturnNpcName(npc.index, true));
 		maxhealth= (heck/5);	//mid squishy
 
 		spawn_index = NPC_CreateByName("npc_alt_donnerkrieg", npc.index, pos, ang, GetTeam(npc.index), "raid_ally");

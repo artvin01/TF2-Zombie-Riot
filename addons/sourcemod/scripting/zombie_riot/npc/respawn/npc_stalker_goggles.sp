@@ -243,35 +243,35 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			{
 				case 1:	// 0.0
 				{
-					CPrintToChatAll("{darkblue}월드치{default}: ...");
+					CPrintToChatAll("{darkblue}왈츠{default}: ...");
 				}
 				case 3:	// 5.0
 				{
-					CPrintToChatAll("{darkblue}월드치{default}: 그 놈들이 또 내 의식을 다시 만들어낼 거고, 난 또 이렇게 되고 말거야.");
+					CPrintToChatAll("{darkblue}왈츠{default}: 그 놈들이 또 내 의식을 다시 만들어낼 거고, 난 또 이렇게 되고 말거야.");
 				}
 				case 5:	// 10.0
 				{
-					CPrintToChatAll("{darkblue}월드치{default}: 부탁한다. 혼돈을 막아줘.");
+					CPrintToChatAll("{darkblue}왈츠{default}: 부탁한다. 혼돈을 막아줘.");
 				}
 				case 7:	// 15.0
 				{
-					CPrintToChatAll("{darkblue}월드치{default}: 그 놈들은.. 끔찍한 것들을 만들어내고 있어.");
+					CPrintToChatAll("{darkblue}왈츠{default}: 그 놈들은.. 끔찍한 것들을 만들어내고 있어.");
 				}
 				case 9:	// 20.0
 				{
-					CPrintToChatAll("{darkblue}월드치{default}: 나처럼.");
+					CPrintToChatAll("{darkblue}왈츠{default}: 나처럼.");
 				}
 				case 10:	// 22.5
 				{
-					CPrintToChatAll("{darkblue}월드치{default}: 하나만 약속해줘.");
+					CPrintToChatAll("{darkblue}왈츠{default}: 하나만 약속해줘.");
 				}
 				case 11:	// 25.0
 				{
-					CPrintToChatAll("{darkblue}월드치{default}: {gold}실베스터{default}... 걔 좀 잘 돌봐줘...");
+					CPrintToChatAll("{darkblue}왈츠{default}: {gold}실베스터{default}... 걔 좀 잘 돌봐줘...");
 				}
 				case 12:	// 27.5
 				{
-					CPrintToChatAll("{darkblue}월드치{default}: {crimson}오류. 의식을 찾을수 없음.");
+					CPrintToChatAll("{darkblue}왈츠{default}: {crimson}오류. 의식을 찾을수 없음.");
 					npc.m_bDissapearOnDeath = true;
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 
@@ -280,7 +280,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 						{
 							Items_GiveNamedItem(client, "Chaos Machina Waldch Chip");
-							CPrintToChat(client, "{default}이 기계가 천천히 스러져가며, 거기서 떨어져나온 것은...: {blue}''혼돈 마키나 월드치 칩''{default}!");
+							CPrintToChat(client, "{default}이 기계가 천천히 스러져가며, 거기서 떨어져나온 것은...: {blue}''혼돈 마키나 왈츠의 칩''{default}!");
 						}
 					}
 				}
@@ -615,7 +615,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 		if(IsValidEntity(npc.m_iWearable3))
 			RemoveEntity(npc.m_iWearable3);
 		
-		CPrintToChatAll("{darkblue}월드치{default}: 프로그래밍에 이상현상 발생중.");
+		CPrintToChatAll("{darkblue}왈츠{default}: 프로그래밍에 이상현상 발생중.");
 
 		for(int i; i < 9; i++)
 		{

@@ -802,7 +802,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
 			
-			CPrintToChatAll("{blue}센살{default}: 도대체 실베스터와 월드치 얘기는 왜 계속하는거지? 그들이 너와 무슨 관계가 있다고?");
+			CPrintToChatAll("{blue}센살{default}: 도대체 실베스터와 왈츠 얘기는 왜 계속하는거지? 그들이 너와 무슨 관계가 있다고?");
 
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
@@ -2226,7 +2226,7 @@ static void Sensal_Weapon_Lines(Sensal npc, int client)
 		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{gold}실베스터{default}의 검이잖아? 나참, 이걸 왜 이런 놈들한테 주는건지...");
 		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}실베스터{default}, 너...");}
 		case WEAPON_SICCERINO,WEAPON_WALDCH_SWORD_NOVISUAL:  Format(Text_Lines, sizeof(Text_Lines), "그건 엑스피돈사인의 무기다. {gold}%N{default}. 어떻게 얻은거지?",client);
-		case WEAPON_WALDCH_SWORD_REAL:  Format(Text_Lines, sizeof(Text_Lines), "네가 왜 월드치의 무기를 쓰고 있는거지, {gold}%N{default}?",client);
+		case WEAPON_WALDCH_SWORD_REAL:  Format(Text_Lines, sizeof(Text_Lines), "네가 왜 왈츠의 무기를 쓰고 있는거지, {gold}%N{default}?",client);
 		case WEAPON_NEARL:  Format(Text_Lines, sizeof(Text_Lines), "{gold}실베스터{default}가 카시미어에 갔다오기라도 한 건가?");
 		case WEAPON_KAHMLFIST:  Format(Text_Lines, sizeof(Text_Lines), "캄르스타인은 그 자체로 많은 문제를 일으킨 놈이지.");
 		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "그 기계는 사라졌다. 여전히 {gold}%N{default}가 쓰는 것보단 훨씬 낫겠지.",client);
