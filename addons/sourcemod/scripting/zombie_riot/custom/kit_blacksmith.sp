@@ -1874,6 +1874,152 @@ public int Anvil_MenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
+static void Tinker_MS_Sharpness(int rarity, TinkerEnum tinker)
+{
+	strcopy(tinker.Name, sizeof(tinker.Name), "날카로움");
+	tinker.Attrib[0] = 2;
+	float DamageLuck = (0.1 * (tinker.Luck[0]));
+	
+	switch(rarity)
+	{
+		case 0:tinker.Value[0] = 1.1 + DamageLuck;
+		case 1:tinker.Value[0] = 1.15 + DamageLuck;
+		case 2:tinker.Value[0] = 1.2 + DamageLuck;
+		case 3:tinker.Value[0] = 1.25 + DamageLuck;
+		case 4:tinker.Value[0] = 1.32 + DamageLuck;
+	}
+}
+
+static void Tinker_MS_Smite(int rarity, TinkerEnum tinker)
+{
+	strcopy(tinker.Name, sizeof(tinker.Name), "강타");
+	tinker.Attrib[0] = 2;
+	tinker.Attrib[1] = 410;
+	tinker.Attrib[2] = 41;
+	tinker.CustomMode[1]=1;
+	tinker.CustomMode[2]=1;
+	float DamageLuck = (0.01 * (tinker.Luck[0]));
+	float CritLuck = (0.025 * (tinker.Luck[1]));
+	float ChargeRate = (0.1 * (tinker.Luck[2]));
+	
+	switch(rarity)
+	{
+		case 0:{tinker.Value[0] = 1.1 + DamageLuck;tinker.Value[1] = 1.2 + CritLuck;tinker.Value[2] = 2.0 + ChargeRate;}
+		case 1:{tinker.Value[0] = 1.12 + DamageLuck;tinker.Value[1] = 1.26 + CritLuck;tinker.Value[2] = 1.75 + ChargeRate;}
+		case 2:{tinker.Value[0] = 1.15 + DamageLuck;tinker.Value[1] = 1.31 + CritLuck;tinker.Value[2] = 1.5 + ChargeRate;}
+		case 3:{tinker.Value[0] = 1.2 + DamageLuck;tinker.Value[1] = 1.35 + CritLuck;tinker.Value[2] = 1.25 + ChargeRate;}
+		case 4:{tinker.Value[0] = 1.35 + DamageLuck;tinker.Value[1] = 1.43 + CritLuck;tinker.Value[2] = 1.1 + ChargeRate;}
+	}
+}
+
+static void Tinker_MS_SweepingEdge(int rarity, TinkerEnum tinker)
+{
+	strcopy(tinker.Name, sizeof(tinker.Name), "휩쓸기");
+	tinker.Attrib[0] = 99;
+	tinker.Attrib[1] = 4;
+	tinker.Attrib[2] = 425;
+	tinker.CustomMode[0]=1;
+	tinker.CustomMode[1]=1;
+	tinker.CustomMode[2]=1;
+	tinker.Addition[1]=true;
+	float RangeLuck = (0.1 * (tinker.Luck[0]));
+	float MaxTargetLuck = (0.5 * (tinker.Luck[1]));
+	float DamageLuck = (0.1 * (tinker.Luck[2]));
+
+	switch(rarity)
+	{
+		case 0:{tinker.Value[0] = 1.25 + RangeLuck;tinker.Value[1] = 1.0 + MaxTargetLuck;tinker.Value[2] = 1.05 + DamageLuck;}
+		case 1:{tinker.Value[0] = 1.5 + RangeLuck;tinker.Value[1] = 2.0 + MaxTargetLuck;tinker.Value[2] = 1.1 + DamageLuck;}
+		case 2:{tinker.Value[0] = 1.75 + RangeLuck;tinker.Value[1] = 3.0 + MaxTargetLuck;tinker.Value[2] = 1.2 + DamageLuck;}
+		case 3:{tinker.Value[0] = 2.0 + RangeLuck;tinker.Value[1] = 4.0 + MaxTargetLuck;tinker.Value[2] = 1.25 + DamageLuck;}
+		case 4:{tinker.Value[0] = 2.5 + RangeLuck;tinker.Value[1] = 4.5 + MaxTargetLuck;tinker.Value[2] = 1.3 + DamageLuck;}
+	}
+}
+
+static void Tinker_MS_QuickCharge(int rarity, TinkerEnum tinker)
+{
+	strcopy(tinker.Name, sizeof(tinker.Name), "빠른 충전");
+	tinker.Attrib[0] = 41;
+	tinker.Attrib[1] = 6;
+	tinker.Attrib[2] = 425;
+	tinker.CustomMode[0]=1;
+	tinker.CustomMode[2]=1;
+	float ChargeRate = (0.01 * (1.0 + (-1.0*(tinker.Luck[0]))));
+	float AttackSpeedLuck = (0.1 * (tinker.Luck[1]));
+	float DamageLuck = (0.1 * (tinker.Luck[2]));
+
+	switch(rarity)
+	{
+		case 0:{tinker.Value[0] = 0.9 + ChargeRate;tinker.Value[1] = 0.9 - AttackSpeedLuck;tinker.Value[2] = 0.7 + DamageLuck;}
+		case 1:{tinker.Value[0] = 0.87 + ChargeRate;tinker.Value[1] = 0.87 - AttackSpeedLuck;tinker.Value[2] = 0.72 + DamageLuck;}
+		case 2:{tinker.Value[0] = 0.8 + ChargeRate;tinker.Value[1] = 0.85 - AttackSpeedLuck;tinker.Value[2] = 0.75 + DamageLuck;}
+		case 3:{tinker.Value[0] = 0.65 + ChargeRate;tinker.Value[1] = 0.8 - AttackSpeedLuck;tinker.Value[2] = 0.77 + DamageLuck;}
+		case 4:{tinker.Value[0] = 0.5 + ChargeRate;tinker.Value[1] = 0.75 - AttackSpeedLuck;tinker.Value[2] = 0.8 + DamageLuck;}
+	}
+}
+
+static void Tinker_MS_BaneofArthropods(int rarity, TinkerEnum tinker)
+{
+	strcopy(tinker.Name, sizeof(tinker.Name), "살충");
+	tinker.Attrib[0] = 2;
+	tinker.Attrib[1] = 411;
+	tinker.Addition[1]=true;
+	tinker.CustomMode[1]=1;
+	float DamageLuck = (0.1 * (tinker.Luck[0]));
+	float SilencedLuck = (0.5 * (tinker.Luck[1]));
+
+	switch(rarity)
+	{
+		case 0:{tinker.Value[0] = 0.65 + DamageLuck;tinker.Value[1] = 1.0 + SilencedLuck;}
+		case 1:{tinker.Value[0] = 0.7 + DamageLuck;tinker.Value[1] = 1.5 + SilencedLuck;}
+		case 2:{tinker.Value[0] = 0.72 + DamageLuck;tinker.Value[1] = 2.0 + SilencedLuck;}
+		case 3:{tinker.Value[0] = 0.75 + DamageLuck;tinker.Value[1] = 3.0 + SilencedLuck;}
+		case 4:{tinker.Value[0] = 0.79 + DamageLuck;tinker.Value[1] = 4.0 + SilencedLuck;}
+	}
+}
+
+static void Tinker_MS_FireAspect(int rarity, TinkerEnum tinker)
+{
+	strcopy(tinker.Name, sizeof(tinker.Name), "발화");
+	tinker.Attrib[0] = 2;
+	tinker.Attrib[1] = 397;
+	tinker.Addition[1]=true;
+	tinker.CustomMode[1]=1;
+	float DamageLuck = (0.1 * (tinker.Luck[0]));
+	float FireLuck = (0.5 * (tinker.Luck[1]));
+
+	switch(rarity)
+	{
+		case 0:{tinker.Value[0] = 0.62 + DamageLuck;tinker.Value[1] = 1.0 + FireLuck;}
+		case 1:{tinker.Value[0] = 0.66 + DamageLuck;tinker.Value[1] = 2.0 + FireLuck;}
+		case 2:{tinker.Value[0] = 0.71 + DamageLuck;tinker.Value[1] = 3.0 + FireLuck;}
+		case 3:{tinker.Value[0] = 0.73 + DamageLuck;tinker.Value[1] = 5.0 + FireLuck;}
+		case 4:{tinker.Value[0] = 0.76 + DamageLuck;tinker.Value[1] = 8.0 + FireLuck;}
+	}
+}
+
+static void Tinker_MS_CurseofGlassy(int rarity, TinkerEnum tinker)
+{
+	strcopy(tinker.Name, sizeof(tinker.Name), "유리 저주");
+	tinker.Attrib[0] = 2;
+	tinker.Attrib[1] = 425;
+	tinker.Attrib[2] = 205;
+	tinker.Attrib[3] = 206;
+	tinker.CustomMode[1]=1;
+	float DamageLuck = (0.1 * (tinker.Luck[0]));
+	float SweepingLuck = (0.1 * (tinker.Luck[1]));
+	float RangedDmgVulLuck = (0.05 * (1.0 + (-1.0*(tinker.Luck[2]))));
+	float MeleeDmgVulLuck = (0.05 * (1.0 + (-1.0*(tinker.Luck[3]))));
+
+	switch(rarity)
+	{
+		case 0:{tinker.Value[0] = 1.1 + DamageLuck;tinker.Value[1] = 1.25 + SweepingLuck;tinker.Value[2] = 1.05 + RangedDmgVulLuck;tinker.Value[3] = 1.05 + MeleeDmgVulLuck;}
+		case 1:{tinker.Value[0] = 1.3 + DamageLuck;tinker.Value[1] = 1.3 + SweepingLuck;tinker.Value[2] = 1.075 + RangedDmgVulLuck;tinker.Value[3] = 1.075 + MeleeDmgVulLuck;}
+		case 2:{tinker.Value[0] = 1.4 + DamageLuck;tinker.Value[1] = 1.35 + SweepingLuck;tinker.Value[2] = 1.1 + RangedDmgVulLuck;tinker.Value[3] = 1.1 + MeleeDmgVulLuck;}
+		case 3:{tinker.Value[0] = 1.5 + DamageLuck;tinker.Value[1] = 1.4 + SweepingLuck;tinker.Value[2] = 1.25 + RangedDmgVulLuck;tinker.Value[3] = 1.25 + MeleeDmgVulLuck;}
+		case 4:{tinker.Value[0] = 1.6 + DamageLuck;tinker.Value[1] = 1.45 + SweepingLuck;tinker.Value[2] = 1.35 + RangedDmgVulLuck;tinker.Value[3] = 1.35 + MeleeDmgVulLuck;}
+	}
+}
 
 void DetectWeaponNoTinker(int weapon, int client)
 {
