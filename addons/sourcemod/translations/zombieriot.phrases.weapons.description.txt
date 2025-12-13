@@ -2484,6 +2484,30 @@
 		"it"	"Ultima unità di base da mischia."
 		"ko"	"기본 근접 유닛의 최상위 등급."
 	}
+	"quincy pap0"
+    {
+        "en"    "A bow made of pure energy\n-Hold mouse1 to charge it\n-Damage dealt depends on how much mana you pump into it"
+    }
+    "quincy pap"
+    {
+        "en"    "-Increased Damage\n-Your arrows gain the ability to home onto targets, if you can see one\n-Homing power is dependant on how raishi ％ charge"
+    }
+    "quincy pap arrow"
+    {
+        "en"    "-Increased Damage\n-Once you charge you weapon enough you gain the ability to shoot more arrows at once!"
+    }
+    "quincy pap1"
+    {
+        "en"    "-Increased Damage\n-Extra Arrows on Multi Shot."
+    }
+    "quincy pap hyper"
+    {
+        "en"    "-Increased Damage\n-You can now fire a constant stream of magic arrows!"
+    }
+    "quincy pap arrow hyper"
+    {
+        "en"    "-Increased Damage\n-After hitting enough enemy combatants, you gain the ability to fire a DEVESTATING hyper arrow."
+    }
 	"Monk Desc"
 	{
 		"en"	"Provides AOE damage around it but lacks self defense"
@@ -4389,7 +4413,7 @@
 	}
 	"Rusty Rifle Desc"
 	{
-		"en"	"Tthe scope has been damaged beyond repair...\nThe rest of the gun works fine enough, though.\n-Weapon is a close ranged sniper rifle with high damage."
+		"en"	"The scope has been damaged beyond repair...\nThe rest of the gun works fine enough, though.\n-Weapon is a close ranged sniper rifle with high damage."
 		"chi"	"一把生锈的长枪。它的瞄准镜破烂不堪…\n…枪倒是还能用。"
 		"it"	"Un vecchio fucile arrugginito. Sembra che il mirino sia danneggiato in modo irreparabile...\nIl resto dell'arma funziona abbastanza bene, però."
 		"ko"	"녹슬고 오래된 소총. 아무래도 조준경은 수리가 힘들것 같습니다.\n그나마 나머지 부분은 일반적인 총처럼 작동하는군요."

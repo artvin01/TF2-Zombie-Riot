@@ -543,7 +543,7 @@ static void Quincy_Hyper_Barrage(int client, float charge_percent, float GameTim
 			float ang_Look[3];
 			MakeVectorFromPoints(endLoc, Vec_offset, ang_Look);
 			GetVectorAngles(ang_Look, ang_Look);
-			Quincy_Rocket_Launch(client, fl_speed, damage, weapon, ang_Look, endLoc);
+			Quincy_Rocket_Launch(client, fl_speed, damage, weapon, ang_Look, endLoc, "raygun_projectile_blue_trail");
 		}
 	}
 }
@@ -771,9 +771,9 @@ static void Do_Vector_Stuff(int cycle, float start_pos[3], float end_Pos[3], flo
 
 	Get_Fake_Forward_Vec(dist, angles, end_Pos, buffer_loc);
 }
-static void Quincy_Rocket_Launch(int client, float speed, float damage, int weapon, float fAng[3], float fPos[3])
+static void Quincy_Rocket_Launch(int client, float speed, float damage, int weapon, float fAng[3], float fPos[3], char[] WandParticle = "raygun_projectile_blue")
 {
-	int projectile = Wand_Projectile_Spawn(client, speed, 30.0, damage, 0, weapon, "raygun_projectile_blue", fAng, false , fPos);
+	int projectile = Wand_Projectile_Spawn(client, speed, 30.0, damage, 0, weapon, WandParticle, fAng, false , fPos);
 	WandProjectile_ApplyFunctionToEntity(projectile, Quincy_MultiArroTouch);
 }
 static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
