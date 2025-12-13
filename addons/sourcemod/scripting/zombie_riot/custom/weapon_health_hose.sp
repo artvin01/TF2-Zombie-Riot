@@ -550,7 +550,7 @@ bool SpawnHealthkit_SyringeGun(int client, float VectorGoal[3])
 		f_HealMaxPickup_Enable[prop] = GetGameTime();
 		f_HealMaxPickup[prop] = HealAmmount;
 		i_WandIdNumber[prop] = 999;
-	//	CreateTimer(0.1, Timer_Detect_Player_Nearby_healthkit, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		CreateTimer(60.0 * 5, Timer_RemoveEntity, prop, TIMER_FLAG_NO_MAPCHANGE);
 	}	
 	return true;
 }
