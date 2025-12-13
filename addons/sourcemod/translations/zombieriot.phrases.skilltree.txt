@@ -337,7 +337,7 @@
 	{
 		"en" 		"Waldch's Blue Goggles"
 		"it"		"Occhiali blu di Waldch"
-		"ko" 		"월드치의 파란 고글"
+		"ko" 		"왈츠의 파란 고글"
 	}
 	"Waldch's Blue Goggles Desc"
 	{

@@ -3,6 +3,7 @@
 
 #define SELL_AMOUNT 0.9
 bool PapPreviewMode[MAXPLAYERS];
+float f_ConfirmSellDo[MAXPLAYERS];
 
 enum
 {
@@ -1005,6 +1006,7 @@ int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
 
 void Store_ConfigSetup()
 {
+	Zero(f_ConfirmSellDo);
 	ClearAllTempAttributes();
 	delete StoreTags;
 	StoreTags = new ArrayList(ByteCountToCells(32));
@@ -3423,7 +3425,7 @@ static void MenuPage(int client, int section)
 								break;
 							}
 						}
-						Format(buffer, sizeof(buffer), "%T", "Weapon Enhancement", client);
+						Format(buffer, sizeof(buffer), "[%T]\n ", "Weapon Enhancement", client);
 						menu.AddItem(buffer2, buffer);
 					}
 					if(tinker || item.Tags[0] || info.ExtraDesc[0] || item.Author[0] || info.WeaponFaction1)
@@ -4766,7 +4768,13 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 				}
 				case 3:	// Sell
 				{
-					TryAndSellOrUnequipItem(index, item, client, false, true);
+					if(f_ConfirmSellDo[client] > GetGameTime())
+						TryAndSellOrUnequipItem(index, item, client, false, true);
+					else
+					{
+						SPrintToChat(client, "%T", "Press again to confirm selling.", client);
+						f_ConfirmSellDo[client] = GetGameTime() + 1.0;
+					}
 				}
 				case 4:	
 				{

@@ -2019,6 +2019,7 @@
 		"nl"		"Gebruik dit om jezelf een beetje te genezen."
 		"chi"       "按下R键来恢复少量生命"
 		"it"		"Usatelo per curarvi un po'."
+		"ko" 		"이 구조물을 사용해 체력을 약간 회복하세요."
 	}
 	"Healing Station Used"
 	{
@@ -3285,7 +3286,7 @@
 		"ru"		"Сильвестр и Валдч не нападали на вас без причины."
 		"chi"		"西尔维斯特和瓦德奇不是无缘无故攻击你的。"
 		"it"		"Silvester e Waldch non vi hanno attaccato senza motivo."
-		"ko"		"실베스터와 월드치가 당신을 아무런 이유도 없이 공격한게 아닙니다."
+		"ko"		"실베스터와 왈츠가 당신을 아무런 이유도 없이 공격한게 아닙니다."
 	}
 	"Xeno_Wave_3"
 	{
@@ -4653,7 +4654,7 @@
 	{
 		"en"	"Lore order: (3) You trying to find out what xeno is... Silvester and waldch are here to stop you from getting infected."
 		"it"	"Ordine Lore: (3) Stai cercando di scoprire cos'è lo xeno... Silvester e waldch sono qui per impedirti di essere infettato."
-		"ko"	"설정 순서: (3) 당신은 제노가 무엇인지 알아내려 하고 있습니다…\n실베스터와 월드치가 당신이 감염되는걸 막기 위해 찾아왔습니다."
+		"ko"	"설정 순서: (3) 당신은 제노가 무엇인지 알아내려 하고 있습니다…\n실베스터와 왈츠가 당신이 감염되는걸 막기 위해 찾아왔습니다."
 	}
 	"Xeno Hard Desc"
 	{
@@ -4701,7 +4702,7 @@
 	{
 		"en"	"Lore order: (5) The scouting party operative, you harmed Silvester and Waldch, but they were unable to tell Sensal that this was a false alarm, brace yourself."
 		"it"	"Ordine Lore: (5) L'agente del gruppo di esplorazione, hai danneggiato silvester e waldch, ma non sono stati in grado di dire a sensal che si trattava di un falso allarme, tieniti forte."
-		"ko"	"설정 순서: (5) 당신은 정찰 부대 요원인 실베스터와 월드치를 공격했지만, 그들은 센살에게 이것이 허위 경보란 사실을 알리지 못 했습니다. 준비하세요."
+		"ko"	"설정 순서: (5) 당신은 정찰 부대 요원인 실베스터와 왈츠를 공격했지만, 그들은 센살에게 이것이 허위 경보란 사실을 알리지 못 했습니다. 준비하세요."
 	}
 	"Deep Sea Desc"
 	{
@@ -4764,7 +4765,7 @@
 	{
 		"en"	"Lore order: (10) After construction and zilius's attack, Izan sends you to an old facility, it seems to have an exact replica of some places..."
 		"it"	"Ordine Lore: (10) Dopo la struttura e l'attacco di Zilius, Izan ti manda in una vecchia struttura, che sembra avere una replica esatta di alcuni luoghi..."
-		"ko"	"설정 순서: (10) 생존연산에서 질리우스의 공격 이후, 이잔은 너를 오래된 시설로 보냅니다./n그곳에는 몇몇 장소와 완전히 동일한 복제물이 존재하는 것처럼 보입니다…"
+		"ko"	"설정 순서: (10) 생존연산에서 질리우스의 습격을 버텨낸 후, 이잔은 당신을 오래된 연구소로 보냈습니다. 그곳에는 몇몇 장소와 완전히 동일한 복제물이 존재하는 것처럼 보입니다…"
 	}
 	"Twirl Raid Desc"
 	{
@@ -4943,6 +4944,10 @@
 		"it"		"Il proprietario non possiede più questo kit! Autodistruzione!!!"
 		"ko"		"소유자가 더 이상 이것과 관련된 키트를 소유하고 있지 않습니다! 이 구조물을 자폭시킵니다!"
 	}
+	"Press again to confirm selling."
+	{
+		"en"		"Press again to confirm selling."
+	}
 	"Weapon No Effect Tinker"
 	{
 		"en"		"This doesn't seem to effect this weapon!"
@@ -4988,9 +4993,9 @@
 	}
 	"Weapon Enhancement"
 	{
-		"en"	"Weapon Enhancement"
+		"en"	"Enhancement"
 		"it"	"Visualizza gli aggiornamenti PAP"
-		"ko"	"강화 효과 보기"
+		"ko"	"무기 강화하기"
 	}
 	"Bring up Class Change Menu"
 	{
@@ -5520,7 +5525,7 @@
 	{
 		"en"		"You're in the Starter Store!\nBuy the weapons and gear you need with a high discount!\nOnce done, exit the store to access your earned cash!\nPress [TAB] and exit the store with [1]!"
 		"it"		"Sei nel Negozio Iniziale! \nAcquista le armi e l'equipaggiamento di cui hai bisogno con un forte sconto! \nUna volta finito, esci dal negozio per accedere ai soldi guadagnati! \nPremi [TAB] e esci dal negozio con [1]!"
-		"ko"		"상점 메뉴에서 초기 장비 로드아웃을 설정하고 더 많은 무기와 자금을 얻으세요!\n[TAB]을 눌러 [1]과 함께 초기 상점을 나가세요!"
+		"ko"		"상점 메뉴에서 초기 장비 로드아웃을 설정하고 더 많은 무기와 자금을 얻으세요!\n [TAB] 을 눌러 [1] 과 함께 초기 상점을 나가세요!"
 	}
 	"Latejoin Hint"
 	{

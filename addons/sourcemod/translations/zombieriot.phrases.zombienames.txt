@@ -2074,7 +2074,7 @@
 		"en"		"Machina Waldch"
 		"ru" 		"Махина Валдч"
 		"it"		"Machina Waldch"
-		"ko"		"마키나 월드치"
+		"ko"		"마키나 왈츠"
 	}
 	"Silvester"
 	{
@@ -2102,7 +2102,7 @@
 		"ru"		"Валдч"
 		"pt"		"Waldch"
 		"it"		"Waldch"
-		"ko"		"월드치"
+		"ko"		"왈츠"
 	}
 	"Angeled Silvester"
 	{
@@ -5802,21 +5802,6 @@
 		"it"	"Il capo dell'esercito finale.\nOgni tanto evoca attacchi aerei su 1 bersaglio.\nGli attacchi aerei avvengono anche quando ti colpisce troppo con la mischia."
 		"ko"	"이 군대의 총괄 지휘자입니다.\n가끔씩 한 대상에게 공습을 가합니다.\n또한 이 적의 근접 공격으로 여러번 피격 당해도 공습이 발생합니다."
 	}
-	"Mr.V"
-	{
-		"en"	"Mr.V"
-		"ko"	"Mr.V"
-	}
-	"Invisible Trigger Man"
-	{
-		"en"	"=Failed name="
-		"ko"	"=Failed name="
-	}
-	"Soulrunner"
-	{
-		"en" 		"Soulrunner"
-		"ko" 		"소울러너"
-	}
 	"Agent John"
 	{
 		"en"		"Agent John"
@@ -6592,7 +6577,7 @@
 	{
 		"en"	"Aperture Demolisher"
 		"it"	"Demolitore di aperture"
-		"ko"	"애퍼처 "
+		"ko"	"애퍼처 철거자"
 	}
 	"Aperture Demolisher Desc"
 	{
@@ -7246,7 +7231,7 @@
 	{
 		"en"	"Both an ally and an enemy, this researcher simply wants to get out.\nGoing below 50%% of his health will cause him to inflict everyone with Kinetic Surge."
 		"it"	"Sia alleato che nemico, questo ricercatore vuole semplicemente andarsene.\nScendere sotto il 50% della sua salute lo porterà a infliggere a tutti un'Ondata Cinetica."
-		"ko"	"아군이자 적군이 될 수도 있는 이 연구원은 단지 이 곳을 서둘러 빠져나가고 싶어할 뿐입니다.\n체력이 50%% 이하가 되면, 적과 아군을 포함한 모든 존재에게 운동 에너지 급증 버프를 부여합니다."
+		"ko"	"아군이자 적군이 될 수도 있는 이 연구원은 단지 이 곳을 서둘러 빠져나가고 싶어할 뿐입니다.\n체력이 50％ 이하가 되면, 적과 아군을 포함한 모든 존재에게 운동 에너지 급증 버프를 부여합니다."
 	}
 	"C.A.T."
 	{

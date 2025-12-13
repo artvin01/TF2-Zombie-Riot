@@ -21,7 +21,7 @@ static int i_Max_ION_Hit = 5;
 static float fl_Sigil_Melee_Range = 130.0;
 static float fl_Sigil_Crystal_ManaCost_Percent = 0.35;
 static float fl_Sigil_Crystal_LifeSpan = 8.0;
-static float fl_Sigil_Crystal_Spawn_Cooldown = 180.0;
+static float fl_Sigil_Crystal_Spawn_Cooldown = 90.0;
 //static float fl_Slash_ManaCost_Max_Percent = 0.5;
 static float fl_Slash_Time_Max = 3.0;
 static float fl_Slash_Increase_Time = 2.0;
@@ -831,7 +831,7 @@ static void Sigil_Tele_Effect(int client, int victims, int damagetype, float &da
 
 static float Sigil_TeleDamage(int weapon)
 {
-	float dmg = 100.0;//Blame pandora if it is too much. it was originally 65
+	float dmg = 115.0;//Blame pandora if it is too much. it was originally 65
 	dmg *= Attributes_Get(weapon, 410, 1.0);
 	return dmg;
 }
@@ -1171,6 +1171,7 @@ bool Sigil_LastMann(int client)
 
 
 */
+
 
 
 

@@ -13,7 +13,7 @@
 		"fr" 		"Silvester et Waldch sont ici."
 		"chi"		"西尔韦斯特和瓦德奇到来。"
 		"it"		"Silvester e Waldch sono arrivati."
-		"ko" 		"실베스터와 월드치가 등장했습니다."
+		"ko" 		"실베스터와 왈츠가 등장했습니다."
 	}
 	"Zilius Arrived Arrived."
 	{
@@ -517,7 +517,7 @@
 		"fr" 		"Une imitation méchanique de Waldch."
 		"chi"		"一台假冒Waldch的机器。"
 		"it"		"Una macchina che cerca di imitare Waldch."
-		"ko" 		"월드치를 복제하려는 기계입니다."
+		"ko" 		"왈츠를 복제하려는 기계입니다."
 	}
 	"Machina Waldch 2"
 	{

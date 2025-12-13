@@ -985,7 +985,7 @@
 	{
 		"en"	"Apparently it applies to copied personalities.\n{red}Machina Waldch appears until defeated"
 		"it"	"Sembra che si applichi alle personalità copiate.\n{red}Machina Waldch appare fino a quando non viene sconfitta"
-		"ko"	"아무래도 복제된 개체에게도 적용되는 사항 같다.\n{red}마키나 월드치가 등장하며, 처치될 때까지 사라지지 않습니다."
+		"ko"	"아무래도 복제된 개체에게도 적용되는 사항 같다.\n{red}마키나 왈츠가 등장하며, 처치될 때까지 사라지지 않습니다."
 	}
 	"Pack of Smokes"
 	{
@@ -1148,13 +1148,13 @@
 	{
 		"en"	"Waldch's Assistance"
 		"it"	"Assistenza Waldch"
-		"ko"	"월드치의 협력"
+		"ko"	"왈츠의 협력"
 	}
 	"Waldch Assistance Desc"
 	{
 		"en"	"Waldch joins you."
 		"it"	"Waldch si unisce a voi."
-		"ko"	"월드치가 당신과 함께한다."
+		"ko"	"왈츠가 당신과 함께한다."
 	}
 	"Kahmlstein Guidance"
 	{
@@ -1407,13 +1407,13 @@
 	{
 		"en"	"It's Waldch"
 		"it"	"E' Waldch"
-		"ko"	"저건 월드치야"
+		"ko"	"저건 왈츠야"
 	}
 	"Prophecy Desc 1b"
 	{
 		"en"	"{yellow}Waldch will acompany you {blue}and the ending is changed."
 		"it"	"{yellow}Waldch vi accompagnerà {blue} e il finale è cambiato."
-		"ko"	"{yellow}월드치가 당신과 함께 하며 {blue}게임 엔딩이 변경됩니다."
+		"ko"	"{yellow}왈츠가 당신과 함께 하며 {blue}게임 엔딩이 변경됩니다."
 	}
 	"Prophecy Lore 1b"
 	{

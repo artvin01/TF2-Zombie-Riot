@@ -1343,7 +1343,7 @@
 	{
 		"en"		"The originator of the Xeno infection. Silvester and Waldch tried to warn you, but you didn't listen. \n-Melee attack hits multiple times and launches the target at the end. \n-Causes infection blast below every enemy, in LoS, after performing or ending any attack. \n-If hit by the infection blast, you are afflicted with a heavy bleed. \n-Occasionally, he'll charge towards the closest enemy, picking them up, and ripping them apart. He'll then throw them into the sky. \n-Has a minigun that shoots explosive bullets. \n-Once he hits 25% of his HP, he will drop to the floor and regen 50% of his total HP back over 20 seconds. During this, he gains 70% damage resistance."
 		"it"		"Il creatore dell'infezione Xeno.\nHanno cercato di avvertirti, non hai ascoltato.\nLa sua resistenza alla fase rigenerativa (può essere silenziata a metà)."
-		"ko"		"제노 감염의 창시자. 실베스터와 월드치가 분명 당신에게 경고했지만, 당신은 듣지도 않았죠.\n-근접 공격이 다중 타격이며 적을 멀리 날려버림. \n-감염 폭발을 일으켜 적들을 감염시킴. 감염 폭발에 맞으면 끝없는 출혈 디버프가 부여됨.\n-근접한 적에게 돌진해 잡고 공중으로 던져버림.\n-체력이 25% 이하일시, 무방비 상태가 되고 20초에 걸쳐 최대 체력의 50% 까지 체력을 회복. 이 상태에선 받는 모든 피해 70% 감소."
+		"ko"		"제노 감염의 창시자. 실베스터와 왈츠가 분명 당신에게 경고했지만, 당신은 듣지도 않았죠.\n-근접 공격이 다중 타격이며 적을 멀리 날려버림. \n-감염 폭발을 일으켜 적들을 감염시킴. 감염 폭발에 맞으면 끝없는 출혈 디버프가 부여됨.\n-근접한 적에게 돌진해 잡고 공중으로 던져버림.\n-체력이 25％ 이하일시, 무방비 상태가 되고 20초에 걸쳐 최대 체력의 50％ 까지 체력을 회복. 이 상태에선 받는 모든 피해 70％ 감소."
 	}
 	"Shell Sea Runner Desc"
 	{
@@ -1848,7 +1848,7 @@
 	{
 		"en"	"The leader of the scouting group and a friend of silvester and Waldch, he is here for what you did.\nEach new time he returns he gains new abilities and gets stronger.\nHe summons scythes that home onto you, summons portals which summon sythes, fires a laser onto all enemies in range aswell.\nGets a shield which is the same as the vaus magica shield upon using any ability.\nSlide on hit (can be silenced)"
 		"it"	"Il capo del gruppo di esploratori e amico di Silvester e Waldch, è qui per quello che avete fatto.Ogni volta che torna guadagna nuove abilità e diventa più forte.\nEvoca falci che si dirigono verso di voi, evoca portali che richiamano falci, spara un laser su tutti i nemici nel raggio d'azione.\nOttiene uno scudo che è lo stesso dello scudo di vaus magica quando usa una qualsiasi abilità.Scivola su un colpo (può essere silenziato)"
-		"ko"	"정찰대의 대장이자 실베스터와 월드치의 친구입니다. 그는 당신이 저지른 행동 때문에 여기에 왔습니다.\n그가 돌아올 때마다, 그가 사용할 수 있는 능력이 새로 추가되고 더욱 강해집니다.\n그는 당신에게 날아가는 낫을 생성하고, 낫을 생성하는 포탈을 소환하며, 범위 내의 모든 적에게 레이저를 발사합니다.\n능력을 사용할 때마다, 바우스 마기카가 사용하는 보호막과 똑같은 보호막을 얻습니다.\n공격이 적중한 대상은 조작에 상관없이 쭉 미끄러지게 됩니다. (침묵 상태일시, 이 디버프를 부여하지 않음)"
+		"ko"	"정찰대의 대장이자 실베스터와 왈츠의 친구입니다. 그는 당신이 저지른 행동 때문에 여기에 왔습니다.\n그가 돌아올 때마다, 그가 사용할 수 있는 능력이 새로 추가되고 더욱 강해집니다.\n그는 당신에게 날아가는 낫을 생성하고, 낫을 생성하는 포탈을 소환하며, 범위 내의 모든 적에게 레이저를 발사합니다.\n능력을 사용할 때마다, 바우스 마기카가 사용하는 보호막과 똑같은 보호막을 얻습니다.\n공격이 적중한 대상은 조작에 상관없이 쭉 미끄러지게 됩니다. (침묵 상태일시, 이 디버프를 부여하지 않음)"
 	}
 	"Dual Rea Desc"
 	{
@@ -2740,7 +2740,7 @@
 	"Spinal Slugger Desc"
 	{
 		"en"		"• Enters a rampage when below 35%% health, increasing speed, damage, and attack speed.\n \n\nFor as much as they love their bats, you'd expect Spinal Sluggers to have at least SOME love for baseball.\nTurns out, most of them don't even know what baseball is.\n''Baseball is a game?,'' asks one astonished Slugger, ''I thought that was the name of the company that makes these things.''"
-		"ko"		"• 체력이 35%% 이하일시 광폭화하여, 피해량, 공격 속도, 속도가 증가합니다.\n \n\n 야구방망이를 매우 좋아하는 이들이, 야구에 대해서는 최소한 어느 정도 알고 있을...\n거라고 생각하셨으면 함정입니다. 이들은 야구가 뭔지도 모릅니다.\n'야구가 스포츠였다고?' 강타자가 놀라며 묻습니다. '난 야구가 방망이 만드는 회사 이름인줄 알았단 말이야!'"
+		"ko"		"• 체력이 35％ 이하일시 광폭화하여, 피해량, 공격 속도, 속도가 증가합니다.\n \n\n 야구방망이를 매우 좋아하는 이들이, 야구에 대해서는 최소한 어느 정도 알고 있을...\n거라고 생각하셨으면 함정입니다. 이들은 야구가 뭔지도 모릅니다.\n'야구가 스포츠였다고?' 강타자가 놀라며 묻습니다. '난 야구가 방망이 만드는 회사 이름인줄 알았단 말이야!'"
 	}
 	"Godfather Grimme Desc"
 	{
@@ -2870,7 +2870,7 @@
 	"Supreme Spookmaster Bones, Magistrate of the Dead Desc"
 	{
 		"en"		"• Summons up to 4 tombstones every time he loses 25%% of his max HP.\n• Tombstones summon skeletons, and provide invulnerability to SSB.\n\n \n\nWhen someone dies, they show up in a long queue as a skeleton.\nAt the front of this queue, SSB judges the recently-deceased, deciding whether they should be allowed\ninto Necropolis or turned away, doomed to wander purgatory alone for eternity."
-		"ko"		"• 최대 체력의 25%에 해당하는 체력을 잃을 때마다, 묘비 4 개를 생성합니다.\n• 묘비는 해골을 소환하고, 스푸크마스터 본즈에게 무적을 부여합니다.\n\n \n\n누군가가 죽을 때마다, 사망한 사람이 해골 행렬에 나타납니다.\n이 행렬의 맨 앞 줄에 있다면, 스푸크마스터 본즈가 최근 사망한 자들을 심판하여 그들이 네크로폴리스에 들어갈 수 있는지,\n아니면 영원히 연옥을 떠돌도록 추방할지를 결정합니다."
+		"ko"		"• 최대 체력의 25％에 해당하는 체력을 잃을 때마다, 묘비 4 개를 생성합니다.\n• 묘비는 해골을 소환하고, 스푸크마스터 본즈에게 무적을 부여합니다.\n\n \n\n누군가가 죽을 때마다, 사망한 사람이 해골 행렬에 나타납니다.\n이 행렬의 맨 앞 줄에 있다면, 스푸크마스터 본즈가 최근 사망한 자들을 심판하여 그들이 네크로폴리스에 들어갈 수 있는지,\n아니면 영원히 연옥을 떠돌도록 추방할지를 결정합니다."
 	}
 	"Supreme Spookmaster Bones, Eternal Master of the Damned Desc"
 	{
@@ -3292,7 +3292,7 @@
 	{
 		"en"	"You decide to push yourself further.\nIncludes all the effects of the Chaos Intrusion modifier!\nSpeeds up enemy health and damage scaling by a low amount each wave.\nIncreases enemy buff durations by 20%% and setups add +1 skull."
 		"it"	"Decidi di spingerti oltre.\nComprende tutti gli effetti del modificatore Intrusione del Caos! \nAccelera la salute dei nemici e la scalatura dei danni di una quantità ridotta a ogni ondata.\nAumenta la durata dei buff nemici del 20% e le configurazioni aggiungono +1 teschio."
-		"ko"	"당신은 자신을 더욱 발전시키기로 결심합니다.\n혼돈의 침입 난이도의 모든 효과가 포함되어 있습니다!\n매 웨이브마다, 적의 체력과 공격 피해량 증가량이 조금씩 증가합니다.\n적들의 버프 지속 시간이 20%% 증가하며, 준비 시간때는 해골이 +1개 증가합니다."
+		"ko"	"당신은 자신을 더욱 발전시키기로 결심합니다.\n혼돈의 침입 난이도의 모든 효과가 포함되어 있습니다!\n매 웨이브마다, 적의 체력과 공격 피해량 증가량이 조금씩 증가합니다.\n적들의 버프 지속 시간이 20％ 증가하며, 준비 시간때는 해골이 +1개 증가합니다."
 	}
 	"Muscle Refiner"
 	{
@@ -3304,7 +3304,7 @@
 	{
 		"en"	"You'll give it your all!!\nIncludes all the effects of the Secondary Mercs modifier!\nSpeeds up enemy health and damage scaling by a medium amount each wave.\nIncreases enemy buff durations by 40%% and setups add +2 skulls."
 		"it"	"Darai il massimo!!!\nComprende tutti gli effetti del modificatore Mercs secondari!!!\nAccresce la salute dei nemici e la scalata dei danni di una quantità media ad ogni ondata.\nAumenta la durata dei buff nemici del 40% e le configurazioni aggiungono +2 teschi."
-		"ko"	"당신은 온 힘을 다 하기로 결심합니다!\n2차 출격 난이도의 모든 효과가 포함되어 있습니다!\n매 웨이브마다, 적의 체력과 공격 피해량 증가량이 평균적으로 증가합니다.\n적들의 버프 지속 시간이 40%% 증가하며, 준비 시간때는 해골이 +2개 증가합니다."
+		"ko"	"당신은 온 힘을 다 하기로 결심합니다!\n2차 출격 난이도의 모든 효과가 포함되어 있습니다!\n매 웨이브마다, 적의 체력과 공격 피해량 증가량이 평균적으로 증가합니다.\n적들의 버프 지속 시간이 40％ 증가하며, 준비 시간때는 해골이 +2개 증가합니다."
 	}
 	"Soul-Squeezer"
 	{

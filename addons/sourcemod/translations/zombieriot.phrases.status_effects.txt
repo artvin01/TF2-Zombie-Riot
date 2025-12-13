@@ -2161,6 +2161,7 @@
 		"en"	"Boosts attack/reload speed & healrate by 5％"
 		"es"	"Aumenta la velocidad de ataque/recarga y curacion medica en un 5％."
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 5％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 5％ 증가합니다."
 	}
 	"7 Heavy Souls"
 	{
