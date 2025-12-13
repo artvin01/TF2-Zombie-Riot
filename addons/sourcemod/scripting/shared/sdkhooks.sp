@@ -729,11 +729,13 @@ public void OnPostThink(int client)
 		OnlyOneAtATime = true;
 		SetGlobalTransTarget(client);
 
+#if defined ZR
 		if(BetWar_ShowStatus(client))
 		{
 			Mana_Hud_Delay[client] = GameTime + 0.1;
 		}
 		else
+#endif	// ZR
 		{
 			char buffer[255];
 			float HudY = 0.95;
@@ -2951,10 +2953,12 @@ void NpcStuckZoneWarning(int client, float &damage, int TypeOfAbuse = 0)
 
 void UpdatePlayerFakeModel(int client)
 {
+#if defined ZR
 	if(TeutonType[client] != TEUTON_NONE)
 	{
 		return;
 	}
+#endif
 	int PlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(PlayerModel > 0)
 	{	

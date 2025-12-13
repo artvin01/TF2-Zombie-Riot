@@ -1270,8 +1270,14 @@ static float ASPDToBuff(float aspd)
 }
 
 static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBuff, float BuffOriginal, int BuffCheckerID, int BuffCheckerIDNPC, int FlagAttackspeedLogicInternal)
-{
-	if(CvarInfiniteCash.BoolValue && ((type == 3) || (type == 1 && BuffOriginal < 1.0)))
+{	
+	bool IsCheatMode = true;
+
+	
+#if defined ZR
+	IsCheatMode = CvarInfiniteCash.BoolValue
+#endif
+	if(IsCheatMode && ((type == 3) || (type == 1 && BuffOriginal < 1.0)))
 	{
 		// Note this will break if two buffs share the same slot but have
 		// a buffed attackspeed and the other a nerfed attackspeed
@@ -4504,6 +4510,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
 
 	
+#if defined ZR
 	strcopy(data.BuffName, sizeof(data.BuffName), "Vuntulum Bomb EMP");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "V");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -4517,8 +4524,8 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= VintulumBombHud_Func;
-	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
-	
+	StatusEffect_AddGlobal(data);
+#endif
 	data.HudDisplay_Func			= INVALID_FUNCTION;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Vuntulum Bomb EMP Death");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "DEAD");
@@ -4532,7 +4539,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.ElementalLogic				= true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
+	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Hand of Spark");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "HS");
@@ -4547,7 +4554,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= HandOfSparkHud_Func;
-	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
+	StatusEffect_AddGlobal(data);
 }
 
 void HandOfSparkHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
@@ -4555,13 +4562,15 @@ void HandOfSparkHud_Func(int attacker, int victim, StatusEffect Apply_MasterStat
 	int owner = GetEntPropEnt(victim, Prop_Data, "m_hOwnerEntity");
 	if(owner <= 0)
 		return;
+#if defined ZR
 	float TimeDisplay = GetGameTime() - Hand2HunterLastTime_Return(owner);
 	if(TimeDisplay >= 25.0)
 	{
 		Format(HudToDisplay, SizeOfChar, "[HS]");
 		return;
 	}
-	Format(HudToDisplay, SizeOfChar, "[HS %.0f％]", TimeDisplay * 4.0);
+	Format(HudToDisplay, SizeOfChar, "[HS %.0f％]", TimeDisplay * 4.0)
+#endif
 }
 
 stock bool NpcStats_KazimierzDodge(int victim)
