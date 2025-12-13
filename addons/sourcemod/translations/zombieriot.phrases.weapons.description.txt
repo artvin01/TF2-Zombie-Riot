@@ -5241,7 +5241,7 @@
 	}
 	"Purging Desc"
 	{
-		"en"	"Become the Ziberian greatest invention... A monster.\n-Gain 2 weapons, Shotgun and Rampager minigun\n-Press M2 To easy switch between them\n-Charge energy on hit, used for later paps\n-Gain 20% more energy from hitting enemies up close."
+		"en"	"Become the Ziberian greatest invention... A monster.\n-Gain 2 weapons, Shotgun and Rampager minigun\n-Press M2 To easy switch between them\n-Charge energy on hit, used for later paps\n-Gain 40% more energy from hitting enemies up close."
     }
 	"Purging Pap N"
 	{
