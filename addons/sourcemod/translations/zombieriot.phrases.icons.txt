@@ -13,7 +13,7 @@
 		"fr" 		"Silvester et Waldch sont ici."
 		"chi"		"西尔韦斯特和瓦德奇到来。"
 		"it"		"Silvester e Waldch sono arrivati."
-		"ko" 		"실베스터와 월드치가 등장했습니다."
+		"ko" 		"실베스터와 왈츠가 등장했습니다."
 	}
 	"Zilius Arrived Arrived."
 	{
@@ -141,12 +141,12 @@
 	"SSB Spawn"
 	{
 		"en"		"SSB is here to wreak havoc!"
-		"ko"		"SSB가 여기 왔다! 이제 혼돈이 시작된다!"
+		"ko"		"슈프림 스푸크마스터 본즈가 이곳에 대혼란을 불러오리라!"
 	}
 	"SSB Spawn Finale"
 	{
 		"en"		"SSB is here to- wait, why is he in a chair?"
-		"ko"		"SSB가 왔다—잠깐, 왜 의자에 앉아 있는 거야?"
+		"ko"		"슈프림 스푸크마스터 본즈가... 잠깐, 쟤 왜 의자에 앉아 있는 거죠?"
 	}
 	"You have alerted the horde..."
 	{
@@ -517,7 +517,7 @@
 		"fr" 		"Une imitation méchanique de Waldch."
 		"chi"		"一台假冒Waldch的机器。"
 		"it"		"Una macchina che cerca di imitare Waldch."
-		"ko" 		"월드치를 복제하려는 기계입니다."
+		"ko" 		"왈츠를 복제하려는 기계입니다."
 	}
 	"Machina Waldch 2"
 	{
@@ -606,14 +606,17 @@
 	"Dr Dam Deliver Spawn 1"
 	{
 		"en"		"Oh wow! How nice, a gift!"
+		"ko"		"와우, 선물이로군! 정말 쩔어!"
 	}
 	"Dr Dam Deliver Spawn 2"
 	{
 		"en"		"Messing with luck has its downsides."
+		"ko"		"운에 맡긴다고? 단점 뿐이지."
 	}
 	"Dr Dam Deliver Spawn 3"
 	{
 		"en"		"Well Dr Dam, ill be dammed!"
+		"ko"		"이런, 된장 박사. 정말 된장 쳐먹을 상황이로군!"
 	}
 	"Zmain spawn Text 1"
 	{
@@ -655,7 +658,7 @@
 	{
 		"en"		"Hope you're not the talky type."
 		"it"		"Spero che tu non sia un tipo loquace."
-		"ko"		"수다스러운 타입이 아니길 바라.."
+		"ko"		"네가 수다스러운 타입이 아니길 바래야겠군."
 	}
 	"Mikusch Spawn 2"
 	{
