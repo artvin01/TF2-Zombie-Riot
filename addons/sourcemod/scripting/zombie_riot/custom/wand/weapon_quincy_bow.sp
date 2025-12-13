@@ -9,7 +9,7 @@ static float fl_Quincy_Charge_Multi[MAXPLAYERS + 1];
 
 #define QUINCY_BOW_HYPER_BARRAGE_DRAIN 10.0		//how much charge is drained per shot
 #define QUINCY_BOW_HYPER_BARRAGE_MINIMUM 50.0	//what % of charge does the battery need to start firing
-#define QUINCY_BOW_MAX_HYPER_BARRAGE 5			//how many maximum individual timers/origin points are shot, kinda like how many of them can be fired a second, this is the max amt
+#define QUINCY_BOW_MAX_HYPER_BARRAGE 6			//how many maximum individual timers/origin points are shot, kinda like how many of them can be fired a second, this is the max amt
 #define QUINCY_BOW_MULTI_SHOT_MINIMUM	50.0	//yada yada
 
 #define QUINCY_BOW_ARROW_TOUCH_SOUND "friends/friend_online.wav"
