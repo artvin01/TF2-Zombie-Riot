@@ -4389,14 +4389,14 @@
 	}
 	"Rusty Rifle Desc"
 	{
-		"en"	"A rusty old rifle. Seems like the scope has been damaged beyond repair...\nThe rest of the gun works fine enough, though.\n-Weapon is a close ranged sniper rifle with high damage."
+		"en"	"Tthe scope has been damaged beyond repair...\nThe rest of the gun works fine enough, though.\n-Weapon is a close ranged sniper rifle with high damage."
 		"chi"	"一把生锈的长枪。它的瞄准镜破烂不堪…\n…枪倒是还能用。"
 		"it"	"Un vecchio fucile arrugginito. Sembra che il mirino sia danneggiato in modo irreparabile...\nIl resto dell'arma funziona abbastanza bene, però."
 		"ko"	"녹슬고 오래된 소총. 아무래도 조준경은 수리가 힘들것 같습니다.\n그나마 나머지 부분은 일반적인 총처럼 작동하는군요."
 	}
 	"Rusty Rifle PaP 1"
 	{
-		"en"	"Now restored to its former glory, this old gun encourages the user to take bold actions.\n-Damage is increased\n-falloff and reload time are decreased.\n-M2 - BIG SHOT: Load a powerful penetrating shot which increases in damage for every zombie it headshots."
+		"en"	"Now restored to its former glory.\n-Damage is increased\n-falloff and reload time are decreased.\n-M2 - BIG SHOT: Load a powerful penetrating shot which increases in damage for every zombie it headshots."
 		"chi"	"回到了昔日的辉煌，用这把枪就得浪一点。\n伤害增高，减少装弹时间以及距离衰减。\n[M2]一发入魂：一发高伤害的穿透弹。击中的头越多伤害越高。"
 		"it"	"Ora riportata al suo antico splendore, questa vecchia pistola incoraggia l'utente a compiere azioni audaci.\nIl danno è aumentato, mentre la caduta e il tempo di ricarica sono diminuiti.\nM2 - BIG SHOT: carica un potente colpo penetrante che aumenta il danno per ogni zombie colpito alla testa."
 		"ko"	"피해량과 재장전 속도가 증가하고, 거리 비례 피해량 감소량이 감소.\n우클릭(M2) - 빅 샷: 적을 헤드샷할 때마다 피해량이 증가하는, 강력하고 관통력이 높은 탄환을 장전."

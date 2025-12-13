@@ -4924,6 +4924,10 @@
 		"it"		"Il proprietario non possiede più questo kit! Autodistruzione!!!"
 		"ko"		"소유자가 더 이상 이것과 관련된 키트를 소유하고 있지 않습니다! 이 구조물을 자폭시킵니다!"
 	}
+	"Press again to confirm selling."
+	{
+		"en"		"Press again to confirm selling."
+	}
 	"Weapon No Effect Tinker"
 	{
 		"en"		"This doesn't seem to effect this weapon!"
@@ -4969,7 +4973,7 @@
 	}
 	"Weapon Enhancement"
 	{
-		"en"	"Weapon Enhancement"
+		"en"	"Enhancement"
 		"it"	"Visualizza gli aggiornamenti PAP"
 		"ko"	"팩펀 개선 효과 보기"
 	}

@@ -1258,7 +1258,7 @@ bool Status_Effects_GrantAttackspeedBonus(int entity, bool HasBuff, float BuffAm
 
 static float BuffToASPD(float buff)
 {
-	return 1.0 - (1.0 / BuffOriginal);
+	return 1.0 - (1.0 / buff);
 }
 
 static float ASPDToBuff(float aspd)
@@ -1271,7 +1271,7 @@ static float ASPDToBuff(float aspd)
 
 static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBuff, float BuffOriginal, int BuffCheckerID, int BuffCheckerIDNPC, int FlagAttackspeedLogicInternal)
 {
-	if((type == 3) || (type == 1 && BuffOriginal < 1.0))
+	if(CvarInfiniteCash.BoolValue && ((type == 3) || (type == 1 && BuffOriginal < 1.0)))
 	{
 		// Note this will break if two buffs share the same slot but have
 		// a buffed attackspeed and the other a nerfed attackspeed

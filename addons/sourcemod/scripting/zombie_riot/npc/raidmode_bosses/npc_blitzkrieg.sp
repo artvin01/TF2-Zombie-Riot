@@ -2500,6 +2500,9 @@ static void FireBlitzRocket(Blitzkrieg npc, float vecTarget[3], float rocket_dam
 	Projectile.visible = true;
 	int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
 	Projectile.Size = model_scale;
+	char Particle[50];
+	Particle = "raygun_projectile_red";
+	Projectile.Apply_Particle(Particle);
 	Projectile.Apply_Model("models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl");
 
 	fl_AbilityOrAttack[Proj][4] = GetGameTime();
