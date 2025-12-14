@@ -1287,6 +1287,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	{
 		return -1;
 	}
+	if(!IsPlayerAlive(client))
+		return;
 
 	int slot = -1;
 	int entity = -1;

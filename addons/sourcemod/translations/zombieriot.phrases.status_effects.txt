@@ -2121,9 +2121,7 @@
 	}
 	"7 Heavy Souls Desc"
 	{
-		"en"	"Increases damage by 50％\nIncreases resistance by 50％\nIncreases attack speed by 100％"
-		"it"	"Aumenta i danni del 50％\nAnche la resistenza del 50％\nAumenta la velocità d'attacco del 100％"
-		"ko"	"공격 피해량이 50％ 증가합니다.\n피해 저항력이 50％ 증가합니다.\n공격 속도가 100％ 증가합니다."
+		"en"	"Increases damage by 75％\nIncreases resistance by 75％\nIncreases attack speed by 400％"
 	}
 	"Nightmare Terror"
 	{
