@@ -302,4 +302,5 @@ void RedHeavy_NPCDeath(int entity)
 	RedHeavy npc = view_as<RedHeavy>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
+		
 }
