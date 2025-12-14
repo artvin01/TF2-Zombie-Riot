@@ -54,7 +54,7 @@
 	"Specter's Aura Desc"
 	{
 		"en"	"Slows NPC'S by 60％"
-		"it"	"Rallenta gli NPC del 60%"
+		"it"	"Rallenta gli NPC del 60％"
 		"ko"	"NPC의 이동 속도를 60％ 감소시킵니다."
 	}
 	"Electric Impairability"
@@ -151,7 +151,7 @@
 	{
 		"en"	"Increases Damage Taken by 35％\nSlows NPC'S by 35％\nLowers Damage Delt by 25％"
 		"it"	"Aumenta i danni subiti del 35％\nRallenta gli NPC del 35％\nRiduce i danni subiti del 25％"
-		"ko"	"받는 피해 35% 증가\nNPC의 속도 35% 감소\n주는 피해 25% 감소"
+		"ko"	"받는 피해 35％ 증가\nNPC의 속도 35％ 감소\n주는 피해 25％ 감소"
 	}
 	"Golden Curse"
 	{
@@ -203,9 +203,9 @@
 	}
 	"Teslar Mule Desc"
 	{
-		"en"	"Increases Damage Taken by 30%\nSlows NPC'S by 80％, which lowers over time up untill 0％"
-		"it"	"Aumenta i danni subiti del 30% e rallenta i gli NPC di 80％, che si riduce nel tempo fino a 0％"
-		"ko"	"받는 피해 30% 증가\nNPC의 속도를 80% 감소시키며\n이 효과는 시간이 지나면서 0%까지 점차 감소함"
+		"en"	"Increases Damage Taken by 30％\nSlows NPC'S by 80％, which lowers over time up untill 0％"
+		"it"	"Aumenta i danni subiti del 30％ e rallenta i gli NPC di 80％, che si riduce nel tempo fino a 0％"
+		"ko"	"받는 피해 30％ 증가\nNPC의 속도를 80％ 감소시키며\n이 효과는 시간이 지나면서 0％까지 점차 감소함"
 	}
 	"Cripple"
 	{
@@ -396,7 +396,7 @@
 	"Maimed Desc"
 	{
 		"en"	"Slows NPC'S Movementspeed by 50％"
-		"it"	"Rallenta la velocità di movimento degli NPC del 50%"
+		"it"	"Rallenta la velocità di movimento degli NPC del 50％"
 		"ko"	"NPC의 이동 속도가 50％ 감소합니다."
 	}
 	"Prosperity I"
@@ -458,7 +458,7 @@
 	{
 		"en"	"Slows attack/reload speed & healrate by 10％.\nRaidbosses that are affected lose/weaken some ability, check Encyclopedia."
 		"it"	"Rallenta la velocità di attacco/ricarica e la velocità di guarigione del 10％.\nRaidboss colpiti perdono/indeboliscono alcune abilità, controllare l'Enciclopedia."
-		"ko"	"공격 속도/재장전 속도 및 회복률을 10% 감소시킵니다.\n효과를 받는 레이드 보스는 일부 능력을 상실하거나 약화시키며\n자세한 내용은 백과사전을 확인하십시오."																																																											   
+		"ko"	"공격 속도/재장전 속도 및 회복률을 10％ 감소시킵니다.\n효과를 받는 레이드 보스는 일부 능력을 상실하거나 약화시키며\n자세한 내용은 백과사전을 확인하십시오."																																																											   
 	}
 	"Hardened Aura"
 	{
@@ -549,8 +549,8 @@
 	}
 	"Shook Head Desc"
 	{
-		"en"	"Reduces all stuns by 50%"
-		"it"	"Riduce del 50% tutti gli stordimenti"
+		"en"	"Reduces all stuns by 50％"
+		"it"	"Riduce del 50％ tutti gli stordimenti"
 		"ko"	"모든 기절 효과의 지속 시간이 50％ 감소합니다."
 	}
 	"Solid Stance"
@@ -665,7 +665,7 @@
 	{
 		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 5％\nLess damage taken by 15％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 20％"
 		"it"	"Guarisce in base a ％ di HP massimi.\nAumenta la velocità del gli NPC di 5％Minuisce i danni subiti di 15％Essendo un giocatore, ogni giocatore riduce questo valore di 5％ in modo piatto.\nAumenta i danni inflitti di 20％"
-		"ko"	"최대 비율에 비례하여 회복하며\nNPC의 속도를 5% 증가시키고\n주는 피해가 20% 증가합니다\n받는 피해는 15% 감소하지만\n파티 내 플레이어 한 명당 이 감소 효과는 5%씩 고정적으로 줄어듭니다."
+		"ko"	"최대 비율에 비례하여 회복하며\nNPC의 속도를 5％ 증가시키고\n주는 피해가 20％ 증가합니다\n받는 피해는 15％ 감소하지만\n파티 내 플레이어 한 명당 이 감소 효과는 5％씩 고정적으로 줄어듭니다."
 	}
 	"Void Strength II"
 	{
@@ -677,7 +677,7 @@
 	{
 		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 15％\nLess damage taken by 20％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 30％"
 		"it"	"Guarisce in base a ％ di HP massimi.\nAumenta la velocità del gli NPC di 15％Minuisce i danni subiti di 20\nEssendo un giocatore, ogni giocatore riduce questo valore di 5％ in modo piatto\nAumenta i danni inflitti di 30％"
-		"ko"	"최대 체력 비율에 비례하여 회복하며\nNPC의 속도를 15% 증가시키고\n주는 피해가 30% 증가합니다\n받는 피해는 20% 감소하지만\n파티 내 플레이어 한 명당 이 감소 효과는 5%씩 고정적으로 줄어듭니다.
+		"ko"	"최대 체력 비율에 비례하여 회복하며\nNPC의 속도를 15％ 증가시키고\n주는 피해가 30％ 증가합니다\n받는 피해는 20％ 감소하지만\n파티 내 플레이어 한 명당 이 감소 효과는 5％씩 고정적으로 줄어듭니다.
 	}
 	"MERLT0N-BUFF"
 	{
@@ -1125,7 +1125,7 @@
 	{
 		"en"	"Decreased attack/reload speed & healrate by a 50％.\nDecrased Movementspeed of players and npcs 50％."
 		"it"	"Riduzione della velocità di attacco/ricarica e della velocità di guarigione di 50％.\nRiduzione della velocità di movimento di giocatori e npc di 50％."
-		"ko"	"공격 속도/재장전 속도 및 회복률이 50% 감소하며\n플레이어와 NPC의 이동 속도도 50% 감소합니다."
+		"ko"	"공격 속도/재장전 속도 및 회복률이 50％ 감소하며\n플레이어와 NPC의 이동 속도도 50％ 감소합니다."
 	}
 	"Unstable Umbral Rift"
 	{
@@ -1316,7 +1316,7 @@
 	"Nightmareish Sawing Desc"
 	{
 		"en"	"Your glaives cause enemeis to lose gibs on hit.\nBoosts damage of said glaives by 35％"
-		"ko"	"당신의 글레이브가 적중 시 적에게서 파편(gibs)이 떨어져 나가게 합니다\n또한, 해당 글레이브의 피해량을 35% 증가시킵니다."
+		"ko"	"당신의 글레이브가 적중 시 적에게서 파편(gibs)이 떨어져 나가게 합니다\n또한, 해당 글레이브의 피해량을 35％ 증가시킵니다."
 	}
 	"Crafted Potion"
 	{
@@ -1352,7 +1352,7 @@
 	{
 		"en"	"Increases attack/reload speed & healrate by 100％\n{crimson}Decreases damage dealt by 40％"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 100％\n{crimson}Diminuisce i danni inflitti del 40％"
-		"ko"	"공격 속도/재장전 속도 및 회복률을 100% 증가시키지만\n주는 피해는 40% 감소합니다."
+		"ko"	"공격 속도/재장전 속도 및 회복률을 100％ 증가시키지만\n주는 피해는 40％ 감소합니다."
 	}
 	"Tonic Affliction Hide"
 	{
@@ -1669,7 +1669,7 @@
 	{
 		"en"	"Deals True Damage if allies are affected, otherwise ranged.\nHeal 25％ less while on fire, when applying fire again (npc only), tick again for 50％ damage.\n{green}Enemies on fire, give 10％ more hp on kill and gibs."
 		"it"	"Infligge danni veri se gli alleati sono colpiti, altrimenti a distanza.\nGuarisce 25％ in meno mentre è in fiamme, quando applica di nuovo il fuoco (solo per gli npc), spunta di nuovo per 50％ danni.\n{green}I nemici in fiamme, danno 10％ hp in più su uccisioni e colpi."																																																																																			
-		"ko"	"아군이 효과를 받으면 고정 피해(트루 대미지)를 입히고\n아니면 원거리 피해를 입힙니다\n불타는 중에는 회복량이 25% 감소하며\nNPC에게 불을 다시 붙이면 50% 피해로 한 번 더 작동합니다\n또한, 불타는 적을 처치하거나 폭발시키면 10%의 추가 HP를 획득합니다."
+		"ko"	"아군이 효과를 받으면 고정 피해(트루 대미지)를 입히고\n아니면 원거리 피해를 입힙니다\n불타는 중에는 회복량이 25％ 감소하며\nNPC에게 불을 다시 붙이면 50％ 피해로 한 번 더 작동합니다\n또한, 불타는 적을 처치하거나 폭발시키면 10％의 추가 HP를 획득합니다."
 	}
 	"Zealot's Random Drinks"
 	{
@@ -1770,7 +1770,7 @@
 	"Headache Incuding Dereliction Desc"
 	{
 		"en"	"Increases Damage Taken by 30％"
-		"it"	"Aumenta i danni subiti del 30%"
+		"it"	"Aumenta i danni subiti del 30％"
 		"ko"	"받는 피해량이 30％ 증가합니다."
 	}
 	"Shocking Dereliction"
@@ -1879,7 +1879,7 @@
 	{
 		"en"	"Increases damage dealt by 25％, Decreases damage taken by 15％."
 		"it"	"Aumenta i danni inflitti di 25％, diminuisce i danni subiti di 15％."
-		"ko"	"주는 피해가 25% 증가하고, 받는 피해가 15% 감소합니다."
+		"ko"	"주는 피해가 25％ 증가하고, 받는 피해가 15％ 감소합니다."
 	}
 	"Anti-Waves"
 	{
@@ -1963,7 +1963,7 @@
 	{
 		"en" "(Only works on Bubble Wand)\nIncreases attackspeed by around 53％.\n{crimson}Multiplies damage dealt by x0.85."
 		"it"	"(Aumenta la velocità d'attacco di circa 53％.\n{crimson}Moltiplica i danni inflitti di x0,85."
-		"ko" "(버블 완드에만 적용)\n공격 속도가 약 53% 증가하지만\n주는 피해는 x0.85배로 감소합니다."
+		"ko" "(버블 완드에만 적용)\n공격 속도가 약 53％ 증가하지만\n주는 피해는 x0.85배로 감소합니다."
 	}
 	"Trigger Finger"
 	{
@@ -2097,7 +2097,7 @@
 		"en"	"Increases damage by 40％\nBoosts attack/reload speed & healrate by 33％ and mana is continuously restored.\n-During raids, uber duration is cut by 35％"
 		"es"	"Aumenta el daño hecho en un 40％.\nAumenta la velocidad de ataque/recarga y curacion medica en un 33％.\nOtorga regeneracion continua de mana."
 		"it"	"Aumenta i danni del 40％ e aumenta la velocità di attacco/ricarica e la velocità di guarigione del 33％ \nil mana viene ripristinato continuamente."
-		"ko"	"피해량이 40% 증가하고\n공격 속도/재장전 속도 및 회복률이 33% 증가하며 마나가 지속적으로 회복됩니다\n다만, 레이드 중에는 우버 효과의 지속 시간이 35% 감소합니다."
+		"ko"	"피해량이 40％ 증가하고\n공격 속도/재장전 속도 및 회복률이 33％ 증가하며 마나가 지속적으로 회복됩니다\n다만, 레이드 중에는 우버 효과의 지속 시간이 35％ 감소합니다."
 	}
 	"Weapon Clocking"
 	{
@@ -2147,7 +2147,7 @@
 	{
 		"en" 	"+30％ dmg dealt, resist and attackspeed.\nAbility cooldowns are halved, gain extra regen below 25％ HP.\nHEAVILY Reduces Plasmic Elemental buildup penalty + cooldown.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
 		"it"	"+30％ danni inflitti, resistenze e velocità d'attacco.\nIl cooldown delle abilità è dimezzato, guadagna rigenerazione extra al di sotto di 25％ HP.\nMOLTO riduce la penalità di accumulo dell'elemento plasmico + il cooldown.\n{darkviolet}Tuttavia, il plasma si diffonde lentamente nel tuo corpo..."
-		"ko" 	"주는 피해, 저항력, 공격 속도가 30% 증가하고\n능력 쿨타임이 절반으로 줄며\nHP가 25% 미만일 때 추가 재생 효과를 얻습니다\n플라즈마 원소 누적 페널티와 쿨타임 또한 대폭 감소합니다.\n{darkviolet}하지만, 시간이 지남에 따라 플라즈마가 서서히 당신의 몸을 집어삼킵니다..."
+		"ko" 	"주는 피해, 저항력, 공격 속도가 30％ 증가하고\n능력 쿨타임이 절반으로 줄며\nHP가 25％ 미만일 때 추가 재생 효과를 얻습니다\n플라즈마 원소 누적 페널티와 쿨타임 또한 대폭 감소합니다.\n{darkviolet}하지만, 시간이 지남에 따라 플라즈마가 서서히 당신의 몸을 집어삼킵니다..."
 	}
 	"Plasmatized Lethalitation"
 	{
@@ -2191,7 +2191,7 @@
 	{
 		"en" 	"Increases damage by +15％ and resistance by +10％ while inside the Plasmatized Bubble's radius."
 		"it"	"Aumenta i danni di +15％ e la resistenza di +10％ quando si è nel raggio della Bolla Plasmata."
-		"ko"	"플라즈마화된 버블의 반경 내에 있는 동안 피해량이 15% 증가하고 저항력이 10% 증가합니다."
+		"ko"	"플라즈마화된 버블의 반경 내에 있는 동안 피해량이 15％ 증가하고 저항력이 10％ 증가합니다."
 	}
 	"Plasmic Layering II"
 	{
@@ -2203,7 +2203,7 @@
 	{
 		"en" 	"Increases damage by +25％ and resistance by +15％ while inside the Plasmatized Bubble's radius."
 		"it"	"Aumenta i danni di +25％ e la resistenza di +15％ quando si è nel raggio della Bolla Plasmata."
-		"ko"	"플라즈마화된 버블의 반경 내에 있는 동안 피해량이 25% 증가하고 저항력이 15% 증가합니다."
+		"ko"	"플라즈마화된 버블의 반경 내에 있는 동안 피해량이 25％ 증가하고 저항력이 15％ 증가합니다."
 	}
 	"Ziberian Flagship Weaponry"
 	{
@@ -2256,7 +2256,7 @@
 	"Empowering Domain Desc"
 	{
 		"en"	"Increases damage +15％\nBoosts attackspeed by +25％\nReduces Ark's Parry cooldown by 60％.\nResets Ark parry cooldown upon activation to 1 Sec.\n{crimson}However, you take 20％ more damage..."
-		"it"	"Aumenta i danni del +15%\nAumenta la velocità d'attacco del +25%\nRiduce il tempo di ricarica della parata di Ark del 60%.\nAll'attivazione, ripristina il tempo di ricarica della parata di Ark a 1 secondo.\n{crimson}Tuttavia, subisci il 20% di danni in più..."
+		"it"	"Aumenta i danni del +15％\nAumenta la velocità d'attacco del +25％\nRiduce il tempo di ricarica della parata di Ark del 60％.\nAll'attivazione, ripristina il tempo di ricarica della parata di Ark a 1 secondo.\n{crimson}Tuttavia, subisci il 20％ di danni in più..."
 		"ko"	"공격 피해량이 +15％ 증가합니다.\n공격 속도가 +25％ 증가합니다.\n파편화된 방주의 패링 쿨타임이 60％ 감소합니다.\n효과가 활성화되면, 파편화된 방주의 패링 쿨타임이 1 초로 감소합니다.\n{crimson}받는 피해량이 20％ 증가합니다."
 	}
 	"Purging Intention"
@@ -2300,7 +2300,7 @@
 	{
 		"en"	"+30％ damage dealt, healing done, and +20％ damage reduction"
 		"it"	"+30％ danni inflitti, guarigione effettuata e +20％ riduzione dei danni"
-		"ko"	"주는 피해, 치유량이 30% 증가하고, 저항값이 20% 증가합니다."
+		"ko"	"주는 피해, 치유량이 30％ 증가하고, 저항값이 20％ 증가합니다."
 	}
 	"Charging Raigeki"
 	{
@@ -2322,7 +2322,7 @@
 	{
 		"en"	"Gain 25％ damage reduction, 25％ extra damage, 25％ attackspeed, 15％ speed bonus."
 		"it"	"Guadagna 25％ di riduzione del danno, 25％ di danno extra, 25％ di velocità d'attacco, 15％ di velocità."
-		"ko"	"피해 감소 25%, 추가 피해 25%, 공격 속도 25%, 이동 속도 보너스 15%를 얻습니다."
+		"ko"	"피해 감소 25％, 추가 피해 25％, 공격 속도 25％, 이동 속도 보너스 15％를 얻습니다."
 	}
 	"Corrupted Godly Power"
 	{
@@ -2334,7 +2334,7 @@
 	{
 		"en"	"Gain 15％ damage reduction, 10％ extra damage, 5％ attackspeed."
 		"it"	"Guadagna 15％ di riduzione del danno, 10％ di danno extra, 5％ di velocità d'attacco."
-		"ko"	"피해 감소 15%, 추가 피해 10%, 공격 속도 5%를 얻습니다."
+		"ko"	"피해 감소 15％, 추가 피해 10％, 공격 속도 5％를 얻습니다."
 	}
 	"Paralysis"
 	{
@@ -2346,7 +2346,7 @@
 	{
 		"en"	"-50％ attack speed and movement speed"
 		"it"	"-50％ velocità di attacco e velocità di movimento"
-		"ko"	"공격 속도와 이동 속도가 50% 감소합니다."
+		"ko"	"공격 속도와 이동 속도가 50％ 감소합니다."
 	}
 	"Hypodermic Toxin Injection"
 	{
@@ -2358,7 +2358,7 @@
 	{
 		"en"	"Increases damage taken by 20％"
 		"it"	"Aumenta i danni subiti di 20％"
-		"ko"	"받는 피해가 20% 증가합니다."
+		"ko"	"받는 피해가 20％ 증가합니다."
 	}
 	"Cellular Breakdown"
 	{
@@ -2370,7 +2370,7 @@
 	{
 		"en"	"Increases damage taken by 20％.\nDecreases attack speed by 20％."
 		"it"	"Aumenta i danni subiti di 20％.\nRiduce la velocità d'attacco di 20％."
-		"ko"	"받는 피해가 20% 증가하고\n공격 속도가 20% 감소합니다."
+		"ko"	"받는 피해가 20％ 증가하고\n공격 속도가 20％ 감소합니다."
 	}
 	"Molecular Collapse"
 	{
@@ -2382,7 +2382,7 @@
 	{
 		"en"	"Increases damage taken by 20％.\nDecreases attack speed by 20％.\nDecreases damage by 20％."
 		"it"	"Aumenta i danni subiti di 20％.\nDiminuisce la velocità d'attacco di 20％.\nDiminuisce i danni di 20％."
-		"ko"	"받는 피해가 20% 증가하고\n공격 속도가 20% 감소하며\n주는 피해가 20% 감소합니다."
+		"ko"	"받는 피해가 20％ 증가하고\n공격 속도가 20％ 감소하며\n주는 피해가 20％ 감소합니다."
 	}
 	"Quantum Entanglement"
 	{
@@ -2394,7 +2394,7 @@
 	{
 		"en"	"Reduces damage taken by 25％.\nIncreases attack speed by 25％.\nIncreases damage by 25％.\nIncreases NPC movement speed by 25％."
 		"it"	"Riduce i danni subiti del 25％.\nAumenta la velocità di attacco del 25％.\nAumenta i danni del 25％.\nAumenta la velocità di movimento dei gli NPC del 25％."
-		"ko"	"받는 피해가 25% 감소합니다\n공격 속도가 25% 증가하고\n주는 피해가 25% 증가하며\nNPC의 이동 속도가 25% 증가합니다."
+		"ko"	"받는 피해가 25％ 감소합니다\n공격 속도가 25％ 증가하고\n주는 피해가 25％ 증가하며\nNPC의 이동 속도가 25％ 증가합니다."
 	}
 	"Mind Warp"
 	{
@@ -2406,7 +2406,7 @@
 	{
 		"en"	"Reduces attack/reload/movement speed and healing rate, but increases timescale by 50％.\n{default}Affects everyone and everything."
 		"it"	"Riduce la velocità di attacco/ricarica/movimento e la velocità di guarigione, ma aumenta i tempi del 50％.\n{default}Affligge tutti e tutto."
-		"ko"	"공격 속도/재장전 속도/이동 속도 및 회복률이 감소하지만\n타임 스케일이 50% 증가합니다.\n{default}이는 모두와 모든 것에 영향을 미칩니다."
+		"ko"	"공격 속도/재장전 속도/이동 속도 및 회복률이 감소하지만\n타임 스케일이 50％ 증가합니다.\n{default}이는 모두와 모든 것에 영향을 미칩니다."
 	}
 	"Envenomed"
 	{
@@ -2430,7 +2430,7 @@
 	{
 		"en"	"Reduces damage taken by 50％.\nIncreases NPC movement speed by 50％."
 		"it"	"Riduce i danni subiti del 50％. \nAumenta la velocità di movimento dei gli NPC del 50％."
-		"ko"	"받는 피해가 50% 감소합니다.\nNPC의 이동 속도가 50% 증가합니다."
+		"ko"	"받는 피해가 50％ 감소합니다.\nNPC의 이동 속도가 50％ 증가합니다."
 	}
 	"Kinetic Surge"
 	{
@@ -2442,7 +2442,7 @@
 	{
 		"en"	"Increases everyone's damage by 100％."
 		"it"	"Aumenta i danni di tutti di 100％."
-		"ko"	"모두의 피해량이 100% 증가합니다."
+		"ko"	"모두의 피해량이 100％ 증가합니다."
 	}
 	"Umbral Grace"
 	{
@@ -2454,7 +2454,7 @@
 	{
 		"en"	"Gain 25％ damage reduction, 15％ extra damage.\nYou slowly cure of elemental damage.\n{crimson}but lose 15％ attackspeed/Healrate."
 		"it"	"Ottieni una riduzione del danno di 25％, 15％ danni extra.\nTi curi lentamente dai danni elementali.\nma perdi 15％ velocità di attacco/guarigione."
-		"ko"	"피해 감소 25%, 피해량 15% 증가를 얻고\n원소 피해로부터 서서히 회복됩니다.\n{crimson}하지만 공격 속도/회복률이 15% 감소합니다."
+		"ko"	"피해 감소 25％, 피해량 15％ 증가를 얻고\n원소 피해로부터 서서히 회복됩니다.\n{crimson}하지만 공격 속도/회복률이 15％ 감소합니다."
 	}
 	"Void Afflicted"
 	{
@@ -2466,7 +2466,7 @@
 	{
 		"en"	"You become a void afflicted creature.\nYou act as if you were a void enemy.\nYou afflict 300％ of your end damage as void elemental damage.\nReceive 25％ less damage."
 		"it"	"Diventi una creatura afflitta dal vuoto.\nAgisci come se fossi un nemico del vuoto.\nAffliggi 300％ del tuo danno finale come danno elementale del vuoto.\nRicevi 25％ di danni in meno."
-		"ko"	"당신은 공허에 감염된 생물체가 되어 공허 속성 적군처럼 행동합니다.\n당신은 최종 피해량의 300%를 공허 원소 피해로 입히고\n받는 피해가 25% 감소합니다."
+		"ko"	"당신은 공허에 감염된 생물체가 되어 공허 속성 적군처럼 행동합니다.\n당신은 최종 피해량의 300％를 공허 원소 피해로 입히고\n받는 피해가 25％ 감소합니다."
 	}
 	"Brightening Light"
 	{
@@ -2478,7 +2478,7 @@
 	{
 		"en"	"Gain 35％ attack/reload speed & healrate."
 		"it"	"Guadagna 35％ velocità di attacco/ricarica e velocità di guarigione."
-		"ko"	"공격 속도/재장전 속도 및 회복률이 35% 증가합니다."
+		"ko"	"공격 속도/재장전 속도 및 회복률이 35％ 증가합니다."
 	}
 	"Revival Stim"
 	{
@@ -2490,7 +2490,7 @@
 	{
 		"en"	"Gain a 15％ Movementspeed Bonus."
 		"it"	"Guadagna un bonus di 15％ alla velocità di movimento."
-		"ko"	"이동 속도 보너스 15%를 얻습니다."
+		"ko"	"이동 속도 보너스 15％를 얻습니다."
 	}
 
 	"Brightening Lightness"
@@ -2515,7 +2515,7 @@
 	{
 		"en"	"Must be what Whiteflower used for his soldiers.\n{green}Upon being revived, gain a 15％ Movementspeed Bonus, and phase through enemies for 5 seconds."
 		"it"	"Deve essere quello che Whiteflower usava per i suoi soldati.\n{green}Una volta rianimato, guadagna un bonus di 15％ alla velocità di movimento e passa attraverso i nemici per 5 secondi."
-		"ko"	"배풍등이 그의 병사들에게 사용했던 것임이 틀림없습니다.\n{green}부활 시, 이동 속도 보너스 15%를 얻고 5초 동안 적을 통과합니다."
+		"ko"	"배풍등이 그의 병사들에게 사용했던 것임이 틀림없습니다.\n{green}부활 시, 이동 속도 보너스 15％를 얻고 5초 동안 적을 통과합니다."
 	}
 	"Kolum's View"
 	{
@@ -2539,6 +2539,6 @@
 	{
 		"en"	"Increases attack/reload speed, healing rate and reduces cooldowns by 40％. Increases movement speed by 25％.\n{crimson}Enemies gain Dimensional Turbulence instead."
 		"it"	"Aumenta la velocità di attacco/ricarica, la velocità di guarigione e riduce i cooldown del 40％.\nAumenta la velocità di movimento del 25％.\n{crimson}I nemici ottengono invece Turbolenza dimensionale."
-		"ko"	"공격 속도/재장전 속도, 회복률이 40% 증가하고 쿨타임이 40% 감소하며\n이동 속도가 25% 증가합니다.\n{crimson}대신 적들은 차원적 격변 효과를 얻습니다."
+		"ko"	"공격 속도/재장전 속도, 회복률이 40％ 증가하고 쿨타임이 40％ 감소하며\n이동 속도가 25％ 증가합니다.\n{crimson}대신 적들은 차원적 격변 효과를 얻습니다."
 	}
 }

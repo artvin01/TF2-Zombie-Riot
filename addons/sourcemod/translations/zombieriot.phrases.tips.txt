@@ -118,7 +118,7 @@
 	{
 		"en"	"Sometimes its better to buy upgrades if they are on sale instead of pack a punching your weapon!"
 		"it"	"A volte è meglio acquistare i potenziamenti se sono in vendita, invece di prendere a pugni la tua arma!"
-		"ko"	"특정 개선이 세일 중이라면, 팩 어 펀치 개선보다 그런 개선을 구입하는 것이 더 나을 때도 있습니다!"
+		"ko"	"특정 개선이 세일 중이라면, 무기 강화보다 세일 중인 개선을 구입하는 것이 더 나을 때도 있습니다!"
 	}
 	"Setup Chat Tip 21"
 	{
