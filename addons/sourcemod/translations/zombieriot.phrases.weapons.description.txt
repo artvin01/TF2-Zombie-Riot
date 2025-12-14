@@ -2306,7 +2306,7 @@
 	"Alchemist Potion Pap 3"
 	{
 		"en"	"-Increased Damage\n-Increased attackspeed\n-further papping gives debuffs."
-		"ko"	"피해량, 공격 속도 증가. 이후 팩펀 개선시 디버프를 부여합니다."
+		"ko"	"피해량, 공격 속도 증가. 이후 무기 강화시 디버프를 부여합니다."
 	}
 	"Alchemist Potion Pap 4"
 	{
@@ -3070,7 +3070,7 @@
 	{
 		"en"	"Jackpot has upgraded the base abilities of the weapon, granting it most qualities of the next Pack-A-Punch upgrade.\nUnfortunately, you'll still need to spend money to unlock it's full potential."
 		"it"	"Jackpot ha potenziato le abilità di base dell'arma, garantendole la maggior parte delle qualità del prossimo potenziamento del Pack-A-Punch.\nPurtroppo, dovrete ancora spendere soldi per sbloccare tutto il suo potenziale."
-		"ko"	"잭팟이 무기의 기본 능력을 강화하여, 다음 팩펀 개선의 효과를 획득.\n단, 맛보기 형식으로 지급되므로, 개선을 해야함."
+		"ko"	"잭팟이 무기의 기본 능력을 강화하여, 다음 무기 강화 시의 효과를 획득.\n단, 맛보기 형식으로 지급되므로, 강화를 해야함."
 	}
 	"Flush Desc"
 	{
@@ -3084,7 +3084,7 @@
 	{
 		"en"	"Jackpot has upgraded the base abilities of the weapon, granting it most qualities of the next Pack-A-Punch upgrade.\nUnfortunately, you'll still need to spend money to unlock it's full potential."
 		"it"	"Jackpot ha potenziato le abilità di base dell'arma, garantendole la maggior parte delle qualità del prossimo potenziamento del Pack-A-Punch.\nPurtroppo, dovrete ancora spendere soldi per sbloccare tutto il suo potenziale."
-		"ko"	"잭팟이 무기의 기본 능력을 강화하여, 다음 팩펀 개선의 효과를 획득.\n단, 맛보기 형식으로 지급되므로, 개선을 해야함."
+		"ko"	"잭팟이 무기의 기본 능력을 강화하여, 다음 무기 강화 시의 효과를 획득.\n단, 맛보기 형식으로 지급되므로, 강화를 해야함."
 	}
 	"Straight Desc"
 	{
@@ -3098,7 +3098,7 @@
 	{
 		"en"	"Jackpot has upgraded the base abilities of the weapon, granting it most qualities of the next Pack-A-Punch upgrade.\nUnfortunately, you'll still need to spend money to unlock it's full potential."
 		"it"	"Jackpot ha potenziato le abilità di base dell'arma, garantendole la maggior parte delle qualità del prossimo potenziamento del Pack-A-Punch.\nPurtroppo, dovrete ancora spendere soldi per sbloccare tutto il suo potenziale."
-		"ko"	"잭팟이 무기의 기본 능력을 강화하여, 다음 팩펀 개선의 효과를 획득.\n단, 맛보기 형식으로 지급되므로, 개선을 해야함."
+		"ko"	"잭팟이 무기의 기본 능력을 강화하여, 다음 무기 강화 시의 효과를 획득.\n단, 맛보기 형식으로 지급되므로, 강화를 해야함."
 	}
 	"Royal Desc"
 	{
@@ -3484,7 +3484,7 @@
 		"fr"	"Vous donne un lance-roquettes rapide qui charge votra arme secondaire,\nune arme secondaire qui convoque un cannon à ION avec assez de charges,\net une arme corps-à-corps qui est plus puissant lorsque votre arme principale se recharge."
 		"chi"	"三个武器 - 高速火箭筒，离子炮，和一把装弹时加强的近战。"
 		"it"	"Hai 3 armi, un lanciarazzi che spara velocemente\nuna secondaria che spara uno ION se hai abbastanza carica, la ottieni colpendo gli npc con la primaria.\nUna da mischia che diventa più forte quando la primaria si sta ricaricando"
-		"ko"	"-공속이 매우 빠르고 수동 재장전형 로켓 발사기 주 무기.\n-주 무기에 남은 로켓에 따라 재장전 속도가 결정됨.\n팩펀 개선을 안할시 패턴이 아무 효과 없음.\n-피해를 주면 이온 충전을 얻고, 소모해서 이온 캐논을 발사하는 보조 무기\n-주 무기가 재장전 중일시 피해량, 광역 범위, 사거리가 증가하는 근접 무기"
+		"ko"	"-공속이 매우 빠르고 수동 재장전형 로켓 발사기 주 무기.\n-주 무기에 남은 로켓에 따라 재장전 속도가 결정됨.\n무기 강화를 안할시 패턴이 아무 효과 없음.\n-피해를 주면 이온 충전을 얻고, 소모해서 이온 캐논을 발사하는 보조 무기\n-주 무기가 재장전 중일시 피해량, 광역 범위, 사거리가 증가하는 근접 무기"
 	}
 	"Blitz Kit Generic Upgrade Pre"
 	{
@@ -4153,7 +4153,7 @@
 	{
 		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAllows the construction of the brewing stand.\nYour secondary gets an ability selection upon its first pap."
 		"it"	"Fornisce una chiave da costruttore, ma non permette di costruire barricate o sentinelle.\nPermette di costruire il chiosco della birra.\nIl tuo secondario ottiene una selezione di abilità alla sua prima carta."
-		"ko"	"센트리 건과 바리케이드를 건설할 수 없는 건축가의 렌치 획득.\n양조기를 건설 가능.\n당신의 보조 무기는 첫번째 팩펀 개선에서 능력 선택이 가능."
+		"ko"	"센트리 건과 바리케이드를 건설할 수 없는 건축가의 렌치 획득.\n양조기를 건설 가능.\n당신의 보조 무기는 첫번째 무기 강화에서 능력 선택이 가능."
 	}
 	"Merchant Pap -1 Desc"
 	{
@@ -5068,7 +5068,7 @@
 	{
 		"en" 	"Increases overall stats and attackspeed.\nUnlocks the Plasm-ubblinator secondary weapon.\nGrants small health regeneration which increases with paps."
 		"it"	"Aumenta le statistiche complessive e la velocità d'attacco.\nSblocca l'arma secondaria Plasm-ubblinator.\nConferisce una piccola rigenerazione della salute che aumenta con i paps."
-		"ko" 	"모든 능력치 증가.\n끓는 플라즈마 분사기 보조 무기 획득.\n소량의 체력 재생을 얻으며 팩펀 개선시 재생력이 더욱 증가."
+		"ko" 	"모든 능력치 증가.\n끓는 플라즈마 분사기 보조 무기 획득.\n소량의 체력 재생을 얻으며 무기 강화시 재생력이 더욱 증가."
 	}
 	"Plasma Inject Pap 2 Desc"
 	{
@@ -5368,9 +5368,8 @@
 	}
 	"Purging Desc"
 	{
-
-		"ko"	"자이베리안의 가장 위대한 발명품, 괴물이 됩니다.\n산탄총과 램페이지 미니건 두 가지 무기를 얻으며,\nM2를 눌러 무기를 쉽게 전환할 수 있습니다.\n공격 적중 시 에너지를 충전하며\n이는 이후의 팩펀에 사용됩니다."
 		"en"	"Become the Ziberian greatest invention... A monster.\n-Gain 2 weapons, Shotgun and Rampager minigun\n-Press M2 To easy switch between them\n-Charge energy on hit, used for later paps\n-Gain 40% more energy from hitting enemies up close."
+		"ko"	"자이베리안의 가장 위대한 발명품, 괴물이 됩니다.\n산탄총과 램페이지 미니건 두 가지 무기를 얻으며,\nM2를 눌러 무기를 쉽게 전환할 수 있습니다.\n공격 적중 시 에너지를 충전하며 이는 이후의 무기 강화에 사용됨. \n-근접한 적 공격시 에너지 충전량 40％ 증가"
     }
 	"Purging Pap N"
 	{

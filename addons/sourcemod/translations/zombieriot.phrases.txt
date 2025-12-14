@@ -4947,6 +4947,7 @@
 	"Press again to confirm selling."
 	{
 		"en"		"Press again to confirm selling."
+		"ko"		"판매 버튼을 다시 누르면 들고 있는 무기를 판매할 수 있습니다."
 	}
 	"Weapon No Effect Tinker"
 	{

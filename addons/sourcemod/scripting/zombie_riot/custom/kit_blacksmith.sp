@@ -936,7 +936,7 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 			Format(buffer, sizeof(buffer), "%s 치유 속도", buffer);
 		
 		case 10, 9:
-			Format(buffer, sizeof(buffer), "%sÜberCharge Rate", buffer);
+			Format(buffer, sizeof(buffer), "%s 우버차지 충전 속도", buffer);
 		
 		case 16:
 			Format(buffer, sizeof(buffer), "%s 적중시 회복", buffer);
