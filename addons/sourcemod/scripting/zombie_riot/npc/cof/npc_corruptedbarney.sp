@@ -497,7 +497,7 @@ void CBarney_CreateAllies(int iNpc)
 	npc.m_flBossSpawnBeacon = 0.0;
 	
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-	int summon = NPC_CreateByName("npc_simon", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "nightmare");
+	int summon = NPC_CreateByName("npc_simon", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "final");
 	if(IsValidEntity(summon))
 	{
 		CorruptedBarney npcsummon = view_as<CorruptedBarney>(summon);
