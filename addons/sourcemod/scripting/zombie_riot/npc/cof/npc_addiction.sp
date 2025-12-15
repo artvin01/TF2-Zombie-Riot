@@ -104,6 +104,12 @@ methodmap Addicition < CClotBody
 		EmitCustomToAll(g_ThunderSounds[GetRandomInt(0, sizeof(g_ThunderSounds) - 1)], this.index, SNDCHAN_AUTO, 120, _, 3.0);
 	}
 	
+	property float m_flSelfStun
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+
 	public Addicition(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Addicition npc = view_as<Addicition>(CClotBody(vecPos, vecAng, "models/zombie_riot/aom/david_monster.mdl", "1.15", data[0] == 'f' ? "250000" : "10000", ally, false, false, true));
@@ -156,6 +162,19 @@ public void Addicition_ClotThink(int iNPC)
 {
 	Addicition npc = view_as<Addicition>(iNPC);
 	
+	float gameTime = GetGameTime(npc.index);
+	if(IsValidEntity(npc.m_iTargetAlly) && npc.m_flSelfStun < gameTime)
+	{
+		ApplyStatusEffect(npc.m_iTargetAlly, npc.m_iTargetAlly, "Infinite Will", 0.5);		
+		ApplyStatusEffect(npc.m_iTargetAlly, npc.m_iTargetAlly, "Defensive Backup", 0.5);
+		int Barneyhealth = GetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iHealth");
+		if(Barneyhealth <= 1.0)
+		{
+			//Hes about to die.
+			ApplyStatusEffect(npc.m_iTargetAlly, npc.m_iTargetAlly, "False Therapy", 999.9);
+			ApplyStatusEffect(npc.m_iTargetAlly, npc.m_iTargetAlly, "Hectic Therapy", 999.9);
+		}
+	}
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -164,7 +183,6 @@ public void Addicition_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
-	
 	
 	if(npc.m_bLostHalfHealth)
 	{
@@ -186,7 +204,19 @@ public void Addicition_ClotThink(int iNPC)
 	{
 		npc.SetHalfLifeStats();
 	}
-	
+
+	if(IsValidEntity(npc.m_iTargetAlly))
+	{
+		if(npc.m_flSelfStun)
+		{
+			npc.m_flSelfStun = 0.0;
+			EmitSoundToAll("mvm/mvm_bought_in.wav", _, _, _, _, 1.0);
+			if(!IsValidEntity(npc.m_iWearable1))
+			{
+				npc.m_iWearable1 = ConnectWithBeam(npc.m_iTargetAlly, npc.index, 125, 125, 65, 5.0, 5.0, 1.0, "sprites/laserbeam.vmt");
+			}
+		}
+	}
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.m_blPlayHurtAnimation = false;
@@ -348,7 +378,58 @@ public Action Addicition_OnTakeDamage(int victim, int &attacker, int &inflictor,
 //	if(damage < 9999999.0 && view_as<Addicition>(victim).m_flRangedSpecialDelay == 1.0)
 //		return Plugin_Handled;
 	
+	Addicition npc = view_as<Addicition>(victim);
 	view_as<Addicition>(victim).PlayHurtSound();
+	if(IsValidEntity(npc.m_iTargetAlly))
+	{
+		int Barneyhealth = GetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iHealth");
+		if(Barneyhealth <= 1.0)
+			return Plugin_Continue;
+		//do nothing, allow death.
+
+		int HealthMe = GetEntProp(victim, Prop_Data, "m_iHealth");
+
+		if((HealthMe - RoundToNearest(damage)) <= 0)
+		{
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			//We died, self stun and give full health.
+			npc.m_flSelfStun = GetGameTime(npc.index) + 0.1;
+			FreezeNpcInTime(victim, 25.0);
+			EmitCustomToAll(g_PassiveSounds[GetRandomInt(0, sizeof(g_PassiveSounds) - 1)], npc.index);
+			EmitCustomToAll(g_PassiveSounds[GetRandomInt(0, sizeof(g_PassiveSounds) - 1)], npc.index);
+			EmitCustomToAll(g_PassiveSounds[GetRandomInt(0, sizeof(g_PassiveSounds) - 1)], npc.index);
+			EmitCustomToAll(g_PassiveSounds[GetRandomInt(0, sizeof(g_PassiveSounds) - 1)], npc.index);
+			//When killed. spawn tallers.
+			for(int repeat; repeat < 5; repeat ++)
+			{
+				int summon = NPC_CreateByName("npc_taller", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "nightmare");
+				if(IsValidEntity(summon))
+				{
+					CorruptedBarney npcsummon = view_as<CorruptedBarney>(summon);
+					if(GetTeam(npc.index) != TFTeam_Red)
+						Zombies_Currently_Still_Ongoing++;
+					
+					fl_Extra_Damage[npcsummon.index] = fl_Extra_Damage[npc.index];
+					fl_Extra_Speed[npcsummon.index] = fl_Extra_Speed[npc.index];
+					fl_Extra_Speed[npcsummon.index] *= 1.5;
+					f_AttackSpeedNpcIncrease[npcsummon.index] *= 4.0;
+					NpcStats_CopyStats(npc.index, summon);
+					FreezeNpcInTime(npcsummon.index, 2.0);
+					SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/3);
+					SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/3);
+					ApplyStatusEffect(summon, summon, "Dimensional Turbulence", 5.0);
+					ApplyStatusEffect(npcsummon.index, npcsummon.index, "Unstoppable Force", 2.0);
+				}
+			}
+			if(IsValidEntity(npc.m_iWearable1))
+				RemoveEntity(npc.m_iWearable1);
+			HealEntityGlobal(npc.index, npc.index, 99999999.9, 1.0, 0.0, HEAL_ABSOLUTE);
+			ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 25.0);
+			damage = 0.0;
+			return Plugin_Changed;
+
+		}
+	}
 	return Plugin_Continue;
 }
 
@@ -357,6 +438,8 @@ public void Addicition_NPCDeath(int entity)
 	Addicition npc = view_as<Addicition>(entity);
 	
 	
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
 	npc.StopPathing();
 	
 	
