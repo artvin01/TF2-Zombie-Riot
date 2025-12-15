@@ -647,7 +647,7 @@ public Action Simon_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 					
 					fl_Extra_Damage[npcsummon.index] = fl_Extra_Damage[npc.index];
 					fl_Extra_Speed[npcsummon.index] = fl_Extra_Speed[npc.index];
-					fl_Extra_Speed[npcsummon.index] *= 1.5;
+					fl_Extra_Speed[npcsummon.index] *= 1.15;
 					f_AttackSpeedNpcIncrease[npcsummon.index] *= 0.85;
 					NpcStats_CopyStats(npc.index, summon);
 					FreezeNpcInTime(npcsummon.index, 2.0);
