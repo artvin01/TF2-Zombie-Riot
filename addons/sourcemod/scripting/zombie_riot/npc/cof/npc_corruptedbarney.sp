@@ -509,8 +509,8 @@ void CBarney_CreateAllies(int iNpc)
 		fl_Extra_Damage[npcsummon.index] *= 3.0;
 		f_AttackSpeedNpcIncrease[npcsummon.index] *= 0.85;
 		npcsummon.m_iTargetAlly = iNpc;
-		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/3);
-		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/3);
+		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/6);
+		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/6);
 		NpcStats_CopyStats(npc.index, summon);
 		TeleportDiversioToRandLocation(summon,_,2500.0, 1250.0);
 		npcsummon.m_iWearable1 = ConnectWithBeam(npc.index, npcsummon.index, 125, 65, 65, 5.0, 5.0, 1.0, "sprites/laserbeam.vmt");
@@ -527,8 +527,8 @@ void CBarney_CreateAllies(int iNpc)
 		fl_Extra_Damage[npcsummon.index] *= 5.0;
 		f_AttackSpeedNpcIncrease[npcsummon.index] *= 0.35;
 		npcsummon.m_iTargetAlly = iNpc;
-		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/2);
-		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/2);
+		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/4);
+		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/4);
 		NpcStats_CopyStats(npc.index, summon);
 		TeleportDiversioToRandLocation(summon,_,2500.0, 1250.0);
 		npcsummon.m_iWearable1 = ConnectWithBeam(npc.index, npcsummon.index, 125, 125, 65, 5.0, 5.0, 1.0, "sprites/laserbeam.vmt");
