@@ -1338,7 +1338,14 @@ stock void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
 {
 	SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_TRUEDAMAGE, -1);
 }
-stock int HealEntityGlobal(int healer, int receiver, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES, int MaxHealPermitted = 99999999)
+stock int HealEntityGlobal(int healer,
+ int receiver,
+  float HealTotal,
+   float Maxhealth = 1.0,
+    float HealOverThisDuration = 0.0,
+	 int flag_extrarules = HEAL_NO_RULES,
+	  int MaxHealPermitted = 99999999,
+	  float &HealPenalty = 1.0)
 {
 	/*
 		MaxHealPermitted is used for HealEntityViaFloat
@@ -1375,9 +1382,13 @@ stock int HealEntityGlobal(int healer, int receiver, float HealTotal, float Maxh
 		if(HasSpecificBuff(receiver, "Growth Blocker"))
 		{
 			HealTotal *= 0.85;
+			HealPenalty *= 0.85;
 		}
 		if(HasSpecificBuff(receiver, "Burn"))
+		{
 			HealTotal *= 0.75;
+			HealPenalty *= 0.75;
+		}
 
 		if((CurrentModifOn() == 3|| CurrentModifOn() == 2) && GetTeam(healer) != TFTeam_Red && GetTeam(receiver) != TFTeam_Red)
 		{
@@ -1385,19 +1396,34 @@ stock int HealEntityGlobal(int healer, int receiver, float HealTotal, float Maxh
 		}
 
 		if(Classic_Mode() && GetTeam(receiver) == TFTeam_Red)
+		{
+			
 			HealTotal *= 0.5;
+			HealPenalty *= 0.5;
+		}
 #endif
 
 #if !defined RTS
+		float fNum = 1.0;
 		//Extra healing bonuses or penalty for all healing except absolute
 		if(receiver <= MaxClients)
-			HealTotal *= Attributes_GetOnPlayer(receiver, 526, true, false);
+		{
+			fNum = Attributes_GetOnPlayer(receiver, 526, true, false);
+			HealTotal *= fNum;
+			if(fNum <= 1.0)
+				HealPenalty *= fNum;
+		}
 
 		//healing bonus or penalty non self heal
 		if(!(flag_extrarules & (HEAL_SELFHEAL)))
 		{
 			if(receiver <= MaxClients)
-				HealTotal *= Attributes_GetOnPlayer(receiver, 734, true, false);
+			{
+				fNum = Attributes_GetOnPlayer(receiver, 734, true, false);
+				HealTotal *= fNum;
+				if(fNum <= 1.0)
+					HealPenalty *= fNum;
+			}
 		}
 #endif
 	}

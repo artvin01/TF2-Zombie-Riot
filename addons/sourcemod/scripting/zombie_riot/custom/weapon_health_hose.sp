@@ -584,7 +584,8 @@ public void TouchHealthKit(int entity, int other)
 		{
 			Owner = other; //if there is no invalid owner, just make the one that picks it up the owner
 		}
-		int healing_done = HealEntityGlobal(Owner, other, HealingAmount * HealPenalty, 1.0, _, _);
+		float fTemp = HealPenalty;
+		int healing_done = HealEntityGlobal(Owner, other, HealingAmount * fTemp , 1.0, _, _, _ , HealPenalty);
 		if(healing_done <= 0)
 		{
 			return;
@@ -595,7 +596,7 @@ public void TouchHealthKit(int entity, int other)
 			PrintHintText(Owner, "%t", "You healed for", other, healing_done);
 		}
 		ClientCommand(other, "playgamesound items/smallmedkit1.wav");
-		ApplyStatusEffect(Owner, other, "Healing Resolve", 15.0);
+		ApplyStatusEffect(Owner, other, "Healing Resolve", 5.0);
 		f_HealMaxPickup_Enable[entity] = GetGameTime() + 0.5;
 		f_HealMaxPickup[entity] -= (healing_done / HealPenalty);
 		if(f_HealMaxPickup[entity] <= 0)
