@@ -48,25 +48,28 @@ float f_MajorSteam_Launcher_Resistance(int client)
 
 void TFProjectile_Rocket_Spawn(int entity)
 {
-	RequestFrame(TFProjectile_Rocket_SpawnFrame, EntRefToEntIndex(entity));
+	RequestFrame(TFProjectile_Rocket_SpawnFrame, EntIndexToEntRef(entity));
 }
 
 void TFProjectile_Rocket_SpawnFrame(int ref)
 {
 	int entity = EntRefToEntIndex(ref);
-	int client=GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
-	if(IsValidClient(client) && h_TimerMajorSteam_Launcher[client] != null)
+	if(IsValidEntity(entity))
 	{
-		if(i_MajorSteam_Launcher_WeaponPap[client]==1)
+		int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(IsValidClient(client) && h_TimerMajorSteam_Launcher[client] != null)
 		{
-			float vecSwingStart[3], vecAngles[3];
-			GetAbsOrigin(entity, vecSwingStart);
-			int particle = ParticleEffectAt(vecSwingStart, "critical_rocket_blue", 0.0); //Inf duartion
-			i_rocket_particle[entity]= EntIndexToEntRef(particle);
-			GetEntPropVector(entity, Prop_Data, "m_angRotation", vecAngles);
-			TeleportEntity(particle, NULL_VECTOR, vecAngles, NULL_VECTOR);
-			SetParent(entity, particle);
-			SDKHook(entity, SDKHook_StartTouchPost, MajorSteam_ProjectileTouch);
+			if(i_MajorSteam_Launcher_WeaponPap[client]==1)
+			{
+				float vecSwingStart[3], vecAngles[3];
+				GetAbsOrigin(entity, vecSwingStart);
+				int particle = ParticleEffectAt(vecSwingStart, "critical_rocket_blue", 0.0); //Inf duartion
+				i_rocket_particle[entity]= EntIndexToEntRef(particle);
+				GetEntPropVector(entity, Prop_Data, "m_angRotation", vecAngles);
+				TeleportEntity(particle, NULL_VECTOR, vecAngles, NULL_VECTOR);
+				SetParent(entity, particle);
+				SDKHook(entity, SDKHook_StartTouchPost, MajorSteam_ProjectileTouch);
+			}
 		}
 	}
 }
