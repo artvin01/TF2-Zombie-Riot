@@ -1141,7 +1141,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	kv.GotoFirstSubKey();
 	do
 	{
-		if(kv.GetSectionName(buffer, sizeof(buffer)) && StrContains(buffer, "music_setup") != -1)
+		if(kv.GetSectionName(buffer, sizeof(buffer)) && StrContains(buffer, "music_") != -1)
 		{
 			continue;
 		}
