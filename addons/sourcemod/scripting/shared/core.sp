@@ -3207,8 +3207,10 @@ public void CheckIfAloneOnServer()
 		{
 			if(!b_AntiLateSpawn_Allow[client])
 				continue;
+#if defined ZR
 			if(!b_HasBeenHereSinceStartOfWave[client])
 				continue;
+#endif
 			players += 1;
 #if defined ZR 
 			player_alone = client;
@@ -3306,10 +3308,12 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		SDKCall_SetSpeed(client);
 	}
+#if defined ZR
 	else if (condition == TFCond_Taunting && (BetWar_Mode() || f_PreventMovementClient[client] > GetGameTime()))
 	{
 		TF2_RemoveCondition(client, TFCond_Taunting);
 	}
+#endif
 }
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)

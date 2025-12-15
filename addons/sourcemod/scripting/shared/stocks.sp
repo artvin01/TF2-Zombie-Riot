@@ -5318,9 +5318,10 @@ stock void SpawnTimer(float time)
 	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
 	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
 	
+#if defined ZR
 	if(!Construction_Mode())
 		f_AllowInstabuildRegardless = GetGameTime() + time;
-
+#endif
 	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
 	
 	Event event = CreateEvent("teamplay_update_timer", true);
@@ -6027,10 +6028,11 @@ public float GetDistanceToGround(float pos[3])
 	angles[0] = 90.0;
 	angles[1] = 0.0;
 	angles[2] = 0.0;
-	
+
+#if defined ZR	
 	Handle trace = TR_TraceRayFilterEx(pos, angles, MASK_SHOT, RayType_Infinite, Priest_OnlyHitWorld);
 	TR_GetEndPosition(otherLoc, trace);
 	delete trace;
-	
+#endif
 	return GetVectorDistance(pos, otherLoc);
 }
