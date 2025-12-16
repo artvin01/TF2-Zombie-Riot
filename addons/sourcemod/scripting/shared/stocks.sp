@@ -5318,7 +5318,7 @@ stock void SpawnTimer(float time)
 	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
 	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
 	
-	if(!Construction_Mode())
+	if(!Construction_Mode() && !Dungeon_Mode())
 		f_AllowInstabuildRegardless = GetGameTime() + time;
 
 	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));

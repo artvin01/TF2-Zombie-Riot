@@ -1406,7 +1406,7 @@ void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0
 {
 	bool AllowResoruceGen = false;
 
-	if(Rogue_Mode() || Construction_Mode())
+	if(Rogue_Mode() || Construction_Mode() || Dungeon_Mode())
 	{
 		AllowResoruceGen = Waves_Started();
 	}

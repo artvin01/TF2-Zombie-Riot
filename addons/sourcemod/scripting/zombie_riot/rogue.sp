@@ -647,6 +647,11 @@ void Rogue_RevoteCmd(int client)	// Waves_RevoteCmd
 	Rogue_CallVote(client, true);
 }
 
+bool Rogue_VoteActive()
+{
+	return view_as<bool>(Voting);
+}
+
 bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 {
 	if(Voting && (force || !VotedFor[client]))
@@ -995,6 +1000,17 @@ public Action Rogue_RoundStartTimer(Handle timer)
 		if(CvarNoRoundStart.BoolValue)
 		{
 			PrintToChatAll("zr_noroundstart is enabled");
+		}
+		else if(Dungeon_Mode())
+		{
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client) && GetClientTeam(client) == 2 && !IsFakeClient(client))
+				{
+					Dungeon_Start();
+					return Plugin_Stop;
+				}
+			}
 		}
 		else if(Construction_Mode())
 		{
@@ -1913,7 +1929,8 @@ void Rogue_StartGenericVote(float time = 20.0)
 	VoteEndTime = GetGameTime() + time;
 	CreateTimer(time, Rogue_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 
-	Rogue_SetProgressTime(time + 5.0, false);
+	if(!Dungeon_Mode())
+		Rogue_SetProgressTime(time + 5.0, false);
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -2015,7 +2032,7 @@ public int Rogue_CallGenericVoteH(Menu menu, MenuAction action, int client, int 
 							Rogue_CallVote(client, true);
 							return 0;
 						}
-						else
+						else if(vote.Desc[0])
 						{
 							CPrintToChat(client, "%t", vote.Desc);
 							Rogue_CallVote(client, true);
@@ -2757,7 +2774,7 @@ void Rogue_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, 
 	}
 }
 
-int Rogue_GetNamedArtifact(const char[] name, Artifact artifact)
+int Rogue_GetNamedArtifact(const char[] name, Artifact artifact = {})
 {
 	int pos = Artifacts.FindString(name, Artifact::Name);
 	if(pos != -1)

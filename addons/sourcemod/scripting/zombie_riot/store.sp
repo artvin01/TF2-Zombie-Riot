@@ -3226,7 +3226,7 @@ static void MenuPage(int client, int section)
 					}
 				}
 			}
-			else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || !Waves_InSetup())
+			else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
 			{
 				Format(buffer, sizeof(buffer), "%T\n \n%s\n \n%s ", "TF2: Zombie Riot", client, buf, info.Custom_Name);
 			}
@@ -3470,7 +3470,7 @@ static void MenuPage(int client, int section)
 		}
 		else if(UsingChoosenTags[client])
 		{
-			if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || !Waves_InSetup())
+			if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
 			{
 				menu.SetTitle("%T\n%T\n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", client, "Cherrypick Weapon", client, buf);
 			}
@@ -3479,7 +3479,7 @@ static void MenuPage(int client, int section)
 				menu.SetTitle("%T\n%T\n%s\n%T\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", client, "Cherrypick Weapon", client, buf, "Store Discount", client);
 			}
 		}
-		else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || !Waves_InSetup())
+		else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
 		{
 			menu.SetTitle("%T\n \n%s\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", client, buf, info.Custom_Name);
 		}
@@ -3509,7 +3509,7 @@ static void MenuPage(int client, int section)
 				menu.SetTitle("%T\n%T\n%T\n \n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", client, "The World Machine's Items", client,"All Items are 20％ off here!", client, buf);
 			}
 		}
-		else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || !Waves_InSetup())
+		else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
 		{
 			if(UsingChoosenTags[client])
 			{
@@ -6622,7 +6622,7 @@ char[] TranslateItemDescription_Long(int client, const char Desc[256], const cha
 */
 static void ItemCost(int client, Item item, int &cost)
 {
-	bool Setup = !Waves_Started() || (!Rogue_NoDiscount() && !Construction_Mode() && Waves_InSetup());
+	bool Setup = !Waves_Started() || (!Rogue_NoDiscount() && !Construction_Mode() && !Dungeon_Mode() && Waves_InSetup());
 	bool GregSale = false;
 
 	//these should account for selling.

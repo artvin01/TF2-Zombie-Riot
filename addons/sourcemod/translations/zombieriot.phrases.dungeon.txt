@@ -1,0 +1,20 @@
+"Phrases"
+{
+	"Found Dungeon Loot"
+	{
+		"#format"	"{1:t}"
+		"en"		"{green}Collected: {yellow}{1}"
+	}
+	"Dungeon Keep Looking"
+	{
+		"en"		"Keep looking for something else"
+	}
+	"Dungeon Stop Looking"
+	{
+		"en"		"Stop looking and ready defenses"
+	}
+	"Dungeon Failed"
+	{
+		"en"		"All players have left the dungeon..."
+	}
+}

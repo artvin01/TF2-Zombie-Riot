@@ -496,6 +496,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zsclassic.sp"
 #include "construction.sp"
 #include "betting.sp"
+#include "dungeons.sp"
 #include "sm_skyboxprops.sp"
 #include "custom/homing_projectile_logic.sp"
 #include "custom/weapon_slug_rifle.sp"
@@ -726,6 +727,7 @@ void ZR_PluginStart()
 	Vehicle_PluginStart();
 	Kritzkrieg_PluginStart();
 	BetWar_PluginStart();
+	Dungeon_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
@@ -770,6 +772,7 @@ void ZR_MapStart()
 	Classic_MapStart();
 	Construction_MapStart();
 	BetWar_MapStart();
+	Dungeon_MapStart();
 	Zero(TeutonType); //Reset teutons on mapchange
 	f_AllowInstabuildRegardless = 0.0;
 	Zero(i_NormalBarracks_HexBarracksUpgrades);
@@ -1030,7 +1033,7 @@ public Action GlobalTimer(Handle timer)
 		f_AllowInstabuildRegardless = 0.0;
 		ForceMusicStopAndReset = true;
 	}
-	if(Rogue_Mode() || Construction_Mode())
+	if(Rogue_Mode() || Construction_Mode() || Dungeon_Mode())
 	{
 		ForceMusicStopAndReset = false;
 	}

@@ -1310,6 +1310,7 @@ static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float
 				Rogue_EnemySpawned(entity);
 				Waves_EnemySpawned(entity);
 				Construction_EnemySpawned(entity);
+				Dungeon_EnemySpawned(entity);
 			}
 			Waves_UpdateMvMStats();
 		}
