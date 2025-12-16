@@ -1136,6 +1136,10 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		return; //STOP. BAD!
 	}
+	if(!IsPlayerAlive(client))
+	{
+		return; //STOP. BAD!
+	}
 	Clip_SaveAllWeaponsClipSizes(client);
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
@@ -1287,6 +1291,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	{
 		return -1;
 	}
+	if(!IsPlayerAlive(client))
+		return -1;
 
 	int slot = -1;
 	int entity = -1;
