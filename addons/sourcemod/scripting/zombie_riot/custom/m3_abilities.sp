@@ -872,7 +872,7 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 		if(!b_ReinforceReady_soundonly[client])
 		{
 			EmitSoundToClient(client, g_ReinforceSounds[GetRandomInt(0, sizeof(g_ReinforceSounds) - 1)], _, _, _, _, 0.5, _, _, _, _, false);
-			CPrintToChat(client, "{green}You can now call in reinforcements.");
+			CPrintToChat(client, "{green}이제 증원 요청을 사용할 수 있습니다.");
 			b_ReinforceReady_soundonly[client]=true;
 		}
 	}

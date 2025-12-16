@@ -220,11 +220,11 @@ public void PurgeKit_HUD(int client, int weapon, bool forced)
 		else
 			quadStat = "Online";
 		if(Attributes_Get(weapon, Attrib_PapNumber, 1.0) < 2.0)
-			PrintHintText(client, "Purge System Activated.\nEnergy: [%.0f/%.0f]", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY);
+			PrintHintText(client, "퍼지 시스템 가동중.\n에너지: [%.0f/%.0f]", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY);
 		else if(Attributes_Get(weapon, Attrib_PapNumber, 1.0) < 4.0)
-			PrintHintText(client, "Purge System Activated.\nEnergy: [%.0f/%.0f]\nAnnihilator:%s", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat);
+			PrintHintText(client, "퍼지 시스템 가동중.\n에너지: [%.0f/%.0f]\n말살 명령:%s", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat);
 		else
-			PrintHintText(client, "Purge System Activated.\nEnergy: [%.0f/%.0f]\nAnnihilator:%s\nQuad-Launcher:%s", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat, quadStat);
+			PrintHintText(client, "퍼지 시스템 가동중.\n에너지: [%.0f/%.0f]\n말살 명령:%s\n4연장 로켓:%s", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat, quadStat);
 		fl_KitPurge_NextHUD[client] = GetGameTime() + 0.4;
 	}
 }

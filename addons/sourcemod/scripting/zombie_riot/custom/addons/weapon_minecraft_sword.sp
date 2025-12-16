@@ -137,7 +137,7 @@ static Action Timer_MSword(Handle timer, DataPack pack)
 			if(Ms_Weapon_Energy[client] > Ms_Weapon_Energy_Max[client])Ms_Weapon_Energy[client] = Ms_Weapon_Energy_Max[client];
 			if(MSwordHUDDelay[client] < GetGameTime())
 			{
-				PrintHintText(client, "Sweeping Edge [%i％]", RoundToFloor(Ms_Weapon_Energy[client]/Ms_Weapon_Energy_Max[client]*100.0));
+				PrintHintText(client, "휩쓸기 [%i％]", RoundToFloor(Ms_Weapon_Energy[client]/Ms_Weapon_Energy_Max[client]*100.0));
 				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
 				MSwordHUDDelay[client] = GetGameTime() + 0.5;
 			}

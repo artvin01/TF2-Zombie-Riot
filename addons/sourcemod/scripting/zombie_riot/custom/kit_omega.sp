@@ -512,11 +512,11 @@ static void KitOmega_HUD(int client)
 		}
 		if(i_KitOmega_WeaponPap[client] <= 0)
 		{
-			PrintHintText(client,"Energy:%.1f\n[%s]", OMEGA_ENERGY[client], weapon_hint);
+			PrintHintText(client,"에너지:%.1f\n[%s]", OMEGA_ENERGY[client], weapon_hint);
 		}
 		else
 		{
-			PrintHintText(client,"Energy:%.1f\n[%s] -> [%s]", OMEGA_ENERGY[client], weapon_hint, weapon_hintNext);
+			PrintHintText(client,"에너지:%.1f\n[%s] -> [%s]", OMEGA_ENERGY[client], weapon_hint, weapon_hintNext);
 		}
 		f_KitOmega_HUDDelay[client] = GetGameTime() + 0.5;
 	}

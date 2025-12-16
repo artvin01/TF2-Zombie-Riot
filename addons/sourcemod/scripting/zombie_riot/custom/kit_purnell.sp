@@ -749,11 +749,11 @@ static void Purnell_AllyBuffApply(int client, int target, int overdose, float Du
 			{
 				if(target > MaxClients)
 				{
-					Format(text, sizeof(text), "You buffed an ally with Hectic Therapy!");
+					Format(text, sizeof(text), "대상 아군에게 정신 치료술 버프를 부여했습니다!");
 				}
 				else
 				{
-					Format(text, sizeof(text), "You buffed %N with Hectic Therapy!", target);
+					Format(text, sizeof(text), "대상 %N 에게 정신 치료술 버프를 부여했습니다!", target);
 				}
 				ApplyStatusEffect(client, target, "Hectic Therapy", DurationGive);
 				ApplyStatusEffect(client, client, "Hectic Therapy", DurationGive);
@@ -764,11 +764,11 @@ static void Purnell_AllyBuffApply(int client, int target, int overdose, float Du
 				ApplyStatusEffect(client, client, "Physical Therapy", DurationGive);
 				if(target > MaxClients)
 				{
-					Format(text, sizeof(text), "You buffed an ally with Physical Therapy!");
+					Format(text, sizeof(text), "대상 아군에게 물리 치료술 버프를 부여했습니다!");
 				}
 				else
 				{
-					Format(text, sizeof(text), "You buffed %N with Physical Therapy!", target);
+					Format(text, sizeof(text), "대상 %N 에게 물리 치료술 버프를 부여했습니다!", target);
 				}
 			}
 		}
@@ -958,7 +958,7 @@ static void Purnell_DebuffApply(int client, int target, int overdose, float Dura
 			ApplyStatusEffect(client, target, "Icy Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				Format(text, sizeof(text), "You debuffed an enemy with Icy Dereliction!");
+				Format(text, sizeof(text), "대상 적에게 차디찬 퇴락 디버프를 부여했습니다!");
 			}
 		}
 		case 1:

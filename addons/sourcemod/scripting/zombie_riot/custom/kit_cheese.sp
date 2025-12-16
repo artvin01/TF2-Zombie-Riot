@@ -242,9 +242,9 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 	{
 		if(!Cheese_HasModernizer1[client])
 		{
-			CPrintToChat(client, "{gold}Koshi{white}: What's that, hmm? You really want to feel this weapon's potential?");
-			CPrintToChat(client, "{gold}Koshi{white}: If that's what you want, go ahead. {red}Just don't fill the place with plasma, will you?");
-			CPrintToChat(client, "{darkviolet}Suddenly, plasma starts engulfing your body...!");
+			CPrintToChat(client, "{gold}코쉬{white}: 음? 허? 정말로 이 무기의 잠재력을 끌어올리길 원하는거야?");
+			CPrintToChat(client, "{gold}코쉬{white}: 네가 원한다면야. {red}하지만 그 장소를 온통 플라즈마로 뒤덮지는 말아줘. 잘 알겠지?");
+			CPrintToChat(client, "{darkviolet}갑자기, 플라즈마가 당신의 몸을 뒤덮기 시작합니다...!");
 			Cheese_HasModernizer1[client] = true;
 		}
 	}
@@ -252,8 +252,8 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 	{
 		if(Cheese_HasModernizer1[client])
 		{
-			CPrintToChat(client, "{gold}Koshi{white}: Oh, getting rid of the fun so soon? Awww...");
-			CPrintToChat(client, "{violet}Plasma is no longer engulfing your body.");
+			CPrintToChat(client, "{gold}코쉬{white}: 아, 이제 막 재밌어질 참인데...");
+			CPrintToChat(client, "{violet}플라즈마가 당신의 몸을 뒤덮지 않게 되었습니다.");
 			Cheese_HasModernizer1[client] = false;
 		}
 	}
@@ -301,30 +301,30 @@ static void Cheese_Hud(int client, bool ignorecd)
 	if(Cheese_PapLevel[client] > 0)
 	{
 		if(Cheese_Bubble_Hits[client] >= Cheese_Bubble_MaxHits[Cheese_PapLevel[client]])
-			Format(CheeseHud, sizeof(CheeseHud), "%sPlasmatized Bubble: Ready!", CheeseHud);
+			Format(CheeseHud, sizeof(CheeseHud), "%s플라즈마화 방울: 준비됨!", CheeseHud);
 		else
-			Format(CheeseHud, sizeof(CheeseHud), "%sPlasmatized Bubble: [%d | %d]", CheeseHud, Cheese_Bubble_Hits[client], Cheese_Bubble_MaxHits[Cheese_PapLevel[client]]);
+			Format(CheeseHud, sizeof(CheeseHud), "%s플라즈마화 방울: [%d | %d]", CheeseHud, Cheese_Bubble_Hits[client], Cheese_Bubble_MaxHits[Cheese_PapLevel[client]]);
 	}
 
 	if(Cheese_PapLevel[client] > 1)
 	{
 		if(HasSpecificBuff(client, "Plasmatized Lethalitation"))
 		{
-			Format(CheeseHud, sizeof(CheeseHud), "%s\nLethal Injection: ACTIVE!", CheeseHud);
+			Format(CheeseHud, sizeof(CheeseHud), "%s\n치사 주사: 활성화됨!", CheeseHud);
 			Cheese_BeamEffect(pos, 1.0, 100.0, 0.075, 7.5, true, client);
 		}
 		else
 		{
 			if(LethalCooldown <= 0.0)
-				Format(CheeseHud, sizeof(CheeseHud), "%s\nLethal Injection: Ready!", CheeseHud);
+				Format(CheeseHud, sizeof(CheeseHud), "%s\n치사 주사: 준비됨!", CheeseHud);
 			else
-				Format(CheeseHud, sizeof(CheeseHud), "%s\nLethal Injection: [%.1f]", CheeseHud, LethalCooldown);
+				Format(CheeseHud, sizeof(CheeseHud), "%s\n치사 주사: [%.1f]", CheeseHud, LethalCooldown);
 		}		
 
 		if(BurstCooldown <= 0.0)
-			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmic Burst: Ready!", CheeseHud);
+			Format(CheeseHud, sizeof(CheeseHud), "%s\n플라즈마 버스트: 준비됨!", CheeseHud);
 		else
-			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmic Burst: [%.1f]", CheeseHud, BurstCooldown);
+			Format(CheeseHud, sizeof(CheeseHud), "%s\n플라즈마 버스트: [%.1f]", CheeseHud, BurstCooldown);
 	}
 
 	hudtimer[client] = GameTime + 0.4;
