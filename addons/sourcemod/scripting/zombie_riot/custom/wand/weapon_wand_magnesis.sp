@@ -128,7 +128,7 @@ float MagnesisDamageBuff(int Tier)
 #define PARTICLE_MAGNESIS_M1     			"raygun_projectile_blue"
 #define PARTICLE_MAGNESIS_M1_FINALPAP		"raygun_projectile_blue_crit"
 #define PARTICLE_MAGNESIS_M1_COLLIDE		"impact_metal"
-#define PARTICLE_MAGNESIS_GRAB				"medicgun_beam_machinery_trail"
+#define PARTICLE_MAGNESIS_GRAB				"medicgun_beam_machinery"
 #define PARTICLE_MAGNESIS_GRAB_FINALPAP		"medicgun_beam_blue_trail"
 #define PARTICLE_MAGNESIS_THROW				"dxhr_lightningball_hit_red"
 #define PARTICLE_MAGNESIS_THROW_FINALPAP	"dxhr_lightningball_hit_blue"

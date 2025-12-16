@@ -4457,9 +4457,15 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						if(DoNormal == 1 || DoNormal == 2)
 						{
 							if(DoNormal == 2)
+							{
 								SPrintToChat(client,"%t", "Cant Display Enhance");
+								MenuPage(client, -1);
 
-							MenuPage(client, -1);
+							}
+							else
+							{
+								MenuPage(client, CurrentMenuItem[client]);
+							}
 						}
 					}
 				}
