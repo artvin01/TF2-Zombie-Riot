@@ -488,6 +488,7 @@ enum struct Item
 	char Author[128];
 	bool NoKit;
 	bool ForceAllowWithKit; //For wrenches.
+	bool Internal_ClickEnhance;
 	
 	ArrayList ItemInfos;
 	
@@ -1116,6 +1117,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 	item.RogueAlwaysSell = view_as<bool>(kv.GetNum("rogue_always_sell", rogueSell ? 1 : 0));
 	item.NoKit = view_as<bool>(kv.GetNum("nokit", noKits ? 1 : 0));
 	item.ForceAllowWithKit = view_as<bool>(kv.GetNum("forcewithkits"));
+	item.Internal_ClickEnhance = view_as<bool>(kv.GetNum("enhanceweapon_click"));
 	kv.GetString("textstore", item.Name, sizeof(item.Name));
 	item.GiftId = item.Name[0] ? Items_NameToId(item.Name) : -1;
 	kv.GetSectionName(item.Name, sizeof(item.Name));
@@ -2538,7 +2540,7 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				}
 				case -86:
 				{
-					Manual_SoundcacheFixTest(client);
+					Manual_SoundcacheFixTest(client, 1);
 				}
 				case -95:
 				{
@@ -4396,7 +4398,69 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					}
 					default:
 					{
-						MenuPage(client, CurrentMenuItem[client]);
+						int DoNormal = 1;
+						static Item item;
+						menu.GetItem(choice, item.Name, sizeof(item.Name));
+						int index = StringToInt(item.Name);
+						if(index >= 0)
+						{
+							StoreItems.GetArray(index, item);
+							
+							if(item.Internal_ClickEnhance)
+							{
+								int activeweapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+								if(IsValidEntity(activeweapon) && StoreWeapon[activeweapon] > 0)
+								{
+									
+									static Item item1;
+									StoreItems.GetArray(StoreWeapon[activeweapon], item1);
+									int level = item1.Owned[client]-1;
+									if(item1.ParentKit || level < 0)
+										level = 0;
+
+									bool CanBePapped = false;
+									ItemInfo info2;
+
+									//allow inspecting kit children
+									if(item1.ParentKit)
+									{
+										static Item subItem;
+										int length = StoreItems.Length;
+										for(int i; i < length; i++)
+										{
+											StoreItems.GetArray(i, subItem);
+											if(subItem.Section == CurrentMenuItem[client] /*this is also just item index?*/)
+											{
+												if(subItem.GetItemInfo(level, info2))
+												{
+													CanBePapped = true;
+													break;
+												}
+											}
+										}
+									}
+									else
+									{
+										if(item.GetItemInfo(level, info2))
+											CanBePapped = true;
+									}
+									if(CanBePapped)
+									{
+										DoNormal = 0;
+										Store_PackMenu(client, StoreWeapon[activeweapon], -1, client);
+									}
+								}
+								else
+									DoNormal = 2;
+							}
+						}
+						if(DoNormal == 1 || DoNormal == 2)
+						{
+							if(DoNormal == 2)
+								SPrintToChat(client,"%t", "Cant Display Enhance");
+
+							MenuPage(client, -1);
+						}
 					}
 				}
 			}

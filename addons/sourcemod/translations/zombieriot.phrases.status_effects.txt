@@ -2501,7 +2501,7 @@
 	{
 		"en"	"A bright light, is Ruina helping?\n{green}At stage start, creates a zone that buffs all allies within."
 		"it"	"Una luce intensa, Ruina sta aiutando? All'inizio della fase, crea una zona che potenzia tutti gli alleati al suo interno."
-		"ko"	"밝은 빛이여, 루이나가 돕고 있는가?"\n{green}스테이지 시작 시, 범위 내 모든 아군에게 버프를 부여하는 영역을 생성합니다."
+		"ko"	"밝은 빛이여, 루이나가 돕고 있는가?\n{green}스테이지 시작 시, 범위 내 모든 아군에게 버프를 부여하는 영역을 생성합니다."
 	}
 	"Revival Stim Packs"
 	{
