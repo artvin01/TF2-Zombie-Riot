@@ -11,9 +11,9 @@ static StringMap SoundAlts;
 
 static ArrayList ExtraList;
 static int ExtraLevel[MAXPLAYERS];
-static bool DoingSoundFix[MAXPLAYERS];
 
 #endif
+static bool DoingSoundFix[MAXPLAYERS];
 static bool FileNetworkLib;
 static ArrayList SoundList;
 
@@ -151,9 +151,9 @@ void FileNetwork_ClientPutInServer(int client)
 #if defined _filenetwork_included
 	//give 3 seconds of breathing
 	CreateTimer(3.0, Timer_FilenetworkBegin, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-	DoingSoundFix[client] = false;
 #endif
 
+	DoingSoundFix[client] = false;
 	if(!FileNetworkLib || CvarFileNetworkDisable.IntValue != FILENETWORK_ENABLED)
 	{
 		SoundLevel[client] = 9999;
