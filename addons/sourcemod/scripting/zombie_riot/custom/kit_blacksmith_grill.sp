@@ -3,6 +3,7 @@
 
 // Amount of Sauce (kills) needed for one part of a potion
 #define SAUCE_REQUIRED	6.0
+#define MAX_BURGERS_ALLOWED	20
 
 /*
 	- Armor Heal
@@ -90,6 +91,15 @@ void BlacksmithGrill_NPCTakeDamagePost(int victim, int attacker, float damage)
 		gain = damage * gain / float(MaxHealth);
 		Sauces[attacker][sauce] += gain;
 		Meats[attacker] += gain * 2.0;
+
+		if(Meats[attacker] >= (SAUCE_REQUIRED * 20.0))
+		{
+			Meats[attacker] = SAUCE_REQUIRED * 20.0;
+		}
+		if(Sauces[attacker][sauce] >= (SAUCE_REQUIRED * 10.0))
+		{
+			Sauces[attacker][sauce] = SAUCE_REQUIRED * 10.0;
+		}
 
 		if(InMenu[attacker])
 		{
@@ -331,8 +341,17 @@ static int GrillingMenuH(Menu menu, MenuAction action, int client, int choice)
 					if(!Selling[client])
 						Selling[client] = new ArrayList();
 					
-					Selling[client].Push(SauceSelected[client]);
+					if(Selling[client].Length >= MAX_BURGERS_ALLOWED)
+					{
 
+						SetDefaultHudPosition(client);
+						ShowSyncHudText(client, SyncHud_Notifaction, "Too Many Burgers currently out");
+						ClientCommand(client, "playgamesound items/medshotno1.wav");
+						GrillingMenu(client);
+						return 0;
+					}
+					Selling[client].Push(SauceSelected[client]);
+					
 					Meats[client] -= SAUCE_REQUIRED;
 					if(SauceSelected[client] >= 0 && SauceSelected[client] < Sauce_MAX)
 						Sauces[client][SauceSelected[client]] -= SAUCE_REQUIRED;

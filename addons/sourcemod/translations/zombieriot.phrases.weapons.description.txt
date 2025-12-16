@@ -2326,9 +2326,9 @@
 	}
 	"Mlynar ExtraDesc"
 	{
-		"en"	"-Reflect deals 2x dmg against raids\n-take 15％ more damage from raids."
-		"it"	"Riflesso infligge 2x dmg contro i raid, si subiscono 15％ danni in più dai raid."
-		"ko"	"반사는 레이드 보스에게 주는 피해량이 2배로 증가하지만, 레이드 보스에게서 받는 피해량 15％ 증가."
+		"en"	"-Reflect deals 5x dmg against raids\n-take 20％ more damage from raids."
+		"it"	"Riflesso infligge 5x dmg contro i raid, si subiscono 20％ danni in più dai raid."
+		"ko"	"반사는 레이드 보스에게 주는 피해량이 5배로 증가하지만, 레이드 보스에게서 받는 피해량 20％ 증가."
 	}
 	"Alchemist Potion Pap 5"
 	{

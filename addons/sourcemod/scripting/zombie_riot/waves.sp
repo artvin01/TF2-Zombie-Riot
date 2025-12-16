@@ -1155,9 +1155,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	kv.GotoFirstSubKey();
 	do
 	{
-		round.music_setup.SetupKv("music_setup", kv);
-		round.Override_Music_Setup=view_as<bool>(kv.GetNum("override_music_setup"));
-		if(kv.GetSectionName(buffer, sizeof(buffer)) && StrContains(buffer, "music_setup") != -1)
+		if(kv.GetSectionName(buffer, sizeof(buffer)) && StrContains(buffer, "music_") != -1)
 		{
 			continue;
 		}

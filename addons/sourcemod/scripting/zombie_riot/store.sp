@@ -4773,7 +4773,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 					else
 					{
 						SPrintToChat(client, "%T", "Press again to confirm selling.", client);
-						f_ConfirmSellDo[client] = GetGameTime() + 1.0;
+						f_ConfirmSellDo[client] = GetGameTime() + 2.0;
 					}
 				}
 				case 4:	
