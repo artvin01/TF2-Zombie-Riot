@@ -7,15 +7,15 @@
 static bool StartedQueue[MAXPLAYERS];
 static bool Downloading[MAXPLAYERS];
 
-static ArrayList SoundList;
 static StringMap SoundAlts;
 
 static ArrayList ExtraList;
 static int ExtraLevel[MAXPLAYERS];
 static bool DoingSoundFix[MAXPLAYERS];
 
-static bool FileNetworkLib;
 #endif
+static bool FileNetworkLib;
+static ArrayList SoundList;
 
 static int SoundLevel[MAXPLAYERS];
 static bool InServerSetup;
@@ -33,9 +33,7 @@ void FileNetwork_PluginStart()
 
 	DownloadList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
 
-#if defined _filenetwork_included
 	FileNetworkLib = LibraryExists("filenetwork");
-#endif
 }
 
 static Action DebugCommand(int args)
@@ -622,7 +620,6 @@ void Manual_SoundcacheFixTest(int client, int Notify)
 	}
 }
 
-#if defined _filenetwork_included
 public Action StartSoundCache_ManualLoop(Handle timer, DataPack pack)
 {
 	pack.Reset();
@@ -692,7 +689,7 @@ public Action Timer_FixSoundsCancelThem(Handle timer, DataPack pack)
 	return Plugin_Handled; 
 }
 
-
+#if defined _filenetwork_included
 public void FileNetwork_SendResults(int client, const char[] file, bool success, DataPack pack)
 {
 	// When done, send a dummy file and the next file in queue
