@@ -1142,6 +1142,8 @@ void NPC_ConfigSetup()
 
 	DrDamSpecialDelivery_OnMapStart_NPC();
 	DrDamClone_OnMapStart_NPC();
+
+	BarbaricRagerOnMapStart();
 }
 
 void NPC_MapEnd()
@@ -2500,3 +2502,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/logic_win_timer.sp"
 #include "npc/construction/npc_sensal_follower.sp"
 #include "npc/construction/npc_overlord_follower.sp"
+#include "npc/construction/construction2/npc_barbaric_rager.sp"

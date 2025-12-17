@@ -3008,6 +3008,12 @@
 		"it"		"L'arma di mantenimento non può essere mostrata nel negozio..."
 		"ko"		"당신이 들고 있는 무기는 상점에 표시될 수 없습니다..."
 	}
+	"Cant Display Enhance"
+	{
+		"en"		"Your Holding weapon cant be enhanced..."
+		"it"		"L'arma di mantenimento non può essere mostrata nel negozio..."
+		"ko"		"당신이 들고 있는 무기는 상점에 표시될 수 없습니다..."
+	}
 	"Move Hud Down"
 	{
 		"en"		"Move Hud Down"

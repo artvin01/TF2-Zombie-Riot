@@ -453,6 +453,10 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 					//if server starts crashing out of nowhere, change how to change teamnum
 					EmitSoundToAll("mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 					ParticleEffectAt(ProjectileLoc, "hightower_explosion", 1.0);
+					int allieshit = 3;
+					if(EnableSilentMode)
+						allieshit = 1;
+
 					b_NpcIsTeamkiller[victim] = true;
 					Explode_Logic_Custom(0.0,
 					attacker,
@@ -463,13 +467,16 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 					_,
 					_,
 					true,
-					3,
+					allieshit,
 					false,
 					_,
 					SakratanGroupDebuff);
 					b_NpcIsTeamkiller[victim] = false;
 					f_ArmorCurrosionImmunity[victim][Element_Chaos]  = GetGameTime() + 10.0;
-					Force_ExplainBuffToClient(victim, "Chaos Elemental Damage");
+					if(EnableSilentMode)
+						Force_ExplainBuffToClient(victim, "Chaos Elemental Damage");
+					else
+						Force_ExplainBuffToClient(victim, "Chaos Elemental Damage High");
 				}
 			}
 			
@@ -690,11 +697,22 @@ static void SakratanGroupDebuff(int entity, int victim, float damage, int weapon
 
 static void SakratanGroupDebuffInternal(int victim)
 {
-	if(victim <= MaxClients)
+	if(!EnableSilentMode)
 	{
-		DealTruedamageToEnemy(0, victim, 350.0);
+		if(victim <= MaxClients)
+		{
+			DealTruedamageToEnemy(0, victim, 350.0);
+		}
+		IncreaseEntityDamageTakenBy(victim, 1.40, 10.0);
 	}
-	IncreaseEntityDamageTakenBy(victim, 1.40, 10.0);
+	else
+	{
+		if(victim <= MaxClients)
+		{
+			DealTruedamageToEnemy(0, victim, 700.0);
+		}
+		IncreaseEntityDamageTakenBy(victim, 1.60, 10.0);
+	}
 }
 
 void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
