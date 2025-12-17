@@ -236,7 +236,7 @@ static bool HasWrench(int client)
 	return true;
 }
 
-static int GetCost(int client, BuildingInfo info, float multi)
+static int GetCost(int client, BuildingInfo info/*, float multi*/)
 {
 	int buildCost = info.Cost;
 	if(info.HealthScaleCost)//if(id <= 1 || id == 12)
@@ -287,7 +287,7 @@ static void BuildingMenu(int client)
 		maxCash -= CashSpentLoadout[client];
 		cash = maxCash;
 	}
-	float multi = Object_GetMaxHealthMulti(client);
+	//float multi = Object_GetMaxHealthMulti(client);
 	float gameTime = GetGameTime();
 	bool ducking = view_as<bool>(GetClientButtons(client) & IN_DUCK);
 
@@ -371,7 +371,7 @@ static void BuildingMenu(int client)
 			if(info.Section != MenuSection[client])
 				continue;
 			
-			int cost = GetCost(client, info, multi);
+			int cost = GetCost(client, info);
 			int count;
 			int maxcount = 99;
 			bool allowed;
@@ -619,7 +619,7 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 								BuildingList.GetArray(id, info);
 
 								int metal = GetAmmo(client, Ammo_Metal);
-								int cost = GetCost(client, info, Object_GetMaxHealthMulti(client));
+								int cost = GetCost(client, info);
 
 								if(metal >= cost && (info.Func == INVALID_FUNCTION || Object_CanBuild(info.Func, client)))
 								{
