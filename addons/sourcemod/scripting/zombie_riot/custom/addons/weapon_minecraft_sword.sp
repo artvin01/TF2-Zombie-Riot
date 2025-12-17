@@ -213,7 +213,7 @@ static void Weapon_Sweeping_Edge(DataPack pack)
 	pack.Reset();
 	int client = 	GetClientOfUserId(pack.ReadCell());
 	int weapon = EntRefToEntIndex(pack.ReadCell());
-	int MaxRepeats = pack.ReadCell();
+	int MaxTarget = pack.ReadCell();
 	float MaxRange = pack.ReadFloat();
 	float damage = pack.ReadFloat();
 	if(IsValidClient(client) && IsValidCurrentWeapon(client, weapon))
@@ -225,14 +225,14 @@ static void Weapon_Sweeping_Edge(DataPack pack)
 		/*
 			Extra effects on bare swing
 		*/
-		static float AngEffect[3];
+		/*static float AngEffect[3];
 		AngEffect = ang2;
-
 		AngEffect[1] -= 90.0;
+		
 		float Speed = 1500.0;
+		int MaxRepeats = 4;
 		int PreviousProjectile;
-
-		for(int repeat; repeat <= MaxRepeats; repeat ++)
+		for(int repeat; repeat <= MaxRepeats; repeat++)
 		{
 			int projectile = Wand_Projectile_Spawn(client, Speed, 99999.9, 0.0, -1, weapon, "", AngEffect);
 			DataPack pack2 = new DataPack();
@@ -247,23 +247,67 @@ static void Weapon_Sweeping_Edge(DataPack pack)
 			pack2.WriteCell(EntIndexToEntRef(laser));
 			RequestFrames(Sweeping_Edge_DeleteLaserAndParticle, 18, pack2);
 			AngEffect[1] += (180.0 / float(MaxRepeats));
-		}
+		}*/
 
 		float vecSwingForward[3];
 		GetAngleVectors(ang2, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
 		ang2[0] = fixAngle(ang2[0]);
 		ang2[1] = fixAngle(ang2[1]);
-
+		
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
+		
+		ArrayList targetList = new ArrayList();
+		// TR_EnumerateEntitiesSphere(pos2, MaxRange, PARTITION_NON_STATIC_EDICTS, TraceSweeping_Edge, client);
+		targetList.Push(client);
+		TR_EnumerateEntitiesSphere(pos2, MaxRange, PARTITION_NON_STATIC_EDICTS, TraceSweeping_Edge, targetList);
+		
+		FinishLagCompensation_Base_boss();
+		// Remove client from target list
+		// Avoid shifting by swapping last element and client
+		int length = targetList.Length;
+		targetList.SwapAt(0, length - 1);
+		targetList.Erase(--length);
+		for (int i; i < length; i++) {
+			if(i>=MaxTarget)
+				break;
+			static float ang3[3];
 			
+			int target = targetList.Get(i);
+			
+			float pos1[3];
+			WorldSpaceCenter(target, pos1);
+			GetVectorAnglesTwoPoints(pos2, pos1, ang3);
+			
+			// fix all angles
+			ang3[0] = fixAngle(ang3[0]);
+			ang3[1] = fixAngle(ang3[1]);
+
+			// verify angle validity
+			if(!(fabs(ang2[0] - ang3[0]) <= 90.0 || (fabs(ang2[0] - ang3[0]) >= (360.0-90.0))))
+				continue;
+
+			if(!(fabs(ang2[1] - ang3[1]) <= 90.0 || (fabs(ang2[1] - ang3[1]) >= (360.0-90.0))))
+				continue;
+			
+			// ensure no wall is obstructing
+			if(Can_I_See_Enemy_Only(client, target))
+			{
+				// success
+				float damage_force[3]; CalculateDamageForce(vecSwingForward, 100000.0, damage_force);
+				SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, damage_force, pos1);
+			}
+		}
+		
+		delete targetList;
+		/*
 		for(int i=0; i < MAXENTITIES; i++)
 		{
-			Ms_HitEntities[i] = false;
+			Ms_HitEntities[i] = 0;
 		}
 		TR_EnumerateEntitiesSphere(pos2, MaxRange, PARTITION_NON_STATIC_EDICTS, TraceSweeping_Edge, client);
-
-	//	bool Hit = false;
+		
+		//	bool Hit = false;
 		for (int entity_traced = 0; entity_traced < 8; entity_traced++)
 		{
 			if(Ms_HitEntities[entity_traced] > 0)
@@ -301,12 +345,12 @@ static void Weapon_Sweeping_Edge(DataPack pack)
 				break;
 			}
 		}
-		FinishLagCompensation_Base_boss();
+		*/
 	}
 	delete pack;
 }
 
-static void Sweeping_Edge_DeleteLaserAndParticle(DataPack pack)
+/*static void Sweeping_Edge_DeleteLaserAndParticle(DataPack pack)
 {
 	pack.Reset();
 	int Projectile = EntRefToEntIndex(pack.ReadCell());
@@ -325,8 +369,21 @@ static void Sweeping_Edge_DeleteLaserAndParticle(DataPack pack)
 			RemoveEntity(Laser);
 	}
 	delete pack;
+}*/
+
+static bool TraceSweeping_Edge(int entity, ArrayList list)
+{
+	if(IsValidEnemy(list.Get(0), entity, true, true)) //Must detect camo.
+	{
+		list.Push(entity);
+		if (list.Length >= 8) {
+			return false;
+		}
+	}
+	return true;
 }
 
+/*
 static bool TraceSweeping_Edge(int entity, int filterentity)
 {
 	if(IsValidEnemy(filterentity, entity, true, true)) //Must detect camo.
@@ -344,3 +401,4 @@ static bool TraceSweeping_Edge(int entity, int filterentity)
 	//always keep going!
 	return true;
 }
+*/
