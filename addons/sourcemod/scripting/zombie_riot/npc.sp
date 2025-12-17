@@ -93,6 +93,7 @@ void NPC_ConfigSetup()
 	// Constructs
 	ObjectResearch_MapStart();
 	ObjectWall_MapStart();
+	
 	ObjectPump_MapStart();
 	ObjectWood_MapStart();
 	ObjectStone_MapStart();
@@ -100,6 +101,8 @@ void NPC_ConfigSetup()
 	ObjectStove_MapStart();
 	ObjectFactory_MapStart();
 	ObjectMinter_MapStart();
+	ObjectGemCrafter_MapStart();
+
 	ObjectConstruction_LightHouse_MapStart();
 	ObjectHeavyCaliberTurret_MapStart();
 	Object_MinigunTurret_MapStart();
@@ -1489,6 +1492,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/construction/obj_const_supply.sp"
 #include "object/construction/obj_const_helper.sp"
 #include "object/construction/obj_const_voidstone.sp"
+#include "object/construction/obj_dungeon_crafter.sp"
 
 // VEHICLES
 #include "../shared/vehicles/vehicle_shared.sp"

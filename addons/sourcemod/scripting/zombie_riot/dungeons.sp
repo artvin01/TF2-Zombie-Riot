@@ -815,6 +815,7 @@ static Action DungeonMainTimer(Handle timer)
 			}
 			else
 			{
+				f_CreditsOnKill[entity] = 0.0;
 				SmiteNpcToDeath(entity);
 			}
 		}
@@ -1030,6 +1031,7 @@ static void Dungeon_RoomVote(const Vote vote)
 				}
 				else
 				{
+					f_CreditsOnKill[entity] = 0.0;
 					SmiteNpcToDeath(entity);
 				}
 			}
@@ -1188,6 +1190,7 @@ static void BattleLosted()
 			}
 			else
 			{
+				f_CreditsOnKill[entity] = 0.0;
 				SmiteNpcToDeath(entity);
 			}
 		}
@@ -1227,12 +1230,42 @@ static float ScaleBasedOnRound(int round)
 
 void Dungeon_EnemySpawned(int entity)
 {
-	if(Dungeon_Mode() && EnemyScaling > 0.0)
+	if(Dungeon_Mode())
 	{
-		fl_Extra_Damage[entity] *= 1.0 + ((EnemyScaling - 1.0) / 3.0);
-		
-		SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * EnemyScaling));
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * EnemyScaling));
+		// Reward cash depending on the wave scaling and how much left
+		if(AttackType < 2)
+		{
+			int round = Dungeon_GetRound();
+			if(round > 39)
+				round = 39;
+			
+			int current = CurrentCash - GlobalExtraCash;
+
+			int a, other;
+			while((other = FindEntityByNPC(a)) != -1)
+			{
+				if(!b_NpcHasDied[other] && GetTeam(other) != TFTeam_Red)
+					current += RoundFloat(f_CreditsOnKill[other]);
+			}
+
+			int goal = DefaultTotalCash(round);
+			if(current < goal)
+			{
+				int reward = (goal - current) / (b_thisNpcIsABoss[entity] ? 5 : 50);
+				if(reward < 5)
+					reward = 5;
+				
+				f_CreditsOnKill[entity] += float(reward / 5 * 5);
+			}
+		}
+
+		if(EnemyScaling > 0.0)
+		{
+			fl_Extra_Damage[entity] *= 1.0 + ((EnemyScaling - 1.0) / 3.0);
+			
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * EnemyScaling));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * EnemyScaling));
+		}
 	}
 }
 
@@ -1244,13 +1277,31 @@ bool Dungeon_UpdateMvMStats()
 	int objective = FindEntityByClassname(-1, "tf_objective_resource");
 	if(objective != -1)
 	{
-		int itemCount;
+		int itemCount, worldMoney;
 		float gameTime = GetGameTime();
 
-		SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", 0);
+		if(AttackType == 1)
+		{
+			int round = Dungeon_GetRound();
+			if(round > 39)
+				round = 39;
+			
+			int current = CurrentCash - GlobalExtraCash;
+			int goal = DefaultTotalCash(round);
+
+			if(current < goal)
+				worldMoney = goal - current;
+		}
+
+		SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", worldMoney);
 
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentAttacks);
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", RaidList.Length + 1);
+
+		StringMap map = Construction_GetMaterialStringMap();
+		StringMapSnapshot snap = map ? map.Snapshot() : null;
+		int snapLength = snap ? snap.Length : 0;
+		int snapPos;
 
 		for(int i; i < 24; i++)
 		{
@@ -1303,11 +1354,40 @@ bool Dungeon_UpdateMvMStats()
 					Waves_SetWaveClass(objective, i, Rogue_GetIngots(), "rogue_ingots", MVM_CLASS_FLAG_NORMAL, true);
 					continue;
 				}
+				default:
+				{
+					bool found;
+					while(snapPos < snapLength)
+					{
+						static const char prefix[] = "material_";
+
+						int size = snap.KeyBufferSize(snapPos) + strlen(prefix) + 1;
+						char[] key = new char[size];
+						snap.GetKey(snapPos, key, size);
+						snapPos++;
+
+						int amount;
+						map.GetValue(key, amount);
+						if(amount > 0)
+						{
+							Format(key, size, "%s%s", prefix, key);
+
+							itemCount += amount;
+							Waves_SetWaveClass(objective, i, amount, key, MVM_CLASS_FLAG_NORMAL, true);
+							found = true;
+							break;
+						}
+					}
+
+					if(found)
+						continue;
+				}
 			}
 
 			Waves_SetWaveClass(objective, i);
 		}
 
+		// Use the bar as a timer for room timelimit
 		float timeLeft = BattleTimelimit + 520.0 - gameTime;
 		float timeMax = NextAttackAt - gameTime;
 		if(timeLeft > timeMax)
@@ -1321,3 +1401,5 @@ bool Dungeon_UpdateMvMStats()
 
 	return true;
 }
+
+#include "roguelike/dungeon_items.sp"

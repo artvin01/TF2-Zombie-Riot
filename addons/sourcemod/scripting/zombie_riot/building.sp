@@ -345,7 +345,7 @@ static void BuildingMenu(int client)
 
 		for(int i; i < sizeof(SectionName); i++)
 		{
-			if(i == 2 && !Construction_Mode() && !CvarInfiniteCash.BoolValue)
+			if(i == 2 && !Construction_Mode() && !Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
 				continue;
 
 			
@@ -690,7 +690,7 @@ static int BuildByInfo(BuildingInfo info, int client, float vecPos[3], float vec
 
 		if(obj.m_bConstructBuilding && !info.HealthScaleCost)
 		{
-			expected = RoundFloat(obj.BaseHealth * Construction_GetMaxHealthMulti());
+			expected = RoundFloat(obj.BaseHealth * Construction_GetMaxHealthMulti(Multi));
 		}
 
 		if(maxhealth && expected && maxhealth != expected)

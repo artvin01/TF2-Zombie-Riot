@@ -1498,6 +1498,11 @@ float Construction_GetNextAttack()
 	return NextAttackAt;
 }
 
+StringMap Construction_GetMaterialStringMap()
+{
+	return CurrentMaterials;
+}
+
 int Construction_GetMaterial(const char[] short)
 {
 	int amount;
@@ -1862,8 +1867,11 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-float Construction_GetMaxHealthMulti()
+float Construction_GetMaxHealthMulti(float builderMulti)
 {
+	if(!Construction_Mode())
+		return builderMulti;
+	
 	float multi = 1.5;	// Construction Novice
 	multi *= 1.65;	// Construction Apprentice
 

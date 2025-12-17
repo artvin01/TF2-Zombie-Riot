@@ -1076,7 +1076,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	i_WaveHasFreeplay = kv.GetNum("do_freeplay", 0);
 	kv.GetString("complete_item", buffer, sizeof(buffer));
 	WaveGiftItem = buffer[0] ? Items_NameToId(buffer) : -1;
-	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
+	bool autoNPCCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
+	bool defaultCash = view_as<bool>(kv.GetNum("auto_wave_cash"));
 	FakeMaxWaves = kv.GetNum("fakemaxwaves");
 	NoBarneySpawn = view_as<bool>(kv.GetNum("no_barney", 0));
 	kv.GetString("relay_send_start", buffer, sizeof(buffer));
@@ -1151,7 +1152,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	MusicLastmann.SetupKv("music_lastman", kv);
 	MusicWin.SetupKv("music_win", kv);
 	MusicLoss.SetupKv("music_loss", kv);
-
+	int waves;
 	
 	Enemy enemy;
 	Wave wave;
@@ -1163,7 +1164,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 			continue;
 		}
 
-		round.Cash = kv.GetNum("cash");
+		round.Cash = kv.GetNum("cash", (defaultCash && waves < sizeof(DefaultWaveCash)) ? DefaultWaveCash[waves] : 0);
 		round.AmmoBoxExtra = kv.GetNum("ammobox_extra");
 		round.Custom_Refresh_Npc_Store = view_as<bool>(kv.GetNum("grigori_refresh_store"));
 		round.medival_difficulty = kv.GetNum("Medieval_research_level");
@@ -1292,7 +1293,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 			kv.GoBack();
 		}
 
-		if(autoCash && nonBosses)
+		if(autoNPCCash && nonBosses)
 		{
 			int length = round.Waves.Length;
 			if(length)
@@ -1318,9 +1319,10 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		}
 		
 		Rounds.PushArray(round);
+		waves++;
 	} while(kv.GotoNextKey());
 
-	int waves = Rounds.Length;
+	waves = Rounds.Length;
 	if(waves > 58 || waves < 29)
 	{
 		if(waves > 1)	//incase some wavetype has only 1 waves 

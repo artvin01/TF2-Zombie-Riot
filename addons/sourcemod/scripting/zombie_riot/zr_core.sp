@@ -47,6 +47,37 @@ public const int AmmoData[][] =
 	{ 0, 0 }			//???
 };
 
+public const int DefaultWaveCash[] =
+{
+	300, 300, 500, 300, 300, 300, 300, 300, 300, 1000,
+	500, 500, 500, 750, 750, 1500, 2000, 1200, 1200, 2500,
+	1250, 1250, 1500, 2250, 1500, 1500, 2900, 1750, 1750, 5000,
+	1850, 1850, 1850, 1850, 1850, 3000, 3000, 4000, 4000, 20000,
+	3000, 3000, 3000, 3000, 15000,
+	2500, 2500, 3000, 4000, 25000,
+	3000, 3000, 3000, 3000
+};
+
+stock int DefaultTotalCash(int wave)
+{
+	static int totalCash[sizeof(DefaultWaveCash)];
+
+	if(!totalCash[0])
+	{
+		int total;
+		for(int i; i < sizeof(DefaultWaveCash); i++)
+		{
+			total += DefaultWaveCash[i];
+			totalCash[i] = total;
+		}
+	}
+	
+	int twave = wave;
+	if(twave >= sizeof(DefaultWaveCash))
+		twave = sizeof(DefaultWaveCash) - 1;
+	
+	return totalCash[twave];
+}
 
 //FOR PERK MACHINE!
 public const char PerkNames[][] =

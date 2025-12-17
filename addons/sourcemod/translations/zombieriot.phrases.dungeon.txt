@@ -7,14 +7,40 @@
 	}
 	"Dungeon Keep Looking"
 	{
-		"en"		"Keep looking for something else"
+		"en"	"Keep looking for something else"
 	}
 	"Dungeon Stop Looking"
 	{
-		"en"		"Stop looking and ready defenses"
+		"en"	"Stop looking and ready defenses"
 	}
 	"Dungeon Failed"
 	{
-		"en"		"All players have left the dungeon..."
+		"en"	"All players have left the dungeon..."
+	}
+	"Packing Station"
+	{
+		"en"	"Packing Station"
+	}
+	"Packing Station Desc"
+	{
+		"en"	"A construct that packs a random weapon with a random buff"
+	}
+	"Pack Random Weapon"
+	{
+		"en"	"Pack Random Weapon"
+	}
+
+	"Weapon Has Packed"
+	{
+		"#format"	"{1:s},{2:t},{3:t}"
+		"en"		"{green}{1} {default}packed with {yellow}{2}\n{3}"
+	}
+	"Clearance Focus"
+	{
+		"en"	"Clearance Focus"
+	}
+	"Clearance Focus Desc"
+	{
+		"en"	"{green}Cheaper parts make it cost 30％ less to buy and enchance"
 	}
 }

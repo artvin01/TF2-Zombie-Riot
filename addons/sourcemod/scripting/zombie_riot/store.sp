@@ -1791,7 +1791,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 	PrintToChat(client, "%t", "Could Not Buy Item", item.Name);
 }
 
-void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
+bool Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
 {
 	if(slot >= 0)
 	{
@@ -1805,10 +1805,12 @@ void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
 				static ItemInfo info;
 				item.GetItemInfo(0, info);
 				Format(buffer, blength, "%s {%T%i}", buffer, "Slot ", client,item.Slot);
-				break;
+				return true;
 			}
 		}
 	}
+
+	return false;
 }
 
 void Store_EquipSlotCheck(int client, Item mainItem)
@@ -3001,6 +3003,17 @@ void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -
 		delete sections;
 	}
 }
+
+bool Store_GetItemData(int index, Item item, ItemInfo info)
+{
+	if(index < 0 || index >= StoreItems.Length)
+		return false;
+	
+	StoreItems.GetArray(index, item);
+	item.GetItemInfo(0, info);
+	return true;
+}
+
 public Action Access_StoreViaCommand(int client, int args)
 {
 	if (!IsClientInGame(client))
@@ -3406,7 +3419,7 @@ static void MenuPage(int client, int section)
 							CanBePapped = true;
 					}
 					
-					bool tinker = Blacksmith_HasTinker(client, section);
+					bool tinker = Blacksmith_HasTinker(client, section) || GemCrafter_HasEffect(section);
 					
 					if(CanBePapped)
 					{
@@ -3805,10 +3818,6 @@ static void MenuPage(int client, int section)
 					{
 						Format(buffer, sizeof(buffer), "%s [%T]", info.Custom_Name, "Equipped", client);
 					}
-					else if(item.Owned[client] > 1)
-					{
-						Format(buffer, sizeof(buffer), "%s [%T]", info.Custom_Name, "Packed", client);
-					}
 					else if(item.Owned[client])
 					{
 						Format(buffer, sizeof(buffer), "%s [%T]", info.Custom_Name, "Purchased", client);
@@ -3860,10 +3869,16 @@ static void MenuPage(int client, int section)
 						}
 					}
 					
-					Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
+					if(Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer)))
+					{
 
+					}
 					//Dont show discount if bought before.
-					if(!item.BoughtBefore[client])
+					else if(GemCrafter_HasEffect(i))
+					{
+						StrCat(buffer, sizeof(buffer), " {+}");
+					}
+					else if(!item.BoughtBefore[client])
 					{
 						if(Rogue_UnlockStore())
 						{
@@ -4869,6 +4884,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 					}
 
 					Blacksmith_ExtraDesc(client, index);
+					GemCrafter_ExtraDesc(client, index);
 				}
 			}
 			MenuPage(client, index);
@@ -6339,6 +6355,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Sigil_Blade(client, entity);
 		Enable_KitOmega(client, entity);
 		Enable_PurgeKit(client, entity);
+		GemCrafter_Enable(client, entity);
 
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);
@@ -6744,7 +6761,12 @@ static int ItemSell(int base, int discount)
 
 static stock void ItemCostPap(const Item item, int &cost)
 {
-	if(Rogue_Mode())
+	if(Dungeon_Mode())
+	{
+		if(item.NPCSeller)
+			cost = RoundFloat(cost * item.NPCSeller_Discount);
+	}
+	else if(Rogue_Mode())
 	{
 		if(Rogue_UnlockStore() && item.NPCSeller)
 			cost = RoundFloat(cost * item.NPCSeller_Discount);
