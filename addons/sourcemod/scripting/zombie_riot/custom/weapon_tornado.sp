@@ -56,14 +56,14 @@ public void Weapon_Tornado_Laucher_M2(int client, int weapon, bool crit, int slo
 			bl_tornado_barrage_mode[client]=false;
 			Attributes_Set(weapon, 4014, Tornado_WeaponSavedAttribute[client]);
 			ClientCommand(client, "playgamesound misc/halloween/spelltick_01.wav");
-			PrintHintText(client,"Barrage: OFF\nBarrage Ammo [%i/%i]", i_RocketsSaved[client]/ROCKET_EFFICIENCY_MULTI , i_RocketsSavedMax[client]/ROCKET_EFFICIENCY_MULTI);
+			PrintHintText(client,"폭격: OFF\n폭격 탄환 [%i/%i]", i_RocketsSaved[client]/ROCKET_EFFICIENCY_MULTI , i_RocketsSavedMax[client]/ROCKET_EFFICIENCY_MULTI);
 		}
 		else if (i_RocketsSaved[client] >= ROCKET_EFFICIENCY_MULTI)
 		{
 			bl_tornado_barrage_mode[client]=true;
 			Attributes_Set(weapon, 4014, 0.0);
 			ClientCommand(client, "playgamesound misc/halloween/spelltick_02.wav");
-			PrintHintText(client,"Barrage: ON\nBarrage Ammo [%i/%i]", i_RocketsSaved[client]/ROCKET_EFFICIENCY_MULTI , i_RocketsSavedMax[client]/ROCKET_EFFICIENCY_MULTI);
+			PrintHintText(client,"폭격: ON\n폭격 탄환 [%i/%i]", i_RocketsSaved[client]/ROCKET_EFFICIENCY_MULTI , i_RocketsSavedMax[client]/ROCKET_EFFICIENCY_MULTI);
 		}
 	}
 }

@@ -222,12 +222,12 @@ public void Weapon_IEM_Cutter_PAP_M2(int client, int weapon, bool crit, int slot
 	if (!Laser_Cutter_Static[client])
 	{
 		Laser_Cutter_Static[client] = true;
-		PrintHintText(client, "Weapon Mode: Static");
+		PrintHintText(client, "무기 모드: 표준형");
 	}
 	else
 	{
 		Laser_Cutter_Static[client] = false;
-		PrintHintText(client, "Weapon Mode: Expand");
+		PrintHintText(client, "무기 모드: 확장형");
 	}
 	
 }

@@ -2096,6 +2096,11 @@
 		"en"		"Misc Items"
 		"ko"		"기타 아이템"
 	}
+	"Enhance Active Weapon"
+	{
+		"en"		"Enhance Active Weapon"
+		"ko"		"현재 들고있는 무기 강화"
+	}
 	"Level Perks"//Lvl Perks here
 	{
 		"en"		"Level Perks"

@@ -755,7 +755,7 @@ static void Beam_Wand_pap_Hud(int client, bool type, int duration)
 {
 	if(type)
 	{
-		PrintHintText(client,"Mana Time Out! {%i}", duration);
+		PrintHintText(client,"마나 시간 초과! {%i}", duration);
 	}
 	else
 	{
@@ -763,30 +763,30 @@ static void Beam_Wand_pap_Hud(int client, bool type, int duration)
 		{
 			if(bl_orbtial_cannon[client])
 			{
-				PrintHintText(client,"ORBITAL CANNON FIRING IN: {%i}", duration);
+				PrintHintText(client,"궤도 폭격 발동까지: {%i}", duration);
 			}
 			else if(i_cannon_charge[client]<BEAM_WAND_CANNON_ABILITY_COST)
 			{
-				PrintHintText(client,"Particle Cannon | Charge: [%i%/%i]", i_cannon_charge[client], BEAM_WAND_CANNON_ABILITY_COST);
+				PrintHintText(client,"입자포 | 충전: [%i%/%i]", i_cannon_charge[client], BEAM_WAND_CANNON_ABILITY_COST);
 			}
 			else
 			{
-				PrintHintText(client,"Particle Cannon | Charge: [FULL!]");
+				PrintHintText(client,"입자포 | 충전: [FULL!]");
 			}
 		}
 		else
 		{
 			if(bl_overdrive_beam[client])
 			{
-				PrintHintText(client,"OVERDRIVE ACTIVE! | {%i}", duration);
+				PrintHintText(client,"과충전 발동! | {%i}", duration);
 			}
 			else if(fl_beam_overdrive_cost[i_weapon_pap_tier[client]]>fl_beam_overdrive_charge[client])
 			{
-				PrintHintText(client,"Particle Beam | Charge: [%i%/%i]", RoundToFloor(fl_beam_overdrive_charge[client]), RoundToFloor(fl_beam_overdrive_cost[i_weapon_pap_tier[client]]));
+				PrintHintText(client,"입자 광선 | 충전: [%i%/%i]", RoundToFloor(fl_beam_overdrive_charge[client]), RoundToFloor(fl_beam_overdrive_cost[i_weapon_pap_tier[client]]));
 			}
 			else
 			{
-				PrintHintText(client,"Particle Beam | Charge: [FULL!]");
+				PrintHintText(client,"입자 광선 | 충전: [충전됨!]");
 			}
 		}
 		

@@ -462,11 +462,11 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 			float cooldown = Ability_Check_Cooldown(client, 2);
 			if(cooldown > 0.0)
 			{
-				PrintHintText(client,"Unbrilliant Glory [%.1f/%.1f]\nPower Gain: [%.1f％]\nAngered Precence: [%.1f％]\nProvoked Anger: [%.1f％]", cooldown, MYLNAR_MAX_CHARGE_TIME, (f_MlynarDmgMultiPassive[client] - 1.0) * 100.0, (f_MlynarDmgMultiAgressiveClose[client] - 1.0) * 100.0, (f_MlynarDmgMultiHurt[client] - 1.0) * 100.0);	
+				PrintHintText(client,"눈부시지 않은 영광 [%.1f/%.1f]\n모은 힘: [%.1f％]\n분노량: [%.1f％]\n표출하지 않은 분노: [%.1f％]", cooldown, MYLNAR_MAX_CHARGE_TIME, (f_MlynarDmgMultiPassive[client] - 1.0) * 100.0, (f_MlynarDmgMultiAgressiveClose[client] - 1.0) * 100.0, (f_MlynarDmgMultiHurt[client] - 1.0) * 100.0);	
 			}
 			else
 			{
-				PrintHintText(client,"Unbrilliant Glory [READY]\nPower Gain: [%.1f％]\nAngered Precence: [%.1f％]\nProvoked Anger: [%.1f％]", (f_MlynarDmgMultiPassive[client] - 1.0) * 100.0, (f_MlynarDmgMultiAgressiveClose[client] - 1.0) * 100.0, (f_MlynarDmgMultiHurt[client] - 1.0) * 100.0);	
+				PrintHintText(client,"눈부시지 않은 영광 [준비됨]\n모은 힘: [%.1f％]\n분노량: [%.1f％]\n표출하지 않은 분노: [%.1f％]", (f_MlynarDmgMultiPassive[client] - 1.0) * 100.0, (f_MlynarDmgMultiAgressiveClose[client] - 1.0) * 100.0, (f_MlynarDmgMultiHurt[client] - 1.0) * 100.0);	
 			}
 			
 			f_MlynarHudDelay[client] = GetGameTime() + 0.5;

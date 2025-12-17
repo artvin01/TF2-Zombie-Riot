@@ -4400,7 +4400,7 @@
 	{
 		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou take 700 truedamage.\nAlso gives 60％ Vulnerability for 10 seconds."
 		"it"	"Una volta pieno, ti fa infuriare in discorsi insopportabili e ti fa infuriare.\nInfliggi 350 danni reali a 3 alleati.\nInoltre dà 40％ Vulnerabilità per 10 secondi.\nColpisce solo fino a 3 alleati aggiuntivi."
-		"ko"	"원소 피해 게이지가 꽉 차면, 당신은 고통을 버티지 못 해 끔찍한 소리를 지르며 분노를 터트립니다.\n당신 주변의 팀원 3명에게 350의 트루 대미지를 줍니다.\n또한 피해를 받은 팀원들이 10초간 받는 피해가 40％ 증가합니다.\n팀킬 피해는 최대 3명의 아군에게만 가해집니다."
+		"ko"	"원소 피해 게이지가 꽉 차면, 당신은 고통을 버티지 못 해 끔찍한 소리를 지르며 분노를 터트립니다.\n당신에게 700의 트루 대미지를 줍니다.\n또한 10초간 받는 피해가 60％ 증가합니다."
 	}
 	
 	"Nervous Impairment Elemental Damage"

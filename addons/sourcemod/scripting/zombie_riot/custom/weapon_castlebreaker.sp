@@ -400,9 +400,9 @@ static void CreateCastleBreakerEffect(int client)
 	if(CastleBreaker_HUDDelay[client] < GetGameTime())
 	{
 		if(Change[client])
-			PrintHintText(client,"Mode: BLAST / Blast Shells: %i", new_ammo);
+			PrintHintText(client,"모드: 폭발 / 폭살탄: %i", new_ammo);
 		else
-			PrintHintText(client,"Mode: PIERCE / Blast Shells: %i", new_ammo);
+			PrintHintText(client,"모드: 관통 / 폭살탄: %i", new_ammo);
 
 		
 		CastleBreaker_HUDDelay[client] = GetGameTime() + 0.5;

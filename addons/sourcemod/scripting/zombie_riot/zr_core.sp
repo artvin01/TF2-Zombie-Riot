@@ -78,14 +78,14 @@ public const char PerkNames_Received[][] =
 public const char PerkNames_two_Letter[][] =
 {
 	"--",
-	"RB",
-	"OO",
-	"MC",
-	"HH",
-	"MB",
-	"TM",
-	"SS",
-	"드링크"
+	"열",
+	"옵",
+	"커",
+	"홉",
+	"명",
+	"뮬",
+	"축",
+	"드"
 };
 
 enum

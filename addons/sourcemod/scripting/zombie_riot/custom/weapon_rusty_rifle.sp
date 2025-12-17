@@ -120,9 +120,9 @@ public void Rusty_HUD(int client, int weapon, bool forced)
 		if(weapon_holding == weapon)
 		{
 			if (BigShot_Active[client])
-				PrintHintText(client, "Big Shot is loaded: fire!");
+				PrintHintText(client, "빅 샷 장전됨: 발사하세요!");
 			else
-				PrintHintText(client, "Big Shot is not loaded.");
+				PrintHintText(client, "빅 샷 장전 대기중...");
 			
 			
 		}
