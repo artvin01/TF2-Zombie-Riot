@@ -177,6 +177,10 @@ public void RedHeavy_ClotThink(int iNPC)
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+				if(!IsValidEntity(other))
+				{
+					continue;
+				}
 
 				if((YellowHeavyNpcID(other) || PurpleHeavyNpcID(other) || OrangeHeavyNpcID(other) || GreenHeavyNpcID(other) || CyanHeavyNpcID(other) || BlueHeavyNpcID(other)))
 				{
