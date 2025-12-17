@@ -4408,10 +4408,10 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 							
 							if(item.Internal_ClickEnhance)
 							{
+								DoNormal = 0;
 								int activeweapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 								if(IsValidEntity(activeweapon) && StoreWeapon[activeweapon] > 0)
 								{
-									
 									static Item item1;
 									StoreItems.GetArray(StoreWeapon[activeweapon], item1);
 									int level = item1.Owned[client]-1;
@@ -4441,7 +4441,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 									}
 									else
 									{
-										if(item.GetItemInfo(level, info2))
+										if(item1.GetItemInfo(level, info2))
 											CanBePapped = true;
 									}
 									if(CanBePapped)
@@ -4460,7 +4460,6 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 							{
 								SPrintToChat(client,"%t", "Cant Display Enhance");
 								MenuPage(client, -1);
-
 							}
 							else
 							{
