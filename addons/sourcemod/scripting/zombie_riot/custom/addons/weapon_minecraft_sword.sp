@@ -350,7 +350,7 @@ static void Weapon_Sweeping_Edge(DataPack pack)
 	delete pack;
 }
 
-static void Sweeping_Edge_DeleteLaserAndParticle(DataPack pack)
+/*static void Sweeping_Edge_DeleteLaserAndParticle(DataPack pack)
 {
 	pack.Reset();
 	int Projectile = EntRefToEntIndex(pack.ReadCell());
@@ -369,7 +369,7 @@ static void Sweeping_Edge_DeleteLaserAndParticle(DataPack pack)
 			RemoveEntity(Laser);
 	}
 	delete pack;
-}
+}*/
 
 static bool TraceSweeping_Edge(int entity, ArrayList list)
 {
