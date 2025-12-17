@@ -18,9 +18,9 @@ void ObjectTinkerAnvil_MapStart()
 	BuildingInfo build;
 	build.Section = 1;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_tinker_anvil");
-	build.Cost = 338;
+	build.Cost = 350;
 	build.Health = 600;
-	build.HealthScaleCost = true;
+	//build.HealthScaleCost = true;
 	build.Cooldown = 15.0;
 	build.Func = ObjectTinkerAnvil_CanBuild;
 	Building_Add(build);
