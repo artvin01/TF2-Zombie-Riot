@@ -21,7 +21,7 @@ void ObjectBarricade_MapStart()
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_barricade");
 	build.Cost = 600;
 	build.Health = 600;
-	//build.HealthScaleCost = true;
+	build.HealthScaleCost = true;
 	build.Cooldown = 15.0;
 	build.Func = ObjectBarricade_CanBuild;
 	Building_Add(build);

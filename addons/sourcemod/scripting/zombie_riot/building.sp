@@ -241,12 +241,14 @@ static int GetCost(int client, BuildingInfo info, float multi)
 	int buildCost = info.Cost;
 	if(info.HealthScaleCost)//if(id <= 1 || id == 12)
 	{
+		/*
 		int cost_extra = RoundFloat(info.Health * multi / 2.4);
 		if(cost_extra <= 0)
 		{
 			cost_extra = 0;
 		}
 		buildCost = buildCost + cost_extra;
+		*/
 		if(!Waves_Started())
 		{
 			buildCost /= 3;
