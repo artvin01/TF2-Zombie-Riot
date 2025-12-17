@@ -103,9 +103,9 @@ bool b_MissilesEnabled[3] = { false, false, true };			//Are Micro-Missiles enabl
 //MONDO MASSACRE: The strongest possible roll. Fires an EXTREMELY powerful, VERY big bomb which deals a base damage of 100k within an enormous blast radius.
 int i_MondoMaxTargets[3] = { 999, 999, 999 };
 
-float f_MondoChance[3] = { 0.00, 0.00, 0.1 };
+float f_MondoChance[3] = { 0.00, 0.00, 0.001 };
 float f_MondoVelocity[3] = { 2000.0, 3000.0, 4000.0 };
-float f_MondoDMG[3] = { 300000.0, 300000.0, 900000.0 };
+float f_MondoDMG[3] = { 300000.0, 300000.0, 300000.0 };
 float f_MondoRadius[3] = { 2000.0, 3000.0, 4000.0 };
 
 bool b_MondoEnabled[3] = { false, false, true };
