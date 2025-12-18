@@ -6504,4 +6504,20 @@
 	{
 		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
 	}
+	"Barbaric Teardown"
+	{
+		"en"	"Barbaric Teardown"
+	}
+	"Barbaric Teardown Desc"
+	{
+		"en"	"Fellow outposts base demolisher's.\n-First 3 hits deal bonus damage\nThese 3 hits deal much higher building damage."
+	}
+	"Skilled Crossbowman"
+	{
+		"en"	"Skilled Crossbowman"
+	}
+	"Skilled Crossbowman Desc"
+	{
+		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
+	}
 }
