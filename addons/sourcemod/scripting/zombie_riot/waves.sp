@@ -189,11 +189,14 @@ void Waves_PluginStart()
 
 bool Waves_InFreeplay()
 {
-	return (!Rogue_Mode() && !Construction_Mode() && Rounds && CurrentRound >= Rounds.Length);
+	return (!Rogue_Mode() && !Construction_Mode() && !Dungeon_Mode() && Rounds && CurrentRound >= Rounds.Length);
 }
 
 bool Waves_InSetup()
 {
+	if(Dungeon_Mode())
+		return Dungeon_InSetup();
+	
 	if(Construction_Mode())
 		return Construction_InSetup();
 	
@@ -243,6 +246,8 @@ float MinibossScalingReturn()
 		return 1.0;
 	if(BetWar_Mode())
 		return 1.0;
+	if(Dungeon_Mode())
+		return 1.0;
 
 	return MinibossScalingHandle;
 }
@@ -273,7 +278,7 @@ public Action Waves_SetWaveCmd(int client, int args)
 
 bool Waves_InVote()
 {
-	return (Rogue_Mode() || Construction_Mode() || Voting || VotingMods);
+	return (Rogue_Mode() || Construction_Mode() || Dungeon_Mode() || Voting || VotingMods);
 }
 
 public Action Waves_RevoteCmd(int client, int args)
@@ -282,7 +287,7 @@ public Action Waves_RevoteCmd(int client, int args)
 	{
 		BetWar_RevoteCmd(client);
 	}
-	else if(Rogue_Mode() || Construction_Mode())
+	else if(Rogue_Mode() || Construction_Mode() || Dungeon_Mode())
 	{
 		Rogue_RevoteCmd(client);
 	}
@@ -304,7 +309,7 @@ bool Waves_CallVote(int client, int force = 0)
 	if(BetWar_Mode())
 		return BetWar_CallVote(client);
 	
-	if(Rogue_Mode() || Construction_Mode())
+	if(Rogue_Mode() || Construction_Mode() || Dungeon_Mode())
 		return Rogue_CallVote(client);
 	
 	if((Voting || VotingMods) && (force || !VotedFor[client]))
@@ -599,6 +604,18 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 	
 	if(!modifierOnly)
 		StartCash = kv.GetNum("cash", 700);
+	
+	// Dungeon Gamemode
+	if(map && kv.GetNum("dungeon"))
+	{
+		if(!modifierOnly)
+			Dungeon_SetupVote(kv);
+
+		if(kv != map)
+			delete kv;
+		
+		return;
+	}
 
 	// Betting Wars Gamemode
 	if(map && kv.GetNum("bettingwars"))
@@ -886,7 +903,7 @@ void Waves_SetupMiniBosses(KeyValues map)
 		MiniBosses = null;
 	}
 	
-	if(CvarNoSpecialZombieSpawn.BoolValue || Rogue_Mode() || Construction_Mode())
+	if(CvarNoSpecialZombieSpawn.BoolValue || Rogue_Mode() || Construction_Mode() || Dungeon_Mode())
 		return;
 	
 	KeyValues kv = map;
@@ -1059,7 +1076,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	i_WaveHasFreeplay = kv.GetNum("do_freeplay", 0);
 	kv.GetString("complete_item", buffer, sizeof(buffer));
 	WaveGiftItem = buffer[0] ? Items_NameToId(buffer) : -1;
-	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
+	bool autoNPCCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
+	bool defaultCash = view_as<bool>(kv.GetNum("auto_wave_cash"));
 	FakeMaxWaves = kv.GetNum("fakemaxwaves");
 	NoBarneySpawn = view_as<bool>(kv.GetNum("no_barney", 0));
 	kv.GetString("relay_send_start", buffer, sizeof(buffer));
@@ -1134,7 +1152,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	MusicLastmann.SetupKv("music_lastman", kv);
 	MusicWin.SetupKv("music_win", kv);
 	MusicLoss.SetupKv("music_loss", kv);
-
+	int waves;
 	
 	Enemy enemy;
 	Wave wave;
@@ -1146,7 +1164,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 			continue;
 		}
 
-		round.Cash = kv.GetNum("cash");
+		round.Cash = kv.GetNum("cash", (defaultCash && waves < sizeof(DefaultWaveCash)) ? DefaultWaveCash[waves] : 0);
 		round.AmmoBoxExtra = kv.GetNum("ammobox_extra");
 		round.Custom_Refresh_Npc_Store = view_as<bool>(kv.GetNum("grigori_refresh_store"));
 		round.medival_difficulty = kv.GetNum("Medieval_research_level");
@@ -1275,7 +1293,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 			kv.GoBack();
 		}
 
-		if(autoCash && nonBosses)
+		if(autoNPCCash && nonBosses)
 		{
 			int length = round.Waves.Length;
 			if(length)
@@ -1301,9 +1319,10 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		}
 		
 		Rounds.PushArray(round);
+		waves++;
 	} while(kv.GotoNextKey());
 
-	int waves = Rounds.Length;
+	waves = Rounds.Length;
 	if(waves > 58 || waves < 29)
 	{
 		if(waves > 1)	//incase some wavetype has only 1 waves 
@@ -1424,7 +1443,7 @@ void Waves_RoundStart(bool event = false)
 
 	Kit_Fractal_ResetRound();
 	
-	if(Construction_Mode() || Rogue_Mode() || BetWar_Mode())
+	if(Construction_Mode() || Rogue_Mode() || BetWar_Mode() || Dungeon_Mode())
 	{
 		
 	}
@@ -1497,8 +1516,12 @@ void Waves_RoundStart(bool event = false)
 	}
 	if(CvarInfiniteCash.BoolValue)
 		CurrentCash = 999999;
-
-	if(BetWar_Mode())
+	
+	if(Dungeon_Mode())
+	{
+		Dungeon_StartSetup();
+	}
+	else if(BetWar_Mode())
 	{
 		BetWar_StartSetup();
 	}
@@ -1525,7 +1548,7 @@ void Waves_RoundEnd()
 	Medival_Difficulty_Level = 0.0; //make sure to set it to 0 othrerwise waves will become impossible
 	Medival_Difficulty_Level_NotMath = 0;
 
-	if(Rogue_Mode() || Construction_Mode())
+	if(Rogue_Mode() || Construction_Mode() || Dungeon_Mode())
 		delete Rounds;
 }
 
@@ -1814,9 +1837,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 	int length = Rounds.Length-1;
 	bool panzer_spawn = false;
 	bool panzer_sound = false;
-	bool subgame = (Rogue_Mode() || Construction_Mode());
+	bool subgame = (Rogue_Mode() || Construction_Mode() || Dungeon_Mode());
 	static int panzer_chance;
-	bool GiveAmmoSupplies = true;
+	bool GiveAmmoSupplies = !Dungeon_Mode();
 
 	if(CurrentRound < length)
 	{
@@ -2011,6 +2034,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			Waves_ResetCashGiveWaveEnd();
 			CurrentRound++;
 			CurrentWave = -1;
+			Dungeon_WaveEnd(CurrentRound == length);
 			//This ensures no invalid spawn happens.
 			Spawners_Timer();
 			if(CurrentRound != length)
@@ -2521,8 +2545,12 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				if(subgame)
 				{
 					ClearCustomFog(FogType_Wave);
-					
-					if(Construction_Mode())
+
+					if(Dungeon_Mode())
+					{
+						Dungeon_BattleVictory();
+					}
+					else if(Construction_Mode())
 					{
 						Construction_BattleVictory();
 					}
@@ -2646,8 +2674,15 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		
 		Ammo_Count_Ready = 8;
 	}
-
-	if(!Construction_Mode() || Construction_FinalBattle())	// In Construction: Base raids must be dealt with
+	
+	bool subWave = true;
+	if(Construction_Mode())	// In Construction: Base raids must be dealt with
+		subWave = !Construction_FinalBattle();
+	
+	if(Dungeon_Mode())
+		subWave = !Dungeon_FinalBattle();
+	
+	if(subWave)
 		WaveStart_SubWaveStart();
 	
 	if(CurrentWave == 0 && GiveAmmoSupplies)
@@ -2656,7 +2691,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		CheckIfAloneOnServer();
 		Ammo_Count_Ready += 1;
 
-		if(!Construction_Mode())
+		if(!Construction_Mode() && !Dungeon_Mode())
 		{
 			for (int target = 1; target <= MaxClients; target++)
 			{
@@ -2672,7 +2707,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		Ammo_Count_Ready += 1;
 		Gave_Ammo_Supply = 0;
 
-		if(!Construction_Mode())
+		if(!Construction_Mode() && !Dungeon_Mode())
 		{
 			for (int target = 1; target <= MaxClients; target++)
 			{
@@ -2912,6 +2947,9 @@ void Waves_ClearWaveCurrentSpawningEnemies()
 
 bool Waves_Started()
 {
+	if(Dungeon_Mode())
+		return Dungeon_Started();
+	
 	if(BetWar_Mode())
 		return BetWar_Started();
 	
@@ -2926,6 +2964,9 @@ bool Waves_Started()
 
 int Waves_GetRoundScale()
 {
+	if(Dungeon_Mode())
+		return Dungeon_GetRound();
+	
 	if(Construction_Mode())
 		return Construction_GetRound();
 	
@@ -3044,7 +3085,7 @@ void WaveStart_SubWaveStart(float time = 0.0)
 
 void Zombie_Delay_Warning()
 {
-	if(!Waves_Started() || InSetup || Classic_Mode() || Construction_InSetup())
+	if(!Waves_Started() || InSetup || Classic_Mode() || Construction_InSetup() || Dungeon_PeaceTime())
 		return;
 
 	switch(i_ZombieAntiDelaySpeedUp)
@@ -3098,6 +3139,9 @@ void Zombie_Delay_Warning()
 				
 				if(Construction_Mode())
 					ForcePlayerLoss();
+				
+				if(Dungeon_Mode())
+					Dungeon_AntiStalled();
 			}
 		}
 		case 6:
@@ -3339,6 +3383,9 @@ static void UpdateMvMStatsFrame()
 	//profiler.Start();
 
 	UpdateFramed = false;
+
+	if(Dungeon_UpdateMvMStats())
+		return;
 
 	if(BetWar_UpdateMvMStats())
 		return;
@@ -4336,6 +4383,8 @@ void Waves_TrySpawnBarney()
 	if(Rogue_Mode())
 		return;
 	if(Construction_Mode())
+		return;
+	if(Dungeon_Mode())
 		return;
 	if(NoBarneySpawn)
 		return;

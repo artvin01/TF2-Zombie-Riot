@@ -229,7 +229,7 @@ public any Native_GetAliveStatus(Handle plugin, int numParams)
 }
 public any Native_GetSpecialMode(Handle plugin, int numParams)
 {
-	if(Construction_Mode())
+	if(Construction_Mode() || Dungeon_Mode())
 		return Mode_Construction;
 
 	if(Rogue_Mode())

@@ -93,6 +93,7 @@ void NPC_ConfigSetup()
 	// Constructs
 	ObjectResearch_MapStart();
 	ObjectWall_MapStart();
+	
 	ObjectPump_MapStart();
 	ObjectWood_MapStart();
 	ObjectStone_MapStart();
@@ -100,6 +101,7 @@ void NPC_ConfigSetup()
 	ObjectStove_MapStart();
 	ObjectFactory_MapStart();
 	ObjectMinter_MapStart();
+
 	ObjectConstruction_LightHouse_MapStart();
 	ObjectHeavyCaliberTurret_MapStart();
 	Object_MinigunTurret_MapStart();
@@ -109,6 +111,18 @@ void NPC_ConfigSetup()
 	ObjectFurniture_MapStart();
 	ObjectHelper_MapStart();
 	ObjectVoidstone_MapStart();
+	
+	ObjectDWall_MapStart();
+	ObjectDungeonCenter_MapStart();
+	ObjectGemCrafter_MapStart();
+	ObjectDStove_MapStart();
+
+	ObjectDLightHouse_MapStart();
+	ObjectDCaliberTurret_MapStart();
+	ObjectDMinigunTurret_MapStart();
+	ObjectDTeslarsMedusa_MapStart();
+	ObjectDStunGun_MapStart();
+	ObjectDDispenser_MapStart();
 	// Constructs
 
 	// Vehicles
@@ -1139,7 +1153,9 @@ void NPC_ConfigSetup()
 	DrDamSpecialDelivery_OnMapStart_NPC();
 	DrDamClone_OnMapStart_NPC();
 
-	BarbaricRagerOnMapStart();
+	
+	BarbaricTeardownOnMapStart();
+	SkilledCrossbowmanOnMapStart();
 }
 
 void NPC_MapEnd()
@@ -1312,6 +1328,7 @@ static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float
 				Rogue_EnemySpawned(entity);
 				Waves_EnemySpawned(entity);
 				Construction_EnemySpawned(entity);
+				Dungeon_EnemySpawned(entity);
 			}
 			Waves_UpdateMvMStats();
 		}
@@ -1490,6 +1507,16 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/construction/obj_const_supply.sp"
 #include "object/construction/obj_const_helper.sp"
 #include "object/construction/obj_const_voidstone.sp"
+#include "object/construction/obj_dungeon_center.sp"
+#include "object/construction/obj_dungeon_crafter.sp"
+#include "object/construction/obj_dungeon_dispenser.sp"
+#include "object/construction/obj_dungeon_lighthouse.sp"
+#include "object/construction/obj_dungeon_minigun_turret.sp"
+#include "object/construction/obj_dungeon_stove.sp"
+#include "object/construction/obj_dungeon_stungun.sp"
+#include "object/construction/obj_dungeon_supergun.sp"
+#include "object/construction/obj_dungeon_teslars_medusa.sp"
+#include "object/construction/obj_dungeon_wall.sp"
 
 // VEHICLES
 #include "../shared/vehicles/vehicle_shared.sp"
@@ -2494,4 +2521,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/logic_win_timer.sp"
 #include "npc/construction/npc_sensal_follower.sp"
 #include "npc/construction/npc_overlord_follower.sp"
-#include "npc/construction/construction2/npc_barbaric_rager.sp"
+#include "npc/construction/construction2/npc_barbaric_teardown.sp"
+#include "npc/construction/construction2/npc_skilled_crossbowman.sp"

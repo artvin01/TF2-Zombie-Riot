@@ -5344,10 +5344,9 @@ stock void SpawnTimer(float time)
 	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
 	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
 	
-#if defined ZR
-	if(!Construction_Mode())
+	if(!Construction_Mode() && !Dungeon_Mode())
 		f_AllowInstabuildRegardless = GetGameTime() + time;
-#endif
+		
 	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
 	
 	Event event = CreateEvent("teamplay_update_timer", true);
