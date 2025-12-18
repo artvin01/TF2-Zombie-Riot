@@ -40,9 +40,9 @@ static void ClotPrecache()
 	PrecacheModel(VictoriaRadiomast_MODEL_3);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaRadiomast(vecPos, vecAng, ally);
+	return VictoriaRadiomast(vecPos, vecAng, ally, data);
 }
 
 methodmap VictoriaRadiomast < CClotBody
@@ -59,7 +59,7 @@ methodmap VictoriaRadiomast < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.3);
 	}
 	
-	public VictoriaRadiomast(float vecPos[3], float vecAng[3], int ally)
+	public VictoriaRadiomast(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictoriaRadiomast npc = view_as<VictoriaRadiomast>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE,"1000000", ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
@@ -102,11 +102,12 @@ methodmap VictoriaRadiomast < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bLostHalfHealth = false;
 		npc.Anger = false;
+		npc.m_bFUCKYOU = (StrContains(data, "death_func") != -1);
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_flMeleeArmor = 2.5;
 		npc.m_flRangedArmor = 1.0;
-
+		
 		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0);
 		switch(Decicion)
 		{
@@ -472,6 +473,20 @@ public void VictoriaRadiomast_NPCDeath(int entity)
 {
 	VictoriaRadiomast npc = view_as<VictoriaRadiomast>(entity);
 	npc.PlayDeathSound();	
+	
+	if(npc.m_bFUCKYOU)
+	{
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+		{
+			int IsBaguettus = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+			if(IsValidEntity(IsBaguettus) && i_NpcInternalId[IsBaguettus] == CaptinoBaguettus_ID() && !b_NpcHasDied[IsBaguettus])
+			{
+				CaptinoBaguettus Baguettus = view_as<CaptinoBaguettus>(IsBaguettus);
+				Baguettus.m_bFUCKYOU=true;
+				break;
+			}
+		}
+	}
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

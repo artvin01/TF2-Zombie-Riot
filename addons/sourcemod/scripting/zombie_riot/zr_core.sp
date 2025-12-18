@@ -246,6 +246,7 @@ enum
 	WEAPON_RAIGEKI = 154,
 	WEAPON_HAMMER_NONPAP = 155,
 	WEAPON_HAMMER_PAP_1 = 156,
+	WEAPON_BOMB_AR = 157
 }
 
 enum
@@ -632,6 +633,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_flamethrower_chemical.sp"
 #include "custom/wand/weapon_ritualist.sp"
 #include "custom/weapon_boomerang.sp"
+#include "custom/weapon_bombplant_smg.sp"
 
 void ZR_PluginLoad()
 {
@@ -697,6 +699,14 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_spawn_vehicle", Command_PropVehicle, ADMFLAG_ROOT, "Spawn Vehicle"); 	//DEBUG
 	RegAdminCmd("sm_loadbgmusic", CommandBGTest, ADMFLAG_RCON, "Load a config containing a music field as passive music");
 	RegAdminCmd("sm_forceset_team", Command_SetTeamCustom, ADMFLAG_ROOT, "Set Team custom to a player"); 	//DEBUG
+	
+	RegAdminCmd("zr_rein", CommandAdminReinforce, ADMFLAG_ROOT, "Deploying Reinforce");
+	RegAdminCmd("zr_waveadd", Waves_AdminsWaveTimeAddCmd, ADMFLAG_ROOT, "Wave Time Add");
+	RegAdminCmd("zr_waveremain", Waves_AdminsWaveTimeRemainCmd, ADMFLAG_ROOT, "Wave Time Remain");
+	RegAdminCmd("zr_raidend", Waves_AdminsRaidTimeEndCmd, ADMFLAG_ROOT, "Raid Force END");
+	RegAdminCmd("zr_raidadd", Waves_AdminsRaidTimeAddCmd, ADMFLAG_ROOT, "Raid Time Add");
+	
+	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 
@@ -945,6 +955,7 @@ void ZR_MapStart()
 	Kritzkrieg_OnMapStart();
 	BubbleWand_MapStart();
 	Cheese_MapStart();
+	ResetMapStartExploARWeapon();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)

@@ -6314,6 +6314,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Medigun_SetModeDo(client, entity);
 		Cheese_Enable(client, entity);
 		Ritualist_Enable(client, entity);
+		Enable_ExploARWeapon(client, entity);
 
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);

@@ -215,7 +215,7 @@ methodmap VictoriaBirdeye < CClotBody
 			npc.SetActivity("ACT_MP_RUN_PRIMARY");
 			npc.StartPathing();
 			npc.m_flSpeed = 200.0;
-		}	
+		}
 		npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -299,6 +299,12 @@ methodmap VictoriaBirdeye < CClotBody
 				case 1:NPCPritToChat_Override("Bigpipe", "{forestgreen}", "bigpipe_Talk_06-1", false);
 				case 2:NPCPritToChat_Override("Harbringer", "{sienna}", "harbringer_Talk_07-1", false);
 			}
+			RequestFrame(VictoriaBirdeye_SpawnAllyDuo, EntIndexToEntRef(npc.index));
+		}
+		else if(!StrContains(data, "damn_trio"))
+		{
+			b_TheGoons=true;
+			npc.m_flMeleeArmor -= 0.25;
 			RequestFrame(VictoriaBirdeye_SpawnAllyDuo, EntIndexToEntRef(npc.index));
 		}
 		else

@@ -7,6 +7,7 @@ static int NPCId;
 static bool SilentDestruction;
 static bool OneCaramelldansen;
 static float g_CD_LandingSound;
+static float FactoryTooLuod;
 
 void VictorianFactory_MapStart()
 {
@@ -88,8 +89,11 @@ methodmap VictorianFactory < CClotBody
 	}
 	public void PlayEmergencyExtractionSound()
 	{
+		if(g_CD_LandingSound > GetGameTime())
+			return;
 		EmitSoundToAll(g_EmergencyExtractionSound, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_EmergencyExtractionSound, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		g_CD_LandingSound = GetGameTime() + 10.0;
 	}
 	public void PlayLandingSound()
 	{
@@ -175,10 +179,11 @@ methodmap VictorianFactory < CClotBody
 		b_we_are_reloading[npc.index]=false;
 		npc.m_flLifeTime=20.0;
 		i_ammo_count[npc.index]=0;
+		bool DontUseTeleport;
 		
 		//default: type-a (old ver)
 		//Maybe used for special waves
-		static char countext[7][1024];
+		static char countext[8][1024];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
@@ -242,6 +247,11 @@ methodmap VictorianFactory < CClotBody
 					}
 				}
 			}
+			else if(StrContains(countext[i], "donusetele") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "donusetele", "");
+				DontUseTeleport=true;
+			}
 		}
 		
 		if(npc.m_iState!=0)
@@ -259,24 +269,27 @@ methodmap VictorianFactory < CClotBody
 				EmitSoundToAll("misc/rd_points_return01.wav", _, _, _, _, 1.0);
 			}
 			LastSpawnDiversio = GetGameTime() + 5.0;
-			int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0);
-			switch(Decicion)
+			if(!DontUseTeleport)
 			{
-				case 2:
+				int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0);
+				switch(Decicion)
 				{
-					Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 500.0);
-					if(Decicion == 2)
+					case 2:
 					{
-						Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 250.0);
+						Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 500.0);
 						if(Decicion == 2)
 						{
-							Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 0.0);
+							Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 250.0);
+							if(Decicion == 2)
+							{
+								Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 0.0);
+							}
 						}
 					}
-				}
-				case 3:
-				{
-					//todo code on what to do if random teleport is disabled
+					case 3:
+					{
+						//todo code on what to do if random teleport is disabled
+					}
 				}
 			}
 		}
@@ -374,8 +387,12 @@ static void FactoryCPU(int iNPC)
 			TeleportEntity(npc.m_iWearable2, Vec, NULL_VECTOR, NULL_VECTOR);
 			SetEntityRenderColor(npc.m_iWearable2, 80, 50, 50, 255);
 			
-			EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+			if(FactoryTooLuod < gameTime)
+			{
+				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+				FactoryTooLuod = gameTime + 4.0;
+			}
 			i_AttacksTillMegahit[npc.index] = 601;
 			return;
 		}
@@ -422,11 +439,82 @@ static void FactoryCPU(int iNPC)
 				case -5:
 				{
 					//I was lazy to make a smooth RGB loop
+					static int GET_R;
+					static int GET_G;
+					static int GET_B;
+					int RGESPeed=17;
+					switch(npc.m_iOverlordComboAttack)
+					{
+						case 0:
+						{
+							GET_R=255;
+							GET_G=0;
+							GET_B+=RGESPeed;
+							if(GET_B>255)
+							{
+								GET_B=255;
+								npc.m_iOverlordComboAttack++;
+							}
+						}
+						case 1:
+						{
+							GET_R-=RGESPeed;
+							GET_G=0;
+							GET_B=255;
+							if(GET_R<=0)
+							{
+								GET_R=0;
+								npc.m_iOverlordComboAttack++;
+							}
+						}
+						case 2:
+						{
+							GET_R=0;
+							GET_G+=RGESPeed;
+							GET_B=255;
+							if(GET_G>255)
+							{
+								GET_G=255;
+								npc.m_iOverlordComboAttack++;
+							}
+						}
+						case 3:
+						{
+							GET_R=0;
+							GET_G=255;
+							GET_B-=RGESPeed;
+							if(GET_B<=0)
+							{
+								GET_B=0;
+								npc.m_iOverlordComboAttack++;
+							}
+						}
+						case 4:
+						{
+							GET_R+=RGESPeed;
+							GET_G=255;
+							GET_B=0;
+							if(GET_R>255)
+							{
+								GET_R=255;
+								npc.m_iOverlordComboAttack++;
+							}
+						}
+						case 5:
+						{
+							GET_R=255;
+							GET_G-=RGESPeed;
+							GET_B=0;
+							if(GET_G<=0)
+							{
+								GET_G=0;
+								npc.m_iOverlordComboAttack++;
+							}
+						}
+						default: npc.m_iOverlordComboAttack=0;
+					}
 					int iColor[4];
-					iColor[0]=145+RoundToCeil((gameTime/10.0)*110.0);
-					iColor[1]=10+RoundToCeil((npc.m_flAttackHappens/10.0)*245.0);
-					iColor[2]=0+RoundToCeil(((npc.m_flAttackHappens-gameTime)/10.0)*255.0);
-					iColor[3]=200;
+					SetColorRGBA(iColor, GET_R, GET_G, GET_B, 200);
 					SetVariantColor(iColor);
 					AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 					if(npc.m_flMusicEnd < gameTime)

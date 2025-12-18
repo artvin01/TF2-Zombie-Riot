@@ -138,6 +138,7 @@ methodmap VictorianDroneFragments < CClotBody
 		
 		ISVOLI[npc.index]=false;
 		b_we_are_reloading[npc.index]=false;
+		npc.m_bFUCKYOU_move_anim=false;
 		npc.m_fXPosSave=0.0;
 		npc.m_fZPosSave=0.0;
 		npc.m_fYPosSave=0.0;
@@ -161,7 +162,7 @@ methodmap VictorianDroneFragments < CClotBody
 		Is_a_Medic[npc.index] = true;
 		
 		bool FactorySpawndo;
-		static char countext[20][1024];
+		static char countext[7][512];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
@@ -196,6 +197,11 @@ methodmap VictorianDroneFragments < CClotBody
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "tracking", "");
 				npc.m_iState = -1;
+			}
+			else if(StrContains(countext[i], "raidmode") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "raidmode", "");
+				npc.m_bFUCKYOU_move_anim = true;
 			}
 		}
 		
@@ -311,7 +317,7 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 	
 	if((npc.m_flLifeTime>0.0 && npc.m_flAttackHappens_bullshit && gameTime > npc.m_flAttackHappens_bullshit)
-	||(npc.m_flLifeTime!=-1.0 &&  !IsValidAlly(npc.index, GetClosestAlly(npc.index))))
+	||((npc.m_flLifeTime!=-1.0 && !npc.m_bFUCKYOU_move_anim) && !IsValidAlly(npc.index, GetClosestAlly(npc.index))))
 	{
 		b_NpcForcepowerupspawn[npc.index] = 0;
 		i_RaidGrantExtra[npc.index] = 0;
@@ -577,10 +583,15 @@ static void VictoriaFragmentsAssaultMode(VictorianDroneFragments npc, float game
 							damageDealt +=50.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 4.0;
-						int GetWave = Waves_GetRoundScale()+1;
-						if(GetWave > 10)
-							GetWave=10;
-						damageDealt*=float(GetWave)*0.1;
+						if(npc.m_bFUCKYOU_move_anim)
+							damageDealt*=RaidModeScaling;
+						else
+						{
+							int GetWave = Waves_GetRoundScale()+1;
+							if(GetWave > 10)
+								GetWave=10;
+							damageDealt*=float(GetWave)*0.1;
+						}
 						Explode_Logic_Custom(damageDealt/(b_we_are_reloading[npc.index] ? 5.0 : 10.0), npc.index, npc.index, -1, vecHit, (b_we_are_reloading[npc.index] ? 125.0 : 85.0),_,_,_,4, _, 1.0);
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 					}

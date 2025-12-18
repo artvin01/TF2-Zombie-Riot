@@ -268,6 +268,48 @@ public Action Waves_SetWaveCmd(int client, int args)
 	RelayCurrentRound = CurrentRound;
 	CurrentWave = -1;
 	Waves_Progress();
+	NPC_CreateByName("npc_invisible_trigger", -1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, TFTeam_Stalkers);
+	return Plugin_Handled;
+}
+
+public Action Waves_AdminsWaveTimeRemainCmd(int client, int args)
+{
+	CPrintToChat(client, "{crimson}[ZR]{snow} WaveTimeOut in T-%.1fs", f_ZombieAntiDelaySpeedUp-GetGameTime());
+	return Plugin_Handled;
+}
+
+public Action Waves_AdminsWaveTimeAddCmd(int client, int args)
+{
+	if(args<1)
+	{
+		PrintToConsole(client, "Usage: zr_waveadd <int:Time>");
+		return Plugin_Handled;
+	}
+	char arg[12];
+	GetCmdArg(1, arg, sizeof(arg));
+	float AddTime = float(StringToInt(arg));
+	f_ZombieAntiDelaySpeedUp += AddTime;
+	return Plugin_Handled;
+}
+
+public Action Waves_AdminsRaidTimeEndCmd(int client, int args)
+{
+	RaidModeTime=GetGameTime();
+	return Plugin_Handled;
+}
+
+public Action Waves_AdminsRaidTimeAddCmd(int client, int args)
+{
+	if(args<1)
+	{
+		PrintToConsole(client, "Usage: zr_raidadd <int:Time>");
+		return Plugin_Handled;
+	}
+	char arg[12];
+	GetCmdArg(1, arg, sizeof(arg));
+	float AddTime = float(StringToInt(arg));
+
+	RaidModeTime+=AddTime;
 	return Plugin_Handled;
 }
 

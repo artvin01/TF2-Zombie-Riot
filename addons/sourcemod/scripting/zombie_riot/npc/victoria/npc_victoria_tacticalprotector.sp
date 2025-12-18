@@ -94,8 +94,8 @@ methodmap VictoriaProtector < CClotBody
 	}
 	property float m_flWait_II
 	{
-		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
 	
 	public VictoriaProtector(float vecPos[3], float vecAng[3], int ally, const char[] data)

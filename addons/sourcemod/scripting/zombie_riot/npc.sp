@@ -657,6 +657,7 @@ void NPC_ConfigSetup()
 	VictorianOfflineAvangard_MapStart();
 	VictorianWelder_OnMapStart_NPC();
 	VIctorianTanker_OnMapStart_NPC();
+	VictorianAssaultVehicle_OnMapStart();
 	VictorianPulverizer_OnMapStart_NPC();
 	VIctorianAmbusher_OnMapStart_NPC();
 	VictoriaTank_MapStart();
@@ -671,8 +672,15 @@ void NPC_ConfigSetup()
 	Harrison_OnMapStart_NPC();
 	Castellan_OnMapStart_NPC();
 
-//special - It is currently used as a trigger for the Victoria Factory.
-	Invisible_TRIGGER_OnMapStart_NPC();
+//special
+	Invisible_TRIGGER_OnMapStart_NPC();//It is currently used as a trigger for the Victoria Factory.
+	CaptinoBaguettus_OnMapStart_NPC();//Captino Meinus Follower
+	VictorianFactory_MapStart();
+	VictorianDroneFragments_MapStart();
+	VictorianDroneAnvil_MapStart();
+	Victorian_Tacticalunit_OnMapStart_NPC();
+	Victorian_TacticalProtector_OnMapStart_NPC();
+	TEST_Dummy_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -911,14 +919,6 @@ void NPC_ConfigSetup()
 	AgentWayneFreeplay_OnMapStart_NPC();
 	AgentIanFreeplay_OnMapStart_NPC();
 	AgentSpencerFreeplay_OnMapStart_NPC();
-
-	//Victoria stuff? idfk, come back in 1.5 years and comment on it Beep
-	VictorianFactory_MapStart();
-	VictorianDroneFragments_MapStart();
-	VictorianDroneAnvil_MapStart();
-	Victorian_Tacticalunit_OnMapStart_NPC();
-	Victorian_TacticalProtector_OnMapStart_NPC();
-
 
 	BossSummonRandom_OnMapStart_NPC();
 	//Combine Mutation
@@ -2196,6 +2196,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 //Victoria
 //special
 #include "npc/victoria/npc_invisible_trigger.sp"
+#include "npc/victoria/npc_victorian_factory.sp"
+#include "npc/victoria/npc_victoria_tacticalprotector.sp"
+#include "npc/victoria/npc_victoria_tacticalunit.sp"
+#include "npc/victoria/npc_test_dummy.sp"
+#include "npc/victoria/npc_baguettus.sp"
+
 //Wave 1~10
 #include "npc/victoria/npc_batter.sp"
 #include "npc/victoria/npc_charger.sp"
@@ -2247,14 +2253,13 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/victoria/npc_ambusher.sp"
 #include "npc/victoria/npc_taser.sp"
 #include "npc/victoria/npc_victorian_tank.sp"
+#include "npc/victoria/npc_drive_in_my_car.sp"
 #include "npc/victoria/npc_victoria_radiomast.sp"
 #include "npc/victoria/npc_radioguard.sp"
 #include "npc/victoria/npc_radio_repair.sp"
 #include "npc/victoria/npc_victorian_moru.sp"
 #include "npc/victoria/npc_victorian_fragments.sp"
-#include "npc/victoria/npc_victorian_factory.sp"
-#include "npc/victoria/npc_victoria_tacticalprotector.sp"
-#include "npc/victoria/npc_victoria_tacticalunit.sp"
+
 //raidbosses
 #include "npc/raidmode_bosses/victoria/npc_the_atomizer.sp"
 #include "npc/raidmode_bosses/victoria/npc_the_wall.sp"

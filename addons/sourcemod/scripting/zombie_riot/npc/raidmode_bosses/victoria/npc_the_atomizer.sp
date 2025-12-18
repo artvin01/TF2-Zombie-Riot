@@ -160,9 +160,8 @@ static void ClotPrecache()
 	PrecacheSound("weapons/bumper_car_spawn.wav");
 	PrecacheSoundCustom("#zombiesurvival/victoria/raid_atomizer.mp3");
 	
-	PrecacheModel(LASERBEAM);
+	g_Laser = PrecacheModel(LASERBEAM);
 	g_RedPoint = PrecacheModel("sprites/redglow1.vmt");
-	g_Laser = PrecacheModel("materials/sprites/laser.vmt");
 	
 	PrecacheModel("models/player/scout.mdl");
 }
@@ -302,8 +301,9 @@ methodmap Atomizer < CClotBody
 			npc.m_flNextRangedSpecialAttackHappens = 0.0;
 			npc.m_flAngerDelay = 0.0;
 			npc.m_flDelay_Attribute = 0.0;
+			npc.m_iAmmo = 0;
 			
-			static char countext[3][216];
+			static char countext[2][216];
 			int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 			for(int i = 0; i < count; i++)
 			{
@@ -319,9 +319,19 @@ methodmap Atomizer < CClotBody
 					npc.m_iTargetAlly = StringToInt(countext[i]);
 				}
 			}
-			
+			switch(npc.m_iOverlordComboAttack)
+			{
+				case 1: NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-1", false, true);
+				case 2:
+				{
+					npc.m_flSpeed = 400.0;
+					npc.m_iMaxAmmo = RoundToNearest(float(CountPlayersOnRed(2)) * 4.0);
+					npc.m_iAmmo = npc.m_iMaxAmmo;
+					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-2", false, true);
+				}
+				default: NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-1", false, true);
+			}
 			npc.PlaySupportSpawnSound();
-			NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-1", false, true);
 		}
 		else
 		{
@@ -353,6 +363,7 @@ methodmap Atomizer < CClotBody
 			OnMiss[npc.index] = false;
 			npc.m_fbRangedSpecialOn = false;
 			npc.m_bFUCKYOU = false;
+			AlreadySaidWin = false;
 			
 			ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 			
@@ -489,11 +500,11 @@ static void Clone_ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
 	
-	float ProjLocBase[3];
 	switch(npc.m_iOverlordComboAttack)
 	{
 		case 1:
 		{
+			static float ProjLocBase[3];
 			if(npc.m_iState <= 0)
 			{
 				npc.AddActivityViaSequence("taunt05");
@@ -508,7 +519,6 @@ static void Clone_ClotThink(int iNPC)
 				}
 				npc.m_flDelay_Attribute = gameTime + 0.5;
 				npc.StopPathing();
-				
 				npc.m_bisWalking = false;
 				npc.m_iState++;
 			}
@@ -523,9 +533,13 @@ static void Clone_ClotThink(int iNPC)
 				for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 				{
 					if(IsValidEnemy(npc.index, EnemyLoop, true, true))
-					{
-						if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop))
+					{					
+						float vecTarget[3]; WorldSpaceCenter(EnemyLoop, vecTarget);
+						float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+						float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+						if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && flDistanceToTarget < (1000.0 * 1000.0))
 						{
+						
 							GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
 							
 							MakeVectorFromPoints(ProjLoc, cpos, velocity);
@@ -537,7 +551,7 @@ static void Clone_ClotThink(int iNPC)
 								npc1.SetVelocity(velocity);
 							}
 							else
-							{	
+							{
 								TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);
 							}
 							if(!IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
@@ -546,9 +560,7 @@ static void Clone_ClotThink(int iNPC)
 								int green = 175;
 								int blue = 255;
 								if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-								{
 									RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-								}
 								int laser;
 								
 								laser = ConnectWithBeam(npc.index, EnemyLoop, red, green, blue, 3.0, 3.0, 2.35, LASERBEAM);
@@ -560,22 +572,20 @@ static void Clone_ClotThink(int iNPC)
 						else
 						{
 							if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-							{
 								RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-							}
 						}
 					}
 					else
 					{
 						if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-						{
 							RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-						}						
 					}
 				}
 				IncreaseEntityDamageTakenBy(npc.index, 0.7, 0.1);
-				spawnRing_Vectors(ProjLocBase, 250.0  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
-				spawnRing_Vectors(ProjLocBase, 250.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
+				spawnRing_Vectors(ProjLocBase, 300.0  * 2.0, 0.0, 0.0, 5.0, LASERBEAM, 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
+				spawnRing_Vectors(ProjLocBase, 300.0 * 2.0, 0.0, 0.0, 25.0, LASERBEAM, 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
+				
+				spawnRing_Vectors(ProjLocBase, 1000.0 * 2.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 255, 255, 150, 1, 0.1, 3.25, 0.1, 3);
 				npc.m_flDoingAnimation = gameTime + 1.1;
 				npc.m_flDelay_Attribute = gameTime + 0.5;
 				npc.StopPathing();
@@ -588,7 +598,7 @@ static void Clone_ClotThink(int iNPC)
 			{
 				float damageDealt = 50.0 * RaidModeScaling;
 				KillFeed_SetKillIcon(npc.index, "bonk");
-				Explode_Logic_Custom(damageDealt, 0, npc.index, -1, ProjLocBase, 250.0 , 1.0, _, true, 20,_,_,_,SuperAttack);
+				Explode_Logic_Custom(damageDealt, 0, npc.index, -1, ProjLocBase, 300.0 , 1.0, _, true, 20,_,_,_,SuperAttack);
 				for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 				{
 					if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
@@ -617,7 +627,7 @@ static void Clone_ClotThink(int iNPC)
 			
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
-				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 				float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				switch(Support_Work(npc, gameTime, flDistanceToTarget))
@@ -654,6 +664,18 @@ static void Clone_ClotThink(int iNPC)
 			}
 			if(npc.m_flDoingAnimation < gameTime)
 				AtomizerAnimationChange(npc);
+				
+			if(npc.m_iAmmo<1)
+			{
+				npc.StopPathing();
+				npc.m_bisWalking = false;
+			
+				npc.AddActivityViaSequence("taunt_the_trackmans_touchdown");
+				npc.SetCycle(0.01);
+				npc.SetPlaybackRate(1.4);
+				npc.m_flDelay_Attribute = gameTime + 0.75;
+				npc.m_iOverlordComboAttack=0;
+			}
 		}
 		default:
 		{
@@ -686,10 +708,10 @@ static int Support_Work(Atomizer npc, float gameTime, float distance)
 				{
 					if(!npc.m_flAttackHappenswillhappen)
 					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2");
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY",_,_,_,2.0);
 						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = gameTime+0.08;
-						npc.m_flAttackHappens_bullshit = gameTime+0.22;
+						npc.m_flAttackHappens = gameTime+0.0625;
+						npc.m_flAttackHappens_bullshit = gameTime+0.125;
 						npc.m_flAttackHappenswillhappen = true;
 					}
 					if(npc.m_flAttackHappens < gameTime && npc.m_flAttackHappens_bullshit >= gameTime && npc.m_flAttackHappenswillhappen)
@@ -725,13 +747,13 @@ static int Support_Work(Atomizer npc, float gameTime, float distance)
 							}
 							else break;
 						}
-						npc.m_flNextMeleeAttack = gameTime + 1.2;
+						npc.m_flNextMeleeAttack = gameTime + 0.0625;
 						npc.m_flAttackHappenswillhappen = false;
 					}
 					else if(npc.m_flAttackHappens_bullshit < gameTime && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = gameTime + 1.2;
+						npc.m_flNextMeleeAttack = gameTime + 0.0625;
 					}
 				}
 			}
@@ -836,6 +858,7 @@ static void Atomizer_ClotThink(int iNPC)
 		npc.AddActivityViaSequence("taunt_peace_out");
 		npc.SetCycle(0.01);
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		AlreadySaidWin = true;
 		BlockLoseSay = true;
 		
 		NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_GameEnd", false, false);
@@ -844,6 +867,7 @@ static void Atomizer_ClotThink(int iNPC)
 	npc.m_flSpeed = 300.0+(((npc.m_flFTL-(RaidModeTime - GetGameTime()))/npc.m_flFTL)*150.0);
 	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red)
 	{
+		BlockLoseSay = true;
 		npc.m_flMeleeArmor = 0.3696;
 		npc.m_flRangedArmor = 0.33;
 		int MaxHealth = RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")*1.25);
@@ -1034,7 +1058,7 @@ static void Atomizer_ClotThink(int iNPC)
 	
 	if(npc.m_flNextRangedAttack < gameTime)
 	{
-		float ProjLocBase[3];
+		static float ProjLocBase[3];
 		if(npc.m_iState <= 0)
 		{
 			NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Ability", false, false);
@@ -1069,8 +1093,8 @@ static void Atomizer_ClotThink(int iNPC)
 				{
 					float vecTarget[3]; WorldSpaceCenter(EnemyLoop, vecTarget );
 					float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-					float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc);
-					if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && flDistanceToTarget < 750.0)
+					float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+					if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && flDistanceToTarget < (750.0 * 750.0))
 					{
 						GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
 						
@@ -1083,7 +1107,7 @@ static void Atomizer_ClotThink(int iNPC)
 							npc1.SetVelocity(velocity);
 						}
 						else
-						{	
+						{
 							TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);
 						}
 						if(!IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
@@ -1092,9 +1116,7 @@ static void Atomizer_ClotThink(int iNPC)
 							int green = 175;
 							int blue = 255;
 							if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-							{
 								RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-							}
 							int laser;
 							
 							laser = ConnectWithBeam(npc.index, EnemyLoop, red, green, blue, 3.0, 3.0, 2.35, LASERBEAM);
@@ -1106,22 +1128,18 @@ static void Atomizer_ClotThink(int iNPC)
 					else
 					{
 						if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-						{
 							RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-						}
 					}
 				}
 				else
 				{
 					if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-					{
 						RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-					}						
 				}
 			}
-			spawnRing_Vectors(ProjLocBase, 250.0  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 0.1, 3);
-			spawnRing_Vectors(ProjLocBase, 250.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 0.1, 3);
-			
+			spawnRing_Vectors(ProjLocBase, 250.0  * 2.0, 0.0, 0.0, 5.0, LASERBEAM, 125, 175, 255, 150, 1, 0.3, 5.0, 0.1, 3);
+			spawnRing_Vectors(ProjLocBase, 250.0 * 2.0, 0.0, 0.0, 25.0, LASERBEAM, 125, 175, 255, 150, 1, 0.3, 5.0, 0.1, 3);
+			spawnRing_Vectors(ProjLocBase, 750.0 * 2.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 255, 255, 150, 1, 0.1, 3.25, 0.1, 3);
 			npc.m_flDoingAnimation = gameTime + 1.1;
 			npc.m_flDelay_Attribute = gameTime + 0.5;
 			npc.StopPathing();

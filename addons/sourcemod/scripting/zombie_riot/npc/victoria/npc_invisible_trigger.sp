@@ -17,7 +17,7 @@ void Invisible_TRIGGER_OnMapStart_NPC()
 
 static void ClotPrecache()
 {
-	
+	PrecacheSound("music/mvm_start_tank_wave.wav");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -63,10 +63,20 @@ methodmap Invisible_TRIGGER < CClotBody
 			npc.i_NPCStats=1;
 			fVerify=true;
 		}
-		
 		if(StrContains(data, "factory_extraction_now") != -1)
 		{
 			npc.i_NPCStats=2;
+			fVerify=true;
+		}
+		if(StrContains(data, "one_factory_extraction") != -1)
+		{
+			npc.i_NPCStats=3;
+			fVerify=true;
+		}
+		if(StrContains(data, "castellan_setup") != -1)
+		{
+			AddNpcToAliveList(npc.index, 1);
+			npc.i_NPCStats=4;
 			fVerify=true;
 		}
 		
@@ -80,7 +90,7 @@ methodmap Invisible_TRIGGER < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 0.0;
 		npc.m_iOverlordComboAttack = 0;
-		npc.m_flNextMeleeAttack = GetGameTime() + 2.0;
+		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
 		
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
@@ -180,6 +190,70 @@ static void Invisible_TRIGGER_ClotThink(int iNPC)
 				SmiteNpcToDeath(npc.index);
 			}
 		}
+		case 3:
+		{
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+			{
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+				if (IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Blue)
+				{
+					VictorianFactory vFactory = view_as<VictorianFactory>(entity);
+					vFactory.m_flNextRangedAttack = GetGameTime(vFactory.index) + 10.0;
+					if(f_DelaySpawnsForVariousReasons < GetGameTime() + 21.0)
+					{
+						i_AttacksTillMegahit[vFactory.index] = 608;
+						break;
+					}
+				}
+			}
+			EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+			EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+			SmiteNpcToDeath(npc.index);
+		}
+		case 4:
+		{
+			switch(npc.m_iOverlordComboAttack)
+			{
+				case 0:
+				{
+					bool bExtraction;
+					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+					{
+						int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+						if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Blue)
+						{
+							if(i_NpcInternalId[entity] == VictorianFactory_ID())
+							{
+								VictorianFactory vFactory = view_as<VictorianFactory>(entity);
+								i_AttacksTillMegahit[vFactory.index] = 608;
+								bExtraction=true;
+								break;
+							}
+						}
+					}
+					if(bExtraction)
+					{
+						EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+						EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+						npc.m_iOverlordComboAttack=1;
+					}
+				}
+				case 1:
+				{
+					if(f_DelaySpawnsForVariousReasons - GetGameTime() < 16.0)
+					{
+						for(int client = 1; client <= MaxClients; client++)
+						{
+							if(IsClientInGame(client) && !b_IsPlayerABot[client])
+								Music_Stop_All(client);
+						}
+						RemoveAllCustomMusic();
+						EmitSoundToAll("music/mvm_start_tank_wave.wav", _, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+						SmiteNpcToDeath(npc.index);
+					}
+				}
+			}
+		}
 		default:SmiteNpcToDeath(npc.index);//WTF HOW???
 	}
 }
@@ -204,6 +278,22 @@ static void Invisible_TRIGGER_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+}
+
+public void NPCPritToChat_Noname(const char[] text, bool NoTrans)
+{
+	for(int Player=1; Player<=MaxClients; Player++)
+	{
+		if(!IsValidClient(Player))
+			continue;
+		if(!NoTrans)
+		{
+			SetGlobalTransTarget(Player);
+			CPrintToChat(Player, "%t", text);
+		}
+		else
+			CPrintToChat(Player, "%s", text);
+	}
 }
 
 public void NPCPritToChat_Override(const char[] name, const char[] namecolor, const char[] text, bool NoTrans)

@@ -97,10 +97,11 @@ methodmap VictorianDroneAnvil < CClotBody
 		npc.m_bisWalking = true;
 		npc.m_bFUCKYOU = false;
 		npc.Anger = false;
+		npc.m_bFUCKYOU_move_anim = false;
 		Is_a_Medic[npc.index] = true;
 		
 		bool FactorySpawndo;
-		static char countext[20][1024];
+		static char countext[5][128];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
@@ -120,6 +121,16 @@ methodmap VictorianDroneAnvil < CClotBody
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "factory", "");
 				FactorySpawndo=true;
+			}
+			else if(StrContains(countext[i], "raidmode") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "raidmode", "");
+				npc.m_bFUCKYOU_move_anim = true;
+			}
+			else if(StrContains(countext[i], "overridetarget") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "overridetarget", "");
+				npc.m_iTarget = StringToInt(countext[i]);
 			}
 		}
 
@@ -215,9 +226,8 @@ static void VictorianDroneAnvil_ClotThink(int iNPC)
 
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
-		
 	if((npc.m_flLifeTime>0.0 && npc.m_flAttackHappens_bullshit && gameTime > npc.m_flAttackHappens_bullshit)
-	||(npc.m_flLifeTime!=-1.0 &&  !IsValidAlly(npc.index, GetClosestAlly(npc.index))))
+	||(npc.m_iTarget&&b_NpcHasDied[npc.m_iTarget])||(!npc.m_iTarget&&(npc.m_flLifeTime!=-1.0 && !IsValidAlly(npc.index, GetClosestAlly(npc.index)))))
 	{
 		b_NpcForcepowerupspawn[npc.index] = 0;
 		i_RaidGrantExtra[npc.index] = 0;
@@ -293,6 +303,8 @@ static int VictoriaAnvilGetTarget(int iNPC, float gameTime)
 static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float distance)
 {
 	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(iNPC);
+	if(npc.m_iTarget&&b_NpcIsInvulnerable[npc.m_iTarget])
+		return 0;
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * (b_we_are_reloading[npc.index] ? 20.0 : 10.0)))
@@ -319,7 +331,7 @@ static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float 
 						int MaxHealth = ReturnEntityMaxHealth(entity);
 						
 						if(b_thisNpcIsARaid[entity])
-							MaxHealth = RoundToCeil(float(MaxHealth) * 0.005);
+							MaxHealth = RoundToCeil(float(MaxHealth) * 0.00725);
 						else if(b_thisNpcIsABoss[entity])
 							MaxHealth = RoundToCeil(float(MaxHealth) * 0.075);
 						else
