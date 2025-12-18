@@ -1839,7 +1839,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 	bool panzer_sound = false;
 	bool subgame = (Rogue_Mode() || Construction_Mode() || Dungeon_Mode());
 	static int panzer_chance;
-	bool GiveAmmoSupplies = true;
+	bool GiveAmmoSupplies = !Dungeon_Mode();
 
 	if(CurrentRound < length)
 	{

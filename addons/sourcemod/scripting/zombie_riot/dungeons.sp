@@ -4,7 +4,7 @@
 #include <adt_trie_sort>
 
 static bool DungeonMode;
-static MusicEnum BackgroundMusic;
+static ArrayList MusicList;	// MusicEnum
 static ArrayList RaidList;	// StringMap
 static ArrayList RoomList;	// RoomInfo
 static StringMap LootMap;	// LootInfo
@@ -96,11 +96,17 @@ enum struct LootInfo
 				Call_StartFunction(null, func);
 				Call_Finish();
 			}
+			else if(LootMap.ContainsKey(buffer))
+			{
+				Dungeon_RollNamedLoot(buffer);
+			}
 			else
 			{
 				Rogue_GiveNamedArtifact(buffer);
 			}
 		}
+
+		EmitSoundToAll("ui/itemcrate_smash_rare.wav");
 	}
 
 	void Clean()
@@ -332,13 +338,15 @@ void Dungeon_MapStart()
 {
 	DungeonMode = false;
 	Dungeon_RoundEnd();
-	BackgroundMusic.Clear();
 }
 
 // Waves_SetupVote
 void Dungeon_SetupVote(KeyValues kv)
 {
 	PrecacheMvMIconCustom("classic_defend", false);
+	PrecacheSound("ui/chime_rd_2base_pos.wav");
+	PrecacheSound("ui/chime_rd_2base_neg.wav");
+	PrecacheSound("ui/itemcrate_smash_rare.wav");
 
 	DungeonMode = true;
 
@@ -383,7 +391,19 @@ void Dungeon_SetupVote(KeyValues kv)
 		delete RoomList;
 	}
 
-	BackgroundMusic.Clear();
+	MusicEnum music;
+	if(MusicList)
+	{
+		int length = MusicList.Length;
+		for(int i; i < length; i++)
+		{
+			MusicList.GetArray(i, music);
+			music.Clear();
+		}
+		delete MusicList;
+	}
+
+	MusicList = new ArrayList(sizeof(MusicEnum));
 	RaidList = new ArrayList();
 	LootMap = new StringMap();
 	RoomList = new ArrayList(sizeof(RoomList));
@@ -464,35 +484,14 @@ void Dungeon_SetupVote(KeyValues kv)
 	
 	if(kv.JumpToKey("RandomMusic"))
 	{
-		int count;
-		
 		if(kv.GotoFirstSubKey())
 		{
 			do
 			{
-				count++;
+				if(music.SetupKv("", kv))
+					MusicList.PushArray(music);
 			}
 			while(kv.GotoNextKey());
-
-			kv.GoBack();
-		}
-
-		if(count)
-		{
-			count = Waves_MapSeed() % count;
-
-			if(kv.GotoFirstSubKey())
-			{
-				for(int i; i < count; i++)
-				{
-					kv.GotoNextKey();
-				}
-
-				kv.GetSectionName(buffer1, sizeof(buffer1));
-				kv.GoBack();
-
-				BackgroundMusic.SetupKv(buffer1, kv);
-			}
 		}
 
 		kv.GoBack();
@@ -629,14 +628,26 @@ void Dungeon_Start()
 				highestLevel = amount;
 			
 			Music_Stop_All(client);
-			SetMusicTimer(client, GetTime() + 1);
+			SetMusicTimer(client, GetTime() + 35);
 		}
 	}
 
 	int startingIngots = highestLevel + 8;
-	Rogue_AddIngots(startingIngots, true);
+	//Rogue_AddIngots(startingIngots, true);
+	Construction_AddMaterial("crystal", startingIngots, true);
 
-	BackgroundMusic.CopyTo(BGMusicSpecial1);
+	SetRandomMusic();
+}
+
+static void SetRandomMusic()
+{
+	int length = MusicList.Length;
+	if(length)
+	{
+		static MusicEnum music;
+		MusicList.GetArray(GetURandomInt() % length, music);
+		music.CopyTo(BGMusicSpecial1);
+	}
 }
 
 void Dungeon_AntiStalled()
@@ -721,11 +732,15 @@ static Action DungeonMainTimer(Handle timer)
 
 			RoomInfo room;
 			ArrayList roomPool;
+			int highestCommon;
 			int round = Dungeon_GetRound();
 			int length = RoomList.Length;
 			for(int a; a < length; a++)
 			{
 				RoomList.GetArray(a, room);
+
+				if(room.Common > highestCommon)
+					highestCommon = room.Common;
 
 				if(room.CurrentCooldown > GetGameTime())
 					continue;
@@ -750,6 +765,25 @@ static Action DungeonMainTimer(Handle timer)
 				{
 					roomPool.Push(a);
 				}
+			}
+
+			// Removes all commons
+			if(Rogue_HasNamedArtifact("Dungeon Compass"))
+			{
+				highestCommon--;
+				for(int a; a < length; a++)
+				{
+					RoomList.GetArray(a, room);
+					if(room.Common >= highestCommon)
+					{
+						for(int b; (b = roomPool.FindValue(a)) != -1; )
+						{
+							roomPool.Erase(b);
+						}
+					}
+				}
+
+				Rogue_RemoveNamedArtifact("Dungeon Compass");
 			}
 
 			int count = (GetURandomInt() % 5) ? 2 : 3;
@@ -792,6 +826,16 @@ static Action DungeonMainTimer(Handle timer)
 	/*
 		Raid Attack
 	*/
+
+	CurrentAttacks++;
+	LastRoomIndex = -1;
+	EnemyScaling = 0.0;
+
+	int index = -1;
+	bool final = CurrentAttacks >= RaidList.Length;
+	AttackType = final ? 3 : 2;
+
+	Rogue_SetBattleIngots(CurrentAttacks > 1 ? 6 : 5);
 	
 	float pos1[3], pos2[3];
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
@@ -844,23 +888,26 @@ static Action DungeonMainTimer(Handle timer)
 					TeleportEntity(client, pos1, {0.0, 0.0, 0.0});
 					SaveLastValidPositionEntity(client, pos1);
 				}
+				
+				Store_ApplyAttribs(client);
+				Store_GiveAll(client, GetClientHealth(client));
 			}
 			else if(GetClientTeam(client) == 2)
 			{
 				DHook_RespawnPlayer(client);
 			}
+
+			if(!b_IsPlayerABot[client])
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + 1);
+			}
 		}
 	}
 
-	CurrentAttacks++;
-	LastRoomIndex = -1;
-	EnemyScaling = 0.0;
+	BGMusicSpecial1.Clear();
 
 	char buffer1[PLATFORM_MAX_PATH], buffer2[64];
-
-	int index = -1;
-	bool final = CurrentAttacks >= RaidList.Length;
-	AttackType = final ? 3 : 2;
 
 	StringMap map = RaidList.Get(CurrentAttacks - 1);
 	SortedSnapshot snap = CreateSortedSnapshot(map, Sort_Random);
@@ -956,6 +1003,8 @@ static void Dungeon_RoomVote(const Vote vote)
 	{
 		RoomInfo room;
 		RoomList.GetArray(LastRoomIndex, room);
+
+		Rogue_SetBattleIngots(0);
 
 		float time = room.Fights ? 0.0 : 5.0;
 		if(room.FuncStart != INVALID_FUNCTION)
@@ -1132,6 +1181,15 @@ static void StartBattle(const RoomInfo room, float time = 3.0)
 		limit = maxLimit;
 
 	SetBattleTimelimit(limit);
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsPlayerAlive(client))
+		{
+			Store_ApplyAttribs(client);
+			Store_GiveAll(client, GetClientHealth(client));
+		}
+	}
 }
 
 void Dungeon_BattleVictory()
@@ -1140,12 +1198,30 @@ void Dungeon_BattleVictory()
 	bool victory = true;
 	Rogue_TriggerFunction(Artifact::FuncStageEnd, victory);
 	Store_RogueEndFightReset();
+	
+	int ingots = Rogue_GetBattleIngots();
+	if(ingots)
+		Construction_AddMaterial("crystal", ingots);
 
 	if(LastRoomIndex != -1 && AttackType == 1)
 	{
 		RoomInfo room;
 		RoomList.GetArray(LastRoomIndex, room);
 		room.RollLoot(true);
+	}
+
+	if(AttackType == 2)
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(!b_IsPlayerABot[client] && IsClientInGame(client))
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + GetRandomInt(90, 150));
+			}
+		}
+
+		SetRandomMusic();
 	}
 	
 	Zero(i_AmountDowned);
@@ -1159,6 +1235,9 @@ static void BattleLosted()
 	Rogue_TriggerFunction(Artifact::FuncStageEnd, victory);
 	Store_RogueEndFightReset();
 	
+	Zero(i_AmountDowned);
+	AttackType = 0;
+	
 	float pos[3];
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -1166,15 +1245,6 @@ static void BattleLosted()
 		{
 			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos);
 			break;
-		}
-	}
-
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(!b_IsPlayerABot[client] && IsClientInGame(client))
-		{
-			Music_Stop_All(client);
-			SetMusicTimer(client, GetTime() + 10);
 		}
 	}
 	
@@ -1205,9 +1275,6 @@ static void BattleLosted()
 			DeleteAndRefundBuilding(builder_owner, entity);
 		}
 	}
-	
-	Zero(i_AmountDowned);
-	AttackType = 0;
 
 	CPrintToChatAll("{crimson}%t", "Dungeon Failed");
 	DelayVoteFor = GetGameTime() + 5.0;
@@ -1221,6 +1288,15 @@ void Dungeon_WaveEnd(bool final)
 		RoomList.GetArray(LastRoomIndex, room);
 		room.RollLoot(false);
 	}
+}
+
+void Dungeon_RollNamedLoot(const char[] name)
+{
+	LootInfo loot;
+	if(LootMap.GetArray(name, loot, sizeof(loot)))
+		loot.RollLoot();
+
+	PrintToChatAll("UNKNOWN LOOT \"%s\", REPORT BUG", name);
 }
 
 static float ScaleBasedOnRound(int round)
@@ -1348,12 +1424,12 @@ bool Dungeon_UpdateMvMStats()
 					Waves_SetWaveClass(objective, i, round + 1, "robo_extremethreat", flags, true);
 					continue;
 				}
-				case 2:
+				/*case 2:
 				{
 					itemCount += Rogue_GetIngots();
 					Waves_SetWaveClass(objective, i, Rogue_GetIngots(), "rogue_ingots", MVM_CLASS_FLAG_NORMAL, true);
 					continue;
-				}
+				}*/
 				default:
 				{
 					bool found;
@@ -1403,3 +1479,4 @@ bool Dungeon_UpdateMvMStats()
 }
 
 #include "roguelike/dungeon_items.sp"
+#include "roguelike/dungeon_encounters.sp"
