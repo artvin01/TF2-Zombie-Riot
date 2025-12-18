@@ -625,7 +625,7 @@ public void Weapon_Victoria_Spe(int client, int weapon, bool crit, int slot)
 		bool R_AbilityBlock=false;
 		int building = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
 		if(building != -1 && Building_Collect_Cooldown[building][client]<=0.0
-		&& IsInteractionBuilding(client, building))
+		&& IsInteractionBuilding(building))
 		{
 			static float angles[3];
 			GetClientEyeAngles(client, angles);
@@ -762,14 +762,14 @@ static void VL_EYEParticle(int client)
 	}
 }
 
-bool IsInteractionBuilding(int client, int building)
+bool IsInteractionBuilding(int building)
 {
 	bool IsInteraction=false;
 	if(StrEqual(c_NpcName[building], "Ammo Box")||StrEqual(c_NpcName[building], "Armor Table")||StrEqual(c_NpcName[building], "Food Fridge")
 	||StrEqual(c_NpcName[building], "Perk Machine")||StrEqual(c_NpcName[building], "Merchant Brewing Stand")
 	||StrEqual(c_NpcName[building], "Merchant Grill")||StrEqual(c_NpcName[building], "Tinker Workshop"))
 		IsInteraction=true;
-	if(StrEqual(c_NpcName[building], "Pack-a-Punch") && Pap_WeaponCheck(client))
-		IsInteraction=true;
+	/*if(StrEqual(c_NpcName[building], "Pack-a-Punch") && Pap_WeaponCheck(client))
+		IsInteraction=true;*/
 	return IsInteraction;
 }

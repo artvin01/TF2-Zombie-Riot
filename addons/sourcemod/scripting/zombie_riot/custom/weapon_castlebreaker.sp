@@ -117,7 +117,7 @@ public void CastleBreaker_Modechange(int client, int weapon, bool crit, int slot
 			bool R_AbilityBlock=false;
 			int building = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
 			if(building != -1 && Building_Collect_Cooldown[building][client]<=0.0
-			&& IsInteractionBuilding(client, building))
+			&& IsInteractionBuilding(building))
 			{
 				static float angles[3];
 				GetClientEyeAngles(client, angles);
