@@ -1,0 +1,334 @@
+"Waves"
+{
+	"gift_drop_chance_multiplier"	"2.0"
+	"grigori_special_shop_logic"	"1"
+	"resourceregen"	"4.0"
+	"1"
+	{
+		"ammobox_extra"	"15"
+		"0.0"
+		{
+			"count"		"0"
+			"extra_damage"	"0.1"
+			"health"	"1"	
+			"plugin"	"npc_seaborn_heavy"
+		}
+	}
+	"2"
+	{
+	
+	}
+	"3"
+	{
+	
+	}
+	"4"
+	{
+	
+	}
+	"5"
+	{
+	
+	}
+	"6"
+	{
+	
+	}
+	"7"
+	{
+	
+	}
+	"8"
+	{
+	
+	}
+	"9"
+	{
+	
+	}
+	"10"
+	{
+	
+	}
+	"11"
+	{
+	
+	}
+	"12"
+	{
+	
+	}
+	"13"
+	{
+	
+	}
+	"14"
+	{
+	
+	}
+	"15"
+	{
+	
+	}
+	"16"
+	{
+	
+	}
+	"17"
+	{
+	
+	}
+	"18"
+	{
+	
+	}
+	"19"
+	{
+	
+	}
+	"20"
+	{
+	
+	}
+	"21"
+	{
+	
+	}
+	"22"
+	{
+	
+	}
+	"23"
+	{
+	
+	}
+	"24"
+	{
+	
+	}
+	"25"
+	{
+	
+	}
+	"26"
+	{
+	
+	}
+	"27"
+	{
+	
+	}
+	"28"
+	{
+	
+	}
+	"29"
+	{
+	
+	}
+	"30"
+	{
+	
+	}
+	"31"
+	{
+	
+	}
+	"32"
+	{
+	
+	}
+	"33"
+	{
+	
+	}
+	"34"
+	{
+	
+	}
+	"35"
+	{
+	
+	}
+	"36"
+	{
+	
+	}
+	"37"
+	{
+	
+	}
+	"38"
+	{
+	
+	}
+	"39"
+	{
+		"cash"	"85000"	// final challange
+	}
+	"40"
+	{
+		"setup"	"60"
+		"ammobox_extra"	"30"
+
+		"0.0"
+		{
+			"count"			"0"
+			"health"		"5000000"
+			"is_boss"		"4"
+			"is_immune_to_nuke"	"1"
+			"is_health_scaling"	"1"
+			"extra_speed"	"1.25"
+			"extra_damage"	"0.65"
+			"plugin"		"npc_xeno_mrx"
+		}
+		"0.5"
+		{
+			"cash"					"0"
+			"count"					"0"
+			"health"				"2000000"
+			"is_boss"				"4"
+			"is_immune_to_nuke"		"1"
+			"is_health_scaling"		"1"
+			"extra_damage"			"0.55"
+			"plugin"				"npc_xeno_raidboss_nemesis"
+		}
+		"0.0"
+		{
+			"cash"					"0"
+			"count"					"0"
+			"health"				"3000000"
+			"is_boss"				"4"
+			"is_immune_to_nuke"		"1"
+			"is_health_scaling"		"1"
+			"extra_damage"			"0.55"
+			"data"					"final_item"
+			"plugin"				"npc_xeno_mrx"
+		}
+		"0.0"
+		{
+			"count"			"0"
+			"health"		"1800000"
+			"is_boss"		"4"
+			"is_immune_to_nuke"	"1"
+			"is_health_scaling"	"1"
+			"extra_speed"	"1.05"
+			"plugin"		"npc_corruptedbarney"
+		}
+		"0.0"
+		{
+			"count"					"0"
+			"health"				"6000000"
+			"extra_damage"			"0.75"
+			"is_boss"				"2"
+			"is_immune_to_nuke"		"1"
+			"is_health_scaling"		"1"
+			"plugin"				"npc_vhxis"
+		}
+		"0.0"
+		{
+			"count"			"0"
+			"health"		"4000000"
+			"is_boss"		"4"
+			"extra_damage"			"0.85"
+			"is_immune_to_nuke"	"1"
+			"is_health_scaling"	"1"
+			"plugin"		"npc_agent_thompson"
+		}
+		"0.0"
+		{
+			"count"			"0"
+			"health"		"2250000"
+			"is_boss"		"4"
+			"is_immune_to_nuke"	"1"
+			"is_health_scaling"	"1"
+			"extra_damage"	"0.80"
+			"data"			"Im_The_raid;My_Twin"
+			"plugin"		"npc_twins"
+		}
+		"0.0"
+		{
+			"count"			"0"
+			"health"		"4000000"
+			"is_boss"		"4"
+			"is_immune_to_nuke"	"1"
+			"is_health_scaling"	"1"
+			"plugin"		"npc_agent_johnson"
+		}
+		"0.0"
+		{
+			"count"			"0"
+			"health"		"5000000"
+			"is_boss"		"1"
+			"is_immune_to_nuke"	"1"
+			"is_health_scaling"	"1"
+			"data"			"raid_time"
+			"plugin"		"npc_agent_smith"
+		}
+		"0.0"
+		{
+			"count"			"0"
+			"health"		"8000000"
+			"is_boss"		"4"
+			"is_immune_to_nuke"	"1"
+			"is_health_scaling"	"1"
+			"extra_damage"		"0.7"
+			"extra_melee_res"        "3.5"
+			"extra_ranged_res"        "3.5"
+			"plugin"		"npc_whiteflower_boss"
+		}
+		"0.0"
+		{
+			"count"			"0"
+			"health"		"5000000"
+			"is_boss"		"4"
+			"is_immune_to_nuke"	"1"
+			"is_health_scaling"	"1"
+			"plugin"		"npc_omega_raid"
+		}
+		"0.0"
+		{
+			"count"				"0"
+			"health"			"10000000"
+			"is_boss"			"4"
+			"is_immune_to_nuke"	"1"
+			"is_health_scaling"	"1"
+			"plugin"			"npc_lelouch"
+		}
+		"0.0"
+		{
+			"count"				"0"
+			"health"			"3750000"
+			"is_boss"			"4"
+			"is_immune_to_nuke"	"1"
+			"is_health_scaling"	"1"
+			"plugin"			"npc_boss_reila"
+			"data"				"force_final_battle"
+		}
+		"0.0"
+		{
+			"count"				"0"
+			"health"			"5000000"
+			"is_boss"			"4"
+			"is_immune_to_nuke"	"1"
+			"is_health_scaling"	"1"
+			"plugin"			"npc_almagest_jkei"
+			"extra_thinkspeed"	"0.9"
+			"data"				"force_final_battle"
+		}
+		"0.0"
+		{
+			"count"				"0"
+			"health"			"15000000"
+			"is_boss"			"4"
+			"is_immune_to_nuke"	"1"
+			"is_health_scaling"	"1"
+			"data"				"sc25;force_final_battle"
+			"plugin"			"npc_shadowing_darkness_boss"
+		}
+	}
+	"Freeplay"
+	{
+
+	}
+}
