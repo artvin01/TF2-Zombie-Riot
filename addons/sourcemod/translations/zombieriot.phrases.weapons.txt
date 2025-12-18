@@ -3736,10 +3736,15 @@
 		"en"		"Modified Pistol"
 		"ko"		"개조된 권총"
 	}
-	"Anti Chaos Container"
+	"Super USP with healing Stims"
 	{
-		"en"		"Anti Chaos Container"
+		"en"		"Super USP with healing Stims"
 		"ko"		"회복 자극제가 첨가된 슈퍼 USP"
+	}
+	"Wizuh Pistol"
+	{
+		"en"		"Wizuh Pistol"
+		"ko"		"위저의 권총"
 	}
 	"Whiteflower's Sidearm"
 	{
