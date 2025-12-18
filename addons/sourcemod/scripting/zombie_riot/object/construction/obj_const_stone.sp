@@ -56,7 +56,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	{
 		count = CountBuildings();
 		
-		if(!CvarInfiniteCash.BoolValue && !Construction_HasNamedResearch("Stonework Factory"))
+		if((!CvarInfiniteCash.BoolValue || !Construction_Mode()) && !Construction_HasNamedResearch("Stonework Factory"))
 		{
 			maxcount = 0;
 			return false;

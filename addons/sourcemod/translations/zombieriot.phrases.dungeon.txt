@@ -1,0 +1,245 @@
+"Phrases"
+{
+	"Found Dungeon Loot"
+	{
+		"#format"	"{1:t}"
+		"en"		"{green}Collected: {yellow}{1}"
+	}
+	"Dungeon Keep Looking"
+	{
+		"en"	"Keep looking for something else"
+	}
+	"Dungeon Stop Looking"
+	{
+		"en"	"Stop looking and ready defenses"
+	}
+	"Dungeon Failed"
+	{
+		"en"	"All players have left the dungeon..."
+	}
+	"Packing Station"
+	{
+		"en"	"Packing Station"
+	}
+	"Packing Station Desc"
+	{
+		"en"	"A construct that packs a random weapon with a random buff"
+	}
+	"Pack Random Weapon"
+	{
+		"en"	"Pack Random Weapon"
+	}
+	"Upgrade Using Materials"
+	{
+		"#format"	"{1:d},{2:d},{3:s}"
+		"en"		"Level {1} / {2}\n{3}to upgrade using materials."
+	}
+	"Upgrade Max"
+	{
+		"en"	"Level MAX"
+	}
+	"Upgrade Building To"
+	{
+		"#format"	"{1:d}"
+		"en"		"Upgrade Building to Level {1}"
+	}
+	"Upgraded Building To"
+	{
+		"#format"	"{1:s},{2:d}"
+		"en"		"{orange}{1} {default}upgraded to {orange}Level {2}"
+	}
+	"Gained Ammo Supplies"
+	{
+		"#format"	"{1:d}"
+		"en"		"{green}Gained {1} ammo supplies"
+	}
+	"Gained Extra Cash"
+	{
+		"#format"	"{1:d}"
+		"en"		"{green}Gained {1} extra cash"
+	}
+	"Construct Health"
+	{
+		"en"	"Construct Health"
+	}
+	"Construct Health Desc"
+	{
+		"en"	"Upgrades all construct building's health."
+	}
+	"Weapon Has Packed"
+	{
+		"#format"	"{1:s},{2:t},{3:t}"
+		"en"		"{green}{1} {default}packed with {yellow}{2}\n{3}"
+	}
+	"Clearance Focus"
+	{
+		"en"	"Clearance Focus"
+	}
+	"Clearance Focus Desc"
+	{
+		"en"	"{green}Price decreased by -30％ to buy and enchance"
+	}
+	"Power Focus"
+	{
+		"en"	"Power Focus"
+	}
+	"Power Focus Desc"
+	{
+		"en"	"{green}Base damage increased by +20％"
+	}
+	"Handling Focus"
+	{
+		"en"	"Handling Focus"
+	}
+	"Handling Focus Desc"
+	{
+		"en"	"{green}Firing speed increased by +20％"
+	}
+	"Refresh Focus"
+	{
+		"en"	"Refresh Focus"
+	}
+	"Refresh Focus Desc"
+	{
+		"en"	"{green}Reload time and mana cost decreased by -20％"
+	}
+	"Defensive Focus"
+	{
+		"en"	"Defensive Focus"
+	}
+	"Defensive Focus Desc"
+	{
+		"en"	"{green}Base damage increased by +40％ {red}only in home base"
+	}
+	"Offensive Focus"
+	{
+		"en"	"Offensive Focus"
+	}
+	"Offensive Focus Desc"
+	{
+		"en"	"{green}Base damage increased by +40％ {red}only in dungeons"
+	}
+	"Dungeon Level 1"
+	{
+		"en"	"Dungeon Level 1"
+	}
+	"Dungeon Level 1 Desc"
+	{
+		"en"	"Bob the First tasks us to help build up a new home base, gather up resources, make the base well defended.\n{green}Enemies stats -15％"
+	}
+	"Dungeon Level 2"
+	{
+		"en"	"Dungeon Level 2"
+	}
+	"Dungeon Level 2 Desc"
+	{
+		"en"	"Almagest didn't forget how you ruined them."
+	}
+	"Dungeon Level 3"
+	{
+		"en"	"Dungeon Level 3"
+	}
+	"Dungeon Level 3 Desc"
+	{
+		"en"	"You remember what he said, who made Chaos.\n{red}Applies Chaos Intrusion modifier"
+	}
+	"Compass Fragment"
+	{
+		"en"	"Compass Fragment"
+	}
+	"Compass Fragment Desc"
+	{
+		"en"	"Craft in the Control Center"
+	}
+	"Dungeon Compass"
+	{
+		"en"	"Dungeon Compass"
+	}
+	"Dungeon Compass Desc"
+	{
+		"en"	"The next dungeon to appear in vote is guaranteed to be a special variant, will be consumed on use"
+	}
+	"Control Center"
+	{
+		"en"	"Control Center"
+	}
+	"Control Center Desc"
+	{
+		"en"	"A construct that allows doing certain special tasks"
+	}
+	"No Actions Needed"
+	{
+		"en"	"No Actions Needed"
+	}
+	"Craft Item"
+	{
+		"#format"	"{1:t}"
+		"en"		"Craft {1}"
+	}
+	"Unbox Item"
+	{
+		"#format"	"{1:t}"
+		"en"		"Unbox {1}"
+	}
+	"Can Opener"
+	{
+		"en"	"Can Opener"
+	}
+	"Can Opener Desc"
+	{
+		"en"	"When they sealed that can too good.\n{green}Unboxing sealed crates no longer cost crystals"
+	}
+	"Wooden Crate"
+	{
+		"en"	"Wooden Crate"
+	}
+	"Jalan Crate"
+	{
+		"en"	"Jalan Crate"
+	}
+	"Rare Jalan Crate"
+	{
+		"en"	"Rare Jalan Crate"
+	}
+	"Sealed Jalan Crate"
+	{
+		"en"	"Sealed Jalan Crate"
+	}
+	"Sealed Jalan Crate Desc"
+	{
+		"en"	"Unbox in the Control Center"
+	}
+	"Wizuh Crate"
+	{
+		"en"	"Wizuh Crate"
+	}
+	"Rare Wizuh Crate"
+	{
+		"en"	"Rare Wizuh Crate"
+	}
+	"Sealed Wizuh Crate Desc"
+	{
+		"en"	"Unbox in the Control Center"
+	}
+	"Ossunia Crate"
+	{
+		"en"	"Ossunia Crate"
+	}
+	"Rare Ossunia Crate"
+	{
+		"en"	"Rare Ossunia Crate"
+	}
+	"Sealed Ossunia Crate Desc"
+	{
+		"en"	"Unbox in the Control Center"
+	}
+	"Sealed Bofazem Crate"
+	{
+		"en"	"Sealed Bofazem Crate"
+	}
+
+	"Common Dungeon"
+	{
+		"en"	"⚔ Dungeon"
+	}
+}

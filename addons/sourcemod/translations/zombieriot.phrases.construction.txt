@@ -3,22 +3,22 @@
 	"Gained Material"
 	{
 		"#format"	"{1:d},{2:t}"
-		"en"		"{orange}(Construct) {green}Gained {1} {2}!"
-		"it"		"{orange}(Costrutto) {green}ha guadagnato {1} {2}!"
-		"ko"		"{orange}(Construct) {green}다음 재료를 획득했습니다: {1} {2}"
+		"en"		"{green}Gained {1} {2}!"
+		"it"		"{green}ha guadagnato {1} {2}!"
+		"ko"		"{green}다음 재료를 획득했습니다: {1} {2}"
 	}
 	"Used Material"
 	{
 		"#format"	"{1:d},{2:t}"
-		"en"		"{orange}(Construct) {red}Used {1} {2}!"
-		"it"		"{orange}(Costrutto) {red}ha usato {1} {2}!"
-		"ko"		"{orange}(Construct) {red}다음 재료를 사용합니다: {1} {2}"
+		"en"		"{red}Used {1} {2}!"
+		"it"		"{red}ha usato {1} {2}!"
+		"ko"		"{red}다음 재료를 사용합니다: {1} {2}"
 	}
 	"Battle Finished"
 	{
-		"en"		"{orange}(Construct) The battle is over!"
-		"it"		"{orange}(Costrutto) La battaglia è finita!"
-		"ko"		"{orange}(Construct) 전투가 끝났습니다!"
+		"en"		"The battle is over!"
+		"it"		"La battaglia è finita!"
+		"ko"		"전투가 끝났습니다!"
 	}
 	"Cash"
 	{
@@ -29,63 +29,63 @@
 	"Resource Attack Started"
 	{
 		"#format"	"{1:N},{2:t}"
-		"en"		"{orange}(Construct) {red}{1} {default}started gathering {orange}{2} {default}and is being attacked!"
-		"it"		"{orange}(Costrutto) {red}{1} {default}ha iniziato a raccogliere {orange}{2} {default}ed è sotto attacco!"
-		"ko"		"{orange}(Construct) {red}{1} {default}가 {orange}{2} {default}를 모으고 있으며 공격받고 있습니다!"
+		"en"		"{red}{1} {default}started gathering {orange}{2} {default}and is being attacked!"
+		"it"		"{red}{1} {default}ha iniziato a raccogliere {orange}{2} {default}ed è sotto attacco!"
+		"ko"		"{red}{1} {default}가 {orange}{2} {default}를 모으고 있으며 공격받고 있습니다!"
 	}
 	"Gifts Spawned"
 	{
 		"#format"	"{1:d}"
-		"en"		"{orange}(Construct) {green}{1} {default}raid remains have appeared!"
-		"it"		"{orange}(Costrutto) {green}{1} {default}Sono apparsi i resti del raid!"
-		"ko"		"{orange}(Construct) {green}{1} {default}의 레이드 부산물이 나타났습니다!"
+		"en"		"{green}{1} {default}raid remains have appeared!"
+		"it"		"{green}{1} {default}Sono apparsi i resti del raid!"
+		"ko"		"{green}{1} {default}의 레이드 부산물이 나타났습니다!"
 	}
 	"No Gifts Spawn"
 	{
-		"en"		"{orange}(Construct) {red}No raid remains appeared, too many exist already..."
-		"it"		"{orange}(Costrutto) {red}Non sono rimasti raid, ce ne sono già troppi..."
-		"ko"		"{orange}(Construct) {red}레이드 부산물이 나오지 않았습니다. 부산물이 너무 많습니다..."
+		"en"		"{red}No raid remains appeared, too many exist already..."
+		"it"		"{red}Non sono rimasti raid, ce ne sono già troppi..."
+		"ko"		"{red}레이드 부산물이 나오지 않았습니다. 부산물이 너무 많습니다..."
 	}
 	"Found a gift remain"
 	{
 		"#format"	"{1:N}"
-		"en"		"{orange}(Construct) {red}{1} {green}found and obtained raid remains!"
-		"it"		"{orange}(Costrutto) {red}{1} {green}ha trovato e ottenuti i resti del raid!"
-		"ko"		"{orange}(Construct) {red}{1} {green}이(가) 레이드 부산물을 얻었습니다!"
+		"en"		"{red}{1} {green}found and obtained raid remains!"
+		"it"		"{red}{1} {green}ha trovato e ottenuti i resti del raid!"
+		"ko"		"{red}{1} {green}이(가) 레이드 부산물을 얻었습니다!"
 	}
 	"Found a gift remain No Attacker"
 	{
-		"en"		"{orange}(Construct) {green}Someone found and obtained raid remains!"
-		"it"		"{orange}(Costrutto) {green}Qualcuno ha trovato e recuperato i resti del raid!"
-		"ko"		"{orange}(Construct) {green}누군가가 레이드 부산물을 찾아서 얻었습니다!"
+		"en"		"{green}Someone found and obtained raid remains!"
+		"it"		"{green}Qualcuno ha trovato e recuperato i resti del raid!"
+		"ko"		"{green}누군가가 레이드 부산물을 찾아서 얻었습니다!"
 	}
 	"Player Used 1 to"
 	{
 		"#format"	"{1:N},{2:d},{3:t}"
-		"en"		"{orange}(Construct) {red}{1} {default}has used {orange}{2} {3} {default}to make"
-		"it"		"{orange}(Costrutto) {red}{1} {default}ha utilizzato {orange}{2} {3} {default}per realizzare"
-		"ko"		"{orange}(Construct) {red}{1} {default}이(가) {orange}{2} {3} {default}를 사용하여 다음을 수행했습니다:"
+		"en"		"{red}{1} {default}has used {orange}{2} {3} {default}to make"
+		"it"		"{red}{1} {default}ha utilizzato {orange}{2} {3} {default}per realizzare"
+		"ko"		"{red}{1} {default}이(가) {orange}{2} {3} {default}를 사용하여 다음을 수행했습니다:"
 	}
 	"Player Used 2 to"
 	{
 		"#format"	"{1:N},{2:d},{3:t},{4:d},{5:t}"
-		"en"		"{orange}(Construct) {red}{1} {default}has used {orange}{2} {3} {default}and {orange}{4} {5} {default}to make"
-		"it"		"{orange}(Costrutto) {red}{1} {default}ha utilizzato {orange}{2} {3} {default}e {orange}{4} {5} {default}per realizzare"
-		"ko"		"{orange}(Construct) {red}{1} {default}이(가) {orange}{2} {3} {default}과 {orange}{4} {5} {default}를 사용하여 다음을 수행했습니다:"
+		"en"		"{red}{1} {default}has used {orange}{2} {3} {default}and {orange}{4} {5} {default}to make"
+		"it"		"{red}{1} {default}ha utilizzato {orange}{2} {3} {default}e {orange}{4} {5} {default}per realizzare"
+		"ko"		"{red}{1} {default}이(가) {orange}{2} {3} {default}과 {orange}{4} {5} {default}를 사용하여 다음을 수행했습니다:"
 	}
 	"Player Start Research"
 	{
 		"#format"	"{1:N},{2:s}"
-		"en"		"{orange}(Construct) {red}{1} {default}has started to research {orange}{2}"
-		"it"		"{orange}(Costrutto) {red}{1} {default}ha iniziato a ricercare {orange}{2}"
-		"ko"		"{orange}(Construct) {red}{1} {default}이(가) 다음 연구를 진행합니다 : {orange}{2}"
+		"en"		"{red}{1} {default}has started to research {orange}{2}"
+		"it"		"{red}{1} {default}ha iniziato a ricercare {orange}{2}"
+		"ko"		"{red}{1} {default}이(가) 다음 연구를 진행합니다 : {orange}{2}"
 	}
 	"Finish Research Desc"
 	{
 		"#format"	"{1:s},{2:t}"
-		"en"		"{orange}(Construct) {default}Finished researching {orange}{1}{default}: {2}"
-		"it"		"{orange}(Costrutto) {default}Ricerca completata {orange}{1}{default}: {2}"
-		"ko"		"{orange}(Construct) {default}다음 연구가 끝났습니다 -> {orange}{1}{default}: {2}"
+		"en"		"{default}Finished researching {orange}{1}{default}: {2}"
+		"it"		"{default}Ricerca completata {orange}{1}{default}: {2}"
+		"ko"		"{default}다음 연구가 끝났습니다 -> {orange}{1}{default}: {2}"
 	}
 	"Crouch and select to view description Alone"
 	{
