@@ -1,22 +1,42 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#undef CONSTRUCT_NAME
+#undef CONSTRUCT_RESOURCE1
+#undef CONSTRUCT_RESOURCE2
+#undef CONSTRUCT_COST1
+#undef CONSTRUCT_COST2
+#undef CONSTRUCT_MAXLVL
+
+#define CONSTRUCT_NAME		"Packing Station"
+#define CONSTRUCT_RESOURCE1	"wood"
+#define CONSTRUCT_RESOURCE2	"crystal"
+#define CONSTRUCT_COST1		50
+#define CONSTRUCT_COST2		2
+
 enum
 {
 	Pack_None = -1,
 
 	Pack_Discount = 0,
+	Pack_Damage,
+	Pack_FireRate,
+	Pack_Reload,
+	Pack_Defensive,
+	Pack_Offensive,
 
 	Pack_MAX
 }
 
 static const char PackName[][] =
 {
-	"Clearance Focus"
+	"Clearance Focus",
+	"Power Focus",
+	"Handling Focus",
+	"Refreshing Focus",
+	"Defensive Focus",
+	"Offensive Focus",
 };
-
-static const int CrystalCost = 2;
-static const int WooodCost = 30;
 
 static int NPCId;
 static float GlobalCooldown;
@@ -48,7 +68,7 @@ void ObjectGemCrafter_MapStart()
 	PrecacheModel("models/props_spytech/computer_low.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Packing Station");
+	strcopy(data.Name, sizeof(data.Name), CONSTRUCT_NAME);
 	strcopy(data.Plugin, sizeof(data.Plugin), "obj_dungeon_crafter");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
@@ -166,18 +186,18 @@ static void ThisBuildingMenu(int client)
 		LastGameTime = CurrentGame;
 	}
 
-	int wood = Construction_GetMaterial("wood");
-	int crystal = Construction_GetMaterial("crystal");
+	int amount1 = Construction_GetMaterial(CONSTRUCT_RESOURCE1);
+	int amount2 = Construction_GetMaterial(CONSTRUCT_RESOURCE2);
 
 	SetGlobalTransTarget(client);
 
 	Menu menu = new Menu(ThisBuildingMenuH);
 
-	menu.SetTitle("%t\n%d / %d %t\n%d / %d %t", "Packing Station", wood, WooodCost, "Material wood", crystal, CrystalCost, "Material crystal");
+	menu.SetTitle("%t\n%d / %d %t\n%d / %d %t\n ", CONSTRUCT_NAME, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1, amount2, CONSTRUCT_COST2, "Material " ... CONSTRUCT_RESOURCE2);
 
 	char buffer[64];
 	FormatEx(buffer, sizeof(buffer), "%t", "Pack Random Weapon");
-	menu.AddItem(buffer, buffer, (wood < WooodCost) || (crystal < CrystalCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) || (amount2 < CONSTRUCT_COST2) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 	menu.Display(client, MENU_TIME_FOREVER);
 }
@@ -192,21 +212,21 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 		}
 		case MenuAction_Select:
 		{
-			char buffer[64];
-			menu.GetItem(choice, buffer, sizeof(buffer));
-			
 			if(GetClientButtons(client) & IN_DUCK)
 			{
+				PrintToChat(client, "%T", CONSTRUCT_NAME ... " Desc", client);
 				ThisBuildingMenu(client);
 			}
-			else if(GlobalCooldown < GetGameTime() && Construction_GetMaterial("wood") >= WooodCost && Construction_GetMaterial("crystal") >= CrystalCost)
+			else if(GlobalCooldown < GetGameTime() && Construction_GetMaterial(CONSTRUCT_RESOURCE1) >= CONSTRUCT_COST1 && Construction_GetMaterial(CONSTRUCT_RESOURCE2) >= CONSTRUCT_COST2)
 			{
 				GlobalCooldown = GetGameTime() + 120.0;
 
-				CPrintToChatAll("%t", "Player Used 2 to", client, WooodCost, "Material wood", CrystalCost, "Material crystal");
+				CPrintToChatAll("%t", "Player Used 2 to", client, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1, CONSTRUCT_COST2, "Material " ... CONSTRUCT_RESOURCE2);
 				
-				Construction_AddMaterial("wood", -WooodCost, true);
-				Construction_AddMaterial("crystal", -CrystalCost, true);
+				Construction_AddMaterial(CONSTRUCT_RESOURCE1, -CONSTRUCT_COST1, true);
+				Construction_AddMaterial(CONSTRUCT_RESOURCE2, -CONSTRUCT_COST2, true);
+
+				EmitSoundToAll("ui/chime_rd_2base_neg.wav");
 
 				ApplyRandomEffect();
 			}
@@ -287,8 +307,9 @@ static void ApplyRandomEffect()
 	{
 		if(IsClientInGame(client))
 		{
+			SetGlobalTransTarget(client);
 			TranslateItemName(client, item.Name, info.Custom_Name, buffer2, sizeof(buffer2));
-			CPrintToChat(client, "Weapon Has Packed", buffer2, PackName[type], buffer1);
+			CPrintToChat(client, "%t", "Weapon Has Packed", buffer2, PackName[type], buffer1);
 		}
 	}
 
@@ -321,6 +342,8 @@ void GemCrafter_ExtraDesc(int client, int index)
 		{
 			char buffer[64];
 			FormatEx(buffer, sizeof(buffer), "%s Desc", PackName[type]);
+
+			SetGlobalTransTarget(client);
 			CPrintToChat(client, "{yellow}%t\n%t", PackName[type], buffer);
 		}
 	}
@@ -328,14 +351,63 @@ void GemCrafter_ExtraDesc(int client, int index)
 
 void GemCrafter_Enable(int client, int weapon)
 {
-	if(WeaponPacked)
+	if(WeaponPacked && client)
 	{
 		int type = -1;
 		if(WeaponPacked.GetValue(StoreWeapon[weapon], type))
 		{
-			switch(type)
+			ApplyPackAttribs(type, weapon);
+		}
+	}
+}
+
+static void ApplyPackAttribs(int type, int weapon)
+{
+	switch(type)
+	{
+		case Pack_Damage:
+		{
+			if(Attributes_Has(weapon, 2))
+				Attributes_SetMulti(weapon, 2, 1.2);
+			
+			if(Attributes_Has(weapon, 8))
+				Attributes_SetMulti(weapon, 8, 1.2);
+		}
+		case Pack_FireRate:
+		{
+			if(Attributes_Has(weapon, 6))
 			{
+				Attributes_SetMulti(weapon, 6, 1.0 / 1.2);
+			}
+			else
+			{
+				ApplyPackAttribs(Pack_Damage, weapon);
+			}
+		}
+		case Pack_Reload:
+		{
+			if(Attributes_Has(weapon, 97))
+			{
+				Attributes_SetMulti(weapon, 97, 1.0 / 1.2);
+			}
+			else if(Attributes_Has(weapon, 733))
+			{
+				Attributes_SetMulti(weapon, 733, 1.0 / 1.2);
+			}
+			else
+			{
+				ApplyPackAttribs(Pack_FireRate, weapon);
+			}
+		}
+		case Pack_Defensive, Pack_Offensive:
+		{
+			if(Dungeon_InSetup() == (type == Pack_Defensive))
+			{
+				if(Attributes_Has(weapon, 2))
+					Attributes_SetMulti(weapon, 2, 1.4);
 				
+				if(Attributes_Has(weapon, 8))
+					Attributes_SetMulti(weapon, 8, 1.4);
 			}
 		}
 	}

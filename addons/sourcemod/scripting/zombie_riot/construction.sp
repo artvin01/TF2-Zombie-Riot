@@ -1869,6 +1869,28 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 
 float Construction_GetMaxHealthMulti(float builderMulti)
 {
+	if(Dungeon_Mode())
+	{
+		int level = ObjectDWall_UpgradeLevel();
+
+		float multi = 1.5;	// Construction Novice
+		multi *= 1.65;	// Construction Apprentice
+
+		if(level > 0)
+			multi *= 1.65;	// Construction Worker
+
+		if(level > 1)
+			multi *= 1.7;	// Construction Expert
+
+		if(level > 2)
+			multi *= 1.4;	// Construction Master
+
+		if(level > 3)
+			multi *= 1.7;	// Wildingen's Elite Building Components
+		
+		return multi;
+	}
+
 	if(!Construction_Mode())
 		return builderMulti;
 	

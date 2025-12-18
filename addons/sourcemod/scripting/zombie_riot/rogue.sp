@@ -2549,6 +2549,9 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 
 void Rogue_SetProgressTime(float time, bool hud, bool waitForPlayers = false)
 {
+	if(!Rogue_Mode())
+		return;
+	
 	delete ProgressTimer;
 	ProgressTimer = CreateTimer(time, waitForPlayers ? Rogue_RoundStartTimer : Rogue_ProgressTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 
@@ -3009,6 +3012,11 @@ void Rogue_AddIngots(int amount, bool silent = false)
 void Rogue_SetBattleIngots(int amount)
 {
 	BattleIngots = amount;
+}
+
+int Rogue_GetBattleIngots()
+{
+	return BattleIngots;
 }
 
 void Rogue_AddBattleIngots(int amount)

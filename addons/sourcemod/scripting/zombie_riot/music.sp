@@ -56,7 +56,7 @@ enum struct MusicEnum
 	{
 		this.Clear();
 
-		if(kv.JumpToKey(key))
+		if(!key[0] || kv.JumpToKey(key))
 		{
 			kv.GetString("file", this.Path, sizeof(this.Path));
 			kv.GetString("name", this.Name, sizeof(this.Name));
