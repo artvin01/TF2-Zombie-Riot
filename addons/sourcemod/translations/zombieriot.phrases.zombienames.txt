@@ -5022,6 +5022,11 @@
 		"en"	"The final army leader.\nEvery once a while summons airstrikes onto 1 target.\nAirstrikes happen aswell when he hits you too much with his melee."
 		"it"	"Il capo dell'esercito finale.\nOgni tanto evoca attacchi aerei su 1 bersaglio.\nGli attacchi aerei avvengono anche quando ti colpisce troppo con la mischia."
 	}
+	"Captino Menius"
+	{
+		"en"	"Captino Menius"
+		"ko"	"캡티노 메니우스"
+	}
 	"0h No it's Not Fair"
 	{
 		"en"	"=Failed name="
