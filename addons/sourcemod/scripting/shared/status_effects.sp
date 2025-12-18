@@ -2711,7 +2711,7 @@ void StatusEffects_Victoria()
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= 0.33; //Deal 33% more damage
-	data.AttackspeedBuff			= 0.33;
+	data.AttackspeedBuff			= 0.67;
 	data.MovementspeedModif			= 1.5;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
@@ -2752,7 +2752,7 @@ void StatusEffects_Victoria()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= 0.2;
-	data.AttackspeedBuff			= 0.2;
+	data.AttackspeedBuff			= 0.8;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
