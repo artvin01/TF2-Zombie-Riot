@@ -2521,8 +2521,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/npc_sensal_follower.sp"
 #include "npc/construction/npc_overlord_follower.sp"
 #include "npc/construction/construction2/npc_barbaric_teardown.sp"
-<<<<<<< Updated upstream
 #include "npc/construction/construction2/npc_skilled_crossbowman.sp"
-=======
-#include "npc/construction/construction2/npc_skilled_crossbowman.sp"
->>>>>>> Stashed changes
