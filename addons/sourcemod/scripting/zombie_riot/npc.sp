@@ -1152,12 +1152,9 @@ void NPC_ConfigSetup()
 
 	DrDamSpecialDelivery_OnMapStart_NPC();
 	DrDamClone_OnMapStart_NPC();
-<<<<<<< Updated upstream
-=======
 
 	BarbaricTeardownOnMapStart();
 	SkilledCrossbowmanOnMapStart();
->>>>>>> Stashed changes
 }
 
 void NPC_MapEnd()
@@ -2522,10 +2519,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/rogue/rouge3/npc_umbral_whiteflower.sp"
 #include "npc/construction/logic_win_timer.sp"
 #include "npc/construction/npc_sensal_follower.sp"
-<<<<<<< Updated upstream
-#include "npc/construction/npc_overlord_follower.sp"
-=======
 #include "npc/construction/npc_overlord_follower.sp"
 #include "npc/construction/construction2/npc_barbaric_teardown.sp"
 #include "npc/construction/construction2/npc_skilled_crossbowman.sp"
->>>>>>> Stashed changes
