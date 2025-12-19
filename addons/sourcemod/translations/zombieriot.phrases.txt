@@ -5465,7 +5465,7 @@
 	{
 		"en" 	"(11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
 		"it"	"(11) Sensal vi chiede di visitare Ziberia, attualmente attaccata da Victoria."
-		"ko"	"(11) 센살은 당신에게 현재 빅토리아가 공격하고 있는 자이베리아를 방문해달라고 부탁했습니다."
+		"ko"	"(11) 센살은 당신에게 현재 빅토리아가 공격하고 있는 지베리아를 방문해달라고 부탁했습니다."
 	}
 	"Ability already Active"
 	{

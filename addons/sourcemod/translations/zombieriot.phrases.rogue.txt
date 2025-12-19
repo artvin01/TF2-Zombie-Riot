@@ -2150,7 +2150,7 @@
 		"en"	"Old ziberian wallet, has some pictures inside and some leftover cash.\n- {green}Gain 500 Cash and deal +1％ damage."
 		"ru"	"Старый русский бумажник, внутри несколько фотографий и немного оставшихся денег.\n- +500 кредитов и на 1％ больше урона."
 		"it"	"Vecchio portafoglio ziberiano, ha alcune foto all'interno e qualche avanzo di denaro.\n- {green} Guadagna 500 contanti e infligge +1％ danni."
-		"ko"	"오래된 자이베리아 지갑. 안에는 약간의 자금과 사진 몇 장이 들어있다.\n- 추가 자금 +500, 공격 피해량 +1％."
+		"ko"	"오래된 지베리아 지갑. 안에는 약간의 자금과 사진 몇 장이 들어있다.\n- 추가 자금 +500, 공격 피해량 +1％."
 	}
 	"Golden Coin"
 	{

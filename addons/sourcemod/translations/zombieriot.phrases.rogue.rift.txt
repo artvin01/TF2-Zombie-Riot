@@ -959,7 +959,7 @@
 	{
 		"en"	"Ziberia artilleries, Ruina casters, and Victorian sharpshooters all took their shots at him.\n{green}The player who spent the most cash receives +50％ damage and max health"
 		"it"	"Le artiglierie di Ziberia, gli incantatori di Ruina e i tiratori scelti vittoriani hanno tutti sparato contro di lui.\n{green}Il giocatore che ha speso più denaro riceve +50％ danni e salute massima"
-		"ko"	"자이베리아 화포 부대, 루이나 캐스터 부대, 빅토리아 명사수들이 그에게 파상 공세를 퍼부었다.\n{green}자금을 가장 많이 소모한 플레이어의 최대 체력 및 피해량 +50％ 증가."
+		"ko"	"지베리아 화포 부대, 루이나 캐스터 부대, 빅토리아 명사수들이 그에게 파상 공세를 퍼부었다.\n{green}자금을 가장 많이 소모한 플레이어의 최대 체력 및 피해량 +50％ 증가."
 	}
 	"Chaos Star"
 	{

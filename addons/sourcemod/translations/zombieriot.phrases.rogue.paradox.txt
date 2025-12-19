@@ -90,7 +90,7 @@
 	{
 		"en"	"{yellow}EVERYONE takes continous non-fatal damage {red}except for Ziberia units"
 		"it"	"{yellow}TUTTI subiscono danni continui e non mortali {red}ad eccezione delle unità di Ziberia"
-		"ko"	"{yellow}모든 유닛의 체력이 시간에 걸쳐 계속해서 감소합니다. (1 이하로는 감소하지 않음) {red}자이베리아 유닛들은 이 효과에서 제외됩니다."
+		"ko"	"{yellow}모든 유닛의 체력이 시간에 걸쳐 계속해서 감소합니다. (1 이하로는 감소하지 않음) {red}지베리아 유닛들은 이 효과에서 제외됩니다."
 	}
 	"Dense Frost Lore"
 	{
@@ -248,7 +248,7 @@
 	{
 		"en"	"Ziberian Chocolate"
 		"it"	"Cioccolato Ziberiano"
-		"ko"	"자이베리아 초콜릿"
+		"ko"	"지베리아 초콜릿"
 	}
 	"Ziberian Chocolate Desc"
 	{

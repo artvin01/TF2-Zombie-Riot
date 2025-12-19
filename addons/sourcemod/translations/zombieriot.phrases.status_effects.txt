@@ -2208,7 +2208,7 @@
 	{
 		"en"	"Ziberian Flagship Weaponry"
 		"it"	"Armamento della nave ammiraglia ziberiana"
-		"ko"	"자이베리아인 기함 무기"
+		"ko"	"지베리아인 기함 무기"
 	}
 	"Ziberian Flagship Weaponry Desc"
 	{

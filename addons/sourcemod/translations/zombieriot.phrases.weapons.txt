@@ -4254,7 +4254,7 @@
 	"Ziberian Political News"
 	{
 		"en"		"Ziberian Political News"
-		"ko"		"자이베리아 정치 뉴스"
+		"ko"		"지베리아 정치 뉴스"
 	}
 	"Sawrunner's Chainsaw"
 	{

@@ -3379,7 +3379,7 @@
 	{
 		"en"	"Ziberian Miner"
 		"it"	"Minatore Ziberiano"
-		"ko"	"자이베리아인 광부"
+		"ko"	"지베리아인 광부"
 	}
 	"Snowey Gunner"
 	{
@@ -7286,7 +7286,7 @@
 	{
 		"en"	"Built by someone in Ziberia. Does not belong in the labs, maybe it's looking for something?\nIs very fast paced, seems to be trying to replicate Sensal's Portal Gates"
 		"it"	"Costruito da qualcuno in Ziberia. Non appartiene ai laboratori, forse sta cercando qualcosa?\nÈ molto veloce, sembra che stia cercando di replicare le Porte del Portale di Sensal"
-		"ko"	"자이베리아의 누군가가 만든 물건입니다. 이 연구소와 관련이 없는 존재입니다. 대체 뭘 찾고 있는 걸까요?\n속도가 매우 빠르며, 센살의 차원문을 복제해둔 것 같습니다."
+		"ko"	"지베리아의 누군가가 만든 물건입니다. 이 연구소와 관련이 없는 존재입니다. 대체 뭘 찾고 있는 걸까요?\n속도가 매우 빠르며, 센살의 차원문을 복제해둔 것 같습니다."
 	}
 	"Refragmented Winter Sniper"
 	{
