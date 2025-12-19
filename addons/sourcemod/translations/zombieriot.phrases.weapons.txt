@@ -2518,7 +2518,7 @@
 	"Kahml's Contained Chaos"
 	{
 		"en"		"Kahml's Contained Chaos"
-		"ko"		"격리된 캄르스타인의 혼돈"
+		"ko"		"격리된 카멜스타인의 혼돈"
 	}
 	"Xeno Virus Vial"
 	{
@@ -2538,7 +2538,7 @@
 	"Kahmlsteins Last Will"
 	{
 		"en"		"Kahmlsteins Last Will"
-		"ko"		"캄르스타인의 유언장"
+		"ko"		"카멜스타인의 유언장"
 	}
 	"Matrix's Curse"
 	{

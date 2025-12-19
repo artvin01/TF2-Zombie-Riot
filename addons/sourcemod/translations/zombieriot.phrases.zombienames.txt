@@ -1470,7 +1470,7 @@
 		"pt"		"Kahmlstein" 
 		"nl"		"Kahmlstein"
 		"it"		"Kahmlstein"
-		"ko"		"캄르스타인"
+		"ko"		"카멜스타인"
 	}
 	"Kahmlstein?"
 	{
@@ -1479,14 +1479,14 @@
 		"pt"		"Kahmlstein?" 
 		"nl"		"Kahmlstein?"
 		"it"		"Kahmlstein?"
-		"ko"		"캄르스타인?"
+		"ko"		"카멜스타인?"
 	}
 	"Chaos Kahmlstein"
 	{
 		"en"		"Chaos Kahmlstein"
 		"ru" 		"Хаос Кахмлстайн"
 		"it"		"Caos Kahmlstein"
-		"ko"		"혼돈 캄르스타인"
+		"ko"		"혼돈 카멜스타인"
 	}
 	"L4D2 Tank"
 	{
@@ -1750,7 +1750,7 @@
 		"pt"		"Bunker Kahmlstein"
 		"ru"		"Бункерный Кахмлстайн"
 		"it"		"Bunker Kahmlstein"
-		"ko"		"벙커 캄르스타인"
+		"ko"		"벙커 카멜스타인"
 	}
 	"Zerofuse"
 	{

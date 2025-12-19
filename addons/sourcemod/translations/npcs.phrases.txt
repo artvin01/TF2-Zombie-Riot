@@ -71,7 +71,7 @@
 		"ru" 		"Хаос Кахмлстейн"
 		"fr"		"Kahmlstein Chaos"
 		"it"		"Caos Kahmlstein"
-		"ko"		"카오스 캄르스타인"
+		"ko"		"카오스 카멜스타인"
 	}
 	"Donnerkrieg"
 	{

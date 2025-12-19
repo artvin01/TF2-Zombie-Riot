@@ -104,7 +104,7 @@
 		"fr" 		"Kahmlstein, le leader rebèle chaotique, va vous détruire."
 		"chi"		"混沌之首，卡姆斯坦因前来歼灭你。"
 		"it"		"Kahmlstein, il leader ribelle e caotico, ti annienterà."
-		"ko" 		"혼돈의 우두머리, 캄르스타인이 당신을 섬멸하기 위해 왔습니다."
+		"ko" 		"혼돈의 우두머리, 카멜스타인이 당신을 섬멸하기 위해 왔습니다."
 	}
 	"Whiteflower The leader"
 	{

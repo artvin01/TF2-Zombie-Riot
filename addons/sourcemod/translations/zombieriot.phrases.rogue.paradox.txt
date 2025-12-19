@@ -1160,13 +1160,13 @@
 	{
 		"en"	"Kahmlstein's Guidance"
 		"it"	"Guida di Kahmlstein"
-		"ko"	"캄르스타인의 안내"
+		"ko"	"카멜스타인의 안내"
 	}
 	"Kahmlstein Guidance Desc"
 	{
 		"en"	"You join Kahmlstein.\n{green}Ally weapon cooldowns are reduced by 1 second every 1.5 seconds"
 		"it"	"Ti unisci a Kahmlstein.\n{green}Il cooldown delle armi leggere si riduce di 1 secondo ogni 1,5 secondi"
-		"ko"	"캄르스타인과 합류한다.\n{green}매 1.5초마다, 플레이어가 들고 있는 무기의 능력 쿨타임이 1초 감소."
+		"ko"	"카멜스타인과 합류한다.\n{green}매 1.5초마다, 플레이어가 들고 있는 무기의 능력 쿨타임이 1초 감소."
 	}
 	"Twirl Guidance"
 	{
@@ -1503,7 +1503,7 @@
 	{
 		"en"	"Kahmlstein appears, he asks you to assist him. Not chaos, something worse."
 		"it"	"Kahmlstein appare e vi chiede di assisterlo. Non è il caos, è qualcosa di peggio."
-		"ko"	"캄르스타인이 나타나서는, 당신에게 자신을 도와달라고 요청한다. 혼돈이 아니라, 더 끔찍한 것과 맞서기 위해."
+		"ko"	"카멜스타인이 나타나서는, 당신에게 자신을 도와달라고 요청한다. 혼돈이 아니라, 더 끔찍한 것과 맞서기 위해."
 	}
 	"Prophecy Option 3a"
 	{

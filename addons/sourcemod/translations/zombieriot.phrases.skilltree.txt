@@ -265,7 +265,7 @@
 	{
 		"en" 		"Kahmlstein Buff"
 		"it"		"Buff di Kahmlstein"
-		"ko" 		"캄르스타인의 버프"
+		"ko" 		"카멜스타인의 버프"
 	}
 	"Kahmlstein Buff Desc"
 	{

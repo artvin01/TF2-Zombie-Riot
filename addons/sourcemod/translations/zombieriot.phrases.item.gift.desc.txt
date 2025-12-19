@@ -1091,7 +1091,7 @@
 	{
 		"en"		"Bunker Kahmlstein"
 		"it"		"Bunker Kahmlstein"
-		"ko"		"벙커 캄르스타인"
+		"ko"		"벙커 카멜스타인"
 	}
 	"Zerofuse Desc"
 	{
@@ -2287,7 +2287,7 @@
 	{
 		"en"	"Kahmlsteins forced right hand man, he really wants his attention.\nApart of the no goverment group called Interitus.\nWave 15: Deals fire and bleed damage.\nWave 30: deals massive chaos damage.\nEach time he does his 4 ball attack he gains permanent power and resistance.\nEach time he shows his hand sign he will teleport.\n(Silence) Reduces chaos damage he deals."
 		"it"	"Kahmlsteins è il suo braccio destro forzato, vuole davvero la sua attenzione.\nFa parte del gruppo di non governanti chiamato Interitus.\nOnde 15: infligge danni da fuoco e da emorragia.\nOnde 30: infligge ingenti danni da caos.\nOgni volta che esegue il suo attacco con 4 sfere guadagna potere e resistenza permanenti.\nOgni volta che mostra il suo segno della mano si teletrasporta.\n(Silenzio) Riduce i danni da caos che infligge."
-		"ko"	"이 자는 캄르스타인에 의해 강제로 그의 오른팔 소속이 되었으며 그는 캄르스타인의 주목을 이끌고 싶어합니다.\n인테리투스라는 비정부 단체 소속원입니다.\n웨이브 15: 출혈과 화상을 부여.\n웨이브 30: 혼돈 원소 피해를 부여.\n추적형 구체 공격을 4회 사용할 때마다, 공격의 피해량과 피해 저항력이 조금씩 성장.\n이 적이 손으로 핸드 사인을 보이면, 이 적이 곧 그 방향으로 순간이동.\n(침묵 부여시,) 이 적이 부여하는 혼돈 원소 피해량을 감소시킴."
+		"ko"	"이 자는 카멜스타인에 의해 강제로 그의 오른팔 소속이 되었으며 그는 카멜스타인의 주목을 이끌고 싶어합니다.\n인테리투스라는 비정부 단체 소속원입니다.\n웨이브 15: 출혈과 화상을 부여.\n웨이브 30: 혼돈 원소 피해를 부여.\n추적형 구체 공격을 4회 사용할 때마다, 공격의 피해량과 피해 저항력이 조금씩 성장.\n이 적이 손으로 핸드 사인을 보이면, 이 적이 곧 그 방향으로 순간이동.\n(침묵 부여시,) 이 적이 부여하는 혼돈 원소 피해량을 감소시킴."
 	}
 	"The Purge Desc"
 	{
