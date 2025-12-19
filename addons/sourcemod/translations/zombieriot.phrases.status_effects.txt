@@ -2122,6 +2122,7 @@
 	"7 Heavy Souls Desc"
 	{
 		"en"	"Increases damage by 75％\nIncreases resistance by 75％\nIncreases attack speed by 400％"
+		"ko"	"피해량 75％ 증가\n피해 저항력 75％ 증가\n공격 속도 400％ 증가"
 	}
 	"Nightmare Terror"
 	{
