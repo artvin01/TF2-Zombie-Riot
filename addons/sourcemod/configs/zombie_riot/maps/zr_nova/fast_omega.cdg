@@ -141,60 +141,6 @@ Waves"
 			"plugin"	"npc_combine_soldier_ar2"
 		}
 	}
-	"6"
-	{
-		"xp"	"25"
-		"cash"	"600"
-		
-		"1.0"
-		{
-			"count"		"5"
-			"health"	"750"	
-			"plugin"	"npc_combine_police_pistol"
-		}
-		"0.0"
-		{
-			"count"		"5"
-			"health"	"1500"	
-			"plugin"	"npc_xeno_combine_police_pistol"
-		}
-	}
-	"7"
-	{
-		"xp"	"50"
-		"cash"	"400"
-		
-		"1.0"
-		{
-			"count"		"10"
-			"health"	"2000"	
-			"plugin"	"npc_xeno_combine_police_smg"
-		}
-		"0.0"
-		{
-			"count"		"15"
-			"health"	"1000"	
-			"plugin"	"npc_combine_police_smg"
-		}
-	}
-	"8"
-	{
-		"xp"	"25"
-		"cash"	"300"
-		
-		"1.0"
-		{
-			"count"		"5"
-			"health"	"1500"	
-			"plugin"	"npc_combine_soldier_ar2"
-		}
-		"0.0"
-		{
-			"count"		"10"
-			"health"	"3000"	
-			"plugin"	"npc_xeno_combine_soldier_ar2"
-		}
-	}
 	"9"
 	{
 		"xp"	"25"
@@ -268,25 +214,6 @@ Waves"
 			"health"	"1600"	
 			"plugin"	"npc_xeno_combine_soldier_shotgun"
 		}
-
-	}
-	"11"
-	{
-		"xp"	"25"
-		"cash"	"400"
-		
-		"1.0"
-		{
-			"count"		"10"
-			"health"	"2500"	
-			"plugin"	"npc_combine_soldier_elite"
-		}
-		"0.0"
-		{
-			"count"		"5"
-			"health"	"5000"	
-			"plugin"	"npc_xeno_combine_soldier_elite"
-		}
 	}
 	"12"
 	{
@@ -316,36 +243,6 @@ Waves"
 			"count"		"5"
 			"health"	"5000"	
 			"plugin"	"npc_xeno_combine_soldier_elite"
-		}
-	}
-	"13"
-	{
-		"xp"	"25"
-		"cash"	"700"
-		
-		"1.0"
-		{
-			"count"		"10"
-			"health"	"2000"	
-			"plugin"	"npc_xeno_combine_police_smg"
-		}
-		"1.0"
-		{
-			"count"		"15"
-			"health"	"1000"	
-			"plugin"	"npc_combine_police_smg"
-		}
-		"1.0"
-		{
-			"count"		"5"
-			"health"	"750"	
-			"plugin"	"npc_combine_police_pistol"
-		}
-		"0.0"
-		{
-			"count"		"5"
-			"health"	"1500"	
-			"plugin"	"npc_xeno_combine_police_pistol"
 		}
 	}
 	"14"
