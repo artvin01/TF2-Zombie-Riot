@@ -3221,9 +3221,8 @@ void DoGlobalMultiScaling()
 	if(playercount < 2.0)
 		playercount = 2.0;
 	
-	playercount = 40.0;
 	int PlayersIngame = RoundToNearest(ZRStocks_PlayerScalingDynamic(0.0,true, true));
-	PlayersIngame = 40;
+	
 	if(PlayersIngame >= 19.0)
 		EnableSilentMode = true;
 	else
