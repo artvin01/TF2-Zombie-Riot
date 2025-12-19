@@ -7614,6 +7614,6 @@
 	}
 	"Demon Devoter Desc"
 	{
-		"en"	"A warrior dealing with the demons that got possed by chaos.\n-Once losing his life he will enrage and fullheal\nThis buff lasts only for a few seconds.\n-This can be canceled by dealing enough damage at once, or stunning him and then killing him."
+		"en"	"A warrior dealing with the demons that got possed by chaos.\n-Once losing his life he will enrage and give himself the ''Chaos Demon Possession'' buff\nThis can be prevented if:\nDealing enough damage in once instance to skip the 2nd life\nStunning him to prevent the enrage and killing him during that stun."
 	}
 }
