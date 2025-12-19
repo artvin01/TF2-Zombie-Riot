@@ -361,7 +361,6 @@ public void MedivalObuch_ClotThink(int iNPC)
 					
 
 					npc.PlayMeleeSound();
-					int enemy_attacked_before = EntRefToEntIndex(i_ObuchSameEnemyAttacked[npc.index]);
 					f_ObuchSameEnemyAttacked[npc.index] -= 0.35;
 					if(f_ObuchSameEnemyAttacked[npc.index] < 0.4)
 					{
