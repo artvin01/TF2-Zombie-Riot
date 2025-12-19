@@ -7608,52 +7608,12 @@
 	{
 		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
 	}
-	"Barbaric Teardown"
+	"Demon Devoter"
 	{
-		"en"	"Barbaric Teardown"
+		"en"	"Demon Devoter"
 	}
-	"Barbaric Teardown Desc"
+	"Demon Devoter Desc"
 	{
-		"en"	"Fellow outposts base demolisher's.\n-First 3 hits deal bonus damage\nThese 3 hits deal much higher building damage."
-	}
-	"Skilled Crossbowman"
-	{
-		"en"	"Skilled Crossbowman"
-	}
-	"Skilled Crossbowman Desc"
-	{
-		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
-	}
-	"Barbaric Teardown"
-	{
-		"en"	"Barbaric Teardown"
-	}
-	"Barbaric Teardown Desc"
-	{
-		"en"	"Fellow outposts base demolisher's.\n-First 3 hits deal bonus damage\nThese 3 hits deal much higher building damage."
-	}
-	"Skilled Crossbowman"
-	{
-		"en"	"Skilled Crossbowman"
-	}
-	"Skilled Crossbowman Desc"
-	{
-		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
-	}
-	"Barbaric Teardown"
-	{
-		"en"	"Barbaric Teardown"
-	}
-	"Barbaric Teardown Desc"
-	{
-		"en"	"Fellow outposts base demolisher's.\n-First 3 hits deal bonus damage\nThese 3 hits deal much higher building damage."
-	}
-	"Skilled Crossbowman"
-	{
-		"en"	"Skilled Crossbowman"
-	}
-	"Skilled Crossbowman Desc"
-	{
-		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
+		"en"	"A warrior dealing with the demons that got possed by chaos.\n-Once losing his life he will enrage and fullheal\nThis buff lasts only for a few seconds.\n-This can be canceled by dealing enough damage at once, or stunning him and then killing him."
 	}
 }
