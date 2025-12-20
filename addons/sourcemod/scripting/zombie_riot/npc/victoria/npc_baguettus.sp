@@ -332,11 +332,11 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 				b_NoHealthbar[npc.index] = 1;
 				if(IsValidEntity(npc.m_iTeamGlow))
 					RemoveEntity(npc.m_iTeamGlow);
-				float flPos[3];
+				/*float flPos[3];
 				float flAng[3];
 				GetAttachment(npc.index, "head", flPos, flAng);	
 				int particler = ParticleEffectAt(flPos, "spy_start_disguise_red", 5.0);
-				SetParent(npc.index, particler, "head");
+				SetParent(npc.index, particler, "head");*/
 				npc.PlayUnCloakLoudSound();
 				SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
 				SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 0.0);
@@ -356,8 +356,8 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 			}
 			case 255:
 			{
-				if(IsValidEntity(npc.m_iWearable7))
-					RemoveEntity(npc.m_iWearable7);
+				/*if(IsValidEntity(npc.m_iWearable7))
+					RemoveEntity(npc.m_iWearable7);*/
 				b_NoHealthbar[npc.index] = 0;
 				if(IsValidEntity(npc.m_iTeamGlow))
 					RemoveEntity(npc.m_iTeamGlow);
@@ -428,11 +428,11 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 						SetVariantColor(view_as<int>({184, 56, 59, 200}));
 						AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 						npc.PlayUnCloakSound();
-						float flPos[3];
+					/*	float flPos[3];
 						float flAng[3];
 						GetAttachment(npc.index, "head", flPos, flAng);	
 						int particler = ParticleEffectAt(flPos, "spy_start_disguise_red", 5.0);
-						SetParent(npc.index, particler, "head");
+						SetParent(npc.index, particler, "head");*/
 						SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
 						SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 0.0);
 						SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 0.0);
@@ -462,8 +462,8 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 					if(IsValidEntity(npc.m_iWearable1))
 						RemoveEntity(npc.m_iWearable1);
 					npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_eternal_reward/c_eternal_reward.mdl");
-					if(IsValidEntity(npc.m_iWearable7))
-						RemoveEntity(npc.m_iWearable7);
+					/*if(IsValidEntity(npc.m_iWearable7))
+						RemoveEntity(npc.m_iWearable7);*/
 					SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 1.0);
 					SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 1.0);
 					SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 1.0);
@@ -490,8 +490,8 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 					if(IsValidEntity(npc.m_iWearable1))
 						RemoveEntity(npc.m_iWearable1);
 					npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/spy/tailored_terminal_model/tailored_terminal_model.mdl");
-					float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-					npc.m_iWearable7 = ParticleEffectAt_Parent(VecSelfNpc, "spy_start_disguise_red", npc.index, "pelvis", {0.0,0.0,0.0});
+					/*float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+					npc.m_iWearable7 = ParticleEffectAt_Parent(VecSelfNpc, "spy_start_disguise_red", npc.index, "pelvis", {0.0,0.0,0.0});*/
 					if(npc.m_iChanged_WalkCycle != 2)
 					{
 						npc.StopPathing();
@@ -574,8 +574,8 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 				npc.g_TimesSummoned+=2;
 				if(npc.g_TimesSummoned>255)
 				{
-					if(IsValidEntity(npc.m_iWearable7))
-						RemoveEntity(npc.m_iWearable7);
+					/*if(IsValidEntity(npc.m_iWearable7))
+						RemoveEntity(npc.m_iWearable7);*/
 					npc.g_TimesSummoned=255;
 				}
 				SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);

@@ -859,7 +859,7 @@ static void Atomizer_ClotThink(int iNPC)
 	}
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
-		DeleteAndRemoveAllNpcs = 3.0;
+		DeleteAndRemoveAllNpcs = 2.0;
 		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_peace_out");
 		npc.SetCycle(0.01);
