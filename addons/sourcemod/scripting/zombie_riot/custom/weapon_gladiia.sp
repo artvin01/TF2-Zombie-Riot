@@ -206,7 +206,7 @@ public Action Gladiia_TimerS1L4(Handle timer, int client)
 					WeaponCharge[client] = Int_CooldownReductionDo(client, 24);
 				
 				int ValueCD = Int_CooldownReductionDo(client, 12);
-				PrintHintText(client, "Parting of the Great Ocean [%d / 2] {%ds}", WeaponCharge[client] / ValueCD, ValueCD - (WeaponCharge[client] % ValueCD));
+				PrintHintText(client, "대양의 일원 [%d / 2] {%ds}", WeaponCharge[client] / ValueCD, ValueCD - (WeaponCharge[client] % ValueCD));
 				
 			}
 
@@ -233,7 +233,7 @@ public Action Gladiia_TimerS1L7(Handle timer, int client)
 				
 				int ValueCD = Int_CooldownReductionDo(client, 10);
 				
-				PrintHintText(client, "Parting of the Great Ocean [%d / 2] {%ds}", WeaponCharge[client] / ValueCD, ValueCD - (WeaponCharge[client] % ValueCD));
+				PrintHintText(client, "대양의 일원 [%d / 2] {%ds}", WeaponCharge[client] / ValueCD, ValueCD - (WeaponCharge[client] % ValueCD));
 				
 			}
 
@@ -259,7 +259,7 @@ public Action Gladiia_TimerS1L8(Handle timer, int client)
 					WeaponCharge[client] = Int_CooldownReductionDo(client, 30);
 				
 				int ValueCD = Int_CooldownReductionDo(client, 10);
-				PrintHintText(client, "Parting of the Great Ocean [%d / 3] {%ds}", WeaponCharge[client] / ValueCD, ValueCD - (WeaponCharge[client] % ValueCD));
+				PrintHintText(client, "대양의 일원 [%d / 3] {%ds}", WeaponCharge[client] / ValueCD, ValueCD - (WeaponCharge[client] % ValueCD));
 				
 			}
 
@@ -286,7 +286,7 @@ public Action Gladiia_TimerS1L10(Handle timer, int client)
 				
 				int ValueCD = Int_CooldownReductionDo(client, 8);
 				
-				PrintHintText(client, "Parting of the Great Ocean [%d / 3] {%ds}", WeaponCharge[client] / ValueCD, ValueCD - (WeaponCharge[client] % ValueCD));
+				PrintHintText(client, "대양의 일원 [%d / 3] {%ds}", WeaponCharge[client] / ValueCD, ValueCD - (WeaponCharge[client] % ValueCD));
 				
 			}
 

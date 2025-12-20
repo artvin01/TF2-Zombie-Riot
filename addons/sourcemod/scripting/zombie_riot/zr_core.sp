@@ -109,14 +109,14 @@ public const char PerkNames_Received[][] =
 public const char PerkNames_two_Letter[][] =
 {
 	"--",
-	"RB",
-	"OO",
-	"MC",
-	"HH",
-	"MB",
-	"TM",
-	"SS",
-	"ED"
+	"열",
+	"옵",
+	"커",
+	"홉",
+	"명",
+	"뮬",
+	"축",
+	"드"
 };
 
 enum
@@ -284,7 +284,10 @@ enum
     WEAPON_KIT_PURGE_RAMPAGER = 161,
     WEAPON_KIT_PURGE_ANNAHILATOR = 162,
     WEAPON_KIT_PURGE_MISC = 163,
-	WEAPON_BOMB_AR = 164
+	WEAPON_BOMB_AR = 164,
+	WEAPON_MAJORSTEAM_LAUNCHER = 1000,
+	WEAPON_LOCKDOWN = 1001,
+	WEAPON_MINECRAFT_SWORD = 1002
 }
 
 enum
@@ -664,6 +667,10 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_walter.sp"
 #include "custom/wand/weapon_wand_nymph.sp"
 #include "custom/weapon_castlebreaker.sp"
+#include "custom/addons/cw_base.sp"
+#include "custom/addons/weapon_majorsteam_launcher.sp"
+#include "custom/addons/weapon_mostima.sp"
+#include "custom/addons/weapon_minecraft_sword.sp"
 #include "custom/kit_soldine.sp"
 #include "custom/weapon_kritzkrieg.sp"
 #include "custom/wand/weapon_bubble_wand.sp"
@@ -747,7 +754,6 @@ void ZR_PluginStart()
 	RegAdminCmd("zr_waveremain", Waves_AdminsWaveTimeRemainCmd, ADMFLAG_ROOT, "Wave Time Remain");
 	RegAdminCmd("zr_raidend", Waves_AdminsRaidTimeEndCmd, ADMFLAG_ROOT, "Raid Force END");
 	RegAdminCmd("zr_raidadd", Waves_AdminsRaidTimeAddCmd, ADMFLAG_ROOT, "Raid Time Add");
-	
 	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
@@ -896,6 +902,7 @@ void ZR_MapStart()
 	Reset_stats_Mlynar_Global();
 //	Reset_stats_Casino_Global();
 	Blemishine_Map_Precache();
+	Weapon_AddonsCustom_OnMapStart();
 	
 	Waves_MapStart();
 	Freeplay_OnMapStart();
@@ -2145,48 +2152,48 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						{
 							Yakuza_AddCharge(client, 99999);
 							Yakuza_Lastman(1);
-							CPrintToChatAll("{crimson}Something awakens inside %N.......",client);
+							CPrintToChatAll("{crimson}알 수 없는 잠재력이 %N 의 몸에서 깨어나고 있다...",client);
 						}
 						if(Zealot_Sugmar(client))
 						{
 							Yakuza_Lastman(2);
-							CPrintToChatAll("{crimson}%N descended into a fanatical worship of Sigmar, and set out to cleanse the unrighteous themselves.",client);
+							CPrintToChatAll("{crimson}%N : 영광의 전투가 펼쳐진다!",client);
 						}
 						if(Fractal_LastMann(client))
 						{
 							//get some cool line.
 							Max_Fractal_Crystals(client);
-							CPrintToChatAll("{purple}Twirl{crimson}'s Essence enters %N...",client);
+							CPrintToChatAll("{purple}트윌{crimson}의 정수가 %N 에게 흘러들어가고 있다...",client);
 							Yakuza_Lastman(3);
 						}
 						if(Wkit_Soldin_LastMann(client))
 						{
 							ChargeSoldineMeleeHit(client,client,true, 999.9);
 							ChargeSoldineRocketJump(client, client, true, 999.9);
-							CPrintToChatAll("{crimson}Expidonsa Activates %N's emergency protocols...",client);
+							CPrintToChatAll("{crimson}%N 의 엑스피돈사 긴급 프로토콜이 가동되었다...",client);
 							Yakuza_Lastman(4);
 						}
 						if(Purnell_Lastman(client))
 						{
-							CPrintToChatAll("{crimson}%N gets filled with the unyielding desire to avenge his patients.",client);
+							CPrintToChatAll("{crimson}%N 가 환자들의 복수를 향한 꺾이지 않는 욕망으로 가득 차게 된다.",client);
 							Yakuza_Lastman(5);
 						}
 						if(Blacksmith_Lastman(client))
 						{
-							CPrintToChatAll("{crimson}%N Seems to be completly and utterly screwed.",client);
+							CPrintToChatAll("{crimson}나사를 조이던 %N 의 인생도 조여지기 시작했다.",client);
 							Yakuza_Lastman(6);
 						}
 						if(BlitzKit_LastMann(client))
 						{
-							CPrintToChatAll("{crimson}The Machine Within %N screams: FOR VICTORY",client);
+							CPrintToChatAll("{crimson}%N 가 기계적인 목소리로 소리 지른다... 승리를 위해서!",client);
 							Yakuza_Lastman(7);
 						}
 						if(IsFlaggilant(client) || IsClientLeper(client))
 						{
 							if(IsFlaggilant(client))
-								CPrintToChatAll("{crimson}The undying soul %N refuses to ever die.",client);
+								CPrintToChatAll("{crimson}분노는 힘이다. 토해내거라, %N !",client);
 							else if(IsClientLeper(client))
-								CPrintToChatAll("{crimson}The King %N cannot stand this any longer..!",client);
+								CPrintToChatAll("{crimson}수많은 자들이 혼돈을 마주하고 무릎 꿇는다. 허나 %N 는 아니다. 적어도 오늘은.",client);
 								
 							int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 							if(weapon != -1)
@@ -2197,34 +2204,35 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						}
 						if(SeaMelee_IsSeaborn(client))
 						{
-							CPrintToChatAll("{crimson}The sea entirely corrupts %N.",client);
+							CPrintToChatAll("{crimson}바다의 힘이 %N 를 완벽히 오염시켰다.",client);
 							Yakuza_Lastman(9);
 						}
 						if(Merchant_IsAMerchant(client))
 						{
-							CPrintToChatAll("{crimson}The merchant knows not who to trade with... Thus massively enrages.",client);
+							CPrintToChatAll("{crimson}상인이 자신의 끝없는 격분을 '거래'할 대상을 수색하고 있다...",client);
 							Yakuza_Lastman(10);
 						}
 						if(Is_Cheesed_Up(client))
 						{
-							CPrintToChatAll("{darkviolet}%N decides to inject themselves with plasma as a last resort...", client);
+							CPrintToChatAll("{darkviolet}%N 가 생각해낸 최후의 저항은, 자기 자신이 플라즈마가 되는 것이었다...", client);
 							Yakuza_Lastman(11);
 						}
+						Weapon_AddonsCustomLastMan(client);
 						/*
 						if(Sigil_LastMann(client))
 						{
-							CPrintToChatAll("{blue}Diabolus Ex Machina.",client);
+							CPrintToChatAll("{blue}기계장치의 악마가 강림했다.",client);
 							Yakuza_Lastman(12);
 						}
 						*/
 						if(Wkit_Omega_LastMann(client))
 						{
-							CPrintToChatAll("{gold}%N is now alone, however giving up isn't in their vocabulary.",client);
+							CPrintToChatAll("{gold}%N 는 이제 혼자가 되었지만, 포기라는 단어는 그들의 사전에 없다.",client);
 							Yakuza_Lastman(13);
 						}
 						if(PurgeKit_LastMann(client))
 						{
-							CPrintToChatAll("{crimson}%N's purging protocol activates.",client);
+							CPrintToChatAll("{crimson}%N 의 분쇄 프로토콜이 가동되었다.",client);
 							Yakuza_Lastman(14);
 						}
 						
@@ -2537,6 +2545,8 @@ stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Mult
 	{
 		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.33);
 	}
+	if(Items_HasNamedItem(client, "Widemouth Refill Port") && !ignoreperk)
+		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.1);
 	if(Multi != 1.0)
 	{
 		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * Multi);

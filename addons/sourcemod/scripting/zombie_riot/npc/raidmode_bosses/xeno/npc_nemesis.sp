@@ -301,11 +301,11 @@ methodmap RaidbossNemesis < CClotBody
 		if(XenoExtraLogic())
 		{
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Enraged Calmaticus");
-			CPrintToChatAll("{green}Calmaticus: YOU WILL BECOME DNA SUPLIMENTS.");
+			CPrintToChatAll("{green}칼마티커스: 너희도 DNA 공급체가 될 것이다.");
 		}
 		else
 		{
-			CPrintToChatAll("{green}Calmaticus: You all will be one with the virus.");
+			CPrintToChatAll("{green}칼마티커스: 너희도 저기 굴러다니는 감염체 중 하나가 될 것이다...");
 		}
 		
 		npc.m_iWearable6 = npc.EquipItem("weapon_bone", "models/workshop/player/items/pyro/hw2013_mucus_membrane/hw2013_mucus_membrane.mdl");
@@ -327,7 +327,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			CPrintToChatAll("{green} The infection got all your friends... Run while you can.");
+			CPrintToChatAll("{green} 감염이 당신의 동료를 전부 집어삼키고 말았습니다... 가능하면 도주하세요.");
 		}
 	}
 	if(RaidModeTime < GetGameTime())
@@ -336,7 +336,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		i_RaidGrantExtra[npc.index] = 0;
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{green} The infection proves too strong for you to resist as you join his side...");
+		CPrintToChatAll("{green} 당신은 감염에 저항조차 못 했습니다... 당신은 이제 한낱 감염체로 전락하고 말았습니다.");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
@@ -1206,7 +1206,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 				if(!XenoExtraLogic())
 				{
 					Items_GiveNamedItem(client_repat, "Calmaticus' Heart Piece");
-					CPrintToChat(client_repat, "{default}You cut its heart to ensure his death and gained: {green}''Calmaticus' Heart Piece''{default}!");
+					CPrintToChat(client_repat, "{default}당신은 그를 확실히 죽이기 위해 심장을 떼어냈고, 당신이 얻은 것은... : {green}''칼마티커스'의 심장 조각''{default}!");
 				}
 			}
 		}
@@ -1692,11 +1692,11 @@ public void Raidmode_Nemesis_Win(int entity)
 	{
 		if(XenoExtraLogic())
 		{
-			CPrintToChatAll("{crimson}You afterall... had no chance.");
+			CPrintToChatAll("{crimson}당신은 이 싸움에서 희망의 빛줄기를 보지 못 했습니다.");
 		}
 		else
 		{
-			CPrintToChatAll("{snow}???{default}: Good job Calmaticus, head back to the lab.");
+			CPrintToChatAll("{snow}???{default}: 아주 잘 했다, 칼마티커스. 연구소로 돌아와라");
 		}
 	}
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;

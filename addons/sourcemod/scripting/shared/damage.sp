@@ -916,6 +916,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 			if(!(damagetype & DMG_TRUEDAMAGE))
 				return Player_OnTakeDamage_Fractal(victim, damage, damagePosition,attacker);
 		}
+		default: Weapon_AddonsCustom_PlayerTakeDamage(victim, attacker, damage, equipped_weapon, damagePosition, damagetype);
 	}
 	return damage;
 }
@@ -1283,8 +1284,8 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
         }
         case WEAPON_KIT_OMEGA_GAUSS:
         {
-            if(!CheckInHud())
-            KitOmega_NPCTakeDamage_Gauss(attacker, victim, damage, weapon);
+			if(!CheckInHud())
+				KitOmega_NPCTakeDamage_Gauss(attacker, victim, damage, weapon);
         }
         case WEAPON_KIT_PURGE_ANNAHILATOR:
         {
@@ -1292,14 +1293,15 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
         }
         case WEAPON_KIT_PURGE_CRUSHER:
         {
-            if(!CheckInHud())
-            PurgeKit_NPCTakeDamage_Crusher(attacker, victim, damage, weapon);
+			if(!CheckInHud())
+				PurgeKit_NPCTakeDamage_Crusher(attacker, victim, damage, weapon);
         }
         case WEAPON_KIT_PURGE_RAMPAGER:
         {
-            if(!CheckInHud())
-            PurgeKit_NPCTakeDamage_Rampager(attacker, victim, damage, weapon);
+			if(!CheckInHud())
+				PurgeKit_NPCTakeDamage_Rampager(attacker, victim, damage, weapon);
 		}
+		default: Weapon_AddonsCustom_NPCTakeDamage(attacker, victim, damage, weapon, damagePosition, damagetype);
 	}
 #endif
 

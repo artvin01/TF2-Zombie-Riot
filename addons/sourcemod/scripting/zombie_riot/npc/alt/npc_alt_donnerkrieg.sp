@@ -205,7 +205,7 @@ methodmap Donnerkrieg < CClotBody
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 		
-		CPrintToChatAll("{crimson}Donnerkrieg{default}: I have arrived to render judgement");
+		CPrintToChatAll("{crimson}도너크리그{default}: 심판을 내리기 위해 이 곳에 왔다.");
 		
 		g_b_angered=false;
 
@@ -321,11 +321,11 @@ static void Internal_ClotThink(int iNPC)
 			}
 			if(GameTime > g_f_blitz_dialogue_timesincehasbeenhurt)
 			{
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: Blitzkrieg's army is happy to serve you as thanks for setting us free...");
+				CPrintToChatAll("{crimson}도너크리그{default}: 우릴 전부 구해줘서 고마워... 정말로.");
 				npc.m_bDissapearOnDeath = true;
 
-				CPrintToChatAll("{aqua}Stella{snow}: Oh also our true names are, {aqua}Stella{snow}, thats me");
-				CPrintToChatAll("{aqua}Stella{snow}: And hes {crimson}Karlas{snow}!");
+				CPrintToChatAll("{aqua}스텔라{snow}: 아, 그리고 우리의 진짜 이름은, {aqua}스텔라{snow}, 내 이름이다.");
+				CPrintToChatAll("{aqua}스텔라{snow}: 그리고 이쪽은, {crimson}카를라스{snow}.");
 				
 				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 				for (int client = 1; client <= MaxClients; client++)
@@ -333,49 +333,49 @@ static void Internal_ClotThink(int iNPC)
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						Items_GiveNamedItem(client, "Blitzkrieg's Army");
-						CPrintToChat(client,"{default}You now have access to: {crimson}''Blitzkrieg's Army''{default}!");
+						CPrintToChat(client,"{default}이제 당신은 새로운 세력을 배럭으로 호출할 수 있게 되었습니다...: {crimson}''블리츠크리그의 군대''{default}!");
 					}
 				}
 			}
 			else if(GameTime + 3.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 8)
 			{
 				i_SaidLineAlready[npc.index] = 8;
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: With Blitzkrieg gone, the army has been set free, and so...");
+				CPrintToChatAll("{crimson}도너크리그{default}: 블리츠크리그도 사라졌으니, 그의 수하들도 전부 자유의 몸이 됐어...");
 			}
 			else if(GameTime + 5.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 7)
 			{
 				i_SaidLineAlready[npc.index] = 7;
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: However, that doesn't matter anymore");
+				CPrintToChatAll("{crimson}도너크리그{default}: 하지만, 이제 아무 상관 없어졌어.");
 			}
 			else if(GameTime + 8.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 6)
 			{
 				i_SaidLineAlready[npc.index] = 6;
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: The corruption had fully gotten to him");
+				CPrintToChatAll("{crimson}도너크리그{default}: 혼돈의 영향이, 저 기계에게도 큰 영향을 미쳤기 때문이었다.");
 			}
 			else if(GameTime + 10.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 5)
 			{
 				i_SaidLineAlready[npc.index] = 5;
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: If we hadn't complied he would have destroyed us");
+				CPrintToChatAll("{crimson}도너크리그{default}: 저 놈을 멈추지 않았다면, 우린 저 놈에게 죽었을 거다.");
 			}
 			else if(GameTime + 12.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 4)
 			{
 				i_SaidLineAlready[npc.index] = 4;
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: We had no choice.");
+				CPrintToChatAll("{crimson}도너크리그{default}: 선택의 여지가 없었다고.");
 			}
 			else if(GameTime + 14.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 3)
 			{
 				i_SaidLineAlready[npc.index] = 3;
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: We don't have to fight anymore, for you see...");
+				CPrintToChatAll("{crimson}도너크리그{default}: 우린 이제 싸울 필요가 없어... 우리는...");
 			}
 			else if(GameTime + 16.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 2)
 			{
 				i_SaidLineAlready[npc.index] = 2;
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: You Stopped The rouge Machine.");
+				CPrintToChatAll("{crimson}도너크리그{default}: 네가 저 미친 기계를 드디어 저지해냈어.");
 			}
 			else if(GameTime + 18.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 1)
 			{
 				i_SaidLineAlready[npc.index] = 1;
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: Wait no please stop");
+				CPrintToChatAll("{crimson}도너크리그{default}: 아니, 잠깐! 멈춰!");
 				ReviveAll(true);
 			}
 		}
@@ -611,15 +611,15 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}Thats it {default}i'm going to kill you");	
+					CPrintToChatAll("{crimson}도너크리그{default}: {crimson}이제 끝내야지. {default}안 그래?");	
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}hm, {default}Wonder how this will end...");	
+					CPrintToChatAll("{crimson}도너크리그{default}: {crimson}흠, {default}어떻게 끝날지 참 기대되는군...");	
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}PREPARE {default}Thyself, {yellow}Judgement {default}Is near");	
+					CPrintToChatAll("{crimson}도너크리그{default}: {crimson}각오해라, {yellow}심판이 {default}멀지 않았다.");	
 				}
 				case 4:
 				{
@@ -627,24 +627,24 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 					{
 						case 5:
 						{
-							CPrintToChatAll("{crimson}Donnerkrieg{default}: Oh not again now train's gone and {crimson}Left{default}.");	
+							CPrintToChatAll("{crimson}도너크리그{default}: 이것도 다시 쓰려면 기다려야한다니..");	
 							npc.m_bFUCKYOU_move_anim = true;
 						}				
 						default:
 						{
-							CPrintToChatAll("{crimson}Donnerkrieg{default}: Oh not again now cannon's gone and {crimson}recharged{default}.");	
+							CPrintToChatAll("{crimson}도너크리그{default}: 내 포는 다시 {crimson}충전{default}해야한다.");	
 						}
 							
 					}
 				}
 				case 5:
 				{
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: Aiming this thing is actually quite {crimson}complex {default}ya know.");	
+					CPrintToChatAll("{crimson}도너크리그{default}: 이 무기로 조준하는건 사실 꽤 {crimson}어려운 {default}일이라고.");	
 					npc.m_bFUCKYOU = true;
 				}
 				case 6:
 				{
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: Ya know, im getting quite bored of {crimson}this");	
+					CPrintToChatAll("{crimson}도너크리그{default}: 그거 알고 있나? 이 싸움이 점점 {crimson}지겨워지고 있는걸.");	
 				}
 			}
 			
@@ -672,15 +672,15 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 						{
 							case 1:
 							{
-								CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}NIGHTMARE, CANNON!");
+								CPrintToChatAll("{crimson}도너크리그{default}: {crimson}악몽포 발사!");
 							}
 							case 2:
 							{
-								CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}JUDGEMENT BE UPON THEE!");
+								CPrintToChatAll("{crimson}도너크리그{default}: {crimson}저들에게 죽음을!");
 							}
 							case 3:
 							{
-								CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}Annihilation!");	
+								CPrintToChatAll("{crimson}도너크리그{default}: {crimson}섬멸 개시!");	
 							}
 						}
 					}
@@ -688,13 +688,13 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 					{
 						if(npc.m_bFUCKYOU_move_anim)
 						{
-							CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}And the city's to far to walk to the end while I...");	
+							CPrintToChatAll("{crimson}도너크리그{default}: {crimson}여전히, 너희를 섬멸하기엔 충분하다...");	
 							npc.m_bFUCKYOU_move_anim = false;
 						}
 						else if(npc.m_bFUCKYOU)
 						{
 							npc.m_bFUCKYOU = false;
-							CPrintToChatAll("{crimson}Donnerkrieg{default}: However its still{crimson} worth the effort");	
+							CPrintToChatAll("{crimson}도너크리그{default}: 그러나, 너흴 상대로는 여전히 {crimson}사용 가치가 있다.");	
 						}
 						
 					}

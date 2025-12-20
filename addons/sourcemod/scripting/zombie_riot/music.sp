@@ -575,6 +575,8 @@ void Music_EndLastmann(bool Reinforce=false)
                             StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/combinehell/escalationP2.mp3", 2.0);
                         case 14:
                             StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/internius/chaos_engineered_cyborg.mp3", 2.0);
+						default:
+							Weapon_AddonsStopCustomSoundForLastMan(client, Yakuza_Lastman());
 					}
 					SetMusicTimer(client, 0);
 					MusicLastmann.StopMusic(client);
@@ -1047,11 +1049,14 @@ void Music_Update(int client)
                     SetMusicTimer(client, GetTime() + 183);
 				}
 				default:
-				{	
-					if(!MusicLastmann.PlayMusic(client))
+				{
+					if(Weapon_AddonsStartCustomSoundForLastMan(client, Yakuza_Lastman()))
 					{
-						EmitCustomToClient(client, "#zombiesurvival/lasthuman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-						SetMusicTimer(client, GetTime() + 120);	
+						if(!MusicLastmann.PlayMusic(client))
+						{
+							EmitCustomToClient(client, "#zombiesurvival/lasthuman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							SetMusicTimer(client, GetTime() + 120);	
+						}
 					}
 				}
 			}

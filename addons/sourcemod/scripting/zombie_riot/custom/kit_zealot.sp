@@ -769,36 +769,36 @@ public void Zealot_Hud_Logic(int client, int weapon, bool ignoreCD)
 	{
 		maxammodo = RoundFloat(float(maxammodo) * Attributes_Get(WeaponPistol, 4, 0.0));
 	}
-	Format(ZealotHud, sizeof(ZealotHud), "Stamina %.0f％ | Ammo [%i/%i]", ((f_StaminaLeftZealot[client] / Zealot_RegenerateStaminaMAx(client)) * 100.0), ammo, maxammodo);
+	Format(ZealotHud, sizeof(ZealotHud), "스태미너 %.0f％ | 탄환 [%i/%i]", ((f_StaminaLeftZealot[client] / Zealot_RegenerateStaminaMAx(client)) * 100.0), ammo, maxammodo);
 	
 	
 	if(i_PaPLevel[client] >= 1)
 	{
 		if(f_PotionCooldownDo[client] > GetGameTime())
 		{
-			Format(ZealotHud, sizeof(ZealotHud), "%s\nNo Potion Ready...", ZealotHud);
+			Format(ZealotHud, sizeof(ZealotHud), "%s\n포션이 준비되지 않음...", ZealotHud);
 		}
 		else
 		{
-			Format(ZealotHud, sizeof(ZealotHud), "%s\nCurrent Potion\n%s", ZealotHud, PotionNames[i_RandomCurrentPotion[client]]);
+			Format(ZealotHud, sizeof(ZealotHud), "%s\n현재 포션\n%s", ZealotHud, PotionNames[i_RandomCurrentPotion[client]]);
 		}
 	}
 	if(i_PaPLevel[client] >= 3)
 	{
 		if(Zealot_OneshotProtection[client] > GetGameTime())
 		{
-			Format(ZealotHud, sizeof(ZealotHud), "%s\nOneshot Protection (%.1f)", ZealotHud, Zealot_OneshotProtection[client] - GetGameTime());
+			Format(ZealotHud, sizeof(ZealotHud), "%s\n즉사 방지 (%.1f)", ZealotHud, Zealot_OneshotProtection[client] - GetGameTime());
 		}
 		else
 		{
-			Format(ZealotHud, sizeof(ZealotHud), "%s\nOneshot Protection (Ready)", ZealotHud, PotionNames[i_RandomCurrentPotion[client]]);
+			Format(ZealotHud, sizeof(ZealotHud), "%s\n즉사 방지 (준비됨)", ZealotHud, PotionNames[i_RandomCurrentPotion[client]]);
 		}
 	}
 	if(i_PaPLevel[client] >= 4)
 	{
 		if(Zealot_BonusMeleeDamageWearoff[client] > GetGameTime())
 		{
-			Format(ZealotHud, sizeof(ZealotHud), "%s\nCalloused Strikes (x%.1f)", ZealotHud, Zealot_BonusMeleeDamage[client]);
+			Format(ZealotHud, sizeof(ZealotHud), "%s\n거친 일격 (x%.1f)", ZealotHud, Zealot_BonusMeleeDamage[client]);
 		}
 	}
 	

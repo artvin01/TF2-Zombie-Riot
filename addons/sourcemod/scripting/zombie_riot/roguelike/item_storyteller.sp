@@ -152,7 +152,7 @@ static Action Timer_BladedancerTimer(Handle timer)
 	}
 	if(IsValidClient(BladeDancer))
 	{
-		CPrintToChatAll("{red}%N {crimson}received +100％ max health and +100％ damage bonus and +100％ heal rate.", BladeDancer);
+		CPrintToChatAll("{red}%N {crimson}플레이어의 최대 체력, 공격력, 치유 속도가 +100％ 증가했습니다.", BladeDancer);
 	}
 	return Plugin_Continue;
 }

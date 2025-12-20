@@ -1554,15 +1554,15 @@ static void Hud(int client, int weapon)
 		{
 			if(b_cannon_animation_active[client])
 			{
-				Format(HUDText, sizeof(HUDText), "ĄHyper CannonČ Active Ę[M1] to DissableĖ");
+				Format(HUDText, sizeof(HUDText), "Ą하이퍼 캐논Č 작동중 Ę[M1] 로 비활성화Ė");
 
 				if(b_overdrive_active[client])
 				{
-					Format(HUDText, sizeof(HUDText), "%s\nĄOverDriveČ Active!",HUDText);
+					Format(HUDText, sizeof(HUDText), "%s\nĄ과충전Č 발동중!",HUDText);
 				}
 				else
 				{
-					Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Activate ĄOverDriveČ [Cost:%.0f/s]",HUDText, FRACTAL_KIT_PASSIVE_OVERDRIVE_COST*10.0);
+					Format(HUDText, sizeof(HUDText), "%s\n[M2] 로 Ą과충전 발동Č [비용:%.0f/s]",HUDText, FRACTAL_KIT_PASSIVE_OVERDRIVE_COST*10.0);
 				}
 				
 			}
@@ -1570,11 +1570,11 @@ static void Hud(int client, int weapon)
 			{
 				if(fl_animation_cooldown[client] > GameTime)
 				{	
-					Format(HUDText, sizeof(HUDText), "ĄHyper CannonČ Offline ĘCooling [%.1fs]Ė", fl_animation_cooldown[client] - GameTime);
+					Format(HUDText, sizeof(HUDText), "Ą하이퍼 캐논Č 비활성화 Ę냉각중 [%.1fs]Ė", fl_animation_cooldown[client] - GameTime);
 				}
 				else
 				{
-					Format(HUDText, sizeof(HUDText), "ĄHyper CannonČ Ready Ę[M1] to ActivateĖ");
+					Format(HUDText, sizeof(HUDText), "Ą하이퍼 캐논Č 준비됨 Ę[M1] 로 사용Ė");
 				}
 			}
 		}
@@ -1588,22 +1588,22 @@ static void Hud(int client, int weapon)
 			{
 				if(struct_Harvester_Data[client].Lockout > GameTime)
 				{
-					Format(HUDText, sizeof(HUDText), "ĄMana HarvesterČ Recharging [%.1f]", struct_Harvester_Data[client].Lockout - GameTime);
+					Format(HUDText, sizeof(HUDText), "Ą마나 수확자Č 발동중 [%.1f]", struct_Harvester_Data[client].Lockout - GameTime);
 				}
 				else
 				{
 					if(struct_Harvester_Data[client].Active)
-						Format(HUDText, sizeof(HUDText), "ĄMana HarvesterČ Active!");
+						Format(HUDText, sizeof(HUDText), "Ą마나 수확자Č 발동중!");
 					else
-						Format(HUDText, sizeof(HUDText), "Hold [M1] To Cast ĄMana HarvesterČ");
+						Format(HUDText, sizeof(HUDText), "[M1] 를 꾹 눌러 발동 - Ą마나 수확자Č");
 				}
 
 				if(fl_starfall_CD[client] > GameTime)
-					Format(HUDText, sizeof(HUDText), "%s\nĄStarFallČ Recharging [%.1f] | [Cost:%.0f]",HUDText, fl_starfall_CD[client] - GameTime, FRACTAL_KIT_STARFALL_COST);
+					Format(HUDText, sizeof(HUDText), "%s\nĄ별똥별Č 충전중 [%.1f] | [비용:%.0f]",HUDText, fl_starfall_CD[client] - GameTime, FRACTAL_KIT_STARFALL_COST);
 				else if(fl_current_crystal_amt[client] >= FRACTAL_KIT_STARFALL_COST)
-					Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Cast ĄStarFallČ [Cost:%.0f]",HUDText, FRACTAL_KIT_STARFALL_COST);
+					Format(HUDText, sizeof(HUDText), "%s\n[M2] 를 눌러 Ą별똥별Č 발동 [비용:%.0f]",HUDText, FRACTAL_KIT_STARFALL_COST);
 				else
-					Format(HUDText, sizeof(HUDText), "%s\nNot Enough Crystals To Cast ĄStarFallČ [%.0f/%.0f]",HUDText, fl_current_crystal_amt[client], FRACTAL_KIT_STARFALL_COST);
+					Format(HUDText, sizeof(HUDText), "%s\nĄ별똥별Č 사용울 위한 수정이 부족. [%.0f/%.0f]",HUDText, fl_current_crystal_amt[client], FRACTAL_KIT_STARFALL_COST);
 
 				
 				//m1: mana harvester.
@@ -1620,7 +1620,7 @@ static void Hud(int client, int weapon)
 			}
 			else
 			{
-				Format(HUDText, sizeof(HUDText), "Press [M1] To Cast ĄFantasiaČ [Cost:%.0f]", FRACTAL_KIT_FANTASIA_COST);
+				Format(HUDText, sizeof(HUDText), "[M1] 를 눌러 Ą환술Č 발동 [비용:%.0f]", FRACTAL_KIT_FANTASIA_COST);
 				//m1: fantasia
 			}
 
@@ -1628,7 +1628,7 @@ static void Hud(int client, int weapon)
 		}
 	}
 
-	Format(HUDText, sizeof(HUDText), "%s\nĄCrystals:Ę%.0f/%.0fĖČ",HUDText, fl_current_crystal_amt[client], fl_max_crystal_amt[client]);
+	Format(HUDText, sizeof(HUDText), "%s\nĄ수정:Ę%.0f/%.0fĖČ",HUDText, fl_current_crystal_amt[client], fl_max_crystal_amt[client]);
 
 	Format_Fancy_Hud(HUDText);
 

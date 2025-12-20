@@ -270,19 +270,19 @@ public void BarrackThorns_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						NpcSpeechBubble(npc.index, "Stop moving around. It'll spare all of us the effort.", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+						NpcSpeechBubble(npc.index, "돌아다니지 마라. 그렇게 하면 서로 수고를 덜 하게 될 테니.", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
 					}
 					case 1:
 					{
-						NpcSpeechBubble(npc.index, "Your attacks are all within my calculations.", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+						NpcSpeechBubble(npc.index, "네 공격은 예상한 대로다.", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
 					}
 					case 2:
 					{
-						NpcSpeechBubble(npc.index, "Futile.", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+						NpcSpeechBubble(npc.index, "소용없다.", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
 					}
 					case 3:
 					{
-						NpcSpeechBubble(npc.index, "Watch carefully, this is the Destreza of Iberia!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+						NpcSpeechBubble(npc.index, "똑똑히 봐라, 이게 바로 이베리아의 데스트레자다!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
 					}
 				}
 			}

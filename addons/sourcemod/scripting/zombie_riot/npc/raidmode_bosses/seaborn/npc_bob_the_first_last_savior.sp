@@ -447,7 +447,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		{
 			if(CurrentModifOn() == 1)
 			{
-				CPrintToChatAll("{white}%s{default}: The chaos is everywhere, we're too late, join me, dont attack.\nProve me your innocence.", NpcStats_ReturnNpcName(npc.index, true));
+				CPrintToChatAll("{white}%s{default}: 혼돈이 사방에 퍼져있어. 우린 너무 늦었어. 나와 함께 하자. 공격하지 말고.\n네 결백을 증명해봐.", NpcStats_ReturnNpcName(npc.index, true));
 			}
 			else
 			{
@@ -455,15 +455,15 @@ methodmap RaidbossBobTheFirst < CClotBody
 				{
 					case 0:
 					{
-						CPrintToChatAll("{white}%s{default}: I'll Handle this one.", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{white}%s{default}: 내가 처리하지.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{white}%s{default}: Stella and Karlas, you did enough, stand back.", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{white}%s{default}: 스텔라, 카를라스, 충분히 잘 해줬다. 이제 뒤로 물러나라.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{white}%s{default}: I know enough about infections and its weaknesses to fend you off.", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{white}%s{default}: 나는 감염과 그 약점에 대해 충분히 알고 있어. 그러니 내가 널 막겠다.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 				}
 			}
@@ -546,20 +546,20 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		{
 			if(!b_BobPistolPhaseSaid[npc.index])
 			{
-				CPrintToChatAll("{crimson}%s uses his immensive willpower to regain some strength...", NpcStats_ReturnNpcName(npc.index, true));
+				CPrintToChatAll("{crimson}%s 의 엄청난 의지력으로 인해 그의 힘이 되돌아오고 있다...", NpcStats_ReturnNpcName(npc.index, true));
 				switch(GetRandomInt(0,2))
 				{
 					case 0:
 					{
-						CPrintToChatAll("{white}%s{default}: Hope my sharp shooting skills will miss your brain, curing is still an option.", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{white}%s{default}: 내 높은 명중률이 네 뇌를 빗겨나가길 기도해야겠군. 이제 감염 치료는 선택 사항이다.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{white}%s{default}: If only i could cure it off you with this handgun, have to take lives to save lives.", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{white}%s{default}: 생명을 구하려면 생명을 앗아가야한다니. 적어도 이 권총으로 널 감염으로부터 치유할 수 있다면 좋겠는데.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{white}%s{default}: Im starting to reach my limit...", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{white}%s{default}: 점점 내 한계에 다다르고 있어.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 				}
 				int MaxHealth = ReturnEntityMaxHealth(npc.index);
@@ -608,15 +608,15 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{white}%s{default}: One infected left.", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{white}%s{default}: 마지막 감염체만 남았다.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 1:
 				{
-					CPrintToChatAll("{white}%s{default}: This nightmare ends soon.", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{white}%s{default}: 이 악몽이 곧 끝나겠군.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 2:
 				{
-					CPrintToChatAll("{white}%s{default}: Last. Infected. Left.", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{white}%s{default}: 마지막 감염체 확인.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 			}
 		}
@@ -640,13 +640,13 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			switch(GetURandomInt() % 3)
 			{
 				case 0:
-					CPrintToChatAll("{white}%s{default}: You weren't supposed to have this infection.", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{white}%s{default}: 넌 그렇게 허무하게 감염 당해서는 안 됐어.", NpcStats_ReturnNpcName(npc.index, true));
 				
 				case 1:
-					CPrintToChatAll("{white}%s{default}: No choice but to kill you, it consumes you.", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{white}%s{default}: 널 죽이는 것 외엔 선택지가 없어. 그 감염은 지금도 널 삼키고 있으니까.", NpcStats_ReturnNpcName(npc.index, true));
 				
 				case 2:
-					CPrintToChatAll("{white}%s{default}: Nobody wins.", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{white}%s{default}: 우리 서로 잃은 것만 있는 싸움이었어.", NpcStats_ReturnNpcName(npc.index, true));
 			}
 			
 			// Play funny animation intro
@@ -658,7 +658,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		else
 		{
 
-			CPrintToChatAll("{white}%s{default}: You think you can fool me!? Ill destroy you!", NpcStats_ReturnNpcName(npc.index, true));
+			CPrintToChatAll("{white}%s{default}: 날 속일 수 있을거라 생각했나!? 널 끝장내주마!", NpcStats_ReturnNpcName(npc.index, true));
 			
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) -1);
 			fl_Extra_Damage[npc.index] = 999.9;
@@ -693,34 +693,34 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				case 2:
 				{
 					ReviveAll(true);
-					CPrintToChatAll("{white}Bob the First{default}: So...");
+					CPrintToChatAll("{white}밥 1세{default}: 그래서...");
 					npc.m_flNextThinkTime = gameTime + 5.0;
 				}
 				case 3:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: What do you think will happpen..?");
+					CPrintToChatAll("{white}밥 1세{default}: 이제 어떻게 해야...?");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 4:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: Wait... no... you were fighting it..! No this.. This cannot be!");
+					CPrintToChatAll("{white}밥 1세{default}: 아니... 잠깐... 넌 감염체가 아니라 감염과 싸우고 있었던 거였어! 이건.. 말도 안 돼!");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 5:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: Im too hurt, i cant, i have to run... i cant....");
+					CPrintToChatAll("{white}밥 1세{default}: 맙소사, 정말 예측불허의 일이 일어났어. 이건, 이건....");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 6:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: ...");
+					CPrintToChatAll("{white}밥 1세{default}: ...");
 					npc.m_flNextThinkTime = gameTime + 2.0;
 				}
 				case 7:
 				{
 					GiveProgressDelay(30.0);
 					SmiteNpcToDeath(npc.index);
-					CPrintToChatAll("{white}Bob the First leaves in a hurry... something is wrong, should you follow him.....? Too late now...");
+					CPrintToChatAll("{white}밥 1세가 급하게 자리를 떴습니다... 뭔가가 잘못 됐습니다. 그를 따라가야했을까요...? 그러기엔 너무 늦은것 같습니다...");
 					MusicEnum music;
 					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/special_mutation/incomming_boss_wait_scary.mp3");
 					music.Time = 100;
@@ -741,37 +741,37 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				case 2:
 				{
 					ReviveAll(true);
-					CPrintToChatAll("{white}Bob the First{default}: No...");
+					CPrintToChatAll("{white}밥 1세{default}: 이럴수가...");
 					npc.m_flNextThinkTime = gameTime + 5.0;
 				}
 				case 3:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: This infection...");
+					CPrintToChatAll("{white}밥 1세{default}: 이 감염...");
 					npc.m_flNextThinkTime = gameTime + 3.0;
 				}
 				case 4:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: How did this thing make you this powerful..?");
+					CPrintToChatAll("{white}밥 1세{default}: 이게 도대체 어떻게 널 그리 강하게 만든거지..?");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 5:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: Took out every single Seaborn and took the infection in yourselves...");
+					CPrintToChatAll("{white}밥 1세{default}: 넌 모든 시본을 제거하고 그들의 감염을 전부 흡수했어...");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 6:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: You people fighting these cities and infections...");
+					CPrintToChatAll("{white}밥 1세{default}: 그 후 넌 다른 세력의 도시들과 감염원들과 싸워나갔지. 그리고 그건 네 의지가 아니었을터.");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 7:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: However...");
+					CPrintToChatAll("{white}밥 1세{default}: 그러니까...");
 					npc.m_flNextThinkTime = gameTime + 3.0;
 				}
 				case 8:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: I will remove what does not belong to you...");
+					CPrintToChatAll("{white}밥 1세{default}: 너의 것이 아닌 그 감염은 내가 제거해주면 될 것 같군.");
 					npc.m_flNextThinkTime = gameTime + 3.0;
 					CreateTimer(12.0, SafetyFixBobDo, EntIndexToEntRef(npc.index));
 				}
@@ -877,13 +877,13 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			switch(GetURandomInt() % 3)
 			{
 				case 0:
-					CPrintToChatAll("{white}Bob the First{default}: You're in the wrong place in the wrong time!");
+					CPrintToChatAll("{white}밥 1세{default}: 네 운은 여기까지인 것 같군!");
 				
 				case 1:
-					CPrintToChatAll("{white}Bob the First{default}: This is not how it goes!");
+					CPrintToChatAll("{white}밥 1세{default}: 이 이야기는 이렇게 흘러가면 안 됐어!");
 				
 				case 2:
-					CPrintToChatAll("{white}Bob the First{default}: Stop trying to change fate!");
+					CPrintToChatAll("{white}밥 1세{default}: 운명을 바꿀 생각 하지 마라!");
 			}
 		}
 		else
@@ -891,16 +891,16 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			switch(GetURandomInt() % 4)
 			{
 				case 0:
-					CPrintToChatAll("{white}Bob the First{default}: Enough of this!");
+					CPrintToChatAll("{white}밥 1세{default}: 이제 그만!");
 				
 				case 1:
-					CPrintToChatAll("{white}Bob the First{default}: Do you see yourself? Your slaughter?");
+					CPrintToChatAll("{white}밥 1세{default}: 네가 한 짓이 느껴지나? 네 학살 말이다.");
 				
 				case 2:
-					CPrintToChatAll("{white}Bob the First{default}: You are no god.");
+					CPrintToChatAll("{white}밥 1세{default}: 넌 신이 아니다.");
 				
 				case 3:
-					CPrintToChatAll("{white}Bob the First{default}: Xeno. Seaborn. Then there's you.");
+					CPrintToChatAll("{white}밥 1세{default}: 제노 감염, 시본 감염, 그리고 그 후엔... 너.");
 			}
 		}
 
@@ -944,7 +944,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			{
 				b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
 				if(CurrentModifOn() == 1 && i_RaidGrantExtra[npc.index] == 1)
-					CPrintToChatAll("{white}%s{default}: Nevermind then, you're one of the affected.", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{white}%s{default}: 상관 없겠지, 너도 그 감염의 영향을 받았을테니.", NpcStats_ReturnNpcName(npc.index, true));
 			}
 		}
 		int summon;
@@ -1823,9 +1823,9 @@ static void GivePlayerItems(int coolwin = 0)
 		{
 			Items_GiveNamedItem(client, "Bob's Curing Hand");
 			if(coolwin == 0)
-				CPrintToChat(client, "{default}Bob has cured you of the sea, you gained: {yellow}''Bob's Curing Hand''{default}!");
+				CPrintToChat(client, "{default}밥이 당신에게 깃든 심해의 감염원을 전부 제거해주었습니다. 당신이 얻은 것은... : {yellow}''밥의 치유의 손길''{default}!");
 			else
-				CPrintToChat(client, "{default}You didnt attack bob for no reason and thus he gives you: {yellow}''Bob's Curing Hand''{default}!");
+				CPrintToChat(client, "{default}당신은 밥을 공격하지 않았고, 그런 밥이 당신에게 준 것은... : {yellow}''밥의 치유의 손길''{default}!");
 		}
 	}
 
@@ -2228,7 +2228,7 @@ public void Raidmode_BobFirst_Win(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 	func_NPCThink[entity] = INVALID_FUNCTION;
-	CPrintToChatAll("{white}Bob the First{default}: Deep sea threat cleaned, finally at peace...");
+	CPrintToChatAll("{white}밥 1세{default}: 심해의 위협은 이제 완전히 사라졌다. 드디어 평화가 찾아오겠군...");
 }
 
 

@@ -223,19 +223,19 @@ public void BarrackVillager_ClotThink(int iNPC)
 					{
 						case 1:
 						{
-							CPrintToChat(client, "{green}Villager Minion{default}: Please tell me where to build my tower!");
+							CPrintToChat(client, "{green}주민 하수인{default}: 망루를 지을 위치를 알려주십시오!");
 						}
 						case 2:
 						{
-							CPrintToChat(client, "{green}Villager Minion{default}: Mister, i will need a command on where to build!");
+							CPrintToChat(client, "{green}주민 하수인{default}: 대장, 어디에다 지을지를 가르쳐주십시오!");
 						}
 						case 3:
 						{
-							CPrintToChat(client, "{green}Villager Minion{default}: I wish to build a tower, please tell me where!");
+							CPrintToChat(client, "{green}주민 하수인{default}: 망루를 건설하고 싶습니다! 어디에 지을깝쇼?");
 						}
 						case 4:
 						{
-							CPrintToChat(client, "{green}Villager Minion{default}: I'm in need of commands on where to build!");
+							CPrintToChat(client, "{green}주민 하수인{default}: 어디에 망루를 지을까요?");
 						}
 					}
 				}		
@@ -649,14 +649,14 @@ public int BarrackVillager_MenuH(Menu menu, MenuAction action, int client, int c
 							CNavArea area = TheNavMesh.GetNavArea(vecPos, 25.0);
 							if(area == NULL_AREA)
 							{
-								CPrintToChat(client, "{green}Villager Minion{default}: I can't build here, please place it closer to the ground or away from walls!");		
+								CPrintToChat(client, "{green}주민 하수인{default}: 이 곳엔 지을수 없습니다. 바닥에 가까이 놓거나 벽에서 멀리 떨어뜨려주세요!");		
 							}
 							else
 							{
 								vecPos[2] += 18.0;
 								if(IsPointHazard(vecPos)) //Retry.
 								{
-									CPrintToChat(client, "{green}Villager Minion{default}: I can't build here, please place it closer to the ground or away from walls!");		
+									CPrintToChat(client, "{green}주민 하수인{default}: 이 곳엔 지을수 없습니다. 바닥에 가까이 놓거나 벽에서 멀리 떨어뜨려주세요!");		
 									BarracksVillager_MenuSpecial(client, npc.index);
 									return 0;
 								}
@@ -665,13 +665,13 @@ public int BarrackVillager_MenuH(Menu menu, MenuAction action, int client, int c
 								vecPos[2] -= 18.0;
 								if(IsPointHazard(vecPos)) //Retry.
 								{
-									CPrintToChat(client, "{green}Villager Minion{default}: I can't build here, please place it closer to the ground or away from walls!");		
+									CPrintToChat(client, "{green}주민 하수인{default}: 이 곳엔 지을수 없습니다. 바닥에 가까이 놓거나 벽에서 멀리 떨어뜨려주세요!");		
 									BarracksVillager_MenuSpecial(client, npc.index);
 									return 0;
 								}
 								VillagerDesiredBuildLocation[npc.index] = vecPos;
 								
-								CPrintToChat(client, "{green}Villager Minion{default}: Right ahead sir!");			
+								CPrintToChat(client, "{green}주민 하수인{default}: 즉시 하겠습니다!");			
 							}
 						}	
 						else

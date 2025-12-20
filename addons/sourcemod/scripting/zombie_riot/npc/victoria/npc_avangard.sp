@@ -11,6 +11,12 @@ static const char g_HurtSounds[][] = {
 	"weapons/sentry_damage3.wav",
 	"weapons/sentry_damage4.wav"
 };
+
+static int MechanizedProtector[MAXENTITIES];
+static int LifeSupportDevice[MAXENTITIES];
+static int i_LinkStat[MAXENTITIES];
+static bool b_Already_Link[MAXENTITIES];
+
 static int NPCId;
 
 static bool b_Already_Link[MAXENTITIES];
@@ -127,7 +133,9 @@ methodmap VictorianOfflineAvangard < CClotBody
 		npc.m_flSpeed = 100.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iOverlordComboAttack = 0;
+		npc.m_i_linkStat = 0;
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flAMBATUBLOW = 0.0;
 		npc.m_flSpawnTime = GetGameTime(npc.index)+50.0;
@@ -149,8 +157,13 @@ methodmap VictorianOfflineAvangard < CClotBody
 		//Maybe used for special waves
 		if(StrContains(data, "only") != -1)
 		{
-			i_AttacksTillMegahit[npc.index]=600;
-			npc.m_bFUCKYOU = true;
+			if(!StrContains(countext[i], "only"))
+			{
+				i_AttacksTillMegahit[npc.index]=600;
+				npc.m_bFUCKYOU = true;
+			}
+			else if(!StrContains(countext[i], "link_majorsteam"))
+				npc.m_fbRangedSpecialOn = true;
 		}
 		
 		if(StrContains(data, "imcomplete") != -1)
@@ -366,6 +379,61 @@ static void VictorianOfflineAvangard_ClotThink(int iNPC)
 				return;
 			}
 		}
+		
+		if(npc.m_fbRangedSpecialOn && npc.m_flNextRangedAttack < gameTime)
+		{
+			switch(npc.m_i_linkStat)
+			{
+				case 0:
+				{
+					bool Link_MajorSteam=false;
+					for(int i; i < i_MaxcountNpcTotal; i++)
+					{
+						int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+						if(IsValidEntity(entity))
+						{
+							char npc_classname[60];
+							NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+							if(entity != INVALID_ENT_REFERENCE && StrEqual(npc_classname, "npc_majorsteam") && IsEntityAlive(entity) && !b_Already_Link[entity])
+							{
+								LifeSupportDevice[npc.index] = EntIndexToEntRef(entity);
+								b_Already_Link[entity] = true;
+								int TempEntity = ConnectWithBeam(npc.index, entity, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM);
+								if(IsValidEntity(TempEntity))
+								{
+									SetEntityRenderMode(TempEntity, RENDER_TRANSCOLOR);
+									SetEntityRenderColor(TempEntity, 0, 205, 255, 255);
+								}
+								MechanizedProtector[npc.index] = EntIndexToEntRef(TempEntity);
+								Link_MajorSteam=true;
+								break;
+							}
+						}
+					}
+					if(Link_MajorSteam)
+						npc.m_i_linkStat=1;
+					npc.m_flNextRangedAttack = gameTime + 1.0;
+				}
+				case 1:
+				{
+					int entity = EntRefToEntIndex(LifeSupportDevice[npc.index]);
+					if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
+					{
+						IncreaseEntityDamageTakenBy(npc.index, 0.5, 0.25);
+						HealEntityGlobal(npc.index, npc.index, 4000.0, 1.0);
+						HealEntityGlobal(npc.index, entity, 75.0, 1.0);
+						npc.m_flNextRangedAttack = gameTime + 0.25;
+					}
+					else
+					{
+						npc.m_i_linkStat=2;
+						if(IsValidEntity(MechanizedProtector[npc.index]))
+							RemoveEntity(MechanizedProtector[npc.index]);
+						b_Already_Link[entity]=false;
+					}
+				}
+			}
+		}
 
 		int target = npc.m_iTarget;
 		if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
@@ -493,6 +561,11 @@ static void VictorianOfflineAvangard_ClotDeath(int entity)
 	VictorianOfflineAvangard npc = view_as<VictorianOfflineAvangard>(entity);
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 	npc.PlayDeathSound();
+
+	if(IsValidEntity(MechanizedProtector[npc.index]))
+		RemoveEntity(MechanizedProtector[npc.index]);
+	LifeSupportDevice[npc.index] = INVALID_ENT_REFERENCE;
+	MechanizedProtector[npc.index] = INVALID_ENT_REFERENCE;
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

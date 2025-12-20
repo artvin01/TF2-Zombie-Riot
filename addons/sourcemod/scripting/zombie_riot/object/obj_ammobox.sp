@@ -144,7 +144,8 @@ static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
 int AmmoboxUsed(int client, int entity)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-
+	bool RefillPort;
+	if(Items_HasNamedItem(client, "Widemouth Refill Port"))RefillPort=true;
 	/*
 	int ie, weapon1;
 	while(TF2_GetItem(client, weapon1, ie))
@@ -180,7 +181,10 @@ int AmmoboxUsed(int client, int entity)
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 				if(Current_Mana[client] < RoundToCeil(max_mana[client] * 2.0))
 				{
-					Current_Mana[client] += RoundToCeil(mana_regen[client] * 10.0);
+					float RefillMana=mana_regen[client] * 10.0;
+					if(RefillPort)RefillMana*=1.1;
+					
+					Current_Mana[client] += RoundToCeil(RefillMana);
 					
 					if(Current_Mana[client] > RoundToCeil(max_mana[client] * 2.0)) //Should only apply during actual regen
 						Current_Mana[client] = RoundToCeil(max_mana[client] * 2.0);

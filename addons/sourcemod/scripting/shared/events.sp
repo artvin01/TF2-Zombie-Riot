@@ -107,6 +107,8 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	CreateMVMPopulator();
 	Zero(b_BobsCuringHand_Revived);
 	
+	ResetITMLogic();
+	ResetCyberGrindGMLogic();
 	Escape_RoundStart();
 	Waves_RoundStart(true);
 	Blacksmith_RoundStart();
@@ -220,6 +222,7 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
 	MVMHud_Disable();
 	GameRules_SetProp("m_iRoundState", RoundState_TeamWin);
+	ResetCyberGrindGMLogic();
 	f_FreeplayDamageExtra = 1.0;
 	b_GameOnGoing = false;
 	GlobalExtraCash = 0;

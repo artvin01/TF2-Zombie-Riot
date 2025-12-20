@@ -366,7 +366,7 @@ methodmap Vhxis < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		CPrintToChatAll("{purple}Vhxis: {default}Youre nothing before the power of the void!");
+		CPrintToChatAll("{purple}비히시스: {default}너희는 공허의 힘에 비하면 아무것도 아니다!");
 
 		
 		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
@@ -406,7 +406,7 @@ public void Vhxis_ClotThink(int iNPC)
 	{
 		if(npc.m_iChanged_WalkCycle != 10)
 		{
-			CPrintToChatAll("{purple}Vhxis: {default}You fools!... You think i made the void?!");
+			CPrintToChatAll("{purple}비히시스: {default}이런 멍청한 것들!... 난 공허를 막으려고 했단 말이다!");
 			if(IsValidEntity(npc.m_iWearable1))
 			{
 				AcceptEntityInput(npc.m_iWearable1, "Disable");
@@ -424,7 +424,7 @@ public void Vhxis_ClotThink(int iNPC)
 		{
 			npc.m_bDissapearOnDeath = true;
 			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
-			CPrintToChatAll("{purple}The void has been released...");
+			CPrintToChatAll("{purple}공허가 풀려나고 말았습니다...");
 		}
 		return;
 	}
@@ -433,7 +433,7 @@ public void Vhxis_ClotThink(int iNPC)
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		CPrintToChatAll("{purple}Vhxis: {default}You almost released the void, i have to keep it in check, piss off!");
+		CPrintToChatAll("{purple}비히시스: {default}네 놈들이 공허의 봉인을 풀려나게 만들 뻔했다! 이제 꺼져라! 계속 관리해야만 한다!");
 		return;
 	}
 
@@ -544,7 +544,7 @@ public Action Vhxis_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true;
-		CPrintToChatAll("{purple}Vhxis: {default}Die already! Im giving it all already!!");
+		CPrintToChatAll("{purple}비히시스: {default}빨리 죽어! 죽으라고!!!!!!!");
 	}
 	return Plugin_Changed;
 }
@@ -1280,5 +1280,5 @@ public void VoidVhxisWin(int entity)
 
 	AlreadySaidWin = true;
 	//b_NpcHasDied[client]
-	CPrintToChatAll("{purple}Vhxis: {default}Back to the void gate i go.");
+	CPrintToChatAll("{purple}비히시스: {default}다시 공허 관문으로 돌아가야겠군.");
 }

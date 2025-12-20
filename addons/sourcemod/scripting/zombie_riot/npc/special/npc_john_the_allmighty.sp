@@ -172,19 +172,19 @@ methodmap JohnTheAllmighty < CClotBody
 		{
 			case 1:
 			{
-				CPrintToChatAll("{crimson}John The Almighty{default}: I need some money donations, care to give it?");
+				CPrintToChatAll("{crimson}전능자 존{default}: 기부금이 필요한데, 좀 주면 안 되겠나?");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{crimson}John The Almighty{crimson}: I will sell your organs.");
+				CPrintToChatAll("{crimson}전능자 존{crimson}: 네 장기를 전부 팔아치워주마.");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{crimson}John The Almighty{default}: You will fund my efforts.");
+				CPrintToChatAll("{crimson}전능자 존{default}: 너의 존재 자체가 나의 자금줄이다.");
 			}
 			case 4:
 			{
-				CPrintToChatAll("{crimson}John The Almighty{default}: You look easy to rob.");
+				CPrintToChatAll("{crimson}전능자 존{default}: 정말 훔쳐먹기 쉬워보이는 놈들이구나.");
 			}
 		}
 		npc.m_iBleedType = 0;
@@ -255,7 +255,7 @@ public void JohnTheAllmighty_ClotThink(int iNPC)
 
 	if((RaidModeTime < GetGameTime() || npc.m_flBackupDespawnEmergency < GetGameTime()))
 	{
-		CPrintToChatAll("{crimson}John The Almighty Ran out of patience and leaves the battle field.");
+		CPrintToChatAll("{crimson}전능자 존, 그의 인내심이 바닥나서 전장을 떠났습니다.");
 		SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		RaidMusicSpecial1.Clear();
@@ -474,8 +474,8 @@ public void JohnTheAllmighty_OnTakeDamagePost(int victim, int attacker, int infl
 	if(npc.m_iActualHealth <= 0)
 	{
 		SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
-		CPrintToChatAll("{crimson}John The Almighty {default}: OH NUTS! I left my oven on! Bye!");
-		CPrintToChatAll("{green}He also left behind his wallet and drops you an extra cash.");
+		CPrintToChatAll("{crimson}전능자 존 {default}: 어, 잠깐만! 오븐 전원 끄는걸 깜빡했잖아! 잘 있어라!");
+		CPrintToChatAll("{green}그가 자신의 지갑을 떨어뜨리고 갔습니다. 덕분에 추가 자금을 챙겼습니다.");
 		npc.m_iActualHealth = 9999999;
 		for(int client = 1; client <= MaxClients; client++)
 		{

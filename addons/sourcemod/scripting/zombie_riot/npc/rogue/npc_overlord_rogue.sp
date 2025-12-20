@@ -224,7 +224,7 @@ methodmap OverlordRogue < CClotBody
 		}
 		npc.m_bDissapearOnDeath = true;
 		
-		CPrintToChatAll("{crimson}The Last Overlord{default}: All these overlords wish to take my place... You are one of them too, arent you...");
+		CPrintToChatAll("{crimson}최후의 대군주{default}: 이 대군주들은 나의 자리를 차지하기 위해 찾아온 자들이다... 그리고 네 놈도 저 놈들과 별 다를게 없겠지...");
 		strcopy(SpawnPoint, sizeof(SpawnPoint), data);
 		ReplaceString(SpawnPoint, sizeof(SpawnPoint), "final_item ", "");
 		ReplaceString(SpawnPoint, sizeof(SpawnPoint), "final_item", "");
@@ -527,17 +527,17 @@ public void OverlordRogue_NPCDeath(int entity)
 
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
-		CPrintToChatAll("{crimson}The Last Overlord{default}: G-Guess i didnt make the cut, huh... Make sure that W.F. Wont get this... End him and {black}Shadowing Darkness.");
+		CPrintToChatAll("{crimson}최후의 대군주{default}: 아... 아무래도 난 틀린것 같군... 절대로 배풍등이 목적을 이루게 해서는 안 돼 ... 그 놈을 끝내고 {black}이 어둠을 끝내야해.");
 		for (int client = 1; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Overlords Final Wish");
-				CPrintToChat(client,"{default}You defeated the final overlord and thus he bestows you... {red}''His final wish.''{default}!");
+				CPrintToChat(client,"{default}당신은 최후의 대군주를 퇴치했고, 그가 당신에게 준 것은...: {red}''대군주의 최후의 소원''{default}!");
 			}
 		}
 	}
-	CPrintToChatAll("{crimson}The Last Overlord{default}: i'll head back... if you let me.");
+	CPrintToChatAll("{crimson}최후의 대군주{default}: 난 돌아간다... 네가 날 놓아준다면.");
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 		
 	TE_Particle("pyro_blast", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);

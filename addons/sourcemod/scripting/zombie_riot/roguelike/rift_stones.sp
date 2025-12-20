@@ -359,7 +359,7 @@ static void GiveCash(int cash)
 {
 	CurrentCash += cash;
 	GlobalExtraCash += cash;
-	CPrintToChatAll("{green}%t", "Cash Gained!", cash);
+	CPrintToChatAll("{green}%t", "자금 획득!", cash);
 }
 
 

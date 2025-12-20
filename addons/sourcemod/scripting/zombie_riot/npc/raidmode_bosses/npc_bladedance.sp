@@ -196,7 +196,7 @@ methodmap RaidbossBladedance < CClotBody
 		RaidModeScaling = 0.0;
 		RaidModeTime = GetGameTime() + ((300.0) * (1.0 + (MultiGlobalEnemy * 0.4)));
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "??????????????????????????????????");
-		CPrintToChatAll("{crimson}Bladedance{default}: How did you get here? Why are you attacking me?? More void creatures?");
+		CPrintToChatAll("{crimson}칼춤{default}: 어떻게 여기까지 온 거지? 날 공격하는 이유가 뭐냐? 네 놈들도 또 공허의 하수인들이겠군?");
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
@@ -284,11 +284,11 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 			switch(GetRandomInt(1,3))
 			{
 				case 1:
-					CPrintToChatAll("{crimson}Bladedance{default}: My copies, go!");
+					CPrintToChatAll("{crimson}칼춤{default}: 가라, 내 분신들아!");
 				case 2:
-					CPrintToChatAll("{crimson}Bladedance{default}: I god damn hate fighting, get out!");
+					CPrintToChatAll("{crimson}칼춤{default}: 이젠 정말 지긋지긋한 싸움이다! 여기서 꺼져라!");
 				case 3:
-					CPrintToChatAll("{crimson}Bladedance{default}: Wish you could lose at the casino i once owned!");
+					CPrintToChatAll("{crimson}칼춤{default}: 내 카지노에서 진 걸로 지금 나한테 화풀이 하는건 아니겠지!");
 
 			}
 			
@@ -441,7 +441,7 @@ public Action RaidbossBladedance_OnTakeDamage(int victim, int &attacker, int &in
 			npc.m_flBladedanceAngerResistance = 1.0;
 			ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 25.0);
 			ApplyStatusEffect(npc.index, npc.index, "Godly Motivation", 40.0);
-			CPrintToChatAll("{crimson}Bladedance{default}: You have seen nothing i say! Im the least of your worries!");
+			CPrintToChatAll("{crimson}칼춤{default}: 넌 내가 하는 말을 전혀 듣지 않는군. 난 네 적이 아니란 말이다!");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
 		}
 	}
@@ -467,14 +467,14 @@ public void RaidbossBladedance_NPCDeath(int entity)
 	
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
-		CPrintToChatAll("{crimson}Bladedance{default}: You and Bob the first.. you both missunderstand who the enemy is.. its {white}Whiteflower{default} you fools! He betrayed {crimson}Guln{default} aswell!");
-		CPrintToChatAll("{crimson}Bladedance{default} escapes from you... and gains the ability to copy {crimson}you.");
+		CPrintToChatAll("{crimson}칼춤{default}: 너. 그리고 밥 1세... 너희 둘은 진정한 적이 누군지 모르고 있다... {white}배풍등{default}이라고, 멍청이들아! 그가 {crimson}귄{default}마저도 배신했단 말이다!");
+		CPrintToChatAll("{crimson}칼춤{default}: 그 놈은 너의 손아귀에서 빠져나와... {crimson}너{default}를 카피하는 방법을 얻었지.");
 		for (int client = 1; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Bob's true fear");
-				CPrintToChat(client,"{default}This battle wasnt something that should have happend. You had little to no chance... This is... {red}''Bob's True fear.''{default}!");
+				CPrintToChat(client,"{default}이 싸움은 일어나서는 안 될 일이었습니다. 당신에게는 거의, 아니 전혀 기회가 없었습니다. 당신이 얻은 것은...: {red}''밥의 진정한 공포''{default}!");
 			}
 		}
 		for(int i; i < i_MaxcountNpcTotal; i++)

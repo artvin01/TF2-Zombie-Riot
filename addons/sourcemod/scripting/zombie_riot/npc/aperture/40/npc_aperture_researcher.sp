@@ -176,7 +176,7 @@ methodmap ApertureResearcher < CClotBody
 
 		if(ally == TFTeam_Blue)
 		{
-			CPrintToChatAll("{normal}Researcher{default}: 𝙹ᓵ⍑ リ╎ᓵ⍑ℸ ̣ ↸╎ᒷᓭᒷ ᒷꖌᒷꖎ⍑ᔑ⎓ℸ ̣ᒷリ ꖌ∷ᒷᔑℸ ̣⚍∷ᒷリ!!!");
+			CPrintToChatAll("{normal}연구원{default}: 𝙹ᓵ⍑ リ╎ᓵ⍑ℸ ̣ ↸╎ᒷᓭᒷ ᒷꖌᒷꖎ⍑ᔑ⎓ℸ ̣ᒷリ ꖌ∷ᒷᔑℸ ̣⚍∷ᒷリ!!!");
 		}
 		else
 		{
@@ -184,15 +184,15 @@ methodmap ApertureResearcher < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{normal}Researcher{default}: I really didn't want to end up in here!");
+					CPrintToChatAll("{normal}연구원{default}: 안 돼! 난 죽고 싶지 않아!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{normal}Researcher{default}: Why here?! Couldn't it have been any other place on this planet?!");
+					CPrintToChatAll("{normal}연구원{default}: 왜 여기서 날뛰는거냐고?!");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{normal}Researcher{default}: Please don't harm me, I-...");
+					CPrintToChatAll("{normal}연구원{default}: 제발! 날 쏘지 마! 난 살고 싶어!...");
 				}
 			}
 		}
@@ -243,15 +243,15 @@ public void ApertureResearcher_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{normal}Researcher{default}: Well, given your history, I wasn't expecting you to be so helpful! I'm out of here!");
+					CPrintToChatAll("{normal}연구원{default}: 휴, 당신의 파일 기록을 보면 당신이 우릴 도울거란 생각은 하지도 못 했는데. 도와줘서 고맙소. 다들 여기서 나가자!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{normal}Researcher{default}: Your contributions to Expidonsa will not go unnoticed! I'm out!");
+					CPrintToChatAll("{normal}연구원{default}: 당신의 엑스피돈사에 대한 호의는 잊히지 않을거요! 어서 빠져나가자!");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{normal}Researcher{default}: That was a close call, thanks for staying neutral! Teleporter, start!");
+					CPrintToChatAll("{normal}연구원{default}: 정말 위험했군. 우리에게 선의를 베풀어주어서 정말 고맙소! 다들 어서 순간이동해!");
 				}
 			}
 		}
@@ -335,7 +335,7 @@ public void ApertureResearcher_NPCDeath(int entity)
 
 	if(GetTeam(npc.index) == TFTeam_Blue)
 	{
-		CPrintToChatAll("{normal}Researcher{default}: ⍊ᒷ∷↸ᔑᒲᒲℸ ̣, ↸╎ᒷ ⍑ᔑʖᒷリ ↸𝙹ᓵ⍑ ᓭᓵ⍑𝙹リ ∴ᔑᓭ ↸∷ᔑ⚍⎓!");
+		CPrintToChatAll("{normal}연구원{default}: ⍊ᒷ∷↸ᔑᒲᒲℸ ̣, ↸╎ᒷ ⍑ᔑʖᒷリ ↸𝙹ᓵ⍑ ᓭᓵ⍑𝙹リ ∴ᔑᓭ ↸∷ᔑ⚍⎓!");
 	}
 	else
 	{
@@ -343,15 +343,15 @@ public void ApertureResearcher_NPCDeath(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{normal}Researcher{default}: I'm out of here!");
+				CPrintToChatAll("{normal}연구원{default}: 됐어! 우린 여기서 나간다!");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{normal}Researcher{default}: Teleporter reconfigured, see you in never!");
+				CPrintToChatAll("{normal}연구원{default}: 텔레포터 재구성 완료! 다신 보지 말자, 이 더러운 놈들아!");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{normal}Researcher{default}: Start the machine, start the machine!");
+				CPrintToChatAll("{normal}연구원{default}: 빨리 텔레포트 장치를 작동 시켜!");
 			}
 		}	
 	}

@@ -351,19 +351,19 @@ methodmap Silvester < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Sorry that im late!");
+					CPrintToChatAll("{gold}실베스터{default}: 늦어서 정말 미안해!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Had to do some errands with {blue}Sensal{default}.");
+					CPrintToChatAll("{gold}실베스터{default}: {blue}센살{default}의 부탁 때문에 좀 늦었어.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Here i am!");
+					CPrintToChatAll("{gold}실베스터{default}: 나 왔어!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Starting easy? Got it!");
+					CPrintToChatAll("{gold}실베스터{default}: 좀 살살하라고? 알았어!");
 				}
 			}
 		}
@@ -374,19 +374,19 @@ methodmap Silvester < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Just like old times, eh Mercs?");
+					CPrintToChatAll("{gold}실베스터{default}: 예전 같네, 응?");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Its good to practice, i shouldnt slack off.");
+					CPrintToChatAll("{gold}실베스터{default}: 연습하는건 좋지. 그렇다고 대충 하면 안 되고.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Sorry {lightblue}Nemal{default} I should take this more seriously.");
+					CPrintToChatAll("{gold}실베스터{default}: {lightblue}네말{default}, 미안한데 좀만 진지하게 할게.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Wish {darkblue}Waldch{default} would come with train with us, but ever since the {crimson}hitman{default} is gone, he can finally do work.");
+					CPrintToChatAll("{gold}실베스터{default}: {darkblue}왈츠{default}도 여기서 같이 훈련하면 좋았을텐데. 근데 자기 일 때문에 바쁘다고 하네.");
 				}
 			}
 		}
@@ -397,19 +397,19 @@ methodmap Silvester < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Here it is.");
+					CPrintToChatAll("{gold}실베스터{default}: 드디어.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Final Challange.");
+					CPrintToChatAll("{gold}실베스터{default}: 마지막이군.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: No more holding back.");
+					CPrintToChatAll("{gold}실베스터{default}: 이제 마지막 싸움이야.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Im giving it my all.");
+					CPrintToChatAll("{gold}실베스터{default}: 최선을 다 해볼게.");
 				}
 			}
 		}
@@ -423,19 +423,19 @@ methodmap Silvester < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Here it is.");
+					CPrintToChatAll("{gold}실베스터{default}: 드디어.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Final Challange.");
+					CPrintToChatAll("{gold}실베스터{default}: 마지막이군.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: No more holding back.");
+					CPrintToChatAll("{gold}실베스터{default}: 이제 마지막 싸움이야.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Im giving it my all.");
+					CPrintToChatAll("{gold}실베스터{default}: 최선을 다 해볼게.");
 				}
 			}
 		}
@@ -594,7 +594,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			npc.m_flInTeleportLogic = 0.0;
 			npc.m_flChangeTargetsSilvester -= 3.0;
-			CPrintToChatAll("{gold}Silvester{default}: Oh damn She is already gone...");
+			CPrintToChatAll("{gold}실베스터{default}: 뭐야, 벌써 사라졌어?");
 			RemoveSpecificBuff(npc.index, "Very Defensive Backup");
 			return;
 		}
@@ -660,23 +660,23 @@ static void Internal_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Hold on {lightblue}Nemal{default} i'm coming!");
+						CPrintToChatAll("{gold}실베스터{default}: {lightblue}네말{default}, 내가 갈게!");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Thinking of taking {lightblue}Nemal{default} out first?");
+						CPrintToChatAll("{gold}실베스터{default}: 나 대신 {lightblue}네말{default}을 먼저 마킹하시겠다고?");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: {lightblue}Nemal{default}... {darkblue}Waldch{default}... you both are the same i swear!");
+						CPrintToChatAll("{gold}실베스터{default}: {lightblue}네말{default}... 너 하는게 꼭 {darkblue}왈츠{default}랑 똑같다?!");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Rahhh, ill teleport to you wait.");
+						CPrintToChatAll("{gold}실베스터{default}: 아... 내가 너한테 순간이동하기까지 좀 버텨봐.");
 					}
 					case 4:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Here i go !");
+						CPrintToChatAll("{gold}실베스터{default}: 내가 간다 !");
 					}
 				}
 			}
@@ -693,15 +693,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: You dont beat me, then youll never be able to face the full force of the {purple}void{default}.");
+					CPrintToChatAll("{gold}실베스터{default}: 날 이기지 못 하면, {purple}공허{default}의 힘에 맞선다는건 생각도 하지마.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Not beating me means no beating the {purple}void{default}.");
+					CPrintToChatAll("{gold}실베스터{default}: 나조차도 못 이기면서 {purple}공허{default}엔 왜 가려는거야?");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Use that adrenaline against me, come on!");
+					CPrintToChatAll("{gold}실베스터{default}: 그 아드레날린을 나한테 좀 써봐! 좀!");
 				}
 			}
 		}
@@ -717,15 +717,15 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{gold}Silvester{default}: Gotta go, youll win next time.");
+				CPrintToChatAll("{gold}실베스터{default}: 어, 지금 가야돼. 다음 번엔 네가 이길거야.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{gold}Silvester{default}: Atleast you fought, and didnt run!");
+				CPrintToChatAll("{gold}실베스터{default}: 그래도 도망치지 않고 싸웠잖아! 그럼 잘 한거야!");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{gold}Silvester{default}: I can try to go easier next time, but that wont help with training.");
+				CPrintToChatAll("{gold}실베스터{default}: 다음엔 좀 강도를 약하게 할 수도 있겠지만, 그럼 훈련엔 별 도움이 안 되잖아.");
 			}
 		}
 		return;
@@ -749,7 +749,7 @@ static void Internal_ClotThink(int iNPC)
 			{
 				RemoveEntity(npc.m_iWearable8);
 			}
-			CPrintToChatAll("{gold}Silvester{default}: Youre taking to long to hurt me, ill try harder myself then.");
+			CPrintToChatAll("{gold}실베스터{default}: 나한테 피해를 주는 속도가 너무 느린거 아냐? 내가 더 열심히 해볼게.");
 			npc.m_flSilvesterTransformRegardless = FAR_FUTURE;
 			npc.i_GunMode = 0;
 		}
@@ -773,15 +773,15 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{gold}Silvester{default}: Sorry, too slow.");
+				CPrintToChatAll("{gold}실베스터{default}: 너무 느리잖아.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{gold}Silvester{default}: Well thats a boring end.");
+				CPrintToChatAll("{gold}실베스터{default}: 이건 좀 재미없는 결말인데.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{gold}Silvester{default}: If you would stop running, this wouldnt happen.");
+				CPrintToChatAll("{gold}실베스터{default}: 자꾸 도망가니까 이런 상황이 나왔잖아...");
 			}
 		}
 		BlockLoseSay = true;
@@ -898,7 +898,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_STAND_MELEE_ALLCLASS");
 					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
-					CPrintToChatAll("{gold}Silvester{default}: Oh you seem to be alone, i'll wait.");
+					CPrintToChatAll("{gold}실베스터{default}: 너 혼자 남은것 같네? 그럼 기다릴게.");
 					b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 				}	
 			}
@@ -912,7 +912,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_STAND_MELEE");
 					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
-					CPrintToChatAll("{gold}Silvester{default}: Oh you seem to be alone, i'll wait.");
+					CPrintToChatAll("{gold}실베스터{default}: 너 혼자 남은것 같네? 그럼 기다릴게.");
 					b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 				}				
 			}
@@ -927,7 +927,7 @@ static void Internal_ClotThink(int iNPC)
 	{
 		if(!b_SilvLine[npc.index])
 		{
-			CPrintToChatAll("{gold}Silvester{default}: Fighting me alone now? Guess ill give it extra.");
+			CPrintToChatAll("{gold}실베스터{default}: 나하고 홀로 싸우겠다고? 더 열심히 해야겠는데?");
 			b_SilvLine[npc.index] = true;
 			RaidModeScaling *= 1.15;
 		}
@@ -1061,7 +1061,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 				RemoveEntity(npc.m_iWearable8);
 			}
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/2);
-			CPrintToChatAll("{gold}Silvester{default}: Well, looks like i gotta take off the training wheels.");
+			CPrintToChatAll("{gold}실베스터{default}: 음, 아무래도 훈련용 장비를 좀 떼야할 것 같은데.");
 			npc.m_flSilvesterTransformRegardless = FAR_FUTURE;
 			npc.i_GunMode = 0;
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
@@ -1084,7 +1084,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			MakeObjectIntangeable(npc.index);
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 			
-			CPrintToChatAll("{gold}Silvester{default}: Not in the face! ah... fine.");
+			CPrintToChatAll("{gold}실베스터{default}: 아니, 가까이 오진 말고! 아니... 아니다.");
 
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
@@ -1142,19 +1142,19 @@ static void Internal_NPCDeath(int entity)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{gold}Silvester{default}: Welp i gotta help {blue}Sensal{default} again, cya!");
+			CPrintToChatAll("{gold}실베스터{default}: 뭐... 그럼 이제 {blue}센살{default}을 도우러 가야겠어. 나중에 또 봐!");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{gold}Silvester{default}: I have some stuff to do, exhausted anyways currently, till later.");
+			CPrintToChatAll("{gold}실베스터{default}: 지금 할 일이 많아서 살짝 지쳐있거든.. 그러니까 나중에 또 하자.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{gold}Silvester{default}: You guys pack a punch!");
+			CPrintToChatAll("{gold}실베스터{default}: 너흰 역시 정말 강해!!");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{gold}Silvester{default}: Remember when i was infected? I still thank you for helping me!");
+			CPrintToChatAll("{gold}실베스터{default}: 너희가 날 감염에서 치료해준거 기억 나? 난 아직도 기억해! 그리고 정말 고마워!");
 		}
 	}
 
@@ -1541,10 +1541,10 @@ bool SilvesterTransformation(Silvester npc, bool NemalAssistance)
 			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 5.0);
 			npc.m_flDoingAnimation = 0.0;
 
-			CPrintToChatAll("{gold}Silvester{default}: Here's my scythe!");
+			CPrintToChatAll("{gold}실베스터{default}: 내 낫을 받아라!");
 			if(NemalAssistance)
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: Guess ill try harder aswell, or try to.");
+				CPrintToChatAll("{lightblue}네말{default}: 나도 열심히 노력해야겠네. 아니면... 그냥 노력을 안 해야되나?");
 			}
 			Nemal_SilvesterApplyEffects(npc.index, false);
 
@@ -1602,13 +1602,13 @@ static void Silvester_Weapon_Lines(Silvester npc, int client)
 	{
 		
 		case WEAPON_SENSAL_SCYTHE,WEAPON_SENSAL_SCYTHE_PAP_1,WEAPON_SENSAL_SCYTHE_PAP_2,WEAPON_SENSAL_SCYTHE_PAP_3:
-		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "You have his weapon yet none of his strength.");
-		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "{blue}Sensal{default} gave you this {gold}%N{default}? cant be.", client);}	//IT ACTUALLY WORKS, LMFAO
-		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2, WEAPON_NEARL: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You little stealers arent you?");
-		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "Hey thats my weapon!");}
-		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "Oh you beat him up? Thats good.");
-		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "that gun aint got ANYTHING ON ME!!!");
-		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "{lightblue}Her{default} gun...? uh...");
+		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "그건 그 사람 무기인데. 그래도 원 주인이 너보단 더 잘 쓸 것 같은데.");
+		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "음? {blue}센살{default}이 너한테 그걸 줬다고, {gold}%N{default}? 세상에.", client);}	//IT ACTUALLY WORKS, LMFAO
+		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2, WEAPON_NEARL: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "그거 내 무기인거 알고 있는거지?");
+		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "야! 그건 내 무기잖아!");}
+		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "어? 설마 그 미친 기계를 부순거야? 대단한데!");
+		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "그 총은 나한테는 아무것도 아니지!");
+		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "그거... {lightblue}네말{default}의 총인데...? 음...");
 
 		default:
 		{

@@ -709,7 +709,7 @@ static void ClotThink(int iNPC)
 			if(other != -1 && i_NpcInternalId[other] == FinalHunter_ID() && IsEntityAlive(other))
 			{
 				npc.Speech(chaos == 4 ? "..." : "This ends now!");
-				CPrintToChatAll("{darkblue}Waldch{default}: %s", chaos == 4 ? "..." : "This ends now!");
+				CPrintToChatAll("{darkblue}왈츠{default}: %s", chaos == 4 ? "..." : "이게 마지막 전투다!");
 				KillFeed_SetKillIcon(npc.index, "sword");
 
 				//cannot heal
@@ -1029,8 +1029,8 @@ static void ClotFinalThink(int iNPC)
 	{
 		npc.Speech("It's over.");
 		npc.SpeechDelay(4.0, "Chaos will not harm Wildingen anymore.");
-		CPrintToChatAll("{darkblue}Waldch{default}: It's over.");
-		CPrintToChatAll("{darkblue}Waldch{default}: Chaos will not harm Wildingen anymore.");
+		CPrintToChatAll("{darkblue}왈츠{default}: 끝났어.");
+		CPrintToChatAll("{darkblue}왈츠{default}: 혼돈은 이제 와일딩겐을 위협하지 못 할거야.");
 		npc.m_flNextMeleeAttack = 0.0;
 
 		npc.StopPathing();

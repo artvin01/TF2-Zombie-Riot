@@ -569,16 +569,16 @@ static void Neuvellete_Hud(int client, int weapon)
 			if(Ration>2.0)
 				Ration = 2.0;
 				
-			Format(HUDText, sizeof(HUDText), "%sPrismatic Laser: [Online | Power: (%.1f/2.2)]", HUDText, Ration);
+			Format(HUDText, sizeof(HUDText), "%s프리즘 레이저: [활성화 | 파워: (%.1f/2.2)]", HUDText, Ration);
 		}
 		else
 		{
-			Format(HUDText, sizeof(HUDText), "%sPrismatic Laser: [Online]", HUDText);
+			Format(HUDText, sizeof(HUDText), "%s프리즘 레이저: [활성화]", HUDText);
 		}
 	}
 	else
 	{
-		Format(HUDText, sizeof(HUDText), "%sPrismatic Laser: [Offline]", HUDText);
+		Format(HUDText, sizeof(HUDText), "%s프리즘 레이저: [비활성화]", HUDText);
 	}
 
 	if(i_pap[client]>=3)
@@ -587,18 +587,18 @@ static void Neuvellete_Hud(int client, int weapon)
 		{
 			if(fl_ion_charge_ammount[client]<=0.0)
 			{
-				Format(HUDText, sizeof(HUDText), "%s\nHexagon Cannon: [Offline] ", HUDText);
+				Format(HUDText, sizeof(HUDText), "%s\n육각 포: [비활성화] ", HUDText);
 			}
 			else if(fl_ion_charge_ammount[client]>0.0)
 			{
 				float charge_precent = fl_ion_charge_ammount[client] / 10.0;
-				Format(HUDText, sizeof(HUDText), "%s\nHexagon Cannon: [Charging | %.1f％]", HUDText, charge_precent);
+				Format(HUDText, sizeof(HUDText), "%s\n육각 포: [충전중 | %.1f％]", HUDText, charge_precent);
 			}
 		}
 		else
 		{
 			float duration = fl_Ion_timer[client] - GameTime;
-			Format(HUDText, sizeof(HUDText), "%s\nHexagon Cannon: [Recharging | %.1f] ", HUDText, duration);
+			Format(HUDText, sizeof(HUDText), "%s\n육각 포: [재충전중 | %.1f] ", HUDText, duration);
 		}
 	}
 

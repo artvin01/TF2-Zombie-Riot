@@ -156,15 +156,15 @@ public Action BarrackTeuton_OnTakeDamage(int victim, int &attacker, int &inflict
 		{
 			case 1:
 			{
-				NpcSpeechBubble(npc.index, "Now you've done it!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+				NpcSpeechBubble(npc.index, "감히 나에게 손상을 입히다니!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
 			}
 			case 2:
 			{
-				NpcSpeechBubble(npc.index, "Anger...", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+				NpcSpeechBubble(npc.index, "화나는군...", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
 			}
 			case 3:
 			{
-				NpcSpeechBubble(npc.index, "You'll pay for that!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+				NpcSpeechBubble(npc.index, "대가를 치를 것이다!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
 			}
 		}
 	}

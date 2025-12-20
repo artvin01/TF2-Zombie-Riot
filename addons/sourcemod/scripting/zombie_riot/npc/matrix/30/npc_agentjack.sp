@@ -375,7 +375,7 @@ public void AgentJack_ClotThink(int iNPC)
 				//shit code
 				/*else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
-					PrintToChatAll("uh not suppose to be happening");
+					PrintToChatAll("이래서는 안 된다.");
 					npc.m_flAttackHappenswillhappen = false;
 					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + AgentHealthSpeedMulti(npc);
 				}*/

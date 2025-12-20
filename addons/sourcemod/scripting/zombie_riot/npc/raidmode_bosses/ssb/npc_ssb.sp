@@ -730,7 +730,7 @@ methodmap SSB_Ability __nullable__
 
 			if (this.IsCard && !this.SkipCardSound)
 			{
-				CPrintToChatAll("{darkorange}- = { {unusual}SPELL CARD: {haunted}%s!{darkorange} } = -{default}", Ability_Name[this.Index]);
+				CPrintToChatAll("{darkorange}- = { {unusual}스펠 카드: {haunted}%s!{darkorange} } = -{default}", Ability_Name[this.Index]);
 				user.PlayGenericSpell();
 			}
 		}

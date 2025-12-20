@@ -560,7 +560,7 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 	if(LastMann && !AlreadySaidLastmann)
 	{
 		AlreadySaidLastmann = true;
-		CPrintToChatAll("{purple}It grins. Wide.");
+		CPrintToChatAll("{purple}저것이... 활짝 웃기 시작한다.");
 	}
 	if(!npc.m_flMaxDeath && RaidModeTime < GetGameTime())
 	{
@@ -568,7 +568,7 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 	//	ForcePlayerLoss();
 	//	RaidBossActive = INVALID_ENT_REFERENCE;
 	//	func_NPCThink[npc.index] = INVALID_FUNCTION;
-		CPrintToChatAll("{purple}It laughs at your incompetence.");
+		CPrintToChatAll("{purple}저것이 당신의 무능함을 비웃고 있다...");
 		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", 1.85);
 		RaidModeScaling *= 5.0;
 		fl_Extra_Speed[npc.index] *= 2.0;
@@ -673,7 +673,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 		else
 			SensalGiveShield(npc.index, CountPlayersOnRed(1) * 12);
 			
-		CPrintToChatAll("{purple}It's Angered.");
+		CPrintToChatAll("{purple}저것이 분노했다.");
 		RaidModeScaling *= 1.1;
 	}
 	if(npc.g_TimesSummoned < 3)
@@ -700,11 +700,11 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 			{
 				case 1:
 				{
-					CPrintToChatAll("{purple}It recoils in pain.");
+					CPrintToChatAll("{purple}저것이 고통에 움츠러들었다.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{purple}It screams in agony.");
+					CPrintToChatAll("{purple}저것이 고통스럽게 비명을 지르고 있다.");
 				}
 			}
 		}
@@ -1019,8 +1019,8 @@ public void VoidUnspeakable_NPCDeath(int entity)
 	}
 	if(i_RaidGrantExtra[npc.index] == 6)
 	{
-		CPrintToChatAll("{purple}NEED TO RETURN TO THEM...");
-		CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Ngh... The voices in my head cant even leave me.");	
+		CPrintToChatAll("{purple}돌려보내야한다...");
+		CPrintToChatAll("{darkgray}그림자 응달{default}: 윽... 내 머릿속의 음성이 떠나가질 않아.");	
 	}
 		
 	if(IsValidEntity(npc.m_iWearable8))
@@ -1231,8 +1231,8 @@ public void VoidUnspeakableWin(int entity)
 
 	AlreadySaidWin = true;
 	//b_NpcHasDied[client]
-	CPrintToChatAll("{purple}After detroying everything here, it leaves to plan another attack.");
-	CPrintToChatAll("{crimson}At the rest of Irln.");
+	CPrintToChatAll("{purple}이곳의 모든 것을 파괴한 그것은, 다른 지역을 공격할 준비를 하고 있다.");
+	CPrintToChatAll("{crimson}다음 파괴 대상은 아를린의 나머지 지역들이었다.");
 }
 
 
@@ -1282,19 +1282,19 @@ void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 			{
 				case 11:
 				{
-					CPrintToChatAll("{purple}FOOLISH MORTALS, YOU THINK YOU CAN STOP US");
+					CPrintToChatAll("{purple}어리석은 필멸자들아, 우리를 막을 수 있을 것 같으냐?");
 				}
 				case 12:
 				{
-					CPrintToChatAll("{purple}THERE'S NOTHING YOU CAN DO ANYMORE");
+					CPrintToChatAll("{purple}네가 할 수 있는건 아무것도 없다...");
 				}
 				case 13:
 				{
-					CPrintToChatAll("{purple}WITNESS THE END OF ALL TIMES, RIGHT HERE AND NOW");
+					CPrintToChatAll("{purple}지금 여기에서 모든 시대의 종말을 목격해라...");
 				}
 				case 14:
 				{
-					CPrintToChatAll("{purple}BECOME ONE WITH THE VOID");
+					CPrintToChatAll("{purple}공허와 하나가 되어라...");
 				}
 			}
 		}
@@ -1304,33 +1304,33 @@ void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 			{
 				case 11:
 				{
-					CPrintToChatAll("{purple}I HAVE HAD IT, IM KILLING EVERYONE HERE");
-					CPrintToChatAll("{black}Izan :{default} Its holding me, no..!");
+					CPrintToChatAll("{purple}더 이상 참을 수 없다... 여기 있는 놈들을 전부 죽여주마...");
+					CPrintToChatAll("{black}이잔 :{default} 날 붙잡고 있어! 안 돼..!");
 				}
 				case 12:
 				{
-					CPrintToChatAll("{purple}SHADOW, YOU, THE ANNOYING LITTLE FOOL CALLING HIMSELF IZAN");
-					CPrintToChatAll("{black}Izan :{default} ....");
+					CPrintToChatAll("{purple}그림자, 너..., 자신을 이잔이라고 부르는 하찮은 쓰레기.");
+					CPrintToChatAll("{black}이잔 :{default} ....");
 				}
 				case 13:
 				{
-					CPrintToChatAll("{purple}I DONT CARE IF I DIE, THIS IS FOR THE GREATER VOID, TO NOT BECOME UMBRALS, TO NOT BECOME NATURE");
-					CPrintToChatAll("{black}Izan :{default} Chaos was-");
+					CPrintToChatAll("{purple}내가 죽는건 아무 상관 없다... 이건 공허를 위한 더 큰 발걸음이다. 엄브랄이 되지 않기 위해, 자연과 하나가 되지 않기 위해...");
+					CPrintToChatAll("{black}이잔 :{default} 혼돈은-");
 				}
 				case 14:
 				{
-					CPrintToChatAll("{purple}YOU ALL MUST DIE TO PREVENT THE VOID FROM FALLING");
-					CPrintToChatAll("{black}Izan :{default} Created by-");
+					CPrintToChatAll("{purple}공허가 무너지는 것을 막으려면 네 놈들이 죽어야만 한다...!");
+					CPrintToChatAll("{black}이잔 :{default} 그 놈들이 만든거야-");
 				}
 				case 15:
 				{
-					CPrintToChatAll("{white}Bob{default}: TAKE MY HAND NOW!");
-					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Wait!! Take me too...");	
+					CPrintToChatAll("{white}밥{default}: 빨리 내 손을 잡아라!");
+					CPrintToChatAll("{darkgray}그림자 응달{default}: 잠깐!! 나도 거기에 데려가줘-");	
 				}
 				case 16:
 				{
-					CPrintToChatAll("{black}Izan :{default} Exp-");
-					CPrintToChatAll("{white}Bob uses the item that Bladedance gave him a long time ago, and thus unbannished us out of the realm, shadowing darkness and izan couldnt reach us in time.");
+					CPrintToChatAll("{black}이잔 :{default} 엑스피-");
+					CPrintToChatAll("{white}밥은 칼춤이 오래전에 건네주었던 물품을 사용하여 당신들을 영역 밖으로 내보내주었지만... 그림자 응달과 이잔이 당신들과 같이 합류하지 못 했습니다.");
 					
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 					for(int client_check=1; client_check<=MaxClients; client_check++)

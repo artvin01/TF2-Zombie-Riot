@@ -549,11 +549,11 @@ methodmap ARIS < CClotBody
 		switch(GetRandomInt(0,2))
 		{
 			case 0:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: 4R1S R3P0R71N6 F0R DU7Y");
+				CPrintToChatAll("{rare}A.R.I.S.{default}: 4R1S ㄷㅐㄱㅣ 중.");
 			case 1:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: 4R1S = 10CK3D 4ND L04D3D");
+				CPrintToChatAll("{rare}A.R.I.S.{default}: 4R1S = 출동 ㅈㅜㄴㅂㅣ 완료");
 			case 2:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: 0NL1N3, 455UM1N6 MY FUNC710NS");
+				CPrintToChatAll("{rare}A.R.I.S.{default}: 활ㅅㅓㅇ화, 진압 ㅅㅣ작");
 		}
 
 		return npc;
@@ -651,11 +651,11 @@ public void ARIS_ClotThink(int iNPC)
 			switch(GetRandomInt(0,2))
 			{
 				case 0:
-					CPrintToChatAll("{rare}A.R.I.S.{default}: F1R3 1N 7H3 H0L3");
+					CPrintToChatAll("{rare}A.R.I.S.{default}: ㅅㅜ류탄 ㅌㅜ척!");
 				case 1:
-					CPrintToChatAll("{rare}A.R.I.S.{default}: DUCK 4ND C0V3R");
+					CPrintToChatAll("{rare}A.R.I.S.{default}: 엄ㅍㅖ하ㄹㅏ!");
 				case 2:
-					CPrintToChatAll("{rare}A.R.I.S.{default}: R0CK37S!");
+					CPrintToChatAll("{rare}A.R.I.S.{default}: 로ㅋㅔㅅ!");
 			}
 			npc.PlayRocketReadyingSound();
 		}
@@ -1207,11 +1207,11 @@ static void ARIS_DropMelee(ARIS npc)
 		switch(GetRandomInt(0,2))
 		{
 			case 0:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: D3P10Y1N6 R3S1574N7 M345UR3S");
+				CPrintToChatAll("{rare}A.R.I.S.{default}: 방어를 ㄷㅓ 증강ㅎㅐ야한다");
 			case 1:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: R3S1574NC3S 0NL1N3");
+				CPrintToChatAll("{rare}A.R.I.S.{default}: ㅈㅓ항력 보강 필요");
 			case 2:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: D3F3NS3 D3PL0Y3D");
+				CPrintToChatAll("{rare}A.R.I.S.{default}: ㅂㅏㅇ어장 작동!");
 		}
 	}
 	if(npc.m_iCurrentMelee == ARIS_MELEE_DAMAGE)
@@ -1219,11 +1219,11 @@ static void ARIS_DropMelee(ARIS npc)
 		switch(GetRandomInt(0,2))
 		{
 			case 0:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: 8UFF3R1N6 D4M463");
+				CPrintToChatAll("{rare}A.R.I.S.{default}: 자가 ㄱㅏㅇ화 시작");
 			case 1:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: D4M463 800S73R D3PL0Y3D");
+				CPrintToChatAll("{rare}A.R.I.S.{default}: 공격력 증강ㄱㅣ ㄱㅏ동중");
 			case 2:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: D4M463 = 8UFF3D");
+				CPrintToChatAll("{rare}A.R.I.S.{default}: 공격ㄹㅕㄱ : 강ㅎㅗㅏ");
 		}
 	}
 	if(npc.m_iCurrentMelee == ARIS_MELEE_SPEED)
@@ -1231,11 +1231,11 @@ static void ARIS_DropMelee(ARIS npc)
 		switch(GetRandomInt(0,2))
 		{
 			case 0:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: V3L0C17Y R151N6");
+				CPrintToChatAll("{rare}A.R.I.S.{default}: 가ㅅㅗㄱ기 ㄱㅏ동중");
 			case 1:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: 4CC3L3R4710N 1NCR34S3D");
+				CPrintToChatAll("{rare}A.R.I.S.{default}: ㅎㅏ늘로 돌ㅇㅏ왔다");
 			case 2:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: M0M3N7UM CH4N63");
+				CPrintToChatAll("{rare}A.R.I.S.{default}: 공ㄱㅣ역학 분산 ㄱㅏ동");
 		}
 	}
 }
@@ -1621,7 +1621,7 @@ static bool ARIS_LoseConditions(int iNPC)
 				npc.SetPlaybackRate(1.0);
 				npc.m_flNextDeathState = GetGameTime() + 1.7;
 				
-				CPrintToChatAll("{rare}A.R.I.S.{default}: 3N0UGH D4M463 5U5741N3D");
+				CPrintToChatAll("{rare}A.R.I.S.{default}: ㅅㅣㅁ각한 ㅍㅣㅎㅐ 감지");
 			}
 			
 			case 1:
@@ -1648,13 +1648,13 @@ static bool ARIS_LoseConditions(int iNPC)
 				switch (GetURandomInt() % 4)
 				{
 					case 0:
-						CPrintToChatAll("{rare}A.R.I.S.{default}: 3J3C71N6!");
+						CPrintToChatAll("{rare}A.R.I.S.{default}: ㄷㅗ주!");
 					case 1:
-						CPrintToChatAll("{rare}A.R.I.S.{default}: 480R71N6 M15510N!");
+						CPrintToChatAll("{rare}A.R.I.S.{default}: 후퇴! ㅇㅓㅅㅓ!");
 					case 2:
-						CPrintToChatAll("{rare}A.R.I.S.{default}: R37URN1N6 70 P057!");
+						CPrintToChatAll("{rare}A.R.I.S.{default}: 재보ㄱㅏㅇ 필요!");
 					case 3:
-						CPrintToChatAll("{rare}A.R.I.S.{default}: 4R15 = 0U7!");
+						CPrintToChatAll("{rare}A.R.I.S.{default}: 4R15 = ㅌㅚ장!");
 				}
 			}
 			
@@ -1688,7 +1688,7 @@ static bool ARIS_LoseConditions(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{rare}A.R.I.S.{default}: M15510N 5UCC355FUL, D3SP173 MY C4P481L1713S");
+		CPrintToChatAll("{rare}A.R.I.S.{default}: 임ㅁㅜ 완료. 원위ㅊㅣ.");
 		return true;
 	}
 	
@@ -1696,7 +1696,7 @@ static bool ARIS_LoseConditions(int iNPC)
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{rare}A.R.I.S.{default}: 7H3 3N3M13S H4V3 F0RF317, M15510N 5UCC355FUL");
+		CPrintToChatAll("{rare}A.R.I.S.{default}: 적ㄱㅜㄴ의 도ㅈㅜ 감지. 임무 완료");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return true;
 	}

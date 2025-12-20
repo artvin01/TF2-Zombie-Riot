@@ -413,7 +413,7 @@ public void Rogue_FearlessBlade_Ally(int entity, StringMap map)
 			if(lastTarget != highestPlayer)
 			{
 				lastTarget = highestPlayer;
-				CPrintToChatAll("{red}%N {crimson}received +50％ max health and +50％ damage bonus and +50％ heal rate.", highestPlayer);
+				CPrintToChatAll("{red}%N {crimson}의 최대 체력, 피해량, 치유 속도가 +50％ 증가했습니다.", highestPlayer);
 			}
 		}
 	}

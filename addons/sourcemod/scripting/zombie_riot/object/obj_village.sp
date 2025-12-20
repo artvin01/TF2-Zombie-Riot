@@ -495,7 +495,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	int points = VillagePointsLeft(client);
 	if(points >= 0)
 	{
-		menu.SetTitle("%t\n \nUpgrade Tokens: %d (%t)\n ", "Buildable Village", points, "Building Upgrades");
+		menu.SetTitle("%t\n \n개선 토큰: %d (%t)\n ", "Buildable Village", points, "Building Upgrades");
 	}
 	else
 	{
@@ -517,191 +517,191 @@ static void VillageUpgradeMenu(int client, int viewer)
 	char buffer[256];
 	if(Village_Flags[client] & VILLAGE_500)
 	{
-		menu.AddItem("", "Rebel Expertise", ITEMDRAW_DISABLED);
-		menu.AddItem("", "Village becomes an attacking sentry, plus all Rebels in", ITEMDRAW_DISABLED);
-		menu.AddItem("", "radius attack faster, deal more damage, and start with $1750.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "일차 전문분야", ITEMDRAW_DISABLED);
+		menu.AddItem("", "마을이 공격형 센트리 건처럼 행동.", ITEMDRAW_DISABLED);
+		menu.AddItem("", "범위 내의 모든 반시민이 자금을 $1750 얻으며 공격 속도, 피해량 증가.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_400)
 	{
 		/*
 		if(Village_TierExists[0] == 5)
 		{
-			menu.AddItem("", "Rebel Mentoring", ITEMDRAW_DISABLED);
-			menu.AddItem("", "All Rebels in radius start with $500,", ITEMDRAW_DISABLED);
-			menu.AddItem("", "increased range and attack speed.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "일차 멘토링", ITEMDRAW_DISABLED);
+			menu.AddItem("", "범위 내의 모든 반시민이 자금을 $500,", ITEMDRAW_DISABLED);
+			menu.AddItem("", "얻고 시작하며 공격 속도, 사거리 증가.\n ", ITEMDRAW_DISABLED);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [4 Bananas]", "Rebel Expertise");
+			FormatEx(buffer, sizeof(buffer), "%s [4 바나나]", "일차 전문분야");
 			menu.AddItem(VilN(VILLAGE_500), buffer, (!owner || points < 4) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "Village becomes an attacking sentry, plus all Rebels in", ITEMDRAW_DISABLED);
-			menu.AddItem("", "radius attack faster, deal more damage, and start with $1750.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "마을이 공격형 센트리 건처럼 행동.", ITEMDRAW_DISABLED);
+			menu.AddItem("", "범위 내의 모든 반시민이 자금을 $1750 얻으며 공격 속도, 피해량 증가.\n ", ITEMDRAW_DISABLED);
 		}
 		*/
 	}
 	else if(Village_Flags[client] & VILLAGE_300)
 	{	/*
-		FormatEx(buffer, sizeof(buffer), "%s [3 Bananas]%s", "Rebel Mentoring", Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
+		FormatEx(buffer, sizeof(buffer), "%s [3 바나나]%s", "일차 멘토링", Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_400), buffer, (!owner || points < 3) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "All Rebels in radius start with $500,", ITEMDRAW_DISABLED);
-		menu.AddItem("", "increased range and attack speed.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "범위 내의 모든 반시민이 자금을 $500,", ITEMDRAW_DISABLED);
+		menu.AddItem("", "얻고 시작하며 공격 속도, 사거리 증가.\n ", ITEMDRAW_DISABLED);
 		*/
 	}
 	else if(Village_Flags[client] & VILLAGE_200)
 	{
 		if(tier)
 		{
-			menu.AddItem("", "Jungle Drums", ITEMDRAW_DISABLED);
-			menu.AddItem("", "Increases attack speed and reloadspeed of all", ITEMDRAW_DISABLED);
-			menu.AddItem("", "players and allies in the radius.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "정글 드럼", ITEMDRAW_DISABLED);
+			menu.AddItem("", "범위 내의 모든 아군의", ITEMDRAW_DISABLED);
+			menu.AddItem("", "공격 속도, 치유 속도 증가.\n ", ITEMDRAW_DISABLED);
 		}
 		else
 		{
-			menu.AddItem("", "PATH LOCKED.", ITEMDRAW_DISABLED);
-		//	menu.AddItem("", "Increases attack speed and reloadspeed of all", ITEMDRAW_DISABLED);
-		//	menu.AddItem("", "players and allies in the radius.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "경로 잠김.", ITEMDRAW_DISABLED);
+		//	menu.AddItem("", "범위 내의 모든 아군의", ITEMDRAW_DISABLED);
+		//	menu.AddItem("", "공격 속도, 치유 속도 증가.\n ", ITEMDRAW_DISABLED);
 			/*
-			FormatEx(buffer, sizeof(buffer), "%s [2 Bananas]%s", "Rebel Training", Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : "");
+			FormatEx(buffer, sizeof(buffer), "%s [2 바나나]%s", "일차 훈련", Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : "");
 			menu.AddItem(VilN(VILLAGE_300), buffer, (!owner || points < 2) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "All Rebels in radius get", ITEMDRAW_DISABLED);
-			menu.AddItem("", "more range and more damage.\n", ITEMDRAW_DISABLED);
-			menu.AddItem("", "Village will spawn rebels every 3 waves upto 3\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "범위 내의 모든", ITEMDRAW_DISABLED);
+			menu.AddItem("", "반시민의 공격력, 사거리 증가.\n", ITEMDRAW_DISABLED);
+			menu.AddItem("", "매 3웨이브마다 마을이 반시민을 생성(최대 3)\n ", ITEMDRAW_DISABLED);
 			*/
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_100)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [3 Upgrade Tokens]%s", "Jungle Drums", Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : Village_TierExists[0] == 2 ? " [Tier 2 Exists]" : "");
+		FormatEx(buffer, sizeof(buffer), "%s [3 개선 토큰]%s", "정글 드럼", Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : Village_TierExists[0] == 2 ? " [Tier 2 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_200), buffer, (!owner || points < 3) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Increases attack speed of all", ITEMDRAW_DISABLED);
-		menu.AddItem("", "players and allies in the radius by 5% and healrate by 8%.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "범위 내의 모든 아군의", ITEMDRAW_DISABLED);
+		menu.AddItem("", "공격 속도+ 5% 및 치유 속도 +8%.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
 		if(owner)
-			menu.AddItem("", "TIP: Only one path can have a tier 3 upgrade.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "TIP: 단 하나의 경로만이 3티어 개선이 가능.\n ", ITEMDRAW_DISABLED);
 		
-		FormatEx(buffer, sizeof(buffer), "%s [1 Upgrade Token]%s", "Bigger Radius", Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : Village_TierExists[0] == 2 ? " [Tier 2 Exists]" : Village_TierExists[0] == 1 ? " [Tier 1 Exists]" : "");
+		FormatEx(buffer, sizeof(buffer), "%s [1 개선 토큰]%s", "반경 증가", Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : Village_TierExists[0] == 2 ? " [Tier 2 Exists]" : Village_TierExists[0] == 1 ? " [Tier 1 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_100), buffer, (!owner || points < 1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Increases influence radius of the village.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "범위 내의 모든 적의 위장 효과 제거.\n ", ITEMDRAW_DISABLED);
 	}
 	
 	if(Village_Flags[client] & VILLAGE_050)
 	{
-		menu.AddItem("", "Homeland Defense", ITEMDRAW_DISABLED);
-		menu.AddItem("", "Ability now increases attack speed and reloadspeed and heal rate by 25%", ITEMDRAW_DISABLED);
-		menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "국토 방어", ITEMDRAW_DISABLED);
+		menu.AddItem("", "능력 사용시 모든 플레이어와 아군의 공격 속도, 재장전 속도, 치유 속도를 25%", ITEMDRAW_DISABLED);
+		menu.AddItem("", "만큼 증가. 20 초 지속.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_040)
 	{
 		if(Village_TierExists[1] == 5)
 		{
-			menu.AddItem("", "Call To Arms", ITEMDRAW_DISABLED);
-			menu.AddItem("", "Press E to activate an ability that gives nearby", ITEMDRAW_DISABLED);
-			menu.AddItem("", "players and allies +12% attack speed and reloadspeed and heal rate for a short time.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "군대 소집", ITEMDRAW_DISABLED);
+			menu.AddItem("", "E로 능력 사용시 주변의 모든 아군의", ITEMDRAW_DISABLED);
+			menu.AddItem("", "공격 속도, 재장전 속도, 치유 속도를 짧은 시간동안 +12% 증가시킴.\n ", ITEMDRAW_DISABLED);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [7 Upgrade Tokens]", "Homeland Defense");
+			FormatEx(buffer, sizeof(buffer), "%s [7 개선 토큰]", "국토 방어");
 			menu.AddItem(VilN(VILLAGE_050), buffer, (!owner || points < 7) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "Ability now increases attack speed and reloadspeed and heal rate by 25%", ITEMDRAW_DISABLED);
-			menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "능력 사용시 모든 플레이어와 아군의 공격 속도, 재장전 속도, 치유 속도를 25%", ITEMDRAW_DISABLED);
+			menu.AddItem("", "만큼 증가. 20 초 지속.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_030)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [6 Upgrade Tokens]%s", "Call To Arms", Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
+		FormatEx(buffer, sizeof(buffer), "%s [6 개선 토큰]%s", "군대 소집", Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_040), buffer, (!owner || points < 6) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Press E to activate an ability that gives nearby", ITEMDRAW_DISABLED);
-		menu.AddItem("", "players and allies +12% attack speed and reloadspeed and heal rate for a short time.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "E로 능력 사용시 주변의 모든 아군의", ITEMDRAW_DISABLED);
+		menu.AddItem("", "공격 속도, 재장전 속도, 치유 속도를 짧은 시간동안 +12% 증가시킴.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_020)
 	{
 		if(tier)
 		{
-			menu.AddItem("", "Radar Scanner", ITEMDRAW_DISABLED);
-			menu.AddItem("", "Removes camo properites off", ITEMDRAW_DISABLED);
-			menu.AddItem("", "enemies while in influence radius.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "레이더 스캐너", ITEMDRAW_DISABLED);
+			menu.AddItem("", "범위 내의 모든", ITEMDRAW_DISABLED);
+			menu.AddItem("", "적들의 위장 효과를 제거.\n ", ITEMDRAW_DISABLED);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [5 Upgrade Tokens]%s", "Monkey Intelligence Bureau", Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : "");
+			FormatEx(buffer, sizeof(buffer), "%s [5 개선 토큰]%s", "원숭이 정보국", Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : "");
 			menu.AddItem(VilN(VILLAGE_030), buffer, (!owner || points < 5) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "The Bureau grants special Bloon popping knowledge, allowing", ITEMDRAW_DISABLED);
-			menu.AddItem("", "nearby players and allies to deal 5% more damage.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "주변의 모든 아군들의", ITEMDRAW_DISABLED);
+			menu.AddItem("", "공격 피해량이 5% 증가.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_010)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [2 Upgrade Tokens]%s", "Radar Scanner", Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : "");
+		FormatEx(buffer, sizeof(buffer), "%s [2 개선 토큰]%s", "레이더 스캐너", Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_020), buffer, (!owner || points < 2) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Removes camo properites off", ITEMDRAW_DISABLED);
-		menu.AddItem("", "enemies while in influence radius.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "범위 내의 모든", ITEMDRAW_DISABLED);
+		menu.AddItem("", "적들의 위장 효과를 제거.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [1 Banana]%s", "Grow Blocker", Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : Village_TierExists[1] == 1 ? " [Tier 1 Exists]" : "");
+		FormatEx(buffer, sizeof(buffer), "%s [1 바나나]%s", "재생 차단기", Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : Village_TierExists[1] == 1 ? " [Tier 1 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_010), buffer, (!owner || points < 1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Lowers non-boss enemies from", ITEMDRAW_DISABLED);
-		menu.AddItem("", "gaining health in the influence radius as much (15% usually).\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "보스를 제외한 적들의", ITEMDRAW_DISABLED);
+		menu.AddItem("", "체력 회복량이 감소. (대부분 15%%)\n ", ITEMDRAW_DISABLED);
 	}
 	
 	if(Village_Flags[client] & VILLAGE_005)
 	{
-		menu.AddItem("", "Iberia Lighthouse", ITEMDRAW_DISABLED);
-		menu.AddItem("", "Increases influnce radius and all nearby allies", ITEMDRAW_DISABLED);
-		menu.AddItem("", "gains a +10% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "이베리아 등대", ITEMDRAW_DISABLED);
+		menu.AddItem("", "영향 범위 내의 모든 아군의 ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "공격 속도, 치유 속도 +10%.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_004)
 	{
 		if(Village_TierExists[1] == 5)
 		{
-			menu.AddItem("", "Iberia Anti-Raid", ITEMDRAW_DISABLED);
-			menu.AddItem("", "Causes Raid Bosses to take 10% more damage in its range and for 3 seconds after existing the range.", ITEMDRAW_DISABLED);
+			menu.AddItem("", "이베리아 안티 레이드", ITEMDRAW_DISABLED);
+			menu.AddItem("", "영향 범위 내에 있는 레이드 보스에게 받는 피해 10% 증가 부여. 범위 밖으로 나가면 3초간 지속.", ITEMDRAW_DISABLED);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "Iberia Lighthouse [18 Upgrade Tokens]");
+			FormatEx(buffer, sizeof(buffer), "이베리아 등대 [18 개선 토큰]");
 			menu.AddItem(VilN(VILLAGE_005), buffer, (!owner || points < 18) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "Increases influnce radius and all nearby allies", ITEMDRAW_DISABLED);
-			menu.AddItem("", "gains a +10% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "영향 범위 내의 모든 아군의", ITEMDRAW_DISABLED);
+			menu.AddItem("", "공격 속도, 치유 속도 +10%.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_003)
 	{
-		FormatEx(buffer, sizeof(buffer), "Iberia Anti-Raid [12 Upgrade Tokens]");
+		FormatEx(buffer, sizeof(buffer), "이베리아 안티 레이드 [12 개선 토큰]");
 		menu.AddItem(VilN(VILLAGE_004), buffer, (!owner || points < 12) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Causes Raid Bosses to take 10% more damage in its range and for 3 seconds after existing the range.", ITEMDRAW_DISABLED);
+		menu.AddItem("", "영향 범위 내에 있는 레이드 보스에게 받는 피해 10% 증가 부여. 범위 밖으로 나가면 3초간 지속.", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_002)
 	{
 		if(tier)
 		{
-			menu.AddItem("", "Armor Aid", ITEMDRAW_DISABLED);
-			menu.AddItem("", "Gain a point of armor every half second.\n ", ITEMDRAW_DISABLED);
-			menu.AddItem("", "to all players with armor in range.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "아머 재생 오라", ITEMDRAW_DISABLED);
+			menu.AddItem("", "매 0.5초마다 범위 내의 모든 아군의 아머를\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "회복시킴.\n ", ITEMDRAW_DISABLED);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "Little Handy [6 Upgrade Tokens]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : "");
+			FormatEx(buffer, sizeof(buffer), "조력자 [6 개선 토큰]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : "");
 			menu.AddItem(VilN(VILLAGE_003), buffer, (!owner || points < 6) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "Reduces the damage caused by nethersea brands", ITEMDRAW_DISABLED);
-			menu.AddItem("", "by 80% to all allies with in range.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "범위 내의 모든 아군은 명흔으로 받는", ITEMDRAW_DISABLED);
+			menu.AddItem("", "피해가 80% 감소함.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_001)
 	{
-		FormatEx(buffer, sizeof(buffer), "Armor Aid [2 Upgrade Tokens]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : "");
+		FormatEx(buffer, sizeof(buffer), "아머 재생 오라 [2 개선 토큰]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_002), buffer, (!owner || points < 2) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Gain 1% of armor every half.\n ", ITEMDRAW_DISABLED);
-		menu.AddItem("", "second to all players in range.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "매 0.5초마다 범위 내의 모든 아군의 아머를 1%\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "회복시킴.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
-		FormatEx(buffer, sizeof(buffer), "Wandering Aid [2 Upgrade Tokens]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : Village_TierExists[2] == 1 ? " [Tier 1 Exists]" : "");
+		FormatEx(buffer, sizeof(buffer), "아머 부식 항독제 [2 개선 토큰]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : Village_TierExists[2] == 1 ? " [Tier 1 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_001), buffer, (!owner || points < 2) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Heals 1% of armor erosion every.\n ", ITEMDRAW_DISABLED);
-		menu.AddItem("", "half second to all players in range.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "매 0.5초마다 범위 내의 모든 아군의 아머 부식 수치를 1%.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "감소시킴.\n ", ITEMDRAW_DISABLED);
 	}
 
 	int entity = Object_GetSentryBuilding(client);

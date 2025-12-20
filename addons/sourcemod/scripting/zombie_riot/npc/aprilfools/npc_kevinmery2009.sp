@@ -271,7 +271,7 @@ public void KevinMery_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{collectors}kevinmery2009{default}: there's only one more left!!");
+					CPrintToChatAll("{collectors}kevinmery2009{default}: 딱 한 명 남았다!!");
 					MusicEnum music;
 					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aprilfools/plead.mp3");
 					music.Time = 90; //no loop usually 43 loop tho
@@ -284,7 +284,7 @@ public void KevinMery_ClotThink(int iNPC)
 				}
 				case 1:
 				{
-					CPrintToChatAll("{collectors}kevinmery2009{default}: artvin pls nerf");
+					CPrintToChatAll("{collectors}kevinmery2009{default}: artvin님 쟤 너프좀;;");
 					MusicEnum music;
 					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aprilfools/plead.mp3");
 					music.Time = 90; //no loop usually 43 loop tho
@@ -377,15 +377,15 @@ public void KevinMery_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}my dad gave me this gun{default}");
+						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}우리 아빠가 이거 줬어염{default}");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}i miss my dad :({default}");
+						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}아빠가 그리워 :({default}");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}this is so much fun :){default}");
+						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}이 모드 ㄹㅇ 재밌다 :){default}");
 					}
 				}
 			}
@@ -417,15 +417,15 @@ public void KevinMery_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}fire!!!{default}");
+						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}빵!!!{default}");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}pow!!!{default}");
+						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}펑!!!{default}");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}boom!!!{default}");
+						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}쾅!!!{default}");
 					}
 				}
 				npc.m_flSwitchCooldown = gameTime + 10.0;

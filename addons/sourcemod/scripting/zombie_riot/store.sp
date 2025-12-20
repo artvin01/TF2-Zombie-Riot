@@ -600,6 +600,12 @@ void Store_OnCached(int client)
 		
 		if(Items_HasNamedItem(client, "ZR Contest 2024 Artist"))
 			amount += 50;
+			
+		if(Items_HasNamedItem(client, "Sardis Gold"))
+			amount += 20;
+			
+		if(Items_HasNamedItem(client, "Originium"))
+			amount += 30;
 		
 		amount += SkillTree_GetByName(client, "Cash Up 1") * 2;
 		amount += SkillTree_GetByName(client, "Cash Up 1 Infinite") / 5;
@@ -2733,10 +2739,6 @@ void Store_DiscountNamedItem(const char[] name, int timed = 0, float discount = 
 	}
 }
 
-#define ZR_STORE_RESET (1 << 1) //This will reset the entire store to default
-#define ZR_STORE_DEFAULT_SALE (1 << 2) //This  will reset the current normally sold items, and put up a new set of items
-#define ZR_STORE_WAVEPASSED (1 << 3) //any storelogic that should be called when a wave passes
-
 void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -1.0)
 {
 	int amount;
@@ -2872,16 +2874,16 @@ void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -
 		if(i_SpecialGrigoriReplace == 0)
 		{
 			if(addItem == 0)
-				CPrintToChatAll("{green}Father Grigori{default}: My child, I'm offering new wares!");
+				CPrintToChatAll("{green}그리고리 신부{default}: 형제여, 지금 막 새로운 상품이 입고되었다네!");
 			else
-				CPrintToChatAll("{green}Father Grigori{default}: My child, I'm offering extra for a limited time!");
+				CPrintToChatAll("{green}그리고리 신부{default}: 형제여, 지금 새로운 상품을 입고했다네! 판매 시간이 그리 길지 않으니 주의하게!");
 		}
 		else
 		{
 			if(addItem == 0)
-				CPrintToChatAll("{purple}The World Machine{default}: Come here! I managed to get some items!");
+				CPrintToChatAll("{purple}세상 기계{default}: 방금 새로운 아이템을 들여왔어요!");
 			else
-				CPrintToChatAll("{purple}The World Machine{default}: Come here! I managed to get some items, but they vanish fast!");
+				CPrintToChatAll("{purple}세상 기계{default}: 방금 새로운 아이템을 들여왔어요! 오래 가진 않는 물건이니까, 조심하세요!");
 		}
 		bool OneSuperSale = (override < 0.0 && !rogue);
 		SortIntegers(indexes, amount, Sort_Random);
@@ -5399,7 +5401,7 @@ void Store_ApplyAttribs(int client)
 							{
 								map.SetValue(buffer1, info.Value[a]);
 							}
-							else if(info.Attrib[a] < 0 || info.Attrib[a]==26 || (Attribute_IntAttribute(info.Attrib[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1)))
+							else if(info.Attrib[a] != Attrib_ReduceMetalCost && (info.Attrib[a] < 0 || info.Attrib[a]==26 || (Attribute_IntAttribute(info.Attrib[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))))
 							{
 								map.SetValue(buffer1, value + info.Value[a]);
 							}
@@ -5419,7 +5421,7 @@ void Store_ApplyAttribs(int client)
 							{
 								map.SetValue(buffer1, info.Value2[a]);
 							}
-							else if(info.Attrib2[a] < 0 || info.Attrib2[a]==26 || (Attribute_IntAttribute(info.Attrib2[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
+							else if(info.Attrib2[a] != Attrib_ReduceMetalCost && (info.Attrib2[a] < 0 || info.Attrib2[a]==26 || (Attribute_IntAttribute(info.Attrib2[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1))))
 							{
 								map.SetValue(buffer1, value + info.Value2[a]);
 							}
@@ -6201,9 +6203,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						
 						if(apply)
 						{
+							bool ignore_rest = false;
 							for(int a; a<info.Attribs; a++)
 							{
-								bool ignore_rest = false;
 								if(!Attributes_Has(entity, info.Attrib[a]))
 								{
 									if(info.SpecialAttribRules == 1)
@@ -6218,7 +6220,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 											Attributes_Set(entity, info.Attrib[a], info.Value[a]);
 									}
 								}
-								else if(!ignore_rest && (Attribute_IntAttribute(info.Attrib[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
+								else if(!ignore_rest && info.Attrib[a] != Attrib_ReduceMetalCost && (Attribute_IntAttribute(info.Attrib[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
 								{
 									Attributes_SetAdd(entity, info.Attrib[a], info.Value[a]);
 								}
@@ -6233,9 +6235,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						
 						if(apply)
 						{
+							bool ignore_rest = false;
 							for(int a; a<info.Attribs2; a++)
 							{
-								bool ignore_rest = false;
 								if(!Attributes_Has(entity, info.Attrib2[a]))
 								{
 									if(info.SpecialAttribRules_2 == 1)
@@ -6250,7 +6252,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 											Attributes_Set(entity, info.Attrib2[a], info.Value2[a]);
 									}
 								}
-								else if(!ignore_rest && (Attribute_IntAttribute(info.Attrib2[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
+								else if(!ignore_rest && info.Attrib2[a] != Attrib_ReduceMetalCost && (Attribute_IntAttribute(info.Attrib2[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
 								{
 									Attributes_SetAdd(entity, info.Attrib2[a], info.Value2[a]);
 								}
@@ -6344,6 +6346,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Management_Banner_1(client, entity);		//Buffbanner PAP
 		Enable_Management_Banner_2(client, entity); 	//Battilons
 		Enable_Management_Banner_3(client, entity); 	//Ancient Banner
+		Weapon_AddonsCustom_Enable(client, entity);
 		
 		Enable_StarShooter(client, entity);
 		Enable_Passanger(client, entity);

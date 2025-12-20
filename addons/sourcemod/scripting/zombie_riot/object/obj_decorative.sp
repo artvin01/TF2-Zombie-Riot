@@ -19,7 +19,7 @@ void ObjectDecorative_MapStart()
 
 	BuildingInfo build;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_decorative");
-	build.Cost = 4;
+	build.Cost = 25;
 	build.Health = 50;
 	build.HealthScaleCost = true;
 	build.Cooldown = 10.0;

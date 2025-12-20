@@ -778,11 +778,11 @@ static void Lelouch_WinLine(int entity)
 	
 	switch(GetRandomInt(0, 1))
 	{
-		case 0: Lelouch_Lines(npc, "Twirl you're all alone.");
-		case 1: Lelouch_Lines(npc, "They all failed Twirl, now all thats left is you..");
+		case 0: Lelouch_Lines(npc, "트윌. 이제 넌 혼자야.");
+		case 1: Lelouch_Lines(npc, "이제 너 혼자 남았어, 트윌. 저들은 실패했고.");
 	}
 
-	CPrintToChatAll("{purple}Twirl{snow}: hahah, guess there's nothing left to lose, Lelouch, have you ever seen what our ion barrage can truly achive if we pump every spare Petawatt into it?");
+	CPrintToChatAll("{purple}트윌{snow}: 하하, 그럼 이제 잃을 것이 없어진거네? 를르슈. 이온 공격에 우리가 가진 페타와트를 전부 다 주입해버리면 어떻게 되는지 본 적 있어?");
 	Lelouch_Lines(npc, "...");
 
 	if(Rogue_Mode())
@@ -866,12 +866,12 @@ static void ClotThink(int iNPC)
 		{
 			switch(GetRandomInt(0, 1))
 			{
-				case 0: Lelouch_Lines(npc, "It is too late, the end has come atlast...");
-				case 1: Lelouch_Lines(npc, "Twirl tell me, how does it feel to be on the losing side for once?");
+				case 0: Lelouch_Lines(npc, "너무 늦었어. 종말이 다가오고 있다고...");
+				case 1: Lelouch_Lines(npc, "트윌. 말해봐. 지는 편에 속해있는 기분은 어떻지?");
 			}
 		}
 
-		CPrintToChatAll("{purple}Twirl{snow}: To hell with it all, this shall become ground zero, a no mans land!");
+		CPrintToChatAll("{purple}트윌{snow}: 어떻냐고? 지옥에나 가라! 이 곳은 폭심지가 되어 아무도 살지 않는 땅이 될 테니!");
 		Ruina_Ion_Storm(npc.index);
 		EmitSoundToAll(BLITZLIGHT_ATTACK);
 
@@ -890,7 +890,7 @@ static void ClotThink(int iNPC)
 			GiveProgressDelay(12.0);
 		}
 
-		Lelouch_Lines(npc, "Wait WHAT-");
+		Lelouch_Lines(npc, "그게 무슨-");
 
 		return;
 	}
@@ -905,8 +905,8 @@ static void ClotThink(int iNPC)
 		b_lastman[npc.index] = true;
 		switch(GetRandomInt(0, 1))
 		{
-			case 0: Lelouch_Lines(npc, "Its only you and Twirl left.");
-			case 1: Lelouch_Lines(npc, "The gateway is nearly fully charged, and you're all almost dead. How magnificent");
+			case 0: Lelouch_Lines(npc, "이제 너와 트윌 뿐이다.");
+			case 1: Lelouch_Lines(npc, "관문은 거의 열렸고, 너흰 거의 다 죽었다. 정말 신나는데?");
 		}
 	}
 
@@ -1233,7 +1233,7 @@ static void Crystal_Passive_Logic(Lelouch npc)
 	//crystal count is 0, which means that either all the crystals have been killed, or the crystals have been deleted, either way, abort.
 	if(loop_for<= 0)
 	{
-		Lelouch_Lines(npc, "My absolute defence field, how dare you destroy it!");
+		Lelouch_Lines(npc, "내 절대 방벽이... 어떻게 부순거냐!");
 		b_crystals_active[npc.index] = false;
 
 		if(npc.m_flDoingAnimation > GameTime && npc.m_flCrystalRevert < GameTime)
@@ -1772,7 +1772,7 @@ static void BladeLogic_Tick(int iNPC)
 	if(death)
 	{
 		//temp line for testing.
-		Lelouch_Lines(npc, "How dare you destroy my BLADE?");
+		Lelouch_Lines(npc, "감히 내 검을 부수다니!");
 	}
 	if(!IsValidAlly(npc.index, Blade_NPC) || death || i_BladeLogic[npc.index] == -1)
 	{
@@ -2190,14 +2190,14 @@ static void Anchor_Phase_Logic(Lelouch npc)
 
 			switch(GetRandomInt(0,1))
 			{
-				case 0: Lelouch_Lines(npc, "You have killed all the anchors within the aloted time...");
-				case 1: Lelouch_Lines(npc, "My Anchors, how dare you!");
+				case 0: Lelouch_Lines(npc, "저렇게 빠른 시간 내에 앵커를 전부 처리하다니...");
+				case 1: Lelouch_Lines(npc, "내 앵커! 이 자식들이!");
 			}
 			
 			switch(GetRandomInt(0,1))
 			{
-				case 0: CPrintToChatAll("{purple}Twirl{snow}: All your Anchors are belong to me now..!");
-				case 1: CPrintToChatAll("{purple}Twirl{snow}: I'm yoinking your Anchor's now~");
+				case 0: CPrintToChatAll("{purple}트윌{snow}: 네 모든 앵커는 이제 내 거야..!");
+				case 1: CPrintToChatAll("{purple}트윌{snow}: 네 앵커는 내가 파괴해버렸단다~");
 			}
 			
 
@@ -2229,7 +2229,7 @@ static void Anchor_Phase_Logic(Lelouch npc)
 			End_Animation(npc);
 			npc.m_flDoingAnimation = 0.0;
 
-			Lelouch_Lines(npc, "Now behold, the power of a Tri-Anchor Laser system!");
+			Lelouch_Lines(npc, "받아라, 트라이 앵커 레이저의 힘을!");
 
 			b_Anchors_Red = false;
 
@@ -2245,11 +2245,11 @@ static void Anchor_Phase_Logic(Lelouch npc)
 
 			switch(GetRandomInt(0,1))
 			{
-				case 0: Lelouch_Lines(npc, "You managed to avert certain doom for yourself, good for you.");
-				case 1: Lelouch_Lines(npc, "You almost made, have a complimentary *clap clap*");
+				case 0: Lelouch_Lines(npc, "넌 정해진 네 파멸의 운명을 피하는데 성공했어. 잘 했네.");
+				case 1: Lelouch_Lines(npc, "그래. 거의 해냈군. 칭찬해주마. *박수");
 			}
 
-			CPrintToChatAll("{purple}Twirl{snow}: Well on the bright side we don't have to worry about his death ray.");
+			CPrintToChatAll("{purple}트윌{snow}: 뭐, 적어도 쟤가 쏘는 죽음의 광선을 더 이상 두려워할 필요는 없게 됐네.");
 		}
 		RaidModeScaling = fl_RaidModeScaling_Buffer;
 		FreezeTimer(false);
@@ -2709,9 +2709,9 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 		switch(GetRandomInt(0, 2))
 		{
-			case 0:	Lelouch_Lines(npc, "My crystal shield, you will pay for that!");
-			case 1: Lelouch_Lines(npc, "AGH, HOW DARE YOU!!!");
-			case 2: Lelouch_Lines(npc, "Don't think this is over, I still have plenty of fight left in me!");
+			case 0:	Lelouch_Lines(npc, "내 수정 보호막이! 대가를 치르게 해주마!");
+			case 1: Lelouch_Lines(npc, "이런 싸가지 없는!!!");
+			case 2: Lelouch_Lines(npc, "아직 끝났다고 생각하지 마라! 아직 싸울 힘은 더 많이 남아있다!");
 		}
 		
 		RaidModeScaling *= 1.5;
@@ -2813,8 +2813,8 @@ static Action LelouchLifeloss(Handle Timer, int ref)
 
 	Lelouch npc = view_as<Lelouch>(client);
 
-	CPrintToChatAll("{purple}Twirl{snow}: How in the bloody hell did you get that ancient artifact flying again?");
-	Lelouch_Lines(npc,"One girl's trash, another man's teasure.");
+	CPrintToChatAll("{purple}트윌{snow}: 도대체 어떻게 그 고대 유물을 다시 발동시킬 수 있었던 거니?");
+	Lelouch_Lines(npc,"한 여자의 쓰레기 취급이, 다른 자에겐 보물이었으니까.");
 	i_summon_weaver(npc);
 
 	return Plugin_Stop;
@@ -2853,13 +2853,13 @@ static void Lelouch_Weapon_Lines(Lelouch npc, int client)
 		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		
 		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		
 		*/
-		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(1,2)) 		{case 1: Format(Text_Lines, sizeof(Text_Lines), "That weapon {gold}%N{snow}. It looks identical to my own. Fortunately my one's the genuine article.", client);  														case 2: Format(Text_Lines, sizeof(Text_Lines), "What a shoody looking weapon you have there {gold}%N{snow}, if only you had the real one.", client);}
-		case WEAPON_YAMATO: switch(GetRandomInt(1,2)) 				{case 1: Format(Text_Lines, sizeof(Text_Lines), "I never could understand why {purple}Twirl{snow} was so obssed with \"{blue}The storm that is aproaching{snow}\". Do you {gold}%N{snow} know perchance", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "Whose this {blue}Vergil{snow} you speak of {gold}%N{snow}?", client);}
-		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(1,2)) 	{case 1: Format(Text_Lines, sizeof(Text_Lines), "Blitzkrieg was the only good thing that came out of the alliance, {gold}%N{snow}. You sure know how to choose good weapons", client);  								case 2: Format(Text_Lines, sizeof(Text_Lines), "A real shame that you {gold}%N{snow} destroyed Blitzkrieg before I got a chance to \"Upgrade\" him...", client);}
-		case WEAPON_KIT_FRACTAL:  switch(GetRandomInt(1,2))			{case 1: Format(Text_Lines, sizeof(Text_Lines), "The hell is that thing your using {gold}%N{snow} yet its power is familiar..", client);  																				case 2: Format(Text_Lines, sizeof(Text_Lines), "Wait are you {gold}%N{snow} using a fragment of {purple}Twirl{snow}'s power?", client);}
-		case WEAPON_BOOMSTICK: switch(GetRandomInt(1,2))			{case 1: Format(Text_Lines, sizeof(Text_Lines), "Overcompensating there {gold}%N{snow} for something?", client); 																										case 2: Format(Text_Lines, sizeof(Text_Lines), "Why is shooting a huge piece of metal so effective {gold}%N{snow} explain this to me immediately!", client);}
-		case WEAPON_ION_BEAM, WEAPON_ION_BEAM_PULSE, WEAPON_ION_BEAM_NIGHT, WEAPON_ION_BEAM_FEED: switch(GetRandomInt(1,2))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "That weapons shows you care more for aesthetics then functionality {gold}%N", client); 						case 2: Format(Text_Lines, sizeof(Text_Lines), "That weapon is more flashy then effective {gold}%N", client);}
-		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "You bitch {gold}%N", client); 
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(1,2)) 		{case 1: Format(Text_Lines, sizeof(Text_Lines), "그 무기는 꼭 마치 내 것처럼 보이는군, {gold}%N{snow}. 다행히도 네 건 짝퉁이지만.", client);  														case 2: Format(Text_Lines, sizeof(Text_Lines), "정말 싼티나는 무기로구나, {gold}%N{snow}.", client);}
+		case WEAPON_YAMATO: switch(GetRandomInt(1,2)) 				{case 1: Format(Text_Lines, sizeof(Text_Lines), "도대체 왜 {purple}트윌{snow}이 그렇게 \"{blue}다가오는 폭풍{snow}\"에 집착하는지 모르겠군. 넌 알고 있나? {gold}%N{snow}?", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "네가 계속 말하는 {blue}버질{snow}이 도대체 누구냐, {gold}%N{snow}?", client);}
+		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(1,2)) 	{case 1: Format(Text_Lines, sizeof(Text_Lines), "블리츠크리그는 그 연합에서 만들어진 것들 중에서 그나마 상태가 좋았던 무기다, {gold}%N{snow}. 그리고 넌 그것보다 더 좋은 무기를 썼어야해.", client);  								case 2: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}. 네가 블리츠크리그를 형체도 없이 파괴한 탓에, 난 그를 \"개선\" 시킬 기회조차 사라져버렸다...", client);}
+		case WEAPON_KIT_FRACTAL:  switch(GetRandomInt(1,2))			{case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, 네가 사용하는 그 마기아 무기... 내가 잘못 본거냐?", client);  																				case 2: Format(Text_Lines, sizeof(Text_Lines), "지금... {gold}%N{snow} 네가 {purple}트윌{snow}의 힘을 사용할 수 있다는 뜻이냐?", client);}
+		case WEAPON_BOOMSTICK: switch(GetRandomInt(1,2))			{case 1: Format(Text_Lines, sizeof(Text_Lines), "뜀뛰기를 참으로 잘 하는군?", client); 																										case 2: Format(Text_Lines, sizeof(Text_Lines), "그런 거대한 금속 조각을 쏘는게 대체 얼마나 효과적인거지? {gold}%N{snow}, 설명해봐라!", client);}
+		case WEAPON_ION_BEAM, WEAPON_ION_BEAM_PULSE, WEAPON_ION_BEAM_NIGHT, WEAPON_ION_BEAM_FEED: switch(GetRandomInt(1,2))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "네 무기 꼴을 보면 네가 무기 성능보다 외형을 더 중시한다는걸 보여주고 있다, {gold}%N", client); 						case 2: Format(Text_Lines, sizeof(Text_Lines), "네 무기는 화려하기만 하고 쓸모가 없다, {gold}%N !", client);}
+		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "이런 개같은 자식, {gold}%N", client); 
 
 		default:
 		{
@@ -2955,7 +2955,7 @@ static void NPC_Death(int entity)
 
 	if(!b_wonviakill[npc.index] && !b_wonviatimer[npc.index])
 	{
-		Lelouch_Lines(npc, "You... You really think if i die youll prevent the gateway opening??? You are so foolish....");
+		Lelouch_Lines(npc, "너... 넌 내가 죽으면 너 혼자 관문을 막을 수 있을거라 생각해...? 어리석은 것들....");
 		//it isn't rouge mode? don't do anything else
 		if(!Rogue_Mode())
 			return;
@@ -3042,7 +3042,7 @@ static Action Timer_FadoutOffset_Global(Handle Timer, int nothing)
 	if(nothing == 69)
 	{
 		ParticleEffectAt({8705.115234, -137.372833, -3051.154297}, "hightower_explosion", 1.0);
-		CPrintToChatAll("{purple}Twirl{snow}: Oh damn, he actually used his own life to open the gate. I'll get us out of here, hold on tight!");
+		CPrintToChatAll("{purple}트윌{snow}: 이런, 그가 정말로 자기 목숨을 바쳐서까지 관문을 열어버렸어. 꽉 잡으렴, 금방 빠져나갈테니!");
 		EmitSoundToAll("items/cart_explode.wav", 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, {8705.115234, -137.372833, -3051.154297});
 		EmitSoundToAll("items/cart_explode.wav", 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, {8705.115234, -137.372833, -3051.154297});
 	}

@@ -439,11 +439,11 @@ methodmap CHIMERA < CClotBody
 		switch(GetRandomInt(0,2))
 		{
 			case 0:
-				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: WELCOME, WELCOME SINNERS!");
+				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 잘 왔다, 죄인들아!");
 			case 1:
-				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: LET'S BEGIN");
+				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 해보자고.");
 			case 2:
-				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ENGAGING THE TARGETS");
+				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 목표 발견.");
 		}
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/tw_medibot_chariot/tw_medibot_chariot.mdl", _, skin);
@@ -714,7 +714,7 @@ public Action CHIMERA_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 		if((ReturnEntityMaxHealth(npc.index) / 2) >= (GetEntProp(npc.index, Prop_Data, "m_iHealth") - RoundToNearest(damage)))
 		{
 			npc.PlayAdaptStart();
-			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: TOO MUCH DAMAGE SUSTAINED, INITIATING {crimson}[DAMAGE ADAPTABILITY MODE]");
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 비정상적인 손상 감지됨. {crimson}[피해 적응 모드] 진입 중.");
 			float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 			TE_Particle("teleported_mvm_bot", VecSelfNpcabs, _, _, npc.index, 1, 0);
 			npc.Anger = true;
@@ -787,13 +787,13 @@ bool CHIMERA_timeBased(int iNPC)
 			//do both abilities twice.
 			if(npc.m_flDamageCharge < 0.0)
 			{
-				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ADAPTING COMPLETED, {crimson}RANGED{default} IS CONSIDERED THE MOST DANGEROUS.");
+				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 적응 완료. {crimson}원거리{default} 피해가 가장 위협적인 상황이다.");
 				npc.m_flRangedArmor = 0.75;
 				npc.m_flMeleeArmor = 1.35;
 			}
 			else
 			{
-				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ADAPTING COMPLETED, {crimson}MELEE{default} IS CONSIDERED THE MOST DANGEROUS.");
+				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 적응 완료. {crimson}근접{default} 피해가 가장 위협적인 상황이다.");
 				npc.m_flRangedArmor = 1.35;
 				npc.m_flMeleeArmor = 0.75;
 			}
@@ -815,7 +815,7 @@ bool CHIMERA_timeBased(int iNPC)
 		npc.SetActivity("ACT_DIEVIOLENT");
 		npc.SetPlaybackRate(0.35);
 
-		CPrintToChatAll("{crimson}C.H.I.M.E.R.A.'s Expidonsan blade detects unauthorised usage and self-destructs.");
+		CPrintToChatAll("{crimson}C.H.I.M.E.R.A. 의 엑스피돈사 검이 비허가 사용을 감지하고 자폭했습니다.");
 		float flPos[3];
 		float flAng[3];
 		int Particle_1;
@@ -870,13 +870,13 @@ bool CHIMERA_LoseConditions(int iNPC)
 				switch (GetURandomInt() % 4)
 				{
 					case 0:
-						CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: IT RECOILS IN PAIN?");
+						CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 이게 고통이란건가?");
 					case 1:
-						CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: I NEED A DISTRACTION. ERROR? ERROR? ERROR?");
+						CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 도움이 필요하다. 오류? 오류? 오류???");
 					case 2:
-						CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: THIS PLACE IS TOO HOT FOR ME.");
+						CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 여기 너무 뜨거운 것 같은데...");
 					case 3:
-						CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: I MIGHT NOT BE WELCOME HERE?");
+						CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 내가 여기에 와서는 안 됐었나?");
 				}
 			}
 			
@@ -900,14 +900,14 @@ bool CHIMERA_LoseConditions(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ZIBERIA WOULD BE PROUD, PROVIDED THEY WERE TO SEE ME NOW.");
+		CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 지금의 내 모습을 본다면, 자이베리아는 분명 자랑스러워할 것이야.");
 		return true;
 	}
 	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: TIME TO CHOOSE. LIFE, OR DEATH?");
+		CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 선택해라. 생존? 아니면 죽음?");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return true;
 	}
@@ -1002,15 +1002,15 @@ bool CHIMERA_RefractedSniper(int iNPC)
 	switch(GetRandomInt(0,4))
 	{
 		case 0:
-			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: BREWING UP A STORM");
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 폭풍을 맞이하리라.");
 		case 1:
-			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: KEEP RUNNING, THAT'LL HELP");
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 도망가면 네 팀에게 도움이 되겠나?");
 		case 2:
-			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: LET'S COOL THINGS DOWN");
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 다 같이 시원해져보자고.");
 		case 3:
-			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: FOOLISH MORTALS, YOU THINK YOU CAN STOP ME?");
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 멍청한 필멸자들, 날 막을 수 있을거라고 생각해?");
 		case 4:
-			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: DIE ALREADY, I'M GIVING IT ALL ALREADY!");
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 이제 죽어라! 나도 전력을 다 하고 있다고!");
 	}
 	if(npc.m_flSpawnSnipers == 1.0)
 		npc.m_flSpawnSnipers = GetGameTime(npc.index) + 10.0;
@@ -1029,15 +1029,15 @@ bool CHIMERA_RefractSpawners(int iNPC)
 	switch(GetRandomInt(0,3))
 	{
 		case 0:
-			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: LOOK OUT, I'M RIGHT BEHIND YOU");
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 네 뒤에 바짝 붙어가주마.");
 		case 1:
-			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: YOU STOP RUNNING AND I'LL STOP FIRING, THAT SEEMS FAIR");
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 도망가는걸 멈추면 나도 그만 쏴줄게. 공평하지?");
 		case 2:
-			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: THIS WOULD GO A LOT FASTER IF YOU'D STAY STILL");
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 가만히 있으면 더 빨리 끝날텐데!");
 		case 3:
-			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: DON'T RUN! DON'T RUN!");
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 도망가지마라!");
 		case 4:
-			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: YOU'RE JUST DELAYING THE INEVITABLE");
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: 예정된 파멸을 피하려 하다니!");
 
 	}
 	npc.PlayRefractedAbilityBall();

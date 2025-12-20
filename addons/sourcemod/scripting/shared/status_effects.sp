@@ -159,6 +159,9 @@ void InitStatusEffects()
 	DeleteStatusEffectsFromAll();
 	//clear all existing ones
 	StatusEffects_TeslarStick();
+#if defined ZR
+	StatusEffects_Baka();
+#endif
 	StatusEffects_Ludo();
 	StatusEffects_Cryo();
 	StatusEffects_PotionWand();
@@ -433,6 +436,203 @@ stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1, b
 			delete E_AL_StatusEffects[victim];
 	}
 }
+#if defined ZR
+int Slowdown_I_Index;
+int Slowdown_II_Index;
+int Slowdown_III_Index;
+
+void StatusEffects_Baka()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Major Steam's Launcher Resistance");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.0;
+	data.DamageDealMulti				= -1.0;
+	data.AttackspeedBuff				= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount	= false;
+	data.Slot						= 0;
+	data.SlotPriority					= 0;
+	data.OnTakeDamage_TakenFunc		= MajorSteam_Launcher_ResistanceFunc;
+	data.OnTakeDamage_DealFunc		= INVALID_FUNCTION;
+	data.OnTakeDamage_PostVictim		= INVALID_FUNCTION;
+	data.OnTakeDamage_PostAttacker		= INVALID_FUNCTION;
+	data.Status_SpeedFunc 			= INVALID_FUNCTION;
+	data.HudDisplay_Func 				= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Subjective Time Dilation");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "↓");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti				= -1.0;
+	data.AttackspeedBuff				= -1.0;
+	data.MovementspeedModif			= 0.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount 	= false;
+	data.Slot						= 0;
+	data.SlotPriority					= 0;
+	data.OnTakeDamage_TakenFunc 		= INVALID_FUNCTION;
+	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
+	data.OnTakeDamage_PostVictim		= INVALID_FUNCTION;
+	data.OnTakeDamage_PostAttacker		= INVALID_FUNCTION;
+	data.Status_SpeedFunc 			= AOESlowdown_Func;
+	data.HudDisplay_Func 				= INVALID_FUNCTION;
+	Slowdown_I_Index=StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Slowdown");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "<");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti				= -1.0;
+	data.AttackspeedBuff				= -1.0;
+	data.MovementspeedModif			= 0.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount 	= false;
+	data.Slot						= 0;
+	data.SlotPriority					= 0;
+	data.OnTakeDamage_TakenFunc 		= INVALID_FUNCTION;
+	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
+	data.OnTakeDamage_PostVictim		= INVALID_FUNCTION;
+	data.OnTakeDamage_PostAttacker		= INVALID_FUNCTION;
+	data.Status_SpeedFunc 			= Slowdown_Func;
+	data.HudDisplay_Func 				= INVALID_FUNCTION;
+	Slowdown_II_Index=StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Power Slowdown");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "<<");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti				= -1.0;
+	data.AttackspeedBuff				= -1.0;
+	data.MovementspeedModif			= 0.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount 	= false;
+	data.Slot						= 0;
+	data.SlotPriority					= 0;
+	data.OnTakeDamage_TakenFunc 		= INVALID_FUNCTION;
+	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
+	data.OnTakeDamage_PostVictim		= INVALID_FUNCTION;
+	data.OnTakeDamage_PostAttacker		= INVALID_FUNCTION;
+	data.Status_SpeedFunc 			= SubjectiveTimeDilation_Func;
+	data.HudDisplay_Func 				= INVALID_FUNCTION;
+	Slowdown_III_Index=StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Cybergrind EX-Hard Enemy Buff");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⛡");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.0;
+	data.DamageDealMulti				= 0.0;
+	data.AttackspeedBuff				= -1.0;
+	data.MovementspeedModif			= 0.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount 	= false;
+	data.Slot						= 0;
+	data.SlotPriority					= 0;
+	data.OnTakeDamage_TakenFunc 		= Cybergrind_EX_Hard_ResistanceFunc;
+	data.OnTakeDamage_DealFunc 		= Cybergrind_EX_Hard_DamageFunc;
+	data.OnTakeDamage_PostVictim		= INVALID_FUNCTION;
+	data.OnTakeDamage_PostAttacker		= INVALID_FUNCTION;
+	data.Status_SpeedFunc 			= Cybergrind_EX_Hard_SpeedFunc;
+	data.HudDisplay_Func 				= INVALID_FUNCTION;
+	/*data.AttackspeedBuff				= INVALID_FUNCTION;
+	data.OnBuffStarted				= INVALID_FUNCTION;
+	data.OnBuffStoreRefresh			= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;*/
+	StatusEffect_AddGlobal(data);
+}
+
+float AOESlowdown_Func(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	float f_Speed = 0.1;
+	if(b_thisNpcIsARaid[victim])f_Speed = 0.05;
+	if(CheckBuffIndex(victim, Slowdown_II_Index))f_Speed = 0.0;
+	if(CheckBuffIndex(victim, Slowdown_III_Index))f_Speed = 0.0;
+	return f_Speed;
+}
+
+float Slowdown_Func(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	float f_Speed = 0.15;
+	if(b_thisNpcIsARaid[victim])f_Speed = 0.05;
+	if(CheckBuffIndex(victim, Slowdown_I_Index)) f_Speed += (b_thisNpcIsARaid[victim] ? 0.05 : 0.1);
+	if(CheckBuffIndex(victim, Slowdown_III_Index))f_Speed = 0.0;
+	return f_Speed;
+}
+
+float SubjectiveTimeDilation_Func(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	float f_Speed = 0.35;
+	if(b_thisNpcIsARaid[victim])f_Speed = 0.1;
+	if(CheckBuffIndex(victim, Slowdown_I_Index)) f_Speed += (b_thisNpcIsARaid[victim] ? 0.05 : 0.1);
+	if(CheckBuffIndex(victim, Slowdown_II_Index)) f_Speed += (b_thisNpcIsARaid[victim] ? 0.05 : 0.15);
+	return f_Speed;
+}
+
+float MajorSteam_Launcher_ResistanceFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	return f_MajorSteam_Launcher_Resistance(victim);
+}
+
+float Cybergrind_EX_Hard_ResistanceFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	float f_Resistance = 0.8;
+	if(Waves_GetRound()+1>64)f_Resistance = 0.95;
+	else if(Waves_GetRound()+1>63)f_Resistance = 0.9;
+	else if(Waves_GetRound()+1>62)f_Resistance = 0.9;
+	else if(Waves_GetRound()+1>59)f_Resistance = 0.8;
+	else if(Waves_GetRound()+1>58)f_Resistance = 0.8;
+	else if(Waves_GetRound()+1>44)f_Resistance = 0.8;
+	else if(Waves_GetRound()+1>43)f_Resistance = 0.8;
+	else if(Waves_GetRound()+1>29)f_Resistance = 0.75;
+	else if(Waves_GetRound()+1>28)f_Resistance = 0.8;
+	else if(Waves_GetRound()+1>14)f_Resistance = 0.75;
+	if(NpcStats_IsEnemySilenced(victim))f_Resistance*=1.0/(f_Resistance*1.25);
+	if(f_Resistance>1.0)f_Resistance=1.0;
+	
+	return f_Resistance;
+}
+
+float Cybergrind_EX_Hard_DamageFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	float f_Damage = 1.25;
+	if(NpcStats_IsEnemySilenced(victim))f_Damage = 1.1;
+	else if(Waves_GetRound()+1>64)f_Damage = 1.25;
+	else if(Waves_GetRound()+1>63)f_Damage = 1.25;
+	else if(Waves_GetRound()+1>62)f_Damage = 1.25;
+	else if(Waves_GetRound()+1>58)f_Damage = 1.3;
+	else if(Waves_GetRound()+1>44)f_Damage = 1.25;
+	else if(Waves_GetRound()+1>43)f_Damage = 1.35;
+	else if(Waves_GetRound()+1>29)f_Damage = 1.25;
+	else if(Waves_GetRound()+1>28)f_Damage = 1.3;
+	else if(Waves_GetRound()+1>14)f_Damage = 1.25;
+	if(f_Damage<1.0)f_Damage=1.0;
+	return f_Damage;
+}
+
+float Cybergrind_EX_Hard_SpeedFunc(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	float f_Speed = 1.06;
+	if(NpcStats_IsEnemySilenced(victim))f_Speed = 1.0;
+	else if(Waves_GetRound()+1>64)f_Speed = 1.01;
+	else if(Waves_GetRound()+1>63)f_Speed = 1.01;
+	else if(Waves_GetRound()+1>62)f_Speed = 1.01;
+	else if(Waves_GetRound()+1>58)f_Speed = 1.04;
+	else if(Waves_GetRound()+1>44)f_Speed = 1.05;
+	else if(Waves_GetRound()+1>43)f_Speed = 1.06;
+	else if(Waves_GetRound()+1>29)f_Speed = 1.05;
+	else if(Waves_GetRound()+1>28)f_Speed = 1.06;
+	else if(Waves_GetRound()+1>14)f_Speed = 1.06;
+	return f_Speed;
+}
+#endif
 
 //Got lazy, tired of doing so many indexs.
 

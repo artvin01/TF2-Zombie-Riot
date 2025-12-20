@@ -596,7 +596,7 @@ public void WeaponArk_Cooldown_Logic(int client, int weapon)
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			PrintHintText(client, "Ark Energy [%d]", Ark_Hits[client]);
+			PrintHintText(client, "아크 에너지 [%d]", Ark_Hits[client]);
 			
 		}
 	}
@@ -925,12 +925,12 @@ public void LappLand_Cooldown_Logic(int client, int weapon)
 		{
 			if(f_LappLandAbilityActive[client] < GetGameTime())
 			{
-				PrintHintText(client,"Wolf Spirit [%i%/%i]", i_LappLandHitsDone[client], LAPPLAND_MAX_HITS_NEEDED);
+				PrintHintText(client,"늑대의 혼 [%i%/%i]", i_LappLandHitsDone[client], LAPPLAND_MAX_HITS_NEEDED);
 			}
 			else
 			{
 				float TimeLeft = f_LappLandAbilityActive[client] - GetGameTime();
-				PrintHintText(client,"Raging Wolf Spirit [%.1f]",TimeLeft);
+				PrintHintText(client,"격노한 늑대의 혼 [%.1f]",TimeLeft);
 			}
 			
 			
@@ -1072,12 +1072,12 @@ public void Quibai_Cooldown_Logic(int client, int weapon)
 		{
 			if(f_LappLandAbilityActive[client] < GetGameTime())
 			{
-				PrintHintText(client,"Questioning Snow [%i%/%i]", i_LappLandHitsDone[client], QUIBAI_MAX_HITS_NEEDED);
+				PrintHintText(client,"어린 송곳니 [%i%/%i]", i_LappLandHitsDone[client], QUIBAI_MAX_HITS_NEEDED);
 			}
 			else
 			{
 				float TimeLeft = f_LappLandAbilityActive[client] - GetGameTime();
-				PrintHintText(client,"Raging Snow [%.1f]",TimeLeft);
+				PrintHintText(client,"격노의 송곳니 [%.1f]",TimeLeft);
 			}
 			
 			

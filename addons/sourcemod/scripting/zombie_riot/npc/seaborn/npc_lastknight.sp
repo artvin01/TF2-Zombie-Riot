@@ -240,7 +240,7 @@ public void LastKnight_ClotThink(int iNPC)
 			if(!found)
 			{
 				PeaceKnight = 1;
-				CPrintToChatAll("{gray}The Last Knight{default}: You have proven yourself, you're against the ocean, and you're not my enemy.");
+				CPrintToChatAll("{gray}마지막 기사{default}: 네가 바다를 상대로 싸우고 있다는 것을 나에게 증명해주었으니, 넌 더 이상 내 적이 아니다.");
 
 				int owner;
 				for(int client = 1; client <= MaxClients; client++)

@@ -190,7 +190,7 @@ public Action ReilaBeacon_OnTakeDamage(int victim, int &attacker, int &inflictor
 		EmitSoundToAll("mvm/mvm_bought_in.wav", _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
 		ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 10.0);
 		
-		CPrintToChatAll("{green}You gain more time before the Curtain closes...{crimson} However, both {pink}Reila{crimson} and the Construct become stronger.");
+		CPrintToChatAll("{green}장막이 닫히는걸 어느 정도 방지했습니다...{crimson} 하지만 {pink}레일라{crimson}와 제작물이 강해졌습니다.");
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
 		MultiHealth(npc.index, 1.5);
 		RaidModeTime = GetGameTime(npc.index) + 80.0;

@@ -619,9 +619,9 @@ static void EndRiftVote(bool WasRacist = false)
 		if(Rogue_HasNamedArtifact("Twirl Guidance"))
 		{
 			Rogue_RemoveNamedArtifact("Twirl Guidance");
-			CPrintToChatAll("{purple}Twirl{snow} : I'm sorry, i have to stay behind, i don't want my higherups to end like lelouch, i'm sure youll be fine without me.");	// Add Twirl leave dialogue
-			CPrintToChatAll("{black}Izan{default} : Bye.");
-			CPrintToChatAll("{white}Bob{default} : We'll be fine, we have the entirety of Irln invading, you can make sure our home is fine.");
+			CPrintToChatAll("{purple}트윌{snow} : 미안해, 잠깐 뒤로 물러날게. 내 상관들이 를르슈처럼 죽는건 원치 않아. 넌 강하니까 나 없이도 잘 할 수 있을거라 믿어.");	// Add Twirl leave dialogue
+			CPrintToChatAll("{black}이잔{default} : 안녕.");
+			CPrintToChatAll("{white}밥{default} : 우린 괜찮을거니 걱정 마라. 지금 아일린 전체가 침략받고 있으니, 네가 우리의 집을 잘 지켜줘.");
 		}
 	}
 	else
@@ -825,7 +825,7 @@ public void Rogue_Rift1_Remove()
 public void Rogue_Rift1Good_Collect()
 {
 	//Keycard = true;
-	CPrintToChatAll("{pink}Reila{default}: I know where to use this.");
+	CPrintToChatAll("{pink}레일라{default}: 내가 이걸 어디에 써야되는지 알고 있어.");
 }
 
 public void Rogue_Rift1Good_Remove()
@@ -843,7 +843,7 @@ public void Rogue_Rift1Good_Remove()
 			}
 		}
 
-		CPrintToChatAll("{pink}Reila{default}: ...");
+		CPrintToChatAll("{pink}레일라{default}: ...");
 		Rogue_RemoveNamedArtifact("Reila Assistance");
 		Rogue_GiveNamedArtifact("Torn Keycard");
 		Rogue_AddUmbral(-100, true);

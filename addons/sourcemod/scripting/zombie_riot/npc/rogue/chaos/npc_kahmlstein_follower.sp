@@ -322,7 +322,7 @@ static void ClotThink(int iNPC)
 	{
 		if(npc.m_flIsAwayOrSomething)
 		{
-			CPrintToChatAll("{darkblue}Kahmlstein fights the void, not knowing you already perished....");
+			CPrintToChatAll("{darkblue}캄르스타인은 공허와 싸워갑니다. 당신이 이미 처참하게 죽은 것을 모른채로 말이죠....");
 			npc.m_flIsAwayOrSomething = 0.0;
 		}		
 		return;
@@ -400,19 +400,19 @@ static void ClotThink(int iNPC)
 						{
 							case 0:
 							{
-								CPrintToChatAll("{darkblue}Kahmlstein{default}: Fight him, ill fend off the gates so nothing goes through!");
+								CPrintToChatAll("{darkblue}캄르스타인{default}: 넌 저 놈과 싸워야한다! 난 게이트 속에서 아무것도 나오지 못 하게 막고 있겠다!");
 							}
 							case 1:
 							{
-								CPrintToChatAll("{darkblue}Kahmlstein{default}: Good luck! ill keep the void things away.");
+								CPrintToChatAll("{darkblue}캄르스타인{default}: 내가 공허 쪽을 막겠다. 행운을 빈다.");
 							}
 							case 2:
 							{
-								CPrintToChatAll("{darkblue}Kahmlstein{default}: You got this, ill keep the rest in bay as much as i can.");
+								CPrintToChatAll("{darkblue}캄르스타인{default}: 넌 할 수 있다. 난 널 믿고 게이트를 막아내겠다.");
 							}
 							case 3:
 							{
-								CPrintToChatAll("{darkblue}Kahmlstein{default}: I cant help you, i have to make sure no other void things come for this!");
+								CPrintToChatAll("{darkblue}캄르스타인{default}: 여기서 우리가 같이 싸울 순 없어. 곧 쏟아져나올 공허 놈들도 막아야한다! 그리고 그건 내가 담당하겠다!");
 							}
 						}
 					}
@@ -474,19 +474,19 @@ static void ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Im back, glad youre ok.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 방금 돌아왔다. 네가 무사하길 바래야겠군.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: You destroyed him? He'll come right back.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 놈을 처치한건가? 비록 그 놈은 얼마 지나지 않아 곧 돌아올 테지만.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: I have feeling he aint sentient, somethings controlling him.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 뭔가 이상해. 저 놈은 자신의 의지대로 움직이는것 같진 않다. 마치 무언가에 조종이라도 당하는 것처럼.");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: The more i fight the void, the more i feel like the void isnt an infection.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 공허와 싸워나갈수록 이 공허란게 감염과는 별개의 존재라는 느낌이 든다.");
 			}
 		}
 		
@@ -732,7 +732,7 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.2);
 				npc.SetPlaybackRate(0.50);
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Not so fast!");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 그렇겐 못 한다!");
 				SetEntityRenderMode(npc.index, RENDER_NORMAL);
 				SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 				SetEntityRenderMode(npc.m_iWearable4, RENDER_NORMAL);
@@ -782,14 +782,14 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 			case 4:
 			{
 				npc.m_flDeathAnimationCD = gameTime + 2.0;
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: ..I think I've finally met a match..");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: ..마침내 싸울만한 상대를 만나게 되었군..");
 			}
 			case 5:
 			{
 				float flPos[3];
 				float flAng[3];
 				npc.m_flDeathAnimationCD = gameTime + 2.0;
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: *cough cough cough*");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: *기침*");
 				npc.PlayCoughSound();
 				npc.GetAttachment("head", flPos, flAng);
 				int particle = ParticleEffectAt(flPos, "blood_trail_red_01_goop", 4.0); //This is a permanent particle, gotta delete it manually...
@@ -799,55 +799,55 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 			case 6:
 			{
 				npc.m_flDeathAnimationCD = gameTime + 2.0;
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Oh.. that's blood.. lots of it.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 오... 피가 정말 많이 나오는군.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 7:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: But we did it, the Void's influence is fading away.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 하지만 우리가 해냈다. 공허의 영향력은 사라지고 있다.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 8:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: And as long as another idiot doesn't try to mess with it, it won't come back");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 다른 얼간이가 공허를 건드리지 않는 한, 다시는 돌아오지 않을 거다.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 9:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: But that means.. my immortality is fading as well. Maybe it's for the better.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 그리고 저 놈들이 사라지면... 내 불멸 능력도 이제 사라지게 되겠지. 그리고 어쩌면 이게 더 나을 수도 있다.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 10:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Now you should actually go back to that Chaos thing I took you away from.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 이제 난 돌아갈래야 돌아갈 수가 없기 때문이지.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 11:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: ...if it's not too late that is.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: ...너무 많이 죽였거든.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 12:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: As for me, my time's almost up. Honestly I deserve it.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 너무 많이 죽이면 뭐가 뭔지 알 수 없게 된다는 말이 있었지. 솔직히 맞는 말이었다.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 13:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: I'm nothing but a scumbag, even before Chaos fiddled with me I was one.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 그리고 난 혼돈에 물들기 전에도 한낮 쓰레기에 불과했고.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 14:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: I did many vile acts that cannot be forgiven..");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 내가 한 짓들을 도저히 잊을 수 없다..");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
@@ -856,7 +856,7 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 				float flPos[3];
 				float flAng[3];
 				npc.m_flDeathAnimationCD = gameTime + 2.0;
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: *cough cough cough*");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: *기침*");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 				npc.GetAttachment("head", flPos, flAng);
@@ -865,20 +865,20 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 			}
 			case 16:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Ahh... is that a light? It's getting closer.. Ahh Ziberia is calling out to me.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 그래.. 자이베리아가 날 데리러 오고 있다.. 저 빛줄기와 함께.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 17:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: And you all, thanks again. For sticking with me till the end.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 너희들. 나와 끝까지 함께 해줘서, 정말 고맙다...");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 18,19,20,21,22:
 			{
 		//		npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: ... Make sure the void doesnt come back...");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: ... 공허가 다시는 돌아오지 않도록...");
 				if(IsValidEntity(npc.index))
 				{
 					HideAllNpcCosmetics(npc.index);
@@ -889,7 +889,7 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						Items_GiveNamedItem(client, "Kahmlsteins Last Will");
-						CPrintToChat(client,"{default}You get: {red}''Kahmlsteins Last Will''{default}.");
+						CPrintToChat(client,"{default}당신이 얻은 것은...: {red}''캄르스타인의 유언장''{default}.");
 					}
 				}
 			}

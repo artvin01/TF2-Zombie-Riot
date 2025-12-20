@@ -306,15 +306,15 @@ public void Hose_UpdateText(int owner)
 		
 	if (Hose_Charged[owner])
 	{
-		PrintHintText(owner, "[CHARGE IS ACTIVE]");
+		PrintHintText(owner, "[충전 발동중]");
 	}
 	else if (Hose_Uber[owner] >= 1.0)
 	{
-		PrintHintText(owner, "[CHARGE IS READY! ALT-FIRE TO USE!]");
+		PrintHintText(owner, "[충전 준비됨! 보조 발사 버튼으로 사용하세요!]");
 	}
 	else
 	{
-		PrintHintText(owner, "[CHARGE: %.2f]", Hose_Uber[owner]);
+		PrintHintText(owner, "[충전: %.2f]", Hose_Uber[owner]);
 	}
 }
 

@@ -441,9 +441,9 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 				cooldown = 15.0;
 			
 			if(AllowHealing == 1)
-				PrintHintText(client, "You Healed %N for %d HP!, you gain a %.0f healing cooldown.", target, healing, cooldown);
+				PrintHintText(client, "대상 %N 의 체력을 %d 만큼 회복시켰습니다! 회복 쿨타임이 %.0f 만큼 추가됩니다.", target, healing, cooldown);
 			else
-				PrintHintText(client, "You Healed %s for %d HP!, you gain a %.0f healing cooldown.", NpcStats_ReturnNpcName(target), healing, cooldown);
+				PrintHintText(client, "대상 %s 의 체력을 %d 만큼 회복시켰습니다! 회복 쿨타임이 %.0f 만큼 추가됩니다.", NpcStats_ReturnNpcName(target), healing, cooldown);
 
 
 			Ability_Apply_Cooldown(client, 1, cooldown);
@@ -456,9 +456,9 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 			return;
 		}
 		if(AllowHealing == 1)
-			PrintHintText(client, "%N Is already at full hp.", target);
+			PrintHintText(client, "%N 의 체력이 꽉 찬 상태입니다.", target);
 		else
-			PrintHintText(client, "%s Is already at full hp.", NpcStats_ReturnNpcName(target));
+			PrintHintText(client, "%s 의 체력이 꽉 찬 상태입니다.", NpcStats_ReturnNpcName(target));
 	}
 
 	ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -510,7 +510,7 @@ public void Weapon_SeaHealingPap_M2(int client, int weapon, bool crit, int slot)
 	HealEntityGlobal(client, client, float(healing), 1.0, 0.5, _);
 	ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 
-	PrintHintText(client,"You Healed yourself for %d HP!, you gain a 25 healing cooldown.", healing);
+	PrintHintText(client,"당신 자신의 체력을 %d 만큼 회복했습니다!, 회복 쿨타임이 25 추가됩니다.", healing);
 
 	Ability_Apply_Cooldown(client, 1, 25.0);
 	Ability_Apply_Cooldown(client, 2, 25.0);

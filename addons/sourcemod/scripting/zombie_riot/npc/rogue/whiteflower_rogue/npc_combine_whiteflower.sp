@@ -389,7 +389,7 @@ public void WhiteflowerWinLine(int entity)
 		return;
 
 	AlreadySaidWin = true;
-	CPrintToChatAll("{crimson}Whiteflower{default}: Now all thats left.\nIs Bob.");	
+	CPrintToChatAll("{crimson}배풍등{default}: 이제 한 놈 남았다.\n밥.");	
 }
 
 public void Whiteflower_Boss_ClotThink(int iNPC)
@@ -426,7 +426,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 		npc.StopPathing();
 		npc.m_flNextThinkTime = FAR_FUTURE;
 		i_RaidGrantExtra[npc.index] = 0;
-		CPrintToChatAll("{crimson}Whiteflower{default}: Out of time, youre entirely surrounded.\nYou now belong to me.\nSubmit.\nHelp me kill Bob, and we will rule it all.");	
+		CPrintToChatAll("{crimson}배풍등{default}: 이제 넌 완전히 포위되었다.\n이제 넌 내 거야.\n이제 얌전히 나를 따라라.\n내가 밥을 죽이는걸 도와주면, 우리 둘 다 최고가 될 수 있어.");	
 	}
 
 	if(npc.m_flNextThinkTime > gameTime)
@@ -923,7 +923,7 @@ public Action Whiteflower_Boss_OnTakeDamage(int victim, int &attacker, int &infl
 	if(RoundToCeil(damage) > Health)
 	{	
 		if(i_RaidGrantExtra[npc.index] == 1)
-			CPrintToChatAll("{crimson}Whiteflower{default}: Y-You... fucking rats... Rot in hell Bob...\n...\nWhiteflower Perishes.\nHis army scatteres.");	
+			CPrintToChatAll("{crimson}배풍등{default}: 이... 미친 쥐새끼들이... 지옥에서 너희들을...\n...\n배풍등이 소멸해간다.\n그의 무리가 사기를 잃고 흩어진다.");	
 		
 		npc.StopPathing();
 		ApplyStatusEffect(victim, victim, "Infinite Will", 5.0);
@@ -951,7 +951,7 @@ public void Whiteflower_Boss_NPCDeath(int entity)
 		npc.PlayDeathSound();
 	}
 	if(i_RaidGrantExtra[npc.index] == 1)
-		CPrintToChatAll("{crimson}Whiteflower{default}: Y-You... fucking rats... Rot in hell Bob...\n...\nWhiteflower Perishes.\nHis army scatteres.");	
+		CPrintToChatAll("{crimson}배풍등{default}: 이... 미친 쥐새끼들이... 지옥에서 너희들을...\n...\n배풍등이 소멸해간다.\n그의 무리가 사기를 잃고 흩어진다.");	
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -1176,70 +1176,70 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 	{
 		case 1:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: Argk... Youre next.");
+			CPrintToChatAll("{crimson}배풍등{default}: 그래.. 네 녀석 차례다.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: Why are you running?");	
+			CPrintToChatAll("{crimson}배풍등{default}: 왜 도망가는거냐?");	
 		}
 		case 3:
 		{
 			if(!Waves_InFreeplay())
 			{
-				CPrintToChatAll("{crimson}Whiteflower{default}: First my army so im alone? Pah!");
+				CPrintToChatAll("{crimson}배풍등{default}: 날 상대하시겠다고? 하!");
 			}
 			else
 			{
-				CPrintToChatAll("{crimson}Whiteflower{default}: From one maniac to another huh?");
+				CPrintToChatAll("{crimson}배풍등{default}: 미친 놈이 또 다른 미친 놈을 싸지른다더니.");
 			}
 			
 		}
 		case 4:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: You are dirty.");	
+			CPrintToChatAll("{crimson}배풍등{default}: 불결한 놈.");	
 		}
 		case 5:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: From one maniac to another huh?");	
+			CPrintToChatAll("{crimson}배풍등{default}: 미친 놈이 또 다른 미친 놈을 싸지른다더니.");	
 		}
 		case 6:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: You are just like them, weak.");	
+			CPrintToChatAll("{crimson}배풍등{default}: 넌 저 놈들과 다를바 없다. 약해빠졌지.");	
 		}
 		case 7:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: You are a fool.");	
+			CPrintToChatAll("{crimson}배풍등{default}: 멍청한 놈.");	
 		}
 		case 8:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: Such ignorance.");	
+			CPrintToChatAll("{crimson}배풍등{default}: 어리석군.");	
 		}
 		case 9:
 		{
 			if(!Waves_InFreeplay())
 			{
-				CPrintToChatAll("{crimson}Whiteflower{default}: They atleast believe in their leader, do you?");	
+				CPrintToChatAll("{crimson}배풍등{default}: 저들은 적어도 자기 리더를 믿는다. 넌 도대체 무슨 가치가 있지?");	
 			}
 			else
 			{
-				CPrintToChatAll("{crimson}Whiteflower{default}: Argk... Youre next.");
+				CPrintToChatAll("{crimson}배풍등{default}: 그래... 네 녀석 차례다.");
 			}	
 		}
 		case 10:
 		{
 			if(!Waves_InFreeplay())
 			{
-				CPrintToChatAll("{crimson}Whiteflower{default}: I actually care for them, do you care for your own army?");	
+				CPrintToChatAll("{crimson}배풍등{default}: 난 내 무리를 한 번도 소홀히 대한 적이 없다. 넌 안 그러겠지만.");	
 			}
 			else
 			{
-				CPrintToChatAll("{crimson}Whiteflower{default}: You are dirty.");
+				CPrintToChatAll("{crimson}배풍등{default}: 불결한 놈.");
 			}
 		}
 	}
 	if(!Waves_InFreeplay())
 	{
-		CPrintToChatAll("He weakens as you defeat his army.");	
+		CPrintToChatAll("당신이 그의 무리를 파괴한 이후, 그는 훨씬 약해졌습니다.");	
 	}
 }
 

@@ -198,17 +198,17 @@ public Action Timer_Management_Survival(Handle timer, DataPack pack)
 		{
 			if(InMadness[client])
 			{
-				PrintHintText(client,"Infinite Knives!");				
+				PrintHintText(client,"무한의 검날!");				
 			}
 			else
 			{
 				if(Knife_Count[client] != Knife_Max[client])
 				{
-					PrintHintText(client,"Knives [%i/%i] (Recharge in: %.1f)",Knife_Count[client], Knife_Max[client],CD_Knife[client]-GetGameTime());
+					PrintHintText(client,"칼 [%i/%i] (재충전까지 : %.1f)",Knife_Count[client], Knife_Max[client],CD_Knife[client]-GetGameTime());
 				}
 				else
 				{
-					PrintHintText(client,"Knives [%i/%i]",Knife_Count[client],Knife_Max[client]);
+					PrintHintText(client,"칼 [%i/%i]",Knife_Count[client],Knife_Max[client]);
 				}							
 			}
 

@@ -103,7 +103,7 @@ bool b_MissilesEnabled[3] = { false, false, true };			//Are Micro-Missiles enabl
 //MONDO MASSACRE: The strongest possible roll. Fires an EXTREMELY powerful, VERY big bomb which deals a base damage of 100k within an enormous blast radius.
 int i_MondoMaxTargets[3] = { 999, 999, 999 };
 
-float f_MondoChance[3] = { 0.00, 0.00, 0.0001 };
+float f_MondoChance[3] = { 0.00, 0.00, 0.001 };
 float f_MondoVelocity[3] = { 2000.0, 3000.0, 4000.0 };
 float f_MondoDMG[3] = { 300000.0, 300000.0, 300000.0 };
 float f_MondoRadius[3] = { 2000.0, 3000.0, 4000.0 };
@@ -291,27 +291,27 @@ if(f_TrashNextHUD[client] < GetGameTime() || forced)
 		switch(i_NextShot[client])
 		{
 			case 1:
-				PrintHintText(client, "NEXT: Shock Stock");
+				PrintHintText(client, "NEXT: 충격 충각탄");
 			case 2:
-				PrintHintText(client, "NEXT: Mortar Marker");
+				PrintHintText(client, "NEXT: 박격 박살포");
 			case 3:
-				PrintHintText(client, "NEXT: Bundle of Arrows");
+				PrintHintText(client, "NEXT: 화살 묶음");
 			case 4:
-				PrintHintText(client, "NEXT: Fireball");
+				PrintHintText(client, "NEXT: 화염구");
 			case 5:
-				PrintHintText(client, "NEXT: An Entire Human Skeleton");
+				PrintHintText(client, "NEXT: 인간의 뼈");
 			case 6:
-				PrintHintText(client, "NEXT: Nice Ice");
+				PrintHintText(client, "NEXT: 시원한 얼음");
 			case 7:
-				PrintHintText(client, "NEXT: Literal Trash");
+				PrintHintText(client, "NEXT: 폐기물 그 자체");
 			case 8:
-				PrintHintText(client, "NEXT: Micro-Missile Barrage");
+				PrintHintText(client, "NEXT: 마이크로 미사일 폭격");
 			default:
 			{
 				if (i_TrashTier[weapon] > 1)
-					PrintHintText(client, "NEXT: Fireball");
+					PrintHintText(client, "NEXT: 화염구");
 				else
-					PrintHintText(client, "NEXT: Flimsy Rocket");
+					PrintHintText(client, "NEXT: 허술한 로켓");
 			}
 		}
 	}

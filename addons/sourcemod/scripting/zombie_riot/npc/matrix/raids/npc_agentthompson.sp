@@ -265,7 +265,7 @@ public void AgentThompson_ClotThink(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{community}Agent Thompson{default}: You're free, at last.");
+		CPrintToChatAll("{community}톰슨 요원{default}: 넌 이제 자유다.");
 		return;
 	}
 
@@ -276,7 +276,7 @@ public void AgentThompson_ClotThink(int iNPC)
 		{
 			ForcePlayerLoss();
 			RaidBossActive = INVALID_ENT_REFERENCE;
-			CPrintToChatAll("{community}Agent Thompson{forestgreen}: {forestgreen}Redpills are behind the time.");
+			CPrintToChatAll("{community}톰슨 요원{forestgreen}: {forestgreen}빨간 약은 시대에 뒤처진 물건이지.");
 			func_NPCThink[npc.index] = INVALID_FUNCTION;
 			return;
 		}

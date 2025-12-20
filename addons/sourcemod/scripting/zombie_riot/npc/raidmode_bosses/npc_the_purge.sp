@@ -244,7 +244,7 @@ methodmap ThePurge < CClotBody
 			}
 		}
 		RemoveAllDamageAddition();
-		CPrintToChatAll("{crimson}The Purge{default}: {crimson}Engaging the targets.");
+		CPrintToChatAll("{crimson}퍼지{default}: {crimson}목표 추적.");
 			
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
@@ -344,7 +344,7 @@ static void ClotThink(int iNPC)
 	{
 		if(npc.m_iGunType != 11)
 		{
-			CPrintToChatAll("{crimson}The Purge{default}: {crimson}Annihilation status: Absolute.");
+			CPrintToChatAll("{crimson}퍼지{default}: {crimson}말살 명령 가동.");
 			npc.PlayAngerSound();
 			npc.PlayMinigunStartSound();
 			npc.m_iGunType = 11;
@@ -385,7 +385,7 @@ static void ClotThink(int iNPC)
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			CPrintToChatAll("{crimson}The Purge{default}: {crimson}Last moving target detected.");
+			CPrintToChatAll("{crimson}퍼지{default}: {crimson}마지막 생존자 감지됨.");
 		}
 	}
 	int target = npc.m_iTarget;
@@ -467,7 +467,7 @@ static void ClotThink(int iNPC)
 					npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 0.5 : 1.0);
 					npc.m_flSpeed = 50.0;
 					cooldown = 6.0;
-					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Engage.");
+					CPrintToChatAll("{crimson}퍼지{default}: {crimson}전투 준비.");
 
 					npc.m_flRangedArmor = 0.5;
 					npc.m_flMeleeArmor = 0.75;
@@ -483,7 +483,7 @@ static void ClotThink(int iNPC)
 					npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 1.65 : 3.25);
 					npc.m_flSpeed = 1.0;
 					cooldown = 5.3;
-					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Activation: Rocket barrage.");
+					CPrintToChatAll("{crimson}퍼지{default}: {crimson}가동: 로켓 세례.");
 
 					if(npc.Anger)
 						npc.SetPlaybackRate(2.0);
@@ -506,7 +506,7 @@ static void ClotThink(int iNPC)
 					npc.m_flRangedArmor = 1.0;
 					npc.m_flMeleeArmor = 1.5;
 					EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
-					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Quad Burst Launcher online.");
+					CPrintToChatAll("{crimson}퍼지{default}: {crimson}4연 속사 발사대 가동.");
 				}
 				case 9:	// Grenade -> Fists
 				{
@@ -522,7 +522,7 @@ static void ClotThink(int iNPC)
 
 					npc.m_flRangedArmor = 1.5;
 					npc.m_flMeleeArmor = 2.25;
-					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Weapons Error. Run over targets.");
+					CPrintToChatAll("{crimson}퍼지{default}: {crimson}무기에 이상 발생. 대상에게 접근 시도.");
 				}
 				case 10:	// Healing -> Fists
 				{
@@ -532,7 +532,7 @@ static void ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_RUN_MELEE");
 					npc.m_flSpeed = 500.0;
 					cooldown = 5.0;
-					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Re-Oiling Complete. Run over targets.");
+					CPrintToChatAll("{crimson}퍼지{default}: {crimson}재보급 완료. 대상에게 접근 시도.");
 				}
 			}
 
@@ -852,7 +852,7 @@ static void ClotDeathStartThink(int iNPC)
 {
 	ThePurge npc = view_as<ThePurge>(iNPC);
 	
-	CPrintToChatAll("{crimson}The Purge{default}: {crimson}ERROR ERROR ERROR.");
+	CPrintToChatAll("{crimson}퍼지{default}: {crimson}오류, 오류, 오류, 오류, 오류,");
 	npc.m_bisWalking = false;
 	npc.SetActivity("taunt_mourning_mercs_heavy", true);
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.5;
@@ -876,7 +876,7 @@ static void ClotDeathLoopThink(int iNPC)
 		return;
 	
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-	CPrintToChatAll("{darkblue}??????????{default}: You will regret this.");
+	CPrintToChatAll("{darkblue}??????????{default}: 그 짓거리를 반드시 후회하게 해주마.");
 				
 	npc.PlayBoomSound();
 	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
@@ -984,7 +984,7 @@ static void ClotDeath(int entity)
 
 public void ThePurge_Win(int entity)
 {
-	CPrintToChatAll("{crimson}The Purge{default}: {crimson}Annihilation completed.");
+	CPrintToChatAll("{crimson}퍼지{default}: {crimson}말살 완료됨.");
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 }
 

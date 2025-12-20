@@ -15,20 +15,20 @@
 
 static const char SauceName[][] =
 {
-	"Mayonnaise",
-	"Ketchup",
-	"Mustard",
-	"Barbecue",
-	"The Special"
+	"마요네즈",
+	"케첩",
+	"머스타드",
+	"바베큐",
+	"특별한 재료"
 };
 
 static const char EffectsSauce[][] =
 {
-	"and removeds elemental damage",
-	"and +33％ armor gained",
-	"and passive healing for 20s",
-	"and buffed for 15s",
-	"and gain 1 revive"
+	"및 원소 피해를 전부 제거함",
+	"및 아머 +33％ 회복",
+	"및 20초간 초당 체력 재생",
+	"및 15초간 치유의 결의 버프 획득",
+	"및 다운 횟수 1 증가"
 };
 
 enum
@@ -154,7 +154,7 @@ static void GrillingUse(int client, int entity)
 		healing *= 0.5; //too op
 
 		char buffer[128];
-		FormatEx(buffer, sizeof(buffer), "Healed %d health", RoundFloat(healing));
+		FormatEx(buffer, sizeof(buffer), "체력 %d 회복", RoundFloat(healing));
 
 		switch(sauce)
 		{
@@ -188,11 +188,11 @@ static void GrillingUse(int client, int entity)
 
 		if(sauce >= 0 && sauce < Sauce_MAX)
 		{
-			CPrintToChat(client, "You ate a {yellow}%s Burger{default}\n{green}%s", SauceName[sauce], EffectsSauce[sauce]);
+			CPrintToChat(client, "{yellow}%s 버거{default}를 먹었습니다\n{green}%s", SauceName[sauce], EffectsSauce[sauce]);
 		}
 		else
 		{
-			CPrintToChat(client, "You ate a {yellow}Plain Burger{default}\n{green}%s", buffer);
+			CPrintToChat(client, "{yellow}평범한 버거{default}를 먹었습니다\n{green}%s", buffer);
 		}
 
 		HealEntityGlobal(owner, client, healing, _, 3.0);

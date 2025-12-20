@@ -227,23 +227,23 @@ methodmap ThirtySixFifty < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{white}3650{default}: You, zombie guy, follow me.");
+					CPrintToChatAll("{white}3650{default}: 어이, 좀비 친구들, 날 따라와라.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{white}3650{default}: I'm more elite than you are, come on.");
+					CPrintToChatAll("{white}3650{default}: 내가 너보다 더 뛰어나다.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{white}3650{default}: You guys can't tell, but I have a mean poker face.");
+					CPrintToChatAll("{white}3650{default}: 솔직히 이딴 것들한테 지면 쪽팔릴 것 같은데.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{white}3650{default}: THEY have medics, why don't WE have medics?");
+					CPrintToChatAll("{white}3650{default}: 저 놈들은 의무병이 있는 것 같은데, 우린 없는거냐?");
 				}
 				case 4:
 				{
-					CPrintToChatAll("{white}3650{default}: At least I still have meatshields.");
+					CPrintToChatAll("{white}3650{default}: 적어도 쓸만한 고기방패는 있어서 다행이군.");
 				}
 			}
 		}

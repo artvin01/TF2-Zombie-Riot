@@ -1512,6 +1512,6 @@ public void OnBuy_BuffGreg(int client)
 
 public Action Timer_TypeInChat(Handle timer)
 {
-	CPrintToChatAll("{purple}The World Machine{default}: See, I can type too! Hello chat!");
+	CPrintToChatAll("{purple}세상 기계{default}: 봐요, 저도 채팅창을 쓸 수 있다구요! 안녕하세요!");
 	return Plugin_Stop;
 }

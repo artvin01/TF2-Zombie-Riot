@@ -685,6 +685,10 @@ void NPC_ConfigSetup()
 	Huscarls_OnMapStart_NPC();
 	Harrison_OnMapStart_NPC();
 	Castellan_OnMapStart_NPC();
+	
+//Special
+	CyberGrindGM_OnMapStart_NPC();
+	Invisible_TRIGGER_Man_OnMapStart_NPC();
 
 //special
 	Invisible_TRIGGER_OnMapStart_NPC();//It is currently used as a trigger for the Victoria Factory.
@@ -2295,6 +2299,10 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/raidmode_bosses/victoria/npc_the_wall.sp"
 #include "npc/raidmode_bosses/victoria/npc_harrison.sp"
 #include "npc/raidmode_bosses/victoria/npc_castellan.sp"
+
+//Special
+#include "npc/baka/npc_cybergrind_gm.sp"
+#include "npc/baka/npc_invisible_trigger_man.sp"
 
 //Matrix Enemies
 #include "npc/matrix/15/npc_agentalan.sp"

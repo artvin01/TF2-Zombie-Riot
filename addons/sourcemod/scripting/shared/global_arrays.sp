@@ -43,6 +43,10 @@ float PreventRespawnsAll;
 #define HEAL_PASSIVE_NO_NOTIF		(1 << 4) 
 //Heals but doesnt notify anyone
 
+#define ZR_STORE_RESET (1 << 1) //This will reset the entire store to default
+#define ZR_STORE_DEFAULT_SALE (1 << 2) //This  will reset the current normally sold items, and put up a new set of items
+#define ZR_STORE_WAVEPASSED (1 << 3) //any storelogic that should be called when a wave passes
+
 enum
 {
 	Ammo_Metal = 3,		// 3	Metal

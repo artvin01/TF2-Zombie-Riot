@@ -441,7 +441,7 @@ static void Brew_Menu(int client, int entity)
 
 		SetGlobalTransTarget(client);
 		
-		menu.SetTitle("What do you wish to do with the Brewing Stand?\n ");
+		menu.SetTitle("양조기로 뭘 하시겠습니까?\n ");
 
 		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 		if(owner == -1)

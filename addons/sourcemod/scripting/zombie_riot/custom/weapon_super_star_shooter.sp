@@ -288,7 +288,7 @@ public void Starshooter_Cooldown_Logic(int client, int weapon)
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			PrintHintText(client,"Star Shooter Overheat %i％", SSS_overheat[client]);
+			PrintHintText(client,"유성 발사기 과열 %i％", SSS_overheat[client]);
 			
 		}
 		starshooter_hud_delay[client] = GetGameTime() + 0.5;

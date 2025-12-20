@@ -920,13 +920,13 @@ methodmap Stella < CClotBody
 		{
 			switch(GetRandomInt(0, 6))
 			{
-				case 0: Stella_Lines(npc, "Luckily {purple}Twirl{snow} wasn't the one who found you first. For us that is, not you");
-				case 1: Stella_Lines(npc, "Man this place is horrid, can't wait to get this job done as soon as possible");
-				case 2: Stella_Lines(npc, "Hey {crimson}Karlas{snow}, enough \"chit chat\" it's time to work");
-				case 3: Stella_Lines(npc, "We have arrived to render Judgement");
-				case 4: Stella_Lines(npc, "I'm in a good mood, so I'll just let you know, if you take too long, this area will soon become ground zero, good luck.");
-				case 5: Stella_Lines(npc, "All we have to do is keep them occupied long enough for the ones above to start glassing the area...");
-				case 6: Stella_Lines(npc, "We have arrived to eradicate you");
+				case 0: Stella_Lines(npc, "다행히도 {purple}트윌{snow}님보다 먼저 널 찾아내서 다행이군. 너한텐 좋은 일이 아니겠지만.");
+				case 1: Stella_Lines(npc, "이 장소는 정말 끔찍하군. 빨리 일을 끝내고 싶은데.");
+				case 2: Stella_Lines(npc, "{crimson}카를라스{snow}, 쓸데없는 잡담은 그만. 일할 시간이야.");
+				case 3: Stella_Lines(npc, "심판을 내리기 위해 여기에 왔다.");
+				case 4: Stella_Lines(npc, "너무 오래 걸리면 이 지역이 곧 폭심지가 될 거야. 행운을 빈다.");
+				case 5: Stella_Lines(npc, "우리가 해야할 일은, 이 곳이 유리화되기 전에 최대한 빨리 정리하는 것...");
+				case 6: Stella_Lines(npc, "널 제거하기 위해 이 곳에 왔다.");
 			}
 			
 		}
@@ -984,17 +984,17 @@ static void Win_Line(int entity)
 	{
 		switch(GetRandomInt(0, 2))
 		{
-			case 0: Stella_Lines(npc, "Huh, they're all dead, guess they were easier to stop then I expected...");
-			case 1: Stella_Lines(npc, "HAH, the {darkblue}sea{snow} isn't THAT hard to beat");
-			case 2: Stella_Lines(npc, "Oh boy, their ragdoll's were {gold}amazing{snow}!");
+			case 0: Stella_Lines(npc, "허, 벌써 전멸이라니, 생각했던것보다 훨씬 쉬운데...");
+			case 1: Stella_Lines(npc, "{darkblue}심해{snow}가 이렇게 처리가 쉬웠나?");
+			case 2: Stella_Lines(npc, "저 시체 날아가는 꼴이 정말 {gold}환상적이군{snow}!");
 		}
 	}
 	else
 	{
 		switch(GetRandomInt(0, 1))
 		{
-			case 0: Stella_Lines(npc, "You killed {crimson}Karlas{snow}, and I {crimson}erased{snow} your existance");
-			case 1: Stella_Lines(npc, "Well, atleast I still have {purple}Twirl{snow}...");
+			case 0: Stella_Lines(npc, "{crimson}카를라스{snow}를 짓밟은 대가다.");
+			case 1: Stella_Lines(npc, "여전히 {purple}트윌{snow}님이 남아있어서 다행이군...");
 		}
 	}
 }
@@ -1047,12 +1047,12 @@ static void Internal_ClotThink(int iNPC)
 			npc.m_bSaidWinLine = true;
 			switch(GetRandomInt(0,3))
 			{
-				case 0: Stella_Lines(npc, "You lose!");
-				case 1: Stella_Lines(npc, "Too late!");
-				case 2: Stella_Lines(npc, "Times UP!");
-				case 3: Stella_Lines(npc, "Atleast you survived this long, now its time for it all to end...");
+				case 0: Stella_Lines(npc, "네 패배다!");
+				case 1: Stella_Lines(npc, "너무 느려!");
+				case 2: Stella_Lines(npc, "시간 종료!");
+				case 3: Stella_Lines(npc, "그렇게 오래 살아봤자 남은건 먼지가 될 뿐인데...");
 			}
-			Stella_Lines(npc, "You have around 5 seconds until everything gets completely nuked by Ruina's ION barrage, good luck");
+			Stella_Lines(npc, "네 놈은 5초 동안 우리 루이나의 이온 폭격에 살아남을 궁리나 해라.");
 			Ruina_Ion_Storm(npc.index);	//This is very stupid, I love it.
 		}
 		CreateTimer(5.0, OffsetLoseTimer, EntIndexToEntRef(npc.index),TIMER_FLAG_NO_MAPCHANGE);
@@ -1074,13 +1074,13 @@ static void Internal_ClotThink(int iNPC)
 			{
 				switch(GetRandomInt(0,1))
 				{
-					case 0:Stella_Lines(npc, "We'd better not choke now...");
-					case 1:Stella_Lines(npc, "Ahaha, its almost over now, just{crimson} one more left{snow}!");
+					case 0:Stella_Lines(npc, "이제 숨 좀 돌리겠군...");
+					case 1:Stella_Lines(npc, "하, 거의 다 끝났다. 이제{crimson} 한 놈만 더{snow}!");
 				}
 			}
 			else
 			{
-				Stella_Lines(npc, "I'm about to turn you into an unrecognisable mass of sea for {crimson}what you've DONE TO KARLAS");
+				Stella_Lines(npc, "널 형체도 못 알아보게끔 뭉개주마.");
 			}
 		}
 	}
@@ -1727,18 +1727,18 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		int chose = GetRandomInt(1, max_dialogue);
 		switch(chose)
 		{
-			case 1: Stella_Lines(npc, "{snow}Thats it {crimson}I'm going to kill you{snow}.");	
-			case 2: Stella_Lines(npc, "{crimson}hm, {snow}Wonder how this will end...");
-			case 3: Stella_Lines(npc, "{crimson}PREPARE {snow}Thyself, {aqua}Judgement {crimson}Is near{snow}.");
-			case 4: Stella_Lines(npc, "Aiming this thing is actually quite {crimson}complex {snow}ya know.");
-			case 5: Stella_Lines(npc, "I'm getting quite bored of {crimson}this{snow} whole charade");
-			case 6: Stella_Lines(npc, "Oh how {crimson}Tiny{snow} you all look from up here.");
-			case 7: Stella_Lines(npc, "This has become quite troublesome.");
-			case 8: Stella_Lines(npc, "Master....");
-			case 9: Stella_Lines(npc, "I, in the name of...");
+			case 1: Stella_Lines(npc, "{snow}좋아. {crimson}이제 끝내야지.{snow}.");	
+			case 2: Stella_Lines(npc, "{crimson}흠, {snow}어떻게 끝날지 참으로 기대되는군...");
+			case 3: Stella_Lines(npc, "{crimson}각오해라, {aqua}심판이 멀지 않았다.{snow}.");
+			case 4: Stella_Lines(npc, "이건 너무 뻔한데. 네 앞길 말이다.");
+			case 5: Stella_Lines(npc, "슬슬 네 {crimson}허세{snow}가 너무 거슬리는군.");
+			case 6: Stella_Lines(npc, "교만에 빠졌군.");
+			case 7: Stella_Lines(npc, "꽤 번거롭겠는데.");
+			case 8: Stella_Lines(npc, "마스터....");
+			case 9: Stella_Lines(npc, "내 이름을 걸고...");
 
-			case 10:Stella_Lines(npc, "Hey {crimson}Karlas{snow}, you got the new mirror?");
-			case 11:Stella_Lines(npc, "{crimson}Karlas{snow}, you did ask for persmission to use {purple}her{snow} mirror right?");
+			case 10:Stella_Lines(npc, "{crimson}카를라스{snow}, 거울 사용 허락은 분명히 해뒀겠지?");
+			case 11:Stella_Lines(npc, "{crimson}카를라스{snow}, {purple}그 분{snow}에게 새로운 거울의 사용 허락을 맡아왔겠지?");
 
 			//case 4: Stella_Lines(npc, "Oh not again now train's gone and {crimson}Left{snow}.");
 			//case 5: Stella_Lines(npc, "Oh not again now cannon's gone and {crimson}recharged{snow}.");
@@ -1777,18 +1777,18 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 
 		switch(npc.m_iNC_Dialogue)
 		{
-			case 1: Stella_Lines(npc, "And I'll Do IT WITH THIS CANNON.");
-			case 2: Stella_Lines(npc, "This is gonna end {crimson}Poorly for you all{snow}.");
-			case 3: Stella_Lines(npc, "{crimson}JUDGEMENT BE UPON THEE{snow}!");
-			case 4: Stella_Lines(npc, "However its still{crimson} worth the effort{snow}.");
-			case 5: Stella_Lines(npc, "So I'll use you all as {crimson}tools for my amusement");
-			case 6: Stella_Lines(npc, "But your tiny stature won't save you from my Fractal Beam Emitter");
-			case 7: Stella_Lines(npc, "So I'll just {crimson}remove{snow} the troublesome component!");
-			case 8: Stella_Lines(npc, "{aqua}SPARK!");
-			case 9: Stella_Lines(npc, "Shall {crimson}Eviscerate you all");
+			case 1: Stella_Lines(npc, "그리고 이 포로 널 갈아주마.");
+			case 2: Stella_Lines(npc, "그리고 {crimson}너희에겐 끔찍한 결말{snow}일테니.");
+			case 3: Stella_Lines(npc, "{crimson}저 놈들에게 심판을{snow}!");
+			case 4: Stella_Lines(npc, "네 앞길이{crimson} 피바다{snow}로 도배될 테니깐 말이다.");
+			case 5: Stella_Lines(npc, "그리고 그런 허세는 대부분 {crimson}이런걸 들이대주면 고쳐지더군.");
+			case 6: Stella_Lines(npc, "그 교만이 널 이 프랙탈 빔으로부터 지켜주진 않을거다.");
+			case 7: Stella_Lines(npc, "그러니 이걸로 그 문제를 {crimson}제거{snow}하면 되겠지!");
+			case 8: Stella_Lines(npc, "{aqua}스파크!");
+			case 9: Stella_Lines(npc, "너희를 전부 {crimson}멸절시킨다.");
 
-			case 10:Stella_Lines(npc, "You all are about to see your own doomed reflections.. heh");
-			case 11:Stella_Lines(npc, "Guess we'll findout once we return");
+			case 10:Stella_Lines(npc, "저들에게 자신의 파멸을 보여주고 싶군. 하!");
+			case 11:Stella_Lines(npc, "돌아가면 알겠지.");
 
 			//case 4: Stella_Lines(npc, "And the city's to far to walk to the end while I...");
 			//case 5: Stella_Lines(npc, "And the Cannons's Capacitor's to small..");
@@ -2113,10 +2113,10 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			int chose = GetRandomInt(1, 4);
 			switch(chose)
 			{
-				case 1: Stella_Lines(npc, "{snow}You... You really think thats all I have....?!");	
-				case 2: Stella_Lines(npc, "{snow}Oh lord.. this actually hurts...");
-				case 3: Stella_Lines(npc, "{snow}Karlas...");
-				case 4: Stella_Lines(npc, "{snow}Its getting kinda cold..");
+				case 1: Stella_Lines(npc, "{snow}넌... 이게 정말로 끝일거라고 생각하나..?!");	
+				case 2: Stella_Lines(npc, "{snow}어떻게 이런 일이...");
+				case 3: Stella_Lines(npc, "{snow}카를라스...");
+				case 4: Stella_Lines(npc, "{snow}점점 추워지는군..");
 			}
 			RaidModeTime +=17.0; //Extra time due to invuln
 			
@@ -2187,16 +2187,16 @@ static void Stella_Weapon_Lines(Stella npc, int client)
 
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "Blitzkrieg, that thing dared to disobey me, but will you {gold}%N{snow} do the same?", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "I'll make you {gold}%N{snow} feel the same pain Blitzkrieg inflicted on us.", client);}
-		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{crimson}Karlas{snow}'s Old blade, interesting choice {gold}%N", client); 														case 1: Format(Text_Lines, sizeof(Text_Lines), "So what if I told you {gold}%N{snow} that you're using the failed version..", client);}	
-		case WEAPON_ION_BEAM_NIGHT: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You're trying to copy me {gold}%N{snow}?", client); 																			case 1: Format(Text_Lines, sizeof(Text_Lines), "I don't approve of this {gold}%N", client);}
-		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Pointy stick go into enemy, right {gold}%N{snow}?", client); 																	case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, You will never become as proficient with the lance as {crimson}Karlas", client);}	
-		case WEAPON_ION_BEAM: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Laser based spell's are one of Ruina's specialties, {gold}%N{snow} You don't even know the first thing about them..",client); 	case 1: Format(Text_Lines, sizeof(Text_Lines), "Oi, {gold}%N{snow} I helped create that spell, you can't just steal it and use it aggainst me", client);}	
-		case WEAPON_ION_BEAM_PULSE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "And you're using {purple}Twirl's{snow} prefered laser, I hope you know what you're getting yourself into {gold}%N", client); 	case 1: Format(Text_Lines, sizeof(Text_Lines), "If {purple}Twirl{snow} catches wing of what you're using {gold}%N{snow}, good luck", client);}	
-		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Gravity is a harness, you {gold} %N{snow} have not harnessed it", client); 													case 1: Format(Text_Lines, sizeof(Text_Lines), "Wonder how you'd react {gold}%N{snow}, if you saw the real one.", client);}
-		case WEAPON_ION_BEAM_FEED: 	Format(Text_Lines, sizeof(Text_Lines), "Here's some interesting information for you {gold}%N{snow} the feedback loop Prisim has been obsolete for AGES", client);
-		case WEAPON_BOBS_GUN:  		Format(Text_Lines, sizeof(Text_Lines), "Oh, bob's gun well might as well go and sleep... I give up {gold}%N", client); 
-		case WEAPON_KIT_FRACTAL:	Format(Text_Lines, sizeof(Text_Lines), "I thought the {aqua}Fractal{snow} was still being developed, how did you {gold}%N{snow} get your hands on it?", client); 
+		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "블리츠크리그, 나를 하수인으로 만든 자. 너도 그 놈과 똑같을까, {gold}%N{snow} ?", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} 네가 그 블리츠크리그의 무기를 계속 쓰겠다면, 나도 정면으로 너에게 침을 뱉을 수 밖에 없다.", client);}
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{crimson}카를라스{snow}의 오래된 검이라니, 흥미로운 선택이군, {gold}%N", client); 														case 1: Format(Text_Lines, sizeof(Text_Lines), "그건 카를라스가 버릴 정도로 구식인 물건인데. {gold}%N{snow}, 좀 더 세련된걸 갖고 오지 그랬나.", client);}	
+		case WEAPON_ION_BEAM_NIGHT: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "날 복제하려하는 건가, {gold}%N{snow}?", client); 																			case 1: Format(Text_Lines, sizeof(Text_Lines), "이런 것도 가져오다니, 참으로 놀라운데.", client);}
+		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "그런 뾰족한 막대기로 적을 찌르려는거냐, {gold}%N{snow}?", client); 																	case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, 넌 카를라스처럼 창을 잘 다루지 못 할 거다.", client);}	
+		case WEAPON_ION_BEAM: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "레이저 기반 마법들은 루이나의 전문 분야다. {gold}%N{snow} 넌 그것도 모르고 있겠지.",client); 	case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, 그것도 네가 훔쳤다고 생각할 수 밖에 없군.", client);}	
+		case WEAPON_ION_BEAM_PULSE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "지금 {purple}트윌{snow}님의 레이저를 사용하는거냐? 네가 지금 무슨 짓을 벌이고 있는지도 모르는군. {gold}%N", client); 	case 1: Format(Text_Lines, sizeof(Text_Lines), "{purple}트윌{snow}님이 이걸 보시면 어떻게 반응하실지 참으로 기대된다, {gold}%N{snow}. 솔직히 재밌겠는데.", client);}	
+		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "중력 마법,  {gold} %N{snow} 네가 그걸 사용할 줄 알다니.", client); 													case 1: Format(Text_Lines, sizeof(Text_Lines), "그 중력 마법의 진짜배기를 {gold}%N{snow} 너에게 보여주고 싶군.", client);}
+		case WEAPON_ION_BEAM_FEED: 	Format(Text_Lines, sizeof(Text_Lines), "프리즘 피드백 루프? {gold}%N{snow}, 그건 몇 년 동안 사용되지 않은 물건이다.", client);
+		case WEAPON_BOBS_GUN:  		Format(Text_Lines, sizeof(Text_Lines), "밥의 총이라니, 그냥 포기해야겠군.", client); 
+		case WEAPON_KIT_FRACTAL:	Format(Text_Lines, sizeof(Text_Lines), "{aqua}프랙탈{snow}은 아직 개발 중이라고 들었는데, {gold}%N{snow} 네 놈이 그걸 어떻게 얻은거지?", client); 
 		default:
 		{
 			valid = false;
@@ -2242,9 +2242,9 @@ static void Internal_NPCDeath(int entity)
 		{
 			switch(GetRandomInt(1,3))
 			{
-				case 1: Stella_Lines(npc, "Huh, I guess our turn's over");
-				case 2: Stella_Lines(npc, "Oh boy, this is gonna be fun to watch");
-				case 3: Stella_Lines(npc, "I wanted to play with them more, allas");
+				case 1: Stella_Lines(npc, "흠, 아무래도 우리의 턴은 끝난것 같군.");
+				case 2: Stella_Lines(npc, "와우, 보기만 해도 정말 재밌었어.");
+				case 3: Stella_Lines(npc, "더 놀고 싶었는데. 아깝네.");
 			}
 		}
 		else
@@ -2258,9 +2258,9 @@ static void Internal_NPCDeath(int entity)
 					NpcSpeechBubble(npc.Ally, ">>:(", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 					switch(GetRandomInt(1,3))
 					{
-						case 1: Stella_Lines(npc, "Hmph, I'll let {crimson}Karlas{snow} handle this");
-						case 2: Stella_Lines(npc, "You still have {crimson}Karlas{snow} to deal with... heh");
-						case 3: Stella_Lines(npc, "I hope you like spining blades");
+						case 1: Stella_Lines(npc, "흠, {crimson}카를라스{snow}에게 맡겨야겠어.");
+						case 2: Stella_Lines(npc, "여전히 {crimson}카를라스{snow}와 싸워야할거다.");
+						case 3: Stella_Lines(npc, "회전하는 칼은 마음에 드나?");
 					}	
 				}
 			}
@@ -2268,8 +2268,8 @@ static void Internal_NPCDeath(int entity)
 			{
 				switch(GetRandomInt(1,2))
 				{
-					case 1: Stella_Lines(npc, "Hmph, I'll let this slide,{crimson} for now.");
-					case 2: Stella_Lines(npc, "Fine, we're leaving.{crimson} Until next time that is{snow} heh");
+					case 1: Stella_Lines(npc, "흠, 일단 철수한다.{crimson} 지금은.");
+					case 2: Stella_Lines(npc, "좋아. 우린 떠난다.{crimson} 다음 기회가 올 때까지는 말이지.{snow} ");
 				}
 			}
 		}

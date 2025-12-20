@@ -1254,7 +1254,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					
 					for(int RandomLoop; RandomLoop < 3; RandomLoop++)
 					{
-						CPrintToChatAll("{%s}%N {%s}HAS GOTTEN THE {%s}BIG WINS!!!!!",g_RandomColoursDo[GetRandomInt(0, sizeof(g_RandomColoursDo) - 1)], client,g_RandomColoursDo[GetRandomInt(0, sizeof(g_RandomColoursDo) - 1)],g_RandomColoursDo[GetRandomInt(0, sizeof(g_RandomColoursDo) - 1)]);		
+						CPrintToChatAll("{%s}%N {%s}님이 {%s}대금성을 뽑았습니다!!!!!",g_RandomColoursDo[GetRandomInt(0, sizeof(g_RandomColoursDo) - 1)], client,g_RandomColoursDo[GetRandomInt(0, sizeof(g_RandomColoursDo) - 1)],g_RandomColoursDo[GetRandomInt(0, sizeof(g_RandomColoursDo) - 1)]);		
 					}	
 					for(int client1=1; client1<=MaxClients; client1++)
 					{
@@ -1272,7 +1272,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 						Store_WeaponUpgradeByOnePap(client, weapon);
 
 					SetDefaultHudPosition(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]\nSadly the casino banned you for cheating.\nMoney returned.");
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]\n당신이 반칙을 썼다는 이유로 카지노가 당신을 내쫒았습니다.\n자금을 다시 돌려받습니다.");
 					ClientCommand(client, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");		
 				}
 			}
@@ -1294,12 +1294,12 @@ static void Casino_Show_Hud(int client)
 	{
 		case INVALID_HANDLE:
 		{
-			PrintHintText(client,"----[%.1i/%.1i/%.1i]----\nDollars: [%.1i$/%.1i$]\nSpecial Bullets: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_slot1[client],i_slot2[client],i_slot3[client], i_Dollars_Ammount[client],100 + (25 * (i_Current_Pap[client] + 1) * (Payday - 1)),i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
+			PrintHintText(client,"----[%.1i/%.1i/%.1i]----\n달러: [%.1i$/%.1i$]\nn특수 탄환: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_slot1[client],i_slot2[client],i_slot3[client], i_Dollars_Ammount[client],100 + (25 * (i_Current_Pap[client] + 1) * (Payday - 1)),i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
 			
 		}
 		default:
 		{
-			PrintHintText(client,"----[FRENZY ACTIVE]----\nDollars: [SPAM / M2]\nSpecial Bullets: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
+			PrintHintText(client,"----[광란 발동]----\n달러: [SPAM / M2]\n특수 탄환: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
 		}
 	}
 }

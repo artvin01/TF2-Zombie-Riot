@@ -384,11 +384,11 @@ methodmap TheMessenger < CClotBody
 			if(i_RaidGrantExtra[npc.index] <= 2)
 			{
 				IgniteTargetEffect(npc.m_iWearable1);
-				CPrintToChatAll("{lightblue}The Messenger{default}: Welcome, welcome sinners! I'm bearing a message to you all!");
+				CPrintToChatAll("{lightblue}메신저{default}: 잘 왔다, 죄인들아! 여기 너희에게 줄 전령이 하나 있다!");
 			}
 			else
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Round two.");
+				CPrintToChatAll("{lightblue}메신저{default}: 2차전은 준비 됐겠지, 죄인들?");
 			}
 		}
 
@@ -438,7 +438,7 @@ public void TheMessenger_ClotThink(int iNPC)
 	if(i_RaidGrantExtra[npc.index] >= 6)
 	{
 		i_RaidGrantExtra[npc.index] = 6;
-		CPrintToChatAll("{lightblue}The Messenger{default}: {crimson}AHAHAHAHHAHAHAHA!!! ALL OF YOU ARE DEAD!!");
+		CPrintToChatAll("{lightblue}메신저{default}: {crimson}으하하하하하!!! 전부 뒈져버려라!!");
 		return;
 	}
 	/*
@@ -456,21 +456,21 @@ public void TheMessenger_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: Shame.");
+					CPrintToChatAll("{lightblue}메신저{default}: 쪽팔리는 줄 알아라.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: Are you for real??");
+					CPrintToChatAll("{lightblue}메신저{default}: 진심인가?");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: No comment.");
+					CPrintToChatAll("{lightblue}메신저{default}: 뭐라 할 말이 없군.");
 				}
 			}
 		}
 		else
 		{
-			CPrintToChatAll("{lightblue}The Messenger{default}: ...........");
+			CPrintToChatAll("{lightblue}메신저{default}: ...........");
 		}
 	}
 	if(LastMann)
@@ -484,15 +484,15 @@ public void TheMessenger_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: Your friends are dead. {crimson}Accept your fate.");
+						CPrintToChatAll("{lightblue}메신저{default}: 네 놈의 친구들은 전부 죽었다. {crimson}네 운명을 받아들여라.");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: It's just you and me now.");
+						CPrintToChatAll("{lightblue}메신저{default}: 너와 나만 남았다.");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: Give up, you cannot win.");
+						CPrintToChatAll("{lightblue}메신저{default}: 포기해라. 넌 이길 수 없다");
 					}
 				}
 			}
@@ -502,15 +502,15 @@ public void TheMessenger_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: YOU ARE DEAD");
+						CPrintToChatAll("{lightblue}메신저{default}: 죽으라고!!!!");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: I'LL FUCK YOU UP");
+						CPrintToChatAll("{lightblue}메신저{default}: 사지를 찢어발겨주마!!!!");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: AHAHAHAHAHAHA");
+						CPrintToChatAll("{lightblue}메신저{default}: 으하하하하하!!!");
 					}
 				}				
 			}
@@ -655,19 +655,19 @@ bool Messanger_Elemental_Attack_Projectiles(TheMessenger npc)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: No more fucking around.");
+						CPrintToChatAll("{lightblue}메신저{default}: 나는 너희들과 이 지랄하면서 놀 시간이 없다.");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: Stop wasting my time shitheads.");
+						CPrintToChatAll("{lightblue}메신저{default}: 그만 죽어라, 이 머저리들아.");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: All sinners will {crimson}DIE.");
+						CPrintToChatAll("{lightblue}메신저{default}: 모든 죄인은 {crimson}죽어야만한다.");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: You just brought infinite pain upon you.");
+						CPrintToChatAll("{lightblue}메신저{default}: 그래봤자 무한한 고통을 느끼게 될 뿐이다.");
 					}
 				}
 				MessengerInitiateGroupAttack(npc);
@@ -861,7 +861,7 @@ public Action TheMessenger_OnTakeDamage(int victim, int &attacker, int &inflicto
 			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MESSENGER_LAUNCHER)
 			{
 				b_khamlWeaponRage[npc.index] = true;
-				CPrintToChatAll("{lightblue}The Messenger{default}: FUCK you, okay? FUCK you.");
+				CPrintToChatAll("{lightblue}메신저{default}: 그건 내 무기잖아. 이런 미친 놈이...");
 			}
 		}
 	}
@@ -911,19 +911,19 @@ public void TheMessenger_NPCDeath(int entity)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: Ugh... little fucks.. This ain't over");
+					CPrintToChatAll("{lightblue}메신저{default}: 으윽... 이런 개밥도 못 한 쓰레기들이...");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: You're just delaying the inevitable..");
+					CPrintToChatAll("{lightblue}메신저{default}: 너흰 그저 피할 수 없는 일을 지연시킬 수 있을 뿐이다..");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: I may or may not heavily underestimated you..");
+					CPrintToChatAll("{lightblue}메신저{default}: 어쩌면 네놈들을 과소평가 했을수도 있겠군..");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: No...");
+					CPrintToChatAll("{lightblue}메신저{default}: 안 돼...");
 				}
 			}
 		}
@@ -933,15 +933,15 @@ public void TheMessenger_NPCDeath(int entity)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: NOT TWICE");
+					CPrintToChatAll("{lightblue}메신저{default}: 두 번 씩이나 졌단 말인가!!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: WHY");
+					CPrintToChatAll("{lightblue}메신저{default}: 어째서냐!!");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: I just want to impress Him for once... Ugh.....");
+					CPrintToChatAll("{lightblue}메신저{default}: 난 그저 그 분에게 한 번이라도 좋은 모습을 보여주고 싶었을 뿐인데... 으윽.....");
 				}
 			}
 		}
@@ -1366,19 +1366,19 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Ahahahahahaha, all of you are {crimson}FUCKED!!");
+				CPrintToChatAll("{lightblue}메신저{default}: 하하하하하, 전부 {crimson}뒈질 준비나 해라!!");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: VOID, GRANT ME STRENGTH!");
+				CPrintToChatAll("{lightblue}메신저{default}: 공허여, 내게 힘을 주소서!");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: You think you won? I'M JUST GETTING STARTED.");
+				CPrintToChatAll("{lightblue}메신저{default}: 지금 이겼다고 생각하나? 아직 시작일 뿐이라고.");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Remember those cats? {crimson} You're getting it worse.");
+				CPrintToChatAll("{lightblue}메신저{default}: 그 고양이들을 기억하나? {crimson} 너희는 그것보다 더 심한 꼴을 당하게 될 거다.");
 			}
 		}
 	}
@@ -1393,15 +1393,15 @@ public void TheMessenger_Win(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Judgement delivered.");
+				CPrintToChatAll("{lightblue}메신저{default}: 정의가 집행되었다.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Your penance is now over.");
+				CPrintToChatAll("{lightblue}메신저{default}: 네 죗값은 이걸로 전부 치뤘다.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Thus your reign of terror is no more.");
+				CPrintToChatAll("{lightblue}메신저{default}: 네 공포 정치는 이걸로 끝이다.");
 			}
 		}
 	}
@@ -1411,15 +1411,15 @@ public void TheMessenger_Win(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: {crimson}TAKE THAT YOU FUCKS");
+				CPrintToChatAll("{lightblue}메신저{default}: {crimson}멍청한 병신새끼들!");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Are you seeing me right now? I did it..");
+				CPrintToChatAll("{lightblue}메신저{default}: 보고 계십니까? 제가 해냈습니다...");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Are you proud? My Lord....");
+				CPrintToChatAll("{lightblue}메신저{default}: 이제 만족하십니까, 주군이시여....");
 			}
 		}
 	}

@@ -340,15 +340,15 @@ public void Soldine_Hud_Logic(int client, int weapon, bool ignoreCD)
 
 	if(i_PaPLevel[client] >= 1)
 	{
-		Format(SoldineHud, sizeof(SoldineHud), "%sExplosive Melee[%1.f％]", SoldineHud, (i_SoldineMeleeCharge[client] / SOLDINE_MAX_MELEE_CHARGE) * 100.0);
+		Format(SoldineHud, sizeof(SoldineHud), "%s폭발 주먹[%1.f％]", SoldineHud, (i_SoldineMeleeCharge[client] / SOLDINE_MAX_MELEE_CHARGE) * 100.0);
 	}
 
 	if(i_PaPLevel[client] >= 2)
 	{
 		if(b_DisableSuperJump[client])
-			Format(SoldineHud, sizeof(SoldineHud), "%s\nRobot Jump[%1.f％] (Disabled)", SoldineHud, (i_SoldineRocketjumpCharge[client] / SOLDINE_MAX_ROCKETJUMP_CHARGE) * 100.0);	
+			Format(SoldineHud, sizeof(SoldineHud), "%s\n로봇 점프[%1.f％] (비활성화)", SoldineHud, (i_SoldineRocketjumpCharge[client] / SOLDINE_MAX_ROCKETJUMP_CHARGE) * 100.0);	
 		else
-			Format(SoldineHud, sizeof(SoldineHud), "%s\nRobot Jump[%1.f％]", SoldineHud, (i_SoldineRocketjumpCharge[client] / SOLDINE_MAX_ROCKETJUMP_CHARGE) * 100.0);
+			Format(SoldineHud, sizeof(SoldineHud), "%s\n로봇 점프[%1.f％]", SoldineHud, (i_SoldineRocketjumpCharge[client] / SOLDINE_MAX_ROCKETJUMP_CHARGE) * 100.0);
 	}
 
 	Soldine_HudDelay[client] = GetGameTime() + 0.5;

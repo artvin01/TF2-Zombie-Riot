@@ -411,19 +411,19 @@ methodmap Nemal < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Were supposed to train our abilities, remember? Well here i am! Lets start off easy!");
+					CPrintToChatAll("{lightblue}네말{default}: 능력 훈련이었던거 기억 나지? 그래서 내가 왔어! 살살 해보자!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: {gold}Silvester{default}? Where are you?... \nLate again... \nThis dude... \nHe'll come later, let's start off relaxed!");
+					CPrintToChatAll("{lightblue}네말{default}: 어... {gold}실베스터{default}? 얘 어딨어? \n설마 또 늦냐... \n환장하겠네... \n그래, 지각생은 냅두고 우리끼리 살살 해보자!");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: {gold}Silvester{default} is late isnt he? Probably off to some random beach with {blue}Sensal{default} as usual.. without me!!!\nWe said vacation is after this! oh well, lets begin!");
+					CPrintToChatAll("{lightblue}네말{default}: {gold}실베스터{default} 얘 안 온거 맞지? 또 {blue}센살{default}이랑 어디 해변가로 놀러가서 퍼질러 자고 있겠지... 또 나만 쏙 빼놓고!!!\n휴가는 이거 한 다음에 가자고 그렇게 말했는데!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Iberians are with us {gold}Expidonsans{default}!... But im kinda both...\nProbably not that important, anyways lets go!");
+					CPrintToChatAll("{lightblue}네말{default}: 이베리아인과 {gold}엑스피돈사인{default}들은 함께지!... 난 혼혈이지만...\n근데 이건 중요한게 아니고, 일단 해보자!");
 				}
 			}
 		}
@@ -434,19 +434,19 @@ methodmap Nemal < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Got a call, {gold}Silvester{default} will be joining soon, he had some buisness apperantly, get ready for... when he comes!");
+					CPrintToChatAll("{lightblue}네말{default}: 방금 연락이 왔는데, {gold}실베스터{default}가 곧 온대, 뭔 일 때문에 바쁘다고 하네, 그러니까 그가 올 때를 대비해!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: What i would do for {darkblue}Waldch{default} to stop being so mangetic to {gold}Silvester{default} with his Wildingen antics, that isnt his home!!!");
+					CPrintToChatAll("{lightblue}네말{default}: 자꾸 {darkblue}왈츠{default}가 {gold}실베스터{default}한테 끌려간다고? 아닌데? 왈츠가 실베스터를 강제로 끌고 오던데?");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: I'll be honest, {blue}Sensal's{default} kinda scary, i mean you fought him, you'd know!");
+					CPrintToChatAll("{lightblue}네말{default}: 솔직히, {blue}센살{default} 좀 무섭지 않아? 너도 그랑 싸워봤으니까 알 거 아냐!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: There sadly aint many Iberians left after what happend to their home country, damn traitorous {blue}seaborn{default}... we took in the surviving iberians and helped them!");
+					CPrintToChatAll("{lightblue}네말{default}: 안타깝게도 많은 이베리아인들이 자신들의 고향을 떠난 상태야. 망할 {blue}시본{default}놈들 때문에... 남은 생존한 이베리아인들은 우리가 데려와서 돕고 있어!");
 				}
 			}
 		}
@@ -457,19 +457,19 @@ methodmap Nemal < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Enough chatter, i'll start to not restrain myself.");
+					CPrintToChatAll("{lightblue}네말{default}: 좋아, 이제 수다는 그만할게.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: {blue}Sensal{default} wasnt lying when he said you guys got some tricks.");
+					CPrintToChatAll("{lightblue}네말{default}: {blue}센살{default}이 너희가 약간의 트릭을 쓴다 했었는데, 거짓말이 아니었네.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Iberian's have some really widening history, eventually it'll be rebuilt with {gold}Expidonsa's{default} help.");
+					CPrintToChatAll("{lightblue}네말{default}: 이베리아는 매우 긴 역사를 가지고 있는 국가야. 결국 {gold}엑스피돈사{default}의 협력으로 재건되겠지.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: {blue}Seaborns{default} and us had some treaty yknow... before they attacked everyone... Thats how we have the idea of what {green}Defenda's{default} are using.");
+					CPrintToChatAll("{lightblue}네말{default}: {blue}시본{default}은 우리와 조약을 맺은 적이 있어... 그 놈들이 우릴 공격하기 전까지는 말야... {green}디펜다{default}가 쓰는거 기억나? 그게 그 놈들 기술력이거든.");
 				}
 			}
 		}
@@ -480,19 +480,44 @@ methodmap Nemal < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Look's like i have to give it all.");
+					CPrintToChatAll("{lightblue}네말{default}: 최선을 다 해야겠네.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: I wont hold back anymore.");
+					CPrintToChatAll("{lightblue}네말{default}: 이제 물러서지 않을게.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Ready yourself.");
+					CPrintToChatAll("{lightblue}네말{default}: 준비해.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: I would worry about you, but i don't think thats neccecary.");
+					CPrintToChatAll("{lightblue}네말{default}: 살짝 걱정했었는데, 그럴 필요는 없어보이네.");
+				}
+			}
+		}
+		TripleLol = false;
+		if(StrContains(data, "triple_enemies") != -1)
+		{
+			TripleLol = true;
+			i_RaidGrantExtra[npc.index] = 4;
+			switch(GetRandomInt(0,3))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}네말{default}: {blue}센살{default}과 함께 하기로 했어.");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}네말{default}: 아, {blue}센살{default}. 여기야.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}네말{default}: 이건 좀 너무 심한거 아닌가?");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{lightblue}네말{default}: 미안한데 어... 그게 끝이네.");
 				}
 			}
 		}
@@ -506,19 +531,19 @@ methodmap Nemal < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Look's like i have to give it all.");
+					CPrintToChatAll("{lightblue}네말{default}: 최선을 다 해야겠네.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: I wont hold back anymore.");
+					CPrintToChatAll("{lightblue}네말{default}: 이제 물러서지 않을게.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Ready yourself.");
+					CPrintToChatAll("{lightblue}네말{default}: 준비해.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: I would worry about you, but i don't think thats neccecary.");
+					CPrintToChatAll("{lightblue}네말{default}: 살짝 걱정했었는데, 그럴 필요는 없어보이네.");
 				}
 			}
 		}
@@ -578,7 +603,6 @@ methodmap Nemal < CClotBody
 		{
 			amount_of_people = 12.0;
 		}
-
 		
 		amount_of_people *= 0.12;
 		
@@ -586,31 +610,6 @@ methodmap Nemal < CClotBody
 			amount_of_people = 1.0;
 			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-		TripleLol = false;
-		if(!StrContains(data, "triple_enemies"))
-		{
-			TripleLol = true;
-			i_RaidGrantExtra[npc.index] = 4;
-			switch(GetRandomInt(0,3))
-			{
-				case 0:
-				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Sorry {blue}Sensal's{default} he's comming a bit late.");
-				}
-				case 1:
-				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Hey {blue}Sensal's{default}, im here.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Isnt this overkill?");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Sorry but thats all.");
-				}
-			}
-		}
 		if(!TripleLol)
 		{
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Nemal_Win);
@@ -675,15 +674,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: You dont beat me, then youll never be able to face the full force of the {purple}void{default}.");
+					CPrintToChatAll("{lightblue}네말{default}: 날 못 이기는 거면, 넌 아직 {purple}공허{default}에 대한 준비가 덜 됐다는 뜻이야.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Not beating me means no beating the {purple}void{default}.");
+					CPrintToChatAll("{lightblue}네말{default}: 날 이기지 못 하면 {purple}공허{default}에는 들어갈 수 없어.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Use that adrenaline against me, come on!");
+					CPrintToChatAll("{lightblue}네말{default}: 왜 이래! 아마추어 같이! 힘 좀 써봐!");
 				}
 			}
 		}
@@ -699,15 +698,15 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: Well... Theres next time.");
+				CPrintToChatAll("{lightblue}네말{default}: 뭐... 다음 기회가 있잖아.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: Too tired today? I get it.");
+				CPrintToChatAll("{lightblue}네말{default}: 오늘 컨디션이 안 좋은거지? 알았어.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: I'm sorry but this is needed, this is training not a daycare.");
+				CPrintToChatAll("{lightblue}네말{default}: 미안하지만 이건 필요한 일이야. 보육원이 아니라 훈련이니까.");
 			}
 		}
 		return;
@@ -737,15 +736,15 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: You won't defeat {purple}it{default} with that speed.");
+				CPrintToChatAll("{lightblue}네말{default}: 그런 속도로는 {purple}그것을{default} 상대로 따라잡을 수 없어.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: ... Don't dissapoint {darkblue}Kahmlstein{default} like this...");
+				CPrintToChatAll("{lightblue}네말{default}: ... {darkblue}캄르스타인{default}을 이런 식으로 실망시키지는 마...");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: As much of an ass{darkblue}Kahmlstein{default} was... he did have something in him.");
+				CPrintToChatAll("{lightblue}네말{default}: {darkblue}캄르스타인{default}은 대단한 인간이었지... 그런 그에게도 뭔가 특별한 게 있었고.");
 			}
 		}
 		BlockLoseSay = true;
@@ -910,7 +909,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 				RemoveEntity(npc.m_iWearable8);
 			}
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/9);
-			CPrintToChatAll("{lightblue}Nemal{default}: Hey man, you're really hurting me here...");
+			CPrintToChatAll("{lightblue}네말{default}: 오우야, 좀 세게 때리는데...");
 			npc.i_GunMode = 0;
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
@@ -935,7 +934,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			MakeObjectIntangeable(npc.index);
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 			
-			CPrintToChatAll("{lightblue}Nemal{default}: Ouch ouch! Time out, time out!");
+			CPrintToChatAll("{lightblue}네말{default}: 어우! 잠깐 타임!");
 			npc.m_iTarget = 0;
 
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
@@ -999,19 +998,19 @@ static void Internal_NPCDeath(int entity)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{lightblue}Nemal{default}: Okay... ouch.. ow...");
+			CPrintToChatAll("{lightblue}네말{default}: 좋아, 아이고...");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{lightblue}Nemal{default}: Okay Okay you won! For now.");
+			CPrintToChatAll("{lightblue}네말{default}: 알았어, 네 승리야! ...지금까지는.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{lightblue}Nemal{default}: See you next time.... this hurts..");
+			CPrintToChatAll("{lightblue}네말{default}: 다음에 보자.... 좀 아프네..");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{lightblue}Nemal{default}: I was going to insult you, but i asked for this...");
+			CPrintToChatAll("{lightblue}네말{default}: 이거 좀 흥미로운데...");
 		}
 	}
 
@@ -1766,7 +1765,7 @@ bool NemalTalkPostWin(Nemal npc)
 	}
 	if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
 	{
-		CPrintToChatAll("{lightblue}Nemal{default}: Till later Mercs!");
+		CPrintToChatAll("{lightblue}네말{default}: 다음에 보자, 용병들아!");
 		
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		CClotBody allynpc = view_as<CClotBody>(npc.m_iTargetAlly);
@@ -1779,29 +1778,29 @@ bool NemalTalkPostWin(Nemal npc)
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Iberian and Expidonsan Training");
-				CPrintToChat(client,"{default}You feel more skilled and obtain: {gold}''Iberian and Expidonsan Training''{default}!");
+				CPrintToChat(client,"{default}이 훈련에서 더욱 많은 경험을 얻은것 같습니다. 당신이 얻은 것은...: {gold}''엑스피돈사-이베리아 연합 훈련''{default}!");
 			}
 		}
 	}
 	else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 	{
 		i_SaidLineAlready[npc.index] = 4;
-		CPrintToChatAll("{lightblue}Nemal{default}: We'll Keep {purple}void gates{default} under controll, tell us when youre ready to kill off the {purple}void{default}  once and for all, as a team!");
+		CPrintToChatAll("{lightblue}네말{default}: 우리가 계속 {purple}공허 관문{default}을 통제하고 있을게. 너희 팀이 전부 {purple}공허{default} 원정에 나갈 준비가 되었다면 알려줘!");
 	}
 	else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
 	{
 		i_SaidLineAlready[npc.index] = 3;
-		CPrintToChatAll("{lightblue}Nemal{default}: shhh! dont ruin the fun! Eitherways, good job!");
+		CPrintToChatAll("{lightblue}네말{default}: 쉿! 그럼 재미 없잖아! 어쨌든, 잘 했어!");
 	}
 	else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
 	{
 		i_SaidLineAlready[npc.index] = 2;
-		CPrintToChatAll("{gold}Silvester{default}: Why do you keep pretending you dont know them? Some of them come from a {crimson}Previous{default} era.");
+		CPrintToChatAll("{gold}실베스터{default}: 근데 왜 계속 모르는 척을 하는거야? 저기서 몇몇 인원은 {crimson}과거{default} 시간대에서 온 사람들이잖아.");
 	}
 	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 	{
 		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{lightblue}Nemal{default}: Well thats it! You passed the test and ontop of that, helped eachother, teamwork!.. probably.");
+		CPrintToChatAll("{lightblue}네말{default}: 음, 이게 전부야! 시험도 통과했고, 게다가 서로 도왔고, 팀워크도 좋았어!... 아마도.");
 		ReviveAll(true);
 	}
 	return true; //He is trying to help.
@@ -1866,7 +1865,7 @@ bool NemalTransformation(Nemal npc)
 			npc.m_flDoingAnimation = 0.0;
 
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 9));
-			CPrintToChatAll("{lightblue}Nemal{default}: Here's my finest creation at work!");
+			CPrintToChatAll("{lightblue}네말{default}: 이게 바로 훈련의 결과물이지!");
 				
 			SetVariantColor(view_as<int>({255, 255, 255, 200}));
 			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
@@ -2058,19 +2057,19 @@ bool NemalSummonSilvester(Nemal npc)
 					{
 						case 0:
 						{
-							CPrintToChatAll("{lightblue}Nemal{default}: Ah no worries! I'll totally forgive you!");
+							CPrintToChatAll("{lightblue}네말{default}: 아, 걱정 마. 다 용서했어!");
 						}
 						case 1:
 						{
-							CPrintToChatAll("{lightblue}Nemal{default}: You're such a nut you know that right?");
+							CPrintToChatAll("{lightblue}네말{default}: 너 가끔 가다 좀 과하게 바보 같을 때가 있는거 알고 있지?");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{lightblue}Nemal{default}: Sorry mercs this guy is signed with ''i dont wanna''");
+							CPrintToChatAll("{lightblue}네말{default}: 미안, 용병들. 얘 지금 ''나 안 할래''라고 떼 쓰고 있어.");
 						}
 						case 3:
 						{
-							CPrintToChatAll("{lightblue}Nemal{default}: Just dont attack the same guy as me, thats unfair!");
+							CPrintToChatAll("{lightblue}네말{default}: 쟤는 볼 때마다 가끔씩 희한하게 느껴진단 말이지...");
 						}
 					}
 					npc.m_iChanged_WalkCycle = 3;
@@ -2115,19 +2114,19 @@ bool NemalSummonSilvester(Nemal npc)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: Oh? Looks like {gold}Silvester{default} Is finally comming!");
+				CPrintToChatAll("{lightblue}네말{default}: 음? 드디어 {gold}실베스터{default}가 왔네!");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: The lazy ass {gold}cat{default} is comming right up!");
+				CPrintToChatAll("{lightblue}네말{default}: 저 게을러터진 {gold}느림보{default}가 이제야 왔네!");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: Hey look, traning partner!");
+				CPrintToChatAll("{lightblue}네말{default}: 어, 저것 봐! 파트너가 왔어!");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: New phone who this? Oh, you finally came!");
+				CPrintToChatAll("{lightblue}네말{default}: 새 알림? 뭐야 이건? 아... 쟤구나.");
 			}
 		}
 		if(i_RaidGrantExtra[npc.index] >= 3 && !TripleLol)
@@ -2226,9 +2225,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Cool Scythe! Can it be yellow though {gold}%N{default}?",client);
+					Format(Text_Lines, sizeof(Text_Lines), "멋진 낫인데! 거기서 더 노랗게 물들면 센살의 것이 되겠어. 안 그래, {gold}%N{default}?",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "I'll let you in on a secret, {blue}Sensal's{default} weapon isnt even from him... its from {gold}Silvester{default}! .... i think, i may be wrong.");
+					Format(Text_Lines, sizeof(Text_Lines), "하나 알려줄게 있는데, {blue}센살{default}의 그 무기는 사실... {gold}실베스터{default}의 물건이래! ... 아님 말고. 나도 어디서 들은거야.");
 			}
 		}
 		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2:
@@ -2236,9 +2235,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default} cant stop himself from showing his weapons cant he?",client);
+					Format(Text_Lines, sizeof(Text_Lines), "{gold}실베스터{default} 저 웬수는 또 무기를 막 버리고 다니네?",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "{blue}Sensal{default} Wasnt kidding when he said {gold}Silvester{default} loves showing off.");
+					Format(Text_Lines, sizeof(Text_Lines), "{blue}센살{default}이 {gold}실베스터{default}가 무기를 막 버리고 다닌다는 말이 있던데 농담이 아닌가보네.");
 			}
 		}
 		case WEAPON_SICCERINO,WEAPON_WALDCH_SWORD_NOVISUAL:
@@ -2246,9 +2245,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Nice pair of Siccors {gold}%N{default}!",client);
+					Format(Text_Lines, sizeof(Text_Lines), "가위 한 쌍이 참 멋진데, {gold}%N{default}!",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Ever tried Snipping slower?",client);
+					Format(Text_Lines, sizeof(Text_Lines), "저격 한 번 해보려고?",client);
 			}
 		} 
 		case WEAPON_WALDCH_SWORD_REAL:
@@ -2256,9 +2255,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Aha! {darkblue}Waldch{default} DID accept my blade!.");
+					Format(Text_Lines, sizeof(Text_Lines), "아하! {darkblue}왈츠{default}가 내 검을 버리진 않았구나!");
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "{darkblue}Waldch{default} You said you HATED IT!!!!!!!!!!!!");
+					Format(Text_Lines, sizeof(Text_Lines), "{darkblue}왈츠{default}... 저 무기 싫어한다더니 엄청 아꼈었구나.");
 			}
 		}  
 		case WEAPON_NEARL:
@@ -2266,9 +2265,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default} went there too?!.");
+					Format(Text_Lines, sizeof(Text_Lines), "{gold}실베스터{default}가 거길 갔었어?");
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default}... invite me next time to Kazimierz...");
+					Format(Text_Lines, sizeof(Text_Lines), "{gold}실베스터{default}... 다음 번엔 나도 카시미어에 데려가주라...");
 			}
 		} 
 		case WEAPON_KAHMLFIST:
@@ -2276,9 +2275,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "{darkblue}Kahmlstein{default} was a rude asshole, But atleast he reedemed himself.");
+					Format(Text_Lines, sizeof(Text_Lines), "{darkblue}캄르스타인{default}은 무례한 놈이었지. 적어도 그는 자신의 잘못을 만회했지만.");
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Trying to keep his memory going {gold}%N{default}? I guess {darkblue}Kahmlstein{default} deserves it after what he did at the end.",client);
+					Format(Text_Lines, sizeof(Text_Lines), "그를 기억하려는 거야, {gold}%N{default}? 그래 뭐... {darkblue}캄르스타인{default}이 마지막에 한 일을 생각하면 그럴 만한 자격이 있지.",client);
 			}
 		}  
 		case WEAPON_KIT_BLITZKRIEG_CORE:
@@ -2286,9 +2285,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Always hated the concept of the machine {crimson}Blitkzrieg{default}...");
+					Format(Text_Lines, sizeof(Text_Lines), "그 정신나간 컨셉을 가진 {crimson}블리츠크리그{default}는 항상 싫더라...");
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Why are you trying to be like it {gold}%N{default}? I guess {crimson}Blitkzrieg{default} was cool...",client);
+					Format(Text_Lines, sizeof(Text_Lines), "그 정신나간 기계를 따라하려고? {gold}%N{default}? {crimson}블리츠크리그{default}는 좋은 놈이 아닌데...",client);
 			}
 		}
 		case WEAPON_RED_BLADE:
@@ -2296,9 +2295,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "I miss {crimson}Guln{default}.");
+					Format(Text_Lines, sizeof(Text_Lines), "그걸 보니까 {crimson}귄{default}이 그리워.");
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "The world was too cruel to {crimson}Guln{default}...");
+					Format(Text_Lines, sizeof(Text_Lines), "그 검을 보니까 {crimson}귄{default}은 너무 허망하게 갔단 생각이 들어...");
 			}
 		}
 		case WEAPON_SPIKELAYER:
@@ -2306,9 +2305,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "OW! WHY LEGOS??");
+					Format(Text_Lines, sizeof(Text_Lines), "뭐야 이거, 레고야?");
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Just cause i can WALK doesnt mean i gotta step on LEGO.");
+					Format(Text_Lines, sizeof(Text_Lines), "그래도 이게 레고보다는 덜 아프잖아.");
 			}
 		}
 		case WEAPON_BOARD:
@@ -2316,9 +2315,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Big shield {gold}%N{default}, compensating?",client);
+					Format(Text_Lines, sizeof(Text_Lines), "아픈건 싫어서 방어력에 올인했다... 맞지, {gold}%N{default}?",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Parry me right... and youll be set for {purple}it{default}.");
+					Format(Text_Lines, sizeof(Text_Lines), "제대로 패링할 줄 안다면 {purple}그것{default} 상대로도 버틸 수 있을거야.");
 			}
 		}
 		case WEAPON_IRENE:
@@ -2326,31 +2325,31 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Hey hey thats my good {snow}friends{default} weapon {gold}%N{default}! She's a very nice Iberian.",client);
+					Format(Text_Lines, sizeof(Text_Lines), "어, 그건 {snow}아이린{default}의 물건이잖아? 걔가 많이 .",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Oh {snow}Irene{default}, looks like you have a student, their name is {gold}%N{default}!",client);
+					Format(Text_Lines, sizeof(Text_Lines), "오, {snow}아이린{default}, 아무래도 전학생 한 명 받아야할 것 같은데? 이름이 {gold}%N{default}라고 하네!",client);
 			}
 		}
-		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "Were here to train.... why......");
+		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "우린 분명 훈련 하러 온건데......");
 		case WEAPON_ANGELIC_SHOTGUN:
 		{
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Hey thats my weapon {gold}%N{default}!",client);
+					Format(Text_Lines, sizeof(Text_Lines), "응? 그건 내 무기잖아, {gold}%N{default}!",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "An one on one battle{gold}%N{default}?",client);
+					Format(Text_Lines, sizeof(Text_Lines), "1:1 결투 좀 해볼까, {gold}%N{default}?",client);
 			}
 		}
-		case WEAPON_HHH_AXE:  Format(Text_Lines, sizeof(Text_Lines), "You're just a little guy {gold}%N{default}! wait ow OW that hurts!!!",client);
+		case WEAPON_HHH_AXE:  Format(Text_Lines, sizeof(Text_Lines), "그거 날이 너무 날카로운거 아냐? {gold}%N{default}?",client);
 		case WEAPON_MLYNAR_PAP_2,WEAPON_MLYNAR_PAP,WEAPON_MLYNAR:
 		{
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Care {gold}%N{default}, dammit!",client);
+					Format(Text_Lines, sizeof(Text_Lines), "아니... 신문 보지마! 집중해! {gold}%N{default}, 좀!",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "You arent even fighting me are you {gold}%N{default}?! Get off your paper!",client);
+					Format(Text_Lines, sizeof(Text_Lines), "뭐야, 흥미라도 떨어진거야!? {gold}%N{default}! 빨리 그 신문 버려!",client);
 			}
 		}
 		case WEAPON_TRASH_CANNON:
@@ -2358,9 +2357,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Your Trash doesnt scare me {gold}%N{default}.",client);
+					Format(Text_Lines, sizeof(Text_Lines), "이상한 무기를 들고 있네, {gold}%N{default}.",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Why is there a bomb in your trash {gold}%N{default}?",client);
+					Format(Text_Lines, sizeof(Text_Lines), "왜 쓰레기통 안에 폭탄이 들어있는거래?",client);
 			}
 		}
 		case WEAPON_STAR_SHOOTER:
@@ -2368,9 +2367,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Hey youre using my Star Shooter {gold}%N{default}!",client);
+					Format(Text_Lines, sizeof(Text_Lines), "그건 내 유성 발사기잖아, {gold}%N{default}!",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Oh how i wanna use that weapon again... can i borrow your Star Shooter {gold}%N{default}?",client);
+					Format(Text_Lines, sizeof(Text_Lines), "그 유성 발사기를 보니까 나도 갑자기 쓰고 싶어지는데...?",client);
 			}
 		}
 		case WEAPON_MESSENGER_LAUNCHER:
@@ -2378,9 +2377,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Messenger's Mind was long gone, i pity him, really...");
+					Format(Text_Lines, sizeof(Text_Lines), "메신저의 정신은 이미 오래 전에 망가진지 오래였지... 그가 안타깝네.");
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "If you see Messenger around, tell him i said hi {gold}%N{default}, okay?",client);
+					Format(Text_Lines, sizeof(Text_Lines), "메신저가 메세지를 보낸다... 이름 참 희한해.",client);
 			}
 		}
 		case WEAPON_FLAMETAIL:
@@ -2388,9 +2387,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Dont Dodge me!");
+					Format(Text_Lines, sizeof(Text_Lines), "피하지 말아봐!");
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Cant dodge forever, {crimson}%N{default}.",client);
+					Format(Text_Lines, sizeof(Text_Lines), "계속 피할 순 없을걸, {crimson}%N{default}.",client);
 			}
 		}
 		case WEAPON_LEPER_MELEE, WEAPON_LEPER_MELEE_PAP:
@@ -2398,9 +2397,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "That sword is cool {gold}%N{default}! lets fight like... uh... people.",client);
+					Format(Text_Lines, sizeof(Text_Lines), "그 검 정말 멋진데, {gold}%N{default}! 그러니까... 어... 묘사를 못 하겠다.",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "That amazing pose wont scare me off {gold}%N{default}!",client);
+					Format(Text_Lines, sizeof(Text_Lines), "그 포즈 잡는거 멋지다, {gold}%N{default}!",client);
 			}
 		}
 		case WEAPON_NECRO_WANDS, WEAPON_SKULL_SERVANT:
@@ -2408,9 +2407,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Dont mess with the dead {gold}%N{default}, dont want {green}him{default} bugging us....",client);
+					Format(Text_Lines, sizeof(Text_Lines), "충고하는데, 그 해골들로 계속 장난치지 마, {gold}%N{default}. 그 {green}해골바가지{default}가 우릴 지켜볼테니까...",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "if {green}he{default} comes back im blaming {gold}%N{default}.",client);
+					Format(Text_Lines, sizeof(Text_Lines), "만약 저걸로 {green}그 해골{default}이 나타난다면, {gold}%N{default} 전부 네 탓이야.",client);
 			}
 		}
 		case WEAPON_SEABORN_MISC:
@@ -2418,9 +2417,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Sea creature! Shoo shoo!");
+					Format(Text_Lines, sizeof(Text_Lines), "바다 괴물!");
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Why are you a Sea Creature {gold}%N{default}? Shoo shoo!",client);
+					Format(Text_Lines, sizeof(Text_Lines), "왜 바다 괴물이 되어있는거야? {gold}%N{default}?",client);
 			}
 		}
 

@@ -501,7 +501,7 @@ public void ToddHoward_ClotThink(int iNPC)
 						npc.AddActivityViaSequence("Lucian_Death_Real");
 						npc.SetPlaybackRate(0.75);	
 						npc.PlayDeathSound();
-						CPrintToChatAll("{lightblue}Todd Howard stands down... he is free...");
+						CPrintToChatAll("{lightblue}토드 하워드가 무릎을 꿇습니다... 그는 이제...");
 					}
 					case 3:
 					{
@@ -519,7 +519,7 @@ public void ToddHoward_ClotThink(int iNPC)
 					{
 						f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
 						fl_Extra_Damage[npc.index] *= 0.75;
-						CPrintToChatAll("{crimson}The infection wont let go. It wants him the most.");
+						CPrintToChatAll("{crimson}세상에. 감염원은 그를 놓아주지 않았습니다. 오히려 그가 더 날뛰길 원하고 있습니다.");
 						b_NpcUnableToDie[npc.index] = false;
 						RaidModeTime = GetGameTime(npc.index) + 150.0;
 						RaidBossActive = EntIndexToEntRef(npc.index);
@@ -630,15 +630,15 @@ public void ToddHoward_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{lightblue}Todd Howard{crimson}: STOP BEING SO WEAK, HELP ME!!!!!");
+						CPrintToChatAll("{lightblue}토드 하워드{crimson}: 우리는 위매니의 뜻을 받든다!!!");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{lightblue}Todd Howard{crimson}: IM UNDER CONTROLL, HELP ME.....");
+						CPrintToChatAll("{lightblue}토드 하워드{crimson}: 제발 도와다오, 버틸 수가 없다...");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{lightblue}Todd Howard{crimson}: THIS THING IS TOO MUCH, HELP!!!!!!!!!");
+						CPrintToChatAll("{lightblue}토드 하워드{crimson}: 머리가 깨질 것만 같다!!!! 제발 나를 도와줘!!");
 					}
 				}
 			}
@@ -648,15 +648,15 @@ public void ToddHoward_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{lightblue}Todd Howard{default}: You have no chance alone!");
+						CPrintToChatAll("{lightblue}토드 하워드{default}: 너 혼자서는 아무것도 하지 못 한다!");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{lightblue}Todd Howard{default}: Your wallet frails in comparison to Bethesda!!");
+						CPrintToChatAll("{lightblue}토드 하워드{default}: 너의 지갑은 베데스다의 상술 앞에 썩어가리라!!");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{lightblue}Todd Howard{default}: Consider buying Skyrim?!");
+						CPrintToChatAll("{lightblue}토드 하워드{default}: 스카이림을 아직도 구매 안 했나?!");
 					}
 				}
 			}
@@ -680,7 +680,7 @@ public void ToddHoward_ClotThink(int iNPC)
 					SetEntityCollisionGroup(baseboss_index, 24);
 				}
 			}
-			CPrintToChatAll("{lightblue}Todd Howard{default}: No.. No No!! The commentary channels are coming, prepare to fight together NOW!!!");
+			CPrintToChatAll("{lightblue}토드 하워드{default}: 안 돼... 망할 기자 놈들이 온다, 전투 준비!!!");
 			RaidBossActive = INVALID_ENT_REFERENCE;
 			for(int i; i<32; i++)
 			{
@@ -723,7 +723,7 @@ public void ToddHoward_ClotThink(int iNPC)
 		else
 		{
 
-			CPrintToChatAll("{green}The Xeno infection sides with you...??!/nSuddenly a battle ensues between Xeno and the Sea infection with alaxios in possession..");
+			CPrintToChatAll("{green}제노 감염체들이... 당신의 편을 들기 시작했습니다...??!/nn갑자기 제노 감염체와 감염된 토드 하워드가 이끄는 시테러 감염체들이 싸우기 시작합니다..");
 			for(int i; i<32; i++)
 			{
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -1130,7 +1130,7 @@ public Action ToddHoward_OnTakeDamage(int victim, int &attacker, int &inflictor,
 			damage = 0.0;
 			RaidModeTime += 120.0;
 			f_TalkDelayCheck = GetGameTime() + 4.0;
-			CPrintToChatAll("{lightblue}Todd Howard{crimson}: EEEEEEEEEEEEEEENOOOOOOOOUGH!!!");
+			CPrintToChatAll("{lightblue}토드 하워드{crimson}: 그만!!!!!!!");
 			return Plugin_Handled;
 		}
 	}
@@ -1400,26 +1400,26 @@ public void ToddHoward_NPCDeath(int entity)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Todd Howard{default}: I have failed Bethesda...");
+					CPrintToChatAll("{lightblue}토드 하워드{default}: 미안하다, 베데스다인들...");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Todd Howard{default}: How was my code defeated..?");
+					CPrintToChatAll("{lightblue}토드 하워드{default}: 나의 코딩 실력이 퇴화했단 말인가..?");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Todd Howard{default}: You dont know what you are doing!");
+					CPrintToChatAll("{lightblue}토드 하워드{default}: 네 놈이 지금 뭘 하고 있는지 알고는 있나!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}Todd Howard{default}: We should be fighting together, not against each other, {orange}Rockstar{default} will be your doom...");
+					CPrintToChatAll("{lightblue}토드 하워드{default}: 우린 서로 협력해야만 했다. 이렇게 싸우는게 아니라. {orange}락스타가{default} 네 파멸을 가져오리라...");
 				}
 			}
 		}
 		else
 		{
-			CPrintToChatAll("{lightblue}Todd Howard{default}: Im.. im free..?");
-			CPrintToChatAll("{lightblue}Todd Howard{default}: He IMMEDIETLY leaves the battlefield... you couldnt even trace him.");
+			CPrintToChatAll("{lightblue}토드 하워드{default}: 오... 지금 내가..?");
+			CPrintToChatAll("{lightblue}토드 하워드{default}: 토드 하워드가 미친듯이 전장을 뛰쳐나갑니다... 그를 추적조차 하지 못 했습니다.");
 		}
 	}
 	else
@@ -2137,19 +2137,19 @@ void ToddHowardSayWords(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard calls upon the infected.");
+				CPrintToChatAll("{lightblue}토드 하워드가 감염체들을 불러냅니다.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard attracts nearby creatures.");
+				CPrintToChatAll("{lightblue}토드 하워드가 주변의 생명체들을 이끌어오고 있습니다...");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard is reviving dead sea creatures.");
+				CPrintToChatAll("{lightblue}토드 하워드가 죽은 바다의 생명체들을 되살려냅니다...");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard is never alone, infected or not...");
+				CPrintToChatAll("{lightblue}토드 하워드는 혼자가 아닙니다... 감염체든 무엇이든간에.");
 			}
 		}
 	}
@@ -2159,19 +2159,19 @@ void ToddHowardSayWords(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: You don't know the dangers you're getting yourself into fighting me and my army at the same time!");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 넌 모르겠지, 나와 내 군대가 힘을 합치면 얼마나 위험한지를!");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: My army will always help me back up!");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 나의 군대가 나를 도우리라!");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: Me and my army, as one, will never be defeated!");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 나와 내 군대는 하나가 되어 결코 패배하지 않을 것이다!");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: Together for Bethesda! As one and for all!");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 베데스다를 위해 뭉치고! 하나가 되어 모두를 위한다!");
 			}
 		}
 	}
@@ -2188,19 +2188,19 @@ void ToddHowardSayWordsAngry(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard Screams for help...");
+				CPrintToChatAll("{lightblue}토드 하워드가 도움을 요청하는 비명을 지릅니다...");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard's head is under full controll, free him.");
+				CPrintToChatAll("{lightblue}토드 하워드는 지금 완전히 정신 지배 당하고 있습니다. 그를 구하십시오.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard, even if strong, cant resist everything.");
+				CPrintToChatAll("{lightblue}토드 하워드, 그조차 되는 강인한 자도 감염을 저항하지 못 하고 있습니다.");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}Free him, help him.");
+				CPrintToChatAll("{lightblue}그를 도와주십시오.");
 			}
 		}
 	}
@@ -2210,19 +2210,19 @@ void ToddHowardSayWordsAngry(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: {crimson}RAVIOLI!!!! FOR THE PEOPLE!!!!!!!!!!");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: {crimson}RAVIOLI!!!! 우리의 회사를 위하여!!!!");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: {crimson}RAVIOLI!!!! FOR ALL THAT IS FORSAKEN!!!!!!! LIKE THAT ONE ROBLOX GAME!!!!!");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: {crimson}RAVIOLI!!!! 잼민이들은 물러가라!!!!");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: {crimson}RAVIOLI!!!! FOR THE FUTURE!!!!!!!");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: {crimson}RAVIOLI!!!! 회사의 미래를 위하여!!!!");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: {crimson}RAVIOLI!!!! FOR BETHESDA!!!!!!!!!");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: {crimson}RAVIOLI!!!! 베데스다를 위하여!!!!");
 			}
 		}
 	}
@@ -2244,59 +2244,59 @@ bool ToddHowardForceTalk()
 			case 0:
 			{
 				ReviveAll(true);
-				CPrintToChatAll("{lightblue}Todd Howard{default}: I will NOT tolerate this dispute any longer!");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 이 부질 없는 싸움을 더는 용납할 수 없다!");
 				i_TalkDelayCheck += 1;
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: You have to understand, WE have a {blue}common enemy{default}, and that is {blue}Seaborn{default}.");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 반드시 이해해둬라. 적은 {blue}우리가 아니다.{default} 진짜 적은 {blue}바다의 그 놈들, 기레기{default}지.");
 				i_TalkDelayCheck += 1;
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: More wars with each other means more opportunity for them to rise.");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 우리가 이렇게 서로 싸우기만 할수록, 그 놈들이 점점 더 성장해나갈거다.");
 				i_TalkDelayCheck += 1;
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: And whilst I am immortal and my army unkillable, we are not incorruptible.");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 비록 나와 내 군대는 불멸의 존재이더라도, 그들에게 감염 당하는 것을 버틸 수는 없다.");
 				i_TalkDelayCheck += 1;
 			}
 			case 4:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: However, I saw your prowess and your abilities.");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 하지만, 네 능력과 위력을 지금 여기서 느꼈다.");
 				i_TalkDelayCheck += 1;
 			}
 			case 5:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: You can wield {blue}Seaborn's{default} weapons without succumbing to their corruption, from what i can see atleast...");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 너라면 {blue}기레기들의{default} 능력조차도 아무 이상 없이 다룰 수 있을 것이다. 감염조차 되지 않을테니...");
 				i_TalkDelayCheck += 1;
 			}
 			case 6:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: As such, we need your aid. YOU are our greatest opportunity to cleanse this world of watery horrors.");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 그래서 너희의 도움이 필요하다. 너희들이야말로 이 세계를 심해 속 공포로부터 정화할 수 있는 가장 큰 대항책이다.");
 				i_TalkDelayCheck += 1;
 			}
 			case 7:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: Of course, we will support you as much as we can. As one, we will thrive once again.");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 물론, 우리는 최선을 다해 너를 지원할 것이다. 하나가 되어 다시 한 번 번영하게 되리라.");
 				i_TalkDelayCheck += 1;
 			}
 			case 8:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: When you invade them, we will make sure that their main forces are distracted by us.");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 너희가 그 놈들 사이로 침투하면, 우리가 그 놈들의 주력 병력의 시선을 우리 쪽으로 끌어오겠다.");
 				i_TalkDelayCheck += 1;
 			}
 			case 9:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: ALL HEIL THE MERCENARIES!! {crimson} FOR BETHESDAAAAAAA!!!!!!!!!!!!!!.");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 이 용병들에게 축복을!!! {crimson} 베데스다를 위해!!!!.");
 				i_TalkDelayCheck = 11;
 				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						Items_GiveNamedItem(client, "Alaxios's Godly assistance");
-						CPrintToChat(client, "{default}You feel something around you... and gained: {lightblue}''Alaxios's Godly assistance''{default}!");
+						CPrintToChat(client, "{default}무언가 알 수 없는 찬란한 기운이 감돕니다... 당신이 얻은 것: {lightblue}''알락시오스의 신성한 축복''{default}!");
 					}
 				}
 			}
@@ -2313,9 +2313,9 @@ public void Raidmode_ToddHoward_Win(int entity)
 	
 	if(i_RaidGrantExtra[npc.index] == TODDHOWARD_SEA_INFECTED)
 	{
-		CPrintToChatAll("{lightblue}... You failed as expected, hopefully the xeno can put an end to the sea-Terror clan.");
-		CPrintToChatAll("{crimson}The enemy of my enemy is my ally as they say.");
-		CPrintToChatAll("{green}You thus offer yourself to the xeno infection to fight it......");
+		CPrintToChatAll("{lightblue}... 예상했던대로, 당신은 실패했습니다. 제노 감염원이 시테러 집단을 종식시킬 수 있길 바랍니다.");
+		CPrintToChatAll("{crimson}적의 적은 나의 동맹이라는 말이 있지요.");
+		CPrintToChatAll("{green}그리고 당신은 제노 감염에 맞서 싸우기 위해 몸을 던졌습니다...");
 	}
 	else
 	{
@@ -2323,19 +2323,19 @@ public void Raidmode_ToddHoward_Win(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: Bethesda will never fall!");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 베데스다는 무너지지 않을 거다!");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: I still have to take care of the {blue}deep sea{default}...");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 여전히 그 {blue}기레기{default}들을 신경써야한다...");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: Threaten our livelyhood and you pay!");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 우리의 생계를 위협하면 이렇게 대가를 치르게 될 것이다!");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: I have to inform {blue}Sensal{default} about this.");
+				CPrintToChatAll("{lightblue}토드 하워드{default}: 이걸 이제 {blue}폴아웃{default}의 소재로 써야겠군.");
 			}
 		}
 	}

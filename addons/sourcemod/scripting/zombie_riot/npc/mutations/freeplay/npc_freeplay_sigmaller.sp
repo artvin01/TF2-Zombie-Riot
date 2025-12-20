@@ -107,7 +107,7 @@ methodmap FreeplaySigmaller < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 
-		CPrintToChatAll("{blue}Sigmaller{white}: {blue}I FEEL SO SIGMA!!");
+		CPrintToChatAll("{blue}시그말리어{white}: {blue}시그마님의 힘이 느껴진다!!!!");
 		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
 		{
 			if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.

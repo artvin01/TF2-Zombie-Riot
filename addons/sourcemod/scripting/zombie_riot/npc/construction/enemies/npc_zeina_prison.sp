@@ -118,15 +118,15 @@ methodmap ZeinaPrisoner < CClotBody
 		{
 			case 1:
 			{
-				CPrintToChatAll("{snow}Zeina{default}: He took me as a prisoner, help!");
+				CPrintToChatAll("{snow}제이나{default}: 도와주세요! 저 자가 절 여기에 가뒀어요!");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{snow}Zeina{default}: I never liked your side of expidonsa...");
+				CPrintToChatAll("{snow}제이나{default}: 이래서 엑스피돈사인들이란...");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{snow}Zeina{default}: This is not the solution..! {black}Zilius{default}!");
+				CPrintToChatAll("{snow}제이나{default}: 이런건 해결책이 될 수 없어요..! {black}질리우스{default}!");
 			}
 		}
 		
@@ -292,15 +292,15 @@ public void ZeinaPrisoner_NPCDeath(int entity)
 	{
 		case 1:
 		{
-			CPrintToChatAll("{snow}Zeina{default}: You freed me..!");
+			CPrintToChatAll("{snow}제이나{default}: 절 구해줘서 고마워요..!");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{snow}Zeina{default}: Thank you!! Ill help you!");
+			CPrintToChatAll("{snow}제이나{default}: 정말 고마워요! 도와드릴게요!");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{snow}Zeina{default}: Face this {black}Zilius{default}!");
+			CPrintToChatAll("{snow}제이나{default}: 이거나 먹어라, {black}질리우스{default}!");
 		}
 	}
 	CPrintToChatAll("{black}Zilius{default}...");

@@ -424,11 +424,11 @@ methodmap CAT < CClotBody
 		switch(GetRandomInt(0,2))
 		{
 			case 0:
-				CPrintToChatAll("{rare}C.A.T.{default}: CONTROL AGAINST TRESPASSERS, NOW ONLINE");
+				CPrintToChatAll("{rare}C.A.T.{default}: 침입자 대응책 준비 완료.");
 			case 1:
-				CPrintToChatAll("{rare}C.A.T.{default}: C.A.T. HAS BEEN ENGAGED");
+				CPrintToChatAll("{rare}C.A.T.{default}: C.A.T. 전투 준비.");
 			case 2:
-				CPrintToChatAll("{rare}C.A.T.{default}: SYSTEM POWER-UP COMPLETE");
+				CPrintToChatAll("{rare}C.A.T.{default}: 시스템 파워 재가동.");
 		}
 
 		return npc;
@@ -728,15 +728,15 @@ static void OrbSpam_Ability_ReadyUp(CAT npc)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{rare}C.A.T.{default}: PARTICLE RADIATOR IS {unique}READY");
+			CPrintToChatAll("{rare}C.A.T.{default}: 입자 방사기 {unique}가동 준비 완료");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{rare}C.A.T.{default}: PREPARING FOR PARTICLE {crimson}DISPERSAL");
+			CPrintToChatAll("{rare}C.A.T.{default}: 입자 분산 {crimson}준비 완료");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{rare}C.A.T.{default}: PARTICLES ARE DONE {crimson}WARMING UP");
+			CPrintToChatAll("{rare}C.A.T.{default}: 입자 방사기 준비 완료. {crimson}예열 중");
 		}
 	}
 }
@@ -797,15 +797,15 @@ static void OrbSpam_Ability_End(CAT npc, bool yap = true)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: PARTICLE RADIATOR IS {azure}COOLING-OFF");
+				CPrintToChatAll("{rare}C.A.T.{default}: 입자 방사기 {azure}냉각 중");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: PARTICLE DISPERSAL {azure}ACCOMPLISHED");
+				CPrintToChatAll("{rare}C.A.T.{default}: 입자 분산 {azure}성공적");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: PARTICLES ARE {crimson}GONE{default}... {azure}FOR NOW");
+				CPrintToChatAll("{rare}C.A.T.{default}: 입자력 {crimson}제거됨{default}... {azure}지금은.");
 			}
 		}
 	}
@@ -870,7 +870,7 @@ bool CAT_timeBased(int iNPC)
 			AcceptEntityInput(npc.m_iWearable1, "Enable");
 			npc.m_flBeginTimeWarp = 0.0;
 			
-			CPrintToChatAll("{rare}C.A.T.{default}: ...ACTION SUCCESSFUL");
+			CPrintToChatAll("{rare}C.A.T.{default}: ...성공적임");
 			
 			float vecPos[3];
 			GetAbsOrigin(npc.index, vecPos);
@@ -961,15 +961,15 @@ static void SelfDegradation_Ability_Start(CAT npc, bool yap = true)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: INITIATING SELF-DEGRADATION");
+				CPrintToChatAll("{rare}C.A.T.{default}: 자가 붕괴 시작.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION IN PROCESS...");
+				CPrintToChatAll("{rare}C.A.T.{default}: 자가 붕괴 진행 중...");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: SWITCHING TO SELF-DEGRADATION MODE");
+				CPrintToChatAll("{rare}C.A.T.{default}: 자가 붕괴 모드로 전환 중.");
 			}
 		}
 	}
@@ -1019,15 +1019,15 @@ static void SelfDegradation_Ability_Activate(CAT npc, bool yap = true)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION MODE IS {unique}ONLINE");
+				CPrintToChatAll("{rare}C.A.T.{default}: 자가 붕괴 모드 {unique}가동 완료.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION: {unique}ACTIVATED");
+				CPrintToChatAll("{rare}C.A.T.{default}: 자가 붕괴: {unique}준비 완료");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION POWER UP, {unique}COMPLETE");
+				CPrintToChatAll("{rare}C.A.T.{default}: 자가 붕괴 모드 가동, {unique}성공적");
 			}
 		}
 	}
@@ -1059,15 +1059,15 @@ static void SelfDegradation_Ability_Deactivate(CAT npc, bool yap = true)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION MODE IS {crimson}OFFLINE");
+				CPrintToChatAll("{rare}C.A.T.{default}: 자가 붕괴 모드 {crimson}비활성화.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION: {crimson}DEACTIVATED");
+				CPrintToChatAll("{rare}C.A.T.{default}: 자가 붕괴 모드: {crimson}종료됨.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION IS {crimson}SHUTTING DOWN");
+				CPrintToChatAll("{rare}C.A.T.{default}: 자가 붕괴 모드 {crimson}강제 종료됨.");
 			}
 		}
 	}
@@ -1112,7 +1112,7 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			npc.AddGesture("ACT_MP_STUN_BEGIN");
 			npc.SetActivity("ACT_MP_STUN_MIDDLE");
 			
-			CPrintToChatAll("{rare}C.A.T.{default}: ENABLING {unique}MIND WARP {default}MECHANISMS...");
+			CPrintToChatAll("{rare}C.A.T.{default}: {unique}정신 왜곡 {default}메커니즘 활성화 중...");
 			
 			npc.Anger = true;
 			npc.m_flBeginTimeWarp = GetGameTime(npc.index) + 2.0;
@@ -1180,9 +1180,9 @@ static void CAT_Weapon_Lines(CAT npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "ANALYZING WEAPON... ... ... INSUFFICIENT DATA",client);
+					Format(Text_Lines, sizeof(Text_Lines), "대상 무기 분석 중... 데이터 부족.",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "IT APPEARS YOU HAVE STOLEN THIS WEAPON FROM SOMEONE, HAND IT OVER OR FACE CONSEQUENCES");
+					Format(Text_Lines, sizeof(Text_Lines), "누군가에게서 그 무기를 도난한 것으로 추정됨. 당장 그 무기를 넘겨주지 않으면 처벌 불가피.");
 			}
 		}
 		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2:
@@ -1190,9 +1190,9 @@ static void CAT_Weapon_Lines(CAT npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "WEAPON'S ORIGIN CAN NOT BE DETERMINED",client);
+					Format(Text_Lines, sizeof(Text_Lines), "무기의 출처 확인 불가.",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "TECHNOLOGY APPEARS TO HAVE ADVANCED FORWARD, WITH THE LABS LEFT BEHIND, EVEN IF IT APPEARS TO BE A POORLY DESIGNED WEAPON");
+					Format(Text_Lines, sizeof(Text_Lines), "연구실을 남겨두고 떠난 누군가가 제작한 무기로 추정. 그럼에도 불구하고 매우 조촐하고 약한 무기로 분석됨.");
 			}
 		}
 		case WEAPON_KIT_BLITZKRIEG_CORE:
@@ -1200,9 +1200,9 @@ static void CAT_Weapon_Lines(CAT npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "ANALYZING MODEL ... OLD PROTOTYPE DISCOVERED, GIVEN ITS POOR STATISTICS, DISREGARD");
+					Format(Text_Lines, sizeof(Text_Lines), "모델 분석 중... 오래된 프로토타입 발견, 통계가 좋지 않음. 무시");
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "ESTIMATING OPPONENT'S THREAT LEVEL... UNDERWHELMING",client);
+					Format(Text_Lines, sizeof(Text_Lines), "상대의 위협 수준 추정... 약해빠졌음.",client);
 			}
 		}
 		case WEAPON_KIT_PROTOTYPE, WEAPON_KIT_PROTOTYPE_MELEE:
@@ -1210,9 +1210,9 @@ static void CAT_Weapon_Lines(CAT npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "FIRST PROTOTYPE'S WEAPONRIES DETECTED",client);
+					Format(Text_Lines, sizeof(Text_Lines), "첫 번째 프로토타입의 무기가 감지됨.",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "THE ANCESTORS OF THE GLORIOUS RACE WOULD'VE LOVED TO SEE YOU USING THESE FIREARMS...AND ALSO HATED YOU");
+					Format(Text_Lines, sizeof(Text_Lines), "영광스러운 종족의 조상들은 당신이 이 총기를 사용하는 모습을 보고 싶어했을 것임. 그리고 당신을 증오할 것임.");
 			}
 		}
 
@@ -1319,9 +1319,9 @@ static bool CAT_LoseConditions(int iNPC)
 				switch (GetURandomInt() % 2)
 				{
 					case 0:
-						CPrintToChatAll("{rare}C.A.T.{default}: OVERHEATING PROTOC-");
+						CPrintToChatAll("{rare}C.A.T.{default}: 과부하 진ㅎ-");
 					case 1:
-						CPrintToChatAll("{rare}C.A.T.{default}: INITIATING SELF-DES-");
+						CPrintToChatAll("{rare}C.A.T.{default}: 자폭 모드 진ㅎ-");
 				}
 				
 				npc.m_flDeathAnim = GetGameTime() + 1.0;
@@ -1347,7 +1347,7 @@ static bool CAT_LoseConditions(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{rare}C.A.T.{default}: BY THE WORDS OF THE ONE AND ONLY GLORIOUS RACE; THERE CAN BE ONLY ONE");
+		CPrintToChatAll("{rare}C.A.T.{default}: 이미 이긴 전투임.");
 		return true;
 	}
 	
@@ -1355,7 +1355,7 @@ static bool CAT_LoseConditions(int iNPC)
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{rare}C.A.T.{default}: SURRENDER YOUR WEAPONS AND COME WITH ME");
+		CPrintToChatAll("{rare}C.A.T.{default}: 네 무기를 버리고 항복한 뒤에 날 따라올 것.");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return true;
 	}

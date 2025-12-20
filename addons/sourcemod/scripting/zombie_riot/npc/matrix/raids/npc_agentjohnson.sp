@@ -292,11 +292,11 @@ public void AgentJohnson_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{community}Agent Johnson{default}: Was it worth the risk?");
+					CPrintToChatAll("{community}존슨 요원{default}: 네가 살아있을 가치가 있나?");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{community}Agent Johnson{default}: Human minds are so feeble.");
+					CPrintToChatAll("{community}존슨 요원{default}: 인간의 정신은 너무나도 나약하다.");
 				}
 			}
 		}
@@ -306,7 +306,7 @@ public void AgentJohnson_ClotThink(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{community}Agent Johnson{default}: Your story ends here.");
+		CPrintToChatAll("{community}존슨 요원{default}: 네 이야기는 여기서 끝이다.");
 		return;
 	}
 
@@ -317,7 +317,7 @@ public void AgentJohnson_ClotThink(int iNPC)
 		{
 			ForcePlayerLoss();
 			RaidBossActive = INVALID_ENT_REFERENCE;
-			CPrintToChatAll("{community}Agent Johnson{default}: {default}The Exiles are done here.{default}");
+			CPrintToChatAll("{community}존슨 요원{default}: {default}망명자들의 이야기는 여기서 끝이다.{default}");
 			func_NPCThink[npc.index] = INVALID_FUNCTION;
 			return;
 		}

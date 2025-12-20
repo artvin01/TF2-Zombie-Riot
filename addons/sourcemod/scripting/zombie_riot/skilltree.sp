@@ -854,10 +854,10 @@ void TreeMenu(int client, bool force = false, bool displayMenu = true)
 		Menu menu = new Menu(TreeMenuH);
 		menu.SetTitle("");
 		menu.AddItem(NULL_STRING, buffer, upgrade ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-		menu.AddItem(names[UP], "W", CanAccess[client][UP] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
-		menu.AddItem(names[LEFT], "A", CanAccess[client][LEFT] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
-		menu.AddItem(names[DOWN], "S", CanAccess[client][DOWN] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
-		menu.AddItem(names[RIGHT], "D", CanAccess[client][RIGHT] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
+		menu.AddItem(names[UP], "↑", CanAccess[client][UP] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
+		menu.AddItem(names[LEFT], "←", CanAccess[client][LEFT] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
+		menu.AddItem(names[DOWN], "↓", CanAccess[client][DOWN] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
+		menu.AddItem(names[RIGHT], "→", CanAccess[client][RIGHT] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
 
 		menu.OptionFlags |= MENUFLAG_NO_SOUND;
 		InMenu[client] = menu.Display(client, MENU_TIME_FOREVER);

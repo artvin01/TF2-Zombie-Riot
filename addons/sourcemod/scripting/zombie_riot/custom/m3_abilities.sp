@@ -872,7 +872,7 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 		if(!b_ReinforceReady_soundonly[client])
 		{
 			EmitSoundToClient(client, g_ReinforceSounds[GetRandomInt(0, sizeof(g_ReinforceSounds) - 1)], _, _, _, _, 0.5, _, _, _, _, false);
-			CPrintToChat(client, "{green}You can now call in reinforcements.");
+			CPrintToChat(client, "{green}이제 증원 요청을 사용할 수 있습니다.");
 			b_ReinforceReady_soundonly[client]=true;
 		}
 	}
@@ -980,7 +980,7 @@ public void Reinforce(int client, bool NoCD)
 
 		
 		i_MaxRevivesAWave++;
-		CPrintToChatAll("{green}%N Is calling for additonal Mercs for temporary assistance...",client);
+		CPrintToChatAll("{green}%N 이(가) 추가 지원을 위해 증원을 요청하고 있습니다...",client);
 		float position[3];
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", position);
 
@@ -1078,7 +1078,7 @@ public Action M3_Ability_Is_Back(Handle cut_timer, int ref)
 		ClientCommand(client, "playgamesound items/gunpickup2.wav");
 		SetHudTextParams(-1.0, 0.45, 3.01, 34, 139, 34, 255);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "M3 Ability Is Back");
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability Is Back");
 	}
 	return Plugin_Handled;
 }
@@ -1987,7 +1987,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 				GiveCompleteInvul(RandomHELLDIVER, 3.5);
 				TF2_AddCondition(RandomHELLDIVER, TFCond_SpeedBuffAlly, 2.0);
 				EmitSoundToAll(g_ReinforceReadySounds, RandomHELLDIVER, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-				CPrintToChatAll("{black}Bob The Second {green}responds.... and was able to recuit {yellow}%N!",RandomHELLDIVER);
+				CPrintToChatAll("그리고 {black}밥 2세{green}가 응답하여.... 다음 플레이어를 징집시켰습니다! : {yellow}%N!",RandomHELLDIVER);
 				DataPack pack_boom = new DataPack();
 				pack_boom.WriteFloat(position[0]);
 				pack_boom.WriteFloat(position[1]);
@@ -1999,7 +1999,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 			{
 				if(IsValidClient(PreviousOwner))
 				{
-					CPrintToChat(PreviousOwner, "{black}Bob The Second {default}Wasnt able to get any merc... he refunds the backup call.");
+					CPrintToChat(PreviousOwner, "하지만 {black}밥 2세{default} 휘하의 용병이 더 이상 없습니다... 그가 지원을 거부했습니다.");
 					HealPointToReinforce(PreviousOwner, 0, 1.0);
 					i_MaxRevivesAWave--;
 				}

@@ -200,8 +200,8 @@ public void RedHeavy_ClotThink(int iNPC)
 						RaidModeTime += 10.0;
 						NoSoundLoop = true;
 						stop_thinking = true;
-						CPrintToChatAll("{snow}We are the 7 heavy souls, we will assist you in your battle against this.");
-						CPrintToChatAll("{crimson}I THINK YOU NEED MORE MEN!!!!!");
+						CPrintToChatAll("{snow}우린 7개의 헤비의 영혼이야. 이 전투에서 널 도울게.");
+						CPrintToChatAll("{crimson}아무래도 네 동료가 더 많이 필요하겠어!!");
 						break;//we found all!
 					}
 				}

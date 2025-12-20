@@ -33,7 +33,7 @@ public float NPC_OnTakeDamage_Hazard(int attacker, int victim, float &damage, in
 			}
 			else
 			{
-				PrintHintText(attacker,"JACKPOT!");
+				PrintHintText(attacker,"잭팟!");
 				DisplayCritAboveNpc(victim, attacker, true);
 				DamageMod = 5.0;
 			}
@@ -63,7 +63,7 @@ public float NPC_OnTakeDamage_Hazard(int attacker, int victim, float &damage, in
 			}
 			else
 			{
-				PrintHintText(attacker,"JACKPOT!");
+				PrintHintText(attacker,"잭팟!");
 				DisplayCritAboveNpc(victim, attacker, true);
 				DamageMod = 5.0;
 			}
@@ -80,7 +80,7 @@ public float NPC_OnTakeDamage_Hazard(int attacker, int victim, float &damage, in
 			{
 				DamageMod = GetRandomFloat(4.0,6.0);
 				DisplayCritAboveNpc(victim, attacker, true);
-				PrintHintText(attacker,"JACKPOT!");
+				PrintHintText(attacker,"잭팟!");
 			}
 		}
 		case WEAPON_HAZARD_CHAOS:
@@ -95,7 +95,7 @@ public float NPC_OnTakeDamage_Hazard(int attacker, int victim, float &damage, in
 			{
 				DamageMod = GetRandomFloat(4.0,6.0);
 				DisplayCritAboveNpc(victim, attacker, true);
-				PrintHintText(attacker,"JACKPOT!");
+				PrintHintText(attacker,"잭팟!");
 			}
 		}
 		case WEAPON_HAZARD_STABILIZED:
@@ -111,7 +111,7 @@ public float NPC_OnTakeDamage_Hazard(int attacker, int victim, float &damage, in
 			}
 			else
 			{
-				PrintHintText(attacker,"JACKPOT!");
+				PrintHintText(attacker,"잭팟!");
 				DisplayCritAboveNpc(victim, attacker, true);
 				DamageMod = 2.5;
 			}
@@ -170,7 +170,7 @@ public float NPC_OnTakeDamage_Hazard(int attacker, int victim, float &damage, in
 				}
 				case 15:
 				{
-					PrintHintText(attacker,"J̸̨͝Ä̷̻͆Ç̸̛̮K̵̻͗þ̸̤͝Ơ̶͚̈†̸̲̍!̴̡́");
+					PrintHintText(attacker,"̸̨͝잭̷̻͆팟̸̸̛̮̲̍!̴̡́");
 					DisplayCritAboveNpc(victim, attacker, true);
 					DamageMod = 6.0;
 					ApplyTempAttrib(weapon, 6, 0.8, 5.0);

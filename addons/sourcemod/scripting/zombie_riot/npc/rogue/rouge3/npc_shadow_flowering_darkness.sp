@@ -255,7 +255,7 @@ methodmap Shadow_FloweringDarkness < CClotBody
 		}
 		else
 		{
-			CPrintToChatAll("{black}Flowering Darkness{default} : You again... I'll make {crimson}sure{default} you're dead.");
+			CPrintToChatAll("{black}어둠 개화자{default} : 또 네놈이로군... 이번엔 {crimson}확실하게 죽여주지.{default}");
 			npc.StartPathing();
 			npc.m_flCloneSpawnDo = GetGameTime() + 5.0;
 			npc.m_flNextAirPush = GetGameTime() + 3.0;
@@ -640,8 +640,8 @@ public void Shadow_FloweringDarkness_NPCDeath(int entity)
 
 	if(!npc.m_bDissapearOnDeath && i_RaidGrantExtra[npc.index])
 	{
-		CPrintToChatAll("{black}Flowering Darkness{default} : ... Like boss like co-boss....");
-		CPrintToChatAll("{crimson}Flowering Darkness perishes... He drops a map, thats where shadowing darkness is.");	
+		CPrintToChatAll("{black}어둠 개화자{default} : ... 마치 내 상관처럼 죽는구나....");
+		CPrintToChatAll("{crimson}어둠 개화자가 소멸하고... 지도가 떨어진다. 이건... 그림자 응달의 위치가 표시되어있다.");	
 	}
 }
 

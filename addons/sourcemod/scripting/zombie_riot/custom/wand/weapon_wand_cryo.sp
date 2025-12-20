@@ -345,6 +345,13 @@ public void Cryo_Touch(int entity, int target)
 	}
 }
 
+bool NpcStats_IsEnemyTrueFrozen(int zombie)
+{
+	if(!IsValidEntity(zombie))
+		return false;
+	return Cryo_Frozen[zombie];
+}
+
 void Cryo_FreezeZombie(int client, int zombie, int type)
 {
 	if (!IsValidEntity(zombie))
