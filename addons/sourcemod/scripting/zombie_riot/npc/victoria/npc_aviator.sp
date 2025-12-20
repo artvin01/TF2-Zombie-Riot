@@ -316,6 +316,8 @@ static void Aviator_ClotThink(int iNPC)
 		//Cooldown is reduced out of range.
 		if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.5))
 			npc.m_flChargeAttack -= 0.076;
+		else if(flDistanceToTarget > < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
+			npc.m_flChargeAttack -= 0.076;
 		
 		switch(AviatorSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget))
 		{
