@@ -5431,13 +5431,17 @@
 		"ko"	"군수공장"
 		"it"	"Fabbrica"
 	}
+	"Dummy"
+	{
+		"en"	"Dummy"
+	}
 	"Batter"
 	{
 		"en"	"Leatherboots Batter"
 		"ko"	"가죽부츠 정찰대 타자"
 		"it"	"Pastella per stivali in pelle"
 	}
-	"Charger"
+	"Victoria Charger"
 	{
 		"en"	"Leatherboots Charger"
 		"ko"	"가죽부츠 정찰대 돌격병"
@@ -5632,6 +5636,7 @@
 	"Cyborg Assaulter"
 	{
 		"en"	"Cyborg Assaulter"
+		"ko"	"사이보그 보병"
 		"it"	"Assaltatore cyborg"
 		"ko"	"사이보그 강습병"
 	}
@@ -5646,6 +5651,11 @@
 		"en"	"Trooper  Mortar"
 		"ko"	"트루퍼 박격포병"
 		"it"	"Mortaio Trooper"
+	}
+	"Victorian Artillerist"
+	{
+		"en"	"Trooper Artillerist"
+		"ko"	"트루퍼 자주포병"
 	}
 	"Bomb Cart"
 	{
@@ -5689,6 +5699,11 @@
 		"ko"	"브라스벙커 아방가르드"
 		"it"	"Brassbunker Avangard"
 	}
+	"Imcomplete Avangard"
+	{
+		"en"	"Imcomplete Avangard"
+		"ko"	"미완성 아방가르드"
+	}
 	"Tanker"
 	{
 		"en"	"Brassbunker Tanker"
@@ -5718,6 +5733,11 @@
 		"en"	"Brassbunker Tank"
 		"ko"	"브라스벙커 탱크"
 		"it"	"Serbatoio Brassbunker"
+	}
+	"Victorian Assault Vehicle"
+	{
+		"en"	"Brassbunker Assault Vehicle"
+		"ko"	"브라스벙커 돌격 차량"
 	}
 	"Victoria Factory"
 	{
@@ -5814,6 +5834,16 @@
 		"en"	"The final army leader.\nEvery once a while summons airstrikes onto 1 target.\nAirstrikes happen aswell when he hits you too much with his melee."
 		"it"	"Il capo dell'esercito finale.\nOgni tanto evoca attacchi aerei su 1 bersaglio.\nGli attacchi aerei avvengono anche quando ti colpisce troppo con la mischia."
 		"ko"	"이 군대의 총괄 지휘자입니다.\n가끔씩 한 대상에게 공습을 가합니다.\n또한 이 적의 근접 공격으로 여러번 피격 당해도 공습이 발생합니다."
+	}
+	"Captino Menius"
+	{
+		"en"	"Captino Menius"
+		"ko"	"캡티노 메니우스"
+	}
+	"0h No it's Not Fair"
+	{
+		"en"	"=Failed name="
+		"ko"	"=Failed name="
 	}
 	"Agent John"
 	{
@@ -7612,64 +7642,12 @@
 		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
 		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다. \n-한 번의 3발의 화살 발사\n-당신의 이동 경로를 예측함\m-대상을 포위하고 주로 측면을 노림\n-높은 근접 피해 1회를 받으면 비무장 상태가 됨"
 	}
-	"Barbaric Teardown"
+	"Demon Devoter"
 	{
-		"en"	"Barbaric Teardown"
-		"ko"	"야만인 분해자"
+		"en"	"Demon Devoter"
 	}
-	"Barbaric Teardown Desc"
+	"Demon Devoter Desc"
 	{
-		"en"	"Fellow outposts base demolisher's.\n-First 3 hits deal bonus damage\nThese 3 hits deal much higher building damage."
-		"ko"	"전초기지 철거자입니다.\n-처음 3 회의 공격이 추가 피해를 주고\n그 공격의 적중 대상이 구조물이라면 더 높은 피해를 줌"
-	}
-	"Skilled Crossbowman"
-	{
-		"en"	"Skilled Crossbowman"
-		"ko"	"숙련된 석궁병"
-	}
-	"Skilled Crossbowman Desc"
-	{
-		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
-		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다. \n-한 번의 3발의 화살 발사\n-당신의 이동 경로를 예측함\m-대상을 포위하고 주로 측면을 노림\n-높은 근접 피해 1회를 받으면 비무장 상태가 됨"
-	}
-	"Barbaric Teardown"
-	{
-		"en"	"Barbaric Teardown"
-		"ko"	"야만인 분해자"
-	}
-	"Barbaric Teardown Desc"
-	{
-		"en"	"Fellow outposts base demolisher's.\n-First 3 hits deal bonus damage\nThese 3 hits deal much higher building damage."
-		"ko"	"전초기지 철거자입니다.\n-처음 3 회의 공격이 추가 피해를 주고\n그 공격의 적중 대상이 구조물이라면 더 높은 피해를 줌"
-	}
-	"Skilled Crossbowman"
-	{
-		"en"	"Skilled Crossbowman"
-		"ko"	"숙련된 석궁병"
-	}
-	"Skilled Crossbowman Desc"
-	{
-		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
-		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다. \n-한 번의 3발의 화살 발사\n-당신의 이동 경로를 예측함\m-대상을 포위하고 주로 측면을 노림\n-높은 근접 피해 1회를 받으면 비무장 상태가 됨"
-	}
-	"Barbaric Teardown"
-	{
-		"en"	"Barbaric Teardown"
-		"ko"	"야만인 분해자"
-	}
-	"Barbaric Teardown Desc"
-	{
-		"en"	"Fellow outposts base demolisher's.\n-First 3 hits deal bonus damage\nThese 3 hits deal much higher building damage."
-		"ko"	"전초기지 철거자입니다.\n-처음 3 회의 공격이 추가 피해를 주고\n그 공격의 적중 대상이 구조물이라면 더 높은 피해를 줌"
-	}
-	"Skilled Crossbowman"
-	{
-		"en"	"Skilled Crossbowman"
-		"ko"	"숙련된 석궁병"
-	}
-	"Skilled Crossbowman Desc"
-	{
-		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
-		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다. \n-한 번의 3발의 화살 발사\n-당신의 이동 경로를 예측함\m-대상을 포위하고 주로 측면을 노림\n-높은 근접 피해 1회를 받으면 비무장 상태가 됨"
+		"en"	"A warrior dealing with the demons that got possed by chaos.\n-Once losing his life he will enrage and give himself the ''Chaos Demon Possession'' buff\nThis can be prevented if:\nDealing enough damage in once instance to skip the 2nd life\nStunning him to prevent the enrage and killing him during that stun."
 	}
 }

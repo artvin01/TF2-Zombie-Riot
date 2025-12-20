@@ -785,9 +785,9 @@
 	}
 	"Caffinated Desc"
 	{
-		"en"	"Boosts damage dealt by 50％\nBoosts NPC'S Movementspeed by 50％, See Caffinated Drain for more info as it a combined effect..."
-		"ko"	"피해량 +50％\nNpc 이동속도 +50％\n효과가 지속되는 동안 카페인 드레인 효과가 적용됨"
-		"it"	"Aumenta i danni inflitti di 50％ \nAumenta la velocità di movimento degli NPC di 50％, Vedere Scolo Caffinato per maggiori informazioni, poiché si tratta di un effetto combinato..."
+		"en"	"Boosts damage dealt by 33％\nBoosts Attack Speed by 33％\nBoosts NPC'S Movementspeed by 50％, See Caffinated Drain for more info as it a combined effect..."
+		"ko"	"피해량 +33％, 공속 +33％\nNpc 이동속도 +50％\n효과가 지속되는 동안 카페인 드레인 효과가 적용됨"
+		"it"	"Aumenta i danni inflitti di 33％\nAumenta la velocità d'attacco del 33％\nAumenta la velocità di movimento degli NPC di 50％, Vedere Scolo Caffinato per maggiori informazioni, poiché si tratta di un effetto combinato..."
 	}
 	"Caffinated Drain"
 	{
@@ -2589,5 +2589,13 @@
 		"en"	"Increases attack/reload speed, healing rate and reduces cooldowns by 40％. Increases movement speed by 25％.\n{crimson}Enemies gain Dimensional Turbulence instead."
 		"it"	"Aumenta la velocità di attacco/ricarica, la velocità di guarigione e riduce i cooldown del 40％.\nAumenta la velocità di movimento del 25％.\n{crimson}I nemici ottengono invece Turbolenza dimensionale."
 		"ko"	"공격 속도/재장전 속도, 회복률이 40％ 증가하고 쿨타임이 40％ 감소하며\n이동 속도가 25％ 증가합니다.\n{crimson}대신 적들은 차원적 격변 효과를 얻습니다."
+	}
+	"Chaos Demon Possession"
+	{
+		"en"	"Chaos Demon Possession"
+	}
+	"Chaos Demon Possession Desc"
+	{
+		"en"	"Decreases damage taken by 65％\nIncreases NPC movementspeed by 15％\nInrceases thinkspeed by 50％\nFully heals target when applied and not extended."
 	}
 }

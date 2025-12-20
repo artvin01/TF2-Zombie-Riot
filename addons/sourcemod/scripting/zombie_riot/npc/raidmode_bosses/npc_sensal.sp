@@ -564,50 +564,48 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{blue}센살{default}: 당장 이 싸움을 멈춰라.");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-1", false, false);
 			}
 			case 1:
 			{
-				CPrintToChatAll("{blue}센살{default}: 지금 도대체 무슨 일이 일어나고 있는거지?");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-2", false, false);
 			}
 			case 2:
 			{
-				CPrintToChatAll("{blue}카스텔란{default}: 우리가 자이베리아를 공격하는 동안, 저들이 우릴 공격했습니다. 정당방위인데 무슨 문제라도...?");
+				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-3", false);
 			}
 			case 3:
 			{
-				CPrintToChatAll("{blue}센살{default}: 자이베리아를 공격하고 있다고? {darkblue}캄르스타인이{default} 죽은 뒤인데?");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-4", false, false);
 			}
 			case 4:
 			{
-				CPrintToChatAll("{blue}센살{default}: 그것보다 더 중요한 처리 사항이 많을텐데.\n자이베리아는 그와 사상이 다르다.");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-5", false, false);
 			}
 			case 5:
 			{
-				CPrintToChatAll("{blue}카스텔란{default}: 그럼 그가 원인이었다고 말씀하고 싶으신 겁니까?");
+				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-6", false);
 			}
 			case 6:
 			{
-				CPrintToChatAll("{blue}센살{default}: 그래. 그 나라 자체에는 잘못이 없어. 이제 이 곳을 떠나라. 빅토리아도 혼돈에 대처해야한다.");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-7", false, false);
 			}
 			case 7:
 			{
-				CPrintToChatAll("{blue}카스텔란{default}: 그러고보니 전에도 혼돈에 대한걸 말씀하셨죠. 만약 그것들이 우리의 성벽 안으로 진입하게 된다면, 즉시 돌아와서 상황 정리를 돕겠습니다.");
+				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-8", false);
 			}
 			case 8:
 			{
-				CPrintToChatAll("{blue}센살{default}: 좋다.");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-9", false, false);
 			}
 			case 9:
 			{
-				CPrintToChatAll("{blue}카스텔란{default}: 이제 빅토리아로 돌아가겠습니다.");
+				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-10", false);
+				NPCPritToChat_Noname("Castellan_And_Sensal_Talk-11", false);
 				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
-					{
 						Items_GiveNamedItem(client, "Avangard's Processing Core-B");
-						CPrintToChat(client,"{default}카스텔란이 돌아간 후, 그의 군대가 무언가를 남겼습니다: {darkblue}''아방가르드의 프로세싱 코어-B''{default}!");
-					}
 				}
 			}
 			default:

@@ -94,6 +94,7 @@ enum struct E_StatusEffect
 	//This is used for function things
 	float DataForUse;
 	int WearableUse;
+	int WearableUse2;
 	int VictimSave;
 	bool MarkedForDeletion;
 
@@ -219,6 +220,7 @@ void InitStatusEffects()
 	StatusEffects_GamemodeMadnessSZF();
 	StatusEffects_Raigeki();
 #endif
+	StatusEffects_Construction2();
 }
 
 static int CategoryPage[MAXPLAYERS];
@@ -1356,7 +1358,7 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 
 		if(Apply_MasterStatusEffect.HudDisplay_Func != INVALID_FUNCTION && Apply_MasterStatusEffect.HudDisplay_Func)
 		{
-			char HudDisplayCustom[12];
+			char HudDisplayCustom[14];
 			//We have a valid function ignore the original value.
 			Call_StartFunction(null, Apply_MasterStatusEffect.HudDisplay_Func);
 			Call_PushCell(attacker);
@@ -3064,6 +3066,7 @@ void StatusEffects_Victoria()
 	data.DamageTakenMulti 			= 0.9;
 	data.DamageDealMulti			= 0.1;
 	data.MovementspeedModif			= 1.33;
+	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
@@ -3076,7 +3079,8 @@ void StatusEffects_Victoria()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 0.5; //Deal 50% more damage
+	data.DamageDealMulti			= 0.33; //Deal 33% more damage
+	data.AttackspeedBuff			= 0.67;
 	data.MovementspeedModif			= 1.5;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
@@ -3090,6 +3094,7 @@ void StatusEffects_Victoria()
 	data.DamageTakenMulti 			= 0.25; //take 25% more damage
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
@@ -3104,11 +3109,25 @@ void StatusEffects_Victoria()
 	data.DamageTakenMulti 			= 0.8;
 	data.DamageDealMulti			= 0.2;
 	data.MovementspeedModif			= 1.15;
+	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	VictoriaCallToArmsIndex = StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Taurine");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "T");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= 0.2;
+	data.AttackspeedBuff			= 0.8;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Victorian Launcher Overdrive");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
@@ -3129,11 +3148,92 @@ void StatusEffects_Victoria()
 	data.Status_SpeedFunc 		= INVALID_FUNCTION;
 	data.HudDisplay_Func 			= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Battery_TM Charge");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "B™");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.AttackspeedBuff			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.HudDisplay_Func			= Charge_BatteryTM_Hud_Func;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Ammo_TM Visualization");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "A™");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.AttackspeedBuff			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.HudDisplay_Func			= AmmoTM_Visual_Hud_Func;
+	StatusEffect_AddGlobal(data);
 }
 
 stock bool NpcStats_VictorianCallToArms(int victim)
 {
 	return CheckBuffIndex(victim, VictoriaCallToArmsIndex);
+}
+
+void AmmoTM_Visual_Hud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	if(!i_GunAmmoMAX[victim])
+		RemoveSpecificBuff(victim, "Ammo_TM Visualization");
+	/* is old Version */
+	/*if(i_GunAmmo[victim])
+	{
+		Format(HudToDisplay, SizeOfChar, "|");
+		for(int i = 1; i < i_OverlordComboAttack[victim]; i++)
+		{
+			if(i>10)
+			{
+				Format(HudToDisplay, SizeOfChar, "%s+%i", HudToDisplay, i_OverlordComboAttack[victim]-i);
+				break;
+			}
+			else
+				Format(HudToDisplay, SizeOfChar, "%s|", HudToDisplay);
+		}
+		Format(HudToDisplay, SizeOfChar, "[A™ %s]", HudToDisplay);
+	}*/
+	Format(HudToDisplay, SizeOfChar, "[A™ %i/%i]", i_GunAmmo[victim], i_GunAmmoMAX[victim]);
+}
+
+void Charge_BatteryTM_Hud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	//Original code is RuinaBatteryHud_Func
+	//It's just to change the symbol.
+	if(fl_ruina_battery_max[victim] == 0.0)
+	{
+		RemoveSpecificBuff(victim, "Battery_TM Charge");
+		return;
+	}
+
+	if(fl_ruina_battery_timeout[victim] != FAR_FUTURE && fl_ruina_battery_timeout[victim] > GetGameTime(victim))
+	{
+		Format(HudToDisplay, SizeOfChar, "[B™ %.1fs]", fl_ruina_battery_timeout[victim] - GetGameTime(victim));
+		return;
+	}
+
+	float Ratio = fl_ruina_battery[victim] / fl_ruina_battery_max[victim] * 100.0;
+
+	if(Ratio >= 101.0)
+	{
+		Format(HudToDisplay, SizeOfChar, "[B™ MAX]", Ratio);
+	}
+	else
+	{
+		Format(HudToDisplay, SizeOfChar, "[B™ %.0f％]", Ratio);
+	}
 }
 
 void StatusEffects_Pernell()
@@ -6717,4 +6817,63 @@ static void UnstableUmbralRift_End(int victim, StatusEffect Apply_MasterStatusEf
 	Attributes_SetMulti(victim, 610, (1.0 / 0.35));
 	Attributes_SetMulti(victim, 326, (1.0 / 1.75));
 	SDKCall_SetSpeed(victim);
+}
+
+
+
+
+void StatusEffects_Construction2()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Chaos Demon Possession");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "CD");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.35;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 1.15;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	//-0.5
+	data.OnBuffStarted				= ChaosDemonInfultration_StartOnce;
+	data.OnBuffEndOrDeleted			= ChaosDemonInfultration_End;
+	data.AttackspeedBuff			= (1.0 / 1.5);
+	StatusEffect_AddGlobal(data);
+}
+
+static void ChaosDemonInfultration_StartOnce(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	if(IsValidEntity(Apply_StatusEffect.WearableUse2))
+		return;
+
+	CClotBody npc = view_as<CClotBody>(victim);
+
+	float maxhealth = float(ReturnEntityMaxHealth(victim));
+	HealEntityGlobal(victim, victim, maxhealth, 1.0, 0.0, HEAL_SELFHEAL);
+	float flPos[3];
+	float flAng[3];
+	npc.GetAttachment("eyes", flPos, flAng);
+	int ParticleEffect_1 = ParticleEffectAt_Parent(flPos, "unusual_smoking", victim, "eyes", {10.0,0.0,-5.0});
+	int ParticleEffect_2 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", victim, "eyes", {10.0,0.0,-20.0});
+
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect_1);
+	Apply_StatusEffect.WearableUse2 = EntIndexToEntRef(ParticleEffect_2);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+
+static void ChaosDemonInfultration_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+	{
+		RemoveEntity(Apply_StatusEffect.WearableUse);
+	}
+	if(IsValidEntity(Apply_StatusEffect.WearableUse2))
+	{
+		RemoveEntity(Apply_StatusEffect.WearableUse2);
+	}
 }

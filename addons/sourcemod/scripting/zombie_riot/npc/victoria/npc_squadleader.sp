@@ -3,7 +3,7 @@
 
 static const char g_DeathSounds[][] = {
 	"vo/demoman_sf13_magic_reac03.mp3",
-	"vo/demoman_sf13_magic_reac05.mp3",
+	"vo/demoman_sf13_magic_reac05.mp3"
 };
 
 static const char g_HurtSounds[][] = {
@@ -13,24 +13,20 @@ static const char g_HurtSounds[][] = {
 	"vo/demoman_painsharp04.mp3",
 	"vo/demoman_painsharp05.mp3",
 	"vo/demoman_painsharp06.mp3",
-	"vo/demoman_painsharp07.mp3",
+	"vo/demoman_painsharp07.mp3"
 };
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/demoman_sf13_midnight02.mp3",
 	"vo/demoman_sf13_midnight04.mp3",
 	"vo/demoman_sf13_midnight05.mp3",
-	"vo/demoman_sf13_midnight06.mp3",
+	"vo/demoman_sf13_midnight06.mp3"
 };
 
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
 	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
-};
-
-static const char g_RangedAttackSounds[][] = {
-	"weapons/doom_scout_shotgun.wav",
+	"weapons/demo_sword_swing3.wav"
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -39,40 +35,41 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_slice_4.wav",
 };
 
-static const char g_WarCry[][] = {
-	"mvm/mvm_warning.wav",
-};
+static const char g_RangedAttackSounds[] = "weapons/doom_scout_shotgun.wav";
+static const char g_WarCry[] = "mvm/mvm_warning.wav";
 
-static int NPCId;
 static float f_GlobalSoundCD;
-static int i_squadleader_particle[MAXENTITIES];
 
 void VictorianSquadleader_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_WarCry)); i++) { PrecacheSound(g_WarCry[i]); }
-
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victorian ScoutSquad Leader");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_squadleader");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_squadleaders");
 	data.IconCustom = true;
-
 	data.Flags = 0;
 	f_GlobalSoundCD = 0.0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
-	NPCId = NPC_Add(data);
+	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static void ClotPrecache()
 {
-	return VictorianSquadleader(vecPos, vecAng, ally);
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSound(g_RangedAttackSounds);
+	PrecacheSound(g_WarCry);
+	PrecacheModel("models/player/demo.mdl");
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return VictorianSquadleader(vecPos, vecAng, ally, data);
 }
 
 #define LEADER_BUFF_MAXRANGE 250.0 		
@@ -83,28 +80,20 @@ methodmap VictorianSquadleader < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
-	
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -112,23 +101,20 @@ methodmap VictorianSquadleader < CClotBody
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
 	}
 	public void PlayRangedSound()
 	{
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 70);
+		EmitSoundToAll(g_RangedAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 70);
 	}
 	public void PlayMeleeWarCry() 
 	{
 		if(f_GlobalSoundCD > GetGameTime())
 			return;
-			
+		EmitSoundToAll(g_WarCry, this.index, _, 80, _, 0.8, 100);
 		f_GlobalSoundCD = GetGameTime() + 5.0;
-
-		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 80, _, 0.8, 100);
 	}
 	
-	public VictorianSquadleader(float vecPos[3], float vecAng[3], int ally)
+	public VictorianSquadleader(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianSquadleader npc = view_as<VictorianSquadleader>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "15000", ally, false, true));
 		
@@ -141,35 +127,39 @@ methodmap VictorianSquadleader < CClotBody
 		SetVariantInt(0);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		
-		
-		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flNextRangedAttack = 0.0;
-		npc.m_flNextRangedAttackHappening = 0.0;
-		npc.m_iOverlordComboAttack = 10;
-		npc.m_iChanged_WalkCycle = 1;
-		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(VictorianSquadleader_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictorianSquadleader_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictorianSquadleader_ClotThink);
+		func_NPCDeath[npc.index] = VictorianSquadleader_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictorianSquadleader_OnTakeDamage;
+		func_NPCThink[npc.index] = VictorianSquadleader_ClotThink;
 		
 		//IDLE
+		KillFeed_SetKillIcon(npc.index, "family_business");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		npc.m_flAttackHappens_bullshit = GetGameTime() + 10.0;
-
-		float flPos[3], flAng[3];
-				
-		npc.GetAttachment("m_vecAbsOrigin", flPos, flAng);
-		i_squadleader_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_pedalfly_blue_spins", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0}));
-		npc.GetAttachment("", flPos, flAng);
+		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextRangedAttack = 0.0;
+		npc.m_flNextRangedAttackHappening = 0.0;
+		npc.m_iChanged_WalkCycle = 1;
+		npc.m_iMaxAmmo = 10;
 		
+		if(StrContains(data, "maxclip") != -1)
+		{
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			ReplaceString(buffers[0], 64, "maxclip", "");
+			npc.m_iMaxAmmo = StringToInt(buffers[0]);
+		}
+		npc.m_iAmmo = npc.m_iMaxAmmo;
+		
+		ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
+
+		npc.m_iWearable6 = ParticleEffectAt_Parent(vecPos, "utaunt_pedalfly_blue_spins", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0});
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -195,7 +185,7 @@ methodmap VictorianSquadleader < CClotBody
 	}
 }
 
-public void VictorianSquadleader_ClotThink(int iNPC)
+static void VictorianSquadleader_ClotThink(int iNPC)
 {
 	VictorianSquadleader npc = view_as<VictorianSquadleader>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -224,17 +214,12 @@ public void VictorianSquadleader_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
-	//VictorianCalltoArmsRange(npc.index);
-		
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-	
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int SetGoalVectorIndex = 0;
-		SetGoalVectorIndex = VictorianSquadleaderSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
-		switch(SetGoalVectorIndex)
+		switch(VictorianSquadleaderSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -269,7 +254,7 @@ public void VictorianSquadleader_ClotThink(int iNPC)
 	VictorianSquadleaderAOEbuff(npc,GetGameTime(npc.index));
 }
 
-public void VictorianSquadleader_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static void VictorianSquadleader_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictorianSquadleader npc = view_as<VictorianSquadleader>(victim);
 		
@@ -283,14 +268,14 @@ public void VictorianSquadleader_OnTakeDamage(int victim, int &attacker, int &in
 	}
 }
 
-public void VictorianSquadleader_NPCDeath(int entity)
+static void VictorianSquadleader_NPCDeath(int entity)
 {
 	VictorianSquadleader npc = view_as<VictorianSquadleader>(entity);
 	if(!npc.m_bGib)
-	{
 		npc.PlayDeathSound();	
-	}
-		
+	
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
@@ -301,20 +286,11 @@ public void VictorianSquadleader_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
-	int particle = EntRefToEntIndex(i_squadleader_particle[npc.index]);
-	if(IsValidEntity(particle))
-	{
-		RemoveEntity(particle);
-		i_squadleader_particle[npc.index]=INVALID_ENT_REFERENCE;
-	}
-
 }
 
-int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, int target, float distance)
+static int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, int target, float distance)
 {
-
-	if(npc.m_iOverlordComboAttack <= 0)
+	if(npc.m_iAmmo <= 0)
 	{
 		if(npc.m_iChanged_WalkCycle != 2)
 		{
@@ -324,10 +300,10 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 			npc.m_flSpeed = 310.0;
 			npc.StartPathing();	
 			if(IsValidEntity(npc.m_iWearable1))
-			{
 				RemoveEntity(npc.m_iWearable1);
-			}		
+			npc.m_flNextMeleeAttack = gameTime + 1.5;
 			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_battleaxe/c_battleaxe.mdl");
+			KillFeed_SetKillIcon(npc.index, "battleaxe");
 		}
 		if(npc.m_flAttackHappens)
 		{
@@ -340,7 +316,6 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
-								
 					target = TR_GetEntityIndex(swingTrace);	
 					
 					float vecHit[3];
@@ -351,7 +326,6 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 						float damageDealt = 50.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 2.5;
-
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
@@ -368,15 +342,13 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 			{
 				int Enemy_I_See;
-									
 				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-						
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;
 					npc.PlayMeleeSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
-							
+					
 					npc.m_flAttackHappens = gameTime + 0.25;
 					npc.m_flDoingAnimation = gameTime + 0.25;
 					npc.m_flNextMeleeAttack = gameTime + 1.5;
@@ -385,7 +357,7 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 		}		
 		return 0;
 	}
-	if(gameTime > npc.m_flNextMeleeAttack)
+	if(gameTime > npc.m_flNextRangedAttack)
 	{
 		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0))
 		{
@@ -402,24 +374,21 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 				{
 					if(!NpcStats_VictorianCallToArms(npc.index))
-					{
-						npc.m_iOverlordComboAttack--;
-					}
+						npc.m_iAmmo--;
 					target = TR_GetEntityIndex(swingTrace);	
-						
+					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 					ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
-					npc.m_flNextMeleeAttack = gameTime + 1.0;
+					npc.m_flNextRangedAttack = gameTime + 1.0;
 
 					if(IsValidEnemy(npc.index, target))
 					{
 						float damageDealt = 40.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 8.0;
-
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 						IncreaseEntityDamageTakenBy(target, 0.1, 3.5, true);
@@ -495,12 +464,9 @@ void VictorianSquadleaderAOEbuff(VictorianSquadleader npc, float gameTime, bool 
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
 					if(GetVectorDistance(pos1, pos2, true) < (LEADER_BUFF_MAXRANGE * LEADER_BUFF_MAXRANGE))
 					{
-						if(i_NpcInternalId[entitycount] != NPCId) //They cannot buff eachother.
-						{
-							ApplyStatusEffect(npc.index, entitycount, "Squad Leader", 15.0);
-							//Buff this entity.
-							buffed_anyone = true;
-						}
+						ApplyStatusEffect(npc.index, entitycount, "Squad Leader", 15.0);
+						//Buff this entity.
+						buffed_anyone = true;
 					}
 				}
 			}
@@ -510,9 +476,7 @@ void VictorianSquadleaderAOEbuff(VictorianSquadleader npc, float gameTime, bool 
 			float bufftime = 25.0;
 			npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 			if(NpcStats_VictorianCallToArms(npc.index))
-			{
 				bufftime -= 10.0;
-			}
 			npc.m_flAttackHappens_bullshit = gameTime + bufftime;
 			static int r;
 			static int g;
