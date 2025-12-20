@@ -1157,6 +1157,7 @@ void NPC_ConfigSetup()
 	BarbaricTeardownOnMapStart();
 	SkilledCrossbowmanOnMapStart();
 	DemonDevoterOnMapStart();
+	DungeonLoot_MapStart();
 }
 
 void NPC_MapEnd()
@@ -2525,3 +2526,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/construction2/npc_barbaric_teardown.sp"
 #include "npc/construction/construction2/npc_skilled_crossbowman.sp"
 #include "npc/construction/construction2/npc_demon_devoter.sp"
+#include "npc/construction/npc_dungeon_loot.sp"
