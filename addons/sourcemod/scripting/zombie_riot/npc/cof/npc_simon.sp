@@ -634,7 +634,7 @@ public Action Simon_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			//We died, self stun and give full health.
 			npc.m_flSelfStun = GetGameTime(npc.index) + 0.1;
-			FreezeNpcInTime(victim, 25.0);
+			FreezeNpcInTime(victim, 45.0);
 			npc.PlayIntroSound();
 			for(int repeat; repeat < 10; repeat ++)
 			{
@@ -651,8 +651,8 @@ public Action Simon_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 					f_AttackSpeedNpcIncrease[npcsummon.index] *= 0.85;
 					NpcStats_CopyStats(npc.index, summon);
 					FreezeNpcInTime(npcsummon.index, 2.0);
-					SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/6);
-					SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/6);
+					SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/10);
+					SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/10);
 					ApplyStatusEffect(summon, summon, "Dimensional Turbulence", 5.0);
 					ApplyStatusEffect(npcsummon.index, npcsummon.index, "Unstoppable Force", 2.0);
 				}
@@ -660,7 +660,7 @@ public Action Simon_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
 			HealEntityGlobal(npc.index, npc.index, 99999999.9, 1.0, 0.0, HEAL_ABSOLUTE);
-			ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 25.0);
+			ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 45.0);
 			damage = 0.0;
 			return Plugin_Changed;
 		}

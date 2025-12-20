@@ -1156,6 +1156,7 @@ void NPC_ConfigSetup()
 	
 	BarbaricTeardownOnMapStart();
 	SkilledCrossbowmanOnMapStart();
+	DemonDevoterOnMapStart();
 }
 
 void NPC_MapEnd()
@@ -2523,3 +2524,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/npc_overlord_follower.sp"
 #include "npc/construction/construction2/npc_barbaric_teardown.sp"
 #include "npc/construction/construction2/npc_skilled_crossbowman.sp"
+#include "npc/construction/construction2/npc_demon_devoter.sp"

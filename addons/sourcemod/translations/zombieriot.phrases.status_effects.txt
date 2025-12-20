@@ -2540,4 +2540,12 @@
 		"it"	"Aumenta la velocità di attacco/ricarica, la velocità di guarigione e riduce i cooldown del 40％.\nAumenta la velocità di movimento del 25％.\n{crimson}I nemici ottengono invece Turbolenza dimensionale."
 		"ko"	"공격 속도/재장전 속도, 회복률이 40％ 증가하고 쿨타임이 40％ 감소하며\n이동 속도가 25％ 증가합니다.\n{crimson}대신 적들은 차원적 격변 효과를 얻습니다."
 	}
+	"Chaos Demon Possession"
+	{
+		"en"	"Chaos Demon Possession"
+	}
+	"Chaos Demon Possession Desc"
+	{
+		"en"	"Decreases damage taken by 65％\nIncreases NPC movementspeed by 15％\nInrceases thinkspeed by 50％\nFully heals target when applied and not extended."
+	}
 }

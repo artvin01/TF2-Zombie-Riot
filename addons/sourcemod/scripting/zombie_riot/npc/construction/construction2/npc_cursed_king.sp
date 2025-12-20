@@ -40,12 +40,21 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/pickaxe_swing2.wav",
 	"weapons/pickaxe_swing3.wav"
 };
-
-void BarbaricRagerOnMapStart()
+static const char g_MeleeBroke[][] =
 {
+	"player/taunt_sorcery_staff_break.wav",
+};
+void CursedKingOnMapStart()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeBroke);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barbaric Rager");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barbaric_rager");
+	strcopy(data.Name, sizeof(data.Name), "Cursed King");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_cursed_king");
 	strcopy(data.Icon, sizeof(data.Icon), "soldier");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -56,11 +65,27 @@ void BarbaricRagerOnMapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return BarbaricRager(vecPos, vecAng, team);
+	return CursedKing(vecPos, vecAng, team);
 }
 
-methodmap BarbaricRager < CClotBody
+methodmap CursedKing < CClotBody
 {
+	property int m_iAttacksLeft
+	{
+		public get()		{	return this.m_iOverlordComboAttack;	}
+		public set(int value) 	{	this.m_iOverlordComboAttack = value;	}
+	}
+	property int m_iMiniLivesLost
+	{
+		public get()
+		{
+			return this.m_iAttacksTillMegahit;
+		}
+		public set(int value)
+		{
+			this.m_iAttacksTillMegahit = value;
+		}
+	}
 	public void PlayIdleSound()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -81,16 +106,21 @@ methodmap BarbaricRager < CClotBody
  	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);
 	}
+	public void PlayMeleeBroke()
+ 	{
+		EmitSoundToAll(g_MeleeBroke[GetRandomInt(0, sizeof(g_MeleeBroke) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);
+	}
+
 	public void PlayMeleeHitSound()
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public BarbaricRager(float vecPos[3], float vecAng[3], int ally)
+	public CursedKing(float vecPos[3], float vecAng[3], int ally)
 	{
-		BarbaricRager npc = view_as<BarbaricRager>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1000", ally));
+		CursedKing npc = view_as<CursedKing>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.3", "1000", ally));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		KillFeed_SetKillIcon(npc.index, "pickaxe");
 		
@@ -100,21 +130,25 @@ methodmap BarbaricRager < CClotBody
 		
 
 		func_NPCDeath[npc.index] = ClotDeath;
-		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
 		
-		npc.m_flSpeed = 290.0;
+		npc.m_flSpeed = 270.0;
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_paintrain/c_paintrain.mdl");
+		npc.m_iAttacksLeft = 3;
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_rift_fire_axe/c_rift_fire_axe.mdl");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/all_class/tuxxy_soldier.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/hw2013_the_glob/hw2013_the_glob.mdl");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2025_face_lift/hwn2025_face_lift_soldier.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum25_sir_buildsalot_style2/sum25_sir_buildsalot_style2.mdl");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2025_buzz_kill_style2/hwn2025_buzz_kill_style2.mdl");
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
+
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
-		SetVariantInt(2);
+		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		npc.StartPathing();
@@ -124,7 +158,7 @@ methodmap BarbaricRager < CClotBody
 
 static void ClotThink(int iNPC)
 {
-	BarbaricRager npc = view_as<BarbaricRager>(iNPC);
+	CursedKing npc = view_as<CursedKing>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -171,13 +205,13 @@ static void ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(target);
 		}
-		BarbaricDealtaker_SelfDefense(npc, distance, vecTarget, gameTime); 
+		Clot_SelfDefense(npc, distance, vecTarget, gameTime); 
 	}
 
 	npc.PlayIdleSound();
 }
 
-void BarbaricDealtaker_SelfDefense(BarbaricRager npc, float distance, float vecTarget[3], float gameTime)
+void Clot_SelfDefense(CursedKing npc, float distance, float vecTarget[3], float gameTime)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -193,9 +227,6 @@ void BarbaricDealtaker_SelfDefense(BarbaricRager npc, float distance, float vecT
 				if(target > 0)
 				{
 					float damage = 60.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damage *= 6.0;
-
 					npc.PlayMeleeHitSound();
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 				}
@@ -222,7 +253,7 @@ void BarbaricDealtaker_SelfDefense(BarbaricRager npc, float distance, float vecT
 }
 static void ClotDeath(int entity)
 {
-	BarbaricRager npc = view_as<BarbaricRager>(entity);
+	CursedKing npc = view_as<CursedKing>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
@@ -240,4 +271,21 @@ static void ClotDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
+}
+
+
+static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	CursedKing npc = view_as<CursedKing>(victim);
+	float gameTime = GetGameTime(npc.index);
+	if(npc.m_flHeadshotCooldown < gameTime)
+	{
+		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
+	}
+
+	float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
+	int health 		= float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+
+	npc.m_iMiniLivesLost
 }
