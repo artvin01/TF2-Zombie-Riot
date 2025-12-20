@@ -4,7 +4,7 @@
 	{
 		"en" 		"Xeno infected Silvester Pleads for help!"
 		"it"		"Silvester Xeno infettato chiede aiuto!"
-		"ko" 		"제노 감염된 실베스터가 도움을 요청합니다!"
+		"ko" 		"제노에 감염된 실베스터가 도움을 요청합니다!"
 	}
 	"Silvester And Waldch Arrived."
 	{
@@ -13,13 +13,13 @@
 		"fr" 		"Silvester et Waldch sont ici."
 		"chi"		"西尔韦斯特和瓦德奇到来。"
 		"it"		"Silvester e Waldch sono arrivati."
-		"ko" 		"실베스터와 왈츠가 등장했습니다."
+		"ko" 		"실베스터와 왈츠가 도착했습니다."
 	}
 	"Zilius Arrived Arrived."
 	{
 		"en" 		"Zilius Arrived the leader of the exlusionary Expidonsans."
 		"it"		"Zilius Arrivò il capo degli esclusivi Expidonsans."
-		"ko" 		"엑스피돈산의 배타적인 지도자, 질리우스가 등장했습니다."
+		"ko" 		"엑스피돈사의 배타적인 지도자, 질리우스가 등장했습니다."
 	}
 	"Calmaticus Arrived."
 	{
@@ -35,7 +35,7 @@
 	{
 		"en" 		"Vivithorn... Is here."
 		"it"		"Vivithorn... È qui."
-		"ko" 		"비비쏜즈가... 이 곳에 왔습니다."
+		"ko" 		"비비쏜이... 여기 있습니다."
 	}
 	"Alaxios Arrived"
 	{
@@ -45,13 +45,13 @@
 		"pt"		"The Atlantean and great leader Alaxios chegou."
 		"chi" 		"亚特兰蒂斯之王 ,阿尔坎托斯到达。"
 		"it"		"Arrivò il grande leader atlantideo Alaxios."
-		"ko" 		"아틀란티스인 총대장, 알락시오스가 등장했습니다."
+		"ko" 		"아틀란티스인이자 위대한 지도자, 알락시오스가 등장했습니다."
 	}
 	"Sea Alaxios Arrived"
 	{
 		"en" 		"The Infected Atlantean is screaming for help free him before it can make use of his power."
 		"it"		"L'Atlante infetto sta gridando aiuto: liberalo prima che possa usare il suo potere."
-		"ko" 		"이 감염된 아틀란티스인이 비명을 질러 도움을 요청하고 있습니다."
+		"ko" 		"감염된 아틀란티스인이 해방시켜 달라고 울부짖습니다... 그것이 그의 힘을 이용하기 전에 말이죠."
 	}
 	"Run while you can."
 	{
@@ -60,7 +60,7 @@
 		"fr" 		"Courez, pendant que vous le pouvez."
 		"chi"		"快跑。"
 		"it"		"Corri finché puoi."
-		"ko" 		"가능하면 도주하십시오."
+		"ko" 		"도망칠 수 있을 때 도망치세요."
 	}
 	"Sensal Arrived"
 	{
@@ -69,7 +69,7 @@
 		"fr" 		"Le Expidonsan Sensal fauche."
 		"pt"		"O Expidonsan Sensal colhe."
 		"it"		"L'Expidonsan Sensal miete."
-		"ko" 		"엑스피돈사 출신, 센살이 등장했습니다."
+		"ko" 		"엑스피돈사 출신, 센살이 전장을 휩씁니다."
 	}
 	"Nemal Arrived"
 	{
@@ -86,7 +86,7 @@
 		"fr" 		"Le gardien du Void Vhxis vous arrête."
 		"chi"		"虚空守卫者Vxhis阻挡了你的路。"
 		"it"		"Vhxis, il custode del vuoto, ti blocca."
-		"ko" 		"공허 수호자, 비흐시스가 당신의 길을 막으러 왔습니다."
+		"ko" 		"공허의 수호자, 비흐시스가 당신을 막아섭니다."
 	}
 	"The Messanger Arrived"
 	{
@@ -95,7 +95,7 @@
 		"fr" 		"Le Messager a collectioné le chaos."
 		"chi"		"代言者已积攒混沌。"
 		"it"		"Il Messaggero ha accumulato caos."
-		"ko" 		"메신저가 이 곳에 혼돈을 누적시키기 위해 왔습니다."
+		"ko" 		"메신저가 이 곳에 혼돈을 쌓아올리기 위해 왔습니다."
 	}
 	"Chaos Kahmlstein Arrived"
 	{
@@ -104,7 +104,7 @@
 		"fr" 		"Kahmlstein, le leader rebèle chaotique, va vous détruire."
 		"chi"		"混沌之首，卡姆斯坦因前来歼灭你。"
 		"it"		"Kahmlstein, il leader ribelle e caotico, ti annienterà."
-		"ko" 		"혼돈의 우두머리, 캄르스타인이 당신을 섬멸하기 위해 왔습니다."
+		"ko" 		"혼돈에 침식된 반란적인 우두머리, 카멜슈타인이 당신을 절멸시킬 것입니다."
 	}
 	"Whiteflower The leader"
 	{
@@ -116,7 +116,7 @@
 	{
 		"en" 		"Shadowing Darkness the throne taker and ruler of the Umbrals."
 		"it"		"Shadowing Darkness, il conquistatore del trono e sovrano degli Umbrali."
-		"ko" 		"왕좌를 빼앗은 자이자 움브랄(Umbrals)의 지배자, 섀도잉 다크니스가 왔습니다."
+		"ko" 		"왕좌 찬탈자이자 움브랄의 지배자, ''응달''."
 	}
 	"The Purge Arrived"
 	{
@@ -125,7 +125,7 @@
 		"fr" 		"Le Purge a collectioné le chaos."
 		"chi"		"扫荡者出现了。"
 		"it"		"La Purga ha accumulato "
-		"ko" 		"퍼지가 이 곳에 혼돈을 누적시키기 위해 왔습니다."
+		"ko" 		"퍼지가 이 곳에 혼돈을 쌓아올리기 위해 왔습니다."
 	}
 	"Blitzkrieg Spawn"
 	{
@@ -146,7 +146,7 @@
 	"SSB Spawn Finale"
 	{
 		"en"		"SSB is here to- wait, why is he in a chair?"
-		"ko"		"슈프림 스푸크마스터 본즈가... 잠깐, 쟤 왜 의자에 앉아 있는 거죠?"
+		"ko"		"슈프림 스푸크마스터 본즈가—잠깐, 왜 의자에 앉아 있는 거죠?"
 	}
 	"You have alerted the horde..."
 	{
@@ -157,7 +157,7 @@
 		"nl"		"De horde heeft je gehoord..."
 		"chi"       "你惊动了尸群...."
 		"it"		"Hai allertato l'orda..."
-		"ko" 		"당신이 호드를 자극했습니다..."
+		"ko" 		"당신이 무리를 자극했습니다..."
 	}
 	"Destruction echoes through a nearby space..."
 	{
@@ -168,7 +168,7 @@
 		"nl"		"Vernietiging echo's door een diepe ruimte..."
 		"chi"       "毁灭的回声在附近的空间回荡……"
 		"it"		"La distruzione riecheggia in uno spazio vicino..."
-		"ko" 		"파멸의 메아리가 근처에 울려퍼지고 있습니다..."
+		"ko" 		"파멸의 메아리가 근방에 울려퍼지고 있습니다..."
 	}
 	"A massive foe has entered this field..."
 	{
@@ -179,7 +179,7 @@
 		"nl"		"Een gigantische tegenstander heeft zich tot het veld begeven..."
 		"chi"       "一个强大的敌人进入了这个领域…"
 		"it"		"Un nemico imponente è entrato in campo..."
-		"ko" 		"강대한 적이 이 전장에 진입했습니다..."
+		"ko" 		"거대한 적이 이 전장에 돌입했습니다..."
 	}
 	"You can discern faint metalic screams not like the others..."
 	{
@@ -190,7 +190,7 @@
 		"nl"		"Je kunt doffe metalen schreeuwen horen ongelijk de anderen..."
 		"chi"       "你可以分辨出微弱的金属尖叫声，不像其他的……"
 		"it"		"Si possono distinguere deboli urla metalliche diverse dalle altre..."
-		"ko" 		"다른 것들과는 전혀 다른 희미한 금속성 비명이 울려퍼지고 있습니다..."
+		"ko" 		"다른 것과 같지 않은 희미한 금속성 비명이 들립니다..."
 	}
 	"Distant low rumbles fill the air space..."
 	{
@@ -223,7 +223,7 @@
 		"nl"		"Doffe ratelingen kunnen gehoord worden, en ze komen snel naar je toe..."
 		"chi"       "隐约可以听到咔哒咔哒的声音，它正以飞快的速度靠近……"
 		"it"		"Si sente un leggero tintinnio, che si avvicina rapidamente..."
-		"ko" 		"희미한 덜컹거리는 소리가 들려옵니다. 그리고 그것이 매우 빠르게 접근해오고 있습니다..."
+		"ko" 		"희미한 덜컹거리는 소리가 들려옵니다. 그리고 매우 빠르게 접근해오고 있습니다..."
 	}
 	"Something rapidly rams through hordes in your direction..."
 	{
@@ -234,7 +234,7 @@
 		"nl"		"Er is iets snel door de hordes aan het rammen in uw richting..."
 		"chi"       "有东西迅速穿过人群朝你的方向冲过来。"
 		"it"		"Qualcosa si fa rapidamente strada tra le orde nella tua direzione..."
-		"ko" 		"적 무리 속에서 무언가가 빠르게 당신이 있는 곳으로 접근해오고 있습니다..."
+		"ko" 		"적 무리 속에서 무언가가 빠르게 당신 쪽으로 돌진해오고 있습니다..."
 	}
 	"Common means might not stop this agile enemy..."
 	{
@@ -256,7 +256,7 @@
 		"pt"		"Calamidade da Trupe Carmesim, codinome Fantasma."
 		"chi"       "深红剧团的灾难，代号幽灵"
 		"it"		"Calamità della Compagnia Cremisi, nome in codice Fantasma."
-		"ko" 		"극단의 재앙 루시안, 코드네임 팬텀."
+		"ko" 		"크림슨 극단의 재앙 루시안, 코드네임 팬텀."
 	}
 	"A caped Crimson warrior with Ominous Apparitions is appearing..."
 	{
@@ -266,7 +266,7 @@
 		"pt"		"Um guerreiro Carmesim com capa e aparições sinistras está aparecendo..."
 		"chi"       "一个披着斗篷、带着不祥幻影的深红战士出现了……"
 		"it"		"Un guerriero cremisi con mantello e apparizioni minacciose sta comparendo..."
-		"ko" 		"불길한 기운을 두른 진홍색 망토의 전사가 나타났습니다..."
+		"ko" 		"불길한 환영을 두른 진홍빛 망토의 전사가 모습을 드러냅니다..."
 	}
 	"A patch of shadow. It has never once left, nor has it ever truly existed."
 	{
@@ -276,7 +276,7 @@
 		"pt"		"Um pedaço de sombra. Nunca saiu, nem nunca existiu verdadeiramente."
 		"chi"       "一片阴影。它从未离开过，也从未真正存在过。"
 		"it"		"Una macchia d'ombra. Non se n'è mai andata, né è mai realmente esistita."
-		"ko" 		"하나의 그림자. 여태 떠난 적도, 실제로 존재한 적도 없다."
+		"ko" 		"그림자의 조각. 결코 떠난 적도, 실제로 존재한 적도 없다."
 	}
 	"Medieval Speech 1"
 	{
@@ -286,7 +286,7 @@
 		"pt"		"Um rei quer conquistar esta terra!"
 		"chi" 		"有位国王进军了！"
 		"it"		"Un re vuole conquistare questa terra!"
-		"ko" 		"과거의 왕이 이 지역을 점령하고 싶어합니다!"
+		"ko" 		"왕이 이 땅을 점령하고 싶어합니다!"
 	}
 	"Medieval Speech 2"
 	{
@@ -296,7 +296,7 @@
 		"pt"		"Um aldeão perdido apareceu, pare-o!"
 		"chi" 		"有村民出现了，快阻止他们！"
 		"it"		"È apparso un abitante del villaggio vagante, fermatelo!"
-		"ko" 		"길 잃은 주민이 등장했습니다! 어서 막아야합니다!"
+		"ko" 		"떠도는 주민이 나타났습니다, 그를 막으세요!"
 	}
 	"Medieval Speech 3"
 	{
@@ -306,7 +306,7 @@
 		"ru" 		"Надвигается вторжение прошлого!"
 		"chi" 		"历史正在回潮！"
 		"it"		"È in atto un'invasione dal passato!"
-		"ko" 		"과거로부터 넘어온 침략자가 이 곳에 왔습니다!"
+		"ko" 		"과거에서의 침략이 발생하고 있습니다!"
 	}
 	"Beheaded Kami 1"
 	{
@@ -316,7 +316,7 @@
 		"pt"		"Talvez seja melhor deixar isso em paz..."
 		"chi" 		"我们最好不要管这个东西..."
 		"it"		"Forse è meglio lasciar perdere..."
-		"ko" 		"그냥 내버려 두는 게 좋을지도 모르겠어..."
+		"ko" 		"어쩌면 그냥 내버려 두는 게 좋을지도..."
 	}
 	"Beheaded Kami 2"
 	{
@@ -326,7 +326,7 @@
 		"pt"		"Não leve isso de ânimo leve."
 		"chi" 		"不要掉以轻心。"
 		"it"		"Non prenderla alla leggera."
-		"ko" 		"저들을 절대 가볍게 보지 마십시오."
+		"ko" 		"절대 가볍게 보지 마세요."
 	}
 	"Beheaded Kami 3"
 	{
@@ -376,7 +376,7 @@
 		"pt"	"Stella e Karlas retornaram."
 		"chi"	"Stella和Karlas回来了。"
 		"it"	"Stella e Karlas sono tornate"
-		"ko"	"스텔라와 카를라스가 돌아왔습니다!"
+		"ko"	"스텔라와 카를라스가 돌아왔습니다."
 	}
 	"Diversionistico Spawn"
 	{
@@ -386,13 +386,13 @@
 		"pt"	"Diversionistico Apareceu."
 		"chi"	"Diversionistico Spawn."
 		"it"	"Spawn Diversionistico"
-		"ko"	"다이버저니스티코가 생성되었습니다."
+		"ko"	"다이버저니스티코 출현"
 	}
 	"Diversionistico_Elitus Spawn"
 	{
 		"en"	"Diversionistico Elitus Spawn."
 		"it"	"Spawn Diversionistico Elitus."
-		"ko"	"다이버저니스티코 엘리투스가 생성되었습니다."
+		"ko"	"다이버저니스티코 엘리투스 출현"
 	}
 	"Voided Diversionistico Spawn"
 	{
@@ -401,7 +401,7 @@
 		"fr"	"Diversionistico du Void Apparaît"
 		"chi"	"Voided DIversionistico Spawn."
 		"it"	"Spawn Voided Diversionistico"
-		"ko"	"침식된 다이버저니스티코가 생성되었습니다."
+		"ko"	"공허화된 다이버저니스티코 출현"
 	}
 	"A Void Gate Apeared..."
 	{
@@ -418,7 +418,7 @@
 		"ru" 	"Маяк Иберии Телепортировался!"
 		"fr"	"Une phare Iberiain s'est téléporté ici!"
 		"it"	"Faro iberico teletrasportato!"
-		"ko"	"이베리안 등대가 나타났습니다!"
+		"ko"	"이베리아 등대가 나타났습니다!"
 	}
 	"Snipers Appear"
 	{
@@ -427,7 +427,7 @@
 		"fr"	"Des Snipers Apparaîssent."
 		"chi"	"狙击手出现。"
 		"it"	"Arrivano i cecchini."
-		"ko"	"스나이퍼가 등장했습니다."
+		"ko"	"저격수들이 모습을 드러냅니다."
 	}
 	"The Doctor Speech 1"
 	{
@@ -436,7 +436,7 @@
 		"fr" 		"Éliminez-le avant qu'il soit trop tard!"
 		"chi"		"在为时已晚之前击败他！"
 		"it"		"Eliminatelo prima che sia troppo tardi!"
-		"ko" 		"너무 늦기 전에 어서 저 의사를 막으세요!"
+		"ko" 		"너무 늦기 전에 저 의사를 제거하세요!"
 	}
 	"The Doctor Speech 2"
 	{
@@ -445,7 +445,7 @@
 		"fr" 		"Sa session de thérapie devrait vous inquièter le moins."
 		"chi"		"他的疗法将是您最不该担心的事情。"
 		"it"		"La sua seduta di terapia sarà l'ultima delle tue preoccupazioni."
-		"ko" 		"그의 치료 방식이 당신의 걱정을 덜어줄지도 모릅니다...?"
+		"ko" 		"그의 치료 시간은 당신의 가장 나중의 걱정거리가 될 겁니다."
 	}
 	"The Doctor Speech 3"
 	{
@@ -454,7 +454,7 @@
 		"fr" 		"Ses paroles motivantes encourage les ennemis."
 		"chi"		"他的发言鼓励着尸群。"
 		"it"		"Il suo discorso motivazionale incoraggia i nemici."
-		"ko" 		"그의 격려용 연설이 적들의 사기를 높여주고 있습니다!"
+		"ko" 		"그의 격려용 연설이 적들의 사기를 높여주고 있습니다."
 	}
 	"Spirit Spawns 1"
 	{
@@ -463,7 +463,7 @@
 		"fr" 		"Un esprit apparaît... libérez-le avant qu'il soit trop tard!"
 		"chi"		"一个冤魂出现了。赶紧驱掉它！"
 		"it"		"È apparso uno spirito... liberalo prima che sia troppo tardi!"
-		"ko" 		"떠도는 영혼들이 나타나기 시작했습니다... 너무 늦기 전에 그들을 성불시키십시오!"
+		"ko" 		"떠도는 영혼이 나타났습니다... 너무 늦기 전에 해방시키세요!"
 	}
 	"Spirit Spawns 2"
 	{
@@ -472,7 +472,7 @@
 		"fr" 		"Évitez de le toucher!"
 		"chi"		"千万别让它碰到你！"
 		"it"		"Non lasciare che ti tocchi!"
-		"ko" 		"절대로 영혼들이 당신과 접촉하게 두지 마십시오!"
+		"ko" 		"절대로 영혼들이 당신과 접촉하게 두지 마세요!"
 	}
 	"Spirit Spawns 3"
 	{
@@ -481,7 +481,7 @@
 		"fr" 		"Soyez pas seul!"
 		"chi"		"不要擅自行动！"
 		"it"		"Non stare da solo!"
-		"ko" 		"절대로 혼자 돌아다니지 마십시오!"
+		"ko" 		"혼자 돌아다니지 마세요!"
 	}
 	"Fallen Warrior 1"
 	{
@@ -508,7 +508,7 @@
 		"fr" 		"Son armure est rouillé et sa lame terne, mais son corps vide se tourne vers vous."
 		"chi"		"他的盔甲早已被铁锈覆盖，长剑也被磨损为铁块。但他的躯壳依旧在向你的方向移动。"
 		"it"		"La sua spada è smussata e l'armatura è arrugginita, ma il suo corpo svuotato si avvicina lentamente a te."
-		"ko" 		"그의 검은 둔해지고, 갑옷은 녹슬었어도, 그의 빈 껍데기인 몸은 여전히 당신을 향해 다가간다."
+		"ko" 		"그의 검은 무뎌지고, 갑옷은 녹슬었지만, 그의 텅 비어버린 몸은 천천히 당신을 향해 다가갑니다."
 	}
 	"Machina Waldch 1"
 	{
@@ -517,7 +517,7 @@
 		"fr" 		"Une imitation méchanique de Waldch."
 		"chi"		"一台假冒Waldch的机器。"
 		"it"		"Una macchina che cerca di imitare Waldch."
-		"ko" 		"왈츠를 복제하려는 기계입니다."
+		"ko" 		"왈츠를 모방하려는 기계입니다."
 	}
 	"Machina Waldch 2"
 	{
@@ -526,7 +526,7 @@
 		"fr" 		"Personne n'est de son côté."
 		"chi"		"它不站在任何一方。"
 		"it"		"Non sta dalla parte di nessuno."
-		"ko" 		"그는 누구의 편도 들지 않을 것입니다."
+		"ko" 		"그는 누구의 편도 아닙니다."
 	}
 	"Machina Waldch 3"
 	{
@@ -535,7 +535,7 @@
 		"fr" 		"Il disparaîtrait peut-être tout seul."
 		"chi"		"不理它的话，它应该会自己离开。"
 		"it"		"Se dura abbastanza a lungo, potrebbe scomparire da sola."
-		"ko" 		"오래 기다리면, 그는 저절로 사라질 것입니다."
+		"ko" 		"충분히 기다린다면, 스스로 떠날지도 모릅니다."
 	}
 	"Venium Spawn"
 	{
@@ -544,7 +544,7 @@
 		"fr"		"Un constructeur d'Ancre Ruanian est ici."
 		"chi"		"敌军正在修建废墟锚。"
 		"it"		"È arrivato un costruttore di ancore rumeno."
-		"ko"		"루이나인의 닻 건축가들이 등장했습니다."
+		"ko"		"루이나의 앵커 건축가가 도착했습니다."
 	}
 	"Twirl Spawn"
 	{
@@ -559,7 +559,7 @@
 	{
 		"en"		"Kill him before he opens the gate"
 		"it"		"Uccidilo prima che apra il cancello."
-		"ko"		"그가 게이트를 열기 전에 그를 처치해야합니다!"
+		"ko"		"그가 게이트를 열기 전에 처치해야합니다!"
 	}
 	"3650 1"
 	{
@@ -577,7 +577,7 @@
 		"chi"		"一个异常显眼的士兵进入了场地。"
 		"fr"		"Un soldat sui generis entre la scène."
 		"it"		"Entra in scena un soldato sui generis."
-		"ko"		"코드명 BAD COP이 전장에 입장했습니다."
+		"ko"		"코드명 BAD COP이 현장에 돌입했습니다."
 	}
 	"3650 3"
 	{
@@ -586,32 +586,32 @@
 		"chi"		"欧米茄现身了。"
 		"fr"		"Omega apparaît."
 		"it"		"3650 fa la sua comparsa."
-		"ko"		"3650가 모습을 드러냈습니다."
+		"ko"		"3650가 모습을 드러냅니다."
 	}
 	"Reaper Spawn 1"
 	{
 		"en"		"''Don't fear the reaper'', they say... They're wrong."
-		"ko"		"'사신을 두려워하지 마라’고들 말하지… 하지만 그들은 틀렸다"
+		"ko"		"'사신을 두려워하지 마라’라고들 하지요... 그들이 틀린 것 같군요."
 	}
 	"Reaper Spawn 2"
 	{
 		"en"		"Death itself has come for you."
-		"ko"		"죽음 그 자체가 너를 찾아왔다."
+		"ko"		"죽음 그 자체가 당신을 찾아왔습니다."
 	}
 	"Reaper Spawn 3"
 	{
 		"en"		"An agent of Necropolis has arrived."
-		"ko"		"네크로폴리스의 요원이 도착했다."
+		"ko"		"네크로폴리스의 요원이 도착했습니다."
 	}
 	"Dr Dam Deliver Spawn 1"
 	{
 		"en"		"Oh wow! How nice, a gift!"
-		"ko"		"와우, 선물이로군! 정말 쩔어!"
+		"ko"		"우와! 선물이라니, 정말 멋진데요!"
 	}
 	"Dr Dam Deliver Spawn 2"
 	{
 		"en"		"Messing with luck has its downsides."
-		"ko"		"운에 맡긴다고? 단점 뿐이지."
+		"ko"		"운에 맡긴다고? 단점 뿐이지요."
 	}
 	"Dr Dam Deliver Spawn 3"
 	{
@@ -628,25 +628,25 @@
 	{
 		"en"		"The Z-Mains planned something against you."
 		"it"		"Gli Z-Mains hanno pianificato qualcosa contro di te."
-		"ko"		"아무래도 Z-Mains 들이 당신에 대한 대책을 마련해온 것 같습니다..."
+		"ko"		"Z-Mains 들이 당신에 대한 대책을 마련해 왔습니다."
 	}
 	"Zmain spawn Text 3"
 	{
 		"en"		"Be glad PVP isnt a thing..."
 		"it"		"Siate felici che il PVP non esista..."
-		"ko"		"이 모드가 PVP 가 아닌걸 다행으로 여겨야할 것 같습니다..."
+		"ko"		"이 모드가 PVP가 아닌걸 다행으로 여기세요..."
 	}
 	"John Spawn Text 1"
 	{
 		"en"		"RUN!"
 		"it"		"CORRI!"
-		"ko"		"도망치세요! 빨리!!!"
+		"ko"		"도망치세요!"
 	}
 	"John Spawn Text 2"
 	{
 		"en"		"Maybe you can rob him back? Or just run..."
 		"it"		"Magari potresti derubarlo a tua volta? Oppure scappare..."
-		"ko"		"지금 저걸 상대로 싸우려고 하십니까? 절대 안 되죠..."
+		"ko"		"어쩌면 저 자를 역으로 털 수 있을지도요? 아니면 그냥 도망치거나..."
 	}
 	"John Spawn Text 3"
 	{
@@ -670,31 +670,31 @@
 	{
 		"en"		"A promise is a promise"
 		"it"		"Una promessa è una promessa"
-		"ko"		"약속은 약속이니까."
+		"ko"		"약속은 약속이니까"
 	}
 	"Victorian Radiomast Is Here!"
 	{
 		"en"	"Victorian Radiomast Is Here! Break this to end the infinite wave"
 		"it"	"Il Radiomast vittoriano è arrivato! Rompilo per porre fine all'onda infinita."
-		"ko"	"빅토리안 방송탑이 등장했습니다! 저것을 파괴하고 끝없는 공세를 멈춰야합니다!"
+		"ko"	"빅토리아 방송탑이 여기에 있습니다! 파괴하여 무한 웨이브를 중단시키세요!"
 	}
 	"Atomizer Arrived"
 	{
 		"en" 		"Leatherboots Scoutsquad's elite, Incoming Atomizer."
 		"it"		"Stivali di pelle Gli scout d'élite, Atomizzatore in arrivo."
-		"ko" 		"가죽부츠 스카웃 부대의 엘리트, 인수분해가 등장했습니다."
+		"ko" 		"가죽부츠 정찰대의 엘리트, 인수분해 접근 중."
 	}
 	"Huscarls Arrived"
 	{
 		"en" 		 "Huscarls halts you."
 		"it"		 "Huscarls ti ferma."
-		"ko" 		 "허스칼이 당신을 막기 위해 왔습니다."
+		"ko" 		 "허스칼이 당신을 막아섭니다."
 	}
 	"Harrison Arrived"
 	{
 		"en" 		 "The Pilot of Victorian Artillery, Harrison Arrived."
 		"it"		 "Il pilota dell'artiglieria vittoriana, Harrison, è arrivato."
-		"ko" 		 "빅토리안 공성대의 조종사, 해리슨이 도착했습니다."
+		"ko" 		 "빅토리아 포병대의 조종사, 해리슨이 도착했습니다."
 	}
 	"Castellan Arrived"
 	{

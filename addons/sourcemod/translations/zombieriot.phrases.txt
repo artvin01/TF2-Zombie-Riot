@@ -11,7 +11,7 @@
 		"nl"		"Artvin: NPC en Spelmodus Ontwikkeling\nBatfoxkid: Spelmodus Ontwikkeling\nPelipoika: Originele NPC Base en hulp\nAlex: Algemene Plugin en Wapen Plugin Assistentie\nSuza: Wapens en Basis Stock hulp\nMikusch: Vroege SpelData hulp\nKenzzer: Npc hulp en bug fixing hulp\nAlex Turtle & Stranger & Syko: Map assistentie\nCrusty: Modellen/Animaties\njDeivid: Alternatieve Golven\nGMOD Zombie Survival Devs: Muziek en basis concepten van hun"
 		"chi" 		"Artvin: NPC And Gamemode Development\nBatfoxkid: Gamemode Development\nPelipoika: Original NPC base and help\nAlex: Weapon Plugins and overall plugin Assistance\nSuza: Weapon and some Base stock help\nMikusch: Early Gamedata help\nKenzzer: NPC help and bug fix help\nAlex Turtle & Stranger & Syko: Map Assistance\nCrusty: Model/Animating\njDeivid: Alternative Waves\nGMOD Zombie Survival Devs: Music and base concept from them\n中文汉化:蔡徐坤，Snacks"
 		"it"		"Artvin: Sviluppo NPC e modalità di gioco\nBatfoxkid: Sviluppo della modalità di gioco\nPelipoika: Base e aiuto PNG originale\nAlex: Plugin per le armi e assistenza generale per i plugin\nSuza: Aiuto per le armi e alcune scorte di base\nMikusch: Aiuto per i primi Gamedata\nKenzzer: Aiuto NPC e correzione bug\nAlex Turtle & Stranger & Syko: Assistenza mappe\nCrusty: Modello/Animazione\njDeivid: Onde alternative\nGMOD Zombie Survival Devs: Musica e concetto di base"
-		"ko" 		"Artvin: NPC와 게임 모드 개발\nBatfoxkid: 게임 모드 개발\nPelipoika: 원본 NPC 베이스 및 도움\nAlex: 무기 플러그인과 전체적인 플러그인 도움\nSuza: 무기와 기본 틀 도움 \nMikusch: 게임 데이터 도움\nKenzzer: NPC 관련 도움과 버그 수정 도움 \nAlex Turtle & Stranger & Syko: 맵 도움\nCrusty: 모델, 애니메이팅\njDeivid: 웨이브 제작 도움\n게리 모드 Zombie Survival 모드 제작자들: 기본 콘셉트와 음악"
+		"ko" 		"Artvin: NPC 및 게임 모드 개발\nBatfoxkid: 게임 모드 개발\nPelipoika: 원본 NPC 베이스 및 도움\nAlex: 무기 플러그인과 전체적인 플러그인 도움\nSuza: 무기와 기본 틀 도움 \nMikusch: 초기 게임 데이터 도움\nKenzzer: NPC 관련 도움과 버그 수정 도움 \nAlex Turtle & Stranger & Syko: 맵 도움\nCrusty: 모델, 애니메이팅\njDeivid: 웨이브 제작 도움\n게리 모드 Zombie Survival 모드 제작자들: 원형 콘셉트와 음악"
 	}
 	"Press To Open Store"
 	{
@@ -22,7 +22,7 @@
 	"Last Alive Alone"
 	{
 		"en"		"You are on your last breath."
-		"ko"		"당신 혼자 살아남고 말았습니다."
+		"ko"		"당신은 죽음의 문턱에 있습니다."
 	}
 	"Last Alive"
 	{
@@ -36,7 +36,7 @@
 		"nl"		"Jij bent de laatste overelevende.\nOverleef de huidige golf om all uw bondgenoten tot leven te brengen" 
 		"chi"		"你是最后一名玩家！\n请坚持住！"
 		"it"		"Sei l'Ultimo Umano Vivo.\nSopravvivi all'ondata corrente per rianimare tutti i tuoi alleati."
-		"ko"		"당신은 최후의 1인이 되었습니다.\n이 웨이브를 버텨서 생존하여 다른 아군들을 전부 부활시키십시오."
+		"ko"		"최후의 1인이 되었습니다.\n이 웨이브에서 생존하여 다른 아군들을 전부 부활시키십시오."
 	}
 	"Level Up"
 	{
@@ -161,7 +161,7 @@
 		"nl"		"EHBO-Kit Afkoeling: {1}s"
 		"chi"       "Medi-Kit 剩余时间：{1}秒"
 		"it"		"Tempo Di Ricarica del Medi-Kit: {1}s"
-		"ko"		"의료 상자 쿨타임: {1}초"
+		"ko"		"의료 키트 쿨타임: {1}초"
 	}
 	"Ammo Crate Supplies"
 	{
@@ -250,7 +250,7 @@
 		"nl"		"-10％ korting op winkelvoorraden als er geen zombies aanwezig zijn"
 		"chi"       "休息回合商城折扣10％~"
 		"it"		"-10％ di sconto finché non ci sono zombie"
-		"ko"		"좀비가 없다면 상점 물건의 가격이 -10％ 할인됩니다"
+		"ko"		"좀비가 없는 동안 상점의 물품이 -10％ 할인됩니다"
 	}
 	"Equip"
 	{
@@ -317,7 +317,7 @@
 		"nl"		"Koop met scrap"
 		"chi"       "使用废料购买"
 		"it"		"Compra con gli scarti"
-		"ko"		"폐기 금속 구매"
+		"ko"		"폐기 금속으로 구매"
 	}
 	"Sell"
 	{
@@ -369,7 +369,7 @@
 	{
 		"en"		"Are you sure you want to sell all your items?\nYou are still in the rebuy phase and will gain back your Starter Store!"
 		"it"		"Sei sicuro di voler vendere tutti i tuoi oggetti?\nSei ancora nella fase di riacquisto e riacquisterai il tuo Negozio Iniziale!"
-		"ko"		"정말로 당신의 모든 아이템을 판매하시겠습니까?\n당신은 아직 재구매 단계이며 다시 로드아웃 상점으로 되돌아갈 것입니다!"
+		"ko"		"정말로 당신의 모든 아이템을 판매하시겠습니까?\n아직 재구매 단계에 있으며 다시 초기 상점으로 되돌아갈 것입니다!"
 	}
 	"Sell All Items"
 	{
@@ -381,7 +381,7 @@
 	{
 		"en"		"Return to loadout Menu"
 		"it"		"Ritorno al menu di caricamento"
-		"ko"		"로드아웃 메뉴로 귀환"
+		"ko"		"로드아웃 메뉴로 복귀"
 	}
 	"Confirm Loadout"
 	{
@@ -525,7 +525,7 @@
 		"en"		"Oil"
 		"es"		"Aceite"
 		"it"		"Olio"
-		"ko"		"오일"
+		"ko"		"기름"
 	}
 	"Flares"
 	{
@@ -669,7 +669,7 @@
 		"nl"		"Genezende Medicijnen"
 		"chi"       "医疗能量"
 		"it"		"Medicina curativa"
-		"ko"		"치유용 약"
+		"ko"		"치료용 약품"
 	}
 	"Medigun Fluid"
 	{
@@ -709,7 +709,7 @@
 		"nl"		"Uw Lazer Batterij is op!"
 		"chi"       "你的弹药已耗尽"
 		"it"		"Hai esaurito la batteria del laser!"
-		"ko"		"레이저 배터리가 전부 소모되었습니다!"
+		"ko"		"레이저 배터리가 전부 소진되었습니다!"
 	}
 	"Potion Supply"
 	{
@@ -806,7 +806,7 @@
 		"pt"		"Alguém usou sua maquina de Pack-a-Punch, você ganhou +100 Créditos!\nOutro construtor tem tecnologia mais avançada que você, e recebeu o resto"
         "ru"		"Кто-то воспользовался вашим улучшайзером, получено +100 кредитов!\nДругой строитель имеет более продвинутые технологии, чем ваши, и получил остальное."
 		"it"		"Qualcuno ha usato la vostra macchina Pack-A-Punch, guadagnate +100 contanti! Un altro costruttore ha una tecnologia più avanzata della vostra e ha guadagnato il resto"
-		"ko"		"누가 당신의 팩펀을 사용함. 자금 +100\n당신의 팩펀을 사용한 자의 기술력이 당신보다 뛰어나므로, 나머지 자금은 해당 인원에게 지급."
+		"ko"		"누군가 당신의 팩 어 펀치를 사용했습니다. 자금 +100\n다른 건축가의 기술력이 당신보다 뛰어나므로, 나머지 자금은 해당 인원에게 지급."
 	}
 	"Pap Machine Used Me"
 	{
@@ -815,7 +815,7 @@
 		"pt"		"Uma maquina de Pack-A-Punch foi usada que não era sua, mas sua tecnologia é mais avançada! você ganha +300 Créditos."
 		"ru"		"Был использован улучшайзер, который не принадлежал вам, но ваша техника более совершенна! Получено 300+ кредитов."
 		"it"		"È stato usato un Pack-A-Punch che non era tuo, ma la tua tecnologia è più avanzata! Guadagnate più di 300 contanti."
-		"ko"		"당신의 것이 아닌 팩펀을 사용했지만, 당신의 기술력이 훨씬 더 높으므로, 자금 +300!"
+		"ko"		"당신의 것이 아닌 팩펀을 사용했지만, 당신의 기술력이 더 높으므로, 자금 +300!"
 	}
 	"Equip Melee To Use"
 	{
@@ -829,7 +829,7 @@
 		"nl"		"Draag een wapen met ammunitie om dit te gebruiken!"
 		"chi"       "请拿着武器再使用！"
 		"it"		"Equipaggia un'arma con munizioni per usarla!"
-		"ko"		"탄약을 소모하는 무기로만 이것을 사용할 수 있습니다!"
+		"ko"		"탄약을 사용하는 무기로만 이것을 사용할 수 있습니다!"
 	}
 	"Armor Max Reached"
 	{
@@ -851,7 +851,7 @@
 		"fr"		"Vous ne pouvez plus utiliser les tables d'armure lors de ce Raid!"
 		"pt"		"Você não pode usar mais mesas de armaduras durante essa Batalha!"
 		"it"		"Non puoi più usare i TavoliArmatura in questa Battaglia Raid!"
-		"ko"		"이 전투에서는 더 이상 아머 테이블을 사용할 수 없습니다!"
+		"ko"		"이 레이드 전투에서는 더 이상 아머 테이블을 사용할 수 없습니다!"
 	}
 	"Armor Max Reached Ammo Box"
 	{
@@ -882,7 +882,7 @@
 		"en" 		"This Object is unuseable untill the next wave."
 		"es"		"Este objeto no es usable hasta la siguiente oleada."
 		"it"		"Questo Oggetto è inutilizzabile fino alla prossima ondata."
-		"ko" 		"이 오브젝트는 다음 웨이브가 시작되기 전까지는 사용할 수 없습니다."
+		"ko" 		"이 오브젝트는 다음 웨이브가 시작되기 전까지 사용할 수 없습니다."
 	}
 	"Object Cooldown"
 	{
@@ -905,7 +905,7 @@
 		"#format"	"{1:.0f}"
 		"en" 		"Theres {1} Minutes left in the simulation."
 		"it"		"Rimangono {1} minuti nella simulazione."
-		"ko" 		"시뮬레이션이 끝나기까지 {1} 분 남았습니다."
+		"ko" 		"시뮬레이션 종료까지 {1} 분 남았습니다."
 	}
 	"Cash Gained This Wave"
 	{
@@ -968,7 +968,7 @@
 		"nl"		"U hebt het maximale spijkers berijkt! Pak spijkers op met M2 of wacht tot ze worden opgebruikt!"
 		"chi"       "你已达到钉刺的最大使用次数，按下鼠标右键将它回收或等待它消耗殆尽。"
 		"it"		"Hai raggiunto il tuo limite di punte! Raccogli le punte con M2 o aspetta che siano esaurite!"
-		"ko" 		"가시 최대 설치량에 도달했습니다! 우클릭(M2)으로 가시를 회수하거나 가시가 소진될 때까지 기다리세요!"
+		"ko" 		"가시 최대 설치량에 도달했습니다! 우클릭(M2)으로 가시를 회수하거나 가시가 사용될 때까지 기다리세요!"
 	}
 	"Spike Limit Reached Global"
 	{
@@ -1042,7 +1042,7 @@
 		"pt"		"Granada de mão"
 		"nl"		"Hand Granaat"
 		"it"		"Granata a mano"
-		"ko" 		"수류탄!"
+		"ko" 		"수류탄"
 	}
 	"Current Mana"
 	{
@@ -1114,22 +1114,22 @@
 	"SSB Teleport Warning"
 	{
 		"en"		"YOU'RE BONED!"
-		"ko"		"넌 끝났어!"
+		"ko"		"넌 끝장이다!"
 	}
 	"Reaper Target Warning"
 	{
 		"en"		"DEATH IS IMMINENT..."
-		"ko"		"죽음이 눈앞에 있다…"
+		"ko"		"죽음이 임박했습니다…"
 	}
 	"Reaper Bored Alert"
 	{
 		"en"		"Death is no longer after you..."
-		"ko"		"더 이상 죽음이 너를 뒤쫓지 않는다…"
+		"ko"		"죽음이 더 이상 당신을 뒤쫓지 않습니다…"
 	}
 	"Reaper Tricked Alert"
 	{
 		"en"		"You've cheated death!"
-		"ko"		"당신은 죽음을 속였습니다…"
+		"ko"		"당신은 죽음을 속였습니다!"
 	}
 	"Rusty Ability Blocked"
 	{
@@ -1148,7 +1148,7 @@
 	{
 		"en"		"Fully Charge To Fire your IEM"
 		"it"		"Carica completa per accendere l'IEM"
-		"ko"		"최대로 충전하여 IEM을 발사하십시오"
+		"ko"		"최대로 충전하여 IEM을 발사하세요"
 	}
 	"Rusty Ability Cooldown"
 	{
@@ -1164,7 +1164,7 @@
 		"fr" 		"Accroupissez-vous pour utiliser cette abilité!"
 		"pt"		"Se abaixe pra usar essa habilidade!"
 		"it"		"Accovacciatevi per usare questa abilità!"
-		"ko" 		"앉은 상태에서 이 능력을 사용하세요!"
+		"ko" 		"앉은 상태에서 능력을 사용할 수 있습니다!"
 	}
 	"Wrathful Ability Cooldown"
 	{
@@ -1185,7 +1185,7 @@
 		"en"		"WRATH STRIKE IS FULLY CHARGED!"
 		"chi"		"！怒斩已完全蓄力！"
 		"it"		"L'ATTACCO DELL'IRA È COMPLETAMENTE CARICO!"
-		"ko"		"분노의 일격이 전부 충전되었습니다!"
+		"ko"		"분노의 일격이 완전히 충전되었습니다!"
 	}
 	"Magnesis Target Immune to Knockback"
 	{
@@ -1245,7 +1245,7 @@
 	{
 		"en"		"Grab target is out of your line of sight."
 		"it"		"Il bersaglio è fuori dalla linea di vista."
-		"ko"		"잡으려는 대상이 당신의 시야 범위 안에 없습니다!"
+		"ko"		"잡으려는 대상이 당신의 시야 범위 밖에 있습니다!"
 	}
 	"Magnesis Target Immune to Knockback"
 	{
@@ -1314,27 +1314,27 @@
 	"Raigeki Failed Low Charge"
 	{
 		"en"		"Raigeki failed: not enough charge!"
-		"ko"		"충전이 부족합니다. 뇌격 사용 불가능."
+		"ko"		"뇌격 사용 실패: 충전이 부족합니다!"
 	}
 	"Raigeki Failed Downed"
 	{
 		"en"		"Raigeki failed: you were downed!"
-		"ko"		"현재 당신은 다운 상태입니다. 뇌격 사용 불가능."
+		"ko"		"뇌격 사용 실패: 다운 상태가 되었습니다!"
 	}
 	"Raigeki Failed Killed"
 	{
 		"en"		"Raigeki failed: you died!"
-		"ko"		"현재 당신은 죽어있습니다. 뇌격 사용 불가능."
+		"ko"		"뇌격 사용 실패: 사망했습니다!"
 	}
 	"Raigeki Failed Wrong Weapon"
 	{
 		"en"		"Raigeki failed: you switched weapons!"
-		"ko"		"무기를 전환하셨습니다. 뇌격 사용 불가능."
+		"ko"		"뇌격 사용 실패: 무기를 전환하셨습니다!"
 	}
 	"Raigeki Fully Charged"
 	{
 		"en"		"RAIGEKI IS FULLY CHARGED!"
-		"ko"		"뇌격이 전부 충전되었습니다!"
+		"ko"		"뇌격이 완전히 충전되었습니다!"
 	}
 	"Gamemode Credits"
 	{
@@ -1405,7 +1405,7 @@
 		"#format"	"{1:.f}"
 		"en" 		"All your unique buildings are on a [{1}] second cooldown."
 		"it"		"Tutti gli Strutture unici hanno un cooldown di [{1}] secondi."
-		"ko"		"당신의 고유 건물들은 모두 [{1}]초의 재사용 대기시간을 가집니다."
+		"ko"		"당신의 고유 건물들이 모두 [{1}]초의 재사용 대기시간을 가집니다."
 	}
 	"Too Far Away"
 	{
@@ -1507,7 +1507,7 @@
 		"pt"		"RÁPIDA RESSUREIÇÃO! 2x velocidade de ressureição e cura 15％ a mais e x2 mais vida ao reviver"
 		"ru" 		"РЕАНИМАТОР! 2x скорость оживления и на 15％ быстрее скорость лечения и 2x здоровье при оживлении"
 		"it"		"Bacca Rigenerativa! velocità di rianimazione 2x e 15％ in più di velocità di guarigione e 2x Salute in rianimazione"
-		"ko" 		"재생형 열매! 부활 속도가 2배 증가 및 치유 속도가 15％ 증가하고 아군 부활시 회복하는 체력이 2배로 증가"
+		"ko" 		"재생형 열매! 부활 속도 2배 증가 및 치유 속도 15％ 증가, 아군 부활시 회복하는 체력이 2배로 증가"
 	}
 	"Obsidian Oaf Received"
 	{
@@ -1525,7 +1525,7 @@
 	{
 		"en" 		"Hasty Hops! 1.42x Extra reload, switchspeed and Mana regen"
 		"it"		"Salti precipitosi! 1.42x Ricarica extra, velocità di commutazione e rigenerazione del mana"
-		"ko" 		"신속 홉! 재장전 속도, 무기 전환 속도, 마나 재생이 1.42배 더 빨라집니다"
+		"ko" 		"신속 홉! 재장전 속도, 무기 전환 속도, 마나 재생이 1.42배 더 빨라집니다."
 	}
 	"Marksman Beer Received"
 	{
@@ -1537,7 +1537,7 @@
 	{
 		"en" 		"Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 30％ more damage."
 		"it"		"Mulo di Teslar! Una protezione ricaricabile che indebolisce gli zombi e blocca il 75％ dei danni se attivata. I nemici indeboliti sono fortemente rallentati e subiscono 30％ danni in più."
-		"ko"		"테슬라 뮬! 재충전 가능한 보호막으로, 활성화 시 좀비를 약화시키고 들어오는 피해의 75％를 막아줌\n약화된 적은 크게 느려지고 30％ 더 많은 피해를 받음."
+		"ko"		"테슬라 뮬! 재충전 가능한 보호막으로, 활성화 시 좀비를 약화시키고 받는 피해의 75％를 막아줍니다.\n약화된 적은 크게 느려지고 받는 피해량이 30% 증가합니다."
 	}
 	"Stockpile Stout Received"
 	{
@@ -1725,14 +1725,14 @@
 		"nl"		"Probeer om tot wel 40 golven van zombies te overleven.\nKoop geweren en versperringen om uw overlevingskans te verhogen.\nProbeer om als een team te spelen en niet altijd te sparen.\nAnders kan dit leiden tot het verlies van uw team\n\n als je niet weet wat je moet kopen, probeer dan het duurste wapen van uw keuze te kopen en verbeteringen voor dat wapentype te verkrijgen in de upgrade tab.\nProbeer ook Passieve verbeteringen te kopen voor meer overlevingskans.\nDe rest komt met ervaring."
 		"chi"       "任务目标：在一波又一波的僵尸潮中生存下来\n通过击杀僵尸获得的现金奖励购买各种强力的武器\n帮助你的队友一起撑到黎明的到来~"
 		"it"		"Sopravvivi contro ondate di zombi fino a un massimo di 40 ondate.\nCompra armi e barricati per sopravvivere.\nAssicurati di giocare in squadra e non risparmiare tutto il tempo.\nO altrimenti sarai la rovina della tua squadra.\nSe non sai cosa comprare, compra un'arma costosa a tua scelta e ottieni i potenziamenti per quel tipo di arma nella scheda dei potenziamenti.\nAcquista anche i potenziamenti passivi per avere una maggiore capacità di sopravvivenza.\nIl resto verrà da sé."
-		"ko" 		"일반적으로 40 웨이브의 좀비 물량에서 살아남아야합니다.\n무기를 구입하고 바리케이드를 세워 생존하세요.\n팀워크를 항상 중시하고 돈을 너무 아끼지 마세요.\n\n 무엇을 사야 할지 모르겠다면, 원하는 고가 무기를 구매하고 개선 탭에서 해당 무기 유형에 대한 개선을 구매하세요.\n패시브를 구매하면 생존력이 더욱 증가합니다.\n나머지는 자연스럽게 알게 될 것입니다."
+		"ko" 		"일반적으로 40 웨이브의 좀비 물량에서 살아남아야합니다.\n무기를 구입하고 바리케이드를 세워 생존하세요.\n팀워크를 항상 중시하고 돈을 너무 아끼지 마세요.\n\n 무엇을 사야 할지 모르겠다면, 원하는 고가 무기를 구매하고 개선 탭에서 해당 무기 유형에 대한 개선을 구매하세요.\n생존 개선을 구매하면 생존력이 더욱 증가합니다.\n나머지는 자연스럽게 알게 될 것입니다."
 	}
 	"Debuff/Buff Explain 1"
 	{
 		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee ％ damage taken, arrow means ranged ％ damage taken.\nIt will light up whatever resitsance is being used when damage calculations happen.\nTrue damage only benifits from bonuses and ignores reisistances."
 		"es"		"A la izquierda hay debuffs, y a la derecha hay buffs.\nCada simbolo es un debuff o buff.\nEl 'dedito' significa el daño cuerpo a cuerpo total que recibes, y la flecha significa el daño total a distancia que recibes.\nSe subrayan apenas recibas el daño correspondiente a estos.\nEl daño verdadero no subraya, y ignora estas resistencias."
 		"it"		"Sul lato sinistro ci saranno i debuff.Sul lato destro ci saranno i buff.Ogni simbolo è un nuovo buff o debuff. \nIl dito indica i danni subiti in mischia, mentre la freccia indica i danni subiti a distanza.\nSi illuminerà la resistenza utilizzata quando si calcolano i danni.\nIl danno reale beneficia solo dei bonus e ignora le resistenze."
-		"ko" 		"왼쪽에는 디버프가 표시됩니다.\n오른쪽에는 버프가 표시됩니다.\n심볼마다 새로운 버프와 디버프를 나타냅니다. \n손가락은 받은 근접 피해량 ％ 를 뜻하고, 화살은 받은 원거리 피해 ％ 를 뜻합니다.\n이에 상승하는 피해를 받으면, 해당 심볼이 커지거나 밑줄이 그어집니다.\n트루 대미지는 이 설정을 무시하며 피해를 받아도 강조되지 않습니다."
+		"ko" 		"왼쪽에는 디버프가 표시됩니다.\n오른쪽에는 버프가 표시됩니다.\n심볼마다 새로운 버프와 디버프를 나타냅니다. \n손가락은 받는 근접 피해량 % 를 뜻하고, 화살은 받는 원거리 피해량 ％ 를 뜻합니다.\n이에 상응하는 피해를 받으면, 해당 심볼이 커지거나 밑줄이 그어집니다.\n트루 대미지는 이 설정을 무시하며 피해를 받아도 강조되지 않습니다."
 	}
 	"Debuff/Buff Explain 2"
 	{
@@ -1783,7 +1783,7 @@
 		"nl"		"Je krijgt EXP per golf dat je overleefd.\nHogere levels belonen je met items en perks die je gratis kunt gebruiken.\nSommige helpen met upgrades en sommige geven je gewoon gratis wapens of krachten.\nUw level blijf je bemachtigen, zelfs als je weg gaat"
 		"chi"       "当你在每一波的尸潮中幸存了下来你就会获得经验值。等级达到一定后会解锁免费的物品和属性。"
 		"it"		"Guadagni EXP per ogni ondata sopravvissuta.\nAlti livelli ti sbloccano oggetti e vantaggi gratuiti.\nAlcuni hanno un ritorno in termini di potenziamento, altri sono solo buff o oggetti gratuiti.\nMantieni i livelli quando te ne vai"
-		"ko" 		"생존한 웨이브만큼 경험치를 얻습니다.\n레벨이 올라갈수록 공짜로 사용할 수 있는 아이템과 퍽이 해금됩니다.\n어떤 것은 당신의 플레이와 정반대되는 효과를 주기도 하지만, 어떤 것은 이점만 있기도 합니다.\n게임에서 나가더라도 레벨은 계속 유지됩니다."
+		"ko" 		"웨이브 하나를 생존할 때마다 경험치를 얻습니다.\n레벨이 올라갈수록 무료로 사용할 수 있는 아이템과 퍽이 해금됩니다.\n어떤 것은 당신의 플레이와 정반대되는 효과를 주기도 하지만, 어떤 것은 이점만 있기도 합니다.\n게임에서 나가더라도 레벨은 계속 유지됩니다."
 	}
 	"Special Zombies Explained"
 	{
@@ -1791,7 +1791,7 @@
 		"fr" 		"Après la vague 12, des Miniboss vont apparaître.\nRaids:\nLes boss Raid recoivent 25％ plus de dégats par les explosions,\net habituellement, 25％ plus de dégats par les coups corps à corps.\nCertaines armes deviennent plus forts contre les Raids, vérifiez leur description."
 		"it"		"Questi sono mini-boss che si riproducono casualmente dopo l'ondata 12.\nRaid:\nRaid subiscono 25％ danni esplosivi in più, e di solito il 25% in più di danni da mischia.\nAlcune armi infliggono danni extra contro i raid, vedi la descrizione se è così."
 		// "pt"		"Tem alguns mini-chefes que aparecem aleatoriamente na onda 12.\nRaids:\n"
-		"ko" 		"12 웨이브 이후 미니 보스가 등장할 확률이 생깁니다.\n레이드:\n레이드 보스는 폭발로 인한 피해를 25％ 더 받으며 모든 근접 피해가 25％ 증가합니다.\n특정 무기는 레이드 보스에게 추가 피해를 입힙니다. 더 자세한 사항은 설명을 확인하세요."
+		"ko" 		"8 웨이브 이후 미니 보스가 출현할 확률이 생깁니다.\n레이드:\n레이드 보스는 폭발로 인한 피해를 25％ 더 받으며, 보통 받는 모든 근접 피해량이 25％ 증가합니다.\n몇몇 무기는 레이드 보스에게 추가 피해를 입힙니다. 더 자세한 사항은 설명을 확인하세요."
 	}
 	"Revival Zombies Explained"
 	{
@@ -1803,13 +1803,13 @@
 		"nl"		"In plaats van dood te gaan wordt je neergeslagen.\nAls een teamgenoot half onzichtbaar is, kun je ze tot leven wekken met de HERLAAD knop."
 		"chi"       "玩家血量清空后不会马上死亡，将会进入一个倒地状态。对着倒地状态的队友按下R键可以将其拉起"
 		"it"		"Invece di morire, si viene abbattuti.\nQuando un alleato è mezzo invisibile, è possibile rianimarlo tenendo premuto RICARICA."
-		"ko" 		"체력이 0이 되면 죽는 대신 다운 상태가 됩니다.\n반투명한 아군이 보인다면, 가까이 접근하여 재장전 키를 꾹 누르면 대상을 부활 시킬 수 있습니다."
+		"ko" 		"체력이 0이 되면 죽는 대신 다운 상태가 됩니다.\n반투명한 아군이 보인다면, 가까이 접근하여 재장전 키를 꾹 눌러 대상을 부활 시킬 수 있습니다."
 	}
 	"Building Explained"
 	{
 		"en" 		"You can use machines by pressing R/T on them.\nYou can mount buildings with a wrench.\nUse them by looking UP and pressing your interact key.\nThis allows you to press R on them for the same effect.\nBuilding display is shown above a building, in this order, its explained as:\nName of owner\nCurrent health\nRepair Left."
 		"it"		"Si possono usare le macchine premendo R/T su di esse.\nSi possono montare gli Strutture con una chiave inglese.\nSi possono usare guardando verso l'alto e premendo il tasto interazione.\nQuesto permette di premere R su di essi per ottenere lo stesso effetto.\nIl display dell'struttura viene mostrato sopra un struttura, in quest'ordine, e viene spiegato come:\nNome del proprietario\nSalute attuale\nRiparazione sinistra."
-		"ko" 		"R 또는 T 를 누르면 바라보고 있는 구조물과 상호작용할 수 있습니다.\n렌치로 구조물을 들 수 있습니다.\n구조물을 들고 있는 상태에선 위쪽을 쳐다보고 사용 키(T) 누르면 해당 구조물을 사용할 수 있습니다.\nR 키를 눌러도 똑같은 효과를 냅니다.\n구조물에 대한 정보는 구조물 위쪽에 다음과 같이 표시됩니다:\n구조물 소유자 이름\n현재 체력\n남은 수리 내구도."
+		"ko" 		"R 또는 T 를 누르면 바라보고 있는 구조물과 상호작용할 수 있습니다.\n렌치를 통해 구조물을 들 수 있습니다.\n구조물을 들고 있는 상태에선 위쪽을 쳐다보고 사용 키(T)를 누르면 해당 구조물을 사용할 수 있습니다.\nR 키를 눌러도 똑같은 효과를 냅니다.\n구조물에 대한 정보는 구조물 위쪽에 다음과 같이 표시됩니다:\n구조물 소유자 이름\n현재 체력\n남은 수리 내구도."
 	}
 	"Extra Buttons Explained"
 	{
@@ -1832,7 +1832,7 @@
 		"nl"		"Je dronk net een Generatietoverdrank voor mana. Je kreeg hierdoor al uw mana terug! De volgende toverdrank is klaar in 60 seconden."
 		"chi"       "你刚喝了法力恢复药水，你的所有法力已恢复，该药水将在1分钟后可以再次使用"
 		"it"		"Hai appena bevuto la pozione di rigenerazione del mana, e hai recuperato tutto il tuo mana! Lo riavrai tra 60 secondi."
-		"ko" 		"마나 재생 포션을 마셨으므로, 마나가 전부 회복되었습니다 ! 60 초 후에 다시 재사용할 수 있습니다."
+		"ko" 		"마나 재생 포션을 마셨으므로, 마나가 전부 회복되었습니다! 60 초 후에 다시 재사용할 수 있습니다."
 	}
 	"Mana Regen Potion Back"
 	{
@@ -1899,7 +1899,7 @@
 	{
 		"en" 		"to enter and exit this vehicle"
 		"it"		"per entrare e uscire da questo veicolo"
-		"ko" 		"키를 눌러 이 탈 것에 탑승하거나 내리십시오"
+		"ko" 		"키를 눌러 이 탈것에 탑승하거나 내리세요"
 	}
 	"Ammobox Tooltip"
 	{
@@ -1925,7 +1925,7 @@
 	{
 		"en" 		"on the Perkmachine to gain a strong perk that lasts till you are dead/downed."
 		"it"		"sulla Perkmachine per ottenere un forte potere che durerà fino alla morte o all'esaurimento."
-		"ko" 		"키를 눌러 이 퍽 기계를 사용해 강력한 퍽을 얻으세요. 퍽은 다운 되거나 사망되면 효과가 사라집니다."
+		"ko" 		"키를 눌러 이 퍽 기계를 사용해 강력한 퍽을 얻으세요. 퍽은 다운 되거나 사망 시 효과가 사라집니다."
 	}
 	"PackAPunch Tooltip"
 	{
@@ -2163,7 +2163,7 @@
 		"nl"		"Je bent een toeschouwer\nHelp uw team door de vijand aan te vallen.\nJe zult bij het rode team worden gezet wanneer er plaats vrij komt."
 		"chi"       "当前幸存者队伍已满\n在此状态下帮助你的队友消灭僵尸\n当有空位时，你将会进入幸存者团队！"
 		"it"		"Stai facendo da spettatore.\nAiuta la tua squadra attaccando i nemici.\nSarai inserito nella squadra rossa come sopravvissuto quando sarà disponibile uno slot."
-		"ko" 		"당신은 관전중입니다.\n적을 공격하여 당신의 팀원을 도와주세요.\n만약 빈 자리가 있다면 당신은 레드 팀으로 진입하게 됩니다."
+		"ko" 		"당신은 관전중입니다.\n적을 공격하여 당신의 팀원을 도와주세요.\n빈 자리가 있다면 당신은 레드 팀으로 진입하게 됩니다."
 	}
 	"Raidboss"
 	{
@@ -2225,7 +2225,7 @@
 		"fr" 		"Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
 		"chi"		"TF2：僵尸暴动\n按Tab开关菜单\nTAB+(H)显示当前武器！"
 		"it"		"Zombie Riot\nPremi di nuovo TAB per chiudere il menu!\nTieni premuto TAB + (H) per mostrare l'arma corrente!"
-		"ko" 		"TF2: 좀비 라이엇\n탭을 다시 눌러 메뉴를 닫으세요!\n탭 + (H) 를 누르면 현재 무기가 표시됩니다!"
+		"ko" 		"TF2: 좀비 라이엇\n탭을 다시 눌러 메뉴를 닫으세요!\상점 메뉴에서 (H) 를 누르면 현재 무기가 표시됩니다!"
 	}
 	"StatusEffectList"
 	{
@@ -2282,7 +2282,7 @@
 		"nl"		"MAXIMALE TOEGELATEN VERSPERRINGEN BERIJKT!"
 		"chi"       "已达到最大路障数"
 		"it"		"MAX BARRICATE FUORI ATTUALMENTE"
-		"ko"		"최대 바리케이드 설치 상한선에 도달했습니다."
+		"ko"		"최대 바리케이드 설치 상한에 도달했습니다."
 	}
 	"All Items are 20％ off here!"
 	{
@@ -2295,7 +2295,7 @@
 		"nl"		"Alle items hier hebben een 20％ korting! {$}\nÉén item heeft een 30％ korting! {$$}"
 		"chi"       "所有商品在这都会打8折 {$}\n一件物品打7折 {$$}"
 		"it"		"Tutti gli articoli sono scontati del 20％ qui! {$}\nUn articolo ha uno sconto di 30％! {$$}"
-		"ko"		"$ 로 표시된건 가격이 20％ 쌉니다!\n$$ 표시는 가격이 30％ 쌉니다!"
+		"ko"		"$ 표시는 가격이 20％ 쌉니다!\n$$ 표시는 가격이 30％ 쌉니다!"
 	}	
 	"All Items are 10％ off here!"
 	{
@@ -2307,7 +2307,7 @@
 		"nl"		"Alle items hier hebben een 10％ korting! {$}\nÉén item heeft een 15％ korting! {$$}"
 		"chi"       "所有商品在这都会打8折 {$}\n一件物品打7折 {$$}"
 		"it"		"Tutti gli articoli sono scontati del 10％ qui! {$}\nUn articolo è scontato del 15%! {$$}"
-		"ko"		"$ 로 표시된건 가격이 10％ 쌉니다!\n$$ 표시 가격이 15％ 쌉니다!"
+		"ko"		"$ 표시는 가격이 10％ 쌉니다!\n$$ 표시는 가격이 15％ 쌉니다!"
 	}	
 	"Your loadout has been equipped!"
 	{
@@ -2349,7 +2349,7 @@
 		"nl"		"Kon niet worden gekocht {1}."
 		"chi"       "无法购买 {1}."
 		"it"		"Non è stato possibile acquistare {1}."
-		"ko"		"그 아이템을 구매할 수 없습니다 : {1}."
+		"ko"		"그 아이템을 구매할 수 없었습니다 : {1}."
 	}
 	"Pickup Gift"
 	{
@@ -2370,7 +2370,7 @@
 		"nl"		"Druk op TAB om de winkel te openen"
 		"chi"       "请按下TAB键打开商城"
 		"it"		"Premere TAB Per aprire il negozio"
-		"ko"		"탭(TAB)키를 눌러 상점을 여십시오"
+		"ko"		"탭(TAB)키를 눌러 상점을 여세요"
 	}
 	"You have only gained 90％ due to not being in-game"
 	{
@@ -2406,7 +2406,7 @@
 		"nl"		"Wees zeker dat je al het geld waar je mee gestart bent gebruikt!"
 		"chi"       "请花光你所有的初始现金，否则回合开始时会被清空！！!"
 		"it"		"Assicuratevi di spendere tutti i vostri soldi iniziali!"
-		"ko"		"당신의 시작 자금을 전부 소모하는걸 추천합니다!"
+		"ko"		"당신의 시작 자금을 전부 사용하는걸 추천합니다!"
 	}
 	"Difficulty set to"
 	{
@@ -2449,7 +2449,7 @@
 		"en"		"When you crouch and M2 a building, you mount it!\nYou see it in your armor hud as a 2 letter name!\nLeft is mounted building, right is your perk."
 		"es"		"Cuando te agachas y le haces click derecho a una construccion, la montas!\nLa ves en tu hud con un nombre de 2 letras!\nIzquierda - Construccion montada, Derecha - Beneficio actual."
 		"it"		"Quando ti accovacci e M2 un struttura, lo monti! Lo vedi nell'hud dell'armatura come un nome di due lettere! Sinistra è l'struttura montato, destra è il tuo vantaggio."
-		"ko"		"앉은 상태에서 구조물을 보고 우클릭(M2)을 누르면, 그 구조물을 들 수 있습니다!\n이제 아머가 표시되는 허드쪽에 2개의 심볼이 표시될 것입니다!\n왼쪽은 들고 있는 구조물이며, 오른쪽은 당신의 현재 퍽입니다."
+		"ko"		"앉은 상태에서 구조물을 보고 우클릭(M2)을 누르면, 그 구조물을 들 수 있습니다!\n이제 아머가 표시되는 허드쪽에 2글자가 표시될 것입니다!\n왼쪽은 들고 있는 구조물이며, 오른쪽은 당신의 현재 퍽입니다."
 	}	
 	"Support Buildings"
 	{
@@ -2463,7 +2463,7 @@
 		"en"		"To build more, buy builder upgrades!\nYou gain money and ammobox supplies when your buildings are used!"
 		"es"		"Para construir mas, compra mejoras de construccion!\nGanas dinero y mas suministros de municion cuando se usan tus construcciones!"
 		"it"		"Per costruire di più, acquista i potenziamenti per i costruttori!\nGuadagni denaro e forniture di munizioni quando i tuoi Strutture vengono utilizzati!"
-		"ko"		"이 구조물들을 더 많이 건설하고 싶다면, 건축가 개선을 구매하세요!\n당신의 구조물이 사용될 때마다, 추가 자금을 얻고 탄약이 보급됩니다!"
+		"ko"		"이 구조물들을 더 많이 건설하고 싶다면, 건축가 개선을 구매하세요!\n당신의 구조물이 사용될 때마다, 추가 자금을 얻고 탄약 보급이 추가됩니다!"
 	}	
 	"Unique Buildings"
 	{
@@ -2477,7 +2477,7 @@
 		"en"		"You can only have 1 building from this section at once!\nThey are used on [E]"
 		"es"		"Solo puedes tener 1 de estas construcciones a la vez!\nSe usan llamando al MEDICO. [E]"
 		"it"		"Si può avere solo 1 struttura di questa sezione alla volta!\nSi usano su [E]"
-		"ko"		"이 구조물은 한 번에 하나만 건설할 수 있습니다!\n이 구조물들은 ([E]) 키로 사용."
+		"ko"		"이 구조물은 한 번에 하나만 건설할 수 있습니다!\n이 구조물들은 ([E]) 키로 사용합니다."
 	}	
 	"Construct Buildings"
 	{
@@ -2489,7 +2489,7 @@
 	{
 		"en"		"Global limits, and you can move any of these from other players!"
 		"it"		"Limiti globali, e potete spostare qualsiasi cosa da altri giocatori!"
-		"ko"		"건설 제한이 모두에게 공유되며, 다른 플레이어들이 이 구조물을 옮길 수 있습니다!"
+		"ko"		"건설 제한이 모두에게 공유되며, 소유자와 관계 없이 다른 플레이어들이 구조물을 옮길 수 있습니다!"
 	}	
 	"Which perk do you desire?"
 	{
@@ -2507,7 +2507,7 @@
 		"nl"		"Aan het opwekken... [{1}]"
 		"chi"       "拉起中... [{1}]"
 		"it"		"Resuscitando... [{1}]"
-		"ko"		"부활시키는 중... [{1}]"
+		"ko"		"소생시키는 중... [{1}]"
 	}
 	"You're Being Revived."
 	{
@@ -2628,7 +2628,7 @@
 	{
 		"en"		"You will also notice that it highlights!\nIf you deal/take the corresponding type of damage, it will get an underscore!\nif you take/deal melee damage ☛will lightup."
 		"it"		"Si noterà anche che si evidenzia!\nSe si infligge/riceve il tipo di danno corrispondente, si ottiene un trattino basso!\nSe si infligge/riceve danno in mischia, si illuminerà ☛."
-		"ko"		"그리고 이 심볼이 가끔씩 밝아지는 것을 알아차리셨을겁니다!\n해당 유형의 피해를 받거나, 해당 유형으로 피해를 주면, 그 심볼에 밑줄이 그어집니다.\n예시로 근접 피해를 주거나, 근접 피해로 공격 받았다면, ☛가 하이라이트로 표시됩니다."
+		"ko"		"그리고 이 심볼이 가끔씩 밝아지는 것을 알아차리셨을겁니다!\n해당 유형의 피해를 받거나, 해당 유형으로 피해를 주면, 그 심볼에 밑줄이 그어집니다.\n예시로 근접 피해를 가하거나, 근접 피해로 공격 받았다면, ☛가 하이라이트로 표시됩니다."
 	}
 	"Tutorial Show Hint Perk Machine"
 	{
@@ -2640,7 +2640,7 @@
 	{
 		"en"		"There's no perk machine!\nTry building one, go to ''Builder Gear'' and grab a wrench.\nAccess its menu with R!\nGet enough metal and/or upgrades for more builder space!"
 		"it"		"Non c'è una macchina per i vantaggi!\nProva a costruirne una, vai a ''Attrezzatura del costruttore'' e prendi una chiave inglese.\nAccedi al suo menu con R!\nOttieni abbastanza metallo e/o potenziamenti per avere più spazio per il costruttore!"
-		"ko"		"퍽 기계가 없습니다!\n''건축가 장비''로 들어가 렌치를 구입하고 렌치로 해당 구조물을 건설할 수 있습니다.\nR 키를 눌러 구조물 메뉴을 여세요!\n충분한 금속이 필요하며 더 많이 건설하려면 건축가 개선이 더 필요합니다!"
+		"ko"		"퍽 기계가 없습니다!\n''건축가 장비''로 들어가 렌치를 장착하고 렌치로 해당 구조물을 건설할 수 있습니다.\nR 키를 눌러 구조물 메뉴을 여세요!\n충분한 금속이 필요하며 더 많이 건설하려면 건축가 개선이 더 필요합니다!"
 	}
 	"Tutorial Show Hint Pack a Punch"
 	{
@@ -2652,7 +2652,7 @@
 	{
 		"en"		"There's no Pack a Punch!\nTry building one, go to ''Builder Gear'' and grab a wrench.\nAccess its menu with R!\nGet enough metal and/or upgrades for more builder space!"
 		"it"		"Non c'è nessun Pack a Punch!\nProva a costruirne uno, vai a ''Attrezzatura del costruttore'' e prendi una chiave inglese.\nAccedi al suo menu con R!\nOttieni abbastanza metallo e/o potenziamenti per avere più spazio per il costruttore!"
-		"ko"		"팩 어 펀치가 없습니다!\n''건축가 장비''로 들어가 렌치를 구입하고 렌치로 해당 구조물을 건설할 수 있습니다.\nR 키를 눌러 구조물 메뉴을 여세요!\n충분한 금속이 필요하며 더 많이 건설하려면 건축가 개선이 더 필요합니다!"
+		"ko"		"팩 어 펀치가 없습니다!\n''건축가 장비''로 들어가 렌치를 장착하고 렌치로 해당 구조물을 건설할 수 있습니다.\nR 키를 눌러 구조물 메뉴을 여세요!\n충분한 금속이 필요하며 더 많이 건설하려면 건축가 개선이 더 필요합니다!"
 	}
 	"Is already at full hp"
 	{
@@ -2714,7 +2714,7 @@
 		"nl"		"Koop alleen graties artikelen"
 		"chi"       "只购买免费商品"
 		"it"		"Acquista solo articoli gratuiti"
-		"ko"		"공짜 아이템만 구매"
+		"ko"		"무료 아이템만 구매"
 	}
 	"Favorite"
 	{
@@ -2748,7 +2748,7 @@
 		"nl"		"Verwijder loadout"
 		"chi"       "删除预设值"
 		"it"		"Eliminare l'equipaggiamento"
-		"ko"		"로드아웃 제거"
+		"ko"		"로드아웃 삭제"
 	}
 	"Save New"
 	{
@@ -2757,7 +2757,7 @@
 		"ru"		"Введите имя в чат для создания нового снаряжения.\nЭто сохранит ваши купленные предметы с именем, которое вы дали.\nВы можете повторно купить это снаряжение, если у вас достаточно денег."
 		"chi"       "在聊天框中输入名字创建一个新的预设\n这将保存您当前购买的物品。如果你有足够的现金，你可以一件购买。"
 		"it"		"Inserisci il nome nella chatbox per creare un nuovo loadout.\nSalverà i tuoi attuali oggetti acquistati con il nome che hai dato.\nPotrai ricomprare questo loadout se hai abbastanza denaro."
-		"ko"		"채팅창에 이름을 입력하여 새 로드아웃을 생성하세요.\n그렇게 하면 현재 구매한 아이템들이 전부 저장됩니다.\n자금이 충분하다면, 로드아웃에 저장된 무기를 다시 구매할 수 있습니다."
+		"ko"		"채팅창에 이름을 입력하여 새 로드아웃을 생성하세요.\n그렇게 하면 현재 구매한 아이템들이 전부 저장됩니다.\n자금이 충분하다면, 로드아웃에 저장된 아이템들을 다시 구매할 수 있습니다."
 	}
 	"Invalid Name"
 	{
@@ -2798,7 +2798,7 @@
 	{
 		"en"		"Are you already familiar with Zombie Riot?\n \nAre you sure?\nlike, very sure that you know what youre doing?"
 		"it"		"Conosci già Zombie Riot? Sei sicuro?\nTipo, molto sicuro di sapere cosa stai facendo?"
-		"ko"		"정말로 좀비 라이엇 모드를 플레이 해보신 적이 있으신가요?\n \n정말이신가요?\n그러니까, 어떻게 해야하는지 알고 있으신건가요?"
+		"ko"		"정말로 좀비 라이엇 모드를 플레이 해보신 적이 있으신가요?\n \n정말이신가요?\n그러니까, 뭘 어떻게 해야하는지 알고 있으신건가요?"
 	}
 	"Skip Starter Button"
 	{
@@ -2861,7 +2861,7 @@
 		"ru"	"Наличка азартного игрока"
 		"chi"		"赌徒的现金"
 		"it"		"Il denaro del giocatore d'azzardo"
-		"ko"	"도박사의 돈"
+		"ko"	"도박사의 자금"
 	}
 	"Gambler Spawn Message"
 	{
@@ -3012,7 +3012,7 @@
 	{
 		"en"		"Your Holding weapon cant be enhanced..."
 		"it"		"L'arma di mantenimento non può essere mostrata nel negozio..."
-		"ko"		"당신이 들고 있는 무기는 상점에 표시될 수 없습니다..."
+		"ko"		"당신이 들고 있는 무기는 강화가 불가능합니다..."
 	}
 	"Move Hud Down"
 	{
@@ -3113,7 +3113,7 @@
 		"fr"		"Détruire tous vos constructions non montés?\nLes constructions que vous sont visibles ne seront pas détruits."
 		"chi"		"确认摧毁所有地上建筑？\n！不会摧毁视野外建筑！"
 		"it"		"È sicuro di voler eliminare tutti le Strutture non montate? Questo non eliminerà le Strutture che si trovano nella sua linea di vista."
-		"ko"		"정말로 현재 당신이 들고 있는 구조물을 제외한 모든 구조물을 삭제하시겠습니까?\n또한 당신의 시야 내에 보이는 구조물은 삭제하지 않습니다."
+		"ko"		"정말로 현재 당신이 들고 있는 구조물을 제외한 모든 구조물을 삭제하시겠습니까?\n당신의 시야 내에 보이는 구조물은 삭제되지 않습니다."
 	}
 	"Final_wave_message"
 	{
@@ -3122,7 +3122,7 @@
 		"ru"		"Это последняя волна, приготовьтесь."
 		"chi"		"这是最后一波，做好准备。"
 		"it"		"Questa è l'ondata finale, Preparati."
-		"ko"		"마지막 공격이 옵니다 준비하세요."
+		"ko"		"마지막 공격이 옵니다, 준비하세요."
 	}
 	"Tower_Message"
 	{
@@ -3133,25 +3133,25 @@
 	"Victoria_Help_Message"
 	{
 		"en"		"Ziberian Guerillas are here to help."
-		"ko"		"자이베리안 게릴라의 지원이 도착했습니다."
+		"ko"		"지베리아 게릴라의 지원이 도착했습니다."
 		"it"		"I Guerriglieri Ziberiani sono qui per aiutare."
 	}
 	"RadioTower_here_Message"
 	{
 		"en"		"Radiotower is here, Prepare."
-		"ko"		"방송탑이 이 곳에 도착했습니다. 전투 준비."
+		"ko"		"방송탑이 여기 있습니다. 전투 준비."
 		"it"		"Radiotower è qui, Preparati."
 	}
 	"Void_Help_Message"
 	{
-		"en"		"Expidonsan's are trying to send help, but the void interfeers, only guarduses could get here."
+		"en"		"Expidonsan's are trying to send help, but the void interfeers, only Guarduses could get here."
 		"it"		"Gli Expidonsan stanno cercando di inviare aiuti, ma il vuoto interferisce, solo i guardiani possono arrivare qui."
-		"ko"		"엑스피돈사 세력이 지원을 보내려고 했지만, 공허 세력의 방해로 인하여, 경비병들만 이 곳에 도착할 수 있었습니다."
+		"ko"		"엑스피돈사가 지원을 보내려고 시도했지만, 공허의 간섭으로 인하여, 가두스들만 이 곳에 도착할 수 있었습니다."
 	}
 	"Void_Survival_Help_Message"
 	{
 		"en"		"Expidonsan's are here to help us defeat this void outbreak."
-		"ko"		"엑스피돈사 세력이 공허 재앙을 막기 위해 당신과 합류합니다."
+		"ko"		"엑스피돈사가 공허 재앙을 막기 위해 당신에게 합류합니다."
 	}
 	"Silvester Shares His Power"
 	{
@@ -3166,13 +3166,13 @@
 	{
 		"en"		"You feel Kahmlsteins Courage..."
 		"it"		"Senti il coraggio di Kahmlsteins..."
-		"ko"		"캄르스타인의 의지가 느껴집니다..."
+		"ko"		"카멜슈타인의 의지가 느껴집니다..."
 	}
 	"Last Down Warning"
 	{
 		"en"		"This is your last down."
 		"it"		"Questa è la vostra ultima discesa."
-		"ko"		"마지막 목숨입니다. 이제 다운되면 완전히 사망합니다."
+		"ko"		"마지막 다운입니다. 다운될 경우 즉시 사망합니다."
 	}
 	"Opened store via command"
 	{
@@ -3181,7 +3181,7 @@
 		"ru"		"В будущем используйте кнопку TAB/таблицы очков, она откроет магазин без всяких команд!"
 		"chi"		"在未来，使用TAB/计分板按钮打开菜单，无需输入指令!"
 		"it"		"In futuro, utilizzate il tasto TAB/Tabellone, che aprirà il negozio senza alcun comando!"
-		"ko"		"나중에는, 탭(Tab, 점수판 호출) 키를 누르면, 벌도의 명령어 없이 상점을 열 수 있습니다!"
+		"ko"		"나중에는, 탭(Tab, 점수판 호출) 키를 사용해주세요. 별도의 명령어 없이 상점을 열 수 있습니다!"
 	}
 	"Invulnerable Npc"
 	{
@@ -3250,7 +3250,7 @@
 	{
 		"en"		"You have been Infected by Calmaticus!\nYou cannot stop this bleeding with thick blood..."
 		"it"		"Sei stato infettato da Calmaticus!\nNon puoi fermare questa emorragia con del sangue denso..."
-		"ko"		"당신은 칼마티커스에게 감염 당했습니다!\n진한 피 때문에 출혈이 멈추지 않고 있습니다..."
+		"ko"		"당신은 칼마티커스에게 감염 당했습니다!\n진한 피 버프로도 출혈이 멈추지 않고 있습니다..."
 	}	
 	"Xeno_Wave_1"
 	{
@@ -3271,19 +3271,19 @@
 	{
 		"en"		"The infection grows and expands per second...\nSilvester can be seen in the distance running to you."
 		"it"		"L'infezione cresce e si espande al secondo...\nSilvester può essere visto in lontananza mentre corre verso di voi."
-		"ko"		"이 감염은 1초 단위로 계속해서 성장하고 퍼져나가고 있습니다...\n실베스터가 멀리서 당신을 보고는 달려오는게 보입니다."
+		"ko"		"이 감염은 매초마다 계속해서 성장하고 퍼져나가고 있습니다...\n멀리서 실베스터가 당신을 향해 달려오는게 보입니다."
 	}
 	"Xeno_Lore_2"
 	{
 		"en"		"Each passing lifetime of a cell, this xeno virus mutates."
 		"it"		"Ad ogni passaggio di vita di una cellula, questo xenovirus muta."
-		"ko"		"세포가 새로 태어날때마다, 이 제노 바이러스가 그것을 변이시키고 있습니다."
+		"ko"		"세포의 수명이 지나갈 때마다, 제노 바이러스가 변이되고 있습니다."
 	}
 	"Xeno_Lore_3"
 	{
 		"en"		"This virus has just started a few hours ago, and already is mutating them to no end."
 		"it"		"Questo virus è iniziato da poche ore e li sta già mutando a dismisura."
-		"ko"		"이 바이러스는 불과 몇 시간 전에 시작되었습니다만, 벌써부터 끝없는 변이를 통해 겉잡을 수 없게 되었습니다."
+		"ko"		"이 바이러스는 불과 몇 시간 전에 시작되었습니다만, 벌써부터 끝없이 변이하며 겉잡을 수 없게 되었습니다."
 	}
 	"Xeno_Wave_2"
 	{
@@ -3301,7 +3301,7 @@
 		"ru"		"Они пытались предупредить вас и уберечь от верной гибели."
 		"chi"		"他们试图警告你，让你免于厄运。"
 		"it"		"Hanno cercato di avvertirvi e di evitarvi una morte certa."
-		"ko"		"그들은 당신을 죽음의 파멸에서 벗어나게 하기 위해 경고한 것이었습니다."
+		"ko"		"그들은 당신을 어떤 파멸에서 벗어나게 하기 위해 경고한 것이었습니다."
 	}
 	"Xeno_Wave_4"
 	{
@@ -3310,7 +3310,7 @@
 		"ru"		"Докажите, что они ошибаются, убейте оставшихся заражённых."
 		"chi"		"证明他们是错的，杀死剩下的几个感染者。"
 		"it"		"Dimostrare che si sbagliano, uccidere i pochi infetti rimasti."
-		"ko"		"그들의 말이 틀렸다는 것을 증명하십시오. 남은 감염체들을 모조리 처치하세요."
+		"ko"		"그들이 틀렸다는 것을 증명하십시오. 남은 감염체들을 모조리 제거하세요."
 	}
 	"Skull Servant Launch Failure"
 	{
@@ -3338,14 +3338,14 @@
 		"ru"		"Выйдите из зоны застревания NPC. Вы будете получать это сообщение каждые 0,5 секунды, если останетесь в ней."
 		"chi"		"离开npc卡住的区域。如果你待在里面，每0.5秒你就会收到这条信息。"
 		"it"		"Esci dalla zona bloccata dagli NPC. Riceverai questo messaggio ogni 0,5 secondi se ci rimani."
-		"ko"		"그 곳은 NPC가 인식하지 못 하는 장소입니다. 내려오십시오. 거기에 계속 있으면 이 메세지가 0.5초마다 띄워집니다."
+		"ko"		"그 곳은 NPC가 인식하지 못 하는 장소입니다. 해당 장소에 있는 동안 이 메세지가 0.5초마다 띄워집니다."
 	}
 	"Npc Stuck Spot Warning Stairs"
 	{
 		"en"		"Dont be on ladders too long or use them too much. you will receive this message every 0.5 seconds if you stay in it."
 		"fr"		"Restez pas trop longtemps sur les échelles. Vous recevrez ce message tous les 0.5 secondes si vous restez."
 		"it"		"Non rimanere troppo a lungo sulle scale e non usarlo troppo. riceverai questo messaggio ogni 0,5 secondi se ci rimani."
-		"ko"		"사다리를 너무 오래 사용하지 마십시오. 거기에 계속 있으면 이 메세지가 0.5초마다 띄워집니다."
+		"ko"		"사다리를 너무 오래 사용하지 마십시오. 해당 위치에 있는 동안 이 메세지가 0.5초마다 띄워집니다."
 	}
 
 	"Show Grigori Mute Hint Message"
@@ -3424,7 +3424,7 @@
 		"en"		"Crouch to see descriptions!\nTip:\nAmmoboxes give resources!"
 		"fr"		"Accroupissez-vous pour voir des descriptions!\nIndice:\nLes boîtes à munitions donne des ressources!"
 		"it"		"Accovacciati per vedere le descrizioni!\nSuggerimento: le scatole di munizioni forniscono risorse!"
-		"ko"		"앉은 상태라면 설명을 볼 수 있습니다!\n팁:\n탄약 상자 사용시, 전용 자원을 획득합니다!"
+		"ko"		"앉은 상태라면 설명을 볼 수 있습니다!\n팁:\n탄약 상자 사용시, 배럭 자원을 획득합니다!"
 	}
 	"Toggle Upgrade Menu Barracks"
 	{
@@ -3496,7 +3496,7 @@
 		"ru"		"Очищенная сталь"
 		"chi"		"精炼钢"
 		"it"		"Acciaio raffinato"
-		"ko"		"강철 정제"
+		"ko"		"정제된 강철"
 	}
 	"Barracks Refined Steel Desc"
 	{
@@ -3559,7 +3559,7 @@
 		"ru"		"Наручи"
 		"chi"		"护腕"
 		"it"		"Bracciale"
-		"ko"		"팔 보호구"
+		"ko"		"팔 보호대"
 	}
 	"Barracks Bracer Desc"
 	{
@@ -3604,7 +3604,6 @@
 		"chi"		"增加伤害减免"
 		"it"		"Aumento della riduzione del danno"
 		//"ru"		"3％ снижение урона и 1 плоское снижение урона"
-		"ko"		"받는 피해량이 감소합니다"
 		"ko"		"받는 피해량이 감소합니다"
 	}
 	"Barracks Iron Armor Plate"
@@ -3674,7 +3673,7 @@
 		"ru"		"Пассивное восстановление при низком уровне здоровья у войск"
 		"chi"		"低生命回复被动单位"
 		"it"		"Bassa rigenerazione della salute passiva sulle unità"
-		"ko"		"매 초마다 모든 유닛의 체력이 조금씩 회복됩니다"
+		"ko"		"유닛의 체력이 매 초마다 조금씩 회복됩니다"
 	}
 	"Barracks Refined Medicine"
 	{
@@ -3711,7 +3710,7 @@
 		"ru"		"новые улучшения\nбольше прочности для вашей постройки, и оно защищает себя само."
 		"chi"		"为你的建筑解锁更多的升级和更多的生命值\n它会自我防御。"
 		"it"		"sblocca più potenziamenti e più salute per la struttura, e si difenderà da solo."
-		"ko"		"더 많은 개선을 해금하고\n구조물의 체력을 늘릴수 있으며 자체적인 방어 수단이 있는 구조물입니다."
+		"ko"		"더 많은 개선을 해금.\n구조물의 체력이 증가하며 자체적인 방어 수단을 갖추게 됩니다."
 	}
 	"Barracks Guard Tower"
 	{
@@ -3860,7 +3859,7 @@
 		"ru"		"Убрана минимальная дальность атаки вашей постройки."
 		"chi"		"移除你的建筑的最小范围。"
 		"it"		"Rimosso il raggio d'azione minimo della struttura."
-		"ko"		"구조물들의 최소 사거리가 제거됩니다."
+		"ko"		"구조물의 최소 사거리가 제거됩니다."
 	}
 	"Barracks Ballistics"
 	{
@@ -3878,7 +3877,7 @@
 		"ru"		"Теперь ваша постройка будет предсказывать движение врагов."
 		"chi"		"你的建筑现在会预测敌人的移动。"
 		"it"		"La struttura ora prevede il movimento dei nemici."
-		"ko"		"이제 구조물들의 적들의 이동 경로를 예측하여 사격합니다. (명중률 증가)"
+		"ko"		"이제 구조물이 적들의 이동 경로를 예측하여 사격합니다. (명중률 증가)"
 	}
 	"Barracks Chemistry"
 	{
@@ -3913,7 +3912,7 @@
 		"ru"		"Значительное увеличение дальности стрельбы, войска ближнего боя теперь также увеличивают количество стрел, стрелы теперь наводятся в цель."
 		"chi"		"大量增加射程，非远程单位现在也会增加箭的数量，箭现在可以射向目标。"
 		"it"		"La gittata è aumentata in modo massiccio, anche le unità non a distanza aumentano il numero di frecce e le frecce si posano sul bersaglio."
-		"ko"		"사거리가 크게 증가하고, 이제 원거리 유닛이 아닌 유닛들도 화살의 개수를 증가시키며, 화살이 이제 적을 추적하는 유도탄이 됩니다."
+		"ko"		"사거리가 크게 증가하고, 비 원거리 유닛들도 화살의 개수를 증가시키며, 화살이 적을 추적하는 유도탄이 됩니다."
 	}
 	"Barracks Conscription"
 	{
@@ -3967,7 +3966,7 @@
 		"ru"		"Получите возможность создать жителя, он будет строить башни и ремонтировать постройки, поговорите с ним для получения подробностей."
 		"chi"       "获得创造一个村民的能力，它将建造一个塔和维修建筑与村民交谈以获得更多信息。"
 		"it"		"Ottenere la capacità di creare un abitante del villaggio, che costruirà una torre e riparerà gli Strutture."
-		"ko"		"주민을 생성할 수 있는 능력을 얻습니다. 주민은 자동으로 망루를 건설하고 구조물을 수리합니다. 주민에게 말을 걸어 더 많은 정보를 확인하세요."
+		"ko"		"주민을 생성할 수 있는 능력을 얻습니다. 주민은 망루를 건설하고 구조물을 수리할 수 있습니다. 주민에게 말을 걸어 더 많은 정보를 확인하세요."
 	}
 	"Barracks Villager Education"
 	{
@@ -4021,7 +4020,7 @@
 		"ru"		"Пока ваша постройка цела, все ваши постройки получают на 25％ больше прочности."
 		"chi"       "当前未被摧毁的建筑生命值提升25％"
 		"it"		"Mentre la vostra struttura è in vita, tutti le Strutture guadagneranno 25％ di salute in più."
-		"ko"		"현재 파괴되지 않은 모든 구조물들의 체력이 25％ 증가합니다."
+		"ko"		"당신의 구조물이 존재하는 동안, 모든 구조물들의 체력이 25％ 증가합니다."
 	}
 	"Barracks Exquisite Housing"
 	{
@@ -4134,14 +4133,14 @@
 		"ru" 		"Зомби во время битвы"
 		"fr"		"Temps en Combat pour Zombies"
 		"it"		"Tempo di Zombie in battaglia"
-		"ko"		"좀비의 전투 시간"
+		"ko"		"좀비 전투 상태 시간"
 	}
 	"Zombie In Battle Logic Setting"
 	{
 		"#format"	"{1:.1f}"
 		"en"		"In Battle Time: [{1}]"
 		"it"		"Tempo in battaglia: [{1}]"
-		"ko"		"전투 시간: [{1}]"
+		"ko"		"전투 상태 시간: [{1}]"
 	}
 	"Turn up volume"
 	{
@@ -4165,7 +4164,7 @@
 		"fr"		"Vous avez déja épuisé votre Burstpack cette vague, rechargement..."
 		"chi"       "Burstpack这一轮已经用过了，冷却中。。。"	
 		"it"		"Burstpack già utilizzato in questo round, in ricarica..."
-		"ko"		"이미 이 라운드에서 Burstpack 이 사용되었습니다. 재충전 중입니다..."
+		"ko"		"이미 이 라운드에서 버스트 팩이 사용되었습니다. 재충전 중입니다..."
 	}
 	"Quincy Menu First"
 	{
@@ -4188,14 +4187,14 @@
 		"en"		"Basic Reishi Collectors\nIncreased Charge Rate"
 		"fr"		"Collecteurs Reishi de Base\nVitesse de charge améliorée"
 		"it"		"Raccoglitori di Reishi di base\nCarica aumentata"
-		"ko"		"일반적인 영자 수확기\n충전 속도가 증가합니다"
+		"ko"		"일반적인 영자 수확기\n충전 속도 증가"
 	}
 	"Quincy Fast2"
 	{
 		"en"		"Mediocre Reishi Collectors\nIncreasd Charge Rate"
 		"fr"		"Collecteurs Reishi Moyennes\nVitesse de charge améliorée"
 		"it"		"Raccoglitori di Reishi mediocri\nVelocità di carica aumentata"
-		"ko"		"더 좋은 영자 수확기\n충전 속도가 증가합니다"
+		"ko"		"더 좋은 영자 수확기\n충전 속도 증가"
 	}
 	"Quincy Fast3"
 	{
@@ -4216,14 +4215,14 @@
 		"en"		"Basic Reishi Cappacitor\nIncreased max Battery"
 		"fr"		"Capaciteurs Reishi de Base\nCapacité de charge améliorée"
 		"it"		"Capacitore di Reishi di base\nAumento della batteria massima"
-		"ko"		"일반적인 영자 저장고\n배터리의 최대치가 증가합니다"
+		"ko"		"일반적인 영자 저장고\n배터리 최대치 증가"
 	}
 	"Quincy Bat2"
 	{
 		"en"		"Mediocre Reishi Cappacitor\nIncreased max Battery"
 		"fr"		"Capaciteurs Reishi Moyennes\nCapacité de charge améliorée"
 		"it"		"Capacitore di Reishi mediocre\nAumento della batteria massima"
-		"ko"		"더 좋은 영자 저장고\n배터리의 최대치가 증가합니다"
+		"ko"		"더 좋은 영자 저장고\n배터리 최대치 증가"
 	}
 	"Quincy Bat3"
 	{
@@ -4279,7 +4278,7 @@
 		"en"		"No Battery Upgrades"
 		"fr"		"Aucune amélioration de capacité"
 		"it"		"Nessun aggiornamento della batteria"
-		"ko"		"배터리 개선 안됨"
+		"ko"		"배터리 개선 없음"
 	}
 	"Quincy Bat_1"
 	{
@@ -4332,14 +4331,14 @@
 		"en"		"Sensal Scythes Not Fully Charged"
 		"fr"		"Scythes Sensal ne sont pas rechargés"
 		"it"		"Falci sensoriali non completamente cariche"
-		"ko"		"센살의 낫이 아직 전부 충전되지 않았습니다"
+		"ko"		"센살의 낫이 아직 충전되지 않았습니다"
 	}
 	"Pre Setup Cash Gain Hint"
 	{
 		"en"		"During ready setup phases, you gain half the cash from buildings, it will be given to you once the waves start again."
 		"fr"		"Lors des temps de préparation, vous recevez la moitié de l'argent de vos constructions. Le reste vous sera donné quand la vague commence."
 		"it"		"Durante le fasi di preparazione, si guadagna metà del denaro dalle Strutture, verrà dato quando le ondate ricominceranno."
-		"ko"		"준비 단계일때 구조물에서 얻는 자금의 절반은 웨이브가 다시 시작되면 돌려받습니다."
+		"ko"		"준비 단계일때, 구조물에서 얻는 자금의 절반만 획득합니다. 웨이브가 다시 시작되면 나머지 절반을 돌려받습니다."
 	}
 	"Extra Description"
 	{
@@ -4395,21 +4394,21 @@
 		"en"		"Nightmare Cannon: Heavily reduced Turn speed, Increased damage"
 		"fr"		"Cannon de Cauchemars : Manoeuvrabilité réduite, dégats améliorés"
 		"it"		"Cannone da Incubo: velocità di rotazione fortemente ridotta, danni aumentati"
-		"ko"		"악몽포: 회전 속도가 매우 크게 감소하지만, 피해량이 증가합니다"
+		"ko"		"나이트메어 캐논: 회전 속도가 매우 크게 감소하지만, 피해량이 증가합니다"
 	}
 	"Neuvellete Pulse"
 	{
 		"en"		"Pulse Cannon: Heavily increased turnrate, but beam is only active for 2.5 seconds, shorter recharge period"
 		"fr"		"Cannon Impulsion : Manoeuvrabilité améliorée, mais le rayon dure pour seulement 2.5 secondes. Période de recharge réduite."
 		"it"		"Cannone a impulsi: velocità di rotazione notevolmente aumentata, ma il raggio è attivo solo per 2,5 secondi, periodo di ricarica più breve"
-		"ko"		"파동포: 회전 속도가 매우 크게 증가하지만, 빔의 지속 시간이 2.5초가 되며, 재충전 쿨타임이 짧습니다"
+		"ko"		"펄스 캐논: 회전 속도가 매우 크게 증가하지만, 빔의 지속 시간이 2.5초가 됩니다. 재충전 쿨타임이 더 짧습니다"
 	}
 	"Neuvellete Feedback"
 	{
-		"en"		"Feeback Loop: The longer your Beam is active, the more damage it deals up to a maximum cap of 2.5x"
+		"en"		"Feedback Loop: The longer your Beam is active, the more damage it deals up to a maximum cap of 2.5x"
 		"fr"		"Rétroaction : Les dégats du rayon augmentent avec la durée, jusqu'à un maximum de 2.5x"
 		"it"		"Ciclo di ritorno: Più a lungo il raggio è attivo, più danni infligge fino a un limite massimo di 2,5 volte"
-		"ko"		"피드백 루프: 빔이 더 오래 지속될수록, 피해량이 점차 증가하여 최대 2.5배까지 증가합니다"
+		"ko"		"피드백 루프: 빔이 더 오래 지속될수록, 피해량이 점차 증가하며 최대 2.5배까지 증가합니다"
 	}
 	"Neuvellete Menu First"
 	{
@@ -4509,19 +4508,19 @@
 	{
 		"en" 	"This will disable lastman music for you during raidbosses music"
 		"it"	"Questo disabilita la musica di Lastman durante la musica dei raidboss"
-		"ko" 	"이것은 레이드 보스 상대로 최후의 1인 상태가 되었을때 나오는 음악을 비활성화시킵니다"
+		"ko" 	"이것은 레이드 보스와 전투 중 최후의 1인 상태가 되었을때 나오는 음악을 비활성화시킵니다"
 	}
 	"DamageHud Setting"
 	{
 		"en" 	"Dont Always Display Damage Hud"
 		"it"	"Non visualizzare sempre l'Hud dei danni "
-		"ko" 	"피해량 표기 끄기"
+		"ko" 	"피해 허드 상시 표기 끄기"
 	}
 	"DamageHud Setting Explain"
 	{
 		"en" 	"Enabling this setting will hide ZR damage numbers if you enabled the TF2 damage number setting."
 		"it"	"L'attivazione di questa impostazione nasconde i numeri di danno dello ZR se è stata attivata l'impostazione del numero di danno di TF2."
-		"ko" 	"이 옵션을 켜면 좀비 라이엇 전용 피해량 수치를 끕니다 ."
+		"ko" 	"이 옵션을 켜면 좀비 라이엇 전용 피해량 수치를 끕니다."
 	}
 	"Fix First Sound Play Manually"
 	{
@@ -4603,7 +4602,7 @@
 		"fr"	"Accroupissez-vous pour cet abilité"
 		"chi"	"蹲下时使用技能"
 		"it"	"Accovacciarsi a terra per l'abilità"
-		"ko" 	"능력을 사용하려면 지면에서 앉으세요"
+		"ko" 	"능력을 사용하려면 지면에 앉으세요"
 	}
 	"Railcannon Charged"
 	{
@@ -4619,13 +4618,13 @@
 		"fr"	"Allez face-à-face contre les zombies et Combine classiques!"
 		"chi"	"击败尸群，打败联合军！"
 		"it"	"Combatti contro i classici zombie e combatti contro le combinazioni!"
-		"ko" 	"전형적인 좀비들과 콤바인들을 상대로 살아남으세요!"
+		"ko" 	"전형적인 좀비들과 배풍등의 군단들을 상대로 살아남으세요!"
 	}
 	"True Fusion Warrior Wave Desc"
 	{
 		"en"	"Lore order: (1) ''Silvester'' Is infected with the xeno virus, his gear prevents the spreading of it. how can we save him from the infection."
 		"it"	"Ordine Lore: (1) ''Silvester'' È infettato dal virus xeno, il suo equipaggiamento ne impedisce la diffusione."
-		"ko"	"설정 순서: (1) ‘실베스터’는 제노 바이러스에 감염되어 있으며, 그의 장비가 감염 확산을 막고 있습니다."
+		"ko"	"설정 순서: (1) ‘실베스터’가 제노 바이러스에 감염되었으며, 그의 장비가 감염의 확산을 막고 있습니다. 어떻게 감염에서 해방시켜야 할까요..."
 	}
 	"Alternative Desc"
 	{
@@ -4633,20 +4632,20 @@
 		"fr"	"Une tournure sur le mode classique aves des nouveaux ennemis mystérieux!"
 		"chi"	"经典模式，但出现了掌握魔法的心敌人…"
 		"it"	"Combatti con una nuova versione del classico con nuovi nemici magici!"
-		"ko" 	"일반 모드이지만, 마법을 사용하는 새로운 적들이 등장합니다!"
+		"ko" 	"블리츠크리그가 군대를 보내 당신을 공격합니다. 블리츠크리그 본인은 당신이 직접 싸울 가치가 없다고 보는 것 같군요."
 	}
 	"Blitzkrieg Wave Desc"
 	{
 		"en"	"Lore order: (2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
 		"it"	"Ordine Lore: (2) La macchina è stata hackerata da qualcuno... ti vuole morto.\nOriginalmente costruito da Kahmlstein insieme a Ruina e Expidonsa...\nNon affrontarlo in nessuna area expidonsan..."
-		"ko"	"설정 순서: (2) 누군가에게 해킹당한 기계입니다... 그리고 이제 당신을 죽이고 싶어합니다.\n원래는 캄르스타인, 루이나, 엑스피돈사와 함께 만들어진 장치였지만…\n엑스피돈사 지역에서 그와 전투하지 마십시오."
+		"ko"	"설정 순서: (2) 누군가에게 해킹당한 기계입니다... 그리고 이제 당신을 죽이고 싶어합니다.\n원래는 카멜슈타인, 루이나, 엑스피돈사와 함께 만들어진 기계였지만…\n엑스피돈사 지역에서 그와 전투하지 마십시오."
 	}
 	"Blitzkrieg Hard Desc"
 	{
 		"en"	"Save the Expidonsan small base from Blitzkrieg, if you can.\nThe machine is much stronger here."
 		"fr"	"Le combat est futile."
 		"it"	"Non osate opporvi a lui."
-		"ko" 	"그와 감히 싸우려고 하지 마십시오."
+		"ko" 	"블리츠크리그에게서 엑스피돈사 소형 기지를 구해내세요. 가능하다면 말이죠.\n이 기계는 이곳에서 더욱 강력해집니다."
 	}
 	"Xeno Desc"
 	{
@@ -4654,7 +4653,7 @@
 		"fr"	"Les ennemis sont infectés avec l'infection Xéno, et reçoivent de nouvelles abilités!"
 		"chi"	"外界感染到来，僵尸们的变异也更加严重了。"
 		"it"	"L'infezione Xeno è arrivata, mutando i nemici con nuove abilità!"
-		"ko" 	"제노 감염원이 여기까지 퍼졌습니다. 적들이 새로운 능력을 얻은채로 변이되었습니다!"
+		"ko" 	"새로운 제노 감염원이 여기까지 퍼졌습니다. 적들이 새로운 능력을 얻은채로 변이되었습니다!"
 	}
 	"Silvester Waldch Desc"
 	{
@@ -4668,7 +4667,7 @@
 		"fr"	"Vouz avez trouvé la source de l'infection Xéno. Les ennemis sont beaucoup plus forts ici, gare à vous..."
 		"chi"	"你们找到了感染的来源。小心点… 它们在这里更强。"
 		"it"	"Entra nella fonte dell'infezione Xeno, qui sono molto più forti, attenzione..."
-		"ko" 	"당신은 제노 감염원이 시작된 곳에 도착했습니다. 그들은 이 곳에서 훨씬 강합니다, 조심하십시오..."
+		"ko" 	"당신은 제노 감염이 시작된 곳에 도착했습니다. 그들은 이 곳에서 훨씬 강합니다, 조심하십시오..."
 	}
 	"Medieval Desc"
 	{
@@ -4676,7 +4675,7 @@
 		"fr"	"Entrez en combat contre le Moyen-Âge, et leur armure qui leur protège contre les attaques à portée et corps à corps!"
 		"chi"	"对抗中世纪的剑与盾！"
 		"it"	"Combatti contro la mezza età con le loro armature per contrastare gli attacchi in mischia o a distanza!"
-		"ko" 	"중세 시대의 병사들과 싸웁니다. 그들은 각각 근접과 원거리 공격 카운터에 특화되어 있습니다!"
+		"ko" 	"중세 시대의 병사들과 싸웁니다. 그들은 각각 근접 공격과 원거리 공격 카운터에 특화되어 있습니다!"
 	}
 	"God Alaxios Wave Desc"
 	{
@@ -4684,7 +4683,7 @@
 		"fr"	"Alaxios apporte son armée, tuez ses unités en premier quand ils apparaîssent!"
 		"chi"	"准备迎接一场全面的战争。记得先处理掉他的军队！"
 		"it"	"Ordine Lore: (4) Combatti contro di lui e il suo esercito che si riproduce rapidamente, uccidi l'esercito per primo ogni volta che si presenta!"
-		"ko"	"설정 순서: (4) 그와 그의 급속히 늘어나는 군대에 맞서 싸우세요. 그들이 나타나면, 무슨 일이던간에 병사들을 먼저 처치하세요!"
+		"ko"	"설정 순서: (4) 그와 그의 급격하게 늘어나는 군대에 맞서 싸우세요. 군대가 나타나면, 무슨 일이던간에 병사들을 먼저 처치하세요!"
 	}
 	"Bone Zone Desc"
 	{
@@ -4694,7 +4693,7 @@
 	"SSB Desc"
 	{
 		"en"	"The God of the Dead has finally lost it, and now he wants to eradicate all life on Earth so that he never has to work again - stop him!"
-		"ko"	"죽은 자들의 신이 마침내 이성을 잃고, 다시는 일을 하지 않기 위해 지상의 모든 생명을 말살하려 하고 있다 — 그를 막아야합니다!"
+		"ko"	"죽은 자들의 신이 마침내 정신이 나가버렸고, 다시는 일을 할 이유가 없도록 지상의 모든 생명을 말살하려 하고 있습니다 — 그를 막아야합니다!"
 	}
 	"Expidonsa Desc"
 	{
@@ -4702,13 +4701,13 @@
 		"fr"	"Résiste cette ville souterraine avancée, faites garde à leur soins regénératifs et leurs attaques surprises!"
 		"chi"	"抵抗Expidonsa的高科技。别小看他们的盾牌，同时看好自己背后……"
 		"it"	"Resisti alla città sotterranea avanzata, fate attenzione alla loro auto-guarigione e agli attacchi a sorpresa!"
-		"ko" 	"엑스피돈사 세력의 최고급 기술력에 저항하십시오. 그들의 자가 회복과 기습 공격을 주의하세요!"
+		"ko" 	"엑스피돈사 세력의 진보된 기술력에 저항하십시오. 그들의 자가 회복과 기습 공격을 주의하세요!"
 	}
 	"Sensal Wave Desc"
 	{
 		"en"	"Lore order: (5) The scouting party operative, you harmed Silvester and Waldch, but they were unable to tell Sensal that this was a false alarm, brace yourself."
 		"it"	"Ordine Lore: (5) L'agente del gruppo di esplorazione, hai danneggiato silvester e waldch, ma non sono stati in grado di dire a sensal che si trattava di un falso allarme, tieniti forte."
-		"ko"	"설정 순서: (5) 당신은 정찰 부대 요원인 실베스터와 왈츠를 공격했지만, 그들은 센살에게 이것이 허위 경보란 사실을 알리지 못 했습니다. 준비하세요."
+		"ko"	"설정 순서: (5) 당신은 정찰 부대 요원인 실베스터와 왈츠를 공격했지만, 그들은 센살에게 이것이 허위 경보란 사실을 알리지 못했습니다. 준비하세요."
 	}
 	"Deep Sea Desc"
 	{
@@ -4716,7 +4715,7 @@
 		"fr"	"L'infection Seaborn attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
 		"chi"	"海嗣感染将会侵蚀你的盾。"
 		"it"	"L'infezione Seaborn è arrivata, gli attacchi di Corrosione dell'Armatura infetteranno la tua armatura, curala con le tabelle dell'armatura!"
-		"ko"	"시본 감염체들이 여기에 도착했습니다. 아머 부식 공격이 당신의 아머를 점차 부식시킬 것입니다. 아머 테이블로 그 상태이상을 치유하세요!"
+		"ko"	"시본 감염체들이 여기에 도착했습니다. 아머 부식 공격이 당신의 아머를 점차 감염시킬 것입니다. 아머 테이블을 사용하여 상태이상을 치유하세요!"
 	}
 	"Interitus Desc"
 	{
@@ -4724,7 +4723,7 @@
 		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
 		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 		"it"	"Ordine Lore: (7) Il caos ha afflitto molte città, il suo gruppo è pronto a servire voi giusti. Preparatevi."
-		"ko"	"설정 순서: (7) 혼돈이 수많은 도시를 뒤덮었고, 그의 무리가 자신들의 정의를 위해 당신을 덮칠 준비가 되었습니다. 대비하세요."
+		"ko"	"혼돈에 침식된 수많은 도시로 이루어진 연합입니다."
 	}
 	"Schwert Donner Desc"
 	{
@@ -4744,7 +4743,7 @@
 		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
 		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 		"it"	"Ordine Lore: (7) Il caos ha afflitto molte città, il suo gruppo è pronto a servire voi giusti. Preparatevi."
-		"ko"	"(7) 혼돈이 수많은 도시를 뒤덮었고, 그의 무리가 자신들의 정의를 위해 당신을 덮칠 준비가 되었습니다. 대비하세요."
+		"ko"	"설정 순서: (7) 혼돈이 수많은 도시를 뒤덮었고, 그의 연합이 자신들의 정의를 위해 당신을 덮칠 준비가 되었습니다. 준비하세요."
 	}
 	"Void Desc"
 	{
@@ -4752,7 +4751,7 @@
 		"fr"	"Aidez Kahmlstein contre le Void!"
 		"chi"	"帮卡姆斯坦因击退深渊！"
 		"it"	"Aiuta Kahmlstein contro il vuoto!"
-		"ko"	"자주 일어나는 공허 발발 재앙 중 하나입니다. 다행스럽게도, 이 근처에 우리가 있으니 방어를 도울 수 있겠군요."
+		"ko"	"수많은 공허 재앙 중 하나입니다. 다행스럽게도, 이 근처에 우리가 있으니 방어를 도울 수 있겠군요."
 	}
 	"Unspeakable Raid Desc"
 	{
@@ -4760,18 +4759,18 @@
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
 		"chi"	"深渊已被释放。"
 		"it"	"Ordine Lore: (9) Subito dopo aver liberato il vuoto in rogue2..."
-		"ko"	"설정 순서: (9) 로그라이크2(Rogue2) 당시 공허가 해방되어버린 직후, 다른 차원의 생명체들이 이 세계를 점령하기 위해 몰려오고 있습니다. 캄르스타인을 도와 공허와 맞서십시오! "
+		"ko"	"설정 순서: (9) 로그라이크2(Rogue2) 당시 공허가 해방되어버린 직후입니다. 다른 차원의 생명체들이 이 세계를 점령하기 위해 몰려오고 있습니다. 카멜슈타인을 도와 공허와 맞서세요!"
 	}
 	"Aperture Desc"
 	{
 		"en"	"You find yourself on the outskirts of an old facility. The inhabitants see you as a threat and attack you. Hopefully, we won't have to come back here after this."
-		"ko"	"당신은 낡은 시설의 외곽에 도착했습니다 이 장소의 수호자들이 당신을 위협으로 여기고 공격해 옵니다. 당신은 이번 사건이 끝나면 다시는 이곳에 오지 않았으면 좋겠다는 생각만이 들었습니다."
+		"ko"	"당신은 낡은 시설의 외곽에 도착했습니다. 이 장소의 수호자들이 당신을 위협으로 여기고 공격해 옵니다. 당신은 이번 일이 끝나면 다시는 이곳에 오지 않았으면 좋겠다는 생각만이 들었습니다."
 	}
 	"Laboratories Raid Desc"
 	{
 		"en"	"Lore order: (10) After construction and zilius's attack, Izan sends you to an old facility, it seems to have an exact replica of some places..."
 		"it"	"Ordine Lore: (10) Dopo la struttura e l'attacco di Zilius, Izan ti manda in una vecchia struttura, che sembra avere una replica esatta di alcuni luoghi..."
-		"ko"	"설정 순서: (10) 생존연산에서 질리우스의 습격을 버텨낸 후, 이잔은 당신을 오래된 연구소로 보냈습니다. 그곳에는 몇몇 장소와 완전히 동일한 복제물이 존재하는 것처럼 보입니다…"
+		"ko"	"설정 순서: (10) 생존연산에서 질리우스의 습격을 버텨낸 후, 이잔은 당신을 오래된 시설로 보냈습니다. 그곳에는 몇몇 장소와 완전히 동일한 복제물이 존재하는 것처럼 보입니다…"
 	}
 	"Twirl Raid Desc"
 	{
@@ -4779,7 +4778,7 @@
 		"fr"	"Cet individuel s'est intéressé dans votre groupe."
 		"chi"	"你貌似引起了 她 的兴趣"
 		"it"	"Ordine Lore: (8) Un certo individuo si è interessato al vostro gruppo"
-		"ko"	"(8) 아무래도 그녀가 당신의 팀에 관심을 보인것 같습니다."
+		"ko"	"설정 순서: (8) 아무래도 그녀가 당신의 팀에 관심을 보인것 같습니다."
 	}
 	"Ruina waves Desc"
 	{
@@ -4787,7 +4786,7 @@
 		"fr"	"Pouvez-vous survivre la prouesse de la magie?"
 		"chi"	"你能阻挡魔法之力吗》"
 		"it"	"Siete in grado di resistere al potere della magia?"
-		"ko"	"마법의 힘을 버텨낼 수 있으실까요?"
+		"ko"	"마법의 힘을 버텨낼 수 있을까요?"
 	}
 	"CoF Normal Desc"
 	{
@@ -4795,7 +4794,7 @@
 		"fr"	"Entrez le Livre de Simon."
 		"chi"	"进入西蒙的书中。"
 		"it"	"Entra nel libro di Simon."
-		"ko"	"사이먼 헨릭스의 책 속으로 들어갑니다."
+		"ko"	"사이먼 헨릭슨의 책 속으로 들어갑니다."
 	}
 	"CoF Nightmare Desc"
 	{
@@ -4803,7 +4802,7 @@
 		"fr"	"Entrez les Pensées de Simon."
 		"chi"	"进入西蒙的噩梦。"
 		"it"	"Entra nella mente di Simon."
-		"ko"	"사이먼 헨릭스의 정신 속으로 들어갑니다."
+		"ko"	"사이먼 헨릭슨의 정신 속으로 들어갑니다."
 	}
 	"Wait for power"
 	{
@@ -4948,12 +4947,12 @@
 	{
 		"en"		"The owner no longer owns this kit! Self detonation!!!"
 		"it"		"Il proprietario non possiede più questo kit! Autodistruzione!!!"
-		"ko"		"소유자가 더 이상 이것과 관련된 키트를 소유하고 있지 않습니다! 이 구조물을 자폭시킵니다!"
+		"ko"		"소유자가 더 이상 해당 키트를 소유하고 있지 않습니다! 이 구조물을 자폭시킵니다!!!"
 	}
 	"Press again to confirm selling."
 	{
 		"en"		"Press again to confirm selling."
-		"ko"		"판매 버튼을 다시 누르면 들고 있는 무기를 판매할 수 있습니다."
+		"ko"		"판매 버튼을 다시 누르면 아이템을 판매할 수 있습니다."
 	}
 	"Weapon No Effect Tinker"
 	{
@@ -4981,7 +4980,7 @@
 		"fr"		"Enlevé les effets de forge."
 		"chi"		"已移除匠工效果。"
 		"it"		"Rimossi gli attributi di Tinker"
-		"ko"		"재련 효과로 부여된 무기 속성을 전부 삭제"
+		"ko"		"재련 효과로 부여된 무기 속성 삭제됨"
 	}
 	"View Modifiers"
 	{
@@ -4990,7 +4989,7 @@
 		"de" 	"oha ein deutscher!"
 		"chi"	"查看效果"
 		"it"	"Visualizza i modificatori"
-		"ko"	"난이도 설정 보기"
+		"ko"	"재련 효과 보기"
 	}
 	"View PAP Upgrades"
 	{
@@ -5016,7 +5015,7 @@
 	{
 		"en"	"Display Top 5 Damage and Support"
 		"it"	"Visualizza i Top 5 danni e supporto"
-		"ko"	"피해량 또는 지원량 순위표 표시"
+		"ko"	"피해량 및 지원량 순위표 표시"
 	}
 	"Corrode"
 	{
@@ -5040,7 +5039,7 @@
 		"fr"	"Cryo"
 		"chi"	"冰"
 		"it"	"Cyro"
-		"ko"	"냉동"
+		"ko"	"냉기"
 	}
 	"Necrosis"
 	{
@@ -5048,7 +5047,7 @@
 		"fr"	"Nécrose"
 		"chi"	"咒死"
 		"it"	"Necrosi"
-		"ko"	"쇠약 원소 피해"
+		"ko"	"괴사"
 	}
 	"Building Menu"
 	{
@@ -5056,7 +5055,7 @@
 		"fr"	"Menu de Construction\nAccroupissez-vous pour plus d'informations"
 		"chi"	"建筑菜单\n蹲下查看详细信息"
 		"it"	"Menu Costruzioni\nTenere premuto il tasto crouch per maggiori informazioni"
-		"ko"	"건설 메뉴\n앉기 = 더 많은 정보."
+		"ko"	"건설 메뉴\n앉아서 더 많은 정보 확인"
 	}
 	"Barracks Gained Resources"
 	{
@@ -5064,7 +5063,7 @@
 		"fr"	"Votre caserne a reçu des ressources par cet action!"
 		"chi"	"你的兵营获得了屋子！"
 		"it"	"La tua caserma ha guadagnato risorse gwrazie a questa azione!"
-		"ko"	"이 행동으로 인해 당신의 배럭이 자원을 얻었습니다!"
+		"ko"	"해당 행동으로 당신의 배럭이 자원을 얻었습니다!"
 	}
 	"Resource Gain Mult Villager"
 	{
@@ -5082,7 +5081,7 @@
 		"fr"	"Vous êtes trop enragés pour utiliser des armes autre que corps à corps!!"
 		"chi"	"你装备了野蛮人思维，无法造成近战外任何伤害！"
 		"it"	"La tua mente è troppo barbara per infliggere danni se non in mischia!!!"
-		"ko"	"당신은 지금 너무 야만적이라서 근접 무기 외에는 다른 무기로 피해를 줄 수 없습니다!"
+		"ko"	"당신은 지금 너무 야만적이라서 근접 무기 외에는 다른 무기로 피해를 줄 수 없습니다!!"
 	}
 	"purnell_message"
 	{
@@ -5115,7 +5114,7 @@
 		"fr"	"Que voulez-vous faire avec l'enclume?"
 		"chi"	"您想对铁砧做什么？"
 		"it"	"Cosa volete fare con l'incudine?"
-		"ko"	"모루로 어떤걸 하시겠습니까?"
+		"ko"	"모루로 무엇을 하시겠습니까?"
 	}
 	"Re-Roll Weapon Stats"
 	{
@@ -5198,7 +5197,7 @@
 	"Iberia Expi Desc"
 	{
 	  "en" "Iberia and expidonsa offer training to help against the true final battle against the void... But our main trainer and her partner aren't here to train us. Their probably on vacation."
-	  "ko" "이베리아와 엑스피돈사 세력이 공허와의 마지막 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 그런데 보아하니 메인 트레이너와 그녀의 파트너가 여기에 없군요. 들려오는 말로는 둘 다 휴가 중이라던데 설마..."
+	  "ko" "이베리아와 엑스피돈사가 공허와의 마지막 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 그런데 보아하니 메인 트레이너와 그녀의 파트너가 여기에 없군요. 들려오는 말로는 둘 다 휴가 중이라던데 설마..."
 	}
 	"Iberia & Nemal"
 	{
@@ -5214,7 +5213,7 @@
 		"en" "(10) Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremly seriously."
 		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
 		"it"	"(10) Iberia e expidonsa offrono addestramento per aiutare contro la vera battaglia finale contro il vuoto... Anche se gli iberici sembrano prenderla estremamente sul serio."
-		"ko" "(10) 이베리아와 엑스피돈사 세력이 공허와의 마지막 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 이베리아인들은 이를 매우 심각하게 받아들이는 것 같지만요."
+		"ko" "설정 순서: (10) 이베리아와 엑스피돈사가 공허와의 마지막 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 이베리아인들은 이를 매우 심각하게 받아들이는 것 같지만요."
 	}
 	"Revenant's Shadow"
 	{
@@ -5292,13 +5291,13 @@
 	{
 		"en"	"Healer Class\nAble to heal, less DPS, and get Regene Berry perk"
 		"it"		"Guaritore di classe\nPossibilità di curare, meno DPS, e ottenere il vantaggio Bacca Regene"
-		"ko"	"메딕\n회복 능력을 가지고 있지만 낮은 피해량을 가짐 그리고 재생형 열매 특성을 가짐"
+		"ko"	"메딕\n회복 능력을 가지고 있지만 낮은 피해량을 가짐. 그리고 재생형 열매 특성을 가짐"
 	}
 	"Builder Class"
 	{
 		"en"	"Builder Class\nAble to build, repair, and get Morning Coffee perk"
 		"it"	"Costruttore di classe\nPuò costruire, riparare e ottenere il vantaggio Caffè del mattino"
-		"ko"	"건축가\n건설과 수리가 가능하고 모닝 커피 특성을 가짐"
+		"ko"	"건축가\n건설과 수리가 가능하며 모닝 커피 특성을 가짐"
 	}
 	"Don't Follow Me"
 	{
@@ -5334,7 +5333,7 @@
 	{
 		"en"	"Well I like anything I can get my hands on.\nDon't need to tell me what to get, I'll use it."
 		"it"	"Beh, mi piace tutto ciò su cui posso mettere le mani."
-		"ko"	"뭐, 난 내 손에 잡히는 거라면 뭐든지 좋아.\n뭘 사야할지 알려줄 필요는 없어. 그냥 내가 쓸게."
+		"ko"	"뭐, 난 내 손에 잡히는 거라면 뭐든지 좋아.\n뭘 써야할지 알려줄 필요는 없어. 그냥 내가 쓸게."
 	}
 	"Preference Normal"
 	{
@@ -5465,7 +5464,7 @@
 	{
 		"en" 	"(11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
 		"it"	"(11) Sensal vi chiede di visitare Ziberia, attualmente attaccata da Victoria."
-		"ko"	"(11) 센살은 당신에게 현재 빅토리아가 공격하고 있는 자이베리아를 방문해달라고 부탁했습니다."
+		"ko"	"설정 순서: (11) 센살은 당신에게 현재 빅토리아에게 공격받고 있는 지베리아를 방문해달라고 부탁했습니다."
 	}
 	"Ability already Active"
 	{
@@ -5489,13 +5488,13 @@
 	{
 		"en"	"Can only use while alive."
 		"it"	"Può essere utilizzato solo da vivo."
-		"ko"	"살아있을때만 사용할 수 있습니다."
+		"ko"	"살아있을 때만 사용할 수 있습니다."
 	}
 	"freeplay_intro"
 	{
 		"en"		"Alright guys...\nProve you're worthy."
 		"it"		"Va bene, ragazzi... \ndimostrate di essere all'altezza."
-		"ko"		"좋아, 친구들...\n네 가치를 증명해봐."
+		"ko"		"좋아, 친구들...\n너희가 자격이 있다는걸 증명해봐."
 	}
 	"Need Healing Point"
 	{
@@ -5508,13 +5507,13 @@
 	{
 		"en"		"Good... it seems like the simulation is working.\nSorry for the trouble, but this training is necessary for the future.\nLelouch exposed some REALLY heavy stuff, and i don't want to explain it all."
 		"it"		"Bene... sembra che la simulazione stia funzionando.\nScusate il disturbo, ma questo addestramento è necessario per il futuro.\nLelouch ha esposto cose davvero pesanti, e non voglio spiegarle tutte."
-		"ko"		"좋아... 시뮬레이션이 효과가 있는 것 같군.\n번거롭게 해서 정말 미안하지만, 이 훈련은 미래를 위해 필요해.\n를르슈가 정말 심각한 내용을 폭로했는데, 다 설명하고 싶지는 않네."
+		"ko"		"좋아... 시뮬레이션이 효과가 있는 것 같군.\n번거롭게 해서 정말 미안하지만, 이 훈련은 후일을 위해 필요해.\n를르슈가 정말 심각한 무언가를 풀어놨는데, 다 설명하고 싶지는 않네."
 	}
 	"freeplay_start_2"
 	{
 		"en"		"...asides from that, let me explain this:\nEach setup, i'll throw in a Skull upto like 3.\nI have added some of my own wanna-be enemies to make sure you see the weirdest creations, we dont know the void."
 		"it"		"...a parte questo, lasciate che vi spieghi questo:\nOgni setup, aggiungerò un teschio fino a circa 3.\nHo aggiunto alcuni dei miei nemici per assicurarmi che vediate le creazioni più strane, non conosciamo il vuoto."
-		"ko"		"그것보다, 이걸 좀 설명할게. -> :\n매 준비 단계마다, 내가 해골을 던질거야. 한... 최대 3개쯤?\n그럼 내가 직접 만들어낸 적들이 몇 개 추가될거야. 아... 우린 아직 공허에 대해서 잘 모르니까 공허 피조물과 닮았단 소리는 하지마."
+		"ko"		"그것보다, 이걸 좀 설명할게. -> :\n매 준비 단계마다, 내가 해골을 던질거야. 한... 최대 3개쯤?\n그리고 가장 말도 안되는 피조물을 볼 수 있도록 내가 직접 만들어낸 적들이 몇 개 추가될거야. 아무튼 우린 아직 공허에 대해서 잘 모르니까."
 	}
 	"freeplay_start_3"
 	{
@@ -5526,19 +5525,19 @@
 	{
 		"en"		"Zeina and I will watch over you, we'll warn you if something happens.\nWho am i? Koshi, the one managing this simulation.\nThis will only last an hour, so be fast!"
 		"it"		"Io e Zeina vi sorveglieremo, vi avvertiremo se dovesse succedere qualcosa.\nChi sono io? Koshi, colui che gestisce questa simulazione.\nQuesto durerà solo un'ora, quindi siate veloci!"
-		"ko"		"제이나와 내가 너희를 지켜볼게. 무슨 일이 생기면 경고할 거야.\n내가 누구냐고? 코쉬. 이 시뮬레이션을 관리하는 자야.\n이건 한, 1시간 쯤만 지속될 거니까, 빨리 해!"
+		"ko"		"제이나와 내가 너희를 지켜볼게. 무슨 일이 생기면 경고할 거야.\n내가 누구냐고? 코시. 이 시뮬레이션을 관리하는 자야.\n이건 한, 1시간 쯤만 지속될 거니까, 빨리 진행해!"
 	}
 	"Loadout In Store"
 	{
 		"en"		"You're in the Starter Store!\nBuy the weapons and gear you need with a high discount!\nOnce done, exit the store to access your earned cash!\nPress [TAB] and exit the store with [1]!"
 		"it"		"Sei nel Negozio Iniziale! \nAcquista le armi e l'equipaggiamento di cui hai bisogno con un forte sconto! \nUna volta finito, esci dal negozio per accedere ai soldi guadagnati! \nPremi [TAB] e esci dal negozio con [1]!"
-		"ko"		"상점 메뉴에서 초기 장비 로드아웃을 설정하고 더 많은 무기와 자금을 얻으세요!\n [TAB] 을 눌러 [1] 과 함께 초기 상점을 나가세요!"
+		"ko"		"초기 상점에 있습니다!\n상점 메뉴에서 높은 할인가로 무기와 장비를 구매하세요!\n구매가 끝났다면, 상점을 나가서 획득한 자금을 사용하세요!\n [TAB] 을 누르고 [1] 로 초기 상점을 나가세요!"
 	}
 	"Latejoin Hint"
 	{
 		"#format"	"{1:d}"
 		"en"		"You joined a round in progress.\nBuy Equipment and use [{1:d}] more Cash to qualify.\nYou have access to upgrade your current weapons in your store.\nSales are ignored, but got extra cash."
-		"ko"		"장비를 구매하고 자격을 갖추기 위해 [{1:d}] 더 많은 캐시를 사용하세요.\n상점에서 현재 무기를 업그레이드할 수 있습니다.\n세일은 적용되지 않지만 추가 캐시를 받았습니다."
+		"ko"		"진행 중인 라운드에 참여했습니다.\n참여 자격을 갖추기 위해 자금을 [{1:d}] 사용하세요.\n상점에서 현재 무기를 업그레이드할 수 있습니다.\n세일은 적용되지 않지만 추가 자금을 받습니다."
 	}
 	"No Attack Info"
 	{
@@ -5561,19 +5560,19 @@
 	{
 		"en"		"Gather resources and build up your base, use your {yellow}''Research Center''{green} to upgrade, You have extra buildings in your builder menu."
 		"it"		"Raccogli risorse e costruisci la tua base, usa il tuo {yellow}''Centro di ricerca''{green} per potenziarlo, hai Strutture extra nel menu del costruttore."
-		"ko"		"자원을 모아 기지를 건설. {yellow}''''연구소''{green}를 통해 개선을 하고, 건축가 메뉴에서 추가 구조물을 건설 가능."
+		"ko"		"자원을 모아 기지를 건설하세요. {yellow}''연구소''{green}를 통해 개선을 하고, 건축가 메뉴에서 추가 구조물을 건설할 수 있습니다."
 	}
 	"Explain Construction 3"
 	{
 		"en"		"If you main building falls, or you all die, you lose."
 		"it"		"Se la struttura principale cade, o se morite tutti, perdi."
-		"ko"		"메인 구조물이 파괴되거나, 전멸시 패배."
+		"ko"		"메인 구조물이 파괴되거나, 전멸시 패배합니다."
 	}
 	"Explain Construction 4"
 	{
 		"en"		"During peace phases you see the current risk/power (skull) and your resoruces at the top!"
 		"it"		"Durante le fasi di pace si vede il rischio/potenza attuale (teschio) e le proprie risorse in alto!"
-		"ko"		"준비 상태라면 현재 위험도/힘(해골)과 자원량이 맨 위에 표시됨!"
+		"ko"		"준비 상태라면 현재 위험도/위력(해골)과 보유한 자원이 맨 위에 표시됩니다!"
 	}
 	"Explain Rogue1 1"
 	{
@@ -5591,19 +5590,19 @@
 	{
 		"en"		"You sometimes collect artifacts after battles or stages (harder battles have a higher chance) these buff you up!"
 		"it"		"A volte si raccolgono artefatti dopo le battaglie o gli stage (le battaglie più difficili hanno una probabilità più alta) e questi ti potenziano!"
-		"ko"		"전투나 이벤트에서 아군의 능력치를 증가시키는 소장품을 확률로 얻을수 있습니다!"
+		"ko"		"전투나 이벤트에서 아군의 능력치를 증가시키는 소장품을 확률적으로 얻을 수 있습니다!(위험한 전투일 경우 확률이 더 높습니다)"
 	}
 	"Explain Rogue2 1"
 	{
 		"en"		"In rogue2 You also get chaos for getting downed too much (see top during peace phases)"
 		"it"		"In rogue2 si ottiene anche il caos per essere stati abbattuti troppo spesso (vedi top durante le fasi di pace)"
-		"ko"		"rogue2 에서는 너무 많이 다운되면 혼돈의 고통을 얻습니다. (준비 상태에서 확인 가능)"
+		"ko"		"로그라이크2에서는 너무 많이 다운될 경우 혼돈 침식도를 얻습니다.(준비 상태에서 확인 가능)"
 	}
 	"Explain Rogue2 2"
 	{
 		"en"		"Weapons must be recovered, or else their price is 1.2x Higher then normal."
 		"it"		"Le armi devono essere recuperate, altrimenti il loro prezzo è 1,2 volte superiore al normale."
-		"ko"		"회수되지 않은 무기는, 가격이 1.2배로 증가합니다."
+		"ko"		"회수되지 않은 무기는 가격이 1.2배로 증가합니다."
 	}
 	"Call for medic to cancel!"
 	{
@@ -5615,7 +5614,7 @@
 	{
 		"en"		"You tried to sell/unequip upgrades your barracks units needed, a rift in time opens and consumes them and kills them in a nanosecond.\n{crimson}Tried to bug abuse huh?"
 		"it"		"Se hai cercato di vendere/disinfettare i potenziamenti di cui avevano bisogno le tue unità della caserma, si è aperto uno squarcio nel tempo che le ha consumate e uccise in un nanosecondo.\n{crimson}Hai cercato di abusare delle cimici, eh?"
-		"ko"		"당신은 요구 사항이 필요한 병영 유닛을 업그레이드하거나 장착 해제하려고 했고, 시간의 균열이 열렸을때 유닛을 소모하여 소숫점 단위로 유닛을 죽였습니다.\n{crimson}이거 버그 악용인거 알지?"
+		"ko"		"당신은 배럭 유닛이 필요로 하는 개선을 판매하거나 장착 해제하려고 했고, 시간의 균열이 열리며 유닛을 빨아들이고 순식간에 죽였습니다.\n{crimson}이거 버그 악용인거 알지?"
 	}
 	"Plasma Kit Insufficient Charge"
 	{
@@ -5627,7 +5626,7 @@
 	{
 		"en"		"Your body slowly starts to break down...."
 		"it"		"Il corpo inizia lentamente a scomporre...."
-		"ko"		"당신의 몸이 천천히 망가져가기 시작합니다..."
+		"ko"		"당신의 몸이 서서히 망가져가기 시작합니다..."
 	}
 	"Too many Perks"
 	{
