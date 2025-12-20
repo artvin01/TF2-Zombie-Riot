@@ -13,6 +13,7 @@ enum				// Types
 	Element_Burger,		// 7
 	Element_Plasma,		// 8
 	Element_Warped,		// 9
+	Element_ManaOverflow,		// 10
 
 	Element_MAX
 }
@@ -28,7 +29,8 @@ static const char ElementName[][] =
 	"CO",
 	"FOOD",
 	"PL",
-	"WW"
+	"WW",
+	"MO"
 };
 
 static float LastTime[MAXENTITIES];
@@ -451,6 +453,10 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 					//if server starts crashing out of nowhere, change how to change teamnum
 					EmitSoundToAll("mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 					ParticleEffectAt(ProjectileLoc, "hightower_explosion", 1.0);
+					int allieshit = 3;
+					if(EnableSilentMode)
+						allieshit = 1;
+
 					b_NpcIsTeamkiller[victim] = true;
 					Explode_Logic_Custom(0.0,
 					attacker,
@@ -461,13 +467,16 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 					_,
 					_,
 					true,
-					3,
+					allieshit,
 					false,
 					_,
 					SakratanGroupDebuff);
 					b_NpcIsTeamkiller[victim] = false;
 					f_ArmorCurrosionImmunity[victim][Element_Chaos]  = GetGameTime() + 10.0;
-					Force_ExplainBuffToClient(victim, "Chaos Elemental Damage");
+					if(EnableSilentMode)
+						Force_ExplainBuffToClient(victim, "Chaos Elemental Damage");
+					else
+						Force_ExplainBuffToClient(victim, "Chaos Elemental Damage High");
 				}
 			}
 			
@@ -688,11 +697,22 @@ static void SakratanGroupDebuff(int entity, int victim, float damage, int weapon
 
 static void SakratanGroupDebuffInternal(int victim)
 {
-	if(victim <= MaxClients)
+	if(!EnableSilentMode)
 	{
-		DealTruedamageToEnemy(0, victim, 350.0);
+		if(victim <= MaxClients)
+		{
+			DealTruedamageToEnemy(0, victim, 350.0);
+		}
+		IncreaseEntityDamageTakenBy(victim, 1.40, 10.0);
 	}
-	IncreaseEntityDamageTakenBy(victim, 1.40, 10.0);
+	else
+	{
+		if(victim <= MaxClients)
+		{
+			DealTruedamageToEnemy(0, victim, 700.0);
+		}
+		IncreaseEntityDamageTakenBy(victim, 1.60, 10.0);
+	}
 }
 
 void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
@@ -1597,4 +1617,91 @@ static void Warped_ClientDoEffets(int client)
 	{
 		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 	}
+}
+
+bool Elemental_AddManaOverflowDamage(int victim, int attacker, int damagebase, int type)
+{
+	//return true means this damage triggered mana overflow
+	//whicn means you can custom what else you can do when mana overflow triggered
+	//mana overflow will only trigger silenced and paralysis here
+	bool triggered = false;
+	int trigger = Elemental_TriggerDamage(victim, Element_ManaOverflow);
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return false;
+	}
+	
+	//if(b_NpcIsInvulnerable[victim])
+	//	return;
+	
+	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(NpcStats_ElementalAmp(victim))
+	{
+		damage = RoundToNearest(float(damage) * 1.3);
+	}
+	if(!b_NpcHasDied[victim])	// NPCs
+	{
+		//players got their own Overmana Overload, so this is mainly targeted at npcs
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_ManaOverflow));
+		//damage -= fl_ruina_battery_max[victim] * 0.1;
+		if(fl_ruina_battery_max[victim] < 10000.0)
+			damage -= RoundToNearest(damage * (fl_ruina_battery_max[victim] / 20000.0));
+		else
+			damage -= RoundToNearest(damage * 0.4);
+		//most ruina npcs got less than 5000 max battery(some got 6000),no ruina npcs got more than 10000 max battery
+		//ruina raid bosses got 1000000.0 max battery
+		
+		/*
+		no need for further balance as elemental got its own balance
+		
+		if(b_thisNpcIsARaid[victim] || b_thisNpcIsABoss[victim])
+			damage = RoundToNearest(damage * 0.75);
+		if(b_thisNpcIsARaid[victim])
+			damage = RoundToNearest(damage * 0.5);
+		*/
+		
+		if(damage < 1)
+			return false;
+		
+		if(f_ArmorCurrosionImmunity[victim][Element_ManaOverflow] < GetGameTime())
+		{
+			LastTime[victim] = GetGameTime();
+			LastElement[victim] = Element_ManaOverflow;
+			ElementDamage[victim][Element_ManaOverflow] += damage;
+			if(ElementDamage[victim][Element_ManaOverflow] > trigger)
+			{
+				ElementDamage[victim][Element_ManaOverflow] = 0;
+				f_ArmorCurrosionImmunity[victim][Element_ManaOverflow] = GetGameTime() + (9.5 + (type * 0.5));
+				float duration;
+				if(b_thisNpcIsARaid[victim] || b_thisNpcIsABoss[victim])
+					duration = 1.0;
+				else
+					duration = 3.0;
+				ApplyStatusEffect(attacker,victim,"Silenced",duration * 2.0);
+				ApplyStatusEffect(attacker,victim,"Paralysis",duration);
+
+				triggered = true;
+			}
+
+			if(attacker && attacker <= MaxClients)
+				ApplyElementalEvent(victim, attacker, damage);
+		}
+		else
+		{
+			float speedUp = 0.05 * damage * 0.01 + (type * 0.05);
+			if(speedUp < 0.1)
+				speedUp = 0.0;
+			if(speedUp > 1.0)
+				speedUp = 1.0;
+			if(speedUp > 0.0)
+				f_ArmorCurrosionImmunity[victim][Element_ManaOverflow] -= speedUp;
+		}
+	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		IncreaseEntityDamageTakenBy(victim, (damage * 0.001), 5.0, true);
+	}
+	return triggered;
 }

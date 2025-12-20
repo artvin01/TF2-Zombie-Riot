@@ -639,6 +639,7 @@ public void OnPostThink(int client)
 					float MaxHealth = float(SDKCall_GetMaxHealth(client));
 					if(MaxHealth > 3000.0)
 						MaxHealth = 3000.0;
+
 						
 					if(Rogue_Rift_HolyBlessing())
 						MaxHealth *= 2.0;
@@ -688,6 +689,18 @@ public void OnPostThink(int client)
 				HealEntityGlobal(client, client, attrib, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 
 			//This heal will show in the hud.
+			attrib = Attributes_GetOnPlayer(client, Attrib_RegenHpOutOfBattle_MaxHealthScaling, true,_, 0.0);	// rage on kill
+			if(attrib)
+			{
+				if(f_TimeUntillNormalHeal[client] < GetGameTime())
+				{
+					float MaxHealth = float(SDKCall_GetMaxHealth(client));
+					if(MaxHealth > 3000.0)
+						MaxHealth = 3000.0;
+					//show this healing.
+					HealEntityGlobal(client, client, MaxHealth * attrib, 1.0, 0.0, HEAL_SELFHEAL);	
+				}
+			}
 			attrib = 0.0;
 			if(ClientPossesesVoidBlade(client) >= 2 && (NpcStats_WeakVoidBuff(client) || NpcStats_StrongVoidBuff(client)))
 			{
@@ -704,6 +717,7 @@ public void OnPostThink(int client)
 			{
 				HealEntityGlobal(client, client, attrib, 1.25, 0.0, HEAL_SELFHEAL);
 			}
+			
 		}
 		
 		Armor_regen_delay[client] = GameTime + 1.0;
@@ -715,11 +729,13 @@ public void OnPostThink(int client)
 		OnlyOneAtATime = true;
 		SetGlobalTransTarget(client);
 
+#if defined ZR
 		if(BetWar_ShowStatus(client))
 		{
 			Mana_Hud_Delay[client] = GameTime + 0.1;
 		}
 		else
+#endif	// ZR
 		{
 			char buffer[255];
 			float HudY = 0.95;
@@ -1837,10 +1853,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(!CheckInHud())
 	{
 #if defined ZR
-		int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 		if(dieingstate[victim] > 0)
 		{
-			if(flHealth < 1)
+			if(GetEntProp(victim, Prop_Send, "m_iHealth") < 1)
 			{
 				//This kills the target.
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
@@ -2938,10 +2953,12 @@ void NpcStuckZoneWarning(int client, float &damage, int TypeOfAbuse = 0)
 
 void UpdatePlayerFakeModel(int client)
 {
+#if defined ZR
 	if(TeutonType[client] != TEUTON_NONE)
 	{
 		return;
 	}
+#endif
 	int PlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(PlayerModel > 0)
 	{	

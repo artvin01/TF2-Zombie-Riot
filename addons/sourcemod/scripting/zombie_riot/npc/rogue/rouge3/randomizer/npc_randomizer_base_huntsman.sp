@@ -231,8 +231,7 @@ public void RandomizerBaseHuntsman_ClotThink(int iNPC)
 						npc.PlayMeleeSound();
 						int projectile = npc.FireArrow(vPredictedPos, 100.0, 1200.0);
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.6;
-						SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-						SDKHook(projectile, SDKHook_StartTouch, RandomizerBaseHuntsman_Particle_StartTouch);
+						WandProjectile_ApplyFunctionToEntity(projectile, RandomizerBaseHuntsman_Particle_StartTouch);	
 					}
 					npc.StopPathing();
 					npc.m_bPathing = false;

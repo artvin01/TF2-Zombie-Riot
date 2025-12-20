@@ -47,6 +47,37 @@ public const int AmmoData[][] =
 	{ 0, 0 }			//???
 };
 
+public const int DefaultWaveCash[] =
+{
+	300, 300, 500, 300, 300, 300, 300, 300, 300, 1000,
+	500, 500, 500, 750, 750, 1500, 2000, 1200, 1200, 2500,
+	1250, 1250, 1500, 2250, 1500, 1500, 2900, 1750, 1750, 5000,
+	1850, 1850, 1850, 1850, 1850, 3000, 3000, 4000, 4000, 20000,
+	3000, 3000, 3000, 3000, 15000,
+	2500, 2500, 3000, 4000, 25000,
+	3000, 3000, 3000, 3000
+};
+
+stock int DefaultTotalCash(int wave)
+{
+	static int totalCash[sizeof(DefaultWaveCash)];
+
+	if(!totalCash[0])
+	{
+		int total;
+		for(int i; i < sizeof(DefaultWaveCash); i++)
+		{
+			total += DefaultWaveCash[i];
+			totalCash[i] = total;
+		}
+	}
+	
+	int twave = wave;
+	if(twave >= sizeof(DefaultWaveCash))
+		twave = sizeof(DefaultWaveCash) - 1;
+	
+	return totalCash[twave];
+}
 
 //FOR PERK MACHINE!
 public const char PerkNames[][] =
@@ -246,7 +277,14 @@ enum
 	WEAPON_RAIGEKI = 154,
 	WEAPON_HAMMER_NONPAP = 155,
 	WEAPON_HAMMER_PAP_1 = 156,
-	WEAPON_BOMB_AR = 157
+	WEAPON_SIGIL_BLADE = 157,
+    WEAPON_KIT_OMEGA_GAUSS = 158,
+    WEAPON_KIT_OMEGA = 159,
+    WEAPON_KIT_PURGE_CRUSHER = 160,
+    WEAPON_KIT_PURGE_RAMPAGER = 161,
+    WEAPON_KIT_PURGE_ANNAHILATOR = 162,
+    WEAPON_KIT_PURGE_MISC = 163,
+	WEAPON_BOMB_AR = 164
 }
 
 enum
@@ -490,6 +528,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zsclassic.sp"
 #include "construction.sp"
 #include "betting.sp"
+#include "dungeons.sp"
 #include "sm_skyboxprops.sp"
 #include "custom/homing_projectile_logic.sp"
 #include "custom/weapon_slug_rifle.sp"
@@ -633,6 +672,9 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_flamethrower_chemical.sp"
 #include "custom/wand/weapon_ritualist.sp"
 #include "custom/weapon_boomerang.sp"
+#include "custom/wand/weapon_wand_sigil_blade.sp"
+#include "custom/kit_omega.sp"
+#include "custom/kit_purging.sp"
 #include "custom/weapon_bombplant_smg.sp"
 
 void ZR_PluginLoad()
@@ -727,6 +769,7 @@ void ZR_PluginStart()
 	Vehicle_PluginStart();
 	Kritzkrieg_PluginStart();
 	BetWar_PluginStart();
+	Dungeon_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
@@ -771,6 +814,7 @@ void ZR_MapStart()
 	Classic_MapStart();
 	Construction_MapStart();
 	BetWar_MapStart();
+	Dungeon_MapStart();
 	Zero(TeutonType); //Reset teutons on mapchange
 	f_AllowInstabuildRegardless = 0.0;
 	Zero(i_NormalBarracks_HexBarracksUpgrades);
@@ -955,6 +999,9 @@ void ZR_MapStart()
 	Kritzkrieg_OnMapStart();
 	BubbleWand_MapStart();
 	Cheese_MapStart();
+	KitOmega_OnMapStart();
+	Wand_Sigil_Blade_MapStart();
+	PurgeKit_MapStart();
 	ResetMapStartExploARWeapon();
 	
 	Zombies_Currently_Still_Ongoing = 0;
@@ -1029,7 +1076,7 @@ public Action GlobalTimer(Handle timer)
 		f_AllowInstabuildRegardless = 0.0;
 		ForceMusicStopAndReset = true;
 	}
-	if(Rogue_Mode() || Construction_Mode())
+	if(Rogue_Mode() || Construction_Mode() || Dungeon_Mode())
 	{
 		ForceMusicStopAndReset = false;
 	}
@@ -2163,7 +2210,23 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							CPrintToChatAll("{darkviolet}%N decides to inject themselves with plasma as a last resort...", client);
 							Yakuza_Lastman(11);
 						}
-						
+						/*
+						if(Sigil_LastMann(client))
+						{
+							CPrintToChatAll("{blue}Diabolus Ex Machina.",client);
+							Yakuza_Lastman(12);
+						}
+						*/
+						if(Wkit_Omega_LastMann(client))
+						{
+							CPrintToChatAll("{gold}%N is now alone, however giving up isn't in their vocabulary.",client);
+							Yakuza_Lastman(13);
+						}
+						if(PurgeKit_LastMann(client))
+						{
+							CPrintToChatAll("{crimson}%N's purging protocol activates.",client);
+							Yakuza_Lastman(14);
+						}
 						
 						for(int i=1; i<=MaxClients; i++)
 						{

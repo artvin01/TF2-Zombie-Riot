@@ -821,7 +821,7 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 		EmitSoundToAll("mvm/mvm_tank_explode.wav", entity, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		ParticleEffectAt(ProjectileLoc, "hightower_explosion", 1.0);
 				
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -829,7 +829,7 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		if(IsValidEntity(particle))
 		{

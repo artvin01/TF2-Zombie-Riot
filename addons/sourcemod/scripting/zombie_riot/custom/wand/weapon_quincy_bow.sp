@@ -9,7 +9,7 @@ static float fl_Quincy_Charge_Multi[MAXPLAYERS + 1];
 
 #define QUINCY_BOW_HYPER_BARRAGE_DRAIN 10.0		//how much charge is drained per shot
 #define QUINCY_BOW_HYPER_BARRAGE_MINIMUM 50.0	//what % of charge does the battery need to start firing
-#define QUINCY_BOW_MAX_HYPER_BARRAGE 5			//how many maximum individual timers/origin points are shot, kinda like how many of them can be fired a second, this is the max amt
+#define QUINCY_BOW_MAX_HYPER_BARRAGE 6			//how many maximum individual timers/origin points are shot, kinda like how many of them can be fired a second, this is the max amt
 #define QUINCY_BOW_MULTI_SHOT_MINIMUM	50.0	//yada yada
 
 #define QUINCY_BOW_ARROW_TOUCH_SOUND "friends/friend_online.wav"
@@ -266,7 +266,7 @@ public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.");
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Your Weapon is not charged enough", RoundToFloor(fl_hyper_arrow_charge[client]), RoundToFloor(QUINCY_BOW_HYPER_CHARGE));
 	}
 }
 static bool TraceWalls(int entity, int contentsMask)
@@ -543,7 +543,7 @@ static void Quincy_Hyper_Barrage(int client, float charge_percent, float GameTim
 			float ang_Look[3];
 			MakeVectorFromPoints(endLoc, Vec_offset, ang_Look);
 			GetVectorAngles(ang_Look, ang_Look);
-			Quincy_Rocket_Launch(client, fl_speed, damage, weapon, ang_Look, endLoc);
+			Quincy_Rocket_Launch(client, fl_speed, damage, weapon, ang_Look, endLoc, "raygun_projectile_blue_trail");
 		}
 	}
 }
@@ -771,9 +771,9 @@ static void Do_Vector_Stuff(int cycle, float start_pos[3], float end_Pos[3], flo
 
 	Get_Fake_Forward_Vec(dist, angles, end_Pos, buffer_loc);
 }
-static void Quincy_Rocket_Launch(int client, float speed, float damage, int weapon, float fAng[3], float fPos[3])
+static void Quincy_Rocket_Launch(int client, float speed, float damage, int weapon, float fAng[3], float fPos[3], char[] WandParticle = "raygun_projectile_blue")
 {
-	int projectile = Wand_Projectile_Spawn(client, speed, 30.0, damage, 0, weapon, "raygun_projectile_blue", fAng, false , fPos);
+	int projectile = Wand_Projectile_Spawn(client, speed, 30.0, damage, 0, weapon, WandParticle, fAng, false , fPos);
 	WandProjectile_ApplyFunctionToEntity(projectile, Quincy_MultiArroTouch);
 }
 static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])

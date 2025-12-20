@@ -57,6 +57,7 @@ enum struct StatusEffect
 		this.OnBuffStarted				= INVALID_FUNCTION;
 		this.OnBuffStoreRefresh			= INVALID_FUNCTION;
 		this.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+		this.HudDisplay_Func			= INVALID_FUNCTION;
 		this.DamageTakenMulti 			= -1.0;
 		this.DamageDealMulti 			= -1.0;
 		this.MovementspeedModif 		= -1.0;
@@ -93,6 +94,7 @@ enum struct E_StatusEffect
 	//This is used for function things
 	float DataForUse;
 	int WearableUse;
+	int WearableUse2;
 	int VictimSave;
 	bool MarkedForDeletion;
 
@@ -215,6 +217,7 @@ void InitStatusEffects()
 	StatusEffects_GamemodeMadnessSZF();
 	StatusEffects_Raigeki();
 #endif
+	StatusEffects_Construction2();
 }
 
 static int CategoryPage[MAXPLAYERS];
@@ -1015,7 +1018,7 @@ void Force_ExplainBuffToClient(int client, const char[] name, bool IgnoreCooldow
 	ExplainBuffToClient(client, Apply_MasterStatusEffect, false, index, IgnoreCooldown);
 }
 
-bool WasAlreadyExplainedToClient(int client, const char[] name)
+stock bool WasAlreadyExplainedToClient(int client, const char[] name)
 {
 	int index;
 	index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
@@ -1255,9 +1258,175 @@ bool Status_Effects_GrantAttackspeedBonus(int entity, bool HasBuff, float BuffAm
 
 */
 
-static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBuff, float BuffOriginal, int BuffCheckerID, int BuffCheckerIDNPC, int FlagAttackspeedLogicInternal)
+static float BuffToASPD(float buff)
 {
-	if(type == 1)
+	return 1.0 - (1.0 / buff);
+}
+
+static float ASPDToBuff(float aspd)
+{
+	if(aspd <= -1.0)
+		ThrowError("We weren't ready for this")
+	
+	return 1.0 / (1.0 + aspd);
+}
+
+static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBuff, float BuffOriginal, int BuffCheckerID, int BuffCheckerIDNPC, int FlagAttackspeedLogicInternal)
+{	
+	bool IsCheatMode = true;
+
+	
+#if defined ZR
+	IsCheatMode = CvarInfiniteCash.BoolValue
+#endif
+	if(IsCheatMode && ((type == 3) || (type == 1 && BuffOriginal < 1.0)))
+	{
+		// Note this will break if two buffs share the same slot but have
+		// a buffed attackspeed and the other a nerfed attackspeed
+		// (The if statement above for "type == 1 && BuffOriginal < 1.0")
+
+		float ASPDOriginal = BuffToASPD(BuffOriginal);
+
+		int i, weapon;
+		while(TF2_GetItem(entity, weapon, i))
+		{
+			//They dont even have the buff.
+			if(!HasSpecificBuff(weapon, "", BuffCheckerID))
+			{
+				//We want to give the buff
+				if(GrantBuff)
+				{
+					//No extra logic needed
+					ApplyStatusEffect(entity, weapon, "", 9999999.9, BuffCheckerID);
+					StatusEffects_SetCustomValue(weapon, BuffOriginal, BuffCheckerID);
+					//inf
+					if(!(FlagAttackspeedLogicInternal & BUFF_ATTACKSPEED_BUFF_DISABLE))
+					{
+						float currentASPD = Attributes_Get(weapon, Attrib_ASPD_StatusCalc, 0.0);
+						float newAPSD = currentASPD + ASPDOriginal;
+						Attributes_Set(weapon, Attrib_ASPD_StatusCalc, newAPSD);
+
+						float currentBuff = ASPDToBuff(currentASPD);
+						float newBuff = ASPDToBuff(newAPSD);
+
+						float changedBuff = newBuff / currentBuff;
+
+						if(Attributes_Has(weapon, 6))
+							Attributes_SetMulti(weapon, 6, changedBuff);	// Fire Rate
+						
+						if(Attributes_Has(weapon, 97))
+							Attributes_SetMulti(weapon, 97, changedBuff);	// Reload Time
+
+						if(Attributes_Has(weapon, 733))
+							Attributes_SetMulti(weapon, 733, changedBuff);	// mana cost
+						
+						if(Attributes_Has(weapon, 8))
+							Attributes_SetMulti(weapon, 8, 1.0 / changedBuff);	// Heal Rate
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_SPEED))
+					{
+						if(Attributes_Has(weapon, 103))
+							Attributes_SetMulti(weapon, 103, BuffOriginal);	// Projectile Speed
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_RANGE))
+					{
+						if(Attributes_Has(weapon, 101))
+							Attributes_SetMulti(weapon, 101, 1.0 / BuffOriginal);	// Projectile Range
+					}
+				}
+			}
+			else
+			{
+				float BuffRevert = Status_Effects_GetCustomValue(weapon, BuffCheckerID);
+				//Is the buff still the same as before?
+				//if it changed, we need to update it.
+
+				//dont be null either.
+				if((BuffRevert != BuffOriginal || !GrantBuff) && BuffRevert != 0.0)
+				{
+					//Just remove the buff it had.
+					if(!(FlagAttackspeedLogicInternal & BUFF_ATTACKSPEED_BUFF_DISABLE))
+					{
+						float ASPDRevert = BuffToASPD(BuffRevert);
+
+						float currentASPD = Attributes_Get(weapon, Attrib_ASPD_StatusCalc, 0.0);
+						float newAPSD = currentASPD - ASPDRevert;
+						Attributes_Set(weapon, Attrib_ASPD_StatusCalc, newAPSD);
+
+						float currentBuff = ASPDToBuff(currentASPD);
+						float newBuff = ASPDToBuff(newAPSD);
+
+						float changedBuff = newBuff / currentBuff;
+
+						if(Attributes_Has(weapon, 6))
+							Attributes_SetMulti(weapon, 6, changedBuff);	// Fire Rate
+						
+						if(Attributes_Has(weapon, 97))
+							Attributes_SetMulti(weapon, 97, changedBuff);	// Reload Time
+							
+						if(Attributes_Has(weapon, 733))
+							Attributes_SetMulti(weapon, 733, changedBuff);	// mana cost
+
+						if(Attributes_Has(weapon, 8))
+							Attributes_SetMulti(weapon, 8, 1.0 / changedBuff);	// Heal Rate
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_SPEED))
+					{
+						if(Attributes_Has(weapon, 103))
+							Attributes_SetMulti(weapon, 103, 1.0 / (BuffRevert));	// Projectile Speed
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_RANGE))
+					{
+						if(Attributes_Has(weapon, 101))
+							Attributes_SetMulti(weapon, 101, BuffOriginal);	// Projectile Range
+					}
+				
+					RemoveSpecificBuff(weapon, "", BuffCheckerID, false);
+				}
+				if(GrantBuff && BuffRevert != BuffOriginal)
+				{
+					//No extra logic needed
+					ApplyStatusEffect(entity, weapon, "", 9999999.9, BuffCheckerID);
+					StatusEffects_SetCustomValue(weapon, BuffOriginal, BuffCheckerID);
+					//inf
+					if(!(FlagAttackspeedLogicInternal & BUFF_ATTACKSPEED_BUFF_DISABLE))
+					{
+						float currentASPD = Attributes_Get(weapon, Attrib_ASPD_StatusCalc, 0.0);
+						float newAPSD = currentASPD + ASPDOriginal;
+						Attributes_Set(weapon, Attrib_ASPD_StatusCalc, newAPSD);
+
+						float currentBuff = ASPDToBuff(currentASPD);
+						float newBuff = ASPDToBuff(newAPSD);
+
+						float changedBuff = newBuff / currentBuff;
+
+						if(Attributes_Has(weapon, 6))
+							Attributes_SetMulti(weapon, 6, changedBuff);	// Fire Rate
+						
+						if(Attributes_Has(weapon, 97))
+							Attributes_SetMulti(weapon, 97, changedBuff);	// Reload Time
+
+						if(Attributes_Has(weapon, 733))
+							Attributes_SetMulti(weapon, 733, changedBuff);	// mana cost
+
+						if(Attributes_Has(weapon, 8))
+							Attributes_SetMulti(weapon, 8, 1.0 / changedBuff);	// Heal Rate
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_SPEED))
+					{
+						if(Attributes_Has(weapon, 103))
+							Attributes_SetMulti(weapon, 103, BuffOriginal);	// Projectile Speed
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_RANGE))
+					{
+						if(Attributes_Has(weapon, 101))
+							Attributes_SetMulti(weapon, 101, 1.0 / BuffOriginal);	// Projectile Range
+					}
+				}
+			}
+		}
+	}
+	else if(type == 1)
 	{
 		int i, weapon;
 		while(TF2_GetItem(entity, weapon, i))
@@ -2672,7 +2841,7 @@ static bool CheckBuffIndex(int victim, int buffIndex)
 void StatusEffects_CombineCommander()
 {
 	StatusEffect data;
-	strcopy(data.BuffName, sizeof(data.BuffName), "Combine Command");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Mazeat Command");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⛠");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -3045,10 +3214,10 @@ void StatusEffects_SevenHeavySouls()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "♥");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.5;
-	data.DamageDealMulti			= 0.5;
+	data.DamageTakenMulti 			= 0.25;
+	data.DamageDealMulti			= 1.0;
 	data.MovementspeedModif			= 1.5;
-	data.AttackspeedBuff			= 0.5;
+	data.AttackspeedBuff			= 0.25;
 	
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false; //lol why was it on yes
@@ -4441,6 +4610,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
 
 	
+#if defined ZR
 	strcopy(data.BuffName, sizeof(data.BuffName), "Vuntulum Bomb EMP");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "V");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -4454,7 +4624,22 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= VintulumBombHud_Func;
-	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
+	StatusEffect_AddGlobal(data);
+#endif
+	data.HudDisplay_Func			= INVALID_FUNCTION;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Vuntulum Bomb EMP Death");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "DEAD");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Hand of Spark");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "HS");
@@ -4469,7 +4654,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= HandOfSparkHud_Func;
-	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
+	StatusEffect_AddGlobal(data);
 }
 
 void HandOfSparkHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
@@ -4477,13 +4662,15 @@ void HandOfSparkHud_Func(int attacker, int victim, StatusEffect Apply_MasterStat
 	int owner = GetEntPropEnt(victim, Prop_Data, "m_hOwnerEntity");
 	if(owner <= 0)
 		return;
+#if defined ZR
 	float TimeDisplay = GetGameTime() - Hand2HunterLastTime_Return(owner);
 	if(TimeDisplay >= 25.0)
 	{
 		Format(HudToDisplay, SizeOfChar, "[HS]");
 		return;
 	}
-	Format(HudToDisplay, SizeOfChar, "[HS %.0f％]", TimeDisplay * 4.0);
+	Format(HudToDisplay, SizeOfChar, "[HS %.0f％]", TimeDisplay * 4.0)
+#endif
 }
 
 stock bool NpcStats_KazimierzDodge(int victim)
@@ -5649,6 +5836,19 @@ void StatusEffects_Explainelemental()
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Chaos Elemental Damage High");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Necrosis Elemental Damage");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
@@ -5703,6 +5903,19 @@ void StatusEffects_Explainelemental()
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Overmana Overload");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Mana Overflow");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	//-1.0 means unused
@@ -5915,6 +6128,20 @@ void StatusEffects_Purge()
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Purging Intention");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "☠");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.ElementalLogic				= true;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Aimbot");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "A");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
@@ -6390,4 +6617,63 @@ static void UnstableUmbralRift_End(int victim, StatusEffect Apply_MasterStatusEf
 	Attributes_SetMulti(victim, 610, (1.0 / 0.35));
 	Attributes_SetMulti(victim, 326, (1.0 / 1.75));
 	SDKCall_SetSpeed(victim);
+}
+
+
+
+
+void StatusEffects_Construction2()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Chaos Demon Possession");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "CD");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.35;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 1.15;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	//-0.5
+	data.OnBuffStarted				= ChaosDemonInfultration_StartOnce;
+	data.OnBuffEndOrDeleted			= ChaosDemonInfultration_End;
+	data.AttackspeedBuff			= (1.0 / 1.5);
+	StatusEffect_AddGlobal(data);
+}
+
+static void ChaosDemonInfultration_StartOnce(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	if(IsValidEntity(Apply_StatusEffect.WearableUse2))
+		return;
+
+	CClotBody npc = view_as<CClotBody>(victim);
+
+	float maxhealth = float(ReturnEntityMaxHealth(victim));
+	HealEntityGlobal(victim, victim, maxhealth, 1.0, 0.0, HEAL_SELFHEAL);
+	float flPos[3];
+	float flAng[3];
+	npc.GetAttachment("eyes", flPos, flAng);
+	int ParticleEffect_1 = ParticleEffectAt_Parent(flPos, "unusual_smoking", victim, "eyes", {10.0,0.0,-5.0});
+	int ParticleEffect_2 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", victim, "eyes", {10.0,0.0,-20.0});
+
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect_1);
+	Apply_StatusEffect.WearableUse2 = EntIndexToEntRef(ParticleEffect_2);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+
+static void ChaosDemonInfultration_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+	{
+		RemoveEntity(Apply_StatusEffect.WearableUse);
+	}
+	if(IsValidEntity(Apply_StatusEffect.WearableUse2))
+	{
+		RemoveEntity(Apply_StatusEffect.WearableUse2);
+	}
 }

@@ -346,8 +346,7 @@ static int VictoriaTaserSelfDefense(VictoriaTaser npc, float gameTime, float dis
 			float projectile_speed = npc.m_flCustomProjectileSpeed;
 			
 			int projectile = npc.FireParticleRocket(vecTarget, 75.0 , projectile_speed, 100.0 , "raygun_projectile_blue_crit");
-			SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-			SDKHook(projectile, SDKHook_StartTouch, VictoriaTaser_Rocket_Particle_StartTouch);
+			WandProjectile_ApplyFunctionToEntity(projectile, VictoriaTaser_Rocket_Particle_StartTouch);
 
 			npc.m_flNextRangedAttack=gameTime+(NpcStats_VictorianCallToArms(npc.index) ? 0.75 : 1.0);
 			npc.m_iAmmo--;
@@ -397,20 +396,16 @@ static void VictoriaTaser_Rocket_Particle_StartTouch(int entity, int target)
 			}
 		}
 
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
-		{
 			RemoveEntity(particle);
-		}
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		if(IsValidEntity(particle))
-		{
 			RemoveEntity(particle);
-		}
 	}
 	RemoveEntity(entity);
 }

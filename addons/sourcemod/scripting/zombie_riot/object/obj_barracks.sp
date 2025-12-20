@@ -354,9 +354,6 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 }
 void BarracksCheckItems(int client)
 {
-	if(!WasAlreadyExplainedToClient(client, "Barracks Building Explain"))
-		return;
-
 	i_NormalBarracks_HexBarracksUpgrades[client] = Store_HasNamedItem(client, "Barracks Hex Upgrade 1");
 	i_NormalBarracks_HexBarracksUpgrades_2[client] = Store_HasNamedItem(client, "Barracks Hex Upgrade 2");
 	WoodAmount[client] = float(Store_HasNamedItem(client, "Barracks Wood"));
@@ -1263,10 +1260,17 @@ void Barracks_BuildingThink(int entity)
 
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CRENELLATIONS)
 			{
-				DataPack pack;
-				CreateDataTimer(0.21, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-				pack.WriteCell(EntIndexToEntRef(arrow)); //projectile
-				pack.WriteCell(EntIndexToEntRef(ValidEnemyToTarget));		//victim to annihilate :)
+				float fAng[3];
+				GetEntPropVector(arrow, Prop_Send, "m_angRotation", fAng);
+				Initiate_HomingProjectile(arrow,
+					npc.index,
+						180.0,			// float lockonAngleMax,
+						90.0,				//float homingaSec,
+						true,				// bool LockOnlyOnce,
+						true,				// bool changeAngles,
+						fAng,
+						ValidEnemyToTarget);			// float AnglesInitiate[3]);
+				TriggerTimerHoming(arrow);
 			}
 		}
 	}
@@ -1363,9 +1367,6 @@ int Building_GetFollowerCommand(int owner)
 
 void BarracksSaveResources(int client)
 {
-	if(!WasAlreadyExplainedToClient(client, "Barracks Building Explain"))
-		return;
-
 	Store_SetNamedItem(client, "Barracks Wood", RoundToCeil(WoodAmount[client]));
 	Store_SetNamedItem(client, "Barracks Food", RoundToCeil(FoodAmount[client]));
 	Store_SetNamedItem(client, "Barracks Gold", RoundToCeil(GoldAmount[client]));
@@ -1405,7 +1406,7 @@ void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0
 {
 	bool AllowResoruceGen = false;
 
-	if(Rogue_Mode() || Construction_Mode())
+	if(Rogue_Mode() || Construction_Mode() || Dungeon_Mode())
 	{
 		AllowResoruceGen = Waves_Started();
 	}

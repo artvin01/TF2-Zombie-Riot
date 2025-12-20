@@ -6,6 +6,7 @@
 		"en"	"Skill Tree"
 		"es"	"Arbol de Habilidades"
 		"it"	"Albero delle abilità"
+		"ko"	"스킬 트리"
 	}
 	"Skill Points"
 	{
@@ -13,431 +14,515 @@
 		"en"	"Skill Points: {1}"
 		"es"	"Puntos de Habilidad: {1}"
 		"it"	"Punti abilità: {1}"
+		"ko"	"보유 스킬 포인트: {1}"
 	}
 	"Browse Skill Tree Explain"
 	{
 		"en"	"\n---This menu overrides your movement! Close to move again!---\n"
 		"es"	"\n---Este menu te impide moverte! Cierralo para moverte!---\n"
 		"it"	"\n---Questo menù annulla i vostri movimenti! Chiudere per muoversi di nuovo!---\n"
+		"ko"	"\n---이 메뉴는 당신의 이동을 방해합니다! 다시 이동하려면 이 메뉴를 닫으세요!---\n"
 	}
 	"Browse Skill Tree Explain Full"
 	{
 		"en"	"You move in the skilltree with your movement keys.\nUpgrade skills by jumping.\nYou need to invest into enough skillpoints to unlock new paths.\nYou cannot move during this!"
 		"es"	"Te mueves en el arbol con tus teclas de movimiento.\nMejora tus habilidades saltando.\nNecesitas invertir suficientes puntos para desbloquear nuevos caminos.\nNo puedes moverte durante esto!"
 		"it"	"Ci si muove nell'albero delle abilità con i tasti di movimento.\nAumenta le abilità saltando.\nDevi investire in un numero sufficiente di punti abilità per sbloccare nuovi percorsi.\nNon puoi muoverti durante tutto ciò!"
+		"ko"	"스킬 트리 창에서, 당신의 이동 키로 커서를 움직일 수 있습니다.\n점프시 포인트를 투자합니다.\n스킬 포인트를 투자해야 열리는 길도 있습니다.\n이 메뉴가 열려있을때는 이동할 수 없습니다!"
 	}
 	"Browse Skill Tree"
 	{
 		"en"	"Browse Skill Tree"
 		"es"	"Revisar el Arbol"
 		"it"	"Sfoglia l'albero delle abilità"
+		"ko"	"스킬 트리 보기"
 	}
 	"Reset Skill Tree"
 	{
 		"en"	"Reset Skill Tree"
 		"es"	"Reiniciar el Arbol"
 		"it"	"Azzera l'albero delle abilità"
+		"ko"	"스킬 초기화"
 	}
 	"Reset Skill Tree Confirm"
 	{
 		"en"	"Are you sure you wish to reset your skill tree?\nThis can not be undone."
 		"es"	"Seguro que quieres reiniciar tu Arbol de Habilidades?\nEsto no se puede deshacer."
 		"it"	"Sei sicuro di voler reimpostare l'albero delle abilità? Non può essere annullato."
+		"ko"	"정말로 스킬 트리를 초기화 하시겠습니까?\n이 선택은 취소할 수 없습니다."
 	}
 	"Unlock Skill"
 	{
 		"en"	"Unlock Skill"
 		"es"	"Desbloquear Habilidad"
 		"it"	"Sblocca abilità"
+		"ko"	"스킬 해금"
 	}
 	"Fully Upgraded"
 	{
 		"en"	"Fully Upgraded"
 		"es"	"Al Maximo"
 		"it"	"Completamente massimizzato"
+		"ko"	"전부 강화됨"
 	}
 	"Upgrade Skill"
 	{
 		"en"	"Upgrade Skill"
 		"es"	"Mejorar Habilidad"
 		"it"	"Potenzia Abilità"
+		"ko"	"스킬 강화"
 	}
 	"Unlocked"
 	{
 		"en"	"Unlocked"
 		"es"	"Desbloqueado"
 		"it"	"Sbloccato"
+		"ko"	"해금됨"
 	}
 	"Luck Up 1"
 	{
 		"en" 		"Luck Up"
 		"es"		"Suerte+"
 		"it"		"Fortuna Aumentata"
+		"ko" 		"행운 증가"
 	}
 	"Luck Up 1 Desc"
 	{
 		"en" 		"Gain an additional +0.005％ chance to crit an enemy for 2x damage on any damage instance."
 		"es"		"Ganas una chance adicional de +0.005%% para hacer el doble de daño en un enemigo."
 		"it"		"Guadagni una possibilità aggiuntiva di +0,005％ di crittare un nemico per un danno doppio in qualsiasi istanza di danno."
+		"ko" 		"투자할 때마다, +0.005％ 확률로 공격에 치명타가 발생하여 적에게 2x 의 피해를 줍니다."
 	}
 	"Weapon Damage All 1"
 	{
 		"en" 		"Weapon Damage"
 		"it"		"Danno da arma da fuoco"
+		"ko" 		"무기 공격력"
 	}
 	"Weapon Damage All 1 Desc"
 	{
 		"en" 		"Gain a multiplicative +0.05％ damage buff to all weapons."
 		"it"		"Ottieni un buff moltiplicativo di +0,05％ danni a tutte le armi."
+		"ko" 		"투자할 때마다, 모든 무기의 피해량이 +0.05％ 만큼 곱연산으로 증가합니다."
 	}
 	"Weapon Damage All 1 High"
 	{
 		"en" 		"Weapon Damage High"
 		"it"		"Danno da arma alto"
+		"ko" 		"무기 공격력 상급"
 	}
 	"Weapon Damage All 1 High Desc"
 	{
 		"en" 		"Gain a multiplicative +0.2％ damage buff to all weapons."
 		"it"		"Ottieni un buff moltiplicativo di +0,2％ danni a tutte le armi."
+		"ko" 		"투자할 때마다, 모든 무기의 피해량이 +0.2％ 만큼 곱연산으로 증가합니다."
 	}
 	"Attackspeed & Reload All 1"
 	{
 		"en" 		"Attack & Reloadspeed"
 		"it"		"Attacco e velocità di ricarica"
+		"ko" 		"공격 속도 & 재장전 속도"
 	}
 	"Attackspeed & Reload All 1 Desc"
 	{
 		"en" 		"Gain a multiplicative +0.05％ attackspeed & reload buff to all weapons."
 		"it"		"Guadagni un buff moltiplicativo di +0,05％ alla velocità d'attacco e alla ricarica di tutte le armi."
+		"ko" 		"투자할 때마다, 모든 무기의 공격 속도와 재장전 속도가 +0.05％ 만큼 곱연산으로 증가합니다."
 	}
 	"Attackspeed & Reload All 1 High"
 	{
 		"en" 		"Attack & Reloadspeed"
 		"it"		"Attacco e velocità di ricarica"
+		"ko" 		"공격 속도 & 재장전 속도 상급"
 	}
 	"Attackspeed & Reload All 1 High Desc"
 	{
 		"en" 		"Gain a multiplicative +0.2％ attackspeed & reload buff to all weapons."
 		"it"		"Guadagni un buff moltiplicativo di +0,2％ alla velocità d'attacco e alla ricarica di tutte le armi."
+		"ko" 		"투자할 때마다, 모든 무기의 공격 속도와 재장전 속도가 +0.2％ 만큼 곱연산으로 증가합니다."
 	}
 	"Health Up 1"
 	{
 		"en" 		"Health Up"
 		"it"		"Salute Aumentata"
+		"ko" 		"체력 증가"
 	}
 	"Health Up 1 Desc"
 	{
 		"en" 		"Gain a +1 HP"
 		"it"		"Guadagni +1 HP"
+		"ko" 		"투자할 때마다, 최대 체력이 +1 증가합니다."
 	}
 	"Health Up 1 High"
 	{
 		"en" 		"Health Up"
 		"it"		"Salute Aumentata"
+		"ko" 		"체력 증가 상급"
 	}
 	"Health Up 1 High Desc"
 	{
 		"en" 		"Gain a +5 HP"
 		"it"		"Guadagni +5 HP"
+		"ko" 		"투자할 때마다, 최대 체력이 +5 증가합니다."
 	}
 	"Health Up 1 Infinite"
 	{
 		"en" 		"Health Up"
 		"it"		"Salute Aumentata"
+		"ko" 		"체력 증가 (무한)"
 	}
 	"Health Up 1 Infinite Desc"
 	{
 		"en" 		"Gain a +0.1 HP, this can be used infinitly, and thus is not efficient use in skillpoints."
 		"it"		"Guadagni +0,1 HP, può essere usato all'infinito e quindi non è un uso efficiente dei punti abilità."
+		"ko" 		"투자할 때마다, 최대 체력이 +0.1 증가합니다. 이 곳에 스킬 포인트를 투자하는건 효율적이지 않지만, 계속해서 투자할 수 있습니다."
 	}
 	"Resist 1"
 	{
 		"en" 		"Total Resistance"
 		"it"		"Resistenza totale"
+		"ko" 		"저항"
 	}
 	"Resist 1 Desc"
 	{
 		"en" 		"Gain a multiplicative +0.05％ Resistance to all sources"
 		"it"		"Guadagni una resistenza moltiplicativa di +0,05％ a tutte le fonti"
+		"ko" 		"투자할 때마다, 받는 모든 피해가 +0.05％ 만큼 곱연산으로 감소합니다."
 	}
 	"Cash Up 1"
 	{
 		"en" 		"Extra Cash"
 		"it"		"Contanti extra"
+		"ko" 		"추가 자금"
 	}
 	"Cash Up 1 Desc"
 	{
 		"en" 		"Gain +2 Extra Cash"
 		"it"		"Guadagniri +2 contanti extra"
+		"ko" 		"투자할 때마다, 초기 시작 자금이 +2 증가합니다."
 	}
 	"Cash Up 1 Infinite"
 	{
 		"en" 		"Extra Cash Infinite"
 		"it"		"Extra Cash Infinito"
+		"ko" 		"추가 자금 (무한)"
 	}
 	"Cash Up 1 Infinite Desc"
 	{
 		"en" 		"Gain +0.2 Extra Cash, this can be used infinitly, and thus is not efficient use in skillpoints."
 		"it"		"Guadagni +0,2 contanti extra, può essere usato all'infinito e quindi non è un uso efficiente dei punti abilità."
+		"ko" 		"투자할 때마다, 초기 시작 자금이 +0.2 증가합니다. 이 곳에 스킬 포인트를 투자하는건 효율적이지 않지만, 계속해서 투자할 수 있습니다."
 	}
 	"Cash Up 1 High"
 	{
 		"en" 		"Extra Cash"
 		"it"		"Contanti extra"
+		"ko" 		"추가 자금 상급"
 	}
 	"Cash Up 1 High Desc"
 	{
 		"en" 		"Gain +20 Extra Cash"
 		"it"		"Guadagni +20 contanti extra"
+		"ko" 		"투자할 때마다, 초기 시작 자금이 +20 증가합니다."
 	}
 	"Reload All 1"
 	{
 		"en" 		"Reloadspeed"
 		"it"		"Velocità di Ricarica"
+		"ko" 		"재장전 속도"
 	}
 	"Reload All 1 Desc"
 	{
 		"en" 		"Gain a multiplicative +0.025％ reload buff to all weapons."
 		"it"		"Guadagni un buff moltiplicativo di +0,025％ per la ricarica di tutte le armi."
+		"ko" 		"투자할 때마다, 모든 무기의 재장전 속도가 +0.025％ 만큼 곱연산으로 증가합니다."
 	}
 	"Attackspeed All 1"
 	{
 		"en" 		"Attack Speed"
 		"it"		"Velocità di attacco"
+		"ko" 		"공격 속도"
 	}
 	"Attackspeed All 1 Desc"
 	{
 		"en" 		"Gain a multiplicative +0.02％ Attackspeed buff to all weapons."
 		"it"		"Ottieni un buff moltiplicativo di +0,02％ Velocità d'attacco per tutte le armi."
+		"ko" 		"투자할 때마다, 모든 무기의 공격 속도가 +0.02％ 만큼 곱연산으로 증가합니다."
 	}
 	"FusionBuffDo"
 	{
 		"en" 		"Fusion Warrior Buff"
 		"it"		"Buff Guerriero Fusion"
+		"ko" 		"퓨전 워리어의 버프"
 	}
 	"FusionBuffDo Desc"
 	{
 		"en" 		"Gain a multiplicative +0.25％ Extra Damage and multiplicative +0.5％ Resistance."
 		"it"		"Guadagni un moltiplicativo +0,25％ di Danno extra e un moltiplicativo +0,5％ di Resistenza."
+		"ko" 		"투자할 때마다, 모든 무기의 피해량이 +0.25％ 곱연산으로 증가하고 자신이 받는 모든 피해가 +0.5％ 곱연산으로 감소합니다."
 	}
 	"Kahmlstein Buff"
 	{
 		"en" 		"Kahmlstein Buff"
 		"it"		"Buff di Kahmlstein"
+		"ko" 		"캄르스타인의 버프"
 	}
 	"Kahmlstein Buff Desc"
 	{
 		"en" 		"Gain a multiplicative +1％ Extra Damage."
 		"it"		"Guadagni un moltiplicativo +1％ di danno extra."
+		"ko" 		"투자할 때마다, 모든 무기의 피해량이 +1％ 증가합니다."
 	}
 	"Cash Up Barney 1"
 	{
 		"en" 		"Sellable Chainsaw"
 		"it"		"Motosega vendibile"
+		"ko" 		"판매 가능한 전기톱"
 	}
 	"Cash Up Barney 1 Desc"
 	{
 		"en" 		"Gain a +30 extra cash."
 		"it"		"Guadagni +30 in contanti."
+		"ko" 		"투자할 때마다, 초기 시작 자금이 +30 증가합니다."
 	}
 	"Sensal Buff Do"
 	{
 		"en" 		"Expidonsan Battery Buff"
 		"it"		"Buff Batteria Expidonsan"
+		"ko" 		"엑스피돈산 배터리 버프"
 	}
 	"Sensal Buff Do Desc"
 	{
 		"en" 		"Gain a multiplicative +0.35％ Extra Damage and multiplicative +1.0％ Resistance."
 		"it"		"Guadagni un moltiplicativo +0,35％ di Danno extra e un moltiplicativo +1,0％ di Resistenza."
+		"ko" 		"투자할 때마다, 모든 무기의 피해량이 +0.35％ 곱연산으로 증가하고 받는 모든 피해가 +1.0％ 곱연산으로 감소합니다."
 	}
 	"Alaxios Godly Powerup"
 	{
 		"en" 		"Alaxios' Full Buff"
 		"it"		"Buff completo di Alaxios"
+		"ko" 		"알락시오스의 버프"
 	}
 	"Alaxios Godly Powerup Desc"
 	{
 		"en" 		"Gain a multiplicative +1.0％ Resistance and 15 HP."
 		"it"		"Guadagni una resistenza moltiplicativa di +1,0％ e 15 HP."
+		"ko" 		"투자할 때마다, 받는 모든 피해가 +1.0％ 만큼 곱연산으로 감소하고 최대 체력이 15 증가합니다."
 	}
 	"Bob's Healing Hand"
 	{
 		"en" 		"Bob's Healing Hand Buff"
 		"it"		"Mano curativa di Bob"
+		"ko" 		"밥의 회복의 손길 버프"
 	}
 	"Bob's Healing Hand Desc"
 	{
 		"en" 		"Gain 25 HP.\nAn additional +0.05％ luck and 1％ building HP and reduces revive time by 5 out of 250"
 		"it"		"Guadagni 25 HP.\nUn ulteriore +0,05％ di fortuna e 1％ di HP dell'edificio e riduce il tempo di rianimazione di 5 su 250"
+		"ko" 		"최대 체력이 25 증가합니다.\n행운이 +0.05％ 만큼 증가하고 구조물의 체력이 1％ 만큼 증가하며 부활 시간을 250분의 5만큼 감소시킵니다."
 	}
 	"Blitzkrieg Buff"
 	{
 		"en" 		"Blitzkrieg Buff"
 		"it"		"Buff Blitzkrieg"
+		"ko" 		"블리츠크리그 버프"
 	}
 	"Blitzkrieg Buff Desc"
 	{
 		"en" 		"Gain a multiplicative +0.5％ Attackspeed and reload speed bonus."
 		"it"		"Guadagni un bonus moltiplicativo di +0,5％ alla velocità di attacco e di ricarica."
+		"ko" 		"투자할 때마다, 공격 속도와 재장전 속도가 +0.5％ 만큼 곱연산으로 증가합니다."
 	}
 	"Waldch's Blue Goggles"
 	{
 		"en" 		"Waldch's Blue Goggles"
 		"it"		"Occhiali blu di Waldch"
+		"ko" 		"왈츠의 파란 고글"
 	}
 	"Waldch's Blue Goggles Desc"
 	{
 		"en" 		"Gain a multiplicative +1.5％ Reload speed bonus."
 		"it"		"Guadagni un bonus moltiplicativo di +1,5％ alla velocità di ricarica."
+		"ko" 		"투자할 때마다, 재장전 속도가 +1.5％ 만큼 곱연산으로 증가합니다."
 	}
 	"Iberia's Last Hope Up"
 	{
 		"en" 		"Iberia's Last Hope Sparkle"
 		"it"		"L'ultima speranza di Iberia scintilla"
+		"ko" 		"이베리아의 마지막 희망"
 	}
 	"Iberia's Last Hope Up Desc"
 	{
 		"en" 		"Gain a multiplicative +1.0％ Attackspeed speed bonus."
 		"it"		"Guadagni un bonus moltiplicativo di +1,0％ alla velocità di attacco."
+		"ko" 		"투자할 때마다, 공격 속도가 +1.0％ 만큼 곱연산으로 증가합니다."
 	}
 	"Calmaticus Heart Up"
 	{
 		"en" 		"Calmaticus Heart Up"
 		"it"		"Cuore Calmatico Aumentato"
+		"ko" 		"칼마티커스 심장 강화"
 	}
 	"Calmaticus Heart Up Desc"
 	{
 		"en" 		"Gain an extra 0.25 Hp regen a second."
 		"it"		"Guadagni una rigenerazione extra di 0,25 cavalli al secondo."
+		"ko" 		"투자할 때마다, 초당 체력을 0.25 만큼 회복합니다."
 	}
 	"Xeno Vial Up"
 	{
 		"en" 		"Xeno Vial Up"
 		"it"		"Fiala Xeno Aumentata"
+		"ko" 		"제노 재생량 강화"
 	}
 	"Xeno Vial Up Desc"
 	{
 		"en" 		"Gain an extra 0.25 Hp regen a second."
 		"it"		"Guadagni una rigenerazione extra di 0,25 cavalli al secondo."
+		"ko" 		"투자할 때마다, 초당 체력을 0.25 만큼 회복합니다."
 	}
 	"Building Hp Up 1"
 	{
 		"en" 		"Building Hp Up"
 		"it"		"Hp Costruzione Aumentati"
+		"ko" 		"구조물 체력 증가"
 	}
 	"Building Hp Up 1 Desc"
 	{
 		"en" 		"Your buildings gain a multiplicative +0.1％ HP"
 		"it"		"Le tue costruzioni guadagnano un +0,1％ HP moltiplicativo"
+		"ko" 		"투자할 때마다, 내 모든 구조물의 체력이 +0.1％ 만큼 곱연산으로 증가합니다."
 	}
 	"Building Repair Up 1"
 	{
 		"en" 		"Building Repair Speed Up"
 		"it"		"Accelerazione della riparazione degli costruzioni"
+		"ko" 		"구조물 수리 효율 증가"
 	}
 	"Building Repair Up 1 Desc"
 	{
 		"en" 		"Your Repairspeed gains a multiplicative +0.1％ speed"
 		"it"		"La velocità di riparazione guadagna un +0,1％ moltiplicativo"
+		"ko" 		"투자할 때마다, 구조물 수리 효율이 +0.1％ 만큼 곱연산으로 증가합니다."
 	}
 	"Building Extra Damage Up 1"
 	{
 		"en" 		"Building Damage Up"
 		"it"		"Danni delle costruzioni Aumentati"
+		"ko" 		"구조물 공격력 증가"
 	}
 	"Building Extra Damage Up 1 Desc"
 	{
 		"en" 		"Your buildings gain a multiplicative +0.1％ Damage"
 		"it"		"Le costruzioni guadagnano un moltiplicativo di +0,1％ Danni"
+		"ko" 		"투자할 때마다, 구조물의 공격력이 +0.1％ 만큼 곱연산으로 증가합니다."
 	}
 	"Twirl Hairpin 1"
 	{
 		"en" 		"Twirls Magical Hairpin"
 		"it"		"Forcina magica di Twirls"
+		"ko" 		"트윌의 마법 헤어핀"
 	}
 	"Twirl Hairpin 1 Desc"
 	{
 		"en" 		"Gain 0.5％ Extra mana Regen"
 		"it"		"Guadagni 0,5％ Rigenerazione di mana extra"
+		"ko" 		"투자할 때마다, 초당 마나 회복량이 0.5％ 만큼 증가합니다."
 	}
 	"Iberia Training"
 	{
 		"en" 		"Nemals Special Help"
 		"it"		"Aiuto speciale di Nemals"
+		"ko" 		"네말의 특별한 도움"
 	}
 	"Iberia Training Desc"
 	{
 		"en" 		"Gain a multiplicative +1％ Attackspeed and reload speed bonus."
 		"it"		"Guadagni un bonus moltiplicativo di +1％ alla velocità di attacco e di ricarica."
+		"ko" 		"투자할 때마다, 공격 속도와 재장전 속도가 +1％ 만큼 곱연산으로 증가합니다."
 	}
 	"Extra Healing Up"
 	{
 		"en" 		"Extra Healing Up"
 		"it"		"Guarigione extra Aumentato"
+		"ko" 		"받는 회복 효율 증가"
 	}
 	"Extra Healing Up Desc"
 	{
 		"en" 		"Gain a multiplicative +0.1％ Extra Healing from all sources."
 		"it"		"Guadagni un +0,1％ moltiplicativo di guarigione extra da tutte le fonti."
+		"ko" 		"투자할 때마다, 받는 모든 치료 효율이 +0.1％ 만큼 곱연산으로 증가합니다."
 	}
 	"Extra Healing Up High"
 	{
 		"en" 		"Extra Healing Up High"
 		"it"		"Guarigione extra Aumentato"
+		"ko" 		"받는 회복 효율 증가 상급"
 	}
 	"Extra Healing Up High Desc"
 	{
 		"en" 		"Gain a multiplicative +0.5％ Extra Healing from all sources."
 		"it"		"Guadagni un +0,5％ moltiplicativo di guarigione extra da tutte le fonti."
+		"ko" 		"투자할 때마다, 받는 모든 치료 효율이 +0.5％ 만큼 곱연산으로 증가합니다."
 	}
 	"ReviveTime Reduce"
 	{
 		"en" 		"Revive Time Down"
 		"it"		"Tempo di rivivificazione Diminuito"
+		"ko" 		"부활 시간 감소"
 	}
 	"ReviveTime Reduce Desc"
 	{
 		"en" 		"Reduce your revive time by 1 out of 250"
 		"it"		"Riduce il tempo di rianimazione di 1 su 250"
+		"ko" 		"투자할 때마다, 나의 부활 시간이 250분의 1 만큼 감소합니다."
 	}
 	"ReviveTime Reduce High"
 	{
 		"en" 		"Revive Time Down High"
 		"it"		"Tempo di rianimazione abbassato"
+		"ko" 		"부활 시간 감소 상급"
 	}
 	"ReviveTime Reduce High Desc"
 	{
 		"en" 		"Reduce your revive time by 5 out of 250"
 		"it"		"Riduce il tempo di rianimazione di 5 su 250"
+		"ko" 		"투자할 때마다, 나의 부활 시간이 250분의 5 만큼 감소합니다."
 	}
 	"Extra Cash Building Up"
 	{
 		"en"	"Extra Cash Building Up"
 		"it"	"Accumulo di denaro extra Aumentato"
+		"ko"	"구조물의 자금 벌이 한도 증가"
 	}
 	"Extra Cash Building Up Desc"
 	{
 		"en"	"increase your max cap of building extra cash from 5000 by 100"
 		"it"	"aumenta di 100 unità il tetto massimo di accumulo di denaro extra da 5000"
+		"ko"	"구조물을 통해 얻을 수 있는 최대 자금 한도(기본 5000)가 100 증가합니다."
 	}
 	"Extra Cash Building Up High"
 	{
 		"en"	"Extra Cash Building UpHigh"
 		"it"	"Contanti extra per costruire Aumentato"
+		"ko"	"구조물의 자금 벌이 한도 증가 상급"
 	}
 	"Extra Cash Building Up High Desc"
 	{
 		"en"	"increase your max cap of building extra cash from 5000 by 500"
 		"it"	"aumenta il tetto massimo di accumulo di denaro extra da 5000 a 500"
+		"ko"	"구조물을 통해 얻을 수 있는 최대 자금 한도(기본 5000)가 500 증가합니다."
 	}
 	"Ingot Up 1"
 	{
 		"en"	"Ingot Up"
 		"it"	"Lingotto Aumentato"
+		"ko"	"추가 주괴 획득"
 	}
 	"Ingot Up 1 Desc"
 	{
 		"en"	"Gain 1 extra australium ingot in the roguelike, only he highest skill of a player on the server counts."
 		"it"	"Guadagni 1 lingotto di australium in più nel roguelike, conta solo l'abilità più alta di un giocatore sul server."
+		"ko"	"투자할 때마다, 로그라이크 모드에서 오스트레일륨 주괴 1 개를 추가로 얻습니다. 서버에서 플레이어의 가장 높은 스킬만이 인정됩니다."
 	}
 }

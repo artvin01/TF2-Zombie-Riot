@@ -360,8 +360,7 @@ static int VictorianRadioguardSelfDefense(Victorian_Radioguard npc, float gameTi
 				if(NpcStats_VictorianCallToArms(npc.index))
 					RocketDamage *= 2.0;
 				int projectile = npc.FireParticleRocket(vecTarget, RocketDamage , RocketSpeed , 450.0 , "spell_fireball_small_blue", true);
-				SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-				SDKHook(projectile, SDKHook_StartTouch, Victoria_RadioGuard_Particle_StartTouch);
+				WandProjectile_ApplyFunctionToEntity(projectile, Victoria_RadioGuard_Particle_StartTouch);
 				npc.m_flNextRangedAttack = gameTime + 5.0;
 				npc.m_flAttackHappenswillhappen = false;
 			}
@@ -400,12 +399,10 @@ static void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 			Explode_Logic_Custom(0.0, owner, inflictor, -1, ProjectileLoc, 100.0, _, _, true, _, false, _, Weeeeeeeeeiiiiii);
 			ParticleEffectAt(ProjectileLoc, "mvm_soldier_shockwave", 1.0);
 		}
-		
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
-		{
 			RemoveEntity(particle);
-		}
 	}
 	else
 	{
@@ -423,11 +420,10 @@ static void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 			Explode_Logic_Custom(0.0, owner, inflictor, -1, ProjectileLoc, 100.0, _, _, true, _, false, _, Weeeeeeeeeiiiiii);
 			ParticleEffectAt(ProjectileLoc, "mvm_soldier_shockwave", 1.0);
 		}
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		//we uhh, missed?
 		if(IsValidEntity(particle))
-		{
 			RemoveEntity(particle);
-		}
 	}
 	RemoveEntity(entity);
 }

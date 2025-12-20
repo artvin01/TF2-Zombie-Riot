@@ -358,8 +358,6 @@ static void Nuke_Old_Drone(int client)
 	}
 	if(IsValidEntity(lowest_id))
 	{
-		lantean_Wand_Drone_Count[client] -= 1;
-		b_is_lantean[lowest_id] = false;
 		RemoveEntity(lowest_id);
 	}
 }
@@ -375,20 +373,12 @@ float time)
 		Nuke_Old_Drone(client);
 	}
 	//sanity check, make sure it despawns eventually if smth goes wrong!
-	int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_LANTEAN, weapon, particle_type[client]);
+	int projectile = Wand_Projectile_Spawn(client, speed, 15.0, damage, WEAPON_LANTEAN, weapon, particle_type[client]);
 
 	b_is_lantean[projectile]=true;
 	fl_lantean_drone_life[projectile] = GetGameTime();
 
 	fl_targetshit[projectile]=1.0;
-
-	//30 sec, own respawnlogic.
-	int particle = EntRefToEntIndex(i_WandParticle[projectile]);
-	DataPack pack;
-	CreateDataTimer(30.0, Timer_RemoveEntity_CustomProjectileWand_Lanteen, pack, TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(projectile));
-	pack.WriteCell(EntIndexToEntRef(particle));
-	pack.WriteCell(client);
 
 //	float GameTimeExtra = GetGameTime() + 0.25;
 	//Dont instantly collide for reasons.
@@ -419,43 +409,35 @@ float time)
 
 	Lantean_HomingProjectile_TurnToTarget(f3_Vector_To_Aimbot_To[client], projectile);
 
+	WandProjectile_Apply_OnDestroyFunction_ToEntity(projectile, OnLanteanProjectileDestroy);
+
 	DataPack Datapack;
 	CreateDataTimer(0.1, Lantean_PerfectHomingShot, Datapack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	Datapack.WriteCell(EntIndexToEntRef(projectile)); //projectile
 	Datapack.WriteCell(EntIndexToEntRef(client));		//so rather than a victim, we send the client to use for trace's
 }
-
-public Action Timer_RemoveEntity_CustomProjectileWand_Lanteen(Handle timer, DataPack pack)
+//called when projectile is destroyed in ANY way.
+//thus allowing us to make 300% sure all data is removed and client info is reset properly. I.E. we don't get negative drone count.
+static void OnLanteanProjectileDestroy(int entity)
 {
-	pack.Reset();
-	int Projectile = EntRefToEntIndex(pack.ReadCell());
-	int Particle = EntRefToEntIndex(pack.ReadCell());
-	int clientindex = pack.ReadCell();
-	if(IsValidEntity(Projectile))
+	b_is_lantean[entity]=false;
+
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+
+	if(IsValidClient(owner))
 	{
-		lantean_Wand_Drone_Count[clientindex] -= 1;
-		b_is_lantean[Projectile]=false;
-		RemoveEntity(Projectile);
+		lantean_Wand_Drone_Count[owner] -= 1;
+		if(lantean_Wand_Drone_Count[owner] <= 0)
+			lantean_Wand_Drone_Count[owner] = 0;
 	}
-	if(IsValidEntity(Particle))
-	{
-		RemoveEntity(Particle);
-	}
-	return Plugin_Stop; 
 }
 public Action lantean_Wand_Touch_World(int entity, int other)
 {
 	//If it touches world.
 	if(other == 0 && !b_ThisEntityIgnoredEntirelyFromAllCollisions[entity])
 	{
-		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		if(fl_lantean_Wand_Drone_Life[entity] < GetGameTime())
 		{
-			int particle = EntRefToEntIndex(i_WandParticle[entity]);
-			if(IsValidEntity(particle))
-			{
-				RemoveEntity(particle);
-			}
 			switch(GetRandomInt(1,4)) 
 			{
 				case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
@@ -466,8 +448,6 @@ public Action lantean_Wand_Touch_World(int entity, int other)
 				
 				case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
 			}
-			b_is_lantean[entity]=false;
-			lantean_Wand_Drone_Count[owner] -= 1;
 			RemoveEntity(entity);
 		}
 	}
@@ -488,7 +468,6 @@ public void lantean_Wand_Touch(int entity, int target)
 		Set_HitDetectionCooldown(entity,target, GetGameTime() + 0.3);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
-		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if (IsValidClient(owner))	
 		{
 			//Code to do damage position and ragdolls
@@ -508,7 +487,7 @@ public void lantean_Wand_Touch(int entity, int target)
 			
 			if(lantean_Wand_Drone_Count[owner] > 10)	//if drone overcharge kicks in, damage penalty is applied
 			{
-				dmg_penalty=(lantean_Wand_Drone_Count[owner]/10)*fl_lantean_overcharge_dmg_penalty[entity];
+				dmg_penalty=(lantean_Wand_Drone_Count[owner]*0.1)*fl_lantean_overcharge_dmg_penalty[entity];
 			}
 			float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 			SDKHooks_TakeDamage(target, entity, owner, (Wand_Dmg / dmg_penalty), DMG_PLASMA, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
@@ -529,13 +508,7 @@ public void lantean_Wand_Touch(int entity, int target)
 			}
 			if(i_drone_targets_penetrated[entity] >= i_lantean_max_penetration[entity])
 			{
-				b_is_lantean[entity]=false;
-				lantean_Wand_Drone_Count[owner] -= 1;
 				RemoveEntity(entity);
-				if(IsValidEntity(particle))
-				{
-					RemoveEntity(particle);
-				}
 			}
 		}
 	} 
@@ -628,7 +601,10 @@ static void Lantean_HomingProjectile_TurnToTarget(float Vec[3], int Projectile)
 	GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", flRocketPos);
 
 	float flInitialVelocity[3];
-	GetEntPropVector(Projectile, Prop_Send, "m_vInitialVelocity", flInitialVelocity);
+	if(b_IsCustomProjectile[Projectile])
+		GetEntPropVector(Projectile, Prop_Data, "m_vInitialVelocity", flInitialVelocity);
+	else
+		GetEntPropVector(Projectile, Prop_Send, "m_vInitialVelocity", flInitialVelocity);
 	float flSpeedInit = GetVectorLength(flInitialVelocity);
 
 	float Ratio = (GetVectorDistance(flTargetPos, flRocketPos))/750.0;
@@ -647,18 +623,4 @@ static void Lantean_HomingProjectile_TurnToTarget(float Vec[3], int Projectile)
 	
 	ScaleVector(flNewVec, flSpeedInit);
 	TeleportEntity(Projectile, NULL_VECTOR, flAng, flNewVec, true);
-}
-
-
-void LeanteanWandCheckDeletion(int entity)
-{
-	if(b_is_lantean[entity])
-	{
-		int Owner = EntRefToEntIndex(i_WandOwner[entity]);
-		if(IsValidClient(Owner))
-		{
-			lantean_Wand_Drone_Count[Owner] -= 1;
-			b_is_lantean[entity]=false;
-		}
-	}
 }

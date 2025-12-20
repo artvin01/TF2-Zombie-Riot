@@ -300,7 +300,7 @@ void MedivalRam_NPCDeath(int entity)
 
 public Action Medival_Ram_Spawner_Delay(Handle timer, DataPack pack)
 {
-	if(!Construction_Mode() && Waves_InSetup())
+	if(!Construction_Mode() && !Dungeon_Mode() && Waves_InSetup())
 	{
 		pack.Reset();
 		int ParticleEffect = EntRefToEntIndex(pack.ReadCell());

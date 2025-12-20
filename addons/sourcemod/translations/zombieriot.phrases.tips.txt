@@ -4,150 +4,180 @@
 	{
 		"en"	"Reviving teammates restores your health! ''Regene Berry'' doubles this effect!"
 		"it"	"Rianimare i compagni di squadra ripristina la salute! La ''Bacca di Regene'' raddoppia questo effetto!"
+		"ko"	"아군을 부활시키면 당신의 체력이 회복됩니다! ''재생형 열매''는 이 효과를 2배로 증가시킵니다!"
 	}
 	"Setup Chat Tip 2"
 	{
 		"en"	"You can cure yourself of Elemental Damage with armor gain!"
 		"it"	"Puoi curarti dal Danno Elementale con l'aumento dell'armatura!"
+		"ko"	"아머를 획득하면 당신에게 쌓인 원소 피해를 치유할 수 있습니다!"
 	}
 	"Setup Chat Tip 3"
 	{
 		"en"	"When getting armor, use Stockpile Stout tempomarily to gain overarmor, then switch back for free Extra armor!"
 		"it"	"Quando ottieni un'armatura, usa temporaneamente Scorta di Birra scura per ottenere un'armatura superiore, poi torna indietro per ottenere un'armatura extra gratuita!"
+		"ko"	"아머를 획득할때, 비축 흑맥주 퍽을 획득해 추가 아머를 얻은뒤, 다른 퍽을 선택하면 초과 아머는 사라지지 않습니다!"
 	}
 	"Setup Chat Tip 4"
 	{
 		"en"	"If you have the money to spare, remember to purchase Extra Gear to give a boost to yourself or your team."
 		"it"	"Se avete soldi da spendere, ricordatevi di acquistare l'equipaggiamento extra per dare una spinta a voi stessi o alla vostra squadra."
+		"ko"	"자금에 여유가 생긴다면, 추가 장비들을 구매하여 당신과 당신의 팀원을 지원하세요."
 	}
 	"Setup Chat Tip 5"
 	{
 		"en"	"Touching most enemies will make them focus on attacking you!"
 		"it"	"Toccando la maggior parte dei nemici, questi si concentreranno sull'attacco a voi!"
+		"ko"	"대부분의 적은 접촉시 당신에게 공격을 집중시키게 할 수 있습니다!"
 	}
 	"Setup Chat Tip 6"
 	{
 		"en"	"You deal significantly less damage while downed. Prioritize getting to safety over fighting."
 		"it"	"Quando si è a terra si infligge una quantità di danni nettamente inferiore. Date la priorità al raggiungimento della salvezza piuttosto che al combattimento."
+		"ko"	"다운 상태라면 공격의 피해량이 조금 감소합니다. 전투에서는 항상 안전이 최우선입니다."
 	}
 	"Setup Chat Tip 7"
 	{
 		"en"	"Try to lure enemies away from the base to relief pressure of your barricades!"
 		"it"	"Cercate di attirare i nemici lontano dalla base per alleggerire la pressione delle vostre barricate!"
+		"ko"	"바리케이드가 너무 많은 피해를 받는다 싶으면 적을 기지에서 멀리 유인해보세요!"
 	}
 	"Setup Chat Tip 8"
 	{
 		"en"	"You gain money and ammosupplies from allies using your buildings, build atleast one!"
 		"it"	"Ottenete denaro e rifornimenti di munizioni dagli alleati che utilizzano i vostri edifici, costruitene almeno uno!"
+		"ko"	"당신이 설치한 구조물을 팀원이 사용할 때마다, 당신은 자금을 얻습니다! 최소한 하나의 구조물을 설치하세요!"
 	}
 	"Setup Chat Tip 9"
 	{
 		"en"	"You unlock and can equip Level Perks as you level up, which offer changes to suit your playstyle, take a look and experiment!"
 		"it"	"Man mano che si sale di livello si sbloccano e si possono equipaggiare i Perk di livello, che offrono modifiche per adattarsi al proprio stile di gioco, date un'occhiata e sperimentate!"
+		"ko"	"레벨업을 할 때마다 추가적인 레벨 퍽이 해금됩니다. 그 퍽들은 당신의 플레이스타일을 결정할 수 있습니다! 한 번 둘러보세요!"
 	}
 	"Setup Chat Tip 10"
 	{
 		"en"	"Confused about the Skill Tree? Don't worry about it too much, look at it once you understand the gamemode better." 
 		"it"	"Sei confuso sull'albero delle abilità? Non preoccuparti troppo, guardalo quando avrai capito meglio la modalità di gioco."
+		"ko"	"스킬 트리가 혼란스러우십니까? 너무 걱정하지 마세요. 한 번 둘러보면 게임 모드에 대해 더 자세히 아시게 될 겁니다."
 	}
 	"Setup Chat Tip 11"
 	{
-		"en"	"Paps are usually more worth it then upgrades!"
+		"en"	"Enchance are usually more worth it then upgrades!"
 		"it"	"Di solito le fotocopie valgono di più degli aggiornamenti!"
+		"ko"	"무기 강화는 무기 개선을 구매하는 것보다 더욱 가치있습니다!"
 	}
 	"Setup Chat Tip 12"
 	{
 		"en"	"Sales might be good but if the situation requires for it, buy upgrades now!"
 		"it"	"Le vendite potrebbero essere buone, ma se la situazione lo richiede, acquistate subito gli aggiornamenti!"
+		"ko"	"세일은 좋은 법이죠. 하지만 상황에 따라 필요하다면, 개선을 구매하세요!"
 	}
 	"Setup Chat Tip 13"
 	{
 		"en"	"You can talk to the rebel to asign them roles for if your team doesnt want to play them!"
 		"it"	"Puoi parlare con il ribelle per assegnargli dei ruoli se la tua squadra non vuole giocarci!"
+		"ko"	"반시민과 대화를 하면 역할을 할당시킬 수 있습니다!"
 	}
 	"Setup Chat Tip 14"
 	{
 		"en"	"As a melee your damage is not as valueable as the distraction of enemies aggro!"
 		"it"	"Come corpo a corpo, il tuo danno non ha lo stesso valore della distrazione dell'aggro dei nemici!"
+		"ko"	"근접 무기 사용자라면, 적의 어그로 분산에 집중하세요. 공격에만 집중하는 것은 당신의 가치를 하락시킵니다!"
 	}
 	"Setup Chat Tip 15"
 	{
 		"en"	"Multiclassing isnt ideal unless youre sure on what youre doing!"
 		"it"	"Il multiclassamento non è l'ideale se non si è sicuri di quello che si sta facendo!"
+		"ko"	"당신이 뭘 하고 있는지 확신하고 있는게 아니라면, 여러 종류의 무기를 사용하는 것은 좋지 않습니다!"
 	}
 	"Setup Chat Tip 16"
 	{
 		"en"	"All bullet shooting guns can headshot, dealing extra damage, be rewarded for your accuracy!"
 		"it"	"Tutte le pistole spara-proiettili possono sparare alla testa, infliggendo un danno extra, e la tua precisione sarà premiata!"
+		"ko"	"탄환을 발사하는 모든 총은 헤드샷이 가능하여, 추가 피해를 줄 수 있습니다. 에임이 정확할 수록 더 많은 피해를 줄 수 있죠!"
 	}
 	"Setup Chat Tip 17"
 	{
 		"en"	"Balance your weapon upgrades with Survival upgrades, no use dealing more damage if you can barely take any!"
 		"it"	"Bilanciate i potenziamenti delle armi con i potenziamenti passivi: non serve a nulla infliggere più danni se poi si riesce a malapena a subirne!"
+		"ko"	"무기 개선과 생존 개선의 균형을 맞춰야합니다. 생존할 수가 없는데 공격력만 높으면 무슨 소용입니까?"
 	}
 	"Setup Chat Tip 18"
 	{
 		"en"	"Armor tables help you take less damage, so make sure you have some armor before going into battle!"
 		"it"	"I tavoli di armatura aiutano a subire meno danni, quindi assicuratevi di avere un'armatura prima di andare in battaglia!"
+		"ko"	"아머 테이블로 획득하는 아머는 받는 피해를 감소 시켜줍니다. 그러니 전투 직전에 아머를 조금이라도 보충하세요!"
 	}
 	"Setup Chat Tip 19"
 	{
 		"en"	"You may not be a healer, but you can still put down a food fridge to give a little extra health, every HP matters!"
 		"it"	"Non sarai un guaritore, ma puoi comunque mettere un frigorifero di cibo per dare un po' di salute in più, ogni HP è importante!"
+		"ko"	"당신이 치유사가 아니더라도, 냉장고를 설치해 조금이라도 체력을 회복시킬 수 있습니다. 체력은 항상 중요합니다!"
 	}
 	"Setup Chat Tip 20"
 	{
 		"en"	"Sometimes its better to buy upgrades if they are on sale instead of pack a punching your weapon!"
 		"it"	"A volte è meglio acquistare i potenziamenti se sono in vendita, invece di prendere a pugni la tua arma!"
+		"ko"	"특정 개선이 세일 중이라면, 무기 강화보다 세일 중인 개선을 구입하는 것이 더 나을 때도 있습니다!"
 	}
 	"Setup Chat Tip 21"
 	{
 		"en"	"Certain weapons can inflict debuffs on enemies and buff your allies, check the glossary of effects to learn what each does!"
 		"it"	"Alcune armi possono infliggere debuff ai nemici e buffare i tuoi alleati, consulta il glossario degli effetti per sapere cosa fa ciascuna di esse!"
+		"ko"	"특정 무기는 적에게 디버프를 적용하고 아군에게 버프를 줄 수 있습니다. 효과 메뉴를 확인하여 각각의 기능을 알아보세요!"
 	}
 	"Setup Chat Tip 22"
 	{
 		"en"	"Adjust your weapon choice to the enemies that come, itll greatly help in defeating them!"
 		"it"	"Adattare la scelta dell'arma ai nemici che si presentano, sarà di grande aiuto per sconfiggerli!"
+		"ko"	"적의 공세에 따라서 당신의 무기를 선택하고 조정하세요. 적의 공세를 막아내는데에 큰 도움이 됩니다!"
 	}
 	"Setup Chat Tip 23"
 	{
 		"en"	"Running low on armor as a melee player? You can use ammo boxes to give you a small amount of armor!"
 		"it"	"Siete a corto di armatura come giocatore di mischia? Potete usare le scatole di munizioni per ottenere una piccola quantità di armatura!"
+		"ko"	"근접 무기 사용자인데 아머가 부족하십니까? 탄약 상자를 사용하면 소량의 아머를 획득합니다!"
 	}
 	"Setup Chat Tip 24"
 	{
 		"en"	"Running low on mana as a mage? You can use ammo boxes to give you mana, even overcharge your mana with ammo boxes!"
 		"it"	"Siete a corto di mana come mago? Potete usare le scatole di munizioni per darvi il mana, e persino sovraccaricare il vostro mana con le scatole di munizioni!"
+		"ko"	"마법사인데 마나가 부족하십니까? 탄약 상자를 사용하면 마나를 획득하며, 마나를 초과 획득할 수도 있습니다!"
 	}
 	"Setup Chat Tip 25"
 	{
-		"en"	"Weapon kits give you a unique playstyle, without having to buy class upgrades. Pack-a-punch them to increase the whole kit's stats!"
+		"en"	"Weapon kits give you a unique playstyle, without having to buy class upgrades. Enchance them to increase the whole kit's stats!"
 		"it"	"I kit di armi vi danno uno stile di gioco unico, senza dover acquistare i potenziamenti di classe. Impacchettateli per aumentare le statistiche dell'intero kit!"
+		"ko"	"무기 키트는 개선 구매가 불가능하지만, 특별한 플레이스타일을 경험하게 해줍니다. 무기 강화를 통해 키트의 능력치를 증가시키세요!"
 	}
 	"Setup Chat Tip 26"
 	{
 		"en"	"Remember. {crimson}He watches."
 		"it"	"Ricorda. {crimson}Lui osserva."
+		"ko"	"기억하십시오. {crimson}그가 지켜보고 있습니다."
 	}
 	"Setup Chat Tip 27"
 	{
 		"en"	"While you have Elemental Damage, your Armor will change from a number into a meter filling up!"
 		"it"	"Quando si ha un danno elementare, l'armatura si trasforma da un numero in un contatore che si riempie!"
+		"ko"	"원소 피해를 보유하게 되면, 아머 수치는 대신 원소 피해 게이지 보유량으로 표기됩니다!"
 	}
 	"Setup Chat Tip 28"
 	{
 		"en"	"Certain enemies and mechanics can summon Creep with adverse effects on the ground. Watch where you step!"
 		"it"	"Alcuni nemici e meccaniche possono evocare Creep con effetti negativi sul terreno. Attenti a dove mettete i piedi!"
+		"ko"	"특정 적과 시스템이 지면에 불이익을 끼치는 장판을 생성할 수 있습니다. 조심하세요!"
 	}
 	"Setup Chat Tip 29"
 	{
 		"en"	"Even as a Teutonic Knight you can deal small but consistent damage to enemies. Keep up the fight!"
 		"it"	"Anche come Cavaliere Teutonico potete infliggere danni piccoli ma consistenti ai nemici. Continuate a combattere!"
+		"ko"	"튜턴 기사단이 되더라도, 적지만 지속적으로 적에게 피해를 줄 수 있습니다. 계속 싸워주세요!"
 	}
 	"Setup Chat Tip 30"
 	{
 		"en"	"Raidbosses completely ignore buildings, try not to stay in the same place for too long!"
 		"it"	"I Boss dei Raid ignorano completamente gli edifici, cercate di non rimanere nello stesso posto per troppo tempo!"
+		"ko"	"레이드 보스들은 구조물을 완전히 무시합니다. 같은 장소에 오래 있지 마세요!"
 	}
 }

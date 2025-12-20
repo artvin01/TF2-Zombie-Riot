@@ -2,33 +2,46 @@
 #pragma newdecls required
 
 #if defined ZR || defined RPG
-static int i_ProjectileIndex;
 Function func_WandOnTouch[MAXENTITIES];
+Function func_WandOnDestroy[MAXENTITIES] = {INVALID_FUNCTION, ...};
 
 void WandStocks_Map_Precache()
 {
-	i_ProjectileIndex = PrecacheModel(ENERGY_BALL_MODEL);
+	PrecacheModel(ENERGY_BALL_MODEL);
 }
 
 stock void WandProjectile_ApplyFunctionToEntity(int projectile, Function Function)
 {
 	func_WandOnTouch[projectile] = Function;
+//	if(Function != INVALID_FUNCTION)
+//		ProjectileBaseThinkInternal(projectile, 3.0);
 }
 
 stock Function func_WandOnTouchReturn(int entity)
 {
 	return func_WandOnTouch[entity];
 }
+
+stock void WandProjectile_Apply_OnDestroyFunction_ToEntity(int projectile, Function Function)
+{
+	func_WandOnDestroy[projectile] = Function;
+}
+stock Function func_WandOnDestroyReturn(int entity)
+{
+	return func_WandOnDestroy[entity];
+}
 #endif
 
 void WandProjectile_GamedataInit()
 {
 	CEntityFactory EntityFactory = new CEntityFactory("zr_projectile_base", OnCreate_Proj, OnDestroy_Proj);
-	EntityFactory.DeriveFromClass("tf_projectile_rocket");
+	EntityFactory.DeriveFromClass("prop_dynamic");
 	EntityFactory.BeginDataMapDesc()
+		.DefineVectorField("m_vInitialVelocity", 3)
 	.EndDataMapDesc(); 
 
 	EntityFactory.Install();
+
 }
 
 #if defined ZR || defined RPG
@@ -105,31 +118,22 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		f_WandDamage[entity] = damage;
 		i_WandIdNumber[entity] = WandId;
 		b_EntityIsArrow[entity] = true;
+		DispatchKeyValue(entity, "model", ENERGY_BALL_MODEL);
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
 		//Edit: Need owner entity, otheriwse you can actuall hit your own god damn rocket and make a ding sound. (Really annoying.)
-		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage should be nothing. if it somehow goes boom.
 		SetTeam(entity, GetTeam(client));
 		int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
-		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
+		Custom_SDKCall_SetLocalOrigin(entity, fPos);
+		SDKCall_SetAbsOrigin(entity, fPos);
+		SetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", fVel);
+		Custom_SetAbsVelocity(entity, fVel);	
+		SDKCall_SetAbsAngle(entity, fAng);
 		DispatchSpawn(entity);
-		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
-		SetEntPropVector(entity, Prop_Send, "m_angRotation", fAng); //set it so it can be used
-		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", fVel);
-	//	SetEntProp(entity, Prop_Send, "m_flDestroyableTime", GetGameTime());
-		//make rockets visible on spawn.
-		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", GetGameTime());
-		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
-		
 		SetEntityCollisionGroup(entity, 27);
-		for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
-		{
-			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", i_ProjectileIndex, _, i);
-		}
-		SetEntityModel(entity, ENERGY_BALL_MODEL);
-
-		//Make it entirely invis. Shouldnt even render these 8 polygons.
-	//	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 		
+		SetEntityModel(entity, ENERGY_BALL_MODEL);
+		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
+
 		if(hideprojectile)
 		{
 			SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
@@ -143,7 +147,7 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		if(WandParticle[0]) //If it has something, put it in. usually it has one, but incase its invis for some odd reason, allow it to be that.
 		{
 			particle = ParticleEffectAt(fPos, WandParticle, 0.0); //Inf duartion
-			TeleportEntity(particle, NULL_VECTOR, fAng, NULL_VECTOR);
+			SDKCall_SetAbsAngle(particle, fAng);
 			SetParent(entity, particle);	
 			SetEntityCollisionGroup(particle, 27);
 			i_WandParticle[entity] = EntIndexToEntRef(particle);
@@ -167,18 +171,6 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 			pack.WriteCell(EntIndexToEntRef(entity));
 			pack.WriteCell(EntIndexToEntRef(particle));
 		}
-		//so they dont get stuck on entities in the air.
-		SetEntProp(entity, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID | FSOLID_TRIGGER); 
-
-		SDKHook(entity, SDKHook_Think, ProjectileBaseThink);
-		SDKHook(entity, SDKHook_ThinkPost, ProjectileBaseThinkPost);
-
-		if(h_NpcSolidHookType[entity] != 0)
-			DHookRemoveHookID(h_NpcSolidHookType[entity]);
-		h_NpcSolidHookType[entity] = 0;
-		h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Wand_DHook_RocketExplodePre); 
-		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-		SDKHook(entity, SDKHook_StartTouch, Wand_Base_StartTouch);
 
 		return entity;
 	}
@@ -189,6 +181,10 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 #endif
 
 public void ProjectileBaseThink(int Projectile)
+{	
+	ProjectileBaseThinkInternal(Projectile,1.0);
+}
+public void ProjectileBaseThinkInternal(int Projectile, float Multi)
 {	
 	/*
 		Why does this exist?
@@ -211,9 +207,9 @@ public void ProjectileBaseThink(int Projectile)
 	static float CurrentVelocity[3];
 	GetEntPropVector(Projectile, Prop_Data, "m_vecAbsVelocity", CurrentVelocity);
 
-	CurrentVelocity[0] *= 0.05;
-	CurrentVelocity[1] *= 0.05;
-	CurrentVelocity[2] *= 0.05;
+	CurrentVelocity[0] *= 0.02 * Multi;
+	CurrentVelocity[1] *= 0.02 * Multi;
+	CurrentVelocity[2] *= 0.02 * Multi;
 
 	static float VecEndLocation[3];
 	VecEndLocation[0] = AbsOrigin[0] + CurrentVelocity[0];
@@ -223,43 +219,49 @@ public void ProjectileBaseThink(int Projectile)
 //	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 //	TE_SetupBeamPoints(AbsOrigin, VecEndLocation, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
 //	TE_SendToAll();
-	Handle trace = TR_TraceRayFilterEx( AbsOrigin, VecEndLocation, ( MASK_ALL ), RayType_EndPoint, ProjectileTraceHitTargets, packFilter );
+	Handle trace = TR_TraceRayFilterEx( AbsOrigin, VecEndLocation, ( MASK_SOLID ), RayType_EndPoint, ProjectileTraceHitTargets, packFilter );
 	delete packFilter;
 	delete trace;
 
+	bool HitWorld = false;
 	int length = Projec_HitEntitiesInTheWay.Length;
 	for (int i = 0; i < length; i++)
 	{
 		int entity_traced = Projec_HitEntitiesInTheWay.Get(i);
+		if(entity_traced == 0)
+		{
+			HitWorld = true;
+			continue;
+		}
 		Wand_Base_StartTouch(Projectile, entity_traced);
 	}
+	if(HitWorld)
+		Wand_Base_StartTouch(Projectile, 0);
 	delete Projec_HitEntitiesInTheWay;
 	
 }
 
 bool ProjectileTraceHitTargets(int entity, int contentsMask, DataPack packFilter)
 {
-	if(entity == 0)
-	{
-		return false;
-	}
 	packFilter.Reset();
 	ArrayList Projec_HitEntitiesInTheWay = packFilter.ReadCell();
 	int iExclude = packFilter.ReadCell();
-	if(entity == iExclude)
+	int Owner = GetEntPropEnt(iExclude, Prop_Send, "m_hOwnerEntity");
+	if(entity == iExclude || Owner == iExclude)
 	{
 		return false;
 	}
+	if(!IsValidEntity(Owner))
+		Owner = iExclude;
 	int target = entity;
 	if(GetTeam(iExclude) == TFTeam_Red)
 		target = Target_Hit_Wand_Detection(iExclude, entity);
 	else
 	{
-		if(!IsValidEnemy(iExclude, target, true, true))
-			target = 0;
+		if(!IsValidEnemy(Owner, target, true, true))
+			target = -1;
 	}
-		
-	if(target > 0)
+	if(target > 0 || target == 0)
 	{
 		//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
 		//Add a new entity to the arrray list
@@ -270,13 +272,8 @@ bool ProjectileTraceHitTargets(int entity, int contentsMask, DataPack packFilter
 
 public void ProjectileBaseThinkPost(int Projectile)
 {
-	CBaseCombatCharacter(Projectile).SetNextThink(GetGameTime() + 0.05);
+	CBaseCombatCharacter(Projectile).SetNextThink(GetGameTime());
 }
-public MRESReturn Wand_DHook_RocketExplodePre(int arrow)
-{
-	return MRES_Supercede; //DONT.
-}
-
 public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pack)
 {
 	pack.Reset();
@@ -463,7 +460,25 @@ static void OnCreate_Proj(CClotBody body)
 		RemoveEntity(extra_index);
 
 	iref_PropAppliedToRocket[body.index] = INVALID_ENT_REFERENCE;
+	
 	return;
+}
+void ApplyLateLogic_ProjectileBase(int Projectile)
+{
+	//so they dont get stuck on entities in the air.
+	SetEntProp(Projectile, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID | FSOLID_TRIGGER); 
+
+	SDKHook(Projectile, SDKHook_Think, ProjectileBaseThink);
+	SDKHook(Projectile, SDKHook_ThinkPost, ProjectileBaseThinkPost);
+	CBaseCombatCharacter(Projectile).SetNextThink(GetGameTime());
+
+	SDKHook(Projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
+//	ProjectileBaseThinkInternal(Projectile, 3.0);
+
+	SetEntityMoveType(Projectile, MOVETYPE_FLY);
+//do our own logic entirely
+//	RunScriptCode(Projectile, -1, -1, "self.SetMoveType(Constants.EMoveType.MOVETYPE_FLY, Constants.EMoveCollide.MOVECOLLIDE_FLY_CUSTOM)");
+	
 }
 static void OnDestroy_Proj(CClotBody body)
 {
@@ -479,11 +494,31 @@ static void OnDestroy_Proj(CClotBody body)
 #if defined ZR || defined RPG
 	func_WandOnTouch[body.index] = INVALID_FUNCTION;
 #endif
+
+	if(func_WandOnDestroy[body.index] && func_WandOnDestroy[body.index] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func_WandOnDestroy[body.index]);
+		Call_PushCell(body.index);
+		Call_Finish();
+	}
+	func_WandOnDestroy[body.index] = INVALID_FUNCTION;
 	return;
 }
 
-stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, float ModelSize, char[] defaultAnimation, float OffsetDown = 0.0)
+stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, float ModelSize, char[] defaultAnimation, float OffsetDown = 0.0, bool UseOriginalModel = false)
 {
+	if(UseOriginalModel)
+	{
+		SetEntityModel(rocket, modelstringname);
+		SetEntPropFloat(rocket, Prop_Send, "m_flModelScale", ModelSize);
+		if(defaultAnimation[0])
+		{
+			CClotBody npc = view_as<CClotBody>(rocket);
+			npc.AddActivityViaSequence(defaultAnimation);
+		}
+
+		return -1;
+	}
 	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[rocket]);
 	if(IsValidEntity(extra_index))
 		RemoveEntity(extra_index);
@@ -523,5 +558,6 @@ stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, f
 		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", ModelSize);
 		return entity;
 	}
+	
 	return -1;
 }
