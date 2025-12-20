@@ -4615,7 +4615,7 @@
 	}
 	"Default Desc"
 	{
-		"en"	"Fight against the classic zombies and W.F. soldiers!"
+		"en"	"Fight against the classic zombies and Whiteflower soldiers!"
 		"fr"	"Allez face-à-face contre les zombies et Combine classiques!"
 		"chi"	"击败尸群，打败联合军！"
 		"it"	"Combatti contro i classici zombie e combatti contro le combinazioni!"
@@ -4629,7 +4629,7 @@
 	}
 	"Alternative Desc"
 	{
-		"en"	"Blitz sends his army to attack you. Blitz itself does not see you worthy enough to fight it."
+		"en"	"Blitzkrieg sends his army to attack you. Blitz itself does not see you worthy enough to fight it."
 		"fr"	"Une tournure sur le mode classique aves des nouveaux ennemis mystérieux!"
 		"chi"	"经典模式，但出现了掌握魔法的心敌人…"
 		"it"	"Combatti con una nuova versione del classico con nuovi nemici magici!"
@@ -4698,7 +4698,7 @@
 	}
 	"Expidonsa Desc"
 	{
-		"en"	"Hold back against the advanced underground city, watch out for their self-healing and surprise attacks!"
+		"en"	"The underground city, Expidonsa, is here, and they're pissed. wonder what we could've done to piss them off."
 		"fr"	"Résiste cette ville souterraine avancée, faites garde à leur soins regénératifs et leurs attaques surprises!"
 		"chi"	"抵抗Expidonsa的高科技。别小看他们的盾牌，同时看好自己背后……"
 		"it"	"Resisti alla città sotterranea avanzata, fate attenzione alla loro auto-guarigione e agli attacchi a sorpresa!"
@@ -4764,7 +4764,7 @@
 	}
 	"Aperture Desc"
 	{
-		"en"	"You find yourself on the outskirts of an old facility. The inhabitants see you as a threat and attack you. Hopefully, we won't have to come back here after this."
+		"en"	"You find yourself on the outskirts of an old facility. The inhabitants see you as a threat and attack you. Hopefully, we won't have to come back here again after this."
 		"ko"	"당신은 낡은 시설의 외곽에 도착했습니다 이 장소의 수호자들이 당신을 위협으로 여기고 공격해 옵니다. 당신은 이번 사건이 끝나면 다시는 이곳에 오지 않았으면 좋겠다는 생각만이 들었습니다."
 	}
 	"Laboratories Raid Desc"
@@ -4783,7 +4783,7 @@
 	}
 	"Ruina waves Desc"
 	{
-		"en"	"Can you withstand the power of magic?"
+		"en"	"An army of magical elves is here to fight us. You wonder who their ruler is? "
 		"fr"	"Pouvez-vous survivre la prouesse de la magie?"
 		"chi"	"你能阻挡魔法之力吗》"
 		"it"	"Siete in grado di resistere al potere della magia?"
