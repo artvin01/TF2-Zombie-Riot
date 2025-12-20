@@ -4,77 +4,49 @@ static Handle h_TimerExploARWeaponManagement[MAXPLAYERS] = {null, ...};
 static int i_VictoriaParticle[MAXPLAYERS];
 static bool b_AbilityActivated[MAXPLAYERS];
 static int ExploAR_WeaponPap[MAXPLAYERS+1] = {0, ...};
-static int i_WeaponID[MAXPLAYERS];
-static int i_BurstNum[MAXPLAYERS];
+static int ExploAR_WeaponID[MAXPLAYERS];
+static int ExploAR_BurstNum[MAXPLAYERS];
+static int ExploAR_OverHit[MAXPLAYERS];
 
+static float ExploAR_OverHeatDelay[MAXPLAYERS];
 static float ExploAR_HUDDelay[MAXPLAYERS];
 static bool Can_I_Fire[MAXPLAYERS] = {false, ...};
-static float f_rest_time[MAXPLAYERS];
-
-#define Projectiles_per_Shot 10
 
 void ResetMapStartExploARWeapon()
 {
-	ExploAR_Map_Precache();
+	PrecacheSound("weapons/stickybomblauncher_det.wav");
+	PrecacheSound("weapons/flare_detonator_launch.wav");
+	PrecacheSound("weapons/gunslinger_three_hit.wav");
+	PrecacheModel("models/props_farm/vent001.mdl");
 	Zero(Can_I_Fire);
-	Zero(f_rest_time);
-}
-
-static void ExploAR_Map_Precache() //Anything that needs to be precaced like sounds or something.
-{
-	PrecacheSound("weapons/capper_shoot.wav");
-	PrecacheSound("weapons/grenade_launcher_worldreload.wav");
-	PrecacheSound("weapons/syringegun_reload_air1.wav");
-	PrecacheSound("weapons/syringegun_reload_air2.wav");
-	PrecacheSound("weapons/sniper_railgun_world_reload.wav");
-	PrecacheSound("weapons/sniper_railgun_bolt_back.wav");
-}
-
-static void Firebullet(int client, int weapon)
-{
-	float damage = 500.0;
-	damage *=Attributes_Get(weapon, 2, 1.0);
-	float speed = 3500.0;
-	speed *=Attributes_Get(weapon, 103, 1.0);
-
-	float time = 5000.0/speed;
-
-	EmitSoundToAll("weapons/capper_shoot.wav", client, _, 65, _, 0.45);
-	int Projectile = Wand_Projectile_Spawn(client, speed, time, damage, 8, weapon, "raygun_projectile_blue_trail");
-	WandProjectile_ApplyFunctionToEntity(Projectile, Gun_BombARTouch);
+	Zero(ExploAR_OverHit);
+	Zero(ExploAR_HUDDelay);
+	Zero(ExploAR_OverHeatDelay);
 }
 
 public void BombAR_M1_Attack(int client, int weapon, bool crit, int slot)
 {
-	switch (ExploAR_WeaponPap[client])
+	ExploAR_OverHit[client]+=2;
+	if(ExploAR_WeaponPap[client]==2)
 	{
-		case -1: //base pap
-		{
-			ExplosiveAR_Fire_Multiple_Rounds(client, weapon, 2);
-		}
-		default:
-		{
-			SetEntProp(weapon, Prop_Send, "m_nKillComboCount", GetEntProp(weapon, Prop_Send, "m_nKillComboCount") + 1);
-			EmitSoundToAll("weapons/capper_shoot.wav", client, SNDCHAN_AUTO, 75, _, 0.85, 110);
-			Firebullet(client, weapon);
-			if(!Can_I_Fire[client])
-			{
-				Can_I_Fire[client]=true;
-				SDKUnhook(client, SDKHook_PreThink, BombAR_M1_PreThink);
-				SDKHook(client, SDKHook_PreThink, BombAR_M1_PreThink);
-			}
-		}
+		if(ExploAR_OverHit[client]>150)ExploAR_OverHit[client]=150;
 	}
-	//EmitSoundToAll(BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 75, _, 0.85, 110);
-
-	float GameTime = GetGameTime();
-	f_rest_time[client] = GameTime + Attributes_Get(weapon, 6, 1.0) *0.4;	//make the rest timer scale on firerate.
-	//so a "weapon fires too slow" case doesn't happen and completely fuck over the weapon!
+	else if(ExploAR_OverHit[client]>100)ExploAR_OverHit[client]=100;
+	ExploAR_OverHeatDelay[client]=GetGameTime()+1.62;
+	ExploAR_HUDDelay[client] = 0.0;
+	SetEntProp(weapon, Prop_Send, "m_nKillComboCount", GetEntProp(weapon, Prop_Send, "m_nKillComboCount") + 1);
+	Firebullet(client, weapon, ExploAR_OverHit[client], ExploAR_WeaponPap[client]);
+	if(!Can_I_Fire[client])
+	{
+		Can_I_Fire[client]=true;
+		SDKUnhook(client, SDKHook_PreThink, BombAR_M1_PreThink);
+		SDKHook(client, SDKHook_PreThink, BombAR_M1_PreThink);
+	}
 }
 
 static void BombAR_M1_PreThink(int client)
 {
-	int weapon = EntRefToEntIndex(i_WeaponID[client]);
+	int weapon = EntRefToEntIndex(ExploAR_WeaponID[client]);
 	if(h_TimerExploARWeaponManagement[client] != null && IsValidEntity(weapon))
 	{
 		float gameTime = GetGameTime();
@@ -82,7 +54,7 @@ static void BombAR_M1_PreThink(int client)
 		float burstRate = Attributes_Get(weapon, 394, 1.0);
 		if(GetClientButtons(client) & IN_ATTACK && GetEntProp(weapon, Prop_Send, "m_iClip1") != 0)
 		{
-			if(GetEntProp(weapon, Prop_Send, "m_nKillComboCount")>=i_BurstNum[client])
+			if(GetEntProp(weapon, Prop_Send, "m_nKillComboCount")>=ExploAR_BurstNum[client])
 			{
 				SetEntPropFloat(weapon, Prop_Data, "m_flNextPrimaryAttack", gameTime + (burstRate * attackTime));
 				SetEntProp(weapon, Prop_Send, "m_nKillComboCount", 0);
@@ -102,107 +74,6 @@ static void BombAR_M1_PreThink(int client)
 		Can_I_Fire[client]=false;
 		SDKUnhook(client, SDKHook_PreThink, BombAR_M1_PreThink);
 		return;
-	}
-}
-
-static int ExplosiveAR_Get_Pap(int weapon)
-{
-	int pap=0;
-	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
-	return pap;
-}
-
-public void ExplosiveAR_Fire_Multiple_Rounds(int client, int weapon, int FireMultiple)
-{		
-	int FrameDelayAdd = 5;
-	float Attackspeed = Attributes_Get(weapon, 6, 1.0);
-	Attackspeed *= 0.5;
-
-	FrameDelayAdd = RoundToNearest(float(FrameDelayAdd) * Attackspeed);
-	for(int LoopFire ; LoopFire <= FireMultiple; LoopFire++)
-	{
-		DataPack pack = new DataPack();
-		pack.WriteCell(EntIndexToEntRef(client));
-		pack.WriteCell(EntIndexToEntRef(weapon));
-		if(LoopFire == 0)
-			pack.WriteCell(0);
-		else
-			pack.WriteCell(1);
-
-		if(LoopFire == 0)
-			Weapon_ExplosiveAR_FireInternal(pack);
-		else
-			RequestFrames(Weapon_ExplosiveAR_FireInternal, RoundToNearest(float(FrameDelayAdd) * LoopFire), pack);
-	}
-}
-
-public void Weapon_ExplosiveAR_FireInternal(DataPack DataDo)
-{		
-	DataDo.Reset();
-	int client = EntRefToEntIndex(DataDo.ReadCell());
-	int weapon = EntRefToEntIndex(DataDo.ReadCell());
-	bool soundDo = DataDo.ReadCell();
-	delete DataDo;
-
-	if(!IsValidEntity(weapon) || !IsValidClient(client))
-		return;
-
-	if(soundDo)
-		EmitSoundToAll("weapons/capper_shoot.wav", client, SNDCHAN_AUTO, 75, _, 0.85, 110);
-
-	Firebullet(client, weapon);
-}
-
-public void Gun_BombARTouch(int entity, int target)
-{
-	int particle = EntRefToEntIndex(i_WandParticle[entity]);
-	if(target > 0)	
-	{
-		//Code to do damage position and ragdolls
-		static float angles[3];
-		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
-		float vecForward[3];
-		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		static float Entity_Position[3];
-		WorldSpaceCenter(target, Entity_Position);
-
-		int owner = EntRefToEntIndex(i_WandOwner[entity]);
-		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
-
-		/*float GameTime = GetGameTime();
-
-		if(f_rest_time[owner] < GameTime)
-		{
-			Cause_Terroriser_Explosion(owner, entity);
-		}*/
-		
-		float damage = 500.0;
-		damage *=Attributes_Get(weapon, 2, 1.0);
-
-		if(!b_NpcIsInvulnerable[target])
-		{
-			f_BombEntityWeaponDamageApplied[target][owner] += damage / 12.0;
-			i_HowManyBombsOnThisEntity[target][owner]++;
-			i_HowManyBombsHud[target]++;
-			Apply_Particle_Teroriser_Indicator(target);
-		}
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-		EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
-		RemoveEntity(entity);
-	}
-	else if(target == 0)
-	{
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-		EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
-		RemoveEntity(entity);
 	}
 }
 
@@ -236,19 +107,129 @@ public void ExploAR_Ability_M2(int client, int weapon, bool crit, int slot)
 }
 */
 
+public void BombAR_ICE_Inject(int client, int weapon, bool crit, int slot)
+{
+	if(IsValidEntity(client))
+	{
+		/*if(b_InteractWithReload[client])
+		{
+			bool R_AbilityBlock=false;
+			int building = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
+			if(building != -1 && Building_Collect_Cooldown[building][client]<=0.0
+			&& IsInteractionBuilding(building))
+			{
+				static float angles[3];
+				GetClientEyeAngles(client, angles);
+				if(angles[0] < -70.0)
+				{
+					static float R_Delay;
+					if(R_Delay < GetGameTime())
+					{
+						R_Delay = GetGameTime() + 0.2;
+						R_AbilityBlock=true;
+					}
+				}
+			}
+			if(R_AbilityBlock)return;
+		}*/
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		if(Ability_CD <= 0.0 || CvarInfiniteCash.BoolValue)
+			Ability_CD = 0.0;
+		if(Ability_CD)
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+			return;
+		}
+		if(ExploAR_OverHit[client]>64)
+		{
+			Rogue_OnAbilityUse(client, weapon);
+			Ability_Apply_Cooldown(client, slot, 5.0);
+			EmitSoundToAll("weapons/flare_detonator_launch.wav", client, SNDCHAN_AUTO, 70, _, 1.0);
+			EmitSoundToAll("weapons/gunslinger_three_hit.wav", client, SNDCHAN_AUTO, 70, _, 1.0);
+			float damage = 500.0;
+			damage *= Attributes_Get(weapon, 2, 1.0);
+			damage += (float(ExploAR_OverHit[client])/65.0)*(damage/2.0);
+			if(ExploAR_WeaponPap[client]==2 && ExploAR_OverHit[client]>99)
+				damage *= (float(ExploAR_OverHit[client])/90.0);
+			float speed = 3000.0;
+			speed *= Attributes_Get(weapon, 103, 1.0);
+
+			float time = 5000.0/speed;
+			int Projectile=Wand_Projectile_Spawn(client, speed, time, damage, 8, weapon, "rockettrail_RocketJumper");
+			WandProjectile_ApplyFunctionToEntity(Projectile, VentTouch);
+			Projectile=ApplyCustomModelToWandProjectile(Projectile, "models/props_farm/vent001.mdl", 0.3, "");
+			TeleportEntity(Projectile, NULL_VECTOR, {-90.0, 0.0, 0.0}, NULL_VECTOR);
+			int RColor = 100+RoundFloat((float(ExploAR_OverHit[client])/65.0)*101.0);
+			if(RColor>255)RColor=255;
+			SetEntityRenderColor(Projectile, RColor, 60, 5, 255);
+			IgniteTargetEffect(Projectile);
+			ExploAR_OverHit[client]=0;
+			return;
+		}
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+	}
+}
+
+public void BombAR_AirStrike_Beacon(int client, int weapon, bool crit, int slot)
+{
+	if(IsValidEntity(client))
+	{
+		/*if(b_InteractWithReload[client])
+		{
+			bool R_AbilityBlock=false;
+			int building = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
+			if(building != -1 && Building_Collect_Cooldown[building][client]<=0.0
+			&& IsInteractionBuilding(building))
+			{
+				static float angles[3];
+				GetClientEyeAngles(client, angles);
+				if(angles[0] < -70.0)
+				{
+					static float R_Delay;
+					if(R_Delay < GetGameTime())
+					{
+						R_Delay = GetGameTime() + 0.2;
+						R_AbilityBlock=true;
+					}
+				}
+			}
+			if(R_AbilityBlock)return;
+		}*/
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		if(Ability_CD <= 0.0 || CvarInfiniteCash.BoolValue)
+			Ability_CD = 0.0;
+		if(Ability_CD)
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+			return;
+		}
+		if(ExploAR_OverHit[client]>64)
+		{
+			Rogue_OnAbilityUse(client, weapon);
+			Ability_Apply_Cooldown(client, slot, 5.0);
+
+			return;
+		}
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+	}
+}
+
 public void Enable_ExploARWeapon(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
 	if(h_TimerExploARWeaponManagement[client] != null)
 	{
-		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BOMB_AR)
 		{
-			//Is the weapon it again?
-			//Yes?
 			ExploAR_WeaponPap[client] = ExplosiveAR_Get_Pap(weapon);
-			i_BurstNum[client] = RoundToCeil(Attributes_Get(weapon, 401, 1.0));
+			ExploAR_BurstNum[client] = RoundToCeil(Attributes_Get(weapon, 401, 1.0));
 			Can_I_Fire[client]=false;
-			i_WeaponID[client]=EntIndexToEntRef(weapon);
+			ExploAR_WeaponID[client]=EntIndexToEntRef(weapon);
 			delete h_TimerExploARWeaponManagement[client];
 			h_TimerExploARWeaponManagement[client] = null;
 			DataPack pack;
@@ -262,9 +243,9 @@ public void Enable_ExploARWeapon(int client, int weapon) // Enable management, h
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BOMB_AR)
 		{
 			ExploAR_WeaponPap[client] = ExplosiveAR_Get_Pap(weapon);
-			i_BurstNum[client] = RoundToCeil(Attributes_Get(weapon, 401, 1.0));
+			ExploAR_BurstNum[client] = RoundToCeil(Attributes_Get(weapon, 401, 1.0));
 			Can_I_Fire[client]=false;
-			i_WeaponID[client]=EntIndexToEntRef(weapon);
+			ExploAR_WeaponID[client]=EntIndexToEntRef(weapon);
 			DataPack pack;
 			h_TimerExploARWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_ExploAR, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
@@ -299,80 +280,179 @@ static Action Timer_Management_ExploAR(Handle timer, DataPack pack)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		if(ExploAR_WeaponPap[client]!=0)
+		ExploARWork(client, weapon);
+		if(ExploAR_WeaponPap[client]==1972)
 			CreateExploAREffect(client);
 	}
 	else
 	{
-		DestroyExploAREffect(client);
+		if(ExploAR_WeaponPap[client]==1972)
+			DestroyExploAREffect(client);
 	}
 
 	return Plugin_Continue;
 }
 
-/*
-void WeaponExploAR_OnTakeDamageNpc(int attacker, int victim, float &damage, int weapon, int damagetype)
+static void ExploARWork(int client, int weapon)
 {
-	if(i_IsABuilding[victim])
+	float GameTime = GetGameTime();
+	static int SaveClip;
+	int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");
+	if(SaveClip>clip)
 	{
-		damage *= 1.2;
+		SaveClip=clip;
 	}
-	if(b_AbilityActivated[attacker])
+	else if(SaveClip<clip)
 	{
-		damage *= 0.65;
-		if(b_thisNpcIsARaid[victim])
+		bool WhoExplode;
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			damage *= 1.15;
+			int npc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+			if (IsValidEntity(npc) && !b_NpcHasDied[npc] && GetTeam(npc) != TFTeam_Red)
+			{
+				if(i_HowManyBombsOnThisEntity[npc][client] > 0)
+				{
+					Cause_Terroriser_Explosion(client, npc, true);
+					WhoExplode=true;
+				}
+			}
 		}
+		if(WhoExplode)
+			EmitSoundToAll("weapons/stickybomblauncher_det.wav", client);
+		SaveClip=clip;
 	}
-	if(Change[attacker]&& (damagetype & DMG_CLUB))
+	if(ExploAR_OverHeatDelay[client] < GameTime)
 	{
-		damage *= 0.5;
+		ExploAR_OverHit[client]-=4;
+		if(ExploAR_OverHit[client]<0)ExploAR_OverHit[client]=0;
+	}
+	if(ExploAR_HUDDelay[client] < GameTime)
+	{
+		if(ExploAR_OverHit[client]>=100)
+			PrintHintText(client,"!!! ICE Overheat  %i％ !!!", ExploAR_OverHit[client]);
+		else if(ExploAR_OverHit[client]>80)
+			PrintHintText(client,"!! ICE Overheat  %i％ !!", ExploAR_OverHit[client]);
+		else if(ExploAR_OverHit[client]>65)
+			PrintHintText(client,"! ICE Overheat  %i％ !", ExploAR_OverHit[client]);
+		else
+			PrintHintText(client,"ICE Overheat  %i％", ExploAR_OverHit[client]);
+		
+		ExploAR_HUDDelay[client] = GameTime + 0.5;
+	}
+	if(ExploAR_OverHit[client]>65)
+	{
+		/*int entity = EntRefToEntIndex(i_VictoriaParticle[client]);
+		if(!IsValidEntity(entity))
+		{
+			entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+			if(IsValidEntity(entity))
+			{
+				float flPos[3];
+				GetAttachment(entity, "effect_hand_R", flPos, NULL_VECTOR);
+				int particle = ParticleEffectAt(flPos, "drg_pipe_smoke", 0.0);
+				AddEntityToThirdPersonTransitMode(client, particle);
+				SetParent(entity, particle, "effect_hand_R");
+				i_VictoriaParticle[client] = EntIndexToEntRef(particle);
+			}
+		}*/
+	}
+	else
+	{
+		/*int entity = EntRefToEntIndex(i_VictoriaParticle[client]);
+		if(IsValidEntity(entity))
+			RemoveEntity(entity);
+		i_VictoriaParticle[client] = INVALID_ENT_REFERENCE;*/
+	}
+}
+
+static void Firebullet(int client, int weapon, int Overheat, int GetPap)
+{
+	float damage = 500.0;
+	damage *= Attributes_Get(weapon, 2, 1.0);
+	if(Overheat>64)
+		damage -= (float(Overheat)/(GetPap==2 ? 130.0 : 100.0))*(damage/2.0);
+	float speed = 3500.0;
+	speed *= Attributes_Get(weapon, 103, 1.0);
+
+	float time = 5000.0/speed;
+	int Projectile;
+	if(Overheat>64)
+		Projectile=Wand_Projectile_Spawn(client, speed, time, damage, 8, weapon, "raygun_projectile_red_trail");
+	else
+		Projectile=Wand_Projectile_Spawn(client, speed, time, damage, 8, weapon, "raygun_projectile_blue_trail");
+	WandProjectile_ApplyFunctionToEntity(Projectile, Gun_BombARTouch);
+}
+
+static int ExplosiveAR_Get_Pap(int weapon)
+{
+	int pap=0;
+	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	return pap;
+}
+
+static void VentTouch(int entity, int target)
+{
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
+	float ProjectilePos[3];GetAbsOrigin(entity, ProjectilePos);
+	makeexplosion(entity, ProjectilePos, 0, 0);
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+	Explode_Logic_Custom(f_WandDamage[entity], owner, owner, weapon, ProjectilePos, _, Attributes_Get(weapon, 117, 1.0), _, _, _, _, _, IM_ON_FIREEEEE);
+	if(IsValidEntity(particle))
+		RemoveEntity(particle);
+	RemoveEntity(entity);
+}
+
+static void IM_ON_FIREEEEE(int entity, int victim, float damage, int weapon)
+{
+	NPC_Ignite(victim, entity, 3.0, weapon);
+}
+
+static void Gun_BombARTouch(int entity, int target)
+{
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
+	if(target > 0)	
+	{
+		//Code to do damage position and ragdolls
 		static float angles[3];
-		GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
+		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		float position[3];
-		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
-		float spawnLoc[3];
-		float BaseDMG = 200.0;
-		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
-		float Falloff = Attributes_Get(weapon, 117, 1.0);
+		static float Entity_Position[3];
+		WorldSpaceCenter(target, Entity_Position);
+
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 
-		Explode_Logic_Custom(BaseDMG, attacker, attacker, weapon, position, _, Falloff);
-		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime(weapon)+1.2);
-		SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime(attacker)+1.2);
-		
-		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, victim, 70,_, 0.9, 70);
-		ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
+		if(!b_NpcIsInvulnerable[target])
+		{
+			f_BombEntityWeaponDamageApplied[target][owner] += f_WandDamage[entity] / 12.0;
+			i_HowManyBombsOnThisEntity[target][owner]++;
+			i_HowManyBombsHud[target]++;
+			Apply_Particle_Teroriser_Indicator(target);
+		}
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
+		RemoveEntity(entity);
 	}
-}
-void WeaponExploAR_OnTakeDamage( int victim, float &damage)
-{
-	if(b_AbilityActivated[victim])
+	else if(target == 0)
 	{
-		damage *= 0.90;
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
+		RemoveEntity(entity);
 	}
 }
-
-static Action Timer_Bool_ExploAR(Handle timer, any userid)
-{
-	int client = GetClientOfUserId(userid);
-	b_AbilityActivated[client] = false;
-	return Plugin_Stop;
-}
-*/
 
 static void CreateExploAREffect(int client)
 {
-	int new_ammo = GetAmmo(client, 8);
-	if(ExploAR_HUDDelay[client] < GetGameTime())
-	{
-			PrintHintText(client,"Mode: PIERCE / Blast Shells: %i", new_ammo);
-		
-		ExploAR_HUDDelay[client] = GetGameTime() + 0.5;
-	}
 	if(b_AbilityActivated[client])
 	{
 		int entity = EntRefToEntIndex(i_VictoriaParticle[client]);

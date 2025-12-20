@@ -62,7 +62,6 @@ methodmap VictorianDroneAnvil < CClotBody
 		VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(CClotBody(vecPos, vecAng, "models/props_teaser/saucer.mdl", "1.0", "3000", ally, _, true, .CustomThreeDimensions = {20.0, 20.0, 20.0}, .CustomThreeDimensionsextra = {-20.0, -20.0, -20.0}));
 		
 		i_NpcWeight[npc.index] = 999;
-		npc.SetActivity("ACT_MP_STUN_MIDDLE");
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
@@ -159,13 +158,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		SetVariantString("!activator");
 		AcceptEntityInput(npc.m_iWearable2, "SetParent", npc.index);
 		MakeObjectIntangeable(npc.m_iWearable2);
-		
-		npc.m_bTeamGlowDefault = false;
-		if(IsValidEntity(npc.m_iTeamGlow))
-			RemoveEntity(npc.m_iTeamGlow);
-		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
-		SetVariantColor(view_as<int>({45, 237, 164, 200}));
-		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+		npc.m_bDoSpawnGesture = true;
 		
 		GetAbsOrigin(npc.index, Vec);
 		if(FactorySpawndo)
@@ -213,6 +206,16 @@ static void VictorianDroneAnvil_ClotThink(int iNPC)
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+	
+	if(npc.m_bDoSpawnGesture)
+	{
+		if(IsValidEntity(npc.m_iTeamGlow))
+			RemoveEntity(npc.m_iTeamGlow);
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.m_iWearable2);
+		SetVariantColor(view_as<int>({45, 237, 164, 200}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+		npc.m_bDoSpawnGesture=false;
+	}
 	
 	if(!npc.m_bisWalking)
 	{

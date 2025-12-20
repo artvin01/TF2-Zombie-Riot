@@ -28,8 +28,7 @@ static const char g_HurtSounds[][] = {
 };
 static const char g_IdleAlertedSounds[][] = {
 	"vo/engineer_standonthepoint01.mp3",
-	"vo/engineer_standonthepoint02.mp3",
-	"vo/engineer_standonthepoint04.mp3"
+	"vo/engineer_standonthepoint02.mp3"
 };
 
 static const char g_MeleeAttackSounds[] = "weapons/gunslinger_swing.wav";

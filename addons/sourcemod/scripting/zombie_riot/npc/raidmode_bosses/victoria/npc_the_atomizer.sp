@@ -261,6 +261,11 @@ methodmap Atomizer < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
+	property float m_flBaseSpeed
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
 	
 	public Atomizer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -344,6 +349,7 @@ methodmap Atomizer < CClotBody
 			npc.StartPathing();
 			npc.m_iState = 0;
 			npc.m_flGetClosestTargetTime = 0.0;
+			npc.m_flBaseSpeed = 300.0;
 			npc.m_flSpeed = 300.0;
 			npc.m_flDelay_Attribute = 0.0;
 			DrinkPOWERUP[npc.index] = false;
@@ -864,7 +870,7 @@ static void Atomizer_ClotThink(int iNPC)
 		NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_GameEnd", false, false);
 		return;
 	}
-	npc.m_flSpeed = 300.0+(((npc.m_flFTL-(RaidModeTime - GetGameTime()))/npc.m_flFTL)*150.0);
+	npc.m_flSpeed = npc.m_flBaseSpeed+(((npc.m_flFTL-(RaidModeTime - GetGameTime()))/npc.m_flFTL)*150.0);
 	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red)
 	{
 		BlockLoseSay = true;
@@ -1038,7 +1044,7 @@ static void Atomizer_ClotThink(int iNPC)
 					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
 					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_2_Phase", false, false);
 					npc.m_iState=0;
-					npc.m_flNextRangedAttack += 2.0;
+					npc.m_flNextRangedAttack = gameTime+1.0;//Punishment
 					npc.m_flRangedSpecialDelay += 2.0;
 					npc.m_flNextRangedSpecialAttackHappens += 2.0;
 					npc.m_bFUCKYOU=false;
@@ -1540,8 +1546,7 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 									ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
 									SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 									TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
-									SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-									SDKHook(RocketGet, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
+									WandProjectile_ApplyFunctionToEntity(RocketGet, Atomizer_Rocket_Particle_StartTouch);	
 									npc.m_iAmmo--;
 								}
 								else break;
@@ -1723,7 +1728,7 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 			if(!HasSpecificBuff(target, "Fluid Movement"))
 				TF2_StunPlayer(target, 2.0, 0.4, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
 
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 			RemoveEntity(particle);
 	}
@@ -1769,7 +1774,7 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 				return Plugin_Handled;
 			}
 		}
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 			RemoveEntity(particle);
 	}

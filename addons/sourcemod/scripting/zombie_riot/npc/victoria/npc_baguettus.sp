@@ -27,7 +27,7 @@ static int NPCId;
 void CaptinoBaguettus_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Captino Meinus");
+	strcopy(data.Name, sizeof(data.Name), "Captino Menius");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_captino_baguettus");
 	strcopy(data.Icon, sizeof(data.Icon), "captino_agentus");
 	data.IconCustom = true;
@@ -332,9 +332,11 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 				b_NoHealthbar[npc.index] = 1;
 				if(IsValidEntity(npc.m_iTeamGlow))
 					RemoveEntity(npc.m_iTeamGlow);
-				
-				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-				npc.m_iWearable7 = ParticleEffectAt_Parent(VecSelfNpc, "spy_start_disguise_red", npc.index, "pelvis", {0.0,0.0,0.0});
+				float flPos[3];
+				float flAng[3];
+				GetAttachment(npc.index, "head", flPos, flAng);	
+				int particler = ParticleEffectAt(flPos, "spy_start_disguise_red", 5.0);
+				SetParent(npc.index, particler, "head");
 				npc.PlayUnCloakLoudSound();
 				SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
 				SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 0.0);
@@ -412,7 +414,7 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 					npc.SetCycle(0.01);
 					npc.SetPlaybackRate(1.0);
 				}
-				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMeinus_Talk-1", false, false);
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-1", false, false);
 				npc.PlayCloakSound();
 				npc.g_TimesSummoned--;
 			}
@@ -424,7 +426,7 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 			{
 				if(AlreadySaidWin)
 				{
-					NPCPritToChat_Noname("CaptinoMeinus_Talk-2", false);
+					NPCPritToChat_Noname("CaptinoMenius_Talk-2", false);
 					npc.g_TimesSummoned=-1;
 				}
 				else
@@ -450,8 +452,11 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 						SetVariantColor(view_as<int>({184, 56, 59, 200}));
 						AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 						npc.PlayUnCloakSound();
-						float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-						npc.m_iWearable7 = ParticleEffectAt_Parent(VecSelfNpc, "spy_start_disguise_red", npc.index, "pelvis", {0.0,0.0,0.0});
+						float flPos[3];
+						float flAng[3];
+						GetAttachment(npc.index, "head", flPos, flAng);	
+						int particler = ParticleEffectAt(flPos, "spy_start_disguise_red", 5.0);
+						SetParent(npc.index, particler, "head");
 						SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
 						SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 0.0);
 						SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 0.0);

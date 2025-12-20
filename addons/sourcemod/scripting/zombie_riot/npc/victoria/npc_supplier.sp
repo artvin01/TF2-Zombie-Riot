@@ -126,7 +126,6 @@ methodmap VictorianSupplier < CClotBody
 		
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
-		
 
 		func_NPCDeath[npc.index] = VictorianSupplier_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = VictorianSupplier_OnTakeDamage;

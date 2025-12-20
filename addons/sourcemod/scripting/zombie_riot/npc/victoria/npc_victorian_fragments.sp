@@ -112,7 +112,6 @@ methodmap VictorianDroneFragments < CClotBody
 		VictorianDroneFragments npc = view_as<VictorianDroneFragments>(CClotBody(vecPos, vecAng, "models/props_teaser/saucer.mdl", "1.0", "3000", ally, _, true, .CustomThreeDimensions = {20.0, 20.0, 20.0}, .CustomThreeDimensionsextra = {-20.0, -20.0, -20.0}));
 		
 		i_NpcWeight[npc.index] = 999;
-		npc.SetActivity("ACT_MP_STUN_MIDDLE");
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
@@ -131,6 +130,7 @@ methodmap VictorianDroneFragments < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flAttackHappens_bullshit = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iAmmo = 3;
 		npc.m_iMaxAmmo=3;
 		npc.m_flAttackHappens = 0.0;
@@ -263,13 +263,7 @@ methodmap VictorianDroneFragments < CClotBody
 		SetVariantString("!activator");
 		AcceptEntityInput(npc.m_iWearable4, "SetParent", npc.index);
 		MakeObjectIntangeable(npc.m_iWearable4);
-		
-		npc.m_bTeamGlowDefault = false;
-		if(IsValidEntity(npc.m_iTeamGlow))
-			RemoveEntity(npc.m_iTeamGlow);
-		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
-		SetVariantColor(view_as<int>({229, 235, 52, 200}));
-		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+		npc.m_bDoSpawnGesture = true;
 		
 		GetAbsOrigin(npc.index, Vec);
 		if(FactorySpawndo)
@@ -301,6 +295,16 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+	
+	if(npc.m_bDoSpawnGesture)
+	{
+		if(IsValidEntity(npc.m_iTeamGlow))
+			RemoveEntity(npc.m_iTeamGlow);
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.m_iWearable4);
+		SetVariantColor(view_as<int>({229, 235, 52, 200}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+		npc.m_bDoSpawnGesture=false;
+	}
 	
 	if(!npc.m_bisWalking)
 	{
@@ -408,6 +412,7 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 			{
 				npc.m_iAmmo = npc.m_iMaxAmmo;
 				npc.m_flGetClosestTargetTime=0.0;
+				npc.m_flNextMeleeAttack=0.0;
 				npc.m_bFUCKYOU = false;
 			}
 		}
@@ -505,6 +510,7 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 			{
 				npc.m_iAmmo = npc.m_iMaxAmmo;
 				npc.m_flGetClosestTargetTime=0.0;
+				npc.m_flNextMeleeAttack=0.0;
 				npc.m_bFUCKYOU = false;
 			}
 		}
@@ -546,6 +552,15 @@ static  int VictoriaFragmentsGetTarget(VictorianDroneFragments npc)
 
 static void VictoriaFragmentsAssaultMode(VictorianDroneFragments npc, float gameTime, float distance)
 {
+	if(npc.m_flNextMeleeAttack)
+	{
+		if(gameTime > npc.m_flNextMeleeAttack)
+		{
+			npc.m_iAmmo = npc.m_iMaxAmmo;
+			npc.m_flNextMeleeAttack=0.0;
+		}
+		return;
+	}
 	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 50.0))
 	{
@@ -566,15 +581,11 @@ static void VictoriaFragmentsAssaultMode(VictorianDroneFragments npc, float game
 					float origin[3];
 					WorldSpaceCenter(npc.index, origin);
 					ShootLaser(npc.index, "bullet_tracer02_blue", origin, vecHit, false );
-					float Cooldown = 3.0;
-					if(npc.m_iAmmo < 1)
-						npc.m_iAmmo = npc.m_iMaxAmmo;
+					if(npc.m_iAmmo < 2)
+						npc.m_flNextMeleeAttack = gameTime + 3.0;
 					else
-					{
 						npc.m_iAmmo --;
-						Cooldown = 0.3;
-					}
-					npc.m_flNextRangedAttack = gameTime + Cooldown;
+					npc.m_flNextRangedAttack = gameTime + 0.3;
 
 					if(IsValidEnemy(npc.index, target))
 					{
