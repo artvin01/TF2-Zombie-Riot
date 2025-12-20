@@ -823,7 +823,7 @@ static void Castellan_ClotThink(int iNPC)
 		switch(GetRandomInt(0, 1))
 		{
 			case 0:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_TimeUp-1", false, false);
-			case 1:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_TimeUp-1", false, false);
+			case 1:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_TimeUp-2", false, false);
 		}
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		for(int i; i<10; i++)
