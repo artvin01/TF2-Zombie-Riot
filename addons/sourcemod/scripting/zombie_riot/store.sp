@@ -5386,7 +5386,7 @@ void Store_ApplyAttribs(int client)
 							{
 								map.SetValue(buffer1, info.Value[a]);
 							}
-							else if(info.Attrib[a] < 0 || info.Attrib[a]==26 || (Attribute_IntAttribute(info.Attrib[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1)))
+							else if(info.Attrib[a] != Attrib_ReduceMetalCost && (info.Attrib[a] < 0 || info.Attrib[a]==26 || (Attribute_IntAttribute(info.Attrib[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))))
 							{
 								map.SetValue(buffer1, value + info.Value[a]);
 							}
@@ -5406,7 +5406,7 @@ void Store_ApplyAttribs(int client)
 							{
 								map.SetValue(buffer1, info.Value2[a]);
 							}
-							else if(info.Attrib2[a] < 0 || info.Attrib2[a]==26 || (Attribute_IntAttribute(info.Attrib2[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
+							else if(info.Attrib2[a] != Attrib_ReduceMetalCost && (info.Attrib2[a] < 0 || info.Attrib2[a]==26 || (Attribute_IntAttribute(info.Attrib2[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1))))
 							{
 								map.SetValue(buffer1, value + info.Value2[a]);
 							}
@@ -6188,9 +6188,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						
 						if(apply)
 						{
+							bool ignore_rest = false;
 							for(int a; a<info.Attribs; a++)
 							{
-								bool ignore_rest = false;
 								if(!Attributes_Has(entity, info.Attrib[a]))
 								{
 									if(info.SpecialAttribRules == 1)
@@ -6205,7 +6205,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 											Attributes_Set(entity, info.Attrib[a], info.Value[a]);
 									}
 								}
-								else if(!ignore_rest && (Attribute_IntAttribute(info.Attrib[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
+								else if(!ignore_rest && info.Attrib[a] != Attrib_ReduceMetalCost && (Attribute_IntAttribute(info.Attrib[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
 								{
 									Attributes_SetAdd(entity, info.Attrib[a], info.Value[a]);
 								}
@@ -6220,9 +6220,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						
 						if(apply)
 						{
+							bool ignore_rest = false;
 							for(int a; a<info.Attribs2; a++)
 							{
-								bool ignore_rest = false;
 								if(!Attributes_Has(entity, info.Attrib2[a]))
 								{
 									if(info.SpecialAttribRules_2 == 1)
@@ -6237,7 +6237,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 											Attributes_Set(entity, info.Attrib2[a], info.Value2[a]);
 									}
 								}
-								else if(!ignore_rest && (Attribute_IntAttribute(info.Attrib2[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
+								else if(!ignore_rest && info.Attrib2[a] != Attrib_ReduceMetalCost && (Attribute_IntAttribute(info.Attrib2[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
 								{
 									Attributes_SetAdd(entity, info.Attrib2[a], info.Value2[a]);
 								}
