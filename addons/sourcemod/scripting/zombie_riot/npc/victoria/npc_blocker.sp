@@ -360,21 +360,32 @@ static Action Blocker_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	{
 		if(IsValidEntity(npc.m_iWearable5))
 			RemoveEntity(npc.m_iWearable5);
-
-		float Cooltime = 7.5;
-		npc.m_flNextRangedAttack = GetGameTime(npc.index) + Cooltime;
-		damage = 0.0;
-		npc.PlayDeflectSound();
-		npc.AddGesture("ACT_PUSH_PLAYER");
-		npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.0;
-		npc.m_flAttackHappens = GetGameTime(npc.index) + 1.0;
-		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
-		npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;
-		IncreaseEntityDamageTakenBy(npc.index, 0.2, 1.0);
-		npc.DispatchParticleEffect(npc.index, "manmelter_impact_electro", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-		npc.StopPathing();
-		npc.m_bPathing = false;
-		return Plugin_Changed;
+		bool ICANSEEU;
+		if(!IsValidClient(attacker)&&IsValidEnemy(npc.index, attacker))
+			ICANSEEU=true;
+		else if(b_IsCamoNPC[attacker] || (IsValidClient(attacker) && (!IsPlayerAlive(attacker) || TeutonType[attacker] != TEUTON_NONE || dieingstate[attacker] != 0)))
+		{
+			//none
+		}
+		else
+			ICANSEEU=true;
+		if(ICANSEEU)
+		{
+			float Cooltime = 7.5;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + Cooltime;
+			damage = 0.0;
+			npc.PlayDeflectSound();
+			npc.AddGesture("ACT_PUSH_PLAYER");
+			npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.0;
+			npc.m_flAttackHappens = GetGameTime(npc.index) + 1.0;
+			npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
+			npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;
+			IncreaseEntityDamageTakenBy(npc.index, 0.2, 1.0);
+			npc.DispatchParticleEffect(npc.index, "manmelter_impact_electro", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+			npc.StopPathing();
+			npc.m_bPathing = false;
+			return Plugin_Changed;
+		}
 	}
 
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))

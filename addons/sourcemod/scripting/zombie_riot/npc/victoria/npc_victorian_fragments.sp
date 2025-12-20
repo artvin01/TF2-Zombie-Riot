@@ -191,7 +191,7 @@ methodmap VictorianDroneFragments < CClotBody
 			else if(StrContains(countext[i], "overridetarget") != -1)
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "overridetarget", "");
-				npc.m_iMainTarget = StringToInt(countext[i]);
+				npc.m_iMainTarget = EntRefToEntIndex(StringToInt(countext[i]));
 			}
 			else if(StrContains(countext[i], "tracking") != -1)
 			{
@@ -209,6 +209,12 @@ methodmap VictorianDroneFragments < CClotBody
 		{
 			npc.m_flLifeTime=-1.0;
 			AddNpcToAliveList(npc.index, 1);
+		}
+		else
+		{
+			fl_ruina_battery_max[npc.index]=npc.m_flLifeTime;
+			fl_ruina_battery[npc.index]=npc.m_flLifeTime;
+			ApplyStatusEffect(npc.index, npc.index, "Battery_TM Charge", 999.0);
 		}
 
 		SetEntityRenderMode(npc.index, RENDER_NONE);
@@ -330,6 +336,8 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 		SmiteNpcToDeath(npc.index);
 		return;
 	}
+	if(fl_ruina_battery_max[npc.index])
+		fl_ruina_battery[npc.index]=npc.m_flAttackHappens_bullshit-gameTime;
 	//Is old Ver isvoli
 	else if(ISVOLI[npc.index] && npc.m_flAttackHappens_bullshit)
 	{
@@ -431,7 +439,7 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 				VecEnemy[2]+=65.0;
 				npc.SaveTreePos(VecEnemy);
 				npc.m_iState=-2;
-				if(npc.m_flLifeTime>0.0)
+				if(!npc.m_flAttackHappens_bullshit && npc.m_flLifeTime>0.0)
 					npc.m_flAttackHappens_bullshit = gameTime+npc.m_flLifeTime+0.2;
 				npc.Anger = true;
 			}
@@ -464,7 +472,7 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 				PluginBot_Jump(npc.index, VecSelfNpc);
 				npc.m_flNextThinkTime = gameTime + 0.2;
 				npc.m_iState=2;
-				if(npc.m_flLifeTime>0.0)
+				if(!npc.m_flAttackHappens_bullshit && npc.m_flLifeTime>0.0)
 					npc.m_flAttackHappens_bullshit = gameTime+npc.m_flLifeTime+0.2;
 				npc.Anger = true;
 			}
@@ -595,7 +603,10 @@ static void VictoriaFragmentsAssaultMode(VictorianDroneFragments npc, float game
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 4.0;
 						if(npc.m_bFUCKYOU_move_anim)
+						{
 							damageDealt*=RaidModeScaling;
+							damageDealt*=0.5;
+						}
 						else
 						{
 							int GetWave = Waves_GetRoundScale()+1;

@@ -49,7 +49,7 @@ static const char g_MeleeHitSounds[] = "weapons/halloween_boss/knight_axe_hit.wa
 void Victorian_Charger_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Charger");
+	strcopy(data.Name, sizeof(data.Name), "Victoria Charger");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_charger");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_charger");
 	data.IconCustom = true;

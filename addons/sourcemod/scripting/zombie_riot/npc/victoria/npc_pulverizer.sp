@@ -335,7 +335,7 @@ static void VictorianPulverizerSelfDefense(VictorianPulverizer npc)
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 		
-		WandProjectile_ApplyFunctionToEntity(projectile, VictorianPulverizer_Rocket_Particle_StartTouch);
+		WandProjectile_ApplyFunctionToEntity(projectile, VictorianPulverizer_Particle_StartTouch);
 	}
 	if(SpinSound)
 		npc.PlayFlameThrowerSound(false);
@@ -347,9 +347,7 @@ static void VictorianPulverizer_Particle_StartTouch(int entity, int target)
 	{
 		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 		if(!IsValidEntity(owner))
-		{
 			owner = 0;
-		}
 		
 		int inflictor = h_ArrowInflictorRef[entity];
 		if(inflictor != -1)
@@ -368,26 +366,20 @@ static void VictorianPulverizer_Particle_StartTouch(int entity, int target)
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		float BurninHell = 1.0;
 		if(NpcStats_VictorianCallToArms(owner))
-		{
 			BurninHell *= 3.0;
-		}
 		BurninHell *= 0.5;
 		NPC_Ignite(target, owner,20.0, -1, BurninHell);
 
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
-		{
 			RemoveEntity(particle);
-		}
 	}
 	else
 	{
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		if(IsValidEntity(particle))
-		{
 			RemoveEntity(particle);
-		}
 	}
 	RemoveEntity(entity);
 }

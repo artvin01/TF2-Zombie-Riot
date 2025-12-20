@@ -426,7 +426,7 @@ static void VictorianOfflineAvangard_ClotThink(int iNPC)
 							float vecSwingStart[3], vecAngles[3];
 							GetAbsOrigin(entity, vecSwingStart);
 							int particle = ParticleEffectAt(vecSwingStart, "critical_rocket_blue", 2.4);
-							i_rocket_particle[entity]= EntIndexToEntRef(particle);
+							i_WandParticle[entity]= EntIndexToEntRef(particle);
 							GetEntPropVector(entity, Prop_Data, "m_angRotation", vecAngles);
 							TeleportEntity(particle, NULL_VECTOR, vecAngles, NULL_VECTOR);
 							SetParent(entity, particle);

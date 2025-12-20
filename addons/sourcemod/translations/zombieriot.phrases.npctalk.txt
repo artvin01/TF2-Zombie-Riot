@@ -33,7 +33,7 @@
 	"birdeye_Talk_02-2"
 	{
 		"en"	"Rest in peace bro."
-		"ko"	"편히 쉬십쇼 형님"
+		"ko"	"푹 쉬라고 친구"
 	}
 	"birdeye_Talk_03-1"
 	{
@@ -856,7 +856,7 @@
 	}
 	"CaptinoMenius_Talk-2"
 	{
-		"en"	"Sensal arrived after he received the transmission from Captino Menius, but Castellan had already left with his army. Ziberia is in deep trouble now…"
-		"ko"	"센살이 캡티노 메니우스의 전보를 받고 도착했지만, 카스텔란은 이미 그의 군대와 함께 전장으로 떠났습니다. 지베리아는 큰 위험애 처했네요…"
+		"en"	"{grey}Sensal arrived after he received the transmission from Captino Menius, but Castellan had already left with his army. Ziberia is in deep trouble now…{default}"
+		"ko"	"{grey}센살이 캡티노 메니우스의 전보를 받고 도착했지만, 카스텔란은 이미 그의 군대와 함께 전장으로 떠났습니다. 지베리아는 큰 위험애 처했네요…{default}"
 	}
 }

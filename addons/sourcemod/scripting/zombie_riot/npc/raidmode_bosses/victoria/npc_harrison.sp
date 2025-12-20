@@ -409,7 +409,7 @@ methodmap Harrison < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 200.0;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
-			NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Intro-2", false, true);
+			NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Intro", false, true);
 			
 			char buffers[3][64];
 			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));

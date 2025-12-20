@@ -372,8 +372,11 @@ static void FactoryCPU(int iNPC)
 			Vec[0] -= 65.0;
 			Vec[1] -= 8.0;
 			Vec[2] += 55.0;
-			TeleportEntity(npc.m_iWearable1, Vec, Ang, NULL_VECTOR);
-			SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
+			if(IsValidEntity(npc.m_iWearable1))
+			{
+				TeleportEntity(npc.m_iWearable1, Vec, Ang, NULL_VECTOR);
+				SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
+			}
 			
 			npc.m_iWearable2 = npc.EquipItemSeperate("models/props_c17/lockers001a.mdl",_,1,2.0,_,true);
 			//GetEntPropVector(npc.m_iWearable3, Prop_Data, "m_angRotation", Ang);
@@ -384,8 +387,11 @@ static void FactoryCPU(int iNPC)
 			Vec[0] += 65.0;
 			Vec[1] -= 8.0;
 			Vec[2] += 55.0;
-			TeleportEntity(npc.m_iWearable2, Vec, NULL_VECTOR, NULL_VECTOR);
-			SetEntityRenderColor(npc.m_iWearable2, 80, 50, 50, 255);
+			if(IsValidEntity(npc.m_iWearable2))
+			{
+				TeleportEntity(npc.m_iWearable2, Vec, NULL_VECTOR, NULL_VECTOR);
+				SetEntityRenderColor(npc.m_iWearable2, 80, 50, 50, 255);
+			}
 			
 			if(FactoryTooLuod < gameTime)
 			{
@@ -399,12 +405,18 @@ static void FactoryCPU(int iNPC)
 		if(i_AttacksTillMegahit[npc.index] >= 601 && i_AttacksTillMegahit[npc.index] < 606)
 		{
 			float Vec[3];
-			GetAbsOrigin(npc.m_iWearable1, Vec);
-			Vec[0] -= 12.5;
-			TeleportEntity(npc.m_iWearable1, Vec, NULL_VECTOR, NULL_VECTOR);
-			GetAbsOrigin(npc.m_iWearable2, Vec);
-			Vec[0] += 12.5;
-			TeleportEntity(npc.m_iWearable2, Vec, NULL_VECTOR, NULL_VECTOR);
+			if(IsValidEntity(npc.m_iWearable1))
+			{
+				GetAbsOrigin(npc.m_iWearable1, Vec);
+				Vec[0] -= 12.5;
+				TeleportEntity(npc.m_iWearable1, Vec, NULL_VECTOR, NULL_VECTOR);
+			}
+			if(IsValidEntity(npc.m_iWearable2))
+			{
+				GetAbsOrigin(npc.m_iWearable2, Vec);
+				Vec[0] += 12.5;
+				TeleportEntity(npc.m_iWearable2, Vec, NULL_VECTOR, NULL_VECTOR);
+			}
 			i_AttacksTillMegahit[npc.index] += 1;
 			return;
 		}
@@ -418,8 +430,11 @@ static void FactoryCPU(int iNPC)
 			MakeObjectIntangeable(npc.m_iWearable2);
 			npc.PlayLandingSound();
 			npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
-			SetVariantColor(view_as<int>({255, 255, 255, 200}));
-			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+			if(IsValidEntity(npc.m_iTeamGlow))
+			{
+				SetVariantColor(view_as<int>({255, 255, 255, 200}));
+				AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+			}
 			npc.m_flAttackHappens = gameTime + BuildTime;
 			i_AttacksTillMegahit[npc.index] = 607;
 			if(npc.m_iState==0)
@@ -516,7 +531,8 @@ static void FactoryCPU(int iNPC)
 					int iColor[4];
 					SetColorRGBA(iColor, GET_R, GET_G, GET_B, 200);
 					SetVariantColor(iColor);
-					AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+					if(IsValidEntity(npc.m_iTeamGlow))
+						AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 					if(npc.m_flMusicEnd < gameTime)
 					{
 						OneCaramelldansen=false;
@@ -640,7 +656,8 @@ static void FactoryCPU(int iNPC)
 					iColor[2]=0+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*255.0);
 					iColor[3]=200+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*55.0);
 					SetVariantColor(iColor);
-					AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+					if(IsValidEntity(npc.m_iTeamGlow))
+						AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 					if(npc.m_flAttackHappens < gameTime)
 					{
 						float Vec[3]; GetAbsOrigin(npc.m_iWearable3, Vec);
@@ -682,7 +699,8 @@ static void FactoryCPU(int iNPC)
 					iColor[2]=0+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*255.0);
 					iColor[3]=200+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*55.0);
 					SetVariantColor(iColor);
-					AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+					if(IsValidEntity(npc.m_iTeamGlow))
+						AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 					if(npc.m_flAttackHappens < gameTime)
 					{
 						float Vec[3]; GetAbsOrigin(npc.m_iWearable3, Vec);
@@ -717,19 +735,34 @@ static void FactoryCPU(int iNPC)
 		}
 		if(i_AttacksTillMegahit[npc.index] >= 608 && i_AttacksTillMegahit[npc.index] < 613)
 		{
-			SetVariantColor(view_as<int>({255, 255, 255, 200}));
-			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-			SetVariantString("!activator");
-			AcceptEntityInput(npc.m_iWearable1, "ClearParent");
-			SetVariantString("!activator");
-			AcceptEntityInput(npc.m_iWearable2, "ClearParent");
+			if(IsValidEntity(npc.m_iTeamGlow))
+			{
+				SetVariantColor(view_as<int>({255, 255, 255, 200}));
+				AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+			}
+			if(IsValidEntity(npc.m_iWearable1))
+			{
+				SetVariantString("!activator");
+				AcceptEntityInput(npc.m_iWearable1, "ClearParent");
+			}
+			if(IsValidEntity(npc.m_iWearable2))
+			{
+				SetVariantString("!activator");
+				AcceptEntityInput(npc.m_iWearable2, "ClearParent");
+			}
 			float Vec[3];
-			GetAbsOrigin(npc.m_iWearable1, Vec);
-			Vec[0] += 12.5;
-			TeleportEntity(npc.m_iWearable1, Vec, NULL_VECTOR, NULL_VECTOR);
-			GetAbsOrigin(npc.m_iWearable2, Vec);
-			Vec[0] -= 12.5;
-			TeleportEntity(npc.m_iWearable2, Vec, NULL_VECTOR, NULL_VECTOR);
+			if(IsValidEntity(npc.m_iWearable1))
+			{
+				GetAbsOrigin(npc.m_iWearable1, Vec);
+				Vec[0] += 12.5;
+				TeleportEntity(npc.m_iWearable1, Vec, NULL_VECTOR, NULL_VECTOR);
+			}
+			if(IsValidEntity(npc.m_iWearable2))
+			{
+				GetAbsOrigin(npc.m_iWearable2, Vec);
+				Vec[0] -= 12.5;
+				TeleportEntity(npc.m_iWearable2, Vec, NULL_VECTOR, NULL_VECTOR);
+			}
 			i_AttacksTillMegahit[npc.index] += 1;
 			return;
 		}
@@ -740,13 +773,16 @@ static void FactoryCPU(int iNPC)
 			if(IsValidEntity(npc.m_iWearable2))
 				RemoveEntity(npc.m_iWearable2);
 			float Vec[3];
-			GetAbsOrigin(npc.m_iWearable3, Vec);
-			Vec[2]-=80.0;
-			npc.m_iWearable1=ParticleEffectAt(Vec, "rockettrail", 0.0);
-			SetVariantString("!activator");
-			AcceptEntityInput(npc.m_iWearable1, "SetParent", npc.m_iWearable3);
-			npc.m_flAttackHappens_bullshit = gameTime + 3.0;
-			i_AttacksTillMegahit[npc.index] = 614;
+			if(IsValidEntity(npc.m_iWearable3))
+			{
+				GetAbsOrigin(npc.m_iWearable3, Vec);
+				Vec[2]-=80.0;
+				npc.m_iWearable1=ParticleEffectAt(Vec, "rockettrail", 0.0);
+				SetVariantString("!activator");
+				AcceptEntityInput(npc.m_iWearable1, "SetParent", npc.m_iWearable3);
+				npc.m_flAttackHappens_bullshit = gameTime + 3.0;
+				i_AttacksTillMegahit[npc.index] = 614;
+			}
 			return;
 		}
 		if(i_AttacksTillMegahit[npc.index] <= 614)
@@ -761,7 +797,8 @@ static void FactoryCPU(int iNPC)
 		{
 			float Vec[3], Parts[3];
 			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", Vec);
-			GetEntPropVector(npc.m_iWearable3, Prop_Send, "m_vecOrigin", Parts);
+			if(IsValidEntity(npc.m_iWearable3))
+				GetEntPropVector(npc.m_iWearable3, Prop_Send, "m_vecOrigin", Parts);
 			Vec[0]=Parts[0];
 			Vec[1]=Parts[1];
 			Vec[2]+=55.0;
@@ -784,7 +821,8 @@ static void FactoryCPU(int iNPC)
 				else if(YPOS>20.0)
 					UpSpeed=10.0;
 				Parts[2]+=UpSpeed;
-				TeleportEntity(npc.m_iWearable3, Parts, NULL_VECTOR, NULL_VECTOR);
+				if(IsValidEntity(npc.m_iWearable3))
+					TeleportEntity(npc.m_iWearable3, Parts, NULL_VECTOR, NULL_VECTOR);
 			}
 			return;
 		}
@@ -795,7 +833,8 @@ static void FactoryCPU(int iNPC)
 			RemoveEntity(npc.m_iTeamGlow);
 		float Vec[3], Parts[3];
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", Vec);
-		GetEntPropVector(npc.m_iWearable3, Prop_Send, "m_vecOrigin", Parts);
+		if(IsValidEntity(npc.m_iWearable3))
+			GetEntPropVector(npc.m_iWearable3, Prop_Send, "m_vecOrigin", Parts);
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
 		Vec[0]=Parts[0];
 		Vec[1]=Parts[1];
@@ -803,10 +842,13 @@ static void FactoryCPU(int iNPC)
 		float YPOS = GetVectorDistance(Vec, Parts);
 		if(YPOS<10.0)
 		{
-			TeleportEntity(npc.m_iWearable3, Vec, NULL_VECTOR, NULL_VECTOR);
-			SetVariantString("!activator");
-			AcceptEntityInput(npc.m_iWearable3, "SetParent", npc.index);
-			MakeObjectIntangeable(npc.m_iWearable3);
+			if(IsValidEntity(npc.m_iWearable3))
+			{
+				TeleportEntity(npc.m_iWearable3, Vec, NULL_VECTOR, NULL_VECTOR);
+				SetVariantString("!activator");
+				AcceptEntityInput(npc.m_iWearable3, "SetParent", npc.index);
+				MakeObjectIntangeable(npc.m_iWearable3);
+			}
 			i_AttacksTillMegahit[npc.index] = 600;
 		}
 		else
@@ -819,7 +861,8 @@ static void FactoryCPU(int iNPC)
 			else if(YPOS>20.0)
 				DownSpeed=10.0;
 			Parts[2]-=DownSpeed;
-			TeleportEntity(npc.m_iWearable3, Parts, NULL_VECTOR, NULL_VECTOR);
+			if(IsValidEntity(npc.m_iWearable3))
+				TeleportEntity(npc.m_iWearable3, Parts, NULL_VECTOR, NULL_VECTOR);
 			i_AttacksTillMegahit[npc.index] += 1;
 		}
 	}

@@ -3328,7 +3328,7 @@
 	{
 		"en"	"Basic melee unit of Leatherboots Scoutsquad.\nMoves faster when direct operation orders are given \n (When signalled) Gain speed boost"
 	}
-	"Charger Desc"
+	"Victoria Charger Desc"
 	{
 		"en"	"melee unit with shortest melee range of Leatherboots Scoutsquad.\nThey are slow at first but accelerates into high speed \nTheir damage multiplies by their current speed\nMoves faster when direct operation orders are given \n (When signalled) Accelerate faster"
 	}
@@ -3442,8 +3442,12 @@
 	}
 	"Victorian Mortar Desc"
 	{
-		"en"	"Elite ranged unit of Irongate Defense Units. Has infinite range and can predict opponent's movement. \n gets motivated and reloads small rockets on direct operation order \n(When signalled) Fires small rockets faster"
+		"en"	"Fearless Ranged unit of Victorian army. -Fires 2 rockets in arc at random position near its target. \n -(When signalled) Rocket explodes twice, second explosion will deal half of the first explosion"
 	}
+	"Victorian Artillerist Desc"
+    {
+        "en"    "Elite ranged unit of Victorian army. -Has infinite attack range. \n -Bombard the target and the area around it with some windup \n(When signalled) Attackspeed hastened massively"
+    }
 	"Bomb Cart Desc"
 	{
 		"en"	"Small cart filled with bombs. Obviously explodes on contact with its target. \n Can be defused by killing it before attacking\n(When signalled) Explodes on death"
@@ -3500,6 +3504,10 @@
 	{
 		"en"	"Elite Vehicle of Brassbunker Special Force. Slow and powerful unit that fires a rocket dealing deadly damage. \nHowever, it turns slowly and moves slowly \nUpon death, it releases the squad it was carrying with \n (When signalled) projecticle speed increased"
 	}
+	"Victorian Assault Vehicle Desc"
+    {
+        "en"    "Armored Transport Vehicle of Victorian army. \n-It slowly speeds up to build up momentum and damage. \n-It prioritizes buildings over players /n-Spawn units from other factions when it rams into building \n(When signalled) Spawn units more often"
+    }
 	"Victoria Radiomast Desc"
 	{
 		"en"	"Giant radiotower that receives a signal and spreads it to other places via signaller. \nSince radiotower is crucial for transmission, Victorians will do everything to preotect it \nWHile the Radiotower is alive, endless waves of enemies will appear and all enemies existing in the map will receive signal buff \nWhen below half health, summons radio repair and guard to protect and heal"

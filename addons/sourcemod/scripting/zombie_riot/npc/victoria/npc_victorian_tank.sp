@@ -389,7 +389,7 @@ static void VictoriaTank_Work(VictoriaTank npc, float gameTime, float distance)
 					{
 						float damageDealt = 100.0;
 						if(ShouldNpcDealBonusDamage(target))
-							damageDealt=19721121.0;
+							damageDealt*=5.0;
 						KillFeed_SetKillIcon(npc.index, "vehicle");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 						npc.PlayMeleeHitSound();

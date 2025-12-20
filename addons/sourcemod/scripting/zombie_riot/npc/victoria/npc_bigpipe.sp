@@ -577,7 +577,7 @@ static Action VictoriaBigpipe_OnTakeDamage(int victim, int &attacker, int &infli
 	{
 		if(!IsValidClient(attacker)&&IsValidEnemy(npc.index, attacker))
 			npc.g_TimesSummoned=30;
-		else if(!IsPlayerAlive(attacker) || TeutonType[attacker] != TEUTON_NONE || dieingstate[attacker] != 0)
+		else if(b_IsCamoNPC[attacker] || (IsValidClient(attacker) && (!IsPlayerAlive(attacker) || TeutonType[attacker] != TEUTON_NONE || dieingstate[attacker] != 0)))
 		{
 			//none
 		}
@@ -667,7 +667,7 @@ static int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float
 					AcceptEntityInput(npc.m_iWearable1, "SetParentAttachmentMaintainOffset"); 
 					SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 0);
 					MakeObjectIntangeable(npc.m_iWearable1);*/
-					npc.SetWeaponModel("models/zombie_riot/weapons/custom_weaponry_1_51.mdl", 1.25);
+					npc.SetWeaponModel("models/zombie_riot/weapons/custom_weaponry_1_52.mdl", 1.25);
 					SetEntProp(npc.m_iWearable1, Prop_Send, "m_nBody", 128);
 					
 					npc.g_TimesSummoned=2;

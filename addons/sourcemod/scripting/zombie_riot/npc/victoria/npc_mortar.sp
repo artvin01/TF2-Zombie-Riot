@@ -338,7 +338,7 @@ static int VictoriaMortarSelfDefense(VictoriaMortar npc, float gameTime, float d
 							i_Wearable[RocketGet][0]=ParticleEffectAt(VecStart, "rockettrail", 0.0);
 							SetParent(RocketGet, i_Wearable[RocketGet][0]);
 							SetEntProp(RocketGet, Prop_Send, "m_nSkin", 1);
-							fl_rocket_particle_dmg[RocketGet] = RocketDamage;
+							f_WandDamage[RocketGet] = RocketDamage;
 							fl_Extra_Damage[RocketGet] = fl_Extra_Damage[npc.index];
 							SDKHook(RocketGet, SDKHook_StartTouch, HEGrenade_StartTouch);
 							TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
@@ -405,10 +405,19 @@ static Action HEGrenade_StartTouch(int entity, int target)
 
 	if(inflictor == -1)
 		inflictor = owner;
+	if(!owner)
+		owner = inflictor;
+	if(!IsValidEntity(owner))
+	{
+		if(IsValidEntity(i_Wearable[entity][0]))
+			RemoveEntity(i_Wearable[entity][0]);
+		RemoveEntity(entity);
+		return Plugin_Handled;
+	}
 		
 	float ProjectileLoc[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-	Explode_Logic_Custom(fl_rocket_particle_dmg[entity], owner, inflictor, -1, ProjectileLoc, EXPLOSION_RADIUS, _, _, true, _, false, _, HEGrenade, ExplodeNoDMG);
+	Explode_Logic_Custom(f_WandDamage[entity], owner, inflictor, -1, ProjectileLoc, EXPLOSION_RADIUS, _, _, true, _, false, _, HEGrenade, ExplodeNoDMG);
 	ParticleEffectAt(ProjectileLoc, "ExplosionCore_MidAir", 1.0);
 	EmitSoundToAll(g_ExplosionSounds[GetRandomInt(0, sizeof(g_ExplosionSounds) - 1)], 0, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL - 20, _, 0.8, _, -1, ProjectileLoc);
 	//SDKUnhook(entity, SDKHook_StartTouch, HEGrenade_StartTouch);

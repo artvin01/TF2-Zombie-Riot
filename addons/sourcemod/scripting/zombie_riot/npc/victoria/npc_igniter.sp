@@ -253,12 +253,11 @@ static int VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime, float
 					npc.PlayRangeSound();
 					npc.FaceTowards(vecTarget, 20000.0);
 					int projectile = npc.FireParticleRocket(vecTarget, 20.0, 1000.0, 200.0, "drg_cow_rockettrail_fire_charged_blue", true);
-					SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-					int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
+					int particle = EntRefToEntIndex(i_WandParticle[projectile]);
 					CreateTimer(8.0, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 					CreateTimer(8.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 					
-					SDKHook(projectile, SDKHook_StartTouch, VictoriaIgniter_Rocket_Particle_StartTouch);
+					WandProjectile_ApplyFunctionToEntity(projectile, VictoriaIgniter_Rocket_Particle_StartTouch);
 					return 1;
 				}
 			}
@@ -273,9 +272,7 @@ static void VictoriaIgniter_Rocket_Particle_StartTouch(int entity, int target)
 	{
 		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 		if(!IsValidEntity(owner))
-		{
 			owner = 0;
-		}
 		
 		int inflictor = h_ArrowInflictorRef[entity];
 		if(inflictor != -1)
@@ -292,28 +289,17 @@ static void VictoriaIgniter_Rocket_Particle_StartTouch(int entity, int target)
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
 		
-		if(NpcStats_VictorianCallToArms(owner))
-		{
-			NPC_Ignite(target, owner, 7.5, -1, 4.0);
-		}
-		else
-		{
-			NPC_Ignite(target, owner, 5.0, -1, 4.0);
-		}
+		NPC_Ignite(target, owner, (NpcStats_VictorianCallToArms(owner) ? 7.5 : 5.0), -1, 4.0);
 
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
-		{
 			RemoveEntity(particle);
-		}
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
-		{
 			RemoveEntity(particle);
-		}
 	}
 	RemoveEntity(entity);
 }

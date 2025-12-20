@@ -97,6 +97,11 @@ methodmap VictoriaProtector < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
+	property float m_flDroneHealth
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
 	
 	public VictoriaProtector(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -117,11 +122,12 @@ methodmap VictoriaProtector < CClotBody
 		func_NPCThink[npc.index] = VictoriaProtector_ClotThink;
 		
 		npc.m_flLifeTime=20.0;
+		npc.m_flDroneHealth=0.35;
 		npc.m_iStand=0;
 		i_GunAmmo[npc.index]=0;
 		b_we_are_reloading[npc.index]=false;
 		i_ammo_count[npc.index]=0;
-		static char countext[20][1024];
+		static char countext[6][512];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
@@ -150,6 +156,11 @@ methodmap VictoriaProtector < CClotBody
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "tracking", "");
 				npc.m_iStand = 1;
+			}
+			else if(StrContains(countext[i], "drone_hp") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "drone_hp", "");
+				npc.m_flDroneHealth = StringToFloat(countext[i]);
 			}
 		}
 		
@@ -236,6 +247,7 @@ static void VictoriaProtector_ClotThink(int iNPC)
 	if(!npc.m_bFUCKYOU)
 	{
 		int HowManyFactory[6];
+		int IsFactorya=0;
 		//└There won't be more cases than this
 		if(i_GunAmmo[npc.index])
 		{
@@ -246,7 +258,8 @@ static void VictoriaProtector_ClotThink(int iNPC)
 				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
 				{
 					NoFactory=false;
-					HowManyFactory[entitycount]=entity;
+					HowManyFactory[IsFactorya]=entity;
+					IsFactorya++;
 				}
 			}
 			if(NoFactory)
@@ -280,7 +293,7 @@ static void VictoriaProtector_ClotThink(int iNPC)
 					
 					if(i_GunAmmo[npc.index])
 					{
-						for(int entitycount; entitycount<6; entitycount++)
+						for(int entitycount; entitycount<IsFactorya-1; entitycount++)
 						{
 							int entity=HowManyFactory[entitycount];
 							if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
@@ -294,7 +307,7 @@ static void VictoriaProtector_ClotThink(int iNPC)
 									spawn_index = NPC_CreateByName("npc_victoria_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 								if(spawn_index > MaxClients)
 								{
-									int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.35);
+									int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*npc.m_flDroneHealth);
 									NpcAddedToZombiesLeftCurrently(spawn_index, true);
 									SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 									SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -318,7 +331,7 @@ static void VictoriaProtector_ClotThink(int iNPC)
 							spawn_index = NPC_CreateByName("npc_victoria_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 						if(spawn_index > MaxClients)
 						{
-							int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.35);
+							int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*npc.m_flDroneHealth);
 							NpcAddedToZombiesLeftCurrently(spawn_index, true);
 							SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);

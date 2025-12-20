@@ -535,7 +535,7 @@ static int VictoriaRepair_Work(VictoriaRepair npc, float gameTime, float distanc
 	{
 		if(IsValidAlly(npc.index, npc.m_iTarget))
 		{
-			if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*14.8 && Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+			if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*14.8 && Can_I_See_Ally(npc.index, npc.m_iTarget))
 			{
 				if(!npc.m_bnew_target)
 				{
@@ -563,7 +563,7 @@ static int VictoriaRepair_Work(VictoriaRepair npc, float gameTime, float distanc
 		{
 			return 3;
 		}
-		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.7)
+		if(Can_I_See_Ally(npc.index, npc.m_iTarget) && distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.7)
 		{
 			if(gameTime > npc.m_flChangeMovement)
 			{

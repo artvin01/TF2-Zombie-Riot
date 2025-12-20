@@ -387,6 +387,16 @@ static void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
 		if(inflictor == -1)
 			inflictor = owner;
+		if(!owner)
+			owner = inflictor;
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		if(!IsValidEntity(owner))
+		{
+			if(IsValidEntity(particle))
+				RemoveEntity(particle);
+			RemoveEntity(entity);
+			return;
+		}
 		
 		float DamageDeal = fl_rocket_particle_dmg[entity];
 		if(ShouldNpcDealBonusDamage(target))
@@ -399,8 +409,6 @@ static void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 			Explode_Logic_Custom(0.0, owner, inflictor, -1, ProjectileLoc, 100.0, _, _, true, _, false, _, Weeeeeeeeeiiiiii);
 			ParticleEffectAt(ProjectileLoc, "mvm_soldier_shockwave", 1.0);
 		}
-
-		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 			RemoveEntity(particle);
 	}
@@ -414,13 +422,22 @@ static void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
 		if(inflictor == -1)
 			inflictor = owner;
+		if(!owner)
+			owner = inflictor;
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		if(!IsValidEntity(owner))
+		{
+			if(IsValidEntity(particle))
+				RemoveEntity(particle);
+			RemoveEntity(entity);
+			return;
+		}
 		if(NpcStats_VictorianCallToArms(owner))
 		{
 			float ProjectileLoc[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 			Explode_Logic_Custom(0.0, owner, inflictor, -1, ProjectileLoc, 100.0, _, _, true, _, false, _, Weeeeeeeeeiiiiii);
 			ParticleEffectAt(ProjectileLoc, "mvm_soldier_shockwave", 1.0);
 		}
-		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		if(IsValidEntity(particle))
 			RemoveEntity(particle);

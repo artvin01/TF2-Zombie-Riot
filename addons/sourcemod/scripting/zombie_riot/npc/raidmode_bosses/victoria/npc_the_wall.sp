@@ -833,7 +833,6 @@ static int Support_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], float
 			{
 				case 0:
 				{
-					npc.FaceTowards(vecTarget, 15000.0);
 					EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 					npc.AddActivityViaSequence("layer_taunt_soviet_showoff");
 					npc.SetCycle(0.5);
@@ -843,6 +842,7 @@ static int Support_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], float
 				}
 				case 1:
 				{
+					npc.FaceTowards(vecTarget, 15000.0);
 					if(npc.m_flDoingAnimation < gameTime)
 					{
 						npc.PlayRushSound();
@@ -1264,6 +1264,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 			}
 			case 1:
 			{
+				npc.FaceTowards(vecTarget, 15000.0);
 				if(npc.m_flDoingAnimation < gameTime)
 				{
 					npc.PlayRushSound();

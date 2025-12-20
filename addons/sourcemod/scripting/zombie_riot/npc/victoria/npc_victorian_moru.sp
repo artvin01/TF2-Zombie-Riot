@@ -129,8 +129,15 @@ methodmap VictorianDroneAnvil < CClotBody
 			else if(StrContains(countext[i], "overridetarget") != -1)
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "overridetarget", "");
-				npc.m_iTarget = StringToInt(countext[i]);
+				npc.m_iTarget = EntRefToEntIndex(StringToInt(countext[i]));
 			}
+		}
+		
+		if(npc.m_flLifeTime!=-1.0)
+		{
+			fl_ruina_battery_max[npc.index]=npc.m_flLifeTime;
+			fl_ruina_battery[npc.index]=npc.m_flLifeTime;
+			ApplyStatusEffect(npc.index, npc.index, "Battery_TM Charge", 999.0);
 		}
 
 		SetEntityRenderMode(npc.index, RENDER_NONE);
@@ -239,7 +246,8 @@ static void VictorianDroneAnvil_ClotThink(int iNPC)
 		SmiteNpcToDeath(npc.index);
 		return;
 	}
-
+	if(fl_ruina_battery_max[npc.index])
+		fl_ruina_battery[npc.index]=npc.m_flAttackHappens_bullshit-gameTime;
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	float VecAlly[3]; WorldSpaceCenter(npc.m_iTargetAlly, VecAlly);
@@ -273,16 +281,19 @@ static void VictorianDroneAnvil_ClotThink(int iNPC)
 				float Pathing[3], Npvel[3], NPCAng[3];
 				if(CheckOpenSky(npc.m_iTargetAlly)) VecAlly[2]+=180.0;
 				SubtractVectors(VecAlly, VecSelfNpc, Pathing);
-				GetEntPropVector(npc.m_iWearable2, Prop_Data, "m_angRotation", NPCAng);
-				npc.GetVelocity(Npvel);
-				float NPCSpeed = npc.m_flSpeed;
-				NormalizeVector(Pathing, Npvel);
-				ScaleVector(Npvel, NPCSpeed);
-				GetVectorAngles(Npvel, NPCAng);
-				npc.SetVelocity(Npvel);
-				NPCAng[2]=0.0;
-				NPCAng[0]=0.0;
-				SetEntPropVector(npc.m_iWearable2, Prop_Data, "m_angRotation", NPCAng);
+				if(IsValidEntity(npc.m_iWearable2))
+				{
+					GetEntPropVector(npc.m_iWearable2, Prop_Data, "m_angRotation", NPCAng);
+					npc.GetVelocity(Npvel);
+					float NPCSpeed = npc.m_flSpeed;
+					NormalizeVector(Pathing, Npvel);
+					ScaleVector(Npvel, NPCSpeed);
+					GetVectorAngles(Npvel, NPCAng);
+					npc.SetVelocity(Npvel);
+					NPCAng[2]=0.0;
+					NPCAng[0]=0.0;
+					SetEntPropVector(npc.m_iWearable2, Prop_Data, "m_angRotation", NPCAng);
+				}
 			}
 		}
 	}

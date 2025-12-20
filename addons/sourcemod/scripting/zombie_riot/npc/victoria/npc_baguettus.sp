@@ -233,7 +233,7 @@ methodmap CaptinoBaguettus < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.m_bCamo = true;
+		npc.m_bCamo = false;
 		npc.Anger = false;
 		npc.m_bFUCKYOU = false;
 		npc.m_bDissapearOnDeath = true;
@@ -394,30 +394,6 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 	{
 		switch(npc.g_TimesSummoned)
 		{
-			case 255:
-			{
-				b_NoHealthbar[npc.index] = 1;
-				if(IsValidEntity(npc.m_iTeamGlow))
-					RemoveEntity(npc.m_iTeamGlow);
-				if(IsValidEntity(npc.m_iWearable1))
-					RemoveEntity(npc.m_iWearable1);
-				npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/spy/tailored_terminal_model/tailored_terminal_model.mdl");
-				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-				npc.m_iWearable7 = ParticleEffectAt_Parent(VecSelfNpc, "spy_start_disguise_red", npc.index, "pelvis", {0.0,0.0,0.0});
-				if(npc.m_iChanged_WalkCycle != 2)
-				{
-					npc.StopPathing();
-					npc.m_bisWalking = false;
-					npc.m_flSpeed = 0.0;
-					npc.m_iChanged_WalkCycle = 2;
-					npc.AddActivityViaSequence("taunttailored_terminal_intro");
-					npc.SetCycle(0.01);
-					npc.SetPlaybackRate(1.0);
-				}
-				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-1", false, false);
-				npc.PlayCloakSound();
-				npc.g_TimesSummoned--;
-			}
 			case -1:
 			{
 				/*none*/
@@ -505,6 +481,30 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 					SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMinDist", 1.0);
 					SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMaxDist", 1.0);
 					npc.g_TimesSummoned=0;
+				}
+				else if(!npc.m_bCamo&&npc.g_TimesSummoned>=125)
+				{
+					b_NoHealthbar[npc.index] = 1;
+					if(IsValidEntity(npc.m_iTeamGlow))
+						RemoveEntity(npc.m_iTeamGlow);
+					if(IsValidEntity(npc.m_iWearable1))
+						RemoveEntity(npc.m_iWearable1);
+					npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/spy/tailored_terminal_model/tailored_terminal_model.mdl");
+					float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+					npc.m_iWearable7 = ParticleEffectAt_Parent(VecSelfNpc, "spy_start_disguise_red", npc.index, "pelvis", {0.0,0.0,0.0});
+					if(npc.m_iChanged_WalkCycle != 2)
+					{
+						npc.StopPathing();
+						npc.m_bisWalking = false;
+						npc.m_flSpeed = 0.0;
+						npc.m_iChanged_WalkCycle = 2;
+						npc.AddActivityViaSequence("taunttailored_terminal_intro");
+						npc.SetCycle(0.01);
+						npc.SetPlaybackRate(1.0);
+					}
+					NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-1", false, false);
+					npc.PlayCloakSound();
+					npc.m_bCamo=true;
 				}
 				SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.index, 255, 255, 255, npc.g_TimesSummoned);
@@ -596,7 +596,7 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 		}
 		return;
 	}
-	if(Waves_Started())
+	if(Waves_Started() && !Waves_InSetup())
 	{
 		switch(npc.g_TimesSummoned)
 		{
@@ -837,9 +837,10 @@ static void CaptinoBaguettusBackup(CaptinoBaguettus npc, float gameTime, float d
 				if(IsValidEnemy(npc.index, target))
 				{
 					float damageDealt = 50.0;
-
+					KillFeed_SetKillIcon(npc.index, "eternal_reward");
 					if(BackstabDone)
 					{
+						KillFeed_SetKillIcon(npc.index, "backsteab");
 						npc.PlayMeleeBackstabSound(target);
 						damageDealt *= 3.0;
 					}

@@ -316,6 +316,7 @@ methodmap Castellan < CClotBody
 		NitroFuelStack[npc.index] = 0;
 		ParticleSpawned[npc.index] = false;
 		npc.m_flDead_Ringer_Invis_bool = false;
+		npc.m_bCamo = false;
 		npc.m_flDead_Ringer_Invis = 0.0;
 		npc.m_bDissapearOnDeath = true;
 		BlastDMG[npc.index] = 0.0;
@@ -370,6 +371,7 @@ methodmap Castellan < CClotBody
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		npc.m_bDoSpawnGesture = true;
 		
 		char buffers[3][64];
 		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
@@ -659,6 +661,14 @@ static void Castellan_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
+	if(npc.m_bDoSpawnGesture)
+	{
+		int Maxhealth=RoundToCeil(float(ReturnEntityMaxHealth(npc.index))/2.5);
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", Maxhealth);
+		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", Maxhealth);
+		npc.m_bDoSpawnGesture=false;
+	}
+	
 	if(npc.m_flTimeSinceHasBeenHurt)
 	{
 		npc.StopPathing();
@@ -846,7 +856,7 @@ static void Castellan_ClotThink(int iNPC)
 		npc.m_bFUCKYOU = true;
 	}
 	
-	if(BlockLoseSay && npc.m_bFUCKYOU && i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	if(!BlockLoseSay && npc.m_bFUCKYOU && i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
 		DeleteAndRemoveAllNpcs = 3.0;
 		npc.m_bisWalking = false;
@@ -1116,14 +1126,26 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	/*Punishment*/
 	if(!Can_I_See_Enemy_Only(npc.index, attacker) && npc.m_flAttackHappens_2 < gameTime)
 	{
-		if(!CounterattackDesc)
+		bool ICANSEEU;
+		if(!IsValidClient(attacker)&&IsValidEnemy(npc.index, attacker))
+			ICANSEEU=true;
+		else if(b_IsCamoNPC[attacker] || (IsValidClient(attacker) && (!IsPlayerAlive(attacker) || TeutonType[attacker] != TEUTON_NONE || dieingstate[attacker] != 0)))
 		{
-			NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Counterattack", false, false);
-			CounterattackDesc=true;
+			//none
 		}
-		float vecTarget[3]; WorldSpaceCenter(attacker, vecTarget);
-		Engage_HE_Strike(npc.index, vecTarget, 100.0 * RaidModeScaling, 2.25, EXPLOSION_RADIUS*2.0);
-		npc.m_flAttackHappens_2 = gameTime + 2.4;
+		else
+			ICANSEEU=true;
+		if(ICANSEEU)
+		{
+			if(!CounterattackDesc)
+			{
+				NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Counterattack", false, false);
+				CounterattackDesc=true;
+			}
+			float vecTarget[3]; WorldSpaceCenter(attacker, vecTarget);
+			Engage_HE_Strike(npc.index, vecTarget, 100.0 * RaidModeScaling, 2.25, EXPLOSION_RADIUS*2.0);
+			npc.m_flAttackHappens_2 = gameTime + 2.4;
+		}
 	}
 	
 	if(!npc.m_bHalfRage)
@@ -1469,17 +1491,17 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 				int DroneIndex;
 				if(NextDrone)
 				{
-					FormatEx(Adddeta, sizeof(Adddeta), "%soverridetarget%i", Adddeta, npc.index);
+					FormatEx(Adddeta, sizeof(Adddeta), "%soverridetarget%i", Adddeta, EntIndexToEntRef(npc.index));
 					DroneIndex = NPC_CreateByName("npc_victoria_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 				}
 				else
 				{
-					FormatEx(Adddeta, sizeof(Adddeta), "%soverridetarget%i", Adddeta, whattarget);
+					FormatEx(Adddeta, sizeof(Adddeta), "%soverridetarget%i", Adddeta, EntIndexToEntRef(whattarget));
 					DroneIndex = NPC_CreateByName("npc_victoria_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 				}
 				if(DroneIndex > MaxClients)
 				{
-					int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.15);
+					int maxhealth = RoundToCeil(float(ReturnEntityMaxHealth(npc.index))*0.125);
 					NpcAddedToZombiesLeftCurrently(DroneIndex, true);
 					SetEntProp(DroneIndex, Prop_Data, "m_iHealth", maxhealth);
 					SetEntProp(DroneIndex, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -2082,6 +2104,7 @@ static bool StealthDevice(Castellan npc, bool Activate)
 			SetEntPropFloat(particle, Prop_Send, "m_fadeMinDist", 1.0);
 			SetEntPropFloat(particle, Prop_Send, "m_fadeMaxDist", 1.0);
 		}
+		npc.m_bCamo=true;
 		ToggleDevice=true;
 		return false;
 	}
@@ -2182,6 +2205,7 @@ static bool StealthDevice(Castellan npc, bool Activate)
 			}
 			npc.m_flDead_Ringer_Invis_bool=false;
 		}
+		npc.m_bCamo=false;
 		ToggleDevice=false;
 	}
 	return true;

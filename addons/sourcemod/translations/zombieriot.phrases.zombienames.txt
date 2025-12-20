@@ -5431,13 +5431,17 @@
 		"ko"	"군수공장"
 		"it"	"Fabbrica"
 	}
+	"Dummy"
+	{
+		"en"	"Dummy"
+	}
 	"Batter"
 	{
 		"en"	"Leatherboots Batter"
 		"ko"	"가죽부츠 정찰대 타자"
 		"it"	"Pastella per stivali in pelle"
 	}
-	"Charger"
+	"Victoria Charger"
 	{
 		"en"	"Leatherboots Charger"
 		"ko"	"가죽부츠 정찰대 돌격병"
@@ -5648,19 +5652,11 @@
 		"ko"	"트루퍼 박격포병"
 		"it"	"Mortaio Trooper"
 	}
-	"Victorian Mortar Desc"
-    {
-        "en"    "Fearless Ranged unit of Victorian army. -Fires 2 rockets in arc at random position near its target. \n -(When signalled) Rocket explodes twice, second explosion will deal half of the first explosion"
-    }
 	"Victorian Artillerist"
 	{
 		"en"	"Trooper Artillerist"
 		"ko"	"트루퍼 자주포병"
 	}
-	"Victorian Artillerist Desc"
-    {
-        "en"    "Elite ranged unit of Victorian army. -Has infinite attack range. \n -Bombard the target and the area around it with some windup \n(When signalled) Attackspeed hastened massively"
-    }
 	"Bomb Cart"
 	{
 		"en"	"Trooper  Bombcart"
@@ -5743,10 +5739,6 @@
 		"en"	"Brassbunker Assault Vehicle"
 		"ko"	"브라스벙커 돌격 차량"
 	}
-	"Victorian Assault Vehicle Desc"
-    {
-        "en"    "Armored Transport Vehicle of Victorian army. \n-It slowly speeds up to build up momentum and damage. \n-It prioritizes buildings over players /n-Spawn units from other factions when it rams into building \n(When signalled) Spawn units more often"
-    }
 	"Victoria Factory"
 	{
 		"en"	"Victorian Factory"
