@@ -94,6 +94,7 @@ enum struct E_StatusEffect
 	//This is used for function things
 	float DataForUse;
 	int WearableUse;
+	int WearableUse2;
 	int VictimSave;
 	bool MarkedForDeletion;
 
@@ -216,6 +217,7 @@ void InitStatusEffects()
 	StatusEffects_GamemodeMadnessSZF();
 	StatusEffects_Raigeki();
 #endif
+	StatusEffects_Construction2();
 }
 
 static int CategoryPage[MAXPLAYERS];
@@ -6517,4 +6519,63 @@ static void UnstableUmbralRift_End(int victim, StatusEffect Apply_MasterStatusEf
 	Attributes_SetMulti(victim, 610, (1.0 / 0.35));
 	Attributes_SetMulti(victim, 326, (1.0 / 1.75));
 	SDKCall_SetSpeed(victim);
+}
+
+
+
+
+void StatusEffects_Construction2()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Chaos Demon Possession");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "CD");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.35;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 1.15;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	//-0.5
+	data.OnBuffStarted				= ChaosDemonInfultration_StartOnce;
+	data.OnBuffEndOrDeleted			= ChaosDemonInfultration_End;
+	data.AttackspeedBuff			= (1.0 / 1.5);
+	StatusEffect_AddGlobal(data);
+}
+
+static void ChaosDemonInfultration_StartOnce(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	if(IsValidEntity(Apply_StatusEffect.WearableUse2))
+		return;
+
+	CClotBody npc = view_as<CClotBody>(victim);
+
+	float maxhealth = float(ReturnEntityMaxHealth(victim));
+	HealEntityGlobal(victim, victim, maxhealth, 1.0, 0.0, HEAL_SELFHEAL);
+	float flPos[3];
+	float flAng[3];
+	npc.GetAttachment("eyes", flPos, flAng);
+	int ParticleEffect_1 = ParticleEffectAt_Parent(flPos, "unusual_smoking", victim, "eyes", {10.0,0.0,-5.0});
+	int ParticleEffect_2 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", victim, "eyes", {10.0,0.0,-20.0});
+
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect_1);
+	Apply_StatusEffect.WearableUse2 = EntIndexToEntRef(ParticleEffect_2);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+
+static void ChaosDemonInfultration_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+	{
+		RemoveEntity(Apply_StatusEffect.WearableUse);
+	}
+	if(IsValidEntity(Apply_StatusEffect.WearableUse2))
+	{
+		RemoveEntity(Apply_StatusEffect.WearableUse2);
+	}
 }

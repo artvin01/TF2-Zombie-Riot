@@ -3222,7 +3222,7 @@ void DoGlobalMultiScaling()
 		playercount = 2.0;
 	
 	int PlayersIngame = RoundToNearest(ZRStocks_PlayerScalingDynamic(0.0,true, true));
-
+	
 	if(PlayersIngame >= 19.0)
 		EnableSilentMode = true;
 	else
@@ -3242,6 +3242,9 @@ void DoGlobalMultiScaling()
 		//on very low playercounts raids deal less damage anyways, so hp shouldnt go that low.
 		MultiGlobalHighHealthBoss = 0.8;
 	}
+
+	//for raids, we want to reduce their HP even more, as that many attacking 1 target is very unlikely.
+	MultiGlobalHighHealthBoss *= GetScaledPlayerCountMulti(PlayersIngame, 0.3);
 
 	//Enemy bosses AMOUNT
 	float cap = zr_maxsbosscaling_untillhp.FloatValue;
@@ -3272,6 +3275,7 @@ void DoGlobalMultiScaling()
 
 	//certain maps need this, if they are too big and raids have issues etc.
 	MultiGlobalHighHealthBoss *= zr_raidmultihp.FloatValue;
+
 
 	cap = zr_maxscaling_untillhp.FloatValue;
 
@@ -3323,20 +3327,20 @@ void DoGlobalMultiScaling()
 // Controls how quickly the scaling multiplier drops off.
 // Lower values = slower decay, players beyond SCALE_PLAYERCOUNT_CUTOFF contribute much more to scaling, much longer
 // Higher valeus = faster decay, players beyond SCALE_PLAYERCOUNT_CUTOFF contribute much less to scaling, much sooner
-#define SCALE_DROP_RATE             0.04
+#define SCALE_DROP_RATE             0.043
 // Lowest possible multiplier for high player counts.
 // Once scaling settles, each player contributes at least 80% of a player, never lower.
 // This only really matters for very high playercounts even beyond 40, simply a safeguard so it can't go into insanity.
-#define SCALE_MIN_MUTIPLIER         0.8
+#define SCALE_MIN_MUTIPLIER         0.75
 
 // Returns the effective players for scaling
-float GetScaledPlayerCountMulti(int players)
+float GetScaledPlayerCountMulti(int players, float MultiLessen = 1.0)
 {
     if (players <= SCALE_PLAYERCOUNT_CUTOFF)
         return 1.0;
     
     float excess = float(players - SCALE_PLAYERCOUNT_CUTOFF);
-    float multiplier = 1.0 - (1.0 - SCALE_MIN_MUTIPLIER) * (1.0 - Exponential(-SCALE_DROP_RATE * excess));
+    float multiplier = 1.0 - (1.0 - SCALE_MIN_MUTIPLIER) * (1.0 - Exponential(-(SCALE_DROP_RATE * MultiLessen) * excess));
 
     return multiplier;
 }

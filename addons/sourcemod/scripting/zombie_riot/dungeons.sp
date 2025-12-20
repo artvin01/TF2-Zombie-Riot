@@ -406,7 +406,7 @@ void Dungeon_SetupVote(KeyValues kv)
 	MusicList = new ArrayList(sizeof(MusicEnum));
 	RaidList = new ArrayList();
 	LootMap = new StringMap();
-	RoomList = new ArrayList(sizeof(RoomList));
+	RoomList = new ArrayList(sizeof(RoomInfo));
 
 	char buffer1[PLATFORM_MAX_PATH], buffer2[PLATFORM_MAX_PATH];
 	

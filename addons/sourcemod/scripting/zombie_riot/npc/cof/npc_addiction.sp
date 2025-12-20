@@ -394,7 +394,7 @@ public Action Addicition_OnTakeDamage(int victim, int &attacker, int &inflictor,
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			//We died, self stun and give full health.
 			npc.m_flSelfStun = GetGameTime(npc.index) + 0.1;
-			FreezeNpcInTime(victim, 25.0);
+			FreezeNpcInTime(victim, 45.0);
 			EmitCustomToAll(g_PassiveSounds[GetRandomInt(0, sizeof(g_PassiveSounds) - 1)], npc.index);
 			EmitCustomToAll(g_PassiveSounds[GetRandomInt(0, sizeof(g_PassiveSounds) - 1)], npc.index);
 			EmitCustomToAll(g_PassiveSounds[GetRandomInt(0, sizeof(g_PassiveSounds) - 1)], npc.index);
@@ -415,16 +415,15 @@ public Action Addicition_OnTakeDamage(int victim, int &attacker, int &inflictor,
 					f_AttackSpeedNpcIncrease[npcsummon.index] *= 4.0;
 					NpcStats_CopyStats(npc.index, summon);
 					FreezeNpcInTime(npcsummon.index, 2.0);
-					SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/3);
-					SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/3);
-					ApplyStatusEffect(summon, summon, "Dimensional Turbulence", 5.0);
+					SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/4);
+					SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/4);
 					ApplyStatusEffect(npcsummon.index, npcsummon.index, "Unstoppable Force", 2.0);
 				}
 			}
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
 			HealEntityGlobal(npc.index, npc.index, 99999999.9, 1.0, 0.0, HEAL_ABSOLUTE);
-			ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 25.0);
+			ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 45.0);
 			damage = 0.0;
 			return Plugin_Changed;
 
