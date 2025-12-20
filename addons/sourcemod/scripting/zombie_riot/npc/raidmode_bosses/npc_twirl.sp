@@ -1023,9 +1023,9 @@ methodmap Twirl < CClotBody
 			npc.m_iRangedAmmo = 12;
 			switch(GetRandomInt(0, 4))
 			{
-				case 0: Twirl_Lines(npc, "Its time for the final show, {purple}I hope you're all as excited as I am{snow}!");
-				case 1: Twirl_Lines(npc, "Ah, the fun that {aqua}Stella{snow}'s missing out on,{purple} a shame{snow}.");
-				case 2: Twirl_Lines(npc, "I hope you're ready for this final {purple}battle{snow}.");
+				case 0: Twirl_Lines(npc, "마지막 쇼가 준비됐네. {purple}너희도 나처럼 충분히 즐기고 있구나{snow}!");
+				case 1: Twirl_Lines(npc, "{aqua}스텔라{snow}, 네가 정말 잘못 생각한 것 같아. 이 자들은 정말 {purple}대단한{snow} 자들이야.");
+				case 2: Twirl_Lines(npc, "마지막 {purple}전투{snow}란다. 준비는 됐지?");
 				case 3: Twirl_Lines(npc, "Kuru Kuru~");
 				case 4:
 				{
@@ -1194,7 +1194,7 @@ static void ClotThink(int iNPC)
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 						{
 							Items_GiveNamedItem(client, "Twirl's Hairpins");
-							CPrintToChat(client,"{snow}You have been given {purple}%s{snow}'s hairpins...", c_NpcName[npc.index]);
+							CPrintToChat(client,"{snow}당신은 {purple}%s{snow}의 머리핀을 받았습니다...", c_NpcName[npc.index]);
 						}
 					}
 					Twirl_Lines(npc, "그거 소중히 다뤄야해.");
