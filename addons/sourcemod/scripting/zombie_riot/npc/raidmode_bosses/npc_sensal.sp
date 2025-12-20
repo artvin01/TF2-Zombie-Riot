@@ -601,13 +601,11 @@ static void Internal_ClotThink(int iNPC)
 			case 9:
 			{
 				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-10", false);
+				NPCPritToChat_Noname("Castellan_And_Sensal_Talk-11", false);
 				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
-					{
 						Items_GiveNamedItem(client, "Avangard's Processing Core-B");
-						NPCPritToChat_Noname("Castellan_And_Sensal_Talk-11", false);
-					}
 				}
 			}
 			default:
