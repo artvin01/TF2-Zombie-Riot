@@ -160,6 +160,17 @@ public void BombAR_ICE_Inject(int client, int weapon, bool crit, int slot)
 			float time = 5000.0/speed;
 			int Projectile=Wand_Projectile_Spawn(client, speed, time, damage, 8, weapon, "rockettrail_RocketJumper");
 			WandProjectile_ApplyFunctionToEntity(Projectile, VentTouch);
+			if(ExploAR_WeaponPap[client]==2)
+			{
+				SetEntityCollisionGroup(Projectile, COLLISION_GROUP_DEBRIS);
+				DataPack pack;
+				CreateDataTimer(0.1, Timer_ExplodDelay, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+				pack.WriteCell(EntIndexToEntRef(Projectile));
+				pack.WriteCell(EntIndexToEntRef(weapon));
+				pack.WriteCell(GetClientUserId(client));
+				pack.WriteCell(0);
+				pack.WriteFloat(0.0);
+			}
 			Projectile=ApplyCustomModelToWandProjectile(Projectile, "models/props_farm/vent001.mdl", 0.3, "");
 			TeleportEntity(Projectile, NULL_VECTOR, {-90.0, 0.0, 0.0}, NULL_VECTOR);
 			int RColor = 100+RoundFloat((float(ExploAR_OverHit[client])/65.0)*101.0);
@@ -171,6 +182,63 @@ public void BombAR_ICE_Inject(int client, int weapon, bool crit, int slot)
 		}
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 	}
+}
+
+static Action Timer_ExplodDelay(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	int owner = GetClientOfUserId(pack.ReadCell());
+	int state = pack.ReadCell();
+	float delay = pack.ReadFloat();
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		if(!IsValidEntity(owner))
+		{
+			RemoveEntity(entity);
+			return Plugin_Stop;
+		}
+		float EntLoc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", EntLoc);
+		if(delay < GetGameTime())
+		{
+			if(!b_should_explode[entity])
+			{
+				delay = GetGameTime() + 1.0;
+				Explode_Logic_Custom(0.0, owner, owner, weapon, EntLoc, EXPLOSION_RADIUS*0.5, _, _, _, _, _, _, CloseGetNPC);
+			}
+			else
+			{
+				delay = GetGameTime() + 0.25;
+				Explode_Logic_Custom(f_WandDamage[entity]/4.0, owner, owner, weapon, EntLoc, _, Attributes_Get(weapon, 117, 1.0), 0.8, _, 4, _, _, _, IM_ON_FIREEEEE);
+				SpawnSmallExplosion(EntLoc);
+				state++;
+			}
+		}
+		if(state>4)
+		{
+			SetEntityCollisionGroup(entity, COLLISION_GROUP_PLAYER);
+			RemoveEntity(entity);
+			return Plugin_Stop;	
+		}
+		pack.WriteCell(EntIndexToEntRef(entity));
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		pack.WriteCell(GetClientUserId(owner));
+		pack.WriteCell(state);
+		pack.WriteFloat(delay);
+		return Plugin_Continue;
+	}
+	else
+	{
+		return Plugin_Stop;	
+	}
+}
+
+static void CloseGetNPC(int entity, int victim, float damage, int weapon)
+{
+	if(GetTeam(entity) != GetTeam(victim))
+		b_should_explode[entity]=true;
 }
 
 public void BombAR_AirStrike_Beacon(int client, int weapon, bool crit, int slot)
@@ -296,11 +364,11 @@ static Action Timer_Management_ExploAR(Handle timer, DataPack pack)
 static void ExploARWork(int client, int weapon)
 {
 	float GameTime = GetGameTime();
-	static int SaveClip;
+	int SaveClip = GetEntProp(weapon, Prop_Send, "m_nKillComboClass");
 	int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");
 	if(SaveClip>clip)
 	{
-		SaveClip=clip;
+		SetEntProp(weapon, Prop_Send, "m_nKillComboClass", clip);
 	}
 	else if(SaveClip<clip)
 	{
@@ -319,7 +387,7 @@ static void ExploARWork(int client, int weapon)
 		}
 		if(WhoExplode)
 			EmitSoundToAll("weapons/stickybomblauncher_det.wav", client);
-		SaveClip=clip;
+		SetEntProp(weapon, Prop_Send, "m_nKillComboClass", clip);
 	}
 	if(ExploAR_OverHeatDelay[client] < GameTime)
 	{
