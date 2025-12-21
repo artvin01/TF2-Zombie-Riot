@@ -368,7 +368,7 @@ static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float 
 			if(!npc.m_bnew_target)
 			{
 				npc.StartHealing();
-				npc.m_iWearable3 = ConnectWithBeam(npc.m_iWearable2, npc.m_iTarget, 30, 255, 0, 3.0, 3.0, 1.35, LASERBEAM);
+				npc.m_iWearable3 = ConnectWithBeam(npc.m_iWearable2, target, 30, 255, 0, 3.0, 3.0, 1.35, LASERBEAM);
 				npc.Healing = true;
 				npc.m_bnew_target = true;
 			}
