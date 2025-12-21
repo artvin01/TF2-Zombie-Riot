@@ -700,6 +700,14 @@ void NPC_ConfigSetup()
 	Victorian_TacticalProtector_OnMapStart_NPC();
 	TEST_Dummy_OnMapStart_NPC();
 
+//special
+	VictorianFactory_MapStart();
+	VictorianDroneFragments_MapStart();
+	VictorianDroneAnvil_MapStart();
+	Victorian_Tacticalunit_OnMapStart_NPC();
+	Victorian_TacticalProtector_OnMapStart_NPC();
+	TEST_Dummy_OnMapStart_NPC();
+
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();

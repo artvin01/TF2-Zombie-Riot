@@ -115,7 +115,7 @@
 		"nl"	"Bob De Tweede is niet vriendelijk en volgt je! MAAR staat stil."
 		"chi"	"鲍勃二代不是友好的，会跟着你，并且坚守此地！"
 		"it"	"Bob Il Secondo non è amichevole e ti segue! MA rimane fermo."
-		"ko"	"밥 2세는 당신과 친하지 않지만 당신을 따를 것이며, 자리에 머무를 것입니다."
+		"ko"	"밥 2세는 당신과 친하지 않지만 당신을 따를 것이며, 현재 위치에 머무를 것입니다."
 	}
 	"Bob The Second is friendly and follows you! BUT stands still"
 	{
@@ -128,7 +128,7 @@
 		"nl"	"Bob De Tweede is vriendelijk en volgt je! MAAR staat stil."
 		"chi"	"鲍勃二代是友好的，会跟着你，并且坚守此地！"
 		"it"	"Bob Il Secondo non è amichevole e ti segue! MA rimane fermo."
-		"ko"	"밥 2세는 당신과 친하고 당신을 따를 것이며, 자리에 머무를 것입니다."
+		"ko"	"밥 2세는 당신과 친하고 당신을 따를 것이며, 현재 위치에 머무를 것입니다."
 	}
 	"Bob The Second is not friendly and doesn't follow you! BUT stands still"
 	{
@@ -141,7 +141,7 @@
 		"nl"	"Bob De Tweede is niet vriendelijk en volgt je niet! MAAR staat stil."
 		"chi"	"鲍勃二代不是友好的，不会跟着你，但会坚守此地！"
 		"it"	"Bob Il Secondo non è amichevole e non ti segue! MA rimane fermo."
-		"ko"	"밥 2세는 당신과 친하지 않으며 당신을 따라오지 않지만, 자리에 머무를 것입니다."
+		"ko"	"밥 2세는 당신과 친하지 않으며 당신을 따라오지 않지만, 현재 위치에 머무를 것입니다."
 	}
 	"Bob The Second is friendly and doesn't follow you! BUT stands still"
 	{
@@ -154,7 +154,7 @@
 		"nl"	"Bob De Tweede is vriendelijk en volgt je niet! MAAR staat stil."
 		"chi"	"鲍勃二代是友好的，不会跟着你，但会坚守此地！"
 		"it"	"Bob Il Secondo è amichevole e non ti segue! MA rimane fermo."
-		"ko"	"밥 2세는 당신과 친하지만 당신을 따라오지 않고, 자리에 머무를 것입니다."
+		"ko"	"밥 2세는 당신과 친하지만 당신을 따라오지 않고, 현재 위치에 머무를 것입니다."
 	}
 
 
@@ -234,7 +234,7 @@
 		"nl"	"Ik herlaad dicht bij je, heer!"
 		"chi"   "装弹中!"
 		"it"	"Ricarica in corso, signore!"
-		"ko"	"저 지금 재장전 중입니다!"
+		"ko"	"재장전 중입니다!"
 	}
 	"I hope your day is going well!"
 	{
@@ -363,7 +363,7 @@
 		"pt"	"Sentinela Aqui? É melhor esperar o resto dos aliados antes de entrar em combate então ficarei de olho."
 		"nl"	"Schildwacht hier? Het is beter om te wachten tot teamgenoten aanvallen, dus ik kijk wel."
 		"it"	"Sentinella qui? È meglio aspettare che i compagni di squadra entrino in azione, quindi mi guarderò intorno."
-		"ko"	"여기 센트리? 팀원들이 교전할 때까지 기다리는 게 낫겠어, 내가 주변을 살펴볼게."
+		"ko"	"여기에 센트리를요? 팀원들이 교전할 때까지 기다리는 게 나을 것 같습니다."
 	}
 	"I cant build a teleporter, sorry."
 	{

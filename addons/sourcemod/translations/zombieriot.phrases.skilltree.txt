@@ -21,14 +21,14 @@
 		"en"	"\n---This menu overrides your movement! Close to move again!---\n"
 		"es"	"\n---Este menu te impide moverte! Cierralo para moverte!---\n"
 		"it"	"\n---Questo menù annulla i vostri movimenti! Chiudere per muoversi di nuovo!---\n"
-		"ko"	"\n---이 메뉴는 당신의 이동을 방해합니다! 다시 이동하려면 이 메뉴를 닫으세요!---\n"
+		"ko"	"\n---이 메뉴는 당신의 이동을 제한합니다! 다시 이동하려면 이 메뉴를 닫으세요!---\n"
 	}
 	"Browse Skill Tree Explain Full"
 	{
 		"en"	"You move in the skilltree with your movement keys.\nUpgrade skills by jumping.\nYou need to invest into enough skillpoints to unlock new paths.\nYou cannot move during this!"
 		"es"	"Te mueves en el arbol con tus teclas de movimiento.\nMejora tus habilidades saltando.\nNecesitas invertir suficientes puntos para desbloquear nuevos caminos.\nNo puedes moverte durante esto!"
 		"it"	"Ci si muove nell'albero delle abilità con i tasti di movimento.\nAumenta le abilità saltando.\nDevi investire in un numero sufficiente di punti abilità per sbloccare nuovi percorsi.\nNon puoi muoverti durante tutto ciò!"
-		"ko"	"스킬 트리 창에서, 당신의 이동 키로 커서를 움직일 수 있습니다.\n점프시 포인트를 투자합니다.\n스킬 포인트를 투자해야 열리는 길도 있습니다.\n이 메뉴가 열려있을때는 이동할 수 없습니다!"
+		"ko"	"스킬 트리 창에서, 당신의 이동 키로 커서를 움직일 수 있습니다.\n점프시 포인트를 투자합니다.\n충분한 스킬 포인트를 투자해야 열리는 길도 있습니다.\n이 메뉴가 열려있을때는 이동할 수 없습니다!"
 	}
 	"Browse Skill Tree"
 	{
@@ -91,7 +91,7 @@
 		"en" 		"Gain an additional +0.005％ chance to crit an enemy for 2x damage on any damage instance."
 		"es"		"Ganas una chance adicional de +0.005%% para hacer el doble de daño en un enemigo."
 		"it"		"Guadagni una possibilità aggiuntiva di +0,005％ di crittare un nemico per un danno doppio in qualsiasi istanza di danno."
-		"ko" 		"투자할 때마다, +0.005％ 확률로 공격에 치명타가 발생하여 적에게 2x 의 피해를 줍니다."
+		"ko" 		"투자할 때마다, 공격에 치명타가 발생하여 적에게 2배의 피해를 줄 확률이 +0.005％ 추가됩니다."
 	}
 	"Weapon Damage All 1"
 	{
@@ -253,25 +253,25 @@
 	{
 		"en" 		"Fusion Warrior Buff"
 		"it"		"Buff Guerriero Fusion"
-		"ko" 		"퓨전 워리어의 버프"
+		"ko" 		"융합 전사의 버프"
 	}
 	"FusionBuffDo Desc"
 	{
 		"en" 		"Gain a multiplicative +0.25％ Extra Damage and multiplicative +0.5％ Resistance."
 		"it"		"Guadagni un moltiplicativo +0,25％ di Danno extra e un moltiplicativo +0,5％ di Resistenza."
-		"ko" 		"투자할 때마다, 모든 무기의 피해량이 +0.25％ 곱연산으로 증가하고 자신이 받는 모든 피해가 +0.5％ 곱연산으로 감소합니다."
+		"ko" 		"투자 시, 모든 무기의 피해량이 +0.25％ 곱연산으로 증가하고 자신이 받는 모든 피해가 +0.5％ 곱연산으로 감소합니다."
 	}
 	"Kahmlstein Buff"
 	{
 		"en" 		"Kahmlstein Buff"
 		"it"		"Buff di Kahmlstein"
-		"ko" 		"캄르스타인의 버프"
+		"ko" 		"카멜슈타인의 버프"
 	}
 	"Kahmlstein Buff Desc"
 	{
 		"en" 		"Gain a multiplicative +1％ Extra Damage."
 		"it"		"Guadagni un moltiplicativo +1％ di danno extra."
-		"ko" 		"투자할 때마다, 모든 무기의 피해량이 +1％ 증가합니다."
+		"ko" 		"투자 시, 모든 무기의 피해량이 +1％ 곱연산으로 증가합니다."
 	}
 	"Cash Up Barney 1"
 	{
@@ -283,19 +283,19 @@
 	{
 		"en" 		"Gain a +30 extra cash."
 		"it"		"Guadagni +30 in contanti."
-		"ko" 		"투자할 때마다, 초기 시작 자금이 +30 증가합니다."
+		"ko" 		"투자 시, 초기 시작 자금이 +30 증가합니다."
 	}
 	"Sensal Buff Do"
 	{
 		"en" 		"Expidonsan Battery Buff"
 		"it"		"Buff Batteria Expidonsan"
-		"ko" 		"엑스피돈산 배터리 버프"
+		"ko" 		"엑스피돈사제 배터리 버프"
 	}
 	"Sensal Buff Do Desc"
 	{
 		"en" 		"Gain a multiplicative +0.35％ Extra Damage and multiplicative +1.0％ Resistance."
 		"it"		"Guadagni un moltiplicativo +0,35％ di Danno extra e un moltiplicativo +1,0％ di Resistenza."
-		"ko" 		"투자할 때마다, 모든 무기의 피해량이 +0.35％ 곱연산으로 증가하고 받는 모든 피해가 +1.0％ 곱연산으로 감소합니다."
+		"ko" 		"투자 시, 모든 무기의 피해량이 +0.35％ 곱연산으로 증가하고 받는 모든 피해가 +1.0％ 곱연산으로 감소합니다."
 	}
 	"Alaxios Godly Powerup"
 	{
@@ -307,7 +307,7 @@
 	{
 		"en" 		"Gain a multiplicative +1.0％ Resistance and 15 HP."
 		"it"		"Guadagni una resistenza moltiplicativa di +1,0％ e 15 HP."
-		"ko" 		"투자할 때마다, 받는 모든 피해가 +1.0％ 만큼 곱연산으로 감소하고 최대 체력이 15 증가합니다."
+		"ko" 		"투자 시, 받는 모든 피해가 +1.0％ 만큼 곱연산으로 감소하고 최대 체력이 15 증가합니다."
 	}
 	"Bob's Healing Hand"
 	{
@@ -331,7 +331,7 @@
 	{
 		"en" 		"Gain a multiplicative +0.5％ Attackspeed and reload speed bonus."
 		"it"		"Guadagni un bonus moltiplicativo di +0,5％ alla velocità di attacco e di ricarica."
-		"ko" 		"투자할 때마다, 공격 속도와 재장전 속도가 +0.5％ 만큼 곱연산으로 증가합니다."
+		"ko" 		"투자 시, 공격 속도와 재장전 속도가 +0.5％ 만큼 곱연산으로 증가합니다."
 	}
 	"Waldch's Blue Goggles"
 	{
@@ -343,7 +343,7 @@
 	{
 		"en" 		"Gain a multiplicative +1.5％ Reload speed bonus."
 		"it"		"Guadagni un bonus moltiplicativo di +1,5％ alla velocità di ricarica."
-		"ko" 		"투자할 때마다, 재장전 속도가 +1.5％ 만큼 곱연산으로 증가합니다."
+		"ko" 		"투자 시, 재장전 속도가 +1.5％ 만큼 곱연산으로 증가합니다."
 	}
 	"Iberia's Last Hope Up"
 	{
@@ -355,31 +355,31 @@
 	{
 		"en" 		"Gain a multiplicative +1.0％ Attackspeed speed bonus."
 		"it"		"Guadagni un bonus moltiplicativo di +1,0％ alla velocità di attacco."
-		"ko" 		"투자할 때마다, 공격 속도가 +1.0％ 만큼 곱연산으로 증가합니다."
+		"ko" 		"투자 시, 공격 속도가 +1.0％ 만큼 곱연산으로 증가합니다."
 	}
 	"Calmaticus Heart Up"
 	{
 		"en" 		"Calmaticus Heart Up"
 		"it"		"Cuore Calmatico Aumentato"
-		"ko" 		"칼마티커스 심장 강화"
+		"ko" 		"칼마티커스의 심장 강화"
 	}
 	"Calmaticus Heart Up Desc"
 	{
 		"en" 		"Gain an extra 0.25 Hp regen a second."
 		"it"		"Guadagni una rigenerazione extra di 0,25 cavalli al secondo."
-		"ko" 		"투자할 때마다, 초당 체력을 0.25 만큼 회복합니다."
+		"ko" 		"투자 시, 초당 체력을 0.25 만큼 회복합니다."
 	}
 	"Xeno Vial Up"
 	{
 		"en" 		"Xeno Vial Up"
 		"it"		"Fiala Xeno Aumentata"
-		"ko" 		"제노 재생량 강화"
+		"ko" 		"제노 바이알 강화"
 	}
 	"Xeno Vial Up Desc"
 	{
 		"en" 		"Gain an extra 0.25 Hp regen a second."
 		"it"		"Guadagni una rigenerazione extra di 0,25 cavalli al secondo."
-		"ko" 		"투자할 때마다, 초당 체력을 0.25 만큼 회복합니다."
+		"ko" 		"투자 시, 초당 체력을 0.25 만큼 회복합니다."
 	}
 	"Building Hp Up 1"
 	{
@@ -427,7 +427,7 @@
 	{
 		"en" 		"Gain 0.5％ Extra mana Regen"
 		"it"		"Guadagni 0,5％ Rigenerazione di mana extra"
-		"ko" 		"투자할 때마다, 초당 마나 회복량이 0.5％ 만큼 증가합니다."
+		"ko" 		"투자 시, 초당 마나 회복량이 0.5％ 만큼 증가합니다."
 	}
 	"Iberia Training"
 	{
@@ -439,7 +439,7 @@
 	{
 		"en" 		"Gain a multiplicative +1％ Attackspeed and reload speed bonus."
 		"it"		"Guadagni un bonus moltiplicativo di +1％ alla velocità di attacco e di ricarica."
-		"ko" 		"투자할 때마다, 공격 속도와 재장전 속도가 +1％ 만큼 곱연산으로 증가합니다."
+		"ko" 		"투자 시, 공격 속도와 재장전 속도가 +1％ 만큼 곱연산으로 증가합니다."
 	}
 	"Extra Healing Up"
 	{
@@ -523,6 +523,6 @@
 	{
 		"en"	"Gain 1 extra australium ingot in the roguelike, only he highest skill of a player on the server counts."
 		"it"	"Guadagni 1 lingotto di australium in più nel roguelike, conta solo l'abilità più alta di un giocatore sul server."
-		"ko"	"투자할 때마다, 로그라이크 모드에서 오스트레일륨 주괴 1 개를 추가로 얻습니다. 서버에서 플레이어의 가장 높은 스킬만이 인정됩니다."
+		"ko"	"투자할 때마다, 로그라이크 모드에서 오스트레일륨 주괴 1 개를 추가로 얻습니다. 서버에서 가장 높은 수치를 가진 플레이어만이 인정됩니다."
 	}
 }
