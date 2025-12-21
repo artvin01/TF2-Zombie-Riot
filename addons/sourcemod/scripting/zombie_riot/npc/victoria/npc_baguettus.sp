@@ -750,12 +750,12 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 			ReAnim=true;
 		}
 		BaguettusIntoAir(npc, ReAnim);
-		CaptinoBaguettusBackup(npc, GameTime, flDistanceToTarget); 
+		CaptinoBaguettusBackup(npc, GameTime, flDistanceToTarget);
+		npc.m_flNextSpeechTalk = GameTime + 10.0;
 	}
 	else
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		if(!IsValidEnemy(npc.index, npc.m_iTarget)&&IsValidAlly(npc.index, npc.m_iTargetAlly))
+		if(IsValidAlly(npc.index, npc.m_iTargetAlly))
 		{
 			if(!Can_I_See_Ally(npc.index, npc.m_iTargetAlly))
 				npc.m_flGetClosestTargetAllyTime -= 0.076;
@@ -815,10 +815,10 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 				}
 			}
 			npc.SpeechTalk(npc.m_iTargetAlly);
-			npc.m_flGetClosestTargetTime = 0.0;
 		}
 		else
 			npc.m_flGetClosestTargetAllyTime = 0.0;
+		npc.m_flGetClosestTargetTime = 0.0;
 		npc.PlayIdleAlertSound();
 	}
 }
