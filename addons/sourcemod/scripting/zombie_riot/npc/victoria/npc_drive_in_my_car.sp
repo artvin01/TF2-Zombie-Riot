@@ -149,7 +149,7 @@ methodmap VictorianAssaultVehicle < CClotBody
 		f_NpcTurnPenalty[npc.index] = 0.6;
 		npc.m_flSpawnTime = GetGameTime();
 		
-		npc.m_flMeleeArmor = 2.25;
+		npc.m_flMeleeArmor = 1.50;
 		npc.m_flRangedArmor = 1.0;
 		npc.m_bDissapearOnDeath = true;
 		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
