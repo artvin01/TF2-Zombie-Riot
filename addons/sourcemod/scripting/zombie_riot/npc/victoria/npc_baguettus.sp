@@ -110,71 +110,73 @@ methodmap CaptinoBaguettus < CClotBody
 		if(GetEntityFlags(client) & FL_FROZEN)
 			return;
 
-		switch(GetURandomInt() % 11)
+		switch(GetURandomInt() % 12)
 		{
 			case 0:
 			{
-				this.Speech("I crushed countless cities, evaporated entire armies, set whole seas ablaze.");
-				this.SpeechDelay(5.0, "But I couldn't defeat a couple of mercs, crazy.");
-				this.SpeechDelay(10.0, "Atleast that got me freed from the influence of this thing somehow, thanks.");
+				this.Speech("I wonder why he hasnt send more then just me");
+				this.SpeechDelay(5.0, "some plans going on?");
 			}
 			case 1:
 			{
-				this.Speech("I always dreamt about being a leader, just not in a way like this", "...");
+				this.Speech("You guys really should setup your own base at some point.");
+				this.SpeechDelay(5.0, "Your work is incredible and helps people all around.");
 			}
 			case 2:
 			{
-				this.Speech("Have you ever heard of Hitman? It's pretty rad series, you should play it.");
-				this.SpeechDelay(5.0, "OR ELSE", "...");
+				this.Speech("Involvement isnt really our thing, but chaos and void have been really bad lately.");
+				this.SpeechDelay(5.0, "So we decided to interviene now.");
 			}
 			case 3:
 			{
-				this.Speech("Some time ago I had a dream about being this powerful galactic being.");
-				this.SpeechDelay(5.0, "And I fought very powerful people in it too, me versus all of them at once.");
-				this.SpeechDelay(10.0, "In the end everyone lost because of the time limit ", "-_-");
-				this.SpeechDelay(15.0, "Woke up soon after, what a weird dream that was.");
+				this.Speech("Soon the time will come for everyone to not do random wars.");
+				this.SpeechDelay(5.0, "But that time isnt now from the looks of it.");
 			}
 			case 4:
 			{
-				this.Speech("Chaos makes you crazy, but the Void takes you in and traps you forever.");
-				this.SpeechDelay(5.0, "You find yourself in nothing but total darkness, unable to escape.");
-				this.SpeechDelay(10.0, "I need to put a stop to it and fix my mistakes.");
+				this.Speech("Sensal is the most kind and high ranking expidonsan youll see.");
+				this.SpeechDelay(5.0, "The rest are, as you would say, incredibly racist at those ranks, for maybe even good reasons.");
 			}
 			case 5:
 			{
-				this.Speech("I do really hate goverments, they use up people for their own comfort and gains.");
-				this.SpeechDelay(5.0, "I might be sane now, but if I could I would still love to crush them all.");
-				this.SpeechDelay(10.0, "This time without the unnecessary casualties.");
-				this.SpeechDelay(15.0, "But there are more important matters at hand now.");
+				this.Speech("im sure at this point you have enough favor to even enter expidonan cities.");
+				this.SpeechDelay(5.0, "Thats unheard off, and only two others managed to achive this so far.");
 			}
 			case 6:
 			{
-				this.Speech("After my fuck ups Ziberia ain't the same anymore...");
-				this.SpeechDelay(5.0, "I wish I could go back in time... To the old days", "...");
+				this.Speech("Expidonsa isnt just our city or country, its varous ones all around.");
+				this.SpeechDelay(5.0, "We dont do much contact with eachother because we just often dont agree on things.");
+				this.SpeechDelay(10.0, "so instead of conflicts, we just live with an oath we made, to help when the planet is in danger.");
 			}
 			case 7:
 			{
-				this.Speech("After I regained my sanity, I keep having these awful nightmares at night.");
-				this.SpeechDelay(5.0, "I see thousands of people being burned alive to crisps.");
-				this.SpeechDelay(10.0, "Their screams of pain are awful, they are literally crying for it to stop.");
-				this.SpeechDelay(15.0, "And the one that set them on fire... is me.");
-				this.SpeechDelay(20.0, "I completely stopped sleeping like a week ago now.");
-				this.SpeechDelay(25.0, "...");
+				this.Speech("Expidonsa is more like an underground Agent center");
+				this.SpeechDelay(5.0, "we take out alien threads and bad guys without most knowing.");
+				this.SpeechDelay(10.0, "Why? History would tell you, but im not authorized to tell.");
 			}
 			case 8:
 			{
-				this.Speech("That furry friend of yours who left, he was from Wildingen right?");
-				this.SpeechDelay(5.0, "I bet he hates me huh? Yeah, in his place I would do the same.");
+				this.Speech("Bob is one of the only few people that align their interrests with expidonsa's");
+				this.SpeechDelay(5.0, "Intentionally or not, hes extremaly helpfull, we like to lend him a hand or two without him knowing.");
+				this.SpeechDelay(10.0, "like the time he put away bladedance, we gave him a little extra energy so it would work.");
 			}
 			case 9:
 			{
-				this.Speech("If you feel uneasy, I can give you a hug. This atmosphere is kinda tense.");
-				this.SpeechDelay(5.0, "Just keep it a secret from my people, they'd think I got soft.");
+				this.Speech("kahmlstein was on the verge of being as intelligent as an average expidonsan.");
+				this.SpeechDelay(5.0, "its scary to think about what one would do without our morale code.");
 			}
 			case 10:
 			{
-				this.Speech("Why im wearing red? oh that", "...");
-				this.SpeechDelay(5.0, "You all wear red, don't want you to confuse me with the enemy.");
+				this.Speech("The time we attacked eachother? that wasnt fake, you did kill some of us.");
+				this.SpeechDelay(5.0, "But so did we kill some of yours, some will want revenge on you, thats for sure.");
+				this.SpeechDelay(10.0, "We see this as a missfire, its moreso that its not worth it to continune when instead we can help eachother.");
+			}
+			case 11:
+			{
+				this.Speech("The hiarchy of expidonsa is mostly willing, most dont want all that work.");
+				this.SpeechDelay(5.0, "some do like sensal and so on.");
+				this.SpeechDelay(10.0, "they are greatly appreciated for it.");
+
 			}
 		}
 		
