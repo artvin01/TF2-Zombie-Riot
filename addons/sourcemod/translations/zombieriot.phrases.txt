@@ -5669,4 +5669,12 @@
 		"en"	"Your Weapon is not charged enough. {1}"
 		"ko"	"당신의 무기가 충분히 충전되지 않았습니다. {1}"
 	}
+	"Simon Wants To Escape"
+	{
+		"en"	"Dont let simon escape by killing someone, or else he will gain more damage next time..."
+	}
+	"Simon Escaped"
+	{
+		"en"	"Simon escaped and gained extra power..."
+	}
 }

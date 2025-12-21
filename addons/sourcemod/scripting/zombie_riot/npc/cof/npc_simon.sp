@@ -96,6 +96,11 @@ methodmap Simon < CClotBody
 		
 		i_NpcWeight[npc.index] = 3;
 		
+		if(StrContains(data, "firstspawn") != -1)
+		{
+			fl_Damage_Boost = 1.0;
+		}
+
 		int body = EntRefToEntIndex(SimonRagdollRef);
 		if(body > MaxClients)
 			RemoveEntity(body);
@@ -117,10 +122,10 @@ methodmap Simon < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
-			RaidModeScaling = 0.0;
+			RaidModeScaling = fl_Damage_Boost;
 			RaidAllowsBuildings = true;
+			CPrintToChatAll("{crimson}%t","Simon Wants To Escape");
 		}
-		
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
 
@@ -523,6 +528,8 @@ public void Simon_ClotThink(int iNPC)
 					npc.m_fCreditsOnKill = 0.0;
 					SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9);
 					fl_Damage_Boost += 0.50;
+					ExcuteRelay("zr_simonescaped");
+					CPrintToChatAll("{crimson}%t","Simon Escaped");
 					return;
 				}
 				
@@ -545,6 +552,7 @@ public void Simon_ClotThink(int iNPC)
 					SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9);
 					fl_Damage_Boost += 0.50;
 					ExcuteRelay("zr_simonescaped");
+					CPrintToChatAll("{crimson}%t","Simon Escaped");
 					return;
 				}
 				
