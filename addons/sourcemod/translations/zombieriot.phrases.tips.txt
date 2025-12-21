@@ -10,31 +10,31 @@
 	{
 		"en"	"You can cure yourself of Elemental Damage with armor gain!"
 		"it"	"Puoi curarti dal Danno Elementale con l'aumento dell'armatura!"
-		"ko"	"아머를 획득하면 당신에게 쌓인 원소 피해를 치유할 수 있습니다!"
+		"ko"	"아머를 획득하면 당신에게 누적된 원소 피해를 치유할 수 있습니다!"
 	}
 	"Setup Chat Tip 3"
 	{
 		"en"	"When getting armor, use Stockpile Stout tempomarily to gain overarmor, then switch back for free Extra armor!"
 		"it"	"Quando ottieni un'armatura, usa temporaneamente Scorta di Birra scura per ottenere un'armatura superiore, poi torna indietro per ottenere un'armatura extra gratuita!"
-		"ko"	"아머를 획득할때, 비축 흑맥주 퍽을 획득해 추가 아머를 얻은뒤, 다른 퍽을 선택하면 초과 아머는 사라지지 않습니다!"
+		"ko"	"아머를 획득할때, 비축 흑맥주 퍽을 획득해 추가 아머를 얻은뒤, 다른 퍽을 선택하면 초과 아머를 보유할 수 있습니다!"
 	}
 	"Setup Chat Tip 4"
 	{
 		"en"	"If you have the money to spare, remember to purchase Extra Gear to give a boost to yourself or your team."
 		"it"	"Se avete soldi da spendere, ricordatevi di acquistare l'equipaggiamento extra per dare una spinta a voi stessi o alla vostra squadra."
-		"ko"	"자금에 여유가 생긴다면, 추가 장비들을 구매하여 당신과 당신의 팀원을 지원하세요."
+		"ko"	"자금에 여유가 있다면, 추가 장비들을 구매하여 당신과 당신의 팀원을 지원하세요."
 	}
 	"Setup Chat Tip 5"
 	{
 		"en"	"Touching most enemies will make them focus on attacking you!"
 		"it"	"Toccando la maggior parte dei nemici, questi si concentreranno sull'attacco a voi!"
-		"ko"	"대부분의 적은 접촉시 당신에게 공격을 집중시키게 할 수 있습니다!"
+		"ko"	"대부분의 적은 접촉 시 당신에게 공격을 집중시키게 할 수 있습니다!"
 	}
 	"Setup Chat Tip 6"
 	{
 		"en"	"You deal significantly less damage while downed. Prioritize getting to safety over fighting."
 		"it"	"Quando si è a terra si infligge una quantità di danni nettamente inferiore. Date la priorità al raggiungimento della salvezza piuttosto che al combattimento."
-		"ko"	"다운 상태라면 공격의 피해량이 조금 감소합니다. 전투에서는 항상 안전이 최우선입니다."
+		"ko"	"다운 상태라면 공격의 피해량이 크게 감소합니다. 전투에서는 항상 안전이 최우선입니다."
 	}
 	"Setup Chat Tip 7"
 	{
@@ -46,13 +46,13 @@
 	{
 		"en"	"You gain money and ammosupplies from allies using your buildings, build atleast one!"
 		"it"	"Ottenete denaro e rifornimenti di munizioni dagli alleati che utilizzano i vostri edifici, costruitene almeno uno!"
-		"ko"	"당신이 설치한 구조물을 팀원이 사용할 때마다, 당신은 자금을 얻습니다! 최소한 하나의 구조물을 설치하세요!"
+		"ko"	"당신이 설치한 구조물을 팀원이 사용할 때마다 자금을 얻습니다! 최소한 하나의 구조물을 설치해보세요!"
 	}
 	"Setup Chat Tip 9"
 	{
 		"en"	"You unlock and can equip Level Perks as you level up, which offer changes to suit your playstyle, take a look and experiment!"
 		"it"	"Man mano che si sale di livello si sbloccano e si possono equipaggiare i Perk di livello, che offrono modifiche per adattarsi al proprio stile di gioco, date un'occhiata e sperimentate!"
-		"ko"	"레벨업을 할 때마다 추가적인 레벨 퍽이 해금됩니다. 그 퍽들은 당신의 플레이스타일을 결정할 수 있습니다! 한 번 둘러보세요!"
+		"ko"	"레벨업을 할 때마다 추가적인 레벨 퍽이 해금되며, 플레이스타일에 변화를 줄 수 있습니다! 한 번 둘러보세요!"
 	}
 	"Setup Chat Tip 10"
 	{
@@ -64,37 +64,37 @@
 	{
 		"en"	"Enchance are usually more worth it then upgrades!"
 		"it"	"Di solito le fotocopie valgono di più degli aggiornamenti!"
-		"ko"	"무기 강화는 무기 개선을 구매하는 것보다 더욱 가치있습니다!"
+		"ko"	"보통 무기 강화가 무기 개선을 구매하는 것보다 더욱 가치있습니다!"
 	}
 	"Setup Chat Tip 12"
 	{
 		"en"	"Sales might be good but if the situation requires for it, buy upgrades now!"
 		"it"	"Le vendite potrebbero essere buone, ma se la situazione lo richiede, acquistate subito gli aggiornamenti!"
-		"ko"	"세일은 좋은 법이죠. 하지만 상황에 따라 필요하다면, 개선을 구매하세요!"
+		"ko"	"세일은 좋은 법이죠. 하지만 상황에 따라 필요하다면, 바로 개선을 구매하세요!"
 	}
 	"Setup Chat Tip 13"
 	{
 		"en"	"You can talk to the rebel to asign them roles for if your team doesnt want to play them!"
 		"it"	"Puoi parlare con il ribelle per assegnargli dei ruoli se la tua squadra non vuole giocarci!"
-		"ko"	"반시민과 대화를 하면 역할을 할당시킬 수 있습니다!"
+		"ko"	"반시민군과 대화를 하면 역할을 할당시킬 수 있습니다!"
 	}
 	"Setup Chat Tip 14"
 	{
 		"en"	"As a melee your damage is not as valueable as the distraction of enemies aggro!"
 		"it"	"Come corpo a corpo, il tuo danno non ha lo stesso valore della distrazione dell'aggro dei nemici!"
-		"ko"	"근접 무기 사용자라면, 적의 어그로 분산에 집중하세요. 공격에만 집중하는 것은 당신의 가치를 하락시킵니다!"
+		"ko"	"근접 무기 사용자라면, 공격보다는 적의 어그로 분산에 집중하는 것이 더욱 가치있습니다!"
 	}
 	"Setup Chat Tip 15"
 	{
 		"en"	"Multiclassing isnt ideal unless youre sure on what youre doing!"
 		"it"	"Il multiclassamento non è l'ideale se non si è sicuri di quello che si sta facendo!"
-		"ko"	"당신이 뭘 하고 있는지 확신하고 있는게 아니라면, 여러 종류의 무기를 사용하는 것은 좋지 않습니다!"
+		"ko"	"당신이 뭘 하고 있는지 잘 알고 있는게 아니라면, 다수의 무기를 사용하는 것은 좋지 않습니다!"
 	}
 	"Setup Chat Tip 16"
 	{
 		"en"	"All bullet shooting guns can headshot, dealing extra damage, be rewarded for your accuracy!"
 		"it"	"Tutte le pistole spara-proiettili possono sparare alla testa, infliggendo un danno extra, e la tua precisione sarà premiata!"
-		"ko"	"탄환을 발사하는 모든 총은 헤드샷이 가능하여, 추가 피해를 줄 수 있습니다. 에임이 정확할 수록 더 많은 피해를 줄 수 있죠!"
+		"ko"	"탄환을 발사하는 모든 총기는 헤드샷이 가능하여, 추가 피해를 줄 수 있습니다. 조준이 정확할 수록 더 많은 피해를 줄 수 있죠!"
 	}
 	"Setup Chat Tip 17"
 	{
@@ -160,19 +160,19 @@
 	{
 		"en"	"While you have Elemental Damage, your Armor will change from a number into a meter filling up!"
 		"it"	"Quando si ha un danno elementare, l'armatura si trasforma da un numero in un contatore che si riempie!"
-		"ko"	"원소 피해를 보유하게 되면, 아머 수치는 대신 원소 피해 게이지 보유량으로 표기됩니다!"
+		"ko"	"원소 피해를 보유하게 되면, 아머 수치는 대신 원소 피해 누적량으로 표기됩니다!"
 	}
 	"Setup Chat Tip 28"
 	{
 		"en"	"Certain enemies and mechanics can summon Creep with adverse effects on the ground. Watch where you step!"
 		"it"	"Alcuni nemici e meccaniche possono evocare Creep con effetti negativi sul terreno. Attenti a dove mettete i piedi!"
-		"ko"	"특정 적과 시스템이 지면에 불이익을 끼치는 장판을 생성할 수 있습니다. 조심하세요!"
+		"ko"	"특정 적과 기믹은 지면에 불이익을 끼치는 장판을 생성할 수 있습니다. 조심하세요!"
 	}
 	"Setup Chat Tip 29"
 	{
 		"en"	"Even as a Teutonic Knight you can deal small but consistent damage to enemies. Keep up the fight!"
 		"it"	"Anche come Cavaliere Teutonico potete infliggere danni piccoli ma consistenti ai nemici. Continuate a combattere!"
-		"ko"	"튜턴 기사단이 되더라도, 적지만 지속적으로 적에게 피해를 줄 수 있습니다. 계속 싸워주세요!"
+		"ko"	"튜튼 기사단이 되더라도, 적지만 지속적으로 적에게 피해를 줄 수 있습니다. 계속 싸워주세요!"
 	}
 	"Setup Chat Tip 30"
 	{

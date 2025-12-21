@@ -22,7 +22,7 @@
 		"nl"		"Korrels"
 		"chi"       	"弹药"
 		"it"		"Pellet"
-		"ko"		"탄환 수"
+		"ko"		"산탄 수"
 	}
 	"firerate"
 	{
@@ -274,7 +274,7 @@
 		"nl"		"Granaatwerper"
 		"chi"		"榴弹发射器"
 		"it"		"Lanciagranate"
-		"ko" 		"유탄발사기"
+		"ko" 		"유탄 발사기"
 	}
 	"Tommygun"
 	{
@@ -303,12 +303,12 @@
 	"The Trash Cannon"
 	{
 		"en"		"The Trash Cannon"
-		"ko"		"폐기물 포"
+		"ko"		"쓰레기 대포"
 	}
 	"Outlaw's Railcannon"
 	{
 		"en"		"Outlaw's Railcannon"
-		"ko"		"아웃로의 레일캐논"
+		"ko"		"무법자의 레일캐논"
 	}
 	"The Pompson 7000"
 	{
@@ -428,7 +428,7 @@
 		"nl"		"Razende Automatisch geweer"
 		"chi"       	"暴走机枪"
 		"it"		"Fucile automatico Rampager"
-		"ko" 		"광분자의 자동소총"
+		"ko" 		"램페이저 자동소총"
 	}
 	"Loose Cannon"
 	{
@@ -510,7 +510,7 @@
 		"nl"		"Geinfecteerde Razende Aanvalsgeweer"
 		"chi"		"血怒步枪"
 		"it"		"Fucile d'assalto Rampager infetto"
-		"ko" 		"감염된 광분자의 돌격소총"
+		"ko" 		"감염된 램페이저 돌격소총"
 	}
 	"Star Shooter"
 	{
@@ -583,7 +583,7 @@
 	"Casino - Flushed Away"
 	{
 		"en"		"Casino - Flushed Away"
-		"ko"		"카지노 - Flushed Away"
+		"ko"		"카지노 - 플러시드 어웨이"
 	}
 	"Casino - Straight Flush"
 	{
@@ -628,12 +628,12 @@
 	"The Manic Marksman"
 	{
 		"en"		"The Manic Marksman"
-		"ko"		"집중 명사수"
+		"ko"		"열광적인 명사수"
 	}
 	"Barricader's SMG"
 	{
 		"en"		"Barricader's SMG"
-		"ko"		"바리케이드 관리자의 기관단총"
+		"ko"		"바리케이드 건설자의 기관단총"
 	}
 	"Camper's Shotgun"
 	{
@@ -938,7 +938,7 @@
 		"nl"		"Zware Deagle"
 		"chi"       	"重型沙漠之鹰"
 		"it"		"Desert Eagle pesante"
-		"ko"		"중량 데저트 이글"
+		"ko"		"중형 데저트 이글"
 	}
 	"Infected Assult Rifle"
 	{
@@ -974,7 +974,7 @@
 		"nl"		"PhlogStorms onsteker"
 		"chi"       	"Phlogstorm信号枪"
 		"it"		"Detonatore PhlogStorms"
-		"ko"		"플로지스톤 기폭 장치"
+		"ko"		"플로지스톰 기폭 장치"
 	}
 	"Melee Weapons"//Melee Here
 	{
@@ -1104,7 +1104,7 @@
 	"Backstabbers Favorit"
 	{
 		"en"		"Backstabbers Favorit"
-		"ko"		"백스탭 사랑꾼"
+		"ko"		"백스탭꾼의 애용품"
 	}
 	"x10 Spy Main's Personal ''Knife''"
 	{
@@ -1124,7 +1124,7 @@
 	"Angelica Shotgonnus"
 	{
 		"en"		"Angelica Shotgonnus"
-		"ko"		"안젤리카 샷건"
+		"ko"		"안젤리카 샷거누스"
 	}
 	"Vampire Knives"
 	{
@@ -1201,7 +1201,7 @@
 		"nl"		"Vuisten van Kahmlstein"
 		"chi"       	"卡姆拳套"
 		"it"		"Pugni di Kahmlstein"
-		"ko"		"카멜스타인의 주먹"
+		"ko"		"카멜슈타인의 주먹"
 	}
 	"Infinity Blade"
 	{
@@ -1213,7 +1213,7 @@
 		"nl"		"Oneindigheidszwaard"
 		"chi"       	"无尽之剑"
 		"it"		"Lama dell'Infinito"
-		"ko"		"무한의 검"
+		"ko"		"인피니티 블레이드"
 	}
 	"Mage Weapons"//Mage here
 	{
@@ -1250,7 +1250,7 @@
 		"nl"		"Vuurstok"
 		"chi"       	"火焰神杖"
 		"it"		"Bacchetta di fuoco"
-		"ko"		"불의 완드"
+		"ko"		"화염 완드"
 	}
 	"Lightning Staff"
 	{
@@ -1330,7 +1330,7 @@
 		"ru"		"Декоративный объект"
 		"fr"		"Objet Décoratif"
 		"it"		"Oggetto decorativo"
-		"ko"		"장식품"
+		"ko"		"장식물"
 	}
 	"Barricade"
 	{
@@ -1768,7 +1768,7 @@
 	"Compacted Rounds"
 	{
 		"en"		"Compacted Rounds"
-		"ko"		"압축된 탄약"
+		"ko"		"압축형 탄약"
 	}
 	"Antidote Coated Bullets"
 	{
@@ -1797,7 +1797,7 @@
 	"Expidonsan's Black hole Storage Unit"
 	{
 		"en"		"Expidonsan's Black hole Storage Unit"
-		"ko"		"엑스피돈산의 블랙홀 저장장치"
+		"ko"		"엑스피돈사의 블랙홀 저장 장치"
 	}
 	"Mage Upgrades"//Mage Upgrades HERE!!!
 	{
@@ -2026,7 +2026,7 @@
 	"Support Upgrades"
 	{
 		"en"		"Support Upgrades"
-		"ko"		"지원 무기 개선"
+		"ko"		"지원 개선"
 	}
 	"Doctor Certificate"
 	{
@@ -2095,6 +2095,11 @@
 	{
 		"en"		"Misc Items"
 		"ko"		"기타 아이템"
+	}
+	"Enhance Active Weapon"
+	{
+		"en"		"Enhance Active Weapon"
+		"ko"		"현재 들고있는 무기 강화"
 	}
 	"Level Perks"//Lvl Perks here
 	{
@@ -2301,7 +2306,7 @@
 	"Concentrated Agelitus"
 	{
 		"en"		"Concentrated Agelitus"
-		"ko"		"농축된 어질리투스"
+		"ko"		"집중된 어질리투스"
 	}
 	"Passive Perks"
 	{
@@ -2422,12 +2427,12 @@
 	"Peashooter Singularity"
 	{
 		"en"		"Peashooter Singularity"
-		"ko"		"특이점 장전 피슈터"
+		"ko"		"특이점 피슈터"
 	}
 	"Peashooter Singularity Singularity"
 	{
 		"en"		"Peashooter Singularity Singularity"
-		"ko"		"특이점 강화 피슈터"
+		"ko"		"강화형 특이점 피슈터"
 	}
 	"Rusty Wrench"
 	{
@@ -2478,12 +2483,12 @@
 	"Cured Silvester"
 	{
 		"en"		"Cured Silvester"
-		"ko"		"감염이 치유된 실베스터"
+		"ko"		"치료된 실베스터"
 	}
 	"Head Equipped Blue Goggles"
 	{
 		"en"		"Head Equipped Blue Goggles"
-		"ko"		"머리에 장착하는 파란 고글"
+		"ko"		"머리 장착형 파란 고글"
 	}
 	"Calmaticus' Heart Piece"
 	{
@@ -2513,12 +2518,12 @@
 	"Kahml's Contained Chaos"
 	{
 		"en"		"Kahml's Contained Chaos"
-		"ko"		"격리된 캄르스타인의 혼돈"
+		"ko"		"격리된 카멜슈타인의 혼돈"
 	}
 	"Xeno Virus Vial"
 	{
 		"en"		"Xeno Virus Vial"
-		"ko"		"제노 바이러스 항생제"
+		"ko"		"제노 바이러스 바이알"
 	}
 	"Chaos Machina Waldch Chip"
 	{
@@ -2533,7 +2538,7 @@
 	"Kahmlsteins Last Will"
 	{
 		"en"		"Kahmlsteins Last Will"
-		"ko"		"캄르스타인의 유언장"
+		"ko"		"카멜슈타인의 마지막 의지"
 	}
 	"Matrix's Curse"
 	{
@@ -2558,7 +2563,7 @@
 	"Waldch's Expidonsan Sword"
 	{
 		"en"		"Waldch's Expidonsan Sword"
-		"ko"		"왈츠의 엑스피돈사 검"
+		"ko"		"왈츠의 엑스피돈사제 검"
 	}
 	"Expidonsan Battery Device"
 	{
@@ -2573,7 +2578,7 @@
 	"Foreign Expidonsan Chip"
 	{
 		"en"		"Foreign Expidonsan Chip"
-		"ko"		"외국풍 엑스피돈사 칩"
+		"ko"		"이국적인 엑스피돈사 칩"
 	}
 	"Reila's Scorn Keycard"
 	{
@@ -2593,7 +2598,7 @@
 	"Avangard's Processing Core-B"
 	{
 		"en"		"Avangard's Processing Core-B"
-		"ko"		"아방가르드의 프로세싱 코어-B"
+		"ko"		"아방가르드의 처리 코어-B"
 	}
 	"Iberian and Expidonsan Training"
 	{
@@ -2603,7 +2608,7 @@
 	"Expidonsan Research Card"
 	{
 		"en"		"Expidonsan Research Card"
-		"ko"		"엑스피돈산 연구 카드"
+		"ko"		"엑스피돈사 연구 카드"
 	}
 	"Whiteflower's Elite Grenade"
 	{
@@ -2757,7 +2762,7 @@
 		"nl"		"Apen Kennis"
 		"chi"       	"特殊技能"
 		"it"		"Conoscenza della scimmia"
-		"ko"		"원숭이 지식"
+		"ko"		"원숭이의 지식"
 	}
 	"Fast Tack Attacks [Rare]"
 	{
@@ -2793,7 +2798,7 @@
 		"nl"		"Grote Cryo Opblazer [Ongewoon]"
 		"chi"		"冰冻爆炸 [稀有]"
 		"it"		"Grande Esplosione Crio [Non comune]"
-		"ko"		"거대 냉동 공격 [특별]"
+		"ko"		"거대 냉기 폭발 [특별]"
 	}
 	"Long Turbo [Uncommon]"
 	{
@@ -2877,7 +2882,7 @@
 		"nl"		"Viersuitbarsting [Legendarisch]"
 		"chi"		"四倍爆发[传奇]"
 		"it"		"Quad Burst [Leggendario]"
-		"ko"		"4중 폭발 [전설]"
+		"ko"		"4중 연사 [전설]"
 	}
 	"Gun Coolant [Rare]"
 	{
@@ -2889,7 +2894,7 @@
 		"nl"		"Pistool koelvloeistof [Zeldzaam]"
 		"chi"		"冷却剂[稀有]"
 		"it"		"Refrigerante per pistole [Raro]"
-		"ko"		"총 냉각수 [희귀]"
+		"ko"		"총기 냉각수 [희귀]"
 	}
 	"Flanking Maneuvers [Rare]"
 	{
@@ -2925,7 +2930,7 @@
 		"nl"		"Groot Ballonsabotage [Legendarisch]"
 		"chi"		"大型气球毁灭者[传奇]"
 		"it"		"Sabotaggio di Big Bloon [Leggendario]"
-		"ko"		"큰 풍선 파괴 [전설]"
+		"ko"		"큰 풍선 파괴공작 [전설]"
 	}
 	"SUPER Range [Rare]"
 	{
@@ -2961,7 +2966,7 @@
 		"nl"		"Snel Brouwen [Ongewoon]"
 		"chi"		"快速酿造[罕见]"
 		"it"		"Birra veloce [Non comune]"
-		"ko"		"빠른 약 제조 [특별]"
+		"ko"		"빠른 약품 제조 [특별]"
 	}
 	"Strike Down The False [Uncommon]"
 	{
@@ -2973,7 +2978,7 @@
 		"nl"		"Sla neer de valse [ongewoon]"
 		"chi"		"测谎仪[罕见]"
 		"it"		"Abbattere il Falso [Non comune]"
-		"ko"		"가짜는 끌어내려 [특별]"
+		"ko"		"가짜를 끌어내려라 [특별]"
 	}
 	"Flame Jet [Common]"
 	{
@@ -3206,7 +3211,7 @@
 	}
 	"The Laser Cure"
 	{
-		"en"       "레이저 치료기"
+		"en"       "The Laser Cure"
 		"ko"	   "레이저 치료기"
 	}
 	"Quad Launcher"
@@ -3234,7 +3239,7 @@
 		"ru"       "Нейтронно-звёздная пушка"
 		"chi"       "中子星爆炸炮"
 		"it"		"Cannone a scoppio a stella di neutroni"
-		"ko"	   "중성자별 격발포"
+		"ko"	   "중성자별 연발포"
 	}
 	"People Popper"
 	{
@@ -3251,7 +3256,7 @@
 		"fr"	"Lame Fusion"
 		"ru"	"Лезвие фьюжена"
 		"chi"	"融合之刃"
-		"ko"	"엑스피돈산 에너지 블레이드"		
+		"ko"	"엑스피돈사 에너지 블레이드"		
 		"it"		"Lama Fusioni"
 	}
 	"Fusions Blade"
@@ -3270,7 +3275,7 @@
 		"ru"       "Расколотый ковчег"
 		"chi"       "断裂方舟"
 		"it"		"Arca fratturata"
-		"ko"		"파편화된 방주"
+		"ko"		"금이 간 방주"
 	}
 	"Zerofuse's Knife"
 	{
@@ -3288,7 +3293,7 @@
 		"ru"		"Палочка медузы Теслар"
 		"chi"		"美杜莎·特斯拉手杖"
 		"it"		"Bastone di Tesla Medusa"
-		"ko"		"메두사 테슬라 막대"
+		"ko"		"메두사 테슬라 스틱"
 	}
 	"Beam Wand"
 	{
@@ -3305,7 +3310,7 @@
 		"fr"       "Bâton des Glaces"
 		"chi"       "寒冰法杖"
 		"it"		"Bastone Cryo"
-		"ko"		"냉동 스태프"
+		"ko"		"냉기 스태프"
 	}
 	"Only one allowed, sell to see and buy others."
 	{
@@ -3314,12 +3319,12 @@
 		"ru"       "Только одно, продайте для покупки другого."
 		"chi"       "只允许装备一个！"
 		"it"		"Solo uno consentito, vendere per vedere e acquistare gli altri."
-		"ko"	   "이 장비들은 오직 하나만 보유할 수 있습니다. 다른걸 사용하려면 현재 보유한 것을 판매해야 합니다."
+		"ko"	   "이 장비들은 오직 하나만 보유할 수 있습니다. 다른걸 보고 사용하려면 현재 보유한 것을 판매해야 합니다."
 	}
 	"Only one allowed at a time [Use with M3]"
 	{
 		"en"	"Only one allowed at a time [Use with M3]"
-		"ko"	"이 장비들은 하나만 장착할 수 있습니다."
+		"ko"	"이 장비들은 하나만 장착할 수 있습니다. [마우스 휠로 사용]"
 	}
 	"Throwable Armor Grenade"
 	{
@@ -3337,7 +3342,7 @@
 		"ru"       "Эксп. разрывная установка"
 		"chi"       "突击装备"
 		"it"		"Pacchetto Burst sperimentale"
-		"ko"		"실험용 버스트 팩"
+		"ko"		"실험형 버스트 팩"
 	}
 	"Throwable Survival Grenade"
 	{
@@ -3535,7 +3540,7 @@
 		"ru"		"Космический террор"
 		"chi"       "宇宙恐怖"
 		"it"		"Terrore cosmico"
-		"ko"		"코즈믹 테러"
+		"ko"		"코스믹 테러"
 	}
 	"Passanger's Device"
 	{
@@ -3578,12 +3583,12 @@
 	"Nightmare"
 	{
 		"en"	"Nightmare"
-		"ko"	"악몽"
+		"ko"	"나이트메어"
 	}
 	"Sunswallower"
 	{
 		"en"	"Sunswallower"
-		"ko"	"햇살 흡수자"
+		"ko"	"태양을 삼키는 자"
 	}
 	"Deleting buildings refunds text"
 	{
@@ -3599,7 +3604,7 @@
 		"ru"	"Нажмите на ячейку действия (h) для открытия доп. меню!"
 		"chi"	"按下动作/魔法键打开功能面板！[默认h]"
 		"it"	"Premete il vostro slot azione (h) per accedere a un menu extra!"
-		"ko"	"액션 슬롯(H)를 눌러 추가 메뉴에 접속하세요!"
+		"ko"	"액션 슬롯(H)를 눌러 추가 메뉴를 여세요!"
 	}
 	"Barracks"
 	{
@@ -3639,7 +3644,7 @@
 	"Raigeki"
 	{
 		"en"		"Raigeki"
-		"ko"		"뇌격"
+		"ko"		"''번개''"
 	}
 	"Direct Current"
 	{
@@ -3654,17 +3659,17 @@
 	"Megawatt Massacre"
 	{
 		"en"	"Megawatt Massacre"
-		"ko"	"메가와트 대학살"
+		"ko"	"메가와트 매서커"
 	}
 	"Crisis Conductor"
 	{
 		"en"	"Crisis Conductor"
-		"ko"	"고비 지휘자"
+		"ko"	"크라이시스 컨덕터"
 	}
 	"Mortal Blackout"
 	{
 		"en"	"Mortal Blackout"
-		"ko"	"필멸의 소등"
+		"ko"	"모탈 블랙아웃"
 	}
 	"Junker Staff"
 	{
@@ -3674,7 +3679,7 @@
 	"Staff of the Skull Servants"
 	{
 		"en"		"Staff of the Skull Servants"
-		"ko"		"저주받은 하인 스태프"
+		"ko"		"저주받은 하인의 스태프"
 	}
 	"Impact Lance"
 	{
@@ -3709,7 +3714,7 @@
 	"Pristine Expidonsan Repair Device"
 	{
 		"en"		"Pristine Expidonsan Repair Device"
-		"ko"		"최상급 엑스피돈사 수리 장치"
+		"ko"		"온전한 엑스피돈사 수리 장치"
 	}
 	"Cleanse Gun"
 	{
@@ -3731,10 +3736,15 @@
 		"en"		"Modified Pistol"
 		"ko"		"개조된 권총"
 	}
-	"Anti Chaos Container"
+	"Super USP with healing Stims"
 	{
-		"en"		"Anti Chaos Container"
+		"en"		"Super USP with healing Stims"
 		"ko"		"회복 자극제가 첨가된 슈퍼 USP"
+	}
+	"Wizuh Pistol"
+	{
+		"en"		"Wizuh Pistol"
+		"ko"		"위저 금속제 권총"
 	}
 	"Whiteflower's Sidearm"
 	{
@@ -3789,7 +3799,7 @@
 	"Full Auto Shotgun"
 	{
 		"en"		"Full Auto Shotgun"
-		"ko"		"풀 오토 산탄총"
+		"ko"		"완전 자동 산탄총"
 	}
 	"M4A1-Carbine"
 	{
@@ -3859,7 +3869,7 @@
 	"Greater Garbage"
 	{
 		"en"		"Greater Garbage"
-		"ko"		"대형 폐기물 포"
+		"ko"		"대형 쓰레기 대포"
 	}
 	"Trash Metal"
 	{
@@ -3949,7 +3959,7 @@
 	"Expidonsan Explorer's Blade"
 	{
 		"en"		"Expidonsan Explorer's Blade"
-		"ko"		"엑스피돈사인 탐험가의 검"
+		"ko"		"엑스피돈사 탐험가의 검"
 	}
 	"Siccerino's Siccors"
 	{
@@ -3959,7 +3969,7 @@
 	"Siccors of siccors"
 	{
 		"en"		"Siccors of siccors"
-		"ko"		"가위 두 쌍"
+		"ko"		"가위 중의 가위"
 	}
 	"Nearl Silvester Spear"
 	{
@@ -3969,7 +3979,7 @@
 	"Void assigned Blade"
 	{
 		"en"		"Void assigned Blade"
-		"ko"		"공허에 침식된 검"
+		"ko"		"공허가 서린 검"
 	}
 	"Contained Void Power"
 	{
@@ -4084,7 +4094,7 @@
 	"CBS's Blade"
 	{
 		"en"		"CBS's Blade"
-		"ko"		"잔혹한 기독교인 스나이퍼의 검"
+		"ko"		"잔혹한 기독교 스나이퍼의 검"
 	}
 	"Steam Knight's Spear"
 	{
@@ -4104,12 +4114,12 @@
 	"Telum Pro Lege"
 	{
 		"en"		"Telum Pro Lege"
-		"ko"		"법적 심판 무기"
+		"ko"		"텔룸 프로 레지(법적 심판 무기)"
 	}
 	"Exactio Legis"
 	{
 		"en"		"Exactio Legis"
-		"ko"		"법 집행가"
+		"ko"		"엑사티오 레지스(법 집행자)"
 	}
 	"Полнолуние"
 	{
@@ -4204,7 +4214,7 @@
 	"Quibai's Elegance"
 	{
 		"en"		"Quibai's Elegance"
-		"ko"		"치우바이의 검"
+		"ko"		"치우바이의 품위"
 	}
 	"Ark of the Elements"
 	{
@@ -4244,7 +4254,7 @@
 	"Ziberian Political News"
 	{
 		"en"		"Ziberian Political News"
-		"ko"		"자이베리아 정치 뉴스"
+		"ko"		"지베리아 정치 뉴스"
 	}
 	"Sawrunner's Chainsaw"
 	{
@@ -4274,7 +4284,7 @@
 	"Completionist Wand"
 	{
 		"en"		"Completionist Wand"
-		"ko"		"완벽주의자 완드"
+		"ko"		"완벽주의자의 완드"
 	}
 	"A Little Bit Of A Fast Wand"
 	{
@@ -4294,7 +4304,7 @@
 	"King of the Skull Servants"
 	{
 		"en"		"King of the Skull Servants"
-		"ko"		"저주받은 하인 킹"
+		"ko"		"저주받은 하인들의 왕"
 	}
 	"Ruilus Blade"
 	{
@@ -4304,7 +4314,7 @@
 	"Scrapped Engineer Staff"
 	{
 		"en"		"Scrapped Engineer Staff"
-		"ko"		"폐기처리된 엔지니어의 스태프"
+		"ko"		"버려진 엔지니어의 스태프"
 	}
 	"Ruina Elite Blade"
 	{
@@ -4319,12 +4329,12 @@
 	"Nightmare Cannon"
 	{
 		"en"		"Nightmare Cannon"
-		"ko"		"악몽 포"
+		"ko"		"나이트메어 캐논"
 	}
 	"Pulse Cannon"
 	{
 		"en"		"Pulse Cannon"
-		"ko"		"펄스 포"
+		"ko"		"펄스 캐논"
 	}
 	"Feedback Loop"
 	{
@@ -4344,7 +4354,7 @@
 	"Lifetime Supply"
 	{
 		"en"		"Lifetime Supply"
-		"ko"		"수명 공급"
+		"ko"		"평생 배급"
 	}
 	"Neodymium Nightmare"
 	{
@@ -4354,22 +4364,22 @@
 	"Heavy Lance"
 	{
 		"en"		"Heavy Lance"
-		"ko"		"대형 랜스"
+		"ko"		"중형 랜스"
 	}
 	"Light Lance"
 	{
 		"en"		"Light Lance"
-		"ko"		"소형 랜스"
+		"ko"		"경량형 랜스"
 	}
 	"Berserker Brew"
 	{
 		"en"		"Berserker Brew"
-		"ko"		"광전사 포션"
+		"ko"		"광전사 브루"
 	}
 	"Unstable Concoction"
 	{
 		"en"		"Unstable Concoction"
-		"ko"		"불안정한 혼합물"
+		"ko"		"불안정한 화합물"
 	}
 	"Lead to Australium"
 	{
@@ -4394,7 +4404,7 @@
 	"Permanent Brew"
 	{
 		"en"		"Permanent Brew"
-		"ko"		"영원의 포션"
+		"ko"		"영원의 브루"
 	}
 	"Transforming Tonic Pap"
 	{
@@ -4409,7 +4419,7 @@
 	"Snowey Attraction Staff"
 	{
 		"en"		"Snowey Attraction Staff"
-		"ko"		"눈짓 이끌림의 스태프"
+		"ko"		"백설의 이끌림의 스태프"
 	}
 	"Chainblade"
 	{
@@ -4481,7 +4491,7 @@
 		"ru"	"Легомёт"
 		"chi"	"乐高布置器"
 		"it"	"Strato Lego a distanza"
-		"ko"	"원거리형 레고 매설기"
+		"ko"	"원격 레고 매설기"
 	}
 	"The Enforcer"
 	{
@@ -4735,7 +4745,7 @@
 		"chi"	"闪电刃"
 		"chi"	"电「刃」"
 		"it"	"Lama Blitz"
-		"ko"	"블리츠 블레이드"
+		"ko"	"블리츠-블레이드"
 	}
 	"Hurricane-Blitz"
 	{
@@ -4745,7 +4755,7 @@
 		"chi"	"闪电战"
 		"chi"	"「闪电战」"
 		"it"	"Uragano-Blitz"
-		"ko"	"허리케인 블리츠"
+		"ko"	"허리케인-블리츠"
 	}
 	"Gravaton Spell"
 	{
@@ -4765,7 +4775,7 @@
 	"Fractal Reiuji"
 	{
 		"en"	"Fractal Reiuji"
-		"ko"	"프랙탈 레이우지"
+		"ko"	"프랙탈-레이우지"
 	}
 	"Heavy Particle Rifle"
 	{
@@ -5061,7 +5071,7 @@
 	"Victorian Launcher"
 	{
 		"en"	"Victorian Launcher"
-		"ko"	"빅토리안 런처"
+		"ko"	"빅토리아 런처"
 		"it"	"Lanciatore vittoriano"
 	}
 	"Castle Breaker"
@@ -5084,17 +5094,17 @@
 	"Expidonsa's Prototype"
 	{
 		"en"		"Expidonsa's Prototype"
-		"ko"		"엑스피돈산 프로토타입"
+		"ko"		"엑스피돈사 프로토타입"
 	}
 	"The Hyper Shovel"
 	{
 		"en"		"The Hyper Shovel"
-		"ko"		"''하이퍼 야전삽''"
+		"ko"		"하이퍼 야전삽"
 	}
 	"The Soldine Launcher"
 	{
 		"en"		"The Soldine Launcher"
-		"ko"		"''솔딘의 로켓 발사기''"
+		"ko"		"솔딘의 로켓 발사기"
 	}
 	"System: Prototype Soldine"
 	{
@@ -5200,7 +5210,7 @@
 	{
 		"en" "A Wheel of Gouda"
 		"it" "Una ruota di Gouda"
-		"ko" "고우다의 돌림판"
+		"ko" "고우다 한 덩이"
 	}
 	"THE BIG CHEESE!"
 	{
@@ -5212,13 +5222,13 @@
 	{
 		"en" "Nanohealing Technology"
 		"it" "Tecnologia di nano-guarigione"
-		"ko" "나노힐링 기술력"
+		"ko" "나노힐링 기술"
 	}
 	"Voided Rejuvenator Pack"
 	{
 		"en" "Voided Rejuvenator Pack"
 		"it" "Pacchetto ringiovanente per il vuoto"
-		"ko" "침식된 원기 회복사 상자"
+		"ko" "공허화된 원기 회복사 상자"
 	}
 	"Cheesy Slimy Aid Kit"
 	{
@@ -5325,13 +5335,13 @@
 	"Braced Pistol"
 	{
 		"en"	"Braced Pistol"
-		"ko"	"보호형 권총"
+		"ko"	"보강된 권총"
 	}
 	"Koshi's Goods"
 	{
 		"en" "Koshi's Goods"
 		"it" "Merci di Koshi"
-		"ko" "코쉬의 좋은 물건"
+		"ko" "코시의 좋은 물건"
 	}
 	"Bubble Wand"
 	{
@@ -5344,14 +5354,14 @@
 		"en" "Plasmic Surprise"
 		"es" "Sorpresa Plasmica"
 		"it" "Sorpresa plasmatica"
-		"ko" "플라즈마 서프라이즈"
+		"ko" "플라즈믹 서프라이즈"
 	}
 	"Plasmic Dosage"
 	{
 		"en" "Plasmic Dosage"
 		"es" "Dosis Plasmica"
 		"it" "Dosaggio plasmatico"
-		"ko" "투약용 플라즈마"
+		"ko" "투약형 플라즈마"
 	}
 	"Plasm-ubblinator"
 	{
@@ -5365,7 +5375,7 @@
 		"en" "Koshi's Plasm-inator"
 		"es" "El Plasm-inador de Koshi"
 		"it" "Plasmatore di Koshi"
-		"ko" "코쉬의 플라즈마 활성화장치"
+		"ko" "코시의 플라즈마 활성화장치"
 	}
 	"The Zealot"
 	{
@@ -5380,7 +5390,7 @@
 	"Braced Pistol"
 	{
 		"en" "Braced Pistol"
-		"ko" "보호형 권총"
+		"ko" "보강된 권총"
 	}
 	"Zealot's Potion"
 	{
@@ -5395,7 +5405,7 @@
 	"Confess Your Fears"
 	{
 		"en"	"Confess Your Fears"
-		"ko"	"네 두려움에 굴복하라"
+		"ko"	"네 두려움을 고백하라"
 	}
 	"Repaired Blade"
 	{
@@ -5443,13 +5453,13 @@
 	{
 		"en"	"Fractal-Harvester"
 		"it"	"Raccoglitore frattale"
-		"ko"	"프랙탈-수확자"
+		"ko"	"프랙탈-하베스터"
 	}
 	"Fractal-Fantasia"
 	{
 		"en"	"Fractal-Fantasia"
 		"it"	"Frattale-Fantasia"
-		"ko"	"프랙탈-환술"
+		"ko"	"프랙탈-판타지아"
 	}
 	"Therapy"
 	{
@@ -5488,7 +5498,7 @@
 	{
 		"en"	"The Crimson"
 		"it"	"Il Cremisi"
-		"ko"	"그림자처럼"
+		"ko"	"''진홍''"
 	}
 	"Effect:"
 	{
@@ -5512,7 +5522,7 @@
 	{
 		"en"	"Potion of Flexibility"
 		"it"	"Pozione della Flessibilità"
-		"ko"	"몸풀기 포션"
+		"ko"	"유연성 포션"
 	}
 	"Potion of Flexibility Desc"
 	{
@@ -5542,7 +5552,7 @@
 	{
 		"en"	"Damage Up (Not mage), Melee Res, Ranged Res"
 		"it"	"Danno Alto (non da mago), Resistenza in mischia, Resistenza a distanza"
-		"ko"	"피해량(마법 피해 아님), 피해 저항력)"
+		"ko"	"피해량 증가(마법 피해 제외), 피해 저항력"
 	}
 	"Potion of Casting"
 	{
@@ -5560,7 +5570,7 @@
 	{
 		"en"	"Potion of Beef"
 		"it"	"Pozione di manzo"
-		"ko"	"소고기 포션"
+		"ko"	"근육 포션"
 	}
 	"Potion of Beef Desc"
 	{
@@ -5626,7 +5636,7 @@
 	{
 		"en"	"Projectile Speed/Range, Knockback Vulnerability"
 		"it"	"Velocità/portata del proiettile, vulnerabilità al contraccolpo"
-		"ko"	"투사체 속도 및 날아가는 거리, 넉백 취약"
+		"ko"	"투사체 속도 및 비행 거리 증가, 넉백에 취약해짐"
 	}
 	"Flask of Assimilation"
 	{
@@ -5674,7 +5684,7 @@
 	{
 		"en"	"Buildings Remove Creep"
 		"it"	"Gli strutture rimuovono lo scorrimento"
-		"ko"	"구조물이 명흔, 점막을 제거"
+		"ko"	"구조물이 명흔, 공허 점막을 제거"
 	}
 	"Flask of Abyssal Hunter"
 	{
@@ -5686,7 +5696,7 @@
 	{
 		"en"	"Adds the Seaborn faction"
 		"it"	"Aggiunge la fazione Seaborn"
-		"ko"	"시본 진영을 추가함."
+		"ko"	"무기에 시본 진영을 추가"
 	}
 	"Flask of Kazimierz"
 	{
@@ -5698,7 +5708,7 @@
 	{
 		"en"	"Adds the Kazimierz faction"
 		"it"	"Aggiunge la fazione Kazimierz"
-		"ko"	"카시미어 진영을 추가함"
+		"ko"	"무기에 카시미어 진영을 추가"
 	}
 	"Crystal Shard"
 	{
@@ -5726,7 +5736,7 @@
 		"en"	"Sanity Sigil Blade"
 		"chi"	"理智印记剑"
 		"ru"	"Сигильный Клинок Рассудка"
-		"ko"	"정신력 인장 검"
+		"ko"	"이성의 인장의 검"
 	}
 	"The Arsenal"
 	{
@@ -5740,6 +5750,6 @@
 		"en"	      "Mechanized Terror"
 		"chi"	"机械恐怖"
 		"ru"	"Механический Террор"
-		"ko"	"기계화 테러"
+		"ko"	"기계화된 공포"
 	}
 }
