@@ -7,13 +7,13 @@ static const char g_DeathSounds[][] = {
 	"vo/mvm/mght/heavy_mvm_m_negativevocalization03.mp3",
 	"vo/mvm/mght/heavy_mvm_m_negativevocalization04.mp3",
 	"vo/mvm/mght/heavy_mvm_m_negativevocalization05.mp3",
-	"vo/mvm/mght/heavy_mvm_m_negativevocalization06.mp3",
+	"vo/mvm/mght/heavy_mvm_m_negativevocalization06.mp3"
 };
 
 static const char g_HurtSounds[][] = {
 	"vo/mvm/mght/heavy_mvm_m_laughshort01.mp3",
 	"vo/mvm/mght/heavy_mvm_m_laughshort02.mp3",
-	"vo/mvm/mght/heavy_mvm_m_laughshort03.mp3",
+	"vo/mvm/mght/heavy_mvm_m_laughshort03.mp3"
 };
 
 static const char g_IdleAlertedSounds[][] = {
@@ -21,18 +21,11 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/mvm/mght/heavy_mvm_m_specials02.mp3",
 	"vo/mvm/mght/heavy_mvm_m_specials03.mp3",
 	"vo/mvm/mght/heavy_mvm_m_specials04.mp3",
-	"vo/mvm/mght/heavy_mvm_m_specials05.mp3",
+	"vo/mvm/mght/heavy_mvm_m_specials05.mp3"
 };
-
 
 void VictoriaMowdown_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	PrecacheModel("models/bots/heavy/bot_heavy.mdl");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_gunspin.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_gunfire.wav");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Mowdown");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mowdown");
@@ -40,9 +33,21 @@ void VictoriaMowdown_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+}
 
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheModel("models/bots/heavy/bot_heavy.mdl");
+	PrecacheSound("mvm/giant_heavy/giant_heavy_gunspin.wav");
+	PrecacheSound("mvm/giant_heavy/giant_heavy_gunfire.wav");
+	//PrecacheModel("models/bots/heavy/bot_heavy.mdl");
+	PrecacheModel("models/bots/heavy_boss/bot_heavy_boss.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -61,23 +66,16 @@ methodmap VictoriaMowdown < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -89,7 +87,7 @@ methodmap VictoriaMowdown < CClotBody
             if(this.i_GunMode != 0)
             {
                 StopSound(this.index, SNDCHAN_STATIC, "mvm/giant_heavy/giant_heavy_gunspin.wav");
-                EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunfire.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 20, _, 0.70);
+                EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunfire.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
             }
             this.i_GunMode = 0;
         }
@@ -106,7 +104,7 @@ methodmap VictoriaMowdown < CClotBody
 
 	public VictoriaMowdown(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaMowdown npc = view_as<VictoriaMowdown>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.4", "26000", ally, .isGiant = true));
+		VictoriaMowdown npc = view_as<VictoriaMowdown>(CClotBody(vecPos, vecAng, "models/bots/heavy_boss/bot_heavy_boss.mdl", "1.4", "26000", ally, .isGiant = true));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -122,9 +120,9 @@ methodmap VictoriaMowdown < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
-
 		
 		//IDLE
+		KillFeed_SetKillIcon(npc.index, "minigun");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -134,10 +132,10 @@ methodmap VictoriaMowdown < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderColor(npc.index, 80, 50, 50, 255);
+		SetEntityRenderColor(npc.index, 100, 75, 75, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_iron_curtain/c_iron_curtain.mdl");
-		SetVariantString("1.0");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/hwn2016_mad_mask/hwn2016_mad_mask.mdl");
@@ -155,7 +153,7 @@ methodmap VictoriaMowdown < CClotBody
 	}
 }
 
-public void VictoriaMowdown_ClotThink(int iNPC)
+static void VictoriaMowdown_ClotThink(int iNPC)
 {
 	VictoriaMowdown npc = view_as<VictoriaMowdown>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -217,7 +215,7 @@ public void VictoriaMowdown_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action VictoriaMowdown_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictoriaMowdown_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictoriaMowdown npc = view_as<VictoriaMowdown>(victim);
 		
@@ -233,7 +231,7 @@ public Action VictoriaMowdown_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-public void VictoriaMowdown_NPCDeath(int entity)
+static void VictoriaMowdown_NPCDeath(int entity)
 {
 	VictoriaMowdown npc = view_as<VictoriaMowdown>(entity);
 	if(!npc.m_bGib)
@@ -258,7 +256,7 @@ public void VictoriaMowdown_NPCDeath(int entity)
 
 }
 
-void VictoriaMowdownSelfDefense(VictoriaMowdown npc)
+static void VictoriaMowdownSelfDefense(VictoriaMowdown npc)
 {
 	int target;
 	target = npc.m_iTarget;

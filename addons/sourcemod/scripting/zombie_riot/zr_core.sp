@@ -284,6 +284,7 @@ enum
     WEAPON_KIT_PURGE_RAMPAGER = 161,
     WEAPON_KIT_PURGE_ANNAHILATOR = 162,
     WEAPON_KIT_PURGE_MISC = 163,
+	WEAPON_BOMB_AR = 164,
 	WEAPON_MAJORSTEAM_LAUNCHER = 1000,
 	WEAPON_LOCKDOWN = 1001,
 	WEAPON_MINECRAFT_SWORD = 1002
@@ -681,6 +682,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/wand/weapon_wand_sigil_blade.sp"
 #include "custom/kit_omega.sp"
 #include "custom/kit_purging.sp"
+#include "custom/weapon_bombplant_smg.sp"
 
 void ZR_PluginLoad()
 {
@@ -746,7 +748,13 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_spawn_vehicle", Command_PropVehicle, ADMFLAG_ROOT, "Spawn Vehicle"); 	//DEBUG
 	RegAdminCmd("sm_loadbgmusic", CommandBGTest, ADMFLAG_RCON, "Load a config containing a music field as passive music");
 	RegAdminCmd("sm_forceset_team", Command_SetTeamCustom, ADMFLAG_ROOT, "Set Team custom to a player"); 	//DEBUG
-	RegAdminCmd("sm_rein", CommandAdminReinforce, ADMFLAG_ROOT, "Deploying Reinforce");
+	
+	RegAdminCmd("zr_rein", CommandAdminReinforce, ADMFLAG_ROOT, "Deploying Reinforce");
+	RegAdminCmd("zr_waveadd", Waves_AdminsWaveTimeAddCmd, ADMFLAG_ROOT, "Wave Time Add");
+	RegAdminCmd("zr_waveremain", Waves_AdminsWaveTimeRemainCmd, ADMFLAG_ROOT, "Wave Time Remain");
+	RegAdminCmd("zr_raidend", Waves_AdminsRaidTimeEndCmd, ADMFLAG_ROOT, "Raid Force END");
+	RegAdminCmd("zr_raidadd", Waves_AdminsRaidTimeAddCmd, ADMFLAG_ROOT, "Raid Time Add");
+	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 
@@ -1001,6 +1009,7 @@ void ZR_MapStart()
 	KitOmega_OnMapStart();
 	Wand_Sigil_Blade_MapStart();
 	PurgeKit_MapStart();
+	ResetMapStartExploARWeapon();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)

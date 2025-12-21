@@ -858,6 +858,7 @@ float fl_StopDodgeCD[MAXENTITIES];
 
 int i_GunMode[MAXENTITIES];
 int i_GunAmmo[MAXENTITIES];
+int i_GunAmmoMAX[MAXENTITIES];
 float f_NemesisImmuneToInfection[MAXENTITIES];
 float f_NemesisSpecialDeathAnimation[MAXENTITIES];
 float f_NemesisRandomInfectionCycle[MAXENTITIES];
@@ -865,10 +866,6 @@ bool b_InKame[MAXENTITIES];
 bool b_said_player_weaponline[MAXPLAYERS]; //Yes, i know, itll break if multiple raids spawn, but it doesnt really matter....
 float fl_said_player_weaponline_time[MAXENTITIES];
 int i_current_wave[MAXENTITIES];
-bool FactorySpawn[MAXENTITIES];
-bool MK2[MAXENTITIES];
-bool Limit[MAXENTITIES];
-bool Anvil[MAXENTITIES];
 int i_ally_index[MAXENTITIES];
 
 //some lasers had some variation of this, i just condeced it down to 1

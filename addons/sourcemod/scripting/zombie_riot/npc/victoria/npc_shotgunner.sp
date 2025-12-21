@@ -4,7 +4,7 @@
 static const char g_DeathSounds[][] = {
 	"vo/heavy_paincrticialdeath01.mp3",
 	"vo/heavy_paincrticialdeath02.mp3",
-	"vo/heavy_paincrticialdeath03.mp3",
+	"vo/heavy_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSounds[][] = {
@@ -12,28 +12,20 @@ static const char g_HurtSounds[][] = {
 	"vo/heavy_painsharp02.mp3",
 	"vo/heavy_painsharp03.mp3",
 	"vo/heavy_painsharp04.mp3",
-	"vo/heavy_painsharp05.mp3",
+	"vo/heavy_painsharp05.mp3"
 };
 
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/taunts/heavy_taunts16.mp3",
 	"vo/taunts/heavy_taunts18.mp3",
-	"vo/taunts/heavy_taunts19.mp3",
+	"vo/taunts/heavy_taunts19.mp3"
 };
 
-static const char g_MeleeHitSounds[][] = {
-	"weapons/family_business_shoot.wav",
-};
-
+static const char g_RangeAttackSounds[] = "weapons/family_business_shoot.wav";
 
 void VictorianShotgunner_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Shotgunner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_shotgunner");
@@ -41,9 +33,19 @@ void VictorianShotgunner_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
 	Rogue_Paradox_AddWinterNPC(id);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSound(g_RangeAttackSounds);
+	PrecacheModel("models/player/heavy.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -51,41 +53,30 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 	return VictorianShotgunner(vecPos, vecAng, ally);
 }
 
-
 methodmap VictorianShotgunner < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
-	public void PlayMeleeHitSound() 
+	public void PlayRangeSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 85);
-
+		EmitSoundToAll(g_RangeAttackSounds[GetRandomInt(0, sizeof(g_RangeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 85);
 	}
-	
 	
 	public VictorianShotgunner(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -100,25 +91,22 @@ methodmap VictorianShotgunner < CClotBody
 		SetVariantInt(0);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		
-		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(VictorianShotgunner_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictorianShotgunner_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictorianShotgunner_ClotThink);
-		
+		func_NPCDeath[npc.index] = VictorianShotgunner_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictorianShotgunner_OnTakeDamage;
+		func_NPCThink[npc.index] = VictorianShotgunner_ClotThink;
 		
 		//IDLE
+		KillFeed_SetKillIcon(npc.index, "panic_attack");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 250.0;
-		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -134,7 +122,7 @@ methodmap VictorianShotgunner < CClotBody
 	}
 }
 
-public void VictorianShotgunner_ClotThink(int iNPC)
+static void VictorianShotgunner_ClotThink(int iNPC)
 {
 	VictorianShotgunner npc = view_as<VictorianShotgunner>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -178,9 +166,7 @@ public void VictorianShotgunner_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int SetGoalVectorIndex = 0;
-		SetGoalVectorIndex = VictorianShotgunnerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
-		switch(SetGoalVectorIndex)
+		switch(VictorianShotgunnerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -214,13 +200,13 @@ public void VictorianShotgunner_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action VictorianShotgunner_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictorianShotgunner_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictorianShotgunner npc = view_as<VictorianShotgunner>(victim);
-		
+	
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -230,14 +216,12 @@ public Action VictorianShotgunner_OnTakeDamage(int victim, int &attacker, int &i
 	return Plugin_Changed;
 }
 
-public void VictorianShotgunner_NPCDeath(int entity)
+static void VictorianShotgunner_NPCDeath(int entity)
 {
 	VictorianShotgunner npc = view_as<VictorianShotgunner>(entity);
 	if(!npc.m_bGib)
-	{
 		npc.PlayDeathSound();	
-	}
-		
+	
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
@@ -248,22 +232,20 @@ public void VictorianShotgunner_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
 }
 
-int VictorianShotgunnerSelfDefense(VictorianShotgunner npc, float gameTime, int target, float distance)
+static int VictorianShotgunnerSelfDefense(VictorianShotgunner npc, float gameTime, int target, float distance)
 {
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.5))
 		{
-			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
+			int Enemy_I_See = Can_I_See_Enemy(npc.index, target);
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 				npc.m_iTarget = Enemy_I_See;
-				npc.PlayMeleeHitSound();
+				npc.PlayRangeSound();
 				float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 				npc.FaceTowards(vecTarget, 20000.0);
 				Handle swingTrace;
@@ -284,9 +266,7 @@ int VictorianShotgunnerSelfDefense(VictorianShotgunner npc, float gameTime, int 
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
 						if(NpcStats_VictorianCallToArms(npc.index))
-						{
 							StartBleedingTimer(target, npc.index, 4.0, 4, -1, DMG_TRUEDAMAGE, 0);
-						}
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 					}

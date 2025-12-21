@@ -6428,6 +6428,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_KitOmega(client, entity);
 		Enable_PurgeKit(client, entity);
 		GemCrafter_Enable(client, entity);
+		Enable_ExploARWeapon(client, entity);
 
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);

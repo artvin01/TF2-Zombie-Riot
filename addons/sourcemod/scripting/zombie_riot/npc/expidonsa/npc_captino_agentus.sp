@@ -54,6 +54,7 @@ static const char g_ZapAttackSounds[][] = {
 static const char g_PullAttackSounds[][] = {
 	"weapons/physcannon/physcannon_pickup.wav",
 };
+static int NPCID;
 void CaptinoAgentus_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -75,7 +76,7 @@ void CaptinoAgentus_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Expidonsa;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCID = NPC_Add(data);
 }
 
 
@@ -726,6 +727,9 @@ void CaptinoShield(int entity, int victim, float damage, int weapon)
 
 	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
 	{
+		if(b_thisNpcIsABoss[victim] && NPCID != i_NpcInternalId[victim])
+			return;
+
 		CaptinoShieldInternal(victim);
 	}
 }

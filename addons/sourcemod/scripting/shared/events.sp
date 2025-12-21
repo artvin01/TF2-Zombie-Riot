@@ -753,6 +753,10 @@ public Action ChatSetupTipTimer(Handle TimerHandle)
 		}
 	}
 	Format(TipText, sizeof(TipText), "Setup Chat Tip %i", GetRandomInt(1,MaxEntries- 1));
-	SPrintToChatAll("{green}TIP:{snow} %t",TipText);
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsValidClient(client))
+			SPrintToChat(client, "{green}TIP:{snow} %t",TipText);
+	}
 	return Plugin_Stop;
 }

@@ -624,7 +624,7 @@ void NPC_ConfigSetup()
 	Iberia_inqusitor_irene_OnMapStart_NPC();
 
 //Victorian Raid
-//wave 1~15
+//wave 1~10
 	Victoria_Batter_OnMapStart_NPC();
 	Victorian_Charger_OnMapStart_NPC();
 	Victorian_Teslar_OnMapStart_NPC();
@@ -636,7 +636,7 @@ void NPC_ConfigSetup()
 	VictorianSquadleader_OnMapStart_NPC();
 	VictorianSignaller_OnMapStart_NPC();
 	
-//wave 16~30
+//wave 11~20
 	VictorianHumbee_MapStart();
 	VictorianShotgunner_OnMapStart_NPC();
 	Bulldozer_OnMapStart_NPC();
@@ -649,27 +649,29 @@ void NPC_ConfigSetup()
 	VictorianIronShield_OnMapStart_NPC();
 	Aviator_OnMapStart_NPC();
 	
-//wave 31~45
+//wave 21~30
 	Victoria_BaseBreaker_OnMapStart_NPC();
 	VictoriaAntiarmorInfantry_OnMapStart_NPC();
-	VictoriaAssulter_OnMapStart_NPC();
+	VictoriaAssaulter_OnMapStart_NPC();
 	VictorianMechafist_OnMapStart_NPC();
 	VictorianBooster_OnMapStart_NPC();
 	VictoriaScorcher_OnMapStart_NPC();
 	VictoriaMowdown_OnMapStart_NPC();
 	VictoriaMortar_OnMapStart_NPC();
+	VictoriaArtillerist_OnMapStart_NPC();
 	VictoriaBreachcart_MapStart();
 	VictoriaBombcart_Precache();
 	VictoriaBigpipe_OnMapStart_NPC();
 	VictoriaHarbringer_OnMapStart_NPC();
 	VictoriaBirdeye_OnMapStart_NPC();
 
-//wave 46~60
+//wave 31~40
 	VictorianCaffeinator_OnMapStart_NPC();
 	VictorianMechanist_as_OnMapStart_NPC();
 	VictorianOfflineAvangard_MapStart();
 	VictorianWelder_OnMapStart_NPC();
 	VIctorianTanker_OnMapStart_NPC();
+	VictorianAssaultVehicle_OnMapStart();
 	VictorianPulverizer_OnMapStart_NPC();
 	VIctorianAmbusher_OnMapStart_NPC();
 	VictoriaTank_MapStart();
@@ -687,6 +689,16 @@ void NPC_ConfigSetup()
 //Special
 	CyberGrindGM_OnMapStart_NPC();
 	Invisible_TRIGGER_Man_OnMapStart_NPC();
+
+//special
+	Invisible_TRIGGER_OnMapStart_NPC();//It is currently used as a trigger for the Victoria Factory.
+	CaptinoBaguettus_OnMapStart_NPC();//Captino Meinus Follower
+	VictorianFactory_MapStart();
+	VictorianDroneFragments_MapStart();
+	VictorianDroneAnvil_MapStart();
+	Victorian_Tacticalunit_OnMapStart_NPC();
+	Victorian_TacticalProtector_OnMapStart_NPC();
+	TEST_Dummy_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -926,14 +938,6 @@ void NPC_ConfigSetup()
 	AgentIanFreeplay_OnMapStart_NPC();
 	AgentSpencerFreeplay_OnMapStart_NPC();
 
-	//Victoria stuff? idfk, come back in 1.5 years and comment on it Beep
-	VictorianFactory_MapStart();
-	VictorianDroneFragments_MapStart();
-	VictorianDroneAnvil_MapStart();
-	Victorian_Tacticalunit_OnMapStart_NPC();
-	Victorian_TacticalProtector_OnMapStart_NPC();
-
-
 	BossSummonRandom_OnMapStart_NPC();
 	//Combine Mutation
 	OmegaRaid_OnMapStart_NPC();
@@ -1160,6 +1164,7 @@ void NPC_ConfigSetup()
 	
 	BarbaricTeardownOnMapStart();
 	SkilledCrossbowmanOnMapStart();
+	DemonDevoterOnMapStart();
 }
 
 void NPC_MapEnd()
@@ -2223,7 +2228,15 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/raidmode_bosses/iberia/npc_raid_silvester.sp"
 
 //Victoria
-//Wave 1~15
+//special
+#include "npc/victoria/npc_invisible_trigger.sp"
+#include "npc/victoria/npc_victorian_factory.sp"
+#include "npc/victoria/npc_victoria_tacticalprotector.sp"
+#include "npc/victoria/npc_victoria_tacticalunit.sp"
+#include "npc/victoria/npc_test_dummy.sp"
+#include "npc/victoria/npc_baguettus.sp"
+
+//Wave 1~10
 #include "npc/victoria/npc_batter.sp"
 #include "npc/victoria/npc_charger.sp"
 #include "npc/victoria/npc_teslar.sp"
@@ -2235,7 +2248,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/victoria/npc_squadleader.sp"
 #include "npc/victoria/npc_signaller.sp"
 
-//wave 16~30
+//wave 11~20
 #include "npc/victoria/npc_humbee.sp"
 #include "npc/victoria/npc_shotgunner.sp"
 #include "npc/victoria/npc_bulldozer.sp"
@@ -2248,7 +2261,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/victoria/npc_ironshield.sp"
 #include "npc/victoria/npc_aviator.sp"
 
-//wave 31~45
+//wave 21~30
 #include "npc/victoria/npc_basebreaker.sp"
 #include "npc/victoria/npc_booster.sp"
 #include "npc/victoria/npc_scorcher.sp"
@@ -2257,13 +2270,14 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/victoria/npc_assaulter.sp"
 #include "npc/victoria/npc_antiarmor_infantry.sp"
 #include "npc/victoria/npc_mortar.sp"
+#include "npc/victoria/npc_victorian_artillerist.sp"
 #include "npc/victoria/npc_bombcart.sp"
 #include "npc/victoria/npc_breachcart.sp"
 #include "npc/victoria/npc_birdeye.sp"
 #include "npc/victoria/npc_harbringer.sp"
 #include "npc/victoria/npc_bigpipe.sp"
 
-//wave 46~60
+//wave 31~40
 #include "npc/victoria/npc_caffeinator.sp"
 #include "npc/victoria/npc_welder.sp"
 #include "npc/victoria/npc_mechanist.sp"
@@ -2273,15 +2287,13 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/victoria/npc_ambusher.sp"
 #include "npc/victoria/npc_taser.sp"
 #include "npc/victoria/npc_victorian_tank.sp"
+#include "npc/victoria/npc_drive_in_my_car.sp"
 #include "npc/victoria/npc_victoria_radiomast.sp"
 #include "npc/victoria/npc_radioguard.sp"
 #include "npc/victoria/npc_radio_repair.sp"
-
 #include "npc/victoria/npc_victorian_moru.sp"
 #include "npc/victoria/npc_victorian_fragments.sp"
-#include "npc/victoria/npc_victorian_factory.sp"
-#include "npc/victoria/npc_victoria_tacticalprotector.sp"
-#include "npc/victoria/npc_victoria_tacticalunit.sp"
+
 //raidbosses
 #include "npc/raidmode_bosses/victoria/npc_the_atomizer.sp"
 #include "npc/raidmode_bosses/victoria/npc_the_wall.sp"
@@ -2531,3 +2543,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/npc_overlord_follower.sp"
 #include "npc/construction/construction2/npc_barbaric_teardown.sp"
 #include "npc/construction/construction2/npc_skilled_crossbowman.sp"
+#include "npc/construction/construction2/npc_demon_devoter.sp"
