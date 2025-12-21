@@ -56,9 +56,9 @@ void Antiviral_Program_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Antiviral_Program(vecPos, vecAng, team, data);
+	return Antiviral_Program(vecPos, vecAng, team);
 }
 
 methodmap Antiviral_Program < CClotBody
@@ -117,7 +117,7 @@ methodmap Antiviral_Program < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
-	public Antiviral_Program(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Antiviral_Program(float vecPos[3], float vecAng[3], int ally)
 	{
 		Antiviral_Program npc = view_as<Antiviral_Program>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1000", ally));
 		
