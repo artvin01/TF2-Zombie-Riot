@@ -473,7 +473,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 					SakratanGroupDebuff);
 					b_NpcIsTeamkiller[victim] = false;
 					f_ArmorCurrosionImmunity[victim][Element_Chaos]  = GetGameTime() + 10.0;
-					if(EnableSilentMode)
+					if(!EnableSilentMode)
 						Force_ExplainBuffToClient(victim, "Chaos Elemental Damage");
 					else
 						Force_ExplainBuffToClient(victim, "Chaos Elemental Damage High");
