@@ -1166,7 +1166,7 @@ static void Matrix_Spawning(int attacker, int victim)
 		{
 			case 2:
 			{
-				Decicion = TeleportDiversioToRandLocation(nsummon, true, 1500.0, 500.0);
+				Decicion = TeleportDiversioToRandLocation(summon, true, 1500.0, 500.0);
 				if(Decicion == 2)
 				{
 					Decicion = TeleportDiversioToRandLocation(summon, true, 1500.0, 250.0);
