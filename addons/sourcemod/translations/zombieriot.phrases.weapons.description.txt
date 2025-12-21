@@ -1026,7 +1026,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-Heals more on backstab.\n-Backstabs have no cooldown.\n-Easier to hit backstabs"
 		"it"	"Danno e velocità d'attacco aumentati, le pugnalate alle spalle danno più salute, le pugnalate alle spalle non hanno cooldown.\nLe pugnalate alle spalle sono più facili da colpire."
-		"ko"	피해량, 공격 속도 증가 및 백스탭 성공시 더 많은 체력을 회복\n-백스탭 쿨타임 제거\n-백스탭이 성공하기 쉬워집니다."
+		"ko"	"피해량, 공격 속도 증가 및 백스탭 성공시 더 많은 체력을 회복\n-백스탭 쿨타임 제거\n-백스탭이 성공하기 쉬워집니다."
 	}
 	"Kunai Pap 4"
 	{
