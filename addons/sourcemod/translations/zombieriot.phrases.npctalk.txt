@@ -721,13 +721,13 @@
 	}
 	"Castellan_AtomizerDesc"
 	{
-		"en"	"{crimson}Permanently increases movement speed by +2.5％ and attack speed by +5％ (Can Stack)"
-		"ko"	"{crimson}이동속도 +2.5％, 공격 속도 +5％ 영구 증가. (중첩됨)"
+		"en"	"{crimson}Permanently increases movement speed by +5％ and attack speed by +10％ (Can Stack)"
+		"ko"	"{crimson}이동속도 +5％, 공격 속도 +10％ 영구 증가. (중첩됨)"
 	}
 	"Castellan_HuscarlsDesc"
 	{
-		"en"	"{crimson}Gain armor equal to 2.5％ of Max HP\nand gain additional resistance to the type that took the most damage for 10 seconds."
-		"ko"	"{crimson}최대 체력의 2.5％ 만큼의 아머를 얻고, 10초 동안 가장 많은 피해를 입은 타입에 추가 저항을 얻음"
+		"en"	"{crimson}Gain armor equal to 5％ of Max HP\nand gain additional resistance to the type that took the most damage for 20 seconds."
+		"ko"	"{crimson}최대 체력의 5％ 만큼의 아머를 얻고, 20초 동안 가장 많은 피해를 입은 타입에 추가 저항을 얻음"
 	}
 	"Castellan_HarrisonDesc"
 	{

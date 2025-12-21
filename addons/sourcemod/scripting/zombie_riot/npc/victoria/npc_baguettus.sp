@@ -208,6 +208,11 @@ methodmap CaptinoBaguettus < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
+	property float m_flCaptinoMeniusTeleport
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
 	
 	public CaptinoBaguettus(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -233,6 +238,7 @@ methodmap CaptinoBaguettus < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
+		npc.m_flCaptinoMeniusTeleport = 0.0;
 		npc.m_bCamo = false;
 		npc.Anger = false;
 		npc.m_bFUCKYOU = false;
@@ -530,44 +536,49 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 		{
 			case 255:
 			{
-				float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget);
-				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-				float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-				static bool ReAnim;
-				switch((!Can_I_See_Ally(npc.index, npc.m_iTargetAlly) || flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.7) ? 0 : 1)
+				if(IsValidAlly(npc.index, npc.m_iTargetAlly))
 				{
-					case 0:
+					float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget);
+					float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+					float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+					static bool ReAnim;
+					switch((!Can_I_See_Ally(npc.index, npc.m_iTargetAlly) || flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.7) ? 0 : 1)
 					{
-						if(npc.m_iChanged_WalkCycle != 0)
+						case 0:
 						{
-							npc.StartPathing();
-							npc.m_bisWalking = true;
-							npc.m_flSpeed = 340.0;
-							npc.m_iChanged_WalkCycle = 0;
-							ReAnim=true;
+							if(npc.m_iChanged_WalkCycle != 0)
+							{
+								npc.StartPathing();
+								npc.m_bisWalking = true;
+								npc.m_flSpeed = 340.0;
+								npc.m_iChanged_WalkCycle = 0;
+								ReAnim=true;
+							}
+							BaguettusIntoAir(npc, ReAnim);
+							if(flDistanceToTarget < npc.GetLeadRadius())
+							{
+								float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_, vPredictedPos);
+								npc.SetGoalVector(vPredictedPos);
+							}
+							else
+								npc.SetGoalEntity(npc.m_iTargetAlly);
 						}
-						BaguettusIntoAir(npc, ReAnim);
-						if(flDistanceToTarget < npc.GetLeadRadius())
+						case 1:
 						{
-							float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_, vPredictedPos);
-							npc.SetGoalVector(vPredictedPos);
-						}
-						else
-							npc.SetGoalEntity(npc.m_iTargetAlly);
-					}
-					case 1:
-					{
-						if(npc.m_iChanged_WalkCycle != 1)
-						{
-							npc.StopPathing();
-							npc.m_bisWalking = false;
-							npc.m_flSpeed = 0.0;
-							npc.m_iChanged_WalkCycle = 1;
-							ReAnim=true;
-							npc.SetActivity("ACT_MP_STAND_MELEE");
+							if(npc.m_iChanged_WalkCycle != 1)
+							{
+								npc.StopPathing();
+								npc.m_bisWalking = false;
+								npc.m_flSpeed = 0.0;
+								npc.m_iChanged_WalkCycle = 1;
+								ReAnim=true;
+								npc.SetActivity("ACT_MP_STAND_MELEE");
+							}
 						}
 					}
 				}
+				else
+					SmiteNpcToDeath(npc.index);
 			}
 			default:
 			{
@@ -742,7 +753,8 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 	}
 	else
 	{
-		if(IsValidAlly(npc.index, npc.m_iTargetAlly))
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		if(!IsValidEnemy(npc.index, npc.m_iTarget)&&IsValidAlly(npc.index, npc.m_iTargetAlly))
 		{
 			if(!Can_I_See_Ally(npc.index, npc.m_iTargetAlly))
 				npc.m_flGetClosestTargetAllyTime -= 0.076;
@@ -750,6 +762,22 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+			if(GameTime > npc.m_flCaptinoMeniusTeleport && flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*150.0)
+			{
+				static float hullcheckmaxs[3];
+				static float hullcheckmins[3];
+				hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+				hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );
+				if(Npc_Teleport_Safe(npc.index, vecTarget, hullcheckmins, hullcheckmaxs, false))
+				{
+					ParticleEffectAt(VecSelfNpc, "teleported_red", 0.5);
+					WorldSpaceCenter(npc.index, VecSelfNpc);
+					ParticleEffectAt(VecSelfNpc, "teleported_red", 0.5);
+					npc.m_flCaptinoMeniusTeleport = GameTime + 18.5;
+				}
+				else
+					npc.m_flCaptinoMeniusTeleport = GameTime + 1.0;
+			}
 			switch((!Can_I_See_Ally(npc.index, npc.m_iTargetAlly) || flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.7) ? 0 : 1)
 			{
 				case 0:
@@ -785,10 +813,10 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 				}
 			}
 			npc.SpeechTalk(npc.m_iTargetAlly);
+			npc.m_flGetClosestTargetTime = 0.0;
 		}
 		else
 			npc.m_flGetClosestTargetAllyTime = 0.0;
-		npc.m_flGetClosestTargetTime = 0.0;
 		npc.PlayIdleAlertSound();
 	}
 }

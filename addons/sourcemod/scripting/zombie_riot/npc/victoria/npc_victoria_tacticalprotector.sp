@@ -293,7 +293,7 @@ static void VictoriaProtector_ClotThink(int iNPC)
 					
 					if(i_GunAmmo[npc.index])
 					{
-						for(int entitycount; entitycount<IsFactorya-1; entitycount++)
+						for(int entitycount; entitycount<IsFactorya; entitycount++)
 						{
 							int entity=HowManyFactory[entitycount];
 							if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))

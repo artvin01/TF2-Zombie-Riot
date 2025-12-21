@@ -429,12 +429,8 @@ static void FactoryCPU(int iNPC)
 			AcceptEntityInput(npc.m_iWearable2, "SetParent", npc.index);
 			MakeObjectIntangeable(npc.m_iWearable2);
 			npc.PlayLandingSound();
-			npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 			if(IsValidEntity(npc.m_iTeamGlow))
-			{
-				SetVariantColor(view_as<int>({255, 255, 255, 200}));
-				AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-			}
+				RemoveEntity(npc.m_iTeamGlow);
 			npc.m_flAttackHappens = gameTime + BuildTime;
 			i_AttacksTillMegahit[npc.index] = 607;
 			if(npc.m_iState==0)
@@ -528,17 +524,19 @@ static void FactoryCPU(int iNPC)
 						}
 						default: npc.m_iOverlordComboAttack=0;
 					}
-					int iColor[4];
-					SetColorRGBA(iColor, GET_R, GET_G, GET_B, 200);
-					SetVariantColor(iColor);
 					if(IsValidEntity(npc.m_iTeamGlow))
+					{
+						int iColor[4];
+						SetColorRGBA(iColor, GET_R, GET_G, GET_B, 200);
+						SetVariantColor(iColor);
 						AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+					}
 					if(npc.m_flMusicEnd < gameTime)
 					{
 						OneCaramelldansen=false;
 						npc.Anger=false;
-						SetVariantColor(view_as<int>({255, 255, 255, 200}));
-						AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+						if(IsValidEntity(npc.m_iTeamGlow))
+							RemoveEntity(npc.m_iTeamGlow);
 						for(int client=1; client<=MaxClients; client++)
 						{
 							if(IsClientInGame(client) && !IsFakeClient(client))
@@ -572,6 +570,8 @@ static void FactoryCPU(int iNPC)
 								}
 							}
 						}
+						if(!IsValidEntity(npc.m_iTeamGlow))
+							npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 						npc.m_flAttackHappens=gameTime;
 						npc.m_iState = -5;
 					}
@@ -616,6 +616,14 @@ static void FactoryCPU(int iNPC)
 				}
 				case 0:
 				{
+					if(!IsValidEntity(npc.m_iTeamGlow))
+					{
+						npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+						int iColor[4];
+						SetColorRGBA(iColor, 255, 255, 255, 200);
+						SetVariantColor(iColor);
+						AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+					}
 					bool GetClosed=false;
 					float Vec[3], entitypos[3], distance;
 					GetAbsOrigin(npc.m_iWearable3, Vec);
@@ -650,14 +658,18 @@ static void FactoryCPU(int iNPC)
 						i_current_wave[npc.index]=(Waves_GetRoundScale()+1);
 						return;
 					}
-					int iColor[4];
-					iColor[0]=145+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*110.0);
-					iColor[1]=10+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*245.0);
-					iColor[2]=0+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*255.0);
-					iColor[3]=200+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*55.0);
-					SetVariantColor(iColor);
 					if(IsValidEntity(npc.m_iTeamGlow))
+					{
+						int iColor[4];
+						SetColorRGBA(iColor, 145+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*110.0),
+						10+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*245.0),
+						0+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*255.0),
+						200+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*55.0));
+						SetVariantColor(iColor);
 						AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+					}
+					else
+						npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 					if(npc.m_flAttackHappens < gameTime)
 					{
 						float Vec[3]; GetAbsOrigin(npc.m_iWearable3, Vec);
@@ -693,14 +705,18 @@ static void FactoryCPU(int iNPC)
 				}
 				case 3, 4, 5, 6:
 				{
-					int iColor[4];
-					iColor[0]=145+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*110.0);
-					iColor[1]=10+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*245.0);
-					iColor[2]=0+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*255.0);
-					iColor[3]=200+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*55.0);
-					SetVariantColor(iColor);
 					if(IsValidEntity(npc.m_iTeamGlow))
+					{
+						int iColor[4];
+						SetColorRGBA(iColor, 145+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*110.0),
+						10+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*245.0),
+						0+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*255.0),
+						200+RoundToCeil(((npc.m_flAttackHappens-gameTime)/BuildTime)*55.0));
+						SetVariantColor(iColor);
 						AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+					}
+					else
+						npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 					if(npc.m_flAttackHappens < gameTime)
 					{
 						float Vec[3]; GetAbsOrigin(npc.m_iWearable3, Vec);
@@ -736,10 +752,7 @@ static void FactoryCPU(int iNPC)
 		if(i_AttacksTillMegahit[npc.index] >= 608 && i_AttacksTillMegahit[npc.index] < 613)
 		{
 			if(IsValidEntity(npc.m_iTeamGlow))
-			{
-				SetVariantColor(view_as<int>({255, 255, 255, 200}));
-				AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-			}
+				RemoveEntity(npc.m_iTeamGlow);
 			if(IsValidEntity(npc.m_iWearable1))
 			{
 				SetVariantString("!activator");

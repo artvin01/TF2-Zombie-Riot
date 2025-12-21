@@ -305,7 +305,7 @@ methodmap Castellan < CClotBody
 		npc.m_flCharge_delay = 330.0;
 		npc.m_flSpeed = npc.m_flCharge_delay;
 		npc.m_flDoingAnimation = 0.0;
-		npc.m_iHealthBar = 2;
+		npc.m_iHealthBar = 1;
 		
 		npc.m_flMeleeArmor = 1.25;
 		
@@ -419,7 +419,7 @@ methodmap Castellan < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.75;
 		}
-		npc.m_flDead_Ringer = RaidModeScaling*0.02;
+		npc.m_flDead_Ringer = RaidModeScaling*0.04;
 		
 		if(StrContains(data, "final_item") != -1)
 		{
@@ -663,7 +663,7 @@ static void Castellan_ClotThink(int iNPC)
 	
 	if(npc.m_bDoSpawnGesture)
 	{
-		int Maxhealth=RoundToCeil(float(ReturnEntityMaxHealth(npc.index))/2.5);
+		int Maxhealth=RoundToCeil(float(ReturnEntityMaxHealth(npc.index))/2.33);
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", Maxhealth);
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", Maxhealth);
 		npc.m_bDoSpawnGesture=false;
@@ -691,49 +691,6 @@ static void Castellan_ClotThink(int iNPC)
 	}
 	
 	if(!npc.m_iHealthBar)
-	{
-		if(i_RaidGrantExtra[npc.index] == 1)
-		{
-			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
-
-			ReviveAll(true);
-
-			npc.m_flTimeSinceHasBeenHurt = GetGameTime() + 36.0;
-			RaidModeTime += 900.0;
-			NPCStats_RemoveAllDebuffs(npc.index, 1.0);
-			SetEntityCollisionGroup(npc.index, 24);
-			SetTeam(npc.index, TFTeam_Red);
-			GiveProgressDelay(45.0);
-			
-			float SelfPos[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
-			float AllyAng[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", AllyAng);
-			int Spawner_entity = GetRandomActiveSpawner();
-			if(IsValidEntity(Spawner_entity))
-			{
-				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", SelfPos);
-				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", AllyAng);
-			}
-			int SensalSpawn = NPC_CreateByName("npc_sensal", -1, SelfPos, AllyAng, GetTeam(npc.index), "victoria_cutscene"); //can only be enemy
-			if(IsValidEntity(SensalSpawn))
-			{
-				if(GetTeam(SensalSpawn) != TFTeam_Red)
-				{
-					NpcAddedToZombiesLeftCurrently(SensalSpawn, true);
-				}
-				SetEntProp(SensalSpawn, Prop_Data, "m_iHealth", 100000000);
-				SetEntProp(SensalSpawn, Prop_Data, "m_iMaxHealth", 100000000);
-			}
-		}
-		else
-			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
-		npc.m_iState = 0;
-		npc.m_flDoingAnimation = 0.0;
-		return;
-	}
-	
-	if(npc.m_iHealthBar!=2)
 	{
 		if(!npc.m_bFUCKYOU_move_anim)
 		{
@@ -767,7 +724,7 @@ static void Castellan_ClotThink(int iNPC)
 		ParticleSpawned[npc.index] = true;
 	}
 	
-	if(CastellanInvis && (npc.m_flVICTORIA_NUKE_SETUP < gameTime || npc.m_iHealthBar!=2 || npc.m_bHalfRage))
+	if(CastellanInvis && (npc.m_flVICTORIA_NUKE_SETUP < gameTime || !npc.m_iHealthBar || npc.m_bHalfRage))
 	{
 		//It's probably fair
 		static int AddNuke;
@@ -776,7 +733,7 @@ static void Castellan_ClotThink(int iNPC)
 		{
 			if(Victoria_Support(npc, AddNuke, Mk2))
 			{
-				if(npc.m_iHealthBar!=2)
+				if(!npc.m_iHealthBar)
 					AddNuke=2;
 				else if(npc.m_bHalfRage)
 					AddNuke=1;
@@ -991,7 +948,7 @@ static void Castellan_ClotThink(int iNPC)
 	}
 	else
 		npc.m_flGetClosestTargetTime = 0.0;
-	npc.m_flSpeed = npc.m_flCharge_delay*(1.0+(NitroFuelStack[npc.index]*0.025));
+	npc.m_flSpeed = npc.m_flCharge_delay*(1.0+(NitroFuelStack[npc.index]*0.05));
 	if(!npc.m_flDead_Ringer_Invis_bool)
 		npc.PlayIdleAlertSound();
 }
@@ -1156,6 +1113,49 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 		if(ratio<0.5 || (float(health)-damage)<(maxhealth*0.5))
 			npc.m_bHalfRage=true;
 	}
+	
+	if(!npc.m_iHealthBar && i_RaidGrantExtra[npc.index] == 1)
+	{
+		if(((ReturnEntityMaxHealth(npc.index)/40) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")))
+		{
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
+
+			ReviveAll(true);
+
+			npc.m_flTimeSinceHasBeenHurt = GetGameTime() + 36.0;
+			RaidModeTime += 900.0;
+			NPCStats_RemoveAllDebuffs(npc.index, 1.0);
+			SetEntityCollisionGroup(npc.index, 24);
+			SetTeam(npc.index, TFTeam_Red);
+			GiveProgressDelay(45.0);
+			
+			float SelfPos[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
+			float AllyAng[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", AllyAng);
+			int Spawner_entity = GetRandomActiveSpawner();
+			if(IsValidEntity(Spawner_entity))
+			{
+				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", SelfPos);
+				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", AllyAng);
+			}
+			int SensalSpawn = NPC_CreateByName("npc_sensal", -1, SelfPos, AllyAng, GetTeam(npc.index), "victoria_cutscene");
+			if(IsValidEntity(SensalSpawn))
+			{
+				if(GetTeam(SensalSpawn) != TFTeam_Red)
+				{
+					NpcAddedToZombiesLeftCurrently(SensalSpawn, true);
+				}
+				SetEntProp(SensalSpawn, Prop_Data, "m_iHealth", 100000000);
+				SetEntProp(SensalSpawn, Prop_Data, "m_iMaxHealth", 100000000);
+			}
+
+			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
+			npc.m_iState = 0;
+			npc.m_flDoingAnimation = 0.0;
+			return Plugin_Handled;
+		}
+	}
 
 	return Plugin_Changed;
 }
@@ -1242,7 +1242,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 				Temp_Target[1] = Victoria_GetTargetDistance(npc.index, true, false);
 			}
 		}
-		if(npc.m_iHealthBar!=2)
+		if(!npc.m_iHealthBar)
 		{
 			if(IsValidEnemy(npc.index, Temp_Target[2]))
 				CastellanAirStrike(npc, Temp_Target[2], 3, gameTime);
@@ -1385,14 +1385,14 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 					BlastArmor[npc.index] = false;
 					MagicArmor[npc.index] = false;
 					BulletArmor[npc.index] = false;
-					npc.m_flCharge_Duration=gameTime+10.0;
+					npc.m_flCharge_Duration=gameTime+20.0;
 					switch(Castellan_Get_HighDMGType(npc))
 					{
 						case 0:BlastArmor[npc.index]=true;
 						case 1:MagicArmor[npc.index]=true;
 						default:BulletArmor[npc.index]=true;
 					}
-					GrantEntityArmor(npc.index, false, 0.025, 0.5, 0);
+					GrantEntityArmor(npc.index, false, 0.05, 0.5, 0);
 					if(!HuscarlsDesc)
 					{
 						NPCPritToChat_Noname("Castellan_HuscarlsDesc", false);
@@ -1564,7 +1564,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 					npc.PlayDeathSound();
 					npc.m_flDead_Ringer_Invis = gameTime + 10.0;
 
-					if(npc.m_iHealthBar!=2)
+					if(!npc.m_iHealthBar)
 						Temp_Target[2] = Victoria_GetTargetDistance(npc.index, false, false);
 					if(npc.m_bHalfRage)
 						Temp_Target[1] = Victoria_GetTargetDistance(npc.index, true, false);
@@ -1590,7 +1590,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 		return 2;
 	}
 	
-	float AttackSpeed = 1.0-(NitroFuelStack[npc.index]*0.05);
+	float AttackSpeed = 1.0-(NitroFuelStack[npc.index]*0.1);
 	if(AttackSpeed<0.05)AttackSpeed=0.05;
 	if(npc.m_iAmmo)
 	{
@@ -1927,7 +1927,7 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 	{
 		case 1:
 		{
-			if(npc.m_iHealthBar!=2)
+			if(!npc.m_iHealthBar)
 			{
 				NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Ability2-3", false, false);
 				npc.m_flAttackHappens_2 = gameTime + 1.35;

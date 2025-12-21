@@ -96,6 +96,7 @@ methodmap VictoriaTank < CClotBody
 		npc.m_flRangedSpecialDelay = 0.0;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bFUCKYOU = false;
+		npc.m_bDoSpawnGesture = false;
 		
 		f_ExtraOffsetNpcHudAbove[npc.index] = -45.0;
 		
@@ -208,6 +209,7 @@ methodmap VictoriaTank < CClotBody
 			SetVariantString("!activator");
 			AcceptEntityInput(npc.m_iWearable5, "SetParent", npc.index);
 			MakeObjectIntangeable(npc.m_iWearable5);
+			npc.m_bDoSpawnGesture = true;
 		}
 
 		return npc;
@@ -226,6 +228,20 @@ static void VictoriaTank_ClotThink(int iNPC)
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+	
+	if(npc.m_bDoSpawnGesture)
+	{
+		if(IsValidEntity(npc.m_iTeamGlow))
+			RemoveEntity(npc.m_iTeamGlow);
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		if(IsValidEntity(npc.m_iTeamGlow))
+		{
+			int iColor[4];
+			SetColorRGBA(iColor, 255, 255, 255, 200);
+			SetVariantColor(iColor);
+			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+		}
+	}
 
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
