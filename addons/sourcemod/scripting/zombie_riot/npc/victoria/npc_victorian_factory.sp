@@ -586,7 +586,7 @@ static void FactoryCPU(int iNPC)
 						if(gameTime > npc.m_flAttackHappens)
 						{
 							GetAbsOrigin(npc.m_iWearable3, Vec);
-							int spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), "factory;mk2;isvoli");
+							int spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), "mk2;isvoli");
 							if(spawn_index > MaxClients)
 							{
 								NpcStats_CopyStats(npc.index, spawn_index);

@@ -52,6 +52,39 @@ methodmap VictorianDroneAnvil < CClotBody
 		EmitSoundToAll(g_HealSound, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.1, 110);
 	}
 	
+	public void StartHealing()
+	{
+		int im_iWearable3 = this.m_iWearable3;
+		if(im_iWearable3 != INVALID_ENT_REFERENCE)
+		{
+			this.Healing = true;
+			
+		//	EmitSoundToAll("m_iWearable3s/medigun_heal.wav", this.index, SNDCHAN_m_iWearable3);
+		}
+	}	
+	public void StopHealing()
+	{
+		int iBeam = this.m_iWearable5;
+		if(iBeam != INVALID_ENT_REFERENCE)
+		{
+			int iBeamTarget = GetEntPropEnt(iBeam, Prop_Send, "m_hOwnerEntity");
+			if(IsValidEntity(iBeamTarget))
+			{
+				AcceptEntityInput(iBeamTarget, "ClearParent");
+				RemoveEntity(iBeamTarget);
+			}
+			
+			AcceptEntityInput(iBeam, "ClearParent");
+			RemoveEntity(iBeam);
+			
+			EmitSoundToAll("weapons/medigun_no_target.wav", this.index, SNDCHAN_WEAPON);
+			
+		//	StopSound(this.index, SNDCHAN_m_iWearable3, "m_iWearable3s/medigun_heal.wav");
+			
+			this.Healing = false;
+		}
+	}
+	
 	property float m_flLifeTime
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
@@ -319,7 +352,12 @@ static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float 
 {
 	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(iNPC);
 	if(npc.m_iTarget&&b_NpcIsInvulnerable[npc.m_iTarget])
+	{
+		npc.StopHealing();
+		npc.Healing = false;
+		npc.m_bnew_target = false;
 		return 0;
+	}
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * (b_we_are_reloading[npc.index] ? 20.0 : 10.0)))
@@ -327,9 +365,13 @@ static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float 
 			npc.PlayHealSound();
 			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 			npc.FaceTowards(vecTarget, 20000.0);
-			if(IsValidEntity(npc.m_iWearable3))
-				RemoveEntity(npc.m_iWearable3);
-			npc.m_iWearable3 = ConnectWithBeam(npc.m_iWearable2, npc.m_iTarget, 30, 255, 0, 3.0, 3.0, 1.35, LASERBEAM);
+			if(!npc.m_bnew_target)
+			{
+				npc.StartHealing();
+				npc.m_iWearable3 = ConnectWithBeam(npc.m_iWearable2, npc.m_iTarget, 30, 255, 0, 3.0, 3.0, 1.35, LASERBEAM);
+				npc.Healing = true;
+				npc.m_bnew_target = true;
+			}
 			//CreateTimer(0.1, Timer_MachineShop, npc.index, TIMER_FLAG_NO_MAPCHANGE);
 			//VictorianFactory npc = view_as<VictorianFactory>(iNPC);
 			float entitypos[3], dist;
@@ -363,10 +405,14 @@ static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float 
 			npc.m_flNextMeleeAttack = gameTime + 0.3;
 			return 0;
 		}
-		else if(IsValidEntity(npc.m_iWearable3))
-			RemoveEntity(npc.m_iWearable3);
+		npc.StopHealing();
+		npc.Healing = false;
+		npc.m_bnew_target = false;
 		return 2;
 	}
+	npc.StopHealing();
+	npc.Healing = false;
+	npc.m_bnew_target = false;
 	return 1;
 }
 

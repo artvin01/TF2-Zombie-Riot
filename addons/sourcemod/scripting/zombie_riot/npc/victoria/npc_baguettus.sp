@@ -489,7 +489,7 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 					SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMaxDist", 1.0);
 					npc.g_TimesSummoned=0;
 				}
-				else if(!npc.m_bCamo&&npc.g_TimesSummoned>=125)
+				else if(!npc.m_bCamo&&npc.g_TimesSummoned>=124)
 				{
 					b_NoHealthbar[npc.index] = 1;
 					if(IsValidEntity(npc.m_iTeamGlow))
