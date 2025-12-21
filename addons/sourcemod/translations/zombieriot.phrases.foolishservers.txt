@@ -1,0 +1,73 @@
+"Phrases"
+{
+	"Mr.V"
+	{
+		"en" "Mr.V"
+		"ko" "Mr.V"
+	}
+	"Invisible Trigger Man"
+	{
+		"en" "Invisible Trigger Man"
+		"ko" "트리거 맨"
+	}
+	"CyberGrind_Fast"
+	{
+		"en"	"Fast Mode"
+		"ko"	"빠른 모드"
+	}
+	"CyberGrind_Fast Desc"
+	{
+		"en"	"It's joever...\nStarting Cash:85000\nStarting Supplies: 1557"
+		"ko"	"쉬는시간 없이 모든 보스를 만날수있습니다!\n시작 자금:85000\n시작 보급품: 1557"
+	}
+	"CyberGrind_EX_Fast"
+	{
+		"en"	"EX Fast Mode"
+		"ko"	"실전압축 모드"
+	}
+	"CyberGrind_EX_Fast Desc"
+	{
+		"en"	"Simulates the Final Round of EX Hard.\nStarting Cash:129800\nStarting Supplies: 220"
+		"ko"	"EX 하드 마지막 라운드를 시뮬레이션 합니다.\n시작 자금:129800\n시작 보급품: 220"
+	}
+	"CyberGrind_Normal"
+	{
+		"en"	"Normal"
+		"ko"	"보통"
+	}
+	"CyberGrind_Normal Desc"
+	{
+		"en"	"Normal difficulty. Raid Boss only.\nStarting Cash:5706\nStarting Supplies: 100"
+		"ko"	"통상 난이도 입니다. 레이드 보스만 등장합니다.\n시작 자금:5706\n시작 보급품: 100"
+	}
+	"CyberGrind_Hard"
+	{
+		"en"	"Hard"
+		"ko"	"어려움"
+	}
+	"CyberGrind_Hard Desc"
+	{
+		"en"	"Added Wave Boss!\nStarting Cash:4700\nStarting Supplies: 50"
+		"ko"	"웨이브 보스가 추가됩니다!\n시작 자금:4700\n시작 보급품: 50"
+	}
+	"CyberGrind_Expert"
+	{
+		"en"	"Expert"
+		"ko"	"ㅈ문가"
+	}
+	"CyberGrind_Expert Desc"
+	{
+		"en"	"Added Mini Boss!\nStarting Cash:4500\nStarting Supplies: 25"
+		"ko"	"미니 보스가 추가됩니다!\n시작 자금:4500\n시작 보급품: 25"
+	}
+	"CyberGrind_EX_Hard"
+	{
+		"en"	"Ex Hard"
+		"ko"	"Ex 하드"
+	}
+	"CyberGrind_EX_Hard Desc"
+	{
+		"en"	"It's joever...\nStarting Cash:4100\nStarting Supplies: 25"
+		"ko"	"우린 ㅈ되고말거에요\n시작 자금:4100\n시작 보급품: 25"
+	}
+}
