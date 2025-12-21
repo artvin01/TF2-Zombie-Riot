@@ -40,9 +40,16 @@ public void Dungeon_Crate_Crystal()
 	Construction_AddMaterial("crystal", 1);
 }
 
-public void Dungeon_Crate_BonusCash()
+public void Dungeon_Crate_BonusCash25()
 {
 	int amount = GetRandomInt(10, 40);
+	GlobalExtraCash += amount;
+	CPrintToChatAll("%t", "Gained Extra Cash", amount);
+}
+
+public void Dungeon_Crate_BonusCash100()
+{
+	int amount = GetRandomInt(50, 150);
 	GlobalExtraCash += amount;
 	CPrintToChatAll("%t", "Gained Extra Cash", amount);
 }
@@ -55,4 +62,9 @@ public void Dungeon_Crate_InscriptionFragment()
 public void Dungeon_Crate_InscriptionWhole()
 {
 	Rogue_GiveNamedArtifact("Dungeon Compass");
+}
+
+public void Dungeon_Crate_KeyFragment()
+{
+	Rogue_GiveNamedArtifact("Key Fragment");
 }

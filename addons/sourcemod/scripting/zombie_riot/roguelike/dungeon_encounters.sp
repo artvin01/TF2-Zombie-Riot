@@ -132,3 +132,40 @@ static void FinishShopVote(const Vote vote)
 		}
 	}
 }
+
+public float Dungeon_Encounter_Treasure()
+{
+	Rogue_RemoveNamedArtifact("Treasure Key");
+	Dungeon_RollNamedLoot("Treasure Crate");
+	
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_ItemEncounter, "Treasure Vault Encounter Title");
+	Vote vote;
+
+	Artifact artifact;
+	for(int i; i < 2; i++)
+	{
+		int index = Rogue_GetRandomArtifact(artifact, true, 24);
+		if(index == -1)
+			break;
+		
+		if(Rogue_HasNamedArtifact(artifact.Name))
+			continue;
+		
+		strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
+		strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
+		IntToString(index, vote.Config, sizeof(vote.Config));
+		list.PushArray(vote);
+	}
+
+	if(!list.Length)
+	{
+		strcopy(vote.Name, sizeof(vote.Name), "There's nothing here?");
+		strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+		IntToString(-1, vote.Config, sizeof(vote.Config));
+		list.PushArray(vote);
+	}
+
+	Rogue_StartGenericVote(30.0);
+
+	return 50.0;
+}
