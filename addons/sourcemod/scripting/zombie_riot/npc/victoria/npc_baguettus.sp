@@ -462,8 +462,9 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 			default:
 			{
 				npc.g_TimesSummoned--;
-				if(npc.g_TimesSummoned<=0)
+				if(npc.g_TimesSummoned<=1)
 				{
+					npc.g_TimesSummoned=0;
 					npc.SetActivity("ACT_MP_STAND_MELEE");
 					if(IsValidEntity(npc.m_iWearable1))
 						RemoveEntity(npc.m_iWearable1);

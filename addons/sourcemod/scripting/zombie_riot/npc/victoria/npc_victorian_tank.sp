@@ -241,6 +241,37 @@ static void VictoriaTank_ClotThink(int iNPC)
 			SetVariantColor(iColor);
 			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		}
+		
+		if(IsValidEntity(npc.m_iWearable6))
+			RemoveEntity(npc.m_iWearable6);
+		npc.m_iWearable6 = TF2_CreateGlow(npc.m_iWearable5);
+		if(IsValidEntity(npc.m_iWearable6))
+		{
+			int iColor[4];
+			SetColorRGBA(iColor, 255, 255, 255, 200);
+			SetVariantColor(iColor);
+			AcceptEntityInput(npc.m_iWearable6, "SetGlowColor");
+		}
+	}
+	if(npc.m_bFUCKYOU || npc.m_fbRangedSpecialOn)
+	{
+		if(IsValidEntity(npc.m_iTeamGlow))
+		{
+			if(!IsValidEntity(npc.m_iWearable6))
+				npc.m_iWearable6 = TF2_CreateGlow(npc.m_iWearable5);
+			else
+			{
+				int iColor[4];
+				SetColorRGBA(iColor, 255, 255, 255, 200);
+				SetVariantColor(iColor);
+				AcceptEntityInput(npc.m_iWearable6, "SetGlowColor");
+			}
+		}
+		else
+		{
+			if(IsValidEntity(npc.m_iWearable6))
+				RemoveEntity(npc.m_iWearable6);
+		}
 	}
 
 	if(npc.m_flNextThinkTime > gameTime)
