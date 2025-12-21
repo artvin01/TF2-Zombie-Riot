@@ -774,6 +774,7 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 					WorldSpaceCenter(npc.index, VecSelfNpc);
 					ParticleEffectAt(VecSelfNpc, "teleported_red", 0.5);
 					npc.m_flCaptinoMeniusTeleport = GameTime + 18.5;
+					npc.PlayTeleportSound();
 				}
 				else
 					npc.m_flCaptinoMeniusTeleport = GameTime + 1.0;
