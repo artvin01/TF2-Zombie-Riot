@@ -5431,6 +5431,11 @@
 		"ko"	"군수공장"
 		"it"	"Fabbrica"
 	}
+	"Dummy"
+	{
+		"en"	"Dummy"
+		"ko"	"훈련용 표적"
+	}
 	"Batter"
 	{
 		"en"	"Leatherboots Batter"
