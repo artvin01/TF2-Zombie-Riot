@@ -170,6 +170,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			//needs buffs!!
 			switch(GetRandomInt(1,3))
+			{
 				case 1:
 				{
 					PluginName = "npc_blitzkrieg";	
@@ -418,6 +419,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			//needs buffs!!
 			switch(GetRandomInt(1,4))
+			{
 				case 1:
 				{
 					PluginName = "npc_vincent";	
