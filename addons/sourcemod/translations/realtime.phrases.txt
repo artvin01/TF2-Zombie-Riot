@@ -103,7 +103,7 @@
 		"en"		"Select Idle Worker"
 		"pt"		"Selecionar Trabalhador Ocioso"
 		"it"		"Seleziona lavoratore inattivo"
-		"ko"		"놀고 있는 일꾼 선택"
+		"ko"		"대기 중인 일꾼 선택"
 	}
 	"Delete Selected"
 	{
@@ -507,7 +507,7 @@
 	{
 		"en"		"Converted"
 		"it"		"Convertito"
-		"ko"		"전환됨"
+		"ko"		"전향됨"
 	}
 	"Supply"
 	{
