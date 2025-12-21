@@ -246,9 +246,6 @@ static void VictoriaProtector_ClotThink(int iNPC)
 
 	if(!npc.m_bFUCKYOU)
 	{
-		int HowManyFactory[6];
-		int IsFactorya=0;
-		//└There won't be more cases than this
 		if(i_GunAmmo[npc.index])
 		{
 			bool NoFactory=true;
@@ -256,11 +253,7 @@ static void VictoriaProtector_ClotThink(int iNPC)
 			{
 				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
-				{
 					NoFactory=false;
-					HowManyFactory[IsFactorya]=entity;
-					IsFactorya++;
-				}
 			}
 			if(NoFactory)
 			{
@@ -293,9 +286,9 @@ static void VictoriaProtector_ClotThink(int iNPC)
 					
 					if(i_GunAmmo[npc.index])
 					{
-						for(int entitycount; entitycount<IsFactorya; entitycount++)
+						for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 						{
-							int entity=HowManyFactory[entitycount];
+							int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 							if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
 							{
 								WorldSpaceCenter(entity, VecSelfNpc);
