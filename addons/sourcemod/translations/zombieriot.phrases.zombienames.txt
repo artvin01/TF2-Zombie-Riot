@@ -5431,6 +5431,10 @@
 		"ko"	"군수공장"
 		"it"	"Fabbrica"
 	}
+	"Dummy"
+	{
+		"en"	"Dummy"
+	}
 	"Batter"
 	{
 		"en"	"Leatherboots Batter"
