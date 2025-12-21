@@ -430,7 +430,7 @@
 	{
 		"en"	"Unlocks more upgrades and allows building constructs."
 		"it"	"Sblocca ulteriori potenziamenti e consente la costruzione di edifici."
-		"ko"	"더 많은 개선과 컨스트럭션 구조물이 해금됩니다."
+		"ko"	"더 많은 개선과 생존연산 구조물이 해금됩니다."
 	}
 	"Base Level II"
 	{
@@ -442,7 +442,7 @@
 	{
 		"en"	"Unlocks more upgrades, increases construct traits, increases construct limit."
 		"it"	"Sblocca ulteriori potenziamenti, aumenta le caratteristiche dei costrutti e aumenta il limite dei costrutti."
-		"ko"	"더 많은 개선이 해금되고 구조물 특성의 효과 및 컨스트럭션 구조물의 최대 설치량이 증가합니다."
+		"ko"	"더 많은 개선이 해금되고 구조물 특성의 효과 및 생존연산 구조물의 최대 설치량이 증가합니다."
 	}
 	"Base Level III"
 	{
@@ -454,7 +454,7 @@
 	{
 		"en"	"Unlocks more upgrades, increases construct traits, increases construct limit."
 		"it"	"Sblocca ulteriori potenziamenti, aumenta le caratteristiche dei costrutti e aumenta il limite dei costrutti."
-		"ko"	"더 많은 개선이 해금되고 구조물 특성의 효과 및 컨스트럭션 구조물의 최대 설치량이 증가합니다."
+		"ko"	"더 많은 개선이 해금되고 구조물 특성의 효과 및 생존연산 구조물의 최대 설치량이 증가합니다."
 	}
 	"Enchanced Water Pump"
 	{

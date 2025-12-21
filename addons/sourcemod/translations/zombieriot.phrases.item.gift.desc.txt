@@ -856,7 +856,7 @@
 	{
 		"en" 		"A combine who adopted an acient way of battle, highly deadly.\nWill deal 25％ extra damage to any non, melee player, and get angered if attacked by anything non melee."
 		"it"		"Un combine che ha adottato un antico modo di combattere, altamente letale. infligge 25％ danni extra a qualsiasi giocatore non in mischia e si arrabbia se attaccato da qualsiasi cosa non in mischia."
-		"ko" 		"고대의 전투 방식을 선택한 콤바인으로서, 매우 위협적입니다.\n-근접 무기를 사용하지 않는 대상에게 가하는 피해량 +25%\n-근접 무기 이외의 공격으로 피해를 받을 시 분노"
+		"ko" 		"고대의 전투 방식을 선택한 콤바인으로서, 매우 위협적입니다.\n-근접 무기를 사용하지 않는 대상에게 가하는 피해량 +25％\n-근접 무기 이외의 공격으로 피해를 받을 시 분노"
 	}
 	"The Addiction Desc"
 	{
@@ -1631,7 +1631,7 @@
 	{
 		"en"		"Immensive strength thanks to your castle."
 		"it"		"Forza immensa grazie al vostro castello."
-		"ko"		"튜턴족 기사는 당신의 성 덕분에 엄청난 힘을 얻었습니다."
+		"ko"		"튜튼족 기사는 당신의 성 덕분에 엄청난 힘을 얻었습니다."
 	}
 	"Barracks Villager Desc"
 	{
@@ -1649,13 +1649,13 @@
 	{
 		"en"		"A bishop that has partially mutated.\nIt is partly human, partly—\nUses a ranged attack\n- When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max"
 		"it"		"Quando la sua ''altra metà'' è viva e non è in coma, entra in coma quando gli HP raggiungono lo 0 e inizia a rigenerarsi quando gli HP raggiungono il massimo"
-		"ko"		"이 주교의 생명 형태는 이미 변화되어 있다.\n한 쪽은 인간으로 보이고, 다른 한쪽은...\n-원거리 공격을 사용\n-임사 형태가 아닌 '파도의 멸사체' 가 살아있다면, 체력이 0이 됐을때 죽지 않고 '임사 상태'가 된 뒤, 체력을 천천히 회복합니다.\n-이 상태에서 체력이 전부 회복되면 다시 부활합니다."
+		"ko"		"이 주교의 생명 형태는 이미 변화되어 있다.\n한 쪽은 인간으로 보이고, 다른 한 쪽은...\n-원거리 공격을 사용\n-임사 형태가 아닌 '파도의 멸사체' 가 살아있다면, 체력이 0이 됐을때 죽지 않고 '임사 형태'가 된 뒤, 체력을 천천히 회복합니다.\n-이 상태에서 체력이 전부 회복되면 다시 부활합니다."
 	}
 	"Tidelinked Archon Desc"
 	{
 		"en"		"Sea Terror. Even Alaxios's technology has a role to play in the evolution of we many.\n- Attacks inflict Nervous Impairment\n- When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max"
 		"it"		"Terrore marino. Persino la tecnologia di Alaxios ha un ruolo da svolgere nell'evoluzione di noi tutti.\n- Gli attacchi infliggono menomazioni nervose.\n- Quando la sua altra metà è viva e non è in coma, entra in coma quando gli HP raggiungono lo 0 e inizia a rigenerarsi quando gli HP raggiungono il massimo"
-		"ko"		"...시테러처럼 보인다. 에기르 과학기술은 위매니가 진화하는 길에서 아무런 쓸모도 없는 건 아니다.\n-임사 형태가 아닌 '파도의 주교' 가 살아있다면, 체력이 0이 됐을때 죽지 않고 '임사 상태'가 된 뒤, 체력을 천천히 회복합니다.\n-이 상태에서 체력이 전부 회복되면 다시 부활합니다."
+		"ko"		"...시테러처럼 보인다. 알락시오스의 과학기술은 위매니가 진화하는 길에서 아무런 쓸모도 없는 건 아니다.\n-임사 형태가 아닌 '파도의 주교' 가 살아있다면, 체력이 0이 됐을때 죽지 않고 '임사 상태'가 된 뒤, 체력을 천천히 회복합니다.\n-이 상태에서 체력이 전부 회복되면 다시 부활합니다."
 	}
 	"Scientific Witchery Desc"
 	{
@@ -1667,7 +1667,7 @@
 	{
 		"en"		"It speaks for we many.\n- Starts in Healer form\n- When in Healer form, follows it's allies and attacks heal up to 2 targets\n- Gains power over time and enters Leviathan form when full, increased while on Nethersea Brands\n- Gains power rapidly when falling below half health for the first time\n- When in Leviathan form, attacks targets 6 locations, dealing AOE True damage, and destorys blocking buildings\n- Reverts forms when Leviathan form, spawns Nethesea Brands and heals self"
 		"it"		"Parla a nome di tutti noi.\n- Inizia in forma di Guaritore \n- Quando è in forma di Guaritore, segue gli alleati e i suoi attacchi curano fino a 2 bersagli \n- Guadagna energia nel tempo ed entra in forma di Leviatano quando è pieno, aumentata quando si trova nelle Marche di Nethersea \n- Guadagna energia rapidamente quando scende sotto la metà della salute per la prima volta \n- Quando è in forma di Leviatano, attacca 6 bersagli, infliggendo danni veri AOE e distruggendo gli edifici che bloccano \n- Ritorna in forma di Leviatano, genera le Marche di Nethesea e si cura da solo \n- Si trasforma in forma di Leviatano, genera le Marche di Nethesea e si cura da solo"
-		"ko"		"더 이상 노래 부르지 않고, 위매니를 위해 목소리를 낸다.\n-스폰 시, 치유자 형태로 시작\n-치유자 형태일 때, 아군을 따라다니며 주변의 최대 2명의 아군에게 버프를 부여하고 체력을 회복시켜줍니다.\n-시간이 지날수록 점차 힘을 충전하며, 명흔 위에 있다면 충전 속도가 더 빨라집니다.\n-체력이 처음으로 절반 이하가 될 경우 힘을 빠르게 충전합니다.\n-힘이 최대치까지 충전되면, 변신 형태가 됩니다.\n-변신 형태일때는 최대 6명의 적을 타격하는 광역 트루 대미지 공격을 사용하며 구조물을 즉시 파괴합니다.\n-변신 형태에서 사망 시 치유자 형태로 복귀, 명흔을 생성하고 스스로를 치유합니다."
+		"ko"		"더 이상 노래 부르지 않고, 위매니를 위해 목소리를 낸다.\n-스폰 시, 치유자 형태로 시작\n-이 상태에서는 아군을 따라다니며 주변의 최대 2명의 아군에게 버프를 부여하고 체력을 회복\n-시간이 지날수록 점차 힘을 충전, 명흔 위에 있다면 충전 속도가 가속됩니다.\n-체력이 처음으로 절반 이하가 될 경우 힘을 급격히 충전합니다.\n-힘이 최대치가 되면, 변신 형태가 됩니다.\n-변신 형태일때는 최대 6개의 위치에 트루 대미지 광역 공격을 사용하며 가로막는 구조물을 파괴합니다.\n-변신 형태에서 사망 시 치유자 형태로 복귀, 명흔을 생성하고 스스로를 치유합니다."
 	}
 	"Seaborn Guard Desc"
 	{
@@ -1811,7 +1811,7 @@
 	{
 		"en"	"Re-created by Sensal on his way to you.\nCan rocketjump\nFires rockets\nCan melee attack with a cooldown, this melee deals heavy damage."
 		"it"	"Ricreato da Sensal mentre si reca da voi.\nPuò saltare con i razzi\nPuò attaccare in mischia con un cooldown, questa mischia infligge danni ingenti."
-		"ko"	"센살이 다시 새로 만들어낸 것으로, 당신에게로 향하고 있습니다.\n-로켓 점프를 사용할 수 있습니다.\n-로켓을 발사합니다.\n-매우 높은 피해를 주지만 쿨타임이 긴 근접 공격을 합니다."
+		"ko"	"센살이 다시 새로 만들어낸 것으로, 당신에게로 향하고 있습니다.\n-로켓 점프를 사용할 수 있습니다.\n-로켓을 발사합니다.\n-매우 높은 피해를 주는 쿨타임을 가진 근접 공격을 합니다."
 	}
 	"Protecta Desc"
 	{
@@ -2118,7 +2118,7 @@
 	{
 		"en"	"A giant steampunk soldier which reloads while not firing.\nAble to fire when it has enough rounds and can't change target while firing.\n- Uses a ranged attack and reloads\n- Immune to slow, stun, and shift effects\n- Attacks deal AOE and inflict Chaos elemental damage\n- Has resistances that decrease when damage is taken\n- On death, deals AOE damage and summons a Vulpo\nIn Red Moon, increased elemental damage and projectile speed"
 		"it"	"Un gigantesco soldato steampunk che ricarica quando non spara.\n- Può sparare quando ha abbastanza colpi e non può cambiare bersaglio mentre spara.\n- Utilizza un attacco a distanza e ricarica.\n- Immune agli effetti di rallentamento, stordimento e spostamento.\n- Gli attacchi sono AOE e infliggono danni elementali del Caos.\n- Ha resistenze che diminuiscono quando si subiscono danni.\n- Alla morte, infligge danni AOE ed evoca un Vulpo.\nIn Red Moon, aumenta i danni elementali e la velocità dei proiettili"
-		"ko"	"발사하지 않는 상황이면 탄약을 재장전하는 거대 스팀펑크 솔저입니다.\n탄약이 충분하면 사격 공격을 하며, 사격 중에는 공격 대상을 변경할 수 없습니다.\n-원거리 공격을 사용하며 재장전함\n-둔화, 기절, 미끄러짐 효과에 면역\n-공격이 광역 피해와 혼돈 원소 피해를 부여\n-피해를 받을 때마다, 자신의 피해 저항력이 조금씩 감소.\n-사망 시, 불포를 소환하고 주변에 극도로 높은 피해를 줌\n-붉은 달(로그2): 원소 피해 부여량과 투사체 속도 증가."
+		"ko"	"발사하지 않는 상황이면 탄약을 재장전하는 거대 스팀펑크 솔저입니다.\n탄약이 충분하면 사격 공격을 하며, 사격 중에는 공격 대상을 변경 불가\n-원거리 공격을 사용하며 재장전함\n-둔화, 기절, 미끄러짐 효과에 면역\n-공격이 광역 피해와 혼돈 원소 피해를 부여\n-피해를 받을 때마다, 자신의 피해 저항력이 조금씩 감소.\n-사망 시, 불포를 소환하고 주변에 극도로 높은 피해를 줌\n-붉은 달(로그2): 원소 피해 부여량과 투사체 속도 증가."
 	}
 	"Ahim Desc" 
 	{
@@ -2130,7 +2130,7 @@
 	{
 		"en"	"Ramps up speed over time, at max speed it gains massive damage and resistance, and its sword glows gold, when it melee's, missing or not itll lose this bonus, deals chaos damage if charged."
 		"it"	"Aumenta la velocità nel tempo, alla massima velocità guadagna danni e resistenza massicci, e la sua spada si illumina d'oro, quando si scontra in mischia, mancando o meno, perde questo bonus, infligge danni da caos se carica."
-		"ko"	"시간이 지날수록 이동 속도가 점차 증가합니다. 이동 속도가 최대에 도달 시 공격력과 피해 저항력이 높아지며 혼돈 원소 피해를 부여합니다. 공격 시, 공격의 적중 여부 상관 없이 이 효과는 전부 초기화됩니다."
+		"ko"	"시간이 지날수록 이동 속도가 점차 증가합니다. 이동 속도가 최대에 도달 시 피해량과 피해 저항력이 높아지며 혼돈 원소 피해를 부여합니다. 공격 시, 공격의 적중 여부 상관 없이 이 효과는 전부 초기화됩니다."
 	}
 	"Khazaan Desc" 
 	{
@@ -2166,13 +2166,13 @@
 	{
 		"it"	"Infligge pochi danni ma infligge emorragie."
 		"en"	"A spy that deals low damage but inflicts bleed. \n-Attacks afflict bleed on hit."
-		"ko"	"공격력은 낮지만, 적중시 대상에게 출혈을 부여하는 스파이입니다.\n-적중 시 출혈 디버프 부여"
+		"ko"	"피해량은 낮지만, 적중시 대상에게 출혈을 부여하는 스파이입니다.\n-적중 시 출혈 디버프 부여"
 	}
 	"Ancient Demon Desc" 
 	{
 		"en"	"Each time an enemy dies around them they gain HP, damage, resistance and a speed buff.\nThis also spawns a weaker smaller version of them randmly around the map.\nBuffs stack infinitly.\nDeals chaos damage."
 		"it"	"Ogni volta che un nemico muore intorno a loro, guadagnano HP, danni, resistenza e un potenziamento della velocità.\nQuesto genera anche una versione più debole e più piccola di loro in giro per la mappa.\nI potenziamenti si accumulano all'infinito.\nDanneggia il caos."
-		"ko"	"이 적 근처에서 다른 적이 사망할 때마다, 이 적의 체력, 공격력, 저항력, 이동 속도가 증가합니다.\n이 효과가 발동될 때마다 이 적의 소형화 버전이 맵의 무작위 위치에서 생성됩니다.\n이 버프는 무한대로 중첩됩니다.\n적중 시, 대상에게 혼돈 원소 피해를 부여합니다."
+		"ko"	"이 적 근처에서 다른 적이 사망할 때마다, 이 적의 체력, 피해량, 저항력, 이동 속도가 증가합니다.\n이 효과가 발동될 때마다 이 적의 소형화 버전이 맵의 무작위 위치에서 생성됩니다.\n이 버프는 무한대로 중첩됩니다.\n적중 시, 대상에게 혼돈 원소 피해를 부여합니다."
 	}
 	"Winter Sniper Desc" 
 	{
@@ -2202,7 +2202,7 @@
 	{
 		"en"	"Can jump and while midair they gain 3x damage, 3x range, and take 2x ranged damage."
 		"it"	"Può saltare e a mezz'aria guadagna 3x danni, 3x gittata e subisce 2x danni a distanza."
-		"ko"	"자주 점프하며, 공중에 떠있는 상태라면 공격력과 사정거리가 3배로 증가하지만, 받는 원거리 피해가 2배로 증폭됩니다."
+		"ko"	"자주 점프하며, 공중에 떠있는 상태라면 피해량과 사정거리가 3배로 증가하지만, 받는 원거리 피해가 2배가 됩니다."
 	}
 	"Arctic Mage Desc" 
 	{
@@ -2238,7 +2238,7 @@
 	{
 		"en"	"Ramps up speed over time, at max speed it gains massive damage and resistance, and its sword glows gold, when it melee's, missing or not itll lose this bonus, deals chaos damage if charged."
 		"it"	"Aumenta la velocità nel tempo, alla massima velocità guadagna danni e resistenza massicci, e la sua spada si illumina d'oro, quando si scontra in mischia, mancando o meno, perde questo bonus, infligge danni da caos se carica."
-		"ko"	"시간이 지날수록 이동 속도가 점차 증가합니다. 이동 속도가 최대에 도달 시 공격력과 피해 저항력이 높아지며 혼돈 원소 피해를 부여합니다. 공격 시, 공격의 적중 여부 상관 없이 이 효과는 전부 초기화됩니다."
+		"ko"	"시간이 지날수록 이동 속도가 점차 증가합니다. 이동 속도가 최대에 도달 시 피해량과 피해 저항력이 높아지며 혼돈 원소 피해를 부여합니다. 공격 시, 공격의 적중 여부 상관 없이 이 효과는 전부 초기화됩니다."
 	}
 	"Hitman Desc" 
 	{
@@ -2341,7 +2341,7 @@
 	{
 		"en"	"Activator of the xeno infection source. He won't let you stop him from infecting the world with the Xeno infection. \n-Melee attack hits multiple times and launches the target at the end. \n-Able to start sprinting towards the closest enemy, starting slow and gaining speed until he grabs someone. He will pick them up and snap their neck. Dropping them onto the floor afterward, and stunning them for a few seconds \n-Occasionally charges to the closest enemy, ramming into them. This will deal damage and knockback on contact. At the end of this, he will be dazed for a few seconds."
 		"it"	"Attivatore della fonte di infezione xeno.\nPuò sfrecciare, uno ti afferra e ti spezza il collo, l'altro colpisce a ripetizione ma nemici diversi in un AOE.\n(SIlenza) perde la scivolata al colpo"
-		"ko"	"제노 감염원의 창시자이자 퍼뜨린 장본인. 그를 막지 않으면 전세계에 제노 감염이 퍼질 것입니다.\n-근접 공격이 다중 타격을 하며 공격의 끝에서 대상을 날려보냄\n-주기적으로 근처의 적에게 돌진해 붙잡아 목을 꺾어버려 기절시키고 바닥에 놓는 잡기 공격 사용\n-주기적으로 주변 적에게 돌진하여 접촉한 대상에게 큰 피해를 주고 넉백시킴. 돌진 종료 후 잠시 동안 기절."
+		"ko"	"제노 감염원의 창시자이자 퍼뜨린 장본인. 그를 막지 않으면 전세계에 제노 감염이 퍼질 것입니다.\n-근접 공격이 다중 타격이며 공격 종료 시 대상을 날려보냄\n-주기적으로 근처의 적에게 돌진해 붙잡아 목을 꺾어버려 기절시키고 바닥에 놓는 잡기 공격 사용\n-주기적으로 주변 적에게 돌진하여 접촉한 대상에게 큰 피해를 주고 넉백시킴. 돌진 종료 후 잠시 동안 기절."
 	}
 	"Lex Desc"
 	{
@@ -2359,7 +2359,7 @@
 	{
 		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: makes crystall speed and turn rate 10％ slower)"
 		"it"		"Il suo vero nome è ''Donnerkrieg'' \nI suoi incantesimi sono molto più raffinati e ''puri'' rispetto a quelli del suo stato di schiavitù \nInoltre indossa la moda più recente di Ruanian e un equipaggiamento protettivo \nBasta non farsi punzecchiare dalle sue orecchie...\n(Silenzio: rallenta la velocità del cristallo e la velocità di rotazione di 10％)"
-		"ko"		"''도너크리그''의 진명입니다.\n그녀의 주문 상태는 블리츠크리그의 노예로 있던 시절보다 훨씬 정제되고 안정적으로 변했습니다.\n한편으로, 그녀는 루이나인들의 최신 패션과 보호 장비를 착용하고 있습니다.\n그녀의 귀에 찔리지 않도록 주의하세요...\n(침묵 상태 시, 수정구의 속도와 회전 속도가 10% 감소)"
+		"ko"		"''도너크리그''의 진명입니다.\n그녀의 주문 상태는 블리츠크리그의 노예로 있던 시절보다 훨씬 정제되고 안정적으로 변했습니다.\n한편으로, 그녀는 루이나인들의 최신 패션과 보호 장비를 착용하고 있습니다.\n그녀의 귀에 찔리지 않도록 주의하세요...\n(침묵 상태 시, 수정구의 속도와 회전 속도가 10％ 감소)"
 	}
 	"Karlas Desc"
 	{

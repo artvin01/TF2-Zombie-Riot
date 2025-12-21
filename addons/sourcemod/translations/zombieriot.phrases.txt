@@ -1537,7 +1537,7 @@
 	{
 		"en" 		"Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 30％ more damage."
 		"it"		"Mulo di Teslar! Una protezione ricaricabile che indebolisce gli zombi e blocca il 75％ dei danni se attivata. I nemici indeboliti sono fortemente rallentati e subiscono 30％ danni in più."
-		"ko"		"테슬라 뮬! 재충전 가능한 보호막으로, 활성화 시 좀비를 약화시키고 받는 피해의 75％를 막아줍니다.\n약화된 적은 크게 느려지고 받는 피해량이 30% 증가합니다."
+		"ko"		"테슬라 뮬! 재충전 가능한 보호막으로, 활성화 시 좀비를 약화시키고 받는 피해의 75％를 막아줍니다.\n약화된 적은 크게 느려지고 받는 피해량이 30％ 증가합니다."
 	}
 	"Stockpile Stout Received"
 	{
@@ -1732,7 +1732,7 @@
 		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee ％ damage taken, arrow means ranged ％ damage taken.\nIt will light up whatever resitsance is being used when damage calculations happen.\nTrue damage only benifits from bonuses and ignores reisistances."
 		"es"		"A la izquierda hay debuffs, y a la derecha hay buffs.\nCada simbolo es un debuff o buff.\nEl 'dedito' significa el daño cuerpo a cuerpo total que recibes, y la flecha significa el daño total a distancia que recibes.\nSe subrayan apenas recibas el daño correspondiente a estos.\nEl daño verdadero no subraya, y ignora estas resistencias."
 		"it"		"Sul lato sinistro ci saranno i debuff.Sul lato destro ci saranno i buff.Ogni simbolo è un nuovo buff o debuff. \nIl dito indica i danni subiti in mischia, mentre la freccia indica i danni subiti a distanza.\nSi illuminerà la resistenza utilizzata quando si calcolano i danni.\nIl danno reale beneficia solo dei bonus e ignora le resistenze."
-		"ko" 		"왼쪽에는 디버프가 표시됩니다.\n오른쪽에는 버프가 표시됩니다.\n심볼마다 새로운 버프와 디버프를 나타냅니다. \n손가락은 받는 근접 피해량 % 를 뜻하고, 화살은 받는 원거리 피해량 ％ 를 뜻합니다.\n이에 상응하는 피해를 받으면, 해당 심볼이 커지거나 밑줄이 그어집니다.\n트루 대미지는 이 설정을 무시하며 피해를 받아도 강조되지 않습니다."
+		"ko" 		"왼쪽에는 디버프가 표시됩니다.\n오른쪽에는 버프가 표시됩니다.\n심볼마다 새로운 버프와 디버프를 나타냅니다. \n손가락은 받는 근접 피해량 ％ 를 뜻하고, 화살은 받는 원거리 피해량 ％ 를 뜻합니다.\n이에 상응하는 피해를 받으면, 해당 심볼이 커지거나 밑줄이 그어집니다.\n트루 대미지는 이 설정을 무시하며 피해를 받아도 강조되지 않습니다."
 	}
 	"Debuff/Buff Explain 2"
 	{
@@ -1787,7 +1787,7 @@
 	}
 	"Special Zombies Explained"
 	{
-		"en" 		"These are mini-bosses that spawn randomly after wave 12.\nRaids:\nRaids take 25％ more explosive damage, and usually 25% more melee damage.\nSome weapons deal extra damage againt raids, see desc if they do."
+		"en" 		"These are mini-bosses that spawn randomly after wave 12.\nRaids:\nRaids take 25％ more explosive damage, and usually 25％ more melee damage.\nSome weapons deal extra damage againt raids, see desc if they do."
 		"fr" 		"Après la vague 12, des Miniboss vont apparaître.\nRaids:\nLes boss Raid recoivent 25％ plus de dégats par les explosions,\net habituellement, 25％ plus de dégats par les coups corps à corps.\nCertaines armes deviennent plus forts contre les Raids, vérifiez leur description."
 		"it"		"Questi sono mini-boss che si riproducono casualmente dopo l'ondata 12.\nRaid:\nRaid subiscono 25％ danni esplosivi in più, e di solito il 25% in più di danni da mischia.\nAlcune armi infliggono danni extra contro i raid, vedi la descrizione se è così."
 		// "pt"		"Tem alguns mini-chefes que aparecem aleatoriamente na onda 12.\nRaids:\n"
@@ -2225,7 +2225,7 @@
 		"fr" 		"Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
 		"chi"		"TF2：僵尸暴动\n按Tab开关菜单\nTAB+(H)显示当前武器！"
 		"it"		"Zombie Riot\nPremi di nuovo TAB per chiudere il menu!\nTieni premuto TAB + (H) per mostrare l'arma corrente!"
-		"ko" 		"TF2: 좀비 라이엇\n탭을 다시 눌러 메뉴를 닫으세요!\상점 메뉴에서 (H) 를 누르면 현재 무기가 표시됩니다!"
+		"ko" 		"TF2: 좀비 라이엇\n탭을 다시 눌러 메뉴를 닫으세요!\n상점 메뉴에서 (H) 를 누르면 현재 무기가 표시됩니다!"
 	}
 	"StatusEffectList"
 	{
@@ -2628,7 +2628,7 @@
 	{
 		"en"		"You will also notice that it highlights!\nIf you deal/take the corresponding type of damage, it will get an underscore!\nif you take/deal melee damage ☛will lightup."
 		"it"		"Si noterà anche che si evidenzia!\nSe si infligge/riceve il tipo di danno corrispondente, si ottiene un trattino basso!\nSe si infligge/riceve danno in mischia, si illuminerà ☛."
-		"ko"		"그리고 이 심볼이 가끔씩 밝아지는 것을 알아차리셨을겁니다!\n해당 유형의 피해를 받거나, 해당 유형으로 피해를 주면, 그 심볼에 밑줄이 그어집니다.\n예시로 근접 피해를 가하거나, 근접 피해로 공격 받았다면, ☛가 하이라이트로 표시됩니다."
+		"ko"		"그리고 이 심볼이 가끔씩 밝아지는 것을 알아차리셨을 겁니다!\n해당 유형의 피해를 받거나, 해당 유형으로 피해를 주면, 그 심볼에 밑줄이 그어집니다.\n예시로 근접 피해를 가하거나, 근접 피해로 공격 받았다면, ☛가 하이라이트로 표시됩니다."
 	}
 	"Tutorial Show Hint Perk Machine"
 	{
@@ -4632,7 +4632,7 @@
 		"fr"	"Une tournure sur le mode classique aves des nouveaux ennemis mystérieux!"
 		"chi"	"经典模式，但出现了掌握魔法的心敌人…"
 		"it"	"Combatti con una nuova versione del classico con nuovi nemici magici!"
-		"ko" 	"블리츠크리그가 군대를 보내 당신을 공격합니다. 블리츠크리그 본인은 당신이 직접 싸울 가치가 없다고 보는 것 같군요."
+		"ko" 	"블리츠크리그가 당신을 공격하기 위해 군대를 보냅니다. 블리츠크리그 본인은 당신이 직접 싸울 가치가 없다고 보는 것 같군요."
 	}
 	"Blitzkrieg Wave Desc"
 	{
@@ -4707,7 +4707,7 @@
 	{
 		"en"	"Lore order: (5) The scouting party operative, you harmed Silvester and Waldch, but they were unable to tell Sensal that this was a false alarm, brace yourself."
 		"it"	"Ordine Lore: (5) L'agente del gruppo di esplorazione, hai danneggiato silvester e waldch, ma non sono stati in grado di dire a sensal che si trattava di un falso allarme, tieniti forte."
-		"ko"	"설정 순서: (5) 당신은 정찰 부대 요원인 실베스터와 왈츠를 공격했지만, 그들은 센살에게 이것이 허위 경보란 사실을 알리지 못했습니다. 준비하세요."
+		"ko"	"설정 순서: (5) 당신은 정찰 부대 요원인 실베스터와 왈츠를 공격했지만, 그들은 센살에게 이것이 허위 경보란 사실을 알리지 못했습니다. 대비하세요."
 	}
 	"Deep Sea Desc"
 	{

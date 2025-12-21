@@ -4594,7 +4594,7 @@
 	{
 		"en" "Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
 		"it" "Xeno Seaborn W.F. Chaos Voided Acclamato Spadaccino Il Primo"
-		"ko" "제노 시본 W.F. 혼돈 침식된 갈채의 검객 1세"
+		"ko" "제노 시본 W.F. 혼돈 공허화된 갈채의 검객 1세"
 	}
 	"Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First esc"
 	{
@@ -4629,7 +4629,7 @@
 	{
 		"en"	"Hes on the brink of death.\nSummons extreme slow areas that nerf attackspeed, and deal immensive damage if power reaches 100%, recives power when taking damage.\nKicks very strongly."
 		"it"	"E' ad un passo dalla morte\nEvoca aree estremamente lente che riducono la velocità d'attacco e infliggono danni immensi se la potenza raggiunge il 100%, recupera energia quando subisce danni."
-		"ko"	"이 자는 죽음의 문턱에 놓였습니다.\n힘이 100% 에 도달할 경우 막대한 피해를 가하고 공격 속도 디버프를 부여하는 지역을 소환합니다. 피해를 입을 때 힘이 충전됩니다.\n발차기 공격으로 대상을 밀어냅니다."
+		"ko"	"이 자는 죽음의 문턱에 놓였습니다.\n힘이 100％ 에 도달할 경우 막대한 피해를 가하고 공격 속도 디버프를 부여하는 지역을 소환합니다. 피해를 입을 때 힘이 충전됩니다.\n발차기 공격으로 대상을 밀어냅니다."
 	}
 	"Voided Erasus"
 	{
@@ -5251,8 +5251,8 @@
 	}
 	"Iberia-Expidonsan Seaborn Eradicator Desc"
 	{
-		"en"		"Acts as a spawnpoint, unkillable and oneshots anything.\nOnce most allies died, it enrages, loses all its resistance and 99% hp and gets very fast, loses alot of damage too."
-		"it"		"Agisce come punto di spawn, non è uccidibile e spara a qualsiasi cosa.\nUna volta morti la maggior parte degli alleati, si infuria, perde tutte le resistenze e il 99% di hp e diventa molto veloce, perdendo anche molti danni."
+		"en"		"Acts as a spawnpoint, unkillable and oneshots anything.\nOnce most allies died, it enrages, loses all its resistance and 99％ hp and gets very fast, loses alot of damage too."
+		"it"		"Agisce come punto di spawn, non è uccidibile e spara a qualsiasi cosa.\nUna volta morti la maggior parte degli alleati, si infuria, perde tutte le resistenze e il 99％ di hp e diventa molto veloce, perdendo anche molti danni."
 		"ko"		"이 적은 다른 적들의 스폰 포인트 역할을 합니다. 이 적은 처치할 수 없으며, 모든 대상을 일격에 즉사시킵니다.\n섬멸자 외의 모든 아군이 처치당하면, 격분 상태가 되어 이동 속도가 매우 빨라지지만, 모든 피해 저항력을 잃고 공격력과 체력이 대폭 감소합니다."
 	}
 	"Combastia"
