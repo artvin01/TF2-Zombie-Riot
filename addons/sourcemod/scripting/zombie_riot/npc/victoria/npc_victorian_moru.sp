@@ -30,6 +30,7 @@ static void ClotPrecache()
 	PrecacheSound(g_DeathSounds);
 	PrecacheSound(g_HealSound);
 	PrecacheModel("models/props_teaser/saucer.mdl");
+	PrecacheModel(LASERBEAM);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -326,7 +327,9 @@ static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float 
 			npc.PlayHealSound();
 			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 			npc.FaceTowards(vecTarget, 20000.0);
-			spawnRing_Vectors(vecTarget, (b_we_are_reloading[npc.index] ? 400.0 : 200.0) * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 255, 0, 150, 1, 0.3, 3.0, 0.1, 3);
+			if(IsValidEntity(npc.m_iWearable3))
+				RemoveEntity(npc.m_iWearable3);
+			npc.m_iWearable3 = ConnectWithBeam(npc.m_iWearable2, npc.m_iTarget, 30, 255, 0, 3.0, 3.0, 1.35, LASERBEAM);
 			//CreateTimer(0.1, Timer_MachineShop, npc.index, TIMER_FLAG_NO_MAPCHANGE);
 			//VictorianFactory npc = view_as<VictorianFactory>(iNPC);
 			float entitypos[3], dist;
@@ -355,9 +358,13 @@ static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float 
 					}
 				}
 			}
+			vecTarget[2]+=25.0;
+			spawnRing_Vectors(vecTarget, (b_we_are_reloading[npc.index] ? 400.0 : 200.0) * 2.0, 0.0, 0.0, 0.0, LASERBEAM, 30, 255, 0, 150, 1, 0.3, 3.0, 0.1, 3);
 			npc.m_flNextMeleeAttack = gameTime + 0.3;
 			return 0;
 		}
+		else if(IsValidEntity(npc.m_iWearable3))
+			RemoveEntity(npc.m_iWearable3);
 		return 2;
 	}
 	return 1;
