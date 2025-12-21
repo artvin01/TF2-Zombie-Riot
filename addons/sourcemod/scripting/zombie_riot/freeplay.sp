@@ -372,15 +372,49 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			}
 			case 10:	
 			{
-				enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
-				enemy.Health = RoundToFloor((7700000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
+				switch(GetRandomInt(1, 4))
+				{
+					case 1: 
+					{
+						enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
+						enemy.Health = RoundToFloor((7500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
+					}
+					{
+						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
+						enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.85);
+					}
+					default: 
+					{
+						enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
+						enemy.Health = RoundToFloor((7700000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
+					}
+				}
 			}
 			case 11:	
 			{
-				enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
-				enemy.Health = RoundToFloor((15000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.85);
+				switch(GetRandomInt(1, 4))
+				{
+					case 1: 
+					{
+						enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
+						enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
+					}
+					{
+						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
+						enemy.Health = RoundToFloor((7500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.85);
+					}
+					default: 
+					{
+						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
+						enemy.Health = RoundToFloor((15000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.85);
+					}
+				}
 			}
 			case 12:
 			{
