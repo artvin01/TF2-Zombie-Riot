@@ -7627,7 +7627,7 @@
 	"Skilled Crossbowman Desc"
 	{
 		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
-		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다.\n-한 번의 3발의 화살 발사\n-표적의 이동 경로를 예측함\m-측면으로 움직이며 대상 주위를 돔\n-높은 근접 피해 1회를 받으면 비무장 상태가 됨"
+		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다.\n-한 번의 3발의 화살 발사\n-표적의 이동 경로를 예측함\n-측면으로 움직이며 대상 주위를 돔\n-높은 근접 피해 1회를 받으면 비무장 상태가 됨"
 	}
 	"Demon Devoter"
 	{
