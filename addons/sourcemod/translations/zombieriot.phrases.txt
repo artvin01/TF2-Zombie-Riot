@@ -4632,7 +4632,7 @@
 		"fr"	"Une tournure sur le mode classique aves des nouveaux ennemis mystérieux!"
 		"chi"	"经典模式，但出现了掌握魔法的心敌人…"
 		"it"	"Combatti con una nuova versione del classico con nuovi nemici magici!"
-		"ko" 	"블리츠크리그가 당신을 공격하기 위해 군대를 보냅니다. 블리츠크리그 본인은 당신이 직접 싸울 가치가 없다고 보는 것 같군요."
+		"ko" 	"블리츠크리그가 군대를 보내 당신을 공격합니다. 블리츠크리그 본인은 당신이 직접 싸울 가치가 없다고 보는 것 같군요."
 	}
 	"Blitzkrieg Wave Desc"
 	{
