@@ -4397,6 +4397,7 @@
 		"it"	"Danno elementare del Caos"
 		"ko"	"혼돈 원소 피해"
 	}
+	
 	"Chaos Elemental Damage High Desc"
 	{
 		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou take 700 truedamage.\nAlso gives 60％ Vulnerability for 10 seconds."
