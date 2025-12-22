@@ -740,11 +740,11 @@ static void Internal_ClotThink(int iNPC)
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}네말{default}: ... {darkblue}캄르스타인{default}을 이런 식으로 실망시키지는 마...");
+				CPrintToChatAll("{lightblue}네말{default}: ... {darkblue}카멜스타인{default}을 이런 식으로 실망시키지는 마...");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}네말{default}: {darkblue}캄르스타인{default}은 대단한 인간이었지... 그런 그에게도 뭔가 특별한 게 있었고.");
+				CPrintToChatAll("{lightblue}네말{default}: {darkblue}카멜스타인{default}은 대단한 인간이었지... 그런 그에게도 뭔가 특별한 게 있었고.");
 			}
 		}
 		BlockLoseSay = true;
@@ -2275,9 +2275,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "{darkblue}캄르스타인{default}은 무례한 놈이었지. 적어도 그는 자신의 잘못을 만회했지만.");
+					Format(Text_Lines, sizeof(Text_Lines), "{darkblue}카멜스타인{default}은 무례한 사람이었지. 적어도 그는 자신의 잘못을 만회했지만.");
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "그를 기억하려는 거야, {gold}%N{default}? 그래 뭐... {darkblue}캄르스타인{default}이 마지막에 한 일을 생각하면 그럴 만한 자격이 있지.",client);
+					Format(Text_Lines, sizeof(Text_Lines), "그를 기억하려는 거야, {gold}%N{default}? 그래 뭐... {darkblue}카멜스타인{default}이 마지막에 한 일을 생각하면 그럴 만한 자격이 있긴 해.",client);
 			}
 		}  
 		case WEAPON_KIT_BLITZKRIEG_CORE:
@@ -2325,7 +2325,7 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "어, 그건 {snow}아이린{default}의 물건이잖아? 걔가 많이 .",client);
+					Format(Text_Lines, sizeof(Text_Lines), "어, 그건 {snow}아이린{default}의 물건이잖아? 걔가 많이 좋은 사람이긴 해.",client);
 				case 1:
 					Format(Text_Lines, sizeof(Text_Lines), "오, {snow}아이린{default}, 아무래도 전학생 한 명 받아야할 것 같은데? 이름이 {gold}%N{default}라고 하네!",client);
 			}

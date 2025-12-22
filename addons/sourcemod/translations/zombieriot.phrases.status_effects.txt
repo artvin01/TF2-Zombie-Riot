@@ -219,7 +219,7 @@
 	{
 		"en"	"Enfeeble"
 		"it"	"Ineffabile"
-		"ko"	"쇠약"
+		"ko"	"쇠약화"
 	}
 	"Enfeeble Desc"
 	{
@@ -989,7 +989,7 @@
 	{
 		"en"	"Extreamly Defensive Backup"
 		"it"	"Backup estremamente difensivo"
-		"ko"	"극도로 방어적인 지원"
+		"ko"	"철괴 수비 지원"
 	}
 	"Extreamly Defensive Backup Desc"
 	{
@@ -1839,7 +1839,7 @@
 	{
 		"en" 	"Therapists Aura"
 		"it"	"Aura dei terapeuti"
-		"ko" 	"상담사의 오라"
+		"ko" 	"심리치료사의 오라"
 	}
 	"Therapists Aura Desc"
 	{

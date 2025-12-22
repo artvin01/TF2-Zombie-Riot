@@ -81,13 +81,13 @@
 	"Duelist"
 	{
 		"en"	"Duelist"
-		"ko"	"결투사"
+		"ko"	"듀얼리스트"
 		"it"	"Duellante"
 	}
 	"Defender"
 	{
 		"en"	"Defender"
-		"ko"	"방어자"
+		"ko"	"디펜더"
 		"it"	"Difensore"
 	}
 	"Lord"
@@ -501,7 +501,7 @@
 	{
 		"en"		"Engi says to not touch his stuff, but you don't care\n-Full charge to attack.\n-Projectile speed actually makes it slower.\n-Reload speed and attackspeed buff its damage.\n-2x dmg vs raids."
 		"it"		"Engi dice di non toccare la sua roba, ma a voi non interessa.\nLa velocità del proiettile lo rende in realtà più lento.\nLa velocità di ricarica e la velocità d'attacco aumentano i suoi danni."
-		"ko"		"엔지니어가 그의 물건을 건드리지 말라 했지만, 당신은 신경쓰지 않았죠.\n-완전히 충전해야만 공격 가능\n-투사체 속도 속성은 이 무기의 투사체 속도를 느리게 만듬\n-재장전 속도와 공격 속도 속성은 이 무기의 피해량을 증가시킴.\n-레이드 보스 대상 피해량 2배."
+		"ko"		"-완전히 충전해야만 공격 가능\n-투사체 속도 속성은 이 무기의 투사체 속도를 느리게 만듬\n-재장전 속도와 공격 속도 속성은 이 무기의 피해량을 증가시킴.\n-레이드 보스 대상 피해량 2배."
 	}
 	"IEM Launcher Pap 1"
 	{
@@ -586,7 +586,7 @@
 		"ru"	"Обученные обезьяны овладевают навыками отскакивания пуль, которые летят от цели к цели, убивая врага.\nНаносят 1,5х урона во время рейдов."
 		"chi"   "经过训练的猴子掌握了弹跳子弹的技能，子弹会从一个目标射到另一个目标，杀死它们。\n对boss造成1.5倍伤害。"
 		"it"	"Le scimmie addestrate padroneggiano l'abilità di far rimbalzare i proiettili, che passano da un bersaglio all'altro, uccidendoli.\nDona 1,5x dmg durante le incursioni."
-		"ko"	"뭔가로 채워진... 탄환들.\n-적중시 탄환이 다른 적에게로 튕깁니다.\n-레이드 보스에게 주는 피해량 1.5배."
+		"ko"	"적중시 탄환이 다른 적에게로 튕깁니다.\n-레이드 보스에게 주는 피해량 1.5배."
 		
 	}
 	"Elite Sniper Pap 1"
@@ -796,7 +796,7 @@
 		"en"	"-Increased damage\n-Increased attackspeed\n-Massively Increased Clipsize\n-Massively Slower reload\n-Worse accuracy\n-Standing still increases accuracy\n-Croching boosts reloadspeed"
 		"fr"	"L'arme s'améliore considérablement en général.\nGrande déviation si vous ne restez pas en place, acroupissez-vous sans bouger pour améliorer la vitesse de recharge."
 		"it"	"Tutte le statistiche aumentano immensamente.\nPoco preciso se non si sta fermi, accovacciarsi senza muoversi dà velocità di ricarica."
-		"ko"	"-피해량, 공격 속도 증가\n-장탄수 대폭 증가\n-정확도 감소\n-가만히 있을 시 정확도 증가\n-가만히 앉아 있으면 재장전 속도 증가"
+		"ko"	"-피해량, 공격 속도 증가\n-장탄수 대폭 증가\n-정확도 감소\n-가만히 있을 시 정확도 증가\n-앉아 있으면 재장전 향상"
 	}
 	
 	"Medigun Desc"
@@ -804,7 +804,7 @@
 		"en"	"-Heal allies\n-Overheal is permanent\n-Revives from afar but slower\n-Uber grants high res and immunity to most debuffs\n-DAMAGE MODE: Change via CTRL/Crouch + RELOAD (or Spray key)."
 		"es"	"Cura y potencia a tus aliados y a ti mismo mientras curas.\nPermite revivir a distancia, la uber da los buffs de SOBRECARGADO y Aura Reforzada.\nMODO DAÑO: Cambia con CTRL/Agachar + RELOAD."
 		"it"	"Guarisce e potenzia gli alleati e se stesso durante la guarigione, il surriscaldamento è permanente.\nPermette la rinascita lenta da lontano, l'ubercarica concede i buff UBERCHARGED e Hardened Aura.\nMODALITÀ DANNEGGIAMENTO: Cambiare tramite CTRL/Crouch + RELOAD (o tasto Spray)."
-		"ko"	"-아군을 치유, 과치료는 영구적으로 지속\n-다운된 대상을 치유시 원거리에서 더 느리게 부활 가능\n-우버차지는 대상에게 우버차지와 경화의 오라 버프를 부여.\n-공격 모드 전환:앉기+재장전(또는 T)."
+		"ko"	"-아군을 치유, 과치료는 영구적으로 지속\n-다운된 대상을 치유시 원거리에서 부활 가능\n-우버차지는 대상에게 우버차지와 경화의 오라 버프를 부여.\n-공격 모드 전환:앉기+재장전(또는 T)."
 	}
 	
 	"Stickybomb Launcher Pap 1"
@@ -1413,7 +1413,7 @@
 	{
 		"en"	"-M2 Summons a Earth Shattering Aimed Quake.\n-Applies Elemental debuff\nBoosts bleed damage by 15％, burn by 20％, elemental damage applied by 30％\n-Earthquake deals 2x damage to enemies with this debuff."
 		"it"	"Consuma mana a ogni colpo. M2 Evoca un Quake mirato che distrugge la Terra.\nApplica un debuff elementale\nAumenta i danni da sanguinamento del 15％, da ustione del 20％, i danni elementali applicati del 30％\nIl Terremoto infligge 2 volte i danni ai nemici con questo debuff."
-		"ko"	"-M2: 보고 있는 방향에 지진을 생성.\n-원소 디버프를 부여합니다:\n-출혈 피해량 +15％, 화상 피해량 +20％, 원소 피해 부여량 +30％\n-지진은 이 무기의 원소 디버프가 부여된 대상에게 2배의 피해를 가함"
+		"ko"	"-M2: 보고 있는 방향에 지진을 생성.\n-원소 피해를 부여합니다:\n-출혈 피해량 +15％, 화상 피해량 +20％, 원소 피해 부여량 +30％\n-지진은 이 무기의 원소 피해가 부여된 대상에게 2배의 피해를 가함"
 	}
 	
 	"Throwable Armor Grenade Desc"
@@ -1429,7 +1429,7 @@
 	{
 		"en"	"-A morphine shot chargeable by dealing Melee damage.\n-Turns you intangible for 3 seconds and regenerates 15％ of your max health up to a cap of 50%.\n-Useable twice a wave/Raid."
 		"it"	"Un colpo di morfina che si ricarica infliggendo danni in mischia.\nTi rende intangibile per 3 secondi e rigenera il 15％ della tua salute massima fino a un massimo del 50%.\nUtilizzabile due volte a ondata/raid."
-		"ko"	"-근접 공격으로 피해를 주면 충전되는 모르핀입니다.\n-사용시, 3초간 지속되는 영체화 버프를 얻고 최대 체력의 15％만큼 체력을 회복하며 최대 50％까지 회복.\n-한 웨이브 또는 레이드에서 최대 2번까지만 사용 가능."
+		"ko"	"-근접 공격으로 피해를 주면 충전되는 모르핀.\n-사용시, 3초간 지속되는 영체화 버프를 얻고 최대 체력의 15％만큼 체력을 회복하며 최대 50％까지 회복.\n-한 웨이브 또는 레이드에서 최대 2번까지만 사용 가능."
 	}
 	
 	"Experimental Burst Pack Desc"
@@ -1613,7 +1613,7 @@
 		"es"	"Cura 60 de vida al usarse, se mejora con mejoras Medicas."
 		"fr"	"Soigne pour 40 santé. Soins améliorés avec les améliorations Medigun."
 		"it"	"Cura per 60 Salute, scala con i potenziamenti del medico."
-		"ko"	"-사용시 체력 60 회복, 메딕 개선의 영향을 받음."
+		"ko"	"-사용시 체력 60 회복, 지원 개선의 영향을 받음."
 	}
 	"Village Desc"
 	{
@@ -2170,7 +2170,7 @@
 		"ru"	"Получайте на 10％ меньше урона при падении!"
 		"chi"   "减少10％的掉落伤害!"
 		"it"	"Subisce 10％ danni da caduta in meno!"
-		"ko"	"-받는 추락 피해량 -10％"
+		"ko"	"-받는 낙하 피해량 -10％"
 	}
 	
 	"Hardened Stance Desc"
@@ -2196,7 +2196,7 @@
 	{
 		"en"	"-Fast attacking melee.\n-Medium damage.\n-On M2 Ability:\nCreate an aura that buffs allies and yourself with damage and resistance.\nStacks once with eachother."
 		"it"	"Lama di Expidonsan ad attacco rapido."
-		"ko"	"-빠르게 공격하는 근접 무기\n-보통의 피해 보유\n-M2 능력: 자신과 주변 아군의 저항력과 피해량을 상승시키는 오라를 생성. 다른 오라와 1회 중첩 가능"
+		"ko"	"-빠르게 공격하는 근접 무기\n-M2 능력: 자신과 주변 아군의 저항력과 피해량을 상승시키는 오라를 생성. 다른 오라와 1회 중첩 가능"
 	}
 	
 	"Fusion Blade Pap 1"
@@ -2209,7 +2209,7 @@
 	{
 		"en"	"-Increased Damage\n-inflicts the void elemental debuff onto enemies, void entities cannot void eachother\n->ou are immune to void and so are they to yours\n-Check void Encyclopedia for more info."
 		"it"	"Ora infliggete il debuff elementale void ai nemici, le entità void non possono void reciprocamente,\nvoi siete immuni al void e anche loro al vostro, il resto è spiegato in void wavetype."
-		"ko"	"-피해량 증가\n-적에게 공허 원소 피해를 부여할 수 있음(공허 계열 적은 제외)\n-공허 관련 효과에 면역이 되며, 공허 계열 적들 역시 당신의 공허 효과에 면역입니다.\n-백과 사전:공허 웨이브에서 더 자세히 확인하세요."
+		"ko"	"-피해량 증가\n-적에게 공허 원소 피해를 부여할 수 있음(공허 계열 적은 제외)\n-공허 관련 효과에 면역이 되며, 공허 계열 적들 역시 당신의 공허 효과에 면역.\n-백과 사전의 공허 관련에서 자세히 확인 가능."
 	}
 	"Expidonsan Explorer Pap 2"
 	{
@@ -2831,7 +2831,7 @@
 		"ru"		"Ику Нагаэ, но человек. Полумобильен и использует стационарную устойчивую КОШМАРНУЮ ПУШКУ!!!"
 		"chi"		"Iku Nagae 但人类。是半移动的，使用固定的、抗性的噩梦炮！！！"
 		"it"		"Iku Nagae ma umana. È semimobile e usa un cannone stazionario e resistente, il CANNONE DA INCUBO!!!"
-		"ko"		"나가에 이쿠의 인간 버전입니다. 공격 중에도 반쯤 이동이 가능하며, 고정형이고 저항력이 높은 나이트메어 캐논!!!을 사용합니다."
+		"ko"		"나가에 이쿠의 인간 버전입니다. 공격 중에도 반쯤 이동이 가능하며, 고정형이고 저항력이 높은 악몽포를 사용합니다."
 	}
 	"Barracks Holy Knight Desc"
 	{
@@ -2925,7 +2925,7 @@
 		"fr"	"Recevez des Shards quand vous frappez les ennemis.\nAppuyez sur M2 pour utiliser les Shards et lancer une onde Fantasmale.\nUne lame pour ceux qui osent rêver..."
 		"chi"	"幻想与奇异之剑...\n按住M2发射幻刃，消耗梦幻碎片。\n攻击敌人获得碎片。"
 		"it"	"Una lama di coloro che osano fantasticare e sognare...\nTenere premuto il mouse 2 per lanciare un'onda fantasmatica in avanti.\nQuesta azione richiede ''Frammenti'', si ottengono colpendo cose"
-		"ko"	"감히 환상과 꿈을 갈구하는 자의 검이라...\n-우클릭을 꾹 눌러 전방으로 판타즈멀 웨이브를 발사\n-이 능력을 사용하려면 ''조각''이 필요하며, 조각은 적에게 공격 적중시 획득합니다."
+		"ko"	"-우클릭을 꾹 눌러 전방으로 환상의 물결 발사\n-이 능력을 사용하려면 ''조각''이 필요하며, 조각은 적에게 공격 적중시 획득합니다."
 		"lt"	"Specialus kardas tiems, kurie išdrista fantazuoti ir sapnuoti...\n-Laikyk M2, kad įšaukti 'Fantasmalinė' banga priekin\n-Šitai kainuoja ''Shards'', juos gauni kai kardas atsitrenkia į priešus"
 	}
 	"Fantasy Blade pap 1"
@@ -2934,7 +2934,7 @@
 		"fr"	"Appuyez sur R + M2 pour améliorer la portée de votre onde Fantasmale.\nObtenez un Halo Fantasmal\nVous sentez que la fantasie devient réele..."
 		"chi"	"梦想正在成真...\n按住R+M2发射远程幻刃。"
 		"it"	"Si ha la sensazione che la Fantasia stia lentamente diventando reale...\nPotete ora tenere premuto R+Mouse 2 per sparare un'onda fantasmatica a lungo raggio...\nNe guadagnate anche un alone fantasmatico"
-		"ko"	"-이제 R+우클릭을 함께 눌러 더 멀리 나아가는 판타즈멀 웨이브를 발사\n-또한 판타즈멀 헤일로를 획득."
+		"ko"	"-이제 R+우클릭을 함께 눌러 더 멀리 나아가는 환상의 물결 발사\n-또한 환상의 광륜을 획득."
 		"lt"	"-Dabar gali lakyti R+M2, kad iššauti ilgesnio nuotolio 'Fantasmalinė' banga, tačiau tą banga yra vertikali\n-Gauni 'Fantasmalinė' aureolė (Vizsualinė)"
 	}
 	"Fantasy Blade pap 2"
@@ -3023,14 +3023,14 @@
 		"en"	"-Increased Damage\n-Attacks deal Necrosis elemental damage."
 		"fr"	"Attaques ont un effet élémental Necrôse"
 		"it"	"Aumento del danno\nGli attacchi infliggono danni elementali da necrosi."
-		"ko"	"-피해량 증가\n-적중시, 대상에게 괴사 원소 피해를 부여"
+		"ko"	"-피해량 증가\n-적중시, 대상에게 쇠약 원소 피해를 부여"
 	}
 	"The Standchen Desc AltPap 2"
 	{
 		"en"	"-Increased Damage\n-Deals an additional 30％ damage if an enemy is under an elemental effect."
 		"fr"	"+30％ dégats sur les ennemis sous un effet élémental."
 		"it"	"Danno Aumentato\ninfligge 30％ danni puri in più se un nemico è sotto un effetto elementale."
-		"ko"	"-피해량 증가\n적중시, 대상에게 괴사 원소 피해가 있다면 공격 피해량 +30％"
+		"ko"	"-피해량 증가\n적중시, 대상에게 쇠약 원소 피해가 있다면 공격 피해량 +30％"
 	}
 	"Sensal Scythe Wep Desc"
 	{
@@ -3200,7 +3200,7 @@
 	{
 		"en"	"Become a workshipper of sigmar!\nRapier: headshots, m2 blocks with a healthbar.\nR: Dashes in any direction except forwards.\nHold R with revolver for rapid fire\nHitting reduces cooldowns (headshots more).\nLess backwalk penalty (0.9)\nSlow immunity."
 		"it"	"Diventa uno spedizioniere di Sigmar!\nRapier: colpi alla testa, blocchi m2 con una barra della salute.\nR: si sposta in qualsiasi direzione tranne che in avanti.\nTenere premuto R con il revolver per il fuoco rapido.\nColpire riduce i cooldown (più colpi alla testa).\nMinore penalità all'indietro (0,9)\nImmunità alla lentezza."
-		"ko"	"시그마르의 숭배자가 되어보세요!\n-레이피어: 헤드샷이 가능하며, M2를 꾹 누르면 스태미나를 소모해 방어 가능.\n-R: 아무 방향으로나 대쉬 가능.\n-R을 꾹 누른채 리볼버로 사격시 고속으로 사격합니다.\n-적중시, 쿨타임 감소(헤드샷시 추가 감소)\n-후진의 이동 속도 감소량이 10％로 감소\n-둔화 효과에 면역"
+		"ko"	"-레이피어: 헤드샷이 가능하며, M2를 꾹 누르면 스태미나를 소모해 방어 가능.\n-R: 아무 방향으로나 대쉬 가능.\n-R을 꾹 누른채 리볼버로 사격시 고속으로 사격.\n-적중시, 쿨타임 감소(헤드샷시 추가 감소)\n-후진의 이동 속도 감소량이 10％로 감소\n-둔화 효과에 면역"
 	}
 	"Zealot Pap 1 Desc"
 	{
@@ -3504,7 +3504,7 @@
 		"fr"	"Vous vous soignez pour chaque ennemi frappé,\nces soins peuvent vous donner du santé bonus.\nVous recevez 75％ de tous soins donnés à vous.Vous ferez un double-attaque tous les 4 attaques.\nAbilité améliore vos dégats et la fréquence de double-attaques."
 		"chi"	"外界的霰弹枪\n大部分治疗-85％。\n可击中多名敌人，带穿透。\n每4发司是双击。\n自疗可以超量。\n技能保证双击，增加伤害。\n有随机暴击。"
 		"it"	"Un fucile da caccia di Expidonsa.\nLa maggior parte della guarigione che ricevi è tagliata del 75％.\nColpisci più nemici e guarisci al colpo.\nOgni quarto attacco è un doppio attacco.\nLa guarigione al colpo permette di surriscaldare.\nL'abilità permette doppi colpi e più danni."
-		"ko"	"엑스피돈사제 산탄총입니다.\n-받는 대부분의 치유 효과가 75％ 감소\n-다수의 적을 타격할 수 있으며, 적중시 체력 회복(과치료 가능)\n-매 4번째 공격은 2연속 공격이 됨.\n-능력 사용시 2연속 공격이 되며 피해량 증가."
+		"ko"	"엑스피돈사제 산탄총입니다.\n-받는 대부분의 치유 효과가 75％ 감소\n-다수의 적을 타격할 수 있으며, 적중시 체력 회복(과치료 가능)\n-매 4번째 공격은 2연 공격이 됨.\n-능력 사용시 2연속 공격이 되며 피해량 증가."
 	}
 	"Angelic Shotgonnus Desc Pap 1"
 	{
@@ -3954,13 +3954,13 @@
 		"fr"	"Améliore la durabilité de l'enclume. Regénére votre métal."
 		"chi"	"增加匠工台抗性和回复金属"
 		"it"	"Aumenta la resistenza dell'Officina Tinker e genera metallo quando è attiva"
-		"ko"	"이 무기를 들고 있으면 땜장이의 작업대의 피해 저항력이 증가하고 금속을 재생합니다."
+		"ko"	"이 무기를 들고 있으면 땜장이의 작업대의 피해 저항력이 증가하고 금속을 재생."
 	}
 	"Tinker Ranger Desc"
 	{
 		"en"	"Fires bolt projectiles."
 		"it"	"Spara proiettili a bullone."
-		"ko"	"볼트 투사체를 발사합니다."
+		"ko"	"볼트 투사체를 발사."
 	}
 	"Tinker Pap 0 Desc"
 	{
@@ -4129,7 +4129,7 @@
 	"VictorianLauncher ManuallyR"
 	{
 		"en"	"Press R Again to Manually Deactivate"
-		"ko"	"R키를 눌러 수동으로 비활성화"
+		"ko"	"R키를 눌러 수동 비활성화"
 		"it"	"Premi nuovamente R per disattivare manualmente"
 	}
 	"VictorianLauncher CRockets"
@@ -4273,7 +4273,7 @@
 		"en"	"Close-quarter ranged unit. He has. A SHOTGUN!"
 		"fr"	"Unité à distance rapprochée. Il a. UN FUSIL DE CHASSE !"
 		"it"	"Unità a distanza ravvicinata. Ha. UN FUCILE DA CACCIA!"
-		"ko"	"근접 사거리를 가진 원거리 유닛입니다. 산탄총을, 가지고 있다고요!"
+		"ko"	"근접 사거리를 가진 원거리 유닛입니다. 산탄총을 가지고 있다고요!"
 	}
 	"Barracks Swordsman Desc"
 	{
@@ -4612,7 +4612,7 @@
 	{
 		"en"	"Attacks deal Necrosis elemental damage.\nHas a chance to fire an additional projectile that slows on hit and deals Ranged Damage to enemies under an Elemental effect.\nAbility executes nearby low-health enemies and has unlimited duration."
 		"it"	"Gli attacchi infliggono danni elementali da Necrosi.\nHa una probabilità di lanciare un proiettile aggiuntivo che rallenta al contatto e infligge danni a distanza ai nemici sotto l'effetto Elementale.\nL'abilità uccide i nemici vicini con poca salute e ha una durata illimitata."
-		"ko"	"공격이 괴사 원소 피해를 입힘.\n-확률적으로 이동 속도를 둔화시키고 원소 피해가 부여된 대상에게 추가 피해를 입히는 투사체 추가 발사\n-능력은 주변에 체력이 낮은 적을 처형하며, 무한정으로 지속됨"
+		"ko"	"공격이 쇠약 원소 피해를 입힘.\n-확률적으로 이동 속도를 둔화시키고 원소 피해가 부여된 대상에게 추가 피해를 입히는 투사체 추가 발사\n-능력은 주변에 체력이 낮은 적을 처형하며, 무한정으로 지속됨"
 	}
 	"Ancestor Launcher Desc"
 	{
@@ -4757,7 +4757,7 @@
 	{
 		"en"	"-Increased Damage\n-Increased crystal capacity\n-Lower StarFall Cooldown."
 		"it"	"Più danni! E capacità dei cristalli. Riduzione del tempo di ricarica di StarFall."
-		"ko"	"-피해량 증가\n-수정 저장량 증가 및 스타폴 쿨타임 감소"
+		"ko"	"-피해량 증가\n-수정 저장량 증가 및 별똥별 쿨타임 감소"
 	}
 	"WPrototype Kit Desc"
 	{
@@ -5196,7 +5196,7 @@
 	{
 		"en"	"-Increased Damage\n-Up to 4 enemies within range take Necrosis elemental damage every second and take increased Necrosis elemental damage.\n-Being in a taunt increases Necrosis elemental damage dealt through this."
 		"it"	"Fino a 4 nemici nel raggio d'azione subiscono danni elementali da Necrosi ogni secondo e subiscono danni elementali da Necrosi aumentati.\nEssere in uno stato di provocazione aumenta i danni elementali da Necrosi inflitti tramite questo effetto."
-		"ko"	"-피해량 증가\n-범위 내 최대 4명의 적들은 매 초마다 괴사 원소 피해를 받고, 받는 괴사 원소 피해가 증가.\n-도발을 사용하고 있는 상태라면 이 효과의 괴사 원소 피해 부여량 증가."
+		"ko"	"-피해량 증가\n-범위 내 최대 4명의 적들은 매 초마다 쇠약 원소 피해를 받고, 받는 쇠약 원소 피해가 증가.\n-도발을 사용하고 있는 상태라면 이 효과의 쇠약 원소 피해 부여량 증가."
 	}
 	"Necrosis Ritualist Pap Desc"
 	{

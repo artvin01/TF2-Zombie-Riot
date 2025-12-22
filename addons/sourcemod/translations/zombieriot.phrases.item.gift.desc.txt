@@ -1091,7 +1091,7 @@
 	{
 		"en"		"Bunker Kahmlstein"
 		"it"		"Bunker Kahmlstein"
-		"ko"		"벙커 카멜슈타인"
+		"ko"		"벙커 카멜스타인"
 	}
 	"Zerofuse Desc"
 	{
@@ -2244,7 +2244,7 @@
 	{
 		"en"	"A speedy spy that's a ''glass-cannon'' type of enemy. \n-VERY fast. \n-Dodges every second attack. "
 		"it"	"Infligge danni immensi a tutto. è estremamente veloce e schiva ogni 2 attacchi.\n ha pochi HP e subisce 2,5 volte i danni in mischia ma 50％ in meno quelli a distanza."
-		"ko"	"통칭 '유리 대포' 속성의 재빠른 스파이입니다.\n-이동 속도가 극도로 빠름\n-매 2번째 공격을 회피"
+		"ko"	"통칭 '유리 대포' 속성의 재빠른 스파이입니다.\n-이동 속도가 극도로 빠름\n-피해를 받을 때마다, 다음에 받는 공격을 1회 회피"
 	
 	}
 	"Mad Doctor Desc"
@@ -2287,13 +2287,13 @@
 	{
 		"en"	"Kahmlsteins forced right hand man, he really wants his attention.\nApart of the no goverment group called Interitus.\nWave 15: Deals fire and bleed damage.\nWave 30: deals massive chaos damage.\nEach time he does his 4 ball attack he gains permanent power and resistance.\nEach time he shows his hand sign he will teleport.\n(Silence) Reduces chaos damage he deals."
 		"it"	"Kahmlsteins è il suo braccio destro forzato, vuole davvero la sua attenzione.\nFa parte del gruppo di non governanti chiamato Interitus.\nOnde 15: infligge danni da fuoco e da emorragia.\nOnde 30: infligge ingenti danni da caos.\nOgni volta che esegue il suo attacco con 4 sfere guadagna potere e resistenza permanenti.\nOgni volta che mostra il suo segno della mano si teletrasporta.\n(Silenzio) Riduce i danni da caos che infligge."
-		"ko"	"카멜슈타인에 의해 강제로 그의 오른팔이 된 자. 그는 카멜슈타인의 주목을 이끌고 싶어합니다.\n인테리투스라는 무정부 그룹 소속원입니다.\n웨이브 15: 출혈과 화상을 부여.\n웨이브 30: 혼돈 원소 피해를 부여.\n4연속 추적형 구체 공격을 사용할 때마다, 피해량과 피해 저항력이 영구적으로 소폭 증가.\n이 적이 손으로 핸드 사인을 보인 후, 순간이동 합니다.\n(침묵 상태 시)이 적이 부여하는 혼돈 원소 피해량이 감소"
+		"ko"	"카멜스타인에 의해 강제로 그의 오른팔이 된 자. 그는 카멜스타인의 주목을 이끌고 싶어합니다.\n인테리투스라는 무정부 단체의 소속원입니다.\n웨이브 15: 출혈과 화상을 부여.\n웨이브 30: 혼돈 원소 피해를 부여.\n4연속 추적형 구체 공격을 사용할 때마다, 피해량과 피해 저항력이 영구적으로 소폭 증가.\n이 적이 손으로 핸드 사인을 보인 후, 순간이동 합니다.\n(침묵 상태 시)이 적이 부여하는 혼돈 원소 피해량이 감소"
 	}
 	"The Purge Desc"
 	{
 		"en"	"A machine to help the efforts of the Interitus group.\nHas a great arsenal of weapons.\nHeals when low enough and gains massive power everytime he has his fists out.\nFinish the fight fast before he becomes too strong.\n(Silence)Decreases his healing abit"
 		"it"	"Una macchina per aiutare gli sforzi del gruppo Interitus.\nHa un grande arsenale di armi.\nGuarisce quando è abbastanza basso e guadagna una potenza enorme ogni volta che tira fuori i pugni.\nFinisce il combattimento velocemente prima che diventi troppo forte.\n(Silenzio)Diminuisce la sua guarigione"
-		"ko"	"인테리투스 그룹을 돕기 위해 만들어진 기계.\n다양한 무기를 보유함.\n체력이 일정 수준 이하로 낮아지면 회복 능력을 사용하고, 주먹을 장착할 때마다 힘이 대폭 상승.\n적이 너무 강해지기 전에 최대한 빠르게 전투를 끝내세요.\n(침묵 상태 시)체력 회복량이 소폭 감소"
+		"ko"	"인테리투스 연합을 돕기 위해 만들어진 기계.\n다양한 무기를 보유함.\n체력이 일정 수준 이하로 낮아지면 회복 능력을 사용하고, 주먹을 장착할 때마다 힘이 대폭 상승.\n그가 너무 강해지기 전에 최대한 빠르게 전투를 끝내세요.\n(침묵 상태 시)체력 회복량이 소폭 감소"
 	} 
 	"Rouge Expidonsan Doctor Desc"
 	{
@@ -2419,7 +2419,7 @@
 	{
 		"en"	"Alongside what the previous one was capable of but stronger\nThis variant can every 20 seconds fire a Fantasmal wave, its best to avoid it\nIts possible to jump across the wave if you time it right!"
 		"it"	"Questa variante può sparare ogni 20 secondi un'onda fantasmatica, meglio evitarla.\n È possibile saltare attraverso l'onda se si è in tempo!"
-		"ko"	"이전과 동일하지만 더욱 강력해졌습니다.\n이 버전은 매 20초마다 판타즈멀 웨이브를 발사합니다. 피하는 것이 좋습니다.\n판타즈멀 웨이브는 타이밍에 맞춰 점프하면 피할 수 있습니다!"
+		"ko"	"이전과 동일하지만 더욱 강력해졌습니다.\n이 버전은 매 20초마다 환상의 물결을 발사합니다.\n환상의 물결은 타이밍에 맞춰 점프하면 피할 수 있습니다!"
 	}
 	"Lazines Desc"
 	{
@@ -3176,7 +3176,7 @@
 	{
 		"it"		"Si affonda verso di voi per colmare la distanza."
 		"en"		"A Metro Cop corrupted by the sea. \n-Has a ranged attack and reloads."
-		"ko"		"공허에 침식된 시민 보호 기동대입니다.\n-원거리 공격을 사용하며 재장전함"
+		"ko"		"시본에 감염된 시민 보호 기동대입니다.\n-원거리 공격을 사용하며 재장전함"
 	}
 	"Seaborn Metro Raider Desc"
 	{
@@ -3281,7 +3281,7 @@
 	{
 		"en"		"Taken by an unknown force, it was converted into an obscure, dark entity.\nDamaging it outside its aura causes it to heal.\n''The darkness is coming. You need to run.''"
 		"it"		"Preso da una forza sconosciuta, è stato trasformato in un'entità oscura e tenebrosa.\nDanneggiandolo al di fuori della sua aura, guarisce.\nL'oscurità sta arrivando. Devi scappare"
-		"ko"		"이엇은 알 수 없는 힘에 의해 희미하고 어두운 존재로 변했습니다.\n이 적의 오라의 범위 바깥에서 피해를 주면, 이 적의 체력이 회복됩니다.\n''어둠이 몰려오고 있어. 어서 도망쳐.''"
+		"ko"		"이것은 알 수 없는 힘에 의해 희미하고 어두운 존재로 변했습니다.\n이 적의 오라의 범위 바깥에서 피해를 주면, 이 적의 체력이 회복됩니다.\n''어둠이 몰려오고 있어. 어서 도망쳐.''"
 	}
 	"Intense Training"
 	{

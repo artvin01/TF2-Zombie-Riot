@@ -2225,7 +2225,7 @@
 		"fr" 		"Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
 		"chi"		"TF2：僵尸暴动\n按Tab开关菜单\nTAB+(H)显示当前武器！"
 		"it"		"Zombie Riot\nPremi di nuovo TAB per chiudere il menu!\nTieni premuto TAB + (H) per mostrare l'arma corrente!"
-		"ko" 		"TF2: 좀비 라이엇\n탭을 다시 눌러 메뉴를 닫으세요!\상점 메뉴에서 (H) 를 누르면 현재 무기가 표시됩니다!"
+		"ko" 		"TF2: 좀비 라이엇\n탭을 다시 눌러 메뉴를 닫으세요!\n상점 메뉴에서 (H) 를 누르면 현재 무기가 표시됨!"
 	}
 	"StatusEffectList"
 	{
@@ -3166,7 +3166,7 @@
 	{
 		"en"		"You feel Kahmlsteins Courage..."
 		"it"		"Senti il coraggio di Kahmlsteins..."
-		"ko"		"카멜슈타인의 의지가 느껴집니다..."
+		"ko"		"카멜스타인의 의지가 느껴집니다..."
 	}
 	"Last Down Warning"
 	{
@@ -3496,7 +3496,7 @@
 		"ru"		"Очищенная сталь"
 		"chi"		"精炼钢"
 		"it"		"Acciaio raffinato"
-		"ko"		"정제된 강철"
+		"ko"		"강철 정제"
 	}
 	"Barracks Refined Steel Desc"
 	{
@@ -3559,7 +3559,7 @@
 		"ru"		"Наручи"
 		"chi"		"护腕"
 		"it"		"Bracciale"
-		"ko"		"팔 보호대"
+		"ko"		"팔 보호구"
 	}
 	"Barracks Bracer Desc"
 	{
@@ -4394,14 +4394,14 @@
 		"en"		"Nightmare Cannon: Heavily reduced Turn speed, Increased damage"
 		"fr"		"Cannon de Cauchemars : Manoeuvrabilité réduite, dégats améliorés"
 		"it"		"Cannone da Incubo: velocità di rotazione fortemente ridotta, danni aumentati"
-		"ko"		"나이트메어 캐논: 회전 속도가 매우 크게 감소하지만, 피해량이 증가합니다"
+		"ko"		"악몽포: 회전 속도가 매우 크게 감소하지만, 피해량이 증가합니다"
 	}
 	"Neuvellete Pulse"
 	{
 		"en"		"Pulse Cannon: Heavily increased turnrate, but beam is only active for 2.5 seconds, shorter recharge period"
 		"fr"		"Cannon Impulsion : Manoeuvrabilité améliorée, mais le rayon dure pour seulement 2.5 secondes. Période de recharge réduite."
 		"it"		"Cannone a impulsi: velocità di rotazione notevolmente aumentata, ma il raggio è attivo solo per 2,5 secondi, periodo di ricarica più breve"
-		"ko"		"펄스 캐논: 회전 속도가 매우 크게 증가하지만, 빔의 지속 시간이 2.5초가 됩니다. 재충전 쿨타임이 더 짧습니다"
+		"ko"		"파동포: 회전 속도가 매우 크게 증가하지만, 빔의 지속 시간이 2.5초가 됩니다. 재충전 쿨타임이 더 짧습니다"
 	}
 	"Neuvellete Feedback"
 	{
@@ -4638,7 +4638,7 @@
 	{
 		"en"	"Lore order: (2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
 		"it"	"Ordine Lore: (2) La macchina è stata hackerata da qualcuno... ti vuole morto.\nOriginalmente costruito da Kahmlstein insieme a Ruina e Expidonsa...\nNon affrontarlo in nessuna area expidonsan..."
-		"ko"	"설정 순서: (2) 누군가에게 해킹당한 기계입니다... 그리고 이제 당신을 죽이고 싶어합니다.\n원래는 카멜슈타인, 루이나, 엑스피돈사와 함께 만들어진 기계였지만…\n엑스피돈사 지역에서 그와 전투하지 마십시오."
+		"ko"	"설정 순서: (2) 누군가에게 해킹당한 기계입니다... 그리고 이제 당신을 죽이고 싶어합니다.\n원래는 카멜스타인, 루이나, 엑스피돈사와 함께 만들어진 기계였지만…\n엑스피돈사 지역에서 그와 전투하지 마십시오."
 	}
 	"Blitzkrieg Hard Desc"
 	{
@@ -4759,7 +4759,7 @@
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
 		"chi"	"深渊已被释放。"
 		"it"	"Ordine Lore: (9) Subito dopo aver liberato il vuoto in rogue2..."
-		"ko"	"설정 순서: (9) 로그라이크2(Rogue2) 당시 공허가 해방되어버린 직후입니다. 다른 차원의 생명체들이 이 세계를 점령하기 위해 몰려오고 있습니다. 카멜슈타인을 도와 공허와 맞서세요!"
+		"ko"	"설정 순서: (9) 로그라이크2(Rogue2) 당시 공허가 해방되어버린 직후입니다. 다른 차원의 생명체들이 이 세계를 점령하기 위해 몰려오고 있습니다. 카멜스타인을 도와 공허와 맞서세요!"
 	}
 	"Aperture Desc"
 	{
@@ -5047,7 +5047,7 @@
 		"fr"	"Nécrose"
 		"chi"	"咒死"
 		"it"	"Necrosi"
-		"ko"	"괴사"
+		"ko"	"쇠약 원소 피해"
 	}
 	"Building Menu"
 	{

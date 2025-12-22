@@ -4,30 +4,37 @@
 	{
 		"#format"	"{1:t}"
 		"en"		"{green}Collected: {yellow}{1}"
+		"ko"		"{green}획득함: {yellow}{1}"
 	}
 	"Dungeon Keep Looking"
 	{
 		"en"	"Keep looking for something else"
+		"ko"	"쓸만한 것들을 계속 수색해보자"
 	}
 	"Dungeon Stop Looking"
 	{
 		"en"	"Stop looking and ready defenses"
+		"ko"	"그만 수색하고 방어를 준비하자"
 	}
 	"Dungeon Failed"
 	{
 		"en"	"All players have left the dungeon..."
+		"ko"	"모든 플레이어들이 던전을 나갔다..."
 	}
 	"Packing Station"
 	{
 		"en"	"Packing Station"
+		"ko"	"팩 스테이션"
 	}
 	"Packing Station Desc"
 	{
 		"en"	"A construct that packs a random weapon with a random buff"
+		"ko"	"무작위 무기에게 무작위 버프를 부여하는 구조물입니다"
 	}
 	"Pack Random Weapon"
 	{
 		"en"	"Pack Random Weapon"
+		"ko"	"무작위 무기 팩"
 	}
 	"Upgrade Using Materials"
 	{
@@ -37,43 +44,52 @@
 	"Upgrade Max"
 	{
 		"en"	"Level MAX"
+		"ko"	"최대 레벨"
 	}
 	"Upgrade Building To"
 	{
 		"#format"	"{1:d}"
 		"en"		"Upgrade Building to Level {1}"
+		"ko"		"구조물의 레벨을 {1} 로 증가시킵니다"
 	}
 	"Upgraded Building To"
 	{
 		"#format"	"{1:s},{2:d}"
 		"en"		"{orange}{1} {default}upgraded to {orange}Level {2}"
+		"ko"		"{orange}{1} {default}의 레벨이 {orange}{2} 로 증가했습니다"
 	}
 	"Gained Ammo Supplies"
 	{
 		"#format"	"{1:d}"
 		"en"		"{green}Gained {1} ammo supplies"
+		"ko"		"{green}탄약 보급을 {1} 얻었습니다"
 	}
 	"Gained Extra Cash"
 	{
 		"#format"	"{1:d}"
 		"en"		"{green}Gained {1} extra cash"
+		"ko"		"{green}추가 자금을 {1} 얻었습니다"
 	}
 	"Construct Health"
 	{
 		"en"	"Construct Health"
+		"ko"	"구조물 체력"
 	}
 	"Construct Health Desc"
 	{
 		"en"	"Upgrades all construct building's health."
+		"ko"	"모든 구조물 체력을 증가시킵니다."
 	}
 	"Weapon Has Packed"
 	{
 		"#format"	"{1:s},{2:t},{3:t}"
 		"en"		"{green}{1} {default}packed with {yellow}{2}\n{3}"
+		"ko"		"{green}{1} {default}의 팩이 다음으로 부여됨 : {yellow}{2}\n{3}"
 	}
 	"Clearance Focus"
 	{
 		"en"	"Clearance Focus"
+		"ko"	"모든 구조물 체력을 증가시킵니다."
 	}
 	"Clearance Focus Desc"
 	{

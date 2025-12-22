@@ -64,7 +64,7 @@
 	{
 		"en"	"Rift of Swarms"
 		"it"	"Rift degli Sciami"
-		"ko"	"무리의 균열"
+		"ko"	"군단의 균열"
 	}
 	"Rift of Swarms Desc"
 	{
@@ -94,7 +94,7 @@
 	{
 		"en"	"Rift of Emptiness"
 		"it"	"Squarcio di vuoto"
-		"ko"	"공허함의 균열"
+		"ko"	"덧없음의 균열"
 	}
 	"Rift of Emptiness Desc"
 	{
@@ -112,7 +112,7 @@
 	{
 		"en"	"Rift of Darkness"
 		"it"	"Squarcio di tenebra"
-		"ko"	"어둠의 균열"
+		"ko"	"암흑의 균열"
 	}
 	"Rift of Darkness Desc"
 	{
@@ -148,13 +148,13 @@
 	{
 		"en"	"Rift of Corruption"
 		"it"	"Spaccatura della corruzione"
-		"ko"	"오염의 균열"
+		"ko"	"타락의 균열"
 	}
 	"Rift of Corruption Desc"
 	{
 		"en"	"{red}Consuming items at a Gateway has a chance to corrupt."
 		"it"	"{red}Il consumo di oggetti in un Gateway ha una possibilità di corrompere."
-		"ko"	"{red}관문에 흡수시킨 아이템은 확률로 오염되게 됩니다."
+		"ko"	"{red}관문에 흡수시킨 아이템은 확률로 오염됩니다."
 	}
 	"Rift of Corruption Lore"
 	{
@@ -515,7 +515,7 @@
 	{
 		"en"	"Patience is key. Plan ahead for the future.\n{green}''Hunter'' weapons gain +20％ damage every second, up to +500％ {yellow}(resets upon dealing damage, but doesnt activate till fully charged)"
 		"it"	"La pazienza è fondamentale.{green}Le armi da ''cacciatore'' guadagnano +20％ danni ogni secondo, fino a +500％ {yellow} (si ripristina quando si infliggono danni, ma non si attiva fino a quando non è completamente carica)"
-		"ko"	"인내심이 열쇠다. 미래를 향해 계획하라.\n{green}''사냥꾼'' 계열 무기가 매 초마다 피해량이 +20％ 증가하여 최대 +500％ 까지 증가. {yellow}(피해를 입히면 초기화되지만, 완전히 충전될 때까지는 발동되지 않음.)"
+		"ko"	"인내심이 미래다. 미래를 위해 생각해라.\n{green}''사냥꾼'' 계열 무기가 매 초마다 피해량이 +20％ 증가하여 최대 +500％ 까지 증가. {yellow}(피해를 입히면 초기화되지만, 완전히 충전될 때까지는 발동되지 않음.)"
 	}
 	"Hand of Buckler"
 	{
@@ -539,7 +539,7 @@
 	{
 		"en"	"Blasts conquer, the wake deafening.\n{green}''Splash Magic'' weapon ability cooldowns are reduced by 2 seconds when dealing damage"
 		"it"	"Le esplosioni conquistano, la scia assorda.\n{green}''Splash Magic'' i cooldown delle abilità delle armi sono ridotti di 2 secondi quando si infliggono danni"
-		"ko"	"폭발의 정복, 귀를 찢는 듯한 기상.\n{green}''확산 마법'' 계열 무기가 피해를 줄 때마다 능력 쿨타임이 2초씩 감소함."
+		"ko"	"한 번 휩쓸면 귀가 찢어질 듯하다.\n{green}''확산 마법'' 계열 무기가 피해를 줄 때마다 능력 쿨타임이 2초씩 감소함."
 	}
 	"Hand of Mystery"
 	{
@@ -599,7 +599,7 @@
 	{
 		"en"	"What she means by standing over there, is that you cannot cross.\n{green}''Defender'' weapons, upon being attacked by a new enemy, reflect damage taken as true damage and shortly stun the enemy"
 		"it"	"{green}Le armi ''difensore'', quando vengono attaccate da un nuovo nemico, riflettono i danni subiti come danni reali e stordiscono brevemente il nemico"
-		"ko"	"그녀가 거기 서 있다는 건, 지나갈 수 없다는 뜻이다.\n{green}''방어자'' 계열 무기는 새로운 적에게 피해를 받을 때마다, 받은 피해를 트루 대미지로 변환해 공격자에게 반사하고 잠깐 기절시킴."
+		"ko"	"그녀가 거기 서 있다는 건, 넘을 수 없다는 뜻이다.\n{green}''디펜더'' 계열 무기는 새로운 적에게 피해를 받을 때마다, 받은 피해를 트루 대미지로 변환해 공격자에게 반사하고 잠깐 기절시킴."
 	}
 	"Hand of Superspeed"
 	{
@@ -611,7 +611,7 @@
 	{
 		"en"	"You swing your hand, leaving not even an afterimage.\n{green}''Ambusher'' weapons gain +90％ fire rate"
 		"it"	"{green}Le armi ''Ambusher'' guadagnano una cadenza di fuoco di +90％"
-		"ko"	"손을 한번 휘두르고, 잔상조차 남기지 않는다.\n{green}''매복자'' 계열 무기의 공격 속도가 +90％ 증가."
+		"ko"	"팔 한 번 휘두르니 남은 건 잔상뿐이다.\n{green}''매복자'' 계열 무기의 공격 속도가 +90％ 증가."
 	}
 	"Hand of Fireworks"
 	{
@@ -1494,7 +1494,7 @@
 	{
 		"en"	"''Bladedance''"
 		"it"	"''Bladedance''"
-		"ko"	"''블레이드댄스''"
+		"ko"	"''칼춤''"
 	}
 	"The Bladedance Desc"
 	{
@@ -1512,7 +1512,7 @@
 	{
 		"en"	"Egotist. Betrayer. Seeker. Loner. Ruler. Goodnight, Irln.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped between players"
 		"it"	"Egoista. Traditore. Cercatore. Solitario. Governante. Buonanotte, Irln.\n{green}Gli alleati guadagnano +25％ salute massima {yellow}ma la salute massima viene scambiata casualmente tra i giocatori"
-		"ko"	"이기주의자. 배신자. 탐구자. 고독한 자. 지배자. 좋은 밤 되길, 에릴렌이여.\n{green}모든 아군의 최대 체력 +25％. {yellow}최대 체력이 플레이어들 사이에서 무작위로 변경됩니다."
+		"ko"	"이기적인 자. 배신자. 길을 찾는 자. 홀로 나아가는 자. 선구자. 안녕히 주무시길, 아를린이여.\n{green}모든 아군의 최대 체력 +25％. {yellow}최대 체력이 플레이어들 사이에서 무작위로 변경됩니다."
 	}
 
 	"Gateway"
@@ -2345,25 +2345,25 @@
 	{
 		"en" "⚔ Bladedance survivors"
 		"it" "⚔ Sopravvissuti alla Bladedance"
-		"ko" "⚔ 블레이드댄스의 생존자들"
+		"ko" "⚔ 칼춤 소속의 생존자들"
 	}
 	"Bladedance survivors!"
 	{
 		"en" "⚠ Bladedance survivors"
 		"it" "⚠ Sopravvissuti alla Bladedance"
-		"ko" "⚠ 블레이드댄스의 생존자들"
+		"ko" "⚠ 칼춤 소속의 생존자들"
 	}
 	"Rescued W.F. Soldiers"
 	{
 		"en" "⚔ Rescued W.F. Soldiers"
 		"it" "⚔ Soldati salvati del W.F"
-		"ko" "⚔ 배풍등의 구출된 병사들"
+		"ko" "⚔ 구출된 배풍등의 휘하 병사들"
 	}
 	"Rescued W.F. Soldiers!"
 	{
 		"en" "⚠ Rescued W.F. Soldiers"
 		"it" "⚠ soldati salvati del W.F"
-		"ko" "⚠ 배풍등의 구출된 병사들"
+		"ko" "⚠ 구출된 배풍등의 휘하 병사들"
 	}
 	"Unknown Taskforce"
 	{
@@ -2393,13 +2393,13 @@
 	{
 		"en" "⚔ Voided Superior's"
 		"it" "⚔ Annullamento della dichiarazione del Superiore"
-		"ko" "⚔ 공허화된 상급자"
+		"ko" "⚔ 침식당한 상급자"
 	}
 	"Voided Superior's!"
 	{
 		"en" "⚠ Voided Superior's"
 		"it" "⚠ Annullamento del mandato del Superiore"
-		"ko" "⚠ 공허화된 상급자"
+		"ko" "⚠ 침식당한 상급자"
 	}
 	"Expert Warpers"
 	{
@@ -2441,13 +2441,13 @@
 	{
 		"en" "⚔ Top Voided Elites"
 		"it" "⚔ i migliori elite vuoti"
-		"ko" "⚔ 공허화된 정예병들"
+		"ko" "⚔ 침식당한 정예병들"
 	}
 	"Top Voided Elites!"
 	{
 		"en" "⚠ Top Voided Elites"
 		"it" "⚠ top Elites non utilizzate"
-		"ko" "⚠ 공허화된 정예병들"
+		"ko" "⚠ 침식당한 정예병들"
 	}
 	"Gun Game"
 	{
@@ -2610,7 +2610,7 @@
 	{
 		"en" "Book of Liver Optimisation"
 		"it" "Libro dell'ottimizzazione del fegato"
-		"ko" "간 기능 최적화 노하우의 책"
+		"ko" "요리 간 맞추기 노하우의 책"
 	}
 	"Book of Liver Optimisation Desc"
 	{
@@ -2743,7 +2743,7 @@
 	{
 		"en"	"Vhxis' Assistance"
 		"it"	"Assistenza Vhxis"
-		"ko"	"비흐시스의 협력"
+		"ko"	"비히시스의 협력"
 	}
 	"Vhxis' Assistance Desc" 
 	{
