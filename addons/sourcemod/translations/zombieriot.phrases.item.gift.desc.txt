@@ -1031,25 +1031,25 @@
 	{
 		"en"		"Forced into servitutde by Blitzkrieg\nPosses a powerful ''Fractal Beam Emitter''\nIt is advised to not touch it.."
 		"it"		"Costretto a servire da Blitzkrieg, possiede un potente ''Emettitore di raggi frattali''.\nSi consiglia di non toccarlo."
-		"ko"		"블리츠크리그에게 패배하여 강제 예속 상태가 되었습니다.\n강력한 ''프랙탈 광선 방출기''를 보유하고 있습니다.\n만지지 않는 것이 좋을겁니다..."
+		"ko"		"블리츠크리그에게 패배하여 강제 예속 상태가 되었습니다.\n-강력한 ''프랙탈 광선 방출기''를 보유하고 있습니다.\n-광선에 닿지 않는 것이 좋을겁니다..."
 	}
 	"Schwertkrieg Desc"
 	{
 		"en"		"Forced into servitutde by Blitzkrieg\nHe completely lost his individuality\nHe poses the ability to teleport long distances\nHighly dangerous up close."
 		"it"		"Costretto alla servitù dalla Blitzkrieg.\nHa perso completamente la sua individualità."
-		"ko"		"블리츠크리그에게 패배하여 강제 예속 상태가 되었습니다.\n그는 자신의 개성을 완전히 잃고 말았습니다...\n먼 거리를 순간이동할 수 있는 능력을 보유했습니다.\n접근하는 것은 굉장히 위험합니다."
+		"ko"		"블리츠크리그에게 패배하여 강제 예속 상태가 되었습니다.\n그는 자신의 개성을 완전히 잃고 말았습니다...\n-먼 거리를 순간이동할 수 있는 능력을 보유\n-접근하는 것은 굉장히 위험합니다."
 	}
 	"Phantom Knight Desc"
 	{
 		"en"		"A phantom knight, he is slow, he has the ability to teleport behind you, he can make clones of himself which are weaker compared to the main host. Highly dangerous up close."
 		"it"		"Un cavaliere fantasma, è lento, ha la capacità di teletrasportarsi alle spalle, può creare cloni di se stesso che sono più deboli rispetto all'ospite principale. Molto pericoloso da vicino."
-		"ko"		"어두운 밤의 유령. 이동 속도가 느리지만, 표적의 뒤쪽으로 순간이동할 수 있는 능력을 보유했으며, 본체보다 약한 분신을 생성할 수 있는 환영 능력도 사용합니다. 이 적에게 접근하는 것은 굉장히 위험합니다."
+		"ko"		"어두운 밤의 유령.\n-이동 속도가 느리지만, 표적의 뒤쪽으로 순간이동할 수 있는 능력을 보유\n-주기적으로 주위에 대량의 피해를 가하는 광역 공격 사용\n-본체보다 약한 분신을 생성할 수 있는 환영 능력 보유"
 	}
 	"Medic Constructor Desc"
 	{
 		"en"		"A rouge mechanical medic constructor, a part of the ''Last Hope'' project\nHeals allies."
 		"it"		"Un costruttore meccanico medico rouge, parte del progetto ''Ultima Speranza''.\nCura alleati."
-		"ko"		"불량 기계 메딕 건축가. ''마지막 희망'' 프로젝트의 일부입니다.\n-주변의 아군을 치료"
+		"ko"		"불량 기계 메딕 구축자. ''마지막 희망'' 프로젝트의 일부입니다.\n-주변의 아군을 치료"
 	}
 	"Gambler Desc"
 	{
@@ -1385,13 +1385,13 @@
 	{
 		"en"		"Fires projectiles with armor erosion, can fire rapid amounts in AOE area.\nThe first beautiful living being to speak human language before civilized man.\nSeaborn.\n- Uses a ranged attack\n- Attacks inflict Nervous Impairment\n- Periodically locks onto target location, after a delay hits serveral times to a random enemy within range"
 		"it"		"Spara proiettili con erosione dell'armatura, può sparare rapidamente in un'area AOE.\nIl primo bell'essere vivente a parlare il linguaggio umano prima dell'uomo civilizzato.\nSeaborn.\n- Utilizza un attacco a distanza.\n- Gli attacchi infliggono menomazioni nervose.\n- Si blocca periodicamente sulla posizione del bersaglio, dopo un ritardo colpisce più volte un nemico a caso nel raggio d'azione"
-		"ko"		"갑옷 부식을 부여하는 투사체를 발사합니다. 광역 범위 내의 적에겐 더 많이 발사합니다.\n처음으로 문명의 앞에서 인간의 말을 쓴 아름다운 생물.\n시본. \n-원거리 공격을 사용하며, 신경 손상 원소 피해를 부여함\n-표적의 위치에 지점을 표시한뒤, 짧은 지연 후 범위 내에 있는 무작위 적에게 다중 타격을 함."
+		"ko"		"처음으로 문명의 앞에서 인간의 말을 쓴 아름다운 생물.\n시본.\n-원거리 공격을 사용하며, 신경 손상 원소 피해를 부여함\n-표적의 위치에 지점을 표시한뒤, 짧은 지연 후 범위 내에 있는 무작위 적에게 다중 타격을 함."
 	}
 	"Sal Viento Bishop Quintus Desc"
 	{
 		"en"		"A member of the Church of the Deep who snuck into disaster-ravaged Iberia.\nHe changed the law of the land through his sincere beliefs, in pursuit of the perfect form, yet he was unable to fathom the will of the ocean.\nThen again, who could?\n- Spawns at a random position, does not move, and becomes a spawn point\n- Uses a ranged attack, up to 2 targets with the highest ranged resistance in range\n- Attacks inflict Nervous Impairment\n- Periodically attacks up to 8 targets\n- Periodically deals damage to all targets in line-of-sight"
 		"it"		"Un membro della Chiesa degli Abissi che si è intrufolato nell'Iberia devastata dal disastro.\nHa cambiato la legge della terra grazie alle sue sincere convinzioni, alla ricerca della forma perfetta, ma non è riuscito a comprendere la volontà dell'oceano.\nD'altronde, chi potrebbe farlo?\n- Si riproduce in una posizione casuale, non si muove e diventa un punto di spawn \n- Utilizza un attacco a distanza, fino a 2 bersagli con la resistenza a distanza più alta nel raggio d'azione \n- Gli attacchi infliggono menomazioni nervose \n- Attacca periodicamente fino a 8 bersagli \n- Infligge periodicamente danni a tutti i bersagli in linea visiva"
-		"ko"		"참사가 벌어진 후 이베리아에 잠입한 심해 교회의 일원 중 하나.\n-자신의 이념으로 율법을 왜곡하고, 개인의 완벽함을 추구했으나 바다의 뜻에는 전혀 침투할 수 없었다.\n그런 게 가능한 사람이 있기는 할까?\n-무작위 위치에 생성되며, 움직이지 않지만 다른 적들을 생성하는 임시 스폰 지점이 됨.\n-원거리 공격을 사용하며, 피해 저항력이 가장 높은 대상 2명만을 노림\n-주기적으로 최대 8명까지 공격하며, 시야 내 모든 목표물에게 피해를 가하는 공격 보유"
+		"ko"		"참사가 벌어진 후 이베리아에 잠입한 심해 교회의 일원 중 하나.\n자신의 이념으로 율법을 왜곡하고, 개인의 완벽함을 추구했으나 바다의 뜻에는 전혀 침투할 수 없었다.\n그런 게 가능한 사람이 있기는 할까?\n-무작위 위치에 생성, 움직이지 않지만 다른 적들을 생성하는 임시 스폰 지점이 됨.\n-원거리 공격을 사용하며, 피해 저항력이 가장 높은 대상 2명만을 노림\n-주기적으로 최대 8명까지 공격하며, 시야 내 모든 목표물에게 피해를 가하는 공격 보유"
 	}
 	"Armorless Union Knight Desc"
 	{
@@ -1427,7 +1427,7 @@
 	{
 		"en"		"The tiny Seaborn that haunted the mighty Stultifera, the blood of its parents once strewn across the ocean's waters.\nThe revelation reaches not the ears of the children, their kind's destiny quietly continuing to flow.\n- Uses attacks based on current form\n- When changing form, consumes the closest remain, killing targets and consumes nearby remains\n- Elite variant gains increased health, damage, and consumes an addtional remain"
 		"it"		"Il piccolo Seaborn che perseguitava la potente Stultifera, il sangue dei suoi genitori un tempo sparso sulle acque dell'oceano.\nLa rivelazione non giunge alle orecchie dei bambini, il destino della loro specie continua silenziosamente a scorrere.\n- Utilizza attacchi basati sulla forma attuale.\n- Quando cambia forma, consuma il resto più vicino, uccidendo i bersagli e consumando i resti vicini.\n- La variante Elite guadagna salute e danni maggiori e consuma un resto aggiuntivo"
-		"ko"		"스툴티페라 나비스 근처에 출몰하는 소형 시본으로, 부모 세대의 피가 이 바다를 가득 채운 적이 있다.\n-귓가에 신탁이 전달되지 않아도, 종족의 운명은 여전히 소리 없이 흘러간다.\n-현재 형태에 따라 다른 공격을 가함.\n형태 변경시, 남겨진 유해를 포식, 해당 위치의 모든 적을 즉사시키고 근처의 유해 역시 포식\n-정예 개체는 체력, 피해량이 증가하며 유해를 추가로 포식"
+		"ko"		"스툴티페라 나비스 근처에 출몰하는 소형 시본으로, 부모 세대의 피가 이 바다를 가득 채운 적이 있다.\n귓가에 신탁이 전달되지 않아도, 종족의 운명은 여전히 소리 없이 흘러간다.\n-현재 형태에 따라 다른 공격을 가함.\n형태 변경시, 남겨진 유해를 포식, 해당 위치의 모든 적을 즉사시키고 근처의 유해 역시 포식\n-정예 개체는 체력, 피해량이 증가하며 유해를 추가로 포식"
 	}
 	"Nethersea Founder Desc"
 	{
@@ -1607,13 +1607,13 @@
 	{
 		"en"		"The basis of a well-known folk tale in Kazimierz.\nThe past died on the land, and neither the present nor the future have any meaning.\nOnly the ocean, kill the ocean.\n- Targets enemy and allies\n- Taking damage inflicts a debuff to the attacker, reducing attack speed\n- Deals increased damage to targets with enough debuff stacks\n- Changes form when below 1/5 of health, increased speed, attacks now deal contact damage, ignores buildings"
 		"it"		"Il passato è morto sulla terra, e né il presente né il futuro hanno alcun significato.\nSolo l'oceano, uccidi l'oceano.\n- Prende di mira il nemico e gli alleati.\n- Subire danni infligge un debuff all'attaccante, riducendo la velocità d'attacco.\n- Infligge danni maggiori ai bersagli con un numero sufficiente di stack di debuff.\n- Cambia forma quando è al di sotto di 1/5 della salute, aumenta la velocità, gli attacchi ora infliggono danni da contatto, ignora gli edifici"
-		"ko"		"카시미어에서 회자되는 동화의 원형.\n그 과거는 육지에서 사라졌고, 현재와 미래 또한 아무런 의미도 없다.\n오직 바다만 남았고, 오직 바다만 죽인다.\n-이 적은 피아구분 없이 모든 것을 공격합니다.\n-피해를 받으면 대상의 공격 속도를 감소시키는 디버프 부여\n- 충분한 디버프가 누적된 대상에 대해 피해량 증가\n- 체력이 1/5 이하일 시 형태 전환: 구조물을 완전히 무시하며 속도 대폭 증가, 접촉시 피해를 줌."
+		"ko"		"카시미어에서 회자되는 동화의 원형.\n그 과거는 육지에서 사라졌고, 현재와 미래 또한 아무런 의미도 없다.\n오직 바다만 남았고, 오직 바다만 죽인다.\n-피아구분 없이 모든 것을 공격\n-피격 시 대상의 공격 속도를 감소시키는 디버프 부여\n-충분한 디버프가 누적된 대상에 대해 피해량 증가\n-체력이 1/5 이하일 시 형태 전환: 구조물을 완전히 무시하며 속도 대폭 증가, 접촉 시 피해를 줌."
 	}
 	"Saint Carmen Desc"
 	{
 		"en"		"The last surviving Saint of Iberia, living well past mortal life expectancy.\nHis longevity came at a price, but he remembers his duty and his enemies, despite having lost his reason.\n- Targets enemy and allies\n- Attacks levitate the target and deals extra hit of True damage"
 		"it"		"La sua longevità ha avuto un prezzo, ma ricorda il suo dovere e i suoi nemici, nonostante abbia perso la ragione.\n- Bersaglia il nemico e gli alleati\n- Gli attacchi fanno levitare il bersaglio e infliggono un colpo extra di danno Vero"
-		"ko"		"이베리아에 남은 유일한 성도로 일반 사람보다 훨씬 나이가 많다.\n이베리아의 생명 연장 시술은 대가가 따르지만, 그는 정신을 잃더라도 본인의 사명과 적을 분명하게 기억하고 있다.\n-이 적은 피아구분 없이 모든 것을 공격합니다.\n-공격 적중시, 대상을 공중으로 띄우고 추가 트루 대미지를 입힘"
+		"ko"		"이베리아에 남은 유일한 성도로 일반 사람보다 훨씬 나이가 많다.\n이베리아의 생명 연장 시술은 대가가 따르지만, 그는 정신을 잃더라도 본인의 사명과 적을 분명하게 기억하고 있다.\n-피아구분 없이 모든 것을 공격\n-적중 시, 대상을 공중으로 띄우고 추가 트루 대미지를 입힘"
 	}
 	"Pathshaper Desc"
 	{
