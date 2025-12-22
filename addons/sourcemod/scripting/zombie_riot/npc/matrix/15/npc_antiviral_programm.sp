@@ -309,7 +309,7 @@ int Antiviral_ProgramSelfDefense(Antiviral_Program npc, float gameTime, int targ
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 110.0;
+					float damageDealt = 130.0;
 					damageDealt *= npc.m_flWaveScale;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);

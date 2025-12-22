@@ -1131,7 +1131,15 @@ static const char g_Agent_Summons[][] =
 
 static void Matrix_Spawning(int attacker, int victim)
 {
-	float pos[3]; GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos);
+	float pos[3];
+	GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos);
+	int Spawner_entity = GetRandomActiveSpawner();
+	if(IsValidEntity(Spawner_entity))
+	{
+		float ang[3];
+		GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+		GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+	}
 	int summon = NPC_CreateByName("npc_antiviral_programm", -1, pos, {0.0,0.0,0.0}, GetTeam(attacker), "final");
 	if(IsValidEntity(summon))
 	{
@@ -1150,32 +1158,7 @@ static void Matrix_Spawning(int attacker, int victim)
 				if(Decicion == 2)
 				{
 					Decicion = TeleportDiversioToRandLocation(summon, true, 500.0, 250.0);
-					if(Decicion == 2)
-					{
-						int Spawner_entity = GetRandomActiveSpawner();
-						if(IsValidEntity(Spawner_entity))
-						{
-							float pos[3];
-							float ang[3];
-							GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
-							GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
-							TeleportEntity(summon, pos, ang, NULL_VECTOR);
-						}
-					}
 				}
-			}
-			case 3:
-			{
-				int Spawner_entity = GetRandomActiveSpawner();
-				if(IsValidEntity(Spawner_entity))
-				{
-					float pos[3];
-					float ang[3];
-					GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
-					GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
-					TeleportEntity(summon, pos, ang, NULL_VECTOR);
-				}
-				//todo code on what to do if random teleport is disabled
 			}
 		}
 		npcsummon.m_iWearable5 = ConnectWithBeam(summon, victim, 65, 125, 65, 2.0, 2.0, 0.0, "sprites/laserbeam.vmt");
