@@ -4383,6 +4383,7 @@
 		"it"	"Danno elementare del Caos"
 		"ko"	"혼돈 원소 피해"
 	}
+
 	"Chaos Elemental Damage Desc"
 	{
 		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou deal 350 truedamage to 3 allies.\nAlso gives 40％ Vulnerability for 10 seconds.\nHits only upto 3 additional allies."
@@ -5868,6 +5869,16 @@
 		"it"		"Agente Steve"
 		"ko"		"스티브 요원"
 	}
+	"Anti Viral Programm"
+	{
+		"en"		"Anti Viral Programm"
+		"ko"		"안티바이러스 프로그램"
+	}
+	"Anti Viral Programm Desc"
+	{
+		"en"		"Its an anti virus, and youre the virus.\n-Goes after only one target.\n-If target dies or enough time passes, he fades away\n-Phases through everything."
+		"ko"		"안티바이러스, 그리고 당신이 바이러스입니다.\n-오직 하나의 대상만을 추격\n-대상이 사망하거나 충분한 시간이 지나면 소멸\n-모든 것들을 무시하고 지나갑니다."
+	}
 	"Agent Eric"
 	{
 		"en"		"Agent Eric"
@@ -7344,7 +7355,7 @@
 	{
 		"en"	"Buffs Vincent in its range, and outside after leaving it a bit aswell."
 		"it"	"Buffa Vincent nel suo raggio d'azione, e anche fuori dopo averlo lasciato un po'."
-		"ko"	"범위 내의 빈센트 에게 버프를 부여하며, 범위를 벗어나도 일정 시간 동안 지속됩니다."
+		"ko"	"범위 내의 빈센트에게 버프를 부여하며, 범위를 벗어나도 일정 시간 동안 지속됩니다."
 	}
 	"Old forgotten expidonsan robot"
 	{
@@ -7578,7 +7589,7 @@
 	{
 		"en" "The Construct"
 		"it" "Il Costrutto"
-		"ko" "제조물"
+		"ko" "제작물"
 	}
 	"Reila's Beacon Desc"
 	{
@@ -7601,47 +7612,7 @@
 	"Barbaric Teardown"
 	{
 		"en"	"Barbaric Teardown"
-		"ko"	"야만인 분해자"
-	}
-	"Barbaric Teardown Desc"
-	{
-		"en"	"Fellow outposts base demolisher's.\n-First 3 hits deal bonus damage\nThese 3 hits deal much higher building damage."
-		"ko"	"전초기지 철거자입니다.\n-처음 3 회의 공격이 추가 피해를 주고\n그 공격의 적중 대상이 구조물이라면 더 높은 피해를 줌"
-	}
-	"Skilled Crossbowman"
-	{
-		"en"	"Skilled Crossbowman"
-		"ko"	"숙련된 석궁병"
-	}
-	"Skilled Crossbowman Desc"
-	{
-		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
-		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다. \n-한 번의 3발의 화살 발사\n-당신의 이동 경로를 예측함\m-대상을 포위하고 주로 측면을 노림\n-높은 근접 피해 1회를 받으면 비무장 상태가 됨"
-	}
-	"Barbaric Teardown"
-	{
-		"en"	"Barbaric Teardown"
-		"ko"	"야만인 분해자"
-	}
-	"Barbaric Teardown Desc"
-	{
-		"en"	"Fellow outposts base demolisher's.\n-First 3 hits deal bonus damage\nThese 3 hits deal much higher building damage."
-		"ko"	"전초기지 철거자입니다.\n-처음 3 회의 공격이 추가 피해를 주고\n그 공격의 적중 대상이 구조물이라면 더 높은 피해를 줌"
-	}
-	"Skilled Crossbowman"
-	{
-		"en"	"Skilled Crossbowman"
-		"ko"	"숙련된 석궁병"
-	}
-	"Skilled Crossbowman Desc"
-	{
-		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
-		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다. \n-한 번의 3발의 화살 발사\n-당신의 이동 경로를 예측함\m-대상을 포위하고 주로 측면을 노림\n-높은 근접 피해 1회를 받으면 비무장 상태가 됨"
-	}
-	"Barbaric Teardown"
-	{
-		"en"	"Barbaric Teardown"
-		"ko"	"야만적인 분쇄자"
+		"ko"	"야만인 분쇄자"
 	}
 	"Barbaric Teardown Desc"
 	{
