@@ -7554,7 +7554,7 @@
 	{
 		"en"	"Ruthless leader of the Almagest squad sent into the Curtain. \nTheir motives remain unclear. \nDeals void damage, and summons drones to deal chaos damage. \nAfter losing a certain amount of HP, becomes invulernerable until the current wave is defeated."
 		"it"	"Spietato leader della squadra Almagest inviata nella Cortina. \nI loro motivi rimangono poco chiari. \nSubisce danni da vuoto ed evoca droni per infliggere danni da caos. \nDopo aver perso una certa quantità di HP, diventa invulnerabile finché non viene sconfitta l'ondata corrente."
-		"ko"	"장막 속으로 파견된 알마게스트 부대의 무자비한 지휘관입니다. \n그들의 동기는 여전히 불분명합니다. \nD공허 속성 피해를 입히고, 드론을 소환하여 혼돈 속성 피해를 입힙니다. \n체력이 일정 수치 감소시, 현재 웨이브의 적들을 전부 처치할 때까지 이 적이 무적 상태가 됩니다."
+		"ko"	"장막 속으로 파견된 알마게스트 부대의 무자비한 지휘관입니다.\n그들의 동기는 여전히 불분명합니다.\n-공허 속성 피해를 입히고, 드론을 소환하여 혼돈 속성 피해를 입힙니다.\n-체력이 일정 수치 감소시, 현재 웨이브의 적들을 전부 처치할 때까지 이 적이 무적 상태가 됩니다."
 	}
 	"Jkei Drone"
 	{
