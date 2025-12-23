@@ -455,7 +455,7 @@
 	{
 		"en"	"Lelouch opened a rift to the Curtain. It's only been a few weeks, we need to stop this, together with Bob and Twirl.\n{green}Enemy stats nerfed by -10％\n{red}Grigori will have 1 less item to sell."
 		"it"	"Lelouch ha aperto una breccia nella cortina. Sono passate solo poche settimane, dobbiamo fermare tutto questo, insieme a Bob e Twirl.\n{green}Le statistiche dei nemici sono state ridotte di -10％\n{red}Grigori avrà un oggetto in meno da vendere."
-		"ko"	"를르슈가 장막으로 향하는 균열을 열었습니다. 고작 몇 주밖에 되지 않았지만, 트윌과 밥과 협력하여 반드시 막아야합니다.\n{green}적들의 능력치 -10％ 감소\n{red}그리고리가 판매하는 물품 1개 감소"
+		"ko"	"를르슈가 장막으로 향하는 균열을 열었습니다. 고작 몇 주밖에 되지 않았지만, 트윌과 밥과 협력하여 막아내야 합니다.\n{green}적들의 능력치 -10％\n{red}그리고리가 판매하는 물품 1개 감소"
 	}
 	"Hand of Predation"
 	{
