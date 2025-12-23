@@ -7610,46 +7610,6 @@
 	"Barbaric Teardown"
 	{
 		"en"	"Barbaric Teardown"
-		"ko"	"야만인 분해자"
-	}
-	"Barbaric Teardown Desc"
-	{
-		"en"	"Fellow outposts base demolisher's.\n-First 3 hits deal bonus damage\nThese 3 hits deal much higher building damage."
-		"ko"	"전초기지 철거자입니다.\n-처음 3 회의 공격이 추가 피해를 주고\n그 공격의 적중 대상이 구조물이라면 더 높은 피해를 줌"
-	}
-	"Skilled Crossbowman"
-	{
-		"en"	"Skilled Crossbowman"
-		"ko"	"숙련된 석궁병"
-	}
-	"Skilled Crossbowman Desc"
-	{
-		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
-		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다. \n-한 번의 3발의 화살 발사\n-당신의 이동 경로를 예측함\m-대상을 포위하고 주로 측면을 노림\n-높은 근접 피해 1회를 받으면 비무장 상태가 됨"
-	}
-	"Barbaric Teardown"
-	{
-		"en"	"Barbaric Teardown"
-		"ko"	"야만인 분해자"
-	}
-	"Barbaric Teardown Desc"
-	{
-		"en"	"Fellow outposts base demolisher's.\n-First 3 hits deal bonus damage\nThese 3 hits deal much higher building damage."
-		"ko"	"전초기지 철거자입니다.\n-처음 3 회의 공격이 추가 피해를 주고\n그 공격의 적중 대상이 구조물이라면 더 높은 피해를 줌"
-	}
-	"Skilled Crossbowman"
-	{
-		"en"	"Skilled Crossbowman"
-		"ko"	"숙련된 석궁병"
-	}
-	"Skilled Crossbowman Desc"
-	{
-		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
-		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다. \n-한 번의 3발의 화살 발사\n-당신의 이동 경로를 예측함\m-대상을 포위하고 주로 측면을 노림\n-높은 근접 피해 1회를 받으면 비무장 상태가 됨"
-	}
-	"Barbaric Teardown"
-	{
-		"en"	"Barbaric Teardown"
 		"ko"	"야만적인 분쇄자"
 	}
 	"Barbaric Teardown Desc"
@@ -7676,5 +7636,13 @@
 	{
 		"en"	"A warrior dealing with the demons that got possed by chaos.\n-Once losing his life he will enrage and fullheal\nThis buff lasts only for a few seconds.\n-This can be canceled by dealing enough damage at once, or stunning him and then killing him."
 		"ko"	"혼돈에 침식당한 악마와 싸우던 기사입니다.\n-생명을 잃을 시 격분 상태가 되고 ''혼돈의 악마 빙의'' 버프를 획득\n-해당 행동으로 저지 가능:\n한번에 대량의 피해를 가해 두번째 목숨까지 완전히 소진\n기절을 부여하여 격분 상태가 되지 않게하고, 이 상태에서 처치"
+	}
+	"Agent 61"
+	{
+		"en"	"Agent 61"
+	}
+	"Agent 61 Desc"
+	{
+		"en"	"A hired hitman merc, number assosiation unknown.\n-Will find the weakest target on the map and focus them\n-Phases through everything\n-Has challanger buff\n-Shoots his gun once which if hitting, deals a stacking fear debuff."
 	}
 }

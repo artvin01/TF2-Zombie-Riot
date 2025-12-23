@@ -46,7 +46,7 @@ void Agent61_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Agent 61s");
+	strcopy(data.Name, sizeof(data.Name), "Agent 61");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_agent_61");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
@@ -402,22 +402,10 @@ static int Clot_SelfDefense_Gun(Agent61 npc, float gameTime)
 	{
 		if(IsValidEnemy(npc.index,npc.m_iTargetWalkTo))
 		{
-			if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTargetWalkTo))
-			{
-				npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,DistanceCheckMax,_,_,_,_,true,_,_,true);
-			}
-		}
-		else
-		{
-			npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,DistanceCheckMax,_,_,_,_,true,_,_,true);
-			if(!IsValidEnemy(npc.index,npc.m_iTargetWalkTo))
+			if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 			{
 				return 2;
-			}		
-		}
-		if(!IsValidEnemy(npc.index,npc.m_iTargetWalkTo))
-		{
-			return 2;
+			}
 		}
 	}
 		
@@ -498,8 +486,13 @@ static int Clot_SelfDefense_Gun(Agent61 npc, float gameTime)
 				float damageDealt = 250.0;
 				if(ShouldNpcDealBonusDamage(target))
 					damageDealt *= 5.5;
-				
+
+
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
+				//once hit, apply massive fear to target AFTER damage calculations.
+				NpcStats_PrimalFearChange(victim, 0.5);
+				ApplyStatusEffect(npc.index, victim, "Primal Fear", 99.0);
+				ApplyStatusEffect(npc.index, victim, "Primal Fear Hide", 5.0);
 			} 
 			npc.m_iAttacksTillReload --;
 		}
@@ -509,8 +502,6 @@ static int Clot_SelfDefense_Gun(Agent61 npc, float gameTime)
 	{
 		npc.m_flAttackHappens = gameTime + 0.9;
 		npc.m_flDoingAnimation = gameTime + 0.55;
-		if(NpcStats_IberiaIsEnemyMarked(npc.m_iTargetWalkTo))
-			npc.m_flDoingAnimation = gameTime + 0.8;
 		npc.m_flNextMeleeAttack = gameTime + 2.5;
 	}
 	return 3;
