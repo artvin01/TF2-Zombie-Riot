@@ -771,6 +771,7 @@ static void AdjustClientWeapons(int client)
 	{
 		i_ClientHasCustomGearEquipped[client] = false;
 		Store_RemoveSpecificItem(client, NULL_STRING, _, ModifiedWeapons[client]);
+		ModifiedWeapons[client] = 0;
 		
 		//TF2_RemoveCondition(client, TFCond_RestrictToMelee);
 		Store_ApplyAttribs(client);
