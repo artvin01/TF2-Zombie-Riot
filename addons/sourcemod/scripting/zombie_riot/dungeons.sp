@@ -125,6 +125,8 @@ enum struct RoomInfo
 	int MinWave;
 	int MaxWave;
 	float WaveChance;
+	int WaveAmount;
+	float LootScale;
 	float Timelimit;
 	float Cooldown;
 	float CurrentCooldown;
@@ -213,6 +215,8 @@ enum struct RoomInfo
 		this.Common = kv.GetNum("common", 1);
 		this.Victory = kv.GetNum("victory");
 		this.WaveChance = kv.GetFloat("wavechance", -0.001);
+		this.WaveAmount = kv.GetNum("waveamount");
+		this.LootScale = kv.GetFloat("lootscale");
 		this.Timelimit = kv.GetFloat("timelimit");
 		this.Cooldown = kv.GetFloat("cooldown");
 		this.MinWave = kv.GetNum("minwave", -9999);
@@ -228,13 +232,16 @@ enum struct RoomInfo
 		if(!this.Loots)
 			return;
 		
+		int count = victory ? this.Victory : 0;
 		if(!victory)
 		{
-			if(GetURandomFloat() > this.WaveChance)
-				return;
+			for(int a; a < this.WaveAmount; a++)
+			{
+				if(GetURandomFloat() < this.WaveChance)
+					count++;
+			}
 		}
 
-		int count = victory ? this.Victory : 1;
 		for(int a; a < count; a++)
 		{
 			ArrayList list = new ArrayList();
@@ -266,7 +273,7 @@ enum struct RoomInfo
 
 			if(!victory)
 			{
-				Dungeon_SpawnLoot(buffer);
+				Dungeon_SpawnLoot(buffer, this.LootScale);
 			}
 			else if(LootMap.ContainsKey(buffer))
 			{
@@ -275,10 +282,13 @@ enum struct RoomInfo
 				LootInfo loot;
 				LootMap.GetArray(buffer, loot, sizeof(loot));
 				loot.RollLoot();
+
+				Dungeon_AddBattleScale(this.LootScale);
 			}
 			else
 			{
 				Rogue_GiveNamedArtifact(buffer);
+				Dungeon_AddBattleScale(this.LootScale);
 			}
 		}
 	}
@@ -297,6 +307,7 @@ static Handle GameTimer;
 static float BattleTimelimit;
 static float DelayVoteFor;
 static int LastRoomIndex;
+static float BattleWaveScale;
 static float EnemyScaling;
 
 void Dungeon_PluginStart()
@@ -331,13 +342,16 @@ bool Dungeon_FinalBattle()
 
 int Dungeon_GetRound()
 {
-	int maxAttacks = RaidList.Length;
-	if(!maxAttacks)
-		return 0;
+	if(AttackType > 1)
+	{
+		int maxAttacks = RaidList.Length;
+		if(!maxAttacks)
+			return MaxWaveScale;
+		
+		return (CurrentAttacks * MaxWaveScale / maxAttacks)
+	}
 	
-	int current = (CurrentAttacks * MaxWaveScale / maxAttacks);
-	int ongoing = RoundToFloor((AttackTime - (NextAttackAt - GetGameTime())) / AttackTime * float(MaxWaveScale) / float(maxAttacks));
-	return current + ongoing;
+	return RoundToFloor(BattleWaveScale);
 }
 
 void Dungeon_MapStart()
@@ -525,6 +539,7 @@ void Dungeon_StartSetup()
 	Construction_RoundEnd();
 
 	NextAttackAt = 0.0;
+	BattleWaveScale = 0.0;
 
 	delete GameTimer;
 	GameTimer = CreateTimer(1.0, Timer_WaitingPeriod, _, TIMER_REPEAT);
@@ -678,10 +693,8 @@ void Dungeon_AntiStalled()
 	}
 }
 
-void Dungeon_SpawnLoot(const char[] name)
+void Dungeon_TeleportRandomly(float pos[3])
 {
-	float pos[3];
-
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client))
@@ -718,17 +731,15 @@ void Dungeon_SpawnLoot(const char[] name)
 	}
 
 	pos[2] += 10.0;
+}
 
-	float ang[3];
-	ang[0] = 0.0;
-	ang[1] = float(GetURandomInt() % 360);
-	ang[2] = 0.0;
+void Dungeon_SpawnLoot(const char[] name, float waveScale)
+{
+	float pos[3];
+	Dungeon_TeleportRandomly(pos);
 
-	DungeonLoot npc = view_as<DungeonLoot>(NPC_CreateByName("npc_dungeon_loot", 0, pos, ang, 3, name));
-
-	LootInfo loot;
-	if(LootMap.GetArray(name, loot, sizeof(loot)))
-		npc.SetLootData(name, loot.Color);
+	DungeonLoot npc = view_as<DungeonLoot>(NPC_CreateById(DungeonLoot_Id(), 0, pos, NULL_VECTOR, 3));
+	npc.SetLootData(name, waveScale);
 }
 
 bool Dungeon_EntityAtBase(int client, bool outOfBoundsResult = false)
@@ -786,13 +797,10 @@ static Action DungeonMainTimer(Handle timer)
 			/*
 				Dungeon Room Voting
 			*/
-			ArrayList voting = Rogue_CreateGenericVote(Dungeon_RoomVote, "Dungeon Room Vote");
-			Vote vote;
-
 			RoomInfo room;
 			ArrayList roomPool;
 			int highestCommon;
-			int round = Dungeon_GetRound();
+			int round = RoundToFloor(BattleWaveScale);
 			int length = RoomList.Length;
 			for(int a; a < length; a++)
 			{
@@ -845,7 +853,10 @@ static Action DungeonMainTimer(Handle timer)
 				Rogue_RemoveNamedArtifact("Dungeon Compass");
 			}
 
-			int count = (GetURandomInt() % 5) ? 2 : 3;
+			Vote vote;
+//			ArrayList voting = Rogue_CreateGenericVote(Dungeon_RoomVote, "Dungeon Room Vote");
+
+			int count = 1;//(GetURandomInt() % 5) ? 2 : 3;
 			for(int a; a < count; a++)
 			{
 				length = roomPool.Length;
@@ -860,14 +871,16 @@ static Action DungeonMainTimer(Handle timer)
 
 				strcopy(vote.Name, sizeof(vote.Name), room.Name);
 				IntToString(index, vote.Config, sizeof(vote.Config));
-				voting.PushArray(vote);
+/*				voting.PushArray(vote);
 
 				for(int b; (b = roomPool.FindValue(index)) != -1; )
 				{
 					roomPool.Erase(b);
 				}
+*/
+				Dungeon_RoomVote(vote);
 			}
-
+/*
 			strcopy(vote.Name, sizeof(vote.Name), time < 130.0 ? "Dungeon Stop Looking" : "Dungeon Keep Looking");
 			vote.Desc[0] = 0;
 			IntToString(-1, vote.Config, sizeof(vote.Config));
@@ -875,6 +888,7 @@ static Action DungeonMainTimer(Handle timer)
 
 			Rogue_StartGenericVote(30.0);
 			DelayVoteFor = GetGameTime() + 31.0;
+*/
 		}
 
 		GameTimer = CreateTimer(0.5, DungeonMainTimer);
@@ -1354,6 +1368,11 @@ bool Dungeon_LootExists(const char[] name)
 	return LootMap && LootMap.ContainsKey(name);
 }
 
+bool Dungeon_GetNamedLoot(const char[] name, LootInfo loot)
+{
+	return LootMap && LootMap.GetArray(name, loot, sizeof(loot));
+}
+
 void Dungeon_RollNamedLoot(const char[] name)
 {
 	LootInfo loot;
@@ -1363,6 +1382,11 @@ void Dungeon_RollNamedLoot(const char[] name)
 	PrintToChatAll("UNKNOWN LOOT \"%s\", REPORT BUG", name);
 }
 
+void Dungeon_AddBattleScale(float scale)
+{
+	BattleWaveScale += scale;
+}
+
 static float ScaleBasedOnRound(int round)
 {
 	return (500.0 + Pow(float(round), 2.6));
@@ -1370,7 +1394,7 @@ static float ScaleBasedOnRound(int round)
 
 void Dungeon_EnemySpawned(int entity)
 {
-	if(Dungeon_Mode())
+	if(Dungeon_Mode() && i_NpcInternalId[entity] != DungeonLoot_Id())
 	{
 		// Reward cash depending on the wave scaling and how much left
 		if(AttackType < 2)
@@ -1411,7 +1435,7 @@ void Dungeon_EnemySpawned(int entity)
 
 bool Dungeon_UpdateMvMStats()
 {
-	if(!Dungeon_Mode() || AttackType > 1)
+	if(!Dungeon_Mode() || AttackType > 0)
 		return false;
 	
 	int objective = FindEntityByClassname(-1, "tf_objective_resource");
@@ -1466,7 +1490,7 @@ bool Dungeon_UpdateMvMStats()
 					static int LastRound;
 					static int FrameCount;
 
-					int round = Dungeon_GetRound();
+					int round = RoundToFloor(BattleWaveScale);
 					int flags = round < 39 ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_MINIBOSS;
 
 					if(LastRound != round)

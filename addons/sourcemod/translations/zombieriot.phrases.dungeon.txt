@@ -193,9 +193,17 @@
 	{
 		"en"	"Wooden Crate"
 	}
+	"Wooden Pack"
+	{
+		"en"	"Wooden Pack"
+	}
 	"Jalan Crate"
 	{
 		"en"	"Jalan Crate"
+	}
+	"Jalan Pack"
+	{
+		"en"	"Jalan Pack"
 	}
 	"Rare Jalan Crate"
 	{
@@ -213,6 +221,10 @@
 	{
 		"en"	"Wizuh Crate"
 	}
+	"Wizuh Pack"
+	{
+		"en"	"Wizuh Pack"
+	}
 	"Rare Wizuh Crate"
 	{
 		"en"	"Rare Wizuh Crate"
@@ -225,6 +237,10 @@
 	{
 		"en"	"Ossunia Crate"
 	}
+	"Ossunia Pack"
+	{
+		"en"	"Ossunia Pack"
+	}
 	"Rare Ossunia Crate"
 	{
 		"en"	"Rare Ossunia Crate"
@@ -233,9 +249,17 @@
 	{
 		"en"	"Unbox in the Control Center"
 	}
+	"Bofazem Crate"
+	{
+		"en"	"Bofazem Crate"
+	}
 	"Sealed Bofazem Crate"
 	{
 		"en"	"Sealed Bofazem Crate"
+	}
+	"Sealed Bofazem Crate Desc"
+	{
+		"en"	"Unbox in the Control Center"
 	}
 	"Treasure Crate"
 	{
