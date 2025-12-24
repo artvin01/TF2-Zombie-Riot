@@ -87,7 +87,7 @@ void ApertureBuilder_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_builder");
 	strcopy(data.Icon, sizeof(data.Icon), "engineer");
 	data.IconCustom = false;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MISSION;
 	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;

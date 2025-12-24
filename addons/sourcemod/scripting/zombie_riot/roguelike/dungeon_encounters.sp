@@ -166,6 +166,7 @@ public float Dungeon_Encounter_Treasure()
 	}
 
 	Rogue_StartGenericVote(30.0);
+	Dungeon_DelayVoteFor(50.0);
 
-	return 50.0;
+	return 0.0;
 }

@@ -23,8 +23,8 @@ void ApertureTeleporter_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Aperture Teleporter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_teleporter");
 	strcopy(data.Icon, sizeof(data.Icon), "teleporter");
-	data.IconCustom = true;
-	data.Flags = 0;
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_MISSION;
 	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	NPC_Add(data);
