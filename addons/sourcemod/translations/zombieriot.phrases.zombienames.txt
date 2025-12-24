@@ -3089,6 +3089,10 @@
 		"it"	"Bladedance Il tradito"
 		"ko"	"배신당한 자, '블레이드댄스'"
 	}
+	"Bladedance Clone"
+	{
+		"en"	"Bladedance Clone"
+	}
 	"Allied Leper Afterimage"
 	{
 		"en"	"Allied Leper Afterimage"
