@@ -46,6 +46,10 @@ methodmap VehicleGeneric < CClotBody
 
 		return view_as<VehicleGeneric>(obj);
 	}
+	public void SetDriverOffset(const float pos[3])
+	{
+		SetEntPropVector(this.index, Prop_Data, "m_vecDriverOffset", pos);
+	}
 	public void AddSeat(const float pos[3], int index, int gun = 0)
 	{
 		if(index < VEHICLE_MAX_SEATS)
@@ -86,6 +90,7 @@ void Vehicle_PluginStart()
 	factory.DeriveFromClass("prop_vehicle_driveable");
 	factory.BeginDataMapDesc()
 	.DefineEntityField("m_hPlayer2")
+	.DefineVectorField("m_vecDriverOffset")
 	.DefineBoolField("m_bNoAttack")
 	.DefineEntityField("m_hSeatEntity", VEHICLE_MAX_SEATS)
 	.DefineVectorField("m_vecSeatPos", VEHICLE_MAX_SEATS)
@@ -439,10 +444,20 @@ static void SwitchToDriver(VehicleGeneric obj, int target)
 		}
 	}
 
-	float pos[3];
+	float pos[3], offset[3];
 	GetEntPropVector(obj.index, Prop_Data, "m_vecOrigin", pos);
 	TeleportEntity(target, pos, _, {0.0, 0.0, 0.0});
-	SetParent(obj.index, target, "vehicle_driver_eyes", {0.0, 0.0, -68.0});	// Was -40 when being ducked
+
+	GetEntPropVector(obj.index, Prop_Data, "m_vecDriverOffset", offset);
+	if(offset[0] || offset[1] || offset[2])
+	{
+		SetParent(obj.index, target, "root", offset);
+	}
+	else
+	{
+		offset[2] -= 68.0;	// Was -40 when being ducked
+		SetParent(obj.index, target, "vehicle_driver_eyes", offset);
+	}
 	
 	AcceptEntityInput(obj.index, "TurnOn");
 	obj.m_hDriver = target;
@@ -553,6 +568,7 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 	{
 		SetEntPropFloat(obj.index, Prop_Data, "m_controls.steering", 0.0);
 		SetEntPropFloat(obj.index, Prop_Data, "m_controls.throttle", 0.0);
+		SetEntPropFloat(obj.index, Prop_Data, "m_controls.brake", 0.0);
 	}
 }
 
@@ -608,6 +624,15 @@ static Action VehicleThink(int entity)
 		else
 		{
 			SetEntPropFloat(obj.index, Prop_Data, "m_controls.throttle", 0.0);
+		}
+	
+		if(buttons & IN_JUMP)
+		{
+			SetEntPropFloat(obj.index, Prop_Data, "m_controls.brake", 1.0);
+		}
+		else
+		{
+			SetEntPropFloat(obj.index, Prop_Data, "m_controls.brake", 0.0);
 		}
 
 		if(obj.m_bNoAttack)
