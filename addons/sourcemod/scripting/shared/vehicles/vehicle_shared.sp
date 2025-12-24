@@ -568,6 +568,7 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 	{
 		SetEntPropFloat(obj.index, Prop_Data, "m_controls.steering", 0.0);
 		SetEntPropFloat(obj.index, Prop_Data, "m_controls.throttle", 0.0);
+		SetEntPropFloat(obj.index, Prop_Data, "m_controls.brake", 0.0);
 	}
 }
 
@@ -623,6 +624,15 @@ static Action VehicleThink(int entity)
 		else
 		{
 			SetEntPropFloat(obj.index, Prop_Data, "m_controls.throttle", 0.0);
+		}
+	
+		if(buttons & IN_JUMP)
+		{
+			SetEntPropFloat(obj.index, Prop_Data, "m_controls.brake", 1.0);
+		}
+		else
+		{
+			SetEntPropFloat(obj.index, Prop_Data, "m_controls.brake", 0.0);
 		}
 
 		if(obj.m_bNoAttack)
