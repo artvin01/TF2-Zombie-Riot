@@ -5659,6 +5659,14 @@
 		"ko"	"트루퍼 폭탄 수레"
 		"it"	"Trooper Bombcart"
 	}
+	"Nuke Cart"
+	{
+		"en"	"Trooper  Nukecart"
+	}
+	"Tank Cart"
+	{
+		"en"	"Trooper  Tankcart"
+	}
 	"Breachcart"
 	{
 		"en"	"Trooper  Breachcart"
