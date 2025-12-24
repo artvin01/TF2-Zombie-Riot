@@ -842,34 +842,35 @@ static void CaptinoBaguettusBackup(CaptinoBaguettus npc, float gameTime, float d
 		for(int AllyLoop; AllyLoop <= MaxClients; AllyLoop ++)
 		{
 			if(IsValidAlly(npc.index, AllyLoop))
-				continue;
-			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget);
-			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			GetEntPropVector(AllyLoop, Prop_Send, "m_vecOrigin", vecTarget);
-			if(GetVectorDistance(VecSelfNpc, vecTarget, true) > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*150.0)
-				continue;
-			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, vecTarget, _, _, _, true, _, false, _, GetNPCCount);
-			if(npc.m_iAttacksTillMegahit>=8)
 			{
-				static float hullcheckmaxs[3];
-				static float hullcheckmins[3];
-				hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
-				hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );
-				if(Npc_Teleport_Safe(npc.index, vecTarget, hullcheckmins, hullcheckmaxs, false))
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget);
+				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+				GetEntPropVector(AllyLoop, Prop_Send, "m_vecOrigin", vecTarget);
+				if(GetVectorDistance(VecSelfNpc, vecTarget, true) > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*150.0)
+					continue;
+				Explode_Logic_Custom(0.0, npc.index, npc.index, -1, vecTarget, _, _, _, true, _, false, _, GetNPCCount);
+				if(npc.m_iAttacksTillMegahit>=8)
 				{
-					ParticleEffectAt(VecSelfNpc, "teleported_red", 0.5);
-					WorldSpaceCenter(npc.index, VecSelfNpc);
-					ParticleEffectAt(VecSelfNpc, "teleported_red", 0.5);
-					npc.m_flCaptinoMeniusTeleportForEnemy = gameTime + 60.0;
-					npc.PlayTeleportSound();
-					npc.m_flGetClosestTargetTime = 0.0;
-					ApplyStatusEffect(npc.index, npc.index, "Tonic Affliction", 3.0);
-					npc.m_flNextMeleeAttack = gameTime + 1.4;
+					static float hullcheckmaxs[3];
+					static float hullcheckmins[3];
+					hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+					hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );
+					if(Npc_Teleport_Safe(npc.index, vecTarget, hullcheckmins, hullcheckmaxs, false))
+					{
+						ParticleEffectAt(VecSelfNpc, "teleported_red", 0.5);
+						WorldSpaceCenter(npc.index, VecSelfNpc);
+						ParticleEffectAt(VecSelfNpc, "teleported_red", 0.5);
+						npc.m_flCaptinoMeniusTeleportForEnemy = gameTime + 60.0;
+						npc.PlayTeleportSound();
+						npc.m_flGetClosestTargetTime = 0.0;
+						ApplyStatusEffect(npc.index, npc.index, "Tonic Affliction", 3.0);
+						npc.m_flNextMeleeAttack = gameTime + 1.4;
+					}
+					else
+						npc.m_flCaptinoMeniusTeleportForEnemy = gameTime + 1.0;
+					TotalFailed=false;
+					break;
 				}
-				else
-					npc.m_flCaptinoMeniusTeleportForEnemy = gameTime + 1.0;
-				TotalFailed=false;
-				break;
 			}
 			npc.m_iAttacksTillMegahit=0;
 			TotalFailed=true;
