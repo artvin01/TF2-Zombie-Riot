@@ -46,7 +46,7 @@ methodmap DungeonLoot < CClotBody
 		}
 
 		strcopy(c_NpcName[this.index], sizeof(c_NpcName[]), name);
-		npc.m_flAttackHappens_bullshit = scale;
+		this.m_flAttackHappens_bullshit = scale;
 	}
 
 	public DungeonLoot(float vecPos[3], const char[] data)
@@ -85,7 +85,7 @@ methodmap DungeonLoot < CClotBody
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
-		b_StaticNPC[entity] = CurrentRound <= (Waves_GetMaxRound(true) - 2);
+		b_StaticNPC[npc.index] = CurrentRound <= (Waves_GetMaxRound(true) - 2);
 		b_NpcUnableToDie[npc.index] = true;
 		b_NoHealthbar[npc.index] = 1;
 
@@ -126,7 +126,7 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 				{
 					b_NpcUnableToDie[victim] = false;
 
-					Dungeon_AddBattleScale(npc.m_flAttackHappens_bullshit);
+					Dungeon_AddBattleScale(view_as<CClotBody>(victim).m_flAttackHappens_bullshit);
 
 					if(Dungeon_LootExists(c_NpcName[victim]))
 					{

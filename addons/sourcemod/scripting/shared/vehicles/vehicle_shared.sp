@@ -320,7 +320,7 @@ bool Vehicle_Interact(int client, int weapon, int entity)
 			SwitchToDriver(view_as<VehicleGeneric>(vehicle), client);
 
 #if defined ZR
-			AdjustClientWeapons(target);
+			AdjustClientWeapons(client);
 #endif
 		}
 		else if(fabs(forceOutTime[client] - GetGameTime()) < 0.4 || CanExit(vehicle))
@@ -620,7 +620,7 @@ static Action VehicleThink(int entity)
 
 	for(int i; i < VEHICLE_MAX_SEATS; i++)
 	{
-		if(GetEntProp(obj.index, Prop_Data, "m_iSeatGunIndex", _, slot) < 0)
+		if(GetEntProp(obj.index, Prop_Data, "m_iSeatGunIndex", _, i) < 0)
 		{
 			int passenger = GetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", i);
 			if(passenger > 0 && passenger <= MaxClients)
