@@ -348,7 +348,7 @@ int Dungeon_GetRound()
 		if(!maxAttacks)
 			return MaxWaveScale;
 		
-		return (CurrentAttacks * MaxWaveScale / maxAttacks)
+		return (CurrentAttacks * MaxWaveScale / maxAttacks);
 	}
 	
 	return RoundToFloor(BattleWaveScale);

@@ -13,7 +13,7 @@
 #define CONSTRUCT_COST1		((5 + (CurrentLevel * 5)) * (CurrentLevel > 3 ? 2 : 1))
 #define CONSTRUCT_MAXLVL	8
 
-static const char NPCModel[] = "models/props_farm/barn_loft001a.mdl";
+static const char NPCModel[] = "models/props_farm/wood_shack001.mdl";
 // 310 total cost
 
 static int NPCId;
@@ -63,7 +63,7 @@ methodmap ObjectC2House < ObjectGeneric
 			LastGameTime = CurrentGame;
 		}
 
-		ObjectC2House npc = view_as<ObjectC2House>(ObjectGeneric(client, vecPos, vecAng, NPCModel, "0.4", "50", {30.0, 30.0, 60.0},_,false));
+		ObjectC2House npc = view_as<ObjectC2House>(ObjectGeneric(client, vecPos, vecAng, NPCModel, "0.65", "50", {25.0, 25.0, 60.0},_,false));
 
 		float flPos[3]; // original
 
