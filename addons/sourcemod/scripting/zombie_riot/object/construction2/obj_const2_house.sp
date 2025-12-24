@@ -54,7 +54,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 
 methodmap ObjectC2House < ObjectGeneric
 {
-
 	public ObjectC2House(int client, const float vecPos[3], const float vecAng[3])
 	{
 		if(LastGameTime != CurrentGame)
@@ -63,7 +62,7 @@ methodmap ObjectC2House < ObjectGeneric
 			LastGameTime = CurrentGame;
 		}
 
-		ObjectC2House npc = view_as<ObjectC2House>(ObjectGeneric(client, vecPos, vecAng, NPCModel, "0.65", "50", {25.0, 25.0, 60.0},_,false));
+		ObjectC2House npc = view_as<ObjectC2House>(ObjectGeneric(client, vecPos, vecAng, NPCModel, "0.5", "50", {30.0, 30.0, 80.0},_,false));
 
 		float flPos[3]; // original
 

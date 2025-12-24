@@ -139,7 +139,7 @@ void NPC_ConfigSetup()
 	VehicleDumpTruck_Setup();
 	VehicleLandrover_Setup();
 	VehiclePickup_Setup();
-	Vehicle_FullAPC_Setup();
+	VehicleFullAPC_Setup();
 	// Vehicles
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
