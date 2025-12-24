@@ -5197,7 +5197,7 @@
 	"Iberia Expi Desc"
 	{
 	  "en" "Iberia and expidonsa offer training to help against the true final battle against the void... But our main trainer and her partner aren't here to train us. Their probably on vacation."
-	  "ko" "이베리아와 엑스피돈사가 공허와의 마지막 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 그런데 보아하니 메인 트레이너와 그녀의 파트너가 여기에 없군요. 들려오는 말로는 둘 다 휴가 중이라던데 설마..."
+	  "ko" "이베리아와 엑스피돈사가 공허와의 최후의 전투를 돕기 위한 대비 훈련을 제공하려고 합니다...만, 보아하니 메인 트레이너와 그녀의 파트너가 여기에 없군요. 아마 휴가중인건가..."
 	}
 	"Iberia & Nemal"
 	{
@@ -5213,7 +5213,7 @@
 		"en" "(10) Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremly seriously."
 		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
 		"it"	"(10) Iberia e expidonsa offrono addestramento per aiutare contro la vera battaglia finale contro il vuoto... Anche se gli iberici sembrano prenderla estremamente sul serio."
-		"ko" "설정 순서: (10) 이베리아와 엑스피돈사가 공허와의 마지막 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 이베리아인들은 이를 매우 심각하게 받아들이는 것 같지만요."
+		"ko" "설정 순서: (10) 이베리아와 엑스피돈사가 공허와의 최후의 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 이베리아인들은 이를 매우 심각하게 받아들이는 것 같지만요."
 	}
 	"Revenant's Shadow"
 	{
