@@ -29,11 +29,9 @@ methodmap VehicleFullJeep < VehicleGeneric
 	{
 		VehicleFullJeep obj = view_as<VehicleFullJeep>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, "models/buggy.mdl", "scripts/vehicles/jeep_test.txt"));
 		
-		int gun = Store_GetItemIndex("Tommygun");
-
 		obj.m_bNoAttack = true;
-		obj.AddSeat({22.0, -42.0, 12.0}, 0, gun);
-		obj.AddSeat({2.0, -90.0, 34.0}, 1, gun);
+		obj.AddSeat({22.0, -42.0, 12.0}, 0);
+		obj.AddSeat({2.0, -90.0, 34.0}, 1);
 
 		FuncShowInteractHud[obj.index] = VehicleFullJeep_ClotShowInteractHud;
 		func_NPCInteract[obj.index] = VehicleFullJeep_ClotInteract;

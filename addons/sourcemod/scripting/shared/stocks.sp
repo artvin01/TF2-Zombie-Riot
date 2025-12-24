@@ -5202,7 +5202,7 @@ void KillDyingGlowEffect(int client)
 }
 #endif	// ZR
 
-enum g_Collision_Group
+enum
 {
     COLLISION_GROUP_NONE  = 0,
     COLLISION_GROUP_DEBRIS,            // Collides with nothing but world and static stuff

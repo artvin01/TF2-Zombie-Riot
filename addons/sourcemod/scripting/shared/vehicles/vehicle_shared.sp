@@ -717,8 +717,6 @@ static void AdjustClientWeapons(int client)
 	int slot = -1;
 	int vehicle = Vehicle_Driver(client, slot);
 
-	char buffer[64];
-
 	if(vehicle != -1)
 	{
 		VehicleGeneric obj = view_as<VehicleGeneric>(vehicle);
