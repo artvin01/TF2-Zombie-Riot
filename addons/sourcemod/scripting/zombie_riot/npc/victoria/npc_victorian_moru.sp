@@ -281,7 +281,12 @@ static void VictorianDroneAnvil_ClotThink(int iNPC)
 	if(npc.m_iTargetAlly && !IsValidAlly(npc.index, npc.m_iTargetAlly))
 		npc.m_iTargetAlly = 0;
 	if(!npc.m_iTargetAlly || npc.m_flGetClosestTargetTime < gameTime)
+	{
+		npc.StopHealing();
+		npc.Healing = false;
+		npc.m_bnew_target = false;
 		npc.m_iTargetAlly = VictoriaAnvilGetTarget(npc.index, gameTime);
+	}
 	
 	int AI = VictoriaAnvilDefenseMode(npc.index, gameTime, npc.m_iTargetAlly, DistanceToTarget);
 	switch(AI)
