@@ -225,22 +225,14 @@ methodmap VictorianHardener < CClotBody
 	}
 	public void StartHealing()
 	{
-		int im_iWearable3 = this.m_iWearable3;
-		if(im_iWearable3 != INVALID_ENT_REFERENCE)
+		if(IsValidEntity(this.m_iWearable4))
 			this.Healing = true;
 	}	
 	public void StopHealing()
 	{
-		int iBeam = this.m_iWearable5;
-		if(iBeam != INVALID_ENT_REFERENCE)
+		int iBeam = this.m_iWearable4;
+		if(IsValidEntity(iBeam))
 		{
-			int iBeamTarget = GetEntPropEnt(iBeam, Prop_Send, "m_hOwnerEntity");
-			if(IsValidEntity(iBeamTarget))
-			{
-				AcceptEntityInput(iBeamTarget, "ClearParent");
-				RemoveEntity(iBeamTarget);
-			}
-			
 			AcceptEntityInput(iBeam, "ClearParent");
 			RemoveEntity(iBeam);
 			
@@ -282,8 +274,6 @@ static void VictorianHardener_ClotThink(int iNPC)
 	}
 	if(IsValidAlly(npc.index, npc.m_iTarget) && Is_a_Medic[npc.m_iTarget])
 	{
-		if(IsValidEntity(npc.m_iWearable4))
-			RemoveEntity(npc.m_iWearable4);
 		npc.StopHealing();
 		npc.Healing = false;
 		npc.m_bnew_target = false;
@@ -302,9 +292,6 @@ static void VictorianHardener_ClotThink(int iNPC)
 		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_medigun/c_medigun.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-	
-		if(IsValidEntity(npc.m_iWearable4))
-			RemoveEntity(npc.m_iWearable4);
 			
 		npc.StopHealing();
 		npc.Healing = false;
@@ -323,9 +310,6 @@ static void VictorianHardener_ClotThink(int iNPC)
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		SetEntityRenderColor(npc.m_iWearable3, 255, 215, 0, 255);
-	
-		if(IsValidEntity(npc.m_iWearable4))
-			RemoveEntity(npc.m_iWearable4);
 			
 		npc.StopHealing();
 		npc.Healing = false;
@@ -434,6 +418,7 @@ static void VictorianHardener_NPCDeath(int entity)
 	}
 	
 	Is_a_Medic[npc.index] = false;
+	npc.StopHealing();
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -448,7 +433,6 @@ static void VictorianHardener_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
-	npc.StopHealing();
 }
 
 static int VictorianHardener_Work(VictorianHardener npc, float gameTime, float distance)
@@ -575,8 +559,7 @@ static int VictorianHardener_Work(VictorianHardener npc, float gameTime, float d
 			}
 			else
 			{
-				if(IsValidEntity(npc.m_iWearable4))
-					RemoveEntity(npc.m_iWearable4);
+				npc.StopHealing();
 				npc.m_bnew_target = false;					
 			}
 		}

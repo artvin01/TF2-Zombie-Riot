@@ -369,6 +369,7 @@ methodmap Atomizer < CClotBody
 			OnMiss[npc.index] = false;
 			npc.m_fbRangedSpecialOn = false;
 			npc.m_bFUCKYOU = false;
+			npc.m_bFUCKYOU_move_anim = false;
 			AlreadySaidWin = false;
 			
 			ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
@@ -1044,6 +1045,7 @@ static void Atomizer_ClotThink(int iNPC)
 					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
 					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_2_Phase", false, false);
 					npc.m_iState=0;
+					npc.m_bFUCKYOU_move_anim=true;
 					npc.m_flNextRangedAttack = gameTime+1.0;//Punishment
 					npc.m_flRangedSpecialDelay += 2.0;
 					npc.m_flNextRangedSpecialAttackHappens += 2.0;
@@ -1156,9 +1158,14 @@ static void Atomizer_ClotThink(int iNPC)
 		}
 		else if(npc.m_flDelay_Attribute < gameTime)
 		{
-			float damageDealt = 50.0 * RaidModeScaling;
+			float damageDealt = 75.0 * (DrinkPOWERUP[npc.index]? 1.34 : 1.0);
+			if(npc.m_bFUCKYOU_move_anim)
+			{
+				damageDealt*2.0;
+				npc.m_bFUCKYOU_move_anim=false;
+			}
 			KillFeed_SetKillIcon(npc.index, "bonk");
-			Explode_Logic_Custom(damageDealt, 0, npc.index, -1, ProjLocBase, 250.0 , 1.0, _, true, 20,_,_,_,SuperAttack);
+			Explode_Logic_Custom(damageDealt * RaidModeScaling, 0, npc.index, -1, ProjLocBase, 250.0 , 1.0, _, true, 20,_,_,_,SuperAttack);
 			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 			{
 				if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
@@ -1621,8 +1628,11 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 										Knocked = true;
 										Custom_Knockback(npc.index, targetTrace, 600.0, true);
 									}
-									TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.4);
-									TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.4);
+									if(!HasSpecificBuff(npc.index, "Godly Motivation") || Knocked)
+									{
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.4);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.4);
+									}
 								}
 								
 								if(!Knocked)
@@ -1920,13 +1930,13 @@ static bool Victoria_Support(Atomizer npc)
 					Vs_LockOn[client]=false;
 			}
 		}
-		spawnRing_Vectors(Vs_Temp_Pos[npc.index], (1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0)), 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(Vs_Temp_Pos[npc.index], (1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0)), 0.0, 0.0, 0.0, LASERBEAM, 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
 		float position2[3];
 		position2[0] = Vs_Temp_Pos[npc.index][0];
 		position2[1] = Vs_Temp_Pos[npc.index][1];
 		position2[2] = Vs_Temp_Pos[npc.index][2] + 65.0;
-		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
-		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
 		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
 		TE_SendToAll();
 		TE_SetupGlowSprite(Vs_Temp_Pos[npc.index], g_RedPoint, 0.1, 1.0, 255);

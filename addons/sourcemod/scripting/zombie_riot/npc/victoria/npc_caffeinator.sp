@@ -173,32 +173,18 @@ methodmap VictorianCaffeinator < CClotBody
 	}
 	public void StartHealing()
 	{
-		int im_iWearable3 = this.m_iWearable3;
-		if(im_iWearable3 != INVALID_ENT_REFERENCE)
-		{
+		if(IsValidEntity(this.m_iWearable4))
 			this.Healing = true;
-			
-		//	EmitSoundToAll("m_iWearable3s/medigun_heal.wav", this.index, SNDCHAN_m_iWearable3);
-		}
 	}	
 	public void StopHealing()
 	{
-		int iBeam = this.m_iWearable5;
-		if(iBeam != INVALID_ENT_REFERENCE)
+		int iBeam = this.m_iWearable4;
+		if(IsValidEntity(iBeam))
 		{
-			int iBeamTarget = GetEntPropEnt(iBeam, Prop_Send, "m_hOwnerEntity");
-			if(IsValidEntity(iBeamTarget))
-			{
-				AcceptEntityInput(iBeamTarget, "ClearParent");
-				RemoveEntity(iBeamTarget);
-			}
-			
 			AcceptEntityInput(iBeam, "ClearParent");
 			RemoveEntity(iBeam);
 			
 			EmitSoundToAll("weapons/medigun_no_target.wav", this.index, SNDCHAN_WEAPON);
-			
-		//	StopSound(this.index, SNDCHAN_m_iWearable3, "m_iWearable3s/medigun_heal.wav");
 			
 			this.Healing = false;
 		}
@@ -236,8 +222,6 @@ static void VictorianCaffeinator_ClotThink(int iNPC)
 	}
 	if(IsValidAlly(npc.index, npc.m_iTarget) && Is_a_Medic[npc.m_iTarget])
 	{
-		if(IsValidEntity(npc.m_iWearable4))
-			RemoveEntity(npc.m_iWearable4);
 		npc.StopHealing();
 		npc.Healing = false;
 		npc.m_bnew_target = false;
@@ -257,9 +241,6 @@ static void VictorianCaffeinator_ClotThink(int iNPC)
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
-	
-		if(IsValidEntity(npc.m_iWearable4))
-			RemoveEntity(npc.m_iWearable4);
 			
 		npc.StopHealing();
 		npc.Healing = false;
@@ -278,9 +259,6 @@ static void VictorianCaffeinator_ClotThink(int iNPC)
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		SetEntityRenderColor(npc.m_iWearable3, 255, 0, 0, 255);
-	
-		if(IsValidEntity(npc.m_iWearable4))
-			RemoveEntity(npc.m_iWearable4);
 			
 		npc.StopHealing();
 		npc.Healing = false;
@@ -517,8 +495,7 @@ static int VictorianCaffeinator_Work(VictorianCaffeinator npc, float gameTime, f
 			}
 			else
 			{
-				if(IsValidEntity(npc.m_iWearable4))
-					RemoveEntity(npc.m_iWearable4);
+				npc.StopHealing();
 				npc.m_bnew_target = false;					
 			}
 		}
