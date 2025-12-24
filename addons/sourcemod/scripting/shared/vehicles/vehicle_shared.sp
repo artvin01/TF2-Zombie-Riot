@@ -6,6 +6,10 @@
 
 #define VEHICLE_MAX_SEATS	24
 
+#if defined ZR
+static int ModifiedWeapons[MAXPLAYERS];
+#endif
+
 enum VehicleType
 {
 	VEHICLE_TYPE_CAR_WHEELS = (1 << 0),	// hl2_jeep
@@ -41,10 +45,13 @@ methodmap VehicleGeneric < CClotBody
 
 		return view_as<VehicleGeneric>(obj);
 	}
-	public void AddSeat(const float pos[3], int index)
+	public void AddSeat(const float pos[3], int index, int gun = 0)
 	{
 		if(index < VEHICLE_MAX_SEATS)
+		{
 			SetEntPropVector(this.index, Prop_Data, "m_vecSeatPos", pos, index);
+			SetEntProp(this.index, Prop_Data, "m_iSeatGunIndex", gun, _, index);
+		}
 	}
 	property int m_hDriver
 	{
@@ -81,6 +88,7 @@ void Vehicle_PluginStart()
 	.DefineBoolField("m_bNoAttack")
 	.DefineEntityField("m_hSeatEntity", VEHICLE_MAX_SEATS)
 	.DefineVectorField("m_vecSeatPos", VEHICLE_MAX_SEATS)
+	.DefineIntField("m_iSeatGunIndex", VEHICLE_MAX_SEATS)
 	.EndDataMapDesc();
 	factory.Install();
 
@@ -91,6 +99,15 @@ void Vehicle_PluginStart()
 void Vehicle_MapEnd()
 {
 	DoneSoundScript = false;
+}
+
+void Vehicle_PluginEnd()
+{
+	int entity = -1;
+	while((entity = FindEntityByClassname(entity, "obj_vehicle")) != -1)
+	{
+		SDKCall_RemoveImmediate(entity);
+	}
 }
 
 void Vehicle_PrecacheSounds()
@@ -183,44 +200,60 @@ static void OnDestroy(int entity)
 
 // If target is a vehicle, returns the driver or passenger with the higher priority, -1 if none
 // If target is a user, returns the vehicle currently on, -1 if none
-int Vehicle_Driver(int target)
+int Vehicle_Driver(int target, int &slot = -1)
 {
 	if(i_IsVehicle[target] == 2)
 	{
 		int driver = view_as<VehicleGeneric>(target).m_hDriver;
 		if(driver == -1)
 		{
-			for(int i; i < VEHICLE_MAX_SEATS; i++)
+			for(slot = 0; slot < VEHICLE_MAX_SEATS; slot++)
 			{
-				int passenger = GetEntPropEnt(target, Prop_Data, "m_hSeatEntity", i);
+				int passenger = GetEntPropEnt(target, Prop_Data, "m_hSeatEntity", slot);
 				if(passenger != -1)
 					return passenger;
 			}
 		}
 
+		slot = -1;
 		return driver;
 	}
 	
 	if(i_IsVehicle[target])
+	{
+		slot = -1;
 		return GetEntPropEnt(target, Prop_Data, "m_hPlayer");
+	}
 	
 	for(int entity = MaxClients + 1; entity < sizeof(i_IsVehicle); entity++)
 	{
 		if(i_IsVehicle[entity] && IsValidEntity(entity))
 		{
-			int driver = view_as<VehicleGeneric>(entity).m_hDriver;
-			if(driver == target)
-				return entity;
-			
-			for(int i; i < VEHICLE_MAX_SEATS; i++)
+			if(i_IsVehicle[entity] == 2)
 			{
-				driver = GetEntPropEnt(entity, Prop_Data, "m_hSeatEntity", i);
+				int driver = view_as<VehicleGeneric>(entity).m_hDriver;
 				if(driver == target)
+				{
+					slot = -1;
 					return entity;
+				}
+				
+				for(slot = 0; slot < VEHICLE_MAX_SEATS; slot++)
+				{
+					driver = GetEntPropEnt(entity, Prop_Data, "m_hSeatEntity", slot);
+					if(driver == target)
+						return entity;
+				}
+			}
+			else if(GetEntPropEnt(entity, Prop_Data, "m_hPlayer") == target)
+			{
+				slot = -1;
+				return entity;
 			}
 		}
 	}
-
+	
+	slot = -1;
 	return -1;
 }
 
@@ -284,6 +317,10 @@ bool Vehicle_Interact(int client, int weapon, int entity)
 			// Driver is out, I'll take the wheel!
 			AcceptEntityInput(client, "ClearParent");
 			SwitchToDriver(view_as<VehicleGeneric>(vehicle), client);
+
+#if defined ZR
+			AdjustClientWeapons(target);
+#endif
 		}
 		else if(fabs(forceOutTime[client] - GetGameTime()) < 0.4 || CanExit(vehicle))
 		{
@@ -381,7 +418,10 @@ bool Vehicle_Enter(int vehicle, int target)
 		SetEntProp(target, Prop_Data, "deadflag", true);
 		SetVariantString("self.AddCustomAttribute(\"no_duck\", 1, -1)");
 		AcceptEntityInput(target, "RunScriptCode");
-		/*ForcePlayerCrouch(target, true, false);*/
+
+#if defined ZR
+		AdjustClientWeapons(target);
+#endif
 	}
 	return true;
 }
@@ -493,7 +533,10 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 		
 		SetVariantString("self.RemoveCustomAttribute(\"no_duck\")");
 		AcceptEntityInput(target, "RunScriptCode");
-		/*ForcePlayerCrouch(target, false);*/
+
+#if defined ZR
+		AdjustClientWeapons(target);
+#endif
 	}
 
 	if(teleport)
@@ -564,6 +607,27 @@ static Action VehicleThink(int entity)
 		else
 		{
 			SetEntPropFloat(obj.index, Prop_Data, "m_controls.throttle", 0.0);
+		}
+
+		if(obj.m_bNoAttack)
+		{
+			float time = GetGameTime() + 0.2;
+			if(GetEntPropFloat(driver, Prop_Send, "m_flNextAttack") < time)
+				SetEntPropFloat(driver, Prop_Send, "m_flNextAttack", time);
+		}
+	}
+
+	for(int i; i < VEHICLE_MAX_SEATS; i++)
+	{
+		if(GetEntProp(obj.index, Prop_Data, "m_iSeatGunIndex", _, slot) < 0)
+		{
+			int passenger = GetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", i);
+			if(passenger > 0 && passenger <= MaxClients)
+			{
+				float time = GetGameTime() + 0.2;
+				if(GetEntPropFloat(passenger, Prop_Send, "m_flNextAttack") < time)
+					SetEntPropFloat(passenger, Prop_Send, "m_flNextAttack", time);
+			}
 		}
 	}
 
@@ -645,3 +709,71 @@ static bool CanExit(int vehicle, float origin[3] = NULL_VECTOR, float angles[3] 
 	
 	return false;
 }
+
+#if defined ZR
+static void AdjustClientWeapons(int client)
+{
+	int slot = -1;
+	int vehicle = Vehicle_Driver(client, slot);
+
+	char buffer[64];
+
+	if(vehicle != -1)
+	{
+		VehicleGeneric obj = view_as<VehicleGeneric>(vehicle);
+		if(slot == -1)
+		{
+			/*if(obj.m_bNoAttack)
+			{
+				int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(active != -1)
+				{
+					char classname[36], buffer[36];
+					GetEntityClassname(active, classname, sizeof(classname));
+					if(TF2_GetClassnameSlot(classname, active) != TFWeaponSlot_Melee)
+					{
+						Store_SwapToItem(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
+						TF2_AddCondition(client, TFCond_RestrictToMelee);
+					}
+				}
+			}
+			else*/
+		}
+		else
+		{
+			int gun = GetEntProp(obj.index, Prop_Data, "m_iSeatGunIndex", _, slot);
+			if(gun > 0)
+			{
+				if(ModifiedWeapons[client] != gun)
+				{
+					if(ModifiedWeapons[client])
+						Store_RemoveSpecificItem(client, NULL_STRING, _, ModifiedWeapons[client]);
+					
+					i_ClientHasCustomGearEquipped[client] = true;
+					ModifiedWeapons[client] = gun;
+
+					int health = GetClientHealth(client);
+					Store_GiveAll(client, health, true);
+					Store_GiveSpecificItem(client, NULL_STRING, _, gun);
+
+					SetAmmo(client, 1, 9999);
+					SetAmmo(client, 2, 9999);
+
+					Manual_Impulse_101(client, health);
+				}
+				return;
+			}
+		}
+	}
+
+	if(ModifiedWeapons[client])
+	{
+		i_ClientHasCustomGearEquipped[client] = false;
+		Store_RemoveSpecificItem(client, NULL_STRING, _, ModifiedWeapons[client]);
+		
+		//TF2_RemoveCondition(client, TFCond_RestrictToMelee);
+		Store_ApplyAttribs(client);
+		Store_GiveAll(client, GetClientHealth(client));
+	}
+}
+#endif

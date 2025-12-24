@@ -6433,14 +6433,14 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	return entity;
 }
 
-int Store_GiveSpecificItem(int client, const char[] name)
+int Store_GiveSpecificItem(int client, const char[] name, bool UpdateSlots = true, int CompareWeaponArray = -1)
 {
 	static Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(StrEqual(name, item.Name, false))
+		if(StrEqual(name, item.Name, false) || CompareWeaponArray == i)
 		{
 			Store_EquipSlotCheck(client, item);
 
@@ -6454,7 +6454,9 @@ int Store_GiveSpecificItem(int client, const char[] name)
 			StoreItems.SetArray(i, item);
 			
 			int entity = Store_GiveItem(client, i, item.Equipped[client]);
-			CheckMultiSlots(client);
+			if(UpdateSlots)
+				CheckMultiSlots(client);
+			
 			return entity;
 		}
 	}
@@ -6561,6 +6563,11 @@ bool Store_PrintLevelItems(int client, int level)
 		}
 	}
 	return found;
+}
+
+int Store_GetItemIndex(const char[] name)
+{
+	return StoreItems.FindString(name, Item::Name);
 }
 
 int Store_GetItemName(int index, int client = 0, char[] buffer, int leng, bool translate = true)
