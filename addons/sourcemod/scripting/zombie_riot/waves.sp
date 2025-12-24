@@ -1205,6 +1205,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		{
 			continue;
 		}
+		round.music_setup.SetupKv("override_setup", kv);
 
 		round.Cash = kv.GetNum("cash", (defaultCash && waves < sizeof(DefaultWaveCash)) ? DefaultWaveCash[waves] : 0);
 		round.AmmoBoxExtra = kv.GetNum("ammobox_extra");
@@ -2169,6 +2170,15 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					{
 						Music_Stop_All(client);
 					}
+				}
+			}
+			if(round.music_setup.Valid())
+			{
+				round.music_setup.CopyTo(MusicSetup1);
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client) && !b_IsPlayerABot[client])
+						SetMusicTimer(client, GetTime() + 5);
 				}
 			}
 			if(round.GrigoriMaxSellsItems > 0)
