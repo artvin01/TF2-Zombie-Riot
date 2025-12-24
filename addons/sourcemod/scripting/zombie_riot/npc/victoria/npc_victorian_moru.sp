@@ -54,33 +54,16 @@ methodmap VictorianDroneAnvil < CClotBody
 	
 	public void StartHealing()
 	{
-		int im_iWearable3 = this.m_iWearable3;
-		if(im_iWearable3 != INVALID_ENT_REFERENCE)
-		{
+		if(IsValidEntity(this.m_iWearable3))
 			this.Healing = true;
-			
-		//	EmitSoundToAll("m_iWearable3s/medigun_heal.wav", this.index, SNDCHAN_m_iWearable3);
-		}
 	}	
 	public void StopHealing()
 	{
-		int iBeam = this.m_iWearable5;
-		if(iBeam != INVALID_ENT_REFERENCE)
+		int iBeam = this.m_iWearable3;
+		if(IsValidEntity(iBeam))
 		{
-			int iBeamTarget = GetEntPropEnt(iBeam, Prop_Send, "m_hOwnerEntity");
-			if(IsValidEntity(iBeamTarget))
-			{
-				AcceptEntityInput(iBeamTarget, "ClearParent");
-				RemoveEntity(iBeamTarget);
-			}
-			
 			AcceptEntityInput(iBeam, "ClearParent");
 			RemoveEntity(iBeam);
-			
-			EmitSoundToAll("weapons/medigun_no_target.wav", this.index, SNDCHAN_WEAPON);
-			
-		//	StopSound(this.index, SNDCHAN_m_iWearable3, "m_iWearable3s/medigun_heal.wav");
-			
 			this.Healing = false;
 		}
 	}
@@ -89,6 +72,11 @@ methodmap VictorianDroneAnvil < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flManuallyDisableSpawnProtector
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 	
 	public VictorianDroneAnvil(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -113,6 +101,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		npc.m_flAttackHappens_bullshit = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
+		npc.m_flManuallyDisableSpawnProtector = GetGameTime(npc.index) + zr_spawnprotectiontime.FloatValue;
 		
 		b_we_are_reloading[npc.index]=false;
 		npc.m_flLifeTime=20.0;
@@ -199,20 +188,15 @@ methodmap VictorianDroneAnvil < CClotBody
 		SetVariantString("!activator");
 		AcceptEntityInput(npc.m_iWearable2, "SetParent", npc.index);
 		MakeObjectIntangeable(npc.m_iWearable2);
+		npc.m_bTeamGlowDefault = false;
 		npc.m_bDoSpawnGesture = true;
 		
 		GetAbsOrigin(npc.index, Vec);
 		if(FactorySpawndo)
 		{
-			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
-			{
-				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
-				{
-					GetAbsOrigin(entity, Vec);
-					break;
-				}
-			}
+			int GetFactory=GetRandomVictoriaFactory(npc.index);
+			if(GetFactory&&IsValidEntity(GetFactory))
+				GetAbsOrigin(GetFactory, Vec);
 		}
 		Vec[2]+=45.0;
 		TeleportEntity(npc.index, Vec, NULL_VECTOR, NULL_VECTOR);
@@ -256,6 +240,13 @@ static void VictorianDroneAnvil_ClotThink(int iNPC)
 		SetVariantColor(view_as<int>({45, 237, 164, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		npc.m_bDoSpawnGesture=false;
+		npc.StopPathing();
+	}
+	
+	if(npc.m_flManuallyDisableSpawnProtector && gameTime > npc.m_flManuallyDisableSpawnProtector)
+	{
+		RemoveSpawnProtectionLogic(npc.index, true);
+		npc.m_flManuallyDisableSpawnProtector=0.0;
 	}
 	
 	if(!npc.m_bisWalking)
@@ -271,7 +262,7 @@ static void VictorianDroneAnvil_ClotThink(int iNPC)
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	if((npc.m_flLifeTime>0.0 && npc.m_flAttackHappens_bullshit && gameTime > npc.m_flAttackHappens_bullshit)
-	||(npc.m_iTarget&&b_NpcHasDied[npc.m_iTarget])||(!npc.m_iTarget&&(npc.m_flLifeTime!=-1.0 && !IsValidAlly(npc.index, GetClosestAlly(npc.index)))))
+	||((npc.m_flLifeTime!=-1.0 && !npc.m_bFUCKYOU_move_anim) && !IsValidAlly(npc.index, GetClosestAlly(npc.index))))
 	{
 		b_NpcForcepowerupspawn[npc.index] = 0;
 		i_RaidGrantExtra[npc.index] = 0;
@@ -367,8 +358,8 @@ static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float 
 			npc.FaceTowards(vecTarget, 20000.0);
 			if(!npc.m_bnew_target)
 			{
-				npc.StartHealing();
 				npc.m_iWearable3 = ConnectWithBeam(npc.m_iWearable2, target, 30, 255, 0, 3.0, 3.0, 1.35, LASERBEAM);
+				npc.StartHealing();
 				npc.Healing = true;
 				npc.m_bnew_target = true;
 			}
@@ -405,9 +396,6 @@ static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float 
 			npc.m_flNextMeleeAttack = gameTime + 0.3;
 			return 0;
 		}
-		npc.StopHealing();
-		npc.Healing = false;
-		npc.m_bnew_target = false;
 		return 2;
 	}
 	npc.StopHealing();
@@ -420,6 +408,7 @@ static void VictorianDroneAnvil_ClotDeath(int entity)
 {
 	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(entity);
 
+	npc.StopHealing();
 	npc.PlayDeathSound();
 
 	if(IsValidEntity(npc.m_iWearable1))

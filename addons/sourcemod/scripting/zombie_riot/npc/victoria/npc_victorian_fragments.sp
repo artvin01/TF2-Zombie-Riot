@@ -88,6 +88,11 @@ methodmap VictorianDroneFragments < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
+	property float m_flManuallyDisableSpawnProtector
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
 	property int m_iMainTarget
 	{
 		public get()							{ return i_AmountProjectiles[this.index]; }
@@ -135,10 +140,12 @@ methodmap VictorianDroneFragments < CClotBody
 		npc.m_iMaxAmmo=3;
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextPosDelay = 0.0;
+		npc.m_flManuallyDisableSpawnProtector = GetGameTime(npc.index) + zr_spawnprotectiontime.FloatValue;
 		
 		ISVOLI[npc.index]=false;
 		b_we_are_reloading[npc.index]=false;
 		npc.m_bFUCKYOU_move_anim=false;
+		npc.m_iMainTarget=0;
 		npc.m_fXPosSave=0.0;
 		npc.m_fZPosSave=0.0;
 		npc.m_fYPosSave=0.0;
@@ -269,20 +276,15 @@ methodmap VictorianDroneFragments < CClotBody
 		SetVariantString("!activator");
 		AcceptEntityInput(npc.m_iWearable4, "SetParent", npc.index);
 		MakeObjectIntangeable(npc.m_iWearable4);
+		npc.m_bTeamGlowDefault = false;
 		npc.m_bDoSpawnGesture = true;
 		
 		GetAbsOrigin(npc.index, Vec);
 		if(FactorySpawndo)
 		{
-			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
-			{
-				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
-				{
-					GetAbsOrigin(entity, Vec);
-					break;
-				}
-			}
+			int GetFactory=GetRandomVictoriaFactory(npc.index);
+			if(GetFactory&&IsValidEntity(GetFactory))
+				GetAbsOrigin(GetFactory, Vec);
 		}
 		Vec[2]+=45.0;
 		TeleportEntity(npc.index, Vec, NULL_VECTOR, NULL_VECTOR);
@@ -310,6 +312,13 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 		SetVariantColor(view_as<int>({229, 235, 52, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		npc.m_bDoSpawnGesture=false;
+		npc.StopPathing();
+	}
+	
+	if(npc.m_flManuallyDisableSpawnProtector && gameTime > npc.m_flManuallyDisableSpawnProtector)
+	{
+		RemoveSpawnProtectionLogic(npc.index, true);
+		npc.m_flManuallyDisableSpawnProtector=0.0;
 	}
 	
 	if(!npc.m_bisWalking)
@@ -428,14 +437,11 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 		{
 			npc.m_bisWalking = true;
 			npc.SetVelocity({0.0,0.0,0.0});
-			int LZ = -1;
+			if(!npc.m_iMainTarget)
+				npc.m_iMainTarget = GetClosestTarget(npc.index);
 			if(IsValidEnemy(npc.index,npc.m_iMainTarget))
-				LZ = npc.m_iMainTarget;
-			else
-				LZ = GetClosestTarget(npc.index);
-			if(IsValidEnemy(npc.index,LZ))
 			{
-				WorldSpaceCenter(LZ, VecEnemy);
+				WorldSpaceCenter(npc.m_iMainTarget, VecEnemy);
 				VecEnemy[2]+=65.0;
 				npc.SaveTreePos(VecEnemy);
 				npc.m_iState=-2;
@@ -447,15 +453,12 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 		case 0:
 		{
 			npc.SetVelocity({0.0,0.0,0.0});
-			int LZ = -1;
+			if(!npc.m_iMainTarget)
+				npc.m_iMainTarget = GetClosestTarget(npc.index);
 			if(IsValidEnemy(npc.index,npc.m_iMainTarget))
-				LZ = npc.m_iMainTarget;
-			else
-				LZ = GetClosestTarget(npc.index);
-			if(IsValidEnemy(npc.index,LZ))
 			{
-				WorldSpaceCenter(LZ, VecEnemy);
-				if(CheckOpenSky(LZ)) VecEnemy[2]+=180.0;
+				WorldSpaceCenter(npc.m_iMainTarget, VecEnemy);
+				if(CheckOpenSky(npc.m_iMainTarget)) VecEnemy[2]+=180.0;
 				npc.SaveTreePos(VecEnemy);
 				npc.m_iState=1;
 			}

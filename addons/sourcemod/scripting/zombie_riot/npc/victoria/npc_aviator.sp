@@ -301,6 +301,7 @@ static void Aviator_ClotThink(int iNPC)
 					i_RaidGrantExtra[npc.index] = 0;
 					b_DissapearOnDeath[npc.index] = true;
 					b_DoGibThisNpc[npc.index] = true;
+					b_NoKillFeed[npc.index] = true;
 					SmiteNpcToDeath(npc.index);
 				}
 			}
@@ -316,8 +317,8 @@ static void Aviator_ClotThink(int iNPC)
 		//Cooldown is reduced out of range.
 		if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.5))
 			npc.m_flChargeAttack -= 0.076;
-		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
-			npc.m_flChargeAttack -= 0.076;
+		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0)
+			npc.m_flChargeAttack -= 0.09;
 		
 		switch(AviatorSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget))
 		{
@@ -412,7 +413,6 @@ static void Aviator_ClotThink(int iNPC)
 				{
 					if(IsValidEntity(npc.m_iWearable1))
 						RemoveEntity(npc.m_iWearable1);
-					KillFeed_SetKillIcon(npc.index, "frontier_kill");
 					KillFeed_SetKillIcon(npc.index, "sledgehammer");
 					npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_sledgehammer/c_sledgehammer.mdl");
 					SetVariantString("0.8");

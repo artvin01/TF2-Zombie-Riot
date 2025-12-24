@@ -210,6 +210,7 @@ methodmap VictoriaTank < CClotBody
 			AcceptEntityInput(npc.m_iWearable5, "SetParent", npc.index);
 			MakeObjectIntangeable(npc.m_iWearable5);
 			npc.m_bDoSpawnGesture = true;
+			npc.m_bTeamGlowDefault = false;
 		}
 
 		return npc;

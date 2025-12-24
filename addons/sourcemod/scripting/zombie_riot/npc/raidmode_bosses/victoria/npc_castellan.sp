@@ -419,7 +419,7 @@ methodmap Castellan < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.75;
 		}
-		npc.m_flDead_Ringer = RaidModeScaling*0.04;
+		npc.m_flDead_Ringer = RaidModeScaling*0.11325;
 		
 		if(StrContains(data, "final_item") != -1)
 		{
@@ -663,7 +663,7 @@ static void Castellan_ClotThink(int iNPC)
 	
 	if(npc.m_bDoSpawnGesture)
 	{
-		int Maxhealth=RoundToCeil(float(ReturnEntityMaxHealth(npc.index))/2.33);
+		int Maxhealth=RoundToCeil(float(ReturnEntityMaxHealth(npc.index))/2.1);
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", Maxhealth);
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", Maxhealth);
 		npc.m_bDoSpawnGesture=false;
