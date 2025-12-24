@@ -843,12 +843,12 @@ static void CaptinoBaguettusBackup(CaptinoBaguettus npc, float gameTime, float d
 		{
 			if(IsValidAlly(npc.index, AllyLoop))
 			{
-				float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget);
+				float vecTarget[3]; WorldSpaceCenter(AllyLoop, vecTarget);
 				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 				GetEntPropVector(AllyLoop, Prop_Send, "m_vecOrigin", vecTarget);
 				if(GetVectorDistance(VecSelfNpc, vecTarget, true) > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*150.0)
 					continue;
-				Explode_Logic_Custom(0.0, npc.index, npc.index, -1, vecTarget, _, _, _, true, _, false, _, GetNPCCount);
+				Explode_Logic_Custom(0.0, npc.index, npc.index, -1, vecTarget, 200.0, _, _, true, _, false, _, GetNPCCount);
 				if(npc.m_iAttacksTillMegahit>=8)
 				{
 					static float hullcheckmaxs[3];
