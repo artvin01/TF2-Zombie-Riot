@@ -396,11 +396,11 @@ static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float 
 			npc.m_flNextMeleeAttack = gameTime + 0.3;
 			return 0;
 		}
+		npc.StopHealing();
+		npc.Healing = false;
+		npc.m_bnew_target = false;
 		return 2;
 	}
-	npc.StopHealing();
-	npc.Healing = false;
-	npc.m_bnew_target = false;
 	return 1;
 }
 
