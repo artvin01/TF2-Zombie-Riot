@@ -26,6 +26,7 @@ methodmap VehicleGeneric < CClotBody
 		DispatchKeyValueVector(obj, "origin", vecPos);
 		DispatchKeyValueVector(obj, "angles", vecAng);
 		SetEntProp(obj, Prop_Data, "m_nVehicleType", type);
+		SetEntityCollisionGroup(obj, COLLISION_GROUP_VEHICLE); //COLLISION_GROUP_DEBRIS_TRIGGER
 
 		DispatchSpawn(obj);
 
@@ -645,3 +646,5 @@ static bool CanExit(int vehicle, float origin[3] = NULL_VECTOR, float angles[3] 
 	
 	return false;
 }
+
+

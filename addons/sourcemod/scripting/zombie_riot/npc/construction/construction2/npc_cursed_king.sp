@@ -7,6 +7,13 @@ static const char g_DeathSounds[][] =
 	"vo/soldier_paincrticialdeath02.mp3",
 	"vo/soldier_paincrticialdeath03.mp3"
 };
+static const char g_chimeraSuperSlash[][] =
+{
+	"weapons/vaccinator_charge_tier_01.wav",
+	"weapons/vaccinator_charge_tier_02.wav",
+	"weapons/vaccinator_charge_tier_03.wav",
+	"weapons/vaccinator_charge_tier_04.wav",
+};
 
 static const char g_HurtSounds[][] =
 {
@@ -44,6 +51,17 @@ static const char g_MeleeBroke[][] =
 {
 	"player/taunt_sorcery_staff_break.wav",
 };
+static const char g_RageOut[][] =
+{
+	"vo/halloween_boss/knight_laugh01.mp3",
+	"vo/halloween_boss/knight_laugh02.mp3",
+	"vo/halloween_boss/knight_laugh03.mp3",
+	"vo/halloween_boss/knight_laugh04.mp3",
+};
+static const char g_ExplodeSound[][] =
+{
+	"weapons/bombinomicon_explode1.wav",
+};
 void CursedKingOnMapStart()
 {
 	PrecacheSoundArray(g_DeathSounds);
@@ -52,6 +70,9 @@ void CursedKingOnMapStart()
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeBroke);
+	PrecacheSoundArray(g_chimeraSuperSlash);
+	PrecacheSoundArray(g_RageOut);
+	PrecacheSoundArray(g_ExplodeSound);
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Cursed King");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_cursed_king");
@@ -111,14 +132,22 @@ methodmap CursedKing < CClotBody
 		EmitSoundToAll(g_MeleeBroke[GetRandomInt(0, sizeof(g_MeleeBroke) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);
 	}
 
+	public void PlayRageOut()
+ 	{
+		EmitSoundToAll(g_RageOut[GetRandomInt(0, sizeof(g_RageOut) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);
+		EmitSoundToAll(g_ExplodeSound[GetRandomInt(0, sizeof(g_ExplodeSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);
+	}
 	public void PlayMeleeHitSound()
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
-	
+	public void PlayChargeSound()
+	{
+		EmitSoundToAll(g_chimeraSuperSlash[GetRandomInt(0, sizeof(g_chimeraSuperSlash) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
+	}
 	public CursedKing(float vecPos[3], float vecAng[3], int ally)
 	{
-		CursedKing npc = view_as<CursedKing>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.3", "1000", ally));
+		CursedKing npc = view_as<CursedKing>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.3", "1000", ally,_,true));
 		
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -132,22 +161,34 @@ methodmap CursedKing < CClotBody
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
+		npc.m_iMiniLivesLost = 100;
 		
 		npc.m_flSpeed = 270.0;
 		
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", 5);
 		npc.m_iAttacksLeft = 3;
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_rift_fire_axe/c_rift_fire_axe.mdl");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/hw2013_the_glob/hw2013_the_glob.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2016_class_crown/hwn2016_class_crown_engineer.mdl");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum25_sir_buildsalot_style2/sum25_sir_buildsalot_style2.mdl");
+		NpcColourCosmetic_ViaPaint(npc.m_iWearable2, 7511618);
+		
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2015_western_beard/hwn2015_western_beard.mdl");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
-
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2025_buzz_kill_style2/hwn2025_buzz_kill_style2.mdl");
+		NpcColourCosmetic_ViaPaint(npc.m_iWearable3, 7511618);
+		
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/engineer/dec22_underminers_style3/dec22_underminers_style3.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
+		NpcColourCosmetic_ViaPaint(npc.m_iWearable4, 7511618);
+		
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/sf14_cursed_cruise/sf14_cursed_cruise_engineer.mdl");
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
+		NpcColourCosmetic_ViaPaint(npc.m_iWearable5, 7511618);
 
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
+		npc.m_iWearable6 = npc.EquipItem("head", "models/player/items/engineer/engineer_zombie.mdl");
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
+
+
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
@@ -226,7 +267,11 @@ void Clot_SelfDefense(CursedKing npc, float distance, float vecTarget[3], float 
 				int target = TR_GetEntityIndex(swingTrace);
 				if(target > 0)
 				{
-					float damage = 60.0;
+					float damage = 150.0;
+					if(ShouldNpcDealBonusDamage(target))
+					{
+						damage *= 5.0;
+					}
 					npc.PlayMeleeHitSound();
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 				}
@@ -271,6 +316,9 @@ static void ClotDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
+		
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 }
 
 
@@ -284,8 +332,54 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.m_blPlayHurtAnimation = true;
 	}
 
-	float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
-	int health 		= float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+	int MaxHealth = ReturnEntityMaxHealth(npc.index);
+	int health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
-	npc.m_iMiniLivesLost
+	while((float(MaxHealth) * float(npc.m_iMiniLivesLost) * 0.01) > float(health))
+	{
+		//we lost 1 mini life, try.
+		npc.m_iMiniLivesLost--;
+		bool ApplyDefaults = false;
+		if(!HasSpecificBuff(npc.index, "Ruina's Defense"))
+			ApplyDefaults = true;
+		ApplyStatusEffect(npc.index, npc.index, "Ruina's Defense", 10.0);
+		if(ApplyDefaults)
+			NpcStats_RuinaDefenseStengthen(npc.index, 1.0);
+		NpcStats_RuinaDefenseStengthen(npc.index, -0.025, true);
+		ApplyStatusEffect(npc.index, npc.index, "Ruina's Agility", 10.0);
+		if(ApplyDefaults)
+			NpcStats_RuinaAgilityStengthen(npc.index, 1.0);	
+		NpcStats_RuinaAgilityStengthen(npc.index, 0.05, true);
+		ApplyStatusEffect(npc.index, npc.index, "Ruina's Damage", 10.0);
+		if(ApplyDefaults)
+			NpcStats_RuinaDamageStengthen(npc.index, 1.0);
+		NpcStats_RuinaDamageStengthen(npc.index, 0.1, true);
+		npc.PlayChargeSound();
+		CreateTimer(10.0, Timer_KingRevertTemporaryBuff, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+	}
+	if(npc.m_iMiniLivesLost <= 25 && !npc.Anger)
+	{
+		npc.Anger = true;
+		float vecPos[3];
+		GetAbsOrigin(npc.index, vecPos);
+		vecPos[2] -= 25.0;
+		npc.PlayRageOut();
+		TE_Particle("mvm_hatch_destroy_smoke", vecPos, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
+		ApplyStatusEffect(npc.index, npc.index, "Chaos Demon Possession", 999.0);
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", MaxHealth / 4);
+	}
+}
+
+public Action Timer_KingRevertTemporaryBuff(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(!IsValidEntity(entity))
+		return Plugin_Stop;
+
+
+	NpcStats_RuinaDefenseStengthen(entity, 0.025, true);
+	NpcStats_RuinaAgilityStengthen(entity, -0.05, true);
+	NpcStats_RuinaDamageStengthen(entity, -0.1, true);
+
+	return Plugin_Stop;
 }

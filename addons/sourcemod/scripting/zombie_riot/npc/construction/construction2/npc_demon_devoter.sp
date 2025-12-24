@@ -265,6 +265,10 @@ static void Clot_SelfDefense(DemonDevoter npc, float distance, float vecTarget[3
 				if(target > 0)
 				{
 					float damage = 60.0;
+					if(ShouldNpcDealBonusDamage(target))
+					{
+						damage *= 2.0;
+					}
 
 					npc.PlayMeleeHitSound();
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);

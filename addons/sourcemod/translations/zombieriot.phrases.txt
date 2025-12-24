@@ -2491,6 +2491,12 @@
 		"it"		"Limiti globali, e potete spostare qualsiasi cosa da altri giocatori!"
 		"ko"		"건설 제한이 모두에게 공유되며, 소유자와 관계 없이 다른 플레이어들이 구조물을 옮길 수 있습니다!"
 	}	
+	"Construct 2 Buildings"
+	{
+		"en"		"Construct Buildings"
+		"it"		"Costruisci Strutture"
+		"ko"		"기타 구조물"
+	}	
 	"Which perk do you desire?"
 	{
 		"en"		"Click on a perk to get it.\nCrouch while clicking to see its description instead.\nSelect a perk you already own to get rid of it."

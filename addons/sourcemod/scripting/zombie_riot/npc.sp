@@ -123,6 +123,11 @@ void NPC_ConfigSetup()
 	ObjectDTeslarsMedusa_MapStart();
 	ObjectDStunGun_MapStart();
 	ObjectDDispenser_MapStart();
+	ObjectC2Cannon_MapStart();
+	ObjectC2Zap_MapStart();
+	ObjectC2ArrowTower_MapStart();
+	ObjectC2Incinerator_MapStart();
+	ObjectC2House_MapStart();
 	// Constructs
 
 	// Vehicles
@@ -1158,6 +1163,14 @@ void NPC_ConfigSetup()
 	BarbaricTeardownOnMapStart();
 	SkilledCrossbowmanOnMapStart();
 	DemonDevoterOnMapStart();
+	Agent61_OnMapStart_NPC();
+	BattlefieldSupplier_OnMapStart_NPC();
+	PlacedSupplies_OnMapStart_NPC();
+	ContractedMotivatorOnMapStart();
+	Catapult_OnMapStart_NPC();
+	CursedKingOnMapStart();
+	TheGreatRam_OnMapStart_NPC();
+	
 	DungeonLoot_MapStart();
 }
 
@@ -1520,6 +1533,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/construction/obj_dungeon_supergun.sp"
 #include "object/construction/obj_dungeon_teslars_medusa.sp"
 #include "object/construction/obj_dungeon_wall.sp"
+#include "object/construction2/obj_const2_cannon.sp"
+#include "object/construction2/obj_const2_zap.sp"
+#include "object/construction2/obj_const2_arrow_tower.sp"
+#include "object/construction2/obj_const2_incinerator.sp"
+#include "object/construction2/obj_const2_house.sp"
 
 // VEHICLES
 #include "../shared/vehicles/vehicle_shared.sp"
@@ -2531,4 +2549,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/construction2/npc_barbaric_teardown.sp"
 #include "npc/construction/construction2/npc_skilled_crossbowman.sp"
 #include "npc/construction/construction2/npc_demon_devoter.sp"
+#include "npc/construction/construction2/npc_agent_61.sp"
+#include "npc/construction/construction2/npc_battlefield_supplier.sp"
+#include "npc/construction/construction2/npc_placed_supplies.sp"
+#include "npc/construction/construction2/npc_contracted_motivator.sp"
+#include "npc/construction/construction2/npc_catapult.sp"
+#include "npc/construction/construction2/npc_cursed_king.sp"
+#include "npc/construction/construction2/npc_the_great_ram.sp"
 #include "npc/construction/npc_dungeon_loot.sp"

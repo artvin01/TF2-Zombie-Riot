@@ -4170,7 +4170,7 @@ void VintulumBombHud_Func(int attacker, int victim, StatusEffect Apply_MasterSta
 	Format(HudToDisplay, SizeOfChar, "[V %.1fs]", Apply_StatusEffect.TimeUntillOver - GetGameTime());
 }
 
-stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)
+stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue, bool AddMode = false)
 {
 	if(!E_AL_StatusEffects[victim])
 		return;
@@ -4185,9 +4185,12 @@ stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)
 		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
 			//Buffs the damgae for casino, and saves it, as its random somewhat
-			if(Apply_StatusEffect.DataForUse == 0.0 || NewBuffValue >= Apply_StatusEffect.DataForUse)
+			if(Apply_StatusEffect.DataForUse == 0.0 || NewBuffValue >= Apply_StatusEffect.DataForUse || AddMode)
 			{
-				Apply_StatusEffect.DataForUse = NewBuffValue;
+				if(!AddMode)
+					Apply_StatusEffect.DataForUse = NewBuffValue;
+				else
+					Apply_StatusEffect.DataForUse += NewBuffValue;
 				E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 			}
 		}
@@ -4201,7 +4204,7 @@ float RuinasAgility_Func(int victim, StatusEffect Apply_MasterStatusEffect, E_St
 	return Apply_StatusEffect.DataForUse;
 }
 
-stock void NpcStats_RuinaDefenseStengthen(int victim, float NewBuffValue)
+stock void NpcStats_RuinaDefenseStengthen(int victim, float NewBuffValue, bool AddMode = false)
 {
 	if(!E_AL_StatusEffects[victim])
 		return;
@@ -4216,9 +4219,12 @@ stock void NpcStats_RuinaDefenseStengthen(int victim, float NewBuffValue)
 		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
 			//Buffs the damgae for casino, and saves it, as its random somewhat
-			if(Apply_StatusEffect.DataForUse == 0.0 || NewBuffValue >= Apply_StatusEffect.DataForUse)
+			if(Apply_StatusEffect.DataForUse == 0.0 || NewBuffValue >= Apply_StatusEffect.DataForUse || AddMode)
 			{
-				Apply_StatusEffect.DataForUse = NewBuffValue;
+				if(!AddMode)
+					Apply_StatusEffect.DataForUse = NewBuffValue;
+				else
+					Apply_StatusEffect.DataForUse += NewBuffValue;
 				E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 			}
 		}
@@ -4234,7 +4240,7 @@ float RuinasDefense_Func(int attacker, int victim, StatusEffect Apply_MasterStat
 	return Apply_StatusEffect.DataForUse;
 }
 
-stock void NpcStats_RuinaDamageStengthen(int victim, float NewBuffValue)
+stock void NpcStats_RuinaDamageStengthen(int victim, float NewBuffValue, bool AddMode = false)
 {
 	if(!E_AL_StatusEffects[victim])
 		return;
@@ -4249,9 +4255,12 @@ stock void NpcStats_RuinaDamageStengthen(int victim, float NewBuffValue)
 		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
 			//Buffs the damgae for casino, and saves it, as its random somewhat
-			if(Apply_StatusEffect.DataForUse == 0.0 || NewBuffValue >= Apply_StatusEffect.DataForUse)
+			if(Apply_StatusEffect.DataForUse == 0.0 || NewBuffValue >= Apply_StatusEffect.DataForUse || AddMode)
 			{
-				Apply_StatusEffect.DataForUse = NewBuffValue;
+				if(!AddMode)
+					Apply_StatusEffect.DataForUse = NewBuffValue;
+				else
+					Apply_StatusEffect.DataForUse += NewBuffValue;
 				E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 			}
 		}
@@ -6544,6 +6553,42 @@ void StatusEffects_Construction2()
 	data.OnBuffEndOrDeleted			= ChaosDemonInfultration_End;
 	data.AttackspeedBuff			= (1.0 / 1.5);
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Hitman On you");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.ElementalLogic				= true;
+	//-0.5
+	data.OnBuffStarted				= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.AttackspeedBuff			= -1.0;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Recently Healed Supplies");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.ElementalLogic				= true;
+	//-0.5
+	data.OnBuffStarted				= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.AttackspeedBuff			= -1.0;
+	StatusEffect_AddGlobal(data);
 }
 
 static void ChaosDemonInfultration_StartOnce(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -6559,9 +6604,9 @@ static void ChaosDemonInfultration_StartOnce(int victim, StatusEffect Apply_Mast
 	HealEntityGlobal(victim, victim, maxhealth, 1.0, 0.0, HEAL_SELFHEAL);
 	float flPos[3];
 	float flAng[3];
-	npc.GetAttachment("eyes", flPos, flAng);
-	int ParticleEffect_1 = ParticleEffectAt_Parent(flPos, "unusual_smoking", victim, "eyes", {10.0,0.0,-5.0});
-	int ParticleEffect_2 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", victim, "eyes", {10.0,0.0,-20.0});
+	npc.GetAttachment("head", flPos, flAng);
+	int ParticleEffect_1 = ParticleEffectAt_Parent(flPos, "unusual_smoking", victim, "head", {10.0,0.0,-10.0});
+	int ParticleEffect_2 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", victim, "head", {10.0,0.0,-25.0});
 
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect_1);

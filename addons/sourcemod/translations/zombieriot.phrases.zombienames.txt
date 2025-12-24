@@ -7645,4 +7645,44 @@
 	{
 		"en"	"A hired hitman merc, number assosiation unknown.\n-Will find the weakest target on the map and focus them\n-Phases through everything\n-Has challanger buff\n-Shoots his gun once which if hitting, deals a stacking fear debuff."
 	}
+	"Battlefield Supplier"
+	{
+		"en"	"Battlefield Supplier"
+	}
+	"Battlefield Supplier Desc"
+	{
+		"en"	"Hired supplier.\n-Has a supply drop every 15 seconds when placed down\n-This supplydrop heals & buffs everyone, benifits their own team more.\n-Is slower and gets resistance while holding the supplydrop."
+	}
+	"Placed Supplies"
+	{
+		"en"	"Placed Supplies"
+	}
+	"Placed Supplies Desc"
+	{
+		"en"	"Placed Supplies"
+	}
+	"Contracted Motivator"
+	{
+		"en"	"Contracted Motivator"
+	}
+	"Contracted Motivator Desc"
+	{
+		"en"	"A great motivator to any army\n-attacks in bursts of 3 rockets\n-rockets predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them.\n-Buffs all allies around themselves with War Cry"
+	}
+	"Catapult"
+	{
+		"en"	"Catapult"
+	}
+	"Catapult Desc"
+	{
+		"en"	"Manned Catapult to demolish buildings\n-Shoots a volley of 10 rockets at once towards the nearest target\n-Has a delay before fiering\n-Has a great deviation\n-Attacks buildings with high priority\n-Collision hurts targets"
+	}
+	"Cursed King"
+	{
+		"en"	"Cursed King"
+	}
+	"Cursed King Desc"
+	{
+		"en"	"A king that delt too many deals\n-Each 1％ life lost boosts the king with minor buffs for 10 seconds, stacking\n-Once below 25％ health, enrages more and gains the chaos buff\nIts recommended to slowly take him out, not with burst."
+	}
 }

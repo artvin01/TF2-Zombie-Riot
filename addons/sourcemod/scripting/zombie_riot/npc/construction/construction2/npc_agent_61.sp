@@ -2,38 +2,39 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"misc/halloween/spell_teleport.wav",
+	"vo/spy_paincrticialdeath01.mp3",
+	"vo/spy_paincrticialdeath02.mp3",
+	"vo/spy_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"music/mvm_class_menu_01.wav",
-	"music/mvm_class_menu_02.wav",
-	"music/mvm_class_menu_03.wav",
-	"music/mvm_class_menu_04.wav",
-	"music/mvm_class_menu_05.wav",
-	"music/mvm_class_menu_06.wav",
-	"music/mvm_class_menu_07.wav",
-	"music/mvm_class_menu_08.wav",
-	"music/mvm_class_menu_09.wav",
+	"vo/spy_painsharp01.mp3",
+	"vo/spy_painsharp02.mp3",
+	"vo/spy_painsharp03.mp3",
+	"vo/spy_painsharp04.mp3",
 };
 static const char g_IdleAlertedSounds[][] = {
-	"misc/flame_engulf.wav",
+	"vo/spy_battlecry01.mp3",
+	"vo/spy_battlecry02.mp3",
+	"vo/spy_battlecry03.mp3",
+	"vo/spy_battlecry04.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/machete_swing.wav",
+	"weapons/knife_swing.wav",
 };
 
 static const char g_RangedAttackSounds[][] = {
-	"weapons/doom_scout_shotgun.wav",
+	"weapons/diamond_back_01.wav",
+	"weapons/diamond_back_02.wav",
+	"weapons/diamond_back_03.wav"
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/cleaver_hit_02.wav",
-	"weapons/cleaver_hit_03.wav",
-	"weapons/cleaver_hit_05.wav",
-	"weapons/cleaver_hit_06.wav",
-	"weapons/cleaver_hit_07.wav",
+	"weapons/blade_hit1.wav",
+	"weapons/blade_hit2.wav",
+	"weapons/blade_hit3.wav",
+	"weapons/blade_hit4.wav",
 };
 
 void Agent61_OnMapStart_NPC()
@@ -80,7 +81,7 @@ methodmap Agent61 < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_WEAPON, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 70);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 	}
 	
@@ -98,8 +99,8 @@ methodmap Agent61 < CClotBody
 		}
 		else
 		{
-			EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-			EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+			EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+			EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		}
 	}
 	public void PlayMeleeHitSound() 
@@ -109,7 +110,7 @@ methodmap Agent61 < CClotBody
 	}
 	public void PlayRangedSound()
 	{
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME - 0.2);
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	property float m_flSuicideTimer
 	{
@@ -124,11 +125,8 @@ methodmap Agent61 < CClotBody
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.SetActivity("ACT_MP_RUN_SECONDARY");
 		
-		SetVariantInt(3);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 		npc.m_iAttacksTillReload = 1;
 		
 		npc.m_flSuicideTimer = GetGameTime() + 50.0;
@@ -167,7 +165,7 @@ methodmap Agent61 < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_acr_hookblade/c_acr_hookblade.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_dex_revolver/c_dex_revolver.mdl");
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_ethereal_hood/hw2013_ethereal_hood_spy.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/spy/sum24_tuxedo_royale_style2/sum24_tuxedo_royale_style2.mdl");
 
@@ -187,7 +185,11 @@ methodmap Agent61 < CClotBody
 			{
 				npc.m_iTarget = enemy_2[i];
 				npc.m_iWearable5 = ConnectWithBeam(npc.index, npc.m_iTarget, 125, 65, 65, 2.0, 2.0, 0.0, "sprites/laserbeam.vmt");
-				EmitSoundToAll("misc/freeze_cam.wav", npc.m_iTarget, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+				if(!HasSpecificBuff(npc.m_iTarget, "Hitman On you"))
+				{
+					EmitSoundToAll("misc/freeze_cam.wav", npc.m_iTarget, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+				}
+				ApplyStatusEffect(npc.index, npc.m_iTarget, "Hitman On you", 10.0);
 			}
 		}
 
@@ -234,7 +236,11 @@ public void Agent61_ClotThink(int iNPC)
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
 			npc.m_iWearable5 = ConnectWithBeam(npc.index, npc.m_iTarget, 125, 65, 65, 2.0, 2.0, 0.0, "sprites/laserbeam.vmt");
-			EmitSoundToAll("misc/freeze_cam.wav", npc.m_iTarget, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+			if(!HasSpecificBuff(npc.m_iTarget, "Hitman On you"))
+			{
+				EmitSoundToAll("misc/freeze_cam.wav", npc.m_iTarget, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+			}
+			ApplyStatusEffect(npc.index, npc.m_iTarget, "Hitman On you", 10.0);
 		}
 	}
 	
@@ -256,11 +262,11 @@ public void Agent61_ClotThink(int iNPC)
 		int ActionDo;
 		if(npc.m_iAttacksTillReload >= 1)
 		{
-			ActionDo = Clot_SelfDefense_Gun(npc,GetGameTime(npc.index));
+			ActionDo = Clot_SelfDefense_Gun(npc,GetGameTime(npc.index), distance);
 		}
 		else
 		{
-			ActionDo = Clot_SelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+			ActionDo = Clot_SelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, distance); 
 		}
 
 		switch(ActionDo)
@@ -282,7 +288,7 @@ public void Agent61_ClotThink(int iNPC)
 				{
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 1;
-					npc.SetActivity("ACT_MP_RUN_PRIMARY");
+					npc.SetActivity("ACT_MP_RUN_SECONDARY");
 					npc.StartPathing();
 					npc.m_flSpeed = 290.0;
 				}	
@@ -293,7 +299,7 @@ public void Agent61_ClotThink(int iNPC)
 				{
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 2;
-					npc.SetActivity("ACT_MP_STAND_PRIMARY");
+					npc.SetActivity("ACT_MP_STAND_SECONDARY");
 					npc.StopPathing();
 					npc.m_flSpeed = 0.0;
 				}
@@ -301,7 +307,7 @@ public void Agent61_ClotThink(int iNPC)
 		}
 	}
 
-	npc.PlayIdleSound();
+	npc.PlayIdleAlertSound();
 }
 
 public void Agent61_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -342,7 +348,19 @@ public void Agent61_NPCDeath(int entity)
 
 static int Clot_SelfDefense(Agent61 npc, float gameTime, int target, float distance)
 {
+	//we use our melee.
+	if(npc.m_iChanged_WalkCycle != 4)
+	{
+		if(IsValidEntity(npc.m_iWearable1))
+			RemoveEntity(npc.m_iWearable1);
 
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_acr_hookblade/c_acr_hookblade.mdl");
+		npc.m_bisWalking = true;
+		npc.m_iChanged_WalkCycle = 4;
+		npc.SetActivity("ACT_MP_RUN_ITEM1");
+		npc.StartPathing();
+		npc.m_flSpeed = 290.0;
+	}	
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
@@ -383,8 +401,8 @@ static int Clot_SelfDefense(Agent61 npc, float gameTime, int target, float dista
 				npc.PlayMeleeSound(false);
 				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flAttackHappens = gameTime + 0.1;
+				npc.m_flDoingAnimation = gameTime + 0.1;
 				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}
@@ -394,14 +412,20 @@ static int Clot_SelfDefense(Agent61 npc, float gameTime, int target, float dista
 
 
 
-static int Clot_SelfDefense_Gun(Agent61 npc, float gameTime)
+static int Clot_SelfDefense_Gun(Agent61 npc, float gameTime, float distance)
 {
-	float DistanceCheckMax = (NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0);
+	float DistanceCheckMax = (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0);
 	
 	if(!npc.m_flAttackHappens)
 	{
-		if(IsValidEnemy(npc.index,npc.m_iTargetWalkTo))
+		if(IsValidEnemy(npc.index,npc.m_iTarget))
 		{
+			if(DistanceCheckMax < distance)
+			{
+			//	PrintToChatAll("DistanceCheckMax %.0f | distance %.0f",DistanceCheckMax, distance);
+				//too far away
+				return 2;
+			}
 			if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 			{
 				return 2;
@@ -410,18 +434,18 @@ static int Clot_SelfDefense_Gun(Agent61 npc, float gameTime)
 	}
 		
 	//Lets save this enemy!
-	npc.m_iTargetAlly = npc.m_iTargetWalkTo;
-	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, VecEnemy);
+//	npc.m_iTargetAlly = npc.m_iTarget;
+	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 	npc.FaceTowards(VecEnemy, 15000.0);
 
 	static float ThrowPos[MAXENTITIES][3];  
 	float origin[3], angles[3];
-	view_as<CClotBody>(npc.m_iWearable3).GetAttachment("muzzle", origin, angles);
+	view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 	if(npc.m_flDoingAnimation > gameTime)
 	{
-		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTargetWalkTo))
+		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 		{
-			WorldSpaceCenter(npc.m_iTargetWalkTo, ThrowPos[npc.index]);
+			WorldSpaceCenter(npc.m_iTarget, ThrowPos[npc.index]);
 			float pos_npc[3];
 			WorldSpaceCenter(npc.index, pos_npc);
 			float AngleAim[3];
@@ -452,17 +476,17 @@ static int Clot_SelfDefense_Gun(Agent61 npc, float gameTime)
 	}
 	if(npc.m_flAttackHappens)
 	{
+		npc.FaceTowards(ThrowPos[npc.index], 15000.0);
 		TE_SetupBeamPoints(origin, ThrowPos[npc.index], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, {0,0,255,255}, 3);
 		TE_SendToAll(0.0);
 	}
 			
-	npc.FaceTowards(ThrowPos[npc.index], 15000.0);
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;		
-			ShootLaser(npc.m_iWearable3, "bullet_tracer02_blue_crit", origin, ThrowPos[npc.index], false );
+			ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, ThrowPos[npc.index], false );
 			float pos_npc[3];
 			WorldSpaceCenter(npc.index, pos_npc);
 			float AngleAim[3];
@@ -478,9 +502,9 @@ static int Clot_SelfDefense_Gun(Agent61 npc, float gameTime)
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}
 			delete hTrace;	
-			int target = Can_I_See_Enemy(npc.index, npc.m_iTargetWalkTo,_ ,ThrowPos[npc.index]);
+			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget,_ ,ThrowPos[npc.index]);
 			npc.PlayRangedSound();
-			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+			npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 			if(IsValidEnemy(npc.index, target))
 			{
 				float damageDealt = 250.0;
@@ -490,9 +514,9 @@ static int Clot_SelfDefense_Gun(Agent61 npc, float gameTime)
 
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
 				//once hit, apply massive fear to target AFTER damage calculations.
-				NpcStats_PrimalFearChange(victim, 0.5);
-				ApplyStatusEffect(npc.index, victim, "Primal Fear", 99.0);
-				ApplyStatusEffect(npc.index, victim, "Primal Fear Hide", 5.0);
+				ApplyStatusEffect(npc.index, target, "Primal Fear", 99.0);
+				ApplyStatusEffect(npc.index, target, "Primal Fear Hide", 5.0);
+				NpcStats_PrimalFearChange(target, 0.5);
 			} 
 			npc.m_iAttacksTillReload --;
 		}

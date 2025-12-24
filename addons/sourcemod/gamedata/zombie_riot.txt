@@ -751,6 +751,24 @@
 					}
 				}
 			}
+			"CGameRules::ShouldCollide"
+			{
+				"offset"	"CGameRules::ShouldCollide"
+				"hooktype"	"gamerules"
+				"return"	"bool"
+				"this"		"ignore"
+				"arguments"
+				{
+					"collisionGroup0"
+					{
+						"type"	"int"
+					}
+					"collisionGroup1"
+					{
+						"type"	"int"
+					}
+				}
+			}
 			"CBasePlayer::EquipWearable" 
 			{
 				"offset" 		"CBasePlayer::EquipWearable"
@@ -892,6 +910,11 @@
 		}
 		"Offsets"
 		{
+			"CGameRules::ShouldCollide"
+			{
+				"linux"		"30"
+				"windows"	"29"
+			}
 			"CGameEventManager::LoadEventsFromFile"
             {
                 "linux"        "2"

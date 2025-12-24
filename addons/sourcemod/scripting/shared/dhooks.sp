@@ -23,6 +23,7 @@ static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
 static DynamicHook g_DhookCrossbowHolster;
+DynamicHook g_DHookShouldCollide;
 DynamicHook g_DhookUpdateTransmitState; 
 
 static Handle g_detour_CTFGrenadePipebombProjectile_PipebombTouch;
@@ -48,6 +49,15 @@ stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
     }
 
     return res;
+}
+
+DynamicHook CreateDynamicHook(GameData gamedata, const char[] name)
+{
+	DynamicHook hook = DynamicHook.FromConf(gamedata, name);
+	if (!hook)
+		LogError("Failed to create hook setup handle: %s", name);
+	
+	return hook;
 }
 
 void DHook_Setup()
@@ -79,6 +89,7 @@ void DHook_Setup()
 
 
 #if defined ZR
+	g_DHookShouldCollide = CreateDynamicHook(gamedata, "CGameRules::ShouldCollide");
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
 
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
@@ -959,7 +970,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 
 #if defined ZR
-	
+		
 		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
 			if(entity2 <= MaxClients && entity2 > 0)
@@ -1876,6 +1887,7 @@ int BannerWearableModelIndex[3];
 bool DidEventHandleChange = false;
 void DHooks_MapStart()
 {
+	DHookGamerulesObject();
 	PreventRespawnsAll = 0.0;
 #if defined ZR
 	if(g_DHookTakeDmgPlayer) 
@@ -1890,9 +1902,6 @@ void DHooks_MapStart()
 	DidEventHandleChange = false;
 	RequestFrame(OverrideNpcHurtShortToLong);
 	//g_bCustomEventsAvailable = false;
-
-	//if(g_DHookShouldCollide)
-	//	g_DHookShouldCollide.HookGamerules(Hook_Post, DHook_ShouldCollide);
 }
 
 void OverrideNpcHurtShortToLong()
@@ -2301,3 +2310,49 @@ MRESReturn FPlayerCanTakeDamagePost(Address pThis, Handle hReturn, Handle hParam
 	return MRES_Ignored;
 }
 #endif
+
+
+
+
+void DHookGamerulesObject()
+{
+	if (g_DHookShouldCollide)
+		g_DHookShouldCollide.HookGamerules(Hook_Post, DHookCallback_ShouldCollide);
+}
+public MRESReturn DHookCallback_ShouldCollide(DHookReturn ret, DHookParam params)
+{
+	int collisionGroup0 = params.Get(1);
+	int collisionGroup1 = params.Get(2);
+	
+	if (collisionGroup0 > collisionGroup1)
+	{
+		// Swap so that lowest is always first
+		V_swap(collisionGroup0, collisionGroup1);
+	}
+
+	if(collisionGroup0 != COLLISION_GROUP_VEHICLE)
+		return MRES_Ignored;
+
+	// Prevent vehicles from entering respawn rooms
+	if (collisionGroup1 == TFCOLLISION_GROUP_RESPAWNROOMS)
+	{
+		ret.Value = true;
+		return MRES_Supercede;
+	}
+	//allow vehicle to pass through enemies
+	if (collisionGroup1 == COLLISION_GROUP_NPC ||
+	 collisionGroup1 == COLLISION_GROUP_PLAYER ||
+	  collisionGroup1 == TFCOLLISION_GROUP_ROCKETS)
+	{
+		ret.Value = false;
+		return MRES_Supercede;
+	}
+	
+	return MRES_Ignored;
+}
+void V_swap(int &x, int &y)
+{
+	int temp = x;
+	x = y;
+	y = temp;
+}

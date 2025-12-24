@@ -3458,6 +3458,7 @@ int inflictor = 0)
 			if(ShouldNpcDealBonusDamage(ClosestTarget))
 			{
 				damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
+				damage_1 *= Attributes_Get(entityToEvaluateFrom, Attrib_MultiBuildingDamage, 1.0);
 			}
 			//against raids, any aoe ability should be better as they are usually alone or its only two.
 			if(b_thisNpcIsARaid[ClosestTarget])

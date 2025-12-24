@@ -11,7 +11,8 @@ static const char SectionName[][] =
 {
 	"Support Buildings",
 	"Unique Buildings",
-	"Construct Buildings"
+	"Construct Buildings",
+	"Construct 2 Buildings"
 };
 
 enum struct BuildingInfo
@@ -346,6 +347,9 @@ static void BuildingMenu(int client)
 		for(int i; i < sizeof(SectionName); i++)
 		{
 			if(i == 2 && !Construction_Mode() && !Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
+				continue;
+				
+			if(i == 3 && !CvarInfiniteCash.BoolValue)
 				continue;
 
 			
