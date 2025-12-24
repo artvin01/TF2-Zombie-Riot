@@ -4396,6 +4396,7 @@
 		"it"	"Danno elementare del Caos"
 		"ko"	"혼돈 원소 피해"
 	}
+	
 	"Chaos Elemental Damage High Desc"
 	{
 		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou take 700 truedamage.\nAlso gives 60％ Vulnerability for 10 seconds."
@@ -5893,6 +5894,14 @@
 		"en"		"Agent Steve"
 		"it"		"Agente Steve"
 		"ko"		"스티브 요원"
+	}
+	"Anti Viral Programm"
+	{
+		"en"		"Anti Viral Programm"
+	}
+	"Anti Viral Programm Desc"
+	{
+		"en"		"Its an anti virus, and youre the virus.\n-Goes after only one target.\n-If target dies or enough time passes, he fades away\n-Phases through everything."
 	}
 	"Agent Eric"
 	{

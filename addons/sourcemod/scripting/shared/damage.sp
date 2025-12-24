@@ -114,6 +114,74 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 			{
 				damage *= 0.75;
 			}
+			//Hardcode cus lazy
+
+			if(Rogue_Theme() == ReilaRift)
+			{
+				switch(Rogue_GetFloor())
+				{
+					case 4:
+					{
+						if(Rogue_GetStage() == 0)
+						{
+							if(!Rogue_HasNamedArtifact("Map around the Castle"))
+							{
+								//dont give buff if under rift of fractured
+								damage *= 0.9;
+							}
+						}
+					}
+					case 1:
+					{
+						if(Rogue_GetStage() == 1)
+						{
+							damage *= 0.9;
+						}
+					}
+					default:
+					{
+						if(Rogue_GetStage() == 0)
+						{
+							damage *= 0.9;
+						}
+					}
+				}
+			}
+		}
+		else if (GetTeam(attacker) == TFTeam_Red)
+		{
+			//Hardcode cus lazy
+			if(Rogue_Theme() == ReilaRift)
+			{
+				switch(Rogue_GetFloor())
+				{
+					case 4:
+					{
+						if(Rogue_GetStage() == 0)
+						{
+							if(!Rogue_HasNamedArtifact("Map around the Castle"))
+							{
+								//dont give buff if under rift of fractured as the first stage is forced
+								damage *= 1.15;
+							}
+						}
+					}
+					case 1:
+					{
+						if(Rogue_GetStage() == 1)
+						{
+							damage *= 1.15;
+						}
+					}
+					default:
+					{
+						if(Rogue_GetStage() == 0)
+						{
+							damage *= 1.15;
+						}
+					}
+				}
+			}
 		}
 	}
 	if(!CheckInHud())

@@ -888,6 +888,7 @@ void NPC_ConfigSetup()
 	AgentJames_OnMapStart_NPC();
 	AgentJohn_OnMapStart_NPC();
 	AgentSteve_OnMapStart_NPC();
+	Antiviral_Program_OnMapStart_NPC();
 	AgentEric_OnMapStart_NPC();
 	AgentJack_OnMapStart_NPC();
 	AgentJim_OnMapStart_NPC();
@@ -1161,6 +1162,7 @@ void NPC_ConfigSetup()
 	BarbaricTeardownOnMapStart();
 	SkilledCrossbowmanOnMapStart();
 	DemonDevoterOnMapStart();
+	DungeonLoot_MapStart();
 }
 
 void NPC_MapEnd()
@@ -2305,6 +2307,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/matrix/15/npc_agentjames.sp"
 #include "npc/matrix/15/npc_agentjohn.sp"
 #include "npc/matrix/15/npc_agentsteve.sp"
+#include "npc/matrix/15/npc_antiviral_programm.sp"
 #include "npc/matrix/30/npc_agenteric.sp"
 #include "npc/matrix/30/npc_agentjack.sp"
 #include "npc/matrix/30/npc_agentjim.sp"
@@ -2536,3 +2539,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/construction2/npc_barbaric_teardown.sp"
 #include "npc/construction/construction2/npc_skilled_crossbowman.sp"
 #include "npc/construction/construction2/npc_demon_devoter.sp"
+#include "npc/construction/npc_dungeon_loot.sp"

@@ -2550,4 +2550,20 @@
 		"en"	"Decreases damage taken by 65％\nIncreases NPC movementspeed by 15％\nInrceases thinkspeed by 50％\nFully heals target when applied and not extended."
 		"ko"	"받는 피해량이 65% 감소합니다.\nNPC의 이동 속도가 15% 증가합니다.\n생각하는 속도가 50% 증가합니다.\n효과 부여 시 대상을 완전히 치료합니다."
 	}
+	"Bob Debuff"
+	{
+		"en"	"Bob Debuff"
+	}
+	"Bob Debuff Desc"
+	{
+		"en"	"Increases Damage Taken by 15％"
+	}
+	"Bob Debuff Enrage"
+	{
+		"en"	"Bob DebuffEnrage"
+	}
+	"Bob Debuff Enrage Desc"
+	{
+		"en"	"Increases Damage Taken by 25％"
+	}
 }
