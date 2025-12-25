@@ -135,7 +135,7 @@ void ObjectC2Cannon_ClotThink(ObjectC2Cannon npc)
 	static float rocketAngle[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", rocketAngle);
 	npc.PlayShootSound();
-	float damageDealt = 117.1875 * Pow(float(CurrentLevel), 2.0);
+	float damageDealt = 150.0 * Pow(float(CurrentLevel), 2.0);
 	if(ShouldNpcDealBonusDamage(npc.m_iTarget))
 		damageDealt *= 3.0;
 
@@ -209,7 +209,7 @@ static void ClotShowInteractHud(ObjectGeneric npc, int client)
 
 		char button[64];
 		PlayerHasInteract(client, button, sizeof(button));
-		PrintCenterText(client, "%t", "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL, button);
+		PrintCenterText(client, "%t", "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL + 1, button);
 	}
 }
 

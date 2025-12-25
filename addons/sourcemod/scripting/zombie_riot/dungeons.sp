@@ -7,9 +7,14 @@ static bool DungeonMode;
 static ArrayList MusicList;	// MusicEnum
 static ArrayList RaidList;	// StringMap
 static ArrayList RoomList;	// RoomInfo
+static ArrayList BaseList;	// RoomInfo
 static StringMap LootMap;	// LootInfo
 static float AttackTime;
 static int MaxWaveScale;
+static char TeleHome[64];
+static char TeleRival[64];
+static char TeleEnter[64];
+static char TeleNext[64];
 
 enum struct LootInfo
 {
@@ -119,7 +124,7 @@ enum struct LootInfo
 
 enum struct RoomInfo
 {
-	char Name[64];
+	//char Name[64];
 	int Common;
 	int Victory;
 	int MinWave;
@@ -139,9 +144,10 @@ enum struct RoomInfo
 
 	bool SetupKv(KeyValues kv)
 	{
-		kv.GetSectionName(this.Name, sizeof(this.Name));
-		if(FailTranslation(this.Name))
-			return false;
+		char name[64];
+		kv.GetSectionName(name, sizeof(name));
+		//if(FailTranslation(this.Name))
+		//	return false;
 
 		char buffer[PLATFORM_MAX_PATH];
 		
@@ -161,7 +167,7 @@ enum struct RoomInfo
 						BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, this.Key);
 						if(!FileExists(buffer))
 						{
-							LogError("Unknown waveset '%s' for room '%s'", this.Key, this.Name);
+							LogError("Unknown waveset '%s' for room '%s'", this.Key, name);
 						}
 						else
 						{
@@ -198,7 +204,7 @@ enum struct RoomInfo
 					this.Loots.SetValue(this.Key, kv.GetNum(NULL_STRING));
 
 					if(Rogue_GetNamedArtifact(this.Key) == -1 && !LootMap.ContainsKey(this.Key))
-						LogError("Unknown loot table '%s' for room '%s'", this.Key, this.Name);
+						LogError("Unknown loot table '%s' for room '%s'", this.Key, name);
 				}
 				while(kv.GotoNextKey(false));
 
@@ -300,19 +306,39 @@ enum struct RoomInfo
 	}
 }
 
+enum DungeonZone
+{
+	Zone_Unknown = 0,
+	Zone_HomeBase,
+	Zone_RivalBase,
+	Zone_Dungeon,
+	Zone_DungeonWait,	// Waiting for next dungeon room
+	
+	Zone_MAX
+}
+
 static int CurrentAttacks;
 static float NextAttackAt;
-static int AttackType;	// 0 = None, 1 = Room, 2 = Base, 3 = Final
+static int AttackType;	// -1 = Rival Setup, 0 = None, 1 = Room, 2 = Base, 3 = Final
 static Handle GameTimer;
 static float BattleTimelimit;
 static float DelayVoteFor;
-static int LastRoomIndex;
+static int CurrentRoomIndex;
+static int NextRoomIndex;
 static float BattleWaveScale;
 static float EnemyScaling;
+static DungeonZone LastZone[MAXENTITIES];
+static int ZoneMarkerRef[Zone_MAX] = {-1, ...};
 
 void Dungeon_PluginStart()
 {
-	LoadTranslations("zombieriot.phrases.dungeon"); 
+	LoadTranslations("zombieriot.phrases.dungeon");
+	HookEntityOutput("trigger_multiple", "OnStartTouch", TriggerStartTouch);
+}
+
+void Dungeon_EntityCreated(int entity)
+{
+	LastZone[entity] = Zone_Unknown;
 }
 
 bool Dungeon_Mode()
@@ -328,11 +354,6 @@ bool Dungeon_Started()
 bool Dungeon_InSetup()
 {
 	return Dungeon_Mode() && AttackType < 2;
-}
-
-bool Dungeon_PeaceTime()
-{
-	return Dungeon_Mode() && AttackType < 1;
 }
 
 bool Dungeon_FinalBattle()
@@ -413,6 +434,17 @@ void Dungeon_SetupVote(KeyValues kv)
 		delete RoomList;
 	}
 
+	if(BaseList)
+	{
+		int length = BaseList.Length;
+		for(int i; i < length; i++)
+		{
+			BaseList.GetArray(i, room);
+			room.Clean();
+		}
+		delete BaseList;
+	}
+
 	MusicEnum music;
 	if(MusicList)
 	{
@@ -429,8 +461,14 @@ void Dungeon_SetupVote(KeyValues kv)
 	RaidList = new ArrayList();
 	LootMap = new StringMap();
 	RoomList = new ArrayList(sizeof(RoomInfo));
+	BaseList = new ArrayList(sizeof(RoomInfo));
 
 	char buffer1[PLATFORM_MAX_PATH], buffer2[PLATFORM_MAX_PATH];
+
+	kv.GetString("tele_homebase", TeleHome, sizeof(TeleHome));
+	kv.GetString("tele_rivalbase", TeleRival, sizeof(TeleRival));
+	kv.GetString("tele_dungeonenter", TeleEnter, sizeof(TeleEnter));
+	kv.GetString("tele_dungeonnext", TeleNext, sizeof(TeleNext));
 	
 	if(kv.JumpToKey("Loots"))
 	{
@@ -454,6 +492,23 @@ void Dungeon_SetupVote(KeyValues kv)
 	}
 	
 	if(kv.JumpToKey("Rooms"))
+	{
+		if(kv.GotoFirstSubKey())
+		{
+			do
+			{
+				if(room.SetupKv(kv))
+					RoomList.PushArray(room);
+			}
+			while(kv.GotoNextKey());
+
+			kv.GoBack();
+		}
+
+		kv.GoBack();
+	}
+	
+	if(kv.JumpToKey("Bases"))
 	{
 		if(kv.GotoFirstSubKey())
 		{
@@ -631,6 +686,7 @@ void Dungeon_Start()
 		{
 			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos);
 			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_angRotation", ang);
+			Dungeon_SetZoneMarker(i_ObjectsSpawners[i], Zone_HomeBase);
 			break;
 		}
 	}
@@ -683,7 +739,7 @@ void Dungeon_AntiStalled()
 			{
 				if(IsClientInGame(client) && IsPlayerAlive(client))
 				{
-					if(!Dungeon_EntityAtBase(client))
+					if(Dungeon_GetEntityZone(client) == Zone_Dungeon)
 						ForcePlayerSuicide(client, true);
 				}
 			}
@@ -695,8 +751,59 @@ void Dungeon_AntiStalled()
 	}
 }
 
+static void TriggerStartTouch(const char[] output, int caller, int activator, float delay)
+{
+	if(Dungeon_Mode() && activator > 0 && activator <= MAXENTITIES && (activator <= MaxClients || !b_NpcHasDied[activator]))
+	{
+		char name[64];
+		if(GetEntPropString(caller, Prop_Data, "m_iName", name, sizeof(name)))
+		{
+			DungeonZone zone = Zone_Unknown;
+
+			if(StrEqual(name, TeleHome, false))
+			{
+				zone = Zone_HomeBase;
+			}
+			else if(StrEqual(name, TeleRival, false))
+			{
+				zone = Zone_RivalBase;
+			}
+			else if(StrEqual(name, TeleEnter, false))
+			{
+				zone = Zone_Dungeon;
+			}
+			else if(StrEqual(name, TeleNext, false))
+			{
+				zone = Zone_DungeonWait;
+			}
+
+			if(zone != Zone_Unknown)
+			{
+				if(zone == Zone_Dungeon && IsValidEntity(ZoneMarkerRef[Zone_DungeonWait]))
+					zone = Zone_DungeonWait;
+
+				if(IsValidEntity(ZoneMarkerRef[zone]))
+				{
+					float pos[3], ang[3];
+					GetEntPropVector(ZoneMarkerRef[zone], Prop_Data, "m_vecOrigin", pos);
+					GetEntPropVector(ZoneMarkerRef[zone], Prop_Data, "m_angRotation", ang);
+
+					TeleportEntity(activator, pos, ang);
+					Dungeon_SetEntityZone(activator, zone);
+				}
+				else if(activator <= MaxClients)
+				{
+					f_DelayLookingAtHud[activator] = GetGameTime() + 2.0;
+					PrintCenterText(activator, "%T", "Dungeon Not Ready Yet", activator);
+				}
+			}
+		}
+	}
+}
+
 void Dungeon_TeleportRandomly(float pos[3])
 {
+	/*
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client))
@@ -708,6 +815,7 @@ void Dungeon_TeleportRandomly(float pos[3])
 			}
 		}
 	}
+	*/
 
 	CNavArea goalArea = TheNavMesh.GetNavArea(pos, 1000.0);
 	if(goalArea == NULL_AREA)
@@ -744,28 +852,49 @@ void Dungeon_SpawnLoot(const char[] name, float waveScale)
 	npc.SetLootData(name, waveScale);
 }
 
-bool Dungeon_EntityAtBase(int client, bool outOfBoundsResult = false)
+void Dungeon_SetZoneMarker(int entity, DungeonZone zone)
 {
-	CNavArea endNav = TheNavMesh.GetNavAreaEntity(client, GETNAVAREA_ALLOW_BLOCKED_AREAS, 1000.0);
-	if(endNav == NULL_AREA)
-		return outOfBoundsResult;
-	
-	float pos[3];
-	CNavArea startNav;
-	for(int i; i < ZR_MAX_SPAWNERS; i++)
+	ZoneMarkerRef[zone] = entity;
+	if(ZoneMarkerRef[zone] > 0 && ZoneMarkerRef[zone] < sizeof(ZoneMarkerRef))
+		ZoneMarkerRef[zone] = EntIndexToEntRef(ZoneMarkerRef[zone]);
+}
+
+void Dungeon_SetEntityZone(int entity, DungeonZone zone)
+{
+	LastZone[entity] = zone;
+}
+
+DungeonZone Dungeon_GetEntityZone(int entity, bool forceReset = false)
+{
+	if(LastZone[entity] == Zone_Unknown || forceReset)
 	{
-		if(IsValidEntity(i_ObjectsSpawners[i]) && GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_iTeamNum") == TFTeam_Red && !GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_bDisabled"))
+		LastZone[entity] = Zone_Unknown;
+
+		CNavArea endNav = TheNavMesh.GetNavAreaEntity(entity, GETNAVAREA_ALLOW_BLOCKED_AREAS, 1000.0);
+		if(endNav != NULL_AREA)
 		{
-			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos);
-			startNav = TheNavMesh.GetNavArea(pos);
-			break;
+			float pos[3];
+			CNavArea startNav;
+
+			for(int i = 1; i < view_as<int>(Zone_MAX); i++)
+			{
+				if(IsValidEntity(ZoneMarkerRef[i]))
+				{
+					GetEntPropVector(ZoneMarkerRef[i], Prop_Data, "m_vecOrigin", pos);
+					startNav = TheNavMesh.GetNavArea(pos);
+
+					if(TheNavMesh.BuildPath(endNav, startNav, pos))
+					{
+						LastZone[entity] = view_as<DungeonZone>(i);
+						break;
+					}
+				}
+			}
+
 		}
 	}
 
-	if(startNav == NULL_AREA)
-		return outOfBoundsResult;
-	
-	return TheNavMesh.BuildPath(endNav, startNav, pos);
+	return LastZone[entity];
 }
 
 static Action DungeonMainTimer(Handle timer)
@@ -773,124 +902,91 @@ static Action DungeonMainTimer(Handle timer)
 	float time = NextAttackAt - GetGameTime();
 	if(time > 0.0)
 	{
-		if(AttackType == 1)
+		if(time > 60.0 && DelayVoteFor < GetGameTime() && !Rogue_VoteActive() && NextRoomIndex == -1)
+			CreateNewDungeon();
+		
+		if(AttackType == -1)
+		{
+			/*
+				Check if rival base is setup now
+			*/
+			if(DelayVoteFor < GetGameTime() && !Rogue_VoteActive())
+				Dungeon_BattleVictory();
+		}
+		else if(AttackType == 1)
 		{
 			/*
 				Check if anyone out on the field is alive
 			*/
-			bool alive;
+			int alive, waiting;
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(IsClientInGame(client))
 				{
-					if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && !Dungeon_EntityAtBase(client, true))
+					if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 					{
-						alive = true;
-						break;
+						switch(Dungeon_GetEntityZone(client))
+						{
+							case Zone_Dungeon:
+								alive++;
+							
+							case Zone_DungeonWait:
+								waiting++;
+						}
+					}
+				}
+			}
+
+			if(!alive || ((alive * 3) < waiting))
+				BattleLosted();
+		}
+		else if(AttackType < 1 && time > 60.0 && DelayVoteFor < GetGameTime() && !Rogue_VoteActive())
+		{
+			/*
+				Create new rival base if one is currently dead
+			*/
+			bool alive;
+			for(int i; i < i_MaxcountNpcTotal; i++)
+			{
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+				if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+				{
+					DungeonZone zone = Dungeon_GetEntityZone(entity);
+					if(zone == Zone_RivalBase)
+					{
+						if(GetTeam(entity) != TFTeam_Red)
+						{
+							alive = true;
+							break;
+						}
 					}
 				}
 			}
 
 			if(!alive)
-				BattleLosted();
-		}
-		else if(AttackType < 1 && time > 99.0 && DelayVoteFor < GetGameTime() && !Rogue_VoteActive())
-		{
-			/*
-				Dungeon Room Voting
-			*/
-			RoomInfo room;
-			ArrayList roomPool;
-			int highestCommon;
-			int round = RoundToFloor(BattleWaveScale);
-			int length = RoomList.Length;
-			for(int a; a < length; a++)
 			{
-				RoomList.GetArray(a, room);
-
-				if(room.Common > highestCommon)
-					highestCommon = room.Common;
-
-				if(room.CurrentCooldown > GetGameTime())
-					continue;
-				
-				if(room.MinWave > round || room.MaxWave < round)
-					continue;
-
-				if(room.Key[0] && !Rogue_HasNamedArtifact(room.Key))
-				{
-					Function func = GetFunctionByName(null, room.Key);
-					if(func == INVALID_FUNCTION)
-						continue;
-					
-					bool value;
-					Call_StartFunction(null, func);
-					Call_Finish(value);
-					if(!value)
-						continue;
-				}
-
-				for(int b; b < room.Common; b++)
-				{
-					roomPool.Push(a);
-				}
+				CreateNewRivals();
 			}
-
-			// Removes all commons
-			if(Rogue_HasNamedArtifact("Dungeon Compass"))
+			else
 			{
-				highestCommon--;
-				for(int a; a < length; a++)
+				/*
+					Start next dungeon if there's some waiting for it
+				*/
+				if(NextRoomIndex != -1)
 				{
-					RoomList.GetArray(a, room);
-					if(room.Common >= highestCommon)
+					for(int client = 1; client <= MaxClients; client++)
 					{
-						for(int b; (b = roomPool.FindValue(a)) != -1; )
+						if(IsClientInGame(client))
 						{
-							roomPool.Erase(b);
+							if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && Dungeon_GetEntityZone(client) == Zone_DungeonWait)
+							{
+								StartNewDungeon();
+								break;
+							}
 						}
 					}
 				}
-
-				Rogue_RemoveNamedArtifact("Dungeon Compass");
 			}
-
-			Vote vote;
-//			ArrayList voting = Rogue_CreateGenericVote(Dungeon_RoomVote, "Dungeon Room Vote");
-
-			int count = 1;//(GetURandomInt() % 5) ? 2 : 3;
-			for(int a; a < count; a++)
-			{
-				length = roomPool.Length;
-				if(length < 1)
-					break;
-				
-				int index = roomPool.Get(GetURandomInt() % length);
-
-				RoomList.GetArray(index, room);
-				room.CurrentCooldown = room.Cooldown + GetGameTime();
-				RoomList.SetArray(index, room);
-
-				strcopy(vote.Name, sizeof(vote.Name), room.Name);
-				IntToString(index, vote.Config, sizeof(vote.Config));
-/*				voting.PushArray(vote);
-
-				for(int b; (b = roomPool.FindValue(index)) != -1; )
-				{
-					roomPool.Erase(b);
-				}
-*/
-				Dungeon_RoomVote(vote);
-			}
-/*
-			strcopy(vote.Name, sizeof(vote.Name), time < 130.0 ? "Dungeon Stop Looking" : "Dungeon Keep Looking");
-			vote.Desc[0] = 0;
-			IntToString(-1, vote.Config, sizeof(vote.Config));
-			voting.PushArray(vote);
-
-			Rogue_StartGenericVote(30.0);
-			DelayVoteFor = GetGameTime() + 31.0;
-*/
 		}
 
 		GameTimer = CreateTimer(0.5, DungeonMainTimer);
@@ -903,7 +999,8 @@ static Action DungeonMainTimer(Handle timer)
 	*/
 
 	CurrentAttacks++;
-	LastRoomIndex = -1;
+	CurrentRoomIndex = -1;
+	NextRoomIndex = -1;
 	EnemyScaling = 0.0;
 
 	int index = -1;
@@ -912,43 +1009,7 @@ static Action DungeonMainTimer(Handle timer)
 
 	Rogue_SetBattleIngots(CurrentAttacks > 1 ? 6 : 5);
 	
-	float pos1[3], pos2[3];
-	for(int i; i < ZR_MAX_SPAWNERS; i++)
-	{
-		if(IsValidEntity(i_ObjectsSpawners[i]) && GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_iTeamNum") == TFTeam_Red && !GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_bDisabled"))
-		{
-			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos1);
-			break;
-		}
-	}
-	
-	for(int i; i < i_MaxcountNpcTotal; i++)
-	{
-		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-		{
-			if(GetTeam(entity) == TFTeam_Red && i_NpcInternalId[entity] != Remain_ID())
-			{
-				TeleportEntity(entity, pos1);
-				SaveLastValidPositionEntity(entity, pos1);
-			}
-			else
-			{
-				f_CreditsOnKill[entity] = 0.0;
-				SmiteNpcToDeath(entity);
-			}
-		}
-	}
-
-	for(int i; i < i_MaxcountBuilding; i++)
-	{
-		int entity = EntRefToEntIndexFast(i_ObjectsBuilding[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) && !b_ThisEntityIgnored[entity] && !Dungeon_EntityAtBase(entity))
-		{
-			int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-			DeleteAndRefundBuilding(builder_owner, entity);
-		}
-	}
+	TeleportToFrom(Zone_HomeBase);
 	
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -956,14 +1017,6 @@ static Action DungeonMainTimer(Handle timer)
 		{
 			if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 			{
-				GetClientAbsOrigin(client, pos2);
-				if(GetVectorDistance(pos1, pos2, true) > 900000.0)
-				{
-					Vehicle_Exit(client, false, false);
-					TeleportEntity(client, pos1, {0.0, 0.0, 0.0});
-					SaveLastValidPositionEntity(client, pos1);
-				}
-				
 				Store_ApplyAttribs(client);
 				Store_GiveAll(client, GetClientHealth(client));
 			}
@@ -1071,87 +1124,281 @@ void Dungeon_DelayVoteFor(float time)
 	DelayVoteFor = GetGameTime() + time;
 }
 
-static void Dungeon_RoomVote(const Vote vote)
+static void CreateNewDungeon()
 {
-	LastRoomIndex = StringToInt(vote.Config);
-	if(LastRoomIndex != -1)
+	RoomInfo room;
+	ArrayList roomPool;
+	int highestCommon;
+	int round = RoundToFloor(BattleWaveScale);
+	int length = RoomList.Length;
+	for(int a; a < length; a++)
 	{
-		RoomInfo room;
-		RoomList.GetArray(LastRoomIndex, room);
+		RoomList.GetArray(a, room);
 
-		Rogue_SetBattleIngots(0);
+		if(room.Common > highestCommon)
+			highestCommon = room.Common;
 
-		float time = room.Fights ? 0.0 : 5.0;
-		if(room.FuncStart != INVALID_FUNCTION)
+		if(room.CurrentCooldown > GetGameTime())
+			continue;
+		
+		if(room.MinWave > round || room.MaxWave < round)
+			continue;
+
+		if(room.Key[0] && !Rogue_HasNamedArtifact(room.Key))
 		{
-			Call_StartFunction(null, room.FuncStart);
-			Call_Finish(time);
+			Function func = GetFunctionByName(null, room.Key);
+			if(func == INVALID_FUNCTION)
+				continue;
+			
+			bool value;
+			Call_StartFunction(null, func);
+			Call_Finish(value);
+			if(!value)
+				continue;
 		}
 
-		if(!time && room.Fights)
+		for(int b; b < room.Common; b++)
 		{
-			StartBattle(room);
+			roomPool.Push(a);
 		}
-		else
-		{
-			Dungeon_DelayVoteFor(time);
-		}
+	}
 
-		float pos[3], ang[3];
-
-		char buffer[64];
-		int entity = -1;
-		while((entity = FindEntityByClassname(entity, "info_teleport_destination")) != -1)
+	// Removes all commons
+	if(Rogue_HasNamedArtifact("Dungeon Compass"))
+	{
+		highestCommon--;
+		for(int a; a < length; a++)
 		{
-			GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-			if(StrEqual(buffer, room.Spawn, false))
+			RoomList.GetArray(a, room);
+			if(room.Common >= highestCommon)
 			{
-				if(!pos[0] || (GetURandomInt() % 2))
+				for(int b; (b = roomPool.FindValue(a)) != -1; )
 				{
-					GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
-					GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+					roomPool.Erase(b);
 				}
 			}
 		}
 
-		if(!pos[0])
+		Rogue_RemoveNamedArtifact("Dungeon Compass");
+	}
+
+	length = roomPool.Length;
+	if(length < 1)
+		return;
+		
+	NextRoomIndex = roomPool.Get(GetURandomInt() % length);
+
+	RoomList.GetArray(NextRoomIndex, room);
+
+	bool found;
+
+	char buffer[64];
+	int entity = -1;
+	while((entity = FindEntityByClassname(entity, "info_teleport_destination")) != -1)
+	{
+		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+		if(StrEqual(buffer, room.Spawn, false))
 		{
-			for(int i; i < ZR_MAX_SPAWNERS; i++)
+			if(!found || (GetURandomInt() % 2))
 			{
-				if(IsValidEntity(i_ObjectsSpawners[i]))
+				Dungeon_SetZoneMarker(entity, Zone_DungeonWait);
+				found = true;
+			}
+		}
+	}
+
+	if(!found)
+	{
+		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		{
+			if(IsValidEntity(i_ObjectsSpawners[i]))
+			{
+				GetEntPropString(i_ObjectsSpawners[i], Prop_Data, "m_iName", buffer, sizeof(buffer));
+				if(StrEqual(buffer, room.Spawn, false))
 				{
-					GetEntPropString(i_ObjectsSpawners[i], Prop_Data, "m_iName", buffer, sizeof(buffer));
-					if(StrEqual(buffer, room.Spawn, false))
+					if(!found || (GetURandomInt() % 2))
 					{
-						if(!pos[0] || (GetURandomInt() % 2))
-						{
-							GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos);
-							GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_angRotation", ang);
-						}
+						Dungeon_SetZoneMarker(entity, Zone_DungeonWait);
+						found = true;
 					}
 				}
 			}
 		}
+	}
+	
+	TeleportToFrom(Zone_DungeonWait, Zone_DungeonWait);
+}
 
-		for(int client = 1; client <= MaxClients; client++)
+static void StartNewDungeon()
+{
+	ZoneMarkerRef[Zone_Dungeon] = ZoneMarkerRef[Zone_DungeonWait];
+	ZoneMarkerRef[Zone_DungeonWait] = -1;
+
+	CurrentRoomIndex = NextRoomIndex;
+	NextRoomIndex = -1;
+	
+	RoomInfo room;
+	RoomList.GetArray(CurrentRoomIndex, room);
+	room.CurrentCooldown = room.Cooldown + GetGameTime();
+	RoomList.SetArray(CurrentRoomIndex, room);
+	
+	Rogue_SetBattleIngots(0);
+
+	float time = room.Fights ? 0.0 : 5.0;
+	if(room.FuncStart != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, room.FuncStart);
+		Call_Finish(time);
+	}
+
+	if(!time && room.Fights)
+		StartBattle(room);
+	
+	if(time < 30.0)
+		Dungeon_DelayVoteFor(time);
+
+	TeleportToFrom(Zone_Dungeon, Zone_DungeonWait, Zone_Dungeon);
+}
+
+static void CreateNewRivals()
+{
+	RoomInfo room;
+	ArrayList roomPool;
+	int highestCommon;
+	int round = RoundToFloor(BattleWaveScale);
+	int length = BaseList.Length;
+	for(int a; a < length; a++)
+	{
+		BaseList.GetArray(a, room);
+
+		if(room.Common > highestCommon)
+			highestCommon = room.Common;
+
+		if(room.CurrentCooldown > GetGameTime())
+			continue;
+		
+		if(room.MinWave > round || room.MaxWave < round)
+			continue;
+
+		if(room.Key[0] && !Rogue_HasNamedArtifact(room.Key))
 		{
-			if(IsClientInGame(client) && IsPlayerAlive(client))
+			Function func = GetFunctionByName(null, room.Key);
+			if(func == INVALID_FUNCTION)
+				continue;
+			
+			bool value;
+			Call_StartFunction(null, func);
+			Call_Finish(value);
+			if(!value)
+				continue;
+		}
+
+		for(int b; b < room.Common; b++)
+		{
+			roomPool.Push(a);
+		}
+	}
+
+	length = roomPool.Length;
+	if(length < 1)
+		return;
+		
+	int index = roomPool.Get(GetURandomInt() % length);
+
+	BaseList.GetArray(index, room);
+	room.CurrentCooldown = room.Cooldown + GetGameTime();
+	BaseList.SetArray(index, room);
+
+	bool found;
+
+	char buffer[64];
+	int entity = -1;
+	while((entity = FindEntityByClassname(entity, "info_teleport_destination")) != -1)
+	{
+		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+		if(StrEqual(buffer, room.Spawn, false))
+		{
+			if(!found || (GetURandomInt() % 2))
+			{
+				Dungeon_SetZoneMarker(entity, Zone_RivalBase);
+				found = true;
+			}
+		}
+	}
+
+	if(!found)
+	{
+		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		{
+			if(IsValidEntity(i_ObjectsSpawners[i]))
+			{
+				GetEntPropString(i_ObjectsSpawners[i], Prop_Data, "m_iName", buffer, sizeof(buffer));
+				if(StrEqual(buffer, room.Spawn, false))
+				{
+					if(!found || (GetURandomInt() % 2))
+					{
+						Dungeon_SetZoneMarker(entity, Zone_RivalBase);
+						found = true;
+					}
+				}
+			}
+		}
+	}
+
+	float time = 0.0;
+	Call_StartFunction(null, room.FuncStart);
+	Call_Finish(time);
+
+	StartBattle(room, time);
+	AttackType = -1;
+
+	Dungeon_DelayVoteFor(time + 5.0);
+	
+	TeleportToFrom(Zone_RivalBase, Zone_RivalBase);
+}
+
+static void TeleportToFrom(DungeonZone tele, DungeonZone from1 = Zone_Unknown, DungeonZone from2 = Zone_MAX, DungeonZone from3 = Zone_MAX)
+{
+	float pos[3], ang[3];
+	if(IsValidEntity(ZoneMarkerRef[tele]))
+	{
+		GetEntPropVector(ZoneMarkerRef[tele], Prop_Data, "m_vecOrigin", pos);
+		GetEntPropVector(ZoneMarkerRef[tele], Prop_Data, "m_angRotation", ang);
+	}
+	else
+	{
+		PrintToChatAll("ERROR: No zone marker for %d", tele);
+		return;
+	}
+	
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsPlayerAlive(client))
+		{
+			DungeonZone zone = Dungeon_GetEntityZone(client);
+			if(zone == Zone_Unknown || (zone != tele && from1 == Zone_Unknown) || zone == from1 || zone == from2 || zone == from3)
 			{
 				Vehicle_Exit(client, false, false);
 				TeleportEntity(client, pos, ang, NULL_VECTOR);
 				SaveLastValidPositionEntity(client, pos);
+				Dungeon_SetEntityZone(client, tele);
 			}
 		}
-		
-		for(int i; i < i_MaxcountNpcTotal; i++)
+	}
+	
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
-			entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-			if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+			DungeonZone zone = Dungeon_GetEntityZone(entity);
+			if(zone == Zone_Unknown || (zone != tele && from1 == Zone_Unknown) || zone == from1 || zone == from2 || zone == from3)
 			{
 				if(GetTeam(entity) == TFTeam_Red && i_NpcInternalId[entity] != Remain_ID())
 				{
 					TeleportEntity(entity, pos, ang, NULL_VECTOR);
 					SaveLastValidPositionEntity(entity, pos);
+					Dungeon_SetEntityZone(entity, tele);
 				}
 				else
 				{
@@ -1160,15 +1407,39 @@ static void Dungeon_RoomVote(const Vote vote)
 				}
 			}
 		}
+	}
 
-		for(int i; i < i_MaxcountBuilding; i++)
+	for(int i; i < i_MaxcountBuilding; i++)
+	{
+		int entity = EntRefToEntIndexFast(i_ObjectsBuilding[i]);
+		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
 		{
-			entity = EntRefToEntIndexFast(i_ObjectsBuilding[i]);
-			if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) && !b_ThisEntityIgnored[entity] && !Dungeon_EntityAtBase(entity))
+			DungeonZone zone = Dungeon_GetEntityZone(entity);
+			if(zone == Zone_Unknown || (zone != tele && from1 == Zone_Unknown) || zone == from1 || zone == from2 || zone == from3)
 			{
 				int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 				DeleteAndRefundBuilding(builder_owner, entity);
 			}
+		}
+	}
+
+	int entity = -1;
+	while((entity = FindEntityByClassname(entity, "obj_vehicle")) != -1)
+	{
+		DungeonZone zone = Dungeon_GetEntityZone(entity);
+		if(
+			(zone == tele && (zone == Zone_HomeBase || tele == Zone_RivalBase)) ||
+			((zone == Zone_Dungeon || zone == Zone_DungeonWait) && (tele == Zone_Dungeon || tele == Zone_DungeonWait))
+		)
+		{
+			// Home -> Home
+			// Rival -> Rival
+			// Dungeon/Wait -> Dungeon/Wait
+			TeleportEntity(entity, pos, ang, NULL_VECTOR);
+		}
+		else if(zone == Zone_Unknown)
+		{
+			RemoveEntity(entity);
 		}
 	}
 }
@@ -1176,7 +1447,7 @@ static void Dungeon_RoomVote(const Vote vote)
 stock void Dungeon_StartThisBattle(float time = 10.0)
 {
 	RoomInfo room;
-	RoomList.GetArray(LastRoomIndex, room);
+	RoomList.GetArray(CurrentRoomIndex, room);
 	
 	StartBattle(room, time);
 }
@@ -1242,46 +1513,44 @@ static void StartBattle(const RoomInfo room, float time = 3.0)
 	}
 	else
 	{
-		PrintToChatAll("NO ROOM %s???? REPORT THIS BUG", room.Name);
+		PrintToChatAll("NO ROOM???? REPORT THIS BUG");
 	}
 
 	delete snap;
 
-	float limit = room.Timelimit;
-	if(limit < 1.0)
-		limit = 420.0;
+	//float limit = room.Timelimit;
+	//if(limit < 1.0)
+	//	limit = 420.0;
 
 	float maxLimit = NextAttackAt - GetGameTime();
-	if(limit > maxLimit)
-		limit = maxLimit;
+	//if(limit > maxLimit)
+	//	limit = maxLimit;
 
-	SetBattleTimelimit(limit);
-
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client) && IsPlayerAlive(client))
-		{
-			Store_ApplyAttribs(client);
-			Store_GiveAll(client, GetClientHealth(client));
-		}
-	}
+	SetBattleTimelimit(maxLimit);
 }
 
 void Dungeon_BattleVictory()
 {
 	Waves_RoundEnd();
+
+	if(AttackType < 1)
+	{
+		AttackType = 0;
+		return;
+	}
+	
 	bool victory = true;
 	Rogue_TriggerFunction(Artifact::FuncStageEnd, victory);
 	Store_RogueEndFightReset();
-	
+
 	int ingots = Rogue_GetBattleIngots();
 	if(ingots)
 		Construction_AddMaterial("crystal", ingots);
 
-	if(LastRoomIndex != -1 && AttackType == 1)
+	if(CurrentRoomIndex != -1 && AttackType == 1)
 	{
 		RoomInfo room;
-		RoomList.GetArray(LastRoomIndex, room);
+		RoomList.GetArray(CurrentRoomIndex, room);
 		room.RollLoot(true);
 	}
 
@@ -1301,6 +1570,7 @@ void Dungeon_BattleVictory()
 	
 	Zero(i_AmountDowned);
 	AttackType = 0;
+	Dungeon_DelayVoteFor(20.0);
 }
 
 static void BattleLosted()
@@ -1313,54 +1583,18 @@ static void BattleLosted()
 	Zero(i_AmountDowned);
 	AttackType = 0;
 	
-	float pos[3];
-	for(int i; i < ZR_MAX_SPAWNERS; i++)
-	{
-		if(IsValidEntity(i_ObjectsSpawners[i]) && GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_iTeamNum") == TFTeam_Red && !GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_bDisabled"))
-		{
-			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos);
-			break;
-		}
-	}
-	
-	for(int i; i < i_MaxcountNpcTotal; i++)
-	{
-		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-		{
-			if(GetTeam(entity) == TFTeam_Red && i_NpcInternalId[entity] != Remain_ID())
-			{
-				TeleportEntity(entity, pos);
-				SaveLastValidPositionEntity(entity, pos);
-			}
-			else
-			{
-				f_CreditsOnKill[entity] = 0.0;
-				SmiteNpcToDeath(entity);
-			}
-		}
-	}
-
-	for(int i; i < i_MaxcountBuilding; i++)
-	{
-		int entity = EntRefToEntIndexFast(i_ObjectsBuilding[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) && !b_ThisEntityIgnored[entity] && !Dungeon_EntityAtBase(entity))
-		{
-			int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-			DeleteAndRefundBuilding(builder_owner, entity);
-		}
-	}
+	//TeleportToFrom(Zone_DungeonWait, Zone_Dungeon);
 
 	CPrintToChatAll("{crimson}%t", "Dungeon Failed");
-	DelayVoteFor = GetGameTime() + 5.0;
+	Dungeon_DelayVoteFor(20.0);
 }
 
 void Dungeon_WaveEnd(bool final)
 {
-	if(!final && LastRoomIndex != -1 && AttackType == 1)
+	if(!final && CurrentRoomIndex != -1 && AttackType == 1)
 	{
 		RoomInfo room;
-		RoomList.GetArray(LastRoomIndex, room);
+		RoomList.GetArray(CurrentRoomIndex, room);
 		room.RollLoot(false);
 	}
 }
@@ -1398,51 +1632,59 @@ void Dungeon_EnemySpawned(int entity)
 {
 	if(Dungeon_Mode() && i_NpcInternalId[entity] != DungeonLoot_Id())
 	{
-		// Reward cash depending on the wave scaling and how much left
-		if(AttackType < 2)
+		switch(AttackType)
 		{
-			static int LimitNotice;
-
-			int round = Dungeon_GetRound(true);
-			int limit = 4 + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
-			if(round > limit)
+			case -1:	// Town NPC
 			{
-				round = limit;
+				b_StaticNPC[entity] = true;
+				AddNpcToAliveList(entity, 1);
+			}
+			case 1:	// Dungeon NPC
+			{
+				// Reward cash depending on the wave scaling and how much left
+				static int LimitNotice;
 
-				if(!LimitNotice)
+				int round = Dungeon_GetRound(true);
+				int limit = 4 + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
+				if(round > limit)
 				{
-					CPrintToChatAll("%t", "Upgrade Build Houses");
-					LimitNotice = 1;
+					round = limit;
+
+					if(!LimitNotice)
+					{
+						CPrintToChatAll("%t", "Upgrade Build Houses");
+						LimitNotice = 1;
+					}
+					else
+					{
+						LimitNotice++;
+						if(LimitNotice > 49)
+							LimitNotice = 0;
+					}
 				}
 				else
 				{
-					LimitNotice++;
-					if(LimitNotice > 49)
-						LimitNotice = 0;
+					LimitNotice = 0;
 				}
-			}
-			else
-			{
-				LimitNotice = 0;
-			}
-			
-			int current = CurrentCash - GlobalExtraCash;
-
-			int a, other;
-			while((other = FindEntityByNPC(a)) != -1)
-			{
-				if(!b_NpcHasDied[other] && GetTeam(other) != TFTeam_Red)
-					current += RoundFloat(f_CreditsOnKill[other]);
-			}
-
-			int goal = DefaultTotalCash(round);
-			if(current < goal)
-			{
-				int reward = (goal - current) / (b_thisNpcIsABoss[entity] ? 5 : 50);
-				if(reward < 5)
-					reward = 5;
 				
-				f_CreditsOnKill[entity] += float(reward / 5 * 5);
+				int current = CurrentCash - GlobalExtraCash;
+
+				int a, other;
+				while((other = FindEntityByNPC(a)) != -1)
+				{
+					if(!b_NpcHasDied[other] && GetTeam(other) != TFTeam_Red)
+						current += RoundFloat(f_CreditsOnKill[other]);
+				}
+
+				int goal = DefaultTotalCash(round);
+				if(current < goal)
+				{
+					int reward = (goal - current) / (b_thisNpcIsABoss[entity] ? 5 : 50);
+					if(reward < 5)
+						reward = 5;
+					
+					f_CreditsOnKill[entity] += float(reward / 5 * 5);
+				}
 			}
 		}
 
@@ -1458,7 +1700,7 @@ void Dungeon_EnemySpawned(int entity)
 
 bool Dungeon_UpdateMvMStats()
 {
-	if(!Dungeon_Mode() || AttackType > 0)
+	if(!Dungeon_Mode() || AttackType > 1)
 		return false;
 	
 	int objective = FindEntityByClassname(-1, "tf_objective_resource");
@@ -1470,8 +1712,9 @@ bool Dungeon_UpdateMvMStats()
 		if(AttackType == 1)
 		{
 			int round = Dungeon_GetRound();
-			if(round > 39)
-				round = 39;
+			int limit = 4 + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
+			if(round > limit)
+				round = limit;
 			
 			int current = CurrentCash - GlobalExtraCash;
 			int goal = DefaultTotalCash(round);

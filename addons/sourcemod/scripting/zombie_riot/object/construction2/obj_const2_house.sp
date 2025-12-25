@@ -10,8 +10,8 @@
 
 #define CONSTRUCT_NAME		"House"
 #define CONSTRUCT_RESOURCE1	"wood"
-#define CONSTRUCT_COST1		(5 + (CurrentLevel * 5))
-#define CONSTRUCT_MAXLVL	10
+#define CONSTRUCT_COST1		(10 + (CurrentLevel * 10))
+#define CONSTRUCT_MAXLVL	9
 
 static const char NPCModel[] = "models/props_farm/wood_shack001.mdl";
 
@@ -141,7 +141,7 @@ static void ClotShowInteractHud(ObjectGeneric npc, int client)
 
 		char button[64];
 		PlayerHasInteract(client, button, sizeof(button));
-		PrintCenterText(client, "%t", "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL, button);
+		PrintCenterText(client, "%t", "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL + 1, button);
 	}
 }
 

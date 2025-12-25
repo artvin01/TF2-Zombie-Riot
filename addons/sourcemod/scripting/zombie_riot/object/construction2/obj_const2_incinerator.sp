@@ -10,9 +10,8 @@
 
 #define CONSTRUCT_NAME		"Incinerator"
 #define CONSTRUCT_RESOURCE1	"copper"
-#define CONSTRUCT_COST1		((5 + (CurrentLevel * 5)) * (CurrentLevel > 3 ? 2 : 1))
-#define CONSTRUCT_MAXLVL	8
-// 310 total cost
+#define CONSTRUCT_COST1		(20 + (CurrentLevel * 10))
+#define CONSTRUCT_MAXLVL	5
 
 static const char NPCModel[] = "models/props_wasteland/lighthouse_fresnel_light_base.mdl";
 
@@ -114,11 +113,11 @@ void ObjectC2Incinerator_ClotThink(ObjectC2Incinerator npc)
 }
 static void ObjConst2_Incinerator_Ingite(int entity, int victim, float damage, int weapon)
 {
-	float damageDealt = 117.1875 * Pow(float(CurrentLevel), 2.0);
+	float damageDealt = 25.0 * Pow(float(CurrentLevel), 3.0);
 	bool HadBuffBefore = true;
 	if(!HasSpecificBuff(victim, "Burn"))
 		HadBuffBefore = false;
-	damageDealt *= 0.25;
+	
 	NPC_Ignite(victim, entity, 4.0, -1, damageDealt);
 	if(!HadBuffBefore && HasSpecificBuff(victim, "Burn"))
 	{
@@ -137,7 +136,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			return false;
 		}
 
-		maxcount = CurrentLevel > 4 ? 2 : 1;
+		maxcount = (CurrentLevel / 2) + 1;
 		if(count >= maxcount)
 			return false;
 	}
@@ -172,7 +171,7 @@ static void ClotShowInteractHud(ObjectGeneric npc, int client)
 
 		char button[64];
 		PlayerHasInteract(client, button, sizeof(button));
-		PrintCenterText(client, "%t", "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL, button);
+		PrintCenterText(client, "%t", "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL + 1, button);
 	}
 }
 

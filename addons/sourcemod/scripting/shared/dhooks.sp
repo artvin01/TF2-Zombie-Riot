@@ -1539,6 +1539,8 @@ public MRESReturn DHook_ForceRespawn(int client)
 		if(!b_AntiLateSpawn_Allow[client])
 			TeutonType[client] = TEUTON_DEAD;
 	}
+
+	Dungeon_SetEntityZone(client, Zone_Unknown);
 #endif
 
 #if !defined RTS

@@ -78,7 +78,7 @@ void ObjectGemCrafter_MapStart()
 	NPCId = NPC_Add(data);
 
 	BuildingInfo build;
-	build.Section = 2;
+	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_crafter");
 	build.Cost = 400;
 	build.Health = 50;

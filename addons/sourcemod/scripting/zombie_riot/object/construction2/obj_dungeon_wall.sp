@@ -33,7 +33,7 @@ void ObjectDWall_MapStart()
 	data.Category = Type_Hidden;
 
 	BuildingInfo build;
-	build.Section = 2;
+	build.Section = 3;
 
 	strcopy(data.Name, sizeof(data.Name), "Small Construct Wall");
 	strcopy(data.Plugin, sizeof(data.Plugin), "obj_const_wall1");
@@ -300,7 +300,7 @@ static void ClotShowInteractHud(ObjectGeneric npc, int client)
 
 		char button[64];
 		PlayerHasInteract(client, button, sizeof(button));
-		PrintCenterText(client, "%t", "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL, button);
+		PrintCenterText(client, "%t", "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL + 1, button);
 	}
 }
 

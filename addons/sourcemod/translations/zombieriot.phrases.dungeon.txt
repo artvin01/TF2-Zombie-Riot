@@ -15,7 +15,7 @@
 	}
 	"Dungeon Failed"
 	{
-		"en"	"All players have left the dungeon..."
+		"en"	"Not enough players left in the dungeon..."
 	}
 	"Packing Station"
 	{
@@ -284,6 +284,10 @@
 	"Upgrade Build Houses"
 	{
 		"en"	"{crimson}Upgrade and build more Houses to collect more cash!"
+	}
+	"Dungeon Not Ready Yet"
+	{
+		"en"	"Didn't find anything yet, check back soon!"
 	}
 
 	"Common Dungeon"

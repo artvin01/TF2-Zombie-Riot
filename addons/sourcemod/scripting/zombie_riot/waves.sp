@@ -3085,7 +3085,7 @@ void WaveStart_SubWaveStart(float time = 0.0)
 
 void Zombie_Delay_Warning()
 {
-	if(!Waves_Started() || InSetup || Classic_Mode() || Construction_InSetup() || Dungeon_PeaceTime())
+	if(!Waves_Started() || InSetup || Classic_Mode() || Construction_InSetup() || Dungeon_InSetup())
 		return;
 
 	switch(i_ZombieAntiDelaySpeedUp)

@@ -12,7 +12,7 @@ static const char SectionName[][] =
 	"Support Buildings",
 	"Unique Buildings",
 	"Construct Buildings",
-	"Construct 2 Buildings"
+	"Construct Buildings"
 };
 
 enum struct BuildingInfo
@@ -346,12 +346,11 @@ static void BuildingMenu(int client)
 
 		for(int i; i < sizeof(SectionName); i++)
 		{
-			if(i == 2 && !Construction_Mode() && !Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
+			if(i == 2 && !Construction_Mode() && !CvarInfiniteCash.BoolValue)
 				continue;
-				
-			if(i == 3 && !CvarInfiniteCash.BoolValue)
+			
+			if(i == 3 && !Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
 				continue;
-
 			
 			FormatEx(buffer1, sizeof(buffer1), "%t", SectionName[i]);
 			if(i == 2 && !Waves_Started() && !CvarInfiniteCash.BoolValue)

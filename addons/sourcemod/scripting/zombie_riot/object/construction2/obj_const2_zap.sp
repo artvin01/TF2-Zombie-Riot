@@ -10,9 +10,8 @@
 
 #define CONSTRUCT_NAME		"Zapper"
 #define CONSTRUCT_RESOURCE1	"copper"
-#define CONSTRUCT_COST1		((5 + (CurrentLevel * 5)) * (CurrentLevel > 3 ? 2 : 1))
-#define CONSTRUCT_MAXLVL	8
-// 310 total cost
+#define CONSTRUCT_COST1		(20 + (CurrentLevel * 10))
+#define CONSTRUCT_MAXLVL	5
 
 static const char NPCModel[] = "models/props_doomsday/power_core_type1.mdl";
 
@@ -140,7 +139,7 @@ void ObjectC2Zap_ClotThink(ObjectC2Zap npc)
 	npc.m_flNextMeleeAttack = gameTime + 0.25;
 
 	npc.PlayShootSound();
-	float damageDealt = 117.1875 * Pow(float(CurrentLevel), 2.0);
+	float damageDealt = 50.0 * Pow(float(CurrentLevel), 2.0);
 	if(ShouldNpcDealBonusDamage(npc.m_iTarget))
 		damageDealt *= 3.0;
 		
@@ -160,7 +159,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			return false;
 		}
 
-		maxcount = CurrentLevel > 4 ? 2 : 1;
+		maxcount = CurrentLevel + 1;
 		if(count >= maxcount)
 			return false;
 	}

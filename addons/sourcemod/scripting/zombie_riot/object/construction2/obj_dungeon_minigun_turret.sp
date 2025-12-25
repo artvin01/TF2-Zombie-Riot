@@ -40,7 +40,7 @@ void ObjectDMinigunTurret_MapStart()
 	NPCId = NPC_Add(data);
 
 	BuildingInfo build;
-	build.Section = 2;
+	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_minigun_turret");
 	build.Cost = 600;
 	build.Health = 50;
@@ -247,7 +247,7 @@ static void ClotShowInteractHud(ObjectGeneric npc, int client)
 
 		char button[64];
 		PlayerHasInteract(client, button, sizeof(button));
-		PrintCenterText(client, "%t", "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL, button);
+		PrintCenterText(client, "%t", "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL + 1, button);
 	}
 }
 

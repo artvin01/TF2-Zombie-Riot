@@ -2691,6 +2691,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Board_EntityCreated(entity);
 
 		Elemental_ClearDamage(entity);
+		Dungeon_EntityCreated(entity);
 #endif
 
 #if defined RPG

@@ -55,7 +55,7 @@ void ObjectDStove_MapStart()
 	NPCId = NPC_Add(data);
 
 	BuildingInfo build;
-	build.Section = 2;
+	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_stove");
 	build.Cost = 1000;
 	build.Health = 50;
