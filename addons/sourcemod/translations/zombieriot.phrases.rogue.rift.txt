@@ -154,7 +154,7 @@
 	{
 		"en"	"{red}Consuming items at a Gateway has a chance to corrupt."
 		"it"	"{red}Il consumo di oggetti in un Gateway ha una possibilità di corrompere."
-		"ko"	"{red}관문에 흡수시킨 아이템은 확률로 오염되게 됩니다."
+		"ko"	"{red}관문에 흡수시킨 아이템이 확률적으로 오염되게 됩니다."
 	}
 	"Rift of Corruption Lore"
 	{
@@ -503,7 +503,7 @@
 	{
 		"en"	"Be a hitman of your dreams.\n{green}''Tactician'' weapons gain infinite accuracy, extra cash & speedbonus on a headshot {yellow}(up to a limit for cash gain up to a limit for cash gain) If the weapon cant headshot, same effects apply but weaker."
 		"it"	"{green}Se l'arma non può colpire alla testa, si applicano gli stessi effetti, ma più deboli."
-		"ko"	"꿈 속에나 있던 히트맨이 되는거다.\n{green}''전술가'' 계열 무기의 정확도가 무한대가 되며, 헤드샷시 추가 자금 및 속도 증진 획득. {yellow}(추가 자금 획득은 상한이 존재) 헤드샷 불가 무기라면, 대신 약화된 효과가 적용됨."
+		"ko"	"꿈 속에나 있던 히트맨이 되는거다.\n{green}''전술가'' 계열 무기의 정확도가 무한대가 되며, 헤드샷시 추가 자금 및 속도 증진 획득.{yellow}(상한 존재) 헤드샷 불가 무기라면, 대신 약화된 효과가 적용."
 	}
 	"Hand of Spark"
 	{
@@ -515,7 +515,7 @@
 	{
 		"en"	"Patience is key. Plan ahead for the future.\n{green}''Hunter'' weapons gain +20％ damage every second, up to +500％ {yellow}(resets upon dealing damage, but doesnt activate till fully charged)"
 		"it"	"La pazienza è fondamentale.{green}Le armi da ''cacciatore'' guadagnano +20％ danni ogni secondo, fino a +500％ {yellow} (si ripristina quando si infliggono danni, ma non si attiva fino a quando non è completamente carica)"
-		"ko"	"인내심이 열쇠다. 미래를 향해 계획하라.\n{green}''사냥꾼'' 계열 무기가 매 초마다 피해량이 +20％ 증가하여 최대 +500％ 까지 증가. {yellow}(피해를 입히면 초기화되지만, 완전히 충전될 때까지는 발동되지 않음.)"
+		"ko"	"인내심이 열쇠다. 미래를 향해 계획하라.\n{green}''사냥꾼'' 계열 무기가 매 초마다 피해량이 +20％ 증가(최대 +500％, {yellow}피해를 입히면 초기화, 완전히 충전될 때까지는 발동되지 않음)"
 	}
 	"Hand of Buckler"
 	{
@@ -527,7 +527,7 @@
 	{
 		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ (1％ against bosses) {yellow}(affected by scaling) and upto 2x base damage only. {green}magic damage based on the enemy's current health"
 		"it"	"Goccia dopo goccia, poco dopo poco.{green}Le armi ''Hexing Magic'' infliggono 3％ (1％ contro i boss) {yellow}(influenzato dallo scaling) e fino a 2 volte i danni base. I danni magici si basano sulla salute attuale del nemico"
-		"ko"	"작은 것도 막으려야 막을 수가 없다.\n{green}''주술 마법'' 계열 무기가 3％ (보스에겐 1％) {yellow}(스케일링 적용) 및 기본 피해의 최대 2배에 한하는 피해만을 줌. {green}마법 피해는 적의 체력에 비례함."
+		"ko"	"작은 것도 막으려야 막을 수가 없다.\n{green}''주술 마법'' 계열 무기가 3％ (보스에겐 1％) {yellow}(스케일링 적용) 및 기본 피해의 최대 2배에 한하는 피해를 줌. {green}마법 피해는 적의 체력에 비례"
 	}
 	"Hand of Undulation"
 	{
@@ -599,7 +599,7 @@
 	{
 		"en"	"What she means by standing over there, is that you cannot cross.\n{green}''Defender'' weapons, upon being attacked by a new enemy, reflect damage taken as true damage and shortly stun the enemy"
 		"it"	"{green}Le armi ''difensore'', quando vengono attaccate da un nuovo nemico, riflettono i danni subiti come danni reali e stordiscono brevemente il nemico"
-		"ko"	"그녀가 거기 서 있다는 건, 지나갈 수 없다는 뜻이다.\n{green}''방어자'' 계열 무기는 새로운 적에게 피해를 받을 때마다, 받은 피해를 트루 대미지로 변환해 공격자에게 반사하고 잠깐 기절시킴."
+		"ko"	"그녀가 거기 서 있다는 건, 지나갈 수 없다는 뜻이다.\n{green}''방어자'' 계열 무기로 새로운 적에게 피해를 받을 시, 받은 피해를 트루 대미지로 변환해 반사하고 잠깐 기절시킴."
 	}
 	"Hand of Superspeed"
 	{
@@ -623,7 +623,7 @@
 	{
 		"en"	"Bang! Boom! A pleasant surprise.\n{green}''Lord'' weapons have a 25％ chance on dealing damage to fire an extra projectile that deals double damage and explodes"
 		"it"	"Bang! Boom! Una piacevole sorpresa.{green}Le armi ''Signore'' hanno una probabilità del 25％ di sparare un proiettile extra che infligge danni doppi ed esplode"
-		"ko"	"파박팍팍. 뜻밖의 기쁨.\n{green}''로드'' 계열 무기로 피해를 주면 25％ 확률로 2배의 피해를 주는 추가 폭발성 투사체를 발사함."
+		"ko"	"파박팍팍. 뜻밖의 기쁨.\n{green}''로드'' 계열 무기로 피해를 주면 25％ 확률적으로 2배의 피해를 주는 추가 폭발성 투사체를 발사함."
 	}
 	"Hand of Pulverization"
 	{
@@ -635,7 +635,7 @@
 	{
 		"en"	"Your goal isn't just to hit the bullseye over and over.\n{green}''Crusher'' weapons gains +5％ fire rate for a short duration when dealing damage to each enemy"
 		"it"	"L'obiettivo non è solo quello di colpire il bersaglio in continuazione{green}Le armi ''Crusher'' guadagnano una velocità di fuoco di +5％ per una breve durata quando infliggono danni a ciascun nemico"
-		"ko"	"당신의 목표는 그저 과녁만 계속 맞춰대는 것이 아니다.\n{green}''파쇄자'' 계열 무기가 이제 피해를 준 적 하나당 공격 속도가 5％씩 증가. 공속 증가 버프는 짧게 지속됨."
+		"ko"	"당신의 목표는 그저 과녁만 계속 맞춰대는 것이 아니다.\n{green}''파쇄자'' 계열 무기가 피해를 준 적 하나당 공격 속도 5％ 증가. 공격 속도 증가 버프는 짧게 지속됨."
 	}
 	"Hand of Revenging"
 	{
@@ -1152,7 +1152,7 @@
 	{
 		"en"	"{red}Umbral Affinity reduced by 15 when obtained\n{purple}Chance obtain a rare artifact when consumed"
 		"it"	"{red}Affinità Umbra ridotta di 15 quando viene ottenuta, {purple}Possibilità di ottenere un artefatto raro quando viene consumata"
-		"ko"	"{red}획득 시 움브랄 친화도 15 감소(흡수해도 친화도가 반환되지 않음)\n{purple}관문에 흡수시키면, 확률적으로 희귀 등급 소장품 획득"
+		"ko"	"{red}획득 시 움브랄 친화력 15 감소(흡수해도 친화력이 반환되지 않음)\n{purple}관문에 흡수시키면, 확률적으로 희귀 등급 소장품 획득"
 	}
 	"Nemesis Blood"
 	{
