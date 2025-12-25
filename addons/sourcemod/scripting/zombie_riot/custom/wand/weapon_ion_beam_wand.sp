@@ -1333,6 +1333,10 @@ static bool Prismatic_TraceWallsOnly(int entity, int contentsMask)
 	return !entity;
 }
 
+public void Neuvellete_Menu_Access(int client, int weapon, bool crit)
+{
+	Neuvellete_Menu(client, weapon);
+}
 public void Neuvellete_Menu(int client, int weapon)
 {	
 	if(!IsValidClient(client))

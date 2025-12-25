@@ -93,6 +93,7 @@ void NPC_ConfigSetup()
 	// Constructs
 	ObjectResearch_MapStart();
 	ObjectWall_MapStart();
+	
 	ObjectPump_MapStart();
 	ObjectWood_MapStart();
 	ObjectStone_MapStart();
@@ -100,6 +101,7 @@ void NPC_ConfigSetup()
 	ObjectStove_MapStart();
 	ObjectFactory_MapStart();
 	ObjectMinter_MapStart();
+
 	ObjectConstruction_LightHouse_MapStart();
 	ObjectHeavyCaliberTurret_MapStart();
 	Object_MinigunTurret_MapStart();
@@ -109,6 +111,18 @@ void NPC_ConfigSetup()
 	ObjectFurniture_MapStart();
 	ObjectHelper_MapStart();
 	ObjectVoidstone_MapStart();
+	
+	ObjectDWall_MapStart();
+	ObjectDungeonCenter_MapStart();
+	ObjectGemCrafter_MapStart();
+	ObjectDStove_MapStart();
+
+	ObjectDLightHouse_MapStart();
+	ObjectDCaliberTurret_MapStart();
+	ObjectDMinigunTurret_MapStart();
+	ObjectDTeslarsMedusa_MapStart();
+	ObjectDStunGun_MapStart();
+	ObjectDDispenser_MapStart();
 	// Constructs
 
 	// Vehicles
@@ -610,7 +624,7 @@ void NPC_ConfigSetup()
 	Iberia_inqusitor_irene_OnMapStart_NPC();
 
 //Victorian Raid
-//wave 1~15
+//wave 1~10
 	Victoria_Batter_OnMapStart_NPC();
 	Victorian_Charger_OnMapStart_NPC();
 	Victorian_Teslar_OnMapStart_NPC();
@@ -622,7 +636,7 @@ void NPC_ConfigSetup()
 	VictorianSquadleader_OnMapStart_NPC();
 	VictorianSignaller_OnMapStart_NPC();
 	
-//wave 16~30
+//wave 11~20
 	VictorianHumbee_MapStart();
 	VictorianShotgunner_OnMapStart_NPC();
 	Bulldozer_OnMapStart_NPC();
@@ -635,7 +649,7 @@ void NPC_ConfigSetup()
 	VictorianIronShield_OnMapStart_NPC();
 	Aviator_OnMapStart_NPC();
 	
-//wave 31~45
+//wave 21~30
 	Victoria_BaseBreaker_OnMapStart_NPC();
 	VictoriaAntiarmorInfantry_OnMapStart_NPC();
 	VictoriaAssulter_OnMapStart_NPC();
@@ -650,7 +664,7 @@ void NPC_ConfigSetup()
 	VictoriaHarbringer_OnMapStart_NPC();
 	VictoriaBirdeye_OnMapStart_NPC();
 
-//wave 46~60
+//wave 31~40
 	VictorianCaffeinator_OnMapStart_NPC();
 	VictorianMechanist_as_OnMapStart_NPC();
 	VictorianOfflineAvangard_MapStart();
@@ -669,6 +683,14 @@ void NPC_ConfigSetup()
 	Huscarls_OnMapStart_NPC();
 	Harrison_OnMapStart_NPC();
 	Castellan_OnMapStart_NPC();
+
+//special
+	VictorianFactory_MapStart();
+	VictorianDroneFragments_MapStart();
+	VictorianDroneAnvil_MapStart();
+	Victorian_Tacticalunit_OnMapStart_NPC();
+	Victorian_TacticalProtector_OnMapStart_NPC();
+	TEST_Dummy_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -862,6 +884,7 @@ void NPC_ConfigSetup()
 	AgentJames_OnMapStart_NPC();
 	AgentJohn_OnMapStart_NPC();
 	AgentSteve_OnMapStart_NPC();
+	Antiviral_Program_OnMapStart_NPC();
 	AgentEric_OnMapStart_NPC();
 	AgentJack_OnMapStart_NPC();
 	AgentJim_OnMapStart_NPC();
@@ -907,14 +930,6 @@ void NPC_ConfigSetup()
 	AgentWayneFreeplay_OnMapStart_NPC();
 	AgentIanFreeplay_OnMapStart_NPC();
 	AgentSpencerFreeplay_OnMapStart_NPC();
-
-	//Victoria stuff? idfk, come back in 1.5 years and comment on it Beep
-	VictorianFactory_MapStart();
-	VictorianDroneFragments_MapStart();
-	VictorianDroneAnvil_MapStart();
-	Victorian_Tacticalunit_OnMapStart_NPC();
-	Victorian_TacticalProtector_OnMapStart_NPC();
-
 
 	BossSummonRandom_OnMapStart_NPC();
 	//Combine Mutation
@@ -1138,6 +1153,12 @@ void NPC_ConfigSetup()
 
 	DrDamSpecialDelivery_OnMapStart_NPC();
 	DrDamClone_OnMapStart_NPC();
+
+	
+	BarbaricTeardownOnMapStart();
+	SkilledCrossbowmanOnMapStart();
+	DemonDevoterOnMapStart();
+	DungeonLoot_MapStart();
 }
 
 void NPC_MapEnd()
@@ -1310,6 +1331,7 @@ static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float
 				Rogue_EnemySpawned(entity);
 				Waves_EnemySpawned(entity);
 				Construction_EnemySpawned(entity);
+				Dungeon_EnemySpawned(entity);
 			}
 			Waves_UpdateMvMStats();
 		}
@@ -1488,6 +1510,16 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/construction/obj_const_supply.sp"
 #include "object/construction/obj_const_helper.sp"
 #include "object/construction/obj_const_voidstone.sp"
+#include "object/construction/obj_dungeon_center.sp"
+#include "object/construction/obj_dungeon_crafter.sp"
+#include "object/construction/obj_dungeon_dispenser.sp"
+#include "object/construction/obj_dungeon_lighthouse.sp"
+#include "object/construction/obj_dungeon_minigun_turret.sp"
+#include "object/construction/obj_dungeon_stove.sp"
+#include "object/construction/obj_dungeon_stungun.sp"
+#include "object/construction/obj_dungeon_supergun.sp"
+#include "object/construction/obj_dungeon_teslars_medusa.sp"
+#include "object/construction/obj_dungeon_wall.sp"
 
 // VEHICLES
 #include "../shared/vehicles/vehicle_shared.sp"
@@ -2190,7 +2222,13 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/raidmode_bosses/iberia/npc_raid_silvester.sp"
 
 //Victoria
-//Wave 1~15
+//special
+#include "npc/victoria/npc_victorian_factory.sp"
+#include "npc/victoria/npc_victoria_tacticalprotector.sp"
+#include "npc/victoria/npc_victoria_tacticalunit.sp"
+#include "npc/victoria/npc_test_dummy.sp"
+
+//Wave 1~10
 #include "npc/victoria/npc_batter.sp"
 #include "npc/victoria/npc_charger.sp"
 #include "npc/victoria/npc_teslar.sp"
@@ -2202,7 +2240,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/victoria/npc_squadleader.sp"
 #include "npc/victoria/npc_signaller.sp"
 
-//wave 16~30
+//wave 11~20
 #include "npc/victoria/npc_humbee.sp"
 #include "npc/victoria/npc_shotgunner.sp"
 #include "npc/victoria/npc_bulldozer.sp"
@@ -2215,7 +2253,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/victoria/npc_ironshield.sp"
 #include "npc/victoria/npc_aviator.sp"
 
-//wave 31~45
+//wave 21~30
 #include "npc/victoria/npc_basebreaker.sp"
 #include "npc/victoria/npc_booster.sp"
 #include "npc/victoria/npc_scorcher.sp"
@@ -2230,7 +2268,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/victoria/npc_harbringer.sp"
 #include "npc/victoria/npc_bigpipe.sp"
 
-//wave 46~60
+//wave 31~40
 #include "npc/victoria/npc_caffeinator.sp"
 #include "npc/victoria/npc_welder.sp"
 #include "npc/victoria/npc_mechanist.sp"
@@ -2243,12 +2281,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/victoria/npc_victoria_radiomast.sp"
 #include "npc/victoria/npc_radioguard.sp"
 #include "npc/victoria/npc_radio_repair.sp"
-
 #include "npc/victoria/npc_victorian_moru.sp"
 #include "npc/victoria/npc_victorian_fragments.sp"
-#include "npc/victoria/npc_victorian_factory.sp"
-#include "npc/victoria/npc_victoria_tacticalprotector.sp"
-#include "npc/victoria/npc_victoria_tacticalunit.sp"
+
 //raidbosses
 #include "npc/raidmode_bosses/victoria/npc_the_atomizer.sp"
 #include "npc/raidmode_bosses/victoria/npc_the_wall.sp"
@@ -2264,6 +2299,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/matrix/15/npc_agentjames.sp"
 #include "npc/matrix/15/npc_agentjohn.sp"
 #include "npc/matrix/15/npc_agentsteve.sp"
+#include "npc/matrix/15/npc_antiviral_programm.sp"
 #include "npc/matrix/30/npc_agenteric.sp"
 #include "npc/matrix/30/npc_agentjack.sp"
 #include "npc/matrix/30/npc_agentjim.sp"
@@ -2492,3 +2528,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/logic_win_timer.sp"
 #include "npc/construction/npc_sensal_follower.sp"
 #include "npc/construction/npc_overlord_follower.sp"
+#include "npc/construction/construction2/npc_barbaric_teardown.sp"
+#include "npc/construction/construction2/npc_skilled_crossbowman.sp"
+#include "npc/construction/construction2/npc_demon_devoter.sp"
+#include "npc/construction/npc_dungeon_loot.sp"

@@ -76,6 +76,11 @@ methodmap Simon < CClotBody
 	{
 		EmitCustomToAll("cof/simon/shoot.mp3", this.index);
 	}
+	property float m_flSelfStun
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	
 	public Simon(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -91,6 +96,11 @@ methodmap Simon < CClotBody
 		
 		i_NpcWeight[npc.index] = 3;
 		
+		if(StrContains(data, "firstspawn") != -1)
+		{
+			fl_Damage_Boost = 1.0;
+		}
+
 		int body = EntRefToEntIndex(SimonRagdollRef);
 		if(body > MaxClients)
 			RemoveEntity(body);
@@ -102,6 +112,7 @@ methodmap Simon < CClotBody
 		ExcuteRelay("zr_simonspawn");
 		
 		func_NPCDeath[npc.index] = Simon_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Simon_OnTakeDamage;
 		func_NPCThink[npc.index] = Simon_ClotThink;
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
@@ -111,8 +122,9 @@ methodmap Simon < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
-			RaidModeScaling = 0.0;
+			RaidModeScaling = fl_Damage_Boost;
 			RaidAllowsBuildings = true;
+			CPrintToChatAll("{crimson}%t","Simon Wants To Escape");
 		}
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
@@ -188,13 +200,36 @@ public void Simon_ClotThink(int iNPC)
 	Simon npc = view_as<Simon>(iNPC);
 	
 	float gameTime = GetGameTime(npc.index);
+	if(IsValidEntity(npc.m_iTargetAlly) && npc.m_flSelfStun < gameTime)
+	{
+		ApplyStatusEffect(npc.m_iTargetAlly, npc.m_iTargetAlly, "Infinite Will", 0.5);
+		ApplyStatusEffect(npc.m_iTargetAlly, npc.m_iTargetAlly, "War Cry", 0.5);
+		int Barneyhealth = GetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iHealth");
+		if(Barneyhealth <= 1.0)
+		{
+			//Hes about to die.
+			ApplyStatusEffect(npc.m_iTargetAlly, npc.m_iTargetAlly, "False Therapy", 999.9);
+			ApplyStatusEffect(npc.m_iTargetAlly, npc.m_iTargetAlly, "Hectic Therapy", 999.9);
+		}
+	}
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.04;
 	npc.Update();
 	npc.PlayIdleSound();
-	
+	if(IsValidEntity(npc.m_iTargetAlly))
+	{
+		if(npc.m_flSelfStun)
+		{
+			npc.m_flSelfStun = 0.0;
+			EmitSoundToAll("mvm/mvm_bought_in.wav", _, _, _, _, 1.0);
+			if(!IsValidEntity(npc.m_iWearable1))
+			{
+				npc.m_iWearable1 = ConnectWithBeam(npc.m_iTargetAlly, npc.index, 125, 65, 65, 5.0, 5.0, 1.0, "sprites/laserbeam.vmt");
+			}
+		}
+	}
 	if(!npc.m_bRetreating && npc.m_flNextRangedSpecialAttack < gameTime)
 	{
 		npc.m_flNextRangedSpecialAttack = gameTime + 0.25;
@@ -493,6 +528,8 @@ public void Simon_ClotThink(int iNPC)
 					npc.m_fCreditsOnKill = 0.0;
 					SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9);
 					fl_Damage_Boost += 0.50;
+					ExcuteRelay("zr_simonescaped");
+					CPrintToChatAll("{crimson}%t","Simon Escaped");
 					return;
 				}
 				
@@ -515,6 +552,7 @@ public void Simon_ClotThink(int iNPC)
 					SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9);
 					fl_Damage_Boost += 0.50;
 					ExcuteRelay("zr_simonescaped");
+					CPrintToChatAll("{crimson}%t","Simon Escaped");
 					return;
 				}
 				
@@ -546,6 +584,8 @@ public void Simon_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
 	
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
 	npc.StopPathing();
 	
 	
@@ -579,4 +619,59 @@ public void Simon_NPCDeath(int entity)
 	}
 
 	Citizen_MiniBossDeath(entity);
+}
+
+
+
+public Action Simon_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	Simon npc = view_as<Simon>(victim);
+//	if(damage < 9999999.0 && view_as<Addicition>(victim).m_flRangedSpecialDelay == 1.0)
+//		return Plugin_Handled;
+	if(IsValidEntity(npc.m_iTargetAlly))
+	{
+		int Barneyhealth = GetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iHealth");
+		if(Barneyhealth <= 1.0)
+			return Plugin_Continue;
+		//do nothing, allow death.
+
+		int HealthMe = GetEntProp(victim, Prop_Data, "m_iHealth");
+
+		if((HealthMe - RoundToNearest(damage)) <= 0)
+		{
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			//We died, self stun and give full health.
+			npc.m_flSelfStun = GetGameTime(npc.index) + 0.1;
+			FreezeNpcInTime(victim, 45.0);
+			npc.PlayIntroSound();
+			for(int repeat; repeat < 10; repeat ++)
+			{
+				int summon = NPC_CreateByName("npc_psycho", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "nightmare");
+				if(IsValidEntity(summon))
+				{
+					CorruptedBarney npcsummon = view_as<CorruptedBarney>(summon);
+					if(GetTeam(npc.index) != TFTeam_Red)
+						Zombies_Currently_Still_Ongoing++;
+					
+					fl_Extra_Damage[npcsummon.index] = fl_Extra_Damage[npc.index];
+					fl_Extra_Speed[npcsummon.index] = fl_Extra_Speed[npc.index];
+					fl_Extra_Speed[npcsummon.index] *= 1.15;
+					f_AttackSpeedNpcIncrease[npcsummon.index] *= 0.85;
+					NpcStats_CopyStats(npc.index, summon);
+					FreezeNpcInTime(npcsummon.index, 2.0);
+					SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/10);
+					SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/10);
+					ApplyStatusEffect(summon, summon, "Dimensional Turbulence", 5.0);
+					ApplyStatusEffect(npcsummon.index, npcsummon.index, "Unstoppable Force", 2.0);
+				}
+			}
+			if(IsValidEntity(npc.m_iWearable1))
+				RemoveEntity(npc.m_iWearable1);
+			HealEntityGlobal(npc.index, npc.index, 99999999.9, 1.0, 0.0, HEAL_ABSOLUTE);
+			ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 45.0);
+			damage = 0.0;
+			return Plugin_Changed;
+		}
+	}
+	return Plugin_Continue;
 }

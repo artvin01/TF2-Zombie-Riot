@@ -1,0 +1,250 @@
+#pragma semicolon 1
+#pragma newdecls required
+
+#undef CONSTRUCT_NAME
+#undef CONSTRUCT_RESOURCE1
+#undef CONSTRUCT_RESOURCE2
+#undef CONSTRUCT_COST1
+#undef CONSTRUCT_COST2
+#undef CONSTRUCT_MAXLVL
+
+#define CONSTRUCT_NAME		"Teslar's Medusa"
+#define CONSTRUCT_RESOURCE1	"copper"
+#define CONSTRUCT_COST1		(20 + (CurrentLevel * 10))
+#define CONSTRUCT_MAXLVL	5
+
+static char g_ShootingSound[][] = {
+	"npc/scanner/scanner_electric2.wav",
+};
+
+static int NPCId;
+static int LastGameTime;
+static int CurrentLevel;
+
+void ObjectDTeslarsMedusa_MapStart()
+{
+	LastGameTime = -1;
+	CurrentLevel = 0;
+
+	PrecacheSoundArray(g_ShootingSound);
+	PrecacheModel("models/buildables/sentry_shield.mdl");
+	PrecacheModel("models/props_moonbase/moon_gravel_crystal.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), CONSTRUCT_NAME);
+	strcopy(data.Plugin, sizeof(data.Plugin), "obj_dungeon_teslars_medusa");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Hidden;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
+
+	BuildingInfo build;
+	build.Section = 2;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_teslars_medusa");
+	build.Cost = 600;
+	build.Health = 50;
+	build.Cooldown = 30.0;
+	build.Func = ClotCanBuild;
+	Building_Add(build);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
+{
+	return ObjectDTeslarsMedusa(client, vecPos, vecAng);
+}
+
+methodmap ObjectDTeslarsMedusa < ObjectGeneric
+{
+	public void PlayShootSound() 
+	{
+		EmitSoundToAll(g_ShootingSound[GetRandomInt(0, sizeof(g_ShootingSound) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.9, GetRandomInt(95, 110));
+	}
+	public ObjectDTeslarsMedusa(int client, const float vecPos[3], const float vecAng[3])
+	{
+		if(LastGameTime != CurrentGame)
+		{
+			CurrentLevel = 0;
+			LastGameTime = CurrentGame;
+		}
+
+		ObjectDTeslarsMedusa npc = view_as<ObjectDTeslarsMedusa>(ObjectGeneric(client, vecPos, vecAng, "models/props_moonbase/moon_gravel_crystal.mdl", "0.85", "50", {25.0, 25.0, 75.0},_,false));
+
+		npc.m_bConstructBuilding = true;
+		npc.FuncCanBuild = ClotCanBuild;
+		func_NPCThink[npc.index] = ObjectDTeslarsMedusa_ClotThink;
+		npc.FuncShowInteractHud = ClotShowInteractHud;
+		func_NPCInteract[npc.index] = ClotInteract;
+
+		int entity = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl", "idle", .model_size = 1.1);
+		npc.m_iWearable5 = entity;
+
+		return npc;
+	}
+}
+
+void ObjectDTeslarsMedusa_ClotThink(ObjectDTeslarsMedusa npc)
+{
+	int Owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(Owner))
+	{
+		Owner = npc.index;
+	}
+
+	float gameTime = GetGameTime(npc.index);
+	npc.m_flNextDelayTime = gameTime + 1.0;
+
+
+	if(npc.m_flGetClosestTargetTime < gameTime)
+	{
+		float DistanceLimit = 700.0;
+
+		npc.m_iTarget = GetClosestTarget(npc.index,_,DistanceLimit,.CanSee = true, .UseVectorDistance = true);
+		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
+	}
+	if(!IsValidEnemy(npc.index, npc.m_iTarget))
+	{
+		npc.m_iTarget = -1;
+		npc.m_flGetClosestTargetTime = 0.0;
+		return;
+	}
+	if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+	{
+		npc.m_iTarget = -1;
+		npc.m_flGetClosestTargetTime = 0.0;
+		return;
+	}
+
+	Handle swingTrace;
+
+	if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, { 9999.0, 9999.0, 9999.0 }, .Npc_type = 3)) //3 is aim bot no matter where they look
+	{
+		int target = TR_GetEntityIndex(swingTrace);	
+
+		if(IsValidEnemy(npc.index, target))
+		{
+			npc.PlayShootSound();
+			float damagedeal = 125.0 * Pow(float(CurrentLevel), 3.0);
+
+			static float AbsOrigin[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
+			AbsOrigin[2] += 80.0;
+			Passanger_Lightning_Strike(Owner, target, -2, damagedeal, AbsOrigin, true);
+		}
+	}
+	delete swingTrace;
+}
+
+
+static bool ClotCanBuild(int client, int &count, int &maxcount)
+{
+	if(client)
+	{
+		count = CountBuildings();
+		
+		if(!Dungeon_Mode())
+		{
+			maxcount = 0;
+			return false;
+		}
+
+		maxcount = 1;
+		if(count >= maxcount)
+			return false;
+	}
+	
+	return true;
+}
+
+
+static int CountBuildings()
+{
+	int count;
+	
+	int entity = -1;
+	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
+	{
+		if(NPCId == i_NpcInternalId[entity])
+			count++;
+	}
+
+	return count;
+}
+
+
+static void ClotShowInteractHud(ObjectGeneric npc, int client)
+{
+	if(CurrentLevel >= CONSTRUCT_MAXLVL)
+	{
+		PrintCenterText(client, "%t", "Upgrade Max");
+	}
+	else
+	{
+		SetGlobalTransTarget(client);
+
+		char button[64];
+		PlayerHasInteract(client, button, sizeof(button));
+		PrintCenterText(client, "%t", "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL, button);
+	}
+}
+
+static bool ClotInteract(int client, int weapon, ObjectGeneric npc)
+{
+	if(CurrentLevel >= CONSTRUCT_MAXLVL)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return true;
+	}
+
+	ThisBuildingMenu(client);
+	return true;
+}
+
+static void ThisBuildingMenu(int client)
+{
+	int amount1 = Construction_GetMaterial(CONSTRUCT_RESOURCE1);
+
+	SetGlobalTransTarget(client);
+
+	Menu menu = new Menu(ThisBuildingMenuH);
+
+	menu.SetTitle("%t\n%d / %d %t\n ", CONSTRUCT_NAME, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
+
+	char buffer[64];
+	FormatEx(buffer, sizeof(buffer), "%t", "Upgrade Building To", CurrentLevel + 2);
+	menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+
+	menu.Display(client, MENU_TIME_FOREVER);
+}
+
+static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Select:
+		{
+			if(GetClientButtons(client) & IN_DUCK)
+			{
+				PrintToChat(client, "%T", CONSTRUCT_NAME ... " Desc", client);
+				ThisBuildingMenu(client);
+			}
+			else if(CurrentLevel < CONSTRUCT_MAXLVL && Construction_GetMaterial(CONSTRUCT_RESOURCE1) >= CONSTRUCT_COST1)
+			{
+				CPrintToChatAll("%t", "Player Used 1 to", client, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
+				CPrintToChatAll("%t", "Upgraded Building To", CONSTRUCT_NAME, CurrentLevel + 2);
+
+				Construction_AddMaterial(CONSTRUCT_RESOURCE1, -CONSTRUCT_COST1, true);
+
+				EmitSoundToAll("ui/chime_rd_2base_pos.wav");
+
+				CurrentLevel++;
+			}
+		}
+	}
+	return 0;
+}

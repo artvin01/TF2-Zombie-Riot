@@ -177,9 +177,11 @@ public void RedHeavy_ClotThink(int iNPC)
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-				if(other == -1)
+				if(!IsValidEntity(other))
+				{
 					continue;
-				
+				}
+
 				if((YellowHeavyNpcID(other) || PurpleHeavyNpcID(other) || OrangeHeavyNpcID(other) || GreenHeavyNpcID(other) || CyanHeavyNpcID(other) || BlueHeavyNpcID(other)))
 				{
 					count++;
@@ -304,4 +306,5 @@ void RedHeavy_NPCDeath(int entity)
 	RedHeavy npc = view_as<RedHeavy>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
+		
 }

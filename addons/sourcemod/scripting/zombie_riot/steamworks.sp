@@ -40,7 +40,11 @@ void SteamWorks_UpdateGameTitle()
 	{
 		char buffer[64];
 		
-		if(Construction_Mode())
+		if(Dungeon_Mode())
+		{
+			strcopy(buffer, sizeof(buffer), "ZR: Dungeon");
+		}
+		else if(Construction_Mode())
 		{
 			strcopy(buffer, sizeof(buffer), "ZR: Construction");
 		}

@@ -56,7 +56,7 @@ enum struct MusicEnum
 	{
 		this.Clear();
 
-		if(kv.JumpToKey(key))
+		if(!key[0] || kv.JumpToKey(key))
 		{
 			kv.GetString("file", this.Path, sizeof(this.Path));
 			kv.GetString("name", this.Name, sizeof(this.Name));
@@ -827,7 +827,7 @@ void Music_Update(int client)
 	{
 		return;
 	}
-	if(Waves_InSetup() && (!Waves_Started() || (!Rogue_Mode() && !Construction_Mode() && !BetWar_Mode())))
+	if(Waves_InSetup() && (!Waves_Started() || (!Rogue_Mode() && !Construction_Mode() && !BetWar_Mode() && !Dungeon_Mode())))
 	{
 		if(!b_DisableSetupMusic[client])
 		{

@@ -3,22 +3,22 @@
 	"Gained Material"
 	{
 		"#format"	"{1:d},{2:t}"
-		"en"		"{orange}(Construct) {green}Gained {1} {2}!"
-		"it"		"{orange}(Costrutto) {green}ha guadagnato {1} {2}!"
-		"ko"		"{orange}(Construct) {green}다음 재료를 획득했습니다: {1} {2}"
+		"en"		"{green}Gained {1} {2}!"
+		"it"		"{green}ha guadagnato {1} {2}!"
+		"ko"		"{green}다음 자원을 획득했습니다: {1} {2}"
 	}
 	"Used Material"
 	{
 		"#format"	"{1:d},{2:t}"
-		"en"		"{orange}(Construct) {red}Used {1} {2}!"
-		"it"		"{orange}(Costrutto) {red}ha usato {1} {2}!"
-		"ko"		"{orange}(Construct) {red}다음 재료를 사용합니다: {1} {2}"
+		"en"		"{red}Used {1} {2}!"
+		"it"		"{red}ha usato {1} {2}!"
+		"ko"		"{red}다음 자원을 사용했습니다: {1} {2}"
 	}
 	"Battle Finished"
 	{
-		"en"		"{orange}(Construct) The battle is over!"
-		"it"		"{orange}(Costrutto) La battaglia è finita!"
-		"ko"		"{orange}(Construct) 전투가 끝났습니다!"
+		"en"		"The battle is over!"
+		"it"		"La battaglia è finita!"
+		"ko"		"전투가 끝났습니다!"
 	}
 	"Cash"
 	{
@@ -29,75 +29,75 @@
 	"Resource Attack Started"
 	{
 		"#format"	"{1:N},{2:t}"
-		"en"		"{orange}(Construct) {red}{1} {default}started gathering {orange}{2} {default}and is being attacked!"
-		"it"		"{orange}(Costrutto) {red}{1} {default}ha iniziato a raccogliere {orange}{2} {default}ed è sotto attacco!"
-		"ko"		"{orange}(Construct) {red}{1} {default}가 {orange}{2} {default}를 모으고 있으며 공격받고 있습니다!"
+		"en"		"{red}{1} {default}started gathering {orange}{2} {default}and is being attacked!"
+		"it"		"{red}{1} {default}ha iniziato a raccogliere {orange}{2} {default}ed è sotto attacco!"
+		"ko"		"{red}{1} {default}가 {orange}{2} {default}를 수집하고 있으며 공격받고 있습니다!"
 	}
 	"Gifts Spawned"
 	{
 		"#format"	"{1:d}"
-		"en"		"{orange}(Construct) {green}{1} {default}raid remains have appeared!"
-		"it"		"{orange}(Costrutto) {green}{1} {default}Sono apparsi i resti del raid!"
-		"ko"		"{orange}(Construct) {green}{1} {default}의 레이드 부산물이 나타났습니다!"
+		"en"		"{green}{1} {default}raid remains have appeared!"
+		"it"		"{green}{1} {default}Sono apparsi i resti del raid!"
+		"ko"		"{green}{1} {default}의 레이드 부산물이 나타났습니다!"
 	}
 	"No Gifts Spawn"
 	{
-		"en"		"{orange}(Construct) {red}No raid remains appeared, too many exist already..."
-		"it"		"{orange}(Costrutto) {red}Non sono rimasti raid, ce ne sono già troppi..."
-		"ko"		"{orange}(Construct) {red}레이드 부산물이 나오지 않았습니다. 부산물이 너무 많습니다..."
+		"en"		"{red}No raid remains appeared, too many exist already..."
+		"it"		"{red}Non sono rimasti raid, ce ne sono già troppi..."
+		"ko"		"{red}레이드 부산물이 나오지 않았습니다. 부산물이 너무 많습니다..."
 	}
 	"Found a gift remain"
 	{
 		"#format"	"{1:N}"
-		"en"		"{orange}(Construct) {red}{1} {green}found and obtained raid remains!"
-		"it"		"{orange}(Costrutto) {red}{1} {green}ha trovato e ottenuti i resti del raid!"
-		"ko"		"{orange}(Construct) {red}{1} {green}이(가) 레이드 부산물을 얻었습니다!"
+		"en"		"{red}{1} {green}found and obtained raid remains!"
+		"it"		"{red}{1} {green}ha trovato e ottenuti i resti del raid!"
+		"ko"		"{red}{1} {green}이(가) 레이드 부산물을 얻었습니다!"
 	}
 	"Found a gift remain No Attacker"
 	{
-		"en"		"{orange}(Construct) {green}Someone found and obtained raid remains!"
-		"it"		"{orange}(Costrutto) {green}Qualcuno ha trovato e recuperato i resti del raid!"
-		"ko"		"{orange}(Construct) {green}누군가가 레이드 부산물을 찾아서 얻었습니다!"
+		"en"		"{green}Someone found and obtained raid remains!"
+		"it"		"{green}Qualcuno ha trovato e recuperato i resti del raid!"
+		"ko"		"{green}누군가가 레이드 부산물을 얻었습니다!"
 	}
 	"Player Used 1 to"
 	{
 		"#format"	"{1:N},{2:d},{3:t}"
-		"en"		"{orange}(Construct) {red}{1} {default}has used {orange}{2} {3} {default}to make"
-		"it"		"{orange}(Costrutto) {red}{1} {default}ha utilizzato {orange}{2} {3} {default}per realizzare"
-		"ko"		"{orange}(Construct) {red}{1} {default}이(가) {orange}{2} {3} {default}를 사용하여 다음을 수행했습니다:"
+		"en"		"{red}{1} {default}has used {orange}{2} {3} {default}to make"
+		"it"		"{red}{1} {default}ha utilizzato {orange}{2} {3} {default}per realizzare"
+		"ko"		"{red}{1} {default}이(가) {orange}{2} {3} {default}를 사용하여 다음을 제작했습니다:"
 	}
 	"Player Used 2 to"
 	{
 		"#format"	"{1:N},{2:d},{3:t},{4:d},{5:t}"
-		"en"		"{orange}(Construct) {red}{1} {default}has used {orange}{2} {3} {default}and {orange}{4} {5} {default}to make"
-		"it"		"{orange}(Costrutto) {red}{1} {default}ha utilizzato {orange}{2} {3} {default}e {orange}{4} {5} {default}per realizzare"
-		"ko"		"{orange}(Construct) {red}{1} {default}이(가) {orange}{2} {3} {default}과 {orange}{4} {5} {default}를 사용하여 다음을 수행했습니다:"
+		"en"		"{red}{1} {default}has used {orange}{2} {3} {default}and {orange}{4} {5} {default}to make"
+		"it"		"{red}{1} {default}ha utilizzato {orange}{2} {3} {default}e {orange}{4} {5} {default}per realizzare"
+		"ko"		"{red}{1} {default}이(가) {orange}{2} {3} {default}과 {orange}{4} {5} {default}를 사용하여 다음을 제작했습니다:"
 	}
 	"Player Start Research"
 	{
 		"#format"	"{1:N},{2:s}"
-		"en"		"{orange}(Construct) {red}{1} {default}has started to research {orange}{2}"
-		"it"		"{orange}(Costrutto) {red}{1} {default}ha iniziato a ricercare {orange}{2}"
-		"ko"		"{orange}(Construct) {red}{1} {default}이(가) 다음 연구를 진행합니다 : {orange}{2}"
+		"en"		"{red}{1} {default}has started to research {orange}{2}"
+		"it"		"{red}{1} {default}ha iniziato a ricercare {orange}{2}"
+		"ko"		"{red}{1} {default}이(가) 다음 연구를 진행합니다 : {orange}{2}"
 	}
 	"Finish Research Desc"
 	{
 		"#format"	"{1:s},{2:t}"
-		"en"		"{orange}(Construct) {default}Finished researching {orange}{1}{default}: {2}"
-		"it"		"{orange}(Costrutto) {default}Ricerca completata {orange}{1}{default}: {2}"
-		"ko"		"{orange}(Construct) {default}다음 연구가 끝났습니다 -> {orange}{1}{default}: {2}"
+		"en"		"{default}Finished researching {orange}{1}{default}: {2}"
+		"it"		"{default}Ricerca completata {orange}{1}{default}: {2}"
+		"ko"		"{default}다음 연구가 끝났습니다 -> {orange}{1}{default}: {2}"
 	}
 	"Crouch and select to view description Alone"
 	{
 		"en"	"Crouch and select to view description"
 		"it"	"Accovacciati e seleziona per visualizzare la descrizione"
-		"ko"	"앉은 상태로 선택하여 설명을 보십시오."
+		"ko"	"앉은 상태로 선택하여 설명을 보세요."
 	}
 	"Crouch and select to view description"
 	{
 		"en"	"Crouch and select to view description\nTwo players need to want 1 research to start it, indicated by [✓]"
 		"it"	"Accovacciati e seleziona per visualizzare la descrizione\nDue giocatori devono volere 1 ricerca per avviarla, indicata da [✓]"
-		"ko"	"앉은 상태로 선택하여 설명을 보십시오.\n연구를 시작하려면 두 명의 플레이어가 1개의 연구를 원해야 하며 [✓]로 표시됩니다."
+		"ko"	"앉은 상태로 선택하여 설명을 보세요.\n연구를 시작하려면 두 명의 플레이어가 1개의 연구를 원해야 하며 [✓]로 표시됩니다."
 	}
 	"Player Must Agree"
 	{
@@ -109,14 +109,14 @@
 	{
 		"en"	"Claim Research"
 		"it"	"Reclama Ricerca"
-		"ko"	"연구 목록"
+		"ko"	"연구 완료"
 	}
 	"Claim Research Time"
 	{
 		"#format"	"{1:d}"
 		"en"	"Claim Research: {1}s"
 		"it"	"Reclama Ricerca: {1}s"
-		"ko"	"연구 : {1} 초"
+		"ko"	"연구 완료: {1} 초"
 	}
 	"Mine Resources"
 	{
@@ -129,26 +129,26 @@
 		"#format"	"{1:s}"
 		"en"	"Start mining {1}?\n A raid might spawn nearby.\nYou need atleast one other player to mine with you to start."
 		"it"	"Iniziare a minare {1}?\n Potrebbe spawnarsi un raid nelle vicinanze.\nPer iniziare è necessario avere almeno un altro giocatore con cui minare."
-		"ko"	"이 {1} 를 채광할까요?\n 레이드가 근처에 스폰될 확률이 있습니다.\n채굴하려면 최소한 한 명의 다른 플레이어가 함께 채굴을 시작해야 합니다."
+		"ko"	"이 {1} 를 채광할까요?\n 레이드가 근처에 스폰될 수도 있습니다.\n채굴하려면 최소한 한 명의 다른 플레이어가 함께 채굴을 시작해야 합니다."
 	}
 	"Start Mining Alone"
 	{
 		"#format"	"{1:s}"
 		"en"	"Start mining {1}?\n A raid might spawn nearby."
 		"it"	"Iniziare a minare {1}?\n Potrebbe spawnare un raid nelle vicinanze."
-		"ko"	"이 {1} 를 채광할까요?\n 레이드가 근처에 스폰될 확률이 있습니다."
+		"ko"	"이 {1} 를 채광할까요?\n 레이드가 근처에 스폰될 수도 있습니다."
 	}
 	"Broken Server"
 	{
 		"en"	"Broken Server"
 		"it"	"Server Rotto"
-		"ko"	"파괴된 서버"
+		"ko"	"고장난 서버"
 	}
 	"Left Remains Of Raids"
 	{
 		"en"	"Left Remains Of Raids"
 		"it"	"Resti delle incursioni"
-		"ko"	"남은 레이드 부산물"
+		"ko"	"남겨진 레이드 부산물"
 	}
 	"Material wood"
 	{
@@ -196,7 +196,7 @@
 	{
 		"en"	"Ossunia Ore"
 		"it"	"Minerale Ossunia"
-		"ko"	"오수니아 광석"
+		"ko"	"오스니아 광석"
 	}
 	"Material water"
 	{
@@ -214,7 +214,7 @@
 	{
 		"en"	"Cash"
 		"it"	"Contanti"
-		"ko"	"자금 재료"
+		"ko"	"자금"
 	}
 	"Pickaxes and a Map"
 	{
@@ -226,7 +226,7 @@
 	{
 		"en"	"We asked for a guide, all we got this.\n{green}Enemies and Ore Deposits move 20％ slower, take 35％ more damage, and deal 35％ less damage\n{crimson}Prevents gaining alternative endings."
 		"it"	"Abbiamo chiesto una guida, ma abbiamo ottenuto solo questo. \n{green}I nemici e i giacimenti di minerale si muovono più lentamente del 20%, subiscono il 35% di danni in più e infliggono il 35% di danni in meno. \n{crimson}Impedisce di ottenere finali alternativi."
-		"ko"	"{green}모든 적과 광물들의 이동 속도 20％ 감소, 받는 피해 35％ 증가, 공격력 35％ 감소.\n{crimson}획득시 다른 엔딩을 볼 수 없음."
+		"ko"	"{green}모든 적과 광물들의 이동 속도 20％ 감소, 받는 피해량 35％ 증가, 공격 피해량 35％ 감소.\n{crimson}다른 엔딩을 볼 수 없게 됨."
 	}
 	"Roaming Silently"
 	{
@@ -238,7 +238,7 @@
 	{
 		"en"	"We just decided to make a base here after what happend at that broken ruina island, to prepare, nothing more."
 		"it"	"Abbiamo semplicemente deciso di stabilire una base qui dopo quello che è successo sull'isola di Ruina, per prepararci, niente di più."
-		"ko"	"우리는 그 루이나 섬과 루이나 섬 파괴 사건 이후 이곳에 기지를 짓기로 했을 뿐이다. 준비해야한다. 그것뿐."
+		"ko"	"그 파괴된 루이나 섬에서 벌어진 일 이후, 이곳에 기지를 마련하기로 했다. 대비해야한다. 그것 뿐이다."
 	}
 	"Loud Firepower"
 	{
@@ -250,7 +250,7 @@
 	{
 		"en"	"Released a bit too much pollution and attracted some attention...\n{green}Start with 50 Wizuh, allies gain +10％ fire rate, {red}Enemies gain +15％ damage."
 		"it"	"Ha rilasciato un po' troppa inquinamento e ha attirato un po' di attenzione...\n{green}Inizia con 50 Wizuh, gli alleati ottengono +10% alla velocità di fuoco, {red}i nemici ottengono +15% ai danni."
-		"ko"	"{green}위저 광석 50 개 보유 및 모든 아군의 공격 속도 +10％. {red}적의 공격력 +15％ 증가."
+		"ko"	"오염수를 너무 많이 방출해서 시선을 끈 것 같다...\n{green}시작 시 위저 광석 50개 보유 및 모든 아군의 공격 속도 +10％.{red}적의 공격 피해량 +15％ 증가."
 	}
 	"Heavy Equippment"
 	{
@@ -262,7 +262,7 @@
 	{
 		"en"	"Our engineers say we need to follow ''guidelines'' to make our stuff safe.\n{green}Start with 50 Jalan, allies gain +125 max health, {red}but Ore Deposits and enemy buildings gain +15％ max health."
 		"it"	"I nostri ingegneri dicono che dobbiamo seguire delle linee guida per rendere sicuri i nostri prodotti. {green}Inizia con 50 Jalan, gli alleati ottengono +125 salute massima, {red}ma i giacimenti minerari e gli edifici nemici ottengono +15% salute massima."
-		"ko"	"{green}잘란 광석 50 개 보유 및, 모든 아군의 최대 체력 +125. {red}광물들과 적 구조물의 최대 체력 +15％."
+		"ko"	"우리의 엔지니어들이 안전을 위해 ''가이드라인''을 따라야 한다고 말한다.\n{green}시작 시 잘란 광석 50개 보유 및 모든 아군의 최대 체력 +125.{red}광물들과 적 구조물의 최대 체력 +15％."
 	}
 	"Vehicle Production"
 	{
@@ -274,7 +274,7 @@
 	{
 		"en"	"The car is all ready for you, right off the crane.\n{green}Start with 50 Ossunia, 15 Iron, Base Level I and Vehicle Factory research, {red}but rare enemies appear more often."
 		"it"	"L'auto è pronta per te, appena scesa dalla gru.\n{green}Inizia con 50 Ossunia, 15 Ferro, Livello Base I e ricerca Fabbrica Veicoli, {red}ma i nemici rari compaiono più spesso"
-		"ko"	"{green}오수니아 광석 50 개와 철 광석 15개 보유 및 거점 레벨 I 과 차량 공장 연구가 마쳐진 상태로 시작. {red}희귀 적군이 평소보다 자주 등장."
+		"ko"	"이 차는 이미 당신을 태울 준비가 되어있다.\n{green}시작 시 오스니아 광석 50개와 철 광석 15개 보유 및 거점 레벨 I 과 차량 공장 연구가 완료된 상태로 시작.{red}희귀 적군이 평소보다 자주 등장."
 	}
 	"Void Blueprints"
 	{
@@ -286,7 +286,7 @@
 	{
 		"en"	"I don't think we should be following these blueprints.\n{red}Rare enemies have a higher chance of appearing.\nEnemies deal 15％ More damage and have 10％ more health."
 		"it"	"Non credo che dovremmo seguire questi progetti.\n{red}I nemici rari hanno una maggiore probabilità di apparire.\nI nemici infliggono il 15% di danni in più e hanno il 10% di salute in più."
-		"ko"	"{red}희귀 적군의 등장 확률이 크게 증가.\n모든 적들의 공격력 +15％ 및 최대 체력 +10％."
+		"ko"	"아무래도 이 청사진을 따르면 안될 것 같은데.\n{red}희귀 적군의 등장 확률이 크게 증가.\n모든 적들의 공격 피해량 +15％ 및 최대 체력 +10％."
 	}
 	"Ambulance"
 	{
@@ -298,7 +298,7 @@
 	{
 		"en"	"A vehicle that can hold up to 8 players. Able to pick up downed players and revive them. Heals all passengers, scaling with the driver's Medic upgrades."
 		"it"	"Un veicolo che può trasportare fino a 8 giocatori. È in grado di raccogliere i giocatori abbattuti e rianimarli. Cura tutti i passeggeri, in base ai potenziamenti Medic del conducente."
-		"ko"	"최대 8 명의 플레이어 탑승 가능. 다운된 플레이어를 태우고 부활 가능. 패신저들을 전부 치유함. 이 효과들은 운전자의 지원 개선에 따라서 증가."
+		"ko"	"최대 8명의 플레이어를 태울 수 있는 차량입니다. 다운된 플레이어를 태우고 부활시킬 수 있습니다. 모든 탑승자들을 지속적으로 치유하며, 운전자의 지원 개선에 따라서 증가합니다."
 	}
 	"Bus"
 	{
@@ -310,7 +310,7 @@
 	{
 		"en"	"A vehicle that can hold up to 24 players."
 		"it"	"Un veicolo che può trasportare fino a 24 giocatori."
-		"ko"	"최대 24 명의 플레이어를 태울 수 있는 차량입니다."
+		"ko"	"최대 24명의 플레이어를 태울 수 있는 차량입니다."
 	}
 	"Camper Van"
 	{
@@ -322,7 +322,7 @@
 	{
 		"en"	"A vehicle that can hold up to 4 players. Able to collect ammo from the an ammo box in the back."
 		"it"	"Un veicolo che può trasportare fino a 4 giocatori. In grado di raccogliere munizioni da una scatola di munizioni situata nella parte posteriore."
-		"ko"	"최대 4 명의 플레이어를 태울 수 있는 차량. 차량 뒤쪽의 탄약 상자를 통해 탄약을 보급 가능."
+		"ko"	"최대 4명의 플레이어를 태울 수 있는 차량입니다. 차량 뒤쪽의 탄약 상자를 통해 탄약을 보급할 수 있습니다."
 	}
 	"Dump Truck"
 	{
@@ -334,7 +334,7 @@
 	{
 		"en"	"A vehicle that can hold up to 6 players. Has increased max armor."
 		"it"	"Un veicolo che può trasportare fino a 6 giocatori. Ha una corazza massima potenziata."
-		"ko"	"최대 6 명의 플레이어를 태울 수 있는 차량. 이 차량은 최대 아머가 증가했습니다."
+		"ko"	"최대 6명의 플레이어를 태울 수 있는 차량입니다. 이 차량은 최대 아머가 증가했습니다."
 	}
 	"Landrover"
 	{
@@ -346,7 +346,7 @@
 	{
 		"en"	"A vehicle that can hold up to 3 players. Has increased driving speed."
 		"it"	"Un veicolo che può trasportare fino a 3 giocatori. Ha una maggiore velocità di guida."
-		"ko"	"최대 3 명의 플레이어를 태울 수 있는 차량. 이 차량은 운전 속도가 증가했습니다."
+		"ko"	"최대 3명의 플레이어를 태울 수 있는 차량입니다. 이 차량은 운전 속도가 증가했습니다."
 	}
 	"Pickup Truck"
 	{
@@ -358,7 +358,7 @@
 	{
 		"en"	"A vehicle that can hold up to 6 players. Prioritizes outside seating."
 		"it"	"Un veicolo che può ospitare fino a 6 giocatori. Dà la priorità ai posti a sedere esterni."
-		"ko"	"최대 6 명의 플레이어를 태울 수 있는 차량. 외부 좌석을 우선시 합니다."
+		"ko"	"최대 6명의 플레이어를 태울 수 있는 차량입니다. 외부 좌석을 우선시 합니다."
 	}
 	"Research Station"
 	{
@@ -370,7 +370,7 @@
 	{
 		"en"	"A construct that can spend materials to research equippment and buildings."
 		"it"	"Una struttura che può spendere materiali per ricercare attrezzature ed edifici."
-		"ko"	"재료를 소비하여 장비와 구조물을 연구할 수 있는 구조물입니다."
+		"ko"	"자원을 소비하여 장비와 구조물을 연구할 수 있는 구조물입니다."
 	}
 	"Vehicle Factory"
 	{
@@ -382,7 +382,7 @@
 	{
 		"en"	"A construct that can spend materials to build vehicles."
 		"it"	"Un costrutto in grado di utilizzare materiali per costruire veicoli."
-		"ko"	"재료를 소비하여 차량을 생산할 수 있는 구조물입니다."
+		"ko"	"자원을 소비하여 차량을 생산할 수 있는 구조물입니다."
 	}
 	"Cooking Stove"
 	{
@@ -394,19 +394,19 @@
 	{
 		"en"	"A construct that can spend materials to cook various meals to buff allies."
 		"it"	"Una struttura che può utilizzare materiali per cucinare vari piatti e potenziare gli alleati."
-		"ko"	"재료를 소비하여 다양한 음식을 제작해 아군에게 버프를 줄 수 있는 구조물입니다."
+		"ko"	"자원을 소비하여 다양한 음식을 제작해 아군에게 버프를 줄 수 있는 구조물입니다."
 	}
 	"Giant Lighthouse"
 	{
-		"en" 		"Giant Lighthouse"
-		"it"		"Faro gigante"
-		"ko" 		"거대 등대"
+		"en" 	"Giant Lighthouse"
+		"it"	"Faro gigante"
+		"ko" 	"거대 등대"
 	}
 	"Giant Lighthouse Desc"
 	{
-		"en" 		"Allies gain +30％ attack speed in its radius."
-		"it"		"Gli alleati ottengono +30% di velocità d'attacco nel suo raggio d'azione."
-		"ko" 		"범위 내에 있는 모든 아군의 공격 속도를 +30％ 증가시킵니다."
+		"en" 	"Allies gain +30％ attack speed in its radius."
+		"it"	"Gli alleati ottengono +30% di velocità d'attacco nel suo raggio d'azione."
+		"ko" 	"범위 내에 있는 모든 아군의 공격 속도를 +30％ 증가시킵니다."
 	}
 	"Water Pump"
 	{
@@ -430,7 +430,7 @@
 	{
 		"en"	"Unlocks more upgrades and allows building constructs."
 		"it"	"Sblocca ulteriori potenziamenti e consente la costruzione di edifici."
-		"ko"	"더 많은 개선과 더 많은 구조물을 해금합니다."
+		"ko"	"더 많은 개선과 컨스트럭션 구조물이 해금됩니다."
 	}
 	"Base Level II"
 	{
@@ -442,7 +442,7 @@
 	{
 		"en"	"Unlocks more upgrades, increases construct traits, increases construct limit."
 		"it"	"Sblocca ulteriori potenziamenti, aumenta le caratteristiche dei costrutti e aumenta il limite dei costrutti."
-		"ko"	"더 많은 개선이 해금되고 구조물 특성 및 구조물 최대 설치량이 증가합니다."
+		"ko"	"더 많은 개선이 해금되고 구조물 특성의 효과 및 컨스트럭션 구조물의 최대 설치량이 증가합니다."
 	}
 	"Base Level III"
 	{
@@ -454,13 +454,13 @@
 	{
 		"en"	"Unlocks more upgrades, increases construct traits, increases construct limit."
 		"it"	"Sblocca ulteriori potenziamenti, aumenta le caratteristiche dei costrutti e aumenta il limite dei costrutti."
-		"ko"	"더 많은 개선이 해금되고 구조물 특성 및 구조물 최대 설치량이 증가합니다."
+		"ko"	"더 많은 개선이 해금되고 구조물 특성의 효과 및 컨스트럭션 구조물의 최대 설치량이 증가합니다."
 	}
 	"Enchanced Water Pump"
 	{
 		"en"	"Enchanced Water Pump"
 		"it"	"Pompa dell'acqua potenziata"
-		"ko"	"진보된 물 펌프"
+		"ko"	"향상된 물 펌프"
 	}
 	"Enchanced Water Pump Desc"
 	{
@@ -478,7 +478,7 @@
 	{
 		"en"	"A construct that uses crystals to gain cash."
 		"it"	"Un sistema che usa i cristalli per fare soldi."
-		"ko"	"수정을 사용하여 자금을 만들 수 있는 구조물입니다."
+		"ko"	"보석 수정을 사용하여 자금을 만들 수 있는 구조물입니다."
 	}
 	"Sawmill Factory"
 	{
@@ -496,7 +496,7 @@
 	{
 		"en"	"Enchanced Sawmill Factory"
 		"it"	"Segheria potenziata"
-		"ko"	"진보된 제재소 공장"
+		"ko"	"향상된 제재소 공장"
 	}
 	"Enchanced Sawmill Factory Desc"
 	{
@@ -520,7 +520,7 @@
 	{
 		"en"	"Enchanced Stonework Factory"
 		"it"	"Fabbrica di pietra migliorata"
-		"ko"	"진보된 석공 공장"
+		"ko"	"향상된 석공 공장"
 	}
 	"Enchanced Stonework Factory Desc"
 	{
@@ -622,7 +622,7 @@
 	{
 		"en"	"I guess it makes it soggy?\n{green}Allies gain +10％ max health {red}but -1％ movement speed"
 		"it"	"Immagino che lo renda molliccio?\n{green}Gli alleati ottengono +10% di salute massima {red}ma -1% di velocità di movimento"
-		"ko"	"이거 이러면 빵이 축축해지는거 아닌가요?\n{green}모든 아군의 최대 체력 +10％ {red}대신 이동 속도 -1％ 감소."
+		"ko"	"이거 이러면 빵이 축축해지는거 아닌가요?\n{green}모든 아군의 최대 체력이 +10％ 증가하지만 {red}이동 속도가 -1％ 감소합니다."
 	}
 	"Steamed Mackerel"
 	{
@@ -646,7 +646,7 @@
 	{
 		"en"	"Ocean to grill to sauce to my mouth.\n{green}Allies gain +10％ attack speed {red}but -5％ max health"
 		"it"	"Dall'oceano alla griglia, alla salsa, alla mia bocca.\n{green}Gli alleati ottengono +10% di velocità d'attacco {red}ma -5% di salute massima"
-		"ko"	"바다에서 그릴로, 그릴에서 소스로, 소스에서 입으로 걸어들어오는 음식.\n{green}모든 아군의 공격 속도 +10％. {red}대신 최대 체력 -5％ 감소."
+		"ko"	"바다에서 그릴로, 그릴에서 소스로, 소스에서 입으로 걸어들어오는 음식.\n{green}모든 아군의 공격 속도가 10％ 증가하지만 {red}최대 체력이 -5％ 감소합니다."
 	}
 	"Beer Bottle"
 	{
@@ -658,7 +658,7 @@
 	{
 		"en"	"I need beer.\n{green}Allies gain +10％ damage bonus {red}but -1％ movement speed"
 		"it"	"Ho bisogno di birra.\n{green}Gli alleati ottengono un bonus al danno del +10％ {red}ma una velocità di movimento ridotta dell'1％"
-		"ko"	"맥주가 필요하다.\n{green}모든 아군의 공격력 +10％ . {red}대신 이동 속도 -1％ 감소."
+		"ko"	"맥주가 필요하다.\n{green}모든 아군의 피해량이 +10％ 증가하지만 {red}이동 속도 -1％ 감소."
 	}
 	"The Sandvich"
 	{
@@ -730,7 +730,7 @@
 	{
 		"en"	"Do we unwrap this or?\n{green}Allies gain +10％ max health {red}but -5％ damage bonus"
 		"it"	"Lo scartiamo o no?\n{green}Gli alleati ottengono +10% di salute massima {red}ma -5% di bonus ai danni"
-		"ko"	"이걸 생으로 먹으라고요?\n{green}모든 아군의 최대 체력이 +10％ 증가하지만 {red}공격 피해량이 -5％ 감소합니다."
+		"ko"	"이걸 생으로 먹으라는건 아니죠?\n{green}모든 아군의 최대 체력이 +10％ 증가하지만 {red}공격 피해량이 -5％ 감소합니다."
 	}
 	"The Second Banana"
 	{
@@ -754,7 +754,7 @@
 	{
 		"en"	"Expidonsa technology, but something seems rather off about it.\n{yellow}Unlocks research Expidonsa Tech Chip Install"
 		"it"	"Tecnologia Expidonsa, ma c'è qualcosa che non mi convince.{yellow}Sblocca la ricerca Installazione chip tecnologico Expidonsa"
-		"ko"	"엑스피돈사인들의 기술력이지만, 뭔가 이상해보입니다.\n{yellow}엑스피돈사 기술 칩 설치 연구를 해금합니다."
+		"ko"	"엑스피돈사의 기술력이지만, 어딘지 이상해보입니다.\n{yellow}엑스피돈사 기술 칩 설치 연구를 해금합니다."
 	}
 	"Rogue Expi Start 1"
 	{
@@ -766,7 +766,7 @@
 	{
 		"en"	"I don't think this is a test anymore..."
 		"it"	"Non credo che questo sia più un test..."
-		"ko"	"이건 더 이상 테스트라고 보기에도 애매한데요..."
+		"ko"	"이건 더 이상 테스트라고 보기에도 이상한데요..."
 	}
 	"Expidonsa Tech Chip Install"
 	{
@@ -778,7 +778,7 @@
 	{
 		"en"	"Should we install the Expidonsa Tech Chip into our system?"
 		"it"	"Dovremmo installare il chip Expidonsa Tech nel nostro sistema?"
-		"ko"	"우리의 시스템에 엑스피돈사 기술 칩을 설치해볼까요?"
+		"ko"	"시스템에 엑스피돈사 기술 칩을 설치해볼까요?"
 	}
 	"System Malfunction"
 	{
@@ -790,13 +790,13 @@
 	{
 		"en"	"Oh. dear.\n{red}Construct traits have a chance to fail {blue}and rogue expidonsans are after you."
 		"it"	"Oh, cielo. \n{red}I tratti costruttivi possono fallire {blue}e gli expidonsans ribelli ti stanno dando la caccia."
-		"ko"	"오, 이런.\n{red}구조물들의 특성이 낮은 확률로 실패합니다. {blue}악한 엑스피돈사인들이 당신을 추격합니다."
+		"ko"	"오, 이런.\n{red}구조물들의 특성이 확률적으로 실패합니다. {blue}이탈자 엑스피돈사인들이 당신을 추격합니다."
 	}
 	"Rebel Calling I"
 	{
 		"en"	"Rebel Calling I"
 		"it"	"Chiamata ribelle I"
-		"ko"	"반시민의 부름 I"
+		"ko"	"반시민 호출 I"
 	}
 	"Rebel Calling I Desc"
 	{
@@ -808,7 +808,7 @@
 	{
 		"en"	"Rebel Calling II"
 		"it"	"Chiamata ribelle II"
-		"ko"	"반시민의 부름 II"
+		"ko"	"반시민 호출 II"
 	}
 	"Rebel Calling II Desc"
 	{
@@ -820,7 +820,7 @@
 	{
 		"en"	"Rebel Calling III"
 		"it"	"Chiamata ribelle III"
-		"ko"	"반시민의 부름 III"
+		"ko"	"반시민 호출 III"
 	}
 	"Rebel Calling III Desc"
 	{
@@ -832,7 +832,7 @@
 	{
 		"en"	"Rebel Calling IV"
 		"it"	"Chiamata ribelle IV"
-		"ko"	"반시민의 부름 IV"
+		"ko"	"반시민의 호출 IV"
 	}
 	"Rebel Calling IV Desc"
 	{
@@ -844,7 +844,7 @@
 	{
 		"en"	"Rebel Calling V"
 		"it"	"Chiamata ribelle V"
-		"ko"	"반시민의 부름 V"
+		"ko"	"반시민 호출 V"
 	}
 	"Rebel Calling V Desc"
 	{
@@ -892,13 +892,13 @@
 	{
 		"en"	"Flagship Calling"
 		"it"	"Chiamata di punta"
-		"ko"	"기함의 부름"
+		"ko"	"기함 호출"
 	}
 	"Flagship Calling Desc"
 	{
 		"en"	"Increase Movementspeed by 10％\nGain the ''Ziberian Flagship Weaponry''."
 		"it"	"Aumenta la velocità di movimento del 10%\nOttieni l'arma Chiamata di punta Ziberiana."
-		"ko"	"이동 속도가 10％ 증가합니다.\n''자이베리안 기함 무기'' 버프를 얻습니다."
+		"ko"	"이동 속도가 10％ 증가합니다.\n''지베리아 기함 무장'' 버프를 얻습니다."
 	}
 	"Tranquilizer Turret"
 	{
@@ -934,7 +934,7 @@
 	{
 		"en"	"Unlocks a set of decorative furniture, for morale."
 		"it"	"Sblocca una serie di mobili decorativi, per il morale."
-		"ko"	"조형에 좋은 장식용 가구 세트를 잠금 해제합니다."
+		"ko"	"조형에 좋은 장식용 가구 세트를 잠금 해제합니다. 사기도 필요하잖아요."
 	}
 	"Decorative Lamp"
 	{
@@ -946,7 +946,7 @@
 	{
 		"en"	"A construct that improves morale and the desire to defend."
 		"it"	"Un costrutto che migliora il morale e la voglia di difendersi."
-		"ko"	"조형용 구조물입니다. 방어용으로도 쓸 수 있습니다."
+		"ko"	"조형용 구조물입니다. 사기와 방어 의지를 북돋아줍니다."
 	}
 	"Decorative Shelf"
 	{
@@ -958,7 +958,7 @@
 	{
 		"en"	"A construct that improves morale and the desire to defend."
 		"it"	"Un costrutto che migliora il morale e la voglia di difendersi."
-		"ko"	"조형용 구조물입니다. 방어용으로도 쓸 수 있습니다."
+		"ko"	"조형용 구조물입니다. 사기와 방어 의지를 북돋아줍니다."
 	}
 	"Decorative Desk"
 	{
@@ -970,7 +970,7 @@
 	{
 		"en"	"A construct that improves morale and the desire to defend."
 		"it"	"Un costrutto che migliora il morale e la voglia di difendersi."
-		"ko"	"조형용 구조물입니다. 방어용으로도 쓸 수 있습니다."
+		"ko"	"조형용 구조물입니다. 사기와 방어 의지를 북돋아줍니다."
 	}
 	"Decorative Couch"
 	{
@@ -982,7 +982,7 @@
 	{
 		"en"	"A construct that improves morale and the desire to defend."
 		"it"	"Un costrutto che migliora il morale e la voglia di difendersi."
-		"ko"	"조형용 구조물입니다. 방어용으로도 쓸 수 있습니다."
+		"ko"	"조형용 구조물입니다. 사기와 방어 의지를 북돋아줍니다."
 	}
 	"Decorative Chair"
 	{
@@ -994,7 +994,7 @@
 	{
 		"en"	"A construct that improves morale and the desire to defend."
 		"it"	"Un costrutto che migliora il morale e la voglia di difendersi."
-		"ko"	"조형용 구조물입니다. 방어용으로도 쓸 수 있습니다."
+		"ko"	"조형용 구조물입니다. 사기와 방어 의지를 북돋아줍니다."
 	}
 	"Command Center"
 	{
@@ -1006,7 +1006,7 @@
 	{
 		"en"	"Unlocks constructs used for the Barracks."
 		"it"	"Sblocca le costruzioni utilizzate per la Caserma."
-		"ko"	"배럭을 해금할 수 있는 구조물입니다."
+		"ko"	"배럭을 강화시키는 구조물을 해금합니다."
 	}
 	"Barracks House"
 	{
@@ -1018,6 +1018,6 @@
 	{
 		"en"	"A construct that provides +1 Barracks supply and +1 maximum allies."
 		"it"	"Una struttura che fornisce +1 rifornimento alla caserma e +1 alleati massimi."
-		"ko"	"배럭의 보급품이 +1 증가하고 최대 아군 수가 +1 증가하는 구조물입니다."
+		"ko"	"배럭의 보급품이 +1 증가하고 유닛 상한 수가 +1 증가하는 구조물입니다."
 	}
 }

@@ -3527,7 +3527,7 @@ public void Citizen_ClotThink(int iNPC)
 								"obj_ammobox",
 								"obj_armortable",
 								"obj_perkmachine",
-							//	"obj_packapunch",
+								"obj_packapunch",
 								"obj_sentrygun",
 								"obj_mortar",
 								"obj_railgun",

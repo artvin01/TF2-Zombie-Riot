@@ -47,6 +47,37 @@ public const int AmmoData[][] =
 	{ 0, 0 }			//???
 };
 
+public const int DefaultWaveCash[] =
+{
+	300, 300, 500, 300, 300, 300, 300, 300, 300, 1000,
+	500, 500, 500, 750, 750, 1500, 2000, 1200, 1200, 2500,
+	1250, 1250, 1500, 2250, 1500, 1500, 2900, 1750, 1750, 5000,
+	1850, 1850, 1850, 1850, 1850, 3000, 3000, 4000, 4000, 20000,
+	3000, 3000, 3000, 3000, 15000,
+	2500, 2500, 3000, 4000, 25000,
+	3000, 3000, 3000, 3000
+};
+
+stock int DefaultTotalCash(int wave)
+{
+	static int totalCash[sizeof(DefaultWaveCash)];
+
+	if(!totalCash[0])
+	{
+		int total;
+		for(int i; i < sizeof(DefaultWaveCash); i++)
+		{
+			total += DefaultWaveCash[i];
+			totalCash[i] = total;
+		}
+	}
+	
+	int twave = wave;
+	if(twave >= sizeof(DefaultWaveCash))
+		twave = sizeof(DefaultWaveCash) - 1;
+	
+	return totalCash[twave];
+}
 
 //FOR PERK MACHINE!
 public const char PerkNames[][] =
@@ -496,6 +527,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zsclassic.sp"
 #include "construction.sp"
 #include "betting.sp"
+#include "dungeons.sp"
 #include "sm_skyboxprops.sp"
 #include "custom/homing_projectile_logic.sp"
 #include "custom/weapon_slug_rifle.sp"
@@ -726,6 +758,7 @@ void ZR_PluginStart()
 	Vehicle_PluginStart();
 	Kritzkrieg_PluginStart();
 	BetWar_PluginStart();
+	Dungeon_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
@@ -770,6 +803,7 @@ void ZR_MapStart()
 	Classic_MapStart();
 	Construction_MapStart();
 	BetWar_MapStart();
+	Dungeon_MapStart();
 	Zero(TeutonType); //Reset teutons on mapchange
 	f_AllowInstabuildRegardless = 0.0;
 	Zero(i_NormalBarracks_HexBarracksUpgrades);
@@ -1030,7 +1064,7 @@ public Action GlobalTimer(Handle timer)
 		f_AllowInstabuildRegardless = 0.0;
 		ForceMusicStopAndReset = true;
 	}
-	if(Rogue_Mode() || Construction_Mode())
+	if(Rogue_Mode() || Construction_Mode() || Dungeon_Mode())
 	{
 		ForceMusicStopAndReset = false;
 	}

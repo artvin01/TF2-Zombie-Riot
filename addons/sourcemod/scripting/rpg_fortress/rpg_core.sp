@@ -1034,6 +1034,7 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 			MasteryAdd += GetRandomFloat(0.2, 0.3);
 		}
 		MasteryAdd += GetRandomFloat(0.11, 0.13);
+		MasteryAdd *= 2.0;
 		int totalInt = Stats_Intelligence(client);
 		if(totalInt >= 6000)
 		{

@@ -56,10 +56,14 @@ methodmap BaseBuilding < BarrackBody
 		func_NPCDeath[npc.index] = BaseBuilding_NPCDeath;
 		func_NPCThink[npc.index] = BaseBuilding_ClotThink;
 		func_NPCOnTakeDamage[npc.index] = BaseBuilding_ClotTakeDamage;
-		CPrintToChatAll("{crimson}%t", "Explain Construction 0");
-		CPrintToChatAll("{green}%t", "Explain Construction 1");
-		CPrintToChatAll("{green}%t", "Explain Construction 3");
-		CPrintToChatAll("{green}%t", "Explain Construction 4");
+
+		if(Construction_Mode())
+		{
+			CPrintToChatAll("{crimson}%t", "Explain Construction 0");
+			CPrintToChatAll("{green}%t", "Explain Construction 1");
+			CPrintToChatAll("{green}%t", "Explain Construction 3");
+			CPrintToChatAll("{green}%t", "Explain Construction 4");
+		}
 
 		npc.m_flSpeed = 0.0;
 		return npc;
