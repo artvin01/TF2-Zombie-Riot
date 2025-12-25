@@ -26,6 +26,11 @@ static const char g_MeleeChargeAttack[][] = {
 static const char g_PassiveSound[][] = {
 	"mvm/giant_heavy/giant_heavy_loop.wav",
 };
+static const char g_MeleeHitSounds[][] = {
+	"mvm/melee_impacts/bottle_hit_robo01.wav",
+	"mvm/melee_impacts/bottle_hit_robo02.wav",
+	"mvm/melee_impacts/bottle_hit_robo03.wav",
+};
 
 void TheGreatRam_OnMapStart_NPC()
 {
@@ -34,6 +39,7 @@ void TheGreatRam_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeChargeAttack)); i++) { PrecacheSound(g_MeleeChargeAttack[i]); }
 	for (int i = 0; i < (sizeof(g_PassiveSound));   i++) { PrecacheSound(g_PassiveSound[i]);   }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds));   i++) { PrecacheSound(g_MeleeHitSounds[i]);   }
 	PrecacheModel("models/combine_apc_dynamic.mdl");
 
 	NPCData data;
@@ -89,6 +95,10 @@ methodmap TheGreatRam < CClotBody
 		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
 		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
 	}
+	public void PlayMeleeHitSound() 
+	{
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+	}
 	property float m_flWeaponSwitchCooldown
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
@@ -100,7 +110,7 @@ methodmap TheGreatRam < CClotBody
 	{
 		TheGreatRam npc = view_as<TheGreatRam>(CClotBody(vecPos, vecAng, "models/combine_apc_dynamic.mdl", "0.65", "1500", ally,_,true));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 999;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		npc.PlayPassiveSound();
@@ -120,9 +130,17 @@ methodmap TheGreatRam < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		
 		
+		if(!IsValidEntity(RaidBossActive))
+		{
+			RaidModeScaling = 0.0;	//just a safety net
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidAllowsBuildings = true;
+		}
 		npc.StartPathing();
-		npc.m_flSpeed = 50.0;
+		npc.m_flSpeed = 25.0;
 		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 9999999.9);	
 		
 		
 		int skin = 1;
@@ -211,6 +229,7 @@ public void TheGreatRam_ClotThink(int iNPC)
 	
 	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
+		//todo: make it auto target the main building if it exists
 		target = GetClosestTarget(npc.index,_,1200.0,_,_,_,_,_,_, true);
 		if(!IsValidEnemy(npc.index, target))
 		{
@@ -225,8 +244,10 @@ public void TheGreatRam_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = TheGreatRamSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
+	//	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		TheGreatRamSelfDefense(npc); 
+			
+		npc.SetGoalEntity(target);
 	}
 
 	TheGreatRamSelfDefense_Auto(npc, GetGameTime(npc.index));
@@ -273,9 +294,37 @@ public void TheGreatRam_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int TheGreatRamSelfDefense(TheGreatRam npc, float gameTime, float distance)
+void TheGreatRamSelfDefense(TheGreatRam npc)
 {
-	
+	int HowManyEnemeisAoeMelee = 64;
+	Handle swingTrace;
+	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+	npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
+	delete swingTrace;
+	bool PlaySound = false;
+	float vecHit[3];
+	for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+	{
+		if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
+		{
+			if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+			{
+				PlaySound = true;
+				int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
+				WorldSpaceCenter(target, vecHit);
+							
+				float damage = 50.0;
+				if(ShouldNpcDealBonusDamage(target))
+					damage *= 100.0;
+				SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);								
+			}
+		}
+	}
+	if(PlaySound)
+	{
+		npc.PlayMeleeHitSound();
+		TE_Particle("mvm_soldier_shockwave2c", vecHit, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	}
 }
 void TheGreatRamSelfDefense_Auto(TheGreatRam npc, float gameTime)
 {

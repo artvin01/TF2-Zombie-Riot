@@ -63,8 +63,6 @@ methodmap ObjectC2House < ObjectGeneric
 
 		ObjectC2House npc = view_as<ObjectC2House>(ObjectGeneric(client, vecPos, vecAng, NPCModel, "0.5", "50", {30.0, 30.0, 80.0},_,false));
 
-		float flPos[3]; // original
-
 		npc.m_bConstructBuilding = true;
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCThink[npc.index] = ObjectC2House_ClotThink;

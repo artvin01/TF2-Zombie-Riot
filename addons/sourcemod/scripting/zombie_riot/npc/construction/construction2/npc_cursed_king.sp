@@ -165,6 +165,14 @@ methodmap CursedKing < CClotBody
 		
 		npc.m_flSpeed = 270.0;
 		
+		if(!IsValidEntity(RaidBossActive))
+		{
+			RaidModeScaling = 0.0;	//just a safety net
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidAllowsBuildings = true;
+		}
+		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 5);
 		npc.m_iAttacksLeft = 3;
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_rift_fire_axe/c_rift_fire_axe.mdl");

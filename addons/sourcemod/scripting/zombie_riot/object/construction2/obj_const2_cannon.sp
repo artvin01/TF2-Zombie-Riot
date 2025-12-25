@@ -145,7 +145,7 @@ void ObjectC2Cannon_ClotThink(ObjectC2Cannon npc)
 	float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 
 	int rocket;
-	rocket = npc.FireParticleRocket(vecTarget, damageDealt,700.0, 1, "doublejump_trail", .hide_projectile = false);
+	rocket = npc.FireParticleRocket(vecTarget, damageDealt,700.0, 1.0, "doublejump_trail", .hide_projectile = false);
 
 	ApplyCustomModelToWandProjectile(rocket, "models/weapons/w_models/w_cannonball.mdl", 1.0, "", _ , true);
 	float fAng[3];

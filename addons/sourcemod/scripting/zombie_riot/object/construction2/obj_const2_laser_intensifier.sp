@@ -163,7 +163,7 @@ void ObjectC2LaserIntensifier_ClotThink(ObjectC2LaserIntensifier npc)
 		damageDealt *= 3.0;
 
 	int rocket;
-	rocket = npc.FireParticleRocket(vecTarget, damageDealt,700.0, 1, "raygun_projectile_red", .hide_projectile = true);
+	rocket = npc.FireParticleRocket(vecTarget, damageDealt,700.0, 1.0, "raygun_projectile_red", .hide_projectile = true);
 
 	npc.PlayShootSound();
 	float fAng[3];
