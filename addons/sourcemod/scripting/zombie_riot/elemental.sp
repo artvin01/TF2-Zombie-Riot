@@ -1131,25 +1131,15 @@ static const char g_Agent_Summons[][] =
 
 static void Matrix_Spawning(int attacker, int victim)
 {
-	int health = ReturnEntityMaxHealth(attacker);
-	if(b_thisNpcIsABoss[attacker])
+	float pos[3];
+	GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos);
+	int Spawner_entity = GetRandomActiveSpawner();
+	if(IsValidEntity(Spawner_entity))
 	{
-		health = (ReturnEntityMaxHealth(attacker)/10);
+		float ang[3];
+		GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+		GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 	}
-	if(b_thisNpcIsARaid[attacker])
-	{
-		health = (ReturnEntityMaxHealth(attacker)/100);
-	}
-	if(!b_thisNpcIsARaid[attacker] && !b_thisNpcIsABoss[attacker] && MultiGlobalHealth != 1.0)
-	{
-		//account for max hp sacling, or else we just keep multiplying forever...
-		//because it does the scaling on spawn, but doesnt revert it here when it adds a new npc....
-		//it was the same bug alaxios had, in this case, it has to be reversed.
-		health = RoundToNearest(float(health) / MultiGlobalHealth);
-	}
-	health /= 4;
-	
-	float pos[3]; GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos);
 	int summon = NPC_CreateByName("npc_antiviral_programm", -1, pos, {0.0,0.0,0.0}, GetTeam(attacker), "final");
 	if(IsValidEntity(summon))
 	{
@@ -1158,32 +1148,17 @@ static void Matrix_Spawning(int attacker, int victim)
 			Zombies_Currently_Still_Ongoing++;
 
 		npcsummon.m_iTarget = victim;
-		SetEntProp(summon, Prop_Data, "m_iHealth", health);
-		SetEntProp(summon, Prop_Data, "m_iMaxHealth", health);
 
 		int Decicion = TeleportDiversioToRandLocation(summon, true, 1500.0, 1000.0);
 		switch(Decicion)
 		{
 			case 2:
 			{
-				Decicion = TeleportDiversioToRandLocation(summon, true, 1500.0, 500.0);
+				Decicion = TeleportDiversioToRandLocation(summon, true, 1000.0, 500.0);
 				if(Decicion == 2)
 				{
-					Decicion = TeleportDiversioToRandLocation(summon, true, 1500.0, 250.0);
-					if(Decicion == 2)
-					{
-						Decicion = TeleportDiversioToRandLocation(summon, true, 1500.0, 0.0);
-						if(Decicion == 2)
-						{
-							//damn, cant find any.... guess we'll just not care about LOS.
-							Decicion = TeleportDiversioToRandLocation(summon, true, 1500.0, 0.0);
-						}
-					}
+					Decicion = TeleportDiversioToRandLocation(summon, true, 500.0, 250.0);
 				}
-			}
-			case 3:
-			{
-				//todo code on what to do if random teleport is disabled
 			}
 		}
 		npcsummon.m_iWearable5 = ConnectWithBeam(summon, victim, 65, 125, 65, 2.0, 2.0, 0.0, "sprites/laserbeam.vmt");

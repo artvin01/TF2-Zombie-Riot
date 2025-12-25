@@ -2570,4 +2570,20 @@
 		"en"	"Increases Damage Taken by 25％"
 		"ko"	"받는 피해량 25％ 증가"
 	}
+	"Bob Debuff"
+	{
+		"en"	"Bob Debuff"
+	}
+	"Bob Debuff Desc"
+	{
+		"en"	"Increases Damage Taken by 15％"
+	}
+	"Bob Debuff Enrage"
+	{
+		"en"	"Bob DebuffEnrage"
+	}
+	"Bob Debuff Enrage Desc"
+	{
+		"en"	"Increases Damage Taken by 25％"
+	}
 }
