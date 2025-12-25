@@ -404,7 +404,7 @@
 		"en"	"Prosperity I"
 		"it"	"Prosperità I"
 		"ko"	"번창 I"
-	}
+	} 
 	"Prosperity I Desc"
 	{
 		"en"	"Lowers attack/reload speed & healrate by 3.5％"

@@ -1172,6 +1172,7 @@ void NPC_ConfigSetup()
 	Catapult_OnMapStart_NPC();
 	CursedKingOnMapStart();
 	TheGreatRam_OnMapStart_NPC();
+	Const2BehemothBehemoth_OnMapStart_NPC();
 	
 	DungeonLoot_MapStart();
 }
@@ -2560,4 +2561,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/construction2/npc_catapult.sp"
 #include "npc/construction/construction2/npc_cursed_king.sp"
 #include "npc/construction/construction2/npc_the_great_ram.sp"
+#include "npc/construction/construction2/npc_behemoth_behemoth.sp"
 #include "npc/construction/npc_dungeon_loot.sp"
