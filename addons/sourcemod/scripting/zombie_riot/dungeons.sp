@@ -340,15 +340,17 @@ bool Dungeon_FinalBattle()
 	return Dungeon_Mode() && (CurrentAttacks + 1) >= RaidList.Length;
 }
 
-int Dungeon_GetRound()
+int Dungeon_GetRound(bool forceTime = false)
 {
-	if(AttackType > 1)
+	if(AttackType > 1 || forceTime)
 	{
 		int maxAttacks = RaidList.Length;
 		if(!maxAttacks)
 			return MaxWaveScale;
 		
-		return (CurrentAttacks * MaxWaveScale / maxAttacks);
+		int current = (CurrentAttacks * MaxWaveScale / maxAttacks);
+		int ongoing = RoundToFloor((AttackTime - (NextAttackAt - GetGameTime())) / AttackTime * float(MaxWaveScale) / float(maxAttacks));
+		return current + ongoing;
 	}
 	
 	return RoundToFloor(BattleWaveScale);
@@ -1399,9 +1401,30 @@ void Dungeon_EnemySpawned(int entity)
 		// Reward cash depending on the wave scaling and how much left
 		if(AttackType < 2)
 		{
-			int round = Dungeon_GetRound();
-			if(round > 39)
-				round = 39;
+			static int LimitNotice;
+
+			int round = Dungeon_GetRound(true);
+			int limit = 4 + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
+			if(round > limit)
+			{
+				round = limit;
+
+				if(!LimitNotice)
+				{
+					CPrintToChatAll("%t", "Upgrade Build Houses");
+					LimitNotice = 1;
+				}
+				else
+				{
+					LimitNotice++;
+					if(LimitNotice > 49)
+						LimitNotice = 0;
+				}
+			}
+			else
+			{
+				LimitNotice = 0;
+			}
 			
 			int current = CurrentCash - GlobalExtraCash;
 

@@ -12,10 +12,9 @@
 #define CONSTRUCT_RESOURCE1	"copper"
 #define CONSTRUCT_COST1		((5 + (CurrentLevel * 5)) * (CurrentLevel > 3 ? 2 : 1))
 #define CONSTRUCT_MAXLVL	8
+// 310 total cost
 
 #define TOWER_MODEL_ARROW "models/props_urban/urban_skybuilding005a.mdl"
-
-// 310 total cost
 
 static char g_ShootingSound[][] = {
 	"weapons/bow_shoot.wav",

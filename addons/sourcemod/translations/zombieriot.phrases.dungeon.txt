@@ -281,6 +281,10 @@
 	{
 		"en"	"Craft in the Control Center"
 	}
+	"Upgrade Build Houses"
+	{
+		"en"	"{crimson}Upgrade and build more Houses to collect more cash!"
+	}
 
 	"Common Dungeon"
 	{

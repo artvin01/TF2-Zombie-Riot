@@ -139,7 +139,7 @@ void NPC_ConfigSetup()
 	VehicleDumpTruck_Setup();
 	VehicleLandrover_Setup();
 	VehiclePickup_Setup();
-	Vehicle_FullAPC_Setup();
+	VehicleFullAPC_Setup();
 	// Vehicles
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
@@ -1524,16 +1524,16 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/construction/obj_const_supply.sp"
 #include "object/construction/obj_const_helper.sp"
 #include "object/construction/obj_const_voidstone.sp"
-#include "object/construction/obj_dungeon_center.sp"
-#include "object/construction/obj_dungeon_crafter.sp"
-#include "object/construction/obj_dungeon_dispenser.sp"
-#include "object/construction/obj_dungeon_lighthouse.sp"
-#include "object/construction/obj_dungeon_minigun_turret.sp"
-#include "object/construction/obj_dungeon_stove.sp"
-#include "object/construction/obj_dungeon_stungun.sp"
-#include "object/construction/obj_dungeon_supergun.sp"
-#include "object/construction/obj_dungeon_teslars_medusa.sp"
-#include "object/construction/obj_dungeon_wall.sp"
+#include "object/construction2/obj_dungeon_center.sp"
+#include "object/construction2/obj_dungeon_crafter.sp"
+#include "object/construction2/obj_dungeon_dispenser.sp"
+#include "object/construction2/obj_dungeon_lighthouse.sp"
+#include "object/construction2/obj_dungeon_minigun_turret.sp"
+#include "object/construction2/obj_dungeon_stove.sp"
+#include "object/construction2/obj_dungeon_stungun.sp"
+#include "object/construction2/obj_dungeon_supergun.sp"
+#include "object/construction2/obj_dungeon_teslars_medusa.sp"
+#include "object/construction2/obj_dungeon_wall.sp"
 #include "object/construction2/obj_const2_cannon.sp"
 #include "object/construction2/obj_const2_zap.sp"
 #include "object/construction2/obj_const2_arrow_tower.sp"

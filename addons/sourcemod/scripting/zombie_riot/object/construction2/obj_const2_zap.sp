@@ -12,9 +12,9 @@
 #define CONSTRUCT_RESOURCE1	"copper"
 #define CONSTRUCT_COST1		((5 + (CurrentLevel * 5)) * (CurrentLevel > 3 ? 2 : 1))
 #define CONSTRUCT_MAXLVL	8
+// 310 total cost
 
 static const char NPCModel[] = "models/props_doomsday/power_core_type1.mdl";
-// 310 total cost
 
 static char g_ShootingSound[][] = {
 	"ambient/energy/zap1.wav",

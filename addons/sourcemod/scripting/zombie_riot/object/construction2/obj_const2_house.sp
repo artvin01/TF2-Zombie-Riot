@@ -9,12 +9,11 @@
 #undef CONSTRUCT_MAXLVL
 
 #define CONSTRUCT_NAME		"House"
-#define CONSTRUCT_RESOURCE1	"copper"
-#define CONSTRUCT_COST1		((5 + (CurrentLevel * 5)) * (CurrentLevel > 3 ? 2 : 1))
-#define CONSTRUCT_MAXLVL	8
+#define CONSTRUCT_RESOURCE1	"wood"
+#define CONSTRUCT_COST1		(5 + (CurrentLevel * 5))
+#define CONSTRUCT_MAXLVL	10
 
 static const char NPCModel[] = "models/props_farm/wood_shack001.mdl";
-// 310 total cost
 
 static int NPCId;
 static int LastGameTime;
@@ -101,7 +100,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 {
 	if(client)
 	{
-		count = CountBuildings();
+		count = ObjectC2House_CountBuildings();
 		
 		if(!Dungeon_Mode())
 		{
@@ -109,7 +108,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			return false;
 		}
 
-		maxcount = CurrentLevel > 4 ? 2 : 1;
+		maxcount = CurrentLevel + 1;
 		if(count >= maxcount)
 			return false;
 	}
@@ -117,7 +116,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	return true;
 }
 
-static int CountBuildings()
+int ObjectC2House_CountBuildings()
 {
 	int count;
 	
@@ -130,7 +129,6 @@ static int CountBuildings()
 
 	return count;
 }
-
 
 static void ClotShowInteractHud(ObjectGeneric npc, int client)
 {

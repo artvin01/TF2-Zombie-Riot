@@ -29,8 +29,7 @@ methodmap VehicleFullAPC < VehicleGeneric
 	{
 		VehicleFullAPC obj = view_as<VehicleFullAPC>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, "models/combine_apc.mdl", "scripts/vehicles/apc.txt"));
 		
-		obj.SetDriverOffset({0.0, 0.0, 30.0});
-		// 0 0 30
+		obj.SetDriverOffset({0.0, -10.0, 30.0});
 		
 		int gun = Store_GetItemIndex("Tommygun");
 
