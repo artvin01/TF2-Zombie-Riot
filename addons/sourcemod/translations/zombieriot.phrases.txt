@@ -1537,7 +1537,7 @@
 	{
 		"en" 		"Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 30％ more damage."
 		"it"		"Mulo di Teslar! Una protezione ricaricabile che indebolisce gli zombi e blocca il 75％ dei danni se attivata. I nemici indeboliti sono fortemente rallentati e subiscono 30％ danni in più."
-		"ko"		"테슬라 뮬! 재충전 가능한 보호막으로, 활성화 시 좀비를 약화시키고 받는 피해의 75％를 막아줍니다.\n약화된 적은 크게 느려지고 받는 피해량이 30% 증가합니다."
+		"ko"		"테슬라 뮬! 재충전 가능한 보호막으로, 활성화 시 좀비를 약화시키고 받는 피해의 75％를 막아줍니다.\n약화된 적은 크게 느려지고 받는 피해량이 30％ 증가합니다."
 	}
 	"Stockpile Stout Received"
 	{
@@ -1732,7 +1732,7 @@
 		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee ％ damage taken, arrow means ranged ％ damage taken.\nIt will light up whatever resitsance is being used when damage calculations happen.\nTrue damage only benifits from bonuses and ignores reisistances."
 		"es"		"A la izquierda hay debuffs, y a la derecha hay buffs.\nCada simbolo es un debuff o buff.\nEl 'dedito' significa el daño cuerpo a cuerpo total que recibes, y la flecha significa el daño total a distancia que recibes.\nSe subrayan apenas recibas el daño correspondiente a estos.\nEl daño verdadero no subraya, y ignora estas resistencias."
 		"it"		"Sul lato sinistro ci saranno i debuff.Sul lato destro ci saranno i buff.Ogni simbolo è un nuovo buff o debuff. \nIl dito indica i danni subiti in mischia, mentre la freccia indica i danni subiti a distanza.\nSi illuminerà la resistenza utilizzata quando si calcolano i danni.\nIl danno reale beneficia solo dei bonus e ignora le resistenze."
-		"ko" 		"왼쪽에는 디버프가 표시됩니다.\n오른쪽에는 버프가 표시됩니다.\n심볼마다 새로운 버프와 디버프를 나타냅니다. \n손가락은 받는 근접 피해량 % 를 뜻하고, 화살은 받는 원거리 피해량 ％ 를 뜻합니다.\n이에 상응하는 피해를 받으면, 해당 심볼이 커지거나 밑줄이 그어집니다.\n트루 대미지는 이 설정을 무시하며 피해를 받아도 강조되지 않습니다."
+		"ko" 		"왼쪽에는 디버프가 표시됩니다.\n오른쪽에는 버프가 표시됩니다.\n심볼마다 새로운 버프와 디버프를 나타냅니다. \n손가락은 받는 근접 피해량 ％ 를 뜻하고, 화살은 받는 원거리 피해량 ％ 를 뜻합니다.\n이에 상응하는 피해를 받으면, 해당 심볼이 커지거나 밑줄이 그어집니다.\n트루 대미지는 이 설정을 무시하며 피해를 받아도 강조되지 않습니다."
 	}
 	"Debuff/Buff Explain 2"
 	{

@@ -196,7 +196,7 @@
 	{
 		"en"	"Ossunia Ore"
 		"it"	"Minerale Ossunia"
-		"ko"	"오스니아 광석"
+		"ko"	"오수니아 광석"
 	}
 	"Material water"
 	{
@@ -274,7 +274,7 @@
 	{
 		"en"	"The car is all ready for you, right off the crane.\n{green}Start with 50 Ossunia, 15 Iron, Base Level I and Vehicle Factory research, {red}but rare enemies appear more often."
 		"it"	"L'auto è pronta per te, appena scesa dalla gru.\n{green}Inizia con 50 Ossunia, 15 Ferro, Livello Base I e ricerca Fabbrica Veicoli, {red}ma i nemici rari compaiono più spesso"
-		"ko"	"이 차는 이미 당신을 태울 준비가 되어있다.\n{green}시작 시 오스니아 광석 50개와 철 광석 15개 보유 및 거점 레벨 I 과 차량 공장 연구가 완료된 상태로 시작.{red}희귀 적군이 평소보다 자주 등장."
+		"ko"	"이 차는 이미 당신을 태울 준비가 되어있다.\n{green}시작 시 오수니아 광석 50개와 철 광석 15개 보유 및 거점 레벨 I 과 차량 공장 연구가 완료된 상태로 시작.{red}희귀 적군이 평소보다 자주 등장."
 	}
 	"Void Blueprints"
 	{

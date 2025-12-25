@@ -856,7 +856,7 @@
 	{
 		"en" 		"A combine who adopted an acient way of battle, highly deadly.\nWill deal 25％ extra damage to any non, melee player, and get angered if attacked by anything non melee."
 		"it"		"Un combine che ha adottato un antico modo di combattere, altamente letale. infligge 25％ danni extra a qualsiasi giocatore non in mischia e si arrabbia se attaccato da qualsiasi cosa non in mischia."
-		"ko" 		"고대의 전투 방식을 선택한 콤바인으로서, 매우 위협적입니다.\n-근접 무기를 사용하지 않는 대상에게 가하는 피해량 +25%\n-근접 무기 이외의 공격으로 피해를 받을 시 분노"
+		"ko" 		"고대의 전투 방식을 선택한 콤바인으로서, 매우 위협적입니다.\n-근접 무기를 사용하지 않는 대상에게 가하는 피해량 +25％\n-근접 무기 이외의 공격으로 피해를 받을 시 분노"
 	}
 	"The Addiction Desc"
 	{
@@ -2359,7 +2359,7 @@
 	{
 		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: makes crystall speed and turn rate 10％ slower)"
 		"it"		"Il suo vero nome è ''Donnerkrieg'' \nI suoi incantesimi sono molto più raffinati e ''puri'' rispetto a quelli del suo stato di schiavitù \nInoltre indossa la moda più recente di Ruanian e un equipaggiamento protettivo \nBasta non farsi punzecchiare dalle sue orecchie...\n(Silenzio: rallenta la velocità del cristallo e la velocità di rotazione di 10％)"
-		"ko"		"''도너크리그''의 진명입니다.\n그녀의 주문 상태는 블리츠크리그의 노예로 있던 시절보다 훨씬 정제되고 안정적으로 변했습니다.\n한편으로, 그녀는 루이나인들의 최신 패션과 보호 장비를 착용하고 있습니다.\n그녀의 귀에 찔리지 않도록 주의하세요...\n(침묵 상태 시, 수정구의 속도와 회전 속도가 10% 감소)"
+		"ko"		"''도너크리그''의 진명입니다.\n그녀의 주문 상태는 블리츠크리그의 노예로 있던 시절보다 훨씬 정제되고 안정적으로 변했습니다.\n한편으로, 그녀는 루이나인들의 최신 패션과 보호 장비를 착용하고 있습니다.\n그녀의 귀에 찔리지 않도록 주의하세요...\n(침묵 상태 시, 수정구의 속도와 회전 속도가 10％ 감소)"
 	}
 	"Karlas Desc"
 	{

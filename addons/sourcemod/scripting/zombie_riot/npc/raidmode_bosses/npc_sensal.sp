@@ -340,7 +340,7 @@ methodmap Sensal < CClotBody
 		if(tripple)
 		{
 			RemoveAllDamageAddition();
-			CPrintToChatAll("{blue}Sensal{default}: This is your final challange, beat all 3 of us at once, Fear the might of {gold}Expidonsa{default}!");
+			CPrintToChatAll("{blue}센살{default}: 이제 마지막 도전이다. 우리 셋을 한꺼번에 이겨보아라. {gold}엑스피돈사{default}의 힘을 두려워하라!");
 			GiveOneRevive(true);
 		}
 		for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -631,15 +631,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: You are the last one.");
+					CPrintToChatAll("{blue}센살{default}: 네가 마지막이다.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: None of you criminals are of any importants infront of {gold}Expidonsa{default}.");
+					CPrintToChatAll("{blue}센살{default}: 너희 잡범들은 {gold}엑스피돈사{default} 앞에선 별 것도 아닌 존재나 다름 없지.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: All your friends are gone. Submit to {gold}Expidonsa{default}.");
+					CPrintToChatAll("{blue}센살{default}: 네 친구들은 전부 사라졌다. {gold}엑스피돈사{default}에 복종하라.");
 				}
 			}
 		}
@@ -651,7 +651,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.SetCycle(0.01);
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{blue}Sensal{default}: Refusing to collaborate or even reason with {gold}Expidonsa{default} will result in termination.");
+		CPrintToChatAll("{blue}센살{default}: 엑스피돈사와의 협력을 거부하겠다면... 너희는 전부 제거될 것이다.");
 		return;
 	}
 	if(RaidModeTime < GetGameTime())
@@ -665,7 +665,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.SetCycle(0.01);
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		CPrintToChatAll("{blue}Sensal{default}: You are under arrest. The Expidonsan elite forces will take you now.");
+		CPrintToChatAll("{blue}센살{default}: 너희를 체포한다. 엑스피돈사의 정예 부대가 너희를 포위하고 있다.");
 		for(int i; i<32; i++)
 		{
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -803,7 +803,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
 			
-			CPrintToChatAll("{blue}Sensal{default}: You keep talking about Silvester and Waldch, what is the meaning of this?");
+			CPrintToChatAll("{blue}센살{default}: 도대체 실베스터와 왈츠 얘기는 왜 계속하는거지? 그들이 너와 무슨 관계가 있다고?");
 
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
@@ -860,9 +860,9 @@ static void Internal_NPCDeath(int entity)
 	if(i_RaidGrantExtra[npc.index] == 50)
 	{
 		if(XenoExtraLogic())
-			CPrintToChatAll("{blue}Sensal{default}: This area is restricted for all of you.");
+			CPrintToChatAll("{blue}센살{default}: 이 구역은 제한 구역이다.");
 		else
-			CPrintToChatAll("{blue}Sensal{default}: You all are coming with me.");
+			CPrintToChatAll("{blue}센살{default}: 너희 전부 나와 같이 가줘야겠다.");
 
 		return;
 	}
@@ -877,19 +877,19 @@ static void Internal_NPCDeath(int entity)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: Your actions against a fellow {gold}Expidonsan{default} will not be forgiven, I will be back with reinforcements.");
+			CPrintToChatAll("{blue}센살{default}: 우리 {gold}엑스피돈사인{default}들에게 행한 네 행동은 절대 잊지 않겠다. 더 많은 지원과 함께 돌아오겠다.");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: Your time will come when you pay for going against the law of {gold}Expidonsa{default}.");
+			CPrintToChatAll("{blue}센살{default}: 너희는 {gold}엑스피돈사{default}만의 법칙을 위반한 대가를 치를 때가 올 것이다.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: {gold}Expidonsa{default} is far out of your level of understanding.");
+			CPrintToChatAll("{blue}센살{default}: {gold}엑스피돈사{default}는 네 이해 수준을 크게 벗어난 곳이다.");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: You do not know what you are getting yourself into.");
+			CPrintToChatAll("{blue}센살{default}: 지금 너희가 하는 짓을 후회하게 될 거다.");
 		}
 	}
 
@@ -1658,7 +1658,7 @@ bool SensalTalkPostWin(Sensal npc)
 	}
 	if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
 	{
-		CPrintToChatAll("{blue}Sensal{default}: We apologize for the sudden attack, we didn't know, take this as an apology.");
+		CPrintToChatAll("{blue}센살{default}: 갑작스럽게 공격해서 진심으로 미안하다. 정말로 아무것도 몰랐어. 사과의 의미로 이것을 받아줘.");
 		
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		BlockLoseSay = true;
@@ -1667,29 +1667,29 @@ bool SensalTalkPostWin(Sensal npc)
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Expidonsan Battery Device");
-				CPrintToChat(client,"{default}Sensal gave you a high tech battery: {darkblue}''Expidonsan Battery Device''{default}!");
+				CPrintToChat(client,"{default}센살이 당신에게 고에너지 배터리를 건네주었습니다: {darkblue}''엑스피돈사인의 배터리 장비''{default}!");
 			}
 		}
 	}
 	else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 	{
 		i_SaidLineAlready[npc.index] = 4;
-		CPrintToChatAll("{blue}Sensal{default}: But I see that this was to protect you guys, yet you were able to destroy Calmaticus.");
+		CPrintToChatAll("{blue}센살{default}: 하지만 이제 그 둘의 행동이 당신들을 보호하기 위해 한 행동이란걸 알았어. 여전히, 칼마티커스를 파괴할만한 힘은 있는것 같군.");
 	}
 	else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
 	{
 		i_SaidLineAlready[npc.index] = 3;
-		CPrintToChatAll("{blue}Sensal{default}: We got sent to rescue him and we saw you attacking him.");
+		CPrintToChatAll("{blue}센살{default}: 그를 구출하기 위해 파견된 순간, 당신이 그를 공격하는 것을 봤었기 때문에 오해한 거야.");
 	}
 	else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
 	{
 		i_SaidLineAlready[npc.index] = 2;
-		CPrintToChatAll("{blue}Sensal{default}: We are close friends though we lost contact since he came out of the city.");
+		CPrintToChatAll("{blue}센살{default}: 우리는 친한 친구였지만, 그가 도시를 떠난 뒤로 연락이 끊겼었고,");
 	}
 	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 	{
 		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of yours now aswell.");
+		CPrintToChatAll("{blue}센살{default}: 아... 이런, 그러니까 그들은 당신들의 친구였었군...");
 	}
 	return true; //He is trying to help.
 }
@@ -2222,24 +2222,24 @@ static void Sensal_Weapon_Lines(Sensal npc, int client)
 	{
 		
 		case WEAPON_SENSAL_SCYTHE,WEAPON_SENSAL_SCYTHE_PAP_1,WEAPON_SENSAL_SCYTHE_PAP_2,WEAPON_SENSAL_SCYTHE_PAP_3:
-		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "You are trying to wield my weapon, {gold}%N{default}? You do not have the expertiese in it.", client);
-		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "You think you can use it to its fullest potentnial {gold}%N{default}? You dont even own the {gold}Manifestation glove.", client);}	//IT ACTUALLY WORKS, LMFAO
-		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvesters{default} blade? Why is he so nice to everyone...");
-		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default}, you...");}
-		case WEAPON_SICCERINO,WEAPON_WALDCH_SWORD_NOVISUAL:  Format(Text_Lines, sizeof(Text_Lines), "How do you have access to such expidonsan weaponry {gold}%N{default}?",client);
-		case WEAPON_WALDCH_SWORD_REAL:  Format(Text_Lines, sizeof(Text_Lines), "What? How did you get this elite blade {gold}%N{default}?",client);
-		case WEAPON_NEARL:  Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default} decided to visit Kazimierz?");
-		case WEAPON_KAHMLFIST:  Format(Text_Lines, sizeof(Text_Lines), "Kahmlstein caused enough problems as it is.");
-		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "This machine is gone now, use it better then it has {gold}%N{default}.",client);
-		case WEAPON_IRENE:  Format(Text_Lines, sizeof(Text_Lines), "Iberia's Weapons!? Looks like the secret is out of the bag now...");
-		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "OH MY GOD, {snow}BOB THE FIRST{default} IS ON YOUR SIDE?!");
-		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "Howd you get {lightblue}Nemal's{default} Weapon {gold}%N{default}?",client);
-		case WEAPON_IMPACT_LANCE:  Format(Text_Lines, sizeof(Text_Lines), "The lance... the only weapon that was forged from both ruina and {gold}expidonsa{default}...");
+		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "지금 내 무기를 쓰겠다는건가, {gold}%N{default}? 그 무기에 대한 전문 지식도 없으면서.", client);
+		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "네가 그 무기의 진정한 힘을 끌어낼 수 있을 것 같나, {gold}%N{default}? 넌 {gold}발현의 장갑{default}조차 없는 놈이다.", client);}	//IT ACTUALLY WORKS, LMFAO
+		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{gold}실베스터{default}의 검이잖아? 나참, 이걸 왜 아무한테나 주는건지...");
+		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}실베스터{default}, 너...");}
+		case WEAPON_SICCERINO,WEAPON_WALDCH_SWORD_NOVISUAL:  Format(Text_Lines, sizeof(Text_Lines), "그건 엑스피돈사인의 무기다. {gold}%N{default}. 어떻게 얻은거지?",client);
+		case WEAPON_WALDCH_SWORD_REAL:  Format(Text_Lines, sizeof(Text_Lines), "네가 왜 왈츠의 무기를 쓰고 있는거지, {gold}%N{default}?",client);
+		case WEAPON_NEARL:  Format(Text_Lines, sizeof(Text_Lines), "{gold}실베스터{default}가 카시미어에 갔다오기라도 한 건가?");
+		case WEAPON_KAHMLFIST:  Format(Text_Lines, sizeof(Text_Lines), "캄르스타인은 그 자체로 많은 문제를 일으킨 놈이지.");
+		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "그 기계는 사라졌다. 여전히 {gold}%N{default}가 쓰는 것보단 훨씬 낫겠지.",client);
+		case WEAPON_IRENE:  Format(Text_Lines, sizeof(Text_Lines), "그건 이베리아의 무기인데?! 이제야 좀 비밀이 풀리는군...");
+		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "맙소사, {snow}밥 1세{default}가 네 편에 섰단 말인가?!");
+		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "네 놈이 어떻게 {lightblue}네말의{default} 무기를 가지고 있는거지, {gold}%N{default}?",client);
+		case WEAPON_IMPACT_LANCE:  Format(Text_Lines, sizeof(Text_Lines), "창... 루이나와 {gold}엑스피돈사{default} 두 세력이 모두 사용하는 유일한 무기...");
 		/*
 		//uncomment on release
 		case WEAPON_NECRO_WANDS:
 		{
-			Format(Text_Lines, sizeof(Text_Lines), "What is this, the dead, an imitation...? Is this a prank again{green} Spookmaster Bones{default}?");
+			Format(Text_Lines, sizeof(Text_Lines), "이건 또 뭐지, 죽은 자를 모방...? 또{green} 스푸크마스터 본즈{default}의 장난질인가?");
 		}
 		*/
 		default:

@@ -515,7 +515,7 @@
 	{
 		"en"	"Patience is key. Plan ahead for the future.\n{green}''Hunter'' weapons gain +20％ damage every second, up to +500％ {yellow}(resets upon dealing damage, but doesnt activate till fully charged)"
 		"it"	"La pazienza è fondamentale.{green}Le armi da ''cacciatore'' guadagnano +20％ danni ogni secondo, fino a +500％ {yellow} (si ripristina quando si infliggono danni, ma non si attiva fino a quando non è completamente carica)"
-		"ko"	"인내심이 미래다. 미래를 위해 생각해라.\n{green}''사냥꾼'' 계열 무기가 매 초마다 피해량이 +20％ 증가하여 최대 +500％ 까지 증가. {yellow}(피해를 입히면 초기화되지만, 완전히 충전될 때까지는 발동되지 않음.)"
+		"ko"	"인내심이 미래다. 미래를 위해 생각해라.\n{green}''헌터'' 계열 무기가 매 초마다 피해량이 +20％ 증가하여 최대 +500％ 까지 증가. {yellow}(피해를 입히면 초기화되지만, 완전히 충전될 때까지는 발동되지 않음.)"
 	}
 	"Hand of Buckler"
 	{

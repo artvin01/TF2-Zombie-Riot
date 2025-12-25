@@ -2700,7 +2700,7 @@
 		"ru" 		"Фрактал Создателя Пути"
 		"chi"		"塑路者分形"
 		"it"		"Frattale sagomatore di percorsi"
-		"ko"		"페스셰이퍼 분신"
+		"ko"		"패스셰이퍼 분신"
 	}
 	"Barracks Teutonic Knight"
 	{
@@ -4630,7 +4630,7 @@
 	{
 		"en"	"Hes on the brink of death.\nSummons extreme slow areas that nerf attackspeed, and deal immensive damage if power reaches 100%, recives power when taking damage.\nKicks very strongly."
 		"it"	"E' ad un passo dalla morte\nEvoca aree estremamente lente che riducono la velocità d'attacco e infliggono danni immensi se la potenza raggiunge il 100%, recupera energia quando subisce danni."
-		"ko"	"이 자는 죽음의 문턱에 놓였습니다.\n힘이 100% 에 도달할 경우 막대한 피해를 가하고 공격 속도 디버프를 부여하는 지역을 소환합니다. 피해를 입을 때 힘이 충전됩니다.\n발차기 공격으로 대상을 밀어냅니다."
+		"ko"	"이 자는 죽음의 문턱에 놓였습니다.\n힘이 100％ 에 도달할 경우 막대한 피해를 가하고 공격 속도 디버프를 부여하는 지역을 소환합니다. 피해를 입을 때 힘이 충전됩니다.\n발차기 공격으로 대상을 밀어냅니다."
 	}
 	"Voided Erasus"
 	{
@@ -5897,10 +5897,12 @@
 	"Anti Viral Programm"
 	{
 		"en"		"Anti Viral Programm"
+		"ko"		"안티 바이러스 프로그램"
 	}
 	"Anti Viral Programm Desc"
 	{
 		"en"		"Its an anti virus, and youre the virus.\n-Goes after only one target.\n-If target dies or enough time passes, he fades away\n-Phases through everything."
+		"ko"		"안티 바이러스 프로그램입니다. 그리고 이들의 입장에서 당신은 바이러스죠.\n-한 명의 대상만을 추격함\n-대상이 사망하거나 충분한 시간이 지나면 소멸함\n-모든 것을 통과하여 지나감"
 	}
 	"Agent Eric"
 	{

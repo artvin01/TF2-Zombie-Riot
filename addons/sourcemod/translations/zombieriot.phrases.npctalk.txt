@@ -18,17 +18,17 @@
 	"birdeye_Talk_01-4"
 	{
 		"en"	"Bad guy Front"
-		"ko"	"나쁜놈들이 여기 있다."
+		"ko"	"전방에 적대 목표 발견!"
 	}
 	"birdeye_Talk_01-5"
 	{
 		"en"	"Pipe, Harb I need some fire support here"
-		"ko"	"파이프, 하브, 여기 화력 지원이 필요하다"
+		"ko"	"파이프, 하브, 여기 화력 지원이 필요하다."
 	}
 	"birdeye_Talk_02-1"
 	{
 		"en"	"Pipe down."
-		"ko"	"파이프 다운."
+		"ko"	"파이프가 쓰러졌다."
 	}
 	"birdeye_Talk_02-2"
 	{
@@ -38,7 +38,7 @@
 	"birdeye_Talk_03-1"
 	{
 		"en"	"Harbringer down."
-		"ko"	"하브링거 다운."
+		"ko"	"하브링거가 쓰러졌다."
 	}
 	"birdeye_Talk_03-2"
 	{
@@ -139,7 +139,7 @@
 	"bigpipe_Talk_02-3"
 	{
 		"en"	"Shit! eyes Dead!"
-		"ko"	"젠장! 버드아이 부상!"
+		"ko"	"젠장! 버드아이가 치명상을 입었다!"
 	}
 	"bigpipe_Talk_03-1"
 	{
@@ -164,7 +164,7 @@
 	"bigpipe_Talk_04-2"
 	{
 		"en"	"I need to treat myself"
-		"ko"	"자가치료가 필요해!"
+		"ko"	"자가수복을 해야해!"
 	}
 	"bigpipe_Talk_05-1"
 	{
@@ -174,91 +174,113 @@
 	"bigpipe_Talk_05-2"
 	{
 		"en"	"Another round of Ale for me"
+		"ko"	"이걸로 또 맥주 한 잔 받겠군."
 	}
 	"bigpipe_Talk_05-3"
 	{
 		"en"	"One Down"
+		"ko"	"한 놈 잡았고."
 	}
 	"bigpipe_Talk_06-1"
 	{
 		"en"	"We won’t go easy this time. Let’s rock"
+		"ko"	"이번엔 쉽게 넘어가진 않을거다. 가자고."
 	}
 
 	"harbringer_Talk_01-1"
 	{
 		"en"	"We got a cluster Fuck here"
+		"ko"	"완전 개판이로군!"
 	}
 	"harbringer_Talk_01-2"
 	{
 		"en"	"Let's Fuck them up"
+		"ko"	"전부 조져버리자고."
 	}
 	"harbringer_Talk_01-3"
 	{
 		"en"	"I see them"
+		"ko"	"저기에 놈들이 보인다."
 	}
 	"harbringer_Talk_01-4"
 	{
 		"en"	"Contact!"
+		"ko"	"적 접근중!"
 	}
 	"harbringer_Talk_02-1"
 	{
 		"en"	"Bird eye is killed"
+		"ko"	"버드아이가 죽었다!"
 	}
 	"harbringer_Talk_02-2"
 	{
 		"en"	"They got Bird eye"
+		"ko"	"놈들이 버드아이를 죽였어!"
 	}
 	"harbringer_Talk_02-3"
 	{
 		"en"	"Bird eye Respond!"
+		"ko"	"버드아이와의 무전이 완전히 끊겼다!"
 	}
 	"harbringer_Talk_03-1"
 	{
 		"en"	"Fuck they killed Pipe"
+		"ko"	"망할, 놈들이 빅 파이프를 죽였어!"
 	}
 	"harbringer_Talk_03-2"
 	{
 		"en"	"Pipe is Dead"
+		"ko"	"빅 파이프가 당했다!"
 	}
 	"harbringer_Talk_03-3"
 	{
 		"en"	"Pipe is Down"
+		"ko"	"빅 파이프가 쓰러졌다!"
 	}
 	"harbringer_Talk_04-1"
 	{
 		"en"	"Report to Base Ops"
+		"ko"	"본부에게 연락해. 상황 종료다."
 	}
 	"harbringer_Talk_04-2"
 	{
 		"en"	"Hostiles are Eliminated"
+		"ko"	"적들을 섬멸했군."
 	}
 	"harbringer_Talk_04-3"
 	{
 		"en"	"Loving this dead silence"
+		"ko"	"시끄럽던 놈들의 주둥이를 다물게 해주는건 우리의 일이지."
 	}
 	"harbringer_Talk_04-4"
 	{
 		"en"	"It's a kill"
+		"ko"	"놈들을 전부 조졌군. 잘 했어!"
 	}
 	"harbringer_Talk_05-1"
 	{
 		"en"	"Deploying armor grenade"
+		"ko"	"아머 수류탄 배치 중."
 	}
 	"harbringer_Talk_05-2"
 	{
 		"en"	"Deploying Armor repair kit"
+		"ko"	"아머 수리 키트 배치 중."
 	}
 	"harbringer_Talk_06-1"
 	{
 		"en"	"Frag Out!"
+		"ko"	"수류탄 투척!"
 	}
 	"harbringer_Talk_06-2"
 	{
 		"en"	"Throwing"
+		"ko"	"이거나 먹어라!"
 	}
 	"harbringer_Talk_07-1"
 	{
 		"en"	"Mercenaries don’t give up easily, and we are pissed."
+		"ko"	"그래, 포기를 안 하시겠다? 그럼 그만큼 더 쳐맞아야지."
 	}
 	
 	"Atomizer_Talk_Intro"
