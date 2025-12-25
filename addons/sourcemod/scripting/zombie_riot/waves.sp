@@ -86,9 +86,7 @@ enum struct Round
 	int FogColor2[4];
 	float FogStart;
 	float FogEnd;
-	float FogDesnity;	
-	
-	bool Override_Music_Setup;
+	float FogDesnity;
 }
 
 enum struct Vote
@@ -1219,6 +1217,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		{
 			continue;
 		}
+		round.music_setup.SetupKv("override_setup", kv);
 
 		round.Cash = kv.GetNum("cash", (defaultCash && waves < sizeof(DefaultWaveCash)) ? DefaultWaveCash[waves] : 0);
 		round.AmmoBoxExtra = kv.GetNum("ammobox_extra");
@@ -2185,7 +2184,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					}
 				}
 			}
-			if(round.music_setup.Valid()&&round.Override_Music_Setup)
+			if(round.music_setup.Valid())
 			{
 				round.music_setup.CopyTo(MusicSetup1);
 				for(int client=1; client<=MaxClients; client++)

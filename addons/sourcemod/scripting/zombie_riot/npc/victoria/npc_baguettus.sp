@@ -65,41 +65,41 @@ methodmap CaptinoBaguettus < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	public void PlayMeleeBackstabSound(int target)
 	{
 		if(this.m_flNextBackStepSound > GetGameTime(this.index))
 			return;
-		EmitSoundToAll(g_MeleeAttackBackstabSounds, this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackBackstabSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.7);
 		if(target <= MaxClients)
 			EmitSoundToClient(target, g_MeleeAttackBackstabSounds, target, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextBackStepSound = GetGameTime(this.index) + GetRandomFloat(2.0, 4.0);
 	}
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayTeleportSound() 
 	{
-		EmitSoundToAll(g_TeleportSound[GetRandomInt(0, sizeof(g_TeleportSound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_TeleportSound[GetRandomInt(0, sizeof(g_TeleportSound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayCloakSound() 
 	{
-		EmitSoundToAll("player/spy_cloak.wav", this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll("player/spy_cloak.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayUnCloakSound() 
 	{
-		EmitSoundToAll("player/spy_uncloak.wav", this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll("player/spy_uncloak.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayUnCloakLoudSound() 
 	{
-		EmitSoundToAll("player/spy_uncloak_feigndeath.wav", this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll("player/spy_uncloak_feigndeath.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
 	public void SpeechTalk(int client)
@@ -210,10 +210,15 @@ methodmap CaptinoBaguettus < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
-	property float m_flCaptinoMeniusTeleport
+	property float m_flCaptinoMeniusTeleportForAlly
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	property float m_flCaptinoMeniusTeleportForEnemy
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
 	
 	public CaptinoBaguettus(float vecPos[3], float vecAng[3], int ally)
@@ -228,6 +233,7 @@ methodmap CaptinoBaguettus < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.g_TimesSummoned = 0;
+		npc.m_iAttacksTillMegahit = 0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -240,12 +246,14 @@ methodmap CaptinoBaguettus < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.m_flCaptinoMeniusTeleport = 0.0;
+		npc.m_flCaptinoMeniusTeleportForAlly = 0.0;
+		npc.m_flCaptinoMeniusTeleportForEnemy = 0.0;
 		npc.m_bCamo = false;
 		npc.Anger = false;
 		npc.m_bFUCKYOU = false;
 		npc.m_bDissapearOnDeath = true;
 		b_NpcIsInvulnerable[npc.index] = true;
+		b_NoKillFeed[npc.index] = true;
 		
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NoKnockbackFromSources[npc.index] = true;
@@ -765,7 +773,7 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-			if(GameTime > npc.m_flCaptinoMeniusTeleport && flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*150.0)
+			if(GameTime > npc.m_flCaptinoMeniusTeleportForAlly && flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*150.0)
 			{
 				static float hullcheckmaxs[3];
 				static float hullcheckmins[3];
@@ -776,11 +784,11 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 					ParticleEffectAt(VecSelfNpc, "teleported_red", 0.5);
 					WorldSpaceCenter(npc.index, VecSelfNpc);
 					ParticleEffectAt(VecSelfNpc, "teleported_red", 0.5);
-					npc.m_flCaptinoMeniusTeleport = GameTime + 18.5;
+					npc.m_flCaptinoMeniusTeleportForAlly = GameTime + 18.5;
 					npc.PlayTeleportSound();
 				}
 				else
-					npc.m_flCaptinoMeniusTeleport = GameTime + 1.0;
+					npc.m_flCaptinoMeniusTeleportForAlly = GameTime + 1.0;
 			}
 			switch((!Can_I_See_Ally(npc.index, npc.m_iTargetAlly) || flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.7) ? 0 : 1)
 			{
@@ -828,6 +836,48 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 static void CaptinoBaguettusBackup(CaptinoBaguettus npc, float gameTime, float distance)
 {
 	bool BackstabDone = false;
+	if(gameTime > npc.m_flCaptinoMeniusTeleportForEnemy)
+	{
+		bool TotalFailed;
+		for(int AllyLoop; AllyLoop <= MaxClients; AllyLoop ++)
+		{
+			if(IsValidAlly(npc.index, AllyLoop))
+			{
+				float vecTarget[3]; WorldSpaceCenter(AllyLoop, vecTarget);
+				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+				GetEntPropVector(AllyLoop, Prop_Send, "m_vecOrigin", vecTarget);
+				if(GetVectorDistance(VecSelfNpc, vecTarget, true) > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*150.0)
+					continue;
+				Explode_Logic_Custom(0.0, npc.index, npc.index, -1, vecTarget, 200.0, _, _, true, _, false, _, GetNPCCount);
+				if(npc.m_iAttacksTillMegahit>=8)
+				{
+					static float hullcheckmaxs[3];
+					static float hullcheckmins[3];
+					hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+					hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );
+					if(Npc_Teleport_Safe(npc.index, vecTarget, hullcheckmins, hullcheckmaxs, false))
+					{
+						ParticleEffectAt(VecSelfNpc, "teleported_red", 0.5);
+						WorldSpaceCenter(npc.index, VecSelfNpc);
+						ParticleEffectAt(VecSelfNpc, "teleported_red", 0.5);
+						npc.m_flCaptinoMeniusTeleportForEnemy = gameTime + 60.0;
+						npc.PlayTeleportSound();
+						npc.m_flGetClosestTargetTime = 0.0;
+						ApplyStatusEffect(npc.index, npc.index, "Tonic Affliction", 3.0);
+						npc.m_flNextMeleeAttack = gameTime + 1.4;
+					}
+					else
+						npc.m_flCaptinoMeniusTeleportForEnemy = gameTime + 1.0;
+					TotalFailed=false;
+					break;
+				}
+			}
+			npc.m_iAttacksTillMegahit=0;
+			TotalFailed=true;
+		}
+		if(TotalFailed)
+			npc.m_flCaptinoMeniusTeleportForEnemy = gameTime + 5.0;
+	}
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
@@ -882,6 +932,15 @@ static void CaptinoBaguettusBackup(CaptinoBaguettus npc, float gameTime, float d
 			}
 			delete swingTrace;
 		}
+	}
+}
+
+static void GetNPCCount(int entity, int victim, float damage, int weapon)
+{
+	CaptinoBaguettus npc = view_as<CaptinoBaguettus>(entity);
+	if(IsValidEntity(npc.index) && IsValidEntity(victim) && !IsValidClient(victim) && GetTeam(npc.index) != GetTeam(victim))
+	{
+		npc.m_iAttacksTillMegahit++;
 	}
 }
 

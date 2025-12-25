@@ -136,6 +136,8 @@ methodmap VictorianFactory < CClotBody
 		
 		i_NpcWeight[npc.index] = 999;
 		
+		KillFeed_SetKillIcon(npc.index, "building_carried_destroyed");
+		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
@@ -921,4 +923,33 @@ static void Factory_Got_Explod(int entity)
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
+}
+
+stock int GetRandomVictoriaFactory(int entity, const char[] InputNPCId="npc_victoria_factory")
+{
+	int GetFactory = StringToInt(InputNPCId);
+	if(!GetFactory)
+		GetFactory = NPC_GetByPlugin(InputNPCId);
+
+	int victims;
+	int[] victim = new int[MaxClients];
+	
+	for(int cpucount; cpucount<i_MaxcountNpcTotal; cpucount++)
+	{
+		int GetCPU = EntRefToEntIndexFast(i_ObjectsNpcsTotal[cpucount]);
+		if(IsValidEntity(GetCPU) && i_NpcInternalId[GetCPU] == GetFactory && !b_NpcHasDied[GetCPU] && GetTeam(entity) == GetTeam(GetCPU))
+		{
+			victim[victims++] = GetCPU;
+		}
+	}
+	
+	if(victims)
+	{
+		int winner = victim[GetURandomInt() % victims];
+		GetFactory = winner;
+	}
+	else
+		GetFactory=-1;
+
+	return GetFactory;
 }
