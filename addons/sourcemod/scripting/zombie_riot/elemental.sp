@@ -473,7 +473,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 					SakratanGroupDebuff);
 					b_NpcIsTeamkiller[victim] = false;
 					f_ArmorCurrosionImmunity[victim][Element_Chaos]  = GetGameTime() + 10.0;
-					if(EnableSilentMode)
+					if(!EnableSilentMode)
 						Force_ExplainBuffToClient(victim, "Chaos Elemental Damage");
 					else
 						Force_ExplainBuffToClient(victim, "Chaos Elemental Damage High");
@@ -1016,13 +1016,12 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 				{
 					Armor_Charge[victim] = 0;
 					
-					int count = RoundToCeil(2.0 * MultiGlobalEnemy);
-					Matrix_Spawning(attacker, count);
+					EmitSoundToAll("misc/freeze_cam.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+					Matrix_Spawning(attacker, victim);
 
 					float MatrixLoc[3];
 					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", MatrixLoc);
 					spawnRing_Vectors(MatrixLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 54, 77, 43, 255, 1, 1.0, 5.0, 8.0, 1, 125.0 * 2.0);
-					EmitSoundToAll("ambient/energy/weld1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 					f_ArmorCurrosionImmunity[victim][Element_Corruption] = GetGameTime() + 5.0;
 					Force_ExplainBuffToClient(victim, "Corruption Elemental Damage");
 				}
@@ -1060,9 +1059,8 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 			{
 				ElementDamage[victim][Element_Corruption] = 0;
 				f_ArmorCurrosionImmunity[victim][Element_Corruption] = GetGameTime() + 5.0;
-				EmitSoundToAll("ambient/energy/weld1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-				int count = RoundToCeil(3.0 * MultiGlobalEnemy);
-				Matrix_Spawning(attacker, count);
+				EmitSoundToAll("misc/freeze_cam.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+				Matrix_Spawning(attacker, victim);
 			}
 			
 			if(attacker && attacker <= MaxClients)
@@ -1083,6 +1081,8 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 static const char g_Agent_Summons[][] =
 {
 	//wave 1-19 | 0-6
+	"npc_antiviral_programm",
+	/*
 	"npc_agent_john",
 	"npc_agent_james",
 	"npc_agent_chase",
@@ -1126,57 +1126,43 @@ static const char g_Agent_Summons[][] =
 	"npc_agent_ross",
 	"npc_agent_spencer",
 	"npc_agent_todd",
+	*/
 };
 
-static void Matrix_Spawning(int entity, int count)
+static void Matrix_Spawning(int attacker, int victim)
 {
-	int summon = GetRandomInt(0, 6);
-	int wave = (Waves_GetRoundScale() + 1);
-	if(wave >= 20)
+	float pos[3];
+	GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos);
+	int Spawner_entity = GetRandomActiveSpawner();
+	if(IsValidEntity(Spawner_entity))
 	{
-		summon = GetRandomInt(7, 11);
+		float ang[3];
+		GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+		GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 	}
-	if(wave >= 30)
+	int summon = NPC_CreateByName("npc_antiviral_programm", -1, pos, {0.0,0.0,0.0}, GetTeam(attacker), "final");
+	if(IsValidEntity(summon))
 	{
-		summon = GetRandomInt(12, 16);
-	}
+		CClotBody npcsummon = view_as<CClotBody>(summon);
+		if(GetTeam(attacker) != TFTeam_Red)
+			Zombies_Currently_Still_Ongoing++;
 
-	char name[255];
-	FormatEx(name, sizeof(name), "%s", g_Agent_Summons[summon]);
-	int health = ReturnEntityMaxHealth(entity);
-	if(b_thisNpcIsABoss[entity])
-	{
-		health = (ReturnEntityMaxHealth(entity)/10);
+		npcsummon.m_iTarget = victim;
+
+		int Decicion = TeleportDiversioToRandLocation(summon, true, 1500.0, 1000.0);
+		switch(Decicion)
+		{
+			case 2:
+			{
+				Decicion = TeleportDiversioToRandLocation(summon, true, 1000.0, 500.0);
+				if(Decicion == 2)
+				{
+					Decicion = TeleportDiversioToRandLocation(summon, true, 500.0, 250.0);
+				}
+			}
+		}
+		npcsummon.m_iWearable5 = ConnectWithBeam(summon, victim, 65, 125, 65, 2.0, 2.0, 0.0, "sprites/laserbeam.vmt");
 	}
-	if(b_thisNpcIsARaid[entity])
-	{
-		health = (ReturnEntityMaxHealth(entity)/100);
-	}
-	if(!b_thisNpcIsARaid[entity] && !b_thisNpcIsABoss[entity] && MultiGlobalHealth != 1.0)
-	{
-		//account for max hp sacling, or else we just keep multiplying forever...
-		//because it does the scaling on spawn, but doesnt revert it here when it adds a new npc....
-		//it was the same bug alaxios had, in this case, it has to be reversed.
-		health = RoundToNearest(float(health) / MultiGlobalHealth);
-	}
-	
-	Enemy enemy;
-	enemy.Index = NPC_GetByPlugin(name);
-	enemy.Health = health;
-	enemy.Is_Outlined = false;
-	enemy.Is_Immune_To_Nuke = true;
-	//do not bother outlining.
-	enemy.ExtraMeleeRes = 1.0;
-	enemy.ExtraRangedRes = 1.0;
-	enemy.ExtraSpeed = 1.0;
-	enemy.ExtraDamage = 1.0;
-	enemy.ExtraSize = 1.0;		
-	enemy.Team = GetTeam(entity);
-	for(int i; i<count; i++)
-	{
-		Waves_AddNextEnemy(enemy);
-	}
-	Zombies_Currently_Still_Ongoing += count;
 }
 
 void Matrix_Shared_CorruptionPrecache()

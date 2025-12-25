@@ -253,9 +253,37 @@
 	{
 		"en"	"Sealed Bofazem Crate"
 	}
+	"Treasure Crate"
+	{
+		"en"	"Treasure Crate"
+	}
+	"Treasure Key"
+	{
+		"en"	"Treasure Key"
+	}
+	"Treasure Key Desc"
+	{
+		"en"	"Treasure Vaults can now appear, will be consumed upon entering"
+	}
+	"Key Fragment"
+	{
+		"en"	"Key Fragment"
+	}
+	"Key Fragment Desc"
+	{
+		"en"	"Craft in the Control Center"
+	}
 
 	"Common Dungeon"
 	{
 		"en"	"⚔ Dungeon"
+	}
+	"Treasure Vault"
+	{
+		"en"	"Treasure Vault"
+	}
+	"Treasure Vault Encounter Title"
+	{
+		"en"	"We used the Treasure Key to open inside, some items are presented in front of you."
 	}
 }
