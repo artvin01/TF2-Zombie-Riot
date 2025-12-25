@@ -69,6 +69,18 @@ stock float fClamp(float fValue, float fMin, float fMax)
 
 	return fValue;
 }
+stock int iClamp(int iValue, int iMin, int iMax)
+{
+	if (iValue < iMin) {
+		return iMin;
+	}
+
+	if (iValue > iMax) {
+		return iMax;
+	}
+
+	return iValue;
+}
 
 stock int GetSpellbook(int client)
 {

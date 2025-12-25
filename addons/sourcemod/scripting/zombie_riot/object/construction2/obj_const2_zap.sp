@@ -98,8 +98,8 @@ void ObjectC2Zap_ClotThink(ObjectC2Zap npc)
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 
-		npc.m_iTarget = GetClosestTarget(npc.index,_,500.0,.CanSee = true, .UseVectorDistance = true);
-		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
+		npc.m_iTarget = GetClosestTarget(npc.index,_,300.0,.CanSee = true, .UseVectorDistance = true);
+		npc.m_flGetClosestTargetTime = FAR_FUTURE;
 	}
 	
 	if(!IsValidEnemy(npc.index, npc.m_iTarget))

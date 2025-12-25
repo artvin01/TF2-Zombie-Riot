@@ -100,7 +100,7 @@ void ObjectC2Cannon_ClotThink(ObjectC2Cannon npc)
 		float DistanceLimit = 900.0;
 
 		npc.m_iTarget = GetClosestTarget(npc.index,_,DistanceLimit,.CanSee = true, .UseVectorDistance = true);
-		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = FAR_FUTURE;
 	}
 	
 	if(!IsValidEnemy(npc.index, npc.m_iTarget))

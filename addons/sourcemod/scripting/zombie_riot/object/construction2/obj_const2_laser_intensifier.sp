@@ -8,33 +8,32 @@
 #undef CONSTRUCT_COST2
 #undef CONSTRUCT_MAXLVL
 
-#define CONSTRUCT_NAME		"Cannon"
+#define CONSTRUCT_NAME		"Laser Intensifier"
 #define CONSTRUCT_RESOURCE1	"copper"
-#define CONSTRUCT_COST1		((5 + (CurrentLevel * 5)) * (CurrentLevel > 3 ? 2 : 1))
-#define CONSTRUCT_MAXLVL	8
-// 310 total cost
+#define CONSTRUCT_COST1		(20 + (CurrentLevel * 10))
+#define CONSTRUCT_MAXLVL	5
 
-#define TOWER_MODEL_ARROW "models/props_urban/urban_skybuilding005a.mdl"
+static const char NPCModel[] = "models/props_moonbase/moon_cube_crystal02.mdl";
 
 static char g_ShootingSound[][] = {
-	"weapons/bow_shoot.wav",
+	"weapons/capper_shoot.wav",
 };
 
 static int NPCId;
 static int LastGameTime;
 static int CurrentLevel;
 
-void ObjectC2ArrowTower_MapStart()
+void ObjectC2LaserIntensifier_MapStart()
 {
 	LastGameTime = -1;
 	CurrentLevel = 0;
-	PrecacheSoundArray(g_ShootingSound);
-	PrecacheModel(TOWER_MODEL_ARROW);
 
+	PrecacheSoundArray(g_ShootingSound);
+	PrecacheModel(NPCModel);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), CONSTRUCT_NAME);
-	strcopy(data.Plugin, sizeof(data.Plugin), "obj_const2_arrow_tower");
+	strcopy(data.Plugin, sizeof(data.Plugin), "obj_const2_laser_intensifier");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -44,7 +43,7 @@ void ObjectC2ArrowTower_MapStart()
 
 	BuildingInfo build;
 	build.Section = 3;
-	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const2_arrow_tower");
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const2_laser_intensifier");
 	build.Cost = 600;
 	build.Health = 50;
 	build.Cooldown = 30.0;
@@ -54,16 +53,21 @@ void ObjectC2ArrowTower_MapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return ObjectC2ArrowTower(client, vecPos, vecAng);
+	return ObjectC2LaserIntensifier(client, vecPos, vecAng);
 }
 
-methodmap ObjectC2ArrowTower < ObjectGeneric
+methodmap ObjectC2LaserIntensifier < ObjectGeneric
 {
+	property float m_flAttackspeedRamp
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	public void PlayShootSound() 
 	{
-		EmitSoundToAll(g_ShootingSound[GetRandomInt(0, sizeof(g_ShootingSound) - 1)], this.index, SNDCHAN_AUTO, 70, _, 0.7, 90);
+		EmitSoundToAll(g_ShootingSound[GetRandomInt(0, sizeof(g_ShootingSound) - 1)], this.index, SNDCHAN_AUTO, 70, _, 0.6, iClamp(RoundToNearest(30.0 / this.m_flAttackspeedRamp), 70, 110));
 	}
-	public ObjectC2ArrowTower(int client, const float vecPos[3], const float vecAng[3])
+	public ObjectC2LaserIntensifier(int client, const float vecPos[3], const float vecAng[3])
 	{
 		if(LastGameTime != CurrentGame)
 		{
@@ -71,26 +75,23 @@ methodmap ObjectC2ArrowTower < ObjectGeneric
 			LastGameTime = CurrentGame;
 		}
 
-		ObjectC2ArrowTower npc = view_as<ObjectC2ArrowTower>(ObjectGeneric(client, vecPos, vecAng, TOWER_MODEL_ARROW, "0.45", "50", {25.0, 25.0, 80.0},_,false));
-
-		npc.m_iWearable1 = npc.EquipItemSeperate("models/props_manor/clocktower_01.mdl");
-		SetVariantString("0.1");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
+		ObjectC2LaserIntensifier npc = view_as<ObjectC2LaserIntensifier>(ObjectGeneric(client, vecPos, vecAng, NPCModel, "0.9s", "50", {20.0, 20.0, 60.0},_,false));
 
 		npc.m_bConstructBuilding = true;
 		npc.FuncCanBuild = ClotCanBuild;
-		func_NPCThink[npc.index] = ObjectC2ArrowTower_ClotThink;
+		func_NPCThink[npc.index] = ObjectC2LaserIntensifier_ClotThink;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
 		SetRotateByDefaultReturn(npc.index, -180.0);
+		npc.m_flAttackspeedRamp = 2.0;
+
+		npc.m_iWearable1 = npc.EquipItemSeperate("models/workshop/weapons/c_models/c_invasion_pistol/c_invasion_pistol.mdl",_,_, 4.0, 40.0);
 
 		return npc;
 	}
 }
 
-void ObjectC2ArrowTower_ClotThink(ObjectC2ArrowTower npc)
+void ObjectC2LaserIntensifier_ClotThink(ObjectC2LaserIntensifier npc)
 {
 	int Owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
 	if(!IsValidEntity(Owner))
@@ -102,9 +103,7 @@ void ObjectC2ArrowTower_ClotThink(ObjectC2ArrowTower npc)
 	npc.m_flNextDelayTime = gameTime + 0.1;
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
-		float DistanceLimit = 1100.0;
-
-		npc.m_iTarget = GetClosestTarget(npc.index,_,DistanceLimit,.CanSee = true, .UseVectorDistance = true);
+		npc.m_iTarget = GetClosestTarget(npc.index,_,500.0,.CanSee = true, .UseVectorDistance = true);
 		npc.m_flGetClosestTargetTime = FAR_FUTURE;
 	}
 	
@@ -112,12 +111,14 @@ void ObjectC2ArrowTower_ClotThink(ObjectC2ArrowTower npc)
 	{
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flAttackspeedRamp = 2.0;
 		return;
 	}
 	if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 	{
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flAttackspeedRamp = 2.0;
 		return;
 	}
 	if(npc.m_flNextMeleeAttack > gameTime)
@@ -125,31 +126,46 @@ void ObjectC2ArrowTower_ClotThink(ObjectC2ArrowTower npc)
 		return;
 	}
 	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	if(flDistanceToTarget >= (1100.0 * 1100.0))
+	if(flDistanceToTarget >= (500.0 * 500.0))
 	{
 		//too far away
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flAttackspeedRamp = 2.0;
 		return;
 	}
+	if(npc.m_iTarget != npc.m_iTargetAlly)
+	{
+		npc.m_flAttackspeedRamp = 2.0;
+	}
+	else
+	{
+		if(npc.m_flAttackspeedRamp <= 1.0)
+			npc.m_flAttackspeedRamp *= 0.85;
+		else
+			npc.m_flAttackspeedRamp *= 0.45;
 
-	static float rocketAngle[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", rocketAngle);
-	npc.PlayShootSound();
-	float damageDealt = 165.0 * Pow(float(CurrentLevel), 2.0);
+		if(npc.m_flAttackspeedRamp <= 0.15)
+		{
+			npc.m_flAttackspeedRamp = 0.15;
+		}
+	}
+	npc.m_iTargetAlly = npc.m_iTarget;
+	Sentrygun_FaceEnemy(npc.index, npc.m_iTarget);
+
+	float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
+
+	float damageDealt = 90.0 * Pow(float(CurrentLevel), 2.0);
 	if(ShouldNpcDealBonusDamage(npc.m_iTarget))
 		damageDealt *= 3.0;
 
-	npc.m_flNextMeleeAttack = gameTime + 1.0;
-		
-	
-	float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
-
 	int rocket;
-	rocket = npc.FireArrow(vecTarget, damageDealt,2000.0);
+	rocket = npc.FireParticleRocket(vecTarget, damageDealt,700.0, 1, "raygun_projectile_red", .hide_projectile = true);
 
+	npc.PlayShootSound();
 	float fAng[3];
 	GetEntPropVector(rocket, Prop_Send, "m_angRotation", fAng);
 	Initiate_HomingProjectile(rocket,
@@ -161,6 +177,8 @@ void ObjectC2ArrowTower_ClotThink(ObjectC2ArrowTower npc)
 		fAng,
 		npc.m_iTarget);			// float AnglesInitiate[3]);
 	TriggerTimerHoming(rocket);	
+	npc.m_flNextMeleeAttack = gameTime + npc.m_flAttackspeedRamp;
+
 }
 
 static bool ClotCanBuild(int client, int &count, int &maxcount)
@@ -175,7 +193,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			return false;
 		}
 
-		maxcount = CurrentLevel > 4 ? 2 : 1;
+		maxcount = CurrentLevel + 1;
 		if(count >= maxcount)
 			return false;
 	}
@@ -210,7 +228,7 @@ static void ClotShowInteractHud(ObjectGeneric npc, int client)
 
 		char button[64];
 		PlayerHasInteract(client, button, sizeof(button));
-		PrintCenterText(client, "%t", "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL + 1, button);
+		PrintCenterText(client, "%t", "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL, button);
 	}
 }
 

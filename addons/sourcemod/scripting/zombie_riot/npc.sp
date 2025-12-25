@@ -128,6 +128,7 @@ void NPC_ConfigSetup()
 	ObjectC2ArrowTower_MapStart();
 	ObjectC2Incinerator_MapStart();
 	ObjectC2House_MapStart();
+	ObjectC2LaserIntensifier_MapStart();
 	// Constructs
 
 	// Vehicles
@@ -1539,6 +1540,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/construction2/obj_const2_arrow_tower.sp"
 #include "object/construction2/obj_const2_incinerator.sp"
 #include "object/construction2/obj_const2_house.sp"
+#include "object/construction2/obj_const2_laser_intensifier.sp"
 
 // VEHICLES
 #include "../shared/vehicles/vehicle_shared.sp"

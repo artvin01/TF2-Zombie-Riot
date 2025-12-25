@@ -161,7 +161,7 @@ methodmap ContractedMotivator < CClotBody
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
-		SetVariantInt(1);
+		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		npc.StartPathing();
