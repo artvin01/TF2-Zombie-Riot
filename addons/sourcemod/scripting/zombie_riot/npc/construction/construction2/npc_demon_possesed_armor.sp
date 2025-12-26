@@ -238,7 +238,7 @@ static void ClotThink(int iNPC)
 			{
 				NpcStats_CopyStats(npc.index, spawn_index);
 				CClotBody npc1 = view_as<CClotBody>(spawn_index);
-				npc1.m_flNextThinkTime = GetGameTime() + 0.5;
+				npc1.m_flNextThinkTime = GetGameTime() + 1.5;
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				int health = ReturnEntityMaxHealth(npc.index);
 
@@ -251,9 +251,9 @@ static void ClotThink(int iNPC)
 
 				float flPos[3];
 				flPos = pos;
-				flPos[2] += 250.0;
-				flPos[0] += GetRandomInt(0,1) ? GetRandomFloat(-200.0, -100.0) : GetRandomFloat(100.0, 200.0);
-				flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-200.0, -100.0) : GetRandomFloat(100.0, 200.0);
+				flPos[2] += 150.0;
+				flPos[0] += GetRandomInt(0,1) ? GetRandomFloat(-100.0, -50.0) : GetRandomFloat(50.0, 100.0);
+				flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-100.0, -50.0) : GetRandomFloat(50.0, 100.0);
 				npc1.SetVelocity({0.0,0.0,0.0});
 				PluginBot_Jump(spawn_index, flPos);
 
@@ -382,6 +382,7 @@ static void Clot_SelfDefense(DemonPossesedArmor npc, float distance, float vecTa
 				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1",_,_,_, 0.85);
 			else
 				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
+
 			npc.PlayMeleeSound();
 			
 			npc.m_flAttackHappens = gameTime + 0.25;
