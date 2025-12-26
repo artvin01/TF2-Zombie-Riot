@@ -1958,7 +1958,7 @@
 	"Pap Weapon Upgraded"
 	{
 		"#format"	"{1:s}"
-		"en"		"Your weapon has been upgraded to {1}:"
+		"en"		"Your weapon has been enhanced to {1}:"
 		"it"		"La tua arma è stata potenziata a {1}:"
 		"ko"		"당신의 무기가 {1} 로 강화됨:"
 	}
