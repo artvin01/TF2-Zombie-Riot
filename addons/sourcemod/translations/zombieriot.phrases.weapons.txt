@@ -2101,6 +2101,11 @@
 		"en"		"Enhance Active Weapon"
 		"ko"		"현재 들고있는 무기 강화"
 	}
+	"Enhance Last Bought Weapon"
+	{
+		"en"		"Enhance Last Bought Weapon"
+		"ko"		"가장 최근 구매한 무기 강화"
+	}
 	"Level Perks"//Lvl Perks here
 	{
 		"en"		"Level Perks"
