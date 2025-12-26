@@ -95,11 +95,11 @@
 	{
 		"en"	"{green}Firing speed increased by +20％"
 	}
-	"Refresh Focus"
+	"Refreshing Focus"
 	{
-		"en"	"Refresh Focus"
+		"en"	"Refreshing Focus"
 	}
-	"Refresh Focus Desc"
+	"Refreshing Focus Desc"
 	{
 		"en"	"{green}Reload time and mana cost decreased by -20％"
 	}
@@ -289,15 +289,16 @@
 	{
 		"en"	"Didn't find anything yet, check back soon!"
 	}
+	"APC"
+	{
+		"en"	"APC"
+	}
+	"Spawned Vehicle At"
+	{
+		"#format"	"{1:s},{2:d}"
+		"en"		"{orange}{1} {default}built {orange}{2} {default}for {orange}{3}"
+	}
 
-	"Common Dungeon"
-	{
-		"en"	"⚔ Dungeon"
-	}
-	"Treasure Vault"
-	{
-		"en"	"Treasure Vault"
-	}
 	"Treasure Vault Encounter Title"
 	{
 		"en"	"We used the Treasure Key to open inside, some items are presented in front of you."

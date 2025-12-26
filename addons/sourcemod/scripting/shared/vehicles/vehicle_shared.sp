@@ -747,9 +747,16 @@ static void AdjustClientWeapons(int client)
 		VehicleGeneric obj = view_as<VehicleGeneric>(vehicle);
 		if(slot == -1)
 		{
-			/*if(obj.m_bNoAttack)
+			if(obj.m_bNoAttack)
 			{
-				int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				RestoreClientWeapons(client);
+				ModifiedWeapons[client] = -1;
+
+				TFClassType class = WeaponClass[client];
+				ViewChange_Switch(client, -1, "");
+				WeaponClass[client] = class;
+				return;
+				/*int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 				if(active != -1)
 				{
 					char classname[36], buffer[36];
@@ -759,9 +766,8 @@ static void AdjustClientWeapons(int client)
 						Store_SwapToItem(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
 						TF2_AddCondition(client, TFCond_RestrictToMelee);
 					}
-				}
+				}*/
 			}
-			else*/
 		}
 		else
 		{
@@ -770,7 +776,7 @@ static void AdjustClientWeapons(int client)
 			{
 				if(ModifiedWeapons[client] != gun)
 				{
-					if(ModifiedWeapons[client])
+					if(ModifiedWeapons[client] > 0)
 						Store_RemoveSpecificItem(client, NULL_STRING, _, ModifiedWeapons[client]);
 					
 					i_ClientHasCustomGearEquipped[client] = true;
@@ -787,10 +793,30 @@ static void AdjustClientWeapons(int client)
 				}
 				return;
 			}
+			else if(gun < 0)
+			{
+				RestoreClientWeapons(client);
+				ModifiedWeapons[client] = -1;
+				
+				TFClassType class = WeaponClass[client];
+				ViewChange_Switch(client, -1, "");
+				WeaponClass[client] = class;
+				return;
+			}
 		}
 	}
 
-	if(ModifiedWeapons[client])
+	RestoreClientWeapons(client);
+}
+
+static void RestoreClientWeapons(int client)
+{
+	if(ModifiedWeapons[client] == -1)
+	{
+		ViewChange_Update(client);
+		ModifiedWeapons[client] = 0;
+	}
+	else if(ModifiedWeapons[client])
 	{
 		i_ClientHasCustomGearEquipped[client] = false;
 		Store_RemoveSpecificItem(client, NULL_STRING, _, ModifiedWeapons[client]);

@@ -74,6 +74,10 @@ methodmap ObjectC2Zap < ObjectGeneric
 
 		ObjectC2Zap npc = view_as<ObjectC2Zap>(ObjectGeneric(client, vecPos, vecAng, NPCModel, "0.6", "50", {20.0, 20.0, 100.0},_,false));
 
+ 		b_CantCollidie[npc.index] = true;
+	 	b_CantCollidieAlly[npc.index] = true;
+		npc.m_bThisEntityIgnored = true;
+		
 		npc.m_bConstructBuilding = true;
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCThink[npc.index] = ObjectC2Zap_ClotThink;

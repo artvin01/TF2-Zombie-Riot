@@ -4,7 +4,7 @@
 void VehicleFullAPC_Setup()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "ATV");
+	strcopy(data.Name, sizeof(data.Name), "APC");
 	strcopy(data.Plugin, sizeof(data.Plugin), "vehicle_fullapc");
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;

@@ -4,7 +4,7 @@
 #include <adt_trie_sort>
 
 static bool DungeonMode;
-static ArrayList MusicList;	// MusicEnum
+static ArrayList MusicList;	// DMusicInfo
 static ArrayList RaidList;	// StringMap
 static ArrayList RoomList;	// RoomInfo
 static ArrayList BaseList;	// RoomInfo
@@ -15,6 +15,30 @@ static char TeleHome[64];
 static char TeleRival[64];
 static char TeleEnter[64];
 static char TeleNext[64];
+
+enum struct DMusicInfo
+{
+	int Common;
+	int MinAttack;
+	int MaxAttack;
+	int Duration;
+	char Key[64];
+	MusicEnum Music;
+
+	bool SetupKv(KeyValues kv)
+	{
+		if(!this.Music.SetupKv("", kv))
+			return false;
+		
+		this.Duration = this.Music.Time;
+		this.Music.Time = 9999;
+		this.Common = kv.GetNum("common", 1);
+		this.MinAttack = kv.GetNum("minattack", -9999);
+		this.MaxAttack = kv.GetNum("maxattack", 9999);
+		kv.GetString("key", this.Key, sizeof(this.Key));
+		return true;
+	}
+}
 
 enum struct LootInfo
 {
@@ -445,19 +469,19 @@ void Dungeon_SetupVote(KeyValues kv)
 		delete BaseList;
 	}
 
-	MusicEnum music;
+	DMusicInfo music;
 	if(MusicList)
 	{
 		int length = MusicList.Length;
 		for(int i; i < length; i++)
 		{
 			MusicList.GetArray(i, music);
-			music.Clear();
+			music.Music.Clear();
 		}
 		delete MusicList;
 	}
 
-	MusicList = new ArrayList(sizeof(MusicEnum));
+	MusicList = new ArrayList(sizeof(DMusicInfo));
 	RaidList = new ArrayList();
 	LootMap = new StringMap();
 	RoomList = new ArrayList(sizeof(RoomInfo));
@@ -565,7 +589,7 @@ void Dungeon_SetupVote(KeyValues kv)
 		{
 			do
 			{
-				if(music.SetupKv("", kv))
+				if(music.SetupKv(kv))
 					MusicList.PushArray(music);
 			}
 			while(kv.GotoNextKey());
@@ -705,9 +729,6 @@ void Dungeon_Start()
 			int amount = SkillTree_GetByName(client, "Ingot Up 1");
 			if(amount > highestLevel)
 				highestLevel = amount;
-			
-			Music_Stop_All(client);
-			SetMusicTimer(client, GetTime() + 35);
 		}
 	}
 
@@ -720,13 +741,78 @@ void Dungeon_Start()
 
 static void SetRandomMusic()
 {
+	DMusicInfo music;
+	ArrayList pool;
 	int length = MusicList.Length;
-	if(length)
+	for(int a; a < length; a++)
 	{
-		static MusicEnum music;
-		MusicList.GetArray(GetURandomInt() % length, music);
-		music.CopyTo(BGMusicSpecial1);
+		MusicList.GetArray(a, music);
+		if(!music.Key[0])
+			continue;
+
+		if(music.MinAttack >= CurrentAttacks || music.MaxAttack <= CurrentAttacks)
+			continue;
+
+		if(!Rogue_HasNamedArtifact(music.Key))
+		{
+			Function func = GetFunctionByName(null, music.Key);
+			if(func == INVALID_FUNCTION)
+				continue;
+			
+			bool value;
+			Call_StartFunction(null, func);
+			Call_Finish(value);
+			if(!value)
+				continue;
+		}
+
+		for(int b; b < music.Common; b++)
+		{
+			pool.Push(a);
+		}
 	}
+
+	if(pool.Length == 0)
+	{
+		for(int a; a < length; a++)
+		{
+			MusicList.GetArray(a, music);
+			if(music.Key[0])
+				continue;
+
+			if(music.MinAttack >= CurrentAttacks || music.MaxAttack <= CurrentAttacks)
+				continue;
+
+			for(int b; b < music.Common; b++)
+			{
+				pool.Push(a);
+			}
+		}
+	}
+
+	length = pool.Length;
+	if(length < 1)
+		return;
+
+	length = pool.Get(GetURandomInt() % length);
+	MusicList.GetArray(length, music);
+
+	int time = GetTime();
+	int nextAttack = RoundToCeil(NextAttackAt - GetGameTime()) - music.Duration;
+
+	if(nextAttack > 0)
+		time += GetRandomInt(0, nextAttack);
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(!b_IsPlayerABot[client] && IsClientInGame(client))
+		{
+			Music_Stop_All(client);
+			SetMusicTimer(client, time);
+		}
+	}
+
+	music.Music.CopyTo(BGMusicSpecial1);
 }
 
 void Dungeon_AntiStalled()
@@ -857,6 +943,11 @@ void Dungeon_SetZoneMarker(int entity, DungeonZone zone)
 	ZoneMarkerRef[zone] = entity;
 	if(ZoneMarkerRef[zone] > 0 && ZoneMarkerRef[zone] < sizeof(ZoneMarkerRef))
 		ZoneMarkerRef[zone] = EntIndexToEntRef(ZoneMarkerRef[zone]);
+}
+
+int Dungeon_GetZoneMarker(DungeonZone zone)
+{
+	return ZoneMarkerRef[zone];
 }
 
 void Dungeon_SetEntityZone(int entity, DungeonZone zone)
@@ -1264,15 +1355,11 @@ static void CreateNewRivals()
 {
 	RoomInfo room;
 	ArrayList roomPool;
-	int highestCommon;
 	int round = RoundToFloor(BattleWaveScale);
 	int length = BaseList.Length;
 	for(int a; a < length; a++)
 	{
 		BaseList.GetArray(a, room);
-
-		if(room.Common > highestCommon)
-			highestCommon = room.Common;
 
 		if(room.CurrentCooldown > GetGameTime())
 			continue;
@@ -1555,18 +1642,7 @@ void Dungeon_BattleVictory()
 	}
 
 	if(AttackType == 2)
-	{
-		for(int client = 1; client <= MaxClients; client++)
-		{
-			if(!b_IsPlayerABot[client] && IsClientInGame(client))
-			{
-				Music_Stop_All(client);
-				SetMusicTimer(client, GetTime() + GetRandomInt(90, 150));
-			}
-		}
-
 		SetRandomMusic();
-	}
 	
 	Zero(i_AmountDowned);
 	AttackType = 0;
