@@ -959,7 +959,7 @@
 	{
 		"en"	"Ziberia artilleries, Ruina casters, and Victorian sharpshooters all took their shots at him.\n{green}The player who spent the most cash receives +50％ damage and max health"
 		"it"	"Le artiglierie di Ziberia, gli incantatori di Ruina e i tiratori scelti vittoriani hanno tutti sparato contro di lui.\n{green}Il giocatore che ha speso più denaro riceve +50％ danni e salute massima"
-		"ko"	"지베리아 화포 부대, 루이나 캐스터 부대, 빅토리아 명사수들이 그에게 파상 공세를 퍼부었다.\n{green}자금을 가장 많이 소모한 플레이어의 최대 체력 및 피해량 +50％ 증가."
+		"ko"	"지베리아 화포 부대, 루이나 캐스터 부대, 빅토리아 명사수들이 그에게 파상 공세를 퍼부었다.\n{green}자금을 가장 많이 소모한 플레이어의 최대 체력, 피해량 +50％"
 	}
 	"Chaos Star"
 	{
@@ -1067,7 +1067,7 @@
 	{
 		"en"	"Freedom never sleeps!!\n{green}Morphine shots are upgraded:\nOn stage start, Instantly fully charge 1 stim.\nStims restore hp to full rapidly in a second. Getting hit during the heal maintains the healing. Healing lasts 3 seconds."
 		"it"	"La libertà non dorme mai!!!\n{green}Gli scatti di morfina sono potenziati:\n All'inizio dello stage, carica istantaneamente 1 stim.\nGli stim ripristinano rapidamente gli hp al massimo in un secondo. Se si viene colpiti durante la guarigione, la guarigione viene mantenuta. La guarigione dura 3 secondi."
-		"ko"	"자유는 잠을 모른다!!{green}모르핀 아이템 강화:\n스테이지 시작시, 즉시 자극제 1개 충전.\n자극제는 최대치까지 매우 빠르게 체력을 회복하며, 피해를 받더라도 회복이 계속 유지됩니다. 회복은 3초 동안 유지됩니다."
+		"ko"	"자유는 잠을 모른다!!{green}모르핀 아이템 강화:\n스테이지 시작시 즉시 자극제 1개 충전.\n자극제는 최대치까지 매우 빠르게 체력을 회복하며, 피해를 받더라도 회복이 계속 유지됩니다. 회복은 3초 동안 유지됩니다."
 	}
 	"Soul Binding Bone"
 	{
