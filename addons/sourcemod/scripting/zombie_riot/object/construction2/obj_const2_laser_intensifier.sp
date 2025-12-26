@@ -10,8 +10,8 @@
 
 #define CONSTRUCT_NAME		"Laser Intensifier"
 #define CONSTRUCT_RESOURCE1	"copper"
-#define CONSTRUCT_COST1		(20 + (CurrentLevel * 10))
-#define CONSTRUCT_MAXLVL	5
+#define CONSTRUCT_COST1		((5 + (CurrentLevel * 5)) * (CurrentLevel > 3 ? 2 : 1))
+#define CONSTRUCT_MAXLVL	8
 
 static const char NPCModel[] = "models/props_moonbase/moon_cube_crystal02.mdl";
 
@@ -193,7 +193,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			return false;
 		}
 
-		maxcount = CurrentLevel + 1;
+		maxcount = (CurrentLevel / 2) + 1;
 		if(count >= maxcount)
 			return false;
 	}

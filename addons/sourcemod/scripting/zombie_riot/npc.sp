@@ -114,8 +114,10 @@ void NPC_ConfigSetup()
 	
 	ObjectDWall_MapStart();
 	ObjectDungeonCenter_MapStart();
+	ObjectC2House_MapStart();
 	ObjectGemCrafter_MapStart();
 	ObjectDStove_MapStart();
+	ObjectDFactory_MapStart();
 
 	ObjectDLightHouse_MapStart();
 	ObjectDCaliberTurret_MapStart();
@@ -127,7 +129,6 @@ void NPC_ConfigSetup()
 	ObjectC2Zap_MapStart();
 	ObjectC2ArrowTower_MapStart();
 	ObjectC2Incinerator_MapStart();
-	ObjectC2House_MapStart();
 	ObjectC2LaserIntensifier_MapStart();
 	// Constructs
 
@@ -1543,6 +1544,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/construction2/obj_const2_incinerator.sp"
 #include "object/construction2/obj_const2_house.sp"
 #include "object/construction2/obj_const2_laser_intensifier.sp"
+#include "object/construction2/obj_dungeon_factory.sp"
 
 // VEHICLES
 #include "../shared/vehicles/vehicle_shared.sp"

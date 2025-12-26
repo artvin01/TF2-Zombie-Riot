@@ -39,9 +39,9 @@ void ObjectC2House_MapStart()
 	BuildingInfo build;
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const2_house");
-	build.Cost = 600;
+	build.Cost = 400;
 	build.Health = 50;
-	build.Cooldown = 30.0;
+	build.Cooldown = 20.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
 }

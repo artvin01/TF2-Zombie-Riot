@@ -40,12 +40,12 @@ methodmap VehicleAmbulance < VehicleGeneric
 		obj.AddSeat({16.0, 6.0, 12.0}, 0);	// Side Seat
 
 		// Back Seats
-		obj.AddSeat({-25.0, -60.0, 22.0}, 1);	// Left Center
-		obj.AddSeat({25.0, -30.0, 22.0}, 2);		// Right Front
-		obj.AddSeat({25.0, -88.0, 22.0}, 3);		// Right Back
-		obj.AddSeat({-25.0, -30.0, 22.0}, 4);	// Left Front
-		obj.AddSeat({-25.0, -88.0, 22.0}, 5);	// Left Back
-		obj.AddSeat({25.0, -60.0, 22.0}, 6);		// Right Center
+		obj.AddSeat({-25.0, -60.0, 22.0}, 1, -1);	// Left Center
+		obj.AddSeat({25.0, -30.0, 22.0}, 2, -1);		// Right Front
+		obj.AddSeat({25.0, -88.0, 22.0}, 3, -1);		// Right Back
+		obj.AddSeat({-25.0, -30.0, 22.0}, 4, -1);	// Left Front
+		obj.AddSeat({-25.0, -88.0, 22.0}, 5, -1);	// Left Back
+		obj.AddSeat({25.0, -60.0, 22.0}, 6, -1);		// Right Center
 
 		FuncShowInteractHud[obj.index] = ClotShowInteractHud;
 		func_NPCInteract[obj.index] = ClotInteract;
