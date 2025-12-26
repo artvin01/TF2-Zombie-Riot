@@ -2104,6 +2104,7 @@
 	"Enhance Last Bought Weapon"
 	{
 		"en"		"Enhance Last Bought Weapon"
+		"ko"		"가장 최근 구매한 무기 강화"
 	}
 	"Level Perks"//Lvl Perks here
 	{
