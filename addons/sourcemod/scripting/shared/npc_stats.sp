@@ -4154,6 +4154,9 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		MakeObjectIntangeable(pThis);
+
+		//avoid hitboxes gettign in the way, specifically a sniper rifle fix
+		SetEntPropFloat(pThis, Prop_Send, "m_flModelScale", 0.0001);
 		b_ThisEntityIgnored[pThis] = true;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
 		//Do not remove pather here.
@@ -4164,8 +4167,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		if(i_IsNpcType[pThis] == 1)
 		{
 			npc.m_bDissapearOnDeath = true;
-			//Need extra, baseboss is very special.
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
 		}
 		if(!npc.m_bDissapearOnDeath)
 		{

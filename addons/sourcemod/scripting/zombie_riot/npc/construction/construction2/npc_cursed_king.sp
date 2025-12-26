@@ -260,7 +260,7 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void Clot_SelfDefense(CursedKing npc, float distance, float vecTarget[3], float gameTime)
+static void Clot_SelfDefense(CursedKing npc, float distance, float vecTarget[3], float gameTime)
 {
 	if(npc.m_flAttackHappens)
 	{
