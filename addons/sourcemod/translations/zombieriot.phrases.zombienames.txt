@@ -3094,6 +3094,10 @@
 		"en"	"Bladedance Clone"
 		"ko"	"블레이드댄스 클론"
 	}
+	"Bladedance Clone"
+	{
+		"en"	"Bladedance Clone"
+	}
 	"Allied Leper Afterimage"
 	{
 		"en"	"Allied Leper Afterimage"
