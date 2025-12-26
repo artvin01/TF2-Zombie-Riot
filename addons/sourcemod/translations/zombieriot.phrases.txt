@@ -4638,7 +4638,7 @@
 	{
 		"en"	"Lore order: (2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
 		"it"	"Ordine Lore: (2) La macchina è stata hackerata da qualcuno... ti vuole morto.\nOriginalmente costruito da Kahmlstein insieme a Ruina e Expidonsa...\nNon affrontarlo in nessuna area expidonsan..."
-		"ko"	"설정 순서: (2) 누군가에게 해킹당한 기계입니다... 그리고 이제 당신을 죽이고 싶어합니다.\n원래는 카멜슈타인, 루이나, 엑스피돈사와 함께 만들어진 기계였지만…\n엑스피돈사 지역에서 그와 전투하지 마십시오."
+		"ko"	"설정 순서: (2) 누군가에게 해킹당한 기계입니다... 당신을 죽이고 싶어하죠.\n본래 카멜슈타인, 루이나, 엑스피돈사가 공동 제작한 기계였지만…\n엑스피돈사 지역에서 그와 전투하지 마세요."
 	}
 	"Blitzkrieg Hard Desc"
 	{
@@ -4697,11 +4697,11 @@
 	}
 	"Expidonsa Desc"
 	{
-		"en"	"The underground city, Expidonsa, is here, and they're pissed. wonder what we could've done to piss them off."
+		"en"	"While you're wandering around, while Koshi and Zeina make their simulation to prepare us for whatever Lelouch released, you find some other expidonsans. You go up to greet them, but they immediately attack you?"
 		"fr"	"Résiste cette ville souterraine avancée, faites garde à leur soins regénératifs et leurs attaques surprises!"
 		"chi"	"抵抗Expidonsa的高科技。别小看他们的盾牌，同时看好自己背后……"
 		"it"	"Resisti alla città sotterranea avanzata, fate attenzione alla loro auto-guarigione e agli attacchi a sorpresa!"
-		"ko" 	"지하 도시 엑스피돈사의 분개한 병사들이 나타났습니다. 우리가 뭘 했길래 그렇게 화가 났는지 모르겠군요..."
+		"ko" 	"코시, 제이나가 를르슈가 해방시킨 것에 대비하기 위한 시뮬레이션을 만드는 동안, 다른 엑스피돈사인들을 만납니다. 인사를 하려고 하는데... 당신을 보자마자 공격해옵니다?"
 	}
 	"Sensal Wave Desc"
 	{
@@ -4759,7 +4759,7 @@
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
 		"chi"	"深渊已被释放。"
 		"it"	"Ordine Lore: (9) Subito dopo aver liberato il vuoto in rogue2..."
-		"ko"	"설정 순서: (9) 로그라이크2(Rogue2) 당시 공허가 해방되어버린 직후입니다. 다른 차원의 생명체들이 이 세계를 점령하기 위해 몰려오고 있습니다. 카멜슈타인을 도와 공허와 맞서세요!"
+		"ko"	"설정 순서: (9) 로그라이크2 당시 공허가 해방되어버린 직후입니다. 다른 차원의 생명체들이 이 세계를 점령하기 위해 몰려오고 있습니다. 카멜슈타인을 도와 공허와 맞서세요!"
 	}
 	"Aperture Desc"
 	{
