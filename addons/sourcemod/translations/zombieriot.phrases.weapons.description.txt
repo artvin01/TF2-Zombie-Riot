@@ -4912,7 +4912,7 @@
 	{
 		"en"	"A tasty cylinder of 1-year aged medium sharp cheddar, weighing around 4500LBS.\nMay god help you eat it all.\n+2750 HP, +30％ overall resistance, grants an additional +15HP/s regen."
 		"it"	"Un gustoso cilindro di cheddar stagionato 1 anno, mediamente piccante, del peso di circa 4500 libbre.\nChe Dio ti aiuti a mangiarlo tutto.\n+2750 HP, +30% di resistenza complessiva, garantisce un'ulteriore rigenerazione di +15 HP/s."
-		"ko"	"1년 동안 숙성된 맛있는 미디움 샤프 체다입니다. 대략 2톤 정도죠.\n-최대 체력 +2750 증가, 모든 피해 저항력 +30％, 초당 체력 회복량 +15 증가."
+		"ko"	"1년 동안 숙성된 맛있는 미디움 샤프 체다입니다. 대략 2톤 정도죠.\n신이 당신이 이걸 먹는걸 돕기를.\n-최대 체력 +2750 증가\n-모든 피해 저항력 +30％\n-초당 체력 회복량 +15"
 	}
 	"Nanomachines Desc"
 	{
