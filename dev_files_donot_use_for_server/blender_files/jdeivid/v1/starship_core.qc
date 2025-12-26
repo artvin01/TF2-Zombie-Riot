@@ -32,6 +32,11 @@ $bodygroup "core_decorations"
 	blank
 	studio "core_decorations.smd"
 }
+$bodygroup "primary_weapons"
+{
+	blank
+	studio "primary_weapons.smd"
+}
 
 
 $surfaceprop "metal"
