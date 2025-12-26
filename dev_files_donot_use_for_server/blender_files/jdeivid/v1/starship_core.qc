@@ -2,7 +2,7 @@
 
 $modelname "zombie_riot/starship_1.mdl"
 
-$bodygroup "starship"	//done
+$bodygroup "starship"
 {
 	blank
 	studio "starship.smd"
