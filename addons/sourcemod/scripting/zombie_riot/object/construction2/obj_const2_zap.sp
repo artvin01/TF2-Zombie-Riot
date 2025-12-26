@@ -8,7 +8,7 @@
 #undef CONSTRUCT_COST2
 #undef CONSTRUCT_MAXLVL
 
-#define CONSTRUCT_NAME		"Zapper"
+#define CONSTRUCT_NAME		"Zapper Building"
 #define CONSTRUCT_RESOURCE1	"copper"
 #define CONSTRUCT_COST1		(20 + (CurrentLevel * 10))
 #define CONSTRUCT_MAXLVL	5
@@ -73,11 +73,11 @@ methodmap ObjectC2Zap < ObjectGeneric
 		}
 
 		ObjectC2Zap npc = view_as<ObjectC2Zap>(ObjectGeneric(client, vecPos, vecAng, NPCModel, "0.6", "50", {20.0, 20.0, 100.0},_,false));
-
+		/*
  		b_CantCollidie[npc.index] = true;
 	 	b_CantCollidieAlly[npc.index] = true;
 		npc.m_bThisEntityIgnored = true;
-		
+		*/
 		npc.m_bConstructBuilding = true;
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCThink[npc.index] = ObjectC2Zap_ClotThink;

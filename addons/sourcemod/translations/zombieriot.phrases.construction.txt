@@ -1020,4 +1020,53 @@
 		"it"	"Una struttura che fornisce +1 rifornimento alla caserma e +1 alleati massimi."
 		"ko"	"배럭의 보급품이 +1 증가하고 유닛 상한 수가 +1 증가하는 구조물입니다."
 	}
+	
+	"House"
+	{
+		"en"	"House"
+	}
+	"House Desc"
+	{
+		"en"	"Build more to cain more cash."
+	}
+	"Incinerator"
+	{
+		"en"	"Incinerator"
+	}
+	"Incinerator Desc"
+	{
+		"en"	"Burns enemies near it alive."
+	}
+	"Zapper Building"
+	{
+		"en"	"Zapper Building"
+	}
+	"Zapper Building Desc"
+	{
+		"en"	"Low range, high attackrate zapper building."
+	}
+	"Laser Intensifier"
+	{
+		"en"	"Laser Intensifier"
+	}
+	"Laser Intensifier Desc"
+	{
+		"en"	"Attacks faster the more it attacks the same target."
+	}
+	"Arrow Tower"
+	{
+		"en"	"Arrow Tower"
+	}
+	"Arrow Tower Desc"
+	{
+		"en"	"Very high range, low damage building"
+	}
+	"Cannon"
+	{
+		"en"	"Cannon"
+	}
+	"Cannon Desc"
+	{
+		"en"	"Jack of all traits, master of none"
+	}
 }
