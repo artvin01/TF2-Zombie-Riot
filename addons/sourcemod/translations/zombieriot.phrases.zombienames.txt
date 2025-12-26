@@ -7685,4 +7685,36 @@
 	{
 		"en"	"A king that delt too many deals\n-Each 1％ life lost boosts the king with minor buffs for 10 seconds, stacking\n-Once below 25％ health, enrages more and gains the chaos buff\nIts recommended to slowly take him out, not with burst."
 	}
+	"The Great Ram"
+	{
+		"en"	"The Great Ram"
+	}
+	"The Great Ram Desc"
+	{
+		"en"	"A ram made for one purpose only.\n-Attacks your main building only, and slowls goes to it\n-Releases a barrage of rockets every so often\n-Deals constant cosntact damage\n-Deals ram damage constantly in an AOE."
+	}
+	"Behemoth Behemoth"
+	{
+		"en"	"Behemoth Behemoth"
+	}
+	"Behemoth Behemoth Desc"
+	{
+		"en"	"A Bigger Behemoth, too many vitamins.\n-Deals chaos damage on hit\n-Has AOE swings\n-Immune to Headshots"
+	}
+	"Demon Possesed Armor"
+	{
+		"en"	"Demon Possesed Armor"
+	}
+	"Demon Possesed Armor Desc"
+	{
+		"en"	"An armor possesing a giant warrior.\n-Has 2 lives\n-If he loses his life, he splits apart and his armor and he attacks seperatly\n-This can be canceled by dealing enough damage at once, or stunning him and then killing him."
+	}
+	"Glug"
+	{
+		"en"	"Glug"
+	}
+	"Glug Desc"
+	{
+		"en"	"A Harmless rockslime.\n-Jumps around randomly\n-Jumps at you if close enough\n-Spins to deal AOE damage if close\n-Splits apart into 3 once on death"
+	}
 }

@@ -111,6 +111,14 @@ methodmap Const2BehemothBehemoth < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
+		if(!IsValidEntity(RaidBossActive))
+		{
+			RaidModeScaling = 0.0;	//just a safety net
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidAllowsBuildings = true;
+		}
+		
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		npc.m_flNextMeleeAttack = 0.0;
