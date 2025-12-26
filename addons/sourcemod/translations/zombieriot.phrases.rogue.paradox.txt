@@ -2530,7 +2530,7 @@
 	{
 		"en"	"Take whats inside the closet instead, cant risk it.\n{green}Obtain money and a high value item."
 		"it"	"Prendete invece quello che c'è nell'armadio, non potete rischiare.\n{green}Ottenere denaro e un oggetto di alto valore."
-		"ko"	"저것 대신 그 주변의 서랍 안에 있는 물건을 챙겼다. 위험을 감수하고 싶진 않다.\n{green}가치가 높은 아이템과 추가 자금을 얻습니다."
+		"ko"	"대신 그 주변의 서랍 안에 있는 물건을 챙긴다. 위험을 감수할 수는 없다.\n{green}가치가 높은 아이템과 추가 자금을 얻습니다."
 	}
 	"Mazeat Lost Tech Option 1b"
 	{
