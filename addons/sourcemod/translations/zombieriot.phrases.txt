@@ -4697,7 +4697,7 @@
 	}
 	"Expidonsa Desc"
 	{
-		"en"	"The underground city, Expidonsa, is here, and they're pissed. wonder what we could've done to piss them off."
+		"en"	"While you're wandering around, while Koshi and Zeina make their simulation to prepare us for whatever Lelouch released, you find some other expidonsans. You go up to greet them, but they immediately attack you?"
 		"fr"	"Résiste cette ville souterraine avancée, faites garde à leur soins regénératifs et leurs attaques surprises!"
 		"chi"	"抵抗Expidonsa的高科技。别小看他们的盾牌，同时看好自己背后……"
 		"it"	"Resisti alla città sotterranea avanzata, fate attenzione alla loro auto-guarigione e agli attacchi a sorpresa!"
