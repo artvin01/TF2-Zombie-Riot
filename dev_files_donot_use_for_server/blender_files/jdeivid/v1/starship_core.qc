@@ -37,7 +37,19 @@ $bodygroup "primary_weapons"
 	blank
 	studio "primary_weapons.smd"
 }
+$bodygroup "under_weapons"
+{
+	blank
+	studio "under_weapons.smd"
+}
 
+$texturegroup "skinfamilies"
+{
+	{ "c_invasion_bat_laser" 		"c_frying_pan_gold"		"painted_wood_01"	"rally_call_2017_purple"	}	//almagest
+	{ "c_invasion_bat_laser_blue" 	"c_frying_pan_gold"		"painted_wood_01"	"gold_player"				}	//ruina.
+	{ "australium_container_glass"	"invulnfx_red" 			"invulnfx_red" 		"invulnfx_red"				}
+	{ "australium_container_glass"	"invulnfx_blue" 		"invulnfx_blue"		"invulnfx_blue"				}
+}
 
 $surfaceprop "metal"
 
