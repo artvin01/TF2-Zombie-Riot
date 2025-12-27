@@ -3087,7 +3087,12 @@
 	{
 		"en"	"Bladedance The Betrayed"
 		"it"	"Bladedance Il tradito"
-		"ko"	"배신당한 자, '블레이드댄스'"
+		"ko"	"배신당한 자 '블레이드댄스'"
+	}
+	"Bladedance Clone"
+	{
+		"en"	"Bladedance Clone"
+		"ko"	"블레이드댄스 클론"
 	}
 	"Allied Leper Afterimage"
 	{
@@ -4383,6 +4388,7 @@
 		"it"	"Danno elementare del Caos"
 		"ko"	"혼돈 원소 피해"
 	}
+
 	"Chaos Elemental Damage Desc"
 	{
 		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou deal 350 truedamage to 3 allies.\nAlso gives 40％ Vulnerability for 10 seconds.\nHits only upto 3 additional allies."
@@ -4595,7 +4601,7 @@
 	{
 		"en" "Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
 		"it" "Xeno Seaborn W.F. Chaos Voided Acclamato Spadaccino Il Primo"
-		"ko" "제노 시본 W.F. 혼돈 침식된 갈채의 검객 1세"
+		"ko" "제노 시본 W.F. 혼돈 공허화된 갈채의 검객 1세"
 	}
 	"Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First esc"
 	{
@@ -4630,7 +4636,7 @@
 	{
 		"en"	"Hes on the brink of death.\nSummons extreme slow areas that nerf attackspeed, and deal immensive damage if power reaches 100%, recives power when taking damage.\nKicks very strongly."
 		"it"	"E' ad un passo dalla morte\nEvoca aree estremamente lente che riducono la velocità d'attacco e infliggono danni immensi se la potenza raggiunge il 100%, recupera energia quando subisce danni."
-		"ko"	"이 자는 죽음의 문턱에 놓였습니다.\n힘이 100% 에 도달할 경우 막대한 피해를 가하고 공격 속도 디버프를 부여하는 지역을 소환합니다. 피해를 입을 때 힘이 충전됩니다.\n발차기 공격으로 대상을 밀어냅니다."
+		"ko"	"이 자는 죽음의 문턱에 놓였습니다.\n힘이 100％ 에 도달할 경우 막대한 피해를 가하고 공격 속도 디버프를 부여하는 지역을 소환합니다. 피해를 입을 때 힘이 충전됩니다.\n발차기 공격으로 대상을 밀어냅니다."
 	}
 	"Voided Erasus"
 	{
@@ -5252,8 +5258,8 @@
 	}
 	"Iberia-Expidonsan Seaborn Eradicator Desc"
 	{
-		"en"		"Acts as a spawnpoint, unkillable and oneshots anything.\nOnce most allies died, it enrages, loses all its resistance and 99% hp and gets very fast, loses alot of damage too."
-		"it"		"Agisce come punto di spawn, non è uccidibile e spara a qualsiasi cosa.\nUna volta morti la maggior parte degli alleati, si infuria, perde tutte le resistenze e il 99% di hp e diventa molto veloce, perdendo anche molti danni."
+		"en"		"Acts as a spawnpoint, unkillable and oneshots anything.\nOnce most allies died, it enrages, loses all its resistance and 99％ hp and gets very fast, loses alot of damage too."
+		"it"		"Agisce come punto di spawn, non è uccidibile e spara a qualsiasi cosa.\nUna volta morti la maggior parte degli alleati, si infuria, perde tutte le resistenze e il 99％ di hp e diventa molto veloce, perdendo anche molti danni."
 		"ko"		"이 적은 다른 적들의 스폰 포인트 역할을 합니다. 이 적은 처치할 수 없으며, 모든 대상을 일격에 즉사시킵니다.\n섬멸자 외의 모든 아군이 처치당하면, 격분 상태가 되어 이동 속도가 매우 빨라지지만, 모든 피해 저항력을 잃고 공격력과 체력이 대폭 감소합니다."
 	}
 	"Combastia"
@@ -5661,13 +5667,23 @@
 	}
 	"Bomb Cart"
 	{
-		"en"	"Trooper  Bombcart"
+		"en"	"Trooper Bombcart"
 		"ko"	"트루퍼 폭탄 수레"
 		"it"	"Trooper Bombcart"
 	}
+	"Nuke Cart"
+	{
+		"en"	"Trooper Nukecart"
+		"ko"	"트루퍼 핵탄두 수레"
+	}
+	"Tank Cart"
+	{
+		"en"	"Trooper Tankcart"
+		"ko"	"트루퍼 전차 수레"
+	}
 	"Breachcart"
 	{
-		"en"	"Trooper  Breachcart"
+		"en"	"Trooper Breachcart"
 		"ko"	"트루퍼 브리칭 전차"
 		"it"	"Soldato Breachcart"
 	}
@@ -5898,10 +5914,12 @@
 	"Anti Viral Programm"
 	{
 		"en"		"Anti Viral Programm"
+		"ko"		"안티바이러스 프로그램"
 	}
 	"Anti Viral Programm Desc"
 	{
 		"en"		"Its an anti virus, and youre the virus.\n-Goes after only one target.\n-If target dies or enough time passes, he fades away\n-Phases through everything."
+		"ko"		"안티바이러스, 그리고 당신이 바이러스입니다.\n-오직 하나의 대상만을 추격\n-대상이 사망하거나 충분한 시간이 지나면 소멸\n-모든 것들을 무시하고 지나갑니다."
 	}
 	"Agent Eric"
 	{
@@ -7379,7 +7397,7 @@
 	{
 		"en"	"Buffs Vincent in its range, and outside after leaving it a bit aswell."
 		"it"	"Buffa Vincent nel suo raggio d'azione, e anche fuori dopo averlo lasciato un po'."
-		"ko"	"범위 내의 빈센트 에게 버프를 부여하며, 범위를 벗어나도 일정 시간 동안 지속됩니다."
+		"ko"	"범위 내의 빈센트에게 버프를 부여하며, 범위를 벗어나도 일정 시간 동안 지속됩니다."
 	}
 	"Old forgotten expidonsan robot"
 	{
@@ -7463,7 +7481,7 @@
 	{
 		"en"	"U̵͌m̴b̷r̵ã̶̺l̶̡͘ ̷͓̈́R̸e̷f̵̞͘ra̷͖͛c̵͊ţ̷͝"
 		"it"	"U̵͌m̴b̷r̵ã̶̺l̶̡͘ ̷͓̈́R̸e̷f̵̞͘ra̷͖͛c̵͊ţ̷͝"
-		"ko"	"움̵͌브̴̷랄̶̶̡̺̃͘ ̷̸͓̈́리̷프̵̞͘랙҇̒̓̓̎트̷̷̧͖͛͝"
+		"ko"	"움̵͌브̴̷랄̶̶̡̺̃͘ ̷̸͓̈́리̷프̵̞͘랙̵̨̕트̷̷̧͖͛͝"
 	}
 	"Umbral Refract Desc"
 	{
@@ -7577,7 +7595,7 @@
 	{
 		"en"	"Ruthless leader of the Almagest squad sent into the Curtain. \nTheir motives remain unclear. \nDeals void damage, and summons drones to deal chaos damage. \nAfter losing a certain amount of HP, becomes invulernerable until the current wave is defeated."
 		"it"	"Spietato leader della squadra Almagest inviata nella Cortina. \nI loro motivi rimangono poco chiari. \nSubisce danni da vuoto ed evoca droni per infliggere danni da caos. \nDopo aver perso una certa quantità di HP, diventa invulnerabile finché non viene sconfitta l'ondata corrente."
-		"ko"	"장막 속으로 파견된 알마게스트 부대의 무자비한 지휘관입니다. \n그들의 동기는 여전히 불분명합니다. \nD공허 속성 피해를 입히고, 드론을 소환하여 혼돈 속성 피해를 입힙니다. \n체력이 일정 수치 감소시, 현재 웨이브의 적들을 전부 처치할 때까지 이 적이 무적 상태가 됩니다."
+		"ko"	"장막 속으로 파견된 알마게스트 부대의 무자비한 지휘관입니다.\n그들의 동기는 여전히 불분명합니다.\n-공허 속성 피해를 입히고, 드론을 소환하여 혼돈 속성 피해를 입힙니다.\n-체력이 일정 수치 감소시, 현재 웨이브의 적들을 전부 처치할 때까지 이 적이 무적 상태가 됩니다."
 	}
 	"Jkei Drone"
 	{
@@ -7613,7 +7631,7 @@
 	{
 		"en" "The Construct"
 		"it" "Il Costrutto"
-		"ko" "제조물"
+		"ko" "제작물"
 	}
 	"Reila's Beacon Desc"
 	{
@@ -7636,47 +7654,7 @@
 	"Barbaric Teardown"
 	{
 		"en"	"Barbaric Teardown"
-		"ko"	"야만인 분해자"
-	}
-	"Barbaric Teardown Desc"
-	{
-		"en"	"Fellow outposts base demolisher's.\n-First 3 hits deal bonus damage\nThese 3 hits deal much higher building damage."
-		"ko"	"전초기지 철거자입니다.\n-처음 3 회의 공격이 추가 피해를 주고\n그 공격의 적중 대상이 구조물이라면 더 높은 피해를 줌"
-	}
-	"Skilled Crossbowman"
-	{
-		"en"	"Skilled Crossbowman"
-		"ko"	"숙련된 석궁병"
-	}
-	"Skilled Crossbowman Desc"
-	{
-		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
-		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다. \n-한 번의 3발의 화살 발사\n-당신의 이동 경로를 예측함\m-대상을 포위하고 주로 측면을 노림\n-높은 근접 피해 1회를 받으면 비무장 상태가 됨"
-	}
-	"Barbaric Teardown"
-	{
-		"en"	"Barbaric Teardown"
-		"ko"	"야만인 분해자"
-	}
-	"Barbaric Teardown Desc"
-	{
-		"en"	"Fellow outposts base demolisher's.\n-First 3 hits deal bonus damage\nThese 3 hits deal much higher building damage."
-		"ko"	"전초기지 철거자입니다.\n-처음 3 회의 공격이 추가 피해를 주고\n그 공격의 적중 대상이 구조물이라면 더 높은 피해를 줌"
-	}
-	"Skilled Crossbowman"
-	{
-		"en"	"Skilled Crossbowman"
-		"ko"	"숙련된 석궁병"
-	}
-	"Skilled Crossbowman Desc"
-	{
-		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
-		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다. \n-한 번의 3발의 화살 발사\n-당신의 이동 경로를 예측함\m-대상을 포위하고 주로 측면을 노림\n-높은 근접 피해 1회를 받으면 비무장 상태가 됨"
-	}
-	"Barbaric Teardown"
-	{
-		"en"	"Barbaric Teardown"
-		"ko"	"야만적인 분쇄자"
+		"ko"	"야만인 분쇄자"
 	}
 	"Barbaric Teardown Desc"
 	{
@@ -7691,7 +7669,7 @@
 	"Skilled Crossbowman Desc"
 	{
 		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
-		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다.\n-한 번의 3발의 화살 발사\n-표적의 이동 경로를 예측함\m-측면으로 움직이며 대상 주위를 돔\n-높은 근접 피해 1회를 받으면 비무장 상태가 됨"
+		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다.\n-한 번의 3발의 화살 발사\n-표적의 이동 경로를 예측함\n-측면으로 움직이며 대상 주위를 돔\n-높은 근접 피해 1회를 받으면 비무장 상태가 됨"
 	}
 	"Demon Devoter"
 	{

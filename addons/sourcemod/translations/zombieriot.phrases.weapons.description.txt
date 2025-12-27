@@ -264,7 +264,7 @@
 		"ru"		"Может стрелять в голову. Нажмите M2, чтобы открыть шквальный огонь."
 		"chi"       "可以造成爆头伤害！按下M2键发射多个弓箭"
 		"it"		"Può sparare alla testa. Premere M2 Per sparare una raffica"
-		"ko"		"헤드샷이 가능합니다.\n-우클릭으로 화살 세례 능력을 사용 가능"
+		"ko"		"헤드샷이 가능합니다.\n-M2로 화살 세례 능력을 사용 가능"
 	}
 	"Huntsman Pap 1"
 	{
@@ -273,7 +273,7 @@
 		"ru"		"Увеличенный урон и скорость атаки, усилена способность М2."
 		"chi"       "增加伤害和攻击速度，加强右键技能。"
 		"it"		"Danno e velocità d'attacco aumentati, abilità m2 potenziate."
-		"ko"		"-피해량, 공격 속도 증가\n-우클릭 능력 강화"
+		"ko"		"-피해량, 공격 속도 증가\n-M2 능력 강화"
 	}
 	"Huntsman Pap 2"
 	{
@@ -282,7 +282,7 @@
 		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2.\nСтреляет 3-я стрелами (обычная)."
 		"chi"       "增加伤害和攻击速度，加强右键技能。普通攻击现可发射3支箭。"
 		"it"		"Danno e velocità d'attacco aumentati, abilità m2 potenziata. L'attacco base ora scocca 3 frecce."
-		"ko"		"-피해량, 공격 속도 증가\n-우클릭 능력 강화.\n-이제 기본 공격이 한 번에 화살 3개를 발사."
+		"ko"		"-피해량, 공격 속도 증가\n-M2 능력 강화.\n-이제 기본 공격이 한 번에 화살 3개를 발사."
 	}
 	
 	"Huntsman Pap 3"
@@ -363,7 +363,7 @@
 		"ru"		"Полуавт. дробовик, для стрельбы из которого нельзя удерживать нажатой клавишу.\nМощнее, стреляет одиночными выстрелами и имеет низкую точность."
 		"chi"       "半自动霰弹枪，你不能按住射击。虽然强大，但因为它的单一火力性质和较差的准确性，使它更难使用"
 		"it"		"Fucile semiautomatico, non si può tenere premuto per sparare.\nPiù potente ma più difficile da usare per la sua natura a fuoco singolo e la scarsa precisione"
-		"ko"		"반자동 산탄총. 이 무기는 꾹 눌러서 사격할 수 없음.\n-강력하지만 단발성과 명중률이 낮아 다루기 어려움\n-이 무기를 들고 있을 때 모든 피해 저항 10% 증가"
+		"ko"		"반자동 산탄총. 이 무기는 꾹 눌러서 사격할 수 없음.\n-강력하지만 단발성과 명중률이 낮아 다루기 어려움\n-이 무기를 들고 있을 때 모든 피해 저항 10％ 증가"
 	}
 	"Leone 12 Gauge Super Pap 1"
 	{
@@ -434,12 +434,12 @@
 	"Annabelle Desc"
 	{
 		"en"		"-Provides an extra 10％ Resistance to all sources while active."
-		"ko"		"-이 무기를 들고 있을 때 추가로 모든 피해 저항 10% 증가"
+		"ko"		"-이 무기를 들고 있을 때 추가로 모든 피해 저항 10％ 증가"
 	}
 	"Double Barrel Shotgun Desc"
 	{
 		"en"		"-Provides an extra 10％ Resistance to all sources while active."
-		"ko"		"-이 무기를 들고 있을 때 추가로 모든 피해 저항 10% 증가"
+		"ko"		"-이 무기를 들고 있을 때 추가로 모든 피해 저항 10％ 증가"
 	}
 	"Double Barrel Shotgun Pap 1"
 	{
@@ -534,7 +534,7 @@
 		"en"		"-Load 4 bullets and shoot all at once.\n-Provides an extra 10％ Resistance to all sources while active."
 		"fr"		"Chargez 4 munitions et tirez-les toutes à la fois\nInflige +10％ des dégats contre les Raids."
 		"it"		"Carica 4 proiettili e spara tutti in una volta\nDà 10％ danni contro le incursioni."
-		"ko"		"-최대 4발의 장탄을 장전하고 발사시 한꺼번에 발사\n-이 무기를 들고 있을 때 추가로 모든 피해 저항 10% 증가"
+		"ko"		"-최대 4발의 장탄을 장전하고 발사시 한꺼번에 발사\n-이 무기를 들고 있을 때 추가로 모든 피해 저항 10％ 증가"
 	}
 	
 	"Boomstick Pap 1"
@@ -576,7 +576,7 @@
 		"fr"	"Dégats améliorés, chauffage de l'arme réduite.\nL'abilité améliore la cadence de tirs et empêche le chauffage de l'arme pour 7.5 secondes."
 		"chi"	"增加伤害，减少过热。获得新技能，激活时增加攻速并且无过热，持续时间7.5秒"
 		"it"	"Aumenta i danni, riduce il surriscaldamento ad ogni colpo e guadagna un'abilità.\nL'abilità conferisce una maggiore velocità d'attacco e rimuove il surriscaldamento a ogni colpo per 7,5 secondi."
-		"ko"	"-피해량 증가 및 과열 증가치가 감소, 새로운 능력 획득\n-능력 사용시 7.5초 동안 과열 수치가 증가하지 않으며 공격 속도 증가"
+		"ko"	"-피해량 증가 및 과열 증가치가 감소, 신규 능력 획득:\n-능력 사용시 7.5초 동안 과열 수치가 증가하지 않으며 공격 속도 증가"
 	}
 	
 	"Elite Sniper Desc"
@@ -594,7 +594,7 @@
 		"en"		"-Increased damage\n-applies apply debuff on hit\n-half charge within scope at minimum to apply debuff."
 		"fr"		"Dégats améliorés, et ralentis les cibles, les rendant plus vulnérables aux dégats.\nCet affaiblissement a besoin d'au moins une demie de charge."
 		"it"		"Per applicare il debuff, è necessario applicare almeno metà carica nel raggio d'azione."
-		"ko"		"-피해량 증가\n-조준 상태에서 50% 이상 충전하여 적중시 대상에게 디버프 부여\n-디버프는 대상이 받는 피해를 증가시키고 이동 속도를 둔화시킴"
+		"ko"		"-피해량 증가\n-조준 상태에서 50％ 이상 충전하여 적중시 대상에게 디버프 부여\n-디버프는 대상이 받는 피해를 증가시키고 이동 속도를 둔화시킴"
 	}
 	"Elite Sniper Pap 2"
 	{
@@ -1042,7 +1042,7 @@
 		"ru"	"Легендарный клинок с магическими свойствами, может парировать с помощью М2.\nПарируйте, чтобы отбить слабые снаряды."
 		"chi"   "一把具有魔法属性的传奇剑，可以用m2格挡"
 		"it"	"Una lama leggendaria con proprietà magiche, che può parare con m2\nParry per ottenere energia che permette di sparare proiettili deboli."
-		"ko"	"-M2로 패링을 발동해 공격을 막고 방주 에너지를 획득 및 받는 피해 90％ 감소\n-패링한 공격 피해를 적에게 반사(적의 공격 피해에 비례)\n-패링시 에너지를 획득\n-패링시 얻는 충전으로 원거리 공격 가능."
+		"ko"	"-M2로 패링을 발동: 방주 에너지 획득 및 받는 피해 90％ 감소\n-패링한 공격 피해를 적에게 반사(적의 공격 피해에 비례)\n-패링 시 에너지를 획득\n-패링 시 얻는 충전으로 원거리 공격 가능."
 	}
 	"Fractured Ark Pap 1"
 	{
@@ -1063,13 +1063,13 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-Abilities change:\n-Silence enemies on hit, always fire ranged projectile if no melee hit is done\n-abiltiy charges on hit, melee charges 2x faster\n-Ability deals 2x dmg and aoe silences\n-Projectiles deal ranged damage and deal less."
 		"it"	"Aumenta il danno e la potenza di fuoco.\nSilenziano i nemici, sparano attacchi a distanza.\nAbilità: 2x dmg + silenzio AOE.\n L'abilità si carica sui colpi, i colpi in mischia danno 2x di carica.\nI proiettili infliggono danni a distanza e meno danni."
-		"ko"	"-피해량, 공격 속도 증가\n-능력 변경:\n-적중한 적에게 침묵 부여. 근접 공격이 적중하지 않으면 원거리 투사체 발사\n-적중시 능력이 충전되며, 근접 공격시 2배 더 빨리 충전\n-능력 사용시 피해량이 2배로 증가하며 광역 침묵 부여\n-원거리 피해는 원거리 피해 속성이며 더 적은 피해를 가함"
+		"ko"	"-피해량, 공격 속도 증가\n-능력 변경: 적중한 적에게 침묵 부여. 근접 공격이 적중하지 않으면 원거리 투사체 발사\n-적중 시 능력이 충전, 근접 공격시 2배 더 빨리 충전\n-능력 사용 시 피해량이 2배로 증가하며 광역 침묵 부여\n-원거리 피해는 원거리 피해 속성이며 더 적은 피해를 가함"
 	}
 	"Fractured Ark Pap 4"
 	{
 		"en"	"-Increased damage\n-reduced attackspeed\n-Abilities change:\n-always fire ranged projectile if no melee hit is done\n-abilties change:\n-M2 pulls enemies to you with damage\n-Faction changes to ''seaborn''"
 		"it"	"Aumento del danno.\nAttacco a distanza e velocità di fuoco più bassa.\nL'abilità cambia in tirare, infliggendo un alto numero di danni.\nFazione cambiata in Seaborn.\nIl proiettile a distanza infligge meno danni del corpo a corpo e infligge danni a distanza."
-		"ko"	"-피해량 증가\n-공격 속도 감소\n-능력 변경:\n-근접 공격이 적중하지 않으면 원거리 투사체 발사\n-능력 변경:\n-M2 능력이 피해를 주고 대상을 플레이어로 끌어당김\n-''시본'' 진영이 추가됨"
+		"ko"	"-피해량 증가\n-공격 속도 감소\n-능력 변경: 근접 공격이 적중하지 않으면 원거리 투사체 발사\n-M2 능력 변경: 피해를 주고 대상을 플레이어로 끌어당김\n-''시본'' 진영이 추가됨"
 	}
 	"Fractured Ark Pap 5"
 	{
@@ -1131,7 +1131,7 @@
 	{
 		"en"	"-Increased damage\n-More energy on parry and activation\n-Parry deals more damage\n-First parry deals much more damage\n-New ability creates a zone that buffs you."
 		"it"	"Aumenta il danno, il guadagno di energia e la parata riflette l'aumento di potenza.\nLa prima parata durante l'abilità è notevolmente potenziata.\nSblocca una nuova abilità che evoca un dominio stazionario che ti potenzia"
-		"ko"	"-피해량 증가\n-에너지 획득량과 패링의 반사 피해량 증가\n-능력 사용 후 첫번째 패링의 피해량이 크게 증가\n-당신에게 버프를 부여하는 구역을 소환하는 새로운 능력 획득."
+		"ko"	"-피해량 증가\n-에너지 획득량과 패링의 반사 피해량 증가\n-능력 사용 후 첫번째 패링의 피해량이 크게 증가\n-신규 능력 획득: 사용자에게 버프를 부여하는 구역을 생성"
 	}
 	
 	"Longsword Desc"
@@ -1224,7 +1224,7 @@
 		"ru"	"Расходует ману с каждым выстрелом. М2 - даёт доп. скорость атаки на короткое время."
 		"chi"   "每次射击消耗法力值。按下鼠标右键在短时间内增加额外的攻击速度。"
 		"it"	"Consuma mana a ogni colpo. M2 Fornisce velocità d'attacco extra per un breve periodo."
-		"ko"	"-우클릭(M2) 사용시 짧은 시간 동안 공격 속도 증가"
+		"ko"	"-M2 능력 사용시 짧은 시간 동안 공격 속도 증가"
 	}
 	"Bad Wand Pap 1"
 	{
@@ -1281,7 +1281,7 @@
 		"ru"	"Замораживает врагов при достаточн. кол-ве урона.\nM2 - вызывает небольшую ударную волну,\nкоторая наносит замороженным зомби значительно больший урон.\nИ замораживает врагов, если нанести достаточно урона. По замороженным = 2x урон."
 		"chi"	"造成足够伤害冰冻敌人。\nM2在你身旁造成一个冲击波。\n对冰冻敌人造成大量伤害。这个技能也可以冰冻敌人。\n冰冻时，僵尸受到的伤害*2。"
 		"it"	"Congelerà i nemici con un numero sufficiente di danni.\nM2 innesca un'onda d'urto nella vostra posizione che infligge danni massicciamente maggiori agli zombi congelati.\nE congela i nemici se infligge abbastanza danni, se congelati, il buff dei danni è due volte più efficace."
-		"ko"	"-공격시 관통형 냉기 마법 발사\n-피해를 주면 냉기 원소 피해 부여. 냉기는 적중한 적을 얼림\n-M2는 광역 피해를 가함\n-얼어붙은 적에게 이 능력으로 입히는 피해가 증가\n-적중시 디버프 부여"
+		"ko"	"-공격시 관통형 냉기 마법 발사\n-피해를 주면 냉기 원소 피해 부여. 냉기는 적중한 적을 얼림\n-M2 광역 피해를 가함\n-얼어붙은 적에게 이 능력으로 입히는 피해가 증가\n-적중시 디버프 부여"
 	}
 	"Cryo Staff Pap 0"
 	{
@@ -1325,7 +1325,7 @@
 		"ru"	"Значительно увеличенный урон и скорость атаки, M2 имеет задержку, но гораздо мощнее."
 		"chi"   "大量增加伤害和攻击速度，M2冷却变长，但伤害更高。"
 		"it"	"Aumenta enormemente i danni e la velocità d'attacco, M2 guadagna un ritardo ma è molto più potente."
-		"ko"	"-피해량, 공격 속도 증가\n-우클릭 능력에 지연이 생기지만 훨씬 더 강력해짐."
+		"ko"	"-피해량, 공격 속도 증가\n-M2 능력에 지연이 생기지만 훨씬 더 강력해짐."
 	}
 
 	"Lightning Staff Pap 2"
@@ -1413,7 +1413,7 @@
 	{
 		"en"	"-M2 Summons a Earth Shattering Aimed Quake.\n-Applies Elemental debuff\nBoosts bleed damage by 15％, burn by 20％, elemental damage applied by 30％\n-Earthquake deals 2x damage to enemies with this debuff."
 		"it"	"Consuma mana a ogni colpo. M2 Evoca un Quake mirato che distrugge la Terra.\nApplica un debuff elementale\nAumenta i danni da sanguinamento del 15％, da ustione del 20％, i danni elementali applicati del 30％\nIl Terremoto infligge 2 volte i danni ai nemici con questo debuff."
-		"ko"	"-M2: 보고 있는 방향에 지진을 생성.\n-원소 디버프를 부여합니다:\n-출혈 피해량 +15％, 화상 피해량 +20％, 원소 피해 부여량 +30％\n-지진은 이 무기의 원소 디버프가 부여된 대상에게 2배의 피해를 가함"
+		"ko"	"-M2 능력: 보고 있는 방향에 지진을 생성.\n-원소 디버프를 부여합니다:\n-출혈 피해량 +15％, 화상 피해량 +20％, 원소 피해 부여량 +30％\n-지진은 이 무기의 디버프가 부여된 대상에게 2배의 피해를 가함"
 	}
 	
 	"Throwable Armor Grenade Desc"
@@ -1427,7 +1427,7 @@
 	}
 	"Morphine Desc"
 	{
-		"en"	"-A morphine shot chargeable by dealing Melee damage.\n-Turns you intangible for 3 seconds and regenerates 15％ of your max health up to a cap of 50%.\n-Useable twice a wave/Raid."
+		"en"	"-A morphine shot chargeable by dealing Melee damage.\n-Turns you intangible for 3 seconds and regenerates 15％ of your max health up to a cap of 50％.\n-Useable twice a wave/Raid."
 		"it"	"Un colpo di morfina che si ricarica infliggendo danni in mischia.\nTi rende intangibile per 3 secondi e rigenera il 15％ della tua salute massima fino a un massimo del 50%.\nUtilizzabile due volte a ondata/raid."
 		"ko"	"-근접 공격으로 피해를 주면 충전되는 모르핀입니다.\n-사용시, 3초간 지속되는 영체화 버프를 얻고 최대 체력의 15％만큼 체력을 회복하며 최대 50％까지 회복.\n-한 웨이브 또는 레이드에서 최대 2번까지만 사용 가능."
 	}
@@ -1557,7 +1557,7 @@
 		"es"	"usar esto te otorga Armadura."
 		"fr"	"Donne de l'armure."
 		"it"	"utilizzandolo da armatura."
-		"ko"	"사용시 아머 획득."
+		"ko"	"사용 시 아머 획득."
 	}
 	"Ammo Box Desc"
 	{
@@ -1565,7 +1565,7 @@
 		"es"	"usar esto te dara municion para tu arma."
 		"fr"	"Donne des munitions."
 		"it"	"utilizzandolo da le munizioni per l'arma in mano"
-		"ko"	"사용시 들고 있는 무기의 탄약을 보급."
+		"ko"	"사용 시 들고 있는 무기의 탄약을 보급."
 	}
 	"Perk Machine Desc"
 	{
@@ -1573,7 +1573,7 @@
 		"es"	"usar esto te dara un beneficio que dura hasta que mueras/te derriben."
 		"fr"	"Donne des Perks, qui améliorent les joueurs, mais se perdent quand KO."
 		"it"	"utilizzandolo vi darà un vantaggio che svanisce alla morte/alla morte."
-		"ko"	"사용시 사망하거나 다운될때까지 유지되는 퍽 획득."
+		"ko"	"사용 시 사망하거나 다운될때까지 유지되는 퍽 획득."
 	}
 	"Pack-a-Punch Desc"
 	{
@@ -1613,7 +1613,7 @@
 		"es"	"Cura 60 de vida al usarse, se mejora con mejoras Medicas."
 		"fr"	"Soigne pour 40 santé. Soins améliorés avec les améliorations Medigun."
 		"it"	"Cura per 60 Salute, scala con i potenziamenti del medico."
-		"ko"	"-사용시 체력 60 회복, 메딕 개선의 영향을 받음."
+		"ko"	"-사용시 체력 60 회복, 지원 개선의 영향을 받음."
 	}
 	"Village Desc"
 	{
@@ -1668,7 +1668,7 @@
 		"ru"	"1,5-кратное увеличение урона в ближнем бою, +5 ед. здоровья при убийстве и +150 ед. здоровья, +3％ сопр. ближнему бою при использ. оружия ближнего боя"
 		"chi"   "增加1.5倍的近战伤害，杀敌后+5点生命，生命值提升150点，使用近战武器时+5％的近战抗性"
 		"it"	"1.danno in mischia aumentato di 5 volte, +5 HP in caso di uccisione e +150 HP, +3％ resistenza in mischia con equipaggiamento da mischia"
-		"ko"	"-근접 무기 피해량 +50%\n-처치시 체력을 +5 회복\n-최대 체력 +150\n-근접 무기 장착 시 근접 피해 저항력 +3％."
+		"ko"	"-근접 무기 피해량 +50％\n-처치시 체력을 +5 회복\n-최대 체력 +150\n-근접 무기 장착 시 근접 피해 저항력 +3％."
 	}
 	
 	"Crystal Meth Desc"
@@ -1678,7 +1678,7 @@
 		"ru"	"1,5-кратное увеличение урона в ближнем бою, +8 ед. здоровья при убийстве и +150 ед. здоровья, +3％ сопр. ближнему бою при использ. оружия ближнего боя"
 		"chi"   "增加30％的近战伤害，杀敌后+8点生命，生命值提升150点，使用近战武器时+5％的近战抗性"
 		"it"	"1.danno in mischia aumentato di 5 volte, +8 HP in caso di uccisione e +150 HP, +3％ resistenza in mischia con equipaggiamento da mischia"
-		"ko"	"-근접 무기 피해량 +50%\n-처치시 체력을 +8 회복\n-최대 체력 +150\n-근접 무기 장착 시 근접 피해 저항력 +3％."
+		"ko"	"-근접 무기 피해량 +50％\n-처치시 체력을 +8 회복\n-최대 체력 +150\n-근접 무기 장착 시 근접 피해 저항력 +3％."
 	}
 	
 	"God's Might Desc"
@@ -1688,7 +1688,7 @@
 		"ru"	"1,5-кратное увеличение урона в ближнем бою, +12 ед. здоровья при убийстве и +250 ед. здоровья, +5％ сопр. ближнему бою при использ. оружия ближнего боя"
 		"chi"   "增加1.5倍的近战伤害，杀敌后+12点生命，生命值提升250点，使用近战武器时+5％的近战抗性"
 		"it"	"1.danno in mischia aumentato di 5 volte, +12 HP in caso di uccisione e +250 HP, +5％ resistenza in mischia con equipaggiamento da mischia"
-		"ko"	"-근접 무기 피해량 +50%\n-처치시 체력을 +12 회복\n-최대 체력 +250\n-근접 무기 장착 시 근접 피해 저항력 +5％."
+		"ko"	"-근접 무기 피해량 +50％\n-처치시 체력을 +12 회복\n-최대 체력 +250\n-근접 무기 장착 시 근접 피해 저항력 +5％."
 	}
 	
 	"Bob's Enhancer Desc"
@@ -1698,7 +1698,7 @@
 		"ru"	"1,65x увеличение урона в ближнем бою, +22 ед. здоровья при убийстве и +600 ед. здоровья, +6％ сопр. ближнему бою при использ. оружия ближнего боя"
 		"chi"   "增加1.65倍的近战伤害，杀敌后+22点生命，生命值提升600点，使用近战武器时+6％的近战抗性"
 		"it"	"1.danno in mischia aumentato di 65 volte, +22 HP su uccisione e +600 HP, +6％ resistenza in mischia con equipaggiamento in mischia"
-		"ko"	"근접 무기 피해량 +65%\n-처치시 체력을 +22 회복\n-최대 체력 +600\n-근접 무기 장착 시 근접 피해 저항력 +6％."
+		"ko"	"근접 무기 피해량 +65％\n-처치시 체력을 +22 회복\n-최대 체력 +600\n-근접 무기 장착 시 근접 피해 저항력 +6％."
 	}
 	"Void's Glimpse Desc"
 	{
@@ -1707,7 +1707,7 @@
 		"ru"	"1,65x увеличение урона в ближнем бою, +22 ед. здоровья при убийстве и +600 ед. здоровья, +6％ сопр. ближнему бою при использ. оружия ближнего боя"
 		"chi"   "增加1.65倍的近战伤害，杀敌后+22点生命，生命值提升600点，使用近战武器时+6％的近战抗性"
 		"it"	"1.danno in mischia aumentato di 65 volte, +22 HP su uccisione e +600 HP, +6％ resistenza in mischia con equipaggiamento in mischia"
-		"ko"	"근접 무기 피해량 +65%\n-처치시 체력을 +22 회복\n-최대 체력 +600\n-근접 무기 장착 시 근접 피해 저항력 +6％."
+		"ko"	"근접 무기 피해량 +65％\n-처치시 체력을 +22 회복\n-최대 체력 +600\n-근접 무기 장착 시 근접 피해 저항력 +6％."
 	}
 	
 	"Repair Handling book for dummies Desc"
@@ -1742,13 +1742,13 @@
 	{
 		"en"	"-2.0x Repair Rate\n-Building damage increased by 1.15x (Not barracks)\n-Reduces cost of metal usage by 20％ (Cant go below 1)"
 		"it"	"2.0x Tasso di riparazione I danni alle strutture aumentano di 1,15x (non alle caserme)\nRiduce il costo dell'uso del metallo del 20(non può scendere sotto 1)"
-		"ko"	"-수리 효율 +2배\n구조물의 피해량 +1.15배 증가(배럭 제외)\n-금속 소모량 20％ 감소 (1 이하로 감소하지 않음)"
+		"ko"	"-수리 효율 +2배\n-구조물의 피해량 +1.15배 증가(배럭 제외)\n-금속 소모량 20％ 감소 (1 이하로 감소하지 않음)"
 	}
 	"Engineering Repair Handling book Desc"
 	{
 		"en"	"-2.0x Repair Rate\n-Building damage increased by 1.15x (Not barracks)\n-Reduces cost of metal usage by 25％ (Cant go below 1)"
 		"it"	"2.0x Tasso di riparazione I danni alle strutture sono aumentati di 1,15x (non alle caserme)\nRiduce il costo dell'uso del metallo del 25 (non può scendere sotto 1)"
-		"ko"	"-수리 효율 +2배\n구조물의 피해량 +1.15배 증가(배럭 제외)\n금속 소모량 25％ 감소 (1 이하로 감소하지 않음)"
+		"ko"	"-수리 효율 +2배\n-구조물의 피해량 +1.15배 증가(배럭 제외)\n-금속 소모량 25％ 감소 (1 이하로 감소하지 않음)"
 	}
 	"Construction Worker Desc"
 	{
@@ -1763,7 +1763,7 @@
 	{
 		"en"	"-3.0x Repair Rate\n-Building damage increased by 1.15x (Not barracks)\n-Reduces cost of metal usage by 20％ (Cant go below 1)"
 		"it"	"3x Tasso di riparazione I danni alle strutture aumentano di 1,15x (non alle caserme)\nRiduce il costo dell'uso del metallo del 20％ (non può scendere sotto 1)"
-		"ko"	"-수리 효율 +3배\n-구조물의 피해량 +1.15배 증가(배럭 제외)\n금속 소모량 20％ 감소 (1 이하로 감소하지 않음)"
+		"ko"	"-수리 효율 +3배\n-구조물의 피해량 +1.15배 증가(배럭 제외)\n-금속 소모량 20％ 감소 (1 이하로 감소하지 않음)"
 	}
 	
 	"Construction Expert Desc"
@@ -1955,8 +1955,8 @@
 	}
 	"Grigoris Special Antidote Desc"
 	{
-		"en"	"You get an extra 350+ HP, and get 4% dmg resistance to all sources."
-		"ko"	"-최대 체력 +350\n-모든 피해 저항력 +4%"
+		"en"	"You get an extra 350+ HP, and get 4％ dmg resistance to all sources."
+		"ko"	"-최대 체력 +350\n-모든 피해 저항력 +4％"
 		"it"	"Aumento della quantità di armatura per uso e tetto massimo. +150 HP\nFornisce una resistenza passiva in caso di rottura dell'armatura e aumenta con i potenziamenti dell'armatura."
 	}
 	
@@ -2097,7 +2097,7 @@
 	
 	"Headshot Affinity Desc"
 	{
-		"en"	"-Headshots deal 1.4x the dmg instead of 1.2x,\n-deal 35％ less bodyshot damage\n-Falloff, if you headshot, is reduced by 30%."
+		"en"	"-Headshots deal 1.4x the dmg instead of 1.2x,\n-deal 35％ less bodyshot damage\n-Falloff, if you headshot, is reduced by 30％."
 		"it"	"I colpi alla testa infliggono 1,4 volte i danni invece di 1,2, ma infliggono 35％ in meno di danni da colpo al corpo.\nIl calo di potenza, in caso di colpo alla testa, è ridotto del 30%."
 		"ko"	"-헤드샷 피해량이 1.2배에서 1.4배로 증가\n-신체 사격 피해량 -35％\n-헤드샷시, 거리 비례 피해 감소량이 30％로 감소"
 	}
@@ -2160,7 +2160,7 @@
 		"ru"	"Вы получаете на 5％ меньше общего урона, но имеете -100 здоровья."
 		"chi"   "你受到的伤害减少5％，但生命值-100。"
 		"it"	"Subisci 5％ danni in meno in generale, ma hai -100 salute."
-		"ko"	"-모든 피해 저항력 +5%\n-최대 체력 -100"
+		"ko"	"-모든 피해 저항력 +5％\n-최대 체력 -100"
 	}
 	
 	"Soft Shoes Desc"
@@ -2221,7 +2221,7 @@
 	{
 		"en"	"-Increased Damage\n-You now gain regeneration while having the void buff.\n-Gain 10％ Melee resistance."
 		"it"	"Ora si ottiene la rigenerazione mentre si ha il buff del vuoto."
-		"ko"	"-피해량 증가\n-공허 관련 버프 보유시 초당 체력을 회복\n-근접 피해 저항력 +10％"
+		"ko"	"-피해량 증가\n-공허 관련 버프 보유시 매초마다 체력을 회복\n-근접 피해 저항력 +10％"
 	}
 	"Fusion Blade Pap 2"
 	{
@@ -2229,13 +2229,13 @@
 		"fr"	"Dégats améliorés, +5％ résistance contre les dégats corps-à-corps.\n+10％ résistance pour les attaques d'en face."
 		"chi"	"更多伤害，5％近战抗性。\n-10％正面受到的伤害。"
 		"it"	"Più danni e 5％ resistenza in mischia.\nSubisci 10％ danni in meno dagli attacchi frontali."
-		"ko"	"-피해량 증가\n-근접 피해 저항력 +5％\n-정면에서 받는 공격의 피해량 -10%"
+		"ko"	"-피해량 증가\n-근접 피해 저항력 +5％\n-정면에서 받는 공격의 피해량 -10％"
 	}
 	"Fusion Blade Pap 3"
 	{
 		"en"	"-M2 ability changes:\nPlace a sword infront of you, doing damage.\nStun enemies in range.\nGet Major buffs.\n-Hurting enemies focusing the sword gives you 2x dmg.\n-Faction ''Kazimierz'' is added.\n-Gain 10％ Melee resistance."
 		"it"	"M2 cambia abilità.\nPosiziona una spada davanti a te, facendo danni.\nStordisci i nemici nel raggio d'azione.\nOttieni maggiori buff.\nFerire i nemici mettendo a fuoco la spada ti dà 2x dmg.\nFazione ''Kazimierz'' è aggiunta.\nSilvester deve essere stato lì..."
-		"KO"	"-M2 능력 변경:\n전방에 검을 생성하여 피해를 가함.\n범위 내의 적을 기절시킴.\n상당한 버프 획득.\n-검을 표적으로 하는 적에게 주는 피해량 2배\n-''카시미어'' 진영 추가\n-근접 피해 저항력 +10％"
+		"ko"	"-M2 능력 변경: 전방에 검을 생성하여 피해를 가함.\n범위 내의 적을 기절시킴.\n상당한 버프 획득.\n-검을 표적으로 하는 적에게 주는 피해량 2배\n-''카시미어'' 진영 추가\n-근접 피해 저항력 +10％"
 	}
 
 	
@@ -2274,7 +2274,7 @@
 		"fr"	"Chaque attaque frappe deux fois.\nObtenez une abilité après 42 coups.\nAbilité lance les ennemis dans l'air et les bombarde aves des tirs explosifs.\n+15％ cadence des attaques si des Seaborns existe."
 		"chi"	"每次攻击造成两次伤害。\n击中敌人42次后可激活技能。\n此技能会将你附近所有敌人击飞，并造成大量aoe伤害。\n如有海嗣，获得+15％攻击速度。"
 		"it"	"Ad ogni attacco si raddoppia l'attacco.\nColpendo un nemico qualsiasi 42 volte si ottiene un'abilità.\nQuesta abilità fa volare i nemici e li bombarda con attacchi AOE.\nSe esistono le marine, si guadagna un bonus di 15％ alla velocità d'attacco."
-		"ko"	"-M1이 빠른 2연타 공격을 가함\n-적중시 능력 충전\n-능력 사용시 근처의 적들을 공중으로 띄우고 광역 피해를 주는 폭격을 가함\n-공중에 떠있는 적에게 총으로 입히는 피해 증가\n-근처에 ''시본'' 진영을 가진 대상이 있다면 공격 속도 +15％"
+		"ko"	"-M1이 빠른 2연타 공격을 가함\n-적중시 능력 충전\n-능력 사용시 근처의 적들을 공중으로 띄운 후 광역 피해를 주는 폭격을 가함\n-공중에 떠있는 적에게 총으로 입히는 피해 증가\n-근처에 ''시본'' 진영을 가진 대상이 있다면 공격 속도 +15％"
 	}
 	
 
@@ -2387,7 +2387,7 @@
 		"fr"	"Devient un fusil de Sniper, la charge améliore les soins.\nLes soins peuvent donner un bonus santé de 15％.\nAppuyez sur R pour placer des medkits.\nVos medkits donne un Buff, mais donne moins de soins aux aliiés dans le combat.\nVous pouvez placer jusqu'a 2 medkits à la fois."
 		"chi"	"子弹替换箭头，并且可以充能。\n现在可以造成超量（上限15％）\nR技能可以放置医疗包，需要蓄力2秒放置。\n医疗包也可以提供buff，战斗时稍微降低效率。"
 		"it"	"I colpi diventano istantanei e la carica di portata.\nLe tue guarigioni si surriscaldano a 15％.\nL'abilità R ti permette di generare kit di salute.\nI kit di salute forniscono anche dei buff e hanno una piccola penalità di guarigione in battaglia.\nRichiedono una ricarica di 2 secondi.\nPuoi piazzarne fino a 2 per ogni utilizzo."
-		"ko"	"-히트스캔형 무기로 변경되며 조준 가능\n-대상에게 최대 체력의 15%까지 과치료 부여 가능\n-R키 능력으로 치료킷을 생성 가능\n-배치된 치료킷을 획득한 대상에게 버프를 부여하며 전투중 치료 패널티가 적음\n-설치 후 2초가 지나야 사용 가능\n-능력 사용 당 치료킷 최대 설치 상한 : 2개"
+		"ko"	"-히트스캔형 무기로 변경되며 조준 가능\n-대상에게 최대 체력의 15％까지 과치료 부여 가능\n-R키 능력으로 치료킷을 생성 가능\n-배치된 치료킷을 획득한 대상에게 버프를 부여하며 전투중 치료 패널티가 적음\n-설치 후 2초가 지나야 사용 가능\n-능력 사용 당 치료킷 최대 설치 상한 : 2개"
 	}
 
 	"Barracks Desc"
@@ -2591,7 +2591,7 @@
 	{
 		"en"	"-Reduced Attackspeed\n-Hits two targets at once.\n-Damage Increased.\n-Faction changed to ''Seaborn''.\n-Ability is removed in exchange for multi target."
 		"it"	"Attacca più lentamente ma colpisce due bersagli alla volta.\nDanno aumentato.\nFazione cambiata in Seaborn."
-		"ko"	"-피해량 증가\n-공격 속도 감소\n-한 번에 두 대상을 공격\n-''시본'' 진영 추가\n-능력이 제거됩니다."
+		"ko"	"-피해량 증가\n-공격 속도 감소\n-한 번에 두 대상을 공격\n-''시본'' 진영 추가\n-기존의 능력이 제거됩니다."
 	}
 	"Specter Pap 2a"
 	{
@@ -2606,7 +2606,7 @@
 	{
 		"en"	"-Gains the ability to go Invulnerable but lose all health and become stunned afterwards.\n-During raids, you instead gain 65％ resistance and your health doesnt drain.\n-Damage Increased"
 		"it"	"Ottiene l'abilità di diventare Invulnerabile, ma perde tutta la salute e poi viene stordito.\nDurante le incursioni, invece, guadagna una resistenza di 65％ e la salute non si prosciuga.\nAumento del danno"
-		"ko"	"-새로운 능력 획득: 완전히 무적이 되지만 체력을 지속적으로 잃고 지속 시간 종료 시 기절\n-레이드 상태일 경우, 대신 피해 저항력이 65％ 증가하고 체력 소모 제거\n-피해량 증가"
+		"ko"	"-신규 능력 획득: 완전히 무적이 되지만 체력을 지속적으로 잃고 지속 시간 종료 시 기절\n-레이드 모드일 경우, 대신 피해 저항력이 65％ 증가하고 체력 소모 제거\n-피해량 증가"
 	}
 	"Specter Pap 3"
 	{
@@ -2624,13 +2624,13 @@
 		"ru"	"Увеличение урона и способность к самовозрождению при получении достаточного урона."
 		"chi"   "增加伤害，造成足够伤害后可复活自己。\n所有''深海猎人''武器+200血量上限"
 		"it"	"Aumenta i danni e acquisisce la capacità di auto-rianimarsi se vengono inflitti danni sufficienti.\nTutte le armi della fazione Seaborn guadagnano +200 di salute massima."
-		"ko"	"-피해량 증가\n-충분한 피해를 가한 후 자가 부활이 가능해지는 새로운 능력 획득.\n-모든 ''시본'' 진영 무기들에 최대 체력 +200 속성 부여"
+		"ko"	"-피해량 증가\n-충분한 피해를 가한 후 자가 부활이 가능해지는 신규 능력 획득.\n-모든 ''시본'' 진영 무기들에 최대 체력 +200 속성 부여"
 	}
 	"Specter Pap 5"
 	{
 		"en"	"-Replaces ability.\n-Use old ability with same button and crouching.\n-Deal bonus damage if the enemy has enough lower ％ hp then you otherwise deal bonus damage during ability\n-You do more dmg, and take less damage during ability.\n-Damage Increased"
 		"it"	"Sostituisce l'abilità. Usa la vecchia abilità con lo stesso pulsante e accovacciandoti.\nil nemico ha un numero di hp inferiore al tuo, altrimenti infliggi danni bonus\nFai più danni e ne subisci di meno\nDanno aumentato"
-		"ko"	"-피해량 증가\n-능력 교체: 이전의 능력은 앉은 상태로 똑같은 사용 버튼을 눌러서 발동 가능.\n-대상 적의 체력이 당신의 체력보다 일정 ％ 만큼 낮을 경우, 추가 피해를 입힘\n-능력 지속 시간 동안 피해량 증가 및 받는 피해 감소"
+		"ko"	"-피해량 증가\n-능력 교체: 기존의 능력은 앉은 상태로 똑같은 사용 버튼을 눌러서 발동 가능.\n-대상 적의 체력이 당신의 체력보다 일정 ％ 만큼 낮을 경우, 추가 피해를 입힘\n-능력 지속 시간 동안 피해량 증가 및 받는 피해 감소"
 	}
 	"Lantean Staff Desc pap2"
 	{
@@ -2689,7 +2689,7 @@
 		"fr"	"Remplace l'arme complètement.\nFaible si vous avez plus que moitié santé.\nTrès puissant si vous avez mois que moitié santé.\n-50％ soins.\nChargez avec M2, recevez de la résistance pendant la charge."
 		"chi"	"武器改动：\n高于50％血时你很弱。\n低于50％血时获得大量buff。\n获得50％治疗\n按住M2获得大量抗性buff"
 		"it"	"Cambia completamente l'arma.\nNon si è forti se si supera la metà della salute.\nSe si scende sotto la metà della salute si guadagna una potenza enorme.\nSi ricevono 50％ di guarigione.\nCarica con M2 si guadagnano resistenze pesanti durante la carica."
-		"ko"	"-무기의 사양이 완전히 변경: \n-체력이 절반 이하일 경우: \n피해량, 저항력 증가\n-치유를 50％만 받음\n-M2 능력으로 돌진, 돌진하는 동안 높은 저항력을 얻습니다."
+		"ko"	"-무기의 사양이 완전히 변경: \n-체력이 절반 이하일 경우: \n피해량, 저항력 증가\n-치유를 50％만 받음\n-M2 능력으로 돌진, 돌진하는 동안 높은 저항력 획득"
 	}
 	"Spike Layer Pap 1"
 	{
@@ -2760,7 +2760,7 @@
 	"Mlynar Sword Desc"
 	{
 		"en"	"-Gain 30％ damage\n-50％ less knockback\n-10％ slower\n-Cant Attack, reflect damage onto enemies depending on your damage(deals true damage)\n-You charge damage by standing around, standing near enemies & being hurt.\n-Enemies are more likely to target you."
-		"ko"	"-피해량 +30%\n-받는 넉백량 -50%\n-이동 속도 -10％\n-공격할 수 없지만, 당신의 피해량에 따라서 적에게 피해를 반사합니다.(트루 대미지)\n-시간이 지나거나, 적 주변에 있거나 피해를 받을 경우 피해량이 점차 증가\n적이 당신을 더 자주 노림"
+		"ko"	"-피해량 +30％\n-받는 넉백량 -50％\n-이동 속도 -10％\n-공격할 수 없지만, 당신의 피해량에 따라서 적에게 피해를 반사합니다.(트루 대미지)\n-시간이 지나거나, 적 주변에 있거나 피해를 받을 경우 피해량이 점차 증가\n적이 당신을 더 자주 노림"
 	}
 	"Mlynar Sword Desc pap"
 	{
@@ -2901,7 +2901,7 @@
 		"fr"		"Dégats et résistance améliorés. Appuyez sur M2 pour soigner vos alliés avec votre attribut santé par victime et étonner les ennemis proches.\nDégats et résistance améliorés pour la durée de l'abilité. +35％ dégats contre les ennemis étonnés."
 		"chi"		"更多抗性与伤害，M2激活能力，附近队友获得击杀治疗效果。激活时眩晕附近的敌人。\n使用时获得更高的抗性和伤害，对眩晕的敌人造成额外35％伤害。"
 		"it"		"aumenta le resistenze e i danni, guadagna la capacità di m2 di curare gli alleati nel tempo con la statt guarisci su uccisione, stordisce i nemici intorno a te durante l'uso dell'abilità.\nAumenta le resistenze e i danni durante l'uso dell'abilità, infliggi sempre 35％ danni in più contro i nemici storditi."
-		"ko"		"-피해량, 저항력 증가\n-M2 사용시 주변의 적을 기절시킴\n-능력 지속 시간동안 추가 피해량, 저항력을 획득\n-기절한 적에게 피해량 +35%"
+		"ko"		"-피해량, 저항력 증가\n-M2 사용시 주변의 적을 기절시킴\n-능력 지속 시간동안 추가 피해량, 저항력을 획득\n-기절한 적에게 피해량 +35％"
 	}
 	"Steel Dagger Desc 2"
 	{
@@ -3036,7 +3036,7 @@
 	{
 		"en"	"-Slow attacking scythe.\n-High damage.\n-Gain the ability to shoot projetiles with R, they home onto targets.\n-they will focus the target you look at when using this ability\n-Charges with melee hits"
 		"it"	"Falce d'attacco lenta."
-		"ko"	"-공격 속도가 느린 낫입니다.\n-높은 피해량\n-R키 능력으로 적을 추적하는 유도 투사체 발사\n-능력으로 발사한 투사체가 당신이 바라보는 적을 집중적으로 추격\n-근접 공격 적중시 충전"
+		"ko"	"-공격 속도가 느린 낫입니다.\n-높은 피해량\n-R키 능력: 적을 추적하는 유도 투사체 발사\n-능력으로 발사한 투사체가 당신이 바라보는 적을 집중적으로 추격\n-근접 공격 적중시 충전"
 	}
 	"Sensal Desc 1"
 	{
@@ -3200,7 +3200,7 @@
 	{
 		"en"	"Become a workshipper of sigmar!\nRapier: headshots, m2 blocks with a healthbar.\nR: Dashes in any direction except forwards.\nHold R with revolver for rapid fire\nHitting reduces cooldowns (headshots more).\nLess backwalk penalty (0.9)\nSlow immunity."
 		"it"	"Diventa uno spedizioniere di Sigmar!\nRapier: colpi alla testa, blocchi m2 con una barra della salute.\nR: si sposta in qualsiasi direzione tranne che in avanti.\nTenere premuto R con il revolver per il fuoco rapido.\nColpire riduce i cooldown (più colpi alla testa).\nMinore penalità all'indietro (0,9)\nImmunità alla lentezza."
-		"ko"	"시그마르의 숭배자가 되어보세요!\n-레이피어: 헤드샷이 가능하며, M2를 꾹 누르면 스태미나를 소모해 방어 가능.\n-R: 아무 방향으로나 대쉬 가능.\n-R을 꾹 누른채 리볼버로 사격시 고속으로 사격합니다.\n-적중시, 쿨타임 감소(헤드샷시 추가 감소)\n-후진의 이동 속도 감소량이 10％로 감소\n-둔화 효과에 면역"
+		"ko"	"시그마르의 숭배자가 되어보세요!\n-레이피어: 헤드샷 가능, M2를 꾹 누르면 스태미나를 소모해 방어\n-R: 아무 방향으로나 대쉬 가능.\n-R을 꾹 누른채 리볼버로 사격시 고속으로 사격\n-적중시, 쿨타임 감소(헤드샷시 추가 감소)\n-후진의 이동 속도 감소량이 10％로 감소\n-둔화 효과에 면역"
 	}
 	"Zealot Pap 1 Desc"
 	{
@@ -3218,7 +3218,7 @@
 	{
 		"en"	"Boost stats.\nIncreases cooldown reductions.\nYour raipier now has an ability when crouching with M2\nDash through targets and gain extra attackspeed for 5 seconds."
 		"it"	"Aumenta le statistiche.\nAumenta le riduzioni del cooldown.\nIl tuo raipier ora ha un'abilità quando si accovaccia con M2\nFuggi tra i bersagli e guadagna velocità d'attacco extra per 5 secondi."
-		"ko"	"-전반적인 능력치 증가\n-쿨타임 감소량 증가\n-레이피어에 새로운 우클릭(M2) 능력 추가:\n대상들을 뚫으며 돌진하고 5초간 공격 속도가 증가."
+		"ko"	"-전반적인 능력치 증가\n-쿨타임 감소량 증가\n-레이피어에 신규 M2 능력 추가(웅크리기+M2):\n 대상들을 뚫으며 돌진하고 5초간 공격 속도가 증가."
 	}
 	"Zealot Pap 4 Desc"
 	{
@@ -3388,7 +3388,7 @@
 		"fr"	"Abilité arme principale «Encore! ENCORE!» : Frappez un ennemi pour infliger tous les dégats de saignement à la fois, et vous soigne pour 35％ santé. Peut être utilisé une fois par vague.\nVos armes secondaire et corps-à-corps reçoivent aussi une abilité."
 		"chi"	"主武器M2技能：''多来点！''\n对一名敌人造成大量伤害，激活所有流血，治疗自己35％血量。（每波一次性）\n副武器和近战也获得M2技能。"
 		"it"	"L'abilità primaria di fuoco alternativo ''Sepsi'' colpisce un nemico con danni ingenti, scatena l'emorragia in una volta sola e si cura per 35％ di salute massima (una volta per ondata).\nSecondaria e Mischia guadagnano anche un'abilità di fuoco alternativo."
-		"ko"	"-주무기 능력 - 패혈증(M2): 적중한 적 하나에게 매우 높은 피해를 주고, 모든 출혈 효과를 한번에 발생시킨 뒤,최대 체력의 35％ 만큼 체력 회복.(웨이브마다 최대 1번 사용 가능).\n-2번, 3번 무기도 개별적인 M2 능력 획득."
+		"ko"	"-주무기 M2 능력-패혈증: 적중한 적 하나에게 매우 높은 피해를 주고, 모든 출혈 효과를 한번에 발생시킨 뒤,최대 체력의 35％ 만큼 체력 회복.(웨이브마다 최대 1번 사용 가능).\n-2, 3번 무기도 개별적인 M2 능력 획득."
 	}
 	"Deathless Pap 1"
 	{
@@ -3396,13 +3396,13 @@
 		"fr"	"Abilité arme secondaire «Don de Lash» : Améliore les dégats et la résistance d'un de vos coéquipiers, en échange pour un peu de leur armure.\nVos armes principale et corps-à-corps reçoivent aussi une abilité."
 		"chi"	"副武器M2技能：''鞭打之礼''\n移除友军部分护甲，但是提供伤害和抗性buff。治疗自己25％血量。\n主武器和近战也获得M2技能。"
 		"it"	"L'abilità secondaria alt-fire ''Dono di Lash'' si rivolge a un alleato, rimuovendo un po' di armatura ma dando un buff ai danni e alla resistenza, e cura se stessi per 25％ di salute massima.\nPrimaria e Mischia guadagnano anche un'abilità alt-fire."
-		"ko"	"-보조무기 능력 - 채찍의 선물(M2): 대상 아군의 아머를 조금 감소시키는 대신 대상의 피해량과 저항력을 증가시키는 버프 부여, 사용자는 최대 체력의 25％ 만큼 체력 회복.\n-1번, 3번 무기도 개별적인 M2 능력 획득."
+		"ko"	"-보조무기 M2 능력-채찍의 선물: 대상 아군의 아머를 조금 감소시키는 대신 대상의 피해량과 저항력을 증가시키는 버프 부여, 사용자는 최대 체력의 25％ 만큼 체력 회복.\n-1, 3번 무기도 개별적인 M2 능력 획득."
 	}
 	"Punish Pap 1"
 	{
 		"en"	"Melee alt-fire ability ''More! MORE!'' gives yourself to store damage taken to later be restored after the ability ends.\nPrimary and Secondary also gain an alt-fire ability."
 		"it"	"L'abilità alt-fire in mischia ''Ancora! DI PIÙ!'' permette di immagazzinare i danni subiti per poi ripristinarli al termine dell'abilità.\nPrimario e Secondario ottengono anche un'abilità alt-fire."
-		"ko"	"-근접무기 능력 - 더! 더!(M2):사용시 능력 지속 시간 동안 받은 피해를 저장하며, 능력 지속 시간이 종료되면 저장한 피해만큼 체력을 회복.\n-1번, 2번 무기도 개별적인 M2 능력 획득."
+		"ko"	"-근접무기 M2 능력-더! 더!: 사용시 능력 지속 시간 동안 받은 피해를 저장하며, 능력 지속 시간이 종료되면 저장한 피해만큼 체력을 회복.\n-1, 2번 무기도 개별적인 M2 능력 획득."
 	}
 	"The Flagellant Pap 0"
 	{
@@ -3438,7 +3438,7 @@
 		"fr"	"+25％ résistance contre les dégats corps-à-corps\nAbilité accélère un particule vers l'ennemi que vous visez.\nAbilité vous inflige du recul."
 		"chi"	"你现在可以加速能量，发射出去。只能面对敌人时使用，会对你造成击退。\+25%近战抗性。"
 		"it"	"Aumenta i danni\nSi ha la possibilità di accelerare una particella ad alta velocità\nSi viene sbalzati all'indietro, si può usare solo se si affronta un nemico\n25％ Resistenza in mischia"
-		"ko"	"-피해량 증가\n-신규 능력 획득: \n사용시 사용자는 뒤쪽으로 넉백되며, 정면에 적이 있는 상태일때만 사용할 수 있습니다.\n-근접 피해 저항력 +25％"
+		"ko"	"-피해량 증가\n-신규 능력 획득: 사용 시 폭발을 일으키는 고속 입자 가속을 발생\n-사용자는 뒤쪽으로 밀려나며, 정면에 적이 있는 상태일때만 사용 가능\n-근접 피해 저항력 +25％"
 	}
 	"Impact Lance Desc 3"
 	{
@@ -3486,7 +3486,7 @@
 		"fr"	"Vous donne un lance-roquettes rapide qui charge votra arme secondaire,\nune arme secondaire qui convoque un cannon à ION avec assez de charges,\net une arme corps-à-corps qui est plus puissant lorsque votre arme principale se recharge."
 		"chi"	"三个武器 - 高速火箭筒，离子炮，和一把装弹时加强的近战。"
 		"it"	"Hai 3 armi, un lanciarazzi che spara velocemente\nuna secondaria che spara uno ION se hai abbastanza carica, la ottieni colpendo gli npc con la primaria.\nUna da mischia che diventa più forte quando la primaria si sta ricaricando"
-		"ko"	"-유리 대포형 키트\n-주 무기: 공격 속도가 매우 빠른 수동 재장전형 다연장 로켓 발사기. 주 무기에 남은 로켓에 따라 재장전 속도가 결정됨.\n-적중시 이온 충전 획득\n-미강화시 패턴은 아무런 효과가 없습니다!\n-보조 무기: 이온 충전을 소모하여 이온 캐논을 발사\n-근접 무기: 주 무기가 재장전 중일시 피해량, 광역 범위, 사거리가 증가, 비-레이드 상태일 때 넉백"
+		"ko"	"-유리 대포형 키트\n-주 무기: 공격 속도가 매우 빠른 수동 재장전형 다연장 로켓 발사기. 주 무기에 남은 로켓에 따라 재장전 속도가 결정됨.\n-적중시 이온 충전 획득\n-미강화시 패턴은 아무런 효과가 없습니다!\n-보조 무기: 이온 충전을 소모하여 이온 캐논을 발사\n-근접 무기: 주 무기가 재장전 중일시 피해량, 광역 범위, 사거리가 증가, 비-레이드 모드일 때 넉백"
 	}
 	"Blitz Kit Generic Upgrade Pre"
 	{
@@ -3518,7 +3518,7 @@
 	{
 		"en" 	"Weapon changes:\n-M2 Ability causes multi 3 hit, with more damage & cooldown\n-Gain 2.4x max HP and 1.8x Vuln\n-Heal on hit, Lower hp = faster atk.\n-You cant gain armor.\n-Armor -> Hp."
 		"it"	"Modifiche all'arma:\nM2 L'abilità provoca più di 3 colpi, con più danni e cooldown.\nGuadagna 2,4 volte gli HP massimi e 1,8 volte la vulnerabilità."
-		"ko" 	"-무기 능력 변경:\nM2 능력 사용 시 공격이 3연타를 하게 되며, 피해량이 증가하지만 쿨타임도 증가.\n-최대 체력 +2.4배, 대신 받는 피해 1.8배 증가\n-적중시 체력 회복, 체력이 감소할 수록 공격 속도 증가\n-아머를 획득할 수 없으며, 아머가 체력으로 전환됨"
+		"ko" 	"-무기 능력 변경: M2 능력 사용 시 공격이 3연타를 하게 되며, 피해량이 증가하지만 쿨타임도 증가.\n-최대 체력 +2.4배, 받는 피해 1.8배 증가\n-적중시 체력 회복, 체력이 감소할 수록 공격 속도 증가\n-아머 획득 불가능, 대신 아머가 체력으로 전환됨"
 	}
 	"Half Moon Desc2"
 	{
@@ -3574,7 +3574,7 @@
 		"fr"	"Abilité vous permet d'entrer en duel avec un ennemi\nLes deux participants du duel s'infligent plus de dégats.\nIl semble que cet arme a été restauré à son gloire."
 		"chi"	"这把剑回到了它昔日的辉煌。\n新技能：对决！\n只能面对敌人激活。\n使用时，向后闪避，标记自己和敌人。\n对彼此的伤害加倍。"
 		"it"	"Aumenta le statistiche.\nE così, è stato riportato al suo antico splendore.\nOttiene una nuova abilità: Duello!\nUtilizzabile solo quando si affronta un nemico.\nQuando la si usa, si indietreggia e si marcano sia l'avversario che il bersaglio.\nLe entità marcate subiscono più danni l'una dall'altra."
-		"ko" 	"-피해량 증가\n-신규 능력 획득 : 결투!\n-결투! : 적을 정면으로 보고 있을때만 사용 가능.\n-사용시, 뒤로 대시하고 해당 적과 당신에게 표식을 부여.\n-표식이 부여된 대상들은 서로에게 더 많은 피해를 입힘"
+		"ko" 	"-피해량 증가\n-신규 능력 획득 : 결투!\n 결투! : 적을 정면으로 보고 있을때만 사용 가능.\n-사용시, 뒤로 대시하고 해당 적과 당신에게 표식을 부여.\n-표식이 부여된 대상들은 서로에게 더 많은 피해를 입힘"
 	}
 	"Improved Rapier Desc"
 	{
@@ -3658,8 +3658,8 @@
 	}
 	"Reiuji Desc 3"
 	{
-		"en"	"-Increased Damage\nIncreased attackspeed\n-When barrage is at 50% or more charge, your m1 magic projectiles gain homing"
-		"it"	"Quando lo sbarramento è al 50% o più di carica, i proiettili magici m1 guadagnano la funzione di inseguimento"
+		"en"	"-Increased Damage\nIncreased attackspeed\n-When barrage is at 50％ or more charge, your m1 magic projectiles gain homing"
+		"it"	"Quando lo sbarramento è al 50％ o più di carica, i proiettili magici m1 guadagnano la funzione di inseguimento"
 		"ko"	"-피해량, 공격 속도 증가\n-집중 포화 게이지가 50％ 이상 충전된 상태라면, 좌클릭 공격의 마법 투사체가 적을 추적하는 유도탄이 됨."
 	}
 	"Reiuji Desc 4"
@@ -3709,7 +3709,7 @@
 	{
 		"en" 	"Basic pistol.\n-Deals 20％ Extra headshot damage."
 		"it"	"Pistola di base.\nDona 20％ danni extra da colpo alla testa."
-		"ko" 	"기본적인 권총입니다.\n-헤드샷시 추가 피해 +20%"
+		"ko" 	"기본적인 권총입니다.\n-헤드샷시 추가 피해 +20％"
 	}
 	"USP PAP 1"
 	{
@@ -3763,7 +3763,7 @@
 		"fr"	"Dégats, vitesse de rechargement, capacité de chargeur et cadence de tir améliorés.\nBaliste fais plus de dégats et prends moins de temps pour se recharger."
 		"chi"	"更多伤害，更大的弹夹，更快的射速，M2加强，更低的cd。"
 		"it"	"La Balista è più forte e ha meno cooldown."
-		"ko"	"-피해량, 장탄수, 공격 속도 증가\n노포 능력의 피해량이 증가하고 쿨타임이 감소합니다."
+		"ko"	"-피해량, 장탄수, 공격 속도 증가\n-노포 능력의 피해량이 증가하고 쿨타임이 감소합니다."
 	}
 	"Medigun Desc Pap 1"
 	{
@@ -3853,7 +3853,7 @@
 	{
 		"en"	"-Your attacks will debuff the enemy so you deal 5％ more damage with each hit you do upto a cap.\n-M2 ability changes into a rapidly fast attacking melee."
 		"it"	"I tuoi attacchi indeboliscono il nemico in modo da infliggere 5％ danni in più a ogni colpo inferto fino a un limite massimo.\nM2 cambia in un attacco melee veloce"
-		"ko"	"-공격 적중시, 대상이 받는 근접 피해를 5％ 증가시키는 디버프 부여.(상한 존재)\n-우클릭(M2) 능력 변경: 사용시 무기의 공격 속도 대폭 증가"
+		"ko"	"-공격 적중시, 대상이 받는 근접 피해를 5％ 증가시키는 디버프 부여.(증가 상한 존재)\n-M2 능력 변경: 사용시 무기의 공격 속도 대폭 증가"
 	}
 	"Siccerino Pap 3"
 	{
@@ -3861,7 +3861,7 @@
 		"fr"	"Dégats et cadence des attaques améliorés.\nAbilité convoque une paire de ciseaux gigantesque qui coupe les ennemis."
 		"chi"	"更多伤害和攻速。\nR技能召唤巨大的剪刀，切断敌人。"
 		"it"	"Più danni e velocità d'attacco.\nIl tuo R ora evoca una coppia gigante di Siccor per colpire il nemico."
-		"ko"	"-피해량, 공격 속도 증가\n-이제 R 키 능력 사용시 거대한 가위가 나와 적을 가위질합니다."
+		"ko"	"-피해량, 공격 속도 증가\n-이제 R키 능력 사용시 거대한 가위가 나와 적을 가위질합니다."
 	}
 	"Ruina's Sacret Magic Ways Magic Desc"
 	{
@@ -4016,7 +4016,7 @@
 	{
 		"en"	"A weapon from Wild West.\n-Slower fire rate\n-Increased damage.\n-You gain damage resistance but the weapon's dmg falloff is increased\n-New ability: M2 for rapid fire.\n-You loose guranteed gibs."
 		"it"	"Un'arma del Far West. \nSi guadagna resistenza ai danni, ma la caduta dei danni dell'arma aumenta: M2 per il fuoco rapido.\nSi perdono i fiocchi garantiti."
-		"ko"	"서부에서 온 무기입니다.\n-피해량 증가\n-공격 속도 감소\n-피해 저항력이 증가하지만, 무기의 거리 비례 피해 감소량이 증가.\n-신규 능력: 우클릭(M2) 사용시 고속 사격을 가함.\n-적의 시체가 확정적으로 조각나는 효과 제거."
+		"ko"	"서부에서 온 무기입니다.\n-피해량 증가\n-공격 속도 감소\n-피해 저항력이 증가하지만, 무기의 거리 비례 피해 감소량이 증가.\n-신규 M2 능력: 사용시 고속으로 연사함.\n-적의 시체가 확정적으로 조각나는 효과 제거."
 	}
 	"West Pap 2 Desc"
 	{
@@ -4024,7 +4024,7 @@
 		"fr"	"Dégats améliorés.\nAbilité vous fera reculer avec un saut.\nAppuyez sur M3 pour viser automatiquement un ennemi. Votre cadence de tir s'améliorera considérablement."
 		"chi"	"增加伤害。\nM2技能发动时会你将会后撤一步。\n新技能：[M3]锁定附近一位敌人，大幅度增加开火速度以及伤害。"
 		"it"	"Aumento del danno\nl'abilità M2 vi farà saltare all'indietro durante l'utilizzo della nuova abilità\nM3 La mira sarà fissata sul nemico vicino e i danni e la potenza di fuoco aumenteranno drasticamente."
-		"ko"	"-피해량 증가\n-이제 우클릭 능력 사용시 뒤쪽으로 점프함.\n-신규 능력: 특수 공격 키(M3) 버튼을 누르면 주변의 적에게 에임이 고정되며 피해량과 공격 속도가 크게 증가."
+		"ko"	"-피해량 증가\n-이제 우클릭 능력 사용시 뒤쪽으로 점프함.\n-신규 M3 능력: 주변의 적에게 에임이 고정되며 피해량과 공격 속도가 크게 증가."
 	}
 	"West Pap 3 Desc"
 	{
@@ -4079,7 +4079,7 @@
 		"en"	"-Increased Damage\n-Increased Ranged Resistance\n-Increased attackspeed\n-New ability - Charged Shot: Press M2 to load up 10 powerful shells. \n-When reaching 5, you will be able to fire all remaining shells.\n-Warning! You will lose health and your weapon will be overheated and cannot shoot rocket for short period"
 		"fr"	"Dégats, cadence de tir et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer jusqu'a 10 tirs.\nCeci vous infligera des dégats et vous empêchera d'utiliser votre arme pour quelques secondes!"
 		"chi"	"增加伤害，远程抗性，以及射速。\n新技能：[M2]蓄力炮：长按M2填装炮弹，上限10发\n填入5发后可发射所有炮弹。\n[警告]发射后武器将会过热，会扣除自身血量，并且武器一段时间内将无法使用。"
-		"ko"	"-피해량, 원거리 피해 저항력, 공격 속도 증가\n-M2 능력 - 충전 사격: 강력한 포탄을 10개까지 장전합니다.\n-잔여 포탄이 5발이 될 경우 전탄 발사 사용가능.\n-경고! 전탄 발사시, 자가 피해를 입고 짧은 시간 동안 포탄 발사 불가."
+		"ko"	"-피해량, 원거리 피해 저항력, 공격 속도 증가\n-신규 M2 능력 - 충전 사격: 강력한 포탄을 10개까지 장전합니다.\n-잔여 포탄이 5발이 될 경우 전탄 발사 사용가능.\n-경고! 전탄 발사시, 자가 피해를 입고 짧은 시간 동안 포탄 발사 불가."
 		"it"	"Aumenta i danni, le res a distanza e la velocità di fuoco. \nNuova funzionalità - Colpo a raffica: Premere M2 per caricare 10 potenti proiettili. \nUna volta raggiunti i 5, sarà possibile sparare tutti i proiettili rimanenti.\nAttenzione! Perderete salute e l'arma si surriscalderà e non potrà sparare razzi per un breve periodo"
 	}
 	"Victorian 3 Desc"
@@ -4087,7 +4087,7 @@
 		"en"	"The Glorious Spear of Victoria.\n-Increased Damage\n-Increased Ranged Resistance\n-New ability - Barrage: For 30 seconds, your attack speed will be shortened immensively and after 15 seconds, the damage will be increased too.\n-Warning! Your health will start to drain after 15 seconds"
 		"fr"	"Dégats et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer un barrage, qui accélère votre cadence de tir et améliora ensuite les dégats après 15 secondes.\nCeci va drainer votre santé après 15 secondes!"
 		"chi"	"维多利亚的光荣之矛。\n增加伤害以及远程抗性。\n新技能：弹幕。30秒内，大幅度提升发射速度。15秒后增加伤害。\n[警告]15秒后会同时开始扣除血量。"
-		"ko"	"빅토리아의 영광스러운 창.\n-피해량, 원거리 피해 저항력 증가\n-신규 능력(R키) - 폭격: 30초 동안 공격 속도가 크게 증가하고, 15초 후 피해량 역시 대폭 증가.\n-경고! 15초 후에 체력이 감소하기 시작합니다."
+		"ko"	"빅토리아의 영광스러운 창.\n-피해량, 원거리 피해 저항력 증가\n-신규 R키 능력 - 폭격: 30초 동안 공격 속도가 크게 증가하고, 15초 후 피해량 역시 대폭 증가.\n-경고! 15초 후에 체력이 감소하기 시작합니다."
 		"it"	"La Gloriosa Lancia di Vittoria. \nAumento dei danni e della resistenza a distanza. \nNuova abilità - Sbarramento: Per 30 secondi, la velocità d'attacco si riduce immensamente e dopo 15 secondi aumenta anche il danno. \nAttenzione! La salute inizierà a scarseggiare dopo 15 secondi"
 	}
 	"VictorianLauncher Desc Extra"
@@ -4155,13 +4155,13 @@
 	{
 		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAllows the construction of the brewing stand.\nYour secondary gets an ability selection upon its first pap."
 		"it"	"Fornisce una chiave da costruttore, ma non permette di costruire barricate o sentinelle.\nPermette di costruire il chiosco della birra.\nIl tuo secondario ottiene una selezione di abilità alla sua prima carta."
-		"ko"	"센트리 건과 바리케이드를 건설할 수 없는 건축가의 렌치 획득.\n양조기 건설 가능.\n당신의 보조 무기는 첫번째 무기 강화 후 능력 선택이 가능."
+		"ko"	"센트리 건과 바리케이드를 건설할 수 없는 건축가의 렌치 획득.\n양조기 건설 가능.\n첫번째 무기 강화 후, 보조 무기로 능력 선택이 가능."
 	}
 	"Merchant Pap -1 Desc"
 	{
 		"en"	"Able to supercharge by using the device, but consumes metal over time."
 		"it"	"È in grado di ricaricarsi utilizzando il dispositivo, ma consuma metallo nel tempo."
-		"ko"	"장치를 사용하여 슈퍼차지를 사용할 수 있게 되지만, 지속적으로 금속이 소모됩니다."
+		"ko"	"장치를 사용하여 슈퍼차지를 사용할 수 있게 됩니다, 사용하는 동안 지속적으로 금속이 소모됩니다."
 	}
 	"Merchant Pap 0 Desc"
 	{
@@ -4373,7 +4373,7 @@
 		"en"	"-Mini-crits against burning enemies.\n-INFERNAL FURY: Hold M2 to burn everything nearby and gain buffs, at the\n-cost of rapidly draining HP. Kills during this grant HP, given when the effect ends.\n-CD is based on use time. Kills while not active reduce CD."
 		"chi"	"对点燃的敌人造成迷你暴击。\n[M2]火愤:长按M2以血量为代价在自身附近生成一个火圈并且获得增益。\n效果生效时击杀敌人积攒回血量，解除后回复。\n效果不激活时击杀敌人降低技能冷却。"
 		"it"	"Mini-criteri contro i nemici in fiamme.\nINFERNAL FURY: Tenere premuto M2 per bruciare tutto ciò che si trova nelle vicinanze e guadagnare buff, al costo di prosciugare rapidamente gli HP.\nLe uccisioni durante questa fase garantiscono HP, dati quando l'effetto termina.\nCD si basa sul tempo di utilizzo.\nLe uccisioni quando non sono attive riducono la CD."
-		"ko"	"-불타는 적에게 소형 치명타\n-M2 능력 - 지옥의 분노: 버프를 얻고 주변을 불태우며, 지속적으로 체력 감소.\n-능력 발동 중에 처치시 포인트를 얻고, 능력 종료시 포인트만큼 HP을 회복.\n-쿨타임은 사용한 시간에 비례하며, 능력 비활성화 중 적 처치시 쿨타임 감소"
+		"ko"	"-불타는 적에게 소형 치명타\n-M2 능력 - 지옥의 분노: 버프를 얻고 주변을 불태우며, 지속적으로 체력 감소\n-능력 발동 중에 처치시 포인트를 얻고, 능력 종료시 포인트만큼 HP을 회복.\n-쿨타임은 사용한 시간에 비례하며, 능력 비활성화 중 적 처치시 쿨타임 감소"
 	}
 	"Wrathful Blade PaP 1"
 	{
@@ -4545,7 +4545,7 @@
 	"Super-Uber-Saw Desc 1"
 	{
 		"en"	"-Increased damage\n-Gives 25％ more range."
-		"it"	"danno aumentato e portata maggiore del 25%."
+		"it"	"danno aumentato e portata maggiore del 25％."
 		"ko"	"-피해량 증가\n-사거리 +25％"
 	}
 	"The Yakuza Desc"
@@ -4600,7 +4600,7 @@
 	{
 		"en"	"Verys slow attacking weapon, has resistances and high damage.\nAll ''Seaborn'' faction weapons will receive 10％ damage bonus"
 		"it"	"Arma con attacco lento\nTutte le armi della fazione Seaborn riceveranno un bonus di 10％ danni"
-		"ko"	"공격 속도는 매우 느리지만 높은 피해량과 저항력을 가짐.\n-모든 ''시본'' 진영 무기의 피해량 10% 증가"
+		"ko"	"공격 속도는 매우 느리지만 높은 피해량과 저항력을 가짐.\n-모든 ''시본'' 진영 무기의 피해량 10％ 증가"
 	}
 	"Abyssal Greatsword Pap 1 desc"
 	{
@@ -4612,13 +4612,13 @@
 	{
 		"en"	"Attacks deal Necrosis elemental damage.\nHas a chance to fire an additional projectile that slows on hit and deals Ranged Damage to enemies under an Elemental effect.\nAbility executes nearby low-health enemies and has unlimited duration."
 		"it"	"Gli attacchi infliggono danni elementali da Necrosi.\nHa una probabilità di lanciare un proiettile aggiuntivo che rallenta al contatto e infligge danni a distanza ai nemici sotto l'effetto Elementale.\nL'abilità uccide i nemici vicini con poca salute e ha una durata illimitata."
-		"ko"	"공격이 괴사 원소 피해를 입힘.\n-확률적으로 이동 속도를 둔화시키고 원소 피해가 부여된 대상에게 추가 피해를 입히는 투사체 추가 발사\n-능력은 주변에 체력이 낮은 적을 처형하며, 무한정으로 지속됨"
+		"ko"	"공격이 괴사 원소 피해를 입힘.\n-확률적으로 이동 속도를 둔화시키고 원소 피해가 부여된 대상에게 추가 피해를 입히는 투사체 추가 발사\n-능력 사용시 주변에 체력이 낮은 적을 처형하며, 무한정으로 지속됨"
 	}
 	"Ancestor Launcher Desc"
 	{
 		"en"	"Attacks deal extra damage and mark the main target.\nHas a chance to explode and stun when hitting marked targets.\nAbility grants sentry buildings and a limited-ammo rocket launcher."
 		"it"	"Gli attacchi infliggono danni aggiuntivi e contrassegnano il bersaglio principale.\nHa una probabilità di esplodere e stordire quando colpisce i bersagli contrassegnati.\nL'abilità garantisce edifici sentinella e un lanciarazzi con munizioni limitate."
-		"ko"	"공격이 주 대상에게 표식을 부여하고 추가 피해를 입힘.\n-표식이 부여된 적을 공격하면, 확률적으로 폭발하며 대상을 기절시킴\n-능력 사용시 센트리 건 구조물이 생성되며, 제한된 탄약을 보유한 로켓 발사기를 지급."
+		"ko"	"공격이 주 대상에게 표식을 부여하고 추가 피해를 입힘.\n-표식이 부여된 적을 공격하면, 확률적으로 폭발하며 대상을 기절시킴\n-능력 사용시 센트리 건 구조물 생성, 제한된 탄약을 보유한 로켓 발사기를 지급."
 	}
 	"Wand of Rot Desc"
 	{
@@ -4648,7 +4648,7 @@
 	{
 		"en"	"-Increased damage\nIncreased attackspeed\n-Added new R ability that will allow you to switch weapon's playstyle.\n-You will do 50％ less damage but will create a small explosion when it hits the enemy.\n-Attack speed is Reduced and Attack costs ammo."
 		"it"	"Statistiche aumentate.\nAggiunta una nuova abilità R che ti consentirà di cambiare lo stile di gioco dell'arma.\nInfliggerai il 50% di danni in meno, ma creerai una piccola esplosione quando colpisci il nemico.\nLa velocità di attacco è ridotta e l'attacco consuma munizioni."
-		"ko"	"-피해량, 공격 속도 증가\n-신규 능력 해금(R): 이 무기의 사용 스타일을 변경할 수 있음.\n-피해량이 50％ 감소하지만, 공격이 적중할 때마다 소형 폭발 발생.\n-공격 속도 역시 감소하며 공격이 탄약을 소모"
+		"ko"	"-피해량, 공격 속도 증가\n-신규 R키 능력 해금: 이 무기의 사용 스타일을 변경할 수 있음.\n-피해량이 50％ 감소하지만, 공격이 적중할 때마다 소형 폭발 발생.\n-공격 속도 역시 감소하며 공격이 탄약을 소모"
 	}
 	"CastleBreaker Pap 2"
 	{
@@ -4660,7 +4660,7 @@
 	{
 		"en"	"\nA giant spear used by Giant Victorian Elite robots. They are both powerful and heavy.\n-Increased damage\n-Increased attackspeed\n-Unlocks new ability(M2)\n-Attack 2 targets at once and attack twice."
 		"it"	"Statistiche potenziate.\nUna lancia gigante utilizzata dai robot Giant Victorian Elite. \nSono potenti e pesanti.\nSblocca una nuova abilità (M2).\nAttacca 2 bersagli contemporaneamente e attacca due volte."
-		"ko"	"\n거대 빅토리아 정예 로봇이 사용하는 거대한 창입니다. 강력하면서 무겁습니다.\n-피해량, 공격 속도 증가\n-신규 능력 해금:\n우클릭(M2) 사용시, 공격이 빠른 2연속 공격이 되며 한 번에 2명의 적을 타격합니다."
+		"ko"	"거대 빅토리아 정예 로봇이 사용하는 거대한 창입니다. 강력하면서 무겁습니다.\n-피해량, 공격 속도 증가\n-신규 M2 능력 해금: 공격이 빠른 2연속 공격이 되며 한 번에 2명의 적을 타격합니다."
 	}
 	"CastleBreaker Desc Extra"
 	{
@@ -4749,7 +4749,7 @@
 	}
 	"Magia Fractal Desc"
 	{
-		"en"	"Primary:\nM1:\n-Enter an animation, and shoot a laser.\n-Hold M2:\n-Increased distance. \n-Faster turning. \n-Yses 10 crystals/s and does 10%% more damage \nSecondary:\nM1:\n-Gain mana on targets hit.\nM2:\n-Summon an Ion that bounces\nMelee:\nM1:\n-Fire an Energy Wave.\n-Costs Crystals.\n-On hit gain crystals"
+		"en"	"Primary:\nM1:\n-Enter an animation, and shoot a laser.\n-Hold M2:\n-Increased distance. \n-Faster turning. \n-Yses 10 crystals/s and does 10% more damage \nSecondary:\nM1:\n-Gain mana on targets hit.\nM2:\n-Summon an Ion that bounces\nMelee:\nM1:\n-Fire an Energy Wave.\n-Costs Crystals.\n-On hit gain crystals"
 		"it"	"Primario:\nM1: attiva un'animazione in cui spari un potente raggio laser distruttivo.\nTieni premuto M2: aumenta la distanza e la velocità di rotazione.\nConsuma 10 cristalli al secondo e infligge il 10% di danni in più. \nSecondario:\nM1: Mietitore, ottieni mana dai bersagli colpiti.\nM2: evoca uno ione che rimbalza\nCorpo a corpo:\nM1: Onda energetica. Costa cristalli. Quando colpisci guadagni cristalli."
 		"ko"	"주 무기:\nM1:애니메이션 상태가 되며, 거대한 레이저를 발사.\nM2를 꾹 누를 시: 회전 속도, 사거리 증가. 수정을 초당 10 소모, 피해량 10％ 증가\n보조 무기:\nM1: 적중한 만큼 마나 획득\nM2: 여러 대상에게 튕기는 이온 캐논 발사\n근접 무기:\nM1: 파동 발사. 수정을 소모하지만, 적중시 수정 획득"
 	}
@@ -4817,7 +4817,7 @@
 	{
 		"en"	"Gain the ability to apply one of three buffs on your teammates with M1."
 		"it"	"Ottieni la possibilità di applicare uno dei tre potenziamenti ai tuoi compagni di squadra con M1."
-		"ko"	"-아군에게 좌클릭(M1)을 하면 3종류의 버프 중 1가지를 부여하는 능력을 보유하게 됩니다."
+		"ko"	"-아군에게 좌클릭(M1)을 하면 3종류의 버프 중 1가지를 부여하는 능력이 추가됩니다."
 	}
 	"Hand Pap Last"
 	{
@@ -4851,19 +4851,19 @@
 	}
 	"Ketamine Desc"
 	{
-		"en"	"Makes you as hard as iron.\n+800 HP, Increases melee damage by +75％ and heal on kill by +30.\nIncreases melee resist with melee weapons by +10％.\nIncreases melee attackspeed by 10%."
+		"en"	"Makes you as hard as iron.\n+800 HP, Increases melee damage by +75％ and heal on kill by +30.\nIncreases melee resist with melee weapons by +10％.\nIncreases melee attackspeed by 10％."
 		"it"	"Ti rende duro come il ferro.\n+800 HP, aumenta il danno da mischia del +75% e la guarigione in caso di uccisione del +30.\nAumenta la resistenza alla mischia con le armi da mischia del +10%.\nAumenta la velocità degli attacchi in mischia del 10%."
 		"ko"	"당신을 강철과 같이 단단하게 만듭니다.\n-최대 체력 +800\n-근접 무기 피해량 +75％\n-처치시 체력 +30 회복\n-근접 피해 저항력 +10％\n-근접 공격 속도 +10％"
 	}
 	"Cannabis Desc"
 	{
-		"en"	"Smoke it everyday.\n+1000 HP, Increases melee damage by +75％ and heal on kill by +50.\nIncreases melee resist with melee weapons by +10％.\nIncreases melee attackspeed by 10%."
+		"en"	"Smoke it everyday.\n+1000 HP, Increases melee damage by +75％ and heal on kill by +50.\nIncreases melee resist with melee weapons by +10％.\nIncreases melee attackspeed by 10％."
 		"it"	"Fumalo ogni giorno.\n+1000 HP, aumenta il danno da mischia del +75% e la guarigione in caso di uccisione del +50.\nAumenta la resistenza da mischia con le armi da mischia del +10%.\nAumenta la velocità degli attacchi da mischia del 10%."
-		"ko"	"매일 피웁시다.\n-최대 체력 +1000\n-근접 무기 피해량 +75％\n-처치시 체력 +50 회복\n-근접 피해 저항력 +10%\n-근접 공격 속도 +10％"
+		"ko"	"매일 피웁시다.\n-최대 체력 +1000\n-근접 무기 피해량 +75％\n-처치시 체력 +50 회복\n-근접 피해 저항력 +10％\n-근접 공격 속도 +10％"
 	}
 	"Fentanyl Desc"
 	{
-		"en"	"It courses through you.\n+1250 HP, Increases melee damage by +100％ and heal on kill by +50.\nIncreases overall resist with melee weapons by +15％.\nIncreases melee attackspeed by 10%."
+		"en"	"It courses through you.\n+1250 HP, Increases melee damage by +100％ and heal on kill by +50.\nIncreases overall resist with melee weapons by +15％.\nIncreases melee attackspeed by 10％."
 		"it"	"Ti scorre dentro.\n+1250 HP, aumenta il danno da mischia del +100% e la guarigione in caso di uccisione del +50.\nAumenta la resistenza complessiva con le armi da mischia del +15%.\nAumenta la velocità degli attacchi da mischia del 10%."
 		"ko"	"당신을 타고 흐릅니다.\n-최대 체력 +1250\n-근접 무기 피해량 +100％\n-처치시 체력 +50 회복\n-근접 피해 저항력 +15％\n-근접 공격 속도 +10％"
 	}
@@ -4937,7 +4937,7 @@
 	{
 		"en"	"A tasty cylinder of 1-year aged medium sharp cheddar, weighing around 4500LBS.\nMay god help you eat it all.\n+2750 HP, +30％ overall resistance, grants an additional +15HP/s regen."
 		"it"	"Un gustoso cilindro di cheddar stagionato 1 anno, mediamente piccante, del peso di circa 4500 libbre.\nChe Dio ti aiuti a mangiarlo tutto.\n+2750 HP, +30% di resistenza complessiva, garantisce un'ulteriore rigenerazione di +15 HP/s."
-		"ko"	"1년 동안 숙성된 맛있는 미디움 샤프 체다입니다. 대략 2톤 정도죠.\n-최대 체력 +2750 증가, 모든 피해 저항력 +30％, 초당 체력 회복량 +15 증가."
+		"ko"	"1년 동안 숙성된 맛있는 미디움 샤프 체다입니다. 대략 2톤 정도죠.\n신이 당신이 이걸 먹는걸 돕기를.\n-최대 체력 +2750 증가\n-모든 피해 저항력 +30％\n-초당 체력 회복량 +15"
 	}
 	"Nanomachines Desc"
 	{
@@ -5100,7 +5100,7 @@
 	{
 		"en" 	"Increases overall stats and attackspeed, Unlocks Lethal Injection [M2]:\nYour next hit will inflict increased damage and MASSIVE Plasmic Elemental damage."
 		"it"	"Aumenta le statistiche complessive e la velocità d'attacco, sblocca Iniezione letale [M2]:\nil tuo prossimo colpo infliggerà danni maggiori e ENORMI danni elementali plasmatici."
-		"ko" 	"-전반적인 능력치 및 공격 속도 증가\n-신규 능력 해금: 치사량 주사\n다음 공격 적중시 추가 피해를 주고 대량의 플라즈마 원소 피해를 부여."
+		"ko" 	"-전반적인 능력치 및 공격 속도 증가\n-신규 M2 능력 해금: 치사량 주사\n 다음 공격 적중시 추가 피해를 주고 대량의 플라즈마 원소 피해를 부여."
 	}
 	"Plasma Inject Pap 3 Desc"
 	{
@@ -5219,7 +5219,7 @@
 	"Health Hose Desc"
 	{
 		"en"	"Fires a stream of rapid healing which pierces allies\n-Cannot overheal\n-If enemy is below 50％ health, heals 65％ more.\n-Allies touched by it get the medigun buff for 2 seconds."
-		"ko"	"아군을 관통하는 치유 투사체 발사.\n-과치료 불가\n-아군의 체력이 50% 이하일 경우 치유량 +65%\n-닿은 아군은 2초간 메디건 버프 획득"
+		"ko"	"아군을 관통하는 치유 투사체 발사.\n-과치료 불가\n-아군의 체력이 50％ 이하일 경우 치유량 +65％\n-닿은 아군은 2초간 메디건 버프 획득"
 	}
 	"Health Hose Desc 1"
 	{
@@ -5249,7 +5249,7 @@
 	"Boomerang PaP 1"
 	{
 		"en"	"-Projectile now bounces between targets.\n-Minimum damage on falloff.\n-Deals 25％ extra damage to raids"
-		"ko"	"-투사체가 이제 대상 사이를 튕기며 이동함.\n-거리 비례 피해 감소량 최소화\n-레이드 모드일시 피해량 +25%"
+		"ko"	"-투사체가 이제 대상 사이를 튕기며 이동함.\n-거리 비례 피해 감소량 최소화\n-레이드 모드일시 피해량 +25％"
 	}
 	"Boomerang PaP 2"
 	{
@@ -5284,7 +5284,7 @@
 	"Arsenal Desc"
 	{
 		"en"	"One of Mazeat's Troops.\n-Charge energy on melee hits\n-On max charge, melee deals 30％ extra ranged damage.\n-With M2 equip a weapon, needs 100％ energy.\n-When not taking damage for a while, regen 2.5％ max health every second."
-		"ko"	"마제트의 부대원 중 하나입니다.\n-근접 공격 적중시 에너지를 충전\n-충전이 100% 이상일 경우 근접 공격이 추가로 30％의 원거리 피해를 입힙니다.\n-M2로 무기를 장착하며, 에너지가 100％ 필요합니다.\n-잠시 동안 피해를 받지 않으면 초당 최대 체력의 2.5％를 재생합니다."
+		"ko"	"마제트의 부대원 중 하나입니다.\n-근접 공격 적중시 에너지를 충전\n-충전이 100％ 이상일 경우 근접 공격이 추가로 30％의 원거리 피해를 입힙니다.\n-M2로 무기를 장착하며, 에너지가 100％ 필요합니다.\n-잠시 동안 피해를 받지 않으면 초당 최대 체력의 2.5％를 재생합니다."
 	}
 	"Arsenal Pap 1"
 	{
@@ -5323,8 +5323,8 @@
 	}
 	"Purging Desc"
 	{
-		"en"	"Become the Ziberian greatest invention... A monster.\n-Gain 2 weapons, Shotgun and Rampager minigun\n-Press M2 To easy switch between them\n-Charge energy on hit, used for later paps\n-Gain 40% more energy from hitting enemies up close."
-		"ko"	"지베리아의 가장 위대한 발명품이 되어보세요... 괴물 말이죠.\n-산탄총과 램페이저 미니건 두 가지 무기를 획득\n-M2를 눌러 무기를 쉽게 전환할 수 있습니다.\n-공격 적중시 에너지를 충전하며 이는 이후의 무기 강화 후 사용됨.\n-근접한 적 공격시 에너지 충전량 40％ 증가"
+		"en"	"Become the Ziberian greatest invention... A monster.\n-Gain 2 weapons, Shotgun and Rampager minigun\n-Press M2 To easy switch between them\n-Charge energy on hit, used for later paps\n-Gain 40％ more energy from hitting enemies up close."
+		"ko"	"지베리아의 가장 위대한 발명품이 되어보세요... 괴물 말이죠.\n-산탄총과 램페이저 미니건 두 가지 무기를 획득\n-M2를 눌러 무기를 쉽게 전환 가능\n-적중 시 에너지를 충전, 이는 무기 강화 후 사용됨.\n-근접한 적 공격시 에너지 충전량 40％ 증가"
     }
 	"Purging Pap N"
 	{
@@ -5333,8 +5333,8 @@
 	}
 	"Purging Pap 2"
 	{
-		"en"	"-Increased damage\n-Increased Health\n-While your shotgun is out, your M2 will give you a minigun.\n-Minigun Abilities:\nHeavy Resistance while out\nAttacking the same target massively boosts damage, upto 2x\nAfter some time, or by pressing R, minigun unequips\nTakes 30％ more damage from raids\nDeals 20% less damage to raids."
-		"ko"	"-피해량, 체력 증가\n-산탄총을 들고 있을 때 M2로 미니건을 장착\n-미니건 능력: 장착하는 동안 높은 저항력을 얻고 동일한 대상 공격 시 피해량이 최대 2배까지 증가합니다.\n미니건은 일정 시간이 지나거나 R키를 누르면 해제됩니다.\n레이드로부터 받는 피해가 30％ 증가하고 레이드에 주는 피해는 20％ 감소합니다."
+		"en"	"-Increased damage\n-Increased Health\n-While your shotgun is out, your M2 will give you a minigun.\n-Minigun Abilities:\nHeavy Resistance while out\nAttacking the same target massively boosts damage, upto 2x\nAfter some time, or by pressing R, minigun unequips\nTakes 30％ more damage from raids\nDeals 20％ less damage to raids."
+		"ko"	"-피해량, 체력 증가\n-산탄총을 들고 있을 때 M2로 미니건을 장착\n-미니건: 장착하는 동안 높은 저항력을 얻고 동일한 대상 공격 시 피해량이 최대 2배까지 증가합니다.\n미니건은 일정 시간이 지나거나 R키를 누르면 해제됩니다.\n레이드 모드 시 받는 피해가 30％ 증가, 가하는 피해는 20％ 감소합니다."
 	}
 	"Purging Pap 3"
 	{
@@ -5344,7 +5344,7 @@
 	"Purging Pap 4"
 	{
 		"en"	"-Increased damage\n-Increased Health\n-While your Rampager Miniguni s out, M2 will give you a Quad Rocket Launcher.\n-Quad launcher Abilities:\nShoots 2 rockets at once\nWhen depleted, explodes, dealing damage\nForce fully equips fists and makes you deal ram damage while running\nYou take more damage while ramming"
-		"ko"	"-피해량, 체력 증가\n-램페이저 미니건을 들고 있을 때 M2로 4연장 로켓 발사기를 장착합니다.\n-4연장 로켓 발사기 능력: 로켓 2발을 동시에 발사합니다.\n탄약이 고갈되거나 지속 시간 종료시 폭발하며 피해를 가합니다.\n이후 강제로 주먹을 장착시키고 달리는 동안 돌진 피해를 입힙니다.\n돌진 중에는 더 많은 피해를 받습니다."
+		"ko"	"-피해량, 체력 증가\n-램페이저 미니건을 들고 있을 때 M2로 4연장 로켓 발사기를 장착합니다.\n-4연장 로켓 발사기: 로켓 2발을 동시에 발사합니다.\n탄약이 고갈되거나 지속 시간 종료시 폭발하며 피해를 가합니다.\n이후 강제로 주먹을 장착시키고 달리는 동안 돌진 피해를 입힙니다.\n돌진 중에는 더 많은 피해를 받습니다."
     }
 	"Purging Pap 5"
 	{
@@ -5359,16 +5359,16 @@
 	"Sigil Blade Pap 1"
 	{
 		"en"	"Some crystal shard from Ruina.\n-Has High Melee Res\n-When hitting an enemy, apply mana overflow\n-When reaching max overflow, cause an ION strike.\n-Applies paralize for a short time\n-Applies silence for a medium time"
-		"ko"	"루이나에서 발견된 수정 파편입니다.\n-높은 근접 피해 저항력을 가집니다.\n-적 공격 시 마나 오버플로우를 부여합니다.\n-오버플로우가 최대로 도달 시 이온 캐논이 생성됩니다.\n-오버플로우 발동시 짧은 시간 동안 마비를 부여.\n- 또한 중간 시간 동안 침묵을 부여합니다."
+		"ko"	"루이나에서 발견된 수정 파편입니다.\n-높은 근접 피해 저항력 보유\n-적 공격 시 마나 오버플로우를 부여\n-오버플로우가 최대로 도달 시 이온 캐논이 생성됩니다.\n-오버플로우 발동시 짧은 시간 동안 마비를 부여.\n- 또한 중간 시간 동안 침묵을 부여합니다."
 	}
 	"Sigil Blade Pap 2"
 	{
 		"en"	"-Increased damage\n-Increased melee resistance\n-Slower attackspeed\n-Summon a floating crystal with M2\n-You need atleast 35％ of your max mana to teleport back with m2\n-Needs LOS.\n-Hitting enemies reduces M2 cooldown\n-If enemies are between you and The crystal they will get damaged heavily."
-		"ko"	"-피해량과 근접 피해 저항력 증가\n-공격 속도 감소\n-M2로 떠다니는 수정을 소환.\n-최대 마나의 35％를 소모하여 M2를 다시 눌러 수정으로 순간이동할 수 있습니다.\n-수정이 시야 내에 있어야 합니다.\n-적을 공격하면 M2의 쿨타임이 감소\n-적이 당신과 수정 사이에 있을 경우 큰 피해를 입습니다."
+		"ko"	"-피해량, 근접 피해 저항력 증가\n-공격 속도 감소\n-M2로 떠다니는 수정을 소환\n-M2 재사용 시최대 마나의 35％를 소모하여 수정으로 순간이동 가능\n-수정이 시야 내에 있어야 합니다.\n-적을 공격하면 M2의 쿨타임이 감소\n-적이 당신과 수정 사이에 있을 경우 큰 피해를 입습니다."
 	}
 	"Sigil Blade Pap 3"
 	{
 		"en"	"-Increased damage\n-Increased melee resistance\n-Slower attackspeed\n-You gain the ability to done an Lock Slash onto enemy(By R)\n-The more you travel with your ability, the more damage you deal\n-Sigil cd reduction buffed a bit.\n-You can return to your crystal while charging"
-		"ko"	"-피해량과 근접 피해 저항력 증가\n-공격 속도 감소\n-R키로 적에게 돌진 추격 베기를 사용할 수 있게 됩니다.\n-능력 사용시 이동 거리가 길수록 더 많은 피해를 입힙니다.\n-인장 쿨타임 감소 효과 상향\n-돌진하는 중에도 수정으로 돌아갈 수 있습니다.
+		"ko"	"-피해량, 근접 피해 저항력 증가\n-공격 속도 감소\n-R키로 적에게 돌진 추격 베기를 사용할 수 있게 됩니다.\n-돌진한 거리가 길수록 더 많은 피해를 입힙니다.\n-인장 쿨타임 감소 효과 상향\n-돌진하는 중에도 수정으로 순간이동 가능
 	}
 }
