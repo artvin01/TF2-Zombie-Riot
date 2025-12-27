@@ -368,7 +368,7 @@ int ClientAttribResetCount[MAXPLAYERS];
 
 //This is for going through things via lag comp or other reasons to teleport things away.
 //bool Do_Not_Regen_Mana[MAXPLAYERS];;
-bool i_ClientHasCustomGearEquipped[MAXPLAYERS]={false, ...};
+int i_ClientHasCustomGearEquipped[MAXPLAYERS]={0, ...};
 
 float delay_hud[MAXPLAYERS];
 float f_DelayBuildNotif[MAXPLAYERS];

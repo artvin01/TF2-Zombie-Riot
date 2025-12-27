@@ -1664,7 +1664,7 @@ public void OnClientDisconnect(int client)
 	RTSCamera_ClientDisconnect(client);
 #endif
 
-	i_ClientHasCustomGearEquipped[client] = false;
+	i_ClientHasCustomGearEquipped[client] = 0;
 	i_EntityToAlwaysMeleeHit[client] = 0;
 	ReplicateClient_Svairaccelerate[client] = -1.0;
 	ReplicateClient_BackwardsWalk[client] = -1.0;
@@ -1789,6 +1789,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 
 		}
 	}
+
+	if(buttons & IN_ATTACK3)
+		buttons |= IN_SPEED;
 #endif
 //Is player active? atleast somewhat.
 	if(buttons > 0)

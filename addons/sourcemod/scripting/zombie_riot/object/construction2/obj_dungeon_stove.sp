@@ -201,26 +201,28 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 			char buffer[64];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			
-			if(GetClientButtons(client) & IN_DUCK)
+			if(!(GetClientButtons(client) & IN_DUCK))
 			{
-				char desc[64];
-				FormatEx(desc, sizeof(desc), "%s Desc", buffer);
-				CPrintToChat(client, "%t", "Artifact Info", buffer, desc);
+				if(GlobalCooldown < GetGameTime() && Construction_GetMaterial(CONSTRUCT_RESOURCE1) >= CONSTRUCT_COST1 && Construction_GetMaterial(CONSTRUCT_RESOURCE2) >= CONSTRUCT_COST2)
+				{
+					GlobalCooldown = GetGameTime() + 250.0;
+					Shuffled = false;
 
-				ThisBuildingMenu(client);
+					CPrintToChatAll("%t", "Player Used 2 to", client, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1, CONSTRUCT_COST2, "Material " ... CONSTRUCT_RESOURCE2);
+					
+					Construction_AddMaterial(CONSTRUCT_RESOURCE1, -CONSTRUCT_COST1, true);
+					Construction_AddMaterial(CONSTRUCT_RESOURCE2, -CONSTRUCT_COST2, true);
+
+					Rogue_GiveNamedArtifact(buffer);
+					return 0;
+				}
 			}
-			else if(GlobalCooldown < GetGameTime() && Construction_GetMaterial(CONSTRUCT_RESOURCE1) >= CONSTRUCT_COST1 && Construction_GetMaterial(CONSTRUCT_RESOURCE2) >= CONSTRUCT_COST2)
-			{
-				GlobalCooldown = GetGameTime() + 250.0;
-				Shuffled = false;
 
-				CPrintToChatAll("%t", "Player Used 2 to", client, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1, CONSTRUCT_COST2, "Material " ... CONSTRUCT_RESOURCE2);
-				
-				Construction_AddMaterial(CONSTRUCT_RESOURCE1, -CONSTRUCT_COST1, true);
-				Construction_AddMaterial(CONSTRUCT_RESOURCE2, -CONSTRUCT_COST2, true);
+			char desc[64];
+			FormatEx(desc, sizeof(desc), "%s Desc", buffer);
+			CPrintToChat(client, "%t", "Artifact Info", buffer, desc);
 
-				Rogue_GiveNamedArtifact(buffer);
-			}
+			ThisBuildingMenu(client);
 		}
 	}
 	return 0;

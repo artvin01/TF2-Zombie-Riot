@@ -62,8 +62,8 @@ enum struct LootInfo
 					kv.GetSectionName(buffer, sizeof(buffer));
 					this.Items.SetValue(buffer, kv.GetNum(NULL_STRING));
 
-					if(Rogue_GetNamedArtifact(buffer) == -1 && GetFunctionByName(null, buffer) == INVALID_FUNCTION)
-						LogError("Unknown item '%s' for loot table '%s'", buffer, name);
+					//if(Rogue_GetNamedArtifact(buffer) == -1 && GetFunctionByName(null, buffer) == INVALID_FUNCTION)
+					//	LogError("Unknown item '%s' for loot table '%s'", buffer, name);
 				}
 				while(kv.GotoNextKey(false));
 
@@ -110,7 +110,10 @@ enum struct LootInfo
 
 			length = list.Length;
 			if(length < 1)
+			{
+				delete list;
 				break;
+			}
 			
 			length = GetURandomInt() % length;
 			length = list.Get(length);
@@ -347,8 +350,8 @@ static int AttackType;	// -1 = Rival Setup, 0 = None, 1 = Room, 2 = Base, 3 = Fi
 static Handle GameTimer;
 static float BattleTimelimit;
 static float DelayVoteFor;
-static int CurrentRoomIndex;
-static int NextRoomIndex;
+static int CurrentRoomIndex = -1;
+static int NextRoomIndex = -1;
 static float BattleWaveScale;
 static float EnemyScaling;
 static DungeonZone LastZone[MAXENTITIES];
@@ -539,7 +542,7 @@ void Dungeon_SetupVote(KeyValues kv)
 			do
 			{
 				if(room.SetupKv(kv))
-					RoomList.PushArray(room);
+					BaseList.PushArray(room);
 			}
 			while(kv.GotoNextKey());
 
@@ -661,6 +664,8 @@ void Dungeon_StartSetup()
 void Dungeon_RoundEnd()
 {
 	CurrentAttacks = 0;
+	CurrentRoomIndex = -1;
+	NextRoomIndex = -1;
 	DelayVoteFor = 0.0;
 	delete GameTimer;
 	AttackType = 0;
@@ -681,7 +686,7 @@ static Action Timer_WaitingPeriod(Handle timer)
 
 	if(CvarInfiniteCash.BoolValue)
 		return Plugin_Continue;
-		
+	
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client) && IsPlayerAlive(client))
@@ -701,6 +706,8 @@ static Action Timer_WaitingPeriod(Handle timer)
 // Rogue_RoundStartTimer()
 void Dungeon_Start()
 {
+	PrintToChatAll("Dungeon_Start");
+
 	delete GameTimer;
 
 	float pos[3], ang[3];
@@ -742,7 +749,7 @@ void Dungeon_Start()
 static void SetRandomMusic()
 {
 	DMusicInfo music;
-	ArrayList pool;
+	ArrayList pool = new ArrayList();
 	int length = MusicList.Length;
 	for(int a; a < length; a++)
 	{
@@ -750,7 +757,7 @@ static void SetRandomMusic()
 		if(!music.Key[0])
 			continue;
 
-		if(music.MinAttack >= CurrentAttacks || music.MaxAttack <= CurrentAttacks)
+		if(music.MinAttack > CurrentAttacks || music.MaxAttack < CurrentAttacks)
 			continue;
 
 		if(!Rogue_HasNamedArtifact(music.Key))
@@ -780,7 +787,7 @@ static void SetRandomMusic()
 			if(music.Key[0])
 				continue;
 
-			if(music.MinAttack >= CurrentAttacks || music.MaxAttack <= CurrentAttacks)
+			if(music.MinAttack > CurrentAttacks || music.MaxAttack < CurrentAttacks)
 				continue;
 
 			for(int b; b < music.Common; b++)
@@ -792,9 +799,14 @@ static void SetRandomMusic()
 
 	length = pool.Length;
 	if(length < 1)
+	{
+		delete pool;
 		return;
+	}
 
 	length = pool.Get(GetURandomInt() % length);
+	delete pool;
+
 	MusicList.GetArray(length, music);
 
 	int time = GetTime();
@@ -812,6 +824,7 @@ static void SetRandomMusic()
 		}
 	}
 
+	PrintToChatAll("SetRandomMusic %d '%s'", time - GetTime(), music.Music.Path);
 	music.Music.CopyTo(BGMusicSpecial1);
 }
 
@@ -839,7 +852,7 @@ void Dungeon_AntiStalled()
 
 static void TriggerStartTouch(const char[] output, int caller, int activator, float delay)
 {
-	if(Dungeon_Mode() && activator > 0 && activator <= MAXENTITIES && (activator <= MaxClients || !b_NpcHasDied[activator]))
+	if(Dungeon_Mode() && AttackType < 2 && activator > 0 && activator <= MAXENTITIES && (activator <= MaxClients || !b_NpcHasDied[activator]))
 	{
 		char name[64];
 		if(GetEntPropString(caller, Prop_Data, "m_iName", name, sizeof(name)))
@@ -981,7 +994,6 @@ DungeonZone Dungeon_GetEntityZone(int entity, bool forceReset = false)
 					}
 				}
 			}
-
 		}
 	}
 
@@ -993,7 +1005,7 @@ static Action DungeonMainTimer(Handle timer)
 	float time = NextAttackAt - GetGameTime();
 	if(time > 0.0)
 	{
-		if(time > 60.0 && DelayVoteFor < GetGameTime() && !Rogue_VoteActive() && NextRoomIndex == -1)
+		if(time > 100.0 && DelayVoteFor < GetGameTime() && !Rogue_VoteActive() && NextRoomIndex == -1)
 			CreateNewDungeon();
 		
 		if(AttackType == -1)
@@ -1031,24 +1043,27 @@ static Action DungeonMainTimer(Handle timer)
 			if(!alive || ((alive * 3) < waiting))
 				BattleLosted();
 		}
-		else if(AttackType < 1 && time > 60.0 && DelayVoteFor < GetGameTime() && !Rogue_VoteActive())
+		else if(AttackType < 1 && time > 20.0 && DelayVoteFor < GetGameTime() && !Rogue_VoteActive())
 		{
 			/*
 				Create new rival base if one is currently dead
 			*/
-			bool alive;
-			for(int i; i < i_MaxcountNpcTotal; i++)
+			bool alive = time < 100.0;
+			if(!alive)
 			{
-				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-				if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+				for(int i; i < i_MaxcountNpcTotal; i++)
 				{
-					DungeonZone zone = Dungeon_GetEntityZone(entity);
-					if(zone == Zone_RivalBase)
+					int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+					if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 					{
-						if(GetTeam(entity) != TFTeam_Red)
+						DungeonZone zone = Dungeon_GetEntityZone(entity);
+						if(zone == Zone_RivalBase)
 						{
-							alive = true;
-							break;
+							if(GetTeam(entity) != TFTeam_Red)
+							{
+								alive = true;
+								break;
+							}
 						}
 					}
 				}
@@ -1217,18 +1232,22 @@ void Dungeon_DelayVoteFor(float time)
 
 static void CreateNewDungeon()
 {
+	PrintToChatAll("CreateNewDungeon");
+	
 	RoomInfo room;
-	ArrayList roomPool;
+	ArrayList roomPool = new ArrayList();
 	int highestCommon;
 	int round = RoundToFloor(BattleWaveScale);
 	int length = RoomList.Length;
 	for(int a; a < length; a++)
 	{
 		RoomList.GetArray(a, room);
-
 		if(room.Common > highestCommon)
 			highestCommon = room.Common;
 
+		if(a == CurrentRoomIndex)
+			continue;
+		
 		if(room.CurrentCooldown > GetGameTime())
 			continue;
 		
@@ -1275,9 +1294,14 @@ static void CreateNewDungeon()
 
 	length = roomPool.Length;
 	if(length < 1)
+	{
+		PrintToChatAll("ERROR: No Dungeons");
+		delete roomPool;
 		return;
+	}
 		
 	NextRoomIndex = roomPool.Get(GetURandomInt() % length);
+	delete roomPool;
 
 	RoomList.GetArray(NextRoomIndex, room);
 
@@ -1316,12 +1340,17 @@ static void CreateNewDungeon()
 			}
 		}
 	}
+
+	if(!found)
+		PrintToChatAll("ERROR: Unknown spawn point '%s'", room.Spawn);
 	
 	TeleportToFrom(Zone_DungeonWait, Zone_DungeonWait);
 }
 
 static void StartNewDungeon()
 {
+	PrintToChatAll("StartNewDungeon");
+	
 	ZoneMarkerRef[Zone_Dungeon] = ZoneMarkerRef[Zone_DungeonWait];
 	ZoneMarkerRef[Zone_DungeonWait] = -1;
 
@@ -1353,8 +1382,10 @@ static void StartNewDungeon()
 
 static void CreateNewRivals()
 {
+	PrintToChatAll("CreateNewRivals");
+
 	RoomInfo room;
-	ArrayList roomPool;
+	ArrayList roomPool = new ArrayList();
 	int round = RoundToFloor(BattleWaveScale);
 	int length = BaseList.Length;
 	for(int a; a < length; a++)
@@ -1388,9 +1419,14 @@ static void CreateNewRivals()
 
 	length = roomPool.Length;
 	if(length < 1)
+	{
+		PrintToChatAll("ERROR: No Rival Bases");
+		delete roomPool;
 		return;
+	}
 		
 	int index = roomPool.Get(GetURandomInt() % length);
+	delete roomPool;
 
 	BaseList.GetArray(index, room);
 	room.CurrentCooldown = room.Cooldown + GetGameTime();
@@ -1432,9 +1468,15 @@ static void CreateNewRivals()
 		}
 	}
 
+	if(!found)
+		PrintToChatAll("ERROR: Unknown spawn point '%s'", room.Spawn);
+
 	float time = 0.0;
-	Call_StartFunction(null, room.FuncStart);
-	Call_Finish(time);
+	if(room.FuncStart != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, room.FuncStart);
+		Call_Finish(time);
+	}
 
 	StartBattle(room, time);
 	AttackType = -1;
@@ -1523,9 +1565,11 @@ static void TeleportToFrom(DungeonZone tele, DungeonZone from1 = Zone_Unknown, D
 			// Rival -> Rival
 			// Dungeon/Wait -> Dungeon/Wait
 			TeleportEntity(entity, pos, ang, NULL_VECTOR);
+			break;
 		}
 		else if(zone == Zone_Unknown)
 		{
+			Vehicle_Exit(entity, false, true);
 			RemoveEntity(entity);
 		}
 	}
@@ -1570,7 +1614,7 @@ static void StartBattle(const RoomInfo room, float time = 3.0)
 	}
 	
 	int index = list.Length;
-	if(index < 0)
+	if(!index)
 	{
 		for(int a; a < length; a++)
 		{
@@ -1580,7 +1624,7 @@ static void StartBattle(const RoomInfo room, float time = 3.0)
 		index = list.Length;
 	}
 	
-	index = index > 0 ? list.Get(GetURandomInt() % index) : -1;
+	index = index ? list.Get(GetURandomInt() % index) : -1;
 	if(index != -1)
 	{
 		snap.GetKey(index, buffer, sizeof(buffer));
@@ -1603,6 +1647,7 @@ static void StartBattle(const RoomInfo room, float time = 3.0)
 		PrintToChatAll("NO ROOM???? REPORT THIS BUG");
 	}
 
+	delete list;
 	delete snap;
 
 	//float limit = room.Timelimit;
@@ -1689,9 +1734,13 @@ void Dungeon_RollNamedLoot(const char[] name)
 {
 	LootInfo loot;
 	if(LootMap && LootMap.GetArray(name, loot, sizeof(loot)))
+	{
 		loot.RollLoot();
-
-	PrintToChatAll("UNKNOWN LOOT \"%s\", REPORT BUG", name);
+	}
+	else
+	{
+		PrintToChatAll("UNKNOWN LOOT \"%s\", REPORT BUG", name);
+	}
 }
 
 void Dungeon_AddBattleScale(float scale)
@@ -1822,7 +1871,6 @@ bool Dungeon_UpdateMvMStats()
 						if(time < 100)
 							flags += MVM_CLASS_FLAG_ALWAYSCRIT;
 						
-						itemCount += time;
 						Waves_SetWaveClass(objective, i, time, "classic_defend", flags, true);
 						continue;
 					}
@@ -1893,16 +1941,8 @@ bool Dungeon_UpdateMvMStats()
 			Waves_SetWaveClass(objective, i);
 		}
 
-		// Use the bar as a timer for room timelimit
-		float timeLeft = BattleTimelimit + 520.0 - gameTime;
-		float timeMax = NextAttackAt - gameTime;
-		if(timeLeft > timeMax)
-			timeLeft = timeMax - 1.0;
-		
-		float ratio = (timeLeft > 0.0 && timeMax > 0.0) ? (timeLeft / timeMax) : 0.0;
-
-		int count = itemCount + RoundToFloor((1.0 - ratio) * 199.0 * float(itemCount));
-		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", count);
+		// Use the bar as a timer
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", itemCount + RoundToCeil(AttackTime));
 	}
 
 	return true;

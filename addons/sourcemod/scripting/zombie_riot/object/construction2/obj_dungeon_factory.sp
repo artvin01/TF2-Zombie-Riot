@@ -10,7 +10,7 @@
 
 #define CONSTRUCT_NAME		"Vehicle Factory"
 #define CONSTRUCT_RESOURCE1	"iron"
-#define CONSTRUCT_COST1		50
+#define CONSTRUCT_COST1		(60 + (CurrentLevel * 60))
 #define CONSTRUCT_MAXLVL	2
 
 static const char Vehicles[][] =
@@ -157,7 +157,6 @@ static bool ClotInteract(int client, int weapon, ObjectGeneric npc)
 static void ThisBuildingMenu(int client)
 {
 	int amount1 = Construction_GetMaterial(CONSTRUCT_RESOURCE1);
-	bool cooldown = GlobalCooldown > GetGameTime();
 
 	SetGlobalTransTarget(client);
 
@@ -166,16 +165,19 @@ static void ThisBuildingMenu(int client)
 	char buffer[64];
 	if(CurrentLevel < CONSTRUCT_MAXLVL)
 	{
-		menu.SetTitle("%t\n%d / %d %t\n \n%t", CONSTRUCT_NAME, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1, "Crouch and select to view description Alone");
+		menu.SetTitle("%t\n \n%d / %d %t", CONSTRUCT_NAME, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
 
-		FormatEx(buffer, sizeof(buffer), "%t", "Upgrade Building To", CurrentLevel + 2);
+		FormatEx(buffer, sizeof(buffer), "%t\n ", "Upgrade Building To", CurrentLevel + 2);
 		menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	}
 	else
 	{
-		menu.SetTitle("%t\n \n%t", CONSTRUCT_NAME, "Crouch and select to view description Alone");
+		menu.SetTitle("%t", CONSTRUCT_NAME);
 		menu.AddItem(buffer, buffer, ITEMDRAW_SPACER); 
 	}
+
+	Format(buffer, sizeof(buffer), "%t", "Crouch and select to view description Alone");
+	menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
 	
 	for(int a; a < 2; a++)
 	{
@@ -189,12 +191,17 @@ static void ThisBuildingMenu(int client)
 				minLevel = b;
 			
 			if(CurrentLevel < minLevel)
-				Format(buffer, sizeof(buffer), "%s [Lv %d]", minLevel);
+				Format(buffer, sizeof(buffer), "%s [Lv %d]", buffer, minLevel + 1);
+			
+			if(b == (sizeof(Vehicles) - 1))
+				StrCat(buffer, sizeof(buffer), "\n ");
 
-			menu.AddItem(Vehicles[b], buffer, (cooldown || CurrentLevel < minLevel) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem(Vehicles[b], buffer, CurrentLevel < minLevel ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		}
 	}
 
+	menu.Pagination = 0;
+	menu.ExitButton = true;
 	menu.Display(client, MENU_TIME_FOREVER);
 }
 
@@ -232,69 +239,70 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 			{
 				char buffer1[64], buffer2[64];
 				menu.GetItem(choice, buffer1, sizeof(buffer1), _, buffer2, sizeof(buffer2));
-			
-				if(GetClientButtons(client) & IN_DUCK)
+				
+				if(!(GetClientButtons(client) & IN_DUCK))
 				{
-					char desc[64];
-					NPC_GetNameByPlugin(buffer1, buffer2, sizeof(buffer2));
-					FormatEx(desc, sizeof(desc), "%s Desc", buffer2);
-					CPrintToChat(client, "%t", "Artifact Info", buffer2, desc);
-
-					ThisBuildingMenu(client);
-				}
-				else
-				{
-					DungeonZone spot = StrContains(buffer2, "Raid") == -1 ? Zone_HomeBase : Zone_RivalBase;
-
-					float pos[3], ang[3];
-
-					int entity = -1;
-					while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
+					if(GlobalCooldown < GetGameTime())
 					{
-						if(NPCId == i_NpcInternalId[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
+						DungeonZone spot = StrContains(buffer2, "Raid") == -1 ? Zone_HomeBase : Zone_RivalBase;
+
+						float pos[3], ang[3];
+
+						int entity = -1;
+						while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 						{
-							if(Dungeon_GetEntityZone(entity) == spot)
+							if(NPCId == i_NpcInternalId[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
+							{
+								if(Dungeon_GetEntityZone(entity) == spot)
+								{
+									GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
+									GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+								}
+							}
+						}
+
+						if(!pos[0])
+						{
+							entity = Dungeon_GetZoneMarker(spot);
+							if(IsValidEntity(entity))
 							{
 								GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
 								GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 							}
 						}
-					}
 
-					if(!pos[0])
-					{
-						entity = Dungeon_GetZoneMarker(spot);
-						if(IsValidEntity(entity))
+						if(pos[0])
 						{
-							GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
-							GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+							entity = -1;
+							while((entity=FindEntityByClassname(entity, "obj_vehicle")) != -1)
+							{
+								DungeonZone zone = Dungeon_GetEntityZone(entity);
+								if(zone == Zone_Unknown || zone == spot)
+								{
+									Vehicle_Exit(entity, false, true);
+									RemoveEntity(entity);
+								}
+							}
+
+							NPC_GetNameByPlugin(buffer1, buffer2, sizeof(buffer2));
+							CPrintToChatAll("%t", "Spawned Vehicle At", client, buffer2, spot == Zone_HomeBase ? "Home Base" : "Base Raiding");
+
+							GlobalCooldown = GetGameTime() + 300.0;
+							
+							pos[2] += 10.0;
+							ang[1] += 90.0;
+							NPC_CreateByName(buffer1, -1, pos, ang, TFTeam_Red);
+							return 0;
 						}
-					}
-
-					if(pos[0])
-					{
-						entity = -1;
-						while((entity=FindEntityByClassname(entity, "obj_vehicle")) != -1)
-						{
-							DungeonZone zone = Dungeon_GetEntityZone(entity);
-							if(zone == Zone_Unknown || zone == spot)
-								RemoveEntity(entity);
-						}
-
-						NPC_GetNameByPlugin(buffer1, buffer2, sizeof(buffer2));
-						CPrintToChatAll("%t", "Spawned Vehicle At", client, buffer2, spot == Zone_HomeBase ? "Home Base" : "Base Raiding");
-
-						GlobalCooldown = GetGameTime() + 300.0;
-						
-						pos[2] += 10.0;
-						ang[1] += 90.0;
-						NPC_CreateByName(buffer1, -1, pos, ang, TFTeam_Red);
-					}
-					else
-					{
-						ThisBuildingMenu(client);
 					}
 				}
+				
+				char desc[64];
+				NPC_GetNameByPlugin(buffer1, buffer2, sizeof(buffer2));
+				FormatEx(desc, sizeof(desc), "%s Desc", buffer2);
+				CPrintToChat(client, "%t", "Artifact Info", buffer2, desc);
+
+				ThisBuildingMenu(client);
 			}
 		}
 	}

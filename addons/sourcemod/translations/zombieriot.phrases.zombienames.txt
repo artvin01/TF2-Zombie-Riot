@@ -6232,11 +6232,9 @@
 		"it" "Pesantezza oscurata"
 		"ko" "어둠에 삼켜진 헤비"
 	}
-	"ATV"
+	"Scout Car"
 	{
-		"en"	"ATV"
-		"it"	"ATV"
-		"ko"	"ATV"
+		"en"	"Scout Car"
 	}
 	"Airboat"
 	{

@@ -103,6 +103,8 @@ methodmap ObjectGemCrafter < ObjectGeneric
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
 		npc.m_bConstructBuilding = true;
+		
+		SetRotateByDefaultReturn(npc.index, 90.0);
 
 		return npc;
 	}

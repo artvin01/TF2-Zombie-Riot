@@ -353,6 +353,11 @@
                 "linux64"    	"@_Z17SV_CreateBaselinev"
                 "windows64"   	""
             }
+			"CPlayerMove::SetupMove"
+			{
+				"linux"		"@_ZN11CPlayerMove9SetupMoveEP11CBasePlayerP8CUserCmdP11IMoveHelperP9CMoveData"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x60\x53\x56\x8B\x75\x14"
+			}
 		}
 		"Functions"
 		{
@@ -907,6 +912,32 @@
 					}
 				}
 			}
+			"CPlayerMove::SetupMove"
+			{
+				"signature"	"CPlayerMove::SetupMove"
+				"callconv"	"thiscall"
+				"return"	"void"
+				"this"		"ignore"
+				"arguments"
+				{
+					"player"
+					{
+						"type"	"cbaseentity"
+					}
+					"ucmd"
+					{
+						"type"	"int"
+					}
+					"pHelper"
+					{
+						"type"	"int"
+					}
+					"move"
+					{
+						"type"	"int"
+					}
+				}
+			}
 		}
 		"Offsets"
 		{
@@ -1049,6 +1080,11 @@
                 "library"    	"server"
 				"windows"		"10"
 				"linux"			"10"
+			}
+			"CBaseServerVehicle::SetupMove"
+			{
+				"linux"		"4"
+				"windows"	"4"
 			}
 		}
 	}

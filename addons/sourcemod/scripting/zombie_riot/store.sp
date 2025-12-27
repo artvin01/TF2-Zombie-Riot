@@ -5375,7 +5375,7 @@ void Store_ApplyAttribs(int client)
 
 	float value;
 	char buffer1[12];
-	if(!i_ClientHasCustomGearEquipped[client])
+	if(i_ClientHasCustomGearEquipped[client] < 2)
 	{
 		static ItemInfo info;
 		char buffer2[32];
@@ -6425,6 +6425,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_KitOmega(client, entity);
 		Enable_PurgeKit(client, entity);
 		GemCrafter_Enable(client, entity);
+		VehicleFullAPC_WeaponEnable(client, entity);
 
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);

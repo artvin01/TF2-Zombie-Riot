@@ -2247,6 +2247,13 @@ static void StartStage(const Stage stage)
 		}
 	}
 
+	entity = -1;
+	while((entity = FindEntityByClassname(entity, "obj_vehicle")) != -1)
+	{
+		TeleportEntity(entity, pos, ang, NULL_VECTOR);
+		break;
+	}
+
 	switch(RogueTheme)
 	{
 		case BlueParadox:
@@ -2549,7 +2556,7 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 
 void Rogue_SetProgressTime(float time, bool hud, bool waitForPlayers = false)
 {
-	if(!Rogue_Mode())
+	if(!waitForPlayers && !Rogue_Mode())
 		return;
 	
 	delete ProgressTimer;

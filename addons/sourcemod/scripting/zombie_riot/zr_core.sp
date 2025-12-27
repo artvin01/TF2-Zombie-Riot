@@ -1142,7 +1142,7 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	UpdatePerkName(client);
 	i_HealthBeforeSuit[client] = 0;
-	i_ClientHasCustomGearEquipped[client] = false;
+	i_ClientHasCustomGearEquipped[client] = 0;
 	
 	Construction_PutInServer(client);
 	if(CountPlayersOnServer() == 1)
@@ -1702,6 +1702,7 @@ public Action Command_SpawnGrigori(int client, int args)
 
 public Action Command_PropVehicle(int client, int args)
 {
+/*
 	float flPos[3], flAng[3];
 	GetClientAbsAngles(client, flAng);
 	if(!SetTeleportEndPoint(client, flPos))
@@ -1723,7 +1724,8 @@ public Action Command_PropVehicle(int client, int args)
 	SetEntProp(vehicle, Prop_Data, "m_nVehicleType", 0);
 
 	DispatchSpawn(vehicle);
-
+*/
+	ReplyToCommand(client, "You probably wanted sm_spawn_npc");
 	return Plugin_Handled;
 }
 

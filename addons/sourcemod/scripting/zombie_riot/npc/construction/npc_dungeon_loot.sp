@@ -67,12 +67,11 @@ methodmap DungeonLoot < CClotBody
 		i_NpcWeight[npc.index] = 999;
 		i_NpcIsABuilding[npc.index] = true;
 		b_NoKnockbackFromSources[npc.index] = true;
-		b_StaticNPC[npc.index] = true;
-		AddNpcToAliveList(npc.index, 1);
 		npc.m_bDissapearOnDeath = true;
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
+		//npc.m_bDoNotGiveWaveDelay = true;
 
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
 		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);
@@ -85,7 +84,10 @@ methodmap DungeonLoot < CClotBody
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
-		b_StaticNPC[npc.index] = CurrentRound <= (Waves_GetMaxRound(true) - 2);
+		b_StaticNPC[npc.index] = !FinalSubWave();
+		if(b_StaticNPC[npc.index])
+			AddNpcToAliveList(npc.index, 1);
+		
 		b_NpcUnableToDie[npc.index] = true;
 		b_NoHealthbar[npc.index] = 1;
 
@@ -103,10 +105,23 @@ methodmap DungeonLoot < CClotBody
 static void ClotThink(int entity)
 {
 	// Delay winning the last round
-	if(b_StaticNPC[entity] && CurrentRound > (Waves_GetMaxRound(true) - 2))
-	{
-		b_StaticNPC[entity] = false;
-	}
+	if(!b_StaticNPC[entity] || !FinalSubWave())
+		return;
+	
+	RemoveFromNpcAliveList(entity);
+	b_StaticNPC[entity] = false;
+	AddNpcToAliveList(entity, 0);
+}
+
+static bool FinalSubWave()
+{
+	if(CurrentRound < (Waves_GetMaxRound(true) - 1))
+		return false;
+	
+	if(CurrentWave < (Waves_GetMaxSubRound() - 1))
+		return false;
+	
+	return true;
 }
 
 static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

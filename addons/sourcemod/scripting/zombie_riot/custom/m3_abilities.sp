@@ -1466,7 +1466,7 @@ public void GearTesting(int client)
 
 			SetEntityMoveType(client, MOVETYPE_NONE);
 
-			i_ClientHasCustomGearEquipped[client] = true;
+			i_ClientHasCustomGearEquipped[client] = 2;
 			b_ActivatedDuringLastMann[client] = false;
 			if(LastMann)
 			{
@@ -1525,7 +1525,7 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 			GetClientAbsOrigin(client, startPosition);
 			i_HealthBeforeSuit[client] = GetClientHealth(client);
 
-			i_ClientHasCustomGearEquipped[client] = true;
+			i_ClientHasCustomGearEquipped[client] = 2;
 			
 			Store_GiveAll(client, 50, true);
 			ViewChange_PlayerModel(client);
@@ -1565,7 +1565,7 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 		{
 			SetEntityMoveType(client, MOVETYPE_WALK);
 
-			i_ClientHasCustomGearEquipped[client] = false;
+			i_ClientHasCustomGearEquipped[client] = 0;
 		}
 	}
 	return Plugin_Handled;
@@ -1576,7 +1576,7 @@ public Action QuantumDeactivate(Handle cut_timer, int ref)
 	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client) && i_HealthBeforeSuit[client] > 0)
 	{
-		i_ClientHasCustomGearEquipped[client] = false;
+		i_ClientHasCustomGearEquipped[client] = 0;
 		int health = i_HealthBeforeSuit[client];
 
 		i_HealthBeforeSuit[client] = 0;

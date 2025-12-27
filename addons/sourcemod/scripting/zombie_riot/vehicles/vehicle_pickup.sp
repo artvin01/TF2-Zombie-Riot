@@ -34,7 +34,7 @@ methodmap VehiclePickup < VehicleGeneric
 		
 		SetEntProp(obj.index, Prop_Send, "m_nSkin", GetURandomInt() % 2);
 		
-		obj.m_bNoAttack = true;
+		obj.m_iGunIndex = -1;
 		obj.AddSeat({20.0, -96.0, 40.0}, 0);	// Back Right
 		obj.AddSeat({-20.0, -44.0, 40.0}, 1);// Front Left
 		obj.AddSeat({20.0, -44.0, 40.0}, 2);	// Back Left

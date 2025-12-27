@@ -36,7 +36,7 @@ methodmap VehicleAmbulance < VehicleGeneric
 		
 		SetEntProp(obj.index, Prop_Send, "m_nSkin", GetURandomInt() % 2);
 
-		obj.m_bNoAttack = true;
+		obj.m_iGunIndex = -1;
 		obj.AddSeat({16.0, 6.0, 12.0}, 0);	// Side Seat
 
 		// Back Seats
@@ -63,14 +63,9 @@ static bool ClotShowInteractHud(VehicleFullJeep obj, int client)
 	if(obj.m_hDriver == -1)
 		return false;
 	
-	float ang1[3], ang2[3];
-	GetEntPropVector(obj.index, Prop_Data, "m_angRotation", ang1);
-	GetClientEyeAngles(client, ang2);
-
-	if(fabs(fabs(ang1[1]) - fabs(ang2[1])) > 15.0)
+	if(!VehicleFullJeep_LookingBehindCar(obj.index, client))
 		return false;
 	
-
 	if(Building_Collect_Cooldown[obj.index][client] > GetGameTime())
 	{
 		PrintCenterText(client, "%T", "Object Cooldown", client,Building_Collect_Cooldown[obj.index][client] - GetGameTime());
@@ -88,11 +83,7 @@ static bool ClotInteract(int client, int weapon, VehicleFullJeep obj)
 	if(owner == -1)
 		return false;
 	
-	float ang1[3], ang2[3];
-	GetEntPropVector(obj.index, Prop_Data, "m_angRotation", ang1);
-	GetClientEyeAngles(client, ang2);
-
-	if(fabs(fabs(ang1[1]) - fabs(ang2[1])) > 15.0)
+	if(!VehicleFullJeep_LookingBehindCar(obj.index, client))
 		return false;
 	
 	if(Building_Collect_Cooldown[obj.index][client] > GetGameTime())

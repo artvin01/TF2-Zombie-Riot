@@ -313,7 +313,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		if(WaitingInQueue[client])
 			TeutonType[client] = TEUTON_WAITING;
 
-		if(i_ClientHasCustomGearEquipped[client])
+		if(i_ClientHasCustomGearEquipped[client] > 1)
 		{
 			SDKCall_GiveCorrectAmmoCount(client);
 

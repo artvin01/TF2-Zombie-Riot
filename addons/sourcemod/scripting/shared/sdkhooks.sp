@@ -1313,7 +1313,8 @@ public void OnPostThink(int client)
 		}
 
 		int Armor_Max = 10000;
-		int vehicle = Vehicle_Driver(client);
+		int vehicleSlot;
+		int vehicle = Vehicle_Driver(client, vehicleSlot);
 		int armorEnt = client;
 		if(vehicle != -1)
 		{
@@ -1482,7 +1483,7 @@ public void OnPostThink(int client)
 		}
 		if(vehicle != -1)
 		{
-			Format(buffer2, sizeof(buffer2), "%s",Vehicle_Driver(vehicle) == client ? "DRI" : "PAS");
+			Format(buffer2, sizeof(buffer2), "%s", vehicleSlot == -1 ? "DRI" : "PAS");
 		}
 		else if(IsValidEntity(Building_Mounted[client]))
 		{
@@ -1547,9 +1548,7 @@ public void OnPostThink(int client)
 			Format(buffer2, sizeof(buffer2), "%s|---",buffer2);
 		}
 		
-#if defined ZR
 		if(!SkillTree_InMenu(client) && !BetWar_Mode() && GetTeam(client) == TFTeam_Red && TeutonType[client] == TEUTON_NONE)
-#endif
 		{
 			SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.9 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
 			ShowSyncHudText(client, SyncHud_ArmorCounter, "%s\n%s", buffer, buffer2);
@@ -1603,7 +1602,7 @@ public void OnPostThink(int client)
 			if(HudBuffer[0])
 				PrintKeyHintText(client,"%s", HudBuffer);
 		}
-#endif
+#endif	// ZR
 	}
 #if defined ZR
 	if(!OnlyOneAtATime && f_DelayLookingAtHud[client] < GameTime)
@@ -1627,7 +1626,7 @@ public void OnPostThink(int client)
 	}
 	
 //	delete profiler;
-#endif
+#endif	// ZR
 }
 
 public void OnPostThinkPost(int client)

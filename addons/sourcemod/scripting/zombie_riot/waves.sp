@@ -2991,7 +2991,20 @@ int Waves_GetRoundScale()
 
 int Waves_GetMaxRound(bool real = false)
 {
+	if(!Rounds)
+		return 0;
+	
 	return (!real && FakeMaxWaves) ? FakeMaxWaves : (Rounds.Length-1);
+}
+
+int Waves_GetMaxSubRound()
+{
+	if(!Rounds || CurrentRound < 0 || CurrentRound >= Rounds.Length)
+		return 0;
+	
+	static Round round;
+	Rounds.GetArray(CurrentRound, round);
+	return round.Waves.Length;
 }
 
 float GetWaveSetupCooldown()

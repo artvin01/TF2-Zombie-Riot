@@ -4,7 +4,7 @@
 void VehicleFullJeep_Setup()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "ATV");
+	strcopy(data.Name, sizeof(data.Name), "Scout Car");
 	strcopy(data.Plugin, sizeof(data.Plugin), "vehicle_fulljeep");
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
@@ -29,24 +29,58 @@ methodmap VehicleFullJeep < VehicleGeneric
 	{
 		VehicleFullJeep obj = view_as<VehicleFullJeep>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, "models/buggy.mdl", "scripts/vehicles/jeep_test.txt"));
 		
-		obj.m_bNoAttack = true;
+		obj.m_iGunIndex = -1;
 		obj.AddSeat({22.0, -42.0, 12.0}, 0);
 		obj.AddSeat({2.0, -90.0, 34.0}, 1);
 
 		FuncShowInteractHud[obj.index] = VehicleFullJeep_ClotShowInteractHud;
 		func_NPCInteract[obj.index] = VehicleFullJeep_ClotInteract;
+		func_NPCThink[obj.index] = VehicleFullJeep_ClotThink;
 
 		return obj;
 	}
 }
 
+bool VehicleFullJeep_LookingBehindCar(int entity, int client)
+{
+	float pos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
+
+	float ang[3], vec1[3], vec2[3];
+	GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+	ang[1] += 90.0;
+
+	// Shift position to back of car
+	GetAngleVectors(ang, ang, NULL_VECTOR, vec2);
+	vec1 = ang;
+	ScaleVector(vec1, -93.0);
+	ScaleVector(vec2, 32.0);
+
+	AddVectors(pos, vec1, vec1);
+	AddVectors(vec1, vec2, vec1);
+	
+	// Vector of positions
+	GetClientEyePosition(client, pos);
+	SubtractVectors(pos, vec1, pos);
+	NormalizeVector(pos, pos);
+
+	// Vector of where player is looking
+	GetClientEyeAngles(client, vec1);
+	GetAngleVectors(vec1, vec1, NULL_VECTOR, NULL_VECTOR);
+	NormalizeVector(vec1, vec1);
+
+	// Looking at the ammo box
+	if(GetVectorDotProduct(pos, vec1) > -0.9)
+		return false;
+	
+	// Looking from the back of the car
+	NormalizeVector(ang, ang);
+	return GetVectorDotProduct(ang, vec1) > 0.2;
+}
+
 bool VehicleFullJeep_ClotShowInteractHud(VehicleFullJeep obj, int client)
 {
-	float ang1[3], ang2[3];
-	GetEntPropVector(obj.index, Prop_Data, "m_angRotation", ang1);
-	GetClientEyeAngles(client, ang2);
-
-	if(fabs(fabs(ang1[1]) - fabs(ang2[1])) > 15.0)
+	if(!VehicleFullJeep_LookingBehindCar(obj.index, client))
 		return false;
 	
 	SetGlobalTransTarget(client);
@@ -66,11 +100,7 @@ bool VehicleFullJeep_ClotShowInteractHud(VehicleFullJeep obj, int client)
 
 bool VehicleFullJeep_ClotInteract(int client, int weapon, VehicleFullJeep obj)
 {
-	float ang1[3], ang2[3];
-	GetEntPropVector(obj.index, Prop_Data, "m_angRotation", ang1);
-	GetClientEyeAngles(client, ang2);
-
-	if(fabs(fabs(ang1[1]) - fabs(ang2[1])) > 15.0)
+	if(!VehicleFullJeep_LookingBehindCar(obj.index, client))
 		return false;
 	
 	if(Building_Collect_Cooldown[obj.index][client] > GetGameTime())
@@ -85,12 +115,33 @@ bool VehicleFullJeep_ClotInteract(int client, int weapon, VehicleFullJeep obj)
 		
 		if(UsedBoxLogic >= 2)
 		{
-			Building_GiveRewardsUse(client, owner, 10, true, 0.35, true);
+			Building_GiveRewardsUse(client, owner, 10, true, 0.5, true);
 			Barracks_TryRegenIfBuilding(client);
 		}
-
-		Building_GiveRewardsUse(client, owner, 10, true, 0.35, true);
+		Building_GiveRewardsUse(client, owner, 10, true, 0.5, true);
 		Barracks_TryRegenIfBuilding(client);
 	}
+	obj.m_flAttackHappens = GetGameTime(obj.index) + 999999.4;
 	return true;
+}
+
+void VehicleFullJeep_ClotThink(VehicleFullJeep obj)
+{
+	if(obj.m_flAttackHappens)
+	{
+		float gameTime = GetGameTime(obj.index);
+
+		if(obj.m_flAttackHappens > 999999.9)
+		{
+			obj.SetActivity("ammo_open", true);
+			//obj.SetPlaybackRate(0.5);	
+			obj.m_flAttackHappens = gameTime + 0.6;
+		}
+		else if(obj.m_flAttackHappens < gameTime)
+		{
+			obj.SetActivity("ammo_close", true);
+			//obj.SetPlaybackRate(0.5);
+			obj.m_flAttackHappens = 0.0;
+		}
+	}
 }

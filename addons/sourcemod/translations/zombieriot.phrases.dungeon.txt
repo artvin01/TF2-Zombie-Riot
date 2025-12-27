@@ -229,6 +229,10 @@
 	{
 		"en"	"Rare Wizuh Crate"
 	}
+	"Sealed Wizuh Crate"
+	{
+		"en"	"Sealed Wizuh Crate"
+	}
 	"Sealed Wizuh Crate Desc"
 	{
 		"en"	"Unbox in the Control Center"
@@ -244,6 +248,10 @@
 	"Rare Ossunia Crate"
 	{
 		"en"	"Rare Ossunia Crate"
+	}
+	"Sealed Ossunia Crate"
+	{
+		"en"	"Sealed Ossunia Crate"
 	}
 	"Sealed Ossunia Crate Desc"
 	{
@@ -289,14 +297,26 @@
 	{
 		"en"	"Didn't find anything yet, check back soon!"
 	}
+	"Scout Car Desc"
+	{
+		"en"	"A vehicle that can hold up to 3 players. Able to collect ammo from the an ammo box in the back."
+	}
 	"APC"
 	{
-		"en"	"APC"
+		"en"	"Armored Personnel Carrier"
+	}
+	"APC Desc"
+	{
+		"en"	"A vehicle that can hold up to 2 players. The passenger wields a powerful mounted turret."
 	}
 	"Spawned Vehicle At"
 	{
-		"#format"	"{1:s},{2:d}"
+		"#format"	"{1:N},{2:s},{3:s}"
 		"en"		"{orange}{1} {default}built {orange}{2} {default}for {orange}{3}"
+	}
+	"Vehicle Controls"
+	{
+		"en"		"%%+attack3%% TURBO %%+jump%% HANDBRAKE"
 	}
 
 	"Treasure Vault Encounter Title"
