@@ -86,7 +86,7 @@ void VehicleFullAPC_WeaponEnable(int client, int weapon)
 	int vehicle = Vehicle_Driver(client, slot);
 	if(vehicle != -1 && i_NpcInternalId[vehicle] == NPCId)
 	{
-		Attributes_SetMulti(weapon, 2, float(Waves_GetRoundScale() + 1) / 80.0);
+		//Attributes_SetMulti(weapon, 2, float(Waves_GetRoundScale() + 1) / 80.0);
 
 		switch(slot)
 		{
