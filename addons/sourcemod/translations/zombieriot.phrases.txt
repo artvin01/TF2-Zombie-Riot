@@ -4711,7 +4711,7 @@
 	}
 	"Deep Sea Desc"
 	{
-		"en"	"The Seaborn infection has arrived, Armor Corrosion attacks will infect your armor, cure it with armor tables!"
+		"en"	"You head to W.F.'s Outpost after seeing his elite soldiers infected by the xeno virus to see if there are any remaining soldiers there. Turns out there was, but they're infected by the Seaborn virus. And the sea has an army ready to strike the mainland."
 		"fr"	"L'infection Seaborn attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
 		"chi"	"海嗣感染将会侵蚀你的盾。"
 		"it"	"L'infezione Seaborn è arrivata, gli attacchi di Corrosione dell'Armatura infetteranno la tua armatura, curala con le tabelle dell'armatura!"
