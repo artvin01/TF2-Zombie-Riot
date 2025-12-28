@@ -161,19 +161,13 @@ static void ClotThink(int iNPC)
 	Const2Spawner npc = view_as<Const2Spawner>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
-	if(npc.m_flNextDelayTime > gameTime)
-		return;
-	
-	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
-	npc.Update();
-
+	f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 1.5;
 	
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
 //	npc.m_flNextThinkTime = gameTime + 0.1;
 	npc.m_flNextThinkTime = gameTime + 0.25;
-	f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 1.5;
 
 	switch(b_NoHealthbar[npc.index])
 	{
@@ -182,11 +176,33 @@ static void ClotThink(int iNPC)
 			if(Rounds[npc.m_iSpawnerAm])
 			{
 				//when a spawner is active, prevent end of waves
-				npc.m_flNextThinkTime = gameTime + (0.3 / (MultiGlobalEnemy));
+				npc.m_flNextThinkTime = gameTime + 0.5;
+				int GroupBunchSpawn = RoundToNearest(4.0 * MultiGlobalEnemy);
 				float SpawnLocation[3];
 				GetAbsOrigin(npc.index, SpawnLocation);
 				SpawnLocation[2] += 5.0;
-				if(NPC_SpawnNext(false, false, npc.m_iSpawnerAm, SpawnLocation))
+				bool DidSpawn = false;
+				static float hullcheckmaxs[3];
+				static float hullcheckmins[3];
+				hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+				hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
+				
+				for(int AmountSpawn; AmountSpawn < GroupBunchSpawn; AmountSpawn++)
+				{
+					float PosRand[3];
+					PosRand = SpawnLocation;
+					PosRand[0] += GetRandomFloat(-50.0, 50.0);
+					PosRand[1] -= GetRandomFloat(-50.0, 50.0);
+					bool Succeed = Npc_Teleport_Safe(npc.index, PosRand, hullcheckmins, hullcheckmaxs, true, false);
+					if(!Succeed)
+						PosRand = SpawnLocation;
+					
+					if(NPC_SpawnNext(false, false, npc.m_iSpawnerAm, PosRand))
+					{
+						DidSpawn = true;
+					}
+				}
+				if(DidSpawn)
 				{
 					npc.PlaySpawnSoundStart();
 				}

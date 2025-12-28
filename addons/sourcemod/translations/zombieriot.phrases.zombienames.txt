@@ -7715,4 +7715,12 @@
 	{
 		"en"	"A Harmless rockslime.\n-Jumps around randomly\n-Jumps at you if close enough\n-Spins to deal AOE damage if close\n-Splits apart into 3 once on death"
 	}
+	"Olunsta Harbrary the LXIX"
+	{
+		"en"	"Olunsta Harbrary the LXIX"
+	}
+	"Gestapo"
+	{
+		"en"	"Gestapo"
+	}
 }

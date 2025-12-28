@@ -1873,10 +1873,10 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 	
 	if(InSetup || !Rounds[WaveWhich] || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime() || BetWar_Mode())
 		return false;
-
 	Cooldown = GetGameTime();
 	ProgressTimerEndAt = 0.0;
-	delete WaveTimer;
+	if(WaveWhich == Rounds_Default)
+		delete WaveTimer;
 	
 	Round round;
 	Wave wave;
@@ -2044,11 +2044,14 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 			if(wave.Delay > 0.0)
 			{
 				float delay = wave.Delay * (1.0 + (MultiGlobalEnemy * 0.4));
-				WaveTimer = CreateTimer(delay, Waves_ProgressTimer);
-				ProgressTimerType = CurrentWave[WaveWhich] == (round.Waves.Length - 1);
+				if(WaveWhich == Rounds_Default)
+				{
+					WaveTimer = CreateTimer(delay, Waves_ProgressTimer);
+					ProgressTimerType = CurrentWave[WaveWhich] == (round.Waves.Length - 1);
+					if(delay > 9.0)
+						ProgressTimerEndAt = GetGameTime() + delay;
+				}
 				
-				if(delay > 9.0)
-					ProgressTimerEndAt = GetGameTime() + delay;
 
 				//only used for waves from spawners
 				DelayContinuneWave[WaveWhich] = GetGameTime() + delay;
@@ -2408,7 +2411,6 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 			}
 			
 			//MUSIC LOGIC
-			PrintToChatAll("testingdo 2 WaveWhich %s", WaveWhich);
 			if(WaveWhich == Rounds_Default)
 			{
 				bool RoundHadCustomMusic = BGMusicSpecial1.Valid();
@@ -2509,7 +2511,6 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 				}
 
 				SteamWorks_UpdateGameTitle();
-				PrintToChatAll("testingdo 1");
 				if(CurrentRound[WaveWhich] == length)
 				{
 					refreshNPCStore = true;
@@ -2609,6 +2610,7 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 
 						if(Dungeon_Mode())
 						{
+							LogStackTrace("Stopped Wave?");
 							Dungeon_BattleVictory();
 						}
 						else if(Construction_Mode())

@@ -951,7 +951,7 @@ void Dungeon_TeleportRandomly(float pos[3])
 		break;
 	}
 
-	pos[2] += 10.0;
+	pos[2] += 1.0;
 }
 
 void Dungeon_SpawnLoot(const float pos[3], const char[] name, float waveScale)
