@@ -384,8 +384,8 @@ MusicEnum RaidMusicSpecial1;
 MusicEnum BGMusicSpecial1;
 //custom wave music.
 float f_DelaySpawnsForVariousReasons;
-int CurrentRound;
-int CurrentWave = -1;
+int CurrentRound[Rounds_MAX];
+int CurrentWave[Rounds_MAX] = -1;
 int StartCash;
 float RoundStartTime;
 char WhatDifficultySetting_Internal[32];
@@ -1734,7 +1734,7 @@ public void OnClientAuthorized(int client)
 	Ammo_Count_Used[client] = 0;
 	CashSpentTotal[client] = 0;
 	
-	if(CurrentRound)
+	if(CurrentRound[Rounds_Default])
 	{
 		// Give extra cash to newly joined
 		int cash = CurrentCash / 20;

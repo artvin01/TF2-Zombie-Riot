@@ -48,7 +48,7 @@ void NPC_PluginStart()
 }
 
 #if defined ZR
-public bool NPC_SpawnNext(bool panzer, bool panzer_warning)
+bool NPC_SpawnNext(bool panzer, bool panzer_warning, int WaveWhich = Rounds_Default)
 {
 	float GameTime = GetGameTime();
 	if(f_DelaySpawnsForVariousReasons > GameTime)
@@ -63,75 +63,77 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning)
 		panzer = false;
 		panzer_warning = false;
 	}
-	
-	if(GlobalCheckDelayAntiLagPlayerScale < GameTime)
+	if(WaveWhich == Rounds_Default)
 	{
-		AllowSpecialSpawns = false;
-		GlobalCheckDelayAntiLagPlayerScale = GameTime + 3.0;//only check every 5 seconds.
-		PlayersAliveScaling = 0;
-		GlobalIntencity = 0;
-		PlayersInGame = 0;
-		
-		limit = 8; //Minimum should be 8! Do not scale with waves, makes it boring early on.
-		limit = RoundToNearest(float(limit) * MaxEnemyMulti());
-		
-		float ScalingEnemies = ZRStocks_PlayerScalingDynamic(_,true);
-		//above 14, dont spawn more, it just is not worth the extra lag it gives.
-		
-		//max is 14 players.
-		if(ScalingEnemies >= 14.0 || BetWar_Mode())
-			ScalingEnemies = 14.0;
-
-		ScalingEnemies *= zr_multi_scaling.FloatValue;
-
-		float f_limit = Pow(1.115, ScalingEnemies);
-
-		f_limit *= float(limit);
-
-		//Minimum limit
-		if(f_limit <= 8.0)
+		if(GlobalCheckDelayAntiLagPlayerScale < GameTime)
 		{
-			f_limit = 8.0;
-		}
-		
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && b_HasBeenHereSinceStartOfWave[client])
-			{
-				if(TeutonType[client] == TEUTON_DEAD || dieingstate[client] > 0)
-				{
-					GlobalIntencity += 1;
-				}
-				PlayersInGame += 1;
-
-				if(Level[client] > 9)
-					AllowSpecialSpawns = true;
-			}
-		}
-		if(PlayersInGame < 2)
-		{
-			PlayersInGame = 3;
-		}
-		
-		//This is here to fix the issue of it always playing the zombie instead of human music when 2 people are in.
-		//even if both are alive.
-
-		PlayersAliveScaling = RoundToNearest(f_limit);
-		
-		if(RoundToNearest(f_limit) >= MaxNpcEnemyAllowed())
-			f_limit = float(MaxNpcEnemyAllowed());
+			AllowSpecialSpawns = false;
+			GlobalCheckDelayAntiLagPlayerScale = GameTime + 3.0;//only check every 5 seconds.
+			PlayersAliveScaling = 0;
+			GlobalIntencity = 0;
+			PlayersInGame = 0;
 			
-		
-		if(PlayersAliveScaling >= MaxNpcEnemyAllowed())
-			PlayersAliveScaling = MaxNpcEnemyAllowed();
+			limit = 8; //Minimum should be 8! Do not scale with waves, makes it boring early on.
+			limit = RoundToNearest(float(limit) * MaxEnemyMulti());
+			
+			float ScalingEnemies = ZRStocks_PlayerScalingDynamic(_,true);
+			//above 14, dont spawn more, it just is not worth the extra lag it gives.
+			
+			//max is 14 players.
+			if(ScalingEnemies >= 14.0 || BetWar_Mode())
+				ScalingEnemies = 14.0;
 
-		LimitNpcs = RoundToNearest(f_limit);
+			ScalingEnemies *= zr_multi_scaling.FloatValue;
+
+			float f_limit = Pow(1.115, ScalingEnemies);
+
+			f_limit *= float(limit);
+
+			//Minimum limit
+			if(f_limit <= 8.0)
+			{
+				f_limit = 8.0;
+			}
+			
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && b_HasBeenHereSinceStartOfWave[client])
+				{
+					if(TeutonType[client] == TEUTON_DEAD || dieingstate[client] > 0)
+					{
+						GlobalIntencity += 1;
+					}
+					PlayersInGame += 1;
+
+					if(Level[client] > 9)
+						AllowSpecialSpawns = true;
+				}
+			}
+			if(PlayersInGame < 2)
+			{
+				PlayersInGame = 3;
+			}
+			
+			//This is here to fix the issue of it always playing the zombie instead of human music when 2 people are in.
+			//even if both are alive.
+
+			PlayersAliveScaling = RoundToNearest(f_limit);
+			
+			if(RoundToNearest(f_limit) >= MaxNpcEnemyAllowed())
+				f_limit = float(MaxNpcEnemyAllowed());
+				
+			
+			if(PlayersAliveScaling >= MaxNpcEnemyAllowed())
+				PlayersAliveScaling = MaxNpcEnemyAllowed();
+
+			LimitNpcs = RoundToNearest(f_limit);
+		}
+		if(!b_GameOnGoing) //no spawn if the round is over
+		{
+			return false;
+		}
 	}
 	
-	if(!b_GameOnGoing) //no spawn if the round is over
-	{
-		return false;
-	}
 	
 	if(!AllowSpecialSpawns)
 	{
@@ -139,54 +141,57 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning)
 		panzer_warning = false;
 	}
 	
-	if(!panzer)
+	if(WaveWhich == Rounds_Default)
 	{
-		bool CheckOutline = true;
-		if(f_DelayGiveOutlineNpc > GetGameTime())
+		if(!panzer)
 		{
-			CheckOutline = false;
-		}
-		else
-		{
-			f_DelayGiveOutlineNpc = GetGameTime() + 0.5;
-		}
-		if(CheckOutline)
-		{
-			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
+			bool CheckOutline = true;
+			if(f_DelayGiveOutlineNpc > GetGameTime())
 			{
-				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
-				if(IsValidEntity(entity))
+				CheckOutline = false;
+			}
+			else
+			{
+				f_DelayGiveOutlineNpc = GetGameTime() + 0.5;
+			}
+			if(CheckOutline)
+			{
+				for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 				{
-					if(GetTeam(entity) != TFTeam_Red)
+					int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
+					if(IsValidEntity(entity))
 					{
-						CClotBody npcstats = view_as<CClotBody>(entity);
-						if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity])
+						if(GetTeam(entity) != TFTeam_Red)
 						{
-							if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
-								GiveNpcOutLineLastOrBoss(entity, true);
-							else
-								GiveNpcOutLineLastOrBoss(entity, false);
+							CClotBody npcstats = view_as<CClotBody>(entity);
+							if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity])
+							{
+								if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+									GiveNpcOutLineLastOrBoss(entity, true);
+								else
+									GiveNpcOutLineLastOrBoss(entity, false);
+							}
 						}
 					}
 				}
 			}
+			//emercency stop. 
+			if((EnemyNpcAlive - EnemyNpcAliveStatic) >= MaxEnemiesAllowedSpawnNext())
+			{
+				return false;
+			}
 		}
-		//emercency stop. 
-		if((EnemyNpcAlive - EnemyNpcAliveStatic) >= MaxEnemiesAllowedSpawnNext())
+
+		if(!Spawns_CanSpawnNext())
 		{
 			return false;
 		}
 	}
 
-	if(!Spawns_CanSpawnNext())
-	{
-		return false;
-	}
-	
 	float pos[3], ang[3];
 
 	MiniBoss boss;
-	if(panzer && Waves_GetMiniBoss(boss))
+	if(panzer && Waves_GetMiniBoss(boss) && WaveWhich == Rounds_Default)
 	{
 		bool isBoss = false;
 		int deathforcepowerup = boss.Powerup;
@@ -269,7 +274,7 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning)
 	else
 	{
 		static Enemy enemy;
-		if(Waves_GetNextEnemy(enemy))
+		if(Waves_GetNextEnemy(enemy, WaveWhich))
 		{
 			int SpawnSettingsSee = 0;
 			bool result;

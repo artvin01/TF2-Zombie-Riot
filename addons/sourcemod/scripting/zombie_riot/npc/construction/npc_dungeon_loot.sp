@@ -115,10 +115,10 @@ static void ClotThink(int entity)
 
 static bool FinalSubWave()
 {
-	if(CurrentRound < (Waves_GetMaxRound(true) - 1))
+	if(CurrentRound[Rounds_Default] < (Waves_GetMaxRound(true) - 1))
 		return false;
 	
-	if(CurrentWave < (Waves_GetMaxSubRound() - 1))
+	if(CurrentWave[Rounds_Default] < (Waves_GetMaxSubRound() - 1))
 		return false;
 	
 	return true;

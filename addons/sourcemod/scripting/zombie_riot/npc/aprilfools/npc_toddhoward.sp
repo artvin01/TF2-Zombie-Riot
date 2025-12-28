@@ -1512,7 +1512,7 @@ void ToddHowardSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 	}
 	else
 	{
-		int postWaves = CurrentRound - Waves_GetMaxRound();
+		int postWaves = CurrentRound[Rounds_Default] - Waves_GetMaxRound();
 		char npc_classname[60];
 		NPC_GetPluginById(i_NpcInternalId[enemy.Index], npc_classname, sizeof(npc_classname));
 		if(StrEqual(npc_classname, "npc_medival_achilles") || StrEqual(npc_classname, "npc_medival_monk") || StrEqual(npc_classname, "npc_medival_villager") || StrEqual(npc_classname, "npc_medival_son_of_osiris"))

@@ -3241,7 +3241,7 @@ static void MenuPage(int client, int section)
 					}
 				}
 			}
-			else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
+			else if(CurrentRound[Rounds_Default] < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
 			{
 				Format(buffer, sizeof(buffer), "%T\n \n%s\n \n%s ", "TF2: Zombie Riot", client, buf, info.Custom_Name);
 			}
@@ -3485,7 +3485,7 @@ static void MenuPage(int client, int section)
 		}
 		else if(UsingChoosenTags[client])
 		{
-			if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
+			if(CurrentRound[Rounds_Default] < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
 			{
 				menu.SetTitle("%T\n%T\n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", client, "Cherrypick Weapon", client, buf);
 			}
@@ -3494,7 +3494,7 @@ static void MenuPage(int client, int section)
 				menu.SetTitle("%T\n%T\n%s\n%T\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", client, "Cherrypick Weapon", client, buf, "Store Discount", client);
 			}
 		}
-		else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
+		else if(CurrentRound[Rounds_Default] < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
 		{
 			menu.SetTitle("%T\n \n%s\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", client, buf, info.Custom_Name);
 		}
@@ -3524,7 +3524,7 @@ static void MenuPage(int client, int section)
 				menu.SetTitle("%T\n%T\n%T\n \n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", client, "The World Machine's Items", client,"All Items are 20％ off here!", client, buf);
 			}
 		}
-		else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
+		else if(CurrentRound[Rounds_Default] < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
 		{
 			if(UsingChoosenTags[client])
 			{
@@ -6785,25 +6785,6 @@ static void ItemCost(int client, Item item, int &cost)
 		{
 			cost = RoundToCeil(float(cost) * 0.9);
 		}
-		/*
-		if(!Rogue_Mode() && (CurrentRound != 0 || CurrentWave != -1) && cost)
-		{
-			switch(CurrentPlayers)
-			{
-				case 0:
-					CheckAlivePlayers();
-				
-				case 1:
-					cost = RoundToNearest(float(cost) * 0.9);
-				
-				case 2:
-					cost = RoundToNearest(float(cost) * 0.92);
-				
-				case 3:
-					cost = RoundToNearest(float(cost) * 0.95);
-			}
-		}
-		*/
 			
 	}
 	
