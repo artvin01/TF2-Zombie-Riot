@@ -1823,7 +1823,7 @@ void Dungeon_EnemySpawned(int entity)
 					LimitNotice = 0;
 				}
 				
-				int current = CurrentCash - GlobalExtraCash;
+				int current = CurrentCash - GlobalExtraCash - StartCash;
 
 				int a, other;
 				while((other = FindEntityByNPC(a)) != -1)
