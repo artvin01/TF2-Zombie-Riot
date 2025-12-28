@@ -672,6 +672,11 @@ void Dungeon_RoundEnd()
 	delete GameTimer;
 	AttackType = 0;
 	EnemyScaling = 0.0;
+
+	for(int i; i < sizeof(ZoneMarkerRef); i++)
+	{
+		ZoneMarkerRef[i] = -1;
+	}
 }
 
 static Action Timer_WaitingPeriod(Handle timer)
@@ -1705,6 +1710,8 @@ void Dungeon_BattleVictory()
 	Zero(i_AmountDowned);
 	AttackType = 0;
 	Dungeon_DelayVoteFor(20.0);
+
+	ZoneMarkerRef[Zone_Dungeon] = -1;
 }
 
 //england is my city
@@ -1722,6 +1729,8 @@ static void BattleLosted()
 
 	CPrintToChatAll("{crimson}%t", "Dungeon Failed");
 	Dungeon_DelayVoteFor(20.0);
+
+	ZoneMarkerRef[Zone_Dungeon] = -1;
 }
 
 void Dungeon_WaveEnd(const float spawner[3] = NULL_VECTOR)
