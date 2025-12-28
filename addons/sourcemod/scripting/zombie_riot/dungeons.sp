@@ -923,17 +923,27 @@ void Dungeon_TeleportRandomly(float pos[3])
 		return;
 	}
 
-	for(int i; i < 50; i++)
+	SurroundingAreasCollector areas = TheNavMesh.CollectSurroundingAreas(goalArea, 100.0, 18.0);
+
+	int length = areas.Count();
+	int start = GetURandomInt() % length;
+	for(int i = start + 1; i != start; i++)
 	{
-		CNavArea startArea = PickRandomArea();
+		if(i >= length)
+		{
+			i = -1;
+			continue;
+		}
+
+		CNavArea startArea = areas.Get(i);
 		if(startArea == NULL_AREA)
 			continue;
 		
 		if(startArea.GetAttributes() & (NAV_MESH_AVOID|NAV_MESH_DONT_HIDE))
 			continue;
 		
-		if(!TheNavMesh.BuildPath(startArea, goalArea, pos))
-			continue;
+		//if(!TheNavMesh.BuildPath(startArea, goalArea, pos))
+		//	continue;
 		
 		startArea.GetCenter(pos);
 		break;
