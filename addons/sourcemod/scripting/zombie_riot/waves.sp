@@ -2094,7 +2094,7 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 			CurrentWave[WaveWhich] = -1;
 			if(WaveWhich == Rounds_Default)
 			{
-				Dungeon_WaveEnd(CurrentRound[WaveWhich] == length);
+				//Dungeon_WaveEnd(CurrentRound[WaveWhich] == length);
 				//This ensures no invalid spawn happens.
 				Spawners_Timer();
 			}

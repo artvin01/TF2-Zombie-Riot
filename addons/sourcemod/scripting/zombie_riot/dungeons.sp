@@ -260,11 +260,12 @@ enum struct RoomInfo
 		return true;
 	}
 
-	void RollLoot(bool victory)
+	void RollLoot(const float spawnPos[3] = NULL_VECTOR)
 	{
 		if(!this.Loots)
 			return;
 		
+		bool victory = IsNullVector(spawnPos);
 		int count = victory ? this.Victory : 0;
 		if(!victory)
 		{
@@ -306,7 +307,7 @@ enum struct RoomInfo
 
 			if(!victory)
 			{
-				Dungeon_SpawnLoot(buffer, this.LootScale);
+				Dungeon_SpawnLoot(spawnPos, buffer, this.LootScale);
 			}
 			else if(LootMap.ContainsKey(buffer))
 			{
@@ -952,12 +953,13 @@ void Dungeon_TeleportRandomly(float pos[3])
 	pos[2] += 10.0;
 }
 
-void Dungeon_SpawnLoot(const char[] name, float waveScale)
+void Dungeon_SpawnLoot(const float pos[3], const char[] name, float waveScale)
 {
-	float pos[3];
-	Dungeon_TeleportRandomly(pos);
+	float newPos[3];
+	newPos = pos;
+	Dungeon_TeleportRandomly(newPos);
 
-	DungeonLoot npc = view_as<DungeonLoot>(NPC_CreateById(DungeonLoot_Id(), 0, pos, NULL_VECTOR, 3));
+	DungeonLoot npc = view_as<DungeonLoot>(NPC_CreateById(DungeonLoot_Id(), 0, newPos, NULL_VECTOR, 3));
 	npc.SetLootData(name, waveScale);
 }
 
@@ -1693,7 +1695,7 @@ void Dungeon_BattleVictory()
 	{
 		RoomInfo room;
 		RoomList.GetArray(CurrentRoomIndex, room);
-		room.RollLoot(true);
+		room.RollLoot(NULL_VECTOR);
 	}
 
 	if(AttackType == 2)
@@ -1721,7 +1723,7 @@ static void BattleLosted()
 	Dungeon_DelayVoteFor(20.0);
 }
 
-void Dungeon_WaveEnd(bool final, bool forcegive = false)
+void Dungeon_WaveEnd(const float spawner[3] = NULL_VECTOR)
 {
 	if(!Dungeon_Mode())
 		return;
@@ -1730,11 +1732,11 @@ void Dungeon_WaveEnd(bool final, bool forcegive = false)
 		PrintToChatAll("Dungeon_WaveEnd failed???");
 		return;
 	}
-	if(forcegive || !final && CurrentRoomIndex != -1 && AttackType == 1)
+	if(CurrentRoomIndex != -1 && AttackType == 1)
 	{
 		RoomInfo room;
 		RoomList.GetArray(CurrentRoomIndex, room);
-		room.RollLoot(false);
+		room.RollLoot(spawner);
 	}
 }
 
@@ -1773,7 +1775,7 @@ static float ScaleBasedOnRound(int round)
 
 void Dungeon_EnemySpawned(int entity)
 {
-	if(Dungeon_Mode() && i_NpcInternalId[entity] != DungeonLoot_Id())
+	if(Dungeon_Mode() && i_NpcInternalId[entity] != DungeonLoot_Id() && i_NpcInternalId[entity] != Const2Spawner_Id())
 	{
 		switch(AttackType)
 		{

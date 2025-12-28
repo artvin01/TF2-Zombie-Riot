@@ -24,6 +24,8 @@ static const char g_SpawnEnd[][] =
 	"buttons/combine_button_locked.wav",
 };
 
+static int NPCId;
+
 void Const2SpawnerOnMapStart()
 {
 	PrecacheSoundArray(g_SpawnStart);
@@ -39,7 +41,12 @@ void Const2SpawnerOnMapStart()
 	data.Flags = -1;
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
+}
+
+int Const2Spawner_Id()
+{
+	return NPCId;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -190,7 +197,11 @@ static void ClotThink(int iNPC)
 				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 				npc.PlaySpawnSoundEnd();
 				if(Dungeon_Mode())
-					Dungeon_WaveEnd(false, true);
+				{
+					float SpawnLocation[3];
+					GetAbsOrigin(npc.index, SpawnLocation);
+					Dungeon_WaveEnd(SpawnLocation);
+				}
 			}
 		}
 		case 1:
