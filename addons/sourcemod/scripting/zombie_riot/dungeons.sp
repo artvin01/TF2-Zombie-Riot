@@ -1711,8 +1711,15 @@ static void BattleLosted()
 	Dungeon_DelayVoteFor(20.0);
 }
 
-void Dungeon_WaveEnd(bool final, bool forcegive = true)
+void Dungeon_WaveEnd(bool final, bool forcegive = false)
 {
+	if(!Dungeon_Mode())
+		return;
+	if(!RoomList)
+	{
+		PrintToChatAll("Dungeon_WaveEnd failed???");
+		return;
+	}
 	if(forcegive || !final && CurrentRoomIndex != -1 && AttackType == 1)
 	{
 		RoomInfo room;

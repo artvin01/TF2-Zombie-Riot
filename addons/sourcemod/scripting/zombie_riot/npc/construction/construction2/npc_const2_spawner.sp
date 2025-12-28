@@ -175,7 +175,7 @@ static void ClotThink(int iNPC)
 			if(Rounds[npc.m_iSpawnerAm])
 			{
 				//when a spawner is active, prevent end of waves
-				npc.m_flNextThinkTime = gameTime + 0.1;
+				npc.m_flNextThinkTime = gameTime + (0.3 / (MultiGlobalEnemy));
 				float SpawnLocation[3];
 				GetAbsOrigin(npc.index, SpawnLocation);
 				SpawnLocation[2] += 5.0;

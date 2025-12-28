@@ -116,6 +116,10 @@ static ArrayList VotingMods;
 static bool CanReVote;
 static ArrayList MiniBosses;
 static float Cooldown;
+void Waves_ApplyCooldown(float fl)
+{
+	Cooldown = fl;
+}
 static bool InSetup;
 static int FakeMaxWaves;
 static bool NoBarneySpawn;
@@ -198,7 +202,7 @@ void Waves_PluginStart()
 
 bool Waves_InFreeplay()
 {
-	return (!Rogue_Mode() && !Construction_Mode() && !Dungeon_Mode() && Rounds[0] && CurrentRound[Rounds_Default] >= Rounds[Rounds_Default].Length);
+	return (!Rogue_Mode() && !Construction_Mode() && !Dungeon_Mode() && Rounds[Rounds_Default][0] && CurrentRound[Rounds_Default] >= Rounds[Rounds_Default].Length);
 }
 
 bool Waves_InSetup()
@@ -2403,6 +2407,7 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 			}
 			
 			//MUSIC LOGIC
+			PrintToChatAll("testingdo 2 WaveWhich %s", WaveWhich);
 			if(WaveWhich == Rounds_Default)
 			{
 				bool RoundHadCustomMusic = BGMusicSpecial1.Valid();
@@ -2503,7 +2508,7 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 				}
 
 				SteamWorks_UpdateGameTitle();
-
+				PrintToChatAll("testingdo 1");
 				if(CurrentRound[WaveWhich] == length)
 				{
 					refreshNPCStore = true;
@@ -2544,7 +2549,7 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 						}
 					}
 
-					if(!subgame || Construction_FinalBattle())
+					if(!subgame || Construction_FinalBattle() || Dungeon_FinalBattle())
 					{
 						ResetReplications();
 						cvarTimeScale.SetFloat(0.1);
@@ -2692,8 +2697,7 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 				if(refreshNPCStore)
 					Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE);
 			}
-			else
-			if(CurrentRound[WaveWhich] == length)
+			else if(CurrentRound[WaveWhich] == length)
 			{
 				//wave done, delete.
 				if(Rounds[WaveWhich])
