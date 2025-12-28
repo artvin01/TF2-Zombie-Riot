@@ -285,6 +285,7 @@ public Action Waves_SkipVote(int client, int args)
 	{
 		VoteEndTime = 0.0;
 		CreateTimer(0.1, Rogue_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+		Rogue_SetProgressTime(0.0, false, true);
 		return Plugin_Handled;
 	}
 	MostRecentVoteCancel++;
