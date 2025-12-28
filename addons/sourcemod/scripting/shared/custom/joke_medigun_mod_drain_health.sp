@@ -324,7 +324,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			}
 			if(medigun_hud_delay[owner] < GetGameTime())
 			{
-				PrintHintText(owner,"[DAMAGE MODE]");
+				PrintHintText(owner,"[공격 모드]");
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
@@ -509,7 +509,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			{
 				if(What_type_Heal != 5.0)
 				{
-					PrintHintText(owner,"[HEALING MODE]");
+					PrintHintText(owner,"[치유 모드]");
 				}
 				else
 				{
@@ -517,11 +517,11 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					{
 						case 0:
 						{
-							PrintHintText(owner,"[HEALING MODE]\nMode: Melee");
+							PrintHintText(owner,"[치유 모드]\n유형: 근접");
 						}
 						case 1:
 						{
-							PrintHintText(owner,"[HEALING MODE]\nMode: Ranged");
+							PrintHintText(owner,"[치유 모드]\n유형: 원거리");
 						}
 					}
 				}

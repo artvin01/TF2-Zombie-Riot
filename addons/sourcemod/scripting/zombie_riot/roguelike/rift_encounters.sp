@@ -851,52 +851,52 @@ static Action Timer_AdvanceStory(Handle timer, int progress)
 
 	static const char Chapter1[][] =
 	{
-		"Chapter 1: Mazeat Saves",
-		"Thousands of years ago, a planet named Irln called by it's inhabitants,",
-		"felines who were called Expidonsans. They oversaw the planet,",
-		"using their intelligence and technology for them, the animals, and the nature.",
-		"However something was lose outside the planet, an infection spreading,",
-		"traveling planet to planet, destroying life for it's own will, the Void.",
-		"The Expidonsans far-saw this, they had the power to defend themselves",
-		"but felt they could not watch other races and species die out to this.",
-		"And so they ventured out into space, gathering whatever species they could save.",
-		"It didn't matter feral, intelligent, nature; they wanted to save as many they can.",
-		"They brought them back to their home planet, giving them a home",
-		"and safety from the Void that spreads."
+		"챕터 1: 마제트의 구원",
+		"수천 년 전, 주민들이 아일린이라고 부르는 행성이 있었다.",
+		"엑스피돈사라고 불리는 필라인들이 그곳에 살며 행성을 보살폈다.",
+		"그들은 자신들의 지능과 기술을 이용해 동물들과 자연을 보호했다.",
+		"하지만 행성 외부에서 문제가 발생했다. 감염이 퍼져나가기 시작한 것이다.",
+		"공허라고 불리우는 감염이, 행성에서 행성으로 퍼져나가며, 제멋대로 생명을 파괴했다.",
+		"엑스피돈사는 그것도 전부 예견했고, 자신들을 보호할 힘도 있었다.",
+		"하지만 그렇다고 해서 다른 종들을 죽게 내버려둘 수는 없었다.",
+		"그래서 그들은 우주로 나아가며 가능한 모든 종족을 구해냈다.",
+		"지능이 없든 있든간에, 최대한 많은 종족을 구해내었다. 심지어 자연물조차도 말이다.",
+		"이렇게 구해낸 자들은 그들의 고향 행성으로 복귀시켜 보금자리를 마련해 주었다.",
+		"그리고 퍼져나가는 공허로부터 안전하게 보호해주었다."
 	};
 
 	static const char Chapter2[][] =
 	{
-		"Chapter 2: Mazeat Lives",
-		"The Expidonsans saved these other species but what to do with them?",
-		"Form a unified city, and that city was eventually called,",
-		"Mazeat.",
-		"A giant city where all could live together and share what resources they had.",
-		"The Void could not enter Irln, and nobody could leave Irln.",
-		"A safe bubble formed by the mass life of everyone living on Irln, gift by nature.",
-		"Expidonsans had hoped to work with these races to come up with a solution.",
-		"A solution to fight back against the Void and save their worlds.",
-		"Everything the Expidonsans hoped for, was starting to crack."
+		"챕터 2 : 마제트의 삶",
+		"엑스피돈사인들이 다른 종족들을 구해낸건 좋은데, 그 다음엔 어떻게 되었을까?",
+		"그들은 하나의 도시를 건설했고, 그 도시의 이름은...,",
+		"마제트 였습니다.",
+		"모두가 함께 살며 자신들이 가진 자원을 공유할 수 있는 거대한 도시.",
+		"공허는 아일린에 접근조차 못 했고, 그와 동시에 누구도 아일린을 떠날 수 없었다.",
+		"아일린에 사는 모든 생명체의 거대한 생명력으로 형성된 이 안전지대는 자연의 선물 그 자체였다.",
+		"엑스피돈사는 이 종족들과 협력하여 해결책을 찾기를 바랬다.",
+		"공허에 맞서 싸우고 그들의 세계를 구원할 해결책을 말이다.",
+		"하지만 엑스피돈사가 바랬던 모든 것이 무너지기 시작했다."
 	};
 
 	static const char Chapter3[][] =
 	{
-		"Chapter 3: Mazeat Falls",
-		"Mazeat was a city meant to a place of peace for all races,",
-		"but they didn't get along.",
-		"Conflicts brew, disagreements among races, language, culture.",
-		"Fights storm up with the storm growing by the months, weeks, days.",
-		"Civil war roared across Mazeat, races spread out, passed away, lost to time.",
-		"Expidonsans weren't clever enough to foresee this.",
-		"What was there to do?",
-		"Expidonsan research burned away in the ashes of war.",
-		"Expidonsan cities torn away for the new races.",
-		"Expidonsans weren't the kind for war, so they flee.",
-		"They had the knowledge to rebuild, and so they did,",
-		"underground where nobody could find them, eventually forgotten.",
-		"Just like how they forgotten themselves, what they made,",
-		"the unforeseen consequences, and what we call now,",
-		"Chaos."
+		"챕터 3 : 마제트의 몰락",
+		"마제트는 모든 종족을 위한 평화로운 도시로 계획되었지만,",
+		"정작 그들은 사이 좋게 지내지 못 했다.",
+		"종족, 언어, 문화 간의 의견 차이로 갈등이 고조되기 시작했고,",
+		"그 갈등은 며칠, 몇 주, 몇 달마다 점점 커져갔다.",
+		"급기야 마제트 전역에 내전이 발발했고, 각 종족들은 흩어지면서 역사 속으로 사라졌다.",
+		"엑스피돈사는 이런 결과를 예측할 만큼 현명하지 못했다.",
+		"그들이 이 사태에서 과연 무엇을 할 수 있었을까?",
+		"엑스피돈사인들의 연구 자료는 전쟁의 불길로 전부 불살라졌다.",
+		"엑스피돈사인들의 도시는 새로운 종족들의 폭동으로 인해 점령되었다.",
+		"엑스피돈사인들은 전쟁에 익숙하지 않은 탓에, 전부 도주했다.",
+		"그래도 그들은 재건이 가능할 정도로 지식이 뛰어났고, 그래서 재건했다.",
+		"아무도 찾을 수 없는 지하 속에 말이다. 그리고 결국 잊혀졌다.",
+		"그들이 무엇을 탄생시켰는지조차 잊은 것처럼.",
+		"예측하지 못 한 결과. 그로 인해 탄생한 것의 명칭은...",
+		"혼돈."
 	};
 
 	int length = chapter == 0 ? sizeof(Chapter1) : (chapter == 1 ? sizeof(Chapter2) : sizeof(Chapter3));

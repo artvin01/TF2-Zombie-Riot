@@ -640,7 +640,7 @@ public void Shadow_FloweringDarkness_NPCDeath(int entity)
 
 	if(!npc.m_bDissapearOnDeath && i_RaidGrantExtra[npc.index])
 	{
-		CPrintToChatAll("{black}어둠 개화자{default} : ... 마치 내 상관처럼 죽는구나....");
+		CPrintToChatAll("{black}어둠 개화자{default} : ... 마치 내 상관처럼 죽게 되는구나....");
 		CPrintToChatAll("{crimson}어둠 개화자가 소멸하고... 지도가 떨어진다. 이건... 그림자 응달의 위치가 표시되어있다.");	
 	}
 }

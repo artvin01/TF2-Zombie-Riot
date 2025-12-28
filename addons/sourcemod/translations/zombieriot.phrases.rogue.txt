@@ -2488,7 +2488,7 @@
 	{
 		"en"	"Boo.\n{green}''Ambusher'' and ''Crusher'' weapons inflict 5 seconds of bleed on hit and gain +33％ attack speed."
 		"it"	"{green}Le armi ''Ambusher'' e ''Crusher'' infliggono 5 secondi di emorragia quando vengono colpite e guadagnano +33％ velocità d'attacco."
-		"ko"	"어흥.\n{green}''매복자'', ''파쇄자'' 태그 무기들의 공격 속도가 33％ 빨라지고 적중 시 5초간 지속되는 출혈을 부여."
+		"ko"	"등짝 좀 보자.\n{green}''매복자'', ''파쇄자'' 태그 무기들의 공격 속도가 33％ 빨라지고 적중 시 5초간 지속되는 출혈을 부여."
 	}
 	"Hand of Revenge"
 	{
@@ -2500,7 +2500,7 @@
 	{
 		"en"	"Better not touch me then.\n{green}''Duelist'' and ''Combatant'' weapons gain +150％ damage while below half health."
 		"it"	"Meglio non toccarmi, allora. \n{green}Le armi ''Duellante'' e ''Combattente'' guadagnano +150％ danni quando sono sotto metà salute."
-		"ko"	"날 건드리지 말았어야 했어.\n{green}''결투사'', ''투사'' 태그 무기들은 이제 체력이 절반 이하일 때 공격 피해량이 +150％ 증가."
+		"ko"	"날 건드리지 말았어야 했어.\n{green}''듀얼리스트'', ''투사'' 태그 무기들은 이제 체력이 절반 이하일 때 공격 피해량이 +150％ 증가."
 	}
 	"Hand of Stock"
 	{
@@ -2560,7 +2560,7 @@
 	{
 		"en"	"Better build that temple.\n{green}Bloons Tower Defense themed weapons gain +20％ damage for every person with a unique bloons weapon"
 		"it"	"Meglio costruire quel tempio.\n{green}Le armi a tema Tower Defense di Bloons guadagnano +20％ danni per ogni persona con un'arma bloons unica"
-		"ko"	"빨리 사원을 건설해야겠군.\n{green}각기 다른 풍선 타워 디펜스 관련 무기(연금술사의 포션, 정예 저격수)를 사용하는 1명 당 서로에게 피해량 +20％ 증가 효과를 부여. 이 효과는 중첩됨."
+		"ko"	"빨리 사원을 건설해야겠군.\n{green}풍선 타워 디펜스 무기를 사용하는 유저 1명당 서로에게 피해량 +20％ 증가 효과를 부여. 중첩됨."
 	}
 	"Soul of Yakuza"
 	{
@@ -2584,7 +2584,7 @@
 	{
 		"en"	"Face the light or be consumed.\n{green}Darkest Dungeon themed weapons gain a chance to prevent fatal damage"
 		"it"	"Affrontare la luce o essere consumati.\n{green}Le armi a tema Dungeon più oscuro guadagnano una possibilità di prevenire i danni mortali"
-		"ko"	"빛을 마주하라. 그렇지 않으면 삼켜지리라.\n{green}다키스트 던전 관련 무기들은 사망에 이르는 피해를 확률적으로 무시하고 일정 시간 동안 체력이 1로 고정되어 죽지 않게 됩니다."
+		"ko"	"빛을 마주하라. 그렇지 않으면 삼켜지리라.\n{green}다키스트 던전 관련 무기들은 사망에 이르는 피해를 확률적으로 무시하고 죽지 않음."
 	}
 	"Soul of Terraria"
 	{
@@ -2596,7 +2596,7 @@
 	{
 		"en"	"And there will be mods.\n{green}Terraria themed weapons gain 1000 HP every so often"
 		"it"	"E ci saranno delle mod. \n{green}Le armi a tema Terraria guadagnano 1000 HP di tanto in tanto"
-		"ko"	"이제 그 곳에 모드 있으라.\n{green}테라리아 관련 무기들은 주기적으로 사용자의 체력을 1000 회복시킵니다.(과치료 가능)"
+		"ko"	"이제 그 곳에 모드 있으라.\n{green}테라리아 관련 무기들은 주기적으로 사용자의 체력을 1000 회복.(과치료 가능)"
 	}
 	"Xeno Anti-Vial"
 	{
@@ -2722,7 +2722,7 @@
 	{
 		"en"	"Corroding as we speak.\n{green}Each newly spawned enemy takes increasingly more damage and stacks"
 		"it"	"Si sta corrodendo mentre parliamo.\n{green}Ogni nuovo nemico generato subisce sempre più danni e stack"
-		"ko"	"말하는 지금 이 순간에도 점점 부식되어가는게 보인다.\n{green}적이 새로 생성될 때마다 피해 저항력이 감소된 채로 등장하며, 이 효과는 중첩됩니다."
+		"ko"	"말하는 지금 이 순간에도 점점 부식되어가는게 보인다.\n{green}적이 새로 생성될 때마다 피해 저항력이 감소된 채로 등장하며, 이 효과는 중첩됨."
 	}
 	"Eyes of the Sea"
 	{
