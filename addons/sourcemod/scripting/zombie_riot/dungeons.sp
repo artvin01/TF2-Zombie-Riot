@@ -139,8 +139,6 @@ enum struct LootInfo
 				Rogue_GiveNamedArtifact(buffer);
 			}
 		}
-
-		EmitSoundToAll("ui/itemcrate_smash_rare.wav");
 	}
 
 	void Clean()
@@ -325,6 +323,9 @@ enum struct RoomInfo
 				Dungeon_AddBattleScale(this.LootScale);
 			}
 		}
+
+		if(victory && count)
+			EmitSoundToAll("ui/itemcrate_smash_rare.wav");
 	}
 
 	void Clean()
@@ -924,7 +925,7 @@ void Dungeon_TeleportRandomly(float pos[3])
 		return;
 	}
 
-	SurroundingAreasCollector areas = TheNavMesh.CollectSurroundingAreas(goalArea, 100.0, 18.0);
+	SurroundingAreasCollector areas = TheNavMesh.CollectSurroundingAreas(goalArea, _, 100.0, 18.0);
 
 	int length = areas.Count();
 	int start = GetURandomInt() % length;
@@ -1756,6 +1757,7 @@ void Dungeon_RollNamedLoot(const char[] name)
 	if(LootMap && LootMap.GetArray(name, loot, sizeof(loot)))
 	{
 		loot.RollLoot();
+		EmitSoundToAll("ui/itemcrate_smash_rare.wav");
 	}
 	else
 	{
