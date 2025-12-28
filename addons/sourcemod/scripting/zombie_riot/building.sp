@@ -347,10 +347,16 @@ static void BuildingMenu(int client)
 		for(int i; i < sizeof(SectionName); i++)
 		{
 			if(i == 2 && !Construction_Mode() && !CvarInfiniteCash.BoolValue)
+			{
+				menu.AddItem(buffer1, buffer1, ITEMDRAW_SPACER);
 				continue;
+			}
 			
 			if(i == 3 && !Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
+			{
+				menu.AddItem(buffer1, buffer1, ITEMDRAW_SPACER);
 				continue;
+			}
 			
 			FormatEx(buffer1, sizeof(buffer1), "%t", SectionName[i]);
 			if(i == 2 && !Waves_Started() && !CvarInfiniteCash.BoolValue)
