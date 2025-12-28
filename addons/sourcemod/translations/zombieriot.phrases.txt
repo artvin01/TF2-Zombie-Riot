@@ -4671,7 +4671,7 @@
 	}
 	"Medieval Desc"
 	{
-		"en"	"Fight against the middle-age with their armor to counter melee or ranged attacks!"
+		"en"	"While Alaxios is away talking with Sensal, he tells his army to come to you. They ask us to train them? We have nothing else to do, so why not Alaxios can just revive them after we're done."
 		"fr"	"Entrez en combat contre le Moyen-Âge, et leur armure qui leur protège contre les attaques à portée et corps à corps!"
 		"chi"	"对抗中世纪的剑与盾！"
 		"it"	"Combatti contro la mezza età con le loro armature per contrastare gli attacchi in mischia o a distanza!"
