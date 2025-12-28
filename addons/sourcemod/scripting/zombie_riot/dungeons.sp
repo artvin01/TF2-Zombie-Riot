@@ -1757,7 +1757,6 @@ void Dungeon_RollNamedLoot(const char[] name)
 	if(LootMap && LootMap.GetArray(name, loot, sizeof(loot)))
 	{
 		loot.RollLoot();
-		EmitSoundToAll("ui/itemcrate_smash_rare.wav");
 	}
 	else
 	{

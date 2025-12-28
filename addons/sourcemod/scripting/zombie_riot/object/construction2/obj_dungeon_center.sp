@@ -226,6 +226,8 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 							Rogue_RemoveNamedArtifact("Sealed Jalan Crate");
 							Construction_AddMaterial("crystal", -unboxCost, true);
 
+							EmitSoundToAll("ui/itemcrate_smash_rare.wav");
+
 							Dungeon_RollNamedLoot("Rare Jalan Crate");
 						}
 					}
@@ -237,6 +239,8 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 							
 							Rogue_RemoveNamedArtifact("Sealed Wizuh Crate");
 							Construction_AddMaterial("crystal", -unboxCost, true);
+
+							EmitSoundToAll("ui/itemcrate_smash_rare.wav");
 
 							Dungeon_RollNamedLoot("Rare Wizuh Crate");
 						}
@@ -250,6 +254,8 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 							Rogue_RemoveNamedArtifact("Sealed Ossunia Crate");
 							Construction_AddMaterial("crystal", -unboxCost, true);
 
+							EmitSoundToAll("ui/itemcrate_smash_rare.wav");
+
 							Dungeon_RollNamedLoot("Rare Ossunia Crate");
 						}
 					}
@@ -261,6 +267,8 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 							
 							Rogue_RemoveNamedArtifact("Sealed Bofazem Crate");
 							Construction_AddMaterial("crystal", -unboxCost, true);
+
+							EmitSoundToAll("ui/itemcrate_smash_rare.wav");
 
 							Dungeon_RollNamedLoot("Bofazem Crate");
 						}

@@ -147,6 +147,7 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 					{
 						CPrintToChatAll("%t", "Found Dungeon Loot", c_NpcName[victim]);
 						Dungeon_RollNamedLoot(c_NpcName[victim]);
+						EmitSoundToAll("ui/itemcrate_smash_rare.wav");
 					}
 					else
 					{
