@@ -101,8 +101,7 @@ enum struct Vote
 	bool Locked;
 }
 
-static ArrayList Enemies[Rounds_MAX][3];
-static ArrayList Rounds[Rounds_MAX];
+
 enum
 {
 	Rounds_Default = 0,
@@ -111,6 +110,7 @@ enum
 
 	Rounds_MAX = 32
 }
+
 static ArrayList Voting;
 static ArrayList VotingMods;
 static bool CanReVote;
@@ -193,6 +193,7 @@ void Waves_PluginStart()
 	RegAdminCmd("zr_setwave", Waves_SetWaveCmd, ADMFLAG_CHEATS);
 	RegAdminCmd("zr_panzer", Waves_ForcePanzer, ADMFLAG_CHEATS);
 	RegAdminCmd("zr_CurrentEnemyAliveLimits", NpcEnemyAliveLimit, ADMFLAG_CHEATS);
+	RegAdminCmd("zr_skipvote", Waves_SkipVote, ADMFLAG_CHEATS);
 }
 
 bool Waves_InFreeplay()
@@ -271,6 +272,19 @@ public Action NpcEnemyAliveLimit(int client, int args)
 public Action Waves_ForcePanzer(int client, int args)
 {
 	NPC_SpawnNext(true, true); //This will force spawn a panzer.
+	return Plugin_Handled;
+}
+public Action Waves_SkipVote(int client, int args)
+{
+	//carefull as it might break voting, its ONLY for debug
+	if(Rogue_VoteActive())
+	{
+		VoteEndTime = 0.0;
+		CreateTimer(0.1, Rogue_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+		return Plugin_Handled;
+	}
+	MostRecentVoteCancel++;
+	CreateTimer(0.1, Waves_EndVote, MostRecentVoteCancel, TIMER_FLAG_NO_MAPCHANGE);
 	return Plugin_Handled;
 }
 
@@ -1074,18 +1088,19 @@ void Waves_SetupWaves(KeyValues kv, bool start, int ArrayDo = Rounds_Default)
 		}
 		delete Rounds[ArrayDo];
 	}
+	DelayContinuneWave[ArrayDo] = 0.0;
 	
 	Rounds[ArrayDo] = new ArrayList(sizeof(Round));
 	
 	char buffer[128], plugin[64];
 	bool autoNPCCash = false;
 	bool defaultCash = false;
+	CurrentRound[ArrayDo] = 0;
+	CurrentWave[ArrayDo] = -1;
 	if(ArrayDo == Rounds_Default)
 	{
-		CurrentRound[Rounds_Default] = 0;
-		CurrentWave[Rounds_Default] = -1;
 		RelayCurrentRound = 0;
-		Waves_ClearWaves();
+		Waves_ClearWaves(ArrayDo);
 		Waves_ResetCashGiveWaveEnd();
 
 		f_ExtraDropChanceRarity = kv.GetFloat("gift_drop_chance_multiplier", 0.5);
@@ -1357,10 +1372,7 @@ void Waves_SetupWaves(KeyValues kv, bool start, int ArrayDo = Rounds_Default)
 
 		if(OverrideScalingManually != 0.0)
 			MinibossScalingHandle = OverrideScalingManually;
-	}
 
-	if(ArrayDo == Rounds_Default)
-	{
 		if(start)
 		{
 			for(int client=1; client<=MaxClients; client++)
@@ -1496,7 +1508,8 @@ void Waves_RoundStart(bool event = false)
 			time = 1.0;
 		
 		VoteEndTime = GetGameTime() + time;
-		CreateTimer(time, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+		MostRecentVoteCancel++;
+		CreateTimer(time, Waves_EndVote, MostRecentVoteCancel, TIMER_FLAG_NO_MAPCHANGE);
 
 		if(wait < time)
 			wait = time;
@@ -1513,7 +1526,8 @@ void Waves_RoundStart(bool event = false)
 		if(FirstMapRound)
 		{
 			FirstMapRound = false;
-			CreateTimer(zr_waitingtime.FloatValue, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+			MostRecentVoteCancel++;
+			CreateTimer(zr_waitingtime.FloatValue, Waves_EndVote, MostRecentVoteCancel, TIMER_FLAG_NO_MAPCHANGE);
 			Waves_SetReadyStatus(2);
 			//Stop music.
 		}
@@ -1604,8 +1618,11 @@ public Action Waves_AllowVoting(Handle timer)
 	return Plugin_Continue;
 }
 
-public Action Waves_EndVote(Handle timer, float time)
+public Action Waves_EndVote(Handle timer, int WhatWasMyCancel)
 {
+	if(WhatWasMyCancel != MostRecentVoteCancel)
+		return Plugin_Continue;
+
 	ArrayList list = Voting ? Voting : VotingMods;
 	if(list)
 	{
@@ -1668,7 +1685,8 @@ public Action Waves_EndVote(Handle timer, float time)
 					Zero(VotedFor);
 					CanReVote = false;
 					VoteEndTime = GetGameTime() + 30.0;
-					CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+					MostRecentVoteCancel++;
+					CreateTimer(30.0, Waves_EndVote, MostRecentVoteCancel, TIMER_FLAG_NO_MAPCHANGE);
 					PrintHintTextToAll("Vote for the top %d options!", list.Length);
 					SPrintToChatAll("Vote for the top %d options!", list.Length);
 					Waves_SetReadyStatus(2);
@@ -1748,7 +1766,8 @@ public Action Waves_EndVote(Handle timer, float time)
 					Zero(VotedFor);
 					VoteEndTime = GetGameTime() + duration;
 					CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-					CreateTimer(duration, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+					MostRecentVoteCancel++;
+					CreateTimer(duration, Waves_EndVote, MostRecentVoteCancel, TIMER_FLAG_NO_MAPCHANGE);
 
 					PrintHintTextToAll("Vote for the wave modifier!");
 					SPrintToChatAll("Vote for the wave modifier!");
@@ -1832,14 +1851,14 @@ public Action Waves_EndVote(Handle timer, float time)
 	return Plugin_Continue;
 }
 
-void Waves_ClearWaves()
+void Waves_ClearWaves(int WaveWhich = Rounds_Default)
 {
-	delete Enemies[Rounds_Default][0];
-	delete Enemies[Rounds_Default][1];
-	delete Enemies[Rounds_Default][2];
+	delete Enemies[WaveWhich][0];
+	delete Enemies[WaveWhich][1];
+	delete Enemies[WaveWhich][2];
 }
 
-void Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Default)
+bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Default)
 {
 	/*PrintCenterTextAll("Waves_Progress %d | %d | %d | %d | %d", InSetup ? 0 : 1,
 		Rounds ? 1 : 0,
@@ -1848,7 +1867,7 @@ void Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 		Cooldown > GetGameTime() ? 0 : 1);*/
 	
 	if(InSetup || !Rounds[WaveWhich] || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime() || BetWar_Mode())
-		return;
+		return false;
 
 	Cooldown = GetGameTime();
 	ProgressTimerEndAt = 0.0;
@@ -1866,14 +1885,14 @@ void Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 	if(CurrentRound[WaveWhich] < length)
 	{
 		Rounds[WaveWhich].GetArray(CurrentRound[WaveWhich], round);
-		if(++CurrentWave[Rounds_Default] < round.Waves.Length)
+		if(++CurrentWave[WaveWhich] < round.Waves.Length)
 		{
 			if(WaveWhich == Rounds_Default)
 				f_FreeplayDamageExtra = 1.0;
 
-			round.Waves.GetArray(CurrentWave[Rounds_Default], wave);
+			round.Waves.GetArray(CurrentWave[WaveWhich], wave);
 
-			if(!CurrentWave[Rounds_Default] && WaveWhich == Rounds_Default)
+			if(!CurrentWave[WaveWhich] && WaveWhich == Rounds_Default)
 			{
 				Rogue_TriggerFunction(Artifact::FuncWaveStart);
 
@@ -2014,28 +2033,32 @@ void Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 		
 			for(int i; i<count; i++)
 			{
-				Waves_AddNextEnemy(wave.EnemyData, view_as<bool>(wave.EnemyData.ignore_max_cap));
+				Waves_AddNextEnemy(wave.EnemyData, view_as<bool>(wave.EnemyData.ignore_max_cap), _,WaveWhich);
 			}
 			
 			if(wave.Delay > 0.0)
 			{
 				float delay = wave.Delay * (1.0 + (MultiGlobalEnemy * 0.4));
 				WaveTimer = CreateTimer(delay, Waves_ProgressTimer);
-				ProgressTimerType = CurrentWave[Rounds_Default] == (round.Waves.Length - 1);
+				ProgressTimerType = CurrentWave[WaveWhich] == (round.Waves.Length - 1);
 				
 				if(delay > 9.0)
 					ProgressTimerEndAt = GetGameTime() + delay;
+
+				//only used for waves from spawners
+				DelayContinuneWave[WaveWhich] = GetGameTime() + delay;
 			}
 		}
 		else if(donotAdvanceRound)
 		{
-			CurrentWave[Rounds_Default] = round.Waves.Length - 1;
+			CurrentWave[WaveWhich] = round.Waves.Length - 1;
 			GiveAmmoSupplies = false;
 		}
 		else
 		{
 			int PrevRoundMusic = 0;
-			WaveEndLogicExtra();
+			if(WaveWhich == Rounds_Default)
+				WaveEndLogicExtra();
 
 			if(!Classic_Mode())
 			{
@@ -2056,15 +2079,22 @@ void Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 				}
 			}
 			
-			Citizen_WaveStart();
-			ExcuteRelay("zr_wavedone");
-			Waves_ResetCashGiveWaveEnd();
+			if(WaveWhich == Rounds_Default)
+			{
+				Citizen_WaveStart();
+				ExcuteRelay("zr_wavedone");
+				Waves_ResetCashGiveWaveEnd();
+				
+			}
 			CurrentRound[WaveWhich]++;
 			CurrentWave[WaveWhich] = -1;
-			Dungeon_WaveEnd(CurrentRound[WaveWhich] == length);
-			//This ensures no invalid spawn happens.
-			Spawners_Timer();
-			if(CurrentRound[WaveWhich] != length)
+			if(WaveWhich == Rounds_Default)
+			{
+				Dungeon_WaveEnd(CurrentRound[WaveWhich] == length);
+				//This ensures no invalid spawn happens.
+				Spawners_Timer();
+			}
+			if(CurrentRound[WaveWhich] != length && WaveWhich == Rounds_Default)
 			{
 				char ExecuteRelayThings[64];
 
@@ -2093,39 +2123,46 @@ void Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 
 			bool wasEmptyWave = !round.Waves.Length;
 			
-			if(!wasEmptyWave)
-				Native_OnWaveEnd();
-
-			RequestFrames(StopMapMusicAll, 60);
-			
-			Waves_ClearWaves();
-
-			bool music_stop = false;
-			//Do we stop the music ?
-			//If theres an outro track, play it here.
-			if(round.music_round_outro[0])
+			if(WaveWhich == Rounds_Default)
 			{
-				music_stop = true;
-				if(round.music_custom_outro)
-				{
-					EmitCustomToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.45);
-				}
-				else
-				{
-					EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.73);
-					EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.73);
-				}
+				if(!wasEmptyWave)
+					Native_OnWaveEnd();
+
+				RequestFrames(StopMapMusicAll, 60);
+
 			}
-			PrevRoundMusic = round.MusicOutroDuration;
+			
+			Waves_ClearWaves(WaveWhich);
+			bool music_stop = false;
 
-			//If there was a music outro, was duration did it have? Set the music timer delay here.
-			if(PrevRoundMusic > 0)
+			if(WaveWhich == Rounds_Default)
 			{
-				for(int client = 1; client <= MaxClients; client++)
+				//Do we stop the music ?
+				//If theres an outro track, play it here.
+				if(round.music_round_outro[0])
 				{
-					if(IsClientInGame(client) && !b_IsPlayerABot[client])
+					music_stop = true;
+					if(round.music_custom_outro)
 					{
-						SetMusicTimer(client, GetTime() + round.MusicOutroDuration); //This is here beacuse of raid music.
+						EmitCustomToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.45);
+					}
+					else
+					{
+						EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.73);
+						EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.73);
+					}
+				}
+				PrevRoundMusic = round.MusicOutroDuration;
+
+				//If there was a music outro, was duration did it have? Set the music timer delay here.
+				if(PrevRoundMusic > 0)
+				{
+					for(int client = 1; client <= MaxClients; client++)
+					{
+						if(IsClientInGame(client) && !b_IsPlayerABot[client])
+						{
+							SetMusicTimer(client, GetTime() + round.MusicOutroDuration); //This is here beacuse of raid music.
+						}
 					}
 				}
 			}
@@ -2146,13 +2183,16 @@ void Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 			}
 			//Did we beforehand stop the music, due to playing an outtro track?
 			//if yes, remove it here.
-			for(int client = 1; client <= MaxClients; client++)
+			if(WaveWhich == Rounds_Default)
 			{
-				if(IsClientInGame(client) && !b_IsPlayerABot[client])
+				for(int client = 1; client <= MaxClients; client++)
 				{
-					if(music_stop)
+					if(IsClientInGame(client) && !b_IsPlayerABot[client])
 					{
-						Music_Stop_All(client);
+						if(music_stop)
+						{
+							Music_Stop_All(client);
+						}
 					}
 				}
 			}
@@ -2207,71 +2247,57 @@ void Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 				SetCustomFog(FogType_Wave, round.FogColor1, round.FogColor2, round.FogStart, round.FogEnd, round.FogDesnity, round.FogBlend, true);
 			
 			//Loop through all the still alive enemies that are indexed!
-			int Zombies_alive_still = 0;
-
-			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+			if(WaveWhich == Rounds_Default)
 			{
-				int npc_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-				if (IsValidEntity(npc_index))
+				int Zombies_alive_still = 0;
+
+				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 				{
-					if(!b_NpcHasDied[npc_index])
+					int npc_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+					if (IsValidEntity(npc_index))
 					{
-						if(GetTeam(npc_index) != TFTeam_Red)
+						if(!b_NpcHasDied[npc_index])
 						{
-							Zombies_alive_still += 1;
+							if(GetTeam(npc_index) != TFTeam_Red)
+							{
+								Zombies_alive_still += 1;
+							}
 						}
 					}
 				}
-			}
-			Zombies_Currently_Still_Ongoing = 0;
-			Zombies_Currently_Still_Ongoing = Zombies_alive_still;
-			
-			/*
-			if(!subgame && CurrentRound >= RoundToNearest(12.0 * (1.0 / MinibossScalingReturn())))
-			{
-				int count;
-				int i = MaxClients + 1;
-				while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
+				Zombies_Currently_Still_Ongoing = 0;
+				Zombies_Currently_Still_Ongoing = Zombies_alive_still;
+
+				if(CurrentRound[WaveWhich] == (RoundToNearest(7.0 * (1.0 / MinibossScalingReturn()))) && !round.NoMiniboss)
 				{
-					if(!b_NpcHasDied[i])
-					{
-						if(Citizen_IsIt(i))
-							count++;
-					}
-				}
-			}
-			// ?????? Old code, we dont know what it does.
-			*/
-			//always increase chance of miniboss.
-			if(CurrentRound[WaveWhich] == (RoundToNearest(7.0 * (1.0 / MinibossScalingReturn()))) && !round.NoMiniboss)
-			{
-				panzer_spawn = true;
-				panzer_sound = true;
-				panzer_chance = 10;
-			}
-			else if((CurrentRound[WaveWhich] > RoundToNearest(7.0 * (1.0 / MinibossScalingReturn())) && round.Setup <= 30.0 && !round.NoMiniboss))
-			{
-				bool chance = (panzer_chance == 10 ? false : !GetRandomInt(0, panzer_chance));
-				if(panzer_chance != 10)
-					Modifier_MiniBossSpawn(chance);
-				
-				panzer_spawn = chance;
-				panzer_sound = chance;
-				panzer_chance--;
-				if(panzer_spawn)
-				{
+					panzer_spawn = true;
+					panzer_sound = true;
 					panzer_chance = 10;
+				}
+				else if((CurrentRound[WaveWhich] > RoundToNearest(7.0 * (1.0 / MinibossScalingReturn())) && round.Setup <= 30.0 && !round.NoMiniboss))
+				{
+					bool chance = (panzer_chance == 10 ? false : !GetRandomInt(0, panzer_chance));
+					if(panzer_chance != 10)
+						Modifier_MiniBossSpawn(chance);
+					
+					panzer_spawn = chance;
+					panzer_sound = chance;
+					panzer_chance--;
+					if(panzer_spawn)
+					{
+						panzer_chance = 10;
+					}
+					else
+					{
+						Flagellant_MiniBossChance(panzer_chance);
+					}
 				}
 				else
 				{
-					Flagellant_MiniBossChance(panzer_chance);
+					panzer_chance--;
+					panzer_spawn = false;
+					panzer_sound = false;
 				}
-			}
-			else
-			{
-				panzer_chance--;
-				panzer_spawn = false;
-				panzer_sound = false;
 			}
 
 			if(subgame) //disable
@@ -2377,293 +2403,302 @@ void Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 			}
 			
 			//MUSIC LOGIC
-			bool RoundHadCustomMusic = BGMusicSpecial1.Valid();
-			if(MusicString1.Valid())
-				RoundHadCustomMusic = true;	
-			if(MusicString2.Valid())
-				RoundHadCustomMusic = true;
-			if(RaidMusicSpecial1.Valid())
-				RoundHadCustomMusic = true;
-
-			//we previously had custom music, what do we do ?
-			if(RoundHadCustomMusic)
-			{	
-				bool ReplaceMusic = false;
-				if(!round.music_round_1.Valid() && MusicString1.Valid())
-				{
-					ReplaceMusic = true;
-				}
-				if(round.music_round_1.Valid())
-				{
-					if(!StrEqual(MusicString1.Path, round.music_round_1.Path))
-					{
-						ReplaceMusic = true;
-					}
-				}
-				//there was music the previous round, but there is none now.
-				if(!round.music_round_2.Valid() && MusicString2.Valid())
-				{
-					ReplaceMusic = true;
-				}
-				//they are different, cancel out.
-				if(round.music_round_2.Valid())
-				{
-					if(!StrEqual(MusicString2.Path, round.music_round_2.Path))
-					{
-						ReplaceMusic = true;
-					}
-				}
-
-				//if it had raid music, replace anyways.
+			if(WaveWhich == Rounds_Default)
+			{
+				bool RoundHadCustomMusic = BGMusicSpecial1.Valid();
+				if(MusicString1.Valid())
+					RoundHadCustomMusic = true;	
+				if(MusicString2.Valid())
+					RoundHadCustomMusic = true;
 				if(RaidMusicSpecial1.Valid())
-					ReplaceMusic = true;
-				
-				if(ReplaceMusic)
-				{
-					for(int client=1; client<=MaxClients; client++)
-					{
-						if(IsClientInGame(client))
-						{
-							SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup) + 2); //This is here beacuse of raid music.
-							Music_Stop_All(client);
-						}
-					}	
-				}
-			}
+					RoundHadCustomMusic = true;
 
-			//This should nullfy anyways if nothings in it
-			RemoveAllCustomMusic();
-
-			round.music_round_1.CopyTo(MusicString1);
-			round.music_round_2.CopyTo(MusicString2);
-			
-			if(round.Setup > 1.0 && PrevRoundMusic <= 0)
-			{
-				if(round.Setup > 59.0)
-				{
-					for(int client=1; client<=MaxClients; client++)
+				//we previously had custom music, what do we do ?
+				if(RoundHadCustomMusic)
+				{	
+					bool ReplaceMusic = false;
+					if(!round.music_round_1.Valid() && MusicString1.Valid())
 					{
-						if(IsClientInGame(client))
+						ReplaceMusic = true;
+					}
+					if(round.music_round_1.Valid())
+					{
+						if(!StrEqual(MusicString1.Path, round.music_round_1.Path))
 						{
-							//a little delay.
-							SetMusicTimer(client, GetTime() + 1);
+							ReplaceMusic = true;
 						}
 					}
-				}
-				else if(MusicString1.Valid() || MusicString2.Valid())
-				{
-					for(int client=1; client<=MaxClients; client++)
+					//there was music the previous round, but there is none now.
+					if(!round.music_round_2.Valid() && MusicString2.Valid())
 					{
-						if(IsClientInGame(client))
+						ReplaceMusic = true;
+					}
+					//they are different, cancel out.
+					if(round.music_round_2.Valid())
+					{
+						if(!StrEqual(MusicString2.Path, round.music_round_2.Path))
 						{
-							SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup));
+							ReplaceMusic = true;
 						}
 					}
-				}
-				else
-				{
-					//Reset and stop music?
-					for(int client=1; client<=MaxClients; client++)
-					{
-						if(IsClientInGame(client))
-						{
-							SetMusicTimer(client, GetTime() + 1); //This is here beacuse of raid music.
-							Music_Stop_All(client);
-						}
-					}
-				}
-			}
 
-			SteamWorks_UpdateGameTitle();
-			
-			if(CurrentRound[WaveWhich] == length)
-			{
-				refreshNPCStore = true;
-				InSetup = true;
-				ExcuteRelay("zr_setuptime");
-				ExcuteRelay("zr_victory");
-				
-				if(!subgame)
-				{
-					Cooldown = GetGameTime() + 30.0;
+					//if it had raid music, replace anyways.
+					if(RaidMusicSpecial1.Valid())
+						ReplaceMusic = true;
 					
-					SpawnTimer(30.0);
-					CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-				}
-				RequestFrames(StopMapMusicAll, 60);
-				
-				int total = 0;
-				int[] players = new int[MaxClients];
-				for(int i=1; i<=MaxClients; i++)
-				{
-					if(IsClientInGame(i) && !IsFakeClient(i))
+					if(ReplaceMusic)
 					{
-						if(!Construction_Mode() || Construction_FinalBattle())
-							Music_Stop_All(i);
-
-						if(!subgame)
+						for(int client=1; client<=MaxClients; client++)
 						{
-							SendConVarValue(i, sv_cheats, "1");
+							if(IsClientInGame(client))
+							{
+								SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup) + 2); //This is here beacuse of raid music.
+								Music_Stop_All(client);
+							}
+						}	
+					}
+				}
+
+				//This should nullfy anyways if nothings in it
+				RemoveAllCustomMusic();
+
+				round.music_round_1.CopyTo(MusicString1);
+				round.music_round_2.CopyTo(MusicString2);
+				
+				if(round.Setup > 1.0 && PrevRoundMusic <= 0)
+				{
+					if(round.Setup > 59.0)
+					{
+						for(int client=1; client<=MaxClients; client++)
+						{
+							if(IsClientInGame(client))
+							{
+								//a little delay.
+								SetMusicTimer(client, GetTime() + 1);
+							}
 						}
+					}
+					else if(MusicString1.Valid() || MusicString2.Valid())
+					{
+						for(int client=1; client<=MaxClients; client++)
+						{
+							if(IsClientInGame(client))
+							{
+								SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup));
+							}
+						}
+					}
+					else
+					{
+						//Reset and stop music?
+						for(int client=1; client<=MaxClients; client++)
+						{
+							if(IsClientInGame(client))
+							{
+								SetMusicTimer(client, GetTime() + 1); //This is here beacuse of raid music.
+								Music_Stop_All(client);
+							}
+						}
+					}
+				}
+
+				SteamWorks_UpdateGameTitle();
+
+				if(CurrentRound[WaveWhich] == length)
+				{
+					refreshNPCStore = true;
+					InSetup = true;
+					ExcuteRelay("zr_setuptime");
+					ExcuteRelay("zr_victory");
+					
+					if(!subgame)
+					{
+						Cooldown = GetGameTime() + 30.0;
 						
-						players[total++] = i;
-
-						if(WaveGiftItem != -1 && PlayerPoints[i] > 500)
+						SpawnTimer(30.0);
+						CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+					}
+					RequestFrames(StopMapMusicAll, 60);
+					
+					int total = 0;
+					int[] players = new int[MaxClients];
+					for(int i=1; i<=MaxClients; i++)
+					{
+						if(IsClientInGame(i) && !IsFakeClient(i))
 						{
-							if(Items_GiveIdItem(i, WaveGiftItem))
-								CPrintToChat(i,"{default}You have found {yellow}%s{default}!", Items_GetNameOfId(WaveGiftItem));
+							if(!Construction_Mode() || Construction_FinalBattle())
+								Music_Stop_All(i);
+
+							if(!subgame)
+							{
+								SendConVarValue(i, sv_cheats, "1");
+							}
+							
+							players[total++] = i;
+
+							if(WaveGiftItem != -1 && PlayerPoints[i] > 500)
+							{
+								if(Items_GiveIdItem(i, WaveGiftItem))
+									CPrintToChat(i,"{default}You have found {yellow}%s{default}!", Items_GetNameOfId(WaveGiftItem));
+							}
 						}
 					}
-				}
 
-				if(!subgame || Construction_FinalBattle())
-				{
-					ResetReplications();
-					cvarTimeScale.SetFloat(0.1);
-					CreateTimer(0.5, SetTimeBack);
-					if(!Music_Disabled())
-						EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
-					
-
-					if(i_WaveHasFreeplay > 0)
+					if(!subgame || Construction_FinalBattle())
 					{
-						if(i_WaveHasFreeplay == 1)
+						ResetReplications();
+						cvarTimeScale.SetFloat(0.1);
+						CreateTimer(0.5, SetTimeBack);
+						if(!Music_Disabled())
+							EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+						
+
+						if(i_WaveHasFreeplay > 0)
 						{
-							Menu menu = new Menu(Waves_FreeplayVote);
-							menu.SetTitle("%t","Victory Menu 2");
-							menu.AddItem("", "Yes");
-							menu.AddItem("", "No");
-							menu.ExitButton = false;
-							menu.DisplayVote(players, total, 30);
+							if(i_WaveHasFreeplay == 1)
+							{
+								Menu menu = new Menu(Waves_FreeplayVote);
+								menu.SetTitle("%t","Victory Menu 2");
+								menu.AddItem("", "Yes");
+								menu.AddItem("", "No");
+								menu.ExitButton = false;
+								menu.DisplayVote(players, total, 30);
+							}
+							else
+							{
+								for (int client = 1; client <= MaxClients; client++)
+								{
+									if(IsValidClient(client) && GetClientTeam(client) == 2)
+									{
+										SetHudTextParams(-1.0, -1.0, 7.5, 0, 255, 255, 255);
+										SetGlobalTransTarget(client);
+										ShowSyncHudText(client, SyncHud_Notifaction, "%t", "freeplay_start_1");
+									}
+								}
+								Freeplay_Info = 1;
+								CreateTimer(7.5, Freeplay_HudInfoTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+							}
 						}
 						else
 						{
-							for (int client = 1; client <= MaxClients; client++)
-							{
-								if(IsValidClient(client) && GetClientTeam(client) == 2)
-								{
-									SetHudTextParams(-1.0, -1.0, 7.5, 0, 255, 255, 255);
-									SetGlobalTransTarget(client);
-									ShowSyncHudText(client, SyncHud_Notifaction, "%t", "freeplay_start_1");
-								}
-							}
-							Freeplay_Info = 1;
-							CreateTimer(7.5, Freeplay_HudInfoTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+							ConVar roundtime = FindConVar("mp_bonusroundtime");
+							float last = roundtime.FloatValue;
+							roundtime.FloatValue = 20.0;
+
+							ForcePlayerWin();
+
+							roundtime.FloatValue = last;
 						}
+						
+						RemoveAllCustomMusic(true);
 					}
 					else
 					{
-						ConVar roundtime = FindConVar("mp_bonusroundtime");
-						float last = roundtime.FloatValue;
-						roundtime.FloatValue = 20.0;
-
-						ForcePlayerWin();
-
-						roundtime.FloatValue = last;
+						RemoveAllCustomMusic();
 					}
-					
-					RemoveAllCustomMusic(true);
-				}
-				else
-				{
-					RemoveAllCustomMusic();
-				}
 
-				if(subgame)
-				{
-					ClearCustomFog(FogType_Wave);
+					if(subgame)
+					{
+						ClearCustomFog(FogType_Wave);
 
-					if(Dungeon_Mode())
-					{
-						Dungeon_BattleVictory();
-					}
-					else if(Construction_Mode())
-					{
-						Construction_BattleVictory();
-					}
-					else if(Rogue_Mode())
-					{
-						Rogue_BattleVictory();
-					}
-				}
-
-				Citizen_SetupStart();
-			}
-			else if(round.Setup > 0.0)
-			{
-				refreshNPCStore = true;
-				InSetup = true;
-				ExcuteRelay("zr_setuptime");
-
-				if(round.Setup > 59.0)
-				{
-					for (int client = 1; client <= MaxClients; client++)
-					{
-						if(IsValidClient(client))
+						if(Dungeon_Mode())
 						{
-							//saving XP and inventory, nothing else.
-							Database_SaveXpAndItems(client);
+							Dungeon_BattleVictory();
+						}
+						else if(Construction_Mode())
+						{
+							Construction_BattleVictory();
+						}
+						else if(Rogue_Mode())
+						{
+							Rogue_BattleVictory();
 						}
 					}
-					if(PrevRoundMusic > 0)
+
+					Citizen_SetupStart();
+				}
+				else if(round.Setup > 0.0)
+				{
+					refreshNPCStore = true;
+					InSetup = true;
+					ExcuteRelay("zr_setuptime");
+
+					if(round.Setup > 59.0)
 					{
-						AlreadyWaitingSet(true);
-					}
-					if(EnableSilentMode)
-					{
-						Waves_SetReadyStatus(2);
-						//wait a minimum of 30 seconds when theres too many players.
-						SPrintToChatAll("You cannot ready up for 30 seconds.");
-						CreateTimer(30.0, Waves_AllowVoting, _, TIMER_FLAG_NO_MAPCHANGE);
+						for (int client = 1; client <= MaxClients; client++)
+						{
+							if(IsValidClient(client))
+							{
+								//saving XP and inventory, nothing else.
+								Database_SaveXpAndItems(client);
+							}
+						}
+						if(PrevRoundMusic > 0)
+						{
+							AlreadyWaitingSet(true);
+						}
+						if(EnableSilentMode)
+						{
+							Waves_SetReadyStatus(2);
+							//wait a minimum of 30 seconds when theres too many players.
+							SPrintToChatAll("You cannot ready up for 30 seconds.");
+							CreateTimer(30.0, Waves_AllowVoting, _, TIMER_FLAG_NO_MAPCHANGE);
+						}
+						else
+							Waves_SetReadyStatus(1);
 					}
 					else
-						Waves_SetReadyStatus(1);
+					{
+						Cooldown = GetGameTime() + round.Setup;
+
+						SpawnTimer(round.Setup);
+						CreateTimer(round.Setup, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+					}
+					RequestFrames(StopMapMusicAll, 60);
+
+					Citizen_SetupStart();
+				}
+				else if(wasLastMann && !Rogue_Mode() && round.Waves.Length)
+				{
+					Cooldown = GetGameTime() + 45.0;
+
+					SpawnTimer(45.0);
+					CreateTimer(45.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+					
+					SPrintToChatAll("You were given extra 45 seconds to prepare...");
+				}
+				else if(GiveBreakForPlayers && !Rogue_Mode() && round.Waves.Length)
+				{
+					Cooldown = GetGameTime() + 30.0;
+
+					SpawnTimer(30.0);
+					CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+					
+					SPrintToChatAll("You were given extra 30 seconds to prepare, as most of your team died......");
 				}
 				else
 				{
-					Cooldown = GetGameTime() + round.Setup;
+					Store_RandomizeNPCStore(ZR_STORE_WAVEPASSED);
+					if(refreshNPCStore)
+						Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE);
 
-					SpawnTimer(round.Setup);
-					CreateTimer(round.Setup, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+					
+					NPC_SpawnNext(panzer_spawn, panzer_sound);
+					return true;
 				}
-				RequestFrames(StopMapMusicAll, 60);
 
-				Citizen_SetupStart();
-			}
-			else if(wasLastMann && !Rogue_Mode() && round.Waves.Length)
-			{
-				Cooldown = GetGameTime() + 45.0;
-
-				SpawnTimer(45.0);
-				CreateTimer(45.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-				
-				SPrintToChatAll("You were given extra 45 seconds to prepare...");
-			}
-			else if(GiveBreakForPlayers && !Rogue_Mode() && round.Waves.Length)
-			{
-				Cooldown = GetGameTime() + 30.0;
-
-				SpawnTimer(30.0);
-				CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-				
-				SPrintToChatAll("You were given extra 30 seconds to prepare, as most of your team died......");
-			}
-			else
-			{
 				Store_RandomizeNPCStore(ZR_STORE_WAVEPASSED);
+				
 				if(refreshNPCStore)
 					Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE);
-
-				
-				NPC_SpawnNext(panzer_spawn, panzer_sound);
-				return;
 			}
-
-			Store_RandomizeNPCStore(ZR_STORE_WAVEPASSED);
-			
-			if(refreshNPCStore)
-				Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE);
-			
+			else
+			if(CurrentRound[WaveWhich] == length)
+			{
+				//wave done, delete.
+				if(Rounds[WaveWhich])
+					delete Rounds[WaveWhich];
+			}
 		}
 	}
 	else if(subgame)
@@ -2686,72 +2721,80 @@ void Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 
 		if(EarlyReturn)
 		{
-			return;
+			return false;
 		}
 	}
-	if(CurrentRound[WaveWhich] == 0 && !subgame)
+	bool subWave = true;
+	if(WaveWhich == Rounds_Default)
 	{
-		if(StartCash < 1500)
+		if(CurrentRound[WaveWhich] == 0 && !subgame)
 		{
-			for(int client=1; client<=MaxClients; client++)
+			if(StartCash < 1500)
 			{
-				GrantCreditsBack(client);
+				for(int client=1; client<=MaxClients; client++)
+				{
+					GrantCreditsBack(client);
+				}
 			}
+			
+			Ammo_Count_Ready = 8;
 		}
 		
-		Ammo_Count_Ready = 8;
+		if(Construction_Mode())	// In Construction: Base raids must be dealt with
+			subWave = !Construction_FinalBattle();
+		
+		if(Dungeon_Mode())
+			subWave = !Dungeon_FinalBattle();
+			
 	}
-	
-	bool subWave = true;
-	if(Construction_Mode())	// In Construction: Base raids must be dealt with
-		subWave = !Construction_FinalBattle();
-	
-	if(Dungeon_Mode())
-		subWave = !Dungeon_FinalBattle();
 	
 	if(subWave)
 		WaveStart_SubWaveStart();
-	
-	if(CurrentWave == 0 && GiveAmmoSupplies)
-	{
-		Renable_Powerups();
-		CheckIfAloneOnServer();
-		Ammo_Count_Ready += 1;
 
-		if(!Construction_Mode() && !Dungeon_Mode())
+	if(WaveWhich == Rounds_Default)
+	{
+		if(CurrentWave[WaveWhich] == 0 && GiveAmmoSupplies)
 		{
-			for (int target = 1; target <= MaxClients; target++)
+			Renable_Powerups();
+			CheckIfAloneOnServer();
+			Ammo_Count_Ready += 1;
+
+			if(!Construction_Mode() && !Dungeon_Mode())
 			{
-				if(i_CurrentEquippedPerk[target] & PERK_STOCKPILE_STOUT) 
+				for (int target = 1; target <= MaxClients; target++)
 				{
-					Ammo_Count_Used[target] -= 1;
+					if(i_CurrentEquippedPerk[target] & PERK_STOCKPILE_STOUT) 
+					{
+						Ammo_Count_Used[target] -= 1;
+					}
 				}
 			}
 		}
-	}
-	else if (Gave_Ammo_Supply > 2 && GiveAmmoSupplies)
-	{
-		Ammo_Count_Ready += 1;
-		Gave_Ammo_Supply = 0;
-
-		if(!Construction_Mode() && !Dungeon_Mode())
+		else if (Gave_Ammo_Supply > 2 && GiveAmmoSupplies)
 		{
-			for (int target = 1; target <= MaxClients; target++)
+			Ammo_Count_Ready += 1;
+			Gave_Ammo_Supply = 0;
+
+			if(!Construction_Mode() && !Dungeon_Mode())
 			{
-				if(i_CurrentEquippedPerk[target] & PERK_STOCKPILE_STOUT) 
+				for (int target = 1; target <= MaxClients; target++)
 				{
-					Ammo_Count_Used[target] -= 1;
+					if(i_CurrentEquippedPerk[target] & PERK_STOCKPILE_STOUT) 
+					{
+						Ammo_Count_Used[target] -= 1;
+					}
 				}
 			}
+		}	
+		else if(GiveAmmoSupplies)
+		{
+			Gave_Ammo_Supply += 1;	
 		}
-	}	
-	else if(GiveAmmoSupplies)
-	{
-		Gave_Ammo_Supply += 1;	
+	//	PrintToChatAll("Wave: %d - %d", CurrentRound+1, CurrentWave+1);
 	}
-//	PrintToChatAll("Wave: %d - %d", CurrentRound+1, CurrentWave+1);
 
 	Waves_UpdateMvMStats();
+	return false;
 }
 
 static Action Freeplay_HudInfoTimer(Handle timer)
@@ -2883,11 +2926,11 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 	return 0;
 }
 
-bool Waves_IsEmpty()
+bool Waves_IsEmpty(int WhichCheck = Rounds_Default)
 {
-	if((!Enemies[Rounds_Default][0] || !Enemies[Rounds_Default][0].Length)
-	 && (!Enemies[Rounds_Default][1] || !Enemies[Rounds_Default][1].Length)
-	  && (!Enemies[Rounds_Default][2] || !Enemies[Rounds_Default][2].Length))
+	if((!Enemies[WhichCheck][0] || !Enemies[WhichCheck][0].Length)
+	 && (!Enemies[WhichCheck][1] || !Enemies[WhichCheck][1].Length)
+	  && (!Enemies[WhichCheck][2] || !Enemies[WhichCheck][2].Length))
 		return true;
 	
 	return false;
@@ -2944,32 +2987,32 @@ void Waves_AddNextEnemy(const Enemy enemy, bool random = false, int prio = -1, i
 	Enemies[WaveWhich][slot].PushArray(enemy);
 }
 
-void Waves_ClearWave()
+void Waves_ClearWave(int WaveWhich = Rounds_Default)
 {
-	if(Rounds[Rounds_Default] && CurrentRound[Rounds_Default] >= 0 && CurrentRound[Rounds_Default] < Rounds[Rounds_Default].Length)
+	if(Rounds[Rounds_Default] && CurrentRound[WaveWhich] >= 0 && CurrentRound[WaveWhich] < Rounds[WaveWhich].Length)
 	{
 		Round round;
-		Rounds[Rounds_Default].GetArray(CurrentRound[Rounds_Default], round);
-		CurrentWave[Rounds_Default] = round.Waves.Length;
+		Rounds[WaveWhich].GetArray(CurrentRound[WaveWhich], round);
+		CurrentWave[WaveWhich] = round.Waves.Length;
 	}
 	else
 	{
-		CurrentWave[Rounds_Default] = -1;
+		CurrentWave[WaveWhich] = -1;
 	}
 }
 
-void Waves_ClearWaveCurrentSpawningEnemies()
+void Waves_ClearWaveCurrentSpawningEnemies(int WaveWhich = Rounds_Default)
 {
-	if(Enemies[Rounds_Default][0])
-		Zombies_Currently_Still_Ongoing -= Enemies[Rounds_Default][0].Length;
+	if(Enemies[WaveWhich][0])
+		Zombies_Currently_Still_Ongoing -= Enemies[WaveWhich][0].Length;
 	
-	if(Enemies[Rounds_Default][1])
-		Zombies_Currently_Still_Ongoing -= Enemies[Rounds_Default][1].Length;
+	if(Enemies[WaveWhich][1])
+		Zombies_Currently_Still_Ongoing -= Enemies[WaveWhich][1].Length;
 	
-	if(Enemies[Rounds_Default][2])
-		Zombies_Currently_Still_Ongoing -= Enemies[Rounds_Default][2].Length;
+	if(Enemies[WaveWhich][2])
+		Zombies_Currently_Still_Ongoing -= Enemies[WaveWhich][2].Length;
 	
-	Waves_ClearWaves();
+	Waves_ClearWaves(WaveWhich);
 }
 
 bool Waves_Started()
@@ -3026,7 +3069,7 @@ int Waves_GetMaxRound(bool real = false)
 
 int Waves_GetMaxSubRound()
 {
-	if(!Rounds[Rounds_Default] || [Rounds_Default] < 0 || CurrentRound[Rounds_Default] >= Rounds[Rounds_Default].Length)
+	if(!Rounds[Rounds_Default] || CurrentRound[Rounds_Default] < 0 || CurrentRound[Rounds_Default] >= Rounds[Rounds_Default].Length)
 		return 0;
 	
 	static Round round;
@@ -3693,8 +3736,8 @@ static void UpdateMvMStatsFrame()
 		if(FakeMaxWaves)
 			maxwaves = FakeMaxWaves;
 
-		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
-		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves : 0);
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound[Rounds_Default] + 1);
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound[Rounds_Default] < maxwaves ? maxwaves : 0);
 
 		static int maxCount;
 		if(!maxCount)

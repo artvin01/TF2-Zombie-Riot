@@ -48,8 +48,10 @@ void NPC_PluginStart()
 }
 
 #if defined ZR
-bool NPC_SpawnNext(bool panzer, bool panzer_warning, int WaveWhich = Rounds_Default)
+bool NPC_SpawnNext(bool panzer, bool panzer_warning, int WaveWhich = Rounds_Default, float vecPos[3] = {0.0,0.0,0.0})
 {
+	//vecPos will allow you to override any spawners that exist, so it will only spawn from this location
+	//this is only used for the const2_spawner npc.
 	float GameTime = GetGameTime();
 	if(f_DelaySpawnsForVariousReasons > GameTime)
 	{
@@ -175,17 +177,17 @@ bool NPC_SpawnNext(bool panzer, bool panzer_warning, int WaveWhich = Rounds_Defa
 					}
 				}
 			}
-			//emercency stop. 
-			if((EnemyNpcAlive - EnemyNpcAliveStatic) >= MaxEnemiesAllowedSpawnNext())
-			{
-				return false;
-			}
 		}
 
 		if(!Spawns_CanSpawnNext())
 		{
 			return false;
 		}
+	}
+	//emercency stop. 
+	if((EnemyNpcAlive - EnemyNpcAliveStatic) >= MaxEnemiesAllowedSpawnNext())
+	{
+		return false;
 	}
 
 	float pos[3], ang[3];
@@ -285,8 +287,18 @@ bool NPC_SpawnNext(bool panzer, bool panzer_warning, int WaveWhich = Rounds_Defa
 					result = true;
 			}
 
-			if(!result)
-				result = Spawns_GetNextPos(pos, ang, enemy.Spawn,_,SpawnSettingsSee);
+			if(AreVectorsEqual(vecPos, view_as<float>({0.0,0.0,0.0})))
+			{
+				if(!result)
+					result = Spawns_GetNextPos(pos, ang, enemy.Spawn,_,SpawnSettingsSee);
+			}
+			else
+			{
+				pos = vecPos;
+				result = true;
+				SpawnSettingsSee = 1;
+				//no spawnprotection from spawners?
+			}
 
 			if(result)
 			{
@@ -453,33 +465,48 @@ bool NPC_SpawnNext(bool panzer, bool panzer_warning, int WaveWhich = Rounds_Defa
 
 			Waves_UpdateMvMStats();
 		}
-		else if((EnemyNpcAlive - EnemyNpcAliveStatic) <= 0)
+		else 
 		{
-			bool donotprogress = false;
-			if(f_DelayNextWaveStartAdvancingDeathNpc > GetGameTime())
+			if(WaveWhich == Rounds_Default)
 			{
-				donotprogress = true;
-				/*
-				if(EnemyNpcAliveStatic >= 1)
+				if((EnemyNpcAlive - EnemyNpcAliveStatic) <= 0)
 				{
-					donotprogress = false;
+					bool donotprogress = false;
+					if(f_DelayNextWaveStartAdvancingDeathNpc > GetGameTime())
+					{
+						donotprogress = true;
+						/*
+						if(EnemyNpcAliveStatic >= 1)
+						{
+							donotprogress = false;
+						}
+						*/
+					}
+					else
+					{
+						/*
+						if(EnemyNpcAliveStatic >= 1)
+						{
+							donotprogress = false;
+						}
+						*/
+					}
+					if(f_DelayNextWaveStartAdvancing < GetGameTime())
+					{
+						Waves_Progress(donotprogress, WaveWhich);
+					}
 				}
-				*/
+				return true;
 			}
 			else
 			{
-				/*
-				if(EnemyNpcAliveStatic >= 1)
+				//for now just skip
+				if(DelayContinuneWave[WaveWhich] < GetGameTime())
 				{
-					donotprogress = false;
+					Waves_Progress(false, WaveWhich);
 				}
-				*/
+				return false;
 			}
-			if(f_DelayNextWaveStartAdvancing < GetGameTime())
-			{
-				Waves_Progress(donotprogress);
-			}
-			return true;
 			//we reached limit. stop trying.
 		}
 	}

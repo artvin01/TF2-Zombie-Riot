@@ -385,7 +385,7 @@ MusicEnum BGMusicSpecial1;
 //custom wave music.
 float f_DelaySpawnsForVariousReasons;
 int CurrentRound[Rounds_MAX];
-int CurrentWave[Rounds_MAX] = -1;
+int CurrentWave[Rounds_MAX] = {-1, ...};
 int StartCash;
 float RoundStartTime;
 char WhatDifficultySetting_Internal[32];

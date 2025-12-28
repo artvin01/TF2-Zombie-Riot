@@ -261,6 +261,13 @@ TFClassType WeaponClass[MAXPLAYERS]={TFClass_Scout, ...};
 
 bool b_GivePlayerHint[MAXPLAYERS];
 #if defined ZR
+int MostRecentVoteCancel;
+
+//only used for waves from spawners
+float DelayContinuneWave[Rounds_MAX];
+ArrayList Enemies[Rounds_MAX][3];
+ArrayList Rounds[Rounds_MAX];
+
 int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
 bool b_IgnoreMapMusic[MAXPLAYERS];
 bool b_DisableDynamicMusic[MAXPLAYERS];

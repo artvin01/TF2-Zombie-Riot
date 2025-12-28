@@ -1694,6 +1694,7 @@ void Dungeon_BattleVictory()
 	Dungeon_DelayVoteFor(20.0);
 }
 
+//england is my city
 static void BattleLosted()
 {
 	Waves_RoundEnd();
@@ -1710,9 +1711,9 @@ static void BattleLosted()
 	Dungeon_DelayVoteFor(20.0);
 }
 
-void Dungeon_WaveEnd(bool final)
+void Dungeon_WaveEnd(bool final, bool forcegive = true)
 {
-	if(!final && CurrentRoomIndex != -1 && AttackType == 1)
+	if(forcegive || !final && CurrentRoomIndex != -1 && AttackType == 1)
 	{
 		RoomInfo room;
 		RoomList.GetArray(CurrentRoomIndex, room);

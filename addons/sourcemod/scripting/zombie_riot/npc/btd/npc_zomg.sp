@@ -17,7 +17,7 @@ static const char SoundZomgPop[][] =
 
 static float MoabSpeed()
 {
-	if([Rounds_Default] < 80)
+	if(CurrentRound[Rounds_Default] < 80)
 		return 150.0;
 	
 	if(CurrentRound[Rounds_Default] < 100)
