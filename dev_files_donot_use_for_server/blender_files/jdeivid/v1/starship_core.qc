@@ -42,6 +42,11 @@ $bodygroup "under_weapons"
 	blank
 	studio "under_weapons.smd"
 }
+$bodygroup "shield_bubble"
+{
+	blank
+	studio "shield_bubble.smd"
+}
 
 $texturegroup "skinfamilies"
 {
@@ -67,6 +72,7 @@ $cdmaterials "models\props_mvm\"		//painted_wood_01
 $cdmaterials "models\player\medic\"
 $cdmaterials "models\player\items\all_class\"
 $cdmaterials "passtime\neons\"	
+$cdmaterials "models\effects\"
 
 $cdmaterials "models\workshop\weapons\c_models\c_invasion_bat\"
 //c_invasion_bat_laser_white.vmt	//glass like texture
@@ -90,10 +96,30 @@ $cbox 0 0 0 0 0 0
 
 $bbox -1.784 -1.784 -2.533 1.77 1.773 29.017
 
-//Good to know I can use these to create special points for vector getting to connect beams or TE or for effects
-
 $definebone "weapon_bone" "" 0 0 0 0 0 0 0 0 0 0 0 0
-#definebone "root"	"" 0 0 0 0 0 0 0 0 0 0 0 0
+
+//WEAPON POINTS:
+//Forward Lances (part of forwrad weapons)
+$attachment "forward_lance_left_end" 			"weapon_bone" -143.702 432.962 0.0 rotate 0.0 0.0 0.0
+$attachment "forward_lance_left_start" 			"weapon_bone" -143.702 314.649 0.0 rotate 0.0 0.0 0.0
+
+$attachment "forward_lance_right_end" 			"weapon_bone" 143.702 432.962 0.0 rotate 0.0 0.0 0.0
+$attachment "forward_lance_right_start" 		"weapon_bone" 143.702 314.649 0.0 rotate 0.0 0.0 0.0
+
+//Central Weapons ports (part of core decorations)
+$attachment "central_weapons_port_left_top" 	"weapon_bone" -132.512 213.092 61.3638 rotate 0.0 0.0 0.0
+$attachment "central_weapons_port_left_bottom" 	"weapon_bone" -132.512 213.092 -61.3638 rotate 0.0 0.0 0.0
+
+$attachment "central_weapons_port_right_top" 	"weapon_bone" 132.512 213.092 61.3638 rotate 0.0 0.0 0.0
+$attachment "central_weapons_port_right_bottom" "weapon_bone" 132.512 213.092 -61.3638 rotate 0.0 0.0 0.0
+
+//Underside weapons (part of under_weapons)
+$attachment "underside_weapons_left_outer" 		"weapon_bone" -133.459 -1.1523 -79.5816 rotate 0.0 0.0 0.0
+$attachment "underside_weapons_left_inner" 		"weapon_bone" -92.7812 -1.1523 -79.5816 rotate 0.0 0.0 0.0
+
+$attachment "underside_weapons_right_outer" 	"weapon_bone" 133.459 -1.1523 -79.5816 rotate 0.0 0.0 0.0
+$attachment "underside_weapons_right_inner" 	"weapon_bone" 92.7812 -1.1523 -79.5816 rotate 0.0 0.0 0.0
+
 
 
 $sequence "idle" {
