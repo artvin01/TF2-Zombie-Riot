@@ -1871,8 +1871,8 @@ bool Dungeon_UpdateMvMStats()
 
 		SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", worldMoney);
 
-		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentAttacks);
-		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", RaidList.Length + 1);
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentAttacks + 1);
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", RaidList.Length);
 
 		StringMap map = Construction_GetMaterialStringMap();
 		StringMapSnapshot snap = map ? map.Snapshot() : null;
