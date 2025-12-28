@@ -1251,6 +1251,7 @@ void Dungeon_DelayVoteFor(float time)
 static void CreateNewDungeon()
 {
 	PrintToChatAll("CreateNewDungeon");
+	f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 9.0;
 	
 	RoomInfo room;
 	ArrayList roomPool = new ArrayList();
@@ -1839,6 +1840,7 @@ void Dungeon_EnemySpawned(int entity)
 						reward = 5;
 					
 					f_CreditsOnKill[entity] += float(reward / 5 * 5);
+					PrintToChatAll("f_CreditsOnKill[entity] %.1f",f_CreditsOnKill[entity]);
 				}
 			}
 		}

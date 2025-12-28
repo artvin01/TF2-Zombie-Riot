@@ -102,8 +102,11 @@ methodmap DungeonLoot < CClotBody
 	}
 }
 
+
 static void ClotThink(int entity)
 {
+	f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 1.50;
+	/*
 	// Delay winning the last round
 	if(!b_StaticNPC[entity] || !FinalSubWave())
 		return;
@@ -111,6 +114,7 @@ static void ClotThink(int entity)
 	RemoveFromNpcAliveList(entity);
 	b_StaticNPC[entity] = false;
 	AddNpcToAliveList(entity, 0);
+	*/
 }
 
 static bool FinalSubWave()

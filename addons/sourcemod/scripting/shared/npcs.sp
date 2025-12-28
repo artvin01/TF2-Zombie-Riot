@@ -296,7 +296,7 @@ bool NPC_SpawnNext(bool panzer, bool panzer_warning, int WaveWhich = Rounds_Defa
 			{
 				pos = vecPos;
 				result = true;
-				SpawnSettingsSee = 1;
+				SpawnSettingsSee = 3;
 				//no spawnprotection from spawners?
 			}
 
@@ -412,7 +412,11 @@ bool NPC_SpawnNext(bool panzer, bool panzer_warning, int WaveWhich = Rounds_Defa
 						GiveNpcOutLineLastOrBoss(entity_Spawner, false);
 					}
 
-					if(!DisableSpawnProtection && zr_spawnprotectiontime.FloatValue > 0.0 && SpawnSettingsSee != 1 && i_npcspawnprotection[entity_Spawner] == NPC_SPAWNPROT_INIT)
+					if(!DisableSpawnProtection &&
+					 zr_spawnprotectiontime.FloatValue > 0.0 &&
+					  SpawnSettingsSee != 1 &&
+					  SpawnSettingsSee != 3 &&
+					   i_npcspawnprotection[entity_Spawner] == NPC_SPAWNPROT_INIT)
 					{
 						
 						i_npcspawnprotection[entity_Spawner] = NPC_SPAWNPROT_ON;
@@ -450,6 +454,11 @@ bool NPC_SpawnNext(bool panzer, bool panzer_warning, int WaveWhich = Rounds_Defa
 						Classic_EnemySpawned(entity_Spawner);
 						Construction_EnemySpawned(entity_Spawner);
 						Dungeon_EnemySpawned(entity_Spawner);
+					}
+					if(SpawnSettingsSee == 3)
+					{
+						//a second of protection
+						ApplyStatusEffect(entity_Spawner, entity_Spawner, "Unstoppable Force", 0.5);
 					}
 
 					if(Waves_InFreeplay())
