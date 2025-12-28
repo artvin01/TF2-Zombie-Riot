@@ -1786,7 +1786,9 @@ static float ScaleBasedOnRound(int round)
 
 void Dungeon_EnemySpawned(int entity)
 {
-	if(Dungeon_Mode() && i_NpcInternalId[entity] != DungeonLoot_Id() && i_NpcInternalId[entity] != Const2Spawner_Id())
+	if(Dungeon_Mode() &&
+	 i_NpcInternalId[entity] != DungeonLoot_Id() &&
+	  i_NpcInternalId[entity] != Const2Spawner_Id())
 	{
 		switch(AttackType)
 		{
@@ -1833,6 +1835,8 @@ void Dungeon_EnemySpawned(int entity)
 				}
 
 				int goal = DefaultTotalCash(round);
+				PrintToChatAll("goal %i",goal);
+				PrintToChatAll("current %i",current);
 				if(current < goal)
 				{
 					int reward = (goal - current) / (b_thisNpcIsABoss[entity] ? 5 : 50);
@@ -1840,7 +1844,6 @@ void Dungeon_EnemySpawned(int entity)
 						reward = 5;
 					
 					f_CreditsOnKill[entity] += float(reward / 5 * 5);
-					PrintToChatAll("f_CreditsOnKill[entity] %.1f",f_CreditsOnKill[entity]);
 				}
 			}
 		}
