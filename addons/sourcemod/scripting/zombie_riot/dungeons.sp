@@ -958,14 +958,26 @@ void Dungeon_TeleportRandomly(float pos[3])
 
 	pos[2] += 1.0;
 }
+void Dungeon_TeleportCratesRewards(int entity, float pos[3])
+{
+	static float hullcheckmaxs[3];
+	static float hullcheckmins[3];
+	hullcheckmaxs = view_as<float>( { 24.0, 24.0, 24.0 } );
+	hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
+	float PosRand[3];
+	PosRand = pos;
+	PosRand[0] += GetRandomFloat(-125.0, 125.0);
+	PosRand[1] -= GetRandomFloat(-125.0, 125.0);
+	bool Succeed = Npc_Teleport_Safe(entity, PosRand, hullcheckmins, hullcheckmaxs, true);
+}
 
 void Dungeon_SpawnLoot(const float pos[3], const char[] name, float waveScale)
 {
 	float newPos[3];
 	newPos = pos;
-	Dungeon_TeleportRandomly(newPos);
+//	Dungeon_TeleportRandomly(newPos);
 
-	DungeonLoot npc = view_as<DungeonLoot>(NPC_CreateById(DungeonLoot_Id(), 0, newPos, NULL_VECTOR, 3));
+	DungeonLoot npc = view_as<DungeonLoot>(NPC_CreateById(DungeonLoot_Id(), 0, newPos, NULL_VECTOR, 3, "t"));
 	npc.SetLootData(name, waveScale);
 }
 
@@ -1835,11 +1847,9 @@ void Dungeon_EnemySpawned(int entity)
 				}
 
 				int goal = DefaultTotalCash(round);
-				PrintToChatAll("goal %i",goal);
-				PrintToChatAll("current %i",current);
 				if(current < goal)
 				{
-					int reward = (goal - current) / (b_thisNpcIsABoss[entity] ? 5 : 50);
+					int reward = (goal - current) / RoundToNearest((float((b_thisNpcIsABoss[entity] ? 5 : 50)) * MultiGlobalEnemy));
 					if(reward < 5)
 						reward = 5;
 					

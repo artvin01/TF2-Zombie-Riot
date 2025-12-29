@@ -2610,7 +2610,6 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 
 						if(Dungeon_Mode())
 						{
-							LogStackTrace("Stopped Wave?");
 							Dungeon_BattleVictory();
 						}
 						else if(Construction_Mode())
@@ -4478,8 +4477,6 @@ void Waves_TrySpawnBarney()
 		return;
 	if(Construction_Mode())
 		return;
-	if(Dungeon_Mode())
-		return;
 	if(NoBarneySpawn)
 		return;
 	if(BetWar_Mode())
@@ -4499,8 +4496,12 @@ void Waves_TrySpawnBarney()
 		//we have a barney or alyx
 	}
 	Citizen_SpawnAtPoint("b");
+	if(Dungeon_Mode())
+	{
+		CPrintToChatAll("{gray}Barney{default}: Hey buddy, looks like you need a hand!");
+		return;
+	}
 	Citizen_SpawnAtPoint(_);
-	CPrintToChatAll("{gray}Barney{default}: Hey buddy, looks like you need a hand!");
 	CPrintToChatAll("{gray}Barney{default}: Talk to my friend here if you want him to do anything in specific.");
 }
 

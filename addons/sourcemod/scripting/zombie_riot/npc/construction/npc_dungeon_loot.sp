@@ -59,11 +59,12 @@ methodmap DungeonLoot < CClotBody
 		ang[1] = float(GetURandomInt() % 360);
 		ang[2] = 0.0;
 
-		if(data[0] && StrContains(data, "notele", false) == -1)
-			Dungeon_TeleportRandomly(pos);
 		
 		DungeonLoot npc = view_as<DungeonLoot>(CClotBody(pos, ang, "models/props_2fort/miningcrate002.mdl", "1.0", "10", 3, .NpcTypeLogic = STATIONARY_NPC));
 		
+		if(data[0] && StrContains(data, "notele", false) == -1)
+			Dungeon_TeleportCratesRewards(npc.index, pos);
+
 		i_NpcWeight[npc.index] = 999;
 		i_NpcIsABuilding[npc.index] = true;
 		b_NoKnockbackFromSources[npc.index] = true;
@@ -84,9 +85,8 @@ methodmap DungeonLoot < CClotBody
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
-		b_StaticNPC[npc.index] = !FinalSubWave();
-		if(b_StaticNPC[npc.index])
-			AddNpcToAliveList(npc.index, 1);
+	//	b_StaticNPC[npc.index] = !FinalSubWave();
+		AddNpcToAliveList(npc.index, 1);
 		
 		b_NpcUnableToDie[npc.index] = true;
 		b_NoHealthbar[npc.index] = 1;
