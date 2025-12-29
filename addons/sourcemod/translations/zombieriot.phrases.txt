@@ -4755,10 +4755,10 @@
 	}
 	"Unspeakable Raid Desc"
 	{
-		"en"	"Lore order: (9) Directly after you release the void in rogue2. Creatures from a different dimension are here to take over ours. Help Kahmlstein against the void!"
+		"en"	"Lore order: (9) Directly after you release the void in Rogue 2. Creatures from a different dimension are here to take over ours. Help Kahmlstein against the void!"
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
 		"chi"	"深渊已被释放。"
-		"it"	"Ordine Lore: (9) Subito dopo aver liberato il vuoto in rogue2..."
+		"it"	"Ordine Lore: (9) Subito dopo aver liberato il vuoto in Rogue 2..."
 		"ko"	"설정 순서: (9) 로그라이크2(Rogue2) 당시 공허가 해방되어버린 직후입니다. 다른 차원의 생명체들이 이 세계를 점령하기 위해 몰려오고 있습니다. 카멜슈타인을 도와 공허와 맞서세요!"
 	}
 	"Aperture Desc"
@@ -5196,7 +5196,7 @@
 	}
 	"Iberia Expi Desc"
 	{
-	  "en" "Iberia and expidonsa offer training to help against the true final battle against the void... But our main trainer and her partner aren't here to train us. Their probably on vacation."
+	  "en" "Iberia and expidonsa, but mainly Iberia, Come back to us for more training. But Nemal and Silvester won't be here this time. They're probably on vacation with Sensal."
 	  "ko" "이베리아와 엑스피돈사가 공허와의 마지막 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 그런데 보아하니 메인 트레이너와 그녀의 파트너가 여기에 없군요. 들려오는 말로는 둘 다 휴가 중이라던데 설마..."
 	}
 	"Iberia & Nemal"
