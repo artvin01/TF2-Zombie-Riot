@@ -1295,6 +1295,16 @@
 		"it"	"Aumenta il raggio di esplosione delle armi vittoriane del 10％"
 		"ko"	"''빅토리아'' 계열 무기들의 폭발 범위가 10％ 증가합니다."
 	}
+	"Explosault Rifle Buff"
+	{
+		"en"	"Heavily modified Shaped Blast"
+		"ko"	"마개조된 성형작약탄"
+	}
+	"Explosault Rifle Buff Desc"
+	{
+		"en"	"''Victoria'' faction will have 10％ less blast damage reduce per target"
+		"ko"	"''빅토리아'' 진형들의 폭발 타겟당 피해량 감소를 10％ 완화"
+	}
 	"Tinkering Curiosity"
 	{
 		"en"	"Tinkering Curiosity"

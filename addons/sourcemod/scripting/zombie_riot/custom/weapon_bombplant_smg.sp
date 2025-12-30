@@ -27,11 +27,11 @@ void ResetMapStartExploARWeapon()
 public void BombAR_M1_Attack(int client, int weapon, bool crit, int slot)
 {
 	ExploAR_OverHit[client]+=2;
-	if(ExploAR_WeaponPap[client]==2)
+	switch(ExploAR_WeaponPap[client])
 	{
-		if(ExploAR_OverHit[client]>150)ExploAR_OverHit[client]=150;
+		case 2:{if(ExploAR_OverHit[client]>150)ExploAR_OverHit[client]=150;ExploAR_OverHit[client]++;}
+		default:{if(ExploAR_OverHit[client]>100)ExploAR_OverHit[client]=100;}
 	}
-	else if(ExploAR_OverHit[client]>100)ExploAR_OverHit[client]=100;
 	ExploAR_OverHeatDelay[client]=GetGameTime()+1.62;
 	ExploAR_HUDDelay[client] = 0.0;
 	SetEntProp(weapon, Prop_Send, "m_nKillComboCount", GetEntProp(weapon, Prop_Send, "m_nKillComboCount") + 1);
@@ -153,24 +153,24 @@ public void BombAR_ICE_Inject(int client, int weapon, bool crit, int slot)
 			damage *= Attributes_Get(weapon, 2, 1.0);
 			damage += (float(ExploAR_OverHit[client])/65.0)*(damage/2.0);
 			if(ExploAR_WeaponPap[client]==2 && ExploAR_OverHit[client]>99)
-				damage *= (float(ExploAR_OverHit[client])/90.0);
+				damage *= (float(ExploAR_OverHit[client])/75.0);
 			float speed = 3000.0;
 			speed *= Attributes_Get(weapon, 103, 1.0);
 
 			float time = 5000.0/speed;
 			int Projectile=Wand_Projectile_Spawn(client, speed, time, damage, 8, weapon, "rockettrail_RocketJumper");
 			WandProjectile_ApplyFunctionToEntity(Projectile, VentTouch);
+
+			b_Anger[Projectile]=false;
 			if(ExploAR_WeaponPap[client]==2)
-			{
-				SetEntityCollisionGroup(Projectile, COLLISION_GROUP_DEBRIS);
-				DataPack pack;
-				CreateDataTimer(0.1, Timer_ExplodDelay, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-				pack.WriteCell(EntIndexToEntRef(Projectile));
-				pack.WriteCell(EntIndexToEntRef(weapon));
-				pack.WriteCell(GetClientUserId(client));
-				pack.WriteCell(0);
-				pack.WriteFloat(0.0);
-			}
+				b_angered_twice[Projectile]=true;
+			DataPack pack = new DataPack();
+			pack.WriteCell(EntIndexToEntRef(Projectile));
+			pack.WriteCell(EntIndexToEntRef(weapon));
+			pack.WriteCell(GetClientUserId(client));
+			pack.WriteFloat(damage/2.0);
+			RequestFrame(Timer_Pushback, pack);
+			
 			Projectile=ApplyCustomModelToWandProjectile(Projectile, "models/props_farm/vent001.mdl", 0.3, "");
 			TeleportEntity(Projectile, NULL_VECTOR, {-90.0, 0.0, 0.0}, NULL_VECTOR);
 			int RColor = 100+RoundFloat((float(ExploAR_OverHit[client])/65.0)*101.0);
@@ -184,62 +184,118 @@ public void BombAR_ICE_Inject(int client, int weapon, bool crit, int slot)
 	}
 }
 
-static Action Timer_ExplodDelay(Handle timer, DataPack pack)
+static void Timer_Pushback(DataPack pack)
 {
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	int owner = GetClientOfUserId(pack.ReadCell());
-	int state = pack.ReadCell();
-	float delay = pack.ReadFloat();
+	float damage = pack.ReadFloat();
 	if(IsValidEntity(entity) && entity>MaxClients)
 	{
 		if(!IsValidEntity(owner))
-		{
-			RemoveEntity(entity);
-			return Plugin_Stop;
-		}
-		float EntLoc[3];
+			return;
+		static float EntLoc[3], EntAng[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", EntLoc);
-		if(delay < GetGameTime())
+		GetEntPropVector(entity, Prop_Data, "m_angRotation", EntAng);
+		//Explode_Logic_Custom(0.0, entity, entity, weapon, EntLoc, _, _, _, _, _, _, _, CloseGetNPC);
+
+		float vecForward[3];
+		GetAngleVectors(EntAng, vecForward, NULL_VECTOR, NULL_VECTOR);
+		EntAng[0] = fixAngle(EntAng[0]);
+		EntAng[1] = fixAngle(EntAng[1]);
+		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(owner);
+		ArrayList targetList = new ArrayList();
+		targetList.Push(owner);
+		TR_EnumerateEntitiesSphere(EntLoc, 250.0, PARTITION_NON_STATIC_EDICTS, CloseGetNPC, targetList);
+		FinishLagCompensation_Base_boss();
+		int length = targetList.Length;
+		targetList.SwapAt(0, length - 1);
+		targetList.Erase(--length);
+		for (int i; i < length; i++)
 		{
-			if(!b_should_explode[entity])
+			static float targetang[3];
+			
+			int target = targetList.Get(i);
+			
+			float targetpos[3];
+			WorldSpaceCenter(target, targetpos);
+			GetVectorAnglesTwoPoints(EntLoc, targetpos, targetang);
+			
+			targetang[0] = fixAngle(targetang[0]);
+			targetang[1] = fixAngle(targetang[1]);
+
+			if(!(fabs(EntAng[0] - targetang[0]) <= 90.0 || (fabs(EntAng[0] - targetang[0]) >= (360.0-90.0))))
+				continue;
+
+			if(!(fabs(EntAng[1] - targetang[1]) <= 90.0 || (fabs(EntAng[1] - targetang[1]) >= (360.0-90.0))))
+				continue;
+			
+			if(Can_I_See_Enemy_Only(entity, target))
 			{
-				delay = GetGameTime() + 1.0;
-				Explode_Logic_Custom(0.0, owner, owner, weapon, EntLoc, EXPLOSION_RADIUS*0.5, _, _, _, _, _, _, CloseGetNPC);
-			}
-			else
-			{
-				delay = GetGameTime() + 0.25;
-				Explode_Logic_Custom(f_WandDamage[entity]/4.0, owner, owner, weapon, EntLoc, _, Attributes_Get(weapon, 117, 1.0), 0.8, _, 4, _, _, _, IM_ON_FIREEEEE);
-				SpawnSmallExplosion(EntLoc);
-				state++;
+				if(!b_Anger[entity]||b_angered_twice[entity])
+				{
+					if(b_angered_twice[entity])
+					{
+						damage/=2.0;
+						NPC_Ignite(target, owner, 3.0, weapon);
+					}
+					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
+					SDKHooks_TakeDamage(target, owner, owner, damage, DMG_CLUB, weapon, damage_force, targetpos);
+					b_Anger[entity]=true;
+				}
+				if(!HasSpecificBuff(target, "Solid Stance"))
+				{
+					float TempKnockback=10000.0;
+					targetang=EntAng;
+					CClotBody npc = view_as<CClotBody>(target);
+					if(TheNPCs.IsValidNPC(npc.GetBaseNPC()) && !npc.IsOnGround())
+						TempKnockback=25.0;
+					else
+						targetang[0]=1.0;
+					Custom_Knockback(entity, target, TempKnockback, true, true, true, .OverrideLookAng=targetang);
+				}
 			}
 		}
-		if(state>4)
-		{
-			SetEntityCollisionGroup(entity, COLLISION_GROUP_PLAYER);
-			RemoveEntity(entity);
-			return Plugin_Stop;	
-		}
-		pack.WriteCell(EntIndexToEntRef(entity));
-		pack.WriteCell(EntIndexToEntRef(weapon));
-		pack.WriteCell(GetClientUserId(owner));
-		pack.WriteCell(state);
-		pack.WriteFloat(delay);
-		return Plugin_Continue;
+		delete targetList;
+		
+		delete pack;
+		DataPack pack2 = new DataPack();
+		pack2.WriteCell(EntIndexToEntRef(entity));
+		pack2.WriteCell(EntIndexToEntRef(weapon));
+		pack2.WriteCell(GetClientUserId(owner));
+		pack2.WriteFloat(damage);
+		float Throttle = 0.04;
+		int frames_offset = RoundToCeil(66.0*Throttle);
+		if(frames_offset < 0)
+			frames_offset = 1;
+		RequestFrames(Timer_Pushback, frames_offset, pack2);
 	}
-	else
-	{
-		return Plugin_Stop;	
-	}
+	return;
 }
 
-static void CloseGetNPC(int entity, int victim, float damage, int weapon)
+static bool CloseGetNPC(int entity, ArrayList list)
+{
+	if(IsValidEnemy(list.Get(0), entity, true, true))
+	{
+		list.Push(entity);
+		if (list.Length >= 30) {
+			return false;
+		}
+	}
+	return true;
+}
+
+/*static void CloseGetNPC(int entity, int victim, float damage, int weapon)
 {
 	if(GetTeam(entity) != GetTeam(victim))
-		b_should_explode[entity]=true;
-}
+	{
+	
+	
+	
+	}
+}*/
 
 public void BombAR_AirStrike_Beacon(int client, int weapon, bool crit, int slot)
 {
@@ -327,8 +383,8 @@ public void Enable_ExploARWeapon(int client, int weapon) // Enable management, h
 		{
 			if(h_TimerExploARWeaponManagement[i])
 			{
-				ApplyStatusEffect(weapon, weapon, "Castle Breaking Power", 9999999.0);
-				Attributes_SetMulti(weapon, 2, 1.1);
+				ApplyStatusEffect(weapon, weapon, "Explosault Rifle Buff", 9999999.0);
+				Attributes_SetMulti(weapon, 4013, 1.1);
 			}
 		}
 	}
@@ -342,13 +398,20 @@ static Action Timer_Management_ExploAR(Handle timer, DataPack pack)
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		h_TimerExploARWeaponManagement[client] = null;
+		SDKUnhook(client, SDKHook_PreThink, BombAR_M1_PreThink);
 		return Plugin_Stop;
 	}	
+	float GameTime = GetGameTime();
+	if(ExploAR_OverHeatDelay[client] < GameTime)
+	{
+		ExploAR_OverHit[client]-=4;
+		if(ExploAR_OverHit[client]<0)ExploAR_OverHit[client]=0;
+	}
 
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+	if(weapon_holding == weapon)
 	{
-		ExploARWork(client, weapon);
+		ExploARWork(client, weapon, GameTime);
 		if(ExploAR_WeaponPap[client]==1972)
 			CreateExploAREffect(client);
 	}
@@ -361,9 +424,8 @@ static Action Timer_Management_ExploAR(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-static void ExploARWork(int client, int weapon)
+static void ExploARWork(int client, int weapon, float GameTime)
 {
-	float GameTime = GetGameTime();
 	int SaveClip = GetEntProp(weapon, Prop_Send, "m_nKillComboClass");
 	int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");
 	if(SaveClip>clip)
@@ -388,11 +450,6 @@ static void ExploARWork(int client, int weapon)
 		if(WhoExplode)
 			EmitSoundToAll("weapons/stickybomblauncher_det.wav", client);
 		SetEntProp(weapon, Prop_Send, "m_nKillComboClass", clip);
-	}
-	if(ExploAR_OverHeatDelay[client] < GameTime)
-	{
-		ExploAR_OverHit[client]-=4;
-		if(ExploAR_OverHit[client]<0)ExploAR_OverHit[client]=0;
 	}
 	if(ExploAR_HUDDelay[client] < GameTime)
 	{

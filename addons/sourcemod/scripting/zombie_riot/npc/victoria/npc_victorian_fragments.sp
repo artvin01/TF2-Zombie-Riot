@@ -98,6 +98,11 @@ methodmap VictorianDroneFragments < CClotBody
 		public get()							{ return i_AmountProjectiles[this.index]; }
 		public set(int TempValueForProperty) 	{ i_AmountProjectiles[this.index] = TempValueForProperty; }
 	}
+	property int m_iWaveScale
+	{
+		public get()							{ return i_AttacksTillMegahit[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
+	}
 	
 	public void SaveTreePos(float VecEnemy[3])
 	{
@@ -136,6 +141,8 @@ methodmap VictorianDroneFragments < CClotBody
 		npc.m_flAttackHappens_bullshit = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
+		npc.m_iWaveScale = Waves_GetRoundScale()+1;
+		if(npc.m_iWaveScale > 10) npc.m_iWaveScale=10;
 		npc.m_iAmmo = 3;
 		npc.m_iMaxAmmo=3;
 		npc.m_flAttackHappens = 0.0;
@@ -169,7 +176,7 @@ methodmap VictorianDroneFragments < CClotBody
 		Is_a_Medic[npc.index] = true;
 		
 		bool FactorySpawndo;
-		static char countext[7][512];
+		static char countext[10][512];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
@@ -209,6 +216,16 @@ methodmap VictorianDroneFragments < CClotBody
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "raidmode", "");
 				npc.m_bFUCKYOU_move_anim = true;
+			}
+			else if(StrContains(countext[i], "wavescale") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "wavescale", "");
+				npc.m_iWaveScale = StringToInt(countext[i]);
+			}
+			else if(StrContains(countext[i], "maxclip") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "maxclip", "");
+				npc.m_iMaxAmmo = StringToInt(countext[i]);
 			}
 		}
 		
@@ -607,13 +624,8 @@ static void VictoriaFragmentsAssaultMode(VictorianDroneFragments npc, float game
 							damageDealt*=0.5;
 						}
 						else
-						{
-							int GetWave = Waves_GetRoundScale()+1;
-							if(GetWave > 10)
-								GetWave=10;
-							damageDealt*=float(GetWave)*0.1;
-						}
-						Explode_Logic_Custom(damageDealt/(b_we_are_reloading[npc.index] ? 5.0 : 10.0), npc.index, npc.index, -1, vecHit, (b_we_are_reloading[npc.index] ? 125.0 : 85.0),_,_,_,4, _, 1.0);
+							damageDealt*=float(npc.m_iWaveScale)*0.1;
+						Explode_Logic_Custom(damageDealt/(b_we_are_reloading[npc.index] ? 3.0: 5.0), npc.index, npc.index, -1, vecHit, (b_we_are_reloading[npc.index] ? 125.0 : 85.0),_,_,_,4, _, 1.0);
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 					}
 					npc.m_iAmmo--;

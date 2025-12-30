@@ -476,7 +476,7 @@ static int VictorianCaffeinator_Work(VictorianCaffeinator npc, float gameTime, f
 				if(!npc.m_bnew_target)
 				{
 					npc.StartHealing();
-					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTarget, 255, 0, 0, 3.0, 3.0, 1.35, LASERBEAM);
+					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTarget, 255, 0, 0, 3.0, 3.0, 0.0, LASERBEAM);
 					npc.Healing = true;
 					npc.m_bnew_target = true;
 				}

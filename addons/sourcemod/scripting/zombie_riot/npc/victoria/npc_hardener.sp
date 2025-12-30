@@ -104,7 +104,10 @@ methodmap VictorianHardener < CClotBody
 	}
 	public void PlayFuckyouSound()
 	{
+		if(this.m_flFuckDelaySound > GetGameTime(this.index))
+			return;
 		EmitSoundToAll(g_FuckyouSounds[GetRandomInt(0, sizeof(g_FuckyouSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		this.m_flFuckDelaySound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	
 	property float m_flMaxArmorGive
@@ -121,6 +124,11 @@ methodmap VictorianHardener < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float m_flFuckDelaySound
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
 
 	public VictorianHardener(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -153,6 +161,7 @@ methodmap VictorianHardener < CClotBody
 		Is_a_Medic[npc.index] = true;
 		npc.m_bFUCKYOU = false;
 		npc.m_bFUCKYOU_move_anim = false;
+		npc.m_flFuckDelaySound=0.0;
 		npc.m_flArmorResist=0.75;
 		npc.m_flMaxArmorGive=1.0;
 		npc.m_flArmorToGive=1.0;
@@ -161,7 +170,7 @@ methodmap VictorianHardener < CClotBody
 		npc.StartPathing();
 		
 		//Maybe used for special waves
-		static char countext[20][1024];
+		static char countext[4][256];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
@@ -536,7 +545,7 @@ static int VictorianHardener_Work(VictorianHardener npc, float gameTime, float d
 				if(!npc.m_bnew_target)
 				{
 					npc.StartHealing();
-					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTarget, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM);
+					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTarget, 255, 215, 0, 3.0, 3.0, 0.0, LASERBEAM);
 					npc.Healing = true;
 					npc.m_bnew_target = true;
 				}

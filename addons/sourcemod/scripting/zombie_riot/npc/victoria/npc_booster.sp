@@ -113,18 +113,18 @@ methodmap VictorianBooster < CClotBody
 	{
 		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
-	property float m_flFuckDelaySound
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
-	}
 	public void PlayFuckyouSound()
 	{
 		if(this.m_flFuckDelaySound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_FuckyouSounds[GetRandomInt(0, sizeof(g_FuckyouSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flFuckDelaySound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+	}
+	
+	property float m_flFuckDelaySound
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 
 	public VictorianBooster(float vecPos[3], float vecAng[3], int ally)
@@ -157,6 +157,7 @@ methodmap VictorianBooster < CClotBody
 		Is_a_Medic[npc.index] = true;
 		npc.m_bFUCKYOU = false;
 		npc.m_bFUCKYOU_move_anim = false;
+		npc.m_flFuckDelaySound = 0.0;
 		
 		npc.m_bnew_target = false;
 		npc.StartPathing();
@@ -492,7 +493,7 @@ static int VictorianBooster_Work(VictorianBooster npc, float gameTime, float dis
 				if(!npc.m_bnew_target)
 				{
 					npc.StartHealing();
-					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTarget, 0, 0, 255, 3.0, 3.0, 1.35, LASERBEAM);
+					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTarget, 0, 0, 255, 3.0, 3.0, 0.0, LASERBEAM);
 					npc.Healing = true;
 					npc.m_bnew_target = true;
 				}

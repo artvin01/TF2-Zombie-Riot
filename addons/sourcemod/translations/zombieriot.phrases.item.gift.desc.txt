@@ -3564,4 +3564,25 @@
 	{
 		"en"	" `Did you really thought you could get out this mess that easily?` \nColonel of Victoria's Army. He has mastered skill for explosives and command \nHe wants your death for the amends of Radiotower's destruction. Do we really have to fight him while we got same enemeis in common? \nHe will utilize all of the abilites that previous raidbosses used and often call in for support"
 	}
+	
+	"Avangard's Processing Core-B"
+	{
+		"en"	"Avangard's Processing Core-B"
+		"ko"	"아방가르드의 프로세싱 코어-B"
+	}
+	"Avangard's Processing Core-B Desc"
+	{
+		"en"	"Cleared Victoria before the update!\nThank you for Waiting Update.\nYou deserve this trophy.\n-No longer Get this Trophy"
+		"ko"	"업데이트 이전 빅토리아를 클리어했습니다!\n업데이트를 기다려주셔서 감사합니다.\n이 트로피를 받을 자격이 충분합니다.\n-이제 이 트로피는 획득할 수 없습니다."
+	}
+	"Tank Beertery"
+	{
+		"en"	"Tank Beertery"
+		"ko"	"탱크 비어터리"
+	}
+	"Tank Beertery Desc"
+	{
+		"en"	"Victorians use beer as a coolant for tank batteries WTF"
+		"ko"	"빅토리아 사람들은 탱크 배터리 냉각제로 맥주를 썼다니, 이게 말이 돼?"
+	}
 }

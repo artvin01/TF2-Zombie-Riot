@@ -265,6 +265,11 @@ methodmap Harrison < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
 	}
+	property float m_flExtraDMGForMG
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
+	}
 	property int m_iAmountProjectiles
 	{
 		public get()							{ return i_AmountProjectiles[this.index]; }
@@ -377,7 +382,13 @@ methodmap Harrison < CClotBody
 			npc.m_flTimeUntillGunReload = GetGameTime(npc.index) + 12.5;
 			npc.m_iOverlordComboAttack = 0;
 			npc.m_iAmountProjectiles = 0;
-			npc.m_iMaxAmmo =  RoundToNearest(float(CountPlayersOnRed(2)) * 5);
+			npc.m_flExtraDMGForMG = 1.0;
+			npc.m_iMaxAmmo =  RoundToNearest(float(CountPlayersOnRed(2)) * 5.0);
+			if(npc.m_iMaxAmmo>80)
+			{
+				npc.m_flExtraDMGForMG = 1.0*(npc.m_iMaxAmmo/60.0);
+				npc.m_iMaxAmmo=80;
+			}
 			npc.m_iAmmo = 0;
 			ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 			
@@ -641,9 +652,13 @@ static void Clone_ClotThink(int iNPC)
 						npc.m_bisWalking = true;
 						npc.StartPathing();
 
-						npc.m_iMaxAmmo =  RoundToNearest(float(CountPlayersOnRed(2)) * 7);
-						if(npc.m_iMaxAmmo>100)npc.m_iMaxAmmo=100;
-						npc.m_iMaxAmmo += 20;
+						npc.m_iMaxAmmo =  RoundToNearest(float(CountPlayersOnRed(2)) * 7.0);
+						if(npc.m_iMaxAmmo>100)
+						{
+							npc.m_flExtraDMGForMG = 1.0*(npc.m_iMaxAmmo/80.0);
+							npc.m_iMaxAmmo=100;
+						}
+						npc.m_iMaxAmmo += 20; //Extra Ammo!
 						npc.m_iAmmo = npc.m_iMaxAmmo;
 						npc.m_iChanged_WalkCycle = -1;
 						ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
@@ -759,11 +774,11 @@ static void Clone_ClotThink(int iNPC)
 								vecDir[2] = vecDirShooting[2] + x * vecRight[2] + y * vecUp[2]; 
 								NormalizeVector(vecDir, vecDir);
 								
-								float damage = 4.0 * 0.1 * RaidModeScaling;
+								float damage = 5.0 * 0.2 * RaidModeScaling;
 								if(flDistanceToTarget > 100000.0)
 									damage *= 100000.0 / flDistanceToTarget;
-								
 								damage *= 3.5;
+								damage *= npc.m_flExtraDMGForMG;
 								KillFeed_SetKillIcon(npc.index, "natascha");
 								FireBullet(npc.index, npc.m_iWearable8, VecSelfNpc, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer02_blue_crit");
 								npc.m_flNextRangedAttack = gameTime + 0.1;
@@ -1077,7 +1092,12 @@ static void Harrison_ClotThink(int iNPC)
 	
 	if(npc.m_flTimeUntillGunReload < gameTime)
 	{
-		npc.m_iMaxAmmo =  RoundToNearest(float(CountPlayersOnRed(2)) * 5);
+		npc.m_iMaxAmmo =  RoundToNearest(float(CountPlayersOnRed(2)) * 5.0);
+		if(npc.m_iMaxAmmo>80)
+		{
+			npc.m_flExtraDMGForMG = 1.0*(npc.m_iMaxAmmo/60.0);
+			npc.m_iMaxAmmo=80;
+		}
 		npc.m_iAmmo = npc.m_iMaxAmmo;
 		npc.m_flTimeUntillGunReload = 30.0 + gameTime;
 	}
@@ -1629,11 +1649,11 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				vecDir[2] = vecDirShooting[2] + x * vecRight[2] + y * vecUp[2]; 
 				NormalizeVector(vecDir, vecDir);
 				
-				float damage = 5.0 * 0.1 * RaidModeScaling;
+				float damage = 5.0 * 0.2 * RaidModeScaling;
 				if(distance > 100000.0)	// 316 HU
 					damage *= 100000.0 / distance;	// Lower damage based on distance
-				
 				damage *= 3.5;
+				damage *= npc.m_flExtraDMGForMG;
 				KillFeed_SetKillIcon(npc.index, "natascha");
 				FireBullet(npc.index, npc.m_iWearable2, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer02_blue_crit");
 				npc.m_flNextMeleeAttack = gameTime + 0.1;
@@ -1676,11 +1696,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 									damage *= 7.0;
 								KillFeed_SetKillIcon(npc.index, "bushwacka");
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
-								if(IsValidClient(targetTrace))
-								{
-									if(!NpcStats_IsEnemySilenced(npc.index))
-										StartBleedingTimer(targetTrace, npc.index, damage * 0.1, 4, -1, DMG_TRUEDAMAGE, 0);
-								}
+								StartBleedingTimer(targetTrace, npc.index, damage * 0.1, 4, -1, DMG_TRUEDAMAGE, 0);
 								Custom_Knockback(npc.index, targetTrace, 150.0, true); 
 							} 
 						}
@@ -1924,7 +1940,7 @@ static Action Timer_Quad_Rocket_Shot(Handle timer, DataPack pack)
 		vecSelf[2] += 80.0;
 		vecSelf[0] += GetRandomFloat(-20.0, 20.0);
 		vecSelf[1] += GetRandomFloat(-20.0, 20.0);
-		float RocketDamage = 36.0;
+		float RocketDamage = 42.0;
 		int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
 		if(IsValidEntity(RocketGet))
 		{

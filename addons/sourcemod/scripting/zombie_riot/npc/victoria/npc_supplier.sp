@@ -113,6 +113,11 @@ methodmap VictorianSupplier < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
+	property float m_flGetClosestTargetTimeForAlly
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
 	
 	public VictorianSupplier(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -141,6 +146,7 @@ methodmap VictorianSupplier < CClotBody
 		KillFeed_SetKillIcon(npc.index, "pistol");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flGetClosestTargetTimeForAlly = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 280.0;
 		Is_a_Medic[npc.index] = true;
@@ -222,20 +228,21 @@ static void VictorianSupplier_ClotThink(int iNPC)
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
-	{
 		return;
-	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	
 	if(GetGameTime(npc.index) > npc.m_flLootTheEnemy)
 		npc.m_bAllowBackWalking = false;
 	
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(!IsValidEnemy(npc.index, npc.m_iTarget)||npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		if(!IsValidAlly(npc.index, npc.m_iTargetAlly))
-			npc.m_iTargetAlly = GetClosestAlly(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+	}
+	if(!IsValidAlly(npc.index, npc.m_iTargetAlly)||npc.m_flGetClosestTargetTimeForAlly < GetGameTime(npc.index))
+	{
+		npc.m_iTargetAlly = GetClosestAlly(npc.index);
+		npc.m_flGetClosestTargetTimeForAlly = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget)||IsValidAlly(npc.index, npc.m_iTargetAlly))

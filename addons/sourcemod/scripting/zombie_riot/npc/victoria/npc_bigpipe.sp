@@ -992,7 +992,10 @@ static void GravityProjectileThink(DataPack pack)
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	float gravity = pack.ReadFloat();
 	if(!IsValidEntity(entity))
+	{
+		delete pack;
 		return;
+	}
 	float vel[3],ang[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel);
 	vel[2] -= gravity;
