@@ -4,13 +4,13 @@
 static const char g_DeathSounds[][] = {
 	"npc/combine_soldier/die1.wav",
 	"npc/combine_soldier/die2.wav",
-	"npc/combine_soldier/die3.wav",
+	"npc/combine_soldier/die3.wav"
 };
 
 static const char g_HurtSounds[][] = {
 	"npc/combine_soldier/pain1.wav",
 	"npc/combine_soldier/pain2.wav",
-	"npc/combine_soldier/pain3.wav",
+	"npc/combine_soldier/pain3.wav"
 };
 
 static const char g_IdleAlertedSounds[][] =
@@ -18,13 +18,10 @@ static const char g_IdleAlertedSounds[][] =
 	"npc/combine_soldier/vo/alert1.wav",
 	"npc/combine_soldier/vo/bouncerbouncer.wav",
 	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfim.wav",
+	"npc/combine_soldier/vo/contactconfim.wav"
 };
 
-static const char g_ExplosionSounds[][]= {
-	"weapons/explode1.wav",
-
-};
+static const char g_ExplosionSounds[] = "weapons/explode1.wav";
 
 void VictoriaDestructor_Precache()
 {
@@ -35,8 +32,17 @@ void VictoriaDestructor_Precache()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSound(g_ExplosionSounds);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
@@ -64,12 +70,11 @@ methodmap VictoriaDestructor < CSeaBody
 	}
 	public void PlayExplosionSound() 
 	{
-		EmitSoundToAll(g_ExplosionSounds[GetRandomInt(0, sizeof(g_ExplosionSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80,125));
+		EmitSoundToAll(g_ExplosionSounds, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80,125));
 	}
 	
 	public VictoriaDestructor(float vecPos[3], float vecAng[3], int ally)
 	{
-
 		VictoriaDestructor npc = view_as<VictoriaDestructor>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.3", "4000", ally, false, .isGiant = true));
 
 		SetVariantInt(16);
@@ -77,7 +82,6 @@ methodmap VictoriaDestructor < CSeaBody
 
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_3");
-		KillFeed_SetKillIcon(npc.index, "saw_kill");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -87,11 +91,11 @@ methodmap VictoriaDestructor < CSeaBody
 		func_NPCOnTakeDamage[npc.index] = VictoriaDestructor_OnTakeDamage;
 		func_NPCThink[npc.index] = VictoriaDestructor_ClotThink;
 		
+		KillFeed_SetKillIcon(npc.index, "firedeath");
 		npc.m_flSpeed = 225.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
-		
 		
 		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 
@@ -113,12 +117,11 @@ methodmap VictoriaDestructor < CSeaBody
 
 		npc.m_flMeleeArmor = 1.25;
 		npc.m_flRangedArmor = 0.5;
-
 		return npc;
 	}
 }
 
-public void VictoriaDestructor_ClotThink(int iNPC)
+static void VictoriaDestructor_ClotThink(int iNPC)
 {
 	VictoriaDestructor npc = view_as<VictoriaDestructor>(iNPC);
 
@@ -141,16 +144,13 @@ public void VictoriaDestructor_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))
-		npc.m_iTarget = 0;
-	
-	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
+	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 	
-	if(npc.m_iTarget > 0)
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -174,39 +174,27 @@ public void VictoriaDestructor_ClotThink(int iNPC)
 
 			float radius = 250.0;
 			if(NpcStats_VictorianCallToArms(npc.index))
-			{
 				radius *= 1.5;
-			}
-			float pradius = 250.0;
-			if(NpcStats_VictorianCallToArms(npc.index))
-			{
-				pradius *= 1.5;
-			}
 
 			npc.PlayExplosionSound();
-			
-			spawnRing_Vectors(vecMe, pradius, 0.0, 0.0, 50.0, "materials/sprites/laserbeam.vmt", 100, 150, 255, 175, 1, 0.5, 6.0, 0.1, 1, 640.0);
-			
-			Explode_Logic_Custom(35.0, -1, npc.index, -1, vecMe, radius, _, 0.75, true, _, false, _, VictoriaDestructor_ExplodePost);
+			spawnRing_Vectors(vecMe, radius, 0.0, 0.0, 50.0, "materials/sprites/laserbeam.vmt", 100, 150, 255, 175, 1, 0.5, 6.0, 0.1, 1, 640.0);
+			Explode_Logic_Custom(25.0, -1, npc.index, -1, vecMe, radius, _, 0.75, true, _, false, _, VictoriaDestructor_ExplodePost);
 		}
 	}
 	else
 	{
 		npc.StopPathing();
+		npc.m_flGetClosestTargetTime=0.0;
 	}
-
 	npc.PlayIdleSound();
 }
 
-public void VictoriaDestructor_ExplodePost(int attacker, int victim, float damage, int weapon)
+static void VictoriaDestructor_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
-	if(!NpcStats_IsEnemySilenced(attacker))
-	{
-		NPC_Ignite(victim, attacker,8.0, -1, 5.50);
-	}
+	NPC_Ignite(victim, attacker,8.0, -1, 5.5);
 }
 
-public Action VictoriaDestructor_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictoriaDestructor_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
@@ -221,7 +209,7 @@ public Action VictoriaDestructor_OnTakeDamage(int victim, int &attacker, int &in
 	return Plugin_Changed;
 }
 
-void VictoriaDestructor_NPCDeath(int entity)
+static void VictoriaDestructor_NPCDeath(int entity)
 {
 	VictoriaDestructor npc = view_as<VictoriaDestructor>(entity);
 	if(!npc.m_bGib)

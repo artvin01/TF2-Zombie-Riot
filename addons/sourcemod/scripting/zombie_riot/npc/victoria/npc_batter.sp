@@ -7,7 +7,7 @@ static const char g_DeathSounds[][] = {
 	"vo/scout_sf12_badmagic03.mp3",
 	"vo/scout_sf12_badmagic04.mp3",
 	"vo/scout_sf12_badmagic05.mp3",
-	"vo/scout_sf12_badmagic09.mp3",
+	"vo/scout_sf12_badmagic09.mp3"
 };
 
 static const char g_HurtSounds[][] = {
@@ -18,33 +18,28 @@ static const char g_HurtSounds[][] = {
 	"vo/scout_painsharp05.mp3",
 	"vo/scout_painsharp06.mp3",
 	"vo/scout_painsharp07.mp3",
-	"vo/scout_painsharp08.mp3",
+	"vo/scout_painsharp08.mp3"
 };
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/scout_sf12_badmagic05.mp3",
 	"vo/scout_sf12_badmagic06.mp3",
-	"vo/scout_sf12_badmagic06.mp3",
+	"vo/scout_sf12_badmagic06.mp3"
 };
 
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/pickaxe_swing1.wav",
 	"weapons/pickaxe_swing2.wav",
-	"weapons/pickaxe_swing3.wav",
+	"weapons/pickaxe_swing3.wav"
 };
 
 static const char g_MeleeHitSounds[][] = {
 	"weapons/bat_draw_swoosh1.wav",
-	"weapons/bat_draw_swoosh2.wav",
+	"weapons/bat_draw_swoosh2.wav"
 };
 
 void Victoria_Batter_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Batter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_batter");
@@ -52,15 +47,26 @@ void Victoria_Batter_OnMapStart_NPC()
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheModel("models/player/scout.mdl");
+}
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return VictoriaBatter(vecPos, vecAng, ally);
 }
+
 methodmap VictoriaBatter < CClotBody
 {
 	public void PlayIdleAlertSound() 
@@ -70,9 +76,7 @@ methodmap VictoriaBatter < CClotBody
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -81,14 +85,11 @@ methodmap VictoriaBatter < CClotBody
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -96,9 +97,7 @@ methodmap VictoriaBatter < CClotBody
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
 	}
-	
 	
 	public VictoriaBatter(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -121,13 +120,12 @@ methodmap VictoriaBatter < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaBatter_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(VictoriaBatter_ClotThink);
 		
-		
 		//IDLE
+		KillFeed_SetKillIcon(npc.index, "bat");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 320.0;
-		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -140,7 +138,6 @@ methodmap VictoriaBatter < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/scout/fwk_scout_provision.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/hiphunter_boots/hiphunter_boots_scout.mdl");
 
-
 		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 100, 255);
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
@@ -152,7 +149,7 @@ methodmap VictoriaBatter < CClotBody
 	}
 }
 
-public void VictoriaBatter_ClotThink(int iNPC)
+static void VictoriaBatter_ClotThink(int iNPC)
 {
 	VictoriaBatter npc = view_as<VictoriaBatter>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -217,7 +214,7 @@ public void VictoriaBatter_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action VictoriaBatter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictoriaBatter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictoriaBatter npc = view_as<VictoriaBatter>(victim);
 		
@@ -233,7 +230,7 @@ public Action VictoriaBatter_OnTakeDamage(int victim, int &attacker, int &inflic
 	return Plugin_Changed;
 }
 
-public void VictoriaBatter_NPCDeath(int entity)
+static void VictoriaBatter_NPCDeath(int entity)
 {
 	VictoriaBatter npc = view_as<VictoriaBatter>(entity);
 	if(!npc.m_bGib)
@@ -250,7 +247,7 @@ public void VictoriaBatter_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-void VictoriaBatterSelfDefense(VictoriaBatter npc, float gameTime, int target, float distance)
+static void VictoriaBatterSelfDefense(VictoriaBatter npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{

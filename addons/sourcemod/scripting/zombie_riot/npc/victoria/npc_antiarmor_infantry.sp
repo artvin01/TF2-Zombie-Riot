@@ -2,47 +2,32 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/npc/male01/no01.wav",
-	"vo/npc/male01/no02.wav",
-};
-
-static const char g_HurtSounds[][] = {
-	"vo/npc/male01/pain01.wav",
-	"vo/npc/male01/pain02.wav",
-	"vo/npc/male01/pain03.wav",
-	"vo/npc/male01/pain05.wav",
-	"vo/npc/male01/pain06.wav",
-	"vo/npc/male01/pain07.wav",
-	"vo/npc/male01/pain08.wav",
-	"vo/npc/male01/pain09.wav",
-};
-
-static const char g_IdleAlertedSounds[][] = {
-	"vo/npc/male01/ohno.wav",
-	"vo/npc/male01/overthere01.wav",
-	"vo/npc/male01/overthere02.wav",
+	"npc/metropolice/die1.wav",
+	"npc/metropolice/die2.wav",
+	"npc/metropolice/die3.wav",
+	"npc/metropolice/die4.wav"
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/machete_swing.wav",
+	"weapons/demo_sword_swing1.wav",
+	"weapons/demo_sword_swing2.wav",
+	"weapons/demo_sword_swing3.wav"
 };
-
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/bat_baseball_hit_flesh.wav",
+	"weapons/axe_hit_flesh1.wav",
+	"weapons/axe_hit_flesh2.wav",
+	"weapons/axe_hit_flesh3.wav"
 };
 
-static const char g_RangedAttackSounds[][] = {
-	"weapons/quake_rpg_fire_remastered.wav",
-};
+static const char g_HurtSounds[] = "npc/metropolice/vo/chuckle.wav";
+
+static const char g_IdleAlertedSounds[] = "npc/metropolice/vo/pickupthecan2.wav";
+
+static const char g_RangedAttackSounds[] = "weapons/quake_rpg_fire_remastered.wav";
 
 void VictoriaAntiarmorInfantry_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Anti-Armor Infantry");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_antiarmor_infantry");
@@ -50,10 +35,20 @@ void VictoriaAntiarmorInfantry_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSound(g_HurtSounds);
+	PrecacheSound(g_IdleAlertedSounds);
+	PrecacheSound(g_RangedAttackSounds);
+}
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -66,28 +61,20 @@ methodmap VictoriaAntiarmorInfantry < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleAlertedSounds, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
+		EmitSoundToAll(g_HurtSounds, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -95,11 +82,10 @@ methodmap VictoriaAntiarmorInfantry < CClotBody
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
 	}
 	public void PlayRangedSound()
 	{
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangedAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
 	public VictoriaAntiarmorInfantry(float vecPos[3], float vecAng[3], int ally)
@@ -115,34 +101,32 @@ methodmap VictoriaAntiarmorInfantry < CClotBody
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		
-		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedAttackHappening = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 
 		func_NPCDeath[npc.index] = view_as<Function>(VictoriaAntiarmorInfantry_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaAntiarmorInfantry_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(VictoriaAntiarmorInfantry_ClotThink);
 		
 		//IDLE
+		KillFeed_SetKillIcon(npc.index, "rocketlauncher_directhit");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 150.0;
 		
-		
 		int skin = 1;
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/w_rocket_launcher.mdl");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/soldier/grfs_soldier.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/soldier/grfs_soldier.mdl", .model_size=3.5);
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/sniper/sum24_aimframe/sum24_aimframe.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/sniper/sum24_aimframe/sum24_aimframe.mdl", .model_size=3.5);
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetVariantString("1.5");
@@ -154,7 +138,7 @@ methodmap VictoriaAntiarmorInfantry < CClotBody
 	}
 }
 
-public void VictoriaAntiarmorInfantry_ClotThink(int iNPC)
+static void VictoriaAntiarmorInfantry_ClotThink(int iNPC)
 {
 	VictoriaAntiarmorInfantry npc = view_as<VictoriaAntiarmorInfantry>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -209,7 +193,7 @@ public void VictoriaAntiarmorInfantry_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public void VictoriaAntiarmorInfantry_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static void VictoriaAntiarmorInfantry_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictoriaAntiarmorInfantry npc = view_as<VictoriaAntiarmorInfantry>(victim);
 		
@@ -223,14 +207,11 @@ public void VictoriaAntiarmorInfantry_OnTakeDamage(int victim, int &attacker, in
 	}
 }
 
-public void VictoriaAntiarmorInfantry_NPCDeath(int entity)
+static void VictoriaAntiarmorInfantry_NPCDeath(int entity)
 {
 	VictoriaAntiarmorInfantry npc = view_as<VictoriaAntiarmorInfantry>(entity);
 	if(!npc.m_bGib)
-	{
 		npc.PlayDeathSound();	
-	}
-		
 	
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
@@ -244,10 +225,9 @@ public void VictoriaAntiarmorInfantry_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
 }
 
-void VictoriaAntiarmorInfantrySelfDefense(VictoriaAntiarmorInfantry npc, float gameTime, int target, float distance)
+static void VictoriaAntiarmorInfantrySelfDefense(VictoriaAntiarmorInfantry npc, float gameTime, int target, float distance)
 {
 	if(!npc.m_flNextRangedAttackHappening)
 	{
@@ -296,15 +276,13 @@ void VictoriaAntiarmorInfantrySelfDefense(VictoriaAntiarmorInfantry npc, float g
 	}
 	if(npc.m_flNextRangedAttack && npc.m_flNextRangedAttack == 5.0)
 	{
+		KillFeed_SetKillIcon(npc.index, "sword");
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		npc.SetActivity("ACT_ACHILLES_RUN_DAGGER");
 		npc.m_flSpeed = 375.0;
 		return;
 	}
-
-	//	npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_prinny_knife/c_prinny_knife.mdl");
-	
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
@@ -338,7 +316,6 @@ void VictoriaAntiarmorInfantrySelfDefense(VictoriaAntiarmorInfantry npc, float g
 			delete swingTrace;
 		}
 	}
-
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))

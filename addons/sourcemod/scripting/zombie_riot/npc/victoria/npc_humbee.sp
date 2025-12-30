@@ -2,13 +2,10 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[] = "mvm/giant_soldier/giant_soldier_explode.wav";
-static const char g_MeleeAttackSounds[] = "weapons/rocket_blackbox_shoot.wav";
+static const char g_RangeAttackSounds[] = "weapons/rocket_blackbox_shoot.wav";
 
 void VictorianHumbee_MapStart()
 {
-	PrecacheModel("models/player/heavy.mdl");
-	PrecacheSound(g_DeathSounds);
-	PrecacheSound(g_MeleeAttackSounds);
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Humbee");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_humbee");
@@ -16,10 +13,17 @@ void VictorianHumbee_MapStart()
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
+static void ClotPrecache()
+{
+	PrecacheSound(g_DeathSounds);
+	PrecacheSound(g_RangeAttackSounds);
+	PrecacheModel("models/player/heavy.mdl");
+}
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
@@ -32,9 +36,9 @@ methodmap VictorianHumbee < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	public void PlayMeleeSound()
+	public void PlayRangeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.6, _);
+		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.6, _);
 	}
 	
 	public VictorianHumbee(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -43,31 +47,29 @@ methodmap VictorianHumbee < CClotBody
 		
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_KART_IDLE");
-		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = 0;
 
-		npc.g_TimesSummoned = 0;
-
 		if(data[0])
-			npc.g_TimesSummoned = StringToInt(data);
+		{
 		
-	//	SetVariantInt(1);
-	//	AcceptEntityInput(npc.index, "SetBodyGroup");
+		}
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = ClotDeath;
+		func_NPCDeath[npc.index] = VictorianHumbee_ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = ClotThink;
+		func_NPCThink[npc.index] = VictorianHumbee_ClotThink;
 		
-		npc.m_flSpeed = 210.0;
+		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+		npc.m_flSpeed = 231.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_flAttackHappens = 0.0;
+		f_NpcTurnPenalty[npc.index] = 0.7;
 
 		npc.m_flMeleeArmor = 1.75;
 		npc.m_flRangedArmor = 0.75;
@@ -82,39 +84,17 @@ methodmap VictorianHumbee < CClotBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_siberian_tigerstripe/fall17_siberian_tigerstripe.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 
-		if(npc.g_TimesSummoned == 0)
-		{
-			npc.m_iWearable2 = npc.EquipItemSeperate("models/workshop/player/items/heavy/road_rager/road_rager.mdl");
-			SetVariantString("1.5");
-			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		}
+		npc.m_iWearable2 = npc.EquipItemSeperate("models/workshop/player/items/heavy/road_rager/road_rager.mdl");
+		SetVariantString("1.5");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		return npc;
 	}
 }
 
-static void ClotThink(int iNPC)
+static void VictorianHumbee_ClotThink(int iNPC)
 {
 	VictorianHumbee npc = view_as<VictorianHumbee>(iNPC);
-
-	if(npc.g_TimesSummoned == 0)
-	{
-		if(npc.m_fbRangedSpecialOn)
-		{
-			if(!IsValidEntity(npc.m_iWearable2))
-			{
-				npc.m_iWearable2 = npc.EquipItemSeperate("models/workshop/player/items/heavy/road_rager/road_rager.mdl");
-				SetVariantString("1.5");
-				AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-			}
-			else
-			{
-				float vecTarget[3];
-				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", vecTarget);
-				Custom_SDKCall_SetLocalOrigin(npc.m_iWearable2, vecTarget);
-			}
-		}
-	}
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -128,36 +108,26 @@ static void ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	int target = npc.m_iTarget;
-	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		i_Target[npc.index] = -1;
-		npc.m_flAttackHappens = 0.0;
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
-	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		target = GetClosestTarget(npc.index);
-		npc.m_iTarget = target;
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
-	}
-
-	if(target > 0)
-	{
-		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			npc.SetGoalEntity(target);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
-
 		npc.StartPathing();
 		
 		if(npc.m_flNextMeleeAttack < gameTime)
@@ -166,13 +136,12 @@ static void ClotThink(int iNPC)
 			{	
 				float damageDeal = 35.0;
 				float ProjectileSpeed = 600.0;
-
 				if(NpcStats_VictorianCallToArms(npc.index))
 				{
 					ProjectileSpeed *= 1.5;
 				}
 
-				npc.PlayMeleeSound();
+				npc.PlayRangeSound();
 
 				int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,_,_,_,7.5);
 				if(entity != -1)
@@ -188,10 +157,11 @@ static void ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
+		npc.m_flGetClosestTargetTime=0.0;
 	}
 }
 
-static void ClotDeath(int entity)
+static void VictorianHumbee_ClotDeath(int entity)
 {
 	VictorianHumbee npc = view_as<VictorianHumbee>(entity);
 

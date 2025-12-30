@@ -735,9 +735,9 @@
 	}
 	"Caffinated Desc"
 	{
-		"en"	"Boosts damage dealt by 50％\nBoosts NPC'S Movementspeed by 50％, See Caffinated Drain for more info as it a combined effect..."
-		"ko"	"공격 피해량이 50％ 증가합니다.\nNPC의 이동 속도가 50％ 증가합니다.\n효과가 지속되는 동안 카페인 드레인 효과가 적용됩니다."
-		"it"	"Aumenta i danni inflitti di 50％ \nAumenta la velocità di movimento degli NPC di 50％, Vedere Scolo Caffinato per maggiori informazioni, poiché si tratta di un effetto combinato..."
+		"en"	"Boosts damage dealt by 33％\nBoosts Attack Speed by 33％\nBoosts NPC'S Movementspeed by 50％, See Caffinated Drain for more info as it a combined effect..."
+		"ko"	"피해량 +33％, 공속 +33％\nNpc 이동속도 +50％\n효과가 지속되는 동안 카페인 드레인 효과가 적용됨"
+		"it"	"Aumenta i danni inflitti di 33％\nAumenta la velocità d'attacco del 33％\nAumenta la velocità di movimento degli NPC di 50％, Vedere Scolo Caffinato per maggiori informazioni, poiché si tratta di un effetto combinato..."
 	}
 	"Caffinated Drain"
 	{
@@ -1294,6 +1294,16 @@
 		"en"	"Increases Victorian Weapons Explosive Radius by 10％"
 		"it"	"Aumenta il raggio di esplosione delle armi vittoriane del 10％"
 		"ko"	"''빅토리아'' 계열 무기들의 폭발 범위가 10％ 증가합니다."
+	}
+	"Explosault Rifle Buff"
+	{
+		"en"	"Heavily modified Shaped Blast"
+		"ko"	"마개조된 성형작약탄"
+	}
+	"Explosault Rifle Buff Desc"
+	{
+		"en"	"''Victoria'' faction will have 10％ less blast damage reduce per target"
+		"ko"	"''빅토리아'' 진형들의 폭발 타겟당 피해량 감소를 10％ 완화"
 	}
 	"Tinkering Curiosity"
 	{
