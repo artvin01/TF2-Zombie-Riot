@@ -4,44 +4,31 @@
 static const char g_DeathSounds[][] = {
 	"vo/sniper_paincrticialdeath01.mp3",
 	"vo/sniper_paincrticialdeath02.mp3",
-	"vo/sniper_paincrticialdeath03.mp3",
+	"vo/sniper_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSounds[][] = {
 	"vo/sniper_painsharp01.mp3",
 	"vo/sniper_painsharp02.mp3",
 	"vo/sniper_painsharp03.mp3",
-	"vo/sniper_painsharp04.mp3",
+	"vo/sniper_painsharp04.mp3"
 };
 static const char g_IdleAlertedSounds[][] = {
 	"vo/sniper_battlecry01.mp3",
 	"vo/sniper_battlecry02.mp3",
 	"vo/sniper_battlecry03.mp3",
-	"vo/sniper_battlecry04.mp3",
+	"vo/sniper_battlecry04.mp3"
 };
 
-static const char g_ReloadSound[][] = {
-	"weapons/ar2/npc_ar2_reload.wav",
-};
+static const char g_ReloadSound[] = "weapons/ar2/npc_ar2_reload.wav";
 
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/ar2/fire1.wav",
-};
+static const char g_RangeAttackSounds[] = "weapons/ar2/fire1.wav";
 
-static const char g_charge_sound[][] = {
-	"misc/halloween/spell_blast_jump.wav",
-};
+static const char g_charge_sound[] = "misc/halloween/spell_blast_jump.wav";
 
 
 void VIctorianAmbusher_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_ReloadSound)); i++) { PrecacheSound(g_ReloadSound[i]); }
-	for (int i = 0; i < (sizeof(g_charge_sound)); i++) { PrecacheSound(g_charge_sound[i]); }
-	PrecacheModel("models/player/sniper.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Brassbunker Ambusher");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ambusher");
@@ -49,13 +36,25 @@ void VIctorianAmbusher_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static void ClotPrecache()
 {
-	return VIctorianAmbusher(vecPos, vecAng, ally);
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSound(g_RangeAttackSounds);
+	PrecacheSound(g_ReloadSound);
+	PrecacheSound(g_charge_sound);
+	PrecacheModel("models/player/sniper.mdl");
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return VIctorianAmbusher(vecPos, vecAng, ally, data);
 }
 
 methodmap VIctorianAmbusher < CClotBody
@@ -64,44 +63,45 @@ methodmap VIctorianAmbusher < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	public void PlayReloadSound() 
-	{
-		EmitSoundToAll(g_ReloadSound[GetRandomInt(0, sizeof(g_ReloadSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
-	public void PlayMeleeSound()
-	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-	}
-
 	public void PlayChargeSound() 
 	{
-		EmitSoundToAll(g_charge_sound[GetRandomInt(0, sizeof(g_charge_sound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80, 85));
-
+		EmitSoundToAll(g_charge_sound, this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80, 85));
 	}
-
-	public VIctorianAmbusher(float vecPos[3], float vecAng[3], int ally)
+	public void PlayRangeSound()
+	{
+		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	public void PlayReloadSound() 
+	{
+		EmitSoundToAll(g_ReloadSound, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	
+	property float m_flEditCharge
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flEditCTVCharge
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	
+	public VIctorianAmbusher(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VIctorianAmbusher npc = view_as<VIctorianAmbusher>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "12000", ally));
 		
@@ -114,25 +114,51 @@ methodmap VIctorianAmbusher < CClotBody
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		
 		func_NPCDeath[npc.index] = view_as<Function>(VIctorianAmbusher_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VIctorianAmbusher_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(VIctorianAmbusher_ClotThink);
 		
-		npc.m_flNextMeleeAttack = 0.0;
-		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		npc.m_iOverlordComboAttack = 30;
-		
+		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		
 		//IDLE
+		KillFeed_SetKillIcon(npc.index, "the_classic");
 		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flAttackHappens = 0.0;
+		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flEditCharge = 90.0;
+		npc.m_flEditCTVCharge = 3.5;
+		npc.m_iMaxAmmo = 30;
+		npc.StartPathing();
 		
+		//Maybe used for special waves
+		static char countext[4][256];
+		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
+		for(int i = 0; i < count; i++)
+		{
+			if(i>=count)break;
+			else if(StrContains(countext[i], "maxclip") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "maxclip", "");
+				npc.m_iMaxAmmo = StringToInt(countext[i]);
+			}
+			else if(StrContains(countext[i], "jetpack") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "jetpack", "");
+				npc.m_flEditCharge = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "jetpack_cvt") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "jetpack_cvt", "");
+				npc.m_flEditCTVCharge = StringToFloat(countext[i]);
+			}
+		}
+		npc.m_iAmmo = npc.m_iMaxAmmo;
+		
+		ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -159,7 +185,7 @@ methodmap VIctorianAmbusher < CClotBody
 	}
 }
 
-public void VIctorianAmbusher_ClotThink(int iNPC)
+static void VIctorianAmbusher_ClotThink(int iNPC)
 {
 	VIctorianAmbusher npc = view_as<VIctorianAmbusher>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -195,7 +221,7 @@ public void VIctorianAmbusher_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
-		int NowIDO = VIctorianAmbusherSelfDefense(npc.index, npc.m_iTarget, GetGameTime(npc.index));
+		int NowIDO = VIctorianAmbusherSelfDefense(npc, npc.m_iTarget, GetGameTime(npc.index));
 		switch(NowIDO)
 		{
 			case 0:
@@ -264,11 +290,10 @@ public void VIctorianAmbusher_ClotThink(int iNPC)
 					npc.m_flSpeed = 350.0;
 					npc.PlayReloadSound();
 
-					DataPack ReloadAmmo;
-					CreateDataTimer(2.5, Timer_Runaway, ReloadAmmo, TIMER_FLAG_NO_MAPCHANGE);
-					ReloadAmmo.WriteCell(npc.index);
-					ReloadAmmo.WriteCell(30);
+					npc.m_flAttackHappens = GetGameTime(npc.index) + 2.5;
 				}
+				if(GetGameTime(npc.index) > npc.m_flAttackHappens)
+					npc.m_iAmmo=npc.m_iMaxAmmo;
 				int Enemy_I_See;
 				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				if(IsValidEnemy(npc.index, Enemy_I_See)) 
@@ -290,15 +315,7 @@ public void VIctorianAmbusher_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Timer_Runaway(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	VIctorianAmbusher npc = view_as<VIctorianAmbusher>(pack.ReadCell());
-	if(IsValidEntity(npc.index)) npc.m_iOverlordComboAttack = pack.ReadCell();
-	return Plugin_Stop;
-}
-
-public Action VIctorianAmbusher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VIctorianAmbusher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VIctorianAmbusher npc = view_as<VIctorianAmbusher>(victim);
 		
@@ -314,7 +331,7 @@ public Action VIctorianAmbusher_OnTakeDamage(int victim, int &attacker, int &inf
 	return Plugin_Changed;
 }
 
-public void VIctorianAmbusher_NPCDeath(int entity)
+static void VIctorianAmbusher_NPCDeath(int entity)
 {
 	VIctorianAmbusher npc = view_as<VIctorianAmbusher>(entity);
 	if(!npc.m_bGib)
@@ -336,10 +353,9 @@ public void VIctorianAmbusher_NPCDeath(int entity)
 
 }
 
-int VIctorianAmbusherSelfDefense(int iNPC, int target, float gameTime)
+static int VIctorianAmbusherSelfDefense(VIctorianAmbusher npc, int target, float gameTime)
 {
-	VIctorianAmbusher npc = view_as<VIctorianAmbusher>(iNPC);
-	if(npc.m_iOverlordComboAttack < 1)
+	if(npc.m_iAmmo < 1)
 		return 3;
 	float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -349,7 +365,11 @@ int VIctorianAmbusherSelfDefense(int iNPC, int target, float gameTime)
 		if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)
 		{
 			npc.PlayChargeSound();
-			npc.m_flCharge_delay = GetGameTime(npc.index) + 90.0;
+			if(NpcStats_VictorianCallToArms(npc.index))
+				npc.m_flCharge_delay = GetGameTime(npc.index) + 3.5;
+			else
+				npc.m_flCharge_delay = GetGameTime(npc.index) + 90.0;
+			
 			PluginBot_Jump(npc.index, vecTarget);
 			float flPos[3];
 			float flAng[3];
@@ -366,10 +386,10 @@ int VIctorianAmbusherSelfDefense(int iNPC, int target, float gameTime)
 			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
-				npc.PlayMeleeSound();
+				npc.PlayRangeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", true);
 				npc.m_iTarget = Enemy_I_See;
-				npc.m_iOverlordComboAttack--;
+				npc.m_iAmmo--;
 				npc.FaceTowards(vecTarget, 20000.0);
 				Handle swingTrace;
 				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))

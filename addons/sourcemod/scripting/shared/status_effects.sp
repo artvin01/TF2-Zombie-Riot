@@ -1159,7 +1159,7 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 
 		if(Apply_MasterStatusEffect.HudDisplay_Func != INVALID_FUNCTION && Apply_MasterStatusEffect.HudDisplay_Func)
 		{
-			char HudDisplayCustom[12];
+			char HudDisplayCustom[14];
 			//We have a valid function ignore the original value.
 			Call_StartFunction(null, Apply_MasterStatusEffect.HudDisplay_Func);
 			Call_PushCell(attacker);
@@ -2867,6 +2867,7 @@ void StatusEffects_Victoria()
 	data.DamageTakenMulti 			= 0.9;
 	data.DamageDealMulti			= 0.1;
 	data.MovementspeedModif			= 1.33;
+	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
@@ -2879,7 +2880,8 @@ void StatusEffects_Victoria()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 0.5; //Deal 50% more damage
+	data.DamageDealMulti			= 0.33; //Deal 33% more damage
+	data.AttackspeedBuff			= 0.67;
 	data.MovementspeedModif			= 1.5;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
@@ -2893,6 +2895,7 @@ void StatusEffects_Victoria()
 	data.DamageTakenMulti 			= 0.25; //take 25% more damage
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
@@ -2907,11 +2910,25 @@ void StatusEffects_Victoria()
 	data.DamageTakenMulti 			= 0.8;
 	data.DamageDealMulti			= 0.2;
 	data.MovementspeedModif			= 1.15;
+	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	VictoriaCallToArmsIndex = StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Taurine");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "T");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= 0.2;
+	data.AttackspeedBuff			= 0.8;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Victorian Launcher Overdrive");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
@@ -2932,11 +2949,93 @@ void StatusEffects_Victoria()
 	data.Status_SpeedFunc 		= INVALID_FUNCTION;
 	data.HudDisplay_Func 			= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Battery_TM Charge");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "B™");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.AttackspeedBuff			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.HudDisplay_Func			= Charge_BatteryTM_Hud_Func;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Ammo_TM Visualization");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "A™");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.AttackspeedBuff			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.HudDisplay_Func			= AmmoTM_Visual_Hud_Func;
+	StatusEffect_AddGlobal(data);
 }
 
 stock bool NpcStats_VictorianCallToArms(int victim)
 {
 	return CheckBuffIndex(victim, VictoriaCallToArmsIndex);
+}
+
+void AmmoTM_Visual_Hud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	if(!i_GunAmmoMAX[victim])
+		RemoveSpecificBuff(victim, "Ammo_TM Visualization");
+	/* is old Version */
+	/*if(i_GunAmmo[victim])
+	{
+		Format(HudToDisplay, SizeOfChar, "|");
+		for(int i = 1; i < i_OverlordComboAttack[victim]; i++)
+		{
+			if(i>10)
+			{
+				Format(HudToDisplay, SizeOfChar, "%s+%i", HudToDisplay, i_OverlordComboAttack[victim]-i);
+				break;
+			}
+			else
+				Format(HudToDisplay, SizeOfChar, "%s|", HudToDisplay);
+		}
+		Format(HudToDisplay, SizeOfChar, "[A™ %s]", HudToDisplay);
+	}*/
+	Format(HudToDisplay, SizeOfChar, "[A™ %i/%i]", i_GunAmmo[victim], i_GunAmmoMAX[victim]);
+}
+
+void Charge_BatteryTM_Hud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	//Original code is RuinaBatteryHud_Func
+	//It's just to change the symbol.
+	if(fl_ruina_battery_max[victim] == 0.0)
+	{
+		RemoveSpecificBuff(victim, "Battery_TM Charge");
+		return;
+	}
+	#if defined ZR
+	if(fl_ruina_battery_timeout[victim] != FAR_FUTURE && fl_ruina_battery_timeout[victim] > GetGameTime(victim))
+	{
+		Format(HudToDisplay, SizeOfChar, "[B™ %.1fs]", fl_ruina_battery_timeout[victim] - GetGameTime(victim));
+		return;
+	}
+
+	float Ratio = fl_ruina_battery[victim] / fl_ruina_battery_max[victim] * 100.0;
+
+	if(Ratio >= 101.0)
+	{
+		Format(HudToDisplay, SizeOfChar, "[B™ MAX]", Ratio);
+	}
+	else
+	{
+		Format(HudToDisplay, SizeOfChar, "[B™ %.0f％]", Ratio);
+	}
+	#endif
 }
 
 void StatusEffects_Pernell()
@@ -4373,6 +4472,19 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Explosault Rifle Buff");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "㎼");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Tinkering Curiosity");

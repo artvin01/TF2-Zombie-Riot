@@ -86,7 +86,7 @@
 		"fr" 		"Le gardien du Void Vhxis vous arrête."
 		"chi"		"虚空守卫者Vxhis阻挡了你的路。"
 		"it"		"Vhxis, il custode del vuoto, ti blocca."
-		"ko" 		"공허의 수호자, 비흐시스가 당신을 막아섭니다."
+		"ko" 		"공허의 수호자, 비히시스가 당신을 막아섭니다."
 	}
 	"The Messanger Arrived"
 	{
@@ -104,7 +104,7 @@
 		"fr" 		"Kahmlstein, le leader rebèle chaotique, va vous détruire."
 		"chi"		"混沌之首，卡姆斯坦因前来歼灭你。"
 		"it"		"Kahmlstein, il leader ribelle e caotico, ti annienterà."
-		"ko" 		"혼돈에 침식된 반란적인 우두머리, 카멜슈타인이 당신을 절멸시킬 것입니다."
+		"ko" 		"혼돈에 침식된 반란적인 우두머리, 카멜스타인이 당신을 절멸시킬 것입니다."
 	}
 	"Whiteflower The leader"
 	{
@@ -256,7 +256,7 @@
 		"pt"		"Calamidade da Trupe Carmesim, codinome Fantasma."
 		"chi"       "深红剧团的灾难，代号幽灵"
 		"it"		"Calamità della Compagnia Cremisi, nome in codice Fantasma."
-		"ko" 		"크림슨 극단의 재앙 루시안, 코드네임 팬텀."
+		"ko" 		"극단의 재앙 루시안, 코드네임 팬텀."
 	}
 	"A caped Crimson warrior with Ominous Apparitions is appearing..."
 	{
@@ -276,7 +276,7 @@
 		"pt"		"Um pedaço de sombra. Nunca saiu, nem nunca existiu verdadeiramente."
 		"chi"       "一片阴影。它从未离开过，也从未真正存在过。"
 		"it"		"Una macchia d'ombra. Non se n'è mai andata, né è mai realmente esistita."
-		"ko" 		"그림자의 조각. 결코 떠난 적도, 실제로 존재한 적도 없다."
+		"ko" 		"하나의 그림자. 여태 떠난 적도, 실제로 존재한 적도 없다."
 	}
 	"Medieval Speech 1"
 	{
@@ -401,7 +401,7 @@
 		"fr"	"Diversionistico du Void Apparaît"
 		"chi"	"Voided DIversionistico Spawn."
 		"it"	"Spawn Voided Diversionistico"
-		"ko"	"공허화된 다이버저니스티코 출현"
+		"ko"	"침식된 다이버저니스티코 출현"
 	}
 	"A Void Gate Apeared..."
 	{
@@ -445,7 +445,7 @@
 		"fr" 		"Sa session de thérapie devrait vous inquièter le moins."
 		"chi"		"他的疗法将是您最不该担心的事情。"
 		"it"		"La sua seduta di terapia sarà l'ultima delle tue preoccupazioni."
-		"ko" 		"그의 치료 시간은 당신의 가장 나중의 걱정거리가 될 겁니다."
+		"ko" 		"그의 치료 방식이 당신의 걱정을 덜어줄지도 모릅니다...?"
 	}
 	"The Doctor Speech 3"
 	{
@@ -508,7 +508,7 @@
 		"fr" 		"Son armure est rouillé et sa lame terne, mais son corps vide se tourne vers vous."
 		"chi"		"他的盔甲早已被铁锈覆盖，长剑也被磨损为铁块。但他的躯壳依旧在向你的方向移动。"
 		"it"		"La sua spada è smussata e l'armatura è arrugginita, ma il suo corpo svuotato si avvicina lentamente a te."
-		"ko" 		"그의 검은 무뎌지고, 갑옷은 녹슬었지만, 그의 텅 비어버린 몸은 천천히 당신을 향해 다가갑니다."
+		"ko" 		"그의 검은 무뎌지고, 갑옷은 녹슬었지만, 그의 텅 비어버린 몸은 천천히 당신을 향해 다가간다."
 	}
 	"Machina Waldch 1"
 	{
@@ -646,7 +646,7 @@
 	{
 		"en"		"Maybe you can rob him back? Or just run..."
 		"it"		"Magari potresti derubarlo a tua volta? Oppure scappare..."
-		"ko"		"어쩌면 저 자를 역으로 털 수 있을지도요? 아니면 그냥 도망치거나..."
+		"ko"		"지금 저걸 상대로 싸우려고 하십니까? 절대 안 되죠..."
 	}
 	"John Spawn Text 3"
 	{
@@ -668,9 +668,9 @@
 	}
 	"Mikusch Spawn 3"
 	{
-		"en"		"A promise is a promise"
-		"it"		"Una promessa è una promessa"
-		"ko"		"약속은 약속이니까"
+		"en"		"A promise is a promise."
+		"it"		"Una promessa è una promessa."
+		"ko"		"약속은 약속이니까."
 	}
 	"Victorian Radiomast Is Here!"
 	{

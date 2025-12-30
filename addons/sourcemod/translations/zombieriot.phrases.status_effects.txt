@@ -169,7 +169,7 @@
 	{
 		"en"	"Enfeeble"
 		"it"	"Ineffabile"
-		"ko"	"쇠약"
+		"ko"	"쇠약화"
 	}
 	"Enfeeble Desc"
 	{
@@ -665,7 +665,7 @@
 	{
 		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 5％\nLess damage taken by 15％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 20％"
 		"it"	"Guarisce in base a ％ di HP massimi.\nAumenta la velocità del gli NPC di 5％Minuisce i danni subiti di 15％Essendo un giocatore, ogni giocatore riduce questo valore di 5％ in modo piatto.\nAumenta i danni inflitti di 20％"
-		"ko"	"최대 체력 비율에 비례하여 회복합니다.\nNPC의 속도가 5％ 증가합니다.\n받는 피해가 15％ 감소합니다.\n플레이어라면 위의 효과가 고정적으로 5% 감소합니다.\n공격 피해량이 20％ 증가합니다."
+		"ko"	"최대 체력 비율에 비례하여 회복합니다.\nNPC의 속도가 5％ 증가합니다.\n받는 피해가 15％ 감소합니다.\n플레이어라면 위의 효과가 고정적으로 5％ 감소합니다.\n공격 피해량이 20％ 증가합니다."
 	}
 	"Void Strength II"
 	{
@@ -677,7 +677,7 @@
 	{
 		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 15％\nLess damage taken by 20％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 30％"
 		"it"	"Guarisce in base a ％ di HP massimi.\nAumenta la velocità del gli NPC di 15％Minuisce i danni subiti di 20\nEssendo un giocatore, ogni giocatore riduce questo valore di 5％ in modo piatto\nAumenta i danni inflitti di 30％"
-		"ko"	"최대 체력 비율에 비례하여 회복합니다.\nNPC의 속도가 15％ 증가합니다.\n받는 피해가 20% 감소합니다.\n플레이어라면 위의 효과가 고정적으로 5% 감소합니다.\n공격 피해량이 30％ 증가합니다."
+		"ko"	"최대 체력 비율에 비례하여 회복합니다.\nNPC의 속도가 15％ 증가합니다.\n받는 피해가 20％ 감소합니다.\n플레이어라면 위의 효과가 고정적으로 5％ 감소합니다.\n공격 피해량이 30％ 증가합니다."
 	}
 	"MERLT0N-BUFF"
 	{
@@ -724,7 +724,7 @@
 	"Squad Leader Desc"
 	{
 		"en"	"Reduces damage taken by 10％\nBoosts damage dealt by 10％\nBoosts NPC'S Movementspeed by 33％"
-		"ko"	"받는 피해량이 10% 감소합니다\n공격 피해량이 10％ 증가합니다.\nNPC의 이동 속도가 33％ 증가합니다."
+		"ko"	"받는 피해량이 10％ 감소합니다\n공격 피해량이 10％ 증가합니다.\nNPC의 이동 속도가 33％ 증가합니다."
 		"it"	"Riduce i danni subiti del 10％\nAumenta i danni inflitti del 10％\nAumenta la velocità di movimento degli NPC del 33％"
 	}
 	"Caffinated"
@@ -735,9 +735,9 @@
 	}
 	"Caffinated Desc"
 	{
-		"en"	"Boosts damage dealt by 50％\nBoosts NPC'S Movementspeed by 50％, See Caffinated Drain for more info as it a combined effect..."
-		"ko"	"공격 피해량이 50％ 증가합니다.\nNPC의 이동 속도가 50％ 증가합니다.\n효과가 지속되는 동안 카페인 드레인 효과가 적용됩니다."
-		"it"	"Aumenta i danni inflitti di 50％ \nAumenta la velocità di movimento degli NPC di 50％, Vedere Scolo Caffinato per maggiori informazioni, poiché si tratta di un effetto combinato..."
+		"en"	"Boosts damage dealt by 33％\nBoosts Attack Speed by 33％\nBoosts NPC'S Movementspeed by 50％, See Caffinated Drain for more info as it a combined effect..."
+		"ko"	"피해량 +33％, 공속 +33％\nNpc 이동속도 +50％\n효과가 지속되는 동안 카페인 드레인 효과가 적용됨"
+		"it"	"Aumenta i danni inflitti di 33％\nAumenta la velocità d'attacco del 33％\nAumenta la velocità di movimento degli NPC di 50％, Vedere Scolo Caffinato per maggiori informazioni, poiché si tratta di un effetto combinato..."
 	}
 	"Caffinated Drain"
 	{
@@ -793,7 +793,7 @@
 	{
 		"en"	"Reduces damage taken by 40％\nBoosts damage dealt by 50％\nBoosts NPC'S Movementspeed by 25％"
 		"it"	"Riduce i danni subiti del 40％\nAumenta i danni inflitti del 50％\nAumenta la velocità di movimento degli NPC del 25％"
-		"ko"	"받는 피해량이 40% 감소합니다.\n공격 피해량이 50% 증가합니다.\nNPC의 이동 속도가 25％ 증가합니다."
+		"ko"	"받는 피해량이 40％ 감소합니다.\n공격 피해량이 50％ 증가합니다.\nNPC의 이동 속도가 25％ 증가합니다."
 	}
 	"Expert's Mind"
 	{
@@ -805,7 +805,7 @@
 	{
 		"en"	"Can only take 25％ of their max HP as damage in one hit.\n{crimson}Cannot reduce it to below 50 damage.\n{crimson}Doesn't work against true damage."
 		"it"	"Può subire solo 25％ dei suoi HP massimi come danno in un colpo solo.\n{crimson}Non può ridurlo a meno di 50 danni.\n{crimson}Non funziona contro i danni veri."
-		"ko"	"한 번의 피격으로 받는 피해량이 최대 체력의 25%로 제한됩니다.\n{crimson}받는 피해를 50 이하로 감소시킬 수 없습니다.\n{crimson}트루 대미지는 이 효과를 무시합니다."
+		"ko"	"한 번의 피격으로 받는 피해량이 최대 체력의 25％로 제한됩니다.\n{crimson}받는 피해를 50 이하로 감소시킬 수 없습니다.\n{crimson}트루 대미지는 이 효과를 무시합니다."
 	}
 	"Godly Motivation"
 	{
@@ -939,7 +939,7 @@
 	{
 		"en"	"Extreamly Defensive Backup"
 		"it"	"Backup estremamente difensivo"
-		"ko"	"극도로 방어적인 지원"
+		"ko"	"철괴 수비 지원"
 	}
 	"Extreamly Defensive Backup Desc"
 	{
@@ -1295,6 +1295,16 @@
 		"it"	"Aumenta il raggio di esplosione delle armi vittoriane del 10％"
 		"ko"	"''빅토리아'' 계열 무기들의 폭발 범위가 10％ 증가합니다."
 	}
+	"Explosault Rifle Buff"
+	{
+		"en"	"Heavily modified Shaped Blast"
+		"ko"	"마개조된 성형작약탄"
+	}
+	"Explosault Rifle Buff Desc"
+	{
+		"en"	"''Victoria'' faction will have 10％ less blast damage reduce per target"
+		"ko"	"''빅토리아'' 진형들의 폭발 타겟당 피해량 감소를 10％ 완화"
+	}
 	"Tinkering Curiosity"
 	{
 		"en"	"Tinkering Curiosity"
@@ -1560,7 +1570,7 @@
 	{
 		"en"	"Slowly regenerates your armor by 1％ every second upto half of your armor\n{yellow}If recently hurt, its only 0.25％"
 		"it"	"Rigenera lentamente l'armatura di 1％ al secondo, fino a metà dell'armatura stessa"
-		"ko"	"매 초마다 아머를 1％씩 회복합니다. 최대 아머의 50%까지 회복할 수 있습니다.\n{yellow}최근에 피해를 받았다면, 이 효과가 0.25％로 감소합니다."
+		"ko"	"매 초마다 아머를 1％씩 회복합니다. 최대 아머의 50％까지 회복할 수 있습니다.\n{yellow}최근에 피해를 받았다면, 이 효과가 0.25％로 감소합니다."
 	}
 	"Nethersea Antidote"
 	{
@@ -1669,7 +1679,7 @@
 	{
 		"en"	"Deals True Damage if allies are affected, otherwise ranged.\nHeal 25％ less while on fire, when applying fire again (npc only), tick again for 50％ damage.\n{green}Enemies on fire, give 10％ more hp on kill and gibs."
 		"it"	"Infligge danni veri se gli alleati sono colpiti, altrimenti a distanza.\nGuarisce 25％ in meno mentre è in fiamme, quando applica di nuovo il fuoco (solo per gli npc), spunta di nuovo per 50％ danni.\n{green}I nemici in fiamme, danno 10％ hp in più su uccisioni e colpi."																																																																																			
-		"ko"	"아군이 효과를 받으면 고정 피해(트루 대미지)를 입히고,\n그렇지 않다면 원거리 피해를 입힙니다\n불타는 중에는 회복량이 25％ 감소합니다.\nNPC에게 불을 다시 붙이면 50％ 피해로 한 번 더 작동합니다\n불타는 적이 처치되면 처치 시 체력 회복량이 10% 증가하고 시체가 산산조각납니다."
+		"ko"	"아군이 효과를 받으면 고정 피해(트루 대미지)를 입히고,\n그렇지 않다면 원거리 피해를 입힙니다\n불타는 중에는 회복량이 25％ 감소합니다.\nNPC에게 불을 다시 붙이면 50％ 피해로 한 번 더 작동합니다\n불타는 적이 처치되면 처치 시 체력 회복량이 10％ 증가하고 시체가 산산조각납니다."
 	}
 	"Zealot's Random Drinks"
 	{
@@ -1789,7 +1799,7 @@
 	{
 		"en" 	"Therapists Aura"
 		"it"	"Aura dei terapeuti"
-		"ko" 	"상담사의 오라"
+		"ko" 	"심리치료사의 오라"
 	}
 	"Therapists Aura Desc"
 	{
@@ -2122,7 +2132,7 @@
 	"7 Heavy Souls Desc"
 	{
 		"en"	"Increases damage by 75％\nIncreases resistance by 75％\nIncreases attack speed by 400％"
-		"ko"	"피해량이 75% 증가합니다.\n피해 저항력이 75% 증가합니다.\n공격 속도가 400% 증가합니다."
+		"ko"	"피해량이 75％ 증가합니다.\n피해 저항력이 75％ 증가합니다.\n공격 속도가 400％ 증가합니다."
 	}
 	"Nightmare Terror"
 	{
@@ -2321,7 +2331,7 @@
 	{
 		"en"	"Gain 25％ damage reduction, 25％ extra damage, 25％ attackspeed, 15％ speed bonus."
 		"it"	"Guadagna 25％ di riduzione del danno, 25％ di danno extra, 25％ di velocità d'attacco, 15％ di velocità."
-		"ko"	"피해 저항력이 25％, 공격 피해량이 25％, 공격 속도가 25％, 이동 속도가 15% 증가합니다."
+		"ko"	"피해 저항력이 25％, 공격 피해량이 25％, 공격 속도가 25％, 이동 속도가 15％ 증가합니다."
 	}
 	"Corrupted Godly Power"
 	{
@@ -2548,22 +2558,26 @@
 	"Chaos Demon Possession Desc"
 	{
 		"en"	"Decreases damage taken by 65％\nIncreases NPC movementspeed by 15％\nInrceases thinkspeed by 50％\nFully heals target when applied and not extended."
-		"ko"	"받는 피해량이 65% 감소합니다.\nNPC의 이동 속도가 15% 증가합니다.\n생각하는 속도가 50% 증가합니다.\n효과 부여 시 대상을 완전히 치료합니다."
+		"ko"	"받는 피해량이 65％ 감소합니다.\nNPC의 이동 속도가 15％ 증가합니다.\n생각하는 속도가 50％ 증가합니다.\n효과 부여 시 대상을 완전히 치료합니다."
 	}
 	"Bob Debuff"
 	{
 		"en"	"Bob Debuff"
+		"ko"	"밥 디버프"
 	}
 	"Bob Debuff Desc"
 	{
 		"en"	"Increases Damage Taken by 15％"
+		"ko"	"받는 피해가 15％ 증가합니다"
 	}
 	"Bob Debuff Enrage"
 	{
 		"en"	"Bob DebuffEnrage"
+		"ko"	"밥 디버프 - 격노"
 	}
 	"Bob Debuff Enrage Desc"
 	{
 		"en"	"Increases Damage Taken by 25％"
+		"ko"	"받는 피해가 25％ 증가합니다"
 	}
 }

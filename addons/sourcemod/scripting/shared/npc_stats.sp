@@ -795,6 +795,16 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return i_OverlordComboAttack[this.index]; }
 		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
 	}
+	property int m_iAmmo
+	{
+		public get()							{ return i_GunAmmo[this.index]; }
+		public set(int TempValueForProperty) 	{ i_GunAmmo[this.index] = TempValueForProperty; }
+	}
+	property int m_iMaxAmmo
+	{
+		public get()							{ return i_GunAmmoMAX[this.index]; }
+		public set(int TempValueForProperty) 	{ i_GunAmmoMAX[this.index] = TempValueForProperty; }
+	}
 	property int m_iTargetAlly
 	{
 		public get()		 

@@ -333,7 +333,7 @@
 		"pt"	"Você se depara com um cavaleiro vestindo uma armadura desgastada e olhando sombriamente para a espada em uma pedra.\nEle afirma ser um cavaleiro que viaja em busca da espada sagrada e deve trazer essa espada de volta ao seu reino para se tornar seu governante legítimo.\nNo entanto, ele não tem como retirar a espada da pedra."
 		"ru"	"Вы натыкаетесь на рыцаря в изношенных доспехах, который мрачно смотрит на меч в камне.\nОн утверждает, что является рыцарем, путешествующим в поисках священного меча, и должен вернуть этот меч в своё королевство, чтобы стать его законным правителем.\nОднако у него нет способа вытащить меч из камня."
 		"it"	"Vi imbattete in un cavaliere che indossa un'armatura logora e guarda malinconicamente una spada in una pietra.\nDichiara di essere un cavaliere in viaggio alla ricerca della spada sacra, che deve riportare nel suo regno per diventarne il legittimo sovrano.\nMa non ha modo di estrarre la spada dalla pietra."
-		"ko"	"당신은 낡은 갑옷을 입은 한 기사를 만났는데, 그는 커다란 바위에 꽂힌 검을 수심에 찬 얼굴로 바라보고 있었다.\n성검을 찾으러 온 용사라고 주장하는 그는 이 검을 자신의 왕국으로 가져가야 국왕이 될 수 있다고 밝혔다.\n하지만 그는 검을 바위에서 빼내지 못하고 있었다."
+		"ko"	"당신은 낡은 갑옷을 입은 한 기사를 만났는데, 그는 커다란 바위에 꽂힌 검을 수심에 찬 얼굴로 바라보고 있었다.\n성검을 찾으러 온 용사라고 주장하는 그는 이 검을 자신의 왕국으로 가져가야 국왕이 될 수 있다고 밝혔다.\n하지만 그는 검을 바위에서 빼내지조차 못하고 있었다."
 	}
 	"Sword and Stone Option 1"
 	{
@@ -349,7 +349,7 @@
 		"pt"	"Você quebra a cabeça para encontrar uma solução. No final, você quebra a espada em duas. Ao ver a metade da espada ainda presa na pedra, o cavaleiro solta um longo suspiro, balança a cabeça e vai embora."
 		"ru"	"Вы ломаете голову, пытаясь найти решение. В конце концов, вы разбиваете меч на две части. Видя, что половина меча по-прежнему застряла в камне, рыцарь испустил долгий вздох, покачал головой и ушёл."
 		"it"	"Ci si scervella per trovare una soluzione. Alla fine, spezzate la spada in due. Vedendo metà della spada ancora conficcata nella pietra, il cavaliere emette un lungo sospiro, scuote la testa e se ne va."
-		"ko"	"해결책을 생각해내기엔 지혜가 부족했다. 결국, 검을 두 동강 내고야 만다. 기사는 바위에 여전히 꽂혀있는 검 반쪽을 바라보더니 길게 한숨을 쉬고, 고개를 저으며 돌아갔다."
+		"ko"	"당신이 갖은 방법을 다 써봤지만 결국 검은 두 동강이 나고 말았다. 기사는 바위에 남은 반쪽의 검을 바라보더니 길게 한숨을 쉬며 돌아갔다."
 	}
 	"Sword and Stone Option 2"
 	{
@@ -394,7 +394,7 @@
 		"en"	"You find a middle-aged man rambling away in front of a dressing table.\nHe notices you and howls in your direction, asking you to deliver the prop on the table to the actress.\nYou look at the dressing table and find a crown entwined with thorns."
 		"ru"	"Вы обнаруживаете мужчину средних лет, бредущего к туалетному столику.\nОн замечает вас и завывает в вашу сторону, прося передать актрисе реквизит, лежащий на столике.\n Вы смотрите на туалетный столик и обнаруживаете корону, увитую шипами."
 		"it"	"Trovate un uomo di mezza età che blatera davanti a un tavolo da toeletta. \nVi nota e ulula nella vostra direzione, chiedendovi di consegnare all'attrice l'oggetto di scena sul tavolo."
-		"ko"	"당신은 화장대 앞에서 중얼거리고 있는 한 중년을 발견한다.\n그는 당신을 보자마자 다짜고짜 소리 지르며 화장대 위의 소품을 배우에게 전해주라고 했다.\n화장대 쪽을 바라보니, 거긴 가시덤불로 휘감긴 왕관이 놓여 있었다."
+		"ko"	"당신은 화장대 앞에서 중얼거리고 있는 한 중년을 발견했고,\n그는 당신을 보자마자 다짜고짜 소리 지르며 화장대 위의 소품을 배우에게 전해주라고 했다.\n화장대 쪽을 바라보니, 거긴 가시덤불로 휘감긴 왕관이 놓여 있었다."
 	}
 	"Theatrical Option 1"
 	{
@@ -414,13 +414,13 @@
 	{
 		"en"	"You cut your fingers when you reach your hand out for the crown. You let go immediately, dropping the crown to the floor and shattering it in half. The middle-aged man is just about to yell at you but turns around all of a sudden."
 		"it"	"Ti tagli le dita quando allunghi la mano per prendere la corona. Lasciate immediatamente la presa, facendo cadere la corona sul pavimento e frantumandola a metà. L'uomo di mezza età sta per sgridarvi, ma si volta improvvisamente."
-		"ko"	"왕관을 손을 가까이 대다가, 가시에 손가락이 찔렸고, 놀란 나머지 손을 놓았더니 왕관이 땅에 떨어져 반으로 부서졌다. 그 중년은 당신에게 막 화를 내려다가, 무슨 소리를 들은 듯 별안간 고개를 돌렸다."
+		"ko"	"왕관을 집어 들자 당신은 가시에 손가락이 찔렸고, 놀란 나머지 손을 놓았더니 왕관은 땅에 떨어져 반쯤은 부서졌다. 그 중년은 당신에게 막 화를 내려다가, 무슨 소리를 들은 듯 별안간 고개를 돌렸다."
 	}
 	"Theatrical Lore 1b"
 	{
 		"en"	"You hear something. The man scratches his ear. Apparently the actress no longers want to play the queen and has run away. He trots away shortly afterwards. With the charade over, you pick up the intact half-crown, now freed from its thorny enclosure."
 		"it"	"Si sente qualcosa. L'uomo si gratta l'orecchio. Sembra che l'attrice non voglia più interpretare la regina e sia scappata. Poco dopo se ne va al trotto. Finita la farsa, raccogliete la mezza corona intatta, ora liberata dal suo involucro spinoso."
-		"ko"	"무슨 소리가 들려온다. 남자가 귀를 긁어댄다. 아무래도 배우가 황후 배역을 맡기 싫어 도망친 것 같다. 그 후, 그는 달음박질하며 떠났다. 소동이 끝난 뒤, 당신은 가시덤불에서 해방된, 여전히 멀쩡한 반쪽 왕관을 주워들었다."
+		"ko"	"그러고는 몹시 초조한 듯 귀와 볼을 막 긁어대며 배우들이 황후 배역을 맡기 싫어 도망갔다는 둥 이상한 말을 남기고는 달음박질하며 떠났다. 소동이 끝난 뒤, 당신은 가시덤불에서 해방된, 여전히 멀쩡한 반쪽 왕관을 주워들었다."
 	}
 	"Theatrical Option 2"
 	{
@@ -441,7 +441,7 @@
 		"en"	"''I know who it is that you seek, outsider,'' says a slender, stooped woman with a strange laugh.\n''You don't understand that Mazeaten, do you? You seem to trust him, though.''\nThe strange woman looks at you through her helmet and scarf.\n''I can tell you all about his past. Are you interested?''\nShe reaches out her shriveled hands, seemingly asking for something."
 		"ru"	"«Я знаю, кого ты ищешь, чужак,» - говорит стройная, сутулая женщина со странным смехом.\n«Ты не понимаешь этого комбайна, не так ли? Но, похоже, вы ему доверяете.»\nСтранная женщина смотрит на вас через шлем и шарф.\n«Я могу рассказать вам всё о его прошлом. Вы заинтересованы?»\nОна протягивает свои сморщенные руки, как бы прося о чём-то."
 		"it"	"''So chi è che cerchi, forestiero'', dice una donna esile e china con una strana risata.\n''Tu non capisci quel Mazeaten, vero? Sembra che vi fidiate di lui''.\nLa strana donna vi guarda attraverso l'elmo e la sciarpa.\n Posso dirvi tutto sul suo passato. Ti interessa?''\nAllunga le mani raggrinzite, sembra chiedere qualcosa."
-		"ko"	"''자네가 누굴 찾는지 난 알고 있어, 외부인.'' 한 곱사등에 수척하게 야윈 사람이 괴상한 웃음소리를 내며 말을 건넸다.\n''자넨 저 마제트인을 모르지. 안 그래? 그럼에도 그를 신뢰하는 것 같구나.''\n괴인은 후드와 목도리 사이로 당신을 바라본다.\n''내가 녀석의 과거를 알려줄 수 있는데. 궁금하지 않아?''\n그녀는 메마른 두 손을 내밀었고, 당신에게 무언가 요구하는 것 같았다."
+		"ko"	"''자네가 누굴 찾는지 난 알고 있어, 외부인.'' 한 곱사등에 수척하게 야윈 사람이 괴상한 웃음소리를 내며 말을 건넸다.\n''하지만 자넨 저 마제트인을 모르지. 안 그래? 자네가 그를 신뢰한다 해도.'''\n괴인은 후드와 목도리 사이로 당신을 바라보며 웃고 있었다.\n''내가 녀석의 과거를 알려줄 수 있는데. 궁금하지 않아?''\n그녀는 메마른 두 손을 내밀었고, 당신에게 무언가 요구하는 것 같았다."
 	}
 	"Eccentric Option 1"
 	{
@@ -467,7 +467,7 @@
 	{
 		"en"	"'Bladedance' sees in putting everyone against each other, everyone to fight for themselves. 'Whiteflower' sees nothing in humanity, only letting nature exist. As 'The First', well let's just say it's complicated what they both have with each other.''"
 		"it"	"'Bladedance' vede nel mettere tutti contro gli altri, tutti a combattere per se stessi. 'Whiteflower' non vede nulla nell'umanità, ma lascia che la natura esista. Come 'The First', beh, diciamo che è complicato quello che hanno entrambi l'uno con l'altro''"
-		"ko"	"'블레이드댄스' 는 모든 이가 서로에게 맞서 싸우고, 각자가 스스로를 위해 싸우도록 만드는 것에 의미를 본다. '배풍등' 은 인간성에 아무런 의미도 두고 있지 않아. 오직 본성만이 존재하도록 내버려 두는 것을 바라고 있지. 그리고 '1세'는... 글쎄, 그 둘 사이에서 어떤 일이 있었는지는, 말하자면 복잡해..''"
+		"ko"	"'칼춤' 은 모든 이가 서로에게 맞서 싸우고, 각자가 스스로를 위해 싸우도록 만드는 것에 의미를 본다. '배풍등' 은 인간성에 아무런 의미도 두고 있지 않아. 오직 본성만이 존재하도록 내버려 두는 것을 바라고 있지. 그리고 '1세'는... 글쎄, 그 둘 사이에서 어떤 일이 있었는지는, 말하자면 복잡해..''"
 	}
 	"Eccentric Option 2"
 	{
@@ -507,13 +507,13 @@
 		"en"	"Ask about the ''Bladedance''"
 		"ru"	"Спросить о «Взбешённом клинке»"
 		"it"	"Chiedete informazioni sulla ''Bladedance''"
-		"ko"	"''블레이드댄스''에 관해 묻는다"
+		"ko"	"''칼춤''에 관해 묻는다"
 	}
 	"Eccentric Lore 1-2"
 	{
 		"en"	"''Ah, he's locked away. Your Mazeat friend locked 'Bladedance' away, how he did it is still questions me. Let's just say he'll never see the light of day as long the cage remains.''"
 		"it"	"''ah, è stato rinchiuso. Il tuo amico Mazeat ha rinchiuso 'Bladedance', come abbia fatto mi è ancora ignoto. Diciamo solo che non vedrà mai la luce del giorno finché la gabbia rimarrà''"
-		"ko"	"''아, 그는 봉인 당했어. 네 마제트인 친구가 저 멀리에 '블레이드댄스' 를 봉인했지. 그가 도대체 어떻게 봉인해둔 건지는 아직도 이해가 안 가지만 말이야. 하지만 말이지, 그 봉인이 존재하는 한, 그는 결코 다시 세상의 빛을 보지 못할 거야.''"
+		"ko"	"''아, 그는 봉인 당했어. 네 마제트인 친구가 저 멀리에 '칼춤' 을 봉인했지. 그가 도대체 어떻게 봉인해둔 건지는 아직도 이해가 안 가지만 말이야. 하지만 말이지, 그 봉인이 존재하는 한, 그는 결코 다시 세상의 빛을 보지 못할 거야.''"
 	}
 	"Eccentric Option 1-3"
 	{
@@ -526,7 +526,7 @@
 	{
 		"en"	"''Hahaha, 'Whiteflower' has no idea how to even pull it off. Betraying every other lord, only himself and 'Shadow' left together.''"
 		"it"	"''Hahaha, 'Whiteflower' non ha la minima idea di come fare. Tradendo tutti gli altri lord, sono rimasti solo lui e 'Shadow' insieme''"
-		"ko"	"''하하하, '배풍등' 은 그 '일'을 어떻게 시작해야 할지 전혀 감도 못 잡고 있어. 다른 군주들까지 배신했으니 말이지. 오직 그녀와 '그림자'만 남았어."
+		"ko"	"''하하하, '배풍등' 은 그 '일'을 어떻게 시작해야 할지 전혀 감도 못 잡고 있어. 다른 군주들까지 배신했으니 말이지. 오직 그와 '그림자'만 남았어."
 	}
 	"Eccentric Option 1-4"
 	{
@@ -589,7 +589,7 @@
 		"en"	"You find a quiet corner safe enough to harbor your entire squad from harm, allowing you to rest and reorganize.\nHaving helped your teammates settle in, your consciousness slowly begins to loosen up."
 		"ru"	"Вы находите тихий уголок, достаточно безопасный, чтобы укрыть весь ваш отряд от опасности, позволяя вам отдохнуть и реорганизоваться.\nПомогая своим товарищам устроиться, вы начинаете медленно терять сознание."
 		"it"	"Trovi un angolo tranquillo e abbastanza sicuro da proteggere tutta la vostra squadra, permettendovi di riposare e riorganizzarvi.\nDopo aver aiutato i vostri compagni a sistemarsi, la vostra coscienza comincia lentamente ad allentarsi."
-		"ko"	"한적한 작은 모퉁이를 찾은 덕분에, 부대는 위험에서 벗어나 충분한 정비 시간을 가질 수 있게 되었다.\n동료들이 자리를 잡은 후 당신도 서서히 긴장이 풀렸다."
+		"ko"	"한적한 작은 모퉁이를 찾은 덕분에, 부대는 위험에서 벗어나 충분한 정비 시간을 가질 수 있게 되었다.\n동료들의 배정을 마친 후 당신도 서서히 긴장이 풀렸다."
 	}
 	"Camp Option"
 	{
@@ -617,14 +617,14 @@
 		"en"	"You discover a dark room. There are no windows in the room, nor are there any light sources.\nIn the center of the room is a massive coffin with many gems and jewels affixed.\nJust as you are about to inspect the coffin, you hear a voice from inside it.\nIt seems to be asking for your help to open the coffin."
 		"ru"	"Вы обнаруживаете тёмную комнату. В комнате нет ни окон, ни источников света.\nВ центре комнаты стоит массивный гроб с множеством драгоценных камней и украшений.\nВ тот момент, когда вы собираетесь осмотреть гроб, вы слышите голос изнутри.\nПохоже, он просит вас помочь открыть гроб."
 		"it"	"Scoprite una stanza buia. Non ci sono finestre né fonti di luce.Al centro della stanza c'è un'enorme bara con molte gemme e gioielli attaccati.Proprio mentre state per ispezionare la bara, sentite una voce dall'interno.Sembra che chieda il vostro aiuto per aprire la bara."
-		"ko"	"당신이 고성 깊숙한 곳에서 어두컴컴한 방 한 칸을 발견한다. 방안에는 창문이 없었고 불빛조차 전혀 없었다.\n방 가운데에는 육중해 보이는 관이 하나 놓여 있었는데, 그 위에는 수많은 보석이 박혀 있었다.\n당신이 관을 조사해 보려고 하자,\n관 속에서 뚜껑을 열어달라는 구조 요청 소리가 들렸다."
+		"ko"	"당신이 고성 깊숙한 곳에서 어두컴컴한 방 한 칸을 발견했는데 방안에는 창문이 없었고 불빛도 전혀 없었다.\n방 가운데에는 육중해 보이는 관이 하나 놓여 있었는데, 그 위에는 수많은 보석이 박혀 있었다.\n당신이 관을 조사해 보려고 하자,\n관 속에서 뚜껑을 열어달라는 구조 요청 소리가 들렸다."
 	}
 	"Coffin of Evil Option 1"
 	{
 		"en"	"We can't stand idly by when someone's asking for help"
 		"ru"	"Мы не можем оставаться в стороне, когда кто-то просит о помощи"
 		"it"	"Non possiamo restare inerti quando qualcuno chiede aiuto"
-		"ko"	"도움을 요청하는 사람을 무시할 수는 없다"
+		"ko"	"일단 사람부터 구한다"
 	}
 	"Coffin of Evil Desc 1"
 	{
@@ -638,7 +638,7 @@
 		"en"	"The coffin was nailed shut. Your only way to free its occupant is to pry it open. An attractive-looking Mazeaten climbs out of the coffin. Kindness is always rewarded, and he gives you a gift as thanks."
 		"ru"	"Гроб был заколочен. Единственный способ освободить его обитателя - вскрыть его. Из гроба вылезает привлекательного вида комбайн. Доброта всегда вознаграждается, и в благодарность он дарит вам подарок."
 		"it"	"La bara è stata inchiodata. L'unico modo per liberare il suo occupante è aprirla. Dalla bara esce un Mazeaten dall'aspetto attraente. La gentilezza viene sempre ricompensata e lui vi dà un dono come ringraziamento."
-		"ko"	"관에는 못이 단단히 박혀 있어 강제로 들어올릴 수 밖에 없었다. 관을 열자 준수하게 생긴 마제트인이 관에서 나왔다. 그는 호의를 베푼 당신에게 감사의 선물을 주었다."
+		"ko"	"관에는 못이 단단히 박혀 있어 강제로 열 수 밖에 없었다. 관을 열자 준수하게 생긴 마제트인이 관에서 나왔다. 그는 호의를 베푼 당신에게 감사의 선물을 주었다."
 	}
 	"Coffin of Evil Option 2"
 	{
@@ -659,21 +659,21 @@
 		"en"	"In many stories, those who offer others help often find their kindness backfiring. Being the cautious person you are, you ignore the suspicious pleas. You even take the jewels on the coffin with you and close the door on your way out."
 		"ru"	"Во многих историях те, кто предлагает другим помощь, часто сталкиваются с тем, что их доброта была напрасной. Будучи осторожным человеком, вы игнорируете подозрительные просьбы. Вы даже забираете с собой драгоценности, лежащие на гробу, и закрываете дверь, покидая место."
 		"it"	"In molte storie, coloro che offrono aiuto agli altri spesso vedono la loro gentilezza ritorcersi contro. Da persona prudente quale siete, ignorate le suppliche sospette. Prendete anche i gioielli sulla bara e chiudete la porta quando uscite."
-		"ko"	"많은 이야기 속엔 호의를 베풀었다가 오히려 곤경에 빠지는 일이 나온다. 당신은 매우 신중했으며, 그 수상한 구조 요청에 모른척하기로 했다. 결국 당신은 관에 박혀 있는 보석만 챙기고는 방문을 닫고 나갔다."
+		"ko"	"많은 이야기 속엔 호의를 베풀었다가 오히려 곤경에 빠진 일이 많았기에 당신은 매우 신중했으며, 그 수상한 구조 요청에 모른척하기로 했다. 결국 당신은 관에 박혀 있는 보석만 챙기고는 방문을 닫고 나갔다."
 	}
 	"Eye for an Eye Lore"
 	{
 		"en"	"A refined, well-dressed Mazeaten stands before you.\nHe politely asks if you know of an innocent man who was once wrongfully punished because of him.\nYou ask him to elaborate and learn that, because of a mistake he made, the Medievalists all mistook his friend for a Witch and locked him here.\nThe man promises a sizable reward if you lend him your help."
 		"ru"	"Перед вами стоит изысканный, хорошо одетый комбайн.\nОн вежливо спрашивает, не знаете ли вы о невинном человеке, который когда-то был несправедливо наказан из-за него.\nВы просите его рассказать подробнее и узнаёте, что из-за ошибки, которую он совершил, все медиевисты приняли его друга за ведьму и заперли его здесь.\nМужчина обещает крупную награду, если вы окажете ему помощь."
 		"it"	"Un Mazeaten raffinato e ben vestito è in piedi davanti a voi.\nChiede gentilmente se conoscete un uomo innocente che è stato punito ingiustamente a causa sua.\nGli chiedete di spiegarvi meglio e scoprite che, a causa di un suo errore, i medievali hanno scambiato il suo amico per una Strega e lo hanno rinchiuso qui.\nL'uomo promette una ricompensa considerevole se gli darete il vostro aiuto."
-		"en"	"행동거지가 우아하고 깔끔하게 차려입은 마제트인 한 명이 당신 앞에 나타나더니,\n깍듯이 예의를 차리며 자신 대신 무고하게 처벌당한 불쌍한 사람을 못 봤냐고 물었다.\n그 마제트인에게 자세히 물어본 후에야 그의 실수로 중세인들이 그의 친구를 마녀로 오해하고 이곳에 가둬뒀다는 것을 알게 되었다.\n이어서 그는 만약 자신을 도와준다면 높은 보수를 지불하겠다고 약속했다."
+		"en"	"행동거지가 우아하고 깔끔하게 차려입은 마제트인 한 명이 당신 앞에 나타나더니,\n깍듯이 예의를 차리며 자신 대신 무고하게 대속 중인 불쌍한 사람을 못 봤냐고 물었다.\n그 마제트인에게 자세히 물어본 후에야 그의 실수로 중세인들이 그의 친구를 마녀로 오해하고 이곳에 가둬뒀다는 것을 알게 되었다.\n이어서 그는 만약 자신을 도와준다면 높은 보수를 지불하겠다고 약속했다."
 	}
 	"Eye for an Eye Option 1"
 	{
 		"en"	"This story sounds familiar"
 		"ru"	"Эта история кажется знакомой"
 		"it"	"Questa storia mi suona familiare"
-		"ko"	"뭔가 익숙한 이야기다"
+		"ko"	"뻔한 레퍼토리다"
 	}
 	"Eye for an Eye Desc 1"
 	{
@@ -729,7 +729,7 @@
 		"en"	"You must always be vigilant in a place like this. Noticing that you remain indifferent to his words, the Mazeaten sighs and laments how his time will end on a tragic note."
 		"ru"	"В таком месте всегда нужно быть бдительным. Заметив, что вы остались равнодушны к его словам, комбайн вздыхает и сетует на то, что его время закончится на трагической ноте."
 		"it"	"Bisogna sempre essere vigili in un luogo come questo. Notando che rimanete indifferenti alle sue parole, il Mazeaten sospira e si lamenta di come il suo tempo finirà in una nota tragica."
-		"ko"	"이런 곳에서 움직이려면 반드시 각별히 경각심을 가져야 했다. 당신이 그의 말에 무심하게 반응하자, 신사는 한숨을 내쉬며 자신의 이 시나리오가 비극으로 끝날 것 같다며 한탄했다."
+		"ko"	"이런 곳에서 움직이려면 반드시 각별히 경각심을 가져야 했다. 당신이 움직이지 않자, 신사는 한숨을 내쉬며 자신의 이 시나리오가 비극으로 끝날 것 같다며 한탄했다."
 	}
 	"Xeno Shaft Title"
 	{
@@ -898,7 +898,7 @@
 	{
 		"en"	"Those that we lost. Bladedance... Guln... Finish the job."
 		"it"	"Quelli che abbiamo perso. Bladedance... Guln... Finisci il lavoro."
-		"ko"	"우리가 잃어버린 자들. 블레이드댄스... 굴른... 일을 끝낼 시간이다."
+		"ko"	"우리가 잃어버린 자들. 칼춤... 굴른... 일을 끝낼 시간이다."
 	}
 	"Mediveal Ally Title"
 	{
@@ -1098,7 +1098,7 @@
 	{
 		"en"	"Crimson Troupe Stage"
 		"it"	"Palcoscenico della troupe cremisi"
-		"ko"	"크림슨 극단의 무대"
+		"ko"	"크림슨 무도회"
 	}
 	"Camp"
 	{
@@ -1212,13 +1212,13 @@
 	{
 		"en"	"⚔ Dried Kelp"
 		"it"	"⚔ kelp essiccato"
-		"ko"	"⚔ 말린 다시마"
+		"ko"	"⚔ 말린 켈프"
 	}
 	"Dried Kelp!"
 	{
 		"en"	"⚠ Dried Kelp"
 		"it"	"⚠kelp essiccato"
-		"ko"	"⚠ 말린 다시마"
+		"ko"	"⚠ 말린 켈프"
 	}
 	"Fueled By Gold"
 	{
@@ -2150,7 +2150,7 @@
 		"en"	"Old ziberian wallet, has some pictures inside and some leftover cash.\n- {green}Gain 500 Cash and deal +1％ damage."
 		"ru"	"Старый русский бумажник, внутри несколько фотографий и немного оставшихся денег.\n- +500 кредитов и на 1％ больше урона."
 		"it"	"Vecchio portafoglio ziberiano, ha alcune foto all'interno e qualche avanzo di denaro.\n- {green} Guadagna 500 contanti e infligge +1％ danni."
-		"ko"	"오래된 지베리아제 지갑. 안에는 사진 몇 장과 약간의 돈이 들어있다.\n- {green}추가 자금 +500, 공격 피해량 +1％."
+		"ko"	"오래된 지베리아제 지갑. 안에는 약간의 자금과 사진 몇 장이 들어있다.\n- {green}추가 자금 +500, 공격 피해량 +1％."
 	}
 	"Golden Coin"
 	{
@@ -2265,7 +2265,7 @@
 		"en"	"Blademace"
 		"ru"	"«Булава с лезвием»"
 		"it"	"Blademace"
-		"ko"	"망치검"
+		"ko"	"망치의 검"
 	}
 	"Blademace Desc"
 	{
@@ -2292,7 +2292,7 @@
 		"en"	"''Bladedance''"
 		"ru"	"«Взбешённый клинок»"
 		"it"	"''Bladedance''"
-		"ko"	"''블레이드댄스''"
+		"ko"	"''칼춤''"
 	}
 	"Bladedance Desc"
 	{
@@ -2416,7 +2416,7 @@
 	{
 		"en"	"A report about a Mazeaten named ''Bladedance''. Status: Unknown. The rest of the report is torn off.\n{green}All Allies gain +15％ damage and +20％ movement speed {blue}and the ending is changed."
 		"it"	"Un rapporto su un Mazeaten chiamato ''Bladedance''. Stato: Sconosciuto. Tutti gli alleati guadagnano +15％ danni e +20％ velocità di movimento {blue}e il finale è cambiato."
-		"ko"	"''블레이드댄스''라는 이름을 가진 마제트인에 대한 보고서. 상태: 불명. 보고서의 나머지 부분이 찢겨져있다.\n{green}모든 아군의 공격 피해량 +15％ 및 이동 속도 +20％ 증가. {blue}게임 엔딩이 변경됩니다."
+		"ko"	"''칼춤''이라는 이름을 가진 마제트인에 대한 보고서. 상태: 불명. 보고서의 나머지 부분이 찢겨져있다.\n{green}모든 아군의 공격 피해량 +15％ 및 이동 속도 +20％ 증가. {blue}게임 엔딩이 변경됩니다."
 	}
 	"Hand of Sticks"
 	{
@@ -2488,7 +2488,7 @@
 	{
 		"en"	"Boo.\n{green}''Ambusher'' and ''Crusher'' weapons inflict 5 seconds of bleed on hit and gain +33％ attack speed."
 		"it"	"{green}Le armi ''Ambusher'' e ''Crusher'' infliggono 5 secondi di emorragia quando vengono colpite e guadagnano +33％ velocità d'attacco."
-		"ko"	"어흥.\n{green}''매복자'', ''파쇄자'' 태그 무기들의 공격 속도가 33％ 빨라지고 적중 시 5초간 지속되는 출혈을 부여."
+		"ko"	"등짝 좀 보자.\n{green}''매복자'', ''파쇄자'' 태그 무기들의 공격 속도가 33％ 빨라지고 적중 시 5초간 지속되는 출혈을 부여."
 	}
 	"Hand of Revenge"
 	{
@@ -2500,7 +2500,7 @@
 	{
 		"en"	"Better not touch me then.\n{green}''Duelist'' and ''Combatant'' weapons gain +150％ damage while below half health."
 		"it"	"Meglio non toccarmi, allora. \n{green}Le armi ''Duellante'' e ''Combattente'' guadagnano +150％ danni quando sono sotto metà salute."
-		"ko"	"날 건드리지 말았어야 했어.\n{green}''결투사'', ''투사'' 태그 무기들은 이제 체력이 절반 이하일 때 공격 피해량이 +150％ 증가."
+		"ko"	"날 건드리지 말았어야 했어.\n{green}''듀얼리스트'', ''투사'' 태그 무기들은 이제 체력이 절반 이하일 때 공격 피해량이 +150％ 증가."
 	}
 	"Hand of Stock"
 	{
@@ -2524,7 +2524,7 @@
 	{
 		"en"	"Such elegance.\n{green}''Lord'' and ''Defender'' weapons gain +75％ damage while over half health"
 		"it"	"Tale eleganza.\n{green} Le armi ''Signore'' e ''Difensore'' guadagnano +75％ danni quando si supera la metà della salute"
-		"ko"	"참으로 우아하여라.\n{green}''로드'', ''방어자'' 태그 무기들은 이제 체력이 절반 이상일 때 공격 피해량이 +75％ 증가."
+		"ko"	"참으로 우아하여라.\n{green}''로드'', ''디펜더'' 태그 무기들은 이제 체력이 절반 이상일 때 공격 피해량이 +75％ 증가."
 	}
 	"Soul of Boss vs Boss"
 	{
@@ -2560,7 +2560,7 @@
 	{
 		"en"	"Better build that temple.\n{green}Bloons Tower Defense themed weapons gain +20％ damage for every person with a unique bloons weapon"
 		"it"	"Meglio costruire quel tempio.\n{green}Le armi a tema Tower Defense di Bloons guadagnano +20％ danni per ogni persona con un'arma bloons unica"
-		"ko"	"빨리 사원을 건설해야겠군.\n{green}각기 다른 풍선 타워 디펜스 관련 무기(연금술사의 포션, 정예 저격수)를 사용하는 1명 당 서로에게 피해량 +20％ 증가 효과를 부여. 이 효과는 중첩됨."
+		"ko"	"빨리 사원을 건설해야겠군.\n{green}풍선 타워 디펜스 무기를 사용하는 유저 1명당 서로에게 피해량 +20％ 증가 효과를 부여. 중첩됨."
 	}
 	"Soul of Yakuza"
 	{
@@ -2584,7 +2584,7 @@
 	{
 		"en"	"Face the light or be consumed.\n{green}Darkest Dungeon themed weapons gain a chance to prevent fatal damage"
 		"it"	"Affrontare la luce o essere consumati.\n{green}Le armi a tema Dungeon più oscuro guadagnano una possibilità di prevenire i danni mortali"
-		"ko"	"빛을 마주하라. 그렇지 않으면 삼켜지리라.\n{green}다키스트 던전 관련 무기들은 사망에 이르는 피해를 확률적으로 무시하고 일정 시간 동안 체력이 1로 고정되어 죽지 않게 됩니다."
+		"ko"	"빛을 마주하라. 그렇지 않으면 삼켜지리라.\n{green}다키스트 던전 관련 무기들은 사망에 이르는 피해를 확률적으로 무시하고 죽지 않음."
 	}
 	"Soul of Terraria"
 	{
@@ -2596,7 +2596,7 @@
 	{
 		"en"	"And there will be mods.\n{green}Terraria themed weapons gain 1000 HP every so often"
 		"it"	"E ci saranno delle mod. \n{green}Le armi a tema Terraria guadagnano 1000 HP di tanto in tanto"
-		"ko"	"이제 그 곳에 모드 있으라.\n{green}테라리아 관련 무기들은 주기적으로 사용자의 체력을 1000 회복시킵니다.(과치료 가능)"
+		"ko"	"이제 그 곳에 모드 있으라.\n{green}테라리아 관련 무기들은 주기적으로 사용자의 체력을 1000 회복.(과치료 가능)"
 	}
 	"Xeno Anti-Vial"
 	{
@@ -2722,7 +2722,7 @@
 	{
 		"en"	"Corroding as we speak.\n{green}Each newly spawned enemy takes increasingly more damage and stacks"
 		"it"	"Si sta corrodendo mentre parliamo.\n{green}Ogni nuovo nemico generato subisce sempre più danni e stack"
-		"ko"	"말하는 지금 이 순간에도 점점 부식되어가는게 보인다.\n{green}적이 새로 생성될 때마다 피해 저항력이 감소된 채로 등장하며, 이 효과는 중첩됩니다."
+		"ko"	"말하는 지금 이 순간에도 점점 부식되어가는게 보인다.\n{green}적이 새로 생성될 때마다 피해 저항력이 감소된 채로 등장하며, 이 효과는 중첩됨."
 	}
 	"Eyes of the Sea"
 	{
@@ -2848,7 +2848,7 @@
 	{
 		"en"	"I got rid of Guln, tricked Bob to get rid of Bladedance...\nYou and Bob are the last ones."
 		"it"	"Mi sono sbarazzato di Guln, ho ingannato Bob per sbarazzarmi di Bladedance... \nTu e Bob siete gli ultimi."
-		"ko"	"난 굴른을 죽였고, 밥을 속여서 블레이드댄스도 제거했다...\n너와 밥이 마지막이다."
+		"ko"	"난 굴른을 죽였고, 밥을 속여서 칼춤도 제거했다...\n너와 밥이 마지막이다."
 	}
 	"Whiteflower Final Speech 2"
 	{
@@ -3040,25 +3040,25 @@
 	{
 		"en" "⚔ Corrupted Ruinan's"
 		"it"		"⚔ corruzione di Ruinan"
-		"ko" "⚔ 오염된 루이나인들"
+		"ko" "⚔ 타락한 루이나인들"
 	}
 	"Corrupted Ruinan's!"
 	{
 		"en" "⚠ Corrupted Ruinan's"
 		"it"		"corrotto di Ruinan"
-		"ko" "⚠ 오염된 루이나인들"
+		"ko" "⚠ 타락한 루이나인들"
 	}
 	"Bladedance Animated"
 	{
 		"en" "⚔ Bladedance Animated"
 		"it"		"⚔ Bladedance Animato"
-		"ko" "⚔ 재현된 블레이드댄스"
+		"ko" "⚔ 재현된 칼춤"
 	}
 	"Bladedance Animated!"
 	{
 		"en" "⚠ Bladedance Animated"
 		"it"		"⚠ Bladedance Animato"
-		"ko" "⚠ 재현된 블레이드댄스"
+		"ko" "⚠ 재현된 칼춤"
 	}
 	"Slaves Controlled"
 	{
@@ -3394,7 +3394,7 @@
 	{
 		"en"	"Omega and Vhxis join your side...or are you rather joining them?"
 		"it"	"Omega e Vhxis si uniscono al tuo fianco... o sei tu a unirti a loro?"
-		"ko"	"오메가와 비흐시스가 당신과 합류하게 되었다. ...아니면 당신이 이 둘에게 합류한 것일수도?"
+		"ko"	"오메가와 비히시스가 당신과 합류하게 되었다. ...아니면 당신이 이 둘에게 합류한 것일수도?"
 	}
 	"Omega and Vhxis Decline Conlusion"
 	{

@@ -1537,7 +1537,7 @@
 	{
 		"en" 		"Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 30％ more damage."
 		"it"		"Mulo di Teslar! Una protezione ricaricabile che indebolisce gli zombi e blocca il 75％ dei danni se attivata. I nemici indeboliti sono fortemente rallentati e subiscono 30％ danni in più."
-		"ko"		"테슬라 뮬! 재충전 가능한 보호막으로, 활성화 시 좀비를 약화시키고 받는 피해의 75％를 막아줍니다.\n약화된 적은 크게 느려지고 받는 피해량이 30% 증가합니다."
+		"ko"		"테슬라 뮬! 재충전 가능한 보호막으로, 활성화 시 좀비를 약화시키고 받는 피해의 75％를 막아줍니다.\n약화된 적은 크게 느려지고 받는 피해량이 30％ 증가합니다."
 	}
 	"Stockpile Stout Received"
 	{
@@ -1732,7 +1732,7 @@
 		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee ％ damage taken, arrow means ranged ％ damage taken.\nIt will light up whatever resitsance is being used when damage calculations happen.\nTrue damage only benifits from bonuses and ignores reisistances."
 		"es"		"A la izquierda hay debuffs, y a la derecha hay buffs.\nCada simbolo es un debuff o buff.\nEl 'dedito' significa el daño cuerpo a cuerpo total que recibes, y la flecha significa el daño total a distancia que recibes.\nSe subrayan apenas recibas el daño correspondiente a estos.\nEl daño verdadero no subraya, y ignora estas resistencias."
 		"it"		"Sul lato sinistro ci saranno i debuff.Sul lato destro ci saranno i buff.Ogni simbolo è un nuovo buff o debuff. \nIl dito indica i danni subiti in mischia, mentre la freccia indica i danni subiti a distanza.\nSi illuminerà la resistenza utilizzata quando si calcolano i danni.\nIl danno reale beneficia solo dei bonus e ignora le resistenze."
-		"ko" 		"왼쪽에는 디버프가 표시됩니다.\n오른쪽에는 버프가 표시됩니다.\n심볼마다 새로운 버프와 디버프를 나타냅니다. \n손가락은 받는 근접 피해량 % 를 뜻하고, 화살은 받는 원거리 피해량 ％ 를 뜻합니다.\n이에 상응하는 피해를 받으면, 해당 심볼이 커지거나 밑줄이 그어집니다.\n트루 대미지는 이 설정을 무시하며 피해를 받아도 강조되지 않습니다."
+		"ko" 		"왼쪽에는 디버프가 표시됩니다.\n오른쪽에는 버프가 표시됩니다.\n심볼마다 새로운 버프와 디버프를 나타냅니다. \n손가락은 받는 근접 피해량 ％ 를 뜻하고, 화살은 받는 원거리 피해량 ％ 를 뜻합니다.\n이에 상응하는 피해를 받으면, 해당 심볼이 커지거나 밑줄이 그어집니다.\n트루 대미지는 이 설정을 무시하며 피해를 받아도 강조되지 않습니다."
 	}
 	"Debuff/Buff Explain 2"
 	{
@@ -1787,7 +1787,7 @@
 	}
 	"Special Zombies Explained"
 	{
-		"en" 		"These are mini-bosses that spawn randomly after wave 12.\nRaids:\nRaids take 25％ more explosive damage, and usually 25% more melee damage.\nSome weapons deal extra damage againt raids, see desc if they do."
+		"en" 		"These are mini-bosses that spawn randomly after wave 12.\nRaids:\nRaids take 25％ more explosive damage, and usually 25％ more melee damage.\nSome weapons deal extra damage againt raids, see desc if they do."
 		"fr" 		"Après la vague 12, des Miniboss vont apparaître.\nRaids:\nLes boss Raid recoivent 25％ plus de dégats par les explosions,\net habituellement, 25％ plus de dégats par les coups corps à corps.\nCertaines armes deviennent plus forts contre les Raids, vérifiez leur description."
 		"it"		"Questi sono mini-boss che si riproducono casualmente dopo l'ondata 12.\nRaid:\nRaid subiscono 25％ danni esplosivi in più, e di solito il 25% in più di danni da mischia.\nAlcune armi infliggono danni extra contro i raid, vedi la descrizione se è così."
 		// "pt"		"Tem alguns mini-chefes que aparecem aleatoriamente na onda 12.\nRaids:\n"
@@ -2225,7 +2225,7 @@
 		"fr" 		"Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
 		"chi"		"TF2：僵尸暴动\n按Tab开关菜单\nTAB+(H)显示当前武器！"
 		"it"		"Zombie Riot\nPremi di nuovo TAB per chiudere il menu!\nTieni premuto TAB + (H) per mostrare l'arma corrente!"
-		"ko" 		"TF2: 좀비 라이엇\n탭을 다시 눌러 메뉴를 닫으세요!\상점 메뉴에서 (H) 를 누르면 현재 무기가 표시됩니다!"
+		"ko" 		"TF2: 좀비 라이엇\n탭을 다시 눌러 메뉴를 닫으세요!\n상점 메뉴에서 (H) 를 누르면 현재 무기가 표시됨!"
 	}
 	"StatusEffectList"
 	{
@@ -3166,7 +3166,7 @@
 	{
 		"en"		"You feel Kahmlsteins Courage..."
 		"it"		"Senti il coraggio di Kahmlsteins..."
-		"ko"		"카멜슈타인의 의지가 느껴집니다..."
+		"ko"		"카멜스타인의 의지가 느껴집니다..."
 	}
 	"Last Down Warning"
 	{
@@ -3496,7 +3496,7 @@
 		"ru"		"Очищенная сталь"
 		"chi"		"精炼钢"
 		"it"		"Acciaio raffinato"
-		"ko"		"정제된 강철"
+		"ko"		"강철 정제"
 	}
 	"Barracks Refined Steel Desc"
 	{
@@ -3559,7 +3559,7 @@
 		"ru"		"Наручи"
 		"chi"		"护腕"
 		"it"		"Bracciale"
-		"ko"		"팔 보호대"
+		"ko"		"팔 보호구"
 	}
 	"Barracks Bracer Desc"
 	{
@@ -4394,14 +4394,14 @@
 		"en"		"Nightmare Cannon: Heavily reduced Turn speed, Increased damage"
 		"fr"		"Cannon de Cauchemars : Manoeuvrabilité réduite, dégats améliorés"
 		"it"		"Cannone da Incubo: velocità di rotazione fortemente ridotta, danni aumentati"
-		"ko"		"나이트메어 캐논: 회전 속도가 매우 크게 감소하지만, 피해량이 증가합니다"
+		"ko"		"악몽포: 회전 속도가 매우 크게 감소하지만, 피해량이 증가합니다"
 	}
 	"Neuvellete Pulse"
 	{
 		"en"		"Pulse Cannon: Heavily increased turnrate, but beam is only active for 2.5 seconds, shorter recharge period"
 		"fr"		"Cannon Impulsion : Manoeuvrabilité améliorée, mais le rayon dure pour seulement 2.5 secondes. Période de recharge réduite."
 		"it"		"Cannone a impulsi: velocità di rotazione notevolmente aumentata, ma il raggio è attivo solo per 2,5 secondi, periodo di ricarica più breve"
-		"ko"		"펄스 캐논: 회전 속도가 매우 크게 증가하지만, 빔의 지속 시간이 2.5초가 됩니다. 재충전 쿨타임이 더 짧습니다"
+		"ko"		"파동포: 회전 속도가 매우 크게 증가하지만, 빔의 지속 시간이 2.5초가 됩니다. 재충전 쿨타임이 더 짧습니다"
 	}
 	"Neuvellete Feedback"
 	{
@@ -4638,7 +4638,7 @@
 	{
 		"en"	"Lore order: (2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
 		"it"	"Ordine Lore: (2) La macchina è stata hackerata da qualcuno... ti vuole morto.\nOriginalmente costruito da Kahmlstein insieme a Ruina e Expidonsa...\nNon affrontarlo in nessuna area expidonsan..."
-		"ko"	"설정 순서: (2) 누군가에게 해킹당한 기계입니다... 그리고 이제 당신을 죽이고 싶어합니다.\n원래는 카멜슈타인, 루이나, 엑스피돈사와 함께 만들어진 기계였지만…\n엑스피돈사 지역에서 그와 전투하지 마십시오."
+		"ko"	"설정 순서: (2) 누군가에게 해킹당한 기계입니다... 그리고 이제 당신을 죽이고 싶어합니다.\n원래는 카멜스타인, 루이나, 엑스피돈사와 함께 만들어진 기계였지만…\n엑스피돈사 지역에서 그와 전투하지 마십시오."
 	}
 	"Blitzkrieg Hard Desc"
 	{
@@ -4701,7 +4701,7 @@
 		"fr"	"Résiste cette ville souterraine avancée, faites garde à leur soins regénératifs et leurs attaques surprises!"
 		"chi"	"抵抗Expidonsa的高科技。别小看他们的盾牌，同时看好自己背后……"
 		"it"	"Resisti alla città sotterranea avanzata, fate attenzione alla loro auto-guarigione e agli attacchi a sorpresa!"
-		"ko" 	"지하 도시 엑스피돈사의 분개한 병사들이 나타났습니다. 우리가 뭘 했길래 그렇게 화가 났는지 모르겠군요..."
+		"ko" 	"코시, 제이나가 를르슈가 해방시킨 것에 대비하기 위한 시뮬레이션을 만드는 동안, 다른 엑스피돈사인들을 만납니다. 인사를 하려고 하는데... 당신을 보자마자 공격해옵니다?"
 	}
 	"Sensal Wave Desc"
 	{
@@ -4758,8 +4758,8 @@
 		"en"	"Lore order: (9) Directly after you release the void in Rogue 2. Creatures from a different dimension are here to take over ours. Help Kahmlstein against the void!"
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
 		"chi"	"深渊已被释放。"
-		"it"	"Ordine Lore: (9) Subito dopo aver liberato il vuoto in Rogue 2..."
-		"ko"	"설정 순서: (9) 로그라이크2(Rogue2) 당시 공허가 해방되어버린 직후입니다. 다른 차원의 생명체들이 이 세계를 점령하기 위해 몰려오고 있습니다. 카멜슈타인을 도와 공허와 맞서세요!"
+		"it"	"Ordine Lore: (9) Subito dopo aver liberato il vuoto in rogue2..."
+		"ko"	"설정 순서: (9) 로그라이크2(Rogue2) 당시 공허가 해방되어버린 직후입니다. 다른 차원의 생명체들이 이 세계를 점령하기 위해 몰려오고 있습니다. 카멜스타인을 도와 공허와 맞서세요!"
 	}
 	"Aperture Desc"
 	{
@@ -5047,7 +5047,7 @@
 		"fr"	"Nécrose"
 		"chi"	"咒死"
 		"it"	"Necrosi"
-		"ko"	"괴사"
+		"ko"	"쇠약 원소 피해"
 	}
 	"Building Menu"
 	{
@@ -5462,8 +5462,8 @@
 	}
 	"Victoria Raid Desc"
 	{
-		"en" 	"(11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
-		"it"	"(11) Sensal vi chiede di visitare Ziberia, attualmente attaccata da Victoria."
+		"en" 	"Lore order: (11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
+		"it"	"Ordine Lore: (11) Sensal vi chiede di visitare Ziberia, attualmente attaccata da Victoria."
 		"ko"	"설정 순서: (11) 센살은 당신에게 현재 빅토리아에게 공격받고 있는 지베리아를 방문해달라고 부탁했습니다."
 	}
 	"Ability already Active"
