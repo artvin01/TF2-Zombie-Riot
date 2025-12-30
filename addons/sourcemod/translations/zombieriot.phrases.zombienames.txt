@@ -795,7 +795,7 @@
 		"pt"		"Bob o todo poderoso destruidor de multiversos"
 		"nl"		"Bob the Oppergod van Goden en vernietigaar van Multiversums"
 		"it"		"Bob, il Dio degli dei e il distruttore di multiversi"
-		"ko" 		"신들 중 최고신이자 다중우주의 파괴자, 밥"
+		"ko" 		"신들 중 최고위 신이자 다중우주의 파괴자, 밥"
 	}
 	"Revived DDT"
 	{
@@ -977,7 +977,7 @@
 		"en" 		"Metro Cop"
 		"ru" 		"Метро коп"
 		"it"		"Poliziotto metropolitano"
-		"ko" 		"시민 보호 기동대"
+		"ko" 		"배럭 시민 보호 기동대"
 	}
 	"Barracks Swordsman"
 	{
@@ -986,14 +986,14 @@
 		"en" 		"Barracks Swordsman"
 		"it"		"Spadaccino combinatore"
 		"it"		"Spadaccino della caserma"
-		"ko" 		"콤바인 검객"
+		"ko" 		"배럭 콤바인 검객"
 	}
 	"Barracks Metro Raider"
 	{
 		"en" 		"Metro Raider"
 		"ru" 		"Метро Рейдер"
 		"it"		"Metro Raider"
-		"ko" 		"시민 보호 특공대"
+		"ko" 		"배럭 시민 보호 특공대"
 	}
 	"Barracks Shotgunner"
 	{
@@ -1002,7 +1002,7 @@
 		"en" 		"Barracks Shotgunner"
 		"it"		"Combine Shotgunner"
 		"it"		"Tiratore della caserma"
-		"ko" 		"콤바인 산탄총병"
+		"ko" 		"배럭 콤바인 산탄총병"
 	}
 	"Barracks Soldier"
 	{
@@ -1011,7 +1011,7 @@
 		"en" 		"Barracks Soldier"
 		"it"		"Soldato Combine"
 		"it"		"Soldato della caserma"
-		"ko" 		"콤바인 소총수"
+		"ko" 		"배럭 콤바인 소총수"
 	}
 	"Barracks DDT"
 	{
@@ -1020,7 +1020,7 @@
 		"en" 		"Barracks DDT"
 		"it"		"Combinare il DDT"
 		"it"		"Caserma DDT"
-		"ko" 		"콤바인 DDT"
+		"ko" 		"배럭 콤바인 DDT"
 	}
 	"Barracks Elite"
 	{
@@ -1029,13 +1029,13 @@
 		"en" 		"Barracks Elite"
 		"it"		"Combine Elite"
 		"it"		"Caserma Elite"
-		"ko" 		"콤바인 엘리트"
+		"ko" 		"배럭 콤바인 엘리트"
 	}
 	"Barracks Peacekeeper"
 	{
 		"en" 		"Combine Peacekeeper"
 		"it"		"Combine Peacekeeper"
-		"ko" 		"콤바인 평화유지군"
+		"ko" 		"배럭 콤바인 평화유지군"
 	}
 	"Barracks Super"
 	{
@@ -1044,7 +1044,7 @@
 		"en" 		"Barracks Warrior"
 		"it"		"Combine Warrior"
 		"it"		"Caserma Guerriero"
-		"ko" 		"콤바인 전사"
+		"ko" 		"배럭 콤바인 전사"
 	}
 	"Barracks Commander"
 	{
@@ -1053,13 +1053,13 @@
 		"en" 		"Barracks Commander"
 		"it"		"Comandante della combinazione"
 		"it"		"Comandante di caserma"
-		"ko" 		"마제트인 사령관"
+		"ko" 		"배럭 마제트인 사령관"
 	}
 	"Barracks Chaos Containment Unit"
 	{
 		"en" 		"Chaos Containment Unit"
 		"it"		"Unità di contenimento del caos"
-		"ko" 		"혼돈 격리 부대"
+		"ko" 		"배럭 혼돈 격리 부대"
 	}
 	"Barracks Giant ddt"
 	{
@@ -1068,7 +1068,7 @@
 		"en" 		"Barracks Giant DDT"
 		"it"		"Combina DDT gigante"
 		"it"		"Caserma Gigante DDT"
-		"ko" 		"거대 콤바인 DDT"
+		"ko" 		"배럭 거대 콤바인 DDT"
 	}
 	"Barracks Collos"
 	{
@@ -1077,82 +1077,82 @@
 		"en"		"Barracks Collos"
 		"it"		"Combinare Collos"
 		"it"		"Caserma Collos"
-		"ko" 		"콤바인 황금 거인"
+		"ko" 		"배럭 콤바인 황금 거인"
 	}
 	"Barracks Iberian Runner"
 	{
 		"en"		"Iberian Runner"
 		"ru" 		"Бегун Иберии"
 		"it"		"Corridore iberico"
-		"ko" 		"이베리아 러너"
+		"ko" 		"배럭 이베리아 러너"
 	}
 	"Barracks Iberian Gunner"
 	{
 		"en"		"Iberian Gunner"
 		"ru" 		"Стрелок Иберии"
 		"it"		"Artigliere iberico"
-		"ko" 		"이베리아 거너"
+		"ko" 		"배럭 이베리아 총잡이"
 	}
 	"Barracks Iberian Tanker"
 	{
 		"en"		"Iberian Tanker"
 		"it"		"Nave cisterna iberica"
-		"ko" 		"이베리아 탱커"
+		"ko" 		"배럭 이베리아 탱커"
 	}	
 	"Barracks Iberian Rocketeer"
 	{
 		"en"		"Iberian Rocketeer"
 		"ru" 		"Ракетомётчик Иберии"
 		"it"		"Razziatore iberico"
-		"ko" 		"이베리아 로켓사수"
+		"ko" 		"배럭 이베리아 로켓사수"
 	}	
 	"Barracks Iberian Healer"
 	{
 		"en"		"Iberian Healer"
 		"ru" 		"Медик Иберии"
 		"it"		"Guaritore iberico"
-		"ko" 		"이베리아 의무병"
+		"ko" 		"배럭 이베리아 의무병"
 	}
 	"Barracks Iberian Healtanker"
 	{
 		"en"		"Iberian Healtanker"
 		"ru" 		"Лечащий танк иберии"
 		"it"		"Healtanker iberico"
-		"ko" 		"이베리아 회복 탱커"
+		"ko" 		"배럭 이베리아 회복 탱커"
 	}	
 	"Barracks Iberia Boomstick"
 	{
 		"en"		"Iberian Boomsticker"
 		"ru" 		"Бумстикер Иберии"
 		"it"		"Boomsticker iberico"
-		"ko" 		"이베리아 붐스틱병"
+		"ko" 		"배럭 이베리아 붐스틱병"
 	}
 	"Barracks Iberian Guards"
 	{
 		"en"		"Iberian Guards"
 		"ru" 		"Стражи Иберии"
 		"it"		"Guardie iberiche"
-		"ko" 		"이베리아 경비병"
+		"ko" 		"배럭 이베리아 경비병"
 	}
 	"Barracks Iberian Commando"
 	{
 		"en"		"Iberian Commando"
 		"it"		"Commando iberico"
-		"ko" 		"이베리아 코만도"
+		"ko" 		"배럭 이베리아 코만도"
 	}
 	"Barracks Iberian Elite Gunner"
 	{
 		"en"		"Iberian Elite Gunner"
 		"ru" 		"Элитный Стрелок Иберии"
 		"it"		"Artigliere d'élite iberico"
-		"ko" 		"이베리아 정예 거너"
+		"ko" 		"배럭 이베리아 정예 총잡이"
 	}	
 	"Barracks Iberia Headhunter"
 	{
 		"en"		"Iberian Headhunter"
 		"ru" 		"Охотник за головами Иберии"
 		"it"		"Cacciatore di teste iberico"
-		"ko" 		"이베리아 헤드헌터"
+		"ko" 		"배럭 이베리아 헤드헌터"
 	}	
 	"Barracks Iberia Inquisitor Lynsen"
 	{
@@ -1165,14 +1165,14 @@
 		"en"		"Guardian of the Lighthouse"
 		"ru" 		"Хранитель Маяка"
 		"it"		"Guardiano del Faro"
-		"ko" 		"등대의 수호자"
+		"ko" 		"배럭 이베리아 등대 수호병"
 	}
 	"Barracks Militia"
 	{
 		"en" 		"Militia"
 		"fr" 		"Milice"
 		"it"		"Milizia"
-		"ko" 		"시민군"
+		"ko" 		"배럭 시민군"
 	}
 	"Barracks Militia Desc"
 	{
@@ -1235,7 +1235,7 @@
 		"pt"		"Espadachim de 2 espadas"
 		"nl"		"Twee Handige Zwaardvechter"
 		"it"		"Spadaccino a due mani"
-		"ko" 		"양손검병"
+		"ko" 		"양손 검병"
 	}
 	"Crossbow Man"
 	{
@@ -1461,7 +1461,7 @@
 	{
 		"en" 		"Voided Vanguard"
 		"it"		"Avanguardia annullata"
-		"ko" 		"공허화된 뱅가드"
+		"ko" 		"침식된 뱅가드"
 	}
 	"Kahmlstein"
 	{
@@ -1470,7 +1470,7 @@
 		"pt"		"Kahmlstein" 
 		"nl"		"Kahmlstein"
 		"it"		"Kahmlstein"
-		"ko"		"카멜슈타인"
+		"ko"		"카멜스타인"
 	}
 	"Kahmlstein?"
 	{
@@ -1479,14 +1479,14 @@
 		"pt"		"Kahmlstein?" 
 		"nl"		"Kahmlstein?"
 		"it"		"Kahmlstein?"
-		"ko"		"카멜슈타인?"
+		"ko"		"카멜스타인?"
 	}
 	"Chaos Kahmlstein"
 	{
 		"en"		"Chaos Kahmlstein"
 		"ru" 		"Хаос Кахмлстайн"
 		"it"		"Caos Kahmlstein"
-		"ko"		"혼돈 카멜슈타인"
+		"ko"		"혼돈 카멜스타인"
 	}
 	"L4D2 Tank"
 	{
@@ -1750,7 +1750,7 @@
 		"pt"		"Bunker Kahmlstein"
 		"ru"		"Бункерный Кахмлстайн"
 		"it"		"Bunker Kahmlstein"
-		"ko"		"벙커 카멜슈타인"
+		"ko"		"벙커 카멜스타인"
 	}
 	"Zerofuse"
 	{
@@ -2067,7 +2067,7 @@
 		"pt"		"Pai Grigori Gerado"
 		"ru"		"Созданный отец Григорий"
 		"it"		"Padre Grigori corrotto"
-		"ko"		"오염된 그리고리 신부"
+		"ko"		"타락한 그리고리 신부"
 	}
 	"Machina Waldch"
 	{
@@ -2111,7 +2111,7 @@
 		"pt"		"Silvester Angelical"
 		"ru"		"Ангел Сильвестр"
 		"it"		"Angeled Silvester"
-		"ko"		"천사화 실베스터"
+		"ko"		"승천한 실베스터"
 	}
 	"Calmaticus"
 	{
@@ -2252,7 +2252,7 @@
 		"ru"		"Сал Вьенто Епископ Квинт"
 		"chi"		"盐风主教昆图斯"
 		"it"		"Sal Viento Vescovo Quinto"
-		"ko"		"살 비엔토 주교 퀸투스"
+		"ko"		"살비엔토 주교 퀸투스"
 	}
 	"Armorless Union Knight"
 	{
@@ -2559,27 +2559,27 @@
 		"en"		"Railgunner"
 		"ru"		"Рельсотроновик"
 		"it"		"Railgunner"
-		"ko"		"레일건 사수"
+		"ko"		"배럭 레일건 사수"
 	}
 	"Barracks Basic Mage"
 	{
 		"en"		"Basic Medic Mage"
 		"ru"		"Базовый маг-медик"
 		"it"		"Medico di base Mago"
-		"ko"		"기본 마법사 메딕"
+		"ko"		"배럭 기본 마법사 메딕"
 	}
 	"Barracks Intermediate Mage"
 	{
 		"en"		"Intermediate Medic Mage"
 		"ru"		"Средний маг-медик"
 		"it"		"Medico intermedio Mago"
-		"ko"		"중급 마법사 메딕"
+		"ko"		"배럭 중급 마법사 메딕"
 	}
 	"Barracks Advanced Mage"
 	{
 		"en"		"Advanced Medic Mage"
 		"it"		"Medico avanzato Mago"
-		"ko"		"상급 마법사 메딕"
+		"ko"		"배럭 상급 마법사 메딕"
 	}
 	"Barracks Ikunagae"
 	{
@@ -2587,7 +2587,7 @@
 		"de"		"Iku Nagae"
 		"ru"		"Ику Нагаэ"
 		"it"		"Iku Nagae"
-		"ko"		"나가에 이쿠"
+		"ko"		"배럭 나가에 이쿠"
 	}
 	"Barracks SchwertKrieg"
 	{
@@ -2595,7 +2595,7 @@
 		"ru"		"Шверткриг"
 		"nl"		"Schwertkrieg"
 		"it"		"Schwertkrieg"
-		"ko"		"슈베르트크리그"
+		"ko"		"배럭 슈베르트크리그"
 	}
 	"Barracks Donnerkrieg"
 	{
@@ -2603,7 +2603,7 @@
 		"ru"		"Доннеркриг"
 		"nl"		"Donnerkrieg"
 		"it"		"Donnerkrieg"
-		"ko"		"도너크리그"
+		"ko"		"배럭 도너크리그"
 	}
 	"Barracks Holy Knight"
 	{
@@ -2612,7 +2612,7 @@
 		"pt"		"Cavaleiro Santo"
 		"nl"		"Heilige Ridder"
 		"it"		"Cavaliere Santo"
-		"ko"		"신성 기사"
+		"ko"		"배럭 신성 기사"
 	}
 	"Barracks Mecha Barrager"
 	{
@@ -2620,27 +2620,27 @@
 		"de"		"Machine Soldat Spammer"
 		"ru"		"Меха-солдат-бомбардир"
 		"it"		"Soldato mecha Barrager"
-		"ko"		"기계 솔저 연발 사격수"
+		"ko"		"배럭 기계 솔저 연발 사격수"
 	}
 	"Barracks Barrager"
 	{
 		"en"		"Barrager"
 		"ru"		"Бомбардир"
 		"it"		"Barrager"
-		"ko"		"솔저 연발 사격수"
+		"ko"		"배럭 솔저 연발 사격수"
 	}
 	"Barracks Mecha Loader"
 	{
 		"en"		"Mecha Loader"
 		"it"		"Caricatore mecha"
-		"ko"		"메카 로더"
+		"ko"		"배럭 메카 로더"
 	}
 	"Barracks Crossbow Medic"
 	{
 		"en"		"Medic Crossbowman"
 		"ru"		"Медик-арбалетчик"
 		"it"		"Medico Balestriere"
-		"ko"		"석궁병 메딕"
+		"ko"		"배럭 석궁병 메딕"
 	}
 	"The Last Knight"
 	{
@@ -2700,14 +2700,14 @@
 		"ru" 		"Фрактал Создателя Пути"
 		"chi"		"塑路者分形"
 		"it"		"Frattale sagomatore di percorsi"
-		"ko"		"페스셰이퍼 분신"
+		"ko"		"패스셰이퍼 분신"
 	}
 	"Barracks Teutonic Knight"
 	{
 		"en"		"Teutonic Knight"
 		"ru"		"Тевтонский рыцарь"
 		"it"		"Cavaliere teutonico"
-		"ko"		"튜튼 기사"
+		"ko"		"배럭 튜튼 기사"
 	}
 	"Barracks Villager"
 	{
@@ -2721,7 +2721,7 @@
 		"en"		"Tower"
 		"ru"		"Башня"
 		"it"		"Torre"
-		"ko"		"망루"
+		"ko"		"배럭 망루"
 	}
 	"Tidelinked Bishop"
 	{
@@ -3087,7 +3087,7 @@
 	{
 		"en"	"Bladedance The Betrayed"
 		"it"	"Bladedance Il tradito"
-		"ko"	"배신당한 자 '블레이드댄스'"
+		"ko"	"배신당한 자, '칼춤'"
 	}
 	"Bladedance Clone"
 	{
@@ -3232,7 +3232,7 @@
 	{
 		"en"	"Draedon"
 		"it"	"Draedon"
-		"ko"	"드레이돈"
+		"ko"	"드래돈"
 	}
 	"Aetheria"
 	{
@@ -3330,13 +3330,13 @@
 	{
 		"en"	"Sakratan"
 		"it"	"Sakratan"
-		"ko"	"사크라탄"
+		"ko"	"사카르탄"
 	}
 	"Yadeam"
 	{
 		"en"	"Yadeam"
 		"it"	"Yadeam"
-		"ko"	"야딤"
+		"ko"	"야댐"
 	}
 	"Rajul"
 	{
@@ -3636,7 +3636,7 @@
 	{
 		"en"	"Xeno Patient Few"
 		"it"	"Pochi pazienti Xeno"
-		"ko"	"제노 소수 환자"
+		"ko"	"제노 한탄의 환자"
 	}
 	"Ouroboros Ekas"
 	{
@@ -3744,7 +3744,7 @@
 	{
 		"en"	"Draeonis"
 		"it"	"Draeonis"
-		"ko"	"드레이오니스"
+		"ko"	"드래오니스"
 	}
 	"Aetherium"
 	{
@@ -3810,13 +3810,13 @@
 	{
 		"en"	"Draconia"
 		"it"	"Draconia"
-		"ko"	"드라코니아"
+		"ko"	"드래코니아"
 	}
 	"Draconia Desc"
 	{
 		"en"	"Is a stronger variant\nIn addition, it can refresh ANY shields, regardless of cooldowns\nEliminate as soon as possible"
 		"it"	"È una variante più forte.\nInoltre, può rinfrescare QUALSIASI scudo, indipendentemente dai cooldown"
-		"ko"	"드레이돈 계열의 최상위 버전입니다.\n쿨타임에 관계 없이, 모든 보호막을 복구시킬 수 있습니다.\n최대한 빠르게 제거하세요."
+		"ko"	"드래돈 계열의 최상위 버전입니다.\n쿨타임에 관계 없이, 모든 보호막을 복구시킬 수 있습니다.\n최대한 빠르게 제거하세요."
 	}
 	"Dronianis"
 	{
@@ -3943,7 +3943,7 @@
 	{
 		"en"	"The ruler of Ruina\nIt is advidsable not to group up aggainst her\nIf 4 or more people are near her, she has the ability to teleport\nIn addition, on wave 60, walk in a circle to avoid her Ion spam attack."
 		"it"	"Il sovrano di Ruina\nÈ consigliabile non raggrupparsi contro di lei Se 4 o più persone le sono vicine, ha la capacità di teletrasportarsi\nInoltre, nell'ondata 60, cammina in cerchio per evitare il suo attacco di spam di ioni."
-		"ko"	"루이나의 통치자입니다.\n그녀에게 떼거지로 접근하지 않는 것이 좋습니다.\n자신 주변에 4명 이상의 적이 있다면, 순간이동 능력을 사용합니다.\n60 웨이브에서는 이온 레이저 공격이 무자비하게 쏟아집니다. 그녀를 중심으로 원을 그리며 싸우세요."
+		"ko"	"루이나의 집정관입니다.\n그녀에게 떼거지로 접근하지 않는 것이 좋습니다.\n자신 주변에 4명 이상의 적이 있다면, 순간이동 능력을 사용합니다.\n60 웨이브에서는 이온 레이저 공격이 무자비하게 쏟아집니다. 그녀를 중심으로 원을 그리며 싸우세요."
 	}
 	"Lelouch Blade"
 	{
@@ -3967,7 +3967,7 @@
 	{
 		"en"	"Fractal Cannon"
 		"it"	"Cannone frattale"
-		"ko"	"프랙탈 캐논"
+		"ko"	"프랙탈 대포"
 	}
 	"Ealing"
 	{
@@ -4009,7 +4009,7 @@
 	{
 		"en"	"Mutating Blob"
 		"it"	"Blob mutante"
-		"ko"	"변이하는 방울"
+		"ko"	"돌연변이 블롭"
 	}
 	"Mutating Blob Desc"
 	{
@@ -4045,7 +4045,7 @@
 	{
 		"en"	"Voided Hard Crust"
 		"it"	"Crosta dura vuota"
-		"ko"	"공허화된 견고한 껍질"
+		"ko"	"침식된 견고한 껍질"
 	}
 	"Voided Hard Crust Desc"
 	{
@@ -4093,7 +4093,7 @@
 	{
 		"en"	"Blood Pollutor"
 		"it"	"Inquinante per il sangue"
-		"ko"	"혈액 오염자"
+		"ko"	"혈액 오염수"
 	}
 	"Blood Pollutor Desc"
 	{
@@ -4105,7 +4105,7 @@
 	{
 		"en"	"Voided Expidonsan Fortifier"
 		"it"	"Fortificatore Expidonsan annullato"
-		"ko"	"공허화된 엑스피돈사 보강병"
+		"ko"	"침식된 엑스피돈사 보강병"
 	}
 	"Voided Expidonsan Fortifier Desc"
 	{
@@ -4129,7 +4129,7 @@
 	{
 		"en"	"Hosting Blob"
 		"it"	"Hosting Blob"
-		"ko"	"숙주형 방울"
+		"ko"	"숙주형 블롭"
 	}
 	"Hosting Blob Desc"
 	{
@@ -4177,7 +4177,7 @@
 	{
 		"en"	"Voided Expidonsan Cleaner"
 		"it"	"Detergente Expidonsan non utilizzato"
-		"ko"	"공허화된 엑스피돈사 청소부"
+		"ko"	"침식된 엑스피돈사 청소부"
 	}
 	"Voided Expidonsan Cleaner Desc"
 	{
@@ -4189,7 +4189,7 @@
 	{
 		"en"	"Voided Expidonsan Container"
 		"it"	"Contenitore Expidonsan vuoto"
-		"ko"	"공허화된 엑스피돈사 격리부대"
+		"ko"	"침식된 엑스피돈사 격리부대"
 	}
 	"Voided Expidonsan Container Desc"
 	{
@@ -4273,7 +4273,7 @@
 	{
 		"en"	"Total Growth"
 		"it"	"Crescita totale"
-		"ko"	"최종 진화체"
+		"ko"	"최종 진화물"
 	}
 	"Total Growth Desc"
 	{
@@ -4297,13 +4297,13 @@
 	{
 		"en"	"Voided Expidonsan Rejuvinator"
 		"it"	"Ringiovanitore Expidonsan non funzionante"
-		"ko"	"공허화된 엑스피돈사 원기 회복사"
+		"ko"	"침식된 엑스피돈사 원기 회복사"
 	}
 	"Voided Expidonsan Rejuvinator Desc"
 	{
 		"en"	"One of the finest expidonsan doctors fell to the void.\nheals almost any ally instantly and overheals them, will try to heal every target (silence makes the heal 5x slower)\nHas extreme speeds, will suicide if its alone."
 		"it"	"Uno dei migliori medici expidonsan caduti nel vuoto.\ncura quasi tutti gli alleati istantaneamente e li surriscalda, cercherà di curare ogni bersaglio (il silenzio rende la guarigione 5 volte più lenta)\nHa una velocità estrema, si suicida se è solo."
-		"ko"	"최고의 엑스피돈사인 의사 중 하나가 공허에 침식된 결과물입니다.\n거의 모든 아군을 즉시 치료하며 과치료도 부여합니다. (침묵 상태 시 치유 속도가 5배 느려집니다)\n이동 속도가 극도로 빠르지만, 혼자 남을 경우 자살합니다."
+		"ko"	"최고의 엑스피돈사인 의사 중 하나가 공허에 침식된 결과물.\n거의 모든 아군을 즉시 치료하며 과치료도 부여. (침묵 상태 시 치유 속도가 5배 느려짐)\n이동 속도가 극도로 빠르지만, 혼자 남을 경우 자살합니다."
 	}
 	"Speechless"
 	{
@@ -4329,13 +4329,13 @@
 		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increased.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks.\n(Silence)makes voidbuff weaker"
 		"ru" 	"Сердце Бездны...\nПервая способность:Засасывает всех союзников и если слишком близко,Наносит очень много урона.\nМожет ударить несколько раз подряд если долго никого не бил.\nВо время его существования,Распостронение бездны Очень усилено.\nКоллоны бездны появляются под врагами.\nЕсли Уровень здоровья пал до низкого начнёт распостронять бездну там где ходит.\n(заглушение)ослабляет Усиление от бездны"
 		"it"	"Cuori del vuoto...\nAbilità1: risucchia tutti gli alleati e, se troppo vicini, li danneggia pesantemente.\nPuò attaccare rapidamente se non ha attaccato per un po'.\nDurante la sua esistenza, la diffusione del vuoto è immensamente aumentata.\nI pilastri del vuoto sono evocati sotto i nemici.\nSe la salute è troppo bassa, diffonderà il vuoto dove cammina.\n(Silenzio)rende il voidbuff più debole"
-		"ko"	"공허의 심장이라고 하는 존재...\n능력1: 주변의 모든 적을 빨아들이며, 너무 가까울 경우 높은 피해를 줍니다.\n한동안 공격하지 않았다면, 다음 공격의 속도가 매우 빨라집니다.\n이 적이 등장하면, 공허 점막의 확산 속도가 매우 빨라집니다.\n플레이어 아래에 공허 기둥을 소환합니다.\n현재 체력이 낮을 경우, 이동할 때마다 공허 점막이 생성됩니다.\n(침묵 상태 시) 이 적에게 부여되는 공허 관련 버프가 약화됩니다."
+		"ko"	"공허의 심장이라고 하는 존재...\n능력1: 주변의 모든 적을 빨아들이고, 가까운 대상에게 높은 피해\n한동안 공격하지 않았다면, 다음 공격 속도가 크게 증가\n이 적이 등장시, 공허 점막의 확산 속도 가속.\n플레이어 아래에 공허 기둥을 소환합니다.\n체력이 낮을 경우, 이동할 때마다 공허 점막 생성.\n(침묵 상태 시) 이 적에게 부여되는 공허 관련 버프가 약화됩니다."
 	}
 	"Voided Diversionistico"
 	{
 		"en"	"Voided Diversionistico"
 		"it"	"Diversionistico annullato"
-		"ko"	"공허화된 다이버저니스티코"
+		"ko"	"침식된 다이버저니스티코"
 	}
 	"Voided Diversionistico Desc"
 	{
@@ -4388,7 +4388,6 @@
 		"it"	"Danno elementare del Caos"
 		"ko"	"혼돈 원소 피해"
 	}
-
 	"Chaos Elemental Damage Desc"
 	{
 		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou deal 350 truedamage to 3 allies.\nAlso gives 40％ Vulnerability for 10 seconds.\nHits only upto 3 additional allies."
@@ -4422,7 +4421,7 @@
 		"en"	"Once full, Your nervous system breaks down.\nYou receive 500 truedamage and are heavily slowed for 5 seconds."
 		"es"	"Cuando se llena, tu sistema nervioso se pone... nervioso, y falla.\nRecibes 500 de daño verdadero y te ralentizas mucho por 5 segundos."
 		"it"	"Una volta pieno, il tuo sistema nervoso si rompe.\nRicevi 500 danni reali e sei fortemente rallentato per 5 secondi."
-		"ko"	"원소 피해 게이지가 꽉 차면, 당신의 신경이 붕괴됩니다.\n즉시 500의 트루 대미지를 받고 5초 동안 이동 속도가 크게 감소합니다."
+		"ko"	"원소 피해 게이지가 꽉 차면, 당신의 신경에 장애가 옵니다.\n즉시 500의 트루 대미지를 받고 5초 동안 이동 속도가 크게 감소합니다."
 	}
 	"Corruption Elemental Damage"
 	{
@@ -4456,7 +4455,7 @@
 	{
 		"en"	"Necrosis Elemental Damage"
 		"it"	"Danno elementare da necrosi"
-		"ko"	"괴사 원소 피해"
+		"ko"	"쇠약 원소 피해"
 	}
 	"Necrosis Elemental Damage Desc"
 	{
@@ -4533,7 +4532,7 @@
 		"en"	"Vhxis"
 		"ru" 	"Всикс"
 		"it"	"Vhxis"
-		"ko"	"비흐시스"
+		"ko"	"비히시스"
 	}
 	"Random Boss"
 	{
@@ -4601,7 +4600,7 @@
 	{
 		"en" "Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
 		"it" "Xeno Seaborn W.F. Chaos Voided Acclamato Spadaccino Il Primo"
-		"ko" "제노 시본 W.F. 혼돈 공허화된 갈채의 검객 1세"
+		"ko" "제노 시본 W.F. 혼돈 침식된 갈채의 검객 1세"
 	}
 	"Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First esc"
 	{
@@ -4642,7 +4641,7 @@
 	{
 		"en"	"Voided Erasus"
 		"it"	"Erasus annullato"
-		"ko"	"공허화된 이레이서스"
+		"ko"	"침식된 이레이서스"
 	}
 	"Voided Erasus Desc"
 	{
@@ -5034,7 +5033,7 @@
 	"Dr Dam Clone Desc"
 	{
 		"en"		"A clone of the one who harnessed luck.\n-Does a triple combo attack, 3rd hit deals 2x damage\n-The further away the target is, the more speed he gains.\n-If far enough away, gains massive resistances."
-		"ko"		"행운에 모든걸 맡긴 자의 복제입니다.\n-3연속 공격을 가하며, 3번째 공격은 2배의 피해를 줌\n-추격 대상과 거리가 멀수록 이동 속도가 증가.\n-대상과 매우 멀리 떨어져있다면, 피해 저항력이 대폭 증가."
+		"ko"		"행운에 모든걸 맡긴 자의 클론입니다.\n-3연속 공격을 가하며, 3번째 공격은 2배의 피해를 줌\n-추격 대상과 거리가 멀수록 이동 속도가 증가.\n-대상과 매우 멀리 떨어져있다면, 피해 저항력이 대폭 증가."
 	}
 	"Dr Dam's Special Delivery"
 	{
@@ -5258,8 +5257,8 @@
 	}
 	"Iberia-Expidonsan Seaborn Eradicator Desc"
 	{
-		"en"		"Acts as a spawnpoint, unkillable and oneshots anything.\nOnce most allies died, it enrages, loses all its resistance and 99％ hp and gets very fast, loses alot of damage too."
-		"it"		"Agisce come punto di spawn, non è uccidibile e spara a qualsiasi cosa.\nUna volta morti la maggior parte degli alleati, si infuria, perde tutte le resistenze e il 99％ di hp e diventa molto veloce, perdendo anche molti danni."
+		"en"		"Acts as a spawnpoint, unkillable and oneshots anything.\nOnce most allies died, it enrages, loses all its resistance and 99% hp and gets very fast, loses alot of damage too."
+		"it"		"Agisce come punto di spawn, non è uccidibile e spara a qualsiasi cosa.\nUna volta morti la maggior parte degli alleati, si infuria, perde tutte le resistenze e il 99% di hp e diventa molto veloce, perdendo anche molti danni."
 		"ko"		"이 적은 다른 적들의 스폰 포인트 역할을 합니다. 이 적은 처치할 수 없으며, 모든 대상을 일격에 즉사시킵니다.\n섬멸자 외의 모든 아군이 처치당하면, 격분 상태가 되어 이동 속도가 매우 빨라지지만, 모든 피해 저항력을 잃고 공격력과 체력이 대폭 감소합니다."
 	}
 	"Combastia"
@@ -5536,73 +5535,73 @@
 	"Humbee"
 	{
 		"en"	"Irongate Humbee"
-		"ko"	"아이언게이트 험비"
+		"ko"	"강철게이트 험비"
 		"it"	"Irongate Humbee"
 	}
 	"Shotgunner"
 	{
 		"en"	"Irongate Shotgunner"
-		"ko"	"아이언게이트 산탄총병"
+		"ko"	"강철게이트 산탄총병"
 		"it"	"Fuciliere Irongate"
 	}
 	"Bulldozer"
 	{
 		"en"	"Irongate Bulldozer"
-		"ko"	"아이언게이트 불도저"
+		"ko"	"강철게이트 불도저"
 		"it"	"Bulldozer Irongate"
 	}
 	"Hardender"
 	{
 		"en"	"Irongate Hardender"
-		"ko"	"아이언게이트 경화자"
+		"ko"	"강철게이트 경화자"
 		"it"	"Hardender Irongate"
 	}
 	"Raider"
 	{
 		"en"	"Irongate Raider"
-		"ko"	"아이언게이트 약탈자"
+		"ko"	"강철게이트 약탈자"
 		"it"	"Incursore di Irongate"
 	}
 	"Zapper"
 	{
 		"en"	"Irongate Zapper"
-		"ko"	"아이언게이트 충격병"
+		"ko"	"강철게이트 충격병"
 		"it"	"Zapper Irongate"
 	}
 	"Payback"
 	{
 		"en"	"Irongate Payback"
-		"ko"	"아이언게이트 복수자"
+		"ko"	"강철게이트 복수자"
 		"it"	"Ritorno di fiamma"
 	}
 	"Blocker"
 	{
 		"en"	"Irongate Blocker"
-		"ko"	"아이언게이트 블로커"
+		"ko"	"강철게이트 블로커"
 		"it"	"Bloccatore di Irongate"
 	}
 	"Victoria Destructor"
 	{
 		"en"	"Irongate Destructor"
-		"ko"	"아이언게이트 파괴자"
+		"ko"	"강철게이트 파괴자"
 		"it"	"Distruttore di Irongate"
 	}
 	"Victoria Tactical Protector"
 	{
 		"en"	"Irongate Tactical Protector"
-		"ko"	"아이언게이트 전술 프로텍터"
+		"ko"	"강철게이트 전술 프로텍터"
 		"it"	"Protezione tattica Irongate"
 	}
 	"Victoria Aviator"
 	{
 		"en"	"Irongate Aviator"
-		"ko"	"아이언게이트 조종사"
+		"ko"	"강철게이트 조종사"
 		"it"	"Aviatore Irongate"
 	}
 	"IronShield"
 	{
 		"en"	"Irongate IronShield"
-		"ko"	"아이언게이트 아이언실드"
+		"ko"	"강철게이트 강철 방패"
 		"it"	"Scudo di ferro Irongate"
 	}
 	"Basebreaker"
@@ -5890,12 +5889,12 @@
 	"Anti Viral Programm"
 	{
 		"en"		"Anti Viral Programm"
-		"ko"		"안티바이러스 프로그램"
+		"ko"		"안티 바이러스 프로그램"
 	}
 	"Anti Viral Programm Desc"
 	{
 		"en"		"Its an anti virus, and youre the virus.\n-Goes after only one target.\n-If target dies or enough time passes, he fades away\n-Phases through everything."
-		"ko"		"안티바이러스, 그리고 당신이 바이러스입니다.\n-오직 하나의 대상만을 추격\n-대상이 사망하거나 충분한 시간이 지나면 소멸\n-모든 것들을 무시하고 지나갑니다."
+		"ko"		"안티 바이러스 프로그램입니다. 그리고 이들의 입장에서 당신은 바이러스죠.\n-한 명의 대상만을 추격함\n-대상이 사망하거나 충분한 시간이 지나면 소멸함\n-모든 것을 통과하여 지나감"
 	}
 	"Agent Eric"
 	{
@@ -6129,31 +6128,31 @@
 	{
 		"en"		"Voided Metro Cop"
 		"it"		"Poliziotto della metropolitana annullato"
-		"ko"		"공허화된 시민 보호 기동대"
+		"ko"		"침식된 시민 보호 기동대"
 	}
 	"Voided Metro Raider"
 	{
 		"en"		"Voided Metro Raider"
 		"it"		"Metro Raider annullato"
-		"ko"		"공허화된 시민 보호 특공대"
+		"ko"		"침식된 시민 보호 특공대"
 	}
 	"Voided W.F. Rifler"
 	{
 		"en"		"Voided W.F. Rifler"
 		"it"		"Annullato W.F. Rifler"
-		"ko"		"공허화된 W.F. 소총수"
+		"ko"		"침식된 W.F. 소총수"
 	}
 	"Voided W.F. Elite"
 	{
 		"en"		"Voided W.F. Elite"
 		"it"		"W.F. Elite annullato"
-		"ko"		"공허화된 W.F. 콤바인 엘리트"
+		"ko"		"침식된 W.F. 콤바인 엘리트"
 	}
 	"Voided W.F. Shotgunner"
 	{
 		"en"		"Voided W.F. Shotgunner"
 		"it"		"Vuoto W.F. Shotgunner"
-		"ko"		"공허화된 W.F. 산탄총병"
+		"ko"		"침식된 W.F. 산탄총병"
 	}
 	"Hunter"
 	{
@@ -6214,7 +6213,7 @@
 	{
 		"en"	"Major Voided"
 		"it"	"Maggiore annullato"
-		"ko"	"공허화된 소령"
+		"ko"	"침식된 소령"
 	}
 	"Chaos Evil Demon"
 	{
@@ -7020,13 +7019,13 @@
 	{
 		"en"	"Portal Gate"
 		"it"	"Porta del portale"
-		"ko"	"차원 게이트"
+		"ko"	"차원 관문"
 	}
 	"Portal Gate Desc"
 	{
 		"en"	"Gates that seem to be opening up on their own...or are they?\nPortal Gates teleport foes that you may or may not have went up against in the past.\nLiving beings that are deemed too weak get refragmented."
 		"it"	"Porte che sembrano aprirsi da sole... o forse sì?\nLe Porte del Portale teletrasportano i nemici che si possono o meno aver affrontato in passato.\nGli esseri viventi ritenuti troppo deboli vengono riframmentati."
-		"ko"	"저절로 열리는 듯한 게이트...인 것 같습니다?\n차원 게이트는 과거에 맞섰거나 맞서지 않은 적들을 순간이동 시킵니다.\n살아있는 생명체 중, 너무 약하다고 판단되는 존재는 재구성됩니다."
+		"ko"	"저절로 열리는 듯한 관문...인 것 같습니다?\n차원 관문은 과거에 맞섰거나 맞서지 않은 적들을 순간이동 시킵니다.\n살아있는 생명체 중, 너무 약하다고 판단되는 존재는 재구성됩니다."
 	}
 	"Aperture Collector"
 	{
@@ -7242,7 +7241,7 @@
 	{
 		"en"	"So this is where all of those Grigori copies are coming from...\nAnnabelle is replaced with a Boomstick.\nIon Cannon now heals allies.\nHas a shield that activates passively."
 		"it"	"Ecco da dove provengono tutte le copie di Grigori...\nAnnabelle è sostituita da un Boomstick.\nIl Cannone a ioni ora cura gli alleati."
-		"ko"	"그 많던 그리고리 신부 짝퉁이 어디서 왔는지 알 것 같군요...\n애너벨이 아닌 붐스틱을 보유하며,\n이온 캐논이 이제 아군들을 회복합니다.\n자동으로 활성화되는 보호막을 보유합니다."
+		"ko"	"그 많던 그리고리 신부 짝퉁이 어디서 왔는지 알 것 같군요...\n애너벨이 아닌 붐스틱을 보유\n이온 캐논이 이제 아군들을 회복함\n자동으로 활성화되는 보호막 보유"
 	}
 	"Aperture Exterminator"
 	{
@@ -7320,7 +7319,7 @@
 	{
 		"en"	"Built by someone in Ziberia. Does not belong in the labs, maybe it's looking for something?\nIs very fast paced, seems to be trying to replicate Sensal's Portal Gates"
 		"it"	"Costruito da qualcuno in Ziberia. Non appartiene ai laboratori, forse sta cercando qualcosa?\nÈ molto veloce, sembra che stia cercando di replicare le Porte del Portale di Sensal"
-		"ko"	"지베리아의 누군가가 만든 기계입니다. 이 연구소와 관련이 없는 존재입니다. 무언가를 찾고 있는 걸까요?\n속도가 매우 빠르며, 센살의 차원문을 복제하려고 시도하는 것 같습니다."
+		"ko"	"지베리아의 누군가가 만든 기계입니다. 이 연구소와 관련이 없는 존재입니다. 대체 뭘 찾고 있는 걸까요?\n속도가 매우 빠르며, 센살의 차원문을 복제하려고 시도하는 것 같습니다."
 	}
 	"Refragmented Winter Sniper"
 	{
@@ -7373,7 +7372,7 @@
 	{
 		"en"	"Buffs Vincent in its range, and outside after leaving it a bit aswell."
 		"it"	"Buffa Vincent nel suo raggio d'azione, e anche fuori dopo averlo lasciato un po'."
-		"ko"	"범위 내의 빈센트에게 버프를 부여하며, 범위를 벗어나도 일정 시간 동안 지속됩니다."
+		"ko"	"범위 내의 빈센트 에게 버프를 부여하며, 범위를 벗어나도 일정 시간 동안 지속됩니다."
 	}
 	"Old forgotten expidonsan robot"
 	{
@@ -7457,7 +7456,7 @@
 	{
 		"en"	"U̵͌m̴b̷r̵ã̶̺l̶̡͘ ̷͓̈́R̸e̷f̵̞͘ra̷͖͛c̵͊ţ̷͝"
 		"it"	"U̵͌m̴b̷r̵ã̶̺l̶̡͘ ̷͓̈́R̸e̷f̵̞͘ra̷͖͛c̵͊ţ̷͝"
-		"ko"	"움̵͌브̴̷랄̶̶̡̺̃͘ ̷̸͓̈́리̷프̵̞͘랙̵̨̕트̷̷̧͖͛͝"
+		"ko"	"움̵͌브̴̷랄̶̶̡̺̃͘ ̷̸͓̈́굴̷절̵̞͘수̷̷̧͖҇̒̓̓̎͛͝"
 	}
 	"Umbral Refract Desc"
 	{
@@ -7499,7 +7498,7 @@
 	{
 		"en"	"An incredibly fast Umbral, capable of moving past the speed of light. \nGains additional speed and vulnerability the longer its alive."
 		"it"	"Un Umbral incredibilmente veloce, capace di muoversi oltre la velocità della luce. \nGuadagna ulteriore velocità e vulnerabilità quanto più a lungo è in vita."
-		"ko"	"엄청나게 빠른 엄브랄로, 빛의 속도를 넘어 움직일 수 있습니다.\n생존한 시간이 길수록 이동 속도가 더 빨라지지만, 공격 피해에 취약해집니다."
+		"ko"	"엄청나게 빠른 엄브랄로, 빛의 속도를 넘어설 정도로 빠릅니다. \n생존한 시간이 길수록 이동 속도가 더 빨라지지만, 공격 피해에 취약해집니다."
 	}
 	"Umbral Automaton"
 	{
@@ -7535,13 +7534,13 @@
 	{
 		"en"	"Shadowing Darkness, The Ruler"
 		"it"	"L'ombra delle tenebre, il dominatore"
-		"ko"	"통치자 ''응달''"
+		"ko"	"집정관 ''그림자 응달''"
 	}
 	"Shadowing Darkness, The Ruler Desc"
 	{
 		"en"	"Ruler of the Umbrals. Keeper of the Purgatory Throne. Culprit behind the Void outbreaks. \nTrapped inside the Curtain, she lost her mind long ago. \nShe must be stopped at all costs.\nShe gives necrosis on most of her abilities."
 		"it"	"Sovrano degli Umbral. Custode del Trono del Purgatorio. Responsabile delle epidemie del Vuoto. \nIntrappolata nella cortina, ha perso la ragione molto tempo fa. \nDeve essere fermata a tutti i costi.\nDà necrosi alla maggior parte delle sue abilità."
-		"en"	"움브랄의 통치자이자, 연옥 왕좌의 파수꾼입니다. 공허 재앙 발발의 장본인입니다.\n 장막 속에 갇힌 그녀는 오래 전에 이성을 잃었습니다.\n무슨 수를 써서라도 막아내야만 합니다.\n대부분의 능력이 적들에게 괴사 원소 피해를 부여합니다."
+		"en"	"움브랄의 통치자이자, 연옥 왕좌의 파수꾼입니다. 공허 재앙 발발의 장본인입니다.\n 장막 속에 갇힌 그녀는 오래 전에 이성을 잃었습니다.\n무슨 수를 써서라도 막아내야만 합니다.\n대부분의 능력이 적들에게 쇠약 원소 피해를 부여합니다."
 	}
 	"Almagest Researcher"
 	{
@@ -7571,7 +7570,7 @@
 	{
 		"en"	"Ruthless leader of the Almagest squad sent into the Curtain. \nTheir motives remain unclear. \nDeals void damage, and summons drones to deal chaos damage. \nAfter losing a certain amount of HP, becomes invulernerable until the current wave is defeated."
 		"it"	"Spietato leader della squadra Almagest inviata nella Cortina. \nI loro motivi rimangono poco chiari. \nSubisce danni da vuoto ed evoca droni per infliggere danni da caos. \nDopo aver perso una certa quantità di HP, diventa invulnerabile finché non viene sconfitta l'ondata corrente."
-		"ko"	"장막 속으로 파견된 알마게스트 부대의 무자비한 지휘관입니다.\n그들의 동기는 여전히 불분명합니다.\n-공허 속성 피해를 입히고, 드론을 소환하여 혼돈 속성 피해를 입힙니다.\n-체력이 일정 수치 감소시, 현재 웨이브의 적들을 전부 처치할 때까지 이 적이 무적 상태가 됩니다."
+		"ko"	"장막 속으로 파견된 알마게스트 부대의 무자비한 지휘관입니다. \n그들의 동기는 여전히 불분명합니다. \nD공허 속성 피해를 입히고, 드론을 소환하여 혼돈 속성 피해를 입힙니다. \n체력이 일정 수치 감소시, 현재 웨이브의 적들을 전부 처치할 때까지 이 적이 무적 상태가 됩니다."
 	}
 	"Jkei Drone"
 	{
@@ -7607,7 +7606,7 @@
 	{
 		"en" "The Construct"
 		"it" "Il Costrutto"
-		"ko" "제작물"
+		"ko" "제조물"
 	}
 	"Reila's Beacon Desc"
 	{
@@ -7644,7 +7643,7 @@
 	}
 	"Skilled Crossbowman Desc"
 	{
-		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
+		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\n-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
 		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다.\n-한 번의 3발의 화살 발사\n-표적의 이동 경로를 예측함\n-측면으로 움직이며 대상 주위를 돔\n-높은 근접 피해 1회를 받으면 비무장 상태가 됨"
 	}
 	"Demon Devoter"

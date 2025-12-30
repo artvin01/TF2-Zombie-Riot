@@ -169,7 +169,7 @@
 	{
 		"en"	"Enfeeble"
 		"it"	"Ineffabile"
-		"ko"	"쇠약"
+		"ko"	"쇠약화"
 	}
 	"Enfeeble Desc"
 	{
@@ -629,7 +629,7 @@
 	{
 		"en"	"Shows that youre standing in void creep, void creatures in keep get stronger."
 		"it"	"Mostra che ti trovi in void creep, le creature void in keep diventano più forti."
-		"ko"	"현재 공허 점막 위에 있습니다. 공허체들은 이 위에 있으면 능력치가 증가합니다."
+		"ko"	"현재 당신은 공허 점막 위에 있습니다. 공허체들은 이 위에 있으면 능력치가 증가합니다."
 	}
 	"Sea Presence"
 	{
@@ -641,7 +641,7 @@
 	{
 		"en"	"Shows that youre standing in sea creep, you take continuous damage, get out.\n{green}If you are apart or one with the sea, you instead benefit from it..."
 		"it"	"Mostra che sei in mezzo al mare, subisci danni continui, esci.\n{green}Se sei separato o un tutt'uno con il mare, invece ne trai beneficio..."
-		"ko"	"현재 명흔 위에 있습니다. 영역에 있으면 계속해서 피해를 받게 됩니다. 당장 빠져나오세요.\n{green}만약 당신이 바다의 일원이라면, 대신 힘을 얻게 될 것입니다..."
+		"ko"	"현재 당신은 명흔 위에 있습니다. 해당 장판 위에 있으면 계속해서 피해를 받게 됩니다. 당장 빠져나오세요.\n{green}만약 당신이 바다의 일원이라면, 대신 특별한 버프를 받게 될 것입니다..."
 	}
 	"Sea Strength"
 	{
@@ -653,7 +653,7 @@
 	{
 		"en"	"Shows that youre standing in sea creep, you benefit from it\nIncreases damage dealt by 10％, Decreases damage taken by 10％."
 		"it"	"Mostra che si è in presenza di mare agitato, se ne trae beneficio. \nAumenta i danni inflitti di 10％, diminuisce i danni subiti di 10％."
-		"ko"	"현재 명흔 위에 있습니다. 영역에 있으면 능력치가 증가합니다.\n공격 피해량이 10％ 증가하고, 받는 피해량이 10％ 감소합니다."
+		"ko"	"현재 당신은 명흔 위에 있습니다. 해당 장판 위에 있으면 능력치가 증가합니다.\n공격 피해량이 10％ 증가하고, 받는 피해량이 10％ 감소합니다."
 	}
 	"Void Strength I"
 	{
@@ -665,7 +665,7 @@
 	{
 		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 5％\nLess damage taken by 15％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 20％"
 		"it"	"Guarisce in base a ％ di HP massimi.\nAumenta la velocità del gli NPC di 5％Minuisce i danni subiti di 15％Essendo un giocatore, ogni giocatore riduce questo valore di 5％ in modo piatto.\nAumenta i danni inflitti di 20％"
-		"ko"	"최대 체력 비율에 비례하여 회복\nNPC의 속도 5％ 증가\n받는 피해 15％ 감소\n플레이어는 위의 효과가 5％ 감소\n공격 피해량 20％ 증가"
+		"ko"	"최대 체력 비율에 비례하여 회복합니다.\nNPC의 속도가 5％ 증가합니다.\n받는 피해가 15％ 감소합니다.\n플레이어라면 위의 효과가 고정적으로 5％ 감소합니다.\n공격 피해량이 20％ 증가합니다."
 	}
 	"Void Strength II"
 	{
@@ -677,7 +677,7 @@
 	{
 		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 15％\nLess damage taken by 20％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 30％"
 		"it"	"Guarisce in base a ％ di HP massimi.\nAumenta la velocità del gli NPC di 15％Minuisce i danni subiti di 20\nEssendo un giocatore, ogni giocatore riduce questo valore di 5％ in modo piatto\nAumenta i danni inflitti di 30％"
-		"ko"	"최대 체력 비율에 비례하여 회복\nNPC의 속도 15％ 증가\n받는 피해 20％ 감소\n플레이어는 위의 효과가 5％ 감소\n공격 피해량 30％ 증가"
+		"ko"	"최대 체력 비율에 비례하여 회복합니다.\nNPC의 속도가 15％ 증가합니다.\n받는 피해가 20％ 감소합니다.\n플레이어라면 위의 효과가 고정적으로 5％ 감소합니다.\n공격 피해량이 30％ 증가합니다."
 	}
 	"MERLT0N-BUFF"
 	{
@@ -760,7 +760,7 @@
 	"Call To Victoria Desc"
 	{
 		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 20％\nBoosts NPC'S Movementspeed by 15％\nAll Victorian enemeies gain extra abilities upon reciving this buff."
-		"ko"	"받는 피해량 20％ 감소\n공격 피해량 20％ 증가\nNPC의 이동 속도 15％ 증가\n해당 버프를 보유한 빅토리아 계열 적들은 추가 능력을 얻습니다."
+		"ko"	"받는 피해량이 20％ 감소합니다.\n공격 피해량이 20％ 증가합니다.\nNPC의 이동 속도가 15％ 증가합니다.\n해당 버프를 보유한 빅토리아 계열 적들은 추가 능력을 얻습니다."
 		"it"	"Riduce i danni subiti del 20％\nAumenta i danni inflitti del 20％\nAumenta la velocità di movimento degli NPC del 15％\nTutti i nemici vittoriani ottengono abilità extra quando ricevono questo buff."
 	}
 	"Taurine"
@@ -939,7 +939,7 @@
 	{
 		"en"	"Extreamly Defensive Backup"
 		"it"	"Backup estremamente difensivo"
-		"ko"	"극도로 방어적인 지원"
+		"ko"	"철괴 수비 지원"
 	}
 	"Extreamly Defensive Backup Desc"
 	{
@@ -1799,7 +1799,7 @@
 	{
 		"en" 	"Therapists Aura"
 		"it"	"Aura dei terapeuti"
-		"ko" 	"상담사의 오라"
+		"ko" 	"심리치료사의 오라"
 	}
 	"Therapists Aura Desc"
 	{
@@ -2563,21 +2563,21 @@
 	"Bob Debuff"
 	{
 		"en"	"Bob Debuff"
-		"ko"	"밥의 디버프"
+		"ko"	"밥 디버프"
 	}
 	"Bob Debuff Desc"
 	{
 		"en"	"Increases Damage Taken by 15％"
-		"ko"	"받는 피해량 15％ 증가"
+		"ko"	"받는 피해가 15％ 증가합니다"
 	}
 	"Bob Debuff Enrage"
 	{
-		"en"	"Bob Debuff Enrage"
-		"ko"	"격분한 밥의 디버프"
+		"en"	"Bob DebuffEnrage"
+		"ko"	"밥 디버프 - 격노"
 	}
 	"Bob Debuff Enrage Desc"
 	{
 		"en"	"Increases Damage Taken by 25％"
-		"ko"	"받는 피해량 25％ 증가"
+		"ko"	"받는 피해가 25％ 증가합니다"
 	}
 }
