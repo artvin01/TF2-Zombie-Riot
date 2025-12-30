@@ -217,12 +217,12 @@ methodmap VictorianAssaultVehicle < CClotBody
 				ReplaceString(countext[i], sizeof(countext[]), "spawner", "");
 				if(!VIPBuilding_Active())
 				{
-					for(int i; i < ZR_MAX_SPAWNERS; i++)
+					for(int ii; ii < ZR_MAX_SPAWNERS; ii++)
 					{
-						if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+						if(!i_ObjectsSpawners[ii] || !IsValidEntity(i_ObjectsSpawners[ii]))
 						{
 							Spawns_AddToArray(EntIndexToEntRef(npc.index), true);
-							i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
+							i_ObjectsSpawners[ii] = EntIndexToEntRef(npc.index);
 							break;
 						}
 					}
