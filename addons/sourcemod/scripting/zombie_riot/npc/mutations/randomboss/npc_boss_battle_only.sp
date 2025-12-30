@@ -276,8 +276,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			PluginName = "npc_corruptedbarney";	
 			
-			enemy.ExtraDamage *= 1.45;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 0.7); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 0.6); 
 			//he doesnt really scale? i dont know what to do.
 		}
 		case 13:

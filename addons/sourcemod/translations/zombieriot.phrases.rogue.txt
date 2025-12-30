@@ -414,13 +414,13 @@
 	{
 		"en"	"You cut your fingers when you reach your hand out for the crown. You let go immediately, dropping the crown to the floor and shattering it in half. The middle-aged man is just about to yell at you but turns around all of a sudden."
 		"it"	"Ti tagli le dita quando allunghi la mano per prendere la corona. Lasciate immediatamente la presa, facendo cadere la corona sul pavimento e frantumandola a metà. L'uomo di mezza età sta per sgridarvi, ma si volta improvvisamente."
-		"ko"	"왕관을 집어 들자 당신은 가시에 손가락이 찔렸고, 놀란 나머지 손을 놓았더니 왕관은 땅에 떨어져 반쯤은 부서졌다. 그 중년은 당신에게 막 화를 내려다가, 무슨 소리를 들은 듯 별안간 고개를 돌렸다."
+		"ko"	"왕관을 손을 가까이 대다 가시에 손가락이 찔렸고, 놀란 나머지 손을 놓아 왕관이 땅에 떨어져 반으로 부서졌다.\n그 중년은 당신에게 막 화를 내려다, 별안간 고개를 돌렸다."
 	}
 	"Theatrical Lore 1b"
 	{
 		"en"	"You hear something. The man scratches his ear. Apparently the actress no longers want to play the queen and has run away. He trots away shortly afterwards. With the charade over, you pick up the intact half-crown, now freed from its thorny enclosure."
 		"it"	"Si sente qualcosa. L'uomo si gratta l'orecchio. Sembra che l'attrice non voglia più interpretare la regina e sia scappata. Poco dopo se ne va al trotto. Finita la farsa, raccogliete la mezza corona intatta, ora liberata dal suo involucro spinoso."
-		"ko"	"그러고는 몹시 초조한 듯 귀와 볼을 막 긁어대며 배우들이 황후 배역을 맡기 싫어 도망갔다는 둥 이상한 말을 남기고는 달음박질하며 떠났다. 소동이 끝난 뒤, 당신은 가시덤불에서 해방된, 여전히 멀쩡한 반쪽 왕관을 주워들었다."
+		"ko"	"뭔가가 들려온다. 남자는 귀를 긁어댄다. 아무래도 배우가 황후 배역을 더 이상 맡기 싫어 도망친 것 같다. 그 후, 그는 달음박질하며 떠났다. 소동이 끝난 뒤, 당신은 가시덤불에서 풀려난, 아직 멀쩡한 반쪽 왕관을 주워들었다."
 	}
 	"Theatrical Option 2"
 	{
@@ -2338,7 +2338,7 @@
 		"en"	"One half of the Gaulish empress' crown is now housed in the Royal Museum of Londinium.\n{green}Enemies take +20％ ranged damage {crimson}but -5％ melee damage."
 		"it"	"Una metà della corona dell'imperatrice gallica è ora conservata nel Museo Reale di Londinium.\n{green}I nemici subiscono +20％ danni a distanza {crimson} ma -5％ danni in mischia."
 		"ru"	"Одна половина короны галльской императрицы сейчас хранится в Королевском музее Лондиниума.\n{green}Враги получают на +20％ больше урона в дальнем бою{crimson}, но -5％ урона в ближнем бою{yellow}."
-		"ko"	"가울 황후의 면관류 장신구 중 일부로, 지금은 런디니움 로열 박물관에 보관되어 있다.\n{green}적에게 주는 원거리 공격 피해량 +20％. {crimson}근접 공격 피해량이 -5％ 감소."
+		"ko"	"가울 황후의 면관류 장신구 중 일부로, 지금은 런디니움 로열 박물관에 보관되어 있다.\n{green}적이 받는 원거리 공격 피해량 +20％. {crimson}근접 공격 피해량 -5％"
 	}
 	"Left Eye of the Natator"
 	{
@@ -2352,7 +2352,7 @@
 		"en"	"One half of the Gaulish empress' crown is now stored housed in the Leithanien Queen Library.\n{green}Enemies take +20％ melee damage {crimson}but -5％ ranged damage."
 		"it"	"Una metà della corona dell'imperatrice gallica è ora conservata nella Biblioteca della Regina di Leithanien.\n{green}I nemici subiscono +20％ danni in mischia {crimson}ma -5％ danni a distanza."
 		"ru"	"Одна половина короны галльской императрицы сейчас хранится в библиотеке королевы Лейтаниена.\n{green}Враги получают на +20％ больше урона в ближнем бою{crimson}, но -5％ урона в дальнем бою{yellow}."
-		"ko"	"가울 황후의 면관류 장신구 중 일부로, 지금은 라이타니엔 여황제 도서관에 보관되어 있다.\n{green}적에게 주는 근접 공격 피해량 +20％. {crimson}원거리 공격 피해량이 -5％ 감소"
+		"ko"	"가울 황후의 면관류 장신구 중 일부로, 지금은 라이타니엔 여황제 도서관에 보관되어 있다.\n{green}적이 받는 근접 공격 피해량 +20％. {crimson}원거리 공격 피해량 -5％"
 	}
 	"End of Times"
 	{
@@ -2416,7 +2416,7 @@
 	{
 		"en"	"A report about a Mazeaten named ''Bladedance''. Status: Unknown. The rest of the report is torn off.\n{green}All Allies gain +15％ damage and +20％ movement speed {blue}and the ending is changed."
 		"it"	"Un rapporto su un Mazeaten chiamato ''Bladedance''. Stato: Sconosciuto. Tutti gli alleati guadagnano +15％ danni e +20％ velocità di movimento {blue}e il finale è cambiato."
-		"ko"	"''칼춤''이라는 이름을 가진 마제트인에 대한 보고서. 상태: 불명. 보고서의 나머지 부분이 찢겨져있다.\n{green}모든 아군의 공격 피해량 +15％ 및 이동 속도 +20％ 증가. {blue}게임 엔딩이 변경됩니다."
+		"ko"	"''블레이드댄스''라는 이름의 마제트인에 대한 보고서. 상태: 불명. 나머지 부분은 찢겨져있다.\n{green}모든 아군의 피해량 +15％, 이동 속도 +20％ 증가. {blue}게임 엔딩이 변경됩니다."
 	}
 	"Hand of Sticks"
 	{
@@ -2512,7 +2512,7 @@
 	{
 		"en"	"Investing in the marketplace.\n{green}''Rapid Magic'' and ''Power Magic'' weapons gain +100％ max mana, mana regen and attack speed."
 		"it"	"Investendo nel mercato,\n{green}le armi ''Magia Rapida'' e ''Magia del Potere'' guadagnano +100％ di mana massimo, rigenerazione del mana e velocità d'attacco."
-		"ko"	"지극히 평범한 것부터가 정상이 아니라던데.\n{green}''속사 마법'', ''강타 마법'' 태그 무기들의 최대 마나 및 마나 재생 속도, 공격 속도가 +100％ 증가."
+		"ko"	"지극히 평범한 것부터가 정상이 아니라던데.\n{green}''속사 마법'', ''강타 마법'' 태그 무기들의 최대 마나, 마나 재생 속도, 공격 속도가 +100％ 증가."
 	}
 	"Hand of the Elite"
 	{

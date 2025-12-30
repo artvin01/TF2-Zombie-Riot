@@ -4171,12 +4171,14 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		RemoveNpcFromEnemyList(pThis, true);
 		b_StaticNPC[pThis] = false;
 
+		//avoid hitboxes gettign in the way, specifically a sniper rifle fix
+		SetEntPropFloat(pThis, Prop_Send, "m_flModelScale", 0.0001);
+
 		//If its a building type, force vanish.
 		if(i_IsNpcType[pThis] == 1)
 		{
 			npc.m_bDissapearOnDeath = true;
 			//Need extra, baseboss is very special.
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
 		}
 		if(!npc.m_bDissapearOnDeath)
 		{
