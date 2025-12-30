@@ -4,30 +4,37 @@
 	{
 		"#format"	"{1:t}"
 		"en"		"{green}Collected: {yellow}{1}"
+		"ko"		"{green}획득함: {yellow}{1}"
 	}
 	"Dungeon Keep Looking"
 	{
 		"en"	"Keep looking for something else"
+		"ko"	"쓸만한 것들을 계속 수색해보자"
 	}
 	"Dungeon Stop Looking"
 	{
 		"en"	"Stop looking and ready defenses"
+		"ko"	"그만 수색하고 방어를 준비하자"
 	}
 	"Dungeon Failed"
 	{
 		"en"	"All players have left the dungeon..."
+		"ko"	"모든 플레이어들이 던전을 나갔다..."
 	}
 	"Packing Station"
 	{
 		"en"	"Packing Station"
+		"ko"	"팩 스테이션"
 	}
 	"Packing Station Desc"
 	{
 		"en"	"A construct that packs a random weapon with a random buff"
+		"ko"	"무작위 무기에게 무작위 버프를 부여하는 구조물입니다"
 	}
 	"Pack Random Weapon"
 	{
 		"en"	"Pack Random Weapon"
+		"ko"	"무작위 무기 팩"
 	}
 	"Upgrade Using Materials"
 	{
@@ -37,237 +44,294 @@
 	"Upgrade Max"
 	{
 		"en"	"Level MAX"
+		"ko"	"최대 레벨"
 	}
 	"Upgrade Building To"
 	{
 		"#format"	"{1:d}"
 		"en"		"Upgrade Building to Level {1}"
+		"ko"		"구조물의 레벨을 {1} 로 증가시킵니다"
 	}
 	"Upgraded Building To"
 	{
 		"#format"	"{1:s},{2:d}"
 		"en"		"{orange}{1} {default}upgraded to {orange}Level {2}"
+		"ko"		"{orange}{1} {default}의 레벨이 {orange}{2} 로 증가했습니다"
 	}
 	"Gained Ammo Supplies"
 	{
 		"#format"	"{1:d}"
 		"en"		"{green}Gained {1} ammo supplies"
+		"ko"		"{green}탄약 보급을 {1} 얻었습니다"
 	}
 	"Gained Extra Cash"
 	{
 		"#format"	"{1:d}"
 		"en"		"{green}Gained {1} extra cash"
+		"ko"		"{green}추가 자금을 {1} 얻었습니다"
 	}
 	"Construct Health"
 	{
 		"en"	"Construct Health"
+		"ko"	"구조물 체력"
 	}
 	"Construct Health Desc"
 	{
 		"en"	"Upgrades all construct building's health."
+		"ko"	"모든 구조물 체력을 증가시킵니다."
 	}
 	"Weapon Has Packed"
 	{
 		"#format"	"{1:s},{2:t},{3:t}"
 		"en"		"{green}{1} {default}packed with {yellow}{2}\n{3}"
+		"ko"		"{green}{1} {default}의 팩이 다음으로 부여됨 : {yellow}{2}\n{3}"
 	}
 	"Clearance Focus"
 	{
 		"en"	"Clearance Focus"
+		"ko"	"정화 집중"
 	}
 	"Clearance Focus Desc"
 	{
 		"en"	"{green}Price decreased by -30％ to buy and enchance"
+		"ko"	"{green}구매와 무기 강화 가격이 -30％ 감소합니다."
 	}
 	"Power Focus"
 	{
 		"en"	"Power Focus"
+		"ko"	"화력 집중"
 	}
 	"Power Focus Desc"
 	{
 		"en"	"{green}Base damage increased by +20％"
+		"ko"	"{green}기본 피해량이 +20％ 증가합니다."
 	}
 	"Handling Focus"
 	{
 		"en"	"Handling Focus"
+		"ko"	"제어 집중"
 	}
 	"Handling Focus Desc"
 	{
 		"en"	"{green}Firing speed increased by +20％"
+		"ko"	"{green}공격 속도가 +20％ 증가합니다."
 	}
 	"Refresh Focus"
 	{
 		"en"	"Refresh Focus"
+		"ko"	"원기 집중"
 	}
 	"Refresh Focus Desc"
 	{
 		"en"	"{green}Reload time and mana cost decreased by -20％"
+		"ko"	"{green}재장전 속도, 마나 소모량이 -20％ 감소합니다."
 	}
 	"Defensive Focus"
 	{
 		"en"	"Defensive Focus"
+		"ko"	"수비 집중"
 	}
 	"Defensive Focus Desc"
 	{
 		"en"	"{green}Base damage increased by +40％ {red}only in home base"
+		"ko"	"{green}기본 피해량이 +40％ 증가합니다. {red}이 효과는 거점 내부에서만 적용됩니다."
 	}
 	"Offensive Focus"
 	{
 		"en"	"Offensive Focus"
+		"ko"	"공세 집중"
 	}
 	"Offensive Focus Desc"
 	{
 		"en"	"{green}Base damage increased by +40％ {red}only in dungeons"
+		"ko"	"{green}기본 피해량이 +40％ 증가합니다. {red}이 효과는 던전 내부에서만 적용됩니다."
 	}
 	"Dungeon Level 1"
 	{
 		"en"	"Dungeon Level 1"
+		"ko"	"던전 레벨 1"
 	}
 	"Dungeon Level 1 Desc"
 	{
 		"en"	"Bob the First tasks us to help build up a new home base, gather up resources, make the base well defended.\n{green}Enemies stats -15％"
+		"ko"	"밥 1세가 우리에게 새로운 기지를 건설하고, 자원을 모으고, 기지를 튼튼하게 대비시키는 임무를 맡겼습니다.\n{green}모든 적의 능력치 -15％"
 	}
 	"Dungeon Level 2"
 	{
 		"en"	"Dungeon Level 2"
+		"ko"	"던전 레벨 2"
 	}
 	"Dungeon Level 2 Desc"
 	{
 		"en"	"Almagest didn't forget how you ruined them."
+		"ko"	"알마게스트들은 당신이 그들에게 저지른 짓을 잊지 않았습니다."
 	}
 	"Dungeon Level 3"
 	{
 		"en"	"Dungeon Level 3"
+		"ko"	"던전 레벨 3"
 	}
 	"Dungeon Level 3 Desc"
 	{
 		"en"	"You remember what he said, who made Chaos.\n{red}Applies Chaos Intrusion modifier"
+		"ko"	"당신은 그가 말했던 것을 기억해내었습니다. 누가 혼돈을 만들어냈는지에 대한 것을. \n{red}혼돈 침식도 효과가 적용됩니다."
 	}
 	"Compass Fragment"
 	{
 		"en"	"Compass Fragment"
+		"ko"	"나침반 조각"
 	}
 	"Compass Fragment Desc"
 	{
 		"en"	"Craft in the Control Center"
+		"ko"	"제어 센터에서 제작 가능"
 	}
 	"Dungeon Compass"
 	{
 		"en"	"Dungeon Compass"
+		"ko"	"던전 나침반"
 	}
 	"Dungeon Compass Desc"
 	{
 		"en"	"The next dungeon to appear in vote is guaranteed to be a special variant, will be consumed on use"
+		"ko"	"다음에 투표에서 등장하는 던전은 특수한 변형 던전이 되며, 사용 시 이 아이템은 소모됩니다."
 	}
 	"Control Center"
 	{
 		"en"	"Control Center"
+		"ko"	"제어 센터"
 	}
 	"Control Center Desc"
 	{
 		"en"	"A construct that allows doing certain special tasks"
+		"ko"	"특별한 임무를 받을 수 있는 구조물입니다."
 	}
 	"No Actions Needed"
 	{
 		"en"	"No Actions Needed"
+		"ko"	"No Actions Needed"
 	}
 	"Craft Item"
 	{
 		"#format"	"{1:t}"
 		"en"		"Craft {1}"
+		"ko"		"제작: {1}"
 	}
 	"Unbox Item"
 	{
 		"#format"	"{1:t}"
 		"en"		"Unbox {1}"
+		"ko"		"상자 개봉: {1}"
 	}
 	"Can Opener"
 	{
 		"en"	"Can Opener"
+		"ko"	"통조림 따개"
 	}
 	"Can Opener Desc"
 	{
 		"en"	"When they sealed that can too good.\n{green}Unboxing sealed crates no longer cost crystals"
+		"ko"	"쓸데없이 밀봉을 너무 잘 해둔 물건을 마주했다면 이걸 사용하세요.\n{green}봉인된 상자들을 개봉할때 더 이상 수정을 소모하지 않습니다"
 	}
 	"Wooden Crate"
 	{
 		"en"	"Wooden Crate"
+		"ko"	"나무 상자"
 	}
 	"Jalan Crate"
 	{
 		"en"	"Jalan Crate"
+		"ko"	"잘란 상자"
 	}
 	"Rare Jalan Crate"
 	{
 		"en"	"Rare Jalan Crate"
+		"ko"	"희귀 잘란 상자"
 	}
 	"Sealed Jalan Crate"
 	{
 		"en"	"Sealed Jalan Crate"
+		"ko"	"봉인된 잘란 상자"
 	}
 	"Sealed Jalan Crate Desc"
 	{
 		"en"	"Unbox in the Control Center"
+		"ko"	"제어 센터에서 이것을 개봉하세요"
 	}
 	"Wizuh Crate"
 	{
 		"en"	"Wizuh Crate"
+		"ko"	"위저 상자"
 	}
 	"Rare Wizuh Crate"
 	{
 		"en"	"Rare Wizuh Crate"
+		"ko"	"희귀 위저 상자"
 	}
 	"Sealed Wizuh Crate Desc"
 	{
 		"en"	"Unbox in the Control Center"
+		"ko"	"제어 센터에서 이것을 개봉하세요"
 	}
 	"Ossunia Crate"
 	{
 		"en"	"Ossunia Crate"
+		"ko"	"오수니아 상자"
 	}
 	"Rare Ossunia Crate"
 	{
 		"en"	"Rare Ossunia Crate"
+		"ko"	"희귀 오수니아 상자"
 	}
 	"Sealed Ossunia Crate Desc"
 	{
 		"en"	"Unbox in the Control Center"
+		"ko"	"제어 센터에서 이것을 개봉하세요"
 	}
 	"Sealed Bofazem Crate"
 	{
 		"en"	"Sealed Bofazem Crate"
+		"ko"	"봉인된 보파젬 상자"
 	}
 	"Treasure Crate"
 	{
 		"en"	"Treasure Crate"
+		"ko"	"보물 상자"
 	}
 	"Treasure Key"
 	{
 		"en"	"Treasure Key"
+		"ko"	"보물 열쇠"
 	}
 	"Treasure Key Desc"
 	{
 		"en"	"Treasure Vaults can now appear, will be consumed upon entering"
+		"ko"	"이제 보물 금고가 등장할 수 있으며, 진입시 이 아이템이 소모됩니다."
 	}
 	"Key Fragment"
 	{
 		"en"	"Key Fragment"
+		"ko"	"열쇠 조각"
 	}
 	"Key Fragment Desc"
 	{
 		"en"	"Craft in the Control Center"
+		"ko"	"제어 센터에서 제작 가능"
 	}
 
 	"Common Dungeon"
 	{
 		"en"	"⚔ Dungeon"
+		"ko"	"⚔ 던전"
 	}
 	"Treasure Vault"
 	{
 		"en"	"Treasure Vault"
+		"ko"	"보물 금고"
 	}
 	"Treasure Vault Encounter Title"
 	{
 		"en"	"We used the Treasure Key to open inside, some items are presented in front of you."
+		"ko"	"보물 열쇠를 사용해 금고를 열었더니, 그 안에 몇 가지 물품들이 있었다."
 	}
 }
