@@ -3018,7 +3018,7 @@ void Charge_BatteryTM_Hud_Func(int attacker, int victim, StatusEffect Apply_Mast
 		RemoveSpecificBuff(victim, "Battery_TM Charge");
 		return;
 	}
-
+	#if defined ZR
 	if(fl_ruina_battery_timeout[victim] != FAR_FUTURE && fl_ruina_battery_timeout[victim] > GetGameTime(victim))
 	{
 		Format(HudToDisplay, SizeOfChar, "[B™ %.1fs]", fl_ruina_battery_timeout[victim] - GetGameTime(victim));
@@ -3035,6 +3035,7 @@ void Charge_BatteryTM_Hud_Func(int attacker, int victim, StatusEffect Apply_Mast
 	{
 		Format(HudToDisplay, SizeOfChar, "[B™ %.0f％]", Ratio);
 	}
+	#endif
 }
 
 void StatusEffects_Pernell()
