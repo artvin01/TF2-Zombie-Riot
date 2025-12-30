@@ -4668,6 +4668,36 @@
 		"it"	"Aumenta il danno della fazione ''Victoria'' del +10％."
 		"ko"	"''빅토리아'' 진영 무기의 피해량 +10％"
 	}
+	"Explosault Rifle Desc"
+	{
+		"en"	"Heavily modified AR that some victorian civilians managed to come up with.\nFire fast projectiles that plant bomb on its target and detonate on reload\nFiring this weapon constantly will build up overheat which will result in damage loss"
+		"ko"	"빅토리아 시민들이 손수 제작한 마개조된 돌격소총입니다.\n적중 시 폭탄 설치, 재장전으로 기폭\n계속 사용할수록 과열이 쌓여 피해량 감소"
+	}
+	"Explosault Rifle HSD 1 Desc"
+	{
+		"en"	"Who would have thought using overheated heat sink as weapon would be a great Idea?\nIncreased damage\n Use M2 to fire a special projectile that scales with your current overheat.\nProjectile knockback enemies and applies burn when it explodes"
+		"ko"	"대체 누가 과열된 방열판까지 무기로 사용할꺼라 예상했겠습니까?\n피해량 증가\nM2: 과열게이지와 비례하는 특별한 투사체 발사\n투사체는 적을 밀쳐내고 폭발시 화상 적용"
+	}
+	"Explosault Rifle HSD 2 Desc"
+	{
+		"en"	"All overheating protections conveniently removed\nIncreased damage, 1.5x Max Overheat\nApply damage and burn while pushing."
+		"ko"	"편의를 위해 모든 과열 보호 장치를 제거했습니다.\n피해량 증가, 최대 과열 1.5x\n이제 밀쳐내면서 지속적으로 피해와 화상을 적용시킴."
+	}
+	"Explosault Rifle AB 1 Desc"
+	{
+		"en"	"A small blue military laser beacon. How did a civilian get his hands on this?\nUse M2 to load special rounds. Fire it to locate the bombardment area\nbombardment will begin when you reload"
+		"ko"	"작은 청색 군용 비콘입니다. 대체 어떻게 일개 시민들이 이걸 손에 넣게 된걸까요?\nM2를 눌러 특수 탄환들을 장전하고 발사해 포격 위치를 지정\n무기를 재장전할시 포격 시작"
+	}
+	"Explosault Rifle AB 2 Desc"
+	{
+		"en"	"WIP"
+		"ko"	"WIP"
+	}
+	"Explosault Rifle Desc Extra"
+	{
+		"en"	"''Victoria'' faction will have 10％ less blast damage reduce per target"
+		"ko"	"''빅토리아'' 진영 무기의 폭발 타겟당 피해량 감소를 10％ 완화시킵니다!"
+	}
 	"Zealot Dash Denie Spam"
 	{
 		"en" 		"You cant dash, you must hit someone with your rapier at least once!"

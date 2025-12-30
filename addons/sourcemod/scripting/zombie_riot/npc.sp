@@ -652,12 +652,13 @@ void NPC_ConfigSetup()
 //wave 21~30
 	Victoria_BaseBreaker_OnMapStart_NPC();
 	VictoriaAntiarmorInfantry_OnMapStart_NPC();
-	VictoriaAssulter_OnMapStart_NPC();
+	VictoriaAssaulter_OnMapStart_NPC();
 	VictorianMechafist_OnMapStart_NPC();
 	VictorianBooster_OnMapStart_NPC();
 	VictoriaScorcher_OnMapStart_NPC();
 	VictoriaMowdown_OnMapStart_NPC();
 	VictoriaMortar_OnMapStart_NPC();
+	VictoriaArtillerist_OnMapStart_NPC();
 	VictoriaBreachcart_MapStart();
 	VictoriaBombcart_Precache();
 	VictoriaBigpipe_OnMapStart_NPC();
@@ -670,6 +671,7 @@ void NPC_ConfigSetup()
 	VictorianOfflineAvangard_MapStart();
 	VictorianWelder_OnMapStart_NPC();
 	VIctorianTanker_OnMapStart_NPC();
+	VictorianAssaultVehicle_OnMapStart();
 	VictorianPulverizer_OnMapStart_NPC();
 	VIctorianAmbusher_OnMapStart_NPC();
 	VictoriaTank_MapStart();
@@ -685,6 +687,8 @@ void NPC_ConfigSetup()
 	Castellan_OnMapStart_NPC();
 
 //special
+	Invisible_TRIGGER_OnMapStart_NPC();//It is currently used as a trigger for the Victoria Factory.
+	CaptinoBaguettus_OnMapStart_NPC();//Captino Meinus Follower
 	VictorianFactory_MapStart();
 	VictorianDroneFragments_MapStart();
 	VictorianDroneAnvil_MapStart();
@@ -2223,10 +2227,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 //Victoria
 //special
+#include "npc/victoria/npc_invisible_trigger.sp"
 #include "npc/victoria/npc_victorian_factory.sp"
 #include "npc/victoria/npc_victoria_tacticalprotector.sp"
 #include "npc/victoria/npc_victoria_tacticalunit.sp"
 #include "npc/victoria/npc_test_dummy.sp"
+#include "npc/victoria/npc_baguettus.sp"
 
 //Wave 1~10
 #include "npc/victoria/npc_batter.sp"
@@ -2262,6 +2268,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/victoria/npc_assaulter.sp"
 #include "npc/victoria/npc_antiarmor_infantry.sp"
 #include "npc/victoria/npc_mortar.sp"
+#include "npc/victoria/npc_victorian_artillerist.sp"
 #include "npc/victoria/npc_bombcart.sp"
 #include "npc/victoria/npc_breachcart.sp"
 #include "npc/victoria/npc_birdeye.sp"
@@ -2278,6 +2285,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/victoria/npc_ambusher.sp"
 #include "npc/victoria/npc_taser.sp"
 #include "npc/victoria/npc_victorian_tank.sp"
+#include "npc/victoria/npc_drive_in_my_car.sp"
 #include "npc/victoria/npc_victoria_radiomast.sp"
 #include "npc/victoria/npc_radioguard.sp"
 #include "npc/victoria/npc_radio_repair.sp"

@@ -1,22 +1,13 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_IdleAlertedSounds[][] =
-{
-	"pl_hoodoo/alarm_clock_ticking_3.wav",
-};
+static const char g_IdleAlertedSounds[] = "pl_hoodoo/alarm_clock_ticking_3.wav";
 
-static const char g_MeleeHitSounds[][] = {
-	"ambient/bumper_car_floor_break.wav",
-};
-
+static const char g_MeleeHitSounds[] = "ambient/bumper_car_floor_break.wav";
 
 void VictoriaBombcart_Precache()
 {
 	NPCData data;
-	PrecacheSoundArray(g_IdleAlertedSounds);
-	PrecacheSoundArray(g_MeleeHitSounds);
-	PrecacheModel("models/combine_apc_dynamic.mdl");
 	strcopy(data.Name, sizeof(data.Name), "Bomb Cart");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bombcart");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_bombcart");
@@ -24,7 +15,15 @@ void VictoriaBombcart_Precache()
 	data.Flags = 0;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSound(g_IdleAlertedSounds);
+	PrecacheSound(g_MeleeHitSounds);
+	PrecacheModel("models/combine_apc_dynamic.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -39,17 +38,15 @@ methodmap VictoriaBombcart < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_IdleAlertedSounds, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(2.0, 3.0);
 	}
 
-	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 100));
-		
-
+	public void PlayMeleeHitSound()
+	{
+		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 100));
 	}
 
-	
 	public VictoriaBombcart(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictoriaBombcart npc = view_as<VictoriaBombcart>(CClotBody(vecPos, vecAng, "models/combine_apc_dynamic.mdl", "0.25", "750", ally));
@@ -64,6 +61,7 @@ methodmap VictoriaBombcart < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = VictoriaBombcart_ClotThink;
 		
+		KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flSpeed = 400.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -78,7 +76,7 @@ methodmap VictoriaBombcart < CClotBody
 	}
 }
 
-public void VictoriaBombcart_ClotThink(int iNPC)
+static void VictoriaBombcart_ClotThink(int iNPC)
 {
 	VictoriaBombcart npc = view_as<VictoriaBombcart>(iNPC);
 
@@ -94,16 +92,13 @@ public void VictoriaBombcart_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))
-		npc.m_iTarget = 0;
-	
-	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
+	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 	}
 	
-	if(npc.m_iTarget > 0)
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -117,7 +112,6 @@ public void VictoriaBombcart_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-
 		npc.StartPathing();
 		
 		if(npc.m_flAttackHappens)
@@ -134,26 +128,20 @@ public void VictoriaBombcart_ClotThink(int iNPC)
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					
-					if(target > 0) 
+					if(IsValidEnemy(npc.index, target))
 					{
-						KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
-						if(!ShouldNpcDealBonusDamage(target))
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
-						else
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_CLUB, -1, _, vecHit);
-							
+						float damageDealt = 50.0;
+						if(ShouldNpcDealBonusDamage(target))
+							damageDealt*=6.0;
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 						float startPosition[3];
 						GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", startPosition);
 						makeexplosion(-1, startPosition, 0, 0);
-						
-						
-						
 						
 						// Hit sound
 						npc.PlayMeleeHitSound();
 						LastHitRef[npc.index] = -1;
 						SmiteNpcToDeath(npc.index);
-						
 					} 
 				}
 
@@ -176,12 +164,13 @@ public void VictoriaBombcart_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
+		npc.m_flGetClosestTargetTime=0.0;
 	}
 
 	npc.PlayIdleSound();
 }
 
-void VictoriaBombcart_NPCDeath(int entity)
+static void VictoriaBombcart_NPCDeath(int entity)
 {
 	VictoriaBombcart npc = view_as<VictoriaBombcart>(entity);
 	

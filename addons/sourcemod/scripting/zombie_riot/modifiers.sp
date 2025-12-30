@@ -71,6 +71,10 @@ public void Modifier_Remove_ParanormalActivity()
 	CurrentModifActive = 0;
 }
 
+public int ZR_Get_Modifier()
+{
+	return CurrentModifActive;
+}
 
 public void Modifier_RecolourAlly_SecondaryMercs(int client, StringMap map)
 {

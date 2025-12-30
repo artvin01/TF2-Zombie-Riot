@@ -5643,6 +5643,7 @@
 	"Cyborg Assaulter"
 	{
 		"en"	"Cyborg Assaulter"
+		"ko"	"사이보그 보병"
 		"it"	"Assaltatore cyborg"
 		"ko"	"사이보그 강습병"
 	}
@@ -5657,6 +5658,11 @@
 		"en"	"Trooper  Mortar"
 		"ko"	"트루퍼 박격포병"
 		"it"	"Mortaio Trooper"
+	}
+	"Victorian Artillerist"
+	{
+		"en"	"Trooper Artillerist"
+		"ko"	"트루퍼 자주포병"
 	}
 	"Bomb Cart"
 	{
@@ -5710,6 +5716,11 @@
 		"ko"	"브라스벙커 아방가르드"
 		"it"	"Brassbunker Avangard"
 	}
+	"Imcomplete Avangard"
+	{
+		"en"	"Imcomplete Avangard"
+		"ko"	"미완성 아방가르드"
+	}
 	"Tanker"
 	{
 		"en"	"Brassbunker Tanker"
@@ -5739,6 +5750,11 @@
 		"en"	"Brassbunker Tank"
 		"ko"	"브라스벙커 탱크"
 		"it"	"Serbatoio Brassbunker"
+	}
+	"Victorian Assault Vehicle"
+	{
+		"en"	"Brassbunker Assault Vehicle"
+		"ko"	"브라스벙커 돌격 차량"
 	}
 	"Victoria Factory"
 	{
@@ -5794,23 +5810,11 @@
 		"ko"	"인수분해"
 		"it"	"Atomizzatore"
 	}
-	"Victoria Atomizer Desc"
-	{
-		"en"	"The lower his health is, the more damage and faster he is."
-		"it"	"Più bassa è la sua salute, maggiore è il danno e la velocità."
-		"ko"	"체력이 감소할수록, 이동 속도와 가하는 피해량이 증가합니다."
-	}
 	"Victoria Huscarls"
 	{
 		"en"	"Huscarls"
 		"ko"	"허스칼"
 		"it"	"Huscarls"
-	}
-	"Victoria Huscarls Desc"
-	{
-		"en"	"Adapts to damages done to him. Ranged or melee, doesnt matter."
-		"it"	"Si adatta ai danni subiti. A distanza o in mischia, non importa."
-		"ko"	"어떤 피해를 받던간에 그 피해에 적응하여 저항력이 증가합니다."
 	}
 	"Victoria Harrison"
 	{
@@ -5818,23 +5822,21 @@
 		"ko"	"해리슨"
 		"it"	"Harrison"
 	}
-	"Victoria Harrison Desc"
-	{
-		"en"	"No resistance, but is full offense."
-		"it"	"Non oppone resistenza, ma è in piena offensiva."
-		"ko"	"피해 저항력은 부족하지만, 전체적인 공격성이 매우 높습니다."
-	}
 	"Victoria Castellan"
 	{
 		"en"	"Castellan"
 		"ko"	"카스텔란"
 		"it"	"Castellano"
 	}
-	"Victoria Castellan Desc"
+	"Captino Menius"
 	{
-		"en"	"The final army leader.\nEvery once a while summons airstrikes onto 1 target.\nAirstrikes happen aswell when he hits you too much with his melee."
-		"it"	"Il capo dell'esercito finale.\nOgni tanto evoca attacchi aerei su 1 bersaglio.\nGli attacchi aerei avvengono anche quando ti colpisce troppo con la mischia."
-		"ko"	"빅토리아 군단의 총괄 지휘관입니다.\n주기적으로 대상 1명에게 공습을 가합니다.\n이 적의 근접 공격으로 여러번 피격 당해도 공습이 발생합니다."
+		"en"	"Captino Menius"
+		"ko"	"캡티노 메니우스"
+	}
+	"0h No it's Not Fair"
+	{
+		"en"	"=Failed name="
+		"ko"	"=Failed name="
 	}
 	"Agent John"
 	{

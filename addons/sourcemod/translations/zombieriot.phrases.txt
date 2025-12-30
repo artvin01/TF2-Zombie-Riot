@@ -5462,8 +5462,8 @@
 	}
 	"Victoria Raid Desc"
 	{
-		"en" 	"(11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
-		"it"	"(11) Sensal vi chiede di visitare Ziberia, attualmente attaccata da Victoria."
+		"en" 	"Lore order: (11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
+		"it"	"Ordine Lore: (11) Sensal vi chiede di visitare Ziberia, attualmente attaccata da Victoria."
 		"ko"	"설정 순서: (11) 센살은 당신에게 현재 빅토리아에게 공격받고 있는 지베리아를 방문해달라고 부탁했습니다."
 	}
 	"Ability already Active"
