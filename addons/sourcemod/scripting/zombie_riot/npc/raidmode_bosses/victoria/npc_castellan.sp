@@ -134,7 +134,7 @@ static void ClotPrecache()
 	PrecacheSound("weapons/airstrike_fire_crit.wav", true);
 	PrecacheSound("weapons/cow_mangler_explode.wav", true);
 	
-	PrecacheSoundCustom("#zombiesurvival/victoria/raid_castellan.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria_1/raid_castellan.mp3");
 	
 	PrecacheModel("models/player/soldier.mdl");
 	g_BluePoint = PrecacheModel("sprites/blueglow1.vmt");
@@ -447,7 +447,7 @@ methodmap Castellan < CClotBody
 		if(StrContains(data, "nomusic") == -1)
 		{
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_castellan.mp3");
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria_1/raid_castellan.mp3");
 			music.Time = 154;
 			music.Volume = 2.0;
 			music.Custom = true;

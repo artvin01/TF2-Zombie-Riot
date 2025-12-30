@@ -158,7 +158,7 @@ static void ClotPrecache()
 	PrecacheSound(g_BoomSounds);
 	PrecacheSound(g_IncomingBoomSounds);
 	PrecacheSound("weapons/bumper_car_spawn.wav");
-	PrecacheSoundCustom("#zombiesurvival/victoria/raid_atomizer.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria_1/raid_atomizer.mp3");
 	
 	g_Laser = PrecacheModel(LASERBEAM);
 	g_RedPoint = PrecacheModel("sprites/redglow1.vmt");
@@ -403,7 +403,7 @@ methodmap Atomizer < CClotBody
 			if(StrContains(data, "nomusic") == -1)
 			{
 				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria_1/raid_atomizer.mp3");
 				music.Time = 128;
 				music.Volume = 2.0;
 				music.Custom = true;
