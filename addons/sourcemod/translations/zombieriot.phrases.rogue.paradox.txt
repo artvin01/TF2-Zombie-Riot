@@ -1546,7 +1546,7 @@
 	{
 		"en"	"{snow}Twirl hands you a gem she made herself, how neat! Probably shouldnt give it away, gift is a gift afterall."
 		"it"	"{snow}Twirl ti porge un gioiello che ha fatto lei stessa, che bello! Probabilmente non dovrebbe darlo via, dopotutto un regalo è un regalo."
-		"ko"	"{snow}트윌이 나타나서는, 그녀가 손수 만든 보석을 당신에게 건네준다. 이 보석은 정말 멋지다! 남에게 함부로 주면 안 될 것 같다. 선물은 선물이니까."
+		"ko"	"{snow}트윌이 나타나서는, 그녀가 손수 만든 보석을 당신에게 건네준다. 정말 놀랍다! 남에게 함부로 주면 안 될 것 같다. 선물은 선물이니까."
 	}
 	"Lost Villager"
 	{

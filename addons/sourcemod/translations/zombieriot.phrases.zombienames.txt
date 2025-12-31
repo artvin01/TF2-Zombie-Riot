@@ -1987,10 +1987,12 @@
 	"Berserk Brawler"
 	{
 		"en"		"Berserk Brawler"
+		"ko"		"광폭한 싸움꾼"
 	}
 	"Brawler Car"
 	{
 		"en"		"Brawler Car"
+		"ko"		"싸움꾼 자동차"
 	}
 	"Medieval Longbowmen"
 	{

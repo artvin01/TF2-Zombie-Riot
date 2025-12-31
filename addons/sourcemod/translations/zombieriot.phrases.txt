@@ -4675,7 +4675,7 @@
 		"fr"	"Entrez en combat contre le Moyen-Âge, et leur armure qui leur protège contre les attaques à portée et corps à corps!"
 		"chi"	"对抗中世纪的剑与盾！"
 		"it"	"Combatti contro la mezza età con le loro armature per contrastare gli attacchi in mischia o a distanza!"
-		"ko" 	"중세 시대의 병사들과 싸웁니다. 그들은 각각 근접 공격과 원거리 공격 카운터에 특화되어 있습니다!"
+		"ko" 	"알락시오스가 센살과 이야기하는 동안, 그의 군대가 당신에게 접근하여 대련을 부탁해왔습니다. 우리에겐 할 일도 없으니 안 할 이유가 없군요. 대련이 끝나면 알락시오스가 그들을 다시 부활시켜줄 겁니다."
 	}
 	"God Alaxios Wave Desc"
 	{
@@ -4715,7 +4715,7 @@
 		"fr"	"L'infection Seaborn attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
 		"chi"	"海嗣感染将会侵蚀你的盾。"
 		"it"	"L'infezione Seaborn è arrivata, gli attacchi di Corrosione dell'Armatura infetteranno la tua armatura, curala con le tabelle dell'armatura!"
-		"ko"	"시본 감염체들이 여기에 도착했습니다. 아머 부식 공격이 당신의 아머를 점차 감염시킬 것입니다. 아머 테이블을 사용하여 상태이상을 치유하세요!"
+		"ko"	"당신은 W.F.의 정예 병사들이 제노 바이러스에 감염된 것을 본 뒤, W.F.의 전초기지로 진입해 그곳에 남아 있는 병사들이 있는지 확인해보았습니다. 그곳에 병사들이 있긴 있었는데... 전부 시본에 감염되었습니다. 그리고 바다가 본토를 공격할 준비를 마친 군대를 소집했습니다."
 	}
 	"Interitus Desc"
 	{
@@ -4759,7 +4759,7 @@
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
 		"chi"	"深渊已被释放。"
 		"it"	"Ordine Lore: (9) Subito dopo aver liberato il vuoto in rogue2..."
-		"ko"	"설정 순서: (9) 로그라이크2(Rogue2) 당시 공허가 해방되어버린 직후입니다. 다른 차원의 생명체들이 이 세계를 점령하기 위해 몰려오고 있습니다. 카멜스타인을 도와 공허와 맞서세요!"
+		"ko"	"설정 순서: (9) 로그라이크2 당시 공허가 해방되어버린 직후입니다. 다른 차원의 생명체들이 이 세계를 점령하기 위해 몰려오고 있습니다. 카멜스타인을 도와 공허와 맞서세요!"
 	}
 	"Aperture Desc"
 	{
@@ -5197,7 +5197,7 @@
 	"Iberia Expi Desc"
 	{
 	  "en" "Iberia and expidonsa, but mainly Iberia, Come back to us for more training. But Nemal and Silvester won't be here this time. They're probably on vacation with Sensal."
-	  "ko" "이베리아와 엑스피돈사가 공허와의 마지막 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 그런데 보아하니 메인 트레이너와 그녀의 파트너가 여기에 없군요. 들려오는 말로는 둘 다 휴가 중이라던데 설마..."
+	  "ko" "이베리아와 엑스피돈사가 공허와의 최후의 전투를 돕기 위한 대비 훈련을 제공하려고 합니다...만 보아하니 메인 트레이너와 그녀의 파트너가 여기에 없군요. 들려오는 말로는 둘 다 휴가 중이라던데 설마..."
 	}
 	"Iberia & Nemal"
 	{
@@ -5213,7 +5213,7 @@
 		"en" "(10) Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremly seriously."
 		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
 		"it"	"(10) Iberia e expidonsa offrono addestramento per aiutare contro la vera battaglia finale contro il vuoto... Anche se gli iberici sembrano prenderla estremamente sul serio."
-		"ko" "설정 순서: (10) 이베리아와 엑스피돈사가 공허와의 마지막 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 이베리아인들은 이를 매우 심각하게 받아들이는 것 같지만요."
+		"ko" "설정 순서: (10) 이베리아와 엑스피돈사가 공허와의 최후의 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 이베리아인들은 이를 매우 심각하게 받아들이는 것 같지만요."
 	}
 	"Revenant's Shadow"
 	{

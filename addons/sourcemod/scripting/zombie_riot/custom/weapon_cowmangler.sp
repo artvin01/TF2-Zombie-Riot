@@ -7,14 +7,14 @@ public void Weapon_Mangler(int client, int weapon, bool crit, int slot)
 	if(new_ammo < 10)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		PrintHintText(client,"You ran out of Laser Battery!");
+		PrintHintText(client,"레이저 배터리 탄창이 전부 소진되었습니다!");
 		return;
 	}
 	new_ammo -= 10;
 	SetAmmo(client, 23, new_ammo);
 	CurrentAmmo[client][23] = GetAmmo(client, 23);
 	
-	PrintHintText(client,"Laser Battery: %i", new_ammo);
+	PrintHintText(client,"레이저 배터리: %i", new_ammo);
 
 	float damage = 112.0;
 	damage *= Attributes_Get(weapon, 1, 1.0);

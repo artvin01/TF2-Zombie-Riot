@@ -1314,7 +1314,7 @@ void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 				}
 				case 13:
 				{
-					CPrintToChatAll("{purple}내가 죽는건 아무 상관 없다... 이건 공허를 위한 더 큰 발걸음이다. 엄브랄이 되지 않기 위해, 자연과 하나가 되지 않기 위해...");
+					CPrintToChatAll("{purple}내가 죽는건 아무 상관 없다... 이건 공허를 위한 더 큰 발걸음이다. 움브랄이 되지 않기 위해, 자연과 하나가 되지 않기 위해...");
 					CPrintToChatAll("{black}이잔 :{default} 혼돈은-");
 				}
 				case 14:
