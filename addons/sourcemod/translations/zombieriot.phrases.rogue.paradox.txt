@@ -890,7 +890,7 @@
 	{
 		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25％ damage bonus, +25％ max health, +15％ attack speed, +15％ reload speed, +10％ damage resistance. The Duck will also greatly strengthen one player at a time"
 		"it"	"L'amato animale domestico di Bob, ''Dubby''.\n{green}Gli alleati guadagnano +25％ bonus ai danni, +25％ salute massima, +15％ velocità di attacco, +15％ velocità di ricarica, +10％ resistenza ai danni. L'Anatra rafforzerà notevolmente anche un giocatore alla volta"
-		"ko"	"밥이 가장 아끼는 애완오리, ''꽥꽥이''다.\n{green}모든 아군의 최대 체력, 피해량 +25％, 공격 속도, 재장전 속도 +15％, 피해 저항력 +10％ 증가. 한 번에 한 플레이어를 크게 강화시켜줍니다."
+		"ko"	"밥이 가장 아끼는 애완오리, ''꽥꽥이'' 다.\n{green}모든 아군 체력과 피해량 +25％ 및 공속과 장전 +15％ 및 저항력 +10％. 주기적으로 오리가 한 대상에게 버프 부여."
 	}
 	"Underground Scorch"
 	{
@@ -1546,7 +1546,7 @@
 	{
 		"en"	"{snow}Twirl hands you a gem she made herself, how neat! Probably shouldnt give it away, gift is a gift afterall."
 		"it"	"{snow}Twirl ti porge un gioiello che ha fatto lei stessa, che bello! Probabilmente non dovrebbe darlo via, dopotutto un regalo è un regalo."
-		"ko"	"{snow}트윌이 그녀가 손수 만든 보석을 당신에게 건네준다. 놀라운걸! 남에게 함부로 주면 안 될 것 같다. 선물은 선물이니까."
+		"ko"	"{snow}트윌이 나타나서는, 그녀가 손수 만든 보석을 당신에게 건네준다. 이 보석은 정말 멋지다! 남에게 함부로 주면 안 될 것 같다. 선물은 선물이니까."
 	}
 	"Lost Villager"
 	{
@@ -2530,7 +2530,7 @@
 	{
 		"en"	"Take whats inside the closet instead, cant risk it.\n{green}Obtain money and a high value item."
 		"it"	"Prendete invece quello che c'è nell'armadio, non potete rischiare.\n{green}Ottenere denaro e un oggetto di alto valore."
-		"ko"	"대신 그 주변의 서랍 안에 있는 물건을 챙긴다. 위험을 감수할 수는 없다.\n{green}가치가 높은 아이템과 추가 자금을 얻습니다."
+		"ko"	"저것 대신 그 주변의 서랍 안에 있는 물건을 챙겼다. 위험을 감수하고 싶진 않다.\n{green}가치가 높은 아이템과 추가 자금을 얻습니다."
 	}
 	"Mazeat Lost Tech Option 1b"
 	{

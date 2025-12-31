@@ -363,7 +363,7 @@ static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float 
 			npc.FaceTowards(vecTarget, 20000.0);
 			if(!npc.m_bnew_target)
 			{
-				npc.m_iWearable3 = ConnectWithBeam(npc.m_iWearable2, target, 30, 255, 0, 3.0, 3.0, 1.35, LASERBEAM);
+				npc.m_iWearable3 = ConnectWithBeam(npc.m_iWearable2, target, 30, 255, 0, 2.0, 2.0, 0.0, LASERBEAM);
 				npc.StartHealing();
 				npc.Healing = true;
 				npc.m_bnew_target = true;
@@ -381,7 +381,7 @@ static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float 
 					dist = GetVectorDistance(vecTarget, entitypos);
 					if(dist<(b_we_are_reloading[npc.index] ? 400.0 : 200.0))
 					{
-						IncreaseEntityDamageTakenBy(entity, 0.8, 0.3);
+						IncreaseEntityDamageTakenBy(entity, b_we_are_reloading[npc.index] ? 0.75 : 0.8, 0.3);
 						
 						int MaxHealth = ReturnEntityMaxHealth(entity);
 						

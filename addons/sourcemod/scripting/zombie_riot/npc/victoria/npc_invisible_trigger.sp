@@ -187,11 +187,12 @@ static void Invisible_TRIGGER_ClotThink(int iNPC)
 			{
 				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
 				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
-				SmiteNpcToDeath(npc.index);
 			}
+			SmiteNpcToDeath(npc.index);
 		}
 		case 3:
 		{
+			bool bExtraction;
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
 				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
@@ -202,13 +203,17 @@ static void Invisible_TRIGGER_ClotThink(int iNPC)
 					if(f_DelaySpawnsForVariousReasons < GetGameTime() + 21.0)
 					{
 						i_AttacksTillMegahit[vFactory.index] = 608;
+						bExtraction=true;
 						break;
 					}
 				}
 			}
-			EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
-			SmiteNpcToDeath(npc.index);
+			if(bExtraction)
+			{
+				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+				SmiteNpcToDeath(npc.index);
+			}
 		}
 		case 4:
 		{

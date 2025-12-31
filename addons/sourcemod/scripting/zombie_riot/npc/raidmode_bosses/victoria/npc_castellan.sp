@@ -94,6 +94,8 @@ static bool CounterattackDesc;
 static int SupportTeamContinue;
 static int NextSupport;
 
+static float flPayback[MAXPLAYERS];
+
 static int AirStrikeTalk[MAXENTITIES];
 
 static bool ParticleSpawned[MAXENTITIES];
@@ -132,7 +134,7 @@ static void ClotPrecache()
 	PrecacheSound("weapons/airstrike_fire_crit.wav", true);
 	PrecacheSound("weapons/cow_mangler_explode.wav", true);
 	
-	PrecacheSoundCustom("#zombiesurvival/victoria/raid_castellan.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria_1/raid_castellan.mp3");
 	
 	PrecacheModel("models/player/soldier.mdl");
 	g_BluePoint = PrecacheModel("sprites/blueglow1.vmt");
@@ -322,6 +324,7 @@ methodmap Castellan < CClotBody
 		BlastDMG[npc.index] = 0.0;
 		MagicDMG[npc.index] = 0.0;
 		BulletDMG[npc.index] = 0.0;
+		Zero(flPayback);
 		
 		npc.m_bFUCKYOU = false;
 		npc.m_bFUCKYOU_move_anim = false;
@@ -434,14 +437,17 @@ methodmap Castellan < CClotBody
 		}
 		else
 		{
-			NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Intro-4", false, true);
+			if(Construction_Mode())
+				NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Intro-5", false, true);
+			else
+				NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Intro-4", false, true);
 			RequestFrame(WhyNoFactory, EntIndexToEntRef(npc.index));
 		}
 
 		if(StrContains(data, "nomusic") == -1)
 		{
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_castellan.mp3");
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria_1/raid_castellan.mp3");
 			music.Time = 154;
 			music.Volume = 2.0;
 			music.Custom = true;
@@ -516,6 +522,70 @@ static void Castellan_FORVICTORIA(int iNPC)
 	npc.Update();
 	
 	Victoria_Support(npc, 1, false);
+	
+	if(LastMann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			npc.m_fbGunout = true;
+			switch(GetRandomInt(0,1))
+			{
+				case 0:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Lastman-1", false, false);
+				case 1:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Lastman-2", false, false);
+			}
+		}
+	}
+	if(RaidModeTime < GetGameTime() && !npc.m_bFUCKYOU && GetTeam(npc.index) != TFTeam_Red)
+	{
+		DeleteAndRemoveAllNpcs = 10.0;
+		mp_bonusroundtime.IntValue = (12 * 2);
+		ZR_NpcTauntWinClear();
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		switch(GetRandomInt(0, 1))
+		{
+			case 0:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_TimeUp-1", false, false);
+			case 1:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_TimeUp-2", false, false);
+		}
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		for(int i; i<10; i++)
+		{
+			int spawn_index = NPC_CreateByName("npc_victorian_tank", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "alway_mount_lmg;turnrate20000.0");
+			if(spawn_index > MaxClients)
+			{
+				NpcStats_CopyStats(npc.index, spawn_index);
+				int health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 3.0);
+				fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
+				fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
+				fl_Extra_Speed[spawn_index] = fl_Extra_Speed[npc.index] * 10.0;
+				fl_Extra_Damage[spawn_index] = fl_Extra_Damage[npc.index]* 20.0;
+				if(GetTeam(iNPC) != TFTeam_Red)
+					NpcAddedToZombiesLeftCurrently(spawn_index, true);
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", health);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
+				int Decicion = TeleportDiversioToRandLocation(spawn_index,_,1250.0, 500.0);
+
+				if(Decicion == 2)
+					Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 250.0);
+
+				if(Decicion == 2)
+					Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 0.0);
+			}
+		}
+		npc.m_flDead_Ringer_Invis = 0.0;
+		npc.m_iState=2;
+		npc.PlayDeathSound();
+		BlockLoseSay = true;
+		AlreadySaidWin = true;
+		npc.m_bFUCKYOU = true;
+	}
+	
+	if(!BlockLoseSay && npc.m_bFUCKYOU && i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		npc.m_flDead_Ringer_Invis = 0.0;
+		npc.m_iState=2;
+		return;
+	}
 	
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
@@ -663,7 +733,7 @@ static void Castellan_ClotThink(int iNPC)
 	
 	if(npc.m_bDoSpawnGesture)
 	{
-		int Maxhealth=RoundToCeil(float(ReturnEntityMaxHealth(npc.index))/2.1);
+		int Maxhealth=RoundToCeil(float(ReturnEntityMaxHealth(npc.index))/2.0);
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", Maxhealth);
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", Maxhealth);
 		npc.m_bDoSpawnGesture=false;
@@ -703,7 +773,7 @@ static void Castellan_ClotThink(int iNPC)
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == GetTeam(npc.index))
+			if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == GetTeam(npc.index))
 				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.3);
 		}
 	}
@@ -813,7 +883,7 @@ static void Castellan_ClotThink(int iNPC)
 		npc.m_bFUCKYOU = true;
 	}
 	
-	if(!BlockLoseSay && npc.m_bFUCKYOU && i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	if(!BlockLoseSay && !npc.m_bFUCKYOU && i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
 		DeleteAndRemoveAllNpcs = 3.0;
 		npc.m_bisWalking = false;
@@ -1080,6 +1150,9 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 		BulletDMG[npc.index] += damage;
 	}
 	
+	if(IsValidClient(attacker) && !IsFakeClient(attacker))
+		flPayback[attacker] += damage;
+	
 	/*Punishment*/
 	if(!Can_I_See_Enemy_Only(npc.index, attacker) && npc.m_flAttackHappens_2 < gameTime)
 	{
@@ -1250,7 +1323,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 			{
 				if(IsValidClient(Temp_Target[2]))
 					Vs_LockOn[Temp_Target[2]]=false;
-				Temp_Target[2] = Victoria_GetTargetDistance(npc.index, false, false);
+				Temp_Target[2] = Victoria_GetPayback(npc.index, false, false);
 			}
 		}
 		RaidModeTime += (0.12 + DEFAULT_UPDATE_DELAY_FLOAT);
@@ -1474,12 +1547,12 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 		switch(GetRandomInt(0,2))
 		{
 			case 0:whattarget=npc.m_iTarget;
-			case 1:whattarget=Victoria_GetTargetDistance(npc.index, true, false);
+			case 1:whattarget=Victoria_GetPayback(npc.index, false, false);
 			case 2:whattarget=Victoria_GetTargetDistance(npc.index, false, false);
 		}
 		FormatEx(Adddeta, sizeof(Adddeta), "lifetime30.0;raidmode;tracking;");
 		if(NpcStats_VictorianCallToArms(npc.index))
-			FormatEx(Adddeta, sizeof(Adddeta), "%s;mk2", Adddeta);
+			FormatEx(Adddeta, sizeof(Adddeta), "%smk2;", Adddeta);
 		static bool NextDrone;
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
@@ -1489,19 +1562,22 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 				WorldSpaceCenter(GetCPU, VecSelfNpc);
 				VecSelfNpc[2]+=45.0;
 				int DroneIndex;
+				int maxhealth;
 				if(NextDrone)
 				{
 					FormatEx(Adddeta, sizeof(Adddeta), "%soverridetarget%i", Adddeta, EntIndexToEntRef(npc.index));
 					DroneIndex = NPC_CreateByName("npc_victoria_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+					maxhealth = RoundToCeil(RaidModeScaling * 21239.0);
 				}
 				else
 				{
 					FormatEx(Adddeta, sizeof(Adddeta), "%soverridetarget%i", Adddeta, EntIndexToEntRef(whattarget));
 					DroneIndex = NPC_CreateByName("npc_victoria_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+					maxhealth = RoundToCeil(RaidModeScaling * 11278.0);
 				}
 				if(DroneIndex > MaxClients)
 				{
-					int maxhealth = RoundToCeil(float(ReturnEntityMaxHealth(npc.index))*0.125);
+					maxhealth += RoundToCeil(float(ReturnEntityMaxHealth(npc.index))*0.01);
 					NpcAddedToZombiesLeftCurrently(DroneIndex, true);
 					SetEntProp(DroneIndex, Prop_Data, "m_iHealth", maxhealth);
 					SetEntProp(DroneIndex, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1565,7 +1641,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 					npc.m_flDead_Ringer_Invis = gameTime + 10.0;
 
 					if(!npc.m_iHealthBar)
-						Temp_Target[2] = Victoria_GetTargetDistance(npc.index, false, false);
+						Temp_Target[2] = Victoria_GetPayback(npc.index, false, false);
 					if(npc.m_bHalfRage)
 						Temp_Target[1] = Victoria_GetTargetDistance(npc.index, true, false);
 					Temp_Target[0] = npc.m_iTarget;
@@ -1699,7 +1775,8 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 								KillFeed_SetKillIcon(npc.index, "fireaxe");
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 								bool Knocked = false;
-											
+								
+								StartBleedingTimer(targetTrace, npc.index, damage * 0.15, 4, -1, DMG_TRUEDAMAGE, 0);
 								if(IsValidClient(targetTrace))
 								{
 									if(IsInvuln(targetTrace))
@@ -1746,13 +1823,13 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 						npc.PlayMeleeHitSound();
 				}
 				npc.m_flAttackHappens = 0.0;
-				npc.m_flNextMeleeAttack = gameTime + (1.2*AttackSpeed);
+				npc.m_flNextMeleeAttack = gameTime + ((NpcStats_VictorianCallToArms(npc.index) ? 0.9 : 1.0)*AttackSpeed);
 				npc.m_flAttackHappenswillhappen = false;
 			}
 			else if(npc.m_flAttackHappens_bullshit < gameTime && npc.m_flAttackHappenswillhappen)
 			{
 				npc.m_flAttackHappenswillhappen = false;
-				npc.m_flNextMeleeAttack = gameTime + (1.2*AttackSpeed);
+				npc.m_flNextMeleeAttack = gameTime + ((NpcStats_VictorianCallToArms(npc.index) ? 0.9 : 1.0)*AttackSpeed);
 			}
 		}
 	}
@@ -2294,7 +2371,6 @@ static void CastellanAirStrike(Castellan npc, int Target, int Silo, float gameTi
 	}
 }
 
-
 static bool Victoria_Support(Castellan npc, int AddNuke, bool Mk2)
 {
 	float GameTime = GetGameTime(npc.index);
@@ -2310,7 +2386,7 @@ static bool Victoria_Support(Castellan npc, int AddNuke, bool Mk2)
 	if(AddNuke>1)
 		enemy[2] = npc.index;
 	if(AddNuke>0)
-		enemy[1] = Victoria_GetTargetDistance(npc.index, false, false);
+		enemy[1] = Victoria_GetPayback(npc.index, true, false);
 	enemy[0] = Victoria_GetTargetDistance(npc.index, true, false);
 	
 	for(int client=1; client<=MaxClients; client++)
@@ -2413,4 +2489,38 @@ static bool Victoria_Support(Castellan npc, int AddNuke, bool Mk2)
 			Vs_RechargeTime[npc.index]=0.0;
 	}
 	return Vs_Fired;
+}
+
+stock int Victoria_GetPayback(int entity, bool inversion, bool ICantSEE)
+{
+	float TargetDMG = 0.0;
+	int ClosestTarget = 0;
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsValidClient(i) && IsPlayerAlive(i) && TeutonType[i] == TEUTON_NONE &&((ICantSEE && Can_I_See_Enemy(entity, i)) || !ICantSEE))
+		{
+			if(GetTeam(entity) != GetTeam(i) && i != entity && IsValidEnemy(entity, i))
+			{
+				if(TargetDMG)
+				{
+					if(inversion && flPayback[i] < TargetDMG)
+					{
+						ClosestTarget = i;
+						TargetDMG = flPayback[i];			
+					}
+					else if(!inversion && flPayback[i] > TargetDMG)
+					{
+						ClosestTarget = i;
+						TargetDMG = flPayback[i];			
+					}
+				}
+				else
+				{
+					ClosestTarget = i;
+					TargetDMG = flPayback[i];
+				}
+			}
+		}
+	}
+	return ClosestTarget;
 }

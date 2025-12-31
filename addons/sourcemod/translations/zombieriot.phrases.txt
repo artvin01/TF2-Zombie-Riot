@@ -2225,7 +2225,7 @@
 		"fr" 		"Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
 		"chi"		"TF2：僵尸暴动\n按Tab开关菜单\nTAB+(H)显示当前武器！"
 		"it"		"Zombie Riot\nPremi di nuovo TAB per chiudere il menu!\nTieni premuto TAB + (H) per mostrare l'arma corrente!"
-		"ko" 		"TF2: 좀비 라이엇\n탭을 다시 눌러 메뉴를 닫으세요!\n상점 메뉴에서 (H) 를 누르면 현재 무기가 표시됩니다!"
+		"ko" 		"TF2: 좀비 라이엇\n탭을 다시 눌러 메뉴를 닫으세요!\n상점 메뉴에서 (H) 를 누르면 현재 무기가 표시됨!"
 	}
 	"StatusEffectList"
 	{
@@ -2628,7 +2628,7 @@
 	{
 		"en"		"You will also notice that it highlights!\nIf you deal/take the corresponding type of damage, it will get an underscore!\nif you take/deal melee damage ☛will lightup."
 		"it"		"Si noterà anche che si evidenzia!\nSe si infligge/riceve il tipo di danno corrispondente, si ottiene un trattino basso!\nSe si infligge/riceve danno in mischia, si illuminerà ☛."
-		"ko"		"그리고 이 심볼이 가끔씩 밝아지는 것을 알아차리셨을 겁니다!\n해당 유형의 피해를 받거나, 해당 유형으로 피해를 주면, 그 심볼에 밑줄이 그어집니다.\n예시로 근접 피해를 가하거나, 근접 피해로 공격 받았다면, ☛가 하이라이트로 표시됩니다."
+		"ko"		"그리고 이 심볼이 가끔씩 밝아지는 것을 알아차리셨을겁니다!\n해당 유형의 피해를 받거나, 해당 유형으로 피해를 주면, 그 심볼에 밑줄이 그어집니다.\n예시로 근접 피해를 가하거나, 근접 피해로 공격 받았다면, ☛가 하이라이트로 표시됩니다."
 	}
 	"Tutorial Show Hint Perk Machine"
 	{
@@ -4638,7 +4638,7 @@
 	{
 		"en"	"Lore order: (2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
 		"it"	"Ordine Lore: (2) La macchina è stata hackerata da qualcuno... ti vuole morto.\nOriginalmente costruito da Kahmlstein insieme a Ruina e Expidonsa...\nNon affrontarlo in nessuna area expidonsan..."
-		"ko"	"설정 순서: (2) 누군가에게 해킹당한 기계입니다... 당신을 죽이고 싶어하죠.\n본래 카멜슈타인, 루이나, 엑스피돈사가 공동 제작한 기계였지만…\n엑스피돈사 지역에서 그와 전투하지 마세요."
+		"ko"	"설정 순서: (2) 누군가에게 해킹당한 기계입니다... 그리고 이제 당신을 죽이고 싶어합니다.\n원래는 카멜스타인, 루이나, 엑스피돈사와 함께 만들어진 기계였지만…\n엑스피돈사 지역에서 그와 전투하지 마십시오."
 	}
 	"Blitzkrieg Hard Desc"
 	{
@@ -4671,7 +4671,7 @@
 	}
 	"Medieval Desc"
 	{
-		"en"	"Fight against the middle-age with their armor to counter melee or ranged attacks!"
+		"en"	"While Alaxios is away talking with Sensal, he tells his army to come to you. They ask us to train them? We have nothing else to do, so why not Alaxios can just revive them after we're done."
 		"fr"	"Entrez en combat contre le Moyen-Âge, et leur armure qui leur protège contre les attaques à portée et corps à corps!"
 		"chi"	"对抗中世纪的剑与盾！"
 		"it"	"Combatti contro la mezza età con le loro armature per contrastare gli attacchi in mischia o a distanza!"
@@ -4707,11 +4707,11 @@
 	{
 		"en"	"Lore order: (5) The scouting party operative, you harmed Silvester and Waldch, but they were unable to tell Sensal that this was a false alarm, brace yourself."
 		"it"	"Ordine Lore: (5) L'agente del gruppo di esplorazione, hai danneggiato silvester e waldch, ma non sono stati in grado di dire a sensal che si trattava di un falso allarme, tieniti forte."
-		"ko"	"설정 순서: (5) 당신은 정찰 부대 요원인 실베스터와 왈츠를 공격했지만, 그들은 센살에게 이것이 허위 경보란 사실을 알리지 못했습니다. 대비하세요."
+		"ko"	"설정 순서: (5) 당신은 정찰 부대 요원인 실베스터와 왈츠를 공격했지만, 그들은 센살에게 이것이 허위 경보란 사실을 알리지 못했습니다. 준비하세요."
 	}
 	"Deep Sea Desc"
 	{
-		"en"	"The Seaborn infection has arrived, Armor Corrosion attacks will infect your armor, cure it with armor tables!"
+		"en"	"You head to W.F.'s Outpost after seeing his elite soldiers infected by the xeno virus to see if there are any remaining soldiers there. Turns out there was, but they're infected by the Seaborn virus. And the sea has an army ready to attack the mainland."
 		"fr"	"L'infection Seaborn attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
 		"chi"	"海嗣感染将会侵蚀你的盾。"
 		"it"	"L'infezione Seaborn è arrivata, gli attacchi di Corrosione dell'Armatura infetteranno la tua armatura, curala con le tabelle dell'armatura!"
@@ -4755,11 +4755,11 @@
 	}
 	"Unspeakable Raid Desc"
 	{
-		"en"	"Lore order: (9) Directly after you release the void in rogue2. Creatures from a different dimension are here to take over ours. Help Kahmlstein against the void!"
+		"en"	"Lore order: (9) Directly after you release the void in Rogue 2. Creatures from a different dimension are here to take over ours. Help Kahmlstein against the void!"
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
 		"chi"	"深渊已被释放。"
 		"it"	"Ordine Lore: (9) Subito dopo aver liberato il vuoto in rogue2..."
-		"ko"	"설정 순서: (9) 로그라이크2 당시 공허가 해방되어버린 직후입니다. 다른 차원의 생명체들이 이 세계를 점령하기 위해 몰려오고 있습니다. 카멜슈타인을 도와 공허와 맞서세요!"
+		"ko"	"설정 순서: (9) 로그라이크2(Rogue2) 당시 공허가 해방되어버린 직후입니다. 다른 차원의 생명체들이 이 세계를 점령하기 위해 몰려오고 있습니다. 카멜스타인을 도와 공허와 맞서세요!"
 	}
 	"Aperture Desc"
 	{
@@ -5196,8 +5196,8 @@
 	}
 	"Iberia Expi Desc"
 	{
-	  "en" "Iberia and expidonsa offer training to help against the true final battle against the void... But our main trainer and her partner aren't here to train us. Their probably on vacation."
-	  "ko" "이베리아와 엑스피돈사가 공허와의 최후의 전투를 돕기 위한 대비 훈련을 제공하려고 합니다...만, 보아하니 메인 트레이너와 그녀의 파트너가 여기에 없군요. 아마 휴가중인건가..."
+	  "en" "Iberia and expidonsa, but mainly Iberia, Come back to us for more training. But Nemal and Silvester won't be here this time. They're probably on vacation with Sensal."
+	  "ko" "이베리아와 엑스피돈사가 공허와의 마지막 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 그런데 보아하니 메인 트레이너와 그녀의 파트너가 여기에 없군요. 들려오는 말로는 둘 다 휴가 중이라던데 설마..."
 	}
 	"Iberia & Nemal"
 	{
@@ -5213,7 +5213,7 @@
 		"en" "(10) Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremly seriously."
 		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
 		"it"	"(10) Iberia e expidonsa offrono addestramento per aiutare contro la vera battaglia finale contro il vuoto... Anche se gli iberici sembrano prenderla estremamente sul serio."
-		"ko" "설정 순서: (10) 이베리아와 엑스피돈사가 공허와의 최후의 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 이베리아인들은 이를 매우 심각하게 받아들이는 것 같지만요."
+		"ko" "설정 순서: (10) 이베리아와 엑스피돈사가 공허와의 마지막 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 이베리아인들은 이를 매우 심각하게 받아들이는 것 같지만요."
 	}
 	"Revenant's Shadow"
 	{
@@ -5462,8 +5462,8 @@
 	}
 	"Victoria Raid Desc"
 	{
-		"en" 	"(11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
-		"it"	"(11) Sensal vi chiede di visitare Ziberia, attualmente attaccata da Victoria."
+		"en" 	"Lore order: (11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
+		"it"	"Ordine Lore: (11) Sensal vi chiede di visitare Ziberia, attualmente attaccata da Victoria."
 		"ko"	"설정 순서: (11) 센살은 당신에게 현재 빅토리아에게 공격받고 있는 지베리아를 방문해달라고 부탁했습니다."
 	}
 	"Ability already Active"

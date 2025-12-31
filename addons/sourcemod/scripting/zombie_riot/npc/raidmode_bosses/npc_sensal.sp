@@ -335,6 +335,7 @@ methodmap Sensal < CClotBody
 		if(cutscene2)
 		{
 			i_RaidGrantExtra[npc.index] = 51;
+			b_NoKillFeed[npc.index] = true;
 		}
 		bool tripple = StrContains(data, "triple_enemies") != -1;
 		if(tripple)
@@ -603,9 +604,10 @@ static void Internal_ClotThink(int iNPC)
 				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-10", false);
 				for (int client = 1; client <= MaxClients; client++)
 				{
-					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500 && !Items_HasNamedItem(client, "Avangard's Processing Core-B"))
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500 && !Items_HasNamedItem(client, "Tank Beertery"))
 					{
-						Items_GiveNamedItem(client, "Avangard's Processing Core-B");
+						//Players who have already won the trophy will not get a message.
+						Items_GiveNamedItem(client, "Tank Beertery");
 						SetGlobalTransTarget(client);
 						CPrintToChat(client, "%t", "Castellan_And_Sensal_Talk-11");
 					}

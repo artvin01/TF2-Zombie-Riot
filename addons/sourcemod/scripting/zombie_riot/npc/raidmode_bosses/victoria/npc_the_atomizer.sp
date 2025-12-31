@@ -158,7 +158,7 @@ static void ClotPrecache()
 	PrecacheSound(g_BoomSounds);
 	PrecacheSound(g_IncomingBoomSounds);
 	PrecacheSound("weapons/bumper_car_spawn.wav");
-	PrecacheSoundCustom("#zombiesurvival/victoria/raid_atomizer.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria_1/raid_atomizer.mp3");
 	
 	g_Laser = PrecacheModel(LASERBEAM);
 	g_RedPoint = PrecacheModel("sprites/redglow1.vmt");
@@ -330,7 +330,8 @@ methodmap Atomizer < CClotBody
 				case 2:
 				{
 					npc.m_flSpeed = 400.0;
-					npc.m_iMaxAmmo = RoundToNearest(float(CountPlayersOnRed(2)) * 4.0);
+					npc.m_iMaxAmmo = 30+RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
+					if(npc.m_iMaxAmmo>45)npc.m_iMaxAmmo=45;
 					npc.m_iAmmo = npc.m_iMaxAmmo;
 					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-2", false, true);
 				}
@@ -364,7 +365,8 @@ methodmap Atomizer < CClotBody
 			npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 5.0;
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 30.0;
 			npc.m_flAngerDelay = GetGameTime(npc.index) + 15.0;
-			npc.m_iMaxAmmo = RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
+			npc.m_iMaxAmmo = 20+RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
+			if(npc.m_iMaxAmmo>45)npc.m_iMaxAmmo=45;
 			npc.m_iAmmo = 0;
 			OnMiss[npc.index] = false;
 			npc.m_fbRangedSpecialOn = false;
@@ -401,7 +403,7 @@ methodmap Atomizer < CClotBody
 			if(StrContains(data, "nomusic") == -1)
 			{
 				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria_1/raid_atomizer.mp3");
 				music.Time = 128;
 				music.Volume = 2.0;
 				music.Custom = true;
@@ -603,7 +605,7 @@ static void Clone_ClotThink(int iNPC)
 			}
 			else if(npc.m_flDelay_Attribute < gameTime)
 			{
-				float damageDealt = 50.0 * RaidModeScaling;
+				float damageDealt = 125.0 * RaidModeScaling;
 				KillFeed_SetKillIcon(npc.index, "bonk");
 				Explode_Logic_Custom(damageDealt, 0, npc.index, -1, ProjLocBase, 300.0 , 1.0, _, true, 20,_,_,_,SuperAttack);
 				for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
@@ -742,14 +744,11 @@ static int Support_Work(Atomizer npc, float gameTime, float distance)
 									//max duration of 3 seconds
 									CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
 								}
-								SetEntityGravity(RocketGet, 1.0);
-								vecDest[0] += GetRandomFloat(-30.0, 30.0);
-								vecDest[1] += GetRandomFloat(-30.0, 30.0);
 								ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
 								SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
+								//Better_Gravity_Rocket(RocketGet, 55.0);
 								TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
-								SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-								SDKHook(RocketGet, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
+								WandProjectile_ApplyFunctionToEntity(RocketGet, Atomizer_Rocket_Particle_StartTouch);
 								npc.m_iAmmo--;
 							}
 							else break;
@@ -1425,7 +1424,8 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 			npc.m_flDoingAnimation = gameTime + 0.45;
 			npc.m_flNextRangedSpecialAttackHappens = gameTime + (DrinkPOWERUP[npc.index] ? 15.0 : 22.5);
 			npc.m_flNextRangedAttack += 1.0;
-			npc.m_iMaxAmmo = RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
+			npc.m_iMaxAmmo = (DrinkPOWERUP[npc.index] ? 30 : 20)+RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
+			if(npc.m_iMaxAmmo>45)npc.m_iMaxAmmo=45;
 			npc.m_iAmmo = npc.m_iMaxAmmo;
 		}
 	}
@@ -1512,7 +1512,7 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 			{
 				if(gameTime > npc.m_flNextMeleeAttack)
 				{
-					if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 25.0))
+					if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 40.0))
 					{
 						npc.m_flAttackHappens = 0.0;
 						float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
@@ -1553,7 +1553,9 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 									ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
 									SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 									TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
-									WandProjectile_ApplyFunctionToEntity(RocketGet, Atomizer_Rocket_Particle_StartTouch);	
+									/*SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+									SDKHook(RocketGet, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);*/
+									WandProjectile_ApplyFunctionToEntity(RocketGet, Atomizer_Rocket_Particle_StartTouch);
 									npc.m_iAmmo--;
 								}
 								else break;
@@ -1651,7 +1653,7 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 	{
 		if(IsValidEnemy(npc.index, target)) 
 		{
-			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 25.0) && npc.m_iAmmo > 0)
+			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 40.0) && npc.m_iAmmo > 0)
 			{
 				int Enemy_I_See;
 									
@@ -1727,8 +1729,6 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 		if(inflictor == -1)
 			inflictor = owner;
 			
-		float ProjectileLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 		float DamageDeal = fl_rocket_particle_dmg[entity];
 		if(ShouldNpcDealBonusDamage(target))
 			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
@@ -1737,57 +1737,11 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 		if(target <= MaxClients && !IsInvuln(target))
 			if(!HasSpecificBuff(target, "Fluid Movement"))
 				TF2_StunPlayer(target, 2.0, 0.4, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
-
-		int particle = EntRefToEntIndex(i_WandParticle[entity]);
-		if(IsValidEntity(particle))
-			RemoveEntity(particle);
+		ApplyStatusEffect(owner, target, "Teslar Shock", NpcStats_VictorianCallToArms(owner) ? 7.5 : 5.0);
 	}
-	else
-	{
-		if(IsValidEntity(entity))
-		{
-			int GETBOUNS = GetEntProp(entity, Prop_Data, "m_iHammerID");
-			if(GETBOUNS < 20)
-			{
-				static float vOrigin[3], vVelocity[3];
-				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vOrigin);
-				GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vVelocity);
-				
-				float TempANG[3], tOrigin[3];
-				TempANG[0]=90.0;
-				EntityLookPoint(entity, TempANG, vOrigin, tOrigin);
-				float distance = GetVectorDistance(vOrigin, tOrigin);
-				if(distance<65.0)
-					vVelocity[2] = 600.0;
-				else
-				{
-					TempANG[0]=-90.0;
-					EntityLookPoint(entity, TempANG, vOrigin, tOrigin);
-					distance = GetVectorDistance(vOrigin, tOrigin);
-					if(distance<65.0)
-						vVelocity[2] = -600.0;
-				}
-				int E_Target = GetClosestTarget(entity);
-				TeleportEntity(entity, NULL_VECTOR, TempANG, vVelocity);
-				float VecStart[3]; WorldSpaceCenter(entity, VecStart);
-				if(IsValidEnemy(owner, E_Target))
-				{
-					float vecDest[3]; WorldSpaceCenter(E_Target, vecDest);
-					float SpeedReturn[3];
-					PredictSubjectPositionForProjectiles(view_as<Atomizer>(entity), E_Target, 400.0,_,vecDest);
-					vecDest[0] += GetRandomFloat(-30.0, 30.0);
-					vecDest[1] += GetRandomFloat(-30.0, 30.0);
-					ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.25, 1.0);
-					TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
-					SetEntProp(entity, Prop_Data, "m_iHammerID", GETBOUNS+1);
-				}
-				return Plugin_Handled;
-			}
-		}
-		int particle = EntRefToEntIndex(i_WandParticle[entity]);
-		if(IsValidEntity(particle))
-			RemoveEntity(particle);
-	}
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
+	if(IsValidEntity(particle))
+		RemoveEntity(particle);
 	RemoveEntity(entity);
 	return Plugin_Handled;
 }

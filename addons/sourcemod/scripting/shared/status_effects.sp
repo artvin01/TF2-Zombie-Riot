@@ -3218,7 +3218,7 @@ void Charge_BatteryTM_Hud_Func(int attacker, int victim, StatusEffect Apply_Mast
 		RemoveSpecificBuff(victim, "Battery_TM Charge");
 		return;
 	}
-
+	#if defined ZR
 	if(fl_ruina_battery_timeout[victim] != FAR_FUTURE && fl_ruina_battery_timeout[victim] > GetGameTime(victim))
 	{
 		Format(HudToDisplay, SizeOfChar, "[B™ %.1fs]", fl_ruina_battery_timeout[victim] - GetGameTime(victim));
@@ -3235,6 +3235,7 @@ void Charge_BatteryTM_Hud_Func(int attacker, int victim, StatusEffect Apply_Mast
 	{
 		Format(HudToDisplay, SizeOfChar, "[B™ %.0f％]", Ratio);
 	}
+	#endif
 }
 
 void StatusEffects_Pernell()
@@ -4671,6 +4672,19 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Explosault Rifle Buff");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "㎼");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Tinkering Curiosity");
