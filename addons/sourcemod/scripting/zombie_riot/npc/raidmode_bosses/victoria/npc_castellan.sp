@@ -272,6 +272,11 @@ methodmap Castellan < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
 	}
+	property float m_flAntiInvulnEmergencyFix
+	{
+		public get()							{ return fl_NextTeleport[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_NextTeleport[this.index] = TempValueForProperty; }
+	}
 
 	public Castellan(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -522,6 +527,21 @@ static void Castellan_FORVICTORIA(int iNPC)
 	npc.Update();
 	
 	Victoria_Support(npc, 1, false);
+	if(npc.m_flAntiInvulnEmergencyFix)
+	{
+		if(npc.m_flAntiInvulnEmergencyFix < gameTime)
+		{
+			if(b_NpcIsInvulnerable[npc.index])
+			{
+				//Incase the invulnerability phase bugs out...
+				//This shouldnt be used, and should be fixed without the need of this, thanks
+				//temp fix due to headaches
+				Castellan_GiveBackVuln(npc);
+			}
+			npc.m_flAntiInvulnEmergencyFix = 0.0;
+			return;
+		}
+	}
 	
 	if(LastMann)
 	{
@@ -629,6 +649,7 @@ static void Castellan_FORVICTORIA(int iNPC)
 				npc.m_iChanged_WalkCycle = -1;
 				npc.PlayDeathSound();
 				npc.m_flDead_Ringer_Invis = gameTime + 10.0;
+				npc.m_flAntiInvulnEmergencyFix = gameTime + 11.0;
 				npc.m_iState = 2;
 			}
 		}
@@ -665,28 +686,7 @@ static void Castellan_FORVICTORIA(int iNPC)
 			}
 			if(npc.m_flDead_Ringer_Invis < gameTime)
 			{
-				if(IsValidEntity(npc.m_iWearable9))
-					RemoveEntity(npc.m_iWearable9);
-				WorldSpaceCenter(npc.index, VecSelfNpc);
-				npc.m_iAmmo = npc.m_iMaxAmmo;
-				fl_ruina_battery[npc.index]=100.0;
-				ParticleEffectAt(VecSelfNpc, "teleported_blue", 0.5);
-				b_DoNotUnStuck[npc.index] = false;
-				b_NoKnockbackFromSources[npc.index] = false;
-				b_NpcIsInvulnerable[npc.index] = false;
-				b_ThisEntityIgnoredEntirelyFromAllCollisions[npc.index] = false;
-				SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", SaveSolidFlags[npc.index]);
-				SetEntProp(npc.index, Prop_Data, "m_nSolidType", SaveSolidType[npc.index]);
-				if(GetTeam(npc.index) == TFTeam_Red)
-					SetEntityCollisionGroup(npc.index, 24);
-				else
-					SetEntityCollisionGroup(npc.index, 9);
-				npc.AddActivityViaSequence("layer_taunt_maggots_condolence");
-				npc.SetCycle(0.5);
-				npc.SetPlaybackRate(1.25);
-				npc.m_flDoingAnimation = gameTime + 0.75;
-				npc.PlayDeathSound();
-				npc.m_iState = 3;
+				Castellan_GiveBackVuln(npc);
 			}
 		}
 		case 3:
@@ -2523,4 +2523,29 @@ stock int Victoria_GetPayback(int entity, bool inversion, bool ICantSEE)
 		}
 	}
 	return ClosestTarget;
+}
+void Castellan_GiveBackVuln(Castellan npc)
+{
+	if(IsValidEntity(npc.m_iWearable9))
+		RemoveEntity(npc.m_iWearable9);
+	WorldSpaceCenter(npc.index, VecSelfNpc);
+	npc.m_iAmmo = npc.m_iMaxAmmo;
+	fl_ruina_battery[npc.index]=100.0;
+	ParticleEffectAt(VecSelfNpc, "teleported_blue", 0.5);
+	b_DoNotUnStuck[npc.index] = false;
+	b_NoKnockbackFromSources[npc.index] = false;
+	b_NpcIsInvulnerable[npc.index] = false;
+	b_ThisEntityIgnoredEntirelyFromAllCollisions[npc.index] = false;
+	SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", SaveSolidFlags[npc.index]);
+	SetEntProp(npc.index, Prop_Data, "m_nSolidType", SaveSolidType[npc.index]);
+	if(GetTeam(npc.index) == TFTeam_Red)
+		SetEntityCollisionGroup(npc.index, 24);
+	else
+		SetEntityCollisionGroup(npc.index, 9);
+	npc.AddActivityViaSequence("layer_taunt_maggots_condolence");
+	npc.SetCycle(0.5);
+	npc.SetPlaybackRate(1.25);
+	npc.m_flDoingAnimation = gameTime + 0.75;
+	npc.PlayDeathSound();
+	npc.m_iState = 3;
 }
