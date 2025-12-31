@@ -667,6 +667,7 @@ bool b_KillHookHandleEvent[MAXENTITIES];
 
 float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];
 float f_DelayLookingAtHud[MAXPLAYERS+1];
+bool b_IsBuildingConverted[MAXENTITIES];
 bool b_EntityIsArrow[MAXENTITIES];
 bool b_EntityIsWandProjectile[MAXENTITIES];
 bool b_EntityIgnoredByShield[MAXENTITIES];

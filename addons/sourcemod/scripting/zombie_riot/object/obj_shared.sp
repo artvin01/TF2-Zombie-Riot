@@ -88,6 +88,9 @@ void Object_PluginStart()
 	.DefineBoolField("m_bSentryBuilding")
 	.DefineBoolField("m_bConstructBuilding")
 	.DefineFloatField("m_fLastTimeClaimed")
+
+	//needed so npc stuff doesnt break
+	.DefineIntField("m_iHealthBar")
 	.EndDataMapDesc();
 	factory.Install();
 }
@@ -206,6 +209,7 @@ methodmap ObjectGeneric < CClotBody
 		SetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity", client);
 		
 		SDKHook(obj, SDKHook_OnTakeDamage, ObjectGeneric_ClotTakeDamage);
+		SDKHook(obj, SDKHook_OnTakeDamagePost, ObjectGeneric_ClotTakeDamage_Post);
 		/*
 			how it works:
 			if a building is on cooldown/can have one, we spawn a 2nd prop, see below under fake model.
@@ -637,7 +641,8 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		Call_Finish();
 	}
 
-	BuildingUpdateTextHud(objstats.index);
+	if(GetTeam(objstats.index) != TFTeam_Red)
+		BuildingUpdateTextHud(objstats.index);
 
 	int health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
 	int maxhealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
@@ -660,6 +665,9 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		}
 	}
 
+	if(GetTeam(objstats.index) != TFTeam_Red)
+		return false;
+	
 	int owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
 	if(owner == -1)
 	{
@@ -761,7 +769,6 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 				SetEntityRenderColor(objstats.index, r, g, 0, 255);
 			}
 		}
-		
 	}
 	return true;
 }
@@ -1005,57 +1012,33 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 		damage *= 0.75;
 	}
 	
-	if(CurrentModifOn() == 2 || CurrentModifOn() == 3)
-		damage *= 1.25;
-
-	if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
+	if(GetTeam(victim) == TFTeam_Red)
 	{
-		int scale = Waves_GetRoundScale();
-		if(scale < 2)
+		if(CurrentModifOn() == 2 || CurrentModifOn() == 3)
+			damage *= 1.25;
+
+		if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
 		{
-			//damage *= 1.0;
-		}
-		else if(scale < 4)
-		{
-			damage *= 2.0;
-		}
-		else
-		{
-			damage *= 3.0;
+			int scale = Waves_GetRoundScale();
+			if(scale < 2)
+			{
+				//damage *= 1.0;
+			}
+			else if(scale < 4)
+			{
+				damage *= 2.0;
+			}
+			else
+			{
+				damage *= 3.0;
+			}
 		}
 	}
 
-	damage *= 0.1;
 	if(Damage_Modifiy(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 	{
 		return Plugin_Handled;
 	}
-	
-	int dmg = FloatToInt_DamageValue_ObjBuilding(victim, damage);
-	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	health -= dmg;
-
-	int Owner = GetEntPropEnt(victim, Prop_Send, "m_hOwnerEntity");
-	if(Owner != -1)
-	{
-		i_BarricadeHasBeenDamaged[Owner] += dmg;
-	}
-	if(health < 0)
-	{
-		DestroyBuildingDo(victim);
-		return Plugin_Handled;
-	}
-	
-	ObjectGeneric objstats = view_as<ObjectGeneric>(victim);
-	if(objstats.PlayHurtSound())
-	{
-		damagePosition[2] -= 40.0;
-		TE_ParticleInt(g_particleImpactMetal, damagePosition);
-		TE_SendToAll();
-	}
-	
-	SetEntProp(victim, Prop_Data, "m_iHealth", health);
-	UpdateDoublebuilding(victim);
 	return Plugin_Handled;
 }
 
@@ -1324,4 +1307,101 @@ public Action SetTransmit_TextBuildingDo(int entity, int client)
 		return Plugin_Continue;
 	else
 		return Plugin_Handled;
+}
+
+public void ObjectGeneric_ClotTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
+{
+	float Damageafter = damage;
+	Damageafter *= 0.1;
+	int dmg = FloatToInt_DamageValue_ObjBuilding(victim, Damageafter);
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	health -= dmg;
+	if((Damageafter >= 0.0 || IsInvuln(victim, true) || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0))) //make sure to still show it if they are invinceable!
+	{
+#if !defined RTS
+		if(inflictor > 0 && inflictor <= MaxClients)
+		{
+			GiveRageOnDamage(inflictor, Damageafter);
+#if defined ZR
+			GiveMorphineOnDamage(inflictor, victim, Damageafter, damagetype);
+#endif
+			Calculate_And_Display_hp(inflictor, victim, Damageafter, false);
+		}
+		else if(attacker > 0 && attacker <= MaxClients)
+		{
+			GiveRageOnDamage(attacker, Damageafter);
+#if defined ZR
+			GiveMorphineOnDamage(attacker, victim, Damageafter, damagetype);
+#endif
+			Calculate_And_Display_hp(attacker, victim, Damageafter, false);	
+		}
+		else
+		{
+			float damageCalc = Damageafter;
+			if(health <= 0)
+			{
+				damageCalc += health;
+			}
+			Damage_dealt_in_total[attacker] += damageCalc;
+			Calculate_And_Display_hp(attacker, victim, Damageafter, false);
+		}
+		OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
+#endif
+		//Do not show this event if they are attacked with DOT. Earls bleedin.
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		{
+			Event event = CreateEvent("npc_hurt");
+			if(event) 
+			{
+				int display = RoundToNearest(Damageafter);
+				event.SetInt("entindex", victim);
+				event.SetInt("health", health);
+				event.SetInt("damageamount", display);
+				event.SetBool("crit", (damagetype & DMG_ACID) == DMG_ACID);
+
+				if(attacker > 0 && attacker <= MaxClients)
+				{
+					event.SetInt("attacker_player", GetClientUserId(attacker));
+					event.SetInt("weaponid", 0);
+				}
+				else 
+				{
+					event.SetInt("attacker_player", 0);
+					event.SetInt("weaponid", 0);
+				}
+
+				event.Fire();
+			}
+		}
+		
+	}
+
+	StatusEffect_OnTakeDamagePostVictim(victim, attacker, damage, damagetype);
+	StatusEffect_OnTakeDamagePostAttacker(victim, attacker, damage, damagetype);
+
+	int Owner = GetEntPropEnt(victim, Prop_Send, "m_hOwnerEntity");
+	if(Owner != -1)
+	{
+		i_BarricadeHasBeenDamaged[Owner] += dmg;
+	}
+	if(health < 0)
+	{
+		DestroyBuildingDo(victim);
+		return;
+	}
+	
+	ObjectGeneric objstats = view_as<ObjectGeneric>(victim);
+	if(objstats.PlayHurtSound())
+	{
+		float damagePosition2[3];
+		damagePosition2 = damagePosition;
+		damagePosition2[2] -= 40.0;
+		TE_ParticleInt(g_particleImpactMetal, damagePosition2);
+		TE_SendToAll();
+	}
+	
+	SetEntProp(victim, Prop_Data, "m_iHealth", health);
+	UpdateDoublebuilding(victim);
+	
+	return;
 }

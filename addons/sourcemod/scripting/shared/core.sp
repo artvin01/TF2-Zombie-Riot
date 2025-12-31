@@ -2529,6 +2529,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_TimeTillMeleeAttackShould[entity] = 0.0;
 		StatusEffectReset(entity, true);
 		f_InBattleDelay[entity] = 0.0;
+		b_IsBuildingConverted[entity] = false;
 		b_AllowCollideWithSelfTeam[entity] = false;
 		NPCStats_SetFuncsToZero(entity);
 		f3_VecTeleportBackSave_OutOfBounds[entity][0] = 0.0;
