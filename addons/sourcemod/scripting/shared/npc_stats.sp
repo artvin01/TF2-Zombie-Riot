@@ -178,6 +178,92 @@ public Action Command_RemoveAll(int client, int args)
 	return Plugin_Handled;
 }
 
+public Action Command_PetMenu1(int client, int args)
+{
+	//What are you.
+	if(!(client > 0 && client <= MaxClients && IsClientInGame(client)))
+		return Plugin_Handled;
+	
+	if(args < 1)
+	{
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_building <plugin> [health] [data] [team] [damage multi] [speed multi] [ranged armour] [melee armour] [Extra Size] [Think Speed]");
+		return Plugin_Handled;
+	}
+	
+	float flPos[3], flAng[3];
+	GetClientEyeAngles(client, flAng);
+	flAng[0] = 0.0;
+	if(!SetTeleportEndPoint(client, flPos, false))
+	{
+		PrintToChat(client, "Could not find place.");
+		return Plugin_Handled;
+	}
+	
+	//1==index, 2==health, 3==data, 4==ally, 5==rpg lvl 
+	char plugin[64], buffer[64];
+	GetCmdArg(1, plugin, sizeof(plugin));
+	GetCmdArg(3, buffer, sizeof(buffer));
+
+#if defined RTS
+	int team = GetTeam(client);
+#elseif defined ZR
+	int team = TFTeam_Blue;
+#else
+	int team = 4;
+#endif
+	if(args > 3)	//data
+		team = view_as<bool>(GetCmdArgInt(4));
+	
+#if defined RTS
+	int entity = NPC_CreateByName(plugin, team, flPos, flAng, buffer);
+#else
+	int entity = NPC_CreateByName(plugin, client, flPos, flAng, team, buffer);
+#endif
+
+	if(IsValidEntity(entity))
+	{
+
+#if defined ZR
+		if(GetTeam(entity) != view_as<int>(TFTeam_Red))
+		{
+			NpcAddedToZombiesLeftCurrently(entity, true);
+		}
+#endif
+		
+		if(args > 1)
+		{
+			int health = GetCmdArgInt(2);
+			SetEntProp(entity, Prop_Data, "m_iHealth", health);
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		}
+		
+		if(args > 4)
+			fl_Extra_Damage[entity] = GetCmdArgFloat(5);
+		
+		if(args > 5)
+			fl_Extra_Speed[entity] = GetCmdArgFloat(6);
+		
+		if(args > 6)
+			fl_Extra_RangedArmor[entity] = GetCmdArgFloat(7);
+		
+		if(args > 7)
+			fl_Extra_MeleeArmor[entity] = GetCmdArgFloat(8);
+
+		if(args > 8)
+		{
+			float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale * GetCmdArgFloat(9));
+		}
+
+		if(args > 9)
+		{
+			f_AttackSpeedNpcIncrease[entity] = GetCmdArgFloat(10);
+		}
+	}
+
+	return Plugin_Handled;
+}
+
 public Action Command_PetMenu(int client, int args)
 {
 	//What are you.
@@ -192,6 +278,7 @@ public Action Command_PetMenu(int client, int args)
 	
 	float flPos[3], flAng[3];
 	GetClientEyeAngles(client, flAng);
+	flAng[0] = 0.0;
 	if(!SetTeleportEndPoint(client, flPos))
 	{
 		PrintToChat(client, "Could not find place.");
@@ -3752,6 +3839,7 @@ methodmap CClotBody < CBaseCombatCharacter
 public void NPC_Base_InitGamedata()
 {
 	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_ROOT);
+	RegAdminCmd("sm_spawn_building", Command_PetMenu1, ADMFLAG_ROOT);
 	RegAdminCmd("sm_remove_npc", Command_RemoveAll, ADMFLAG_ROOT);
 	
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
@@ -5530,7 +5618,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 	int ClosestTarget = -1; 
 
 #if !defined RTS
-	if(i_IsNpcType[entity] == STATIONARY_NPC)
+	if(i_IsNpcType[entity] == STATIONARY_NPC || !b_ThisWasAnNpc[entity])
 	{
 		//Stationary npcs never really need vector distance.
 		UseVectorDistance = true;
@@ -6730,7 +6818,7 @@ public void NpcStuckInSomething(CClotBody npc, int iNPC)
 		return;
 	if(f_DoNotUnstuckDuration[iNPC] > GetGameTime())
 		return;
-
+		
 	if(i_FailedTriesUnstuck[iNPC][1] == 0)
 	{
 		if (npc.IsOnGround())
@@ -8001,7 +8089,7 @@ public bool TraceEntityFilterPlayer2(int entity, int contentsMask)
 	return entity > MaxClients || !entity;
 }
 
-bool SetTeleportEndPoint(int client, float Position[3])
+bool SetTeleportEndPoint(int client, float Position[3], bool DontChange = true)
 {
 	float vAngles[3];
 	float vOrigin[3];
@@ -8018,12 +8106,19 @@ bool SetTeleportEndPoint(int client, float Position[3])
 	if(TR_DidHit(trace))
 	{   	 
    	 	TR_GetEndPosition(vStart, trace);
-		GetVectorDistance(vOrigin, vStart, false);
-		Distance = -35.0;
-   	 	GetAngleVectors(vAngles, vBuffer, NULL_VECTOR, NULL_VECTOR);
-		Position[0] = vStart[0] + (vBuffer[0]*Distance);
-		Position[1] = vStart[1] + (vBuffer[1]*Distance);
-		Position[2] = vStart[2] + (vBuffer[2]*Distance);
+		if(DontChange)
+		{
+			GetVectorDistance(vOrigin, vStart, false);
+			Distance = -35.0;
+			GetAngleVectors(vAngles, vBuffer, NULL_VECTOR, NULL_VECTOR);
+			Position[0] = vStart[0] + (vBuffer[0]*Distance);
+			Position[1] = vStart[1] + (vBuffer[1]*Distance);
+			Position[2] = vStart[2] + (vBuffer[2]*Distance);
+		}
+		else
+		{
+			Position = vStart;
+		}
 	}
 	else
 	{
@@ -9748,6 +9843,7 @@ public void KillNpc(int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity)) //Dont do this in a think pls.
 	{
+		LogStackTrace("test");
 #if defined RPG
 		NPC_Despawn(entity);
 #endif

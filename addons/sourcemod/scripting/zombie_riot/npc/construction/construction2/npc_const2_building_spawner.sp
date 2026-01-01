@@ -74,7 +74,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 		i_IsNpcType[entity] = STATIONARY_NPC;
 		AddNpcToAliveList(entity, 1);	
 		SetEntityRenderColor(entity, 255, 255, 255, 255);
-		b_IsBuildingConverted[entity] = true;
 	}
 	SetTeam(entity, team);
 	//figure out eventually
@@ -128,7 +127,6 @@ public Action Building_GiveLayout(int client, int args)
 		
 		float pos[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
-		pos[2] -= 5.0;
 		float ang[3];
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		char buffer2[128];

@@ -1398,6 +1398,7 @@ public void ObjectGeneric_ClotTakeDamage_Post(int victim, int attacker, int infl
 	}
 	if(health < 0)
 	{
+		b_NpcHasDied[victim] = true;
 		DestroyBuildingDo(victim);
 		return;
 	}
