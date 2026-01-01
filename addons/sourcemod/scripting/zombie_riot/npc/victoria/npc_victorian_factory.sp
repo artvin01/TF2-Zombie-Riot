@@ -34,7 +34,7 @@ static void ClotPrecache()
 	PrecacheModel("models/props_c17/substation_transformer01a.mdl");
 	PrecacheModel("models/props_c17/lockers001a.mdl");
 	PrecacheModel("models/props_skybox/train_building004_skybox.mdl");
-	PrecacheSoundCustom("#zombiesurvival/aprilfools/caramelldansen.mp3");
+//s	PrecacheSoundCustom("#zombiesurvival/aprilfools/caramelldansen.mp3");
 }
 
 int VictorianFactory_ID()
@@ -235,6 +235,7 @@ methodmap VictorianFactory < CClotBody
 				ReplaceString(countext[i], sizeof(countext[]), "tracking", "");
 				i_GunAmmo[npc.index]=1;
 			}
+			/*
 			else if(StrContains(countext[i], "caramelldansen") != -1)
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "caramelldansen", "");
@@ -249,6 +250,7 @@ methodmap VictorianFactory < CClotBody
 					}
 				}
 			}
+			*/
 			else if(StrContains(countext[i], "donusetele") != -1)
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "donusetele", "");
@@ -555,6 +557,7 @@ static void FactoryCPU(int iNPC)
 				{
 					if(npc.Anger)
 					{
+						/*
 						MusicEnum CustomMusic;
 						strcopy(CustomMusic.Path, sizeof(CustomMusic.Path), "#zombiesurvival/aprilfools/caramelldansen.mp3");
 						CustomMusic.Time = 175;
@@ -572,6 +575,7 @@ static void FactoryCPU(int iNPC)
 								}
 							}
 						}
+						*/
 						if(!IsValidEntity(npc.m_iTeamGlow))
 							npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 						npc.m_flAttackHappens=gameTime;
@@ -901,8 +905,8 @@ static void Factory_Got_Explod(int entity)
 			if(IsClientInGame(client) && !IsFakeClient(client))
 			{
 				SetMusicTimer(client, GetTime() + 1);
-				StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/aprilfools/caramelldansen.mp3");
-				StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/aprilfools/caramelldansen.mp3");
+			//	StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/aprilfools/caramelldansen.mp3");
+			//	StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/aprilfools/caramelldansen.mp3");
 			}
 		}
 	}
