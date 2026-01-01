@@ -2473,7 +2473,7 @@
 	{
 		"en"	"You came too late, chaos took its full effect...\nWaves spawn 25％ more enemies, spawn 20％ faster, and 10％ more zombies are alive at once.\nenemies deal 12％ more damage, have 30％ more HP and are 3％ faster."
 		"it"	"Sei arrivato troppo tardi, il caos ha avuto tutto il suo effetto... Le onde generano 25％ più nemici, generano 20％ più velocemente e 10％ più zombi sono vivi in una volta sola."
-		"ko"	"당신은 너무 늦게 도착했습니다. 이미 혼돈이 모든것을 삼켜버린 상태입니다...\n웨이브마다 생성되는 적이 25％ 더 증가하고, 생성 속도가 20％ 더 빨라지며, 한번에 존재하는 좀비의 수가 10％ 더 많아집니다.\n적들의 공격 피해량이 12％ 증가하고, 체력이 30％ 증가하며 이동 속도가 3％ 증가합니다."
+		"ko"	"당신은 너무 늦게 도착했습니다. 이미 혼돈이 모든것을 삼켜버린 상태입니다...\n웨이브마다 생성되는 적 수량 +25％, 생성 속도 +20％, 한번에 존재하는 적의 수 +10％\n적들의 공격 피해량 +12％, 체력 +30％, 이동 속도 +3％"
 	}
 	"Standard"
 	{
@@ -2497,7 +2497,7 @@
 	{
 		"en"	"Experience ZR on how it feels to be a newbie.\n35％ more enemies, spawn 33％ faster, 15％ more are alive at once.\nThey deal +25％ dmg, +25％ dmg to cades, +60％ HP, +6％ faster, attack 33％ faster.\n1 down, enemies heal 50％ more."
 		"it"	"Esperienza ZR su come ci si sente ad essere un novellino.\n35％ più nemici, spawn 33％ più veloce, 15％ più sono vivi in una volta.\nFanno +25％ dmg, +25％ dmg ai cad, +60％ HP, +6％ più veloce, attacco 33％ più veloce.\n1 down, i nemici guariscono 50％ in più."
-		"ko"	"이 모드로 뉴비 시절의 좀비 라이엇이 어떤 느낌이었는지 다시 기억 속에 새길 수 있을 겁니다...\n웨이브마다 생성되는 적이 35％ 더 증가하고, 생성 속도가 33％ 더 빨라지며, 한번에 존재하는 좀비의 수가 15％ 더 많아집니다.\n적들의 공격 피해량과 구조물 대상 피해량이 25％ 증가하고, 체력이 60％ 증가하며 이동 속도가 6％ 증가하고, 공격 속도가 33％ 증가합니다.\n또한 다운 횟수는 1번 뿐이며, 적들의 체력 회복량이 50％ 더 증가합니다."
+		"ko"	"뉴비 시절의 좀비 라이엇이 어떤 느낌이었는지 다시 느껴보세요.\n웨이브마다 생성되는 적 수량 +35％, 생성 속도가 +33％, 한번에 존재하는 적의 수 +15％\n적들의 피해량, 구조물 대상 피해량 +25％, 체력 +60％, 이동 속도 +6％, 공격 속도 +33％\n다운 횟수는 1번 뿐이며, 적들의 체력 회복량 +50％"
 	}
 	"Turbulance"
 	{
@@ -2521,7 +2521,7 @@
 	{
 		"en"	"First batch of mercs failed already.\n35％ more enemies, spawn 33％ faster, 15％ more are alive at once.\nThey deal +15％ dmg, +25％ dmg to cades, have 50％ + HP, +4％ faster.\nEnemies heal 50％ more."
 		"it"	"Il primo gruppo di mercenari ha già fallito.\n 35 nemici in più, si riproducono 33％ più velocemente, 15％ in più sono vivi contemporaneamente. infliggono +15％ dmg, +25％ dmg ai cad, hanno 50％ + HP, +4％ più velocemente. i nemici guariscono 50％ in più."
-		"ko"	"첫번째로 출격한 용병들은 실패했습니다. 두번째 출격으로 모든걸 만회해야합니다.\n웨이브마다 생성되는 적이 35％ 더 증가하고, 생성 속도가 33％ 더 빨라지며, 한번에 존재하는 좀비의 수가 15％ 더 많아집니다.\n적들의 공격 피해량이 15％, 구조물 대상 피해량이 25％ 증가하고, 체력이 50％ 증가하며 이동 속도가 4％ 증가합니다.\n적들의 체력 회복량이 50％ 더 증가합니다."
+		"ko"	"첫번째로 출격한 용병들은 실패했습니다. 두번째 출격으로 모든걸 만회해야합니다.\n웨이브마다 생성되는 적 수량 +35％, 생성 속도 +33％, 한번에 존재하는 적의 수 +15％\n적들의 피해량 +15％, 구조물 대상 피해량 +25％, 체력 +50％, 이동 속도 +4％\n적들의 체력 회복량 +50％"
 	}
 	"Paranormal Activity"
 	{
