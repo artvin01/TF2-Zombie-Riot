@@ -272,10 +272,35 @@ methodmap Castellan < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
 	}
+	property bool m_flToggleStealthStats
+	{
+		public get()							{ return b_Dead_Ringer_Invis_bool[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_Dead_Ringer_Invis_bool[this.index] = TempValueForProperty; }
+	}
+	property float m_flStealthDuration
+	{
+		public get()							{ return fl_Dead_Ringer_Invis[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_Dead_Ringer_Invis[this.index] = TempValueForProperty; }
+	}
+	property float m_flScalingRaidBuffTmpe
+	{
+		public get()							{ return fl_Dead_Ringer[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_Dead_Ringer[this.index] = TempValueForProperty; }
+	}
 	property float m_flAntiInvulnEmergencyFix
 	{
-		public get()							{ return fl_NextTeleport[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextTeleport[this.index] = TempValueForProperty; }
+		public get()							{ return fl_AngerDelay[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_AngerDelay[this.index] = TempValueForProperty; }
+	}
+	property float m_flDMGTypeArmorDuration
+	{
+		public get()							{ return fl_Charge_Duration[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_Charge_Duration[this.index] = TempValueForProperty; }
+	}
+	property float m_flBaseMoveSpeed
+	{
+		public get()							{ return fl_Charge_delay[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_Charge_delay[this.index] = TempValueForProperty; }
 	}
 
 	public Castellan(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -307,10 +332,11 @@ methodmap Castellan < CClotBody
 		npc.m_iState = 0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
-		npc.m_flCharge_Duration = 0.0;
+		npc.m_flDMGTypeArmorDuration = 0.0;
+		npc.m_flAntiInvulnEmergencyFix = 0.0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_flCharge_delay = 330.0;
-		npc.m_flSpeed = npc.m_flCharge_delay;
+		npc.m_flBaseMoveSpeed = 330.0;
+		npc.m_flSpeed = npc.m_flBaseMoveSpeed;
 		npc.m_flDoingAnimation = 0.0;
 		npc.m_iHealthBar = 1;
 		
@@ -322,9 +348,9 @@ methodmap Castellan < CClotBody
 		npc.m_bAirStrikeTalk = 0;
 		NitroFuelStack[npc.index] = 0;
 		ParticleSpawned[npc.index] = false;
-		npc.m_flDead_Ringer_Invis_bool = false;
+		npc.m_flToggleStealthStats = false;
 		npc.m_bCamo = false;
-		npc.m_flDead_Ringer_Invis = 0.0;
+		npc.m_flStealthDuration = 0.0;
 		npc.m_bDissapearOnDeath = true;
 		BlastDMG[npc.index] = 0.0;
 		MagicDMG[npc.index] = 0.0;
@@ -427,7 +453,7 @@ methodmap Castellan < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.75;
 		}
-		npc.m_flDead_Ringer = RaidModeScaling*0.11325;
+		npc.m_flScalingRaidBuffTmpe = RaidModeScaling*0.11325;
 		
 		if(StrContains(data, "final_item") != -1)
 		{
@@ -527,21 +553,6 @@ static void Castellan_FORVICTORIA(int iNPC)
 	npc.Update();
 	
 	Victoria_Support(npc, 1, false);
-	if(npc.m_flAntiInvulnEmergencyFix)
-	{
-		if(npc.m_flAntiInvulnEmergencyFix < gameTime)
-		{
-			if(b_NpcIsInvulnerable[npc.index])
-			{
-				//Incase the invulnerability phase bugs out...
-				//This shouldnt be used, and should be fixed without the need of this, thanks
-				//temp fix due to headaches
-				Castellan_GiveBackVuln(npc);
-			}
-			npc.m_flAntiInvulnEmergencyFix = 0.0;
-			return;
-		}
-	}
 	
 	if(LastMann)
 	{
@@ -592,7 +603,7 @@ static void Castellan_FORVICTORIA(int iNPC)
 					Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 0.0);
 			}
 		}
-		npc.m_flDead_Ringer_Invis = 0.0;
+		npc.m_flStealthDuration = 0.0;
 		npc.m_iState=2;
 		npc.PlayDeathSound();
 		BlockLoseSay = true;
@@ -602,7 +613,7 @@ static void Castellan_FORVICTORIA(int iNPC)
 	
 	if(!BlockLoseSay && npc.m_bFUCKYOU && i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
-		npc.m_flDead_Ringer_Invis = 0.0;
+		npc.m_flStealthDuration = 0.0;
 		npc.m_iState=2;
 		return;
 	}
@@ -610,7 +621,7 @@ static void Castellan_FORVICTORIA(int iNPC)
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	npc.m_flNextThinkTime = gameTime + 0.1;
-	StealthDevice(npc, (npc.m_flDead_Ringer_Invis > gameTime));
+	StealthDevice(npc, (npc.m_flStealthDuration > gameTime));
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	switch(npc.m_iState)
 	{
@@ -648,8 +659,7 @@ static void Castellan_FORVICTORIA(int iNPC)
 				MakeObjectIntangeable(npc.index);
 				npc.m_iChanged_WalkCycle = -1;
 				npc.PlayDeathSound();
-				npc.m_flDead_Ringer_Invis = gameTime + 10.0;
-				npc.m_flAntiInvulnEmergencyFix = gameTime + 11.0;
+				npc.m_flStealthDuration = gameTime + 10.0;
 				npc.m_iState = 2;
 			}
 		}
@@ -684,13 +694,35 @@ static void Castellan_FORVICTORIA(int iNPC)
 				GetAbsOrigin(npc.index, VecSelfNpc);
 				npc.m_iWearable9 = ParticleEffectAt_Parent(VecSelfNpc, "teleporter_mvm_bot_persist", npc.index, "", {0.0,0.0,0.0});
 			}
-			if(npc.m_flDead_Ringer_Invis < gameTime)
+			if(npc.m_flStealthDuration < gameTime)
 			{
-				Castellan_GiveBackVuln(npc);
+				if(IsValidEntity(npc.m_iWearable9))
+					RemoveEntity(npc.m_iWearable9);
+				WorldSpaceCenter(npc.index, VecSelfNpc);
+				npc.m_iAmmo = npc.m_iMaxAmmo;
+				fl_ruina_battery[npc.index]=100.0;
+				ParticleEffectAt(VecSelfNpc, "teleported_blue", 0.5);
+				b_DoNotUnStuck[npc.index] = false;
+				b_NoKnockbackFromSources[npc.index] = false;
+				b_NpcIsInvulnerable[npc.index] = false;
+				b_ThisEntityIgnoredEntirelyFromAllCollisions[npc.index] = false;
+				SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", SaveSolidFlags[npc.index]);
+				SetEntProp(npc.index, Prop_Data, "m_nSolidType", SaveSolidType[npc.index]);
+				if(GetTeam(npc.index) == TFTeam_Red)
+					SetEntityCollisionGroup(npc.index, 24);
+				else
+					SetEntityCollisionGroup(npc.index, 9);
+				npc.AddActivityViaSequence("layer_taunt_maggots_condolence");
+				npc.SetCycle(0.5);
+				npc.SetPlaybackRate(1.25);
+				npc.m_flDoingAnimation = gameTime + 0.75;
+				npc.PlayDeathSound();
+				npc.m_iState = 3;
 			}
 		}
 		case 3:
 		{
+			b_NpcIsInvulnerable[npc.index] = false;
 			if(npc.m_flDoingAnimation < gameTime)
 			{
 				if(IsValidEntity(npc.m_iWearable9))
@@ -699,7 +731,7 @@ static void Castellan_FORVICTORIA(int iNPC)
 				npc.m_flTimeUntillSupportSpawn = gameTime + 23.0;
 				npc.m_flTimeUntillHomingStrike = gameTime + 10.0;
 				npc.m_flRequestDrone = gameTime + 15.0;
-				npc.m_flDead_Ringer_Invis = 0.0;
+				npc.m_flStealthDuration = 0.0;
 				ResetCastellanWeapon(npc, 1);
 				npc.PlayAngerReaction();
 				npc.PlayAngerSound();
@@ -784,15 +816,37 @@ static void Castellan_ClotThink(int iNPC)
 			Vs_RechargeTime[npc.index]=Vs_RechargeTimeMax[npc.index]*0.7;
 		DefaultAirStrikeTalk(npc, gameTime);
 	}
-	bool CastellanInvis = StealthDevice(npc, (npc.m_flDead_Ringer_Invis > gameTime));
-	if(CastellanInvis && NpcStats_VictorianCallToArms(npc.index) && !ParticleSpawned[npc.index])
+	bool CastellanInvis = StealthDevice(npc, (npc.m_flStealthDuration > gameTime));
+	if(CastellanInvis)
 	{
-		float flPos[3], flAng[3];
-		npc.GetAttachment("eyeglow_L", flPos, flAng);
-		npc.m_iWearable9 = ParticleEffectAt_Parent(flPos, "eye_powerup_blue_lvl_3", npc.index, "eyeglow_L", {0.0,0.0,0.0});
-		npc.GetAttachment("", flPos, flAng);
-		ParticleSpawned[npc.index] = true;
+		//Don't have an EGO!!!!!!!!!!!!!!!!!
+		if(npc.m_flAntiInvulnEmergencyFix && npc.m_flAntiInvulnEmergencyFix < gameTime)
+		{
+			b_DoNotUnStuck[npc.index] = false;
+			b_NoKnockbackFromSources[npc.index] = false;
+			b_NpcIsInvulnerable[npc.index] = false;
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[npc.index] = false;
+			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", SaveSolidFlags[npc.index]);
+			SetEntProp(npc.index, Prop_Data, "m_nSolidType", SaveSolidType[npc.index]);
+			if(GetTeam(npc.index) == TFTeam_Red)
+				SetEntityCollisionGroup(npc.index, 24);
+			else
+				SetEntityCollisionGroup(npc.index, 9);
+			npc.m_flAntiInvulnEmergencyFix = gameTime + 0.0;
+		}
+		else if(b_NpcIsInvulnerable[npc.index])
+			npc.m_flAntiInvulnEmergencyFix = gameTime + 0.5;
+			
+		if(NpcStats_VictorianCallToArms(npc.index) && !ParticleSpawned[npc.index])
+		{
+			float flPos[3], flAng[3];
+			npc.GetAttachment("eyeglow_L", flPos, flAng);
+			npc.m_iWearable9 = ParticleEffectAt_Parent(flPos, "eye_powerup_blue_lvl_3", npc.index, "eyeglow_L", {0.0,0.0,0.0});
+			npc.GetAttachment("", flPos, flAng);
+			ParticleSpawned[npc.index] = true;
+		}
 	}
+	else npc.m_flAntiInvulnEmergencyFix = gameTime + 1.0;
 	
 	if(CastellanInvis && (npc.m_flVICTORIA_NUKE_SETUP < gameTime || !npc.m_iHealthBar || npc.m_bHalfRage))
 	{
@@ -939,7 +993,7 @@ static void Castellan_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.m_bAllowBackWalking = false;
 					npc.m_iChanged_WalkCycle = 0;
-					npc.m_flCharge_delay = 330.0;
+					npc.m_flBaseMoveSpeed = 330.0;
 					npc.StartPathing();
 				}
 				CastellanIntoAir(npc, ReAnim);
@@ -968,7 +1022,7 @@ static void Castellan_ClotThink(int iNPC)
 					npc.m_bisWalking = false;
 					npc.m_bAllowBackWalking = false;
 					npc.m_iChanged_WalkCycle = 2;
-					npc.m_flCharge_delay = 0.0;
+					npc.m_flBaseMoveSpeed = 0.0;
 					npc.StopPathing();
 				}
 				ReAnim=true;
@@ -981,7 +1035,7 @@ static void Castellan_ClotThink(int iNPC)
 					npc.m_bisWalking = false;
 					npc.m_bAllowBackWalking = true;
 					npc.m_iChanged_WalkCycle = 3;
-					npc.m_flCharge_delay = 330.0;
+					npc.m_flBaseMoveSpeed = 330.0;
 					npc.StartPathing();
 				}
 				CastellanIntoAir(npc, ReAnim);
@@ -998,7 +1052,7 @@ static void Castellan_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.m_bAllowBackWalking = false;
 					npc.m_iChanged_WalkCycle = 4;
-					npc.m_flCharge_delay = 290.0;
+					npc.m_flBaseMoveSpeed = 290.0;
 					npc.StartPathing();
 				}
 				CastellanIntoAir(npc, ReAnim);
@@ -1014,12 +1068,29 @@ static void Castellan_ClotThink(int iNPC)
 				}
 				ReAnim=false;
 			}
+			case 5:
+			{
+				if(npc.m_iChanged_WalkCycle != 5)
+				{
+					ReAnim=true;
+					npc.m_bisWalking = false;
+					npc.m_bAllowBackWalking = true;
+					npc.m_iChanged_WalkCycle = 5;
+					npc.m_flBaseMoveSpeed = 290.0;
+					npc.StartPathing();
+				}
+				CastellanIntoAir(npc, ReAnim);
+				float vBackoffPos[3];
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
+				npc.SetGoalVector(vBackoffPos, true);
+				ReAnim=false;
+			}
 		}
 	}
 	else
 		npc.m_flGetClosestTargetTime = 0.0;
-	npc.m_flSpeed = npc.m_flCharge_delay*(1.0+(NitroFuelStack[npc.index]*0.05));
-	if(!npc.m_flDead_Ringer_Invis_bool)
+	npc.m_flSpeed = npc.m_flBaseMoveSpeed;//*(1.0+(NitroFuelStack[npc.index]*0.05));
+	if(!npc.m_flToggleStealthStats)
 		npc.PlayIdleAlertSound();
 }
 
@@ -1047,7 +1118,7 @@ static void CastellanIntoAir(Castellan npc, bool ReAime)
 				}
 			}
 		}
-		case 4:
+		case 4, 5:
 		{
 			if(npc.IsOnGround())
 			{
@@ -1110,7 +1181,7 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 		magic = true;
 	}
 	
-	if(npc.m_flCharge_Duration < gameTime)
+	if(npc.m_flDMGTypeArmorDuration < gameTime)
 	{
 		BlastArmor[npc.index] = false;
 		MagicArmor[npc.index] = false;
@@ -1332,7 +1403,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 		npc.m_flRequestDrone += (0.12 + DEFAULT_UPDATE_DELAY_FLOAT);
 		return 2;
 	}
-	else if(npc.m_flDead_Ringer_Invis && npc.m_flDead_Ringer_Invis < gameTime)
+	else if(npc.m_flStealthDuration && npc.m_flStealthDuration < gameTime)
 	{
 		switch(npc.m_iState)
 		{
@@ -1367,7 +1438,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 				{
 					ResetCastellanWeapon(npc, 1);
 					npc.m_iAmmo = npc.m_iMaxAmmo;
-					npc.m_flDead_Ringer_Invis = 0.0;
+					npc.m_flStealthDuration = 0.0;
 					npc.m_flTimeUntillAirStrike = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 30.0 : 40.0);
 					npc.m_iState = -1;
 				}
@@ -1458,7 +1529,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 					BlastArmor[npc.index] = false;
 					MagicArmor[npc.index] = false;
 					BulletArmor[npc.index] = false;
-					npc.m_flCharge_Duration=gameTime+20.0;
+					npc.m_flDMGTypeArmorDuration=gameTime+20.0;
 					switch(Castellan_Get_HighDMGType(npc))
 					{
 						case 0:BlastArmor[npc.index]=true;
@@ -1475,7 +1546,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 				case 3:
 				{
 					NPCPritToChat_Noname("Castellan_Talk_Ability1-6", false);
-					RaidModeScaling+=npc.m_flDead_Ringer;
+					RaidModeScaling+=npc.m_flScalingRaidBuffTmpe;
 					if(!HarrisonDesc)
 					{
 						NPCPritToChat_Noname("Castellan_HarrisonDesc", false);
@@ -1542,6 +1613,32 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 	}
 	else if(npc.m_flRequestDrone < gameTime)
 	{
+		//float vAngles[3];
+		GetAbsOrigin(npc.index, VecSelfNpc);
+		int DroneSignal = CreateEntityByName("prop_dynamic_override");
+		if(IsValidEntity(DroneSignal))
+		{
+			DispatchKeyValue(DroneSignal, "model", "models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl");
+			DispatchKeyValue(DroneSignal, "modelscale", "1.00");
+			DispatchKeyValue(DroneSignal, "StartDisabled", "false");
+			DispatchKeyValue(DroneSignal, "Solid", "0");
+			SetEntProp(DroneSignal, Prop_Data, "m_nSolidType", 0);
+			DispatchSpawn(DroneSignal);
+			SetEntityCollisionGroup(DroneSignal, 1);
+			AcceptEntityInput(DroneSignal, "DisableShadow");
+			AcceptEntityInput(DroneSignal, "DisableCollision");
+			VecSelfNpc[2]-=45.0;
+			TeleportEntity(DroneSignal, VecSelfNpc, NULL_VECTOR, NULL_VECTOR);
+			CreateTimer(3.0, Timer_RemoveEntityFancy, EntIndexToEntRef(DroneSignal), TIMER_FLAG_NO_MAPCHANGE);
+			VecSelfNpc[2]+=90.0;
+			int Radio = ParticleEffectAt(VecSelfNpc, "bot_radio_waves", 3.0);
+			if(IsValidEntity(Radio))
+			{
+				SetVariantString("!activator");
+				AcceptEntityInput(Radio, "SetParent", DroneSignal);
+			}
+		}
+	
 		char Adddeta[512];
 		int whattarget;
 		switch(GetRandomInt(0,2))
@@ -1563,17 +1660,20 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 				VecSelfNpc[2]+=45.0;
 				int DroneIndex;
 				int maxhealth;
+				int red, green, blue;
 				if(NextDrone)
 				{
 					FormatEx(Adddeta, sizeof(Adddeta), "%soverridetarget%i", Adddeta, EntIndexToEntRef(npc.index));
 					DroneIndex = NPC_CreateByName("npc_victoria_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 					maxhealth = RoundToCeil(RaidModeScaling * 21239.0);
+					red=45, green=237, blue=164;
 				}
 				else
 				{
 					FormatEx(Adddeta, sizeof(Adddeta), "%soverridetarget%i", Adddeta, EntIndexToEntRef(whattarget));
 					DroneIndex = NPC_CreateByName("npc_victoria_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 					maxhealth = RoundToCeil(RaidModeScaling * 11278.0);
+					red=229, green=235, blue=52;
 				}
 				if(DroneIndex > MaxClients)
 				{
@@ -1587,6 +1687,13 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 					fl_Extra_Damage[DroneIndex] = fl_Extra_Damage[npc.index];
 					FreezeNpcInTime(DroneIndex, 3.0, true);
 					IncreaseEntityDamageTakenBy(DroneIndex, 0.000001, 3.0);
+				}
+				if(IsValidEntity(DroneSignal))
+				{
+					VictorianFactory CPU = view_as<VictorianFactory>(GetCPU);
+					if(IsValidEntity(CPU.m_iWearable5))
+						RemoveEntity(CPU.m_iWearable5);
+					CPU.m_iWearable5=ConnectWithBeam(CPU.index, DroneSignal, red, green, blue, 3.0, 3.0, 0.0, LASERBEAM);
 				}
 			}
 		}
@@ -1628,8 +1735,6 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 				if(npc.m_flDoingAnimation < gameTime)
 				{
 					ParticleEffectAt(VecSelfNpc, "teleported_blue", 0.5);
-					ParticleEffectAt(VecSelfNpc, "smoke_marker", 10.0);
-					
 					NPCStats_RemoveAllDebuffs(npc.index, 1.0);
 					b_DoNotUnStuck[npc.index] = true;
 					b_NoKnockbackFromSources[npc.index] = true;
@@ -1638,7 +1743,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 					MakeObjectIntangeable(npc.index);
 					npc.m_iChanged_WalkCycle = -1;
 					npc.PlayDeathSound();
-					npc.m_flDead_Ringer_Invis = gameTime + 10.0;
+					npc.m_flStealthDuration = gameTime + 10.0;
 
 					if(!npc.m_iHealthBar)
 						Temp_Target[2] = Victoria_GetPayback(npc.index, false, false);
@@ -1651,10 +1756,11 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 						Vs_LockOn[Temp_Target[1]] = true;
 					if(IsValidClient(Temp_Target[2]))
 						Vs_LockOn[Temp_Target[2]] = true;
-					//Appears in a different location from the sound location.
 					TeleportDiversioToRandLocation(npc.index,_,1250.0, 750.0);
-					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", _, SNDCHAN_STATIC, 120, _, 1.0);
-					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", _, SNDCHAN_STATIC, 120, _, 1.0);
+					WorldSpaceCenter(npc.index, VecSelfNpc);
+					ParticleEffectAt(VecSelfNpc, "smoke_marker", 10.0);
+					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
+					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					npc.m_iState = -1;
 				}
 			}
@@ -1713,8 +1819,8 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 
 				Initiate_HomingProjectile(Projectile,
 				npc.index,
-				9999.0,			// float lockonAngleMax,
-				13.0,			// float homingaSec,
+				120.0,			// float lockonAngleMax,
+				9.0,			// float homingaSec,
 				false,			// bool LockOnlyOnce,
 				true,			// bool changeAngles,
 				vAnglesProj,
@@ -1732,6 +1838,8 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 		
 		npc.m_flTimeUntillSupportSpawn += (0.12 + DEFAULT_UPDATE_DELAY_FLOAT);
 		npc.m_flTimeUntillHomingStrike += (0.12 + DEFAULT_UPDATE_DELAY_FLOAT);
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0) && Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+			return 5;
 		return 4;
 	}
 	else if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
@@ -1769,49 +1877,44 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 								float vecHit[3];
 								
 								WorldSpaceCenter(targetTrace, vecHit);
-								float damage = 40.0 * RaidModeScaling;
+								float damage = 30.0;
 								if(ShouldNpcDealBonusDamage(targetTrace))
 									damage *= 7.0;
+								damage *= RaidModeScaling;
 								KillFeed_SetKillIcon(npc.index, "fireaxe");
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 								bool Knocked = false;
-								
-								StartBleedingTimer(targetTrace, npc.index, damage * 0.15, 4, -1, DMG_TRUEDAMAGE, 0);
+								float bleeding = damage/187.5;
+								if(bleeding<4.0)bleeding=4.0;
+								else if(bleeding>10.0)bleeding=10.0;
+								StartBleedingTimer(targetTrace, npc.index, bleeding, 4, -1, DMG_TRUEDAMAGE, 0);
 								if(IsValidClient(targetTrace))
 								{
-									if(IsInvuln(targetTrace))
+									if(IsInvuln(targetTrace) && !HasSpecificBuff(targetTrace, "Solid Stance"))
 									{
 										Knocked = true;
 										Custom_Knockback(npc.index, targetTrace, 750.0, true);
 									}
-									TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-									TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+									if(!HasSpecificBuff(targetTrace, "Fluid Movement"))
+									{
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+									}
 								}
 								
-								if(!Knocked)
+								if(!Knocked && !HasSpecificBuff(targetTrace, "Solid Stance"))
 									Custom_Knockback(npc.index, targetTrace, 375.0, true);
 								if(fl_ruina_battery[npc.index] >= fl_ruina_battery_max[npc.index])
 								{
 									float BombPos[3];
-									float BombDamage = 100.0;
-									BombDamage *= RaidModeScaling;
+									float BombDamage = 100.0 * (RaidModeScaling/5.0);
+									if(BombDamage<100.0)BombDamage=100.0;
 									for(int AirRaid; AirRaid < 2; AirRaid++)
 									{
 										GetAbsOrigin(targetTrace, BombPos);
 										if(AirRaid>0)
-										{
 											PredictSubjectPositionForProjectiles(npc, targetTrace, 125.0, _,BombPos);
-										}
-										DataPack pack;
-										CreateDataTimer(0.01, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
-										pack.WriteCell(EntIndexToEntRef(npc.index));
-										pack.WriteFloat(BombPos[0]);
-										pack.WriteFloat(BombPos[1]);
-										pack.WriteFloat(BombPos[2]);
-										pack.WriteFloat(BombDamage);
-										pack.WriteFloat(3.0);
-										pack.WriteFloat(1.0);
-										pack.WriteFloat(150.0);
+										Engage_RocketBarrage(npc.index, BombPos, BombDamage, 3.0, EXPLOSION_RADIUS);
 									}
 									fl_ruina_battery[npc.index]=0.0;
 								}
@@ -2100,7 +2203,7 @@ static bool StealthDevice(Castellan npc, bool Activate)
 	static bool ToggleDevice;
 	if(Activate)
 	{
-		if(!npc.m_flDead_Ringer_Invis_bool)
+		if(!npc.m_flToggleStealthStats)
 		{
 			ParticleSpawned[npc.index] = false;
 			npc.m_iChanged_WalkCycle = -1;
@@ -2171,7 +2274,7 @@ static bool StealthDevice(Castellan npc, bool Activate)
 				RemoveEntity(npc.m_iWearable9);
 			if(IsValidEntity(npc.m_iTeamGlow))
 				RemoveEntity(npc.m_iTeamGlow);
-			npc.m_flDead_Ringer_Invis_bool=true;
+			npc.m_flToggleStealthStats=true;
 		}
 		if(IsValidEntity(i_InvincibleParticle[npc.index]))
 		{
@@ -2280,7 +2383,7 @@ static bool StealthDevice(Castellan npc, bool Activate)
 				SetVariantColor(view_as<int>({150, 150, 150, 200}));
 				AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 			}
-			npc.m_flDead_Ringer_Invis_bool=false;
+			npc.m_flToggleStealthStats=false;
 		}
 		npc.m_bCamo=false;
 		ToggleDevice=false;
@@ -2351,13 +2454,10 @@ static void CastellanAirStrike(Castellan npc, int Target, int Silo, float gameTi
 			DataPack pack;
 			CreateDataTimer(Spam_delay, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(EntIndexToEntRef(npc.index));
-			pack.WriteFloat(BombPos[0]);
-			pack.WriteFloat(BombPos[1]);
-			pack.WriteFloat(BombPos[2]);
+			pack.WriteFloatArray(BombPos, 3);
 			pack.WriteFloat(BombDamage);
 			pack.WriteFloat(3.0);
-			pack.WriteFloat(1.0);
-			pack.WriteFloat(150.0);
+			pack.WriteFloat(210.0);
 			Spam_delay += 0.15;
 		}
 		AS_Delay = gameTime + AS_CoolDown;
@@ -2378,7 +2478,7 @@ static bool Victoria_Support(Castellan npc, int AddNuke, bool Mk2)
 		return false;
 
 	Vs_DelayTime[npc.index] = GameTime + 0.1;
-	float Vs_Raged = (Mk2 ? 1000.0 : 500.0);
+	float Vs_Raged = (Mk2 ? 600.0 : 300.0);
 	bool Vs_Online=false;
 	bool Vs_Fired=false;
 	bool Vs_IncomingBoom=false;
@@ -2400,6 +2500,8 @@ static bool Victoria_Support(Castellan npc, int AddNuke, bool Mk2)
 			continue;
 		if(!IsValidEnemy(npc.index, enemy[i]) && i!=2)
 			continue;
+		if(AddNuke>1&&i==1)
+			Vs_Raged*=0.8;
 		Vs_Online = true;
 		float vecTarget[3];
 		GetEntPropVector(enemy[i], Prop_Data, "m_vecAbsOrigin", vecTarget);
@@ -2426,13 +2528,13 @@ static bool Victoria_Support(Castellan npc, int AddNuke, bool Mk2)
 						Vs_LockOn[client]=false;
 				}
 			}
-			spawnRing_Vectors(Vs_Temp_Pos[enemy[i]], (Vs_Raged - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*Vs_Raged)), 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
+			spawnRing_Vectors(Vs_Temp_Pos[enemy[i]], (Vs_Raged - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*Vs_Raged)), 0.0, 0.0, 0.0, LASERBEAM, 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
 			float position2[3];
 			position2[0] = Vs_Temp_Pos[enemy[i]][0];
 			position2[1] = Vs_Temp_Pos[enemy[i]][1];
 			position2[2] = Vs_Temp_Pos[enemy[i]][2] + 65.0;
-			spawnRing_Vectors(position2, Vs_Raged, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
-			spawnRing_Vectors(Vs_Temp_Pos[enemy[i]], Vs_Raged, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
+			spawnRing_Vectors(position2, Vs_Raged, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
+			spawnRing_Vectors(Vs_Temp_Pos[enemy[i]], Vs_Raged, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
 			TE_SetupBeamPoints(Vs_Temp_Pos[enemy[i]], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
 			TE_SendToAll();
 			TE_SetupGlowSprite(Vs_Temp_Pos[enemy[i]], g_RedPoint, 0.1, 1.0, 255);
@@ -2523,29 +2625,4 @@ stock int Victoria_GetPayback(int entity, bool inversion, bool ICantSEE)
 		}
 	}
 	return ClosestTarget;
-}
-void Castellan_GiveBackVuln(Castellan npc)
-{
-	if(IsValidEntity(npc.m_iWearable9))
-		RemoveEntity(npc.m_iWearable9);
-	WorldSpaceCenter(npc.index, VecSelfNpc);
-	npc.m_iAmmo = npc.m_iMaxAmmo;
-	fl_ruina_battery[npc.index]=100.0;
-	ParticleEffectAt(VecSelfNpc, "teleported_blue", 0.5);
-	b_DoNotUnStuck[npc.index] = false;
-	b_NoKnockbackFromSources[npc.index] = false;
-	b_NpcIsInvulnerable[npc.index] = false;
-	b_ThisEntityIgnoredEntirelyFromAllCollisions[npc.index] = false;
-	SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", SaveSolidFlags[npc.index]);
-	SetEntProp(npc.index, Prop_Data, "m_nSolidType", SaveSolidType[npc.index]);
-	if(GetTeam(npc.index) == TFTeam_Red)
-		SetEntityCollisionGroup(npc.index, 24);
-	else
-		SetEntityCollisionGroup(npc.index, 9);
-	npc.AddActivityViaSequence("layer_taunt_maggots_condolence");
-	npc.SetCycle(0.5);
-	npc.SetPlaybackRate(1.25);
-	npc.m_flDoingAnimation = gameTime + 0.75;
-	npc.PlayDeathSound();
-	npc.m_iState = 3;
 }

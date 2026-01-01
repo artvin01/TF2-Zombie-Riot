@@ -39,6 +39,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSound(g_RageAttackSounds);
 	PrecacheModel("models/player/medic.mdl");
+	PrecacheModel(LASERBEAM);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -484,8 +485,8 @@ static void HE_StrikeThink(DataPack pack)
 	}
 	else
 	{
-		spawnRing_Vectors(targetpos, radius * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 100, 50, 100, 1, 0.1, 2.0, 0.1, 3);
-		spawnRing_Vectors(targetpos, ((radius)*((delay-GetGameTime())/maxdelay))* 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 100, 50, 100, 1, 0.1, 2.0, 0.1, 3);
+		spawnRing_Vectors(targetpos, radius * 2.0, 0.0, 0.0, 5.0, LASERBEAM, 255, 100, 50, 100, 1, 0.1, 2.0, 0.1, 3);
+		spawnRing_Vectors(targetpos, ((radius)*((delay-GetGameTime())/maxdelay))* 2.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 100, 50, 100, 1, 0.1, 2.0, 0.1, 3);
 	}
 	delete pack;
 	DataPack pack2 = new DataPack();
