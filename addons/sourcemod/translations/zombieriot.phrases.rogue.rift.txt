@@ -64,7 +64,7 @@
 	{
 		"en"	"Rift of Swarms"
 		"it"	"Rift degli Sciami"
-		"ko"	"군단의 균열"
+		"ko"	"무리의 균열"
 	}
 	"Rift of Swarms Desc"
 	{
@@ -94,7 +94,7 @@
 	{
 		"en"	"Rift of Emptiness"
 		"it"	"Squarcio di vuoto"
-		"ko"	"덧없음의 균열"
+		"ko"	"공허함의 균열"
 	}
 	"Rift of Emptiness Desc"
 	{
@@ -112,7 +112,7 @@
 	{
 		"en"	"Rift of Darkness"
 		"it"	"Squarcio di tenebra"
-		"ko"	"암흑의 균열"
+		"ko"	"어둠의 균열"
 	}
 	"Rift of Darkness Desc"
 	{
@@ -148,13 +148,13 @@
 	{
 		"en"	"Rift of Corruption"
 		"it"	"Spaccatura della corruzione"
-		"ko"	"타락의 균열"
+		"ko"	"오염의 균열"
 	}
 	"Rift of Corruption Desc"
 	{
 		"en"	"{red}Consuming items at a Gateway has a chance to corrupt."
 		"it"	"{red}Il consumo di oggetti in un Gateway ha una possibilità di corrompere."
-		"ko"	"{red}관문에 흡수시킨 아이템은 확률로 오염됩니다."
+		"ko"	"{red}관문에 흡수시킨 아이템이 확률적으로 오염되게 됩니다."
 	}
 	"Rift of Corruption Lore"
 	{
@@ -455,7 +455,7 @@
 	{
 		"en"	"Lelouch opened a rift to the Curtain. It's only been a few weeks, we need to stop this, together with Bob and Twirl.\n{green}Enemy stats nerfed by -10％\n{red}Grigori will have 1 less item to sell."
 		"it"	"Lelouch ha aperto una breccia nella cortina. Sono passate solo poche settimane, dobbiamo fermare tutto questo, insieme a Bob e Twirl.\n{green}Le statistiche dei nemici sono state ridotte di -10％\n{red}Grigori avrà un oggetto in meno da vendere."
-		"ko"	"를르슈가 장막으로 향하는 균열을 열었다. 트윌과 밥과 협력해 반드시 막아라.\n{green}적들의 능력치 -10％ 감소\n{red}그리고리가 판매하는 물품 1개 감소"
+		"ko"	"를르슈가 장막으로 향하는 균열을 열었습니다. 트윌과 밥과 협력하여 막아내야 합니다.\n{green}적들의 능력치 -10％\n{red}그리고리가 판매하는 물품 1개 감소"
 	}
 	"Hand of Predation"
 	{
@@ -479,7 +479,7 @@
 	{
 		"en"	"Strikes land true, the earth trembles.\n{green}''Artillery'' weapons deal their damage again after 3 seconds as blast damage."
 		"it"	"{green}Le armi di ''artiglieria'' infliggono nuovamente i loro danni dopo 3 secondi sotto forma di danni da esplosione."
-		"ko"	"표적을 확실하게 명중시키고, 대지를 뒤흔든다.\n{green}''포격수'' 계열 무기로 피해를 입히면 3초 후에 폭발 피해로써 다시 피해를 줍니다."
+		"ko"	"표적을 명중시키고 대지를 뒤흔든다.\n{green}''포격수'' 계열 무기로 피해를 입히면 3초 후에 폭발 피해로써 다시 피해를 줍니다."
 	}
 	"Hand of Choker"
 	{
@@ -491,7 +491,7 @@
 	{
 		"en"	"Take their heads, take their soul.\n{green}''Deadeye'' weapons will instantly kill enemies below 20％ of max health on a headshot, deal +50％ dmg on headshot, {yellow}instakill Doesnt work against raids."
 		"it"	"Prendete le loro teste, prendete la loro anima.{green}Le armi ''Deadeye'' uccidono istantaneamente i nemici sotto il 20％ di salute massima con un colpo alla testa, infliggono +50％ dmg con un colpo alla testa, {yellow}instakill Non funziona contro i raid."
-		"ko"	"{green}''명사수'' 계열 무기는 체력 20％ 이하인 적을 헤드샷시 즉사시키며, 헤드샷 피해량 +50％. {yellow}레이드 보스에게는 즉사 발동 X."
+		"ko"	"마지막 기력을 다해 마지막 숨통을 끊는다.\n{green}''명사수'' 계열 무기로 체력이 20％ 이하인 적을 헤드샷시 즉사시키며, 헤드샷 피해량 +50％. {yellow}레이드 보스에게는 즉사 발동 X"
 	}
 	"Hand of Snatcher"
 	{
@@ -503,7 +503,7 @@
 	{
 		"en"	"Be a hitman of your dreams.\n{green}''Tactician'' weapons gain infinite accuracy, extra cash & speedbonus on a headshot {yellow}(up to a limit for cash gain up to a limit for cash gain) If the weapon cant headshot, same effects apply but weaker."
 		"it"	"{green}Se l'arma non può colpire alla testa, si applicano gli stessi effetti, ma più deboli."
-		"ko"	"나 자신이 히트맨이 되는거다.\n{green}''전술가'' 계열 무기의 정확도가 무한대가 되며, 헤드샷시 추가 자금 및 속도 증진 획득. {yellow}(추가 자금 획득은 상한이 존재) 헤드샷 불가 무기라면, 대신 약화된 효과가 적용됨."
+		"ko"	"나 자신이 히트맨이 되는거다.\n{green}''전술가'' 계열 무기의 정확도가 무한대가 되며, 헤드샷시 추가 자금 및 속도 증진 획득. {yellow}(추가 자금 획득은 상한이 존재) 헤드샷 불가 무기라면 대신 약화된 효과가 적용됨."
 	}
 	"Hand of Spark"
 	{
@@ -515,7 +515,7 @@
 	{
 		"en"	"Patience is key. Plan ahead for the future.\n{green}''Hunter'' weapons gain +20％ damage every second, up to +500％ {yellow}(resets upon dealing damage, but doesnt activate till fully charged)"
 		"it"	"La pazienza è fondamentale.{green}Le armi da ''cacciatore'' guadagnano +20％ danni ogni secondo, fino a +500％ {yellow} (si ripristina quando si infliggono danni, ma non si attiva fino a quando non è completamente carica)"
-		"ko"	"인내심이 미래다. 미래를 위해 생각해라.\n{green}''헌터'' 계열 무기가 매 초마다 피해량이 +20％ 증가하여 최대 +500％ 까지 증가. {yellow}(피해를 입히면 초기화되지만, 완전히 충전될 때까지는 발동되지 않음.)"
+		"ko"	"인내심이 미래다. 미래를 위해 생각해라.\n{green}''헌터'' 계열 무기가 매 초마다 피해량이 +20％ 증가(최대 +500％, {yellow}피해를 입히면 초기화, 완전히 충전될 때까지는 발동되지 않음)"
 	}
 	"Hand of Buckler"
 	{
@@ -527,7 +527,7 @@
 	{
 		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ (1％ against bosses) {yellow}(affected by scaling) and upto 2x base damage only. {green}magic damage based on the enemy's current health"
 		"it"	"Goccia dopo goccia, poco dopo poco.{green}Le armi ''Hexing Magic'' infliggono 3％ (1％ contro i boss) {yellow}(influenzato dallo scaling) e fino a 2 volte i danni base. I danni magici si basano sulla salute attuale del nemico"
-		"ko"	"{green}''주술 마법'' 계열 무기가 3％ (보스에겐 1％) {yellow}(스케일링 적용) 및 기본 피해의 최대 2배에 한하는 피해만을 주며 {green} 적 체력에 비례."
+		"ko"	"작은 것도 막으려야 막을 수가 없다.\n{green}''주술 마법'' 계열 무기가 3％ (보스에겐 1％) {yellow}(스케일링 적용) 및 기본 피해의 최대 2배에 한하는 피해만을 가하며, {green}적의 체력에 비례"
 	}
 	"Hand of Undulation"
 	{
@@ -575,7 +575,7 @@
 	{
 		"en"	"Is it a will of the many, or the many for the few.\n{green}''Drone Magic'' weapons gain +15％ damage every active projectile, up to +120％"
 		"it"	"È una volontà di molti o di molti per pochi?{green}Le armi ''Drone Magic'' guadagnano +15％ danni per ogni proiettile attivo, fino a +120％"
-		"ko"	"다수의 의지인가, 아니면 소수를 위한 다수인가?\n{green}이제 ''드론 마법'' 계열 무기는 활성화된 투사체 하나당 피해량이 +15％씩 증가하여 최대 +120％까지 증가"
+		"ko"	"수량이 많을수록 힘은 강해지는 법.\n{green}이제 ''드론 마법'' 계열 무기는 활성화된 투사체 하나당 피해량이 +15％씩 증가하여 최대 +120％까지 증가"
 	}
 	"Hand of Rending"
 	{
@@ -599,7 +599,7 @@
 	{
 		"en"	"What she means by standing over there, is that you cannot cross.\n{green}''Defender'' weapons, upon being attacked by a new enemy, reflect damage taken as true damage and shortly stun the enemy"
 		"it"	"{green}Le armi ''difensore'', quando vengono attaccate da un nuovo nemico, riflettono i danni subiti come danni reali e stordiscono brevemente il nemico"
-		"ko"	"{green}''디펜더'' 계열 무기는 새로운 적에게 피해를 받을 때마다, 그 피해를 트루 대미지로 변환해 반사하고 잠깐 기절시킴."
+		"ko"	"그녀가 거기 서 있다는 건, 넘을 수 없다는 뜻이다.\n{green}''디펜더'' 계열 무기로 새로운 적에게 피해를 받을 시, 받은 피해를 트루 대미지로 변환해 반사하고 잠깐 기절시킴."
 	}
 	"Hand of Superspeed"
 	{
@@ -623,7 +623,7 @@
 	{
 		"en"	"Bang! Boom! A pleasant surprise.\n{green}''Lord'' weapons have a 25％ chance on dealing damage to fire an extra projectile that deals double damage and explodes"
 		"it"	"Bang! Boom! Una piacevole sorpresa.{green}Le armi ''Signore'' hanno una probabilità del 25％ di sparare un proiettile extra che infligge danni doppi ed esplode"
-		"ko"	"파박팍팍. 뜻밖의 기쁨.\n{green}''로드'' 계열 무기로 피해를 주면 25％ 확률로 2배의 피해를 주는 추가 폭발성 투사체를 발사함."
+		"ko"	"파박팍팍. 뜻밖의 기쁨.\n{green}''로드'' 계열 무기로 피해를 주면 25％ 확률적으로 2배의 피해를 주는 추가 폭발성 투사체를 발사함."
 	}
 	"Hand of Pulverization"
 	{
@@ -635,7 +635,7 @@
 	{
 		"en"	"Your goal isn't just to hit the bullseye over and over.\n{green}''Crusher'' weapons gains +5％ fire rate for a short duration when dealing damage to each enemy"
 		"it"	"L'obiettivo non è solo quello di colpire il bersaglio in continuazione{green}Le armi ''Crusher'' guadagnano una velocità di fuoco di +5％ per una breve durata quando infliggono danni a ciascun nemico"
-		"ko"	"{green}''파쇄자'' 계열 무기가 이제 피해를 준 적 하나당 공격 속도가 5％씩 증가. 공속 증가 버프는 짧게 지속됨."
+		"ko"	"목표, 과녁만 맞추는 게 아니다.\n{green}''파쇄자'' 계열 무기가 피해를 준 적 하나당 공격 속도 5％ 증가. 공격 속도 증가 버프는 짧게 지속됨."
 	}
 	"Hand of Revenging"
 	{
@@ -959,7 +959,7 @@
 	{
 		"en"	"Ziberia artilleries, Ruina casters, and Victorian sharpshooters all took their shots at him.\n{green}The player who spent the most cash receives +50％ damage and max health"
 		"it"	"Le artiglierie di Ziberia, gli incantatori di Ruina e i tiratori scelti vittoriani hanno tutti sparato contro di lui.\n{green}Il giocatore che ha speso più denaro riceve +50％ danni e salute massima"
-		"ko"	"지베리아 화포 부대, 루이나 캐스터 부대, 빅토리아 명사수들이 그에게 파상 공세를 퍼부었다.\n{green}자금을 가장 많이 소모한 플레이어의 최대 체력 및 피해량 +50％ 증가."
+		"ko"	"지베리아 화포 부대, 루이나 캐스터 부대, 빅토리아 명사수들이 그에게 파상 공세를 퍼부었다.\n{green}자금을 가장 많이 소모한 플레이어의 최대 체력, 피해량 +50％"
 	}
 	"Chaos Star"
 	{
@@ -1067,7 +1067,7 @@
 	{
 		"en"	"Freedom never sleeps!!\n{green}Morphine shots are upgraded:\nOn stage start, Instantly fully charge 1 stim.\nStims restore hp to full rapidly in a second. Getting hit during the heal maintains the healing. Healing lasts 3 seconds."
 		"it"	"La libertà non dorme mai!!!\n{green}Gli scatti di morfina sono potenziati:\n All'inizio dello stage, carica istantaneamente 1 stim.\nGli stim ripristinano rapidamente gli hp al massimo in un secondo. Se si viene colpiti durante la guarigione, la guarigione viene mantenuta. La guarigione dura 3 secondi."
-		"ko"	"{green}모르핀 아이템 강화:\n스테이지 시작시, 자극제 1개 충전.\n사용시 고속으로 체력을 회복하며, 피해를 받아도 회복이 멈추지 않고 3초 동안 유지."
+		"ko"	"자유는 잠을 모른다!!{green}모르핀 아이템 강화:\n스테이지 시작시, 자극제 1개 충전.\n사용시 최대까지 고속으로 체력을 회복하며, 피해를 받아도 회복이 멈추지 않고 3초 동안 유지."
 	}
 	"Soul Binding Bone"
 	{
@@ -1152,7 +1152,7 @@
 	{
 		"en"	"{red}Umbral Affinity reduced by 15 when obtained\n{purple}Chance obtain a rare artifact when consumed"
 		"it"	"{red}Affinità Umbra ridotta di 15 quando viene ottenuta, {purple}Possibilità di ottenere un artefatto raro quando viene consumata"
-		"ko"	"{red}획득 시 움브랄 친화도 15 감소(흡수해도 친화도가 반환되지 않음)\n{purple}관문에 흡수시키면, 확률적으로 희귀 등급 소장품 획득"
+		"ko"	"{red}획득 시 움브랄 친화력 15 감소(흡수해도 친화력이 반환되지 않음)\n{purple}관문에 흡수시키면, 확률적으로 희귀 등급 소장품 획득"
 	}
 	"Nemesis Blood"
 	{
@@ -1488,7 +1488,7 @@
 	{
 		"en"	"She was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop her.\n{yellow}NPC allies will use the same max health from players."
 		"it"	"Era intrappolata dopo aver sconfitto Whiteflower, una pedina posseduta dopo aver sconfitto Unspeakable, ora dobbiamo fermarla.\n{yellow}Gli alleati PNG useranno la stessa salute massima dei giocatori."
-		"ko"	"그녀는 배풍등이 격파된 순간 갇혔고, 형용할 수 없는 자가 격파된 순간 그것의 꼭두각시가 되었다.\n{yellow}아군 NPC들의 최대 체력이 플레이어의 최대 체력과 동일해짐."
+		"ko"	"그녀는 배풍등을 격파한 순간 갇혀버렸고, 형용할 수 없는 자를 격파한 순간 그것의 꼭두각시가 되었다. 이제 그녀를 막아야한다.\n{yellow}모든 아군 NPC들의 최대 체력이 플레이어의 최대 체력과 동일해짐"
 	}
 	"The Bladedance"
 	{
@@ -1512,7 +1512,7 @@
 	{
 		"en"	"Egotist. Betrayer. Seeker. Loner. Ruler. Goodnight, Irln.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped between players"
 		"it"	"Egoista. Traditore. Cercatore. Solitario. Governante. Buonanotte, Irln.\n{green}Gli alleati guadagnano +25％ salute massima {yellow}ma la salute massima viene scambiata casualmente tra i giocatori"
-		"ko"	"굿나잇, 아를린.\n{green}모든 아군의 최대 체력 +25％. {yellow}최대 체력이 플레이어들 사이에서 무작위로 변경됩니다."
+		"ko"	"좋은 밤 되길, 에릴렌이여.\n{green}모든 아군의 최대 체력 +25％. {yellow}최대 체력이 플레이어들 사이에서 무작위로 변경됩니다."
 	}
 
 	"Gateway"
@@ -2357,13 +2357,13 @@
 	{
 		"en" "⚔ Rescued W.F. Soldiers"
 		"it" "⚔ Soldati salvati del W.F"
-		"ko" "⚔ 구출된 배풍등의 휘하 병사들"
+		"ko" "⚔ 구출된 배풍등의 병사들"
 	}
 	"Rescued W.F. Soldiers!"
 	{
 		"en" "⚠ Rescued W.F. Soldiers"
 		"it" "⚠ soldati salvati del W.F"
-		"ko" "⚠ 구출된 배풍등의 휘하 병사들"
+		"ko" "⚠ 구출된 배풍등의 병사들"
 	}
 	"Unknown Taskforce"
 	{
@@ -2393,13 +2393,13 @@
 	{
 		"en" "⚔ Voided Superior's"
 		"it" "⚔ Annullamento della dichiarazione del Superiore"
-		"ko" "⚔ 침식당한 상급자"
+		"ko" "⚔ 공허화된 상급자"
 	}
 	"Voided Superior's!"
 	{
 		"en" "⚠ Voided Superior's"
 		"it" "⚠ Annullamento del mandato del Superiore"
-		"ko" "⚠ 침식당한 상급자"
+		"ko" "⚠ 공허화된 상급자"
 	}
 	"Expert Warpers"
 	{
@@ -2441,13 +2441,13 @@
 	{
 		"en" "⚔ Top Voided Elites"
 		"it" "⚔ i migliori elite vuoti"
-		"ko" "⚔ 침식당한 정예병들"
+		"ko" "⚔ 공허화된 정예병들"
 	}
 	"Top Voided Elites!"
 	{
 		"en" "⚠ Top Voided Elites"
 		"it" "⚠ top Elites non utilizzate"
-		"ko" "⚠ 침식당한 정예병들"
+		"ko" "⚠ 공허화된 정예병들"
 	}
 	"Gun Game"
 	{
@@ -2610,7 +2610,7 @@
 	{
 		"en" "Book of Liver Optimisation"
 		"it" "Libro dell'ottimizzazione del fegato"
-		"ko" "요리 간 맞추기 노하우의 책"
+		"ko" "간 기능 최적화 노하우의 책"
 	}
 	"Book of Liver Optimisation Desc"
 	{
