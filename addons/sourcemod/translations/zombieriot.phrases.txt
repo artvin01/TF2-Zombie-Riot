@@ -2483,7 +2483,7 @@
 	{
 		"en"		"Construct Buildings"
 		"it"		"Costruisci Strutture"
-		"ko"		"기타 구조물"
+		"ko"		"생존연산 구조물"
 	}	
 	"Construct Buildings Explain"
 	{
