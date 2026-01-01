@@ -5546,73 +5546,73 @@
 	"Humbee"
 	{
 		"en"	"Irongate Humbee"
-		"ko"	"아이언게이트 험비"
+		"ko"	"강철게이트 험비"
 		"it"	"Irongate Humbee"
 	}
 	"Shotgunner"
 	{
 		"en"	"Irongate Shotgunner"
-		"ko"	"아이언게이트 산탄총병"
+		"ko"	"강철게이트 산탄총병"
 		"it"	"Fuciliere Irongate"
 	}
 	"Bulldozer"
 	{
 		"en"	"Irongate Bulldozer"
-		"ko"	"아이언게이트 불도저"
+		"ko"	"강철게이트 불도저"
 		"it"	"Bulldozer Irongate"
 	}
 	"Hardender"
 	{
 		"en"	"Irongate Hardender"
-		"ko"	"아이언게이트 경화자"
+		"ko"	"강철게이트 경화자"
 		"it"	"Hardender Irongate"
 	}
 	"Raider"
 	{
 		"en"	"Irongate Raider"
-		"ko"	"아이언게이트 약탈자"
+		"ko"	"강철게이트 약탈자"
 		"it"	"Incursore di Irongate"
 	}
 	"Zapper"
 	{
 		"en"	"Irongate Zapper"
-		"ko"	"아이언게이트 충격병"
+		"ko"	"강철게이트 충격병"
 		"it"	"Zapper Irongate"
 	}
 	"Payback"
 	{
 		"en"	"Irongate Payback"
-		"ko"	"아이언게이트 복수자"
+		"ko"	"강철게이트 복수자"
 		"it"	"Ritorno di fiamma"
 	}
 	"Blocker"
 	{
 		"en"	"Irongate Blocker"
-		"ko"	"아이언게이트 블로커"
+		"ko"	"강철게이트 블로커"
 		"it"	"Bloccatore di Irongate"
 	}
 	"Victoria Destructor"
 	{
 		"en"	"Irongate Destructor"
-		"ko"	"아이언게이트 파괴자"
+		"ko"	"강철게이트 파괴자"
 		"it"	"Distruttore di Irongate"
 	}
 	"Victoria Tactical Protector"
 	{
 		"en"	"Irongate Tactical Protector"
-		"ko"	"아이언게이트 전술 프로텍터"
+		"ko"	"강철게이트 전술 프로텍터"
 		"it"	"Protezione tattica Irongate"
 	}
 	"Victoria Aviator"
 	{
 		"en"	"Irongate Aviator"
-		"ko"	"아이언게이트 조종사"
+		"ko"	"강철게이트 조종사"
 		"it"	"Aviatore Irongate"
 	}
 	"IronShield"
 	{
 		"en"	"Irongate IronShield"
-		"ko"	"아이언게이트 아이언실드"
+		"ko"	"강철게이트 아이언실드"
 		"it"	"Scudo di ferro Irongate"
 	}
 	"Basebreaker"
