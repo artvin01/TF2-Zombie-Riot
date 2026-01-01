@@ -75,7 +75,7 @@ methodmap ObjectC2LaserIntensifier < ObjectGeneric
 			LastGameTime = CurrentGame;
 		}
 
-		ObjectC2LaserIntensifier npc = view_as<ObjectC2LaserIntensifier>(ObjectGeneric(client, vecPos, vecAng, NPCModel, "0.9s", "50", {20.0, 20.0, 60.0},_,false));
+		ObjectC2LaserIntensifier npc = view_as<ObjectC2LaserIntensifier>(ObjectGeneric(client, vecPos, vecAng, NPCModel, "0.9", "50", {20.0, 20.0, 60.0},_,false));
 
 		npc.m_bConstructBuilding = true;
 		npc.FuncCanBuild = ClotCanBuild;

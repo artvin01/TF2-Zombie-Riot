@@ -72,7 +72,7 @@ methodmap ObjectC2Zap < ObjectGeneric
 			LastGameTime = CurrentGame;
 		}
 
-		ObjectC2Zap npc = view_as<ObjectC2Zap>(ObjectGeneric(client, vecPos, vecAng, NPCModel, "0.6", "50", {20.0, 20.0, 100.0},_,false));
+		ObjectC2Zap npc = view_as<ObjectC2Zap>(ObjectGeneric(client, vecPos, vecAng, NPCModel, "0.75", "50", {31.0, 31.0, 125.0},_,false));
 		/*
  		b_CantCollidie[npc.index] = true;
 	 	b_CantCollidieAlly[npc.index] = true;
@@ -136,7 +136,7 @@ void ObjectC2Zap_ClotThink(ObjectC2Zap npc)
 
 	float VecStart[3];
 	GetAbsOrigin(npc.index, VecStart);
-	VecStart[2] += 100.0;
+	VecStart[2] += 125.0;
 
 	TE_SetupBeamPoints(VecStart, vecTarget, Shared_BEAM_Laser, 0, 0, 0, 0.15, 4.0, 4.0, 0, 8.0, {220, 25, 25, 230}, 0);
 	TE_SendToAll();

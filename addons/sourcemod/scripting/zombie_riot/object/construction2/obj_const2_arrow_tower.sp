@@ -71,12 +71,12 @@ methodmap ObjectC2ArrowTower < ObjectGeneric
 			LastGameTime = CurrentGame;
 		}
 
-		ObjectC2ArrowTower npc = view_as<ObjectC2ArrowTower>(ObjectGeneric(client, vecPos, vecAng, TOWER_MODEL_ARROW, "0.45", "50", {25.0, 25.0, 80.0},_,false));
+		ObjectC2ArrowTower npc = view_as<ObjectC2ArrowTower>(ObjectGeneric(client, vecPos, vecAng, TOWER_MODEL_ARROW, "0.5625", "50", {31.0, 31.0, 100.0},_,false));
 
 		npc.m_iWearable1 = npc.EquipItemSeperate("models/props_manor/clocktower_01.mdl");
-		SetVariantString("0.1");
+		SetVariantString("0.125");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
 
 		npc.m_bConstructBuilding = true;

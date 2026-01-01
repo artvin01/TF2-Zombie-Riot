@@ -130,16 +130,18 @@ public Action Building_GiveLayout(int client, int args)
 		float ang[3];
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		char buffer2[128];
+		int health = ReturnEntityMaxHealth(entity);
 		NPC_GetPluginById(i_NpcInternalId[entity], buffer2, sizeof(buffer2));
 		Format(buffer, sizeof(buffer), "		\"0.01\""
 		... "\n		{"
 		... "\n			\"count\"			\"0\""
-		... "\n			\"health\"		\"1000\""
+		... "\n			\"health\"		\"%i\""
 		... "\n			\"extra_damage\"	\"1.0\""
+		... "\n			\"is_health_scaling\"	\"1.0\""
 		... "\n			\"plugin\"		\"npc_const2_building_spawner\""
 		... "\n			\"spawn\"			\"enemy_base_point\""
 		... "\n			\"data\"			\"%s;_;%.0f %.0f %.0f;%.0f %.0f %.0f\""
-		... "\n		}", buffer2, pos[0], pos[1], pos[2], ang[0], ang[1], ang[2]);
+		... "\n		}", health, buffer2, pos[0], pos[1], pos[2], ang[0], ang[1], ang[2]);
 		file.WriteLine(buffer);
 	}
 	Format(buffer, sizeof(buffer), "\n	}"
