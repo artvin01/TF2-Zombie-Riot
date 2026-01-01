@@ -1437,11 +1437,14 @@ public Action Command_Hudnotif(int client, int args)
 public Action GetPos(int client, int args)
 {
 	float pos[3];
+	float Ang[3];
 	GetEntPropVector(client, Prop_Send, "m_vecOrigin", pos);
 	ReplyToCommand(client, "m_vecOrigin: %f %f %f", pos[0], pos[1], pos[2]);
 
-	GetClientEyeAngles(client, pos);
-	ReplyToCommand(client, "m_vecAngles: %f %f %f", pos[0], pos[1], pos[2]);
+	GetClientEyeAngles(client, Ang);
+	ReplyToCommand(client, "m_vecAngles: %f %f %f", Ang[0], Ang[1], Ang[2]);
+
+	ReplyToCommand(client, "Bulding Copypaste: %.1f %.1f %.1f;%.1f %.1f %.1f", pos[0], pos[1], pos[2], Ang[0], Ang[1], Ang[2]);
 	return Plugin_Handled;
 }
 

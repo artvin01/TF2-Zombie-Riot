@@ -774,6 +774,7 @@ void ZR_PluginStart()
 	
 	BobTheGod_OnPluginStart();
 	VIPBuilding_PluginStart();
+	NpcConst2Building_CommandPluginStart();
 }
 
 void ZR_MapStart()

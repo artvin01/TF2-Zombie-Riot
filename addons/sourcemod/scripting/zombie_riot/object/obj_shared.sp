@@ -137,7 +137,10 @@ methodmap ObjectGeneric < CClotBody
 
 		ObjectGeneric objstats = view_as<ObjectGeneric>(obj);
 		objstats.BaseHealth = StringToInt(basehealth);
-		SetTeam(obj, GetTeam(client));
+		if(IsValidClient(client))
+			SetTeam(obj, GetTeam(client));
+		else
+			SetTeam(obj, TFTeam_Blue);
 			
  		b_CantCollidie[obj] = false;
 	 	b_CantCollidieAlly[obj] = false;
@@ -206,7 +209,8 @@ methodmap ObjectGeneric < CClotBody
 		objstats.FuncCanBuild = defaultFunc;
 		objstats.FuncShowInteractHud = INVALID_FUNCTION;
 
-		SetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity", client);
+		if(IsValidClient(client))
+			SetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity", client);
 		
 		SDKHook(obj, SDKHook_OnTakeDamage, ObjectGeneric_ClotTakeDamage);
 		SDKHook(obj, SDKHook_OnTakeDamagePost, ObjectGeneric_ClotTakeDamage_Post);
@@ -1039,7 +1043,7 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		return Plugin_Handled;
 	}
-	return Plugin_Handled;
+	return Plugin_Changed;
 }
 
 void DestroyBuildingDo(int entity, bool DontCheckAgain = false)
@@ -1311,8 +1315,16 @@ public Action SetTransmit_TextBuildingDo(int entity, int client)
 
 public void ObjectGeneric_ClotTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
+	if(RaidBossActive && RaidbossIgnoreBuildingsLogic(2)) //They are ignored anyways
+		return;
+
+	if((damagetype & DMG_CRUSH))
+		return;
+
 	float Damageafter = damage;
-	Damageafter *= 0.1;
+	//only red buildings get 90% dmg res, this is done so its more easy to read the numbers on the buildings.
+	if(GetTeam(victim) == TFTeam_Red)
+		Damageafter *= 0.1;
 	int dmg = FloatToInt_DamageValue_ObjBuilding(victim, Damageafter);
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	health -= dmg;

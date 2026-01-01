@@ -3,6 +3,11 @@
 
 static int NPCId;
 
+void NpcConst2Building_CommandPluginStart()
+{
+	RegConsoleCmd("sm_getbase_layout", Building_GiveLayout, "Base Building logic",ADMFLAG_SLAY);
+}
+
 void Const2BuildingCreateOnMapStart()
 {
 	NPCData data;
@@ -24,7 +29,7 @@ int Const2BuildingCreate_Id()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	static char buffers[4][64];
+	char buffers[4][64];
 	/*
 		0 : npc index
 		1 : data for it
@@ -37,9 +42,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 		ExplodeStringFloat(buffers[2], " ", vecPos, sizeof(vecPos));
 	if(buffers[3][0])
 		ExplodeStringFloat(buffers[3], " ", vecAng, sizeof(vecAng));
-
 	int entity = NPC_CreateByName(buffers[0], client, vecPos, vecAng, team, buffers[1], true);
-	if(team != TFTeam_Red)
+	if(IsValidEntity(entity) && team != TFTeam_Red)
 	{
 		//its an enemy one, set all neccecary logics needed
 		i_IsABuilding[entity] = false;
@@ -75,4 +79,79 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 	SetTeam(entity, team);
 	//figure out eventually
 	return entity;
+}
+
+
+#define FILE_CHECKBASE  "addons/sourcemod/data/zombie_riot/baselayout.cfg"
+public Action Building_GiveLayout(int client, int args)
+{
+	char buffer[1024];
+	
+	DeleteFile(FILE_CHECKBASE);
+	File file = OpenFile(FILE_CHECKBASE, "w");
+	if(!file)
+	{
+		ReplyToCommand(client, "Failed?.");
+		delete file;
+		return Plugin_Handled;
+	}
+	//We give the basics now to the file to imitate a waveset
+	/*
+		end result as a test
+		"Waves"
+		{
+			"1"
+			{
+				"0.01"
+				{
+					"count"				"0"
+					"is_health_scaling"	"1"
+					"health"			"25000"
+					"plugin"			"npc_const2_building_spawner"
+					"spawn"				"enemy_base_point"
+					"data"				"obj_const2_cannon;_;6495.1 923.0 -1199.9;0.0 0.0 0.0"
+				}
+	*/
+	Format(buffer, sizeof(buffer), "\"Waves\""
+	... "\n{"
+	... "\n	\"1\""
+	... "\n	{");
+	
+	file.WriteLine(buffer);
+
+	
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(!i_NpcIsABuilding[entity])
+			continue;
+		
+		float pos[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+		pos[2] -= 5.0;
+		float ang[3];
+		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+		char buffer2[128];
+		NPC_GetPluginById(i_NpcInternalId[entity], buffer2, sizeof(buffer2));
+		Format(buffer, sizeof(buffer), "		\"0.01\""
+		... "\n		{"
+		... "\n			\"count\"			\"0\""
+		... "\n			\"health\"		\"1000\""
+		... "\n			\"extra_damage\"	\"1.0\""
+		... "\n			\"plugin\"		\"npc_const2_building_spawner\""
+		... "\n			\"spawn\"			\"enemy_base_point\""
+		... "\n			\"data\"			\"%s;_;%.0f %.0f %.0f;%.0f %.0f %.0f\""
+		... "\n		}", buffer2, pos[0], pos[1], pos[2], ang[0], ang[1], ang[2]);
+		file.WriteLine(buffer);
+	}
+	Format(buffer, sizeof(buffer), "\n	}"
+	...	"\n	\"Freeplay\""
+	... "\n	{"
+	... "\n	"
+	... "\n	}"
+	... "\n}");
+	file.WriteLine(buffer);
+	delete file;
+	ReplyToCommand(client, "Gave layout in file ''%s''.",FILE_CHECKBASE);
+	return Plugin_Handled;
 }

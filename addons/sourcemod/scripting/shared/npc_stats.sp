@@ -191,7 +191,7 @@ public Action Command_PetMenu(int client, int args)
 	}
 	
 	float flPos[3], flAng[3];
-	GetClientAbsAngles(client, flAng);
+	GetClientEyeAngles(client, flAng);
 	if(!SetTeleportEndPoint(client, flPos))
 	{
 		PrintToChat(client, "Could not find place.");
