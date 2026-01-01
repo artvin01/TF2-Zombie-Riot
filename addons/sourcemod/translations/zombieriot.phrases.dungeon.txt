@@ -174,7 +174,7 @@
 	"Dungeon Level 3 Desc"
 	{
 		"en"	"You remember what he said, who made Chaos.\n{red}Applies Chaos Intrusion modifier"
-		"ko"	"당신은 그가 말했던 것을 기억해냈다. 누가 혼돈을 만들어냈는지. \n{red}''혼돈의 침식'' 난이도가 적용됩니다."
+		"ko"	"당신은 그가 말했던 것을 기억해냈다. 누가 혼돈을 만들어냈는지. \n{red}''혼돈의 침입'' 난이도가 적용됩니다."
 	}
 	"Compass Fragment"
 	{
