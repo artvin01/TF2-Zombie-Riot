@@ -7544,7 +7544,7 @@
 	{
 		"en"	"Shadowing Darkness, The Ruler"
 		"it"	"L'ombra delle tenebre, il dominatore"
-		"ko"	"통치자 ''응달''"
+		"ko"	"통치자 ''그림자 응달''"
 	}
 	"Shadowing Darkness, The Ruler Desc"
 	{

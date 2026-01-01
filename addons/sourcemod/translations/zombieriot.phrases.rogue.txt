@@ -507,7 +507,7 @@
 		"en"	"Ask about the ''Bladedance''"
 		"ru"	"Спросить о «Взбешённом клинке»"
 		"it"	"Chiedete informazioni sulla ''Bladedance''"
-		"ko"	"''블레이드댄스''에 관해 묻는다"
+		"ko"	"''칼춤''에 관해 묻는다"
 	}
 	"Eccentric Lore 1-2"
 	{

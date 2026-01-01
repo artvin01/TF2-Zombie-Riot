@@ -4111,31 +4111,6 @@
 		"en"		"CBS's Blade"
 		"ko"		"잔혹한 기독교 스나이퍼의 검"
 	}
-	"Steam Knight's Spear"
-	{
-		"en"		"Steam Knight's Spear"
-		"ko"		"증기 기사의 창"
-	}
-	"Explosault Rifle"
-	{
-		"en"	"Explosault Rifle"
-		"ko"	"폭썰트 라이플"
-	}
-	"Enhancement: Heat Sink Discharge"
-	{
-		"en"	"Enhancement: Heat Sink Discharge"
-		"ko"	"개조: 방열판 사출"
-	}
-	"Enhancement: Overheating Protection Removed"
-	{
-		"en"	"Enhancement: Overheating Protection Removed"
-		"ko"	"개조: 과열 보호 제거"
-	}
-	"Enhancement: Airstrike Beacon"
-	{
-		"en"	"Enhancement: Heat Sink Discharge"
-		"ko"	"개조: 폭격 유도 비콘"
-	}
 	"Полумесяц"
 	{
 		"en"		"Полумесяц"
@@ -5120,6 +5095,26 @@
 		"en"	"Steam Knight's Spear"
 		"ko"	"증기 기사의 창"
 		"it"	"Lancia del cavaliere del vapore"
+	}
+	"Explosault Rifle"
+	{
+		"en"	"Explosault Rifle"
+		"ko"	"폭썰트 라이플"
+	}
+	"Enhancement: Heat Sink Discharge"
+	{
+		"en"	"Enhancement: Heat Sink Discharge"
+		"ko"	"개조: 방열판 사출"
+	}
+	"Enhancement: Overheating Protection Removed"
+	{
+		"en"	"Enhancement: Overheating Protection Removed"
+		"ko"	"개조: 과열 보호 제거"
+	}
+	"Enhancement: Airstrike Beacon"
+	{
+		"en"	"Enhancement: Heat Sink Discharge"
+		"ko"	"개조: 폭격 유도 비콘"
 	}
 	"Boomerang"
 	{
