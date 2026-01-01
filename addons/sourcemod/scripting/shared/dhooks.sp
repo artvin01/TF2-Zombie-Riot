@@ -1348,6 +1348,8 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		int entity = -1;
 		while((entity=FindEntityByClassname(entity, "obj_*")) != -1)
 		{
+			if(b_ThisWasAnNpc[entity])
+				continue;
 			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
 		}
 	}
