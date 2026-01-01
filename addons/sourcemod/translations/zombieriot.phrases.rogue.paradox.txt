@@ -96,7 +96,7 @@
 	{
 		"en"	"The frost covers everything you have, including you."
 		"it"	"Il gelo copre tutto ciò che avete, compreso voi."
-		"ko"	"이 서리가 당신을 포함한 모든 것을 뒤덮고 있다."
+		"ko"	"이 서리가 당신이 가진 모든 것을, 그리고 당신 역시 뒤덮고 있다."
 	}
 	"Red Moon"
 	{
