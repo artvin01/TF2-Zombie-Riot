@@ -36,11 +36,11 @@ void ObjectDWall_MapStart()
 	build.Section = 3;
 
 	strcopy(data.Name, sizeof(data.Name), "Small Construct Wall");
-	strcopy(data.Plugin, sizeof(data.Plugin), "obj_const_wall1");
+	strcopy(data.Plugin, sizeof(data.Plugin), "obj_dungeon_wall1");
 	data.Func = ClotSummon1;
 	NPCId1 = NPC_Add(data);
 
-	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_wall1");
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_wall1");
 	build.Cost = 807;
 	build.Health = 630;
 	build.HealthScaleCost = true;
@@ -49,11 +49,11 @@ void ObjectDWall_MapStart()
 	Building_Add(build);
 
 	strcopy(data.Name, sizeof(data.Name), "Large Construct Wall");
-	strcopy(data.Plugin, sizeof(data.Plugin), "obj_const_wall2");
+	strcopy(data.Plugin, sizeof(data.Plugin), "obj_dungeon_wall2");
 	data.Func = ClotSummon2;
 	NPCId2 = NPC_Add(data);
 
-	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_wall2");
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_wall2");
 	build.Cost = 1076;
 	build.Health = 840;
 	build.HealthScaleCost = true;
@@ -62,11 +62,11 @@ void ObjectDWall_MapStart()
 	Building_Add(build);
 
 	strcopy(data.Name, sizeof(data.Name), "Extreme Construct Wall");
-	strcopy(data.Plugin, sizeof(data.Plugin), "obj_const_wall3");
+	strcopy(data.Plugin, sizeof(data.Plugin), "obj_dungeon_wall3");
 	data.Func = ClotSummon3;
 	NPCId3 = NPC_Add(data);
 
-	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_wall3");
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_wall3");
 	build.Cost = 1614;
 	build.Health = 1260;
 	build.HealthScaleCost = true;
@@ -107,10 +107,13 @@ static bool ClotCanBuild1(int client, int &count, int &maxcount)
 	{
 		count = CountBuildings();
 		
-		if(!Dungeon_Mode())
+		if(!CvarInfiniteCash.BoolValue)
 		{
-			maxcount = 0;
-			return false;
+			if(!Dungeon_Mode())
+			{
+				maxcount = 0;
+				return false;
+			}
 		}
 
 		maxcount = 3 + CurrentLevel;
@@ -121,14 +124,14 @@ static bool ClotCanBuild1(int client, int &count, int &maxcount)
 	return true;
 }
 
-static any ClotSummon2(int client, float vecPos[3])
+static any ClotSummon2(int client, float vecPos[3], float vecAng[3])
 {
-	return ObjectDWall2(client, vecPos);
+	return ObjectDWall2(client, vecPos, vecAng);
 }
 
 methodmap ObjectDWall2 < ObjectGeneric
 {
-	public ObjectDWall2(int client, const float vecPos[3])
+	public ObjectDWall2(int client, const float vecPos[3], const float vecAng[3])
 	{
 		if(LastGameTime != CurrentGame)
 		{
@@ -161,6 +164,8 @@ methodmap ObjectDWall2 < ObjectGeneric
 		npc_right.m_iMasterBuilding = npc.index;
 		SetParent(npc.index, npc_right.index, "root",{0.0, -40.0, 0.0}, true);
 
+		TeleportEntity(npc.index, _, vecAng);
+
 		return npc;
 	}
 }
@@ -185,14 +190,14 @@ static bool ClotCanBuild2(int client, int &count, int &maxcount)
 	return true;
 }
 
-static any ClotSummon3(int client, float vecPos[3])
+static any ClotSummon3(int client, float vecPos[3], float vecAng[3])
 {
-	return ObjectDWall3(client, vecPos);
+	return ObjectDWall3(client, vecPos, vecAng);
 }
 
 methodmap ObjectDWall3 < ObjectGeneric
 {
-	public ObjectDWall3(int client, const float vecPos[3])
+	public ObjectDWall3(int client, const float vecPos[3], const float vecAng[3])
 	{
 		if(LastGameTime != CurrentGame)
 		{
@@ -225,6 +230,8 @@ methodmap ObjectDWall3 < ObjectGeneric
 		npc.m_iExtrabuilding2 = npc_right.index;
 		npc_right.m_iMasterBuilding = npc.index;
 		SetParent(npc.index, npc_right.index, "root",{0.0, -50.0, 0.0}, true);
+
+		TeleportEntity(npc.index, _, vecAng);
 
 		return npc;
 	}

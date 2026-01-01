@@ -22,11 +22,13 @@ static char g_ShootingSound[][] = {
 static int NPCId;
 static int LastGameTime;
 static int CurrentLevel;
+static bool Unlocked;
 
 void ObjectC2Incinerator_MapStart()
 {
 	LastGameTime = -1;
 	CurrentLevel = 0;
+	Unlocked = false;
 
 	PrecacheSoundArray(g_ShootingSound);
 	PrecacheModel(NPCModel);
@@ -71,6 +73,7 @@ methodmap ObjectC2Incinerator < ObjectGeneric
 		{
 			CurrentLevel = 0;
 			LastGameTime = CurrentGame;
+			Unlocked = false;
 		}
 
 		ObjectC2Incinerator npc = view_as<ObjectC2Incinerator>(ObjectGeneric(client, vecPos, vecAng, NPCModel, "0.6", "50", {20.0, 20.0, 150.0},_,false));
@@ -83,6 +86,7 @@ methodmap ObjectC2Incinerator < ObjectGeneric
 		func_NPCThink[npc.index] = ObjectC2Incinerator_ClotThink;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
+		func_NPCDeath[npc.index] = ClotDeath;
 		SetRotateByDefaultReturn(npc.index, -180.0);
 
 		return npc;
@@ -113,7 +117,9 @@ void ObjectC2Incinerator_ClotThink(ObjectC2Incinerator npc)
 }
 static void ObjConst2_Incinerator_Ingite(int entity, int victim, float damage, int weapon)
 {
-	float damageDealt = 25.0 * Pow(float(CurrentLevel), 3.0);
+	int level = GetTeam(entity) == TFTeam_Red ? CurrentLevel : 0;
+
+	float damageDealt = 25.0 * Pow(float(level), 3.0);
 	bool HadBuffBefore = true;
 	if(!HasSpecificBuff(victim, "Burn"))
 		HadBuffBefore = false;
@@ -130,10 +136,13 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	{
 		count = CountBuildings();
 		
-		if(!Dungeon_Mode())
+		if(!CvarInfiniteCash.BoolValue)
 		{
-			maxcount = 0;
-			return false;
+			if(!Dungeon_Mode() || !Unlocked || LastGameTime != CurrentGame)
+			{
+				maxcount = 0;
+				return false;
+			}
 		}
 
 		maxcount = (CurrentLevel / 2) + 1;
@@ -233,4 +242,13 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 		}
 	}
 	return 0;
+}
+
+static void ClotDeath(int entity)
+{
+	if(!Unlocked && LastGameTime == CurrentGame && GetTeam(entity) != TFTeam_Red && !(i_HexCustomDamageTypes[entity] & ZR_SLAY_DAMAGE))
+	{
+		Unlocked = true;
+		CPrintToChatAll("{green}%t", "Unlocked Building", CONSTRUCT_NAME);
+	}
 }

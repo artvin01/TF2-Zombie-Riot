@@ -16,11 +16,13 @@
 static int NPCId;
 static int LastGameTime;
 static int CurrentLevel;
+static bool Unlocked;
 
 void ObjectDDispenser_MapStart()
 {
 	LastGameTime = -1;
 	CurrentLevel = 0;
+	Unlocked = false;
 
 	PrecacheModel("models/buildables/dispenser_lvl3_light.mdl");
 
@@ -57,6 +59,7 @@ methodmap ObjectDDispenser < ObjectGeneric
 		{
 			CurrentLevel = 0;
 			LastGameTime = CurrentGame;
+			Unlocked = false;
 		}
 
 		ObjectDDispenser npc = view_as<ObjectDDispenser>(ObjectGeneric(client, vecPos, vecAng, "models/buildables/dispenser_lvl3_light.mdl", "1.0", "50", {26.0, 26.0, 67.0}, _, false));
@@ -66,6 +69,7 @@ methodmap ObjectDDispenser < ObjectGeneric
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
 		func_NPCThink[npc.index] = ClotThink;
+		func_NPCDeath[npc.index] = ClotDeath;
 		SetRotateByDefaultReturn(npc.index, -180.0);
 
 		return npc;
@@ -101,7 +105,9 @@ static void DispenserExplode(int entity, int victim, float damage, int weapon)
 
 	if(GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && (!b_NpcHasDied[victim] || victim <= MaxClients))
 	{
-		HealEntityGlobal(entity, victim, 5.0 + (CurrentLevel * 7.5), _, 0.5);
+		int level = GetTeam(entity) == TFTeam_Red ? CurrentLevel : Dungeon_GetRound();
+
+		HealEntityGlobal(entity, victim, 5.0 + (level * 7.5), _, 0.5);
 		if(victim <= MaxClients)
 			TF2_AddCondition(victim, TFCond_InHealRadius, 0.6);
 	}
@@ -113,10 +119,13 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	{
 		count = CountBuildings();
 		
-		if(!Dungeon_Mode())
+		if(!CvarInfiniteCash.BoolValue)
 		{
-			maxcount = 0;
-			return false;
+			if(!Dungeon_Mode() || !Unlocked || LastGameTime != CurrentGame)
+			{
+				maxcount = 0;
+				return false;
+			}
 		}
 
 		maxcount = CurrentLevel >= CONSTRUCT_MAXLVL ? 2 : 1;
@@ -215,4 +224,13 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 		}
 	}
 	return 0;
+}
+
+static void ClotDeath(int entity)
+{
+	if(!Unlocked && LastGameTime == CurrentGame && GetTeam(entity) != TFTeam_Red && !(i_HexCustomDamageTypes[entity] & ZR_SLAY_DAMAGE))
+	{
+		Unlocked = true;
+		CPrintToChatAll("{green}%t", "Unlocked Building", CONSTRUCT_NAME);
+	}
 }

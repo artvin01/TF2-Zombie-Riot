@@ -16,11 +16,13 @@
 static int NPCId;
 static int LastGameTime;
 static int CurrentLevel;
+static bool Unlocked;
 
 void ObjectDLightHouse_MapStart()
 {
 	LastGameTime = -1;
 	CurrentLevel = 0;
+	Unlocked = false;
 
 	PrecacheModel("models/props_sunshine/lighthouse_blu_bottom.mdl");
 
@@ -62,6 +64,7 @@ methodmap ObjectDLightHouse < ObjectGeneric
 		{
 			CurrentLevel = 0;
 			LastGameTime = CurrentGame;
+			Unlocked = false;
 		}
 
 		ObjectDLightHouse npc = view_as<ObjectDLightHouse>(ObjectGeneric(client, vecPos, vecAng, "models/props_sunshine/lighthouse_blu_bottom.mdl", "0.3", "600",{30.0, 30.0, 80.0},_,false));
@@ -70,6 +73,7 @@ methodmap ObjectDLightHouse < ObjectGeneric
 		func_NPCThink[npc.index] = ClotThink;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
+		func_NPCDeath[npc.index] = ClotDeath;
 		npc.m_bConstructBuilding = true;
 
 		return npc;
@@ -82,10 +86,13 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	{
 		count = CountBuildings();
 		
-		if(!Dungeon_Mode())
+		if(!CvarInfiniteCash.BoolValue)
 		{
-			maxcount = 0;
-			return false;
+			if(!Dungeon_Mode() || !Unlocked || LastGameTime != CurrentGame)
+			{
+				maxcount = 0;
+				return false;
+			}
 		}
 
 		maxcount = CurrentLevel + 1;
@@ -222,4 +229,13 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 		}
 	}
 	return 0;
+}
+
+static void ClotDeath(int entity)
+{
+	if(!Unlocked && LastGameTime == CurrentGame && GetTeam(entity) != TFTeam_Red && !(i_HexCustomDamageTypes[entity] & ZR_SLAY_DAMAGE))
+	{
+		Unlocked = true;
+		CPrintToChatAll("{green}%t", "Unlocked Building", CONSTRUCT_NAME);
+	}
 }

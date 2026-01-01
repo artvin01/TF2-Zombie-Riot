@@ -21,11 +21,13 @@ static char g_ShootingSound[][] = {
 static int NPCId;
 static int LastGameTime;
 static int CurrentLevel;
+static bool Unlocked;
 
 void ObjectDCaliberTurret_MapStart()
 {
 	LastGameTime = -1;
 	CurrentLevel = 0;
+	Unlocked = false;
 
 	PrecacheSoundArray(g_ShootingSound);
 	PrecacheModel("models/buildables/sentry1_heavy.mdl");
@@ -67,6 +69,7 @@ methodmap ObjectDCaliberTurret < ObjectGeneric
 		{
 			CurrentLevel = 0;
 			LastGameTime = CurrentGame;
+			Unlocked = false;
 		}
 
 		ObjectDCaliberTurret npc = view_as<ObjectDCaliberTurret>(ObjectGeneric(client, vecPos, vecAng, "models/buildables/sentry1_heavy.mdl", "2.0", "50", {40.0, 40.0, 90.0},_,false));
@@ -76,6 +79,7 @@ methodmap ObjectDCaliberTurret < ObjectGeneric
 		func_NPCThink[npc.index] = ObjectDCaliberTurret_ClotThink;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
+		func_NPCDeath[npc.index] = ClotDeath;
 		SetRotateByDefaultReturn(npc.index, -180.0);
 
 		return npc;
@@ -139,7 +143,8 @@ void ObjectDCaliberTurret_ClotThink(ObjectDCaliberTurret npc)
 		npc.PlayShootSound();
 		if(IsValidEnemy(npc.index, target))
 		{
-			float damageDealt = 117.1875 * Pow(float(CurrentLevel), 2.0);
+			int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
+			float damageDealt = 117.1875 * Pow(float(level), 2.0);
 			if(ShouldNpcDealBonusDamage(target))
 				damageDealt *= 3.0;
 				
@@ -157,10 +162,13 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	{
 		count = CountBuildings();
 		
-		if(!Dungeon_Mode())
+		if(!CvarInfiniteCash.BoolValue)
 		{
-			maxcount = 0;
-			return false;
+			if(!Dungeon_Mode() || !Unlocked || LastGameTime != CurrentGame)
+			{
+				maxcount = 0;
+				return false;
+			}
 		}
 
 		maxcount = CurrentLevel > 4 ? 2 : 1;
@@ -260,4 +268,13 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 		}
 	}
 	return 0;
+}
+
+static void ClotDeath(int entity)
+{
+	if(!Unlocked && LastGameTime == CurrentGame && GetTeam(entity) != TFTeam_Red && !(i_HexCustomDamageTypes[entity] & ZR_SLAY_DAMAGE))
+	{
+		Unlocked = true;
+		CPrintToChatAll("{green}%t", "Unlocked Building", CONSTRUCT_NAME);
+	}
 }

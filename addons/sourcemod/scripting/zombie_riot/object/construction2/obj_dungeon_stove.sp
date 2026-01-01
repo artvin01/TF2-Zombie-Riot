@@ -35,6 +35,8 @@ static const char Artifacts[][] =
 
 static int NPCId;
 static float GlobalCooldown;
+static int LastGameTime;
+static bool Unlocked;
 static bool Shuffled;
 static bool Enabled[sizeof(Artifacts)];
 
@@ -42,6 +44,8 @@ void ObjectDStove_MapStart()
 {
 	Shuffled = false;
 	GlobalCooldown = 0.0;
+	LastGameTime = -1;
+	Unlocked = false;
 	PrecacheModel("models/props_c17/furniturestove001a.mdl");
 
 	NPCData data;
@@ -73,12 +77,19 @@ methodmap ObjectDStove < ObjectGeneric
 {
 	public ObjectDStove(int client, const float vecPos[3], const float vecAng[3])
 	{
+		if(LastGameTime != CurrentGame)
+		{
+			LastGameTime = CurrentGame;
+			Unlocked = false;
+		}
+
 		ObjectDStove npc = view_as<ObjectDStove>(ObjectGeneric(client, vecPos, vecAng, "models/props_c17/furniturestove001a.mdl", _, "600", {27.0, 27.0, 41.0}, 20.0));
 		
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
+		func_NPCDeath[npc.index] = ClotDeath;
 		npc.m_bConstructBuilding = true;
 
 		return npc;
@@ -226,4 +237,13 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 		}
 	}
 	return 0;
+}
+
+static void ClotDeath(int entity)
+{
+	if(!Unlocked && LastGameTime == CurrentGame && GetTeam(entity) != TFTeam_Red && !(i_HexCustomDamageTypes[entity] & ZR_SLAY_DAMAGE))
+	{
+		Unlocked = true;
+		CPrintToChatAll("{green}%t", "Unlocked Building", CONSTRUCT_NAME);
+	}
 }

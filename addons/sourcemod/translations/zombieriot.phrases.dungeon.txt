@@ -316,7 +316,12 @@
 	}
 	"Vehicle Controls"
 	{
-		"en"		"%%+attack3%% TURBO %%+jump%% HANDBRAKE"
+		"en"	"%%+attack3%% TURBO %%+jump%% HANDBRAKE"
+	}
+	"Unlocked Building"
+	{
+		"#format"	"{1:t}"
+		"en"		"Unlocked Construct Building: {orange}{1}"
 	}
 
 	"Treasure Vault Encounter Title"

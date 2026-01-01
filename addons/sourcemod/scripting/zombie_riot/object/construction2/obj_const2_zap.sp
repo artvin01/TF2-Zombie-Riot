@@ -24,11 +24,13 @@ static char g_ShootingSound[][] = {
 static int NPCId;
 static int LastGameTime;
 static int CurrentLevel;
+static bool Unlocked;
 
 void ObjectC2Zap_MapStart()
 {
 	LastGameTime = -1;
 	CurrentLevel = 0;
+	Unlocked = false;
 
 	PrecacheSoundArray(g_ShootingSound);
 	PrecacheModel(NPCModel);
@@ -70,6 +72,7 @@ methodmap ObjectC2Zap < ObjectGeneric
 		{
 			CurrentLevel = 0;
 			LastGameTime = CurrentGame;
+			Unlocked = false;
 		}
 
 		ObjectC2Zap npc = view_as<ObjectC2Zap>(ObjectGeneric(client, vecPos, vecAng, NPCModel, "0.75", "50", {31.0, 31.0, 125.0},_,false));
@@ -83,6 +86,7 @@ methodmap ObjectC2Zap < ObjectGeneric
 		func_NPCThink[npc.index] = ObjectC2Zap_ClotThink;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
+		func_NPCDeath[npc.index] = ClotDeath;
 		SetRotateByDefaultReturn(npc.index, -180.0);
 
 		return npc;
@@ -142,8 +146,10 @@ void ObjectC2Zap_ClotThink(ObjectC2Zap npc)
 	TE_SendToAll();
 	npc.m_flNextMeleeAttack = gameTime + 0.25;
 
+	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
+
 	npc.PlayShootSound();
-	float damageDealt = 50.0 * Pow(float(CurrentLevel), 2.0);
+	float damageDealt = 50.0 * Pow(float(level), 2.0);
 	if(ShouldNpcDealBonusDamage(npc.m_iTarget))
 		damageDealt *= 3.0;
 		
@@ -157,10 +163,13 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	{
 		count = CountBuildings();
 		
-		if(!Dungeon_Mode())
+		if(!CvarInfiniteCash.BoolValue)
 		{
-			maxcount = 0;
-			return false;
+			if(!Dungeon_Mode() || !Unlocked || LastGameTime != CurrentGame)
+			{
+				maxcount = 0;
+				return false;
+			}
 		}
 
 		maxcount = CurrentLevel + 1;
@@ -260,4 +269,13 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 		}
 	}
 	return 0;
+}
+
+static void ClotDeath(int entity)
+{
+	if(!Unlocked && LastGameTime == CurrentGame && GetTeam(entity) != TFTeam_Red && !(i_HexCustomDamageTypes[entity] & ZR_SLAY_DAMAGE))
+	{
+		Unlocked = true;
+		CPrintToChatAll("{green}%t", "Unlocked Building", CONSTRUCT_NAME);
+	}
 }

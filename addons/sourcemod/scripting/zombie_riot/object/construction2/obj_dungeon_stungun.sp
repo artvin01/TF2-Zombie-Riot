@@ -19,11 +19,13 @@ static const char g_ShootingSound[] =
 static int NPCId;
 static int LastGameTime;
 static int CurrentLevel;
+static bool Unlocked;
 
 void ObjectDStunGun_MapStart()
 {
 	LastGameTime = -1;
 	CurrentLevel = 0;
+	Unlocked = false;
 
 	PrecacheSound(g_ShootingSound);
 	PrecacheModel("models/combine_turrets/floor_turret.mdl");
@@ -65,6 +67,7 @@ methodmap ObjectDStunGun < ObjectGeneric
 		{
 			CurrentLevel = 0;
 			LastGameTime = CurrentGame;
+			Unlocked = false;
 		}
 
 		ObjectDStunGun npc = view_as<ObjectDStunGun>(ObjectGeneric(client, vecPos, vecAng, "models/combine_turrets/floor_turret.mdl", "1.0", "50", {23.0, 23.0, 61.0}, _, false));
@@ -74,6 +77,7 @@ methodmap ObjectDStunGun < ObjectGeneric
 		func_NPCThink[npc.index] = ClotThink;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
+		func_NPCDeath[npc.index] = ClotDeath;
 		SetRotateByDefaultReturn(npc.index, -180.0);
 
 		return npc;
@@ -115,6 +119,7 @@ static void ClotThink(ObjectDStunGun npc)
 	if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, { 9999.0, 9999.0, 9999.0 }))
 	{
 		int target = TR_GetEntityIndex(swingTrace);	
+		float level = GetTeam(npc.index) == TFTeam_Red ? float(CurrentLevel) : MultiGlobalEnemy;
 			
 		float vecHit[3];
 		TR_GetEndPosition(vecHit, swingTrace);
@@ -122,14 +127,33 @@ static void ClotThink(ObjectDStunGun npc)
 		float angles[3];
 		view_as<CClotBody>(npc.index).GetAttachment("light", origin, angles);
 		ShootLaser(npc.index, "bullet_tracer02_red_crit", origin, vecHit, false );
-		npc.m_flNextMeleeAttack = gameTime + 9.0 - (CurrentLevel * 2.0);
+		npc.m_flNextMeleeAttack = gameTime + 9.0 - (level * 2.0);
 		npc.PlayShootSound();
 		if(IsValidEnemy(npc.index, target))
 		{
-			if(b_thisNpcIsARaid[target])
-				FreezeNpcInTime(target, 0.4);
+			if(i_IsVehicle[target])	// EMP!!
+			{
+				AcceptEntityInput(target, "TurnOff");
+
+				SetVariantString("OnUser4 !self:TurnOn::3:-1");
+				AcceptEntityInput(target, "AddOutput");
+				AcceptEntityInput(target, "FireUser4");
+				AcceptEntityInput(target, "FireUser4");
+
+				for(int other = 1; other <= MaxClients; other++)
+				{
+					if(IsClientInGame(other) && Vehicle_Driver(other) == target)
+						SetEntPropFloat(other, Prop_Send, "m_flNextAttack", GetGameTime() + 3.0);
+				}
+			}
+			else if(target < 1 || target >= MaxClients)
+			{
+				TF2_StunPlayer(target, 2.0, 1.0, TF_STUNFLAG_SLOWDOWN);
+			}
 			else
-				FreezeNpcInTime(target, 2.0);
+			{
+				FreezeNpcInTime(target, b_thisNpcIsARaid[target] ? 0.4 : 2.0);
+			}
 		}
 	}
 
@@ -142,10 +166,13 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	{
 		count = CountBuildings();
 		
-		if(!Dungeon_Mode())
+		if(!CvarInfiniteCash.BoolValue)
 		{
-			maxcount = 0;
-			return false;
+			if(!Dungeon_Mode() || !Unlocked || LastGameTime != CurrentGame)
+			{
+				maxcount = 0;
+				return false;
+			}
 		}
 
 		maxcount = CurrentLevel + 1;
@@ -244,4 +271,13 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 		}
 	}
 	return 0;
+}
+
+static void ClotDeath(int entity)
+{
+	if(!Unlocked && LastGameTime == CurrentGame && GetTeam(entity) != TFTeam_Red && !(i_HexCustomDamageTypes[entity] & ZR_SLAY_DAMAGE))
+	{
+		Unlocked = true;
+		CPrintToChatAll("{green}%t", "Unlocked Building", CONSTRUCT_NAME);
+	}
 }
