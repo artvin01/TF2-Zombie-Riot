@@ -116,7 +116,7 @@
 	{
 		"en" 		"Shadowing Darkness the throne taker and ruler of the Umbrals."
 		"it"		"Shadowing Darkness, il conquistatore del trono e sovrano degli Umbrali."
-		"ko" 		"왕좌 찬탈자이자 움브랄의 지배자, ''응달''."
+		"ko" 		"왕좌 찬탈자이자 움브랄의 지배자, ''그림자 응달''."
 	}
 	"The Purge Arrived"
 	{
