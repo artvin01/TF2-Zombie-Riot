@@ -972,8 +972,8 @@ methodmap Twirl < CClotBody
 		if(b_tripple_raid)
 		{
 			WaveStart_SubWaveStart(GetGameTime() + 700.0);	//due to lots and lots of time
-			Twirl_Lines(npc, "Oh my, looks like the expidonsans went easy on you, we sure wont my dears. Us ruanians work differently~");
-			Twirl_Lines(npc, "... Except Karlas but shhhh!");
+			Twirl_Lines(npc, "어머나, 엑스피돈사 친구들이 좀 살살해줬나보네? 우린 절대 안 그럴건데. 우리 루이나인 일하는 방식이 좀 다르거든~");
+			Twirl_Lines(npc, "... 카를라스는 빼고, 아, 내가 이런 말 했다는거 비밀이야!");
 			CPrintToChatAll("{crimson}Karlas{snow}: .....");
 			CPrintToChatAll("{crimson}Karlas{snow}: :(");
 			RaidModeTime = GetGameTime(npc.index) + 500.0;

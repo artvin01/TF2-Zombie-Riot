@@ -410,7 +410,10 @@ static void ClotThink(int iNPC)
 						
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
-						IncreaseEntityDamageTakenBy(target, 0.02, 3.0, true);
+						if(npc.Anger)
+							ApplyStatusEffect(npc.index, target, "Bob Debuff Enrage", 10.0);
+						else
+							ApplyStatusEffect(npc.index, target, "Bob Debuff", 3.0);
 					}
 				}
 

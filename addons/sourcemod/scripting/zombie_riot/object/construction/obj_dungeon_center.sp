@@ -11,6 +11,7 @@
 #define CONSTRUCT_NAME		"Control Center"
 
 static const int CompassCrystalCost = 5;
+static const int TreasureKeyCost = 10;
 static const int UnboxCrystalCost = 10;
 
 static int NPCId;
@@ -135,6 +136,12 @@ static void ThisBuildingMenu(int client)
 		menu.AddItem("1", buffer, (crystal < CompassCrystalCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	}
 
+	if(Rogue_HasNamedArtifact("Key Fragment"))
+	{
+		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Craft Item", "Treasure Key", crystal, TreasureKeyCost, "Material crystal");
+		menu.AddItem("6", buffer, (crystal < TreasureKeyCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	}
+
 	if(Rogue_HasNamedArtifact("Sealed Jalan Crate"))
 	{
 		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Unbox Item", "Sealed Jalan Crate", crystal, unboxCost, "Material crystal");
@@ -256,6 +263,20 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 							Construction_AddMaterial("crystal", -unboxCost, true);
 
 							Dungeon_RollNamedLoot("Bofazem Crate");
+						}
+					}
+					case 6:
+					{
+						if(Rogue_HasNamedArtifact("Key Fragment") && Construction_GetMaterial("crystal") >= TreasureKeyCost)
+						{
+							CPrintToChatAll("%t", "Player Used 2 to", client, 1, "Key Fragment", TreasureKeyCost, "Material crystal");
+							
+							Rogue_RemoveNamedArtifact("Key Fragment");
+							Construction_AddMaterial("crystal", -TreasureKeyCost, true);
+
+							EmitSoundToAll("ui/chime_rd_2base_neg.wav");
+
+							Rogue_GiveNamedArtifact("Treasure Key");
 						}
 					}
 				}

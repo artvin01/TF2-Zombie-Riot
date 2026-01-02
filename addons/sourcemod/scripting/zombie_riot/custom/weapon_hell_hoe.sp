@@ -56,7 +56,7 @@ public void Enable_Management_Hell_Hoe(int client, int weapon)
 	{
 		Reset_Management_Hell_Hoe(client);
 		DataPack pack;
-		g_hHell_Hoe_Management[client] = CreateDataTimer(HELL_HOE_TICK, Timer_Management_Hell_Hoe, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		g_hHell_Hoe_Management[client] = CreateDataTimer(HELL_HOE_TICK, Timer_Management_Hell_Hoe, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -68,7 +68,8 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 	int client = pack.ReadCell();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 
-	if (!IsValidMulti(client)) {
+	if (!IsValidMulti(client)) 
+	{
 		g_hHell_Hoe_Management[client] = INVALID_HANDLE;
 		return Plugin_Stop;
 	}

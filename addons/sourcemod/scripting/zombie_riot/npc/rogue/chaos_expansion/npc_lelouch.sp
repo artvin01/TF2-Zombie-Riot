@@ -3016,8 +3016,8 @@ static Action Timer_FadoutOffset_Global(Handle Timer, int nothing)
 {
 	if(nothing == 50)
 	{
-		CPrintToChatAll("{crimson}The Island falls down as Twirl escorts you, Lelouch was successfull in the end, but he paid with his life..");
-		CPrintToChatAll("{crimson}The Space to the Curtain has weakened... something terrible is comming...");
+		CPrintToChatAll("{crimson}당신이 트윌의 보호를 받으며 섬을 빠져나가자, 섬이 완전히 파괴됩니다. 하지만 를르슈는 그의 목숨을 바쳐서라도 자신의 목적을 달성하고 말았습니다...");
+		CPrintToChatAll("{crimson}장막과의 연결망이 약화되었습니다. 무언가... 끔찍한게 다가오고 있습니다...");
 		for(int i=1 ; i <= MaxClients ; i++)
 		{
 			if(IsValidClient(i) && Rogue_Mode())

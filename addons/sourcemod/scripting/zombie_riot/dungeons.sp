@@ -15,6 +15,7 @@ enum struct LootInfo
 {
 	int Count;
 	float Bonus;
+	int Color[4];
 	StringMap Items;
 
 	bool SetupKv(const char[] name, KeyValues kv)
@@ -45,6 +46,7 @@ enum struct LootInfo
 
 		this.Count = kv.GetNum("count", 1);
 		this.Bonus = kv.GetFloat("bonus");
+		kv.GetColor4("color", this.Color);
 		return true;
 	}
 
@@ -262,7 +264,11 @@ enum struct RoomInfo
 			snap.GetKey(length, buffer, common);
 			delete snap;
 
-			if(LootMap.ContainsKey(buffer))
+			if(!victory)
+			{
+				Dungeon_SpawnLoot(buffer);
+			}
+			else if(LootMap.ContainsKey(buffer))
 			{
 				CPrintToChatAll("%t", "Found Dungeon Loot", buffer);
 
@@ -670,6 +676,59 @@ void Dungeon_AntiStalled()
 			ForcePlayerLoss();
 		}
 	}
+}
+
+void Dungeon_SpawnLoot(const char[] name)
+{
+	float pos[3];
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && !Dungeon_EntityAtBase(client, true))
+			{
+				GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
+				break;
+			}
+		}
+	}
+
+	CNavArea goalArea = TheNavMesh.GetNavArea(pos, 1000.0);
+	if(goalArea == NULL_AREA)
+	{
+		PrintToChatAll("ERROR: Could not find valid nav area for location (%f %f %f)", pos[0], pos[1], pos[2]);
+		return;
+	}
+
+	for(int i; i < 50; i++)
+	{
+		CNavArea startArea = PickRandomArea();
+		if(startArea == NULL_AREA)
+			continue;
+		
+		if(startArea.GetAttributes() & (NAV_MESH_AVOID|NAV_MESH_DONT_HIDE))
+			continue;
+		
+		if(!TheNavMesh.BuildPath(startArea, goalArea, pos))
+			continue;
+		
+		startArea.GetCenter(pos);
+		break;
+	}
+
+	pos[2] += 10.0;
+
+	float ang[3];
+	ang[0] = 0.0;
+	ang[1] = float(GetURandomInt() % 360);
+	ang[2] = 0.0;
+
+	DungeonLoot npc = view_as<DungeonLoot>(NPC_CreateByName("npc_dungeon_loot", 0, pos, ang, 3, name));
+
+	LootInfo loot;
+	if(LootMap.GetArray(name, loot, sizeof(loot)))
+		npc.SetLootData(name, loot.Color);
 }
 
 bool Dungeon_EntityAtBase(int client, bool outOfBoundsResult = false)
@@ -1290,10 +1349,15 @@ void Dungeon_WaveEnd(bool final)
 	}
 }
 
+bool Dungeon_LootExists(const char[] name)
+{
+	return LootMap && LootMap.ContainsKey(name);
+}
+
 void Dungeon_RollNamedLoot(const char[] name)
 {
 	LootInfo loot;
-	if(LootMap.GetArray(name, loot, sizeof(loot)))
+	if(LootMap && LootMap.GetArray(name, loot, sizeof(loot)))
 		loot.RollLoot();
 
 	PrintToChatAll("UNKNOWN LOOT \"%s\", REPORT BUG", name);

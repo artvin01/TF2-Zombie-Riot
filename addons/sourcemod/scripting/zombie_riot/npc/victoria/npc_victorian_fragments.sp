@@ -88,10 +88,20 @@ methodmap VictorianDroneFragments < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
+	property float m_flManuallyDisableSpawnProtector
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
 	property int m_iMainTarget
 	{
 		public get()							{ return i_AmountProjectiles[this.index]; }
 		public set(int TempValueForProperty) 	{ i_AmountProjectiles[this.index] = TempValueForProperty; }
+	}
+	property int m_iWaveScale
+	{
+		public get()							{ return i_AttacksTillMegahit[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
 	}
 	
 	public void SaveTreePos(float VecEnemy[3])
@@ -131,14 +141,18 @@ methodmap VictorianDroneFragments < CClotBody
 		npc.m_flAttackHappens_bullshit = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
+		npc.m_iWaveScale = Waves_GetRoundScale()+1;
+		if(npc.m_iWaveScale > 10) npc.m_iWaveScale=10;
 		npc.m_iAmmo = 3;
 		npc.m_iMaxAmmo=3;
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextPosDelay = 0.0;
+		npc.m_flManuallyDisableSpawnProtector = GetGameTime(npc.index) + zr_spawnprotectiontime.FloatValue;
 		
 		ISVOLI[npc.index]=false;
 		b_we_are_reloading[npc.index]=false;
 		npc.m_bFUCKYOU_move_anim=false;
+		npc.m_iMainTarget=0;
 		npc.m_fXPosSave=0.0;
 		npc.m_fZPosSave=0.0;
 		npc.m_fYPosSave=0.0;
@@ -162,7 +176,7 @@ methodmap VictorianDroneFragments < CClotBody
 		Is_a_Medic[npc.index] = true;
 		
 		bool FactorySpawndo;
-		static char countext[7][512];
+		static char countext[10][512];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
@@ -202,6 +216,16 @@ methodmap VictorianDroneFragments < CClotBody
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "raidmode", "");
 				npc.m_bFUCKYOU_move_anim = true;
+			}
+			else if(StrContains(countext[i], "wavescale") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "wavescale", "");
+				npc.m_iWaveScale = StringToInt(countext[i]);
+			}
+			else if(StrContains(countext[i], "maxclip") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "maxclip", "");
+				npc.m_iMaxAmmo = StringToInt(countext[i]);
 			}
 		}
 		
@@ -269,20 +293,15 @@ methodmap VictorianDroneFragments < CClotBody
 		SetVariantString("!activator");
 		AcceptEntityInput(npc.m_iWearable4, "SetParent", npc.index);
 		MakeObjectIntangeable(npc.m_iWearable4);
+		npc.m_bTeamGlowDefault = false;
 		npc.m_bDoSpawnGesture = true;
 		
 		GetAbsOrigin(npc.index, Vec);
 		if(FactorySpawndo)
 		{
-			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
-			{
-				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
-				{
-					GetAbsOrigin(entity, Vec);
-					break;
-				}
-			}
+			int GetFactory=GetRandomVictoriaFactory(npc.index);
+			if(GetFactory&&IsValidEntity(GetFactory))
+				GetAbsOrigin(GetFactory, Vec);
 		}
 		Vec[2]+=45.0;
 		TeleportEntity(npc.index, Vec, NULL_VECTOR, NULL_VECTOR);
@@ -310,6 +329,13 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 		SetVariantColor(view_as<int>({229, 235, 52, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		npc.m_bDoSpawnGesture=false;
+		npc.StopPathing();
+	}
+	
+	if(npc.m_flManuallyDisableSpawnProtector && gameTime > npc.m_flManuallyDisableSpawnProtector)
+	{
+		RemoveSpawnProtectionLogic(npc.index, true);
+		npc.m_flManuallyDisableSpawnProtector=0.0;
 	}
 	
 	if(!npc.m_bisWalking)
@@ -428,14 +454,11 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 		{
 			npc.m_bisWalking = true;
 			npc.SetVelocity({0.0,0.0,0.0});
-			int LZ = -1;
+			if(!npc.m_iMainTarget)
+				npc.m_iMainTarget = GetClosestTarget(npc.index);
 			if(IsValidEnemy(npc.index,npc.m_iMainTarget))
-				LZ = npc.m_iMainTarget;
-			else
-				LZ = GetClosestTarget(npc.index);
-			if(IsValidEnemy(npc.index,LZ))
 			{
-				WorldSpaceCenter(LZ, VecEnemy);
+				WorldSpaceCenter(npc.m_iMainTarget, VecEnemy);
 				VecEnemy[2]+=65.0;
 				npc.SaveTreePos(VecEnemy);
 				npc.m_iState=-2;
@@ -447,15 +470,12 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 		case 0:
 		{
 			npc.SetVelocity({0.0,0.0,0.0});
-			int LZ = -1;
+			if(!npc.m_iMainTarget)
+				npc.m_iMainTarget = GetClosestTarget(npc.index);
 			if(IsValidEnemy(npc.index,npc.m_iMainTarget))
-				LZ = npc.m_iMainTarget;
-			else
-				LZ = GetClosestTarget(npc.index);
-			if(IsValidEnemy(npc.index,LZ))
 			{
-				WorldSpaceCenter(LZ, VecEnemy);
-				if(CheckOpenSky(LZ)) VecEnemy[2]+=180.0;
+				WorldSpaceCenter(npc.m_iMainTarget, VecEnemy);
+				if(CheckOpenSky(npc.m_iMainTarget)) VecEnemy[2]+=180.0;
 				npc.SaveTreePos(VecEnemy);
 				npc.m_iState=1;
 			}
@@ -604,13 +624,8 @@ static void VictoriaFragmentsAssaultMode(VictorianDroneFragments npc, float game
 							damageDealt*=0.5;
 						}
 						else
-						{
-							int GetWave = Waves_GetRoundScale()+1;
-							if(GetWave > 10)
-								GetWave=10;
-							damageDealt*=float(GetWave)*0.1;
-						}
-						Explode_Logic_Custom(damageDealt/(b_we_are_reloading[npc.index] ? 5.0 : 10.0), npc.index, npc.index, -1, vecHit, (b_we_are_reloading[npc.index] ? 125.0 : 85.0),_,_,_,4, _, 1.0);
+							damageDealt*=float(npc.m_iWaveScale)*0.1;
+						Explode_Logic_Custom(damageDealt/(b_we_are_reloading[npc.index] ? 3.0: 5.0), npc.index, npc.index, -1, vecHit, (b_we_are_reloading[npc.index] ? 125.0 : 85.0),_,_,_,4, _, 1.0);
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 					}
 					npc.m_iAmmo--;

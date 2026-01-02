@@ -80,6 +80,9 @@ static bool BlastArmor[MAXENTITIES];
 static bool MagicArmor[MAXENTITIES];
 static bool BulletArmor[MAXENTITIES];
 
+
+static int GrabPlayer[MAXPLAYERS];
+
 static bool ParticleSpawned[MAXENTITIES];
 static bool Frozen_Player[MAXPLAYERS];
 
@@ -122,7 +125,7 @@ static void ClotPrecache()
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("items/powerup_pickup_knockout.wav", true);
 	PrecacheSound("items/powerup_pickup_resistance.wav", true);
-	PrecacheSoundCustom("#zombiesurvival/victoria/huscarl_ost_new.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria_1/huscarl_ost_new.mp3");
 
 	PrecacheModel("models/props_mvm/mvm_player_shield.mdl", true);
 	PrecacheModel("models/props_mvm/mvm_player_shield2.mdl", true);
@@ -347,7 +350,7 @@ methodmap Huscarls < CClotBody
 		npc.m_iOverrideOwner = 0;
 		static char countext[2][512];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
-		float MAXHitCharge=3500.0;
+		float MAXHitCharge=5000.0;
 		for(int i = 0; i < count; i++)
 		{
 			if(i>=count)break;
@@ -431,6 +434,7 @@ methodmap Huscarls < CClotBody
 			npc.m_bLostHalfHealth = false;
 			b_NpcIsInvulnerable[npc.index] = false;
 			npc.Anger = false;
+			b_angered_twice[npc.index] = false;
 			npc.m_bFUCKYOU_move_anim = false;
 			npc.m_bFUCKYOU = false;
 			BlockLoseSay = false;
@@ -464,7 +468,6 @@ methodmap Huscarls < CClotBody
 			EmitSoundToAll("items/powerup_pickup_knockout.wav", _, _, _, _, 1.0, .soundtime = GetGameTime() - 0.336);
 			EmitSoundToAll("items/powerup_pickup_knockout.wav", _, _, _, _, 1.0, .soundtime = GetGameTime() - 0.336);
 			b_thisNpcIsARaid[npc.index] = true;
-			b_angered_twice[npc.index] = false;
 			for(int client_check=1; client_check<=MaxClients; client_check++)
 			{
 				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
@@ -482,7 +485,7 @@ methodmap Huscarls < CClotBody
 			if(StrContains(data, "nomusic") == -1)
 			{
 				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/huscarl_ost_new.mp3");
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria_1/huscarl_ost_new.mp3");
 				music.Time = 232;
 				music.Volume = 1.7;
 				music.Custom = true;
@@ -528,7 +531,7 @@ methodmap Huscarls < CClotBody
 				amount_of_people = 1.0;
 
 			RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-			fl_ruina_battery_max[npc.index] = MAXHitCharge+(125.0 * RaidModeScaling);
+			fl_ruina_battery_max[npc.index] = MAXHitCharge+(500.0 * RaidModeScaling);
 			fl_ruina_battery[npc.index] = 0.0;
 		}
 		
@@ -1247,6 +1250,9 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 		npc.m_flHuscarlsAdaptiveArmorDuration=0.0;
 		npc.m_flHuscarlsAdaptiveArmorCoolDown = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 20.0 : 30.0);
 	}
+	
+	if(b_angered_twice[npc.index] && npc.m_flHuscarlsRushCoolDown-(0.28 + DEFAULT_UPDATE_DELAY_FLOAT) > gameTime && npc.m_flHuscarlsRushCoolDown-3.6 < gameTime)
+		HuscarlsGrab(npc, gameTime);
 
 	if(npc.m_flHuscarlsRushCoolDown < gameTime)
 	{
@@ -1274,6 +1280,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 					npc.SetLayerCycle(AnimLayer, (0.9));
 					npc.m_flDoingAnimation = gameTime + 5.0;
 					npc.m_iState = 2;
+					b_angered_twice[npc.index]=true;
 				}
 			}
 			case 2:
@@ -1443,7 +1450,6 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 				}
 			}
 		}
-		npc.m_flHuscarlsRushCoolDown += 0.1;
 		npc.m_flHuscarlsGroundSlamCoolDown += 0.1;
 		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
 		npc.m_flNextRangedBarrage_Singular += 0.1;
@@ -1649,7 +1655,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 								KillFeed_SetKillIcon(npc.index, "apocofists");
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 								bool Knocked = false;
-											
+								
 								if(IsValidClient(targetTrace))
 								{
 									if(IsInvuln(targetTrace))
@@ -1657,8 +1663,11 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 										Knocked = true;
 										Custom_Knockback(npc.index, targetTrace, 750.0, true);
 									}
-									TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-									TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+									if(!HasSpecificBuff(npc.index, "Godly Motivation") || Knocked)
+									{
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+									}
 								}
 								
 								if(!Knocked)
@@ -1934,6 +1943,8 @@ static void Huscarls_NPCDeath(int entity)
 				Frozen_Player[client]=false;
 			}
 		}
+		if(IsValidEntity(GrabPlayer[client-1]))
+			RemoveEntity(GrabPlayer[client-1]);
 	}
 
 	npc.PlayDeathSound();	
@@ -2055,7 +2066,8 @@ static void Shield_Knockback(int entity, int victim, float damage, int weapon)
 			if(IsValidClient(victim))
 				if(!HasSpecificBuff(victim, "Fluid Movement"))
 					TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
-			Custom_Knockback(entity, victim, 70.0, true);
+			if(!HasSpecificBuff(victim, "Solid Stance"))
+				Custom_Knockback(entity, victim, 70.0, true);
 		}
 		else Custom_Knockback(entity, victim, 140.0, true);
 	}
@@ -2182,13 +2194,13 @@ static bool Victoria_Support(Huscarls npc)
 					Vs_LockOn[client]=false;
 			}
 		}
-		spawnRing_Vectors(Vs_Temp_Pos[npc.index], (1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0)), 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(Vs_Temp_Pos[npc.index], (1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0)), 0.0, 0.0, 0.0, LASERBEAM, 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
 		float position2[3];
 		position2[0] = Vs_Temp_Pos[npc.index][0];
 		position2[1] = Vs_Temp_Pos[npc.index][1];
 		position2[2] = Vs_Temp_Pos[npc.index][2] + 65.0;
-		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
-		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
 		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
 		TE_SendToAll();
 		TE_SetupGlowSprite(Vs_Temp_Pos[npc.index], g_RedPoint, 0.1, 1.0, 255);
@@ -2239,6 +2251,7 @@ static void Got_it_fucking_shit(int entity, int victim, float damage, int weapon
 			SetEntityCollisionGroup(victim, 1);
 			Frozen_Player[victim]=true;
 			ApplyStatusEffect(npc.index, npc.index, "Intangible", 5.0);
+			b_angered_twice[npc.index]=false;
 		}
 	}
 }
@@ -2264,7 +2277,7 @@ static void Compressor(int entity, int victim, float damage, int weapon)
 		flPos[2]+=5.0;
 		TeleportEntity(victim, flPos, NULL_VECTOR, NULL_VECTOR);
 		damage = 50.0 * RaidModeScaling;
-		damage += ReturnEntityMaxHealth(victim)*0.33;
+		damage += ReturnEntityMaxHealth(victim)*0.715;
 		KillFeed_SetKillIcon(npc.index, "vehicle");
 		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 		ApplyStatusEffect(victim, victim, "Intangible", 1.0);
@@ -2289,7 +2302,7 @@ static void ToTheMoon(int entity, int victim, float damage, int weapon)
 	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim))
 	{
 		damage = 40.0 * RaidModeScaling;
-		damage += ReturnEntityMaxHealth(victim)*0.165;
+		damage += ReturnEntityMaxHealth(victim)*0.35;
 		KillFeed_SetKillIcon(npc.index, "apocofists");
 		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 		float fVelocity[3];
@@ -2315,7 +2328,7 @@ static void Ground_pound(int entity, int victim, float damage, int weapon)
 	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim))
 	{
 		damage = 40.0 * RaidModeScaling;
-		damage += ReturnEntityMaxHealth(victim)*0.165;
+		damage += ReturnEntityMaxHealth(victim)*0.35;
 		KillFeed_SetKillIcon(npc.index, "mentreads");
 		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 		float fVelocity[3];
@@ -2349,7 +2362,8 @@ static void Ground_Slam(int entity, int victim, float damage, int weapon)
 			if(IsValidClient(victim))
 				if(!HasSpecificBuff(victim, "Fluid Movement"))
 					TF2_StunPlayer(victim, 1.5, 0.85, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
-			Custom_Knockback(entity, victim, 720.0, true);
+			if(!HasSpecificBuff(victim, "Solid Stance"))
+				Custom_Knockback(entity, victim, 720.0, true);
 		}
 		else Custom_Knockback(entity, victim, 1440.0, true);
 	}
@@ -2400,10 +2414,10 @@ static bool TinCan_Raid(Huscarls npc, float gameTime)
 						npc.SaveLifeSupportDevice(spawn_index, npc.m_iState);
 						view_as<CClotBody>(spawn_index).m_iWearable7=ConnectWithBeam(npc.index, spawn_index, 255, 215, 0, 1.5, 1.5, 0.0, LASERBEAM);
 						
-						int Decicion = TeleportDiversioToRandLocation(spawn_index,_,2500.0, 1750.0);
+						int Decicion = TeleportDiversioToRandLocation(spawn_index,_,1750.0, 750.0);
 
 						if(Decicion == 2)
-							Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1750.0, 500.0);
+							Decicion = TeleportDiversioToRandLocation(spawn_index, _, 750.0, 500.0);
 
 						if(Decicion == 2)
 							Decicion = TeleportDiversioToRandLocation(spawn_index, _, 500.0, 0.0);
@@ -2528,4 +2542,118 @@ static bool TinCan_Raid(Huscarls npc, float gameTime)
 		return true;
 	}
 	return false;
+}
+
+static void HuscarlsGrab(Huscarls npc, float gameTime)
+{
+	static float EnemyPos[3];
+	static float pos[3]; 
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	float Range = (NpcStats_VictorianCallToArms(npc.index) ? 450.0 : 325.0);
+	spawnRing_Vectors(pos, Range * 2.0, 0.0, 0.0, 5.0, LASERBEAM, 220, 220, 255, 150, 1, 0.1, 3.0, 0.1, 3);
+	spawnRing_Vectors(pos, Range * 2.0, 0.0, 0.0, 25.0, LASERBEAM, 220, 220, 255, 150, 1, 0.1, 3.0, 0.1, 3);
+	spawnRing_Vectors(pos, Range * 2.0, 0.0, 0.0, 45.0, LASERBEAM, 220, 220, 255, 150, 1, 0.1, 3.0, 0.1, 3);
+	
+	for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+	{
+		if(IsValidEnemy(npc.index, EnemyLoop))
+		{
+			GetEntPropVector(EnemyLoop, Prop_Send, "m_vecOrigin", EnemyPos);
+			float Distance = GetVectorDistance(pos, EnemyPos, true);
+			if(Distance < (Range * Range))
+			{
+				if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && !HasSpecificBuff(EnemyLoop, "Solid Stance"))
+				{
+					int red = 220;
+					int green = 220;
+					int blue = 255;
+					if(EnemyLoop == npc.m_iTarget)
+					{
+						red = 255;
+						green = 65;
+						blue = 65;
+					}
+					if(!IsValidEntity(GrabPlayer[EnemyLoop]))
+					{
+						if(IsValidEntity(GrabPlayer[EnemyLoop]))
+							RemoveEntity(GrabPlayer[EnemyLoop]);
+
+						int laser;
+						laser = ConnectWithBeam(npc.index, EnemyLoop, red, green, blue, 1.5, 1.5, 0.0, LASERBEAM);
+			
+						GrabPlayer[EnemyLoop] = EntIndexToEntRef(laser);
+					}
+					else
+					{
+						int laser = EntRefToEntIndex(GrabPlayer[EnemyLoop]);
+						SetEntityRenderColor(laser, red, green, blue, 255);
+					}
+				}
+				else
+				{
+					if(IsValidEntity(GrabPlayer[EnemyLoop]))
+						RemoveEntity(GrabPlayer[EnemyLoop]);
+				}
+			}
+			else
+			{
+				if(IsValidEntity(GrabPlayer[EnemyLoop]))
+					RemoveEntity(GrabPlayer[EnemyLoop]);
+			}
+		}
+		else
+		{
+			if(IsValidEntity(GrabPlayer[EnemyLoop]))
+				RemoveEntity(GrabPlayer[EnemyLoop]);
+		}
+	}
+	
+	if(npc.m_flHuscarlsRushCoolDown-0.4 < gameTime)
+	{
+		static float flPos[3]; 
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+		flPos[2] += 5.0;
+		//npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
+		ParticleEffectAt(flPos, "taunt_yeti_fistslam", 0.25);
+		npc.PlayKaboomSound();
+		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+		{
+			if(IsValidEnemy(npc.index, EnemyLoop))
+			{
+				GetEntPropVector(EnemyLoop, Prop_Send, "m_vecOrigin", EnemyPos);
+				float Distance = GetVectorDistance(pos, EnemyPos);
+				if(Distance < Range)
+				{
+					if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && !HasSpecificBuff(EnemyLoop, "Solid Stance"))
+					{
+						static float angles[3];
+						GetVectorAnglesTwoPoints(EnemyPos, pos, angles);
+
+						if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
+							angles[0] = 0.0;
+
+						static float velocity[3];
+						GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+						float attraction_intencity = 1.50;
+						ScaleVector(velocity, Distance * attraction_intencity);
+						
+						if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
+							velocity[2] = fmax(325.0, velocity[2]);
+						
+						TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);   
+						if(EnemyLoop == npc.m_iTarget)
+						{
+							TF2_AddCondition(EnemyLoop, TFCond_HalloweenKartNoTurn, 0.2, 0);
+							TF2_AddCondition(EnemyLoop, TFCond_CompetitiveLoser, 0.2, 0);
+							TF2_AddCondition(EnemyLoop, TFCond_LostFooting, 0.5);
+							TF2_AddCondition(EnemyLoop, TFCond_AirCurrent, 0.5);
+						}
+					}
+				}
+			}
+			if(IsValidEntity(GrabPlayer[EnemyLoop]))
+				RemoveEntity(GrabPlayer[EnemyLoop]);
+			b_angered_twice[npc.index] = false;
+		}
+	}
 }

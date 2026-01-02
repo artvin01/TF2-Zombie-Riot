@@ -967,7 +967,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 				switch(GetRandomInt(0,1))
 				{
 					case 0:
-						Format(Text_Lines, sizeof(Text_Lines), "{darkblue}캄르스타인{default}, 난 그를 그다지 좋게 생각하지는 않지만, 흔히 말하듯이 겉모습으로 사람을 판단하지 말란 말이 있잖아.");
+						Format(Text_Lines, sizeof(Text_Lines), "{darkblue}카멜스타인{default}, 난 그를 그다지 좋게 생각하지는 않지만, 흔히 말하듯이 겉모습으로 사람을 판단하지 말란 말이 있잖아.");
 					case 1:
 						Format(Text_Lines, sizeof(Text_Lines), "뭐, 이제 {darkblue}그는{default} 더 나은 장소에 있잖아! 하하... 아나.",client);
 				}	

@@ -352,7 +352,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 			}
 			case 9:
 			{
-				CPrintToChatAll("{black}질리우스{default}: 캄르스타인은 재능을 너무 낭비한 존재였다. 안타깝게도, 그 놈은 {gold}너무 많은걸 알려고 했지{default}.");
+				CPrintToChatAll("{black}질리우스{default}: 카멜스타인은 재능을 너무 낭비한 존재였다. 안타깝게도, 그 놈은 {gold}너무 많은걸 알려고 했지{default}.");
 			}
 			case 10:
 			{

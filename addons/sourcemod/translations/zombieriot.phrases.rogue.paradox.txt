@@ -146,7 +146,7 @@
 	{
 		"en"	"Go the right way, nothing more.\n{green}Enemies move 20％ slower, take 35％ more damage, and deal 35％ less damage\n{green}Gain 75％ less Chaos Infliction\n{crimson}Prevents gaining alternative endings."
 		"it"	"{green}I nemici si muovono 20％ più lentamente, subiscono 35％ danni in più e infliggono 35％ danni in meno\n{green}Ottieni 75％ inflizioni del Caos in meno\n{crimson}Impedisce di ottenere finali alternativi."
-		"ko"	"올바른 길로 나아가자. 그게 전부다.\n{green}적들의 이동 속도 -20％, 피해 저항력 -35％, 공격 피해량 -35％.\n{green}혼돈 침식도 획득량이 75％ 감소.\n{crimson}다른 엔딩을 볼 수 없게 됩니다."
+		"ko"	"{green}적들의 이동 속도 -20％, 저항력 -35％, 피해량 -35％.\n{green}혼돈 침식도 획득량이 75％ 감소.\n{crimson}다른 엔딩을 볼 수 없음."
 	}
 	"Healing Supplies"
 	{
@@ -890,7 +890,7 @@
 	{
 		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25％ damage bonus, +25％ max health, +15％ attack speed, +15％ reload speed, +10％ damage resistance. The Duck will also greatly strengthen one player at a time"
 		"it"	"L'amato animale domestico di Bob, ''Dubby''.\n{green}Gli alleati guadagnano +25％ bonus ai danni, +25％ salute massima, +15％ velocità di attacco, +15％ velocità di ricarica, +10％ resistenza ai danni. L'Anatra rafforzerà notevolmente anche un giocatore alla volta"
-		"ko"	"밥이 가장 아끼는 애완오리, ''꽥꽥이'' 다.\n{green}모든 아군의 최대 체력과 공격 피해량 +25％ 및 공격 속도와 재장전 속도 +15％ 증가 및 피해 저항력 +10％ 증가. 주기적으로 오리가 한 번에 한 플레이어를 크게 강화시켜줍니다."
+		"ko"	"밥이 가장 아끼는 애완오리, ''꽥꽥이'' 다.\n{green}모든 아군 체력과 피해량 +25％ 및 공속과 장전 +15％ 및 저항력 +10％. 주기적으로 오리가 한 대상에게 버프 부여."
 	}
 	"Underground Scorch"
 	{
@@ -1161,13 +1161,13 @@
 	{
 		"en"	"Kahmlstein's Guidance"
 		"it"	"Guida di Kahmlstein"
-		"ko"	"카멜슈타인의 인도"
+		"ko"	"카멜스타인의 인도"
 	}
 	"Kahmlstein Guidance Desc"
 	{
 		"en"	"You join Kahmlstein.\n{green}Ally weapon cooldowns are reduced by 1 second every 1.5 seconds"
 		"it"	"Ti unisci a Kahmlstein.\n{green}Il cooldown delle armi leggere si riduce di 1 secondo ogni 1,5 secondi"
-		"ko"	"카멜슈타인에게 합류한다.\n{green}매 1.5초마다, 플레이어가 들고 있는 무기의 능력 쿨타임이 1초 감소."
+		"ko"	"카멜스타인에게 합류한다.\n{green}매 1.5초마다, 플레이어가 들고 있는 무기의 능력 쿨타임이 1초 감소."
 	}
 	"Twirl Guidance"
 	{
@@ -1504,7 +1504,7 @@
 	{
 		"en"	"Kahmlstein appears, he asks you to assist him. Not chaos, something worse."
 		"it"	"Kahmlstein appare e vi chiede di assisterlo. Non è il caos, è qualcosa di peggio."
-		"ko"	"카멜슈타인이 나타나서는, 당신에게 자신을 도와달라고 요청한다. 혼돈이 아니라, 더 끔찍한 것과 맞서기 위해."
+		"ko"	"카멜스타인이 나타나서는, 당신에게 자신을 도와달라고 요청한다. 혼돈이 아니라, 더 끔찍한 것과 맞서기 위해."
 	}
 	"Prophecy Option 3a"
 	{
@@ -1546,7 +1546,7 @@
 	{
 		"en"	"{snow}Twirl hands you a gem she made herself, how neat! Probably shouldnt give it away, gift is a gift afterall."
 		"it"	"{snow}Twirl ti porge un gioiello che ha fatto lei stessa, che bello! Probabilmente non dovrebbe darlo via, dopotutto un regalo è un regalo."
-		"ko"	"{snow}트윌이 나타나서는, 그녀가 손수 만든 보석을 당신에게 건네준다. 이 보석은 정말 멋지다! 남에게 함부로 주면 안 될 것 같다. 선물은 선물이니까."
+		"ko"	"{snow}트윌이 나타나서는, 그녀가 손수 만든 보석을 당신에게 건네준다. 정말 놀랍다! 남에게 함부로 주면 안 될 것 같다. 선물은 선물이니까."
 	}
 	"Lost Villager"
 	{
@@ -1634,7 +1634,7 @@
 	{
 		"en"	"You ask for nothing. A peace of mind. He wanders off."
 		"it"	"Non chiedete nulla. La pace della mente. Si allontana."
-		"ko"	"마음의 평화, 당신은 아무것도 필요하지 않다고 대답한다. 그는 다시 떠나간다."
+		"ko"	"마음의 평화. 당신은 아무것도 필요하지 않다고 대답한다. 그는 다시 떠나간다."
 	}
 	
 	"Lost Villager Option 2"
@@ -1653,7 +1653,7 @@
 	{
 		"en"	"You tell him you don't have any to spare, he understands, hands you a piece of gold, and carries on."
 		"it"	"Gli dici che non hai niente da parte, lui capisce, ti dà un pezzo d'oro e continua."
-		"ko"	"당신은 그에게 줄 것이 없다고 말했고, 그는 이해하고는 당신의 손의 금덩이를 쥐어준 뒤 계속 나아갔습니다."
+		"ko"	"당신은 그에게 줄 것이 없다고 말했고, 그는 이해하고는 당신의 손에 금덩이를 쥐어준 뒤 계속 나아갔습니다."
 	}
 
 	"Lost Villager Option 3"

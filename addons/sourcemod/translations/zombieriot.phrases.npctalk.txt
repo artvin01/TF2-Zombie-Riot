@@ -3,42 +3,42 @@
 	"birdeye_Talk_01-1"
 	{
 		"en"	"Enemy contact"
-		"ko"	"적과 조우했다"
+		"ko"	"적과 조우했다."
 	}
 	"birdeye_Talk_01-2"
 	{
 		"en"	"Enemy Front"
-		"ko"	"적이 앞에있다"
+		"ko"	"적이 앞에 있다!"
 	}
 	"birdeye_Talk_01-3"
 	{
 		"en"	"I see a Target"
-		"ko"	"목표물 보인다"
+		"ko"	"목표물이 보인다."
 	}
 	"birdeye_Talk_01-4"
 	{
 		"en"	"Bad guy Front"
-		"ko"	"나쁜놈들이 여기있다"
+		"ko"	"전방에 적대 목표 발견!"
 	}
 	"birdeye_Talk_01-5"
 	{
 		"en"	"Pipe, Harb I need some fire support here"
-		"ko"	"파이프, 하브, 여기 화력 지원이 필요하다"
+		"ko"	"파이프, 하브, 여기 화력 지원이 필요하다."
 	}
 	"birdeye_Talk_02-1"
 	{
 		"en"	"Pipe down."
-		"ko"	"파이프 다운."
+		"ko"	"파이프가 쓰러졌다."
 	}
 	"birdeye_Talk_02-2"
 	{
 		"en"	"Rest in peace bro."
-		"ko"	"푹 쉬라고 친구"
+		"ko"	"푹 쉬라고, 친구."
 	}
 	"birdeye_Talk_03-1"
 	{
 		"en"	"Harbringer down."
-		"ko"	"하브링거 다운."
+		"ko"	"하브링거가 쓰러졌다."
 	}
 	"birdeye_Talk_03-2"
 	{
@@ -98,7 +98,7 @@
 	"birdeye_Talk_08-1"
 	{
 		"en"	"We’re back, and got some new tricks"
-		"ko"	"우리가 돌아왔다. 새로운 트릭과 함께"
+		"ko"	"우리가 돌아왔다. 새로운 트릭과 함께."
 	}
 
 	"bigpipe_Talk_01-1"
@@ -134,37 +134,37 @@
 	"bigpipe_Talk_02-2"
 	{
 		"en"	"Fuck Bird eyes down!"
-		"ko"	"젠장 버드아이가 쓰러졌다!"
+		"ko"	"젠장, 버드아이가 쓰러졌다!"
 	}
 	"bigpipe_Talk_02-3"
 	{
 		"en"	"Shit! eyes Dead!"
-		"ko"	"젠장! 버드아이 부상!"
+		"ko"	"젠장! 버드아이가 치명상을 입었다!"
 	}
 	"bigpipe_Talk_03-1"
 	{
 		"en"	"Harb got Killed"
-		"ko"	"하브가 사망했다"
+		"ko"	"하브가 죽었다."
 	}
 	"bigpipe_Talk_03-2"
 	{
 		"en"	"Hey Harb Respond!"
-		"ko"	"이봐 하브 응답해!"
+		"ko"	"이봐, 하브! 응답해!"
 	}
 	"bigpipe_Talk_03-3"
 	{
 		"en"	"Harbringer is down"
-		"ko"	"하브링거가 쓰러졌다"
+		"ko"	"하브링거가 쓰러졌다."
 	}
 	"bigpipe_Talk_04-1"
 	{
 		"en"	"Cover me i need to heal"
-		"ko"	"날 엄호해 치료를 해야되"
+		"ko"	"날 엄호해줘! 내 부상을 회복해야한다!"
 	}
 	"bigpipe_Talk_04-2"
 	{
 		"en"	"I need to treat myself"
-		"ko"	"자가치료가 필요해"
+		"ko"	"자가수복을 해야해!"
 	}
 	"bigpipe_Talk_05-1"
 	{
@@ -174,91 +174,113 @@
 	"bigpipe_Talk_05-2"
 	{
 		"en"	"Another round of Ale for me"
+		"ko"	"이걸로 또 맥주 한 잔 받겠군."
 	}
 	"bigpipe_Talk_05-3"
 	{
 		"en"	"One Down"
+		"ko"	"한 놈 잡았고."
 	}
 	"bigpipe_Talk_06-1"
 	{
 		"en"	"We won’t go easy this time. Let’s rock"
+		"ko"	"이번엔 쉽게 넘어가진 않을거다. 가자고."
 	}
 
 	"harbringer_Talk_01-1"
 	{
 		"en"	"We got a cluster Fuck here"
+		"ko"	"완전 개판이로군!"
 	}
 	"harbringer_Talk_01-2"
 	{
 		"en"	"Let's Fuck them up"
+		"ko"	"전부 조져버리자고."
 	}
 	"harbringer_Talk_01-3"
 	{
 		"en"	"I see them"
+		"ko"	"저기에 놈들이 보인다."
 	}
 	"harbringer_Talk_01-4"
 	{
 		"en"	"Contact!"
+		"ko"	"적 접근중!"
 	}
 	"harbringer_Talk_02-1"
 	{
 		"en"	"Bird eye is killed"
+		"ko"	"버드아이가 죽었다!"
 	}
 	"harbringer_Talk_02-2"
 	{
 		"en"	"They got Bird eye"
+		"ko"	"놈들이 버드아이를 죽였어!"
 	}
 	"harbringer_Talk_02-3"
 	{
 		"en"	"Bird eye Respond!"
+		"ko"	"버드아이와의 무전이 완전히 끊겼다!"
 	}
 	"harbringer_Talk_03-1"
 	{
 		"en"	"Fuck they killed Pipe"
+		"ko"	"망할, 놈들이 빅 파이프를 죽였어!"
 	}
 	"harbringer_Talk_03-2"
 	{
 		"en"	"Pipe is Dead"
+		"ko"	"빅 파이프가 당했다!"
 	}
 	"harbringer_Talk_03-3"
 	{
 		"en"	"Pipe is Down"
+		"ko"	"빅 파이프가 쓰러졌다!"
 	}
 	"harbringer_Talk_04-1"
 	{
 		"en"	"Report to Base Ops"
+		"ko"	"본부에게 연락해. 상황 종료다."
 	}
 	"harbringer_Talk_04-2"
 	{
 		"en"	"Hostiles are Eliminated"
+		"ko"	"적들을 섬멸했군."
 	}
 	"harbringer_Talk_04-3"
 	{
 		"en"	"Loving this dead silence"
+		"ko"	"시끄럽던 놈들의 주둥이를 다물게 해주는건 우리의 일이지."
 	}
 	"harbringer_Talk_04-4"
 	{
 		"en"	"It's a kill"
+		"ko"	"놈들을 전부 조졌군. 잘 했어!"
 	}
 	"harbringer_Talk_05-1"
 	{
 		"en"	"Deploying armor grenade"
+		"ko"	"아머 수류탄 배치 중."
 	}
 	"harbringer_Talk_05-2"
 	{
 		"en"	"Deploying Armor repair kit"
+		"ko"	"아머 수리 키트 배치 중."
 	}
 	"harbringer_Talk_06-1"
 	{
 		"en"	"Frag Out!"
+		"ko"	"수류탄 투척!"
 	}
 	"harbringer_Talk_06-2"
 	{
 		"en"	"Throwing"
+		"ko"	"이거나 먹어라!"
 	}
 	"harbringer_Talk_07-1"
 	{
 		"en"	"Mercenaries don’t give up easily, and we are pissed."
+		"ko"	"그래, 포기를 안 하시겠다? 그럼 그만큼 더 쳐맞아야지."
 	}
 	
 	"Atomizer_Talk_Intro"
@@ -365,12 +387,12 @@
 	"Huscarls_Talk_Support-1"
 	{
 		"en"	"Let’s see if you can piece through this!"
-		"ko"	"이거를 뚫을수 있을지 보자고!"
+		"ko"	"이것도 뚫어보시지!"
 	}
 	"Huscarls_Talk_Support-2"
 	{
 		"en"	"You’ll need more bullets to go through this!"
-		"ko"	"이거를 뚫으려면 더 많은 총알이 필요할껄!"
+		"ko"	"이걸 뚫으려면 더 많은 총알이 필요할 거다!"
 	}
 	"Huscarls_Talk_Support-3"
 	{
@@ -410,7 +432,7 @@
 	"Huscarls_Talk_Support-10"
 	{
 		"en"	"They could dodge 2, but how about 3 now!"
-		"ko"	"두개는 피했어도, 세개는 피할수 있을지 한번 볼까!"
+		"ko"	"두개는 피했어도, 세개는 피할수 있을지 한 번 볼까!"
 	}
 	"Huscarls_Talk_Lastman-1"
 	{
@@ -430,7 +452,7 @@
 	"Huscarls_Talk_GameEnd"
 	{
 		"en"	"Even my metal sandbags were tougher than you meatheads."
-		"ko"	"내 강철 샌드백이 너희 고깃덩어리들보다 단단하겠다"
+		"ko"	"내 강철 샌드백이 너희 고깃덩어리들보다 단단하겠다."
 	}
 	"Huscarls_Talk_TimeUp-1"
 	{
@@ -475,12 +497,12 @@
 	"Huscarls_Talk_MagicArmor"
 	{
 		"en"	"What is this? Pesky {valve}magic{default}! Sweet liquor to remove their existence out of my mind!"
-		"ko"	"이건또 뭐야? 징글징글한 {valve}마법{default}이잖아! 이딴건 시원~한 맥주 한잔이면 바로 잊혀진다고!"
+		"ko"	"이건 또 뭐야? 징글징글한 {valve}마법{default}이잖아! 이딴건 시원~한 맥주 한잔이면 바로 잊혀진다고!"
 	}
 	"Huscarls_Talk_BlastArmor"
 	{
 		"en"	"Do you call that {darkgray}explosives{default}? Ha! You are far away from understanding {gold}Victorian{default}’s nature"
-		"ko"	"네낸 그걸 {darkgray}폭발물{default}이라고 부르나? 하! {gold}빅토리아{default}를 이해하긴 멀었군!"
+		"ko"	"지금 그딴걸 {darkgray}폭발물{default}이라고 부르나? 하! {gold}빅토리아{default}를 이해하긴 멀었군!"
 	}
 	"Huscarls_Talk_EscapePlan-1"
 	{
@@ -501,7 +523,7 @@
 	"Harrison_Talk_Support-1"
 	{
 		"en"	"Enabling artillery support. Brace for impact"
-		"ko"	"포격 지원가능. 충격에 대비하라"
+		"ko"	"포격 지원가능. 충격에 대비하라."
 	}
 	"Harrison_Talk_Support-2"
 	{
@@ -511,7 +533,7 @@
 	"Harrison_Talk_Support-3"
 	{
 		"en"	"Heavy machine gun Armed, Engaging Target."
-		"ko"	"중기관총이 준비됬다, 표적과 교전."
+		"ko"	"중기관총이 준비됐다, 표적과 교전."
 	}
 	"Harrison_Talk_Support-4"
 	{
@@ -521,7 +543,7 @@
 	"Harrison_Talk_Support-5"
 	{
 		"en"	"What a hassle"
-		"ko"	"아우 귀찮아"
+		"ko"	"허, 귀찮군."
 	}
 	"Harrison_Talk_Support-6"
 	{
@@ -536,7 +558,7 @@
 	"Harrison_Talk_Support-8"
 	{
 		"en"	"Right away."
-		"ko"	"수신 양호합니다"
+		"ko"	"수신 양호합니다."
 	}
 	"Harrison_Talk_Support-9"
 	{
@@ -546,12 +568,12 @@
 	"Harrison_Talk_Support-10"
 	{
 		"en"	"*sigh* This place is getting too crowded"
-		"ko"	"*한숨* 여기 너무 좁아지고 있어…"
+		"ko"	"*한숨* 여기 너무 좁아지고 있는데…"
 	}
 	"Harrison_Talk_Support-11"
 	{
 		"en"	"Victoria Cannon is Ready, Fire Support is coming in"
-		"ko"	"빅토리아 캐논 준비 완료, 화력 지원 전개"
+		"ko"	"빅토리아 캐논 준비 완료, 화력 지원 전개."
 	}
 	"Harrison_Talk_Intro"
 	{
@@ -596,7 +618,7 @@
 	"Harrison_Talk_GameEnd"
 	{
 		"en"	"Mission completed. Back to the control center with my beer keg."
-		"ko"	"미션 완료. 내 맥주통이랑 같이 컨트롤 센터로 돌아가야겠어"
+		"ko"	"미션 완료. 내 맥주통이랑 같이 컨트롤 센터로 돌아가야겠어."
 	}
 	"Harrison_Talk_Pre_2_Phase"
 	{
@@ -642,32 +664,37 @@
 	"Castellan_Talk_Intro-1"
 	{
 		"en"	"As my men said, you must be the trespassers who sabotaged our radiotower."
-		"ko"	"그래 자네들이 내 병사들이 말한 우리 라디오타워를 망가뜨린 침입자들인가?"
+		"ko"	"그래, 자네들이 내 병사들이 말한 우리 방송탑을 망가뜨린 침입자들인가?"
 	}
 	"Castellan_Talk_Intro-2"
 	{
 		"en"	"So you managed to confront me. I hope you are prepared for the consequences of your action."
-		"ko"	"그래 결국 내 앞에 서게 되었군. 앞으로 다가올 너희들의 행동에 대한 대가를 치룰 준비는 되었겠지?"
+		"ko"	"결국 내 앞에 서게 되었군. 앞으로 다가올 너희들의 행동에 대한 대가를 치룰 준비는 되었겠지?"
 	}
 	"Castellan_Talk_Intro-3"
 	{
 		"en"	"Who are you trying to put a brake in our invasion plan? We must put an end to this chaos spreading next to our country!"
-		"ko"	"너희들은 누군데 감히 우리 침공 계획을 방해하는거냐? 우리는 카오스가 퍼지는걸 막아야 한단 말이다!"
+		"ko"	"너희들은 누군데 감히 우리 침공 계획을 방해하는거냐? 우리는 혼돈이 퍼져나가는걸 막아야 한단 말이다!"
 	}
 	"Castellan_Talk_Intro-4"
 	{
 		"en"	"A small simulation eh? I guess I’ll give it a try"
-		"ko"	"이게 그 작은 시뮬레이션이란 말이지? 까짓거 한번 해보지 뭐"
+		"ko"	"이게 그 작은 시뮬레이션이란 말이지? 한 번 해볼까."
+	}
+	"Castellan_Talk_Intro-5"
+	{
+		"en"	"You will pay for daring to stand against us!"
+		"ko"	"여기로 숨어들었다고 우리가 못찾을줄 알았나 용병들. 우리랑 맞선 대가를 치뤄라!"
 	}
 	"Castellan_Talk_Lastman-1"
 	{
 		"en"	"Did my men really failed to stop these weaklings?"
-		"ko"	"내 병사들이 이딴 약골들에게 쩔쩔맸다니"
+		"ko"	"내 병사들이 이딴 약골들에게 쩔쩔맸단 말인가..."
 	}
 	"Castellan_Talk_Lastman-2"
 	{
 		"en"	"Put up your best gear and fight me! I didn’t waste my time here to fight such maggots"
-		"ko"	"너희들의 최고의 수단으로 상대해봐라! 나는 이딴 졸병들을 상대하려고 여기서 시간을 낭비하고 있지 않단 말이다!"
+		"ko"	"너희들의 최고의 수단으로 상대해봐라! 나는 너희같은 졸병 따위를 상대하려고 여기서 시간을 낭비할 이유가 없단 말이다!"
 	}
 	"Castellan_Talk_TimeUp-1"
 	{
@@ -682,12 +709,12 @@
 	"Castellan_Talk_GameEnd-1"
 	{
 		"en"	"total waste of my time."
-		"ko"	"시간낭비로군"
+		"ko"	"시간낭비로군."
 	}
 	"Castellan_Talk_GameEnd-2"
 	{
 		"en"	"Back to frontline"
-		"ko"	"다시 최전방으로 향하도록 하지"
+		"ko"	"다시 최전방으로 향하도록 하지."
 	}
 	"Castellan_Talk_Ability1-1"
 	{
@@ -707,17 +734,17 @@
 	"Castellan_Talk_Ability1-4"
 	{
 		"en"	"Atomizer gave Nitro Fuel to Castellan"
-		"ko"	"아토마이져가 니트로퓨엘을 카스텔란에게 주었습니다"
+		"ko"	"인수분해가 니트로퓨엘을 카스텔란에게 주었습니다."
 	}
 	"Castellan_Talk_Ability1-5"
 	{
 		"en"	"Huscarls refurbished Castellan's armor"
-		"ko"	"허스칼이 카스텔란의 방어구를 재정비 했습니다"
+		"ko"	"허스칼이 카스텔란의 방어구를 재정비 했습니다."
 	}
 	"Castellan_Talk_Ability1-6"
 	{
 		"en"	"Harrison refills his ammo with a look of annoyance on his face."
-		"ko"	"해리슨이 귀찮아죽겠다는 표정으로 자신의 탄약을 보급해줍니다"
+		"ko"	"해리슨이 귀찮아죽겠다는 표정으로 탄약을 보급했습니다."
 	}
 	"Castellan_AtomizerDesc"
 	{
@@ -747,7 +774,7 @@
 	"Castellan_Talk_Ability2-3"
 	{
 		"en"	"Alright boys, Fire all we got! We cannot waste any more time on here!"
-		"ko"	"좋아 얘들아, 우리가 가진 모든걸 쏟아부어라! 우리는 여기서 더이상 낭비할 시간이 없다!"
+		"ko"	"좋아, 친구들. 우리가 가진 모든걸 쏟아부어라! 우리는 여기서 더이상 낭비할 시간이 없다!"
 	}
 	"Castellan_Talk_Ability3-1"
 	{
@@ -757,7 +784,7 @@
 	"Castellan_Talk_Ability3-2"
 	{
 		"en"	"You can hide but cannot outrun this rocket!"
-		"ko"	"이 공격으로부터 숨을순 있지만 도망치진 못할꺼다!"
+		"ko"	"이 공격으로부터 숨을순 있어도 도망치진 못할 거다!"
 	}
 	"Castellan_Talk_Counterattack"
 	{
@@ -772,7 +799,7 @@
 	"Castellan_Talk_GetLifeLost-2"
 	{
 		"en"	"Ran out of rockets! Im gonna be back with more serious gears."
-		"ko"	"탄약이 다 떨어졌다! 더 위험한 장비들로 돌아올테니 기다리고 있도록."
+		"ko"	"탄약이 다 떨어졌군. 더 위험한 장비들로 돌아올테니 기다리고 있도록."
 	}
 	"Castellan_Talk_LifeLost-1"
 	{
@@ -782,7 +809,7 @@
 	"Castellan_Talk_LifeLost-2"
 	{
 		"en"	"Show no fear or dread! Our soldiers of Victoria will never fall!"
-		"ko"	"물러서지 마라! 우리 빅토리아의 병사들에게 쓰러지는것을 허락하지 않았다!"
+		"ko"	"물러서지 마라! 우리 빅토리아 병사들은 쓰러지지 않으리라!"
 	}
 	"Castellan_Talk_LifeLost-3"
 	{
@@ -792,7 +819,7 @@
 	"Castellan_Talk_EscapePlan"
 	{
 		"en"	"Well played. I will return with better gears"
-		"ko"	"잘 싸웠다. 좀더 좋은 장비들을 가지고 돌아오도록 하지"
+		"ko"	"잘 싸웠다. 좀더 좋은 장비들을 가지고 돌아오도록 하지."
 	}
 	"Castellan_And_Sensal_Talk-1"
 	{
@@ -807,17 +834,17 @@
 	"Castellan_And_Sensal_Talk-3"
 	{
 		"en"	"They attacked us while invading Ziberia, what else is there to add?"
-		"ko"	"우리가 자이베리아를 공격하는 동안, 저들이 우릴 공격했습니다. 정당방위인데 무슨 문제라도...?"
+		"ko"	"우리가 지베리아를 공격하는 동안, 저들이 우릴 공격했습니다. 정당방위인데 무슨 문제라도...?"
 	}
 	"Castellan_And_Sensal_Talk-4"
 	{
 		"en"	"Invading Ziberia? Right after {darkblue}Kahmlstein{default} Perished?"
-		"ko"	"자이베리아를 공격하고 있다고? {darkblue}카멜스타인{default}이 죽은 뒤인데?"
+		"ko"	"지베리아를 공격하고 있다고? {darkblue}카멜스타인{default}이 죽은 뒤인데?"
 	}
 	"Castellan_And_Sensal_Talk-5"
 	{
 		"en"	"There are more important matters to attend to.\nZiberia is not like Him."
-		"ko"	"그것보다 더 중요한 처리 사항이 많을텐데.\n자이베리아는 그와 사상이 다르다."
+		"ko"	"그것보다 더 중요한 처리 사항이 많을텐데.\n지베리아는 그와 사상이 다르다."
 	}
 	"Castellan_And_Sensal_Talk-6"
 	{
@@ -846,88 +873,17 @@
 	}
 	"Castellan_And_Sensal_Talk-11"
 	{
-		"en"	"{default}As Castellan and his army leave, they drop something: {darkblue}''Avangard's Processing Core-B''{default}!"
-		"ko"	"{default}카스텔란이 돌아간 후, 그의 군대가 무언가를 남겼습니다: {darkblue}''아방가르드의 프로세싱 코어-B''{default}!"
+		"en"	"{default}As Castellan and his army leave, they drop something: {unique}''Tank Beertery''{default}!"
+		"ko"	"{default}카스텔란이 돌아간 후, 그의 군대가 무언가를 남겼습니다: {unique}''탱크 비어터리''{default}!"
 	}
 	"CaptinoMenius_Talk-1"
 	{
 		"en"	"Great! The Radiotower is down. I can now send clear evidences to sensal. Please hold before the support arrives"
-		"ko"	"좋아! 라디오타워가 무너졌군. 이제 센살한테 확실한 증거들을 보낼수 있겠어. 증원이 올때까지 잘 버텨주길 바라겠네"
+		"ko"	"좋아! 방송탑이 무너졌군. 이제 센살한테 확실한 증거들을 보낼수 있겠어. 증원이 올때까지 잘 버텨주길 바라겠네."
 	}
 	"CaptinoMenius_Talk-2"
 	{
 		"en"	"{grey}Sensal arrived after he received the transmission from Captino Menius, but Castellan had already left with his army. Ziberia is in deep trouble now…{default}"
-		"ko"	"{grey}센살이 캡티노 메니우스의 전보를 받고 도착했지만, 카스텔란은 이미 그의 군대와 함께 전장으로 떠났습니다. 지베리아는 큰 위험애 처했네요…{default}"
-	}
-	"Adrenalive rushes engage"
-	{
-		"en"	"{green}Adrenalive rushes through your body, healing you and giving you an extra revive."
-		"ko"	"{green}아드레날린이 온몸으로 퍼져나갑니다, 체력이 전부 회복되고 모든 사람이 소생됩니다!"
-	}
-	"Rebels Arrive"
-	{
-		"en"	"{gray}Barney: {default}Hey! We came late to assist! Got a friend too!"
-		"ko"	"{gray}바니 칼훈: {default}이봐! 좀 늦었지만 이제 도착했어! 친구도 데려왔지!"
-	}	
-	"MrV Talk 01"
-	{
-		"en"	"Oh, I See..."
-		"ko"	"오, 어디 보자..."
-	}
-	"MrV Talk 02"
-	{
-		"en"	"I checked. Have a Funny Time."
-		"ko"	"확인 됐어. 즐거운 시간 보내."
-	}
-	"MrV Talk 03"
-	{
-		"en"	"What, really?"
-		"ko"	"뭣, 진짜로?"
-	}
-	"MrV Talk 04"
-	{
-		"en"	"Okay, {crimson}Good Luck.{default}"
-		"ko"	"좋아, {crimson}행운을 빌게.{default}"
-	}
-	"MrV Talk 05"
-	{
-		"en"	"Congratulations, Cleared the Challenge"
-		"ko"	"축하한다. 챌린지를 클리어했네."
-	}
-	"MrV Talk 06"
-	{
-		"en"	"Here, I'll give you the {unique}Item{default} as promised."
-		"ko"	"여기 약속한 {unique}보상{default}이야."
-	}
-	"MrV Talk 07"
-	{
-		"en"	"He opened his briefcase and handed over the items:"
-		"ko"	"그가 서류 가방을 열어 물건을 당신에게 건넸습니다."
-	}
-	"MrV Talk 08"
-	{
-		"en"	"{gray}[Normal]{uncommon}''Widemouth Refill Port''{default}"
-		"ko"	"{gray}[보통]{uncommon}''넓쩍한 재보급 포드''{default}"
-	}
-	"MrV Talk 09"
-	{
-		"en"	"{red}[Hard]{darkblue}''Builder's Blueprints''{default}"
-		"ko"	"{red}[어려움]{darkblue}''건축가의 청사진''{default}"
-	}
-	"MrV Talk 10"
-	{
-		"en"	"{collectors}[Expert]{gold}''Sardis Gold''{default}"
-		"ko"	"{collectors}[전문가]{gold}''사르디스 골드''{default}"
-	}
-	"MrV Talk 11"
-	{
-		"en"	"{maroon}[EX Hard]{darkgoldenrod}''Originium''{default}"
-		"ko"	"{maroon}[EX 하드]{darkgoldenrod}''오리지늄''{default}"
-	}
-	"MrV Talk 12"
-	{
-		"#format"	"{1:i}"
-		"en"	"{green}Everyone gains {1} XP!{default}"
-		"ko"	"{green}모두에게 {1} 만큼의 추가 경험치!{default}"
+		"ko"	"{grey}센살이 캡티노 메니우스의 전보를 받고 도착했지만, 카스텔란은 이미 그의 군대와 함께 전장으로 떠났습니다. 이제 지베리아는 큰 위험에 처했습니다.{default}"
 	}
 }

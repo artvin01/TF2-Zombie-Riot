@@ -447,7 +447,7 @@ public Action BossReila_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 10.0);
 		//	ApplyStatusEffect(npc.index, npc.index, "Umbral Grace Debuff", 10.0);
 			ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 10.0);
-			CPrintToChatAll("{pink}레일라가 {snow}엄브랄의 기운에 휩싸이고 있다...");
+			CPrintToChatAll("{pink}레일라가 {snow}움브랄의 기운에 휩싸이고 있다...");
 		}
 	}
 		

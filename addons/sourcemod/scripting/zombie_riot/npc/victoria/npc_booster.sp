@@ -113,18 +113,18 @@ methodmap VictorianBooster < CClotBody
 	{
 		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
-	property float m_flFuckDelaySound
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
-	}
 	public void PlayFuckyouSound()
 	{
 		if(this.m_flFuckDelaySound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_FuckyouSounds[GetRandomInt(0, sizeof(g_FuckyouSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flFuckDelaySound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+	}
+	
+	property float m_flFuckDelaySound
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 
 	public VictorianBooster(float vecPos[3], float vecAng[3], int ally)
@@ -157,6 +157,7 @@ methodmap VictorianBooster < CClotBody
 		Is_a_Medic[npc.index] = true;
 		npc.m_bFUCKYOU = false;
 		npc.m_bFUCKYOU_move_anim = false;
+		npc.m_flFuckDelaySound = 0.0;
 		
 		npc.m_bnew_target = false;
 		npc.StartPathing();
@@ -196,32 +197,18 @@ methodmap VictorianBooster < CClotBody
 	}
 	public void StartHealing()
 	{
-		int im_iWearable3 = this.m_iWearable3;
-		if(im_iWearable3 != INVALID_ENT_REFERENCE)
-		{
+		if(IsValidEntity(this.m_iWearable4))
 			this.Healing = true;
-			
-		//	EmitSoundToAll("m_iWearable3s/medigun_heal.wav", this.index, SNDCHAN_m_iWearable3);
-		}
 	}	
 	public void StopHealing()
 	{
-		int iBeam = this.m_iWearable5;
-		if(iBeam != INVALID_ENT_REFERENCE)
+		int iBeam = this.m_iWearable4;
+		if(IsValidEntity(iBeam))
 		{
-			int iBeamTarget = GetEntPropEnt(iBeam, Prop_Send, "m_hOwnerEntity");
-			if(IsValidEntity(iBeamTarget))
-			{
-				AcceptEntityInput(iBeamTarget, "ClearParent");
-				RemoveEntity(iBeamTarget);
-			}
-			
 			AcceptEntityInput(iBeam, "ClearParent");
 			RemoveEntity(iBeam);
 			
 			EmitSoundToAll("weapons/medigun_no_target.wav", this.index, SNDCHAN_WEAPON);
-			
-		//	StopSound(this.index, SNDCHAN_m_iWearable3, "m_iWearable3s/medigun_heal.wav");
 			
 			this.Healing = false;
 		}
@@ -257,8 +244,6 @@ static void VictorianBooster_ClotThink(int iNPC)
 	}
 	if(IsValidAlly(npc.index, npc.m_iTarget) && Is_a_Medic[npc.m_iTarget])
 	{
-		if(IsValidEntity(npc.m_iWearable4))
-			RemoveEntity(npc.m_iWearable4);
 		npc.StopHealing();
 		npc.Healing = false;
 		npc.m_bnew_target = false;
@@ -277,9 +262,6 @@ static void VictorianBooster_ClotThink(int iNPC)
 		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_medigun/c_medigun.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-	
-		if(IsValidEntity(npc.m_iWearable4))
-			RemoveEntity(npc.m_iWearable4);
 			
 		npc.StopHealing();
 		npc.Healing = false;
@@ -298,9 +280,6 @@ static void VictorianBooster_ClotThink(int iNPC)
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		SetEntityRenderColor(npc.m_iWearable3, 255, 0, 0, 255);
-	
-		if(IsValidEntity(npc.m_iWearable4))
-			RemoveEntity(npc.m_iWearable4);
 			
 		npc.StopHealing();
 		npc.Healing = false;
@@ -514,7 +493,7 @@ static int VictorianBooster_Work(VictorianBooster npc, float gameTime, float dis
 				if(!npc.m_bnew_target)
 				{
 					npc.StartHealing();
-					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTarget, 0, 0, 255, 3.0, 3.0, 1.35, LASERBEAM);
+					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTarget, 0, 0, 255, 3.0, 3.0, 0.0, LASERBEAM);
 					npc.Healing = true;
 					npc.m_bnew_target = true;
 				}
@@ -533,8 +512,7 @@ static int VictorianBooster_Work(VictorianBooster npc, float gameTime, float dis
 			}
 			else
 			{
-				if(IsValidEntity(npc.m_iWearable4))
-					RemoveEntity(npc.m_iWearable4);
+				npc.StopHealing();
 				npc.m_bnew_target = false;					
 			}
 		}

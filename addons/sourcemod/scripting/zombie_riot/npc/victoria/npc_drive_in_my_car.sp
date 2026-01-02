@@ -154,7 +154,7 @@ methodmap VictorianAssaultVehicle < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 		
-		static char countext[11][1024];
+		static char countext[12][512];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
@@ -211,6 +211,22 @@ methodmap VictorianAssaultVehicle < CClotBody
 				if(!npc.g_TimesSummoned)
 					npc.g_TimesSummoned = NPC_GetByPlugin(countext[i]);
 				//PrintToChatAll("NPC ID: %i", npc.g_TimesSummoned);
+			}
+			else if(StrContains(countext[i], "spawner") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "spawner", "");
+				if(!VIPBuilding_Active())
+				{
+					for(int ii; ii < ZR_MAX_SPAWNERS; ii++)
+					{
+						if(!i_ObjectsSpawners[ii] || !IsValidEntity(i_ObjectsSpawners[ii]))
+						{
+							Spawns_AddToArray(EntIndexToEntRef(npc.index), true);
+							i_ObjectsSpawners[ii] = EntIndexToEntRef(npc.index);
+							break;
+						}
+					}
+				}
 			}
 		}
 		
