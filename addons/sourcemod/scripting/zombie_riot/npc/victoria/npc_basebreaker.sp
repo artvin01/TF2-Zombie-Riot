@@ -62,9 +62,9 @@ static void ClotPrecache()
 	PrecacheModel("models/player/scout.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaBaseBreaker(vecPos, vecAng, ally);
+	return VictoriaBaseBreaker(vecPos, vecAng, ally, data);
 }
 
 methodmap VictoriaBaseBreaker < CClotBody
@@ -99,7 +99,18 @@ methodmap VictoriaBaseBreaker < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public VictoriaBaseBreaker(float vecPos[3], float vecAng[3], int ally)
+	property float m_flVSBuild_DMG
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flVSBuild_DMG_Buff
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	
+	public VictoriaBaseBreaker(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictoriaBaseBreaker npc = view_as<VictoriaBaseBreaker>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "4500", ally));
 		
@@ -116,9 +127,9 @@ methodmap VictoriaBaseBreaker < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(VictoriaBaseBreaker_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaBaseBreaker_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictoriaBaseBreaker_ClotThink);
+		func_NPCDeath[npc.index] = VictoriaBaseBreaker_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictoriaBaseBreaker_OnTakeDamage;
+		func_NPCThink[npc.index] = VictoriaBaseBreaker_ClotThink;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "the_maul");
@@ -126,6 +137,27 @@ methodmap VictoriaBaseBreaker < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 350.0;
+		npc.m_flVSBuild_DMG = 4.0;
+		npc.m_flVSBuild_DMG_Buff = 1.5;
+		
+		static char countext[2][256];
+		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
+		for(int i = 0; i < count; i++)
+		{
+			if(i>=count)break;
+			else if(StrContains(countext[i], "vsbuilding") != -1)
+			{
+				//Automatic Fragments Spawn
+				ReplaceString(countext[i], sizeof(countext[]), "vsbuilding", "");
+				npc.m_flVSBuild_DMG = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "buff_vsbuilding") != -1)
+			{
+				//Automatic Anvil Spawn
+				ReplaceString(countext[i], sizeof(countext[]), "buff_vsbuilding", "");
+				npc.m_flVSBuild_DMG_Buff = StringToFloat(countext[i]);
+			}
+		}
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -155,9 +187,7 @@ static void VictoriaBaseBreaker_ClotThink(int iNPC)
 {
 	VictoriaBaseBreaker npc = view_as<VictoriaBaseBreaker>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
-	{
 		return;
-	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
@@ -169,9 +199,7 @@ static void VictoriaBaseBreaker_ClotThink(int iNPC)
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
-	{
 		return;
-	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
@@ -180,14 +208,7 @@ static void VictoriaBaseBreaker_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 
-	if(NpcStats_VictorianCallToArms(npc.index))
-	{
-		npc.m_flSpeed = 400.0;
-	}
-	else
-	{
-		npc.m_flSpeed = 320.0;
-	}
+	npc.m_flSpeed = (NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 320.0);
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -212,24 +233,19 @@ static void VictoriaBaseBreaker_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	
-
 	npc.PlayIdleAlertSound();
 }
 
 static Action VictoriaBaseBreaker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictoriaBaseBreaker npc = view_as<VictoriaBaseBreaker>(victim);
-		
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
 	return Plugin_Changed;
 }
 
@@ -237,9 +253,7 @@ static void VictoriaBaseBreaker_NPCDeath(int entity)
 {
 	VictoriaBaseBreaker npc = view_as<VictoriaBaseBreaker>(entity);
 	if(!npc.m_bGib)
-	{
 		npc.PlayDeathSound();	
-	}
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
@@ -265,30 +279,20 @@ static void VictoriaBaseBreakerSelfDefense(VictoriaBaseBreaker npc, float gameTi
 			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 			{
-							
 				target = TR_GetEntityIndex(swingTrace);	
-				
 				float vecHit[3];
 				TR_GetEndPosition(vecHit, swingTrace);
 				
 				if(IsValidEnemy(npc.index, target))
 				{
 					float damageDealt = 45.0;
-					
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						damageDealt *= 4.0;
+						damageDealt *= npc.m_flVSBuild_DMG;
 						if(NpcStats_VictorianCallToArms(npc.index))
-						{
-							damageDealt *= 1.5;
-						}
+							damageDealt *= npc.m_flVSBuild_DMG_Buff;
 					}
-
-					int DamageType = DMG_CLUB;
-					
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DamageType, -1, _, vecHit);
-
-					// Hit sound
+					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					npc.PlayMeleeHitSound();
 				} 
 			}

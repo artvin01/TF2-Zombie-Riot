@@ -747,6 +747,7 @@ void ZR_PluginStart()
 	RegAdminCmd("zr_waveremain", Waves_AdminsWaveTimeRemainCmd, ADMFLAG_ROOT, "Wave Time Remain");
 	RegAdminCmd("zr_raidend", Waves_AdminsRaidTimeEndCmd, ADMFLAG_ROOT, "Raid Force END");
 	RegAdminCmd("zr_raidadd", Waves_AdminsRaidTimeAddCmd, ADMFLAG_ROOT, "Raid Time Add");
+	RegAdminCmd("zr_scaletest", Waves_ScaleTestCmd, ADMFLAG_ROOT, "Usage: zr_scaletest <Players> [AllyRebels] [EnemyCount] [EnemyHP]  [EnemyDMG]");
 	
 	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);

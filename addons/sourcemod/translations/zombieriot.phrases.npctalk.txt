@@ -748,8 +748,8 @@
 	}
 	"Castellan_AtomizerDesc"
 	{
-		"en"	"{crimson}Permanently increases movement speed by +5％ and attack speed by +10％ (Can Stack)"
-		"ko"	"{crimson}이동속도 +5％, 공격 속도 +10％ 영구 증가. (중첩됨)"
+		"en"	"{crimson}Permanently increases Attack speed by +10％ (Can Stack)"
+		"ko"	"{crimson}공격 속도 +10％ 영구 증가. (중첩됨)"
 	}
 	"Castellan_HuscarlsDesc"
 	{
@@ -853,8 +853,8 @@
 	}
 	"Castellan_And_Sensal_Talk-7"
 	{
-		"en"	"Correct. The country itself isnt at fault. Now leave, I also believe Victoria has to deal with chaos."
-		"ko"	"그래. 그 나라 자체에는 잘못이 없어. 이제 이 곳을 떠나라. 빅토리아도 혼돈에 대처해야한다."
+		"en"	"Correct. The country itself isnt at fault. Now leave, I also believe {gold}Victoria{default} has to deal with {darkblue}chaos{default}."
+		"ko"	"그래. 그 나라 자체에는 잘못이 없어. 이제 이 곳을 떠나라. {gold}빅토리아{default}도 {darkblue}혼돈{default}에 대처해야한다."
 	}
 	"Castellan_And_Sensal_Talk-8"
 	{
@@ -873,8 +873,13 @@
 	}
 	"Castellan_And_Sensal_Talk-11"
 	{
-		"en"	"{default}As Castellan and his army leave, they drop something: {unique}''Tank Beertery''{default}!"
-		"ko"	"{default}카스텔란이 돌아간 후, 그의 군대가 무언가를 남겼습니다: {unique}''탱크 비어터리''{default}!"
+		"en"	"{default}Before Sensal left, he asked Captino Menius to share the evidence he collected to you.\nCaptino Menius hands you the classified document with Victoria and Expidonsan logo printed on it: {unique}''A copy of Truthful Evidence''{default}!"
+		"ko"	"{default}센살이 떠나기전, 메니우스에게 부탁하여\n당신에게 빅토리아와 엑스피돈사의 로고가 박힌 서류폴더 하나를 건냅니다: {unique}''진실된 증거자료 [사본]''{default}!"
+	}
+	"Castellan_And_Sensal_Talk-12"
+	{
+		"en"	"{crimson}Meanwhile, you realize Castellan was watching with mixed emotions as he was retreating…{default}"
+		"ko"	"{crimson}그리고 여러분은 카스텔란이 퇴각하면서 이를 노려보고 있음을 깨닫습니다…{default}"
 	}
 	"CaptinoMenius_Talk-1"
 	{

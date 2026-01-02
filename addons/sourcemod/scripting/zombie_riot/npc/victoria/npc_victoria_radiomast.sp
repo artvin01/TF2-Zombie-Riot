@@ -200,10 +200,8 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 	//make it affected by attack speed, idk
 	if(Waves_IsEmpty() && npc.m_flNextMeleeAttack < gameTime)
 	{
-		int ISVOLI= 1;
-		ISVOLI = RoundToNearest(4.0); 
-		int VICTORIA= 1;
-		VICTORIA = RoundToNearest(float(CountPlayersOnRed(1)) * 1.0); 
+		int ISVOLI = 4;
+		int VICTORIA = RoundToNearest(MultiGlobalEnemyBoss * 1.2); 
 		for(int i=1; i<=VICTORIA; i++)
 		{
 			switch(GetRandomInt(1, 4))

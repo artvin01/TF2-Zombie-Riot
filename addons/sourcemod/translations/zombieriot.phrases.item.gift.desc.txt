@@ -3575,14 +3575,14 @@
 		"en"	"Cleared Victoria before the update!\nThank you for Waiting Update.\nYou deserve this trophy.\n-No longer Get this Trophy"
 		"ko"	"업데이트 이전 빅토리아를 클리어했습니다!\n업데이트를 기다려주셔서 감사합니다.\n이 트로피를 받을 자격이 충분합니다.\n-이제 이 트로피는 획득할 수 없습니다."
 	}
-	"Tank Beertery"
+	"Copycat Truthful Evidence"
 	{
-		"en"	"Tank Beertery"
-		"ko"	"탱크 비어터리"
+		"en"	"A copy of Truthful Evidence"
+		"ko"	"진실된 증거자료 [사본]"
 	}
-	"Tank Beertery Desc"
+	"Copycat Truthful Evidence Desc"
 	{
-		"en"	"Victorians use beer as a coolant for tank batteries WTF"
-		"ko"	"빅토리아 사람들은 탱크 배터리 냉각제로 맥주를 썼다니, 이게 말이 돼?"
+		"en"	"This is a Copy of the evidence received from Sensal.\nSee some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Victoria invaded Ziberia.\nyou became the primary target of Victorians due to this…"
+		"ko"	"센살에게 받은 진실된 증거자료[사본] 입니다.\n이해못할 단어들이 보이지만 숨겨진 뜻이 있는거 같습니다. 이것이 빅토리아가 자이베리아를 침공한 이유같습니다.\n하지만 이것이 빅토리아인들과의 트러블을 만들었습니다."
 	}
 }

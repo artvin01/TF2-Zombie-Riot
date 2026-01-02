@@ -432,7 +432,7 @@ static void VictorianAssaultVehicle_Work(VictorianAssaultVehicle npc, float game
 						{
 							if(GetTeam(npc.index) != TFTeam_Red)
 								Zombies_Currently_Still_Ongoing++;
-							int health = RoundToCeil(float(ReturnEntityMaxHealth(entity))*npc.m_flSpawnHealth);
+							int health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index))*npc.m_flSpawnHealth);
 							SetEntProp(entity, Prop_Data, "m_iHealth", health);
 							SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 							
