@@ -1158,7 +1158,7 @@
 	{
 		"en"		"Inquisitor Lynsen"
 		"it"		"Inquisitore Lynsen"
-		"ko" 		"배럭 재판관 린슨"
+		"ko" 		"재판관 린슨"
 	}
 	"Barracks Iberian Lighthouse Guardian"
 	{
