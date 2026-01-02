@@ -620,8 +620,9 @@ static void VictoriaFragmentsAssaultMode(VictorianDroneFragments npc, float game
 							damageDealt *= 4.0;
 						if(npc.m_bFUCKYOU_move_anim)
 						{
-							damageDealt*=RaidModeScaling;
-							damageDealt*=0.5;
+							float DMGTemp=damageDealt*(RaidModeScaling/15.0);
+							if(DMGTemp>damageDealt)
+								damageDealt=DMGTemp;
 						}
 						else
 							damageDealt*=float(npc.m_iWaveScale)*0.1;
