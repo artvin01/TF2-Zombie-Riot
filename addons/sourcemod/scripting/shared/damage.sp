@@ -1360,12 +1360,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
         }
         case WEAPON_KIT_PURGE_CRUSHER:
         {
-            if(!CheckInHud())
             return PurgeKit_NPCTakeDamage_Crusher(attacker, victim, damage, weapon, damagetype);
         }
         case WEAPON_KIT_PURGE_RAMPAGER:
         {
-            if(!CheckInHud())
            return PurgeKit_NPCTakeDamage_Rampager(attacker, victim, damage, weapon, damagetype);
 		}
 	}
