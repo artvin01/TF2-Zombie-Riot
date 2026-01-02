@@ -1142,7 +1142,7 @@
 	{
 		"en"	"With enough time, this box will become a whole new stage.\n{green}Ally max health increases up to +60％ over 300s, {red}resets when knocked down"
 		"it"	"Con il tempo necessario, questa scatola diventerà uno stadio completamente nuovo.\n{green}La salute massima aumenta fino a +60％ nell'arco di 300s, {red}si ripristina quando viene abbattuta"
-		"ko"	"시간이 충분하다면, 이 상자는 또 다른 새로운 무대가 될 수 있다.{green}아군의 최대 체력이 300초에 걸쳐 최대 60％까지 증가. {red}다운시, 이 효과가 초기화."
+		"ko"	"시간이 충분하다면, 이 상자는 또 다른 새로운 무대가 될 수 있다.\n{green}아군의 최대 체력이 300초에 걸쳐 최대 60％까지 증가. {red}다운시, 이 효과가 초기화."
 	}
 
 	"Waldch Assistance"
