@@ -839,7 +839,7 @@
 	"Castellan_And_Sensal_Talk-4"
 	{
 		"en"	"Invading Ziberia? Right after {darkblue}Kahmlstein{default} Perished?"
-		"ko"	"지베리아를 공격하고 있다고? {darkblue}카멜스타인{default}이 죽은 뒤인데?"
+		"ko"	"지베리아를 공격하고 있다고? {darkblue}카멜슈타인{default}이 죽은 뒤인데?"
 	}
 	"Castellan_And_Sensal_Talk-5"
 	{
