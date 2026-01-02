@@ -34,7 +34,7 @@ static void ClotPrecache()
 	PrecacheModel("models/props_c17/substation_transformer01a.mdl");
 	PrecacheModel("models/props_c17/lockers001a.mdl");
 	PrecacheModel("models/props_skybox/train_building004_skybox.mdl");
-	PrecacheSoundCustom("#zombiesurvival/aprilfools/caramelldansen.mp3");
+//	PrecacheSoundCustom("#zombiesurvival/aprilfools/caramelldansen.mp3");
 }
 
 int VictorianFactory_ID()
@@ -241,6 +241,7 @@ methodmap VictorianFactory < CClotBody
 				ReplaceString(countext[i], sizeof(countext[]), "tracking", "");
 				i_GunAmmo[npc.index]=1;
 			}
+			/*
 			else if(StrContains(countext[i], "caramelldansen") != -1)
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "caramelldansen", "");
@@ -255,6 +256,7 @@ methodmap VictorianFactory < CClotBody
 					}
 				}
 			}
+			*/
 			else if(StrContains(countext[i], "donusetele") != -1)
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "donusetele", "");
