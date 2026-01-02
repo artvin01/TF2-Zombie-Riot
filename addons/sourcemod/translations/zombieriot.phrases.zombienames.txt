@@ -977,7 +977,7 @@
 		"en" 		"Metro Cop"
 		"ru" 		"Метро коп"
 		"it"		"Poliziotto metropolitano"
-		"ko" 		"시민 보호 기동대"
+		"ko" 		"배럭 시민 보호 기동대"
 	}
 	"Barracks Swordsman"
 	{
@@ -986,14 +986,14 @@
 		"en" 		"Barracks Swordsman"
 		"it"		"Spadaccino combinatore"
 		"it"		"Spadaccino della caserma"
-		"ko" 		"콤바인 검객"
+		"ko" 		"배럭 콤바인 검객"
 	}
 	"Barracks Metro Raider"
 	{
 		"en" 		"Metro Raider"
 		"ru" 		"Метро Рейдер"
 		"it"		"Metro Raider"
-		"ko" 		"시민 보호 특공대"
+		"ko" 		"배럭 시민 보호 특공대"
 	}
 	"Barracks Shotgunner"
 	{
@@ -1002,7 +1002,7 @@
 		"en" 		"Barracks Shotgunner"
 		"it"		"Combine Shotgunner"
 		"it"		"Tiratore della caserma"
-		"ko" 		"콤바인 산탄총병"
+		"ko" 		"배럭 콤바인 산탄총병"
 	}
 	"Barracks Soldier"
 	{
@@ -1011,7 +1011,7 @@
 		"en" 		"Barracks Soldier"
 		"it"		"Soldato Combine"
 		"it"		"Soldato della caserma"
-		"ko" 		"콤바인 소총수"
+		"ko" 		"배럭 콤바인 소총수"
 	}
 	"Barracks DDT"
 	{
@@ -1020,7 +1020,7 @@
 		"en" 		"Barracks DDT"
 		"it"		"Combinare il DDT"
 		"it"		"Caserma DDT"
-		"ko" 		"콤바인 DDT"
+		"ko" 		"배럭 콤바인 DDT"
 	}
 	"Barracks Elite"
 	{
@@ -1029,13 +1029,13 @@
 		"en" 		"Barracks Elite"
 		"it"		"Combine Elite"
 		"it"		"Caserma Elite"
-		"ko" 		"콤바인 엘리트"
+		"ko" 		"배럭 콤바인 엘리트"
 	}
 	"Barracks Peacekeeper"
 	{
 		"en" 		"Combine Peacekeeper"
 		"it"		"Combine Peacekeeper"
-		"ko" 		"콤바인 평화유지군"
+		"ko" 		"배럭 콤바인 평화유지군"
 	}
 	"Barracks Super"
 	{
@@ -1044,7 +1044,7 @@
 		"en" 		"Barracks Warrior"
 		"it"		"Combine Warrior"
 		"it"		"Caserma Guerriero"
-		"ko" 		"콤바인 전사"
+		"ko" 		"배럭 콤바인 전사"
 	}
 	"Barracks Commander"
 	{
@@ -1053,13 +1053,13 @@
 		"en" 		"Barracks Commander"
 		"it"		"Comandante della combinazione"
 		"it"		"Comandante di caserma"
-		"ko" 		"마제트인 사령관"
+		"ko" 		"배럭 마제트인 사령관"
 	}
 	"Barracks Chaos Containment Unit"
 	{
 		"en" 		"Chaos Containment Unit"
 		"it"		"Unità di contenimento del caos"
-		"ko" 		"혼돈 격리 부대"
+		"ko" 		"배럭 혼돈 격리 부대"
 	}
 	"Barracks Giant ddt"
 	{
@@ -1068,7 +1068,7 @@
 		"en" 		"Barracks Giant DDT"
 		"it"		"Combina DDT gigante"
 		"it"		"Caserma Gigante DDT"
-		"ko" 		"거대 콤바인 DDT"
+		"ko" 		"배럭 거대 콤바인 DDT"
 	}
 	"Barracks Collos"
 	{
@@ -1077,102 +1077,102 @@
 		"en"		"Barracks Collos"
 		"it"		"Combinare Collos"
 		"it"		"Caserma Collos"
-		"ko" 		"콤바인 황금 거인"
+		"ko" 		"배럭 콤바인 황금 거인"
 	}
 	"Barracks Iberian Runner"
 	{
 		"en"		"Iberian Runner"
 		"ru" 		"Бегун Иберии"
 		"it"		"Corridore iberico"
-		"ko" 		"이베리아 러너"
+		"ko" 		"배럭 이베리아 러너"
 	}
 	"Barracks Iberian Gunner"
 	{
 		"en"		"Iberian Gunner"
 		"ru" 		"Стрелок Иберии"
 		"it"		"Artigliere iberico"
-		"ko" 		"이베리아 거너"
+		"ko" 		"배럭 이베리아 거너"
 	}
 	"Barracks Iberian Tanker"
 	{
 		"en"		"Iberian Tanker"
 		"it"		"Nave cisterna iberica"
-		"ko" 		"이베리아 탱커"
+		"ko" 		"배럭 이베리아 탱커"
 	}	
 	"Barracks Iberian Rocketeer"
 	{
 		"en"		"Iberian Rocketeer"
 		"ru" 		"Ракетомётчик Иберии"
 		"it"		"Razziatore iberico"
-		"ko" 		"이베리아 로켓사수"
+		"ko" 		"배럭 이베리아 로켓사수"
 	}	
 	"Barracks Iberian Healer"
 	{
 		"en"		"Iberian Healer"
 		"ru" 		"Медик Иберии"
 		"it"		"Guaritore iberico"
-		"ko" 		"이베리아 의무병"
+		"ko" 		"배럭 이베리아 의무병"
 	}
 	"Barracks Iberian Healtanker"
 	{
 		"en"		"Iberian Healtanker"
 		"ru" 		"Лечащий танк иберии"
 		"it"		"Healtanker iberico"
-		"ko" 		"이베리아 회복 탱커"
+		"ko" 		"배럭 이베리아 회복 탱커"
 	}	
 	"Barracks Iberia Boomstick"
 	{
 		"en"		"Iberian Boomsticker"
 		"ru" 		"Бумстикер Иберии"
 		"it"		"Boomsticker iberico"
-		"ko" 		"이베리아 붐스틱병"
+		"ko" 		"배럭 이베리아 붐스틱병"
 	}
 	"Barracks Iberian Guards"
 	{
 		"en"		"Iberian Guards"
 		"ru" 		"Стражи Иберии"
 		"it"		"Guardie iberiche"
-		"ko" 		"이베리아 경비병"
+		"ko" 		"배럭 이베리아 경비병"
 	}
 	"Barracks Iberian Commando"
 	{
 		"en"		"Iberian Commando"
 		"it"		"Commando iberico"
-		"ko" 		"이베리아 코만도"
+		"ko" 		"배럭 이베리아 코만도"
 	}
 	"Barracks Iberian Elite Gunner"
 	{
 		"en"		"Iberian Elite Gunner"
 		"ru" 		"Элитный Стрелок Иберии"
 		"it"		"Artigliere d'élite iberico"
-		"ko" 		"이베리아 정예 거너"
+		"ko" 		"배럭 이베리아 정예 거너"
 	}	
 	"Barracks Iberia Headhunter"
 	{
 		"en"		"Iberian Headhunter"
 		"ru" 		"Охотник за головами Иберии"
 		"it"		"Cacciatore di teste iberico"
-		"ko" 		"이베리아 헤드헌터"
+		"ko" 		"배럭 이베리아 헤드헌터"
 	}	
 	"Barracks Iberia Inquisitor Lynsen"
 	{
 		"en"		"Inquisitor Lynsen"
 		"it"		"Inquisitore Lynsen"
-		"ko" 		"재판관 린슨"
+		"ko" 		"배럭 재판관 린슨"
 	}
 	"Barracks Iberian Lighthouse Guardian"
 	{
 		"en"		"Guardian of the Lighthouse"
 		"ru" 		"Хранитель Маяка"
 		"it"		"Guardiano del Faro"
-		"ko" 		"등대의 수호자"
+		"ko" 		"배럭 등대의 수호자"
 	}
 	"Barracks Militia"
 	{
 		"en" 		"Militia"
 		"fr" 		"Milice"
 		"it"		"Milizia"
-		"ko" 		"시민군"
+		"ko" 		"배럭 시민군"
 	}
 	"Barracks Militia Desc"
 	{
@@ -2569,27 +2569,27 @@
 		"en"		"Railgunner"
 		"ru"		"Рельсотроновик"
 		"it"		"Railgunner"
-		"ko"		"레일건 사수"
+		"ko"		"배럭 레일건 사수"
 	}
 	"Barracks Basic Mage"
 	{
 		"en"		"Basic Medic Mage"
 		"ru"		"Базовый маг-медик"
 		"it"		"Medico di base Mago"
-		"ko"		"기본 마법사 메딕"
+		"ko"		"배럭 기본 마법사 메딕"
 	}
 	"Barracks Intermediate Mage"
 	{
 		"en"		"Intermediate Medic Mage"
 		"ru"		"Средний маг-медик"
 		"it"		"Medico intermedio Mago"
-		"ko"		"중급 마법사 메딕"
+		"ko"		"배럭 중급 마법사 메딕"
 	}
 	"Barracks Advanced Mage"
 	{
 		"en"		"Advanced Medic Mage"
 		"it"		"Medico avanzato Mago"
-		"ko"		"상급 마법사 메딕"
+		"ko"		"배럭 상급 마법사 메딕"
 	}
 	"Barracks Ikunagae"
 	{
@@ -2597,7 +2597,7 @@
 		"de"		"Iku Nagae"
 		"ru"		"Ику Нагаэ"
 		"it"		"Iku Nagae"
-		"ko"		"나가에 이쿠"
+		"ko"		"배럭 나가에 이쿠"
 	}
 	"Barracks SchwertKrieg"
 	{
@@ -2605,7 +2605,7 @@
 		"ru"		"Шверткриг"
 		"nl"		"Schwertkrieg"
 		"it"		"Schwertkrieg"
-		"ko"		"슈베르트크리그"
+		"ko"		"배럭 슈베르트크리그"
 	}
 	"Barracks Donnerkrieg"
 	{
@@ -2613,7 +2613,7 @@
 		"ru"		"Доннеркриг"
 		"nl"		"Donnerkrieg"
 		"it"		"Donnerkrieg"
-		"ko"		"도너크리그"
+		"ko"		"배럭 도너크리그"
 	}
 	"Barracks Holy Knight"
 	{
@@ -2622,7 +2622,7 @@
 		"pt"		"Cavaleiro Santo"
 		"nl"		"Heilige Ridder"
 		"it"		"Cavaliere Santo"
-		"ko"		"신성 기사"
+		"ko"		"배럭 신성 기사"
 	}
 	"Barracks Mecha Barrager"
 	{
@@ -2630,27 +2630,27 @@
 		"de"		"Machine Soldat Spammer"
 		"ru"		"Меха-солдат-бомбардир"
 		"it"		"Soldato mecha Barrager"
-		"ko"		"기계 솔저 연발 사격수"
+		"ko"		"배럭 기계 솔저 연발 사격수"
 	}
 	"Barracks Barrager"
 	{
 		"en"		"Barrager"
 		"ru"		"Бомбардир"
 		"it"		"Barrager"
-		"ko"		"솔저 연발 사격수"
+		"ko"		"배럭 솔저 연발 사격수"
 	}
 	"Barracks Mecha Loader"
 	{
 		"en"		"Mecha Loader"
 		"it"		"Caricatore mecha"
-		"ko"		"메카 로더"
+		"ko"		"배럭 메카 로더"
 	}
 	"Barracks Crossbow Medic"
 	{
 		"en"		"Medic Crossbowman"
 		"ru"		"Медик-арбалетчик"
 		"it"		"Medico Balestriere"
-		"ko"		"석궁병 메딕"
+		"ko"		"배럭 석궁병 메딕"
 	}
 	"The Last Knight"
 	{
@@ -2717,21 +2717,21 @@
 		"en"		"Teutonic Knight"
 		"ru"		"Тевтонский рыцарь"
 		"it"		"Cavaliere teutonico"
-		"ko"		"튜튼 기사"
+		"ko"		"배럭 튜튼 기사"
 	}
 	"Barracks Villager"
 	{
 		"en"		"Villager"
 		"ru"		"Житель"
 		"it"		"Villano"
-		"ko"		"주민"
+		"ko"		"배럭 주민"
 	}
 	"Barracks Building"
 	{
 		"en"		"Tower"
 		"ru"		"Башня"
 		"it"		"Torre"
-		"ko"		"망루"
+		"ko"		"배럭 망루"
 	}
 	"Tidelinked Bishop"
 	{
