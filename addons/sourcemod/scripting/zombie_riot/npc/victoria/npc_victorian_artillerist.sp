@@ -485,8 +485,8 @@ static void HE_StrikeThink(DataPack pack)
 	}
 	else
 	{
-		spawnRing_Vectors(targetpos, radius * 2.0, 0.0, 0.0, 5.0, LASERBEAM, 255, 100, 50, 100, 1, 0.1, 2.0, 0.1, 3);
-		spawnRing_Vectors(targetpos, ((radius)*((delay-GetGameTime())/maxdelay))* 2.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 100, 50, 100, 1, 0.1, 2.0, 0.1, 3);
+		spawnRing_Vectors(targetpos, radius * 2.0, 0.0, 0.0, 5.0, LASERBEAM, 150, 200, 255, 100, 1, 0.1, 2.0, 0.1, 3);
+		spawnRing_Vectors(targetpos, ((radius)*((delay-GetGameTime())/maxdelay))* 2.0, 0.0, 0.0, 0.0, LASERBEAM, 150, 200, 255, 100, 1, 0.1, 2.0, 0.1, 3);
 	}
 	delete pack;
 	DataPack pack2 = new DataPack();
