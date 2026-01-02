@@ -890,7 +890,7 @@
 	{
 		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25％ damage bonus, +25％ max health, +15％ attack speed, +15％ reload speed, +10％ damage resistance. The Duck will also greatly strengthen one player at a time"
 		"it"	"L'amato animale domestico di Bob, ''Dubby''.\n{green}Gli alleati guadagnano +25％ bonus ai danni, +25％ salute massima, +15％ velocità di attacco, +15％ velocità di ricarica, +10％ resistenza ai danni. L'Anatra rafforzerà notevolmente anche un giocatore alla volta"
-		"ko"	"밥이 가장 아끼는 애완오리, ''꽥꽥이''다.\n{green}모든 아군의 최대 체력, 피해량 +25％, 공격 속도, 재장전 속도 +15％, 피해 저항력 +10％. 한 번에 한 명을 크게 강화시켜줍니다."
+		"ko"	"밥이 가장 아끼는 애완오리, ''꽥꽥이''다.\n{green}모든 아군의 최대 체력, 피해량 +25％, 공격, 재장전 속도 +15％, 저항력 +10％. 한 번에 한 명을 크게 강화시켜줍니다."
 	}
 	"Underground Scorch"
 	{
