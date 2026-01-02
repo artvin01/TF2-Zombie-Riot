@@ -3,7 +3,7 @@
 
 static const char g_DeathSounds[][] = {
 	"vo/npc/male01/no01.wav",
-	"vo/npc/male01/no02.wav",
+	"vo/npc/male01/no02.wav"
 };
 
 static const char g_HurtSounds[][] = {
@@ -14,26 +14,19 @@ static const char g_HurtSounds[][] = {
 	"vo/npc/male01/pain06.wav",
 	"vo/npc/male01/pain07.wav",
 	"vo/npc/male01/pain08.wav",
-	"vo/npc/male01/pain09.wav",
+	"vo/npc/male01/pain09.wav"
 };
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/npc/male01/ohno.wav",
 	"vo/npc/male01/overthere01.wav",
-	"vo/npc/male01/overthere02.wav",
+	"vo/npc/male01/overthere02.wav"
 };
 
-static const char g_MeleeAttackSounds[][] = {
-	"mvm/giant_demoman/giant_demoman_grenade_shoot.wav",
-};
-
+static const char g_ThrowSounds[] = "weapons/cleaver_throw.wav";
 
 void VictorianGrenadier_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Grenadier");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_grenadier");
@@ -41,11 +34,18 @@ void VictorianGrenadier_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
-static float fl_npc_basespeed;
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSound(g_ThrowSounds);
+}
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -60,9 +60,7 @@ methodmap VictorianGrenadier < CClotBody
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -71,24 +69,20 @@ methodmap VictorianGrenadier < CClotBody
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
-	public void PlayMeleeSound()
+	public void PlayThrowSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.2);
+		EmitSoundToAll(g_ThrowSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.2);
 	}
 	property float m_flWeaponSwitchCooldown
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
-	
 	
 	public VictorianGrenadier(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -112,14 +106,12 @@ methodmap VictorianGrenadier < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictorianGrenadier_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(VictorianGrenadier_ClotThink);
 		
-		
 		//IDLE
+		KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 180.0;
-		fl_npc_basespeed = 180.0;
-		
 		
 		int skin = 1;
 	
@@ -142,7 +134,7 @@ methodmap VictorianGrenadier < CClotBody
 	}
 }
 
-public void VictorianGrenadier_ClotThink(int iNPC)
+static void VictorianGrenadier_ClotThink(int iNPC)
 {
 	VictorianGrenadier npc = view_as<VictorianGrenadier>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -194,8 +186,6 @@ public void VictorianGrenadier_ClotThink(int iNPC)
 				npc.m_bisWalking = true;
 				npc.m_iChanged_WalkCycle = 1;
 				npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
-				npc.StartPathing();
-				npc.m_flSpeed = 200.0;
 			}
 		}
 		else
@@ -205,8 +195,6 @@ public void VictorianGrenadier_ClotThink(int iNPC)
 				npc.m_bisWalking = true;
 				npc.m_iChanged_WalkCycle = 2;
 				npc.SetActivity("ACT_ACHILLES_RUN_DAGGER");
-				npc.StartPathing();
-				npc.m_flSpeed = 200.0;
 			}
 		}
 	}
@@ -251,7 +239,7 @@ public void VictorianGrenadier_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action VictorianGrenadier_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictorianGrenadier_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictorianGrenadier npc = view_as<VictorianGrenadier>(victim);
 		
@@ -267,7 +255,7 @@ public Action VictorianGrenadier_OnTakeDamage(int victim, int &attacker, int &in
 	return Plugin_Changed;
 }
 
-public void VictorianGrenadier_NPCDeath(int entity)
+static void VictorianGrenadier_NPCDeath(int entity)
 {
 	VictorianGrenadier npc = view_as<VictorianGrenadier>(entity);
 	if(!npc.m_bGib)
@@ -291,7 +279,7 @@ public void VictorianGrenadier_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float distance)
+static int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float distance)
 {
 	//Direct mode
 	if(gameTime > npc.m_flNextMeleeAttack)
@@ -304,7 +292,7 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.m_iTarget = Enemy_I_See;
-				npc.PlayMeleeSound();
+				npc.PlayThrowSound();
 				float RocketDamage = 35.0;
 				float RocketSpeed = 900.0;
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -324,7 +312,7 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 					SetEntityGravity(RocketGet, 1.0); 	
 					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
 					ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.75, 1.0);
-					SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
+					Better_Gravity_Rocket(RocketGet, 55.0);
 					TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 
 					//This will return vecTarget as the speed we need.
@@ -338,8 +326,16 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 					//	npc.PlayRangedSound();
 					npc.FireRocket(vecTarget, RocketDamage, RocketSpeed, "models/workshop/weapons/c_models/c_caber/c_caber.mdl", 1.2);
 				}
-						
-				npc.m_flNextMeleeAttack = gameTime + 1.75;
+				
+				if(NpcStats_VictorianCallToArms(npc.index))
+				{
+					npc.m_flNextMeleeAttack = gameTime + 1.0;
+				}
+				else
+				{
+					npc.m_flNextMeleeAttack = gameTime + 1.75;
+				}
+				
 				//Launch something to target, unsure if rocket or something else.
 				//idea:launch fake rocket with noclip or whatever that passes through all
 				//then whereever the orginal goal was, land there.
@@ -349,12 +345,9 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 	}
 	if(npc.m_flNextMeleeAttack > gameTime)
 	{
-		npc.m_flSpeed = 0.0;
+		return 1;
 	}
-	else
-	{
-		npc.m_flSpeed = fl_npc_basespeed;
-	}
+
 	//No can shooty.
 	//Enemy is close enough.
 	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 9.0))

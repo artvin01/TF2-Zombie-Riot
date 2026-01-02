@@ -2101,6 +2101,11 @@
 		"en"		"Enhance Active Weapon"
 		"ko"		"현재 들고있는 무기 강화"
 	}
+	"Enhance Last Bought Weapon"
+	{
+		"en"		"Enhance Last Bought Weapon"
+		"ko"		"가장 최근 구매한 무기 강화"
+	}
 	"Level Perks"//Lvl Perks here
 	{
 		"en"		"Level Perks"
@@ -2598,7 +2603,7 @@
 	"Avangard's Processing Core-B"
 	{
 		"en"		"Avangard's Processing Core-B"
-		"ko"		"아방가르드의 처리 코어-B"
+		"ko"		"아방가르드의 프로세싱 코어-B"
 	}
 	"Iberian and Expidonsan Training"
 	{
@@ -2762,7 +2767,7 @@
 		"nl"		"Apen Kennis"
 		"chi"       	"特殊技能"
 		"it"		"Conoscenza della scimmia"
-		"ko"		"원숭이의 지식"
+		"ko"		"원숭이 지식"
 	}
 	"Fast Tack Attacks [Rare]"
 	{
@@ -2930,7 +2935,7 @@
 		"nl"		"Groot Ballonsabotage [Legendarisch]"
 		"chi"		"大型气球毁灭者[传奇]"
 		"it"		"Sabotaggio di Big Bloon [Leggendario]"
-		"ko"		"큰 풍선 파괴공작 [전설]"
+		"ko"		"큰 풍선 파괴 [전설]"
 	}
 	"SUPER Range [Rare]"
 	{
@@ -2966,7 +2971,7 @@
 		"nl"		"Snel Brouwen [Ongewoon]"
 		"chi"		"快速酿造[罕见]"
 		"it"		"Birra veloce [Non comune]"
-		"ko"		"빠른 약품 제조 [특별]"
+		"ko"		"빠른 약 제조 [특별]"
 	}
 	"Strike Down The False [Uncommon]"
 	{
@@ -2978,7 +2983,7 @@
 		"nl"		"Sla neer de valse [ongewoon]"
 		"chi"		"测谎仪[罕见]"
 		"it"		"Abbattere il Falso [Non comune]"
-		"ko"		"가짜를 끌어내려라 [특별]"
+		"ko"		"가짜는 끌어내려 [특별]"
 	}
 	"Flame Jet [Common]"
 	{
@@ -3239,7 +3244,7 @@
 		"ru"       "Нейтронно-звёздная пушка"
 		"chi"       "中子星爆炸炮"
 		"it"		"Cannone a scoppio a stella di neutroni"
-		"ko"	   "중성자별 연발포"
+		"ko"	   "중성자별 격발포"
 	}
 	"People Popper"
 	{
@@ -3679,7 +3684,7 @@
 	"Staff of the Skull Servants"
 	{
 		"en"		"Staff of the Skull Servants"
-		"ko"		"저주받은 하인의 스태프"
+		"ko"		"저주받은 하인 스태프"
 	}
 	"Impact Lance"
 	{
@@ -3716,12 +3721,22 @@
 		"en"		"Pristine Expidonsan Repair Device"
 		"ko"		"온전한 엑스피돈사 수리 장치"
 	}
+	"Expert Trapper"
+	{
+		"en"		"Expert Trapper"
+		"ko"		"함정 전문가"
+	}
+	"Builder Weapons"
+	{
+		"en"		"Builder Weapons"
+		"ko"		"건축가 무기"
+	}
 	"Cleanse Gun"
 	{
 		"en"		"Cleanse Gun"
 		"ko"		"정화총"
 	}
-	"Cleanse Gun"
+	"Purifying Cleaner"
 	{
 		"en"		"Purifying Cleaner"
 		"ko"		"정화총 클리너"
@@ -4096,11 +4111,6 @@
 		"en"		"CBS's Blade"
 		"ko"		"잔혹한 기독교 스나이퍼의 검"
 	}
-	"Steam Knight's Spear"
-	{
-		"en"		"Steam Knight's Spear"
-		"ko"		"증기 기사의 창"
-	}
 	"Полумесяц"
 	{
 		"en"		"Полумесяц"
@@ -4304,7 +4314,7 @@
 	"King of the Skull Servants"
 	{
 		"en"		"King of the Skull Servants"
-		"ko"		"저주받은 하인들의 왕"
+		"ko"		"저주받은 하인 킹"
 	}
 	"Ruilus Blade"
 	{
@@ -4354,7 +4364,7 @@
 	"Lifetime Supply"
 	{
 		"en"		"Lifetime Supply"
-		"ko"		"평생 배급"
+		"ko"		"수명 공급"
 	}
 	"Neodymium Nightmare"
 	{
@@ -5086,6 +5096,26 @@
 		"ko"	"증기 기사의 창"
 		"it"	"Lancia del cavaliere del vapore"
 	}
+	"Explosault Rifle"
+	{
+		"en"	"Explosault Rifle"
+		"ko"	"폭썰트 라이플"
+	}
+	"Enhancement: Heat Sink Discharge"
+	{
+		"en"	"Enhancement: Heat Sink Discharge"
+		"ko"	"개조: 방열판 사출"
+	}
+	"Enhancement: Overheating Protection Removed"
+	{
+		"en"	"Enhancement: Overheating Protection Removed"
+		"ko"	"개조: 과열 보호 제거"
+	}
+	"Enhancement: Airstrike Beacon"
+	{
+		"en"	"Enhancement: Heat Sink Discharge"
+		"ko"	"개조: 폭격 유도 비콘"
+	}
 	"Boomerang"
 	{
 		"en"	"Boomerang"
@@ -5228,7 +5258,7 @@
 	{
 		"en" "Voided Rejuvenator Pack"
 		"it" "Pacchetto ringiovanente per il vuoto"
-		"ko" "공허화된 원기 회복사 상자"
+		"ko" "공허화된 원기 회복사의 상자"
 	}
 	"Cheesy Slimy Aid Kit"
 	{
@@ -5405,7 +5435,7 @@
 	"Confess Your Fears"
 	{
 		"en"	"Confess Your Fears"
-		"ko"	"네 두려움을 고백하라"
+		"ko"	"네 두려움에 굴복하라"
 	}
 	"Repaired Blade"
 	{
@@ -5522,7 +5552,7 @@
 	{
 		"en"	"Potion of Flexibility"
 		"it"	"Pozione della Flessibilità"
-		"ko"	"유연성 포션"
+		"ko"	"몸풀기 포션"
 	}
 	"Potion of Flexibility Desc"
 	{
@@ -5570,7 +5600,7 @@
 	{
 		"en"	"Potion of Beef"
 		"it"	"Pozione di manzo"
-		"ko"	"근육 포션"
+		"ko"	"소고기 포션"
 	}
 	"Potion of Beef Desc"
 	{

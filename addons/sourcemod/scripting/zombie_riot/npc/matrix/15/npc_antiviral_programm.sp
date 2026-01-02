@@ -119,7 +119,7 @@ methodmap Antiviral_Program < CClotBody
 	
 	public Antiviral_Program(float vecPos[3], float vecAng[3], int ally)
 	{
-		Antiviral_Program npc = view_as<Antiviral_Program>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1000", ally));
+		Antiviral_Program npc = view_as<Antiviral_Program>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", MinibossHealthScaling(220.0, true), ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -309,7 +309,7 @@ int Antiviral_ProgramSelfDefense(Antiviral_Program npc, float gameTime, int targ
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 110.0;
+					float damageDealt = 130.0;
 					damageDealt *= npc.m_flWaveScale;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);

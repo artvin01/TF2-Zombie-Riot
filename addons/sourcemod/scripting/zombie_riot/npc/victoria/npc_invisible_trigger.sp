@@ -1,0 +1,379 @@
+#pragma semicolon 1
+#pragma newdecls required
+
+void Invisible_TRIGGER_OnMapStart_NPC()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "0h No it's Not Fair");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_invisible_trigger");
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
+	data.Flags = -1;
+	data.Category = Type_Hidden;
+	data.Precache = ClotPrecache;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSound("music/mvm_start_tank_wave.wav");
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Invisible_TRIGGER(vecPos, vecAng, ally, data);
+}
+
+methodmap Invisible_TRIGGER < CClotBody
+{
+	property int i_NPCStats
+	{
+		public get()							{ return i_TimesSummoned[this.index]; }
+		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+	}
+	property int i_GetWave
+	{
+		public get()							{ return i_MedkitAnnoyance[this.index]; }
+		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
+	}
+
+	public Invisible_TRIGGER(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	{
+		ally = TFTeam_Stalkers;
+		Invisible_TRIGGER npc = view_as<Invisible_TRIGGER>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "12000", ally));
+		
+		b_NoKillFeed[npc.index] = true;
+		i_NpcWeight[npc.index] = 1;
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
+		npc.AddActivityViaSequence("selectionMenu_Idle");
+		npc.SetCycle(0.01);
+		
+		SetVariantInt(2);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+		npc.i_NPCStats=0;
+		
+		bool fVerify=false;
+		func_NPCDeath[npc.index] = Invisible_TRIGGER_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = INVALID_FUNCTION;
+		func_NPCThink[npc.index] = Invisible_TRIGGER_ClotThink;
+		if(StrContains(data, "factory_emergency_extraction") != -1)
+		{
+			npc.i_NPCStats=1;
+			fVerify=true;
+		}
+		if(StrContains(data, "factory_extraction_now") != -1)
+		{
+			npc.i_NPCStats=2;
+			fVerify=true;
+		}
+		if(StrContains(data, "one_factory_extraction") != -1)
+		{
+			npc.i_NPCStats=3;
+			fVerify=true;
+		}
+		if(StrContains(data, "castellan_setup") != -1)
+		{
+			AddNpcToAliveList(npc.index, 1);
+			npc.i_NPCStats=4;
+			fVerify=true;
+		}
+		
+		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
+		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		
+		//IDLE
+		npc.m_iState = 0;
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.StartPathing();
+		npc.m_flSpeed = 0.0;
+		npc.m_iOverlordComboAttack = 0;
+		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextRangedAttack = 0.0;
+		
+		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		b_DoNotUnStuck[npc.index] = true;
+		b_NoKnockbackFromSources[npc.index] = true;
+		b_NpcIsInvulnerable[npc.index] = true;
+		b_ThisEntityIgnored[npc.index] = true;
+		MakeObjectIntangeable(npc.index);
+		b_NoHealthbar[npc.index]=true;
+		npc.m_bTeamGlowDefault = false;
+		if(IsValidEntity(i_InvincibleParticle[npc.index]))
+		{
+			int particle = EntRefToEntIndex(i_InvincibleParticle[npc.index]);
+			SetEntityRenderMode(particle, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(particle, 255, 255, 255, 1);
+			SetEntPropFloat(particle, Prop_Send, "m_fadeMinDist", 1.0);
+			SetEntPropFloat(particle, Prop_Send, "m_fadeMaxDist", 1.0);
+		}
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
+		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 1.0);
+		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 1.0);
+		if(IsValidEntity(npc.m_iTeamGlow))
+			RemoveEntity(npc.m_iTeamGlow);
+			
+		b_NpcForcepowerupspawn[npc.index] = 0;
+		i_RaidGrantExtra[npc.index] = 0;
+		b_DissapearOnDeath[npc.index] = true;
+		b_DoGibThisNpc[npc.index] = true;
+		
+		if(!fVerify || npc.i_NPCStats==0)
+		{
+			func_NPCDeath[npc.index] = INVALID_FUNCTION;
+			func_NPCThink[npc.index] = INVALID_FUNCTION;
+			SmiteNpcToDeath(npc.index);
+		}
+		
+		return npc;
+	}
+}
+
+static void Invisible_TRIGGER_ClotThink(int iNPC)
+{
+	Invisible_TRIGGER npc = view_as<Invisible_TRIGGER>(iNPC);
+	float gameTime = GetGameTime(npc.index);
+	if(npc.m_flNextDelayTime > gameTime)
+		return;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.Update();
+	if(npc.m_flNextThinkTime > gameTime)
+		return;
+	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	switch(npc.i_NPCStats)
+	{
+		case 1:
+		{
+			bool bExtraction=false;
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+			{
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+				if (IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Blue)
+				{
+					VictorianFactory vFactory = view_as<VictorianFactory>(entity);
+					vFactory.m_flNextRangedAttack = GetGameTime(vFactory.index) + 10.0;
+					if(f_DelaySpawnsForVariousReasons < GetGameTime() + 21.0)
+					{
+						i_AttacksTillMegahit[vFactory.index] = 608;
+						bExtraction=true;
+					}
+				}
+			}
+			if(bExtraction)
+			{
+				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+				SmiteNpcToDeath(npc.index);
+			}
+		}
+		case 2:
+		{
+			bool bExtraction=false;
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+			{
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+				if (IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Blue)
+				{
+					VictorianFactory vFactory = view_as<VictorianFactory>(entity);
+					i_AttacksTillMegahit[vFactory.index] = 608;
+					bExtraction=true;
+				}
+			}
+			if(bExtraction)
+			{
+				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+			}
+			SmiteNpcToDeath(npc.index);
+		}
+		case 3:
+		{
+			bool bExtraction;
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+			{
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+				if (IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Blue)
+				{
+					VictorianFactory vFactory = view_as<VictorianFactory>(entity);
+					vFactory.m_flNextRangedAttack = GetGameTime(vFactory.index) + 10.0;
+					if(f_DelaySpawnsForVariousReasons < GetGameTime() + 21.0)
+					{
+						i_AttacksTillMegahit[vFactory.index] = 608;
+						bExtraction=true;
+						break;
+					}
+				}
+			}
+			if(bExtraction)
+			{
+				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+				SmiteNpcToDeath(npc.index);
+			}
+		}
+		case 4:
+		{
+			switch(npc.m_iOverlordComboAttack)
+			{
+				case 0:
+				{
+					bool bExtraction;
+					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+					{
+						int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+						if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Blue)
+						{
+							if(i_NpcInternalId[entity] == VictorianFactory_ID())
+							{
+								VictorianFactory vFactory = view_as<VictorianFactory>(entity);
+								i_AttacksTillMegahit[vFactory.index] = 608;
+								bExtraction=true;
+								break;
+							}
+						}
+					}
+					if(bExtraction)
+					{
+						EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+						EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
+						npc.m_iOverlordComboAttack=1;
+					}
+				}
+				case 1:
+				{
+					if(f_DelaySpawnsForVariousReasons - GetGameTime() < 16.0)
+					{
+						for(int client = 1; client <= MaxClients; client++)
+						{
+							if(IsClientInGame(client) && !b_IsPlayerABot[client])
+								Music_Stop_All(client);
+						}
+						RemoveAllCustomMusic();
+						EmitSoundToAll("music/mvm_start_tank_wave.wav", _, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+						SmiteNpcToDeath(npc.index);
+					}
+				}
+			}
+		}
+		default:SmiteNpcToDeath(npc.index);//WTF HOW???
+	}
+}
+
+static void Invisible_TRIGGER_NPCDeath(int entity)
+{
+	Invisible_TRIGGER npc = view_as<Invisible_TRIGGER>(entity);
+
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+}
+
+public void NPCPritToChat_Noname(const char[] text, bool NoTrans)
+{
+	for(int Player=1; Player<=MaxClients; Player++)
+	{
+		if(!IsValidClient(Player))
+			continue;
+		if(!NoTrans)
+		{
+			SetGlobalTransTarget(Player);
+			CPrintToChat(Player, "%t", text);
+		}
+		else
+			CPrintToChat(Player, "%s", text);
+	}
+}
+
+public void NPCPritToChat_Override(const char[] name, const char[] namecolor, const char[] text, bool NoTrans)
+{
+	for(int Player=1; Player<=MaxClients; Player++)
+	{
+		if(!IsValidClient(Player))
+			continue;
+		if(!NoTrans)
+		{
+			SetGlobalTransTarget(Player);
+			CPrintToChat(Player, "%s%t{default}: %t", namecolor, name, text);
+		}
+		else
+			CPrintToChat(Player, "%s%s{default}: %s", namecolor, name, text);
+	}
+}
+
+public void NPCPritToChat(int entity, const char[] namecolor, const char[] text, bool NoTrans, bool requestframe)
+{
+	if(entity==-1||!IsValidEntity(entity))return;
+	if(requestframe)
+	{
+		DataPack pack = new DataPack();
+		RequestFrame(NPCPritToChat_Delay, pack);
+		pack.WriteCell(entity);
+		pack.WriteString(namecolor);
+		pack.WriteString(text);
+		pack.WriteCell(view_as<int>(NoTrans));
+	}
+	else
+	{
+		for(int Player=1; Player<=MaxClients; Player++)
+		{
+			if(!IsValidClient(Player))
+				continue;
+			SetGlobalTransTarget(Player);
+			char NameReturn[255];
+			if(!b_NameNoTranslation[entity] && !NoTrans)
+				Format(NameReturn, sizeof(NameReturn), "%t", c_NpcName[entity]);
+			else
+				Format(NameReturn, sizeof(NameReturn), "%s", c_NpcName[entity]);
+			
+			if(!NoTrans)
+				CPrintToChat(Player, "%s%s{default}: %t", namecolor, NameReturn, text);
+			else
+				CPrintToChat(Player, "%s%s{default}: %s", namecolor, NameReturn, text);
+		}
+	}
+}
+
+static void NPCPritToChat_Delay(DataPack pack)
+{
+	pack.Reset();
+	int entity = pack.ReadCell();
+	char namecolor[16];
+	char text[512];
+	pack.ReadString(namecolor, sizeof(namecolor));
+	pack.ReadString(text, sizeof(text));
+	bool NoTrans = view_as<bool>(pack.ReadCell());
+	for(int Player=1; Player<=MaxClients; Player++)
+	{
+		if(!IsValidClient(Player))
+			continue;
+		SetGlobalTransTarget(Player);
+		char NameReturn[255];
+		if(!b_NameNoTranslation[entity] && !NoTrans)
+			Format(NameReturn, sizeof(NameReturn), "%t", c_NpcName[entity]);
+		else
+			Format(NameReturn, sizeof(NameReturn), "%s", c_NpcName[entity]);
+		
+		if(!NoTrans)
+			CPrintToChat(Player, "%s%s{default}: %t", namecolor, NameReturn, text);
+		else
+			CPrintToChat(Player, "%s%s{default}: %s", namecolor, NameReturn, text);
+	}
+	delete pack;
+}

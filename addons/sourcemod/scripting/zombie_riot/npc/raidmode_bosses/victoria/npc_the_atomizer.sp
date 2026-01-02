@@ -73,11 +73,6 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/bat_draw_swoosh1.wav",
 	"weapons/bat_draw_swoosh2.wav"
 };
-static const char g_MeleeHitSounds[] = "weapons/bat_hit.wav";
-static const char g_AngerSounds[] = "mvm/mvm_tele_activate.wav";
-static const char g_AngerReaction[] = "vo/scout_revenge06.mp3";
-static const char g_HomerunHitSounds[] = "mvm/melee_impacts/bat_baseball_hit_robo01.wav";
-static const char g_SupportSounds[] = "vo/scout_revenge05.mp3";
 static const char g_HomerunSounds[][]= {
 	"vo/scout_stunballhit01.mp3",
 	"vo/scout_stunballhit02.mp3",
@@ -92,16 +87,22 @@ static const char g_HomerunfailSounds[][]= {
 	"vo/taunts/scout/scout_taunt_rps_lose_01.mp3",
 	"vo/taunts/scout/scout_taunt_rps_lose_03.mp3"
 };
-static const char StunballPickupeSound[][] = {
+static const char g_StunballPickupeSound[][] = {
 	"vo/scout_stunballpickup01.mp3",
 	"vo/scout_stunballpickup02.mp3",
 	"vo/scout_stunballpickup03.mp3",
 	"vo/scout_stunballpickup04.mp3",
 	"vo/scout_stunballpickup05.mp3"
 };
+static const char g_MeleeHitSounds[] = "weapons/bat_hit.wav";
+static const char g_AngerSounds[] = "mvm/mvm_tele_activate.wav";
+static const char g_AngerReaction[] = "vo/scout_revenge06.mp3";
+static const char g_HomerunHitSounds[] = "mvm/melee_impacts/bat_baseball_hit_robo01.wav";
+static const char g_SupportSounds[] = "vo/scout_revenge05.mp3";
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
 
+/* Victoria Nuke */
 static float Vs_DelayTime[MAXENTITIES];
 float Vs_RechargeTime[MAXENTITIES];
 float Vs_RechargeTimeMax[MAXENTITIES];
@@ -109,25 +110,20 @@ static int Vs_Target[MAXENTITIES];
 static int Vs_ParticleSpawned[MAXENTITIES];
 static float Vs_Temp_Pos[MAXENTITIES][3];
 bool Vs_LockOn[MAXENTITIES];
+
+//for Huscarls
 int Vs_Atomizer_To_Huscarls;
 
-static float FTL[MAXENTITIES];
-static float Delay_Attribute[MAXENTITIES];
 static bool DrinkPOWERUP[MAXENTITIES];
-static float NiceMiss[MAXENTITIES];
 static bool OnMiss[MAXENTITIES];
-static int I_cant_do_this_all_day[MAXENTITIES];
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static bool YaWeFxxked[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 
-
 static bool SUPERHIT[MAXENTITIES];
 
-static int gLaser1;
-static int gRedPoint;
-static int g_BeamIndex_heal;
-static int g_HALO_Laser;
+static int g_RedPoint;
+static int g_Laser;
 
 void Atomizer_OnMapStart_NPC()
 {
@@ -145,11 +141,15 @@ void Atomizer_OnMapStart_NPC()
 
 static void ClotPrecache()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_HomerunSounds);
+	PrecacheSoundArray(g_StunballPickupeSound);
+	PrecacheSoundArray(g_MissAbilitySound);
+	PrecacheSoundArray(g_HomerunfailSounds);
 	PrecacheSound(g_MeleeHitSounds);
 	PrecacheSound(g_AngerSounds);
 	PrecacheSound(g_AngerReaction);
@@ -157,16 +157,13 @@ static void ClotPrecache()
 	PrecacheSound(g_SupportSounds);
 	PrecacheSound(g_BoomSounds);
 	PrecacheSound(g_IncomingBoomSounds);
-	gRedPoint = PrecacheModel("sprites/redglow1.vmt");
-	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
-	g_BeamIndex_heal = PrecacheModel("materials/sprites/laserbeam.vmt", true);
-	g_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
-	for (int i = 0; i < (sizeof(g_HomerunSounds));   i++) { PrecacheSound(g_HomerunSounds[i]);   }
-	for (int i = 0; i < (sizeof(StunballPickupeSound));   i++) { PrecacheSound(StunballPickupeSound[i]);   }
-	for (int i = 0; i < (sizeof(g_MissAbilitySound));   i++) { PrecacheSound(g_MissAbilitySound[i]);   }
-	for (int i = 0; i < (sizeof(g_HomerunfailSounds));   i++) { PrecacheSound(g_HomerunfailSounds[i]);   }
+	PrecacheSound("weapons/bumper_car_spawn.wav");
+	PrecacheSoundCustom("#zombiesurvival/victoria_1/raid_atomizer.mp3");
+	
+	g_Laser = PrecacheModel(LASERBEAM);
+	g_RedPoint = PrecacheModel("sprites/redglow1.vmt");
+	
 	PrecacheModel("models/player/scout.mdl");
-	PrecacheSoundCustom("#zombiesurvival/victoria/raid_atomizer.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -174,17 +171,30 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 	return Atomizer(client, vecPos, vecAng, ally, data);
 }
 
-static int i_atomizer_eye_particle[MAXENTITIES];
-
 methodmap Atomizer < CClotBody
 {
-	property int i_GunMode
-	{
-		public get()							{ return i_TimesSummoned[this.index]; }
-		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+	public void PlayIdleAlertSound(){
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
+			return;
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+	}
+	public void PlayHurtSound(){
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
+			return;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayMissSound(){
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
+			return;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
+		int sound = GetRandomInt(0, sizeof(g_MissAbilitySound) - 1);
+		EmitSoundToAll(g_MissAbilitySound[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MissAbilitySound[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void NiceCatchKnucklehead() {
-		EmitSoundToAll(StunballPickupeSound[GetRandomInt(0, sizeof(StunballPickupeSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_StunballPickupeSound[GetRandomInt(0, sizeof(g_StunballPickupeSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayAngerSound() {
 		EmitSoundToAll(g_AngerSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -212,35 +222,11 @@ methodmap Atomizer < CClotBody
 		EmitSoundToAll(g_HomerunfailSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_HomerunfailSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayIdleAlertSound(){
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-	
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-	}
 	public void PlayBoomSound(){
 		EmitSoundToAll(g_BoomSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayIncomingBoomSound(){
 		EmitSoundToAll(g_IncomingBoomSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
-	public void PlayHurtSound(){
-		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
-	public void PlayMissSound(){
-		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
-		int sound = GetRandomInt(0, sizeof(g_MissAbilitySound) - 1);
-		EmitSoundToAll(g_MissAbilitySound[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_MissAbilitySound[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayDeathSound(){
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -254,9 +240,36 @@ methodmap Atomizer < CClotBody
 	public void PlayMeleeHitSound(){
 		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
+	
+	property int i_GunMode
+	{
+		public get()							{ return i_TimesSummoned[this.index]; }
+		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+	}
+	property float m_flFTL
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flDelay_Attribute
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flNiceMiss
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float m_flBaseSpeed
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	
 	public Atomizer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Atomizer npc = view_as<Atomizer>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
+		Atomizer npc = view_as<Atomizer>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.35", "45000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -275,61 +288,102 @@ methodmap Atomizer < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flMeleeArmor = 1.25;
 
-		bool CloneDo = StrContains(data, "support_ability") != -1;
-		if(CloneDo)
+		if(StrContains(data, "support_ability") != -1)
 		{
-			func_NPCDeath[npc.index] = view_as<Function>(Clone_NPCDeath);
-			func_NPCOnTakeDamage[npc.index] = view_as<Function>(Clone_OnTakeDamage);
-			func_NPCThink[npc.index] = view_as<Function>(Clone_ClotThink);
+			func_NPCDeath[npc.index] = Clone_NPCDeath;
+			func_NPCOnTakeDamage[npc.index] = Clone_OnTakeDamage;
+			func_NPCThink[npc.index] = Clone_ClotThink;
 			
 			MakeObjectIntangeable(npc.index);
 			b_DoNotUnStuck[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
-			npc.m_flNextRangedAttack = GetGameTime() + 0.1;
-			npc.m_flRangedSpecialDelay = GetGameTime() + 99.0;
-			npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 99.0;
-			npc.m_flAngerDelay = GetGameTime() + 99.0;
+			npc.m_iState = 0;
+			npc.m_iOverlordComboAttack = 0;
+			npc.m_flNextRangedAttack = 0.0;
+			npc.m_flRangedSpecialDelay = 0.0;
+			npc.m_flNextRangedSpecialAttackHappens = 0.0;
+			npc.m_flAngerDelay = 0.0;
+			npc.m_flDelay_Attribute = 0.0;
+			npc.m_iAmmo = 0;
+			
+			static char countext[2][216];
+			int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
+			for(int i = 0; i < count; i++)
+			{
+				if(i>=count)break;
+				else if(StrContains(countext[i], "support_ability") != -1)
+				{
+					ReplaceString(countext[i], sizeof(countext[]), "support_ability", "");
+					npc.m_iOverlordComboAttack = StringToInt(countext[i]);
+				}
+				else if(StrContains(countext[i], "override") != -1)
+				{
+					ReplaceString(countext[i], sizeof(countext[]), "override", "");
+					npc.m_iTargetAlly = StringToInt(countext[i]);
+				}
+			}
+			switch(npc.m_iOverlordComboAttack)
+			{
+				case 1: NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-1", false, true);
+				case 2:
+				{
+					npc.m_flSpeed = 400.0;
+					npc.m_iMaxAmmo = 30+RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
+					if(npc.m_iMaxAmmo>45)npc.m_iMaxAmmo=45;
+					npc.m_iAmmo = npc.m_iMaxAmmo;
+					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-2", false, true);
+				}
+				default: NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-1", false, true);
+			}
 			npc.PlaySupportSpawnSound();
-			CPrintToChatAll("{blue}Atomizer{default}: Did you really think we would let you sabotage our Radiotower?");
 		}
 		else
 		{
 			RemoveAllDamageAddition();
-			func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
-			func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
-			func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+			func_NPCDeath[npc.index] = Atomizer_NPCDeath;
+			func_NPCOnTakeDamage[npc.index] = Atomizer_OnTakeDamage;
+			func_NPCThink[npc.index] = Atomizer_ClotThink;
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
 			//IDLE
 			npc.StartPathing();
 			npc.m_iState = 0;
 			npc.m_flGetClosestTargetTime = 0.0;
+			npc.m_flBaseSpeed = 300.0;
 			npc.m_flSpeed = 300.0;
-			Delay_Attribute[npc.index] = 0.0;
+			npc.m_flDelay_Attribute = 0.0;
 			DrinkPOWERUP[npc.index] = false;
 			YaWeFxxked[npc.index] = false;
 			ParticleSpawned[npc.index] = false;
 			SUPERHIT[npc.index] = false;
-			NiceMiss[npc.index] = 0.0;
+			npc.m_flNiceMiss = 0.0;
 			Vs_Atomizer_To_Huscarls = 0;
-			I_cant_do_this_all_day[npc.index] = 0;
 			npc.i_GunMode = 0;
+			npc.m_iOverlordComboAttack = 0;
 			npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 15.0;
 			npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 5.0;
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 30.0;
 			npc.m_flAngerDelay = GetGameTime(npc.index) + 15.0;
-			npc.m_iOverlordComboAttack = 0;
+			npc.m_iMaxAmmo = 20+RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
+			if(npc.m_iMaxAmmo>45)npc.m_iMaxAmmo=45;
+			npc.m_iAmmo = 0;
 			OnMiss[npc.index] = false;
 			npc.m_fbRangedSpecialOn = false;
 			npc.m_bFUCKYOU = false;
+			npc.m_bFUCKYOU_move_anim = false;
+			AlreadySaidWin = false;
+			
+			ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
+			
 			Zero(b_said_player_weaponline);
 			fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
+			
 			Vs_RechargeTimeMax[npc.index] = 20.0;
 			Victoria_Support_RechargeTimeMax(npc.index, 20.0);
 			
-			EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
-			EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+			EmitSoundToAll("weapons/bumper_car_spawn.wav", _, _, _, _, 1.0);	
+			EmitSoundToAll("weapons/bumper_car_spawn.wav", _, _, _, _, 1.0);	
 			b_thisNpcIsARaid[npc.index] = true;
 			b_angered_twice[npc.index] = false;
 			for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -341,15 +395,15 @@ methodmap Atomizer < CClotBody
 					ShowGameText(client_check, "item_armor", 1, "%t", "Atomizer Arrived");
 				}
 			}
-			FTL[npc.index] = 200.0;
-			RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
+			npc.m_flFTL = 200.0;
+			RaidModeTime = GetGameTime(npc.index) + npc.m_flFTL;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
 
 			if(StrContains(data, "nomusic") == -1)
 			{
 				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria_1/raid_atomizer.mp3");
 				music.Time = 128;
 				music.Volume = 2.0;
 				music.Custom = true;
@@ -358,7 +412,7 @@ methodmap Atomizer < CClotBody
 				Music_SetRaidMusic(music);
 			}
 			
-			CPrintToChatAll("{blue}Atomizer{default}: Intruders in sight, I won't let them get out alive!");
+			NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Intro", false, true);
 			Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);
 			
 			char buffers[3][64];
@@ -455,127 +509,276 @@ static void Clone_ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
 	
-	float ProjLocBase[3];
-	if(I_cant_do_this_all_day[npc.index] <= 0)
+	switch(npc.m_iOverlordComboAttack)
 	{
-		npc.AddActivityViaSequence("taunt05");
-		npc.SetCycle(0.01);
-		npc.SetPlaybackRate(1.4);
-		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-		int POWERHomeRUN = ParticleEffectAt(pos, "utaunt_aestheticlogo_teamcolor_blue", 3.0);
-		if(IsValidEntity(POWERHomeRUN))
+		case 1:
 		{
-			SetVariantString("!activator");
-			AcceptEntityInput(POWERHomeRUN, "SetParent", npc.index);
-		}
-		Delay_Attribute[npc.index] = gameTime + 0.5;
-		npc.StopPathing();
-		
-		npc.m_bisWalking = false;
-		I_cant_do_this_all_day[npc.index]++;
-	}
-	else if(I_cant_do_this_all_day[npc.index] < 23)
-	{
-		float ProjLoc[3];
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-		ProjLocBase = ProjLoc;
-		ProjLocBase[2] += 5.0;
-		float cpos[3];
-		float velocity[3];
-		for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
-		{
-			if(IsValidEnemy(npc.index, EnemyLoop, true, true))
+			static float ProjLocBase[3];
+			if(npc.m_iState <= 0)
 			{
-				if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop))
+				npc.AddActivityViaSequence("taunt05");
+				npc.SetCycle(0.01);
+				npc.SetPlaybackRate(1.4);
+				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+				int POWERHomeRUN = ParticleEffectAt(pos, "utaunt_aestheticlogo_teamcolor_blue", 3.0);
+				if(IsValidEntity(POWERHomeRUN))
 				{
-					GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
-					
-					MakeVectorFromPoints(ProjLoc, cpos, velocity);
-					NormalizeVector(velocity, velocity);
-					ScaleVector(velocity, -450.0);
-					if(b_ThisWasAnNpc[EnemyLoop])
+					SetVariantString("!activator");
+					AcceptEntityInput(POWERHomeRUN, "SetParent", npc.index);
+				}
+				npc.m_flDelay_Attribute = gameTime + 0.5;
+				npc.StopPathing();
+				npc.m_bisWalking = false;
+				npc.m_iState++;
+			}
+			else if(npc.m_iState < 23)
+			{
+				float ProjLoc[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
+				ProjLocBase = ProjLoc;
+				ProjLocBase[2] += 5.0;
+				float cpos[3];
+				float velocity[3];
+				for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
+				{
+					if(IsValidEnemy(npc.index, EnemyLoop, true, true))
 					{
-						CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
-						npc1.SetVelocity(velocity);
+						float vecTarget[3]; WorldSpaceCenter(EnemyLoop, vecTarget);
+						float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+						float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+						if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && flDistanceToTarget < (1000.0 * 1000.0))
+						{
+							if(!HasSpecificBuff(EnemyLoop, "Solid Stance"))
+							{
+								GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
+								
+								MakeVectorFromPoints(ProjLoc, cpos, velocity);
+								NormalizeVector(velocity, velocity);
+								ScaleVector(velocity, -450.0);
+								if(b_ThisWasAnNpc[EnemyLoop])
+								{
+									CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
+									npc1.SetVelocity(velocity);
+								}
+								else
+									TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);
+							}
+							if(!IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
+							{
+								int red = 125;
+								int green = 175;
+								int blue = 255;
+								if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
+									RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
+								int laser;
+								if(HasSpecificBuff(EnemyLoop, "Solid Stance"))
+								{
+									red = 50;
+									green = 50;
+									blue = 50;
+								}
+								
+								laser = ConnectWithBeam(npc.index, EnemyLoop, red, green, blue, 3.0, 3.0, 2.35, LASERBEAM);
+					
+								i_LaserEntityIndex[EnemyLoop] = EntIndexToEntRef(laser);
+								//Im seeing a new target, relocate laser particle.
+							}
+						}
+						else
+						{
+							if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
+								RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
+						}
 					}
 					else
-					{	
-						TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);
-					}
-					if(!IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 					{
-						int red = 125;
-						int green = 175;
-						int blue = 255;
 						if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-						{
 							RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-						}
-						int laser;
-						
-						laser = ConnectWithBeam(npc.index, EnemyLoop, red, green, blue, 3.0, 3.0, 2.35, LASERBEAM);
-			
-						i_LaserEntityIndex[EnemyLoop] = EntIndexToEntRef(laser);
-						//Im seeing a new target, relocate laser particle.
 					}
 				}
-				else
+				IncreaseEntityDamageTakenBy(npc.index, 0.7, 0.1);
+				spawnRing_Vectors(ProjLocBase, 300.0  * 2.0, 0.0, 0.0, 5.0, LASERBEAM, 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
+				spawnRing_Vectors(ProjLocBase, 300.0 * 2.0, 0.0, 0.0, 25.0, LASERBEAM, 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
+				
+				spawnRing_Vectors(ProjLocBase, 1000.0 * 2.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 255, 255, 150, 1, 0.1, 3.25, 0.1, 3);
+				npc.m_flDoingAnimation = gameTime + 1.1;
+				npc.m_flDelay_Attribute = gameTime + 0.5;
+				npc.StopPathing();
+				
+				npc.m_bisWalking = false;
+				npc.m_iChanged_WalkCycle = 0;
+				npc.m_iState++;
+			}
+			else if(npc.m_flDelay_Attribute < gameTime)
+			{
+				float damageDealt = 125.0 * RaidModeScaling;
+				KillFeed_SetKillIcon(npc.index, "bonk");
+				Explode_Logic_Custom(damageDealt, 0, npc.index, -1, ProjLocBase, 300.0 , 1.0, _, true, 20,_,_,_,SuperAttack);
+				for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 				{
 					if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-					{
 						RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
+				}
+				if(SUPERHIT[npc.index])
+				{
+					npc.PlayHomerunSound();
+					npc.PlayHomerunHitSound();
+					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+					SUPERHIT[npc.index]=false;
+				}
+				else npc.PlayHomerunMissSound();
+				npc.m_flDelay_Attribute = gameTime + 0.5;
+				npc.m_iState=0;
+				npc.m_iOverlordComboAttack=0;
+			}
+		}
+		case 2:
+		{
+			if(npc.m_flGetClosestTargetTime < gameTime)
+			{
+				npc.m_iTarget = GetClosestTarget(npc.index);
+				npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
+			}
+			
+			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			{
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+				float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+				switch(Support_Work(npc, gameTime, flDistanceToTarget))
+				{
+					case 0:
+					{
+						npc.m_bisWalking = true;
+						npc.m_bAllowBackWalking = false;
+						if(flDistanceToTarget < npc.GetLeadRadius()) 
+						{
+							float vPredictedPos[3];
+							PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+							npc.SetGoalVector(vPredictedPos);
+						}
+						else 
+						{
+							npc.SetGoalEntity(npc.m_iTarget);
+						}
+					}
+					case 1:
+					{
+						npc.m_bisWalking = true;
+						npc.m_bAllowBackWalking = true;
+						float vBackoffPos[3];
+						BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
+						npc.SetGoalVector(vBackoffPos, true);
 					}
 				}
 			}
 			else
 			{
-				if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-				{
-					RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-				}						
+				npc.m_flGetClosestTargetTime = 0.0;
+				npc.m_iTarget = GetClosestTarget(npc.index);
+			}
+			if(npc.m_flDoingAnimation < gameTime)
+				AtomizerAnimationChange(npc);
+				
+			if(npc.m_iAmmo<1)
+			{
+				npc.StopPathing();
+				npc.m_bisWalking = false;
+			
+				npc.AddActivityViaSequence("taunt_the_trackmans_touchdown");
+				npc.SetCycle(0.01);
+				npc.SetPlaybackRate(1.4);
+				npc.m_flDelay_Attribute = gameTime + 0.75;
+				npc.m_iOverlordComboAttack=0;
 			}
 		}
-		IncreaseEntityDamageTakenBy(npc.index, 0.7, 0.1);
-		spawnRing_Vectors(ProjLocBase, 250.0  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
-		spawnRing_Vectors(ProjLocBase, 250.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
-		npc.m_flDoingAnimation = gameTime + 1.1;
-		Delay_Attribute[npc.index] = gameTime + 0.5;
-		npc.StopPathing();
-		
-		npc.m_bisWalking = false;
-		npc.m_iChanged_WalkCycle = 0;
-		I_cant_do_this_all_day[npc.index]++;
+		default:
+		{
+			if(npc.m_flDelay_Attribute < gameTime)
+			{
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+				
+				ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+				npc.PlayDeathSound();
+				
+				b_NpcForcepowerupspawn[npc.index] = 0;
+				i_RaidGrantExtra[npc.index] = 0;
+				b_DissapearOnDeath[npc.index] = true;
+				b_DoGibThisNpc[npc.index] = true;
+				SmiteNpcToDeath(npc.index);
+			}
+		}
 	}
-	else if(Delay_Attribute[npc.index] < gameTime)
+}
+
+static int Support_Work(Atomizer npc, float gameTime, float distance)
+{
+	switch(npc.m_iOverlordComboAttack)
 	{
-		float damageDealt = 50.0 * RaidModeScaling;
-		Explode_Logic_Custom(damageDealt, 0, npc.index, -1, ProjLocBase, 250.0 , 1.0, _, true, 20,_,_,_,SuperAttack);
-		for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
+		case 2:
 		{
-			if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-				RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
+			if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTarget)) && (distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 25.0) || npc.m_flAttackHappenswillhappen))
+			{
+				if(npc.m_flNextMeleeAttack < gameTime)
+				{
+					if(!npc.m_flAttackHappenswillhappen)
+					{
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY",_,_,_,2.0);
+						npc.PlayMeleeSound();
+						npc.m_flAttackHappens = gameTime+0.0625;
+						npc.m_flAttackHappens_bullshit = gameTime+0.125;
+						npc.m_flAttackHappenswillhappen = true;
+					}
+					if(npc.m_flAttackHappens < gameTime && npc.m_flAttackHappens_bullshit >= gameTime && npc.m_flAttackHappenswillhappen)
+					{
+						npc.PlayRangedSound();
+						float RocketDamage = 37.5;
+						float RocketSpeed = 1650.0;
+						float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+						float VecStart[3]; WorldSpaceCenter(npc.index, VecStart);
+						float vecDest[3];
+						npc.FaceTowards(vecTarget, 20000.0);
+						vecDest = vecTarget;
+						float SpeedReturn[3];
+						for(int i=1; i<=(npc.m_iAmmo > 3 ? 3 : 1); i++)
+						{
+							if(npc.m_iAmmo)
+							{
+								int RocketGet = npc.FireParticleRocket(vecDest, RocketDamage * RaidModeScaling, RocketSpeed, 400.0, "critical_rocket_blue", false);
+								if(RocketGet != -1)
+								{
+									//max duration of 3 seconds
+									CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
+								}
+								ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
+								SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
+								//Better_Gravity_Rocket(RocketGet, 55.0);
+								TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+								WandProjectile_ApplyFunctionToEntity(RocketGet, Atomizer_Rocket_Particle_StartTouch);
+								npc.m_iAmmo--;
+							}
+							else break;
+						}
+						npc.m_flNextMeleeAttack = gameTime + 0.0625;
+						npc.m_flAttackHappenswillhappen = false;
+					}
+					else if(npc.m_flAttackHappens_bullshit < gameTime && npc.m_flAttackHappenswillhappen)
+					{
+						npc.m_flAttackHappenswillhappen = false;
+						npc.m_flNextMeleeAttack = gameTime + 0.0625;
+					}
+				}
+			}
+			if(distance > (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 9.0))
+				return 0;
+			else if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0))
+			{
+				if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+					return 1;
+			}
 		}
-		if(SUPERHIT[npc.index])
-		{
-			npc.PlayHomerunSound();
-			npc.PlayHomerunHitSound();
-			npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-			SUPERHIT[npc.index]=false;
-		}
-		else npc.PlayHomerunMissSound();
-		I_cant_do_this_all_day[npc.index]=0;
-		
-		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-		
-		ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
-		npc.PlayDeathSound();
-		
-		b_NpcForcepowerupspawn[npc.index] = 0;
-		i_RaidGrantExtra[npc.index] = 0;
-		b_DissapearOnDeath[npc.index] = true;
-		b_DoGibThisNpc[npc.index] = true;
-		SmiteNpcToDeath(npc.index);
 	}
+	return 0;
 }
 
 static Action Clone_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -611,7 +814,7 @@ static void Clone_NPCDeath(int entity)
 	}
 }
 
-static void Internal_ClotThink(int iNPC)
+static void Atomizer_ClotThink(int iNPC)
 {
 	Atomizer npc = view_as<Atomizer>(iNPC);
 	float gameTime = GetGameTime(npc.index);
@@ -627,11 +830,11 @@ static void Internal_ClotThink(int iNPC)
 		float flPos[3], flAng[3];
 				
 		npc.GetAttachment("eyeglow_L", flPos, flAng);
-		i_atomizer_eye_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "eye_powerup_blue_lvl_3", npc.index, "eyeglow_L", {0.0,0.0,0.0}));
+		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "eye_powerup_blue_lvl_3", npc.index, "eyeglow_L", {0.0,0.0,0.0});
 		npc.GetAttachment("", flPos, flAng);
 		ParticleSpawned[npc.index] = true;
 	}
-	if(NiceMiss[npc.index] < gameTime)
+	if(npc.m_flNiceMiss < gameTime)
 	{
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
@@ -647,34 +850,36 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{blue}Atomizer{default}: Ready to die?");
+					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Lastman-1", false, false);
 				}
 				case 1:
 				{
-					CPrintToChatAll("{blue}Atomizer{default}: You can't run forever.");
+					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Lastman-2", false, false);
 				}
 				case 2:
 				{
-					CPrintToChatAll("{blue}Atomizer{default}: All of your comrades are fallen.");
+					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Lastman-3", false, false);
 				}
 			}
 		}
 	}
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
-		DeleteAndRemoveAllNpcs = 3.0;
+		DeleteAndRemoveAllNpcs = 2.0;
 		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_peace_out");
 		npc.SetCycle(0.01);
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		AlreadySaidWin = true;
 		BlockLoseSay = true;
 		
-		CPrintToChatAll("{blue}Atomizer{default}: Mission Accomplished, we will figure out who is behind them");
+		NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_GameEnd", false, false);
 		return;
 	}
-	npc.m_flSpeed = 300.0+(((FTL[npc.index]-(RaidModeTime - GetGameTime()))/FTL[npc.index])*150.0);
+	npc.m_flSpeed = npc.m_flBaseSpeed+(((npc.m_flFTL-(RaidModeTime - GetGameTime()))/npc.m_flFTL)*150.0);
 	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red)
 	{
+		BlockLoseSay = true;
 		npc.m_flMeleeArmor = 0.3696;
 		npc.m_flRangedArmor = 0.33;
 		int MaxHealth = RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")*1.25);
@@ -682,10 +887,10 @@ static void Internal_ClotThink(int iNPC)
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", MaxHealth);
 		switch(GetRandomInt(1, 4))
 		{
-			case 1:CPrintToChatAll("{blue}Atomizer{default}: Victoria will be in peace. Once and for all.");
-			case 2:CPrintToChatAll("{blue}Atomizer{default}: The troops have arrived and will begin destroying the intruders!");
-			case 3:CPrintToChatAll("{blue}Atomizer{default}: Backup team has arrived. Catch those damn bastards!");
-			case 4:CPrintToChatAll("{blue}Atomizer{default}: After this, Im heading to Rusted Bolt Pub. {unique}I need beer.{default}");
+			case 1:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_TimeUp-1", false, false);
+			case 2:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_TimeUp-2", false, false);
+			case 3:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_TimeUp-3", false, false);
+			case 4:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_TimeUp-4", false, false);
 		}
 		for(int i=1; i<=15; i++)
 		{
@@ -770,7 +975,6 @@ static void Internal_ClotThink(int iNPC)
 				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.3);
 		}
 	}
-	
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -794,11 +998,11 @@ static void Internal_ClotThink(int iNPC)
 	
 	if(npc.m_bFUCKYOU)
 	{
-		switch(I_cant_do_this_all_day[npc.index])
+		switch(npc.m_iState)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{blue}Atomizer{default}: Not Enough Energy! Nitro Fuel going in!");
+				NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Pre_2_Phase", false, false);
 				if(IsValidEntity(npc.m_iWearable2))
 					RemoveEntity(npc.m_iWearable2);
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/taunt_cheers/taunt_cheers_pyro.mdl");
@@ -812,13 +1016,13 @@ static void Internal_ClotThink(int iNPC)
 				npc.SetPlaybackRate(2.0);
 				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 1.5;	
-				Delay_Attribute[npc.index] = gameTime + 1.4;
-				I_cant_do_this_all_day[npc.index]=1;
+				npc.m_flDelay_Attribute = gameTime + 1.4;
+				npc.m_iState=1;
 				if(!LastMann)Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);
 			}
 			case 1:
 			{
-				if(Delay_Attribute[npc.index] < gameTime)
+				if(npc.m_flDelay_Attribute < gameTime)
 				{
 					EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 					EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
@@ -826,13 +1030,13 @@ static void Internal_ClotThink(int iNPC)
 					
 					npc.m_bisWalking = false;
 					npc.m_flDoingAnimation = gameTime + 1.5;	
-					Delay_Attribute[npc.index] = gameTime + 0.6;
-					I_cant_do_this_all_day[npc.index]=2;
+					npc.m_flDelay_Attribute = gameTime + 0.6;
+					npc.m_iState=2;
 				}
 			}
 			case 2:
 			{
-				if(Delay_Attribute[npc.index] < gameTime)
+				if(npc.m_flDelay_Attribute < gameTime)
 				{
 					npc.PlayAngerSound();
 					npc.PlayAngerReaction();
@@ -844,9 +1048,10 @@ static void Internal_ClotThink(int iNPC)
 					AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
-					CPrintToChatAll("{blue}Atomizer{default}: Oh yes! I FEEL ALIVE!");
-					I_cant_do_this_all_day[npc.index]=0;
-					npc.m_flNextRangedAttack += 2.0;
+					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_2_Phase", false, false);
+					npc.m_iState=0;
+					npc.m_bFUCKYOU_move_anim=true;
+					npc.m_flNextRangedAttack = gameTime+1.0;//Punishment
 					npc.m_flRangedSpecialDelay += 2.0;
 					npc.m_flNextRangedSpecialAttackHappens += 2.0;
 					npc.m_bFUCKYOU=false;
@@ -866,10 +1071,10 @@ static void Internal_ClotThink(int iNPC)
 	
 	if(npc.m_flNextRangedAttack < gameTime)
 	{
-		float ProjLocBase[3];
-		if(I_cant_do_this_all_day[npc.index] <= 0)
+		static float ProjLocBase[3];
+		if(npc.m_iState <= 0)
 		{
-			CPrintToChatAll("{blue}Atomizer{default}: Ready to fly?");
+			NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Ability", false, false);
 			npc.AddActivityViaSequence("taunt05");
 			npc.SetCycle(0.01);
 			npc.SetPlaybackRate(1.4);
@@ -880,13 +1085,14 @@ static void Internal_ClotThink(int iNPC)
 				SetVariantString("!activator");
 				AcceptEntityInput(POWERHomeRUN, "SetParent", npc.index);
 			}
-			Delay_Attribute[npc.index] = gameTime + 0.5;
+			npc.m_flDelay_Attribute = gameTime + 0.5;
 			npc.StopPathing();
 			
 			npc.m_bisWalking = false;
-			I_cant_do_this_all_day[npc.index]++;
+			npc.m_iState++;
+			IncreaseEntityDamageTakenBy(npc.index, 0.7, 3.0);
 		}
-		else if(I_cant_do_this_all_day[npc.index] < 23)
+		else if(npc.m_iState < 23)
 		{
 			float ProjLoc[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
@@ -900,22 +1106,23 @@ static void Internal_ClotThink(int iNPC)
 				{
 					float vecTarget[3]; WorldSpaceCenter(EnemyLoop, vecTarget );
 					float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-					float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc);
-					if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && flDistanceToTarget < 750.0)
+					float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+					if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && flDistanceToTarget < (750.0 * 750.0))
 					{
-						GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
-						
-						MakeVectorFromPoints(ProjLoc, cpos, velocity);
-						NormalizeVector(velocity, velocity);
-						ScaleVector(velocity, -450.0);
-						if(b_ThisWasAnNpc[EnemyLoop])
+						if(!HasSpecificBuff(EnemyLoop, "Solid Stance"))
 						{
-							CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
-							npc1.SetVelocity(velocity);
-						}
-						else
-						{	
-							TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);
+							GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
+							
+							MakeVectorFromPoints(ProjLoc, cpos, velocity);
+							NormalizeVector(velocity, velocity);
+							ScaleVector(velocity, -450.0);
+							if(b_ThisWasAnNpc[EnemyLoop])
+							{
+								CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
+								npc1.SetVelocity(velocity);
+							}
+							else
+								TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);
 						}
 						if(!IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 						{
@@ -923,10 +1130,14 @@ static void Internal_ClotThink(int iNPC)
 							int green = 175;
 							int blue = 255;
 							if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-							{
 								RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-							}
 							int laser;
+							if(HasSpecificBuff(EnemyLoop, "Solid Stance"))
+							{
+								red = 50;
+								green = 50;
+								blue = 50;
+							}
 							
 							laser = ConnectWithBeam(npc.index, EnemyLoop, red, green, blue, 3.0, 3.0, 2.35, LASERBEAM);
 				
@@ -937,34 +1148,36 @@ static void Internal_ClotThink(int iNPC)
 					else
 					{
 						if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-						{
 							RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-						}
 					}
 				}
 				else
 				{
 					if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-					{
 						RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-					}						
 				}
 			}
-			IncreaseEntityDamageTakenBy(npc.index, 0.7, 0.1);
-			spawnRing_Vectors(ProjLocBase, 250.0  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
-			spawnRing_Vectors(ProjLocBase, 250.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
+			spawnRing_Vectors(ProjLocBase, 250.0  * 2.0, 0.0, 0.0, 5.0, LASERBEAM, 125, 175, 255, 150, 1, 0.3, 5.0, 0.1, 3);
+			spawnRing_Vectors(ProjLocBase, 250.0 * 2.0, 0.0, 0.0, 25.0, LASERBEAM, 125, 175, 255, 150, 1, 0.3, 5.0, 0.1, 3);
+			spawnRing_Vectors(ProjLocBase, 750.0 * 2.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 255, 255, 150, 1, 0.1, 3.25, 0.1, 3);
 			npc.m_flDoingAnimation = gameTime + 1.1;
-			Delay_Attribute[npc.index] = gameTime + 0.5;
+			npc.m_flDelay_Attribute = gameTime + 0.5;
 			npc.StopPathing();
 			
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 0;
-			I_cant_do_this_all_day[npc.index]++;
+			npc.m_iState++;
 		}
-		else if(Delay_Attribute[npc.index] < gameTime)
+		else if(npc.m_flDelay_Attribute < gameTime)
 		{
-			float damageDealt = 50.0 * RaidModeScaling;
-			Explode_Logic_Custom(damageDealt, 0, npc.index, -1, ProjLocBase, 250.0 , 1.0, _, true, 20,_,_,_,SuperAttack);
+			float damageDealt = 75.0 * (DrinkPOWERUP[npc.index]? 1.34 : 1.0);
+			if(npc.m_bFUCKYOU_move_anim)
+			{
+				damageDealt*2.0;
+				npc.m_bFUCKYOU_move_anim=false;
+			}
+			KillFeed_SetKillIcon(npc.index, "bonk");
+			Explode_Logic_Custom(damageDealt * RaidModeScaling, 0, npc.index, -1, ProjLocBase, 250.0 , 1.0, _, true, 20,_,_,_,SuperAttack);
 			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 			{
 				if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
@@ -978,7 +1191,7 @@ static void Internal_ClotThink(int iNPC)
 				SUPERHIT[npc.index]=false;
 			}
 			else npc.PlayHomerunMissSound();
-			I_cant_do_this_all_day[npc.index]=0;
+			npc.m_iState=0;
 			npc.StartPathing();
 			npc.m_flNextRangedAttack = gameTime + (DrinkPOWERUP[npc.index] ? 22.5 : 40.0);
 		}
@@ -1032,7 +1245,7 @@ static void Internal_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Atomizer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Atomizer npc = view_as<Atomizer>(victim);
 		
@@ -1041,7 +1254,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	if(!IsValidEntity(attacker))
 		return Plugin_Continue;
 	float gameTime = GetGameTime(npc.index);
-	if(NiceMiss[npc.index] > gameTime && GetRandomInt(1,100)<=40)
+	if(npc.m_flNiceMiss > gameTime && GetRandomInt(1,100)<=40)
 	{
 		damage = 0.0;
 		float chargerPos[3];
@@ -1081,11 +1294,11 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		if(!npc.m_fbRangedSpecialOn)
 		{
-			I_cant_do_this_all_day[npc.index]=0;
+			npc.m_iState=0;
 			npc.m_bFUCKYOU=true;
-			IncreaseEntityDamageTakenBy(npc.index, 0.05, 1.0);
+			IncreaseEntityDamageTakenBy(npc.index, 0.05, 2.9);
 			npc.m_fbRangedSpecialOn = true;
-			FTL[npc.index] += 5.0;
+			npc.m_flFTL += 5.0;
 			RaidModeTime += 5.0;
 			npc.m_flNextRangedAttack += 5.0;
 		}
@@ -1094,13 +1307,9 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	return Plugin_Changed;
 }
 
-static void Internal_NPCDeath(int entity)
+static void Atomizer_NPCDeath(int entity)
 {
 	Atomizer npc = view_as<Atomizer>(entity);
-	/*
-		Explode on death code here please
-
-	*/
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
@@ -1126,13 +1335,6 @@ static void Internal_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
-	int particle = EntRefToEntIndex(i_atomizer_eye_particle[npc.index]);
-	if(IsValidEntity(particle))
-	{
-		RemoveEntity(particle);
-		i_atomizer_eye_particle[npc.index]=INVALID_ENT_REFERENCE;
-	}
 	
 	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 	{
@@ -1151,14 +1353,14 @@ static void Internal_NPCDeath(int entity)
 
 	switch(GetRandomInt(0,2))
 	{
-		case 0:CPrintToChatAll("{blue}Atomizer{default}: Ugh, I need backup");
-		case 1:CPrintToChatAll("{blue}Atomizer{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
-		case 2:CPrintToChatAll("{blue}Atomizer{default}: You intruders will soon face the {crimson}Real Deal.{default}");
+		case 0:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_EscapePlan-1", false, false);
+		case 1:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_EscapePlan-2", false, false);
+		case 2:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_EscapePlan-3", false, false);
 	}
 
 }
 
-void AtomizerAnimationChange(Atomizer npc)
+static void AtomizerAnimationChange(Atomizer npc)
 {
 	if(npc.m_iChanged_WalkCycle == 0)
 		npc.m_iChanged_WalkCycle = -1;
@@ -1218,16 +1420,16 @@ void AtomizerAnimationChange(Atomizer npc)
 
 }
 
-int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance)
+static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance)
 {
 	npc.i_GunMode = 0;
 
 	if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 	{
 		int Enemy_I_See;
-									
+		
 		Enemy_I_See = Can_I_See_Enemy(npc.index, target);
-						
+		
 		if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 		{
 			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
@@ -1235,18 +1437,20 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 			npc.m_flDoingAnimation = gameTime + 0.45;
 			npc.m_flNextRangedSpecialAttackHappens = gameTime + (DrinkPOWERUP[npc.index] ? 15.0 : 22.5);
 			npc.m_flNextRangedAttack += 1.0;
-			npc.m_iOverlordComboAttack =  RoundToNearest(float(CountPlayersOnRed(2)) * 2.5); 
+			npc.m_iMaxAmmo = (DrinkPOWERUP[npc.index] ? 30 : 20)+RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
+			if(npc.m_iMaxAmmo>45)npc.m_iMaxAmmo=45;
+			npc.m_iAmmo = npc.m_iMaxAmmo;
 		}
 	}
 	else if(npc.m_flRangedSpecialDelay < gameTime)
 	{
 		int Enemy_I_See;
-									
+		
 		Enemy_I_See = Can_I_See_Enemy(npc.index, target);
-						
+		
 		if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 		{
-			switch(I_cant_do_this_all_day[npc.index])
+			switch(npc.m_iState)
 			{
 				case 0:
 				{
@@ -1254,7 +1458,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 						RemoveEntity(npc.m_iWearable2);
 					npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_energy_drink/c_energy_drink.mdl");
 					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-				
+					IncreaseEntityDamageTakenBy(npc.index, 0.25, 1.5);
 					npc.StopPathing();
 					
 					npc.m_flDoingAnimation = gameTime + 1.0;
@@ -1268,12 +1472,12 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 					EmitSoundToAll("mvm/mvm_used_powerup.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.5);
 					npc.SetCycle(0.01);
 					npc.m_iChanged_WalkCycle = 0;
-					Delay_Attribute[npc.index] = gameTime + 1.0;
-					I_cant_do_this_all_day[npc.index]=1;
+					npc.m_flDelay_Attribute = gameTime + 1.0;
+					npc.m_iState=1;
 				}
 				case 1:
 				{
-					if(Delay_Attribute[npc.index] < gameTime)
+					if(npc.m_flDelay_Attribute < gameTime)
 					{
 						if(IsValidEntity(npc.m_iWearable2))
 							RemoveEntity(npc.m_iWearable2);
@@ -1281,9 +1485,9 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 						SetVariantString("1.2");
 						AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 						SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-						NiceMiss[npc.index] = gameTime + 10.0;
+						npc.m_flNiceMiss = gameTime + 10.0;
 						if(!LastMann)Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);
-						I_cant_do_this_all_day[npc.index]=2;
+						npc.m_iState=2;
 					}
 				}
 				case 2:
@@ -1294,8 +1498,9 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 					{
 						float flPos[3];
 						float flAng[3];
-						npc.GetAttachment("effect_hand_r", flPos, flAng);
-						npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+						npc.GetAttachment("head", flPos, flAng);
+						npc.m_iWearable1 = ParticleEffectAt(flPos, "scout_dodge_blue", 7.5);
+						SetParent(npc.index, npc.m_iWearable1, "head");
 					}
 					if(!IsValidEntity(npc.m_iWearable7))
 					{
@@ -1305,7 +1510,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 						npc.m_iWearable7 = ParticleEffectAt(flPos, "utaunt_tarotcard_blue_glow");
 						SetParent(npc.index, npc.m_iWearable7);
 					}
-					I_cant_do_this_all_day[npc.index]=0;
+					npc.m_iState=0;
 					npc.m_flNextRangedAttack += 3.0;
 					npc.m_flRangedSpecialDelay = gameTime + (DrinkPOWERUP[npc.index] ? 20.0 : 30.0);
 				}
@@ -1316,11 +1521,11 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
-			if(npc.m_iOverlordComboAttack > 0)
+			if(npc.m_iAmmo > 0)
 			{
 				if(gameTime > npc.m_flNextMeleeAttack)
 				{
-					if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 25.0))
+					if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 40.0))
 					{
 						npc.m_flAttackHappens = 0.0;
 						float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
@@ -1345,14 +1550,14 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 							float vecDest[3];
 							vecDest = vecTarget;
 							float SpeedReturn[3];
-							for(int i=1; i<=(npc.m_iOverlordComboAttack > 3 ? 3 : 1); i++)
+							for(int i=1; i<=(npc.m_iAmmo > 3 ? 3 : 1); i++)
 							{
-								if(npc.m_iOverlordComboAttack > 0)
+								if(npc.m_iAmmo > 0)
 								{
 									int RocketGet = npc.FireParticleRocket(vecDest, RocketDamage * RaidModeScaling, RocketSpeed, 400.0, "critical_rocket_blue", false);
 									if(RocketGet != -1)
 									{
-										//max duration of 2 seconds
+										//max duration of 3 seconds
 										CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
 									}
 									SetEntityGravity(RocketGet, 1.0);
@@ -1361,48 +1566,13 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 									ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
 									SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 									TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
-									WandProjectile_ApplyFunctionToEntity(RocketGet, Atomizer_Rocket_Particle_StartTouch);	
-									npc.m_iOverlordComboAttack-=1;
+									/*SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+									SDKHook(RocketGet, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);*/
+									WandProjectile_ApplyFunctionToEntity(RocketGet, Atomizer_Rocket_Particle_StartTouch);
+									npc.m_iAmmo--;
 								}
 								else break;
 							}
-							
-							/*if(!IsSpaceOccupiedWorldOnly(VecStart, view_as<float>( { -35.0, -35.0, 17.0 } ), view_as<float>( { 35.0, 35.0, 500.0 } ), npc.index))
-							{
-								float SpeedReturn[3];
-								for(int i=1; i<=3; i++)
-								{
-									if(npc.m_iOverlordComboAttack > 0)
-									{
-										int RocketGet = npc.FireParticleRocket(vecDest, RocketDamage * RaidModeScaling, RocketSpeed, 400.0, "critical_rocket_blue", false);
-										SetEntityGravity(RocketGet, 1.0); 	
-										ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
-										SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
-										TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
-										SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-										SDKHook(RocketGet, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
-										npc.m_iOverlordComboAttack --;
-									}
-									else break;
-								}
-							}
-							else
-							{
-								RocketSpeed *= 0.75;
-								for(int i=1; i<=3; i++)
-								{
-									if(npc.m_iOverlordComboAttack > 0)
-									{
-										int RocketGet = npc.FireParticleRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, 100.0, "critical_rocket_blue", false);
-										SetEntityGravity(RocketGet, 1.0);
-										SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
-										SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-										SDKHook(RocketGet, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
-										npc.m_iOverlordComboAttack --;
-									}
-									else break;
-								}
-							}*/
 						}
 					}
 				}
@@ -1461,40 +1631,27 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 									damage*=1.25;
 								if(ShouldNpcDealBonusDamage(target))
 									damage *= 7.0;
-
+								KillFeed_SetKillIcon(npc.index, "atomizer");
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
-									
-								
-								// Hit particle
-								
-							
 								
 								bool Knocked = false;
-											
+								
 								if(IsValidClient(targetTrace))
 								{
-									if(IsInvuln(targetTrace))
+									if(IsInvuln(targetTrace) && !HasSpecificBuff(targetTrace, "Solid Stance"))
 									{
 										Knocked = true;
-										Custom_Knockback(npc.index, targetTrace, 300.0, true);
-										if(!NpcStats_IsEnemySilenced(npc.index))
-										{
-											TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
-											TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
-										}
+										Custom_Knockback(npc.index, targetTrace, 600.0, true);
 									}
-									else
+									if(!HasSpecificBuff(targetTrace, "Fluid Movement"))
 									{
-										if(!NpcStats_IsEnemySilenced(npc.index))
-										{
-											TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
-											TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
-										}
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.4);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.4);
 									}
 								}
-											
-								if(!Knocked)
-									Custom_Knockback(npc.index, targetTrace, 150.0, true); 
+								
+								if(!Knocked && !HasSpecificBuff(targetTrace, "Solid Stance"))
+									Custom_Knockback(npc.index, targetTrace, 300.0, true); 
 							} 
 						}
 					}
@@ -1509,7 +1666,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 	{
 		if(IsValidEnemy(npc.index, target)) 
 		{
-			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 25.0) && npc.m_iOverlordComboAttack > 0)
+			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 40.0) && npc.m_iAmmo > 0)
 			{
 				int Enemy_I_See;
 									
@@ -1565,8 +1722,11 @@ static void SuperAttack(int entity, int victim, float damage, int weapon)
 	Atomizer npc = view_as<Atomizer>(entity);
 	if(IsValidEntity(victim))
 	{
-		float vecHit[3]; WorldSpaceCenter(victim, vecHit);
-		Custom_Knockback(npc.index, victim, DrinkPOWERUP[npc.index] ? 2200.0 : 1980.0, true, true, true);
+		if(!HasSpecificBuff(victim, "Solid Stance"))
+		{
+			float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+			Custom_Knockback(npc.index, victim, DrinkPOWERUP[npc.index] ? 2200.0 : 1980.0, true, true, true);
+		}
 		SUPERHIT[npc.index]=true;
 	}
 }
@@ -1585,80 +1745,26 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 		if(inflictor == -1)
 			inflictor = owner;
 			
-		float ProjectileLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 		float DamageDeal = fl_rocket_particle_dmg[entity];
 		if(ShouldNpcDealBonusDamage(target))
 			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
-
+		KillFeed_SetKillIcon(owner, "ball");
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		if(target <= MaxClients && !IsInvuln(target))
 			if(!HasSpecificBuff(target, "Fluid Movement"))
 				TF2_StunPlayer(target, 2.0, 0.4, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
-
-		int particle = EntRefToEntIndex(i_WandParticle[entity]);
-		if(IsValidEntity(particle))
-			RemoveEntity(particle);
+		ApplyStatusEffect(owner, target, "Teslar Shock", NpcStats_VictorianCallToArms(owner) ? 7.5 : 5.0);
 	}
-	else
-	{
-		if(IsValidEntity(entity))
-		{
-			int GETBOUNS = GetEntProp(entity, Prop_Data, "m_iHammerID");
-			if(GETBOUNS < 20)
-			{
-				static float vOrigin[3], vVelocity[3];
-				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vOrigin);
-				GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vVelocity);
-				
-				float TempANG[3], tOrigin[3];
-				TempANG[0]=90.0;
-				EntityLookPoint(entity, TempANG, vOrigin, tOrigin);
-				float distance = GetVectorDistance(vOrigin, tOrigin);
-				if(distance<65.0)
-					vVelocity[2] = 600.0;
-				else
-				{
-					TempANG[0]=-90.0;
-					EntityLookPoint(entity, TempANG, vOrigin, tOrigin);
-					distance = GetVectorDistance(vOrigin, tOrigin);
-					if(distance<65.0)
-						vVelocity[2] = -600.0;
-				}
-				int E_Target = GetClosestTarget(entity);
-				TeleportEntity(entity, NULL_VECTOR, TempANG, vVelocity);
-				float VecStart[3]; WorldSpaceCenter(entity, VecStart);
-				if(IsValidEnemy(owner, E_Target))
-				{
-					float vecDest[3]; WorldSpaceCenter(E_Target, vecDest);
-					float SpeedReturn[3];
-					PredictSubjectPositionForProjectiles(view_as<Atomizer>(entity), E_Target, 400.0,_,vecDest);
-					vecDest[0] += GetRandomFloat(-30.0, 30.0);
-					vecDest[1] += GetRandomFloat(-30.0, 30.0);
-					ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.25, 1.0);
-					TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
-					SetEntProp(entity, Prop_Data, "m_iHammerID", GETBOUNS+1);
-				}
-				return Plugin_Handled;
-			}
-		}
-		int particle = EntRefToEntIndex(i_WandParticle[entity]);
-		if(IsValidEntity(particle))
-			RemoveEntity(particle);
-	}
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
+	if(IsValidEntity(particle))
+		RemoveEntity(particle);
 	RemoveEntity(entity);
 	return Plugin_Handled;
 }
 
 static bool ONLYBSP(int entity, int contentsMask, any data)
 {
-	if(entity == data)
-		return false;
-
-	if(1 <= entity <= MaxClients)
-		return false;
-
-	return true;
+	return !entity;
 }
 
 static int Victoria_Melee_or_Ranged(Atomizer npc)
@@ -1741,12 +1847,13 @@ static void Atomizer_Weapon_Lines(Atomizer npc, int client)
 
 	if(valid)
 	{
-		CPrintToChatAll("{blue}Atomizer{default}: %s", Text_Lines);
+		NPCPritToChat(npc.index, "{blue}", Text_Lines, false, false);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}
 }
 
+/* Victoria Nuke */
 static bool Victoria_Support(Atomizer npc)
 {
 	float GameTime = GetGameTime();
@@ -1793,24 +1900,19 @@ static bool Victoria_Support(Atomizer npc)
 					Vs_LockOn[client]=false;
 			}
 		}
-		TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index], 1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0), (1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0))+0.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {255, 255, 255, 150}, 0, 0);
-		TE_SendToAll();
+		spawnRing_Vectors(Vs_Temp_Pos[npc.index], (1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0)), 0.0, 0.0, 0.0, LASERBEAM, 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
 		float position2[3];
 		position2[0] = Vs_Temp_Pos[npc.index][0];
 		position2[1] = Vs_Temp_Pos[npc.index][1];
 		position2[2] = Vs_Temp_Pos[npc.index][2] + 65.0;
-		TE_SetupBeamRingPoint(position2, 1000.0, 1000.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
+		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
+		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
 		TE_SendToAll();
-		TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index], 1000.0, 1000.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
-		TE_SendToAll();
-		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, gLaser1, -1, 0, 0, 0.1, 0.0, 25.0, 0, 1.0, {145, 47, 47, 150}, 3);
-		TE_SendToAll();
-		TE_SetupGlowSprite(Vs_Temp_Pos[npc.index], gRedPoint, 0.1, 1.0, 255);
+		TE_SetupGlowSprite(Vs_Temp_Pos[npc.index], g_RedPoint, 0.1, 1.0, 255);
 		TE_SendToAll();
 		if(Vs_RechargeTime[npc.index] > (Vs_RechargeTimeMax[npc.index] - 1.0) && !IsValidEntity(Vs_ParticleSpawned[npc.index]))
 		{
-			position[0] = 525.0;
-			position[1] = 1600.0;
 			Vs_ParticleSpawned[npc.index] = EntIndexToEntRef(ParticleEffectAt(position, "kartimpacttrail", 2.0));
 			SetEdictFlags(Vs_ParticleSpawned[npc.index], (GetEdictFlags(Vs_ParticleSpawned[npc.index]) | FL_EDICT_ALWAYS));
 			SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
@@ -1827,7 +1929,8 @@ static bool Victoria_Support(Atomizer npc)
 		position[2] += 700.0;
 		
 		i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_TRUE_DAMAGE;
-		Explode_Logic_Custom(100.0*RaidModeScaling, 0, npc.index, -1, position, 500.0, 1.0, _, true, 20);
+		KillFeed_SetKillIcon(npc.index, "megaton");
+		Explode_Logic_Custom(125.0*RaidModeScaling, 0, npc.index, -1, position, 500.0, 1.0, _, true, 20);
 		
 		ParticleEffectAt(position, "hightower_explosion", 1.0);
 		i_ExplosiveProjectileHexArray[npc.index] = 0; 

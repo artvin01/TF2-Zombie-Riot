@@ -11,6 +11,12 @@ enum
 	PAP_DESC_PREVIEW
 }
 
+enum
+{
+	VIEW_TEUTON_NONE,
+	VIEW_TEUTON_ONLY,
+	VIEW_TEUTON_EXCEPTION
+}
 
 enum struct ItemInfo
 {
@@ -489,6 +495,7 @@ enum struct Item
 	bool NoKit;
 	bool ForceAllowWithKit; //For wrenches.
 	bool Internal_ClickEnhance;
+	int ViewTeutonOnly;
 	
 	ArrayList ItemInfos;
 	
@@ -575,6 +582,7 @@ static bool UsingChoosenTags[MAXPLAYERS];
 static int LastMenuPage[MAXPLAYERS];
 static int CurrentMenuPage[MAXPLAYERS];
 static int CurrentMenuItem[MAXPLAYERS];
+static Item LastBoughtWeapon[MAXPLAYERS];
 
 static bool HasMultiInSlot[MAXPLAYERS][6];
 static Function HolsterFunc[MAXPLAYERS] = {INVALID_FUNCTION, ...};
@@ -1118,6 +1126,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 	item.NoKit = view_as<bool>(kv.GetNum("nokit", noKits ? 1 : 0));
 	item.ForceAllowWithKit = view_as<bool>(kv.GetNum("forcewithkits"));
 	item.Internal_ClickEnhance = view_as<bool>(kv.GetNum("enhanceweapon_click"));
+	item.ViewTeutonOnly = kv.GetNum("teuton_only", VIEW_TEUTON_NONE);
 	kv.GetString("textstore", item.Name, sizeof(item.Name));
 	item.GiftId = item.Name[0] ? Items_NameToId(item.Name) : -1;
 	kv.GetSectionName(item.Name, sizeof(item.Name));
@@ -1341,6 +1350,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 					}
 					
 					menu.Pagination = 6;
+					menu.ExitBackButton = true;
 					menu.ExitButton = true;
 					menu.Display(client, MENU_TIME_FOREVER);
 				}
@@ -1361,6 +1371,9 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_Cancel:
 		{
 			ResetStoreMenuLogic(client);
+			
+			if(choice == MenuCancel_ExitBack)
+				MenuPage(client, -1);
 		}
 		case MenuAction_Select:
 		{
@@ -1482,6 +1495,8 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						Store_ApplyAttribs(client);
 						Store_GiveAll(client, GetClientHealth(client));
 					//	owner = EntRefToEntIndex(values[2]);
+						
+						LastBoughtWeapon[client] = item;
 
 						Function Func = info.FuncOnPap;
 
@@ -3737,6 +3752,12 @@ static void MenuPage(int client, int section)
 				continue;
 			}
 			
+			if (item.ViewTeutonOnly == VIEW_TEUTON_ONLY && TeutonType[client] == 0)
+				continue;
+			
+			if (item.ViewTeutonOnly == VIEW_TEUTON_EXCEPTION && TeutonType[client] != 0)
+				continue;
+			
 			if(item.GiftId != -1 && !Items_HasIdItem(client, item.GiftId))
 				continue;
 
@@ -3908,7 +3929,6 @@ static void MenuPage(int client, int section)
 				}
 			}
 		}
-			
 	}
 
 	if(UsingChoosenTags[client])
@@ -4424,11 +4444,47 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 							if(item.Internal_ClickEnhance)
 							{
 								DoNormal = 0;
-								int activeweapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-								if(IsValidEntity(activeweapon) && StoreWeapon[activeweapon] > 0)
+								
+								int index1;
+								static Item item1;
+								
+								if (TeutonType[client])
 								{
-									static Item item1;
-									StoreItems.GetArray(StoreWeapon[activeweapon], item1);
+									// We can't hold any weapon as a teuton, so we search for our last-purchased weapon instead
+									Item itemLastBought;
+									itemLastBought = LastBoughtWeapon[client];
+									if (itemLastBought.Owned[client])
+									{
+										int length = StoreItems.Length;
+										for(int i; i<length; i++)
+										{
+											StoreItems.GetArray(i, item1);
+											if(StrEqual(itemLastBought.Name, item1.Name, false))
+											{
+												index1 = i;
+												break;
+											}
+										}
+									}
+									
+									// Couldn't find our last weapon... likely because we don't own it anymore (or never owned one at all)
+									if (index1 <= 0)
+										DoNormal = 2;
+								}
+								else
+								{
+									// We're not a teuton! Use our active weapon
+									int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+									if (IsValidEntity(weapon))
+									{
+										index1 = StoreWeapon[weapon];
+										if (index1 > 0)
+											StoreItems.GetArray(index, item1);
+									}
+								}
+								
+								if(index1 > 0)
+								{
 									int level = item1.Owned[client]-1;
 									if(item1.ParentKit || level < 0)
 										level = 0;
@@ -4462,7 +4518,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 									if(CanBePapped)
 									{
 										DoNormal = 0;
-										Store_PackMenu(client, StoreWeapon[activeweapon], -1, client);
+										Store_PackMenu(client, index1, -1, client);
 									}
 								}
 								else
@@ -4673,6 +4729,8 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 									subItem.Owned[client] = item.Owned[client];
 									subItem.Equipped[client] = true;
 									StoreItems.SetArray(i, subItem);
+									
+									LastBoughtWeapon[client] = subItem;
 								}
 							}
 							
@@ -4718,6 +4776,8 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 								}
 								
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+								
+								LastBoughtWeapon[client] = item;
 							}
 						}
 						
@@ -6426,7 +6486,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_PurgeKit(client, entity);
 		GemCrafter_Enable(client, entity);
 		VehicleFullAPC_WeaponEnable(client, entity);
-
+		Enable_ExploARWeapon(client, entity);
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);
 	}

@@ -882,6 +882,16 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return i_OverlordComboAttack[this.index]; }
 		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
 	}
+	property int m_iAmmo
+	{
+		public get()							{ return i_GunAmmo[this.index]; }
+		public set(int TempValueForProperty) 	{ i_GunAmmo[this.index] = TempValueForProperty; }
+	}
+	property int m_iMaxAmmo
+	{
+		public get()							{ return i_GunAmmoMAX[this.index]; }
+		public set(int TempValueForProperty) 	{ i_GunAmmoMAX[this.index] = TempValueForProperty; }
+	}
 	property int m_iTargetAlly
 	{
 		public get()		 
@@ -4250,6 +4260,9 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		//Do not remove pather here.
 		RemoveNpcFromEnemyList(pThis, true);
 		b_StaticNPC[pThis] = false;
+
+		//avoid hitboxes gettign in the way, specifically a sniper rifle fix
+		SetEntPropFloat(pThis, Prop_Send, "m_flModelScale", 0.0001);
 
 		//If its a building type, force vanish.
 		if(i_IsNpcType[pThis] == 1)

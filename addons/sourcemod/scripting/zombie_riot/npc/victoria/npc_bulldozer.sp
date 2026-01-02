@@ -7,7 +7,7 @@ static const char g_DeathSounds[][] = {
 	"vo/demoman_negativevocalization03.mp3",
 	"vo/demoman_negativevocalization04.mp3",
 	"vo/demoman_negativevocalization05.mp3",
-	"vo/demoman_negativevocalization06.mp3",
+	"vo/demoman_negativevocalization06.mp3"
 };
 
 static const char g_HurtSounds[][] = {
@@ -17,9 +17,8 @@ static const char g_HurtSounds[][] = {
 	"vo/demoman_painsharp04.mp3",
 	"vo/demoman_painsharp05.mp3",
 	"vo/demoman_painsharp06.mp3",
-	"vo/demoman_painsharp07.mp3",
+	"vo/demoman_painsharp07.mp3"
 };
-
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/taunts/demoman_taunts01.mp3",
@@ -29,44 +28,46 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/taunts/demoman_taunts05.mp3",
 	"vo/taunts/demoman_taunts06.mp3",
 	"vo/taunts/demoman_taunts07.mp3",
-	"vo/taunts/demoman_taunts08.mp3",
+	"vo/taunts/demoman_taunts08.mp3"
 };
 
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
 	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
-};
-
-static const char g_MeleeHitSounds[][] = {
-	"weapons/bat_baseball_hit_flesh.wav",
+	"weapons/demo_sword_swing3.wav"
 };
 
 static const char g_HurtArmorSounds[][] = {
 	")physics/metal/metal_box_impact_bullet1.wav",
 	")physics/metal/metal_box_impact_bullet2.wav",
-	")physics/metal/metal_box_impact_bullet3.wav",
+	")physics/metal/metal_box_impact_bullet3.wav"
 };
+
+static const char g_MeleeHitSounds[] = "weapons/bat_baseball_hit_flesh.wav";
 
 void Bulldozer_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_HurtArmorSounds)); i++) { PrecacheSound(g_HurtArmorSounds[i]); }
-	PrecacheModel("models/player/demo.mdl");
-
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bulldozer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bulldozer");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_bulldozer");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Expidonsa;
+	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_HurtArmorSounds);
+	PrecacheSound(g_MeleeHitSounds);
+	PrecacheModel("models/player/demo.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -83,9 +84,7 @@ methodmap Bulldozer < CClotBody
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -94,22 +93,18 @@ methodmap Bulldozer < CClotBody
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 90);
-
+		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 90);
 	}
 	public void PlayHurtArmorSound() 
 	{
@@ -118,9 +113,7 @@ methodmap Bulldozer < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		EmitSoundToAll(g_HurtArmorSounds[GetRandomInt(0, sizeof(g_HurtArmorSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
 	}
-	
 	
 	public Bulldozer(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -132,12 +125,6 @@ methodmap Bulldozer < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		
-		/*
-			Slow and has armor
-			once armor breaks, gains heavy speed
-		*/
-		
 		func_NPCDeath[npc.index] = Bulldozer_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Bulldozer_OnTakeDamage;
 		func_NPCThink[npc.index] = Bulldozer_ClotThink;
@@ -147,17 +134,15 @@ methodmap Bulldozer < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		
 		//IDLE
+		KillFeed_SetKillIcon(npc.index, "the_maul");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 175.0;
 		
-		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_rfa_hammer/c_rfa_hammer.mdl");
 		SetVariantString("1.0");
@@ -186,7 +171,7 @@ methodmap Bulldozer < CClotBody
 	}
 }
 
-public void Bulldozer_ClotThink(int iNPC)
+static void Bulldozer_ClotThink(int iNPC)
 {
 	Bulldozer npc = view_as<Bulldozer>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -251,7 +236,7 @@ public void Bulldozer_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Bulldozer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Bulldozer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Bulldozer npc = view_as<Bulldozer>(victim);
 		
@@ -286,13 +271,10 @@ public Action Bulldozer_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			npc.m_blPlayHurtAnimation = true;
 		}		
 	}
-
-
-	
 	return Plugin_Changed;
 }
 
-public void Bulldozer_NPCDeath(int entity)
+static void Bulldozer_NPCDeath(int entity)
 {
 	Bulldozer npc = view_as<Bulldozer>(entity);
 	if(!npc.m_bGib)
@@ -313,20 +295,18 @@ public void Bulldozer_NPCDeath(int entity)
 
 }
 
-void BulldozerSelfDefense(Bulldozer npc, float gameTime, int target, float distance)
+static void BulldozerSelfDefense(Bulldozer npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
-			
 			Handle swingTrace;
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
-							
 				target = TR_GetEntityIndex(swingTrace);	
 				
 				float vecHit[3];
@@ -337,7 +317,6 @@ void BulldozerSelfDefense(Bulldozer npc, float gameTime, int target, float dista
 					float damageDealt = 85.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 4.0;
-
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
@@ -354,15 +333,12 @@ void BulldozerSelfDefense(Bulldozer npc, float gameTime, int target, float dista
 		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;
-								
 			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
-						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
 				npc.m_flNextMeleeAttack = gameTime + 1.2;

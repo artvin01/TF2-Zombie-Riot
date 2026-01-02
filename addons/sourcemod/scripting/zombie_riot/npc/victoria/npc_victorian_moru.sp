@@ -4,14 +4,10 @@
 static const char g_DeathSounds[] = "npc/scanner/scanner_explode_crash2.wav";
 static const char g_HealSound[] = "physics/metal/metal_box_strain1.wav";
 
-
-static int OverrideAlly[MAXENTITIES];
+static int NPCId;
 
 void VictorianDroneAnvil_MapStart()
 {
-	PrecacheModel("models/props_teaser/saucer.mdl");
-	PrecacheSound(g_DeathSounds);
-	PrecacheSound(g_HealSound);
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Anvil");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victoria_anvil");
@@ -19,12 +15,29 @@ void VictorianDroneAnvil_MapStart()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId=NPC_Add(data);
+}
+
+int VictorianAnvil_ID()
+{
+	return NPCId;
+}
+
+static void ClotPrecache()
+{
+	PrecacheSound(g_DeathSounds);
+	PrecacheSound(g_HealSound);
+	PrecacheModel("models/props_teaser/saucer.mdl");
+	PrecacheModel(LASERBEAM);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
+	vecAng[0]=0.0;
+	vecAng[1]=0.0;
+	vecAng[2]=0.0;
 	return VictorianDroneAnvil(vecPos, vecAng, ally, data);
 }
 
@@ -39,61 +52,116 @@ methodmap VictorianDroneAnvil < CClotBody
 		EmitSoundToAll(g_HealSound, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.1, 110);
 	}
 	
+	public void StartHealing()
+	{
+		if(IsValidEntity(this.m_iWearable3))
+			this.Healing = true;
+	}	
+	public void StopHealing()
+	{
+		int iBeam = this.m_iWearable3;
+		if(IsValidEntity(iBeam))
+		{
+			AcceptEntityInput(iBeam, "ClearParent");
+			RemoveEntity(iBeam);
+			this.Healing = false;
+		}
+	}
+	
+	property float m_flLifeTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flManuallyDisableSpawnProtector
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	
 	public VictorianDroneAnvil(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(CClotBody(vecPos, vecAng, "models/props_teaser/saucer.mdl", "1.0", "3000", ally, _, true, .CustomThreeDimensions = {20.0, 20.0, 20.0}, .CustomThreeDimensionsextra = {-20.0, -20.0, -20.0}));
 		
 		i_NpcWeight[npc.index] = 999;
-		npc.SetActivity("ACT_MP_STUN_MIDDLE");
-		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
-		
-		b_IgnoreAllCollisionNPC[npc.index] = true;
-		f_NoUnstuckVariousReasons[npc.index] = FAR_FUTURE;
-		
-		MK2[npc.index]=false;
-		Limit[npc.index]=false;
-		OverrideAlly[npc.index]=-1;
-		
-		bool FactorySpawndo;
-		static char countext[20][1024];
-		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
-		for(int i = 0; i < count; i++)
-		{
-			if(i>=count)break;
-			if(!StrContains(countext[i], "factory"))FactorySpawndo=true;
-			else if(!StrContains(countext[i], "mk2")){MK2[npc.index]=true;strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Victoria Anvil MK2");}
-			else if(!StrContains(countext[i], "limit"))Limit[npc.index]=true;
-			int targetdata = StringToInt(countext[i]);
-			if(IsValidEntity(targetdata) && GetTeam(npc.index) == GetTeam(targetdata))OverrideAlly[npc.index] = targetdata;
-		}
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = ClotDeath;
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
-		func_NPCThink[npc.index] = ClotThink;
+		func_NPCDeath[npc.index] = VictorianDroneAnvil_ClotDeath;
+		func_NPCOnTakeDamage[npc.index] = VictorianDroneAnvil_OnTakeDamage;
+		func_NPCThink[npc.index] = VictorianDroneAnvil_ClotThink;
 		
+		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flAttackHappens_bullshit = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_iOverlordComboAttack = 3;
-		npc.m_flAttackHappens = GetGameTime(npc.index)+500.0;
+		npc.m_flAttackHappens = 0.0;
+		npc.m_flManuallyDisableSpawnProtector = GetGameTime(npc.index) + zr_spawnprotectiontime.FloatValue;
+		
+		b_we_are_reloading[npc.index]=false;
+		npc.m_flLifeTime=20.0;
 
 		npc.m_flMeleeArmor = 1.00;
 		npc.m_flRangedArmor = 1.00;
 		
 		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
 		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
+		b_IgnoreAllCollisionNPC[npc.index] = true;
+		f_NoUnstuckVariousReasons[npc.index] = FAR_FUTURE;
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bisWalking = true;
+		npc.m_bFUCKYOU = false;
 		npc.Anger = false;
+		npc.m_bFUCKYOU_move_anim = false;
 		Is_a_Medic[npc.index] = true;
+		
+		bool FactorySpawndo;
+		static char countext[5][128];
+		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
+		for(int i = 0; i < count; i++)
+		{
+			if(i>=count)break;
+			else if(StrContains(countext[i], "lifetime") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "lifetime", "");
+				npc.m_flLifeTime = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "mk2") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "mk2", "");
+				b_we_are_reloading[npc.index] = true;
+				strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Victoria Anvil MK2");
+			}
+			else if(StrContains(countext[i], "factory") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "factory", "");
+				FactorySpawndo=true;
+			}
+			else if(StrContains(countext[i], "raidmode") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "raidmode", "");
+				npc.m_bFUCKYOU_move_anim = true;
+			}
+			else if(StrContains(countext[i], "overridetarget") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "overridetarget", "");
+				npc.m_iTarget = EntRefToEntIndex(StringToInt(countext[i]));
+			}
+		}
+		
+		if(npc.m_flLifeTime!=-1.0)
+		{
+			fl_ruina_battery_max[npc.index]=npc.m_flLifeTime;
+			fl_ruina_battery[npc.index]=npc.m_flLifeTime;
+			ApplyStatusEffect(npc.index, npc.index, "Battery_TM Charge", 999.0);
+		}
 
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
@@ -120,24 +188,15 @@ methodmap VictorianDroneAnvil < CClotBody
 		SetVariantString("!activator");
 		AcceptEntityInput(npc.m_iWearable2, "SetParent", npc.index);
 		MakeObjectIntangeable(npc.m_iWearable2);
-		
-		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
-		SetVariantColor(view_as<int>({45, 237, 164, 200}));
-		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+		npc.m_bDoSpawnGesture = true;
 		
 		GetAbsOrigin(npc.index, Vec);
 		if(FactorySpawndo)
 		{
-			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
-			{
-				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
-				{
-					GetAbsOrigin(entity, Vec);
-					break;
-				}
-			}
+			int GetFactory=GetRandomVictoriaFactory(npc.index);
+			if(GetFactory&&IsValidEntity(GetFactory))
+				GetAbsOrigin(GetFactory, Vec);
 		}
 		Vec[2]+=45.0;
 		TeleportEntity(npc.index, Vec, NULL_VECTOR, NULL_VECTOR);
@@ -146,7 +205,7 @@ methodmap VictorianDroneAnvil < CClotBody
 	}
 }
 
-static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictorianDroneAnvil_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(victim);
 		
@@ -162,7 +221,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	return Plugin_Changed;
 }
 
-static void ClotThink(int iNPC)
+static void VictorianDroneAnvil_ClotThink(int iNPC)
 {
 	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(iNPC);
 
@@ -172,6 +231,23 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+	
+	if(npc.m_bDoSpawnGesture)
+	{
+		if(IsValidEntity(npc.m_iTeamGlow))
+			RemoveEntity(npc.m_iTeamGlow);
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.m_iWearable2);
+		SetVariantColor(view_as<int>({45, 237, 164, 200}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+		npc.m_bDoSpawnGesture=false;
+		npc.StopPathing();
+	}
+	
+	if(npc.m_flManuallyDisableSpawnProtector && gameTime > npc.m_flManuallyDisableSpawnProtector)
+	{
+		RemoveSpawnProtectionLogic(npc.index, true);
+		npc.m_flManuallyDisableSpawnProtector=0.0;
+	}
 	
 	if(!npc.m_bisWalking)
 	{
@@ -185,9 +261,8 @@ static void ClotThink(int iNPC)
 
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
-		
-	if((!IsValidAlly(npc.index, GetClosestAlly(npc.index)) && !IsValidAlly(npc.index, OverrideAlly[npc.index]))
-	|| (gameTime > npc.m_flAttackHappens && Limit[npc.index]))
+	if((npc.m_flLifeTime>0.0 && npc.m_flAttackHappens_bullshit && gameTime > npc.m_flAttackHappens_bullshit)
+	||((npc.m_flLifeTime!=-1.0 && !npc.m_bFUCKYOU_move_anim) && !IsValidAlly(npc.index, GetClosestAlly(npc.index))))
 	{
 		b_NpcForcepowerupspawn[npc.index] = 0;
 		i_RaidGrantExtra[npc.index] = 0;
@@ -196,20 +271,24 @@ static void ClotThink(int iNPC)
 		SmiteNpcToDeath(npc.index);
 		return;
 	}
-
+	if(fl_ruina_battery_max[npc.index])
+		fl_ruina_battery[npc.index]=npc.m_flAttackHappens_bullshit-gameTime;
 	npc.m_flNextThinkTime = gameTime + 0.1;
-	
-	int target = npc.m_iTargetAlly;
 
-	float VecAlly[3]; WorldSpaceCenter(target, VecAlly);
+	float VecAlly[3]; WorldSpaceCenter(npc.m_iTargetAlly, VecAlly);
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float DistanceToTarget = GetVectorDistance(VecAlly, VecSelfNpc, true);
 	if(npc.m_iTargetAlly && !IsValidAlly(npc.index, npc.m_iTargetAlly))
 		npc.m_iTargetAlly = 0;
 	if(!npc.m_iTargetAlly || npc.m_flGetClosestTargetTime < gameTime)
-		target = VictoriaAnvilGetTarget(npc.index, gameTime);
+	{
+		npc.StopHealing();
+		npc.Healing = false;
+		npc.m_bnew_target = false;
+		npc.m_iTargetAlly = VictoriaAnvilGetTarget(npc.index, gameTime);
+	}
 	
-	int AI = VictoriaAnvilDefenseMode(npc.index, gameTime, target, DistanceToTarget);
+	int AI = VictoriaAnvilDefenseMode(npc.index, gameTime, npc.m_iTargetAlly, DistanceToTarget);
 	switch(AI)
 	{
 		case 0://attack
@@ -217,11 +296,8 @@ static void ClotThink(int iNPC)
 			npc.m_bisWalking = false;
 			npc.m_flCharge_delay = gameTime + 0.8;
 			
-			if(!npc.Anger && Limit[npc.index])
-			{
-				npc.m_flAttackHappens = gameTime + (MK2[npc.index] ? 30.0 : 20.0);
-				npc.Anger = true;
-			}
+			if(!npc.m_flAttackHappens_bullshit && npc.m_flLifeTime>0.0)
+				npc.m_flAttackHappens_bullshit = gameTime+npc.m_flLifeTime+0.2;
 		}
 		case 1://cooldown
 		{
@@ -233,31 +309,27 @@ static void ClotThink(int iNPC)
 			{
 				npc.m_bisWalking = true;
 				float Pathing[3], Npvel[3], NPCAng[3];
-				float Ang[3], OpenSky[3], distance;
-				Ang[0]=-90.0;
-				LookPoint(target, Ang, VecAlly, OpenSky);
-				distance = GetVectorDistance(VecAlly, OpenSky);
-				if(distance>300.0) VecAlly[2]+=300.0;
-				else if(distance>200.0) VecAlly[2]+=200.0;
-				else if(distance>100.0) VecAlly[2]+=100.0;
-				else if(distance>50.0) VecAlly[2]+=20.0;
+				if(CheckOpenSky(npc.m_iTargetAlly)) VecAlly[2]+=180.0;
 				SubtractVectors(VecAlly, VecSelfNpc, Pathing);
-				GetEntPropVector(npc.m_iWearable2, Prop_Data, "m_angRotation", NPCAng);
-				npc.GetVelocity(Npvel);
-				float NPCSpeed = npc.m_flSpeed;
-				NormalizeVector(Pathing, Npvel);
-				ScaleVector(Npvel, NPCSpeed);
-				GetVectorAngles(Npvel, NPCAng);
-				npc.SetVelocity(Npvel);
-				NPCAng[2]=0.0;
-				NPCAng[0]=0.0;
-				SetEntPropVector(npc.m_iWearable2, Prop_Data, "m_angRotation", NPCAng);
+				if(IsValidEntity(npc.m_iWearable2))
+				{
+					GetEntPropVector(npc.m_iWearable2, Prop_Data, "m_angRotation", NPCAng);
+					npc.GetVelocity(Npvel);
+					float NPCSpeed = npc.m_flSpeed;
+					NormalizeVector(Pathing, Npvel);
+					ScaleVector(Npvel, NPCSpeed);
+					GetVectorAngles(Npvel, NPCAng);
+					npc.SetVelocity(Npvel);
+					NPCAng[2]=0.0;
+					NPCAng[0]=0.0;
+					SetEntPropVector(npc.m_iWearable2, Prop_Data, "m_angRotation", NPCAng);
+				}
 			}
 		}
 	}
 }
 
-int VictoriaAnvilGetTarget(int iNPC, float gameTime)
+static int VictoriaAnvilGetTarget(int iNPC, float gameTime)
 {
 	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(iNPC);
 	if(!IsValidAlly(npc.index,npc.m_iTargetAlly))
@@ -272,46 +344,76 @@ int VictoriaAnvilGetTarget(int iNPC, float gameTime)
 	return npc.m_iTargetAlly;
 }
 
-int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float distance)
+static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float distance)
 {
 	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(iNPC);
+	if(npc.m_iTarget&&b_NpcIsInvulnerable[npc.m_iTarget])
+	{
+		npc.StopHealing();
+		npc.Healing = false;
+		npc.m_bnew_target = false;
+		return 0;
+	}
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * (MK2[npc.index] ? 20.0 : 10.0)))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * (b_we_are_reloading[npc.index] ? 20.0 : 10.0)))
 		{
 			npc.PlayHealSound();
 			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 			npc.FaceTowards(vecTarget, 20000.0);
-			spawnRing_Vectors(vecTarget, (MK2[npc.index] ? 400.0 : 200.0)  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 30, 255, 0, 150, 1, 0.3, 5.0, 8.0, 3);	
+			if(!npc.m_bnew_target)
+			{
+				npc.m_iWearable3 = ConnectWithBeam(npc.m_iWearable2, target, 30, 255, 0, 2.0, 2.0, 0.0, LASERBEAM);
+				npc.StartHealing();
+				npc.Healing = true;
+				npc.m_bnew_target = true;
+			}
 			//CreateTimer(0.1, Timer_MachineShop, npc.index, TIMER_FLAG_NO_MAPCHANGE);
 			//VictorianFactory npc = view_as<VictorianFactory>(iNPC);
 			float entitypos[3], dist;
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
 				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-				if(IsValidEntity(entity) && entity!=npc.index && GetTeam(entity) == GetTeam(npc.index))
+				if(IsValidEntity(entity) && entity!=npc.index && GetTeam(entity) == GetTeam(npc.index)
+				&& i_NpcInternalId[entity] != VictorianFragments_ID() && i_NpcInternalId[entity] != VictorianAnvil_ID())
 				{
 					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);
 					dist = GetVectorDistance(vecTarget, entitypos);
-					if(dist<(MK2[npc.index] ? 400.0 : 200.0))
+					if(dist<(b_we_are_reloading[npc.index] ? 400.0 : 200.0))
 					{
-						IncreaseEntityDamageTakenBy(entity, 0.8, 0.3);
-						HealEntityGlobal(npc.index, entity, 75.0, 1.0);
+						IncreaseEntityDamageTakenBy(entity, b_we_are_reloading[npc.index] ? 0.75 : 0.8, 0.3);
+						
+						int MaxHealth = ReturnEntityMaxHealth(entity);
+						
+						if(b_thisNpcIsARaid[entity])
+							MaxHealth = RoundToCeil(float(MaxHealth) * 0.00725);
+						else if(b_thisNpcIsABoss[entity])
+							MaxHealth = RoundToCeil(float(MaxHealth) * 0.075);
+						else
+							MaxHealth = RoundToCeil(float(MaxHealth) * 0.8);
+						
+						HealEntityGlobal(npc.index, entity, float(MaxHealth / 80), 1.0);
 					}
 				}
 			}
+			vecTarget[2]+=25.0;
+			spawnRing_Vectors(vecTarget, (b_we_are_reloading[npc.index] ? 400.0 : 200.0) * 2.0, 0.0, 0.0, 0.0, LASERBEAM, 30, 255, 0, 150, 1, 0.3, 3.0, 0.1, 3);
 			npc.m_flNextMeleeAttack = gameTime + 0.3;
 			return 0;
 		}
+		npc.StopHealing();
+		npc.Healing = false;
+		npc.m_bnew_target = false;
 		return 2;
 	}
 	return 1;
 }
 
-static void ClotDeath(int entity)
+static void VictorianDroneAnvil_ClotDeath(int entity)
 {
 	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(entity);
 
+	npc.StopHealing();
 	npc.PlayDeathSound();
 
 	if(IsValidEntity(npc.m_iWearable1))
@@ -330,4 +432,17 @@ static void ClotDeath(int entity)
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
+}
+
+static bool CheckOpenSky(int entity)
+{
+	static float flMyPos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flMyPos);
+	static float hullcheckmaxs[3];
+	static float hullcheckmins[3];
+
+	hullcheckmaxs = view_as<float>( { 35.0, 35.0, 500.0 } ); //check if above is free
+	hullcheckmins = view_as<float>( { -35.0, -35.0, 17.0 } );
+
+	return (!IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, entity));
 }

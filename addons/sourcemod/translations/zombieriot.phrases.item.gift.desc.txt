@@ -856,7 +856,7 @@
 	{
 		"en" 		"A combine who adopted an acient way of battle, highly deadly.\nWill deal 25％ extra damage to any non, melee player, and get angered if attacked by anything non melee."
 		"it"		"Un combine che ha adottato un antico modo di combattere, altamente letale. infligge 25％ danni extra a qualsiasi giocatore non in mischia e si arrabbia se attaccato da qualsiasi cosa non in mischia."
-		"ko" 		"고대의 전투 방식을 선택한 콤바인으로서, 매우 위협적입니다.\n-근접 무기를 사용하지 않는 대상에게 가하는 피해량 +25%\n-근접 무기 이외의 공격으로 피해를 받을 시 분노"
+		"ko" 		"고대의 전투 방식을 선택한 콤바인으로서, 매우 위협적입니다.\n-근접 무기를 사용하지 않는 대상에게 가하는 피해량 +25％\n-근접 무기 이외의 공격으로 피해를 받을 시 분노"
 	}
 	"The Addiction Desc"
 	{
@@ -1031,25 +1031,25 @@
 	{
 		"en"		"Forced into servitutde by Blitzkrieg\nPosses a powerful ''Fractal Beam Emitter''\nIt is advised to not touch it.."
 		"it"		"Costretto a servire da Blitzkrieg, possiede un potente ''Emettitore di raggi frattali''.\nSi consiglia di non toccarlo."
-		"ko"		"블리츠크리그에게 패배하여 강제 예속 상태가 되었습니다.\n강력한 ''프랙탈 광선 방출기''를 보유하고 있습니다.\n만지지 않는 것이 좋을겁니다..."
+		"ko"		"블리츠크리그에게 패배하여 강제 예속 상태가 되었습니다.\n-강력한 ''프랙탈 광선 방출기''를 보유하고 있습니다.\n-광선에 닿지 않는 것이 좋을겁니다..."
 	}
 	"Schwertkrieg Desc"
 	{
 		"en"		"Forced into servitutde by Blitzkrieg\nHe completely lost his individuality\nHe poses the ability to teleport long distances\nHighly dangerous up close."
 		"it"		"Costretto alla servitù dalla Blitzkrieg.\nHa perso completamente la sua individualità."
-		"ko"		"블리츠크리그에게 패배하여 강제 예속 상태가 되었습니다.\n그는 자신의 개성을 완전히 잃고 말았습니다...\n먼 거리를 순간이동할 수 있는 능력을 보유했습니다.\n접근하는 것은 굉장히 위험합니다."
+		"ko"		"블리츠크리그에게 패배하여 강제 예속 상태가 되었습니다.\n그는 자신의 개성을 완전히 잃고 말았습니다...\n-먼 거리를 순간이동할 수 있는 능력을 보유\n-접근하는 것은 굉장히 위험합니다."
 	}
 	"Phantom Knight Desc"
 	{
 		"en"		"A phantom knight, he is slow, he has the ability to teleport behind you, he can make clones of himself which are weaker compared to the main host. Highly dangerous up close."
 		"it"		"Un cavaliere fantasma, è lento, ha la capacità di teletrasportarsi alle spalle, può creare cloni di se stesso che sono più deboli rispetto all'ospite principale. Molto pericoloso da vicino."
-		"ko"		"어두운 밤의 유령. 이동 속도가 느리지만, 표적의 뒤쪽으로 순간이동할 수 있는 능력을 보유했으며, 본체보다 약한 분신을 생성할 수 있는 환영 능력도 사용합니다. 이 적에게 접근하는 것은 굉장히 위험합니다."
+		"ko"		"어두운 밤의 유령.\n-이동 속도가 느리지만, 표적의 뒤쪽으로 순간이동할 수 있는 능력을 보유\n-주기적으로 주위에 대량의 피해를 가하는 광역 공격 사용\n-본체보다 약한 분신을 생성할 수 있는 환영 능력 보유"
 	}
 	"Medic Constructor Desc"
 	{
 		"en"		"A rouge mechanical medic constructor, a part of the ''Last Hope'' project\nHeals allies."
 		"it"		"Un costruttore meccanico medico rouge, parte del progetto ''Ultima Speranza''.\nCura alleati."
-		"ko"		"불량 기계 메딕 건축가. ''마지막 희망'' 프로젝트의 일부입니다.\n-주변의 아군을 치료"
+		"ko"		"불량 기계 메딕 구축자. ''마지막 희망'' 프로젝트의 일부입니다.\n-주변의 아군을 치료"
 	}
 	"Gambler Desc"
 	{
@@ -1385,13 +1385,13 @@
 	{
 		"en"		"Fires projectiles with armor erosion, can fire rapid amounts in AOE area.\nThe first beautiful living being to speak human language before civilized man.\nSeaborn.\n- Uses a ranged attack\n- Attacks inflict Nervous Impairment\n- Periodically locks onto target location, after a delay hits serveral times to a random enemy within range"
 		"it"		"Spara proiettili con erosione dell'armatura, può sparare rapidamente in un'area AOE.\nIl primo bell'essere vivente a parlare il linguaggio umano prima dell'uomo civilizzato.\nSeaborn.\n- Utilizza un attacco a distanza.\n- Gli attacchi infliggono menomazioni nervose.\n- Si blocca periodicamente sulla posizione del bersaglio, dopo un ritardo colpisce più volte un nemico a caso nel raggio d'azione"
-		"ko"		"갑옷 부식을 부여하는 투사체를 발사합니다. 광역 범위 내의 적에겐 더 많이 발사합니다.\n처음으로 문명의 앞에서 인간의 말을 쓴 아름다운 생물.\n시본. \n-원거리 공격을 사용하며, 신경 손상 원소 피해를 부여함\n-표적의 위치에 지점을 표시한뒤, 짧은 지연 후 범위 내에 있는 무작위 적에게 다중 타격을 함."
+		"ko"		"처음으로 문명의 앞에서 인간의 말을 쓴 아름다운 생물.\n시본.\n-원거리 공격을 사용하며, 신경 손상 원소 피해를 부여함\n-표적의 위치에 지점을 표시한뒤, 짧은 지연 후 범위 내에 있는 무작위 적에게 다중 타격을 함."
 	}
 	"Sal Viento Bishop Quintus Desc"
 	{
 		"en"		"A member of the Church of the Deep who snuck into disaster-ravaged Iberia.\nHe changed the law of the land through his sincere beliefs, in pursuit of the perfect form, yet he was unable to fathom the will of the ocean.\nThen again, who could?\n- Spawns at a random position, does not move, and becomes a spawn point\n- Uses a ranged attack, up to 2 targets with the highest ranged resistance in range\n- Attacks inflict Nervous Impairment\n- Periodically attacks up to 8 targets\n- Periodically deals damage to all targets in line-of-sight"
 		"it"		"Un membro della Chiesa degli Abissi che si è intrufolato nell'Iberia devastata dal disastro.\nHa cambiato la legge della terra grazie alle sue sincere convinzioni, alla ricerca della forma perfetta, ma non è riuscito a comprendere la volontà dell'oceano.\nD'altronde, chi potrebbe farlo?\n- Si riproduce in una posizione casuale, non si muove e diventa un punto di spawn \n- Utilizza un attacco a distanza, fino a 2 bersagli con la resistenza a distanza più alta nel raggio d'azione \n- Gli attacchi infliggono menomazioni nervose \n- Attacca periodicamente fino a 8 bersagli \n- Infligge periodicamente danni a tutti i bersagli in linea visiva"
-		"ko"		"참사가 벌어진 후 이베리아에 잠입한 심해 교회의 일원 중 하나.\n-자신의 이념으로 율법을 왜곡하고, 개인의 완벽함을 추구했으나 바다의 뜻에는 전혀 침투할 수 없었다.\n그런 게 가능한 사람이 있기는 할까?\n-무작위 위치에 생성되며, 움직이지 않지만 다른 적들을 생성하는 임시 스폰 지점이 됨.\n-원거리 공격을 사용하며, 피해 저항력이 가장 높은 대상 2명만을 노림\n-주기적으로 최대 8명까지 공격하며, 시야 내 모든 목표물에게 피해를 가하는 공격 보유"
+		"ko"		"참사가 벌어진 후 이베리아에 잠입한 심해 교회의 일원 중 하나.\n자신의 이념으로 율법을 왜곡하고, 개인의 완벽함을 추구했으나 바다의 뜻에는 전혀 침투할 수 없었다.\n그런 게 가능한 사람이 있기는 할까?\n-무작위 위치에 생성, 움직이지 않지만 다른 적들을 생성하는 임시 스폰 지점이 됨.\n-원거리 공격을 사용하며, 피해 저항력이 가장 높은 대상 2명만을 노림\n-주기적으로 최대 8명까지 공격하며, 시야 내 모든 목표물에게 피해를 가하는 공격 보유"
 	}
 	"Armorless Union Knight Desc"
 	{
@@ -1427,7 +1427,7 @@
 	{
 		"en"		"The tiny Seaborn that haunted the mighty Stultifera, the blood of its parents once strewn across the ocean's waters.\nThe revelation reaches not the ears of the children, their kind's destiny quietly continuing to flow.\n- Uses attacks based on current form\n- When changing form, consumes the closest remain, killing targets and consumes nearby remains\n- Elite variant gains increased health, damage, and consumes an addtional remain"
 		"it"		"Il piccolo Seaborn che perseguitava la potente Stultifera, il sangue dei suoi genitori un tempo sparso sulle acque dell'oceano.\nLa rivelazione non giunge alle orecchie dei bambini, il destino della loro specie continua silenziosamente a scorrere.\n- Utilizza attacchi basati sulla forma attuale.\n- Quando cambia forma, consuma il resto più vicino, uccidendo i bersagli e consumando i resti vicini.\n- La variante Elite guadagna salute e danni maggiori e consuma un resto aggiuntivo"
-		"ko"		"스툴티페라 나비스 근처에 출몰하는 소형 시본으로, 부모 세대의 피가 이 바다를 가득 채운 적이 있다.\n-귓가에 신탁이 전달되지 않아도, 종족의 운명은 여전히 소리 없이 흘러간다.\n-현재 형태에 따라 다른 공격을 가함.\n형태 변경시, 남겨진 유해를 포식, 해당 위치의 모든 적을 즉사시키고 근처의 유해 역시 포식\n-정예 개체는 체력, 피해량이 증가하며 유해를 추가로 포식"
+		"ko"		"스툴티페라 나비스 근처에 출몰하는 소형 시본으로, 부모 세대의 피가 이 바다를 가득 채운 적이 있다.\n귓가에 신탁이 전달되지 않아도, 종족의 운명은 여전히 소리 없이 흘러간다.\n-현재 형태에 따라 다른 공격을 가함.\n형태 변경시, 남겨진 유해를 포식, 해당 위치의 모든 적을 즉사시키고 근처의 유해 역시 포식\n-정예 개체는 체력, 피해량이 증가하며 유해를 추가로 포식"
 	}
 	"Nethersea Founder Desc"
 	{
@@ -1607,13 +1607,13 @@
 	{
 		"en"		"The basis of a well-known folk tale in Kazimierz.\nThe past died on the land, and neither the present nor the future have any meaning.\nOnly the ocean, kill the ocean.\n- Targets enemy and allies\n- Taking damage inflicts a debuff to the attacker, reducing attack speed\n- Deals increased damage to targets with enough debuff stacks\n- Changes form when below 1/5 of health, increased speed, attacks now deal contact damage, ignores buildings"
 		"it"		"Il passato è morto sulla terra, e né il presente né il futuro hanno alcun significato.\nSolo l'oceano, uccidi l'oceano.\n- Prende di mira il nemico e gli alleati.\n- Subire danni infligge un debuff all'attaccante, riducendo la velocità d'attacco.\n- Infligge danni maggiori ai bersagli con un numero sufficiente di stack di debuff.\n- Cambia forma quando è al di sotto di 1/5 della salute, aumenta la velocità, gli attacchi ora infliggono danni da contatto, ignora gli edifici"
-		"ko"		"카시미어에서 회자되는 동화의 원형.\n그 과거는 육지에서 사라졌고, 현재와 미래 또한 아무런 의미도 없다.\n오직 바다만 남았고, 오직 바다만 죽인다.\n-이 적은 피아구분 없이 모든 것을 공격합니다.\n-피해를 받으면 대상의 공격 속도를 감소시키는 디버프 부여\n- 충분한 디버프가 누적된 대상에 대해 피해량 증가\n- 체력이 1/5 이하일 시 형태 전환: 구조물을 완전히 무시하며 속도 대폭 증가, 접촉시 피해를 줌."
+		"ko"		"카시미어에서 회자되는 동화의 원형.\n그 과거는 육지에서 사라졌고, 현재와 미래 또한 아무런 의미도 없다.\n오직 바다만 남았고, 오직 바다만 죽인다.\n-피아구분 없이 모든 것을 공격\n-피격 시 대상의 공격 속도를 감소시키는 디버프 부여\n-충분한 디버프가 누적된 대상에 대해 피해량 증가\n-체력이 1/5 이하일 시 형태 전환: 구조물을 완전히 무시하며 속도 대폭 증가, 접촉 시 피해를 줌."
 	}
 	"Saint Carmen Desc"
 	{
 		"en"		"The last surviving Saint of Iberia, living well past mortal life expectancy.\nHis longevity came at a price, but he remembers his duty and his enemies, despite having lost his reason.\n- Targets enemy and allies\n- Attacks levitate the target and deals extra hit of True damage"
 		"it"		"La sua longevità ha avuto un prezzo, ma ricorda il suo dovere e i suoi nemici, nonostante abbia perso la ragione.\n- Bersaglia il nemico e gli alleati\n- Gli attacchi fanno levitare il bersaglio e infliggono un colpo extra di danno Vero"
-		"ko"		"이베리아에 남은 유일한 성도로 일반 사람보다 훨씬 나이가 많다.\n이베리아의 생명 연장 시술은 대가가 따르지만, 그는 정신을 잃더라도 본인의 사명과 적을 분명하게 기억하고 있다.\n-이 적은 피아구분 없이 모든 것을 공격합니다.\n-공격 적중시, 대상을 공중으로 띄우고 추가 트루 대미지를 입힘"
+		"ko"		"이베리아에 남은 유일한 성도로 일반 사람보다 훨씬 나이가 많다.\n이베리아의 생명 연장 시술은 대가가 따르지만, 그는 정신을 잃더라도 본인의 사명과 적을 분명하게 기억하고 있다.\n-피아구분 없이 모든 것을 공격\n-적중 시, 대상을 공중으로 띄우고 추가 트루 대미지를 입힘"
 	}
 	"Pathshaper Desc"
 	{
@@ -1631,7 +1631,7 @@
 	{
 		"en"		"Immensive strength thanks to your castle."
 		"it"		"Forza immensa grazie al vostro castello."
-		"ko"		"튜턴족 기사는 당신의 성 덕분에 엄청난 힘을 얻었습니다."
+		"ko"		"튜튼족 기사는 당신의 성 덕분에 엄청난 힘을 얻었습니다."
 	}
 	"Barracks Villager Desc"
 	{
@@ -1649,13 +1649,13 @@
 	{
 		"en"		"A bishop that has partially mutated.\nIt is partly human, partly—\nUses a ranged attack\n- When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max"
 		"it"		"Quando la sua ''altra metà'' è viva e non è in coma, entra in coma quando gli HP raggiungono lo 0 e inizia a rigenerarsi quando gli HP raggiungono il massimo"
-		"ko"		"이 주교의 생명 형태는 이미 변화되어 있다.\n한 쪽은 인간으로 보이고, 다른 한쪽은...\n-원거리 공격을 사용\n-임사 형태가 아닌 '파도의 멸사체' 가 살아있다면, 체력이 0이 됐을때 죽지 않고 '임사 상태'가 된 뒤, 체력을 천천히 회복합니다.\n-이 상태에서 체력이 전부 회복되면 다시 부활합니다."
+		"ko"		"이 주교의 생명 형태는 이미 변화되어 있다.\n한 쪽은 인간으로 보이고, 다른 한 쪽은...\n-원거리 공격을 사용\n-임사 형태가 아닌 '파도의 멸사체' 가 살아있다면, 체력이 0이 됐을때 죽지 않고 '임사 형태'가 된 뒤, 체력을 천천히 회복합니다.\n-이 상태에서 체력이 전부 회복되면 다시 부활합니다."
 	}
 	"Tidelinked Archon Desc"
 	{
 		"en"		"Sea Terror. Even Alaxios's technology has a role to play in the evolution of we many.\n- Attacks inflict Nervous Impairment\n- When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max"
 		"it"		"Terrore marino. Persino la tecnologia di Alaxios ha un ruolo da svolgere nell'evoluzione di noi tutti.\n- Gli attacchi infliggono menomazioni nervose.\n- Quando la sua altra metà è viva e non è in coma, entra in coma quando gli HP raggiungono lo 0 e inizia a rigenerarsi quando gli HP raggiungono il massimo"
-		"ko"		"...시테러처럼 보인다. 에기르 과학기술은 위매니가 진화하는 길에서 아무런 쓸모도 없는 건 아니다.\n-임사 형태가 아닌 '파도의 주교' 가 살아있다면, 체력이 0이 됐을때 죽지 않고 '임사 상태'가 된 뒤, 체력을 천천히 회복합니다.\n-이 상태에서 체력이 전부 회복되면 다시 부활합니다."
+		"ko"		"...시테러처럼 보인다. 알락시오스의 과학기술은 위매니가 진화하는 길에서 아무런 쓸모도 없는 건 아니다.\n-임사 형태가 아닌 '파도의 주교' 가 살아있다면, 체력이 0이 됐을때 죽지 않고 '임사 형태'가 된 뒤, 체력을 천천히 회복합니다.\n-이 상태에서 체력이 전부 회복되면 다시 부활합니다."
 	}
 	"Scientific Witchery Desc"
 	{
@@ -1667,7 +1667,7 @@
 	{
 		"en"		"It speaks for we many.\n- Starts in Healer form\n- When in Healer form, follows it's allies and attacks heal up to 2 targets\n- Gains power over time and enters Leviathan form when full, increased while on Nethersea Brands\n- Gains power rapidly when falling below half health for the first time\n- When in Leviathan form, attacks targets 6 locations, dealing AOE True damage, and destorys blocking buildings\n- Reverts forms when Leviathan form, spawns Nethesea Brands and heals self"
 		"it"		"Parla a nome di tutti noi.\n- Inizia in forma di Guaritore \n- Quando è in forma di Guaritore, segue gli alleati e i suoi attacchi curano fino a 2 bersagli \n- Guadagna energia nel tempo ed entra in forma di Leviatano quando è pieno, aumentata quando si trova nelle Marche di Nethersea \n- Guadagna energia rapidamente quando scende sotto la metà della salute per la prima volta \n- Quando è in forma di Leviatano, attacca 6 bersagli, infliggendo danni veri AOE e distruggendo gli edifici che bloccano \n- Ritorna in forma di Leviatano, genera le Marche di Nethesea e si cura da solo \n- Si trasforma in forma di Leviatano, genera le Marche di Nethesea e si cura da solo"
-		"ko"		"더 이상 노래 부르지 않고, 위매니를 위해 목소리를 낸다.\n-스폰 시, 치유자 형태로 시작\n-치유자 형태일 때, 아군을 따라다니며 주변의 최대 2명의 아군에게 버프를 부여하고 체력을 회복시켜줍니다.\n-시간이 지날수록 점차 힘을 충전하며, 명흔 위에 있다면 충전 속도가 더 빨라집니다.\n-체력이 처음으로 절반 이하가 될 경우 힘을 빠르게 충전합니다.\n-힘이 최대치까지 충전되면, 변신 형태가 됩니다.\n-변신 형태일때는 최대 6명의 적을 타격하는 광역 트루 대미지 공격을 사용하며 구조물을 즉시 파괴합니다.\n-변신 형태에서 사망 시 치유자 형태로 복귀, 명흔을 생성하고 스스로를 치유합니다."
+		"ko"		"더 이상 노래 부르지 않고, 위매니를 위해 목소리를 낸다.\n-스폰 시, 치유자 형태로 시작\n-이 상태에서는 아군을 따라다니며 주변의 최대 2명의 아군에게 버프를 부여하고 체력을 회복\n-시간이 지날수록 점차 힘을 충전, 명흔 위에 있다면 충전 속도가 가속됩니다.\n-체력이 처음으로 절반 이하가 될 경우 힘을 급격히 충전합니다.\n-힘이 최대치가 되면, 변신 형태가 됩니다.\n-변신 형태일때는 최대 6개의 위치에 트루 대미지 광역 공격을 사용하며 가로막는 구조물을 파괴합니다.\n-변신 형태에서 사망 시 치유자 형태로 복귀, 명흔을 생성하고 스스로를 치유합니다."
 	}
 	"Seaborn Guard Desc"
 	{
@@ -1811,7 +1811,7 @@
 	{
 		"en"	"Re-created by Sensal on his way to you.\nCan rocketjump\nFires rockets\nCan melee attack with a cooldown, this melee deals heavy damage."
 		"it"	"Ricreato da Sensal mentre si reca da voi.\nPuò saltare con i razzi\nPuò attaccare in mischia con un cooldown, questa mischia infligge danni ingenti."
-		"ko"	"센살이 다시 새로 만들어낸 것으로, 당신에게로 향하고 있습니다.\n-로켓 점프를 사용할 수 있습니다.\n-로켓을 발사합니다.\n-매우 높은 피해를 주지만 쿨타임이 긴 근접 공격을 합니다."
+		"ko"	"센살이 다시 새로 만들어낸 것으로, 당신에게로 향하고 있습니다.\n-로켓 점프를 사용할 수 있습니다.\n-로켓을 발사합니다.\n-매우 높은 피해를 주는, 긴 쿨타임을 가진 근접 공격을 합니다."
 	}
 	"Protecta Desc"
 	{
@@ -2118,7 +2118,7 @@
 	{
 		"en"	"A giant steampunk soldier which reloads while not firing.\nAble to fire when it has enough rounds and can't change target while firing.\n- Uses a ranged attack and reloads\n- Immune to slow, stun, and shift effects\n- Attacks deal AOE and inflict Chaos elemental damage\n- Has resistances that decrease when damage is taken\n- On death, deals AOE damage and summons a Vulpo\nIn Red Moon, increased elemental damage and projectile speed"
 		"it"	"Un gigantesco soldato steampunk che ricarica quando non spara.\n- Può sparare quando ha abbastanza colpi e non può cambiare bersaglio mentre spara.\n- Utilizza un attacco a distanza e ricarica.\n- Immune agli effetti di rallentamento, stordimento e spostamento.\n- Gli attacchi sono AOE e infliggono danni elementali del Caos.\n- Ha resistenze che diminuiscono quando si subiscono danni.\n- Alla morte, infligge danni AOE ed evoca un Vulpo.\nIn Red Moon, aumenta i danni elementali e la velocità dei proiettili"
-		"ko"	"발사하지 않는 상황이면 탄약을 재장전하는 거대 스팀펑크 솔저입니다.\n탄약이 충분하면 사격 공격을 하며, 사격 중에는 공격 대상을 변경할 수 없습니다.\n-원거리 공격을 사용하며 재장전함\n-둔화, 기절, 미끄러짐 효과에 면역\n-공격이 광역 피해와 혼돈 원소 피해를 부여\n-피해를 받을 때마다, 자신의 피해 저항력이 조금씩 감소.\n-사망 시, 불포를 소환하고 주변에 극도로 높은 피해를 줌\n-붉은 달(로그2): 원소 피해 부여량과 투사체 속도 증가."
+		"ko"	"발사하지 않는 상황이면 탄약을 재장전하는 거대 스팀펑크 솔저입니다.\n-탄약이 충분하면 사격 공격을 하며, 사격 중에는 공격 대상을 변경 불가\n-원거리 공격을 사용하며 재장전함\n-둔화, 기절, 미끄러짐 효과에 면역\n-공격이 광역 피해와 혼돈 원소 피해를 부여\n-피해를 받을 때마다, 자신의 피해 저항력이 조금씩 감소.\n-사망 시, 불포를 소환하고 주변에 극도로 높은 피해를 줌\n-붉은 달(로그2): 원소 피해 부여량과 투사체 속도 증가."
 	}
 	"Ahim Desc" 
 	{
@@ -2130,7 +2130,7 @@
 	{
 		"en"	"Ramps up speed over time, at max speed it gains massive damage and resistance, and its sword glows gold, when it melee's, missing or not itll lose this bonus, deals chaos damage if charged."
 		"it"	"Aumenta la velocità nel tempo, alla massima velocità guadagna danni e resistenza massicci, e la sua spada si illumina d'oro, quando si scontra in mischia, mancando o meno, perde questo bonus, infligge danni da caos se carica."
-		"ko"	"시간이 지날수록 이동 속도가 점차 증가합니다. 이동 속도가 최대에 도달 시 공격력과 피해 저항력이 높아지며 혼돈 원소 피해를 부여합니다. 공격 시, 공격의 적중 여부 상관 없이 이 효과는 전부 초기화됩니다."
+		"ko"	"시간이 지날수록 이동 속도가 점차 증가합니다. 이동 속도가 최대에 도달 시 피해량과 피해 저항력이 높아지며 혼돈 원소 피해를 부여합니다. 공격 시, 공격의 적중 여부 상관 없이 이 효과는 전부 초기화됩니다."
 	}
 	"Khazaan Desc" 
 	{
@@ -2166,13 +2166,13 @@
 	{
 		"it"	"Infligge pochi danni ma infligge emorragie."
 		"en"	"A spy that deals low damage but inflicts bleed. \n-Attacks afflict bleed on hit."
-		"ko"	"공격력은 낮지만, 적중시 대상에게 출혈을 부여하는 스파이입니다.\n-적중 시 출혈 디버프 부여"
+		"ko"	"피해량은 낮지만, 적중시 대상에게 출혈을 부여하는 스파이입니다.\n-적중 시 출혈 디버프 부여"
 	}
 	"Ancient Demon Desc" 
 	{
 		"en"	"Each time an enemy dies around them they gain HP, damage, resistance and a speed buff.\nThis also spawns a weaker smaller version of them randmly around the map.\nBuffs stack infinitly.\nDeals chaos damage."
 		"it"	"Ogni volta che un nemico muore intorno a loro, guadagnano HP, danni, resistenza e un potenziamento della velocità.\nQuesto genera anche una versione più debole e più piccola di loro in giro per la mappa.\nI potenziamenti si accumulano all'infinito.\nDanneggia il caos."
-		"ko"	"이 적 근처에서 다른 적이 사망할 때마다, 이 적의 체력, 공격력, 저항력, 이동 속도가 증가합니다.\n이 효과가 발동될 때마다 이 적의 소형화 버전이 맵의 무작위 위치에서 생성됩니다.\n이 버프는 무한대로 중첩됩니다.\n적중 시, 대상에게 혼돈 원소 피해를 부여합니다."
+		"ko"	"이 적 근처에서 다른 적이 사망할 때마다, 이 적의 체력, 피해량, 저항력, 이동 속도가 증가합니다.\n이 효과가 발동될 때마다 이 적의 소형화 버전이 맵의 무작위 위치에서 생성됩니다.\n이 버프는 무한대로 중첩됩니다.\n적중 시, 대상에게 혼돈 원소 피해를 부여합니다."
 	}
 	"Winter Sniper Desc" 
 	{
@@ -2202,7 +2202,7 @@
 	{
 		"en"	"Can jump and while midair they gain 3x damage, 3x range, and take 2x ranged damage."
 		"it"	"Può saltare e a mezz'aria guadagna 3x danni, 3x gittata e subisce 2x danni a distanza."
-		"ko"	"자주 점프하며, 공중에 떠있는 상태라면 공격력과 사정거리가 3배로 증가하지만, 받는 원거리 피해가 2배로 증폭됩니다."
+		"ko"	"자주 점프하며, 공중에 떠있는 상태라면 피해량과 사정거리가 3배로 증가하지만, 받는 원거리 피해가 2배로 증폭됩니다."
 	}
 	"Arctic Mage Desc" 
 	{
@@ -2238,13 +2238,13 @@
 	{
 		"en"	"Ramps up speed over time, at max speed it gains massive damage and resistance, and its sword glows gold, when it melee's, missing or not itll lose this bonus, deals chaos damage if charged."
 		"it"	"Aumenta la velocità nel tempo, alla massima velocità guadagna danni e resistenza massicci, e la sua spada si illumina d'oro, quando si scontra in mischia, mancando o meno, perde questo bonus, infligge danni da caos se carica."
-		"ko"	"시간이 지날수록 이동 속도가 점차 증가합니다. 이동 속도가 최대에 도달 시 공격력과 피해 저항력이 높아지며 혼돈 원소 피해를 부여합니다. 공격 시, 공격의 적중 여부 상관 없이 이 효과는 전부 초기화됩니다."
+		"ko"	"시간이 지날수록 이동 속도가 점차 증가합니다. 이동 속도가 최대에 도달 시 피해량과 피해 저항력이 높아지며 혼돈 원소 피해를 부여합니다. 공격 시, 공격의 적중 여부 상관 없이 이 효과는 전부 초기화됩니다."
 	}
 	"Hitman Desc" 
 	{
 		"en"	"A speedy spy that's a ''glass-cannon'' type of enemy. \n-VERY fast. \n-Dodges every second attack. "
 		"it"	"Infligge danni immensi a tutto. è estremamente veloce e schiva ogni 2 attacchi.\n ha pochi HP e subisce 2,5 volte i danni in mischia ma 50％ in meno quelli a distanza."
-		"ko"	"통칭 '유리 대포' 속성의 재빠른 스파이입니다.\n-이동 속도가 극도로 빠름\n-매 2번째 공격을 회피"
+		"ko"	"통칭 '유리 대포' 속성의 재빠른 스파이입니다.\n-이동 속도가 극도로 빠름\n-피해를 받을 때마다, 다음에 받는 공격을 1회 회피"
 	
 	}
 	"Mad Doctor Desc"
@@ -2287,13 +2287,13 @@
 	{
 		"en"	"Kahmlsteins forced right hand man, he really wants his attention.\nApart of the no goverment group called Interitus.\nWave 15: Deals fire and bleed damage.\nWave 30: deals massive chaos damage.\nEach time he does his 4 ball attack he gains permanent power and resistance.\nEach time he shows his hand sign he will teleport.\n(Silence) Reduces chaos damage he deals."
 		"it"	"Kahmlsteins è il suo braccio destro forzato, vuole davvero la sua attenzione.\nFa parte del gruppo di non governanti chiamato Interitus.\nOnde 15: infligge danni da fuoco e da emorragia.\nOnde 30: infligge ingenti danni da caos.\nOgni volta che esegue il suo attacco con 4 sfere guadagna potere e resistenza permanenti.\nOgni volta che mostra il suo segno della mano si teletrasporta.\n(Silenzio) Riduce i danni da caos che infligge."
-		"ko"	"카멜슈타인에 의해 강제로 그의 오른팔이 된 자. 그는 카멜슈타인의 주목을 이끌고 싶어합니다.\n인테리투스라는 무정부 그룹 소속원입니다.\n웨이브 15: 출혈과 화상을 부여.\n웨이브 30: 혼돈 원소 피해를 부여.\n4연속 추적형 구체 공격을 사용할 때마다, 피해량과 피해 저항력이 영구적으로 소폭 증가.\n이 적이 손으로 핸드 사인을 보인 후, 순간이동 합니다.\n(침묵 상태 시)이 적이 부여하는 혼돈 원소 피해량이 감소"
+		"ko"	"카멜슈타인에 의해 강제로 그의 오른팔이 된 자. 그는 카멜슈타인의 주목을 이끌고 싶어합니다.\n인테리투스라는 무정부 단체의 소속원입니다.\n웨이브 15: 출혈과 화상을 부여.\n웨이브 30: 혼돈 원소 피해를 부여.\n4연속 추적형 구체 공격을 사용할 때마다, 피해량과 피해 저항력이 영구적으로 소폭 증가.\n이 적이 손으로 핸드 사인을 보인 후, 순간이동 합니다.\n(침묵 상태 시)이 적이 부여하는 혼돈 원소 피해량이 감소"
 	}
 	"The Purge Desc"
 	{
 		"en"	"A machine to help the efforts of the Interitus group.\nHas a great arsenal of weapons.\nHeals when low enough and gains massive power everytime he has his fists out.\nFinish the fight fast before he becomes too strong.\n(Silence)Decreases his healing abit"
 		"it"	"Una macchina per aiutare gli sforzi del gruppo Interitus.\nHa un grande arsenale di armi.\nGuarisce quando è abbastanza basso e guadagna una potenza enorme ogni volta che tira fuori i pugni.\nFinisce il combattimento velocemente prima che diventi troppo forte.\n(Silenzio)Diminuisce la sua guarigione"
-		"ko"	"인테리투스 그룹을 돕기 위해 만들어진 기계.\n다양한 무기를 보유함.\n체력이 일정 수준 이하로 낮아지면 회복 능력을 사용하고, 주먹을 장착할 때마다 힘이 대폭 상승.\n적이 너무 강해지기 전에 최대한 빠르게 전투를 끝내세요.\n(침묵 상태 시)체력 회복량이 소폭 감소"
+		"ko"	"인테리투스 연합을 돕기 위해 만들어진 기계.\n다양한 무기를 보유함.\n체력이 일정 수준 이하로 낮아지면 회복 능력을 사용하고, 주먹을 장착할 때마다 힘이 대폭 상승.\n그가 너무 강해지기 전에 최대한 빠르게 전투를 끝내세요.\n(침묵 상태 시)체력 회복량이 소폭 감소"
 	} 
 	"Rouge Expidonsan Doctor Desc"
 	{
@@ -2341,7 +2341,7 @@
 	{
 		"en"	"Activator of the xeno infection source. He won't let you stop him from infecting the world with the Xeno infection. \n-Melee attack hits multiple times and launches the target at the end. \n-Able to start sprinting towards the closest enemy, starting slow and gaining speed until he grabs someone. He will pick them up and snap their neck. Dropping them onto the floor afterward, and stunning them for a few seconds \n-Occasionally charges to the closest enemy, ramming into them. This will deal damage and knockback on contact. At the end of this, he will be dazed for a few seconds."
 		"it"	"Attivatore della fonte di infezione xeno.\nPuò sfrecciare, uno ti afferra e ti spezza il collo, l'altro colpisce a ripetizione ma nemici diversi in un AOE.\n(SIlenza) perde la scivolata al colpo"
-		"ko"	"제노 감염원의 창시자이자 퍼뜨린 장본인. 그를 막지 않으면 전세계에 제노 감염이 퍼질 것입니다.\n-근접 공격이 다중 타격을 하며 공격의 끝에서 대상을 날려보냄\n-주기적으로 근처의 적에게 돌진해 붙잡아 목을 꺾어버려 기절시키고 바닥에 놓는 잡기 공격 사용\n-주기적으로 주변 적에게 돌진하여 접촉한 대상에게 큰 피해를 주고 넉백시킴. 돌진 종료 후 잠시 동안 기절."
+		"ko"	"제노 감염원의 창시자이자 퍼뜨린 장본인. 그를 막지 않으면 전세계에 제노 감염이 퍼질 것입니다.\n-근접 공격이 다중 타격이며 공격 종료 시 대상을 날려보냄\n-주기적으로 근처의 적에게 돌진해 붙잡아 목을 꺾어버려 기절시키고 바닥에 놓는 잡기 공격 사용\n-주기적으로 주변 적에게 돌진하여 접촉한 대상에게 큰 피해를 주고 넉백시킴. 돌진 종료 후 잠시 동안 기절."
 	}
 	"Lex Desc"
 	{
@@ -2359,7 +2359,7 @@
 	{
 		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: makes crystall speed and turn rate 10％ slower)"
 		"it"		"Il suo vero nome è ''Donnerkrieg'' \nI suoi incantesimi sono molto più raffinati e ''puri'' rispetto a quelli del suo stato di schiavitù \nInoltre indossa la moda più recente di Ruanian e un equipaggiamento protettivo \nBasta non farsi punzecchiare dalle sue orecchie...\n(Silenzio: rallenta la velocità del cristallo e la velocità di rotazione di 10％)"
-		"ko"		"''도너크리그''의 진명입니다.\n그녀의 주문 상태는 블리츠크리그의 노예로 있던 시절보다 훨씬 정제되고 안정적으로 변했습니다.\n한편으로, 그녀는 루이나인들의 최신 패션과 보호 장비를 착용하고 있습니다.\n그녀의 귀에 찔리지 않도록 주의하세요...\n(침묵 상태 시, 수정구의 속도와 회전 속도가 10% 감소)"
+		"ko"		"''도너크리그''의 진명입니다.\n그녀의 주문 상태는 블리츠크리그의 노예로 있던 시절보다 훨씬 정제되고 안정적으로 변했습니다.\n한편으로, 그녀는 루이나인들의 최신 패션과 보호 장비를 착용하고 있습니다.\n그녀의 귀에 찔리지 않도록 주의하세요...\n(침묵 상태 시, 수정구의 속도와 회전 속도가 10％ 감소)"
 	}
 	"Karlas Desc"
 	{
@@ -2473,7 +2473,7 @@
 	{
 		"en"	"You came too late, chaos took its full effect...\nWaves spawn 25％ more enemies, spawn 20％ faster, and 10％ more zombies are alive at once.\nenemies deal 12％ more damage, have 30％ more HP and are 3％ faster."
 		"it"	"Sei arrivato troppo tardi, il caos ha avuto tutto il suo effetto... Le onde generano 25％ più nemici, generano 20％ più velocemente e 10％ più zombi sono vivi in una volta sola."
-		"ko"	"당신은 너무 늦게 도착했습니다. 이미 혼돈이 모든것을 삼켜버린 상태입니다...\n웨이브마다 생성되는 적이 25％ 더 증가하고, 생성 속도가 20％ 더 빨라지며, 한번에 존재하는 좀비의 수가 10％ 더 많아집니다.\n적들의 공격 피해량이 12％ 증가하고, 체력이 30％ 증가하며 이동 속도가 3％ 증가합니다."
+		"ko"	"당신은 너무 늦게 도착했습니다. 이미 혼돈이 모든것을 삼켜버린 상태입니다...\n웨이브마다 생성되는 적 수량 +25％, 생성 속도 +20％, 한번에 존재하는 적의 수 +10％\n적들의 공격 피해량 +12％, 체력 +30％, 이동 속도 +3％"
 	}
 	"Standard"
 	{
@@ -2497,7 +2497,7 @@
 	{
 		"en"	"Experience ZR on how it feels to be a newbie.\n35％ more enemies, spawn 33％ faster, 15％ more are alive at once.\nThey deal +25％ dmg, +25％ dmg to cades, +60％ HP, +6％ faster, attack 33％ faster.\n1 down, enemies heal 50％ more."
 		"it"	"Esperienza ZR su come ci si sente ad essere un novellino.\n35％ più nemici, spawn 33％ più veloce, 15％ più sono vivi in una volta.\nFanno +25％ dmg, +25％ dmg ai cad, +60％ HP, +6％ più veloce, attacco 33％ più veloce.\n1 down, i nemici guariscono 50％ in più."
-		"ko"	"이 모드로 뉴비 시절의 좀비 라이엇이 어떤 느낌이었는지 다시 기억 속에 새길 수 있을 겁니다...\n웨이브마다 생성되는 적이 35％ 더 증가하고, 생성 속도가 33％ 더 빨라지며, 한번에 존재하는 좀비의 수가 15％ 더 많아집니다.\n적들의 공격 피해량과 구조물 대상 피해량이 25％ 증가하고, 체력이 60％ 증가하며 이동 속도가 6％ 증가하고, 공격 속도가 33％ 증가합니다.\n또한 다운 횟수는 1번 뿐이며, 적들의 체력 회복량이 50％ 더 증가합니다."
+		"ko"	"뉴비 시절의 좀비 라이엇이 어떤 느낌이었는지 다시 느껴보세요.\n웨이브마다 생성되는 적 수량 +35％, 생성 속도가 +33％, 한번에 존재하는 적의 수 +15％\n적들의 피해량, 구조물 대상 피해량 +25％, 체력 +60％, 이동 속도 +6％, 공격 속도 +33％\n다운 횟수는 1번 뿐이며, 적들의 체력 회복량 +50％"
 	}
 	"Turbulance"
 	{
@@ -2521,7 +2521,7 @@
 	{
 		"en"	"First batch of mercs failed already.\n35％ more enemies, spawn 33％ faster, 15％ more are alive at once.\nThey deal +15％ dmg, +25％ dmg to cades, have 50％ + HP, +4％ faster.\nEnemies heal 50％ more."
 		"it"	"Il primo gruppo di mercenari ha già fallito.\n 35 nemici in più, si riproducono 33％ più velocemente, 15％ in più sono vivi contemporaneamente. infliggono +15％ dmg, +25％ dmg ai cad, hanno 50％ + HP, +4％ più velocemente. i nemici guariscono 50％ in più."
-		"ko"	"첫번째로 출격한 용병들은 실패했습니다. 두번째 출격으로 모든걸 만회해야합니다.\n웨이브마다 생성되는 적이 35％ 더 증가하고, 생성 속도가 33％ 더 빨라지며, 한번에 존재하는 좀비의 수가 15％ 더 많아집니다.\n적들의 공격 피해량이 15％, 구조물 대상 피해량이 25％ 증가하고, 체력이 50％ 증가하며 이동 속도가 4％ 증가합니다.\n적들의 체력 회복량이 50％ 더 증가합니다."
+		"ko"	"첫번째로 출격한 용병들은 실패했습니다. 두번째 출격으로 모든걸 만회해야합니다.\n웨이브마다 생성되는 적 수량 +35％, 생성 속도 +33％, 한번에 존재하는 적의 수 +15％\n적들의 피해량 +15％, 구조물 대상 피해량 +25％, 체력 +50％, 이동 속도 +4％\n적들의 체력 회복량 +50％"
 	}
 	"Paranormal Activity"
 	{
@@ -3281,7 +3281,7 @@
 	{
 		"en"		"Taken by an unknown force, it was converted into an obscure, dark entity.\nDamaging it outside its aura causes it to heal.\n''The darkness is coming. You need to run.''"
 		"it"		"Preso da una forza sconosciuta, è stato trasformato in un'entità oscura e tenebrosa.\nDanneggiandolo al di fuori della sua aura, guarisce.\nL'oscurità sta arrivando. Devi scappare"
-		"ko"		"이엇은 알 수 없는 힘에 의해 희미하고 어두운 존재로 변했습니다.\n이 적의 오라의 범위 바깥에서 피해를 주면, 이 적의 체력이 회복됩니다.\n''어둠이 몰려오고 있어. 어서 도망쳐.''"
+		"ko"		"이것은 알 수 없는 힘에 의해 희미하고 어두운 존재로 변했습니다.\n이 적의 오라의 범위 바깥에서 피해를 주면, 이 적의 체력이 회복됩니다.\n''어둠이 몰려오고 있어. 어서 도망쳐.''"
 	}
 	"Intense Training"
 	{
@@ -3324,5 +3324,265 @@
 		"en" 	"A being made out of chaos and void combined..."
 		"it"	"Un essere fatto di caos e vuoto combinato..."
 		"ko" 	"혼돈과 공허가 융합된 존재입니다..."
+	}
+	"Batter Desc"
+	{
+		"en"	"Basic melee unit of Leatherboots Scoutsquad.\nMoves faster when direct operation orders are given \n (When signalled) Gain speed boost"
+	}
+	"Victoria Charger Desc"
+	{
+		"en"	"melee unit with shortest melee range of Leatherboots Scoutsquad.\nThey are slow at first but accelerates into high speed \nTheir damage multiplies by their current speed\nMoves faster when direct operation orders are given \n (When signalled) Accelerate faster"
+	}
+	"Teslar Desc"
+	{
+		"en"	"basic melee unit with electrical stick of Leatherboots Scoutsquad.\nApply teslar debuff to their victim on hit \n(When signalled) Duration of the debuff is increased"
+	}
+	"Victorian Vanguard Desc"
+	{
+		"en"	"Melee unit of Leatherboots Scoutsquad that has long range.\nslightly pulls their victim on hit \n(When signalled) pull stronger"
+	}
+	"Supplier Desc"
+	{
+		"en"	"Ranged Support unit of Leatherboots Scoutsquad.\nSupports team by providing ammo and health at the same time. \nThey could heal and provide armor to themselves too \n(When signalled) Heal and provide more armor"
+	}
+	"Victorian Vanguard Desc"
+	{
+		"en"	"Melee unit of Leatherboots Scoutsquad that has long range.\nslightly pulls their victim on hit \n(When signalled) pull stronger"
+	}
+	"Ballista Desc"
+	{
+		"en"	"Cyborg Ranged unit of Leatherboots Scoutsquad \nFires 3 projectiles per attack \n(When signalled) reload faster"
+	}
+	"Victorian Igniter Desc"
+	{
+		"en"	"Giant ranged unit of Leatherboots Scoutsquad \nFires a flare that ignites its target \n(When signalled) afterburn damage increased"
+	}
+	"Grenadier Desc"
+	{
+		"en"	"Ranged unit of Leatherboots Scoutsquad. It throws an inaccurate grenade \n(When signalled) firing speed increased"
+	}
+	"Victorian ScoutSquad Leader Desc"
+	{
+		"en"	"Capable leader of Leatherboots Scoutsquad \nFires a shotgun with limited ammo that applies stacking vulnerability. \nWhen it runs out of ammo, it will pull out his axe and perform melee attacks. \nWith some cooldowns, it will grant heavy speedboost to all enemies near him \n(When signalled) Never lose ammo"
+	}
+	"Signaller Desc"
+	{
+		"en"	"Elite unit of Victorian army. He receives a direct opertion order from radiotower and deliver it to all enemies \n While alive, all the enemies get Signal buff which increases their damage and speed. \nAlso, all victorian enemies will unlock special traits"
+	}
+	"Humbee Desc"
+	{
+		"en"	"Rocketlauncher mounted vehicle of Irongate Defense Units. It ensures the safety of the driver until it breaks \n On death, spawns Irongate Shotgunner to continue the battle \n(When signalled) rocket's projectile speed is increased"
+	}
+	"Shotgunner Desc"
+	{
+		"en"	"Ranged unit of Irongate Defense Units. Has decent health and fires shotgun rapidly. \n Reloads deadly ammunition when he recieves a direct operation order \n(When signalled) Applies bleed on target"
+	}
+	"Bulldozer Desc"
+	{
+		"en"	"Giant melee of Irongate Defense Units. Has high health and armor by sacrificing his speed. \n While his armor is up, he will take significantly less blast damage. \n(When signalled) Gains additional resistance"
+	}
+	"Hardender Desc"
+	{
+		"en"	"Medic unit of Irongate Defense Units. He heals and slowly provides armor to their targets. \n They also spawn with some armor for their survivability \n(When signalled) Provides battalion buff to their patients"
+	}
+	"Raider Desc"
+	{
+		"en"	"Ranged robotic unit of Irongate Defense Units. It fires strong but slow plasma projectile. \n(When signalled) Deals significantly more damage"
+	}
+	"Shotgunner Desc"
+	{
+		"en"	"Ranged unit of Irongate Defense Units. Has decent health and fires shotgun rapidly. \n Reloads deadly ammunition when he recieves a direct operation order \n(When signalled) Applies bleed on target"
+	}
+	"Zapper Desc"
+	{
+		"en"	"Melee unit of Irongate Defense Units. Better variant of teslar. \n Applies stronger teslar debuff to its victim \n(When signalled) duration of debuff is longer"
+	}
+	"Payback Desc"
+	{
+		"en"	"Elite Combine unit of Irongate Defense Units. He inject himself with strong adrenaline that will delay his death. \n Damage increases as health drops. On death, revives and gain massive speed but will perish in few seconds \n(When signalled) Damage increase"
+	}
+	"Blocker Desc"
+	{
+		"en"	"Melee unit of Irongate Defense Units. got a skill to block incoming damage. \n when damaged, enters defense mode, and gains high damage resistance. \nwhen attacking, every 4th damage deals higher damage \n(When signalled) block cooldown reduced"
+	}
+	"Victoria Destructor Desc"
+	{
+		"en"	"Ranged unit of Irongate Defense Units. Creates explosion that ignites all targets. \n performs stronger explosion when he receives a direct operation order \n(When signalled) wider explosion range"
+	}
+	"IronShield Desc"
+	{
+		"en"	"Powerful Mecha of Irongate Defense Units. moves slowly but hits hard. \nperforms aoe attack every few attacks. Also, when destroyed, drops the aviator to continue the fight \n(When signalled) performs aoe attack often"
+	}
+	"Victoria Aviator Desc"
+	{
+		"en"	"Elite mechanists who rides the Ironshield Mecha. It will ride Ironshield after few seconds. \n it fires a shotgun and slams the enemy to the ground with hammer \n(When signalled) calls Ironshield faster"
+	}
+	"Booster Desc"
+	{
+		"en"	"Medical unit of StormTrooper team. Heals and gives damage boost to its patient. \n(When signalled) provides additional damage boost"
+	}
+	"Scorcher Desc"
+	{
+		"en"	"Ranged unit with flamethrower in Stormtrooper team. \n(When signalled) Applies stronger burn damage"
+	}
+	"Mowdown Desc"
+	{
+		"en"	"Giant mehanical unit of Stormtrooper team. Closes up and fire full barrage of bullets. \n Moves very slowly, but VERY deadly up close and hardens its head when operation orders are given \n(When signalled) Cannot be headshotted"
+	}
+	"Mechafist Desc"
+	{
+		"en"	"Melee unit of Stormtrooper Team. Capable of pulling enemy towards him on hit. \n on 3rd hit, it will push its victim with strong force \n(When signalled) Stronger push and pull"
+	}
+	"Assulter Desc"
+	{
+		"en"	"Basic Infantry Stormtrooper Team. Fires his firearm rapidly. \n fires 3 round per fire \n(When signalled) fire more rounds on fire"
+	}
+	"Anti-Armor Infantry Desc"
+	{
+		"en"	"Elite ranged unit of Stormtrooper Team. He is holding disposable RPG. \n When target is in range, fire a rocket and rush in with his melee \n(When signalled) Damage heavily increased"
+	}
+	"Victorian Mortar Desc"
+	{
+		"en"	"Fearless Ranged unit of Victorian army. -Fires 2 rockets in arc at random position near its target. \n -(When signalled) Rocket explodes twice, second explosion will deal half of the first explosion"
+		"ko"	"원거리 광역 적으로 타겟 주변에 랜덤한 지점으로 로켓 두개를 날립니다\n(시그널 버프시) 두번 폭발합니다. 두번째 폭발은 데미지가 반감됩니다"
+	}
+	"Victorian Artillerist Desc"
+    {
+        "en"    "Elite ranged unit of Victorian army. -Has infinite attack range. \n -Bombard the target and the area around it with some windup \n(When signalled) Attackspeed hastened massively"
+		"ko"	"초원거리에서 타깃 지점으로 광역포격을 합니다.\n(시그널 버프시) 공격속도가 빨라집니다
+	}
+	"Bomb Cart Desc"
+	{
+		"en"	"Small cart filled with bombs. Obviously explodes on contact with its target. \n Can be defused by killing it before attacking\n(When signalled) Explodes on death"
+	}
+	"Breachcart Desc"
+	{
+		"en"	"Vehicle of Irongate Defense Units filled with bombcarts. Releases bombcart with cooldown. \n Unlike Humbee, they could ram into players and buildings \n(When signalled) summon bombcarts faster"
+	}
+	"Birdeye Desc"
+	{
+		"en"	"One of the elite mercenaries hired by Castellan. Always support Harbringer and Bigpipe. \nBirdeye enjoys watching its victim suffer in pain by sniping targets with special vulnerability bullet. \nEquipped with teleportation device that he will use it to reposition himself from incoming threats \nHe also got transmitter from victorian army to get specific orders and locks into target much faster\n(When signalled) Always hit target within sight"
+	}
+	"Harbringer Desc"
+	{
+		"en"	"One of the elite mercenaries hired by Castellan. Always get along with Bigpipe and Birdeye. \nHolds LMG and rushes in fast speed. He also got painkiller and transmitter from victorian army which he would use it on command \n(When signalled) sets max cap of damage that he could take per hit"
+	}
+	"Bigpipe Desc"
+	{
+		"en"	"One of the elite mercenaries hired by Castellan. Always get along with Bigpipe and Birdeye. \nEquipped with special grenade launcher, Bigpipe fires arching pipes that will explode on contact. He perfroms good crowd-control against enemies and building destruction\nHe is also equipped with HE ammunition and victorian transmitter which he will use on given orders \n(When signalled) Ignite targets hit by pipes"
+	}
+	"Caffeinator Desc"
+	{
+		"en"	"Robotic medic unit of Brassbunker Special Force. \nHeals its target and injects strong dose of caffeine which increase patient's speed, damage, and attackspeed\n When enemy is too close or its patient dies, it will start to release caffeinated gas around it thus buffing all near allies\n(When signalled) provides additional damage buff to its patient"
+	}
+	"Welder Desc"
+	{
+		"en"	"Melee unit and best repairman of Brassbunker Special Force. Gains armor when hitting buildings and deal incrased damage. \n (When signalled) Gain more armor"
+	}
+	"Mechanist Desc"
+	{
+		"en"	"Elite engineers of Brassbunker Special Force. Teleports into the map and spawns and activates the avangard \nAfter activating avangard, it will follow and repair it constantly \n (When signalled) Build it faster"
+	}
+	"Avangard Desc"
+	{
+		"en"	"Giant robot of Brassbunker Special Force. Fires sentry rocket constantly."
+	}
+	"Tanker Desc"
+	{
+		"en"	"Elite ranged tank unit of Brassbunker Special Force. Takes max 10% of its maxhp as single burst damage. \n (When signalled) max cap for damage is enhanced"
+	}
+	"Pulverizer Desc"
+	{
+		"en"	"Elite pyro unit of Brassbunker Special Force. Deals insane burn damage and fire damage up close. \nDO NOT APPROACH TO THIS UNIT \n (When signalled) Deals even more burn damage"
+	}
+	"Brassbunker Ambusher Desc"
+	{
+		"en"	"Ranged unit of Brassbunker Special Force. They randomly spawn around the players and ambush them.\n They are equipped with disposable jetpack which will launch towards their target once \n Also, when they are reloading, they run away and take cover \n (When signalled) Jump cd decreased heavily"
+	}
+	"Victoria Taser Desc"
+	{
+		"en"	"Elite ranged unit of Brassbunker Special Force armed with taser. Slows down its victim heavily . \n (When signalled) attacks faster"
+	}
+	"Victoria Tank Desc"
+	{
+		"en"	"Elite Vehicle of Brassbunker Special Force. Slow and powerful unit that fires a rocket dealing deadly damage. \nHowever, it turns slowly and moves slowly \nUpon death, it releases the squad it was carrying with \n (When signalled) projecticle speed increased"
+	}
+	"Victorian Assault Vehicle Desc"
+    {
+		"en"    "Armored Transport Vehicle of Victorian army. \n-It slowly speeds up to build up momentum and damage. \n-It prioritizes buildings over players /n-Spawn units from other factions when it rams into building \n(When signalled) Spawn units more often"
+		"ko"	"강화 병력 수송차량으로 건물을 우선시하며 여러 적들을 수송합니다.\n이동속도가 점차 빨라짐\n구조물을 공격시 적을 하차시킵니다\n(시그널 버프시) 더 빨라진 공격속도"
+	}
+	"Victoria Radiomast Desc"
+	{
+		"en"	"Giant radiotower that receives a signal and spreads it to other places via signaller. \nSince radiotower is crucial for transmission, Victorians will do everything to preotect it \nWHile the Radiotower is alive, endless waves of enemies will appear and all enemies existing in the map will receive signal buff \nWhen below half health, summons radio repair and guard to protect and heal"
+	}
+	"Radio Guard Desc"
+	{
+		"en"	"Guard who protects Victorian Radiotower\n He is armed with speical cannon that pushes enemies far away when hit\nSlows down its victim heavily .\nHowever, he will lose his ability to push when Radiotower is gone (When signalled) Pushes enemies with rocket"
+	}
+	"Radio Repair Desc"
+	{
+		"en"	"Medic who repairs Victorian Radiotower instead of allies\n They do not care about surroundings and only heal.\n They will also provide small defense boost to their targets"
+	}
+	"Victoria Anvil Desc"
+	{
+		"en"	"Victorian supportive drone which spawns from drone factory\nThey fly and heal all allies within the area. \nUpgraded version, MK2, will heal more and even apply small defense buff to allies"
+	}
+	"Victoria Fragments Desc"
+	{
+		"en"	"Victorian aggresive drone which spawns from drone factory\nHover to designated area and fire leads at the enemies within range. \nUpgraded version, MK2, will deal more damage"
+	}
+	"Victoria Factory Desc"
+	{
+		"en"	"Victorian frontline arms factory which create and store drones \nWhen specific enemies order support fire or heal, it will release the drones to support them.\nVictorian Drone factory in invincible and will only retreat before raid \nUpgraded version, MK2, will deal more damage"
+	}
+	"Victoria Tactical Protector Desc"
+	{
+		"en"	"Giant robot unit that calls for Anvil drone when below half health \nHowever, they will not order drones if factory does not exist in the map"
+	}
+	"Victoria Tactical Protector Desc"
+	{
+		"en"	"Giant robot unit that calls for Anvil drone when below half health \nHowever, they will not order drones if factory does not exist in the map"
+	}
+	"Victoria Tacticalunit Desc"
+	{
+		"en"	"Fast unit armed with kukri and pointer \nThey will call in Fragment drones using their pointers \nHowever, they will not order drones if factory does not exist in the map"
+	}
+	"Victoria Atomizer Desc"
+	{
+		"en"	" `You can't outrun me!` \nCaptain of Victoria's Leatherboots Scoutsquad. Priorities speed over everything \nFires barrage of homing energy balls which will slow targets down and often drags all people to him to swing a homerun \n Harrison will help Atomizer by controlling victorian artillery and target the furtherest target from atomizer dealing devastating damage"
+	}
+	"Victoria Huscarls Desc"
+	{
+		"en"	" `You're up against the wall and I am the fucking wall!` \nLieutenant of Victoria's Irongate Defense Units. Aquires adaptive armor on each amount of health loss \nPeform various abilities focused on defense and blocking attacks\nHe will summon Brassbunker Avangards when he is in danger. However, they are not ready yet so easy to kill \n Harrison will help Atomizer by controlling victorian artillery and target the furtherest target from atomizer dealing devastating damage"
+	}
+	"Victoria Harrison Desc"
+	{
+		"en"	" `Do I really have to do this myself?` \nLieutenant Colonel of Victoria's Stormtrooper Team and controller of Victorian Artillery. \nUtilizes lots of ranged firearms \nHe will call in massive airstrikes and rearm himself when he takes enough damage. Then, he will set Victorian Artillery to automode and greatly increase his firepower "
+	}
+	"Victoria Castellan Desc"
+	{
+		"en"	" `Did you really thought you could get out this mess that easily?` \nColonel of Victoria's Army. He has mastered skill for explosives and command \nHe wants your death for the amends of Radiotower's destruction. Do we really have to fight him while we got same enemeis in common? \nHe will utilize all of the abilites that previous raidbosses used and often call in for support"
+	}
+	
+	"Avangard's Processing Core-B"
+	{
+		"en"	"Avangard's Processing Core-B"
+		"ko"	"아방가르드의 프로세싱 코어-B"
+	}
+	"Avangard's Processing Core-B Desc"
+	{
+		"en"	"Cleared Victoria before the update!\nThank you for Waiting Update.\nYou deserve this trophy.\n-No longer Get this Trophy"
+		"ko"	"업데이트 이전 빅토리아를 클리어했습니다!\n업데이트를 기다려주셔서 감사합니다.\n이 트로피를 받을 자격이 충분합니다.\n-이제 이 트로피는 획득할 수 없습니다."
+	}
+	"Copycat Truthful Evidence"
+	{
+		"en"	"A copy of Truthful Evidence"
+		"ko"	"진실된 증거자료 [사본]"
+	}
+	"Copycat Truthful Evidence Desc"
+	{
+		"en"	"This is a Copy of the evidence received from Sensal.\nSee some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Victoria invaded Ziberia.\nyou became the primary target of Victorians due to this…"
+		"ko"	"센살에게 받은 진실된 증거자료[사본] 입니다.\n이해못할 단어들이 보이지만 숨겨진 뜻이 있는거 같습니다. 이것이 빅토리아가 지베리아를 침공한 이유 같습니다.\n하지만 이것이 빅토리아인들과의 트러블을 만들었습니다."
 	}
 }

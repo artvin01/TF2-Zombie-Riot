@@ -4,34 +4,26 @@
 static const char g_DeathSounds[][] = {
 	"vo/heavy_negativevocalization01.mp3",
 	"vo/heavy_negativevocalization02.mp3",
-	"vo/heavy_negativevocalization03.mp3",
+	"vo/heavy_negativevocalization03.mp3"
 };
 
 static const char g_HurtSounds[][] = {
 	"vo/heavy_helpmedefend01.mp3",
 	"vo/heavy_helpmedefend02.mp3",
-	"vo/heavy_helpmedefend03.mp3",
+	"vo/heavy_helpmedefend03.mp3"
 };
 
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/taunts/heavy_taunts16.mp3",
 	"vo/taunts/heavy_taunts18.mp3",
-	"vo/taunts/heavy_taunts19.mp3",
+	"vo/taunts/heavy_taunts19.mp3"
 };
 
-static const char g_MeleeHitSounds[][] = {
-	"weapons/shotgun_shoot.wav",
-};
-
+static const char g_RangeAttackSounds[] = "weapons/shotgun_shoot.wav";
 
 void VIctorianTanker_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Tanker");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_tanker");
@@ -39,16 +31,25 @@ void VIctorianTanker_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
 	Rogue_Paradox_AddWinterNPC(id);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static void ClotPrecache()
 {
-	return VIctorianTanker(vecPos, vecAng, ally);
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSound(g_RangeAttackSounds);
+	PrecacheModel("models/player/heavy.mdl");
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return VIctorianTanker(vecPos, vecAng, ally, data);
+}
 
 methodmap VIctorianTanker < CClotBody
 {
@@ -56,36 +57,32 @@ methodmap VIctorianTanker < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
-	public void PlayMeleeHitSound() 
+	public void PlayRangeSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 85);
-
+		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 85);
 	}
 	
+	property float m_flTrueArmor
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	
-	public VIctorianTanker(float vecPos[3], float vecAng[3], int ally)
+	public VIctorianTanker(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VIctorianTanker npc = view_as<VIctorianTanker>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "22000", ally));
 		
@@ -98,28 +95,34 @@ methodmap VIctorianTanker < CClotBody
 		SetVariantInt(0);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		
-		
-		npc.m_flNextMeleeAttack = 0.0;
-		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(VIctorianTanker_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VIctorianTanker_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VIctorianTanker_ClotThink);
-		
+		func_NPCDeath[npc.index] = VIctorianTanker_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VIctorianTanker_OnTakeDamage;
+		func_NPCThink[npc.index] = VIctorianTanker_ClotThink;
 		
 		//IDLE
+		KillFeed_SetKillIcon(npc.index, "reserve_shooter");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.StartPathing();
+		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flSpeed = 230.0;
+		npc.m_flTrueArmor = 0.5;
 		
 		npc.m_flMeleeArmor = 0.9;
 		npc.m_flRangedArmor = 0.9;
-
+		
+		npc.StartPathing();
+		
+		if(StrContains(data, "extraarmor") != -1)
+		{
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			ReplaceString(buffers[0], 64, "extraarmor", "");
+			npc.m_flTrueArmor = StringToFloat(buffers[0]);
+		}
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -145,7 +148,7 @@ methodmap VIctorianTanker < CClotBody
 	}
 }
 
-public void VIctorianTanker_ClotThink(int iNPC)
+static void VIctorianTanker_ClotThink(int iNPC)
 {
 	VIctorianTanker npc = view_as<VIctorianTanker>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -166,11 +169,8 @@ public void VIctorianTanker_ClotThink(int iNPC)
 	}
 
 	float TrueArmor = 1.0;
-
 	if(NpcStats_VictorianCallToArms(npc.index))
-	{
-		TrueArmor *= 0.5;
-	}
+		TrueArmor *= npc.m_flTrueArmor;
 	fl_TotalArmor[npc.index] = TrueArmor;
 
 	if(npc.m_blPlayHurtAnimation)
@@ -195,12 +195,9 @@ public void VIctorianTanker_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int SetGoalVectorIndex = 0;
-		SetGoalVectorIndex = VIctorianTankerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
-		switch(SetGoalVectorIndex)
+		switch(VIctorianTankerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -234,7 +231,7 @@ public void VIctorianTanker_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action VIctorianTanker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VIctorianTanker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VIctorianTanker npc = view_as<VIctorianTanker>(victim);
 		
@@ -257,7 +254,7 @@ public Action VIctorianTanker_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-public void VIctorianTanker_NPCDeath(int entity)
+static void VIctorianTanker_NPCDeath(int entity)
 {
 	VIctorianTanker npc = view_as<VIctorianTanker>(entity);
 	if(!npc.m_bGib)
@@ -276,29 +273,26 @@ public void VIctorianTanker_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
 }
 
-int VIctorianTankerSelfDefense(VIctorianTanker npc, float gameTime, int target, float distance)
+static int VIctorianTankerSelfDefense(VIctorianTanker npc, float gameTime, int target, float distance)
 {
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.5))
 		{
 			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 				npc.m_iTarget = Enemy_I_See;
-				npc.PlayMeleeHitSound();
+				npc.PlayRangeSound();
 				float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 				npc.FaceTowards(vecTarget, 20000.0);
 				Handle swingTrace;
 				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 				{
-					target = TR_GetEntityIndex(swingTrace);	
-						
+					target = TR_GetEntityIndex(swingTrace);
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float origin[3], angles[3];
@@ -311,7 +305,6 @@ int VIctorianTankerSelfDefense(VIctorianTanker npc, float gameTime, int target, 
 						float damageDealt = 90.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
-
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 					}
