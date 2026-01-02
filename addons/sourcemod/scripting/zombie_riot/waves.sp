@@ -277,6 +277,175 @@ public Action Waves_SetWaveCmd(int client, int args)
 	return Plugin_Handled;
 }
 
+public Action Waves_ScaleTestCmd(int client, int args)
+{
+	char buffer[12];
+	GetCmdArg(1, buffer, sizeof(buffer));
+	int m_iPlayer = StringToInt(buffer);
+	GetCmdArg(2, buffer, sizeof(buffer));
+	int m_iRebel = StringToInt(buffer);
+	GetCmdArg(3, buffer, sizeof(buffer));
+	int m_iCount = StringToInt(buffer);
+	GetCmdArg(4, buffer, sizeof(buffer));
+	int m_iHP = StringToInt(buffer);
+	GetCmdArg(5, buffer, sizeof(buffer));
+	float m_iDMG = StringToFloat(buffer);
+	
+	float m_flCalculateOutPut[9];
+	
+	if(!m_iPlayer)
+	{
+		PrintToConsole(client, "Usage: zr_scaletest <Players> [AllyRebels] [EnemyCount] [EnemyHP]  [EnemyDMG]");
+		return Plugin_Handled;
+	}
+	
+	PrintToConsole(client, "=====Start=====");
+	DoMultiScalingTest(m_iPlayer, m_iRebel, m_flCalculateOutPut);
+	PrintToConsole(client, "Nomal Count Multiple: %.1f", m_flCalculateOutPut[4]);
+	PrintToConsole(client, "Nomal HP Multiple: %.1f", m_flCalculateOutPut[3]);
+	
+	PrintToConsole(client, "Boss Count Multiple: %.1f", m_flCalculateOutPut[5]);
+	PrintToConsole(client, "Boss HP Multiple: %.1f", m_flCalculateOutPut[0]);
+	PrintToConsole(client, "Boss High HP Multiple: %.1f", m_flCalculateOutPut[1]);
+	PrintToConsole(client, "Boss Extra DMG Scaling: %.1f", m_flCalculateOutPut[2]);
+	
+	PrintToConsole(client, "Player Buff Scaling: %.1f", m_flCalculateOutPut[6]);
+	PrintToConsole(client, "Player AttackSpeed Scaling: %.1f", m_flCalculateOutPut[7]);
+	PrintToConsole(client, "Player Resistance Scaling: %.1f", m_flCalculateOutPut[8]);
+	
+	if(m_iCount)
+	{
+		PrintToConsole(client, "Nomal Count: %i", RoundToNearest(float(m_iCount) * m_flCalculateOutPut[4]));
+		PrintToConsole(client, "Boss Count: %i", RoundToNearest(float(m_iCount) * m_flCalculateOutPut[5]));
+	}
+	if(m_iHP)
+	{
+		PrintToConsole(client, "Nomal HP: %i", RoundToNearest(float(m_iHP) * m_flCalculateOutPut[3]));
+		int SaveNomalHP = RoundToNearest(float(m_iHP) * m_flCalculateOutPut[1]);
+		PrintToConsole(client, "High Boss HP: %i", SaveNomalHP);
+		int SaveBossHP = RoundToNearest(float(m_iHP) * m_flCalculateOutPut[0]);
+		PrintToConsole(client, "Boss HP: %i", SaveBossHP);
+		
+		float multiBoss=float(SaveNomalHP) * m_flCalculateOutPut[5];
+		float decrease = (float(m_iCount) * m_flCalculateOutPut[4]) / float(m_iCount);
+		if(decrease > 1.0)
+			multiBoss /= decrease;
+		PrintToConsole(client, "1 Nomal More HP: %i", RoundToNearest(float(m_iHP) * multiBoss));
+		
+		multiBoss=float(SaveNomalHP) * m_flCalculateOutPut[5];
+		decrease = (float(m_iCount) * m_flCalculateOutPut[5]) / float(m_iCount);
+		if(decrease > 1.0)
+			multiBoss /= decrease;
+		PrintToConsole(client, "2 Nomal More HP: %i", RoundToNearest(float(m_iHP) * multiBoss));
+		
+		multiBoss=float(SaveBossHP) * m_flCalculateOutPut[5];
+		decrease = (float(m_iCount) * m_flCalculateOutPut[4]) / float(m_iCount);
+		if(decrease > 1.0)
+			multiBoss /= decrease;
+		PrintToConsole(client, "1 Boss More HP: %i", RoundToNearest(float(m_iHP) * multiBoss));
+		
+		multiBoss=float(SaveBossHP) * m_flCalculateOutPut[5];
+		decrease = (float(m_iCount) * m_flCalculateOutPut[5]) / float(m_iCount);
+		if(decrease > 1.0)
+			multiBoss /= decrease;
+		PrintToConsole(client, "2 Boss More HP: %i", RoundToNearest(float(m_iHP) * multiBoss));
+	}
+	if(m_iDMG)
+		PrintToConsole(client, "Boss Extra DMG: %.1f", m_iDMG * (((m_flCalculateOutPut[4] - 1.0) * 0.5) + 1.0));
+	PrintToConsole(client, "=====End=====");
+	return Plugin_Handled;
+}
+
+static void DoMultiScalingTest(int InPutPlayer, int InPutRebel, float OutPut[9])
+{
+	float playercount = float(InPutPlayer)+(float(InPutRebel) * 0.5);
+
+	if(playercount < 2.0)
+		playercount = 2.0;
+	
+	playercount *= 0.88;
+	playercount *= GetScaledPlayerCountMulti(InPutPlayer);
+
+	float multi = playercount / 4.0;
+	
+	//raids or super bosses health
+	float TmpeMultiGlobalHighHealthBoss = playercount * 0.34;
+	//on very low playercounts raids deal less damage anyways, so hp shouldnt go that low.
+	if(TmpeMultiGlobalHighHealthBoss <= 0.8)
+		TmpeMultiGlobalHighHealthBoss = 0.8;
+
+	//for raids, we want to reduce their HP even more, as that many attacking 1 target is very unlikely.
+	TmpeMultiGlobalHighHealthBoss *= GetScaledPlayerCountMulti(InPutPlayer, 0.3);
+
+	//Enemy bosses AMOUNT
+	float cap = zr_maxsbosscaling_untillhp.FloatValue;
+	float BossMulti = playercount * 0.3; 
+	float TmpeMultiGlobalScalingBossExtra, TmpeMultiGlobalEnemyBoss, TmpeMultiGlobalHealth, TmpeMultiGlobalEnemy;
+	if(BossMulti > cap)
+	{
+		TmpeMultiGlobalScalingBossExtra = BossMulti / cap;
+		TmpeMultiGlobalEnemyBoss = cap;
+	}
+	else
+	{
+		TmpeMultiGlobalScalingBossExtra = 1.0;
+		TmpeMultiGlobalEnemyBoss = BossMulti;
+	}
+	
+	//normal bosses health
+	float TmpeMultiGlobalHealthBoss = playercount * 0.2;
+	//Enemy bosses AMOUNT affects HP too, so keeping  this on 1.0 is good.
+	if(TmpeMultiGlobalHealthBoss <= 1.0)
+		TmpeMultiGlobalHealthBoss = 1.0;
+
+	OutPut[2] = TmpeMultiGlobalScalingBossExtra;
+	//scale extra HP higher
+	OutPut[0] = TmpeMultiGlobalHealthBoss * (((TmpeMultiGlobalScalingBossExtra - 1.0) * 0.75) + 1.0);
+
+	//certain maps need this, if they are too big and raids have issues etc.
+	OutPut[1] = TmpeMultiGlobalHighHealthBoss * zr_raidmultihp.FloatValue;
+
+	cap = zr_maxscaling_untillhp.FloatValue;
+
+	if(multi > cap)
+	{
+		TmpeMultiGlobalHealth = multi / cap;
+		TmpeMultiGlobalEnemy = cap;
+	}
+	else
+	{
+		TmpeMultiGlobalHealth = 1.0;
+		TmpeMultiGlobalEnemy = multi;
+	}
+
+	OutPut[3] = TmpeMultiGlobalHealth;
+	OutPut[4] = TmpeMultiGlobalEnemy * ZRModifs_MaxSpawnWaveModif();
+	OutPut[5] = TmpeMultiGlobalEnemyBoss * ZRModifs_MaxSpawnWaveModif();
+
+	float TmpePlayerCountBuffScaling = 4.5 / playercount;
+	if(TmpePlayerCountBuffScaling > 1.0)
+		TmpePlayerCountBuffScaling = 1.0;
+	
+	//Shouldnt be lower then 0.25
+	if(TmpePlayerCountBuffScaling < 0.25)
+		TmpePlayerCountBuffScaling = 0.25;
+	OutPut[6]=TmpePlayerCountBuffScaling;
+
+	float TmpePlayerCountBuffAttackspeedScaling = 6.0 / playercount;
+	if(TmpePlayerCountBuffAttackspeedScaling > 1.0)
+		TmpePlayerCountBuffAttackspeedScaling = 1.0;
+	
+	//Shouldnt be lower then 0.5
+	if(TmpePlayerCountBuffAttackspeedScaling < 0.5)
+		TmpePlayerCountBuffAttackspeedScaling = 0.5;
+	OutPut[7]=TmpePlayerCountBuffAttackspeedScaling;
+
+	float TmpePlayerCountResBuffScaling = (1.0 - (playercount / 48.0)) + 0.1;
+	if(TmpePlayerCountResBuffScaling < 0.75)
+		TmpePlayerCountResBuffScaling = 0.75;
+	OutPut[8]=TmpePlayerCountResBuffScaling;
+}
+
 public Action Waves_AdminsWaveTimeRemainCmd(int client, int args)
 {
 	CPrintToChat(client, "{crimson}[ZR]{snow} WaveTimeOut in T-%.1fs", f_ZombieAntiDelaySpeedUp-GetGameTime());
