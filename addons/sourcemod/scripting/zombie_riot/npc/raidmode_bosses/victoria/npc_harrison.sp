@@ -133,7 +133,7 @@ static void ClotPrecache()
 	PrecacheSound(g_LaserBeamSoundsStart);
 	PrecacheSound("mvm/ambient_mp3/mvm_siren.mp3");
 	PrecacheSound("weapons/ar2/npc_ar2_reload.wav");
-	PrecacheSoundCustom("#zombiesurvival/victoria/raid_harrison.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria_1/raid_harrison.mp3");
 	
 	PrecacheModel("models/player/sniper.mdl");
 	PrecacheModel("models/weapons/w_models/w_drg_ball.mdl");
@@ -472,7 +472,7 @@ methodmap Harrison < CClotBody
 			if(StrContains(data, "nomusic") == -1)
 			{
 				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_harrison.mp3");
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria_1/raid_harrison.mp3");
 				music.Time = 92;
 				music.Volume = 1.0;
 				music.Custom = true;
