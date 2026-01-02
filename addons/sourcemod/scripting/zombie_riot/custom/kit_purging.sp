@@ -178,7 +178,7 @@ public Action Timer_PurgeKit(Handle timer, DataPack pack)
 		if(i_CustomWeaponEquipLogic[currentWeapon] == WEAPON_KIT_PURGE_MISC)
 			range = PURGE_RAM_RADIUS;
 	}
-	spawnRing_Vectors(clientPos,  range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 200, 1, 0.11, 30.0, 0.0, .client = client);
+	spawnRing_Vectors(clientPos,  range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 200, 1, 0.11, 30.0, 0.0_,_,_,client);
 	
 	//PrintToConsoleAll("m_hActiveWeapon: %d", GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
 	if(f_OneShotProtectionTimer[client] > GetGameTime() && !b_KitPurge_Toogle[client])
