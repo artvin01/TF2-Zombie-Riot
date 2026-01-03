@@ -3280,7 +3280,7 @@
 		"ru"       "Расколотый ковчег"
 		"chi"       "断裂方舟"
 		"it"		"Arca fratturata"
-		"ko"		"파편화된 방주"
+		"ko"		"금이 간 방주"
 	}
 	"Zerofuse's Knife"
 	{
@@ -4224,7 +4224,7 @@
 	"Quibai's Elegance"
 	{
 		"en"		"Quibai's Elegance"
-		"ko"		"치우바이의 검"
+		"ko"		"치우바이의 품위"
 	}
 	"Ark of the Elements"
 	{

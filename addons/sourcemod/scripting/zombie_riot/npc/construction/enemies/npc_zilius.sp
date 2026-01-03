@@ -324,11 +324,11 @@ methodmap Construction_Raid_Zilius < CClotBody
 			}
 			case 2:
 			{
-				CPrintToChatAll("{black}질리우스{default}: 끝없는 폭력이 뭘 초래하는지 모르고 있나보군. 네 더러운 몸을 좀 돌아봐라.");
+				CPrintToChatAll("{black}질리우스{default}: 끝없는 폭력이 뭘 초래하는지 모르고 있나보군. 네 자신을 좀 돌아봐라.");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{black}질리우스{default}: 우리의 행성은, 황폐화되었다. 네 놈들은 전부 {violet}공허의 장막{default} 대항용으론 아무 쓸모도 없겠지.");
+				CPrintToChatAll("{black}질리우스{default}: 우리의 행성은 황폐화되었다. 네 놈들은 전부 {violet}공허의 장막{default} 대항용으론 아무 쓸모도 없겠지.");
 			}
 			case 4:
 			{
@@ -352,7 +352,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 			}
 			case 9:
 			{
-				CPrintToChatAll("{black}질리우스{default}: 카멜스타인은 재능을 너무 낭비한 존재였다. 안타깝게도, 그 놈은 {gold}너무 많은걸 알려고 했지{default}.");
+				CPrintToChatAll("{black}질리우스{default}: 카멜슈타인은 재능을 너무 낭비한 존재였다. 안타깝게도, 그 놈은 {gold}너무 많은걸 알려고 했지{default}.");
 			}
 			case 10:
 			{
@@ -623,7 +623,7 @@ static void Internal_ClotThink(int iNPC)
 				} 
 				case 9:
 				{
-					CPrintToChatAll("{black}이잔{default}: ...혹시 모르지, 또 그들이 날 처벌할 수도 있고...");
+					CPrintToChatAll("{black}이잔{default}: ...그들이 또 나에게 어떠한 처벌을 내릴지를 생각하면... 정말 모르겠어.");
 				} 
 				case 10:
 				{
@@ -664,7 +664,7 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{black}질리우스{default}: 널 더 위대한 존재로 만들어줄 유전자 변형 기술을 유지했었다면 참 좋았을텐데.");
+					CPrintToChatAll("{black}질리우스{default}: 널 더 위대한 존재로 만들어줄 유전자 변형 기술이 남아있었다면 참 좋았을텐데.");
 				}
 			}
 		}

@@ -1293,7 +1293,7 @@ public void ChaosKahmlstein_NPCDeath(int entity)
 
 	if(i_RaidGrantExtra[npc.index] != 1)
 	{
-		CPrintToChatAll("{darkblue}카멜슈타인{default}: 잘했군, 좀 더 완벽하게 대응했어야했어.");
+		CPrintToChatAll("{darkblue}카멜슈타인{default}: 허. 잘 버텨냈군. 너희를 상대로 좀 더 진중한 대책이 필요하겠어.");
 	}
 }
 /*

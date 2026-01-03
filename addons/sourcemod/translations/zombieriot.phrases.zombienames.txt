@@ -3953,7 +3953,7 @@
 	{
 		"en"	"The ruler of Ruina\nIt is advidsable not to group up aggainst her\nIf 4 or more people are near her, she has the ability to teleport\nIn addition, on wave 60, walk in a circle to avoid her Ion spam attack."
 		"it"	"Il sovrano di Ruina\nÈ consigliabile non raggrupparsi contro di lei Se 4 o più persone le sono vicine, ha la capacità di teletrasportarsi\nInoltre, nell'ondata 60, cammina in cerchio per evitare il suo attacco di spam di ioni."
-		"ko"	"루이나의 집정관입니다.\n그녀에게 떼거지로 접근하지 않는 것이 좋습니다.\n자신 주변에 4명 이상의 적이 있다면, 순간이동 능력을 사용합니다.\n60 웨이브에서는 이온 레이저 공격이 무자비하게 쏟아집니다. 그녀를 중심으로 원을 그리며 싸우세요."
+		"ko"	"루이나의 통치자입니다.\n그녀에게 떼거지로 접근하지 않는 것이 좋습니다.\n자신 주변에 4명 이상의 적이 있다면, 순간이동 능력을 사용합니다.\n60 웨이브에서는 이온 레이저 공격이 무자비하게 쏟아집니다. 그녀를 중심으로 원을 그리며 싸우세요."
 	}
 	"Lelouch Blade"
 	{
@@ -7554,13 +7554,13 @@
 	{
 		"en"	"Shadowing Darkness, The Ruler"
 		"it"	"L'ombra delle tenebre, il dominatore"
-		"ko"	"집정관, ''그림자 응달''"
+		"ko"	"통치자, ''그림자 응달''"
 	}
 	"Shadowing Darkness, The Ruler Desc"
 	{
 		"en"	"Ruler of the Umbrals. Keeper of the Purgatory Throne. Culprit behind the Void outbreaks. \nTrapped inside the Curtain, she lost her mind long ago. \nShe must be stopped at all costs.\nShe gives necrosis on most of her abilities."
 		"it"	"Sovrano degli Umbral. Custode del Trono del Purgatorio. Responsabile delle epidemie del Vuoto. \nIntrappolata nella cortina, ha perso la ragione molto tempo fa. \nDeve essere fermata a tutti i costi.\nDà necrosi alla maggior parte delle sue abilità."
-		"en"	"움브랄의 집정관이자, 연옥 왕좌의 파수꾼입니다. 공허 재앙 발발의 장본인입니다.\n 장막 속에 갇힌 그녀는 오래 전에 이성을 잃었습니다.\n무슨 수를 써서라도 막아내야만 합니다.\n대부분의 능력이 적들에게 쇠약 원소 피해를 부여합니다."
+		"en"	"움브랄의 통치자이자, 연옥 왕좌의 파수꾼입니다. 공허 재앙 발발의 장본인입니다.\n 장막 속에 갇힌 그녀는 오래 전에 이성을 잃었습니다.\n무슨 수를 써서라도 막아내야만 합니다.\n대부분의 능력이 적들에게 쇠약 원소 피해를 부여합니다."
 	}
 	"Almagest Researcher"
 	{
