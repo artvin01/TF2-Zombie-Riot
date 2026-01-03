@@ -1296,6 +1296,29 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 				SetEntProp(SensalSpawn, Prop_Data, "m_iHealth", 100000000);
 				SetEntProp(SensalSpawn, Prop_Data, "m_iMaxHealth", 100000000);
 			}
+			
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+			{
+				int GetDrone = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+				if (IsValidEntity(GetDrone) && !b_NpcHasDied[GetDrone] && GetTeam(GetDrone) == TFTeam_Blue)
+				{
+					if(i_NpcInternalId[GetDrone] == VictorianFragments_ID())
+					{
+						VictorianDroneFragments DroneCPU = view_as<VictorianDroneFragments>(GetDrone);
+						DroneCPU.m_iState = 2;
+						NPCStats_RemoveAllDebuffs(GetDrone, 1.0);
+						SetTeam(GetDrone, TFTeam_Red);
+					}
+					else if(i_NpcInternalId[GetDrone] == VictorianAnvil_ID())
+					{
+						VictorianDroneAnvil DroneCPU = view_as<VictorianDroneAnvil>(GetDrone);
+						DroneCPU.m_iTarget = npc.index;
+						NPCStats_RemoveAllDebuffs(GetDrone, 1.0);
+						SetTeam(GetDrone, TFTeam_Red);
+					}
+					else continue;
+				}
+			}
 
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			npc.m_iState = 0;
@@ -2536,7 +2559,7 @@ static bool Victoria_Support(Castellan npc, int AddNuke, bool Mk2)
 			float position2[3];
 			position2[0] = Vs_Temp_Pos[enemy[i]][0];
 			position2[1] = Vs_Temp_Pos[enemy[i]][1];
-			position2[2] = Vs_Temp_Pos[enemy[i]][2] + 65.0;
+			position2[2] = Vs_Temp_Pos[enemy[i]][2] + 40.0;
 			spawnRing_Vectors(position2, Vs_Raged, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
 			spawnRing_Vectors(Vs_Temp_Pos[enemy[i]], Vs_Raged, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
 			TE_SetupBeamPoints(Vs_Temp_Pos[enemy[i]], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
