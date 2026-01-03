@@ -106,6 +106,11 @@ methodmap VictorianPayback < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
+	property float m_EditHPGain
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
 	
 	public VictorianPayback(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -126,6 +131,7 @@ methodmap VictorianPayback < CClotBody
 		npc.m_PaybackAnimation = 0.0;
 		npc.m_EditLifetime = 5.0;
 		npc.m_EditArmorGain = 1.25;
+		npc.m_EditHPGain = 0.5;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -159,7 +165,16 @@ methodmap VictorianPayback < CClotBody
 				ReplaceString(countext[i], sizeof(countext[]), "armor", "");
 				npc.m_EditArmorGain = StringToFloat(countext[i]);
 			}
+			else if(StrContains(countext[i], "hp") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "hp", "");
+				npc.m_EditHPGain = StringToFloat(countext[i]);
+			}
 		}
+		
+		fl_ruina_battery_max[npc.index]=npc.m_EditHPGain;
+		fl_ruina_battery[npc.index]=npc.m_EditHPGain;
+		ApplyStatusEffect(npc.index, npc.index, "Battery_TM Charge", 999.0);
 		
 		int skin = 1;
 	//	SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -206,11 +221,12 @@ methodmap VictorianPayback < CClotBody
 static void VictorianPayback_ClotThink(int iNPC)
 {
 	VictorianPayback npc = view_as<VictorianPayback>(iNPC);
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	float gameTime = GetGameTime(npc.index);
+	if(npc.m_flNextDelayTime > gameTime)
 	{
 		return;
 	}
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
 	if(npc.m_blPlayHurtAnimation)
@@ -234,11 +250,15 @@ static void VictorianPayback_ClotThink(int iNPC)
 			npc.StopPathing();
 			npc.m_flSpeed = 0.0;
 		}
-		if(npc.m_PaybackAnimation < GetGameTime(npc.index) && !npc.m_fbRangedSpecialOn)
+		if(npc.m_PaybackAnimation < gameTime && !npc.m_fbRangedSpecialOn)
 		{
 			npc.m_PaybackAnimation = 0.0;
-			npc.m_LimitedLifetime = GetGameTime(npc.index) + npc.m_EditLifetime;
+			npc.m_LimitedLifetime = gameTime + npc.m_EditLifetime;
 			npc.m_fbRangedSpecialOn = true;
+			
+			fl_ruina_battery_max[npc.index]=npc.m_EditLifetime;
+			fl_ruina_battery[npc.index]=npc.m_LimitedLifetime;
+			ApplyStatusEffect(npc.index, npc.index, "Battery_TM Charge", 999.0);
 			
 			if(IsValidEntity(npc.m_iWearable2))
 			{
@@ -247,28 +267,30 @@ static void VictorianPayback_ClotThink(int iNPC)
 			}
 			//b_HideHealth[npc.index]=true;
 			GrantEntityArmor(npc.index, false, npc.m_EditArmorGain, 0.0, 0, float(ReturnEntityMaxHealth(npc.index))*npc.m_EditArmorGain);
-
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(npc.index))*npc.m_EditHPGain));
 			b_NpcIsInvulnerable[npc.index] = false;
 			b_NpcUnableToDie[npc.index]=false;
 		}
 		return;
 	}
+	if(npc.m_fbRangedSpecialOn)
+		fl_ruina_battery[npc.index]=npc.m_LimitedLifetime-gameTime;
 
-	if(npc.m_LimitedLifetime < GetGameTime(npc.index) && npc.Anger)
+	if(npc.m_LimitedLifetime < gameTime && npc.Anger)
 	{
 		b_NpcIsInvulnerable[npc.index] = false;
 		SDKHooks_TakeDamage(npc.index, 0, 0, 1000000.0, DMG_BULLET);
 		SmiteNpcToDeath(npc.index);
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > gameTime)
 		return;
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 	}
 	
 	if(npc.Anger)
@@ -310,7 +332,7 @@ static void VictorianPayback_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VictorianPaybackSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
+		VictorianPaybackSelfDefense(npc,gameTime, flDistanceToTarget); 
 	}
 	else
 	{

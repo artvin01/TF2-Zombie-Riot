@@ -5528,7 +5528,7 @@
 	{
 		"en"	"The Crimson"
 		"it"	"Il Cremisi"
-		"ko"	"그림자처럼"
+		"ko"	"''그림자처럼''"
 	}
 	"Effect:"
 	{

@@ -128,7 +128,8 @@ methodmap VictoriaArtillerist < CClotBody
 		npc.m_flMeleeArmor = 1.5;
 		npc.m_flRangedArmor = 0.6;
 		
-		static char countext[20][1024];
+		bool ambusher;
+		static char countext[5][256];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
@@ -147,6 +148,11 @@ methodmap VictoriaArtillerist < CClotBody
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "impact", "");
 				npc.m_flImpactDelay = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "ambusher") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "ambusher", "");
+				ambusher=true;
 			}
 		}
 		
@@ -171,7 +177,31 @@ methodmap VictoriaArtillerist < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-
+		
+		if(ambusher)
+		{
+			int Decicion = TeleportDiversioToRandLocation(npc.index, true, 2500.0, 1000.0);
+			switch(Decicion)
+			{
+				case 2:
+				{
+					Decicion = TeleportDiversioToRandLocation(npc.index, true, 2500.0, 500.0);
+					if(Decicion == 2)
+					{
+						Decicion = TeleportDiversioToRandLocation(npc.index, true, 2500.0, 250.0);
+						if(Decicion == 2)
+						{
+							Decicion = TeleportDiversioToRandLocation(npc.index, true, 2500.0, 0.0);
+						}
+					}
+				}
+				case 3:
+				{
+					//todo code on what to do if random teleport is disabled
+				}
+			}
+		}
+		
 		return npc;
 	}
 }
