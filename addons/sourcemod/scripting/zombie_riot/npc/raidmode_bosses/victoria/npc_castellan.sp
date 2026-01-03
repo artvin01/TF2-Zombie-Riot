@@ -1326,7 +1326,6 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			return Plugin_Handled;
 		}
 	}
-
 	return Plugin_Changed;
 }
 
@@ -1381,6 +1380,20 @@ static void Castellan_NPCDeath(int entity)
 		EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
 		EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
 	}
+	
+	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+	{
+		int GetDrone = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+		if (IsValidEntity(GetDrone) && !b_NpcHasDied[GetDrone] && (i_NpcInternalId[GetDrone] == VictorianFragments_ID() || i_NpcInternalId[GetDrone] == VictorianAnvil_ID()) && GetTeam(GetDrone) == TFTeam_Blue)
+		{
+			b_NpcForcepowerupspawn[GetDrone] = 0;
+			i_RaidGrantExtra[GetDrone] = 0;
+			b_DissapearOnDeath[GetDrone] = true;
+			b_DoGibThisNpc[GetDrone] = true;
+			SmiteNpcToDeath(GetDrone);
+		}
+	}
+
 
 	if(BlockLoseSay)
 		return;
