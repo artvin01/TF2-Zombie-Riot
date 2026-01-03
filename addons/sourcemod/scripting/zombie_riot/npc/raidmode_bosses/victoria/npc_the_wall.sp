@@ -377,7 +377,7 @@ methodmap Huscarls < CClotBody
 			func_NPCThink[npc.index] = Clone_ClotThink;
 		
 			MakeObjectIntangeable(npc.index);
-			b_DoNotUnStuck[npc.index] = true;
+			//b_DoNotUnStuck[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
@@ -2199,7 +2199,7 @@ static bool Victoria_Support(Huscarls npc)
 		float position2[3];
 		position2[0] = Vs_Temp_Pos[npc.index][0];
 		position2[1] = Vs_Temp_Pos[npc.index][1];
-		position2[2] = Vs_Temp_Pos[npc.index][2] + 65.0;
+		position2[2] = Vs_Temp_Pos[npc.index][2] + 40.0;
 		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
 		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
 		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
