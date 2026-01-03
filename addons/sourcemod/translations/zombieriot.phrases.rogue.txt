@@ -441,7 +441,7 @@
 		"en"	"''I know who it is that you seek, outsider,'' says a slender, stooped woman with a strange laugh.\n''You don't understand that Mazeaten, do you? You seem to trust him, though.''\nThe strange woman looks at you through her helmet and scarf.\n''I can tell you all about his past. Are you interested?''\nShe reaches out her shriveled hands, seemingly asking for something."
 		"ru"	"«Я знаю, кого ты ищешь, чужак,» - говорит стройная, сутулая женщина со странным смехом.\n«Ты не понимаешь этого комбайна, не так ли? Но, похоже, вы ему доверяете.»\nСтранная женщина смотрит на вас через шлем и шарф.\n«Я могу рассказать вам всё о его прошлом. Вы заинтересованы?»\nОна протягивает свои сморщенные руки, как бы прося о чём-то."
 		"it"	"''So chi è che cerchi, forestiero'', dice una donna esile e china con una strana risata.\n''Tu non capisci quel Mazeaten, vero? Sembra che vi fidiate di lui''.\nLa strana donna vi guarda attraverso l'elmo e la sciarpa.\n Posso dirvi tutto sul suo passato. Ti interessa?''\nAllunga le mani raggrinzite, sembra chiedere qualcosa."
-		"ko"	"''자네가 누굴 찾는지 난 알고 있어, 외부인.'' 한 곱사등에 수척하게 야윈 사람이 괴상한 웃음소리를 내며 말을 건넸다.\n''하지만 자넨 저 마제트인을 모르지. 안 그래? 자네가 그를 신뢰한다 해도.'''\n괴인은 후드와 목도리 사이로 당신을 바라보며 웃고 있었다.\n''내가 녀석의 과거를 알려줄 수 있는데. 궁금하지 않아?''\n그녀는 메마른 두 손을 내밀었고, 당신에게 무언가 요구하는 것 같았다."
+		"ko"	"''자네가 누굴 찾는지 난 알고 있어, 외부인.'' 한 곱사등에 수척하게 야윈 사람이 괴상한 웃음소리를 내며 말을 건넸다.\n''하지만 자넨 저 마제트인을 모르지. 안 그래? 자네가 그를 신뢰한다 해도.''\n괴인은 후드와 목도리 사이로 당신을 바라보며 웃고 있었다.\n''내가 녀석의 과거를 알려줄 수 있는데. 궁금하지 않아?''\n그녀는 메마른 두 손을 내밀었고, 당신에게 무언가 요구하는 것 같았다."
 	}
 	"Eccentric Option 1"
 	{
@@ -2150,7 +2150,7 @@
 		"en"	"Old ziberian wallet, has some pictures inside and some leftover cash.\n- {green}Gain 500 Cash and deal +1％ damage."
 		"ru"	"Старый русский бумажник, внутри несколько фотографий и немного оставшихся денег.\n- +500 кредитов и на 1％ больше урона."
 		"it"	"Vecchio portafoglio ziberiano, ha alcune foto all'interno e qualche avanzo di denaro.\n- {green} Guadagna 500 contanti e infligge +1％ danni."
-		"ko"	"오래된 지베리아제 지갑. 안에는 약간의 자금과 사진 몇 장이 들어있다.\n- {green}추가 자금 +500, 공격 피해량 +1％."
+		"ko"	"오래된 지베리아제 지갑. 안에는 사진 몇 장과 약간의 돈이 들어있다.\n- {green}추가 자금 +500, 공격 피해량 +1％."
 	}
 	"Golden Coin"
 	{
@@ -2338,7 +2338,7 @@
 		"en"	"One half of the Gaulish empress' crown is now housed in the Royal Museum of Londinium.\n{green}Enemies take +20％ ranged damage {crimson}but -5％ melee damage."
 		"it"	"Una metà della corona dell'imperatrice gallica è ora conservata nel Museo Reale di Londinium.\n{green}I nemici subiscono +20％ danni a distanza {crimson} ma -5％ danni in mischia."
 		"ru"	"Одна половина короны галльской императрицы сейчас хранится в Королевском музее Лондиниума.\n{green}Враги получают на +20％ больше урона в дальнем бою{crimson}, но -5％ урона в ближнем бою{yellow}."
-		"ko"	"가울 황후의 면관류 장신구 중 일부로, 지금은 런디니움 로열 박물관에 보관되어 있다.\n{green}적에게 주는 원거리 공격 피해량 +20％. {crimson}근접 공격 피해량이 -5％ 감소."
+		"ko"	"가울 황후의 면관류 장신구 중 일부로, 지금은 런디니움 로열 박물관에 보관되어 있다.\n{green}적이 받는 원거리 공격 피해량 +20％. {crimson}근접 공격 피해량 -5％"
 	}
 	"Left Eye of the Natator"
 	{
@@ -2352,7 +2352,7 @@
 		"en"	"One half of the Gaulish empress' crown is now stored housed in the Leithanien Queen Library.\n{green}Enemies take +20％ melee damage {crimson}but -5％ ranged damage."
 		"it"	"Una metà della corona dell'imperatrice gallica è ora conservata nella Biblioteca della Regina di Leithanien.\n{green}I nemici subiscono +20％ danni in mischia {crimson}ma -5％ danni a distanza."
 		"ru"	"Одна половина короны галльской императрицы сейчас хранится в библиотеке королевы Лейтаниена.\n{green}Враги получают на +20％ больше урона в ближнем бою{crimson}, но -5％ урона в дальнем бою{yellow}."
-		"ko"	"가울 황후의 면관류 장신구 중 일부로, 지금은 라이타니엔 여황제 도서관에 보관되어 있다.\n{green}적에게 주는 근접 공격 피해량 +20％. {crimson}원거리 공격 피해량이 -5％ 감소"
+		"ko"	"가울 황후의 면관류 장신구 중 일부로, 지금은 라이타니엔 여황제 도서관에 보관되어 있다.\n{green}적이 받는 근접 공격 피해량 +20％. {crimson}원거리 공격 피해량 -5％"
 	}
 	"End of Times"
 	{
@@ -2416,7 +2416,7 @@
 	{
 		"en"	"A report about a Mazeaten named ''Bladedance''. Status: Unknown. The rest of the report is torn off.\n{green}All Allies gain +15％ damage and +20％ movement speed {blue}and the ending is changed."
 		"it"	"Un rapporto su un Mazeaten chiamato ''Bladedance''. Stato: Sconosciuto. Tutti gli alleati guadagnano +15％ danni e +20％ velocità di movimento {blue}e il finale è cambiato."
-		"ko"	"''칼춤''이라는 이름을 가진 마제트인에 대한 보고서. 상태: 불명. 보고서의 나머지 부분이 찢겨져있다.\n{green}모든 아군의 공격 피해량 +15％ 및 이동 속도 +20％ 증가. {blue}게임 엔딩이 변경됩니다."
+		"ko"	"''칼춤''이라는 이름의 마제트인에 대한 보고서. 상태: 불명. 보고서의 나머지 부분이 찢겨져있다.\n{green}모든 아군의 피해량 +15％, 이동 속도 +20％ 증가. {blue}게임 엔딩이 변경됩니다."
 	}
 	"Hand of Sticks"
 	{
@@ -2512,7 +2512,7 @@
 	{
 		"en"	"Investing in the marketplace.\n{green}''Rapid Magic'' and ''Power Magic'' weapons gain +100％ max mana, mana regen and attack speed."
 		"it"	"Investendo nel mercato,\n{green}le armi ''Magia Rapida'' e ''Magia del Potere'' guadagnano +100％ di mana massimo, rigenerazione del mana e velocità d'attacco."
-		"ko"	"지극히 평범한 것부터가 정상이 아니라던데.\n{green}''속사 마법'', ''강타 마법'' 태그 무기들의 최대 마나 및 마나 재생 속도, 공격 속도가 +100％ 증가."
+		"ko"	"지극히 평범한 것부터가 정상이 아니라던데.\n{green}''속사 마법'', ''강타 마법'' 태그 무기들의 최대 마나, 마나 재생 속도, 공격 속도가 +100％ 증가."
 	}
 	"Hand of the Elite"
 	{
@@ -2560,7 +2560,7 @@
 	{
 		"en"	"Better build that temple.\n{green}Bloons Tower Defense themed weapons gain +20％ damage for every person with a unique bloons weapon"
 		"it"	"Meglio costruire quel tempio.\n{green}Le armi a tema Tower Defense di Bloons guadagnano +20％ danni per ogni persona con un'arma bloons unica"
-		"ko"	"빨리 사원을 건설해야겠군.\n{green}풍선 타워 디펜스 무기를 사용하는 유저 1명당 서로에게 피해량 +20％ 증가 효과를 부여. 중첩됨."
+		"ko"	"빨리 사원을 건설해야겠군.\n{green}각기 다른 풍선 타워 디펜스 관련 무기 사용자 1명 당 서로에게 피해량 +20％ 증가 효과를 부여. 이 효과는 중첩됨."
 	}
 	"Soul of Yakuza"
 	{
@@ -2572,7 +2572,7 @@
 	{
 		"en"	"10 years.\n{green}Yakuza themed weapons allow their special stance to always gain HEAT"
 		"it"	"10 anni.\n{green}Le armi a tema Yakuza permettono alla loro posizione speciale di guadagnare sempre calore"
-		"ko"	"10년의 세월.\n{green}용과 같이 관련 무기(''평범한 주먹'')의 전설 스타일이 언제나 히트를 획득합니다."
+		"ko"	"10년의 세월.\n{green}용과 같이 관련 무기(평범한 주먹)의 전설 스타일이 언제나 히트를 획득합니다."
 	}
 	"Soul of Darkest Dungeon"
 	{
@@ -2584,7 +2584,7 @@
 	{
 		"en"	"Face the light or be consumed.\n{green}Darkest Dungeon themed weapons gain a chance to prevent fatal damage"
 		"it"	"Affrontare la luce o essere consumati.\n{green}Le armi a tema Dungeon più oscuro guadagnano una possibilità di prevenire i danni mortali"
-		"ko"	"빛을 마주하라. 그렇지 않으면 삼켜지리라.\n{green}다키스트 던전 관련 무기들은 사망에 이르는 피해를 확률적으로 무시하고 죽지 않음."
+		"ko"	"빛을 마주하라. 그렇지 않으면 삼켜지리라.\n{green}다키스트 던전 관련 무기 사용시 사망에 이르는 피해를 확률적으로 무시하고 사망하지 않음."
 	}
 	"Soul of Terraria"
 	{
@@ -2596,7 +2596,7 @@
 	{
 		"en"	"And there will be mods.\n{green}Terraria themed weapons gain 1000 HP every so often"
 		"it"	"E ci saranno delle mod. \n{green}Le armi a tema Terraria guadagnano 1000 HP di tanto in tanto"
-		"ko"	"이제 그 곳에 모드 있으라.\n{green}테라리아 관련 무기들은 주기적으로 사용자의 체력을 1000 회복.(과치료 가능)"
+		"ko"	"이제 그 곳에 모드 있으라.\n{green}테라리아 관련 무기들은 주기적으로 사용자의 체력을 1000 회복시킵니다.(과치료 가능)"
 	}
 	"Xeno Anti-Vial"
 	{
@@ -2722,7 +2722,7 @@
 	{
 		"en"	"Corroding as we speak.\n{green}Each newly spawned enemy takes increasingly more damage and stacks"
 		"it"	"Si sta corrodendo mentre parliamo.\n{green}Ogni nuovo nemico generato subisce sempre più danni e stack"
-		"ko"	"말하는 지금 이 순간에도 점점 부식되어가는게 보인다.\n{green}적이 새로 생성될 때마다 피해 저항력이 감소된 채로 등장하며, 이 효과는 중첩됨."
+		"ko"	"말하는 지금 이 순간에도 점점 부식되어가는게 보인다.\n{green}적이 새로 생성될 때마다 피해 저항력이 감소된 채로 등장하며, 이 효과는 중첩됩니다."
 	}
 	"Eyes of the Sea"
 	{

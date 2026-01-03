@@ -967,7 +967,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 				switch(GetRandomInt(0,1))
 				{
 					case 0:
-						Format(Text_Lines, sizeof(Text_Lines), "{darkblue}카멜스타인{default}, 난 그를 그다지 좋게 생각하지는 않지만, 흔히 말하듯이 겉모습으로 사람을 판단하지 말란 말이 있잖아.");
+						Format(Text_Lines, sizeof(Text_Lines), "{darkblue}카멜슈타인{default}, 난 그를 그다지 좋게 생각하지는 않지만, 흔히 말하듯이 겉모습으로 사람을 판단하지 말란 말이 있잖아.");
 					case 1:
 						Format(Text_Lines, sizeof(Text_Lines), "뭐, 이제 {darkblue}그는{default} 더 나은 장소에 있잖아! 하하... 아나.",client);
 				}	
@@ -1058,7 +1058,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 				switch(GetRandomInt(0,1))
 				{
 					case 0:
-						Format(Text_Lines, sizeof(Text_Lines), "전투에서 신문을 볼 시간이 있다고, {gold}%N{default}? 내가 우습나?",client);	
+						Format(Text_Lines, sizeof(Text_Lines), "전투 도중에 신문을 볼 시간이 있다고, {gold}%N{default}? 내가 우습나?",client);	
 					case 1:
 						Format(Text_Lines, sizeof(Text_Lines), "미친 놈. 지금 {white}밥{default}을 인질로 잡아놓고 신문이나 보시겠다, {gold}%N{default}? {red}도발이냐?",client);
 				}
@@ -1152,7 +1152,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 					case 0:
 						Format(Text_Lines, sizeof(Text_Lines), "도대체 어떻게 시본의 힘을 부작용 없이 사용하고 있는거야?");
 					case 1:
-						Format(Text_Lines, sizeof(Text_Lines), "글쎄, 네가 겪은 모든 일을 생각하면, 시본 감염이 너에게 영향을 미치지 않는다는 것은 별로 놀라운 일은 아닐거 같네, {gold}%N{default}.",client);
+						Format(Text_Lines, sizeof(Text_Lines), "뭐, 솔직히 네가 겪은 모든 일을 생각하면, 시본 감염이 너에게 영향을 미치지 않는다는 것은 별로 놀라운 일도 아닐거 같네, {gold}%N{default}.",client);
 				}
 			}
 			else
@@ -1175,7 +1175,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 					case 0:
 						Format(Text_Lines, sizeof(Text_Lines), "붐스틱은 내가 가장 좋아하는 무기였어. RPG로 바꿨지만.");
 					case 1:
-						Format(Text_Lines, sizeof(Text_Lines), "그 붐스틱을 들고 있으니까, 속된 말로 간지나보인다, {gold}%N{default}.",client);
+						Format(Text_Lines, sizeof(Text_Lines), "그 붐스틱을 들고 있으니까, 어, 속된 말로 간지나보인다, {gold}%N{default}!",client);
 				}
 			}
 			else
@@ -1350,7 +1350,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 
 	if(valid)
 	{
-		CPrintToChatAll("{gold}Omega{default}: %s", Text_Lines);
+		CPrintToChatAll("{gold}오메가{default}: %s", Text_Lines);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(15.0, 22.0);
 		b_said_player_weaponline[client] = true;
 	}
@@ -1444,7 +1444,7 @@ static bool OmegasRabiling()
 			}
 			case 8:
 			{
-				OmegaRaid_Reply("{default}젠장... 좀 더 깊게 알아봤어야했네...");
+				OmegaRaid_Reply("{default}젠장... 좀 더 정확히 조사해봤어야했는데...");
 			}
 			case 9:
 			{

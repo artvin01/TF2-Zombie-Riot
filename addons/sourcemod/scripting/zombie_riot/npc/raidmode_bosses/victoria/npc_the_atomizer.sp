@@ -542,26 +542,26 @@ static void Clone_ClotThink(int iNPC)
 				for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 				{
 					if(IsValidEnemy(npc.index, EnemyLoop, true, true))
-					{					
+					{
 						float vecTarget[3]; WorldSpaceCenter(EnemyLoop, vecTarget);
 						float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 						float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 						if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && flDistanceToTarget < (1000.0 * 1000.0))
 						{
-						
-							GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
-							
-							MakeVectorFromPoints(ProjLoc, cpos, velocity);
-							NormalizeVector(velocity, velocity);
-							ScaleVector(velocity, -450.0);
-							if(b_ThisWasAnNpc[EnemyLoop])
+							if(!HasSpecificBuff(EnemyLoop, "Solid Stance"))
 							{
-								CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
-								npc1.SetVelocity(velocity);
-							}
-							else
-							{
-								TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);
+								GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
+								
+								MakeVectorFromPoints(ProjLoc, cpos, velocity);
+								NormalizeVector(velocity, velocity);
+								ScaleVector(velocity, -450.0);
+								if(b_ThisWasAnNpc[EnemyLoop])
+								{
+									CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
+									npc1.SetVelocity(velocity);
+								}
+								else
+									TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);
 							}
 							if(!IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 							{
@@ -571,6 +571,12 @@ static void Clone_ClotThink(int iNPC)
 								if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 									RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
 								int laser;
+								if(HasSpecificBuff(EnemyLoop, "Solid Stance"))
+								{
+									red = 50;
+									green = 50;
+									blue = 50;
+								}
 								
 								laser = ConnectWithBeam(npc.index, EnemyLoop, red, green, blue, 3.0, 3.0, 2.35, LASERBEAM);
 					
@@ -1103,19 +1109,20 @@ static void Atomizer_ClotThink(int iNPC)
 					float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 					if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && flDistanceToTarget < (750.0 * 750.0))
 					{
-						GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
-						
-						MakeVectorFromPoints(ProjLoc, cpos, velocity);
-						NormalizeVector(velocity, velocity);
-						ScaleVector(velocity, -450.0);
-						if(b_ThisWasAnNpc[EnemyLoop])
+						if(!HasSpecificBuff(EnemyLoop, "Solid Stance"))
 						{
-							CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
-							npc1.SetVelocity(velocity);
-						}
-						else
-						{
-							TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);
+							GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
+							
+							MakeVectorFromPoints(ProjLoc, cpos, velocity);
+							NormalizeVector(velocity, velocity);
+							ScaleVector(velocity, -450.0);
+							if(b_ThisWasAnNpc[EnemyLoop])
+							{
+								CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
+								npc1.SetVelocity(velocity);
+							}
+							else
+								TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);
 						}
 						if(!IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 						{
@@ -1125,6 +1132,12 @@ static void Atomizer_ClotThink(int iNPC)
 							if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 								RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
 							int laser;
+							if(HasSpecificBuff(EnemyLoop, "Solid Stance"))
+							{
+								red = 50;
+								green = 50;
+								blue = 50;
+							}
 							
 							laser = ConnectWithBeam(npc.index, EnemyLoop, red, green, blue, 3.0, 3.0, 2.35, LASERBEAM);
 				
@@ -1622,22 +1635,22 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 								
 								bool Knocked = false;
-											
+								
 								if(IsValidClient(targetTrace))
 								{
-									if(IsInvuln(targetTrace))
+									if(IsInvuln(targetTrace) && !HasSpecificBuff(targetTrace, "Solid Stance"))
 									{
 										Knocked = true;
 										Custom_Knockback(npc.index, targetTrace, 600.0, true);
 									}
-									if(!HasSpecificBuff(npc.index, "Godly Motivation") || Knocked)
+									if(!HasSpecificBuff(targetTrace, "Fluid Movement"))
 									{
 										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.4);
 										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.4);
 									}
 								}
 								
-								if(!Knocked)
+								if(!Knocked && !HasSpecificBuff(targetTrace, "Solid Stance"))
 									Custom_Knockback(npc.index, targetTrace, 300.0, true); 
 							} 
 						}
@@ -1709,8 +1722,11 @@ static void SuperAttack(int entity, int victim, float damage, int weapon)
 	Atomizer npc = view_as<Atomizer>(entity);
 	if(IsValidEntity(victim))
 	{
-		float vecHit[3]; WorldSpaceCenter(victim, vecHit);
-		Custom_Knockback(npc.index, victim, DrinkPOWERUP[npc.index] ? 2200.0 : 1980.0, true, true, true);
+		if(!HasSpecificBuff(victim, "Solid Stance"))
+		{
+			float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+			Custom_Knockback(npc.index, victim, DrinkPOWERUP[npc.index] ? 2200.0 : 1980.0, true, true, true);
+		}
 		SUPERHIT[npc.index]=true;
 	}
 }
@@ -1889,8 +1905,8 @@ static bool Victoria_Support(Atomizer npc)
 		position2[0] = Vs_Temp_Pos[npc.index][0];
 		position2[1] = Vs_Temp_Pos[npc.index][1];
 		position2[2] = Vs_Temp_Pos[npc.index][2] + 65.0;
-		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
-		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
 		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
 		TE_SendToAll();
 		TE_SetupGlowSprite(Vs_Temp_Pos[npc.index], g_RedPoint, 0.1, 1.0, 255);

@@ -594,7 +594,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			npc.m_flInTeleportLogic = 0.0;
 			npc.m_flChangeTargetsSilvester -= 3.0;
-			CPrintToChatAll("{gold}실베스터{default}: 뭐야, 벌써 사라졌어?");
+			CPrintToChatAll("{gold}실베스터{default}: 어... 네말? 벌써 물러난거야?");
 			RemoveSpecificBuff(npc.index, "Very Defensive Backup");
 			return;
 		}
@@ -717,11 +717,11 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{gold}실베스터{default}: 어, 지금 가야돼. 다음 번엔 네가 이길거야.");
+				CPrintToChatAll("{gold}실베스터{default}: 어, 잠깐, 지금 당장 다른쪽을 도와야겠어! 다음 번엔 네가 이길거야.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{gold}실베스터{default}: 그래도 도망치지 않고 싸웠잖아! 그럼 잘 한거야!");
+				CPrintToChatAll("{gold}실베스터{default}: 그래도 이번엔 도망치지 않고 싸웠잖아! 그럼 잘 한거야!");
 			}
 			case 2:
 			{
@@ -749,7 +749,7 @@ static void Internal_ClotThink(int iNPC)
 			{
 				RemoveEntity(npc.m_iWearable8);
 			}
-			CPrintToChatAll("{gold}실베스터{default}: 나한테 피해를 주는 속도가 너무 느린거 아냐? 내가 더 열심히 해볼게.");
+			CPrintToChatAll("{gold}실베스터{default}: 좀 진지하게 해봐! 나도 이제부터 더 열심히 해볼게.");
 			npc.m_flSilvesterTransformRegardless = FAR_FUTURE;
 			npc.i_GunMode = 0;
 		}

@@ -1597,7 +1597,7 @@ static void Final_Invocation(Twirl npc)
 			switch(GetRandomInt(0, 7))
 			{
 				case 0: Twirl_Lines(npc, "음, 이게 끝이라고 생각했어? {crimson}난 아닌데...");
-				case 1: Twirl_Lines(npc, "아하하, 내가 집정관이라는거 알고 있지? {purple}그럼 이것도 누구 물건이란것도 알겠네?");
+				case 1: Twirl_Lines(npc, "아하하, 내가 이곳의 통치자인건 잘 알고 있지? {purple}그럼 이것도 누구 물건이란것도 알겠네?");
 				case 2: Twirl_Lines(npc, "그래, 광역 공격은 잘 챙겼고?");
 				case 3: Twirl_Lines(npc, "어, 걱정 마. {aqua}스텔라 위버{snow}는 저기서 안 나와.");
 				case 4: Twirl_Lines(npc, "흐음, 지원이 필요하다고? 여기 있어! 비록 네 지원군은 아니지만.");

@@ -375,7 +375,7 @@ methodmap Vincent < CClotBody
 			Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "V.I.N.C.E.N.T.");
 			EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.7, 80);
 			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
-			CPrintToChatAll("{rare}%t{default}: 뭐. 무자비한 로봇을 원하는건가? {crimson}내가 되어주지.", c_NpcName[npc.index]);
+			CPrintToChatAll("{rare}%t{default}: 뭐 어쩌라고. 자비를 바라는건가? {crimson}너한테 그러긴 싫은데.", c_NpcName[npc.index]);
 			CPrintToChatAll("{fullred}감염성 유기체 박멸 개시.");
 			npc.m_flRangedArmor *= 0.95;
 			npc.m_flMeleeArmor *= 0.95;	
@@ -1110,21 +1110,21 @@ static bool Vincent_LoseConditions(int iNPC)
 						switch (GetURandomInt() % 3)
 						{
 							case 0:
-								first = "Alright.";
+								first = "좋습니다.";
 							case 1:
-								first = "Enough.";
+								first = "이 정도면 되겠군.";
 							case 2:
-								first = "Ah.";
+								first = "흠.";
 						}
 						
 						switch (GetURandomInt() % 3)
 						{
 							case 0:
-								second = "I'm taking my leave.";
+								second = "전 이제 자리를 뜨겠습니다.";
 							case 1:
-								second = "That's my cue to go.";
+								second = "보아하니 여기서 떠날 시간인 것 같네요.";
 							case 2:
-								second = "You got the best of me this time.";
+								second = "이번엔 저를 이기셨군요.";
 						}
 						
 						CPrintToChatAll("{rare}%t{default}: %s %s", c_NpcName[npc.index], first, second);

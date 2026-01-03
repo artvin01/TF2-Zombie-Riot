@@ -1215,13 +1215,10 @@ static void Harrison_ClotThink(int iNPC)
 						DataPack pack;
 						CreateDataTimer(Spam_delay, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
 						pack.WriteCell(EntIndexToEntRef(npc.index));
-						pack.WriteFloat(BombPos[0]);
-						pack.WriteFloat(BombPos[1]);
-						pack.WriteFloat(BombPos[2]);
+						pack.WriteFloatArray(BombPos, 3);
 						pack.WriteFloat(BombDamage);
 						pack.WriteFloat(3.0);
-						pack.WriteFloat(1.0);
-						pack.WriteFloat(150.0);
+						pack.WriteFloat(210.0);
 						Spam_delay += 0.15;
 					}
 				}
@@ -1697,7 +1694,23 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 								KillFeed_SetKillIcon(npc.index, "bushwacka");
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 								StartBleedingTimer(targetTrace, npc.index, damage * 0.1, 4, -1, DMG_TRUEDAMAGE, 0);
-								Custom_Knockback(npc.index, targetTrace, 150.0, true); 
+								bool Knocked = false;
+								if(IsValidClient(targetTrace))
+								{
+									if(IsInvuln(targetTrace) && !HasSpecificBuff(targetTrace, "Solid Stance"))
+									{
+										Knocked = true;
+										Custom_Knockback(npc.index, targetTrace, 750.0, true);
+									}
+									if(!HasSpecificBuff(targetTrace, "Fluid Movement"))
+									{
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+									}
+								}
+								
+								if(!Knocked && !HasSpecificBuff(targetTrace, "Solid Stance"))
+									Custom_Knockback(npc.index, targetTrace, 150.0, true);
 							} 
 						}
 					}
@@ -1986,69 +1999,60 @@ static void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
 	}
 }
 
+public void Engage_RocketBarrage(int entity, float targetpos[3], float damage, float delay, float radius)
+{
+	DataPack RocketBarrage = new DataPack();
+	RocketBarrage.WriteCell(EntIndexToEntRef(entity));
+	RocketBarrage.WriteFloatArray(targetpos, 3);
+	RocketBarrage.WriteFloat(damage);
+	RocketBarrage.WriteFloat(GetGameTime()+delay);
+	RocketBarrage.WriteFloat(delay);
+	RocketBarrage.WriteFloat(radius);
+	RequestFrame(RocketBarrage_Think, RocketBarrage);
+}
+
 public Action Timer_Bomb_Spam(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
-	float BombPos[3];
-	for (int GetVector = 0; GetVector < 3; GetVector++)
-	{
-		BombPos[GetVector] = pack.ReadFloat();
-	}
-	float BombDamage = pack.ReadFloat();
-	float BombChargeTime = pack.ReadFloat();
-	float BombChargeSpan = pack.ReadFloat();
-	float BombRange = pack.ReadFloat();
+	float targetpos[3]; pack.ReadFloatArray(targetpos, 3);
+	float damage = pack.ReadFloat();
+	float delay = pack.ReadFloat();
+	float radius = pack.ReadFloat();
 	if(IsValidEntity(entity))
 	{
-		Handle pack2;
-		CreateDataTimer(BombChargeSpan, Delay_Drop_Rocket, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-		WritePackCell(pack2, EntIndexToEntRef(entity));
-		WritePackFloat(pack2, 0.0);
-		WritePackFloat(pack2, BombPos[0]);
-		WritePackFloat(pack2, BombPos[1]);
-		WritePackFloat(pack2, BombPos[2]);
-		WritePackFloat(pack2, BombDamage);
-		WritePackFloat(pack2, BombChargeTime);
-		WritePackFloat(pack2, BombRange);
-			
-		spawnRing_Vectors(BombPos, BombRange * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, BombChargeTime, 6.0, 0.1, 1, 1.0);
+		DataPack RocketBarrage = new DataPack();
+		RocketBarrage.WriteCell(EntIndexToEntRef(entity));
+		RocketBarrage.WriteFloatArray(targetpos, 3);
+		RocketBarrage.WriteFloat(damage);
+		RocketBarrage.WriteFloat(GetGameTime()+delay);
+		RocketBarrage.WriteFloat(delay);
+		RocketBarrage.WriteFloat(radius);
+		RequestFrame(RocketBarrage_Think, RocketBarrage);
 	}
 	return Plugin_Stop;
 }
 
-static Action Delay_Drop_Rocket(Handle Smite_Logic, DataPack pack)
+static void RocketBarrage_Think(DataPack pack)
 {
-	ResetPack(pack);
-	int entity = EntRefToEntIndex(ReadPackCell(pack));
-	
-	if (!IsValidEntity(entity))
-	{
-		return Plugin_Stop;
-	}
-		
-	float NumLoops = ReadPackFloat(pack);
-	float spawnLoc[3];
-	for (int GetVector = 0; GetVector < 3; GetVector++)
-	{
-		spawnLoc[GetVector] = ReadPackFloat(pack);
-	}
-	
-	float damage = ReadPackFloat(pack);
-	float BombChargeTime = ReadPackFloat(pack);
-	float BombRange = ReadPackFloat(pack);
-	
-	if (NumLoops >= BombChargeTime)
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	float targetpos[3]; pack.ReadFloatArray(targetpos, 3);
+	float damage = pack.ReadFloat();
+	float delay = pack.ReadFloat();
+	float maxdelay = pack.ReadFloat();
+	float radius = pack.ReadFloat();
+	if(!IsValidEntity(entity))
+		return;
+	if(GetGameTime() >= delay)
 	{
 		float secondLoc[3];
-		for (int replace = 0; replace < 3; replace++)
-		{
-			secondLoc[replace] = spawnLoc[replace];
-		}
+		for(int replace = 0; replace < 3; replace++)
+			secondLoc[replace] = targetpos[replace];
 		
-		for (int sequential = 1; sequential <= 5; sequential++)
+		for(int sequential = 1; sequential <= 5; sequential++)
 		{
-			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 100, 100, 255, 120, 1, 0.33, 6.0, 0.4, 1, (BombRange * 5.0)/float(sequential));
+			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, LASERBEAM, 100, 100, 255, 120, 1, 0.33, 6.0, 0.4, 1, (radius * 5.0)/float(sequential));
 			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
 		}
 		
@@ -2068,62 +2072,41 @@ static Action Delay_Drop_Rocket(Handle Smite_Logic, DataPack pack)
 			AcceptEntityInput(prop2, "DisableShadow");
 			AcceptEntityInput(prop2, "DisableCollision");
 			vAngles[0] += 90.0;
-			TeleportEntity(prop2, spawnLoc, vAngles, NULL_VECTOR);
+			TeleportEntity(prop2, targetpos, vAngles, NULL_VECTOR);
 			CreateTimer(2.0, Timer_RemoveEntityFancy, EntIndexToEntRef(prop2), TIMER_FLAG_NO_MAPCHANGE);
 		}
-
-		/*
-		spawnBeam(0.8, 255, 50, 50, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, secondLoc, spawnLoc);	
-		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, secondLoc, spawnLoc);	
-		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, secondLoc, spawnLoc);	
-		*/
-
+	
 		DataPack pack_boom = new DataPack();
-		pack_boom.WriteFloat(spawnLoc[0]);
-		pack_boom.WriteFloat(spawnLoc[1]);
-		pack_boom.WriteFloat(spawnLoc[2]);
+		pack_boom.WriteFloat(targetpos[0]);
+		pack_boom.WriteFloat(targetpos[1]);
+		pack_boom.WriteFloat(targetpos[2]);
 		pack_boom.WriteCell(1);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		
+		CreateEarthquake(targetpos, 1.0, radius * 2.5, 16.0, 255.0);
 		KillFeed_SetKillIcon(entity, "tf_projectile_rocket");
-		CreateEarthquake(spawnLoc, 1.0, BombRange * 2.5, 16.0, 255.0);
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BombRange * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increase
-	
-		return Plugin_Stop;
+		Explode_Logic_Custom(damage, entity, entity, -1, targetpos, radius,_,0.8, true, 100, false, 25.0);
+		return;
 	}
 	else
 	{
-		spawnRing_Vectors(spawnLoc, BombRange * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 250, 150, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
-	//	EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, _, GetRandomInt(80, 110));
-		
-		ResetPack(pack);
-		WritePackCell(pack, EntIndexToEntRef(entity));
-		WritePackFloat(pack, NumLoops + BombChargeTime);
-		WritePackFloat(pack, spawnLoc[0]);
-		WritePackFloat(pack, spawnLoc[1]);
-		WritePackFloat(pack, spawnLoc[2]);
-		WritePackFloat(pack, damage);
-		WritePackFloat(pack, BombChargeTime);
-		WritePackFloat(pack, BombRange);
+		spawnRing_Vectors(targetpos, radius * 2.0, 0.0, 0.0, 5.0, LASERBEAM, 150, 200, 255, 100, 1, 0.1, 2.0, 0.1, 3);
+		spawnRing_Vectors(targetpos, ((radius)*((delay-GetGameTime())/maxdelay))* 2.0, 0.0, 0.0, 0.0, LASERBEAM, 150, 200, 255, 100, 1, 0.1, 4.0, 0.1, 3);
 	}
-	
-	return Plugin_Continue;
+	delete pack;
+	DataPack pack2 = new DataPack();
+	pack2.WriteCell(EntIndexToEntRef(entity));
+	pack2.WriteFloatArray(targetpos, 3);
+	pack2.WriteFloat(damage);
+	pack2.WriteFloat(delay);
+	pack2.WriteFloat(maxdelay);
+	pack2.WriteFloat(radius);
+	float Throttle = 0.04;	//0.025
+	int frames_offset = RoundToCeil(66.0*Throttle);	//no need to call this every frame if avoidable
+	if(frames_offset < 0)
+		frames_offset = 1;
+	RequestFrames(RocketBarrage_Think, frames_offset, pack2);
 }
-
-/*static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
-{
-	int color[4];
-	color[0] = r;
-	color[1] = g;
-	color[2] = b;
-	color[3] = a;
-		
-	int SPRITE_INT = PrecacheModel(sprite, false);
-
-	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
-	
-	TE_SendToAll();
-}*/
 
 static bool Victoria_Support(Harrison npc)
 {
@@ -2174,13 +2157,13 @@ static bool Victoria_Support(Harrison npc)
 						Vs_LockOn[client]=false;
 				}
 			}
-			spawnRing_Vectors(Vs_Temp_Pos[enemy[i]], (Vs_Raged - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*Vs_Raged)), 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
+			spawnRing_Vectors(Vs_Temp_Pos[enemy[i]], (Vs_Raged - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*Vs_Raged)), 0.0, 0.0, 0.0, LASERBEAM, 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
 			float position2[3];
 			position2[0] = Vs_Temp_Pos[enemy[i]][0];
 			position2[1] = Vs_Temp_Pos[enemy[i]][1];
 			position2[2] = Vs_Temp_Pos[enemy[i]][2] + 65.0;
-			spawnRing_Vectors(position2, Vs_Raged, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
-			spawnRing_Vectors(Vs_Temp_Pos[enemy[i]], Vs_Raged, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
+			spawnRing_Vectors(position2, Vs_Raged, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
+			spawnRing_Vectors(Vs_Temp_Pos[enemy[i]], Vs_Raged, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
 			TE_SetupBeamPoints(Vs_Temp_Pos[enemy[i]], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
 			TE_SendToAll();
 			TE_SetupGlowSprite(Vs_Temp_Pos[enemy[i]], g_RedPoint, 0.1, 1.0, 255);

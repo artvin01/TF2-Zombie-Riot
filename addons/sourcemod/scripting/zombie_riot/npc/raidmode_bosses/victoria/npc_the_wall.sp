@@ -1655,23 +1655,22 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 								KillFeed_SetKillIcon(npc.index, "apocofists");
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 								bool Knocked = false;
-								
 								if(IsValidClient(targetTrace))
 								{
-									if(IsInvuln(targetTrace))
+									if(IsInvuln(targetTrace) && !HasSpecificBuff(targetTrace, "Solid Stance"))
 									{
 										Knocked = true;
 										Custom_Knockback(npc.index, targetTrace, 750.0, true);
 									}
-									if(!HasSpecificBuff(npc.index, "Godly Motivation") || Knocked)
+									if(!HasSpecificBuff(targetTrace, "Fluid Movement"))
 									{
 										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
 										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
 									}
 								}
 								
-								if(!Knocked)
-									Custom_Knockback(npc.index, targetTrace, 375.0, true); 
+								if(!Knocked && !HasSpecificBuff(targetTrace, "Solid Stance"))
+									Custom_Knockback(npc.index, targetTrace, 375.0, true);
 							} 
 						}
 					}
@@ -2199,8 +2198,8 @@ static bool Victoria_Support(Huscarls npc)
 		position2[0] = Vs_Temp_Pos[npc.index][0];
 		position2[1] = Vs_Temp_Pos[npc.index][1];
 		position2[2] = Vs_Temp_Pos[npc.index][2] + 65.0;
-		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
-		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 145, 47, 47, 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
 		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
 		TE_SendToAll();
 		TE_SetupGlowSprite(Vs_Temp_Pos[npc.index], g_RedPoint, 0.1, 1.0, 255);

@@ -238,7 +238,7 @@
 	{
 		"en"	"We just decided to make a base here after what happend at that broken ruina island, to prepare, nothing more."
 		"it"	"Abbiamo semplicemente deciso di stabilire una base qui dopo quello che è successo sull'isola di Ruina, per prepararci, niente di più."
-		"ko"	"그 파괴된 루이나 섬에서 벌어진 일 이후, 이곳에 기지를 마련하기로 했다. 대비해야한다. 그것 뿐이다."
+		"ko"	"그 파괴된 루이나 섬에서 벌어진 일 이후, 우리는 이곳에 기지를 마련하기로 했습니다. 대비하기 위해서, 그것 뿐입니다."
 	}
 	"Loud Firepower"
 	{
@@ -250,7 +250,7 @@
 	{
 		"en"	"Released a bit too much pollution and attracted some attention...\n{green}Start with 50 Wizuh, allies gain +10％ fire rate, {red}Enemies gain +15％ damage."
 		"it"	"Ha rilasciato un po' troppa inquinamento e ha attirato un po' di attenzione...\n{green}Inizia con 50 Wizuh, gli alleati ottengono +10% alla velocità di fuoco, {red}i nemici ottengono +15% ai danni."
-		"ko"	"오염수를 너무 많이 방출해서 시선을 끈 것 같다...\n{green}시작 시 위저 광석 50개 보유 및 모든 아군의 공격 속도 +10％.{red}적의 공격 피해량 +15％ 증가."
+		"ko"	"오염수를 너무 많이 방출해서 시선을 끈 것 같습니다...\n{green}시작 시 위저 광석 50개 보유 및 모든 아군의 공격 속도 +10％.{red}적의 공격 피해량 +15％ 증가."
 	}
 	"Heavy Equippment"
 	{
@@ -274,7 +274,7 @@
 	{
 		"en"	"The car is all ready for you, right off the crane.\n{green}Start with 50 Ossunia, 15 Iron, Base Level I and Vehicle Factory research, {red}but rare enemies appear more often."
 		"it"	"L'auto è pronta per te, appena scesa dalla gru.\n{green}Inizia con 50 Ossunia, 15 Ferro, Livello Base I e ricerca Fabbrica Veicoli, {red}ma i nemici rari compaiono più spesso"
-		"ko"	"이 차는 이미 당신을 태울 준비가 되어있다.\n{green}시작 시 오수니아 광석 50개와 철 광석 15개 보유 및 거점 레벨 I 과 차량 공장 연구가 완료된 상태로 시작.{red}희귀 적군이 평소보다 자주 등장."
+		"ko"	"이 차는 이미 당신을 태울 준비가 되어있습니다.\n{green}시작 시 오수니아 광석 50개와 철 광석 15개 보유 및 거점 레벨 I 과 차량 공장 연구가 완료된 상태로 시작.{red}희귀 적군이 평소보다 자주 등장."
 	}
 	"Void Blueprints"
 	{
@@ -286,7 +286,7 @@
 	{
 		"en"	"I don't think we should be following these blueprints.\n{red}Rare enemies have a higher chance of appearing.\nEnemies deal 15％ More damage and have 10％ more health."
 		"it"	"Non credo che dovremmo seguire questi progetti.\n{red}I nemici rari hanno una maggiore probabilità di apparire.\nI nemici infliggono il 15% di danni in più e hanno il 10% di salute in più."
-		"ko"	"아무래도 이 청사진을 따르면 안될 것 같은데.\n{red}희귀 적군의 등장 확률이 크게 증가.\n모든 적들의 공격 피해량 +15％ 및 최대 체력 +10％."
+		"ko"	"아무래도 이 청사진을 따르면 안될 것 같은데요...\n{red}희귀 적군의 등장 확률이 크게 증가.\n모든 적들의 공격 피해량 +15％ 및 최대 체력 +10％."
 	}
 	"Ambulance"
 	{
