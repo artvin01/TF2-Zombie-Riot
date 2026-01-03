@@ -5354,12 +5354,12 @@
 	"Purging Pap 5"
 	{
 		"en"	"-Increased damage\n-Increased Health\n-You store more power\n-You can move during your annihilator phase\n-Quad Launcher fires 1 more rocket at once now, fires faster."
-		"ko"	"-피해량, 체력 증가\n-더 많은 에너지를 저장합니다.\n-이제 미니건을 사용하는 동안 움직일 수 있습니다.\n4연장 로켓 발사기가 한 번에 로켓을 1발 더 발사하고 공격 속도가 빨라집니다."
+		"ko"	"-피해량, 체력 증가\n-더 많은 에너지를 저장합니다.\n-이제 미니건을 사용하는 동안 움직일 수 있습니다.\n-4연장 로켓 발사기가 한 번에 로켓을 1발 더 발사하고 공격 속도가 빨라집니다."
 	}
 	"Purging Pap 6"
 	{
 		"en"	"-Increased damage\n-Increased Health\n-You move faster in your annihilator phase\n-Ram Phase deals more damage, and has less vulnerabilities"
-		"ko"	"-피해량, 체력 증가\n- 미니건을 사용하는 동안의 이동 속도가 빨라집니다.\n-'돌진 상태'는 더 많은 피해를 입히며 피해 취약성이 감소합니다."
+		"ko"	"-피해량, 체력 증가\n-미니건을 사용하는 동안의 이동 속도가 빨라집니다.\n-'돌진 상태'는 더 많은 피해를 입히며 피해 취약성이 감소합니다."
 	}
 	"Sigil Blade Pap 1"
 	{
