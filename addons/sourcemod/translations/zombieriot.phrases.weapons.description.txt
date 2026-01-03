@@ -501,7 +501,7 @@
 	{
 		"en"		"Engi says to not touch his stuff, but you don't care\n-Full charge to attack.\n-Projectile speed actually makes it slower.\n-Reload speed and attackspeed buff its damage.\n-2x dmg vs raids."
 		"it"		"Engi dice di non toccare la sua roba, ma a voi non interessa.\nLa velocità del proiettile lo rende in realtà più lento.\nLa velocità di ricarica e la velocità d'attacco aumentano i suoi danni."
-		"ko"		"엔지니어가 그의 물건에 손대지 말라 했지만, 신경쓰지 않았죠.\n-완전히 충전해야만 공격 가능\n-투사체 속도 속성은 이 무기의 투사체 속도를 느리게 만듬\n-재장전 속도와 공격 속도 속성은 이 무기의 피해량을 증가시킴.\n-레이드 보스 대상 피해량 2배."
+		"ko"		"-완전히 충전해야만 공격 가능\n-투사체 속도 속성은 이 무기의 투사체 속도를 느리게 만듬\n-재장전 속도와 공격 속도 속성은 이 무기의 피해량을 증가시킴.\n-레이드 보스 대상 피해량 2배."
 	}
 	"IEM Launcher Pap 1"
 	{
@@ -2831,7 +2831,7 @@
 		"ru"		"Ику Нагаэ, но человек. Полумобильен и использует стационарную устойчивую КОШМАРНУЮ ПУШКУ!!!"
 		"chi"		"Iku Nagae 但人类。是半移动的，使用固定的、抗性的噩梦炮！！！"
 		"it"		"Iku Nagae ma umana. È semimobile e usa un cannone stazionario e resistente, il CANNONE DA INCUBO!!!"
-		"ko"		"나가에 이쿠의 인간 버전입니다. 공격 중에도 반쯤 이동이 가능하며, 고정형이고 저항력이 높은 나이트메어 캐논을 사용합니다."
+		"ko"		"나가에 이쿠의 인간 버전입니다. 공격 중에도 반쯤 이동이 가능하며, 고정형이고 저항력이 높은 악몽포를 사용합니다."
 	}
 	"Barracks Holy Knight Desc"
 	{
@@ -2925,7 +2925,7 @@
 		"fr"	"Recevez des Shards quand vous frappez les ennemis.\nAppuyez sur M2 pour utiliser les Shards et lancer une onde Fantasmale.\nUne lame pour ceux qui osent rêver..."
 		"chi"	"幻想与奇异之剑...\n按住M2发射幻刃，消耗梦幻碎片。\n攻击敌人获得碎片。"
 		"it"	"Una lama di coloro che osano fantasticare e sognare...\nTenere premuto il mouse 2 per lanciare un'onda fantasmatica in avanti.\nQuesta azione richiede ''Frammenti'', si ottengono colpendo cose"
-		"ko"	"감히 환상과 꿈을 갈구하는 자의 검이라...\n-우클릭을 꾹 눌러 전방으로 판타즈멀 웨이브를 발사\n-이 능력을 사용하려면 ''조각''이 필요\n-조각은 적에게 공격 적중시 획득"
+		"ko"	"감히 환상과 꿈을 갈구하는 자의 검이라...\n-우클릭을 꾹 눌러 전방으로 환상의 물결 발사\n-이 능력을 사용하려면 ''조각''이 필요\n-조각은 적에게 공격 적중시 획득"
 		"lt"	"Specialus kardas tiems, kurie išdrista fantazuoti ir sapnuoti...\n-Laikyk M2, kad įšaukti 'Fantasmalinė' banga priekin\n-Šitai kainuoja ''Shards'', juos gauni kai kardas atsitrenkia į priešus"
 	}
 	"Fantasy Blade pap 1"
@@ -2934,7 +2934,7 @@
 		"fr"	"Appuyez sur R + M2 pour améliorer la portée de votre onde Fantasmale.\nObtenez un Halo Fantasmal\nVous sentez que la fantasie devient réele..."
 		"chi"	"梦想正在成真...\n按住R+M2发射远程幻刃。"
 		"it"	"Si ha la sensazione che la Fantasia stia lentamente diventando reale...\nPotete ora tenere premuto R+Mouse 2 per sparare un'onda fantasmatica a lungo raggio...\nNe guadagnate anche un alone fantasmatico"
-		"ko"	"-이제 R+우클릭을 함께 눌러 더 멀리 나아가는 판타즈멀 웨이브를 발사\n-또한 판타즈멀 헤일로를 획득."
+		"ko"	"-이제 R+우클릭을 함께 눌러 더 멀리 나아가는 환상의 물결 발사\n-또한 환상의 광륜을 획득."
 		"lt"	"-Dabar gali lakyti R+M2, kad iššauti ilgesnio nuotolio 'Fantasmalinė' banga, tačiau tą banga yra vertikali\n-Gauni 'Fantasmalinė' aureolė (Vizsualinė)"
 	}
 	"Fantasy Blade pap 2"
@@ -3200,7 +3200,7 @@
 	{
 		"en"	"Become a workshipper of sigmar!\nRapier: headshots, m2 blocks with a healthbar.\nR: Dashes in any direction except forwards.\nHold R with revolver for rapid fire\nHitting reduces cooldowns (headshots more).\nLess backwalk penalty (0.9)\nSlow immunity."
 		"it"	"Diventa uno spedizioniere di Sigmar!\nRapier: colpi alla testa, blocchi m2 con una barra della salute.\nR: si sposta in qualsiasi direzione tranne che in avanti.\nTenere premuto R con il revolver per il fuoco rapido.\nColpire riduce i cooldown (più colpi alla testa).\nMinore penalità all'indietro (0,9)\nImmunità alla lentezza."
-		"ko"	"시그마르의 숭배자가 되어보세요!\n-레이피어: 헤드샷 가능, M2를 꾹 누르면 스태미나를 소모해 방어\n-R: 아무 방향으로나 대쉬 가능.\n-R을 꾹 누른채 리볼버로 사격시 고속으로 사격\n-적중시, 쿨타임 감소(헤드샷시 추가 감소)\n-후진의 이동 속도 감소량이 10％로 감소\n-둔화 효과에 면역"
+		"ko"	"-레이피어: 헤드샷 가능, M2를 꾹 누르면 스태미나를 소모해 방어\n-R: 아무 방향으로나 대쉬 가능.\n-R을 꾹 누른채 리볼버로 사격시 고속으로 사격\n-적중시, 쿨타임 감소(헤드샷시 추가 감소)\n-후진의 이동 속도 감소량이 10％로 감소\n-둔화 효과에 면역"
 	}
 	"Zealot Pap 1 Desc"
 	{

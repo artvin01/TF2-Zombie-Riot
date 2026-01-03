@@ -286,7 +286,7 @@
 	"Sealed Ossunia Crate Desc"
 	{
 		"en"	"Unbox in the Control Center"
-		"ko"	"제어 센터에서 개봉 가능"
+		"ko"	"제어 센터에서 개봉 가능 "
 	}
 	"Sealed Bofazem Crate"
 	{

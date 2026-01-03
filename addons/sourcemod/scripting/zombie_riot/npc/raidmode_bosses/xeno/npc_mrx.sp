@@ -319,7 +319,7 @@ methodmap RaidbossMrX < CClotBody
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
 		i_SideHurtWhich[npc.index] = 0;
 
-		CPrintToChatAll("{green}비비쏜즈: ...");
+		CPrintToChatAll("{green}비비쏜: ...");
 
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
@@ -1078,7 +1078,7 @@ public void RaidbossMrX_NPCDeath(int entity)
 			{
 				if(XenoExtraLogic())
 				{
-					CPrintToChat(client_repat, "{green}비비쏜즈: 칼마티커스 프로젝트를 가동시킬 때가 왔다...");
+					CPrintToChat(client_repat, "{green}비비쏜: 칼마티커스 프로젝트를 가동시킬 때가 왔다...");
 				}
 			}
 		}
@@ -1091,7 +1091,7 @@ public void RaidbossMrX_NPCDeath(int entity)
 			{
 				if(XenoExtraLogic())
 				{
-					CPrintToChat(client_repat, "{green}비비쏜즈가 도주했습니다... 중상을 입은 채로 말이죠....");
+					CPrintToChat(client_repat, "{green}비비쏜이 도주했습니다... 중상을 입은 채로 말이죠....");
 				}
 			}
 		}

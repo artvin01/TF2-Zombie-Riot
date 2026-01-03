@@ -2232,7 +2232,7 @@ static void Sensal_Weapon_Lines(Sensal npc, int client)
 		case WEAPON_SICCERINO,WEAPON_WALDCH_SWORD_NOVISUAL:  Format(Text_Lines, sizeof(Text_Lines), "그건 엑스피돈사인의 무기다. {gold}%N{default}. 어떻게 얻은거지?",client);
 		case WEAPON_WALDCH_SWORD_REAL:  Format(Text_Lines, sizeof(Text_Lines), "네가 왜 왈츠의 무기를 쓰고 있는거지, {gold}%N{default}?",client);
 		case WEAPON_NEARL:  Format(Text_Lines, sizeof(Text_Lines), "{gold}실베스터{default}가 카시미어에 갔다오기라도 한 건가?");
-		case WEAPON_KAHMLFIST:  Format(Text_Lines, sizeof(Text_Lines), "캄르스타인은 그 자체로 많은 문제를 일으킨 놈이지.");
+		case WEAPON_KAHMLFIST:  Format(Text_Lines, sizeof(Text_Lines), "카멜슈타인은 그 자체로 많은 문제를 일으킨 놈이지.");
 		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "그 기계는 사라졌다. 여전히 {gold}%N{default}가 쓰는 것보단 훨씬 낫겠지.",client);
 		case WEAPON_IRENE:  Format(Text_Lines, sizeof(Text_Lines), "그건 이베리아의 무기인데?! 이제야 좀 비밀이 풀리는군...");
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "맙소사, {snow}밥 1세{default}가 네 편에 섰단 말인가?!");
