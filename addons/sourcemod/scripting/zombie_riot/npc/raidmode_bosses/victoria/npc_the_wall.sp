@@ -343,6 +343,7 @@ methodmap Huscarls < CClotBody
 				npc.m_flRangedArmor = 1.0;
 			}
 		}
+		npc.m_flMeleeArmor *= 0.75;
 		npc.m_iState=0;
 		npc.m_iOverlordComboAttack=0;
 		npc.m_flDoingAnimation=0.0;
