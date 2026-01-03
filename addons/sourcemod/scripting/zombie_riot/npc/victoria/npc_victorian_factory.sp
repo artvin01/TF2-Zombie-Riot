@@ -34,7 +34,7 @@ static void ClotPrecache()
 	PrecacheModel("models/props_c17/substation_transformer01a.mdl");
 	PrecacheModel("models/props_c17/lockers001a.mdl");
 	PrecacheModel("models/props_skybox/train_building004_skybox.mdl");
-	PrecacheSoundCustom("#zombiesurvival/aprilfools/caramelldansen.mp3");
+//	PrecacheSoundCustom("#zombiesurvival/aprilfools/caramelldansen.mp3");
 }
 
 int VictorianFactory_ID()
@@ -129,6 +129,11 @@ methodmap VictorianFactory < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
+	property float m_flAutoDisconnect
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
 	
 	public VictorianFactory (float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -155,6 +160,7 @@ methodmap VictorianFactory < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_flAttackHappens = 0.0;
+		npc.m_flAutoDisconnect = 0.0;
 		npc.m_flBaseBuildTime = 10.0;
 		npc.m_flLastManAdvantage = 2.5;
 		i_AttacksTillMegahit[npc.index] = 0;
@@ -235,6 +241,7 @@ methodmap VictorianFactory < CClotBody
 				ReplaceString(countext[i], sizeof(countext[]), "tracking", "");
 				i_GunAmmo[npc.index]=1;
 			}
+			/*
 			else if(StrContains(countext[i], "caramelldansen") != -1)
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "caramelldansen", "");
@@ -249,6 +256,7 @@ methodmap VictorianFactory < CClotBody
 					}
 				}
 			}
+			*/
 			else if(StrContains(countext[i], "donusetele") != -1)
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "donusetele", "");
@@ -321,9 +329,20 @@ static void FactoryCPU(int iNPC)
 	npc.Update();
 
 	if(npc.m_flNextThinkTime > gameTime)
-		return;
+		return; 
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
+	
+	if(npc.m_flAutoDisconnect && npc.m_flAutoDisconnect < gameTime)
+	{
+		if(IsValidEntity(npc.m_iWearable5))
+			RemoveEntity(npc.m_iWearable5);
+		npc.m_flAutoDisconnect = 0.0;
+	}
+	else if(!npc.m_flAutoDisconnect && IsValidEntity(npc.m_iWearable5))
+	{
+		npc.m_flAutoDisconnect = gameTime+3.0;
+	}
 
 	if(i_AttacksTillMegahit[npc.index] >= 600)
 	{
