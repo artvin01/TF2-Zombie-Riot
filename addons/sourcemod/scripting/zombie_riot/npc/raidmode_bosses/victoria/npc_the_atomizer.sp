@@ -1859,6 +1859,7 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 }
 
 //delay velocity setting for upwards movement or else it wont work in that call.
+//└ wow.. artvin so genius.. gg My code is a mess - baka
 stock void SetVelocityAtomizerProjectile(DataPack pack)
 {
 	pack.Reset();

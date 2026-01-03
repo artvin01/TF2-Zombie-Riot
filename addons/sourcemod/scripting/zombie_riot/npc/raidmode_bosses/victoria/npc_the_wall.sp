@@ -329,21 +329,20 @@ methodmap Huscarls < CClotBody
 		{
 			case 1:
 			{
-				npc.m_flMeleeArmor = 0.85;
+				npc.m_flMeleeArmor = 0.6;
 				npc.m_flRangedArmor = 1.0;
 			}
 			case 2:
 			{
-				npc.m_flMeleeArmor = 1.0;
+				npc.m_flMeleeArmor = 0.75;
 				npc.m_flRangedArmor = 0.85;
 			}
 			default:
 			{
-				npc.m_flMeleeArmor = 1.0;
+				npc.m_flMeleeArmor = 0.75;
 				npc.m_flRangedArmor = 1.0;
 			}
 		}
-		npc.m_flMeleeArmor *= 0.75;
 		npc.m_iState=0;
 		npc.m_iOverlordComboAttack=0;
 		npc.m_flDoingAnimation=0.0;
@@ -351,7 +350,7 @@ methodmap Huscarls < CClotBody
 		npc.m_iOverrideOwner = 0;
 		static char countext[2][512];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
-		float MAXHitCharge=5000.0;
+		float MAXHitCharge=10000.0;
 		for(int i = 0; i < count; i++)
 		{
 			if(i>=count)break;
@@ -1245,7 +1244,10 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 	if(npc.m_flHuscarlsAdaptiveArmorDuration && npc.m_flHuscarlsAdaptiveArmorDuration < gameTime)
 	{
 		if(fl_ruina_battery[npc.index])
+		{
 			NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Ability1-2", false, false);
+			GrantEntityArmor(npc.index, false, 0.1, 0.5, 0, (float(ReturnEntityMaxHealth(npc.index))*0.1)*(fl_ruina_battery[npc.index]/fl_ruina_battery_max[npc.index]));
+		}
 		else
 			RemoveSpecificBuff(npc.index, "Battery_TM Charge");
 		npc.m_flHuscarlsAdaptiveArmorDuration=0.0;
@@ -1993,8 +1995,7 @@ static void Fire_Shield_Projectile(Huscarls npc, float Time)
 		SetVariantString("!activator");
 		AcceptEntityInput(Shield, "SetParent", RocketGet);
 		
-		SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-		SDKHook(RocketGet, SDKHook_StartTouch, Huscarls_Particle_StartTouch);
+		WandProjectile_ApplyFunctionToEntity(RocketGet, Huscarls_Particle_StartTouch);
 		DataPack RFShield = new DataPack();
 		RFShield.WriteCell(EntIndexToEntRef(Shield));
 		RFShield.WriteCell(EntIndexToEntRef(npc.index));
@@ -2276,7 +2277,7 @@ static void Compressor(int entity, int victim, float damage, int weapon)
 		float flPos[3]; GetAbsOrigin(npc.index, flPos);
 		flPos[2]+=5.0;
 		TeleportEntity(victim, flPos, NULL_VECTOR, NULL_VECTOR);
-		damage = 50.0 * RaidModeScaling;
+		damage = 80.0 * RaidModeScaling;
 		damage += ReturnEntityMaxHealth(victim)*0.715;
 		KillFeed_SetKillIcon(npc.index, "vehicle");
 		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
@@ -2301,7 +2302,7 @@ static void ToTheMoon(int entity, int victim, float damage, int weapon)
 	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
 	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim))
 	{
-		damage = 40.0 * RaidModeScaling;
+		damage = 50.0 * RaidModeScaling;
 		damage += ReturnEntityMaxHealth(victim)*0.35;
 		KillFeed_SetKillIcon(npc.index, "apocofists");
 		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
@@ -2327,7 +2328,7 @@ static void Ground_pound(int entity, int victim, float damage, int weapon)
 	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
 	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim))
 	{
-		damage = 40.0 * RaidModeScaling;
+		damage = 50.0 * RaidModeScaling;
 		damage += ReturnEntityMaxHealth(victim)*0.35;
 		KillFeed_SetKillIcon(npc.index, "mentreads");
 		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);

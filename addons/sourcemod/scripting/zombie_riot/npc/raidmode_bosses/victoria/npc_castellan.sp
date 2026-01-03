@@ -820,22 +820,25 @@ static void Castellan_ClotThink(int iNPC)
 	if(CastellanInvis)
 	{
 		//Don't have an EGO!!!!!!!!!!!!!!!!!
-		if(npc.m_flAntiInvulnEmergencyFix && npc.m_flAntiInvulnEmergencyFix < gameTime)
+		if(npc.m_flAntiInvulnEmergencyFix)
 		{
-			b_DoNotUnStuck[npc.index] = false;
-			b_NoKnockbackFromSources[npc.index] = false;
-			b_NpcIsInvulnerable[npc.index] = false;
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[npc.index] = false;
-			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", SaveSolidFlags[npc.index]);
-			SetEntProp(npc.index, Prop_Data, "m_nSolidType", SaveSolidType[npc.index]);
-			if(GetTeam(npc.index) == TFTeam_Red)
-				SetEntityCollisionGroup(npc.index, 24);
-			else
-				SetEntityCollisionGroup(npc.index, 9);
-			npc.m_flAntiInvulnEmergencyFix = gameTime + 0.0;
+			if(npc.m_flAntiInvulnEmergencyFix < gameTime)
+			{
+				b_DoNotUnStuck[npc.index] = false;
+				b_NoKnockbackFromSources[npc.index] = false;
+				b_NpcIsInvulnerable[npc.index] = false;
+				b_ThisEntityIgnoredEntirelyFromAllCollisions[npc.index] = false;
+				SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", SaveSolidFlags[npc.index]);
+				SetEntProp(npc.index, Prop_Data, "m_nSolidType", SaveSolidType[npc.index]);
+				if(GetTeam(npc.index) == TFTeam_Red)
+					SetEntityCollisionGroup(npc.index, 24);
+				else
+					SetEntityCollisionGroup(npc.index, 9);
+				npc.m_flAntiInvulnEmergencyFix = 0.0;
+			}
 		}
 		else if(b_NpcIsInvulnerable[npc.index])
-			npc.m_flAntiInvulnEmergencyFix = gameTime + 0.5;
+			npc.m_flAntiInvulnEmergencyFix = gameTime + 1.0;
 			
 		if(NpcStats_VictorianCallToArms(npc.index) && !ParticleSpawned[npc.index])
 		{
@@ -1761,6 +1764,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 					ParticleEffectAt(VecSelfNpc, "smoke_marker", 10.0);
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
+					npc.m_flTimeUntillAirStrike = gameTime + 40.0;
 					npc.m_iState = -1;
 				}
 			}

@@ -106,7 +106,7 @@ methodmap VictoriaRadiomast < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_flMeleeArmor = 2.5;
-		npc.m_flRangedArmor = 1.0;
+		npc.m_flRangedArmor = 1.25;
 		
 		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0);
 		switch(Decicion)

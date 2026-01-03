@@ -129,7 +129,7 @@ methodmap VictoriaTaser < CClotBody
 		npc.m_flSpeed = 310.0;
 		
 		npc.m_iMaxAmmo = 1;
-		npc.m_flCustomProjectileSpeed = 600.0;
+		npc.m_flCustomProjectileSpeed = 800.0;
 		npc.m_flCustomSlowDown = 0.8;
 		npc.m_flCustomDuration = 1.0;
 		
