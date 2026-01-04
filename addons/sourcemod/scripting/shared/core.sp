@@ -1801,6 +1801,22 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		f_PlayerLastKeyDetected[client] = GetGameTime() + 2.0;
 	}
+	if(EntityFuncPlayerRunCmd[client] && EntityFuncPlayerRunCmd[client] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, EntityFuncPlayerRunCmd[client]);
+		Call_PushCell(client);
+		Call_PushCellRef(buttons);
+		Call_PushCellRef(impulse);
+		Call_PushArray(vel, sizeof(vel));
+		Call_PushArray(angles, sizeof(angles));
+		Call_PushCellRef(weapon);
+		Call_PushCellRef(subtype);
+		Call_PushCellRef(cmdnum);
+		Call_PushCellRef(tickcount);
+		Call_PushCellRef(seed);
+		Call_PushArray(mouse, sizeof(mouse));
+		Call_Finish();
+	}
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	
 #if defined RTS

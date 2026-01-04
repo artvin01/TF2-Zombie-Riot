@@ -634,7 +634,7 @@ static void VictoriaRepair_Move(VictoriaRepair npc, float min, float max, float 
 		float vPredictedPos[3]; RandomArea.GetCenter(vPredictedPos);
 		vPredictedPos[2] += 1.0;
 		
-        if(GetVectorDistance(vPredictedPos, vecTarget, true) < (min * min))
+		if(GetVectorDistance(vPredictedPos, vecTarget, true) < (min * min))
 			continue;
 		
 		if(IsPointHazard(vPredictedPos))

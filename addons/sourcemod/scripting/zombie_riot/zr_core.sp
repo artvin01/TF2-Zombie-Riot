@@ -676,6 +676,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/kit_omega.sp"
 #include "custom/kit_purging.sp"
 #include "custom/weapon_bombplant_smg.sp"
+#include "custom/weapon_guiding_missile.sp"
 
 void ZR_PluginLoad()
 {

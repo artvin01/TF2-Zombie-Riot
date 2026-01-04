@@ -356,7 +356,7 @@ static void VictoriaSignaller_Move(VictorianSignaller npc, float min, float max,
 		float vPredictedPos[3]; RandomArea.GetCenter(vPredictedPos);
 		vPredictedPos[2] += 1.0;
 		
-        if(GetVectorDistance(vPredictedPos, vecTarget, true) < (min * min))
+		if(GetVectorDistance(vPredictedPos, vecTarget, true) < (min * min))
 			continue;
 		
 		if(IsPointHazard(vPredictedPos))
