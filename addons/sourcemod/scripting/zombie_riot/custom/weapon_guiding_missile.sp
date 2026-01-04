@@ -46,7 +46,7 @@ public void Guiding_Missile_Created_Shoot_M2Internal(int client, int weapon, boo
 	Rogue_OnAbilityUse(client, weapon);
 	float TimeCooldown = 45.0;
 	if(BigNuke) 
-		TimeCooldown = 120.0;
+		TimeCooldown = 90.0;
 	Ability_Apply_Cooldown(client, slot, TimeCooldown);
 	if(Local_Timer[client] != null)
 		return;
@@ -70,11 +70,14 @@ public void Guiding_Missile_Created_Shoot_M2Internal(int client, int weapon, boo
 		Speed = 300.0;
 		RocketSize = 1.5;
 	}
+	if(BigNuke)
+		damage * 0.85;
+
 	int projectile = Wand_Projectile_Spawn(client, Speed, 0.0, damage, 0, weapon, "rockettrail",_,false);
 	SetEntityModel(projectile, REDEEMER_ROCKET_MODEL);
 	int Spectator = ApplyCustomModelToWandProjectile(projectile, "models/empty.mdl", RocketSize, "");
 	if(BigNuke)
-		fl_AbilityOrAttack[projectile][0] = GetGameTime() + 8.0; //MAx Time Rocket Till Full
+		fl_AbilityOrAttack[projectile][0] = GetGameTime() + 6.0; //MAx Time Rocket Till Full
 	else
 		fl_AbilityOrAttack[projectile][0] = GetGameTime() + 4.0; //MAx Time Rocket Till Full
 
@@ -185,12 +188,10 @@ static Action Timer_Local(Handle timer, DataPack pack)
 		{
 			if(WhatRocketType[client])
 			{
-				f_WandDamage[rocket] *= 1.025;
 				ScaleVector(fVel, 1.01);
 			}
 			else
 			{
-				f_WandDamage[rocket] *= 1.05;
 				ScaleVector(fVel, 1.02);
 			}
 			if(fl_AbilityOrAttack[rocket][0] < GetGameTime())
@@ -246,18 +247,30 @@ public void RedeemerTouch(int entity, int target)
 		WorldSpaceCenter(entity, Entity_Position);
 
 
+		float DamageMulti = 1.0;
+		float MaxChargeIs = 4.0;
+		if(WhatRocketType[owner])
+			MaxChargeIs = 6.0;
+		if(!fl_AbilityOrAttack[entity][0] || fl_AbilityOrAttack[entity][0] < GetGameTime())
+			DamageMulti = 5.0;
+		else
+		{
+			DamageMulti = ((((((fl_AbilityOrAttack[entity][0] - GetGameTime()) / MaxChargeIs)) -1.0) * -1.0) * 5.0);
+		}
+		if(DamageMulti <= 1.0)
+			DamageMulti = 1.0;
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 		float fVel[3];
 		GetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", fVel);
 		if(fl_AbilityOrAttack[entity][0])
 		{
-			Explode_Logic_Custom(f_WandDamage[entity], owner, entity, weapon, Entity_Position, 150.0);
+			Explode_Logic_Custom(f_WandDamage[entity] * DamageMulti, owner, entity, weapon, Entity_Position, 150.0);
 			TE_Particle("rd_robot_explosion", Entity_Position, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 			EmitSoundToAll("mvm/mvm_tank_explode.wav", 0, SNDCHAN_STATIC, 60, _, 0.5,_,_,Entity_Position);
 		}
 		else
 		{
-			Explode_Logic_Custom(f_WandDamage[entity], owner, entity, weapon, Entity_Position, 250.0);
+			Explode_Logic_Custom(f_WandDamage[entity] * DamageMulti, owner, entity, weapon, Entity_Position, 250.0);
 			TE_Particle("hightower_explosion", Entity_Position, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, owner);
 			TE_Particle("rd_robot_explosion", Entity_Position, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 			EmitSoundToAll("mvm/mvm_tank_explode.wav", 0, SNDCHAN_STATIC, 80, _, 0.85,_,_,Entity_Position);
