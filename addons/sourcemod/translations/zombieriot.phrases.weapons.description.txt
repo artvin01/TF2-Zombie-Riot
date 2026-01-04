@@ -475,7 +475,7 @@
 	}
 	"RPG Pap 3"
 	{
-		"en"		"-Massively Increased damage\n-Reduced reload speed\n-Has better enemy pierce"
+		"en"		"-Massively Increased damage\n-Reduced reload speed\n-Has better enemy pierce\n-Guiding missile becomes slower, and a much bigger cooldown, and charges slower, but deals immensive damage"
 		"fr"		"Dégats et vitesse de rechargement améliorés.\nFrappe plus d'ennemis à la fois."
 		"it"		"Danno enormemente aumentato e velocità di ricarica RIDOTTA.\nE ha una migliore perforazione del nemico"
 		"ko"		"-피해량 대폭 증가\n-재장전 속도 감소\n-적 관통력 증가"
@@ -5375,5 +5375,9 @@
 	{
 		"en"	"-Increased damage\n-Increased melee resistance\n-Slower attackspeed\n-You gain the ability to done an Lock Slash onto enemy(By R)\n-The more you travel with your ability, the more damage you deal\n-Sigil cd reduction buffed a bit.\n-You can return to your crystal while charging"
 		"ko"	"-피해량, 근접 피해 저항력 증가\n-공격 속도 감소\n-R키로 적에게 돌진 추격 베기를 사용할 수 있게 됩니다.\n-돌진한 거리가 길수록 더 많은 피해를 입힙니다.\n-인장 쿨타임 감소 효과 상향\n-돌진하는 중에도 수정으로 순간이동 가능
+	}
+	"RPG Desc"
+	{
+		"en"	"-M2 fires a Guided missile, the more it flies the more damage it does, upto a limit."
 	}
 }
