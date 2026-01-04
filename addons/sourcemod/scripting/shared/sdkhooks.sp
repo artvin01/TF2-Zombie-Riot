@@ -496,10 +496,10 @@ public void OnPostThink(int client)
 	CorrectClientsideMultiweapon(client, 2);
 #endif
 	//Reduce knockback when airborn, this is to fix issues regarding flying way too high up, making it really easy to tank groups!
-	bool WasAirborn = false;
+	int WasAirbornType = 0;
 	if (!(GetEntityFlags(client) & FL_ONGROUND))
 	{
-		WasAirborn = true;
+		WasAirbornType = 1;
 	}
 	else
 	{
@@ -507,14 +507,18 @@ public void OnPostThink(int client)
 		int GroundEntity = EntRefToEntIndex(RefGround);
 		if(GroundEntity > 0 && GroundEntity < MAXENTITIES)
 		{
-			if(!b_NpcHasDied[GroundEntity])
+			if(b_ThisWasAnNpc[GroundEntity])
 			{
-				WasAirborn = true;
+				//when standing on an npc you gain less knockack reduction
+				WasAirbornType = 1;
+				if(b_thisNpcIsARaid[GroundEntity])
+					WasAirbornType = 2;
+				//when ontop of a raidboss, gain no knockback reduction.
 			}
 		}
 	}
 
-	if(WasAirborn && !b_PlayerWasAirbornKnockbackReduction[client])
+	if(WasAirbornType == 1 && !b_PlayerWasAirbornKnockbackReduction[client])
 	{
 		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
 		if(EntityWearable > 0)
@@ -524,7 +528,7 @@ public void OnPostThink(int client)
 			Attributes_Set(EntityWearable, 252, 0.5);
 		}
 	}
-	else if(!WasAirborn && b_PlayerWasAirbornKnockbackReduction[client])
+	else if((WasAirbornType == 0 || WasAirbornType == 2) && b_PlayerWasAirbornKnockbackReduction[client])
 	{
 		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
 		if(EntityWearable > 0)

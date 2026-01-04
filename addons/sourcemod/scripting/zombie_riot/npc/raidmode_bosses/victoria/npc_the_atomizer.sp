@@ -295,7 +295,7 @@ methodmap Atomizer < CClotBody
 			func_NPCThink[npc.index] = Clone_ClotThink;
 			
 			MakeObjectIntangeable(npc.index);
-			b_DoNotUnStuck[npc.index] = true;
+			//b_DoNotUnStuck[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
@@ -1730,7 +1730,7 @@ static void SuperAttack(int entity, int victim, float damage, int weapon)
 		SUPERHIT[npc.index]=true;
 	}
 }
-
+/*
 static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 {
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
@@ -1761,7 +1761,122 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 	RemoveEntity(entity);
 	return Plugin_Handled;
 }
+*/
+static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+		owner = 0;
+	if(target > 0 && target < MAXENTITIES)    //did we hit something???
+	{
+		int inflictor = h_ArrowInflictorRef[entity];
+		if(inflictor != -1)
+			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
 
+		if(inflictor == -1)
+			inflictor = owner;
+			
+		float ProjectileLoc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		float DamageDeal = fl_rocket_particle_dmg[entity];
+		if(ShouldNpcDealBonusDamage(target))
+			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
+
+		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);    //acts like a kinetic rocket    
+		if(target <= MaxClients && !IsInvuln(target))
+			if(!HasSpecificBuff(target, "Fluid Movement"))
+				TF2_StunPlayer(target, 2.0, 0.4, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
+
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		if(IsValidEntity(particle))
+			RemoveEntity(particle);
+	}
+	else
+	{
+		if(IsValidEntity(entity))
+		{
+			int GETBOUNS = GetEntProp(entity, Prop_Data, "m_iHammerID");
+			if(GETBOUNS < 20)
+			{
+				static float vOrigin[3], vVelocity[3];
+				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vOrigin);
+				GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vVelocity);
+				
+				float TempANG[3], tOrigin[3];
+				TempANG[0]=90.0;
+				EntityLookPoint(entity, TempANG, vOrigin, tOrigin);
+				float distance = GetVectorDistance(vOrigin, tOrigin);
+				if(distance<65.0)
+					vVelocity[2] = 600.0;
+				else
+				{
+					TempANG[0]=-90.0;
+					EntityLookPoint(entity, TempANG, vOrigin, tOrigin);
+					distance = GetVectorDistance(vOrigin, tOrigin);
+					if(distance<65.0)
+						vVelocity[2] = -600.0;
+				}
+				int E_Target = GetClosestTarget(entity);
+				float VecStart[3]; WorldSpaceCenter(entity, VecStart);
+				if(IsValidEnemy(owner, E_Target))
+				{
+					float vecDest[3]; WorldSpaceCenter(E_Target, vecDest);
+					float SpeedReturn[3];
+					PredictSubjectPositionForProjectiles(view_as<Atomizer>(entity), E_Target, 400.0,_,vecDest);
+					vecDest[0] += GetRandomFloat(-30.0, 30.0);
+					vecDest[1] += GetRandomFloat(-30.0, 30.0);
+					ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.25, 1.0);
+			//   TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+						
+					DataPack pack = new DataPack();
+					pack.WriteCell(EntIndexToEntRef(entity));
+					pack.WriteFloat(SpeedReturn[0]);
+					pack.WriteFloat(SpeedReturn[1]);
+					pack.WriteFloat(SpeedReturn[2]);
+					RequestFrames(SetVelocityAtomizerProjectile, 1, pack);
+					SetEntProp(entity, Prop_Data, "m_iHammerID", GETBOUNS+1);
+				}
+				else
+				{
+					TeleportEntity(entity, NULL_VECTOR, TempANG, NULL_VECTOR);
+					
+					DataPack pack = new DataPack();
+					pack.WriteCell(EntIndexToEntRef(entity));
+					pack.WriteFloat(vVelocity[0]);
+					pack.WriteFloat(vVelocity[1]);
+					pack.WriteFloat(vVelocity[2]);
+					RequestFrames(SetVelocityAtomizerProjectile, 1, pack);
+				}
+				return Plugin_Handled;
+			}
+		}
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		if(IsValidEntity(particle))
+			RemoveEntity(particle);
+	}
+	RemoveEntity(entity);
+	return Plugin_Handled;
+}
+
+//delay velocity setting for upwards movement or else it wont work in that call.
+//└ wow.. artvin so genius.. gg My code is a mess - baka
+stock void SetVelocityAtomizerProjectile(DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(entity))
+	{
+		delete pack;
+		return;
+	}
+	float vel[3];
+	vel[0] = pack.ReadFloat();
+	vel[1] = pack.ReadFloat();
+	vel[2] = pack.ReadFloat();
+	delete pack;
+	Custom_SetAbsVelocity(entity, vel);	
+
+}
 static bool ONLYBSP(int entity, int contentsMask, any data)
 {
 	return !entity;
@@ -1904,7 +2019,7 @@ static bool Victoria_Support(Atomizer npc)
 		float position2[3];
 		position2[0] = Vs_Temp_Pos[npc.index][0];
 		position2[1] = Vs_Temp_Pos[npc.index][1];
-		position2[2] = Vs_Temp_Pos[npc.index][2] + 65.0;
+		position2[2] = Vs_Temp_Pos[npc.index][2] + 40.0;
 		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
 		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
 		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);

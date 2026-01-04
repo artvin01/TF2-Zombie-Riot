@@ -4031,6 +4031,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	{
 		//we push back the entity in time to when lag comp happend, so gibs actually make sense.
 		FinishLagCompensation_Base_boss(pThis);
+		RemoveEntityToLagCompList(pThis);
 		int client;
 #if defined ZR
 		if(Saga_EnemyDoomed(pThis))
@@ -4171,9 +4172,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		RemoveNpcFromEnemyList(pThis, true);
 		b_StaticNPC[pThis] = false;
 
-		//avoid hitboxes gettign in the way, specifically a sniper rifle fix
-		SetEntPropFloat(pThis, Prop_Send, "m_flModelScale", 0.0001);
-
 		//If its a building type, force vanish.
 		if(i_IsNpcType[pThis] == 1)
 		{
@@ -4196,6 +4194,12 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		{	
 			SetNpcToDeadViaGib(pThis);
 		}
+		//avoid hitboxes gettign in the way, specifically a sniper rifle fix
+	//	SetEntPropFloat(pThis, Prop_Send, "m_flModelScale", 0.0001);
+		SetEntPropVector(pThis, Prop_Data, "m_vecMinsPreScaled", {0.0,0.0,0.0});
+		SetEntPropVector(pThis, Prop_Data, "m_vecMaxsPreScaled", {0.0,0.0,0.0});
+		npc.UpdateCollisionBox();
+	//	view_as<CBaseCombatCharacter>(pThis).SetModel("models/empty.mdl");
 #if defined ZR
 		Waves_UpdateMvMStats();
 #endif

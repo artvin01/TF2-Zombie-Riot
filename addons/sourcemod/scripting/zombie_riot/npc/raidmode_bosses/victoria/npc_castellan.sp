@@ -820,22 +820,25 @@ static void Castellan_ClotThink(int iNPC)
 	if(CastellanInvis)
 	{
 		//Don't have an EGO!!!!!!!!!!!!!!!!!
-		if(npc.m_flAntiInvulnEmergencyFix && npc.m_flAntiInvulnEmergencyFix < gameTime)
+		if(npc.m_flAntiInvulnEmergencyFix)
 		{
-			b_DoNotUnStuck[npc.index] = false;
-			b_NoKnockbackFromSources[npc.index] = false;
-			b_NpcIsInvulnerable[npc.index] = false;
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[npc.index] = false;
-			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", SaveSolidFlags[npc.index]);
-			SetEntProp(npc.index, Prop_Data, "m_nSolidType", SaveSolidType[npc.index]);
-			if(GetTeam(npc.index) == TFTeam_Red)
-				SetEntityCollisionGroup(npc.index, 24);
-			else
-				SetEntityCollisionGroup(npc.index, 9);
-			npc.m_flAntiInvulnEmergencyFix = gameTime + 0.0;
+			if(npc.m_flAntiInvulnEmergencyFix < gameTime)
+			{
+				b_DoNotUnStuck[npc.index] = false;
+				b_NoKnockbackFromSources[npc.index] = false;
+				b_NpcIsInvulnerable[npc.index] = false;
+				b_ThisEntityIgnoredEntirelyFromAllCollisions[npc.index] = false;
+				SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", SaveSolidFlags[npc.index]);
+				SetEntProp(npc.index, Prop_Data, "m_nSolidType", SaveSolidType[npc.index]);
+				if(GetTeam(npc.index) == TFTeam_Red)
+					SetEntityCollisionGroup(npc.index, 24);
+				else
+					SetEntityCollisionGroup(npc.index, 9);
+				npc.m_flAntiInvulnEmergencyFix = 0.0;
+			}
 		}
 		else if(b_NpcIsInvulnerable[npc.index])
-			npc.m_flAntiInvulnEmergencyFix = gameTime + 0.5;
+			npc.m_flAntiInvulnEmergencyFix = gameTime + 1.0;
 			
 		if(NpcStats_VictorianCallToArms(npc.index) && !ParticleSpawned[npc.index])
 		{
@@ -1293,6 +1296,29 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 				SetEntProp(SensalSpawn, Prop_Data, "m_iHealth", 100000000);
 				SetEntProp(SensalSpawn, Prop_Data, "m_iMaxHealth", 100000000);
 			}
+			
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+			{
+				int GetDrone = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+				if (IsValidEntity(GetDrone) && !b_NpcHasDied[GetDrone] && GetTeam(GetDrone) == TFTeam_Blue)
+				{
+					if(i_NpcInternalId[GetDrone] == VictorianFragments_ID())
+					{
+						VictorianDroneFragments DroneCPU = view_as<VictorianDroneFragments>(GetDrone);
+						DroneCPU.m_iState = 2;
+						NPCStats_RemoveAllDebuffs(GetDrone, 1.0);
+						SetTeam(GetDrone, TFTeam_Red);
+					}
+					else if(i_NpcInternalId[GetDrone] == VictorianAnvil_ID())
+					{
+						VictorianDroneAnvil DroneCPU = view_as<VictorianDroneAnvil>(GetDrone);
+						DroneCPU.m_iTarget = npc.index;
+						NPCStats_RemoveAllDebuffs(GetDrone, 1.0);
+						SetTeam(GetDrone, TFTeam_Red);
+					}
+					else continue;
+				}
+			}
 
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			npc.m_iState = 0;
@@ -1300,7 +1326,6 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			return Plugin_Handled;
 		}
 	}
-
 	return Plugin_Changed;
 }
 
@@ -1355,6 +1380,20 @@ static void Castellan_NPCDeath(int entity)
 		EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
 		EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
 	}
+	
+	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+	{
+		int GetDrone = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+		if (IsValidEntity(GetDrone) && !b_NpcHasDied[GetDrone] && (i_NpcInternalId[GetDrone] == VictorianFragments_ID() || i_NpcInternalId[GetDrone] == VictorianAnvil_ID()) && GetTeam(GetDrone) == TFTeam_Blue)
+		{
+			b_NpcForcepowerupspawn[GetDrone] = 0;
+			i_RaidGrantExtra[GetDrone] = 0;
+			b_DissapearOnDeath[GetDrone] = true;
+			b_DoGibThisNpc[GetDrone] = true;
+			SmiteNpcToDeath(GetDrone);
+		}
+	}
+
 
 	if(BlockLoseSay)
 		return;
@@ -1761,6 +1800,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 					ParticleEffectAt(VecSelfNpc, "smoke_marker", 10.0);
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
+					npc.m_flTimeUntillAirStrike = gameTime + 40.0;
 					npc.m_iState = -1;
 				}
 			}
@@ -2532,7 +2572,7 @@ static bool Victoria_Support(Castellan npc, int AddNuke, bool Mk2)
 			float position2[3];
 			position2[0] = Vs_Temp_Pos[enemy[i]][0];
 			position2[1] = Vs_Temp_Pos[enemy[i]][1];
-			position2[2] = Vs_Temp_Pos[enemy[i]][2] + 65.0;
+			position2[2] = Vs_Temp_Pos[enemy[i]][2] + 40.0;
 			spawnRing_Vectors(position2, Vs_Raged, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
 			spawnRing_Vectors(Vs_Temp_Pos[enemy[i]], Vs_Raged, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
 			TE_SetupBeamPoints(Vs_Temp_Pos[enemy[i]], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
