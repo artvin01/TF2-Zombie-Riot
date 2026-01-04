@@ -71,7 +71,7 @@ public void Guiding_Missile_Created_Shoot_M2Internal(int client, int weapon, boo
 		RocketSize = 1.5;
 	}
 	if(BigNuke)
-		damage * 0.85;
+		damage *= 0.85;
 
 	int projectile = Wand_Projectile_Spawn(client, Speed, 0.0, damage, 0, weapon, "rockettrail",_,false);
 	SetEntityModel(projectile, REDEEMER_ROCKET_MODEL);
