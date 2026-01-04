@@ -264,13 +264,13 @@ public void RedeemerTouch(int entity, int target)
 		GetEntPropVector(entity, Prop_Data, "m_vInitialVelocity", fVel);
 		if(fl_AbilityOrAttack[entity][0])
 		{
-			Explode_Logic_Custom(f_WandDamage[entity] * DamageMulti, owner, entity, weapon, Entity_Position, 150.0);
+			Explode_Logic_Custom(f_WandDamage[entity] * DamageMulti, owner, entity, weapon, Entity_Position, 150.0, .FunctionToCallBeforeHit = RemoveRaidBonusDmgExplode);
 			TE_Particle("rd_robot_explosion", Entity_Position, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 			EmitSoundToAll("mvm/mvm_tank_explode.wav", 0, SNDCHAN_STATIC, 60, _, 0.5,_,_,Entity_Position);
 		}
 		else
 		{
-			Explode_Logic_Custom(f_WandDamage[entity] * DamageMulti, owner, entity, weapon, Entity_Position, 250.0);
+			Explode_Logic_Custom(f_WandDamage[entity] * DamageMulti, owner, entity, weapon, Entity_Position, 250.0, .FunctionToCallBeforeHit = RemoveRaidBonusDmgExplode);
 			TE_Particle("hightower_explosion", Entity_Position, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, owner);
 			TE_Particle("rd_robot_explosion", Entity_Position, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 			EmitSoundToAll("mvm/mvm_tank_explode.wav", 0, SNDCHAN_STATIC, 80, _, 0.85,_,_,Entity_Position);
@@ -297,3 +297,12 @@ public void RedeemerTouch(int entity, int target)
 	}
 }
 
+static float RemoveRaidBonusDmgExplode(int attacker, int victim, float &damage, int weapon)
+{
+	if(b_thisNpcIsARaid[victim])
+	{
+		//Remove raid damage bonus from this explosion.
+		damage /= EXTRA_RAID_EXPLOSIVE_DAMAGE;
+	}
+	return 0.0;
+}

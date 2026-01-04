@@ -5378,6 +5378,6 @@
 	}
 	"RPG Desc"
 	{
-		"en"	"-M2 fires a Guided missile, the more it flies the more damage it does, upto a limit."
+		"en"	"-M2 fires a Guided missile, the more it flies the more damage it does, upto a limit.\nDoes not deal bonus explosive dmg to raids."
 	}
 }
