@@ -90,6 +90,9 @@ enum struct ItemInfo
 	Function FuncReload4;
 	Function FuncOnDeploy;
 	Function FuncOnHolster;
+	Function Func_OnPlayerRunCmd;
+	Function Func_WeaponCreated;
+	Function Func_MapStart;
 
 	Function FuncOnPap;
 
@@ -356,6 +359,26 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sfunc_onholster", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncOnHolster = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_onplayerruncmd", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_OnPlayerRunCmd = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_weaponcreated", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_WeaponCreated = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_mapstart", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_MapStart = GetFunctionByName(null, buffer);
+
+		if(this.Func_MapStart != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, this.Func_MapStart);
+			Call_Finish();
+
+		}
+
 
 		Format(buffer, sizeof(buffer), "%sfunc_onpap", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -656,6 +679,7 @@ void Store_WeaponSwitch(int client, int weapon)
 
 	if(weapon != -1)
 	{
+		EntityFuncPlayerRunCmd[client] = EntityFuncPlayerRunCmd[weapon];
 		if(StoreWeapon[weapon] > 0)
 		{
 			static ItemInfo info;
@@ -6063,6 +6087,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					EntityFuncAttack2[entity] = info.FuncAttack2;
 					EntityFuncAttack3[entity] = info.FuncAttack3;
 					EntityFuncReload4[entity]  = info.FuncReload4;
+					EntityFuncPlayerRunCmd[entity]  = info.Func_OnPlayerRunCmd;
 					
 					b_Do_Not_Compensate[entity] 				= info.NoLagComp;
 					b_Only_Compensate_CollisionBox[entity] 		= info.OnlyLagCompCollision;
@@ -6102,6 +6127,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						Store_SwapToItem(client, entity);
 						use = false;
+					}
+					if(info.Func_WeaponCreated != INVALID_FUNCTION)
+					{
+						Call_StartFunction(null, info.Func_WeaponCreated);
+						Call_PushCell(client);
+						Call_PushCell(entity);
+						Call_Finish();
 					}
 				}
 			}

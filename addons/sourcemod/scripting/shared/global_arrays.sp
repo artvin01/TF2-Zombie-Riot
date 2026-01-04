@@ -624,6 +624,7 @@ Function EntityFuncAttackInstant[MAXENTITIES];
 Function EntityFuncAttack2[MAXENTITIES];
 Function EntityFuncAttack3[MAXENTITIES];
 Function EntityFuncReload4[MAXENTITIES];
+Function EntityFuncPlayerRunCmd[MAXENTITIES];
 //Function EntityFuncReloadSingular5[MAXENTITIES];
 
 float f_ClientMusicVolume[MAXPLAYERS];
