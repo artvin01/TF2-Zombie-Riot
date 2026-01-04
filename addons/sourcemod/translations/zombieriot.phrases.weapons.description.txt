@@ -478,7 +478,7 @@
 		"en"		"-Massively Increased damage\n-Reduced reload speed\n-Has better enemy pierce\n-Guiding missile becomes slower, and a much bigger cooldown, and charges slower, but deals immensive damage"
 		"fr"		"Dégats et vitesse de rechargement améliorés.\nFrappe plus d'ennemis à la fois."
 		"it"		"Danno enormemente aumentato e velocità di ricarica RIDOTTA.\nE ha una migliore perforazione del nemico"
-		"ko"		"-피해량 대폭 증가\n-재장전 속도 감소\n-적 관통력 증가"
+		"ko"		"-피해량 대폭 증가\n-재장전 속도 감소\n-적 관통력 증가\n-유도 미사일이 느려지고, 쿨타임이 증가하고, 충전 속도도 느려지지만, 매우 높은 피해를 입힘"
 	}
 	
 	"The Pomson 7000 Desc"
@@ -5450,5 +5450,6 @@
 	"RPG Desc"
 	{
 		"en"	"-M2 fires a Guided missile, the more it flies the more damage it does, upto a limit.\nDoes not deal bonus explosive dmg to raids."
+		"ko"	"-M2 로 유도 미사일 발사. 미사일이 날아가는 거리가 길어질수록 피해량이 증가하지만, 피해량 증가는 상한 존재.\n더 이상 레이드 보스에게 추가 폭발 피해를 입히지 않음."
 	}
 }

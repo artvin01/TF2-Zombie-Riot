@@ -180,7 +180,7 @@ static Action Timer_Local(Handle timer, DataPack pack)
 	{
 		float fVel[3];
 
-		PrintCenterText(client, "Control your rocket with your mouse!\nThe more it flies, the more damage it will deal.");
+		PrintCenterText(client, "마우스로 당신의 로켓을 조종하세요!\n미사일이 더 멀리 날아갈수록, 피해량도 증가합니다.");
 		SetEntProp(client, Prop_Send, "m_hObserverTarget", -1);
 		GetEntPropVector(rocket, Prop_Data, "m_vInitialVelocity", fVel);
 

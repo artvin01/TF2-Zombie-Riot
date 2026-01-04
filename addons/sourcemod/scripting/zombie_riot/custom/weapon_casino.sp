@@ -1345,10 +1345,10 @@ static void Casino_Show_Hud(int client)
 		{
 			if(i_Dollars_Ammount[client] < 300)
 			{
-				PrintHintText(client,"----[%.1i/%.1i/%.1i]----\nDollars: [%.1i$/%.1i$]\nSpecial Bullets: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_slot1[client],i_slot2[client],i_slot3[client], i_Dollars_Ammount[client],100 + (25 * (i_Current_Pap[client] + 1) * (Payday - 1)),i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
+				PrintHintText(client,"----[%.1i/%.1i/%.1i]----\n달러: [%.1i$/%.1i$]\n특수 탄환: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_slot1[client],i_slot2[client],i_slot3[client], i_Dollars_Ammount[client],100 + (25 * (i_Current_Pap[client] + 1) * (Payday - 1)),i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
 			}
 			else
-				PrintHintText(client,"----[%.1i/%.1i/%.1i]----\nDollars: [Like, a lot of $]\nSpecial Bullets: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_slot1[client],i_slot2[client],i_slot3[client], i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
+				PrintHintText(client,"----[%.1i/%.1i/%.1i]----\n달러: [$ 가 넘쳐흐름]\n특수 탄환: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_slot1[client],i_slot2[client],i_slot3[client], i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
 		}
 		default:
 		{
@@ -1356,13 +1356,13 @@ static void Casino_Show_Hud(int client)
 			{
 				if(i_Dollars_Ammount[client] < 300)
 				{
-					PrintHintText(client,"----[%.1i/%.1i/%.1i]----\nDollars: [%.1i$/%.1i$]\nSpecial Bullets: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_slot1[client],i_slot2[client],i_slot3[client], i_Dollars_Ammount[client],100 + (25 * (i_Current_Pap[client] + 1) * (Payday - 1)),i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
+					PrintHintText(client,"----[%.1i/%.1i/%.1i]----\n달러: [%.1i$/%.1i$]\n특수 탄환: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_slot1[client],i_slot2[client],i_slot3[client], i_Dollars_Ammount[client],100 + (25 * (i_Current_Pap[client] + 1) * (Payday - 1)),i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
 				}
 				else
-					PrintHintText(client,"----[%.1i/%.1i/%.1i]----\nDollars: [Like, a lot of $]\nSpecial Bullets: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_slot1[client],i_slot2[client],i_slot3[client], i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
+					PrintHintText(client,"----[%.1i/%.1i/%.1i]----\n달러: [$ 가 넘쳐흐름]\n특수 탄환: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_slot1[client],i_slot2[client],i_slot3[client], i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
 			}
 			else
-				PrintHintText(client,"----[FRENZY ACTIVE]----\nDollars: [SPAM / M2]\nSpecial Bullets: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
+				PrintHintText(client,"----[광란 발동]----\n달러: [SPAM / M2]\n특수 탄환: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
 		}
 	}
 }
