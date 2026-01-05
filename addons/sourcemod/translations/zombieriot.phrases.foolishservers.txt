@@ -345,7 +345,7 @@
 		"en"	"1.03* Sentry Attack speed"
 		"ko"	"센트리 공속 +3％"
 	}
-	"Inv Das Feelinbeter Medibager"
+	"Das Feelinbeter Medibager [Common]"
 	{
 		"en"	"Das Feelinbeter Medibager [Common]"
 		"ko"	"다스 긔분조흔 의료 가방 [일반]"
