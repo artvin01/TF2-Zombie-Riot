@@ -99,15 +99,21 @@ public void Weapon_Nailgun_Shotgun(DataPack pack)
 			
 		attack_speed = Attributes_GetOnPlayer(client, 343, true); //Sentry attack speed bonus
 		Attributes_Set(weapon, 6, attack_speed);
+		if(Inv_Mini_Shell[client])attack_speed*=1.05;
 		Attributes_Set(weapon, 97, attack_speed);//reload speed too for shotgun
 		float Extra_Clip;
 		
-		Extra_Clip = 1.0 / Attributes_GetOnPlayer(client, 343, true); 
+		Extra_Clip = 1.0 / Attributes_GetOnPlayer(client, 343, true);
+		if(Inv_Mini_Shell[client])Extra_Clip*=1.5;
 		Attributes_Set(weapon, 4, Extra_Clip);
 
 		float damage = Attributes_GetOnPlayer(client, 287, true);			//Sentry damage bonus
 		damage *= 0.85;
 		//reduce
+		if(Inv_Nailgun_Slug_Ammo[client]!=1.0)
+			damage *= Inv_Nailgun_Slug_Ammo[client];
+		if(Inv_Mini_Shell[client])
+			damage *= 0.7;
 		Attributes_Set(weapon, 2, damage);
 			
 	}

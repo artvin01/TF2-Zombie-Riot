@@ -243,7 +243,7 @@
 	"Hammer Editor HUD [Uncommon]"
 	{
 		"en"	"Hammer Editor HUD [Uncommon]"
-		"ko"	"해머 에디터 HUD [드문]"
+		"ko"	"해머 에디터 HUD [특별]"
 	}
 	"Inv Hammer Editor HUD desc"
 	{
@@ -288,7 +288,7 @@
 	"Wizard Hat [Uncommon]"
 	{
 		"en"	"Wizard Hat [Uncommon]"
-		"ko"	"마법사 모자 [드문]"
+		"ko"	"마법사 모자 [특별]"
 	}
 	"Inv Wizard Hat desc"
 	{
@@ -325,10 +325,10 @@
 		"en"	"+15％ More Barrack Resources\nIn Rogue Mode +15％ to +5％ reduced"
 		"ko"	"배럭 자원 획득량 +15％\n록라 모드에서: +15％ -> +5％로 감소"
 	}
-	"Ceramic Coating [Common]"
+	"Ceramic Coating [Legendary]"
 	{
-		"en"	"Ceramic Coating [Common]"
-		"ko"	"세라믹 코팅 [일반]"
+		"en"	"Ceramic Coating [Legendary]"
+		"ko"	"세라믹 코팅 [전설]"
 	}
 	"Inv Ceramic Coating desc"
 	{
@@ -358,7 +358,7 @@
 	"Sacred Medical Bag [Uncommon]"
 	{
 		"en"	"Sacred Medical Bag [Uncommon]"
-		"ko"	"신성한 의료 가방 [드문]"
+		"ko"	"신성한 의료 가방 [특별]"
 	}
 	"Inv Sacred Medical Bag desc"
 	{
@@ -368,7 +368,7 @@
 	"Force Shield Generator [Uncommon]"
 	{
 		"en"	"Force Shield Generator [Uncommon]"
-		"ko"	"보호막 생성기 [드문]"
+		"ko"	"보호막 생성기 [특별]"
 	}
 	"Little Sandvich SafeHouse [Rare]"
 	{
@@ -383,7 +383,7 @@
 	"Slug Shell Pouch [Uncommon]"
 	{
 		"en"	"12g Slug Shell Pouch [Uncommon]"
-		"ko"	"12g 슬러그 탄 주머니 [드문]"
+		"ko"	"12g 슬러그 탄 주머니 [특별]"
 	}
 	"Inv Slug Shell Pouch desc"
 	{
@@ -393,7 +393,7 @@
 	"Scrap Backpack [Uncommon]"
 	{
 		"en"	"Scrap Backpack [Uncommon]"
-		"ko"	"고철 배낭 [드문]"
+		"ko"	"고철 배낭 [특별]"
 	}
 	"Inv Scrap Backpack desc"
 	{
@@ -403,7 +403,7 @@
 	"BatPack [Uncommon]"
 	{
 		"en"	"BatPack [Uncommon]"
-		"ko"	"배터리팩 [드문]"
+		"ko"	"배터리팩 [특별]"
 	}
 	"Inv BatPack desc"
 	{
@@ -488,7 +488,7 @@
 	"6B47 Helmet [Uncommon]"
 	{
 		"en"	"6B47 Helmet [Uncommon]"
-		"ko"	"6B47 헬멧 [드문]"
+		"ko"	"6B47 헬멧 [특별]"
 	}
 	"Inv 6B47 Helmet desc"
 	{
@@ -538,7 +538,7 @@
 	"Thaumium Belt [Uncommon]"
 	{
 		"en"	"Thaumium Belt [Uncommon]"
-		"ko"	"사우뮴 벨트 [드문]"
+		"ko"	"사우뮴 벨트 [특별]"
 	}
 	"Inv Thaumium Belt desc"
 	{
@@ -548,7 +548,7 @@
 	"Quick Draw Belt [Uncommon]"
 	{
 		"en"	"Quick Draw Belt [Uncommon]"
-		"ko"	"퀵드로우 벨트 [드문]"
+		"ko"	"퀵드로우 벨트 [특별]"
 	}
 	"Inv Quick Draw Belt desc"
 	{
@@ -628,7 +628,7 @@
 	"Medieval Alloy Boots [Uncommon]"
 	{
 		"en"	"Medieval Alloy Boots [Uncommon]"
-		"ko"	"중세 합금 부츠 [드문]"
+		"ko"	"중세 합금 부츠 [특별]"
 	}
 	"Inv Medieval Alloy Boots desc"
 	{
@@ -638,7 +638,7 @@
 	"Missing Texture Boots [Uncommon]"
 	{
 		"en"	"Missing Texture Boots [Uncommon]"
-		"ko"	"보라돌이 부츠 [드문]"
+		"ko"	"보라돌이 부츠 [특별]"
 	}
 	"Inv Missing Texture Boots desc"
 	{
@@ -648,7 +648,7 @@
 	"Monkey Shoes [Uncommon]"
 	{
 		"en"	"Monkey Shoes [Uncommon]"
-		"ko"	"멍끼 신발 [드문]"
+		"ko"	"멍끼 신발 [특별]"
 	}
 	"Inv Monkey Shoes desc"
 	{
@@ -658,7 +658,7 @@
 	"Military Boots [Uncommon]"
 	{
 		"en"	"Military Boots [Uncommon]"
-		"ko"	"군화 [드문]"
+		"ko"	"군화 [특별]"
 	}
 	"Inv Military Boots desc"
 	{
@@ -778,7 +778,7 @@
 	"Double-Size BuckShot [Uncommon]"
 	{
 		"en"	"Double-Size BuckShot [Uncommon]"
-		"ko"	"더블-사이즈 벅샷 [드문]"
+		"ko"	"더블-사이즈 벅샷 [특별]"
 	}
 	"Inv Double-Size BuckShot desc"
 	{
@@ -838,7 +838,7 @@
 	"Medal Season 14 [Uncommon]"
 	{
 		"en"	"Medal Season 14 [Uncommon]"
-		"ko"	"메달 14기 [드문]"
+		"ko"	"메달 14기 [특별]"
 	}
 	"Inv Medal Season 14 desc"
 	{
@@ -848,7 +848,7 @@
 	"Heroic Comradeship Badge [Uncommon]"
 	{
 		"en"	"Heroic Comradeship Badge [Uncommon]"
-		"ko"	"영웅적인 '전우애' 증표 [드문]"
+		"ko"	"영웅적인 '전우애' 증표 [특별]"
 	}
 	"Inv Heroic Comradeship Badge desc"
 	{
@@ -858,7 +858,7 @@
 	"Dual-Fusion Welders [Uncommon]"
 	{
 		"en"	"Dual-Fusion Welders [Uncommon]"
-		"ko"	"이중 핵융합 용접기 [드문]"
+		"ko"	"이중 핵융합 용접기 [특별]"
 	}
 	"Inv Dual-Fusion Welders desc"
 	{
@@ -903,7 +903,7 @@
 	"Targeting Computer [Uncommon]"
 	{
 		"en"	"Targeting Computer [Uncommon]"
-		"ko"	"타겟팅 컴퓨터 [드문]"
+		"ko"	"타겟팅 컴퓨터 [특별]"
 	}
 	"Inv Targeting Computer desc"
 	{
@@ -913,7 +913,7 @@
 	"It's Magic, I Added Some Magic [Uncommon]"
 	{
 		"en"	"It's Magic, I Added Some Magic [Uncommon]"
-		"ko"	"마법이야, 내가 마법을 추가했어 [드문]"
+		"ko"	"마법이야, 내가 마법을 추가했어 [특별]"
 	}
 	"Inv I Added Some Magic desc"
 	{
@@ -923,7 +923,7 @@
 	"Death from Above [Rare]"
 	{
 		"en"	"Death from Above [Rare]"
-		"ko"	"천상의 레퀴엠 [희귀한]"
+		"ko"	"천상의 레퀴엠 [희귀]"
 	}
 	"Inv Death from Above desc"
 	{
@@ -933,7 +933,7 @@
 	"The True Biker's Manual [Rare]"
 	{
 		"en"	"The True Biker's Manual [Rare]"
-		"ko"	"진정한 바이커를 위한 매뉴얼 [희귀한]"
+		"ko"	"진정한 바이커를 위한 매뉴얼 [희귀]"
 	}
 	"Inv True Biker desc"
 	{
@@ -947,8 +947,8 @@
 	}
 	"Inv Optimize Magic Casting desc"
 	{
-		"en"	"Magic weapon mana cost reduced by -10％"
-		"ko"	"마법무기의 마나 코스트 -10％ 감소"
+		"en"	"Magic weapon mana cost reduced by -30％"
+		"ko"	"마법무기의 마나 코스트 -30％ 감소"
 	}
 	"Khaydarin Crystal [Mythic]"
 	{
