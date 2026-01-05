@@ -418,6 +418,7 @@ static void VictorianAssaultVehicle_Work(VictorianAssaultVehicle npc, float game
 					} 
 				}
 				delete swingTrace;
+				
 				if(ShouldNpcDealBonusDamage(npc.m_iTarget) && npc.g_TimesSummoned)
 				{
 					float RNGPos[3]; WorldSpaceCenter(npc.index, RNGPos);
