@@ -206,7 +206,7 @@ public void Custom_Inventory_Think(int client, float GameTime)
 		int Chaos_Coil = EntRefToEntIndex(Inv_Chaos_Coil[client]);
 		if(IsValidEntity(Chaos_Coil))
 		{
-			Attributes_Set(Chaos_Coil, 107, 1.0+(0.01*float(GetRandomInt(0, 20))));
+			Attributes_Set(Chaos_Coil, 107, 1.0+(0.01*float(GetRandomInt(5, 20))));
 			SDKCall_SetSpeed(client);
 			Inv_Chaos_Coil_Delay[client] = GameTime + 3.0;
 		}
