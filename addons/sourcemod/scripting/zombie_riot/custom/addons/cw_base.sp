@@ -7,6 +7,7 @@
 public void Weapon_AddonsCustom_OnMapStart()
 {
 	/*초기화*/
+	PrecacheSoundCustom("#baka_zr/metal_pipe.mp3");
 	MajorSteam_Launcher_OnMapStart();
 	LockDown_Wand_MapStart();
 	MSword_OnMapStart();
@@ -26,7 +27,7 @@ void Weapon_AddonsCustomLastMan(int client)
 	{
 		/*에러 제거용*/
 	}
-	/*라스맨일때 트리거됨*/
+	/*lms일때 트리거됨*/
 	/*if(Wkit_Omega_LastMann(client))
 	{
 		CPrintToChatAll("{gold}%N are now alone,however,he won't give up that early...", client);
@@ -48,7 +49,7 @@ bool Weapon_AddonsStartCustomSoundForLastMan(int client, int WhatSoundPlay)
 	bool CompleteFailure;
 	switch(WhatSoundPlay)
 	{
-		/*Yakuza_Lastman(번호)는 해당하는 라스맨 브금을 재생 시킴*/
+		/*Yakuza_Lastman(번호)는 해당하는 lms브금을 재생 시킴*/
 		/*case 12:
 		{
 			EmitCustomToClient(client, "#zombiesurvival/combinehell/escalationP2.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
@@ -66,7 +67,7 @@ void Weapon_AddonsStopCustomSoundForLastMan(int client, int WhatSoundPlay)
 	{
 		/*에러 제거용*/
 	}
-	/*라스맨 종료되면 트리거됨*/
+	/*lms종료되면 트리거됨*/
 	switch(WhatSoundPlay)
 	{
 		//case 12:StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/combinehell/escalationP2.mp3", 2.0);

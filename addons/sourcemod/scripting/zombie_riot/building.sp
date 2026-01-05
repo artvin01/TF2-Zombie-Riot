@@ -2132,6 +2132,44 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 0.8));
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 0.8));
 		}
+		if(!Inv_Golden_Crown[entity] && Inv_Golden_Crown[client])
+		{
+			Inv_Golden_Crown[entity] = true;
+			if(BarracksUpgrade)
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.15));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.15));
+		}
+		if(Inv_Golden_Crown[entity] && !Inv_Golden_Crown[client])
+		{
+			Inv_Golden_Crown[entity] = false;
+			if(BarracksUpgrade)
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.15));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 1.15));
+		}
+		if(!Inv_Barrack_Backup[entity] && Inv_Barrack_Backup[client])
+		{
+			Inv_Barrack_Backup[entity] = true;
+			if(BarracksUpgrade)
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.5));
+		}
+		if(Inv_Barrack_Backup[entity] && !Inv_Barrack_Backup[client])
+		{
+			Inv_Barrack_Backup[entity] = false;
+			if(BarracksUpgrade)
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 1.5));
+		}
+		if(!Inv_Leaders_Belt[entity] && Inv_Leaders_Belt[client])
+		{
+			Inv_Leaders_Belt[entity] = true;
+			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.15;
+			view_as<BarrackBody>(entity).BonusFireRate *= 0.88;
+		}
+		if(Inv_Leaders_Belt[entity] && !Inv_Leaders_Belt[client])
+		{
+			Inv_Leaders_Belt[entity] = false;
+			view_as<BarrackBody>(entity).BonusDamageBonus /= 1.15;			
+			view_as<BarrackBody>(entity).BonusFireRate /= 0.88;
+		}
 		if(!(i_CurrentEquippedPerk[entity] & PERK_MORNING_COFFEE) && (i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE))
 		{
 			view_as<BarrackBody>(entity).BonusFireRate *= 0.85;

@@ -329,7 +329,6 @@ void NPC_ConfigSetup()
 	Ikunagae_OnMapStart_NPC();
 	MechaSoldier_Barrager_OnMapStart_NPC();
 	NearlSwordAbility_OnMapStart_NPC();
-	Goliath_Aircraft_OnMapStart_NPC();
 
 	SeaRunner_MapStart();
 	SeaSlider_Precache();
@@ -1919,7 +1918,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/ally/iberia_barracks/npc_barrack_lighthouse_guardian.sp"
 
 #include "npc/ally/npc_nearl_sword.sp"
-#include "npc/ally/npc_goliath_aircraft.sp"
 #include "npc/ally/npc_ritualist.sp"
 
 #include "npc/respawn/npc_stalker_combine.sp"
