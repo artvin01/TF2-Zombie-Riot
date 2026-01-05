@@ -117,7 +117,9 @@ methodmap Taller < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		func_NPCDeath[npc.index] = view_as<Function>(Taller_NPCDeath);
+		
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Taller_OnTakeDamage);
+
 		func_NPCThink[npc.index] = view_as<Function>(Taller_ClotThink);
 		npc.b_Nightmare = false;
 
