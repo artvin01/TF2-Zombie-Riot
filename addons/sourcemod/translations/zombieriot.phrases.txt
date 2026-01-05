@@ -4719,7 +4719,7 @@
 	}
 	"Interitus Desc"
 	{
-		"en"	"A group made up of many cities, all afflicted with Chaos."
+		"en"	"After Kahml sees that we beat his clone in Rogue 1, Kahml decides to send part of his army to attack us because he’s bored."
 		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
 		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 		"it"	"Ordine Lore: (7) Il caos ha afflitto molte città, il suo gruppo è pronto a servire voi giusti. Preparatevi."
