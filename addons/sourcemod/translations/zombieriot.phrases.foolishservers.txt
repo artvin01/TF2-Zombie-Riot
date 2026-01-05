@@ -455,12 +455,12 @@
 		"en"	"Barrack units spawn with x1.5 overhealing.\1％ Decreased Player -50 max HP"
 		"ko"	"배럭 유닛이 x1.5 과치료를 받고 소환합니다.\n사용자의 최대 체력 -50"
 	}
-	"Market Gardener Office Uniform [Legendary]"
+	"Market Gardener Fixer Uniform [Legendary]"
 	{
-		"en"	"Market Gardener Office Uniform [Legendary]"
+		"en"	"Market Gardener Fixer Uniform [Legendary]"
 		"ko"	"마켓가드너 사무소 유니폼 [전설]"
 	}
-	"Inv Market Gardener Office Uniform desc"
+	"Inv Market Gardener Fixer Uniform desc"
 	{
 		"en"	"+4％ Jump height\nWhile jumping, damage dealt increases by 5％\nAdditional damage is dealt in proportion to current speed."
 		"ko"	"점프 높이 +4％\n점프중 피해량이 5％ 상승\n현재 속도에 비례해 추가피해를 줍니다."
