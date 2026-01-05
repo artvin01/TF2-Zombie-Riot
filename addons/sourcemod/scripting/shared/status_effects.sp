@@ -548,6 +548,46 @@ void StatusEffects_Baka()
 	data.OnBuffStoreRefresh			= INVALID_FUNCTION;
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;*/
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Barricade Stabilizer");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⛉");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.0;
+	data.DamageDealMulti				= -1.0;
+	data.AttackspeedBuff				= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount 	= false;
+	data.Slot						= 0;
+	data.SlotPriority					= 0;
+	data.OnTakeDamage_TakenFunc 		= Barricade_Stabilizer_ResistanceFunc;
+	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
+	data.OnTakeDamage_PostVictim		= INVALID_FUNCTION;
+	data.OnTakeDamage_PostAttacker		= INVALID_FUNCTION;
+	data.Status_SpeedFunc 			= INVALID_FUNCTION;
+	data.HudDisplay_Func 				= Barricade_Stabilizer_Hud_Func;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Chaos Coil Speed");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "✧");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.0;
+	data.DamageDealMulti				= -1.0;
+	data.AttackspeedBuff				= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount 	= false;
+	data.Slot						= 0;
+	data.SlotPriority					= 0;
+	data.OnTakeDamage_TakenFunc 		= Chaos_Coil_Func;
+	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
+	data.OnTakeDamage_PostVictim		= INVALID_FUNCTION;
+	data.OnTakeDamage_PostAttacker		= INVALID_FUNCTION;
+	data.Status_SpeedFunc 			= INVALID_FUNCTION;
+	data.HudDisplay_Func 				= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
 
 float AOESlowdown_Func(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -580,6 +620,77 @@ float SubjectiveTimeDilation_Func(int victim, StatusEffect Apply_MasterStatusEff
 float MajorSteam_Launcher_ResistanceFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
 	return f_MajorSteam_Launcher_Resistance(victim);
+}
+
+float Barricade_Stabilizer_ResistanceFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, int basedamage)
+{
+	float f_Resistance = 1.0;
+	int building = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][victim]);
+	if(building != -1)
+	{
+		if(StrEqual(c_NpcName[building], "Barricade"))
+		{
+			if(!CheckInHud())
+			{
+				int health = GetEntProp(building, Prop_Data, "m_iHealth") - RoundToCeil(basedamage*(RaidbossIgnoreBuildingsLogic(1) ? 1.5 : 1.0));
+				if(health > 0)
+				{
+					ObjectGeneric objstats = view_as<ObjectGeneric>(building);
+					SetEntProp(building, Prop_Data, "m_iHealth", health);
+					objstats.PlayHurtSound();
+				}
+				else
+				{
+					int entity = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][victim]);
+					if(IsValidEntity(i2_MountedInfoAndBuilding[1][victim]))
+					{
+						float posStacked[3]; 
+						GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", posStacked);
+						AcceptEntityInput(i2_MountedInfoAndBuilding[1][victim], "ClearParent");
+						SDKCall_SetLocalOrigin(entity, posStacked);	
+						i2_MountedInfoAndBuilding[1][victim] = INVALID_ENT_REFERENCE;
+					}
+					if(IsValidEntity(i2_MountedInfoAndBuilding[0][victim]))
+					{
+						RemoveEntity(i2_MountedInfoAndBuilding[0][victim]);
+						i2_MountedInfoAndBuilding[0][victim] = INVALID_ENT_REFERENCE;
+					}
+					DestroyBuildingDo(building);
+				}
+			}
+			f_Resistance=0.8;
+		}
+	}
+	return f_Resistance;
+}
+
+void Barricade_Stabilizer_Hud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	if(!Inv_Barricade_Stabilizer[victim])
+		RemoveSpecificBuff(victim, "Barricade Stabilizer");
+	#if defined ZR
+	float Ratio = 0.0;
+	int building = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][victim]);
+	if(building != -1)
+	{
+		if(StrEqual(c_NpcName[building], "Barricade"))
+		{
+			int health = GetEntProp(building, Prop_Data, "m_iHealth");
+			int maxhealth = GetEntProp(building, Prop_Data, "m_iMaxHealth");
+			Ratio = float(health)/float(maxhealth) * 100.0;
+		}
+	}
+	Format(HudToDisplay, SizeOfChar, "[⛉ %.0f％]", Ratio);
+	#endif
+}
+
+float Chaos_Coil_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, int basedamage)
+{
+	if(!Inv_Chaos_Coil[victim])
+		RemoveSpecificBuff(victim, "Chaos Coil Speed");
+	if(!CheckInHud())
+		Elemental_AddChaosDamage(victim, attacker, basedamage);
+	return 1.15;
 }
 
 float Cybergrind_EX_Hard_ResistanceFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)

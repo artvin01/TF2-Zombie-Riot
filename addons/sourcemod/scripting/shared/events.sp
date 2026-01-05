@@ -546,7 +546,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	Armor_Charge[client] = 0; //reset to 0 on death
 
 	//Incase they die, do suit!
-	if(!Rogue_Mode())
+	if(!Rogue_Mode() && !Inv_LSandvich_SafeHouse[client])
 	{
 		i_CurrentEquippedPerk[client] = 0;
 		UpdatePerkName(client);

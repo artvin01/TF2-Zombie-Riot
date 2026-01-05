@@ -57,6 +57,8 @@ static ZRGiftRarity i_RarityType[MAXENTITIES];
 static float f_IncreaseChanceManually = 1.0;
 static bool b_ForceSpawnNextTime;
 
+#include "zombie_riot/items_gift.sp"
+
 void Items_PluginStart()
 {
 	for(int i=0; i<=MaxClients; i++)
@@ -733,7 +735,8 @@ void Gift_DropChance(int entity)
 				if(!IsPointHazard(VecOrigin)) //Is it valid?
 				{
 					b_ForceSpawnNextTime = false;
-					Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, rarity);
+					if(!Stock_SpawnInvGift(VecOrigin, GIFT_MODEL, 45.0, rarity))
+						Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, rarity);
 				}
 				else //Not a valid position, we must force it! next time we try!
 				{
@@ -930,7 +933,6 @@ stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime
 		
 		SetVariantColor(view_as<int>(color));
 		AcceptEntityInput(glow, "SetGlowColor");
-			
 		
 		f_RingDelayGift[m_iGift] = 0.0;
 

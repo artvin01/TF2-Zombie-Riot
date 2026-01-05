@@ -5717,6 +5717,7 @@ void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
 	b_ArmorVisualiser[client] = false;
 	b_CanSeeBuildingValues_Force[client] = false;
 	b_Reinforce[client] = false;
+	Custom_Inventory_Reset(client);
 	i_MaxSupportBuildingsLimit[client] = 0;
 	b_PlayerWasAirbornKnockbackReduction[client] = false;
 	BannerOnEntityCreated(client);
@@ -6285,6 +6286,12 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						b_CanSeeBuildingValues_Force[client] = true;
 					}
+					
+					if(Custom_Inventory_Enable(client, entity, info.SpecialAdditionViaNonAttribute))
+					{
+					
+					
+					}
 
 					int CostDo;
 
@@ -6362,6 +6369,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 	if(EntityIsAWeapon)
 	{
+		Custom_Inventory_Attribute(client, entity);
+		
 		if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS)
 		{
 			//dont give it if it doesnt have it.

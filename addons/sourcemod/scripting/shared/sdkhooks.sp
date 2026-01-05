@@ -414,6 +414,11 @@ public void OnPostThink(int client)
 			}
 		}
 	}
+	
+#if defined ZR
+	Custom_Inventory_Think(client, GameTime);
+#endif
+	
 #if defined ZR
 	if(SkillTree_InMenu(client))
 	{

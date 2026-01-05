@@ -111,6 +111,7 @@ static char g_PullSounds[][] = {
 static char g_RangedReloadSound[][] = {
 	"weapons/shotgun/shotgun_reload1.wav",
 };
+static char g_RangedReloadEndSound[] = "weapons/shotgun/shotgun_cock.wav";
 
 static char g_SadDueToAllyDeath[][] = {
 	"vo/ravenholm/monk_mourn01.wav",
@@ -159,6 +160,7 @@ public void CuredFatherGrigori_OnMapStart_NPC()
 	PrecacheModel("models/weapons/w_bullet.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
 	
+	PrecacheSound(g_RangedReloadEndSound);
 	PrecacheSound("ambient/explosions/explode_9.wav",true);
 	PrecacheSound("ambient/energy/weld1.wav",true);
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
@@ -199,6 +201,16 @@ methodmap CuredFatherGrigori < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flGetClosestTargetAllyTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float m_flReloadSoundDelay
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -572,6 +584,9 @@ methodmap CuredFatherGrigori < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, 90, _, 1.0);
 		
 	}
+	public void PlayRangedReloadEndSound() {
+		EmitSoundToAll(g_RangedReloadEndSound, this.index, _, 90, _, 1.0);
+	}
 	
 	public void PlayMeleeSound() {
 	//	if (GetRandomInt(0, 5) == 2)
@@ -769,6 +784,9 @@ methodmap CuredFatherGrigori < CClotBody
 		npc.m_iAttacksTillReload = 2;
 		npc.m_bWasSadAlready = false;
 		npc.Anger = false;
+		npc.m_bFUCKYOU = false;
+		npc.m_iMaxAmmo = 6;
+		npc.m_iAmmo = 0;
 		npc.m_bScalesWithWaves = true;
 		npc.StartPathing();
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -994,7 +1012,9 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 	{
 		Owner = npc.index;
 	}
-						
+	else if(IsValidClient(Owner) && Inv_Grigori_Antidote_Enable(Owner))
+		func_NPCThink[npc.index] = CuredFatherGrigori_AggressiveThink;
+	
 	if((BoughtGregHelp || CurrentPlayers <= 4) && IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
@@ -1514,4 +1534,441 @@ public Action Timer_TypeInChat(Handle timer)
 {
 	CPrintToChatAll("{purple}세상 기계{default}: 봐요, 저도 채팅창을 쓸 수 있다구요! 안녕하세요!");
 	return Plugin_Stop;
+}
+
+public void CuredFatherGrigori_AggressiveThink(int iNPC)
+{
+	CuredFatherGrigori npc = view_as<CuredFatherGrigori>(iNPC);
+	float GameTime = GetGameTime(npc.index);
+	if(npc.m_flNextDelayTime > GameTime)
+		return;
+	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.Update();
+	
+	if(npc.m_flNextThinkTime > GameTime)
+		return;
+	npc.m_flNextThinkTime = GameTime + 0.1;
+
+	bool aggressive;
+	int Owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(Owner))
+		Owner = npc.index;
+	else if(IsValidClient(Owner) && Inv_Grigori_Antidote_Enable(Owner))
+		aggressive=true;
+	if(npc.m_flVerySadCry || !aggressive)
+		func_NPCThink[npc.index] = CuredFatherGrigori_ClotThink;
+	
+	if(!IsValidAlly(npc.index, npc.m_iTargetAlly) || npc.m_flGetClosestTargetAllyTime < GameTime)
+	{
+		npc.m_iTargetAlly = GetClosestAlly(npc.index);
+		npc.m_flGetClosestTargetAllyTime = GameTime + GetRandomRetargetTime();
+	}
+
+	if(npc.m_flGetClosestTargetTime < GameTime)
+	{
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
+	}
+	
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
+	{
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		switch(CuredFatherGrigori_Work(npc, GameTime, flDistanceToTarget, Owner))
+		{
+			case 0:
+			{
+				if(npc.m_iChanged_WalkCycle != 3)
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 3;
+					npc.m_flSpeed = 300.0;
+					npc.StartPathing();
+					if(i_SpecialGrigoriReplace == 0)
+					{
+						int iActivity = npc.LookupActivity("ACT_RUN_AR2_RELAXED");
+						if(iActivity > 0) npc.StartActivity(iActivity);
+						npc.m_flSpeed = 250.0;
+					}
+					else
+					{
+						if(BoughtGregHelp || CurrentPlayers <= 4)
+						{
+							int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+							if(iActivity > 0) npc.StartActivity(iActivity);
+						}
+						else
+						{
+							int iActivity = npc.LookupActivity("ACT_HL2MP_WALK");
+							if(iActivity > 0) npc.StartActivity(iActivity);
+						}
+					}
+				}
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3];
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
+				}
+				else 
+				{
+					npc.SetGoalEntity(npc.m_iTarget);
+				}
+			}
+			case 1:
+			{
+				if(npc.m_iChanged_WalkCycle != 4)
+				{
+					npc.m_iChanged_WalkCycle = 4;
+					npc.m_bisWalking = false;
+					npc.m_flSpeed = 0.0;
+					npc.StopPathing();
+					if(i_SpecialGrigoriReplace == 0)
+					{
+						int iActivity = npc.LookupActivity("ACT_MONK_GUN_IDLE");
+						if(iActivity > 0) npc.StartActivity(iActivity);
+					}
+					else
+					{
+						if(BoughtGregHelp || CurrentPlayers <= 4)
+						{
+							int iActivity = npc.LookupActivity("ACT_MP_STAND_PRIMARY");
+							if(iActivity > 0) npc.StartActivity(iActivity);
+							npc.m_flSpeed = 175.0;
+						}
+						else
+						{
+							int iActivity = npc.LookupActivity("ACT_HL2MP_WALK");
+							if(iActivity > 0) npc.StartActivity(iActivity);
+							npc.m_flSpeed = 175.0;
+						}
+					}
+				}
+			}
+			case 2:
+			{
+				if(npc.m_iChanged_WalkCycle != 6)
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 6;
+					npc.m_flSpeed = 330.0;
+					npc.StartPathing();
+					if(i_SpecialGrigoriReplace == 0)
+					{
+						int iActivity = npc.LookupActivity("ACT_RUN_AR2_RELAXED");
+						if(iActivity > 0) npc.StartActivity(iActivity);
+					}
+					else
+					{
+						if(BoughtGregHelp || CurrentPlayers <= 4)
+						{
+							int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+							if(iActivity > 0) npc.StartActivity(iActivity);
+						}
+						else
+						{
+							int iActivity = npc.LookupActivity("ACT_HL2MP_WALK");
+							if(iActivity > 0) npc.StartActivity(iActivity);
+						}
+					}
+				}
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3];
+					PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
+				}
+				else 
+				{
+					npc.SetGoalEntity(npc.m_iTargetWalkTo);
+				}
+			}
+			case 3:
+			{
+				if(npc.m_flNextRangedSpecialAttack && npc.m_flNextRangedSpecialAttack < GameTime)
+				{
+					npc.m_flNextRangedSpecialAttack = 0.0;
+					npc.SetPlaybackRate(0.0);	
+				}
+				if(npc.m_iChanged_WalkCycle != 11) 	
+				{
+					npc.StopPathing();
+					
+					npc.AddActivityViaSequence("Open_door_towards_right");
+					npc.m_flNextRangedSpecialAttack = GameTime + 0.7;
+					npc.m_iChanged_WalkCycle = 11;
+					npc.m_bisWalking = false;
+					npc.m_flSpeed = 0.0;
+				}
+			}
+		}
+	}
+	else
+	{
+		if(IsValidAlly(npc.index, npc.m_iTargetAlly))
+		{
+			if(!Can_I_See_Ally(npc.index, npc.m_iTargetAlly))
+				npc.m_flGetClosestTargetAllyTime -= 0.076;
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+			
+			int m_IWalkToYou = 0;
+			if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*8.0)
+				m_IWalkToYou=2;
+			else if(!Can_I_See_Ally(npc.index, npc.m_iTargetAlly) || flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.7)
+				m_IWalkToYou=1;
+			else
+				m_IWalkToYou=0;
+			
+			switch(m_IWalkToYou)
+			{
+				case 0:
+				{
+					if(npc.m_iChanged_WalkCycle != 0)
+					{
+						npc.StopPathing();
+						npc.m_bisWalking = false;
+						npc.m_flSpeed = 0.0;
+						npc.m_iChanged_WalkCycle = 0;
+						if(i_SpecialGrigoriReplace == 0)
+						{
+							int iActivity = npc.LookupActivity("ACT_MONK_GUN_IDLE");
+							if(iActivity > 0) npc.StartActivity(iActivity);
+						}
+						else
+						{
+							if(BoughtGregHelp || CurrentPlayers <= 4)
+							{
+								int iActivity = npc.LookupActivity("ACT_MP_STAND_PRIMARY");
+								if(iActivity > 0) npc.StartActivity(iActivity);
+							}
+							else
+							{
+								int iActivity = npc.LookupActivity("ACT_HL2MP_WALK");
+								if(iActivity > 0) npc.StartActivity(iActivity);
+							}
+						}
+					}
+				}
+				case 1:
+				{
+					if(npc.m_iChanged_WalkCycle != 5)
+					{
+						npc.StartPathing();
+						npc.m_bisWalking = true;
+						npc.m_flSpeed = 175.0;
+						npc.m_iChanged_WalkCycle = 5;
+						if(i_SpecialGrigoriReplace == 0)
+						{
+							int iActivity = npc.LookupActivity("ACT_WALK_AR2_RELAXED");
+							if(iActivity > 0) npc.StartActivity(iActivity);
+							npc.m_flSpeed = 125.0;
+						}
+						else
+						{
+							if(BoughtGregHelp || CurrentPlayers <= 4)
+							{
+								int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+								if(iActivity > 0) npc.StartActivity(iActivity);
+							}
+							else
+							{
+								int iActivity = npc.LookupActivity("ACT_HL2MP_WALK");
+								if(iActivity > 0) npc.StartActivity(iActivity);
+							}
+						}
+					}
+					if(flDistanceToTarget < npc.GetLeadRadius())
+					{
+						float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_, vPredictedPos);
+						npc.SetGoalVector(vPredictedPos);
+					}
+					else
+						npc.SetGoalEntity(npc.m_iTargetAlly);
+				}
+				case 2:
+				{
+					if(npc.m_iChanged_WalkCycle != 2)
+					{
+						npc.m_bisWalking = true;
+						npc.m_flSpeed = 300.0;
+						npc.m_iChanged_WalkCycle = 2;
+						npc.StartPathing();
+						if(i_SpecialGrigoriReplace == 0)
+						{
+							int iActivity = npc.LookupActivity("ACT_RUN_AR2_RELAXED");
+							if(iActivity > 0) npc.StartActivity(iActivity);
+							npc.m_flSpeed = 250.0;
+						}
+						else
+						{
+							if(BoughtGregHelp || CurrentPlayers <= 4)
+							{
+								int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+								if(iActivity > 0) npc.StartActivity(iActivity);
+							}
+							else
+							{
+								int iActivity = npc.LookupActivity("ACT_HL2MP_WALK");
+								if(iActivity > 0) npc.StartActivity(iActivity);
+							}
+						}
+					}
+					if(flDistanceToTarget < npc.GetLeadRadius())
+					{
+						float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_, vPredictedPos);
+						npc.SetGoalVector(vPredictedPos);
+					}
+					else
+						npc.SetGoalEntity(npc.m_iTargetAlly);
+				}
+			}
+		}
+		else
+			npc.m_flGetClosestTargetAllyTime = 0.0;
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.PlayIdleAlertSound();
+	}
+}
+
+static int CuredFatherGrigori_Work(CuredFatherGrigori npc, float gameTime, float distance, int Owner)
+{
+	if(npc.m_flReloadDelay || !npc.m_iAmmo)
+	{
+		if(!npc.m_flReloadDelay)
+		{
+			if(i_SpecialGrigoriReplace == 0)
+				npc.AddGesture("ACT_RELOAD_shotgun");
+			else
+				npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY_PRIMARY3", .SetGestureSpeed = 0.35);
+			npc.m_flReloadSoundDelay=gameTime+0.4;
+			npc.m_flReloadDelay=gameTime+2.5;
+			npc.PlayRangedReloadSound();
+		}
+		if(gameTime > npc.m_flReloadDelay)
+		{
+			if(gameTime > npc.m_flReloadSoundDelay)
+			{
+				npc.PlayRangedReloadEndSound();
+				npc.m_iAmmo = npc.m_iMaxAmmo;
+				npc.m_flReloadSoundDelay=0.0;
+				npc.m_flReloadDelay=0.0;
+			}
+		}
+		else if(gameTime > npc.m_flReloadSoundDelay)
+		{
+			npc.PlayRangedReloadSound();
+			npc.m_flReloadSoundDelay=gameTime+0.4;
+		}
+		return 1;
+	}
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+	if(!npc.m_iTargetWalkTo)
+		npc.m_iTargetWalkTo = GetClosestAllyPlayerGreg(npc.index);
+	
+	if(npc.m_iTargetWalkTo)
+	{
+		if (GetTeam(npc.m_iTargetWalkTo)==GetTeam(npc.index) && 
+		b_BobsCuringHand_Revived[npc.m_iTargetWalkTo] >= GREGPOINTS_REV_NEEDED &&
+		 TeutonType[npc.m_iTargetWalkTo] == TEUTON_NONE &&
+		  dieingstate[npc.m_iTargetWalkTo] > 0 && 
+		  !b_LeftForDead[npc.m_iTargetWalkTo])
+		{
+			WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget);
+			distance = GetVectorDistance(vecTarget, VecSelfNpc, true);
+			if(distance < (70.0*70.0))
+			{
+				ReviveClientFromOrToEntity(npc.m_iTargetWalkTo, npc.index, 1);
+				return 3;
+			}
+			return 2;
+		}
+		npc.m_iTargetWalkTo=0;
+	}
+	
+	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.1) || npc.m_flAttackHappenswillhappen)
+	{
+		if(npc.m_flNextMeleeAttack < gameTime)
+		{
+			if(!npc.m_flAttackHappenswillhappen)
+			{
+				if(i_SpecialGrigoriReplace == 0)
+					npc.AddGesture("ACT_MELEE_ATTACK");
+				else
+					npc.AddGesture("ACT_GMOD_GESTURE_MELEE_SHOVE_2HAND", .SetGestureSpeed = 0.6);
+				npc.PlayMeleeSound();
+				npc.m_flAttackHappens = gameTime+0.4;
+				npc.m_flAttackHappens_bullshit = gameTime+0.54;
+				npc.m_flAttackHappenswillhappen = true;
+			}
+			if(npc.m_flAttackHappens < gameTime && npc.m_flAttackHappens_bullshit >= gameTime && npc.m_flAttackHappenswillhappen)
+			{
+				Handle swingTrace;
+				npc.FaceTowards(vecTarget, 15000.0);
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,2))
+				{
+					int target = TR_GetEntityIndex(swingTrace);
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					if(IsValidEnemy(npc.index, target))
+					{
+						float damageDealt = 85.0;
+						if(BoughtGregHelp && CurrentPlayers <= 4)
+							damageDealt = 100.0;
+						SDKHooks_TakeDamage(target, npc.index, Owner, damageDealt, DMG_CLUB, -1, _, vecHit);
+						npc.PlayMeleeHitSound();
+						if(!IsValidEnemy(npc.index, target))
+							npc.PlayKilledEnemy();
+					}
+				}
+				delete swingTrace;
+				npc.m_flNextMeleeAttack = gameTime + 1.5;
+				npc.m_flNextRangedAttack = gameTime + 1.5;
+				npc.m_flAttackHappenswillhappen = false;
+			}
+			else if(npc.m_flAttackHappens_bullshit < gameTime && npc.m_flAttackHappenswillhappen)
+			{
+				npc.m_flAttackHappenswillhappen = false;
+				npc.m_flNextMeleeAttack = gameTime + 1.5;
+				npc.m_flNextRangedAttack = gameTime + 1.5;
+			}
+			return 1;
+		}
+	}
+	else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
+	{
+		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+		if((gameTime > npc.m_flNextRangedAttack && IsValidEnemy(npc.index, Enemy_I_See)))
+		{
+			if(i_SpecialGrigoriReplace == 0)
+				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
+			else
+				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+			npc.FaceTowards(vecTarget, 10000.0);
+			
+			float Hitdamage = 50.0;
+			if(BoughtGregHelp && CurrentPlayers <= 4)
+				Hitdamage = 75.0;
+			WorldSpaceCenter(npc.m_iTarget, vecTarget);
+			
+			vecTarget[2] += 15.0;
+			float vecDir[3];
+			MakeVectorFromPoints(VecSelfNpc, vecTarget, vecDir);
+			NormalizeVector(vecDir, vecDir);
+			FireBullet(npc.index, npc.m_iWearable1, VecSelfNpc, vecDir, Hitdamage, 9000.0, DMG_BULLET, "bullet_tracer01_red", Owner , _ , "0");
+
+			npc.PlayRangedSound();
+			if(!IsValidEnemy(npc.index, npc.m_iTarget))
+				npc.PlayKilledEnemy();
+
+			npc.m_flNextRangedAttack=gameTime+1.2;
+			npc.m_flNextMeleeAttack=gameTime+1.2;
+			npc.m_iAmmo--;
+			return 1;
+		}
+	}
+	return (distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.0 && Can_I_See_Enemy_Only(npc.index, npc.m_iTarget)) ? 1 : 0;
 }

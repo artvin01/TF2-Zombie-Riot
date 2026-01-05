@@ -1665,6 +1665,38 @@ stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflic
 				return true;
 			}
 		}
+		else if(IsValidClient(attacker))
+		{
+			if(Inv_Dragon_Breath_Shell[attacker] && Custom_Inventory_IsShotgun(weapon))
+			{
+				if(!(damagetype & DMG_TRUEDAMAGE) && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+				{
+					float attackerPos[3], victimPos[3];
+					GetEntPropVector(attacker, Prop_Send, "m_vecOrigin", attackerPos);
+					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", victimPos);
+					float Dist = GetVectorDistance(attackerPos, victimPos, true);
+					float IgniteDMG = damage/100.0;
+					if(IgniteDMG<4.0)IgniteDMG=4.0;
+					if(Dist<(1000.0*1000.0)) NPC_Ignite(victim, attacker, 3.0, weapon, IgniteDMG);
+				}
+			}
+			if(Inv_MarketGardener_Uniform[attacker] && !(GetEntityFlags(attacker)&FL_ONGROUND))
+			{
+				float Speed = MoveSpeed(attacker, _, true);
+				damage += Speed*0.25;
+				damage *= 1.05;
+			}
+			if(Inv_DeathfromAbove[attacker])
+			{
+				float attackerPos[3], victimPos[3];
+				GetEntPropVector(attacker, Prop_Send, "m_vecOrigin", attackerPos);
+				GetEntPropVector(victim, Prop_Send, "m_vecOrigin", victimPos);
+				attackerPos[0]=victimPos[0];
+				attackerPos[1]=victimPos[1];
+				float YPOS = GetVectorDistance(attackerPos, victimPos);
+				if(YPOS>100.0) damage *= 1.10;
+			}
+		}
 	}
 	if(IsValidEntity(inflictor))
 	{

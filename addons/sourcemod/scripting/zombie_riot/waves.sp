@@ -3280,6 +3280,7 @@ void WaveEndLogicExtra()
 	{
 		if(IsValidClient(client))
 		{
+			Custom_Inventory_WaveEnd(client);
 			b_BobsCuringHand_Revived[client] += GetRandomInt(1,2);
 			if(Rogue_Theme() == ReilaRift)
 			{

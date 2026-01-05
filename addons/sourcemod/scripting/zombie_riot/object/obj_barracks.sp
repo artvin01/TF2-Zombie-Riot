@@ -1472,15 +1472,19 @@ float ResourceGenMulti(int client, bool gold = false, bool allowgoldgen = false,
 		}
 		if(Rogue_Mode())
 		{
-			SupplyRateCalc *= 1.1;
+			SupplyRateCalc *= Inv_Mining_Foreman_Hat_Enable(client) ? 1.15 : 1.1;
 		}
+		else if(Inv_Mining_Foreman_Hat_Enable(client))
+			SupplyRateCalc *= 1.15;
 	}
 	else
 	{
 		if(Rogue_Mode())
 		{
-			SupplyRateCalc *= 1.2;
+			SupplyRateCalc *= Inv_Mining_Foreman_Hat_Enable(client) ? 1.25 : 1.2;
 		}
+		else if(Inv_Mining_Foreman_Hat_Enable(client))
+			SupplyRateCalc *= 1.15;
 		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_GOLDMINERS)
 		{
 			SupplyRateCalc *= 1.25;

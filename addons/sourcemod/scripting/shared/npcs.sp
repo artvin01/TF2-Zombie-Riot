@@ -1028,44 +1028,43 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			}
 		}
 		
-		if(damagetype & DMG_BULLET)
+		float GetFallOff=Custom_Inventory_Falloff(attacker, weapon);
+		if(i_WeaponDamageFalloff[weapon] != 1.0 || GetFallOff != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
 		{
-			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
+			if(b_ProximityAmmo[attacker])
 			{
-				if(b_ProximityAmmo[attacker])
-				{
-					damage *= 1.15;
-				}
-
-				float AttackerPos[3];
-				float VictimPos[3];
-				
-				WorldSpaceCenter(attacker, AttackerPos);
-				WorldSpaceCenter(victim, VictimPos);
-
-				float distance = GetVectorDistance(AttackerPos, VictimPos, true);
-				
-				distance -= 1600.0;// Give 60 units of range cus its not going from their hurt pos
-
-				if(distance < 0.1)
-				{
-					distance = 0.1;
-				}
-				float WeaponDamageFalloff = i_WeaponDamageFalloff[weapon];
-				if(b_ProximityAmmo[attacker])
-				{
-					WeaponDamageFalloff *= 0.8;
-				}
-				if(DoCalcReduceHeadshotFalloff && WeaponDamageFalloff <= 1.0)
-				{
-					WeaponDamageFalloff *= 1.3;
-					if(WeaponDamageFalloff >= 1.0)
-						WeaponDamageFalloff = 1.0;
-				}
-				
-
-				damage *= Pow(WeaponDamageFalloff, (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
+				damage *= 1.15;
 			}
+
+			float AttackerPos[3];
+			float VictimPos[3];
+			
+			WorldSpaceCenter(attacker, AttackerPos);
+			WorldSpaceCenter(victim, VictimPos);
+
+			float distance = GetVectorDistance(AttackerPos, VictimPos, true);
+			
+			distance -= 1600.0;// Give 60 units of range cus its not going from their hurt pos
+
+			if(distance < 0.1)
+			{
+				distance = 0.1;
+			}
+			float WeaponDamageFalloff = i_WeaponDamageFalloff[weapon];
+			if(b_ProximityAmmo[attacker])
+			{
+				WeaponDamageFalloff *= 0.8;
+			}
+			WeaponDamageFalloff*=GetFallOff;
+			if(DoCalcReduceHeadshotFalloff && WeaponDamageFalloff <= 1.0)
+			{
+				WeaponDamageFalloff *= 1.3;
+				if(WeaponDamageFalloff >= 1.0)
+					WeaponDamageFalloff = 1.0;
+			}
+			
+
+			damage *= Pow(WeaponDamageFalloff, (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
 		}
 #endif
 	}
@@ -2446,6 +2445,8 @@ void BackstabNpcInternalModifExtra(int weapon, int attacker, int victim, float m
 #if defined ZR
 void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 {
+	Custom_Inventory_NPCKill(attacker);
+	
 	if(!IsValidEntity(weapon))
 		return;
 

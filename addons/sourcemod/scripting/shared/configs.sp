@@ -94,6 +94,7 @@ void Configs_ConfigsExecuted()
 	
 #if defined ZR
 	Items_SetupConfig();
+	InvItems_SetupConfig();
 	SkillTree_ConfigSetup();
 	Store_ConfigSetup();
 	Waves_SetupVote(kv);

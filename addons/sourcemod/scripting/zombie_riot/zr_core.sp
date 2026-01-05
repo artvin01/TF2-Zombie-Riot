@@ -287,7 +287,8 @@ enum
 	WEAPON_BOMB_AR = 164,
 	WEAPON_MAJORSTEAM_LAUNCHER = 1000,
 	WEAPON_LOCKDOWN = 1001,
-	WEAPON_MINECRAFT_SWORD = 1002
+	WEAPON_MINECRAFT_SWORD = 1002,
+	WEAPON_IS_SHOTGUN = 1003
 }
 
 enum
@@ -506,6 +507,7 @@ float fl_MatrixReflect[MAXENTITIES];
 
 #include "npc.sp"	// Global NPC List
 
+#include "custom/addons/special_inventory.sp"
 #include "aprilfools_settings.sp"
 #include "building.sp"
 #include "database.sp"
@@ -694,6 +696,7 @@ void ZR_PluginStart()
 {
 	LoadTranslations("zombieriot.phrases.zombienames");
 	LoadTranslations("zombieriot.phrases.npctalk");
+	LoadTranslations("zombieriot.phrases.foolishservers");
 	
 	RegServerCmd("zr_reloadnpcs", OnReloadCommand, "Reload NPCs");
 	RegServerCmd("sm_reloadnpcs", OnReloadCommand, "Reload NPCs", FCVAR_HIDDEN);
@@ -755,8 +758,10 @@ void ZR_PluginStart()
 	RegAdminCmd("zr_waveremain", Waves_AdminsWaveTimeRemainCmd, ADMFLAG_ROOT, "Wave Time Remain");
 	RegAdminCmd("zr_raidend", Waves_AdminsRaidTimeEndCmd, ADMFLAG_ROOT, "Raid Force END");
 	RegAdminCmd("zr_raidadd", Waves_AdminsRaidTimeAddCmd, ADMFLAG_ROOT, "Raid Time Add");
+	
 	RegAdminCmd("zr_scaletest", Waves_ScaleTestCmd, ADMFLAG_ROOT, "Usage: zr_scaletest <Players> [AllyRebels] [EnemyCount] [EnemyHP]  [EnemyDMG]");
 	
+	RegAdminCmd("zr_spawn_gift", CommandSpawnGift, ADMFLAG_ROOT, "Usage: zr_spawn_gift [xp:0 / Item:1] <0:Common 1:Uncommon 2:Rare 3:Legend 4:Mythic>");
 	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
@@ -940,6 +945,7 @@ void ZR_MapStart()
 	OnMapStart_NPC_Base();
 	Gb_Ball_Map_Precache();
 	Map_Precache_Zombie_Drops_Gift();
+	Map_Precache_Zombie_Drops_InvGift();
 	Grenade_Custom_Precache();
 	Weapon_Tornado_Blitz_Precache();
 	BoomStick_MapPrecache();
@@ -1775,7 +1781,21 @@ public Action Timer_Dieing(Handle timer, int client)
 {
 	if(IsClientInGame(client) && IsPlayerAlive(client) && dieingstate[client] > 0)
 	{
-		if(b_LeftForDead[client])
+		if(Inv_Rose_Of_SelfHarm[client] && !b_LeftForDead[client])
+		{
+			int particle = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
+			if(IsValidEntity(particle))
+				RemoveEntity(particle);
+			particle = EntRefToEntIndex(i_DyingParticleIndication[client][1]);
+			if(IsValidEntity(particle))
+				RemoveEntity(particle);
+			particle = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
+			if(IsValidEntity(particle))
+				RemoveEntity(particle);
+			b_LeftForDead[client]=true;
+		}
+		
+		if(b_LeftForDead[client] && !Inv_Rose_Of_SelfHarm[client])
 		{
 			dieingstate[client] -= 3;
 			f_DelayLookingAtHud[client] = GetGameTime() + 0.2;
@@ -2442,6 +2462,9 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 	else if(ArmorLevel == 250)
 		Armor_Max = 3000;
 		
+	else if(ArmorLevel > 250)	//Over 250!
+		Armor_Max = 3000+RoundToNearest(ArmorLevel*1.5);
+		
 	else
 		Armor_Max = 200;
 
@@ -2550,6 +2573,8 @@ stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Mult
 	}
 	if(Items_HasNamedItem(client, "Widemouth Refill Port") && !ignoreperk)
 		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.1);
+	if(Inv_Scrap_Backpack[client] && !ignoreperk)
+		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.33);
 	if(Multi != 1.0)
 	{
 		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * Multi);
