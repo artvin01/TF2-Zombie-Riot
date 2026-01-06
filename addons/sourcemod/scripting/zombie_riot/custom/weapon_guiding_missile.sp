@@ -58,7 +58,7 @@ public void Guiding_Missile_Created_Shoot_M2Internal(int client, int weapon, boo
 	damage *= Attributes_Get(weapon, 2, 1.0);
 
 	damage *= 1.25;
-	float Speed = 500.0;
+	float Speed = 400.0;
 	float RocketSize = 1.0;
 
 	Speed *= Attributes_Get(weapon, 103, 1.0);
@@ -188,7 +188,7 @@ static Action Timer_Local(Handle timer, DataPack pack)
 		{
 			if(WhatRocketType[client])
 			{
-				ScaleVector(fVel, 1.01);
+				ScaleVector(fVel, 1.012);
 			}
 			else
 			{
