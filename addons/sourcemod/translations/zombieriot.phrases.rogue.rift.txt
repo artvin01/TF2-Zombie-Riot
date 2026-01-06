@@ -64,7 +64,7 @@
 	{
 		"en"	"Rift of Swarms"
 		"it"	"Rift degli Sciami"
-		"ko"	"무리의 균열"
+		"ko"	"군단의 균열"
 	}
 	"Rift of Swarms Desc"
 	{
@@ -94,7 +94,7 @@
 	{
 		"en"	"Rift of Emptiness"
 		"it"	"Squarcio di vuoto"
-		"ko"	"공허함의 균열"
+		"ko"	"덧없음의 균열"
 	}
 	"Rift of Emptiness Desc"
 	{
@@ -112,7 +112,7 @@
 	{
 		"en"	"Rift of Darkness"
 		"it"	"Squarcio di tenebra"
-		"ko"	"어둠의 균열"
+		"ko"	"암흑의 균열"
 	}
 	"Rift of Darkness Desc"
 	{
@@ -148,7 +148,7 @@
 	{
 		"en"	"Rift of Corruption"
 		"it"	"Spaccatura della corruzione"
-		"ko"	"오염의 균열"
+		"ko"	"타락의 균열"
 	}
 	"Rift of Corruption Desc"
 	{
@@ -455,7 +455,7 @@
 	{
 		"en"	"Lelouch opened a rift to the Curtain. It's only been a few weeks, we need to stop this, together with Bob and Twirl.\n{green}Enemy stats nerfed by -10％\n{red}Grigori will have 1 less item to sell."
 		"it"	"Lelouch ha aperto una breccia nella cortina. Sono passate solo poche settimane, dobbiamo fermare tutto questo, insieme a Bob e Twirl.\n{green}Le statistiche dei nemici sono state ridotte di -10％\n{red}Grigori avrà un oggetto in meno da vendere."
-		"ko"	"를르슈가 장막으로 향하는 균열을 열었다. 트윌과 밥과 협력하여 막아내야만 한다.\n{green}적들의 능력치 -10％\n{red}그리고리가 판매하는 물품 1개 감소"
+		"ko"	"를르슈가 장막으로 향하는 균열을 열었다. 트윌과 밥과 협력해 반드시 막아라.\n{green}적들의 능력치 -10％\n{red}그리고리가 판매하는 물품 1개 감소"
 	}
 	"Hand of Predation"
 	{
@@ -491,7 +491,7 @@
 	{
 		"en"	"Take their heads, take their soul.\n{green}''Deadeye'' weapons will instantly kill enemies below 20％ of max health on a headshot, deal +50％ dmg on headshot, {yellow}instakill Doesnt work against raids."
 		"it"	"Prendete le loro teste, prendete la loro anima.{green}Le armi ''Deadeye'' uccidono istantaneamente i nemici sotto il 20％ di salute massima con un colpo alla testa, infliggono +50％ dmg con un colpo alla testa, {yellow}instakill Non funziona contro i raid."
-		"ko"	"마지막 기력을 다해 마지막 숨통을 끊는다.\n{green}''명사수'' 계열 무기로 체력이 20％ 이하인 적을 헤드샷시 즉사시키며, 헤드샷 피해량 +50％. {yellow}레이드 보스에게는 즉사 발동 X"
+		"ko"	"{green}''명사수'' 계열 무기로 체력이 20％ 이하인 적을 헤드샷시 즉사시키며, 헤드샷 피해량 +50％. {yellow}레이드 보스에게는 즉사 발동 X"
 	}
 	"Hand of Snatcher"
 	{
@@ -503,7 +503,7 @@
 	{
 		"en"	"Be a hitman of your dreams.\n{green}''Tactician'' weapons gain infinite accuracy, extra cash & speedbonus on a headshot {yellow}(up to a limit for cash gain up to a limit for cash gain) If the weapon cant headshot, same effects apply but weaker."
 		"it"	"{green}Se l'arma non può colpire alla testa, si applicano gli stessi effetti, ma più deboli."
-		"ko"	"나 자신이 히트맨이 되는거다.\n{green}''전술가'' 계열 무기의 정확도가 무한대가 되며, 헤드샷시 추가 자금 및 속도 증진 획득. {yellow}(추가 자금 획득은 상한이 존재) 헤드샷 불가 무기라면 대신 약화된 효과가 적용됨."
+		"ko"	"나 자신이 히트맨이 되는거다.\n{green}''전술가'' 계열 무기의 정확도가 무한대가 되며, 헤드샷시 추가 자금 및 속도 증진 획득. {yellow}(자금 획득 상한 존재) 헤드샷 불가 무기라면, 대신 약화된 효과가 적용."
 	}
 	"Hand of Spark"
 	{
@@ -527,7 +527,7 @@
 	{
 		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ (1％ against bosses) {yellow}(affected by scaling) and upto 2x base damage only. {green}magic damage based on the enemy's current health"
 		"it"	"Goccia dopo goccia, poco dopo poco.{green}Le armi ''Hexing Magic'' infliggono 3％ (1％ contro i boss) {yellow}(influenzato dallo scaling) e fino a 2 volte i danni base. I danni magici si basano sulla salute attuale del nemico"
-		"ko"	"작은 것도 막으려야 막을 수가 없다.\n{green}''주술 마법'' 계열 무기가 3％ (보스에겐 1％) {yellow}(스케일링 적용) 및 기본 피해의 최대 2배에 한하는 피해만을 가하며, {green}적의 체력에 비례"
+		"ko"	"{green}''주술 마법'' 계열 무기가 3％ (보스에겐 1％) {yellow}(스케일링 적용) 및 기본 피해의 최대 2배에 한하는 피해만을 가하며, {green}적의 체력에 비례"
 	}
 	"Hand of Undulation"
 	{
@@ -599,7 +599,7 @@
 	{
 		"en"	"What she means by standing over there, is that you cannot cross.\n{green}''Defender'' weapons, upon being attacked by a new enemy, reflect damage taken as true damage and shortly stun the enemy"
 		"it"	"{green}Le armi ''difensore'', quando vengono attaccate da un nuovo nemico, riflettono i danni subiti come danni reali e stordiscono brevemente il nemico"
-		"ko"	"그녀가 거기 서 있다는 건, 넘을 수 없다는 뜻이다.\n{green}''디펜더'' 계열 무기로 새로운 적에게 피해를 받을 시, 받은 피해를 트루 대미지로 변환해 반사하고 잠깐 기절시킴."
+		"ko"	"{green}''디펜더'' 계열 무기는 새로운 적에게 피해를 받을 시, 그 피해를 트루 대미지로 변환해 반사하고 잠깐 기절시킴"
 	}
 	"Hand of Superspeed"
 	{
@@ -1067,7 +1067,7 @@
 	{
 		"en"	"Freedom never sleeps!!\n{green}Morphine shots are upgraded:\nOn stage start, Instantly fully charge 1 stim.\nStims restore hp to full rapidly in a second. Getting hit during the heal maintains the healing. Healing lasts 3 seconds."
 		"it"	"La libertà non dorme mai!!!\n{green}Gli scatti di morfina sono potenziati:\n All'inizio dello stage, carica istantaneamente 1 stim.\nGli stim ripristinano rapidamente gli hp al massimo in un secondo. Se si viene colpiti durante la guarigione, la guarigione viene mantenuta. La guarigione dura 3 secondi."
-		"ko"	"자유는 잠을 모른다!!{green}모르핀 아이템 강화:\n스테이지 시작시, 자극제 1개 충전.\n사용시 최대까지 고속으로 체력을 회복하며, 피해를 받아도 회복이 멈추지 않고 3초 동안 유지."
+		"ko"	"{green}모르핀 아이템 강화:\n스테이지 시작시, 자극제 1개 충전.\n사용시 최대까지 고속으로 체력을 회복하며, 피해를 받아도 회복이 멈추지 않고 3초 동안 유지."
 	}
 	"Soul Binding Bone"
 	{
@@ -1512,7 +1512,7 @@
 	{
 		"en"	"Egotist. Betrayer. Seeker. Loner. Ruler. Goodnight, Irln.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped between players"
 		"it"	"Egoista. Traditore. Cercatore. Solitario. Governante. Buonanotte, Irln.\n{green}Gli alleati guadagnano +25％ salute massima {yellow}ma la salute massima viene scambiata casualmente tra i giocatori"
-		"ko"	"좋은 밤 되길, 에릴렌이여.\n{green}모든 아군의 최대 체력 +25％. {yellow}최대 체력이 플레이어들 사이에서 무작위로 변경됩니다."
+		"ko"	"굿나잇, 아를린.\n{green}모든 아군의 최대 체력 +25％. {yellow}최대 체력이 플레이어들 사이에서 무작위로 변경됩니다."
 	}
 
 	"Gateway"

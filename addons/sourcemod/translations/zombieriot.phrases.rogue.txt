@@ -2482,13 +2482,13 @@
 	{
 		"en"	"Hand of Surprise"
 		"it"	"Mano di sorpresa"
-		"ko"	"기습의 손"
+		"ko"	"등짝의 손"
 	}
 	"Hand of Suprise Desc"
 	{
 		"en"	"Boo.\n{green}''Ambusher'' and ''Crusher'' weapons inflict 5 seconds of bleed on hit and gain +33％ attack speed."
 		"it"	"{green}Le armi ''Ambusher'' e ''Crusher'' infliggono 5 secondi di emorragia quando vengono colpite e guadagnano +33％ velocità d'attacco."
-		"ko"	"어흥.\n{green}''매복자'', ''파쇄자'' 태그 무기들의 공격 속도가 33％ 빨라지고 적중 시 5초간 지속되는 출혈을 부여."
+		"ko"	"등짝 좀 보자.\n{green}''매복자'', ''파쇄자'' 태그 무기들의 공격 속도가 33％ 빨라지고 적중 시 5초간 지속되는 출혈을 부여."
 	}
 	"Hand of Revenge"
 	{
@@ -2572,7 +2572,7 @@
 	{
 		"en"	"10 years.\n{green}Yakuza themed weapons allow their special stance to always gain HEAT"
 		"it"	"10 anni.\n{green}Le armi a tema Yakuza permettono alla loro posizione speciale di guadagnare sempre calore"
-		"ko"	"10년의 세월.\n{green}용과 같이 관련 무기(도지마의 용)의 전설 스타일이 언제나 히트를 획득합니다."
+		"ko"	"10년의 세월.\n{green}용과 같이 관련 무기(평범한 주먹)의 전설 스타일이 언제나 히트를 획득합니다."
 	}
 	"Soul of Darkest Dungeon"
 	{

@@ -2419,7 +2419,7 @@
 	{
 		"en"	"Alongside what the previous one was capable of but stronger\nThis variant can every 20 seconds fire a Fantasmal wave, its best to avoid it\nIts possible to jump across the wave if you time it right!"
 		"it"	"Questa variante può sparare ogni 20 secondi un'onda fantasmatica, meglio evitarla.\n È possibile saltare attraverso l'onda se si è in tempo!"
-		"ko"	"이전과 동일하지만 더욱 강력해졌습니다.\n이 버전은 매 20초마다 판타즈멀 웨이브를 발사합니다. 피하는 것이 좋습니다.\n판타즈멀 웨이브는 타이밍에 맞춰 점프하면 피할 수 있습니다!"
+		"ko"	"이전과 동일하지만 더욱 강력해졌습니다.\n이 버전은 매 20초마다 환상의 물결을 발사합니다. 피하는 것이 좋습니다.\n환상의 물결은 타이밍에 맞춰 점프하면 피할 수 있습니다!"
 	}
 	"Lazines Desc"
 	{
@@ -3509,7 +3509,7 @@
 	}
 	"Victorian Assault Vehicle Desc"
     {
-		"en"    "Armored Transport Vehicle of Victorian army. \n-It slowly speeds up to build up momentum and damage. \n-It prioritizes buildings over players" /n-Spawn units from other factions when it rams into building \n(When signalled) Spawn units more often""
+		"en"    "Armored Transport Vehicle of Victorian army. \n-It slowly speeds up to build up momentum and damage. \n-It prioritizes buildings over players /n-Spawn units from other factions when it rams into building \n(When signalled) Spawn units more often"
 		"ko"	"강화 병력 수송차량으로 건물을 우선시하며 여러 적들을 수송합니다.\n이동속도가 점차 빨라짐\n구조물을 공격시 적을 하차시킵니다\n(시그널 버프시) 더 빨라진 공격속도"
 	}
 	"Victoria Radiomast Desc"

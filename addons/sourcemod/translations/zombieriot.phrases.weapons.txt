@@ -303,7 +303,7 @@
 	"The Trash Cannon"
 	{
 		"en"		"The Trash Cannon"
-		"ko"		"쓰레기 대포"
+		"ko"		"폐기물 대포"
 	}
 	"Outlaw's Railcannon"
 	{
@@ -1104,7 +1104,7 @@
 	"Backstabbers Favorit"
 	{
 		"en"		"Backstabbers Favorit"
-		"ko"		"백스탭꾼의 애용품"
+		"ko"		"백스탭 사랑꾼"
 	}
 	"x10 Spy Main's Personal ''Knife''"
 	{
@@ -1213,7 +1213,7 @@
 		"nl"		"Oneindigheidszwaard"
 		"chi"       	"无尽之剑"
 		"it"		"Lama dell'Infinito"
-		"ko"		"인피니티 블레이드"
+		"ko"		"무한의 검"
 	}
 	"Mage Weapons"//Mage here
 	{
@@ -1768,7 +1768,7 @@
 	"Compacted Rounds"
 	{
 		"en"		"Compacted Rounds"
-		"ko"		"압축형 탄약"
+		"ko"		"압축된 탄약"
 	}
 	"Antidote Coated Bullets"
 	{
@@ -2311,7 +2311,7 @@
 	"Concentrated Agelitus"
 	{
 		"en"		"Concentrated Agelitus"
-		"ko"		"집중된 어질리투스"
+		"ko"		"농축된 어질리투스"
 	}
 	"Passive Perks"
 	{
@@ -2543,7 +2543,7 @@
 	"Kahmlsteins Last Will"
 	{
 		"en"		"Kahmlsteins Last Will"
-		"ko"		"카멜슈타인의 마지막 의지"
+		"ko"		"카멜슈타인의 유언장"
 	}
 	"Matrix's Curse"
 	{
@@ -3280,7 +3280,7 @@
 		"ru"       "Расколотый ковчег"
 		"chi"       "断裂方舟"
 		"it"		"Arca fratturata"
-		"ko"		"금이 간 방주"
+		"ko"		"파편화된 방주"
 	}
 	"Zerofuse's Knife"
 	{
@@ -3298,7 +3298,7 @@
 		"ru"		"Палочка медузы Теслар"
 		"chi"		"美杜莎·特斯拉手杖"
 		"it"		"Bastone di Tesla Medusa"
-		"ko"		"메두사 테슬라 스틱"
+		"ko"		"메두사 테슬라 막대"
 	}
 	"Beam Wand"
 	{
@@ -3664,17 +3664,17 @@
 	"Megawatt Massacre"
 	{
 		"en"	"Megawatt Massacre"
-		"ko"	"메가와트 매서커"
+		"ko"	"메가와트 대학살"
 	}
 	"Crisis Conductor"
 	{
 		"en"	"Crisis Conductor"
-		"ko"	"크라이시스 컨덕터"
+		"ko"	"고비 지휘자"
 	}
 	"Mortal Blackout"
 	{
 		"en"	"Mortal Blackout"
-		"ko"	"모탈 블랙아웃"
+		"ko"	"필멸의 소등"
 	}
 	"Junker Staff"
 	{
@@ -3884,7 +3884,7 @@
 	"Greater Garbage"
 	{
 		"en"		"Greater Garbage"
-		"ko"		"대형 쓰레기 대포"
+		"ko"		"대형 폐기물 대포"
 	}
 	"Trash Metal"
 	{
@@ -4124,12 +4124,12 @@
 	"Telum Pro Lege"
 	{
 		"en"		"Telum Pro Lege"
-		"ko"		"텔룸 프로 레지(법적 심판 무기)"
+		"ko"		"법적 심판 무기"
 	}
 	"Exactio Legis"
 	{
 		"en"		"Exactio Legis"
-		"ko"		"엑사티오 레지스(법 집행자)"
+		"ko"		"법 집행자"
 	}
 	"Полнолуние"
 	{
@@ -4224,7 +4224,7 @@
 	"Quibai's Elegance"
 	{
 		"en"		"Quibai's Elegance"
-		"ko"		"치우바이의 품위"
+		"ko"		"치우바이의 검"
 	}
 	"Ark of the Elements"
 	{
@@ -4294,7 +4294,7 @@
 	"Completionist Wand"
 	{
 		"en"		"Completionist Wand"
-		"ko"		"완벽주의자의 완드"
+		"ko"		"완벽주의자 완드"
 	}
 	"A Little Bit Of A Fast Wand"
 	{
@@ -4339,12 +4339,12 @@
 	"Nightmare Cannon"
 	{
 		"en"		"Nightmare Cannon"
-		"ko"		"나이트메어 캐논"
+		"ko"		"악몽포"
 	}
 	"Pulse Cannon"
 	{
 		"en"		"Pulse Cannon"
-		"ko"		"펄스 캐논"
+		"ko"		"파동포"
 	}
 	"Feedback Loop"
 	{
@@ -4384,12 +4384,12 @@
 	"Berserker Brew"
 	{
 		"en"		"Berserker Brew"
-		"ko"		"광전사 브루"
+		"ko"		"광전사 포션"
 	}
 	"Unstable Concoction"
 	{
 		"en"		"Unstable Concoction"
-		"ko"		"불안정한 화합물"
+		"ko"		"불안정한 혼합물"
 	}
 	"Lead to Australium"
 	{
@@ -4414,7 +4414,7 @@
 	"Permanent Brew"
 	{
 		"en"		"Permanent Brew"
-		"ko"		"영원의 브루"
+		"ko"		"영원의 포션"
 	}
 	"Transforming Tonic Pap"
 	{
@@ -4429,7 +4429,7 @@
 	"Snowey Attraction Staff"
 	{
 		"en"		"Snowey Attraction Staff"
-		"ko"		"백설의 이끌림의 스태프"
+		"ko"		"눈짓 이끌림의 스태프"
 	}
 	"Chainblade"
 	{
@@ -5384,14 +5384,14 @@
 		"en" "Plasmic Surprise"
 		"es" "Sorpresa Plasmica"
 		"it" "Sorpresa plasmatica"
-		"ko" "플라즈믹 서프라이즈"
+		"ko" "플라즈마 서프라이즈"
 	}
 	"Plasmic Dosage"
 	{
 		"en" "Plasmic Dosage"
 		"es" "Dosis Plasmica"
 		"it" "Dosaggio plasmatico"
-		"ko" "투약형 플라즈마"
+		"ko" "투약용 플라즈마"
 	}
 	"Plasm-ubblinator"
 	{
@@ -5483,13 +5483,13 @@
 	{
 		"en"	"Fractal-Harvester"
 		"it"	"Raccoglitore frattale"
-		"ko"	"프랙탈-하베스터"
+		"ko"	"프랙탈-수확자"
 	}
 	"Fractal-Fantasia"
 	{
 		"en"	"Fractal-Fantasia"
 		"it"	"Frattale-Fantasia"
-		"ko"	"프랙탈-판타지아"
+		"ko"	"프랙탈-환술"
 	}
 	"Therapy"
 	{
@@ -5528,7 +5528,7 @@
 	{
 		"en"	"The Crimson"
 		"it"	"Il Cremisi"
-		"ko"	"''그림자처럼''"
+		"ko"	"그림자처럼"
 	}
 	"Effect:"
 	{
@@ -5766,7 +5766,7 @@
 		"en"	"Sanity Sigil Blade"
 		"chi"	"理智印记剑"
 		"ru"	"Сигильный Клинок Рассудка"
-		"ko"	"이성의 인장의 검"
+		"ko"	"정신력 인장의 검"
 	}
 	"The Arsenal"
 	{
