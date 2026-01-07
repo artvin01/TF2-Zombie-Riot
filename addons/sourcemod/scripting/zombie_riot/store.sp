@@ -7589,7 +7589,7 @@ public void OnBuyOrSell_LivingArmor(int client)
 		Armor_Charge[client] = 0;
 	if(f_LivingArmorPenalty[client] < GetGameTime())
 	{
-		SPrintToChat(client, "%T", "Living Armor Chat", client);
+		SPrintToChat(client, "%t", "Living Armor Chat");
 		f_LivingArmorPenalty[client] = GetGameTime() + 0.1;
 	}
 	if(!Waves_InSetup())
