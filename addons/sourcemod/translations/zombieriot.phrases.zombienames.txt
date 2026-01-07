@@ -7560,7 +7560,7 @@
 	{
 		"en"	"Ruler of the Umbrals. Keeper of the Purgatory Throne. Culprit behind the Void outbreaks. \nTrapped inside the Curtain, she lost her mind long ago. \nShe must be stopped at all costs.\nShe gives necrosis on most of her abilities."
 		"it"	"Sovrano degli Umbral. Custode del Trono del Purgatorio. Responsabile delle epidemie del Vuoto. \nIntrappolata nella cortina, ha perso la ragione molto tempo fa. \nDeve essere fermata a tutti i costi.\nDà necrosi alla maggior parte delle sue abilità."
-		"en"	"움브랄의 집정관이자, 연옥 왕좌의 파수꾼입니다. 공허 재앙 발발의 장본인입니다.\n 장막 속에 갇힌 그녀는 오래 전에 이성을 잃었습니다.\n무슨 수를 써서라도 막아내야만 합니다.\n대부분의 능력이 적들에게 쇠약 원소 피해를 부여합니다."
+		"ko"	"움브랄의 집정관이자, 연옥 왕좌의 파수꾼입니다. 공허 재앙 발발의 장본인입니다.\n 장막 속에 갇힌 그녀는 오래 전에 이성을 잃었습니다.\n무슨 수를 써서라도 막아내야만 합니다.\n대부분의 능력이 적들에게 쇠약 원소 피해를 부여합니다."
 	}
 	"Almagest Researcher"
 	{
