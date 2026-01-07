@@ -475,10 +475,10 @@
 	}
 	"RPG Pap 3"
 	{
-		"en"		"-Massively Increased damage\n-Reduced reload speed\n-Has better enemy pierce"
+		"en"		"-Massively Increased damage\n-Reduced reload speed\n-Has better enemy pierce\n-Guiding missile becomes slower, and a much bigger cooldown, and charges slower, but deals immensive damage"
 		"fr"		"Dégats et vitesse de rechargement améliorés.\nFrappe plus d'ennemis à la fois."
 		"it"		"Danno enormemente aumentato e velocità di ricarica RIDOTTA.\nE ha una migliore perforazione del nemico"
-		"ko"		"-피해량 대폭 증가\n-재장전 속도 감소\n-적 관통력 증가"
+		"ko"		"-피해량 대폭 증가\n-재장전 속도 감소\n-적 관통력 증가\n-유도 미사일의 속도 감소, 쿨타임 대폭 증가, 충전 속도 감소\n-유도 미사일의 피해 대폭 증가"
 	}
 	
 	"The Pomson 7000 Desc"
@@ -2831,7 +2831,7 @@
 		"ru"		"Ику Нагаэ, но человек. Полумобильен и использует стационарную устойчивую КОШМАРНУЮ ПУШКУ!!!"
 		"chi"		"Iku Nagae 但人类。是半移动的，使用固定的、抗性的噩梦炮！！！"
 		"it"		"Iku Nagae ma umana. È semimobile e usa un cannone stazionario e resistente, il CANNONE DA INCUBO!!!"
-		"ko"		"나가에 이쿠의 인간 버전입니다. 공격 중에도 반쯤 이동이 가능하며, 고정형이고 저항력이 높은 악몽포를 사용합니다."
+		"ko"		"나가에 이쿠의 인간 버전입니다. 공격 중에도 반쯤 이동이 가능하며, 고정형이고 저항력이 높은 나이트메어 캐논을 사용합니다."
 	}
 	"Barracks Holy Knight Desc"
 	{
@@ -4582,7 +4582,7 @@
 	{
 		"en"	"+25 max HEAT. Can now use the Dragon style by ducking while using R ability.\nDragon style allows you to use heatactions without needing a stun."
 		"it"	"+25 HEAT massimo. Ora è possibile utilizzare lo stile del drago abbassandosi mentre si utilizza l'abilità R.\nLo stile del drago consente di utilizzare le azioni di calore senza bisogno di uno stordimento."
-		"ko"	"-최대 히트 게이지 +25\n-이제 앉은 상태에서 R키 사용시 전설 스타일을 사용할 수 있음.\n-전설 스타일은 대상이 기절 상태가 아니더라도 히트 액션을 시전할 수 있음."
+		"ko"	"-최대 히트 게이지 +25\n-이제 앉은 상태에서 R키 사용시 '도지마의 용' 스타일을 사용할 수 있음.\n-'도지마의 용' 스타일은 대상이 기절 상태가 아니더라도 히트 액션을 시전할 수 있음."
 	}
 	"Yakuza Pap 5"
 	{
@@ -5330,7 +5330,7 @@
 	"Purging Desc"
 	{
 		"en"	"Become the Ziberian greatest invention... A monster.\n-Gain 2 weapons, Shotgun and Rampager riffle\n-Press M2 To easy switch between them\n-Charge energy on hit, used for later paps\n-Weapons has overheat and will lose damage the more you use them\n-The more one weapon overheats the stronger other weapons becomes\n-Also gain special buffs if other weapon is overheated\n-Gain 40％ more energy from hitting enemies up close."
-		"ko"	"지베리아의 가장 위대한 발명품이 되어보세요... 괴물 말이죠.\n-산탄총과 램페이저 미니건 두 가지 무기를 획득\n-M2를 눌러 무기를 쉽게 전환할 수 있습니다.\n-공격 적중시 에너지를 충전하며 이는 이후의 무기 강화 후 사용됨.\n-근접한 적 공격시 에너지 충전량 40％ 증가"
+		"ko"	"지베리아의 가장 위대한 발명품... 괴물이 되세요.\n-산탄총, 램페이저 라이플 두 무기 보유: 우클릭으로 무기를 쉽게 전환 가능\n-적중 시 에너지 충전, 이는 무기 강화 후 사용\n-무기 사용시 과열되어 피해량이 감소하나, 과열될 수록 다른 무기가 강화\n-다른 무기가 과열된 상태일 시 특수 버프 획득\n-근접한 적 공격시 에너지 충전량 40％ 증가"
     }
 	"Purging Pap N"
 	{
@@ -5349,18 +5349,18 @@
 	}
 	"Purging Pap 4"
 	{
-		"en"	"-Increased damage\n-Increased Health\n-While your Rampager Miniguni s out, M2 will give you a Quad Rocket Launcher.\n-Quad launcher Abilities:\nShoots 2 rockets at once\nWhen depleted, explodes, dealing damage\nForce fully equips fists and makes you deal ram damage while running\nYou take more damage while ramming"
-		"ko"	"-피해량, 체력 증가\n-램페이저 미니건을 들고 있을 때 M2로 4연장 로켓 발사기를 장착합니다.\n-4연장 로켓 발사기: 로켓 2발을 동시에 발사합니다.\n탄약이 고갈되거나 지속 시간 종료시 폭발하며 피해를 가합니다.\n이후 강제로 주먹을 장착시키고 달리는 동안 돌진 피해를 입힙니다.\n돌진 중에는 더 많은 피해를 받습니다."
+		"en"	"-Increased damage\n-Increased Health\n-While your Rampager rifle is out, M2 will give you a Quad Rocket Launcher.\n-Quad launcher Abilities:\nShoots 2 rockets at once\nWhen depleted, explodes, dealing damage\nForce fully equips fists and makes you deal ram damage while running\nYou take more damage while ramming"
+		"ko"	"-피해량, 체력 증가\n-램페이저 라이플을 들고 있을 때 M2로 4연장 로켓 발사기 장착\n-4연장 로켓 발사기: 로켓 2발을 동시에 발사합니다.\n탄약이 고갈되거나 지속 시간 종료시 폭발하며 피해를 가합니다.\n이후 강제로 주먹을 장착시키고 달리는 동안 돌진 피해를 입힙니다.\n돌진 중에는 더 많은 피해를 받습니다."
     }
 	"Purging Pap 5"
 	{
 		"en"	"-Increased damage\n-Increased Health\n-You store more power\n-You can move during your annihilator phase\n-Quad Launcher fires 1 more rocket at once now, fires faster."
-		"ko"	"-피해량, 체력 증가\n-더 많은 에너지를 저장합니다.\n-이제 미니건을 사용하는 동안 움직일 수 있습니다.\n4연장 로켓 발사기가 한 번에 로켓을 1발 더 발사하고 공격 속도가 빨라집니다."
+		"ko"	"-피해량, 체력 증가\n-더 많은 에너지를 저장합니다.\n-이제 미니건을 사용하는 동안 움직일 수 있습니다.\n-4연장 로켓 발사기가 한 번에 로켓을 1발 더 발사하고 공격 속도가 빨라집니다."
 	}
 	"Purging Pap 6"
 	{
 		"en"	"-Increased damage\n-Increased Health\n-You move faster in your annihilator phase\n-Ram Phase deals more damage, and has less vulnerabilities"
-		"ko"	"-피해량, 체력 증가\n- 미니건을 사용하는 동안의 이동 속도가 빨라집니다.\n-'돌진 상태'는 더 많은 피해를 입히며 피해 취약성이 감소합니다."
+		"ko"	"-피해량, 체력 증가\n-미니건을 사용하는 동안의 이동 속도가 빨라집니다.\n-'돌진 상태'의 피해량이 증가, 얻는 피해 취약성이 감소합니다."
 	}
 	"Sigil Blade Pap 1"
 	{

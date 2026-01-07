@@ -64,7 +64,7 @@
 	{
 		"en"	"Rift of Swarms"
 		"it"	"Rift degli Sciami"
-		"ko"	"군단의 균열"
+		"ko"	"무리의 균열"
 	}
 	"Rift of Swarms Desc"
 	{
@@ -94,7 +94,7 @@
 	{
 		"en"	"Rift of Emptiness"
 		"it"	"Squarcio di vuoto"
-		"ko"	"덧없음의 균열"
+		"ko"	"공허함의 균열"
 	}
 	"Rift of Emptiness Desc"
 	{
@@ -112,7 +112,7 @@
 	{
 		"en"	"Rift of Darkness"
 		"it"	"Squarcio di tenebra"
-		"ko"	"암흑의 균열"
+		"ko"	"어둠의 균열"
 	}
 	"Rift of Darkness Desc"
 	{
@@ -148,7 +148,7 @@
 	{
 		"en"	"Rift of Corruption"
 		"it"	"Spaccatura della corruzione"
-		"ko"	"타락의 균열"
+		"ko"	"오염의 균열"
 	}
 	"Rift of Corruption Desc"
 	{
@@ -455,7 +455,7 @@
 	{
 		"en"	"Lelouch opened a rift to the Curtain. It's only been a few weeks, we need to stop this, together with Bob and Twirl.\n{green}Enemy stats nerfed by -10％\n{red}Grigori will have 1 less item to sell."
 		"it"	"Lelouch ha aperto una breccia nella cortina. Sono passate solo poche settimane, dobbiamo fermare tutto questo, insieme a Bob e Twirl.\n{green}Le statistiche dei nemici sono state ridotte di -10％\n{red}Grigori avrà un oggetto in meno da vendere."
-		"ko"	"를르슈가 장막으로 향하는 균열을 열었다. 트윌과 밥과 협력해 반드시 막아라.\n{green}적들의 능력치 -10％\n{red}그리고리가 판매하는 물품 1개 감소"
+		"ko"	"를르슈가 장막으로 향하는 균열을 열었다. 트윌과 밥과 협력해 막아내야만 한다.\n{green}적들의 능력치 -10％\n{red}그리고리가 판매하는 물품 1개 감소"
 	}
 	"Hand of Predation"
 	{
@@ -1512,7 +1512,7 @@
 	{
 		"en"	"Egotist. Betrayer. Seeker. Loner. Ruler. Goodnight, Irln.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped between players"
 		"it"	"Egoista. Traditore. Cercatore. Solitario. Governante. Buonanotte, Irln.\n{green}Gli alleati guadagnano +25％ salute massima {yellow}ma la salute massima viene scambiata casualmente tra i giocatori"
-		"ko"	"굿나잇, 아를린.\n{green}모든 아군의 최대 체력 +25％. {yellow}최대 체력이 플레이어들 사이에서 무작위로 변경됩니다."
+		"ko"	"좋은 밤 되길, 에릴렌이여.\n{green}모든 아군의 최대 체력 +25％. {yellow}최대 체력이 플레이어들 사이에서 무작위로 변경됩니다."
 	}
 
 	"Gateway"
