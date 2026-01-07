@@ -301,7 +301,7 @@ public void MedivalRiddenArcher_ClotThink(int iNPC)
 						
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.1;
 						npc.m_flJumpStartTime = GetGameTime(npc.index) + 1.0;
 					}
 					npc.StopPathing();
@@ -345,7 +345,7 @@ public void HandleAnimEventMedival_RiddenArcher(int entity, int event)
 			npc.FaceTowards(vecTarget, 30000.0);
 						
 			npc.PlayMeleeSound();
-			npc.FireArrow(vecTarget, 75.0, 1200.0);
+			npc.FireArrow(vecTarget, 80.0, 1200.0);
 		}
 	}
 	

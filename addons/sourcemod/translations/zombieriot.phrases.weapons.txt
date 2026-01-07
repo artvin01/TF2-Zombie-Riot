@@ -2366,6 +2366,18 @@
 		"en"		"Hardened Stance"
 		"ko"		"단단한 골격"
 	}
+	"Living Armor"
+	{
+		"en"		"Living Armor"
+	}
+	"Living Armor Desc"
+	{
+		"en"		"-Armor now regens over 15 seconds if not hurt\n-Armor icon changes\n-Max Armor is halved\n-Armor protects only 70％ instead of 75％\n-Cant get armor from buildings\n-Armor corrosion disables this perk"
+	}
+	"Living Armor Chat"
+	{
+		"en"		"When buying or selling this perk, you lose all armor, and cant regen armor if done outside of setup."
+	}
 	"Sticky Support Grenades"
 	{
 		"en"		"Sticky Support Grenades"

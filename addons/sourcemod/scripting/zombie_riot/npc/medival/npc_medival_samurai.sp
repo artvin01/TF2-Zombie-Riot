@@ -338,39 +338,13 @@ public void MedivalSamurai_ClotThink(int iNPC)
 							{
 								
 								float Bonus_damage = 1.0;
-								
-								if(target <= MaxClients)
-								{
-									int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
-	
-									char classname[32];
-									GetEntityClassname(weapon, classname, 32);
-									
-									int weapon_slot = TF2_GetClassnameSlot(classname, weapon);
-										
-									if(i_OverrideWeaponSlot[weapon] != -1)
-									{
-										weapon_slot = i_OverrideWeaponSlot[weapon];
-									}
-									if(weapon_slot != 2 || i_IsWandWeapon[weapon])
-									{
-										Bonus_damage = 1.25;
-									}
-								}
 								if(npc.Anger)
-								{
-									if(!ShouldNpcDealBonusDamage(target))
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0 * Bonus_damage, DMG_CLUB, -1, _, vecHit);
-									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 600.0, DMG_CLUB, -1, _, vecHit);
-								}
+									Bonus_damage *= 1.75;
+								
+								if(!ShouldNpcDealBonusDamage(target))
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0 * Bonus_damage, DMG_CLUB, -1, _, vecHit);
 								else
-								{
-									if(!ShouldNpcDealBonusDamage(target))
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0 * Bonus_damage, DMG_CLUB, -1, _, vecHit);
-									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);									
-								}
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0 * Bonus_damage, DMG_CLUB, -1, _, vecHit);
 
 								// Hit sound
 								npc.PlayMeleeHitSound();
@@ -423,7 +397,7 @@ public void MedivalSamurai_ClotDamaged_Post(int victim, int attacker, int inflic
 	if(!(damagetype & (DMG_CLUB|DMG_TRUEDAMAGE)))
 	{
 		f_RangedPainTolerance[npc.index] += damage;
-		if((ReturnEntityMaxHealth(npc.index) / 2 ) < f_RangedPainTolerance[npc.index]) //npc.Anger after half hp/400 hp
+		if((ReturnEntityMaxHealth(npc.index) / 4 ) < f_RangedPainTolerance[npc.index]) //npc.Anger after half hp/400 hp
 		{
 			npc.Anger = true; //	>:(
 			npc.m_flSpeed = 330.0;

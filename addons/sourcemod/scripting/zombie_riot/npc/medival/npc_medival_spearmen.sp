@@ -317,11 +317,25 @@ public void MedivalSpearMan_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									float damage = 10.0;
-									int entity = EntRefToEntIndex(Building_Mounted[target]);
-									if(IsValidEntity(entity))
+									float damage = 20.0;
+									if(StatusEffects_PikemanDebuffMaxStacks(target))
 									{
 										damage *= 3.0;
+										if(IsValidClient(target))
+										{
+											if(f_ReceivedTruedamageHit[target] < GetGameTime())
+											{
+												f_ReceivedTruedamageHit[target] = GetGameTime() + 0.5;
+												ClientCommand(target, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
+											}
+										}
+									}
+
+									if(!ShouldNpcDealBonusDamage(target))
+									{
+										//not to buildings
+										ApplyStatusEffect(target, target, "Pikeman's Slashes", 5.0);
+										StatusEffects_PikemanDebuffAdd(target, 1);
 									}
 									
 									if(!ShouldNpcDealBonusDamage(target))

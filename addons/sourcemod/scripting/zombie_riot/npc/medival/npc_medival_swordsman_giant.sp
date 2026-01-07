@@ -318,12 +318,7 @@ public void MedivalSwordsmanGiant_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									float damage = 180.0;
-
-									if(Medival_Difficulty_Level_NotMath >= 2)
-									{
-										damage = 240.0;
-									}
+									float damage = 200.0;
 
 									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);

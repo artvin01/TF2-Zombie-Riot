@@ -54,7 +54,10 @@ static bool ClotCanUse(ObjectArmorTable npc, int client)
 		if(i_MaxArmorTableUsed[client] >= RAID_MAX_ARMOR_TABLE_USE)
 			return false;
 	}
-
+	if(f_LivingArmorPenalty[client] > GetGameTime() || (Attributes_Get(client, Attrib_Armor_AliveMode, 0.0) != 0.0 && Armor_Charge[client] >= 0))
+	{
+		return false;
+	}
 	return true;
 }
 

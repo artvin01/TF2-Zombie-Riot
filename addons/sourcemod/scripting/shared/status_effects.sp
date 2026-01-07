@@ -2655,8 +2655,8 @@ stock bool StatusEffects_RapidSuturingCheck(int victim, float BleedTimeActive)
 		delete E_AL_StatusEffects[victim];
 
 	return false;
-
 }
+
 stock bool NpcStats_IsEnemySilenced(int victim)
 {
 #if defined ZR
@@ -3068,6 +3068,7 @@ void StatusEffects_Pernell()
 	StatusEffect_AddGlobal(data);
 }
 
+int PikemanDebuffIndex;
 void StatusEffects_Medieval()
 {
 	StatusEffect data;
@@ -3092,6 +3093,22 @@ void StatusEffects_Medieval()
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 
 	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Pikeman's Slashes");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "PI");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func 			= Func_PikemanMaxStacks;
+	PikemanDebuffIndex = StatusEffect_AddGlobal(data);
+
+	data.HudDisplay_Func 			= INVALID_FUNCTION;
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Hussar's Warscream");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ᐩ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -3139,7 +3156,65 @@ void StatusEffects_Medieval()
 	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 }
+#define MAXPIKEMAN_STACKS 15
 
+stock void StatusEffects_PikemanDebuffAdd(int victim, int valuetoadd)
+{
+	if(!E_AL_StatusEffects[victim])
+		return;
+
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(PikemanDebuffIndex , E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
+		{
+			if(RoundToNearest(Apply_StatusEffect.DataForUse) >= 10)
+			{
+				//we at max.
+				return;
+			}
+			Apply_StatusEffect.DataForUse += float(valuetoadd);
+			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+		}
+	}
+	if(E_AL_StatusEffects[victim].Length < 1)
+		delete E_AL_StatusEffects[victim];
+
+}
+
+void Func_PikemanMaxStacks(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	Format(HudToDisplay, SizeOfChar, "PI(%i/%i)", RoundToNearest(Apply_StatusEffect.DataForUse), MAXPIKEMAN_STACKS);
+}
+
+stock bool StatusEffects_PikemanDebuffMaxStacks(int victim)
+{
+	if(!E_AL_StatusEffects[victim])
+		return false;
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(PikemanDebuffIndex, E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_StatusEffect Apply_StatusEffect;
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
+		{
+			if(RoundToNearest(Apply_StatusEffect.DataForUse) >= 10)
+			{
+				//we at max.
+				return true;
+			}
+		}
+	}
+	if(E_AL_StatusEffects[victim].Length < 1)
+		delete E_AL_StatusEffects[victim];
+
+	return false;
+}
 void GodlyMotivaitonGive(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	if(!(b_ThisWasAnNpc[victim] || victim <= MaxClients))
