@@ -3156,7 +3156,7 @@ void StatusEffects_Medieval()
 	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 }
-#define MAXPIKEMAN_STACKS 15
+#define MAXPIKEMAN_STACKS 10
 
 stock void StatusEffects_PikemanDebuffAdd(int victim, int valuetoadd)
 {
