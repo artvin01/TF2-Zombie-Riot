@@ -3172,7 +3172,7 @@ stock void StatusEffects_PikemanDebuffAdd(int victim, int valuetoadd)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
-			if(RoundToNearest(Apply_StatusEffect.DataForUse) >= 10)
+			if(RoundToNearest(Apply_StatusEffect.DataForUse) >= MAXPIKEMAN_STACKS)
 			{
 				//we at max.
 				return;
