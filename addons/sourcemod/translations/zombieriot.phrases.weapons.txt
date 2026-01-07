@@ -5740,56 +5740,6 @@
 		"it"	"Aggiunge la fazione Kazimierz"
 		"ko"	"무기에 카시미어 진영을 추가"
 	}
-	"Chaos Infected Launcher"
-	{
-		"en"		"Chaos Infected Launcher"
-		"ko"		"카오스 침식 발사기"
-	}
-	"Major Steam's Launcher"
-	{
-		"en"		"Major Steam's Launcher"
-		"ko"		"증기 소령의 발사기"
-	}
-	"LockDown Staff"
-	{
-		"en"		"LockDown Staff"
-		"ko"		"자물쇠 스태프"
-	}
-	"Pixel Sword"
-	{
-		"en"		"Pixel Sword"
-		"ko"		"픽셀 나무 검"
-	}
-	"Task Stone Age"
-	{
-		"en"		"Stone Age"
-		"ko"		"석기 시대"
-	}
-	"Task Isn't It Iron Pick"
-	{
-		"en"		"Isn't It Iron Pick"
-		"ko"		"이젠 철 좀 들어라"
-	}
-	"Task Enchanter"
-	{
-		"en"		"Enchanter"
-		"ko"		"마법 부여자"
-	}
-	"Task Enchanted Gold Sword"
-	{
-		"en"		"Enchanted Gold Sword"
-		"ko"		"인첸트된 금 검"
-	}
-	"Task Diamonds!"
-	{
-		"en"		"Diamonds!"
-		"ko"		"다이아몬드다!"
-	}
-	"Task Cover Me in Debris"
-	{
-		"en"		"Cover Me in Debris"
-		"ko"		"잔해로 날 감싸줘"
-	}
 	"Crystal Shard"
 	{
 		"en"	"Crystal Shard"

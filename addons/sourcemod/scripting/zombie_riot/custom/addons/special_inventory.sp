@@ -17,6 +17,7 @@ bool Inv_Grigori_Antidote[MAXPLAYERS];
 bool Inv_Rose_Of_SelfHarm[MAXPLAYERS];
 bool Inv_DeathfromAbove[MAXPLAYERS];
 bool Inv_UGotMetalPipe[MAXPLAYERS];
+bool Inv_GalssCoil[MAXPLAYERS];
 float Inv_Nailgun_Slug_Ammo[MAXPLAYERS];
 float Inv_Chaos_Coil_Delay[MAXPLAYERS];
 int Inv_ChaosticGlass[MAXPLAYERS];
@@ -41,7 +42,14 @@ public void Custom_Inventory_Reset(int client)
 	Inv_Rose_Of_SelfHarm[client]=false;
 	Inv_Grigori_Antidote[client]=false;
 	Inv_DeathfromAbove[client]=false;
-	Inv_Chaos_Coil[client]=0;
+	Inv_GalssCoil[client]=false;
+	if(Inv_Chaos_Coil[client])
+	{
+		int Chaos_Coil = EntRefToEntIndex(Inv_Chaos_Coil[client]);
+		if(IsValidEntity(Chaos_Coil))
+			Attributes_Set(Chaos_Coil, 489, 1.0);
+		Inv_Chaos_Coil[client] = INVALID_ENT_REFERENCE;
+	}
 	Inv_Nailgun_Slug_Ammo[client]=1.0;
 }
 
@@ -64,11 +72,7 @@ stock bool Custom_Inventory_Enable(int client, int entity, int Attribute)
 			ApplyStatusEffect(client, client, "Barricade Stabilizer", 9999.0);
 		}
 		case 1010:Inv_Leaders_Belt[client]=true;
-		case 1011:
-		{
-			if(IsValidEntity(entity))Inv_Chaos_Coil[client] = EntIndexToEntRef(entity);
-			ApplyStatusEffect(client, client, "Chaos Coil Speed", 9999.0);
-		}
+		case 1011:{if(IsValidEntity(entity))Inv_Chaos_Coil[client] = EntIndexToEntRef(entity);}
 		case 1012:Inv_Box_Office[client]=true;
 		case 1013:Inv_Rose_Of_SelfHarm[client]=true;
 		case 1014:Inv_Grigori_Antidote[client]=true;
@@ -87,6 +91,7 @@ stock bool Custom_Inventory_Enable(int client, int entity, int Attribute)
 			}
 			Inv_UGotMetalPipe[client] = true;
 		}
+		case 1017:Inv_GalssCoil[client]=true;
 	}
 	return false;
 }
@@ -182,14 +187,14 @@ public void Custom_Inventory_WaveEnd(int client)
 {
 	if(!StrContains(WhatDifficultySetting_Internal, "Interitus Group"))
 	{
-		bool Chaostic = view_as<bool>(Store_HasNamedItem(client, "Glass Coil [Common]"));
+		bool Chaostic = view_as<bool>(Store_HasNamedItem(client, "Glass Coil"));
 		if(Chaostic)
 		{
 			Inv_ChaosticGlass[client]++;
 			int ThisWave = Waves_GetRoundScale()+1;
-			if(Inv_ChaosticGlass[client]>=33 && ThisWave>=30 && ThisWave<31 &&!(Items_HasNamedItem(client, "Chaos Coil [Rare]")))
+			if(Inv_ChaosticGlass[client]>=46 && (ThisWave==40 || (ThisWave>=0 && ThisWave<=1)) &&!(Items_HasNamedItem(client, "Chaos Coil")))
 			{
-				Items_GiveNamedItem(client, "Chaos Coil [Rare]");
+				Items_GiveNamedItem(client, "Chaos Coil");
 				CPrintToChat(client, "%t", "Inv Chaos Coil Give");
 			}
 		}
@@ -206,7 +211,7 @@ public void Custom_Inventory_Think(int client, float GameTime)
 		int Chaos_Coil = EntRefToEntIndex(Inv_Chaos_Coil[client]);
 		if(IsValidEntity(Chaos_Coil))
 		{
-			Attributes_Set(Chaos_Coil, 107, 1.0+(0.01*float(GetRandomInt(5, 20))));
+			Attributes_Set(Chaos_Coil, 489, 1.0+(0.01*float(GetRandomInt(5, 20))));
 			SDKCall_SetSpeed(client);
 			Inv_Chaos_Coil_Delay[client] = GameTime + 3.0;
 		}
@@ -227,6 +232,36 @@ public void Custom_Inventory_NPCKill(int attacker)
 			Inv_Box_Office_Max[attacker]++;
 		}
 	}
+}
+
+public float Custom_Inventory_OnTakeDamage(int victim, int attacker, float damage)
+{
+	if(!IsValidClient(victim) || CheckInHud())
+		return damage;
+
+	if(Inv_Chaos_Coil[victim])
+	{
+		int Chaos_Coil = EntRefToEntIndex(Inv_Chaos_Coil[victim]);
+		if(IsValidEntity(Chaos_Coil))
+		{
+			Elemental_AddChaosDamage(victim, attacker, RoundToCeil(damage*1.2));
+			if(Armor_Charge[victim] > 0)
+			{
+				Armor_Charge[victim]=0;
+				f_Armor_BreakSoundDelay[victim] = GetGameTime() + 5.0;	
+				EmitSoundToClient(victim, "npc/assassin/ball_zap1.wav", victim, SNDCHAN_STATIC, 60, _, 1.0, GetRandomInt(95,105));
+			}
+		}
+		else Inv_Chaos_Coil[victim] = INVALID_ENT_REFERENCE;
+	}
+	else if(Inv_GalssCoil[victim] && Armor_Charge[victim] > 0)
+	{
+		Armor_Charge[victim]=0;
+		f_Armor_BreakSoundDelay[victim] = GetGameTime() + 5.0;	
+		EmitSoundToClient(victim, "npc/assassin/ball_zap1.wav", victim, SNDCHAN_STATIC, 60, _, 1.0, GetRandomInt(95,105));
+	}
+		
+	return damage;
 }
 
 bool Inv_Grigori_Antidote_Enable(int client)
