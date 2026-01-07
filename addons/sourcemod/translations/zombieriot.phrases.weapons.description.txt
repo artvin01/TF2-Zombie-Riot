@@ -5329,7 +5329,7 @@
 	}
 	"Purging Desc"
 	{
-		"en"	"Become the Ziberian greatest invention... A monster.\n-Gain 2 weapons, Shotgun and Rampager riffle\n-Press M2 To easy switch between them\n-Charge energy on hit, used for later paps\n-Weapons has overheat and will lose damage the more you use them\n-The more one weapon overheats the stronger other weapons becomes\n-Also gain special buffs if other weapon is overheated\n-Gain 40％ more energy from hitting enemies up close."
+		"en"	"Become the Ziberian greatest invention... A monster.\n-Gain 2 weapons, Shotgun and Rampager rifle\n-Press M2 To easy switch between them\n-Charge energy on hit, used for later paps\n-Weapons has overheat and will lose damage the more you use them\n-The more one weapon overheats the stronger other weapons becomes\n-Also gain special buffs if other weapon is overheated\n-Gain 40％ more energy from hitting enemies up close."
 		"ko"	"지베리아의 가장 위대한 발명품... 괴물이 되세요.\n-산탄총, 램페이저 라이플 두 무기 보유: 우클릭으로 무기를 쉽게 전환 가능\n-적중 시 에너지 충전, 이는 무기 강화 후 사용\n-무기 사용시 과열되어 피해량이 감소하나, 과열될 수록 다른 무기가 강화\n-다른 무기가 과열된 상태일 시 특수 버프 획득\n-근접한 적 공격시 에너지 충전량 40％ 증가"
     }
 	"Purging Pap N"
