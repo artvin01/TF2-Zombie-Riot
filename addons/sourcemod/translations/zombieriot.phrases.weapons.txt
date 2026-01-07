@@ -2376,7 +2376,7 @@
 	}
 	"Living Armor Chat"
 	{
-		"en"		"When buying or selling this perk, you lose all armor, and cant regen armor if done outside of setup."
+		"en"		"When buying or selling this perk, you lose all armor, and cant regen armor if done outside of setup for some time."
 	}
 	"Sticky Support Grenades"
 	{
