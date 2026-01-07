@@ -404,6 +404,34 @@ public Action Timer_Detect_Player_Near_InvGift(Handle timer, DataPack pack)
 					{
 						SetGlobalTransTarget(client);
 						CPrintToChat(client,"%t", "Pickup Gift Hero", NameOfTheHero);
+						
+						int MultiExtra = 1;
+						switch(Rarity)
+						{
+							case Common:
+								MultiExtra = 1;
+							case Uncommon:
+								MultiExtra = 2;
+							case Rare:
+								MultiExtra = 5;
+							case Legend:
+								MultiExtra = 10;
+							case Mythic:
+								MultiExtra = 40;
+						}
+						int TempCalc = Level[client];
+						if(TempCalc >= 101)
+							TempCalc = 101;
+
+						TempCalc = LevelToXp(TempCalc) - LevelToXp(TempCalc - 1);
+						TempCalc /= 40;
+
+						int XpToGive = TempCalc * MultiExtra;
+						CPrintToChat(client,"%t", "Pickup XP Gift", XpToGive);
+						XP[client] += XpToGive;
+						Native_ZR_OnGetXP(client, XpToGive, 0);
+						GiveXP(client, 0);
+						
 						static InvGiftItem item;
 						int rand = GetURandomInt();
 						int length = GiftItems.Length;
@@ -419,62 +447,34 @@ public Action Timer_Detect_Player_Near_InvGift(Handle timer, DataPack pack)
 									items[maxitems++] = i;
 								}
 							}
-
-							int start = (rand % maxitems);
-							int i = start;
-							do
+							
+							if(maxitems)
 							{
-								i++;
-								if(i >= maxitems)
+								int start = (rand % maxitems);
+								int i = start;
+								do
 								{
-									i = -1;
-									continue;
+									i++;
+									if(i >= maxitems)
+									{
+										i = -1;
+										continue;
+									}
+
+									if(Items_GiveIdItem(client, items[i]))	// Gives item, returns true if newly obtained, false if they already have
+									{
+										static const char Colors[][] = { "default", "green", "blue", "yellow", "darkred" };
+										GiftItems.GetArray(items[i], item);
+										CPrintToChat(client, "%t {%s}\"%t\"{snow}!", "Pickup Inventory Gift", Colors[r], item.Name);
+										/*CPrintToChat(client, "%t", "Pickup Inventory Gift");
+										CPrintToChat(client, "{%s}\"%t\"", Colors[r], item.Name);*/
+										r = -1;
+										length = 0;
+										break;
+									}
 								}
-
-								if(Items_GiveIdItem(client, items[i]))	// Gives item, returns true if newly obtained, false if they already have
-								{
-									static const char Colors[][] = { "default", "green", "blue", "yellow", "darkred" };
-									GiftItems.GetArray(items[i], item);
-									CPrintToChat(client, "%t {%s}\"%t\"{snow}!", "Pickup Inventory Gift", Colors[r], item.Name);
-									/*CPrintToChat(client, "%t", "Pickup Inventory Gift");
-									CPrintToChat(client, "{%s}\"%t\"", Colors[r], item.Name);*/
-									r = -1;
-									length = 0;
-									break;
-								}
+								while(i != start);
 							}
-							while(i != start);
-						}
-						
-						if(length)
-						{
-							int MultiExtra = 1;
-							switch(Rarity)
-							{
-								case Common:
-									MultiExtra = 1;
-								case Uncommon:
-									MultiExtra = 2;
-								case Rare:
-									MultiExtra = 5;
-								case Legend:
-									MultiExtra = 10;
-								case Mythic:
-									MultiExtra = 40;
-							}
-							//xp to give?
-							int TempCalc = Level[client];
-							if(TempCalc >= 101) //fix shitty rounding to 995 xp to 1000 xp
-								TempCalc = 101;
-
-							TempCalc = LevelToXp(TempCalc) - LevelToXp(TempCalc - 1);
-							TempCalc /= 40;
-
-							int XpToGive = TempCalc * MultiExtra;
-							CPrintToChat(client,"%t", "Pickup XP Gift", XpToGive);
-							XP[client] += XpToGive;
-							Native_ZR_OnGetXP(client, XpToGive, 0);
-							GiveXP(client, 0);
 						}
 					}
 				}

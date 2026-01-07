@@ -248,6 +248,8 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon, damagePosition);
 	}
 	
+	damage = Custom_Inventory_OnTakeDamage(victim, attacker, damage);
+	
 	if(OnTakeDamage_ShieldLogic(victim, damagetype))
 		return true;
 

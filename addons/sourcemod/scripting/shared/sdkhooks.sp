@@ -2209,7 +2209,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
 				i_CurrentEquippedPerkPreviously[victim] = i_CurrentEquippedPerk[victim];
-				if(!Rogue_Mode() && !SpecterCheckIfAutoRevive(victim))
+				if(!Rogue_Mode() && !SpecterCheckIfAutoRevive(victim) && !Inv_LSandvich_SafeHouse[victim])
 				{
 					i_CurrentEquippedPerk[victim] = 0;
 				}
