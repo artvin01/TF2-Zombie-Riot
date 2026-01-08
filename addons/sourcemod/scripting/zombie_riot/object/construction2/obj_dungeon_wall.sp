@@ -41,9 +41,9 @@ void ObjectDWall_MapStart()
 	NPCId1 = NPC_Add(data);
 
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_wall1");
-	build.Cost = 807;
+	build.Cost = 5000;
 	build.Health = 630;
-	build.HealthScaleCost = true;
+	build.HealthScaleCost = false;
 	build.Cooldown = 30.0;
 	build.Func = ClotCanBuild1;
 	Building_Add(build);
@@ -54,9 +54,9 @@ void ObjectDWall_MapStart()
 	NPCId2 = NPC_Add(data);
 
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_wall2");
-	build.Cost = 1076;
+	build.Cost = 7500;
 	build.Health = 840;
-	build.HealthScaleCost = true;
+	build.HealthScaleCost = false;
 	build.Cooldown = 45.0;
 	build.Func = ClotCanBuild2;
 	Building_Add(build);
@@ -67,9 +67,9 @@ void ObjectDWall_MapStart()
 	NPCId3 = NPC_Add(data);
 
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_wall3");
-	build.Cost = 1614;
+	build.Cost = 10000;
 	build.Health = 1260;
-	build.HealthScaleCost = true;
+	build.HealthScaleCost = false;
 	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild3;
 	Building_Add(build);
@@ -257,6 +257,20 @@ static bool ClotCanBuild3(int client, int &count, int &maxcount)
 	return true;
 }
 
+bool ObjectDWall_IsId(int id)
+{
+	if(NPCId1 == id)
+		return true;
+	
+	if(NPCId2 == id)
+		return true;
+	
+	if(NPCId3 == id)
+		return true;
+	
+	return false;
+}
+
 static int CountBuildings()
 {
 	int count;
@@ -364,8 +378,31 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 
 				EmitSoundToAll("ui/chime_rd_2base_pos.wav");
 
+				float healthPre = Construction_GetMaxHealthMulti(1.0);
 				CurrentLevel++;
+				float healthPost = Construction_GetMaxHealthMulti(1.0);
+				
+				float multi = healthPost / healthPre;
+				
+				int entity = -1;
+				while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
+				{
+					ObjectGeneric obj = view_as<ObjectGeneric>(entity);
+					if(obj.m_bConstructBuilding)
+					{
+						int currentMax = GetEntProp(obj.index, Prop_Data, "m_iMaxHealth");
+						int newMax = RoundFloat(currentMax * multi);
+						SetEntProp(obj.index, Prop_Data, "m_iMaxHealth", newMax);
+						SetEntProp(obj.index, Prop_Data, "m_iHealth", GetEntProp(obj.index, Prop_Data, "m_iHealth") + (newMax - currentMax));
 
+						currentMax = GetEntProp(obj.index, Prop_Data, "m_iRepairMax");
+						newMax = RoundFloat(currentMax * multi);
+						SetEntProp(obj.index, Prop_Data, "m_iRepairMax", newMax);
+						SetEntProp(obj.index, Prop_Data, "m_iRepair", GetEntProp(obj.index, Prop_Data, "m_iRepair") + (newMax - currentMax));
+					}
+				}
+
+				/*
 				if(Dungeon_InSetup())
 				{
 					int entity = -1;
@@ -386,7 +423,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 							}
 						}
 					}
-				}
+				}*/
 			}
 		}
 	}
