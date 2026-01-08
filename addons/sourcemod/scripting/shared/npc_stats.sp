@@ -10942,9 +10942,11 @@ void MapStartResetNpc()
 		b_StaticNPC[i] = false;
 		b_EnemyNpcWasIndexed[i][0] = false;
 		b_EnemyNpcWasIndexed[i][1] = false;
+		b_EnemyNpcWasIndexed[i][2] = false;
 	}
 	EnemyNpcAlive = 0;
 	EnemyNpcAliveStatic = 0;
+	EnemyNpcAliveConst2 = 0;
 }
 
 /*
@@ -10972,6 +10974,26 @@ void AddNpcToAliveList(int iNpc, int which)
 			EnemyNpcAliveStatic += 1;
 		}
 	}
+	if(which == 2)
+	{
+		if(!b_EnemyNpcWasIndexed[iNpc][0])
+		{
+			b_EnemyNpcWasIndexed[iNpc][0] = true;
+			EnemyNpcAlive += 1;
+		}
+		if(!b_EnemyNpcWasIndexed[iNpc][1])
+		{
+			b_DoNotGiveWaveDelay[iNpc] = true; //dont delay spawns if static
+			b_EnemyNpcWasIndexed[iNpc][1] = true;
+			EnemyNpcAliveStatic += 1;
+		}
+		if(!b_EnemyNpcWasIndexed[iNpc][2])
+		{
+			b_DoNotGiveWaveDelay[iNpc] = true; //dont delay spawns if static
+			b_EnemyNpcWasIndexed[iNpc][2] = true;
+			EnemyNpcAliveConst2 += 1;
+		}
+	}
 }
 
 void RemoveFromNpcAliveList(int iNpc)
@@ -10982,14 +11004,21 @@ void RemoveFromNpcAliveList(int iNpc)
 	if(b_EnemyNpcWasIndexed[iNpc][1])
 		EnemyNpcAliveStatic -= 1;
 
+	if(b_EnemyNpcWasIndexed[iNpc][2])
+		EnemyNpcAliveConst2 -= 1;
+
 	b_EnemyNpcWasIndexed[iNpc][0] = false;
 	b_EnemyNpcWasIndexed[iNpc][1] = false;
+	b_EnemyNpcWasIndexed[iNpc][2] = false;
 
 	if(EnemyNpcAlive < 0)
 		EnemyNpcAlive = 0;
 
 	if(EnemyNpcAliveStatic < 0)
 		EnemyNpcAliveStatic = 0;
+
+	if(EnemyNpcAliveConst2 < 0)
+		EnemyNpcAliveConst2 = 0;
 }
 
 #if defined ZR

@@ -108,7 +108,7 @@ enum
 	Rounds_Spawner = 1, //just as a test
 
 
-	Rounds_MAX = 32
+	Rounds_MAX = 64
 }
 
 static ArrayList Voting;

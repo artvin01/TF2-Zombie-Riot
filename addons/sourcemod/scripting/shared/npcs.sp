@@ -48,7 +48,11 @@ void NPC_PluginStart()
 }
 
 #if defined ZR
-bool NPC_SpawnNext(bool panzer, bool panzer_warning, int WaveWhich = Rounds_Default, float vecPos[3] = {0.0,0.0,0.0})
+bool NPC_SpawnNext(bool panzer,
+ bool panzer_warning,
+  int WaveWhich = Rounds_Default,
+   float vecPos[3] = {0.0,0.0,0.0},
+   int& NpcForward = -1)
 {
 	//vecPos will allow you to override any spawners that exist, so it will only spawn from this location
 	//this is only used for the const2_spawner npc.
@@ -463,6 +467,8 @@ bool NPC_SpawnNext(bool panzer, bool panzer_warning, int WaveWhich = Rounds_Defa
 
 					if(Waves_InFreeplay())
 						Freeplay_SpawnEnemy(entity_Spawner);
+
+					NpcForward = entity_Spawner;
 
 					return true;
 				}

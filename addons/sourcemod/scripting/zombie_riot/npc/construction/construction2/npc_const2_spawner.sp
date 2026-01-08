@@ -75,6 +75,11 @@ methodmap Const2Spawner < CClotBody
 		public get()							{ return i_OverlordComboAttack[this.index]; }
 		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
 	}
+	property bool m_bEnemyBase
+	{
+		public get()							{ return b_movedelay_walk[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_movedelay_walk[this.index] = TempValueForProperty; }
+	}
 	public Const2Spawner(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Const2Spawner npc = view_as<Const2Spawner>(CClotBody(vecPos, vecAng, "models/editor/ground_node.mdl", "1.0", "999999999", ally, .NpcTypeLogic = 1));
@@ -145,8 +150,17 @@ methodmap Const2Spawner < CClotBody
 		}
 		Const2SpawnerEnum edata;
 		// Create a new entry
+		npc.m_bEnemyBase = false;
+		char DataAm[512];
+		
+		Format(DataAm, sizeof(DataAm), "%s", data);
+		if(StrContains(DataAm, "enemy_base") != -1)
+		{
+			npc.m_bEnemyBase = true;
+			ReplaceString(DataAm, sizeof(DataAm), "enemy_base;", "");
+		}
 		edata.SpawnerAmRef = EntIndexToEntRef(npc.index);
-		Format(edata.DataWave, sizeof(edata.DataWave), "%s", data);
+		Format(edata.DataWave, sizeof(edata.DataWave), "%s", DataAm);
 		edata.SpawnerArrayAm = SpawnArrayFree;
 		hConst2_SpawnerSaveWave.PushArray(edata);
 		
@@ -189,6 +203,13 @@ static void ClotThink(int iNPC)
 				
 				for(int AmountSpawn; AmountSpawn < GroupBunchSpawn; AmountSpawn++)
 				{
+					if(npc.m_bEnemyBase)
+					{
+						if((EnemyNpcAliveConst2) >= MaxEnemiesAllowedSpawnNext())
+						{
+							return;
+						}
+					}
 					float PosRand[3];
 					PosRand = SpawnLocation;
 					PosRand[0] += GetRandomFloat(-50.0, 50.0);
@@ -196,9 +217,14 @@ static void ClotThink(int iNPC)
 					bool Succeed = Npc_Teleport_Safe(npc.index, PosRand, hullcheckmins, hullcheckmaxs, true, false);
 					if(!Succeed)
 						PosRand = SpawnLocation;
-					
-					if(NPC_SpawnNext(false, false, npc.m_iSpawnerAm, PosRand))
+
+					int NpcForward = -1;
+					if(NPC_SpawnNext(false, false, npc.m_iSpawnerAm, PosRand, NpcForward))
 					{
+						//We keep track of static NPCS.
+						if(npc.m_bEnemyBase && IsValidEntity(NpcForward))
+							AddNpcToAliveList(NpcForward, 2);
+
 						DidSpawn = true;
 					}
 				}

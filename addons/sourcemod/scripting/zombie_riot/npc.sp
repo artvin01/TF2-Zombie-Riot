@@ -118,7 +118,6 @@ void NPC_ConfigSetup()
 	ObjectGemCrafter_MapStart();
 	ObjectDStove_MapStart();
 	ObjectDFactory_MapStart();
-	ObjectC2HeadQuarters_MapStart();
 
 	ObjectDLightHouse_MapStart();
 	ObjectDCaliberTurret_MapStart();
@@ -1554,7 +1553,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/construction2/obj_const2_house.sp"
 #include "object/construction2/obj_const2_laser_intensifier.sp"
 #include "object/construction2/obj_dungeon_factory.sp"
-#include "object/construction2/obj_const2_head_quarters.sp"
 
 // VEHICLES
 #include "../shared/vehicles/vehicle_shared.sp"

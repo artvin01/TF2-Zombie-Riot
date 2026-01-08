@@ -40,20 +40,34 @@ void ObjectDungeonCenter_MapStart()
 	Building_Add(build);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3])
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return ObjectDungeonCenter(client, vecPos, vecAng);
+	return ObjectDungeonCenter(client, vecPos, vecAng ,data);
 }
 
 methodmap ObjectDungeonCenter < ObjectGeneric
 {
-	public ObjectDungeonCenter(int client, const float vecPos[3], const float vecAng[3])
+	property bool m_bEnemyBase
+	{
+		public get()							{ return b_movedelay_walk[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_movedelay_walk[this.index] = TempValueForProperty; }
+	}
+	public ObjectDungeonCenter(int client, const float vecPos[3], const float vecAng[3], const char[] data)
 	{
 		ObjectDungeonCenter npc = view_as<ObjectDungeonCenter>(ObjectGeneric(client, vecPos, vecAng, "models/props_combine/masterinterface.mdl", _, "600", {65.0, 65.0, 197.0},_,false));
 		
-		npc.FuncShowInteractHud = ClotShowInteractHud;
-		npc.FuncCanBuild = ClotCanBuild;
-		func_NPCInteract[npc.index] = ClotInteract;
+		
+		npc.m_bEnemyBase = false;
+		if(StrContains(data, "enemy_base") != -1)
+		{
+			npc.m_bEnemyBase = true;
+		}
+		else
+		{
+			npc.FuncShowInteractHud = ClotShowInteractHud;
+			npc.FuncCanBuild = ClotCanBuild;
+			func_NPCInteract[npc.index] = ClotInteract;
+		}
 		npc.m_bConstructBuilding = true;
 
 		return npc;

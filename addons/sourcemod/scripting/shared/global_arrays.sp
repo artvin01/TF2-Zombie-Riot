@@ -337,9 +337,10 @@ int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 
 
 //only used in zr, however, can also be used for other gamemodes incase theres a limit.
-bool b_EnemyNpcWasIndexed[MAXENTITIES][2];
+bool b_EnemyNpcWasIndexed[MAXENTITIES][3];
 int EnemyNpcAlive = 0;
 int EnemyNpcAliveStatic = 0;
+int EnemyNpcAliveConst2 = 0;
 
 const int i_MaxcountBuilding = ZR_MAX_BUILDINGS;
 
