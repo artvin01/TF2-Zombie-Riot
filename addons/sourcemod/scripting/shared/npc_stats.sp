@@ -28,6 +28,7 @@ bool b_NpcHasBeenAddedToZombiesLeft[MAXENTITIES];
 int Zombies_Currently_Still_Ongoing;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what entref is the raid?
 float Medival_Difficulty_Level = 0.0;
+int Medival_Difficulty_Level_NotMath = 0;
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int i_NpcOverrideAttacker[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
@@ -10258,6 +10259,11 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		//Display morale!
 		MoraleIconShowHud(npc.index, HealthText, sizeof(HealthText));
+	}
+	if(NpcAppliesMarkDebuff(npc.index)) // Mark applier indicator
+	{
+    	//Display mark applier warning!
+    	Format(HealthText, sizeof(HealthText), "M%s", HealthText);
 	}
 	if(Saga_EnemyDoomed(npc.index))
 	{
