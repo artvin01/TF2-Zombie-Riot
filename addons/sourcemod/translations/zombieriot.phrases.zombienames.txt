@@ -2018,6 +2018,22 @@
 		"it"		"Arcieri d'élite medievali"
 		"ko"		"중세 정예 장궁병"
 	}
+	"Golden Squad's Construct"
+	{
+		"en"		"Golden Squad's Construct"
+	}
+	"Golden Squad's Swordsman"
+	{
+		"en"		"Golden Squad's Swordsman"
+	}
+	"Golden Squad's Crossbowman"
+	{
+		"en"		"Golden Squad's Crossbowman"
+	}
+	"Golden Squad's Eagleman"
+	{
+		"en"		"Golden Squad's Eagleman"
+	}
 	"Trebuchet"
 	{
 		"en"		"Trebuchet"
