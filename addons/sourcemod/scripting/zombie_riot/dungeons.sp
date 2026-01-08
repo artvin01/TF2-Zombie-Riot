@@ -908,10 +908,9 @@ static void TriggerStartTouch(const char[] output, int caller, int activator, fl
 		}
 	}
 }
-
+/*
 void Dungeon_TeleportRandomly(float pos[3])
 {
-	/*
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client))
@@ -923,7 +922,6 @@ void Dungeon_TeleportRandomly(float pos[3])
 			}
 		}
 	}
-	*/
 
 	CNavArea goalArea = TheNavMesh.GetNavArea(pos, 1000.0);
 	if(goalArea == NULL_AREA)
@@ -959,7 +957,7 @@ void Dungeon_TeleportRandomly(float pos[3])
 	}
 
 	pos[2] += 1.0;
-}
+}*/
 void Dungeon_TeleportCratesRewards(int entity, float pos[3])
 {
 	static float hullcheckmaxs[3];
@@ -970,7 +968,7 @@ void Dungeon_TeleportCratesRewards(int entity, float pos[3])
 	PosRand = pos;
 	PosRand[0] += GetRandomFloat(-125.0, 125.0);
 	PosRand[1] -= GetRandomFloat(-125.0, 125.0);
-	bool Succeed = Npc_Teleport_Safe(entity, PosRand, hullcheckmins, hullcheckmaxs, true);
+	Npc_Teleport_Safe(entity, PosRand, hullcheckmins, hullcheckmaxs, true);
 }
 
 void Dungeon_SpawnLoot(const float pos[3], const char[] name, float waveScale)
@@ -1517,11 +1515,11 @@ static bool CheckRivalStatus()
 		if(entity == INVALID_ENT_REFERENCE || !IsEntityAlive(entity))
 			continue;
 		
-		DungeonZone zone = Dungeon_GetEntityZone(entity);
-		if(zone != Zone_RivalBase)
+		if(GetTeam(entity) == TFTeam_Red)
 			continue;
 		
-		if(GetTeam(entity) == TFTeam_Red)
+		DungeonZone zone = Dungeon_GetEntityZone(entity);
+		if(zone != Zone_RivalBase)
 			continue;
 		
 		if(ObjectDWall_IsId(i_NpcInternalId[entity]))
