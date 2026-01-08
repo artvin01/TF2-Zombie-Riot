@@ -1505,6 +1505,9 @@ StringMap Construction_GetMaterialStringMap()
 
 int Construction_GetMaterial(const char[] short)
 {
+	if(CvarInfiniteCash.BoolValue)
+		return 999;
+	
 	int amount;
 	if(CurrentMaterials)
 		CurrentMaterials.GetValue(short, amount);
@@ -1520,6 +1523,9 @@ int Construction_AddMaterial(const char[] short, int gain, bool silent = false)
 	int amount;
 	CurrentMaterials.GetValue(short, amount);
 	amount += gain;
+	if(amount < 0 && CvarInfiniteCash.BoolValue)
+		amount = 0;
+	
 	CurrentMaterials.SetValue(short, amount);
 //	PrintToChatAll("short %s gain %i silent %b",short, gain, silent);
 	if(!silent)
