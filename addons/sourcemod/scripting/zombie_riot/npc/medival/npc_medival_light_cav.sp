@@ -266,12 +266,7 @@ public void MedivalLightCav_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 30.0;
-
-					if(Medival_Difficulty_Level_NotMath >= 3)
-					{
-						damage = 40.0;
-					}
+					float damage = 35.0;
 
 					if(target > MaxClients)
 					{

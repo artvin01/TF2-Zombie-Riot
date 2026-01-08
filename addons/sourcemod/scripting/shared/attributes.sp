@@ -62,7 +62,8 @@ enum
 	Attrib_RegenHpOutOfBattle_MaxHealthScaling = 4056,
 
 	Attrib_DisallowTinker = 4057,
-	Attrib_MultiBuildingDamage = 4058,
+	Attrib_Armor_AliveMode = 4058,
+	Attrib_MultiBuildingDamage = 4059,
 	Attrib_ASPD_StatusCalc,	// Only used in status_effect to determine their current ASPD amount
 }
 

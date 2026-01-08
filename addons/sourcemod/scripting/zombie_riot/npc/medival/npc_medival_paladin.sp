@@ -265,12 +265,7 @@ public void MedivalPaladin_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 100.0;
-
-					if(Medival_Difficulty_Level_NotMath >= 3)
-					{
-						damage = 120.0;
-					}
+					float damage = 120.0;
 
 					if(ShouldNpcDealBonusDamage(target))
 					{

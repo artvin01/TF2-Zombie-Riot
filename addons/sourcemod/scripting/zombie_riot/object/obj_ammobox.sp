@@ -243,6 +243,12 @@ int AmmoboxUsed(int client, int entity)
 			}
 			else
 			{
+				//not useable if they have armor, or no armor, useable if they are under corrosion
+				if(f_LivingArmorPenalty[client] > GetGameTime() || (Attributes_Get(client, Attrib_Armor_AliveMode, 0.0) != 0.0 && Armor_Charge[client] >= 0))
+				{
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					return false;
+				}
 				int Armor_Max = 150;
 			
 				Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 0.75);

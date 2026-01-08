@@ -1142,6 +1142,7 @@ public void OnMapStart()
 	Zero(f_ImmuneToFalldamage);
 	Zero(f_DelayLookingAtHud);
 	Zero(f_TimeUntillNormalHeal);
+	Zero(f_LivingArmorPenalty);
 	Zero(f_ClientWasTooLongInsideHurtZone);
 	Zero(f_ClientWasTooLongInsideHurtZoneDamage);
 	Zero(f_ClientWasTooLongInsideHurtZoneStairs);

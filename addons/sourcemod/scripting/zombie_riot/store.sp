@@ -133,6 +133,7 @@ enum struct ItemInfo
 	int UnboxRarity;
 	bool CannotBeSavedByCookies;
 	Function FuncOnBuy;
+	Function FuncOnUnequipOrSell;
 	int PackBranches;
 	int PackSkip;
 
@@ -465,6 +466,10 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sfunc_onbuy", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncOnBuy = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_onunequip", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.FuncOnUnequipOrSell = GetFunctionByName(null, buffer);
 
 		/*Format(buffer, sizeof(buffer), "%stier", prefix);
 		this.Tier = kv.GetNum(buffer, -1);
@@ -6617,6 +6622,13 @@ stock void Store_Unequip(int client, int index)
 	ItemInfo info;
 	if(item.GetItemInfo(0, info) && info.Cost <= 0)
 		item.Owned[client] = 0;
+		
+	if(info.FuncOnUnequipOrSell != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, info.FuncOnUnequipOrSell);
+		Call_PushCell(client);
+		Call_Finish();
+	}
 	
 	item.Equipped[client] = false;
 
@@ -7433,6 +7445,13 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 			GetEntityClassname(active_weapon, buffer, sizeof(buffer));
 			if(IgnoreRestriction || (GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer, active_weapon) != TFWeaponSlot_PDA)
 			{
+				
+				if(info.FuncOnUnequipOrSell != INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, info.FuncOnUnequipOrSell);
+					Call_PushCell(client);
+					Call_Finish();
+				}
 				Store_Unequip(client, index);
 				
 				Store_ApplyAttribs(client);
@@ -7456,7 +7475,12 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 			GetEntityClassname(active_weapon, buffer, sizeof(buffer));
 			if(IgnoreRestriction || (GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer, active_weapon) != TFWeaponSlot_PDA)
 			{
-
+				if(info.FuncOnUnequipOrSell != INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, info.FuncOnUnequipOrSell);
+					Call_PushCell(client);
+					Call_Finish();
+				}
 				int sell = item.Sell[client];
 				if(item.BuyWave[client] == Waves_GetRoundScale())
 					sell = item.BuyPrice[client];
@@ -7543,4 +7567,19 @@ bool Store_IsWeaponFaction(int client, int weapon, int faction)
 		return true;
 	
 	return false;
+}
+
+
+
+public void OnBuyOrSell_LivingArmor(int client)
+{
+	if(Armor_Charge[client] >= 0)
+		Armor_Charge[client] = 0;
+	if(f_LivingArmorPenalty[client] < GetGameTime())
+	{
+		SPrintToChat(client, "%t", "Living Armor Chat");
+		f_LivingArmorPenalty[client] = GetGameTime() + 0.1;
+	}
+	if(!Waves_InSetup())
+		f_LivingArmorPenalty[client] = GetGameTime() + 20.0;
 }

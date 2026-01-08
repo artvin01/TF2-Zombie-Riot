@@ -413,6 +413,7 @@ bool b_HoldingInspectWeapon[MAXPLAYERS];
 #define SF2_PLAYER_VIEWBOB_SCALE_Z 0.0
 #define RAID_MAX_ARMOR_TABLE_USE 20
 #define ZR_ARMOR_DAMAGE_REDUCTION 0.75
+#define ZR_LIVING_ARMOR_DAMAGE_REDUCTION 0.7
 #define ZR_ARMOR_DAMAGE_REDUCTION_INVRERTED 0.25
 
 float Armor_regen_delay[MAXPLAYERS];
@@ -2443,6 +2444,9 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 	{
 		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
 	}
+	//half armor if they have this thing, but only if they arent under corrosion.
+	if((f_LivingArmorPenalty[client] > GetGameTime() || (Attributes_Get(client, Attrib_Armor_AliveMode, 0.0)) != 0.0) && Armor_Charge[client] >= 0)
+		Armor_Max /= 2;
 		
 	return (RoundToCeil(float(Armor_Max) * multiplyier));
 	

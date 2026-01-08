@@ -262,7 +262,7 @@
 	{
 		"en"	"Our engineers say we need to follow ''guidelines'' to make our stuff safe.\n{green}Start with 50 Jalan, allies gain +125 max health, {red}but Ore Deposits and enemy buildings gain +15％ max health."
 		"it"	"I nostri ingegneri dicono che dobbiamo seguire delle linee guida per rendere sicuri i nostri prodotti. {green}Inizia con 50 Jalan, gli alleati ottengono +125 salute massima, {red}ma i giacimenti minerari e gli edifici nemici ottengono +15% salute massima."
-		"ko"	"엔지니어들이 안전을 위해 ''지침''을 따라야 한다고 합니다.\n{green}시작 시 잘란 광석 50개 보유 및 모든 아군의 최대 체력 +125.{red}광물들과 적 구조물의 최대 체력 +15％."
+		"ko"	"{green}시작 시 잘란 광석 50개 보유 및 모든 아군의 최대 체력 +125.{red}광물들과 적 구조물의 최대 체력 +15％."
 	}
 	"Vehicle Production"
 	{

@@ -320,7 +320,7 @@ public void MedivalConstruct_ClotThink(int iNPC)
 						SDKHooks_TakeDamage(npc.index, target, target, ReturnEntityMaxHealth(npc.index) * 3.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 					}
 					
-					SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + RoundToCeil(damage * 0.5));
+					HealEntityGlobal(npc.index, npc.index, damage * 2.0, 1.0, _, HEAL_SELFHEAL);
 				}
 				delete swingTrace;
 			}

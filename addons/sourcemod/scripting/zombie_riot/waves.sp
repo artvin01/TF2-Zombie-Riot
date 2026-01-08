@@ -1799,7 +1799,6 @@ void Waves_RoundEnd()
 	RelayCurrentRound = 0;
 	CurrentWave[Rounds_Default] = -1;
 	Medival_Difficulty_Level = 0.0; //make sure to set it to 0 othrerwise waves will become impossible
-	Medival_Difficulty_Level_NotMath = 0;
 
 	if(Rogue_Mode() || Construction_Mode() || Dungeon_Mode())
 		delete Rounds[Rounds_Default];
@@ -3130,7 +3129,6 @@ public void Medival_Wave_Difficulty_Riser(int difficulty)
 	//invert the number and then just set the difficulty medival level to the % amount of damage resistance.
 	//This means that you can go upto 100% dmg res but if youre retarded enough to do this then you might aswell have an unplayable experience.
 	
-	Medival_Difficulty_Level_NotMath = difficulty;
 	Medival_Difficulty_Level = difficulty_math; //More armor and damage taken.
 }
 
@@ -4399,7 +4397,6 @@ void Waves_EnemySpawned(int entity)
 		ApplyStatusEffect(entity, entity, "Corrupted Godly Power", 99999.0);
 	}
 }
-
 bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 {
 	int length = Rounds[Rounds_Default].Length - 1;

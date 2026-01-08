@@ -819,6 +819,14 @@
 		"it"	"Aumenta i danni inflitti di 12,5％\nDiminuisce i danni subiti di 25％\nAumenta la velocità di movimento degli NPC di 50％\nAumenta la velocità di attacco/ricarica e la velocità di guarigione di 25％"
 		"ko"	"공격 피해량이 12.5％ 증가합니다.\n받는 피해량이 25％ 감소합니다.\nNPC의 이동 속도가 50％ 증가합니다.\n공격 속도, 재장전 속도, 치유 속도가 25％ 증가합니다."
 	}
+	"Pikeman's Slashes"
+	{
+		"en"	"Pikeman's Slashes"
+	}
+	"Pikeman's Slashes Desc"
+	{
+		"en"	"Count increases by 1 for each spearmen hit taken\nAt Max hits taken, all spearmen enemies will deal 300％ more damage to you."
+	}
 	"Hussar's Warscream"
 	{
 		"en"	"Hussar's Warscream"
