@@ -275,12 +275,7 @@ public void MedivalObuch_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 55.0;
-
-					if(Medival_Difficulty_Level_NotMath >= 3)
-					{
-						damage = 85.0;
-					}
+					float damage = 65.0;
 					if(ShouldNpcDealBonusDamage(target))
 					{
 						damage *= 4.2;

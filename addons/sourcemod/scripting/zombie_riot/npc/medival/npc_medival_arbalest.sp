@@ -288,7 +288,7 @@ public void MedivalArbalest_ClotThink(int iNPC)
 						
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
 						npc.m_flJumpStartTime = GetGameTime(npc.index) + 0.7; //Reuse this!
 					}
 					npc.StopPathing();
@@ -336,11 +336,7 @@ public void HandleAnimEventMedival_Arbalest(int entity, int event)
 						
 			npc.PlayMeleeSound();
 			
-			float damage = 40.0;
-			if(Medival_Difficulty_Level_NotMath >= 2)
-			{
-				damage = 55.0;
-			}
+			float damage = 55.0;
 			npc.FireArrow(vecTarget, damage, projectile_speed);
 		}
 	}
