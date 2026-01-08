@@ -3572,7 +3572,7 @@
 	}
 	"Avangard's Processing Core-B Desc"
 	{
-		"en"	"Cleared Victoria before the update!\nThank you for Waiting Update.\nYou deserve this trophy.\n-No longer Get this Trophy"
+		"en"	"After destroying the Radiomast at the Victorian outpost, along with the soldiers there, you find this on the ground. drop by one of the Avanguards we killed."
 		"ko"	"업데이트 이전 빅토리아를 클리어했습니다!\n업데이트를 기다려주셔서 감사합니다.\n이 트로피를 받을 자격이 충분합니다.\n-이제 이 트로피는 획득할 수 없습니다."
 	}
 	"Copycat Truthful Evidence"
