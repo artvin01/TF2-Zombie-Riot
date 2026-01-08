@@ -52,7 +52,8 @@ bool NPC_SpawnNext(bool panzer,
  bool panzer_warning,
   int WaveWhich = Rounds_Default,
    float vecPos[3] = {0.0,0.0,0.0},
-   int& NpcForward = -1)
+   int& NpcForward = -1,
+   bool IgnoreNpcLimit = false)
 {
 	//vecPos will allow you to override any spawners that exist, so it will only spawn from this location
 	//this is only used for the const2_spawner npc.
@@ -189,7 +190,7 @@ bool NPC_SpawnNext(bool panzer,
 		}
 	}
 	//emercency stop. 
-	if((EnemyNpcAlive - EnemyNpcAliveStatic) >= MaxEnemiesAllowedSpawnNext())
+	if(!IgnoreNpcLimit && (EnemyNpcAlive - EnemyNpcAliveStatic) >= MaxEnemiesAllowedSpawnNext())
 	{
 		return false;
 	}

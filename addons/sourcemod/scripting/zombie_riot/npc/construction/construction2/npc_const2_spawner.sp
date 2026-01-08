@@ -82,6 +82,28 @@ methodmap Const2Spawner < CClotBody
 	}
 	public Const2Spawner(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
+		char DataAm[512];
+		char buffers[2][256];
+		bool EnemyBaseIs = false;
+		Format(DataAm, sizeof(DataAm), "%s", data);
+		PrintToChatAll("DataAm: %s",DataAm);
+		if(StrContains(DataAm, ";enemy_base") != -1)
+		{
+			PrintToChatAll("confirm enemy_base");
+			EnemyBaseIs = true;
+			ReplaceString(DataAm, sizeof(DataAm), ";enemy_base", "");
+		}
+		/*
+			0 : WaveData
+			1 : Location
+		*/
+
+		ExplodeString(DataAm, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+	//	if(buffers[0][0])
+	//		ExplodeString(buffers[0], " ", DataAm, sizeof(DataAm));
+		if(buffers[1][0])
+			ExplodeStringFloat(buffers[1], " ", vecPos, sizeof(vecPos));
+
 		Const2Spawner npc = view_as<Const2Spawner>(CClotBody(vecPos, vecAng, "models/editor/ground_node.mdl", "1.0", "999999999", ally, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
@@ -150,17 +172,10 @@ methodmap Const2Spawner < CClotBody
 		}
 		Const2SpawnerEnum edata;
 		// Create a new entry
-		npc.m_bEnemyBase = false;
-		char DataAm[512];
-		
-		Format(DataAm, sizeof(DataAm), "%s", data);
-		if(StrContains(DataAm, "enemy_base") != -1)
-		{
-			npc.m_bEnemyBase = true;
-			ReplaceString(DataAm, sizeof(DataAm), "enemy_base;", "");
-		}
+		npc.m_bEnemyBase = EnemyBaseIs;
+
 		edata.SpawnerAmRef = EntIndexToEntRef(npc.index);
-		Format(edata.DataWave, sizeof(edata.DataWave), "%s", DataAm);
+		Format(edata.DataWave, sizeof(edata.DataWave), "%s", buffers[0]);
 		edata.SpawnerArrayAm = SpawnArrayFree;
 		hConst2_SpawnerSaveWave.PushArray(edata);
 		
@@ -205,8 +220,9 @@ static void ClotThink(int iNPC)
 				{
 					if(npc.m_bEnemyBase)
 					{
-						if((EnemyNpcAliveConst2) >= MaxEnemiesAllowedSpawnNext())
-						{
+						if(EnemyNpcAliveConst2 >= MaxEnemiesAllowedSpawnNext())
+						{	
+							PrintToChatAll("MaxSpawnsConst2");
 							return;
 						}
 					}
@@ -219,7 +235,7 @@ static void ClotThink(int iNPC)
 						PosRand = SpawnLocation;
 
 					int NpcForward = -1;
-					if(NPC_SpawnNext(false, false, npc.m_iSpawnerAm, PosRand, NpcForward))
+					if(NPC_SpawnNext(false, false, npc.m_iSpawnerAm, PosRand, NpcForward, npc.m_bEnemyBase))
 					{
 						//We keep track of static NPCS.
 						if(npc.m_bEnemyBase && IsValidEntity(NpcForward))
