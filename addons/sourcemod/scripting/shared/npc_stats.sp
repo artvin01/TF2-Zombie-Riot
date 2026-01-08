@@ -9859,7 +9859,6 @@ public void KillNpc(int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity)) //Dont do this in a think pls.
 	{
-		LogStackTrace("test");
 #if defined RPG
 		NPC_Despawn(entity);
 #endif

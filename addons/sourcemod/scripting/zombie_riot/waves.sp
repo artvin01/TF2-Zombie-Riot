@@ -17,7 +17,7 @@ enum struct Enemy
 	int Team;
 	int Index;
 	float Credits;
-	char Data[64];
+	char Data[128];
 	float ExtraMeleeRes;
 	float ExtraRangedRes;
 	float ExtraSpeed;
