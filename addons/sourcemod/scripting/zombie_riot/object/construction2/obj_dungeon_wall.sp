@@ -257,6 +257,20 @@ static bool ClotCanBuild3(int client, int &count, int &maxcount)
 	return true;
 }
 
+bool ObjectDWall_IsId(int id)
+{
+	if(NPCId1 == i_NpcInternalId[entity])
+		return true;
+	
+	if(NPCId2 == i_NpcInternalId[entity])
+		return true;
+	
+	if(NPCId3 == i_NpcInternalId[entity])
+		return true;
+	
+	return false;
+}
+
 static int CountBuildings()
 {
 	int count;

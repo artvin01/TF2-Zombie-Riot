@@ -85,7 +85,6 @@ methodmap DungeonLoot < CClotBody
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
-	//	b_StaticNPC[npc.index] = !FinalSubWave();
 		AddNpcToAliveList(npc.index, 1);
 		
 		b_NpcUnableToDie[npc.index] = true;
@@ -102,30 +101,10 @@ methodmap DungeonLoot < CClotBody
 	}
 }
 
-
 static void ClotThink(int entity)
 {
-	f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 1.50;
-	/*
-	// Delay winning the last round
-	if(!b_StaticNPC[entity] || !FinalSubWave())
-		return;
-	
-	RemoveFromNpcAliveList(entity);
-	b_StaticNPC[entity] = false;
-	AddNpcToAliveList(entity, 0);
-	*/
-}
-
-static bool FinalSubWave()
-{
-	if(CurrentRound[Rounds_Default] < (Waves_GetMaxRound(true) - 1))
-		return false;
-	
-	if(CurrentWave[Rounds_Default] < (Waves_GetMaxSubRound() - 1))
-		return false;
-	
-	return true;
+	if(!b_StaticNPC[entity])
+		f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 1.50;
 }
 
 static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

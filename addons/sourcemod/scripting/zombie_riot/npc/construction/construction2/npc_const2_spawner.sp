@@ -242,7 +242,7 @@ static void ClotThink(int iNPC)
 				{
 					float SpawnLocation[3];
 					GetAbsOrigin(npc.index, SpawnLocation);
-					Dungeon_WaveEnd(SpawnLocation);
+					Dungeon_WaveEnd(SpawnLocation, npc.m_bEnemyBase);
 				}
 			}
 		}

@@ -354,6 +354,7 @@ static float BattleTimelimit;
 static float DelayVoteFor;
 static int CurrentRoomIndex = -1;
 static int NextRoomIndex = -1;
+static int CurrentBaseIndex = -1;
 static float BattleWaveScale;
 static float EnemyScaling;
 static DungeonZone LastZone[MAXENTITIES];
@@ -668,6 +669,7 @@ void Dungeon_RoundEnd()
 	CurrentAttacks = 0;
 	CurrentRoomIndex = -1;
 	NextRoomIndex = -1;
+	CurrentBaseIndex = -1;
 	DelayVoteFor = 0.0;
 	delete GameTimer;
 	AttackType = 0;
@@ -1048,6 +1050,8 @@ static Action DungeonMainTimer(Handle timer)
 		}
 		else if(AttackType == 1)
 		{
+			CheckRivalStatus();
+
 			/*
 				Check if anyone out on the field is alive
 			*/
@@ -1078,28 +1082,9 @@ static Action DungeonMainTimer(Handle timer)
 			/*
 				Create new rival base if one is currently dead
 			*/
-			bool alive = time < 100.0;
-			if(!alive)
-			{
-				for(int i; i < i_MaxcountNpcTotal; i++)
-				{
-					int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-					if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-					{
-						DungeonZone zone = Dungeon_GetEntityZone(entity);
-						if(zone == Zone_RivalBase)
-						{
-							if(GetTeam(entity) != TFTeam_Red)
-							{
-								alive = true;
-								break;
-							}
-						}
-					}
-				}
-			}
+			bool alive = CheckRivalStatus();
 
-			if(!alive)
+			if(!alive && time > 100.0)
 			{
 				CreateNewRivals();
 			}
@@ -1134,9 +1119,12 @@ static Action DungeonMainTimer(Handle timer)
 		Raid Attack
 	*/
 
+	CheckRivalStatus();
+
 	CurrentAttacks++;
 	CurrentRoomIndex = -1;
 	NextRoomIndex = -1;
+	CurrentBaseIndex = -1;
 	EnemyScaling = 0.0;
 
 	int index = -1;
@@ -1456,12 +1444,12 @@ static void CreateNewRivals()
 		return;
 	}
 		
-	int index = roomPool.Get(GetURandomInt() % length);
+	CurrentBaseIndex = roomPool.Get(GetURandomInt() % length);
 	delete roomPool;
 
-	BaseList.GetArray(index, room);
+	BaseList.GetArray(CurrentBaseIndex, room);
 	room.CurrentCooldown = room.Cooldown + GetGameTime();
-	BaseList.SetArray(index, room);
+	BaseList.SetArray(CurrentBaseIndex, room);
 
 	bool found;
 
@@ -1515,6 +1503,39 @@ static void CreateNewRivals()
 	Dungeon_DelayVoteFor(time + 5.0);
 	
 	TeleportToFrom(Zone_RivalBase, Zone_RivalBase);
+}
+
+// Returns true if an base is ongoing
+static bool CheckRivalStatus()
+{
+	if(CurrentBaseIndex == -1)
+		return false;
+	
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(entity == INVALID_ENT_REFERENCE || !IsEntityAlive(entity))
+			continue;
+		
+		DungeonZone zone = Dungeon_GetEntityZone(entity);
+		if(zone != Zone_RivalBase)
+			continue;
+		
+		if(GetTeam(entity) == TFTeam_Red)
+			continue;
+		
+		if(ObjectDWall_IsId(i_NpcInternalId[entity]))
+			continue;
+
+		return true;
+	}
+
+	RoomInfo room;
+	BaseList.GetArray(CurrentBaseIndex, room);
+	room.RollLoot(NULL_VECTOR);
+
+	CurrentBaseIndex = -1;
+	return false;
 }
 
 static void TeleportToFrom(DungeonZone tele, DungeonZone from1 = Zone_Unknown, DungeonZone from2 = Zone_MAX, DungeonZone from3 = Zone_MAX)
@@ -1746,16 +1767,27 @@ static void BattleLosted()
 	ZoneMarkerRef[Zone_Dungeon] = -1;
 }
 
-void Dungeon_WaveEnd(const float spawner[3] = NULL_VECTOR)
+void Dungeon_WaveEnd(const float spawner[3] = NULL_VECTOR, bool rivalBase = false)
 {
 	if(!Dungeon_Mode())
 		return;
+	
 	if(!RoomList)
 	{
 		PrintToChatAll("Dungeon_WaveEnd failed???");
 		return;
 	}
-	if(CurrentRoomIndex != -1 && AttackType == 1)
+
+	if(rivalBase)
+	{
+		if(CurrentBaseIndex != -1)
+		{
+			RoomInfo room;
+			RoomList.GetArray(CurrentBaseIndex, room);
+			room.RollLoot(spawner);
+		}
+	}
+	else if(CurrentRoomIndex != -1 && AttackType == 1)
 	{
 		RoomInfo room;
 		RoomList.GetArray(CurrentRoomIndex, room);
