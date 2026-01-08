@@ -1,9 +1,8 @@
 "UnlitGeneric"
 {
-	"$baseTexture" "hud/leaderboard_class_mark_sniper_r1"
+	"$basetexture" "hud/leaderboard_class_mark_sniper_r1"
 	"$vertexcolor" 1
 	"$no_fullbright" 1
 	"$ignorez" 1
-	"%keywords" "tf"
 	"$translucent" 1
 }
