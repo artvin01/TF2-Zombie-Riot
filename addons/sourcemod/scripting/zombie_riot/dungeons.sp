@@ -21,7 +21,7 @@ enum struct DMusicInfo
 	int Common;
 	int MinAttack;
 	int MaxAttack;
-	int Duration;
+	//int Duration;
 	char Key[64];
 	MusicEnum Music;
 
@@ -30,8 +30,8 @@ enum struct DMusicInfo
 		if(!this.Music.SetupKv("", kv))
 			return false;
 		
-		this.Duration = this.Music.Time;
-		this.Music.Time = 9999;
+		//this.Duration = this.Music.Time;
+		//this.Music.Time = 9999;
 		this.Common = kv.GetNum("common", 1);
 		this.MinAttack = kv.GetNum("minattack", -9999);
 		this.MaxAttack = kv.GetNum("maxattack", 9999);
@@ -819,7 +819,7 @@ static void SetRandomMusic()
 	MusicList.GetArray(length, music);
 
 	int time = GetTime();
-	int nextAttack = RoundToCeil(NextAttackAt - GetGameTime()) - music.Duration;
+//	int nextAttack = RoundToCeil(NextAttackAt - GetGameTime()) - music.Duration;
 
 //	if(nextAttack > 0)
 //		time += GetRandomInt(0, nextAttack);
@@ -833,7 +833,7 @@ static void SetRandomMusic()
 		}
 	}
 
-	PrintToChatAll("SetRandomMusic %d '%s'", time - GetTime(), music.Music.Path);
+	PrintToChatAll("SetRandomMusic '%s'", music.Music.Path);
 	music.Music.CopyTo(BGMusicSpecial1);
 }
 
