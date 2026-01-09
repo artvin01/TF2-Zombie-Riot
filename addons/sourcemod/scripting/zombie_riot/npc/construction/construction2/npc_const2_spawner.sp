@@ -189,7 +189,8 @@ static void ClotThink(int iNPC)
 	Const2Spawner npc = view_as<Const2Spawner>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
-	f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 1.5;
+	if(!npc.m_bEnemyBase)
+		f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 1.5;
 	
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
@@ -221,7 +222,6 @@ static void ClotThink(int iNPC)
 					{
 						if(EnemyNpcAliveConst2 >= MaxEnemiesAllowedSpawnNext())
 						{	
-							PrintToChatAll("MaxSpawnsConst2");
 							return;
 						}
 					}

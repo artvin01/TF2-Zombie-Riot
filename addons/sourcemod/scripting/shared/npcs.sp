@@ -52,13 +52,13 @@ bool NPC_SpawnNext(bool panzer,
  bool panzer_warning,
   int WaveWhich = Rounds_Default,
    float vecPos[3] = {0.0,0.0,0.0},
-   int& NpcForward = -1,
-   bool IgnoreNpcLimit = false)
+    int& NpcForward = -1,
+     bool IgnoreNpcLimit = false)
 {
 	//vecPos will allow you to override any spawners that exist, so it will only spawn from this location
 	//this is only used for the const2_spawner npc.
 	float GameTime = GetGameTime();
-	if(f_DelaySpawnsForVariousReasons > GameTime)
+	if(WaveWhich == Rounds_Default && f_DelaySpawnsForVariousReasons > GameTime)
 	{
 		return false;
 	}
@@ -190,9 +190,10 @@ bool NPC_SpawnNext(bool panzer,
 		}
 	}
 	//emercency stop. 
-	if(!IgnoreNpcLimit && (EnemyNpcAlive - EnemyNpcAliveStatic) >= MaxEnemiesAllowedSpawnNext())
+	if(!IgnoreNpcLimit)
 	{
-		return false;
+	 	if((EnemyNpcAlive - EnemyNpcAliveStatic) >= MaxEnemiesAllowedSpawnNext())
+			return false;
 	}
 
 	float pos[3], ang[3];
@@ -350,16 +351,8 @@ bool NPC_SpawnNext(bool panzer,
 					npcstats.m_bStaticNPC = enemy.Is_Static;
 					if(enemy.Is_Static && enemy.Team != TFTeam_Red)
 						AddNpcToAliveList(entity_Spawner, 1);
-					/*
-					if(!npcstats.m_bStaticNPC)
-					{
-						if(enemy.Is_Static && enemy.Team != TFTeam_Red)
-						{
-							npcstats.m_bStaticNPC = enemy.Is_Static;
-							AddNpcToAliveList(entity_Spawner, 1);
-						}
-					}
-					*/
+
+
 					//if its an ally and NOT static, itll teleport to a player!
 					if(enemy.Team == TFTeam_Red && !enemy.Is_Static)
 					{

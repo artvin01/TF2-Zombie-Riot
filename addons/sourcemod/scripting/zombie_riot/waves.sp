@@ -2081,8 +2081,11 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 		CvarNoRoundStart.BoolValue ? 0 : 1,
 		GameRules_GetRoundState() == RoundState_BetweenRounds ? 0 : 1,
 		Cooldown > GetGameTime() ? 0 : 1);*/
-	
-	if(InSetup || !Rounds[WaveWhich] || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime() || BetWar_Mode())
+
+	if(WaveWhich == Rounds_Default)
+		if(InSetup || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime() || BetWar_Mode())
+			return false;
+	if(!Rounds[WaveWhich])
 		return false;
 	Cooldown = GetGameTime();
 	ProgressTimerEndAt = 0.0;

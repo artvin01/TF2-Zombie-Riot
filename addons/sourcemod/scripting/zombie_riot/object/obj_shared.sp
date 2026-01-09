@@ -645,7 +645,7 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		Call_Finish();
 	}
 
-	if(GetTeam(objstats.index) != TFTeam_Red)
+	if(GetTeam(objstats.index) == TFTeam_Red)
 		BuildingUpdateTextHud(objstats.index);
 
 	int health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
