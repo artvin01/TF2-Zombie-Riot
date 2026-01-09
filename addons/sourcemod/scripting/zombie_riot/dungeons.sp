@@ -1743,6 +1743,8 @@ void Dungeon_BattleVictory()
 	AttackType = 0;
 	Dungeon_DelayVoteFor(20.0);
 
+	Const2_ReviveAllBuildings();
+
 	ZoneMarkerRef[Zone_Dungeon] = -1;
 }
 

@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static ArrayList hConst2_SpawnerSaveWave;
+ArrayList hConst2_SpawnerSaveWave;
 
 enum struct Const2SpawnerEnum
 {
@@ -88,7 +88,6 @@ methodmap Const2Spawner < CClotBody
 		Format(DataAm, sizeof(DataAm), "%s", data);
 		if(StrContains(DataAm, ";enemy_base") != -1)
 		{
-			PrintToChatAll("confirm enemy_base");
 			EnemyBaseIs = true;
 			ReplaceString(DataAm, sizeof(DataAm), ";enemy_base", "");
 		}

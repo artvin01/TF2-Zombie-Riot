@@ -75,6 +75,7 @@ void Object_MapStart()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
+	PrecacheModel("models/props_debris/concrete_debris128pile001a.mdl");
 	Zero2(f_TransmitDelayCheck);
 }
 void Object_PluginStart()
@@ -357,6 +358,24 @@ methodmap ObjectGeneric < CClotBody
 			else
 			{
 				i_Wearable[this.index][1] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+	property int m_iConstructDeathModel
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_Wearable[this.index][8]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_Wearable[this.index][8] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_Wearable[this.index][8] = EntIndexToEntRef(iInt);
 			}
 		}
 	}
@@ -645,8 +664,7 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		Call_Finish();
 	}
 
-	if(GetTeam(objstats.index) == TFTeam_Red)
-		BuildingUpdateTextHud(objstats.index);
+	BuildingUpdateTextHud(objstats.index);
 
 	int health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
 	int maxhealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
@@ -671,9 +689,9 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 
 	if(GetTeam(objstats.index) != TFTeam_Red)
 		return false;
-	
+
 	int owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
-	if(owner == -1)
+	if(owner == -1 && !objstats.m_bConstructBuilding)
 	{
 		//give 30 sec untill it destroys itself
 		if(objstats.LastTimeClaimed + 30.0 < GetGameTime())
@@ -1087,9 +1105,75 @@ void DestroyBuildingDo(int entity, bool DontCheckAgain = false)
 	pack.WriteFloat(VecOrigin[2]);
 	pack.WriteCell(0);
 	RequestFrame(MakeExplosionFrameLater, pack);
+	if(Const2_BuildingDestroySpecial(entity))
+	{
+		return;
+	}
+
 	RemoveEntity(entity);
 }
 
+bool Const2_BuildingDestroySpecial(int entity)
+{
+	if(!Dungeon_Mode())
+		return false;
+	if(GetTeam(entity) != TFTeam_Red)
+		return false;
+	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	if(!objstats.m_bConstructBuilding)
+		return false;
+
+	if(IsValidEntity(objstats.m_iConstructDeathModel))
+		return true;
+
+	//already in ignoring, stop
+	if(b_ThisEntityIgnored[objstats.index])
+		return false;
+
+	b_ThisEntityIgnored[objstats.index] = true;
+	objstats.m_iConstructDeathModel = objstats.EquipItemSeperate("models/props_debris/concrete_debris128pile001a.mdl", .model_size = 0.75, .DontParent = true);
+	if(IsValidEntity(objstats.index))
+		SetEntityRenderMode(objstats.index, RENDER_NONE);
+	if(IsValidEntity(objstats.m_iWearable1))
+		SetEntityRenderMode(objstats.m_iWearable1, RENDER_NONE);
+	ExtinguishTarget(objstats.index);
+	objstats.m_flNextDelayTime = FAR_FUTURE;
+	//dont destroy. deactivate.
+	return true;
+}
+void Const2_ReviveAllBuildings()
+{
+	LogStackTrace("Const2_ReviveAllBuildings");
+	int entity = -1;
+	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
+	{
+		Const2_ReConstructBuilding(entity);
+	}
+}
+bool Const2_ReConstructBuilding(int entity)
+{
+	if(!Dungeon_Mode())
+		return false;
+	if(GetTeam(entity) != TFTeam_Red)
+		return false;
+	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	if(!objstats.m_bConstructBuilding)
+		return false;
+
+	if(!IsValidEntity(objstats.m_iConstructDeathModel))
+		return false;
+	RemoveEntity(objstats.m_iConstructDeathModel);
+	b_ThisEntityIgnored[objstats.index] = false;
+	if(IsValidEntity(objstats.index))
+		SetEntityRenderMode(objstats.index, RENDER_NORMAL);
+	if(IsValidEntity(objstats.m_iWearable1))
+		SetEntityRenderMode(objstats.m_iWearable1, RENDER_NORMAL);
+	objstats.m_flNextDelayTime = 0.0;
+	SetEntProp(objstats.index, Prop_Data, "m_iHealth", GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth"));
+	SetEntProp(objstats.index, Prop_Data, "m_iRepair", GetEntProp(objstats.index, Prop_Data, "m_iRepairMax"));
+	return true;
+
+}
 public void ObjBaseThinkPost(int building)
 {
 	CBaseCombatCharacter(building).SetNextThink(GetGameTime() + 0.1);
@@ -1139,6 +1223,12 @@ void BuildingUpdateTextHud(int building)
 
 	//nope.
 	if(IsValidEntity(objstats.m_iMasterBuilding))
+	{
+		if(IsValidEntity(objstats.m_iWearable2))
+			RemoveEntity(objstats.m_iWearable2);
+		return;
+	}
+	if(GetTeam(objstats.index) != TFTeam_Red || objstats.m_bConstructBuilding)
 	{
 		if(IsValidEntity(objstats.m_iWearable2))
 			RemoveEntity(objstats.m_iWearable2);

@@ -122,8 +122,19 @@ public Action Building_GiveLayout(int client, int args)
 	int a, entity;
 	while((entity = FindEntityByNPC(a)) != -1)
 	{
+		bool WasASpawner = false;
 		if(!i_NpcIsABuilding[entity])
 			continue;
+		if (GetTeam(entity) == TFTeam_Red)
+			continue;
+
+		if(i_NpcInternalId[entity] == Const2Spawner_Id())
+		{
+			Const2Spawner Snpc = view_as<Const2Spawner>(entity);
+			if(!Snpc.m_bEnemyBase)
+				continue;
+			WasASpawner = true;
+		}
 		
 		float pos[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
@@ -132,16 +143,44 @@ public Action Building_GiveLayout(int client, int args)
 		char buffer2[128];
 		int health = ReturnEntityMaxHealth(entity);
 		NPC_GetPluginById(i_NpcInternalId[entity], buffer2, sizeof(buffer2));
-		Format(buffer, sizeof(buffer), "		\"0.01\""
-		... "\n		{"
-		... "\n			\"count\"			\"0\""
-		... "\n			\"health\"		\"%i\""
-		... "\n			\"extra_damage\"	\"1.0\""
-		... "\n			\"is_health_scaling\"	\"1.0\""
-		... "\n			\"plugin\"		\"npc_const2_building_spawner\""
-		... "\n			\"spawn\"			\"enemy_base_point\""
-		... "\n			\"data\"			\"%s;_;%.0f %.0f %.0f;%.0f %.0f %.0f\""
-		... "\n		}", health, buffer2, pos[0], pos[1], pos[2], ang[0], ang[1], ang[2]);
+		if(WasASpawner)
+		{
+			
+			Const2SpawnerEnum Initdata;
+			int length = hConst2_SpawnerSaveWave.Length;
+			char DataSave[512];
+			for(int i; i < length; i++)
+			{
+				// Loop through the arraylist to find the right attacker and victim
+				hConst2_SpawnerSaveWave.GetArray(i, Initdata);
+				if(Initdata.SpawnerAmRef == EntIndexToEntRef(entity))
+				{
+					Format(DataSave, sizeof(DataSave), "%s", Initdata.DataWave);
+				}
+			}
+
+			Format(buffer, sizeof(buffer), "		\"0.01\""
+			... "\n		{"
+			... "\n			\"count\"				\"1\""
+			... "\n			\"does_not_scale\"	\"1\""
+			... "\n			\"plugin\"			\"npc_const2_spawner\""
+			... "\n			\"spawn\"				\"enemy_base_point\""
+			... "\n			\"data\"				\"%s;%.0f %.0f %.0f;enemy_base\""
+			... "\n		}", DataSave, pos[0], pos[1], pos[2]);
+		}
+		else
+		{
+			Format(buffer, sizeof(buffer), "		\"0.01\""
+			... "\n		{"
+			... "\n			\"count\"				\"0\""
+			... "\n			\"health\"			\"%i\""
+			... "\n			\"extra_damage\"		\"1.0\""
+			... "\n			\"is_health_scaling\"	\"1.0\""
+			... "\n			\"plugin\"			\"npc_const2_building_spawner\""
+			... "\n			\"spawn\"				\"enemy_base_point\""
+			... "\n			\"data\"				\"%s;_;%.0f %.0f %.0f;%.0f %.0f %.0f\""
+			... "\n		}", health, buffer2, pos[0], pos[1], pos[2], ang[0], ang[1], ang[2]);
+		}
 		file.WriteLine(buffer);
 	}
 	Format(buffer, sizeof(buffer), "\n	}"

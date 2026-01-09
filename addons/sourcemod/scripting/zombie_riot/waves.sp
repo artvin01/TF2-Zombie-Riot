@@ -2085,12 +2085,16 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 	if(WaveWhich == Rounds_Default)
 		if(InSetup || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime() || BetWar_Mode())
 			return false;
+			
 	if(!Rounds[WaveWhich])
 		return false;
-	Cooldown = GetGameTime();
-	ProgressTimerEndAt = 0.0;
+		
 	if(WaveWhich == Rounds_Default)
+	{
+		Cooldown = GetGameTime();
+		ProgressTimerEndAt = 0.0;
 		delete WaveTimer;
+	}
 	
 	Round round;
 	Wave wave;

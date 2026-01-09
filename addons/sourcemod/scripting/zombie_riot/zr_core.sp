@@ -1412,9 +1412,7 @@ public Action CommandDebugHudTest(int client, int args)
 		ReplyToCommand(client, "[SM] Usage: sm_displayhud <number>");
 	        return Plugin_Handled;
 	}
-
-	int Number = GetCmdArgInt(1);
-	Medival_Wave_Difficulty_Riser(Number);
+	Const2_ReviveAllBuildings();
 	return Plugin_Handled;
 }
 
