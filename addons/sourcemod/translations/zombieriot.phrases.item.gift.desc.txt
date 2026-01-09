@@ -3585,4 +3585,52 @@
 		"en"	"This is a Copy of the evidence received from Sensal.\nSee some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Victoria invaded Ziberia.\nyou became the primary target of Victorians due to this…"
 		"ko"	"센살에게 받은 진실된 증거자료[사본] 입니다.\n이해못할 단어들이 보이지만 숨겨진 뜻이 있는거 같습니다. 이것이 빅토리아가 지베리아를 침공한 이유 같습니다.\n하지만 이것이 빅토리아인들과의 트러블을 만들었습니다."
 	}
+	"Dropped Secret Letter"
+	{
+		"en"	"Dropped Secret Letter"
+	}
+	"Dropped Secret Letter Desc"
+	{
+		"en"	"Dropped on the floor after beating Blitz’s army. Written on it is someone pleading for help from this machine? And it’s signed by someone named Karlas?"
+	}
+	"Xeno Virus Sample"
+	{
+		"en"	"Xeno Virus Sample"
+	}
+	"Xeno Virus Sample Desc"
+	{
+		"en"	"A sample of the Xeno virus after we beat them in Xeno Survival. Maybe this will help us find the source of the infection."
+	}
+	"Son of Osiris’s Gift"
+	{
+		"en"	"Son of Osiris’s Gift"
+	}
+	"Son of Osiris’s Gift Desc"
+	{
+		"en"	"Osiris gives us this for helping him and the rest of Alaxios’s army train. It’s a book on how to become a Brawler…"
+	}
+	"Broken Expidonsan Tech"
+	{
+		"en"	"Broken Expidonsan Tech"
+	}
+	"Broken Expidonsan Tech Desc"
+	{
+		"en"	"Broken off one of the elite rogue expidonsans. It appears to be stronger than Sensal's tech, at least by the look of it."
+	}
+	"Major Voided’s Hat"
+	{
+		"en"	"Major Voided’s Hat"
+	}
+	"Major Voided’s Hat Desc"
+	{
+		"en"	"Somehow still intact after the explosion. A bit big but still usable."
+	}
+	"Drop"
+	{
+		"en"	"Drop"
+	}
+	"Drop Desc"
+	{
+		"en"	"Drop"
+	}
 }
