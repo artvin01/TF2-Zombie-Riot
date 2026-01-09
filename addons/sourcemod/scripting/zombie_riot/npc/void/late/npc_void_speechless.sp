@@ -202,7 +202,6 @@ methodmap VoidSpeechless < CClotBody
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 7);
 		npc.m_flAttackspeedIncrease = 1.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 330.0;
 		
 		
 		int skin = 1;
@@ -621,7 +620,6 @@ void ExpidonsanExplorerLifeLoss(VoidSpeechless npc)
 		ApplyStatusEffect(npc.index, npc.index, "Anti-Waves", 99999.0);
 		ApplyStatusEffect(npc.index, npc.index, "Expidonsan Anger", 99999.0);
 		ApplyStatusEffect(npc.index, npc.index, "Zilius Prime Technology", 99999.0);
-		npc.m_flSpeed = 330.0;
 		if(i_RaidGrantExtra[npc.index] == 1)
 		{
 			CPrintToChatAll("{violet}Speechless{default}: Zilius was right... Im sorry...\n{purple}It takes full controll of The expidonsans body.");
@@ -643,4 +641,6 @@ void ExpidonsanExplorerScaleAttackspeed(VoidSpeechless npc, float Addition)
 
 	if(npc.m_flAttackspeedIncrease >= 1.0)
 		npc.m_flAttackspeedIncrease = 1.0;
+		
+	npc.m_flSpeed = 330.0 * npc.m_flAttackspeedIncrease;
 }

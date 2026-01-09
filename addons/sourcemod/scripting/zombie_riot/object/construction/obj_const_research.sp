@@ -52,6 +52,13 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	if(client)
 	{
 		count = CountBuildings();
+		
+		if(!Construction_Mode())
+		{
+			maxcount = 0;
+			return false;
+		}
+
 		maxcount = 1;
 		if(count >= maxcount)
 			return false;

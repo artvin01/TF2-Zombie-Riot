@@ -75,7 +75,6 @@ static const char g_MalfunctionParticleAttachments[][] = {
 };
 
 static const char g_DeployBeaconSound[] = "mvm/sentrybuster/mvm_sentrybuster_intro.wav";
-static const char g_MeleeHitChargeSound[] = "weapons/vaccinator_charge_tier_02.wav";
 
 static const char g_RocketFiringSound[] = "weapons/sentry_rocket.wav";
 static const char g_RocketLandingSound[] = "weapons/flare_detonator_launch.wav";
@@ -110,7 +109,7 @@ static int i_EnemyHitByThisManyBullets[MAXENTITIES];
 #define ARIS_WEAPON_SWITCH_COOLDOWN 15.0
 
 #define ARIS_WEAPON_SHOOT_COOLDOWN 2.0
-#define ARIS_WEAPON_SHOOT_DELAY 0.7 		// Delay between aiming and firing weapon
+#define ARIS_WEAPON_SHOOT_DELAY 0.85 		// Delay between aiming and firing weapon
 #define ARIS_WEAPON_SPECIAL_COOLDOWN_INITIAL 6.0
 #define ARIS_WEAPON_SPECIAL_COOLDOWN 12.0
 
@@ -170,7 +169,6 @@ static void ClotPrecache()
 	PrecacheSound(g_SpecialRangedAttackSound);
 	
 	PrecacheSound(g_DeployBeaconSound);
-	PrecacheSound(g_MeleeHitChargeSound);
 	
 	PrecacheSound(g_SelfLaunchingSound);
 	
@@ -238,7 +236,6 @@ methodmap ARIS < CClotBody
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_MeleeHitChargeSound, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RoundToNearest(fClamp(80.0 + (this.m_iTimesHitWithMelee * 3.0), 80.0, 120.0)));
 	}
 	public void PlayRangedSound()
 	{
@@ -391,7 +388,7 @@ methodmap ARIS < CClotBody
 		public set(int TempValueForProperty) 	{ i_State[this.index] = TempValueForProperty; }
 	}
 	
-	property int m_iTimesHitWithMelee
+	property int m_iForcedWeaponSwitchHealthThreshold
 	{
 		public get()							{ return i_OverlordComboAttack[this.index]; }
 		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
@@ -421,6 +418,12 @@ methodmap ARIS < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
 	
+	property bool m_bHasCalculatedHealthThreshold
+	{
+		public get()							{ return b_FUCKYOU[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
+	}
+	
 	public ARIS(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		ARIS npc = view_as<ARIS>(CClotBody(vecPos, vecAng, "models/bots/soldier/bot_soldier.mdl", "1.45", "700", ally, false, true, true, true));
@@ -445,7 +448,7 @@ methodmap ARIS < CClotBody
 
 		npc.PlayPassiveSound();
 		
-		RaidModeTime = GetGameTime() + 200.0;
+		RaidModeTime = GetGameTime() + 220.0;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
@@ -602,9 +605,31 @@ public void ARIS_ClotThink(int iNPC)
 	
 	ARIS_RefreshAnimation(npc);
 	
+	if (!npc.m_bHasCalculatedHealthThreshold)
+	{
+		npc.m_bHasCalculatedHealthThreshold = true;
+		ARIS_SetNextForcedWeaponSwitchThreshold(npc);
+	}
+	
 	// If we're flying from our blast, hurt people in the way
 	if (npc.IsOnGround())
-		npc.m_bInFlightFromRangedAttack = false;
+	{
+		if (npc.m_bInFlightFromRangedAttack)
+		{
+			// We just landed from a shotgun blast, force a retarget
+			npc.m_iTarget = GetClosestTarget(npc.index);
+			npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
+			
+			npc.m_bInFlightFromRangedAttack = false;
+			
+			// Delay the next attack a little to give us the chance to adapt to the new target
+			if (npc.m_fbGunout)
+			{
+				npc.m_flNextRangedAttack = fmax(npc.m_flNextRangedAttack, gameTime + 1.25);
+				npc.m_flNextWeaponSwitch += 1.25;
+			}
+		}
+	}
 	else if (npc.m_bInFlightFromRangedAttack)
 	{
 		float damage = 10.0;
@@ -710,6 +735,10 @@ public void ARIS_ClotThink(int iNPC)
 				if (!NpcStats_IsEnemySilenced(npc.index)) // If we're silenced, we don't turn at all
 					npc.FaceTowards(vecTargetPos, 400.0);
 			}
+			else
+			{
+				npc.FaceTowards(vecTargetPos, 700.0);
+			}
 		}
 		
 		// Predict their pos when not loading our gun
@@ -739,7 +768,7 @@ static void ARIS_SelfDefense(ARIS npc, float gameTime, int target, float distanc
 	if (npc.m_fbGunout)
 	{
 		// Aiming self-defense logic is in ARIS.AttemptToShoot(), and actual shooting in ARIS.ShootGun()
-		if (distance < (ARIS_WEAPON_SHOOT_MAX_DISTANCE * ARIS_WEAPON_SHOOT_MAX_DISTANCE) / 1.15 && npc.m_flNextRangedAttack < gameTime)
+		if (distance < (ARIS_WEAPON_SHOOT_MAX_DISTANCE * ARIS_WEAPON_SHOOT_MAX_DISTANCE) * 0.5 && npc.m_flNextRangedAttack < gameTime)
 		{
 			float vecPos[3], vecTargetPos[3];
 			WorldSpaceCenter(npc.index, vecPos);
@@ -825,9 +854,6 @@ static void ARIS_SelfDefense(ARIS npc, float gameTime, int target, float distanc
 			if(PlaySound)
 			{
 				npc.PlayMeleeHitSound();
-				
-				// this also means we hit someone
-				npc.m_iTimesHitWithMelee++;
 			}
 		}
 	}
@@ -858,7 +884,8 @@ public Action ARIS_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 {
 	ARIS npc = view_as<ARIS>(victim);
 	
-	if (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	if (RoundToCeil(damage) >= health)
 	{
 		ARIS_DestroyDroppedBeacon(npc);
 		ARIS_ClearAllProjectiles(npc);
@@ -887,8 +914,12 @@ public Action ARIS_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 		return Plugin_Handled;
 	}
 	
-	if (!npc.m_bLostHalfHealth && (ReturnEntityMaxHealth(npc.index) / 2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+	if (!npc.m_bLostHalfHealth && (ReturnEntityMaxHealth(npc.index) / 2) >= health)
 		npc.m_bLostHalfHealth = true;
+	
+	// Force a weapon switch if we took too much damage while holding our melee and have no armor
+	if (!npc.m_fbGunout && npc.m_flArmorCount <= 0.0 && npc.m_iForcedWeaponSwitchHealthThreshold >= health + damage)
+		npc.m_flNextWeaponSwitch = GetGameTime(npc.index);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -1041,11 +1072,17 @@ static void ARIS_ToggleWeapon(ARIS npc)
 		ARIS_DropMelee(npc);
 		npc.m_iCurrentMelee++;
 		npc.m_iCurrentMelee = npc.m_iCurrentMelee % ARIS_MELEE_COUNT;
-		npc.m_iTimesHitWithMelee = 0;
+		
+		npc.m_bAllowBackWalking = true;
+		
+		ARIS_SetNextForcedWeaponSwitchThreshold(npc);
 	}
-	else if (!npc.m_bLostHalfHealth)
+	else
 	{
-		npc.m_flNextRocketBarrageStart = fmax(npc.m_flNextRocketBarrageStart, gameTime + 6.0);
+		npc.m_bAllowBackWalking = false;
+		
+		if (!npc.m_bLostHalfHealth)
+			npc.m_flNextRocketBarrageStart = fmax(npc.m_flNextRocketBarrageStart, gameTime + 6.0);
 	}
 	
 	npc.m_flNextWeaponSwitch = gameTime + ARIS_WEAPON_SWITCH_COOLDOWN;
@@ -1154,8 +1191,6 @@ static void ARIS_DropMelee(ARIS npc)
 		case ARIS_MELEE_SPEED: data = "speed";
 	}
 	
-	Format(data, 64, "%s;%d", data, npc.m_iTimesHitWithMelee);
-	
 	// This model is a bit too down low, let's raise it up
 	if (npc.m_iCurrentMelee == ARIS_MELEE_RESISTANCE)
 		vecTargetPos[2] += 50.0;
@@ -1246,10 +1281,8 @@ static bool ARIS_AttemptToShoot(ARIS npc, float vecPos[3], float vecTargetPos[3]
 		{
 			float vecBuffer[3];
 			WorldSpaceCenter(npc.m_iTarget, vecBuffer);
-			npc.FaceTowards(vecBuffer, 20000.0);
 		}
 		
-		npc.m_bAllowBackWalking = true;
 		npc.m_flSpeed = 50.0;
 	}
 	
@@ -1342,7 +1375,9 @@ public void ARIS_ShootGun(ARIS npc)
 	Handle trace = TR_TraceHullFilterEx(vecPos, vecPos, vecMins, vecMaxs, 1073741824, TraceFilter_ARIS_ShotgunBlast, npc.index);
 	delete trace;
 	
-	float armor;
+	float finalArmor;
+	int finalTarget;
+	
 	for (int target = 1; target < MAXENTITIES; target++)
 	{
 		float damage;
@@ -1352,7 +1387,7 @@ public void ARIS_ShootGun(ARIS npc)
 		if (bullets)
 		{
 			damage += 10.0 + (5.0 + (bullets - 1));
-			armorFromThisTarget += bullets * 0.005;
+			armorFromThisTarget += bullets * 0.006;
 			i_EnemyHitByThisManyBullets[target] = 0;
 		}
 		
@@ -1361,7 +1396,7 @@ public void ARIS_ShootGun(ARIS npc)
 		{
 			damage += 25.0;
 			Custom_Knockback(npc.index, target, 1200.0);
-			armorFromThisTarget += 0.01;
+			armorFromThisTarget += 0.012;
 			b_EnemyHitByBlast[target] = false;
 		}
 		damage *= 6.0;
@@ -1374,28 +1409,33 @@ public void ARIS_ShootGun(ARIS npc)
 			if (target > MaxClients)
 				armorFromThisTarget *= 0.2;
 			
-			armor += armorFromThisTarget;
-			
-			if (IsValidEntity(npc.m_iWearable1))
+			if (armorFromThisTarget > finalArmor)
 			{
-				float vecBufferAng[3];
-				WorldSpaceCenter(target, vecBuffer);
-				
-				GetVectorAnglesTwoPoints(vecBuffer, vecBarrelPos, vecBufferAng);
-				int particle = ParticleEffectAtWithRotation(vecBuffer, vecBufferAng, ARIS_WEAPON_ARMOR_RETURN_PARTICLE, 0.3);
-				
-				// Array netprop, but we only need element 0 anyway
-				SetEntPropEnt(particle, Prop_Send, "m_hControlPointEnts", npc.m_iWearable1, 0);
-				SetEntProp(particle, Prop_Send, "m_iControlPointParents", npc.m_iWearable1, _, 0);
-				CreateMediArmorBeam(target, npc.index);
+				finalTarget = target;
+				finalArmor = armorFromThisTarget;
 			}
 		}
 	}
 	
-	if (armor > 0.0)
+	// Only gain armor from the enemy that was hit the hardest
+	if (finalTarget && finalArmor > 0.0)
 	{
-		armor *= NpcDoHealthRegenScaling(npc.index);
-		GrantEntityArmor(npc.index, false, 1.0, 0.5, 0, ReturnEntityMaxHealth(npc.index) * armor);
+		finalArmor *= NpcDoHealthRegenScaling(npc.index);
+		GrantEntityArmor(npc.index, false, 1.0, 0.5, 0, ReturnEntityMaxHealth(npc.index) * finalArmor);
+		
+		if (IsValidEntity(npc.m_iWearable1))
+		{
+			float vecBufferAng[3];
+			WorldSpaceCenter(finalTarget, vecBuffer);
+			
+			GetVectorAnglesTwoPoints(vecBuffer, vecBarrelPos, vecBufferAng);
+			int particle = ParticleEffectAtWithRotation(vecBuffer, vecBufferAng, ARIS_WEAPON_ARMOR_RETURN_PARTICLE, 0.3);
+			
+			// Array netprop, but we only need element 0 anyway
+			SetEntPropEnt(particle, Prop_Send, "m_hControlPointEnts", npc.m_iWearable1, 0);
+			SetEntProp(particle, Prop_Send, "m_iControlPointParents", npc.m_iWearable1, _, 0);
+			CreateMediArmorBeam(finalTarget, npc.index);
+		}
 	}	
 	
 	// Launching ourselves backwards. We don't care if we're being blocked
@@ -1419,7 +1459,6 @@ public void ARIS_ShootGun(ARIS npc)
 	
 	npc.m_flNextWeaponSwitch = fmax(npc.m_flNextWeaponSwitch, GetGameTime(npc.index) + 1.0);
 	
-	npc.m_bAllowBackWalking = false;
 	npc.m_bInFlightFromRangedAttack = true;
 	
 	npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
@@ -1702,4 +1741,10 @@ public Action Timer_StopEmitting(Handle timer, any entid)
 		AcceptEntityInput(entity, "stop");
 	}
 	return Plugin_Stop;
+}
+
+static void ARIS_SetNextForcedWeaponSwitchThreshold(ARIS npc)
+{
+	const float maxHealthPercentageThreshold = 0.25;
+	npc.m_iForcedWeaponSwitchHealthThreshold = GetEntProp(npc.index, Prop_Data, "m_iHealth") - RoundToCeil(ReturnEntityMaxHealth(npc.index) * maxHealthPercentageThreshold);
 }

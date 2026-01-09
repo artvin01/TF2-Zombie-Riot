@@ -2014,9 +2014,10 @@ static void CitizenMenu(int client, int page = 0)
 
 					FormatEx(buffer, sizeof(buffer), "%t (%i/%i)", "Build Perk Machine At Me",BuildingsSee, MaxBuildingsSee);
 					menu.AddItem("19", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-
+					/*
 					FormatEx(buffer, sizeof(buffer), "%t (%i/%i)", "Build Pack-a-Punch At Me",BuildingsSee, MaxBuildingsSee);
 					menu.AddItem("20", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					*/
 				}
 			}
 			if(!npc.m_bHero && !TempRebel[npc.index])
@@ -3222,11 +3223,14 @@ public void Citizen_ClotThink(int iNPC)
 				// Replace with Perk or Pap if they don't exist
 				if(type != 6)
 				{
+					/*
 					if(Object_NamedBuildings(_, "obj_packapunch") == 0)
 					{
 						type = 11;
 					}
-					else if(Object_NamedBuildings(_, "obj_perkmachine") == 0)
+					else 
+					*/
+					if(Object_NamedBuildings(_, "obj_perkmachine") == 0)
 					{
 						type = 10;
 					}

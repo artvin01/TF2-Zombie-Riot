@@ -450,7 +450,7 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 		Overheat = 0.0;
 	else RocketDMG*=0.5;
 	VictoriaLauncher_HUDDelay[client]=0.0;
-	int entity = CreateEntityByName("zr_projectile_base");
+	int entity = CreateEntityByName("tf_projectile_rocket");
 	if(IsValidEntity(entity))
 	{
 		bHESH_BIG_BOOM[entity]=false;
@@ -513,8 +513,7 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 		if(h_NpcSolidHookType[entity] != 0)
 			DHookRemoveHookID(h_NpcSolidHookType[entity]);
 		h_NpcSolidHookType[entity] = 0;
-		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Tornado_RocketExplodePre);//I reused*2 code. I'm too lazy.
-		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre);//I reused*2 code. I'm too lazy.
 		SDKHook(entity, SDKHook_StartTouch, Victorian_HESH_Touch);
 		Better_Gravity_Rocket(entity, 55.0);
 		GetAbsOrigin(entity, Position);
@@ -625,7 +624,7 @@ public void Weapon_Victoria_Spe(int client, int weapon, bool crit, int slot)
 		bool R_AbilityBlock=false;
 		int building = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
 		if(building != -1 && Building_Collect_Cooldown[building][client]<=0.0
-		&& IsInteractionBuilding(client, building))
+		&& IsInteractionBuilding(building))
 		{
 			static float angles[3];
 			GetClientEyeAngles(client, angles);
@@ -762,14 +761,14 @@ static void VL_EYEParticle(int client)
 	}
 }
 
-bool IsInteractionBuilding(int client, int building)
+bool IsInteractionBuilding(int building)
 {
 	bool IsInteraction=false;
 	if(StrEqual(c_NpcName[building], "Ammo Box")||StrEqual(c_NpcName[building], "Armor Table")||StrEqual(c_NpcName[building], "Food Fridge")
 	||StrEqual(c_NpcName[building], "Perk Machine")||StrEqual(c_NpcName[building], "Merchant Brewing Stand")
 	||StrEqual(c_NpcName[building], "Merchant Grill")||StrEqual(c_NpcName[building], "Tinker Workshop"))
 		IsInteraction=true;
-	if(StrEqual(c_NpcName[building], "Pack-a-Punch") && Pap_WeaponCheck(client))
-		IsInteraction=true;
+	/*if(StrEqual(c_NpcName[building], "Pack-a-Punch") && Pap_WeaponCheck(client))
+		IsInteraction=true;*/
 	return IsInteraction;
 }

@@ -240,6 +240,8 @@ void DoTutorialStep(int client, bool obeycooldown)
 				}
 				case 5:
 				{
+					SetClientTutorialStep(client, 6);
+					/*
 					if(TeutonType[client] == TEUTON_NONE)
 					{
 						if(b_GrantFreeItemsOnce[client])
@@ -287,6 +289,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 
 						f_TutorialUpdateStep[client] = GetGameTime() + 20.0;
 					}
+					*/
 				}
 				case 6:
 				{

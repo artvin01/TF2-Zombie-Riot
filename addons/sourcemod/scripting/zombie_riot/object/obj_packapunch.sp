@@ -6,8 +6,8 @@ bool b_LastWeaponCheckBias[MAXPLAYERS];
 
 void ObjectPackAPunch_MapStart()
 {
+	
 	PrecacheModel("models/props_spytech/computer_low.mdl");
-
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Pack-a-Punch");
 	strcopy(data.Plugin, sizeof(data.Plugin), "obj_packapunch");
@@ -17,7 +17,8 @@ void ObjectPackAPunch_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
-
+	
+	/*
 	BuildingInfo build;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_packapunch");
 	build.Cost = 1000;
@@ -25,10 +26,13 @@ void ObjectPackAPunch_MapStart()
 	build.Cooldown = 60.0;
 	build.Func = ObjectGeneric_CanBuild;
 	Building_Add(build);
-
+	*/
+	
 	Zero(b_LastWeaponCheckBias);
 	Zero(f_CheckWeaponDelay);
 }
+
+
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {

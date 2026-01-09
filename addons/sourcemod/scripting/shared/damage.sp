@@ -7,11 +7,7 @@
 #define DMG_MEDIGUN_LOW 1.25
 #define DMG_WIDOWS_WINE 1.35
 
-float BarbariansMindNotif[MAXPLAYERS];
-void DamageModifMapStart()
-{
-	Zero(BarbariansMindNotif);
-}
+
 
 stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -80,6 +76,10 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &dama
 
 stock void Damage_AnyVictimPost(int victim, float &damage, int &damagetype)
 {
+	//the hud shouzldnt check this.
+	if(CheckInHud())
+		return;
+
 	if(!HasSpecificBuff(victim, "Expert's Mind"))
 		return;
 
@@ -113,6 +113,74 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 			else if(scale < 2)
 			{
 				damage *= 0.75;
+			}
+			//Hardcode cus lazy
+
+			if(Rogue_Theme() == ReilaRift)
+			{
+				switch(Rogue_GetFloor())
+				{
+					case 4:
+					{
+						if(Rogue_GetStage() == 0)
+						{
+							if(!Rogue_HasNamedArtifact("Map around the Castle"))
+							{
+								//dont give buff if under rift of fractured
+								damage *= 0.9;
+							}
+						}
+					}
+					case 1:
+					{
+						if(Rogue_GetStage() == 1)
+						{
+							damage *= 0.9;
+						}
+					}
+					default:
+					{
+						if(Rogue_GetStage() == 0)
+						{
+							damage *= 0.9;
+						}
+					}
+				}
+			}
+		}
+		else if (GetTeam(attacker) == TFTeam_Red)
+		{
+			//Hardcode cus lazy
+			if(Rogue_Theme() == ReilaRift)
+			{
+				switch(Rogue_GetFloor())
+				{
+					case 4:
+					{
+						if(Rogue_GetStage() == 0)
+						{
+							if(!Rogue_HasNamedArtifact("Map around the Castle"))
+							{
+								//dont give buff if under rift of fractured as the first stage is forced
+								damage *= 1.15;
+							}
+						}
+					}
+					case 1:
+					{
+						if(Rogue_GetStage() == 1)
+						{
+							damage *= 1.15;
+						}
+					}
+					default:
+					{
+						if(Rogue_GetStage() == 0)
+						{
+							damage *= 1.15;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -259,8 +327,8 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	}
 	
 #if defined ZR || defined NOG
-		//true damage does NOT Ignore this.
-		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,damagetype, i_HexCustomDamageTypes[victim], weapon);
+	//true damage does NOT Ignore this.
+	VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,damagetype, i_HexCustomDamageTypes[victim], weapon);
 #endif
 	OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon);
 	if(!CheckInHud())
@@ -274,6 +342,11 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		if(vehicle != -1)
 			armorEnt = vehicle;
 		
+		float ArmorDmgRes = ZR_ARMOR_DAMAGE_REDUCTION;
+		if(f_LivingArmorPenalty[victim] > GetGameTime() || (Attributes_Get(victim, Attrib_Armor_AliveMode, 0.0) != 0.0))
+		{
+			ArmorDmgRes = ZR_LIVING_ARMOR_DAMAGE_REDUCTION;
+		}
 		if(CheckInHud())
 		{
 			if(vehicle != -1 && Armor_Charge[armorEnt] > 0)
@@ -285,7 +358,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		{
 			if(Armor_Charge[armorEnt] > 0)
 			{
-				int dmg_through_armour = RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION_INVRERTED);
+				int dmg_through_armour = RoundToCeil(damage * (1.0 - ArmorDmgRes));
 				switch(GetRandomInt(1,3))
 				{
 					case 1:
@@ -297,7 +370,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 					case 3:
 						EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet3.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
 				}						
-				if(RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION) >= Armor_Charge[armorEnt])
+				if(RoundToCeil(damage * ArmorDmgRes) >= Armor_Charge[armorEnt])
 				{
 					int damage_received_after_calc;
 					damage_received_after_calc = RoundToCeil(damage) - Armor_Charge[armorEnt];
@@ -322,7 +395,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 				}
 				else
 				{
-					Armor_Charge[armorEnt] -= RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION);
+					Armor_Charge[armorEnt] -= RoundToCeil(damage * ArmorDmgRes);
 					damage = 0.0;
 					damage += float(dmg_through_armour);
 				}
@@ -1292,13 +1365,11 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
         }
         case WEAPON_KIT_PURGE_CRUSHER:
         {
-            if(!CheckInHud())
-            PurgeKit_NPCTakeDamage_Crusher(attacker, victim, damage, weapon);
+            return PurgeKit_NPCTakeDamage_Crusher(attacker, victim, damage, weapon, damagetype);
         }
         case WEAPON_KIT_PURGE_RAMPAGER:
         {
-            if(!CheckInHud())
-            PurgeKit_NPCTakeDamage_Rampager(attacker, victim, damage, weapon);
+           return PurgeKit_NPCTakeDamage_Rampager(attacker, victim, damage, weapon, damagetype);
 		}
 	}
 #endif

@@ -81,7 +81,6 @@ static const char g_MeleeAttackSounds[][] = {
 
 
 static float f_ObuchSameEnemyAttacked[MAXENTITIES];
-static int i_ObuchSameEnemyAttacked[MAXENTITIES];
 void MedivalObuch_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -202,7 +201,6 @@ methodmap MedivalObuch < CClotBody
 		
 
 		f_ObuchSameEnemyAttacked[npc.index] = 1.0;
-		i_ObuchSameEnemyAttacked[npc.index] = -1;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_powerjack/c_powerjack.mdl");
 		SetVariantString("1.0");
@@ -277,12 +275,7 @@ public void MedivalObuch_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 55.0;
-
-					if(Medival_Difficulty_Level_NotMath >= 3)
-					{
-						damage = 85.0;
-					}
+					float damage = 65.0;
 					if(ShouldNpcDealBonusDamage(target))
 					{
 						damage *= 4.2;
@@ -363,22 +356,10 @@ public void MedivalObuch_ClotThink(int iNPC)
 					
 
 					npc.PlayMeleeSound();
-					int enemy_attacked_before = EntRefToEntIndex(i_ObuchSameEnemyAttacked[npc.index]);
-					if(enemy_attacked_before == npc.m_iTarget)
+					f_ObuchSameEnemyAttacked[npc.index] -= 0.35;
+					if(f_ObuchSameEnemyAttacked[npc.index] < 0.4)
 					{
-						f_ObuchSameEnemyAttacked[npc.index] -= 0.35;
-						if(f_ObuchSameEnemyAttacked[npc.index] < 0.4)
-						{
-							f_ObuchSameEnemyAttacked[npc.index] = 0.4;
-						}
-					}
-					else
-					{
-						f_ObuchSameEnemyAttacked[npc.index] += 0.5;
-						if(f_ObuchSameEnemyAttacked[npc.index] > 1.0)
-						{
-							f_ObuchSameEnemyAttacked[npc.index] = 1.0;
-						}
+						f_ObuchSameEnemyAttacked[npc.index] = 0.4;
 					}
 					float Armor_Max = 1.5;
 						
@@ -393,7 +374,6 @@ public void MedivalObuch_ClotThink(int iNPC)
 
 					SetEntityRenderColor(npc.m_iWearable1, red, green, blue, 255);
 
-					i_ObuchSameEnemyAttacked[npc.index] = EntIndexToEntRef(npc.m_iTarget);
 
 					npc.m_flAttackHappens = gameTime + 0.35;
 

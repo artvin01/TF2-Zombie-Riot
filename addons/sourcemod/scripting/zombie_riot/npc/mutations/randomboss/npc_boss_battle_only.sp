@@ -169,9 +169,20 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		case 2:
 		{
 			//needs buffs!!
-			PluginName = "npc_blitzkrieg";	
-			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_40");
-			
+			switch(GetRandomInt(1,3))
+			{
+				case 1:
+				{
+					PluginName = "npc_blitzkrieg";	
+					Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_40;hyper");
+				}
+				default:
+				{
+					PluginName = "npc_blitzkrieg";	
+					Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_40");
+				}
+			}
+
 			enemy.ExtraDamage *= 1.4;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.65); 
 		}
@@ -265,8 +276,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			PluginName = "npc_corruptedbarney";	
 			
-			enemy.ExtraDamage *= 1.45;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 0.7); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 0.6); 
 			//he doesnt really scale? i dont know what to do.
 		}
 		case 13:
@@ -406,10 +416,22 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		}
 		case 30:
 		{
-			PluginName = "npc_vincent";	
+			//needs buffs!!
+			switch(GetRandomInt(1,4))
+			{
+				case 1:
+				{
+					PluginName = "npc_vincent";	
+					Format(CharData, sizeof(CharData), "%s%s",CharData, "forceangry");
+				}
+				default:
+				{
+					PluginName = "npc_vincent";	
+				}
+			}
 			
 			enemy.ExtraDamage *= 1.1;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.5); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.4); 
 		}
 		case 31:
 		{

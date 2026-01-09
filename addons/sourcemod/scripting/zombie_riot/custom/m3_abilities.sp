@@ -160,6 +160,10 @@ void M3_AbilitiesWaveEnd()
 	Zero(i_BurstpackUsedThisRound);
 	Zero(i_MaxMorhpinesThisRound);
 	i_MaxRevivesAWave = 0;
+	for(int target = 1; target <= MaxClients; target++)
+	{
+		RemoveSpecificBuff(target, "Vuntulum Bomb EMP Death");
+	}
 }
 
 bool MorphineMaxed(int client)
@@ -950,6 +954,8 @@ public void Reinforce(int client, bool NoCD)
 			if(!b_HasBeenHereSinceStartOfWave[client_check])
 				continue;
 			if(f_PlayerLastKeyDetected[client_check] < GetGameTime())
+				continue;
+			if(HasSpecificBuff(client_check, "Vuntulum Bomb EMP Death"))
 				continue;
 
 			int CashSpendScale = CashSpentTotal[client_check];
@@ -2068,6 +2074,8 @@ stock int GetRandomDeathPlayer(int client)
 			continue;
 
 		if(f_PlayerLastKeyDetected[client_check] < GetGameTime())
+			continue;
+		if(HasSpecificBuff(client_check, "Vuntulum Bomb EMP Death"))
 			continue;
 
 		int CashSpendScale = CashSpentTotal[client_check];

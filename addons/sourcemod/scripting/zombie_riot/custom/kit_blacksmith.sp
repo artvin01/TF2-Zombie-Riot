@@ -119,6 +119,7 @@ void Blacksmith_Enable(int client, int weapon)
 
 	if(Tinkers)
 	{
+		DetectWeaponNoTinker(weapon, client);
 		int account = GetSteamAccountID(client, false);
 		if(account)
 		{
@@ -399,6 +400,30 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 						TinkerRangedFastProj(tinker.Rarity, tinker);
 				}
 			}
+			case WEAPON_SIGIL_BLADE:
+			{
+				BlockNormal = true;
+				// Mage Weapon
+				switch(GetURandomInt() % 3)
+				{
+					case 0:
+						TinkerHastyMage(tinker.Rarity, tinker);
+					case 1:
+						TinkerHeavyMage(tinker.Rarity, tinker);
+					case 2:
+						TinkerTankMage(tinker.Rarity, tinker);
+				}
+			}
+		}
+		if(Attributes_Get(client, Attrib_DisallowTinker, 0.0) != 0.0)
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Blacksmith Underleveled");
+
+			ApplyBuildingCollectCooldown(entity, client, 2.0);
+			return;
 		}
 		if(!BlockNormal)
 		{
@@ -1040,17 +1065,17 @@ static void TinkerHastyMage(int rarity, TinkerEnum tinker)
 	{
 		case 0:
 		{
-			tinker.Value[0] = 0.8 - AttackspeedLuck;
+			tinker.Value[0] = 0.8 + AttackspeedLuck;
 			tinker.Value[1] = 1.25 + MageShootExtraCost;
 		}
 		case 1:
 		{
-			tinker.Value[0] = 0.75 - AttackspeedLuck;
+			tinker.Value[0] = 0.75 + AttackspeedLuck;
 			tinker.Value[1] = 1.35 + MageShootExtraCost;
 		}
 		case 2:
 		{
-			tinker.Value[0] = 0.7 - AttackspeedLuck;
+			tinker.Value[0] = 0.7 + AttackspeedLuck;
 			tinker.Value[1] = 1.45 + MageShootExtraCost;
 		}
 	}
@@ -1703,4 +1728,43 @@ public int Anvil_MenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 	}
 	return 0;
+}
+
+
+void DetectWeaponNoTinker(int weapon, int client)
+{
+	if(Attributes_Get(weapon, Attrib_DisallowTinker, 0.0) == 0.0)
+		return;
+
+	SetGlobalTransTarget(client);
+	
+	int account = GetSteamAccountID(client, false);
+	if(!account)
+	{
+		return;
+	}
+
+	TinkerEnum tinker;
+	int found = -1;
+	if(Tinkers)
+	{
+		int length = Tinkers.Length;
+		for(int a; a < length; a++)
+		{
+			Tinkers.GetArray(a, tinker);
+			if(tinker.AccountId == account && tinker.StoreIndex == StoreWeapon[weapon])
+			{
+				found = a;
+				break;
+			}
+		}
+	}
+	if(found == -1)
+	{
+		return;
+	}
+
+	tinker.Rarity = -1;
+	Tinkers.Erase(found);
+	PrintToChat(client, "%T", "Removed Tinker Attributes", client);
 }

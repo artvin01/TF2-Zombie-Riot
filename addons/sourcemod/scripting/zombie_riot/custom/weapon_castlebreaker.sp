@@ -12,7 +12,6 @@ static int CastleBreaker_Cylinder[MAXPLAYERS];
 static float CastleBreaker_SoundsDelay[MAXPLAYERS];
 static int CashGainLimitWavePer_CastleBreaker[MAXPLAYERS];
 static float CastleBreaker_DoubleTapR[MAXPLAYERS];
-static bool CastleBreaker_ModeLock[MAXPLAYERS];
 
 #define MAX_CASH_PER_WAVE_CASTLEBREAKER 500
 
@@ -61,6 +60,7 @@ void CastleBreaker_DoSwingTrace(int client, float &CustomMeleeRange, float &Cust
 public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 {
 	float attackspeed = Attributes_Get(weapon, 6, 1.0);
+	//PrintHintText(client,"Attack!");
 	if(b_AbilityActivated[client])
 	{
 		b_AbilityDone[client] = false;
@@ -86,29 +86,59 @@ public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 
 	if(Change[client])
 	{
-		int Ammo_Cost = 12;
+		int Ammo_Cost = 8;
 		int new_ammo = GetAmmo(client, 8); //rocket ammo
-		if(new_ammo < 12)
+		if(new_ammo < 8)
 		{
 			ClientCommand(client, "playgamesound weapons/shotgun_empty.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Ammo", Ammo_Cost);
-			if(!CastleBreaker_ModeLock[client])
-			{
-				Ability_Apply_Cooldown(client, 3, 5.0);
-				Change[client]=false;
-				DataPack pack;
-				CreateDataTimer(0.1, Timer_ChangeSound, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-				pack.WriteCell(GetClientUserId(client));
-				pack.WriteCell(EntIndexToEntRef(weapon));
-				pack.WriteCell(Change[client]);
-			}
+			Ability_Apply_Cooldown(client, 3, 5.0);
+			Change[client]=false;
+			DataPack pack;
+			CreateDataTimer(0.1, Timer_ChangeSound, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+			pack.WriteCell(GetClientUserId(client));
+			pack.WriteCell(EntIndexToEntRef(weapon));
+			pack.WriteCell(Change[client]);
 			return;
 		}
-		new_ammo -= 12;
+		new_ammo -= 8;
 		SetAmmo(client, 8, new_ammo);
 		CurrentAmmo[client][8] = GetAmmo(client, 8);
+	}
+}
+
+void WeaponCastleBreaker_Extra(int client, int victim, int weapon)
+{
+	float damage = 65.0;
+	damage *= Attributes_Get(weapon, 2, 1.0);
+	CastleBreaker_WeaponPap[client] = RoundToFloor(Attributes_Get(weapon, 391, 0.0));
+	switch (CastleBreaker_WeaponPap[client])
+	{
+		case 0: //base pap
+		{
+			damage *= 0.05;
+		}
+		case 1: //base pap
+		{
+			damage *= 0.1;
+		}
+		case 2: //base pap
+		{
+			damage *= 0.15;
+		}
+		case 3: //base pap
+		{
+			damage *= 0.2;
+		}
+	}
+	if(IsValidEnemy(client, victim))
+	{
+		float vecHit[3];
+		WorldSpaceCenter(victim, vecHit);
+		//PrintHintText(client,"TrueHit!");
+		SDKHooks_TakeDamage(victim, client, client, damage, DMG_TRUEDAMAGE, -1, _, vecHit);
 	}
 }
 
@@ -116,37 +146,25 @@ public void CastleBreaker_Modechange(int client, int weapon, bool crit, int slot
 {
 	if(IsValidEntity(client))
 	{
-		bool ignore=false;
-		static float angles[3];
-		GetClientEyeAngles(client, angles);
-		if(angles[0] > 85.0)
-		{
-			if(CastleBreaker_DoubleTapR[client] < GetGameTime())
-				CastleBreaker_DoubleTapR[client] = GetGameTime() + 0.2;
-			else
-				ignore=true;
-		}
-		
-		if(!ignore && GetEntityFlags(client) & FL_DUCKING)
-		{
-			CastleBreaker_ModeLock[client]=!CastleBreaker_ModeLock[client];
-			ClientCommand(client, "playgamesound weapons/vaccinator_toggle.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			if(CastleBreaker_ModeLock[client])
-				ShowSyncHudText(client,  SyncHud_Notifaction, "Ability Lock");
-			else
-				ShowSyncHudText(client,  SyncHud_Notifaction, "Ability Unlock");
-			return;
-		}
-		
-		if(!ignore && CastleBreaker_ModeLock[client])
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Ability has Lock!");
-			return;
+		if(b_InteractWithReload[client])
+		{ 
+			bool R_AbilityBlock=false;
+			int building = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
+			if(building != -1 && Building_Collect_Cooldown[building][client]<=0.0
+			&& IsInteractionBuilding(building))
+			{
+				static float angles[3];
+				GetClientEyeAngles(client, angles);
+				if(angles[0] < -70.0)
+				{
+					if(CastleBreaker_DoubleTapR[client] < GetGameTime())
+					{
+						CastleBreaker_DoubleTapR[client] = GetGameTime() + 0.2;
+						R_AbilityBlock=true;
+					}
+				}
+			}
+			if(R_AbilityBlock)return;
 		}
 		
 		int Ammo_Cost = 12;
@@ -317,6 +335,10 @@ void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage
 		{
 			damage *= 1.15;
 		}
+	}
+	if(!Change[attacker]&& (damagetype & DMG_CLUB))
+	{
+		WeaponCastleBreaker_Extra(attacker, victim, weapon);
 	}
 	if(Change[attacker]&& (damagetype & DMG_CLUB))
 	{

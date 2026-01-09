@@ -7,204 +7,244 @@
 		"#format"	"{1:t}"
 		"en"		"{green}{1} {default}has closed!"
 		"it"		"{green}{1} {default}è chiuso!"
+		"ko"		"{green}{1} {default}(이)가 닫혔습니다!"
 	}
 	"Good Umbral"
 	{
 		"#format"	"{1:d}"
 		"en"		"{green}Gained {1} Umbral Affinity"
 		"it"		"{green}Ottenuto {1} Affinità Umbrale"
+		"ko"		"{green}움브랄 친화력이 {1} 증가했습니다"
 	}
 	"Umbral Forgiveness"
 	{
 		"en"		"{green}Umbrals Seemingly don't mind whatever you just did."
 		"it"		"{green}Sembra che le braccia non si preoccupino di quello che hai appena fatto."
+		"ko"		"{green}움브랄들은 당신이 방금 한 일에 대해 전혀 개의치 않아하는 것 같습니다."
 	}
 	"Bad Umbral"
 	{
 		"#format"	"{1:d}"
 		"en"		"{red}Lost {1} Umbral Affinity"
 		"it"		"{red}Perso {1} Affinità Umbra"
+		"ko"		"{red}움브랄 친화력이 {1} 감소했습니다"
 	}
 	"We found a Voidstone"
 	{
 		"en"	"We found a Voidstone"
 		"it"	"Abbiamo trovato una pietra vuota"
+		"ko"	"공허석을 찾았다"
 	}
 	"Leave it"
 	{
 		"en"	"Leave it"
 		"it"	"Lascialo"
+		"ko"	"줍지 않는다"
 	}
 	"A strange gateway opens up"
 	{
 		"en"	"A strange gateway opens up"
 		"it"	"Si apre una strana porta"
+		"ko"	"수상한 관문이 열리고 있다."
 	}
 	"Stay and fight it"
 	{
 		"en"	"Stay and fight it"
 		"it"	"Rimani e combattilo"
+		"ko"	"전투를 준비한다"
 	}
 	"Umbrals take notice of your actions"
 	{
 		"en"	"{crimson}Umbrals take notice of your actions"
 		"it"	"{crimson}Gli imbalsamatori prendono nota delle vostre azioni"
+		"ko"	"{crimson}움브랄들이 당신의 행동을 알아챕니다."
 	}
 
 	"Rift of Swarms"
 	{
 		"en"	"Rift of Swarms"
 		"it"	"Rift degli Sciami"
+		"ko"	"군단의 균열"
 	}
 	"Rift of Swarms Desc"
 	{
 		"en"	"{red}Increases the amount of enemies by +20％ {green} Gain 2 Umbral Affinity each battle."
 		"it"	"{red}Aumenta la quantità di nemici di +20％ {green} Guadagni 2 Affinità Umbrale ad ogni battaglia."
+		"ko"	"{red}적의 수량이 +20％ 증가합니다. {green} 매 전투마다 움브랄 친화력이 2 증가합니다."
 	}
 	"Rift of Swarms Lore"
 	{
 		"en"	"A rift opens as it spews out more enemies in your path."
 		"it"	"Si apre una spaccatura che sparge altri nemici sul vostro cammino."
+		"ko"	"균열이 열리고 더 많은 적들을 뿜어내며 당신의 길을 가로막는다."
 	}
 	"Rift of Swarming"
 	{
 		"en"	"Rift of Swarming"
 		"it"	"Rift di Sciamatura"
+		"ko"	"무리의 균열"
 	}
 	"Rift of Swarming Desc"
 	{
 		"en"	"{red}Increases the amount of enemies by +20％ {green} Gain 2 Umbral Affinity each battle."
 		"it"	"{red}Aumenta la quantità di nemici di +20％ {green} Guadagni 2 Affinità Umbrale ad ogni battaglia."
+		"ko"	"{red}적의 수량이 +20％ 증가합니다. {green} 매 전투마다 움브랄 친화력이 2 증가합니다."
 	}
 	"Rift of Emptiness"
 	{
 		"en"	"Rift of Emptiness"
 		"it"	"Squarcio di vuoto"
+		"ko"	"덧없음의 균열"
 	}
 	"Rift of Emptiness Desc"
 	{
 		"en"	"{red}Voidstones have a much lower dropchance."
 		"it"	"{red}Le pietre voide hanno una probabilità di caduta molto più bassa."
+		"ko"	"{red}공허석의 드랍 확률이 크게 감소합니다."
 	}
 	"Rift of Emptiness Lore"
 	{
 		"en"	"A rift opens, as if you can feel it's blankness and void inside it."
 		"it"	"Si apre uno squarcio, come se si potesse percepire il vuoto e il vuoto al suo interno."
+		"ko"	"균열이 열리면서, 당신은 그 안의 텅 빈 공허함이 느껴지는 것 같다."
 	}
 	"Rift of Darkness"
 	{
 		"en"	"Rift of Darkness"
 		"it"	"Squarcio di tenebra"
+		"ko"	"암흑의 균열"
 	}
 	"Rift of Darkness Desc"
 	{
 		"en"	"{red}Void & Umbral enemies gain +15％ health and +10％ damage {green}but all other enemies lose -10％ health and -5％ damage"
 		"it"	"{red}I nemici di Void e Umbral guadagnano +15％ salute e +10％ danni {green} ma tutti gli altri nemici perdono -10％ salute e -5％ danni"
+		"ko"	"{red}공허 & 움브랄 계열 적들의 체력 +15％ 및 공격력 +10％. {green} 이 외의 나머지 적은 체력 -10％ 및 피해량 -5％ 감소."
 	}
 	"Rift of Darkness Lore"
 	{
 		"en"	"A rift opens as you watch it suck light away from the area around it."
 		"it"	"Si apre una spaccatura e la si osserva risucchiare la luce dall'area circostante."
+		"ko"	"균열이 열리면서 주변의 빛을 남김없이 빨아들이고 있다."
 	}
 	"Rift of Expansion"
 	{
 		"en"	"Rift of Expansion"
 		"it"	"Rift di espansione"
+		"ko"	"팽창의 균열"
 	}
 	"Rift of Expansion Desc"
 	{
 		"en"	"{red}Void Gates will appear in stages."
 		"it"	"{red}Le Porte di Vidimazione appariranno in fasi successive."
+		"ko"	"{red}공허 게이트들이 스테이지에 등장하게 됩니다."
 	}
 	"Rift of Expansion Lore"
 	{
 		"en"	"Multiple rifts opens around, you feel you know what's gonna come out."
 		"it"	"Molteplici spaccature si aprono intorno, si ha la sensazione di sapere cosa uscirà fuori."
+		"ko"	"다수의 균열이 열렸다. 당신은 무슨 일이 벌어질지 짐작하고 있다."
 	}
 	"Rift of Corruption"
 	{
 		"en"	"Rift of Corruption"
 		"it"	"Spaccatura della corruzione"
+		"ko"	"타락의 균열"
 	}
 	"Rift of Corruption Desc"
 	{
 		"en"	"{red}Consuming items at a Gateway has a chance to corrupt."
 		"it"	"{red}Il consumo di oggetti in un Gateway ha una possibilità di corrompere."
+		"ko"	"{red}관문에 흡수시킨 아이템이 확률적으로 오염되게 됩니다."
 	}
 	"Rift of Corruption Lore"
 	{
 		"en"	"The gateway used to show offerings, tints darker and darker."
 		"it"	"Il portale utilizzato per mostrare le offerte, si tinge sempre più di scuro."
+		"ko"	"제물을 보여주던 관문은 점점 더 어두워지고 흐릿해져간다."
 	}
 	"Rift of Malice"
 	{
 		"en"	"Rift of Malice"
 		"it"	"Rift della malizia"
+		"ko"	"악의의 균열"
 	}
 	"Rift of Malice Desc"
 	{
 		"en"	"{red}Entering battles reduces Umbral Affinity by 2."
 		"it"	"{red}Entrando in battaglia riduce di 2 l'Affinità Umbrale."
+		"ko"	"{red}전투 진입시, 움브랄 친화력이 2 감소합니다."
 	}
 	"Rift of Malice Lore"
 	{
 		"en"	"A rift opens, you feel as if you're being watched from inside it."
 		"it"	"Si apre una spaccatura, si ha la sensazione di essere osservati dall'interno."
+		"ko"	"균열이 열리며, 그 균열 안에서 무언가가 당신을 지켜보는 듯한 느낌이 든다."
 	}
 	"Rift of Warp"
 	{
 		"en"	"Rift of Warp"
 		"it"	"Rift of Warp"
+		"ko"	"왜곡의 균열"
 	}
 	"Rift of Warp Desc"
 	{
 		"en"	"{red}Enemies have a chance to be warpped"
 		"it"	"{red}I nemici hanno la possibilità di essere deformati"
+		"ko"	"{red}확률적으로 적이 왜곡됩니다."
 	}
 	"Void Outbreak"
 	{
 		"en"	"Void Outbreak"
 		"it"	"Scoppio del Vuoto"
+		"ko"	"공허 발발의 재앙"
 	}
 	"Void Outbreak Desc"
 	{
 		"en"	"{red}All enemies are voided and deal void damage."
 		"it"	"{red}Tutti i nemici vengono annullati e infliggono danni nulli."
+		"ko"	"{red}모든 적이 공허에 침식당하게 됩니다. 이제 적들이 공허 원소 피해를 줍니다."
 	}
 	"Gamemode Madness"
 	{
 		"en"	"Gamemode Madness"
 		"it"	"Follia della modalità di gioco"
+		"ko"	"게임모드 대축제"
 	}
 	"Almagest Alien Tech"
 	{
 		"en"	"Almagest Alien Tech"
 		"it"	"Tecnologia aliena Almagest"
+		"ko"	"알마게스트 외계 기술력"
 	}
 	"Gamemode Madness Desc"
 	{
 		"en"	"Gamemode Madness"
 		"it"	"Follia della modalità di gioco"
+		"ko"	"게임모드 대축제"
 	}
 	"SZF Damage Scaling Mode"
 	{
 		"en"	"{crimson}Enabled SZF damage scaling."
 		"it"	"{crimson}Attivata la scalatura dei danni SZF."
+		"ko"	"{crimson}슈퍼 좀비 포트리스 모드의 데미지 스케일링을 활성화합니다."
 	}
 	"Gamemode Madness SZF"
 	{
 		"en"	"Gamemode Madness SZF"
 		"it"	"Modalità di gioco Follia SZF"
+		"ko"	"게임 모드 - 슈퍼 좀비 포트리스"
 	}
 	"Gamemode Madness SZF Desc"
 	{
 		"en"	"Gamemode Madness SZF"
 		"it"	"Modalità di gioco Follia SZF"
+		"ko"	"게임 모드 - 슈퍼 좀비 포트리스"
 	}
 	"Gamemode Madness Slender"
 	{
 		"en"	"Gamemode Madness Slender"
 		"it"	"Modalità di gioco Follia Slender"
+		"ko"	"게임 모드 - 슬렌더 포트리스"
 	}
 	"Gamemode Madness Slender Desc"
 	{
@@ -215,1142 +255,1369 @@
 	{
 		"en"	"Gamemode Madness Zombie Riot"
 		"it"	"Modalità di gioco Follia Zombie Riot"
+		"ko"	"게임 모드 - 좀비 라이엇"
 	}
 	"Gamemode Madness Zombie Riot Desc"
 	{
 		"en"	"Gamemode Madness Zombie Riot"
 		"it"	"Modalità di gioco Follia Zombie Riot"
+		"ko"	"게임 모드 - 좀비 라이엇"
 	}
 	"Zombie Riot Badge"
 	{
 		"en"	"Zombie Riot "
 		"it"	"Badge Zombie Riot"
+		"ko"	"좀비 라이엇 배지 "
 	}
 	"Zombie Riot Badge Desc"
 	{
 		"en"	"You have finally defeated Nemal, unlocked this badge and reached {unique}Player Level 42{default}.\n{green}+200 Cash"
 		"it"	"Hai finalmente sconfitto Nemal, hai sbloccato questo distintivo e hai raggiunto il {unique}Livello giocatore 42{default}.\n{green}+200 Cash"
+		"ko"	"당신은 드디어 네말을 격파했고, 이 배지를 해금했으며{unique}플레이어 레벨이 42{default}가 되었습니다.\n{green}추가 자금 +200"
 	}
 	"Gamemode Madness URF Mode"
 	{
 		"en"	"{redsunfirst}An {unique}Ultra Rapid Fire Coin {redsunfirst}was flipped! {redsunsecond}Ultra Rapid Fire Mode {redsunfirst}will be active until the stage ends.\n{redsunsecond}Welcome to the future of Team Fortress 2."
 		"it"	"{redsunfirst}È stata lanciata una {unique}Moneta Ultra Fuoco Rapido! {redsunfirst}La modalità Fuoco Rapido Ultra sarà attiva fino alla fine della fase.\n{redsunsecond}Benvenuti nel futuro di Team Fortress 2."
+		"ko"	"{redsunfirst}{unique}우르프 코인 {redsunfirst} 사용 감지! {redsunsecond}우르프 모드 {redsunfirst}가 스테이지 종료 시까지 발동됩니다!\n{redsunsecond}이것이 팀 포트리스 2의 미래다!!"
 	}
 	"Gamemode Madness URF"
 	{
 		"en"	"Gamemode Madness URF"
 		"it"	"Modalità di gioco Follia URF"
+		"ko"	"게임 모드 - 우르프 모드"
 	}
 	"Gamemode Madness URF Desc"
 	{
 		"en"	"Gamemode Madness URF"
 		"it"	"Modalità di gioco Follia URF"
+		"ko"	"게임 모드 - 우르프 모드"
 	}
 	"Broken Crest"
 	{
 		"en"	"Broken Crest"
 		"it"	"Cresta rotta"
+		"ko"	"부서진 휘장"
 	}
 	"Free Treasure!!!"
 	{
 		"en"	"Free Treasure!!!"
 		"it"	"Tesoro gratuito!!!"
+		"ko"	"공짜 보물이다!!!"
 	}
 	"Rift of Fractured"
 	{
 		"en"	"Rift of Fractured"
 		"it"	"Rift di Frattura"
+		"ko"	"혼란의 균열"
 	}
 	"Rift of Fractured Desc"
 	{
 		"en"	"{yellow}Something is coming"
 		"it"	"{yellow}Sta arrivando qualcosa"
+		"ko"	"{yellow}무언가가 다가오고 있다."
 	}
 	"Map around the Castle"
 	{
 		"en"	"Map around the Castle"
 		"it"	"Mappa intorno al Castello"
+		"ko"	"성 주변 지도"
 	}
 	"Map around the Castle Desc"
 	{
 		"en"	"{red}lose 15 Umbral Affinity {blue}The way opened."
 		"it"	"{red}Perdi 15 Affinità Umbrale {blue}La strada si è aperta."
+		"ko"	"{red}움브랄 친화력이 15 감소합니다. {blue}길이 열립니다..."
 	}
 
 	"Ruin"
 	{
 		"en"	"Ruin"
 		"it"	"Rovina"
+		"ko"	"폐허"
 	}
 	"Ruin Lore"
 	{
 		"en"	"We're at the ruined Ruinan islands, we need to find a way to stop the void, something else is coming through?"
 		"it"	"Siamo alle isole Ruinan in rovina, dobbiamo trovare un modo per fermare il vuoto, sta passando qualcos'altro?"
+		"ko"	"당신은 폐허가 된 루이나 섬에 도착했다. 저 공허를 막을 방법을 찾아야하는데... 다른 무언가도 넘어오고 있는 것 같다?"
 	}
 	"Whatever is Left"
 	{
 		"en"	"''Whatever is left of it...''"
 		"it"	"''Qualunque cosa sia rimasta...''"
+		"ko"	"''남아있는 흔적을 찾아서''"
 	}
 	"Whatever is Left Lore"
 	{
 		"en"	"The portal site, now ruined and in pieces, hope we can get this to help find a way."
 		"it"	"Il sito del portale, ormai in rovina e in pezzi, speriamo di poterlo ottenere per aiutare a trovare una strada."
+		"ko"	"포탈이 열렸던 이곳은 이제 폐허 그 자체가 되었다. 이것이 길을 찾는데에 도움이 되길 바란다."
 	}
 	"Behind The Curtains"
 	{
 		"en"	"Behind The Curtains"
 		"it"	"Dietro le tende"
+		"ko"	"장막의 저편"
 	}
 	"Behind The Curtains Lore"
 	{
 		"en"	"We're inside the Curtain, full of plains and crystals. Let's hope we can find what we're looking for, and keep that way out."
 		"it"	"Siamo all'interno della cortina, piena di pianure e cristalli. Speriamo di riuscire a trovare quello che cerchiamo e di mantenere la via d'uscita."
+		"ko"	"우리는 들풀과 수정으로 가득한 장막 속에 들어와있다. 여기서 우리가 찾고 있는 것을 찾아낼 수 있길 바랄 뿐."
 	}
 	"More Research"
 	{
 		"en"	"More Research"
 		"it"	"Altre ricerche"
+		"ko"	"추가적인 연구"
 	}
 	"More Research Lore"
 	{
 		"en"	"It's some kind of abandoned lab here. Something tells it wasn't always a wasteland here."
 		"it"	"Qui c'è una specie di laboratorio abbandonato. Qualcosa ci dice che non è sempre stata una landa desolata."
+		"ko"	"이 장소는 뭔가 버려진 연구실 같다. 하지만 둘러보니 여기가 원래부터 폐허였던 곳은 아닌 것 같다."
 	}
 	"Palace of the Void"
 	{
 		"en"	"Palace of the Void"
 		"it"	"Palazzo del Vuoto"
+		"ko"	"공허의 궁전"
 	}
 	"Palace of the Void Lore"
 	{
 		"en"	"Palace of the Void"
 		"it"	"Palazzo del Vuoto"
+		"ko"	"공허의 궁전"
 	}
 	"The Throne"
 	{
 		"en"	"The Throne"
 		"it"	"Il Trono"
+		"ko"	"왕좌"
 	}
 
 	"Rift Level 3"
 	{
 		"en"	"Rift Level 3"
 		"it"	"Rift Livello 3"
+		"ko"	"균열 레벨 3"
 	}
 	"Rift Level 3 Desc"
 	{
 		"en"	"{red}Enemy stats per chapter +2％, start with Fractured voidstone, rift events can occur more often, Umbrals do not like you."
 		"it"	"{red}Statistiche dei nemici per capitolo +2％, inizio con la pietra vuota fratturata, gli eventi di spaccatura possono verificarsi più spesso, gli Umbral non ti amano."
+		"ko"	"{red}매 챕터마다, 적의 능력치 +2％ 증가. '혼란' 공허석을 보유하고 시작. 균열 이벤트가 더 자주 발생하며, 움브랄들이 당신을 싫어합니다."
 	}
 	"Rift Level 5"
 	{
 		"en"	"Rift Level 5"
 		"it"	"Rift Livello 5"
+		"ko"	"균열 레벨 5"
 	}
 	"Rift Level 5 Desc"
 	{
 		"en"	"{red}Enemy stats per chapter +10％, start with Fractured voidstone, rift events can occur more often, You are just a grunt, beating bossrush was not enough to prepare you."
 		"it"	"{red}Statistiche dei nemici per capitolo +10％, inizio con la pietra del vuoto fratturata, gli eventi della spaccatura possono verificarsi più spesso, Sei solo un grugnito, battere la bossrush non è stato sufficiente per prepararti."
+		"ko"	"{red}매 챕터마다, 적의 능력치 +10％ 증가. '혼란' 공허석을 보유하고 시작. 균열 이벤트가 더 자주 발생함. 보스러쉬가 물러터진 난이도였다고? 이것도 도전해보시지."
 	}
 	"Rift Level 4"
 	{
 		"en"	"Rift Level 4"
 		"it"	"Rift Livello 4"
+		"ko"	"균열 레벨 4"
 	}
 	"Rift Level 4 Desc"
 	{
 		"en"	"{red}Enemy stats per chapter +4％, start with Fractured voidstone, rift events can occur more often, You have no hope."
 		"it"	"{red}Statistiche dei nemici per capitolo +4％, inizio con la pietra vuota fratturata, gli eventi della spaccatura possono verificarsi più spesso, Non hai speranza."
+		"ko"	"{red}매 챕터마다, 적의 능력치 +4％ 증가. '혼란' 공허석을 보유하고 시작. 균열 이벤트가 더 자주 발생함. 희망이 보이지 않습니다."
 	}
 	"Rift Level 2"
 	{
 		"en"	"Rift Level 2"
 		"it"	"Rift Livello 2"
+		"ko"	"균열 레벨 2"
 	}
 	"Rift Level 2 Desc"
 	{
 		"en"	"{yellow}No Stat Changes {blue}and other possibilities"
 		"it"	"{yellow}Nessuna modifica delle statistiche {blue}e altre possibilità"
+		"ko"	"{yellow}능력치 변화 없음. {blue}또 다른 가능성들이 추가(추가 엔딩)"
 	}
 	"Rift Level 1"
 	{
 		"en"	"Rift Level 1"
 		"it"	"Rift Livello 1"
+		"ko"	"균열 레벨 1"
 	}
 	"Rift Level 1 Desc"
 	{
 		"en"	"Lelouch opened a rift to the Curtain. It's only been a few weeks, we need to stop this, together with Bob and Twirl.\n{green}Enemy stats nerfed by -10％\n{red}Grigori will have 1 less item to sell."
 		"it"	"Lelouch ha aperto una breccia nella cortina. Sono passate solo poche settimane, dobbiamo fermare tutto questo, insieme a Bob e Twirl.\n{green}Le statistiche dei nemici sono state ridotte di -10％\n{red}Grigori avrà un oggetto in meno da vendere."
+		"ko"	"를르슈가 장막으로 향하는 균열을 열었다. 트윌과 밥과 협력해 반드시 막아라.\n{green}적들의 능력치 -10％\n{red}그리고리가 판매하는 물품 1개 감소"
 	}
 	"Hand of Predation"
 	{
 		"en"	"Hand of Predation"
 		"it"	"La mano della predazione"
+		"ko"	"포식의 손"
 	}
 	"Hand of Predation Desc"
 	{
 		"en"	"Herds stir, flesh rend asunder.\n{green}''Charger'' weapons gain +50％ more damage if you are close enough to the enemy and a speed bonus for 1 second, +25％ resistance overall"
 		"it"	"{green}Le armi ''Charger'' guadagnano +50％ danni in più se si è abbastanza vicini al nemico e un bonus di velocità per 1 secondo, +25％ resistenza complessiva"
+		"ko"	"짐승 무리에 뛰어들어 몸뚱이를 찢어버린다.\n{green}''돌격자'' 계열 무기가 이제 적과 근접할 시 피해량 +50％ 를 얻고 1초간 이동 속도 증진. 모든 피해 저항력 +25％"
 	}
 	"Hand of Rumble"
 	{
 		"en"	"Hand of Rumble"
 		"it"	"Mano di Rumble"
+		"ko"	"울림의 손"
 	}
 	"Hand of Rumble Desc"
 	{
 		"en"	"Strikes land true, the earth trembles.\n{green}''Artillery'' weapons deal their damage again after 3 seconds as blast damage."
 		"it"	"{green}Le armi di ''artiglieria'' infliggono nuovamente i loro danni dopo 3 secondi sotto forma di danni da esplosione."
+		"ko"	"표적을 명중시키고 대지를 뒤흔든다.\n{green}''포격수'' 계열 무기로 피해를 입히면 3초 후에 폭발 피해로써 다시 피해를 줍니다."
 	}
 	"Hand of Choker"
 	{
 		"en"	"Hand of Choker"
 		"it"	"Mano di Choker"
+		"ko"	"목 조르는 손"
 	}
 	"Hand of Choker Desc"
 	{
 		"en"	"Take their heads, take their soul.\n{green}''Deadeye'' weapons will instantly kill enemies below 20％ of max health on a headshot, deal +50％ dmg on headshot, {yellow}instakill Doesnt work against raids."
 		"it"	"Prendete le loro teste, prendete la loro anima.{green}Le armi ''Deadeye'' uccidono istantaneamente i nemici sotto il 20％ di salute massima con un colpo alla testa, infliggono +50％ dmg con un colpo alla testa, {yellow}instakill Non funziona contro i raid."
+		"ko"	"{green}''명사수'' 계열 무기로 체력이 20％ 이하인 적을 헤드샷시 즉사시키며, 헤드샷 피해량 +50％. {yellow}레이드 보스에게는 즉사 발동 X"
 	}
 	"Hand of Snatcher"
 	{
 		"en"	"Hand of Snatcher"
 		"it"	"Mano del Ladro"
+		"ko"	"모둠의 손"
 	}
 	"Hand of Snatcher Desc"
 	{
 		"en"	"Be a hitman of your dreams.\n{green}''Tactician'' weapons gain infinite accuracy, extra cash & speedbonus on a headshot {yellow}(up to a limit for cash gain up to a limit for cash gain) If the weapon cant headshot, same effects apply but weaker."
 		"it"	"{green}Se l'arma non può colpire alla testa, si applicano gli stessi effetti, ma più deboli."
+		"ko"	"나 자신이 히트맨이 되는거다.\n{green}''전술가'' 계열 무기의 정확도가 무한대가 되며, 헤드샷시 추가 자금 및 속도 증진 획득. {yellow}(자금 획득 상한 존재) 헤드샷 불가 무기라면, 대신 약화된 효과가 적용."
 	}
 	"Hand of Spark"
 	{
 		"en"	"Hand of Spark"
 		"it"	"Mano di Scintilla"
+		"ko"	"가시의 손"
 	}
 	"Hand of Spark Desc"
 	{
 		"en"	"Patience is key. Plan ahead for the future.\n{green}''Hunter'' weapons gain +20％ damage every second, up to +500％ {yellow}(resets upon dealing damage, but doesnt activate till fully charged)"
 		"it"	"La pazienza è fondamentale.{green}Le armi da ''cacciatore'' guadagnano +20％ danni ogni secondo, fino a +500％ {yellow} (si ripristina quando si infliggono danni, ma non si attiva fino a quando non è completamente carica)"
+		"ko"	"인내심이 미래다. 미래를 위해 생각해라.\n{green}''헌터'' 계열 무기가 매 초마다 피해량이 +20％ 증가(최대 +500％, {yellow}피해를 입히면 초기화, 완전히 충전될 때까지는 발동되지 않음)"
 	}
 	"Hand of Buckler"
 	{
 		"en"	"Hand of Buckler"
 		"it"	"Mano di Buckler"
+		"ko"	"긁기의 손"
 	}
 	"Hand of Buckler Desc"
 	{
 		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ (1％ against bosses) {yellow}(affected by scaling) and upto 2x base damage only. {green}magic damage based on the enemy's current health"
-		"it"	"Goccia dopo goccia, poco dopo poco.{green}Le armi ''Hexing Magic'' infliggono 3％ (1％ contro i boss) {yellow}(influenzato dallo scaling) e fino a 2 volte i danni base. {I danni magici si basano sulla salute attuale del nemico"
+		"it"	"Goccia dopo goccia, poco dopo poco.{green}Le armi ''Hexing Magic'' infliggono 3％ (1％ contro i boss) {yellow}(influenzato dallo scaling) e fino a 2 volte i danni base. I danni magici si basano sulla salute attuale del nemico"
+		"ko"	"{green}''주술 마법'' 계열 무기가 3％ (보스에겐 1％) {yellow}(스케일링 적용) 및 기본 피해의 최대 2배에 한하는 피해만을 가하며, {green}적의 체력에 비례"
 	}
 	"Hand of Undulation"
 	{
 		"en"	"Hand of Undulation"
 		"it"	"Mano di ondulazione"
+		"ko"	"파문의 손"
 	}
 	"Hand of Undulation Desc"
 	{
 		"en"	"Blasts conquer, the wake deafening.\n{green}''Splash Magic'' weapon ability cooldowns are reduced by 2 seconds when dealing damage"
 		"it"	"Le esplosioni conquistano, la scia assorda.\n{green}''Splash Magic'' i cooldown delle abilità delle armi sono ridotti di 2 secondi quando si infliggono danni"
+		"ko"	"한 번 휩쓸면 귀가 찢어질 듯하다.\n{green}''확산 마법'' 계열 무기가 피해를 줄 때마다 능력 쿨타임이 2초씩 감소함."
 	}
 	"Hand of Mystery"
 	{
 		"en"	"Hand of Mystery"
 		"it"	"La mano del mistero"
+		"ko"	"비밀의 손"
 	}
 	"Hand of Mystery Desc"
 	{
 		"en"	"Mists part, the truth approaches.\n{green}''Rapid Magic'' weapon ability cooldowns are reduced by 50％"
 		"it"	"Le nebbie si separano, la verità si avvicina.\n{green}''Magia Rapida'' i cooldown dell'abilità dell'arma sono ridotti del 50％"
+		"ko"	"찾아 헤매다 진실에 가까워진다.\n{green}''속사 마법'' 계열 무기의 능력 쿨타임이 50％ 감소함."
 	}
 	"Hand of Flowing Water"
 	{
 		"en"	"Hand of Flowing Water"
 		"it"	"Mano dell'acqua che scorre"
+		"ko"	"영원한 흐름의 손"
 	}
 	"Hand of Flowing Water Desc"
 	{
 		"en"	"The ocean's flow never ceases, because it is always surging.\n{green}''Power Magic'' weapons grant +300％ max mana and regen"
 		"it"	"Il flusso dell'oceano non cessa mai, perché è sempre in aumento.{green}Le armi ''Power Magic'' concedono +300％ mana e rigenerazione massimi"
+		"ko"	"바다가 끝없이 흐르는 것은 그것이 영원히 솟구치기 때문이다.\n{green}''강타 마법'' 계열 무기 사용 시 최대 마나 및 마나 재생량 +300％."
 	}
 	"Hand of Diffusion"
 	{
 		"en"	"Hand of Diffusion"
 		"it"	"Mano di diffusione"
+		"ko"	"작열의 손"
 	}
 	"Hand of Diffusion Desc"
 	{
 		"en"	"Is it a will of the many, or the many for the few.\n{green}''Drone Magic'' weapons gain +15％ damage every active projectile, up to +120％"
 		"it"	"È una volontà di molti o di molti per pochi?{green}Le armi ''Drone Magic'' guadagnano +15％ danni per ogni proiettile attivo, fino a +120％"
+		"ko"	"수량이 많을수록 힘은 강해지는 법.\n{green}이제 ''드론 마법'' 계열 무기는 활성화된 투사체 하나당 피해량이 +15％씩 증가하여 최대 +120％까지 증가"
 	}
 	"Hand of Rending"
 	{
 		"en"	"Hand of Rending"
 		"it"	"Mano di Render"
+		"ko"	"쇄암의 손"
 	}
 	"Hand of Rending Desc"
 	{
 		"en"	"Mountains shatter, stones devoured.\n{green}''Duelist'' weapons damage type is changed to true damage"
 		"it"	"Le montagne si frantumano, le pietre vengono divorate.\n{green}''Duellante'' il tipo di danno delle armi è cambiato in danno vero"
+		"ko"	"산을 깎고 땅을 부숴 흙을 먹고 돌을 삼킨다.\n{green}이제 ''듀얼리스트'' 계열 무기가 트루 대미지를 입힘."
 	}
 	"Hand of Fisticuffs"
 	{
 		"en"	"Hand of Fisticuffs"
 		"it"	"Mano di scazzottate"
+		"ko"	"결박의 손"
 	}
 	"Hand of Fisticuffs Desc"
 	{
 		"en"	"What she means by standing over there, is that you cannot cross.\n{green}''Defender'' weapons, upon being attacked by a new enemy, reflect damage taken as true damage and shortly stun the enemy"
 		"it"	"{green}Le armi ''difensore'', quando vengono attaccate da un nuovo nemico, riflettono i danni subiti come danni reali e stordiscono brevemente il nemico"
+		"ko"	"{green}''디펜더'' 계열 무기는 새로운 적에게 피해를 받을 시, 그 피해를 트루 대미지로 변환해 반사하고 잠깐 기절시킴"
 	}
 	"Hand of Superspeed"
 	{
 		"en"	"Hand of Superspeed"
 		"it"	"Mano della supervelocità"
+		"ko"	"극속의 손"
 	}
 	"Hand of Superspeed Desc"
 	{
 		"en"	"You swing your hand, leaving not even an afterimage.\n{green}''Ambusher'' weapons gain +90％ fire rate"
 		"it"	"{green}Le armi ''Ambusher'' guadagnano una cadenza di fuoco di +90％"
+		"ko"	"팔 한 번 휘두르니 남은 건 잔상뿐이다.\n{green}''매복자'' 계열 무기의 공격 속도가 +90％ 증가."
 	}
 	"Hand of Fireworks"
 	{
 		"en"	"Hand of Fireworks"
 		"it"	"Mano dei fuochi d'artificio"
+		"ko"	"불꽃의 손"
 	}
 	"Hand of Fireworks Desc"
 	{
 		"en"	"Bang! Boom! A pleasant surprise.\n{green}''Lord'' weapons have a 25％ chance on dealing damage to fire an extra projectile that deals double damage and explodes"
 		"it"	"Bang! Boom! Una piacevole sorpresa.{green}Le armi ''Signore'' hanno una probabilità del 25％ di sparare un proiettile extra che infligge danni doppi ed esplode"
+		"ko"	"파박팍팍. 뜻밖의 기쁨.\n{green}''로드'' 계열 무기로 피해를 주면 25％ 확률적으로 2배의 피해를 주는 추가 폭발성 투사체를 발사함."
 	}
 	"Hand of Pulverization"
 	{
 		"en"	"Hand of Pulverization"
 		"it"	"Mano di polverizzazione"
+		"ko"	"과녁 파괴의 손"
 	}
 	"Hand of Pulverization Desc"
 	{
 		"en"	"Your goal isn't just to hit the bullseye over and over.\n{green}''Crusher'' weapons gains +5％ fire rate for a short duration when dealing damage to each enemy"
 		"it"	"L'obiettivo non è solo quello di colpire il bersaglio in continuazione{green}Le armi ''Crusher'' guadagnano una velocità di fuoco di +5％ per una breve durata quando infliggono danni a ciascun nemico"
+		"ko"	"목표, 과녁만 맞추는 게 아니다.\n{green}''파쇄자'' 계열 무기가 피해를 준 적 하나당 공격 속도 5％ 증가. 공격 속도 증가 버프는 짧게 지속됨."
 	}
 	"Hand of Revenging"
 	{
 		"en"	"Hand of Revenging"
 		"it"	"Mano della Vendetta"
+		"ko"	"앙갚음의 손"
 	}
 	"Hand of Revenging Desc"
 	{
 		"en"	"Better not touch my friends then.\n{green}''Combatant'' weapons gains up to +300％ damage with players more injured or dead"
 		"it"	"Meglio non toccare i miei amici allora.\n{green}''Le armi da combattimento'' guadagnano fino a +300％ danni con i giocatori più feriti o morti"
+		"ko"	"내 친구를 건드리지 않는게 좋을거다.\n{green}''투사'' 계열 무기의 피해량이 체력 감소량과 다운 여부에 따라 최대 +300％까지 증가함."
 	}
 	"Hand of Purification"
 	{
 		"en"	"Hand of Purification"
 		"it"	"Mano della Purificazione"
+		"ko"	"정화의 손"
 	}
 	"Hand of Purification Desc"
 	{
 		"en"	"Where it is, dust is not.\n{green}''Medical'' weapons deals 50％ of healing rate as explosive damage to nearby enemies"
 		"it"	"Dove c'è, non c'è polvere. Le armi ''mediche'' infliggono il 50％ del tasso di guarigione come danno esplosivo ai nemici vicini"
+		"ko"	"이것이 있는 곳이 곧 정화된 곳이다.\n{green}이제 ''의무병'' 계열 무기가 주변 적에게 치유량의 50％에 해당하는 폭발 피해를 가함."
 	}
 	"Hand of Protraction"
 	{
 		"en"	"Hand of Protraction"
 		"it"	"Mano di ritrazione"
+		"ko"	"영주의 손"
 	}
 	"Hand of Protraction Desc"
 	{
 		"en"	"Protracted battles, a home of carnage.\n{green}''Mechanic'' weapons fully repairs buildings on hit"
 		"it"	"Battaglie prolungate, una casa di carneficine.\n{green}''Arma meccanica'' ripara completamente gli edifici colpiti"
+		"ko"	"전장은 집과도 같아서 오랫동안 머무를 수 있다.\n{green}이제 ''메카닉'' 계열 무기가 타격한 구조물의 체력을 한번에 전부 회복시킴."
 	}
 	"Vitality Injection"
 	{
 		"en"	"Vitality Injection"
 		"it"	"Iniezione di vitalità"
+		"ko"	"생기 주사"
 	}
 	"Vitality Injection Desc"
 	{
 		"en"	"When when dying, itll keep you alive a little longer.\n{green}You are faster while downed and live longer."
 		"it"	"Quando si è in fin di vita, ci si mantiene in vita un po' più a lungo.\n{green}Si è più veloci quando si è abbattuti e si vive più a lungo."
+		"ko"	"다운시, 잠깐동안 좀 더 오래 살아남게 해준다.\n{green}다운 상태의 이동 속도가 빨라지며 더 오래 생존합니다."
 	}
 	"Flash Vest"
 	{
 		"en"	"Flash Vest"
 		"it"	"Gilet Flash"
+		"ko"	"섬광 조끼"
 	}
 	"Flash Vest Desc"
 	{
 		"en"	"Flash em!\n{green}When downed, stun all surrounding enemies by for 1.5 seconds."
 		"it"	"Flash em!\n{green}Quando viene abbattuto, stordisce tutti i nemici circostanti per 1,5 secondi."
+		"ko"	"지져버려!\n{green}다운될 때마다, 주변 적들을 1.5초간 기절시킴."
 	}
 	"Reila Assistance"
 	{
 		"en"	"Reila's Assistance"
 		"it"	"Assistenza di Reila"
+		"ko"	"레일라의 협력"
 	}
 	"Reila Assistance Desc"
 	{
 		"en"	"Reila joins you."
 		"it"	"Reila si unisce a voi."
+		"ko"	"레일라가 당신에게 합류합니다."
 	}
 	"Umbral Hate"
 	{
 		"en"	"Umbral Hate"
 		"it"	"Odio Umbro"
+		"ko"	"움브랄의 증오"
 	}
 	"Umbral Hate Desc"
 	{
 		"en"	"{crimson}You have seriously pissed off the Umbrals, they are enraged and always appear now, you cannot gain umbral affinity anymore."
 		"it"	"{crimson}Hai fatto arrabbiare gli Umbral, sono infuriati e appaiono sempre, non puoi più ottenere l'affinità umbrale."
+		"ko"	"{crimson}당신은 움브랄들을 심각하게 격노시켰습니다. 움브랄들이 격분 상태로 항상 등장합니다. 더 이상 움브랄 친화력을 얻을 수 없습니다."
 	}
 	"Gift of Remembrance"
 	{
 		"en"	"Gift of Remembrance"
 		"it"	"Il dono della memoria"
+		"ko"	"명심의 축하선물"
 	}
 	"Gift of Remembrance Desc"
 	{
 		"en"	"Water from Ruina that never loses its shimmer.\n{green}Umbral Affinity increased by 15"
 		"it"	"L'acqua di Ruina non perde mai la sua lucentezza.\n{green}Affinità Umbra aumentata del 15"
+		"ko"	"루이나의 영원히 반짝이는 물이다.\n{green}움브랄 친화력이 15 증가합니다."
 	}
 	"Bag of Stones"
 	{
 		"en"	"Bag of Stones"
 		"it"	"Sacco di pietre"
+		"ko"	"돌이 담긴 배낭"
 	}
 	"Bag of Stones Desc"
 	{
 		"en"	"Stones that possibly used to be alive are perfect for sitting inside bags.\n{yellow}Obtain 3 random voidstones"
 		"it"	"Le pietre che forse un tempo erano vive sono perfette per stare dentro le borse.\n{yellow}Ottieni 3 pietre vuote casuali"
+		"ko"	"어쩌면 한 때 살아있었을지도 모를 돌들은 가방에 넣기 딱 좋을 것이다.\n{yellow}무작위 공허석 3개를 얻습니다."
 	}
 	"Magic Box"
 	{
 		"en"	"Magic Box"
 		"it"	"Scatola magica"
+		"ko"	"마술 상자"
 	}
 	"Magic Box Desc"
 	{
 		"en"	"This ordinary looking box devours souls.\n{green}Obtain 4 Australium Ingots and Umbral Affinity increased by 6"
 		"it"	"Questa scatola dall'aspetto ordinario divora le anime.\n{green}Ottieni 4 lingotti di australium e l'Affinità Umbrale aumentata del 6"
+		"ko"	"이 평범해 보이는 상자는 사람들의 마음을 빼앗는다.\n{green}오스트레일륨 주괴를 4 얻고 움브랄 친화력이 6 증가합니다."
 	}
 	"Old Fan"
 	{
 		"en"	"Old Fan"
 		"it"	"Vecchio ventilatore"
+		"ko"	"낡은 부들부채"
 	}
 	"Old Fan Desc"
 	{
 		"en"	"When it rains for several days on end.\n{green}Allies gain +40％ damage"
 		"it"	"Quando piove per diversi giorni di seguito,{green}gli alleati guadagnano +40％ danni"
+		"ko"	"장마철만 되면 어르신이 이것을 흔들면서, 곧바로 구름이 걷히고 비가 그치며 날이 갠다.\n{green}모든 아군의 피해량 +40％ 증가"
 	}
 	"Dream Catcher"
 	{
 		"en"	"Dream Catcher"
 		"it"	"Acchiappasogni"
+		"ko"	"드림 캐처"
 	}
 	"Dream Catcher Desc"
 	{
 		"en"	"Incase you get a very nasty dream.\n{green}When losing a stage, it repeats the stage and grants a new item." 
 		"it"	"Nel caso in cui si faccia un sogno molto brutto.\n{green}Quando si perde una tappa, si ripete la tappa e si ottiene un nuovo oggetto."
+		"ko"	"행여 끔찍한 꿈을 꾸게 되었을 때.\n{green}스테이지에서 패배하면, 해당 스테이지를 다시 도전하며 새로운 아이템 획득."
 	}
 	"Dream Caught"
 	{
 		"en"	"Dream Caught"
 		"it"	"Sogno catturato"
+		"ko"	"사로잡힌 꿈"
 	}
 	"Dream Caught Desc"
 	{
 		"en"	"Aha!\n{green}When a new stage starts, gain full health, Revive times are cut in half, Enemies have -10％ damage"
 		"it"	"{green}Quando inizia una nuova fase, guadagna la salute completa, i tempi di rianimazione si dimezzano, i nemici subiscono -10％ danni"
+		"ko"	"아하!\n{green}새로운 스테이지가 시작되면, 체력이 전부 회복되고, 부활 시간이 절반으로 단축되며, 모든 적의 공격력 -10％ 감소."
 	}
 	"Scout's Scope"
 	{
 		"en"	"Scout's Scope"
 		"it"	"Ambito di applicazione dell'esploratore"
+		"ko"	"스카우트의 조준경"
 	}
 	"Scout's Scope Desc"
 	{
 		"en"	"Lock on, aim, fire, and destroy the enemy's will to resist.\n{green}Ally damage dealt increases by up to +50％ the further the target is"
 		"it"	"Agganciare, mirare, sparare e distruggere la volontà di resistenza del nemico.\n{green}I danni inflitti aumentano fino a +50％ quanto più lontano è il bersaglio"
+		"ko"	"목표를 지정하고, 정밀도를 유지하며, 방아쇠를 당겨, 적의 저항을 꺾어버린다.\n{green}모든 아군은 대상과의 거리가 멀수록 대상에게 주는 피해량이 최대 +50％ 까지 증가."
 	}
 	"Lakebed Aegis"
 	{
 		"en"	"Lakebed Aegis"
 		"it"	"Egida del letto del lago"
+		"ko"	"호수의 방패"
 	}
 	"Lakebed Aegis Desc"
 	{
 		"en"	"When it rains for several days on end.\n{green}Allies gain 500 barrier and +35％ damage resistance while current health is above max health"
 		"it"	"Quando piove per diversi giorni di seguito,{green}gli alleati guadagnano 500 barriere e +35％ resistenza ai danni finché la salute corrente è superiore alla salute massima"
+		"ko"	"30년 전, 아이의 장난감 방패가 호수에 떨어졌다.\n{green}모든 아군에게 내구도 500의 배리어 부여 및 현재 체력이 최대치를 초과할 시 피해 저항력 +35％ 증가."
 	}
 	"Living Woodplate"
 	{
 		"en"	"Living Woodplate"
 		"it"	"Piastra di legno vivente"
+		"ko"	"생존의 나무 갑옷"
 	}
 	"Living Woodplate Desc"
 	{
 		"en"	"The Umbrals know how trees will cling to survival.\n{green}Allies gain barrier equal to 50％ max health when revived"
 		"it"	"Gli Umbral sanno come gli alberi si aggrappano alla sopravvivenza. Gli alleati guadagnano una barriera pari al 50％ di salute massima quando vengono rianimati"
+		"ko"	"움브랄들은 나무의 생존에 대한 집착을 잘 알고 있다.\n{green}부활할 때마다, 최대 체력의 50％에 해당하는 배리어 획득."
 	}
 	"Medicine Sticks"
 	{
 		"en"	"Medicine Sticks"
 		"it"	"Bastoncini di medicina"
+		"ko"	"약용 재갈"
 	}
 	"Medicine Sticks Desc"
 	{
 		"en"	"No this isn't weed you stoner.\n{green}Allies gain 2 shields when a wave starts"
 		"it"	"No, questa non è erba, tossico.\n{green}Gli alleati guadagnano 2 scudi quando inizia un'ondata"
+		"ko"	"이게 대마초냐고? 너 미쳤어?\n{green}웨이브가 시작될 때마다, 보호막 2개 획득."
 	}
 	"Expidonsan Access Card"
 	{
 		"en"	"Expidonsan Access Card"
 		"it"	"Scheda di accesso Expidonsan"
+		"ko"	"엑스피돈사 체험 카드"
 	}
 	"Expidonsan Access Card Desc"
 	{
 		"en"	"Each Mercenary is entitled to one physiotherapy session.\n{green}Players gain +40％ fire rate and reload speed for 10 seconds after being revived"
 		"it"	"Ogni Mercenario ha diritto a una seduta di fisioterapia.\n{green}I giocatori guadagnano +40％ velocità di fuoco e velocità di ricarica per 10 secondi dopo essere stati rianimati"
+		"ko"	"각 용병마다 물리치료 서비스를 1회 받을 수 있다.\n{green}부활할 때마다, 10초간 공격 속도와 재장전 속도 +40％ 증가."
 	}
 	"Expidonsan Prime Membership"
 	{
 		"en"	"Expidonsan Prime Membership"
 		"it"	"Abbonamento Prime Expidonsan"
+		"ko"	"엑스피돈사 스페셜 카드"
 	}
 	"Expidonsan Prime Membership Desc"
 	{
 		"en"	"Each Mercenary is entitled to one comprehensive physical and psychological assessment.\n{green}Players gain +70％ fire rate and reload speed for 10 seconds after being revived"
 		"it"	"Ogni Mercenario ha diritto a una valutazione fisica e psicologica completa.\n{green}I giocatori guadagnano +70％ velocità di fuoco e velocità di ricarica per 10 secondi dopo essere stati rianimati"
+		"ko"	"각 용병마다 전면적인 신체검사와 심리 케어 서비스를 1회 받을 수 있다.\n{green}부활할 때마다, 10초간 공격 속도와 재장전 속도 +70％ 증가."
 	}
 	"The Whip of Punishment"
 	{
 		"en"	"The Whip of Punishment"
 		"it"	"La frusta della punizione"
+		"ko"	"징벌의 채찍"
 	}
 	"The Whip of Punishment Desc"
 	{
 		"en"	"A whip that strikes fear.\n{green}Allies gain 10％ Movement Speed."
 		"it"	"Una frusta che incute paura.\n{green}Gli alleati guadagnano 10％ Velocità di movimento."
+		"ko"	"공포를 느끼게 만드는 채찍.\n{green}모든 아군의 이동 속도 +10％ 증가."
 	}
 	"Familiar Sculpture"
 	{
 		"en"	"Familiar Sculpture"
 		"it"	"Scultura familiare"
+		"ko"	"낯익은 조각상"
 	}
 	"Familiar Sculpture Desc"
 	{
 		"en"	"A familiar face but a different vibe.\n{green}Enemy attack speed decreased by -10％"
 		"it"	"Un volto familiare ma con un'atmosfera diversa.\n{green}La velocità d'attacco dei nemici diminuisce di -10％"
+		"ko"	"생김새는 닮았지만, 분위기는 전혀 다르다.\n{green}모든 적의 공격 속도 -10％ 감소."
 	}
 	"Painful Happiness"
 	{
 		"en"	"''Painful Happiness''"
 		"it"	"''Felicità dolorosa''"
+		"ko"	"''고통스러운 쾌락''"
 	}
 	"Painful Happiness Desc"
 	{
 		"en"	"He enters the unknown, his weight is gone.\n{green}Enemy health and movement speed decreased by -9％"
 		"it"	"Entra nell'ignoto, il suo peso è sparito.\n{green}La salute e la velocità di movimento dei nemici diminuiscono di -9％"
+		"ko"	"그는 미지의 세계로 발을 들여놓았고, 그의 무게는 순식간에 사라졌다.\n{green}모든 적의 체력과 이동 속도 -9％ 감소."
 	}
 	"Gravity Defying Machine"
 	{
 		"en"	"Gravity Defying Machine"
 		"it"	"Macchina che sfida la gravità"
+		"ko"	"''중력 무시 장치''"
 	}
 	"Gravity Defying Machine Desc"
 	{
 		"en"	"Now, though they float in clouds.\n{green}Enemy weight decreased by -2"
 		"it"	"Ora, però, fluttuano nelle nuvole.\n{green}Il peso dei nemici è diminuito di -2"
+		"ko"	"그 후, 그들은 비록 구름 사이를 떠돌아다녔지만.\n{green}모든 적의 무게 -2 감소."
 	}
 	"Devilbane Banner"
 	{
 		"en"	"''Devilbane Banner''"
 		"it"	"''Stendardo di Devilbane''"
+		"ko"	"''마족 토벌 깃발''"
 	}
 	"Devilbane Banner Desc"
 	{
 		"en"	"Made by Al-Hallem mercenaries loyal to Iberia.\n{green}Weapon cooldown reduced by 2s when hitting an Umbral enemy"
 		"it"	"Realizzato da mercenari Al-Hallem fedeli a Iberia.\n{green}Il cooldown dell'arma si riduce di 2s quando si colpisce un nemico Umbral"
+		"ko"	"이베리아에 충성하던 알-할렘 용병이 만들었다.\n{green}움브랄 계열 적을 적중할 때마다, 무기 능력 쿨타임이 2초씩 감소."
 	}
 	"Great Banshee Veil"
 	{
 		"en"	"Great Banshee's Veil"
 		"it"	"Velo della Grande Banshee"
+		"ko"	"노래하는 자의 베일"
 	}
 	"Great Banshee Veil Desc"
 	{
 		"en"	"Impale the agonizing wails into the minds of every intruder.\n{green}Enemies receive +50％ elemental damage"
 		"it"	"Imprimi i lamenti strazianti nelle menti di ogni intruso.\n{green}I nemici ricevono +50％ danni elementali"
+		"ko"	"모든 침입자의 생각에 비명을 박아 넣을 때까지.\n{green}모든 적의 체력과 이동 속도 -9％ 감소."
 	}
 	"Little Cube"
 	{
 		"en"	"Little Cube"
 		"it"	"Piccolo cubo"
+		"ko"	"''큐브''"
 	}
 	"Little Cube Desc"
 	{
 		"en"	"Zeina spent a lot of time fixing it up.\n{green}Allies receive +25％ max health, increased to +100％ when on a bizarre chapter"
 		"it"	"Gli alleati ricevono +25％ di salute massima, aumentata a +100％ quando sono in un capitolo bizzarro"
+		"ko"	"제이나가 오랜 시간을 들여 겨우 고쳤다.\n{green}모든 아군의 최대 체력 +25％ 증가. 기묘한 챕터에 도달하면 대신 +100％ 증가."
 	}
 	"Fearless Blade"
 	{
 		"en"	"Fearless Blade"
 		"it"	"Lama impavida"
+		"ko"	"담대함의 칼날"
 	}
 	"Fearless Blade Desc"
 	{
 		"en"	"Ziberia artilleries, Ruina casters, and Victorian sharpshooters all took their shots at him.\n{green}The player who spent the most cash receives +50％ damage and max health"
 		"it"	"Le artiglierie di Ziberia, gli incantatori di Ruina e i tiratori scelti vittoriani hanno tutti sparato contro di lui.\n{green}Il giocatore che ha speso più denaro riceve +50％ danni e salute massima"
+		"ko"	"지베리아 화포 부대, 루이나 캐스터 부대, 빅토리아 명사수들이 그에게 파상 공세를 퍼부었다.\n{green}자금을 가장 많이 소모한 플레이어의 최대 체력, 피해량 +50％"
 	}
 	"Chaos Star"
 	{
 		"en"	"''Chaos Star''"
 		"it"	"''Stella del Caos''"
+		"ko"	"''혼돈의 별''"
 	}
 	"Chaos Star Desc"
 	{
 		"en"	"A symbol of Chaos.\n{green}Enemies receive +150％ damage from True Damage"
 		"it"	"Un simbolo del Caos.\n{green}I nemici ricevono +150％ danni da Danno Vero"
+		"ko"	"혼돈의 표식이다.\n{green}이제 트루 대미지가 적에게 추가로 +150％ 의 피해를 입힘."
 	}
 	"Unripe Yearning"
 	{
 		"en"	"Unripe Yearning"
 		"it"	"Anelito acerbo"
+		"ko"	"풋풋한 애착"
 	}
 	"Unripe Yearning Desc"
 	{
 		"en"	"These incomplete thoughts cling to their creators.\n{green}Allies receive +0.4％ max health per Umbral Affinity"
 		"it"	"Questi pensieri incompleti si aggrappano ai loro creatori.\n{green}Gli alleati ricevono +0,4％ di salute massima per Affinità Umbrale"
+		"ko"	"형성되지 않은 생각은 갓난아이처럼 창조주에게 애착을 보인다.\n{green}보유한 움브랄 친화력 1 당, 모든 아군의 최대 체력 +0.4％ 증가."
 	}
 	"Eye of Fortune"
 	{
 		"en"	"Eye of Fortune"
 		"it"	"L'occhio della fortuna"
+		"ko"	"재물의 눈"
 	}
 	"Eye of Fortune Desc"
 	{
 		"en"	"People began worshipping discs with a single embedded eye.\n{green}Obtain 5 Australium Ingots, obtain 20 Australium Ingots after Emergency Dispatch operation"
 		"it"	"La gente ha iniziato a venerare i dischi con un unico occhio incastonato.\n{green}Ottieni 5 lingotti di australium, ottieni 20 lingotti di australium dopo l'operazione di invio di emergenza"
+		"ko"	"주민들이 집집마다 외눈이 박힌 원반을 모신다.\n{green}오스트레일륨 주괴를 5 얻습니다. 긴급 파견 완료시 오스트레일륨 주괴를 20 얻습니다."
 	}
 	"Thoughts Catcher"
 	{
 		"en"	"Thoughts Catcher"
 		"it"	"Acchiappapensieri"
+		"ko"	"생각의 포수"
 	}
 	"Thoughts Catcher Desc"
 	{
 		"en"	"Sorting truth from falsehood takes time, and some ideas will invariably scatter.\n{green}Obtain 3 Australium Ingots when consuming an item at a Gateway"
 		"it"	"Per separare la verità dalla menzogna ci vuole tempo e alcune idee si disperderanno invariabilmente.\n{green}Ottieni 3 lingotti di australium quando consumi un oggetto in un portale"
+		"ko"	"거짓과 진실을 판별하는 건 기나긴 과정인지라, 항상 새어 나가는 생각들이 있다.\n{green}관문에 아이템을 흡수시킬 때마다, 오스트레일륨 주괴를 3 얻습니다."
 	}
 	"Scales of Avarice"
 	{
 		"en"	"Scales of Avarice"
 		"it"	"Bilancia dell'Avarizia"
+		"ko"	"탐욕의 저울"
 	}
 	"Scales of Avarice Desc"
 	{
 		"en"	"Merchants offered money, treasure, and even their lives.\n{green}Obtain 2 Australium Ingots when entering a stage when Umbral Affinity is above 61"
 		"it"	"I mercanti offrivano denaro, tesori e persino le loro vite.\n{green}Ottieni 2 lingotti di australium quando entri in uno stage con Affinità Umbrale superiore a 61"
+		"ko"	"상인들은 돈, 보물, 심지어 자기 목숨과 영혼까지 바쳤다.\n{green}움브랄 친화력이 61 이상일시, 스테이지 진입시마다 오스트레일륨 주괴를 2 얻습니다."
 	}
 	"Personal Paintbrush"
 	{
 		"en"	"Personal Paintbrush"
 		"it"	"Pennello personale"
+		"ko"	"휴대용 붓"
 	}
 	"Personal Paintbrush Desc"
 	{
 		"en"	"A haunted brush that compels its owners to paint with their own blood.\n{green}Umbral Affinity increased by 1 whenever Umbral Affinity is reduced"
 		"it"	"Un pennello stregato che costringe i suoi possessori a dipingere con il proprio sangue.\n{green}L'Affinità Umbrale aumenta di 1 ogni volta che l'Affinità Umbrale viene ridotta"
+		"ko"	"화가는 이 붓을 들고 자신을 찍어 다음 작품을 그렸다.\n{green}움브랄 친화력이 감소할 때마다, 움브랄 친화력이 1 증가합니다."
 	}
 	"Survivor Contract"
 	{
 		"en"	"Survivor Contract"
 		"it"	"Contratto di sopravvivenza"
+		"ko"	"생존자 협약"
 	}
 	"Survivor Contract Desc"
 	{
 		"en"	"Satisfy them all to be the final survivor.\n{green}Barney and Alyx joins you"
 		"it"	"Soddisfali tutti per essere l'ultimo sopravvissuto.\n{green}Barney e Alyx si uniscono a te"
+		"ko"	"하나씩 이행하면 마지막 생존자가 될 수 있다.\n{green}바니 칼훈과 알릭스 밴스가 합류합니다."
 	}
 	"Survivor Party"
 	{
 		"en"	"Survivor Party"
 		"it"	"Festa dei sopravvissuti"
+		"ko"	"생존자 무리"
 	}
 	"Survivor Party Desc"
 	{
 		"en"	"A very long contract, in which every term and condition is the result of experience.\n{green}3 Rebels joins you"
 		"it"	"Un contratto molto lungo, in cui ogni termine e condizione è il risultato dell'esperienza.\n{green}3 Ribelli si unisce a te"
+		"ko"	"수많은 조항이 포함된 협약서. 책에 기록된 조항 하나하나가 감성과 운을 포기한 경험의 결정체이다.\n{green}반시민군 3명이 합류합니다."
 	}
 	"Super Stims"
 	{
 		"en"	"Super Stims"
 		"it"	"Super Stims"
+		"ko"	"초 전투 자극제"
 	}
 	"Super Stims Desc"
 	{
 		"en"	"Freedom never sleeps!!\n{green}Morphine shots are upgraded:\nOn stage start, Instantly fully charge 1 stim.\nStims restore hp to full rapidly in a second. Getting hit during the heal maintains the healing. Healing lasts 3 seconds."
 		"it"	"La libertà non dorme mai!!!\n{green}Gli scatti di morfina sono potenziati:\n All'inizio dello stage, carica istantaneamente 1 stim.\nGli stim ripristinano rapidamente gli hp al massimo in un secondo. Se si viene colpiti durante la guarigione, la guarigione viene mantenuta. La guarigione dura 3 secondi."
+		"ko"	"{green}모르핀 아이템 강화:\n스테이지 시작시, 자극제 1개 충전.\n사용시 최대까지 고속으로 체력을 회복하며, 피해를 받아도 회복이 멈추지 않고 3초 동안 유지."
 	}
 	"Soul Binding Bone"
 	{
 		"en"	"Soul Binding Bone"
 		"it"	"Osso che lega l'anima"
+		"ko"	"영혼 속박의 뼈"
 	}
 	"Soul Binding Bone Desc"
 	{
 		"en"	"The elder Ruinan made a cage with his own bones to seal his kin within.\n{green}Allies receive +0.4％ damage per Umbral Affinity"
 		"it"	"L'anziano Ruinan ha creato una gabbia con le sue ossa per sigillare i suoi parenti al suo interno.{green}Gli alleati ricevono +0,4 danni per Affinità Umbrale"
+		"ko"	"한 고대 루이나인이 자신의 뼈로 동족을 봉인하는 우리를 만들었다.\n{green}보유한 움브랄 친화력 1 당, 모든 아군의 공격 피해량이 +0.4％만큼 증가."
 	}
 
 	"Pots In The Ground"
 	{
 		"en"	"Pots In The Ground ◈"
 		"it"	"Vasi nel terreno ◈"
+		"ko"	"땅속의 냄비 ◈"
 	}
 	"Pots In The Ground Desc"
 	{
 		"en"	"{red}Umbral Affinity reduced by 9 while held\n{purple}Obtain a common artifact when consumed"
 		"it"	"{red}L'Affinità Ombrale è ridotta di 9 mentre la si tiene in mano"
+		"ko"	"{red}이것을 보유하는 동안 움브랄 친화력 9 감소\n{purple}관문에 흡수시키면, 일반 등급 소장품 획득"
 	}
 	"Walled Gold"
 	{
 		"en"	"Walled Gold ◈"
 		"it"	"Oro murato ◈"
+		"ko"	"벽속의 순금 ◈"
 	}
 	"Walled Gold Desc"
 	{
 		"en"	"{red}Umbral Affinity reduced by 6 while held\n{purple}Obtain an uncommon artifact when consumed"
 		"it"	"{red}Affinità Ombrale ridotta di 6 mentre la si tiene \n{purple}Ottiene un artefatto non comune quando viene consumata"
+		"ko"	"{red}이것을 보유하는 동안 움브랄 친화력 6 감소\n{purple}관문에 흡수시키면, 특별 등급 소장품 획득"
 	}
 	"Stored Instruments"
 	{
 		"en"	"Stored Instruments ◈"
 		"it"	"Strumenti memorizzati"
+		"ko"	"상자 속 제기 ◈"
 	}
 	"Stored Instruments Desc"
 	{
 		"en"	"{red}Umbral Affinity reduced by 12 while held\n{purple}Chance obtain a rare artifact when consumed"
 		"it"	"{red}affinità Imbrigliata ridotta di 12 mentre la si trattiene \n{purple}Possibilità di ottenere un artefatto raro quando si consuma"
+		"ko"	"{red}이것을 보유하는 동안 움브랄 친화력 12 감소\n{purple}관문에 흡수시키면, 확률적으로 희귀 등급 소장품 획득"
 	}
 	"Empty Thoughts"
 	{
 		"en"	"Empty Thoughts ◈"
 		"it"	"Pensieri vuoti ◈"
+		"ko"	"공백의 사념 ◈"
 	}
 	"Empty Thoughts Desc"
 	{
 		"en"	"{red}Umbral Affinity reduced by 6 while held\n{purple}Obtain a common artifact when consumed"
 		"it"	"{red}L'Affinità Ombrale è ridotta di 6 mentre la si tiene in mano"
+		"ko"	"{red}이것을 보유하는 동안 움브랄 친화력 6 감소\n{purple}관문에 흡수시키면, 일반 등급 소장품 획득"
 	}
 	"Shrivel and Sprout"
 	{
 		"en"	"Shrivel and Sprout ◈"
 		"it"	"Ghiaccio e germoglio ◈"
+		"ko"	"고목 신지 ◈"
 	}
 	"Shrivel and Sprout Desc"
 	{
 		"en"	"{yellow}Duplicates when reaching a new chapter {red}but Umbral Affinity reduced by 6 while held\n{purple}Obtain an uncommon artifact when consumed"
 		"it"	"{yellow}Si duplica quando si raggiunge un nuovo capitolo {red}ma l'Affinità Umbrale è ridotta di 6 mentre la si tiene \n{purple}Ottiene un artefatto non comune quando viene consumato"
+		"ko"	"{yellow}새 챕터 진입 시 이 소장품이 복제됨. {red}이것을 보유하는 동안 움브랄 친화력 6 감소\n{purple}관문에 흡수시키면, 특별 등급 소장품 획득"
 	}
 	"Cheerful Banter"
 	{
 		"en"	"Cheerful Banter ◈"
 		"it"	"Allegra botta e risposta ◈"
+		"ko"	"친우의 웃음 ◈"
 	}
 	"Cheerful Banter Desc"
 	{
 		"en"	"{red}Umbral Affinity reduced by 15 when obtained\n{purple}Chance obtain a rare artifact when consumed"
 		"it"	"{red}Affinità Umbra ridotta di 15 quando viene ottenuta, {purple}Possibilità di ottenere un artefatto raro quando viene consumata"
+		"ko"	"{red}획득 시 움브랄 친화력 15 감소(흡수해도 친화력이 반환되지 않음)\n{purple}관문에 흡수시키면, 확률적으로 희귀 등급 소장품 획득"
 	}
 	"Nemesis Blood"
 	{
 		"en"	"Nemesis Blood ◈"
 		"it"	"Sangue di Nemesi ◈"
+		"ko"	"원수의 피 ◈"
 	}
 	"Nemesis Blood Desc"
 	{
 		"en"	"{green}Umbral Affinity increased by 3 when reaching a new chapter {red}but Umbral Affinity reduced by 15 while held\n{purple}Chance obtain a rare artifact when consumed"
 		"it"	"{green}l'Affinità Umbrale aumenta di 3 quando si raggiunge un nuovo capitolo {red}ma l'Affinità Umbrale si riduce di 15 mentre si tiene \n{purple}Possibilità di ottenere un artefatto raro quando si consuma"
+		"ko"	"{green}새 챕터 진입 시 움브랄 친화력이 3 증가. {red}대신 이것을 보유하는 동안, 엄브랄 친화력 15 감소\n{purple}관문에 흡수시키면, 확률적으로 희귀 등급 소장품 획득"
 	}
 	"Sprouting Stem"
 	{
 		"en"	"Sprouting Stem ◈"
 		"it"	"Stelo germogliante ◈"
+		"ko"	"싹이 자란 자루 ◈"
 	}
 	"Sprouting Stem Desc"
 	{
 		"en"	"{green}Umbral Affinity reduced by 5 when obtained"
 		"it"	"{green}Affinità Umbra ridotta di 5 quando viene ottenuta"
+		"ko"	"{green}획득 시, 움브랄 친화력이 5 증가"
 	}
 	"Wild Grass by the Door"
 	{
 		"en"	"Wild Grass by the Door ◈"
 		"it"	"Erba selvatica vicino alla porta"
+		"ko"	"문앞의 들풀 ◈"
 	}
 	"Wild Grass by the Door Desc"
 	{
 		"en"	"{red}Umbral Affinity reduced by 12 while held\n{purple}Obtain a random artifact when consumed"
 		"it"	"{red}Affinità Ombrale ridotta di 12 mentre la si trattiene \n{purple}Ottiene un artefatto casuale quando viene consumata"
+		"ko"	"{red}이것을 보유하는 동안 움브랄 친화력 12 감소\n{purple}관문에 흡수시키면, 무작위 소장품 획득"
 	}
 	"Despair"
 	{
 		"en"	"Despair ◈"
-		"it"		"Disperazione"
+		"it"	"Disperazione"
+		"ko"	"절망 ◈"
 	}
 	"Despair Desc"
 	{
 		"en"	"{red}Shops no longer appear while held\n{purple}Removes all Australium Ingots when consumed"
 		"it"	"{red}I negozi non appaiono più quando sono in mano a qualcuno"
+		"ko"	"{red}이것을 보유하는 동안 더 이상 상점이 등장하지 않음\n{purple}관문에 흡수시키면, 보유한 오스트레일륨 주괴 전부 소멸"
 	}
 	"Outblood"
 	{
 		"en"	"Outblood ◈"
 		"it"	"Outblood ◈"
+		"ko"	"이종족 ◈"
 	}
 	"Outblood Desc"
 	{
 		"en"	"{green}Allies have +7％ fire rate {red}but Umbral Affinity reduced by 2 after a battle"
 		"it"	"{green}Gli alleati hanno +7％ velocità di fuoco {red}ma l'Affinità Umbrale è ridotta di 2 dopo una battaglia"
+		"ko"	"{green}모든 아군의 공격 속도 +7％ 증가. {red}매 전투 종료 시, 움브랄 친화력 2 감소."
 	}
 	"Flames"
 	{
 		"en"	"Flames ◈"
 		"it"	"Fiamme ◈"
+		"ko"	"불바다 ◈"
 	}
 	"Flames Desc"
 	{
 		"en"	"{green}Allies have +14％ fire rate {red}but Umbral Affinity reduced by 3 after a battle"
 		"it"	"{green}Gli alleati hanno +14％ velocità di fuoco {red}ma l'Affinità Umbrale è ridotta di 3 dopo una battaglia"
+		"ko"	"{green}모든 아군의 공격 속도 +14％ 증가. {red}매 전투 종료 시, 움브랄 친화력 3 감소."
 	}
 	"Lost"
 	{
 		"en"	"Lost ◈"
 		"it"	"Perso ◈"
+		"ko"	"산실 ◈"
 	}
 	"Lost Desc"
 	{
 		"en"	"{green}Umbral Affinity increased by 12 while held\n{purple}Obtain a random voidstone when consumed"
 		"it"	"{green}L'Affinità Umbra è aumentata di 12 quando viene tenuta in mano"
+		"ko"	"{green}이것을 보유하는 동안 움브랄 친화력 12 증가\n{purple}관문에 흡수시키면, 무작위 공허석 획득"
 	}
 	"Witchcraft"
 	{
 		"en"	"Witchcraft ◈"
 		"it"	"Stregoneria ◈"
+		"ko"	"주술 ◈"
 	}
 	"Witchcraft Desc"
 	{
 		"en"	"{green}Umbral Affinity increased by 3 after a battle {red}but enemies have +10％ health and damage while held"
 		"it"	"{green}L'Affinità Imbrigliata è aumentata di 3 dopo una battaglia {red}ma i nemici hanno +10％ di salute e danni mentre vengono tenuti in mano"
+		"ko"	"{green}매 전투 종료 시, 움브랄 친화력 3 증가. {red}대신 이것을 보유하는 동안 적들의 최대 체력 및 피해량 +10％ 증가. "
 	}
 	"Consume"
 	{
 		"en"	"Consume ◈"
 		"it"	"Consuma ◈"
+		"ko"	"취식 ◈"
 	}
 	"Consume Desc"
 	{
 		"en"	"{green}Allies have +8％ max health {red}but Umbral Affinity reduced by 1 after a battle"
 		"it"	"{green}Gli alleati hanno +8％ salute massima {red}ma l'Affinità Umbrale è ridotta di 1 dopo una battaglia"
+		"ko"	"{green}모든 아군의 최대 체력 +8％ 증가. {red}매 전투 종료 시, 움브랄 친화력 1 감소. "
 	}
 	"Consume Voidstone"
 	{
 		"en"	"'Consume' Voidstone"
 		"it"	"consuma la pietra vuota"
+		"ko"	"''취식'된 공허석'"
 	}
 	"Consume Voidstone Desc"
 	{
 		"en"	"{green}Allies receive +5％ max health"
 		"it"	"{green}Gli alleati ricevono +5％ salute massima"
+		"ko"	"{green}모든 아군의 최대 체력 +5％ 증가"
 	}
 	"Reclaim"
 	{
 		"en"	"Reclaim ◈"
 		"it"	"Recupera ◈"
+		"ko"	"개간 ◈"
 	}
 	"Reclaim Desc"
 	{
 		"en"	"{green}Allies have +15％ max health {red}but Umbral Affinity reduced by 2 after a battle"
 		"it"	"{green}Gli alleati hanno +15％ salute massima {red}ma l'Affinità Umbrale è ridotta di 2 dopo una battaglia"
+		"ko"	"{green}모든 아군의 최대 체력 +15％ 증가. {red}매 전투 종료 시, 움브랄 친화력 2 감소. "
 	}
 	"Reclaim Voidstone"
 	{
 		"en"	"'Reclaim' Voidstone"
 		"it"	"recupera la pietra vuota"
+		"ko"	"'개간'된 공허석"
 	}
 	"Reclaim Voidstone Desc"
 	{
 		"en"	"{green}Allies receive +10％ max health"
 		"it"	"{green}Gli alleati ricevono +10％ salute massima"
+		"ko"	"{green}모든 아군의 최대 체력 +10％ 증가"
 	}
 	"Pillage"
 	{
 		"en"	"Pillage ◈"
 		"it"	"Saccheggio ◈"
+		"ko"	"강탈 ◈"
 	}
 	"Pillage Desc"
 	{
 		"en"	"{green}Allies have +5％ damage {red}but Umbral Affinity reduced by 1 after a battle"
 		"it"	"{green}Gli alleati hanno +5％ danni {red}ma l'Affinità Umbrale è ridotta di 1 dopo una battaglia"
+		"ko"	"{green}모든 아군의 공격 피해량 +5％ 증가. {red}매 전투 종료 시, 움브랄 친화력 1 감소. "
 	}
 	"Pillage Voidstone"
 	{
 		"en"	"'Pillage' Voidstone"
 		"it"	"'Saccheggia' la pietra vuota"
+		"ko"	"'강탈'당한 공허석"
 	}
 	"Pillage Voidstone Desc"
 	{
 		"en"	"{green}Allies receive +5％ damage"
 		"it"	"{green}Gli alleati ricevono +5％ danni"
+		"ko"	"{green}모든 아군의 공격 피해량 +5％ 증가"
 	}
 	"Invasion"
 	{
 		"en"	"Invasion ◈"
 		"it"	"Invasione ◈"
+		"ko"	"침략 ◈"
 	}
 	"Invasion Desc"
 	{
 		"en"	"{green}Allies have +10％ damage {red}but Umbral Affinity reduced by 2 after a battle"
 		"it"	"{green}Gli alleati hanno +10％ danni {red}ma l'Affinità Umbrale è ridotta di 2 dopo una battaglia"
+		"ko"	"{green}모든 아군의 공격 피해량 +10％ 증가. {red}매 전투 종료 시, 움브랄 친화력 2 감소. "
 	}
 	"Invasion Voidstone"
 	{
 		"en"	"'Invasion' Voidstone"
 		"it"	"pietra vuota Invasione"
+		"ko"	"'침략'당한 공허석"
 	}
 	"Invasion Voidstone Desc"
 	{
 		"en"	"{green}Allies receive +10％ damage"
 		"it"	"{green}Gli alleati ricevono +10％ danni"
+		"ko"	"{green}모든 아군의 공격 피해량 +10％ 증가"
 	}
 	"Rise and Fall"
 	{
 		"en"	"Rise and Fall ◈"
 		"it"	"Ascesa e caduta ◈"
+		"ko"	"흥망 ◈"
 	}
 	"Rise and Fall Desc"
 	{
 		"en"	"{green}Allies have +15％ damage {red}but Umbral Affinity reduced by 3 after a battle"
 		"it"	"{green}Gli alleati hanno +15％ danni {red}ma l'Affinità Umbrale è ridotta di 3 dopo una battaglia"
+		"ko"	"{green}모든 아군의 공격 피해량 +15％ 증가. {red}매 전투 종료 시, 움브랄 친화력 3 감소."
 	}
 	"Words"
 	{
 		"en"	"Words ◈"
 		"it"	"Parole ◈"
+		"ko"	"말문 ◈"
 	}
 	"Words Desc"
 	{
 		"en"	"{green}Umbral Affinity increased by 6 while held\n{purple}Obtain 2000 cash when consumed"
 		"it"	"{green} L'Affinità Umbra è aumentata di 6 mentre la si detiene"
+		"ko"	"{green}이것을 보유하는 동안 움브랄 친화력 6 증가\n{purple}관문에 흡수시키면, 자금 2000 획득"
 	}
 	"Words Voidstone"
 	{
 		"en"	"'Words' Voidstone"
 		"it"	"pietra vuota Parole"
+		"ko"	"'말문' 트인 공허석"
 	}
 	"Words Voidstone Desc"
 	{
 		"en"	"{green}Obtain 2000 cash"
 		"it"	"{green}Ottieni 2000 contanti"
+		"ko"	"{green}자금 2000 획득."
 	}
 	"Assembly"
 	{
 		"en"	"Assembly ◈"
 		"it"	"Montaggio ◈"
+		"ko"	"집회 ◈"
 	}
 	"Assembly Desc"
 	{
 		"en"	"{green}Umbral Affinity increased by 9 while held\n{purple}Obtain 3000 cash when consumed"
 		"it"	"{green}L'Affinità Umbra è aumentata di 9 mentre la si detiene"
+		"ko"	"{green}이것을 보유하는 동안 움브랄 친화력 9 증가\n{purple}관문에 흡수시키면, 자금 3000 획득"
 	}
 	"Assembly Voidstone"
 	{
 		"en"	"'Assembly' Voidstone"
 		"it"	"pietra vuota di montaggio"
+		"ko"	"'집회'하는 공허석"
 	}
 	"Assembly Voidstone Desc"
 	{
 		"en"	"{green}Obtain 3000 cash when consumed"
 		"it"	"{green}Ottieni 3000 contanti quando si consuma"
+		"ko"	"{green}자금 3000 획득."
 	}
 	"Catastrophe"
 	{
 		"en"	"Catastrophe ◈"
 		"it"	"Catastrofe ◈"
+		"ko"	"재앙 ◈"
 	}
 	"Catastrophe Desc"
 	{
 		"en"	"{green}Umbral Affinity increased by 9 while held\n{purple}Obtain 9 Australium Ingots when consumed"
 		"it"	"{green}L'Affinità Umbra è aumentata di 9 mentre la si tiene in mano"
+		"ko"	"{green}이것을 보유하는 동안 움브랄 친화력 9 증가\n{purple}관문에 흡수시키면, 오스트레일륨 주괴를 9 획득"
 	}
 	"Furnace"
 	{
 		"en"	"Furnace ◈"
 		"it"	"Fornace ◈"
+		"ko"	"용광로 ◈"
 	}
 	"Furnace Desc"
 	{
 		"en"	"{green}Umbral Affinity increased by 12 while held\n{purple}Obtain 12 Australium Ingots when consumed"
 		"it"	"{green}L'Affinità Umbra è aumentata di 12 mentre la si detiene"
+		"ko"	"{green}이것을 보유하는 동안 움브랄 친화력 12 증가\n{purple}관문에 흡수시키면, 오스트레일륨 주괴를 12 획득"
 	}
 	"Fractured"
 	{
 		"en"	"Fractured ◈"
 		"it"	"Fratturato ◈"
+		"ko"	"혼란 ◈"
 	}
 	"Fractured Desc"
 	{
 		"en"	"{red}Umbral Affinity reduced by 5 while holding\n{purple}A special encounter will appear when entering the final chapter when consumed"
 		"it"	"{red}L'Affinità Imbriale è ridotta di 5 mentre si tiene in mano \n{purple}Un incontro speciale apparirà quando si entra nel capitolo finale se si consuma"
+		"ko"	"{red}이것을 보유하는 동안 움브랄 친화력 5 감소\n{purple}관문에 흡수시키면, 마지막 챕터에서 특수한 우연한 만남이 발생함."
 	}
 	"Wordless Deed"
 	{
 		"en"	"Wordless Deed ◈"
 		"it"	"Atto senza parole ◈"
+		"ko"	"이름 없는 계약서 ◈"
 	}
 	"Wordless Deed Desc"
 	{
 		"en"	"{red}Umbral Affinity reduced by 15 while held\n{purple}Obtain a cursed artifact when consumed"
 		"it"	"{red}L'Affinità Imbrigliata è ridotta di 15 mentre la si tiene in mano"
+		"ko"	"{red}이것을 보유하는 동안 움브랄 친화력 15 감소\n{purple}관문에 흡수시키면, 저주 소장품 획득"
 	}
 	"Keycard"
 	{
 		"en"	"Keycard"
 		"it"	"Scheda chiave"
+		"ko"	"키카드"
 	}
 	"Keycard Desc"
 	{
 		"en"	"{yellow}All Umbrals Gain 10％ damage and 10％ resistance while held {blue}and a new way inside"
 		"it"	"{yellow}Tutti gli Umbral guadagnano 10％ danni e 10％ resistenza mentre sono tenuti in mano {blue}e una nuova via d'accesso"
+		"ko"	"{yellow}이것을 보유하는 동안 움브랄의 피해량과 저항력이 10％ 증가. {blue}새로운 길이 열리게 됨."
 	}
 	"Torn Keycard"
 	{
 		"en"	"Torn Keycard"
 		"it"	"Carta strappata"
+		"ko"	"찢겨진 키카드"
 	}
 	"Torn Keycard Desc"
 	{
 		"en"	"{crimson}What did you do?"
 		"it"	"{crimson}Che cosa hai fatto?"
+		"ko"	"{crimson}무슨 짓을 한거지?"
 	}
 	"The Shadow"
 	{
 		"en"	"''Shadow''"
 		"it"	"''Ombra''"
+		"ko"	"''그림자''"
 	}
 	"The Shadow Desc"
 	{
 		"en"	"She was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop her.\n{yellow}NPC allies will use the same max health from players."
 		"it"	"Era intrappolata dopo aver sconfitto Whiteflower, una pedina posseduta dopo aver sconfitto Unspeakable, ora dobbiamo fermarla.\n{yellow}Gli alleati PNG useranno la stessa salute massima dei giocatori."
+		"ko"	"그녀는 배풍등을 격파한 순간 갇혀버렸고, 형용할 수 없는 자를 격파한 순간 그것의 꼭두각시가 되었다. 이제 그녀를 막아야한다.\n{yellow}모든 아군 NPC들의 최대 체력이 플레이어의 최대 체력과 동일해짐"
 	}
 	"The Bladedance"
 	{
 		"en"	"''Bladedance''"
 		"it"	"''Bladedance''"
+		"ko"	"''칼춤''"
 	}
 	"The Bladedance Desc"
 	{
 		"en"	"Left to rot in the same fate, alone, but able to keep himself alive.\n{green}One player at a time will gain +100％ max health, +100％ damage and +100％ heal rate."
 		"it"	"Lasciato a marcire nello stesso destino, solo, ma in grado di mantenersi in vita.\n{green}Un giocatore alla volta guadagnerà +100％ salute massima, +100％ danni e +100％ velocità di guarigione."
+		"ko"	"그는 같은 운명 속에 홀로 썩어가도록 내버려졌지만, 스스로 살아남을 수는 있었다.\n{green}주기적으로 한 번에 한 명의 플레이어의 최대 체력, 공격 피해량, 치유량이 +100％ 증가."
 	}
 	"The Whiteflower"
 	{
 		"en"	"''Whiteflower''"
 		"it"	"''Biancofiore''"
+		"ko"	"''배풍등''"
 	}
 	"The Whiteflower Desc"
 	{
 		"en"	"Egotist. Betrayer. Seeker. Loner. Ruler. Goodnight, Irln.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped between players"
 		"it"	"Egoista. Traditore. Cercatore. Solitario. Governante. Buonanotte, Irln.\n{green}Gli alleati guadagnano +25％ salute massima {yellow}ma la salute massima viene scambiata casualmente tra i giocatori"
+		"ko"	"굿나잇, 아를린.\n{green}모든 아군의 최대 체력 +25％. {yellow}최대 체력이 플레이어들 사이에서 무작위로 변경됩니다."
 	}
 
 	"Gateway"
 	{
 		"en"	"Gateway"
 		"it"	"Porta d'ingresso"
+		"ko"	"관문"
 	}
 	"Reila Curtain Closer"
 	{
 		"en"	"Reila Curtain Closer"
 		"it"	"Chiudi tenda Reila"
+		"ko"	"장막 봉쇄자 레일라"
 	}
 	"Almagest Intrusion"
 	{
 		"en"	"Almagest Intrusion"
 		"it"	"Intrusione di Almagest"
+		"ko"	"알마게스트의 간섭"
 	}
 	"Rift Consume Encounter Title"
 	{
 		"en"	"A rift opens up, it's time to throw something in it"
 		"it"	"Si apre una frattura, è ora di gettarvi qualcosa dentro"
+		"ko"	"균열이 열렸다. 뭔가를 던져넣을 시간이다."
 	}
 	"Consumes Left"
 	{
 		"#format"	"{1:d}"
 		"en"	"We can consume {1} more stones"
 		"it"	"Possiamo consumare {1} più pietre"
+		"ko"	"아직 공허석 {1} 개를 더 흡수시킬 수 있다."
 	}
 	"Rift Ending 1 Lore"
 	{
 		"en"	"It's dangerous out there, we can get some help if you know somebody that can get us in."
 		"it"	"È pericoloso là fuori, possiamo trovare aiuto se conosci qualcuno che può farci entrare."
+		"ko"	"밖은 정말 위험하다. 우리를 도와줄 수 있는 사람을 알고 있다면 도움을 받을 수 있을지도 모른다."
 	}
 	"Rift Ending 1 Option 1"
 	{
 		"en"	"Just the items we have"
 		"it"	"Solo gli articoli che abbiamo"
+		"ko"	"가진건 우리의 물품 뿐이야"
 	}
 	"Rift Ending 1 Desc 1"
 	{
 		"en"	"{green}Receive an uncommon artifact."
 		"it"	"{green}Ricevi un artefatto non comune."
+		"ko"	"{green}특별 등급 소장품을 얻습니다."
 	}
 	"Rift Ending 1 Option 2"
 	{
 		"en"	"We have Reila"
 		"it"	"Abbiamo Reila"
+		"ko"	"우리에겐 레일라가 있어"
 	}
 	"Rift Ending 1 Desc 2"
 	{
 		"en"	"{yellow}Reila will acompany you.{green}Receive an common artifact."
 		"it"	"{yellow}Reila ti accompagnerà. Ricevi un artefatto comune."
+		"ko"	"{yellow}레일라가 당신에게 합류합니다. {green}일반 등급 소장품을 얻습니다."
 	}
 
 	"Gamemode History Lore"
 	{
 		"en"	"You find yourselves at a terminal, something interesting catches your eyes."
 		"it"	"Vi trovate in un terminal e qualcosa di interessante cattura la vostra attenzione."
+		"ko"	"당신은 어떤 터미널을 발견한다. 이 안에서 무언가 흥미로운 것이 당신의 시선을 끈다."
 	}
 	"Gamemode History Option 1"
 	{
 		"en"	"Let's take a look"
 		"it"	"Diamo un'occhiata"
+		"ko"	"살펴본다"
 	}
 	"Gamemode History Desc 1"
 	{
 		"en"	"{yellow}Enter a special floor"
 		"it"	"{yellow}Entrare in un piano speciale"
+		"ko"	"{yellow}특별한 층으로 진입합니다"
 	}
 	"Gamemode History Option 2"
 	{
 		"en"	"Scrap it for something useful"
 		"it"	"Rottamazione per qualcosa di utile"
+		"ko"	"분해해서 쓸만한 것을 얻는다"
 	}
 	"Gamemode History Desc 2"
 	{
 		"en"	"{green}Obtain 10000 cash"
 		"it"	"{yellow}Ottieni 10000 contanti"
+		"ko"	"{green}자금을 10000 얻습니다"
 	}
 	"Gamemode History Lore 2"
 	{
 		"en"	"We broke it down, parts for cash and weapons."
 		"it"	"Abbiamo scomposto le parti in contanti e in armi."
+		"ko"	"그것들을 분해하여 자금과 무기 부품으로 만들었다."
 	}
 	"Gamemode History"
 	{
 		"en"	"Gamemode History"
 		"it"	"Storia della modalità di gioco"
+		"ko"	"게임모드의 역사"
 	}
 	"Gamemode History Desc"
 	{
@@ -1361,941 +1628,1127 @@
 	{
 		"en"	"Immensive Guilt"
 		"it"	"Senso di colpa immenso"
+		"ko"	"막대한 죄책감"
 	}
 	"Immensive Guilt Desc"
 	{
 		"en"	"{crimson}This is not good."
 		"it"	"{crimson}Questo non va bene."
+		"ko"	"{crimson}기분이 썩어들어가고 있다."
 	}
 	"Bob's Wrath"
 	{
 		"en"	"Bob's Wrath"
 		"it"	"L'ira di Bob"
+		"ko"	"밥의 분노"
 	}
 	"Bob's Wrath Desc"
 	{
 		"en"	"{crimson}He's pissed."
 		"it"	"{crimson}È incazzato."
+		"ko"	"{crimson}그가 극도로 분노하고 있다."
 	}
 	"Familiar Faces"
 	{
 		"en"	"Familiar Faces"
 		"it"	"Volti familiari"
+		"ko"	"낯익은 얼굴들"
 	}
 	"Crystalized Warped Subjects"
 	{
 		"en"	"Crystalized Warped Subjects"
 		"it"	"Soggetti deformati cristallizzati"
+		"ko"	"결정화된 왜곡된 실험체들"
 	}
 	"Bizarre History"
 	{
 		"en"	"Bizarre History"
 		"it"	"Storia bizzarra"
+		"ko"	"기묘한 역사"
 	}
 
 	"We Are Fractured"
 	{
 		"en"	"We Are Fractured"
 		"it"	"Siamo fratturati"
+		"ko"	"조각난 이들"
 	}
 	"We Are Fractured Lore"
 	{
 		"en"	"The voidstone appears right out of a rift, followed by serveral more rifts around you."
 		"it"	"La pietra del vuoto appare da una spaccatura, seguita da altre spaccature intorno a voi."
+		"ko"	"공허석이 균열에서 튀어나오고, 그 뒤를 따라 당신 주변에 여러 개의 균열이 더 생겨나고 있다."
 	}
 	"We Are Fractured Option 1"
 	{
 		"en"	"Take it and get ready for a fight"
 		"it"	"Prendetelo e preparatevi a combattere"
+		"ko"	"집어든 뒤 전투 준비"
 	}
 	"We Are Fractured Desc 1"
 	{
 		"en"	"{blue}Collect an artifact and start a battle"
 		"it"	"{blue}Raccogliete un artefatto e iniziate una battaglia"
+		"ko"	"{blue}소장품을 얻고 전투를 시작합니다."
 	}
 	"We Are Fractured Lore 1"
 	{
 		"en"	"You hope you haven't threw away that Fractured voidstone too early. Are you strong enough?"
 		"it"	"Spera di non aver buttato via troppo presto la pietra vuota fratturata. Sei abbastanza forte?"
+		"ko"	"당신이 그 '혼란' 공허석을 너무 일찍 던져넣지 않았기를 바라고 있다. 과연 생존할 수 있을까?"
 	}
 	"We Are Fractured Option 2"
 	{
 		"en"	"Leave while we still can"
 		"it"	"Partire finché siamo in tempo"
+		"ko"	"빠르게 도주한다"
 	}
 	"We Are Fractured Lore 2"
 	{
 		"en"	"You left right away, you feel as if the Fractured voidstone was behind this. Maybe we need to try it when we're ready to handle this."
 		"it"	"Se ne è andato subito, si ha l'impressione che dietro a tutto questo ci sia la Pietra Vuota Fratturata. Forse dovremo provarla quando saremo pronti a gestire la situazione."
+		"ko"	"당신은 바로 그 장소를 떠난다. 이건 꼭 마치 '혼란' 공허석 때문에 벌어진 일인것 같다. 나중에 이 사태에서 버텨낼 준비가 되었다면 시도해봐야할지도 모른다."
 	}
 
 	"Poison Water"
 	{
 		"en"	"Poison Water"
 		"it"	"Acqua velenosa"
+		"ko"	"독성 액체"
 	}
 	"Poison Water Lore"
 	{
 		"en"	"Fresh water we can probably take, but is it safe to drink?"
 		"it"	"L'acqua dolce è probabilmente accettabile, ma è sicura da bere?"
+		"ko"	"여기서 신선한 물을 가져갈 수 있을 것 같다. 그런데 이 물을 마셔도 괜찮을까?"
 	}
 	"Poison Water Option 1"
 	{
 		"en"	"It's poisoned"
 		"it"	"È avvelenato"
+		"ko"	"독일지도 몰라"
 	}
 	"Poison Water Desc 1"
 	{
 		"en"	"{green}Obtain 2000 cash"
 		"it"	"{green}Ottieni 2000 contanti"
+		"ko"	"{green}자금 2000 획득"
 	}
 	"Poison Water Option 2"
 	{
 		"en"	"Take some water"
 		"it"	"Prendete un po' d'acqua"
+		"ko"	"물을 좀 가져간다"
 	}
 	"Poison Water Desc 2"
 	{
 		"en"	"{green}Obtain an artifact, 2000 cash {red}but a chance to obtain a cursed artifact"
 		"it"	"{green}Ottieni un artefatto, 2000 contanti {red} ma la possibilità di ottenere un artefatto maledetto"
+		"ko"	"{green}소장품과 자금 2000 획득. {red}확률적으로 저주 소장품을 획득하게 됨"
 	}
 	"Poison Water Lore 2a"
 	{
 		"en"	"Looks like it was safe."
 		"it"	"Sembra che sia stato sicuro."
+		"ko"	"아무래도 안전한 것 같다."
 	}
 	"Poison Water Lore 2b"
 	{
 		"en"	"Don't feel so good."
 		"it"	"Non mi sento bene."
+		"ko"	"기분이 좋지 않다."
 	}
 	"Lone Health"
 	{
 		"en"	"Lone Health"
 		"it"	"Salute solitaria"
+		"ko"	"론 헬스"
 	}
 	"Poisoned Water"
 	{
 		"en"	"Poisoned Water"
 		"it"	"Acqua avvelenata"
+		"ko"	"유독성 물"
 	}
 	"Poisoned Water Desc"
 	{
 		"en"	"Shouldn't have drank that.\n{red}Allies have -20％ max health, cured by visting a Gateway"
 		"it"	"Non avrei dovuto berlo.{red}Gli alleati hanno -20％ di salute massima, curata visitando un Gateway"
+		"ko"	"그 물을 마시지 말았어야 했다.\n{red}모든 아군의 최대 체력 -20％. 관문을 방문하면 치유됩니다"
 	}
 	"Bad Lab Air"
 	{
 		"en"	"Bad Lab Air"
 		"it"	"Aria cattiva di laboratorio"
+		"ko"	"나쁜 연구실 공기"
 	}
 	"Bad Lab Air Desc"
 	{
 		"en"	"Maybe shouldnt have stayed.\n{red}Allies have -5％ max health, cured upon next floor."
 		"it"	"Forse non sarei dovuto rimanere.\n{red}Gli alleati hanno -5％ di salute massima, curata al prossimo piano."
+		"ko"	"그곳에 오래 있어서는 안 됐는데.\n{red}모든 아군의 최대 체력 -5％. 다음 층으로 진입하면 치유됩니다"
 	}
 	"Pool of Clarity Title"
 	{
 		"en"	"You find a pool surrounded by nothing by crystals, umbrals can be seen going to it and away."
 		"it"	"Si trova una piscina circondata dal nulla di cristalli, si vedono umbratili che la raggiungono e la abbandonano."
+		"ko"	"수정으로 둘러싸인 텅 빈 웅덩이를 발견한다. 움브랄들이 그곳을 왔다갔다 하는 것이 보인다."
 	}
 	"Pool of Clarity"
 	{
 		"en"	"Pool of Clarity"
 		"it"	"Piscina della chiarezza"
+		"ko"	"총명의 연못"
 	}
 	"Pool of Clarity Lore"
 	{
 		"en"	"Pool of Clarity Lore"
 		"it"	"Vasca di chiarezza Lore"
+		"ko"	"총명의 연못 설정"
 	}
 	"Pool of Clarity Option 1"
 	{
 		"en"	"Throw in some voidstones"
 		"it"	"Aggiungete alcune pietre di vuoto"
+		"ko"	"공허석을 좀 던져넣는다"
 	}
 	"Pool of Clarity Desc 1"
 	{
 		"en"	"Consume up to 2 voidstones"
 		"it"	"Consumi fino a 2 pietre vuote"
+		"ko"	"공허석을 최대 2개까지 흡수시킵니다"
 	}
 	"Pool of Clarity Lore 1"
 	{
 		"en"	"Pool of Clarity Lore 1"
 		"it"	"Piscina della Chiarezza Lore 1"
+		"ko"	"총명의 연못 설정 1"
 	}
 	"Pool of Clarity Option 2"
 	{
 		"en"	"Throw in some ingots with an artifact"
 		"it"	"Getti alcuni lingotti con un artefatto"
+		"ko"	"오스트레일륨 주괴와 소장품을 함께 던져넣는다"
 	}
 	"Pool of Clarity Desc 2"
 	{
 		"en"	"Give up 10 Australium Inogts and an artifact for an item"
 		"it"	"Rinuncia a 10 Inogts Australium e a un artefatto per un oggetto"
+		"ko"	"오스트레일륨 주괴 10개와 소장품을 던져 아이템을 얻습니다"
 	}
 	"Pool of Clarity Lore 2"
 	{
 		"en"	"What should we throw away?"
 		"it"	"Cosa dobbiamo buttare via?"
+		"ko"	"연못에 어떤 것을 던져넣어야할까?"
 	}
 	"Holy Blessing"
 	{
 		"en"	"Holy Blessing"
 		"it"	"Santa Benedizione"
+		"ko"	"신성 축복"
 	}
 	"Holy Blessing Desc"
 	{
 		"en"	"{green}Grigori's Blessing now heals up to full health and heals 2x as much."
 		"it"	"{green}La Benedizione di Grigori ora cura fino alla salute completa e guarisce due volte di più."
+		"ko"	"{green}그리고리 신부의 축복의 체력 회복 속도가 2배가 되고 최대 체력까지 회복시킵니다"
 	}
 	
 	"Ruina'n Magic Factory"
 	{
 		"en"	"Ruina'n Magic Factory"
 		"it"	"Fabbrica di magia Ruina"
+		"ko"	"루이나 마법 공장"
 	}
 	"Magic Factory Lore"
 	{
 		"en"	"Some sort of factory here we could find something useful here."
 		"it"	"Qui c'è una specie di fabbrica in cui potremmo trovare qualcosa di utile."
+		"ko"	"이 장소는 마치 공장처럼 보인다. 여기서 무언가 유용한 것을 찾을 수 있을지도 모른다."
 	}
 	"Magic Factory Option 1"
 	{
 		"en"	"Take a look inside"
 		"it"	"Date un'occhiata all'interno"
+		"ko"	"안을 살펴본다"
 	}
 	"Magic Factory Desc 1"
 	{
 		"en"	"{green}Obtain a rare artifact"
 		"it"	"{green}Ottieni un artefatto raro"
+		"ko"	"{green}희귀 등급 소장품을 얻습니다"
 	}
 	"Magic Factory Option 2"
 	{
 		"en"	"Go around back"
 		"it"	"Gira intorno al retro"
+		"ko"	"뒤돌아간다"
 	}
 	"Magic Factory Desc 2"
 	{
 		"en"	"{green}Obtain 2000 cash {yellow}and a random voidstone"
 		"it"	"{green}Ottieni 2000 contanti {yellow}e una pietra vuota casuale"
+		"ko"	"{green}자금 2000을 얻고 {yellow}무작위 공허석 1개를 얻습니다"
 	}
 
 	"Broken Gambing Machine"
 	{
 		"en"	"Broken Gambing Machine"
 		"it"	"Macchina da gioco rotta"
+		"ko"	"망가진 슬롯 머신"
 	}
 	"Rouge3 Gamble Lore"
 	{
 		"en"	"A slot machine out in the curtain? Does it still work?"
 		"it"	"Una slot machine fuori dalla tenda? Funziona ancora?"
+		"ko"	"장막 안에도 슬롯 머신이 있다니? 작동을 하긴 할까?"
 	}
 	"Rouge3 Gamble Option 1"
 	{
 		"en"	"Insert a coin"
 		"it"	"Inserisci una moneta"
+		"ko"	"코인을 투입한다"
 	}
 	"Rouge3 Gamble Desc 1"
 	{
 		"en"	"{red}Lose 4 Australium Ingots"
 		"it"	"{red}Perdi 4 lingotti di australium"
+		"ko"	"{red}오스트레일륨 주괴를 4 잃습니다"
 	}
 	"Rouge3 Gamble Lore 1a"
 	{
 		"en"	"It hits a random assortment of items."
 		"it"	"Colpisce un assortimento casuale di articoli."
+		"ko"	"무작위로 다양한 요소들이 나왔다."
 	}
 	"Rouge3 Gamble Lore 1b"
 	{
 		"en"	"It hits 3 Cherries and pays out."
 		"it"	"Colpisce 3 ciliegie e paga."
+		"ko"	"체리 3개가 나왔고 자금이 나왔다."
 	}
 	"Rouge3 Gamble Lore 1c"
 	{
 		"en"	"It hits 3 Bars and spits something out."
 		"it"	"Raggiunge le 3 barre e sputa fuori qualcosa."
+		"ko"	"주괴 3개가 나왔고 무언가가 기계 안에서 튀어나왔다."
 	}
 	"Rouge3 Gamble Lore 1d"
 	{
 		"en"	"It hits 3 7s as you hear something break as it pays out, it refuses to work anymore."
 		"it"	"Raggiunge 3 7 mentre si sente qualcosa che si rompe mentre paga, si rifiuta di funzionare ancora."
+		"ko"	"숫자 7이 3개가 나왔고, 자금이 나오면서 무언가가 부서지는 소리가 났다. 이제 더 이상 작동하지 않는다."
 	}
 	"Rouge3 Gamble Lore 1e"
 	{
 		"en"	"It hits 3 Lemons as you hear scrapping as a voidstone spits out."
 		"it"	"Colpisce 3 limoni, mentre si sente il rumore di una pietra vuota che viene sputata fuori."
+		"ko"	"레몬 3개가 나왔고 긁히는 소리와 함께 공허석이 튀어나왔다."
 	}
 
 	"Rouge3 Gamble Option 2"
 	{
 		"en"	"Leave it alone"
 		"it"	"Lascia stare"
+		"ko"	"떠난다"
 	}
 	"Rouge3 Gamble Option 2a"
 	{
 		"en"	"{green}Gain 15 Umbral Affinity"
 		"it"	"{green}Guadagni 15 Affinità Umbrale"
+		"ko"	"{green}움브랄 친화력이 15 증가합니다."
 	}
 	"Rouge3 Gamble Option 2b"
 	{
 		"en"	"Stop gambling"
 		"it"	"Smetti di giocare d'azzardo"
+		"ko"	"그만둔다"
 	}
 	"Rouge3 Gamble Lore 2"
 	{
 		"en"	"Don't bet on it."
 		"it"	"Non scommetteteci."
+		"ko"	"도박을 하고 싶진 않다."
 	}
 
 	"Safe House"
 	{
 		"en"	"Safe House"
 		"it"	"Casa sicura"
+		"ko"	"안전 가옥"
 	}
 	"Past Lore Lore"
 	{
 		"en"	"Rest now, may I tell you a story?"
 		"it"	"Riposatevi, posso raccontarvi una storia?"
+		"ko"	"이제 좀 쉬시죠. 그러고보니 제가 이야기 하나 해드려도 될까요?"
 	}
 	"Past Lore Option 1"
 	{
 		"en"	"Tell me a story of "
 		"it"	"Raccontami una storia di"
+		"ko"	"이야기를 듣는다 : "
 	}
 	"Past Lore Desc 1"
 	{
 		"en"	"Read the story, {yellow}obtain an unknown artifact"
 		"it"	"Leggi la storia, {yellow}ottenere un manufatto sconosciuto"
+		"ko"	"이야기를 들어봅니다. {yellow}알 수 없는 소장품을 얻습니다"
 	}
 	"Past Lore Option 2"
 	{
 		"en"	"Skip it"
 		"it"	"Salta"
+		"ko"	"대충 흘려넘긴다"
 	}
 	"Past Lore Desc 2"
 	{
 		"en"	"Skip the story, {yellow}obtain an unknown artifact"
 		"it"	"Salta la storia, {yellow}ottieni un artefatto sconosciuto"
+		"ko"	"대충 흘려넘긴다. {yellow}알 수 없는 소장품을 얻습니다"
 	}
 	"Mazeat Saves"
 	{
 		"en"	"Mazeat Saves"
 		"it"	"Mazeat salva"
+		"ko"	"마제트의 구원"
 	}
 	"Mazeat Saves Desc"
 	{
 		"en"	"Mazeat is a safe place.\n{green}Non-Umbrals enemies have -10％ health and damage"
 		"it"	"Mazeat è un luogo sicuro.\n{green}I nemici non imbalsamati hanno -10％ di salute e danno"
+		"ko"	"마제트는 안전한 곳입니다.\n{green}움브랄 계열 적들을 제외한 모든 적의 체력과 피해량이 -10％ 감소."
 	}
 	"Mazeat Lives"
 	{
 		"en"	"Mazeat Lives"
 		"it"	"Mazeat Vive"
+		"ko"	"마제트의 삶"
 	}
 	"Mazeat Lives Desc"
 	{
 		"en"	"Mazeat is a place to live.\n{green}Non-Umbrals enemies have -10％ movement speed"
 		"it"	"Mazeat è un luogo in cui vivere.\n{green}I nemici non imbalsamati hanno -10％ di velocità di movimento"
+		"ko"	"마제트는 살아가는 곳입니다.\n{green}움브랄 계열 적들을 제외한 모든 적의 이동 속도가 -10％ 감소."
 	}
 	"Mazeat Falls"
 	{
 		"en"	"Mazeat Falls"
 		"it"	"Cascate del Mazeat"
+		"ko"	"마제트의 몰락"
 	}
 	"Mazeat Falls Desc"
 	{
 		"en"	"Mazeat was.\n{green}Non-Umbrals enemies have -25％ health and damage and receive +100％ elemental damage"
 		"it"	"{green}I nemici non imbalsamati hanno -25％ salute e danni e ricevono +100％ danni elementali"
+		"ko"	"...그랬던 곳이었습니다.\n{green}움브랄 계열 적들을 제외한 모든 적의 체력과 피해량이 -25％ 감소하고 받는 원소 피해량이 +100％ 증가"
 	}
 	"Finale Encounter Lore"
 	{
 		"en"	"You gotten this far, from infections, outbreaks, riots, and chaos. Take a moment to remember the past."
 		"it"	"Siete arrivati fin qui, tra infezioni, epidemie, rivolte e caos. Prendetevi un momento per ricordare il passato."
+		"ko"	"당신은 감염, 재앙, 폭동, 혼돈을 넘어 여기까지 도달했습니다. 과거를 잠시 돌아봅니다..."
 	}
 	"Finale Encounter Option 1"
 	{
 		"en"	"It's too much"
 		"it"	"E' troppo"
+		"ko"	"너무 가혹했다"
 	}
 	"Finale Encounter Desc 1"
 	{
 		"en"	"{yellow}This encounter never existed. You get the encounter refunded."
 		"it"	"{yellow}Questo incontro non è mai esistito. L'incontro viene rimborsato."
+		"ko"	"{yellow}이 우연한 만남은 없었던 것으로 취급됩니다... 이 우연한 만남이 반환됩니다."
 	}
 	"Finale Encounter Lore 1"
 	{
 		"en"	"In the end, we're human, in the world that makes us aliens."
 		"it"	"Alla fine, siamo umani, nel mondo che ci rende alieni."
+		"ko"	"결국 우리는 인간일 뿐이다. 우리를 외계인으로 취급하는 세계에서 말이다."
 	}
 	"Finale Encounter Option 2"
 	{
 		"en"	"Remember ''them''"
 		"it"	"Ricordate ''loro''"
+		"ko"	"당연히 ''기억''한다"
 	}
 	"Finale Encounter Desc 2"
 	{
 		"en"	"{yellow}Obtain 3 unknown artifacts"
 		"it"	"{yellow}Ottieni 3 artefatti sconosciuti"
+		"ko"	"{yellow}알 수 없는 소장품 3개를 얻습니다"
 	}
 
 	"Cloned Subjects"
 	{
 		"en" "⚔ Cloned Subjects"
 		"it" "⚔ Soggetti clonati"
+		"ko" "⚔ 복제된 실험체들"
 	}
 	"Cloned Subjects!"
 	{
 		"en" "⚠ Cloned Subjects"
 		"it" "⚠ Soggetti clonati"
+		"ko" "⚠ 복제된 실험체들"
 	}
 	"Shipment Deliviered"
 	{
 		"en" "⚔ Shipment Deliviered"
-		"it"	"⚔ Spedizione consegnata"
+		"it" "⚔ Spedizione consegnata"
+		"ko" "⚔ 배송 완료"
 	}
 	"Shipment Deliviered!"
 	{
 		"en" "⚠ Shipment Deliviered"
-		"it"	"⚠ Spedizione consegnata"
+		"it" "⚠ Spedizione consegnata"
+		"ko" "⚠ 배송 완료"
 	}
 	"The Insane"
 	{
 		"en" "⚔ The Insane"
-		"it"	"⚔ Il folle"
+		"it" "⚔ Il folle"
+		"ko" "⚔ 광인들"
 	}
 	"The Insane!"
 	{
 		"en" "⚠ The Insane"
-		"it"	"⚠ Il folle"
+		"it" "⚠ Il folle"
+		"ko" "⚠ 광인들"
 	}
 	"Confused Ruanians"
 	{
 		"en" "⚔ Confused Ruanians"
-		"it"	"⚔ ruaniani confusi"
+		"it" "⚔ ruaniani confusi"
+		"ko" "⚔ 혼란에 빠진 루이나인들"
 	}
 	"Confused Ruanians!"
 	{
 		"en" "⚠ Confused Ruanians"
-		"it"	"⚠ ruaniani confusi"
+		"it" "⚠ ruaniani confusi"
+		"ko" "⚠ 혼란에 빠진 루이나인들"
 	}
 	"The Umbral Commander"
 	{
 		"en" "☠ The Umbral Commander"
 		"it" "☠ il Comandante Umbro"
+		"ko" "☠ 움브랄의 사령관"
 	}
 	"Sabotaging Electric's"
 	{
 		"en" "⚔ Sabotaging Electric's"
-		"it"	"⚔ sabotaggio del sistema elettrico"
+		"it" "⚔ sabotaggio del sistema elettrico"
+		"ko" "⚔ 전력 차단"
 	}
 	"Sabotaging Electric's!"
 	{
 		"en" "⚠ Sabotaging Electric's"
-		"it"	"⚠ sabotaggio del sistema elettrico"
+		"it" "⚠ sabotaggio del sistema elettrico"
+		"ko" "⚠ 전력 차단"
 	}
 	"Zombies Land"
 	{
 		"en" "⚔ Zombies Land"
-		"it"	"⚔ Terra degli zombie"
+		"it" "⚔ Terra degli zombie"
+		"ko" "⚔ 좀비 랜드"
 	}
 	"Zombies Land!"
 	{
 		"en" "⚠ Zombies Land"
-		"it"	"⚠ Terra degli zombie"
+		"it" "⚠ Terra degli zombie"
+		"ko" "⚠ 좀비 랜드"
 	}
 	"Underpaid Mercs"
 	{
 		"en" "⚔ Underpaid Mercs"
-		"it"	"⚔ mercs sottopagati"
+		"it" "⚔ mercs sottopagati"
+		"ko" "⚔ 저임금 용병들"
 	}
 	"Underpaid Mercs!"
 	{
 		"en" "⚠ Underpaid Mercs"
-		"it"	"⚠ mercati sottopagati"
+		"it" "⚠ mercati sottopagati"
+		"ko" "⚠ 저임금 용병들"
 	}
 	"Unknown Army"
 	{
 		"en" "⚔ Unknown Army"
 		"it"	"⚔ esercito sconosciuto"
+		"ko" "⚔ 정체불명의 군단"
 	}
 	"Unknown Army!"
 	{
 		"en" "⚠ Unknown Army"
-		"it"	"⚠ esercito sconosciuto"
+		"it" "⚠ esercito sconosciuto"
+		"ko" "⚠ 정체불명의 군단"
 	}
 	"Desperate Voiders"
 	{
 		"en" "⚔ Desperate Voiders"
-		"it"	"⚔ Voci disperate"
+		"it" "⚔ Voci disperate"
+		"ko" "⚔ 필사적인 공허체들"
 	}
 	"Desperate Voiders!"
 	{
 		"en" "⚠ Desperate Voiders"
-		"it"	"⚠ Voci disperate"
+		"it" "⚠ Voci disperate"
+		"ko" "⚠ 필사적인 공허체들"
 	}
 	
 
 	"Looters Keepers"
 	{
 		"en" "⚔ Looters Keepers"
-		"it"	"saccheggiatori e custodi"
+		"it" "⚔ saccheggiatori e custodi"
+		"ko" "⚔ 약탈품 수호자들"
 	}
 	"Looters Keepers!"
 	{
 		"en" "⚠ Looters Keepers"
-		"it"	"⚠ Saccheggiatori custodi"
+		"it" "⚠ Saccheggiatori custodi"
+		"ko" "⚠ 약탈품 수호자들"
 	}
 	"Almagest Security?"
 	{
 		"en" "⚔ Almagest Security?"
-		"it"	"⚔ sicurezza dell'Almagesto?"
+		"it" "⚔ sicurezza dell'Almagesto?"
+		"ko" "⚔ 알마게스트 보안구역?"
 	}
 	"Almagest Security?!"
 	{
 		"en" "⚠ Almagest Security?"
-		"it"	"⚠ sicurezza dell'Almagesto?"
+		"it" "⚠ sicurezza dell'Almagesto?"
+		"ko" "⚠ 알마게스트 보안구역?"
 	}
 	"Automatic Defenses"
 	{
 		"en" "⚔ Automatic Defenses"
-		"it"	"⚔ difese automatiche"
+		"it" "⚔ difese automatiche"
+		"ko" "⚔ 자동화 방어체계"
 	}
 	"Automatic Defenses!"
 	{
 		"en" "⚠ Automatic Defenses"
-		"it"	"⚠ difese automatiche"
+		"it" "⚠ difese automatiche"
+		"ko" "⚠ 자동화 방어체계"
 	}
 	"Experimental Creatures"
 	{
 		"en" "⚔ Experimental Creatures"
-		"it"	"⚔ creature sperimentali"
+		"it" "⚔ creature sperimentali"
+		"ko" "⚔ 실험형 생명체들"
 	}
 	"Experimental Creatures!"
 	{
 		"en" "⚠ Experimental Creatures"
-		"it"	"⚠ creature sperimentali"
+		"it" "⚠ creature sperimentali"
+		"ko" "⚔ 실험형 생명체들"
 	}
 	"Lost Warriors"
 	{
 		"en" "⚔ Lost Warriors"
-		"it"	"⚔ guerrieri perduti"
+		"it" "⚔ guerrieri perduti"
+		"ko" "⚔ 길 잃은 전사들"
 	}
 	"Lost Warriors!"
 	{
 		"en" "⚠ Lost Warriors"
-		"it"	"⚠ guerrieri perduti"
+		"it" "⚠ guerrieri perduti"
+		"ko" "⚠ 길 잃은 전사들"
 	}
 	"Failed Mercs"
 	{
 		"en" "⚔ Failed Mercs"
 		"it"	"⚔ mercs falliti"
+		"ko" "⚔ 실패한 용병들"
 	}
 	"Failed Mercs!"
 	{
 		"en" "⚠ Failed Mercs"
-		"it"	"⚠ mercs falliti"
+		"it" "⚠ mercs falliti"
+		"ko" "⚠ 실패한 용병들"
 	}
 	"Void Entangled"
 	{
 		"en" "⚔ Void Entangled"
-		"it"	"⚔ vuoto Impigliato"
+		"it" "⚔ vuoto Impigliato"
+		"ko" "⚔ 뒤얽힌 공허"
 	}
 	"Void Entangled!"
 	{
 		"en" "⚠ Void Entangled"
-		"it"	"⚠ Vuoto Impigliato"
+		"it" "⚠ Vuoto Impigliato"
+		"ko" "⚠ 뒤얽힌 공허"
 	}
 	"Washed Expidonsans"
 	{
 		"en" "⚔ Washed Expidonsans"
-		"it"	"⚔ Espidonsani lavati"
+		"it" "⚔ Espidonsani lavati"
+		"ko" "⚔ 세뇌된 엑스피돈사인"
 	}
 	"Washed Expidonsans!"
 	{
 		"en" "⚠ Washed Expidonsans"
-		"it"	"⚠ Expidonsans lavato"
+		"it" "⚠ Expidonsans lavato"
+		"ko" "⚠ 세뇌된 엑스피돈사인"
 	}
 	"Umbral Disturbance"
 	{
 		"en" "☠ Umbral Disturbance"
-		"it"	"☠ Disturbo umorale"
+		"it" "☠ Disturbo umorale"
+		"ko" "☠ 움브랄의 방해"
 	}
 	"Almagest Desperation"
 	{
 		"en" "☠ Almagest Desperation"
-		"it"	"☠ Disperazione dell'Almagesto"
+		"it" "☠ Disperazione dell'Almagesto"
+		"ko" "☠ 알마게스트의 절망"
 	}
 	"Slaves Controlled"
 	{
 		"en" "⚔ Slaves Controlled"
-		"it"	"⚔ schiavi controllati"
+		"it" "⚔ schiavi controllati"
+		"ko" "⚔ 조종 당하는 노예들"
 	}
 	"Slaves Controlled!"
 	{
 		"en" "⚠ Slaves Controlled"
-		"it"	"⚠ schiavi controllati"
+		"it" "⚠ schiavi controllati"
+		"ko" "⚠ 조종 당하는 노예들"
 	}
 	"Slaves Controlled"
 	{
 		"en" "⚔ Slaves Controlled"
-		"it"	"⚔ schiavi controllati"
+		"it" "⚔ schiavi controllati"
+		"ko" "⚔ 조종 당하는 노예들"
 	}
 	"Slaves Controlled!"
 	{
 		"en" "⚠ Slaves Controlled"
-		"it"	"⚠ schiavi controllati"
+		"it" "⚠ schiavi controllati"
+		"ko" "⚠ 조종 당하는 노예들"
 	}
 	"Slaves Controlled"
 	{
 		"en" "⚔ Slaves Controlled"
-		"it"	"⚔ schiavi controllati"
+		"it" "⚔ schiavi controllati"
+		"ko" "⚔ 조종 당하는 노예들"
 	}
 	"Slaves Controlled!"
 	{
 		"en" "⚠ Slaves Controlled"
-		"it"	"schiavi controllati"
+		"it" "⚠ schiavi controllati"
+		"ko" "⚠ 조종 당하는 노예들"
 	}
 	"Bladedance survivors"
 	{
 		"en" "⚔ Bladedance survivors"
-		"it"	"⚔ Sopravvissuti alla Bladedance"
+		"it" "⚔ Sopravvissuti alla Bladedance"
+		"ko" "⚔ 칼춤 소속의 생존자들"
 	}
 	"Bladedance survivors!"
 	{
 		"en" "⚠ Bladedance survivors"
-		"it"	"⚠ Sopravvissuti alla Bladedance"
+		"it" "⚠ Sopravvissuti alla Bladedance"
+		"ko" "⚠ 칼춤 소속의 생존자들"
 	}
 	"Rescued W.F. Soldiers"
 	{
 		"en" "⚔ Rescued W.F. Soldiers"
-		"it"	"⚔ Soldati salvati del W.F"
+		"it" "⚔ Soldati salvati del W.F"
+		"ko" "⚔ 구출된 배풍등의 병사들"
 	}
 	"Rescued W.F. Soldiers!"
 	{
 		"en" "⚠ Rescued W.F. Soldiers"
-		"it"	"soldati salvati del W.F"
+		"it" "⚠ soldati salvati del W.F"
+		"ko" "⚠ 구출된 배풍등의 병사들"
 	}
 	"Unknown Taskforce"
 	{
 		"en" "⚔ Unknown Taskforce"
-		"it"	"⚔ Task force sconosciuta"
+		"it" "⚔ Task force sconosciuta"
+		"ko" "⚔ 정체불명의 특무대"
 	}
 	"Unknown Taskforce!"
 	{
 		"en" "⚠ Unknown Taskforce"
-		"it"		"⚠ Taskforce sconosciuta"
+		"it" "⚠ Taskforce sconosciuta"
+		"ko" "⚠ 정체불명의 특무대"
 	}
 	"Seaborn Enslaved"
 	{
 		"en" "⚔ Seaborn Enslaved"
-		"it"		"⚔ Seaborn Enslaved"
+		"it" "⚔ Seaborn Enslaved"
+		"ko" "⚔ 억압당한 시본"
 	}
 	"Seaborn Enslaved!"
 	{
 		"en" "⚠ Seaborn Enslaved"
-		"it"		"⚠ Seaborn Enslaved"
+		"it" "⚠ Seaborn Enslaved"
+		"ko" "⚠ 억압당한 시본"
 	}
 	"Voided Superior's"
 	{
 		"en" "⚔ Voided Superior's"
-		"it"		"⚔ Annullamento della dichiarazione del Superiore"
+		"it" "⚔ Annullamento della dichiarazione del Superiore"
+		"ko" "⚔ 공허화된 상급자"
 	}
 	"Voided Superior's!"
 	{
 		"en" "⚠ Voided Superior's"
-		"it"		"⚠ Annullamento del mandato del Superiore"
+		"it" "⚠ Annullamento del mandato del Superiore"
+		"ko" "⚠ 공허화된 상급자"
 	}
 	"Expert Warpers"
 	{
 		"en" "⚔ Expert Warpers"
-		"it"		"guerrieri esperti"
+		"it" "⚔ guerrieri esperti"
+		"ko" "⚔ 왜곡 전문가"
 	}
 	"Expert Warpers!"
 	{
 		"en" "⚠ Expert Warpers"
-		"it"		"⚠ guerrieri esperti"
+		"it" "⚠ guerrieri esperti"
+		"ko" "⚠ 왜곡 전문가"
 	}
 	"Beyond Recognition"
 	{
 		"en" "⚔ Beyond Recognition"
-		"it"		"⚔ Oltre il riconoscimento"
+		"it" "⚔ Oltre il riconoscimento"
+		"ko" "⚔ 인지 불가"
 	}
 	"Beyond Recognition!"
 	{
 		"en" "⚠ Beyond Recognition"
-		"it"		"⚠ Oltre il riconoscimento"
+		"it" "⚠ Oltre il riconoscimento"
+		"ko" "⚠ 인지 불가"
 	}
 	"Mind Equals Controlled"
 	{
 		"en" "⚔ Mind Equals Controlled"
-		"it"		"⚔ mente uguale Controllo"
+		"it" "⚔ mente uguale Controllo"
+		"ko" "⚔ 제어당한 정신"
 	}
 	"Mind Equals Controlled!"
 	{
 		"en" "⚠ Mind Equals Controlled"
-		"it"		"⚠ mente uguale controllo"
+		"it" "⚠ mente uguale controllo"
+		"ko" "⚠ 제어당한 정신"
 	}
 	"Top Voided Elites"
 	{
 		"en" "⚔ Top Voided Elites"
-		"it"		"⚔ i migliori elite vuoti"
+		"it" "⚔ i migliori elite vuoti"
+		"ko" "⚔ 공허화된 정예병들"
 	}
 	"Top Voided Elites!"
 	{
 		"en" "⚠ Top Voided Elites"
-		"it"		"⚠ top Elites non utilizzate"
+		"it" "⚠ top Elites non utilizzate"
+		"ko" "⚠ 공허화된 정예병들"
 	}
 	"Gun Game"
 	{
 		"en" "☠ Gun Game"
-		"it"		"☠ Gun Game"
+		"it" "☠ Gun Game"
+		"ko" "☠ 건 게임"
 	}
 	"Versus Saxton Hale"
 	{
 		"en" "☠ Versus Saxton Hale"
-		"it"		"☠ Versus Saxton Hale"
+		"it" "☠ Versus Saxton Hale"
+		"ko" "☠ 프리크 포트리스"
 	}
 	"Super Zombie Fortress"
 	{
 		"en" "☠ Super Zombie Fortress"
-		"it"		"☠ super Fortezza Zombie"
+		"it" "☠ super Fortezza Zombie"
+		"ko" "☠ 슈퍼 좀비 포트리스"
 	}
 	"Class Warfare"
 	{
 		"en" "☠ Class Warfare"
-		"it"		"☠ guerra di classe"
+		"it" "☠ guerra di classe"
+		"ko" "☠ 클래스 VS 클래스"
 	}
 	"Slender Fortress"
 	{
-		"en"	"☠ Slender Fortress"
-		"it"		"☠ Slender Fortress"
+		"en" "☠ Slender Fortress"
+		"it" "☠ Slender Fortress"
+		"ko" "☠ 슬렌더 포트리스"
 	}
 	"Slender Fortress Desc"
 	{
-		"en"	"Collect the 8 heavy pages to win"
-		"it"		"Raccogli le 8 pagine pesanti per vincere"
+		"en" "Collect the 8 heavy pages to win"
+		"it" "Raccogli le 8 pagine pesanti per vincere"
+		"ko" "8개의 헤비 모양 쪽지를 모으면 승리합니다"
 	}
 	"Randomizer"
 	{
 		"en" "☠ Randomizer"
-		"it"		"randomizzatore"
+		"it" "☠ randomizzatore"
+		"ko" "☠ 랜덤 무기"
 	}
 	"Zombie Riot"
 	{
 		"en" "☠ Zombie Riot"
-		"it"		"☠ zombie Riot"
+		"it" "☠ zombie Riot"
+		"ko" "☠ 좀비 라이엇"
 	}
 	"Refragmented Page"
 	{
-		"en"	"Refragmented Page"
-		"it"		"Pagina Reframmentata"
+		"en" "Refragmented Page"
+		"it" "Pagina Reframmentata"
+		"ko" "재구성된 쪽지"
 	}
 	"Strange Gateway"
 	{
 		"en" "⚔ Strange Gateway"
-		"it"		"⚔ Strana porta"
+		"it" "⚔ Strana porta"
+		"ko" "⚔ 수상한 관문"
 	}
 	"Hitman III!"
 	{
 		"en" "⚠ Hitman III"
-		"it"		"⚠ hitman III"
+		"it" "⚠ hitman III"
+		"ko" "⚠ 히트맨 III"
 	}
 
 	"Crystalized Warped Subjects Title"
 	{
-		"en"	"You find a room full of crystalized bodies, their gear being put to the side...\nStaying here doesn't seem wise, you feel at unease."
-		"it"		"Trovi una stanza piena di corpi cristallizzati, la cui attrezzatura è stata messa da parte... Rimanere qui non sembra saggio, vi sentite a disagio."
+		"en" "You find a room full of crystalized bodies, their gear being put to the side...\nStaying here doesn't seem wise, you feel at unease."
+		"it" "Trovi una stanza piena di corpi cristallizzati, la cui attrezzatura è stata messa da parte... Rimanere qui non sembra saggio, vi sentite a disagio."
+		"ko" "당신은 결정화된 시체들로 가득 찬 방을 발견한다. 그들의 장비는 한 쪽으로 치워져있다...\n 이곳에 머무르는 것은 현명하지 않을 것 같다. 벌써부터 불안하다."
 	}
 	"Crystalized Warped Subjects Title Repeat"
 	{
-		"en"	"Your body deterioates..."
-		"it"	"Il vostro corpo si deteriora..."
+		"en" "Your body deterioates..."
+		"it" "Il vostro corpo si deteriora..."
+		"ko" "몸이 쇠약해져가고 있다..."
 	}
 	"Crystalized Warped Subjects Search More"
 	{
-		"en"	"Search the room for other things."
-		"it"	"Cerchi altri oggetti nella stanza."
+		"en" "Search the room for other things."
+		"it" "Cerchi altri oggetti nella stanza."
+		"ko" "이 방에서 다른 쓸만한 것들을 찾아본다."
 	}
 	"Crystalized Warped Subjects Search More Desc"
 	{
-		"en"	"{yellow}Search the room for something else.{red}For the rest of the chapter, Allies lose 5％ Max Health"
-		"it"	"{red}Per il resto del capitolo, gli Alleati perdono 5％ Salute massima"
+		"en" "{yellow}Search the room for something else.{red}For the rest of the chapter, Allies lose 5％ Max Health"
+		"it" "{red}Per il resto del capitolo, gli Alleati perdono 5％ Salute massima"
+		"ko" "{yellow}방 안을 수색해 뭔가 쓸만한 물건이 있나 찾아봅니다.{red}현 챕터의 남은 스테이지 동안, 아군의 최대 체력이 5％ 감소합니다."
 	}
 	"Crystalized Warped Subjects Search Cancel"
 	{
-		"en"	"Lets stop and take their gear."
-		"it"	"Fermiamoci e prendiamo la loro attrezzatura."
+		"en" "Lets stop and take their gear."
+		"it" "Fermiamoci e prendiamo la loro attrezzatura."
+		"ko" "그만두고 저 시체들의 장비라도 챙기자."
 	}
 	"Crystalized Warped Subjects Search Cancel Desc"
 	{
-		"en"	"{green}Gain 7000 Cash and a random rare item."
-		"it"	"{green}Guadagni 7000 contanti e un oggetto raro casuale."
+		"en" "{green}Gain 7000 Cash and a random rare item."
+		"it" "{green}Guadagni 7000 contanti e un oggetto raro casuale."
+		"ko" "{green}추가 자금을 7000 얻고 무작위 희귀 아이템을 얻습니다."
 	}
 	"Crystalized Warped Subjects Guln"
 	{
-		"en"	"You find the body of... Guln."
-		"it"	"Avete trovato il corpo di... Guln."
+		"en" "You find the body of... Guln."
+		"it" "Avete trovato il corpo di... Guln."
+		"ko" "당신이 찾은 것은... 굴른의... 시체입니다."
 	}
 	"Crystalized Warped Subjects Guln"
 	{
-		"en"	"You find the body of... Guln."
-		"it"	"Avete trovato il corpo di... Guln."
+		"en" "You find the body of... Guln."
+		"it" "Avete trovato il corpo di... Guln."
+		"ko" "당신이 찾은 것은... 굴른의... 시체입니다."
 	}
 	"Book of Nature"
 	{
-		"en"	"Book of Nature"
-		"it"	"Libro della natura"
+		"en" "Book of Nature"
+		"it" "Libro della natura"
+		"ko" "자연의 책"
 	}
 	"Book of Nature Desc"
 	{
-		"en"	"A book explaining how the Umbrals act, even if basic.\n{green}Umbral Affinity increased by 10, cannot lose Umbral Affinity anymore, ''Umbral Hate'' is ignored, you can gain umbral affinity again."
-		"it"	"Un libro che spiega come agiscono gli Umbral, anche se di base.\n{green}L'Affinità Umbrale è aumentata di 10, non si può più perdere l'Affinità Umbrale, ''Odio Umbrale'' è ignorato, si può guadagnare nuovamente l'Affinità Umbrale."
+		"en" "A book explaining how the Umbrals act, even if basic.\n{green}Umbral Affinity increased by 10, cannot lose Umbral Affinity anymore, ''Umbral Hate'' is ignored, you can gain umbral affinity again."
+		"it" "Un libro che spiega come agiscono gli Umbral, anche se di base.\n{green}L'Affinità Umbrale è aumentata di 10, non si può più perdere l'Affinità Umbrale, ''Odio Umbrale'' è ignorato, si può guadagnare nuovamente l'Affinità Umbrale."
+		"ko" "기초뿐이지만 움브랄의 행동 방식을 설명해주는 책.\n{green}움브랄 친화력 +10 및 더 이상 움브랄 친화력이 감소하지 않고, ''움브랄의 증오'' 효과가 무시되어 친화력을 다시 증가시킬 수 있음."
 	}
 	"Book of Nature Conclusion"
 	{
-		"en"	"You pick up the book that's off to the side, near some other peaceful related subjects."
-		"it"	"Prende il libro che si trova in disparte, vicino ad altri argomenti legati alla pace."
+		"en" "You pick up the book that's off to the side, near some other peaceful related subjects."
+		"it" "Prende il libro che si trova in disparte, vicino ad altri argomenti legati alla pace."
+		"ko" "당신은 다른 평화로운 주제들과 가까운 옆에 있는 책을 집어 듭니다."
 	}
 	"Book of Weakness"
 	{
-		"en"	"Book of Weakness"
-		"it"	"Libro della debolezza"
+		"en" "Book of Weakness"
+		"it" "Libro della debolezza"
+		"ko" "약점의 책"
 	}
 	"Book of Weakness Desc"
 	{
-		"en"	"A book explaining detailed weakpoints of most creatures.\n{green}+10％ Crit chance, crits deal 3x dmg instead of 2x."
-		"it"	"Un libro che spiega in dettaglio i punti deboli della maggior parte delle creature.\n{green}+10％ Possibilità di critico, i critici infliggono 3x dmg invece di 2x."
+		"en" "A book explaining detailed weakpoints of most creatures.\n{green}+10％ Crit chance, crits deal 3x dmg instead of 2x."
+		"it" "Un libro che spiega in dettaglio i punti deboli della maggior parte delle creature.\n{green}+10％ Possibilità di critico, i critici infliggono 3x dmg invece di 2x."
+		"ko" "대부분의 생물들의 상세한 약점이 적혀있는 책.\n{green}치명타 확률 +10％. 치명타가 2배가 아닌 3배의 피해를 줍니다."
 	}
 	"Book of Weakness Conclusion"
 	{
-		"en"	"You pick up the book thats marked as ''important for mercs''"
-		"it"	"Prendi il libro contrassegnato come importante per i mercenari"
+		"en" "You pick up the book thats marked as ''important for mercs''"
+		"it" "Prendi il libro contrassegnato come importante per i mercenari"
+		"ko" "당신은 ''용병들에게 꼭 필요함''이라고 표시된 책을 집어듭니다."
 	}
 	"Book of Liver Optimisation Conclusion"
 	{
-		"en"	"A book thats covered in grime and slime, seemingly left to rot."
-		"it"	"Un libro ricoperto di sporcizia e melma, apparentemente lasciato a marcire."
+		"en" "A book thats covered in grime and slime, seemingly left to rot."
+		"it" "Un libro ricoperto di sporcizia e melma, apparentemente lasciato a marcire."
+		"ko" "먼지와 진액으로 뒤덮여 마치 썩어가는 것처럼 보이는 책을 집습니다."
 	}
 	"Book of Liver Optimisation"
 	{
-		"en"	"Book of Liver Optimisation"
-		"it"	"Libro dell'ottimizzazione del fegato"
+		"en" "Book of Liver Optimisation"
+		"it" "Libro dell'ottimizzazione del fegato"
+		"ko" "간 기능 최적화 노하우의 책"
 	}
 	"Book of Liver Optimisation Desc"
 	{
-		"en"	"Experiencing cold water made your brace the book of true evils.\n{green}Gain all perks at once."
-		"it"	"L'esperienza dell'acqua fredda ha reso il tuo tutore il libro dei veri mali.\n{green}Acquistare tutti i vantaggi in una volta sola."
+		"en" "Experiencing cold water made your brace the book of true evils.\n{green}Gain all perks at once."
+		"it" "L'esperienza dell'acqua fredda ha reso il tuo tutore il libro dei veri mali.\n{green}Acquistare tutti i vantaggi in una volta sola."
+		"ko" "찬물에 몸을 강제로 담그는 것이 얼마나 악질적인지를 느꼈다.\n{green}한 번에 모든 퍽을 얻습니다."
 	}
 	"Hold Out Normal"
 	{
 		"en"	"Standard"
 		"it"	"Standard"
+		"ko"	"일반"
 	}
 	"Hold Out Normal Desc"
 	{
 		"en"	"The rifts keep coming, stand out ground. Mercenaries are already heading out, we're the second line of defense."
 		"it"	"Le spaccature continuano ad arrivare, tenetevi pronti. I mercenari stanno già uscendo, noi siamo la seconda linea di difesa."
+		"ko"	"균열이 계속해서 생겨나고 있다. 위치를 사수하라. 다른 용병들은 이미 출발했으며, 우리는 제2방어선이다."
 	}
 	"Hold Out Creep"
 	{
 		"en"	"Void Creep"
 		"it"	"Vuoto strisciante"
+		"ko"	"공허 점막"
 	}
 	"Hold Out Creep Desc"
 	{
 		"en"	"Our base doesn't look so good, but it's what we got.\n{red}Harder base position"
 		"it"	"La nostra base non ha un bell'aspetto,{red}ma è quello che abbiamo"
+		"ko"	"기지의 상태는 좋지 않아 보인다. 하지만 이게 우리가 가진 전부다.\n{red}더 어려운 기지 포지션."
 	}
 	"Hold Out Hard"
 	{
 		"en"	"Chaos Intrusion"
 		"it"	"Intrusione del caos"
+		"ko"	"혼돈의 침입"
 	}
 	"Hold Out Hard Desc"
 	{
 		"en"	"They keep coming.\n{red}Rare enemies have a higher chance of appearing and applies Chaos Intrusion difficulty"
 		"it"	"Continuano ad arrivare.\n{red}I nemici rari hanno una maggiore probabilità di apparire e applicano la difficoltà Intrusione del Caos"
+		"ko"	"저들이 몰려오는게 끝도 없다.\n{red}희귀 적군들의 등장 확률이 증가하며, 혼돈의 침입 난이도가 적용됩니다."
 	}
 	"Hold Out Hard Creep"
 	{
 		"en"	"Death World"
 		"it"	"Mondo della morte"
+		"ko"	"죽음의 세계"
 	}
 	"Hold Out Hard Creep Desc"
 	{
 		"en"	"Biters.\n{red}Harder base position, rare enemies have a higher chance of appearing, applies Chaos Intrusion difficulty"
 		"it"	"Biters.\n{red}Posizione base più difficile, i nemici rari hanno una maggiore possibilità di apparire, si applica la difficoltà Intrusione del Caos"
+		"ko"	"끔찍하다.\n{red}더 어려운 기지 포지션 및 희귀 적군들의 등장 확률이 더욱 증가하며, 혼돈의 침입 난이도가 적용됩니다."
 	}
 	"Hold Out Survive"
 	{
 		"en"	"Hang in there! The mercenaries are coming back!"
 		"it"	"Resistete! I mercenari stanno tornando!"
+		"ko"	"좀만 더 힘내! 용병들이 돌아오고 있으니까!"
 	}
 	"Expidonsa Barracks"
 	{
 		"en"	"Expidonsa Barracks"
 		"it"	"Caserma Expidonsa"
+		"ko"	"엑스피돈사 배럭"
 	}
 	"Expidonsa Barracks Desc"
 	{
 		"en"	"A construct that summons Expidonsa allies."
 		"it"	"Un costrutto che evoca gli alleati di Expidonsa."
+		"ko"	"엑스피돈사 계열 아군을 생성하는 구조물입니다."
 	}
 	"Ruina Barracks"
 	{
 		"en"	"Ruina Barracks"
 		"it"	"Caserma Ruina"
+		"ko"	"루이나 배럭"
 	}
 	"Ruina Barracks Desc"
 	{
 		"en"	"A construct that summons Ruina allies."
 		"it"	"Un costrutto che evoca gli alleati di Ruina."
+		"ko"	"루이나 계열 아군을 생성하는 구조물입니다."
 	}
 	"Ally Assistance"
 	{
 		"en"	"Ally Assistance"
 		"it"	"Assistenza agli alleati"
+		"ko"	"아군의 협력"
 	}
 	"Ally Assistance Desc"
 	{
 		"en"	"Unlocks a new construct and new allies will join you."
 		"it"	"Sblocca un nuovo costrutto e nuovi alleati si uniranno a voi."
+		"ko"	"새로운 구조물을 해금하며 새로운 아군이 합류합니다."
 	}
 	"Crystal Polisher"
 	{
 		"en"	"Crystal Polisher"
 		"it"	"Lucidatrice per cristalli"
+		"ko"	"수정 연마기"
 	}
 	"Crystal Polisher Desc"
 	{
 		"en"	"A construct that processes crystals into voidstones."
 		"it"	"Un costrutto che trasforma i cristalli in pietre del vuoto."
+		"ko"	"수정을 공허석으로 변환하는 구조물입니다."
 	}
 
 	"Omega and Vhxis Title"
 	{
 		"en"	"You spot two people in the distance that appear to be eerily familiar to you, they seem to be fighting off a massive horde of W.F soldiers.\nThey don't seem to be having trouble, but maybe we could help them regardless?"
 		"it"	"Scorgete in lontananza due persone che vi sembrano stranamente familiari, che sembrano combattere contro un'enorme orda di soldati W.F. Non sembrano avere problemi, ma forse potremmo aiutarli comunque?"
+		"ko"	"저 멀리에서 대량의 W.F. 병사들과 싸우고 있는... 당신의 눈에 낯익은 두 인물이 보인다.\n딱히 힘들어하는 것처럼 보이진 않지만, 그래도 도와주면 좋지 않을까?"
 	}
 	"Omega's Assistance"
 	{
 		"en"	"Omega's Assistance"
 		"it"	"Assistenza Omega"
+		"ko"	"오메가의 협력"
 	}
 	"Omega's Assistance Desc"
 	{
 		"en"	"{yellow} ''Huh.''"
 		"it"	"{yellow}''Huh.''"
+		"ko"	"{yellow} ''허어.''"
 	}
 	"Vhxis' Assistance"
 	{
 		"en"	"Vhxis' Assistance"
 		"it"	"Assistenza Vhxis"
+		"ko"	"비히시스의 협력"
 	}
 	"Vhxis' Assistance Desc" 
 	{
 		"en"	"{purple} ''You again?''"
 		"it"	"{purple}Ancora tu?"
+		"ko"	"{purple} ''또 너냐?''"
 	}
 }

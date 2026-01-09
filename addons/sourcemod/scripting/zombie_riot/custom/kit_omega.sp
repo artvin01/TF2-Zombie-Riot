@@ -27,7 +27,7 @@ public float OmegaWeaponCosts(int WeaponType)
 	switch(WeaponType)
 	{
 		case 1:
-			return 5.0;
+			return 4.0;
 		case 2:
 			return 10.0;
 		case 3:
@@ -129,7 +129,17 @@ static Action Timer_KitOmega(Handle timer, DataPack pack)
 			PrintToConsoleAll("IsPlayerAlive(client)");
 		if(!IsValidEntity(weapon))
 			PrintToConsoleAll("IsValidEntity(weapon)");*/
-			
+		int Gun = EntRefToEntIndex(i_KitOmega_GunRef[client]);
+		if(IsValidEntity(Gun))
+		{
+			int ClipLeft = GetEntData(Gun, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"));
+			if(ClipLeft < 1)
+			{
+				ResetClipOfWeaponStore(Gun, client, 1);
+				//emergency add 1000 over limit hehe
+				SetEntData(Gun, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), 1);
+			}
+		}
 		KitOmega_Weapon_Remove_All(client);
 		
 		//SetDefaultHudPosition(client);
@@ -235,30 +245,13 @@ static void KitOmega_Function(int client, int weapon, bool holding)
 
 public void KitOmega_RKey(int client, int weapon, bool crit, int slot)//按下r键(press R)
 {
-	if(Ability_Check_Cooldown(client, slot) < 0.0 || CvarInfiniteCash.BoolValue)
-	{
-		//KitOmega_GUN_Selector_Function(client);
-		EmitSoundToAll(WEAPON_SELECTSOUND, client, SNDCHAN_STATIC, SNDLEVEL_NORMAL, _, 1.0, 100);
-		KitOmega_GUN_Swap_Select(client);//开始切换(Start switch)
-	//	Ability_Apply_Cooldown(client, slot, 0.5);
+	//KitOmega_GUN_Selector_Function(client);
+	EmitSoundToAll(WEAPON_SELECTSOUND, client, SNDCHAN_STATIC, SNDLEVEL_NORMAL, _, 1.0, 100);
+	KitOmega_GUN_Swap_Select(client);//开始切换(Start switch)
 
-		//update hud instantly
-		f_KitOmega_HUDDelay[client] = 0.0;
-		KitOmega_HUD(client);
-	}
-	else
-	{
-		float Ability_CD = Ability_Check_Cooldown(client, slot);
-		
-		if(Ability_CD <= 0.0)
-			Ability_CD = 0.0;
-			
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
-		return;
-	}
+	//update hud instantly
+	f_KitOmega_HUDDelay[client] = 0.0;
+	KitOmega_HUD(client);
 }
 
 static void KitOmega_GUN_Swap_Select(int client, bool CheckIfValid = false)//切换选择的武器(Switch the weapon)
@@ -290,8 +283,13 @@ static void KitOmega_GUN_Swap_Select(int client, bool CheckIfValid = false)//切
 	}
 }
 
-public void KitOmega_M2(int client)
+public void KitOmega_M2(int client, int weapon, bool crit, int slot)
 {
+	if(Ability_Check_Cooldown(client, slot) >0.0)
+		return;
+
+	//absolute CD
+	Ability_Apply_Cooldown(client, slot, 0.5, _, true);
 	if(OMEGA_ENERGY[client] >= 100.0)
 	{
 		//b_KitOmega_Using_Guns[client] = true;
@@ -299,6 +297,7 @@ public void KitOmega_M2(int client)
 	}
 	else
 	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "You need full energy to take out another weapon!");
@@ -372,39 +371,41 @@ static void KitOmega_GUN_Selector_Function(int client, int OverrideGunType=-1)
 	//	Attributes_Set(weapon_new, 2, multi);
 	//	Attributes_Set(weapon_new, 6, firingRate);
 		int AmmoLeft = RoundToCeil(OMEGA_ENERGY[client] / OmegaWeaponCosts(i_KitOmega_GunType[client]));
+		AmmoLeft += 20;
 		ResetClipOfWeaponStore(weapon_new, client, AmmoLeft);
+		//emergency add 1000 over limit hehe
 		SetEntData(weapon_new, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), AmmoLeft);
-		//PrintToConsoleAll(" attribute? %f", Attributes_Get(weapon_new, 2, -1.0));
-		//PrintToConsoleAll(" attribute? %f", Attributes_Get(weapon_new, 6, -1.0));
 	}
 }
 
 public void KitOmega_AddCharge(int client, float amount)
 {
-	if(amount)
-	{
-		OMEGA_ENERGY[client] += amount;
+	if(!amount)
+		return;
 
-		if(OMEGA_ENERGY[client] < 0.0)
+	OMEGA_ENERGY[client] += amount;
+
+	if(OMEGA_ENERGY[client] < 0.0)
+	{
+		OMEGA_ENERGY[client] = 0.0;
+	}
+	else
+	{
+		if(i_KitOmega_WeaponPap[client] >= 5)
 		{
-			OMEGA_ENERGY[client] = 0.0;
+			if(OMEGA_ENERGY[client] > OMEGA_MAXENERGY_PAP)
+				OMEGA_ENERGY[client] = OMEGA_MAXENERGY_PAP;
+
 		}
 		else
 		{
-			if(i_KitOmega_WeaponPap[client] >= 5)
-			{
-				if(OMEGA_ENERGY[client] > OMEGA_MAXENERGY_PAP)
-					OMEGA_ENERGY[client] = OMEGA_MAXENERGY_PAP;
+			if(OMEGA_ENERGY[client] > OMEGA_MAXENERGY)
+				OMEGA_ENERGY[client] = OMEGA_MAXENERGY;
 
-			}
-			else
-			{
-				if(OMEGA_ENERGY[client] > OMEGA_MAXENERGY)
-					OMEGA_ENERGY[client] = OMEGA_MAXENERGY;
-
-			}
 		}
 	}
+	f_KitOmega_HUDDelay[client] = 0.0;
+	KitOmega_HUD(client);
 
 	//TriggerTimer(WeaponTimer[client], true);
 }
@@ -419,6 +420,8 @@ public void KitOmega_NPCTakeDamage_Gauss(int attacker, int victim, float &damage
 	if(GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon") != GetPlayerWeaponSlot(attacker, TFWeaponSlot_Melee) && b_KitOmega_Using_Gauss[attacker])
 	{
 		float duration = 5.0;
+		if(b_thisNpcIsARaid[victim] || b_thisNpcIsABoss[victim])
+              duration = 2.0;
 		switch(GetRandomInt(0, 3))
 		{
 			case 0:
@@ -433,18 +436,17 @@ public void KitOmega_NPCTakeDamage_Gauss(int attacker, int victim, float &damage
 	}
 }
 
-public void KitOmega_NPCTakeDamage_Melee(int attacker, int victim, float &damage, int weapon, int damagetype)
+public void KitOmega_NPCTakeDamage_Melee(int attacker, int victim, float &damage, int weapon,int damagetype)
 {
-	if(!(damagetype & DMG_CLUB))
+	if(!(damagetype & (DMG_CLUB | DMG_TRUEDAMAGE)))
 		return;
-		
 	float energy;
 	energy = OMEGA_PREHITGAIN;
 	
 	if(b_thisNpcIsARaid[victim])//击中的是raidboss(if is raid)
-		energy *= 1.1;
+		energy *= 1.25;
 	if(LastMann)//最后一人状态(last manm buff)
-		energy *= 1.2;
+		energy *= 1.25;
 	int Gun = EntRefToEntIndex(i_KitOmega_GunRef[attacker]);
 	if(IsValidEntity(Gun))
 	{
@@ -454,10 +456,10 @@ public void KitOmega_NPCTakeDamage_Melee(int attacker, int victim, float &damage
 				energy *= 0.0;
 		}
 	}
-	KitOmega_AddCharge(attacker, energy);
 	
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_KIT_OMEGA)
 	{
+		KitOmega_AddCharge(attacker, energy);
 		if(OMEGA_ENERGY[attacker] >= 100.0)
 			KitOmega_Melee_Extra_OnHit(attacker, victim, weapon);
 	}
@@ -552,6 +554,16 @@ public void KitOmega_Weapon_Fire(int client, int weapon, bool crit, int slot, in
 			KitOmega_AddCharge(client, -OmegaWeaponCosts(3));
 		case 4:
 			KitOmega_AddCharge(client, -OmegaWeaponCosts(4));
+	}
+	if(OMEGA_ENERGY[client] > 0.0)
+	{
+		int ClipLeft = GetEntData(weapon, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"));
+		if(ClipLeft <= 2)
+		{
+			ResetClipOfWeaponStore(weapon, client, 2);
+			//emergency add 1000 over limit hehe
+			SetEntData(weapon, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), 2);
+		}
 	}
 	if(h_KitOmega_Timer[client] == null)
 	{

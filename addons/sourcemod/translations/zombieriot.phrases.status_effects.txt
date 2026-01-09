@@ -5,1735 +5,2122 @@
 		"en"	"This is an Elemental status effect."
 		"es"	"Este es un efecto de status elemental."
 		"it"	"Si tratta di un effetto di stato elementare."
+		"ko"	"이것은 원소 상태 효과입니다."
 	}
 	"Applied Onto Others"
 	{
 		"en"	"{yellow}Applied Onto Others"
 		"es"	"{yellow}Aplicado en otros"
 		"it"	"{yellow}Applicato ad altri"
+		"ko"	"{yellow}다른 대상에게 적용"
 	}
 	"Scale With Player"
 	{
 		"en"	"{yellow}Scales with playercount, unless youre the buff owner or enemies benefit from it."
 		"es"	"{yellow}Escala con la cantidad de jugadores, a menos que seas el emisor del buff o si el enemigo se beneficia de este."
 		"it"	"{yellow}Scala con il numero di giocatori, a meno che tu non sia il proprietario del buff o che i nemici non ne beneficino."
+		"ko"	"{yellow}플레이어 수에 따라 효과가 증가합니다. 당신이 버프를 건 장본인이거나 적도 똑같이 효과를 받는게 아니라면 말이죠."
 	}
 	"Teslar Shock"
 	{
 		"en"	"Teslar Shock"
 		"it"	"Shock Teslar"
+		"ko"	"테슬라 충격"
 	}
 	"Teslar Shock Desc"
 	{
 		"en"	"Increases Damage Taken by 20％\nSlows NPC'S by 25％"
 		"it"	"Aumenta i danni subiti del 20％\nRiduce gli NPC del 25％"
+		"ko"	"받는 피해량이 20％ 증가합니다.\nNPC의 이동 속도를 25％ 감소시킵니다."
 	}
 	"Teslar Electricution"
 	{
 		"en"	"Teslar Electricution"
 		"it"	"Elettricità Teslar"
+		"ko"	"테슬라 감전"
 	}
 	"Teslar Electricution Desc"
 	{
 		"en"	"Increases Damage Taken by 25％\nSlows NPC'S by 35％"
 		"it"	"Aumenta i danni subiti del 25％\nRiduce gli NPC del 35％"
+		"ko"	"받는 피해량이 25％ 증가합니다.\nNPC의 이동 속도를 35％ 감소시킵니다."
 	}
 	"Specter's Aura"
 	{
 		"en"	"Specter's Aura"
 		"it"	"Aura dello spettro"
+		"ko"	"스펙터의 오라"
 	}
 	"Specter's Aura Desc"
 	{
 		"en"	"Slows NPC'S by 60％"
-		"it"	"Rallenta gli NPC del 60%"
+		"it"	"Rallenta gli NPC del 60％"
+		"ko"	"NPC의 이동 속도를 60％ 감소시킵니다."
 	}
 	"Electric Impairability"
 	{
 		"en"	"Electric Impairability"
 		"it"	"Imputabilità elettrica"
+		"ko"	"전기 장애"
 	}
 	"Electric Impairability Desc"
 	{
 		"en"	"Slows NPC'S by 80％"
 		"it"	"Rallenta gli NPC dell'80"
+		"ko"	"NPC의 이동 속도를 80％ 감소시킵니다."
 	}
 	"Ludo-Maniancy"
 	{
 		"en"	"Ludo-Maniancy"
 		"it"	"Ludo-manzia"
+		"ko"	"루도마니아시"
 	}
 	"Ludo-Maniancy Desc"
 	{
 		"en"	"Increases Damage Taken by 10％\nSlows NPC'S by 20％"
 		"it"	"Aumenta i danni subiti del 10％\nRallenta gli NPC del 20％"
+		"ko"	"받는 피해량이 10％ 증가합니다.\nNPC의 이동 속도를 20％ 감소시킵니다."
 	}
 	"Spade Ludo-Maniancy"
 	{
 		"en"	"Spade Ludo-Maniancy"
 		"it"	"Vanga Ludo-Mania"
+		"ko"	"스페이드 루도마니아시"
 	}
 	"Spade Ludo-Maniancy Desc"
 	{
 		"en"	"Increases Damage Taken by 12％\nSlows NPC'S by 22％"
 		"it"	"Aumenta i danni subiti del 12％\nRallenta gli NPC del 22％"
+		"ko"	"받는 피해량이 12％ 증가합니다.\nNPC의 이동 속도를 22％ 감소시킵니다."
 	}
 	"Freeze"
 	{
 		"en"	"Freeze"
 		"it"	"Congelamento"
+		"ko"	"한기"
 	}
 	"Freeze Desc"
 	{
 		"en"	"Increases Damage Taken by 10％\nSlows NPC'S by 10％"
 		"it"	"Aumenta i danni subiti del 10％\nRallenta i gli NPC del 10％"
+		"ko"	"받는 피해량이 5％ 증가합니다.\nNPC의 이동 속도를 5％ 감소시킵니다."
 	}
 	"Cryo"
 	{
 		"en"	"Cryo"
 		"it"	"Crio"
+		"ko"	"냉기"
 	}
 	"Cryo Desc"
 	{
 		"en"	"Increases Damage Taken by 15％\nSlows NPC'S by 15％"
 		"it"	"Aumenta i danni subiti del 15％\nRallenta gli NPC del 15％"
+		"ko"	"받는 피해량이 10％ 증가합니다.\nNPC의 이동 속도를 10％ 감소시킵니다."
 	}
 	"Near Zero"
 	{
 		"en"	"Near Zero"
 		"it"	"Vicino allo zero"
+		"ko"	"영도 근접"
 	}
 	"Near Zero Desc"
 	{
 		"en"	"Increases Damage Taken by 20％\nSlows NPC'S by 20％"
 		"it"	"Aumenta i danni subiti del 20％\nRallenta gli NPC del 20％"
+		"ko"	"받는 피해량이 15％ 증가합니다.\nNPC의 이동 속도를 15％ 감소시킵니다."
 	}
 	"Frozen"
 	{
 		"en"	"Frozen"
 		"it"	"Congelato"
+		"ko"	"얼어붙음"
 	}
 	"Frozen Desc"
 	{
 		"en"	"Increases Damage Taken by 20％\nStuns for a duration."
 		"it"	"Aumenta i danni subiti di 20％\nStunna per una durata."
+		"ko"	"받는 피해량이 15％ 증가합니다.\n지속 시간 동안 기절합니다."
 	}
 	"Weakening Compound"
 	{
 		"en"	"Weakening Compound"
 		"it"	"Composto indebolente"
+		"ko"	"약화제"
 	}
 	"Weakening Compound Desc"
 	{
 		"en"	"Increases Damage Taken by 35％\nSlows NPC'S by 35％\nLowers Damage Delt by 25％"
 		"it"	"Aumenta i danni subiti del 35％\nRallenta gli NPC del 35％\nRiduce i danni subiti del 25％"
+		"ko"	"받는 피해 35％ 증가\nNPC의 속도 35％ 감소\n주는 피해 25％ 감소"
 	}
 	"Golden Curse"
 	{
 		"en"	"Golden Curse"
 		"it"	"Maledizione d'oro"
+		"ko"	"황금화 저주"
 	}
 	"Golden Curse Desc"
 	{
 		"en"	"Increases Damage Taken by 20％"
 		"it"	"Aumenta i danni subiti di 20％"
+		"ko"	"받는 피해량이 20％ 증가합니다."
 	}
 	"Enfeeble"
 	{
 		"en"	"Enfeeble"
 		"it"	"Ineffabile"
+		"ko"	"쇠약화"
 	}
 	"Enfeeble Desc"
 	{
 		"en"	"Decreases damage dealt by 25％, which lowers over time to 0％"
 		"it"	"Diminuisce i danni inflitti di 25％, che si riducono nel tempo a 0％"
+		"ko"	"적에게 입히는 공격 피해량이 10％ 감소하고, 시간이 지날수록 점점 감소하여 최종적으로 주는 피해량 감소량이 0％까지 떨어집니다."
 	}
 	"Iberia's Anti Raid"
 	{
 		"en"	"Iberia's Anti Raid"
 		"it"	"Anti Raid di Iberia"
+		"ko"	"이베리아의 레이드 대항마"
 	}
 	"Iberia's Anti Raid Desc"
 	{
 		"en"	"Increases Damage Taken by 10％"
 		"it"	"Aumenta i danni subiti del 10"
+		"ko"	"받는 피해량이 10％ 증가합니다."
 	}
 	"Teslar Mule"
 	{
 		"en"	"Teslar Mule"
 		"it"	"Mulo di Teslar"
+		"ko"	"테슬라 뮬"
 	}
 	"Energy Drink"
 	{
 		"en"	"Energy Drink"
 		"it"	"Bevanda energetica"
+		"ko"	"에너지 드링크"
 	}
 	"Teslar Mule Desc"
 	{
-		"en"	"Increases Damage Taken by 30%\nSlows NPC'S by 80％, which lowers over time up untill 0％"
-		"it"	"Aumenta i danni subiti del 30% e rallenta i gli NPC di 80％, che si riduce nel tempo fino a 0％"
+		"en"	"Increases Damage Taken by 30％\nSlows NPC'S by 80％, which lowers over time up untill 0％"
+		"it"	"Aumenta i danni subiti del 30％ e rallenta i gli NPC di 80％, che si riduce nel tempo fino a 0％"
+		"ko"	"받는 피해량이 30％ 증가합니다.\nNPC의 속도를 80％ 감소시키며,\n이 효과는 시간이 지나면서 0％까지 점차 감소합니다."
 	}
 	"Cripple"
 	{
 		"en"	"Cripple"
 		"it"	"Storpio"
+		"ko"	"신경 쇠약"
 	}
 	"Cripple Desc"
 	{
 		"en"	"increased damage taken by 30％"
 		"it"	"aumento dei danni subiti del 30％"
+		"ko"	"받는 피해량이 30％ 증가합니다."
 	}
 	"Stranglation I"
 	{
 		"en"	"Stranglation I"
 		"it"	"Strangolamento I"
+		"ko"	"교살 I"
 	}
 	"Stranglation I Desc"
 	{
 		"en"	"Increases Damage Taken by 10％"
 		"it"	"Aumenta i danni subiti del 10"
+		"ko"	"받는 피해량이 10％ 증가합니다."
 	}
 	"Stranglation II"
 	{
 		"en"	"Stranglation II"
 		"it"	"Strangolamento II"
+		"ko"	"교살 II"
 	}
 	"Stranglation II Desc"
 	{
 		"en"	"Increases Damage Taken by 15％"
 		"it"	"Aumenta i danni subiti del 15"
+		"ko"	"받는 피해량이 15％ 증가합니다."
 	}
 	"Stranglation III"
 	{
 		"en"	"Stranglation III"
 		"it"	"Strangolamento III"
+		"ko"	"교살 III"
 	}
 	"Stranglation III Desc"
 	{
 		"en"	"Increases Damage Taken by 20％"
 		"it"	"Aumenta i danni subiti di 20％"
+		"ko"	"받는 피해량이 20％ 증가합니다."
 	}
 	"Cheesy Presence"
 	{
 		"en"	"Cheesy Presence"
 		"it"	"Presenza formaggioso"
+		"ko"	"저질스러운 존재"
 	}
 	"Cheesy Presence Desc"
 	{
 		"en"	"{orange}Oh how cheesed you are...\n{green}Increases damage and resistance by +15％\nIncreases npc speed by +25％.\nIncreases attack/reload speed & healrate by +15％."
 		"it"		"{orange}Quanto sei formaggioso...\n{green}Aumenta i danni e la resistenza di +15％, aumenta la velocità degli npc di +25％, aumenta la velocità di attacco/ricarica e la velocità di guarigione di +15％."
+		"ko"	"{orange}이렇게 저질스러울 수가...\n{green}공격 피해량과 피해 저항력이 +15％ 증가합니다.\nNPC의 이동 속도가 +25％ 증가합니다.\n공격 속도, 재장전 속도, 치유 속도가 +15％ 증가합니다."
 	}
 	"Freeplay Eloquence I"
 	{
 		"en"	"Eloquence I"
 		"it"	"Eloquenza I"
+		"ko"	"화술 I"
 	}
 	"Freeplay Eloquence I Desc"
 	{
 		"en"	"Increases damage dealt by 10％"
 		"it"	"Aumenta i danni inflitti del 10％"
+		"ko"	"공격 피해량이 10％ 증가합니다."
 	}
 	"Freeplay Eloquence II"
 	{
 		"en"	"Eloquence II"
 		"it"	"Eloquenza II"
+		"ko"	"화술 II"
 	}
 	"Freeplay Eloquence II Desc"
 	{
 		"en"	"Increases damage dealt by 20％"
 		"it"	"Aumenta i danni inflitti di 20％"
+		"ko"	"공격 피해량이 20％ 증가합니다."
 	}
 	"Freeplay Eloquence III"
 	{
 		"en"	"Eloquence III"
 		"it"	"Eloquenza III"
+		"ko"	"화술 III"
 	}
 	"Freeplay Eloquence III Desc"
 	{
 		"en"	"Increases damage dealt by 30％"
 		"it"	"Aumenta i danni inflitti del 30％"
+		"ko"	"공격 피해량이 30％ 증가합니다."
 	}
 	"Freeplay Rampart I"
 	{
 		"en"	"Rampart I"
 		"it"	"Rampart I"
+		"ko"	"방비 I"
 	}
 	"Freeplay Rampart I Desc"
 	{
 		"en"	"Reduces damage taken by 10％"
 		"it"	"Riduce i danni subiti del 10％"
+		"ko"	"받는 피해량이 10％ 감소합니다."
 	}
 	"Freeplay Rampart II"
 	{
 		"en"	"Rampart II"
 		"it"	"Rampart II"
+		"ko"	"방비 II"
 	}
 	"Freeplay Rampart II Desc"
 	{
 		"en"	"Reduces damage taken by 20％"
 		"it"	"Riduce i danni subiti del 20"
+		"ko"	"받는 피해량이 20％ 감소합니다."
 	}
 	"Freeplay Rampart III"
 	{
 		"en"	"Rampart III"
 		"it"	"Rampart III"
+		"ko"	"방비 III"
 	}
 	"Freeplay Rampart III Desc"
 	{
 		"en"	"Reduces damage taken by 30％"
 		"it"	"Riduce i danni subiti del 30％"
+		"ko"	"받는 피해량이 30％ 감소합니다."
 	}
 	"Freeplay Hurtle I"
 	{
 		"en"	"Hurtle I"
 		"it"	"Uragano I"
+		"ko"	"쏜살 I"
 	}
 	"Freeplay Hurtle I Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by +7％"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione di +7％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 +7％ 증가합니다."
 	}
 	"Freeplay Hurtle II"
 	{
 		"en"	"Hurtle II"
 		"it"	"Uragano II"
+		"ko"	"쏜살 II"
 	}
 	"Freeplay Hurtle II Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by +14％"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione di +14％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 +14％ 증가합니다."
 	}
 	"Freeplay Hurtle III"
 	{
 		"en"	"Hurtle III"
 		"it"	"Uragano III"
+		"ko"	"쏜살 III"
 	}
 	"Freeplay Hurtle III Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by +21％"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione di +21％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 +21％ 증가합니다."
 	}
 	"Cudgelled"
 	{
 		"en"	"Cudgelled"
 		"it"	"Spremuto"
+		"ko"	"뇌진탕 충격"
 	}
 	"Cudgelled Desc"
 	{
 		"en"	"Increases Damage Taken by 30％"
 		"it"	"Aumenta i danni subiti del 30"
+		"ko"	"받는 피해량이 30％ 증가합니다."
 	}
 	"Maimed"
 	{
 		"en"	"Maimed"
 		"it"	"Mutilato"
+		"ko"	"신체 장애"
 	}
 	"Maimed Desc"
 	{
 		"en"	"Slows NPC'S Movementspeed by 50％"
-		"it"	"Rallenta la velocità di movimento degli NPC del 50%"
+		"it"	"Rallenta la velocità di movimento degli NPC del 50％"
+		"ko"	"NPC의 이동 속도가 50％ 감소합니다."
 	}
 	"Prosperity I"
 	{
 		"en"	"Prosperity I"
 		"it"	"Prosperità I"
+		"ko"	"번창 I"
 	}
 	"Prosperity I Desc"
 	{
 		"en"	"Lowers attack/reload speed & healrate by 3.5％"
 		"it"	"Riduce la velocità di attacco/ricarica e la velocità di guarigione del 3,5％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 3.5％ 감소합니다."
 	}
 	"Prosperity II"
 	{
 		"en"	"Prosperity II"
 		"it"	"Prosperità II"
+		"ko"	"번창 II"
 	}
 	"Prosperity II Desc"
 	{
 		"en"	"Lowers attack/reload speed & healrate by 7％"
 		"it"	"Riduce la velocità di attacco/ricarica e la velocità di guarigione del 7％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 7％ 감소합니다."
 	}
 	"Prosperity III"
 	{
 		"en"	"Prosperity III"
 		"it"	"Prosperità III"
+		"ko"	"번창 III"
 	}
 	"Prosperity III Desc"
 	{
 		"en"	"Lowers attack/reload speed & healrate by 14％"
 		"it"	"Riduce la velocità di attacco/ricarica e la velocità di guarigione del 14％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 14％ 감소합니다."
 	}
 	"Aeternam"
 	{
 		"en"	"Aeternam"
 		"it"	"Aeternam"
+		"ko"	"영원함"
 	}
 	"Aeternam Desc"
 	{
 		"en"	"Increases Magic/Laser damage by 10％, And adds an additional 1500 on each hit."
 		"it"	"Aumenta i danni da magia/laser del 10％ e aggiunge 1500 ad ogni colpo."
+		"ko"	"마법, 레이저 피해가 10％ 증가하며, 적중시 추가로 1500의 피해를 줍니다."
 	}
 	"Silenced"
 	{
 		"en"	"Silenced"
 		"es"	"Silenciado"
 		"it"	"Silenziato"
+		"ko"	"침묵"
 	}
 	"Silenced Desc"
 	{
 		"en"	"Slows attack/reload speed & healrate by 10％.\nRaidbosses that are affected lose/weaken some ability, check Encyclopedia."
 		"it"	"Rallenta la velocità di attacco/ricarica e la velocità di guarigione del 10％.\nRaidboss colpiti perdono/indeboliscono alcune abilità, controllare l'Enciclopedia."
+		"ko"	"공격 속도, 재장전 속도 및 치유 속도를 10％ 감소시킵니다.\n효과를 받는 레이드 보스는 일부 능력이 상실되거나 약화됩니다.\n자세한 내용은 백과사전을 확인하십시오."																																																											   
 	}
 	"Hardened Aura"
 	{
 		"en"	"Hardened Aura"
 		"es"	"Aura Reforzada"
 		"it"	"Aura temprata"
+		"ko"	"경화의 오라"
 	}
 	"Hardened Aura Desc"
 	{
 		"en"	"Immune to any and ALL that debuffs.\n{yellow}Elemental Is excluded from this.\n{yellow}Stuns and movement displacements are not counted as debuffs."
 		"it"	"Immune a tutti i debuff.\n{yellow}Elementale è escluso da questo.\n{yellow}Stun e spostamenti di movimento non sono contati come debuff."
 		"es"	"Inmune a cualquier debuff Y cualquer cosa que inflinga debuffs.\n{yellow}(No incluye buffs elementales, aturdimientos y desplazamientos)"
+		"ko"	"모든 디버프에 면역이 됩니다.\n{yellow}원소 피해는 이 효과에서 제외됩니다.\n{yellow}기절과 이동 변위는 디버프로 판정되지 않습니다."
 	}
 	"Intangible"
 	{
 		"en"	"Intangible"
 		"it"	"Intangibile"
+		"ko"	"영체화"
 	}
 	"Intangible Desc"
 	{
 		"en"	"Allows you to phase through enemies."
 		"es"	"Permite pasar a traves de enemigos."
 		"it"	"Permette di passare in fase attraverso i nemici."
+		"ko"	"적과의 충돌 판정이 사라져, 적들을 뚫고 지나갈 수 있습니다."
 	}
 	"Infinite Will"
 	{
 		"en"	"Infinite Will"
 		"it"	"Volontà infinita"
+		"ko"	"무한한 의지"
 	}
 	"Infinite Will Desc"
 	{
 		"en"	"Your HP cannot drop below 1 no matter what."
 		"it"	"I suoi HP non possono scendere al di sotto di 1 in nessun caso."
+		"ko"	"체력이 1 이하로 떨어지지 않습니다. 사망하지 않습니다."
 	}
 	"Blessing of Stars"
 	{
 		"en"	"Blessing of Stars"
 		"it"	"Benedizione delle stelle"
+		"ko"	"별의 축복"
 	}
 	"Blessing of Stars Desc"
 	{
 		"en"	"Saves you from death, once."
 		"it"	"Ti salva dalla morte, una volta."
+		"ko"	"죽음으로부터 한 번 구해줍니다."
 	}
 	"Death is comming."
 	{
 		"en"	"Death is comming."
 		"it"	"La morte sta arrivando."
+		"ko"	"다가오는 죽음"
 	}
 	"Death is comming. Desc"
 	{
 		"en"	"Try what you want, you will die eventually."
 		"it"	"Provate quello che volete, prima o poi morirete."
+		"ko"	"발버둥 쳐봐야 소용 없습니다. 결국 죽게 될 테니까요."
 	}
 	"Thick Blood"
 	{
 		"en"	"Thick Blood"
 		"it"	"Sangue denso"
+		"ko"	"진한 피"
 	}
 	"Clear Head"
 	{
 		"en"	"Clear Head"
 		"it"	"Testa libera"
+		"ko"	"정신통일"
 	}
 	"Clear Head Desc"
 	{
 		"en"	"Immune to all stuns"
 		"it"	"Immune a tutti gli stordimenti"
+		"ko"	"모든 기절 효과에 면역이 됩니다."
 	}
 	"Shook Head"
 	{
 		"en"	"Shook Head"
 		"it"	"Testa scossa"
+		"ko"	"정신 차리기"
 	}
 	"Shook Head Desc"
 	{
-		"en"	"Reduces all stuns by 50%"
-		"it"	"Riduce del 50% tutti gli stordimenti"
+		"en"	"Reduces all stuns by 50％"
+		"it"	"Riduce del 50％ tutti gli stordimenti"
+		"ko"	"모든 기절 효과의 지속 시간이 50％ 감소합니다."
 	}
 	"Solid Stance"
 	{
 		"en"	"Solid Stance"
 		"it"	"Posizione solida"
+		"ko"	"견고한 자세"
 	}
 	"Solid Stance Desc"
 	{
 		"en"	"Immune to knockback or displacements"
 		"it"	"Immune ai colpi o agli spostamenti"
+		"ko"	"모든 넉백과 변위 효과에 면역이 됩니다."
 	}
 	"Raid Strangle Protection"
 	{
 		"en"	"Raid Strangle Protection"
 		"it"	"Protezione antistrangolamento Raid"
+		"ko"	"레이드 교살 보호"
 	}
 	"Raid Strangle Protection Desc"
 	{
 		"en"	"Prevents the buff owners from grabbing the raid twice."
 		"it"	"Impedisce ai possessori di buff di prendere il raid due volte."
+		"ko"	"버프 소유자가 레이드를 두 번 붙잡는 것을 방지합니다."
 	}
 	"Fluid Movement"
 	{
 		"en"	"Fluid Movement"
 		"it"	"Movimento fluido"
+		"ko"	"유연한 움직임"
 	}
 	"Fluid Movement Desc"
 	{
 		"en"	"Immune to Slowness Effects"
 		"it"	"Immune agli effetti della lentezza"
+		"ko"	"모든 둔화 효과에 면역이 됩니다."
 	}
 	"Thick Blood Desc"
 	{
 		"en"	"Immune To all Bleed, cleanses all Bleed."
 		"it"	"Immune a tutte le emorragie, purifica tutte le emorragie."
+		"ko"	"모든 출혈 효과에 면역이 되며, 현재 부여된 모든 출혈을 즉시 제거합니다."
 	}
 	"Rapid Suturing"
 	{
 		"en"	"Rapid Suturing"
 		"it"	"Sutura rapida"
+		"ko"	"신속 봉합"
 	}
 	"Rapid Suturing Desc"
 	{
 		"en"	"Cleanses All Current bleed, Doesnt act like a buff or debuff,No icon as its very temporary.\nUsed for Flaggilant, their attack which makes bleedstacks deal more damage on its ability."
 		"it"	"Pulisce tutte le emorragie in corso, non agisce come un buff o un debuff, non ha un'icona perché è molto temporanea.\nSi usa per Flaggilant, il suo attacco che fa sì che le pile di emorragie infliggano più danni con la sua abilità."
+		"ko"	"현재 부여된 모든 출혈을 즉시 제거합니다. 이 효과는 버프나 디버프로 취급되지 않으며, 즉발 효과이므로 아이콘이 없습니다.\n 고행자 무기의 출혈 중첩 폭발 능력에 사용됩니다."
 	}
 	"Marked"
 	{
 		"en"	"Marked"
 		"it"	"Contrassegnato"
+		"ko"	"표적"
 	}
 	"Marked Desc"
 	{
 		"en"	"Certain Enemies gain extra abilities against marked, See Encyclopedia entrances."
 		"it"	"Alcuni nemici ottengono abilità extra contro gli ingressi contrassegnati, vedi Enciclopedia."
+		"ko"	"특정 적들은 표적 디버프가 있는 대상에게 추가 효과를 발동합니다. 백과사전에서 이 디버프와 상호작용하는 대상을 찾아보세요."
 	}
 	"Void Presence"
 	{
 		"en"	"Void Presence"
 		"it"	"Presenza del vuoto"
+		"ko"	"공허의 존재감"
 	}
 	"Void Presence Desc"
 	{
 		"en"	"Shows that youre standing in void creep, void creatures in keep get stronger."
 		"it"	"Mostra che ti trovi in void creep, le creature void in keep diventano più forti."
+		"ko"	"현재 당신은 공허 점막 위에 있습니다. 공허체들은 이 위에 있으면 능력치가 증가합니다."
 	}
 	"Sea Presence"
 	{
 		"en"	"Sea Presence"
 		"it"	"Presenza del mare"
+		"ko"	"바다의 존재감"
 	}
 	"Sea Presence Desc"
 	{
 		"en"	"Shows that youre standing in sea creep, you take continuous damage, get out.\n{green}If you are apart or one with the sea, you instead benefit from it..."
 		"it"	"Mostra che sei in mezzo al mare, subisci danni continui, esci.\n{green}Se sei separato o un tutt'uno con il mare, invece ne trai beneficio..."
+		"ko"	"현재 당신은 명흔 위에 있습니다. 영역 내에 있으면 계속해서 피해를 받게 됩니다. 당장 빠져나오세요.\n{green}만약 당신이 바다의 일원이라면, 대신 힘을 얻게 될 것입니다..."
 	}
 	"Sea Strength"
 	{
 		"en"	"Sea Strength"
 		"it"	"Forza del mare"
+		"ko"	"바다의 힘"
 	}
 	"Sea Strength Desc"
 	{
 		"en"	"Shows that youre standing in sea creep, you benefit from it\nIncreases damage dealt by 10％, Decreases damage taken by 10％."
 		"it"	"Mostra che si è in presenza di mare agitato, se ne trae beneficio. \nAumenta i danni inflitti di 10％, diminuisce i danni subiti di 10％."
+		"ko"	"현재 당신은 명흔 위에 있습니다. 영역 내에 있으면 능력치가 증가합니다.\n공격 피해량이 10％ 증가하고, 받는 피해량이 10％ 감소합니다."
 	}
 	"Void Strength I"
 	{
 		"en"	"Void Strength I"
 		"it"	"Forza del Vuoto I"
+		"ko"	"공허의 힘 I"
 	}
 	"Void Strength I Desc"
 	{
 		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 5％\nLess damage taken by 15％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 20％"
 		"it"	"Guarisce in base a ％ di HP massimi.\nAumenta la velocità del gli NPC di 5％Minuisce i danni subiti di 15％Essendo un giocatore, ogni giocatore riduce questo valore di 5％ in modo piatto.\nAumenta i danni inflitti di 20％"
+		"ko"	"최대 체력 비율에 비례하여 회복\nNPC의 속도 5％ 증가\n받는 피해 15％ 감소\n플레이어는 위의 효과가 5％ 감소\n공격 피해량 20％ 증가"
 	}
 	"Void Strength II"
 	{
 		"en"	"Void Strength II"
 		"it"	"Forza del Vuoto II"
+		"ko"	"공허의 힘 II"
 	}
 	"Void Strength II Desc"
 	{
 		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 15％\nLess damage taken by 20％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 30％"
 		"it"	"Guarisce in base a ％ di HP massimi.\nAumenta la velocità del gli NPC di 15％Minuisce i danni subiti di 20\nEssendo un giocatore, ogni giocatore riduce questo valore di 5％ in modo piatto\nAumenta i danni inflitti di 30％"
+		"ko"	"최대 체력 비율에 비례하여 회복\nNPC의 속도 15％ 증가\n받는 피해 20％ 감소\n플레이어는 위의 효과가 5％ 감소\n공격 피해량 30％ 증가"
 	}
 	"MERLT0N-BUFF"
 	{
 		"en"	"MERLT0N-BUFF"
 		"it"	"MERLT0N-BUFF"
+		"ko"	"멀톤-버프"
 	}
 	"MERLT0N-BUFF Desc"
 	{
 		"en"	"Reduces damage taken by 50％\nBoosts damage dealt by 50％"
 		"it"	"Riduce i danni subiti del 50％ \nAumenta i danni inflitti del 50％"
+		"ko"	"받는 피해량이 50％ 감소합니다.\n공격 피해량이 50％ 증가합니다."
 	}
 	"Extreme Anxiety"
 	{
 		"en"	"Extreme Anxiety"
 		"it"	"Ansia estrema"
+		"ko"	"극심한 불안함"
 	}
 	"Extreme Anxiety Desc"
 	{
 		"en"	"Attack 25％ faster."
 		"it"	"Attacco 25％ più veloce."
+		"ko"	"공격 속도가 25％ 증가합니다."
 	}
 	"Mazeat Command"
 	{
 		"en"	"Mazeat Command"
 		"it"	"Comando di combinazione"
+		"ko"	"마제트의 지휘"
 	}
 	"Mazeat Command Desc"
 	{
 		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 25％"
 		"it"	"Riduce i danni subiti del 20％ \naumenta i danni inflitti del 25％"
+		"ko"	"받는 피해량이 20％ 감소합니다.\n공격 피해량이 25％ 증가합니다."
 	}
 	"Squad Leader"
 	{
 		"en"	"Squad Leader"
+		"ko"	"분대장"
 		"it"	"Caposquadra"
 	}
 	"Squad Leader Desc"
 	{
 		"en"	"Reduces damage taken by 10％\nBoosts damage dealt by 10％\nBoosts NPC'S Movementspeed by 33％"
+		"ko"	"받는 피해량이 10％ 감소합니다.\n공격 피해량이 10％ 증가합니다.\nNPC의 이동 속도가 33％ 증가합니다."
 		"it"	"Riduce i danni subiti del 10％\nAumenta i danni inflitti del 10％\nAumenta la velocità di movimento degli NPC del 33％"
 	}
 	"Caffinated"
 	{
 		"en"	"Caffinated"
+		"ko"	"카페인"
 		"it"	"Caffinato"
 	}
 	"Caffinated Desc"
 	{
-		"en"	"Boosts damage dealt by 50％\nBoosts NPC'S Movementspeed by 50％, See Caffinated Drain for more info as it a combined effect..."
-		"it"	"Aumenta i danni inflitti di 50％ \nAumenta la velocità di movimento degli NPC di 50％, Vedere Scolo Caffinato per maggiori informazioni, poiché si tratta di un effetto combinato..."
+		"en"	"Boosts damage dealt by 33％\nBoosts Attack Speed by 33％\nBoosts NPC'S Movementspeed by 50％, See Caffinated Drain for more info as it a combined effect..."
+		"ko"	"피해량, 공격 속도가 33％ 증가합니다.\nNPC의 이동 속도가 50％ 증가합니다.\n효과가 지속되는 동안 카페인 드레인 효과가 적용됩니다."
+		"it"	"Aumenta i danni inflitti di 33％\nAumenta la velocità d'attacco del 33％\nAumenta la velocità di movimento degli NPC di 50％, Vedere Scolo Caffinato per maggiori informazioni, poiché si tratta di un effetto combinato..."
 	}
 	"Caffinated Drain"
 	{
 		"en"	"Caffinated Drain"
+		"ko"	"카페인 드레인"
 		"it"	"Scolo Caffinato"
 	}
 	"Caffinated Drain Desc"
 	{
 		"en"	"Increas damage taken by 25％"
+		"ko"	"받는 피해량이 25％ 증가합니다."
 		"it"	"Aumenta i danni subiti di 25％"
 	}
 	"Call To Victoria"
 	{
 		"en"	"Call To Victoria"
+		"ko"	"빅토리아의 부름"
 		"it"	"Chiamata a Vittoria"
 	}
 	"Call To Victoria Desc"
 	{
 		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 20％\nBoosts NPC'S Movementspeed by 15％\nAll Victorian enemeies gain extra abilities upon reciving this buff."
+		"ko"	"받는 피해량 20％ 감소\n공격 피해량 20％ 증가\nNPC의 이동 속도 15％ 증가\n해당 버프를 보유한 빅토리아 계열 적들은 추가 능력을 얻습니다."
 		"it"	"Riduce i danni subiti del 20％\nAumenta i danni inflitti del 20％\nAumenta la velocità di movimento degli NPC del 15％\nTutti i nemici vittoriani ottengono abilità extra quando ricevono questo buff."
+	}
+	"Taurine"
+	{
+		"en"	"Taurine"
+		"ko"	"타우린"
+	}
+	"Taurine Desc"
+	{
+		"en"	"Boosts damage dealt by 20％\nBoosts Attack Speed by 20％"
+		"ko"	"공격 피해량이 20％ 증가합니다.\n공격 속도가 20％ 증가합니다."
+	}
+	"Battery_TM Charge"
+	{
+		"en"	"Battery Charge"
+		"ko"	"배터리 충전"
+	}
+	"Ammo_TM Visualization"
+	{
+		"en"	"Ammo Visualization"
+		"ko"	"탄약 시각화"
 	}
 	"False Therapy"
 	{
 		"en"	"False Therapy"
 		"it"	"Falsa terapia"
+		"ko"	"돌팔이 치료술"
 	}
 	"False Therapy Desc"
 	{
 		"en"	"Reduces damage taken by 40％\nBoosts damage dealt by 50％\nBoosts NPC'S Movementspeed by 25％"
 		"it"	"Riduce i danni subiti del 40％\nAumenta i danni inflitti del 50％\nAumenta la velocità di movimento degli NPC del 25％"
+		"ko"	"받는 피해량이 40％ 감소합니다.\n공격 피해량이 50％ 증가합니다.\nNPC의 이동 속도가 25％ 증가합니다."
 	}
 	"Expert's Mind"
 	{
 		"en"	"Expert's Mind"
 		"it"	"La mente dell'esperto"
+		"ko"	"전문가의 마음가짐"
 	}
 	"Expert's Mind Desc"
 	{
 		"en"	"Can only take 25％ of their max HP as damage in one hit.\n{crimson}Cannot reduce it to below 50 damage.\n{crimson}Doesn't work against true damage."
 		"it"	"Può subire solo 25％ dei suoi HP massimi come danno in un colpo solo.\n{crimson}Non può ridurlo a meno di 50 danni.\n{crimson}Non funziona contro i danni veri."
+		"ko"	"한 번의 피격으로 받는 피해량이 최대 체력의 25％로 제한됩니다.\n{crimson}받는 피해를 50 이하로 감소시킬 수 없습니다.\n{crimson}트루 대미지는 이 효과를 무시합니다."
 	}
 	"Godly Motivation"
 	{
 		"en"	"Godly Motivation"
 		"it"	"Motivazione divina"
+		"ko"	"경건한 동기 부여"
 	}
 	"Godly Motivation Desc"
 	{
 		"en"	"Increases damage dealt by 12.5％\nDecreases damage taken by 25％\nIncreases NPC'S movement speed by 50％\nIncreases attack/reload speed & healrate by 25％"
 		"it"	"Aumenta i danni inflitti di 12,5％\nDiminuisce i danni subiti di 25％\nAumenta la velocità di movimento degli NPC di 50％\nAumenta la velocità di attacco/ricarica e la velocità di guarigione di 25％"
+		"ko"	"공격 피해량이 12.5％ 증가합니다.\n받는 피해량이 25％ 감소합니다.\nNPC의 이동 속도가 50％ 증가합니다.\n공격 속도, 재장전 속도, 치유 속도가 25％ 증가합니다."
+	}
+	"Pikeman's Slashes"
+	{
+		"en"	"Pikeman's Slashes"
+	}
+	"Pikeman's Slashes Desc"
+	{
+		"en"	"Count increases by 1 for each spearmen hit taken\nAt Max hits taken, all spearmen enemies will deal 300％ more damage to you."
 	}
 	"Hussar's Warscream"
 	{
 		"en"	"Hussar's Warscream"
 		"it"	"Urlo di guerra dell'Ussaro"
+		"ko"	"후사르의 전투의 외침"
 	}
 	"Hussar's Warscream Desc"
 	{
 		"en"	"Increases damage dealt by 10％"
 		"it"	"Aumenta i danni inflitti del 10％"
+		"ko"	"공격 피해량이 10％ 증가합니다."
 	}
 	"Flagellants Punishment"
 	{
 		"en"	"Flagellants Punishment"
 		"it"	"Punizione dei flagellanti"
+		"ko"	"고행자의 수련"
 	}
 	"Flagellants Punishment Desc"
 	{
 		"en"	"Increases damage dealt by 35％\nDecreases damage taken by 20％\nIncreases attack/reload speed & healrate by 10％"
 		"it"	"Aumenta i danni inflitti del 35％\nDiminuisce i danni subiti del 20％\nAumenta la velocità di attacco/ricarica e la velocità di guarigione del 10％"
+		"ko"	"공격 피해량이 35％ 증가합니다.\n받는 피해량이 20％ 감소합니다.\n공격 속도, 재장전 속도, 치유 속도가 10％ 증가합니다."
 	}
 	"King's Dying Breath"
 	{
 		"en"	"King's Dying Breath"
 		"it"	"Il respiro morente del re"
+		"ko"	"왕의 마지막 숨결"
 	}
 	"King's Dying Breath Desc"
 	{
 		"en"	"Increases damage dealt by 35％\nDecreases damage taken by 20％\nIncreases attack/reload speed & healrate by 10％"
 		"it"	"Aumenta i danni inflitti del 35％\nDiminuisce i danni subiti del 20％\nAumenta la velocità di attacco/ricarica e la velocità di guarigione del 10％"
+		"ko"	"공격 피해량이 35％ 증가합니다.\n받는 피해량이 20％ 감소합니다.\n공격 속도, 재장전 속도, 치유 속도가 10％ 증가합니다."
 	}
 	"Oceanic Singing"
 	{
 		"en"	"Oceanic Singing"
 		"es"	"Canto Oceanico"
 		"it"	"Canto oceanico"
+		"ko"	"대양의 노래"
 	}
 	"Oceanic Singing Desc"
 	{
 		"en"	"Increases damage dealt by 10％"
 		"es"	"Aumenta el daño hecho en un 10％."
 		"it"	"Aumenta i danni inflitti del 10％"
+		"ko"	"공격 피해량이 10％ 증가합니다."
 	}
 	"Oceanic Scream"
 	{
 		"en"	"Oceanic Scream"
 		"es"	"Grito Oceanico"
 		"it"	"Urlo oceanico"
+		"ko"	"대양의 외침"
 	}
 	"Oceanic Scream Desc"
 	{
 		"en"	"Increases damage dealt by 25％"
 		"es"	"Aumenta el daño hecho en un 25％."
 		"it"	"Aumenta i danni inflitti del 25％"
+		"ko"	"공격 피해량이 25％ 증가합니다."
 	}
 	"War Cry"
 	{
 		"en"	"War Cry"
 		"es"	"Grito de Guerra"
 		"it"	"Grido di guerra"
+		"ko"	"전투의 함성"
 	}
 	"War Cry Desc"
 	{
 		"en"	"Increases damage dealt by 25％"
 		"es"	"Aumenta el daño hecho en un 25％."
 		"it"	"Aumenta i danni inflitti del 25％"
+		"ko"	"공격 피해량이 25％ 증가합니다."
 	}
 	"Expidonsan War Cry"
 	{
 		"en"	"Expidonsan War Cry"
 		"it"	"Grido di guerra di Expidonsan"
+		"ko"	"엑스피돈사 전투의 함성"
 	}
 	"Expidonsan War Cry Desc"
 	{
 		"en"	"Increases damage dealt by 50％"
 		"it"	"Aumenta i danni inflitti del 50％"
+		"ko"	"공격 피해량이 50％ 증가합니다."
 	}
 	"Defensive Backup"
 	{
 		"en"	"Defensive Backup"
 		"es"	"Apoyo Defensivo"
 		"it"	"Backup difensivo"
+		"ko"	"수비 지원"
 	}
 	"Defensive Backup Desc"
 	{
 		"en"	"Decreases damage taken by 15％"
 		"es"	"Reduce el daño recibido en un 15％."
 		"it"	"Diminuisce i danni subiti del 15"
+		"ko"	"받는 피해량이 15％ 감소합니다."
 	}
 	"Very Defensive Backup"
 	{
 		"en"	"Very Defensive Backup"
 		"it"	"Backup molto difensivo"
+		"ko"	"철벽 수비 지원"
 	}
 	"Very Defensive Backup Desc"
 	{
 		"en"	"Decreases damage taken by 50％"
 		"it"	"Diminuisce i danni subiti del 50％"
+		"ko"	"받는 피해량이 50％ 감소합니다."
 	}
 	"Extreamly Defensive Backup"
 	{
 		"en"	"Extreamly Defensive Backup"
 		"it"	"Backup estremamente difensivo"
+		"ko"	"철괴 수비 지원"
 	}
 	"Extreamly Defensive Backup Desc"
 	{
 		"en"	"Decreases damage taken by 90％"
 		"it"	"Diminuisce i danni subiti del 90％"
+		"ko"	"받는 피해량이 90％ 감소합니다."
 	}
 	"UBERCHARGED"
 	{
 		"en"	"UBERCHARGED"
 		"es"	"SOBRECARGADO"
 		"it"	"UBERCARICATO"
+		"ko"	"우버차지 상태"
 	}
 	"UBERCHARGED Desc"
 	{
 		"en"	"Decreases damage taken by 90％.\n{yellow}During raids, you take 50％ reduced damage instead."
 		"it"	"Diminuisce i danni subiti di 90％.\n{yellow}Durante le incursioni, si subiscono invece danni ridotti del 50％."
 		"es"	"Reduce el daño recibido en un 90％.\n{yellow}Durante un raid, recibes 50％ en lugar de 90％."
+		"ko"	"받는 피해량이 90％ 감소합니다.\n{yellow}레이드 모드라면, 이 효과가 50％로 감소합니다."
 	}
 	"Unstoppable Force"
 	{
 		"en"	"Unstoppable Force"
 		"it"	"Forza inarrestabile"
+		"ko"	"멈출 수 없는 힘"
 	}
 	"Unstoppable Force Desc"
 	{
 		"en"	"Immune to any and all damage with no exceptions."
 		"it"	"Immune a tutti i danni, senza eccezioni."
+		"ko"	"모든 피해에 면역 상태가 됩니다. 예외는 없습니다."
 	}
 	"Archo's Posion"
 	{
 		"en"	"Archo's Posion"
 		"it"	"Posione di Archo"
+		"ko"	"아다크리스의 독"
 	}
 	"Archo's Posion Desc"
 	{
 		"en"	"Any and all damage you take is converted into true damage."
 		"it"	"Tutti i danni subiti vengono convertiti in danni reali."
+		"ko"	"받는 모든 피해가 트루 대미지로 전환됩니다."
 	}
 	"Healing Resolve"
 	{
 		"en"	"Healing Resolve"
 		"es"	"Resolucion Curativa"
 		"it"	"Risolutezza curativa"
+		"ko"	"치유의 결의"
 	}
 	"Healing Resolve Desc"
 	{
 		"en"	"Decreases damage taken by 5％, Increases damage dealt by 25％"
 		"es"	"Reduce el daño recibido en un 5％.\nAumenta el daño hecho en un 25％."
 		"it"	"Diminuisce i danni subiti di 5％\nAumenta i danni inflitti di 25％"
+		"ko"	"받는 피해량이 5％ 감소합니다.\n공격 피해량이 25％ 증가합니다."
 	}
 	"Healing Adaptiveness All"
 	{
 		"en"	"Healing Adaptiveness All"
 		"es"	"Adaptabilidad Curativa Global"
 		"it"	"Adattamento curativo Tutti"
+		"ko"	"치유 적응력 : 전체형"
 	}
 	"Healing Adaptiveness All Desc"
 	{
 		"en"	"Decreases damage taken by 5％"
 		"es"	"Reduce el daño recibido en un 5％."
 		"it"	"Riduce i danni subiti di 5％"
+		"ko"	"받는 피해량이 5％ 감소합니다."
 	}
 	"Healing Adaptiveness Melee"
 	{
 		"en"	"Healing Adaptiveness Melee"
 		"es"	"Adaptabilidad Curativa (MELEE)"
 		"it"	"Guarigione Adattamento in mischia"
+		"ko"	"치유 적응력 : 근접형"
 	}
 	"Healing Adaptiveness Melee Desc"
 	{
 		"en"	"Decreases damage taken from melee sources by 15％"
 		"es"	"Reduce el daño cuerpo a cuerpo recibido en un 15％."
 		"it"	"Diminuisce i danni subiti da fonti in mischia del 15％"
+		"ko"	"받는 근접 공격 피해량이 15％ 감소합니다."
 	}
 	"Healing Adaptiveness Ranged"
 	{
 		"en"	"Healing Adaptiveness Ranged"
 		"es"	"Adaptabilidad Curativa (DISTANCIA)"
 		"it"	"Adattamento curativo a distanza"
+		"ko"	"치유 적응력 : 원거리형"
 	}
 	"Healing Adaptiveness Ranged Desc"
 	{
 		"en"	"Decreases damage taken from ranged sources by 15％"
 		"es"	"Reduce el daño a distancia recibido en un 15％."
 		"it"	"Diminuisce i danni subiti dalle fonti a distanza del 15％"
+		"ko"	"받는 원거리 공격 피해량이 15％ 감소합니다."
 	}
 	"Self Empowerment"
 	{
 		"en"	"Self Empowerment"
 		"it"	"Potenziamento di sé"
+		"ko"	"자가 강화"
 	}
 	"Self Empowerment Desc"
 	{
 		"en"	"Increases damage dealt by 15％\nDecreases damage taken by 10％"
 		"it"	"Aumenta i danni inflitti del 15％\nDiminuisce i danni subiti del 10％"
+		"ko"	"공격 피해량이 15％ 증가합니다.\n받는 피해량이 10％ 감소합니다."
 	}
 	"Ally Empowerment"
 	{
 		"en"	"Ally Empowerment"
 		"it"	"Potenziamento degli alleati"
+		"ko"	"아군 강화"
 	}
 	"Ally Empowerment Desc"
 	{
 		"en"	"Increases damage dealt by 10％\nDecreases damage taken by 7％"
 		"it"	"Aumenta i danni inflitti del 10％\nDiminuisce i danni subiti del 7％"
+		"ko"	"공격 피해량이 10％ 증가합니다.\n받는 피해량이 7％ 감소합니다."
 	}
 	"Ancient Melodies"
 	{
 		"en"	"Ancient Melodies"
 		"es"	"Melodias Antiguas"
 		"it"	"Antiche melodie"
+		"ko"	"고대의 멜로디"
 	}
 	"Ancient Melodies Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by a 20％."
 		"es"	"Aumenta la velocidad de ataque/recarga y curacion medica en un 20％."
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione di 20％."
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 20％ 증가합니다."
 	}
 	"Bobs Duck Dubby"
 	{
 		"en"	"Bobs Duck Dubby"
 		"it"	"Bobs Duck Dubby"
+		"ko"	"밥의 애완오리 꽥꽥이의 애교"
 	}
 	"Bobs Duck Dubby Desc"
 	{
 		"en"	"Increases damage dealt by 25％\nDecreases damage taken by 10％"
 		"it"	"Aumenta i danni inflitti del 25％\nDiminuisce i danni subiti del 10％"
+		"ko"	"공격 피해량이 25％ 증가합니다.\n받는 피해량이 10％ 감소합니다."
 	}
 	"Elemental Amplification"
 	{
 		"en"	"Elemental Amplification"
 		"it"	"Amplificazione elementare"
+		"ko"	"원소 증폭"
 	}
 	"Elemental Amplification Desc"
 	{
 		"en"	"Increases Bleed damage by 15％\nIncreases Burn damage by 20％\nBoosts all elemental type of damage, on how fast it fills the bar by 30％."
 		"it"	"Aumenta i danni da dissanguamento del 15％\nAumenta i danni da ustione del 20％\nAumenta tutti i danni di tipo elementale, in base alla velocità con cui riempie la barra del 30％."
+		"ko"	"출혈 피해가 15％ 증가합니다.\n화상 피해가 20％ 증가합니다.\n모든 원소 피해 부여량이 30％ 증가합니다. (원소 피해 게이지가 좀 더 빨리 증가)"
 	}
 	"Heavy Presence"
 	{
 		"en"	"Heavy Presence"
 		"it"	"Presenza pesante"
+		"ko"	"중압감"
 	}
 	"Heavy Presence Desc"
 	{
 		"en"	"Decreased attack/reload speed & healrate by a 50％."
 		"it"	"Riduzione della velocità di attacco/ricarica e della velocità di guarigione del 50％."
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 50％ 감소합니다."
 	}
 	"Terrified"
 	{
 		"en"	"Terrified"
 		"it"	"Terrorizzato"
+		"ko"	"겁에 질린"
 	}
 	"Terrified Desc"
 	{
 		"en"	"Decreased attack/reload speed & healrate by a 50％.\nDecrased Movementspeed of players and npcs 50％."
 		"it"	"Riduzione della velocità di attacco/ricarica e della velocità di guarigione di 50％.\nRiduzione della velocità di movimento di giocatori e npc di 50％."
+		"ko"	"공격 속도, 재장전 속도 및 치유 속도가 50％ 감소합니다.\n플레이어와 NPC의 이동 속도가 50％ 감소합니다."
 	}
 	"Unstable Umbral Rift"
 	{
 		"en"	"Unstable Umbral Rift"
 		"it"	"Frattura ombelicale instabile"
+		"ko"	"불안정한 움브랄 균열"
 	}
 	"Unstable Umbral Rift Desc"
 	{
 		"en"	"Only affects players, Reduces gravity and movementspeed, causes you to lose aircontroll aswell."
 		"it"	"Colpisce solo i giocatori, riduce la gravità e la velocità di movimento e fa perdere anche il controllo aereo."
+		"ko"	"플레이어에게만 적용되며, 중력과 이동 속도가 감소하고 공중 제어 능력 또한 상실하게 됩니다."
 	}
 	"Altered Functions"
 	{
 		"en"	"Altered Functions"
 		"it"	"Funzioni alterate"
+		"ko"	"변환 작용"
 	}
 	"Altered Functions Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by 50％.\n{crimson}Spreads onto enemies you hit."
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 50％.\n{crimson}Si diffonde sui nemici colpiti."
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 50％ 증가합니다.\n{crimson}공격이 적중한 대상에게 이 효과가 부여됩니다."
 	}
 	"John's Presence"
 	{
 		"en"	"John's Presence"
 		"it"	"La presenza di John"
+		"ko"	"존의 압박감"
 	}
 	"John's Presence Desc"
 	{
 		"en"	"Reduces attack/reload speed & healrate by 50％.\nSlows down NPCs by 50％."
 		"it"	"Riduce la velocità di attacco/ricarica e la velocità di guarigione del 50％.\nRiduce i gli NPC del 50％."
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 50％ 감소합니다.\nNPC의 이동 속도를 50％ 감소시킵니다."
 	}
 	"Gambler's Ruin Total"
 	{
 		"en"	"Gambler's Ruin Total"
 		"it"	"Rovina del giocatore Totale"
+		"ko"	"도박사의 도박 실패 합계"
 	}
 	"Gambler's Ruin Total Desc"
 	{
 		"en"	"Increased damage taken by a certain amount."
 		"it"	"Aumenta i danni subiti di una certa entità."
+		"ko"	"일정한 수치만큼 받는 피해량이 증가합니다."
 	}
 	"Ruina's Agility"
 	{
 		"en"	"Ruina's Agility"
 		"it"	"Agilità di Ruina"
+		"ko"	"루이나의 민첩성"
 	}
 	"Ruina's Agility Desc"
 	{
 		"en"	"Changed movement NPC'S speed by a certain amount."
 		"it"	"Modifica della velocità di movimento dei gli NPC di una certa entità."
+		"ko"	"NPC의 이동 속도가 일정한 수치만큼 변경됩니다."
 	}
 	"Ruina's Defense"
 	{
 		"en"	"Ruina's Defense"
 		"it"	"Difesa di Ruina"
+		"ko"	"루이나의 수비력"
 	}
 	"Ruina's Defense Desc"
 	{
 		"en"	"Changed damage taken by a certain amount."
 		"it"	"Modifica i danni subiti di una certa entità."
+		"ko"	"일정한 수치만큼 받는 피해량이 변경됩니다."
 	}
 	"Ruina's Damage"
 	{
 		"en"	"Ruina's Damage"
 		"it"	"Danno di Ruina"
+		"ko"	"루이나의 공격성"
 	}
 	"Ruina's Damage Desc"
 	{
 		"en"	"Changed damage dealt by a certain amount."
 		"it"	"Modifica i danni inflitti di una certa entità."
+		"ko"	"일정한 수치만큼 공격 피해량이 변경됩니다."
 	}
 	"King's Wrath"
 	{
 		"en"	"King's Wrath"
 		"it"	"L'ira del re"
+		"ko"	"왕의 분노"
 	}
 	"King's Wrath Desc"
 	{
 		"en"	"Everytime you are hurt, you deal more damage for a short time."
 		"it"	"Ogni volta che si viene feriti, si infligge un danno maggiore per un breve periodo."
+		"ko"	"피해를 받을 때마다, 짧은 시간 동안 공격 피해량이 증가합니다."
 	}
 	"Waterless Training"
 	{
 		"en"	"Waterless Training"
 		"it"	"Formazione senza acqua"
+		"ko"	"갈증 훈련"
 	}
 	"Waterless Training Desc"
 	{
 		"en"	"Regernate health based on max health and it's applier.\nDecreases damage taken from certain sources."
 		"it"	"Registra la salute in base alla salute massima e al suo applicatore.\nRiduce i danni subiti da alcune fonti."
+		"ko"	"최대 체력과 버프 부여자의 체력에 따라서 체력을 회복합니다.\n특정한 효과로 받는 피해가 감소합니다."
 	}
 	"Specter's Resolve"
 	{
 		"en"	"Specter's Resolve"
 		"it"	"La risoluzione di Specter"
+		"ko"	"스펙터의 결의"
 	}
 	"Specter's Resolve Desc"
 	{
 		"en"	"Increases max health by 200"
 		"it"	"Aumenta la salute massima di 200"
+		"ko"	"최대 체력이 200 증가합니다."
 	}
 	"Ulpianus' Seriousness"
 	{
 		"en"	"Ulpianus' Seriousness"
 		"it"	"La serietà di Ulpiano"
+		"ko"	"울피아누스의 진중함"
 	}
 	"Ulpianus' Seriousness Desc"
 	{
 		"en"	"attack/reload speed & healrate increased by 20％.\nIncreases Max Health by 540."
 		"it"	"velocità di attacco/ricarica e velocità di guarigione aumentate del 20％.\nAumenta la Salute massima di 540."
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 20％ 증가합니다.\n최대 체력이 540 증가합니다."
 	}
 	"Abyssal Skills"
 	{
 		"en"	"Abyssal Skills"
 		"it"	"Abilità abissali"
+		"ko"	"어비설 스킬"
 	}
 	"Skadi's Skills Desc"
 	{
 		"en"	"Increases Abyssalhunter weapons damage by 10％"
 		"it"	"Aumenta i danni delle armi di Abyssalhunter del 10％"
+		"ko"	"''어비설 헌터스'' 계열 무기들의 피해량이 10％ 증가합니다."
 	}
 	"Castle Breaking Power"
 	{
 		"en"	"Castle Breaking Power"
 		"it"	"Potenza di rottura del castello"
+		"ko"	"캐슬 브레이커의 힘"
 	}
 	"Castle Breaking Power Desc"
 	{
 		"en"	"Increases Victorian weapons damage by 10％"
 		"it"	"Aumenta i danni delle armi vittoriane del 10％"
+		"ko"	"''빅토리아'' 진영 무기들의 피해량이 10％ 증가합니다."
 	}
 	"Victorian Launcher's Call"
 	{
 		"en"	"Victorian Launcher's Call"
 		"it"	"Il richiamo del lanciatore vittoriano"
+		"ko"	"빅토리아 런처의 부름"
 	}
 	"Victorian Launcher's Call Desc"
 	{
 		"en"	"Increases Victorian Weapons Explosive Radius by 10％"
 		"it"	"Aumenta il raggio di esplosione delle armi vittoriane del 10％"
+		"ko"	"''빅토리아'' 진영 무기들의 폭발 범위가 10％ 증가합니다."
+	}
+	"Explosault Rifle Buff"
+	{
+		"en"	"Heavily modified Shaped Blast"
+		"ko"	"마개조된 성형작약탄"
+	}
+	"Explosault Rifle Buff Desc"
+	{
+		"en"	"''Victoria'' faction will have 10％ less blast damage reduce per target"
+		"ko"	"''빅토리아'' 진영 무기들의 폭발 타겟당 피해량 감소가 10％ 완화됩니다."
 	}
 	"Tinkering Curiosity"
 	{
 		"en"	"Tinkering Curiosity"
 		"it"	"Curiosità armeggiante"
+		"ko"	"땜장질의 호기심"
 	}
 	"Tinkering Curiosity Desc"
 	{
 		"en"	"Provides a certain effect based on it's chance."
 		"it"	"Fornisce un determinato effetto in base alla sua probabilità."
+		"ko"	"확률에 따라 특정한 효과를 얻습니다."
 	}
 	"Nightmareish Sawing"
 	{
 		"en"	"Nightmareish Sawing"
 		"it"	"Curiosità armeggiante"
+		"ko"	"악몽 같은 톱질"
 	}
 	"Nightmareish Sawing Desc"
 	{
 		"en"	"Your glaives cause enemeis to lose gibs on hit.\nBoosts damage of said glaives by 35％"
+		"ko"	"당신의 글레이브가 적중 시 적에게서 파편(gibs)이 떨어져 나가게 합니다\n또한, 해당 글레이브의 피해량을 35％ 증가시킵니다."
 	}
 	"Crafted Potion"
 	{
 		"en"	"Crafted Potion"
 		"it"	"Pozione artigianale"
+		"ko"	"제작한 포션"
 	}
 	"Crafted Potion Desc"
 	{
 		"en"	"Provides a certain effect based on the creation."
 		"it"	"Fornisce un certo effetto in base alla creazione."
+		"ko"	"제작물에 따라서 특정한 효과를 얻습니다."
 	}
 	"Flaming Agility"
 	{
 		"en"	"Flaming Agility"
 		"it"	"Agilità fiammeggiante"
+		"ko"	"불타오르는 민첩성"
 	}
 	"Flaming Agility Desc"
 	{
 		"en"	"Grants a chance to dodge melee attacks."
 		"it"	"Conferisce una possibilità di schivare gli attacchi in mischia."
+		"ko"	"근접 피해를 회피할 확률이 생깁니다."
 	}
 	"Tonic Affliction"
 	{
 		"en"	"Tonic Affliction"
 		"it"	"Afflizione tonica"
+		"ko"	"강장제의 고통"
 	}
 	"Tonic Affliction Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by 100％\n{crimson}Decreases damage dealt by 40％"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 100％\n{crimson}Diminuisce i danni inflitti del 40％"
+		"ko"	"공격 속도, 재장전 속도 및 치유 속도를 100％ 증가시킵니다.\n{crimson}공격 피해량은 40％ 감소합니다."
 	}
 	"Tonic Affliction Hide"
 	{
 		"en"	"Tonic Affliction Hide"
 		"it"	"Afflizione tonica Nascondi"
+		"ko"	"강장제의 고통 관리용"
 	}
 	"Tonic Affliction Hide Desc"
 	{
 		"en"	"Ignore."
 		"it"	"Ignora."
+		"ko"	"이 텍스트는 무시하십시오."
 	}
 	"Victorian Launcher Overdrive"
 	{
 		"en"	"Ignore"
 		"it"	"Ignora"
+		"ko"	"이 텍스트는 무시하십시오."
 	}
 	"Victorian Launcher Overdrive Desc"
 	{
 		"en"	"Ignore"
 		"it"	"Ignora"
+		"ko"	"이 텍스트는 무시하십시오."
 	}
 	"Mystery Beer"
 	{
 		"en"	"Mystery Beer"
 		"it"	"Birra misteriosa"
+		"ko"	"신비한 맥주"
 	}
 	"Mystery Beer Desc"
 	{
 		"en"	"Increases base attack/reload speed & healrate by 20％"
 		"it"	"Aumenta la velocità di attacco/ricarica base e la velocità di guarigione del 20％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 20％ 증가합니다."
 	}
 	"Mystery Brew"
 	{
 		"en"	"Mystery Brew"
 		"it"	"Birra misteriosa"
+		"ko"	"신비한 양조"
 	}
 	"Mystery Brew Desc"
 	{
 		"en"	"Increases base attack/reload speed & healrate by 25％"
 		"it"	"Aumenta la velocità di attacco/ricarica base e la velocità di guarigione del 25％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 25％ 증가합니다."
 	}
 	"Osmosis'ity"
 	{
 		"en"	"Osmosis'ity"
 		"it"	"Osmosi"
+		"ko"	"삼투성"
 	}
 	"Osmosis'ity Desc"
 	{
 		"en"	"On hit, Reduces ability cooldown by 2 seconds, can only happen once per attacker."
 		"it"	"Al momento del colpo, riduce il cooldown dell'abilità di 2 secondi, può accadere solo una volta per attaccante."
+		"ko"	"적중시, 능력의 쿨타임이 2초 감소합니다. 이 효과는 공격자 1명당 1번만 발동합니다."
 	}
 	"Vuntulum Bomb EMP"
 	{
 		"en"	"Vuntulum Bomb EMP"
 		"it"	"Bomba Vuntulum EMP"
+		"ko"	"번툴룸 폭탄 EMP"
 	}
 	"Vuntulum Bomb EMP Desc"
 	{
 		"en"	"Cant make any Unique buildings while this is active."
 		"it"	"Non è possibile creare edifici Unici mentre questo è attivo."
+		"ko"	"이것이 활성화된 동안에는 어떤 유니크 구조물도 건설할 수 없습니다."
+	}
+	"Vuntulum Bomb EMP Death"
+	{
+		"en"	"Vuntulum Bomb EMP Death"
+		"ko"	"번툴룸 폭탄 EMP로 인한 사망"
+	}
+	"Vuntulum Bomb EMP Death Desc"
+	{
+		"en"	"You died to the Vuntulum Bomb, you can not be revived this round."
+		"ko"	"번툴룸 폭탄에 의해 사망했습니다. 이번 라운드에서는 부활할 수 없습니다.(증원 요청 등)"
 	}
 	"Ruina Battery Charge"
 	{
 		"en"	"Ruina Battery Charge"
 		"it"	"Carica della batteria Ruina"
+		"ko"	"루이나 배터리 충전"
 	}
 	"Village Radar"
 	{
 		"en"	"Village Radar"
 		"it"	"Radar del villaggio"
+		"ko"	"마을 레이더"
 	}
 	"Village Radar Desc"
 	{
 		"en"	"Increases projectile speed and range by 10％"
 		"it"	"Aumenta la velocità e la gittata del proiettile del 10％"
+		"ko"	"투사체 비행 속도와 비행 거리가 10％ 증가합니다."
 	}
 	"Jungle Drums"
 	{
 		"en"	"Jungle Drums"
 		"it"	"Tamburi della giungla"
+		"ko"	"정글 드럼"
 	}
 	"Jungle Drums Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by 2.5％"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 2,5％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 2.5％ 증가합니다."
 	}
 	"Intelligence"
 	{
 		"en"	"Intelligence"
 		"it"	"Intelligenza"
+		"ko"	"정보"
 	}
 	"Intelligence Desc"
 	{
 		"en"	"Increases damage dealt by 5％"
 		"it"	"Aumenta i danni inflitti di 5％"
+		"ko"	"공격 피해량이 5％ 증가합니다."
 	}
 	"Homeland Defense"
 	{
 		"en"	"Homeland Defense"
 		"it"	"Difesa della patria"
+		"ko"	"국토 방어"
 	}
 	"Homeland Defense Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by 24％"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 24％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 24％ 증가합니다."
 	}
 	"Growth Blocker"
 	{
 		"en"	"Growth Blocker"
 		"it"	"Bloccante della crescita"
+		"ko"	"재생 차단기"
 	}
 	"Growth Blocker Desc"
 	{
 		"en"	"Reduces healing by 15％\nOn some enemies it has extra effects..."
 		"it"	"Riduce la guarigione del 15％\nsu alcuni nemici ha effetti extra..."
+		"ko"	"회복량이 15％ 감소합니다.\n특정 적에게는 추가 효과를 부여합니다..."
 	}
 	"Revealed"
 	{
 		"en"	"Revealed"
 		"it"	"Rivelato"
+		"ko"	"노출됨"
 	}
 	"Revealed Desc"
 	{
 		"en"	"Affected entity is revealed and cannot camo."
 		"it"	"L'entità colpita viene rivelata e non può mimetizzarsi."
+		"ko"	"노출됨 효과를 보유한 개체의 모습이 드러나며 위장이 불가능합니다."
 	}
 	"Call To Arms"
 	{
 		"en"	"Call To Arms"
 		"it"	"Chiamata alle armi"
+		"ko"	"전원 소집"
 	}
 	"Call To Arms Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by 12％"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 12％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 12％ 증가합니다."
 	}
 	"Iberia Light"
 	{
 		"en"	"Iberia Light"
 		"it"	"Luce Iberia"
+		"ko"	"이베리아의 빛"
 	}
 	"Iberia Light Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by 10％"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 10％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 10％ 증가합니다."
 	}
 	"Elemental Curing"
 	{
 		"en"	"Elemental Curing"
 		"it"	"Polimerizzazione elementare"
+		"ko"	"원소 피해 치유"
 	}
 	"Elemental Curing Desc"
 	{
 		"en"	"Slowly cures your elemental damage by 1％ every second\n{yellow}If recently hurt, its only 0.25％"
 		"it"	"Cura lentamente i danni elementali di 1％ ogni secondo\n{yellow}Se il danno è recente, è solo di 0,25％"
+		"ko"	"매 초마다 누적된 원소 피해를 1％씩 치유합니다.\n{yellow}최근에 피해를 받았다면, 이 효과가 0.25％로 감소합니다."
 	}
 	"Armor Curing"
 	{
 		"en"	"Armor Curing"
 		"it"	"Polimerizzazione dell'armatura"
+		"ko"	"아머 회복"
 	}
 	"Armor Curing Desc"
 	{
 		"en"	"Slowly regenerates your armor by 1％ every second upto half of your armor\n{yellow}If recently hurt, its only 0.25％"
 		"it"	"Rigenera lentamente l'armatura di 1％ al secondo, fino a metà dell'armatura stessa"
+		"ko"	"매 초마다 아머를 1％씩 회복합니다. 최대 아머의 50％까지 회복할 수 있습니다.\n{yellow}최근에 피해를 받았다면, 이 효과가 0.25％로 감소합니다."
 	}
 	"Nethersea Antidote"
 	{
 		"en"	"Nethersea Antidote"
 		"it"	"Antidoto di Nethersea"
+		"ko"	"명흔 항독제"
 	}
 	"Nethersea Antidote Desc"
 	{
 		"en"	"Reduces the damage caused by nethersea brands by 80％"
 		"it"	"Riduce i danni causati dai marchi nethersea dell'80％"
+		"ko"	"명흔으로 받는 피해가 80％ 감소합니다."
 	}
 	"Victoria Nuke"
 	{
 		"en"	"Victoria Nuke"
 		"it"	"Bomba Atomica Vittoria"
+		"ko"	"빅토리아 핵"
 	}
 	"Victoria Nuke Desc"
 	{
 		"en"	"Launches a Victoria Nuke when full.\nRemoves Locked On from all enemies when at a certain amount."
 		"it"	"Lancia una Victoria Nuke quando è piena.\nRimuove Locked On da tutti i nemici quando raggiunge una certa quantità."
+		"ko"	"이것이 꽉 차면 빅토리아 핵이 발사됩니다.\n일정 수치 이상이 되면, 모든 적에게 부여된 목표 고정 효과를 제거합니다."
 	}
 	"Locked On"
 	{
 		"en"	"Locked On"
 		"it"	"Agganciato"
+		"ko"	"목표 고정"
 	}
 	"Locked On Desc"
 	{
 		"en"	"The Victoria Nuke will always target the victim."
 		"it"	"La Victoria Nuke si rivolge sempre alla vittima."
+		"ko"	"빅토리아 핵은 항상 이 효과가 부여된 대상을 타겟으로 삼습니다."
 	}
 	"Shield"
 	{
 		"en"	"Shield"
 		"it"	"Scudo"
+		"ko"	"보호막"
 	}
 	"Shield Desc"
 	{
 		"en"	"Reduces the next damage taken by 75％, stacks up to a limit.\nEach hit removes 1 stack, Bleed and burn are excluded.\nSome weapons need 2 hits to remove 1 shield.\nThis shield even helps against true damage."
 		"it"	"Riduce i danni successivi di 75％, fino a un limite massimo.\nOgni colpo rimuove 1 pila, l'emorragia e l'ustione sono escluse.\nAlcune armi hanno bisogno di 2 colpi per rimuovere 1 scudo.\nQuesto scudo aiuta anche contro i danni veri."
+		"ko"	"다음 공격으로 받는 피해가 75％ 감소하며, 최대 중첩 한도까지 중첩됩니다.\n피해를 받을 때마다 보호막 중첩이 1 감소하며, 출혈과 화상 피해는 보호막 효과를 무시합니다.\n특정 무기들은 보호막 1중첩을 제거하려면 공격을 2회 적중시켜야 합니다.\n이 보호막은 트루 대미지 피해도 경감시킬 수 있습니다."
 	}
 	"Chaos Infliction"
 	{
 		"en"	"Chaos Infliction"
 		"it"	"Inflizione del caos"
+		"ko"	"혼돈 침식"
 	}
 	"Chaos Infliction Desc"
 	{
 		"en"	"Randomly changes damage and HUD elements depending on it's level."
 		"it"	"Cambia casualmente i danni e gli elementi dell'HUD a seconda del livello."
+		"ko"	"보유한 혼돈 침식도에 비례하여 피해량과 허드 요소가 무작위로 변경됩니다."
 	}
 	"Iberia Morale Boost"
 	{
 		"en" 	"Iberia Morale Boost"
 		"it"	"Aumento del morale di Iberia"
+		"ko"	"이베리아 사기 증진"
 	}
 	"Iberia Morale Boost Desc"
 	{
 		"en"	"Increases damage, speed and resistances.\nThis dependant on how high the motivation is, 1 being the lowest, 4 being the highest.\nWith each tier giving much more."
 		"it"	"Aumenta i danni, la velocità e le resistenze.\nQuesto dipende da quanto è alta la motivazione, 1 è la più bassa, 4 è la più alta.\nCon ogni livello che dà molto di più."
+		"ko"	"피해량, 이동 속도, 피해 저항력이 증가합니다.\n이 효과는 사기 수치에 비례하여 변동되며, 사기 수치는 최소 1, 최대 4까지 존재합니다.\n사기 수치가 높을수록 능력치가 더욱 증가합니다."
 	}
 	"Heavy Laccerations"
 	{
 		"en" 	"Heavy Laccerations"
 		"it"	"Laccature pesanti"
+		"ko"	"치명상"
 	}
 	"Heavy Laccerations Desc"
 	{
 		"en"	"Uncureable.\nincreased damage taken dynamically."
 		"it"	"Non curabile.\nAumenta i danni subiti dinamicamente."
+		"ko"	"이 효과는 치유가 불가능합니다.\n받는 피해가 일정 수치만큼 증가합니다."
 	}
 	"Bleed"
 	{
 		"en"	"Bleed"
 		"it"	"Sanguinamento"
+		"ko"	"출혈"
 	}
 	"Bleed Desc"
 	{
 		"en"	"Deals Melee, or ranged damage, all dependant on the weapon that it comes from over time, Stacks infinitly."
 		"it"	"Infligge danni in mischia o a distanza, a seconda dell'arma da cui proviene, e si accumula all'infinito."
+		"ko"	"이 효과를 부여한 무기에 따라 근접 또는 원거리 피해를 시간에 걸쳐 입히며, 무한히 중첩됩니다."
 	}
 	"Burn"
 	{
 		"en"	"Burn"
 		"es"	"Quemadura"
 		"it"	"Bruciatura"
+		"ko"	"화상"
 	}
 	"Burn Desc"
 	{
 		"en"	"Deals True Damage if allies are affected, otherwise ranged.\nHeal 25％ less while on fire, when applying fire again (npc only), tick again for 50％ damage.\n{green}Enemies on fire, give 10％ more hp on kill and gibs."
-		"it"	"Infligge danni veri se gli alleati sono colpiti, altrimenti a distanza.\nGuarisce 25％ in meno mentre è in fiamme, quando applica di nuovo il fuoco (solo per gli npc), spunta di nuovo per 50％ danni.\n{green}I nemici in fiamme, danno 10％ hp in più su uccisioni e colpi."
+		"it"	"Infligge danni veri se gli alleati sono colpiti, altrimenti a distanza.\nGuarisce 25％ in meno mentre è in fiamme, quando applica di nuovo il fuoco (solo per gli npc), spunta di nuovo per 50％ danni.\n{green}I nemici in fiamme, danno 10％ hp in più su uccisioni e colpi."																																																																																			
+		"ko"	"아군이 효과를 받으면 고정 피해(트루 대미지)를 입히고,\n그렇지 않다면 원거리 피해를 입힙니다\n불타는 중에는 회복량이 25％ 감소합니다.\nNPC에게 불을 다시 붙이면 50％ 피해로 한 번 더 작동합니다\n불타는 적이 처치되면 처치 시 체력 회복량이 10％ 증가하고 시체가 산산조각납니다."
 	}
 	"Zealot's Random Drinks"
 	{
-		"en" "Zealot's Random Drinks"
+		"en"	"Zealot's Random Drinks"
 		"it"	"Bevande casuali dello zelota"
+		"ko"	"광전사의 무작위 음료"
 	}
 	"Zealot's Random Drinks Desc"
 	{
-		"en" "Grants a random buff from the selected that the Zealot kit provides."
+		"en" 	"Grants a random buff from the selected that the Zealot kit provides."
 		"it"	"Conferisce un buff casuale tra quelli selezionati dal kit dello Zelota."
+		"ko" 	"광전사 키트가 제공하는 선택된 버프 중 무작위 버프를 하나 얻습니다."
 	}
 	"Zealot's Rush"
 	{
-		"en" "Zealot's Extreme Rush"
+		"en" 	"Zealot's Extreme Rush"
 		"it"	"Corsa estrema dello Zelota"
+		"ko" 	"광전사의 고속 돌격"
 	}
 	"Zealot's Rush Desc"
 	{
-		"en" "Grants 25％ attack/reload speed & healrate."
+		"en" 	"Grants 25％ attack/reload speed & healrate."
 		"it"	"Concede 25％ velocità di attacco/ricarica e velocità di guarigione."
+		"ko" 	"공격 속도, 재장전 속도, 치유 속도가 25％ 증가합니다."
 	}
 	"MERLT0N-BUFF"
 	{
 		"en"	"MERLT0N-BUFF"
 		"it"	"MERLT0N-BUFF"
+		"ko"	"멀톤-버프"
 	}
 	"Icy Dereliction"
 	{
-		"en" "Icy Dereliction"
+		"en" 	"Icy Dereliction"
 		"it"	"Derelizione ghiacciata"
+		"ko" 	"차디찬 퇴락"
 	}
 	"Icy Dereliction Desc"
 	{
 		"en"	"Increases Damage Taken by 10％\nSlows NPC'S by 10％"
 		"it"	"Aumenta i danni subiti del 10％\nRallenta i gli NPC del 10％"
+		"ko"	"받는 피해량이 10％ 증가합니다.\nNPC의 이동 속도를 10％ 감소시킵니다."
 	}
 	"Raiding Dereliction"
 	{
-		"en" "Raiding Dereliction"
+		"en" 	"Raiding Dereliction"
 		"it"	"Raiding Dereliction"
+		"ko" 	"강습의 퇴락"
 	}
 	"Raiding Dereliction Desc"
 	{
 		"en"	"Increases Damage Taken by 10％"
 		"it"	"Aumenta i danni subiti del 10"
+		"ko"	"받는 피해량이 10％ 증가합니다."
 	}
 	"Degrading Dereliction"
 	{
-		"en" "Degrading Dereliction"
+		"en" 	"Degrading Dereliction"
 		"it"	"Derelizione degradante"
+		"ko" 	"퇴화의 퇴락"
 	}
 	"Degrading Dereliction Desc"
 	{
 		"en"	"Lowers Damage Delt by 10％"
 		"it"	"Riduce il Delt del danno di 10％"
+		"ko"	"공격 피해량이 10％ 감소합니다."
 	}
 	"Zero Therapy"
 	{
-		"en" "Zero Therapy"
+		"en" 	"Zero Therapy"
 		"it"	"Terapia zero"
+		"ko" 	"영식 치료술"
 	}
 	"Zero Therapy Desc"
 	{
 		"en"	"Increases Damage Taken by 15％\nSlows NPC'S by 15％"
 		"it"	"Aumenta i danni subiti del 15％\nRallenta i gli NPC del 15％"
+		"ko"	"받는 피해량이 15％ 증가합니다.\nNPC의 이동 속도를 15％ 감소시킵니다."
 	}
 	"Debt Causing Dereliction"
 	{
-		"en" "Debt Causing Dereliction"
+		"en" 	"Debt Causing Dereliction"
 		"it"	"Debito che provoca inadempienza"
+		"ko" 	"빚쟁이의 퇴락"
 	}
 	"Debt Causing Dereliction Desc"
 	{
-		"en" "Increases Damage Taken by 20％"
+		"en" 	"Increases Damage Taken by 20％"
 		"it"	"Aumenta i danni subiti di 20％"
+		"ko" 	"받는 피해량이 20％ 증가합니다."
 	}
 	"Headache Incuding Dereliction"
 	{
 		"en" "Headache Incuding Dereliction"
 		"it"	"Mal di testa da deresponsabilizzazione"
+		"ko" 	"퇴락의 두통"
 	}
 	"Headache Incuding Dereliction Desc"
 	{
 		"en"	"Increases Damage Taken by 30％"
-		"it"	"Aumenta i danni subiti del 30%"
+		"it"	"Aumenta i danni subiti del 30％"
+		"ko"	"받는 피해량이 30％ 증가합니다."
 	}
 	"Shocking Dereliction"
 	{
-		"en" "Shocking Dereliction"
+		"en" 	"Shocking Dereliction"
 		"it"	"Una scioccante negligenza"
+		"ko" 	"충격적인 퇴락"
 	}
 	"Shocking Dereliction Desc"
 	{
 		"en"	"Increases Damage Taken by 20％\nSlows NPC'S by 25％"
 		"it"	"Aumenta i danni subiti del 20％\nRallenta gli NPC del 25％"
+		"ko"	"받는 피해량이 20％ 증가합니다.\nNPC의 이동 속도를 25％ 감소시킵니다."
 	}
 	"Therapists Aura"
 	{
-		"en" "Therapists Aura"
+		"en" 	"Therapists Aura"
 		"it"	"Aura dei terapeuti"
+		"ko" 	"심리치료사의 오라"
 	}
 	"Therapists Aura Desc"
 	{
 		"en"	"Slows NPC'S by 60％"
 		"it"	"Rallenta gli NPC del 60"
+		"ko"	"NPC의 이동 속도를 60％ 감소시킵니다."
 	}
 	"Electric Dereliction"
 	{
-		"en" "Electric Dereliction"
+		"en" 	"Electric Dereliction"
 		"it"	"Derelitto elettrico"
+		"ko" 	"전격의 퇴락"
 	}
 	"Electric Dereliction Desc"
 	{
 		"en"	"Increases Damage Taken by 25％\nSlows NPC'S by 35％"
 		"it"	"Aumenta i danni subiti del 25％\nRallenta i gli NPC del 35％"
+		"ko"	"받는 피해량이 25％ 증가합니다.\nNPC의 이동 속도를 35％ 감소시킵니다."
 	}
 	"Caffinated Dereliction"
 	{
-		"en" "Caffinated Dereliction"
+		"en" 	"Caffinated Dereliction"
 		"it"	"Derelitto caffinato"
+		"ko" 	"카페인의 퇴락"
 	}
 	"Caffinated Dereliction Desc"
 	{
 		"en"	"Increas damage taken by 25％"
 		"it"	"Aumenta i danni subiti di 25％"
+		"ko"	"받는 피해량이 25％ 증가합니다."
 	}
 	"Lighthouse Enlightment"
 	{
-		"en" "Lighthouse Enlightment"
+		"en" 	"Lighthouse Enlightment"
 		"it"	"Illuminazione del faro"
+		"ko" 	"등대의 빛줄기"
 	}
 	"Lighthouse Enlightment Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate and reloadspeed by 30％"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione e ricarica del 30％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 30％ 증가합니다."
 	}
 	"Expidonsan Anger"
 	{
-		"en" "Expidonsan Anger"
+		"en" 	"Expidonsan Anger"
 		"it"	"Rabbia Expidonsan"
+		"ko" 	"엑스피돈사인의 분노"
 	}
 	"Expidonsan Anger Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate and reloadspeed by 30％\nIncreases NPC movementspeed by 15％"
 		"it"	"Aumenta la velocità di attacco/ricarica, la velocità di guarigione e la velocità di ricarica del 30％\nAumenta la velocità di movimento dei gli NPC del 15％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 30％ 증가합니다.\nNPC의 이동 속도가 15％ 증가합니다."
 	}
 	"Rejuvinator's Medizine"
 	{
-		"en" "Rejuvinator's Medizine"
+		"en" 	"Rejuvinator's Medizine"
 		"it"	"La medicina del ringiovanimento"
+		"ko" 	"원기 회복사의 약물"
 	}
 	"Rejuvinator's Medizine Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate and reloadspeed by 30％"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione e ricarica del 30％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 30％ 증가합니다."
 	}
 	"Cut Hair"
 	{
-		"en" "Cut Hair"
+		"en" 	"Cut Hair"
 		"it"	"Taglio dei capelli"
+		"ko" 	"미용"
 	}
 	"Cut Hair Desc"
 	{
 		"en"	"You got a new fade, expidonsans despite being cats are really good at cutting hair huh?"
 		"it"	"Ti sei fatto una nuova piega, gli expidonsan nonostante siano gatti sono davvero bravi a tagliare i capelli, eh?"
+		"ko"	"새 헤어스타일을 얻었습니다. 엑스피돈사인들은 고양이임에도 불구하고 미용을 정말 잘 하는것 같아요. 그렇죠?"
 	}
 	"Starting Grace"
 	{
-		"en" "Starting Grace"
+		"en" 	"Starting Grace"
 		"it"	"Grazia di partenza"
+		"ko"	"시작 버프"
 	}
 	"Starting Grace Desc"
 	{
 		"en"	"Increases damage dealt by 25％, Decreases damage taken by 15％."
 		"it"	"Aumenta i danni inflitti di 25％, diminuisce i danni subiti di 15％."
+		"ko"	"공격 피해량이 25％ 증가하고, 받는 피해가 15％ 감소합니다."
 	}
 	"Anti-Waves"
 	{
-		"en" "Anti-Waves"
+		"en" 	"Anti-Waves"
 		"it"	"Anti Onde"
+		"ko" 	"안티-웨이브"
 	}
 	"Anti-Waves Desc"
 	{
 		"en"	"Prevents any healing.\n{green}Doesnt prevent absolute healing."
 		"it"	"Impedisce qualsiasi guarigione.\n{green}Non impedisce la guarigione assoluta."
+		"ko"	"모든 체력 회복을 받을 수 없습니다.\n{green}절대 치유는 이 효과를 무시합니다."
 	}
 	"Zeinas Protection"
 	{
-		"en" "Zeinas Protection"
+		"en" 	"Zeinas Protection"
 		"it"	"Protezione Zeinas"
+		"ko" 	"제이나의 수호"
 	}
 	"Zeinas Protection Desc"
 	{
 		"en"	"Take 15％ less damage"
 		"it"	"Subisce 15％ danni in meno"
+		"ko"	"받는 피해량이 15％ 감소합니다."
 	}
 	"Zilius Prime Technology"
 	{
-		"en" "Zilius Prime Technology"
+		"en" 	"Zilius Prime Technology"
 		"it"	"Tecnologia Zilius Prime"
+		"ko" 	"질리우스 정점형 기술력"
 	}
 	"Zilius Prime Technology Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by 20％\nExpidonsan shield's take half duration damage, and have 2x the capacity"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 20％\nGli scudi di Epidonsan subiscono la metà dei danni di durata e hanno una capacità doppia"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 20％ 증가합니다.\n엑스피돈사 보호막은 지속 피해(화상, 출혈 등)를 절반만 받으며, 내구도가 2배로 증가합니다."
 	}
 	"We gotta go bald"
 	{
-		"en" "We gotta go bald"
+		"en" 	"We gotta go bald"
 		"it"	"Dobbiamo diventare calvi"
+		"ko" 	"너 대머리야"
 	}
 	"We gotta go bald Desc"
 	{
 		"en"	"They messed up your hair, welp."
 		"it"	"Ti hanno rovinato i capelli, beh..."
+		"ko"	"그들이 실수로 당신의 헤어스타일을 망쳤네요... 용서해주실 거죠?"
 	}
 	"Soggy"
 	{
-		"en" "Soggy"
+		"en" 	"Soggy"
 		"it"	"Appiccicoso"
+		"ko" 	"축축함"
 	}
 	"Soggy Desc"
 	{
-		"en" "Deal 5％ Less damage."
+		"en" 	"Deal 5％ Less damage."
 		"it"	"Infligge 5％ danni in meno."
+		"ko" 	"공격 피해량이 5％ 감소합니다."
 	}
 	"Soggiest"
 	{
-		"en" "Soggiest"
+		"en" 	"Soggiest"
 		"it"	"Soggiest"
+		"ko" 	"흠뻑 젖음"
 	}
 	"Soggiest Desc"
 	{
-		"en" "Deal 7％ Less damage."
+		"en" 	"Deal 7％ Less damage."
 		"it"	"Infligge 7％ danni in meno."
+		"ko" 	"공격 피해량이 7％ 감소합니다."
 	}
 	"Bubble Frenzy"
 	{
-		"en" "Bubble Frenzy"
+		"en" 	"Bubble Frenzy"
 		"it"	"Frenesia delle bolle"
+		"ko" 	"방울 폭주"
 	}
 	"Bubble Frenzy Desc"
 	{
-		"en" "(Only works on Bubble Wand)\nIncreases attackspeed by around 53％.\n{crimson}Multiplies damage dealt by x0.85."
-		"it"	"(Aumenta la velocità d'attacco di circa 53％.\n{crimson}Moltiplica i danni inflitti di x0,85."
+		"en" 	"(Only works on Bubble Wand)\nIncreases attackspeed by around 53％.\n{crimson}Multiplies damage dealt by x0.85."
+		"it"	"Aumenta la velocità d'attacco di circa 53％.\n{crimson}Moltiplica i danni inflitti di x0,85."
+		"ko" 	"(버블 완드에만 적용)\n공격 속도가 약 53％ 증가합니다.\n{crimson}피해량이 x0.85배로 감소합니다."
 	}
 	"Trigger Finger"
 	{
-		"en" "Trigger Finger"
+		"en" 	"Trigger Finger"
 		"it"	"Dito a scatto"
+		"ko" 	"트리거 핑거"
 	}
 	"Trigger Finger Desc"
 	{
-		"en" "Attack & reload 2x Faster, only works on USP.\n{crimson}But deal 15％ less damage during it."
+		"en" 	"Attack & reload 2x Faster, only works on USP.\n{crimson}But deal 15％ less damage during it."
 		"it"	"Attacca e ricarica due volte più velocemente, funziona solo su USP, ma infligge 15％ danni in meno durante l'attacco."
+		"ko" 	"USP에만 적용됩니다. 공격 속도, 재장전 속도가 2배로 증가합니다.\n{crimson}지속 시간 동안 피해량이 15％ 감소합니다."
 	}
 	"Trigger Finger Hidden"
 	{
-		"en" "Trigger Finger Hidden"
+		"en" 	"Trigger Finger Hidden"
 		"it"	"Dito grilletto nascosto"
+		"ko" 	"트리거 핑거 관리용"
 	}
 	"Trigger Finger Hidden Desc"
 	{
-		"en" "Trigger Finger Hidden Desc"
+		"en" 	"Trigger Finger Hidden Desc"
 		"it"	"Dito grillino nascosto Desc"
+		"ko" 	"트리거 핑거 관리용 설명"
 	}
 	"Hectic Therapy"
 	{
-		"en" "Hectic Therapy"
+		"en" 	"Hectic Therapy"
 		"it"	"Terapia frenetica"
+		"ko" 	"정신 치료술"
 	}
 	"Hectic Therapy Desc"
 	{
-		"en" "Increases attack/reload speed & healrate and reloadspeed by 20％"
+		"en" 	"Increases attack/reload speed & healrate and reloadspeed by 20％"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione e ricarica del 20％"
+		"ko" 	"공격 속도, 재장전 속도, 치유 속도가 20％ 증가합니다."
 	}
 	"Physical Therapy"
 	{
-		"en" "Physical Therapy"
+		"en" 	"Physical Therapy"
 		"it"	"Terapia fisica"
+		"ko" 	"물리 치료술"
 	}
 	"Physical Therapy Desc"
 	{
-		"en" "Deal 20％ More damage."
+		"en" 	"Deal 20％ More damage."
 		"it"	"Infliggere 20％ danni in più."
+		"ko" 	"공격 피해량이 20％ 증가합니다."
 	}
 	"Ensuring Therapy"
 	{
-		"en" "Ensuring Therapy"
+		"en" 	"Ensuring Therapy"
 		"it"	"Assicurare la terapia"
+		"ko" 	"인내 치료술"
 	}
 	"Ensuring Therapy Desc"
 	{
-		"en" "Take 15％ less damage."
+		"en" 	"Take 15％ less damage."
 		"it"	"Subisce 15％ danni in meno."
+		"ko" 	"받는 피해량이 15％ 감소합니다."
 	}
 	"Overall Therapy"
 	{
-		"en" "Overall Therapy"
+		"en" 	"Overall Therapy"
 		"it"	"Terapia complessiva"
+		"ko" 	"전반적인 치료술"
 	}
 	"Overall Therapy Desc"
 	{
-		"en" "Deal 10％ more damage, and take 10％ less damage, NPCS gain 20％ Speed"
+		"en" 	"Deal 10％ more damage, and take 10％ less damage, NPCS gain 20％ Speed"
 		"it"	"Infligge 10％ danni in più e subisce 10％ danni in meno, i gli NPC guadagnano 20％ velocità"
+		"ko" 	"공격 피해량이 10％ 증가하고, 받는 피해량이 10％ 감소합니다. NPC의 이동 속도가 20％ 증가합니다."
 	}
 	"Powering Therapy"
 	{
-		"en" "Powering Therapy"
+		"en" 	"Powering Therapy"
 		"it"	"Terapia di potenza"
+		"ko" 	"힘솟음의 치료술"
 	}
 	"Powering Therapy Desc"
 	{
-		"en" "5％ resistance and 15％ damage dealt"
+		"en" 	"5％ resistance and 15％ damage dealt"
 		"it"	"5％ di resistenza e 15％ di danni inflitti"
+		"ko" 	"피해 저항력이 5％ 증가하고 공격 피해량이 15％ 증가합니다."
 	}
 	"Calling Therapy"
 	{
-		"en" "Calling Therapy"
+		"en" 	"Calling Therapy"
 		"it"	"Terapia di chiamata"
+		"ko" 	"경화 치료술"
 	}
 	"Calling Therapy Desc"
 	{
-		"en" "15％ resistance and 5％ damage dealt, 10％ more speed for NPCS"
+		"en" 	"15％ resistance and 5％ damage dealt, 10％ more speed for NPCS"
 		"it"	"15％ resistenza e 5％ danni inflitti, 10％ velocità in più per i gli NPC"
+		"ko" 	"피해 저항력이 15％ 증가하고 공격 피해량이 5％ 증가합니다. NPC의 이동 속도가 10％ 증가합니다."
 	}
 	"Caffinated Therapy"
 	{
-		"en" "Caffinated Therapy"
+		"en" 	"Caffinated Therapy"
 		"it"	"Terapia con caffeina"
+		"ko" 	"카페인 치료술"
 	}
 	"Caffinated Therapy Desc"
 	{
-		"en" "25％ Resistance, 25％ more damage dealt, and gain 20％ Speed for NPCS"
+		"en" 	"25％ Resistance, 25％ more damage dealt, and gain 20％ Speed for NPCS"
 		"it"	"25％ Resistenza, 25％ danni inflitti in più e guadagno di 20％ Velocità per gli NPC"
+		"ko" 	"피해 저항력이 25％ 증가하고 공격 피해량이 25％ 증가합니다. NPC의 이동 속도가 20％ 증가합니다."
 	}
 	"Regenerating Therapy"
 	{
-		"en" "Regenerating Therapy"
+		"en" 	"Regenerating Therapy"
 		"it"	"Terapia rigenerante"
+		"ko" 	"재생의 치료술"
 	}
 	"Regenerating Therapy Desc"
 	{
-		"en" "10％ Resistance, and deal 10％ more damage, gain slow HP regen."
+		"en" 	"10％ Resistance, and deal 10％ more damage, gain slow HP regen."
 		"it"	"10％ Resistenza e infliggere 10％ danni in più, guadagnare una lenta rigenerazione di HP."
+		"ko" 	"피해 저항력이 10％ 증가하고 공격 피해량이 10％ 증가합니다. 초당 체력이 천천히 회복됩니다."
 	}
 	"Weapon Overclock"
 	{
 		"en"	"Overclock"
-		"ko"	"과부하"
+		"ko"	"무기 과부하"
 		"es"	"Overclock"
 		"it"	"Overclock"
 	}
 	"Weapon Overclock Desc"
 	{
-		"en"	"Increases damage by 40％\nBoosts attack/reload speed & healrate by 33％ and mana is continuously restored."
+		"en"	"Increases damage by 40％\nBoosts attack/reload speed & healrate by 33％ and mana is continuously restored.\n-During raids, uber duration is cut by 35％"
 		"es"	"Aumenta el daño hecho en un 40％.\nAumenta la velocidad de ataque/recarga y curacion medica en un 33％.\nOtorga regeneracion continua de mana."
 		"it"	"Aumenta i danni del 40％ e aumenta la velocità di attacco/ricarica e la velocità di guarigione del 33％ \nil mana viene ripristinato continuamente."
+		"ko"	"피해량이 40％ 증가합니다.\n공격 속도, 재장전 속도 및 치유 속도가 33％ 증가하며 마나가 지속적으로 회복됩니다\n레이드 모드일 경우 우버 효과의 지속 시간이 35％ 감소합니다."
 	}
 	"Weapon Clocking"
 	{
 		"en"	"Weapon Clocking"
-		"ko"	"과부하"
+		"ko"	"무기 증폭"
 		"es" 	"Arma-ficiencia"
 		"it"	"Orologio dell'arma"
 	}
@@ -1742,361 +2129,463 @@
 		"en"	"Boosts attack/reload speed & healrate by 5％"
 		"es"	"Aumenta la velocidad de ataque/recarga y curacion medica en un 5％."
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 5％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 5％ 증가합니다."
 	}
 	"7 Heavy Souls"
 	{
 		"en"	"7 Heavy Souls"
 		"it"	"7 Anime pesanti"
+		"ko"	"7개의 헤비의 영혼"
 	}
 	"7 Heavy Souls Desc"
 	{
-		"en"	"Increases damage by 50％\nIncreases resistance by 50％\nIncreases attack speed by 100％"
-		"it"	"Aumenta i danni del 50％\nAnche la resistenza del 50％\nAumenta la velocità d'attacco del 100％"
+		"en"	"Increases damage by 75％\nIncreases resistance by 75％\nIncreases attack speed by 400％"
+		"ko"	"피해량이 75％ 증가합니다.\n피해 저항력이 75％ 증가합니다.\n공격 속도가 400％ 증가합니다."
 	}
 	"Nightmare Terror"
 	{
 		"en"	"Nightmare Terror"
 		"it"	"Incubo Terrore"
+		"ko"	"악몽의 공포"
 	}
 	"Nightmare Terror Desc"
 	{
 		"en"	"You cannot get downed."
 		"it"	"Non si può essere abbattuti."
+		"ko"	"다운되지 않으며 즉사합니다."
 	}
 	"Plasmatic Rampage"
 	{
 		"en"	"Plasmatic Rampage"
 		"it"	"Furia plasmatica"
+		"ko"	"플라즈마 폭주"
 	}
 	"Plasmatic Rampage Desc"
 	{
 		"en" 	"+30％ dmg dealt, resist and attackspeed.\nAbility cooldowns are halved, gain extra regen below 25％ HP.\nHEAVILY Reduces Plasmic Elemental buildup penalty + cooldown.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
 		"it"	"+30％ danni inflitti, resistenze e velocità d'attacco.\nIl cooldown delle abilità è dimezzato, guadagna rigenerazione extra al di sotto di 25％ HP.\nMOLTO riduce la penalità di accumulo dell'elemento plasmico + il cooldown.\n{darkviolet}Tuttavia, il plasma si diffonde lentamente nel tuo corpo..."
+		"ko" 	"피해량, 저항력, 공격 속도가 30％ 증가합니다.\n능력 쿨타임이 절반으로 감소하며, 체력이 25％ 미만일 때 추가 재생 효과를 얻습니다\n플라즈마 원소 피해 누적 페널티와 쿨타임 또한 대폭 감소합니다.\n{darkviolet}하지만, 시간이 지남에 따라 플라즈마가 서서히 당신의 몸을 집어삼킵니다..."
 	}
 	"Plasmatized Lethalitation"
 	{
 		"en"	"Plasmatized Lethalitation"
 		"it"	"Letalità plasmata"
+		"ko"	"치명성 플라즈마"
 	}
 	"Challenger"
 	{
 		"en"	"Challenger"
+		"ko"	"도전자"
 	}
 	"Challenger Desc"
 	{
 		"en"	"NPCs only: takes double damage from its current target, but all other damage taken is halved."
+		"ko"	"NPC 한정: 현재 표적에게 받는 피해는 두 배로 증가하지만\n그 외 모든 피해는 절반으로 감소합니다."
 	}
 	"Plasmatized Lethalitation Desc"
 	{
 		"en" 	"Your next hit will deal more damage, and inflict MASSIVE Plasmic Elemental Damage.\nAbility receives more boosts based on pap level.\n{red}Buff is removed and the ability is put on cooldown after landing a hit."
 		"it"	"Il tuo prossimo colpo infliggerà più danni e infliggerà un Danno Elementale Plasmico MASSICCIO.\nL'abilità riceve più potenziamenti in base al livello del pap.\n{red}Il buff viene rimosso e l'abilità viene messa in cooldown dopo aver messo a segno un colpo."
+		"ko"	"다음 공격 적중 시 더 큰 피해와 대량의 플라즈마 원소 피해를 입힙니다.\n이 능력은 PAP 레벨에 따라 효과가 증가합니다.\n{red}공격 적중 시 버프가 제거되고 능력이 재사용 대기 상태로 전환됩니다."
 	}
 	"Plasma Heal Prevent"
 	{
 		"en"	"Plasma Heal Prevent"
+		"ko"	"플라즈마 회복 방지"
 	}
 	"Plasma Heal Prevent Desc"
 	{
 		"en"	"Prevents Heal from plasma kit so its not stackable"
+		"ko"	"플라즈마 키트의 회복 효과가 중첩되지 않도록 방지합니다."
 	}
 	"Plasmic Layering I"
 	{
 		"en"	"Plasmic Layering I"
 		"it"	"Stratificazione plasmatica I"
+		"ko"	"플라즈마 단층 I"
 	}
 	"Plasmic Layering I Desc"
 	{
 		"en" 	"Increases damage by +15％ and resistance by +10％ while inside the Plasmatized Bubble's radius."
 		"it"	"Aumenta i danni di +15％ e la resistenza di +10％ quando si è nel raggio della Bolla Plasmata."
+		"ko"	"플라즈마화된 버블의 반경 내에 있는 동안 공격 피해량이 15％ 증가하고 피해 저항력이 10％ 증가합니다."
 	}
 	"Plasmic Layering II"
 	{
 		"en"	"Plasmic Layering II"
 		"it"	"Stratificazione plasmatica II"
+		"ko"	"플라즈마 단층 II"
 	}
 	"Plasmic Layering II Desc"
 	{
 		"en" 	"Increases damage by +25％ and resistance by +15％ while inside the Plasmatized Bubble's radius."
 		"it"	"Aumenta i danni di +25％ e la resistenza di +15％ quando si è nel raggio della Bolla Plasmata."
+		"ko"	"플라즈마화된 버블의 반경 내에 있는 동안 공격 피해량이 25％ 증가하고 피해 저항력이 15％ 증가합니다."
 	}
 	"Ziberian Flagship Weaponry"
 	{
 		"en"	"Ziberian Flagship Weaponry"
 		"it"	"Armamento della nave ammiraglia ziberiana"
+		"ko"	"지베리아 기함 무장"
 	}
 	"Ziberian Flagship Weaponry Desc"
 	{
 		"en" 	"Take 25％ Less damage\nDeal 10％ More damage\nAttack 10％ Faster.\nReduces cooldowns by 15％"
 		"it"	"Subisce 25％ meno danni\nSubisce 10％ più danni\n Attacca 10％ più velocemente.\nRiduce i cooldown di 15％"
+		"ko"	"받는 피해량이 25％ 감소합니다.\n공격 피해량이 10％ 증가합니다.\n공격 속도가 10％ 증가합니다.\n능력 쿨타임이 15％ 감소합니다."
 	}
 	"Dimensional Turbulence"
 	{
 		"en"	"Dimensional Turbulence"
 		"it"	"Turbolenza dimensionale"
+		"ko"	"차원 난기류"
 	}
 	"Dimensional Turbulence Desc"
 	{
 		"en" 	"2x Attackspeed, Infinite mana/Reserve Ammo\n20％ Movementspeed\n75％ Less Cooldowns\n2x Revive speed\n50％ more HP and Healing\n50％ less stun duration"
 		"it"	"2x Velocità d'attacco, mana infinito/riserva munizioni\n20\nVelocità di movimento\n75\nMeno Cooldown\n2x Velocità di rianimazione\n50％ più HP e guarigione\n50％ meno durata di stordimento"
+		"ko" 	"공격 속도가 2배로 증가하며 마나와 예비 탄약이 무제한이 됩니다.\n이동 속도가 20％ 증가합니다.\n모든 쿨타임이 75％ 감소합니다.\n부활 속도가 2배 증가합니다.\n치유 속도와 최대 체력이 50％ 증가합니다\n기절 지속 시간이 50％ 감소합니다"
 	}
 	"Therapy Duration"
 	{
 		"en"	"Therapy Duration"
 		"it"	"Durata della terapia"
+		"ko"	"치료 시간"
 	}
 	"Therapy Duration Desc"
 	{
 		"en" 	"Under the influence of Therapy debuffs..."
 		"it"	"Sotto l'influenza dei debuff della terapia..."
+		"ko"	"심리치료사의 디버프의 영향을 받고 있습니다..."
 	}
 	"Empowering Domain Hidden"
 	{
 		"en"	"Empowering Domai Hidden"
 		"it"	"Potenziamento di Domai Nascosto"
+		"ko"	"강화 영역 관리용"
 	}
 	"Empowering Domain"
 	{
 		"en"	"Empowering Domain"
 		"it"	"Dominio potenziante"
+		"ko"	"강화 영역"
 	}
 	"Empowering Domain Desc"
 	{
 		"en"	"Increases damage +15％\nBoosts attackspeed by +25％\nReduces Ark's Parry cooldown by 60％.\nResets Ark parry cooldown upon activation to 1 Sec.\n{crimson}However, you take 20％ more damage..."
-		"it"	"Aumenta i danni del +15%\nAumenta la velocità d'attacco del +25%\nRiduce il tempo di ricarica della parata di Ark del 60%.\nAll'attivazione, ripristina il tempo di ricarica della parata di Ark a 1 secondo.\n{crimson}Tuttavia, subisci il 20% di danni in più..."
+		"it"	"Aumenta i danni del +15％\nAumenta la velocità d'attacco del +25％\nRiduce il tempo di ricarica della parata di Ark del 60％.\nAll'attivazione, ripristina il tempo di ricarica della parata di Ark a 1 secondo.\n{crimson}Tuttavia, subisci il 20％ di danni in più..."
+		"ko"	"공격 피해량이 +15％ 증가합니다.\n공격 속도가 +25％ 증가합니다.\n''방주'' 계열 무기의 패링 쿨타임이 60％ 감소합니다.\n효과 활성화 시 무기의 패링 쿨타임이 1초로 감소합니다.\n{crimson}받는 피해량이 20％ 증가합니다."
 	}
 	"Purging Intention"
 	{
-		"en" "Purging Intention"
+		"en" 	"Purging Intention"
 		"it"	"Intenzione di spurgo"
+		"ko" 	"말살 의도"
 	}
 	"Purging Intention Desc"
 	{
-		"en" "Uncureable.\nPurge is after you.\nYou gain Primal fear much faster."
+		"en" 	"Uncureable.\nPurge is after you.\nYou gain Primal fear much faster."
 		"it"	"Inguaribile.\nPurge ti insegue.\nAcquisti la Paura Primordiale molto più velocemente."
+		"ko"	"치유 불가.\n퍼지가 당신을 추격하고 있습니다.\n원초적 두려움을 훨씬 더 빠르게 얻게 됩니다."
 	}
 	"Primal Fear"
 	{
-		"en" "Primal Fear"
+		"en" 	"Primal Fear"
 		"it"	"Paura primaria"
+		"ko" 	"원초적 두려움"
 	}
 	"Primal Fear Desc"
 	{
-		"en" "Uncureable.\nGain a multiplicative damage vulnerability.\nStacks upto 2x damage taken.\nAvoid purge to lower this overtime."
+		"en" 	"Uncureable.\nGain a multiplicative damage vulnerability.\nStacks upto 2x damage taken.\nAvoid purge to lower this overtime."
 		"it"	"Non curabile.\nGuadagna una vulnerabilità moltiplicativa ai danni.\nSi accumula fino a 2 volte i danni subiti.\nEvita la purga per abbassare questo tempo supplementare."
+		"ko" 	"치유 불가.\n곱연산으로 계산되는 받는 피해 증가 효과를 얻습니다.\n최대 2배까지 중첩됩니다.\n퍼지에게서 도주하여 이 디버프의 효과를 서서히 감소시키세요."
 	}
 	//This is just used for cooldown stuff.
 	"Primal Fear Hide"
 	{
-		"en" "Primal Fear Hide"
+		"en" 	"Primal Fear Hide"
 		"it"	"Paura Primaria Nascondi"
+		"ko" 	"원초적 두려움 숨겨짐"
 	}
 	"Liberal Tango"
 	{
 		"en"	"''Liberal Tango''"
 		"it"	"''Tango liberale''"
+		"ko"	"''자유로운 탱고''"
 	}
 	"Liberal Tango Desc"
 	{
 		"en"	"+30％ damage dealt, healing done, and +20％ damage reduction"
 		"it"	"+30％ danni inflitti, guarigione effettuata e +20％ riduzione dei danni"
+		"ko"	"공격 피해량, 치유량이 30％ 증가하고, 피해 저항력이 20％ 증가합니다."
 	}
 	"Charging Raigeki"
 	{
 		"en"	"CHARGING RAIGEKI"
+		"ko"	"뇌격 충전 중"
 	}
 	"Charging Raigeki Desc"
 	{
 		"en"	"Reduces movement speed, prevents attacking, and drains mana to charge a devastating blast of lightning from the heavens. Grants resistance, which increases as charge level rises, and electrocutes nearby foes with Static Electricity."
+		"ko"	"이동 속도가 감소하고 공격이 불가능해지며, 지속적으로 마나를 소모하며 하늘에서 내려오는 파괴적인 번개 폭발을 충전합니다. 충전량이 늘어날 수록 증가하는 추가 저항력을 얻으며, 주변 적들에게는 정전기로 감전 피해를 입힙니다."
 	}
 	"Xeno's Territory"
 	{
 		"en"	"Xeno's Territory"
 		"it"	"Il territorio di Xeno"
+		"ko"	"제노의 영역"
 	}
 	"Xeno's Territory Desc"
 	{
 		"en"	"Gain 25％ damage reduction, 25％ extra damage, 25％ attackspeed, 15％ speed bonus."
 		"it"	"Guadagna 25％ di riduzione del danno, 25％ di danno extra, 25％ di velocità d'attacco, 15％ di velocità."
+		"ko"	"피해 저항력이 25％, 공격 피해량이 25％, 공격 속도가 25％, 이동 속도가 15％ 증가합니다."
 	}
 	"Corrupted Godly Power"
 	{
 		"en"	"Corrupted Godly Power"
 		"it"	"Potere divino corrotto"
+		"ko"	"오염된 신성한 힘"
 	}
 	"Corrupted Godly Power Desc"
 	{
 		"en"	"Gain 15％ damage reduction, 10％ extra damage, 5％ attackspeed."
 		"it"	"Guadagna 15％ di riduzione del danno, 10％ di danno extra, 5％ di velocità d'attacco."
+		"ko"	"피해 저항력이 15％, 공격 피해량이 10％, 공격 속도가 5％ 증가합니다."
 	}
 	"Paralysis"
 	{
 		"en"	"Paralysis"
 		"it"	"Paralisi"
+		"ko"	"마비"
 	}
 	"Paralysis Desc"
 	{
 		"en"	"-50％ attack speed and movement speed"
 		"it"	"-50％ velocità di attacco e velocità di movimento"
+		"ko"	"공격 속도와 이동 속도가 50％ 감소합니다."
 	}
 	"Hypodermic Toxin Injection"
 	{
 		"en"	"Hypodermic Toxin Injection"
 		"it"	"Iniezione ipodermica di tossina"
+		"ko"	"피하 독소 주입"
 	}
 	"Hypodermic Toxin Injection Desc"
 	{
 		"en"	"Increases damage taken by 20％"
 		"it"	"Aumenta i danni subiti di 20％"
+		"ko"	"받는 피해가 20％ 증가합니다."
 	}
 	"Cellular Breakdown"
 	{
 		"en"	"Cellular Breakdown"
 		"it"	"Guasto cellulare"
+		"ko"	"세포 파괴"
 	}
 	"Cellular Breakdown Desc"
 	{
 		"en"	"Increases damage taken by 20％.\nDecreases attack speed by 20％."
 		"it"	"Aumenta i danni subiti di 20％.\nRiduce la velocità d'attacco di 20％."
+		"ko"	"받는 피해가 20％ 증가합니다.\n공격 속도가 20％ 감소합니다."
 	}
 	"Molecular Collapse"
 	{
 		"en"	"Molecular Collapse"
 		"it"	"Collasso molecolare"
+		"ko"	"분자 붕괴"
 	}
 	"Molecular Collapse Desc"
 	{
 		"en"	"Increases damage taken by 20％.\nDecreases attack speed by 20％.\nDecreases damage by 20％."
 		"it"	"Aumenta i danni subiti di 20％.\nDiminuisce la velocità d'attacco di 20％.\nDiminuisce i danni di 20％."
+		"ko"	"받는 피해가 20％ 증가합니다.\n공격 속도가 20％ 감소합니다.\n주는 피해가 20％ 감소합니다."
 	}
 	"Quantum Entanglement"
 	{
 		"en"	"Quantum Entanglement"
 		"it"	"Entanglement quantistico"
+		"ko"	"양자 얽힘"
 	}
 	"Quantum Entanglement Desc"
 	{
 		"en"	"Reduces damage taken by 25％.\nIncreases attack speed by 25％.\nIncreases damage by 25％.\nIncreases NPC movement speed by 25％."
 		"it"	"Riduce i danni subiti del 25％.\nAumenta la velocità di attacco del 25％.\nAumenta i danni del 25％.\nAumenta la velocità di movimento dei gli NPC del 25％."
+		"ko"	"받는 피해가 25％ 감소합니다.\n공격 속도가 25％ 증가합니다.\n공격 피해량이 25％ 증가합니다.\nNPC의 이동 속도가 25％ 증가합니다."
 	}
 	"Mind Warp"
 	{
 		"en"	"Mind Warp"
 		"it"	"Distorsione della mente"
+		"ko"	"정신 왜곡"
 	}
 	"Mind Warp Desc"
 	{
 		"en"	"Reduces attack/reload/movement speed and healing rate, but increases timescale by 50％.\n{default}Affects everyone and everything."
 		"it"	"Riduce la velocità di attacco/ricarica/movimento e la velocità di guarigione, ma aumenta i tempi del 50％.\n{default}Affligge tutti e tutto."
+		"ko"	"공격 속도/재장전 속도/이동 속도 및 치유 속도가 감소하지만\n타임 스케일이 50％ 증가합니다.\n{default}이는 모두와 모든 것에 영향을 미칩니다."
 	}
 	"Envenomed"
 	{
 		"en"	"Envenomed"
 		"it"	"Envenomed"
+		"ko"	"맹독"
 	}
 	"Envenomed Desc"
 	{
 		"en"	"Brings your health down to 1, your health partially recovers overtime."
 		"it"	"Riduce la salute a 1, ma la salute viene parzialmente recuperata nel tempo."
+		"ko"	"당신의 체력을 1로 만듭니다. 이후 체력이 시간이 지남에 따라 부분적으로 회복됩니다."
 	}
 	"Energizing Gel"
 	{
 		"en"	"Energizing Gel"
 		"it"	"Gel energizzante"
+		"ko"	"활력 증진 젤"
 	}
 	"Energizing Gel Desc"
 	{
 		"en"	"Reduces damage taken by 50％.\nIncreases NPC movement speed by 50％."
 		"it"	"Riduce i danni subiti del 50％. \nAumenta la velocità di movimento dei gli NPC del 50％."
+		"ko"	"받는 피해가 50％ 감소합니다.\nNPC의 이동 속도가 50％ 증가합니다."
 	}
 	"Kinetic Surge"
 	{
 		"en"	"Kinetic Surge"
 		"it"	"Impulso cinetico"
+		"ko"	"운동 에너지 급증"
 	}
 	"Kinetic Surge Desc"
 	{
 		"en"	"Increases everyone's damage by 100％."
 		"it"	"Aumenta i danni di tutti di 100％."
+		"ko"	"모두의 피해량이 100％ 증가합니다."
 	}
 	"Umbral Grace"
 	{
 		"en"	"Umbral Grace"
 		"it"	"Grazia Umbra"
+		"ko"	"움브랄의 은총"
 	}
 	"Umbral Grace Desc"
 	{
 		"en"	"Gain 25％ damage reduction, 15％ extra damage.\nYou slowly cure of elemental damage.\n{crimson}but lose 15％ attackspeed/Healrate."
 		"it"	"Ottieni una riduzione del danno di 25％, 15％ danni extra.\nTi curi lentamente dai danni elementali.\nma perdi 15％ velocità di attacco/guarigione."
+		"ko"	"피해 감소 25％, 피해량 15％ 증가를 얻고\n누적된 원소 피해가 서서히 회복됩니다.\n{crimson}하지만 공격 속도, 치유 속도가 15％ 감소합니다."
 	}
 	"Void Afflicted"
 	{
 		"en"	"Void Afflicted"
 		"it"	"Afflitto dal vuoto"
+		"ko"	"공허 감염"
 	}
 	"Void Afflicted Desc"
 	{
 		"en"	"You become a void afflicted creature.\nYou act as if you were a void enemy.\nYou afflict 300％ of your end damage as void elemental damage.\nReceive 25％ less damage."
 		"it"	"Diventi una creatura afflitta dal vuoto.\nAgisci come se fossi un nemico del vuoto.\nAffliggi 300％ del tuo danno finale come danno elementale del vuoto.\nRicevi 25％ di danni in meno."
+		"ko"	"당신은 공허에 침식된 생물체가 되어 공허 계열 적으로써 간주됩니다.\n적중 시 최종 피해량의 300％를 공허 원소 피해로 부여합니다.\n받는 피해가 25％ 감소합니다."
 	}
 	"Brightening Light"
 	{
 		"en"	"Brightening Light"
 		"it"	"Luce illuminante"
+		"ko"	"밝아지는 빛"
 	}
 	"Brightening Light Desc"
 	{
 		"en"	"Gain 35％ attack/reload speed & healrate."
 		"it"	"Guadagna 35％ velocità di attacco/ricarica e velocità di guarigione."
+		"ko"	"공격 속도, 재장전 속도 및 치유 속도가 35％ 증가합니다."
 	}
 	"Revival Stim"
 	{
 		"en"	"Revival Stim"
 		"it"	"Stimolo alla rinascita"
+		"ko"	"소생 자극제"
 	}
 	"Revival Stim Desc"
 	{
 		"en"	"Gain a 15％ Movementspeed Bonus."
 		"it"	"Guadagna un bonus di 15％ alla velocità di movimento."
+		"ko"	"이동 속도 보너스 15％를 얻습니다."
 	}
 
 	"Brightening Lightness"
 	{
 		"en"	"Brightening Lightness"
 		"it"	"Schiarita illuminante"
+		"ko"	"밝아지는 광채"
 	}
 	"Brightening Lightness Desc"
 	{
 		"en"	"A bright light, is Ruina helping?\n{green}At stage start, creates a zone that buffs all allies within."
 		"it"	"Una luce intensa, Ruina sta aiutando? All'inizio della fase, crea una zona che potenzia tutti gli alleati al suo interno."
+		"ko"	"밝디 밝은 빛입니다. 루이나가 돕고 있는 걸까요?\n{green}스테이지 시작 시, 범위 내 모든 아군에게 버프를 부여하는 영역을 생성합니다."
 	}
 	"Revival Stim Packs"
 	{
 		"en"	"Revival Stim Packs"
 		"it"	"Pacchetti di stimolo alla rinascita"
+		"ko"	"부활 자극제 팩"
 	}
 	"Revival Stim Packs Desc"
 	{
 		"en"	"Must be what Whiteflower used for his soldiers.\n{green}Upon being revived, gain a 15％ Movementspeed Bonus, and phase through enemies for 5 seconds."
 		"it"	"Deve essere quello che Whiteflower usava per i suoi soldati.\n{green}Una volta rianimato, guadagna un bonus di 15％ alla velocità di movimento e passa attraverso i nemici per 5 secondi."
+		"ko"	"배풍등이 그의 병사들에게 사용했던 것임이 틀림없습니다.\n{green}부활 시, 이동 속도 보너스 15％를 얻고 5초 동안 적을 통과합니다."
 	}
 	"Kolum's View"
 	{
 		"en"	"Kolum's View"
 		"it"	"Il punto di vista di Kolum"
+		"ko"	"콜룸의 시선"
 	}
 	"Kolum's View Desc"
 	{
 		"en"	"Umbral koulm's have their vision on you."
 		"it"	"I koulm umorali hanno la loro visione su di voi."
+		"ko"	"움브랄 콜룸들이 당신에게 시선을 고정하고 있습니다."
 	}
 	"Ultra Rapid Fire"
 	{
 		"en"	"Ultra Rapid Fire"
 		"it"	"Fuoco ultra rapido"
+		"ko"	"초고속 연사"
 	}
 	"Ultra Rapid Fire Desc"
 	{
 		"en"	"Increases attack/reload speed, healing rate and reduces cooldowns by 40％. Increases movement speed by 25％.\n{crimson}Enemies gain Dimensional Turbulence instead."
 		"it"	"Aumenta la velocità di attacco/ricarica, la velocità di guarigione e riduce i cooldown del 40％.\nAumenta la velocità di movimento del 25％.\n{crimson}I nemici ottengono invece Turbolenza dimensionale."
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 40％ 증가하고 쿨타임이 40％ 감소합니다.\n이동 속도가 25％ 증가합니다.\n{crimson}대신 적들은 차원 난기류 효과를 얻습니다."
+	}
+	"Chaos Demon Possession"
+	{
+		"en"	"Chaos Demon Possession"
+		"ko"	"혼돈의 악마 빙의"
+	}
+	"Chaos Demon Possession Desc"
+	{
+		"en"	"Decreases damage taken by 65％\nIncreases NPC movementspeed by 15％\nInrceases thinkspeed by 50％\nFully heals target when applied and not extended."
+		"ko"	"받는 피해량이 65％ 감소합니다.\nNPC의 이동 속도가 15％ 증가합니다.\n생각하는 속도가 50％ 증가합니다.\n효과 부여 시 대상을 완전히 치료합니다."
+	}
+	"Bob Debuff"
+	{
+		"en"	"Bob Debuff"
+		"ko"	"밥 디버프"
+	}
+	"Bob Debuff Desc"
+	{
+		"en"	"Increases Damage Taken by 15％"
+		"ko"	"받는 피해량이 15％ 증가합니다"
+	}
+	"Bob Debuff Enrage"
+	{
+		"en"	"Bob Debuff Enrage"
+		"ko"	"밥 디버프 - 격노"
+	}
+	"Bob Debuff Enrage Desc"
+	{
+		"en"	"Increases Damage Taken by 25％"
+		"ko"	"받는 피해량이 25％ 증가합니다"
 	}
 }

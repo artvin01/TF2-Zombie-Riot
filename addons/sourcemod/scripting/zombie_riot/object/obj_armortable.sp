@@ -54,7 +54,10 @@ static bool ClotCanUse(ObjectArmorTable npc, int client)
 		if(i_MaxArmorTableUsed[client] >= RAID_MAX_ARMOR_TABLE_USE)
 			return false;
 	}
-
+	if(f_LivingArmorPenalty[client] > GetGameTime() || (Attributes_Get(client, Attrib_Armor_AliveMode, 0.0) != 0.0 && Armor_Charge[client] >= 0))
+	{
+		return false;
+	}
 	return true;
 }
 
@@ -109,7 +112,7 @@ static bool ClotInteract(int client, int weapon, ObjectArmorTable npc)
 		return true;
 	}
 	int owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
-	Building_GiveRewardsUse(client, owner, 30, true, 0.5, true);
+	Building_GiveRewardsUse(client, owner, 30, true, 0.75, true);
 	GiveArmorViaPercentage(client, 0.2, 1.0);
 	ApplyBuildingCollectCooldown(npc.index, client, 45.0);
 	ClientCommand(client, "playgamesound ambient/machines/machine1_hit2.wav");

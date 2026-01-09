@@ -21,6 +21,11 @@ static const char g_HurtSounds[][] = {
 	"vo/soldier_painsharp08.mp3"
 };
 
+static const char g_ExplosionSounds[][]= {
+	"weapons/explode1.wav",
+	"weapons/explode2.wav",
+	"weapons/explode3.wav"
+};
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/taunts/soldier_taunts19.mp3",
@@ -30,18 +35,17 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/compmode/cm_soldier_pregamefirst_03.mp3"
 };
 
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/csgo_awp_shoot.wav",
-};
+static const char g_RangeAttackSounds[] = "weapons/csgo_awp_shoot.wav";
 
+static bool b_TheGoons;
+static bool b_KillIconSwitch[MAXENTITIES];
+static int CanteenModels;
+static int BeamIndex;
+static float fl_Har_Delay[MAXENTITIES];
+static float fl_Har_Duration[MAXENTITIES];
 
 void VictoriaHarbringer_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	PrecacheModel("models/player/soldier.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Harbringer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_harbringer");
@@ -49,23 +53,27 @@ void VictoriaHarbringer_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
-//static int i_ally_index;
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_ExplosionSounds);
+	PrecacheSound(g_RangeAttackSounds);
+	PrecacheModel("models/player/soldier.mdl");
+	CanteenModels = PrecacheModel("models/workshop/player/items/scout/robo_all_mvm_canteen/robo_all_mvm_canteen.mdl");
+	BeamIndex = PrecacheModel("materials/sprites/laserbeam.vmt", true);
+}
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
 	return VictoriaHarbringer(vecPos, vecAng, ally, data);
 }
-
-/*
-public void VictoriaHarbringer_Set_Ally_Index(int ref)
-{	
-	i_ally_index = EntIndexToEntRef(ref);
-}
-*/
 
 methodmap VictoriaHarbringer < CClotBody
 {
@@ -76,9 +84,7 @@ methodmap VictoriaHarbringer < CClotBody
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -87,17 +93,39 @@ methodmap VictoriaHarbringer < CClotBody
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
-	public void PlayMeleeSound()
+	public void PlayRangeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 70, _, 0.6);
+		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_AUTO, 70, _, 0.6);
+	}
+	public void PlayThrowSound()
+	{
+		EmitSoundToAll("weapons/slam/throw.wav", this.index, SNDCHAN_AUTO, 80, _, 0.7);
+	}
+	
+	property int m_iBirdEye
+	{
+		public get()							{ return i_AmountProjectiles[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AmountProjectiles[this.index] = TempValueForProperty; }
+	}
+	property int m_iBigPipe
+	{
+		public get()							{ return this.m_iState; }
+		public set(int TempValueForProperty) 	{ this.m_iState = TempValueForProperty; }
+	}
+	property float m_flFlashGrenade
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flArmorGrenade
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 
 	public VictoriaHarbringer(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -113,16 +141,14 @@ methodmap VictoriaHarbringer < CClotBody
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		
-		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		bool IconOnly = StrContains(data, "icononly") != -1;
-		if(IconOnly)
+		b_TheGoons=false;
+		if(StrContains(data, "icononly") != -1)
 		{
 			func_NPCDeath[npc.index] = INVALID_FUNCTION;
 			func_NPCOnTakeDamage[npc.index] = INVALID_FUNCTION;
@@ -136,15 +162,33 @@ methodmap VictoriaHarbringer < CClotBody
 			return npc;
 		}
 		
+		if(StrContains(data, "the_goons") != -1)
+			b_TheGoons=true;
+		else if(StrContains(data, "birdeye"))
+		{
+			npc.m_iBirdEye=-1;
+			npc.m_iBigPipe=-1;
+			//The NPC name will be displayed normally only after 1 frame.
+			switch(GetRandomInt(0, 3))
+			{
+				case 0:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_01-1", false, true);
+				case 1:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_01-2", false, true);
+				case 2:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_01-3", false, true);
+				case 3:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_01-4", false, true);
+			}
+		}
+		
 		func_NPCDeath[npc.index] = VictoriaHarbringer_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = VictoriaHarbringer_OnTakeDamage;
 		func_NPCThink[npc.index] = VictoriaHarbringer_ClotThink;
 		
 		//IDLE
-		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
+		npc.m_flFlashGrenade = 0.0;
+		npc.m_flArmorGrenade = 0.0;
+		b_KillIconSwitch[npc.index]=false;
 		
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		GiveNpcOutLineLastOrBoss(npc.index, true);
@@ -166,11 +210,22 @@ methodmap VictoriaHarbringer < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		npc.m_iWearable5 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		if(b_TheGoons)
+		{
+			npc.m_iWearable6 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl");
+			SetVariantString("1.75");
+			AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+
+			npc.m_iWearable7 = ParticleEffectAt_Parent(vecPos, "utaunt_aestheticlogo_teamcolor_blue", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0});
+			npc.m_flRangedArmor -= 0.3;
+			npc.m_flFlashGrenade = GetGameTime(npc.index)+10.0;
+			npc.m_flArmorGrenade = GetGameTime(npc.index)+8.0;
+		}
 		return npc;
 	}
 }
 
-public void VictoriaHarbringer_ClotThink(int iNPC)
+static void VictoriaHarbringer_ClotThink(int iNPC)
 {
 	VictoriaHarbringer npc = view_as<VictoriaHarbringer>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -193,10 +248,58 @@ public void VictoriaHarbringer_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
+	if(b_TheGoons)
+	{
+		int team = GetTeam(npc.index);
+		if(team == 2)
+		{
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client) && IsEntityAlive(client))
+				{
+					ApplyStatusEffect(npc.index, client, "Call To Victoria", 2.0);
+				}
+			}
+		}
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+			{
+				if(GetTeam(entity) == team)
+				{
+					ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
+				}
+			}
+		}
+	}
+
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+	}
+	
+	if(!IsEntityAlive(npc.m_iBirdEye)&&npc.m_iBirdEye!=-1)
+	{
+		switch(GetRandomInt(0, 2))
+		{
+			case 0:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_02-1", false, false);
+			case 1:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_02-2", false, false);
+			case 2:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_02-3", false, false);
+		}
+		npc.m_iBirdEye=-1;
+	}
+	
+	if(!IsEntityAlive(npc.m_iBigPipe)&&npc.m_iBigPipe!=-1)
+	{
+		switch(GetRandomInt(0, 2))
+		{
+			case 0:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_03-1", false, false);
+			case 1:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_03-2", false, false);
+			case 2:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_03-3", false, false);
+		}
+		npc.m_iBigPipe=-1;
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -225,7 +328,7 @@ public void VictoriaHarbringer_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action VictoriaHarbringer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictoriaHarbringer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictoriaHarbringer npc = view_as<VictoriaHarbringer>(victim);
 		
@@ -239,7 +342,7 @@ public Action VictoriaHarbringer_OnTakeDamage(int victim, int &attacker, int &in
 	}
 	if(NpcStats_VictorianCallToArms(npc.index))
 	{
-		int health = ReturnEntityMaxHealth(npc.index) / 10;
+		int health = ReturnEntityMaxHealth(npc.index) / 30;
 
 		if(damage > float(health))
 		{
@@ -250,7 +353,7 @@ public Action VictoriaHarbringer_OnTakeDamage(int victim, int &attacker, int &in
 	return Plugin_Changed;
 }
 
-public void VictoriaHarbringer_NPCDeath(int entity)
+static void VictoriaHarbringer_NPCDeath(int entity)
 {
 	VictoriaHarbringer npc = view_as<VictoriaHarbringer>(entity);
 	if(!npc.m_bGib)
@@ -258,6 +361,10 @@ public void VictoriaHarbringer_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
@@ -268,10 +375,9 @@ public void VictoriaHarbringer_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
 }
 
-void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime)
+static void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime)
 {
 	int target;
 	//some Ranged units will behave differently.
@@ -293,10 +399,128 @@ void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime)
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+	if(b_TheGoons&&npc.m_flArmorGrenade<gameTime)
+	{
+		npc.PlayThrowSound();
+		npc.m_flArmorGrenade = gameTime+32.0;
+		switch(GetRandomInt(0, 1))
+		{
+			case 0:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_05-1", false, false);
+			case 1:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_05-2", false, false);
+		}
+		
+		int entity = CreateEntityByName("tf_projectile_pipe_remote");
+		if(IsValidEntity(entity))
+		{
+			SetEntitySpike(entity, 3);
+			b_StickyIsSticking[entity] = true;
+			
+			int team = GetTeam(npc.index);
+				
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", team, 1);
+			
+			SetEntProp(entity, Prop_Send, "m_nSkin", (team-2));
+			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
+			SetEntPropEnt(entity, Prop_Send, "m_hThrower", npc.index);
+			SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher", 0);
+			SetEntProp(entity, Prop_Send, "m_iType", 1);
+				
+			for(int i; i<4; i++)
+			{
+				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", CanteenModels, _, i);
+			}
+			
+			SetVariantInt(team);
+			AcceptEntityInput(entity, "TeamNum", -1, -1, 0);
+			SetVariantInt(team);
+			AcceptEntityInput(entity, "SetTeam", -1, -1, 0);
+			DispatchSpawn(entity);
+			TeleportEntity(entity, VecSelfNpc, NULL_VECTOR, NULL_VECTOR);
+			
+			IsCustomTfGrenadeProjectile(entity, 9999999.0);
+			CClotBody Grenade = view_as<CClotBody>(entity);
+			Grenade.m_bThisEntityIgnored = true;
+			
+			fl_Har_Delay[entity] = GetGameTime() + 1.0;
+			fl_Har_Duration[entity] = GetGameTime() + 12.0;
+			
+			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
+			
+			DataPack pack;
+			CreateDataTimer(0.1, Timer_NPC_Armor_Grenade, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+			pack.WriteCell(EntIndexToEntRef(entity));
+			pack.WriteCell(GetTeam(npc.index));
+		}
+	}
+	if(b_TheGoons&&npc.m_flFlashGrenade<gameTime)
+	{
+		npc.PlayThrowSound();
+		npc.m_flFlashGrenade = gameTime+22.0;
+		switch(GetRandomInt(0, 1))
+		{
+			case 0:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_06-1", false, false);
+			case 1:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_06-2", false, false);
+		}
+		
+		int entity = CreateEntityByName("tf_projectile_pipe");
+		if(IsValidEntity(entity))
+		{
+			SetEntitySpike(entity, 3);
+			b_StickyIsSticking[entity] = true;
+			static float ang[3], vel[3];
+			MakeVectorFromPoints(VecSelfNpc, vecTarget, ang);
+			GetVectorAngles(ang, ang);
+		
+			ang[0] -= 8.0;
+			
+			float speed = 750.0;
+			
+			vel[0] = Cosine(DegToRad(ang[0]))*Cosine(DegToRad(ang[1]))*speed;
+			vel[1] = Cosine(DegToRad(ang[0]))*Sine(DegToRad(ang[1]))*speed;
+			vel[2] = Sine(DegToRad(ang[0]))*speed;
+			vel[2] *= -1;
+			
+			int team = GetTeam(npc.index);
+				
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", team, 1);
+			
+			SetEntProp(entity, Prop_Send, "m_nSkin", (team-2));
+			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
+			SetEntPropEnt(entity, Prop_Send, "m_hThrower", npc.index);
+			SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher", 0);
+				
+			SetEntityModel(entity, "models/weapons/w_grenade.mdl");
+			
+			SetVariantInt(team);
+			AcceptEntityInput(entity, "TeamNum", -1, -1, 0);
+			SetVariantInt(team);
+			AcceptEntityInput(entity, "SetTeam", -1, -1, 0);
+			DispatchSpawn(entity);
+			TeleportEntity(entity, VecSelfNpc, ang, vel);
+			
+			IsCustomTfGrenadeProjectile(entity, 9999999.0);
+			CClotBody Grenade = view_as<CClotBody>(entity);
+			Grenade.m_bThisEntityIgnored = true;
+			
+			fl_Har_Delay[entity] = GetGameTime() + 1.0;
+			fl_Har_Duration[entity] = GetGameTime() + 4.5;
+			fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
+			
+			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
+			SetEntityCollisionGroup(entity, COLLISION_GROUP_DEBRIS);
+			//SDKHook(entity, SDKHook_StartTouch, Flash_Grenade_StartTouch);
+			DataPack pack;
+			CreateDataTimer(0.1, Timer_NPC_Flash_Grenade, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+			pack.WriteCell(EntIndexToEntRef(entity));
+			pack.WriteCell(EntIndexToEntRef(npc.index));
+		}
+	}
 	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 	{
 		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
+
 		if(IsValidEnemy(npc.index, Enemy_I_See))
 		{
 			if(npc.m_iChanged_WalkCycle != 5)
@@ -312,7 +536,7 @@ void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime)
 				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 				{	
 					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY",_,_,_,2.00);
-					npc.PlayMeleeSound();
+					npc.PlayRangeSound();
 					npc.FaceTowards(vecTarget, 20000.0);
 					Handle swingTrace;
 					if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
@@ -331,9 +555,24 @@ void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime)
 							float damageDealt = 30.0;
 							if(ShouldNpcDealBonusDamage(target))
 								damageDealt *= 3.0;
-
-
+							if(!b_KillIconSwitch[npc.index])
+							{
+								KillFeed_SetKillIcon(npc.index, "minigun");
+								b_KillIconSwitch[npc.index]=true;
+							}
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
+							if(!IsValidEnemy(npc.index, target))
+							{
+								switch(GetRandomInt(0, 3))
+								{
+									case 0:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_04-1", false, false);
+									case 1:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_04-2", false, false);
+									case 2:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_04-3", false, false);
+									case 3:NPCPritToChat(npc.index, "{sienna}", "harbringer_Talk_04-4", false, false);
+								}
+							}
+							else if(b_TheGoons)
+								IncreaseEntityDamageTakenBy(target, 0.01, 4.0, true);
 						}
 					}
 					delete swingTrace;
@@ -362,5 +601,137 @@ void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime)
 			npc.m_flSpeed = 310.0;
 			npc.StartPathing();
 		}
+	}
+}
+
+static Action Timer_NPC_Armor_Grenade(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int team = pack.ReadCell();
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		if(fl_Har_Delay[entity] < GetGameTime())
+		{
+			float powerup_pos[3];
+			float target_pos[3];
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", powerup_pos);
+			fl_Har_Delay[entity] = GetGameTime() + 1.0;
+			TE_SetupBeamRingPoint(powerup_pos, 10.0, 400.0 * 2.0, BeamIndex, -1, 0, 5, 0.5, 5.0, 3.0, {255,255,0,75}, 0, 0);
+			TE_SendToAll();
+			for (int target = 0; target < MAXENTITIES; target++)
+			{
+				if(!IsValidEntity(target))
+					continue;
+
+				if(GetTeam(target) != team)
+					continue;
+
+				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", target_pos);
+				if(GetVectorDistance(powerup_pos, target_pos, true) > (400.0 * 400.0))
+					continue;
+
+				if(b_ThisWasAnNpc[target] && IsEntityAlive(target, true))
+				{
+					float GiveArmor = ReturnEntityMaxHealth(target) * (f_TimeUntillNormalHeal[target] > GetGameTime() ? 0.025 : 0.05);
+					GrantEntityArmor(target, false, 1.5, 0.75, 0, GiveArmor);
+					continue;
+				}
+			}
+		}
+		if(fl_Har_Duration[entity] < GetGameTime())
+		{
+			RemoveEntity(entity);
+			return Plugin_Stop;	
+		}
+		return Plugin_Continue;
+	}
+	else
+	{
+		return Plugin_Stop;	
+	}
+}
+
+/*static Action Flash_Grenade_StartTouch(int entity, int target)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+		owner = 0;
+	int inflictor = h_ArrowInflictorRef[entity];
+	if(inflictor != -1)
+		inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+
+	if(inflictor == -1)
+		inflictor = owner;
+	float powerup_pos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", powerup_pos);
+	ParticleEffectAt(powerup_pos, "ExplosionCore_MidAir", 1.0);
+	EmitSoundToAll(g_ExplosionSounds[GetRandomInt(0, sizeof(g_ExplosionSounds) - 1)], 0, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _, -1, powerup_pos);
+	Explode_Logic_Custom(0.0, owner, inflictor, -1, powerup_pos, 400.0, _, _, true, _, false, _, FlashGrenade);
+
+	RemoveEntity(entity);
+	return Plugin_Handled;
+}*/
+
+static Action Timer_NPC_Flash_Grenade(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int owner = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		if(!IsValidEntity(owner)&&!IsEntityAlive(owner))
+		{
+			RemoveEntity(entity);
+			return Plugin_Stop;
+		}
+		float powerup_pos[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", powerup_pos);
+		if(fl_Har_Delay[entity] < GetGameTime())
+		{
+			fl_Har_Delay[entity] = GetGameTime() + 1.0;
+			TE_SetupBeamRingPoint(powerup_pos, 10.0, 400.0 * 2.0, BeamIndex, -1, 0, 5, 0.5, 5.0, 3.0, {255,100,80,75}, 0, 0);
+			TE_SendToAll();
+		}
+		if(fl_Har_Duration[entity] < GetGameTime())
+		{
+			ParticleEffectAt(powerup_pos, "ExplosionCore_MidAir", 1.0);
+			EmitSoundToAll(g_ExplosionSounds[GetRandomInt(0, sizeof(g_ExplosionSounds) - 1)], 0, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _, -1, powerup_pos);
+			Explode_Logic_Custom(0.0, owner, owner, -1, powerup_pos, 400.0, _, _, true, _, false, _, FlashGrenade);
+
+			RemoveEntity(entity);
+			return Plugin_Stop;	
+		}
+		return Plugin_Continue;
+	}
+	else
+	{
+		return Plugin_Stop;	
+	}
+}
+
+static void FlashGrenade(int entity, int victim, float damage, int weapon)
+{
+	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+	if(GetTeam(entity) != GetTeam(victim))
+	{
+		int inflictor = h_ArrowInflictorRef[entity];
+		if(inflictor != -1)
+			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+
+		if(inflictor == -1)
+			inflictor = entity;
+		damage = 500.0;
+		if(ShouldNpcDealBonusDamage(victim))
+			damage *= 3.0;
+		if(b_KillIconSwitch[entity])
+		{
+			KillFeed_SetKillIcon(entity, "taunt_soldier");
+			b_KillIconSwitch[entity]=false;
+		}
+		SDKHooks_TakeDamage(victim, entity, inflictor, damage, DMG_BLAST, -1, _, vecHit);
+		if(!HasSpecificBuff(victim, "Fluid Movement") && IsValidClient(victim))
+			TF2_StunPlayer(victim, 3.0, 0.3, TF_STUNFLAG_SLOWDOWN);
+		ApplyStatusEffect(entity, victim, "Silenced", (IsValidClient(victim) ? 6.0 : (b_thisNpcIsARaid[victim] || b_thisNpcIsABoss[victim] ? 3.0 : 6.0)));
 	}
 }

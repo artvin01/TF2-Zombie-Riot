@@ -272,7 +272,6 @@ stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR
 		TeleportEntity(entity,origin,angles,velocity);
 	}
 }
-
 stock void Custom_SDKCall_SetLocalOrigin(int index, const float localOrigin[3])
 {
 	if(g_hSetLocalOrigin)

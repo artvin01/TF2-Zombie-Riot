@@ -335,6 +335,7 @@ methodmap Sensal < CClotBody
 		if(cutscene2)
 		{
 			i_RaidGrantExtra[npc.index] = 51;
+			b_NoKillFeed[npc.index] = true;
 		}
 		bool tripple = StrContains(data, "triple_enemies") != -1;
 		if(tripple)
@@ -564,49 +565,52 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: Stop the fight this instant.");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-1", false, false);
 			}
 			case 1:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: What is happening here?");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-2", false, false);
 			}
 			case 2:
 			{
-				CPrintToChatAll("{blue}Castellan{default}: They attacked us while invading Ziberia, what else is there to add?");
+				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-3", false);
 			}
 			case 3:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: Invading Ziberia? Right after {darkblue}Kahmlstein{default} Perished?");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-4", false, false);
 			}
 			case 4:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: There are more important matters to attend to.\nZiberia is not like Him.");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-5", false, false);
 			}
 			case 5:
 			{
-				CPrintToChatAll("{blue}Castellan{default}: Youre meaning to say that he was the cause?");
+				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-6", false);
 			}
 			case 6:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: Correct. The country itself isnt at fault. Now leave, I also believe Victoria has to deal with chaos.");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-7", false, false);
 			}
 			case 7:
 			{
-				CPrintToChatAll("{blue}Castellan{default}: I remember you mentioning chaos before, if you say its in our city walls, then we will immedietly return and assess the situation.");
+				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-8", false);
 			}
 			case 8:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: Good.");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-9", false, false);
 			}
 			case 9:
 			{
-				CPrintToChatAll("{blue}Castellan{default}: We will return to Victoria now.");
+				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-10", false);
 				for (int client = 1; client <= MaxClients; client++)
 				{
-					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500 && !Items_HasNamedItem(client, "A copy of Truthful Evidence"))
 					{
-						Items_GiveNamedItem(client, "Avangard's Processing Core-B");
-						CPrintToChat(client,"{default}As Castellan and his army leave, they drop something: {darkblue}''Avangard's Processing Core-B''{default}!");
+						//Players who have already won the trophy will not get a message.
+						Items_GiveNamedItem(client, "A copy of Truthful Evidence");
+						SetGlobalTransTarget(client);
+						CPrintToChat(client, "%t", "Castellan_And_Sensal_Talk-11");
+						CPrintToChat(client, "%t", "Castellan_And_Sensal_Talk-12");
 					}
 				}
 			}
@@ -1492,8 +1496,8 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		int Projectile = npc.FireParticleRocket(FloatVector, damage , 400.0 , 100.0 , "",_,_,true,origin_altered,_,_,_,false);
 		b_RageProjectile[Projectile] = npc.Anger;
 		//dont exist !
-		SDKUnhook(Projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-		SDKHook(Projectile, SDKHook_StartTouch, Sensal_Particle_StartTouch);
+		//dont exist !
+		WandProjectile_ApplyFunctionToEntity(Projectile, Sensal_Particle_StartTouch);
 		CreateTimer(15.0, Timer_RemoveEntitySensal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
 		static float ang_Look[3];
 		GetEntPropVector(Projectile, Prop_Send, "m_angRotation", ang_Look);
@@ -1602,7 +1606,7 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 		EmitSoundToAll(g_SyctheHitSound[GetRandomInt(0, sizeof(g_SyctheHitSound) - 1)], entity, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		TE_Particle(b_RageProjectile[entity] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -1610,7 +1614,7 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		float ProjectileLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
@@ -1961,8 +1965,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 				b_RageProjectile[Projectile] = npc.Anger;
 
 				//dont exist !
-				SDKUnhook(Projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-				SDKHook(Projectile, SDKHook_StartTouch, Sensal_Particle_StartTouch);
+				WandProjectile_ApplyFunctionToEntity(Projectile, Sensal_Particle_StartTouch);
 				
 				CreateTimer(15.0, Timer_RemoveEntitySensal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
 				static float ang_Look[3];

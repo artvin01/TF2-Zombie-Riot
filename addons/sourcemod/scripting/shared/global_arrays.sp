@@ -391,13 +391,16 @@ bool i_IsABuilding[MAXENTITIES];
 bool i_NpcIsABuilding[MAXENTITIES];
 bool b_NpcIgnoresbuildings[MAXENTITIES];
 
+float f_ReceivedTruedamageHit[MAXPLAYERS];
 
 bool b_IsAGib[MAXENTITIES];
 int i_NpcInternalId[MAXENTITIES];
 bool b_IsCamoNPC[MAXENTITIES];
 bool b_NoKillFeed[MAXENTITIES];
+bool b_IsCustomProjectile[MAXENTITIES];
 
 float f_TimeUntillNormalHeal[MAXENTITIES]={0.0, ...};
+float f_LivingArmorPenalty[MAXPLAYERS]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZone[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneDamage[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneStairs[MAXENTITIES]={0.0, ...};
@@ -619,6 +622,7 @@ Function EntityFuncAttackInstant[MAXENTITIES];
 Function EntityFuncAttack2[MAXENTITIES];
 Function EntityFuncAttack3[MAXENTITIES];
 Function EntityFuncReload4[MAXENTITIES];
+Function EntityFuncPlayerRunCmd[MAXENTITIES];
 //Function EntityFuncReloadSingular5[MAXENTITIES];
 
 float f_ClientMusicVolume[MAXPLAYERS];
@@ -853,6 +857,7 @@ float fl_StopDodgeCD[MAXENTITIES];
 
 int i_GunMode[MAXENTITIES];
 int i_GunAmmo[MAXENTITIES];
+int i_GunAmmoMAX[MAXENTITIES];
 float f_NemesisImmuneToInfection[MAXENTITIES];
 float f_NemesisSpecialDeathAnimation[MAXENTITIES];
 float f_NemesisRandomInfectionCycle[MAXENTITIES];
@@ -860,10 +865,6 @@ bool b_InKame[MAXENTITIES];
 bool b_said_player_weaponline[MAXPLAYERS]; //Yes, i know, itll break if multiple raids spawn, but it doesnt really matter....
 float fl_said_player_weaponline_time[MAXENTITIES];
 int i_current_wave[MAXENTITIES];
-bool FactorySpawn[MAXENTITIES];
-bool MK2[MAXENTITIES];
-bool Limit[MAXENTITIES];
-bool Anvil[MAXENTITIES];
 int i_ally_index[MAXENTITIES];
 
 //some lasers had some variation of this, i just condeced it down to 1

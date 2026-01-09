@@ -274,7 +274,7 @@ void WinterFreezingCleanerSelfDefense(WinterFreezingCleaner npc)
 		npc.FaceTowards(vecTarget, 20000.0);
 		int projectile = npc.FireParticleRocket(vecTarget, 8.0, 1000.0, 150.0, "unusual_icetornado_blue_parent", true);
 		SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-		int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
+		int particle = EntRefToEntIndex(i_WandParticle[projectile]);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 		
@@ -313,7 +313,7 @@ public void FreezingCleaner_Rocket_Particle_StartTouch(int entity, int target)
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		
 		Elemental_AddCyroDamage(target, owner, 10, true);
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -321,7 +321,7 @@ public void FreezingCleaner_Rocket_Particle_StartTouch(int entity, int target)
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		if(IsValidEntity(particle))
 		{

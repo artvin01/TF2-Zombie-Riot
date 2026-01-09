@@ -47,6 +47,37 @@ public const int AmmoData[][] =
 	{ 0, 0 }			//???
 };
 
+public const int DefaultWaveCash[] =
+{
+	300, 300, 500, 300, 300, 300, 300, 300, 300, 1000,
+	500, 500, 500, 750, 750, 1500, 2000, 1200, 1200, 2500,
+	1250, 1250, 1500, 2250, 1500, 1500, 2900, 1750, 1750, 5000,
+	1850, 1850, 1850, 1850, 1850, 3000, 3000, 4000, 4000, 20000,
+	3000, 3000, 3000, 3000, 15000,
+	2500, 2500, 3000, 4000, 25000,
+	3000, 3000, 3000, 3000
+};
+
+stock int DefaultTotalCash(int wave)
+{
+	static int totalCash[sizeof(DefaultWaveCash)];
+
+	if(!totalCash[0])
+	{
+		int total;
+		for(int i; i < sizeof(DefaultWaveCash); i++)
+		{
+			total += DefaultWaveCash[i];
+			totalCash[i] = total;
+		}
+	}
+	
+	int twave = wave;
+	if(twave >= sizeof(DefaultWaveCash))
+		twave = sizeof(DefaultWaveCash) - 1;
+	
+	return totalCash[twave];
+}
 
 //FOR PERK MACHINE!
 public const char PerkNames[][] =
@@ -253,6 +284,7 @@ enum
     WEAPON_KIT_PURGE_RAMPAGER = 161,
     WEAPON_KIT_PURGE_ANNAHILATOR = 162,
     WEAPON_KIT_PURGE_MISC = 163,
+	WEAPON_BOMB_AR = 164
 }
 
 enum
@@ -381,6 +413,7 @@ bool b_HoldingInspectWeapon[MAXPLAYERS];
 #define SF2_PLAYER_VIEWBOB_SCALE_Z 0.0
 #define RAID_MAX_ARMOR_TABLE_USE 20
 #define ZR_ARMOR_DAMAGE_REDUCTION 0.75
+#define ZR_LIVING_ARMOR_DAMAGE_REDUCTION 0.7
 #define ZR_ARMOR_DAMAGE_REDUCTION_INVRERTED 0.25
 
 float Armor_regen_delay[MAXPLAYERS];
@@ -496,6 +529,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zsclassic.sp"
 #include "construction.sp"
 #include "betting.sp"
+#include "dungeons.sp"
 #include "sm_skyboxprops.sp"
 #include "custom/homing_projectile_logic.sp"
 #include "custom/weapon_slug_rifle.sp"
@@ -642,6 +676,8 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/wand/weapon_wand_sigil_blade.sp"
 #include "custom/kit_omega.sp"
 #include "custom/kit_purging.sp"
+#include "custom/weapon_bombplant_smg.sp"
+#include "custom/weapon_guiding_missile.sp"
 
 void ZR_PluginLoad()
 {
@@ -651,6 +687,7 @@ void ZR_PluginLoad()
 void ZR_PluginStart()
 {
 	LoadTranslations("zombieriot.phrases.zombienames");
+	LoadTranslations("zombieriot.phrases.npctalk");
 	
 	RegServerCmd("zr_reloadnpcs", OnReloadCommand, "Reload NPCs");
 	RegServerCmd("sm_reloadnpcs", OnReloadCommand, "Reload NPCs", FCVAR_HIDDEN);
@@ -706,6 +743,15 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_spawn_vehicle", Command_PropVehicle, ADMFLAG_ROOT, "Spawn Vehicle"); 	//DEBUG
 	RegAdminCmd("sm_loadbgmusic", CommandBGTest, ADMFLAG_RCON, "Load a config containing a music field as passive music");
 	RegAdminCmd("sm_forceset_team", Command_SetTeamCustom, ADMFLAG_ROOT, "Set Team custom to a player"); 	//DEBUG
+	
+	RegAdminCmd("zr_rein", CommandAdminReinforce, ADMFLAG_ROOT, "Deploying Reinforce");
+	RegAdminCmd("zr_waveadd", Waves_AdminsWaveTimeAddCmd, ADMFLAG_ROOT, "Wave Time Add");
+	RegAdminCmd("zr_waveremain", Waves_AdminsWaveTimeRemainCmd, ADMFLAG_ROOT, "Wave Time Remain");
+	RegAdminCmd("zr_raidend", Waves_AdminsRaidTimeEndCmd, ADMFLAG_ROOT, "Raid Force END");
+	RegAdminCmd("zr_raidadd", Waves_AdminsRaidTimeAddCmd, ADMFLAG_ROOT, "Raid Time Add");
+	RegAdminCmd("zr_scaletest", Waves_ScaleTestCmd, ADMFLAG_ROOT, "Usage: zr_scaletest <Players> [AllyRebels] [EnemyCount] [EnemyHP]  [EnemyDMG]");
+	
+	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 
@@ -726,6 +772,7 @@ void ZR_PluginStart()
 	Vehicle_PluginStart();
 	Kritzkrieg_PluginStart();
 	BetWar_PluginStart();
+	Dungeon_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
@@ -770,6 +817,7 @@ void ZR_MapStart()
 	Classic_MapStart();
 	Construction_MapStart();
 	BetWar_MapStart();
+	Dungeon_MapStart();
 	Zero(TeutonType); //Reset teutons on mapchange
 	f_AllowInstabuildRegardless = 0.0;
 	Zero(i_NormalBarracks_HexBarracksUpgrades);
@@ -957,6 +1005,7 @@ void ZR_MapStart()
 	KitOmega_OnMapStart();
 	Wand_Sigil_Blade_MapStart();
 	PurgeKit_MapStart();
+	ResetMapStartExploARWeapon();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1030,7 +1079,7 @@ public Action GlobalTimer(Handle timer)
 		f_AllowInstabuildRegardless = 0.0;
 		ForceMusicStopAndReset = true;
 	}
-	if(Rogue_Mode() || Construction_Mode())
+	if(Rogue_Mode() || Construction_Mode() || Dungeon_Mode())
 	{
 		ForceMusicStopAndReset = false;
 	}
@@ -2392,6 +2441,9 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 	{
 		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
 	}
+	//half armor if they have this thing, but only if they arent under corrosion.
+	if((f_LivingArmorPenalty[client] > GetGameTime() || (Attributes_Get(client, Attrib_Armor_AliveMode, 0.0)) != 0.0) && Armor_Charge[client] >= 0)
+		Armor_Max /= 2;
 		
 	return (RoundToCeil(float(Armor_Max) * multiplyier));
 	

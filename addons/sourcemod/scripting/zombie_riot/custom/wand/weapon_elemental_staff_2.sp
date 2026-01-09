@@ -584,7 +584,7 @@ public void Weapon_Passanger_LightningArea(int client, int weapon, bool crit, in
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.");		
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Your Weapon is not charged enough None");		
 	}
 	f_PassangerHudDelay[client] = 0.0;
 	Passanger_Cooldown_Logic(client, weapon);

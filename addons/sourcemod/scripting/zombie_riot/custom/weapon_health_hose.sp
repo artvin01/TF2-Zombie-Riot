@@ -550,7 +550,7 @@ bool SpawnHealthkit_SyringeGun(int client, float VectorGoal[3])
 		f_HealMaxPickup_Enable[prop] = GetGameTime();
 		f_HealMaxPickup[prop] = HealAmmount;
 		i_WandIdNumber[prop] = 999;
-	//	CreateTimer(0.1, Timer_Detect_Player_Nearby_healthkit, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		CreateTimer(60.0 * 5, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 	}	
 	return true;
 }
@@ -584,7 +584,8 @@ public void TouchHealthKit(int entity, int other)
 		{
 			Owner = other; //if there is no invalid owner, just make the one that picks it up the owner
 		}
-		int healing_done = HealEntityGlobal(Owner, other, HealingAmount * HealPenalty, 1.0, _, _);
+		float fTemp = HealPenalty;
+		int healing_done = HealEntityGlobal(Owner, other, HealingAmount * fTemp , 1.0, _, _, _ , HealPenalty);
 		if(healing_done <= 0)
 		{
 			return;
@@ -595,7 +596,7 @@ public void TouchHealthKit(int entity, int other)
 			PrintHintText(Owner, "%t", "You healed for", other, healing_done);
 		}
 		ClientCommand(other, "playgamesound items/smallmedkit1.wav");
-		ApplyStatusEffect(Owner, other, "Healing Resolve", 15.0);
+		ApplyStatusEffect(Owner, other, "Healing Resolve", 5.0);
 		f_HealMaxPickup_Enable[entity] = GetGameTime() + 0.5;
 		f_HealMaxPickup[entity] -= (healing_done / HealPenalty);
 		if(f_HealMaxPickup[entity] <= 0)

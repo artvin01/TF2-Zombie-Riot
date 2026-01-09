@@ -86,7 +86,7 @@ static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
 		//littel cooldown
 		KillMostCurrentIDAnnotation(client, i_CurrentIdBeforeAnnoation[client]);
 		f_TutorialUpdateStep[client] = GetGameTime() + 5.0;
-		SetClientTutorialStep(client, 5);
+		SetClientTutorialStep(client, 6);
 		DoTutorialStep(client, false);	
 	}
 	char buffer[32];
@@ -286,7 +286,7 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	
 	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
 	ApplyBuildingCollectCooldown(entity, client, 40.0);
-	Building_GiveRewardsUse(client, owner, 25, true, 0.6, true);
+	Building_GiveRewardsUse(client, owner, 25, true, 0.75, true);
 
 	float pos[3];
 	float angles[3];

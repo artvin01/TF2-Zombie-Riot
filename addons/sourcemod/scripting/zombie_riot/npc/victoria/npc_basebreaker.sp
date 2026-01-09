@@ -7,7 +7,7 @@ static const char g_DeathSounds[][] = {
 	"vo/scout_sf12_badmagic03.mp3",
 	"vo/scout_sf12_badmagic04.mp3",
 	"vo/scout_sf12_badmagic05.mp3",
-	"vo/scout_sf12_badmagic09.mp3",
+	"vo/scout_sf12_badmagic09.mp3"
 };
 
 static const char g_HurtSounds[][] = {
@@ -18,33 +18,28 @@ static const char g_HurtSounds[][] = {
 	"vo/scout_painsharp05.mp3",
 	"vo/scout_painsharp06.mp3",
 	"vo/scout_painsharp07.mp3",
-	"vo/scout_painsharp08.mp3",
+	"vo/scout_painsharp08.mp3"
 };
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/scout_sf12_badmagic05.mp3",
 	"vo/scout_sf12_badmagic06.mp3",
-	"vo/scout_sf12_badmagic06.mp3",
+	"vo/scout_sf12_badmagic06.mp3"
 };
 
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/pickaxe_swing1.wav",
 	"weapons/pickaxe_swing2.wav",
-	"weapons/pickaxe_swing3.wav",
+	"weapons/pickaxe_swing3.wav"
 };
 
 static const char g_MeleeHitSounds[][] = {
 	"weapons/bat_draw_swoosh1.wav",
-	"weapons/bat_draw_swoosh2.wav",
+	"weapons/bat_draw_swoosh2.wav"
 };
 
 void Victoria_BaseBreaker_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Basebreaker");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_basebreaker");
@@ -52,15 +47,26 @@ void Victoria_BaseBreaker_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
-
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static void ClotPrecache()
 {
-	return VictoriaBaseBreaker(vecPos, vecAng, ally);
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheModel("models/player/scout.mdl");
 }
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return VictoriaBaseBreaker(vecPos, vecAng, ally, data);
+}
+
 methodmap VictoriaBaseBreaker < CClotBody
 {
 	public void PlayIdleAlertSound() 
@@ -70,9 +76,7 @@ methodmap VictoriaBaseBreaker < CClotBody
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -81,14 +85,11 @@ methodmap VictoriaBaseBreaker < CClotBody
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -96,11 +97,20 @@ methodmap VictoriaBaseBreaker < CClotBody
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
 	}
 	
+	property float m_flVSBuild_DMG
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flVSBuild_DMG_Buff
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	
-	public VictoriaBaseBreaker(float vecPos[3], float vecAng[3], int ally)
+	public VictoriaBaseBreaker(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictoriaBaseBreaker npc = view_as<VictoriaBaseBreaker>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "4500", ally));
 		
@@ -117,17 +127,37 @@ methodmap VictoriaBaseBreaker < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(VictoriaBaseBreaker_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaBaseBreaker_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictoriaBaseBreaker_ClotThink);
-		
+		func_NPCDeath[npc.index] = VictoriaBaseBreaker_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictoriaBaseBreaker_OnTakeDamage;
+		func_NPCThink[npc.index] = VictoriaBaseBreaker_ClotThink;
 		
 		//IDLE
+		KillFeed_SetKillIcon(npc.index, "the_maul");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 350.0;
+		npc.m_flVSBuild_DMG = 4.0;
+		npc.m_flVSBuild_DMG_Buff = 1.5;
 		
+		static char countext[2][256];
+		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
+		for(int i = 0; i < count; i++)
+		{
+			if(i>=count)break;
+			else if(StrContains(countext[i], "vsbuilding") != -1)
+			{
+				//Automatic Fragments Spawn
+				ReplaceString(countext[i], sizeof(countext[]), "vsbuilding", "");
+				npc.m_flVSBuild_DMG = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "buff_vsbuilding") != -1)
+			{
+				//Automatic Anvil Spawn
+				ReplaceString(countext[i], sizeof(countext[]), "buff_vsbuilding", "");
+				npc.m_flVSBuild_DMG_Buff = StringToFloat(countext[i]);
+			}
+		}
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -153,13 +183,11 @@ methodmap VictoriaBaseBreaker < CClotBody
 	}
 }
 
-public void VictoriaBaseBreaker_ClotThink(int iNPC)
+static void VictoriaBaseBreaker_ClotThink(int iNPC)
 {
 	VictoriaBaseBreaker npc = view_as<VictoriaBaseBreaker>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
-	{
 		return;
-	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
@@ -171,9 +199,7 @@ public void VictoriaBaseBreaker_ClotThink(int iNPC)
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
-	{
 		return;
-	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
@@ -182,14 +208,7 @@ public void VictoriaBaseBreaker_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 
-	if(NpcStats_VictorianCallToArms(npc.index))
-	{
-		npc.m_flSpeed = 400.0;
-	}
-	else
-	{
-		npc.m_flSpeed = 320.0;
-	}
+	npc.m_flSpeed = (NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 320.0);
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -214,34 +233,27 @@ public void VictoriaBaseBreaker_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	
-
 	npc.PlayIdleAlertSound();
 }
 
-public Action VictoriaBaseBreaker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictoriaBaseBreaker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictoriaBaseBreaker npc = view_as<VictoriaBaseBreaker>(victim);
-		
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
 	return Plugin_Changed;
 }
 
-public void VictoriaBaseBreaker_NPCDeath(int entity)
+static void VictoriaBaseBreaker_NPCDeath(int entity)
 {
 	VictoriaBaseBreaker npc = view_as<VictoriaBaseBreaker>(entity);
 	if(!npc.m_bGib)
-	{
 		npc.PlayDeathSound();	
-	}
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
@@ -254,7 +266,7 @@ public void VictoriaBaseBreaker_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-void VictoriaBaseBreakerSelfDefense(VictoriaBaseBreaker npc, float gameTime, int target, float distance)
+static void VictoriaBaseBreakerSelfDefense(VictoriaBaseBreaker npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -267,31 +279,20 @@ void VictoriaBaseBreakerSelfDefense(VictoriaBaseBreaker npc, float gameTime, int
 			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 			{
-							
 				target = TR_GetEntityIndex(swingTrace);	
-				
 				float vecHit[3];
 				TR_GetEndPosition(vecHit, swingTrace);
 				
 				if(IsValidEnemy(npc.index, target))
 				{
 					float damageDealt = 45.0;
-					
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						damageDealt *= 4.0;
+						damageDealt *= npc.m_flVSBuild_DMG;
 						if(NpcStats_VictorianCallToArms(npc.index))
-						{
-							damageDealt *= 1.5;
-						}
+							damageDealt *= npc.m_flVSBuild_DMG_Buff;
 					}
-						
-
-					int DamageType = DMG_CLUB;
-					
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DamageType, -1, _, vecHit);
-
-					// Hit sound
+					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					npc.PlayMeleeHitSound();
 				} 
 			}

@@ -11,7 +11,6 @@ static float f_EntityOutOfNav[MAXPLAYERS];
 static float f_LatestDamageRes[MAXPLAYERS];
 static float f_TimeSinceLastRegenStop[MAXPLAYERS];
 static bool b_GaveMarkForDeath[MAXPLAYERS];
-static float f_ReceivedTruedamageHit[MAXPLAYERS];
 static char MaxAsignPerkNames[MAXPLAYERS][8];
 
 //With high ping our method to change weapons with a click of a button or whtaever breaks.
@@ -496,10 +495,10 @@ public void OnPostThink(int client)
 	CorrectClientsideMultiweapon(client, 2);
 #endif
 	//Reduce knockback when airborn, this is to fix issues regarding flying way too high up, making it really easy to tank groups!
-	bool WasAirborn = false;
+	int WasAirbornType = 0;
 	if (!(GetEntityFlags(client) & FL_ONGROUND))
 	{
-		WasAirborn = true;
+		WasAirbornType = 1;
 	}
 	else
 	{
@@ -507,14 +506,18 @@ public void OnPostThink(int client)
 		int GroundEntity = EntRefToEntIndex(RefGround);
 		if(GroundEntity > 0 && GroundEntity < MAXENTITIES)
 		{
-			if(!b_NpcHasDied[GroundEntity])
+			if(b_ThisWasAnNpc[GroundEntity])
 			{
-				WasAirborn = true;
+				//when standing on an npc you gain less knockack reduction
+				WasAirbornType = 1;
+				if(b_thisNpcIsARaid[GroundEntity])
+					WasAirbornType = 2;
+				//when ontop of a raidboss, gain no knockback reduction.
 			}
 		}
 	}
 
-	if(WasAirborn && !b_PlayerWasAirbornKnockbackReduction[client])
+	if(WasAirbornType == 1 && !b_PlayerWasAirbornKnockbackReduction[client])
 	{
 		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
 		if(EntityWearable > 0)
@@ -524,7 +527,7 @@ public void OnPostThink(int client)
 			Attributes_Set(EntityWearable, 252, 0.5);
 		}
 	}
-	else if(!WasAirborn && b_PlayerWasAirbornKnockbackReduction[client])
+	else if((WasAirbornType == 0 || WasAirbornType == 2) && b_PlayerWasAirbornKnockbackReduction[client])
 	{
 		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
 		if(EntityWearable > 0)
@@ -624,6 +627,18 @@ public void OnPostThink(int client)
 	if(Rogue_CanRegen() && Armor_regen_delay[client] < GameTime)
 	{
 		Armour_Level_Current[client] = 0;
+		if(f_LivingArmorPenalty[client] < GetGameTime() && Attributes_Get(client, Attrib_Armor_AliveMode, 0.0) != 0.0)
+		{
+			//regen armor if out of battle
+			if(f_TimeUntillNormalHeal[client] < GetGameTime())
+			{
+				if(Armor_Charge[client] >= 0)
+				{
+					float DefaultRegenArmor = 0.06666;
+					GiveArmorViaPercentage(client, DefaultRegenArmor, 1.0);
+				}
+			}
+		}
 
 		
 		if(!Rogue_Paradox_GrigoriBlessing(client))
@@ -639,6 +654,7 @@ public void OnPostThink(int client)
 					float MaxHealth = float(SDKCall_GetMaxHealth(client));
 					if(MaxHealth > 3000.0)
 						MaxHealth = 3000.0;
+
 						
 					if(Rogue_Rift_HolyBlessing())
 						MaxHealth *= 2.0;
@@ -688,6 +704,18 @@ public void OnPostThink(int client)
 				HealEntityGlobal(client, client, attrib, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 
 			//This heal will show in the hud.
+			attrib = Attributes_GetOnPlayer(client, Attrib_RegenHpOutOfBattle_MaxHealthScaling, true,_, 0.0);	// rage on kill
+			if(attrib)
+			{
+				if(f_TimeUntillNormalHeal[client] < GetGameTime())
+				{
+					float MaxHealth = float(SDKCall_GetMaxHealth(client));
+					if(MaxHealth > 3000.0)
+						MaxHealth = 3000.0;
+					//show this healing.
+					HealEntityGlobal(client, client, MaxHealth * attrib, 1.0, 0.0, HEAL_SELFHEAL);	
+				}
+			}
 			attrib = 0.0;
 			if(ClientPossesesVoidBlade(client) >= 2 && (NpcStats_WeakVoidBuff(client) || NpcStats_StrongVoidBuff(client)))
 			{
@@ -704,6 +732,7 @@ public void OnPostThink(int client)
 			{
 				HealEntityGlobal(client, client, attrib, 1.25, 0.0, HEAL_SELFHEAL);
 			}
+			
 		}
 		
 		Armor_regen_delay[client] = GameTime + 1.0;
@@ -715,11 +744,13 @@ public void OnPostThink(int client)
 		OnlyOneAtATime = true;
 		SetGlobalTransTarget(client);
 
+#if defined ZR
 		if(BetWar_ShowStatus(client))
 		{
 			Mana_Hud_Delay[client] = GameTime + 0.1;
 		}
 		else
+#endif	// ZR
 		{
 			char buffer[255];
 			float HudY = 0.95;
@@ -1411,17 +1442,35 @@ public void OnPostThink(int client)
 		int armor = abs(Armor_Charge[armorEnt]);
 		if(Armor_Charge[armorEnt] >= 0)
 		{	
-			if(armor > 0)
+			if(Attributes_Get(client, Attrib_Armor_AliveMode, 0.0) != 0.0)
 			{
-				if(armor > Armor_Max)
-					Format(buffer, sizeof(buffer), "⛨ ", buffer);
+				if(armor > 0)
+				{
+					if(armor > Armor_Max)
+						Format(buffer, sizeof(buffer), "⛊ ", buffer);
+					else
+						Format(buffer, sizeof(buffer), "⛨ ", buffer);
+				}
 				else
-					Format(buffer, sizeof(buffer), "⛉ ", buffer);
+				{
+					Format(buffer, sizeof(buffer), "⛨ ", buffer);
+				}			
 			}
 			else
 			{
-				Format(buffer, sizeof(buffer), "⛉ ", buffer);
+				if(armor > 0)
+				{
+					if(armor > Armor_Max)
+						Format(buffer, sizeof(buffer), "⛊ ", buffer);
+					else
+						Format(buffer, sizeof(buffer), "⛉ ", buffer);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "⛉ ", buffer);
+				}
 			}
+
 			static char c_ArmorCurrent[64];
 			if(vehicle != -1)
 			{
@@ -1837,10 +1886,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(!CheckInHud())
 	{
 #if defined ZR
-		int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 		if(dieingstate[victim] > 0)
 		{
-			if(flHealth < 1)
+			if(GetEntProp(victim, Prop_Send, "m_iHealth") < 1)
 			{
 				//This kills the target.
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
@@ -2938,10 +2986,12 @@ void NpcStuckZoneWarning(int client, float &damage, int TypeOfAbuse = 0)
 
 void UpdatePlayerFakeModel(int client)
 {
+#if defined ZR
 	if(TeutonType[client] != TEUTON_NONE)
 	{
 		return;
 	}
+#endif
 	int PlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(PlayerModel > 0)
 	{	

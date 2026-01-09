@@ -246,7 +246,7 @@ void SDKCall_SetAbsOrigin(int index, float AbsOrigin[3])
 		SDKCall(g_hSetAbsOrigin, index, AbsOrigin);
 	}
 }
-/*
+
 void SDKCall_SetAbsAngle(int index, float AbsAngle[3])
 {
 	if(g_hSetAbsAngle)
@@ -254,7 +254,7 @@ void SDKCall_SetAbsAngle(int index, float AbsAngle[3])
 		SDKCall(g_hSetAbsAngle, index, AbsAngle);
 	}
 }
-*/
+
 
 #if defined ZR || defined RPG
 stock void SDKCall_RecalculatePlayerBodygroups(int index)

@@ -35,7 +35,7 @@ static int ParticleRef[MAXPLAYERS] = {-1, ...};
 static Handle EffectTimer[MAXPLAYERS];
 static bool Precached = false;
 
-#define FLAGGELANT_BASE_HEAL 40.0
+#define FLAGGELANT_BASE_HEAL 80.0
 #define FLAGGELANT_GLOBAL_HP_NERF 0.8
 void Flagellant_MapStart()
 {
@@ -498,29 +498,20 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 		
 		if(health < maxhealth)
 		{
-			float multi = Attributes_Get(weapon, 2, 1.0);
+			float multi = Attributes_Get(weapon, 122, 1.0);
 			multi *= Attributes_GetOnWeapon(client, weapon, 8, true);
-			
-			float base = FLAGGELANT_BASE_HEAL + (HealLevel[client] * 7.5);
-			float cost = 1.0 - (HealLevel[client] * 0.1);
-
-			base *= FLAGGELANT_GLOBAL_HP_NERF;
-			cost *= FLAGGELANT_GLOBAL_HP_NERF;
-
-			float healing = base * multi;
-			float injured = float(maxhealth - health);
-			if(healing > injured)
-				healing = injured;
-			
-			float healthLost = healing / (1.0 + (multi / 10.0)) * cost;
-			float healerHP = float(GetClientHealth(client) - 1);
-			if(healthLost > healerHP)
+			if(LastMann)
 			{
-				healing *= healerHP / healthLost;
-				healthLost = healerHP;
+				multi *= 0.25;
+				//he heals himself twice, nerf alot.
 			}
+			
+			float base = FLAGGELANT_BASE_HEAL;
+			base *= FLAGGELANT_GLOBAL_HP_NERF;
+			float healing = base * multi;
 
-			if(healing > 0.0 && healthLost > 0.0)
+
+			if(healing > 0.0)
 			{
 				int BeamIndex = ConnectWithBeam(client, target, 100, 250, 100, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
 				SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
@@ -528,7 +519,8 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 				
 				HealEntityGlobal(client, target, healing, 1.0, 2.0, _);
-				HealEntityGlobal(client, client, healthLost, 1.0, 2.0, _);
+				HealEntityGlobal(client, client, healing, 1.0, 2.0, _);
+				
 				MoreMoreHits[client] += 10;
 				float HealedAlly[3];
 				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", HealedAlly);
@@ -548,16 +540,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 				if(target <= MaxClients)
 					ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 				
-				float cooldown = (healing / multi) / 15.0;
-				cooldown *= 2.0;
-				if(cooldown < 8.0)
-				{
-					cooldown = 8.0;
-				}
-				else if(cooldown > 15.0)
-				{
-					cooldown = 15.0;
-				}
+				float cooldown = 10.0;
 
 				Ability_Apply_Cooldown(client, slot, cooldown);
 				
@@ -624,7 +607,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 		TriggerSelfDamage(client, 0.025);
 		
 		int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		float multi = Attributes_Get(weapon, 2, 1.0);
+		float multi = Attributes_Get(weapon, 122, 1.0);
 		multi *= Attributes_GetOnWeapon(client, weapon, 8, true);
 
 		int flags = i_ExplosiveProjectileHexArray[client];
@@ -849,7 +832,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 		}
 		
 		int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		float multi = Attributes_Get(weapon, 2, 1.0);
+		float multi = Attributes_Get(weapon, 122, 1.0);
 		multi *= Attributes_GetOnWeapon(client, weapon, 8, true);
 		if(HealLevel[client] > 1)
 			multi *= 1.2;
