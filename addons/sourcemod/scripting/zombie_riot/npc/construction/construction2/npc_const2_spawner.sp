@@ -86,7 +86,6 @@ methodmap Const2Spawner < CClotBody
 		char buffers[2][256];
 		bool EnemyBaseIs = false;
 		Format(DataAm, sizeof(DataAm), "%s", data);
-		PrintToChatAll("DataAm: %s",DataAm);
 		if(StrContains(DataAm, ";enemy_base") != -1)
 		{
 			PrintToChatAll("confirm enemy_base");

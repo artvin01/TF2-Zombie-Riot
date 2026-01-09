@@ -821,8 +821,8 @@ static void SetRandomMusic()
 	int time = GetTime();
 	int nextAttack = RoundToCeil(NextAttackAt - GetGameTime()) - music.Duration;
 
-	if(nextAttack > 0)
-		time += GetRandomInt(0, nextAttack);
+//	if(nextAttack > 0)
+//		time += GetRandomInt(0, nextAttack);
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
