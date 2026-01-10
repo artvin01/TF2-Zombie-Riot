@@ -2366,6 +2366,18 @@
 		"en"		"Hardened Stance"
 		"ko"		"단단한 골격"
 	}
+	"Living Armor"
+	{
+		"en"		"Living Armor"
+	}
+	"Living Armor Desc"
+	{
+		"en"		"-Armor now regens over 15 seconds if not hurt\n-Armor icon changes\n-Max Armor is halved\n-Armor protects only 70％ instead of 75％\n-Cant get armor from buildings\n-Armor corrosion disables this perk"
+	}
+	"Living Armor Chat"
+	{
+		"en"		"When buying or selling this perk, you lose all armor, and cant regen armor if done outside of setup for some time."
+	}
 	"Sticky Support Grenades"
 	{
 		"en"		"Sticky Support Grenades"
@@ -3280,7 +3292,7 @@
 		"ru"       "Расколотый ковчег"
 		"chi"       "断裂方舟"
 		"it"		"Arca fratturata"
-		"ko"		"금이 간 방주"
+		"ko"		"파편화된 방주"
 	}
 	"Zerofuse's Knife"
 	{
@@ -4224,7 +4236,7 @@
 	"Quibai's Elegance"
 	{
 		"en"		"Quibai's Elegance"
-		"ko"		"치우바이의 품위"
+		"ko"		"치우바이의 검"
 	}
 	"Ark of the Elements"
 	{
@@ -5528,7 +5540,7 @@
 	{
 		"en"	"The Crimson"
 		"it"	"Il Cremisi"
-		"ko"	"''그림자처럼''"
+		"ko"	"그림자처럼"
 	}
 	"Effect:"
 	{

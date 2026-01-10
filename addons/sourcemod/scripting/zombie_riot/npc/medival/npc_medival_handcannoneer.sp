@@ -282,7 +282,7 @@ public void MedivalHandCannoneer_ClotThink(int iNPC)
 						
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.25;
 					}
 					npc.StopPathing();
 					

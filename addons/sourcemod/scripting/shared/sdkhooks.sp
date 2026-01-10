@@ -11,7 +11,6 @@ static float f_EntityOutOfNav[MAXPLAYERS];
 static float f_LatestDamageRes[MAXPLAYERS];
 static float f_TimeSinceLastRegenStop[MAXPLAYERS];
 static bool b_GaveMarkForDeath[MAXPLAYERS];
-static float f_ReceivedTruedamageHit[MAXPLAYERS];
 static char MaxAsignPerkNames[MAXPLAYERS][8];
 
 //With high ping our method to change weapons with a click of a button or whtaever breaks.
@@ -633,6 +632,18 @@ public void OnPostThink(int client)
 	if(Rogue_CanRegen() && Armor_regen_delay[client] < GameTime)
 	{
 		Armour_Level_Current[client] = 0;
+		if(f_LivingArmorPenalty[client] < GetGameTime() && Attributes_Get(client, Attrib_Armor_AliveMode, 0.0) != 0.0)
+		{
+			//regen armor if out of battle
+			if(f_TimeUntillNormalHeal[client] < GetGameTime())
+			{
+				if(Armor_Charge[client] >= 0)
+				{
+					float DefaultRegenArmor = 0.06666;
+					GiveArmorViaPercentage(client, DefaultRegenArmor, 1.0);
+				}
+			}
+		}
 
 		
 		if(!Rogue_Paradox_GrigoriBlessing(client))
@@ -1436,17 +1447,35 @@ public void OnPostThink(int client)
 		int armor = abs(Armor_Charge[armorEnt]);
 		if(Armor_Charge[armorEnt] >= 0)
 		{	
-			if(armor > 0)
+			if(Attributes_Get(client, Attrib_Armor_AliveMode, 0.0) != 0.0)
 			{
-				if(armor > Armor_Max)
-					Format(buffer, sizeof(buffer), "⛨ ", buffer);
+				if(armor > 0)
+				{
+					if(armor > Armor_Max)
+						Format(buffer, sizeof(buffer), "⛊ ", buffer);
+					else
+						Format(buffer, sizeof(buffer), "⛨ ", buffer);
+				}
 				else
-					Format(buffer, sizeof(buffer), "⛉ ", buffer);
+				{
+					Format(buffer, sizeof(buffer), "⛨ ", buffer);
+				}			
 			}
 			else
 			{
-				Format(buffer, sizeof(buffer), "⛉ ", buffer);
+				if(armor > 0)
+				{
+					if(armor > Armor_Max)
+						Format(buffer, sizeof(buffer), "⛊ ", buffer);
+					else
+						Format(buffer, sizeof(buffer), "⛉ ", buffer);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "⛉ ", buffer);
+				}
 			}
+
 			static char c_ArmorCurrent[64];
 			if(vehicle != -1)
 			{

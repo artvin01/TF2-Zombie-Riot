@@ -800,9 +800,7 @@
 	}
 	"Spearman Desc"
 	{
-		"en" 		"A fast, fast attacking, high range, but low health and damage enemy. They can quickly storm, surround and kill you.\nDeals 2x damage to enemies that have a building mounted."
-		"it"		"Un nemico veloce, che attacca rapidamente, con un raggio d'azione elevato, ma con salute e danni bassi.\nPuò rapidamente assalirvi, circondarvi e uccidervi.\nDanno 2x ai nemici che hanno un edificio montato."
-		"ko" 		"빠르고, 빠른 공격 속도에, 긴 사정거리를 보유했지만, 체력과 피해량이 낮습니다. 빠르게 모여들 수 있기에 당신을 둘러싸서 죽이기 쉽습니다.\n-구조물을 들고 있는 대상에게 가하는 피해량 2배"
+		"en" 		"A fast, fast attacking, high range, but low health and damage enemy. They can quickly storm, surround and kill you.\nStacks a debuff, read debuff for more info."
 	}
 	"Hand Cannoneer Desc"
 	{
@@ -3509,7 +3507,7 @@
 	}
 	"Victorian Assault Vehicle Desc"
     {
-		"en"    "Armored Transport Vehicle of Victorian army. \n-It slowly speeds up to build up momentum and damage. \n-It prioritizes buildings over players" /n-Spawn units from other factions when it rams into building \n(When signalled) Spawn units more often""
+		"en"    "Armored Transport Vehicle of Victorian army. \n-It slowly speeds up to build up momentum and damage. \n-It prioritizes buildings over players /n-Spawn units from other factions when it rams into building \n(When signalled) Spawn units more often"
 		"ko"	"강화 병력 수송차량으로 건물을 우선시하며 여러 적들을 수송합니다.\n이동속도가 점차 빨라짐\n구조물을 공격시 적을 하차시킵니다\n(시그널 버프시) 더 빨라진 공격속도"
 	}
 	"Victoria Radiomast Desc"

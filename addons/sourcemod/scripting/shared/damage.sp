@@ -344,6 +344,11 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		if(vehicle != -1)
 			armorEnt = vehicle;
 		
+		float ArmorDmgRes = ZR_ARMOR_DAMAGE_REDUCTION;
+		if(f_LivingArmorPenalty[victim] > GetGameTime() || (Attributes_Get(victim, Attrib_Armor_AliveMode, 0.0) != 0.0))
+		{
+			ArmorDmgRes = ZR_LIVING_ARMOR_DAMAGE_REDUCTION;
+		}
 		if(CheckInHud())
 		{
 			if(vehicle != -1 && Armor_Charge[armorEnt] > 0)
@@ -355,7 +360,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		{
 			if(Armor_Charge[armorEnt] > 0)
 			{
-				int dmg_through_armour = RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION_INVRERTED);
+				int dmg_through_armour = RoundToCeil(damage * (1.0 - ArmorDmgRes));
 				switch(GetRandomInt(1,3))
 				{
 					case 1:
@@ -367,7 +372,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 					case 3:
 						EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet3.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
 				}						
-				if(RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION) >= Armor_Charge[armorEnt])
+				if(RoundToCeil(damage * ArmorDmgRes) >= Armor_Charge[armorEnt])
 				{
 					int damage_received_after_calc;
 					damage_received_after_calc = RoundToCeil(damage) - Armor_Charge[armorEnt];
@@ -392,7 +397,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 				}
 				else
 				{
-					Armor_Charge[armorEnt] -= RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION);
+					Armor_Charge[armorEnt] -= RoundToCeil(damage * ArmorDmgRes);
 					damage = 0.0;
 					damage += float(dmg_through_armour);
 				}

@@ -518,7 +518,7 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 				}
 			}
 		}
-		if(Attributes_Get(weapon, Attrib_DisallowTinker, 0.0) != 0.0)
+		if(Attributes_Get(client, Attrib_DisallowTinker, 0.0) != 0.0)
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);

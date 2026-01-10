@@ -475,7 +475,7 @@
 	}
 	"RPG Pap 3"
 	{
-		"en"		"-Massively Increased damage\n-Reduced reload speed\n-Has better enemy pierce\n-Guiding missile becomes slower, and a much bigger cooldown, and charges slower, but deals immensive damage"
+		"en"		"-Massively Increased damage\n-Reduced reload speed\n-Has better enemy pierce"
 		"fr"		"Dégats et vitesse de rechargement améliorés.\nFrappe plus d'ennemis à la fois."
 		"it"		"Danno enormemente aumentato e velocità di ricarica RIDOTTA.\nE ha una migliore perforazione del nemico"
 		"ko"		"-피해량 대폭 증가\n-재장전 속도 감소\n-적 관통력 증가\n-유도 미사일이 느려지고, 쿨타임이 증가하고, 충전 속도도 느려지지만, 매우 높은 피해를 입힘"
@@ -5329,8 +5329,8 @@
 	}
 	"Purging Desc"
 	{
-		"en"	"Become the Ziberian greatest invention... A monster.\n-Gain 2 weapons, Shotgun and Rampager rifle\n-Press M2 To easy switch between them\n-Charge energy on hit, used for later paps\n-Weapons has overheat and will lose damage the more you use them\n-The more one weapon overheats the stronger other weapons becomes\n-Also gain special buffs if other weapon is overheated\n-Gain 40％ more energy from hitting enemies up close."
-		"ko"	"지베리아의 가장 위대한 발명품... 괴물이 되세요.\n-산탄총, 램페이저 라이플 두 가지 무기를 획득\n-우클릭으로 무기를 쉽게 전환 가능\n-적중 시 에너지를 충전, 이는 무기 강화 후 사용\n-무기들은 사용시 과열되어 피해량 감소하나, 과열될 수록 다른 한 쪽이 강해집니다.\n-다른 무기가 과열된 상태일 시 특수 버프 획득\n-근접한 적 공격시 에너지 충전량 40％ 증가"
+		"en"	"Become the Ziberian greatest invention... A monster.\n-Gain 2 weapons, Shotgun and Rampager riffle\n-Press M2 To easy switch between them\n-Charge energy on hit, used for later paps\n-Weapons has overheat and will lose damage the more you use them\n-The more one weapon overheats the stronger other weapons becomes\n-Also gain special buffs if other weapon is overheated\n-Gain 40％ more energy from hitting enemies up close."
+		"ko"	"지베리아의 가장 위대한 발명품이 되어보세요... 괴물 말이죠.\n-산탄총과 램페이저 미니건 두 가지 무기를 획득\n-M2를 눌러 무기를 쉽게 전환할 수 있습니다.\n-공격 적중시 에너지를 충전하며 이는 이후의 무기 강화 후 사용됨.\n-근접한 적 공격시 에너지 충전량 40％ 증가"
     }
 	"Purging Pap N"
 	{
@@ -5340,7 +5340,7 @@
 	"Purging Pap 2"
 	{
 		"en"	"-Increased damage\n-Increased Health\n-While your shotgun is out, your M2 will give you a minigun.\n-Minigun Abilities:\nHeavy Resistance while out\nAttacking the same target massively boosts damage, upto 2x\nAfter some time, or by pressing R, minigun unequips\nTakes 30％ more damage from raids\nDeals 20％ less damage to raids."
-		"ko"	"-피해량, 체력 증가\n-산탄총을 들고 있을 때 우클릭으로 미니건을 장착\n-미니건: 장착하는 동안 높은 저항력을 얻고 동일한 대상 공격 시 피해량이 최대 2배까지 증가합니다.\n미니건은 일정 시간이 지나거나 R키를 누르면 해제됩니다.\n레이드 보스에게 받는 피해가 30％ 증가, 가하는 피해는 20％ 감소합니다."
+		"ko"	"-피해량, 체력 증가\n-산탄총을 들고 있을 때 M2로 미니건을 장착\n-미니건: 장착하는 동안 높은 저항력을 얻고 동일한 대상 공격 시 피해량이 최대 2배까지 증가합니다.\n미니건은 일정 시간이 지나거나 R키를 누르면 해제됩니다.\n레이드 보스에게 받는 피해가 30％ 증가, 가하는 피해는 20％ 감소합니다."
 	}
 	"Purging Pap 3"
 	{
@@ -5349,18 +5349,18 @@
 	}
 	"Purging Pap 4"
 	{
-		"en"	"-Increased damage\n-Increased Health\n-While your Rampager rifle is out, M2 will give you a Quad Rocket Launcher.\n-Quad launcher Abilities:\nShoots 2 rockets at once\nWhen depleted, explodes, dealing damage\nForce fully equips fists and makes you deal ram damage while running\nYou take more damage while ramming"
-		"ko"	"-피해량, 체력 증가\n-램페이저 라이플을 들고 있을 때 우클릭으로 4연장 로켓 발사기 장착\n-4연장 로켓 발사기: 로켓 2발을 동시에 발사합니다.\n탄약이 고갈되거나 지속 시간 종료시 폭발하며 피해를 가합니다.\n이후 강제로 주먹을 장착시키고 달리는 동안 돌진 피해를 입힙니다.\n돌진 중에는 더 많은 피해를 받습니다."
+		"en"	"-Increased damage\n-Increased Health\n-While your Rampager Miniguni s out, M2 will give you a Quad Rocket Launcher.\n-Quad launcher Abilities:\nShoots 2 rockets at once\nWhen depleted, explodes, dealing damage\nForce fully equips fists and makes you deal ram damage while running\nYou take more damage while ramming"
+		"ko"	"-피해량, 체력 증가\n-램페이저 미니건을 들고 있을 때 M2로 4연장 로켓 발사기를 장착합니다.\n-4연장 로켓 발사기: 로켓 2발을 동시에 발사합니다.\n탄약이 고갈되거나 지속 시간 종료시 폭발하며 피해를 가합니다.\n이후 강제로 주먹을 장착시키고 달리는 동안 돌진 피해를 입힙니다.\n돌진 중에는 더 많은 피해를 받습니다."
     }
 	"Purging Pap 5"
 	{
 		"en"	"-Increased damage\n-Increased Health\n-You store more power\n-You can move during your annihilator phase\n-Quad Launcher fires 1 more rocket at once now, fires faster."
-		"ko"	"-피해량, 체력 증가\n-더 많은 에너지를 저장합니다.\n-이제 미니건을 사용하는 동안 움직일 수 있습니다.\n-4연장 로켓 발사기가 한 번에 로켓을 1발 더 발사하고 공격 속도가 빨라집니다."
+		"ko"	"-피해량, 체력 증가\n-더 많은 에너지를 저장합니다.\n-이제 미니건을 사용하는 동안 움직일 수 있습니다.\n4연장 로켓 발사기가 한 번에 로켓을 1발 더 발사하고 공격 속도가 빨라집니다."
 	}
 	"Purging Pap 6"
 	{
 		"en"	"-Increased damage\n-Increased Health\n-You move faster in your annihilator phase\n-Ram Phase deals more damage, and has less vulnerabilities"
-		"ko"	"-피해량, 체력 증가\n-미니건을 사용하는 동안의 이동 속도가 빨라집니다.\n-'돌진 상태'의 피해량이 증가, 얻는 피해 취약성이 감소합니다."
+		"ko"	"-피해량, 체력 증가\n- 미니건을 사용하는 동안의 이동 속도가 빨라집니다.\n-'돌진 상태'는 더 많은 피해를 입히며 피해 취약성이 감소합니다."
 	}
 	"Sigil Blade Pap 1"
 	{
