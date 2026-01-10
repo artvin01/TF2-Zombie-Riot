@@ -3625,12 +3625,36 @@
 	{
 		"en"	"Somehow still intact after the explosion. A bit big but still usable."
 	}
-	"Drop"
+	"Iberian Badge of Honor"
 	{
-		"en"	"Drop"
+		"en"	"Iberian Badge of Honor"
 	}
-	"Drop Desc"
+	"Iberian Badge of Honor Desc"
 	{
-		"en"	"Drop"
+		"en"	"Irene gives you this for all you have done for Iberia, dating back to before you were employed by Bob the Second."
+	}
+	"Collector’s Backpack"
+	{
+		"en"	"Collector’s Backpack"
+	}
+	"Collector’s Backpack Desc"
+	{
+		"en"	"The backpack worn by the Aperture Collector. The tech within looks extremely advanced."
+	}
+	"Ruianian Necklace"
+	{
+		"en"	"Ruianian Necklace"
+	}
+	"Ruianian Necklace Desc"
+	{
+		"en"	"A golden necklace with a gem at the end of it. Ruliana gives it to us as a gift from Twirl."
+	}
+	"inter place holder"
+	{
+		"en"	"inter place holder"
+	}
+	"inter place holder Desc"
+	{
+		"en"	"inter place holder"
 	}
 }
