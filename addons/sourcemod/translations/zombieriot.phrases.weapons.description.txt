@@ -478,7 +478,7 @@
 		"en"		"-Massively Increased damage\n-Reduced reload speed\n-Has better enemy pierce"
 		"fr"		"Dégats et vitesse de rechargement améliorés.\nFrappe plus d'ennemis à la fois."
 		"it"		"Danno enormemente aumentato e velocità di ricarica RIDOTTA.\nE ha una migliore perforazione del nemico"
-		"ko"		"-피해량 대폭 증가\n-재장전 속도 감소\n-적 관통력 증가\n-유도 미사일이 느려지고, 쿨타임이 증가하고, 충전 속도도 느려지지만, 매우 높은 피해를 입힘"
+		"ko"		"-피해량 대폭 증가\n-재장전 속도 감소\n-적 관통력 증가"
 	}
 	
 	"The Pomson 7000 Desc"
@@ -5330,7 +5330,7 @@
 	"Purging Desc"
 	{
 		"en"	"Become the Ziberian greatest invention... A monster.\n-Gain 2 weapons, Shotgun and Rampager riffle\n-Press M2 To easy switch between them\n-Charge energy on hit, used for later paps\n-Weapons has overheat and will lose damage the more you use them\n-The more one weapon overheats the stronger other weapons becomes\n-Also gain special buffs if other weapon is overheated\n-Gain 40％ more energy from hitting enemies up close."
-		"ko"	"지베리아의 가장 위대한 발명품이 되어보세요... 괴물 말이죠.\n-산탄총과 램페이저 미니건 두 가지 무기를 획득\n-M2를 눌러 무기를 쉽게 전환할 수 있습니다.\n-공격 적중시 에너지를 충전하며 이는 이후의 무기 강화 후 사용됨.\n-근접한 적 공격시 에너지 충전량 40％ 증가"
+		"ko"	"지베리아의 가장 위대한 발명품이 되어보세요... 괴물 말이죠.\n-산탄총과 램페이저 라이플 무기 획득\n-M2로 무기를 쉽게 전환 가능\n-적중시 에너지를 충전하며 이는 이후의 무기 강화 후 사용됨.\n-근접한 적 공격시 에너지 충전량 40％ 증가"
     }
 	"Purging Pap N"
 	{
@@ -5350,7 +5350,7 @@
 	"Purging Pap 4"
 	{
 		"en"	"-Increased damage\n-Increased Health\n-While your Rampager Miniguni s out, M2 will give you a Quad Rocket Launcher.\n-Quad launcher Abilities:\nShoots 2 rockets at once\nWhen depleted, explodes, dealing damage\nForce fully equips fists and makes you deal ram damage while running\nYou take more damage while ramming"
-		"ko"	"-피해량, 체력 증가\n-램페이저 미니건을 들고 있을 때 M2로 4연장 로켓 발사기를 장착합니다.\n-4연장 로켓 발사기: 로켓 2발을 동시에 발사합니다.\n탄약이 고갈되거나 지속 시간 종료시 폭발하며 피해를 가합니다.\n이후 강제로 주먹을 장착시키고 달리는 동안 돌진 피해를 입힙니다.\n돌진 중에는 더 많은 피해를 받습니다."
+		"ko"	"-피해량, 체력 증가\n-램페이저 미니건을 들고 있을 때 M2로 4연장 로켓 발사기를 장착.\n-4연장 로켓 발사기: 로켓 2발을 동시에 발사.\n탄약 고갈 또는 지속 시간 종료시 폭발하며 피해를 줌.\n이후 강제로 주먹이 장착되고 달리는 동안 피해를 입힘\n돌진 중에는 적에게서 더 많은 피해를 받음."
     }
 	"Purging Pap 5"
 	{

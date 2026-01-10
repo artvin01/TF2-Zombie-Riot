@@ -822,10 +822,12 @@
 	"Pikeman's Slashes"
 	{
 		"en"	"Pikeman's Slashes"
+		"ko"	"장창병의 참격"
 	}
 	"Pikeman's Slashes Desc"
 	{
 		"en"	"Count increases by 1 for each spearmen hit taken\nAt Max hits taken, all spearmen enemies will deal 300％ more damage to you."
+		"ko"	"창병 계열 적에게 공격 받을때마다 카운트가 1 씩 증가\n최대 카운트에 도달시, 모든 창병 계열 적이 당신에게 가하는 피해가 300％ 증가."
 	}
 	"Hussar's Warscream"
 	{

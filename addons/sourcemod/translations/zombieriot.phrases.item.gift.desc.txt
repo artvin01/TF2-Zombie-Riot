@@ -801,6 +801,7 @@
 	"Spearman Desc"
 	{
 		"en" 		"A fast, fast attacking, high range, but low health and damage enemy. They can quickly storm, surround and kill you.\nStacks a debuff, read debuff for more info."
+		"ko" 		"빠르고, 빠른 공격 속도 및 긴 사정거리. 하지만 체력과 피해량은 낮음. 빠르게 모여들 수 있기에 당신을 둘러싸서 죽이기 쉽습니다.\n디버프를 부여하며, 디버프는 백과사전 참고."
 	}
 	"Hand Cannoneer Desc"
 	{
