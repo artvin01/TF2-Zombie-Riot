@@ -735,7 +735,7 @@ void Dungeon_Start()
 	GameTimer = CreateTimer(0.5, DungeonMainTimer);
 	Ammo_Count_Ready = 20;
 
-	NPC_CreateByName("npc_base_building", -1, pos, ang, TFTeam_Red);
+	NPC_CreateByName("obj_dungeon_center", -1, pos, ang, TFTeam_Red);
 
 	int highestLevel;
 	for(int client = 1; client <= MaxClients; client++)
@@ -1533,6 +1533,13 @@ static bool CheckRivalStatus()
 	room.RollLoot(NULL_VECTOR);
 
 	CurrentBaseIndex = -1;
+	return false;
+}
+
+bool Const2_IgnoreBuilding_FindTraget(int entity)
+{
+	if(ObjectDWall_IsId(i_NpcInternalId[entity]))
+		return true;
 	return false;
 }
 

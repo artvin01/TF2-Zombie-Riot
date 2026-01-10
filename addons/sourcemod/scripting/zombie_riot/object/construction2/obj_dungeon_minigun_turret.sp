@@ -45,7 +45,7 @@ void ObjectDMinigunTurret_MapStart()
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_minigun_turret");
 	build.Cost = 600;
-	build.Health = 50;
+	build.Health = 200;
 	build.Cooldown = 30.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -137,7 +137,7 @@ void ObjectDMinigunTurret_ClotThink(ObjectDMinigunTurret npc)
 		float DistanceLimit = 800.0;
 
 		npc.m_iTarget = GetClosestTarget(npc.index,_,DistanceLimit,.CanSee = true, .UseVectorDistance = true);
-		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = FAR_FUTURE;
 	}
 	
 	if(!IsValidEnemy(npc.index, npc.m_iTarget))
@@ -146,8 +146,6 @@ void ObjectDMinigunTurret_ClotThink(ObjectDMinigunTurret npc)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.AddActivityViaSequence("idle_off");
 		npc.PlayMinigunSound(false);
-		//longer think so it doesnt lag.
-		npc.m_flNextDelayTime = gameTime + 0.5;
 		return;
 	}
 	if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
@@ -158,10 +156,22 @@ void ObjectDMinigunTurret_ClotThink(ObjectDMinigunTurret npc)
 		npc.PlayMinigunSound(false);
 		return;
 	}
-//	if(npc.m_flNextMeleeAttack > gameTime)
-//	{
-//		return;
-//	}
+	if(npc.m_flNextMeleeAttack > gameTime)
+	{
+		return;
+	}
+	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+	if(flDistanceToTarget >= (900.0 * 900.0))
+	{
+		//too far away 
+		npc.m_iTarget = -1;
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.AddActivityViaSequence("idle_off");
+		npc.PlayMinigunSound(false);
+		return;
+	}
 
 	Handle swingTrace;
 	int target;
@@ -195,7 +205,7 @@ void ObjectDMinigunTurret_ClotThink(ObjectDMinigunTurret npc)
 		npc.PlayMinigunSound(true);
 		if(IsValidEnemy(npc.index, target))
 		{
-			int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
+			int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 1;
 
 			float damageDealt = 23.4375 * Pow(float(level), 2.0);
 			if(ShouldNpcDealBonusDamage(target))
@@ -237,6 +247,8 @@ static int CountBuildings()
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
 		if(NPCId == i_NpcInternalId[entity])
 			count++;
 	}

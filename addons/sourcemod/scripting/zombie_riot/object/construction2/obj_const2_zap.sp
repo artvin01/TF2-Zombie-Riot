@@ -49,7 +49,7 @@ void ObjectC2Zap_MapStart()
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const2_zap");
 	build.Cost = 600;
-	build.Health = 50;
+	build.Health = 150;
 	build.Cooldown = 30.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -146,7 +146,7 @@ void ObjectC2Zap_ClotThink(ObjectC2Zap npc)
 	TE_SendToAll();
 	npc.m_flNextMeleeAttack = gameTime + 0.25;
 
-	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
+	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 1;
 
 	npc.PlayShootSound();
 	float damageDealt = 50.0 * Pow(float(level), 2.0);
@@ -187,6 +187,8 @@ static int CountBuildings()
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
 		if(NPCId == i_NpcInternalId[entity])
 			count++;
 	}

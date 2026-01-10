@@ -9,13 +9,13 @@
 #undef CONSTRUCT_MAXLVL
 
 #define CONSTRUCT_NAME		"Control Center"
+static float BuffTimerLimited;
 
 static const int CompassCrystalCost = 5;
 static const int TreasureKeyCost = 10;
 static const int UnboxCrystalCost = 10;
 
 static int NPCId;
-
 void ObjectDungeonCenter_MapStart()
 {
 	PrecacheModel("models/props_combine/masterinterface.mdl");
@@ -29,15 +29,16 @@ void ObjectDungeonCenter_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
-
+/*
 	BuildingInfo build;
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_center");
 	build.Cost = 400;
-	build.Health = 50;
+	build.Health = 2000;
 	build.Cooldown = 20.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
+*/
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -54,9 +55,10 @@ methodmap ObjectDungeonCenter < ObjectGeneric
 	}
 	public ObjectDungeonCenter(int client, const float vecPos[3], const float vecAng[3], const char[] data)
 	{
-		ObjectDungeonCenter npc = view_as<ObjectDungeonCenter>(ObjectGeneric(client, vecPos, vecAng, "models/props_combine/masterinterface.mdl", _, "600", {65.0, 65.0, 197.0},_,false));
+		ObjectDungeonCenter npc = view_as<ObjectDungeonCenter>(ObjectGeneric(client, vecPos, vecAng, "models/props_combine/masterinterface.mdl", _, "1500", {65.0, 65.0, 197.0},_,false));
 		
 		
+		PrintToChatAll("''%s'' datacheck",data);
 		npc.m_bEnemyBase = false;
 		if(StrContains(data, "enemy_base") != -1)
 		{
@@ -66,14 +68,23 @@ methodmap ObjectDungeonCenter < ObjectGeneric
 		{
 			npc.FuncShowInteractHud = ClotShowInteractHud;
 			npc.FuncCanBuild = ClotCanBuild;
+			func_NPCThink[npc.index] = ClotThink;
 			func_NPCInteract[npc.index] = ClotInteract;
+			BuffTimerLimited = GetGameTime() + 160.0;
+			SetTeam(npc.index, TFTeam_Red);
 		}
 		npc.m_bConstructBuilding = true;
+		npc.m_bCannotBePickedUp = true;
 
 		return npc;
 	}
 }
 
+static void ClotThink(ObjectDungeonCenter npc)
+{
+	if(BuffTimerLimited)
+		StartingBaseBuffGiveBuff(npc.index);
+}
 static bool ClotCanBuild(int client, int &count, int &maxcount)
 {
 	if(client)
@@ -101,6 +112,8 @@ static int CountBuildings()
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
 		if(NPCId == i_NpcInternalId[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
 		{
 			count++;
@@ -306,4 +319,45 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 		}
 	}
 	return 0;
+}
+
+
+
+
+static void StartingBaseBuffGiveBuff(int iNpc)
+{
+	b_NpcIsTeamkiller[iNpc] = true;
+	float spawnLoc[3]; 	
+	WorldSpaceCenter(iNpc, spawnLoc);
+	Explode_Logic_Custom(0.0,
+	iNpc,
+	iNpc,
+	-1,
+	spawnLoc,
+	9999.9,
+	_,
+	_,
+	false,
+	99,
+	false,
+	_,
+	StartingBaseBuffGiveBuffInternal);
+	b_NpcIsTeamkiller[iNpc] = false;
+}
+
+static void StartingBaseBuffGiveBuffInternal(int entity, int victim, float damage, int weapon)
+{
+	if(entity == victim)
+		return;
+
+	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && (!b_NpcHasDied[victim] || victim <= MaxClients))
+	{
+		float GiveBuffDuration = BuffTimerLimited - GetGameTime();
+		if(GiveBuffDuration <= 0.0)
+		{
+			BuffTimerLimited = 0.0;
+			return;
+		}
+		ApplyStatusEffect(entity, victim, "Starting Grace", GiveBuffDuration);
+	}
 }

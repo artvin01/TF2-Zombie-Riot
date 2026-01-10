@@ -40,7 +40,7 @@ void ObjectDLightHouse_MapStart()
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_lighthouse");
 	build.Cost = 1000;
-	build.Health = 100;
+	build.Health = 125;
 	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -115,6 +115,8 @@ static int CountBuildings()
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
 		if(NPCId == i_NpcInternalId[entity])
 			count++;
 	}

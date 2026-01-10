@@ -900,6 +900,9 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 		if(!objstats.m_bConstructBuilding)
 			return; //anyone can pick up construct buildings!
 	}
+	//dont allow pickup
+	if(objstats.m_bCannotBePickedUp)
+		return; 
 	if(IsValidEntity(objstats.m_iMasterBuilding))
 	{
 		entity = objstats.m_iMasterBuilding;

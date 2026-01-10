@@ -40,7 +40,7 @@ void ObjectC2House_MapStart()
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const2_house");
 	build.Cost = 400;
-	build.Health = 50;
+	build.Health = 100;
 	build.Cooldown = 20.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -120,6 +120,8 @@ int ObjectC2House_CountBuildings()
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
 		if(NPCId == i_NpcInternalId[entity])
 			count++;
 	}

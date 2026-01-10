@@ -113,6 +113,7 @@ public Action Building_GiveLayout(int client, int args)
 	*/
 	Format(buffer, sizeof(buffer), "\"Waves\""
 	... "\n{"
+	... "\n	//Created by using ''sm_getbase_layout'' In construction 2"
 	... "\n	\"1\""
 	... "\n	{");
 	

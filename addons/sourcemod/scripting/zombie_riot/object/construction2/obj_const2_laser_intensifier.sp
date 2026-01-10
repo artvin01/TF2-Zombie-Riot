@@ -47,7 +47,7 @@ void ObjectC2LaserIntensifier_MapStart()
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const2_laser_intensifier");
 	build.Cost = 600;
-	build.Health = 50;
+	build.Health = 300;
 	build.Cooldown = 30.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -162,7 +162,7 @@ void ObjectC2LaserIntensifier_ClotThink(ObjectC2LaserIntensifier npc)
 
 	float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 
-	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
+	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 1;
 
 	float damageDealt = 90.0 * Pow(float(level), 2.0);
 	if(ShouldNpcDealBonusDamage(npc.m_iTarget))
@@ -217,6 +217,8 @@ static int CountBuildings()
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
 		if(NPCId == i_NpcInternalId[entity])
 			count++;
 	}

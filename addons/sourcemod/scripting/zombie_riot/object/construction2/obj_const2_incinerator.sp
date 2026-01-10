@@ -49,7 +49,7 @@ void ObjectC2Incinerator_MapStart()
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const2_incinerator");
 	build.Cost = 600;
-	build.Health = 50;
+	build.Health = 350;
 	build.Cooldown = 30.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -160,6 +160,8 @@ static int CountBuildings()
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
 		if(NPCId == i_NpcInternalId[entity])
 			count++;
 	}

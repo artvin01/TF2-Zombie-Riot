@@ -5540,9 +5540,13 @@ stock int GetClosestTarget(int entity,
 
 	//If the team searcher is not on red, target buildings, buildings can only be on the player team.
 #if defined ZR
-	if(SearcherNpcTeam != TFTeam_Red && !RaidbossIgnoreBuildingsLogic(1) && !IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers)) //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
-#elseif defined RTS
-	if(!IgnoreBuildings)
+	//In Construction2 we want them to always try to target buildings.
+	if(SearcherNpcTeam != TFTeam_Red &&
+	 !RaidbossIgnoreBuildingsLogic(1) &&
+	  !IgnoreBuildings &&
+	   ((view_as<CClotBody>(entity).m_iTarget > 0
+	    && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget])
+		 || IgnorePlayers || (Dungeon_Mode()))) //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
 #else
 	if(!IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers))
 #endif
@@ -5555,29 +5559,18 @@ stock int GetClosestTarget(int entity,
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(!i_IsVehicle[entity_close] && GetTeam(entity_close) != SearcherNpcTeam && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 				{
-#if defined RTS
-					if(ExtraValidityFunction == INVALID_FUNCTION)
-					{
-						// Ignore resources and allies
-						if(Object_GetResource(entity_close) ||
-							RTS_IsEntAlly(entity, entity_close))
-							continue;
-					}
-					else
-					{
-						// Ignore non-resource allies
-						if(!Object_GetResource(entity_close) && RTS_IsEntAlly(entity, entity_close))
-							continue;
-					}
-#endif
-
-#if !defined RTS
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, entity_close))
 							continue;
 					}
-#endif
+
+					if(Dungeon_Mode())
+					{
+						//when its this gamemode, we want to make sure to always ignore these buildings
+						if(Const2_IgnoreBuilding_FindTraget(entity_close))
+							continue;
+					}
 
 					if(ExtraValidityFunction != INVALID_FUNCTION)
 					{
@@ -5599,11 +5592,7 @@ stock int GetClosestTarget(int entity,
 		}
 	}
 
-#if defined RTS
-	return GetClosestTarget_Internal(entity, fldistancelimit, EntityLocation, MinimumDistance);
-#else
 	return GetClosestTarget_Internal(entity, fldistancelimit, fldistancelimitAllyNPC, EntityLocation, UseVectorDistance, MinimumDistance);
-#endif
 }
 
 void GetClosestTarget_AddTarget(int entity, int type)

@@ -42,7 +42,7 @@ void ObjectDWall_MapStart()
 
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_wall1");
 	build.Cost = 5000;
-	build.Health = 630;
+	build.Health = 1000;
 	build.HealthScaleCost = false;
 	build.Cooldown = 30.0;
 	build.Func = ClotCanBuild1;
@@ -55,7 +55,7 @@ void ObjectDWall_MapStart()
 
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_wall2");
 	build.Cost = 7500;
-	build.Health = 840;
+	build.Health = 1500;
 	build.HealthScaleCost = false;
 	build.Cooldown = 45.0;
 	build.Func = ClotCanBuild2;
@@ -68,7 +68,7 @@ void ObjectDWall_MapStart()
 
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_wall3");
 	build.Cost = 10000;
-	build.Health = 1260;
+	build.Health = 2000;
 	build.HealthScaleCost = false;
 	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild3;
@@ -278,6 +278,8 @@ static int CountBuildings()
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
 		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
 		{
 			ObjectGeneric objstats = view_as<ObjectGeneric>(entity);

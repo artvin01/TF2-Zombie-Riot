@@ -49,7 +49,7 @@ void ObjectC2Cannon_MapStart()
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const2_cannon");
 	build.Cost = 600;
-	build.Health = 50;
+	build.Health = 200;
 	build.Cooldown = 30.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -136,7 +136,7 @@ void ObjectC2Cannon_ClotThink(ObjectC2Cannon npc)
 
 	Sentrygun_FaceEnemy(npc.index, npc.m_iTarget);
 
-	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
+	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 1;
 
 	static float rocketAngle[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", rocketAngle);
@@ -198,6 +198,8 @@ static int CountBuildings()
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
 		if(NPCId == i_NpcInternalId[entity])
 			count++;
 	}

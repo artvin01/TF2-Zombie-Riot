@@ -83,7 +83,7 @@ void ObjectGemCrafter_MapStart()
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_crafter");
 	build.Cost = 400;
-	build.Health = 50;
+	build.Health = 100;
 	build.Cooldown = 20.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -147,6 +147,8 @@ static int CountBuildings()
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
 		if(NPCId == i_NpcInternalId[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
 		{
 			count++;

@@ -226,8 +226,16 @@ static void ClotThink(int iNPC)
 					}
 					float PosRand[3];
 					PosRand = SpawnLocation;
-					PosRand[0] += GetRandomFloat(-50.0, 50.0);
-					PosRand[1] -= GetRandomFloat(-50.0, 50.0);
+					if(!npc.m_bEnemyBase)
+					{
+						PosRand[0] += GetRandomFloat(-50.0, 50.0);
+						PosRand[1] += GetRandomFloat(-50.0, 50.0);
+					}
+					else
+					{
+						PosRand[0] += GetRandomFloat(-100.0, 100.0);
+						PosRand[1] += GetRandomFloat(-100.0, 100.0);
+					}
 					bool Succeed = Npc_Teleport_Safe(npc.index, PosRand, hullcheckmins, hullcheckmaxs, true, false);
 					if(!Succeed)
 						PosRand = SpawnLocation;

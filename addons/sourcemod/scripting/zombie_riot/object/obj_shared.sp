@@ -89,6 +89,7 @@ void Object_PluginStart()
 	.DefineBoolField("m_bSentryBuilding")
 	.DefineBoolField("m_bConstructBuilding")
 	.DefineFloatField("m_fLastTimeClaimed")
+	.DefineBoolField("m_bCannotBePickedUp")
 
 	//needed so npc stuff doesnt break
 	.DefineIntField("m_iHealthBar")
@@ -500,6 +501,17 @@ methodmap ObjectGeneric < CClotBody
 		public get()
 		{
 			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bConstructBuilding"));
+		}
+	}
+	property bool m_bCannotBePickedUp
+	{
+		public set(bool value)
+		{
+			SetEntProp(this.index, Prop_Data, "m_bCannotBePickedUp", value);
+		}
+		public get()
+		{
+			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bCannotBePickedUp"));
 		}
 	}
 	property bool m_bBurning
@@ -1055,6 +1067,10 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 				damage *= 3.0;
 			}
 		}
+		if(Dungeon_Mode()) //Buildings are good but not too good, its mainly construct buildings that are used.
+		{
+			damage *= 3.0;
+		}
 	}
 
 	if(Damage_Modifiy(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
@@ -1143,7 +1159,6 @@ bool Const2_BuildingDestroySpecial(int entity)
 }
 void Const2_ReviveAllBuildings()
 {
-	LogStackTrace("Const2_ReviveAllBuildings");
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{

@@ -46,7 +46,7 @@ void ObjectDTeslarsMedusa_MapStart()
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_teslars_medusa");
 	build.Cost = 600;
-	build.Health = 50;
+	build.Health = 300;
 	build.Cooldown = 30.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -98,15 +98,14 @@ void ObjectDTeslarsMedusa_ClotThink(ObjectDTeslarsMedusa npc)
 
 	float gameTime = GetGameTime(npc.index);
 	npc.m_flNextDelayTime = gameTime + 1.0;
-
-
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
-		float DistanceLimit = 700.0;
+		float DistanceLimit = 1000.0;
 
 		npc.m_iTarget = GetClosestTarget(npc.index,_,DistanceLimit,.CanSee = true, .UseVectorDistance = true);
-		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = FAR_FUTURE;
 	}
+	
 	if(!IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		npc.m_iTarget = -1;
@@ -119,7 +118,17 @@ void ObjectDTeslarsMedusa_ClotThink(ObjectDTeslarsMedusa npc)
 		npc.m_flGetClosestTargetTime = 0.0;
 		return;
 	}
+	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+	if(flDistanceToTarget >= (1000.0 * 1000.0))
+	{
+		//too far away
+		npc.m_iTarget = -1;
+		npc.m_flGetClosestTargetTime = 0.0;
+		return;
+	}
 	Handle swingTrace;
 
 	if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, { 9999.0, 9999.0, 9999.0 }, .Npc_type = 3)) //3 is aim bot no matter where they look
@@ -128,7 +137,7 @@ void ObjectDTeslarsMedusa_ClotThink(ObjectDTeslarsMedusa npc)
 
 		if(IsValidEnemy(npc.index, target))
 		{
-			int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
+			int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 1;
 			npc.PlayShootSound();
 			float damagedeal = 125.0 * Pow(float(level), 3.0);
 
@@ -173,6 +182,8 @@ static int CountBuildings()
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
 		if(NPCId == i_NpcInternalId[entity])
 			count++;
 	}

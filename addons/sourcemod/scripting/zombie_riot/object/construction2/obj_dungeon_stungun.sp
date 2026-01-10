@@ -44,7 +44,7 @@ void ObjectDStunGun_MapStart()
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_stungun");
 	build.Cost = 600;
-	build.Health = 50;
+	build.Health = 100;
 	build.Cooldown = 30.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -91,20 +91,34 @@ static void ClotThink(ObjectDStunGun npc)
 
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
-		float DistanceLimit = 1000.0;
-		npc.m_iTarget = GetClosestTarget(npc.index, _, DistanceLimit, .CanSee = true, .UseVectorDistance = true);
-		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
+
+		npc.m_iTarget = GetClosestTarget(npc.index,_,1000.0,.CanSee = true, .UseVectorDistance = true);
+		npc.m_flGetClosestTargetTime = FAR_FUTURE;
 	}
 	
-	if(!IsValidEnemy(npc.index, npc.m_iTarget) || view_as<CClotBody>(npc.m_iTarget).m_flNextDelayTime > (GetGameTime(npc.m_iTarget) + DEFAULT_UPDATE_DELAY_FLOAT))
+	if(!IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
 		return;
 	}
-
 	if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 	{
+		npc.m_iTarget = -1;
+		npc.m_flGetClosestTargetTime = 0.0;
+		return;
+	}
+	if(npc.m_flNextMeleeAttack > gameTime)
+	{
+		return;
+	}
+	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+	if(flDistanceToTarget >= (1000.0 * 1000.0))
+	{
+		//too far away
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
 		return;
@@ -190,6 +204,8 @@ static int CountBuildings()
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
 		if(NPCId == i_NpcInternalId[entity])
 			count++;
 	}
