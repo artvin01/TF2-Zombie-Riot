@@ -205,9 +205,12 @@ void ObjectDMinigunTurret_ClotThink(ObjectDMinigunTurret npc)
 		npc.PlayMinigunSound(true);
 		if(IsValidEnemy(npc.index, target))
 		{
-			int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 1;
+			int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
+			level++;
 
 			float damageDealt = 23.4375 * Pow(float(level), 2.0);
+			if(GetTeam(npc.index) == TFTeam_Red)
+				damageDealt *= DMGMULTI_CONST2_RED;
 			if(ShouldNpcDealBonusDamage(target))
 				damageDealt *= 3.0;
 			

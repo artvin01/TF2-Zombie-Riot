@@ -46,9 +46,9 @@ void ObjectC2LaserIntensifier_MapStart()
 	BuildingInfo build;
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const2_laser_intensifier");
-	build.Cost = 600;
-	build.Health = 300;
-	build.Cooldown = 30.0;
+	build.Cost = 300;
+	build.Health = 600;
+	build.Cooldown = 10.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
 }
@@ -162,9 +162,12 @@ void ObjectC2LaserIntensifier_ClotThink(ObjectC2LaserIntensifier npc)
 
 	float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 
-	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 1;
+	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
+	level++;
 
 	float damageDealt = 90.0 * Pow(float(level), 2.0);
+	if(GetTeam(npc.index) == TFTeam_Red)
+		damageDealt *= DMGMULTI_CONST2_RED;
 	if(ShouldNpcDealBonusDamage(npc.m_iTarget))
 		damageDealt *= 3.0;
 

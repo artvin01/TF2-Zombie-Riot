@@ -48,9 +48,9 @@ void ObjectC2Zap_MapStart()
 	BuildingInfo build;
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const2_zap");
-	build.Cost = 600;
-	build.Health = 150;
-	build.Cooldown = 30.0;
+	build.Cost = 300;
+	build.Health = 300;
+	build.Cooldown = 1.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
 }
@@ -146,10 +146,13 @@ void ObjectC2Zap_ClotThink(ObjectC2Zap npc)
 	TE_SendToAll();
 	npc.m_flNextMeleeAttack = gameTime + 0.25;
 
-	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 1;
+	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
+	level++;
 
 	npc.PlayShootSound();
 	float damageDealt = 50.0 * Pow(float(level), 2.0);
+	if(GetTeam(npc.index) == TFTeam_Red)
+		damageDealt *= DMGMULTI_CONST2_RED;
 	if(ShouldNpcDealBonusDamage(npc.m_iTarget))
 		damageDealt *= 3.0;
 		
@@ -172,7 +175,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
-		maxcount = CurrentLevel + 1;
+		maxcount = 4 + (CurrentLevel * 2);
 		if(count >= maxcount)
 			return false;
 	}

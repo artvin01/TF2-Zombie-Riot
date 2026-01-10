@@ -41,10 +41,10 @@ void ObjectDWall_MapStart()
 	NPCId1 = NPC_Add(data);
 
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_wall1");
-	build.Cost = 5000;
+	build.Cost = 200;
 	build.Health = 1000;
 	build.HealthScaleCost = false;
-	build.Cooldown = 30.0;
+	build.Cooldown = 1.0;
 	build.Func = ClotCanBuild1;
 	Building_Add(build);
 
@@ -54,10 +54,10 @@ void ObjectDWall_MapStart()
 	NPCId2 = NPC_Add(data);
 
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_wall2");
-	build.Cost = 7500;
+	build.Cost = 350;
 	build.Health = 1500;
 	build.HealthScaleCost = false;
-	build.Cooldown = 45.0;
+	build.Cooldown = 1.0;
 	build.Func = ClotCanBuild2;
 	Building_Add(build);
 
@@ -67,10 +67,10 @@ void ObjectDWall_MapStart()
 	NPCId3 = NPC_Add(data);
 
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_wall3");
-	build.Cost = 10000;
+	build.Cost = 500;
 	build.Health = 2000;
 	build.HealthScaleCost = false;
-	build.Cooldown = 60.0;
+	build.Cooldown = 1.0;
 	build.Func = ClotCanBuild3;
 	Building_Add(build);
 }
@@ -116,7 +116,7 @@ static bool ClotCanBuild1(int client, int &count, int &maxcount)
 			}
 		}
 
-		maxcount = 3 + CurrentLevel;
+		maxcount = 24 + (CurrentLevel * 6);
 		if(count >= maxcount)
 			return false;
 	}
@@ -182,7 +182,7 @@ static bool ClotCanBuild2(int client, int &count, int &maxcount)
 			return false;
 		}
 
-		maxcount = 3 + CurrentLevel;
+		maxcount = 24 + (CurrentLevel * 6);
 		if((count + 1) >= maxcount)
 			return false;
 	}
@@ -249,7 +249,7 @@ static bool ClotCanBuild3(int client, int &count, int &maxcount)
 			return false;
 		}
 
-		maxcount = 3 + CurrentLevel;
+		maxcount = 24 + (CurrentLevel * 6);
 		if((count + 2) >= maxcount)
 			return false;
 	}

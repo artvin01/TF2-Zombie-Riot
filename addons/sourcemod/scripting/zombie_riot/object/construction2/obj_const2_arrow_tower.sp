@@ -47,9 +47,9 @@ void ObjectC2ArrowTower_MapStart()
 	BuildingInfo build;
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const2_arrow_tower");
-	build.Cost = 600;
-	build.Health = 200;
-	build.Cooldown = 30.0;
+	build.Cost = 300;
+	build.Health = 400;
+	build.Cooldown = 1.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
 }
@@ -140,12 +140,15 @@ void ObjectC2ArrowTower_ClotThink(ObjectC2ArrowTower npc)
 		return;
 	}
 
-	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 1;
+	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
+	level++;
 
 	static float rocketAngle[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", rocketAngle);
 	npc.PlayShootSound();
 	float damageDealt = 165.0 * Pow(float(level), 2.0);
+	if(GetTeam(npc.index) == TFTeam_Red)
+		damageDealt *= DMGMULTI_CONST2_RED;
 	if(ShouldNpcDealBonusDamage(npc.m_iTarget))
 		damageDealt *= 3.0;
 
@@ -185,7 +188,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
-		maxcount = CurrentLevel > 4 ? 2 : 1;
+		maxcount = 3 + (CurrentLevel);
 		if(count >= maxcount)
 			return false;
 	}

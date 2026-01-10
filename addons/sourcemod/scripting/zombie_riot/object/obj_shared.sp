@@ -41,6 +41,7 @@ int OwnerOfText[MAXENTITIES];
 float f_TransmitDelayCheck[MAXENTITIES][MAXPLAYERS];
 Action b_TransmitBiasDo[MAXENTITIES][MAXPLAYERS];
 
+#define DMGMULTI_CONST2_RED 5.0
 int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
 
 #define ZR_BARRACKS_TROOP_CLASSES			(1 << 3) //Allows training of units, although will limit support buildings to 1.
@@ -991,7 +992,8 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 	int maxAllowed = 1;
 	
   	int Building_health_attribute = i_MaxSupportBuildingsLimit[client];
-	
+	if(Dungeon_Mode())
+		maxAllowed += 1;
 	maxAllowed += Building_health_attribute; 
 	maxAllowed += Blacksmith_Additional_SupportBuildings(client); 
 	maxAllowed += Merchant_Additional_SupportBuildings(client); 

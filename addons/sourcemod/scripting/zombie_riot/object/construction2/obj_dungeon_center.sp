@@ -55,7 +55,7 @@ methodmap ObjectDungeonCenter < ObjectGeneric
 	}
 	public ObjectDungeonCenter(int client, const float vecPos[3], const float vecAng[3], const char[] data)
 	{
-		ObjectDungeonCenter npc = view_as<ObjectDungeonCenter>(ObjectGeneric(client, vecPos, vecAng, "models/props_combine/masterinterface.mdl", _, "1500", {65.0, 65.0, 197.0},_,false));
+		ObjectDungeonCenter npc = view_as<ObjectDungeonCenter>(ObjectGeneric(client, vecPos, vecAng, "models/props_combine/masterinterface.mdl", _, "3000", {65.0, 65.0, 197.0},_,false));
 		
 		
 		PrintToChatAll("''%s'' datacheck",data);

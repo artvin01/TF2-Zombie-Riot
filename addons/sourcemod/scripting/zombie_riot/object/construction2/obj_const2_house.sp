@@ -39,9 +39,9 @@ void ObjectC2House_MapStart()
 	BuildingInfo build;
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const2_house");
-	build.Cost = 400;
-	build.Health = 100;
-	build.Cooldown = 20.0;
+	build.Cost = 200;
+	build.Health = 200;
+	build.Cooldown = 1.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
 }
@@ -105,7 +105,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			return false;
 		}
 
-		maxcount = CurrentLevel + 1;
+		maxcount = CurrentLevel + 4;
 		if(count >= maxcount)
 			return false;
 	}

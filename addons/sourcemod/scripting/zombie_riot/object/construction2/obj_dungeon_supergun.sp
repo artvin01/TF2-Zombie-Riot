@@ -150,7 +150,7 @@ void ObjectDCaliberTurret_ClotThink(ObjectDCaliberTurret npc)
 		npc.PlayShootSound();
 		if(IsValidEnemy(npc.index, target))
 		{
-			int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 1;
+			int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
 			float damageDealt = 117.1875 * Pow(float(level), 2.0);
 			if(ShouldNpcDealBonusDamage(target))
 				damageDealt *= 3.0;

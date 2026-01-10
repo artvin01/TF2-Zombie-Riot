@@ -1895,9 +1895,7 @@
 	}
 	"Starting Grace Desc"
 	{
-		"en"	"Increases damage dealt by 25％, Decreases damage taken by 15％."
-		"it"	"Aumenta i danni inflitti di 25％, diminuisce i danni subiti di 15％."
-		"ko"	"공격 피해량이 25％ 증가하고, 받는 피해가 15％ 감소합니다."
+		"en"	"Increases damage dealt by 25％, Decreases damage taken by 15％.\nAll buildings cost and cooldowns on building are 50％ reduced"
 	}
 	"Anti-Waves"
 	{

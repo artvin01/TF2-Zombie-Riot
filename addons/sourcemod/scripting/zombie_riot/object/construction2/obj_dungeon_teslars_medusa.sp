@@ -137,7 +137,8 @@ void ObjectDTeslarsMedusa_ClotThink(ObjectDTeslarsMedusa npc)
 
 		if(IsValidEnemy(npc.index, target))
 		{
-			int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 1;
+			int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
+			level++;
 			npc.PlayShootSound();
 			float damagedeal = 125.0 * Pow(float(level), 3.0);
 

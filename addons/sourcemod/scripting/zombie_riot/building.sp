@@ -255,6 +255,14 @@ static int GetCost(int client, BuildingInfo info, float multi)
 		//only reduce off buildigns that actually cost more to build.
 		ReduceMetalCost(client, buildCost);
 	}
+	if(HasSpecificBuff(client, "Starting Grace"))
+	{
+		buildCost /= 2;
+	}
+	if(Dungeon_Mode() && !Waves_Started())
+	{
+		buildCost = 9999;
+	}
 
 
 	if(Rogue_Mode())
@@ -655,6 +663,10 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 											CooldownGive *= 3.0;
 											
 										UpdateDoublebuilding(entity);
+										if(HasSpecificBuff(client, "Starting Grace"))
+										{
+											CooldownGive *= 0.5;
+										}
 										
 										info.Cooldowns[client] = GetGameTime() + CooldownGive;
 										BuildingList.SetArray(id, info);

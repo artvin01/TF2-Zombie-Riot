@@ -48,9 +48,9 @@ void ObjectC2Incinerator_MapStart()
 	BuildingInfo build;
 	build.Section = 3;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const2_incinerator");
-	build.Cost = 600;
-	build.Health = 350;
-	build.Cooldown = 30.0;
+	build.Cost = 300;
+	build.Health = 700;
+	build.Cooldown = 1.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
 }
@@ -118,8 +118,11 @@ void ObjectC2Incinerator_ClotThink(ObjectC2Incinerator npc)
 static void ObjConst2_Incinerator_Ingite(int entity, int victim, float damage, int weapon)
 {
 	int level = GetTeam(entity) == TFTeam_Red ? CurrentLevel : 0;
-
+	level++
+	
 	float damageDealt = 25.0 * Pow(float(level), 3.0);
+	if(GetTeam(npc.index) == TFTeam_Red)
+		damageDealt *= DMGMULTI_CONST2_RED;
 	bool HadBuffBefore = true;
 	if(!HasSpecificBuff(victim, "Burn"))
 		HadBuffBefore = false;

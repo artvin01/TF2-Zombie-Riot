@@ -107,7 +107,7 @@ public Action Building_GiveLayout(int client, int args)
 					"is_health_scaling"	"1"
 					"health"			"25000"
 					"plugin"			"npc_const2_building_spawner"
-					"spawn"				"enemy_base_point"
+					
 					"data"				"obj_const2_cannon;_;6495.1 923.0 -1199.9;0.0 0.0 0.0"
 				}
 	*/
@@ -176,10 +176,10 @@ public Action Building_GiveLayout(int client, int args)
 			... "\n			\"count\"				\"0\""
 			... "\n			\"health\"			\"%i\""
 			... "\n			\"extra_damage\"		\"1.0\""
-			... "\n			\"is_health_scaling\"	\"1.0\""
+	//		... "\n			\"is_health_scaling\"	\"1.0\""
 			... "\n			\"plugin\"			\"npc_const2_building_spawner\""
-			... "\n			\"spawn\"				\"enemy_base_point\""
-			... "\n			\"data\"				\"%s;_;%.0f %.0f %.0f;%.0f %.0f %.0f\""
+	//		... "\n			\"spawn\"				\"enemy_base_point\""
+			... "\n			\"data\"				\"%s;enemy_base;%.0f %.0f %.0f;%.0f %.0f %.0f\""
 			... "\n		}", health, buffer2, pos[0], pos[1], pos[2], ang[0], ang[1], ang[2]);
 		}
 		file.WriteLine(buffer);
