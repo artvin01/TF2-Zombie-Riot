@@ -956,6 +956,13 @@ static void TriggerStartTouch(const char[] output, int caller, int activator, fl
 			else if(StrEqual(name, TeleNext, false))
 			{
 				zone = Zone_DungeonWait;
+				
+				if(NextRoomIndex == -1)
+				{
+					float time = NextAttackAt - GetGameTime();
+					if(time > 100.0 && DelayVoteFor < GetGameTime() && !Rogue_VoteActive())
+						CreateNewDungeon();
+				}
 			}
 
 			if(zone != Zone_Unknown)
@@ -1108,9 +1115,6 @@ static Action DungeonMainTimer(Handle timer)
 	float time = NextAttackAt - GetGameTime();
 	if(time > 0.0)
 	{
-		if(time > 100.0 && DelayVoteFor < GetGameTime() && !Rogue_VoteActive() && NextRoomIndex == -1)
-			CreateNewDungeon();
-		
 		if(AttackType == -1)
 		{
 			/*
@@ -1164,6 +1168,12 @@ static Action DungeonMainTimer(Handle timer)
 				/*
 					Start next dungeon if there's some waiting for it
 				*/
+				if(NextRoomIndex == -1)
+				{
+					if(time > 100.0 && !Rogue_VoteActive())
+						CreateNewDungeon();
+				}
+
 				if(NextRoomIndex != -1)
 				{
 					for(int client = 1; client <= MaxClients; client++)
