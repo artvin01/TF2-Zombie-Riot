@@ -91,6 +91,7 @@ void Object_PluginStart()
 	.DefineBoolField("m_bConstructBuilding")
 	.DefineFloatField("m_fLastTimeClaimed")
 	.DefineBoolField("m_bCannotBePickedUp")
+	.DefineBoolField("m_bNoOwnerRequired")
 
 	//needed so npc stuff doesnt break
 	.DefineIntField("m_iHealthBar")
@@ -493,10 +494,23 @@ methodmap ObjectGeneric < CClotBody
 			return GetEntPropFloat(this.index, Prop_Data, "m_fLastTimeClaimed");
 		}
 	}
+	property bool m_bNoOwnerRequired
+	{
+		public set(bool value)
+		{
+			SetEntProp(this.index, Prop_Data, "m_bNoOwnerRequired", value);
+		}
+		public get()
+		{
+			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bNoOwnerRequired"));
+		}
+	}
 	property bool m_bConstructBuilding
 	{
 		public set(bool value)
 		{
+			//no owner
+			this.m_bNoOwnerRequired = value;
 			SetEntProp(this.index, Prop_Data, "m_bConstructBuilding", value);
 		}
 		public get()
@@ -704,7 +718,7 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		return false;
 
 	int owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
-	if(owner == -1 && !objstats.m_bConstructBuilding)
+	if(owner == -1 && !objstats.m_bConstructBuilding && !objstats.m_bNoOwnerRequired)
 	{
 		//give 30 sec untill it destroys itself
 		if(objstats.LastTimeClaimed + 30.0 < GetGameTime())
@@ -862,7 +876,8 @@ bool Object_Interact(int client, int weapon, int obj)
 	NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
 	if(StrContains(plugin, "obj_", false) != -1)
 	{
-		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == -1)
+		ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == -1 && !objstats.m_bNoOwnerRequired)
 		{
 			// Claim a unclaimed building
 			if(weapon != -1 && (i_IsWrench[weapon] || Attributes_Get(weapon, 4018, 0.0) >= 1.0))
@@ -871,6 +886,7 @@ bool Object_Interact(int client, int weapon, int obj)
 				{
 					if(Object_CanBuild(FuncCanBuild[entity], client))
 					{
+						
 						SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 						BuildingUpdateTextHud(entity);
 					}

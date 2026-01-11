@@ -96,6 +96,7 @@ methodmap ObjectDWall1 < ObjectGeneric
 		npc.m_bConstructBuilding = true;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
+		SetRotateByDefaultReturn(npc.index, -180.0);
 
 		return npc;
 	}

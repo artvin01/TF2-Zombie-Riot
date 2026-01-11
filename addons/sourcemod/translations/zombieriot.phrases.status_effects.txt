@@ -1897,6 +1897,14 @@
 	{
 		"en"	"Increases damage dealt by 25％, Decreases damage taken by 15％.\nAll buildings cost and cooldowns on building are 50％ reduced"
 	}
+	"Homebase Momentum"
+	{
+		"en" 	"Homebase Momentum"
+	}
+	"Homebase Momentum Desc"
+	{
+		"en"	"Durint peace times in your homebase, gain 45％ Movementspeed and 50％ Jumpheight"
+	}
 	"Anti-Waves"
 	{
 		"en" 	"Anti-Waves"

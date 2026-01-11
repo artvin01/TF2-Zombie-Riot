@@ -118,10 +118,10 @@ void ObjectC2Incinerator_ClotThink(ObjectC2Incinerator npc)
 static void ObjConst2_Incinerator_Ingite(int entity, int victim, float damage, int weapon)
 {
 	int level = GetTeam(entity) == TFTeam_Red ? CurrentLevel : 0;
-	level++
+	level++;
 	
 	float damageDealt = 25.0 * Pow(float(level), 3.0);
-	if(GetTeam(npc.index) == TFTeam_Red)
+	if(GetTeam(entity) == TFTeam_Red)
 		damageDealt *= DMGMULTI_CONST2_RED;
 	bool HadBuffBefore = true;
 	if(!HasSpecificBuff(victim, "Burn"))

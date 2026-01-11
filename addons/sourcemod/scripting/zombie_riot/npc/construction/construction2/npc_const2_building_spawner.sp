@@ -74,6 +74,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 		i_IsNpcType[entity] = STATIONARY_NPC;
 		AddNpcToAliveList(entity, 1);	
 		SetEntityRenderColor(entity, 255, 255, 255, 255);
+		ApplyStatusEffect(entity, entity, "Const2 Scaling For Enemy Base Nerf", 999999.0);
 	}
 	SetTeam(entity, team);
 	//figure out eventually

@@ -105,7 +105,7 @@ void Building_ResetRewardValuesWave()
 void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit = true, float AmmoSupply = 0.0, bool SupplyLimit = true)
 {
 	int owner = trueOwner;
-	if(owner > MaxClients)
+	if(!IsValidEntity(owner) || owner > MaxClients)
 		owner = client;
 	
 	//when using your own buildings, you get half as much.
@@ -161,7 +161,8 @@ void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit
 	if(ConvertedAmmoSupplyGive <= 0)
 		return;
 		
-	Resupplies_Supplied[trueOwner] += ConvertedAmmoSupplyGive;
+	if(IsValidEntity(trueOwner))
+		Resupplies_Supplied[trueOwner] += ConvertedAmmoSupplyGive;
 	Resupplies_Supplied[owner] += ConvertedAmmoSupplyGive;
 	if(SupplyLimit)
 	{
@@ -822,7 +823,8 @@ void Building_ShowInteractionHud(int client, int entity)
 			//NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
 			//if(StrContains(plugin, "obj_", false) != -1)
 			{
-				if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == -1)
+				ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+				if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == -1 && !objstats.m_bNoOwnerRequired)
 				{
 					Hide_Hud = false;
 					SetGlobalTransTarget(client);
@@ -909,8 +911,15 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") <= MaxClients)
 	{
-		if(!objstats.m_bConstructBuilding)
-			return; //anyone can pick up construct buildings!
+		bool AllowAnyways = false;
+		if(objstats.m_bNoOwnerRequired)
+			AllowAnyways = true;
+		if(objstats.m_bConstructBuilding)
+			AllowAnyways = true;
+		if(!AllowAnyways)
+		{
+			return;
+		}
 	}
 	//dont allow pickup
 	if(objstats.m_bCannotBePickedUp)
@@ -942,8 +951,15 @@ public void Pickup_Building_M2_InfRange(int client, int weapon, bool crit)
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") <= MaxClients)
 	{
-		if(!objstats.m_bConstructBuilding)
-			return; //anyone can pick up construct buildings!
+		bool AllowAnyways = false;
+		if(objstats.m_bNoOwnerRequired)
+			AllowAnyways = true;
+		if(objstats.m_bConstructBuilding)
+			AllowAnyways = true;
+		if(!AllowAnyways)
+		{
+			return;
+		}
 	}
 	if(IsValidEntity(objstats.m_iMasterBuilding))
 	{
@@ -2321,6 +2337,8 @@ bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 	ObjectGeneric objstats1 = view_as<ObjectGeneric>(entity);
 	if(objstats1.m_bConstructBuilding)
 		return false;	// Too fat
+	if(objstats.m_bNoOwnerRequired)
+		return false;	// no owner!!!
 
 	Building_RotateAllDepencencies(entity);
 	float ModelScale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");

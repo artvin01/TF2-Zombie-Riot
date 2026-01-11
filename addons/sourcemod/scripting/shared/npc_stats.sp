@@ -5389,6 +5389,12 @@ stock int GetClosestTarget(int entity,
 		3: player ally npc
 		4: buildings
 	*/
+	if(Dungeon_Mode())
+	{
+		//max limit to find targets
+		if(fldistancelimit >= 6000.0)
+			fldistancelimit = 6000.0;
+	}
 
 #if !defined RTS
 	

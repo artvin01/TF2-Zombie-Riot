@@ -5434,6 +5434,25 @@ void StatusEffects_Construction()
 	data.SlotPriority				= 0;
 	StatusEffect_AddGlobal(data);
 
+	strcopy(data.BuffName, sizeof(data.BuffName), "Homebase Momentum");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "HM");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= HomebaseMomentum_Start;
+	data.OnBuffStoreRefresh			= HomebaseMomentum_Start;
+	data.OnBuffEndOrDeleted			= HomebaseMomentum_End;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+	data.OnBuffStarted				= INVALID_FUNCTION;
+	data.OnBuffStoreRefresh			= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Anti-Waves");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ם");
@@ -5515,7 +5534,77 @@ void StatusEffects_Construction()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Const2 Scaling For Enemy Base Nerf");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.Positive 					= false;
+	data.DamageTakenMulti 			= 0.1;
+	data.DamageDealMulti			= 0.1;
+	data.OnTakeDamage_TakenFunc 	= Const2_Nerf_DamageScalingtaken;
+	data.OnTakeDamage_DealFunc 		= Const2_Nerf_DamageScalingdeal;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }
+
+float Const2_Nerf_DamageScalingtaken(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
+{
+	//look at how many enemies are left alive, and then scale off tha
+	float ValueDo;
+	int AliveAssume = CountPlayersOnRed(0, true);
+	if(AliveAssume > 14)
+		AliveAssume = 14;
+
+	ValueDo = float(AliveAssume) / 14.0;
+
+	float resist = ValueDo;
+	if(resist >= 1.0)
+	{
+		resist = 1.0;
+	}
+	resist -= 1.0;
+	resist *= -1.0;
+	resist *= 3.0;
+	return (basedamage * resist);
+}
+
+float Const2_Nerf_DamageScalingdeal(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	float ValueDo;
+	int AliveAssume = CountPlayersOnRed(0, true);
+	if(AliveAssume > 8)
+		AliveAssume = 8;
+
+	ValueDo = float(AliveAssume) / 8.0;
+
+	if(ValueDo <= 0.35)
+		ValueDo = 0.35;
+
+	float resist = ValueDo;
+	return resist;
+}
+
+static void HomebaseMomentum_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+		
+	Attributes_SetMulti(victim, 442, 1.45);
+	Attributes_SetMulti(victim, 326, 1.25);
+	SDKCall_SetSpeed(victim);
+}
+static void HomebaseMomentum_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+		
+	Attributes_SetMulti(victim, 442, (1.0 / 1.45));
+	Attributes_SetMulti(victim, 326, (1.0 / 1.25));
+	SDKCall_SetSpeed(victim);
+}
+
 
 void StatusEffects_BubbleWand1()
 {

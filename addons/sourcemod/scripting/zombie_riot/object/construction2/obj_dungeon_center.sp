@@ -84,6 +84,8 @@ static void ClotThink(ObjectDungeonCenter npc)
 {
 	if(BuffTimerLimited)
 		StartingBaseBuffGiveBuff(npc.index);
+	if(Dungeon_InSetup())
+		HomebaseMomentumGiveBuff(npc.index);
 }
 static bool ClotCanBuild(int client, int &count, int &maxcount)
 {
@@ -361,3 +363,36 @@ static void StartingBaseBuffGiveBuffInternal(int entity, int victim, float damag
 		ApplyStatusEffect(entity, victim, "Starting Grace", GiveBuffDuration);
 	}
 }
+static void HomebaseMomentumGiveBuff(int iNpc)
+{
+	b_NpcIsTeamkiller[iNpc] = true;
+	float spawnLoc[3]; 	
+	WorldSpaceCenter(iNpc, spawnLoc);
+	Explode_Logic_Custom(0.0,
+	iNpc,
+	iNpc,
+	-1,
+	spawnLoc,
+	9999.9,
+	_,
+	_,
+	true,
+	99,
+	false,
+	_,
+	HomebaseMomentumInternal);
+	b_NpcIsTeamkiller[iNpc] = false;
+}
+static void HomebaseMomentumInternal(int entity, int victim, float damage, int weapon)
+{
+	if(entity == victim)
+		return;
+
+	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && (!b_NpcHasDied[victim] || victim <= MaxClients))
+	{
+		ApplyStatusEffect(entity, victim, "Homebase Momentum", 0.5);
+	}
+}
+
+
+// "Homebase Momentum"

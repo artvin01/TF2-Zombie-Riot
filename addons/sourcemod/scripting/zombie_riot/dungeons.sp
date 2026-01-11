@@ -735,7 +735,7 @@ void Dungeon_Start()
 	GameTimer = CreateTimer(0.5, DungeonMainTimer);
 	Ammo_Count_Ready = 20;
 
-	NPC_CreateByName("obj_dungeon_center", -1, pos, ang, TFTeam_Red);
+	CreateAllDefaultBuidldings(pos, ang);
 
 	int highestLevel;
 	for(int client = 1; client <= MaxClients; client++)
@@ -753,6 +753,79 @@ void Dungeon_Start()
 	Construction_AddMaterial("crystal", startingIngots, true);
 
 	SetRandomMusic();
+}
+
+void CreateAllDefaultBuidldings(float pos[3], float ang[3])
+{
+	NPC_CreateByName("obj_dungeon_center", 0, pos, ang, TFTeam_Red);
+	float PosSave[3];
+	float RandAng[3];
+	PosSave = pos;
+	/*
+		As of now, hardcoded to this map.
+	*/
+	int iNpc;
+	for(int Loop; Loop < 4; Loop++)
+	{
+		PosSave = pos;
+		PosSave[0] += GetRandomInt(0,1) ? GetRandomFloat(-250.0,-50.0) : GetRandomFloat(50.0, 250.0);
+		PosSave[1] += GetRandomInt(0,1) ? GetRandomFloat(-250.0,-50.0) : GetRandomFloat(50.0, 250.0);
+	//	RandAng[0] = GetRandomFloat(-180.0,180.0);
+		RandAng[1] = GetRandomFloat(-180.0,180.0);
+		iNpc = NPC_CreateByName("obj_dungeon_wall1", -1, PosSave, RandAng, TFTeam_Red);
+		SetTeam(iNpc, TFTeam_Red);
+		ObjectGeneric objstats = view_as<ObjectGeneric>(iNpc);
+		objstats.m_bNoOwnerRequired = true;
+	}
+	for(int Loop; Loop < 4; Loop++)
+	{
+		PosSave = pos;
+		PosSave[0] += GetRandomInt(0,1) ? GetRandomFloat(-250.0,-50.0) : GetRandomFloat(50.0, 250.0);
+		PosSave[1] += GetRandomInt(0,1) ? GetRandomFloat(-250.0,-50.0) : GetRandomFloat(50.0, 250.0);
+	//	RandAng[0] = GetRandomFloat(-180.0,180.0);
+		RandAng[1] = GetRandomFloat(-180.0,180.0);
+		PosSave[2] += 16.0;
+		iNpc = NPC_CreateByName("obj_ammobox", -1, PosSave, RandAng, TFTeam_Red);
+		SetTeam(iNpc, TFTeam_Red);
+		ObjectGeneric objstats = view_as<ObjectGeneric>(iNpc);
+		objstats.m_bNoOwnerRequired = true;
+	}
+	for(int Loop; Loop < 4; Loop++)
+	{
+		PosSave = pos;
+		PosSave[0] += GetRandomInt(0,1) ? GetRandomFloat(-250.0,-50.0) : GetRandomFloat(50.0, 250.0);
+		PosSave[1] += GetRandomInt(0,1) ? GetRandomFloat(-250.0,-50.0) : GetRandomFloat(50.0, 250.0);
+	//	RandAng[0] = GetRandomFloat(-180.0,180.0);
+		RandAng[1] = GetRandomFloat(-180.0,180.0);
+		iNpc = NPC_CreateByName("obj_armortable", -1, PosSave, RandAng, TFTeam_Red);
+		SetTeam(iNpc, TFTeam_Red);
+		ObjectGeneric objstats = view_as<ObjectGeneric>(iNpc);
+		objstats.m_bNoOwnerRequired = true;
+	}
+	for(int Loop; Loop < 1; Loop++)
+	{
+		PosSave = pos;
+		PosSave[0] += GetRandomInt(0,1) ? GetRandomFloat(-250.0,-50.0) : GetRandomFloat(50.0, 250.0);
+		PosSave[1] += GetRandomInt(0,1) ? GetRandomFloat(-250.0,-50.0) : GetRandomFloat(50.0, 250.0);
+	//	RandAng[0] = GetRandomFloat(-180.0,180.0);
+		RandAng[1] = GetRandomFloat(-180.0,180.0);
+		iNpc = NPC_CreateByName("obj_const2_cannon", -1, PosSave, RandAng, TFTeam_Red);
+		SetTeam(iNpc, TFTeam_Red);
+		ObjectGeneric objstats = view_as<ObjectGeneric>(iNpc);
+		objstats.m_bNoOwnerRequired = true;
+	}
+	for(int Loop; Loop < 1; Loop++)
+	{
+		PosSave = pos;
+		PosSave[0] += GetRandomInt(0,1) ? GetRandomFloat(-250.0,-50.0) : GetRandomFloat(50.0, 250.0);
+		PosSave[1] += GetRandomInt(0,1) ? GetRandomFloat(-250.0,-50.0) : GetRandomFloat(50.0, 250.0);
+	//	RandAng[0] = GetRandomFloat(-180.0,180.0);
+		RandAng[1] = GetRandomFloat(-180.0,180.0);
+		iNpc = NPC_CreateByName("obj_perkmachine", -1, PosSave, RandAng, TFTeam_Red);
+		SetTeam(iNpc, TFTeam_Red);
+		ObjectGeneric objstats = view_as<ObjectGeneric>(iNpc);
+		objstats.m_bNoOwnerRequired = true;
+	}
 }
 
 static void SetRandomMusic()
