@@ -963,6 +963,9 @@ static void TriggerStartTouch(const char[] output, int caller, int activator, fl
 					if(time > 100.0 && DelayVoteFor < GetGameTime() && !Rogue_VoteActive())
 						CreateNewDungeon();
 				}
+
+				if(NextRoomIndex == -1)
+					zone = Zone_HomeBase;
 			}
 
 			if(zone != Zone_Unknown)
