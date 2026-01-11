@@ -35,6 +35,7 @@ static float RotateByDefault[MAXENTITIES]={0.0, ...};
 int Building_BuildingBeingCarried[MAXENTITIES];
 float f_DamageTakenFloatObj[MAXENTITIES];
 int OwnerOfText[MAXENTITIES];
+float f_CooldownShowRange[MAXPLAYERS];
 
 //Performance improvement, no need to check this littearlly every fucking frame
 //other things DO need it, but not this.
@@ -78,6 +79,7 @@ void Object_MapStart()
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheModel("models/props_debris/concrete_debris128pile001a.mdl");
 	Zero2(f_TransmitDelayCheck);
+	Zero(f_CooldownShowRange);
 }
 void Object_PluginStart()
 {
@@ -217,7 +219,7 @@ methodmap ObjectGeneric < CClotBody
 			SetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity", client);
 		
 		SDKHook(obj, SDKHook_OnTakeDamage, ObjectGeneric_ClotTakeDamage);
-		SDKHook(obj, SDKHook_OnTakeDamagePost, ObjectGeneric_ClotTakeDamage_Post);
+	//	SDKHook(obj, SDKHook_OnTakeDamagePost, ObjectGeneric_ClotTakeDamage_Post);
 		/*
 			how it works:
 			if a building is on cooldown/can have one, we spawn a 2nd prop, see below under fake model.
@@ -908,7 +910,6 @@ bool Object_Interact(int client, int weapon, int obj)
 				func = func_NPCInteract[entity];
 				if(func && func != INVALID_FUNCTION)
 				{
-					ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 					Call_StartFunction(null, func);
 					Call_PushCell(client);
 					Call_PushCell(weapon);
@@ -1090,11 +1091,35 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 			damage *= 3.0;
 		}
 	}
+	else
+	{
+		if(Dungeon_Mode())
+		{
+			float vecTarget[3]; WorldSpaceCenter(attacker, vecTarget );
+
+			float VecSelfNpc[3]; WorldSpaceCenter(victim, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+			if(flDistanceToTarget > (600.0 * 600.0))
+			{
+				damage = 0.0;
+				if(IsValidClient(attacker) && f_CooldownShowRange[attacker] < GetGameTime())
+				{
+					f_CooldownShowRange[attacker] = GetGameTime() + 0.25;
+					float NewPos[3]; 
+					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", NewPos);
+					NewPos[2] += 10.0;
+					spawnRing_Vectors(NewPos, 600.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.15, 2.0, 2.0, 2, _, attacker);
+				}
+				return Plugin_Handled;
+			}
+		}
+	}
 
 	if(Damage_Modifiy(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 	{
 		return Plugin_Handled;
 	}
+	ObjectGeneric_ClotTakeDamage_Post(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	return Plugin_Changed;
 }
 

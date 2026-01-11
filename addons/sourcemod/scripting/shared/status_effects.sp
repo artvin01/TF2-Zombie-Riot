@@ -5551,7 +5551,7 @@ void StatusEffects_Construction()
 
 float Const2_Nerf_DamageScalingtaken(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
 {
-	//look at how many enemies are left alive, and then scale off tha
+	//look at how many enemies are left alive, and then scale off that
 	float ValueDo;
 	int AliveAssume = CountPlayersOnRed(0, true);
 	if(AliveAssume > 14)
