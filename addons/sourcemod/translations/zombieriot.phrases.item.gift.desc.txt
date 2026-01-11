@@ -3649,12 +3649,12 @@
 	{
 		"en"	"A golden necklace with a gem at the end of it. Ruliana gives it to us as a gift from Twirl."
 	}
-	"inter place holder"
+	"Ancient Demon Horn"
 	{
-		"en"	"inter place holder"
+		"en"	"Ancient Demon Horn"
 	}
-	"inter place holder Desc"
+	"Ancient Demon Horn Desc"
 	{
-		"en"	"inter place holder"
+		"en"	"Broken off an Ancient Demon we killed. We have no idea what to use it for…"
 	}
 }
