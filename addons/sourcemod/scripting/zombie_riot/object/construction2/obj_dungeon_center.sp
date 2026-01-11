@@ -58,7 +58,6 @@ methodmap ObjectDungeonCenter < ObjectGeneric
 		ObjectDungeonCenter npc = view_as<ObjectDungeonCenter>(ObjectGeneric(client, vecPos, vecAng, "models/props_combine/masterinterface.mdl", _, "3000", {65.0, 65.0, 197.0},_,false));
 		
 		
-		PrintToChatAll("''%s'' datacheck",data);
 		npc.m_bEnemyBase = false;
 		if(StrContains(data, "enemy_base") != -1)
 		{
