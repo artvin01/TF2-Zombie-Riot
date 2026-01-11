@@ -960,12 +960,16 @@ static void TriggerStartTouch(const char[] output, int caller, int activator, fl
 				if(NextRoomIndex == -1)
 				{
 					float time = NextAttackAt - GetGameTime();
-					if(time > 100.0 && DelayVoteFor < GetGameTime() && !Rogue_VoteActive())
-						CreateNewDungeon();
+					if(time > 100.0)
+					{
+						if(DelayVoteFor < GetGameTime() && !Rogue_VoteActive())
+							CreateNewDungeon();
+					}
+					else
+					{
+						zone = Zone_HomeBase;
+					}
 				}
-
-				if(NextRoomIndex == -1)
-					zone = Zone_HomeBase;
 			}
 
 			if(zone != Zone_Unknown)
