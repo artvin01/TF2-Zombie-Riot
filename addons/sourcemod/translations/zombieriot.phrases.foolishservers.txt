@@ -475,6 +475,32 @@
 		"en"	"{1} has completed the challenge {valve}{2}{default}"
 		"ko"	"{1}이(가) {valve}{2}{default} 도전을 완료했습니다"
 	}
+	"Cosmic Terror Desc"
+	{
+		"en" "Have you ever looked at the sky and wondered if you could use that as a weapon?\nWell wonder-no-more!\nIntroducing the ''Cosmic Terror''\nEnjoy eviscerating your foes with the power of the moon!"
+		"fr" "Avez-vous observé le ciel vous demandant si vous pourriez l'utiliser comme une arme?\nVoici le Terreur Cosmique!\nExterminez vos ennemis avec la puissance de la Lune!"
+		"ru" "Вы когда-нибудь смотрели на небо и думали, можно ли использовать его в качестве оружия?\nЧто ж, не удивляйтесь!\nПредставляем вам «Космический террор»\nНаслаждайтесь уничтожением своих врагов с помощью силы луны!"
+		"chi" "你是否曾仰望天空，想过是否可以将其用作武器?\n不必再等待!\n介绍“宇宙恐怖”\n享受与月亮的力量掏空你的敌人!"
+	}
+	"Cosmic Terror Desc pap1"
+	{
+		"en" "Do you need more power? more oomph?\nWell look no further, introducing 3 magnifying lenses that almost double the potential damage\nWarning: Warranty void on purchase."
+		"fr" "Double les dégats.\nVoici 3 lunnetes de magnification massives pour donner plus de puissance à votre arme ultime.\n(Garantie anulée avec achat du kit de lunnetes de magnification gigantesques.)"
+		"ru" "Вам нужно больше силы? Больше мощи?\nНу тогда смотрите дальше, представляем вам 3 увеличительные линзы, которые почти удваивают потенциальный урон\nПредупреждение: Гарантия аннигилируется при покупке."
+		"chi" "你需要更多的动力吗?更多的性感吗?\n我们不会再看了，介绍3个放大镜，几乎是潜在损害的两倍\n警告:购买保修无效。"
+	}
+	"Cosmic Terror Desc pap2"
+	{
+		"en" "Whats better than 1 death beam?\n4 more death beams of course\nThanks to these extra beams we have recreated the power of the moon!\nWarning: Warranty annihilated on purchase."
+		"fr" "Quadruple les rayons.\nAvec un total de quatre rayons, nous avons répliqué la puissance totale de la lune!\n(Garantie exterminée avec achat.)"
+		"ru" "Что может быть лучше одного луча смерти?\nЧетыре луча смерти, конечно\nБлагодаря этим дополнительным лучам мы воссоздали силу луны!\nПредупреждение: Гарантия аннигилируется при покупке."
+		"chi" "什么比一个激光更好?\n当然是更多激光！\n多亏这些光束，我们成功复刻出了月球之力！\n警告:购买时保修失效。"
+	}
+	"Cosmic Terror Extra Desc"
+	{
+		"en"	"Firerate bonuses affect the speed of the beam\nReload rate bonuses affect how fast you gain heat."
+		"fr"	"Améliorations de cadence de tir améliore la vitesse du rayon laser.\nAméliorations de vitesse du rechargement ralentit le rechauffement de l'arme."
+	}
 	
 	//Etc
 	"Module"
