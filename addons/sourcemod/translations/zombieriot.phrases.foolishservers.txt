@@ -501,6 +501,56 @@
 		"en"	"Firerate bonuses affect the speed of the beam\nReload rate bonuses affect how fast you gain heat."
 		"fr"	"Améliorations de cadence de tir améliore la vitesse du rayon laser.\nAméliorations de vitesse du rechargement ralentit le rechauffement de l'arme."
 	}
+	"Beam Wand Desc"
+	{
+		"en"	"Increased damage\nHold M1 for a constant beam to eviscerate your enemies. M2: Magic overdrive, more mana=stronger but higher CD."
+		"fr"	"Laser constant qui épuise le Mana. M2 pompe plus de Mana dans l'attaque pour améliorer les dégats."
+		"ru"	"Удерживайте М1 для постоянного луча уничтожения. М2 - усиление магии, больше маны = сильнее, но выше восстановление."
+		"chi"   "按住M1发出一个恒定的光束来清除你的敌人。M2:魔法超速。更多的法力值=更强更快的CD"
+	}
+	"Beam Wand Pap 1"
+	{
+		"en"	"Increased damage and attackspeed"
+		"fr"	"Dégats et cadence des attaques améliorés"
+		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"   "增加伤害和攻击速度。"
+	}
+	"Beam Wand Pap 2"
+	{
+		"en"	"Increased damage and attackspeed"
+		"fr"	"Dégats et cadence des attaques améliorés"
+		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"   "增加伤害和攻击速度。"
+	}
+	"Beam Wand pap Alt 1"
+	{
+		"en"	"Increased damage\Have you ever wondered what it would be like to fire 2 laser beams?\nWell, wonder-no-more!\nHold Mouse1 to attack\nOnce charge is full press Mouse2 to use it!"
+		"fr"	"Chargez une attaque avec M1, utilisez la charge avec M2.\nTire 2 rayons laser."
+		"ru"	"Вы когда-нибудь задумывались, каково это - стрелять двумя лазерными лучами?\nНу, теперь это реальность!\nУдерж. ЛКМ для атаки\n, при полном заряде нажмите ПКМ для использования!"
+		"chi"   "你有没有想过发射两束激光会是什么样子?\n 左键攻击\n一旦充能完毕，按右键使用它!"
+	}
+	"Beam Wand pap Alt 2"
+	{
+		"en"	"Increased damage\So, you want more power?\nIntroducing the ''Particle Cannon''tm\nPress RELOAD to switch between the particle Beam/Cannon\nThe particle cannon also has its own Mouse2 ability\nParticle cannon cannot pierce multiple targets!"
+		"fr"	"Appuyez sur RELOAD pour changer entre le rayon laser et le cannon à particules.\nAbilité change avec l'utilisation du cannon.\nCannon à particules ne peut pas perçer les ennemis."
+		"ru"	"Итак, вы хотите больше мощности?\nПредставляем «Нейтронная пушка»tm\nНажмите ПЕРЕЗАРЯДКУ для перекл. между нейтронным лучом/пушкой\nНейтронная пушка также имеет свою собственную способность на ПКМ\nНейтронная пушка не может пробить несколько целей!"
+		"chi"   "所以，你想要更大的力量?\n介绍“粒子炮”\n按R在粒子束/炮之间切换\n粒子炮也有自己的鼠标右键技能\n粒子炮不能拼接多个目标!"
+	}
+	"Necromancy Staff Desc"
+	{
+		"en"	"M2 Summons a minion.\nNot having your wand in your hand will half minion damage.\nMinion will only attack marked enemies\nM1 Marks enemies for 5 seconds"
+	}
+	"Necromancy Staff Pap 1"
+	{
+		"en"	"Increased damage and attackspeed, loses camo detection"
+		"fr"	"Dégats et cadence des attaques améliorés, votre minion ne peut plus détecter le camouflage."
+		"ru"	"Увеличенный урон и скорость атаки, потеря обнаружения камуфляжа."
+		"chi"   "增加伤害和攻击速度，失去伪装检测"
+	}
+	"Necromancy Staff Pap 2"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
 	
 	//Etc
 	"Module"
