@@ -2613,6 +2613,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 		b_IsATrigger[entity] = false;
 		b_IsATriggerHurt[entity] = false;
+		b_StaticNPC[entity] = false;
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
 		b_CanSeeBuildingValues[entity] = false;
