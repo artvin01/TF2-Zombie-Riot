@@ -1806,7 +1806,7 @@ void Waves_RoundStart(bool event = false)
 
 void Waves_RoundEnd()
 {
-	Cooldown = 0.0;
+	Cooldown = GetGameTime();
 	InSetup = true;
 //	InFreeplay = false;
 	CurrentRound[Rounds_Default] = 0;
@@ -2999,8 +2999,11 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 			
 	}
 	
-	if(subWave)
-		WaveStart_SubWaveStart();
+	if(WaveWhich == Rounds_Default)
+	{
+		if(subWave)
+			WaveStart_SubWaveStart();
+	}
 
 	if(WaveWhich == Rounds_Default)
 	{
@@ -3407,7 +3410,7 @@ void ResetAbilitiesWaveEnd()
 
 void WaveStart_SubWaveStart(float time = 0.0)
 {
-//	f_ZombieAntiDelaySpeedUp = Cooldown + 600.0;
+//	f_ZombieAntiDelaySpeedUp = Cooldown + 600.0;s
 	if(time == 0.0)
 		f_ZombieAntiDelaySpeedUp = Cooldown + 420.0;
 	else
