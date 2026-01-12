@@ -77,6 +77,7 @@ methodmap ObjectDFactory < ObjectGeneric
  		b_CantCollidie[npc.index] = true;
 	 	b_CantCollidieAlly[npc.index] = true;
 		npc.m_bThisEntityIgnored = true;
+		b_ThisEntityIgnoredBeingCarried[npc.index] = true; 
 		npc.m_bConstructBuilding = true;
 
 		npc.FuncCanUse = ClotCanUse;

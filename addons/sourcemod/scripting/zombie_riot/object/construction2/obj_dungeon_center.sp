@@ -180,9 +180,12 @@ bool ObjectDungeonCenter_Alive()
 
 static void ClotShowInteractHud(ObjectDungeonCenter npc, int client)
 {
+	char viality[64];
+	BuildingVialityDisplay(client, npc.index, viality, sizeof(viality));
+
 	char button[64];
 	PlayerHasInteract(client, button, sizeof(button));
-	PrintCenterText(client, "%sto view control and crafting options.", button);
+	PrintCenterText(client, "%s\n%sto view control and crafting options.", viality, button);
 }
 
 static bool ClotInteract(int client, int weapon, ObjectDungeonCenter npc)

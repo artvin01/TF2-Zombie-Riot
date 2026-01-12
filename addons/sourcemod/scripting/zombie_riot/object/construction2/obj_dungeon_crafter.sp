@@ -173,15 +173,18 @@ static bool ClotCanUse(ObjectGemCrafter npc, int client)
 
 static void ClotShowInteractHud(ObjectGemCrafter npc, int client)
 {
+	char viality[64];
+	BuildingVialityDisplay(client, npc.index, viality, sizeof(viality));
+
 	if(GlobalCooldown > GetGameTime())
 	{
-		PrintCenterText(client, "%t", "Object Cooldown", GlobalCooldown - GetGameTime());
+		PrintCenterText(client, "%s\n%t", "Object Cooldown", viality, GlobalCooldown - GetGameTime());
 	}
 	else
 	{
 		char button[64];
 		PlayerHasInteract(client, button, sizeof(button));
-		PrintCenterText(client, "%sto pack weapons using materials.", button);
+		PrintCenterText(client, "%s\n%sto pack weapons using materials.", viality, button);
 	}
 }
 

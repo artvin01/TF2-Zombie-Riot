@@ -206,9 +206,12 @@ static int CountBuildings()
 
 static void ClotShowInteractHud(ObjectGeneric npc, int client)
 {
+	char viality[64];
+	BuildingVialityDisplay(client, npc.index, viality, sizeof(viality));
+
 	if(CurrentLevel >= CONSTRUCT_MAXLVL)
 	{
-		PrintCenterText(client, "%t", ObjectDungeonCenter_Level() < ObjectDungeonCenter_MaxLevel() ? "Upgrade Max Limited" : "Upgrade Max");
+		PrintCenterText(client, "%s\n%t", viality, ObjectDungeonCenter_Level() < ObjectDungeonCenter_MaxLevel() ? "Upgrade Max Limited" : "Upgrade Max");
 	}
 	else
 	{
@@ -216,7 +219,7 @@ static void ClotShowInteractHud(ObjectGeneric npc, int client)
 
 		char button[64];
 		PlayerHasInteract(client, button, sizeof(button));
-		PrintCenterText(client, "%t", "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL, button);
+		PrintCenterText(client, "%s\n%t", viality, "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL + 1, button);
 	}
 }
 

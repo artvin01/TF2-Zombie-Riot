@@ -137,15 +137,18 @@ static bool ClotCanUse(ObjectDStove npc, int client)
 
 static void ClotShowInteractHud(ObjectDStove npc, int client)
 {
+	char viality[64];
+	BuildingVialityDisplay(client, npc.index, viality, sizeof(viality));
+
 	if(GlobalCooldown > GetGameTime())
 	{
-		PrintCenterText(client, "%t", "Object Cooldown", GlobalCooldown - GetGameTime());
+		PrintCenterText(client, "%s\n%t", viality, "Object Cooldown", GlobalCooldown - GetGameTime());
 	}
 	else
 	{
 		char button[64];
 		PlayerHasInteract(client, button, sizeof(button));
-		PrintCenterText(client, "%sto cook something using materials.", button);
+		PrintCenterText(client, "%s\n%sto cook something using materials.", viality, button);
 	}
 }
 
