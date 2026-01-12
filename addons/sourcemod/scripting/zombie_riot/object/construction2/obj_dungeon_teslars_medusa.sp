@@ -10,8 +10,8 @@
 
 #define CONSTRUCT_NAME		"Teslar's Medusa"
 #define CONSTRUCT_RESOURCE1	"copper"
-#define CONSTRUCT_COST1		(20 + (CurrentLevel * 10))
-#define CONSTRUCT_MAXLVL	5
+#define CONSTRUCT_COST1		(30 + (CurrentLevel * 10))
+#define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
 
 static char g_ShootingSound[][] = {
 	"npc/scanner/scanner_electric2.wav",
@@ -20,13 +20,11 @@ static char g_ShootingSound[][] = {
 static int NPCId;
 static int LastGameTime;
 static int CurrentLevel;
-static bool Unlocked;
 
 void ObjectDTeslarsMedusa_MapStart()
 {
 	LastGameTime = -1;
 	CurrentLevel = 0;
-	Unlocked = false;
 
 	PrecacheSoundArray(g_ShootingSound);
 	PrecacheModel("models/buildables/sentry_shield.mdl");
@@ -69,7 +67,6 @@ methodmap ObjectDTeslarsMedusa < ObjectGeneric
 		{
 			CurrentLevel = 0;
 			LastGameTime = CurrentGame;
-			Unlocked = false;
 		}
 
 		ObjectDTeslarsMedusa npc = view_as<ObjectDTeslarsMedusa>(ObjectGeneric(client, vecPos, vecAng, "models/props_moonbase/moon_gravel_crystal.mdl", "0.85", "50", {25.0, 25.0, 75.0},_,false));
@@ -79,7 +76,6 @@ methodmap ObjectDTeslarsMedusa < ObjectGeneric
 		func_NPCThink[npc.index] = ObjectDTeslarsMedusa_ClotThink;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
-		func_NPCDeath[npc.index] = ClotDeath;
 
 		int entity = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl", "idle", .model_size = 1.1);
 		npc.m_iWearable5 = entity;
@@ -140,7 +136,7 @@ void ObjectDTeslarsMedusa_ClotThink(ObjectDTeslarsMedusa npc)
 			int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
 			level++;
 			npc.PlayShootSound();
-			float damagedeal = 125.0 * Pow(float(level), 3.0);
+			float damagedeal = 125.0 * Pow(level * 2.0, 2.0);
 
 			static float AbsOrigin[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
@@ -160,7 +156,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 		
 		if(!CvarInfiniteCash.BoolValue)
 		{
-			if(!Dungeon_Mode() || !Unlocked || LastGameTime != CurrentGame)
+			if(!Dungeon_Mode() || ObjectDungeonCenter_Level() < 2 || LastGameTime != CurrentGame)
 			{
 				maxcount = 0;
 				return false;
@@ -267,13 +263,4 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 		}
 	}
 	return 0;
-}
-
-static void ClotDeath(int entity)
-{
-	if(!Unlocked && LastGameTime == CurrentGame && GetTeam(entity) != TFTeam_Red && !(i_HexCustomDamageTypes[entity] & ZR_SLAY_DAMAGE))
-	{
-		Unlocked = true;
-		CPrintToChatAll("{green}%t", "Unlocked Building", CONSTRUCT_NAME);
-	}
 }

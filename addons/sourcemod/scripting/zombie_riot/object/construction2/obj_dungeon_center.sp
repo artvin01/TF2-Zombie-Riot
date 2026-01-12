@@ -9,15 +9,24 @@
 #undef CONSTRUCT_MAXLVL
 
 #define CONSTRUCT_NAME		"Control Center"
+#define CONSTRUCT_COST1		(30 + (CurrentLevel * 45))
+#define CONSTRUCT_MAXLVL	3
+
 static float BuffTimerLimited;
 
 static const int CompassCrystalCost = 5;
 static const int TreasureKeyCost = 10;
 static const int UnboxCrystalCost = 10;
 
+static int LastGameTime;
+static int CurrentLevel;
+
 static int NPCId;
 void ObjectDungeonCenter_MapStart()
 {
+	LastGameTime = -1;
+	CurrentLevel = 0;
+
 	PrecacheModel("models/props_combine/masterinterface.mdl");
 
 	NPCData data;
@@ -55,6 +64,12 @@ methodmap ObjectDungeonCenter < ObjectGeneric
 	}
 	public ObjectDungeonCenter(int client, const float vecPos[3], const float vecAng[3], const char[] data)
 	{
+		if(LastGameTime != CurrentGame)
+		{
+			CurrentLevel = 0;
+			LastGameTime = CurrentGame;
+		}
+
 		ObjectDungeonCenter npc = view_as<ObjectDungeonCenter>(ObjectGeneric(client, vecPos, vecAng, "models/props_combine/masterinterface.mdl", _, "3000", {65.0, 65.0, 197.0},_,false));
 		
 		
@@ -124,6 +139,11 @@ static int CountBuildings()
 	return count;
 }
 
+int ObjectDungeonCenter_Level()
+{
+	return CurrentLevel;
+}
+
 bool ObjectDungeonCenter_Alive()
 {
 	int entity = -1;
@@ -134,8 +154,7 @@ bool ObjectDungeonCenter_Alive()
 		
 		if(NPCId == i_NpcInternalId[entity])
 		{
-			ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
-			if(!IsValidEntity(objstats.m_iConstructDeathModel))
+			if(!IsValidEntity(view_as<ObjectGeneric>(entity).m_iConstructDeathModel))
 				return true;
 		}
 	}
@@ -176,6 +195,12 @@ static void ThisBuildingMenu(int client)
 		copper, "Material copper");
 
 	char buffer[64];
+
+	if(CurrentLevel < CONSTRUCT_MAXLVL)
+	{
+		FormatEx(buffer, sizeof(buffer), "%t", "Upgrade Building To", CurrentLevel + 2);
+		menu.AddItem("7", buffer, (wood < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	}
 
 	if(Rogue_HasNamedArtifact("Compass Fragment"))
 	{
@@ -332,6 +357,20 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 							EmitSoundToAll("ui/chime_rd_2base_neg.wav");
 
 							Rogue_GiveNamedArtifact("Treasure Key");
+						}
+					}
+					case 7:
+					{
+						if(CurrentLevel < CONSTRUCT_MAXLVL && Construction_GetMaterial("wood") >= CONSTRUCT_COST1)
+						{
+							CPrintToChatAll("%t", "Player Used 1 to", client, CONSTRUCT_COST1, "Material wood");
+							CPrintToChatAll("%t", "Upgraded Building To", CONSTRUCT_NAME, CurrentLevel + 2);
+
+							Construction_AddMaterial("wood", -CONSTRUCT_COST1, true);
+
+							EmitSoundToAll("ui/chime_rd_2base_pos.wav");
+
+							CurrentLevel++;
 						}
 					}
 				}

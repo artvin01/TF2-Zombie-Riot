@@ -10,19 +10,17 @@
 
 #define CONSTRUCT_NAME		"Giant Lighthouse"
 #define CONSTRUCT_RESOURCE1	"iron"
-#define CONSTRUCT_COST1		90
-#define CONSTRUCT_MAXLVL	2
+#define CONSTRUCT_COST1		30
+#define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
 
 static int NPCId;
 static int LastGameTime;
 static int CurrentLevel;
-static bool Unlocked;
 
 void ObjectDLightHouse_MapStart()
 {
 	LastGameTime = -1;
 	CurrentLevel = 0;
-	Unlocked = false;
 
 	PrecacheModel("models/props_sunshine/lighthouse_blu_bottom.mdl");
 
@@ -64,7 +62,6 @@ methodmap ObjectDLightHouse < ObjectGeneric
 		{
 			CurrentLevel = 0;
 			LastGameTime = CurrentGame;
-			Unlocked = false;
 		}
 
 		ObjectDLightHouse npc = view_as<ObjectDLightHouse>(ObjectGeneric(client, vecPos, vecAng, "models/props_sunshine/lighthouse_blu_bottom.mdl", "0.3", "600",{30.0, 30.0, 80.0},_,false));
@@ -73,7 +70,6 @@ methodmap ObjectDLightHouse < ObjectGeneric
 		func_NPCThink[npc.index] = ClotThink;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
-		func_NPCDeath[npc.index] = ClotDeath;
 		npc.m_bConstructBuilding = true;
 
 		return npc;
@@ -88,7 +84,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 		
 		if(!CvarInfiniteCash.BoolValue)
 		{
-			if(!Dungeon_Mode() || !Unlocked || LastGameTime != CurrentGame)
+			if(!Dungeon_Mode() || ObjectDungeonCenter_Level() < 2 || LastGameTime != CurrentGame)
 			{
 				maxcount = 0;
 				return false;
@@ -231,13 +227,4 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 		}
 	}
 	return 0;
-}
-
-static void ClotDeath(int entity)
-{
-	if(!Unlocked && LastGameTime == CurrentGame && GetTeam(entity) != TFTeam_Red && !(i_HexCustomDamageTypes[entity] & ZR_SLAY_DAMAGE))
-	{
-		Unlocked = true;
-		CPrintToChatAll("{green}%t", "Unlocked Building", CONSTRUCT_NAME);
-	}
 }

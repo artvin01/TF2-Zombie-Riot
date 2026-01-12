@@ -10,8 +10,8 @@
 
 #define CONSTRUCT_NAME		"House"
 #define CONSTRUCT_RESOURCE1	"wood"
-#define CONSTRUCT_COST1		(10 + (CurrentLevel * 10))
-#define CONSTRUCT_MAXLVL	9
+#define CONSTRUCT_COST1		(10 + (CurrentLevel * 5))
+#define CONSTRUCT_MAXLVL	(1 + (ObjectDungeonCenter_Level() * 2))
 
 static const char NPCModel[] = "models/props_farm/wood_shack001.mdl";
 

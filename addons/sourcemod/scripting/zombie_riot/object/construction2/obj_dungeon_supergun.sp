@@ -10,9 +10,8 @@
 
 #define CONSTRUCT_NAME		"Heavy Calliber"
 #define CONSTRUCT_RESOURCE1	"copper"
-#define CONSTRUCT_COST1		((5 + (CurrentLevel * 5)) * (CurrentLevel > 3 ? 2 : 1))
-#define CONSTRUCT_MAXLVL	8
-// 310 total cost
+#define CONSTRUCT_COST1		(10 + (CurrentLevel * 10))
+#define CONSTRUCT_MAXLVL	(1 + ObjectDungeonCenter_Level())
 
 static char g_ShootingSound[][] = {
 	"weapons/csgo_awp_shoot.wav",
@@ -21,13 +20,11 @@ static char g_ShootingSound[][] = {
 static int NPCId;
 static int LastGameTime;
 static int CurrentLevel;
-static bool Unlocked;
 
 void ObjectDCaliberTurret_MapStart()
 {
 	LastGameTime = -1;
 	CurrentLevel = 0;
-	Unlocked = false;
 
 	PrecacheSoundArray(g_ShootingSound);
 	PrecacheModel("models/buildables/sentry1_heavy.mdl");
@@ -69,7 +66,6 @@ methodmap ObjectDCaliberTurret < ObjectGeneric
 		{
 			CurrentLevel = 0;
 			LastGameTime = CurrentGame;
-			Unlocked = false;
 		}
 
 		ObjectDCaliberTurret npc = view_as<ObjectDCaliberTurret>(ObjectGeneric(client, vecPos, vecAng, "models/buildables/sentry1_heavy.mdl", "2.0", "50", {40.0, 40.0, 90.0},_,false));
@@ -79,7 +75,6 @@ methodmap ObjectDCaliberTurret < ObjectGeneric
 		func_NPCThink[npc.index] = ObjectDCaliberTurret_ClotThink;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
-		func_NPCDeath[npc.index] = ClotDeath;
 		SetRotateByDefaultReturn(npc.index, -180.0);
 
 		return npc;
@@ -171,7 +166,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 		
 		if(!CvarInfiniteCash.BoolValue)
 		{
-			if(!Dungeon_Mode() || !Unlocked || LastGameTime != CurrentGame)
+			if(!Dungeon_Mode() || ObjectDungeonCenter_Level() < 1 || LastGameTime != CurrentGame)
 			{
 				maxcount = 0;
 				return false;
@@ -277,13 +272,4 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 		}
 	}
 	return 0;
-}
-
-static void ClotDeath(int entity)
-{
-	if(!Unlocked && LastGameTime == CurrentGame && GetTeam(entity) != TFTeam_Red && !(i_HexCustomDamageTypes[entity] & ZR_SLAY_DAMAGE))
-	{
-		Unlocked = true;
-		CPrintToChatAll("{green}%t", "Unlocked Building", CONSTRUCT_NAME);
-	}
 }

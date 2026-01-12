@@ -10,8 +10,8 @@
 
 #define CONSTRUCT_NAME		"Construct Health"
 #define CONSTRUCT_RESOURCE1	"iron"
-#define CONSTRUCT_COST1		(15 + (CurrentLevel * 15))
-#define CONSTRUCT_MAXLVL	4
+#define CONSTRUCT_COST1		(10 + (CurrentLevel * 10))
+#define CONSTRUCT_MAXLVL	(1 + ObjectDungeonCenter_Level())
 
 static int NPCId1;
 static int NPCId2;

@@ -10,8 +10,8 @@
 
 #define CONSTRUCT_NAME		"Vehicle Factory"
 #define CONSTRUCT_RESOURCE1	"iron"
-#define CONSTRUCT_COST1		(60 + (CurrentLevel * 60))
-#define CONSTRUCT_MAXLVL	2
+#define CONSTRUCT_COST1		(20 + (CurrentLevel * 20))
+#define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
 
 static const char Vehicles[][] =
 {
@@ -89,7 +89,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	{
 		count = CountBuildings();
 		
-		if(!CvarInfiniteCash.BoolValue || !Dungeon_Mode())
+		if(!CvarInfiniteCash.BoolValue || ObjectDungeonCenter_Level() < 1 || !Dungeon_Mode())
 		{
 			maxcount = 0;
 			return false;
