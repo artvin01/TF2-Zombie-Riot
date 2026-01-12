@@ -7,11 +7,16 @@
 #undef CONSTRUCT_COST1
 #undef CONSTRUCT_COST2
 #undef CONSTRUCT_MAXLVL
+#undef CONSTRUCT_DAMAGE
+#undef CONSTRUCT_FIRERATE
+#undef CONSTRUCT_RANGE
+#undef CONSTRUCT_MAXCOUNT
 
 #define CONSTRUCT_NAME		"Vehicle Factory"
 #define CONSTRUCT_RESOURCE1	"iron"
 #define CONSTRUCT_COST1		(20 + (CurrentLevel * 20))
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
+#define CONSTRUCT_MAXCOUNT	1
 
 static const char Vehicles[][] =
 {
@@ -99,7 +104,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
-		maxcount = 1;
+		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;
 	}
@@ -171,9 +176,9 @@ static void ThisBuildingMenu(int client)
 	char buffer[64];
 	if(CurrentLevel < CONSTRUCT_MAXLVL)
 	{
-		menu.SetTitle("%t\n \n%d / %d %t", CONSTRUCT_NAME, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
+		menu.SetTitle("%t", CONSTRUCT_NAME);
 
-		FormatEx(buffer, sizeof(buffer), "%t\n ", "Upgrade Building To", CurrentLevel + 2);
+		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Upgrade Building To", CurrentLevel + 2, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
 		menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	}
 	else

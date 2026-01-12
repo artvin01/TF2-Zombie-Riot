@@ -7,11 +7,19 @@
 #undef CONSTRUCT_COST1
 #undef CONSTRUCT_COST2
 #undef CONSTRUCT_MAXLVL
+#undef CONSTRUCT_DAMAGE
+#undef CONSTRUCT_FIRERATE
+#undef CONSTRUCT_RANGE
+#undef CONSTRUCT_MAXCOUNT
 
 #define CONSTRUCT_NAME		"Tranquilizer Turret"
 #define CONSTRUCT_RESOURCE1	"copper"
 #define CONSTRUCT_COST1		(30 + (CurrentLevel * 10))
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
+#define CONSTRUCT_DAMAGE	2.0
+#define CONSTRUCT_FIRERATE	(9.0 - level)
+#define CONSTRUCT_RANGE		1000.0
+#define CONSTRUCT_MAXCOUNT	(1 + (CurrentLevel))
 
 static const char g_ShootingSound[] =
 	"weapons/sniper_rifle_classic_shoot.wav";
@@ -138,7 +146,7 @@ static void ClotThink(ObjectDStunGun npc)
 		float angles[3];
 		view_as<CClotBody>(npc.index).GetAttachment("light", origin, angles);
 		ShootLaser(npc.index, "bullet_tracer02_red_crit", origin, vecHit, false );
-		npc.m_flNextMeleeAttack = gameTime + 9.0 - (level * 2.0);
+		npc.m_flNextMeleeAttack = gameTime + CONSTRUCT_FIRERATE;
 		npc.PlayShootSound();
 		if(IsValidEnemy(npc.index, target))
 		{
@@ -157,13 +165,13 @@ static void ClotThink(ObjectDStunGun npc)
 						SetEntPropFloat(other, Prop_Send, "m_flNextAttack", GetGameTime() + 3.0);
 				}
 			}
-			else if(target < 1 || target >= MaxClients)
+			else if(target >= MaxClients)
 			{
-				TF2_StunPlayer(target, 2.0, 1.0, TF_STUNFLAG_SLOWDOWN);
+				FreezeNpcInTime(target, b_thisNpcIsARaid[target] ? 0.4 : 2.0);
 			}
 			else
 			{
-				FreezeNpcInTime(target, b_thisNpcIsARaid[target] ? 0.4 : 2.0);
+				TF2_StunPlayer(target, 2.0, 1.0, TF_STUNFLAG_SLOWDOWN);
 			}
 		}
 	}
@@ -186,7 +194,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
-		maxcount = CurrentLevel + 1;
+		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;
 	}
@@ -228,12 +236,6 @@ static void ClotShowInteractHud(ObjectGeneric npc, int client)
 
 static bool ClotInteract(int client, int weapon, ObjectGeneric npc)
 {
-	if(CurrentLevel >= CONSTRUCT_MAXLVL)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		return true;
-	}
-
 	ThisBuildingMenu(client);
 	return true;
 }
@@ -246,12 +248,31 @@ static void ThisBuildingMenu(int client)
 
 	Menu menu = new Menu(ThisBuildingMenuH);
 
-	menu.SetTitle("%t\n \n%d / %d %t", CONSTRUCT_NAME, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
+	int level = CurrentLevel;
+	float damagePre = CONSTRUCT_FIRERATE;
+	int countPre = CONSTRUCT_MAXCOUNT;
 
+	level = CurrentLevel + 1;
+	float damagePost = CONSTRUCT_FIRERATE;
+	int countPost = CONSTRUCT_MAXCOUNT;
+	
 	char buffer[64];
-	FormatEx(buffer, sizeof(buffer), "%t", "Upgrade Building To", CurrentLevel + 2);
-	menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
+	if(CurrentLevel >= CONSTRUCT_MAXLVL)
+	{
+		menu.SetTitle("%t\n%.1fs Fire Rate\n%.0f Range\n%d Supply", CONSTRUCT_NAME, damagePre, CONSTRUCT_RANGE, countPre);
+
+		FormatEx(buffer, sizeof(buffer), "Level %d", CurrentLevel + 1);
+		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+	}
+	else
+	{
+		menu.SetTitle("%t\n%.1fs (-%.1fs) Fire Rate\n%.0f Range\n%d (+%d) Supply\n ", CONSTRUCT_NAME, damagePre, damagePost - damagePre, CONSTRUCT_RANGE, countPre, countPost - countPre);
+
+		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t", "Upgrade Building To", CurrentLevel + 2, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
+		menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	}
+	
 	menu.Display(client, MENU_TIME_FOREVER);
 }
 

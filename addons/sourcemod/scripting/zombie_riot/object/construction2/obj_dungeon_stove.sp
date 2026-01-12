@@ -7,12 +7,17 @@
 #undef CONSTRUCT_COST1
 #undef CONSTRUCT_COST2
 #undef CONSTRUCT_MAXLVL
+#undef CONSTRUCT_DAMAGE
+#undef CONSTRUCT_FIRERATE
+#undef CONSTRUCT_RANGE
+#undef CONSTRUCT_MAXCOUNT
 
 #define CONSTRUCT_NAME		"Cooking Stove"
 #define CONSTRUCT_RESOURCE1	"wood"
 #define CONSTRUCT_RESOURCE2	"crystal"
 #define CONSTRUCT_COST1		10
 #define CONSTRUCT_COST2		4
+#define CONSTRUCT_MAXCOUNT	1
 
 static const char Artifacts[][] =
 {
@@ -98,7 +103,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			return false;
 		}
 
-		maxcount = 1;
+		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;
 	}

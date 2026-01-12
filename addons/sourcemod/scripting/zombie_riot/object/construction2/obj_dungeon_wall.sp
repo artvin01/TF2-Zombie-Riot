@@ -7,11 +7,16 @@
 #undef CONSTRUCT_COST1
 #undef CONSTRUCT_COST2
 #undef CONSTRUCT_MAXLVL
+#undef CONSTRUCT_DAMAGE
+#undef CONSTRUCT_FIRERATE
+#undef CONSTRUCT_RANGE
+#undef CONSTRUCT_MAXCOUNT
 
 #define CONSTRUCT_NAME		"Construct Health"
 #define CONSTRUCT_RESOURCE1	"iron"
 #define CONSTRUCT_COST1		(10 + (CurrentLevel * 10))
 #define CONSTRUCT_MAXLVL	(1 + ObjectDungeonCenter_Level())
+#define CONSTRUCT_MAXCOUNT	(24 + (CurrentLevel * 12))
 
 static int NPCId1;
 static int NPCId2;
@@ -119,7 +124,7 @@ static bool ClotCanBuild1(int client, int &count, int &maxcount)
 			}
 		}
 
-		maxcount = 24 + (CurrentLevel * 12);
+		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;
 	}
@@ -189,7 +194,7 @@ static bool ClotCanBuild2(int client, int &count, int &maxcount)
 			return false;
 		}
 
-		maxcount = 24 + (CurrentLevel * 12);
+		maxcount = CONSTRUCT_MAXCOUNT;
 		if((count + 1) >= maxcount)
 			return false;
 	}
@@ -260,7 +265,7 @@ static bool ClotCanBuild3(int client, int &count, int &maxcount)
 			return false;
 		}
 
-		maxcount = 24 + (CurrentLevel * 12);
+		maxcount = CONSTRUCT_MAXCOUNT;
 		if((count + 2) >= maxcount)
 			return false;
 	}

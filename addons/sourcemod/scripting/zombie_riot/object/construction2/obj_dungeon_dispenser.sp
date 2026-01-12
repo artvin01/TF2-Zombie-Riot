@@ -7,11 +7,19 @@
 #undef CONSTRUCT_COST1
 #undef CONSTRUCT_COST2
 #undef CONSTRUCT_MAXLVL
+#undef CONSTRUCT_DAMAGE
+#undef CONSTRUCT_FIRERATE
+#undef CONSTRUCT_RANGE
+#undef CONSTRUCT_MAXCOUNT
 
 #define CONSTRUCT_NAME		"The Dispenser"
 #define CONSTRUCT_RESOURCE1	"iron"
 #define CONSTRUCT_COST1		(20 + (CurrentLevel * 20))
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
+#define CONSTRUCT_DAMAGE	(5.0 + (level * 7.5))
+#define CONSTRUCT_FIRERATE	0.5
+#define CONSTRUCT_RANGE		350.0
+#define CONSTRUCT_MAXCOUNT	(1 + CurrentLevel)
 
 static int NPCId;
 static int LastGameTime;
@@ -76,7 +84,7 @@ methodmap ObjectDDispenser < ObjectGeneric
 static void ClotThink(ObjectDDispenser npc)
 {
 	float gameTime = GetGameTime(npc.index);
-	npc.m_flNextDelayTime = gameTime + 0.5;
+	npc.m_flNextDelayTime = gameTime + CONSTRUCT_FIRERATE;
 
 	b_NpcIsTeamkiller[npc.index] = true;
 	Explode_Logic_Custom(0.0,
@@ -84,7 +92,7 @@ static void ClotThink(ObjectDDispenser npc)
 	npc.index,
 	-1,
 	_,
-	350.0,
+	CONSTRUCT_RANGE,
 	_,
 	_,
 	true,
@@ -104,7 +112,7 @@ static void DispenserExplode(int entity, int victim, float damage, int weapon)
 	{
 		int level = GetTeam(entity) == TFTeam_Red ? CurrentLevel : Dungeon_GetRound();
 
-		HealEntityGlobal(entity, victim, 5.0 + (level * 7.5), _, 0.5);
+		HealEntityGlobal(entity, victim, CONSTRUCT_DAMAGE, _, 0.5);
 		if(victim <= MaxClients)
 			TF2_AddCondition(victim, TFCond_InHealRadius, 0.6);
 	}
@@ -125,7 +133,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
-		maxcount = CurrentLevel >= CONSTRUCT_MAXLVL ? 2 : 1;
+		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;
 	}
@@ -167,12 +175,6 @@ static void ClotShowInteractHud(ObjectGeneric npc, int client)
 
 static bool ClotInteract(int client, int weapon, ObjectGeneric npc)
 {
-	if(CurrentLevel >= CONSTRUCT_MAXLVL)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		return true;
-	}
-
 	ThisBuildingMenu(client);
 	return true;
 }
@@ -185,12 +187,31 @@ static void ThisBuildingMenu(int client)
 
 	Menu menu = new Menu(ThisBuildingMenuH);
 
-	menu.SetTitle("%t\n \n%d / %d %t", CONSTRUCT_NAME, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
+	int level = CurrentLevel;
+	float damagePre = CONSTRUCT_DAMAGE / CONSTRUCT_FIRERATE;
+	int countPre = CONSTRUCT_MAXCOUNT;
 
+	level = CurrentLevel + 1;
+	float damagePost = CONSTRUCT_DAMAGE / CONSTRUCT_FIRERATE;
+	int countPost = CONSTRUCT_MAXCOUNT;
+	
 	char buffer[64];
-	FormatEx(buffer, sizeof(buffer), "%t", "Upgrade Building To", CurrentLevel + 2);
-	menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
+	if(CurrentLevel >= CONSTRUCT_MAXLVL)
+	{
+		menu.SetTitle("%t\n%.0f HPS\n%.0f Range\n%d Supply", CONSTRUCT_NAME, damagePre, CONSTRUCT_RANGE, countPre);
+
+		FormatEx(buffer, sizeof(buffer), "Level %d", CurrentLevel + 1);
+		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+	}
+	else
+	{
+		menu.SetTitle("%t\n%.0f (+%.0f) HPS\n%.0f Range\n%d (+%d) Supply\n ", CONSTRUCT_NAME, damagePre, damagePost - damagePre, CONSTRUCT_RANGE, countPre, countPost - countPre);
+
+		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t", "Upgrade Building To", CurrentLevel + 2, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
+		menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	}
+	
 	menu.Display(client, MENU_TIME_FOREVER);
 }
 

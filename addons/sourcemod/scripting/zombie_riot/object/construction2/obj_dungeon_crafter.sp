@@ -7,12 +7,17 @@
 #undef CONSTRUCT_COST1
 #undef CONSTRUCT_COST2
 #undef CONSTRUCT_MAXLVL
+#undef CONSTRUCT_DAMAGE
+#undef CONSTRUCT_FIRERATE
+#undef CONSTRUCT_RANGE
+#undef CONSTRUCT_MAXCOUNT
 
 #define CONSTRUCT_NAME		"Packing Station"
 #define CONSTRUCT_RESOURCE1	"wood"
 #define CONSTRUCT_RESOURCE2	"crystal"
 #define CONSTRUCT_COST1		20
 #define CONSTRUCT_COST2		2
+#define CONSTRUCT_MAXCOUNT	1
 
 enum
 {
@@ -132,7 +137,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
-		maxcount = 1;
+		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;
 	}

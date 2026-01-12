@@ -109,7 +109,8 @@ public void Dungeon_Crate_Crystal()
 
 public void Dungeon_Crate_BonusCash25()
 {
-	int amount = GetRandomInt(10, 40);
+	// 50
+	int amount = GetRandomInt(30, 70);
 	GlobalExtraCash += amount;
 	ItemMessage("Gained Extra Cash", amount);
 }

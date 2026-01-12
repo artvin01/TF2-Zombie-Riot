@@ -7,11 +7,19 @@
 #undef CONSTRUCT_COST1
 #undef CONSTRUCT_COST2
 #undef CONSTRUCT_MAXLVL
+#undef CONSTRUCT_DAMAGE
+#undef CONSTRUCT_FIRERATE
+#undef CONSTRUCT_RANGE
+#undef CONSTRUCT_MAXCOUNT
 
 #define CONSTRUCT_NAME		"Teslar's Medusa"
 #define CONSTRUCT_RESOURCE1	"copper"
 #define CONSTRUCT_COST1		(30 + (CurrentLevel * 10))
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
+#define CONSTRUCT_DAMAGE	(125.0 * Pow(level + 1.0, 2.0))
+#define CONSTRUCT_FIRERATE	1.0
+#define CONSTRUCT_RANGE		1000.0
+#define CONSTRUCT_MAXCOUNT	(1 + (CurrentLevel))
 
 static char g_ShootingSound[][] = {
 	"npc/scanner/scanner_electric2.wav",
@@ -94,10 +102,10 @@ void ObjectDTeslarsMedusa_ClotThink(ObjectDTeslarsMedusa npc)
 	}
 
 	float gameTime = GetGameTime(npc.index);
-	npc.m_flNextDelayTime = gameTime + 1.0;
+	npc.m_flNextDelayTime = gameTime + CONSTRUCT_FIRERATE;
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
-		float DistanceLimit = 1000.0;
+		float DistanceLimit = CONSTRUCT_RANGE;
 
 		npc.m_iTarget = GetClosestTarget(npc.index,_,DistanceLimit,.CanSee = true, .UseVectorDistance = true);
 		npc.m_flGetClosestTargetTime = FAR_FUTURE;
@@ -119,7 +127,7 @@ void ObjectDTeslarsMedusa_ClotThink(ObjectDTeslarsMedusa npc)
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	if(flDistanceToTarget >= (1000.0 * 1000.0))
+	if(flDistanceToTarget >= (CONSTRUCT_RANGE * CONSTRUCT_RANGE))
 	{
 		//too far away
 		npc.m_iTarget = -1;
@@ -135,9 +143,8 @@ void ObjectDTeslarsMedusa_ClotThink(ObjectDTeslarsMedusa npc)
 		if(IsValidEnemy(npc.index, target))
 		{
 			int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
-			level++;
 			npc.PlayShootSound();
-			float damagedeal = 125.0 * Pow(level * 2.0, 2.0);
+			float damagedeal = CONSTRUCT_DAMAGE;
 
 			static float AbsOrigin[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
@@ -164,7 +171,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
-		maxcount = 1;
+		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;
 	}
@@ -208,12 +215,6 @@ static void ClotShowInteractHud(ObjectGeneric npc, int client)
 
 static bool ClotInteract(int client, int weapon, ObjectGeneric npc)
 {
-	if(CurrentLevel >= CONSTRUCT_MAXLVL)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		return true;
-	}
-
 	ThisBuildingMenu(client);
 	return true;
 }
@@ -226,12 +227,31 @@ static void ThisBuildingMenu(int client)
 
 	Menu menu = new Menu(ThisBuildingMenuH);
 
-	menu.SetTitle("%t\n \n%d / %d %t", CONSTRUCT_NAME, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
+	int level = CurrentLevel;
+	float damagePre = CONSTRUCT_DAMAGE / CONSTRUCT_FIRERATE * DMGMULTI_CONST2_RED;
+	int countPre = CONSTRUCT_MAXCOUNT;
 
+	level = CurrentLevel + 1;
+	float damagePost = CONSTRUCT_DAMAGE / CONSTRUCT_FIRERATE * DMGMULTI_CONST2_RED;
+	int countPost = CONSTRUCT_MAXCOUNT;
+	
 	char buffer[64];
-	FormatEx(buffer, sizeof(buffer), "%t", "Upgrade Building To", CurrentLevel + 2);
-	menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
+	if(CurrentLevel >= CONSTRUCT_MAXLVL)
+	{
+		menu.SetTitle("%t\n%.0f DPS\n%.0f Range\n%d Supply", CONSTRUCT_NAME, damagePre, CONSTRUCT_RANGE, countPre);
+
+		FormatEx(buffer, sizeof(buffer), "Level %d", CurrentLevel + 1);
+		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+	}
+	else
+	{
+		menu.SetTitle("%t\n%.0f (+%.0f) DPS\n%.0f Range\n%d (+%d) Supply\n ", CONSTRUCT_NAME, damagePre, damagePost - damagePre, CONSTRUCT_RANGE, countPre, countPost - countPre);
+
+		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t", "Upgrade Building To", CurrentLevel + 2, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
+		menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	}
+	
 	menu.Display(client, MENU_TIME_FOREVER);
 }
 

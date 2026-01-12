@@ -7,10 +7,15 @@
 #undef CONSTRUCT_COST1
 #undef CONSTRUCT_COST2
 #undef CONSTRUCT_MAXLVL
+#undef CONSTRUCT_DAMAGE
+#undef CONSTRUCT_FIRERATE
+#undef CONSTRUCT_RANGE
+#undef CONSTRUCT_MAXCOUNT
 
 #define CONSTRUCT_NAME		"Control Center"
 #define CONSTRUCT_COST1		(30 + (CurrentLevel * 45))
 #define CONSTRUCT_MAXLVL	3
+#define CONSTRUCT_MAXCOUNT	1
 
 static float BuffTimerLimited;
 
@@ -119,7 +124,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			return false;
 		}
 
-		maxcount = 1;
+		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;
 	}

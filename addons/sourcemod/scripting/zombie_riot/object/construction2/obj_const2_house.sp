@@ -7,11 +7,16 @@
 #undef CONSTRUCT_COST1
 #undef CONSTRUCT_COST2
 #undef CONSTRUCT_MAXLVL
+#undef CONSTRUCT_DAMAGE
+#undef CONSTRUCT_FIRERATE
+#undef CONSTRUCT_RANGE
+#undef CONSTRUCT_MAXCOUNT
 
 #define CONSTRUCT_NAME		"House"
 #define CONSTRUCT_RESOURCE1	"wood"
 #define CONSTRUCT_COST1		(10 + (CurrentLevel * 5))
 #define CONSTRUCT_MAXLVL	(1 + (ObjectDungeonCenter_Level() * 2))
+#define CONSTRUCT_MAXCOUNT	(3 + (CurrentLevel))
 
 static const char NPCModel[] = "models/props_farm/wood_shack001.mdl";
 
@@ -106,7 +111,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			return false;
 		}
 
-		maxcount = CurrentLevel + 4;
+		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;
 	}

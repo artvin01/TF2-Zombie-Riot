@@ -7,11 +7,19 @@
 #undef CONSTRUCT_COST1
 #undef CONSTRUCT_COST2
 #undef CONSTRUCT_MAXLVL
+#undef CONSTRUCT_DAMAGE
+#undef CONSTRUCT_FIRERATE
+#undef CONSTRUCT_RANGE
+#undef CONSTRUCT_MAXCOUNT
 
 #define CONSTRUCT_NAME		"Zapper Building"
 #define CONSTRUCT_RESOURCE1	"copper"
 #define CONSTRUCT_COST1		(10 + (CurrentLevel * 10))
 #define CONSTRUCT_MAXLVL	(1 + ObjectDungeonCenter_Level())
+#define CONSTRUCT_DAMAGE	(50.0 * Pow(level + 1.0, 2.0))
+#define CONSTRUCT_FIRERATE	0.3
+#define CONSTRUCT_RANGE		300.0
+#define CONSTRUCT_MAXCOUNT	(3 + (CurrentLevel))
 
 static const char NPCModel[] = "models/props_doomsday/power_core_type1.mdl";
 
@@ -103,7 +111,7 @@ void ObjectC2Zap_ClotThink(ObjectC2Zap npc)
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 
-		npc.m_iTarget = GetClosestTarget(npc.index,_,300.0,.CanSee = true, .UseVectorDistance = true);
+		npc.m_iTarget = GetClosestTarget(npc.index,_,CONSTRUCT_RANGE,.CanSee = true, .UseVectorDistance = true);
 		npc.m_flGetClosestTargetTime = FAR_FUTURE;
 	}
 	
@@ -127,7 +135,7 @@ void ObjectC2Zap_ClotThink(ObjectC2Zap npc)
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	if(flDistanceToTarget >= (300.0 * 300.0))
+	if(flDistanceToTarget >= (CONSTRUCT_RANGE * CONSTRUCT_RANGE))
 	{
 		//too far away
 		npc.m_iTarget = -1;
@@ -141,12 +149,12 @@ void ObjectC2Zap_ClotThink(ObjectC2Zap npc)
 
 	TE_SetupBeamPoints(VecStart, vecTarget, Shared_BEAM_Laser, 0, 0, 0, 0.15, 4.0, 4.0, 0, 8.0, {220, 25, 25, 230}, 0);
 	TE_SendToAll();
-	npc.m_flNextMeleeAttack = gameTime + 0.25;
+	npc.m_flNextMeleeAttack = gameTime + CONSTRUCT_FIRERATE;
 
-	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 1;
+	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
 
 	npc.PlayShootSound();
-	float damageDealt = 50.0 * Pow(level * 2.0, 2.0);
+	float damageDealt = CONSTRUCT_DAMAGE;
 	if(GetTeam(npc.index) == TFTeam_Red)
 		damageDealt *= DMGMULTI_CONST2_RED;
 	if(ShouldNpcDealBonusDamage(npc.m_iTarget))
@@ -171,7 +179,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
-		maxcount = 4 + CurrentLevel;
+		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;
 	}
@@ -214,12 +222,6 @@ static void ClotShowInteractHud(ObjectGeneric npc, int client)
 
 static bool ClotInteract(int client, int weapon, ObjectGeneric npc)
 {
-	if(CurrentLevel >= CONSTRUCT_MAXLVL)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		return true;
-	}
-
 	ThisBuildingMenu(client);
 	return true;
 }
@@ -232,12 +234,31 @@ static void ThisBuildingMenu(int client)
 
 	Menu menu = new Menu(ThisBuildingMenuH);
 
-	menu.SetTitle("%t\n \n%d / %d %t", CONSTRUCT_NAME, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
+	int level = CurrentLevel;
+	float damagePre = CONSTRUCT_DAMAGE / CONSTRUCT_FIRERATE * DMGMULTI_CONST2_RED;
+	int countPre = CONSTRUCT_MAXCOUNT;
 
+	level = CurrentLevel + 1;
+	float damagePost = CONSTRUCT_DAMAGE / CONSTRUCT_FIRERATE * DMGMULTI_CONST2_RED;
+	int countPost = CONSTRUCT_MAXCOUNT;
+	
 	char buffer[64];
-	FormatEx(buffer, sizeof(buffer), "%t", "Upgrade Building To", CurrentLevel + 2);
-	menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
+	if(CurrentLevel >= CONSTRUCT_MAXLVL)
+	{
+		menu.SetTitle("%t\n%.0f DPS\n%.0f Range\n%d Supply", CONSTRUCT_NAME, damagePre, CONSTRUCT_RANGE, countPre);
+
+		FormatEx(buffer, sizeof(buffer), "Level %d", CurrentLevel + 1);
+		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+	}
+	else
+	{
+		menu.SetTitle("%t\n%.0f (+%.0f) DPS\n%.0f Range\n%d (+%d) Supply\n ", CONSTRUCT_NAME, damagePre, damagePost - damagePre, CONSTRUCT_RANGE, countPre, countPost - countPre);
+
+		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t", "Upgrade Building To", CurrentLevel + 2, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
+		menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	}
+	
 	menu.Display(client, MENU_TIME_FOREVER);
 }
 
