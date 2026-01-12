@@ -335,17 +335,6 @@ enum struct RoomInfo
 	}
 }
 
-enum DungeonZone
-{
-	Zone_Unknown = 0,
-	Zone_HomeBase,
-	Zone_RivalBase,
-	Zone_Dungeon,
-	Zone_DungeonWait,	// Waiting for next dungeon room
-	
-	Zone_MAX
-}
-
 static int CurrentAttacks;
 static float NextAttackAt;
 static int AttackType;	// -1 = Rival Setup, 0 = None, 1 = Room, 2 = Base, 3 = Final
@@ -358,7 +347,6 @@ static int CurrentBaseIndex = -1;
 static float BattleWaveScale;
 static float EnemyScaling;
 static DungeonZone LastZone[MAXENTITIES];
-static int ZoneMarkerRef[Zone_MAX] = {-1, ...};
 
 void Dungeon_PluginStart()
 {
@@ -371,7 +359,7 @@ void Dungeon_EntityCreated(int entity)
 	LastZone[entity] = Zone_Unknown;
 }
 
-bool Dungeon_Mode()
+public bool Dungeon_Mode()
 {
 	return DungeonMode;
 }
@@ -1653,7 +1641,7 @@ static bool CheckRivalStatus()
 	return false;
 }
 
-bool Const2_IgnoreBuilding_FindTraget(int entity)
+public bool Const2_IgnoreBuilding_FindTraget(int entity)
 {
 	if(ObjectDWall_IsId(i_NpcInternalId[entity]))
 		return true;

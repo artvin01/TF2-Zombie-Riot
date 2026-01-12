@@ -2577,6 +2577,7 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 				}
 			}
 			//if(!wasEmptyWave)
+			if(WaveWhich == Rounds_Default)
 			{
 				for(int client=1; client<=MaxClients; client++)
 				{
@@ -2635,8 +2636,8 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 				RespawnCheckCitizen();
 				ReviveAll();
 				CheckAlivePlayers();
+				BlockOtherRaidMusic = false;
 			}
-			BlockOtherRaidMusic = false;
 			if(round.AmmoBoxExtra)
 			{
 				Ammo_Count_Ready += round.AmmoBoxExtra;	

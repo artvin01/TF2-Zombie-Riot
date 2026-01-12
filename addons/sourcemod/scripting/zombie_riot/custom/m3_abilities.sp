@@ -1083,6 +1083,8 @@ public Action M3_Ability_Is_Back(Handle cut_timer, int ref)
 	return Plugin_Handled;
 }
 
+static Handle CallbackTimer[MAXPLAYERS];
+
 public void BuilderMenu(int client)
 {
 	if(dieingstate[client] == 0)
@@ -1093,6 +1095,17 @@ public void BuilderMenu(int client)
 		Menu menu = new Menu(BuilderMenuM);
 		AnyMenuOpen[client] = 1.0;
 
+		if(Dungeon_Mode() && Dungeon_InSetup())
+		{
+			//Teleport back to base, with a cooldown
+			if(CallbackTimer[client] != null)
+				delete CallbackTimer[client];
+			DataPack pack1;
+			pack1.WriteCell(client);	
+			pack1.WriteCell(EntIndexToEntRef(client));	
+			pack1.WriteFloat(GetGameTime() + 5.0);	
+			CallbackTimer[client] = CreateDataTimer(0.25, Timer_RecallBackToBase, pack1, TIMER_REPEAT);
+		}
 		SetGlobalTransTarget(client);
 		
 		menu.SetTitle("%t", "Extra Menu");
@@ -1118,10 +1131,62 @@ public void BuilderMenu(int client)
 	}
 }
 
-/*
-	SetStoreMenuLogic(client, false);
-	sResetStoreMenuLogic(client);
-*/
+static Action Timer_RecallBackToBase(Handle dashHud, DataPack pack)
+{
+	pack.Reset();
+	int idx_client = pack.ReadCell();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	//This belongs to a client.
+	if(!IsValidClient(client))
+	{
+		CallbackTimer[idx_client] = null;
+		return Plugin_Stop;
+	}
+	if(dieingstate[client] != 0)
+	{
+		CallbackTimer[idx_client] = null;
+		return Plugin_Stop;
+	}
+	if(f_TimeUntillNormalHeal[client] > GetGameTime())
+	{
+		CallbackTimer[idx_client] = null;
+		return Plugin_Stop;
+	}
+	float GameTimeFinish = pack.ReadFloat();
+	if(GameTimeFinish <= GetGameTime())
+	{
+		if(IsValidEntity(ZoneMarkerRef[Zone_HomeBase]))
+		{
+			float pos[3], ang[3];
+			GetEntPropVector(ZoneMarkerRef[Zone_HomeBase], Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(ZoneMarkerRef[Zone_HomeBase], Prop_Data, "m_angRotation", ang);
+
+			TeleportEntity(client, pos, ang);
+			Dungeon_SetEntityZone(client, Zone_HomeBase);
+		}
+		CallbackTimer[idx_client] = null;
+		return Plugin_Stop;
+	}
+	TF2_StunPlayer(client, 0.5, 0.1, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
+
+	float VecPos[3];
+	float VecPosEnd[3];
+	GetEntPropVector(ZoneMarkerRef[Zone_HomeBase], Prop_Data, "m_vecOrigin", VecPos);
+	VecPos = VecPosEnd;
+
+	float RangeMax = 150.0;
+
+	RangeMax *=  ((GameTimeFinish - GetGameTime()) / 5.0);
+
+
+
+	TE_SetupBeamPoints(VecPos, VecPosEnd, gLaser1, 0, 0, 0, 0.26, 10.0, 10.0, 0, 0.1, {125, 125, 255, 125}, 3);
+	TE_SendToAll();
+	spawnRing_Vectors(VecPos, RangeMax * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 125, 1, /*DURATION*/ 0.26, 6.0, 0.5, 1);
+	
+	return Plugin_Continue;
+}
+
 public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)

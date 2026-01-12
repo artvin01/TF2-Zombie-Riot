@@ -721,7 +721,7 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 
 	int owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
 	if(owner == -1 && !objstats.m_bConstructBuilding && !objstats.m_bNoOwnerRequired)
-	{
+	{                                               
 		//give 30 sec untill it destroys itself
 		if(objstats.LastTimeClaimed + 30.0 < GetGameTime())
 		{

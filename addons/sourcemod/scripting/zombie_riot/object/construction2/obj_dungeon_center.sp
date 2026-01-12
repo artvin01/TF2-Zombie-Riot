@@ -134,6 +134,7 @@ bool ObjectDungeonCenter_Alive()
 		
 		if(NPCId == i_NpcInternalId[entity])
 		{
+			ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 			if(!IsValidEntity(objstats.m_iConstructDeathModel))
 				return true;
 		}

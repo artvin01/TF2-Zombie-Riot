@@ -57,6 +57,16 @@ public const int DefaultWaveCash[] =
 	2500, 2500, 3000, 4000, 25000,
 	3000, 3000, 3000, 3000
 };
+enum DungeonZone
+{
+	Zone_Unknown = 0,
+	Zone_HomeBase,
+	Zone_RivalBase,
+	Zone_Dungeon,
+	Zone_DungeonWait,	// Waiting for next dungeon room
+	
+	Zone_MAX
+}
 
 stock int DefaultTotalCash(int wave)
 {
