@@ -76,6 +76,7 @@ methodmap ObjectDTeslarsMedusa < ObjectGeneric
 		func_NPCThink[npc.index] = ObjectDTeslarsMedusa_ClotThink;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
+		func_NPCDeath[npc.index] = Dungeon_BuildingDeath;
 
 		int entity = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl", "idle", .model_size = 1.1);
 		npc.m_iWearable5 = entity;

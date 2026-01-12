@@ -104,6 +104,7 @@ methodmap ObjectDMinigunTurret < ObjectGeneric
 		func_NPCDeath[npc.index] = ObjectDMinigunTurret_Death;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
+		func_NPCDeath[npc.index] = Dungeon_BuildingDeath;
 		SetRotateByDefaultReturn(npc.index, -180.0);
 		SDKUnhook(npc.index, SDKHook_ThinkPost, ObjBaseThinkPost);
 		SDKHook(npc.index, SDKHook_ThinkPost, ObjBaseThinkPostSentry);

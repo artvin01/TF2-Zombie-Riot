@@ -66,6 +66,7 @@ methodmap ObjectDDispenser < ObjectGeneric
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
 		func_NPCThink[npc.index] = ClotThink;
+		func_NPCDeath[npc.index] = Dungeon_BuildingDeath;
 		SetRotateByDefaultReturn(npc.index, -180.0);
 
 		return npc;

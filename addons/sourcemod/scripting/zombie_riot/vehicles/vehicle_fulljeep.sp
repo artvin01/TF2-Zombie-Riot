@@ -106,6 +106,9 @@ bool VehicleFullJeep_ClotInteract(int client, int weapon, VehicleFullJeep obj)
 	if(Building_Collect_Cooldown[obj.index][client] > GetGameTime())
 		return true;
 	
+	if((Ammo_Count_Ready - Ammo_Count_Used[client]) < 1)
+		return true;
+	
 	int UsedBoxLogic = AmmoboxUsed(client, obj.index);
 	if(UsedBoxLogic >= 1)
 	{
