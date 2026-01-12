@@ -68,7 +68,7 @@ methodmap ObjectC2ArrowTower < ObjectGeneric
 {
 	public void PlayShootSound() 
 	{
-		EmitSoundToAll(g_ShootingSound[GetRandomInt(0, sizeof(g_ShootingSound) - 1)], this.index, SNDCHAN_AUTO, 70, _, 0.7, 90);
+		EmitSoundToAll(g_ShootingSound[GetRandomInt(0, sizeof(g_ShootingSound) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.7, 90);
 	}
 	public ObjectC2ArrowTower(int client, const float vecPos[3], const float vecAng[3])
 	{

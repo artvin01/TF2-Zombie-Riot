@@ -266,6 +266,8 @@ static int GetCost(int client, BuildingInfo info, float multi)
 	}
 
 
+	if(CvarInfiniteCash.BoolValue)
+		buildCost = 1;
 	if(Rogue_Mode())
 		buildCost /= 3;
 

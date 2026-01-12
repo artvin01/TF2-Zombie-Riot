@@ -70,7 +70,7 @@ methodmap ObjectC2Zap < ObjectGeneric
 {
 	public void PlayShootSound() 
 	{
-		EmitSoundToAll(g_ShootingSound[GetRandomInt(0, sizeof(g_ShootingSound) - 1)], this.index, SNDCHAN_AUTO, 70, _, 0.6, 90);
+		EmitSoundToAll(g_ShootingSound[GetRandomInt(0, sizeof(g_ShootingSound) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.6, 90);
 	}
 	public ObjectC2Zap(int client, const float vecPos[3], const float vecAng[3])
 	{
