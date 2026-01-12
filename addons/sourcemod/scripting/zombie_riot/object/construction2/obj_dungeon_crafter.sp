@@ -123,10 +123,13 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	{
 		count = CountBuildings();
 		
-		if(!Dungeon_Mode() || ObjectDungeonCenter_Level() < 1 || !CvarInfiniteCash.BoolValue)
+		if(!CvarInfiniteCash.BoolValue)
 		{
-			maxcount = 0;
-			return false;
+			if(!Dungeon_Mode() || ObjectDungeonCenter_Level() < 1)
+			{
+				maxcount = 0;
+				return false;
+			}
 		}
 
 		maxcount = 1;
