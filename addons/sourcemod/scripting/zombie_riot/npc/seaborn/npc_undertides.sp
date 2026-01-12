@@ -35,7 +35,7 @@ void UnderTides_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Sal Viento Bishop Quintus");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_undertides");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_undertides");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_quintus");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Seaborn;

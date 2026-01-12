@@ -73,7 +73,7 @@ void EndSpeaker_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "The Endspeaker, Will of We Many");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_endspeaker_1");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_endspeaker");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_endspeaker");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL;
 	data.Category = Type_Seaborn;

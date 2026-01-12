@@ -40,17 +40,21 @@ void Iberia_Lighthouse_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Iberia Lighthouse");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_iberia_lighthouse");
-	strcopy(data.Icon, sizeof(data.Icon), "lighthouse");
+	strcopy(data.Icon, sizeof(data.Icon), "lighthouse_1");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	LighthouseID = NPC_Add(data);
 	PrecacheModel(IBERIA_LIGHTHOUSE_MODEL_1);
 	PrecacheModel(IBERIA_LIGHTHOUSE_MODEL_2);
 }
 
-
+static void ClotPrecache()
+{
+	NPC_GetByPlugin("npc_huirgrajo");
+}
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return IberiaLighthouse(vecPos, vecAng, team);

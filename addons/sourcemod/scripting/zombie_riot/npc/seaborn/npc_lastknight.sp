@@ -42,7 +42,7 @@ void LastKnight_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "The Last Knight");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_lastknight");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_lastknight");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_lastknight");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Seaborn;

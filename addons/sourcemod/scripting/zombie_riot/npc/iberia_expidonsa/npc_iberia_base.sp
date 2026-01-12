@@ -1,6 +1,7 @@
 float f_MoraleBoostCurrent[MAXENTITIES];
 float f_TimeSinceMoraleBoost[MAXENTITIES];
 bool b_EntityHasthink[MAXENTITIES];
+bool b_NpcAppliesMarkDebuff[MAXENTITIES]; 
 
 //precached with alaxios
 static char g_RandomGroupScream[][] = {
@@ -16,6 +17,7 @@ void IberiaEntityCreated(int entity)
 {
 	b_EntityHasthink[entity] = false;
 	f_MoraleBoostCurrent[entity] = 0.0;
+	b_NpcAppliesMarkDebuff[entity] = false;
 }
 #define IBERIA_MAX_MORALE_ALLOWED 1000.0
 
@@ -166,4 +168,7 @@ void MoraleIconShowHud(int entity, char[] HudChar, int HudSizeOf)
 	}
 }
 
-
+bool NpcAppliesMarkDebuff(int entity)
+{
+    return b_NpcAppliesMarkDebuff[entity];
+}

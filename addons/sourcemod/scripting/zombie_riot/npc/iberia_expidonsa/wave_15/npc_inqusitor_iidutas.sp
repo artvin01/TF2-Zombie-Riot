@@ -46,7 +46,7 @@ void Iberia_inqusitor_iidutas_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Inquisitor IIdutas");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_inqusitor_iidutas");
-	strcopy(data.Icon, sizeof(data.Icon), "shattertide");
+	strcopy(data.Icon, sizeof(data.Icon), "shattertide_1");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;
@@ -122,7 +122,7 @@ methodmap Iberiainqusitor_iidutas < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Iberiainqusitor_iidutas_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Iberiainqusitor_iidutas_ClotThink);
 		
-		
+		b_NpcAppliesMarkDebuff[npc.index] = true;
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 320.0;

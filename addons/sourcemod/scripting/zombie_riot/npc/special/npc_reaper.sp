@@ -97,8 +97,8 @@ void GrimReaper_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "The Reaper");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_reaper");
-	strcopy(data.Icon, sizeof(data.Icon), ""); 	//leaderboard_class_(insert the name)
-	data.IconCustom = false;								//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "mb_reaper"); 	//leaderboard_class_(insert the name)
+	data.IconCustom = true;								//download needed?
 	data.Flags = 0;											//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	data.Category = Type_Special;
 	data.Func = SummonGrimReaper;

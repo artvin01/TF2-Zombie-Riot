@@ -43,7 +43,7 @@ void SeaReefbreaker_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Nethersea Reefbreaker");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseareefbreaker");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_reefbreaker");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_reefbreaker");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;
