@@ -1300,6 +1300,8 @@ static Action DungeonMainTimer(Handle timer)
 	{
 		PrintToChatAll("NO BATTLE %d???? REPORT THIS BUG", CurrentAttacks);
 	}
+
+	EmitGameSoundToAll("Ambient.Siren");
 	
 	delete snap;
 
