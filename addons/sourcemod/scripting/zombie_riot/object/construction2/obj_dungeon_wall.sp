@@ -117,7 +117,7 @@ static bool ClotCanBuild1(int client, int &count, int &maxcount)
 			}
 		}
 
-		maxcount = 24 + (CurrentLevel * 6);
+		maxcount = 24 + (CurrentLevel * 12);
 		if(count >= maxcount)
 			return false;
 	}
@@ -146,6 +146,7 @@ methodmap ObjectDWall2 < ObjectGeneric
 		npc.m_bConstructBuilding = true;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
+		SetRotateByDefaultReturn(npc.index, -180.0);
 
 		float VecLeft[3];
 		VecLeft = vecPos;
@@ -183,7 +184,7 @@ static bool ClotCanBuild2(int client, int &count, int &maxcount)
 			return false;
 		}
 
-		maxcount = 24 + (CurrentLevel * 6);
+		maxcount = 24 + (CurrentLevel * 12);
 		if((count + 1) >= maxcount)
 			return false;
 	}
@@ -213,6 +214,7 @@ methodmap ObjectDWall3 < ObjectGeneric
 		npc.m_bConstructBuilding = true;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
+		SetRotateByDefaultReturn(npc.index, -180.0);
 		
 		float VecLeft[3];
 		VecLeft = vecPos;
@@ -250,7 +252,7 @@ static bool ClotCanBuild3(int client, int &count, int &maxcount)
 			return false;
 		}
 
-		maxcount = 24 + (CurrentLevel * 6);
+		maxcount = 24 + (CurrentLevel * 12);
 		if((count + 2) >= maxcount)
 			return false;
 	}

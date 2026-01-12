@@ -50,6 +50,10 @@ void ObjectDungeonCenter_MapStart()
 */
 }
 
+int IsDungeonCenterId()
+{
+	return NPCId;
+}
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return ObjectDungeonCenter(client, vecPos, vecAng ,data);

@@ -4553,6 +4553,14 @@
 		"it" "Ricevi {yellow}cash{green} e {yellow}ammobox{green} da chi usa le tuoe strutture! \nQuesto viene visto come denaro extra accanto al tuo denaro, viene aggiunto automaticamente.\n{yellow}Questo ha un limite."
 		"ko" "다른 사람이 당신의 구조물을 사용할 때마다 {yellow}자금{green}과 {yellow}탄약 보급{green}을 얻습니다! \n이 효과로 얻은 자금은 당신의 자금 오른편의 추가 자금으로 표시되며, 자동으로 획득합니다.\n{yellow}이 효과로 얻는 자금은 상한이 있습니다."
 	}
+	"Explain Dungeon Do"
+	{
+		"en" "How to Teleport Back To Base."
+	}
+	"Explain Dungeon Do Desc"
+	{
+		"en" "You can return back to base by pressing {yellow}(F){green}\nCancel it by pressing {yellow}(F){green} again."
+	}
 	
 	"Vhxis"
 	{

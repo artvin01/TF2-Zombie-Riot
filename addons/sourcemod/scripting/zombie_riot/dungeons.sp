@@ -961,10 +961,14 @@ static void TriggerStartTouch(const char[] output, int caller, int activator, fl
 			}
 			else if(StrEqual(name, TeleRival, false))
 			{
+				if(IsValidClient(activator))
+					Force_ExplainBuffToClient(activator, "Explain Dungeon Do", true);
 				zone = Zone_RivalBase;
 			}
 			else if(StrEqual(name, TeleEnter, false))
 			{
+				if(IsValidClient(activator))
+					Force_ExplainBuffToClient(activator, "Explain Dungeon Do", true);
 				zone = Zone_Dungeon;
 			}
 			else if(StrEqual(name, TeleNext, false))

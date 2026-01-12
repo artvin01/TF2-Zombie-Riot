@@ -16,6 +16,14 @@ static float f_ReinforceTillMax[MAXPLAYERS];
 static bool b_ReinforceReady_soundonly[MAXPLAYERS];
 static int i_MaxRevivesAWave;
 static float MorphineCharge[MAXPLAYERS+1]={0.0, ...};
+static const char g_TeleportHomeSound[][] =
+{
+	"weapons/vaccinator_charge_tier_01.wav",
+	"weapons/vaccinator_charge_tier_02.wav",
+	"weapons/vaccinator_charge_tier_03.wav",
+	"weapons/vaccinator_charge_tier_04.wav",
+};
+
 
 void GiveMorphineToEveryone()
 {
@@ -77,6 +85,7 @@ public void M3_Abilities_Precache()
 	model = "models/healthvial.mdl";
 	g_ProjectileModel = PrecacheModel(model);
 	model = "models/Items/battery.mdl";
+	PrecacheSoundArray(g_TeleportHomeSound);
 	g_ProjectileModelArmor = PrecacheModel(model);
 	g_BeamIndex_heal = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	for (int i = 0; i < (sizeof(g_TeleSounds));	   i++) { PrecacheSound(g_TeleSounds[i]);	   }
@@ -87,6 +96,8 @@ public void M3_Abilities_Precache()
 	PrecacheSound(SOUND_REPAIR_BEAM);
 	PrecacheSound(SOUND_DASH);
 	PrecacheSound("mvm/mvm_tank_start.wav");
+	PrecacheSound("player/invuln_on_vaccinator.wav");
+	PrecacheSound("player/invuln_off_vaccinator.wav");
 	PrecacheSound("weapons/air_burster_explode3.wav");
 	HookEntityOutput("func_movelinear", "OnFullyOpen", OnBombDrop);
 	PrecacheSound("weapons/slam/throw.wav");
@@ -1099,12 +1110,19 @@ public void BuilderMenu(int client)
 		{
 			//Teleport back to base, with a cooldown
 			if(CallbackTimer[client] != null)
+			{
 				delete CallbackTimer[client];
-			DataPack pack1;
-			pack1.WriteCell(client);	
-			pack1.WriteCell(EntIndexToEntRef(client));	
-			pack1.WriteFloat(GetGameTime() + 5.0);	
-			CallbackTimer[client] = CreateDataTimer(0.25, Timer_RecallBackToBase, pack1, TIMER_REPEAT);
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+			}
+			else
+			{
+				EmitSoundToAll("player/invuln_on_vaccinator.wav", client, SNDCHAN_STATIC, 70, _, 0.7, 100, .soundtime = GetGameTime() - 1.0);
+				DataPack pack1;
+				CallbackTimer[client] = CreateDataTimer(0.25, Timer_RecallBackToBase, pack1, TIMER_REPEAT);
+				pack1.WriteCell(client);	
+				pack1.WriteCell(EntIndexToEntRef(client));	
+				pack1.WriteFloat(GetGameTime() + 5.0);	
+			}
 		}
 		SetGlobalTransTarget(client);
 		
@@ -1144,11 +1162,13 @@ static Action Timer_RecallBackToBase(Handle dashHud, DataPack pack)
 	}
 	if(dieingstate[client] != 0)
 	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		CallbackTimer[idx_client] = null;
 		return Plugin_Stop;
 	}
 	if(f_TimeUntillNormalHeal[client] > GetGameTime())
 	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		CallbackTimer[idx_client] = null;
 		return Plugin_Stop;
 	}
@@ -1163,26 +1183,57 @@ static Action Timer_RecallBackToBase(Handle dashHud, DataPack pack)
 
 			TeleportEntity(client, pos, ang);
 			Dungeon_SetEntityZone(client, Zone_HomeBase);
+			float RangeMax = 150.0;
+			float VecPosEnd[3];
+			VecPosEnd = pos;
+			VecPosEnd[2] += 400.0;
+			TE_SetupBeamPoints(pos, VecPosEnd, gLaser1, 0, 0, 0, 0.5, 20.0, 0.1, 0, 0.1, {125, 125, 255, 125}, 3);
+			spawnRing_Vectors(pos, 0.1, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 125, 1, /*DURATION*/ 0.5, 6.0, 0.5, 1,RangeMax * 2.0);
+			spawnRing_Vectors(pos, 0.1, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 125, 1, /*DURATION*/ 0.5, 6.0, 0.5, 1,RangeMax * 3.0);
+			spawnRing_Vectors(pos, 0.1, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 125, 1, /*DURATION*/ 0.5, 6.0, 0.5, 1,RangeMax * 4.0);
+		
+			EmitSoundToAll("player/invuln_off_vaccinator.wav", client, SNDCHAN_STATIC, 70, _, 0.7, 100);
 		}
 		CallbackTimer[idx_client] = null;
 		return Plugin_Stop;
 	}
-	TF2_StunPlayer(client, 0.5, 0.1, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
+	TF2_StunPlayer(client, 0.5, 0.85, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
 
 	float VecPos[3];
 	float VecPosEnd[3];
-	GetEntPropVector(ZoneMarkerRef[Zone_HomeBase], Prop_Data, "m_vecOrigin", VecPos);
-	VecPos = VecPosEnd;
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", VecPos);
+	VecPos[2] += 2.0;
+	VecPosEnd = VecPos;
+	VecPosEnd[2] += 400.0;
 
 	float RangeMax = 150.0;
 
-	RangeMax *=  ((GameTimeFinish - GetGameTime()) / 5.0);
+	RangeMax *= ((GameTimeFinish - GetGameTime()) / 5.0);
+	int SoundPlayDo = RoundToCeil(GameTimeFinish - GetGameTime());
+	switch(SoundPlayDo)
+	{
+		case 4:
+		{
+			EmitSoundToAll(g_TeleportHomeSound[0], client, SNDCHAN_STATIC, 70, _, 0.7, 80);
+		}
+		case 3:
+		{
+			EmitSoundToAll(g_TeleportHomeSound[1], client, SNDCHAN_STATIC, 70, _, 0.5, 80);
+		}
+		case 2:
+		{
+			EmitSoundToAll(g_TeleportHomeSound[2], client, SNDCHAN_STATIC, 70, _, 0.3, 80);
+		}
+		case 1:
+		{
+			EmitSoundToAll(g_TeleportHomeSound[3], client, SNDCHAN_STATIC, 70, _, 0.25, 80);
+		}
+	}
 
-
-
-	TE_SetupBeamPoints(VecPos, VecPosEnd, gLaser1, 0, 0, 0, 0.26, 10.0, 10.0, 0, 0.1, {125, 125, 255, 125}, 3);
+	TE_SetupBeamPoints(VecPos, VecPosEnd, gLaser1, 0, 0, 0, 0.26, 20.0, 0.1, 0, 0.1, {125, 125, 255, 125}, 3);
 	TE_SendToAll();
 	spawnRing_Vectors(VecPos, RangeMax * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 125, 1, /*DURATION*/ 0.26, 6.0, 0.5, 1);
+	spawnRing_Vectors(VecPos, RangeMax * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 125, 1, /*DURATION*/ 0.26, 6.0, 0.5, 1, 0.1);
 	
 	return Plugin_Continue;
 }
