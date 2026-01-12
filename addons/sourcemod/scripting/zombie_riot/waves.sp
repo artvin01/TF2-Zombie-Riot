@@ -2993,14 +2993,10 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 		
 		if(Construction_Mode())	// In Construction: Base raids must be dealt with
 			subWave = !Construction_FinalBattle();
-		
+		/*
 		if(Dungeon_Mode())
 			subWave = !Dungeon_FinalBattle();
-			
-	}
-	
-	if(WaveWhich == Rounds_Default)
-	{
+		*/	
 		if(subWave)
 			WaveStart_SubWaveStart();
 	}
