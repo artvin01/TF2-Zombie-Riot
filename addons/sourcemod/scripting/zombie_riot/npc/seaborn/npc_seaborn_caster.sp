@@ -36,7 +36,7 @@ void SeabornCaster_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Seaborn Caster");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_caster");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_caster");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_caster");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;

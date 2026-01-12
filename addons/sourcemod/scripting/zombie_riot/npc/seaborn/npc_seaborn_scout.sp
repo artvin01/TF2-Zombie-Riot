@@ -44,7 +44,7 @@ void SeabornScout_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Seaborn Scout");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_scout");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_scout");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_scout");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;

@@ -45,7 +45,7 @@ void SeabornEngineer_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Seaborn Engineer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_engineer");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_engineer");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_engi");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MISSION;
 	data.Category = Type_Seaborn;
