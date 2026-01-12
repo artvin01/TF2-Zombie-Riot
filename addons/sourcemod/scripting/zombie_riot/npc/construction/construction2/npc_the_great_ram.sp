@@ -229,25 +229,30 @@ public void TheGreatRam_ClotThink(int iNPC)
 	
 	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		target = GetClosestTarget(npc.index,_,1200.0,_,_,_,_,_,_, true);
-		if(!IsValidEnemy(npc.index, target))
-		{
-			target = GetClosestTarget(npc.index);
-		}
-		npc.m_iTarget = target;
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-		
-		int a, entity;
-		while((entity = FindEntityByNPC(a)) != -1)
+		int entity = MaxClients + 1;
+		bool Found = false;
+		while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 		{
 			if(IsValidEnemy(npc.index, entity))
 			{
-				if(IsDungeonCenterId() == i_NpcInternalId[npc.index])
+				if(IsDungeonCenterId() == i_NpcInternalId[entity])
 				{
+					Found = true;
 					npc.m_iTarget = entity;
 				}
 			}
 		}
+		if(!Found)
+		{
+			target = GetClosestTarget(npc.index,_,1200.0,_,_,_,_,_,_, true);
+			if(!IsValidEnemy(npc.index, target))
+			{
+				target = GetClosestTarget(npc.index);
+			}
+			npc.m_iTarget = target;
+		}
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -326,7 +331,7 @@ void TheGreatRamSelfDefense(TheGreatRam npc)
 							
 				float damage = 50.0;
 				if(ShouldNpcDealBonusDamage(target))
-					damage *= 100.0;
+					damage *= 25.0;
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);								
 			}
 		}

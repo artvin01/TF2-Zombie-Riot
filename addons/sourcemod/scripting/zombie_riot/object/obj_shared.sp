@@ -91,6 +91,7 @@ void Object_PluginStart()
 	.DefineIntField("m_iMaxHealth")
 	.DefineBoolField("m_bSentryBuilding")
 	.DefineBoolField("m_bConstructBuilding")
+	.DefineBoolField("m_bTransparrency")
 	.DefineFloatField("m_fLastTimeClaimed")
 	.DefineBoolField("m_bCannotBePickedUp")
 	.DefineBoolField("m_bNoOwnerRequired")
@@ -520,6 +521,18 @@ methodmap ObjectGeneric < CClotBody
 			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bConstructBuilding"));
 		}
 	}
+	property bool m_bTransparrency
+	{
+		public set(bool value)
+		{
+			//no owner
+			SetEntProp(this.index, Prop_Data, "m_bTransparrency", value);
+		}
+		public get()
+		{
+			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bTransparrency"));
+		}
+	}
 	property bool m_bCannotBePickedUp
 	{
 		public set(bool value)
@@ -610,16 +623,13 @@ static Action SetTransmit_BuildingShared(int entity, int client, bool reverse, b
 	owner = GetEntPropEnt(building, Prop_Send, "m_hOwnerEntity");
 	
 	bool hide;
-	if(owner != -1)
+	if(!Ignorethird && EntRefToEntIndex(Building_Mounted[building]) == owner)
 	{
-		if(!Ignorethird && EntRefToEntIndex(Building_Mounted[building]) == owner)
-		{
-			return Plugin_Continue;
-		}
-		else
-		{
-			hide = !CanUseBuilding[building][client];	
-		}
+		return Plugin_Continue;
+	}
+	else
+	{
+		hide = !CanUseBuilding[building][client];	
 	}
 
 	//abomination
@@ -790,7 +800,12 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 				HideBuildingForce = true;
 			}
 		}
-		if(HideBuildingForce)
+		if(objstats.m_bTransparrency)
+		{
+			SetEntityRenderMode(objstats.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(objstats.index, r, g, 0, 125);
+		}
+		else if(HideBuildingForce)
 		{
 			SetEntityRenderColor(objstats.index, 0, 0, 0, 255);
 		}
