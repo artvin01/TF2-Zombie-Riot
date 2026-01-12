@@ -1124,7 +1124,7 @@ DungeonZone Dungeon_GetEntityZone(int entity, bool forceReset = false)
 static Action DungeonMainTimer(Handle timer)
 {
 	float time = NextAttackAt - GetGameTime();
-	if(time > 0.0)
+	if(time > 0.0 || AttackType > 1)
 	{
 		if(AttackType == -1)
 		{
