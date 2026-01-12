@@ -249,7 +249,37 @@ methodmap Twirl < CClotBody
 		this.Ion_On_Loc(Predicted_Pos, Radius, dmg, Time);
 		
 	}
-	public void Ion_On_Loc(float Predicted_Pos[3], float Radius, float dmg, float Time)
+	public int iGetSicknessFlatPerWaveMulti(int val)
+	{
+		int wave = i_current_wave[this.index];
+		float multi = 1.0;
+		if(wave<=10)	
+		{
+			multi = 1.0;
+		}
+		else if(wave <=20)	
+		{
+			multi = 1.25;
+		}
+		else if(wave <= 30)	
+		{
+			multi = 1.75;
+		}
+		else if(wave <= 40)	
+		{
+			multi = 2.5;
+		}
+		else
+		{
+			multi = 4.5;
+		}
+
+		int res = RoundToFloor(val * multi);
+		//CPrintToChatAll("input: %i", val);
+		//CPrintToChatAll("res: %i", res);
+		return res;
+	}
+	public void Ion_On_Loc(float Predicted_Pos[3], float Radius, float dmg, float Time, bool OwnIon = true)
 	{
 		int color[4]; 
 		Ruina_Color(color, i_current_wave[this.index]);
@@ -266,14 +296,14 @@ methodmap Twirl < CClotBody
 		Ruina_IonSoundInvoke(Predicted_Pos);
 		
 		DataPack pack;
-		CreateDataTimer(Time, Ruina_Generic_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
+		CreateDataTimer(Time, OwnIon ? Timer_Twirl_Ion : Ruina_Generic_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(this.index));
 		pack.WriteFloatArray(Predicted_Pos, sizeof(Predicted_Pos));
 		pack.WriteCellArray(color, sizeof(color));
 		pack.WriteFloat(Radius);
 		pack.WriteFloat(dmg);
 		pack.WriteFloat(0.25);			//Sickness %
-		pack.WriteCell(100);			//Sickness flat
+		pack.WriteCell(this.iGetSicknessFlatPerWaveMulti(200));			//Sickness flat
 		pack.WriteCell(this.Anger);		//Override sickness timeout
 
 		float Sky_Loc[3]; Sky_Loc = Predicted_Pos; Sky_Loc[2]+=500.0; Predicted_Pos[2]-=100.0;
@@ -1102,6 +1132,90 @@ methodmap Twirl < CClotBody
 		
 		return npc;
 	}
+}
+
+static float fl_ion_passthrough_dmg;
+static float fl_ion_passthrough_vec[3];
+static bool b_ion_passthrough_override;
+static int i_ion_passthrough_sickness_flat;
+static float fl_ion_passthrough_sickness_multi;
+static Action Timer_Twirl_Ion(Handle Timer, DataPack data)
+{
+	data.Reset();
+	int iNPC =EntRefToEntIndex(data.ReadCell());
+	float end_point[3];
+	int color[4];
+	data.ReadFloatArray(end_point, sizeof(end_point));
+	data.ReadCellArray(color, sizeof(color));
+	float Radius			= data.ReadFloat();
+	float dmg 				= data.ReadFloat();
+	float Sickness_Multi 	= data.ReadFloat();
+	int Sickness_flat 		= data.ReadCell();
+	bool Override 			= data.ReadCell();
+
+	if(!IsValidEntity(iNPC))
+		return Plugin_Stop;
+
+	Explode_Logic_Custom(0.0, iNPC, iNPC, -1, end_point, Radius, _, _, true, _ , _    , 2.0, Twirl_Ion_OnHit);
+
+	fl_ion_passthrough_dmg = dmg;
+	fl_ion_passthrough_vec = end_point;
+
+	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+
+	b_ion_passthrough_override = Override;
+
+	i_ion_passthrough_sickness_flat = Sickness_flat;
+	fl_ion_passthrough_sickness_multi = Sickness_Multi;
+
+	float Thickness = 6.0;
+	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.4, Thickness, 0.75, color, 1, 0);
+	TE_SendToAll();
+
+	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=1000.0; end_point[2]-=100.0;
+
+	if(AtEdictLimit(EDICT_NPC))
+		return Plugin_Stop;
+		
+	int laser;
+	laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 7.0, 7.0, 1.0, BEAM_COMBINE_BLACK, end_point, Sky_Loc);
+	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+	laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 5.0, 5.0, 0.1, LASERBEAM, end_point, Sky_Loc);
+	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+
+	int particle = ParticleEffectAt(Sky_Loc, "kartimpacttrail", 1.0);
+	SetEdictFlags(particle, (GetEdictFlags(particle) | FL_EDICT_ALWAYS));	
+	CreateTimer(0.25, Nearl_Falling_Shot, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+
+	return Plugin_Stop;
+}
+static void Twirl_Ion_OnHit(int entity, int victim, float damage, int weapon)
+{
+	if(IsValidClient(victim))
+	{
+		EmitSoundToClient(victim, RUINA_ION_CANNON_SOUND_ATTACK);
+		EmitSoundToClient(victim, RUINA_ION_CANNON_SOUND_ATTACK);
+		//CPrintToChatAll("Twirl attempting to attack %N", victim);
+	}
+
+	if(IsIn_HitDetectionCooldown(entity,victim))
+		return;
+
+	//if(IsValidClient(victim))
+	//	CPrintToChatAll("Twirl Sucesfully attacking %N", victim);
+
+	if(i_ion_passthrough_sickness_flat || fl_ion_passthrough_sickness_multi)
+		Ruina_Add_Mana_Sickness(entity, victim, fl_ion_passthrough_sickness_multi, i_ion_passthrough_sickness_flat, b_ion_passthrough_override);
+			
+	Set_HitDetectionCooldown(entity,victim, GetGameTime() + 0.5);	//this will make it so if a player gets attacked by 1 ions at nearly the same instance, only 1 will actually deal damage. instead of the 8 other clumped up ions
+
+	float dmg = fl_ion_passthrough_dmg;
+
+	if(ShouldNpcDealBonusDamage(victim))
+		dmg *= 3.0;
+
+	SDKHooks_TakeDamage(victim, entity, entity, dmg, DMG_PLASMA, _, fl_ion_passthrough_vec); 
 }
 
 void TwirlSetBatteryPercentage(int entity, float percentage)
@@ -2062,7 +2176,8 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 							float Radius = (npc.Anger ? 225.0 : 150.0);
 							float dmg = 75.0;
 							dmg *= RaidModeScaling;
-							npc.Predictive_Ion(target, (npc.Anger ? 1.0 : 1.5), Radius, dmg);
+							float VicLoc[3]; GetAbsOrigin(target, VicLoc);
+							npc.Ion_On_Loc(VicLoc, Radius, dmg, (npc.Anger ? 1.0 : 1.5), false);
 						}
 			
 						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(target, 40.0), DMG_CLUB, -1, _, vecHit);
@@ -2080,7 +2195,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 							}
 						}
-						Ruina_Add_Mana_Sickness(npc.index, target, 0.2, RoundToNearest(Modify_Damage(target, 7.0)));
+						Ruina_Add_Mana_Sickness(npc.index, target, npc.Anger ? 0.2 : 0.3, npc.iGetSicknessFlatPerWaveMulti(npc.Anger ? 75 : 100));
 					}
 					npc.PlayMeleeHitSound();
 					
@@ -2102,10 +2217,8 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 		if(npc.m_flNextMeleeAttack < GameTime && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25))	//its a lance so bigger range
 		{
-			int Enemy_I_See;
-									
-			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-					
+			int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+			
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;
@@ -2812,7 +2925,7 @@ static void Func_On_Proj_Touch(int entity, int other)
 		float dmg = Modify_Damage(-1, 12.0);
 
 		float Time = (npc.Anger ? 1.45 : 1.9);
-		npc.Ion_On_Loc(ProjectileLoc, radius, dmg, Time);
+		npc.Ion_On_Loc(ProjectileLoc, radius, dmg, Time, false);
 	}
 
 	Ruina_Remove_Projectile(entity);
@@ -3270,7 +3383,7 @@ static void CountTargets(int entity, int victim, float damage, int weapon)
 static void On_LaserHit(int client, int target, int damagetype, float damage)
 {
 	Twirl npc = view_as<Twirl>(client);
-	Ruina_Add_Mana_Sickness(npc.index, target, 0.1, (npc.Anger ? 55 : 45), true);
+	Ruina_Add_Mana_Sickness(npc.index, target, 0.1, (npc.Anger ? npc.iGetSicknessFlatPerWaveMulti(25) : npc.iGetSicknessFlatPerWaveMulti(45)), true);
 }
 static float fl_ionic_fracture_range = 1000.0;
 static float fl_ionic_fracture_detionation_radius = 800.0;
@@ -3522,7 +3635,7 @@ static Action IonicFracture_Think(int iNPC)
 		float sky_loc[3]; sky_loc = Origin; sky_loc[2]+=height;
 
 		Explode_Logic_Custom(Modify_Damage(-1, 200.0), npc.index, npc.index, -1, Origin, fl_ionic_fracture_detionation_radius,_,0.8, true);
-		Ruina_AOE_Add_Mana_Sickness(Origin, npc.index, fl_ionic_fracture_detionation_radius, 0.5, 200, true);
+		Ruina_AOE_Add_Mana_Sickness(Origin, npc.index, fl_ionic_fracture_detionation_radius, 0.5, npc.iGetSicknessFlatPerWaveMulti(400), true);
 
 		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND);
 		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND);
@@ -4435,7 +4548,13 @@ static void Twirl_Lines(Twirl npc, const char[] text)
 	if(b_test_mode)
 		return;
 
-	CPrintToChatAll("%s %s", npc.GetName(), text);
+	for(int i=1 ; i <= MaxClients ; i++)	//should fix translations being buggy with the name.
+	{
+		if(IsValidClient(i) && IsClientInGame(i))
+		{
+			CPrintToChat(i, "%s %s", npc.GetName(), text);
+		}
+	}
 }
 static float[] GetNPCAngles(CClotBody npc)
 {

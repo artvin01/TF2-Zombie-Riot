@@ -43,7 +43,7 @@ void PathshaperFractal_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Pathshaper Fractal");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_pathshaper_fractal");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_fractal");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_fractal");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
 	data.Category = Type_Seaborn;

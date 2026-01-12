@@ -45,7 +45,7 @@ void IsharmlaTrans_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ishar'mla, Heart of Corruption");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_isharmla_trans");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_isharmla");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_isharmla");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MISSION|MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Hidden;

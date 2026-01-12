@@ -1303,8 +1303,8 @@ static void Projectile_Detect_Loop(DataPack pack)
 
 	Ruina_Laser_Logic Laser;
 	Laser.client = owner;
-	Laser.Damage = Modify_Damage(-1, 17.0);
-	Laser.Bonus_Damage = Modify_Damage(-1, 17.0) * 6.0;
+	Laser.Damage = Modify_Damage(-1, 25.0);
+	Laser.Bonus_Damage = Modify_Damage(-1, 25.0) * 6.0;
 	Laser.damagetype = DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE;
 	//Laser.Radius = radius;
 	Laser.End_Point = Vec_Points[1];

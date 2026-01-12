@@ -59,7 +59,7 @@ void BossReila_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Reila");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_boss_reila");
-	strcopy(data.Icon, sizeof(data.Icon), "reila");
+	strcopy(data.Icon, sizeof(data.Icon), "rbf_reila");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Curtain;

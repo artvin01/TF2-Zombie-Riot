@@ -37,7 +37,7 @@ void KazimierzLongArcher_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Armorless Union Cleanup Squad");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_kazimersch_longrange");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_longrange");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_cleanup");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;

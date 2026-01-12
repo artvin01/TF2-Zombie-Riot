@@ -2018,6 +2018,26 @@
 		"it"		"Arcieri d'élite medievali"
 		"ko"		"중세 정예 장궁병"
 	}
+	"Golden Squad Construct"
+	{
+		"en"		"Golden Squad Construct"
+		"ko"		"황금 부대 고대 조각상"
+	}
+	"Golden Squad Swordsman"
+	{
+		"en"		"Golden Squad Swordsman"
+		"ko"		"황금 부대 검병"
+	}
+	"Golden Squad Crossbowman"
+	{
+		"en"		"Golden Squad Crossbowman"
+		"ko"		"황금 부대 석궁병"
+	}
+	"Golden Squad Eagleman"
+	{
+		"en"		"Golden Squad Eagleman"
+		"ko"		"황금 부대 독수리 전사"
+	}
 	"Trebuchet"
 	{
 		"en"		"Trebuchet"
@@ -3646,7 +3666,7 @@
 	{
 		"en"	"Xeno Patient Few"
 		"it"	"Pochi pazienti Xeno"
-		"ko"	"제노 한탄의 환자"
+		"ko"	"제노 소수 환자"
 	}
 	"Ouroboros Ekas"
 	{
@@ -3977,7 +3997,7 @@
 	{
 		"en"	"Fractal Cannon"
 		"it"	"Cannone frattale"
-		"ko"	"프랙탈 대포"
+		"ko"	"프랙탈 캐논"
 	}
 	"Ealing"
 	{
@@ -5848,16 +5868,6 @@
 		"en"	"=Failed name="
 		"ko"	"=Failed name="
 	}
-	"Captino Menius"
-	{
-		"en"	"Captino Menius"
-		"ko"	"캡티노 메니우스"
-	}
-	"0h No it's Not Fair"
-	{
-		"en"	"=Failed name="
-		"ko"	"=Failed name="
-	}
 	"Agent John"
 	{
 		"en"		"Agent John"
@@ -7476,7 +7486,7 @@
 	{
 		"en"	"U̵͌m̴b̷r̵ã̶̺l̶̡͘ ̷͓̈́R̸e̷f̵̞͘ra̷͖͛c̵͊ţ̷͝"
 		"it"	"U̵͌m̴b̷r̵ã̶̺l̶̡͘ ̷͓̈́R̸e̷f̵̞͘ra̷͖͛c̵͊ţ̷͝"
-		"ko"	"움̵͌브̴̷랄̶̶̡̺̃͘ ̷̸͓̈́굴̷절̵̞͘수̵̷̷̨̧͖͛̕͝"
+		"ko"	"움̵͌브̴̷랄̶̶̡̺̃͘ ̷̸͓̈́리̷프̵̞͘랙̵̨̕트̷̷̧͖͛͝"
 	}
 	"Umbral Refract Desc"
 	{
@@ -7554,7 +7564,7 @@
 	{
 		"en"	"Shadowing Darkness, The Ruler"
 		"it"	"L'ombra delle tenebre, il dominatore"
-		"ko"	"지배자, ''그림자 응달''"
+		"ko"	"지배자 ''그림자 응달''"
 	}
 	"Shadowing Darkness, The Ruler Desc"
 	{
