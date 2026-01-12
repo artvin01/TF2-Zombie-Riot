@@ -1873,11 +1873,11 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-float Construction_GetMaxHealthMulti(float builderMulti)
+float Construction_GetMaxHealthMulti(float builderMulti, int forceLevel = -1)
 {
 	if(Dungeon_Mode())
 	{
-		int level = ObjectDWall_UpgradeLevel();
+		int level = forceLevel == -1 ? ObjectDWall_UpgradeLevel() : forceLevel;
 
 		float multi = 1.5;	// Construction Novice
 		multi *= 1.65;	// Construction Apprentice

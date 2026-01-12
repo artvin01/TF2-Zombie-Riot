@@ -309,7 +309,7 @@ enum struct RoomInfo
 			}
 			else if(LootMap.ContainsKey(buffer))
 			{
-				CPrintToChatAll("%t", "Found Dungeon Loot", buffer);
+				//CPrintToChatAll("%t", "Found Dungeon Loot", buffer);
 
 				LootInfo loot;
 				LootMap.GetArray(buffer, loot, sizeof(loot));
@@ -324,8 +324,8 @@ enum struct RoomInfo
 			}
 		}
 
-		if(victory && count)
-			EmitSoundToAll("ui/itemcrate_smash_rare.wav");
+		//if(victory && count)
+		//	EmitSoundToAll("ui/itemcrate_smash_rare.wav");
 	}
 
 	void Clean()

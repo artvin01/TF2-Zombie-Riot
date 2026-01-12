@@ -2863,6 +2863,9 @@ void Rogue_GiveNamedArtifact(const char[] name, bool silent = false, bool noFail
 	
 	if(!CurrentCollection)
 		CurrentCollection = new ArrayList();
+
+	if(!silent && Dungeon_Mode())
+		EmitSoundToAll("ui/itemcrate_smash_rare.wav");
 	
 	Artifact artifact;
 	int length = Artifacts.Length;

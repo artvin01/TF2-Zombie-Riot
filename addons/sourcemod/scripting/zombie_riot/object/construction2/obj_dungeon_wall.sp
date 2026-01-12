@@ -343,12 +343,6 @@ static void ClotShowInteractHud(ObjectGeneric npc, int client)
 
 static bool ClotInteract(int client, int weapon, ObjectGeneric npc)
 {
-	if(CurrentLevel >= CONSTRUCT_MAXLVL)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		return true;
-	}
-
 	ThisBuildingMenu(client);
 	return true;
 }
@@ -361,12 +355,31 @@ static void ThisBuildingMenu(int client)
 
 	Menu menu = new Menu(ThisBuildingMenuH);
 
-	menu.SetTitle("%t\n \n%d / %d %t", CONSTRUCT_NAME, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
+	int level = CurrentLevel;
+	float healthPre = 1000.0 * Construction_GetMaxHealthMulti(level);
+	int countPre = CONSTRUCT_MAXCOUNT;
 
+	level = CurrentLevel + 1;
+	float healthPost = 1000.0 * Construction_GetMaxHealthMulti(level);
+	int countPost = CONSTRUCT_MAXCOUNT;
+	
 	char buffer[64];
-	FormatEx(buffer, sizeof(buffer), "%t", "Upgrade Building To", CurrentLevel + 2);
-	menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
+	if(CurrentLevel >= CONSTRUCT_MAXLVL)
+	{
+		menu.SetTitle("%t\n%.0f Health\n%d Supply", CONSTRUCT_NAME, healthPre, CONSTRUCT_RANGE, countPre);
+
+		FormatEx(buffer, sizeof(buffer), "Level %d", CurrentLevel + 1);
+		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+	}
+	else
+	{
+		menu.SetTitle("%t\n%.0f (+%.0f) Health\n%d (+%d) Supply\n ", CONSTRUCT_NAME, healthPre, healthPost - healthPre, CONSTRUCT_RANGE, countPre, countPost - countPre);
+
+		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t", "Upgrade Building To", CurrentLevel + 2, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
+		menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	}
+	
 	menu.Display(client, MENU_TIME_FOREVER);
 }
 

@@ -3,14 +3,17 @@
 
 static StringMap ItemsGiven;
 static StringMap MatGiven;
+static Handle StuffTimer;
 
 void ItemMessage(const char[] string, int amount)
 {
 	if(!ItemsGiven)
-	{
 		ItemsGiven = new StringMap();
-		RequestFrame(ItemMsgFrame);
-	}
+
+	if(StuffTimer)
+		delete StuffTimer;
+	
+	StuffTimer = CreateTimer(1.0, Timer_StuffGive);
 
 	int total;
 	ItemsGiven.GetValue(string, total);
@@ -20,11 +23,13 @@ void ItemMessage(const char[] string, int amount)
 
 void MaterialDelay(const char[] string, int amount)
 {
-	if(!MatGiven)
-	{
-		MatGiven = new StringMap();
-		RequestFrame(MatGiveFrame);
-	}
+	if(!ItemsGiven)
+		ItemsGiven = new StringMap();
+
+	if(StuffTimer)
+		delete StuffTimer;
+	
+	StuffTimer = CreateTimer(1.0, Timer_StuffGive);
 
 	int total;
 	MatGiven.GetValue(string, total);
@@ -32,40 +37,48 @@ void MaterialDelay(const char[] string, int amount)
 	MatGiven.SetValue(string, total);
 }
 
-static void ItemMsgFrame()
+static Action Timer_StuffGive(Handle timer)
 {
-	StringMapSnapshot snap = ItemsGiven.Snapshot();
+	StuffTimer = null;
 
-	int length = snap.Length;
-	for(int i; i < length; i++)
+	if(ItemsGiven)
 	{
-		int amount = snap.KeyBufferSize(i) + 1;
-		char[] name = new char[amount];
-		snap.GetKey(i, name, amount);
+		StringMapSnapshot snap = ItemsGiven.Snapshot();
 
-		ItemsGiven.GetValue(name, amount);
-		CPrintToChatAll("%t", name, amount);
+		int length = snap.Length;
+		for(int i; i < length; i++)
+		{
+			int amount = snap.KeyBufferSize(i) + 1;
+			char[] name = new char[amount];
+			snap.GetKey(i, name, amount);
+
+			ItemsGiven.GetValue(name, amount);
+			CPrintToChatAll("%t", name, amount);
+		}
+
+		delete ItemsGiven;
 	}
 
-	delete ItemsGiven;
-}
-
-static void MatGiveFrame()
-{
-	StringMapSnapshot snap = MatGiven.Snapshot();
-
-	int length = snap.Length;
-	for(int i; i < length; i++)
+	if(MatGiven)
 	{
-		int amount = snap.KeyBufferSize(i) + 1;
-		char[] name = new char[amount];
-		snap.GetKey(i, name, amount);
+		StringMapSnapshot snap = MatGiven.Snapshot();
 
-		MatGiven.GetValue(name, amount);
-		Construction_AddMaterial(name, amount);
+		int length = snap.Length;
+		for(int i; i < length; i++)
+		{
+			int amount = snap.KeyBufferSize(i) + 1;
+			char[] name = new char[amount];
+			snap.GetKey(i, name, amount);
+
+			MatGiven.GetValue(name, amount);
+			Construction_AddMaterial(name, amount);
+		}
+
+		delete MatGiven;
 	}
 
-	delete MatGiven;
+	EmitSoundToAll("ui/itemcrate_smash_common.wav");
+	return Plugin_Continue;
 }
 
 public void Dungeon_EasyMode_Enemy(int entity)
