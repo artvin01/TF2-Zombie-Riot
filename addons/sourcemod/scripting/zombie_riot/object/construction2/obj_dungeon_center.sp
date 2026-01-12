@@ -203,7 +203,7 @@ static void ThisBuildingMenu(int client)
 
 	if(CurrentLevel < CONSTRUCT_MAXLVL)
 	{
-		FormatEx(buffer, sizeof(buffer), "%t", "Upgrade Building To", CurrentLevel + 2);
+		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Upgrade Building To", CurrentLevel + 2, wood, CONSTRUCT_COST1, "Material wood");
 		menu.AddItem("7", buffer, (wood < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	}
 
