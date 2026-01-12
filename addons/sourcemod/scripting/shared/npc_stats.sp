@@ -5414,10 +5414,10 @@ stock int GetClosestTarget(int entity,
 				{
 					if(Dungeon_Mode())
 					{
-						if(Dungeon_GetEntityZone(entity) != entity_close)
+						if(Dungeon_GetEntityZone(entity) != Dungeon_GetEntityZone(i))
 							continue;
 					}
-					
+
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, i))
@@ -5459,7 +5459,7 @@ stock int GetClosestTarget(int entity,
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(Dungeon_Mode())
 				{
-					if(Dungeon_GetEntityZone(entity) != entity_close)
+					if(Dungeon_GetEntityZone(entity) != Dungeon_GetEntityZone(entity_close))
 						continue;
 				}
 #if defined RTS
@@ -5521,7 +5521,7 @@ stock int GetClosestTarget(int entity,
 						continue;
 					if(Dungeon_Mode())
 					{
-						if(Dungeon_GetEntityZone(entity) != entity_close)
+						if(Dungeon_GetEntityZone(entity) != Dungeon_GetEntityZone(entity_close))
 							continue;
 					}
 					if(CanSee)
@@ -5582,7 +5582,7 @@ stock int GetClosestTarget(int entity,
 
 					if(Dungeon_Mode())
 					{
-						if(Dungeon_GetEntityZone(entity) != entity_close)
+						if(Dungeon_GetEntityZone(entity) != Dungeon_GetEntityZone(entity_close))
 							continue;
 						//when its this gamemode, we want to make sure to always ignore these buildings
 						if(Const2_IgnoreBuilding_FindTraget(entity_close))
