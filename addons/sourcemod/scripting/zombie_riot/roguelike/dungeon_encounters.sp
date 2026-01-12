@@ -176,7 +176,6 @@ public float Dungeon_Encounter_ShipEnding()
 	ArrayList list = Rogue_CreateGenericVote(Dungeon_Vote_ShipEnding, "Ship Ending Encounter Title");
 	Vote vote;
 
-	Artifact artifact;
 	strcopy(vote.Name, sizeof(vote.Name), "Expidonsa Tech Chip");
 	strcopy(vote.Desc, sizeof(vote.Config), "Artifact Info");
 	strcopy(vote.Config, sizeof(vote.Config), "Expidonsa Tech Chip");
