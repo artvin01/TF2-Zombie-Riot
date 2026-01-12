@@ -258,7 +258,7 @@ static void ClotShowInteractHud(ObjectGeneric npc, int client)
 {
 	if(CurrentLevel >= CONSTRUCT_MAXLVL)
 	{
-		PrintCenterText(client, "%t", "Upgrade Max");
+		PrintCenterText(client, "%t", ObjectDungeonCenter_Level() < 3 ? "Upgrade Max Limited" : "Upgrade Max");
 	}
 	else
 	{

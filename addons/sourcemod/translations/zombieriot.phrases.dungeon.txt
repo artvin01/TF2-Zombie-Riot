@@ -45,6 +45,10 @@
 		"en"	"Level MAX"
 		"ko"	"최대 레벨"
 	}
+	"Upgrade Max Limited"
+	{
+		"en"	"Level MAX, Upgrade Control Center"
+	}
 	"Upgrade Building To"
 	{
 		"#format"	"{1:d}"
