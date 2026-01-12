@@ -194,7 +194,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 		
 		if(!CvarInfiniteCash.BoolValue)
 		{
-			if(!Dungeon_Mode() || ObjectDungeonCenter_Level() < 2 || LastGameTime != CurrentGame)
+			if(!Dungeon_Mode() || ObjectDungeonCenter_Level() < 2)
 			{
 				maxcount = 0;
 				return false;

@@ -262,7 +262,7 @@ static int GetCost(int client, BuildingInfo info, float multi)
 	}
 	if(Dungeon_Mode() && !Waves_Started())
 	{
-		buildCost = 9999;
+		buildCost = 99999;
 	}
 
 
@@ -355,23 +355,19 @@ static void BuildingMenu(int client)
 
 		for(int i; i < sizeof(SectionName); i++)
 		{
+			IntToString(i, buffer2, sizeof(buffer2));
+
 			if(i == 2 && !Construction_Mode() && !CvarInfiniteCash.BoolValue)
-			{
-				menu.AddItem(buffer1, buffer1, ITEMDRAW_SPACER);
 				continue;
-			}
 			
 			if(i == 3 && !Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
-			{
-				menu.AddItem(buffer1, buffer1, ITEMDRAW_SPACER);
 				continue;
-			}
 			
 			FormatEx(buffer1, sizeof(buffer1), "%t", SectionName[i]);
 			if(i == 2 && !Waves_Started() && !CvarInfiniteCash.BoolValue)
-				menu.AddItem(buffer1, buffer1, ITEMDRAW_DISABLED);
+				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 			else
-				menu.AddItem(buffer1, buffer1);
+				menu.AddItem(buffer2, buffer1);
 		}
 	}
 	else
@@ -578,7 +574,9 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 						}
 						default:
 						{
-							MenuSection[client] = choice - 3;
+							char buffer[16];
+							menu.GetItem(choice, buffer, sizeof(buffer));
+							MenuSection[client] = StringToInt(buffer);
 						}
 					}
 				}

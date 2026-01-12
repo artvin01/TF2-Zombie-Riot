@@ -89,10 +89,13 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	{
 		count = CountBuildings();
 		
-		if(!CvarInfiniteCash.BoolValue || ObjectDungeonCenter_Level() < 1 || !Dungeon_Mode())
+		if(!CvarInfiniteCash.BoolValue)
 		{
-			maxcount = 0;
-			return false;
+			if(!Dungeon_Mode() || ObjectDungeonCenter_Level() < 1)
+			{
+				maxcount = 0;
+				return false;
+			}
 		}
 
 		maxcount = 1;
@@ -146,7 +149,7 @@ static void ClotShowInteractHud(ObjectDFactory npc, int client)
 
 		char button[64];
 		PlayerHasInteract(client, button, sizeof(button));
-		PrintCenterText(client, "%t", "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL + 1, button);
+		PrintCenterText(client, "%t", "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL + 2, button);
 	}
 }
 
