@@ -1936,6 +1936,40 @@ void Dungeon_RollNamedLoot(const char[] name)
 	}
 }
 
+void Dungeon_BuildingDeath(int entity)
+{
+	if(GetTeam(entity) != TFTeam_Red)
+	{
+		if(CurrentBaseIndex != -1)
+		{
+			float pos[3];
+			WorldSpaceCenter(entity, pos);
+
+			RoomInfo room;
+			RoomList.GetArray(CurrentBaseIndex, room);
+			room.RollLoot(pos);
+		}
+	}
+}
+
+void Dungeon_MainBuildingDeath(int entity)
+{
+	if(GetTeam(entity) != TFTeam_Red)
+	{
+		if(CurrentBaseIndex != -1)
+		{
+			float pos[3];
+			WorldSpaceCenter(entity, pos);
+
+			RoomInfo room;
+			RoomList.GetArray(CurrentBaseIndex, room);
+			room.RollLoot(pos);
+			room.RollLoot(pos);
+			room.RollLoot(pos);
+		}
+	}
+}
+
 void Dungeon_AddBattleScale(float scale)
 {
 	BattleWaveScale += scale;

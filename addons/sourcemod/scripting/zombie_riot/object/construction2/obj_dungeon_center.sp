@@ -82,6 +82,7 @@ methodmap ObjectDungeonCenter < ObjectGeneric
 		if(StrContains(data, "enemy_base") != -1)
 		{
 			npc.m_bEnemyBase = true;
+			func_NPCDeath[npc.index] = Dungeon_MainBuildingDeath;
 		}
 		else
 		{

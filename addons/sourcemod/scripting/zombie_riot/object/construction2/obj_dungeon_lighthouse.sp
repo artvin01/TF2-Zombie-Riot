@@ -70,6 +70,7 @@ methodmap ObjectDLightHouse < ObjectGeneric
 		func_NPCThink[npc.index] = ClotThink;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
+		func_NPCDeath[npc.index] = Dungeon_BuildingDeath;
 		npc.m_bConstructBuilding = true;
 
 		return npc;
