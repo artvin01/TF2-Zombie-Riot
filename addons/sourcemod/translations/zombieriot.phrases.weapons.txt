@@ -1104,7 +1104,7 @@
 	"Backstabbers Favorit"
 	{
 		"en"		"Backstabbers Favorit"
-		"ko"		"백스탭 사랑꾼"
+		"ko"		"백스탭꾼의 애용품"
 	}
 	"x10 Spy Main's Personal ''Knife''"
 	{
@@ -1213,7 +1213,7 @@
 		"nl"		"Oneindigheidszwaard"
 		"chi"       	"无尽之剑"
 		"it"		"Lama dell'Infinito"
-		"ko"		"무한의 검"
+		"ko"		"인피니티 블레이드"
 	}
 	"Mage Weapons"//Mage here
 	{
@@ -2369,14 +2369,17 @@
 	"Living Armor"
 	{
 		"en"		"Living Armor"
+		"ko"		"생체 장갑"
 	}
 	"Living Armor Desc"
 	{
 		"en"		"-Armor now regens over 15 seconds if not hurt\n-Armor icon changes\n-Max Armor is halved\n-Armor protects only 50％ instead of 75％\n-Cant get armor from buildings\n-Armor corrosion disables this perk"
+		"ko"		"-피해를 입지 않으면 아머가 15초에 거쳐 재생\n-아머 아이콘 변경, 최대 아머가 절반으로 감소\n-아머의 피해 방어가 75%에서 50%로 감소\n-구조물에서 아머 획득 불가, 아머 부식이 있으면 퍽 비활성화"
 	}
 	"Living Armor Chat"
 	{
 		"en"		"When buying or selling this perk, you lose all armor, and cant regen armor if done outside of setup for some time."
+		"ko"		"이 퍽을 구매 및 판매할 때, 모든 아머를 잃게 되며, 준비 단계가 아니었다면 일시적으로 아머 재생이 중단됩니다."
 	}
 	"Sticky Support Grenades"
 	{
@@ -3292,7 +3295,7 @@
 		"ru"       "Расколотый ковчег"
 		"chi"       "断裂方舟"
 		"it"		"Arca fratturata"
-		"ko"		"파편화된 방주"
+		"ko"		"금이 간 방주"
 	}
 	"Zerofuse's Knife"
 	{
@@ -3310,7 +3313,7 @@
 		"ru"		"Палочка медузы Теслар"
 		"chi"		"美杜莎·特斯拉手杖"
 		"it"		"Bastone di Tesla Medusa"
-		"ko"		"메두사 테슬라 막대"
+		"ko"		"메두사 테슬라 스틱"
 	}
 	"Beam Wand"
 	{
@@ -4236,7 +4239,7 @@
 	"Quibai's Elegance"
 	{
 		"en"		"Quibai's Elegance"
-		"ko"		"치우바이의 검"
+		"ko"		"치우바이의 품위"
 	}
 	"Ark of the Elements"
 	{
@@ -4351,12 +4354,12 @@
 	"Nightmare Cannon"
 	{
 		"en"		"Nightmare Cannon"
-		"ko"		"악몽포"
+		"ko"		"나이트메어 캐논"
 	}
 	"Pulse Cannon"
 	{
 		"en"		"Pulse Cannon"
-		"ko"		"파동포"
+		"ko"		"펄스 캐논"
 	}
 	"Feedback Loop"
 	{
@@ -4441,7 +4444,7 @@
 	"Snowey Attraction Staff"
 	{
 		"en"		"Snowey Attraction Staff"
-		"ko"		"눈짓 이끌림의 스태프"
+		"ko"		"백설 이끌림의 스태프"
 	}
 	"Chainblade"
 	{
@@ -5495,13 +5498,13 @@
 	{
 		"en"	"Fractal-Harvester"
 		"it"	"Raccoglitore frattale"
-		"ko"	"프랙탈-수확자"
+		"ko"	"프랙탈-하베스터"
 	}
 	"Fractal-Fantasia"
 	{
 		"en"	"Fractal-Fantasia"
 		"it"	"Frattale-Fantasia"
-		"ko"	"프랙탈-환술"
+		"ko"	"프랙탈-판타지아"
 	}
 	"Therapy"
 	{
@@ -5778,7 +5781,7 @@
 		"en"	"Sanity Sigil Blade"
 		"chi"	"理智印记剑"
 		"ru"	"Сигильный Клинок Рассудка"
-		"ko"	"정신력 인장의 검"
+		"ko"	"이성의 인장의 검"
 	}
 	"The Arsenal"
 	{
