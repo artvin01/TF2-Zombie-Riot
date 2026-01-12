@@ -1301,7 +1301,7 @@ static Action DungeonMainTimer(Handle timer)
 		Rogue_TriggerFunction(Artifact::FuncStageStart);
 		RemoveAllCustomMusic();
 		CreateTimer(float(AttackType * AttackType), Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-		SetBattleTimelimit(AttackTime - 3.0);
+		//SetBattleTimelimit(AttackTime - 3.0);
 	}
 	else
 	{
