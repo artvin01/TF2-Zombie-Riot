@@ -144,6 +144,11 @@ int ObjectDungeonCenter_Level()
 	return CurrentLevel;
 }
 
+int ObjectDungeonCenter_MaxLevel()
+{
+	return CONSTRUCT_MAXLVL;
+}
+
 bool ObjectDungeonCenter_Alive()
 {
 	int entity = -1;
