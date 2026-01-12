@@ -46,7 +46,7 @@ void Iberia_inqusitor_iidutas_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Inquisitor IIdutas");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_inqusitor_iidutas");
-	strcopy(data.Icon, sizeof(data.Icon), "shattertide");
+	strcopy(data.Icon, sizeof(data.Icon), "shattertide_1");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;

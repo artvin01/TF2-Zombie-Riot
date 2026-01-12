@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
-	"$basetexture" "hud/leaderboard_class_shattertide"
+	"$basetexture" "hud/leaderboard_class_shattertide_1"
 	"$vertexcolor" 1
 	"$no_fullbright" 1
 	"$ignorez" 1
