@@ -40,7 +40,7 @@ void SaintCarmen_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Saint Carmen");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_saintcarmen");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_saintcarmen");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_saint");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Seaborn;

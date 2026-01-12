@@ -19,7 +19,7 @@ void Isharmla_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ishar'mla, Heart of Corruption");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_isharmla");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_isharmla");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_isharmla");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Seaborn;

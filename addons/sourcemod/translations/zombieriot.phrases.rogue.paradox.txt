@@ -146,7 +146,7 @@
 	{
 		"en"	"Go the right way, nothing more.\n{green}Enemies move 20％ slower, take 35％ more damage, and deal 35％ less damage\n{green}Gain 75％ less Chaos Infliction\n{crimson}Prevents gaining alternative endings."
 		"it"	"{green}I nemici si muovono 20％ più lentamente, subiscono 35％ danni in più e infliggono 35％ danni in meno\n{green}Ottieni 75％ inflizioni del Caos in meno\n{crimson}Impedisce di ottenere finali alternativi."
-		"ko"	"{green}적들의 이동 속도 -20％, 저항력 -35％, 피해량 -35％.\n{green}혼돈 침식도 획득량 75％ 감소.\n{crimson}다른 엔딩을 볼 수 없음."
+		"ko"	"올바른 길로 나아가자. 그게 다다.\n{green}적들의 이동 속도 -20％, 저항력 -35％, 피해량 -35％\n{green}혼돈 침식도 획득량 75％ 감소\n{crimson}다른 엔딩을 볼 수 없음"
 	}
 	"Healing Supplies"
 	{
@@ -890,7 +890,7 @@
 	{
 		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25％ damage bonus, +25％ max health, +15％ attack speed, +15％ reload speed, +10％ damage resistance. The Duck will also greatly strengthen one player at a time"
 		"it"	"L'amato animale domestico di Bob, ''Dubby''.\n{green}Gli alleati guadagnano +25％ bonus ai danni, +25％ salute massima, +15％ velocità di attacco, +15％ velocità di ricarica, +10％ resistenza ai danni. L'Anatra rafforzerà notevolmente anche un giocatore alla volta"
-		"ko"	"밥이 가장 아끼는 애완오리, ''꽥꽥이''다.\n{green}{green}모든 아군 체력과 피해량 +25％ 및 공속과 장전 +15％ 및 저항력 +10％. 주기적으로 오리가 한 대상에게 버프 부여."
+		"ko"	"밥이 가장 아끼는 애완오리, ''꽥꽥이''다.\n{green}모든 아군의 체력, 피해량 +25％ 및 공속, 장전 +15％ 및 저항력 +10％. 주기적으로 오리가 한 명에게 버프 부여"
 	}
 	"Underground Scorch"
 	{

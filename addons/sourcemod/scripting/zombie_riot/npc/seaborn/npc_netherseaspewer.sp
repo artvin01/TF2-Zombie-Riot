@@ -36,7 +36,7 @@ void SeaSpewer_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Nethersea Spewer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseaspewer");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_spewer");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_spewer");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;
