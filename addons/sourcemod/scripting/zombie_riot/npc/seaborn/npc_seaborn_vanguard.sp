@@ -50,7 +50,7 @@ void SeabornVanguard_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Seaborn Vanguard");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_vanguard");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_vanguard");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_vanguard");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MISSION;
 	data.Category = Type_Seaborn;

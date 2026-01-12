@@ -38,7 +38,7 @@ void KazimierzKnightArcher_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Roar Knightclub Trainee");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_kazimersch_archer");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_archer");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_archer");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;

@@ -801,6 +801,7 @@
 	"Spearman Desc"
 	{
 		"en" 		"A fast, fast attacking, high range, but low health and damage enemy. They can quickly storm, surround and kill you.\nStacks a debuff, read debuff for more info."
+		"ko" 		"빠르고, 빠른 공격 속도에, 긴 사정거리를 보유했지만, 체력과 피해량이 낮습니다. 빠르게 모여들 수 있기에 당신을 둘러싸서 죽이기 쉽습니다.\n-디버프를 쌓습니다. 디버프 내용에서 더 자세히 확인해주세요."
 	}
 	"Hand Cannoneer Desc"
 	{
@@ -3570,7 +3571,7 @@
 	}
 	"Avangard's Processing Core-B Desc"
 	{
-		"en"	"Cleared Victoria before the update!\nThank you for Waiting Update.\nYou deserve this trophy.\n-No longer Get this Trophy"
+		"en"	"After destroying the Radiomast at the Victorian outpost, along with the soldiers there, you find this on the ground. drop by one of the Avanguards we killed."
 		"ko"	"업데이트 이전 빅토리아를 클리어했습니다!\n업데이트를 기다려주셔서 감사합니다.\n이 트로피를 받을 자격이 충분합니다.\n-이제 이 트로피는 획득할 수 없습니다."
 	}
 	"Copycat Truthful Evidence"
@@ -3582,5 +3583,77 @@
 	{
 		"en"	"This is a Copy of the evidence received from Sensal.\nSee some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Victoria invaded Ziberia.\nyou became the primary target of Victorians due to this…"
 		"ko"	"센살에게 받은 진실된 증거자료[사본] 입니다.\n이해못할 단어들이 보이지만 숨겨진 뜻이 있는거 같습니다. 이것이 빅토리아가 지베리아를 침공한 이유 같습니다.\n하지만 이것이 빅토리아인들과의 트러블을 만들었습니다."
+	}
+	"Dropped Secret Letter"
+	{
+		"en"	"Dropped Secret Letter"
+	}
+	"Dropped Secret Letter Desc"
+	{
+		"en"	"Dropped on the floor after beating Blitz’s army. Written on it is someone pleading for help from this machine? And it’s signed by someone named Karlas?"
+	}
+	"Xeno Virus Sample"
+	{
+		"en"	"Xeno Virus Sample"
+	}
+	"Xeno Virus Sample Desc"
+	{
+		"en"	"A sample of the Xeno virus after we beat them in Xeno Survival. Maybe this will help us find the source of the infection."
+	}
+	"Son of Osiris’s Gift"
+	{
+		"en"	"Son of Osiris’s Gift"
+	}
+	"Son of Osiris’s Gift Desc"
+	{
+		"en"	"Osiris gives us this for helping him and the rest of Alaxios’s army train. It’s a book on how to become a Brawler…"
+	}
+	"Broken Expidonsan Tech"
+	{
+		"en"	"Broken Expidonsan Tech"
+	}
+	"Broken Expidonsan Tech Desc"
+	{
+		"en"	"Broken off one of the elite rogue expidonsans. It appears to be stronger than Sensal's tech, at least by the look of it."
+	}
+	"Major Voided’s Hat"
+	{
+		"en"	"Major Voided’s Hat"
+	}
+	"Major Voided’s Hat Desc"
+	{
+		"en"	"Somehow still intact after the explosion. A bit big but still usable."
+	}
+	"Iberian Badge of Honor"
+	{
+		"en"	"Iberian Badge of Honor"
+	}
+	"Iberian Badge of Honor Desc"
+	{
+		"en"	"Irene gives you this for all you have done for Iberia, dating back to before you were employed by Bob the Second."
+	}
+	"Collector’s Backpack"
+	{
+		"en"	"Collector’s Backpack"
+	}
+	"Collector’s Backpack Desc"
+	{
+		"en"	"The backpack worn by the Aperture Collector. The tech within looks extremely advanced."
+	}
+	"Ruianian Necklace"
+	{
+		"en"	"Ruianian Necklace"
+	}
+	"Ruianian Necklace Desc"
+	{
+		"en"	"A golden necklace with a gem at the end of it. Ruliana gives it to us as a gift from Twirl."
+	}
+	"Ancient Demon Horn"
+	{
+		"en"	"Ancient Demon Horn"
+	}
+	"Ancient Demon Horn Desc"
+	{
+		"en"	"Broken off an Ancient Demon we killed. We have no idea what to use it for…"
 	}
 }

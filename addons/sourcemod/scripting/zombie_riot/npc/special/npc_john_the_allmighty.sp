@@ -40,8 +40,8 @@ void JohnTheAllmighty_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "John The Almighty");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_john_the_allmighty");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "mb_john");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;

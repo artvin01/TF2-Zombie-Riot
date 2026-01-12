@@ -43,7 +43,7 @@ void SeaSlider_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Deep Sea Slider");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaslider");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_slider");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_slider");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;

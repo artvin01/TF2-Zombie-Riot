@@ -50,7 +50,7 @@ void SeabornSoldier_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Seaborn Soldier");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_soldier");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_soldier");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_soldier");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;

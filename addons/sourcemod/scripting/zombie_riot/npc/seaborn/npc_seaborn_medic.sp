@@ -29,7 +29,7 @@ void SeabornMedic_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Seaborn Medic");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_medic");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_medic");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_medic");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MISSION;
 	data.Category = Type_Seaborn;

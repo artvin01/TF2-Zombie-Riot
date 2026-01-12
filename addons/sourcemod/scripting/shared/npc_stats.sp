@@ -10351,6 +10351,11 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 		//Display morale!
 		MoraleIconShowHud(npc.index, HealthText, sizeof(HealthText));
 	}
+	if(NpcAppliesMarkDebuff(npc.index)) // Mark applier indicator
+	{
+    	//Display mark applier warning!
+    	Format(HealthText, sizeof(HealthText), "M%s", HealthText);
+	}
 	if(Saga_EnemyDoomed(npc.index))
 	{
 		Format(HealthText, sizeof(HealthText), "%s#",HealthText);
