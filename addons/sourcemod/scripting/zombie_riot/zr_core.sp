@@ -1980,7 +1980,7 @@ void CheckLastMannStanding(int killed)
 }
 void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false, int CheckForLastManAlone = 0)
 {
-	if(!Waves_Started() || Waves_InSetup() || GameRules_GetRoundState() != RoundState_ZombieRiot)
+	if(!Waves_Started() || Waves_InSetup() || GameRules_GetRoundState() != RoundState_ZombieRiot || Dungeon_CanRespawn())
 	{
 		LastMann = false;
 		LastMann_BeforeLastman = false;
@@ -2611,7 +2611,7 @@ public Action ZR_CheckValidityOfPostions_OfObjects(Handle timer,bool recheck)
 void ZR_CheckValidityOfPostions_OfObjectsInternal(bool recheck)
 {
 	//if in setup, keep checking.
-	if(Waves_InSetup() && recheck)
+	if(Waves_InSetup() && recheck && !Construction_Mode() && !Dungeon_Mode())
 		CreateTimer(5.0, ZR_CheckValidityOfPostions_OfObjects, true, TIMER_FLAG_NO_MAPCHANGE);
 
 	float pos2[3];

@@ -112,7 +112,7 @@ static int CountBuildings()
 	{
 		if(GetTeam(entity) != TFTeam_Red)
 			continue;
-		if(NPCId == i_NpcInternalId[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
+		if(NPCId == i_NpcInternalId[entity])
 			count++;
 	}
 
@@ -253,7 +253,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 						int entity = -1;
 						while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 						{
-							if(NPCId == i_NpcInternalId[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
+							if(NPCId == i_NpcInternalId[entity])
 							{
 								if(Dungeon_GetEntityZone(entity) == spot)
 								{

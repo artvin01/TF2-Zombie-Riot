@@ -2226,7 +2226,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			Rogue_PlayerDowned(victim);	
 			
 			//there are players still left, down them.
-			if((SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 2)) && !HasSpecificBuff(victim, "Nightmare Terror"))
+			if((SpecterCheckIfAutoRevive(victim) || i_AmountDowned[victim] < (2 + Dungeon_DownedBonus(victim))) && !HasSpecificBuff(victim, "Nightmare Terror"))
 			{
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 12");
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
@@ -2857,6 +2857,7 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 	int downsleft;
 	downsleft = 2;
 	downsleft -= i_AmountDowned[client];
+	downsleft += Dungeon_DownedBonus(client);
 	if(HasSpecificBuff(client, "Nightmare Terror"))
 		downsleft = 0;
 	if(!force_Clear && downsleft <= 0 && !SpecterCheckIfAutoRevive(client))

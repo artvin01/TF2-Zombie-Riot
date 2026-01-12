@@ -281,21 +281,19 @@ static int CountBuildings()
 	{
 		if(GetTeam(entity) != TFTeam_Red)
 			continue;
-		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
-		{
-			ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
-			if(IsValidEntity(objstats.m_iMasterBuilding))
-				continue;
+		
+		ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+		if(IsValidEntity(objstats.m_iMasterBuilding))
+			continue;
 
-			if(NPCId1 == i_NpcInternalId[entity])
-				count++;
-			
-			if(NPCId2 == i_NpcInternalId[entity])
-				count += 2;
-			
-			if(NPCId3 == i_NpcInternalId[entity])
-				count += 3;
-		}
+		if(NPCId1 == i_NpcInternalId[entity])
+			count++;
+		
+		if(NPCId2 == i_NpcInternalId[entity])
+			count += 2;
+		
+		if(NPCId3 == i_NpcInternalId[entity])
+			count += 3;
 	}
 
 	return count;
@@ -390,6 +388,9 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 				int entity = -1;
 				while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 				{
+					if(GetTeam(entity) != TFTeam_Red)
+						continue;
+					
 					ObjectGeneric obj = view_as<ObjectGeneric>(entity);
 					if(obj.m_bConstructBuilding)
 					{
@@ -404,29 +405,6 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 						SetEntProp(obj.index, Prop_Data, "m_iRepair", GetEntProp(obj.index, Prop_Data, "m_iRepair") + (newMax - currentMax));
 					}
 				}
-
-				/*
-				if(Dungeon_InSetup())
-				{
-					int entity = -1;
-					while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
-					{
-						if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
-						{
-							ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
-							if(IsValidEntity(objstats.m_iMasterBuilding))
-								continue;
-
-							if(NPCId1 == i_NpcInternalId[entity] ||
-								NPCId2 == i_NpcInternalId[entity] ||
-								NPCId3 == i_NpcInternalId[entity])
-							{
-								int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-								DeleteAndRefundBuilding(builder_owner, entity);
-							}
-						}
-					}
-				}*/
 			}
 		}
 	}

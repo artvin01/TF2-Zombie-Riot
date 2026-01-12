@@ -666,6 +666,9 @@ void Dungeon_StartSetup()
 
 void Dungeon_RoundEnd()
 {
+	if(Dungeon_Mode())
+		mp_disable_respawn_times.BoolValue = true;
+
 	CurrentAttacks = 0;
 	CurrentRoomIndex = -1;
 	NextRoomIndex = -1;
@@ -734,6 +737,7 @@ void Dungeon_Start()
 	NextAttackAt = GetGameTime() + AttackTime;
 	GameTimer = CreateTimer(0.5, DungeonMainTimer);
 	Ammo_Count_Ready = 20;
+	mp_disable_respawn_times.BoolValue = false;
 
 	CreateAllDefaultBuidldings(pos, ang);
 
@@ -930,6 +934,28 @@ void Dungeon_AntiStalled()
 			ForcePlayerLoss();
 		}
 	}
+}
+
+bool Dungeon_CanRespawn()
+{
+	if(!Dungeon_Mode())
+		return false;
+	
+	if(Dungeon_InSetup())
+		return true;
+	
+	return ObjectDungeonCenter_Alive();
+}
+
+int Dungeon_DownedBonus()
+{
+	if(!Dungeon_Mode())
+		return 0;
+	
+	if(Dungeon_InSetup())
+		return 0;
+	
+	return ObjectDungeonCenter_Alive() ? 999 : -2;
 }
 
 static void TriggerStartTouch(const char[] output, int caller, int activator, float delay)
@@ -1835,7 +1861,12 @@ void Dungeon_BattleVictory()
 	}
 
 	if(AttackType == 2)
+	{
+		// Reset next attack, give full time after a raid
+		NextAttackAt = GetGameTime() + AttackTime;
+
 		SetRandomMusic();
+	}
 	
 	Zero(i_AmountDowned);
 	AttackType = 0;

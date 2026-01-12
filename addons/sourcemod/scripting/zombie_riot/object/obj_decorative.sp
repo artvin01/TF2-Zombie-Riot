@@ -69,6 +69,9 @@ int ObjectDecorative_Buildings(int owner)
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
+		
 		if(owner == -1 || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 		{
 			if(NPCId == i_NpcInternalId[entity])

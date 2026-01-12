@@ -1528,7 +1528,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
 	
-	if(Construction_InSetup() || BetWar_Mode() || Dungeon_InSetup())
+	if(Construction_InSetup() || BetWar_Mode() || Dungeon_CanRespawn())
 	{
 		TeutonType[client] = TEUTON_NONE;
 	}

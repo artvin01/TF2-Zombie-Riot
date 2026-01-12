@@ -936,6 +936,9 @@ int Object_NamedBuildings(int owner = 0, const char[] name)
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
+		
 		if(owner == 0 || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 		{
 			static char plugin[64];
@@ -955,6 +958,9 @@ int Object_SupportBuildings(int owner, int &all = 0)
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
+		
 		static char plugin[64];
 		NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
 		if(StrContains(plugin, "obj_", false) != -1)
@@ -1223,6 +1229,9 @@ bool Const2_ReConstructBuilding(int entity)
 	if(!objstats.m_bConstructBuilding)
 		return false;
 
+	SetEntProp(objstats.index, Prop_Data, "m_iHealth", GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth"));
+	SetEntProp(objstats.index, Prop_Data, "m_iRepair", GetEntProp(objstats.index, Prop_Data, "m_iRepairMax"));
+	
 	if(!IsValidEntity(objstats.m_iConstructDeathModel))
 		return false;
 	RemoveEntity(objstats.m_iConstructDeathModel);
@@ -1232,8 +1241,6 @@ bool Const2_ReConstructBuilding(int entity)
 	if(IsValidEntity(objstats.m_iWearable1))
 		SetEntityRenderMode(objstats.m_iWearable1, RENDER_NORMAL);
 	objstats.m_flNextDelayTime = 0.0;
-	SetEntProp(objstats.index, Prop_Data, "m_iHealth", GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth"));
-	SetEntProp(objstats.index, Prop_Data, "m_iRepair", GetEntProp(objstats.index, Prop_Data, "m_iRepairMax"));
 	return true;
 
 }
