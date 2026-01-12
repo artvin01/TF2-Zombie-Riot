@@ -5389,12 +5389,6 @@ stock int GetClosestTarget(int entity,
 		3: player ally npc
 		4: buildings
 	*/
-	if(Dungeon_Mode())
-	{
-		//max limit to find targets
-		if(fldistancelimit >= 6000.0)
-			fldistancelimit = 6000.0;
-	}
 
 #if !defined RTS
 	
@@ -5418,6 +5412,12 @@ stock int GetClosestTarget(int entity,
 				CClotBody npc = view_as<CClotBody>(i);
 				if (GetTeam(i) != SearcherNpcTeam && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true))
 				{
+					if(Dungeon_Mode())
+					{
+						if(Dungeon_GetEntityZone(entity) != entity_close)
+							continue;
+					}
+					
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, i))
@@ -5457,6 +5457,11 @@ stock int GetClosestTarget(int entity,
 			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client && GetTeam(entity_close) != SearcherNpcTeam)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
+				if(Dungeon_Mode())
+				{
+					if(Dungeon_GetEntityZone(entity) != entity_close)
+						continue;
+				}
 #if defined RTS
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
@@ -5514,7 +5519,11 @@ stock int GetClosestTarget(int entity,
 					//if its a downed citizen, dont target.
 					if(Citizen_ThatIsDowned(entity_close))
 						continue;
-
+					if(Dungeon_Mode())
+					{
+						if(Dungeon_GetEntityZone(entity) != entity_close)
+							continue;
+					}
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, entity_close))
@@ -5573,6 +5582,8 @@ stock int GetClosestTarget(int entity,
 
 					if(Dungeon_Mode())
 					{
+						if(Dungeon_GetEntityZone(entity) != entity_close)
+							continue;
 						//when its this gamemode, we want to make sure to always ignore these buildings
 						if(Const2_IgnoreBuilding_FindTraget(entity_close))
 							continue;

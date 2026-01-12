@@ -1643,6 +1643,7 @@ public bool Const2_IgnoreBuilding_FindTraget(int entity)
 	return false;
 }
 
+
 static void TeleportToFrom(DungeonZone tele, DungeonZone from1 = Zone_Unknown, DungeonZone from2 = Zone_MAX, DungeonZone from3 = Zone_MAX)
 {
 	float pos[3], ang[3];
