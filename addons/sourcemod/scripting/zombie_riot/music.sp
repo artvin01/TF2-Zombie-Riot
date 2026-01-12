@@ -737,7 +737,6 @@ void Music_Stop_All(int client)
 	MusicString2.StopMusic(client);
 	RaidMusicSpecial1.StopMusic(client);
 	BGMusicSpecial1.StopMusic(client);
-	LogStackTrace("test");
 }
 
 void Music_Update(int client)
