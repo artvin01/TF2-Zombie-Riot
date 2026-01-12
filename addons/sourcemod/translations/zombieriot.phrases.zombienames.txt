@@ -2021,18 +2021,22 @@
 	"Golden Squad Construct"
 	{
 		"en"		"Golden Squad Construct"
+		"ko"		"황금 부대 고대 조각상"
 	}
 	"Golden Squad Swordsman"
 	{
 		"en"		"Golden Squad Swordsman"
+		"ko"		"황금 부대 검병"
 	}
 	"Golden Squad Crossbowman"
 	{
 		"en"		"Golden Squad Crossbowman"
+		"ko"		"황금 부대 석궁병"
 	}
 	"Golden Squad Eagleman"
 	{
 		"en"		"Golden Squad Eagleman"
+		"ko"		"황금 부대 독수리 전사"
 	}
 	"Trebuchet"
 	{
