@@ -1286,6 +1286,20 @@ void Waves_CacheWaves(KeyValues kv, bool npcs)
 	music.Clear();
 }
 
+void WavesDeleteSet(int ArrayDo = Rounds_Default)
+{
+	Round round;
+	if(Rounds[ArrayDo])
+	{
+		int length = Rounds[ArrayDo].Length;
+		for(int i; i < length; i++)
+		{
+			Rounds[ArrayDo].GetArray(i, round);
+			delete round.Waves;
+		}
+		delete Rounds[ArrayDo];
+	}
+}
 void Waves_SetupWaves(KeyValues kv, bool start, int ArrayDo = Rounds_Default)
 {
 	Round round;

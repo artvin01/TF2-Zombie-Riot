@@ -171,6 +171,7 @@ methodmap Const2Spawner < CClotBody
 		Const2SpawnerEnum edata;
 		// Create a new entry
 		npc.m_bEnemyBase = EnemyBaseIs;
+		WavesDeleteSet(SpawnArrayFree);
 
 		edata.SpawnerAmRef = EntIndexToEntRef(npc.index);
 		Format(edata.DataWave, sizeof(edata.DataWave), "%s", buffers[0]);
