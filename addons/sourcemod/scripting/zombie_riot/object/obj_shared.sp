@@ -1119,6 +1119,11 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		return Plugin_Handled;
 	}
+	if(attacker <= MaxClients && dieingstate[attacker] != 0)
+	{
+		//no dmg at all.
+		return Plugin_Handled;
+	}
 	ObjectGeneric_ClotTakeDamage_Post(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	return Plugin_Changed;
 }

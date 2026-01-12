@@ -5446,12 +5446,14 @@ void StatusEffects_Construction()
 	data.OnBuffStarted				= HomebaseMomentum_Start;
 	data.OnBuffStoreRefresh			= HomebaseMomentum_Start;
 	data.OnBuffEndOrDeleted			= HomebaseMomentum_End;
+	data.TimerRepeatCall_Func 		= HomebaseMoenmtum_Timer;
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
 	StatusEffect_AddGlobal(data);
 	data.OnBuffStarted				= INVALID_FUNCTION;
 	data.OnBuffStoreRefresh			= INVALID_FUNCTION;
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.TimerRepeatCall_Func		= INVALID_FUNCTION;
 
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Anti-Waves");
@@ -5586,6 +5588,11 @@ float Const2_Nerf_DamageScalingdeal(int attacker, int victim, StatusEffect Apply
 	return resist;
 }
 
+static void HomebaseMoenmtum_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	float maxhealth = float(ReturnEntityMaxHealth(entity));
+	HealEntityGlobal(entity, entity, maxhealth / 10.0, 1.0, 0.0, HEAL_ABSOLUTE);
+}
 static void HomebaseMomentum_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	if(!IsValidClient(victim))

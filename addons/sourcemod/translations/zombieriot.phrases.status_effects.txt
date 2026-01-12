@@ -1905,7 +1905,7 @@
 	}
 	"Homebase Momentum Desc"
 	{
-		"en"	"Durint peace times in your homebase, gain 45％ Movementspeed and 50％ Jumpheight"
+		"en"	"During peace times in your homebase, gain 45％ Movementspeed and 50％ Jumpheight, Regen hp fast"
 	}
 	"Anti-Waves"
 	{
