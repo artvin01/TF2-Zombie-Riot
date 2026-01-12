@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
-	"$basetexture" "hud/leaderboard_class_lighthouse"
+	"$basetexture" "hud/leaderboard_class_judgement_1"
 	"$vertexcolor" 1
 	"$no_fullbright" 1
 	"$ignorez" 1

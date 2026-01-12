@@ -54,7 +54,7 @@ void Iberia_inqusitor_irene_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Inquisitor Irene");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_inqusitor_irene");
-	strcopy(data.Icon, sizeof(data.Icon), "judgement");
+	strcopy(data.Icon, sizeof(data.Icon), "judgement_1");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;

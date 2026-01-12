@@ -40,7 +40,7 @@ void Iberia_Lighthouse_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Iberia Lighthouse");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_iberia_lighthouse");
-	strcopy(data.Icon, sizeof(data.Icon), "lighthouse");
+	strcopy(data.Icon, sizeof(data.Icon), "lighthouse_1");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_IberiaExpiAlliance;
