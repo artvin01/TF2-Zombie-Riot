@@ -47,7 +47,7 @@ void ObjectDWall_MapStart()
 	build.Cooldown = 1.0;
 	build.Func = ClotCanBuild1;
 	Building_Add(build);
-
+	/*
 	strcopy(data.Name, sizeof(data.Name), "Large Construct Wall");
 	strcopy(data.Plugin, sizeof(data.Plugin), "obj_dungeon_wall2");
 	data.Func = ClotSummon2;
@@ -73,6 +73,7 @@ void ObjectDWall_MapStart()
 	build.Cooldown = 1.0;
 	build.Func = ClotCanBuild3;
 	Building_Add(build);
+	*/
 }
 
 static any ClotSummon1(int client, float vecPos[3], float vecAng[3])

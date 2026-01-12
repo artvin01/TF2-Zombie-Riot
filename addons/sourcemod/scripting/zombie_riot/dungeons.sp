@@ -1311,6 +1311,7 @@ static Action DungeonMainTimer(Handle timer)
 	}
 
 	EmitGameSoundToAll("Ambient.Siren");
+	WaveStart_SubWaveStart(GetGameTime());
 	
 	delete snap;
 
@@ -1816,7 +1817,7 @@ static void StartBattle(const RoomInfo room, float time = 3.0)
 	//if(limit > maxLimit)
 	//	limit = maxLimit;
 
-	SetBattleTimelimit(maxLimit);
+//	SetBattleTimelimit(maxLimit);
 }
 
 void Dungeon_BattleVictory()

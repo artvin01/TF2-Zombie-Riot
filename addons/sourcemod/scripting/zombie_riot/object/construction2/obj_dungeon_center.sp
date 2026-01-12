@@ -450,6 +450,13 @@ static void StartingBaseBuffGiveBuffInternal(int entity, int victim, float damag
 			return;
 		}
 		ApplyStatusEffect(entity, victim, "Starting Grace", GiveBuffDuration);
+		GiveBuffDuration -= 60.0;
+		if(GiveBuffDuration <= 0.0)
+		{
+			GiveBuffDuration = 0.0;
+		}
+		ApplyStatusEffect(entity, victim, "War Cry", GiveBuffDuration);
+		ApplyStatusEffect(entity, victim, "Defensive Backup", GiveBuffDuration);
 	}
 }
 static void HomebaseMomentumGiveBuff(int iNpc)
