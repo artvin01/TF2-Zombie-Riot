@@ -3572,7 +3572,7 @@
 	"Avangard's Processing Core-B Desc"
 	{
 		"en"	"After destroying the Radiomast at the Victorian outpost, along with the soldiers there, you find this on the ground. drop by one of the Avanguards we killed."
-		"ko"	"업데이트 이전 빅토리아를 클리어했습니다!\n업데이트를 기다려주셔서 감사합니다.\n이 트로피를 받을 자격이 충분합니다.\n-이제 이 트로피는 획득할 수 없습니다."
+		"ko"	"빅토리아 전초기지의 방송탑을 파괴한 후, 땅에 널부러진 병사들 사이에서 발견했습니다.\n쓰러뜨린 아방가르드 중 하나에게서 떨어져 나온 것 같습니다."
 	}
 	"Copycat Truthful Evidence"
 	{
@@ -3587,73 +3587,91 @@
 	"Dropped Secret Letter"
 	{
 		"en"	"Dropped Secret Letter"
+		"ko"	"유실된 비밀 편지"
 	}
 	"Dropped Secret Letter Desc"
 	{
 		"en"	"Dropped on the floor after beating Blitz’s army. Written on it is someone pleading for help from this machine? And it’s signed by someone named Karlas?"
+		"ko"	"블리츠크리그의 군단을 막아낸 후 바닥에서 발견했습니다.\n이 기계에게서 구해달라고 쓰여져있는데...\n''카를라스''란 인물의 서명이 있군요?"
 	}
 	"Xeno Virus Sample"
 	{
 		"en"	"Xeno Virus Sample"
+		"ko"	"제노 바이러스 샘플"
 	}
 	"Xeno Virus Sample Desc"
 	{
 		"en"	"A sample of the Xeno virus after we beat them in Xeno Survival. Maybe this will help us find the source of the infection."
+		"ko"	"제노 생존을 몰아낸 후 얻은 제노 바이러스의 샘플입니다. 감염의 근원을 찾아내는데 도움이 될 수 있을 것 같습니다."
 	}
 	"Son of Osiris’s Gift"
 	{
 		"en"	"Son of Osiris’s Gift"
+		"ko"	"오시리스의 아들의 선물"
 	}
 	"Son of Osiris’s Gift Desc"
 	{
 		"en"	"Osiris gives us this for helping him and the rest of Alaxios’s army train. It’s a book on how to become a Brawler…"
+		"ko"	"오시리스가 남은 알락시오스의 군단과 그의 훈련을 도운 보답으로 이것을 주었습니다.\n어떻게 난투꾼이 되는지에 대해 쓰여져있는 책이군요..."
 	}
 	"Broken Expidonsan Tech"
 	{
 		"en"	"Broken Expidonsan Tech"
+		"ko"	"고장난 엑스피돈사제 기술력"
 	}
 	"Broken Expidonsan Tech Desc"
 	{
 		"en"	"Broken off one of the elite rogue expidonsans. It appears to be stronger than Sensal's tech, at least by the look of it."
+		"ko"	"정예 이탈자 엑스피돈사인들 중 하나에게서 떨어져 나온 것입니다.\n보아하니 센살의 기술력보다 더욱 강력한 것 같군요. 최소한 보이는 것으로는요."
 	}
 	"Major Voided’s Hat"
 	{
 		"en"	"Major Voided’s Hat"
+		"ko"	"공허화된 소령의 모자"
 	}
 	"Major Voided’s Hat Desc"
 	{
 		"en"	"Somehow still intact after the explosion. A bit big but still usable."
+		"ko"	"어떻게인지 몰라도 폭발 이후에도 멀쩡하게 남아있습니다. 좀 크긴 하지만 쓸 수는 있네요."
 	}
 	"Iberian Badge of Honor"
 	{
 		"en"	"Iberian Badge of Honor"
+		"ko"	"이베리아의 영광의 배지"
 	}
 	"Iberian Badge of Honor Desc"
 	{
 		"en"	"Irene gives you this for all you have done for Iberia, dating back to before you were employed by Bob the Second."
+		"ko"	"아이린이 당신이 이베리아를 위해 행한 모든 것에 대한 감사로 이것을 주었습니다.\n당신이 밥 2세에게 고용되기 전의 날짜까지 거슬러 올라가네요."
 	}
 	"Collector’s Backpack"
 	{
 		"en"	"Collector’s Backpack"
+		"ko"	"수집가의 가방"
 	}
 	"Collector’s Backpack Desc"
 	{
 		"en"	"The backpack worn by the Aperture Collector. The tech within looks extremely advanced."
+		"ko"	"애퍼처 수집가가 매고 있던 가방입니다. 안에 들어있는 기술은 극도로 진보된 것 같습니다."
 	}
 	"Ruianian Necklace"
 	{
 		"en"	"Ruianian Necklace"
+		"ko"	"루이나제 목걸이"
 	}
 	"Ruianian Necklace Desc"
 	{
 		"en"	"A golden necklace with a gem at the end of it. Ruliana gives it to us as a gift from Twirl."
+		"ko"	"끝부분에 보석이 달려있는 황금 목걸이입니다. 루리아나가 트윌의 선물이라며 건네주었습니다."
 	}
 	"Ancient Demon Horn"
 	{
 		"en"	"Ancient Demon Horn"
+		"ko"	"고대 악마의 뿔"
 	}
 	"Ancient Demon Horn Desc"
 	{
 		"en"	"Broken off an Ancient Demon we killed. We have no idea what to use it for…"
+		"ko"	"처치한 고대 악마에게서 부서져나온 뿔입니다. 어디에 써야할지 도통 모르겠군요..."
 	}
 }
