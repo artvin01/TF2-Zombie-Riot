@@ -40,7 +40,7 @@ void SeaRunner_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Shell Sea Runner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_searunner");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_runner");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_runner");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;

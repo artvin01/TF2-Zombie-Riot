@@ -43,7 +43,7 @@ void SeaBrandguider_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Nethersea Brandguider");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseabrandguider");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_brandguider");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_brandguide");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;

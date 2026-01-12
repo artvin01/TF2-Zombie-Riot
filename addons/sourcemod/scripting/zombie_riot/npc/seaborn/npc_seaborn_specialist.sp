@@ -53,7 +53,7 @@ void SeabornSpecialist_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Seaborn Specialist");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_specialist");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_specialist");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_specialist");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;

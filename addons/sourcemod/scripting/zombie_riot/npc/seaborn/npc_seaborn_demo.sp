@@ -13,7 +13,7 @@ void SeabornDemo_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Seaborn Demoman");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_demo");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_demo");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_demo");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;

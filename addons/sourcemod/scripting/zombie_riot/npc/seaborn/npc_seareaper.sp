@@ -46,7 +46,7 @@ void SeaReaper_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Basin Sea Reaper");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seareaper");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_reaper");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_reaper");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Seaborn;

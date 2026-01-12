@@ -27,8 +27,8 @@ void WanderingSpirit_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Wandering Spirit");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_wandering_spirit");
-	strcopy(data.Icon, sizeof(data.Icon), ""); 	//leaderboard_class_(insert the name)
-	data.IconCustom = false;								//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "mb_spirit"); 	//leaderboard_class_(insert the name)
+	data.IconCustom = true;								//download needed?
 	data.Flags = 0;											//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	data.Category = Type_Special;
 	data.Func = ClotSummon;

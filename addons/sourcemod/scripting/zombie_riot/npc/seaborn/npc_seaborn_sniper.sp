@@ -41,7 +41,7 @@ void SeabornSniper_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Seaborn Sniper");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_sniper");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_sniper");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_sniper");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;
