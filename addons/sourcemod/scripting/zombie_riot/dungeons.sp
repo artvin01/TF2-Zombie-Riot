@@ -978,7 +978,7 @@ static void TriggerStartTouch(const char[] output, int caller, int activator, fl
 				if(NextRoomIndex == -1)
 				{
 					float time = NextAttackAt - GetGameTime();
-					if(time > 100.0)
+					if(time > 60.0)
 					{
 						if(DelayVoteFor < GetGameTime() && !Rogue_VoteActive())
 							CreateNewDungeon();
@@ -1184,7 +1184,7 @@ static Action DungeonMainTimer(Handle timer)
 				*/
 				if(NextRoomIndex == -1)
 				{
-					if(time > 100.0 && !Rogue_VoteActive())
+					if(time > 60.0 && !Rogue_VoteActive())
 						CreateNewDungeon();
 				}
 
@@ -1194,10 +1194,16 @@ static Action DungeonMainTimer(Handle timer)
 					{
 						if(IsClientInGame(client))
 						{
-							if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && Dungeon_GetEntityZone(client) == Zone_DungeonWait)
+							if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 							{
-								StartNewDungeon();
-								break;
+								switch(Dungeon_GetEntityZone(client))
+								{
+									case Zone_Dungeon, Zone_DungeonWait:
+									{
+										StartNewDungeon();
+										break;
+									}
+								}
 							}
 						}
 					}
@@ -1837,11 +1843,14 @@ void Dungeon_BattleVictory()
 	if(ingots)
 		Construction_AddMaterial("crystal", ingots);
 
-	if(CurrentRoomIndex != -1 && AttackType == 1)
+	if(AttackType == 1)
 	{
-		RoomInfo room;
-		RoomList.GetArray(CurrentRoomIndex, room);
-		room.RollLoot(NULL_VECTOR);
+		if(CurrentRoomIndex != -1)
+		{
+			RoomInfo room;
+			RoomList.GetArray(CurrentRoomIndex, room);
+			room.RollLoot(NULL_VECTOR);
+		}
 	}
 
 	if(AttackType == 2)
@@ -1854,7 +1863,7 @@ void Dungeon_BattleVictory()
 	
 	Zero(i_AmountDowned);
 	AttackType = 0;
-	Dungeon_DelayVoteFor(20.0);
+	Dungeon_DelayVoteFor(10.0);
 
 	Const2_ReviveAllBuildings();
 
@@ -2058,7 +2067,7 @@ bool Dungeon_UpdateMvMStats()
 					{
 						int time = RoundToCeil(NextAttackAt - gameTime);
 						int flags = (CurrentAttacks + 1) < RaidList.Length ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_MINIBOSS;
-						if(time < 100)
+						if(time < 61)
 							flags += MVM_CLASS_FLAG_ALWAYSCRIT;
 						
 						Waves_SetWaveClass(objective, i, time, "classic_defend", flags, true);
