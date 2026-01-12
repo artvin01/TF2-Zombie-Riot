@@ -2776,7 +2776,10 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 						if(IsClientInGame(i) && !IsFakeClient(i))
 						{
 							if(!Construction_Mode() || Construction_FinalBattle())
-								Music_Stop_All(i);
+							{
+								if(!Dungeon_Mode() || Dungeon_FinalBattle())
+									Music_Stop_All(i);
+							}
 
 							if(!subgame)
 							{

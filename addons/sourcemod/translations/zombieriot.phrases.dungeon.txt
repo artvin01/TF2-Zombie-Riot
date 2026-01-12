@@ -45,6 +45,10 @@
 		"en"	"Level MAX"
 		"ko"	"최대 레벨"
 	}
+	"Upgrade Max Limited"
+	{
+		"en"	"Level MAX, Upgrade Control Center"
+	}
 	"Upgrade Building To"
 	{
 		"#format"	"{1:d}"
@@ -201,8 +205,7 @@
 	}
 	"Control Center Desc"
 	{
-		"en"	"A construct that allows doing certain special tasks"
-		"ko"	"특별한 임무를 받을 수 있는 구조물."
+		"en"	"The objective, protect this building to survive, use it to upgrade and do certain tasks."
 	}
 	"No Actions Needed"
 	{

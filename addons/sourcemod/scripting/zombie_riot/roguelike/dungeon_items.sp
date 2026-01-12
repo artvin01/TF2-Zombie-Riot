@@ -1,6 +1,73 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static StringMap ItemsGiven;
+static StringMap MatGiven;
+
+void ItemMessage(const char[] string, int amount)
+{
+	if(!ItemsGiven)
+	{
+		ItemsGiven = new StringMap();
+		RequestFrame(ItemMsgFrame);
+	}
+
+	int total;
+	ItemsGiven.GetValue(string, total);
+	total += amount;
+	ItemsGiven.SetValue(string, total);
+}
+
+void MaterialDelay(const char[] string, int amount)
+{
+	if(!MatGiven)
+	{
+		MatGiven = new StringMap();
+		RequestFrame(MatGiveFrame);
+	}
+
+	int total;
+	MatGiven.GetValue(string, total);
+	total += amount;
+	MatGiven.SetValue(string, total);
+}
+
+static void ItemMsgFrame()
+{
+	StringMapSnapshot snap = ItemsGiven.Snapshot();
+
+	int length = snap.Length;
+	for(int i; i < length; i++)
+	{
+		int amount = snap.KeyBufferSize(i) + 1;
+		char[] name = new char[amount];
+		snap.GetKey(i, name, amount);
+
+		ItemsGiven.GetValue(name, amount);
+		CPrintToChatAll("%t", name, amount);
+	}
+
+	delete ItemsGiven;
+}
+
+static void MatGiveFrame()
+{
+	StringMapSnapshot snap = MatGiven.Snapshot();
+
+	int length = snap.Length;
+	for(int i; i < length; i++)
+	{
+		int amount = snap.KeyBufferSize(i) + 1;
+		char[] name = new char[amount];
+		snap.GetKey(i, name, amount);
+
+		MatGiven.GetValue(name, amount);
+		Construction_AddMaterial(name, amount);
+	}
+
+	delete MatGiven;
+}
+
 public void Dungeon_EasyMode_Enemy(int entity)
 {
 	float stats = 0.85;
@@ -20,38 +87,38 @@ public void Dungeon_Crate_Ammo()
 public void Dungeon_Crate_Wood()
 {
 	int amount = GetRandomInt(1, 3);
-	Construction_AddMaterial("wood", amount);
+	MaterialDelay("wood", amount);
 }
 
 public void Dungeon_Crate_Iron()
 {
 	int amount = GetRandomInt(2, 4);
-	Construction_AddMaterial("iron", amount);
+	MaterialDelay("iron", amount);
 }
 
 public void Dungeon_Crate_Copper()
 {
 	int amount = GetRandomInt(2, 4);
-	Construction_AddMaterial("copper", amount);
+	MaterialDelay("copper", amount);
 }
 
 public void Dungeon_Crate_Crystal()
 {
-	Construction_AddMaterial("crystal", 1);
+	MaterialDelay("crystal", 1);
 }
 
 public void Dungeon_Crate_BonusCash25()
 {
 	int amount = GetRandomInt(10, 40);
 	GlobalExtraCash += amount;
-	CPrintToChatAll("%t", "Gained Extra Cash", amount);
+	ItemMessage("Gained Extra Cash", amount);
 }
 
 public void Dungeon_Crate_BonusCash100()
 {
 	int amount = GetRandomInt(50, 150);
 	GlobalExtraCash += amount;
-	CPrintToChatAll("%t", "Gained Extra Cash", amount);
+	ItemMessage("Gained Extra Cash", amount);
 }
 
 public void Dungeon_Crate_InscriptionFragment()
