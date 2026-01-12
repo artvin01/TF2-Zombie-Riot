@@ -1009,21 +1009,9 @@ static void TriggerStartTouch(const char[] output, int caller, int activator, fl
 		}
 	}
 }
-/*
+
 void Dungeon_TeleportRandomly(float pos[3])
 {
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && !Dungeon_EntityAtBase(client, true))
-			{
-				GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
-				break;
-			}
-		}
-	}
-
 	CNavArea goalArea = TheNavMesh.GetNavArea(pos, 1000.0);
 	if(goalArea == NULL_AREA)
 	{
@@ -1058,8 +1046,9 @@ void Dungeon_TeleportRandomly(float pos[3])
 	}
 
 	pos[2] += 1.0;
-}*/
-void Dungeon_TeleportCratesRewards(int entity, float pos[3])
+}
+
+void Dungeon_TeleportCratesRewards(int entity, float pos[3], float range = 125.0)
 {
 	static float hullcheckmaxs[3];
 	static float hullcheckmins[3];
@@ -1067,8 +1056,8 @@ void Dungeon_TeleportCratesRewards(int entity, float pos[3])
 	hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
 	float PosRand[3];
 	PosRand = pos;
-	PosRand[0] += GetRandomFloat(-125.0, 125.0);
-	PosRand[1] -= GetRandomFloat(-125.0, 125.0);
+	PosRand[0] += GetRandomFloat(-range, range);
+	PosRand[1] -= GetRandomFloat(-range, range);
 	Npc_Teleport_Safe(entity, PosRand, hullcheckmins, hullcheckmaxs, true);
 }
 
