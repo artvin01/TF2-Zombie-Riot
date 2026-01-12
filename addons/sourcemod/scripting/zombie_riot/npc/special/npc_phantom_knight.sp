@@ -73,7 +73,7 @@ void PhantomKnight_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Phantom Knight");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_phantom_knight");
-	strcopy(data.Icon, sizeof(data.Icon), "phantom");
+	strcopy(data.Icon, sizeof(data.Icon), "mb_phantom");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Special;

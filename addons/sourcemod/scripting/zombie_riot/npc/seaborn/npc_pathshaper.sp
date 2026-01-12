@@ -38,7 +38,7 @@ void Pathshaper_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Pathshaper");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_pathshaper");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_pathshaper");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_pathshaper");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Seaborn;

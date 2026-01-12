@@ -1687,10 +1687,8 @@ Action Ruina_Generic_Ion(Handle Timer, DataPack data)
 		Ruina_AOE_Add_Mana_Sickness(end_point, iNPC, Radius, Sickness_Multi, Sickness_flat,Override);
 
 	float Thickness = 6.0;
-	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.25, Thickness, 0.75, color, 1, 0);
+	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.35, Thickness, 0.75, color, 1, 0);
 	TE_SendToAll();
-
-
 
 	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=1000.0; end_point[2]-=100.0;
 
@@ -1717,7 +1715,10 @@ void Ruina_IonSoundInvoke(float Loc[3])
 static void Generic_ion_OnHit(int entity, int victim, float damage, int weapon)
 {
 	if(IsValidClient(victim))
+	{
 		EmitSoundToClient(victim, RUINA_ION_CANNON_SOUND_ATTACK);
+		EmitSoundToClient(victim, RUINA_ION_CANNON_SOUND_ATTACK);
+	}
 }
 public void Ruina_Add_Battery(int iNPC, float Amt)
 {

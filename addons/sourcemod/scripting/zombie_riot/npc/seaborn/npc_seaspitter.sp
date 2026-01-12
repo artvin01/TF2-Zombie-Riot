@@ -42,7 +42,7 @@ void SeaSpitter_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ridge Sea Spitter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaspitter");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_spitter");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_spitter");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;

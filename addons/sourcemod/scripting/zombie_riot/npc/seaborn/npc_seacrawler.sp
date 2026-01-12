@@ -33,7 +33,7 @@ void SeaCrawler_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Pocket Sea Crawler");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seacrawler");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_crawler");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_crawler");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Seaborn;

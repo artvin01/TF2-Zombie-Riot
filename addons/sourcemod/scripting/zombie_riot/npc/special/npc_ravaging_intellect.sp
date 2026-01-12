@@ -84,7 +84,7 @@ void RavagingIntellect_OnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ravaging Intellectual");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ravaging_intellectual");
-	strcopy(data.Icon, sizeof(data.Icon), "ravaging_mikusch");
+	strcopy(data.Icon, sizeof(data.Icon), "mb_miku");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Special;

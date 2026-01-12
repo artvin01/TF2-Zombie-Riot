@@ -39,7 +39,7 @@ void FirstToTalk_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "The First To Talk");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_firsttotalk");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_firsttotalk");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_firsttotalk");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;
