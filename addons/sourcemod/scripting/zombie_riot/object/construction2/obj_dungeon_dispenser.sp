@@ -10,19 +10,17 @@
 
 #define CONSTRUCT_NAME		"The Dispenser"
 #define CONSTRUCT_RESOURCE1	"iron"
-#define CONSTRUCT_COST1		(60 + (CurrentLevel * 60))
-#define CONSTRUCT_MAXLVL	2
+#define CONSTRUCT_COST1		(20 + (CurrentLevel * 20))
+#define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
 
 static int NPCId;
 static int LastGameTime;
 static int CurrentLevel;
-static bool Unlocked;
 
 void ObjectDDispenser_MapStart()
 {
 	LastGameTime = -1;
 	CurrentLevel = 0;
-	Unlocked = false;
 
 	PrecacheModel("models/buildables/dispenser_lvl3_light.mdl");
 
@@ -59,7 +57,6 @@ methodmap ObjectDDispenser < ObjectGeneric
 		{
 			CurrentLevel = 0;
 			LastGameTime = CurrentGame;
-			Unlocked = false;
 		}
 
 		ObjectDDispenser npc = view_as<ObjectDDispenser>(ObjectGeneric(client, vecPos, vecAng, "models/buildables/dispenser_lvl3_light.mdl", "1.0", "50", {26.0, 26.0, 67.0}, _, false));
@@ -69,7 +66,6 @@ methodmap ObjectDDispenser < ObjectGeneric
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
 		func_NPCThink[npc.index] = ClotThink;
-		func_NPCDeath[npc.index] = ClotDeath;
 		SetRotateByDefaultReturn(npc.index, -180.0);
 
 		return npc;
@@ -121,7 +117,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 		
 		if(!CvarInfiniteCash.BoolValue)
 		{
-			if(!Dungeon_Mode() || !Unlocked || LastGameTime != CurrentGame)
+			if(!Dungeon_Mode() || ObjectDungeonCenter_Level() < 1 || LastGameTime != CurrentGame)
 			{
 				maxcount = 0;
 				return false;
@@ -226,13 +222,4 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 		}
 	}
 	return 0;
-}
-
-static void ClotDeath(int entity)
-{
-	if(!Unlocked && LastGameTime == CurrentGame && GetTeam(entity) != TFTeam_Red && !(i_HexCustomDamageTypes[entity] & ZR_SLAY_DAMAGE))
-	{
-		Unlocked = true;
-		CPrintToChatAll("{green}%t", "Unlocked Building", CONSTRUCT_NAME);
-	}
 }

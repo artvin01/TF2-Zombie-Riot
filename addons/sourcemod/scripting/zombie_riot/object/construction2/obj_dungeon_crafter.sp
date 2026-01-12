@@ -11,7 +11,7 @@
 #define CONSTRUCT_NAME		"Packing Station"
 #define CONSTRUCT_RESOURCE1	"wood"
 #define CONSTRUCT_RESOURCE2	"crystal"
-#define CONSTRUCT_COST1		50
+#define CONSTRUCT_COST1		20
 #define CONSTRUCT_COST2		2
 
 enum
@@ -41,14 +41,12 @@ static const char PackName[][] =
 static int NPCId;
 static float GlobalCooldown;
 static int LastGameTime;
-static bool Unlocked;
 
 static IntMap WeaponPacked;
 
 void ObjectGemCrafter_MapStart()
 {
 	LastGameTime = -2;
-	Unlocked = false;
 	delete WeaponPacked;
 
 	bool failed;
@@ -102,7 +100,6 @@ methodmap ObjectGemCrafter < ObjectGeneric
 		{
 			delete WeaponPacked;
 			LastGameTime = CurrentGame;
-			Unlocked = false;
 		}
 
 		ObjectGemCrafter npc = view_as<ObjectGemCrafter>(ObjectGeneric(client, vecPos, vecAng, "models/props_spytech/computer_low.mdl", _, "600", {25.0, 25.0, 65.0}));
@@ -111,7 +108,6 @@ methodmap ObjectGemCrafter < ObjectGeneric
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
-		func_NPCDeath[npc.index] = ClotDeath;
 		npc.m_bConstructBuilding = true;
 		
 		SetRotateByDefaultReturn(npc.index, 90.0);
@@ -126,7 +122,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	{
 		count = CountBuildings();
 		
-		if(!Dungeon_Mode() || (!Unlocked && !CvarInfiniteCash.BoolValue))
+		if(!Dungeon_Mode() || ObjectDungeonCenter_Level() < 1 || !CvarInfiniteCash.BoolValue)
 		{
 			maxcount = 0;
 			return false;
@@ -198,7 +194,6 @@ static void ThisBuildingMenu(int client)
 	{
 		delete WeaponPacked;
 		LastGameTime = CurrentGame;
-		Unlocked = true;
 	}
 
 	int amount1 = Construction_GetMaterial(CONSTRUCT_RESOURCE1);
@@ -425,14 +420,5 @@ static void ApplyPackAttribs(int type, int weapon)
 					Attributes_SetMulti(weapon, 8, 1.4);
 			}
 		}
-	}
-}
-
-static void ClotDeath(int entity)
-{
-	if(!Unlocked && LastGameTime == CurrentGame && GetTeam(entity) != TFTeam_Red && !(i_HexCustomDamageTypes[entity] & ZR_SLAY_DAMAGE))
-	{
-		Unlocked = true;
-		CPrintToChatAll("{green}%t", "Unlocked Building", CONSTRUCT_NAME);
 	}
 }

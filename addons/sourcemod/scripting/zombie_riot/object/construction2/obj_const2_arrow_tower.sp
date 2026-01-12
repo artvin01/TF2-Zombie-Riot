@@ -10,9 +10,8 @@
 
 #define CONSTRUCT_NAME		"Arrow Tower"
 #define CONSTRUCT_RESOURCE1	"copper"
-#define CONSTRUCT_COST1		((5 + (CurrentLevel * 5)) * (CurrentLevel > 3 ? 2 : 1))
-#define CONSTRUCT_MAXLVL	8
-// 310 total cost
+#define CONSTRUCT_COST1		(10 + (CurrentLevel * 10))
+#define CONSTRUCT_MAXLVL	(1 + ObjectDungeonCenter_Level())
 
 #define TOWER_MODEL_ARROW "models/props_urban/urban_skybuilding005a.mdl"
 
@@ -23,13 +22,11 @@ static char g_ShootingSound[][] = {
 static int NPCId;
 static int LastGameTime;
 static int CurrentLevel;
-static bool Unlocked;
 
 void ObjectC2ArrowTower_MapStart()
 {
 	LastGameTime = -1;
 	CurrentLevel = 0;
-	Unlocked = false;
 	PrecacheSoundArray(g_ShootingSound);
 	PrecacheModel(TOWER_MODEL_ARROW);
 
@@ -71,7 +68,6 @@ methodmap ObjectC2ArrowTower < ObjectGeneric
 		{
 			CurrentLevel = 0;
 			LastGameTime = CurrentGame;
-			Unlocked = false;
 		}
 
 		ObjectC2ArrowTower npc = view_as<ObjectC2ArrowTower>(ObjectGeneric(client, vecPos, vecAng, TOWER_MODEL_ARROW, "0.5625", "50", {31.0, 31.0, 100.0},_,false));
@@ -87,7 +83,6 @@ methodmap ObjectC2ArrowTower < ObjectGeneric
 		func_NPCThink[npc.index] = ObjectC2ArrowTower_ClotThink;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
-		func_NPCDeath[npc.index] = ClotDeath;
 		SetRotateByDefaultReturn(npc.index, -180.0);
 
 		return npc;
@@ -140,13 +135,12 @@ void ObjectC2ArrowTower_ClotThink(ObjectC2ArrowTower npc)
 		return;
 	}
 
-	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
-	level++;
+	int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 1;
 
 	static float rocketAngle[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", rocketAngle);
 	npc.PlayShootSound();
-	float damageDealt = 165.0 * Pow(float(level), 2.0);
+	float damageDealt = 165.0 * Pow(level * 2.0, 2.0);
 	if(GetTeam(npc.index) == TFTeam_Red)
 		damageDealt *= DMGMULTI_CONST2_RED;
 	if(ShouldNpcDealBonusDamage(npc.m_iTarget))
@@ -181,7 +175,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 		
 		if(!CvarInfiniteCash.BoolValue)
 		{
-			if(!Dungeon_Mode() || !Unlocked || LastGameTime != CurrentGame)
+			if(!Dungeon_Mode() || LastGameTime != CurrentGame)
 			{
 				maxcount = 0;
 				return false;
@@ -288,13 +282,4 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 		}
 	}
 	return 0;
-}
-
-static void ClotDeath(int entity)
-{
-	if(!Unlocked && LastGameTime == CurrentGame && GetTeam(entity) != TFTeam_Red && !(i_HexCustomDamageTypes[entity] & ZR_SLAY_DAMAGE))
-	{
-		Unlocked = true;
-		CPrintToChatAll("{green}%t", "Unlocked Building", CONSTRUCT_NAME);
-	}
 }
