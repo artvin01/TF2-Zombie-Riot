@@ -65,7 +65,7 @@ methodmap ObjectC2LaserIntensifier < ObjectGeneric
 	}
 	public void PlayShootSound() 
 	{
-		EmitSoundToAll(g_ShootingSound[GetRandomInt(0, sizeof(g_ShootingSound) - 1)], this.index, SNDCHAN_AUTO, 70, _, 0.6, iClamp(RoundToNearest(30.0 / this.m_flAttackspeedRamp), 70, 110));
+		EmitSoundToAll(g_ShootingSound[GetRandomInt(0, sizeof(g_ShootingSound) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.6, iClamp(RoundToNearest(30.0 / this.m_flAttackspeedRamp), 70, 110));
 	}
 	public ObjectC2LaserIntensifier(int client, const float vecPos[3], const float vecAng[3])
 	{

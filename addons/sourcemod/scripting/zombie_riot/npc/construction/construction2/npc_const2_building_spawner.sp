@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int NPCId;
 
 void NpcConst2Building_CommandPluginStart()
 {
@@ -18,12 +17,7 @@ void Const2BuildingCreateOnMapStart()
 	data.Flags = -1;
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
-	NPCId = NPC_Add(data);
-}
-
-int Const2BuildingCreate_Id()
-{
-	return NPCId;
+	NPC_Add(data);
 }
 
 
@@ -42,7 +36,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 		ExplodeStringFloat(buffers[2], " ", vecPos, sizeof(vecPos));
 	if(buffers[3][0])
 		ExplodeStringFloat(buffers[3], " ", vecAng, sizeof(vecAng));
-	int entity = NPC_CreateByName(buffers[0], client, vecPos, vecAng, team, buffers[1], true);
+	int entity = NPC_CreateByName(buffers[0], client, vecPos, vecAng, team, buffers[1]);
 	if(IsValidEntity(entity) && team != TFTeam_Red)
 	{
 		//its an enemy one, set all neccecary logics needed
@@ -67,7 +61,13 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 				break;
 			}
 		}
-
+		if(StrContains(buffers[0], "obj_const_wall1") != -1)
+		{
+			//global res values
+			CClotBody npc = view_as<CClotBody>(entity);
+			npc.m_flMeleeArmor *= 0.75;
+			npc.m_flRangedArmor *= 0.5;
+		}
 		b_ThisWasAnNpc[entity] = true;
 		i_NpcIsABuilding[entity] = true;
 		b_NpcHasDied[entity] = false;
