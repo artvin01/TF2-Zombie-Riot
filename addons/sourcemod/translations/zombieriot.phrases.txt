@@ -4653,7 +4653,7 @@
 		"fr"	"Les ennemis sont infectés avec l'infection Xéno, et reçoivent de nouvelles abilités!"
 		"chi"	"外界感染到来，僵尸们的变异也更加严重了。"
 		"it"	"L'infezione Xeno è arrivata, mutando i nemici con nuove abilità!"
-		"ko" 	"새로운 제노 감염원이 여기까지 퍼졌습니다. 적들이 새로운 능력을 얻은채로 변이되었습니다!"
+		"ko" 	"블리츠크리그를 쓰러뜨린 후, 로그라이크1에서 목격한 제노 감염원이 퍼집니다. 희생자들을 새로운 능력과 함께 변이시키는군요! 상황이 악화되기 전에 해결해야 합니다."
 	}
 	"Silvester Waldch Desc"
 	{
@@ -4675,7 +4675,7 @@
 		"fr"	"Entrez en combat contre le Moyen-Âge, et leur armure qui leur protège contre les attaques à portée et corps à corps!"
 		"chi"	"对抗中世纪的剑与盾！"
 		"it"	"Combatti contro la mezza età con le loro armature per contrastare gli attacchi in mischia o a distanza!"
-		"ko" 	"알락시오스가 센살과 대화하기 위해 자리를 비운 동안, 그의 군단이 당신에게 다가옵니다. 자신들을 훈련해달라나요? 어차피 할 것도 없으니, 끝나고 알락시오스가 부활시켜주면 되겠죠."
+		"ko" 	"알락시오스가 센살과 대화하기 위해 떠난 동안, 그의 군단이 당신에게 다가옵니다. 자신들을 훈련해달라나요? 할 것도 없으니, 끝나고 알락시오스가 부활시켜주면 되겠죠."
 	}
 	"God Alaxios Wave Desc"
 	{
@@ -4715,7 +4715,7 @@
 		"fr"	"L'infection Seaborn attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
 		"chi"	"海嗣感染将会侵蚀你的盾。"
 		"it"	"L'infezione Seaborn è arrivata, gli attacchi di Corrosione dell'Armatura infetteranno la tua armatura, curala con le tabelle dell'armatura!"
-		"ko"	"배풍등의 정예병들이 제노에 감염된 것을 본 후, 남은 병사가 있는지 확인하기 위해 그의 전초기지로 향합니다. 남은 병사가 있었지만... 시본에 감염된 상태였죠. 그리고 시테러는 본토를 공격할 군단을 갖추고 있었습니다."
+		"ko"	"제노에 감염된 배풍등의 정예병들을 본 후, 그의 전초기지에 남은 병사가 있는지 확인을 하러 갑니다. 남은 병사가 있었지만... 시테러가 되어있었고... 이미 본토를 공격할 준비를 마친 상태입니다."
 	}
 	"Interitus Desc"
 	{
@@ -4723,7 +4723,7 @@
 		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
 		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 		"it"	"Ordine Lore: (7) Il caos ha afflitto molte città, il suo gruppo è pronto a servire voi giusti. Preparatevi."
-		"ko"	"혼돈에 침식된 수많은 도시로 이루어진 연합입니다."
+		"ko"	"카멜슈타인이 우리가 로그라이크1에서 그의 복제를 쓰러뜨리는 것을 본 후, 지루한 나머지 그의 군대를 보내 우릴 공격하기로 결심합니다."
 	}
 	"Schwert Donner Desc"
 	{
@@ -4786,7 +4786,7 @@
 		"fr"	"Pouvez-vous survivre la prouesse de la magie?"
 		"chi"	"你能阻挡魔法之力吗》"
 		"it"	"Siete in grado di resistere al potere della magia?"
-		"ko"	"마법의 엘프 군단이 당신과 싸우기 위해 나타났습니다. 그들을 이끄는 자가 누구일지 궁금해지는군요."
+		"ko"	"움브랄 인커젼 시뮬레이션을 완료한 이후, 트윌이 또 다른 엑스피돈사 시뮬레이션에 그녀의 군대를 보내 싸우게 합니다. 우리가 얼마나 강해졌는지 보기 위해서 말이죠."
 	}
 	"CoF Normal Desc"
 	{
@@ -5458,7 +5458,7 @@
 	"Victoria Survival Desc"
 	{
 		"en" 	"Before Bob the First comes to us for help in Rogue 2, we come across a Victoria outpost. They decide to attack us. Guess they're pissed off about beating them before."
-		"ko" 	"당신은 밥 1세를 만나러 가던 도중, 빅토리아 전초기지를 발견합니다. 그리고... 그들이 당신을 공격해옵니다?! 아무래도 이전에 그들과 한바탕 싸운 탓에 이러는 것 같군요."
+		"ko" 	"로그2에서 밥 1세가 도움을 위해 찾아오기 전, 빅토리아 전초기지를 지나가게 되고... 그들이 당신을 공격해옵니다?! 아무래도 이전에 그들을 패퇴시킨 것에 화가 난 것 같군요."
 	}
 	"Victoria Raid Desc"
 	{
