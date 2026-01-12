@@ -742,7 +742,9 @@ void Dungeon_Start()
 	//Rogue_AddIngots(startingIngots, true);
 	Construction_AddMaterial("crystal", startingIngots, true);
 
-	SetRandomMusic();
+	Dungeon_SetRandomMusic();
+
+	CreateNewRivals();
 }
 
 void CreateAllDefaultBuidldings(float pos[3], float ang[3])
@@ -818,7 +820,7 @@ void CreateAllDefaultBuidldings(float pos[3], float ang[3])
 	}
 }
 
-static void SetRandomMusic()
+void Dungeon_SetRandomMusic()
 {
 	DMusicInfo music;
 	ArrayList pool = new ArrayList();
@@ -1172,7 +1174,7 @@ static Action DungeonMainTimer(Handle timer)
 
 			if(!alive && time > 100.0)
 			{
-				CreateNewRivals();
+				//CreateNewRivals();
 			}
 			else
 			{
@@ -1360,7 +1362,7 @@ static void CreateNewDungeon()
 	for(int a; a < length; a++)
 	{
 		RoomList.GetArray(a, room);
-		if(room.Common > highestCommon)
+		if(room.Common < 19 && room.Common > highestCommon)
 			highestCommon = room.Common;
 
 		if(a == CurrentRoomIndex)
@@ -1398,7 +1400,7 @@ static void CreateNewDungeon()
 		for(int a; a < length; a++)
 		{
 			RoomList.GetArray(a, room);
-			if(room.Common >= highestCommon)
+			if(room.Common < 19 && room.Common >= highestCommon)
 			{
 				for(int b; (b = roomPool.FindValue(a)) != -1; )
 				{
@@ -1850,7 +1852,8 @@ void Dungeon_BattleVictory()
 		// Reset next attack, give full time after a raid
 		NextAttackAt = GetGameTime() + AttackTime;
 
-		SetRandomMusic();
+		Dungeon_SetRandomMusic();
+		CreateNewRivals();
 	}
 	
 	Zero(i_AmountDowned);

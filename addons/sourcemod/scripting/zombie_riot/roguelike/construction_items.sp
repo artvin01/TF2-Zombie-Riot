@@ -197,9 +197,12 @@ public void Construction_AH_Ally(int entity, StringMap map)
 
 public void Construction_BadExpi_Collect()
 {
-	if(!Construction_FinalBattle())
+	if(!Construction_FinalBattle() && !Dungeon_FinalBattle())
 	{
 		CreateTimer(4.0, Timer_DialogueNewEnd, 0, TIMER_FLAG_NO_MAPCHANGE);
+
+		if(Dungeon_Mode())
+			Dungeon_SetRandomMusic();
 	}
 }
 
