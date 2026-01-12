@@ -4649,7 +4649,7 @@
 	}
 	"Xeno Desc"
 	{
-		"en"	"A new infection is here, the Xeno infection. It seems to be mutating enemies with new abilities!"
+		"en"	"After defeating Blitzkrieg, we start an infection we last saw in Rogue 1, the Xeno infection. It seems to be mutating their victims with new abilities! We need to take this out before it gets bad."
 		"fr"	"Les ennemis sont infectés avec l'infection Xéno, et reçoivent de nouvelles abilités!"
 		"chi"	"外界感染到来，僵尸们的变异也更加严重了。"
 		"it"	"L'infezione Xeno è arrivata, mutando i nemici con nuove abilità!"
@@ -4719,7 +4719,7 @@
 	}
 	"Interitus Desc"
 	{
-		"en"	"A group made up of many cities, all afflicted with Chaos."
+		"en"	"After Kahml sees that we beat his clone in Rogue 1, Kahml decides to send part of his army to attack us because he’s bored."
 		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
 		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 		"it"	"Ordine Lore: (7) Il caos ha afflitto molte città, il suo gruppo è pronto a servire voi giusti. Preparatevi."
@@ -4782,7 +4782,7 @@
 	}
 	"Ruina waves Desc"
 	{
-		"en"	"An army of magical elves is here to fight us. You wonder who their ruler is? "
+		"en"	"After finishing the Umbral Incursion simulation, Twirl decides to send her army to fight us, in another one of Expidonsa's simulations, to see how strong we are now."
 		"fr"	"Pouvez-vous survivre la prouesse de la magie?"
 		"chi"	"你能阻挡魔法之力吗》"
 		"it"	"Siete in grado di resistere al potere della magia?"
@@ -5457,7 +5457,7 @@
 	}
 	"Victoria Survival Desc"
 	{
-		"en" 	"On our way to meet up with Bob the First we see a Victoria outpost. They decide to attack us. Guess they're pissed off about beating them before."
+		"en" 	"Before Bob the First comes to us for help in Rogue 2, we come across a Victoria outpost. They decide to attack us. Guess they're pissed off about beating them before."
 		"ko" 	"당신은 밥 1세를 만나러 가던 도중, 빅토리아 전초기지를 발견합니다. 그리고... 그들이 당신을 공격해옵니다?! 아무래도 이전에 그들과 한바탕 싸운 탓에 이러는 것 같군요."
 	}
 	"Victoria Raid Desc"
