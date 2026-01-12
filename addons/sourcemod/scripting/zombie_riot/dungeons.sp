@@ -706,8 +706,6 @@ static Action Timer_WaitingPeriod(Handle timer)
 // Rogue_RoundStartTimer()
 void Dungeon_Start()
 {
-	PrintToChatAll("Dungeon_Start");
-
 	delete GameTimer;
 
 	float pos[3], ang[3];
@@ -861,7 +859,6 @@ static void SetRandomMusic()
 			if(music.Key[0])
 				continue;
 
-			PrintToChatAll("SetRandomMusic %d <= [%d] <= %d '%s'", music.MinAttack, CurrentAttacks, music.MaxAttack, music.Music.Path);
 			if(music.MinAttack > CurrentAttacks || music.MaxAttack < CurrentAttacks)
 				continue;
 
@@ -1353,7 +1350,6 @@ void Dungeon_DelayVoteFor(float time)
 
 static void CreateNewDungeon()
 {
-	PrintToChatAll("CreateNewDungeon");
 	f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 9.0;
 	
 	RoomInfo room;
@@ -1471,8 +1467,6 @@ static void CreateNewDungeon()
 
 static void StartNewDungeon()
 {
-	PrintToChatAll("StartNewDungeon");
-	
 	ZoneMarkerRef[Zone_Dungeon] = ZoneMarkerRef[Zone_DungeonWait];
 	ZoneMarkerRef[Zone_DungeonWait] = -1;
 
@@ -1504,8 +1498,6 @@ static void StartNewDungeon()
 
 static void CreateNewRivals()
 {
-	PrintToChatAll("CreateNewRivals");
-
 	RoomInfo room;
 	ArrayList roomPool = new ArrayList();
 	int round = RoundToFloor(BattleWaveScale);
