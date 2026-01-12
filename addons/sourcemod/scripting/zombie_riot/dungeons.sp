@@ -1943,7 +1943,7 @@ void Dungeon_BuildingDeath(int entity)
 		if(CurrentBaseIndex != -1)
 		{
 			float pos[3];
-			GetAbsOrigin(entity, pos2);
+			GetAbsOrigin(entity, pos);
 
 			RoomInfo room;
 			RoomList.GetArray(CurrentBaseIndex, room);
@@ -1959,7 +1959,7 @@ void Dungeon_MainBuildingDeath(int entity)
 		if(CurrentBaseIndex != -1)
 		{
 			float pos[3];
-			GetAbsOrigin(entity, pos2)
+			GetAbsOrigin(entity, pos);
 
 			RoomInfo room;
 			RoomList.GetArray(CurrentBaseIndex, room);
