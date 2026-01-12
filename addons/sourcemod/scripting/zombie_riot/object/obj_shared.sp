@@ -572,20 +572,6 @@ methodmap ObjectGeneric < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.8, 100);
 	}
 }
-
-public Action SetTransmit_BuildingNotReady(int entity, int client)
-{
-	if(f_TransmitDelayCheck[entity][client] > GetGameTime())
-	{
-		return b_TransmitBiasDo[entity][client];
-	}
-	f_TransmitDelayCheck[entity][client] = GetGameTime() + 0.25;
-
-	b_TransmitBiasDo[entity][client] = SetTransmit_BuildingShared(entity, client, true);
-	return b_TransmitBiasDo[entity][client];
-}
-
-
 public Action SetTransmit_BuildingReady(int entity, int client)
 {
 	if(f_TransmitDelayCheck[entity][client] > GetGameTime())
@@ -618,12 +604,9 @@ static Action SetTransmit_BuildingShared(int entity, int client, bool reverse, b
 		return Plugin_Continue;
 	}
 	int owner;
-
-		
 	owner = GetEntPropEnt(building, Prop_Send, "m_hOwnerEntity");
-	
 	bool hide;
-	if(!Ignorethird && EntRefToEntIndex(Building_Mounted[building]) == owner)
+	if(!Ignorethird && EntRefToEntIndex(Building_Mounted[building]) == owner && !view_as<ObjectGeneric>(building).m_bNoOwnerRequired)
 	{
 		return Plugin_Continue;
 	}
@@ -800,12 +783,7 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 				HideBuildingForce = true;
 			}
 		}
-		if(objstats.m_bTransparrency)
-		{
-			SetEntityRenderMode(objstats.index, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(objstats.index, r, g, 0, 125);
-		}
-		else if(HideBuildingForce)
+		if(HideBuildingForce)
 		{
 			SetEntityRenderColor(objstats.index, 0, 0, 0, 255);
 		}
@@ -826,13 +804,29 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 			int wearable = objstats.m_iWearable1;
 			if(wearable != -1)
 			{
-				SetEntityRenderColor(objstats.index, r, g, 0, 100);
-				SetEntityRenderColor(wearable, r, g, 0, 255);
-				SetEntityRenderMode(wearable, RENDER_NORMAL);
+				
+				if(!objstats.m_bTransparrency)
+				{
+					SetEntityRenderColor(objstats.index, r, g, 0, 100);
+					SetEntityRenderColor(wearable, r, g, 0, 255);
+					SetEntityRenderMode(wearable, RENDER_NORMAL);
+				}
+				else
+				{
+					SetEntityRenderColor(objstats.index, r, g, 0, 100);
+					SetEntityRenderColor(wearable, r, g, 0, 125);
+					SetEntityRenderMode(wearable, RENDER_TRANSCOLOR);
+				}
 			}
 			else
 			{
-				SetEntityRenderColor(objstats.index, r, g, 0, 255);
+				if(!objstats.m_bTransparrency)
+					SetEntityRenderColor(objstats.index, r, g, 0, 255);
+				else
+				{
+					SetEntityRenderColor(objstats.index, r, g, 0, 125);
+					SetEntityRenderMode(objstats.index, RENDER_TRANSCOLOR);
+				}
 			}
 		}
 	}
