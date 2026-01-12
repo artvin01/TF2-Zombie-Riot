@@ -861,7 +861,7 @@ static void SetRandomMusic()
 			if(music.Key[0])
 				continue;
 
-			PrintToChatAll("SetRandomMusic %d <= [%d] <= %d '%s'", music.Music.Path, music.MinAttack, CurrentAttacks, music.MaxAttack);
+			PrintToChatAll("SetRandomMusic %d <= [%d] <= %d '%s'", music.MinAttack, CurrentAttacks, music.MaxAttack, music.Music.Path);
 			if(music.MinAttack > CurrentAttacks || music.MaxAttack < CurrentAttacks)
 				continue;
 
