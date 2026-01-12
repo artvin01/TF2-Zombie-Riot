@@ -818,6 +818,16 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		}
 		Waves_ClearWaves();
 		GiveProgressDelay(50.0);
+
+		int time = GetTime() + 60;
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(!b_IsPlayerABot[client] && IsClientInGame(client))
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, time);
+			}
+		}
 	}
 	Internal_Weapon_Lines(npc, attacker);
 

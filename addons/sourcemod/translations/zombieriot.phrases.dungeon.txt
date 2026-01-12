@@ -386,19 +386,21 @@
 		"en"		"Unlocked Construct Building: {orange}{1}"
 	}
 
-	"Common Dungeon"
-	{
-		"en"	"⚔ Dungeon"
-		"ko"	"⚔ 던전"
-	}
-	"Treasure Vault"
-	{
-		"en"	"Treasure Vault"
-		"ko"	"보물 금고"
-	}
 	"Treasure Vault Encounter Title"
 	{
 		"en"	"We used the Treasure Key to open inside, some items are presented in front of you."
 		"ko"	"보물 열쇠를 사용해 금고를 열었더니, 그 안에 몇 가지 물품들이 있었다."
+	}
+	"Ship Ending Encounter Title"
+	{
+		"en"	"You find some lost Expidonsa technology, should we grab one of these?"
+	}
+	"Expidonsa Space Beacon"
+	{
+		"en"	"Expidonsa Space Beacon"
+	}
+	"Expidonsa Space Beacon Desc"
+	{
+		"en"	"Expidonsa technology, it seems to have been used to track far above.\n{yellow}Unlocks research Expidonsa Space Beacon Install"
 	}
 }
