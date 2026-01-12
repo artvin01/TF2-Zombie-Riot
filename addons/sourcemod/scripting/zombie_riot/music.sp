@@ -102,7 +102,9 @@ enum struct MusicEnum
 				kv.GoBack();
 			}
 
-			kv.GoBack();
+			if(key[0])
+				kv.GoBack();
+			
 			return true;
 		}
 
