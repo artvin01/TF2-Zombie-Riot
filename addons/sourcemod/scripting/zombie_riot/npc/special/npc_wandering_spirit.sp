@@ -31,10 +31,15 @@ void WanderingSpirit_OnMapStart_NPC()
 	data.IconCustom = true;								//download needed?
 	data.Flags = 0;											//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	data.Category = Type_Special;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
+static void ClotPrecache()
+{
+	NPC_GetByPlugin("npc_vengefull_spirit");
+}
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return WanderingSpirit(vecPos, vecAng, team, data);
