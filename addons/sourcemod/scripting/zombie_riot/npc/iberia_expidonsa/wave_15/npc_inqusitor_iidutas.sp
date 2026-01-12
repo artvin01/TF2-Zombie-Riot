@@ -122,7 +122,7 @@ methodmap Iberiainqusitor_iidutas < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Iberiainqusitor_iidutas_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Iberiainqusitor_iidutas_ClotThink);
 		
-		
+		b_NpcAppliesMarkDebuff[npc.index] = true;
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 320.0;

@@ -145,6 +145,8 @@ methodmap Iberiainqusitor_irene < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
+
+
 		func_NPCDeath[npc.index] = view_as<Function>(Iberiainqusitor_irene_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Iberiainqusitor_irene_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Iberiainqusitor_irene_ClotThink);
@@ -152,7 +154,7 @@ methodmap Iberiainqusitor_irene < CClotBody
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 		
-		
+		b_NpcAppliesMarkDebuff[npc.index] = true;
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 345.0;

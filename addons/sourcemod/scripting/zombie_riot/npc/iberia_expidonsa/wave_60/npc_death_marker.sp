@@ -45,7 +45,7 @@ void IberiaDeathMarker_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Death Marker");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_death_marker");
-	strcopy(data.Icon, sizeof(data.Icon), "scout_stun");
+	strcopy(data.Icon, sizeof(data.Icon), "mark_sniper_r3");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;
@@ -118,7 +118,7 @@ methodmap IberiaDeathMarker < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaDeathMarker_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(IberiaDeathMarker_ClotThink);
 		
-		
+		b_NpcAppliesMarkDebuff[npc.index] = true; 
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 310.0;
