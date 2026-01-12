@@ -1229,6 +1229,7 @@ static Action DungeonMainTimer(Handle timer)
 
 	int index = -1;
 	bool final = CurrentAttacks >= RaidList.Length;
+	PrintToChatAll("%d > %d", CurrentAttacks, RaidList.Length);
 	AttackType = final ? 3 : 2;
 
 	Rogue_SetBattleIngots(CurrentAttacks > 1 ? 6 : 5);
