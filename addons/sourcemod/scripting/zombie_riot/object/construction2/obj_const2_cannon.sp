@@ -151,17 +151,21 @@ void ObjectC2Cannon_ClotThink(ObjectC2Cannon npc)
 	rocket = npc.FireParticleRocket(vecTarget, damageDealt,700.0, 1.0, "doublejump_trail", .hide_projectile = false);
 
 	ApplyCustomModelToWandProjectile(rocket, "models/weapons/w_models/w_cannonball.mdl", 1.0, "", _ , true);
-	float fAng[3];
-	GetEntPropVector(rocket, Prop_Send, "m_angRotation", fAng);
-	Initiate_HomingProjectile(rocket,
-	npc.index,
-		180.0,			// float lockonAngleMax,
-		90.0,				//float homingaSec,
-		true,				// bool LockOnlyOnce,
-		true,				// bool changeAngles,
-		fAng,
-		npc.m_iTarget);			// float AnglesInitiate[3]);
-	TriggerTimerHoming(rocket);	
+	
+	if(GetTeam(npc.index) == TFTeam_Red)
+	{
+		float fAng[3];
+		GetEntPropVector(rocket, Prop_Send, "m_angRotation", fAng);
+		Initiate_HomingProjectile(rocket,
+		npc.index,
+			180.0,			// float lockonAngleMax,
+			90.0,				//float homingaSec,
+			true,				// bool LockOnlyOnce,
+			true,				// bool changeAngles,
+			fAng,
+			npc.m_iTarget);			// float AnglesInitiate[3]);
+		TriggerTimerHoming(rocket);	
+	}
 
 }
 

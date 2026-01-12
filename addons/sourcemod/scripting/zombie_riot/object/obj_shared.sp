@@ -42,7 +42,7 @@ float f_CooldownShowRange[MAXPLAYERS];
 float f_TransmitDelayCheck[MAXENTITIES][MAXPLAYERS];
 Action b_TransmitBiasDo[MAXENTITIES][MAXPLAYERS];
 
-#define DMGMULTI_CONST2_RED 5.0
+#define DMGMULTI_CONST2_RED 2.5
 int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
 
 #define ZR_BARRACKS_TROOP_CLASSES			(1 << 3) //Allows training of units, although will limit support buildings to 1.
@@ -514,6 +514,10 @@ methodmap ObjectGeneric < CClotBody
 		{
 			//no owner
 			this.m_bNoOwnerRequired = value;
+			if(Dungeon_Mode() && value)
+			{
+				SetEntPropEnt(this.index, Prop_Data, "m_hOwnerEntity", -1);
+			}
 			SetEntProp(this.index, Prop_Data, "m_bConstructBuilding", value);
 		}
 		public get()

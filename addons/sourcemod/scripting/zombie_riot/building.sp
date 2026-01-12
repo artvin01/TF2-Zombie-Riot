@@ -2003,6 +2003,9 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		float IsAlreadyDowngraded = Attributes_Get(entity, Attrib_BuildingOnly_PreventUpgrade, 0.0);
 		if(CurrentMulti != multi)
 		{
+			//dont
+			if(Dungeon_Mode() && view_as<ObjectGeneric>(entity).m_bConstructBuilding)
+				return;
 			float MultiChange = multi / CurrentMulti;
 			if(MultiChange < 1.0)
 			{

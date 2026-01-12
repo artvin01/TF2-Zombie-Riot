@@ -171,17 +171,20 @@ void ObjectC2LaserIntensifier_ClotThink(ObjectC2LaserIntensifier npc)
 	rocket = npc.FireParticleRocket(vecTarget, damageDealt,700.0, 1.0, "raygun_projectile_red", .hide_projectile = true);
 
 	npc.PlayShootSound();
-	float fAng[3];
-	GetEntPropVector(rocket, Prop_Send, "m_angRotation", fAng);
-	Initiate_HomingProjectile(rocket,
-	npc.index,
-		180.0,			// float lockonAngleMax,
-		90.0,				//float homingaSec,
-		true,				// bool LockOnlyOnce,
-		true,				// bool changeAngles,
-		fAng,
-		npc.m_iTarget);			// float AnglesInitiate[3]);
-	TriggerTimerHoming(rocket);	
+	if(GetTeam(npc.index) == TFTeam_Red)
+	{
+		float fAng[3];
+		GetEntPropVector(rocket, Prop_Send, "m_angRotation", fAng);
+		Initiate_HomingProjectile(rocket,
+		npc.index,
+			180.0,			// float lockonAngleMax,
+			90.0,				//float homingaSec,
+			true,				// bool LockOnlyOnce,
+			true,				// bool changeAngles,
+			fAng,
+			npc.m_iTarget);			// float AnglesInitiate[3]);
+		TriggerTimerHoming(rocket);	
+	}
 	npc.m_flNextMeleeAttack = gameTime + npc.m_flAttackspeedRamp;
 
 }

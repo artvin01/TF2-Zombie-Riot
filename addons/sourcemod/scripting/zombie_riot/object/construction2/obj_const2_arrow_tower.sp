@@ -154,17 +154,20 @@ void ObjectC2ArrowTower_ClotThink(ObjectC2ArrowTower npc)
 	int rocket;
 	rocket = npc.FireArrow(vecTarget, damageDealt,2000.0);
 
-	float fAng[3];
-	GetEntPropVector(rocket, Prop_Send, "m_angRotation", fAng);
-	Initiate_HomingProjectile(rocket,
-	npc.index,
-		180.0,			// float lockonAngleMax,
-		90.0,				//float homingaSec,
-		true,				// bool LockOnlyOnce,
-		true,				// bool changeAngles,
-		fAng,
-		npc.m_iTarget);			// float AnglesInitiate[3]);
-	TriggerTimerHoming(rocket);	
+	if(GetTeam(npc.index) == TFTeam_Red)
+	{
+		float fAng[3];
+		GetEntPropVector(rocket, Prop_Send, "m_angRotation", fAng);
+		Initiate_HomingProjectile(rocket,
+		npc.index,
+			180.0,			// float lockonAngleMax,
+			90.0,				//float homingaSec,
+			true,				// bool LockOnlyOnce,
+			true,				// bool changeAngles,
+			fAng,
+			npc.m_iTarget);			// float AnglesInitiate[3]);
+		TriggerTimerHoming(rocket);	
+	}
 }
 
 static bool ClotCanBuild(int client, int &count, int &maxcount)

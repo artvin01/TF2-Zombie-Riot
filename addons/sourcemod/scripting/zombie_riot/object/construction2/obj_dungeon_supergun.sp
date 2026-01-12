@@ -122,6 +122,10 @@ void ObjectDCaliberTurret_ClotThink(ObjectDCaliberTurret npc)
 		npc.m_flGetClosestTargetTime = 0.0;
 		return;
 	}
+	if(npc.m_flNextMeleeAttack > gameTime)
+	{
+		return;
+	}
 
 	Handle swingTrace;
 	int target;
@@ -147,6 +151,8 @@ void ObjectDCaliberTurret_ClotThink(ObjectDCaliberTurret npc)
 		{
 			int level = GetTeam(npc.index) == TFTeam_Red ? CurrentLevel : 0;
 			float damageDealt = 117.1875 * Pow(float(level), 2.0);
+			if(GetTeam(npc.index) == TFTeam_Red)
+				damageDealt *= DMGMULTI_CONST2_RED;
 			if(ShouldNpcDealBonusDamage(target))
 				damageDealt *= 3.0;
 				
