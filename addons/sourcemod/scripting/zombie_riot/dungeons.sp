@@ -861,6 +861,7 @@ static void SetRandomMusic()
 			if(music.Key[0])
 				continue;
 
+			PrintToChatAll("SetRandomMusic %d <= [%d] <= %d '%s'", music.Music.Path, music.MinAttack, CurrentAttacks, music.MaxAttack);
 			if(music.MinAttack > CurrentAttacks || music.MaxAttack < CurrentAttacks)
 				continue;
 
@@ -898,7 +899,6 @@ static void SetRandomMusic()
 		}
 	}
 
-	PrintToChatAll("SetRandomMusic '%s'", music.Music.Path);
 	music.Music.CopyTo(BGMusicSpecial1);
 }
 
