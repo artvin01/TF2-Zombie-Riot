@@ -376,7 +376,7 @@ bool Dungeon_InSetup()
 
 bool Dungeon_FinalBattle()
 {
-	return Dungeon_Mode() && (CurrentAttacks + 1) >= RaidList.Length;
+	return Dungeon_Mode() && CurrentAttacks >= RaidList.Length;
 }
 
 int Dungeon_GetRound(bool forceTime = false)
@@ -1228,7 +1228,7 @@ static Action DungeonMainTimer(Handle timer)
 	EnemyScaling = 0.0;
 
 	int index = -1;
-	bool final = CurrentAttacks > RaidList.Length;
+	bool final = CurrentAttacks >= RaidList.Length;
 	AttackType = final ? 3 : 2;
 
 	Rogue_SetBattleIngots(CurrentAttacks > 1 ? 6 : 5);
