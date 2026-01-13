@@ -444,8 +444,8 @@ static stock bool CanEnterVehicle(int entity, int client)
 	if(GetEntProp(entity, Prop_Data, "m_bLocked"))
 		return false;
 
-	if(GetEntProp(entity, Prop_Data, "m_nSpeed") > GetEntPropFloat(entity, Prop_Data, "m_flMinimumSpeedToEnterExit"))
-		return false;
+	//if(GetEntProp(entity, Prop_Data, "m_nSpeed") > GetEntPropFloat(entity, Prop_Data, "m_flMinimumSpeedToEnterExit"))
+	//	return false;
 
 	return true;
 }
