@@ -72,12 +72,12 @@ methodmap ObjectDFactory < ObjectGeneric
 			LastGameTime = CurrentGame;
 		}
 
-		ObjectDFactory npc = view_as<ObjectDFactory>(ObjectGeneric(client, vecPos, vecAng, "models/props_mvm/mann_hatch.mdl", "0.5", "600", {80.0, 80.0, 16.0}));
+		ObjectDFactory npc = view_as<ObjectDFactory>(ObjectGeneric(client, vecPos, vecAng, "models/props_mvm/mann_hatch.mdl", "0.5", "600", {60.0, 60.0, 24.0}));
 		
- 		b_CantCollidie[npc.index] = true;
-	 	b_CantCollidieAlly[npc.index] = true;
-		npc.m_bThisEntityIgnored = true;
-		b_ThisEntityIgnoredBeingCarried[npc.index] = true; 
+ 	//	b_CantCollidie[npc.index] = true;
+	// 	b_CantCollidieAlly[npc.index] = true;
+	//	npc.m_bThisEntityIgnored = true;
+	//	b_ThisEntityIgnoredBeingCarried[npc.index] = true; 
 		npc.m_bConstructBuilding = true;
 
 		npc.FuncCanUse = ClotCanUse;

@@ -25,6 +25,7 @@ static const char g_SpawnEnd[][] =
 };
 
 static int NPCId;
+int ActiveSpawners[2] = 0;
 
 void Const2SpawnerOnMapStart()
 {
@@ -42,6 +43,7 @@ void Const2SpawnerOnMapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
+	ActiveSpawners = 0;
 }
 
 int Const2Spawner_Id()
@@ -79,6 +81,11 @@ methodmap Const2Spawner < CClotBody
 	{
 		public get()							{ return b_movedelay_walk[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_movedelay_walk[this.index] = TempValueForProperty; }
+	}
+	property bool m_bIsActive
+	{
+		public get()							{ return b_movedelay_run[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_movedelay_run[this.index] = TempValueForProperty; }
 	}
 	public Const2Spawner(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -205,8 +212,10 @@ static void ClotThink(int iNPC)
 			if(Rounds[npc.m_iSpawnerAm])
 			{
 				//when a spawner is active, prevent end of waves
-				npc.m_flNextThinkTime = gameTime + 0.5;
+				npc.m_flNextThinkTime = gameTime + 1.0;
 				int GroupBunchSpawn = RoundToNearest(4.0 * MultiGlobalEnemy);
+				if(GroupBunchSpawn <= 1)
+					GroupBunchSpawn = 1;
 				float SpawnLocation[3];
 				GetAbsOrigin(npc.index, SpawnLocation);
 				SpawnLocation[2] += 5.0;
@@ -271,6 +280,9 @@ static void ClotThink(int iNPC)
 		}
 		case 1:
 		{
+			if(ActiveSpawners[view_as<int>(npc.m_bEnemyBase)] >= 3)
+				return;
+
 			DetectedEnemyHit_Const2 = false;
 			Explode_Logic_Custom(0.0, 0, npc.index, 0, _, 500.0, _,_,true,_,_,_,_, DetectedEnemyHit_Const2_Internal);
 			if(DetectedEnemyHit_Const2 && hConst2_SpawnerSaveWave)
@@ -283,7 +295,6 @@ static void ClotThink(int iNPC)
 					hConst2_SpawnerSaveWave.GetArray(i, data);
 					if(data.SpawnerAmRef == EntIndexToEntRef(npc.index))
 					{
-						
 						static float flPos[3]; 
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 						flPos[2] += 0.5;
@@ -293,20 +304,10 @@ static void ClotThink(int iNPC)
 
 						npc.SetModel("models/editor/ground_node_hint.mdl");
 						Spawner_CreateEnemies(npc.m_iSpawnerAm, data.DataWave);
-						npc.m_flNextThinkTime = gameTime + 0.5;
+						npc.m_flNextThinkTime = gameTime + 0.1;
 						b_NoHealthbar[npc.index] = 0;
-						hConst2_SpawnerSaveWave.Erase(i);
-						i--;
-						length--;
-						continue;
-					}
-					else if(!IsValidEntity(data.SpawnerAmRef))
-					{
-						// No longer Valid
-						hConst2_SpawnerSaveWave.Erase(i);
-						i--;
-						length--;
-						continue;
+						ActiveSpawners[view_as<int>(npc.m_bEnemyBase)]++;
+						break;
 					}
 				}
 			}
@@ -322,6 +323,10 @@ static void ClotDeath(int entity)
 {
 	Const2Spawner npc = view_as<Const2Spawner>(entity);
 	//???
+	if(npc.m_bIsActive)
+	{
+		ActiveSpawners[view_as<int>(npc.m_bEnemyBase)]--;
+	}
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
