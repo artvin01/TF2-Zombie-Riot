@@ -19,7 +19,7 @@
 #define CONSTRUCT_DAMAGE	(50.0 * Pow(level + 1.0, 2.0))
 #define CONSTRUCT_FIRERATE	0.3
 #define CONSTRUCT_RANGE		300.0
-#define CONSTRUCT_MAXCOUNT	(3 + (CurrentLevel))
+#define CONSTRUCT_MAXCOUNT	(3 + level)
 
 static const char NPCModel[] = "models/props_doomsday/power_core_type1.mdl";
 
@@ -179,6 +179,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
+		int level = CurrentLevel;
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;

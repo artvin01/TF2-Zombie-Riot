@@ -16,7 +16,7 @@
 #define CONSTRUCT_RESOURCE1	"wood"
 #define CONSTRUCT_COST1		(10 + (CurrentLevel * 5))
 #define CONSTRUCT_MAXLVL	(1 + (ObjectDungeonCenter_Level() * 2))
-#define CONSTRUCT_MAXCOUNT	(3 + (CurrentLevel))
+#define CONSTRUCT_MAXCOUNT	(3 + level)
 
 static const char NPCModel[] = "models/props_farm/wood_shack001.mdl";
 
@@ -111,6 +111,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			return false;
 		}
 
+		int level = CurrentLevel;
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;

@@ -16,7 +16,7 @@
 #define CONSTRUCT_RESOURCE1	"iron"
 #define CONSTRUCT_COST1		(10 + (CurrentLevel * 10))
 #define CONSTRUCT_MAXLVL	(1 + ObjectDungeonCenter_Level())
-#define CONSTRUCT_MAXCOUNT	(24 + (CurrentLevel * 12))
+#define CONSTRUCT_MAXCOUNT	(24 + (level * 12))
 
 static int NPCId1;
 static int NPCId2;
@@ -124,6 +124,7 @@ static bool ClotCanBuild1(int client, int &count, int &maxcount)
 			}
 		}
 
+		int level = CurrentLevel;
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;
@@ -194,6 +195,7 @@ static bool ClotCanBuild2(int client, int &count, int &maxcount)
 			return false;
 		}
 
+		int level = CurrentLevel;
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if((count + 1) >= maxcount)
 			return false;
@@ -265,6 +267,7 @@ static bool ClotCanBuild3(int client, int &count, int &maxcount)
 			return false;
 		}
 
+		int level = CurrentLevel;
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if((count + 2) >= maxcount)
 			return false;
@@ -359,11 +362,11 @@ static void ThisBuildingMenu(int client)
 	Menu menu = new Menu(ThisBuildingMenuH);
 
 	int level = CurrentLevel;
-	float healthPre = 1000.0 * Construction_GetMaxHealthMulti(level);
+	float healthPre = 1000.0 * Construction_GetMaxHealthMulti(1.0, level);
 	int countPre = CONSTRUCT_MAXCOUNT;
 
 	level = CurrentLevel + 1;
-	float healthPost = 1000.0 * Construction_GetMaxHealthMulti(level);
+	float healthPost = 1000.0 * Construction_GetMaxHealthMulti(1.0, level);
 	int countPost = CONSTRUCT_MAXCOUNT;
 	
 	char buffer[64];

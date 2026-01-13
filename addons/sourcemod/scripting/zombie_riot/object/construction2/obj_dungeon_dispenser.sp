@@ -19,7 +19,7 @@
 #define CONSTRUCT_DAMAGE	(5.0 + (level * 7.5))
 #define CONSTRUCT_FIRERATE	0.5
 #define CONSTRUCT_RANGE		350.0
-#define CONSTRUCT_MAXCOUNT	(1 + CurrentLevel)
+#define CONSTRUCT_MAXCOUNT	(1 + level)
 
 static int NPCId;
 static int LastGameTime;
@@ -133,6 +133,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
+		int level = CurrentLevel;
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;

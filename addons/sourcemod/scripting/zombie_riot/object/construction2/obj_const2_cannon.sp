@@ -19,7 +19,7 @@
 #define CONSTRUCT_DAMAGE	(150.0 * Pow(level + 1.0, 2.0))
 #define CONSTRUCT_FIRERATE	1.0
 #define CONSTRUCT_RANGE		900.0
-#define CONSTRUCT_MAXCOUNT	(3 + (CurrentLevel))
+#define CONSTRUCT_MAXCOUNT	(3 + level)
 
 static const char NPCModel[] = "models/workshop/player/items/demo/taunt_drunk_manns_cannon/taunt_drunk_manns_cannon.mdl";
 
@@ -193,6 +193,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
+		int level = CurrentLevel;
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;

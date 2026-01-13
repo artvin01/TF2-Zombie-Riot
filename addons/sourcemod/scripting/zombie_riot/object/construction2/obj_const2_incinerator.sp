@@ -19,7 +19,7 @@
 #define CONSTRUCT_DAMAGE	(50.0 * Pow(level + 1.0, 2.0))	// /2
 #define CONSTRUCT_FIRERATE	0.5
 #define CONSTRUCT_RANGE		300.0
-#define CONSTRUCT_MAXCOUNT	(1 + CurrentLevel)
+#define CONSTRUCT_MAXCOUNT	(1 + level)
 
 static const char NPCModel[] = "models/props_wasteland/lighthouse_fresnel_light_base.mdl";
 
@@ -152,6 +152,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
+		int level = CurrentLevel;
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;

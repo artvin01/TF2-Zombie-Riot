@@ -11,7 +11,6 @@
 #undef CONSTRUCT_FIRERATE
 #undef CONSTRUCT_RANGE
 #undef CONSTRUCT_MAXCOUNT
-#undef CONSTRUCT_MAXCOUNT
 
 #define CONSTRUCT_NAME		"Arrow Tower"
 #define CONSTRUCT_RESOURCE1	"copper"
@@ -20,7 +19,7 @@
 #define CONSTRUCT_DAMAGE	(165.0 * Pow(level + 1.0, 2.0))
 #define CONSTRUCT_FIRERATE	1.0
 #define CONSTRUCT_RANGE		1100.0
-#define CONSTRUCT_MAXCOUNT	(3 + (CurrentLevel))
+#define CONSTRUCT_MAXCOUNT	(3 + level)
 #define TOWER_MODEL_ARROW "models/props_urban/urban_skybuilding005a.mdl"
 
 static char g_ShootingSound[][] = {
@@ -194,6 +193,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
+		int level = CurrentLevel;
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;

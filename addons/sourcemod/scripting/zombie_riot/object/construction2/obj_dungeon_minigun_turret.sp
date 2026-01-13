@@ -19,7 +19,7 @@
 #define CONSTRUCT_DAMAGE	(50.0 * Pow(level + 1.0, 2.0))
 #define CONSTRUCT_FIRERATE	0.05
 #define CONSTRUCT_RANGE		900.0
-#define CONSTRUCT_MAXCOUNT	(1 + (CurrentLevel))
+#define CONSTRUCT_MAXCOUNT	(1 + level)
 
 static char g_ShootingSound[][] = {
 	"weapons/csgo_awp_shoot.wav",
@@ -239,6 +239,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
+		int level = CurrentLevel;
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;

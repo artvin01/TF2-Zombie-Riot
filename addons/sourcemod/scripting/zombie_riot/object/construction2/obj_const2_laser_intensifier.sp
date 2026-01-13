@@ -18,7 +18,7 @@
 #define CONSTRUCT_MAXLVL	ObjectDungeonCenter_Level()
 #define CONSTRUCT_DAMAGE	(90.0 * Pow(level + 1.0, 2.0))
 #define CONSTRUCT_RANGE		500.0
-#define CONSTRUCT_MAXCOUNT	(1 + CurrentLevel)
+#define CONSTRUCT_MAXCOUNT	(1 + level)
 
 static const char NPCModel[] = "models/props_moonbase/moon_cube_crystal02.mdl";
 
@@ -211,6 +211,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
+		int level = CurrentLevel;
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;

@@ -17,7 +17,7 @@
 #define CONSTRUCT_COST1		30
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
 #define CONSTRUCT_RANGE		2000.0
-#define CONSTRUCT_MAXCOUNT	(1 + (CurrentLevel))
+#define CONSTRUCT_MAXCOUNT	(1 + level)
 
 static int NPCId;
 static int LastGameTime;
@@ -98,6 +98,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
+		int level = CurrentLevel;
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;

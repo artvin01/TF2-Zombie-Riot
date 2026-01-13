@@ -19,7 +19,7 @@
 #define CONSTRUCT_DAMAGE	2.0
 #define CONSTRUCT_FIRERATE	(9.0 - level)
 #define CONSTRUCT_RANGE		1000.0
-#define CONSTRUCT_MAXCOUNT	(1 + (CurrentLevel))
+#define CONSTRUCT_MAXCOUNT	(1 + level)
 
 static const char g_ShootingSound[] =
 	"weapons/sniper_rifle_classic_shoot.wav";
@@ -194,6 +194,7 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 			}
 		}
 
+		int level = CurrentLevel;
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
 			return false;
