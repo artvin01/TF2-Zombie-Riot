@@ -1104,7 +1104,7 @@
 	"Backstabbers Favorit"
 	{
 		"en"		"Backstabbers Favorit"
-		"ko"		"백스탭꾼의 애용품"
+		"ko"		"백스탭 사랑꾼"
 	}
 	"x10 Spy Main's Personal ''Knife''"
 	{
@@ -1213,7 +1213,7 @@
 		"nl"		"Oneindigheidszwaard"
 		"chi"       	"无尽之剑"
 		"it"		"Lama dell'Infinito"
-		"ko"		"인피니티 블레이드"
+		"ko"		"무한의 검"
 	}
 	"Mage Weapons"//Mage here
 	{
@@ -2369,7 +2369,7 @@
 	"Living Armor"
 	{
 		"en"		"Living Armor"
-		"ko"		"생체 장갑"
+		"ko"		"살아있는 갑옷"
 	}
 	"Living Armor Desc"
 	{
@@ -3295,7 +3295,7 @@
 		"ru"       "Расколотый ковчег"
 		"chi"       "断裂方舟"
 		"it"		"Arca fratturata"
-		"ko"		"금이 간 방주"
+		"ko"		"파편화된 방주"
 	}
 	"Zerofuse's Knife"
 	{
@@ -3313,7 +3313,7 @@
 		"ru"		"Палочка медузы Теслар"
 		"chi"		"美杜莎·特斯拉手杖"
 		"it"		"Bastone di Tesla Medusa"
-		"ko"		"메두사 테슬라 스틱"
+		"ko"		"메두사 테슬라 막대"
 	}
 	"Beam Wand"
 	{
@@ -4354,12 +4354,12 @@
 	"Nightmare Cannon"
 	{
 		"en"		"Nightmare Cannon"
-		"ko"		"나이트메어 캐논"
+		"ko"		"악몽포"
 	}
 	"Pulse Cannon"
 	{
 		"en"		"Pulse Cannon"
-		"ko"		"펄스 캐논"
+		"ko"		"파동포"
 	}
 	"Feedback Loop"
 	{

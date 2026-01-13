@@ -146,7 +146,7 @@
 	{
 		"en"	"Go the right way, nothing more.\n{green}Enemies move 20％ slower, take 35％ more damage, and deal 35％ less damage\n{green}Gain 75％ less Chaos Infliction\n{crimson}Prevents gaining alternative endings."
 		"it"	"{green}I nemici si muovono 20％ più lentamente, subiscono 35％ danni in più e infliggono 35％ danni in meno\n{green}Ottieni 75％ inflizioni del Caos in meno\n{crimson}Impedisce di ottenere finali alternativi."
-		"ko"	"올바른 길로 나아가자. 그게 다다.\n{green}적들의 이동 속도 -20％, 저항력 -35％, 피해량 -35％\n{green}혼돈 침식도 획득량 75％ 감소\n{crimson}다른 엔딩을 볼 수 없음"
+		"ko"	"{green}적들의 이동 속도 -20％, 저항력 -35％, 피해량 -35％\n{green}혼돈 침식도 획득량 75％ 감소\n{crimson}다른 엔딩을 볼 수 없음"
 	}
 	"Healing Supplies"
 	{

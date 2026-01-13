@@ -4394,14 +4394,14 @@
 		"en"		"Nightmare Cannon: Heavily reduced Turn speed, Increased damage"
 		"fr"		"Cannon de Cauchemars : Manoeuvrabilité réduite, dégats améliorés"
 		"it"		"Cannone da Incubo: velocità di rotazione fortemente ridotta, danni aumentati"
-		"ko"		"나이트메어 캐논: 회전 속도가 매우 크게 감소하지만, 피해량이 증가합니다"
+		"ko"		"악몽포: 회전 속도가 매우 크게 감소하지만, 피해량이 증가합니다"
 	}
 	"Neuvellete Pulse"
 	{
 		"en"		"Pulse Cannon: Heavily increased turnrate, but beam is only active for 2.5 seconds, shorter recharge period"
 		"fr"		"Cannon Impulsion : Manoeuvrabilité améliorée, mais le rayon dure pour seulement 2.5 secondes. Période de recharge réduite."
 		"it"		"Cannone a impulsi: velocità di rotazione notevolmente aumentata, ma il raggio è attivo solo per 2,5 secondi, periodo di ricarica più breve"
-		"ko"		"펄스 캐논: 회전 속도가 매우 크게 증가하지만, 빔의 지속 시간이 2.5초가 됩니다. 재충전 쿨타임이 더 짧습니다"
+		"ko"		"파동포: 회전 속도가 매우 크게 증가하지만, 빔의 지속 시간이 2.5초가 됩니다. 재충전 쿨타임이 더 짧습니다"
 	}
 	"Neuvellete Feedback"
 	{

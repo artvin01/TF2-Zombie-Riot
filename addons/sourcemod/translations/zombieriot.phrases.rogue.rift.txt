@@ -64,7 +64,7 @@
 	{
 		"en"	"Rift of Swarms"
 		"it"	"Rift degli Sciami"
-		"ko"	"무리의 균열"
+		"ko"	"군단의 균열"
 	}
 	"Rift of Swarms Desc"
 	{
@@ -112,7 +112,7 @@
 	{
 		"en"	"Rift of Darkness"
 		"it"	"Squarcio di tenebra"
-		"ko"	"어둠의 균열"
+		"ko"	"암흑의 균열"
 	}
 	"Rift of Darkness Desc"
 	{
@@ -148,7 +148,7 @@
 	{
 		"en"	"Rift of Corruption"
 		"it"	"Spaccatura della corruzione"
-		"ko"	"오염의 균열"
+		"ko"	"타락의 균열"
 	}
 	"Rift of Corruption Desc"
 	{
@@ -1512,7 +1512,7 @@
 	{
 		"en"	"Egotist. Betrayer. Seeker. Loner. Ruler. Goodnight, Irln.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped between players"
 		"it"	"Egoista. Traditore. Cercatore. Solitario. Governante. Buonanotte, Irln.\n{green}Gli alleati guadagnano +25％ salute massima {yellow}ma la salute massima viene scambiata casualmente tra i giocatori"
-		"ko"	"좋은 밤 되길, 에릴렌이여.\n{green}모든 아군의 최대 체력 +25％. {yellow}최대 체력이 플레이어들 사이에서 무작위로 변경됩니다."
+		"ko"	"굿나잇, 에릴렌.\n{green}모든 아군의 최대 체력 +25％. {yellow}최대 체력이 플레이어들 사이에서 무작위로 변경됩니다."
 	}
 
 	"Gateway"

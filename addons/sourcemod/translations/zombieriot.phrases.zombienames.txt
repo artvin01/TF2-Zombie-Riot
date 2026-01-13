@@ -3666,7 +3666,7 @@
 	{
 		"en"	"Xeno Patient Few"
 		"it"	"Pochi pazienti Xeno"
-		"ko"	"제노 소수 환자"
+		"ko"	"제노 한탄의 환자"
 	}
 	"Ouroboros Ekas"
 	{
@@ -3997,7 +3997,7 @@
 	{
 		"en"	"Fractal Cannon"
 		"it"	"Cannone frattale"
-		"ko"	"프랙탈 캐논"
+		"ko"	"프랙탈 대포"
 	}
 	"Ealing"
 	{
