@@ -59,6 +59,13 @@ methodmap DungeonLoot < CClotBody
 		ang[1] = float(GetURandomInt() % 360);
 		ang[2] = 0.0;
 
+		if(data[0] && StrContains(data, "notele", false) == -1)
+		{
+			if(StrContains(data, "randpos", false) != -1)
+			{
+				Dungeon_TeleportRandomly(pos);
+			}
+		}
 		
 		DungeonLoot npc = view_as<DungeonLoot>(CClotBody(pos, ang, "models/props_2fort/miningcrate002.mdl", "1.0", "10", 3, .NpcTypeLogic = STATIONARY_NPC));
 		
@@ -67,10 +74,6 @@ methodmap DungeonLoot < CClotBody
 			if(StrContains(data, "randpos", false) == -1)
 			{
 				Dungeon_TeleportCratesRewards(npc.index, pos);
-			}
-			else
-			{
-				Dungeon_TeleportRandomly(pos);
 			}
 		}
 
