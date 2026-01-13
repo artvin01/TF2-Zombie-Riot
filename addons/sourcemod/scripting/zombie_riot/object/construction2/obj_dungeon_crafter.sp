@@ -178,7 +178,7 @@ static void ClotShowInteractHud(ObjectGemCrafter npc, int client)
 
 	if(GlobalCooldown > GetGameTime())
 	{
-		PrintCenterText(client, "%s\n%t", "Object Cooldown", viality, GlobalCooldown - GetGameTime());
+		PrintCenterText(client, "%s\n%t", viality, "Object Cooldown", GlobalCooldown - GetGameTime());
 	}
 	else
 	{

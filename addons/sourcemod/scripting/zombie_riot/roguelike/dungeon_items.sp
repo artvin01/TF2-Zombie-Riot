@@ -92,9 +92,9 @@ public void Dungeon_EasyMode_Enemy(int entity)
 
 public void Dungeon_Crate_Ammo()
 {
-	int amount = GetRandomInt(1, 3);
+	int amount = 1;//GetRandomInt(1, 3);
 	Ammo_Count_Ready += amount;
-	CPrintToChatAll("%t", "Gained Ammo Supplies", amount);
+	ItemMessage("Gained Ammo Supplies", amount);
 }
 
 public void Dungeon_Crate_Wood()
