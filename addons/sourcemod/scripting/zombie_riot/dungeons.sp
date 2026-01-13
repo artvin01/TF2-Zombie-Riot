@@ -1907,7 +1907,7 @@ void Dungeon_WaveEnd(const float spawner[3] = NULL_VECTOR, bool rivalBase = fals
 		if(CurrentBaseIndex != -1)
 		{
 			RoomInfo room;
-			RoomList.GetArray(CurrentBaseIndex, room);
+			BaseList.GetArray(CurrentBaseIndex, room);
 			room.RollLoot(spawner);
 		}
 	}
