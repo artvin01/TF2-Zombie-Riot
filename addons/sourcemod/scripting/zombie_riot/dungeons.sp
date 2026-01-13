@@ -1945,9 +1945,13 @@ void Dungeon_BuildingDeath(int entity)
 	{
 		if(CurrentBaseIndex != -1)
 		{
+			static bool SpawnDo;
+			SpawnDo = !SpawnDo;
+			if(!SpawnDo)
+				return;
 			float pos[3];
 			GetAbsOrigin(entity, pos);
-
+			
 			RoomInfo room;
 			RoomList.GetArray(CurrentBaseIndex, room);
 			room.RollLoot(pos);
