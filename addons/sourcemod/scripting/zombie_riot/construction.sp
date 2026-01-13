@@ -1880,19 +1880,19 @@ float Construction_GetMaxHealthMulti(float builderMulti, int forceLevel = -1)
 		int level = forceLevel == -1 ? ObjectDWall_UpgradeLevel() : forceLevel;
 
 		float multi = 1.5;	// Construction Novice
-		multi *= 1.65;	// Construction Apprentice
+		multi *= 1.6;	// Construction Apprentice
 
 		if(level > 0)
-			multi *= 1.65;	// Construction Worker
+			multi *= 1.6;	// Construction Worker
 
 		if(level > 1)
-			multi *= 1.7;	// Construction Expert
+			multi *= 1.65;	// Construction Expert
 
 		if(level > 2)
-			multi *= 1.4;	// Construction Master
+			multi *= 1.35;	// Construction Master
 
 		if(level > 3)
-			multi *= 1.7;	// Wildingen's Elite Building Components
+			multi *= 1.65;	// Wildingen's Elite Building Components
 		
 		return multi;
 	}

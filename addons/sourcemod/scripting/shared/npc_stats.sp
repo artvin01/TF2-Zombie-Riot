@@ -11715,12 +11715,19 @@ stock void Spawns_CheckBadClient(int client/*, int checkextralogic = 0*/)
 	GetClientAbsOrigin(client, pos1);
 	pos1[2] += 25.0;
 	CNavArea area;
-	area = TheNavMesh.GetNavArea(pos1, 65.0);
+	float MaxPosCheck = 65.0;
+	int vehicle = Vehicle_Driver(client);
+	if(vehicle != -1)
+		MaxPosCheck = 100.0;
+	area = TheNavMesh.GetNavArea(pos1, MaxPosCheck);
 	//no nav area directly under them
 	if(area == NULL_AREA)
 	{
 		pos1[2] -= 25.0;
-		area = TheNavMesh.GetNearestNavArea(pos1, false, 55.0, false, true);
+		MaxPosCheck = 55.0;
+		if(vehicle != -1)
+			MaxPosCheck = 80.0;
+		area = TheNavMesh.GetNearestNavArea(pos1, false, MaxPosCheck, false, true);
 		if(area == NULL_AREA)
 		{
 			// Not near a nav mesh, bad
