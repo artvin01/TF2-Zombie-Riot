@@ -297,7 +297,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 			else
 			{
 				bool freeKey = Rogue_HasNamedArtifact("Can Opener");
-				int unboxCost = freeKey ? 0 : UnboxCrystalCost;
+				int unboxCost = freeKey ? 1 : UnboxCrystalCost;
 
 				int option = StringToInt(buffer);
 				switch(option)

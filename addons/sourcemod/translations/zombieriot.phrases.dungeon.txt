@@ -239,8 +239,7 @@
 	}
 	"Can Opener Desc"
 	{
-		"en"	"When they sealed that can too good.\n{green}Unboxing sealed crates no longer cost crystals"
-		"ko"	"쓸데없이 밀봉을 너무 잘 해둔 물건을 마주했을 때.\n{green}봉인된 상자들을 개봉할때 더 이상 수정을 소모하지 않습니다"
+		"en"	"When they sealed that can too good.\n{green}Unboxing sealed crates cost 1 crystal"
 	}
 	"Wooden Crate"
 	{

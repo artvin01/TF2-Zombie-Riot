@@ -47,7 +47,7 @@ void ObjectDWall_MapStart()
 
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_wall1");
 	build.Cost = 200;
-	build.Health = 1000;
+	build.Health = 700;
 	build.HealthScaleCost = false;
 	build.Cooldown = 1.0;
 	build.Func = ClotCanBuild1;
@@ -370,14 +370,14 @@ static void ThisBuildingMenu(int client)
 
 	if(CurrentLevel >= CONSTRUCT_MAXLVL)
 	{
-		menu.SetTitle("%t\n%.0f Health\n%d Supply", CONSTRUCT_NAME, healthPre, CONSTRUCT_RANGE, countPre);
+		menu.SetTitle("%t\n%.0f Health\n%d Supply", CONSTRUCT_NAME, healthPre, countPre);
 
 		FormatEx(buffer, sizeof(buffer), "Level %d", CurrentLevel + 1);
 		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
 	}
 	else
 	{
-		menu.SetTitle("%t\n%.0f (+%.0f) Health\n%d (+%d) Supply\n ", CONSTRUCT_NAME, healthPre, healthPost - healthPre, CONSTRUCT_RANGE, countPre, countPost - countPre);
+		menu.SetTitle("%t\n%.0f (+%.0f) Health\n%d (+%d) Supply\n ", CONSTRUCT_NAME, healthPre, healthPost - healthPre, countPre, countPost - countPre);
 
 		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t", "Upgrade Building To", CurrentLevel + 2, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
 		menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);

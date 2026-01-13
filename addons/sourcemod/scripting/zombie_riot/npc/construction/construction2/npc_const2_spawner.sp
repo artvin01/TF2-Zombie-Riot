@@ -272,7 +272,7 @@ static void ClotThink(int iNPC)
 		case 1:
 		{
 			DetectedEnemyHit_Const2 = false;
-			Explode_Logic_Custom(0.0, 0, npc.index, 0, _, 400.0, _,_,true,_,_,_,_, DetectedEnemyHit_Const2_Internal);
+			Explode_Logic_Custom(0.0, 0, npc.index, 0, _, 500.0, _,_,true,_,_,_,_, DetectedEnemyHit_Const2_Internal);
 			if(DetectedEnemyHit_Const2 && hConst2_SpawnerSaveWave)
 			{
 				Const2SpawnerEnum data;
@@ -293,6 +293,7 @@ static void ClotThink(int iNPC)
 
 						npc.SetModel("models/editor/ground_node_hint.mdl");
 						Spawner_CreateEnemies(npc.m_iSpawnerAm, data.DataWave);
+						npc.m_flNextThinkTime = gameTime + 0.5;
 						b_NoHealthbar[npc.index] = 0;
 						hConst2_SpawnerSaveWave.Erase(i);
 						i--;
