@@ -1231,7 +1231,7 @@ static Action DungeonMainTimer(Handle timer)
 	bool final = CurrentAttacks >= RaidList.Length;
 	AttackType = final ? 3 : 2;
 
-	Rogue_SetBattleIngots(CurrentAttacks > 1 ? 6 : 5);
+	Rogue_SetBattleIngots(CurrentAttacks > 1 ? 18 : 15);
 	
 	TeleportToFrom(Zone_HomeBase);
 	
@@ -1466,6 +1466,7 @@ static void CreateNewDungeon()
 		PrintToChatAll("ERROR: Unknown spawn point '%s'", room.Spawn);
 	
 	TeleportToFrom(Zone_DungeonWait, Zone_DungeonWait);
+	CPrintToChatAll("{yellow}%t", "Dungeon New");
 }
 
 static void StartNewDungeon()
@@ -1846,6 +1847,8 @@ void Dungeon_BattleVictory()
 			RoomList.GetArray(CurrentRoomIndex, room);
 			room.RollLoot(NULL_VECTOR);
 		}
+
+		CPrintToChatAll("{green}%t", "Dungeon Success");
 	}
 
 	if(AttackType == 2)

@@ -20,6 +20,14 @@
 	{
 		"en"	"Not enough players left in the dungeon..."
 	}
+	"Dungeon Success"
+	{
+		"en"	"All enemies slain in the dungeon!"
+	}
+	"Dungeon New"
+	{
+		"en"	"A new dungeon opens up..."
+	}
 	"Packing Station"
 	{
 		"en"	"Packing Station"

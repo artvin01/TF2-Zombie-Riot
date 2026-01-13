@@ -20,7 +20,7 @@
 static float BuffTimerLimited;
 
 static const int Ending2CrystalCost = 1;
-static const int CompassCrystalCost = 5;
+static const int CompassCrystalCost = 3;
 static const int TreasureKeyCost = 10;
 static const int UnboxCrystalCost = 10;
 

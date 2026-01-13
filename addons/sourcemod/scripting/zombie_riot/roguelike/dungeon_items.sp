@@ -23,8 +23,8 @@ void ItemMessage(const char[] string, int amount)
 
 void MaterialDelay(const char[] string, int amount)
 {
-	if(!ItemsGiven)
-		ItemsGiven = new StringMap();
+	if(!MatGiven)
+		MatGiven = new StringMap();
 
 	if(StuffTimer)
 		delete StuffTimer;
