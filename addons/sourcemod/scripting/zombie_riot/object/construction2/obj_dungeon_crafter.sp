@@ -323,7 +323,7 @@ static void ApplyRandomEffect()
 	
 	WeaponPacked.SetValue(index, type);
 
-	Store_GetItemData(index, item, info)
+	Store_GetItemData(index, item, info);
 
 	char buffer2[64];
 	FormatEx(buffer1, sizeof(buffer1), "%s Desc", PackName[type]);
