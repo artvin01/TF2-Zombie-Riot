@@ -201,7 +201,7 @@ static void ThisBuildingMenu(int client)
 	int copper = Construction_GetMaterial("copper");
 	int crystal = Construction_GetMaterial("crystal");
 	bool freeKey = Rogue_HasNamedArtifact("Can Opener");
-	int unboxCost = freeKey ? 0 : UnboxCrystalCost;
+	int unboxCost = freeKey ? UnboxCrystalCost/2 : UnboxCrystalCost;
 
 	SetGlobalTransTarget(client);
 
@@ -297,7 +297,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 			else
 			{
 				bool freeKey = Rogue_HasNamedArtifact("Can Opener");
-				int unboxCost = freeKey ? 1 : UnboxCrystalCost;
+				int unboxCost = freeKey ? UnboxCrystalCost/2 : UnboxCrystalCost;
 
 				int option = StringToInt(buffer);
 				switch(option)
