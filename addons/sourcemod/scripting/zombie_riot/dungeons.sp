@@ -1721,6 +1721,9 @@ static void TeleportToFrom(DungeonZone tele, DungeonZone from1 = Zone_Unknown, D
 			((zone == Zone_Dungeon || zone == Zone_DungeonWait) && (tele == Zone_Dungeon || tele == Zone_DungeonWait))
 		)
 		{
+			if(zone == tele && zone == Zone_HomeBase)
+				continue;
+			
 			// Home -> Home
 			// Rival -> Rival
 			// Dungeon/Wait -> Dungeon/Wait
@@ -1949,7 +1952,7 @@ void Dungeon_BuildingDeath(int entity)
 			GetAbsOrigin(entity, pos);
 			
 			RoomInfo room;
-			RoomList.GetArray(CurrentBaseIndex, room);
+			BaseList.GetArray(CurrentBaseIndex, room);
 			room.RollLoot(pos);
 		}
 	}
@@ -1965,7 +1968,7 @@ void Dungeon_MainBuildingDeath(int entity)
 			GetAbsOrigin(entity, pos);
 
 			RoomInfo room;
-			RoomList.GetArray(CurrentBaseIndex, room);
+			BaseList.GetArray(CurrentBaseIndex, room);
 			room.RollLoot(pos);
 			room.RollLoot(pos);
 		}
