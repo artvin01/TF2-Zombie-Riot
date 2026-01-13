@@ -44,6 +44,7 @@ void ObjectDungeonCenter_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
+	PrecacheSound("ui/itemcrate_smash_common.wav");
 /*
 	BuildingInfo build;
 	build.Section = 3;
