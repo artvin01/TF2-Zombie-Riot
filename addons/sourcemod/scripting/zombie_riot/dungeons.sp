@@ -1605,7 +1605,7 @@ static void CreateNewRivals()
 	AttackType = -1;
 	EnemyScaling = 0.0;
 
-	Dungeon_DelayVoteFor(time + 5.0);
+	Dungeon_DelayVoteFor(time + 10.0);
 	
 	TeleportToFrom(Zone_RivalBase, Zone_RivalBase);
 }

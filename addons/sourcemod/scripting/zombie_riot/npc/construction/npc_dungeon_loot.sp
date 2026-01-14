@@ -58,12 +58,15 @@ methodmap DungeonLoot < CClotBody
 		ang[0] = 0.0;
 		ang[1] = float(GetURandomInt() % 360);
 		ang[2] = 0.0;
+		bool RandomPos = false;
+		
 
 		if(data[0] && StrContains(data, "notele", false) == -1)
 		{
 			if(StrContains(data, "randpos", false) != -1)
 			{
 				Dungeon_TeleportRandomly(pos);
+				RandomPos = true;
 			}
 		}
 		
@@ -75,6 +78,10 @@ methodmap DungeonLoot < CClotBody
 			{
 				Dungeon_TeleportCratesRewards(npc.index, pos);
 			}
+		}
+		if(RandomPos)
+		{
+			Dungeon_TeleportCratesRewards(npc.index, pos, 500.0);
 		}
 
 		i_NpcWeight[npc.index] = 999;

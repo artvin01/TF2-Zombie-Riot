@@ -7777,4 +7777,13 @@
 	{
 		"en"	"Gestapo"
 	}
+	"Upgraded Militia"
+	{
+		"en" 		"Militia"
+		"ru" 		"Ополченец"
+		"pt"		"Milícia"
+		"nl"		"Militie"
+		"it"		"Milizia"
+		"ko" 		"시민군"
+	}
 }
