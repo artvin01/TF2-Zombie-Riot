@@ -5351,6 +5351,11 @@ stock int GetClosestTarget(int entity,
 		fldistancelimitAllyNPC = 99999.9;
 		UseVectorDistance = true;
 	}
+	if(Dungeon_Mode())
+	{
+		if(fldistancelimitAllyNPC == 450.0)
+			fldistancelimitAllyNPC = 99999.9;
+	}
 
 	//in rogue you can get allies, but they shouldnt get any enemies during setups.
 	if(Rogue_Mode())
@@ -5556,12 +5561,7 @@ stock int GetClosestTarget(int entity,
 	//If the team searcher is not on red, target buildings, buildings can only be on the player team.
 #if defined ZR
 	//In Construction2 we want them to always try to target buildings.
-	if(SearcherNpcTeam != TFTeam_Red &&
-	 !RaidbossIgnoreBuildingsLogic(1) &&
-	  !IgnoreBuildings &&
-	   ((view_as<CClotBody>(entity).m_iTarget > 0
-	    && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget])
-		 || IgnorePlayers || (Dungeon_Mode()))) //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
+	if(SearcherNpcTeam != TFTeam_Red && !RaidbossIgnoreBuildingsLogic(1) && !IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers || (Dungeon_Mode()))) //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
 #else
 	if(!IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers))
 #endif

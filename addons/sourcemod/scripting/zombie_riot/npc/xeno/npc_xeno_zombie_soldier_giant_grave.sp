@@ -406,7 +406,7 @@ public void XenoSoldierGiant_ClotDamagedPost(int victim, int attacker, int infli
 
 					if(StrContains(c_NpcName[npc.index], "Verde", false) != -1)
 					{
-						strcopy(c_NpcName[spawn_index], sizeof(c_NpcName[spawn_index]), "Verde Soldier Minion");
+						strcopy(c_NpcName[spawn_index], sizeof(c_NpcName[]), "Verde Soldier Minion");
 					}
 				}
 			}
