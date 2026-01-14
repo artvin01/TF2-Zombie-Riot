@@ -647,7 +647,7 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 										if(Items_HasNamedItem(client, "Builder's Blueprints"))
 										{
 											if(CooldownGive>1.0)
-												CooldownGive-=1.0;
+												CooldownGive-=5.0;
 											else
 												CooldownGive=0.0;
 										}

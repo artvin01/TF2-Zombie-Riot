@@ -367,6 +367,16 @@ stock void PrecacheSoundList(const char[][] array, int length)
 
 #define PrecacheSoundArray(%1)        PrecacheSoundList(%1, sizeof(%1))
 
+stock void PrecacheSoundCustomList(const char[][] array, int length)
+{
+    for(int i; i < length; i++)
+    {
+		PrecacheSoundCustom(array[i]);
+    }
+}
+
+#define PrecacheSoundCustomArray(%1)        PrecacheSoundCustomList(%1, sizeof(%1))
+
 #if defined ZR
 void Edited_EmitSoundToAll(const char[] sample,
 				 int entity = SOUND_FROM_PLAYER,
