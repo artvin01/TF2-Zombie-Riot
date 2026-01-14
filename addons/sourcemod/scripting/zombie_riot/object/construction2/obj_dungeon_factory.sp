@@ -299,7 +299,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 							NPC_GetNameByPlugin(buffer1, buffer2, sizeof(buffer2));
 							CPrintToChatAll("%t", "Spawned Vehicle At", client, buffer2, spot == Zone_HomeBase ? "Home Base" : "Base Raiding");
 
-							GlobalCooldown = GetGameTime() + 300.0;
+							GlobalCooldown = GetGameTime() + 100.0;
 							
 							pos[2] += 10.0;
 							ang[1] += 90.0;

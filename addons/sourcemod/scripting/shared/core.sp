@@ -1794,7 +1794,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 
-	if(buttons & IN_ATTACK3)
+	if(buttons & (IN_ATTACK2|IN_RELOAD))
 		buttons |= IN_SPEED;
 #endif
 //Is player active? atleast somewhat.
