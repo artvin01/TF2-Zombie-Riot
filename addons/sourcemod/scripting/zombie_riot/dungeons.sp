@@ -1721,6 +1721,10 @@ static void TeleportToFrom(DungeonZone tele, DungeonZone from1 = Zone_Unknown, D
 	while((entity = FindEntityByClassname(entity, "obj_vehicle")) != -1)
 	{
 		DungeonZone zone = Dungeon_GetEntityZone(entity);
+
+		if(b_ThisNpcIsImmuneToNuke[entity])	// Temp car
+			zone = Zone_Unknown;
+		
 		if(
 			(zone == tele && (zone == Zone_HomeBase || tele == Zone_RivalBase)) ||
 			((zone == Zone_Dungeon || zone == Zone_DungeonWait) && (tele == Zone_Dungeon || tele == Zone_DungeonWait))
@@ -1737,7 +1741,6 @@ static void TeleportToFrom(DungeonZone tele, DungeonZone from1 = Zone_Unknown, D
 		}
 		else if(zone == Zone_Unknown)
 		{
-			Vehicle_Exit(entity, false, true);
 			RemoveEntity(entity);
 		}
 	}

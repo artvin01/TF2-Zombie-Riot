@@ -410,4 +410,12 @@
 	{
 		"en"	"Expidonsa technology, it seems to have been used to track far above.\n{yellow}Unlocks research Expidonsa Space Beacon Install"
 	}
+	"Verde Soldier Giant Summoner"
+	{
+		"en"	"Verde Soldier Giant Summoner"
+	}
+	"Verde Soldier Minion"
+	{
+		"en"	"Verde Soldier Minion"
+	}
 }
