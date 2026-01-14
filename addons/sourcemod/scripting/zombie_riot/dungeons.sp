@@ -1801,7 +1801,6 @@ static void StartBattle(const RoomInfo room, float time = 0.1)
 		listPre.PushArray(data);
 	}
 
-	delete snap;
 	ArrayList listPost = new ArrayList();
 	
 	// Check data
@@ -1843,6 +1842,7 @@ static void StartBattle(const RoomInfo room, float time = 0.1)
 		PrintToChatAll("NO ROOM???? REPORT THIS BUG");
 	}
 
+	delete snap;
 	delete listPost;
 
 	/*float limit = room.Timelimit;
