@@ -25,7 +25,7 @@ static const char g_SpawnEnd[][] =
 };
 
 static int NPCId;
-int ActiveSpawners[2] = 0;
+int ActiveSpawners[2];
 
 void Const2SpawnerOnMapStart()
 {
@@ -43,7 +43,8 @@ void Const2SpawnerOnMapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
-	ActiveSpawners = 0;
+	ActiveSpawners[0] = 0;
+	ActiveSpawners[1] = 0;
 }
 
 int Const2Spawner_Id()
@@ -196,7 +197,7 @@ static void ClotThink(int iNPC)
 	Const2Spawner npc = view_as<Const2Spawner>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
-	if(!npc.m_bEnemyBase)
+	if(!npc.m_bEnemyBase && GetTeam(npc.index) == TFTeam_Blue)
 		f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 1.5;
 	
 	if(npc.m_flNextThinkTime > gameTime)
@@ -307,6 +308,7 @@ static void ClotThink(int iNPC)
 						npc.m_flNextThinkTime = gameTime + 0.1;
 						b_NoHealthbar[npc.index] = 0;
 						ActiveSpawners[view_as<int>(npc.m_bEnemyBase)]++;
+						npc.m_bIsActive = true;
 						break;
 					}
 				}

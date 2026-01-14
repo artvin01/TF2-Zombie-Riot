@@ -1746,7 +1746,7 @@ stock void Dungeon_StartThisBattle(float time = 10.0)
 	StartBattle(room, time);
 }
 
-static void StartBattle(const RoomInfo room, float time = 3.0)
+static void StartBattle(const RoomInfo room, float time = 0.1)
 {
 	if(!room.Fights)
 		return;
