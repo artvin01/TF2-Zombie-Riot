@@ -11,6 +11,23 @@
 		"en" "Invisible Trigger Man"
 		"ko" "트리거 맨"
 	}
+	"True Fusion Warrior"
+	{
+		"en" "True Fusion Warrior"
+		"ko" "트루 퓨전 워리어"
+	}
+	
+	//등장 알람
+	"True Fusion Warrior Spawn"
+	{
+		"en"	"The True Fusion Warrior has arrived."
+		"fr"	"Le Guerrier Tru Fusion est ici."
+		"ru"	"Истинный Термоядерный воин прибыл."
+		"pt"	"O Verdadeiro Guerreiro da Fusão chegou."
+		"nl"	"De Ware Fuziekrijger is gearriveerd"
+		"chi"	"真正的融合战士已经到来。"
+		"ko"	"The True Fusion Warrior has arrived."
+	}
 	
 	//웨이브
 	"CyberGrind_Fast"
@@ -73,6 +90,16 @@
 		"en"	"It's joever...\nStarting Cash:4100\nStarting Supplies: 25"
 		"ko"	"우린 ㅈ되고말거에요\n시작 자금:4100\n시작 보급품: 25"
 	}
+	"THE CYBER GRIND"
+	{
+		"en"	"THE CYBER GRIND"
+		"ko"	"THE CYBER GRIND"
+	}
+	"CYBER GRIND Desc"
+	{
+		"en"	"It's joever...\nStarting Cash:4100\nStarting Supplies: 25"
+		"ko"	"Mr.V가 준비한 시뮬레이션 입니다.\n모든 보스를 상대해 볼 수 있습니다, 보통-EX 하드를 클리어하면 아이템을 해금할 수 있습니다.\n시작 자금 및 시작 보급품은 선택된 난이도에 따라 다름"
+	}
 	
 	//NPC 대사
 	"MrV Talk 01"
@@ -132,9 +159,8 @@
 	}
 	"MrV Talk 12"
 	{
-		"#format"	"{1:i}"
-		"en"	"{green}Everyone gains {1} XP!{default}"
-		"ko"	"{green}모두에게 {1} 만큼의 추가 경험치!{default}"
+		"en"	"Set non standard Difficulty, so it's going to be Really Hard."
+		"ko"	"스탠다드외 난이도가 설정되있던대, 많이 힘들꺼야."
 	}
 	
 	//트로피
@@ -155,8 +181,8 @@
 	}
 	"Builder's Blueprints Desc"
 	{
-		"en"	"You have cleared [Hard] Cyber ​​Grind!\nReduces building construction cooldown by 1 second"
-		"ko"	"[어려움] 난이도의 사이버 그라인드를 클리어했습니다!\n구조물 설치 쿨다운 1초 감소"
+		"en"	"You have cleared [Hard] Cyber ​​Grind!\nReduces building construction cooldown by 5 second"
+		"ko"	"[어려움] 난이도의 사이버 그라인드를 클리어했습니다!\n구조물 설치 쿨다운 5초 감소"
 	}
 	"Sardis Gold"
 	{
@@ -553,6 +579,16 @@
 	}
 	
 	//Etc
+	"Inv Call Dev"
+	{
+		"en"	"Call Dev!!"
+		"ko"	"관리자를 불러!!"
+	}
+	"Inv Call Dev desc"
+	{
+		"en"	"If you did not use 'zr_give_item', call an administrator!"
+		"ko"	"'zr_give_item'를 사용한게 아니라면, 관리자를 호출하세요!,"
+	}
 	"Module"
 	{
 		"en"	"Module"

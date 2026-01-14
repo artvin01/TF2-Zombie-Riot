@@ -32,8 +32,8 @@ void Invisible_TRIGGER_Man_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Invisible Trigger Man");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_invisible_trigger_man");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_precision_strike");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
 	data.Flags = -1;
 	data.Category = Type_Hidden;
 	data.Precache = ClotPrecache;
@@ -168,18 +168,46 @@ methodmap Invisible_TRIGGER_Man < CClotBody
 			return npc;
 		}
 		
+		bool fVerify=false;
 		if(!StrContains(data, "cover_blitzkrieg"))
-			npc.i_NPCStats=1;
-		if(!StrContains(data, "cover_bobthefirst"))
-			npc.i_NPCStats=2;
-		if(!StrContains(data, "cover_corruptedbarney"))
-			npc.i_NPCStats=3;
-		if(!StrContains(data, "cover_twins"))
-			npc.i_NPCStats=4;
-		if(!StrContains(data, "delete_timerlimit"))
 		{
-			ally = TFTeam_Stalkers;
-			npc.i_NPCStats=3000;
+			npc.i_NPCStats=1;
+			fVerify=true;
+		}
+		if(!StrContains(data, "cover_bobthefirst"))
+		{
+			npc.i_NPCStats=2;
+			fVerify=true;
+		}
+		if(!StrContains(data, "cover_corruptedbarney"))
+		{
+			npc.i_NPCStats=3;
+			fVerify=true;
+		}
+		if(!StrContains(data, "cover_twins"))
+		{
+			npc.i_NPCStats=4;
+			fVerify=true;
+		}
+		if(!StrContains(data, "cover_true_fusion_warrior"))
+		{
+			npc.i_NPCStats=5;
+			fVerify=true;
+		}
+		if(!StrContains(data, "give_cash_"))
+		{
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			ReplaceString(buffers[0], 64, "give_cash_", "");
+			CurrentCash += StringToInt(buffers[0]);
+		}
+		if(!StrContains(data, "give_cash_print_"))
+		{
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			ReplaceString(buffers[0], 64, "give_cash_print_", "");
+			CurrentCash += StringToInt(buffers[0]);
+			CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", StringToInt(buffers[0]));
 		}
 
 		func_NPCDeath[npc.index] = view_as<Function>(Invisible_TRIGGER_Man_NPCDeath);
@@ -190,7 +218,6 @@ methodmap Invisible_TRIGGER_Man < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -220,6 +247,13 @@ methodmap Invisible_TRIGGER_Man < CClotBody
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 1.0);
 		if(IsValidEntity(npc.m_iTeamGlow))
 			RemoveEntity(npc.m_iTeamGlow);
+			
+		if(!fVerify || npc.i_NPCStats==0)
+		{
+			func_NPCDeath[npc.index] = INVALID_FUNCTION;
+			func_NPCThink[npc.index] = INVALID_FUNCTION;
+			SmiteNpcToDeath(npc.index);
+		}
 		
 		return npc;
 	}
@@ -868,6 +902,78 @@ static void Invisible_TRIGGER_Man_ClotThink(int iNPC)
 						b_DissapearOnDeath[npc.index] = true;
 						b_DoGibThisNpc[npc.index] = true;
 						SmiteNpcToDeath(npc.index);
+					}
+				}
+			}
+		}
+		case 5:
+		{
+			if(npc.m_flNextMeleeAttack < gameTime)
+			{
+				switch(npc.m_iOverlordComboAttack)
+				{
+					case 0:
+					{
+						for(int i; i < i_MaxcountNpcTotal; i++)
+						{
+							int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+							if(IsValidEntity(entity))
+							{
+								char npc_classname[60];
+								NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+								if(entity != INVALID_ENT_REFERENCE && StrEqual(npc_classname, "npc_true_cyber_warrior") && IsEntityAlive(entity))
+								{
+									fl_Extra_Damage[entity] *= 1.25;
+									int Health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+									SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 1.6));
+									SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 1.6));
+									fl_GibVulnerablity[entity] *= 1.6;
+									fl_Extra_Speed[entity] *= 1.06;
+									f_AttackSpeedNpcIncrease[entity] *= 0.75;
+									TempTargetOne[npc.index] = EntIndexToEntRef(entity);
+									npc.m_iOverlordComboAttack=1;
+									return;
+								}
+							}
+						}
+						npc.m_flNextMeleeAttack = gameTime + 1.0;
+					}
+					case 1:
+					{
+						int entity = EntRefToEntIndex(TempTargetOne[npc.index]);
+						if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
+						{
+							for(int client = 1; client <= MaxClients; client++)
+							{
+								if(IsClientInGame(client) && IsEntityAlive(client))
+									ApplyStatusEffect(npc.index, client, "True Fusion Warrior Effect", 2.0);
+							}
+							for(int i; i < i_MaxcountNpcTotal; i++)
+							{
+								int Getentity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+								if(Getentity != INVALID_ENT_REFERENCE && IsEntityAlive(Getentity))
+									ApplyStatusEffect(npc.index, Getentity, "True Fusion Warrior Effect", 0.5);
+							}
+						}
+						else
+						{
+							for(int client = 1; client <= MaxClients; client++)
+							{
+								if(IsClientInGame(client) && IsEntityAlive(client))
+									RemoveSpecificBuff(client, "True Fusion Warrior Effect");
+							}
+							for(int i; i < i_MaxcountNpcTotal; i++)
+							{
+								int Getentity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+								if(Getentity != INVALID_ENT_REFERENCE && IsEntityAlive(Getentity))
+									RemoveSpecificBuff(Getentity, "True Fusion Warrior Effect");
+							}
+							b_NpcForcepowerupspawn[npc.index] = 0;
+							i_RaidGrantExtra[npc.index] = 0;
+							b_DissapearOnDeath[npc.index] = true;
+							b_DoGibThisNpc[npc.index] = true;
+							SmiteNpcToDeath(npc.index);
+						}
 					}
 				}
 			}
