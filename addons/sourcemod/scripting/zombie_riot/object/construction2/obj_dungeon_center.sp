@@ -223,22 +223,25 @@ static void ThisBuildingMenu(int client)
 	}
 	else
 	{
-		if(CurrentLevel < CONSTRUCT_MAXLVL)
+		if(CurrentLevel < CONSTRUCT_MAXLVL && CurrentLevel < (Dungeon_CurrentAttacks() + (Dungeon_InSetup() ? 0 : -1)))
 		{
 			FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Upgrade Building To", CurrentLevel + 2, wood, CONSTRUCT_COST1, "Material wood");
 			menu.AddItem("7", buffer, (wood < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		}
 
-		if(Rogue_HasNamedArtifact("Compass Fragment"))
+		if(Dungeon_InSetup())
 		{
-			FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Craft Item", "Dungeon Compass", crystal, CompassCrystalCost, "Material crystal");
-			menu.AddItem("1", buffer, (crystal < CompassCrystalCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		}
+			if(Rogue_HasNamedArtifact("Compass Fragment"))
+			{
+				FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Craft Item", "Dungeon Compass", crystal, CompassCrystalCost, "Material crystal");
+				menu.AddItem("1", buffer, (crystal < CompassCrystalCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			}
 
-		if(Rogue_HasNamedArtifact("Key Fragment"))
-		{
-			FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Craft Item", "Treasure Key", crystal, TreasureKeyCost, "Material crystal");
-			menu.AddItem("6", buffer, (crystal < TreasureKeyCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			if(Rogue_HasNamedArtifact("Key Fragment"))
+			{
+				FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Craft Item", "Treasure Key", crystal, TreasureKeyCost, "Material crystal");
+				menu.AddItem("6", buffer, (crystal < TreasureKeyCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			}
 		}
 
 		if(Rogue_HasNamedArtifact("Sealed Jalan Crate"))
@@ -389,7 +392,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 					}
 					case 7:
 					{
-						if(CurrentLevel < CONSTRUCT_MAXLVL && Construction_GetMaterial("wood") >= CONSTRUCT_COST1)
+						if(CurrentLevel < CONSTRUCT_MAXLVL && CurrentLevel < (Dungeon_CurrentAttacks() + (Dungeon_InSetup() ? 0 : -1)) && Construction_GetMaterial("wood") >= CONSTRUCT_COST1)
 						{
 							CPrintToChatAll("%t", "Player Used 1 to", client, CONSTRUCT_COST1, "Material wood");
 							CPrintToChatAll("%t", "Upgraded Building To", CONSTRUCT_NAME, CurrentLevel + 2);

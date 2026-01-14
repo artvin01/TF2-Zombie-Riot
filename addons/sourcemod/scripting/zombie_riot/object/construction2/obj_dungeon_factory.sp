@@ -303,8 +303,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 							
 							pos[2] += 10.0;
 							ang[1] += 90.0;
-							int iCar = NPC_CreateByName(buffer1, -1, pos, ang, TFTeam_Red);
-							SetTeam(iCar, TFTeam_Red);
+							NPC_CreateByName(buffer1, -1, pos, ang, TFTeam_Red, _, true);
 
 							return 0;
 						}

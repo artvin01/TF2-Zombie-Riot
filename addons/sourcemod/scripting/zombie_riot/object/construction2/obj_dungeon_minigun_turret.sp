@@ -16,7 +16,7 @@
 #define CONSTRUCT_RESOURCE1	"copper"
 #define CONSTRUCT_COST1		(10 + (CurrentLevel * 10))
 #define CONSTRUCT_MAXLVL	(1 + ObjectDungeonCenter_Level())
-#define CONSTRUCT_DAMAGE	(50.0 * Pow(level + 1.0, 2.0))
+#define CONSTRUCT_DAMAGE	(15.0 * Pow(level + 1.0, 2.0))
 #define CONSTRUCT_FIRERATE	0.05
 #define CONSTRUCT_RANGE		900.0
 #define CONSTRUCT_MAXCOUNT	(1 + level)
@@ -136,7 +136,7 @@ void ObjectDMinigunTurret_ClotThink(ObjectDMinigunTurret npc)
 	}
 
 	float gameTime = GetGameTime(npc.index);
-	npc.m_flNextDelayTime = gameTime + 0.05;
+	npc.m_flNextDelayTime = gameTime + CONSTRUCT_FIRERATE;
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		float DistanceLimit = CONSTRUCT_RANGE;
@@ -206,7 +206,7 @@ void ObjectDMinigunTurret_ClotThink(ObjectDMinigunTurret npc)
 			npc.Anger = true;
 		}
 		ShootLaser(npc.index, "bullet_tracer02_red", origin, vecHit, false );
-	//	npc.m_flNextMeleeAttack = gameTime + 0.05;
+	//	npc.m_flNextMeleeAttack = gameTime + CONSTRUCT_FIRERATE;
 		npc.PlayMinigunSound(true);
 		if(IsValidEnemy(npc.index, target))
 		{
