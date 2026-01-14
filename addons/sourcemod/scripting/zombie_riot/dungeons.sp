@@ -1759,10 +1759,13 @@ static void StartBattle(const RoomInfo room, float time = 0.1)
 	AttackType = 1;
 	int scale;
 	int round = Dungeon_GetRound();
+	int lowestDiff = 999;
+	int data[2];
 
 	char buffer[PLATFORM_MAX_PATH];
-	ArrayList list = new ArrayList();
+	ArrayList listPre = new ArrayList(sizeof(data));
 
+	// Gather data
 	StringMapSnapshot snap = room.Fights.Snapshot();
 	int length = snap.Length;
 	for(int a; a < length; a++)
@@ -1770,32 +1773,38 @@ static void StartBattle(const RoomInfo room, float time = 0.1)
 		snap.GetKey(a, buffer, sizeof(buffer));
 		room.Fights.GetValue(buffer, scale);
 
-		int common = (MaxWaveScale - abs(MaxWaveScale - scale));
-		if(common < (MaxWaveScale / 2))
-			continue;
+		data[0] = a;
+		data[1] = abs(MaxWaveScale - scale);
+
+		if(data[1] < lowestDiff)
+			lowestDiff = data[1];
 		
-		common /= 4;
+		listPre.PushArray(data);
+	}
+
+	delete snap;
+	ArrayList listPost = new ArrayList();
+	
+	// Check data
+	for(int a; a < length; a++)
+	{
+		listPre.GetArray(a, data);
+
+		// Less difference, more common
+		int common = 10 - (data[1] - lowestDiff);
 		for(int b; b < common; b++)
 		{
-			list.Push(a);
+			listPost.Push(data[0]);
 		}
 	}
-	
-	int index = list.Length;
-	if(!index)
-	{
-		for(int a; a < length; a++)
-		{
-			list.Push(a);
-		}
 
-		index = list.Length;
-	}
+	delete listPre;
 	
-	index = index ? list.Get(GetURandomInt() % index) : -1;
-	if(index != -1)
+	length = listPost.Length;
+	if(length)
 	{
-		snap.GetKey(index, buffer, sizeof(buffer));
+		length = listPost.Get(GetURandomInt() % length);
+		snap.GetKey(length, buffer, sizeof(buffer));
 
 		room.Fights.GetValue(buffer, scale);
 		EnemyScaling = ScaleBasedOnRound(round) / ScaleBasedOnRound(scale);
@@ -1815,18 +1824,17 @@ static void StartBattle(const RoomInfo room, float time = 0.1)
 		PrintToChatAll("NO ROOM???? REPORT THIS BUG");
 	}
 
-	delete list;
-	delete snap;
+	delete listPost;
 
-	//float limit = room.Timelimit;
-	//if(limit < 1.0)
-	//	limit = 420.0;
+	/*float limit = room.Timelimit;
+	if(limit < 1.0)
+		limit = 420.0;
 
 	float maxLimit = NextAttackAt - GetGameTime();
-	//if(limit > maxLimit)
-	//	limit = maxLimit;
+	if(limit > maxLimit)
+		limit = maxLimit;
 
-//	SetBattleTimelimit(maxLimit);
+	SetBattleTimelimit(limit);*/
 }
 
 void Dungeon_BattleVictory()
