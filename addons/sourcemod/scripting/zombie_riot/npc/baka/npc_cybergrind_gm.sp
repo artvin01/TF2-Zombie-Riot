@@ -135,7 +135,7 @@ methodmap CyberGrindGM < CClotBody
 			SmiteNpcToDeath(npc.index);
 			return npc;
 		}
-		else if(!StrContains(data, "start_difficulty"))
+		else if(!StrContains(data, "wgoto_"))
 		{
 			func_NPCDeath[npc.index] = INVALID_FUNCTION;
 			func_NPCOnTakeDamage[npc.index] = INVALID_FUNCTION;
@@ -148,12 +148,12 @@ methodmap CyberGrindGM < CClotBody
 			}
 			
 			int DifficultyGotoWave[5];
-			static char countext[5][8];
+			static char countext[5][256];
 			int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 			for(int i = 0; i < count; i++)
 			{
 				if(i>=count)break;
-				ReplaceString(countext[i], sizeof(countext[]), "start_difficulty", "");
+				ReplaceString(countext[i], sizeof(countext[]), "wgoto_", "");
 				DifficultyGotoWave[i] = StringToInt(countext[i])-1;
 				if(DifficultyGotoWave[i]<0)DifficultyGotoWave[i]=0;
 			}
@@ -161,11 +161,12 @@ methodmap CyberGrindGM < CClotBody
 			int iNextSetWave;
 			switch(CyberGrind_InternalDifficulty)
 			{
-				case 1:iNextSetWave=DifficultyGotoWave[0];
-				case 5:iNextSetWave=DifficultyGotoWave[2];
-				case 4:iNextSetWave=DifficultyGotoWave[4];
-				case 6:iNextSetWave=DifficultyGotoWave[3];
-				default:iNextSetWave=DifficultyGotoWave[1];
+				case 1:iNextSetWave=DifficultyGotoWave[0]; //CyberGrind_Normal
+				case 2, 3:iNextSetWave=DifficultyGotoWave[1]; //CyberGrind_Hard, CyberGrind_Expert
+				case 4:iNextSetWave=DifficultyGotoWave[2]; //CyberGrind_EX_Hard
+				case 5:iNextSetWave=DifficultyGotoWave[3]; //CyberGrind_Fast
+				case 6:iNextSetWave=DifficultyGotoWave[4]; //CyberGrind_EX_Fast
+				default:iNextSetWave=DifficultyGotoWave[0]; //CyberGrind_Normal
 			}
 			Waves_ClearWaves();
 			CurrentRound = iNextSetWave;
