@@ -689,6 +689,9 @@ void NPC_ConfigSetup()
 //Special
 	CyberGrindGM_OnMapStart_NPC();
 	Invisible_TRIGGER_Man_OnMapStart_NPC();
+	CyberMessenger_OnMapStart_NPC();
+	TrueCyberWarrior_OnMapStart();
+	VillageAlaxios_OnMapStart();
 
 //special
 	Invisible_TRIGGER_OnMapStart_NPC();//It is currently used as a trigger for the Victoria Factory.
@@ -2305,6 +2308,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 //Special
 #include "npc/baka/npc_cybergrind_gm.sp"
 #include "npc/baka/npc_invisible_trigger_man.sp"
+#include "npc/baka/raidbosses/npc_cyber_messenger.sp"
+#include "npc/baka/raidbosses/npc_true_cyber_warrior.sp"
+#include "npc/baka/raidbosses/npc_village_god_alaxios.sp"
 
 //Matrix Enemies
 #include "npc/matrix/15/npc_agentalan.sp"
