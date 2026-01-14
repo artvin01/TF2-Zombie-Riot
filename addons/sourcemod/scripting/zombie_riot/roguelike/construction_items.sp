@@ -216,7 +216,7 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 		}
 		case 1:
 		{
-			CPrintToChatAll("{black}???{default}: So that's where your located.");
+			CPrintToChatAll("{black}???{default}: So that's where you're located.");
 		}
 		case 2:
 		{
@@ -228,7 +228,7 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 		}
 		case 4:
 		{
-			CPrintToChatAll("{black}???{default}: So die you damn forerunners.");
+			CPrintToChatAll("{black}???{default}: die you damn forerunners.");
 		}
 		default:
 		{

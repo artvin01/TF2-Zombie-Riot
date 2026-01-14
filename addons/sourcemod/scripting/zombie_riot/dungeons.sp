@@ -1870,7 +1870,7 @@ void Dungeon_BattleVictory()
 	
 	Zero(i_AmountDowned);
 	AttackType = 0;
-	Dungeon_DelayVoteFor(10.0);
+	Dungeon_DelayVoteFor(1.0);
 
 	Const2_ReviveAllBuildings();
 

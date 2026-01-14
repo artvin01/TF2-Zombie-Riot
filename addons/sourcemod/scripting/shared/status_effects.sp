@@ -3093,6 +3093,8 @@ void StatusEffects_Medieval()
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 
 	
+	data.AttackspeedBuff			= -1.0;
+	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Pikeman's Slashes");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "PI");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
