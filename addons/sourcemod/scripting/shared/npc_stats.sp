@@ -4253,8 +4253,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		MakeObjectIntangeable(pThis);
 
-		//avoid hitboxes gettign in the way, specifically a sniper rifle fix
-		SetEntPropFloat(pThis, Prop_Send, "m_flModelScale", 0.0001);
 		b_ThisEntityIgnored[pThis] = true;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
 		//Do not remove pather here.

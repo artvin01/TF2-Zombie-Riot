@@ -2240,5 +2240,10 @@ stock void ToggleEntityByName(const char[] name, bool toggleMode)
 	}
 }
 
+public void ZRModifs_ModifEnemyChaos(int iNpc)
+{
+	ZRModifs_ChaosIntrusionNPC(iNpc);
+}
+
 #include "roguelike/dungeon_items.sp"
 #include "roguelike/dungeon_encounters.sp"

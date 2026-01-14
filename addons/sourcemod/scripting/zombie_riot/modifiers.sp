@@ -31,6 +31,19 @@ public void Modifier_Collect_ChaosIntrusion()
 	CurrentModifActive = CHAOS_INTRUSION;
 }
 
+public void Modifier_Collect_ChaosIntrusion_LvL3_Const2()
+{
+	Modifier_Collect_ChaosIntrusion();
+//	int color[4] = { 220, 100, 12, 115 };
+//	SetCustomFog(FogType_Difficulty, color, color, 75.0, 350.0, 0.3,_,true);
+}
+
+public void Modifier_Remove_ChaosIntrusion_LvL3_Const2()
+{
+	Modifier_Remove_ChaosIntrusion();
+	ClearCustomFog(FogType_Difficulty);
+}
+
 public void Modifier_Remove_ChaosIntrusion()
 {
 	CurrentModifActive = 0;

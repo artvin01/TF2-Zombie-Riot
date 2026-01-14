@@ -904,6 +904,7 @@ enum
 {
 	FogType_Wave,
 	FogType_NPC,
+	FogType_Difficulty,
 	
 	FogType_COUNT
 }
