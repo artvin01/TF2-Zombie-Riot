@@ -395,6 +395,11 @@ int Dungeon_GetRound(bool forceTime = false)
 	return RoundToFloor(BattleWaveScale);
 }
 
+int Dungeon_CurrentAttacks()
+{
+	return CurrentAttacks;
+}
+
 void Dungeon_MapStart()
 {
 	DungeonMode = false;
@@ -1022,7 +1027,7 @@ void Dungeon_TeleportRandomly(float pos[3])
 		return;
 	}
 
-	SurroundingAreasCollector areas = TheNavMesh.CollectSurroundingAreas(goalArea, _, 100.0, 18.0);
+	SurroundingAreasCollector areas = TheNavMesh.CollectSurroundingAreas(goalArea, 3000.0, 100.0, 18.0);
 
 	int length = areas.Count();
 	int start = GetURandomInt() % length;
@@ -2009,7 +2014,11 @@ void Dungeon_EnemySpawned(int entity)
 				{
 					round = limit;
 
-					if(!LimitNotice)
+					if(limit > 38)
+					{
+
+					}
+					else if(!LimitNotice)
 					{
 						CPrintToChatAll("%t", "Upgrade Build Houses");
 						LimitNotice = 1;

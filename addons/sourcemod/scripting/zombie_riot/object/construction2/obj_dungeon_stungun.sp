@@ -17,7 +17,7 @@
 #define CONSTRUCT_COST1		(30 + (CurrentLevel * 10))
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
 #define CONSTRUCT_DAMAGE	2.0
-#define CONSTRUCT_FIRERATE	(9.0 - level)
+#define CONSTRUCT_FIRERATE	(9.0 - (level * 2.0))
 #define CONSTRUCT_RANGE		1000.0
 #define CONSTRUCT_MAXCOUNT	(1 + level)
 
@@ -271,7 +271,7 @@ static void ThisBuildingMenu(int client)
 	}
 	else
 	{
-		menu.SetTitle("%t\n%.1fs (-%.1fs) Fire Rate\n%.0f Range\n%d (+%d) Supply\n ", CONSTRUCT_NAME, damagePre, damagePost - damagePre, CONSTRUCT_RANGE, countPre, countPost - countPre);
+		menu.SetTitle("%t\n%.1fs (%.1fs) Fire Rate\n%.0f Range\n%d (+%d) Supply\n ", CONSTRUCT_NAME, damagePre, damagePost - damagePre, CONSTRUCT_RANGE, countPre, countPost - countPre);
 
 		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t", "Upgrade Building To", CurrentLevel + 2, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
 		menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
