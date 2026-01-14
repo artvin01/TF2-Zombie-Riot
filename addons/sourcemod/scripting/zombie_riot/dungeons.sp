@@ -492,6 +492,9 @@ void Dungeon_SetupVote(KeyValues kv)
 	kv.GetString("tele_rivalbase", TeleRival, sizeof(TeleRival));
 	kv.GetString("tele_dungeonenter", TeleEnter, sizeof(TeleEnter));
 	kv.GetString("tele_dungeonnext", TeleNext, sizeof(TeleNext));
+	ToggleEntityByName(TeleRival, true);
+	ToggleEntityByName(TeleEnter, true);
+	UpdateBlockedNavmesh();
 	
 	if(kv.JumpToKey("Loots"))
 	{
@@ -1223,6 +1226,9 @@ static Action DungeonMainTimer(Handle timer)
 	/*
 		Raid Attack
 	*/
+	ToggleEntityByName(TeleRival, false);
+	ToggleEntityByName(TeleEnter, false);
+	UpdateBlockedNavmesh();
 
 	CheckRivalStatus();
 
@@ -1876,7 +1882,10 @@ void Dungeon_BattleVictory()
 		NextAttackAt = GetGameTime() + AttackTime;
 
 		Dungeon_SetRandomMusic();
-		CreateNewRivals();
+		CreateNewRivals();	
+		ToggleEntityByName(TeleRival, true);
+		ToggleEntityByName(TeleEnter, true);
+		UpdateBlockedNavmesh();
 	}
 	
 	Zero(i_AmountDowned);
@@ -2200,6 +2209,25 @@ bool Dungeon_UpdateMvMStats()
 	}
 
 	return true;
+}
+
+stock void ToggleEntityByName(const char[] name, bool toggleMode)
+{
+	for( int i = 1; i <= MAXENTITIES; i++ ) 
+	{
+		if(IsValidEntity(i))
+		{
+			static char buffer[32];
+			GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer));
+			if(StrEqual(buffer, name, false))
+			{
+				if(!toggleMode)
+					AcceptEntityInput(i, "Disable");
+				else
+					AcceptEntityInput(i, "Enable");
+			}
+		}
+	}
 }
 
 #include "roguelike/dungeon_items.sp"
