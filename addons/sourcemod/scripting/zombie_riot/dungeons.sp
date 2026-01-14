@@ -154,6 +154,8 @@ enum struct RoomInfo
 	int Victory;
 	int MinWave;
 	int MaxWave;
+	int MinAttack;
+	int MaxAttack;
 	float WaveChance;
 	int WaveAmount;
 	float LootScale;
@@ -252,6 +254,8 @@ enum struct RoomInfo
 		this.Cooldown = kv.GetFloat("cooldown");
 		this.MinWave = kv.GetNum("minwave", -9999);
 		this.MaxWave = kv.GetNum("maxwave", 9999);
+		this.MinAttack = kv.GetNum("minattack", -9999);
+		this.MaxAttack = kv.GetNum("maxattack", 9999);
 		kv.GetString("spawn", this.Spawn, sizeof(this.Spawn));
 		kv.GetString("key", this.Key, sizeof(this.Key));
 		this.FuncStart = KvGetFunction(kv, "func_start");
@@ -1383,6 +1387,9 @@ static void CreateNewDungeon()
 		if(room.CurrentCooldown > GetGameTime())
 			continue;
 		
+		if(room.MinAttack > CurrentAttacks || room.MaxAttack < CurrentAttacks)
+			continue;
+		
 		if(room.MinWave > round || room.MaxWave < round)
 			continue;
 
@@ -1522,6 +1529,9 @@ static void CreateNewRivals()
 		BaseList.GetArray(a, room);
 
 		if(room.CurrentCooldown > GetGameTime())
+			continue;
+		
+		if(room.MinAttack > CurrentAttacks || room.MaxAttack < CurrentAttacks)
 			continue;
 		
 		if(room.MinWave > round || room.MaxWave < round)

@@ -136,7 +136,7 @@ static void FinishShopVote(const Vote vote)
 public float Dungeon_Encounter_Treasure()
 {
 	Rogue_RemoveNamedArtifact("Treasure Key");
-	Dungeon_RollNamedLoot("Treasure Crate");
+	//Dungeon_RollNamedLoot("Treasure Crate");
 	
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_ItemEncounter, "Treasure Vault Encounter Title");
 	Vote vote;
