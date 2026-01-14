@@ -3421,6 +3421,11 @@ void UpdateCustomFog()
 		fogToUse = CustomFogEntity[FogType_NPC];
 		ActiveFogEntity = fogToUse;
 	}
+	else if (IsValidEntity(CustomFogEntity[FogType_Difficulty]))
+	{
+		fogToUse = CustomFogEntity[FogType_Difficulty];
+		ActiveFogEntity = fogToUse;
+	}
 	else if (IsValidEntity(CustomFogEntity[FogType_Wave]))
 	{
 		fogToUse = CustomFogEntity[FogType_Wave];
