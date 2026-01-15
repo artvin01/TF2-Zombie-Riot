@@ -10,6 +10,7 @@ static ArrayList RoomList;	// RoomInfo
 static ArrayList BaseList;	// RoomInfo
 static StringMap LootMap;	// LootInfo
 static float AttackTime;
+static float RespawnTime;
 static int MaxWaveScale;
 static char TeleHome[64];
 static char TeleRival[64];
@@ -350,6 +351,7 @@ static int NextRoomIndex = -1;
 static int CurrentBaseIndex = -1;
 static float BattleWaveScale;
 static float EnemyScaling;
+static float LastKilledAt[MAXPLAYERS];
 static DungeonZone LastZone[MAXENTITIES];
 
 void Dungeon_PluginStart()
@@ -558,6 +560,7 @@ void Dungeon_SetupVote(KeyValues kv)
 	if(kv.JumpToKey("Raids"))
 	{
 		AttackTime = kv.GetFloat("delay", 300.0);
+		RespawnTime = kv.GetFloat("respawn", 20.0);
 		MaxWaveScale = kv.GetNum("maxwave", 39);
 
 		if(kv.GotoFirstSubKey())
@@ -677,6 +680,7 @@ void Dungeon_RoundEnd()
 	delete GameTimer;
 	AttackType = 0;
 	EnemyScaling = 0.0;
+	Zero(LastKilledAt);
 
 	for(int i; i < sizeof(ZoneMarkerRef); i++)
 	{
@@ -933,6 +937,28 @@ void Dungeon_AntiStalled()
 			ForcePlayerLoss();
 		}
 	}
+}
+
+void Dungeon_PlayerDowned(int client)
+{
+	if(dieingstate[client] <= 0)
+		LastKilledAt[client] = GetGameTime();
+}
+
+bool Dungeon_InRespawnTimer(int client)
+{
+	if(!Dungeon_Mode())
+		return false;
+	
+	float time = (RespawnTime + GetGameTime()) - LastKilledAt[client];
+	if(time > 0.0)
+	{
+		f_DelayLookingAtHud[client] = GetGameTime() + time;
+		PrintCenterText(client, "Respawning in %ds...", RoundToCeil(time));
+		return true;
+	}
+
+	return false;
 }
 
 bool Dungeon_CanRespawn()

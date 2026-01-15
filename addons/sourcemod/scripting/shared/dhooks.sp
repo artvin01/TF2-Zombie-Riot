@@ -1525,6 +1525,10 @@ public MRESReturn DHook_ForceRespawn(int client)
 		return MRES_Supercede;
 	}
 #if defined ZR
+	
+	if(!IsRespawning && Dungeon_InRespawnTimer(client))
+		return MRES_Supercede;
+
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
 	
@@ -1561,7 +1565,6 @@ public MRESReturn DHook_ForceRespawn(int client)
 #if defined ZR
 	if(!WaitingInQueue[client] && !GameRules_GetProp("m_bInWaitingForPlayers"))
 		Queue_AddPoint(client);
-	
 	
 	if(f_WasRecentlyRevivedViaNonWaveClassChange[client] > GetGameTime())
 	{	

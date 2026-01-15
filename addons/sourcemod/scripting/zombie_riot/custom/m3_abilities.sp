@@ -1193,6 +1193,7 @@ static Action Timer_RecallBackToBase(Handle dashHud, DataPack pack)
 			spawnRing_Vectors(pos, 0.1, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 125, 1, /*DURATION*/ 0.5, 6.0, 0.5, 1,RangeMax * 4.0);
 		
 			EmitSoundToAll("player/invuln_off_vaccinator.wav", client, SNDCHAN_STATIC, 70, _, 0.7, 100);
+			i_AmountDowned[idx_client] = 0;
 		}
 		CallbackTimer[idx_client] = null;
 		return Plugin_Stop;
