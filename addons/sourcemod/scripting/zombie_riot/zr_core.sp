@@ -1499,7 +1499,7 @@ public Action Command_GiveBuff(int client, int args)
 	//What are you.
 	if(args < 2)
     {
-        ReplyToCommand(client, "[SM] Usage: sm_give_buff <target> <buffname> <duration>");
+        ReplyToCommand(client, "[SM] Usage: sm_give_buff <target or npc name> <buffname> <duration>");
         return Plugin_Handled;
     }
     
@@ -1516,6 +1516,24 @@ public Action Command_GiveBuff(int client, int args)
 	float buffduration = StringToFloat(buf2); 
 	
 
+	//first look for npcs
+	bool FoundAnNpc = false;
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(b_NpcHasDied[entity])
+			continue;
+
+		if (StrContains(pattern, c_NpcName[entity]) == -1)
+			continue;
+		ApplyStatusEffect(entity, entity, buf, buffduration);
+		FoundAnNpc = true;
+	}
+	if(FoundAnNpc)
+	{
+		PrintToChat(client, "Gave the NPCS the buff you asked for!");
+		return Plugin_Handled;
+	}
 	int targets[MAXPLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)

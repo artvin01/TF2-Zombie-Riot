@@ -2596,4 +2596,120 @@
 		"en"	"Increases Damage Taken by 25％"
 		"ko"	"받는 피해량이 25％ 증가합니다"
 	}
+	"The Haste"
+	{
+		"en"	"The Haste"
+	}
+	"The Haste Desc"
+	{
+		"en"	"Increases NPC movementspeed by 25％\nIncreases attackspeed by 300％"
+	}
+	"Haste"
+	{
+		"en"	"Haste"
+	}
+	"The Big"
+	{
+		"en"	"The Haste"
+	}
+	"The Big Desc"
+	{
+		"en"	"Enlarges by 25％\nIncreases Resistance by 75％"
+	}
+	"The Big"
+	{
+		"en"	"The Big"
+	}
+	"The Big Desc"
+	{
+		"en"	"Enlarges by 25％\nIncreases Resistance by 75％"
+	}
+	"Big"
+	{
+		"en"	"Big"
+	}
+	"The Strong"
+	{
+		"en"	"The Strong"
+	}
+	"The Strong Desc"
+	{
+		"en"	"Increases Damage by 600％"
+	}
+	"Strong"
+	{
+		"en"	"Strong"
+	}
+	"The Tiny"
+	{
+		"en"	"The Tiny"
+	}
+	"The Tiny Desc"
+	{
+		"en"	"Reduces size by 75％\nIncreases Movementspeed by 50％"
+	}
+	"Tiny"
+	{
+		"en"	"Tiny"
+	}
+	"The Bleeder"
+	{
+		"en"	"The Bleeder"
+	}
+	"The Bleeder Desc"
+	{
+		"en"	"On dealing damage, deals the same damage as truedamage bleed again over 4 seconds."
+	}
+	"Bleeder"
+	{
+		"en"	"Bleeder"
+	}
+	"The Vampire"
+	{
+		"en"	"The Vampire"
+	}
+	"The Vampire Desc"
+	{
+		"en"	"On dealing damage, heals 1000％ of the damage dealt as health, can heal upto 2x max health."
+	}
+	"Vampire"
+	{
+		"en"	"Vampire"
+	}
+	"The Anti Sea"
+	{
+		"en"	"The Anti Sea"
+	}
+	"The Anti Sea Desc"
+	{
+		"en"	"When taking damage, if the enemy is too far away, take 0 damage."
+	}
+	"Anti Sea"
+	{
+		"en"	"Anti Sea"
+	}
+	"The Sprayer"
+	{
+		"en"	"The Sprayer"
+	}
+	"The Sprayer Desc"
+	{
+		"en"	"Randomly releases 10 projectiles that home."
+	}
+	"Sprayer"
+	{
+		"en"	"Sprayer"
+	}
+	"The Gravitational"
+	{
+		"en"	"The Gravitational"
+	}
+	"The Gravitational Desc"
+	{
+		"en"	"Sucks in nearby Players."
+	}
+	"Gravitational"
+	{
+		"en"	"Gravitational"
+	}
 }

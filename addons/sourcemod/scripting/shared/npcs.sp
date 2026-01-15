@@ -2042,13 +2042,15 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		RPGSpawns_UpdateHealthNpc(victim);
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s\n%s / %s",ExtraHudHurt,c_NpcName[victim], c_Health, c_MaxHealth);
 #else
+		char NamePrefix[255];
+		StatusEffects_PrefixName(victim, attacker, NamePrefix, sizeof(NamePrefix));
 		if(!b_NameNoTranslation[npc.index])
 		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%s / %s",c_NpcName[victim], c_Health, c_MaxHealth);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%t\n%s / %s",NamePrefix,c_NpcName[victim], c_Health, c_MaxHealth);
 		}
 		else
 		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s / %s",c_NpcName[victim], c_Health, c_MaxHealth);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%s\n%s / %s",NamePrefix,c_NpcName[victim], c_Health, c_MaxHealth);
 		}
 		CClotBody npcstats = view_as<CClotBody>(victim);
 		if(b_ThisWasAnNpc[victim] && npcstats.m_iHealthBar > 0)
@@ -2152,13 +2154,15 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			Format(c_Health, sizeof(c_Health), "???");
 		}
 		
+		char NamePrefix[255];
+		StatusEffects_PrefixName(victim, attacker, NamePrefix, sizeof(NamePrefix));
 		if(!b_NameNoTranslation[victim])
 		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%s / %s",ExtraHudHurt,c_NpcName[victim], c_Health, c_MaxHealth);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s%t\n%s / %s",ExtraHudHurt,NamePrefix,c_NpcName[victim], c_Health, c_MaxHealth);
 		}
 		else
 		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s\n%s / %s",ExtraHudHurt,c_NpcName[victim], c_Health, c_MaxHealth);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s%s\n%s / %s",ExtraHudHurt,NamePrefix,c_NpcName[victim], c_Health, c_MaxHealth);
 		}
 		
 		CClotBody npcstats = view_as<CClotBody>(victim);
