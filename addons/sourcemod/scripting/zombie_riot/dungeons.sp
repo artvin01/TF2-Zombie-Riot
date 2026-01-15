@@ -2277,7 +2277,7 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 		return;
 
 	//Rare
-	if(GetRandomInt(0,RoundToCeil(300.0 * MultiGlobalEnemy)) != 0)
+	if(GetRandomInt(0,RoundToCeil(100.0 * MultiGlobalEnemy)) != 0)
 		return;
 
 	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 5.0));
