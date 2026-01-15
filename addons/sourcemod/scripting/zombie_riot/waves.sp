@@ -131,7 +131,7 @@ static Function ModFuncAlly = INVALID_FUNCTION;
 static Function ModFuncEnemy = INVALID_FUNCTION;
 static Function ModFuncWeapon = INVALID_FUNCTION;
 
-static ConVar CvarSkyName;
+ConVar CvarSkyName;
 static char SkyNameRestore[64];
 
 static StringMap g_AllocPooledStringCache;

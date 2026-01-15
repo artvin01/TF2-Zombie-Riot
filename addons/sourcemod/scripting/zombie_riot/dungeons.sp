@@ -2242,6 +2242,8 @@ stock void ToggleEntityByName(const char[] name, bool toggleMode)
 
 public void ZRModifs_ModifEnemyChaos(int iNpc)
 {
+	if(i_NpcInternalId[iNpc] == DungeonLoot_Id() ||i_NpcInternalId[iNpc] == Const2Spawner_Id())
+		return;
 	ZRModifs_ChaosIntrusionNPC(iNpc);
 }
 
