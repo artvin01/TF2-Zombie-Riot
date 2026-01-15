@@ -2728,4 +2728,12 @@
 	{
 		"en"	"Regenerate 20％ of max health every 3 seconds"
 	}
+	"Laggy"
+	{
+		"en"	"Laggy"
+	}
+	"Laggy Desc"
+	{
+		"en"	"This npc lags"
+	}
 }

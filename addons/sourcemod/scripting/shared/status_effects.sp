@@ -7175,6 +7175,70 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 	data.TimerRepeatCall_Func 		= Const2_SefHeal_Timer;
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Laggy");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Laggy");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.TimerRepeatCall_Func 		= Const2_Laggy_Timer;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Laggy Debuff 1");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.99;
+	data.AttackspeedBuff			= 1.35;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Laggy Debuff 2");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Laggy Buff");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 1.5;
+	data.AttackspeedBuff			= (1.0 / 4.0);
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
 
 
@@ -7471,4 +7535,76 @@ static void Const2_SefHeal_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 
 	float maxhealth = float(ReturnEntityMaxHealth(entity));
 	HealEntityGlobal(entity, entity, maxhealth / 5.0, 1.0, 0.0, HEAL_SELFHEAL);
+}
+
+
+
+static void Const2_Laggy_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(Apply_StatusEffect.DataForUse > GetGameTime())
+	{
+		return;
+	}
+	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.DataForUse = GetGameTime() + GetRandomFloat(2.0 , 3.5);
+	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+
+
+	float pos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+	Dungeon_TeleportCratesRewards(entity, pos, GetRandomFloat(50.0, 100.0));
+
+	if(GetRandomInt(0,2) == 0)
+	{
+		b_isWalking[entity] = false;
+		float RandTime = GetRandomFloat(0.1, 1.0);
+		if(GetRandomInt(0,1))
+			CreateTimer(RandTime, Timer_LaggyDo1, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		if(GetRandomInt(0,1))
+			CreateTimer(RandTime, Timer_LaggyDo2, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+
+		CreateTimer(1.0, Timer_LaggyDoRevert, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+
+	}
+	if(GetRandomInt(0,2) == 0)
+		CreateTimer(GetRandomFloat(0.5, 1.5), Timer_LaggyDoBuff, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+
+
+}
+
+public Action Timer_LaggyDo1(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(!IsValidEntity(entity))
+		return Plugin_Handled;
+
+	ApplyStatusEffect(entity, entity, "Laggy Debuff 1", GetRandomFloat(0.35, 1.0));
+	return Plugin_Handled;
+}
+public Action Timer_LaggyDo2(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(!IsValidEntity(entity))
+		return Plugin_Handled;
+
+	ApplyStatusEffect(entity, entity, "Laggy Debuff 2", GetRandomFloat(0.1, 0.25));
+	return Plugin_Handled;
+}
+public Action Timer_LaggyDoRevert(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(!IsValidEntity(entity))
+		return Plugin_Handled;
+	b_isWalking[entity] = true;
+	return Plugin_Handled;
+}
+public Action Timer_LaggyDoBuff(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(!IsValidEntity(entity))
+		return Plugin_Handled;
+
+	ApplyStatusEffect(entity, entity, "Laggy Buff", GetRandomFloat(0.45, 0.75));
+	return Plugin_Handled;
+
 }
