@@ -2271,6 +2271,114 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 	if(i_NpcInternalId[iNpc] == DungeonLoot_Id() ||i_NpcInternalId[iNpc] == Const2Spawner_Id())
 		return;
 	ZRModifs_ChaosIntrusionNPC(iNpc);
+	if(b_thisNpcIsABoss[iNpc])
+		return;
+	if(i_IsABuilding[iNpc])
+		return;
+
+	//Rare
+	if(GetRandomInt(0,RoundToCeil(300.0 * MultiGlobalEnemy)) != 0)
+		return;
+
+	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 5.0));
+	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 5.0));
+	fl_Extra_Damage[iNpc] *= 1.5;
+	bool RetryBuffGiving = false;
+	bool GiveOneGuranteed = true;
+	while(GiveOneGuranteed || RetryBuffGiving || GetRandomInt(1,4) == 1)
+	{
+		GiveOneGuranteed = false;
+		RetryBuffGiving = false;
+		switch(GetRandomInt(1,12))
+		{
+			case 1:
+			{
+				if(HasSpecificBuff(iNpc, "The Haste"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "The Haste", 999999.9);
+			}
+			case 2:
+			{
+				if(HasSpecificBuff(iNpc, "The Big"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "The Big", 999999.9);
+			}
+			case 3:
+			{
+				if(HasSpecificBuff(iNpc, "The Strong"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "The Strong", 999999.9);
+			}
+			case 4:
+			{
+				if(HasSpecificBuff(iNpc, "The Tiny"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "The Tiny", 999999.9);
+			}
+			case 5:
+			{
+				if(HasSpecificBuff(iNpc, "The Bleeder"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "The Bleeder", 999999.9);
+			}
+			case 6:
+			{
+				if(HasSpecificBuff(iNpc, "The Vampire"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "The Vampire", 999999.9);
+			}
+			case 7:
+			{
+				if(HasSpecificBuff(iNpc, "The Anti Sea"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "The Anti Sea", 999999.9);
+			}
+			case 8:
+			{
+				if(HasSpecificBuff(iNpc, "The Sprayer"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "The Sprayer", 999999.9);
+			}
+			case 9:
+			{
+				if(HasSpecificBuff(iNpc, "The Gravitational"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "The Gravitational", 999999.9);
+			}
+			case 10:
+			{
+				if(HasSpecificBuff(iNpc, "1 UP"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "1 UP", 999999.9);
+			}
+			case 11:
+			{
+				if(HasSpecificBuff(iNpc, "Regenerating"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Regenerating", 999999.9);
+			}
+			case 12:
+			{
+				if(HasSpecificBuff(iNpc, "Laggy"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Laggy", 999999.9);
+			}
+		}
+	}
+	
+	//This is a unique enemy, give mega buffs
 }
 
 #include "roguelike/dungeon_items.sp"
