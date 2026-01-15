@@ -1100,19 +1100,17 @@ void StatusEffects_PrefixName(int victim, int attacker, char[] NamePrefix, int C
 	int length = E_AL_StatusEffects[victim].Length;
 	for(int i; i<length; i++)
 	{
+		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
 			continue;
 		}
 		//only show to players.
-		int ShowToClient = 0;
 		if(attacker > 0 && attacker <= MaxClients)
-			ShowToClient = attacker;
-
-		if(ShowToClient > 0 && ShowToClient <= MaxClients)
 		{
 			if(Apply_MasterStatusEffect.PrefixEnemyName[0])
-				Format(NamePrefix, CharSize, "%T %s", Apply_MasterStatusEffect.PrefixEnemyName, ShowToClient, NamePrefix);
+				Format(NamePrefix, CharSize, "%T %s", Apply_MasterStatusEffect.PrefixEnemyName, attacker, NamePrefix);
 		}
 	}
 
@@ -7001,7 +6999,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	PrecacheSoundArray(g_SuckEnemiesIn);
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "The Haste");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "H+");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Haste");
 	//-1.0 means unused
@@ -7017,7 +7015,7 @@ void StatusEffects_Construct2_EnemyModifs()
 
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "The Big");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "B+");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Big");
 	//-1.0 means unused
@@ -7032,7 +7030,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "The Strong");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "S+");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Strong");
 	//-1.0 means unused
@@ -7047,7 +7045,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "The Tiny");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "T+");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Tiny");
 	//-1.0 means unused
@@ -7062,7 +7060,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "The Bleeder");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "BL+");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Bleeder");
 	//-1.0 means unused
@@ -7078,7 +7076,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "The Vampire");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "V+");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Vampire");
 	//-1.0 means unused
@@ -7096,7 +7094,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.OnTakeDamage_PostAttacker	= INVALID_FUNCTION;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "The Anti Sea");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "AS+");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Anti Sea");
 	//-1.0 means unused
@@ -7114,7 +7112,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "The Sprayer");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "SP+");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Sprayer");
 	//-1.0 means unused
@@ -7131,7 +7129,7 @@ void StatusEffects_Construct2_EnemyModifs()
 
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "The Gravitational");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "G+");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Gravitational");
 	//-1.0 means unused
@@ -7144,6 +7142,38 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.OnBuffStarted				= INVALID_FUNCTION;
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 	data.TimerRepeatCall_Func 		= Const2_Gravitational_Timer;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "1 UP");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "1 UP");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= Const2_1UpStart;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Regenerating");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Regenerating");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.TimerRepeatCall_Func 		= Const2_SefHeal_Timer;
 	StatusEffect_AddGlobal(data);
 }
 
@@ -7344,7 +7374,7 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 		FireRandomParticle = WorldSpaceVec;
 		FireRandomParticle [0] += GetRandomFloat(-70.0, 70.0);
 		FireRandomParticle [1] += GetRandomFloat(-70.0, 70.0);
-		FireRandomParticle [2] += GetRandomFloat(0.0, 10.0);
+		FireRandomParticle [2] += GetRandomFloat(10.0, 20.0);
 
 		int projectile = npc.FireParticleRocket(FireRandomParticle, DamageDeal, 500.0, 150.0, "raygun_projectile_blue_crit", false);
 		static float angles[3];
@@ -7352,9 +7382,9 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 		
 		Initiate_HomingProjectile(projectile,
 		projectile,
-			180.0,			// float lockonAngleMax,
-			180.0,				//float homingaSec,
-			true,				// bool LockOnlyOnce,
+			90.0,			// float lockonAngleMax,
+			13.0,				//float homingaSec,
+			false,				// bool LockOnlyOnce,
 			true,				// bool changeAngles,
 			angles);			// float AnglesInitiate[3]);
 	}
@@ -7415,4 +7445,30 @@ static void Const2_Gravitational_Timer(int entity, StatusEffect Apply_MasterStat
 	}	
 
 	//spray particles
+}
+
+
+void Const2_1UpStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+
+	CClotBody npc = view_as<CClotBody>(victim);
+	npc.m_iHealthBar++
+}
+
+
+static void Const2_SefHeal_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(Apply_StatusEffect.DataForUse > GetGameTime())
+	{
+		return;
+	}
+	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.DataForUse = GetGameTime() + 3.0;
+	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+
+	float maxhealth = float(ReturnEntityMaxHealth(entity));
+	HealEntityGlobal(entity, entity, maxhealth / 5.0, 1.0, 0.0, HEAL_SELFHEAL);
 }

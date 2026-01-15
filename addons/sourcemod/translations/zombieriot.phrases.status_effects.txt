@@ -2712,4 +2712,20 @@
 	{
 		"en"	"Gravitational"
 	}
+	"1 UP"
+	{
+		"en"	"1 Up"
+	}
+	"1 UP Desc"
+	{
+		"en"	"Npc's Gain 1 extra healthbar"
+	}
+	"Regenerating"
+	{
+		"en"	"Regenerating"
+	}
+	"Regenerating Desc"
+	{
+		"en"	"Regenerate 20％ of max health every 3 seconds"
+	}
 }
