@@ -950,7 +950,7 @@ bool Dungeon_InRespawnTimer(int client)
 	if(!Dungeon_Mode())
 		return false;
 	
-	float time = (RespawnTime + GetGameTime()) - LastKilledAt[client];
+	float time = (RespawnTime + LastKilledAt[client]) - GetGameTime();
 	if(time > 0.0)
 	{
 		f_DelayLookingAtHud[client] = GetGameTime() + time;
