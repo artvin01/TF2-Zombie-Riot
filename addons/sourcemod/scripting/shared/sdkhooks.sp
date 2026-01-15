@@ -2244,10 +2244,12 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					i_AmountDowned[victim] = 99;
 				}
 				*/
+
+				Dungeon_PlayerDowned(victim);
 				
 				ApplyRapidSuturing(victim);
 				ExtinguishTargetDebuff(victim);
-				if(!Waves_InSetup())
+				if(!Waves_InSetup() || Dungeon_Started())
 					i_AmountDowned[victim]++;
 				
 				if(Rogue_Rift_VialityThing())
