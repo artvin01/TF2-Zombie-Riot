@@ -1730,13 +1730,11 @@ static void TeleportToFrom(DungeonZone tele, DungeonZone from1 = Zone_Unknown, D
 			DungeonZone zone = Dungeon_GetEntityZone(entity);
 			if(zone == Zone_Unknown || (zone != tele && from1 == Zone_Unknown) || zone == from1 || zone == from2 || zone == from3)
 			{
-				if(GetTeam(entity) == TFTeam_Red && i_NpcInternalId[entity] != Remain_ID())
-				{
-					TeleportEntity(entity, pos, ang, NULL_VECTOR);
-					SaveLastValidPositionEntity(entity, pos);
-					Dungeon_SetEntityZone(entity, tele);
-				}
-				else
+				TeleportEntity(entity, pos, ang, NULL_VECTOR);
+				SaveLastValidPositionEntity(entity, pos);
+				Dungeon_SetEntityZone(entity, tele);
+
+				if(GetTeam(entity) != TFTeam_Red || i_NpcInternalId[entity] == Remain_ID())
 				{
 					f_CreditsOnKill[entity] = 0.0;
 					SmiteNpcToDeath(entity);
