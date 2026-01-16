@@ -127,7 +127,7 @@ methodmap HallamGreatDemon < CClotBody
 
 
 		
-		if(!IsValidEntity(RaidBossActive))
+		if(!IsValidEntity(RaidBossActive) && !Dungeon_Mode())
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
