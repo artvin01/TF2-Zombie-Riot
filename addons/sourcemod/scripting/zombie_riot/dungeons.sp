@@ -359,6 +359,7 @@ void Dungeon_PluginStart()
 {
 	LoadTranslations("zombieriot.phrases.dungeon");
 	HookEntityOutput("trigger_multiple", "OnStartTouch", TriggerStartTouch);
+	RegAdminCmd("sm_dungeon_enemies_left", Dungeon_Debuff_EnemiesLeft, ADMFLAG_GENERIC, "Debug to see what remains to win");
 }
 
 void Dungeon_EntityCreated(int entity)
@@ -2439,6 +2440,14 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 	
 	//This is a unique enemy, give mega buffs
 }
+
+
+public Action Dungeon_Debuff_EnemiesLeft(int client, int args)
+{
+	
+	return Plugin_Handled;
+}
+
 
 #include "roguelike/dungeon_items.sp"
 #include "roguelike/dungeon_encounters.sp"
