@@ -1647,7 +1647,7 @@ static void CreateNewRivals()
 	AttackType = -1;
 	EnemyScaling = 0.0;
 
-	Dungeon_DelayVoteFor(time + 10.0);
+	Dungeon_DelayVoteFor(time + 15.0);
 	
 	TeleportToFrom(Zone_RivalBase, Zone_RivalBase);
 }
@@ -2411,6 +2411,14 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 						fl_Extra_Damage[iNpc] *= 1.1;
 					}
 				}
+			}
+			case 16:
+			{
+				//free token
+				if(HasSpecificBuff(iNpc, "The First"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "The First", 999999.9);
 			}
 		}
 	}

@@ -7259,6 +7259,22 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.OnBuffEndOrDeleted			= Const2Modifs_Verde_End;
 	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "The First");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "TF"); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "The First");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.3;
+	data.DamageDealMulti			= 2.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= (1.0 / 2.0);
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
 
 
