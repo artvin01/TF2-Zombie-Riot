@@ -632,7 +632,7 @@ void Dungeon_StartSetup()
 	BattleWaveScale = 0.0;
 
 	delete GameTimer;
-	GameTimer = CreateTimer(1.0, Timer_WaitingPeriod, _, TIMER_REPEAT);
+	//GameTimer = CreateTimer(1.0, Timer_WaitingPeriod, _, TIMER_REPEAT);
 	
 	//Just incase, reget spawnsers, beacuse its way too fast and needs a frame, start setup is too fast!
 	for (int ent = -1; (ent = FindEntityByClassname(ent, "info_player_teamspawn")) != -1;) 
@@ -947,7 +947,7 @@ void Dungeon_PlayerDowned(int client)
 
 bool Dungeon_InRespawnTimer(int client)
 {
-	if(!Dungeon_Mode())
+	if(!Dungeon_Started())
 		return false;
 	
 	float time = (RespawnTime + LastKilledAt[client]) - GetGameTime();
@@ -2138,7 +2138,7 @@ bool Dungeon_UpdateMvMStats()
 
 		if(AttackType == 1)
 		{
-			int round = Dungeon_GetRound();
+			int round = Dungeon_GetRound(true);
 			int limit = 4 + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
 			if(round > limit)
 				round = limit;
