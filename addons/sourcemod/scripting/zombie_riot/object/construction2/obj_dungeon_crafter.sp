@@ -183,6 +183,10 @@ static void ClotShowInteractHud(ObjectGemCrafter npc, int client)
 	{
 		PrintCenterText(client, "%s\n%t", viality, "Object Cooldown", GlobalCooldown - GetGameTime());
 	}
+	else if(Dungeon_AtLimitNotice())
+	{
+		PrintCenterText(client, "%s\nUpgrade Houses to collect more cash");
+	}
 	else
 	{
 		char button[64];

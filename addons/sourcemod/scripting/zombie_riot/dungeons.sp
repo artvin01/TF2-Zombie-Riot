@@ -16,6 +16,7 @@ static char TeleHome[64];
 static char TeleRival[64];
 static char TeleEnter[64];
 static char TeleNext[64];
+static int LimitNotice;
 
 enum struct DMusicInfo
 {
@@ -2043,6 +2044,11 @@ void Dungeon_AddBattleScale(float scale)
 	BattleWaveScale += scale;
 }
 
+bool Dungeon_AtLimitNotice()
+{
+	return LimitNotice;
+}
+
 static float ScaleBasedOnRound(int round)
 {
 	return (500.0 + Pow(float(round), 2.6));
@@ -2064,52 +2070,53 @@ void Dungeon_EnemySpawned(int entity)
 			case 1:	// Dungeon NPC
 			{
 				// Reward cash depending on the wave scaling and how much left
-				static int LimitNotice;
-
-				int round = Dungeon_GetRound(true);
-				int limit = 4 + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
-				if(round > limit)
+				if(!i_IsABuilding[entity] && !i_NpcIsABuilding[entity])
 				{
-					round = limit;
-
-					if(limit > 38)
+					int round = Dungeon_GetRound(true);
+					int limit = 4 + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
+					if(round > limit)
 					{
+						round = limit;
 
-					}
-					else if(!LimitNotice)
-					{
-						CPrintToChatAll("%t", "Upgrade Build Houses");
-						LimitNotice = 1;
+						if(limit > 38)
+						{
+
+						}
+						else if(LimitNotice < 1)
+						{
+							CPrintToChatAll("%t", "Upgrade Build Houses");
+							LimitNotice = 1;
+						}
+						else
+						{
+							LimitNotice++;
+							if(LimitNotice > 49)
+								LimitNotice = -1;
+						}
 					}
 					else
 					{
-						LimitNotice++;
-						if(LimitNotice > 49)
-							LimitNotice = 0;
+						LimitNotice = 0;
 					}
-				}
-				else
-				{
-					LimitNotice = 0;
-				}
-				
-				int current = CurrentCash - GlobalExtraCash - StartCash;
-
-				int a, other;
-				while((other = FindEntityByNPC(a)) != -1)
-				{
-					if(!b_NpcHasDied[other] && GetTeam(other) != TFTeam_Red)
-						current += RoundFloat(f_CreditsOnKill[other]);
-				}
-
-				int goal = DefaultTotalCash(round);
-				if(current < goal)
-				{
-					int reward = (goal - current) / RoundToNearest((float((b_thisNpcIsABoss[entity] ? 5 : 50)) * MultiGlobalEnemy));
-					if(reward < 5)
-						reward = 5;
 					
-					f_CreditsOnKill[entity] += float(reward / 5 * 5);
+					int current = CurrentCash - GlobalExtraCash - StartCash;
+
+					int a, other;
+					while((other = FindEntityByNPC(a)) != -1)
+					{
+						if(!b_NpcHasDied[other] && GetTeam(other) != TFTeam_Red)
+							current += RoundFloat(f_CreditsOnKill[other]);
+					}
+
+					int goal = DefaultTotalCash(round);
+					if(current < goal)
+					{
+						int reward = (goal - current) / RoundToNearest((float((b_thisNpcIsABoss[entity] ? 5 : 50)) * MultiGlobalEnemy));
+						if(reward < 5)
+							reward = 5;
+						
+						f_CreditsOnKill[entity] += float(reward / 5 * 5);
+					}
 				}
 			}
 		}
