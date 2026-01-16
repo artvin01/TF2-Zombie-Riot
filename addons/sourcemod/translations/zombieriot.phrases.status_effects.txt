@@ -2752,4 +2752,12 @@
 	{
 		"en"	"Warped"
 	}
+	"The First"
+	{
+		"en"	"The First"
+	}
+	"The First Desc"
+	{
+		"en"	"Npc Gains 30％ Resistance, 300％ Damage, 2x Thinkspeed"
+	}
 }
