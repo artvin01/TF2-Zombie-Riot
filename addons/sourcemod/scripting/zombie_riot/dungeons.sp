@@ -1819,9 +1819,9 @@ static void StartBattle(const RoomInfo room, float time = 0.1)
 		room.Fights.GetValue(buffer, scale);
 
 		data[0] = a;
-		data[1] = abs(MaxWaveScale - scale);
+		data[1] = abs(round - scale);
 
-		if(data[1] < lowestDiff)
+		if(lowestDiff > data[1])
 			lowestDiff = data[1];
 		
 		listPre.PushArray(data);
