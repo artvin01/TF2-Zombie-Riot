@@ -97,7 +97,7 @@
 	}
 	"CYBER GRIND Desc"
 	{
-		"en"	"It's joever...\nStarting Cash:4100\nStarting Supplies: 25"
+		"en"	"This is a simulation prepared by Mr. V\nYou can face all bosses, and you can unlock items by clearing Normal - EX Hard\nStarting money and starting supplies vary depending on the selected difficulty."
 		"ko"	"Mr.V가 준비한 시뮬레이션 입니다.\n모든 보스를 상대해 볼 수 있습니다, 보통-EX 하드를 클리어하면 아이템을 해금할 수 있습니다.\n시작 자금 및 시작 보급품은 선택된 난이도에 따라 다름"
 	}
 	
@@ -287,8 +287,8 @@
 	}
 	"Inv Chaos Coil desc"
 	{
-		"en"	"Speed ​​changes randomly every second from a of +0％ - +20％.\nWhen hit, takes chaos damage.\nAll Armors are destroyed By One Hit"
-		"ko"	"속도가 +0％~+20％ 무작위로 매번 바뀝니다.\n피격시 카오스 피해를 받습니다.\n피격시, 모든 아머가 파괴됩니다."
+		"en"	"Speed ​​changes randomly every second from a of +5％ - +20％.\nWhen hit, takes chaos damage.\nAll Armors are destroyed By One Hit"
+		"ko"	"속도가 +5％~+20％ 무작위로 매번 바뀝니다.\n피격시 카오스 피해를 받습니다.\n피격시, 모든 아머가 파괴됩니다."
 	}
 	"Inv Chaos Coil desc Extra"
 	{
