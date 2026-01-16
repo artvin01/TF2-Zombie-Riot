@@ -55,6 +55,7 @@ static void ClotPrecache()
 	PrecacheSoundCustom("zombiesurvival/altwaves_and_blitzkrieg/music/dm_start4.mp3");
 	PrecacheSoundCustom("zombiesurvival/altwaves_and_blitzkrieg/music/dm_start5.mp3");
 	PrecacheSoundCustom("zombiesurvival/altwaves_and_blitzkrieg/music/dm_start6.mp3");
+	PrecacheModel(LASERBEAM);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -64,6 +65,23 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 
 methodmap Invisible_TRIGGER_Man < CClotBody
 {
+	public void PlayBlitzkriegStartSound() 
+	{
+		EmitCustomToAll("zombiesurvival/altwaves_and_blitzkrieg/music/dm_start.mp3", _, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayBlitzkriegVioceStartSound() 
+	{
+		EmitCustomToAll(g_BlitzkriegVioce_StartSounds[GetRandomInt(0, sizeof(g_BlitzkriegVioce_StartSounds) - 1)], _, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayBlitzkriegEndSound() 
+	{
+		EmitCustomToAll("zombiesurvival/altwaves_and_blitzkrieg/music/dm_end.mp3", _, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayTeleSound() 
+	{
+		EmitSoundToAll(g_TeleSounds[GetRandomInt(0, sizeof(g_TeleSounds) - 1)], _, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	
 	property int i_NPCStats
 	{
 		public get()							{ return i_TimesSummoned[this.index]; }
@@ -74,25 +92,10 @@ methodmap Invisible_TRIGGER_Man < CClotBody
 		public get()							{ return i_MedkitAnnoyance[this.index]; }
 		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
 	}
-
-	public void PlayBlitzkriegStartSound() 
+	property float m_flCoolDown
 	{
-		EmitCustomToAll("zombiesurvival/altwaves_and_blitzkrieg/music/dm_start.mp3", _, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-	}
-
-	public void PlayBlitzkriegVioceStartSound() 
-	{
-		EmitCustomToAll(g_BlitzkriegVioce_StartSounds[GetRandomInt(0, sizeof(g_BlitzkriegVioce_StartSounds) - 1)], _, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-	}
-	
-	public void PlayBlitzkriegEndSound() 
-	{
-		EmitCustomToAll("zombiesurvival/altwaves_and_blitzkrieg/music/dm_end.mp3", _, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-	}
-	
-	public void PlayTeleSound() 
-	{
-		EmitSoundToAll(g_TeleSounds[GetRandomInt(0, sizeof(g_TeleSounds) - 1)], _, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 
 	public Invisible_TRIGGER_Man(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -136,6 +139,7 @@ methodmap Invisible_TRIGGER_Man < CClotBody
 			npc.m_flNextMeleeAttack = 0.0;
 			npc.m_flNextRangedAttack = 0.0;
 			npc.m_flDead_Ringer_Invis = 0.0;
+			npc.m_flCoolDown = 0.0;
 			TempDelayOne[npc.index] = 0.0;
 			
 			AddNpcToAliveList(npc.index, 1);
@@ -208,6 +212,17 @@ methodmap Invisible_TRIGGER_Man < CClotBody
 			ReplaceString(buffers[0], 64, "give_cash_print_", "");
 			CurrentCash += StringToInt(buffers[0]);
 			CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", StringToInt(buffers[0]));
+		}
+		if(!StrContains(data, "anti_stuck_zone"))
+		{
+			npc.i_NPCStats=6;
+			
+			SetTeam(npc.index, TFTeam_Stalkers);
+			AddNpcToAliveList(npc.index, 1);
+			Is_a_Medic[npc.index] = true;
+			npc.m_bStaticNPC = true;
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
+			fVerify=true;
 		}
 
 		func_NPCDeath[npc.index] = view_as<Function>(Invisible_TRIGGER_Man_NPCDeath);
@@ -978,6 +993,116 @@ static void Invisible_TRIGGER_Man_ClotThink(int iNPC)
 				}
 			}
 		}
+		case 6:
+		{
+			if(Waves_Started() && !Waves_InSetup())
+			{
+				if(!npc.m_iTargetAlly || npc.m_flGetClosestTargetTime < gameTime)
+				{
+					npc.m_iTargetAlly = GetClosestAnyNPC(npc.index);
+					npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
+				}
+				
+				if(IsEntityAlive(npc.m_iTargetAlly))
+				{
+					float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget);
+					float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+					//spawnRing_Vectors(VecSelfNpc, 200.0, 0.0, 0.0, 5.0, LASERBEAM, 150, 200, 255, 100, 1, 0.1, 2.0, 0.1, 3);
+					float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+					if(flDistanceToTarget < (100.0 * 100.0))
+					{
+						if(npc.m_flCoolDown < gameTime)
+						{
+							ParticleEffectAt(VecSelfNpc, "teleported_blue", 0.5);
+							int Decicion = TeleportDiversioToRandLocation(npc.m_iTargetAlly, true, 750.0, 750.0);
+							if(Decicion == 2)
+							{
+								Decicion = TeleportDiversioToRandLocation(npc.m_iTargetAlly, true, 750.0, 375.0);
+								if(Decicion == 2)
+								{
+									Decicion = TeleportDiversioToRandLocation(npc.m_iTargetAlly, true, 750.0, 187.5);
+									if(Decicion == 2)
+									{
+										Decicion = TeleportDiversioToRandLocation(npc.m_iTargetAlly, true, 750.0, 0.0);
+									}
+								}
+							}
+							ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Extreamly Defensive Backup", 1.0);
+							ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Very Defensive Backup", 2.0);
+							ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Defensive Backup", 3.0);
+							ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "War Cry", 3.0);
+							ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Expidonsan War Cry", 1.0);
+							npc.PlayTeleSound();
+							WorldSpaceCenter(npc.index, VecSelfNpc);
+							ParticleEffectAt(VecSelfNpc, "teleported_blue", 0.5);
+							npc.m_flCoolDown = gameTime + 30.0;
+						}
+						if(flDistanceToTarget < (75.0 * 75.0) && npc.m_iChanged_WalkCycle != 0)
+						{
+							npc.m_bisWalking = false;
+							npc.m_bAllowBackWalking = false;
+							npc.m_iChanged_WalkCycle = 0;
+							npc.m_flSpeed = 0.0;
+							npc.StopPathing();
+						}
+					}
+					else
+					{
+						npc.m_flCoolDown = gameTime + 30.0;
+						if(flDistanceToTarget > (1000.0 * 1000.0))
+						{
+							if(npc.m_iChanged_WalkCycle != 2)
+							{
+								npc.m_bisWalking = true;
+								npc.m_bAllowBackWalking = false;
+								npc.m_iChanged_WalkCycle = 2;
+								npc.m_flSpeed = 400.0;
+								npc.StartPathing();
+							}
+						}
+						else
+						{
+							if(npc.m_iChanged_WalkCycle != 1)
+							{
+								npc.m_bisWalking = true;
+								npc.m_bAllowBackWalking = false;
+								npc.m_iChanged_WalkCycle = 1;
+								npc.m_flSpeed = 100.0;
+								npc.StartPathing();
+							}
+						}
+						if(flDistanceToTarget < npc.GetLeadRadius()) 
+						{
+							float vPredictedPos[3];
+							PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_, vPredictedPos);
+							npc.SetGoalVector(vPredictedPos);
+						}
+						else npc.SetGoalEntity(npc.m_iTargetAlly);
+					}
+				}
+				else
+				{
+					npc.m_flCoolDown = gameTime + 30.0;
+					if(npc.m_iChanged_WalkCycle != 0)
+					{
+						npc.m_bisWalking = false;
+						npc.m_bAllowBackWalking = false;
+						npc.m_iChanged_WalkCycle = 0;
+						npc.m_flSpeed = 0.0;
+						npc.StopPathing();
+					}
+				}
+			}
+			else
+			{
+				//PrintToChatAll("End");
+				b_NpcForcepowerupspawn[npc.index] = 0;
+				i_RaidGrantExtra[npc.index] = 0;
+				b_DissapearOnDeath[npc.index] = true;
+				b_DoGibThisNpc[npc.index] = true;
+				SmiteNpcToDeath(npc.index);
+			}
+		}
 		case 3000:
 		{
 			bool there_is_no_one=true;
@@ -1042,4 +1167,38 @@ static void Invisible_TRIGGER_Man_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+}
+
+static int GetClosestAnyNPC(int entity)
+{
+	float TargetDistance = 0.0; 
+	int ClosestTarget = 0; 
+	for(int i = 1; i <= MAXENTITIES; i++ ) 
+	{
+		if(IsValidEntity(i) && i != entity && !b_NpcHasDied[i])
+		{
+			if(!Is_a_Medic[i] && IsEntityAlive(i, true) && GetTeam(i) == TFTeam_Blue && !i_NpcIsABuilding[i] && !b_ThisEntityIgnoredByOtherNpcsAggro[i] && !b_NpcIsInvulnerable[i] && b_thisNpcIsARaid[i])
+			{
+				float EntityLocation[3], TargetLocation[3]; 
+				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+				GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+				
+				float distance = GetVectorDistance( EntityLocation, TargetLocation, true );
+				if(TargetDistance) 
+				{
+					if(distance < TargetDistance) 
+					{
+						ClosestTarget = i; 
+						TargetDistance = distance;		  
+					}
+				} 
+				else 
+				{
+					ClosestTarget = i; 
+					TargetDistance = distance;
+				}
+			}
+		}
+	}
+	return ClosestTarget; 
 }
