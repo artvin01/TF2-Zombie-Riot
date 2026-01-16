@@ -2042,7 +2042,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							ResearchStartedIn[client] = GetGameTime();
 							
 							float TimeUntillResearch = float(GetRData(item, TrainTime));
-							if(Rogue_Mode())
+							if(Rogue_Mode() || !StrContains(WhatDifficultySetting_Internal, "THE CYBER GRIND"))
 							{
 								TimeUntillResearch *= 0.5;
 							}

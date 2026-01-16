@@ -479,6 +479,15 @@ methodmap CyberGrindGM < CClotBody
 			npc.m_flCoolDown = GetGameTime() + 0.5;
 			return npc;
 		}
+		else if(!StrContains(data, "world_end"))
+		{
+			func_NPCDeath[npc.index] = INVALID_FUNCTION;
+			func_NPCOnTakeDamage[npc.index] = INVALID_FUNCTION;
+			func_NPCThink[npc.index] = CyberGrindGM_OverrideMusic;
+			npc.m_iOverlordComboAttack = 3;
+			npc.m_flCoolDown = GetGameTime() + 0.5;
+			return npc;
+		}
 		else if(!StrContains(data, "is_twirl"))
 		{
 			func_NPCDeath[npc.index] = INVALID_FUNCTION;
@@ -697,6 +706,17 @@ static void CyberGrindGM_OverrideMusic(int iNPC)
 			case 2:
 			{
 				Music_SetRaidMusicSimple("#zombiesurvival/xeno_raid/mr_duo_battle.mp3", 171, true, 1.3);
+			}
+			case 3:
+			{
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/altwaves_and_blitzkrieg/music/dm_loop1.mp3");
+				music.Time = 356;
+				music.Volume = 2.0;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "感情の魔天楼　～ World's End");
+				strcopy(music.Artist, sizeof(music.Artist), "Demetori");
+				Music_SetRaidMusic(music);
 			}
 			case 100: RaidModeTime += npc.m_flAddRiadTime;
 		}

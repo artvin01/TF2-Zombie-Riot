@@ -549,6 +549,25 @@ void StatusEffects_Baka()
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;*/
 	StatusEffect_AddGlobal(data);
 
+	strcopy(data.BuffName, sizeof(data.BuffName), "True Fusion Warrior Effect");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "O");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti				= -1.0;
+	data.AttackspeedBuff				= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount 	= false;
+	data.Slot						= 0;
+	data.SlotPriority					= 0;
+	data.OnTakeDamage_TakenFunc 		= Barricade_Stabilizer_ResistanceFunc;
+	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
+	data.OnTakeDamage_PostVictim		= INVALID_FUNCTION;
+	data.OnTakeDamage_PostAttacker		= INVALID_FUNCTION;
+	data.Status_SpeedFunc 			= INVALID_FUNCTION;
+	data.HudDisplay_Func 				= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Barricade Stabilizer");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⛉");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
