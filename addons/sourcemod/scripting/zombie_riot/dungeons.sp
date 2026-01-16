@@ -1138,7 +1138,7 @@ DungeonZone Dungeon_GetEntityZone(int entity, bool forceReset = false)
 
 		float AbsPos[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsPos);
-		CNavArea endNav = TheNavMesh.GetNavAreaEntity(entity, GETNAVAREA_ALLOW_BLOCKED_AREAS, 1000.0);
+		CNavArea endNav = TheNavMesh.GetNavAreaEntity(entity, GETNAVAREA_ALLOW_BLOCKED_AREAS, 500.0);
 		if(endNav == NULL_AREA)
 			endNav = TheNavMesh.GetNearestNavArea(AbsPos, false, 60.0, _, _, _);
 		if(endNav != NULL_AREA)
@@ -2072,7 +2072,7 @@ void Dungeon_EnemySpawned(int entity)
 				// Reward cash depending on the wave scaling and how much left
 				if(!i_IsABuilding[entity] && !i_NpcIsABuilding[entity])
 				{
-					int round = Dungeon_GetRound(true);
+					int round = Dungeon_GetRound(true) + 4;
 					int limit = 4 + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
 					if(round > limit)
 					{
@@ -2144,7 +2144,7 @@ bool Dungeon_UpdateMvMStats()
 
 		if(AttackType == 1)
 		{
-			int round = Dungeon_GetRound(true);
+			int round = Dungeon_GetRound(true) + 4;
 			int limit = 4 + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
 			if(round > limit)
 				round = limit;
@@ -2284,6 +2284,8 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 	if(b_thisNpcIsABoss[iNpc])
 		return;
 	if(i_IsABuilding[iNpc])
+		return;
+	if(i_NpcIsABuilding[iNpc])
 		return;
 	if(Dungeon_GetEntityZone(iNpc) != Zone_Dungeon && Dungeon_GetEntityZone(iNpc) != Zone_RivalBase)
 		return;

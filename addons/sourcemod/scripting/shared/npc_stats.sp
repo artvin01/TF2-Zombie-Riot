@@ -5353,6 +5353,10 @@ stock int GetClosestTarget(int entity,
 	{
 		if(fldistancelimitAllyNPC == 450.0)
 			fldistancelimitAllyNPC = 99999.9;
+		if(Dungeon_GetEntityZone(entity) == Zone_RivalBase)
+		{
+			UseVectorDistance = true;
+		}
 	}
 
 	//in rogue you can get allies, but they shouldnt get any enemies during setups.

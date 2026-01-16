@@ -112,12 +112,16 @@ void ObjectDCaliberTurret_ClotThink(ObjectDCaliberTurret npc)
 	{
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
+		if(GetTeam(npc.index) != TFTeam_Red)
+			npc.m_flNextDelayTime = gameTime + 0.4;
 		return;
 	}
 	if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 	{
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
+		if(GetTeam(npc.index) != TFTeam_Red)
+			npc.m_flNextDelayTime = gameTime + 0.4;
 		return;
 	}
 	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
