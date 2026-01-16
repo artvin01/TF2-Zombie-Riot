@@ -7039,7 +7039,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Strong");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 5.0;
+	data.DamageDealMulti			= 3.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= true;

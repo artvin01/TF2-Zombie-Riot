@@ -1585,6 +1585,8 @@ public MRESReturn DHook_ForceRespawn(int client)
 		RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
 	}
 	
+	if(Dungeon_Mode())
+		i_AmountDowned[client] = 0;
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
 
 	if(Construction_Mode() || BetWar_Mode() || Dungeon_Mode())

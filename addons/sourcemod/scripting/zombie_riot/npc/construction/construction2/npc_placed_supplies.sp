@@ -156,7 +156,7 @@ public void PlacedSupplies_ClotThink(int iNPC)
 
 	
 	ExpidonsaGroupHeal(npc.index,
-	 200.0,
+	 180.0,
 	  99,
 	   0.0,
 	   1.0,
