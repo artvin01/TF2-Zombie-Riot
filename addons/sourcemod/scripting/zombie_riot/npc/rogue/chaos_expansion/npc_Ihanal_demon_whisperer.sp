@@ -135,7 +135,7 @@ methodmap HallamDemonWhisperer < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
-		if(!IsValidEntity(RaidBossActive))
+		if(!IsValidEntity(RaidBossActive) && !Dungeon_Mode())
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
