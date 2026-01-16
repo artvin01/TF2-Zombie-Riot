@@ -2634,7 +2634,7 @@
 	}
 	"The Strong Desc"
 	{
-		"en"	"Increases Damage by 600％"
+		"en"	"Increases Damage by 400％"
 	}
 	"Strong"
 	{

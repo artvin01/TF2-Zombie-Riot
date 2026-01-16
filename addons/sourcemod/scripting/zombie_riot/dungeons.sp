@@ -1135,7 +1135,11 @@ DungeonZone Dungeon_GetEntityZone(int entity, bool forceReset = false)
 	{
 		LastZone[entity] = Zone_Unknown;
 
+		float AbsPos[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsPos);
 		CNavArea endNav = TheNavMesh.GetNavAreaEntity(entity, GETNAVAREA_ALLOW_BLOCKED_AREAS, 1000.0);
+		if(endNav == NULL_AREA)
+			endNav = TheNavMesh.GetNearestNavArea(AbsPos, false, 60.0, _, _, _);
 		if(endNav != NULL_AREA)
 		{
 			float pos[3];
@@ -2279,10 +2283,11 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 	//Rare
 	if(GetRandomInt(0,RoundToCeil(75.0 * MultiGlobalEnemy)) != 0)
 		return;
+	b_thisNpcHasAnOutline[iNpc] = true;
 	GiveNpcOutLineLastOrBoss(iNpc, true);
-	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 5.0));
-	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 5.0));
-	fl_Extra_Damage[iNpc] *= 1.5;
+	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 3.0));
+	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 3.0));
+	fl_Extra_Damage[iNpc] *= 1.2;
 	bool RetryBuffGiving = false;
 	bool GiveOneGuranteed = true;
 	int MaxHits = 0;
