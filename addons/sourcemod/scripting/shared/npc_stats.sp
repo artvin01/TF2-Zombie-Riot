@@ -3129,11 +3129,11 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 		
-		if(i_IsVehicle[target])
+		/*if(i_IsVehicle[target])
 		{
 			// Vehicle hitboxes
 			return this.DoAimbotTrace(trace, target, vecSwingStartOffset);
-		}
+		}*/
 		
 		float eyePitch[3];
 		if(Npc_type != 3)

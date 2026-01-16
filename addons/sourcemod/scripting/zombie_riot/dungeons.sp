@@ -344,7 +344,7 @@ static int CurrentAttacks;
 static float NextAttackAt;
 static int AttackType;	// -1 = Rival Setup, 0 = None, 1 = Room, 2 = Base, 3 = Final
 static Handle GameTimer;
-static float BattleTimelimit;
+//static float BattleTimelimit;
 static float DelayVoteFor;
 static int CurrentRoomIndex = -1;
 static int NextRoomIndex = -1;
@@ -1368,7 +1368,7 @@ static Action DungeonMainTimer(Handle timer)
 	}
 	return Plugin_Stop;
 }
-
+/*
 static void SetBattleTimelimit(float time)
 {
 	BattleTimelimit = time > 0.0 ? (GetGameTime() + time - 520.0) : GetGameTime() + 420.0;
@@ -1386,7 +1386,7 @@ static stock void DecreaseBattleTimelimit(float time)
 		WaveStart_SubWaveStart(BattleTimelimit);
 	}
 }
-
+*/
 void Dungeon_DelayVoteFor(float time)
 {
 	DelayVoteFor = GetGameTime() + time;

@@ -113,6 +113,7 @@ static void ClotThink(ObjectDungeonCenter npc)
 	if(Dungeon_InSetup())
 		HomebaseMomentumGiveBuff(npc.index);
 }
+
 static bool ClotCanBuild(int client, int &count, int &maxcount)
 {
 	if(client)
@@ -127,7 +128,10 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
+		{
+			maxcount = 0;
 			return false;
+		}
 	}
 	
 	return true;

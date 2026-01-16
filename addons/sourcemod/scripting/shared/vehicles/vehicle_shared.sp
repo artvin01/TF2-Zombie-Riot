@@ -99,6 +99,7 @@ void Vehicle_PluginStart()
 	.DefineEntityField("m_hSeatEntity", VEHICLE_MAX_SEATS)
 	.DefineVectorField("m_vecSeatPos", VEHICLE_MAX_SEATS)
 	.DefineIntField("m_iSeatGunIndex", VEHICLE_MAX_SEATS)
+	.DefineFloatField("m_flBrakeFor")
 	.EndDataMapDesc();
 	factory.Install();
 
@@ -666,7 +667,7 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 	if(teleport)
 	{
 		CanExit(obj.index, pos, ang);
-		GetEntPropVector(obj.index, Prop_Data, "m_vecVelocity", vel);
+		GetEntPropVector(obj.index, Prop_Data, "m_vecSmoothedVelocity", vel);
 		pos[2] += 8.0;
 		ang[2] = 0.0;
 		TeleportEntity(target, pos, ang, vel);
@@ -749,6 +750,26 @@ static Action VehicleThink(int entity)
 			float time = GetGameTime() + 0.5;
 			if(GetEntPropFloat(driver, Prop_Send, "m_flNextAttack") < time)
 				SetEntPropFloat(driver, Prop_Send, "m_flNextAttack", time);
+		}
+
+#if defined ZR
+		ZRRammingThink(obj);
+#endif
+
+	}
+
+	float brakeFor = GetEntPropFloat(obj.index, Prop_Data, "m_flBrakeFor");
+	if(brakeFor)
+	{
+		if(brakeFor > GetGameTime())
+		{
+			if(!GetEntProp(obj.index, Prop_Data, "m_controls.handbrake"))
+				AcceptEntityInput(obj.index, "HandBrakeOn", driver, obj.index);
+		}
+		else
+		{
+			SetEntPropFloat(obj.index, Prop_Data, "m_flBrakeFor", 0.0);
+			AcceptEntityInput(obj.index, "HandBrakeOff", driver, obj.index);
 		}
 	}
 
@@ -846,6 +867,74 @@ static bool CanExit(int vehicle, float origin[3] = NULL_VECTOR, float angles[3] 
 }
 
 #if defined ZR
+static int ZRRamHealth;
+static void ZRRammingThink(VehicleGeneric obj)
+{
+	int client = Vehicle_Driver(obj.index);
+	if(client != -1)
+	{
+		float vel[3];
+		GetEntPropVector(obj.index, Prop_Data, "m_vecSmoothedVelocity", vel);
+		
+		float damage = GetVectorLength(vel, true);
+
+		if(damage > 49999.0)
+		{
+			float scale = ExtraDamageWaveScaling();
+			if(scale < 1.0 || CvarInfiniteCash.BoolValue)
+				scale = 1.0;
+			
+			damage *= scale * 0.001;
+		}
+		else
+		{
+			damage = 0.0;
+		}
+
+		int type = i_ExplosiveProjectileHexArray[obj.index];
+		i_ExplosiveProjectileHexArray[obj.index] = EP_DEALS_CLUB_DAMAGE;
+		Explode_Logic_Custom(damage, client, obj.index, -1, _, 60.0, 1.0, 1.0, _, 99, false, 0.2, ZRRamDamagePost, ZRRamDamagePre);
+		i_ExplosiveProjectileHexArray[obj.index] = type;
+	}
+}
+
+static float ZRRamDamagePre(VehicleGeneric obj, int victim, float &damage, int weapon)
+{
+	if(damage < 1.0 || IsIn_HitDetectionCooldown(obj.index, victim))
+	{
+		ZRRamHealth = 0;
+		damage = 0.0;
+		return 0.0;
+	}
+
+	ZRRamHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
+	return 0.0;
+}
+
+static void ZRRamDamagePost(VehicleGeneric obj, int victim, float damage, int weapon)
+{
+	Set_HitDetectionCooldown(obj.index, victim, GetGameTime() + 1.0);
+	if(ZRRamHealth < 1)
+		return;
+
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(health > 0)
+	{
+		TeleportEntity(obj.index, _, _, {0.0, 0.0, 0.0});
+	}
+	else
+	{
+		float vel[3];
+		GetEntPropVector(obj.index, Prop_Data, "m_vecSmoothedVelocity", vel);
+
+		float ratio = 1.0 - (ZRRamHealth / (ZRRamHealth - health));
+
+		ScaleVector(vel, ratio);
+
+		TeleportEntity(obj.index, _, _, vel);
+	}
+}
+
 static void AdjustClientWeapons(int client)
 {
 	int slot = -1;

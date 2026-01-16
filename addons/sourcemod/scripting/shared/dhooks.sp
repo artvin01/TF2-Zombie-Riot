@@ -916,6 +916,14 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		{
 			return false;
 		}
+		else if(i_IsVehicle[ent1])
+		{
+			return false;
+		}
+		else if(i_IsVehicle[ent2])
+		{
+			return false;
+		}
 		//We do not want this entity to step on anything aside from the actual world or entities that are treated as the world
 	}
 	//npc has died, ignore all collissions no matter what
@@ -2348,7 +2356,6 @@ public MRESReturn DHookCallback_ShouldCollide(DHookReturn ret, DHookParam params
 	}
 	//allow vehicle to pass through enemies
 	if (collisionGroup1 == COLLISION_GROUP_NPC ||
-	 collisionGroup1 == COLLISION_GROUP_PLAYER ||
 	  collisionGroup1 == TFCOLLISION_GROUP_ROCKETS)
 	{
 		ret.Value = false;

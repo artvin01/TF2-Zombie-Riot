@@ -14,8 +14,8 @@
 
 #define CONSTRUCT_NAME		"Giant Lighthouse"
 #define CONSTRUCT_RESOURCE1	"iron"
-#define CONSTRUCT_COST1		30
-#define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
+#define CONSTRUCT_COST1		80
+#define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 2)
 #define CONSTRUCT_RANGE		2000.0
 #define CONSTRUCT_MAXCOUNT	(1 + level)
 
@@ -101,7 +101,10 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 		int level = CurrentLevel;
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
+		{
+			maxcount = 0;
 			return false;
+		}
 	}
 	
 	return true;

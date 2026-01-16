@@ -191,7 +191,10 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 		int level = CurrentLevel;
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
+		{
+			maxcount = 0;
 			return false;
+		}
 	}
 	
 	return true;

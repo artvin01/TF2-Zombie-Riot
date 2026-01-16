@@ -111,25 +111,34 @@ void NPC_ConfigSetup()
 	ObjectFurniture_MapStart();
 	ObjectHelper_MapStart();
 	ObjectVoidstone_MapStart();
-	
-	ObjectDWall_MapStart();
+
+	// Main
 	ObjectDungeonCenter_MapStart();
+	ObjectDWall_MapStart();
 	ObjectC2House_MapStart();
+
+	// Singles
+	ObjectDFactory_MapStart();
 	ObjectGemCrafter_MapStart();
 	ObjectDStove_MapStart();
-	ObjectDFactory_MapStart();
 
-	ObjectDLightHouse_MapStart();
-	ObjectDCaliberTurret_MapStart();
-	ObjectDMinigunTurret_MapStart();
-	ObjectDTeslarsMedusa_MapStart();
-	ObjectDStunGun_MapStart();
-	ObjectDDispenser_MapStart();
+	// Level 1
 	ObjectC2Cannon_MapStart();
 	ObjectC2Zap_MapStart();
 	ObjectC2ArrowTower_MapStart();
+
+	// Level 2
+	ObjectDDispenser_MapStart();
+	ObjectDCaliberTurret_MapStart();
+	ObjectDMinigunTurret_MapStart();
+	ObjectDMortar_MapStart();
+
+	// Level 3
+	ObjectDLightHouse_MapStart();
+	ObjectDStunGun_MapStart();
 	ObjectC2Incinerator_MapStart();
 	ObjectC2LaserIntensifier_MapStart();
+	ObjectDTeslarsMedusa_MapStart();
 	// Constructs
 
 	// Vehicles
@@ -1553,6 +1562,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/construction2/obj_const2_house.sp"
 #include "object/construction2/obj_const2_laser_intensifier.sp"
 #include "object/construction2/obj_dungeon_factory.sp"
+#include "object/construction2/obj_dungeon_mortar.sp"
 
 // VEHICLES
 #include "../shared/vehicles/vehicle_shared.sp"

@@ -16,7 +16,7 @@
 #define CONSTRUCT_RESOURCE1	"copper"
 #define CONSTRUCT_COST1		(30 + (CurrentLevel * 10))
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
-#define CONSTRUCT_DAMAGE	(125.0 * Pow(level + 1.0, 2.0))
+#define CONSTRUCT_DAMAGE	(125.0 * Pow(level + 3.0, 2.0))
 #define CONSTRUCT_FIRERATE	1.0
 #define CONSTRUCT_RANGE		1000.0
 #define CONSTRUCT_MAXCOUNT	(1 + level)
@@ -174,7 +174,10 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 		int level = CurrentLevel;
 		maxcount = CONSTRUCT_MAXCOUNT;
 		if(count >= maxcount)
+		{
+			maxcount = 0;
 			return false;
+		}
 	}
 	
 	return true;

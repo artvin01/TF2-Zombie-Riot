@@ -19,8 +19,8 @@
 #define CONSTRUCT_MAXCOUNT	(24 + (level * 12))
 
 static int NPCId1;
-static int NPCId2;
-static int NPCId3;
+/*static int NPCId2;
+static int NPCId3;*/
 static int LastGameTime;
 static int CurrentLevel;
 
@@ -132,7 +132,7 @@ static bool ClotCanBuild1(int client, int &count, int &maxcount)
 	
 	return true;
 }
-
+/*
 static any ClotSummon2(int client, float vecPos[3], float vecAng[3])
 {
 	return ObjectDWall2(client, vecPos, vecAng);
@@ -275,18 +275,18 @@ static bool ClotCanBuild3(int client, int &count, int &maxcount)
 	
 	return true;
 }
-
+*/
 bool ObjectDWall_IsId(int id)
 {
 	if(NPCId1 == id)
 		return true;
-	
+	/*
 	if(NPCId2 == id)
 		return true;
 	
 	if(NPCId3 == id)
 		return true;
-	
+	*/
 	return false;
 }
 
@@ -306,12 +306,12 @@ static int CountBuildings()
 
 		if(NPCId1 == i_NpcInternalId[entity])
 			count++;
-		
+		/*
 		if(NPCId2 == i_NpcInternalId[entity])
 			count += 2;
 		
 		if(NPCId3 == i_NpcInternalId[entity])
-			count += 3;
+			count += 3;*/
 	}
 
 	return count;
