@@ -3840,6 +3840,7 @@ public Action ReviveDisplayMessageDelay(Handle timer, int ref)
 	{
 		int downsleft;
 		downsleft = 2;
+		downsleft -= i_AmountDowned[target];
 		if(downsleft <= 0)
 		{
 			SetDefaultHudPosition(target, 255, 0, 0, 2.5);

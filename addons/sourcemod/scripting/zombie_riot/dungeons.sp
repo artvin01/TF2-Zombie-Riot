@@ -2070,6 +2070,13 @@ void Dungeon_EnemySpawned(int entity)
 			}
 			case 1:	// Dungeon NPC
 			{
+				
+				//nerf enemies in dungeons by 10%
+				fl_Extra_Damage[entity] *= 0.9;
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.9));
+				SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.9));
+
+
 				// Reward cash depending on the wave scaling and how much left
 				if(!i_IsABuilding[entity] && !i_NpcIsABuilding[entity])
 				{
