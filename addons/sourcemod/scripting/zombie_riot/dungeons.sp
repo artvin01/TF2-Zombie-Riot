@@ -1135,7 +1135,11 @@ DungeonZone Dungeon_GetEntityZone(int entity, bool forceReset = false)
 	{
 		LastZone[entity] = Zone_Unknown;
 
+		float AbsPos[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsPos);
 		CNavArea endNav = TheNavMesh.GetNavAreaEntity(entity, GETNAVAREA_ALLOW_BLOCKED_AREAS, 1000.0);
+		if(endNav != NULL_AREA)
+			endNav = TheNavMesh.GetNearestNavArea(AbsPos, false, 30.0, _, _, _);
 		if(endNav != NULL_AREA)
 		{
 			float pos[3];
