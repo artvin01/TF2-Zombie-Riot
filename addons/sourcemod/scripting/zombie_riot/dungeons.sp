@@ -1137,7 +1137,7 @@ DungeonZone Dungeon_GetEntityZone(int entity, bool forceReset = false)
 
 		float AbsPos[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsPos);
-		CNavArea endNav = TheNavMesh.GetNavAreaEntity(entity, GETNAVAREA_ALLOW_BLOCKED_AREAS, 1000.0);
+		CNavArea endNav = TheNavMesh.GetNavAreaEntity(entity, GETNAVAREA_ALLOW_BLOCKED_AREAS, 500.0);
 		if(endNav == NULL_AREA)
 			endNav = TheNavMesh.GetNearestNavArea(AbsPos, false, 60.0, _, _, _);
 		if(endNav != NULL_AREA)
@@ -2103,6 +2103,7 @@ void Dungeon_EnemySpawned(int entity)
 				}
 
 				int goal = DefaultTotalCash(round);
+				goal += 1000; //Neccecary buff as cashgain earlygame was super harsh
 				if(current < goal)
 				{
 					int reward = (goal - current) / RoundToNearest((float((b_thisNpcIsABoss[entity] ? 5 : 50)) * MultiGlobalEnemy));
@@ -2277,6 +2278,8 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 	if(b_thisNpcIsABoss[iNpc])
 		return;
 	if(i_IsABuilding[iNpc])
+		return;
+	if(i_NpcIsABuilding[iNpc])
 		return;
 	if(Dungeon_GetEntityZone(iNpc) != Zone_Dungeon && Dungeon_GetEntityZone(iNpc) != Zone_RivalBase)
 		return;

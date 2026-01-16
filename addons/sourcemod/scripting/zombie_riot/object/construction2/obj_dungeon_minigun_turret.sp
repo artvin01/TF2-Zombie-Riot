@@ -151,6 +151,8 @@ void ObjectDMinigunTurret_ClotThink(ObjectDMinigunTurret npc)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.AddActivityViaSequence("idle_off");
 		npc.PlayMinigunSound(false);
+		if(GetTeam(npc.index) != TFTeam_Red)
+			npc.m_flNextDelayTime = gameTime + 0.4;
 		return;
 	}
 	if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
@@ -159,6 +161,8 @@ void ObjectDMinigunTurret_ClotThink(ObjectDMinigunTurret npc)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.AddActivityViaSequence("idle_off");
 		npc.PlayMinigunSound(false);
+		if(GetTeam(npc.index) != TFTeam_Red)
+			npc.m_flNextDelayTime = gameTime + 0.4;
 		return;
 	}
 	if(npc.m_flNextMeleeAttack > gameTime)
