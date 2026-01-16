@@ -2873,7 +2873,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 	}
 	else if(subgame)
 	{
-		SPrintToChatAll("FREEPLAY OCCURED, BAD CFG, REPORT BUG");
+		SPrintToChatAll("프리플레이 발생, 나쁜 CFG 파일, 버그 제보할것");
 		CurrentRound = 0;
 		RelayCurrentRound = 0;
 		CurrentWave = -1;
@@ -3005,7 +3005,7 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 				}
 			}
 			FreeplayTimeLimit = GetGameTime() + 3607.5; // one hour and 7.5 extra seconds because of setup time smh
-			CPrintToChatAll("{yellow}IMPORTANT: The faster you beat waves, the more cash AND experience you'll get!");
+			CPrintToChatAll("{yellow}중요사항: 웨이브를 더 빠르게 클리어할수록, 더 많은 자금과 경험치를 얻습니다!");
 			CreateTimer(0.1, Freeplay_ExtraCashTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			Freeplay_Info = 0;
 		}
@@ -3382,7 +3382,7 @@ void Zombie_Delay_Warning()
 			if(f_ZombieAntiDelaySpeedUp + 400.0 < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 7;
-				CPrintToChatAll("{crimson}You are probably abusing something, perish, go my uber swordsmen.");
+				CPrintToChatAll("{crimson}너 지금 어뷰징하냐? 죽을래?");
 				if(!Rogue_Mode())
 					AntiDelaySpawnEnemies(999999999, 5, true);
 			}

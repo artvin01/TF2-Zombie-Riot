@@ -5494,7 +5494,7 @@
 	{
 		"en"		"Alright guys...\nProve you're worthy."
 		"it"		"Va bene, ragazzi... \ndimostrate di essere all'altezza."
-		"ko"		"좋아, 친구들...\n너희가 자격이 있다는걸 증명해봐."
+		"ko"		"좋아, 친구들...\n너희의 존재 가치를 증명해봐."
 	}
 	"Need Healing Point"
 	{
