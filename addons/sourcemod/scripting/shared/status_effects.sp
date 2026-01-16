@@ -6212,6 +6212,7 @@ void StatusEffects_Explainelemental()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Warped Elemental Damage");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ʬ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Warped");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= 0.0;
@@ -6231,6 +6232,7 @@ void StatusEffects_Explainelemental()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Warped Elemental End");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
@@ -6609,6 +6611,7 @@ void StatusEffects_Rogue3()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Void Afflicted");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ɣ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Void");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.75;
 	data.DamageDealMulti			= -1.0;
@@ -6626,6 +6629,7 @@ void StatusEffects_Rogue3()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Ultra Rapid Fire");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "URF");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
@@ -7239,6 +7243,22 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Verde");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Verde");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= Const2Modifs_Verde_Start;
+	data.OnBuffEndOrDeleted			= Const2Modifs_Verde_End;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
 
 
@@ -7607,4 +7627,23 @@ public Action Timer_LaggyDoBuff(Handle timer, int ref)
 	ApplyStatusEffect(entity, entity, "Laggy Buff", GetRandomFloat(0.45, 0.75));
 	return Plugin_Handled;
 
+}
+
+
+
+void Const2Modifs_Verde_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+
+	SetEntityRenderColor_NpcAll(victim, 0.15, 1.5, 0.15);
+}
+void Const2Modifs_Verde_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
+		return;
+
+	SetEntityRenderColor_NpcAll(victim, (1.0 / 0.15), (1.0 / 0.15), (1.0 / 0.15));
 }

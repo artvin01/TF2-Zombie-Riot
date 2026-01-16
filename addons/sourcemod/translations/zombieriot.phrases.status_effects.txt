@@ -2736,4 +2736,20 @@
 	{
 		"en"	"This npc lags"
 	}
+	"Verde"
+	{
+		"en"	"Verde"
+	}
+	"Verde Desc"
+	{
+		"en"	"This npc is Verde"
+	}
+	"Void"
+	{
+		"en"	"Void"
+	}
+	"Warped"
+	{
+		"en"	"Warped"
+	}
 }

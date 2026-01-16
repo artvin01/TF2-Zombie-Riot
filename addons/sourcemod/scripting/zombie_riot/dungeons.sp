@@ -2271,25 +2271,33 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 	if(i_NpcInternalId[iNpc] == DungeonLoot_Id() ||i_NpcInternalId[iNpc] == Const2Spawner_Id())
 		return;
 	ZRModifs_ChaosIntrusionNPC(iNpc);
+
 	if(b_thisNpcIsABoss[iNpc])
 		return;
 	if(i_IsABuilding[iNpc])
 		return;
-
-	//Rare
-	if(GetRandomInt(0,RoundToCeil(100.0 * MultiGlobalEnemy)) != 0)
+	if(Dungeon_GetEntityZone(iNpc) != Zone_Dungeon && Dungeon_GetEntityZone(iNpc) != Zone_RivalBase)
 		return;
-
+	//Rare
+	if(GetRandomInt(0,RoundToCeil(75.0 * MultiGlobalEnemy)) != 0)
+		return;
+	GiveNpcOutLineLastOrBoss(iNpc, true);
 	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 5.0));
 	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 5.0));
 	fl_Extra_Damage[iNpc] *= 1.5;
 	bool RetryBuffGiving = false;
 	bool GiveOneGuranteed = true;
+	int MaxHits = 0;
 	while(GiveOneGuranteed || RetryBuffGiving || GetRandomInt(1,4) == 1)
 	{
+		MaxHits++;
+		if(MaxHits >= 1000)
+		{
+			break;
+		}
 		GiveOneGuranteed = false;
 		RetryBuffGiving = false;
-		switch(GetRandomInt(1,12))
+		switch(GetRandomInt(1,15))
 		{
 			case 1:
 			{
@@ -2374,6 +2382,37 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 					RetryBuffGiving = true;
 				else
 					ApplyStatusEffect(iNpc, iNpc, "Laggy", 999999.9);
+			}
+			case 13:
+			{
+				//free token
+				RetryBuffGiving = true;
+				ApplyStatusEffect(iNpc, iNpc, "Verde", 999999.9);
+			}
+			case 14:
+			{
+				if(HasSpecificBuff(iNpc, "Void Afflicted"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Void Afflicted", 999999.9);
+			}
+			case 15:
+			{
+				if(Elemental_DamageRatio(iNpc, Element_Warped) > 0.0)
+				{
+					RetryBuffGiving = true;
+				}
+				else
+				{
+					Elemental_AddWarpedDamage(iNpc, iNpc, 1, false, _, true);
+					if(Elemental_DamageRatio(iNpc, Element_Warped) > 0.0)
+					{
+						fl_Extra_MeleeArmor[iNpc] /= 3.0;
+						fl_Extra_RangedArmor[iNpc] /= 3.0;
+						fl_Extra_Speed[iNpc] *= 1.1;
+						fl_Extra_Damage[iNpc] *= 1.1;
+					}
+				}
 			}
 		}
 	}
