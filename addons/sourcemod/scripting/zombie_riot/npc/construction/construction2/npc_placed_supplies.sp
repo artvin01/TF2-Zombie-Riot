@@ -187,7 +187,7 @@ void PlacedSuppliesGiveBuffs(int entity, int victim, float &healingammount)
 	if(GetTeam(entity) != GetTeam(victim))
 	{
 		//nerf by alot alot
-		HealBy *= 0.25;
+		HealBy *= 0.05;
 		ApplyStatusEffect(entity, victim, "Defensive Backup", 1.0);
 		if(HasSpecificBuff(victim, "Recently Healed Supplies"))
 		{
