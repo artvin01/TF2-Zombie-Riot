@@ -884,7 +884,7 @@ static void ZRRammingThink(VehicleGeneric obj)
 			if(scale < 1.0 || CvarInfiniteCash.BoolValue)
 				scale = 1.0;
 			
-			damage *= scale * 0.001;
+			damage *= scale * 0.01;
 		}
 		else
 		{
