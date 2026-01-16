@@ -13,7 +13,7 @@
 #undef CONSTRUCT_MAXCOUNT
 
 #define CONSTRUCT_NAME		"Control Center"
-#define CONSTRUCT_COST1		(30 + (CurrentLevel * 45))
+#define CONSTRUCT_COST1		(20 + (CurrentLevel * 30))
 #define CONSTRUCT_MAXLVL	3
 #define CONSTRUCT_MAXCOUNT	1
 
