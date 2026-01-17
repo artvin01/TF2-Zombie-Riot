@@ -2732,6 +2732,90 @@ void Ruina_Clean_Particles(int client)
 		i_laser_ref_id[client][i] = INVALID_ENT_REFERENCE;
 	}
 }
+stock bool IsVecEmpty(float vec[3])
+{	
+	for(int i=0 ; i < 3 ; i++) {if(vec[i]) return false;}
+	return true;
+}
+
+enum struct VectorTurnData {
+	float Origin[3];
+	float TargetVec[3];
+	float CurrentAngles[3];
+
+	float PitchSpeed;
+	float YawSpeed;
+
+	float YawRotateLeft;
+	float PitchRotateLeft;
+
+}
+
+stock float[] TurnVectorTowardsGoal(VectorTurnData Data)
+{
+	CClotBody Nada = view_as<CClotBody>(0);	//the util stuff is defined inside a methodmap. thing is, they don't use any npc specific data from the methodmap. so uh. yeah
+	float desiredPitch;
+	float desiredYaw;
+	if(!IsVecEmpty(Data.Origin)) {
+		//we have a valid origin, therefor assume its a turn from one location vector to another location vector.
+		float SubractedVec[3];
+		Data.Origin[2] += 1.0;
+		for(int i=0 ; i < 3 ; i++) {SubractedVec[i] = Data.TargetVec[i] - Data.Origin[i];}
+		
+		desiredPitch = Nada.UTIL_VecToPitch( SubractedVec );
+		desiredYaw = Nada.UTIL_VecToYaw( SubractedVec );
+	}
+	else {
+		//otherwise the "TargetVec" is angle values.
+		desiredYaw   = Data.TargetVec[1];
+		desiredPitch = Data.TargetVec[0];	
+	}
+
+	float angles[3];
+	angles = Data.CurrentAngles;
+
+	float angleDiff_Yaw = Nada.UTIL_AngleDiff( desiredYaw, angles[1] );		//now get the difference between what we want and what we have as our angles
+	float deltaYaw = Data.YawSpeed;										//set turn speed
+	angleDiff_Yaw = fixAngle(angleDiff_Yaw);
+	Data.YawRotateLeft = angleDiff_Yaw;
+	if ( angleDiff_Yaw < -deltaYaw )	
+	{
+		angles[1] -= deltaYaw;
+	}
+	else if ( angleDiff_Yaw > deltaYaw )
+	{
+		angles[1] += deltaYaw;
+	}
+	else
+	{
+		//if the turn speed is higher then the amount needed to turn, just set the turn as the same as the difference
+		angles[1] += angleDiff_Yaw;
+	}
+	Data.YawSpeed = fabs(angleDiff_Yaw) > Data.YawSpeed ? (angleDiff_Yaw  > 0 ? Data.YawSpeed*-1.0 : Data.YawSpeed): angleDiff_Yaw;	//now set the turn rates as a return value.
+	//usefull if you wanna say make an object's "spin" dependant on how fast its turning
+	//Pitch
+	float angleDiff_Pitch = Nada.UTIL_AngleDiff( desiredPitch, angles[0] );	//now get the difference between what we want and what we have as our angles
+	float deltaPitch = Data.PitchSpeed;									//set turn speed
+	angleDiff_Pitch = fixAngle(angleDiff_Pitch);
+	Data.PitchRotateLeft = angleDiff_Pitch;
+	if ( angleDiff_Pitch < -deltaYaw )
+	{
+		angles[0] -= deltaPitch;
+	}
+	else if ( angleDiff_Pitch > deltaYaw )
+	{
+		angles[0] += deltaPitch;
+	}
+	else
+	{
+		angles[0] += angleDiff_Pitch;
+	}
+	Data.PitchSpeed = fabs(angleDiff_Pitch) > Data.PitchSpeed ? (angleDiff_Pitch  > 0 ? Data.PitchSpeed*-1.0 : Data.PitchSpeed): angleDiff_Pitch;	//now set the turn rates as a return value.
+	//usefull if you wanna say make an object's "spin" dependant on how fast its turning
+
+
+	return angles;
+}
 /*
 void Ruina_Move_Entity(int entity, float loc[3], float Ang[3], bool old=false)
 {

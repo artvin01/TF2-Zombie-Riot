@@ -356,7 +356,7 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		NpcStats_RuinaDefenseStengthen(npc.index, -0.025, true);
 		ApplyStatusEffect(npc.index, npc.index, "Ruina's Agility", 10.0);
 		if(ApplyDefaults)
-			NpcStats_RuinaAgilityStengthen(npc.index, 0.0);	
+			NpcStats_RuinaAgilityStengthen(npc.index, 1.0);	
 		NpcStats_RuinaAgilityStengthen(npc.index, 0.05, true);
 		ApplyStatusEffect(npc.index, npc.index, "Ruina's Damage", 10.0);
 		if(ApplyDefaults)
