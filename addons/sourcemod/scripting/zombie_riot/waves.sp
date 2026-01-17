@@ -202,7 +202,7 @@ void Waves_PluginStart()
 
 bool Waves_InFreeplay()
 {
-	return (!Rogue_Mode() && !Construction_Mode() && !Dungeon_Mode() && Rounds[Rounds_Default][0] && CurrentRound[Rounds_Default] >= Rounds[Rounds_Default].Length);
+	return (!Rogue_Mode() && !Construction_Mode() && !Dungeon_Mode() && Rounds[Rounds_Default] && CurrentRound[Rounds_Default] >= Rounds[Rounds_Default].Length);
 }
 
 bool Waves_InSetup()
