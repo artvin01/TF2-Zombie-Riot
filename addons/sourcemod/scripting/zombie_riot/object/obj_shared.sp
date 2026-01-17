@@ -518,6 +518,7 @@ methodmap ObjectGeneric < CClotBody
 			if(Dungeon_Mode() && value)
 			{
 				SetEntPropEnt(this.index, Prop_Data, "m_hOwnerEntity", -1);
+				ApplyStatusEffect(this.index, this.index, "Const2 Scaling For Enemy Base Nerf", 999999.0);
 			}
 			SetEntProp(this.index, Prop_Data, "m_bConstructBuilding", value);
 		}
@@ -1241,6 +1242,15 @@ void Const2_ReviveAllBuildings()
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
 		Const2_ReConstructBuilding(entity);
+	}				
+	int a;
+	entity = 0;
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(i_NpcInternalId[entity] == IsConst2Defender())
+		{
+			SetDownedState_Construct(entity, 0);
+		}
 	}
 }
 bool Const2_ReConstructBuilding(int entity)

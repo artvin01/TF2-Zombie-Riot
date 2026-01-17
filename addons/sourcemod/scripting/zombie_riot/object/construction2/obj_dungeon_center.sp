@@ -97,13 +97,6 @@ methodmap ObjectDungeonCenter < ObjectGeneric
 			func_NPCInteract[npc.index] = ClotInteract;
 			BuffTimerLimited = GetGameTime() + 160.0;
 			SetTeam(npc.index, TFTeam_Red);
-			int spawn_index = NPC_CreateByName("npc_base_construct_defender", -1, vecPos, vecAng, TFTeam_Red);
-			if(spawn_index > MaxClients)
-			{
-				NpcStats_CopyStats(npc.index, spawn_index);
-				CClotBody npc1 = view_as<CClotBody>(spawn_index);
-				npc1.m_iTargetAlly = npc.index;
-			}
 		}
 		npc.m_bConstructBuilding = true;
 		npc.m_bCannotBePickedUp = true;

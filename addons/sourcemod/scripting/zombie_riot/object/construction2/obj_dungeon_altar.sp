@@ -12,23 +12,25 @@
 #undef CONSTRUCT_RANGE
 #undef CONSTRUCT_MAXCOUNT
 
-#define CONSTRUCT_NAME		"Construct Creator"
+#define CONSTRUCT_NAME		"Construct Altar"
 #define CONSTRUCT_RESOURCE1	"iron"
 #define CONSTRUCT_COST1		(10 + (CurrentLevel * 10))
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() * 3)
-#define CONSTRUCT_DAMAGE	(10.0 * Pow(level + 1.0, 2.0))	//SET ME
+#define CONSTRUCT_DAMAGE	(3000.0 * Pow(level + 1.0, 1.85))	//SET ME
 #define CONSTRUCT_FIRERATE	1.0
-#define CONSTRUCT_RANGE		(100.0 * Pow(level + 1.0, 2.0))	//HEALTH
-#define CONSTRUCT_MAXCOUNT	(3 + level)
+#define CONSTRUCT_RANGE		(7000.0 * Pow(level + 1.0, 1.25))	//HEALTH
+#define CONSTRUCT_MAXCOUNT	(1)
 
 static int NPCId;
 static int LastGameTime;
 static int CurrentLevel;
+static int ConstructIndex;
 
-void ObjectConst2_ConstructCreator_MapStart()
+void ObjectConst2_Altar_MapStart()
 {
 	LastGameTime = -1;
 	CurrentLevel = 0;
+	ConstructIndex = -1;
 
 	PrecacheModel("models/props_barnblitz/track_switchbox_bb.mdl");
 
@@ -54,12 +56,12 @@ void ObjectConst2_ConstructCreator_MapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return ObjectConst2_ConstructCreator(client, vecPos, vecAng);
+	return ObjectConst2_Altar(client, vecPos, vecAng);
 }
 
-methodmap ObjectConst2_ConstructCreator < ObjectGeneric
+methodmap ObjectConst2_Altar < ObjectGeneric
 {
-	public ObjectConst2_ConstructCreator(int client, const float vecPos[3], const float vecAng[3])
+	public ObjectConst2_Altar(int client, const float vecPos[3], const float vecAng[3])
 	{
 		if(LastGameTime != CurrentGame)
 		{
@@ -67,7 +69,7 @@ methodmap ObjectConst2_ConstructCreator < ObjectGeneric
 			LastGameTime = CurrentGame;
 		}
 
-		ObjectConst2_ConstructCreator npc = view_as<ObjectConst2_ConstructCreator>(ObjectGeneric(client, vecPos, vecAng, "models/props_barnblitz/track_switchbox_bb.mdl", _, "600", {25.0, 25.0, 65.0},_,false));
+		ObjectConst2_Altar npc = view_as<ObjectConst2_Altar>(ObjectGeneric(client, vecPos, vecAng, "models/props_barnblitz/track_switchbox_bb.mdl", "2.0", "600", {35.0, 35.0, 30.0},_,false));
 		
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		npc.FuncCanBuild = ClotCanBuild;
@@ -75,12 +77,20 @@ methodmap ObjectConst2_ConstructCreator < ObjectGeneric
 		func_NPCDeath[npc.index] = Dungeon_BuildingDeath;
 		npc.m_bConstructBuilding = true;
 		
-		int spawn_index = NPC_CreateByName("npc_base_construct_defender", -1, vecPos, vecAng, TFTeam_Red);
+		float vecPosnorm[3];
+		vecPosnorm = vecPos;
+		float vecAngnorm[3];
+		vecAngnorm = vecAng;
+		int spawn_index = NPC_CreateByName("npc_base_construct_defender", -1, vecPosnorm, vecAngnorm, TFTeam_Red);
 		if(spawn_index > MaxClients)
 		{
 			NpcStats_CopyStats(npc.index, spawn_index);
 			CClotBody npc1 = view_as<CClotBody>(spawn_index);
 			npc1.m_iTargetAlly = npc.index;
+			ConstructIndex = EntIndexToEntRef(spawn_index);
+			int level = CurrentLevel;
+			SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToNearest(CONSTRUCT_RANGE));
+			Const2UpdateAltarMinion();
 		}
 		
 		SetRotateByDefaultReturn(npc.index, 90.0);
@@ -89,18 +99,18 @@ methodmap ObjectConst2_ConstructCreator < ObjectGeneric
 	}
 }
 
-int ObjectConst2_ConstructCreator_Level()
+int ObjectConst2_Altar_Level()
 {
 	return CurrentLevel;
 }
 
-int ObjectConst2_ConstructCreator_Health()
+int ObjectConst2_Altar_Health()
 {
 	int level = CurrentLevel;
 	return RoundFloat(CONSTRUCT_RANGE);
 }
 
-float ObjectConst2_ConstructCreator_Damage()
+float ObjectConst2_Altar_Damage()
 {
 	int level = CurrentLevel;
 	return CONSTRUCT_DAMAGE;
@@ -150,7 +160,7 @@ static int CountBuildings()
 	return count;
 }
 
-static void ClotShowInteractHud(ObjectConst2_ConstructCreator npc, int client)
+static void ClotShowInteractHud(ObjectConst2_Altar npc, int client)
 {
 	char viality[64];
 	BuildingVialityDisplay(client, npc.index, viality, sizeof(viality));
@@ -169,7 +179,7 @@ static void ClotShowInteractHud(ObjectConst2_ConstructCreator npc, int client)
 	}
 }
 
-static bool ClotInteract(int client, int weapon, ObjectConst2_ConstructCreator npc)
+static bool ClotInteract(int client, int weapon, ObjectConst2_Altar npc)
 {
 	ThisBuildingMenu(client);
 	return true;
@@ -236,8 +246,26 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 				EmitSoundToAll("ui/chime_rd_2base_pos.wav");
 
 				CurrentLevel++;
+				Const2UpdateAltarMinion();
 			}
 		}
 	}
 	return 0;
+}
+
+void Const2UpdateAltarMinion()
+{
+	int iNpc = EntRefToEntIndex(ConstructIndex);
+	if(!IsValidEntity(iNpc))
+		return;
+
+	//update max health
+	int level = CurrentLevel;
+	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToNearest(CONSTRUCT_RANGE));
+}
+
+float Const2AltarDamageGet()
+{
+	int level = CurrentLevel;
+	return CONSTRUCT_DAMAGE;
 }

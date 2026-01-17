@@ -132,6 +132,7 @@ void NPC_ConfigSetup()
 	ObjectDCaliberTurret_MapStart();
 	ObjectDMinigunTurret_MapStart();
 	ObjectDMortar_MapStart();
+	ObjectConst2_Altar_MapStart();
 
 	// Level 3
 	ObjectDLightHouse_MapStart();
@@ -1548,6 +1549,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/construction/obj_const_helper.sp"
 #include "object/construction/obj_const_voidstone.sp"
 #include "object/construction2/obj_dungeon_center.sp"
+#include "object/construction2/obj_dungeon_altar.sp"
 #include "object/construction2/obj_dungeon_crafter.sp"
 #include "object/construction2/obj_dungeon_dispenser.sp"
 #include "object/construction2/obj_dungeon_lighthouse.sp"

@@ -215,6 +215,14 @@
 	{
 		"en"	"The objective, protect this building to survive, use it to upgrade and do certain tasks."
 	}
+	"Construct Altar"
+	{
+		"en"	"Construct Altar"
+	}
+	"Construct Altar Desc"
+	{
+		"en"	"Summons a great Construct with help from alaxios, it will defend the controll point."
+	}
 	"No Actions Needed"
 	{
 		"en"	"No Actions Needed"

@@ -5580,6 +5580,7 @@ void StatusEffects_Construction()
 	data.OnTakeDamage_DealFunc 		= Const2_Nerf_DamageScalingdeal;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.ElementalLogic				= true;
 	StatusEffect_AddGlobal(data);
 }
 
