@@ -630,7 +630,7 @@ public void OnPostThink(int client)
 		if(f_LivingArmorPenalty[client] < GetGameTime() && Attributes_Get(client, Attrib_Armor_AliveMode, 0.0) != 0.0)
 		{
 			//regen armor if out of battle
-			if(f_TimeUntillNormalHeal[client] < GetGameTime())
+			if(f_TimeUntillNormalHeal[client] < GetGameTime() && dieingstate[client] == 0)
 			{
 				if(Armor_Charge[client] >= 0)
 				{

@@ -2021,18 +2021,22 @@
 	"Golden Squad Construct"
 	{
 		"en"		"Golden Squad Construct"
+		"ko"		"황금 부대 고대 조각상"
 	}
 	"Golden Squad Swordsman"
 	{
 		"en"		"Golden Squad Swordsman"
+		"ko"		"황금 부대 검병"
 	}
 	"Golden Squad Crossbowman"
 	{
 		"en"		"Golden Squad Crossbowman"
+		"ko"		"황금 부대 석궁병"
 	}
 	"Golden Squad Eagleman"
 	{
 		"en"		"Golden Squad Eagleman"
+		"ko"		"황금 부대 독수리 전사"
 	}
 	"Trebuchet"
 	{
@@ -4017,7 +4021,7 @@
 	{
 		"en"	"Void Spawn.\nBuffs enemies around itself on death."
 		"it"	"Void Spawn.\nBuffa i nemici intorno a sé alla morte."
-		"ko"	"공허에서 태어난 존재입니다.\n사망 시, 주변 아군에게 버프를 부여합니다.
+		"ko"	"공허에서 태어난 존재입니다.\n사망 시, 주변 아군에게 버프를 부여합니다."
 	}
 	"Growing Exat"
 	{
