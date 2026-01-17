@@ -18,7 +18,7 @@
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() * 3)
 #define CONSTRUCT_DAMAGE	(10.0 * Pow(level + 1.0, 2.0))	//SET ME
 #define CONSTRUCT_FIRERATE	1.0
-#define CONSTRUCT_RANGE		1100.0
+#define CONSTRUCT_RANGE		(100.0 * Pow(level + 1.0, 2.0))	//HEALTH
 #define CONSTRUCT_MAXCOUNT	(3 + level)
 
 static int NPCId;
