@@ -2070,7 +2070,6 @@ void Dungeon_EnemySpawned(int entity)
 			}
 			case 1:	// Dungeon NPC
 			{
-				
 				//nerf enemies in dungeons by 10%
 				fl_Extra_Damage[entity] *= 0.9;
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.9));
@@ -2119,7 +2118,7 @@ void Dungeon_EnemySpawned(int entity)
 					int goal = DefaultTotalCash(round);
 					if(current < goal)
 					{
-						int reward = (goal - current) / RoundToNearest((float((b_thisNpcIsABoss[entity] ? 5 : 50)) * MultiGlobalEnemy));
+						int reward = (goal - current) / RoundToNearest((float((b_thisNpcIsABoss[entity] ? 4 : 40)) * MultiGlobalEnemy));
 						if(reward < 5)
 							reward = 5;
 						
