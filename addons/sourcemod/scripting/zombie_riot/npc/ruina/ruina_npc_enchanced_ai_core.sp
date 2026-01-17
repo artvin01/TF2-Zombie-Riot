@@ -111,6 +111,7 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 
 #define BEAM_COMBINE_BLACK	"materials/sprites/combineball_trail_black_1.vmt"
 #define BEAM_COMBINE_BLUE	"materials/sprites/combineball_trail_blue_1.vmt"
+#define BEAM_DIAMOND 		"materials/sprites/physring1.vmt"
 
 int i_Ruina_Overlord_Ref;
 
@@ -249,20 +250,20 @@ void Ruina_Ai_Core_Mapstart()
 
 	i_Ruina_Overlord_Ref = INVALID_ENT_REFERENCE;
 	
-	g_Ruina_Laser_BEAM = PrecacheModel("materials/sprites/laserbeam.vmt", true);
+	g_Ruina_Laser_BEAM 			= PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	//gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
-	g_Ruina_BEAM_Diamond = PrecacheModel("materials/sprites/physring1.vmt", true);
-	g_Ruina_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
-	g_Ruina_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
-	g_Ruina_BEAM_Combine_Black 	= PrecacheModel("materials/sprites/combineball_trail_black_1.vmt", true);
-	g_Ruina_BEAM_Combine_Blue 	= PrecacheModel("materials/sprites/combineball_trail_blue_1.vmt", true);
+	g_Ruina_BEAM_Diamond 		= PrecacheModel(BEAM_DIAMOND, true);
+	g_Ruina_BEAM_Laser 			= PrecacheModel("materials/sprites/laser.vmt", true);
+	g_Ruina_HALO_Laser 			= PrecacheModel("materials/sprites/halo01.vmt", true);
+	g_Ruina_BEAM_Combine_Black 	= PrecacheModel(BEAM_COMBINE_BLACK, true);
+	g_Ruina_BEAM_Combine_Blue 	= PrecacheModel(BEAM_COMBINE_BLUE, true);
 
-	g_Ruina_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
+	g_Ruina_BEAM_Glow 			= PrecacheModel("sprites/glow02.vmt", true);
 
-	g_Ruina_BEAM_lightning= PrecacheModel("materials/sprites/lgtning.vmt", true);
+	g_Ruina_BEAM_lightning		= PrecacheModel("materials/sprites/lgtning.vmt", true);
 
-	g_Ruina_Glow_Blue = PrecacheModel("sprites/blueglow2.vmt", true);
-	g_Ruina_Glow_Red = PrecacheModel("sprites/redglow2.vmt", true);
+	g_Ruina_Glow_Blue 			= PrecacheModel("sprites/blueglow2.vmt", true);
+	g_Ruina_Glow_Red 			= PrecacheModel("sprites/redglow2.vmt", true);
 }
 static void OffsetGive_BatteryChargeStatus(int ref)
 {
