@@ -13,52 +13,28 @@
 #undef CONSTRUCT_MAXCOUNT
 
 #define CONSTRUCT_NAME		"Construct Creator"
-#define CONSTRUCT_RESOURCE1	"wood"
-#define CONSTRUCT_RESOURCE2	"crystal"
-#define CONSTRUCT_COST1		20
-#define CONSTRUCT_COST2		2
-#define CONSTRUCT_MAXCOUNT	1
-
-enum
-{
-	Pack_None = -1,
-
-	Pack_Discount = 0,
-	Pack_Damage,
-	Pack_FireRate,
-	Pack_Reload,
-	Pack_Defensive,
-	Pack_Offensive,
-
-	Pack_MAX
-}
-
-static const char PackName[][] =
-{
-	"Clearance Focus",
-	"Power Focus",
-	"Handling Focus",
-	"Refreshing Focus",
-	"Defensive Focus",
-	"Offensive Focus",
-};
+#define CONSTRUCT_RESOURCE1	"iron"
+#define CONSTRUCT_COST1		(10 + (CurrentLevel * 10))
+#define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() * 3)
+#define CONSTRUCT_DAMAGE	(10.0 * Pow(level + 1.0, 2.0))	//SET ME
+#define CONSTRUCT_FIRERATE	1.0
+#define CONSTRUCT_RANGE		1100.0
+#define CONSTRUCT_MAXCOUNT	(3 + level)
 
 static int NPCId;
-static float GlobalCooldown;
 static int LastGameTime;
-
-static IntMap WeaponPacked;
+static int CurrentLevel;
 
 void ObjectConst2_ConstructCreator_MapStart()
 {
-	LastGameTime = -2;
-
+	LastGameTime = -1;
+	CurrentLevel = 0;
 
 	PrecacheModel("models/props_barnblitz/track_switchbox_bb.mdl");
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), CONSTRUCT_NAME);
-	strcopy(data.Plugin, sizeof(data.Plugin), "obj_dungeon_crafter");
+	strcopy(data.Plugin, sizeof(data.Plugin), "obj_dungeon_altar");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -68,7 +44,7 @@ void ObjectConst2_ConstructCreator_MapStart()
 
 	BuildingInfo build;
 	build.Section = 3;
-	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_crafter");
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_altar");
 	build.Cost = 400;
 	build.Health = 100;
 	build.Cooldown = 20.0;
@@ -87,13 +63,12 @@ methodmap ObjectConst2_ConstructCreator < ObjectGeneric
 	{
 		if(LastGameTime != CurrentGame)
 		{
-			delete WeaponPacked;
+			CurrentLevel = 0;
 			LastGameTime = CurrentGame;
 		}
 
-		ObjectConst2_ConstructCreator npc = view_as<ObjectConst2_ConstructCreator>(ObjectGeneric(client, vecPos, vecAng, "models/props_barnblitz/track_switchbox_bb.mdl", _, "600", {25.0, 25.0, 65.0}));
+		ObjectConst2_ConstructCreator npc = view_as<ObjectConst2_ConstructCreator>(ObjectGeneric(client, vecPos, vecAng, "models/props_barnblitz/track_switchbox_bb.mdl", _, "600", {25.0, 25.0, 65.0},_,false));
 		
-		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
@@ -112,6 +87,23 @@ methodmap ObjectConst2_ConstructCreator < ObjectGeneric
 
 		return npc;
 	}
+}
+
+int ObjectConst2_ConstructCreator_Level()
+{
+	return CurrentLevel;
+}
+
+int ObjectConst2_ConstructCreator_Health()
+{
+	int level = CurrentLevel;
+	return RoundFloat(CONSTRUCT_RANGE);
+}
+
+float ObjectConst2_ConstructCreator_Damage()
+{
+	int level = CurrentLevel;
+	return CONSTRUCT_DAMAGE;
 }
 
 static bool ClotCanBuild(int client, int &count, int &maxcount)
@@ -158,68 +150,64 @@ static int CountBuildings()
 	return count;
 }
 
-static bool ClotCanUse(ObjectConst2_ConstructCreator npc, int client)
-{
-	if(GlobalCooldown > GetGameTime())
-		return false;
-
-	return true;
-}
-
 static void ClotShowInteractHud(ObjectConst2_ConstructCreator npc, int client)
 {
 	char viality[64];
 	BuildingVialityDisplay(client, npc.index, viality, sizeof(viality));
 
-	if(GlobalCooldown > GetGameTime())
+	if(CurrentLevel >= CONSTRUCT_MAXLVL)
 	{
-		PrintCenterText(client, "%s\n%t", viality, "Object Cooldown", GlobalCooldown - GetGameTime());
-	}
-	else if(Dungeon_AtLimitNotice())
-	{
-		PrintCenterText(client, "%s\nUpgrade Houses to collect more cash");
+		PrintCenterText(client, "%s\n%t", viality, ObjectDungeonCenter_Level() < ObjectDungeonCenter_MaxLevel() ? "Upgrade Max Limited" : "Upgrade Max");
 	}
 	else
 	{
+		SetGlobalTransTarget(client);
+
 		char button[64];
 		PlayerHasInteract(client, button, sizeof(button));
-		PrintCenterText(client, "%s\n%sto pack weapons using materials.", viality, button);
+		PrintCenterText(client, "%s\n%t", viality, "Upgrade Using Materials", CurrentLevel + 1, CONSTRUCT_MAXLVL + 1, button);
 	}
 }
 
 static bool ClotInteract(int client, int weapon, ObjectConst2_ConstructCreator npc)
 {
-	if(!ClotCanUse(npc, client))
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		return true;
-	}
-
 	ThisBuildingMenu(client);
 	return true;
 }
 
 static void ThisBuildingMenu(int client)
 {
-	if(LastGameTime != CurrentGame)
-	{
-		delete WeaponPacked;
-		LastGameTime = CurrentGame;
-	}
-
 	int amount1 = Construction_GetMaterial(CONSTRUCT_RESOURCE1);
-	int amount2 = Construction_GetMaterial(CONSTRUCT_RESOURCE2);
 
 	SetGlobalTransTarget(client);
 
 	Menu menu = new Menu(ThisBuildingMenuH);
 
-	menu.SetTitle("%t\n%d / %d %t\n%d / %d %t\n ", CONSTRUCT_NAME, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1, amount2, CONSTRUCT_COST2, "Material " ... CONSTRUCT_RESOURCE2);
+	int level = CurrentLevel;
+	float damagePre = CONSTRUCT_DAMAGE / CONSTRUCT_FIRERATE * DMGMULTI_CONST2_RED;
+	float healthPre = CONSTRUCT_RANGE;
 
+	level = CurrentLevel + 1;
+	float damagePost = CONSTRUCT_DAMAGE / CONSTRUCT_FIRERATE * DMGMULTI_CONST2_RED;
+	float healthPost = CONSTRUCT_RANGE;
+	
 	char buffer[64];
-	FormatEx(buffer, sizeof(buffer), "%t", "Pack Random Weapon");
-	menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) || (amount2 < CONSTRUCT_COST2) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
+	if(CurrentLevel >= CONSTRUCT_MAXLVL)
+	{
+		menu.SetTitle("%t\n%.0f Range\n%.0f DPS", CONSTRUCT_NAME, healthPre, damagePre);
+
+		FormatEx(buffer, sizeof(buffer), "Level %d", CurrentLevel + 1);
+		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+	}
+	else
+	{
+		menu.SetTitle("%t\n%.0f (+%.0f) Health\n%.0f (+%.0f) DPS", CONSTRUCT_NAME, healthPre, healthPost - healthPre, damagePre, damagePost - damagePre);
+
+		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t", "Upgrade Building To", CurrentLevel + 2, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
+		menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	}
+	
 	menu.Display(client, MENU_TIME_FOREVER);
 }
 
@@ -238,200 +226,18 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 				PrintToChat(client, "%T", CONSTRUCT_NAME ... " Desc", client);
 				ThisBuildingMenu(client);
 			}
-			else if(GlobalCooldown < GetGameTime() && Construction_GetMaterial(CONSTRUCT_RESOURCE1) >= CONSTRUCT_COST1 && Construction_GetMaterial(CONSTRUCT_RESOURCE2) >= CONSTRUCT_COST2)
+			else if(CurrentLevel < CONSTRUCT_MAXLVL && Construction_GetMaterial(CONSTRUCT_RESOURCE1) >= CONSTRUCT_COST1)
 			{
-				GlobalCooldown = GetGameTime() + 120.0;
+				CPrintToChatAll("%t", "Player Used 1 to", client, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
+				CPrintToChatAll("%t", "Upgraded Building To", CONSTRUCT_NAME, CurrentLevel + 2);
 
-				CPrintToChatAll("%t", "Player Used 2 to", client, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1, CONSTRUCT_COST2, "Material " ... CONSTRUCT_RESOURCE2);
-				
 				Construction_AddMaterial(CONSTRUCT_RESOURCE1, -CONSTRUCT_COST1, true);
-				Construction_AddMaterial(CONSTRUCT_RESOURCE2, -CONSTRUCT_COST2, true);
 
-				EmitSoundToAll("ui/chime_rd_2base_neg.wav");
+				EmitSoundToAll("ui/chime_rd_2base_pos.wav");
 
-				ApplyRandomEffect();
+				CurrentLevel++;
 			}
 		}
 	}
 	return 0;
-}
-
-static void ApplyRandomEffect()
-{
-	int index = -1;
-	char buffer1[64];
-	static Item item;
-	static ItemInfo info;
-
-	// Only a chance to grab a weapon someone actually owns
-	if((GetURandomInt() % 2) == 0)
-	{
-		ArrayList list = new ArrayList();
-
-		int owned, scale, equip, sell, hidden;
-
-		for(int client = 1; client <= MaxClients; client++)
-		{
-			if(b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client) == 2)
-			{
-				for(int i; Store_GetNextItem(client, i, owned, scale, equip, sell, buffer1, sizeof(buffer1), hidden); i++)
-				{
-					if(owned && !hidden && sell > 0 && list.FindValue(i) == -1)
-					{
-						if(Store_GetItemData(i, item, info) && ValidWeapon(i, info))
-							list.Push(i);
-					}
-				}
-			}
-		}
-		
-		int length = list.Length;
-		if(length)
-			index = list.Get(GetURandomInt() % length);
-
-		delete list;
-	}
-
-	if(index == -1)
-	{
-		ArrayList list = new ArrayList();
-
-		for(int i; Store_GetItemData(i, item, info); i++)
-		{
-			if(ValidWeapon(i, info))
-				list.Push(i);
-		}
-		
-		int length = list.Length;
-		if(length)
-			index = list.Get(GetURandomInt() % length);
-
-		delete list;
-	}
-
-	if(index == -1)
-	{
-		PrintToChatAll("NOTHING????!??!");
-		return;
-	}
-
-	int type = GetURandomInt() % Pack_MAX;
-
-	if(!WeaponPacked)
-		WeaponPacked = new IntMap();
-	
-	WeaponPacked.SetValue(index, type);
-
-	Store_GetItemData(index, item, info);
-
-	char buffer2[64];
-	FormatEx(buffer1, sizeof(buffer1), "%s Desc", PackName[type]);
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			SetGlobalTransTarget(client);
-			TranslateItemName(client, item.Name, info.Custom_Name, buffer2, sizeof(buffer2));
-			CPrintToChat(client, "%t", "Weapon Has Packed", buffer2, PackName[type], buffer1);
-		}
-	}
-
-	switch(type)
-	{
-		case Pack_Discount:
-			Store_DiscountNamedItem(item.Name, 999, 0.7);
-	}
-}
-
-static bool ValidWeapon(int index, ItemInfo info)
-{
-	return info.Cost_Unlock > 0 && info.Cost_Unlock < 99999 && info.Classname[0] && !GemCrafter_HasEffect(index);
-}
-
-bool GemCrafter_HasEffect(int index)
-{
-	if(WeaponPacked)
-		return WeaponPacked.ContainsKey(index);
-	
-	return false;
-}
-
-void GemCrafter_ExtraDesc(int client, int index)
-{
-	if(WeaponPacked)
-	{
-		int type = -1;
-		if(WeaponPacked.GetValue(index, type) && type >= 0)
-		{
-			char buffer[64];
-			FormatEx(buffer, sizeof(buffer), "%s Desc", PackName[type]);
-
-			SetGlobalTransTarget(client);
-			CPrintToChat(client, "{yellow}%t\n%t", PackName[type], buffer);
-		}
-	}
-}
-
-void GemCrafter_Enable(int client, int weapon)
-{
-	if(WeaponPacked && client)
-	{
-		int type = -1;
-		if(WeaponPacked.GetValue(StoreWeapon[weapon], type))
-		{
-			ApplyPackAttribs(type, weapon);
-		}
-	}
-}
-
-static void ApplyPackAttribs(int type, int weapon)
-{
-	switch(type)
-	{
-		case Pack_Damage:
-		{
-			if(Attributes_Has(weapon, 2))
-				Attributes_SetMulti(weapon, 2, 1.2);
-			
-			if(Attributes_Has(weapon, 8))
-				Attributes_SetMulti(weapon, 8, 1.2);
-		}
-		case Pack_FireRate:
-		{
-			if(Attributes_Has(weapon, 6))
-			{
-				Attributes_SetMulti(weapon, 6, 1.0 / 1.2);
-			}
-			else
-			{
-				ApplyPackAttribs(Pack_Damage, weapon);
-			}
-		}
-		case Pack_Reload:
-		{
-			if(Attributes_Has(weapon, 97))
-			{
-				Attributes_SetMulti(weapon, 97, 1.0 / 1.2);
-			}
-			else if(Attributes_Has(weapon, 733))
-			{
-				Attributes_SetMulti(weapon, 733, 1.0 / 1.2);
-			}
-			else
-			{
-				ApplyPackAttribs(Pack_FireRate, weapon);
-			}
-		}
-		case Pack_Defensive, Pack_Offensive:
-		{
-			if(Dungeon_InSetup() == (type == Pack_Defensive))
-			{
-				if(Attributes_Has(weapon, 2))
-					Attributes_SetMulti(weapon, 2, 1.4);
-				
-				if(Attributes_Has(weapon, 8))
-					Attributes_SetMulti(weapon, 8, 1.4);
-			}
-		}
-	}
 }
