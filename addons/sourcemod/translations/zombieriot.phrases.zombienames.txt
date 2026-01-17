@@ -7777,6 +7777,14 @@
 	{
 		"en"	"Gestapo"
 	}
+	"HMS: Regalia"
+	{
+		"en"	"HMS: Regalia"
+	}
+	"HMS: Regalia Desc"
+	{
+		"en"	"Regalia class Battlecruiser"
+	}
 	"Upgraded Militia"
 	{
 		"en" 		"Militia"
