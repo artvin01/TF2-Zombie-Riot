@@ -754,7 +754,6 @@ float Cybergrind_EX_Hard_DamageFunc(int attacker, int victim, StatusEffect Apply
 float Cybergrind_EX_Hard_SpeedFunc(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	float f_Speed = 1.06;
-	int GetWaves = Waves_GetRound()+1;
 	if(NpcStats_IsEnemySilenced(victim))f_Speed = 1.0;
 	else if(Waves_GetRound()>44)f_Speed = 1.05;
 	else if(Waves_GetRound()>43)f_Speed = 1.06;
