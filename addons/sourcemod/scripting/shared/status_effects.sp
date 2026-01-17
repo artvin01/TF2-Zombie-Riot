@@ -715,35 +715,38 @@ float Chaos_Coil_Func(int attacker, int victim, StatusEffect Apply_MasterStatusE
 float Cybergrind_EX_Hard_ResistanceFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
 	float f_Resistance = 0.8;
-	if(Waves_GetRound()+1>64)f_Resistance = 0.95;
-	else if(Waves_GetRound()+1>63)f_Resistance = 0.9;
-	else if(Waves_GetRound()+1>62)f_Resistance = 0.9;
-	else if(Waves_GetRound()+1>59)f_Resistance = 0.8;
-	else if(Waves_GetRound()+1>58)f_Resistance = 0.8;
-	else if(Waves_GetRound()+1>44)f_Resistance = 0.8;
-	else if(Waves_GetRound()+1>43)f_Resistance = 0.8;
-	else if(Waves_GetRound()+1>29)f_Resistance = 0.75;
-	else if(Waves_GetRound()+1>28)f_Resistance = 0.8;
-	else if(Waves_GetRound()+1>14)f_Resistance = 0.75;
-	if(NpcStats_IsEnemySilenced(victim))f_Resistance*=1.0/(f_Resistance*1.25);
+	int GetWaves = Waves_GetRound()+1;
+	if(GetWaves>43)
+	{
+		if(CountPlayersOnRed()>4)
+			f_Resistance = 0.8;
+		else
+			f_Resistance = 0.95;
+	}
+	else if(GetWaves>29)f_Resistance = 0.75;
+	else if(GetWaves>28)f_Resistance = 0.8;
+	else if(GetWaves>14)f_Resistance = 0.75;
+	if(NpcStats_IsEnemySilenced(victim))f_Resistance*=1.0/(f_Resistance*1.2);
 	if(f_Resistance>1.0)f_Resistance=1.0;
-	
 	return f_Resistance;
 }
 
 float Cybergrind_EX_Hard_DamageFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
 	float f_Damage = 1.25;
+	int GetWaves = Waves_GetRound()+1;
 	if(NpcStats_IsEnemySilenced(victim))f_Damage = 1.1;
-	else if(Waves_GetRound()+1>64)f_Damage = 1.25;
-	else if(Waves_GetRound()+1>63)f_Damage = 1.25;
-	else if(Waves_GetRound()+1>62)f_Damage = 1.25;
-	else if(Waves_GetRound()+1>58)f_Damage = 1.3;
-	else if(Waves_GetRound()+1>44)f_Damage = 1.25;
-	else if(Waves_GetRound()+1>43)f_Damage = 1.35;
-	else if(Waves_GetRound()+1>29)f_Damage = 1.25;
-	else if(Waves_GetRound()+1>28)f_Damage = 1.3;
-	else if(Waves_GetRound()+1>14)f_Damage = 1.25;
+	else if(GetWaves>44)
+	{
+		if(CountPlayersOnRed()>4)
+			f_Damage = 1.25;
+		else
+			f_Damage = 1.15;
+	}
+	else if(GetWaves>43)f_Damage = 1.35;
+	else if(GetWaves>29)f_Damage = 1.25;
+	else if(GetWaves>28)f_Damage = 1.3;
+	else if(GetWaves>14)f_Damage = 1.25;
 	if(f_Damage<1.0)f_Damage=1.0;
 	return f_Damage;
 }
@@ -751,16 +754,13 @@ float Cybergrind_EX_Hard_DamageFunc(int attacker, int victim, StatusEffect Apply
 float Cybergrind_EX_Hard_SpeedFunc(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	float f_Speed = 1.06;
+	int GetWaves = Waves_GetRound()+1;
 	if(NpcStats_IsEnemySilenced(victim))f_Speed = 1.0;
-	else if(Waves_GetRound()+1>64)f_Speed = 1.01;
-	else if(Waves_GetRound()+1>63)f_Speed = 1.01;
-	else if(Waves_GetRound()+1>62)f_Speed = 1.01;
-	else if(Waves_GetRound()+1>58)f_Speed = 1.04;
-	else if(Waves_GetRound()+1>44)f_Speed = 1.05;
-	else if(Waves_GetRound()+1>43)f_Speed = 1.06;
-	else if(Waves_GetRound()+1>29)f_Speed = 1.05;
-	else if(Waves_GetRound()+1>28)f_Speed = 1.06;
-	else if(Waves_GetRound()+1>14)f_Speed = 1.06;
+	else if(Waves_GetRound()>44)f_Speed = 1.05;
+	else if(Waves_GetRound()>43)f_Speed = 1.06;
+	else if(Waves_GetRound()>29)f_Speed = 1.05;
+	else if(Waves_GetRound()>28)f_Speed = 1.06;
+	else if(Waves_GetRound()>14)f_Speed = 1.06;
 	return f_Speed;
 }
 #endif
