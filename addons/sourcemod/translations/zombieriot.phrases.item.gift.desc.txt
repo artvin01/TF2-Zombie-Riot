@@ -3067,7 +3067,7 @@
 	{
 		"en"		"Strongest variant of Agent Zach. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Gains more movement speed over time."
 		"it"		"La variante più forte degli agenti ingegneri."
-		"ko"		"자크 요원의 강화 버전.\n-원거리 공격을 보유함\n-적중 시, 대상에게 오염 원소 피해를 부여\n-시간이 지날 수록 이동 속도 증가
+		"ko"		"자크 요원의 강화 버전.\n-원거리 공격을 보유함\n-적중 시, 대상에게 오염 원소 피해를 부여\n-시간이 지날 수록 이동 속도 증가"
 	}
 	"Agent Ross Desc"
 	{
@@ -3448,7 +3448,7 @@
 	"Victorian Artillerist Desc"
     {
         "en"    "Elite ranged unit of Victorian army. -Has infinite attack range. \n -Bombard the target and the area around it with some windup \n(When signalled) Attackspeed hastened massively"
-		"ko"	"초원거리에서 타깃 지점으로 광역포격을 합니다.\n(시그널 버프시) 공격속도가 빨라집니다
+		"ko"	"초원거리에서 타깃 지점으로 광역포격을 합니다.\n(시그널 버프시) 공격속도가 빨라집니다"
 	}
 	"Bomb Cart Desc"
 	{
