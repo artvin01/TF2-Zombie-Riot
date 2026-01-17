@@ -284,6 +284,7 @@ static void ThisBuildingMenu(int client)
 	menu.Display(client, MENU_TIME_FOREVER);
 }
 
+
 static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)

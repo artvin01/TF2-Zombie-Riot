@@ -1192,6 +1192,7 @@ void NPC_ConfigSetup()
 	GlugOnMapStart();
 	Const2SpawnerOnMapStart();
 	Const2BuildingCreateOnMapStart();
+	Const2BaseConstructDefender_OnMapStart_NPC();
 	
 	DungeonLoot_MapStart();
 }
@@ -2592,4 +2593,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/construction2/npc_glug.sp"
 #include "npc/construction/construction2/npc_const2_spawner.sp"
 #include "npc/construction/construction2/npc_const2_building_spawner.sp"
+#include "npc/construction/construction2/npc_base_construct_defender.sp"
 #include "npc/construction/npc_dungeon_loot.sp"

@@ -44,6 +44,8 @@ static const char g_MeleeBroke[][] =
 {
 	"player/taunt_sorcery_staff_break.wav",
 };
+
+
 void BarbaricTeardownOnMapStart()
 {
 	PrecacheSoundArray(g_DeathSounds);
