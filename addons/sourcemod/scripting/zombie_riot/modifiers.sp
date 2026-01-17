@@ -34,7 +34,6 @@ public void Modifier_Collect_ChaosIntrusion()
 char SkynameSave[32];
 public void Modifier_Collect_ChaosIntrusion_LvL3_Const2()
 {
-	Modifier_Collect_ChaosIntrusion();
 	CvarSkyName.GetString(SkynameSave, sizeof(SkynameSave));
 	Waves_SetSkyName("space_5");
 	ToggleEntityByName("color_correct_entity_hard", true);
@@ -42,7 +41,6 @@ public void Modifier_Collect_ChaosIntrusion_LvL3_Const2()
 
 public void Modifier_Remove_ChaosIntrusion_LvL3_Const2()
 {
-	Modifier_Remove_ChaosIntrusion();
 	Waves_SetSkyName(SkynameSave);
 	ToggleEntityByName("color_correct_entity_hard", false);
 }

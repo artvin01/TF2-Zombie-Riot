@@ -183,7 +183,7 @@
 	}
 	"Dungeon Level 3 Desc"
 	{
-		"en"	"You remember what he said, who made Chaos.\n{red}Applies Chaos Intrusion modifier\n{red}Enemies sometimes get random modifiers."
+		"en"	"You remember what he said, who made Chaos.\n{red}Enemies Gain 10％ Stats\n{red}Enemies sometimes get random modifiers."
 		"ko"	"당신은 그가 말했던 것을 기억합니다. 누가 혼돈을 만들어냈는지. \n{red}''혼돈의 침입'' 난이도가 적용됩니다."
 	}
 	"Compass Fragment"

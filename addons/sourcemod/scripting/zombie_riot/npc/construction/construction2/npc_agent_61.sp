@@ -178,7 +178,7 @@ methodmap Agent61 < CClotBody
 		//find 1 target
 		//itll work wierdly but its needed.
 		//this will instead get the lowest def target, so itll target medics and non tanky targets and focus them
-		GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), false, false, npc.index, _, false);
+		GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), false, 1, npc.index, _, false);
 		for(int i; i < sizeof(enemy_2); i++)
 		{
 			if(enemy_2[i])

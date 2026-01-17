@@ -123,7 +123,7 @@ methodmap DungeonLoot < CClotBody
 static void ClotThink(int entity)
 {
 	if(Dungeon_GetEntityZone(entity) == Zone_Dungeon)
-		f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 1.50;
+		f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 0.35;
 }
 
 static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

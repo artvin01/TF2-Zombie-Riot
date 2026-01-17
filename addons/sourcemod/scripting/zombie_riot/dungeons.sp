@@ -2287,7 +2287,11 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 {
 	if(i_NpcInternalId[iNpc] == DungeonLoot_Id() ||i_NpcInternalId[iNpc] == Const2Spawner_Id())
 		return;
-	ZRModifs_ChaosIntrusionNPC(iNpc);
+		
+	fl_Extra_Damage[iNpc] *= 1.10;
+	int Health = GetEntProp(iNpc, Prop_Data, "m_iMaxHealth");
+	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 1.10));
+	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 1.10));
 
 	if(b_thisNpcIsABoss[iNpc])
 		return;

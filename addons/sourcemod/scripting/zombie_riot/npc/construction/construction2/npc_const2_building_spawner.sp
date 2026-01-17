@@ -61,10 +61,10 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 				break;
 			}
 		}
+		CClotBody npc = view_as<CClotBody>(entity);
 		if(StrContains(buffers[0], "obj_const_wall1") != -1)
 		{
 			//global res values
-			CClotBody npc = view_as<CClotBody>(entity);
 			npc.m_flMeleeArmor *= 0.75;
 			npc.m_flRangedArmor *= 0.5;
 		}
@@ -75,6 +75,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 		AddNpcToAliveList(entity, 1);	
 		SetEntityRenderColor(entity, 255, 255, 255, 255);
 		ApplyStatusEffect(entity, entity, "Const2 Scaling For Enemy Base Nerf", 999999.0);
+		npc.m_flMeleeArmor *= 1.5;
 	}
 	SetTeam(entity, team);
 	//figure out eventually
