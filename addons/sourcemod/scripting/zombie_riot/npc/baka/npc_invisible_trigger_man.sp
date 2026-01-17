@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static bool JUST_TOGGLE[MAXENTITIES];
 static bool b_Already_Link[MAXENTITIES]={false};
 static int TempTargetOne[MAXENTITIES];
 static int TempTargetTwo[MAXENTITIES];
@@ -22,6 +21,8 @@ static const char g_TeleSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_02.wav"
 };
 
+static int IsMETrigger;
+
 void ResetITMLogic()
 {
 	Zero(b_Already_Link);
@@ -38,24 +39,18 @@ void Invisible_TRIGGER_Man_OnMapStart_NPC()
 	data.Category = Type_Hidden;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	IsMETrigger=NPC_Add(data);
 }
 
 static void ClotPrecache()
 {
-	for (int i = 0; i < (sizeof(g_BlitzkriegVioce_StartSounds));	   i++) { PrecacheSound(g_BlitzkriegVioce_StartSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_TeleSounds));	   i++) { PrecacheSound(g_TeleSounds[i]);	   }
-	PrecacheModel("models/player/spy.mdl");
+	PrecacheSoundCustomArray(g_BlitzkriegVioce_StartSounds);
+	PrecacheSoundArray(g_TeleSounds);
 	PrecacheSoundCustom("zombiesurvival/altwaves_and_blitzkrieg/music/dm_end.mp3");
 	PrecacheSoundCustom("#zombiesurvival/altwaves_and_blitzkrieg/music/dm_loop1.mp3");
 	PrecacheSoundCustom("zombiesurvival/altwaves_and_blitzkrieg/music/dm_start.mp3");
-	PrecacheSoundCustom("zombiesurvival/altwaves_and_blitzkrieg/music/dm_start1.mp3");
-	PrecacheSoundCustom("zombiesurvival/altwaves_and_blitzkrieg/music/dm_start2.mp3");
-	PrecacheSoundCustom("zombiesurvival/altwaves_and_blitzkrieg/music/dm_start3.mp3");
-	PrecacheSoundCustom("zombiesurvival/altwaves_and_blitzkrieg/music/dm_start4.mp3");
-	PrecacheSoundCustom("zombiesurvival/altwaves_and_blitzkrieg/music/dm_start5.mp3");
-	PrecacheSoundCustom("zombiesurvival/altwaves_and_blitzkrieg/music/dm_start6.mp3");
 	PrecacheModel(LASERBEAM);
+	PrecacheModel("models/player/spy.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -97,6 +92,11 @@ methodmap Invisible_TRIGGER_Man < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
+	property bool m_bIsToggle
+	{
+		public get()							{ return b_Dead_Ringer_Invis_bool[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_Dead_Ringer_Invis_bool[this.index] = TempValueForProperty; }
+	}
 
 	public Invisible_TRIGGER_Man(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -119,6 +119,7 @@ methodmap Invisible_TRIGGER_Man < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.i_NPCStats=0;
+		npc.m_bIsToggle=false;
 		
 		if(Cybergrind_EX_Hard_Mode)
 		{
@@ -196,6 +197,16 @@ methodmap Invisible_TRIGGER_Man < CClotBody
 		if(!StrContains(data, "cover_true_fusion_warrior"))
 		{
 			npc.i_NPCStats=5;
+			fVerify=true;
+		}
+		if(!StrContains(data, "cybergrind_ex_hard_off"))
+		{
+			npc.i_NPCStats=7;
+			fVerify=true;
+		}
+		if(!StrContains(data, "cybergrind_ex_hard_on"))
+		{
+			npc.i_NPCStats=8;
 			fVerify=true;
 		}
 		if(!StrContains(data, "give_cash_"))
@@ -282,56 +293,22 @@ static void Cybergrind_EX_Hard_Mode_ClotThink(int iNPC)
 		return;
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-	
-	if(Waves_InSetup())
-	{
-		if(JUST_TOGGLE[npc.index])
-		{
-			bool YESISWAVE=false;
-			/*switch(Waves_GetRound()+1)
-			{
-				case 16:CPrintToChatAll("{crimson}Enemies grow restless...{default}");
-				case 31:CPrintToChatAll("{crimson}Enemies power gauge increases...{default}");
-				case 46:CPrintToChatAll("{crimson}Enemies Power The limit is lifted...{default}");
-				case 65:CPrintToChatAll("{crimson}Is 9001!!{default}");
-				default:
-				{
-					//none
-				}
-			}*/
-			if(YESISWAVE)
-			{
-				npc.i_GetWave=Waves_GetRound()+1;
-				JUST_TOGGLE[npc.index]=true;
-			}
-		}
+
+	if(npc.m_flNextThinkTime > gameTime)
 		return;
-	}
-	JUST_TOGGLE[npc.index]=false;
+	npc.m_flNextThinkTime = gameTime + 0.1;
 	
-	bool there_is_no_one=true;
+	if(npc.m_bIsToggle)
+		return;
+	
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Blue)
 		{
-			ApplyStatusEffect(npc.index, entity, "Cybergrind EX-Hard Enemy Buff", 0.5);
-			there_is_no_one=false;
+			ApplyStatusEffect(npc.index, entity, "Cybergrind EX-Hard Enemy Buff", 1.0);
 		}
 	}
-	if(there_is_no_one)
-	{
-		npc.m_flNextMeleeAttack = gameTime + 1.0;
-	}
-	else if(npc.m_flNextMeleeAttack < gameTime)
-	{
-		WaveStart_SubWaveStart(GetGameTime() + 3000.0);
-		npc.m_flNextMeleeAttack = gameTime + 2250.0;
-	}
-	
-	if(npc.m_flNextThinkTime > gameTime)
-		return;
-	npc.m_flNextThinkTime = gameTime + 0.1;
 }
 
 static void Invisible_TRIGGER_Man_ClotThink(int iNPC)
@@ -1103,26 +1080,37 @@ static void Invisible_TRIGGER_Man_ClotThink(int iNPC)
 				SmiteNpcToDeath(npc.index);
 			}
 		}
-		case 3000:
+		case 7:
 		{
-			bool there_is_no_one=true;
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-				if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Blue)
+				if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && i_NpcInternalId[entity] == IsMETrigger && GetTeam(entity) == TFTeam_Stalkers)
 				{
-					there_is_no_one=false;
+					b_Dead_Ringer_Invis_bool[entity]=true;
 				}
 			}
-			if(there_is_no_one)
+			b_NpcForcepowerupspawn[npc.index] = 0;
+			i_RaidGrantExtra[npc.index] = 0;
+			b_DissapearOnDeath[npc.index] = true;
+			b_DoGibThisNpc[npc.index] = true;
+			SmiteNpcToDeath(npc.index);
+		}
+		case 8:
+		{
+			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				npc.m_flNextMeleeAttack = gameTime + 1.0;
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && i_NpcInternalId[entity] == IsMETrigger && GetTeam(entity) == TFTeam_Stalkers)
+				{
+					b_Dead_Ringer_Invis_bool[entity]=false;
+				}
 			}
-			else if(npc.m_flNextMeleeAttack < gameTime)
-			{
-				WaveStart_SubWaveStart(GetGameTime() + 3000.0);
-				npc.m_flNextMeleeAttack = gameTime + 2250.0;
-			}
+			b_NpcForcepowerupspawn[npc.index] = 0;
+			i_RaidGrantExtra[npc.index] = 0;
+			b_DissapearOnDeath[npc.index] = true;
+			b_DoGibThisNpc[npc.index] = true;
+			SmiteNpcToDeath(npc.index);
 		}
 	}
 	
