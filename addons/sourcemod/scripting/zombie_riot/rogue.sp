@@ -2250,8 +2250,13 @@ static void StartStage(const Stage stage)
 	entity = -1;
 	while((entity = FindEntityByClassname(entity, "obj_vehicle")) != -1)
 	{
+		if(b_ThisNpcIsImmuneToNuke[entity])	// Temp car
+		{
+			RemoveEntity(entity);
+			continue;
+		}
+		
 		TeleportEntity(entity, pos, ang, NULL_VECTOR);
-		break;
 	}
 
 	switch(RogueTheme)

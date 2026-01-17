@@ -163,8 +163,8 @@
 	}
 	"Dungeon Level 1 Desc"
 	{
-		"en"	"Bob the First tasks us to help build up a new home base, gather up resources, make the base well defended.\n{green}Enemies stats -15％"
-		"ko"	"밥 1세가 우리에게 새로운 본거지를 건설하고, 자원을 모으고, 기지를 튼튼하게 대비시키는 임무를 맡겼습니다.\n{green}모든 적의 능력치 -15％"
+		"en"	"{green}Enemies stats -15％"
+		"ko"	"{green}모든 적의 능력치 -15％"
 	}
 	"Dungeon Level 2"
 	{
@@ -173,8 +173,8 @@
 	}
 	"Dungeon Level 2 Desc"
 	{
-		"en"	"Almagest didn't forget how you ruined them."
-		"ko"	"알마게스트는 당신이 그들의 계획을 망친 것을 잊지 않았습니다."
+		"en"	"Bob the First tasks us to help build up a new home base, gather up resources, make the base well defended."
+		"ko"	"밥 1세가 우리에게 새로운 본거지를 건설하고, 자원을 모으고, 기지를 튼튼하게 대비시키는 임무를 맡겼습니다."
 	}
 	"Dungeon Level 3"
 	{
@@ -183,8 +183,8 @@
 	}
 	"Dungeon Level 3 Desc"
 	{
-		"en"	"You remember what he said, who made Chaos.\n{red}Enemies Gain 10％ Stats\n{red}Enemies sometimes get random modifiers."
-		"ko"	"당신은 그가 말했던 것을 기억합니다. 누가 혼돈을 만들어냈는지. \n{red}''혼돈의 침입'' 난이도가 적용됩니다."
+		"en"	"{red}Enemies Gain 10％ Stats\n{red}Enemies sometimes get random modifiers."
+		"ko"	"{red}''혼돈의 침입'' 난이도가 적용됩니다."
 	}
 	"Compass Fragment"
 	{
@@ -360,7 +360,7 @@
 	}
 	"Upgrade Build Houses"
 	{
-		"en"	"{crimson}Upgrade and build more Houses to collect more cash!"
+		"en"	"Upgrade and build more Houses to collect more cash!"
 	}
 	"Dungeon Not Ready Yet"
 	{

@@ -19,7 +19,6 @@
 
 static float BuffTimerLimited;
 
-static const int Ending2CrystalCost = 1;
 static const int CompassCrystalCost = 3;
 static const int TreasureKeyCost = 10;
 static const int UnboxCrystalCost = 10;
@@ -220,63 +219,55 @@ static void ThisBuildingMenu(int client)
 
 	char buffer[64];
 
-	if(Rogue_HasNamedArtifact("Expidonsa Tech Chip"))
+	if(CurrentLevel < CONSTRUCT_MAXLVL && CurrentLevel < (Dungeon_CurrentAttacks() + (Dungeon_InSetup() ? 0 : -1)))
 	{
-		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Craft Item", "Expidonsa Tech Chip", crystal, Ending2CrystalCost, "Material crystal");
-		menu.AddItem("8", buffer, (crystal < Ending2CrystalCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Upgrade Building To", CurrentLevel + 2, wood, CONSTRUCT_COST1, "Material wood");
+		menu.AddItem("7", buffer, (wood < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	}
-	else
+
+	if(Dungeon_InSetup())
 	{
-		if(CurrentLevel < CONSTRUCT_MAXLVL && CurrentLevel < (Dungeon_CurrentAttacks() + (Dungeon_InSetup() ? 0 : -1)))
+		if(Rogue_HasNamedArtifact("Compass Fragment"))
 		{
-			FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Upgrade Building To", CurrentLevel + 2, wood, CONSTRUCT_COST1, "Material wood");
-			menu.AddItem("7", buffer, (wood < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Craft Item", "Dungeon Compass", crystal, CompassCrystalCost, "Material crystal");
+			menu.AddItem("1", buffer, (crystal < CompassCrystalCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		}
 
-		if(Dungeon_InSetup())
+		if(Rogue_HasNamedArtifact("Key Fragment"))
 		{
-			if(Rogue_HasNamedArtifact("Compass Fragment"))
-			{
-				FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Craft Item", "Dungeon Compass", crystal, CompassCrystalCost, "Material crystal");
-				menu.AddItem("1", buffer, (crystal < CompassCrystalCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			}
-
-			if(Rogue_HasNamedArtifact("Key Fragment"))
-			{
-				FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Craft Item", "Treasure Key", crystal, TreasureKeyCost, "Material crystal");
-				menu.AddItem("6", buffer, (crystal < TreasureKeyCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			}
+			FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Craft Item", "Treasure Key", crystal, TreasureKeyCost, "Material crystal");
+			menu.AddItem("6", buffer, (crystal < TreasureKeyCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		}
+	}
 
-		if(Rogue_HasNamedArtifact("Sealed Jalan Crate"))
-		{
-			FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Unbox Item", "Sealed Jalan Crate", crystal, unboxCost, "Material crystal");
-			menu.AddItem("2", buffer, (crystal < unboxCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		}
+	if(Rogue_HasNamedArtifact("Sealed Jalan Crate"))
+	{
+		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Unbox Item", "Sealed Jalan Crate", crystal, unboxCost, "Material crystal");
+		menu.AddItem("2", buffer, (crystal < unboxCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	}
 
-		if(Rogue_HasNamedArtifact("Sealed Wizuh Crate"))
-		{
-			FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Unbox Item", "Sealed Wizuh Crate", crystal, unboxCost, "Material crystal");
-			menu.AddItem("3", buffer, (crystal < unboxCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		}
+	if(Rogue_HasNamedArtifact("Sealed Wizuh Crate"))
+	{
+		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Unbox Item", "Sealed Wizuh Crate", crystal, unboxCost, "Material crystal");
+		menu.AddItem("3", buffer, (crystal < unboxCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	}
 
-		if(Rogue_HasNamedArtifact("Sealed Ossunia Crate"))
-		{
-			FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Unbox Item", "Sealed Ossunia Crate", crystal, unboxCost, "Material crystal");
-			menu.AddItem("4", buffer, (crystal < unboxCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		}
+	if(Rogue_HasNamedArtifact("Sealed Ossunia Crate"))
+	{
+		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Unbox Item", "Sealed Ossunia Crate", crystal, unboxCost, "Material crystal");
+		menu.AddItem("4", buffer, (crystal < unboxCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	}
 
-		if(Rogue_HasNamedArtifact("Sealed Bofazem Crate"))
-		{
-			FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Unbox Item", "Sealed Bofazem Crate", crystal, unboxCost, "Material crystal");
-			menu.AddItem("5", buffer, (crystal < unboxCost) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		}
+	if(Rogue_HasNamedArtifact("Sealed Bofazem Crate"))
+	{
+		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t\n ", "Unbox Item", "Sealed Bofazem Crate", crystal, (unboxCost * 3 / 2), "Material crystal");
+		menu.AddItem("5", buffer, (crystal < (unboxCost * 3 / 2)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	}
 
-		if(!menu.ItemCount)
-		{
-			FormatEx(buffer, sizeof(buffer), "%t", "No Actions Needed");
-			menu.AddItem("-1", buffer, ITEMDRAW_DISABLED);
-		}
+	if(!menu.ItemCount)
+	{
+		FormatEx(buffer, sizeof(buffer), "%t", "No Actions Needed");
+		menu.AddItem("-1", buffer, ITEMDRAW_DISABLED);
 	}
 
 	menu.Pagination = 3;
@@ -368,12 +359,12 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 					}
 					case 5:
 					{
-						if(Rogue_HasNamedArtifact("Sealed Bofazem Crate") && Construction_GetMaterial("crystal") >= unboxCost)
+						if(Rogue_HasNamedArtifact("Sealed Bofazem Crate") && Construction_GetMaterial("crystal") >= (unboxCost * 3 / 2))
 						{
-							CPrintToChatAll("%t", "Player Used 2 to", client, 1, "Sealed Bofazem Crate", unboxCost, "Material crystal");
+							CPrintToChatAll("%t", "Player Used 2 to", client, 1, "Sealed Bofazem Crate", (unboxCost * 3 / 2), "Material crystal");
 							
 							Rogue_RemoveNamedArtifact("Sealed Bofazem Crate");
-							Construction_AddMaterial("crystal", -unboxCost, true);
+							Construction_AddMaterial("crystal", -(unboxCost * 3 / 2), true);
 
 							EmitSoundToAll("ui/itemcrate_smash_rare.wav");
 
@@ -406,20 +397,6 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 							EmitSoundToAll("ui/chime_rd_2base_pos.wav");
 
 							CurrentLevel++;
-						}
-					}
-					case 8:
-					{
-						if(Rogue_HasNamedArtifact("Expidonsa Tech Chip") && Construction_GetMaterial("crystal") >= Ending2CrystalCost)
-						{
-							CPrintToChatAll("%t", "Player Used 2 to", client, 1, "Expidonsa Tech Chip", Ending2CrystalCost, "Material crystal");
-							
-							Rogue_RemoveNamedArtifact("Expidonsa Tech Chip");
-							Construction_AddMaterial("crystal", -Ending2CrystalCost, true);
-
-							EmitSoundToAll("ui/chime_rd_2base_neg.wav");
-
-							Rogue_GiveNamedArtifact("Expidonsa Tech Chip Install", true);
 						}
 					}
 				}

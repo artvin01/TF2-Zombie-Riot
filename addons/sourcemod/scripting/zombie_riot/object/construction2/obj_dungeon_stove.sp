@@ -132,7 +132,7 @@ static int CountBuildings()
 
 static bool ClotCanUse(ObjectDStove npc, int client)
 {
-	if(GlobalCooldown > GetGameTime())
+	if(GlobalCooldown > GetGameTime() || Dungeon_AtLimitNotice())
 		return false;
 
 	return true;
@@ -149,7 +149,7 @@ static void ClotShowInteractHud(ObjectDStove npc, int client)
 	}
 	else if(Dungeon_AtLimitNotice())
 	{
-		PrintCenterText(client, "%s\nUpgrade Houses to collect more cash");
+		PrintCenterText(client, "%s\n%t", viality, "Upgrade Build Houses");
 	}
 	else
 	{

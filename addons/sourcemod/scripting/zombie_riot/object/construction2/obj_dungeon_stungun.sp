@@ -152,9 +152,12 @@ static void ClotThink(ObjectDStunGun npc)
 		{
 			if(i_IsVehicle[target])	// EMP!!
 			{
+				AcceptEntityInput(target, "HandBrakeOn");
 				AcceptEntityInput(target, "TurnOff");
 
 				SetVariantString("OnUser4 !self:TurnOn::3:-1");
+				AcceptEntityInput(target, "AddOutput");
+				SetVariantString("OnUser4 !self:HandBrakeOff::3:-1");
 				AcceptEntityInput(target, "AddOutput");
 				AcceptEntityInput(target, "FireUser4");
 				AcceptEntityInput(target, "FireUser4");

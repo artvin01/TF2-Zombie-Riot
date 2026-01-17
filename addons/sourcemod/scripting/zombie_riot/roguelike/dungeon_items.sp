@@ -120,6 +120,12 @@ public void Dungeon_Crate_Crystal()
 	MaterialDelay("crystal", 1);
 }
 
+public void Dungeon_Crate_Crystal2()
+{
+	int amount = GetRandomInt(1, 3);
+	MaterialDelay("crystal", amount);
+}
+
 public void Dungeon_Crate_BonusCash25()
 {
 	// 50
@@ -148,4 +154,10 @@ public void Dungeon_Crate_InscriptionWhole()
 public void Dungeon_Crate_KeyFragment()
 {
 	Rogue_GiveNamedArtifact("Key Fragment");
+}
+
+public void Dungeon_ShipEnding_Collect()
+{
+	if(Dungeon_Mode() && Dungeon_InSetup())
+		Dungeon_SetRandomMusic();
 }

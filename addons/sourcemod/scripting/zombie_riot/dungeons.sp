@@ -2092,7 +2092,7 @@ void Dungeon_EnemySpawned(int entity)
 						}
 						else if(LimitNotice < 1)
 						{
-							CPrintToChatAll("%t", "Upgrade Build Houses");
+							CPrintToChatAll("{crimson}%t", "Upgrade Build Houses");
 							LimitNotice = 1;
 						}
 						else

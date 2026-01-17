@@ -1214,6 +1214,16 @@ bool Const2_BuildingDestroySpecial(int entity)
 	if(b_ThisEntityIgnored[objstats.index])
 		return false;
 
+	if(IsDungeonCenterId() == i_NpcInternalId[objstats.index])
+	{
+		int vehicle = -1;
+		while((vehicle = FindEntityByClassname(vehicle, "obj_vehicle")) != -1)
+		{
+			SetEntProp(vehicle, Prop_Data, "m_bLocked", true);
+			AcceptEntityInput(vehicle, "TurnOff");
+		}
+	}
+
 	b_ThisEntityIgnored[objstats.index] = true;
 	objstats.m_iConstructDeathModel = objstats.EquipItemSeperate("models/props_debris/concrete_debris128pile001a.mdl", .model_size = 0.75, .DontParent = true);
 	if(IsValidEntity(objstats.index))
@@ -1248,6 +1258,16 @@ bool Const2_ReConstructBuilding(int entity)
 	
 	if(!IsValidEntity(objstats.m_iConstructDeathModel))
 		return false;
+
+	if(IsDungeonCenterId() == i_NpcInternalId[objstats.index])
+	{
+		int vehicle = -1;
+		while((vehicle = FindEntityByClassname(vehicle, "obj_vehicle")) != -1)
+		{
+			SetEntProp(vehicle, Prop_Data, "m_bLocked", false);
+		}
+	}
+
 	RemoveEntity(objstats.m_iConstructDeathModel);
 	b_ThisEntityIgnored[objstats.index] = false;
 	if(IsValidEntity(objstats.index))

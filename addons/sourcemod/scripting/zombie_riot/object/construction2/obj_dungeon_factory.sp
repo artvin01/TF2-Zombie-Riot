@@ -14,7 +14,7 @@
 
 #define CONSTRUCT_NAME		"Vehicle Factory"
 #define CONSTRUCT_RESOURCE1	"iron"
-#define CONSTRUCT_COST1		(20 + (CurrentLevel * 20))
+#define CONSTRUCT_COST1		(60 + (CurrentLevel * 20))
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
 #define CONSTRUCT_MAXCOUNT	1
 
@@ -144,10 +144,7 @@ static void ClotShowInteractHud(ObjectDFactory npc, int client)
 {
 	if(GlobalCooldown > GetGameTime())
 	{
-		if(GlobalCooldown - GetGameTime() >= 999999.9)
-			PrintCenterText(client, "%t","Object Cooldown NextWave");
-		else
-			PrintCenterText(client, "%t","Object Cooldown",GlobalCooldown - GetGameTime());
+		PrintCenterText(client, "%t","Object Cooldown",GlobalCooldown - GetGameTime());
 	}
 	else if(CurrentLevel >= CONSTRUCT_MAXLVL)
 	{
@@ -188,7 +185,8 @@ static void ThisBuildingMenu(int client)
 	else
 	{
 		menu.SetTitle("%t", CONSTRUCT_NAME);
-		menu.AddItem(buffer, buffer, ITEMDRAW_SPACER); 
+		FormatEx(buffer, sizeof(buffer), "Level %d\n ", CurrentLevel + 1);
+		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
 	}
 
 	Format(buffer, sizeof(buffer), "%t", "Crouch and select to view description Alone");

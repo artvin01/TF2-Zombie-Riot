@@ -197,13 +197,8 @@ public void Construction_AH_Ally(int entity, StringMap map)
 
 public void Construction_BadExpi_Collect()
 {
-	if(!Construction_FinalBattle() && !Dungeon_FinalBattle())
-	{
+	if(!Construction_FinalBattle())
 		CreateTimer(4.0, Timer_DialogueNewEnd, 0, TIMER_FLAG_NO_MAPCHANGE);
-
-		if(Dungeon_Mode())
-			Dungeon_SetRandomMusic();
-	}
 }
 
 static Action Timer_DialogueNewEnd(Handle timer, int part)
@@ -212,6 +207,9 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 	{
 		case 0:
 		{
+			if(!Construction_Mode())
+				CPrintToChatAll("{crimson}This takes place in the first construction, it is only placed here for gameplay reasons.");
+			
 			CPrintToChatAll("{black}???{default}: Hah, I knew you'll fall for it.");
 		}
 		case 1:

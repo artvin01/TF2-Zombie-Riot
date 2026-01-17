@@ -16,7 +16,7 @@
 #define CONSTRUCT_RESOURCE1	"copper"
 #define CONSTRUCT_COST1		(20 + (CurrentLevel * 10))
 #define CONSTRUCT_MAXLVL	ObjectDungeonCenter_Level()
-#define CONSTRUCT_DAMAGE	(450.0 * Pow(level + 2.0, 2.0))
+#define CONSTRUCT_DAMAGE	(400.0 * Pow(level + 2.0, 2.0))
 #define CONSTRUCT_FIRERATE	5.0
 #define CONSTRUCT_RANGE		2000.0
 #define CONSTRUCT_MAXCOUNT	(1 + level)
