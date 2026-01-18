@@ -56,6 +56,7 @@ void ObjectDMinigunTurret_MapStart()
 	build.Func = ClotCanBuild;
 	Building_Add(build);
 
+	PrecacheSound("weapons/minigun_spin.wav");
 	PrecacheSound("weapons/minigun_wind_down.wav");
 }
 
@@ -112,7 +113,6 @@ methodmap ObjectDMinigunTurret < ObjectGeneric
 		func_NPCDeath[npc.index] = ObjectDMinigunTurret_Death;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
-		func_NPCDeath[npc.index] = Dungeon_BuildingDeath;
 		SetRotateByDefaultReturn(npc.index, -180.0);
 		SDKUnhook(npc.index, SDKHook_ThinkPost, ObjBaseThinkPost);
 		SDKHook(npc.index, SDKHook_ThinkPost, ObjBaseThinkPostSentry);
@@ -126,6 +126,7 @@ void ObjectDMinigunTurret_Death(int entity)
 {
 	ObjectDMinigunTurret npc = view_as<ObjectDMinigunTurret>(entity);
 	npc.PlayMinigunSound(false);
+	Dungeon_BuildingDeath(entity);
 }
 void ObjectDMinigunTurret_ClotThink(ObjectDMinigunTurret npc)
 {
