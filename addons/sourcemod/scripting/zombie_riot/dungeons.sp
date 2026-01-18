@@ -1977,6 +1977,10 @@ void Dungeon_BattleVictory()
 
 		CPrintToChatAll("{green}%t", "Dungeon Success");
 	}
+	
+	Zero(i_AmountDowned);
+	AttackType = 0;
+	Dungeon_DelayVoteFor(1.0);
 
 	if(AttackType == 2)
 	{
@@ -1989,10 +1993,6 @@ void Dungeon_BattleVictory()
 		ToggleEntityByName(TeleEnter, true);
 		UpdateBlockedNavmesh();
 	}
-	
-	Zero(i_AmountDowned);
-	AttackType = 0;
-	Dungeon_DelayVoteFor(1.0);
 
 	Const2_ReviveAllBuildings();
 
