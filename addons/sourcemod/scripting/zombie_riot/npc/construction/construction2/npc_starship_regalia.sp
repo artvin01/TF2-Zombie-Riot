@@ -11,14 +11,153 @@ static float fl_ShipHyperDecelerationMax = 0.5;
 
 static float fl_ShipTurnSpeed;
 /*
+	Artvins Requirements:
+		@jDeivid for the boss i need:
+
+		An escape sequence (follows certain paths, i can code that)
+		If "killed" itll try to escape
+			(Simple vector points can be used. since the npc/ship flight system follows vectors.)
+
+		It will fly off, and you must be in a radius near it or you take dmg and die
+			(use special krilian dome thing.)
+
+		It spawns beacons on the floor of which, if damaged, damages the ship (see it as stabilitezers so melees can do shit)
+			(steal anchor code, improve ten fold.)
+
+		Otherwise have fun with its abilities!!!
+
 	Behaviors:
 
+	
+	Weapons System:
+
+		Primary/Forward Lances:
+
+			Conditions To Enter:
+
+			-Ship Max Speed reduced to 5%.
+			-Ship Turn Rate increased by 300%
+
+				-Maybe on vault map. ship goes towards set points and begins beam phase.
+			
+			Lance Firing Sequence.
+				Follows a path.
+			Aquire Optimal path:
+				Find avg center of all players with the highest chance of hitting people.
+				That becomes the center of the beam.
+				Then beam start / end points are offset in a direction. roughly left to right from ship location towards enemy location. with a bit of randomness added.
+					(Mornye E skill like beams, but instead of forwards, its sideways)
+					(Or like Arqebus Balteus beam phase)
+					(Or like lelouch's crystal target crystal beams)
+					^ references for myself to understand what the fuck I typed.
+
+			Once optimal path is created. ship bow follows path. Beams fire from forward lances.
+			
+			Once path is complete. ship returns to standard behavior.
+		
+		Central Weapon Ports
+
+			Type 1:	"Lantean Drone Launchers"
+				Conditions To Enter:
+
+				Uses central weapons ports.
+				Fires x lantean projectiles.
+				Projectiles *should* in theory be killable by players.
+
+				apart from that. they behave like lantean drone projectiles (won't have perfect homing turning.)
+				-Projectile speeds would have a base speed. but an additional randomised speed. that way the projectiles won't clump up into 1 ball of doom.
+
+				Does not affect current mode. however cannot be used during beam phase.
+
+			Type 2: "Sprial"
+				Conditions To Enter:
+
+				-Ship becomes stationary
+				-Central Bottom weapons ports each create 5 beams
+				-Beams spin.
+				-Beams start to fan out. (like new pablo lasershow start.)
+				-Ability ends once beams have reach 90 degress from start.
+				
+
+		Underslung Weapons:
+
+			Type 1:
+				Conditions To Enter: Avg Vec point must have atleast X players before commiting
+
+				-Get average highest players concentration in a circle.
+				-Create IOC.
+				-IOC Draw points originate from underslung weapon ports.
+				-While IOC is charging. ship speed slowed. and forced to look towards the IOC end point.
+				-IOC spins.
+
+			Type 2:
+				Conditions To Enter: Avg Vec point must have atleast X players before commiting
+
+				-Get average highest players concentration in a circle.
+				-Create delayed X lasers pattern barrages.
+
+				-When creating a laser pattern. use underslung weapons to create a line from beam to start point.
+
+			Type 3: "Fuck You In Particular"
+				Conditions To Enter: Single player has to have done 25% of total hp of damage. can only be done oncer per player. only works if player count is above 7
+
+				-Ship becomes stationary.
+				-IOC begins charging. however it can move.
+				-IOC follows said player.
+				-IOC spins. weapon ports create beam from ports to ground end points
+				-Deals True Damage
+
+			Type 4: "Cosmic Terror"
+				Conditions To Enter: 
+
+				-Ship speed set to 80%.
+				-4 cosmic terrors appear. each one controled by a seperate weapons port.
+				-Acts like cosmic terror. just better coded.
+				Cosmic terrors last for X seconds.
+
+		Special Weapons Slot:
+
+			Ship aims downwards (Like the entire ship pitches down), and spawns a special npc. (npc coded by Artvin)
+			Use forward "bay" area as the origin point.
+				(need to add an attachment there.)
+
+			- Maybe reuse temple of scarlets V0.1 VFX for summoning/teleporting
+
+	Passive:
+
+		Constructor:
+			-Ship becomes stationary.
+			-4 Beacons spawn. (has a construction phase. like 5 seconds?)
+			-create beams from weapon ports to beacon pos.
+			-Once beacons are constructed. ship goes to normal behavior.
+
+			-Can only create beacons up to a total of 4.
+				so if there are 2 alive, and ship decides to build more, it will only build 2 more to reach the total of 4.
+
+	Beacons:
+
+		Basic Functionality:
+			- Beacons have 5% of ship hp.
+			- When beacon is damage, 25%(?) of damage taken is transfered to ship
+
+		Beacon Shield Phase:
+			Every X seconds the beacons gain a shield (armour) if you don't destroy the armour of all beacons. the ship gains a massive shield (armour)
+
+		Passive:
+			While beacon is active, a orbital beam is active. acts like stella's orbital ray. should make the system independant.
 
 	Flight isssues:
-	Required turn can become too high resulting in the ship going inverted due to rotational turn adjustment.
-		add max limits.
+	
 
-	When going over a target ship rotation get wonky.
+		When going over a target ship rotation get wonky.
+
+
+	Notes:
+
+		Seperate various parts of flight system into seperate functions:
+			Turning.
+			Velocity.
+			Destination.
 */
 
 static const char g_ShieldDamageSound[][] = {
