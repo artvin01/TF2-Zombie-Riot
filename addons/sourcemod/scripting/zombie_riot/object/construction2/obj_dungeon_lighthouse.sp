@@ -14,7 +14,7 @@
 
 #define CONSTRUCT_NAME		"Giant Lighthouse"
 #define CONSTRUCT_RESOURCE1	"iron"
-#define CONSTRUCT_COST1		80
+#define CONSTRUCT_COST1		40
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 2)
 #define CONSTRUCT_RANGE		2000.0
 #define CONSTRUCT_MAXCOUNT	(1 + level)

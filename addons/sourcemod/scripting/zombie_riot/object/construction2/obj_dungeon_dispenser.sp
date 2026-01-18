@@ -14,7 +14,7 @@
 
 #define CONSTRUCT_NAME		"The Dispenser"
 #define CONSTRUCT_RESOURCE1	"iron"
-#define CONSTRUCT_COST1		(60 + (CurrentLevel * 20))
+#define CONSTRUCT_COST1		(30 + (CurrentLevel * 10))
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
 #define CONSTRUCT_DAMAGE	(5.0 + (level * 7.5))
 #define CONSTRUCT_FIRERATE	0.5

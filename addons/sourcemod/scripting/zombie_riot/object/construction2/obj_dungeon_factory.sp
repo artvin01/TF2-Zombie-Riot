@@ -14,7 +14,7 @@
 
 #define CONSTRUCT_NAME		"Vehicle Factory"
 #define CONSTRUCT_RESOURCE1	"iron"
-#define CONSTRUCT_COST1		(60 + (CurrentLevel * 20))
+#define CONSTRUCT_COST1		(30 + (CurrentLevel * 10))
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
 #define CONSTRUCT_MAXCOUNT	1
 

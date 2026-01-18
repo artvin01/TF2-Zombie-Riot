@@ -14,7 +14,7 @@
 
 #define CONSTRUCT_NAME		"Construct Altar"
 #define CONSTRUCT_RESOURCE1	"iron"
-#define CONSTRUCT_COST1		(10 + (CurrentLevel * 10))
+#define CONSTRUCT_COST1		(5 + (CurrentLevel * 5))
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() * 3)
 #define CONSTRUCT_DAMAGE	(3000.0 * Pow(level + 1.0, 1.25))	//SET ME
 #define CONSTRUCT_FIRERATE	1.0
@@ -217,13 +217,13 @@ static void ThisBuildingMenu(int client)
 	Format(buffer, sizeof(buffer), "%s\n120s Revive Time", buffer);
 
 	// Level 2
-	if(CurrentLevel >= CONSTRUCT_MAXLVL && CurrentLevel == 0)
+	if(CONSTRUCT_MAXLVL > 0 && CurrentLevel == 0)
 		Format(buffer, sizeof(buffer), "%s\n(+New Ability: Stomp [Knockback/Stun])", buffer);
 	else if(CurrentLevel > 0)
 		Format(buffer, sizeof(buffer), "%s\nAbility: Stomp [Knockback/Stun]", buffer);
 
 	// Level 4
-	if(CurrentLevel >= CONSTRUCT_MAXLVL && CurrentLevel == 2)
+	if(CONSTRUCT_MAXLVL > 2 && CurrentLevel == 2)
 		Format(buffer, sizeof(buffer), "%s\n(+New Ability: Sword Slam [Knockback/Nuke])", buffer);
 	else if(CurrentLevel > 2)
 		Format(buffer, sizeof(buffer), "%s\nAbility: Sword Slam [Knockback/Nuke]", buffer);

@@ -332,6 +332,12 @@ static void ApplyRandomEffect()
 
 	Store_GetItemData(index, item, info);
 
+	switch(type)
+	{
+		case Pack_Discount:
+			Store_DiscountNamedItem(item.Name, 999, 0.7);
+	}
+
 	char buffer2[64];
 	FormatEx(buffer1, sizeof(buffer1), "%s Desc", PackName[type]);
 	for(int client = 1; client <= MaxClients; client++)
@@ -342,12 +348,6 @@ static void ApplyRandomEffect()
 			TranslateItemName(client, item.Name, info.Custom_Name, buffer2, sizeof(buffer2));
 			CPrintToChat(client, "%t", "Weapon Has Packed", buffer2, PackName[type], buffer1);
 		}
-	}
-
-	switch(type)
-	{
-		case Pack_Discount:
-			Store_DiscountNamedItem(item.Name, 999, 0.7);
 	}
 }
 

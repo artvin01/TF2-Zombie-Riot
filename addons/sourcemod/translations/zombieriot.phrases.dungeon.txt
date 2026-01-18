@@ -153,7 +153,7 @@
 	}
 	"Offensive Focus Desc"
 	{
-		"en"	"{green}Base damage increased by +40％ {red}only in dungeons"
+		"en"	"{green}Base damage increased by +40％ {red}only in dungeons and rival bases"
 		"ko"	"{green}기본 피해량이 +40％ 증가합니다. {red}이 효과는 던전 내부에서만 적용됩니다."
 	}
 	"Dungeon Level 1"

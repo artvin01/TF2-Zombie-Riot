@@ -80,6 +80,11 @@ methodmap ObjectC2House < ObjectGeneric
 	}
 }
 
+bool ObjectC2House_CanUpgrade()
+{
+	return CurrentLevel < CONSTRUCT_MAXLVL;
+}
+
 void ObjectC2House_ClotThink(ObjectC2House npc)
 {
 	int Owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
