@@ -1249,7 +1249,7 @@ void Const2_ReviveAllBuildings()
 	{
 		if(i_NpcInternalId[entity] == IsConst2Defender())
 		{
-			SetDownedState_Construct(entity, 0);
+			SetDownedState_Construct(entity, false);
 		}
 	}
 }

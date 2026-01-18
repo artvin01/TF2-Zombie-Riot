@@ -49,6 +49,18 @@ static const char g_MeleeHitSounds[][] = {
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/shovel_swing.wav",
 };
+static const char g_SlamHit[][] = {
+	"weapons/halloween_boss/knight_axe_miss.wav",
+};
+static const char g_StompHit[][] = {
+	"ambient/atmosphere/terrain_rumble1.wav",
+};
+static const char g_SlamPrepare[][] = {
+	"weapons/pickaxe_swing1.wav",
+};
+static const char g_StompPrepare[][] = {
+	"physics/metal/metal_box_strain4.wav",
+};
 
 static int NPCId;
 void Const2BaseConstructDefender_OnMapStart_NPC()
@@ -58,6 +70,10 @@ void Const2BaseConstructDefender_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_SlamHit)); i++) { PrecacheSound(g_SlamHit[i]); }
+	for (int i = 0; i < (sizeof(g_StompHit)); i++) { PrecacheSound(g_StompHit[i]); }
+	for (int i = 0; i < (sizeof(g_SlamPrepare)); i++) { PrecacheSound(g_SlamPrepare[i]); }
+	for (int i = 0; i < (sizeof(g_StompPrepare)); i++) { PrecacheSound(g_StompPrepare[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Alive Construct");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_base_construct_defender");
@@ -115,12 +131,57 @@ methodmap Const2BaseConstructDefender < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 70);
 
 	}
+	public void PlaySlamHit() 
+	{
+		EmitSoundToAll(g_SlamHit[GetRandomInt(0, sizeof(g_SlamHit) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 70);
+	}
+	public void PlaySlamPrepare() 
+	{
+		EmitSoundToAll(g_SlamPrepare[GetRandomInt(0, sizeof(g_SlamPrepare) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 40);
+		EmitSoundToAll(g_SlamPrepare[GetRandomInt(0, sizeof(g_SlamPrepare) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 40);
+	}
+	public void PlayStompHit() 
+	{
+		EmitSoundToAll(g_StompHit[GetRandomInt(0, sizeof(g_StompHit) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_StompHit[GetRandomInt(0, sizeof(g_StompHit) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+	}
+	public void PlayStompPrepare() 
+	{
+		EmitSoundToAll(g_StompPrepare[GetRandomInt(0, sizeof(g_StompPrepare) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 60);
+		EmitSoundToAll(g_StompPrepare[GetRandomInt(0, sizeof(g_StompPrepare) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 60);
+	}
+	
 	property float m_flWalkAroundRandomlyDo
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
+	property float m_flStompCooldown
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flStompHappening
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float m_flSlamCooldown
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	property float m_flSlamHappening
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
 	
+	property float m_flAntiChain
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
 	
 	
 	public Const2BaseConstructDefender(float vecPos[3], float vecAng[3], int ally)
@@ -149,6 +210,9 @@ methodmap Const2BaseConstructDefender < CClotBody
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 220.0;
+
+		//slight immunity to many debuffs and stepsounds
+		b_thisNpcIsARaid[npc.index] = true;
 		
 		
 		int skin = 0;
@@ -158,7 +222,7 @@ methodmap Const2BaseConstructDefender < CClotBody
 		b_ShowNpcHealthbar[npc.index] = true;
 		
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("1.25");
+		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		SetEntityRenderColor(npc.m_iWearable2, 255, 215, 0, 255);
@@ -210,6 +274,12 @@ public void Const2BaseConstructDefender_ClotThink(int iNPC)
 	bool DefendingMode;
 	if(IsValidEntity(npc.m_iTargetAlly))
 		DefendingMode = true;
+	else
+	{
+		//temp fix
+		RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+		return;
+	}
 
 	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, npc.m_iTarget))
 		i_Target[npc.index] = -1;
@@ -235,7 +305,17 @@ public void Const2BaseConstructDefender_ClotThink(int iNPC)
 		}
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	
+	npc.PlayIdleAlertSound();
+
+	if(Const2_ConstDefenderStomp(npc, GetGameTime(npc.index)))
+	{
+		return;
+	}
+	if(Const2_ConstDefenderSlam(npc, GetGameTime(npc.index)))
+	{
+		return;
+	}
+
 	if(npc.m_iTarget > 0)
 	{
 		npc.StartPathing();
@@ -264,9 +344,91 @@ public void Const2BaseConstructDefender_ClotThink(int iNPC)
 		//Walk around randomly
 		Const2BaseConstructDefender_WalkCycle(npc,GetGameTime(npc.index)); 
 	}
-	npc.PlayIdleAlertSound();
 }
 
+#define CONST2_DEFENDER_STEPRANGE 220.0
+bool Const2_ConstDefenderStomp(Const2BaseConstructDefender npc, float gameTime)
+{
+	if(!npc.m_flStompHappening)
+		return false;
+
+	if(npc.m_flDoingAnimation && npc.m_flStompHappening < gameTime)
+	{
+		npc.m_flDoingAnimation = 0.0;
+		npc.m_flStompHappening = gameTime + 1.0;
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		TE_Particle("grenade_smoke_cycle", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, STEPSOUND_GIANT, true);
+		npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, STEPSOUND_GIANT, true);
+		npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, STEPSOUND_GIANT, true);
+		npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, STEPSOUND_GIANT, true);
+		npc.PlayStompHit();
+		CreateEarthquake(pos, 1.0, CONST2_DEFENDER_STEPRANGE * 2.2, 16.0, 255.0);
+		Explode_Logic_Custom(Const2AltarDamageGet() * 1.5, 0, npc.index, -1, pos ,CONST2_DEFENDER_STEPRANGE, 1.0, _, true, .FunctionToCallOnHit = Const2_ConstDefender_KnockbackDo);
+	
+	}
+
+	if(!npc.m_flDoingAnimation && npc.m_flStompHappening < gameTime)
+	{
+		npc.m_flDoingAnimation = 0.0;
+		npc.m_flStompHappening = 0.0;
+		return false;
+	}
+
+	return true;
+}
+
+void Const2_ConstDefender_KnockbackDo(int entity, int victim, float damage, int weapon)
+{
+	float VecMe[3]; WorldSpaceCenter(entity, VecMe);
+	float VecEnemy[3]; WorldSpaceCenter(victim, VecEnemy);
+
+	float AngleVec[3];
+	MakeVectorFromPoints(VecMe, VecEnemy, AngleVec);
+	GetVectorAngles(AngleVec, AngleVec);
+
+	AngleVec[0] = -45.0;
+	Custom_Knockback(entity, victim, 500.0, true, true, true, .OverrideLookAng = AngleVec);
+}
+bool Const2_ConstDefenderSlam(Const2BaseConstructDefender npc, float gameTime)
+{
+	if(!npc.m_flSlamHappening)
+		return false;
+
+	if(npc.m_flDoingAnimation && npc.m_flSlamHappening < gameTime)
+	{
+		npc.m_flDoingAnimation = 0.0;
+		npc.m_flSlamHappening = gameTime + 1.5;
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		TE_Particle("Explosion_ShockWave_01", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		npc.PlaySlamHit();
+		npc.PlaySlamHit();
+		CreateEarthquake(pos, 1.0, CONST2_DEFENDER_STEPRANGE * 2.2, 16.0, 255.0);
+		Explode_Logic_Custom(Const2AltarDamageGet() * 3.0, 0, npc.index, -1, pos ,CONST2_DEFENDER_STEPRANGE, 1.0, _, true, .FunctionToCallOnHit = Const2_ConstDefender_KnockbackDoBig);
+	
+	}
+
+	if(!npc.m_flDoingAnimation && npc.m_flSlamHappening < gameTime)
+	{
+		npc.m_flDoingAnimation = 0.0;
+		npc.m_flSlamHappening = 0.0;
+		return false;
+	}
+
+	return true;
+}
+void Const2_ConstDefender_KnockbackDoBig(int entity, int victim, float damage, int weapon)
+{
+	float VecMe[3]; WorldSpaceCenter(entity, VecMe);
+	float VecEnemy[3]; WorldSpaceCenter(victim, VecEnemy);
+
+	float AngleVec[3];
+	MakeVectorFromPoints(VecMe, VecEnemy, AngleVec);
+	GetVectorAngles(AngleVec, AngleVec);
+
+	AngleVec[0] = -45.0;
+	Custom_Knockback(entity, victim, 800.0, true, true, true, .OverrideLookAng = AngleVec);
+}
 public Action Const2BaseConstructDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Const2BaseConstructDefender npc = view_as<Const2BaseConstructDefender>(victim);
@@ -286,8 +448,8 @@ public Action Const2BaseConstructDefender_OnTakeDamage(int victim, int &attacker
 	if(RoundToNearest(damage) < GetEntProp(victim, Prop_Data, "m_iHealth"))
 		return Plugin_Changed;
 
-	SetDownedState_Construct(victim, 1);
-	damage = 0;
+	SetDownedState_Construct(victim, true);
+	damage = 0.0;
 	//we died.
 	return Plugin_Changed;
 }
@@ -392,7 +554,52 @@ void Const2BaseConstructDefenderSelfDefense(Const2BaseConstructDefender npc, flo
 			}
 		}
 	}
+	
+	if(!npc.m_flAttackHappens && gameTime > npc.m_flStompCooldown && gameTime > npc.m_flAntiChain && Const2AltarGetLevel() >= 0)
+	{
+		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		{
 
+			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+			if(IsValidEnemy(npc.index, Enemy_I_See))
+			{
+				npc.m_iTarget = Enemy_I_See;
+				npc.PlayStompPrepare();
+				npc.StopPathing();
+				npc.m_bisWalking = false;
+				npc.SetActivity("ACT_CONSTRUCTION_CONSTRUCT_STOMP");
+						
+				npc.m_flStompHappening = gameTime + 2.35;
+				npc.m_flDoingAnimation = gameTime + 2.35;
+				npc.m_flStompCooldown = gameTime + 25.0;
+				npc.m_flAntiChain = gameTime + 5.0;
+				return;
+			}
+		}
+	}
+	
+	if(!npc.m_flAttackHappens && gameTime > npc.m_flSlamCooldown && gameTime > npc.m_flAntiChain && Const2AltarGetLevel() >= 0)
+	{
+		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		{
+
+			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+			if(IsValidEnemy(npc.index, Enemy_I_See))
+			{
+				npc.m_iTarget = Enemy_I_See;
+				npc.PlaySlamPrepare();
+				npc.StopPathing();
+				npc.m_bisWalking = false;
+				npc.SetActivity("ACT_CONSTRUCTION_CONSTRUCT_SLAM");
+						
+				npc.m_flSlamHappening = gameTime + 2.0;
+				npc.m_flDoingAnimation = gameTime + 2.0;
+				npc.m_flSlamCooldown = gameTime + 45.0;
+				npc.m_flAntiChain = gameTime + 5.0;
+				return;
+			}
+		}
+	}
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
