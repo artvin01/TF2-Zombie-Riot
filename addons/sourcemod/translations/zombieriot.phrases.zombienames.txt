@@ -4021,7 +4021,7 @@
 	{
 		"en"	"Void Spawn.\nBuffs enemies around itself on death."
 		"it"	"Void Spawn.\nBuffa i nemici intorno a sé alla morte."
-		"ko"	"공허에서 태어난 존재입니다.\n사망 시, 주변 아군에게 버프를 부여합니다.
+		"ko"	"공허에서 태어난 존재입니다.\n사망 시, 주변 아군에게 버프를 부여합니다."
 	}
 	"Growing Exat"
 	{
