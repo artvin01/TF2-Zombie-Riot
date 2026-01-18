@@ -109,7 +109,7 @@ void ObjectC2Incinerator_ClotThink(ObjectC2Incinerator npc)
 	float gameTime = GetGameTime(npc.index);
 	npc.m_flNextDelayTime = gameTime + 0.1;
 	if(GetTeam(npc.index) != TFTeam_Red)
-		npc.m_flNextDelayTime = gameTime + 0.4;
+		npc.m_flNextDelayTime = gameTime + ENEMY_BUILDING_DELAY_THINK;
 
 	if(npc.m_flNextMeleeAttack > gameTime)
 	{

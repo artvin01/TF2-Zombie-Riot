@@ -82,21 +82,8 @@ methodmap ObjectC2House < ObjectGeneric
 
 void ObjectC2House_ClotThink(ObjectC2House npc)
 {
-	int Owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
-	if(!IsValidEntity(Owner))
-	{
-		Owner = npc.index;
-	}
-
 	float gameTime = GetGameTime(npc.index);
-	npc.m_flNextDelayTime = gameTime + 0.1;
-
-	if(npc.m_flNextMeleeAttack > gameTime)
-	{
-		return;
-	}
 	npc.m_flNextMeleeAttack = gameTime + 0.5;
-
 }
 
 static bool ClotCanBuild(int client, int &count, int &maxcount)

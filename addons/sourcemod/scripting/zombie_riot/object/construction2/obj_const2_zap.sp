@@ -108,8 +108,6 @@ void ObjectC2Zap_ClotThink(ObjectC2Zap npc)
 
 	float gameTime = GetGameTime(npc.index);
 	npc.m_flNextDelayTime = gameTime + 0.1;
-	if(GetTeam(npc.index) != TFTeam_Red)
-		npc.m_flNextDelayTime = gameTime + 0.4;
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 
@@ -121,12 +119,16 @@ void ObjectC2Zap_ClotThink(ObjectC2Zap npc)
 	{
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
+		if(GetTeam(npc.index) != TFTeam_Red)
+			npc.m_flNextDelayTime = gameTime + ENEMY_BUILDING_DELAY_THINK;
 		return;
 	}
 	if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 	{
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
+		if(GetTeam(npc.index) != TFTeam_Red)
+			npc.m_flNextDelayTime = gameTime + ENEMY_BUILDING_DELAY_THINK;
 		return;
 	}
 	if(npc.m_flNextMeleeAttack > gameTime)
