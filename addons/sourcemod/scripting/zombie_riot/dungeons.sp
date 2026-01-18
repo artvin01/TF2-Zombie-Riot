@@ -689,7 +689,7 @@ void Dungeon_RoundEnd()
 		ZoneMarkerRef[i] = -1;
 	}
 }
-
+/*
 static Action Timer_WaitingPeriod(Handle timer)
 {
 	float pos1[3], pos2[3];
@@ -720,7 +720,7 @@ static Action Timer_WaitingPeriod(Handle timer)
 	
 	return Plugin_Continue;
 }
-
+*/
 // Rogue_RoundStartTimer()
 void Dungeon_Start()
 {
@@ -2055,7 +2055,7 @@ void Dungeon_AddBattleScale(float scale)
 
 bool Dungeon_AtLimitNotice()
 {
-	return LimitNotice;
+	return LimitNotice != 0;
 }
 
 static float ScaleBasedOnRound(int round)

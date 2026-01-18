@@ -201,18 +201,43 @@ static void ThisBuildingMenu(int client)
 	float damagePost = CONSTRUCT_DAMAGE / CONSTRUCT_FIRERATE * DMGMULTI_CONST2_RED;
 	float healthPost = CONSTRUCT_RANGE;
 	
-	char buffer[64];
+	char buffer[256];
+	FormatEx(buffer, sizeof(buffer), "%t", CONSTRUCT_NAME);
+
+	if(CurrentLevel >= CONSTRUCT_MAXLVL)
+		Format(buffer, sizeof(buffer), "%s\n%.0f Health", buffer, healthPre);
+	else
+		Format(buffer, sizeof(buffer), "%s\n%.0f (+%.0f) Health", buffer, healthPre, healthPost - healthPre);
+
+	if(CurrentLevel >= CONSTRUCT_MAXLVL)
+		Format(buffer, sizeof(buffer), "%s\n%.0f DPS", buffer, damagePre);
+	else
+		Format(buffer, sizeof(buffer), "%s\n%.0f (+%.0f) DPS", buffer, damagePre, damagePost - damagePre);
+
+	Format(buffer, sizeof(buffer), "%s\n120s Revive Time", buffer);
+
+	// Level 2
+	if(CurrentLevel >= CONSTRUCT_MAXLVL && CurrentLevel == 0)
+		Format(buffer, sizeof(buffer), "%s\n(+New Ability: Stomp [Knockback/Stun])", buffer);
+	else if(CurrentLevel > 0)
+		Format(buffer, sizeof(buffer), "%s\nAbility: Stomp [Knockback/Stun]", buffer);
+
+	// Level 4
+	if(CurrentLevel >= CONSTRUCT_MAXLVL && CurrentLevel == 2)
+		Format(buffer, sizeof(buffer), "%s\n(+New Ability: Sword Slam [Knockback/Nuke])", buffer);
+	else if(CurrentLevel > 2)
+		Format(buffer, sizeof(buffer), "%s\nAbility: Sword Slam [Knockback/Nuke]", buffer);
 
 	if(CurrentLevel >= CONSTRUCT_MAXLVL)
 	{
-		menu.SetTitle("%t\n%.0f Range\n%.0f DPS", CONSTRUCT_NAME, healthPre, damagePre);
+		menu.SetTitle(buffer);
 
 		FormatEx(buffer, sizeof(buffer), "Level %d", CurrentLevel + 1);
 		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
 	}
 	else
 	{
-		menu.SetTitle("%t\n%.0f (+%.0f) Health\n%.0f (+%.0f) DPS", CONSTRUCT_NAME, healthPre, healthPost - healthPre, damagePre, damagePost - damagePre);
+		menu.SetTitle("%s\n ", buffer);
 
 		FormatEx(buffer, sizeof(buffer), "%t\n%d / %d %t", "Upgrade Building To", CurrentLevel + 2, amount1, CONSTRUCT_COST1, "Material " ... CONSTRUCT_RESOURCE1);
 		menu.AddItem(buffer, buffer, (amount1 < CONSTRUCT_COST1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
