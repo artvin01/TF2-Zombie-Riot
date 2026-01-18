@@ -1033,6 +1033,14 @@ static void TriggerStartTouch(const char[] output, int caller, int activator, fl
 			{
 				if(zone == Zone_Dungeon && IsValidEntity(ZoneMarkerRef[Zone_DungeonWait]))
 					zone = Zone_DungeonWait;
+				
+				if(zone != Zone_HomeBase && activator <= MaxClients)
+				{
+					// Don't carry constructs outside home base
+					ObjectGeneric obj = view_as<ObjectGeneric>(GetCarryingObject(activator));
+					if(IsValidEntity(obj.index) && obj.m_bConstructBuilding)
+						return;
+				}
 
 				if(IsValidEntity(ZoneMarkerRef[zone]))
 				{

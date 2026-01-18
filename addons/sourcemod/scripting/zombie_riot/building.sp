@@ -76,6 +76,10 @@ bool IsPlayerCarringObject(int client)
 		
 	return false;
 }
+int GetCarryingObject(int client)
+{
+	return Player_BuildingBeingCarried[client] == 0 ? -1 : EntRefToEntIndex(Player_BuildingBeingCarried[client]);
+}
 bool BuildingIsBeingCarried(int buildingindx)
 {
 	if(IsValidEntity(Building_BuildingBeingCarried[buildingindx]))
@@ -362,8 +366,14 @@ static void BuildingMenu(int client)
 			if(i == 2 && !Construction_Mode() && !CvarInfiniteCash.BoolValue)
 				continue;
 			
-			if(i == 3 && !Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
-				continue;
+			if(i == 3)
+			{
+				if(!Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
+					continue;
+				
+				if(Dungeon_GetEntityZone(client) != Zone_HomeBase)
+					continue;
+			}
 			
 			FormatEx(buffer1, sizeof(buffer1), "%t", SectionName[i]);
 			if(i == 2 && !Waves_Started() && !CvarInfiniteCash.BoolValue)
@@ -1100,6 +1110,13 @@ bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false
 			Player_BuildingBeingCarried[client] = 0;
 			EmitSoundToClient(client, SOUND_TOSS_TF);
 		}
+	}
+
+	// Don't place constructs outside home base
+	if(Dungeon_Mode() && view_as<ObjectGeneric>(buildingindx).m_bConstructBuilding && Dungeon_GetEntityZone(buildingindx, true) != Zone_HomeBase)
+	{
+		int builder_owner = GetEntPropEnt(buildingindx, Prop_Send, "m_hOwnerEntity");
+		DeleteAndRefundBuilding(builder_owner, buildingindx);
 	}
 	return true;
 }
