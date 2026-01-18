@@ -99,12 +99,12 @@ methodmap ObjectConst2_Altar < ObjectGeneric
 	}
 }
 
-int ObjectConst2_Altar_Level()
+stock int ObjectConst2_Altar_Level()
 {
 	return CurrentLevel;
 }
 
-int ObjectConst2_Altar_Health()
+stock int ObjectConst2_Altar_Health()
 {
 	int level = CurrentLevel;
 	return RoundFloat(CONSTRUCT_RANGE);
@@ -287,12 +287,6 @@ void Const2UpdateAltarMinion()
 	//update max health
 	int level = CurrentLevel;
 	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToNearest(CONSTRUCT_RANGE));
-}
-
-float Const2AltarDamageGet()
-{
-	int level = CurrentLevel;
-	return CONSTRUCT_DAMAGE;
 }
 
 int Const2AltarGetLevel()
