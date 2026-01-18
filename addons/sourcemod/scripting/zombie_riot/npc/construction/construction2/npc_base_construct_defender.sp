@@ -61,6 +61,10 @@ static const char g_SlamPrepare[][] = {
 static const char g_StompPrepare[][] = {
 	"physics/metal/metal_box_strain4.wav",
 };
+static const char g_SelfRevive[][] = {
+	"mvm/mvm_bought_in.wav",
+};
+
 
 static int NPCId;
 void Const2BaseConstructDefender_OnMapStart_NPC()
@@ -74,6 +78,7 @@ void Const2BaseConstructDefender_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_StompHit)); i++) { PrecacheSound(g_StompHit[i]); }
 	for (int i = 0; i < (sizeof(g_SlamPrepare)); i++) { PrecacheSound(g_SlamPrepare[i]); }
 	for (int i = 0; i < (sizeof(g_StompPrepare)); i++) { PrecacheSound(g_StompPrepare[i]); }
+	for (int i = 0; i < (sizeof(g_SelfRevive)); i++) { PrecacheSound(g_SelfRevive[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Alive Construct");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_base_construct_defender");
@@ -150,7 +155,10 @@ methodmap Const2BaseConstructDefender < CClotBody
 		EmitSoundToAll(g_StompPrepare[GetRandomInt(0, sizeof(g_StompPrepare) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 60);
 		EmitSoundToAll(g_StompPrepare[GetRandomInt(0, sizeof(g_StompPrepare) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 60);
 	}
-	
+	public void PlaySelfRevive() 
+	{
+		EmitSoundToAll(g_SelfRevive[GetRandomInt(0, sizeof(g_SelfRevive) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 60);
+	}
 	property float m_flWalkAroundRandomlyDo
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
@@ -181,6 +189,11 @@ methodmap Const2BaseConstructDefender < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+	property float m_flSelfRevival
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
 	
 	
@@ -267,6 +280,12 @@ public void Const2BaseConstructDefender_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	if(!b_ShowNpcHealthbar[iNPC])
 	{
+		if(npc.m_flSelfRevival && npc.m_flSelfRevival < GetGameTime())
+		{
+			npc.PlaySelfRevive();
+			DesertYadeamDoHealEffect(iNPC, 200.0);
+			SetDownedState_Construct(iNPC, false);
+		}
 		//stunned
 		return;
 	}
@@ -364,7 +383,7 @@ bool Const2_ConstDefenderStomp(Const2BaseConstructDefender npc, float gameTime)
 		npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, STEPSOUND_GIANT, true);
 		npc.PlayStompHit();
 		CreateEarthquake(pos, 1.0, CONST2_DEFENDER_STEPRANGE * 2.2, 16.0, 255.0);
-		Explode_Logic_Custom(Const2AltarDamageGet() * 1.5, 0, npc.index, -1, pos ,CONST2_DEFENDER_STEPRANGE, 1.0, _, true, .FunctionToCallOnHit = Const2_ConstDefender_KnockbackDo);
+		Explode_Logic_Custom(Const2AltarDamageGet() * 1.5, 0, npc.index, -1, pos ,CONST2_DEFENDER_STEPRANGE, _, 0.9, false,60, .FunctionToCallOnHit = Const2_ConstDefender_KnockbackDo);
 	
 	}
 
@@ -388,6 +407,7 @@ void Const2_ConstDefender_KnockbackDo(int entity, int victim, float damage, int 
 	GetVectorAngles(AngleVec, AngleVec);
 
 	AngleVec[0] = -45.0;
+	FreezeNpcInTime(entity, 0.75);
 	Custom_Knockback(entity, victim, 500.0, true, true, true, .OverrideLookAng = AngleVec);
 }
 bool Const2_ConstDefenderSlam(Const2BaseConstructDefender npc, float gameTime)
@@ -404,7 +424,7 @@ bool Const2_ConstDefenderSlam(Const2BaseConstructDefender npc, float gameTime)
 		npc.PlaySlamHit();
 		npc.PlaySlamHit();
 		CreateEarthquake(pos, 1.0, CONST2_DEFENDER_STEPRANGE * 2.2, 16.0, 255.0);
-		Explode_Logic_Custom(Const2AltarDamageGet() * 3.0, 0, npc.index, -1, pos ,CONST2_DEFENDER_STEPRANGE, 1.0, _, true, .FunctionToCallOnHit = Const2_ConstDefender_KnockbackDoBig);
+		Explode_Logic_Custom(Const2AltarDamageGet() * 3.0, 0, npc.index, -1, pos ,CONST2_DEFENDER_STEPRANGE, 0.85, 0.9, false,60, .FunctionToCallOnHit = Const2_ConstDefender_KnockbackDoBig);
 	
 	}
 
@@ -427,7 +447,7 @@ void Const2_ConstDefender_KnockbackDoBig(int entity, int victim, float damage, i
 	GetVectorAngles(AngleVec, AngleVec);
 
 	AngleVec[0] = -45.0;
-	Custom_Knockback(entity, victim, 800.0, true, true, true, .OverrideLookAng = AngleVec);
+	Custom_Knockback(entity, victim, 1200.0, true, true, true, .OverrideLookAng = AngleVec);
 }
 public Action Const2BaseConstructDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -458,6 +478,7 @@ void SetDownedState_Construct(int iNpc, bool StateDo)
 	Const2BaseConstructDefender npc = view_as<Const2BaseConstructDefender>(iNpc);
 	if(StateDo) //downed
 	{
+		npc.m_flSelfRevival = GetGameTime() + 120.0;
 		b_ShowNpcHealthbar[iNpc] = false;	
 		b_ThisEntityIgnored[iNpc] = true;
 		b_NpcIsInvulnerable[iNpc] = true;
@@ -480,6 +501,7 @@ void SetDownedState_Construct(int iNpc, bool StateDo)
 	}
 	else
 	{
+		npc.m_flSelfRevival = 0.0;
 		b_ShowNpcHealthbar[iNpc] = true;	
 		b_ThisEntityIgnored[iNpc] = false;
 		b_NpcIsInvulnerable[iNpc] = false;
@@ -555,7 +577,7 @@ void Const2BaseConstructDefenderSelfDefense(Const2BaseConstructDefender npc, flo
 		}
 	}
 	
-	if(!npc.m_flAttackHappens && gameTime > npc.m_flStompCooldown && gameTime > npc.m_flAntiChain && Const2AltarGetLevel() >= 0)
+	if(!npc.m_flAttackHappens && gameTime > npc.m_flStompCooldown && gameTime > npc.m_flAntiChain && Const2AltarGetLevel() >= 2)
 	{
 		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
@@ -578,7 +600,7 @@ void Const2BaseConstructDefenderSelfDefense(Const2BaseConstructDefender npc, flo
 		}
 	}
 	
-	if(!npc.m_flAttackHappens && gameTime > npc.m_flSlamCooldown && gameTime > npc.m_flAntiChain && Const2AltarGetLevel() >= 0)
+	if(!npc.m_flAttackHappens && gameTime > npc.m_flSlamCooldown && gameTime > npc.m_flAntiChain && Const2AltarGetLevel() >= 4)
 	{
 		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
