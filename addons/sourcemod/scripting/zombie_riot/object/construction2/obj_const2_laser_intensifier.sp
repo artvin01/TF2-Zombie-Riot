@@ -120,6 +120,8 @@ void ObjectC2LaserIntensifier_ClotThink(ObjectC2LaserIntensifier npc)
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flAttackspeedRamp = 2.0;
+		if(GetTeam(npc.index) != TFTeam_Red)
+			npc.m_flNextDelayTime = gameTime + ENEMY_BUILDING_DELAY_THINK;
 		return;
 	}
 	if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
@@ -127,6 +129,8 @@ void ObjectC2LaserIntensifier_ClotThink(ObjectC2LaserIntensifier npc)
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flAttackspeedRamp = 2.0;
+		if(GetTeam(npc.index) != TFTeam_Red)
+			npc.m_flNextDelayTime = gameTime + ENEMY_BUILDING_DELAY_THINK;
 		return;
 	}
 	if(npc.m_flNextMeleeAttack > gameTime)
@@ -171,6 +175,9 @@ void ObjectC2LaserIntensifier_ClotThink(ObjectC2LaserIntensifier npc)
 	float damageDealt = CONSTRUCT_DAMAGE;
 	if(GetTeam(npc.index) == TFTeam_Red)
 		damageDealt *= DMGMULTI_CONST2_RED;
+	else
+		damageDealt *= 2.0;
+
 	if(ShouldNpcDealBonusDamage(npc.m_iTarget))
 		damageDealt *= 3.0;
 

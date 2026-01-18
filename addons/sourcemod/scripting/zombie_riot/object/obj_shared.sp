@@ -51,7 +51,7 @@ int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
 #define EFL_IN_SKYBOX (1 << 17)
 
 #define MAX_REBELS_ALLOWED 4
-
+#define ENEMY_BUILDING_DELAY_THINK 1.0
 float RotateByDefaultReturn(int entity)
 {
 	return RotateByDefault[entity];
@@ -682,8 +682,15 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	if(objstats.m_flNextDelayTime > gameTime)
 		return false;
 
-	objstats.m_flNextDelayTime = gameTime + 0.2;
-
+	//Reduce computation forceably for enemy bases, this nerfs some buildings but thats fine.
+	if(Dungeon_Mode() && objstats.m_bConstructBuilding && GetTeam(objstats.index) != TFTeam_Red)
+	{
+		objstats.m_flNextDelayTime = gameTime + 0.4;
+	}
+	else
+	{
+		objstats.m_flNextDelayTime = gameTime + 0.2;
+	}
 	Function func = func_NPCThink[objstats.index];
 	if(func && func != INVALID_FUNCTION)
 	{
@@ -691,6 +698,14 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		Call_PushCell(objstats.index);
 		Call_Finish();
 	}
+
+	//force think much slower during peace times
+	if(Dungeon_Mode() && Dungeon_InSetup() && objstats.m_bConstructBuilding && GetTeam(objstats.index) == TFTeam_Red)
+	{
+		objstats.m_flNextDelayTime = gameTime + 1.0;
+	}
+
+
 
 	BuildingUpdateTextHud(objstats.index);
 
