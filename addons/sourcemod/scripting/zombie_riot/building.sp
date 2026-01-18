@@ -361,25 +361,32 @@ static void BuildingMenu(int client)
 
 		for(int i; i < sizeof(SectionName); i++)
 		{
+			bool locked;
 			IntToString(i, buffer2, sizeof(buffer2));
 
-			if(i == 2 && !Construction_Mode() && !CvarInfiniteCash.BoolValue)
-				continue;
-			
-			if(i == 3)
+			if(!CvarInfiniteCash.BoolValue)
 			{
-				if(!Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
-					continue;
+				if(i == 2)
+				{
+					if(!Construction_Mode())
+						continue;
+					
+					if(!Waves_Started())
+						locked = true;
+				}
 				
-				if(Dungeon_GetEntityZone(client) != Zone_HomeBase)
-					continue;
+				if(i == 3)
+				{
+					if(!Dungeon_Mode())
+						continue;
+					
+					if(Dungeon_GetEntityZone(client) != Zone_HomeBase)
+						locked = true;
+				}
 			}
 			
 			FormatEx(buffer1, sizeof(buffer1), "%t", SectionName[i]);
-			if(i == 2 && !Waves_Started() && !CvarInfiniteCash.BoolValue)
-				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
-			else
-				menu.AddItem(buffer2, buffer1);
+			menu.AddItem(buffer2, buffer1, locked ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		}
 	}
 	else
