@@ -383,7 +383,7 @@ bool Const2_ConstDefenderStomp(Const2BaseConstructDefender npc, float gameTime)
 		npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, STEPSOUND_GIANT, true);
 		npc.PlayStompHit();
 		CreateEarthquake(pos, 1.0, CONST2_DEFENDER_STEPRANGE * 2.2, 16.0, 255.0);
-		Explode_Logic_Custom(Const2AltarDamageGet() * 1.5, 0, npc.index, -1, pos ,CONST2_DEFENDER_STEPRANGE, _, 0.9, false,60, .FunctionToCallOnHit = Const2_ConstDefender_KnockbackDo);
+		Explode_Logic_Custom(ObjectConst2_Altar_Damage() * 1.5, 0, npc.index, -1, pos ,CONST2_DEFENDER_STEPRANGE, _, 0.9, false,60, .FunctionToCallOnHit = Const2_ConstDefender_KnockbackDo);
 	
 	}
 
@@ -424,7 +424,7 @@ bool Const2_ConstDefenderSlam(Const2BaseConstructDefender npc, float gameTime)
 		npc.PlaySlamHit();
 		npc.PlaySlamHit();
 		CreateEarthquake(pos, 1.0, CONST2_DEFENDER_STEPRANGE * 2.2, 16.0, 255.0);
-		Explode_Logic_Custom(Const2AltarDamageGet() * 3.0, 0, npc.index, -1, pos ,CONST2_DEFENDER_STEPRANGE, 0.85, 0.9, false,60, .FunctionToCallOnHit = Const2_ConstDefender_KnockbackDoBig);
+		Explode_Logic_Custom(ObjectConst2_Altar_Damage() * 3.0, 0, npc.index, -1, pos ,CONST2_DEFENDER_STEPRANGE, 0.85, 0.9, false,60, .FunctionToCallOnHit = Const2_ConstDefender_KnockbackDoBig);
 	
 	}
 
@@ -564,7 +564,7 @@ void Const2BaseConstructDefenderSelfDefense(Const2BaseConstructDefender npc, flo
 						int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 						WorldSpaceCenter(target, vecHit);
 									
-						float damageDealt = Const2AltarDamageGet();
+						float damageDealt = ObjectConst2_Altar_Damage();
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					}

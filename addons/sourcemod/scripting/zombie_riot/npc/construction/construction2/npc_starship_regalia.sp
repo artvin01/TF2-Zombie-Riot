@@ -51,8 +51,8 @@ static const float VaultVectorPoints[][3] = {
 
 void StarShip_Regalia_OnMapStart()
 {
-	
-    NPCData data;
+
+	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "HMS: Regalia");	//Regalia Class battlecruisers
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_starship_regalia");
 	strcopy(data.Icon, sizeof(data.Icon), "soldier");
