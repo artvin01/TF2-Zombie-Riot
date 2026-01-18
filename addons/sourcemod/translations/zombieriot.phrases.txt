@@ -4793,6 +4793,10 @@
 		"it"	"Siete in grado di resistere al potere della magia?"
 		"ko"	"움브랄 인커젼 시뮬레이션을 완료한 이후, 트윌이 또 다른 엑스피돈사 시뮬레이션에 그녀의 군대를 보내 싸우게 합니다. 우리가 얼마나 강해졌는지 보기 위해서 말이죠."
 	}
+	"Umbral Outbreak Desc"
+	{
+		"en"	"Before regrouping with Bob and Twirl in Rogue 3, a rift opens before us, releasing Void and Umbral creatures. With Al-Hallam and Vuntulum nearby, we are attacked from every direction."
+	}
 	"CoF Normal Desc"
 	{
 		"en"	"Enter Simon's Book."
