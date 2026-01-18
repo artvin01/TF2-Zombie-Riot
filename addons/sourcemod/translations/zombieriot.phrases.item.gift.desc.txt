@@ -3674,4 +3674,14 @@
 		"en"	"Broken off an Ancient Demon we killed. We have no idea what to use it for…"
 		"ko"	"처치한 고대 악마에게서 부러져 나온 뿔입니다. 어디에 써야할지 도통 모르겠군요..."
 	}
+	"Warped Crystal"
+	{
+		"en"	"Warped Crystal"
+		"ko"	""
+	}
+	"Warped Crystal Desc"
+	{
+		"en"	"Made from the combination of Chaos and Void. Let's hope none of us crystallizes so we don’t get encased in one of these."
+		"ko"	""
+	}
 }
