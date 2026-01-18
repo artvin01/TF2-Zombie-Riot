@@ -418,6 +418,7 @@ void Dungeon_MapStart()
 void Dungeon_SetupVote(KeyValues kv)
 {
 	PrecacheMvMIconCustom("classic_defend", false);
+	PrecacheMvMIconCustom("robo_extremethreat");
 	PrecacheSound("ui/chime_rd_2base_pos.wav");
 	PrecacheSound("ui/chime_rd_2base_neg.wav");
 	PrecacheSound("ui/itemcrate_smash_rare.wav");
@@ -503,6 +504,23 @@ void Dungeon_SetupVote(KeyValues kv)
 	ToggleEntityByName(TeleRival, true);
 	ToggleEntityByName(TeleEnter, true);
 	UpdateBlockedNavmesh();
+	
+	if(kv.JumpToKey("CustomIcons"))
+	{
+		if(kv.GotoFirstSubKey(false))
+		{
+			do
+			{
+				kv.GetSectionName(buffer1, sizeof(buffer1));
+				PrecacheMvMIconCustom(buffer1, view_as<bool>(kv.GetNum(NULL_STRING)));
+			}
+			while(kv.GotoNextKey(false));
+
+			kv.GoBack();
+		}
+
+		kv.GoBack();
+	}
 	
 	if(kv.JumpToKey("Loots"))
 	{
