@@ -366,6 +366,12 @@ static void BuildingMenu(int client)
 
 			if(!CvarInfiniteCash.BoolValue)
 			{
+				if(Dungeon_Mode())
+				{
+					if(!Waves_Started())
+						locked = true;
+				}
+
 				if(i == 2)
 				{
 					if(!Construction_Mode())
