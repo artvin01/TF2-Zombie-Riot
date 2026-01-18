@@ -3153,6 +3153,11 @@
 		"en"		"Expidonsan's are here to help us defeat this void outbreak."
 		"ko"		"엑스피돈사가 공허 재앙을 막기 위해 당신에게 합류합니다."
 	}
+	"Umbral_Outbreak_Help_Message"
+	{
+		"en"		"There is no help in sight. Are we really going to die from this outbreak?"
+		"ko"		""
+	}
 	"Silvester Shares His Power"
 	{
 		"en"		"Silvester shares his power with you..."
