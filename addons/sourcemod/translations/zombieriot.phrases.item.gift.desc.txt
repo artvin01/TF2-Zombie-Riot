@@ -951,7 +951,7 @@
 	{
 		"en"		"Afflicted by chaos to make his reasoning uncontrollable.\nHe hates you for killing expidonsans.\nDont let the fight take too long as he gets faster over time.\n(Silence) makes his melee not glide you around, it also makes his projectiles deal less chaos, also reduces resistances he gets when going below a health threshhold."
 		"it"		"Afflitto dal caos che rende il suo ragionamento incontrollabile.\nNon vi odia perché uccidete gli expidonsan.\nNon lasciate che il combattimento duri troppo a lungo perché diventa più veloce con il passare del tempo.\n(Silenzio) fa sì che il suo corpo a corpo non vi scivoli intorno, inoltre fa sì che i suoi proiettili infliggano meno caos, riduce anche le resistenze che ottiene quando scende sotto una soglia di salute."
-		"en"		"혼돈에 침식되어 그의 사고가 통제 불능 상태가 되고 말았습니다.\n그는 엑스피돈사인들을 죽인 당신을 증오합니다.\n-시간이 지날수록 모든 속도가 가속됩니다. 전투를 너무 오래 끌지 마세요.\n-(침묵 상태 시)그의 근접 공격이 당신을 날려버리지 않게 되며, 투사체 공격의 혼돈 원소 피해 부여량이 감소하고, 또한 체력이 일정 수치 이하로 감소할 때 얻는 추가 피해 저항력을 감소시킵니다."
+		"ko"		"혼돈에 침식되어 그의 사고가 통제 불능 상태가 되고 말았습니다.\n그는 엑스피돈사인들을 죽인 당신을 증오합니다.\n-시간이 지날수록 모든 속도가 가속됩니다. 전투를 너무 오래 끌지 마세요.\n-(침묵 상태 시)그의 근접 공격이 당신을 날려버리지 않게 되며, 투사체 공격의 혼돈 원소 피해 부여량이 감소하고, 또한 체력이 일정 수치 이하로 감소할 때 얻는 추가 피해 저항력을 감소시킵니다."
 
 	}
 	"L4D2 Tank Desc"
