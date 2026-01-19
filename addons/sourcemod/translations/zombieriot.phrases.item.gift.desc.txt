@@ -951,7 +951,7 @@
 	{
 		"en"		"Afflicted by chaos to make his reasoning uncontrollable.\nHe hates you for killing expidonsans.\nDont let the fight take too long as he gets faster over time.\n(Silence) makes his melee not glide you around, it also makes his projectiles deal less chaos, also reduces resistances he gets when going below a health threshhold."
 		"it"		"Afflitto dal caos che rende il suo ragionamento incontrollabile.\nNon vi odia perché uccidete gli expidonsan.\nNon lasciate che il combattimento duri troppo a lungo perché diventa più veloce con il passare del tempo.\n(Silenzio) fa sì che il suo corpo a corpo non vi scivoli intorno, inoltre fa sì che i suoi proiettili infliggano meno caos, riduce anche le resistenze che ottiene quando scende sotto una soglia di salute."
-		"en"		"혼돈에 침식되어 그의 사고가 통제 불능 상태가 되고 말았습니다.\n그는 엑스피돈사인들을 죽인 당신을 증오합니다.\n-시간이 지날수록 모든 속도가 가속됩니다. 전투를 너무 오래 끌지 마세요.\n-(침묵 상태 시)그의 근접 공격이 당신을 날려버리지 않게 되며, 투사체 공격의 혼돈 원소 피해 부여량이 감소하고, 또한 체력이 일정 수치 이하로 감소할 때 얻는 추가 피해 저항력을 감소시킵니다."
+		"ko"		"혼돈에 침식되어 그의 사고가 통제 불능 상태가 되고 말았습니다.\n그는 엑스피돈사인들을 죽인 당신을 증오합니다.\n-시간이 지날수록 모든 속도가 가속됩니다. 전투를 너무 오래 끌지 마세요.\n-(침묵 상태 시)그의 근접 공격이 당신을 날려버리지 않게 되며, 투사체 공격의 혼돈 원소 피해 부여량이 감소하고, 또한 체력이 일정 수치 이하로 감소할 때 얻는 추가 피해 저항력을 감소시킵니다."
 
 	}
 	"L4D2 Tank Desc"
@@ -3591,7 +3591,7 @@
 	}
 	"Dropped Secret Letter Desc"
 	{
-		"en"	"Dropped on the floor after beating Blitz’s army. Written on it is someone pleading for help from this machine? And it’s signed by someone named Karlas?"
+		"en"	"Dropped on the floor after beating Blitz’s army. \nWritten on it is someone pleading for help from this machine? \nAnd it’s signed by someone named Karlas?"
 		"ko"	"블리츠크리그의 군단을 막아낸 후 바닥에서 발견했습니다.\n이 기계에게서 구해달라고 쓰여져있는데...\n''카를라스''란 인물의 서명이 있군요?"
 	}
 	"Xeno Virus Sample"
@@ -3601,7 +3601,7 @@
 	}
 	"Xeno Virus Sample Desc"
 	{
-		"en"	"A sample of the Xeno virus after we beat them in Xeno Survival. Maybe this will help us find the source of the infection."
+		"en"	"A sample of the Xeno virus after we beat them in Xeno Survival. \nMaybe this will help us find the source of the infection."
 		"ko"	"제노 생존을 몰아낸 후 얻은 제노 바이러스의 샘플입니다. 감염의 근원을 찾아내는데 도움이 될 수 있을 것 같습니다."
 	}
 	"Son of Osiris’s Gift"
@@ -3611,7 +3611,7 @@
 	}
 	"Son of Osiris’s Gift Desc"
 	{
-		"en"	"Osiris gives us this for helping him and the rest of Alaxios’s army train. It’s a book on how to become a Brawler…"
+		"en"	"Osiris gives us this for helping him and the rest of Alaxios’s army train. \nIt’s a book on how to become a Brawler…"
 		"ko"	"오시리스가 남은 알락시오스의 군단과 그의 훈련을 도운 보답으로 이것을 주었습니다.\n어떻게 난투꾼이 되는지에 대해 쓰여져있는 책이군요..."
 	}
 	"Broken Expidonsan Tech"
@@ -3621,7 +3621,7 @@
 	}
 	"Broken Expidonsan Tech Desc"
 	{
-		"en"	"Broken off one of the elite rogue expidonsans. It appears to be stronger than Sensal's tech, at least by the look of it."
+		"en"	"Broken off one of the elite rogue expidonsans. \nIt appears to be stronger than Sensal's tech, at least by the look of it."
 		"ko"	"정예 이탈자 엑스피돈사인들 중 하나에게서 떨어져 나온 것입니다.\n보아하니 센살의 기술력보다 더욱 강력한 것 같군요. 최소한 보이는 것으로는요."
 	}
 	"Major Voided’s Hat"
@@ -3641,7 +3641,7 @@
 	}
 	"Iberian Badge of Honor Desc"
 	{
-		"en"	"Irene gives you this for all you have done for Iberia, dating back to before you were employed by Bob the Second."
+		"en"	"Irene gives you this for all you have done for Iberia, \ndating back to before you were employed by Bob the Second."
 		"ko"	"아이린이 당신이 이베리아를 위해 행한 모든 것에 대한 감사로 이것을 주었습니다.\n당신이 밥 2세에게 고용되기 전의 날짜까지 거슬러 올라가네요."
 	}
 	"Collector’s Backpack"
@@ -3673,5 +3673,15 @@
 	{
 		"en"	"Broken off an Ancient Demon we killed. We have no idea what to use it for…"
 		"ko"	"처치한 고대 악마에게서 부러져 나온 뿔입니다. 어디에 써야할지 도통 모르겠군요..."
+	}
+	"Warped Crystal"
+	{
+		"en"	"Warped Crystal"
+		"ko"	""
+	}
+	"Warped Crystal Desc"
+	{
+		"en"	"Made from the combination of Chaos and Void. Let's hope none of us crystallizes so we don’t get encased in one of these."
+		"ko"	""
 	}
 }
