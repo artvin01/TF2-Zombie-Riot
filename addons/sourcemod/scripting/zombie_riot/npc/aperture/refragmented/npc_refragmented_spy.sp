@@ -123,22 +123,8 @@ methodmap RefragmentedSpy < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		
-		npc.m_flMeleeArmor = 0.10;
-		npc.m_flRangedArmor = 0.10;
-
-		npc.m_iWearable2 = TF2_CreateGlow_White("models/player/spy.mdl", npc.index, 1.0);
-		if(IsValidEntity(npc.m_iWearable2))
-		{
-			SetEntProp(npc.m_iWearable2, Prop_Send, "m_bGlowEnabled", false);
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_ENVIRONMENTAL);
-			TE_SetupParticleEffect("utaunt_signalinterference_parent", PATTACH_ABSORIGIN_FOLLOW, npc.m_iWearable2);
-			TE_WriteNum("m_bControlPoint1", npc.m_iWearable2);	
-			TE_SendToAll();
-		}
-
-		SetEntityRenderMode(npc.index, RENDER_GLOW);
-		SetEntityRenderColor(npc.index, 0, 0, 125, 200);
-
+		RefragmentedBase_Init(npc.index);
+		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
@@ -185,21 +171,7 @@ public void RefragmentedSpy_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 
-	float vecTarget2[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget2);
-	float VecSelfNpc2[3]; WorldSpaceCenter(npc.index, VecSelfNpc2);
-	float distance2 = GetVectorDistance(vecTarget2, VecSelfNpc2, true);
-	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-	if(distance2 < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.25) && !i_IsABuilding[npc.m_iTarget])
-	{
-		npc.PlayHurtSound();
-		SDKHooks_TakeDamage(npc.index, npc.m_iTarget, npc.m_iTarget, 40.0, DMG_TRUEDAMAGE, -1, _, vecMe);
-		//Explode_Logic_Custom(10.0, npc.index, npc.index, -1, vecMe, 15.0, _, _, false, 1, false);
-		SetEntityRenderColor(npc.index, 180, 0, 0, 200);
-	}
-	if(distance2 > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.25) && !i_IsABuilding[npc.m_iTarget])
-	{
-		SetEntityRenderColor(npc.index, 0, 0, 125, 200);
-	}
+	RefragmentedBase_OnThink(npc.index, 40.0);
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -250,17 +222,11 @@ public void RefragmentedSpy_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-		
 	
-	if(IsValidEntity(npc.m_iWearable4))
-		RemoveEntity(npc.m_iWearable4);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
+	
+	RefragmentedBase_OnDeath(npc.index);
 }
 
 void RefragmentedSpySelfDefense(RefragmentedSpy npc, float gameTime, int target, float distance)
