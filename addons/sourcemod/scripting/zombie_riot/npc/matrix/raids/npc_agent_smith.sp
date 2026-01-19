@@ -809,6 +809,10 @@ static void Smith_Infection(AgentSmith npc)
 				{
 					fl_Infection_Meter[victim] += 0.20;
 				}
+				default: //When there's more than 14 players
+				{
+					fl_Infection_Meter[victim] += 0.22;
+				}
 			}
 			PrintCenterText(victim, "Your Infection is rising - %.0f％ | Cure %.0f％", (fl_Infection_Meter[victim] * 10.0), (fl_Cure_Meter[victim] * 10.0));
 			for(int clients = 1 ; clients <= MaxClients ; clients++)
