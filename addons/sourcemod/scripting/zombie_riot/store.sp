@@ -2776,7 +2776,7 @@ void Store_DiscountNamedItem(const char[] name, int timed = 0, float discount = 
 		}
 	}
 
-	PrintToChatAll("ERROR: Store_DiscountNamedItem::%s:%d:%f unknown item", name, timed, discount)
+	PrintToChatAll("ERROR: Store_DiscountNamedItem::%s:%d:%f unknown item", name, timed, discount);
 }
 
 #define ZR_STORE_RESET (1 << 1) //This will reset the entire store to default

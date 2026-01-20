@@ -765,7 +765,7 @@ static void ClotThink(int iNPC)
 
 	npc.ShieldState(npc.m_flArmorCount>0.0);	//shield VFX will take directly from npc armour.
 
-	HandleMainWeapons(npc);
+	//HandleMainWeapons(npc);
 
 	
 }
@@ -845,6 +845,120 @@ static void HandleMainWeapons(RegaliaClass npc)
 		npc.m_flLanceDuration = GameTime + 20.0;
 	}
 	
+}
+/*
+	@param npc 			//for referencing what to track
+	@param radius 		//how big of a radius is the checking. lower = more harsh and less likely to find a good spot. higher = more leniant, meaning better chance of fiding a vector, but the players will be more spread out
+	@param player_amt	//how many players within radius. if you make input 0 it will simply return amt. if you set a value above 0 it will only return a valid vector if it finds this many players inside radius.
+*/
+stock float[] vGetBestAverageWithinRadius(CClotBody npc, float radius, int &player_amt)
+{
+	int amt;
+
+	int ValidEnts[100];	//save all our aquired targets.
+
+	Zero(ValidEnts);
+
+	int team = GetTeam(npc.index);
+
+	for(int clients = 1 ; clients <= MaxClients ; clients++)
+	{
+		if(!(IsValidClient(clients) && GetClientTeam(clients) == 2 && TeutonType[clients] != TEUTON_WAITING))
+			continue;
+		ValidEnts[amt] = clients;
+		amt++;
+	}
+
+	for(int targ; targ< i_MaxcountNpcTotal; targ++)
+	{
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
+		if (!(IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && team  == GetTeam(baseboss_index)))
+			continue;
+		ValidEnts[amt] = baseboss_index;
+		amt++;
+	}
+
+	float averageVec[3];
+	averageVec = vGetAvgFromArrayOfEnts(ValidEnts, amt);
+
+	//we now have the true average of all enemy players/enemies.
+
+	radius *=radius;	//square it
+
+	int failsafe = 0;
+
+	while(failsafe < 100)
+	{
+		failsafe++;
+
+		float DistFromCore[100];
+		float AvgDist = 0.0;
+		float LargestRadius = 0.0;
+
+		//get distances
+		for(int i=0 ; i < amt ; i++)
+		{
+			int ent = ValidEnts[i];
+			float vec[3]; GetAbsOrigin(ent, vec);
+			DistFromCore[i] = GetVectorDistance(vec, averageVec, true);	//do everything squared to make it less performance heavy.
+			AvgDist += DistFromCore[i];
+
+			if(LargestRadius < DistFromCore[i])
+				LargestRadius = DistFromCore[i];
+		}
+
+		//so the checked location's largest radius is within our wanted radius value, AND it has our wanted target amout. sooo we found a valid location.
+		//ship it!
+		if(LargestRadius <= radius && (player_amt == 0 || amt >=player_amt))
+		{
+			player_amt = amt;
+			return averageVec;
+		}
+
+		AvgDist /=amt;
+
+		int new_amt = 0;
+		int newValidEnts[100];
+
+		//now nuke everthing beyond avg dist.
+
+		for(int i=0 ; i < amt ; i++)
+		{
+			if(AvgDist <= DistFromCore[i])
+			{
+				newValidEnts[new_amt] = ValidEnts[i];
+				new_amt++;
+			}
+		}
+
+		//Now clean everything and prepare for new loop!
+		Zero(ValidEnts);
+
+		for(int i=0 ; i < new_amt ; i++)
+		{
+			ValidEnts[i] = newValidEnts[i];
+		}
+		amt = new_amt;
+
+		averageVec = vGetAvgFromArrayOfEnts(ValidEnts, amt);
+		
+	}
+	player_amt = -1;
+	return NULL_VECTOR;
+}
+static float[] vGetAvgFromArrayOfEnts(int Array[100], int amt)
+{
+	float averageVec[3];
+	for(int i=0 ; i < amt ; i++)
+	{
+		float vec[3]; GetAbsOrigin(Array[i], vec);
+		AddVectors(averageVec, vec, averageVec);
+	}
+	averageVec[0] /= amt;
+	averageVec[1] /= amt;
+	averageVec[2] /= amt;
+	return averageVec;
+
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
