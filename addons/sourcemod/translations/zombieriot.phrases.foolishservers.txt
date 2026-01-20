@@ -430,6 +430,26 @@
 		"en"		"Cover Me in Debris"
 		"ko"		"잔해로 날 감싸줘"
 	}
+	"Cosmic Terror"
+	{
+		"en"		"Cosmic Terror"
+		"ko"		"코즈믹 테러"
+	}
+	"Beam Wand"
+	{
+		"en"		"Beam Wand"
+		"ko"		"빔 완드"
+	}
+	"Necromancy Staff"
+	{
+		"en"		"Necromancy Staff"
+		"ko"		"부두술 스태프"
+	}
+	"Improvised Armor"
+	{
+		"en"		"Improvised Armor"
+		"ko"		"급조된 증가 장갑"
+	}
 	
 	//무기 설명
 	"Chaos Infected Launcher desc"
@@ -501,6 +521,7 @@
 		"en"	"{1} has completed the challenge {valve}{2}{default}"
 		"ko"	"{1}이(가) {valve}{2}{default} 도전을 완료했습니다"
 	}
+	
 	"Cosmic Terror Desc"
 	{
 		"en" "Have you ever looked at the sky and wondered if you could use that as a weapon?\nWell wonder-no-more!\nIntroducing the ''Cosmic Terror''\nEnjoy eviscerating your foes with the power of the moon!"
@@ -527,6 +548,7 @@
 		"en"	"Firerate bonuses affect the speed of the beam\nReload rate bonuses affect how fast you gain heat."
 		"fr"	"Améliorations de cadence de tir améliore la vitesse du rayon laser.\nAméliorations de vitesse du rechargement ralentit le rechauffement de l'arme."
 	}
+	
 	"Beam Wand Desc"
 	{
 		"en"	"Increased damage\nHold M1 for a constant beam to eviscerate your enemies. M2: Magic overdrive, more mana=stronger but higher CD."
@@ -562,6 +584,7 @@
 		"ru"	"Итак, вы хотите больше мощности?\nПредставляем «Нейтронная пушка»tm\nНажмите ПЕРЕЗАРЯДКУ для перекл. между нейтронным лучом/пушкой\nНейтронная пушка также имеет свою собственную способность на ПКМ\nНейтронная пушка не может пробить несколько целей!"
 		"chi"   "所以，你想要更大的力量?\n介绍“粒子炮”\n按R在粒子束/炮之间切换\n粒子炮也有自己的鼠标右键技能\n粒子炮不能拼接多个目标!"
 	}
+	
 	"Necromancy Staff Desc"
 	{
 		"en"	"M2 Summons a minion.\nNot having your wand in your hand will half minion damage.\nMinion will only attack marked enemies\nM1 Marks enemies for 5 seconds"
@@ -576,6 +599,12 @@
 	"Necromancy Staff Pap 2"
 	{
 		"en"	"Increased damage and attackspeed"
+	}
+	
+	"Improvised Armor Desc"
+	{
+		"en"	"Final Max Armor +300\n-Max Armor -10％"
+		"ko"	"-최종 최대 아머 +300\n-최대 아머 10％ 감소"
 	}
 	
 	//Etc
@@ -646,4 +675,5 @@
 		"en"		"{crimson}[ZR]{snow} You have found!"
 		"ko"		"{crimson}[ZR]{snow} 아이템을 발견했습니다!"
 	}
+	
 }
