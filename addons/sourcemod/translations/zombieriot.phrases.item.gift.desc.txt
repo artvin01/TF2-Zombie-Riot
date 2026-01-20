@@ -3601,7 +3601,7 @@
 	"Xeno Virus Sample Desc"
 	{
 		"en"	"A sample of the Xeno virus after we beat them in Xeno Survival. \nMaybe this will help us find the source of the infection."
-		"ko"	"제노 생존을 몰아낸 후 얻은 제노 바이러스의 샘플입니다. 감염의 근원을 찾아내는데 도움이 될 수 있을 것 같습니다."
+		"ko"	"제노 생존을 몰아낸 후 얻은 제노 바이러스의 샘플입니다.\n감염의 근원을 찾아내는데 도움이 될 수 있을 것 같습니다."
 	}
 	"Son of Osiris’s Gift"
 	{
@@ -3676,11 +3676,11 @@
 	"Warped Crystal"
 	{
 		"en"	"Warped Crystal"
-		"ko"	""
+		"ko"	"왜곡된 수정"
 	}
 	"Warped Crystal Desc"
 	{
 		"en"	"Made from the combination of Chaos and Void. Let's hope none of us crystallizes so we don’t get encased in one of these."
-		"ko"	""
+		"ko"	"혼돈과 공허가 융화되어 만들어진 수정입니다.\n우리 중 누군가 결정화 되어 이런 수정에 갇히지 않길 바라야겠죠."
 	}
 }

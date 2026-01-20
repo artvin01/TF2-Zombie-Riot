@@ -3156,7 +3156,7 @@
 	"Umbral_Outbreak_Help_Message"
 	{
 		"en"		"There is no help in sight. Are we really going to die from this outbreak?"
-		"ko"		""
+		"ko"		"아무런 도움의 손길도 보이지 않습니다. 정말로 이 재앙 속에서 죽게 될 운명일까요?"
 	}
 	"Silvester Shares His Power"
 	{
@@ -4796,6 +4796,7 @@
 	"Umbral Outbreak Desc"
 	{
 		"en"	"Before regrouping with Bob and Twirl in Rogue 3, a rift opens before us, releasing Void and Umbral creatures. With Al-Hallam and Vuntulum nearby, we are attacked from every direction."
+		"ko"	"로그3에서 밥, 트윌과 재집결하기 전, 우리 앞에 균열이 열리며 공허와 움브랄 생명체들을 풀어냅니다. 근처에는 알-할람과 번툴룸까지 있으니... 사면초가군요."
 	}
 	"CoF Normal Desc"
 	{
