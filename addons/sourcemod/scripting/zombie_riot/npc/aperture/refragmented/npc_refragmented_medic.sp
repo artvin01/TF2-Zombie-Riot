@@ -122,22 +122,8 @@ methodmap RefragmentedMedic < CClotBody
 		npc.m_flSpeed = 280.0;
 		npc.m_iHealthBar = 4;
 
-		npc.m_flMeleeArmor = 0.10;
-		npc.m_flRangedArmor = 0.10;
-
-		npc.m_iWearable2 = TF2_CreateGlow_White("models/player/medic.mdl", npc.index, 1.0);
-		if(IsValidEntity(npc.m_iWearable2))
-		{
-			SetEntProp(npc.m_iWearable2, Prop_Send, "m_bGlowEnabled", false);
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_ENVIRONMENTAL);
-			TE_SetupParticleEffect("utaunt_signalinterference_parent", PATTACH_ABSORIGIN_FOLLOW, npc.m_iWearable2);
-			TE_WriteNum("m_bControlPoint1", npc.m_iWearable2);	
-			TE_SendToAll();
-		}
-
-		SetEntityRenderMode(npc.index, RENDER_GLOW);
-		SetEntityRenderColor(npc.index, 0, 0, 125, 200);
-				
+		RefragmentedBase_Init(npc.index);
+		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_ubersaw/c_ubersaw.mdl");
@@ -189,23 +175,9 @@ public void RefragmentedMedic_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
+	RefragmentedBase_OnThink(npc.index, 50.0);
+	
 	int PrimaryThreatIndex = npc.m_iTarget;
-
-	float vecTarget2[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget2);
-	float VecSelfNpc2[3]; WorldSpaceCenter(npc.index, VecSelfNpc2);
-	float distance2 = GetVectorDistance(vecTarget2, VecSelfNpc2, true);
-	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-	if(distance2 < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.25) && !i_IsABuilding[npc.m_iTarget])
-	{
-		npc.PlayHurtSound();
-		SDKHooks_TakeDamage(npc.index, npc.m_iTarget, npc.m_iTarget, 50.0, DMG_TRUEDAMAGE, -1, _, vecMe);
-		//Explode_Logic_Custom(10.0, npc.index, npc.index, -1, vecMe, 15.0, _, _, false, 1, false);
-		SetEntityRenderColor(npc.index, 180, 0, 0, 200);
-	}
-	if(distance2 > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.25) && !i_IsABuilding[npc.m_iTarget])
-	{
-		SetEntityRenderColor(npc.index, 0, 0, 125, 200);
-	}
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -359,6 +331,6 @@ public void RefragmentedMedic_NPCDeath(int entity)
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
+	
+	RefragmentedBase_OnDeath(npc.index);
 }

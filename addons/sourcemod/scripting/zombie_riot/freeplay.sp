@@ -460,6 +460,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_agent_johnson");
 				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = 0.75; // johnson gets way too much damage in freeplay, reduce it
+				enemy.ExtraThinkSpeed = 0.75;
+				enemy.ExtraSpeed = 1.50;
 			}
 			case 21:
 			{
@@ -470,22 +472,22 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 22:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_atomizer");
-				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((4500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 23:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_the_wall");
-				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 24:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_harrison");
-				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 25:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_castellan");
-				enemy.Health = RoundToFloor((8000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 26:
 			{
@@ -497,6 +499,59 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_omega_raid");
 				enemy.Health = RoundToFloor((8000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 28:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_cat");
+				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 29:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_aris");
+				enemy.Health = RoundToFloor((5500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 30:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_chimera");
+				enemy.Health = RoundToFloor((4000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 31:	
+			{
+				switch(GetRandomInt(1, 4))
+				{
+					case 1: // 
+					{
+						enemy.Index = NPC_GetByPlugin("npc_vincent");
+						enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "sc40;forceangry";
+					}
+					default: // 
+					{
+						enemy.Index = NPC_GetByPlugin("npc_vincent");
+						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+					}
+				}
+			}
+			case 32:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_boss_reila");
+				enemy.Health = RoundToFloor((3000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Data = "force_final_battle";
+				enemy.ExtraDamage = 0.90;
+			}
+			case 33:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_almagest_jkei");
+				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Data = "force_final_battle";
+				enemy.ExtraThinkSpeed = 0.90;
+			}
+			case 34:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_shadowing_darkness_boss");
+				enemy.Health = RoundToFloor((10000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Data = "sc25;force_final_battle";
+				enemy.ExtraDamage = 0.75;
 			}
 			default:
 			{
@@ -930,6 +985,34 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		case 27:
 		{
 			CPrintToChatAll("{gold}오메가! - {red}군무를 추며 다가오는군.");
+		}
+		case 28:
+		{
+			CPrintToChatAll("{rare}C.A.T.! {gold}- {red}It now considers you a trespassers of the laboratories.");
+		}
+		case 29:
+		{
+			CPrintToChatAll("{rare}A.R.I.S.! {gold}- {red}C.A.T. must have failed at stopping you.");
+		}
+		case 30:
+		{
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.! {gold}- {red}Wonder who the {darkblue}creator {red}of this robot is?");
+		}
+		case 31:
+		{
+			CPrintToChatAll("{rare}VINCENT! {gold}- {red}Lets see how much he yaps this time.");
+		}
+		case 32:
+		{
+			CPrintToChatAll("{pink}REILA! {gold}- {red}Make sure you attack her first.");
+		}
+		case 33:
+		{
+			CPrintToChatAll("{black}JKEI! {gold}- {red}Hope we don't have to fight more from the Almagest Corporation.");
+		}
+		case 34:
+		{
+			CPrintToChatAll("{darkgray}SHADOWING DARKNESS! {gold}- {red}The hardest challenge we have programmed into this. Good luck beating her.");
 		}
 		default:
 		{
