@@ -2446,39 +2446,40 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 		ArmorLevel = RoundToNearest(Attributes_GetOnPlayer(client, 701, false));
 	}
 
-	int Armor_Max;
+	int Armor_Max = 200 + RoundToNearest(Attributes_GetOnPlayer(client, Attrib_MaxArmor_BaseAdditive, false, _, 0.0));
 	
+	float Armor_Multiplier = Attributes_GetOnPlayer(client, Attrib_MaxArmor_Multiplier, false, _, 1.0);
+	if (Armor_Multiplier < 0.0)
+		Armor_Multiplier = 0.0;
+	Armor_Max = RoundToCeil(Armor_Max * Armor_Multiplier);
+	
+	/*
 	if(ArmorLevel == 50)
 		Armor_Max = 300;
-											
 	else if(ArmorLevel == 100)
 		Armor_Max = 450;
-											
 	else if(ArmorLevel == 150)
 		Armor_Max = 1000;
-										
 	else if(ArmorLevel == 200)
 		Armor_Max = 2000;	
-
 	else if(ArmorLevel == 250)
 		Armor_Max = 3000;
-		
 	else if(ArmorLevel > 250)	//Over 250!
 		Armor_Max = 3000+RoundToNearest(ArmorLevel*1.5);
-		
 	else
 		Armor_Max = 200;
-
+	*/
+	
 	if(i_CurrentEquippedPerk[client] & PERK_STOCKPILE_STOUT)
-	{
 		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
-	}
+	
 	//half armor if they have this thing, but only if they arent under corrosion.
 	if((f_LivingArmorPenalty[client] > GetGameTime() || (Attributes_Get(client, Attrib_Armor_AliveMode, 0.0)) != 0.0) && Armor_Charge[client] >= 0)
 		Armor_Max /= 2;
-		
-	return (RoundToCeil(float(Armor_Max) * multiplyier));
 	
+	Armor_Max += RoundToNearest(Attributes_GetOnPlayer(client, Attrib_MaxArmor_FinalAdditive, false, _, 0.0));
+	
+	return (RoundToCeil(float(Armor_Max) * multiplyier));
 }
 
 float f_IncrementalSmallArmor[MAXENTITIES];
