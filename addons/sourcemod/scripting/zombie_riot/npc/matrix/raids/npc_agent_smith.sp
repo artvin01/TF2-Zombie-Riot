@@ -809,6 +809,10 @@ static void Smith_Infection(AgentSmith npc)
 				{
 					fl_Infection_Meter[victim] += 0.20;
 				}
+				default: //When there's more than 14 players
+				{
+					fl_Infection_Meter[victim] += 0.22;
+				}
 			}
 			PrintCenterText(victim, "당신은 감염되고 있습니다 - %.0f％ | 치료율 %.0f％", (fl_Infection_Meter[victim] * 10.0), (fl_Cure_Meter[victim] * 10.0));
 			for(int clients = 1 ; clients <= MaxClients ; clients++)

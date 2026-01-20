@@ -118,7 +118,7 @@ public void ApertureTeleporter_ClotThink(ApertureTeleporter npc, int iNPC)
 				npc.SetCycle(0.01);
 				
 				const float animTime = 10.4;
-				float duration = npc.Anger ? 1.0 : 10.0;
+				float duration = npc.Anger ? 1.0 : 5.0;
 				
 				npc.SetPlaybackRate(animTime / duration);
 				npc.m_flDoingAnimation = gameTime + duration;

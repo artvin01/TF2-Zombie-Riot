@@ -55,6 +55,7 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 #define APERTURE_TELEPORTER_SPAWN_OFFSET_Z 20.0
+#define APERTURE_BUILDER_DEFAULT_SPEED 270.0
 
 enum
 {
@@ -63,6 +64,7 @@ enum
 	APT_BUILDER_STATE_BUILDING,
 	APT_BUILDER_STATE_ANGRY,
 	APT_BUILDER_STATE_RETURNING_TO_NEST,
+	APT_BUILDER_STATE_SEARCHING_FOR_NEW_SPOT,
 }
 
 enum
@@ -243,11 +245,11 @@ methodmap ApertureBuilder < CClotBody
 		npc.m_iState = APT_BUILDER_STATE_IDLE;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StopPathing(); // Don't path straight away, so we don't fall off an edge right after spawning
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = APERTURE_BUILDER_DEFAULT_SPEED;
 		
 		// We just spawned, our mission is to build our shit asap
 		npc.m_bQuickBuildings = true;
-		npc.m_flNextBuildingStateTime = GetGameTime() + 0.75;
+		npc.m_flNextBuildingStateTime = GetGameTime(npc.index);
 		npc.m_iBuildingsPlaced = 0;
 		
 		npc.m_bCurrentlyReturning = false;
@@ -274,7 +276,6 @@ methodmap ApertureBuilder < CClotBody
 		
 		ApertureBuilder_ToggleBuilding(npc, false);
 		
-
 		if(!Rogue_Mode())
 		{
 			if (StrContains(data, "noteleport") == -1)
@@ -328,8 +329,7 @@ methodmap ApertureBuilder < CClotBody
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 			{
-				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "voice_player", 1, "%s", "Engineers Appear");
+				ShowGameText(client_check, "voice_player", 1, "%s", "An Aperture Builder appears...");
 			}
 		}
 		
@@ -389,7 +389,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 					npc.m_iTarget = target;
 					npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();	
 					npc.m_iState = APT_BUILDER_STATE_ANGRY;
-					npc.m_flSpeed = 300.0;
+					npc.m_flSpeed = APERTURE_BUILDER_DEFAULT_SPEED;
 					npc.StartPathing();
 					return;
 				}
@@ -405,7 +405,9 @@ public void ApertureBuilder_ClotThink(int iNPC)
 				int building = EntRefToEntIndex(ApertureBuilder_GetRandomBuilding(npc, true));
 				if (building > MaxClients)
 				{
-					GetAbsOrigin(building, vecPos);
+					if (!ApertureBuilder_TryToFindSpotInRadius(npc.index, building, 150.0, false, false, vecPos))
+						GetAbsOrigin(building, vecPos);
+					
 					f3_NpcSavePos[npc.index] = vecPos;
 					npc.StartPathing();
 				}
@@ -420,15 +422,32 @@ public void ApertureBuilder_ClotThink(int iNPC)
 			if (GetVectorLength(f3_NpcSavePos[npc.index], true))
 			{
 				GetAbsOrigin(npc.index, vecPos);
-				if (GetVectorDistance(f3_NpcSavePos[npc.index], vecPos, true) < 4000.0)
-				{
+				if (GetVectorDistance(f3_NpcSavePos[npc.index], vecPos, true) < 2000.0)
 					npc.StopPathing();
-					f3_NpcSavePos[npc.index] = { 0.0, 0.0, 0.0 };
+				else
+					npc.SetGoalVector(f3_NpcSavePos[npc.index]);
+			}
+			else
+			{
+				if (ApertureBuilder_TryToFindSpotInRadius(npc.index, npc.index, 2000.0, false, false, vecPos))
+				{
+					f3_NpcSavePos[npc.index] = vecPos;
+					
+					npc.m_flGetClosestTargetTime = 0.0;
+					npc.m_bCurrentlyReturning = false;
+					npc.m_iState = APT_BUILDER_STATE_SEARCHING_FOR_NEW_SPOT;
 				}
 				else
 				{
-					npc.SetGoalVector(f3_NpcSavePos[npc.index]);
+					npc.m_flSpeed = APERTURE_BUILDER_DEFAULT_SPEED;
+					npc.StartPathing();
+					npc.m_iTarget = GetClosestTarget(npc.index);
+					npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();	
+					npc.m_iState = APT_BUILDER_STATE_ANGRY;
+					npc.m_flNextBuildingStateTime = gameTime + 1.5;
 				}
+				
+				return;
 			}
 		}
 		
@@ -441,101 +460,22 @@ public void ApertureBuilder_ClotThink(int iNPC)
 			{
 				if (!GetVectorLength(f3_NpcSavePos[npc.index], true))
 				{
-					bool success = false;
-					
-					// We want to search for a valid spot around us to build something first
-					for (int i = 0; i < 60; i++)
+					float vecBuffer[3];
+					bool success = ApertureBuilder_TryToFindSpotInRadius(npc.index, npc.index, 200.0, true, true, vecBuffer);
+					if (success)
 					{
-						float vecPotentialPos[3], vecBuffer[3];
-						GetAbsOrigin(npc.index, vecBuffer);
-						vecPotentialPos = vecBuffer;
-						
-						vecPotentialPos[0] += GetRandomFloat(-200.0, 200.0);
-						vecPotentialPos[1] += GetRandomFloat(-200.0, 200.0);
-						vecPotentialPos[2] += 65.0;
-						Handle trace = TR_TraceRayFilterEx(vecBuffer, vecPotentialPos, GetSolidMask(npc.index), RayType_EndPoint, BulletAndMeleeTrace, npc.index);
-						if (TR_DidHit(trace))
-							continue;
-						
-						delete trace;
-						
-						trace = TR_TraceRayFilterEx(vecPotentialPos, view_as<float>( { 90.0, 0.0, 0.0 } ), GetSolidMask(npc.index), RayType_Infinite, BulletAndMeleeTrace, npc.index);
-						
-						TR_GetEndPosition(vecPotentialPos, trace);
-						delete trace;
-						
-						CNavArea area = TheNavMesh.GetNearestNavArea(vecPotentialPos, true);
-						if (area == NULL_AREA)
-							continue;
-						
-						int navAttribs = area.GetAttributes();
-						if (navAttribs & NAV_MESH_AVOID)
-							continue;
-						
-						// The teleporter might spawn giants!
-						float vecMins[3] = { -35.0, -35.0, 0.0 };
-						float vecMaxs[3] = { 35.0, 35.0, 130.0 };
-						
-						vecPotentialPos[2] += APERTURE_TELEPORTER_SPAWN_OFFSET_Z;
-						if (IsBoxHazard(vecPotentialPos, vecMins, vecMaxs))
-							continue;
-							
-						if (IsSpaceOccupiedIgnorePlayers(vecPotentialPos, vecMins, vecMaxs, npc.index))
-							continue;
-						
-						// Avoid placing buildings way too close to other buildings
-						int other = INVALID_ENT_REFERENCE;
-						int nothing;
-						while ((other = FindEntityByNPC(nothing)) != INVALID_ENT_REFERENCE)
-						{
-							if (IsValidEntity(other))
-							{
-								if (!i_NpcIsABuilding[other])
-									continue;
-								
-								float vecOtherPos[3];
-								GetAbsOrigin(other, vecOtherPos);
-								if (GetVectorDistance(vecPotentialPos, vecOtherPos, true) <= 8000.0)
-									break;
-							}
-						}
-						
-						if (other != INVALID_ENT_REFERENCE)
-							continue;
-						
-						// Ensure the center of the nav mesh is accessible as well, so we can walk on it later
-						float vecCenterPos[3];
-						area.GetCenter(vecCenterPos);
-						
-						vecPotentialPos[2] += 1.0;
-						vecMins = { -24.0, -24.0, 0.0 };
-						vecMaxs = { 24.0, 24.0, 82.0 };
-						
-						if (IsBoxHazard(vecCenterPos, vecMins, vecMaxs))
-							continue;
-						
-						if (IsSpaceOccupiedIgnorePlayers(vecCenterPos, vecMins, vecMaxs, npc.index))
-							continue;
-
-						if(Dome_PointOutside(vecCenterPos))
-							continue;
-
-						vecPotentialPos[2] -= APERTURE_TELEPORTER_SPAWN_OFFSET_Z;
 						// Congratulations little fella, you got a place to go
 						ApertureBuilder_ToggleBuilding(npc, true);
 						npc.m_iTarget = 0;
-						npc.m_flSpeed = 300.0;
-						success = true;
-						f3_NpcSavePos[npc.index] = vecPotentialPos;
+						npc.m_flSpeed = APERTURE_BUILDER_DEFAULT_SPEED;
+						f3_NpcSavePos[npc.index] = vecBuffer;
 						npc.StartPathing();
-						npc.SetGoalVector(vecPotentialPos);
-						break;
+						npc.SetGoalVector(vecBuffer);
 					}
-					
-					if (!success)
+					else
 					{
 						// Epic fail, try again in a little bit. To not lobotomize ourselves, let's be angry at anyone so we move for a little bit
-						npc.m_flSpeed = 300.0;
+						npc.m_flSpeed = APERTURE_BUILDER_DEFAULT_SPEED;
 						npc.StartPathing();
 						npc.m_iTarget = GetClosestTarget(npc.index);
 						npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();	
@@ -618,8 +558,12 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						}
 					}
 					
-					NpcStats_CopyStats(npc.index, building);
 					b_StaticNPC[building] = b_StaticNPC[npc.index];
+					
+					// Give each building 50% of the engie's health
+					int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2;
+					SetEntProp(building, Prop_Data, "m_iMaxHealth", health);
+					SetEntProp(building, Prop_Data, "m_iHealth", health);
 					
 					if (b_StaticNPC[building])
 						AddNpcToAliveList(building, 1);
@@ -639,7 +583,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 					
 					ApertureBuilder_ToggleBuilding(npc, false);
 					npc.m_iState = APT_BUILDER_STATE_IDLE;
-					npc.m_flNextBuildingStateTime = npc.m_bQuickBuildings ? gameTime : gameTime + 20.0;
+					npc.m_flNextBuildingStateTime = npc.m_bQuickBuildings ? gameTime : gameTime + 12.0;
 					npc.StartPathing();
 				}
 			}
@@ -694,7 +638,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 			if (!npc.m_bCurrentlyReturning)
 			{
 				npc.m_flNextIdleSound = 0.0;
-				npc.m_flSpeed = 300.0;
+				npc.m_flSpeed = APERTURE_BUILDER_DEFAULT_SPEED;
 				npc.StartPathing();
 				npc.m_bCurrentlyReturning = true;
 			}
@@ -735,6 +679,46 @@ public void ApertureBuilder_ClotThink(int iNPC)
 			{
 				// We don't have a nest! Go back to idling and decide what to do from there
 				npc.m_flNextBuildingStateTime = fmax(npc.m_flNextBuildingStateTime, gameTime + 1.0);
+				npc.m_bCurrentlyReturning = false;
+				npc.m_iState = APT_BUILDER_STATE_IDLE;
+			}
+		}
+		
+		case APT_BUILDER_STATE_SEARCHING_FOR_NEW_SPOT:
+		{
+			if (!npc.m_bCurrentlyReturning)
+			{
+				npc.m_flNextIdleSound = 0.0;
+				npc.m_flSpeed = APERTURE_BUILDER_DEFAULT_SPEED;
+				npc.StartPathing();
+				npc.m_bCurrentlyReturning = true;
+			}
+			
+			// Continue targetting enemies in this state, but don't move towards them
+			if (npc.m_flGetClosestTargetTime < gameTime)
+			{
+				npc.m_iTarget = GetClosestTarget(npc.index, .fldistancelimit = 200.0);
+				npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();	
+			}
+			
+			if (IsValidEnemy(npc.index, npc.m_iTarget))
+			{
+				float distance = ApertureBuilder_GetEntityDistance(npc.index, npc.m_iTarget, true);
+				ApertureBuilderSelfDefense(npc, gameTime, npc.m_iTarget, distance); 
+			}
+			else
+			{
+				npc.m_flGetClosestTargetTime = 0.0;
+			}
+			
+			npc.SetGoalVector(f3_NpcSavePos[npc.index]);
+			
+			float vecPos[3];
+			WorldSpaceCenter(npc.index, vecPos);
+			if (GetVectorDistance(vecPos, f3_NpcSavePos[npc.index], true) < 7000.0)
+			{
+				// We reached our destination, can go back to idling
+				npc.m_flNextBuildingStateTime = fmax(npc.m_flNextBuildingStateTime, gameTime + 0.3);
 				npc.m_bCurrentlyReturning = false;
 				npc.m_iState = APT_BUILDER_STATE_IDLE;
 			}
@@ -974,4 +958,110 @@ static void ApertureBuilder_ToggleBuilding(ApertureBuilder npc, bool toggle)
 	
 	if (activity > 0)
 		npc.StartActivity(activity);
+}
+
+static bool ApertureBuilder_TryToFindSpotInRadius(int iNPC, int entity, float radius, bool avoidBuildings, bool careAboutGiants, float vecBuffer[3])
+{
+	bool success = false;
+	
+	// We want to search for a valid spot around us to build something first
+	for (int i = 0; i < 60; i++)
+	{
+		float vecPotentialPos[3], vecBuffer2[3];
+		GetAbsOrigin(entity, vecBuffer2);
+		vecPotentialPos = vecBuffer2;
+		
+		vecPotentialPos[0] += GetRandomFloat(-radius, radius);
+		vecPotentialPos[1] += GetRandomFloat(-radius, radius);
+		vecPotentialPos[2] += 65.0;
+		Handle trace = TR_TraceRayFilterEx(vecBuffer2, vecPotentialPos, GetSolidMask(iNPC), RayType_EndPoint, BulletAndMeleeTrace, iNPC);
+		if (TR_DidHit(trace))
+			continue;
+		
+		delete trace;
+		
+		trace = TR_TraceRayFilterEx(vecPotentialPos, view_as<float>( { 90.0, 0.0, 0.0 } ), GetSolidMask(iNPC), RayType_Infinite, BulletAndMeleeTrace, iNPC);
+		
+		TR_GetEndPosition(vecPotentialPos, trace);
+		delete trace;
+		
+		CNavArea area = TheNavMesh.GetNearestNavArea(vecPotentialPos, true);
+		if (area == NULL_AREA)
+			continue;
+		
+		int navAttribs = area.GetAttributes();
+		if (navAttribs & NAV_MESH_AVOID)
+			continue;
+		
+		float vecMins[3], vecMaxs[3];
+			
+		if (careAboutGiants)
+		{
+			// The teleporter might spawn giants!
+			vecMins = { -35.0, -35.0, 0.0 };
+			vecMaxs = { 35.0, 35.0, 130.0 };
+		}
+		else
+		{
+			vecMins = { -24.0, -24.0, 0.0 };
+			vecMaxs = { 24.0, 24.0, 82.0 };
+		}
+		
+		vecPotentialPos[2] += APERTURE_TELEPORTER_SPAWN_OFFSET_Z;
+		if (IsBoxHazard(vecPotentialPos, vecMins, vecMaxs))
+			continue;
+			
+		if (IsSpaceOccupiedIgnorePlayers(vecPotentialPos, vecMins, vecMaxs, iNPC))
+			continue;
+		
+		if (avoidBuildings)
+		{
+			// Avoid placing buildings way too close to other buildings
+			int other = INVALID_ENT_REFERENCE;
+			int nothing;
+			while ((other = FindEntityByNPC(nothing)) != INVALID_ENT_REFERENCE)
+			{
+				if (IsValidEntity(other))
+				{
+					if (!i_NpcIsABuilding[other])
+						continue;
+					
+					float vecOtherPos[3];
+					GetAbsOrigin(other, vecOtherPos);
+					if (GetVectorDistance(vecPotentialPos, vecOtherPos, true) <= 8000.0)
+						break;
+				}
+			}
+			
+			if (other != INVALID_ENT_REFERENCE)
+				continue;
+			}
+		
+		// Ensure the center of the nav mesh is accessible as well, so we can walk on it later
+		float vecCenterPos[3];
+		area.GetCenter(vecCenterPos);
+		
+		vecPotentialPos[2] += 1.0;
+		if (careAboutGiants)
+		{
+			vecMins = { -24.0, -24.0, 0.0 };
+			vecMaxs = { 24.0, 24.0, 82.0 };
+		}
+		
+		if (IsBoxHazard(vecCenterPos, vecMins, vecMaxs))
+			continue;
+		
+		if (IsSpaceOccupiedIgnorePlayers(vecCenterPos, vecMins, vecMaxs, iNPC))
+			continue;
+	
+		if(Dome_PointOutside(vecCenterPos))
+			continue;
+		
+		success = true;
+		vecPotentialPos[2] -= APERTURE_TELEPORTER_SPAWN_OFFSET_Z;
+		vecBuffer = vecPotentialPos;
+		break;
+	}
+	
+	return success;
 }

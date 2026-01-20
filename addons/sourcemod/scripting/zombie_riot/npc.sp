@@ -1022,6 +1022,8 @@ void NPC_ConfigSetup()
 
 
 	//Aperture
+	Aperture_Shared_OnMapStart();
+	RefragmentedBase_OnMapStart();
 	ApertureCombatant_OnMapStart_NPC();
 	ApertureShotgunner_OnMapStart_NPC();
 	ApertureDevastator_OnMapStart_NPC();
@@ -2447,6 +2449,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/enemies/npc_zeina_freed.sp"
 
 //Aperture
+#include "npc/aperture/npc_base_aperture.sp"
+#include "npc/aperture/npc_base_refragmented.sp"
 #include "npc/aperture/10/npc_aperture_combatant.sp"
 #include "npc/aperture/10/npc_aperture_shotgunner.sp"
 #include "npc/aperture/10/npc_aperture_jumper.sp"
