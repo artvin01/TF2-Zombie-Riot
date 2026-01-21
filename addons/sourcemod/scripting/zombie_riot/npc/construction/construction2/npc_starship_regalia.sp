@@ -688,6 +688,11 @@ methodmap RegaliaClass < CClotBody
 		public get()							{ return fl_BEAM_DurationTime[this.index]; 				}
 		public set(float TempValueForProperty) 	{ fl_BEAM_DurationTime[this.index] = TempValueForProperty; }
 	}
+	property float m_flDroneSpawnNext
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; 				}
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
 	public RegaliaClass(float vecPos[3], float vecAng[3], int team, const char[] data)
 	{
 		RegaliaClass npc = view_as<RegaliaClass>(CClotBody(vecPos, vecAng, STARSHIP_MODEL, "1.0", "1000", team, .CustomThreeDimensions = {1000.0, 1000.0, 200.0}, .CustomThreeDimensionsextra = {-1000.0, -1000.0, -200.0}));
@@ -697,6 +702,11 @@ methodmap RegaliaClass < CClotBody
 		npc.CleanEntities();
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+
+		if(StrContains(data, "raid_hud") != -1)
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+		}
 		
 		npc.CreateBody();
 		npc.ShieldState(false);
@@ -717,7 +727,7 @@ methodmap RegaliaClass < CClotBody
 		fl_ShipHyperDecelerationSpeed = 10.0;
 		fl_ShipHyperDecelerationMax = 0.5;
 
-		npc.m_flSpeed = 1000.0;		//MAX SPEED
+		npc.m_flSpeed = 500.0;		//MAX SPEED
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StopPathing();	//don't path.
 		
@@ -740,6 +750,8 @@ methodmap RegaliaClass < CClotBody
 		//Weapons System.
 		npc.m_flLanceRecharge = GetRandomFloat(1.0, 3.0) + GetGameTime();
 		npc.m_flLanceDuration = 0.0;
+
+		npc.m_flDroneSpawnNext= GetRandomFloat(1.0, 3.0) + GetGameTime();
 
 
 		//Make immune to speed debuffs and the like
@@ -1236,8 +1248,89 @@ static void ClotThink(int iNPC)
 	npc.ShieldState(npc.m_flArmorCount>0.0);	//shield VFX will take directly from npc armour.
 
 	//HandleMainWeapons(npc);
+	HandleDroneSystem(npc);
 
 	
+}
+static void HandleDroneSystem(RegaliaClass npc)
+{
+	if(!npc.bDoesSectionExist(StarShip_BG_CoreDeco))
+		return;
+
+	float GameTime = GetGameTime(npc.index);
+
+	if(npc.m_flDroneSpawnNext > GameTime)
+		return;
+
+	npc.m_flDroneSpawnNext = GameTime + 12.5;
+
+	bool TopSection 	= true;
+	bool BottomSection 	= true;
+
+	int SpawnAmt = 4;
+	
+	static const char Sections[][] = {
+		"central_weapons_port_left_top",
+		"central_weapons_port_right_top",
+		"central_weapons_port_left_bottom",
+		"central_weapons_port_right_bottom" 
+	};
+
+	if(!TopSection && !BottomSection)
+	{
+		npc.m_flDroneSpawnNext = GameTime + 1.0;
+		return;
+	}
+
+	float ShipAngles[3]; ShipAngles = npc.GetAngles();
+
+	if(TopSection)
+	{
+		for(int i=0 ; i < 2 ; i++)
+		{
+			float Loc[3]; Loc = npc.GetWeaponSections(Sections[i]);
+			for(int loop=0 ; loop < SpawnAmt ; loop++)
+			{
+				float Angles[3]; Angles = ShipAngles;
+				Angles[2] = 0.0;
+				Angles[1] += (360.0 / SpawnAmt) * loop;
+				Angles[0] = -45.0;
+				FireDrones(npc, Loc, Angles);
+			}
+		}
+	}
+	if(BottomSection)
+	{
+		for(int i=2 ; i < 4 ; i++)
+		{
+			float Loc[3]; Loc = npc.GetWeaponSections(Sections[i]);
+			for(int loop=0 ; loop < SpawnAmt ; loop++)
+			{
+				float Angles[3]; Angles = ShipAngles;
+				Angles[2] = 0.0;
+				Angles[1] += (360.0 / SpawnAmt) * loop;
+				Angles[0] = 45.0;
+				FireDrones(npc, Loc, Angles);
+			}
+		}
+	}
+}
+static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
+{
+	int Drone = NPC_CreateByName("npc_lantean_drone_projectile", npc.index, Loc, Angles, GetTeam(npc.index), "blue;");
+
+	int health = 100;
+	if(Drone > MaxClients)
+	{
+		SetEntProp(Drone, Prop_Data, "m_iHealth", health);
+		SetEntProp(Drone, Prop_Data, "m_iMaxHealth", health);
+
+		LanteanProjectile drone_npc = view_as<LanteanProjectile>(Drone);
+		fl_AbilityVectorData[drone_npc.index] = Angles;
+
+		drone_npc.m_flTimeTillDeath = GetGameTime() + 10.0;
+		drone_npc.m_flSpeed = npc.m_flSpeed + 200.0 * GetRandomFloat(0.8, 1.2);
+	}
 }
 static void HandleMainWeapons(RegaliaClass npc)
 {
