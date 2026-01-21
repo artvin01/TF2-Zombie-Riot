@@ -257,7 +257,7 @@ void ChaosBladeThrowerSelfDefense(ChaosBladeThrower npc, float gameTime, int tar
 
 			float projectile_speed = 1000.0;
 			npc.FaceTowards(vecTarget, 30000.0);	
-			float damage = 40.0;
+			float damage = 100.0;
 
 			int arrow = npc.FireArrow(vecTarget, damage, projectile_speed, "models/props_junk/sawblade001a.mdl", 1.25);	
 
