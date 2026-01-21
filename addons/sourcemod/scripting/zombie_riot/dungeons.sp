@@ -1754,15 +1754,23 @@ static void TeleportToFrom(DungeonZone tele, DungeonZone from1 = Zone_Unknown, D
 		}
 	}
 	
-	for(int i; i < i_MaxcountNpcTotal; i++)
+	int a;
+	while((entity = FindEntityByNPC(a)) != -1)
 	{
-		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+		if(IsEntityAlive(entity))
 		{
 			DungeonZone zone = Dungeon_GetEntityZone(entity);
 			if(zone == Zone_Unknown || (zone != tele && from1 == Zone_Unknown) || zone == from1 || zone == from2 || zone == from3)
 			{
-				if(GetTeam(entity) == TFTeam_Red && i_NpcInternalId[entity] != Remain_ID())
+				if(GetTeam(entity) != TFTeam_Red || i_NpcInternalId[entity] == Remain_ID())
+				{
+					f_CreditsOnKill[entity] = 0.0;
+					SmiteNpcToDeath(entity);
+					SmiteNpcToDeath(entity);
+					SmiteNpcToDeath(entity);
+					SmiteNpcToDeath(entity);
+				}
+				else
 				{
 					TeleportEntity(entity, pos, ang, NULL_VECTOR);
 					SaveLastValidPositionEntity(entity, pos);
@@ -1813,15 +1821,15 @@ static void TeleportToFrom(DungeonZone tele, DungeonZone from1 = Zone_Unknown, D
 			RemoveEntity(entity);
 		}
 	}
-
+/*
 	DataPack pack;
 	CreateDataTimer(0.2, KillToFrom, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	pack.WriteCell(tele);
 	pack.WriteCell(from1);
 	pack.WriteCell(from2);
-	pack.WriteCell(from3);
+	pack.WriteCell(from3);*/
 }
-
+/*
 static Action KillToFrom(Handle timer, DataPack pack)
 {
 	bool found;
@@ -1852,7 +1860,7 @@ static Action KillToFrom(Handle timer, DataPack pack)
 	}
 
 	return found ? Plugin_Continue : Plugin_Stop;
-}
+}*/
 
 stock void Dungeon_StartThisBattle(float time = 10.0)
 {
