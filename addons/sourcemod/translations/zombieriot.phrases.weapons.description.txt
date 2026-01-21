@@ -1920,7 +1920,7 @@
 		"en"	"-Increased Max Armor.\n-Gain +50HP\n-Extra Passive resistances if no armor is active."
 		"fr"	"Armure reçu et armure maximalle améliorées. +50 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
 		"it"	"Aumento della quantità di armatura ottenuta per uso e tetto massimo.+50HP\nFornisce resistenza passiva in caso di rottura dell'armatura e aumenta con i potenziamenti dell'armatura."
-		"ko"	"-최대 아머 +100\n-최대 체력 +50\n-아머가 없으면 추가 저항력 증가(생존 개선에 따라 증가함)"
+		"ko"	"-최대 아머 +150\n-최대 체력 +50\n-아머가 없으면 추가 저항력 증가(생존 개선에 따라 증가함)"
 	}
 	
 	"Kevlar Desc"
@@ -1951,7 +1951,7 @@
 		"en"	"-Increased Max Armor.\n-Gain +150HP\n-Extra Passive resistances if no armor is active."
 		"fr"	"Armure reçu et armure maximalle améliorées. +150 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
 		"it"	"Aumento della quantità di armatura per uso e tetto massimo. +150 HP\nFornisce una resistenza passiva in caso di rottura dell'armatura e aumenta con i potenziamenti dell'armatura."
-		"ko"	"-최대 아머 +50\n-최대 아머 2배\n-최대 체력 +150\n-아머가 없으면 추가 저항력 증가(생존 개선에 따라 증가함)"
+		"ko"	"-최대 아머 2배\n-최대 체력 +150\n-아머가 없으면 추가 저항력 증가(생존 개선에 따라 증가함)"
 	}
 	"Grigoris Special Antidote Desc"
 	{

@@ -603,8 +603,8 @@
 	
 	"Improvised Armor Desc"
 	{
-		"en"	"Final Max Armor +300\n-Max Armor -10％"
-		"ko"	"-최종 최대 아머 +300\n-최대 아머 10％ 감소"
+		"en"	"-Final Max Armor +300\n-Max Armor -20％"
+		"ko"	"-최종 최대 아머 +300\n-최대 아머 20％ 감소"
 	}
 	
 	//Etc
