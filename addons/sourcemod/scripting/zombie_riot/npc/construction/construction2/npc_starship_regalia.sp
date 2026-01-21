@@ -332,6 +332,7 @@ methodmap LanteanProjectile < CClotBody
 		b_IgnoreAllCollisionNPC[npc.index]		= true;
 		//b_ForceCollisionWithProjectile[npc.index]=true;
 		npc.m_bDissapearOnDeath 				= true;
+		npc.b_BlockDropChances					= true;
 
 		npc.m_flSpeed = 500.0 + GetRandomFloat(0.0, 100.0);		//MAX SPEED
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -701,6 +702,10 @@ methodmap RegaliaClass < CClotBody
 
 		npc.CleanEntities();
 		
+		SetEntityRenderMode(npc.index, RENDER_NORMAL);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
+
+
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
 		if(StrContains(data, "raid_hud") != -1)
@@ -1247,7 +1252,7 @@ static void ClotThink(int iNPC)
 
 	npc.ShieldState(npc.m_flArmorCount>0.0);	//shield VFX will take directly from npc armour.
 
-	//HandleMainWeapons(npc);
+	HandleMainWeapons(npc);
 	HandleDroneSystem(npc);
 
 	
@@ -1342,28 +1347,32 @@ static void HandleMainWeapons(RegaliaClass npc)
 	if(npc.m_flLanceRecharge > GameTime && npc.m_flLanceDuration < GameTime)
 		return;
 
-	/*        															x		y		z
-		$attachment "forward_lance_left_end" 			"weapon_bone" 143.702 -432.962 0.0 rotate 0.0 0.0 0.0
-		$attachment "forward_lance_left_start" 			"weapon_bone" 143.702 -314.649 0.0 rotate 0.0 0.0 0.0
+	if(npc.m_flLanceRecharge < GameTime)
+	{
+		if(!bIntialiseMainLances(npc))
+		{
+			npc.m_flLanceRecharge = GameTime + 5.0;
+			npc.m_flLanceDuration = 0.0;
+			return;
+		}
+		else
+		{
+			npc.m_flLanceRecharge = GameTime + 30.0;
+			npc.m_flLanceDuration = GameTime + 20.0;
+		}
+	}
 
-		$attachment "forward_lance_right_end" 			"weapon_bone" -143.702 -432.962 0.0 rotate 0.0 0.0 0.0
-		$attachment "forward_lance_right_start" 		"weapon_bone" -143.702 -314.649 0.0 rotate 0.0 0.0 0.0
-
-		when translplanting. switch x with z, and then invert x. (which was formerly y before switching)
-	*/
-	//float Sections[][3] = {
-	//	{314.649,  143.702, 0.0},
-	//	{432.962,  143.702, 0.0},
-	//	{314.649, -143.702, 0.0},
-	//	{432.962, -143.702, 0.0}
-	//};
+	if(npc.m_flLanceDuration < GameTime)
+		return;
 
 	static const char Sections[][] = {
 		"forward_lance_left_end" ,
 		"forward_lance_right_end"
 	};
 	
-	float TargetLoc[3]; GetAbsOrigin(npc.m_iTarget, TargetLoc); TargetLoc[2]+=50.0;
+	float TargetLoc[3];
+
+	TargetLoc = f3_LastValidPosition[npc.index];
 
 	float Allowance_Pitch 	= 15.0;
 	float Allowance_Yaw 	= 10.0;
@@ -1377,7 +1386,7 @@ static void HandleMainWeapons(RegaliaClass npc)
 	Ruina_Laser_Logic Laser;
 	Laser.client = npc.index;
 
-	bool Attacked = false;
+	float Dist = 800.0;
 
 	float ShipAngles[3]; ShipAngles = npc.GetAngles();
 
@@ -1385,29 +1394,109 @@ static void HandleMainWeapons(RegaliaClass npc)
 	{
 		float End[3]; 	End = npc.GetWeaponSections(Sections[i]);
 
-		if(!npc.bIsShipFacingLoc(End, TargetLoc, Allowance_Pitch, Allowance_Yaw))	//Gimbal lances.
-			continue;
+		//if(!npc.bIsShipFacingLoc(End, TargetLoc, Allowance_Pitch, Allowance_Yaw))	//Gimbal lances.
+		//	continue;
 
-		float Angles[3];
-		MakeVectorFromPoints(End, TargetLoc, Angles);
-		GetVectorAngles(Angles, Angles);
+		float Angles[3]; Angles = fl_AbilityVectorData_2[npc.index];
 
-		Laser.DoForwardTrace_Custom(Angles, End, -1.0);
+		float WantedLoc[3];
+		Get_Fake_Forward_Vec(-Dist * (i==0 ? -1.0 : 1.0), Angles, WantedLoc, TargetLoc);
+
+		float BeamAngles[3];
+		MakeVectorFromPoints(End, WantedLoc, BeamAngles);
+		GetVectorAngles(BeamAngles, BeamAngles);
+
+		Laser.DoForwardTrace_Custom(BeamAngles, End, -1.0);
 
 		TE_SetupBeamPoints(End, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Start_Thickness, End_Thickness, 0, 0.25, color, 3);
 		TE_SendToAll();
 
-		Attacked = true;
-
-	}
-
-
-	if(Attacked && npc.m_flLanceDuration < GameTime)
-	{
-		npc.m_flLanceRecharge = GameTime + 30.0;
-		npc.m_flLanceDuration = GameTime + 20.0;
 	}
 	
+}
+static bool bIntialiseMainLances(RegaliaClass npc)
+{
+	float radius = 800.0;
+	int amt = 4;
+
+	float Loc[3];
+	Loc = vGetBestAverageWithinRadius(npc, radius, amt);
+	
+	if(amt == -1)
+		return false;
+
+	float Thickness = 60.0;
+	TE_SetupBeamRingPoint(Loc, radius*2.0, radius*2.0 - 1.0, g_Ruina_BEAM_Laser, 0, 0, 1, 2.0, Thickness, 0.75, {255, 0, 0, 255}, 1, 0);
+	TE_SendToAll();
+		
+	f3_LastValidPosition[npc.index] = Loc;
+	fl_AbilityVectorData_2[npc.index] = vGetBestAngles(npc, Loc, radius*1.5, 20.0, 1.0, amt);
+
+	return true;
+}
+static float[] vGetBestAngles(RegaliaClass npc, float Center[3], float Dist, float radius, float angle_adjust = 1.0, int expected = 0)
+{
+	float Angle_Val = 0.0;
+	bool stop = false;
+
+	int BestCount = 0;
+	float BestAngles[3];
+
+	Ruina_Laser_Logic Laser;
+	Laser.client = npc.index;
+	Laser.Radius = radius;
+
+	//do a 180 circle trace thing.
+	//get from what line we get the highest chance of hitting targets.
+
+	bool faster = false;
+	
+	while(!stop)
+	{
+		if(Angle_Val > 180.0)
+		{
+			stop = true;
+			break;
+		}
+		Angle_Val +=faster ? angle_adjust * 6.0 : angle_adjust;
+		float Angles[3]; Angles[1] = Angle_Val;
+		Get_Fake_Forward_Vec(-Dist, Angles, Laser.Start_Point, Center);
+		Get_Fake_Forward_Vec(Dist, Angles, Laser.End_Point, Center);
+
+		int count = 0;
+
+		Laser.Enumerate_Simple();
+		//get victims from the "Enumerate_Simple"
+		for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
+		{
+			int victim = i_Ruina_Laser_BEAM_HitDetected[loop];
+			if(!victim)
+				break;
+
+			count++;
+		}
+		
+		//if we happen to find a perfect line where we get all or more of our "counted" targets, we most likely found the best angle, however to make 300% sure we will do all the other calcs. but we will make the angle adjustment far higher. that way its less total calculations.
+		if(expected > 0 && count >= expected)
+		{
+			faster = true;
+		}
+		if(count > BestCount)
+		{
+			BestCount = count;
+			BestAngles = Angles;
+		}
+	}
+
+	return BestAngles;
+}
+static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
+{
+	float Direction[3];
+	
+	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(Direction, Range);
+	AddVectors(Pos, Direction, Vec_Target);
 }
 /*
 	@param npc 			//for referencing what to track
@@ -1426,8 +1515,15 @@ stock float[] vGetBestAverageWithinRadius(CClotBody npc, float radius, int &play
 
 	for(int clients = 1 ; clients <= MaxClients ; clients++)
 	{
-		if(!(IsValidClient(clients) && GetClientTeam(clients) == 2 && TeutonType[clients] != TEUTON_WAITING))
+		if(!IsValidClient(clients))
 			continue;
+
+		if(GetClientTeam(clients) != 2)
+			continue;
+
+		if(TeutonType[clients] != TEUTON_NONE)
+			continue;
+		
 		ValidEnts[amt] = clients;
 		amt++;
 	}
@@ -1435,8 +1531,15 @@ stock float[] vGetBestAverageWithinRadius(CClotBody npc, float radius, int &play
 	for(int targ; targ< i_MaxcountNpcTotal; targ++)
 	{
 		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
-		if (!(IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && team  == GetTeam(baseboss_index)))
+		if(!IsValidEntity(baseboss_index))
 			continue;
+
+		if(b_NpcHasDied[baseboss_index])
+			continue;
+
+		if(team == GetTeam(baseboss_index))
+			continue;
+
 		ValidEnts[amt] = baseboss_index;
 		amt++;
 	}
@@ -1474,11 +1577,21 @@ stock float[] vGetBestAverageWithinRadius(CClotBody npc, float radius, int &play
 		//ship it!
 		if(LargestRadius <= radius && (player_amt == 0 || amt >=player_amt))
 		{
+			//CPrintToChatAll("EARLY RETURN");
 			player_amt = amt;
 			return averageVec;
 		}
 
+		float Thickness = 6.0;
+		TE_SetupBeamRingPoint(averageVec, SquareRoot(LargestRadius)*2.0, SquareRoot(LargestRadius)*2.0 - 1.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 2.0, Thickness, 0.75, {255, 255, 255, 255}, 1, 0);
+		TE_SendToAll();
+		
+
 		AvgDist /=amt;
+
+		//CPrintToChatAll("%iamt:             %i", failsafe, amt);
+		//CPrintToChatAll("%iAvgDist:         %.3f", failsafe, SquareRoot(AvgDist));
+		//CPrintToChatAll("%iLargestRadius:   %.3f", failsafe, SquareRoot(LargestRadius));
 
 		int new_amt = 0;
 		int newValidEnts[100];
@@ -1487,8 +1600,10 @@ stock float[] vGetBestAverageWithinRadius(CClotBody npc, float radius, int &play
 
 		for(int i=0 ; i < amt ; i++)
 		{
-			if(AvgDist <= DistFromCore[i])
+			//CPrintToChatAll("%i-%iDistFromCore: %.3f", failsafe, i, SquareRoot(DistFromCore[i]));
+			if(AvgDist >= DistFromCore[i])
 			{
+				//CPrintToChatAll("%i-%iNewEntAdded:  %i", failsafe, i, ValidEnts[i]);
 				newValidEnts[new_amt] = ValidEnts[i];
 				new_amt++;
 			}
@@ -1502,6 +1617,8 @@ stock float[] vGetBestAverageWithinRadius(CClotBody npc, float radius, int &play
 			ValidEnts[i] = newValidEnts[i];
 		}
 		amt = new_amt;
+
+		//CPrintToChatAll("%inew_amt:       %i", failsafe, new_amt);
 
 		averageVec = vGetAvgFromArrayOfEnts(ValidEnts, amt);
 		
