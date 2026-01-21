@@ -1004,15 +1004,15 @@ static void Invisible_TRIGGER_Man_ClotThink(int iNPC)
 									}
 								}
 							}
-							ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Extreamly Defensive Backup", 1.0);
-							ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Very Defensive Backup", 2.0);
-							ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Defensive Backup", 3.0);
-							ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "War Cry", 3.0);
-							ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Expidonsan War Cry", 1.0);
+							ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Extreamly Defensive Backup", 10.0);
+							ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Very Defensive Backup", 10.0);
+							ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Defensive Backup", 10.0);
+							ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "War Cry", 10.0);
+							ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Expidonsan War Cry", 10.0);
 							npc.PlayTeleSound();
 							WorldSpaceCenter(npc.index, VecSelfNpc);
 							ParticleEffectAt(VecSelfNpc, "teleported_blue", 0.5);
-							npc.m_flCoolDown = gameTime + 30.0;
+							npc.m_flCoolDown = gameTime + 20.0;
 						}
 						if(flDistanceToTarget < (75.0 * 75.0) && npc.m_iChanged_WalkCycle != 0)
 						{
@@ -1025,7 +1025,7 @@ static void Invisible_TRIGGER_Man_ClotThink(int iNPC)
 					}
 					else
 					{
-						npc.m_flCoolDown = gameTime + 30.0;
+						npc.m_flCoolDown = gameTime + 20.0;
 						if(flDistanceToTarget > (1000.0 * 1000.0))
 						{
 							if(npc.m_iChanged_WalkCycle != 2)
@@ -1059,7 +1059,7 @@ static void Invisible_TRIGGER_Man_ClotThink(int iNPC)
 				}
 				else
 				{
-					npc.m_flCoolDown = gameTime + 30.0;
+					npc.m_flCoolDown = gameTime + 20.0;
 					if(npc.m_iChanged_WalkCycle != 0)
 					{
 						npc.m_bisWalking = false;

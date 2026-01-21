@@ -880,8 +880,8 @@ static Action TrueCyberWarrior_TBB_Tick(int client)
 	Data.Radius = 45.0;
 	Data.Range = 2000.0;
 	//divided by 6 since its every tick, and by TickrateModify
-	Data.Close_Dps = RaidModeScaling * (npc.Anger ? 20.0 : 15.0) / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
-	Data.Long_Dps = RaidModeScaling * (npc.Anger ? 18.5 : 12.0) / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
+	Data.Close_Dps = RaidModeScaling * (npc.Anger ? 40.0 : 30.0) / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
+	Data.Long_Dps = RaidModeScaling * (npc.Anger ? 40.0 : 30.0) / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
 	Data.Color = (npc.Anger ? {238, 221, 68, 60} : {255, 255, 255, 30});
 	Data.DoEffects = true;
 	Basic_NPC_Laser_Logic(Data);
