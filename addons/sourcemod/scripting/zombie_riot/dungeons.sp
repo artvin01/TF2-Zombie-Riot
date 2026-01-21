@@ -2360,8 +2360,8 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 		return;
 	if(i_NpcIsABuilding[iNpc])
 		return;
-	if(Dungeon_GetEntityZone(iNpc) != Zone_Dungeon && Dungeon_GetEntityZone(iNpc) != Zone_RivalBase)
-		return;
+//	if(Dungeon_GetEntityZone(iNpc) != Zone_Dungeon && Dungeon_GetEntityZone(iNpc) != Zone_RivalBase)
+//		return;
 	//Rare
 	if(GetRandomInt(0,RoundToCeil(75.0 * MultiGlobalEnemy)) != 0)
 		return;

@@ -3316,7 +3316,7 @@ int Waves_GetMaxRound(bool real = false)
 	return (!real && FakeMaxWaves) ? FakeMaxWaves : (Rounds[Rounds_Default].Length-1);
 }
 
-int Waves_GetMaxSubRound()
+stock int Waves_GetMaxSubRound()
 {
 	if(!Rounds[Rounds_Default] || CurrentRound[Rounds_Default] < 0 || CurrentRound[Rounds_Default] >= Rounds[Rounds_Default].Length)
 		return 0;

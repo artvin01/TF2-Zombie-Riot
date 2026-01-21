@@ -3961,7 +3961,7 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("m_iTowerdefense_CheckpointAt")
 		.DefineIntField("m_iTowerdefense_Target")
 		.DefineFloatField("f_RegenDoLogic")
-		.DefineFloatField("b_BlockDropChances")
+		.DefineBoolField("b_BlockDropChances")
 #if defined ZR
 		.DefineFloatField("m_flElementRes", Element_MAX)
 #endif

@@ -666,7 +666,7 @@ void Const2BaseConstructDefender_WalkCycle(Const2BaseConstructDefender npc, floa
 	if(npc.m_flWalkAroundRandomlyDo < gameTime)
 	{
 		float pos[3]; GetEntPropVector(npc.m_iTargetAlly, Prop_Data, "m_vecAbsOrigin", pos);
-		if(!FindRandomSpotTowalkTo(npc.index, pos, MAX_RANGE_DEFEND_BASE * 0.9))
+		if(!FindRandomSpotTowalkTo(pos, MAX_RANGE_DEFEND_BASE * 0.9))
 		{
 			npc.m_flWalkAroundRandomlyDo = gameTime + 1.0;
 			//retry in 1 second
@@ -684,7 +684,7 @@ void Const2BaseConstructDefender_WalkCycle(Const2BaseConstructDefender npc, floa
 }
 
 
-int FindRandomSpotTowalkTo(int entity, float VectorStart[3] = {0.0,0.0,0.0}, float RangeToWalk)
+int FindRandomSpotTowalkTo(float VectorStart[3] = {0.0,0.0,0.0}, float RangeToWalk)
 {
 	float f3_VecAbs[3];
 	f3_VecAbs = VectorStart;
