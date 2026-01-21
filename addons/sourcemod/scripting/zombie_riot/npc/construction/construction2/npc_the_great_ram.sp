@@ -45,8 +45,8 @@ void TheGreatRam_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "The Great Ram");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_the_great_ram");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_crit");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "the_great_ram");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = 0;
 	data.Func = ClotSummon;

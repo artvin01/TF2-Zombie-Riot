@@ -53,8 +53,8 @@ void BattlefieldSupplier_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Battlefield Supplier");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_battlefield_supplier");
-	strcopy(data.Icon, sizeof(data.Icon), "engineer");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "battlefield_supplier");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = 0;
 	data.Func = ClotSummon;

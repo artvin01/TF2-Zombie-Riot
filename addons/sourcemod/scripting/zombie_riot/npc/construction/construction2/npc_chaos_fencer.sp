@@ -77,7 +77,7 @@ public void ChaosFencer_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Chaos Fencer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chaos_fencer");
-	strcopy(data.Icon, sizeof(data.Icon), "chaos_sword");
+	strcopy(data.Icon, sizeof(data.Icon), "chaos_fencer");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = 0;

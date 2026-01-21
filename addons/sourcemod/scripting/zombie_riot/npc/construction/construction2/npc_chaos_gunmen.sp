@@ -55,8 +55,8 @@ void ChaosGunmenOnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Chaos Gunman");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chaos_gunmen");
-	strcopy(data.Icon, sizeof(data.Icon), "sniper");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "chaos_gunmen");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = 0;
 	data.Func = ClotSummon;

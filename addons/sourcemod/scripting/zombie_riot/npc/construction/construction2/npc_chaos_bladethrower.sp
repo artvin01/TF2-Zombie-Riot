@@ -56,8 +56,8 @@ void ChaosBladeThrowerOnMapStart()
 	NPCData data; 
 	strcopy(data.Name, sizeof(data.Name), "Chaos Blade Thrower");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chaos_blade_thrower");
-	strcopy(data.Icon, sizeof(data.Icon), "sniper");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "chaos_bladethrower");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = 0;
 	data.Func = ClotSummon;

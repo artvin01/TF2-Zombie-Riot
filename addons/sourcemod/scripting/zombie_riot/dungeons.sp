@@ -1755,6 +1755,7 @@ static void TeleportToFrom(DungeonZone tele, DungeonZone from1 = Zone_Unknown, D
 	}
 	
 	int a;
+	int entity;
 	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(IsEntityAlive(entity))
@@ -1779,7 +1780,9 @@ static void TeleportToFrom(DungeonZone tele, DungeonZone from1 = Zone_Unknown, D
 			}
 		}
 	}
-	
+	entity = 0;
+	a = 0;
+	//fixes npcs second phase
 	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(IsEntityAlive(entity))
@@ -1801,7 +1804,7 @@ static void TeleportToFrom(DungeonZone tele, DungeonZone from1 = Zone_Unknown, D
 
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
-		int entity = EntRefToEntIndexFast(i_ObjectsBuilding[i]);
+		entity = EntRefToEntIndexFast(i_ObjectsBuilding[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
 		{
 			DungeonZone zone = Dungeon_GetEntityZone(entity);
@@ -1813,7 +1816,7 @@ static void TeleportToFrom(DungeonZone tele, DungeonZone from1 = Zone_Unknown, D
 		}
 	}
 
-	int entity = -1;
+	entity = -1;
 	while((entity = FindEntityByClassname(entity, "obj_vehicle")) != -1)
 	{
 		DungeonZone zone = Dungeon_GetEntityZone(entity);

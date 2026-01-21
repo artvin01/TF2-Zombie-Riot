@@ -40,6 +40,7 @@ void Const2SpawnerOnMapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = -1;
+	data.Precache_data = ClotPrecache_data;
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
@@ -47,6 +48,26 @@ void Const2SpawnerOnMapStart()
 	ActiveSpawners[1] = 0;
 }
 
+static void ClotPrecache_data(const char[] data)
+{
+	char DataAm[512];
+	char buffers[2][256];
+	bool EnemyBaseIs = false;
+	Format(DataAm, sizeof(DataAm), "%s", data);
+	if(StrContains(DataAm, ";enemy_base") != -1)
+	{
+		EnemyBaseIs = true;
+		ReplaceString(DataAm, sizeof(DataAm), ";enemy_base", "");
+	}
+	/*
+		0 : WaveData
+		1 : Location
+	*/
+	ExplodeString(DataAm, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+
+	Spawner_CreateEnemies(32, buffers[0], true);
+	//used so it precaches whatever it wants to spawn in.
+}
 int Const2Spawner_Id()
 {
 	return NPCId;
@@ -338,7 +359,7 @@ static void ClotDeath(int entity)
 
 
 
-static void Spawner_CreateEnemies(int SpawnerDo , const char[] data)
+static void Spawner_CreateEnemies(int SpawnerDo , const char[] data, bool precache = false)
 {
 	char Buffer[512];
 	BuildPath(Path_SM, Buffer, sizeof(Buffer), CONFIG_CFG, data);
@@ -346,4 +367,8 @@ static void Spawner_CreateEnemies(int SpawnerDo , const char[] data)
 	kv.ImportFromFile(Buffer);
 	Waves_SetupWaves(kv, false, SpawnerDo);
 	delete kv;
+	if(precache)
+	{
+		WavesDeleteSet(SpawnerDo);
+	}
 }

@@ -82,10 +82,10 @@ void Const2BaseConstructDefender_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Alive Construct");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_base_construct_defender");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy_chief");
+	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Interitus;
+	data.Flags = -1;
+	data.Category = 0;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
 }

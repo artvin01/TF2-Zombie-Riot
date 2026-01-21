@@ -76,8 +76,8 @@ void CursedKingOnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Cursed King");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_cursed_king");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "cursed_king");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = 0;
 	data.Func = ClotSummon;

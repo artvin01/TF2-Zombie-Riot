@@ -51,8 +51,8 @@ void GlugOnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Glug");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_glug");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "glug_slime");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = 0;
 	data.Func = ClotSummon;

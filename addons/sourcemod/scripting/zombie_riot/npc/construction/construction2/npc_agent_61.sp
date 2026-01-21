@@ -49,8 +49,8 @@ void Agent61_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Agent 61");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_agent_61");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "agent_61");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = 0;
 	data.Func = ClotSummon;

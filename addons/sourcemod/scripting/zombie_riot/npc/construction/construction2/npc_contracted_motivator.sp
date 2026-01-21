@@ -61,7 +61,7 @@ void ContractedMotivatorOnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Contracted Motivator");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_contracted_motivator");
-	strcopy(data.Icon, sizeof(data.Icon), "sniper");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_backup");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = 0;

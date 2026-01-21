@@ -57,8 +57,8 @@ void BarbaricTeardownOnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barbaric Teardown");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barbaric_teardown");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_basebreaker");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = 0;
 	data.Func = ClotSummon;

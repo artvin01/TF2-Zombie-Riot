@@ -48,8 +48,8 @@ void Const2BehemothBehemoth_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Behemoth Behemoth");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_behemoth_behemoth");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy_chief");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "behemoth_behemoth");
+	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Interitus;
 	data.Func = ClotSummon;

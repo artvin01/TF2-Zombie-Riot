@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
-	"$basetexture" "hud/leaderboard_class_max_floor"
+	"$basetexture" "hud/leaderboard_class_behemoth_behemoth"
 	"$vertexcolor" 1
 	"$no_fullbright" 1
 	"$ignorez" 1

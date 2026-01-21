@@ -86,9 +86,9 @@ void DemonPossesedArmorOnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Demon Possesed Armor");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_demon_possesed_armor");
-	strcopy(data.Icon, sizeof(data.Icon), "demo");
-	data.IconCustom = false;
-	data.Flags = 0;
+	strcopy(data.Icon, sizeof(data.Icon), "possesed_armor");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = 0;
 	data.Func = ClotSummon;
 	NPC_Add(data);

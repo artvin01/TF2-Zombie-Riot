@@ -63,8 +63,8 @@ void DemonDevoterOnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Demon Devoter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_demon_devoter");
-	strcopy(data.Icon, sizeof(data.Icon), "demo");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "demon_devoter");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = 0;
 	data.Func = ClotSummon;

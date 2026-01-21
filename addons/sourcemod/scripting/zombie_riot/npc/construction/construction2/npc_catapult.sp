@@ -34,8 +34,8 @@ void Catapult_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Catapult");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_catapult");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_crit");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "catapult_heavy");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = 0;
 	data.Func = ClotSummon;
