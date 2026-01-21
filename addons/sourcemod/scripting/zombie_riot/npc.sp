@@ -1195,6 +1195,9 @@ void NPC_ConfigSetup()
 	Const2BuildingCreateOnMapStart();
 	Const2BaseConstructDefender_OnMapStart_NPC();
 	StarShip_Regalia_OnMapStart();
+	ChaosGunmenOnMapStart();
+	ChaosBladeThrowerOnMapStart();
+	ChaosFencer_OnMapStart_NPC();
 	
 	DungeonLoot_MapStart();
 }
@@ -2594,6 +2597,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/construction2/npc_behemoth_behemoth.sp"
 #include "npc/construction/construction2/npc_demon_possesed_armor.sp"
 #include "npc/construction/construction2/npc_glug.sp"
+#include "npc/construction/construction2/npc_chaos_gunmen.sp"
+#include "npc/construction/construction2/npc_chaos_bladethrower.sp"
+#include "npc/construction/construction2/npc_chaos_fencer.sp"
 #include "npc/construction/construction2/npc_const2_spawner.sp"
 #include "npc/construction/construction2/npc_const2_building_spawner.sp"
 #include "npc/construction/construction2/npc_base_construct_defender.sp"

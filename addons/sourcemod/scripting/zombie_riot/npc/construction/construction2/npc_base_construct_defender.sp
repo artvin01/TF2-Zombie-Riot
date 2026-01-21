@@ -688,7 +688,6 @@ int FindRandomSpotTowalkTo(int entity, float VectorStart[3] = {0.0,0.0,0.0}, flo
 {
 	float f3_VecAbs[3];
 	f3_VecAbs = VectorStart;
-	Diversionistico npc = view_as<Diversionistico>(entity);
 	for( int loop = 1; loop <= 50; loop++ ) 
 	{
 		float AproxRandomSpaceToWalkTo[3];

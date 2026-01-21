@@ -3941,7 +3941,7 @@ public void NPC_Base_InitGamedata()
 		.DefineFloatField("f_JumpedRecently")
 		.DefineIntField("i_Climbinfractions")
 		.DefineFloatField("f_ClimbingAm")
-		.DefineFloatField("b_BlockDropChances")
+		.DefineBoolField("b_BlockDropChances")
 #if defined ZR
 		.DefineFloatField("m_flElementRes", Element_MAX)
 #endif

@@ -1033,7 +1033,7 @@ methodmap Citizen < CClotBody
 			npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "eyes", {10.0,0.0,-5.0});
 			npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "eyes", {10.0,0.0,-20.0});
 			npc.StartPathing();
-			SetEntityRenderColor(npc.index, 125, 125, 125, 255);
+			SetEntityRenderColor(npc.index, 150, 150, 150, 255);
 			npc.m_bRebelAgressive = true;
 			npc.m_bStaticNPC = false;
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Chaos Rebel");

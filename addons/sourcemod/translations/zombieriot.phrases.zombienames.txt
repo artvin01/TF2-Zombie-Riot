@@ -7805,4 +7805,28 @@
 	{
 		"en" 		"Alive Construct"
 	}
+	"Chaos Gunman"
+	{
+		"en"	"Chaos Gunman"
+	}
+	"Chaos Gunman Desc"
+	{
+		"en"	"-Fires a barrage of bullets dealing immensive damage\n-Predicts if enemy is too close.\n-Stands still while attacking\n-Kites around you while not shooting"
+	}
+	"Chaos Blade Thrower"
+	{
+		"en"	"Chaos Blade Thrower"
+	}
+	"Chaos Blade Thrower Desc"
+	{
+		"en"	"-Throws one infinitly piercing Blade\n"
+	}
+	"Chaos Fencer"
+	{
+		"en"	"Chaos Fencer"
+	}
+	"Chaos Fencer Desc"
+	{
+		"en"	"-Gets heavily buffed when alone\n-Ignores armor (not resistances) at all times\n-When buffed, gains the ability to dodge any attacks is too far away"
+	}
 }
