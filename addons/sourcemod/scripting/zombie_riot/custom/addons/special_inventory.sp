@@ -136,7 +136,8 @@ public void Custom_Inventory_Attribute(int client, int weapon)
 					{
 						if(ExtraPellets)
 						{
-							Attributes_Set(weapon, 45, 0.1);
+							Attributes_Set(weapon, 45, 0.25);
+							Pellets=RoundToCeil(4.0*ExtraPellets);
 							Attributes_SetMulti(weapon, 2, float(Pellets));
 							if(i_WeaponDamageFalloff[weapon]==1.0)
 								i_WeaponDamageFalloff[weapon]=0.99;

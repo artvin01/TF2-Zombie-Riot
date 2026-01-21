@@ -241,55 +241,66 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, bool crit, in
 	extra_accuracy *= Attributes_Get(weapon, 106, 1.0);
 
 	Player_Laser_Logic Laser;
-	float Radius = 5.0;
+	float Radius = (Inv_Slug_Shell_Pouch[client] ? 10.0 : 5.0);
 	Laser.client = client;
 	Laser.Radius = Radius;
 	Laser.damagetype = DMG_PLASMA;
 
 	int color[4] = {255, 165, 0, 60};
-
 	float Origin[3]; GetClientEyePosition(client, Origin);
-	for (int repeats = 1; repeats <= 6; repeats++)
+	if(Inv_Slug_Shell_Pouch[client])
 	{
+		color = {255, 65, 15, 80};
 		float angles[3];
 		GetClientEyeAngles(client, angles);
-		switch(repeats)
-		{
-			case 1:
-			{
-				angles[0] += -extra_accuracy;
-				angles[1] += extra_accuracy*2.0;
-			}
-			case 2:
-			{
-				angles[0] += -extra_accuracy;
-				angles[1] += 0.0;
-			}
-			case 3:
-			{
-				angles[0] += -extra_accuracy;
-				angles[1] += -(extra_accuracy*2.0);
-			}
-			case 4:
-			{
-				angles[0] += extra_accuracy;
-				angles[1] += extra_accuracy*2.0;
-			}
-			case 5:
-			{
-				angles[0] += extra_accuracy;
-				angles[1] += 0.0;
-			}
-			case 6:
-			{
-				angles[0] += extra_accuracy;
-				angles[1] += -(extra_accuracy*2.0);
-			}
-		}
-
 		Laser.DoForwardTrace_Custom(angles, Origin, 1000.0);
-		PlayerLaserDoDamageCombined(Laser, damage, damage*0.75);
+		PlayerLaserDoDamageCombined(Laser, damage, damage*0.6);
 		DoPlayerLaserEffectsBigger(Laser, color);
+	}
+	else
+	{
+		for (int repeats = 1; repeats <= 6; repeats++)
+		{
+			float angles[3];
+			GetClientEyeAngles(client, angles);
+			switch(repeats)
+			{
+				case 1:
+				{
+					angles[0] += -extra_accuracy;
+					angles[1] += extra_accuracy*2.0;
+				}
+				case 2:
+				{
+					angles[0] += -extra_accuracy;
+					angles[1] += 0.0;
+				}
+				case 3:
+				{
+					angles[0] += -extra_accuracy;
+					angles[1] += -(extra_accuracy*2.0);
+				}
+				case 4:
+				{
+					angles[0] += extra_accuracy;
+					angles[1] += extra_accuracy*2.0;
+				}
+				case 5:
+				{
+					angles[0] += extra_accuracy;
+					angles[1] += 0.0;
+				}
+				case 6:
+				{
+					angles[0] += extra_accuracy;
+					angles[1] += -(extra_accuracy*2.0);
+				}
+			}
+
+			Laser.DoForwardTrace_Custom(angles, Origin, 1000.0);
+			PlayerLaserDoDamageCombined(Laser, damage, damage*0.75);
+			DoPlayerLaserEffectsBigger(Laser, color);
+		}
 	}
 }
 
