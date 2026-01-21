@@ -4685,18 +4685,53 @@
 	}
 	"Explosault Rifle AB 1 Desc"
 	{
-		"en"	"A small blue military laser beacon. How did a civilian get his hands on this?\nUse M2 to load special rounds. Fire it to locate the bombardment area\nbombardment will begin when you reload"
-		"ko"	"작은 청색 군용 비콘입니다. 대체 어떻게 일개 시민들이 이걸 손에 넣게 된걸까요?\nM2를 눌러 특수 탄환들을 장전하고 발사해 포격 위치를 지정\n무기를 재장전할시 포격 시작"
+		"en"	"Capacitor is Wrapped in Aluminum foil.\nIncreased Damage\nM2: Toggle Zoom and Capacitor Charged\nCapacitor Charged: consumes 3 ammo but deals more damage and plants Bombs."
+		"ko"	"축전기에 알루미늄 호일을 칭칭 감았습니다.\n피해량 증가\nM2: 조준및 충전 사격 토글\n충전사격은 탄약들 3발 소모하지만 피해량과 폭탄을 많이심습니다."
 	}
 	"Explosault Rifle AB 2 Desc"
 	{
-		"en"	"WIP"
-		"ko"	"WIP"
+		"en"	"A small blue military laser beacon. How did a civilian get his hands on this?\nUse M3 to load special rounds. Fire it to locate the bombardment area\nbombardment will begin when you reload"
+		"ko"	"작은 청색 군용 비콘입니다. 대체 어떻게 일개 시민들이 이걸 손에 넣게 된걸까요?\n피해량 증가\nM3를 눌러 특수 탄환들을 장전하고 발사해 포격 위치를 지정\n무기를 재장전할시 포격 시작"
 	}
 	"Explosault Rifle Desc Extra"
 	{
 		"en"	"''Victoria'' faction will have 10％ less blast damage reduce per target"
 		"ko"	"''빅토리아'' 진영 무기의 폭발 타겟당 피해량 감소를 10％ 완화시킵니다!"
+	}
+	"ExploAR_OverHeated"
+	{
+		"#format"	"{1:i}"
+		"en"	"ICE Overheat {1}％"
+		"ko"	"ICE 과열 {1}％"
+	}
+	"ExploAR_Not_Enough_OverHeat"
+	{
+		"#format"	"{1:d}"
+		"en" 		"Not Enough Overheat! You need {1} Overheat!"
+		"de"		"Nicht Genügend Overheat! Du brauchst {1} Overheat!"
+		"ko"		"과열 부족! {1}만큼의 과열이 필요합니다!"
+	}
+	"ExploAR_FocusMode"
+	{
+		"#format"	"{1:i}"
+		"en"	"[Focus Mode]\nCapacitor {1}％"
+		"ko"	"[집중 모드]\n축전기 {1}％"
+	}
+	"ExploAR_FocusMode_Max"
+	{
+		"en"	"[Focus Mode]\nnCapacitor MAX"
+		"ko"	"[집중 모드]\n축전기 MAX"
+	}
+	"ExploAR_RapidMode"
+	{
+		"en"	"[Rapid Mode]"
+		"ko"	"[연사 모드]"
+	}
+	"ExploAR_BarrageMode"
+	{
+		"#format"	"{1:i},{2:i}"
+		"en"	"[Barrage Mode]\nAmmo {1}/{2}"
+		"ko"	"[폭격 모드]\n탄약 {1}/{2}"
 	}
 	"Zealot Dash Denie Spam"
 	{
