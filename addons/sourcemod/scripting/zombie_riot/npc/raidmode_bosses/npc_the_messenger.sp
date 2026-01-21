@@ -151,6 +151,11 @@ methodmap TheMessenger < CClotBody
 		public get()			{	return this.m_flGrappleCooldown;	}
 		public set(float value) 	{	this.m_flGrappleCooldown = value;	}
 	}
+	property bool m_bBossRushDuo
+	{
+		public get()							{ return b_FlamerToggled[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FlamerToggled[this.index] = TempValueForProperty; }
+	}
 	public void PlayAngerSoundPassed() 
 	{
 		int sound = GetRandomInt(0, sizeof(g_AngerSoundsPassed) - 1);
@@ -289,6 +294,7 @@ methodmap TheMessenger < CClotBody
 		}
 
 		bool final = StrContains(data, "Cutscene_Khaml") != -1;
+		npc.m_bBossRushDuo = StrContains(data, "bossrush_duo") != -1;
 		
 		if(final)
 		{
@@ -379,7 +385,11 @@ methodmap TheMessenger < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		if(!final)
+		if (npc.m_bBossRushDuo)
+		{
+			CPrintToChatAll("{lightblue}The Messenger{default}: You're gonna die.");
+		}
+		else if(!final)
 		{
 			if(i_RaidGrantExtra[npc.index] <= 2)
 			{
@@ -434,7 +444,10 @@ public void TheMessenger_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-
+	
+	if (npc.m_bBossRushDuo && b_NpcIsInvulnerable[npc.index])
+		return;
+	
 	if(i_RaidGrantExtra[npc.index] >= 6)
 	{
 		i_RaidGrantExtra[npc.index] = 6;
@@ -882,8 +895,9 @@ public void TheMessenger_NPCDeath(int entity)
 		ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 		npc.PlayDeathSound();	
 	}
-
-	RaidBossActive = INVALID_ENT_REFERENCE;
+	
+	if (EntIndexToEntRef(npc.index) == RaidBossActive)
+		RaidBossActive = INVALID_ENT_REFERENCE;
 		
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
