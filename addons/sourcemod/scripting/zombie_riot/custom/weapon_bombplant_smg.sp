@@ -411,7 +411,7 @@ public void BombAR_AirStrike_Beacon(int client, int weapon, bool crit, int slot)
 			Ability_Apply_Cooldown(client, slot, 50.0);
 			int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
 			int GetClip=GetEntData(weapon, iAmmoTable, 4);
-			SetAmmo(client, 18, SMGAmmo+GetCli-SMGAmmoMAX);
+			SetAmmo(client, 18, SMGAmmo+GetClip-SMGAmmoMAX);
 			SetEntData(weapon, iAmmoTable, SMGAmmoMAX);
 			ExploAR_AirStrikeActivated[client]=SMGAmmoMAX+64;
 			ExploAR_AirStrikeActivatedMAX[client]=SMGAmmoMAX;
