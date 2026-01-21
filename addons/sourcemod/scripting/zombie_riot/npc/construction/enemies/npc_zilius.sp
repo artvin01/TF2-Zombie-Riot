@@ -421,6 +421,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 		}
 		RemoveAllDamageAddition();
 		bool final = StrContains(data, "final_item") != -1;
+		bool bossrush = StrContains(data, "bossrush") != -1;
 		
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
@@ -431,6 +432,10 @@ methodmap Construction_Raid_Zilius < CClotBody
 			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
+		
+		if (bossrush)
+			RaidAllowsBuildings = false;
+		
 		b_thisNpcIsARaid[npc.index] = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;

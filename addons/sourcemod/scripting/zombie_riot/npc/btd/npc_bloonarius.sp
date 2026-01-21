@@ -209,6 +209,11 @@ methodmap Bloonarius < CClotBody
 			this.m_iAttacksTillMegahit = value;
 		}
 	}
+	property bool m_bBossRush
+	{
+		public get()							{ return b_FlamerToggled[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FlamerToggled[this.index] = TempValueForProperty; }
+	}
 	public int UpdateBloonOnDamage()
 	{
 		if(GetEntProp(this.index, Prop_Data, "m_iHealth") < (GetEntProp(this.index, Prop_Data, "m_iMaxHealth") / 2))
@@ -216,11 +221,15 @@ methodmap Bloonarius < CClotBody
 	}
 	public Bloonarius(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		if(IsValidEntity(RaidBossActive))	// Bloon raids fail if another can't spawn
+		bool bossrush = StrContains(data, "bossrush") != -1;
+		if (!bossrush)
 		{
-			ForcePlayerLoss();
-			RaidBossActive = INVALID_ENT_REFERENCE;
-			return view_as<Bloonarius>(-1);
+			if(IsValidEntity(RaidBossActive))	// Bloon raids fail if another can't spawn
+			{
+				ForcePlayerLoss();
+				RaidBossActive = INVALID_ENT_REFERENCE;
+				return view_as<Bloonarius>(-1);
+			}
 		}
 
 		bool elite = StrContains(data, "classic") != -1;
@@ -256,6 +265,8 @@ methodmap Bloonarius < CClotBody
 		npc.m_iStepNoiseType = 0;	
 		npc.m_flNextMeleeAttack = 0.0;
 		
+		npc.m_bBossRush = bossrush;
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bloonarius_ClotDamagedPost);
 		
 		func_NPCDeath[npc.index] = Bloonarius_NPCDeath;
@@ -282,7 +293,10 @@ methodmap Bloonarius < CClotBody
 		strcopy(music.Artist, sizeof(music.Artist), "Tim Haywood");
 		Music_SetRaidMusic(music);
 		
-		RaidModeTime = 9999999.9; //cant afford to delete it, since duo.
+		if (!bossrush)
+			RaidModeTime = 9999999.9; //cant afford to delete it, since duo.
+		else
+			RaidModeTime = GetGameTime() + 500.0;
 
 		i_PlayMusicSound[npc.index] = 0;
 		ToggleMapMusic(false);
