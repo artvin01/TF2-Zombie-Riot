@@ -2410,8 +2410,12 @@ void NPC_DeadEffects(int entity)
 	{
 		
 #if defined ZR		
-		DropPowerupChance(entity);
-		Gift_DropChance(entity);
+		CClotBody npc = view_as<CClotBody>(entity);
+		if(!npc.b_BlockDropChances)
+		{
+			DropPowerupChance(entity);
+			Gift_DropChance(entity);
+		}
 #endif
 		
 		int WeaponLastHit = EntRefToEntIndex(LastHitWeaponRef[entity]);

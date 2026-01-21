@@ -1525,6 +1525,17 @@ methodmap CClotBody < CBaseCombatCharacter
 			this.SetPropFloat(Prop_Data, "f_RegenDoLogic", iFloat); 
 		}
 	}
+	property bool b_BlockDropChances
+	{
+		public get()		 
+		{ 
+			return this.GetProp(Prop_Data, "b_BlockDropChances");
+		}
+		public set(bool iBool) 
+		{
+			this.SetProp(Prop_Data, "b_BlockDropChances", iBool); 
+		}
+	}
 	property int m_iBleedType
 	{
 		public get()							{ return i_BleedType[this.index]; }
@@ -3930,6 +3941,7 @@ public void NPC_Base_InitGamedata()
 		.DefineFloatField("f_JumpedRecently")
 		.DefineIntField("i_Climbinfractions")
 		.DefineFloatField("f_ClimbingAm")
+		.DefineFloatField("b_BlockDropChances")
 #if defined ZR
 		.DefineFloatField("m_flElementRes", Element_MAX)
 #endif
@@ -3949,6 +3961,7 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("m_iTowerdefense_CheckpointAt")
 		.DefineIntField("m_iTowerdefense_Target")
 		.DefineFloatField("f_RegenDoLogic")
+		.DefineFloatField("b_BlockDropChances")
 #if defined ZR
 		.DefineFloatField("m_flElementRes", Element_MAX)
 #endif
