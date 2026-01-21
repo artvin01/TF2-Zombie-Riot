@@ -116,12 +116,17 @@ public void Custom_Inventory_Attribute(int client, int weapon)
 				{
 					case WEAPON_BOOMSTICK, WEAPON_IS_SHOTGUN:
 					{
-						Attributes_Set(weapon, 45, 0.1);
-						Attributes_SetMulti(weapon, 2, float(Pellets));
-						if(i_WeaponDamageFalloff[weapon]==1.0)
-							i_WeaponDamageFalloff[weapon]=0.99;
+						if(!ExtraPellets)
+							Attributes_SetMulti(weapon, 2, 6.0);
 						else
-							i_WeaponDamageFalloff[weapon]-=0.01;
+						{
+							Attributes_Set(weapon, 45, 0.1);
+							Attributes_SetMulti(weapon, 2, float(Pellets));
+							if(i_WeaponDamageFalloff[weapon]==1.0)
+								i_WeaponDamageFalloff[weapon]=0.99;
+							else
+								i_WeaponDamageFalloff[weapon]-=0.01;
+						}
 					}
 					case WEAPON_NAILGUN_SHOTGUN:
 					{
