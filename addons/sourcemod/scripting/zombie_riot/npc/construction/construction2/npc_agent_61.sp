@@ -524,9 +524,9 @@ static int Clot_SelfDefense_Gun(Agent61 npc, float gameTime, float distance)
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		npc.m_flAttackHappens = gameTime + 0.9;
-		npc.m_flDoingAnimation = gameTime + 0.55;
-		npc.m_flNextMeleeAttack = gameTime + 2.5;
+		npc.m_flAttackHappens = gameTime + 0.5;
+		npc.m_flDoingAnimation = gameTime + 0.25;
+		npc.m_flNextMeleeAttack = gameTime + 0.6;
 	}
 	return 3;
 }
