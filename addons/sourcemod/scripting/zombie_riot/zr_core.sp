@@ -323,7 +323,8 @@ enum
 	Type_Aperture,
 	Type_Mutation,
 	Type_Curtain,
-	Type_Necropolain
+	Type_Necropolain,
+	Type_Outlaws
 }
 
 //int Bob_To_Player[MAXENTITIES];

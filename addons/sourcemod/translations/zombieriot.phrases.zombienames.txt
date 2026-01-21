@@ -7789,6 +7789,14 @@
 	{
 		"en"	"Regalia class Battlecruiser"
 	}
+	"Lantean Drone Projectile"
+	{
+		"en"	"Lantean Drone"
+	}
+	"Lantean Drone Projectile Desc"
+	{
+		"en"	"Its like the drones from the lantean wand. but instead they are tracking you."
+	}
 	"Upgraded Militia"
 	{
 		"en" 		"Upgraded Militia"
