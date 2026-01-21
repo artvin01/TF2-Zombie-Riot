@@ -832,7 +832,7 @@ static void CyberGrindGM_Final_Item(int iNPC)
 				}
 				for (int client = 0; client < MaxClients; client++)
 				{
-					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						SetGlobalTransTarget(client);
 						CPrintToChat(client, "%t", "MrV Talk 07");
@@ -1442,7 +1442,7 @@ static Action RaidMode_EndVote(Handle timer, float time)
 			else if(!StrContains(vote.Name, "CyberGrind_EX_Fast"))
 			{
 				CyberGrind_Difficulty = 6;
-				CurrentCash = 129800;
+				CurrentCash = 189800;
 				for(int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client))

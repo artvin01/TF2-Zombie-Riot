@@ -48,7 +48,7 @@
 	"CyberGrind_EX_Fast Desc"
 	{
 		"en"	"Simulates the Final Round of EX Hard.\nStarting Cash:129800\nStarting Supplies: 220"
-		"ko"	"EX 하드 마지막 라운드를 시뮬레이션 합니다.\n시작 자금:129800\n시작 보급품: 220"
+		"ko"	"EX 하드 마지막 라운드를 시뮬레이션 합니다.\n시작 자금:189800\n시작 보급품: 220"
 	}
 	"CyberGrind_Normal"
 	{
