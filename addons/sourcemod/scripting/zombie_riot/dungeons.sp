@@ -1779,6 +1779,25 @@ static void TeleportToFrom(DungeonZone tele, DungeonZone from1 = Zone_Unknown, D
 			}
 		}
 	}
+	
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(IsEntityAlive(entity))
+		{
+			DungeonZone zone = Dungeon_GetEntityZone(entity);
+			if(zone == Zone_Unknown || (zone != tele && from1 == Zone_Unknown) || zone == from1 || zone == from2 || zone == from3)
+			{
+				if(GetTeam(entity) != TFTeam_Red || i_NpcInternalId[entity] == Remain_ID())
+				{
+					f_CreditsOnKill[entity] = 0.0;
+					SmiteNpcToDeath(entity);
+					SmiteNpcToDeath(entity);
+					SmiteNpcToDeath(entity);
+					SmiteNpcToDeath(entity);
+				}
+			}
+		}
+	}
 
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
