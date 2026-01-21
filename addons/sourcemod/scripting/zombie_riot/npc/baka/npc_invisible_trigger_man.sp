@@ -974,6 +974,7 @@ static void Invisible_TRIGGER_Man_ClotThink(int iNPC)
 		{
 			if(Waves_Started() && !Waves_InSetup())
 			{
+				NPCStats_RemoveAllDebuffs(npc.index, 1.0);
 				if(!npc.m_iTargetAlly || npc.m_flGetClosestTargetTime < gameTime)
 				{
 					npc.m_iTargetAlly = GetClosestAnyNPC(npc.index);
