@@ -159,5 +159,78 @@ public void Dungeon_Crate_KeyFragment()
 public void Dungeon_ShipEnding_Collect()
 {
 	if(Dungeon_Mode() && Dungeon_InSetup())
+	{
 		Dungeon_SetRandomMusic();
+		CreateTimer(4.0, Timer_DialogueNewEnd, 0, TIMER_FLAG_NO_MAPCHANGE);
+	}
+}
+static Action Timer_DialogueNewEnd(Handle timer, int part)
+{
+	switch(part)
+	{
+		case 0:
+		{
+			CPrintToChatAll("{gray}You hear radio chatter, it doesnt sound familiar to you, but the device {pink}Reila {gray}gave you blinks up, translating for you...");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{violet}???{gray}: Ruanian Magic is just fancy tech, it looks just like ours, its insane.");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{mediumvioletred}???{default}: Well it barely worked, most of this is still our shit, its as if ruanians hate tech or something.");
+		}
+		case 3:
+		{
+			CPrintToChatAll("{mediumvioletred}???{gray}: These crystals sure do have a lot of power from the curtain, CEO was right afterall.");
+		}
+		case 4:
+		{
+			CPrintToChatAll("{violet}???{gray}: Isnt it unethical, like, there are people in those crystals and we just use that...");
+		}
+		case 5:
+		{
+			CPrintToChatAll("{mediumvioletred}???{gray}: What? People? They arent sentient, Its a simulation remember, to keep us up incase someone invades?");
+		}
+		case 6:
+		{
+			CPrintToChatAll("{mediumvioletred}???{gray}: Why the CEO would put up fake enemies is still beyond me, But money is money.");
+		}
+		case 6:
+		{
+			CPrintToChatAll("{gray} Some buttons can be heard being pressed, some loud engines...");
+		}
+		case 7:
+		{
+			CPrintToChatAll("{violet}???{gray}: If its fake, then why are we trying to escape? Something's fishy.");
+		}
+		case 8:
+		{
+			CPrintToChatAll("{violet}???{gray}: hey what are you doi-");
+			CPrintToChatAll("{gray}: Two loud gunshots can be heard, both bodies falling to the floor.");
+		}
+		case 9:
+		{
+			CPrintToChatAll("{gray}???{crimson}: Good employee's don't ask or question, don't break company policy.");
+		}
+		case 10:
+		{
+			CPrintToChatAll("{gray}???{crimson}: I know you have been listening in, we aren't idiots.");
+		}
+		case 11:
+		{
+			CPrintToChatAll("{gray}: You promptly hear some sounds you never heard before, then it shuts off.");
+		}
+		case 12:
+		{
+			CPrintToChatAll("{crimson}: Someone found you, someone is after you, they arent going easy on you no more.");
+		}
+		default:
+		{
+			return Plugin_Continue;
+		}
+	}
+
+	CreateTimer(4.0, Timer_DialogueNewEnd, part + 1, TIMER_FLAG_NO_MAPCHANGE);
+	return Plugin_Continue;
 }
