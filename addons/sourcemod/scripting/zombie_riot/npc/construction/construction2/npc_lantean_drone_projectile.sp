@@ -100,7 +100,7 @@ methodmap LanteanProjectile < CClotBody
 		npc.m_iBleedType 					= BLEEDTYPE_PORTAL;
 
 		func_NPCDeath[npc.index]			= LanteanNPC_Death;
-		//func_NPCOnTakeDamage[npc.index] 	= LanteanNPC_OnTakeDamage;
+		func_NPCOnTakeDamage[npc.index] 	= INVALID_FUNCTION;
 		func_NPCThink[npc.index] 			= LanteanNPC_ClotThink;
 
 		float Angles[3];
@@ -439,6 +439,9 @@ static void LanteanNPC_Death(int iNPC)
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+
+	SetEntityRenderMode(npc.index, RENDER_NORMAL);
+	SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 
 	SDKUnhook(npc.index, SDKHook_Think, 		ProjectileBaseThink);
 	SDKUnhook(npc.index, SDKHook_StartTouch, 	Wand_Base_StartTouch);

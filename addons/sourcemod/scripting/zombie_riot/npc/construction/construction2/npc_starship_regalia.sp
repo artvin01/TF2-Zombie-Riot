@@ -283,7 +283,6 @@ methodmap RegaliaClass < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_NORMAL);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 
-
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
 		if(StrContains(data, "raid_hud") != -1)
