@@ -481,7 +481,7 @@ static void HomebaseMomentumInternal(int entity, int victim, float damage, int w
 
 	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && (!b_NpcHasDied[victim] || victim <= MaxClients))
 	{
-		ApplyStatusEffect(entity, victim, "Homebase Momentum", 0.5);
+		ApplyStatusEffect(entity, victim, "Homebase Momentum", 1.1);
 	}
 }
 

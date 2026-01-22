@@ -52,11 +52,9 @@ static void ClotPrecache_data(const char[] data)
 {
 	char DataAm[512];
 	char buffers[2][256];
-	bool EnemyBaseIs = false;
 	Format(DataAm, sizeof(DataAm), "%s", data);
 	if(StrContains(DataAm, ";enemy_base") != -1)
 	{
-		EnemyBaseIs = true;
 		ReplaceString(DataAm, sizeof(DataAm), ";enemy_base", "");
 	}
 	/*

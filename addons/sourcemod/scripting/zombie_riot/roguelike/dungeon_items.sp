@@ -182,46 +182,50 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 		}
 		case 3:
 		{
-			CPrintToChatAll("{mediumvioletred}???{gray}: These crystals sure do have a lot of power from the curtain, CEO was right afterall.");
+			CPrintToChatAll("{mediumvioletred}???{default}: These crystals sure do have a lot of power from the curtain, CEO was right afterall.");
 		}
 		case 4:
 		{
-			CPrintToChatAll("{violet}???{gray}: Isnt it unethical, like, there are people in those crystals and we just use that...");
+			CPrintToChatAll("{violet}???{default}: Isnt it unethical, like, there are people in those crystals and we just use that...");
 		}
 		case 5:
 		{
-			CPrintToChatAll("{mediumvioletred}???{gray}: What? People? They arent sentient, Its a simulation remember, to keep us up incase someone invades?");
+			CPrintToChatAll("{mediumvioletred}???{default}: What? People? They arent sentient, Its a simulation remember, to keep us up incase someone invades?");
 		}
 		case 6:
 		{
-			CPrintToChatAll("{mediumvioletred}???{gray}: Why the CEO would put up fake enemies is still beyond me, But money is money.");
-		}
-		case 6:
-		{
-			CPrintToChatAll("{gray} Some buttons can be heard being pressed, some loud engines...");
+			CPrintToChatAll("{mediumvioletred}???{default}: Why the CEO would put up fake enemies is still beyond me, But money is money.");
 		}
 		case 7:
 		{
-			CPrintToChatAll("{violet}???{gray}: If its fake, then why are we trying to escape? Something's fishy.");
+			CPrintToChatAll("{gray}Some buttons can be heard being pressed, some loud engines...");
 		}
 		case 8:
 		{
-			CPrintToChatAll("{violet}???{gray}: hey what are you doi-");
-			CPrintToChatAll("{gray}: Two loud gunshots can be heard, both bodies falling to the floor.");
+			CPrintToChatAll("{violet}???{default}: If its fake, then why are we trying to escape? Something's fishy.");
 		}
 		case 9:
 		{
-			CPrintToChatAll("{gray}???{crimson}: Good employee's don't ask or question, don't break company policy.");
+			CPrintToChatAll("{violet}???{default}: hey what are you doi-");
+			CPrintToChatAll("{gray}: Two loud gunshots can be heard, both bodies falling to the floor.");
 		}
 		case 10:
 		{
-			CPrintToChatAll("{gray}???{crimson}: I know you have been listening in, we aren't idiots.");
+			CPrintToChatAll("{gray}???{crimson}: Good employee's don't ask or question, don't break company policy.");
 		}
 		case 11:
 		{
-			CPrintToChatAll("{gray}: You promptly hear some sounds you never heard before, then it shuts off.");
+			CPrintToChatAll("{gray}???{crimson}: I know you have been listening in, we aren't idiots.");
 		}
 		case 12:
+		{
+			CPrintToChatAll("{gray}???{crimson}: You closed those gates on us, {red}i will end your life.");
+		}
+		case 13:
+		{
+			CPrintToChatAll("{gray}You hear some sounds you never heard before, then it shuts off.");
+		}
+		case 14:
 		{
 			CPrintToChatAll("{crimson}: Someone found you, someone is after you, they arent going easy on you no more.");
 		}
