@@ -17,6 +17,10 @@ stock void Addon_M3_Abilities(int client, int slot)
 	{
 		case 195:
 		{
+			if(IsValidClient(client))
+			{
+			
+			}
 		}
 		case 65:
 		{
