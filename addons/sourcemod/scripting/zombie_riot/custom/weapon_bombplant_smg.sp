@@ -23,7 +23,7 @@ static bool Zoom_Active[MAXPLAYERS] = {false, ...};
 
 static int g_LaserIndex;
 
-void ResetMapStartExploARWeapon()
+public void ResetMapStartExploARWeapon()
 {
 	PrecacheSound("weapons/stickybomblauncher_det.wav");
 	PrecacheSound("weapons/flare_detonator_launch.wav");
@@ -33,6 +33,7 @@ void ResetMapStartExploARWeapon()
 	PrecacheModel("models/weapons/w_models/w_drg_ball.mdl");
 	g_LaserIndex = PrecacheModel(LASERBEAM);
 	Zero(Can_I_Fire);
+	Zero(Zoom_Active);
 	Zero(ExploAR_OverHit);
 	Zero(ExploAR_HUDDelay);
 	Zero(ExploAR_OverHeatDelay);
@@ -453,13 +454,9 @@ public void BombAR_AirStrike_Beacon(int client, int weapon, bool crit, int slot)
 
 public void Enable_ExploARWeapon(int client, int weapon)
 {
+	ExploAR_WeaponID[client]=EntIndexToEntRef(weapon);
 	if(h_TimerExploARWeaponManagement[client] != null)
 	{
-		ExploAR_WeaponPap[client] = ExplosiveAR_Get_Pap(weapon);
-		ExploAR_BurstNum[client] = RoundToCeil(Attributes_Get(weapon, 401, 1.0));
-		Can_I_Fire[client]=false;
-		ExploAR_AirStrikeActivated[client]=0;
-		ExploAR_WeaponID[client]=EntIndexToEntRef(weapon);
 		delete h_TimerExploARWeaponManagement[client];
 		h_TimerExploARWeaponManagement[client] = null;
 		DataPack pack;
@@ -469,11 +466,6 @@ public void Enable_ExploARWeapon(int client, int weapon)
 	}
 	else
 	{
-		ExploAR_WeaponPap[client] = ExplosiveAR_Get_Pap(weapon);
-		ExploAR_BurstNum[client] = RoundToCeil(Attributes_Get(weapon, 401, 1.0));
-		Can_I_Fire[client]=false;
-		ExploAR_AirStrikeActivated[client]=0;
-		ExploAR_WeaponID[client]=EntIndexToEntRef(weapon);
 		DataPack pack;
 		h_TimerExploARWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_ExploAR, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
@@ -483,6 +475,15 @@ public void Enable_ExploARWeapon(int client, int weapon)
 
 public void Deploy_ExploARWeapon(int client, int weapon)
 {
+	if(IsValidEntity(weapon))
+	{
+		ExploAR_WeaponPap[client] = ExplosiveAR_Get_Pap(weapon);
+		ExploAR_BurstNum[client] = RoundToCeil(Attributes_Get(weapon, 401, 1.0));
+		ExploAR_WeaponID[client]=EntIndexToEntRef(weapon);
+	}
+	Can_I_Fire[client]=false;
+	ExploAR_AirStrikeActivated[client]=0;
+	
 	CreateExploAREffect(client);
 	IsDeploy[client]=true;
 	if(Store_IsWeaponFaction(client, weapon, Faction_Victoria))	// Victoria
