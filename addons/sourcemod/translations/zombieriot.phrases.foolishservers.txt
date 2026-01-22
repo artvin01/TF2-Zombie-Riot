@@ -256,10 +256,50 @@
 		"en"	"Grigori Now Aggressively.\nIt will only be applied if the person who purchased his ammunition is equipped."
 		"ko"	"그리고리가 공격적으로 행동합니다.\n그의 탄약을 구매한 본인이 장착 해야합니다."
 	}
-	"Force Shield Generator"
+	"Super Focus Lens"
 	{
-		"en"	"Force Shield Generator"
-		"ko"	"보호막 생성기"
+		"en"	"Super Focus Lens"
+		"ko"	"초 집중 렌즈"
+	}
+	"Inv Super Focus Lens desc"
+	{
+		"en"	"Lasering Beamstick Only\nDamage increases by +1000％\nInstead, it becomes Single Laser\Laser Dist -50％, Laser Range -50％"
+		"ko"	"레이저 빔스틱 전용\n피해량이 10배 증가합니다.\n대신 레이져는 직선으로 하나만 발사됩니다.\n사거리 -50％, 범위 -50％"
+	}
+	"Barricade Stabilizer"
+	{
+		"en"	"Barricade Stabilizer"
+		"ko"	"바리케이드 안정 장치"
+	}
+	"Inv Barricade Stabilizer desc"
+	{
+		"en"	"Barricade is mounted, damage taken is reduced, but when the mounted Barricade also takes damage.\nIf hit by a raid boss, it will be destroyed faster."
+		"ko"	"바리케이드를 장착한 경우, 받는 피해가 감소하지만, 장착한 바리케이드도 피해를 입습니다.\n레이드 보스에게 피격되면 더 빨리 파괴됩니다."
+	}
+	"Inv Barricade Stabilizer desc Extra"
+	{
+		"en"	"Resistance scales with Building Upgrades."
+		"ko"	"저항값은 구조물 개선의 영향을 받음."
+	}
+	"Experimental Reactor"
+	{
+		"en"	"Experimental Reactor"
+		"ko"	"실험용 반응로"
+	}
+	"Inv Experimental Reactor desc"
+	{
+		"en"	"Heavy Particle Rifle Only\nDamage increases by +1000％\nInstead, it becomes Single Laser\Laser Dist -50％, Laser Range -50％"
+		"ko"	"중입자 소총 전용\n최대치 도달에 필요한 탄약수 -25％\n충전량에 따른 피해량 증가 +35％\n피해량 -65％"
+	}
+	"Sticky Full Burst"
+	{
+		"en"	"Sticky Full Burst Unit"
+		"ko"	"점착 전탄 격발 장치"
+	}
+	"Inv Sticky Full Burst desc"
+	{
+		"en"	"Stickybomb Launcher Only\nRemoved Detonates stickybombs near the crosshair and directly under your feet"
+		"ko"	"점착 폭탄 발사기 전용\n조준선 근처및 발밑 점착 폭탄 폭파 기능 제거"
 	}
 	
 	//인벤토리 첼린지
@@ -296,16 +336,6 @@
 		"ko"	"끔찍한 혼돈이 이 코일에 담겨 있습니다...\n코일이 머릿속에 직접 말을 거는듯한 기분이 듭니다..."
 	}
 	
-	"Barricade Stabilizer"
-	{
-		"en"	"Barricade Stabilizer"
-		"ko"	"바리케이드 안정 장치"
-	}
-	"Inv Barricade Stabilizer desc"
-	{
-		"en"	"Barricade is mounted, damage taken is reduced by 20％, but when the mounted Barricade also takes damage.\nIf hit by a raid boss, it will be destroyed faster."
-		"ko"	"바리케이드를 장착한 경우, 받는 피해가 20％ 감소하지만, 장착한 바리케이드도 피해를 입습니다.\n레이드 보스에게 피격되면 더 빨리 파괴됩니다."
-	}
 	"Little Sandvich SafeHouse"
 	{
 		"en"	"Little Sandvich SafeHous"
@@ -375,8 +405,8 @@
 	}
 	"Barricade Stabilizer Desc"
 	{
-		"en"	"Barricade is mounted, damage taken is reduced by 20％,\n{yellow}but when the mounted Barricade also takes damage.\n{crimson}If hit by a raid boss, it will be destroyed faster."
-		"ko"	"바리케이드를 장착한 경우, 받는 피해가 20％ 감소하지만,\n{yellow}장착한 바리케이드도 피해를 입습니다.\n{crimson}레이드 보스에게 피격되면 더 빨리 파괴됩니다."
+		"en"	"Barricade is mounted, damage taken is reduced\n{yellow}but when the mounted Barricade also takes damage.\n{crimson}If hit by a raid boss, it will be destroyed faster."
+		"ko"	"바리케이드를 장착한 경우, 받는 피해가 감소하지만\n{yellow}장착한 바리케이드도 피해를 입습니다.\n{crimson}레이드 보스에게 피격되면 더 빨리 파괴됩니다."
 	}
 	
 	//무기 이름
@@ -603,8 +633,8 @@
 	
 	"Improvised Armor Desc"
 	{
-		"en"	"-Final Max Armor +300\n-Max Armor -20％"
-		"ko"	"-최종 최대 아머 +300\n-최대 아머 20％ 감소"
+		"en"	"Final Max Armor +300\n-Max Armor -10％"
+		"ko"	"-최종 최대 아머 +300\n-최대 아머 10％ 감소"
 	}
 	
 	//Etc

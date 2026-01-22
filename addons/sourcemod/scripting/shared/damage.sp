@@ -248,7 +248,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon, damagePosition);
 	}
 	
-	damage = Custom_Inventory_OnTakeDamage(victim, attacker, damage);
+	damage = Custom_Inventory_PlayerOnTakeDamage(victim, attacker, damage);
 	
 	if(OnTakeDamage_ShieldLogic(victim, damagetype))
 		return true;
@@ -588,6 +588,10 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 #if defined ZR	
 		if(!CheckInHud())		
 			OnTakeDamageScalingWaveDamage(victim, attacker, inflictor, damage, damagetype, weapon);
+#endif
+
+#if defined ZR	
+		damage = Custom_Inventory_NPCOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon);
 #endif
 
 		if(attacker <= MaxClients && attacker > 0)
@@ -1670,38 +1674,6 @@ stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflic
 			{
 				damage = 0.0;
 				return true;
-			}
-		}
-		else if(IsValidClient(attacker))
-		{
-			if(Inv_Dragon_Breath_Shell[attacker] && Custom_Inventory_IsShotgun(weapon))
-			{
-				if(!(damagetype & DMG_TRUEDAMAGE) && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
-				{
-					float attackerPos[3], victimPos[3];
-					GetEntPropVector(attacker, Prop_Send, "m_vecOrigin", attackerPos);
-					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", victimPos);
-					float Dist = GetVectorDistance(attackerPos, victimPos, true);
-					float IgniteDMG = damage/100.0;
-					if(IgniteDMG<4.0)IgniteDMG=4.0;
-					if(Dist<(1000.0*1000.0)) NPC_Ignite(victim, attacker, 3.0, weapon, IgniteDMG);
-				}
-			}
-			if(Inv_MarketGardener_Uniform[attacker] && !(GetEntityFlags(attacker)&FL_ONGROUND))
-			{
-				float Speed = MoveSpeed(attacker, _, true);
-				damage += Speed*0.25;
-				damage *= 1.05;
-			}
-			if(Inv_DeathfromAbove[attacker])
-			{
-				float attackerPos[3], victimPos[3];
-				GetEntPropVector(attacker, Prop_Send, "m_vecOrigin", attackerPos);
-				GetEntPropVector(victim, Prop_Send, "m_vecOrigin", victimPos);
-				attackerPos[0]=victimPos[0];
-				attackerPos[1]=victimPos[1];
-				float YPOS = GetVectorDistance(attackerPos, victimPos);
-				if(YPOS>100.0) damage *= 1.10;
 			}
 		}
 	}
