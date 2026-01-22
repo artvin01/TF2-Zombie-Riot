@@ -1529,7 +1529,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		public get()		 
 		{ 
-			return this.GetProp(Prop_Data, "b_BlockDropChances");
+			return view_as<bool>(this.GetProp(Prop_Data, "b_BlockDropChances"));
 		}
 		public set(bool iBool) 
 		{
