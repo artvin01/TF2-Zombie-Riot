@@ -195,6 +195,11 @@ methodmap Const2BaseConstructDefender < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
+	property float m_flWasIdleState
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
 	
 	
 	public Const2BaseConstructDefender(float vecPos[3], float vecAng[3], int ally)
@@ -223,6 +228,7 @@ methodmap Const2BaseConstructDefender < CClotBody
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 220.0;
+		npc.m_flWasIdleState = 0.0;
 
 		//slight immunity to many debuffs and stepsounds
 		b_thisNpcIsARaid[npc.index] = true;
@@ -483,9 +489,14 @@ void SetDownedState_Construct(int iNpc, bool StateDo)
 		b_ThisEntityIgnored[iNpc] = true;
 		b_NpcIsInvulnerable[iNpc] = true;
 		SetEntProp(iNpc, Prop_Data, "m_iHealth", 1);
-		npc.StopPathing();
-		npc.m_bisWalking = false;
-		npc.SetActivity("ACT_CONSTRUCTION_CONSTRUCT_IDLE");
+		if(!npc.m_flWasIdleState)
+		{
+			npc.m_flWasIdleState = 1.0;
+			npc.StopPathing();
+			npc.m_bisWalking = false;
+			npc.AddGesture("ACT_CONSTRUCTION_CONSTRUCT_STUN_START");
+			npc.SetActivity("ACT_CONSTRUCTION_CONSTRUCT_STUN_LOOP");
+		}
 		SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
 		SetEntityRenderColor(npc.index, 255, 215, 0, 125);
 		if(IsValidEntity(npc.m_iWearable1))
@@ -501,6 +512,12 @@ void SetDownedState_Construct(int iNpc, bool StateDo)
 	}
 	else
 	{
+		if(npc.m_flWasIdleState)
+		{
+			npc.m_flWasIdleState = 0.0;
+			npc.AddGesture("ACT_CONSTRUCTION_CONSTRUCT_STUN_END");
+			npc.SetActivity("ACT_CONSTRUCTION_CONSTRUCT_IDLE");
+		}
 		npc.m_flSelfRevival = 0.0;
 		b_ShowNpcHealthbar[iNpc] = true;	
 		b_ThisEntityIgnored[iNpc] = false;
