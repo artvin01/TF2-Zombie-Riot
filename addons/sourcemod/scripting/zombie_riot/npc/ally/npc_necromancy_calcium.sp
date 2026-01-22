@@ -124,7 +124,6 @@ methodmap NecroCalcium < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bNoKillFeed = true;
-		b_NpcIsInvulnerable[npc.index] = true;
 		
 		SetEntityCollisionGroup(npc.index, 27);
 		SetEntityRenderColor(npc.index, 192, 192, 192, 255);
