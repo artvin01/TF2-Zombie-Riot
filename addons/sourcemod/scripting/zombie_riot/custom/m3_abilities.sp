@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#include "addons/m3_base.sp"
+
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float ability_cooldown_2[MAXPLAYERS+1]={0.0, ...};
 static int Attack3AbilitySlotArray[MAXPLAYERS+1]={0, ...};
@@ -102,6 +104,7 @@ public void M3_ClearAll()
 	Zero(f_ReinforceTillMax);
 	Zero(MorphineCharge);
 	Zero(b_ReinforceReady_soundonly);
+	Addon_M3_ClearAll();
 }
 
 public Action CommandAdminReinforce(int client, int args)
@@ -152,6 +155,7 @@ public void M3_Abilities(int client)
 		{
 			MorphineShot(client);
 		}
+		default: Addon_M3_Abilities(client, Attack3AbilitySlotArray[client]);
 	}
 }
 
@@ -164,6 +168,7 @@ void M3_AbilitiesWaveEnd()
 	{
 		RemoveSpecificBuff(target, "Vuntulum Bomb EMP Death");
 	}
+	Addon_M3_WaveEnd();
 }
 
 bool MorphineMaxed(int client)
@@ -1954,6 +1959,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 {
 	char name[64];
 	GetEntPropString(caller, Prop_Data, "m_iName", name, sizeof(name));
+	Addon_OnBombDrop(caller, name);
 	if(StrContains(name, "ZR_ReinforcePOD_", false) != -1)
 	{
 		int HELLDIVER = GetEntPropEnt(caller, Prop_Data, "m_hOwnerEntity");

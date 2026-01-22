@@ -18,6 +18,9 @@ bool Inv_Rose_Of_SelfHarm[MAXPLAYERS];
 bool Inv_DeathfromAbove[MAXPLAYERS];
 bool Inv_UGotMetalPipe[MAXPLAYERS];
 bool Inv_GalssCoil[MAXPLAYERS];
+bool Inv_SuperFocusLens[MAXPLAYERS];
+bool Inv_ExperimentalReactor[MAXPLAYERS];
+bool Inv_StickyFullBurst[MAXPLAYERS];
 float Inv_Nailgun_Slug_Ammo[MAXPLAYERS];
 float Inv_Chaos_Coil_Delay[MAXPLAYERS];
 int Inv_ChaosticGlass[MAXPLAYERS];
@@ -43,6 +46,9 @@ public void Custom_Inventory_Reset(int client)
 	Inv_Grigori_Antidote[client]=false;
 	Inv_DeathfromAbove[client]=false;
 	Inv_GalssCoil[client]=false;
+	Inv_SuperFocusLens[client]=false;
+	Inv_ExperimentalReactor[client]=false;
+	Inv_StickyFullBurst[client]=false;
 	if(Inv_Chaos_Coil[client])
 	{
 		int Chaos_Coil = EntRefToEntIndex(Inv_Chaos_Coil[client]);
@@ -92,6 +98,9 @@ stock bool Custom_Inventory_Enable(int client, int entity, int Attribute)
 			Inv_UGotMetalPipe[client] = true;
 		}
 		case 1017:Inv_GalssCoil[client]=true;
+		case 1018:Inv_SuperFocusLens[client]=true;
+		case 1019:Inv_ExperimentalReactor[client]=true;
+		case 1020:Inv_StickyFullBurst[client]=true;
 	}
 	return false;
 }
@@ -116,9 +125,7 @@ public void Custom_Inventory_Attribute(int client, int weapon)
 				{
 					case WEAPON_BOOMSTICK, WEAPON_IS_SHOTGUN:
 					{
-						if(!ExtraPellets)
-							Attributes_SetMulti(weapon, 2, 6.0);
-						else
+						if(ExtraPellets)
 						{
 							Attributes_Set(weapon, 45, 0.1);
 							Attributes_SetMulti(weapon, 2, float(Pellets));
@@ -153,13 +160,13 @@ public void Custom_Inventory_Attribute(int client, int weapon)
 				}
 			}
 		}
-		else if(Inv_Dragon_Breath_Shell[client])
+		/*else if(Inv_Dragon_Breath_Shell[client])
 		{
 			if(Attributes_Has(weapon, 71))
 				Attributes_SetMulti(weapon, 71, 0.5);
 			else
 				Attributes_Set(weapon, 71, 0.5);
-		}
+		}*/
 		else if(Inv_Mini_Shell[client])
 		{
 			if(!Attributes_Has(weapon, 45))
@@ -187,6 +194,14 @@ public void Custom_Inventory_Attribute(int client, int weapon)
 				i_WeaponDamageFalloff[weapon]-=0.01;
 		}
 	}
+	if(i_CustomWeaponEquipLogic[weapon]==WEAPON_IS_HPR && Inv_ExperimentalReactor[client])
+	{
+		Attributes_SetMulti(weapon, 122, 0.75);
+		Attributes_SetMulti(weapon, 4047, 1.35);
+		Attributes_SetMulti(weapon, 4048, 0.35);
+	}
+	if(i_CustomWeaponEquipLogic[weapon]==WEAPON_IS_STICKYBOMB && Inv_StickyFullBurst[client])
+		Attributes_Set(weapon, 119, 0.0);
 }
 
 public void Custom_Inventory_WaveEnd(int client)
@@ -240,7 +255,7 @@ public void Custom_Inventory_NPCKill(int attacker)
 	}
 }
 
-public float Custom_Inventory_OnTakeDamage(int victim, int attacker, float damage)
+public float Custom_Inventory_PlayerOnTakeDamage(int victim, int attacker, float damage)
 {
 	if(!IsValidClient(victim) || CheckInHud())
 		return damage;
@@ -265,6 +280,47 @@ public float Custom_Inventory_OnTakeDamage(int victim, int attacker, float damag
 		Armor_Charge[victim]=0;
 		f_Armor_BreakSoundDelay[victim] = GetGameTime() + 5.0;	
 		EmitSoundToClient(victim, "npc/assassin/ball_zap1.wav", victim, SNDCHAN_STATIC, 60, _, 1.0, GetRandomInt(95,105));
+	}
+		
+	return damage;
+}
+
+public float Custom_Inventory_NPCOnTakeDamage(int victim, int attacker, int inflictor, float &damage, int &damagetype, int weapon)
+{
+	if(!IsValidEntity(victim) || CheckInHud())
+		return damage;
+
+	if(IsValidClient(attacker))
+	{
+		if(Inv_Dragon_Breath_Shell[attacker] && Custom_Inventory_IsShotgun(weapon))
+		{
+			if(!(damagetype & DMG_TRUEDAMAGE) && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+			{
+				float attackerPos[3], victimPos[3];
+				GetEntPropVector(attacker, Prop_Send, "m_vecOrigin", attackerPos);
+				GetEntPropVector(victim, Prop_Send, "m_vecOrigin", victimPos);
+				float Dist = GetVectorDistance(attackerPos, victimPos, true);
+				float IgniteDMG = damage/10000.0;
+				if(IgniteDMG<4.0)IgniteDMG=4.0;
+				if(Dist<(1000.0*1000.0)) NPC_Ignite(victim, attacker, 3.0, weapon, IgniteDMG);
+			}
+		}
+		if(Inv_MarketGardener_Uniform[attacker] && !(GetEntityFlags(attacker)&FL_ONGROUND))
+		{
+			float Speed = MoveSpeed(attacker, _, true);
+			damage += Speed*0.25;
+			damage *= 1.05;
+		}
+		if(Inv_DeathfromAbove[attacker])
+		{
+			float attackerPos[3], victimPos[3];
+			GetEntPropVector(attacker, Prop_Send, "m_vecOrigin", attackerPos);
+			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", victimPos);
+			attackerPos[0]=victimPos[0];
+			attackerPos[1]=victimPos[1];
+			float YPOS = GetVectorDistance(attackerPos, victimPos);
+			if(YPOS>100.0) damage *= 1.10;
+		}
 	}
 		
 	return damage;
@@ -341,4 +397,41 @@ float MoveSpeed(int client, bool maxspeed = false, bool upspeed = false)
 		Speed = 520.0;
 
 	return Speed;
+}
+
+float Barricade_Stabilizer_FeedBack(int client)
+{
+	float f_Resistance=0.95;
+	
+	if(Store_HasNamedItem(client, "Construction Novice"))
+		f_Resistance*=0.98;
+	
+	if(Store_HasNamedItem(client, "Construction Apprentice"))
+		f_Resistance*=0.97;
+	
+	if(Store_HasNamedItem(client, "Engineering Repair Handling book"))
+		f_Resistance*=0.982;
+	
+	if(Store_HasNamedItem(client, "Construction Worker"))
+		f_Resistance*=0.98;
+		
+	if(Store_HasNamedItem(client, "Alien Repair Handling book"))
+		f_Resistance*=0.98;
+		
+	if(Store_HasNamedItem(client, "Construction Expert"))
+		f_Resistance*=0.95;
+	
+	if(Store_HasNamedItem(client, "Cosmic Repair Handling book"))
+		f_Resistance*=0.97;
+		
+	if(Store_HasNamedItem(client, "Construction Master"))
+		f_Resistance*=0.97;
+	
+	if(Store_HasNamedItem(client, "Construction Killer"))
+		f_Resistance*=0.97;
+
+	if(Store_HasNamedItem(client, "Wildingen's Elite Building Components"))
+		f_Resistance*=0.9;
+
+	return f_Resistance;
 }

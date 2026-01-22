@@ -560,7 +560,7 @@ void StatusEffects_Baka()
 	data.ShouldScaleWithPlayerCount 	= false;
 	data.Slot						= 0;
 	data.SlotPriority					= 0;
-	data.OnTakeDamage_TakenFunc 		= Barricade_Stabilizer_ResistanceFunc;
+	data.OnTakeDamage_TakenFunc 		= INVALID_FUNCTION;
 	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
 	data.OnTakeDamage_PostVictim		= INVALID_FUNCTION;
 	data.OnTakeDamage_PostAttacker		= INVALID_FUNCTION;
@@ -677,7 +677,7 @@ float Barricade_Stabilizer_ResistanceFunc(int attacker, int victim, StatusEffect
 					DestroyBuildingDo(building);
 				}
 			}
-			f_Resistance=0.8;
+			f_Resistance=Barricade_Stabilizer_FeedBack(victim);
 		}
 	}
 	return f_Resistance;
