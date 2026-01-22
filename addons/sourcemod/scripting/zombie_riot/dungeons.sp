@@ -1995,8 +1995,11 @@ void Dungeon_BattleVictory()
 	int ingots = Rogue_GetBattleIngots();
 	if(ingots)
 		Construction_AddMaterial("crystal", ingots);
+	
+	int attack = AttackType;
+	AttackType = 0;
 
-	if(AttackType == 1)
+	if(attack == 1)
 	{
 		if(CurrentRoomIndex != -1)
 		{
@@ -2009,10 +2012,9 @@ void Dungeon_BattleVictory()
 	}
 	
 	Zero(i_AmountDowned);
-	AttackType = 0;
 	Dungeon_DelayVoteFor(1.0);
 
-	if(AttackType == 2)
+	if(attack == 2)
 	{
 		// Reset next attack, give full time after a raid
 		NextAttackAt = GetGameTime() + AttackTime;
