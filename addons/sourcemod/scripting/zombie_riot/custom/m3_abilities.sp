@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#include "addons/m3_base.sp"
+//#include "addons/m3_base.sp"
 
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float ability_cooldown_2[MAXPLAYERS+1]={0.0, ...};
