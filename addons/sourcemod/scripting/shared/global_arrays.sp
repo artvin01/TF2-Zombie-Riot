@@ -850,6 +850,7 @@ float fl_BEAM_ThrottleTime[MAXENTITIES];	//if you want to make a laser only do s
 
 float fl_AbilityVectorData[MAXENTITIES][3];	//if you wish to transfer vector data between stuff. or save it for something else
 float fl_AbilityVectorData_2[MAXENTITIES][3];	//if you wish to transfer vector data between stuff. or save it for something else
+float fl_AbilityVectorData_3[MAXENTITIES][3];	//if you wish to transfer vector data between stuff. or save it for something else
 int i_Ruina_Laser_BEAM_HitDetected[100];	//if your laser has to hit more then 100 targets, your doing something wrong.
 int i_AmountProjectiles[MAXENTITIES];
 

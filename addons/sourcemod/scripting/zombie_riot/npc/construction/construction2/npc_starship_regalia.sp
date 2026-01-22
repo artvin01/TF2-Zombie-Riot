@@ -2,7 +2,6 @@
 #pragma newdecls required
 
 #define STARSHIP_MODEL			"models/zombie_riot/starship_5.mdl"
-#define LANTEAN_NPC_DRONE_MODEL	"models/props_moonbase/moon_gravel_crystal_blue.mdl"//"models/empty.mdl"
 
 static float fl_ShipAcceleration;
 static float fl_ShipDeceleration;
@@ -10,14 +9,6 @@ static float fl_ShipHyperDecelerationNearDist = 500.0;
 static float fl_ShipHyperDecelerationSpeed = 80.0;
 static float fl_ShipHyperDecelerationMax = 0.5;
 static float fl_ShipTurnSpeed;
-
-
-static float fl_LanteanDrone_Acceleration;
-static float fl_LanteanDrone_Deceleration;
-static float fl_LanteanDrone_HyperDecelerationNearDist = 500.0;
-static float fl_LanteanDrone_HyperDecelerationSpeed = 80.0;
-static float fl_LanteanDrone_HyperDecelerationMax = 0.5;
-static float fl_LanteanDrone_TurnSpeed;
 /*
 	Artvins Requirements:
 		@jDeivid for the boss i need:
@@ -196,9 +187,9 @@ static const float VaultVectorPoints[][3] = {
 	{0.0, 0.0, 0.0}
 };
 
+static Function func_ShipTurn[MAXENTITIES];
 void StarShip_Regalia_OnMapStart()
 {
-
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "HMS: Regalia");	//Regalia Class battlecruisers
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_starship_regalia");
@@ -209,449 +200,16 @@ void StarShip_Regalia_OnMapStart()
 	data.Precache 	= ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
-
-	NPCData lantean_data;
-	strcopy(lantean_data.Name, sizeof(data.Name), "Lantean Drone Projectile");
-	strcopy(lantean_data.Plugin, sizeof(data.Plugin), "npc_lantean_drone_projectile");
-	//strcopy(lantean_data.Icon, sizeof(data.Icon), "soldier");
-	lantean_data.IconCustom = false;
-	lantean_data.Flags 		= -1;
-	lantean_data.Category 	= Type_Outlaws;
-	lantean_data.Func = ClotSummon_Lantean;
-	lantean_data.Precache 	= ClotPrecache_Drone;
-	NPC_Add(lantean_data);
-
 }
 static void ClotPrecache()
 {
 	PrecacheModel(STARSHIP_MODEL);
 	PrecacheSoundArray(g_ShieldDamageSound);
 }
-static void ClotPrecache_Drone()
-{
-	PrecacheModel(LANTEAN_NPC_DRONE_MODEL);
-}
-
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return RegaliaClass(vecPos, vecAng, team, data);
 }
-static any ClotSummon_Lantean(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
-{
-	return LanteanProjectile(client, vecPos, vecAng, team, data);
-}
-
-methodmap LanteanProjectile < CClotBody 
-{
-	property float m_flCurrentSpeed
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][0]; 				}
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
-	}
-	property float m_flTimeTillDeath
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][1]; 				}
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
-	}
-	property int m_iAttacker	//does entref get angry if you try to ent ref the world? no idea.
-	{
-		public get()							{ return EntRefToEntIndexFast(i_TimesSummoned[this.index]); }
-		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = EntIndexToEntRef(TempValueForProperty); }
-	}
-	property int m_iPenetrationAmmount
-	{
-		public get()							{ return this.m_iState; 				}
-		public set(int TempValueForProperty) 	{ this.m_iState = TempValueForProperty; }
-	}
-	property bool m_bUseRaidmodeScaling
-	{
-		public get()							{ return b_Half_Life_Regen[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_Half_Life_Regen[this.index] = TempValueForProperty; }
-	}
-	public LanteanProjectile(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
-	{
-		LanteanProjectile npc = view_as<LanteanProjectile>(CClotBody(vecPos, vecAng, LANTEAN_NPC_DRONE_MODEL, "0.75", "1000", team, .CustomThreeDimensions = {25.0, 25.0, 25.0}, .CustomThreeDimensionsextra = {-25.0, -25.0, -25.0}));
-		i_NpcWeight[npc.index] = 999;
-
-		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");	//uhh
-
-		if(IsValidEntity(npc.m_iWearable1))
-			RemoveEntity(npc.m_iWearable1);
-
-		SetEntityRenderMode(npc.index, RENDER_NONE);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
-
-		if(GetTeam(client) == team)
-			npc.m_iAttacker = client;
-		else
-			npc.m_iAttacker = npc.index;
-
-		float Origin[3]; GetAbsOrigin(npc.index, Origin);
-
-		if(StrContains(data, "red") != -1)
-		{
-			npc.m_iWearable1 = ParticleEffectAt_Parent(Origin, "flaregun_energyfield_red", npc.index, "", {0.0,0.0,0.0});
-		}
-		else if(StrContains(data, "blue") != -1)
-		{
-			npc.m_iWearable1 = ParticleEffectAt_Parent(Origin, "flaregun_energyfield_blue", npc.index, "", {0.0,0.0,0.0});
-		}
-
-		npc.m_bUseRaidmodeScaling = StrContains(data, "raidmodescaling_damage") != -1;
-
-		npc.m_iPenetrationAmmount = 0;
-
-		npc.m_flTimeTillDeath = GetGameTime() + 15.0;	//default value. should be ovewritten by the spawner
-
-		npc.m_iBleedType 					= BLEEDTYPE_PORTAL;
-
-		func_NPCDeath[npc.index]			= LanteanNPC_Death;
-		//func_NPCOnTakeDamage[npc.index] 	= LanteanNPC_OnTakeDamage;
-		func_NPCThink[npc.index] 			= LanteanNPC_ClotThink;
-
-		float Angles[3];
-		GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
-		int iPitch = npc.LookupPoseParameter("body_pitch");
-		float flPitch = npc.GetPoseParameter(iPitch);
-		flPitch *= -1.0;
-		Angles[0] = flPitch;
-
-		fl_AbilityVectorData[npc.index] = Angles;
-
-		//Make immune to speed debuffs and the like
-		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);	
-		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
-
-		//dissable collision checks / safeties
-		b_DoNotUnStuck[npc.index]				= true;
-		f_NoUnstuckVariousReasons[npc.index] 	= FAR_FUTURE;
-		f_StuckOutOfBoundsCheck[npc.index]		= FAR_FUTURE;
-		b_NoKnockbackFromSources[npc.index] 	= true;
-		b_ThisNpcIsImmuneToNuke[npc.index] 		= true;
-		b_IgnoreAllCollisionNPC[npc.index]		= true;
-		//b_ForceCollisionWithProjectile[npc.index]=true;
-		npc.m_bDissapearOnDeath 				= true;
-		npc.b_BlockDropChances					= true;
-
-		npc.m_flSpeed = 500.0 + GetRandomFloat(0.0, 100.0);		//MAX SPEED
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.StopPathing();	//don't path.
-
-		fl_LanteanDrone_TurnSpeed			 		= 2.0;
-		fl_LanteanDrone_Acceleration 				= 25.0;
-		fl_LanteanDrone_Deceleration				= 2.5;
-		fl_LanteanDrone_HyperDecelerationNearDist 	= 500.0;
-		fl_LanteanDrone_HyperDecelerationSpeed 		= 10.0;
-		fl_LanteanDrone_HyperDecelerationMax 		= 0.5;
-
-		//detection
-		SDKHook(npc.index, SDKHook_Think, 		ProjectileBaseThink);
-		//SDKHook(npc.index, SDKHook_ThinkPost, 	ProjectileBaseThinkPost);
-		//CBaseCombatCharacter(entity).SetNextThink(GetGameTime());
-
-		WandProjectile_ApplyFunctionToEntity(npc.index, LanteanNPC_SimulateTouch);
-
-		SDKHook(npc.index, SDKHook_StartTouch, Wand_Base_StartTouch);
-
-		return npc;
-	}
-	//Flight System:
-	public void HeadingControl()
-	{
-		b_NoGravity[this.index] = true;
-
-		this.StopPathing();
-
-		if(!IsValidEntity(this.m_iTarget))
-			return;
-
-		float GameTime = GetGameTime(this.index);
-		
-		float DroneLoc[3], TargetLoc[3];
-		GetAbsOrigin(this.index, DroneLoc);
-		WorldSpaceCenter(this.m_iTarget, TargetLoc);
-		float Dist = GetVectorDistance(DroneLoc, TargetLoc); 
-
-		this.Fly(TargetLoc, Dist);
-	}
-	property float m_flTurnSpeed
-	{
-		public get()							{ return fl_LanteanDrone_TurnSpeed; 				}
-		public set(float TempValueForProperty) 	{ fl_LanteanDrone_TurnSpeed = TempValueForProperty; }
-	}
-	property float m_flDecceleration
-	{
-		public get()							{ return fl_LanteanDrone_Deceleration; 					}
-		public set(float TempValueForProperty) 	{ fl_LanteanDrone_Deceleration = TempValueForProperty; 	}
-	}
-	property float m_flHyperDeccelSpeed
-	{
-		public get()							{ return fl_LanteanDrone_HyperDecelerationSpeed; 				 }
-		public set(float TempValueForProperty) 	{ fl_LanteanDrone_HyperDecelerationSpeed = TempValueForProperty; }
-	}
-	property float m_flAcceleration
-	{
-		public get()							{ return fl_LanteanDrone_Acceleration; 					}
-		public set(float TempValueForProperty) 	{ fl_LanteanDrone_Acceleration = TempValueForProperty; 	}
-	}
-	property float m_flHyperDeccelNearDist
-	{
-		public get()							{ return fl_LanteanDrone_HyperDecelerationNearDist; 				}
-		public set(float TempValueForProperty) 	{ fl_LanteanDrone_HyperDecelerationNearDist = TempValueForProperty; }
-	}
-	property float m_flHyperDeccelMax
-	{
-		public get()							{ return fl_LanteanDrone_HyperDecelerationMax; 					}
-		public set(float TempValueForProperty) 	{ fl_LanteanDrone_HyperDecelerationMax = TempValueForProperty; 	}
-	}
-	public float[] GetAngles()
-	{
-		return fl_AbilityVectorData[this.index];
-	}
-	public void Fly(float Vec[3], float Dist)
-	{
-		float DroneLoc[3];
-		GetAbsOrigin(this.index, DroneLoc);
-
-		float Angles[3];
-
-		float HypeDecell_NearDist 	= this.m_flHyperDeccelNearDist;
-		float HypeDecell_Max 		= this.m_flHyperDeccelMax;
-
-		VectorTurnData Data;
-		Data.Origin 		= DroneLoc;	//this makes it act form vec to vec rather then from angles to angles.
-		Data.TargetVec 		= Vec;
-		Data.CurrentAngles 	= this.GetAngles();
-		Data.PitchSpeed		= this.m_flTurnSpeed;
-		Data.YawSpeed		= this.m_flTurnSpeed;
-		Angles = TurnVectorTowardsGoal(Data);
-		fl_AbilityVectorData[this.index] = Angles;
-
-		float TurnRates[2];
-		TurnRates[0] = Data.PitchRotateLeft;
-		TurnRates[1] = Data.YawRotateLeft;
-
-		float MaxSpeed = this.m_flSpeed;
-		//we gotta turn ALOT, so slow down the this.index to make its turning circle smaller.
-
-		bool HyperDeccel = (Dist < HypeDecell_NearDist);
-
-		float TurnReduce = 45.0;
-
-		bool SubDeccel = false;
-
-		for(int i=0 ; i < 2 ; i++)
-		{
-			if(fabs(TurnRates[i]) > TurnReduce) {
-				MaxSpeed *= ( TurnReduce / fabs(TurnRates[i]));
-			}
-
-			if(fabs(TurnRates[i]) > 45.0)
-				HyperDeccel = false;
-
-			if(fabs(TurnRates[i]) > 100.0 && this.m_flCurrentSpeed > this.m_flSpeed*0.5)
-				SubDeccel = true;
-		}
-		
-		if(HyperDeccel) {
-			
-			float SpeedRatio = Dist / HypeDecell_NearDist;
-
-			if(SpeedRatio < HypeDecell_Max)
-				SpeedRatio = HypeDecell_Max;
-
-			MaxSpeed *=SpeedRatio;
-		}
-		
-		if(SubDeccel)
-			HyperDeccel = SubDeccel;
-
-		float fBuf[3], fVel[3];
-		GetAngleVectors(Angles, fBuf, NULL_VECTOR, NULL_VECTOR);
-
-		float FlySpeed = this.GetShipFlightSpeed(MaxSpeed, HyperDeccel, SubDeccel);
-
-		Angles[2] = -1.0 * Data.YawRotateLeft;
-
-		fVel[0] = fBuf[0]*FlySpeed;
-		fVel[1] = fBuf[1]*FlySpeed;
-		fVel[2] = fBuf[2]*FlySpeed;
-
-		const float RotationClamp = 50.0;
-
-		//clamp ship rotational angles
-		if(Angles[2] > RotationClamp)
-			Angles[2] = RotationClamp;
-		else if(Angles[2] < -RotationClamp)
-			Angles[2] = -RotationClamp;
-
-		SDKCall_SetLocalAngles(this.index, Angles);
-		this.SetVelocity(fVel);
-	}
-	public float GetShipFlightSpeed(float MaxSpeed, bool HyperDeccel, bool DoNotAccel)
-	{
-		float FlySpeed = this.m_flCurrentSpeed;
-		float Acceleration = this.m_flAcceleration;
-		float Deccel = HyperDeccel ? this.m_flHyperDeccelSpeed : this.m_flDecceleration;
-
-
-		if(!DoNotAccel) {
-			if(FlySpeed+Acceleration < MaxSpeed)
-				FlySpeed+=Acceleration;
-			else {
-				if(MaxSpeed == this.m_flSpeed)
-					FlySpeed = MaxSpeed;
-			}
-		}
-
-		//we too fast
-		if(FlySpeed > MaxSpeed || DoNotAccel) {
-			//we faster the base speed. force set
-			if(FlySpeed > this.m_flSpeed) {
-				FlySpeed = this.m_flSpeed;
-			}
-			else {
-				//we faster then the max speed assigned due to rotational difference, apply gradual Deceleration and not instant.
-
-				FlySpeed -= Deccel;
-
-				if(FlySpeed < MaxSpeed)
-					FlySpeed = MaxSpeed;
-
-				if(FlySpeed < 0.0 && HyperDeccel)
-					FlySpeed = 0.0;
-			}
-		}
-
-		this.m_flCurrentSpeed = FlySpeed;
-
-		return FlySpeed;
-	}
-	public int iGetTarget()
-	{
-		if(!IsValidEnemy(this.index, this.m_iTarget))
-			this.m_flGetClosestTargetTime = 0.0;
-
-		float GameTime = GetGameTime(this.index);
-		if(this.m_flGetClosestTargetTime > GameTime)
-			return this.m_iTarget;
-
-		this.m_iTarget = GetClosestTarget(this.index, _, _ , true, _, _, _, _, _, _, true);
-		this.m_flGetClosestTargetTime = GetGameTime(this.index) + GetRandomRetargetTime();
-		
-		/*
-		int entity,
-		
-		bool IgnoreBuildings = false,
-		float fldistancelimit = 99999.9,
-		bool camoDetection=false,
-
-		bool onlyPlayers = false,
-		int ingore_client = -1, 
-		float EntityLocation[3] = {0.0,0.0,0.0},
-
-		bool CanSee = false,
-		float fldistancelimitAllyNPC = 450.0,
-		bool IgnorePlayers = false, //also assumes npcs, only buildings are attacked
-
-		bool UseVectorDistance = false,
-		float MinimumDistance = 0.0,
-		Function ExtraValidityFunction = INVALID_FUNCTION)
-		*/
-
-		return this.m_iTarget;
-	}
-}
-static void LanteanNPC_SimulateTouch(int iNPC, int target)
-{
-	LanteanProjectile npc = view_as<LanteanProjectile>(iNPC);
-
-	int max_pen = 5;
-	bool should_delete = false;
-	bool allow_noclip = true;		//issue: currently if spawned near or at ground it breaks.
-
-	if(npc.m_iPenetrationAmmount > max_pen)
-		should_delete = true;
-	if(target == 0 && !allow_noclip)
-		should_delete = true;
-
-	if(should_delete)
-	{
-		DeleteLanteanProjectile(npc.index);
-		return;
-	}
-
-	if(target <= 0)
-		return;
-	if(IsIn_HitDetectionCooldown(npc.index, target))
-		return;
-
-	Set_HitDetectionCooldown(npc.index, target, GetGameTime() + 1.0);
-	npc.m_iPenetrationAmmount++;
-	float damage = 25.0 * (npc.m_bUseRaidmodeScaling ? RaidModeScaling : 10.0);
-	int attacker = npc.m_iAttacker;
-	if(!IsValidEntity(attacker))
-		attacker = npc.index;
-	float Origin[3]; GetAbsOrigin(npc.index, Origin);
-	SDKHooks_TakeDamage(target, attacker, attacker, damage, DMG_PLASMA, _, _, Origin);
-}
-static void DeleteLanteanProjectile(int iNPC)
-{
-	LanteanProjectile npc = view_as<LanteanProjectile>(iNPC);
-
-	func_NPCThink[npc.index] = INVALID_FUNCTION;
-	b_NpcUnableToDie[npc.index] = false;
-
-	RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
-
-	SDKUnhook(npc.index, SDKHook_Think, 		ProjectileBaseThink);
-	SDKUnhook(npc.index, SDKHook_StartTouch, 	Wand_Base_StartTouch);
-}
-static void LanteanNPC_ClotThink(int iNPC)
-{
-	LanteanProjectile npc = view_as<LanteanProjectile>(iNPC);
-
-	float GameTime = GetGameTime(npc.index);
-
-	if(npc.m_flNextDelayTime > GameTime)
-		return;
-
-	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
-
-	//should not be affectable by slowdowns
-	if(npc.m_flTimeTillDeath < GetGameTime())
-	{
-		DeleteLanteanProjectile(npc.index);
-		return;
-	}
-	npc.HeadingControl();
-	
-	npc.Update();
-
-	if(npc.m_flNextThinkTime > GameTime)
-		return;
-	
-	npc.m_flNextThinkTime = GameTime + 0.1;
-
-	npc.m_iTarget = npc.iGetTarget();
-
-	if(!IsValidEntity(npc.m_iTarget))
-		return;
-
-	//core of npc logic above should now be complete. now onto the specialist stuff.
-}
-static void LanteanNPC_Death(int iNPC)
-{
-	LanteanProjectile npc = view_as<LanteanProjectile>(iNPC);
-
-	if(IsValidEntity(npc.m_iWearable1))
-		RemoveEntity(npc.m_iWearable1);
-
-	SDKUnhook(npc.index, SDKHook_Think, 		ProjectileBaseThink);
-	SDKUnhook(npc.index, SDKHook_StartTouch, 	Wand_Base_StartTouch);
-}
-
 methodmap RegaliaClass < CClotBody
 {
 	public void EmitShieldSound()
@@ -694,6 +252,26 @@ methodmap RegaliaClass < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; 				}
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
+	property float m_flShipAbilityActive
+	{
+		public get()							{ return fl_ruina_battery_timeout[this.index]; 				}
+		public set(float TempValueForProperty) 	{ fl_ruina_battery_timeout[this.index] = TempValueForProperty; }
+	}
+	property bool m_bVectoredThrust
+	{
+		public get()							{ return b_Half_Life_Regen[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_Half_Life_Regen[this.index] = TempValueForProperty; }
+	}
+	property bool m_bVectoredThrust_InUse
+	{
+		public get()							{ return b_Dead_Ringer_Invis_bool[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_Dead_Ringer_Invis_bool[this.index] = TempValueForProperty; }
+	}
+	property bool m_bShipFlightTowardsActive
+	{
+		public get()							{ return b_movedelay_gun[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_movedelay_gun[this.index] = TempValueForProperty; }
+	}
 	public RegaliaClass(float vecPos[3], float vecAng[3], int team, const char[] data)
 	{
 		RegaliaClass npc = view_as<RegaliaClass>(CClotBody(vecPos, vecAng, STARSHIP_MODEL, "1.0", "1000", team, .CustomThreeDimensions = {1000.0, 1000.0, 200.0}, .CustomThreeDimensionsextra = {-1000.0, -1000.0, -200.0}));
@@ -723,6 +301,7 @@ methodmap RegaliaClass < CClotBody
 		func_NPCDeath[npc.index]			= NPC_Death;
 		func_NPCOnTakeDamage[npc.index] 	= OnTakeDamage;
 		func_NPCThink[npc.index] 			= ClotThink;
+		func_ShipTurn[npc.index]			= INVALID_FUNCTION;
 
 		fl_ShipTurnSpeed = 1.0;
 
@@ -732,8 +311,12 @@ methodmap RegaliaClass < CClotBody
 		fl_ShipHyperDecelerationSpeed = 10.0;
 		fl_ShipHyperDecelerationMax = 0.5;
 
-		npc.m_flSpeed = 500.0;		//MAX SPEED
-		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_bShipFlightTowardsActive 	= false;
+		npc.m_bVectoredThrust 			= false;
+		npc.m_bVectoredThrust_InUse		= false;
+		npc.m_flSpeed 					= 300.0;		//MAX SPEED
+		npc.m_flGetClosestTargetTime 	= 0.0;
+		npc.m_flShipAbilityActive 		= 0.0;
 		npc.StopPathing();	//don't path.
 		
 		//npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
@@ -862,6 +445,10 @@ methodmap RegaliaClass < CClotBody
 	}
 	public float[] GetAngles()
 	{
+		return fl_AbilityVectorData_3[this.index];
+	}
+	public float[] GetShipFlightAngles()
+	{
 		return fl_AbilityVectorData[this.index];
 	}
 	//is the ship facing completely forward relative to its current flight path.
@@ -877,18 +464,33 @@ methodmap RegaliaClass < CClotBody
 	//can set how much of an allowance we will let.
 	public bool bIsShipFacingLoc(float ComparePos[3], float Loc[3], float Pitch_Allow, float Yaw_Allow)
 	{
-		if(IsVecEmpty(ComparePos))
-			GetAbsOrigin(this.index, ComparePos);
+		//TE_SetupBeamPoints(ComparePos, Loc, g_Ruina_BEAM_Laser, 0, 0, 0, 1.0, 60.0, 60.0, 0, 0.25, {100, 255, 0, 255}, 3);
+		//TE_SendToAll();
+
 		float ShipAngles[3]; ShipAngles = this.GetAngles();
 		float Angles[3];
 		MakeVectorFromPoints(ComparePos, Loc, Angles);
 		GetVectorAngles(Angles, Angles);
 
+		//float Paranoia_Loc[3];
+		//Get_Fake_Forward_Vec(500.0 , Angles , Paranoia_Loc, ComparePos);
+		//TE_SetupBeamPoints(ComparePos, Paranoia_Loc, g_Ruina_BEAM_Laser, 0, 0, 0, 1.0, 60.0, 60.0, 0, 0.25, {255, 255, 100, 255}, 3);
+		//TE_SendToAll();
+
+		//Get_Fake_Forward_Vec(500.0 , ShipAngles , Paranoia_Loc, ComparePos);
+		//TE_SetupBeamPoints(ComparePos, Paranoia_Loc, g_Ruina_BEAM_Laser, 0, 0, 0, 1.0, 60.0, 60.0, 0, 0.25, {50, 255, 100, 255}, 3);
+		//TE_SendToAll();
+
 		float desiredPitch = Angles[0];
 		float desiredYaw   = Angles[1];
 
-		float angleDiff_Yaw 	= this.UTIL_AngleDiff( desiredYaw, 		ShipAngles[1] );	//now get the difference between what we want and what we have as our angles
-		float angleDiff_Pitch 	= this.UTIL_AngleDiff( desiredPitch, 	ShipAngles[0] );	//now get the difference between what we want and what we have as our angles
+		float angleDiff_Pitch 	= UTIL_AngleDiff( desiredPitch, 	ShipAngles[0] );	//now get the difference between what we want and what we have as our angles
+		float angleDiff_Yaw 	= UTIL_AngleDiff( desiredYaw, 		ShipAngles[1] );	//now get the difference between what we want and what we have as our angles
+		angleDiff_Pitch	 = fixAngle(angleDiff_Pitch);
+		angleDiff_Yaw	 = fixAngle(angleDiff_Yaw);
+
+		//CPrintToChatAll("angleDiff_Pitch:  %.3f", angleDiff_Pitch);
+		//CPrintToChatAll("angleDiff_Yaw:    %.3f", angleDiff_Yaw);
 
 		if(fabs(angleDiff_Yaw) > Yaw_Allow || fabs(angleDiff_Pitch) > Pitch_Allow)
 			return false;
@@ -933,6 +535,17 @@ methodmap RegaliaClass < CClotBody
 	}
 
 	//Flight System:
+	public void SetFlightSystemGoal(float GoalVec[3])
+	{
+		if(this.m_bShipFlightTowardsActive)
+		{
+			LogStackTrace("Regalia Attempted to set new pathing logic when we already have a path. this is not supported and might break ship logic. as such aborting");
+			return;
+		}
+		this.m_bShipFlightTowardsActive = true;
+
+		f3_NpcSavePos[this.index] = GoalVec;
+	}
 	public void HeadingControl()
 	{
 		b_NoGravity[this.index] = true;
@@ -959,14 +572,54 @@ methodmap RegaliaClass < CClotBody
 		//	return;
 		//}
 
-
-
 		float DroneLoc[3], TargetLoc[3];
 		GetAbsOrigin(this.index, DroneLoc);
-		GetAbsOrigin(this.m_iTarget, TargetLoc); //TargetLoc[2]+=250.0;
-		float Dist = GetVectorDistance(DroneLoc, TargetLoc); 
 
-		this.Fly(TargetLoc, Dist);
+
+		if(this.m_bShipFlightTowardsActive)
+		{
+			TargetLoc = f3_NpcSavePos[this.index];
+		}
+		else
+		{
+			WorldSpaceCenter(this.m_iTarget, TargetLoc);
+		}
+		
+		float Dist = GetVectorDistance(DroneLoc, TargetLoc, true); 
+
+		bool Vectored_Thrust = false;	
+		//so simply put. space ships aren't limited to the usual "plane movement", they can move in 3d space freely.
+		//however coding that is annoying and I don't have time for it.
+		//however, I can partially simulate it by making it so:
+		//if we are traveling towards a set vector point, and we allow drifting
+		//and are about to reach said point we can initiate "fake thrust vectoring"
+		//aka the ship model turns, but the ship's actual velocity vector stays the same
+		//obv the ship's main engies are nolonger being used as the main engies, as such to
+		//make it more believable we will slow the ship by 50%.
+		//since big engines on back == big speed.
+		//big engines cauise big mass.
+		//TL;DR: it look cool.
+
+		if(this.m_bShipFlightTowardsActive)
+		{
+			if(this.m_bVectoredThrust)	//do we have "tokyo drifto" mode active?
+			{
+				float DistCheck = 500.0*500.0;
+				if(Dist < DistCheck)	
+					Vectored_Thrust = true;
+			}
+		}
+
+		this.Fly(TargetLoc, Dist, Vectored_Thrust);
+
+		this.m_bVectoredThrust_InUse = Vectored_Thrust;
+
+		if(func_ShipTurn[this.index] && func_ShipTurn[this.index] != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, func_ShipTurn[this.index]);
+			Call_PushCell(this.index);
+			Call_Finish();
+		}
 
 		/*
 		return;
@@ -1041,31 +694,49 @@ methodmap RegaliaClass < CClotBody
 		public get()							{ return fl_ShipHyperDecelerationMax; 				}
 		public set(float TempValueForProperty) 	{ fl_ShipHyperDecelerationMax = TempValueForProperty; }
 	}
-	public void Fly(float Vec[3], float Dist)
+	public VectorTurnData RotateShipFlightPathTowards(float GoalVec[3], float multi = 1.0)
+	{
+		float DroneLoc[3]; GetAbsOrigin(this.index, DroneLoc);
+		VectorTurnData Data;
+		Data.Origin 		= DroneLoc;	//this makes it act form vec to vec rather then from angles to angles.
+		Data.TargetVec 		= GoalVec;
+		Data.CurrentAngles 	= this.GetShipFlightAngles();
+		Data.PitchSpeed		= this.m_flTurnSpeed * multi;
+		Data.YawSpeed		= this.m_flTurnSpeed * multi;
+		fl_AbilityVectorData[this.index] = TurnVectorTowardsGoal(Data);
+		this.m_flPitchLeft 	= Data.PitchRotateLeft;
+		this.m_flYawLeft	= Data.YawRotateLeft;
+		return Data;
+	}
+	public float[] RotateShipModelTowards(float GoalVec[3], VectorTurnData Data, float multi = 1.0)
+	{
+		float DroneLoc[3]; GetAbsOrigin(this.index, DroneLoc);
+		Data.Origin 		= DroneLoc;	//this makes it act form vec to vec rather then from angles to angles.
+		Data.TargetVec 		= GoalVec;
+		Data.CurrentAngles 	= this.GetAngles();
+		Data.PitchSpeed		= this.m_flTurnSpeed * multi;
+		Data.YawSpeed		= this.m_flTurnSpeed * multi;
+		fl_AbilityVectorData_3[this.index] = TurnVectorTowardsGoal(Data);
+		return fl_AbilityVectorData_3[this.index];
+	}
+	public void Fly(float Vec[3], float Dist, bool Vectored_Thrust)
 	{
 		float DroneLoc[3];
 		GetAbsOrigin(this.index, DroneLoc);
 
 		float Angles[3];
 
-		float HypeDecell_NearDist 	= this.m_flHyperDeccelNearDist;
+		float HypeDecell_NearDist 	= this.m_flHyperDeccelNearDist * this.m_flHyperDeccelNearDist;
 		float HypeDecell_Max 		= this.m_flHyperDeccelMax;
 
 		VectorTurnData Data;
-		Data.Origin 		= DroneLoc;	//this makes it act form vec to vec rather then from angles to angles.
-		Data.TargetVec 		= Vec;
-		Data.CurrentAngles 	= this.GetAngles();
-		Data.PitchSpeed		= this.m_flTurnSpeed;
-		Data.YawSpeed		= this.m_flTurnSpeed;
-		Angles = TurnVectorTowardsGoal(Data);
-		fl_AbilityVectorData[this.index] = Angles;
+		Data = this.RotateShipFlightPathTowards(Vec);
+
+		Angles = fl_AbilityVectorData[this.index];
 
 		float TurnRates[2];
 		TurnRates[0] = Data.PitchRotateLeft;
 		TurnRates[1] = Data.YawRotateLeft;
-
-		this.m_flPitchLeft 	= Data.PitchRotateLeft;
-		this.m_flYawLeft	= Data.YawRotateLeft;
 
 		float MaxSpeed = this.m_flSpeed;
 		//we gotta turn ALOT, so slow down the this.index to make its turning circle smaller.
@@ -1105,14 +776,10 @@ methodmap RegaliaClass < CClotBody
 		float fBuf[3], fVel[3];
 		GetAngleVectors(Angles, fBuf, NULL_VECTOR, NULL_VECTOR);
 
-		float FlySpeed = this.GetShipFlightSpeed(MaxSpeed, HyperDeccel, SubDeccel);
+		float FlySpeed = this.GetShipFlightSpeed(MaxSpeed, HyperDeccel, SubDeccel, Vectored_Thrust);
 
 		Angles[2] = -1.0 * Data.YawRotateLeft;
-
-		fVel[0] = fBuf[0]*FlySpeed;
-		fVel[1] = fBuf[1]*FlySpeed;
-		fVel[2] = fBuf[2]*FlySpeed;
-
+		
 		const float RotationClamp = 50.0;
 
 		//clamp ship rotational angles
@@ -1121,15 +788,46 @@ methodmap RegaliaClass < CClotBody
 		else if(Angles[2] < -RotationClamp)
 			Angles[2] = -RotationClamp;
 
-		SDKCall_SetLocalAngles(this.index, Angles);
+		if(Vectored_Thrust)
+		{
+			float DistCheck = (250.0 * 250.0);
+
+			if(Dist < (50.0*50.0))
+			{
+				this.m_flCurrentSpeed = 0.0;
+				this.SetVelocity({0.0, 0.0, 0.0});
+				fl_AbilityVectorData[this.index] = this.GetAngles();
+				return;
+			}
+
+			//if(Dist < DistCheck)
+			//	FlySpeed *= Dist/DistCheck;
+
+			if(FlySpeed < 10.0)
+				FlySpeed = 10.0;
+
+		}
+
+		fVel[0] = fBuf[0]*FlySpeed;
+		fVel[1] = fBuf[1]*FlySpeed;
+		fVel[2] = fBuf[2]*FlySpeed;
+
+		if(!Vectored_Thrust)
+			this.RotateShipModel(Angles);
+
 		this.SetVelocity(fVel);
 	}
-	public float GetShipFlightSpeed(float MaxSpeed, bool HyperDeccel, bool DoNotAccel)
+	public void RotateShipModel(float Angles[3])
+	{
+		fl_AbilityVectorData_3[this.index] = Angles;
+		SDKCall_SetLocalAngles(this.index, Angles);	
+		//TeleportEntity(this.index, NULL_VECTOR, Angles);
+	}
+	public float GetShipFlightSpeed(float MaxSpeed, bool HyperDeccel, bool DoNotAccel, bool DriftMode = false)
 	{
 		float FlySpeed = this.m_flCurrentSpeed;
 		float Acceleration = this.m_flAcceleration;
 		float Deccel = HyperDeccel ? this.m_flHyperDeccelSpeed : this.m_flDecceleration;
-
 
 		if(!DoNotAccel) {
 			if(FlySpeed+Acceleration < MaxSpeed)
@@ -1158,15 +856,14 @@ methodmap RegaliaClass < CClotBody
 					FlySpeed = 0.0;
 			}
 		}
+		
+		//if(DriftMode)
+		//	FlySpeed *= 0.5;
 
 		this.m_flCurrentSpeed = FlySpeed;
 
 		return FlySpeed;
 	}
-	//public bool bTargetInfront(float TargetLoc[3])
-	//{
-	//	return false;
-	//}
 
 
 	// Particle VFX application
@@ -1272,6 +969,9 @@ static void HandleDroneSystem(RegaliaClass npc)
 	bool TopSection 	= true;
 	bool BottomSection 	= true;
 
+	if(npc.m_flShipAbilityActive > GameTime)
+		BottomSection = false;
+
 	int SpawnAmt = 4;
 	
 	static const char Sections[][] = {
@@ -1337,19 +1037,45 @@ static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
 		drone_npc.m_flSpeed = npc.m_flSpeed + 200.0 * GetRandomFloat(0.8, 1.2);
 	}
 }
+static void LanceeWeaponTurnControl(int iNPC)
+{
+	RegaliaClass npc = view_as<RegaliaClass>(iNPC);
+	float Angles[3];
+	VectorTurnData Data;
+	Angles = npc.RotateShipModelTowards(f3_LastValidPosition[npc.index], Data, npc.m_flLanceRecharge == FAR_FUTURE ? 1.2 : 1.5);
+	npc.RotateShipModel(Angles);
+
+}
 static void HandleMainWeapons(RegaliaClass npc)
 {
-	if(!npc.bDoesSectionExist(StarShip_BG_ForwardLance))
-		return;
-
 	float GameTime = GetGameTime(npc.index);
+	if(!npc.bDoesSectionExist(StarShip_BG_ForwardLance))
+	{
+		if(npc.m_flLanceDuration == FAR_FUTURE && npc.m_flShipAbilityActive > GameTime)
+		{
+			npc.m_flLanceDuration = 0.0;
+		}
+		return;
+	}
+
+	if(npc.m_flLanceRecharge == FAR_FUTURE && npc.m_flLanceDuration < GameTime)
+	{
+		fl_AbilityVectorData[npc.index] = npc.GetAngles();
+		npc.m_bShipFlightTowardsActive 	= false;
+		npc.m_bVectoredThrust 			= false;
+		npc.m_flLanceRecharge 			= GameTime + 10.0;
+		npc.m_flShipAbilityActive 		= 0.0;
+		func_ShipTurn[npc.index]		= INVALID_FUNCTION;
+	}
 
 	if(npc.m_flLanceRecharge > GameTime && npc.m_flLanceDuration < GameTime)
 		return;
 
+	float Dist = 800.0;
+
 	if(npc.m_flLanceRecharge < GameTime)
 	{
-		if(!bIntialiseMainLances(npc))
+		if(!bInitialiseMainLances(npc))
 		{
 			npc.m_flLanceRecharge = GameTime + 5.0;
 			npc.m_flLanceDuration = 0.0;
@@ -1358,8 +1084,54 @@ static void HandleMainWeapons(RegaliaClass npc)
 		else
 		{
 			npc.m_flLanceRecharge = GameTime + 30.0;
-			npc.m_flLanceDuration = GameTime + 20.0;
+
+			func_ShipTurn[npc.index] = LanceeWeaponTurnControl;
+			
+
+			npc.m_flShipAbilityActive = GameTime + 10.0;
+			npc.m_flLanceDuration = FAR_FUTURE;
+
+			float GoalVec[3]; GoalVec = f3_LastValidPosition[npc.index];
+			float WantedLoc[3];
+
+			//semi temp system.
+			float Angles[3]; Angles = fl_AbilityVectorData_2[npc.index];
+			Angles[1] += GetRandomInt(0, 1) == 0 ? 90.0 : -90.0;
+			Angles[0] = -30.0;
+			Get_Fake_Forward_Vec(Dist*3.0, Angles, WantedLoc, GoalVec);
+
+			TE_SetupBeamPoints(GoalVec, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 10.0, 60.0, 60.0, 0, 0.25, {255, 255, 255, 255}, 3);
+			TE_SendToAll();
+
+			npc.SetFlightSystemGoal(WantedLoc);
+			npc.m_bVectoredThrust = true;
 		}
+	}
+
+	if(npc.m_flLanceDuration == FAR_FUTURE && npc.m_flShipAbilityActive > GameTime)
+	{
+		float Origin[3]; GetAbsOrigin(npc.index, Origin);
+		
+		npc.m_flLanceRecharge = GameTime + 30.0;
+		npc.m_flShipAbilityActive = GameTime + 5.0;
+		if(npc.m_bVectoredThrust_InUse)
+		{
+			TE_SetupBeamPoints(Origin, f3_LastValidPosition[npc.index], g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 60.0, 60.0, 0, 0.25, {0, 255, 0, 255}, 3);
+			TE_SendToAll();
+
+			if(npc.bIsShipFacingLoc(Origin, f3_LastValidPosition[npc.index], 20.0, 20.0))
+			{
+				npc.m_flLanceDuration = GameTime + 10.0;
+				npc.m_flShipAbilityActive = GameTime + 11.0;
+				npc.m_flLanceRecharge = FAR_FUTURE;
+			}
+		}
+		else
+		{
+			TE_SetupBeamPoints(Origin, f3_LastValidPosition[npc.index], g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 60.0, 60.0, 0, 0.25, {0, 0, 255, 255}, 3);
+			TE_SendToAll();
+		}
+		return;
 	}
 
 	if(npc.m_flLanceDuration < GameTime)
@@ -1370,12 +1142,10 @@ static void HandleMainWeapons(RegaliaClass npc)
 		"forward_lance_right_end"
 	};
 	
+	
 	float TargetLoc[3];
 
 	TargetLoc = f3_LastValidPosition[npc.index];
-
-	float Allowance_Pitch 	= 15.0;
-	float Allowance_Yaw 	= 10.0;
 
 	int color[4] = {255, 255, 255, 255};
 	float Start_Thickness = 12.0;
@@ -1386,21 +1156,27 @@ static void HandleMainWeapons(RegaliaClass npc)
 	Ruina_Laser_Logic Laser;
 	Laser.client = npc.index;
 
-	float Dist = 800.0;
-
 	float ShipAngles[3]; ShipAngles = npc.GetAngles();
+
+	float Origin[3]; GetAbsOrigin(npc.index, Origin);
+
+	TE_SetupBeamPoints(Origin, TargetLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 1.0, 60.0, 60.0, 0, 0.25, {255, 0, 0, 255}, 3);
+	TE_SendToAll();
+
+	float Allowance_Pitch 	= 45.0;
+	float Allowance_Yaw 	= 45.0;
 
 	for(int i = 0 ; i < 2 ; i++)	//left right
 	{
 		float End[3]; 	End = npc.GetWeaponSections(Sections[i]);
 
-		//if(!npc.bIsShipFacingLoc(End, TargetLoc, Allowance_Pitch, Allowance_Yaw))	//Gimbal lances.
-		//	continue;
-
 		float Angles[3]; Angles = fl_AbilityVectorData_2[npc.index];
 
 		float WantedLoc[3];
-		Get_Fake_Forward_Vec(-Dist * (i==0 ? -1.0 : 1.0), Angles, WantedLoc, TargetLoc);
+		Get_Fake_Forward_Vec(-Dist * (i==0 ? 1.0 : -1.0), Angles, WantedLoc, TargetLoc);
+
+		//if(!npc.bIsShipFacingLoc(End, WantedLoc, Allowance_Pitch, Allowance_Yaw))	//Gimbal lances.
+		//	continue;
 
 		float BeamAngles[3];
 		MakeVectorFromPoints(End, WantedLoc, BeamAngles);
@@ -1414,7 +1190,7 @@ static void HandleMainWeapons(RegaliaClass npc)
 	}
 	
 }
-static bool bIntialiseMainLances(RegaliaClass npc)
+static bool bInitialiseMainLances(RegaliaClass npc)
 {
 	float radius = 800.0;
 	int amt = 4;
@@ -1426,7 +1202,7 @@ static bool bIntialiseMainLances(RegaliaClass npc)
 		return false;
 
 	float Thickness = 60.0;
-	TE_SetupBeamRingPoint(Loc, radius*2.0, radius*2.0 - 1.0, g_Ruina_BEAM_Laser, 0, 0, 1, 2.0, Thickness, 0.75, {255, 0, 0, 255}, 1, 0);
+	TE_SetupBeamRingPoint(Loc, radius*2.0, radius*2.0 - 1.0, g_Ruina_BEAM_Laser, 0, 0, 1, 10.0, Thickness, 0.75, {255, 0, 0, 255}, 1, 0);
 	TE_SendToAll();
 		
 	f3_LastValidPosition[npc.index] = Loc;
@@ -1582,9 +1358,9 @@ stock float[] vGetBestAverageWithinRadius(CClotBody npc, float radius, int &play
 			return averageVec;
 		}
 
-		float Thickness = 6.0;
-		TE_SetupBeamRingPoint(averageVec, SquareRoot(LargestRadius)*2.0, SquareRoot(LargestRadius)*2.0 - 1.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 2.0, Thickness, 0.75, {255, 255, 255, 255}, 1, 0);
-		TE_SendToAll();
+		//float Thickness = 6.0;
+		//TE_SetupBeamRingPoint(averageVec, SquareRoot(LargestRadius)*2.0, SquareRoot(LargestRadius)*2.0 - 1.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 2.0, Thickness, 0.75, {255, 255, 255, 255}, 1, 0);
+		//TE_SendToAll();
 		
 
 		AvgDist /=amt;

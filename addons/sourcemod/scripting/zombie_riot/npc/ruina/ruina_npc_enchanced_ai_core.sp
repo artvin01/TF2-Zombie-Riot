@@ -2754,17 +2754,16 @@ enum struct VectorTurnData {
 
 stock float[] TurnVectorTowardsGoal(VectorTurnData Data)
 {
-	CClotBody Nada = view_as<CClotBody>(0);	//the util stuff is defined inside a methodmap. thing is, they don't use any npc specific data from the methodmap. so uh. yeah
 	float desiredPitch;
 	float desiredYaw;
 	if(!IsVecEmpty(Data.Origin)) {
 		//we have a valid origin, therefor assume its a turn from one location vector to another location vector.
 		float SubractedVec[3];
-		Data.Origin[2] += 1.0;
-		for(int i=0 ; i < 3 ; i++) {SubractedVec[i] = Data.TargetVec[i] - Data.Origin[i];}
-		
-		desiredPitch = Nada.UTIL_VecToPitch( SubractedVec );
-		desiredYaw = Nada.UTIL_VecToYaw( SubractedVec );
+		MakeVectorFromPoints(Data.Origin, Data.TargetVec, SubractedVec);
+		GetVectorAngles(SubractedVec, SubractedVec);
+
+		desiredYaw   = SubractedVec[1];
+		desiredPitch = SubractedVec[0];	
 	}
 	else {
 		//otherwise the "TargetVec" is angle values.
@@ -2775,7 +2774,7 @@ stock float[] TurnVectorTowardsGoal(VectorTurnData Data)
 	float angles[3];
 	angles = Data.CurrentAngles;
 
-	float angleDiff_Yaw = Nada.UTIL_AngleDiff( desiredYaw, angles[1] );		//now get the difference between what we want and what we have as our angles
+	float angleDiff_Yaw = UTIL_AngleDiff( desiredYaw, angles[1] );		//now get the difference between what we want and what we have as our angles
 	float deltaYaw = Data.YawSpeed;										//set turn speed
 	angleDiff_Yaw = fixAngle(angleDiff_Yaw);
 	Data.YawRotateLeft = angleDiff_Yaw;
@@ -2795,15 +2794,15 @@ stock float[] TurnVectorTowardsGoal(VectorTurnData Data)
 	Data.YawSpeed = fabs(angleDiff_Yaw) > Data.YawSpeed ? (angleDiff_Yaw  > 0 ? Data.YawSpeed*-1.0 : Data.YawSpeed): angleDiff_Yaw;	//now set the turn rates as a return value.
 	//usefull if you wanna say make an object's "spin" dependant on how fast its turning
 	//Pitch
-	float angleDiff_Pitch = Nada.UTIL_AngleDiff( desiredPitch, angles[0] );	//now get the difference between what we want and what we have as our angles
+	float angleDiff_Pitch = UTIL_AngleDiff( desiredPitch, angles[0] );	//now get the difference between what we want and what we have as our angles
 	float deltaPitch = Data.PitchSpeed;									//set turn speed
 	angleDiff_Pitch = fixAngle(angleDiff_Pitch);
 	Data.PitchRotateLeft = angleDiff_Pitch;
-	if ( angleDiff_Pitch < -deltaYaw )
+	if ( angleDiff_Pitch < -deltaPitch )
 	{
 		angles[0] -= deltaPitch;
 	}
-	else if ( angleDiff_Pitch > deltaYaw )
+	else if ( angleDiff_Pitch > deltaPitch )
 	{
 		angles[0] += deltaPitch;
 	}
@@ -2816,6 +2815,54 @@ stock float[] TurnVectorTowardsGoal(VectorTurnData Data)
 
 
 	return angles;
+}
+stock float UTIL_AngleDiff( float destAngle, float srcAngle )
+{
+	float delta;
+
+	delta = fmodf(destAngle - srcAngle, 360.0);
+	if ( destAngle > srcAngle )
+	{
+		if ( delta >= 180.0 )
+			delta -= 360.0;
+	}
+	else
+	{
+		if ( delta <= -180.0 )
+			delta += 360.0;
+	}
+	return delta;
+}
+stock float UTIL_VecToYaw(const float vec[3])
+{
+	if (vec[1] == 0 && vec[0] == 0)
+		return 0.0;
+	
+	float yaw = ArcTangent2( vec[1], vec[0] );
+
+	yaw = RAD2DEG(yaw);
+
+	if (yaw < 0)
+		yaw += 360;
+
+	return yaw;
+}
+stock float UTIL_VecToPitch( const float vec[3])
+{
+	if (vec[1] == 0 && vec[0] == 0)
+	{
+		if (vec[2] < 0)
+			return 180.0;
+		else
+			return -180.0;
+	}
+
+	float dist = GetVectorLength(vec);
+	float pitch = ArcTangent2( -vec[2], dist );
+
+	pitch = RAD2DEG(pitch);
+
+	return pitch;
 }
 /*
 void Ruina_Move_Entity(int entity, float loc[3], float Ang[3], bool old=false)
