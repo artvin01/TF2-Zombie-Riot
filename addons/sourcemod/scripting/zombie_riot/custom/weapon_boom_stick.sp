@@ -241,19 +241,34 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, bool crit, in
 	extra_accuracy *= Attributes_Get(weapon, 106, 1.0);
 
 	Player_Laser_Logic Laser;
-	float Radius = (Inv_Slug_Shell_Pouch[client] ? 10.0 : 5.0);
+	float Radius = 5.0;
+	if(Inv_SuperFocusLens[client])
+		Radius=2.5;
+	else if(Inv_Slug_Shell_Pouch[client])
+		Radius=10.0;
 	Laser.client = client;
 	Laser.Radius = Radius;
 	Laser.damagetype = DMG_PLASMA;
 
 	int color[4] = {255, 165, 0, 60};
 	float Origin[3]; GetClientEyePosition(client, Origin);
-	if(Inv_Slug_Shell_Pouch[client])
+	if(Inv_SuperFocusLens[client])
 	{
 		color = {255, 65, 15, 80};
 		float angles[3];
 		GetClientEyeAngles(client, angles);
-		Laser.DoForwardTrace_Custom(angles, Origin, 1000.0);
+		Laser.DoForwardTrace_Custom(angles, Origin, 450.0);
+		damage*=10.0;
+		PlayerLaserDoDamageCombined(Laser, damage, damage);
+		DoPlayerLaserEffectsBigger(Laser, color);
+	}
+	else if(Inv_Slug_Shell_Pouch[client])
+	{
+		color = {255, 65, 15, 80};
+		float angles[3];
+		GetClientEyeAngles(client, angles);
+		Laser.DoForwardTrace_Custom(angles, Origin, 2000.0);
+		damage*=6.0;
 		PlayerLaserDoDamageCombined(Laser, damage, damage*0.6);
 		DoPlayerLaserEffectsBigger(Laser, color);
 	}
