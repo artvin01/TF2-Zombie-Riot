@@ -419,6 +419,7 @@ public void BombAR_AirStrike_Beacon(int client, int weapon, bool crit, int slot)
 			SetEntPropFloat(weapon, Prop_Data, "m_flNextPrimaryAttack", GetGameTime() + 1.0);
 			SetEntProp(weapon, Prop_Send, "m_nKillComboCount", 0);
 			SetEntProp(weapon, Prop_Send, "m_nKillComboClass", SMGAmmoMAX);
+			SetEntPropFloat(weapon, Prop_Data, "m_flEnergy", ClipAttributes);
 			Can_I_Fire[client]=false;
 			SDKUnhook(client, SDKHook_PreThink, BombAR_M1_PreThink);
 			int Prop = EntRefToEntIndex(ExploAR_VictoriaNuke[client]);
@@ -447,7 +448,7 @@ public void BombAR_AirStrike_Beacon(int client, int weapon, bool crit, int slot)
 				SetEntPropFloat(Prop, Prop_Send, "m_fadeMaxDist", 1.0);
 				SetParent(client, Prop);
 			}
-			Attributes_Set(weapon, 303, 0.04/ClipAttributes);//Only One
+			Attributes_Set(weapon, 4, 0.04/ClipAttributes);//Only One
 		}
 	}
 }
@@ -565,6 +566,7 @@ static void ExploARWork(int client, int weapon, float GameTime)
 		if(ExploAR_AirStrikeActivated[client])
 		{
 			VictoriaNukeEngage(client, weapon);
+			Attributes_Set(weapon, 4, GetEntPropFloat(weapon, Prop_Send, "m_flEnergy"));
 			ExploAR_AirStrikeActivated[client]=0;
 		}
 		else
