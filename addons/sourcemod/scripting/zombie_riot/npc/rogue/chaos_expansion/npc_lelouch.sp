@@ -51,9 +51,6 @@ static const char g_TeleportSounds[][] = {
 static const char g_AngerSounds[][] = {
 	"mvm/mvm_tank_deploy.wav",
 };
-static const char g_LaserLoop[][] = {
-	"zombiesurvival/seaborn/loop_laser.mp3"
-};
 
 /*
 	Notepad:
@@ -406,11 +403,11 @@ methodmap Lelouch < CClotBody
 		}
 	}
 	public void PlayLaserLoopSound() {
-		if(fl_nightmare_cannon_core_sound_timer[this.index] > GetGameTime())
+		if(fl_RuinaLaserSoundTimer[this.index] > GetGameTime())
 			return;
 		
-		EmitCustomToAll(g_LaserLoop[GetRandomInt(0, sizeof(g_LaserLoop) - 1)], _, _, SNDLEVEL_RAIDSIREN, _, 0.7);
-		fl_nightmare_cannon_core_sound_timer[this.index] = GetGameTime() + 2.25;
+		EmitCustomToAll(g_RuinaLaserLoop[GetRandomInt(0, sizeof(g_RuinaLaserLoop) - 1)], _, _, SNDLEVEL_RAIDSIREN, _, 0.7);
+		fl_RuinaLaserSoundTimer[this.index] = GetGameTime() + 2.25;
 	}
 	public void PlayCrystalSounds()
 	{
@@ -621,7 +618,7 @@ methodmap Lelouch < CClotBody
 		SetVariantColor(view_as<int>({255, 255, 255, 255}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
-		fl_nightmare_cannon_core_sound_timer[npc.index] = 0.0;
+		fl_RuinaLaserSoundTimer[npc.index] = 0.0;
 		b_Anchors_Created[npc.index] = false;
 		
 		MusicEnum music;
@@ -1257,7 +1254,7 @@ static void Crystal_Passive_Logic(Lelouch npc)
 
 	if(npc.m_flCrystalRevert < GameTime)
 	{
-		StopCustomSound(npc.index, SNDCHAN_STATIC, g_LaserLoop[GetRandomInt(0, sizeof(g_LaserLoop) - 1)]);
+		StopCustomSound(npc.index, SNDCHAN_STATIC, g_RuinaLaserLoop[GetRandomInt(0, sizeof(g_RuinaLaserLoop) - 1)]);
 		for(int y= 0 ; y < LELOUCH_MAX_CRYSTALS ; y++)
 		{
 			struct_Crystals[npc.index][y].state = 0;
@@ -1988,7 +1985,7 @@ static void Create_Anchors(Lelouch npc)
 	End_Animation(npc);
 
 	npc.m_flCrystalRevert = FAR_FUTURE;
-	StopCustomSound(npc.index, SNDCHAN_STATIC, g_LaserLoop[GetRandomInt(0, sizeof(g_LaserLoop) - 1)]);
+	StopCustomSound(npc.index, SNDCHAN_STATIC, g_RuinaLaserLoop[GetRandomInt(0, sizeof(g_RuinaLaserLoop) - 1)]);
 	for(int y= 0 ; y < LELOUCH_MAX_CRYSTALS ; y++)
 	{
 		struct_Crystals[npc.index][y].state = 0;
