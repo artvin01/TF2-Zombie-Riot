@@ -590,14 +590,14 @@ methodmap RegaliaClass < CClotBody
 			return;
 		}
 
-		func_ShipTurn[this.index] = FuncTurn;
-
-		this.m_bShipFlightTowardsActive = true;
-
-		f3_NpcSavePos[this.index] = GoalVec;
+		this.m_flRevertControlOverride		= FAR_FUTURE;
+		func_ShipTurn[this.index] 			= FuncTurn;
+		this.m_bShipFlightTowardsActive 	= true;
+		f3_NpcSavePos[this.index] 			= GoalVec;
 	}
 	public void EndFlightSystemGoal()
 	{
+		this.m_flRevertControlOverride		= FAR_FUTURE;
 		fl_AbilityVectorData[this.index] 	= this.GetAngles();
 		this.m_bShipFlightTowardsActive 	= false;
 		this.m_bVectoredThrust 				= false;
@@ -1391,7 +1391,9 @@ static void LanceeWeaponTurnControl(int iNPC)
 		}
 	}
 	else
-		WantedLoc = f3_LastValidPosition[npc.index];
+	{
+		Get_Fake_Forward_Vec(fl_PrimaryLanceTravelDist, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
+	}
 	
 	
 	float Angles[3];
@@ -1479,11 +1481,11 @@ static void HandleMainWeapons(RegaliaClass npc)
 		npc.m_flShipAbilityActive = GameTime + 5.0;
 		if(npc.m_bVectoredThrust_InUse)
 		{
-			//TE_SetupBeamPoints(Origin, f3_LastValidPosition[npc.index], g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 60.0, 60.0, 0, 0.25, {0, 255, 0, 255}, 3);
-			//TE_SendToAll();
-
 			float WantedLoc[3];
 			Get_Fake_Forward_Vec(fl_PrimaryLanceTravelDist, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
+
+			//TE_SetupBeamPoints(Origin, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 60.0, 60.0, 0, 0.25, {0, 255, 0, 255}, 3);
+			//TE_SendToAll();
 
 			if(npc.bIsShipFacingLoc(Origin, WantedLoc, 10.0, 10.0))
 			{
@@ -1494,7 +1496,9 @@ static void HandleMainWeapons(RegaliaClass npc)
 		}
 		//else
 		//{
-		//	TE_SetupBeamPoints(Origin, f3_LastValidPosition[npc.index], g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 60.0, 60.0, 0, 0.25, {0, 0, 255, 255}, 3);
+		//	float WantedLoc[3];
+		//	Get_Fake_Forward_Vec(fl_PrimaryLanceTravelDist, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
+		//	TE_SetupBeamPoints(Origin, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 60.0, 60.0, 0, 0.25, {0, 0, 255, 255}, 3);
 		//	TE_SendToAll();
 		//}
 		return;
