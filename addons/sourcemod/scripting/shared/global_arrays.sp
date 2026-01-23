@@ -835,7 +835,7 @@ float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
 int i_PlayIdleAlertSound[MAXENTITIES];
 int i_ammo_count[MAXENTITIES];
 bool b_we_are_reloading[MAXENTITIES];
-float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
+float fl_RuinaLaserSoundTimer[MAXENTITIES];
 int i_wingslot[MAXENTITIES];
 int i_haloslot[MAXENTITIES];
 int i_ClosestAlly[MAXENTITIES];
