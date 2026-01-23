@@ -1665,6 +1665,10 @@
 		"it"		"Schwertkrieg"
 		"ko"		"슈베르트크리그"
 	}
+	"Crude Schwertkrieg Copy"
+	{
+		"en"		"Crude Schwertkrieg Copy"
+	}
 	"Phantom Knight"
 	{
 		"en"		"Lucian, ''Blood Diamond''"
