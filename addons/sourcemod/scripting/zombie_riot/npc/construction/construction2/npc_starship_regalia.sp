@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define STARSHIP_MODEL			"models/zombie_riot/starship_5.mdl"
+#define STARSHIP_MODEL			"models/zombie_riot/starship_6.mdl"
 
 static float fl_ShipAcceleration;
 static float fl_ShipDeceleration;

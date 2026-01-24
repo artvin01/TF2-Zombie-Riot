@@ -1,6 +1,6 @@
 // Created by Crowbar 0.71
 
-$modelname "zombie_riot/starship_5.mdl"
+$modelname "zombie_riot/starship_6.mdl"
 
 $bodygroup "starship"
 {
@@ -131,6 +131,34 @@ $attachment "underside_weapons_left_inner" 		"weapon_bone" 92.7812 1.1523 -79.58
 $attachment "underside_weapons_right_outer" 	"weapon_bone" -133.459 1.1523 -79.5816 rotate 0.0 0.0 0.0
 $attachment "underside_weapons_right_inner" 	"weapon_bone" -92.7812 1.1523 -79.5816 rotate 0.0 0.0 0.0
 
+
+$attachment "forward_hanger" 					"weapon_bone" 0 -438.867 0 rotate 0.0 0.0 0.0
+
+
+//Engine block
+
+$attachment "upper_center_engine_block" 		"weapon_bone" 0 452.303 23.2271  		rotate 0.0 0.0 0.0
+$attachment "lower_center_engine_block" 		"weapon_bone" 0 452.303 -23.2271  		rotate 0.0 0.0 0.0
+
+//Left
+$attachment "upper_left_engine_block" 		"weapon_bone" 102.032  452.303 23.2271   	rotate 0.0 0.0 0.0
+$attachment "center_left_engine_block" 		"weapon_bone" 131.182  452.303 0.0   		rotate 0.0 0.0 0.0
+$attachment "lower_left_engine_block" 		"weapon_bone" 102.032  452.303 -23.2271   	rotate 0.0 0.0 0.0
+
+
+//Right 
+$attachment "upper_right_engine_block" 		"weapon_bone" -102.032  452.303 23.2271   	rotate 0.0 0.0 0.0
+$attachment "center_right_engine_block" 	"weapon_bone" -131.182  452.303 0.0   		rotate 0.0 0.0 0.0
+$attachment "lower_right_engine_block" 		"weapon_bone" -102.032  452.303 -23.2271   	rotate 0.0 0.0 0.0
+
+
+//Wing Block
+
+$attachment "top_left_wing_block" 			"weapon_bone" 327.24 449.802 147.163   		rotate 0.0 0.0 0.0
+$attachment "top_right_wing_block" 			"weapon_bone" -327.24 449.802 147.163   	rotate 0.0 0.0 0.0
+
+$attachment "bottom_left_wing_block" 		"weapon_bone" 166.716  442.199  -205.638   	rotate 0.0 0.0 0.0
+$attachment "bottom_right_wing_block" 		"weapon_bone" -166.716 442.199 -205.638   	rotate 0.0 0.0 0.0
 
 
 $sequence "idle" {
