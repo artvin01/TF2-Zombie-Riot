@@ -362,9 +362,9 @@ methodmap RegaliaClass < CClotBody
 		npc.CreateBody();
 		npc.ShieldState(false);
 		
-		npc.m_iBleedType 			= BLEEDTYPE_METAL;
-		//npc.m_iStepNoiseType 		= STEPSOUND_NORMAL;	
-		//npc.m_iNpcStepVariation 	= STEPTYPE_NORMAL;
+		npc.m_iBleedType 					= BLEEDTYPE_METAL;
+		//npc.m_iStepNoiseType 				= STEPSOUND_NORMAL;	
+		//npc.m_iNpcStepVariation 			= STEPTYPE_NORMAL;
 
 		func_NPCDeath[npc.index]			= NPC_Death;
 		func_NPCOnTakeDamage[npc.index] 	= OnTakeDamage;
@@ -432,7 +432,6 @@ methodmap RegaliaClass < CClotBody
 		b_NoKnockbackFromSources[npc.index] 	= true;
 		b_ThisNpcIsImmuneToNuke[npc.index] 		= true;
 		b_IgnoreAllCollisionNPC[npc.index]		= true;
-		//b_ForceCollisionWithProjectile[npc.index]=true;
 		npc.m_bDissapearOnDeath 				= true;
 
 
