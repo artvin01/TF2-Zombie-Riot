@@ -1692,9 +1692,8 @@ static void HandleDroneSystem(RegaliaClass npc)
 }
 static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
 {
-	int Drone = NPC_CreateByName("npc_lantean_drone_projectile", npc.index, Loc, Angles, GetTeam(npc.index), "blue;");
-
-	int health = 100;
+	int Drone = NPC_CreateByName("npc_lantean_drone_projectile", npc.index, Loc, Angles, GetTeam(npc.index), "blue;raidmodescaling_damage");
+	int health = 5000;
 	if(Drone > MaxClients)
 	{
 		SetEntProp(Drone, Prop_Data, "m_iHealth", health);
