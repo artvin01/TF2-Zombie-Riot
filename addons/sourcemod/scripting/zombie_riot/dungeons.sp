@@ -598,6 +598,21 @@ void Dungeon_SetupVote(KeyValues kv)
 						kv.GetSectionName(buffer1, sizeof(buffer1));
 						kv.GetString(NULL_STRING, buffer2, sizeof(buffer2));
 						map.SetString(buffer1, buffer2);
+
+						BuildPath(Path_SM, buffer2, sizeof(buffer2), buffer1);
+						if(!FileExists(buffer2))
+						{
+							LogError("Unknown waveset '%s' for raid", buffer2);
+						}
+						else
+						{
+							KeyValues wavekv = new KeyValues("Waves");
+
+							wavekv.ImportFromFile(buffer2);
+							Waves_CacheWaves(wavekv, true);
+
+							delete wavekv;
+						}
 					}
 					while(kv.GotoNextKey(false));
 
@@ -2166,59 +2181,62 @@ void Dungeon_EnemySpawned(int entity)
 			}
 			case 1:	// Dungeon NPC
 			{
-				//nerf enemies in dungeons by 10%
-				fl_Extra_Damage[entity] *= 0.9;
-				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.9));
-				SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.9));
-
-
-				// Reward cash depending on the wave scaling and how much left
-				if(!i_IsABuilding[entity] && !i_NpcIsABuilding[entity])
+				if(Dungeon_GetEntityZone(entity) != Zone_RivalBase)
 				{
-					int round = Dungeon_GetRound(true) + MONEY_SCLAING_PUSHFUTURE;
-					int limit = MONEY_SCLAING_PUSHFUTURE + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
-					if(round > limit)
+					//nerf enemies in dungeons by 10%
+					fl_Extra_Damage[entity] *= 0.9;
+					SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.9));
+					SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.9));
+
+
+					// Reward cash depending on the wave scaling and how much left
+					if(!i_IsABuilding[entity] && !i_NpcIsABuilding[entity])
 					{
-						round = limit;
-
-						if(!ObjectC2House_CanUpgrade() && ObjectDungeonCenter_Level() >= ObjectDungeonCenter_MaxLevel())
+						int round = Dungeon_GetRound(true) + MONEY_SCLAING_PUSHFUTURE;
+						int limit = MONEY_SCLAING_PUSHFUTURE + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
+						if(round > limit)
 						{
+							round = limit;
 
-						}
-						else if(LimitNotice < 1)
-						{
-							CPrintToChatAll("{crimson}%t", "Upgrade Build Houses");
-							LimitNotice = 1;
+							if(!ObjectC2House_CanUpgrade() && ObjectDungeonCenter_Level() >= ObjectDungeonCenter_MaxLevel())
+							{
+
+							}
+							else if(LimitNotice < 1)
+							{
+								CPrintToChatAll("{crimson}%t", "Upgrade Build Houses");
+								LimitNotice = 1;
+							}
+							else
+							{
+								LimitNotice++;
+								if(LimitNotice > 49)
+									LimitNotice = -1;
+							}
 						}
 						else
 						{
-							LimitNotice++;
-							if(LimitNotice > 49)
-								LimitNotice = -1;
+							LimitNotice = 0;
 						}
-					}
-					else
-					{
-						LimitNotice = 0;
-					}
-					
-					int current = CurrentCash - GlobalExtraCash - StartCash;
-
-					int a, other;
-					while((other = FindEntityByNPC(a)) != -1)
-					{
-						if(!b_NpcHasDied[other] && GetTeam(other) != TFTeam_Red)
-							current += RoundFloat(f_CreditsOnKill[other]);
-					}
-
-					int goal = DefaultTotalCash(round);
-					if(current < goal)
-					{
-						int reward = (goal - current) / RoundToNearest((float((b_thisNpcIsABoss[entity] ? 4 : 40)) * MultiGlobalEnemy));
-						if(reward < 5)
-							reward = 5;
 						
-						f_CreditsOnKill[entity] += float(reward / 5 * 5);
+						int current = CurrentCash - GlobalExtraCash - StartCash;
+
+						int a, other;
+						while((other = FindEntityByNPC(a)) != -1)
+						{
+							if(!b_NpcHasDied[other] && GetTeam(other) != TFTeam_Red)
+								current += RoundFloat(f_CreditsOnKill[other]);
+						}
+
+						int goal = DefaultTotalCash(round);
+						if(current < goal)
+						{
+							int reward = (goal - current) / RoundToNearest((float((b_thisNpcIsABoss[entity] ? 4 : 40)) * MultiGlobalEnemy));
+							if(reward < 5)
+								reward = 5;
+							
+							f_CreditsOnKill[entity] += float(reward / 5 * 5);
+						}
 					}
 				}
 			}
