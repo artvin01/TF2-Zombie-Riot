@@ -890,7 +890,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				{
 					float chargerPos[3];
 					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
-					if(b_BoundingBoxVariant[victim] == 1)
+					if(b_BoundingBoxVariant[victim] == BBV_Giant)
 					{
 						chargerPos[2] += 120.0;
 					}

@@ -68,6 +68,7 @@ enum struct Round
 	MusicEnum music_round_1;
 	MusicEnum music_round_2;
 	MusicEnum music_setup;
+	char GiveNamedArtifact[255];
 	int MusicOutroDuration;
 	char music_round_outro[255];
 	bool music_custom_outro;
@@ -1437,6 +1438,8 @@ void Waves_SetupWaves(KeyValues kv, bool start, int ArrayDo = Rounds_Default)
 
 		round.music_round_1.SetupKv("music_1", kv);
 		round.music_round_2.SetupKv("music_2", kv);
+
+		kv.GetString("give_rogue_artifact", round.GiveNamedArtifact, sizeof(round.GiveNamedArtifact));
 		
 		kv.GetString("music_track_outro", round.music_round_outro, sizeof(round.music_round_outro));
 		round.MusicOutroDuration = kv.GetNum("music_outro_duration");
@@ -2491,6 +2494,9 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 			
 			if(round.Skyname[0])
 				Waves_SetSkyName(round.Skyname);
+				
+			if(round.GiveNamedArtifact[0])
+				Rogue_GiveNamedArtifact(round.GiveNamedArtifact);
 
 			if(round.FogChange)
 				SetCustomFog(FogType_Wave, round.FogColor1, round.FogColor2, round.FogStart, round.FogEnd, round.FogDesnity, round.FogBlend, true);

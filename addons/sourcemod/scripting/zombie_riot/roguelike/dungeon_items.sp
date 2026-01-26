@@ -174,7 +174,7 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 		}
 		case 1:
 		{
-			CPrintToChatAll("{violet}???{gray}: Ruanian Magic is just fancy tech, it looks just like ours, its insane.");
+			CPrintToChatAll("{violet}???{default}: Ruanian Magic is just fancy tech, it looks just like ours, its insane.");
 		}
 		case 2:
 		{
@@ -207,7 +207,7 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 		case 9:
 		{
 			CPrintToChatAll("{violet}???{default}: hey what are you doi-");
-			CPrintToChatAll("{gray}: Two loud gunshots can be heard, both bodies falling to the floor.");
+			CPrintToChatAll("{gray}Two loud gunshots can be heard, both bodies falling to the floor.");
 		}
 		case 10:
 		{
@@ -227,7 +227,7 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 		}
 		case 14:
 		{
-			CPrintToChatAll("{crimson}: Someone found you, someone is after you, they arent going easy on you no more.");
+			CPrintToChatAll("{crimson}Someone found you, someone is after you, they arent going easy on you no more.");
 		}
 		default:
 		{

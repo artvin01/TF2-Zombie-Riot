@@ -331,6 +331,16 @@ methodmap RegaliaClass < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 		}
+		//Setting it to 999 will make our lag comp not resize collision box on shoot
+		b_BoundingBoxVariant[npc.index] = BBV_DontAlter; 
+
+
+		//SOLID_OBB_YAW		= 4,	// an OBB, constrained so that it can only yaw
+		// could also try:  SOLID_CUSTOM		= 5,	// Always call into the entity for tests
+		//or if youre very cool, maybe use 
+		//SOLID_VPHYSICS		= 6,	// solid vphysics object, get vcollide from the model and collide with that
+		//but that requires modeling that crudely.
+		SetEntProp(npc.index, Prop_Data, "m_nSolidType", 4); 
 		
 		npc.CreateBody();
 		npc.ShieldState(false);

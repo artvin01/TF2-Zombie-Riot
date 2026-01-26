@@ -93,7 +93,7 @@ void Object_PluginStart()
 	.DefineBoolField("b_BlockDropChances")
 	.DefineBoolField("m_bSentryBuilding")
 	.DefineBoolField("m_bConstructBuilding")
-	.DefineBoolField("m_bTransparrency")
+	.DefineIntField("m_iTransparrencyMode")
 	.DefineFloatField("m_fLastTimeClaimed")
 	.DefineBoolField("m_bCannotBePickedUp")
 	.DefineBoolField("m_bNoOwnerRequired")
@@ -369,24 +369,6 @@ methodmap ObjectGeneric < CClotBody
 			}
 		}
 	}
-	property int m_iConstructDeathModel
-	{
-		public get()		 
-		{ 
-			return EntRefToEntIndex(i_Wearable[this.index][8]); 
-		}
-		public set(int iInt) 
-		{
-			if(iInt == -1)
-			{
-				i_Wearable[this.index][8] = INVALID_ENT_REFERENCE;
-			}
-			else
-			{
-				i_Wearable[this.index][8] = EntIndexToEntRef(iInt);
-			}
-		}
-	}
 	property int m_iMasterBuilding
 	{
 		public get()		 
@@ -438,6 +420,24 @@ methodmap ObjectGeneric < CClotBody
 			else
 			{
 				i_Wearable[this.index][8] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+	property int m_iConstructDeathModel
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_Wearable[this.index][9]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_Wearable[this.index][9] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_Wearable[this.index][9] = EntIndexToEntRef(iInt);
 			}
 		}
 	}
@@ -528,16 +528,16 @@ methodmap ObjectGeneric < CClotBody
 			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bConstructBuilding"));
 		}
 	}
-	property bool m_bTransparrency
+	property int m_iTransparrencyMode
 	{
-		public set(bool value)
+		public set(int value)
 		{
 			//no owner
-			SetEntProp(this.index, Prop_Data, "m_bTransparrency", value);
+			SetEntProp(this.index, Prop_Data, "m_iTransparrencyMode", value);
 		}
 		public get()
 		{
-			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bTransparrency"));
+			return GetEntProp(this.index, Prop_Data, "m_iTransparrencyMode");
 		}
 	}
 	property bool m_bCannotBePickedUp
@@ -826,28 +826,47 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 			int wearable = objstats.m_iWearable1;
 			if(wearable != -1)
 			{
-				
-				if(!objstats.m_bTransparrency)
+				switch(objstats.m_iTransparrencyMode)
 				{
-					SetEntityRenderColor(objstats.index, r, g, 0, 100);
-					SetEntityRenderColor(wearable, r, g, 0, 255);
-					SetEntityRenderMode(wearable, RENDER_NORMAL);
-				}
-				else
-				{
-					SetEntityRenderColor(objstats.index, r, g, 0, 100);
-					SetEntityRenderColor(wearable, r, g, 0, 125);
-					SetEntityRenderMode(wearable, RENDER_TRANSCOLOR);
+					case 2:
+					{
+						SetEntityRenderColor(objstats.index, r, g, 0, 0);
+						SetEntityRenderMode(objstats.index, RENDER_TRANSCOLOR);
+						SetEntityRenderColor(wearable, r, g, 0, 125);
+						SetEntityRenderMode(wearable, RENDER_TRANSCOLOR);
+					}
+					case 1:
+					{
+						SetEntityRenderColor(objstats.index, r, g, 0, 100);
+						SetEntityRenderColor(wearable, r, g, 0, 125);
+						SetEntityRenderMode(wearable, RENDER_TRANSCOLOR);
+					}
+					default:
+					{
+						SetEntityRenderColor(objstats.index, r, g, 0, 100);
+						SetEntityRenderColor(wearable, r, g, 0, 255);
+						SetEntityRenderMode(wearable, RENDER_NORMAL);
+					}
 				}
 			}
 			else
 			{
-				if(!objstats.m_bTransparrency)
-					SetEntityRenderColor(objstats.index, r, g, 0, 255);
-				else
+				switch(objstats.m_iTransparrencyMode)
 				{
-					SetEntityRenderColor(objstats.index, r, g, 0, 125);
-					SetEntityRenderMode(objstats.index, RENDER_TRANSCOLOR);
+					case 2:
+					{
+						SetEntityRenderColor(objstats.index, r, g, 0, 0);
+						SetEntityRenderMode(objstats.index, RENDER_TRANSCOLOR);
+					}
+					case 1:
+					{
+						SetEntityRenderColor(objstats.index, r, g, 0, 125);
+						SetEntityRenderMode(objstats.index, RENDER_TRANSCOLOR);
+					}
+					default:
+					{
+						SetEntityRenderColor(objstats.index, r, g, 0, 255);
+					}
 				}
 			}
 		}

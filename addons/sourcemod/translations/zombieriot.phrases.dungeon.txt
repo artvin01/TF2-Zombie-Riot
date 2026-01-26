@@ -426,4 +426,12 @@
 	{
 		"en"	"Verde Soldier Minion"
 	}
+	"Xeno Resurgance"
+	{
+		"en"	"Xeno Resurgance"
+	}
+	"Xeno Resurgance Desc"
+	{
+		"en"	"{darkgreen}All enemies are xenofied...\n{gray}Didnt we kill off the xeno virus?"
+	}
 }

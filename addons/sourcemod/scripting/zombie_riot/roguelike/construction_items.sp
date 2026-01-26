@@ -358,3 +358,21 @@ public void Construction_RareWeapon_Collect()
 	Store_DiscountNamedItem(name, 999, discount);
 	CPrintToChatAll("{green}Recovered Items: {palegreen}%s", name);
 }
+
+
+
+
+public void Xeno_Resurgance_Enemy(int entity)
+{
+	if(i_NpcIsABuilding[entity])
+		return;
+
+	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_XENO)
+		ApplyStatusEffect(entity, entity, "Xeno Infection", 9999.9);
+	else
+		ApplyStatusEffect(entity, entity, "Xeno Infection Buff Only", 9999.9);
+}
+public void Xeno_Resurgance_End()
+{
+	Rogue_RemoveNamedArtifact("Xeno Resurgance");
+}

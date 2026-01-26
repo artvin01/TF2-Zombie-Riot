@@ -2760,4 +2760,24 @@
 	{
 		"en"	"Npc Gains 30％ Resistance, 300％ Damage, 2x Thinkspeed"
 	}
+	"Xeno Infection"
+	{
+		"en"	"Xeno Infection"
+	}
+	"Xeno Infection Desc"
+	{
+		"en"	"Npc Gains 30％ Resistance, 40％ Damage, but thinks 15％ slower, and regens over time upto 2x max health, if above 25％ max health, gain immensive buffs untill below\ninfects any enemy with xeno aswell."
+	}
+	"Xeno"
+	{
+		"en"	"Xeno"
+	}
+	"Perfected Instinct"
+	{
+		"en"	"Perfected Instinct"
+	}
+	"Perfected Instinct Desc"
+	{
+		"en"	"Npc Gains 30％ Resistance, 300％ Damage, 1.5x Thinkspeed, Gains a high chance to dodge attacks, the lower the hp, the higher the chance. On dodge, gain an immensive short speed bonus"
+	}
 }

@@ -3771,7 +3771,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		DHook_RespawnPlayer(target);
 		
 		float pos[3], ang[3];
-		GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
+		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos);
 		GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 		ang[2] = 0.0;
 		SetEntProp(target, Prop_Send, "m_bDucked", true);

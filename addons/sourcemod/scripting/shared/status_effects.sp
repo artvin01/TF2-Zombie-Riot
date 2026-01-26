@@ -136,6 +136,19 @@ enum struct E_StatusEffect
 	}
 }
 
+static const char MissSound[][] =
+{
+	"weapons/fx/nearmiss/bulletltor08.wav",
+	"weapons/fx/nearmiss/bulletltor09.wav",
+	"weapons/fx/nearmiss/bulletltor10.wav",
+	"weapons/fx/nearmiss/bulletltor11.wav",
+	"weapons/fx/nearmiss/bulletltor13.wav",
+	"weapons/fx/nearmiss/bulletltor14.wav",
+};
+static const char XenoInfect[][] =
+{
+	"items/powerup_pickup_plague_infected.wav",
+};
 void ResetExplainBuffStatus(int client)
 {
 	DisplayChatBuffCD[client] = 0.0;
@@ -156,6 +169,8 @@ void InitStatusEffects()
 	//First delete everything
 	delete AL_StatusEffects;
 	AL_StatusEffects = new ArrayList(sizeof(StatusEffect));
+	PrecacheSoundArray(MissSound);
+	PrecacheSoundArray(XenoInfect);
 
 	DeleteStatusEffectsFromAll();
 	//clear all existing ones
@@ -7276,6 +7291,73 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Xeno Infection");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Xeno");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.7;
+	data.DamageDealMulti			= 0.4;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= (1.0 / 0.85);
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= Const2Modifs_Xeno_Start;
+	data.OnBuffEndOrDeleted			= Const2Modifs_Xeno_End;
+	data.TimerRepeatCall_Func 		= Const2_XenoHeal;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Xeno Infection Buff Only");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.7;
+	data.DamageDealMulti			= 0.4;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= (1.0 / 0.85);
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= Const2Modifs_Xeno_Start_Already;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.TimerRepeatCall_Func 		= Const2_XenoHeal;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Perfected Instinct");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Perfected Instinct");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.3;
+	data.DamageDealMulti			= 2.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= (1.0 / 1.5);
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnTakeDamage_TakenFunc 	= Perfected_Instinct_Dodge;
+	data.OnBuffStarted				= Perfected_Instinct_Give;
+	data.OnBuffEndOrDeleted			= Perfected_InstinctEnd;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Perfected Instinct Speed");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 4.0;
+	data.AttackspeedBuff			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
+	data.OnBuffStarted				= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
 
 
@@ -7419,9 +7501,11 @@ void Const2Modifs_AntiSea_Start(int victim, StatusEffect Apply_MasterStatusEffec
 	CClotBody npc = view_as<CClotBody>(victim);
 	float flPos[3];
 	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
-	int ParticleEffect = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-120.0, true);
+	int ParticleEffect = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl");
 	SetVariantString("2.5");
 	AcceptEntityInput(ParticleEffect, "SetModelScale");
+	//parent with differences
+	SDKCall_SetLocalOrigin(ParticleEffect, {0.0,0.0,-120.0});
 	
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
@@ -7646,8 +7730,6 @@ public Action Timer_LaggyDoBuff(Handle timer, int ref)
 
 }
 
-
-
 void Const2Modifs_Verde_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	//not an npc, ignore.
@@ -7662,5 +7744,175 @@ void Const2Modifs_Verde_End(int victim, StatusEffect Apply_MasterStatusEffect, E
 	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
 		return;
 
+	SetEntityRenderColor_NpcAll(victim, (1.0 / 0.15), (1.0 / 0.15), (1.0 / 0.15));
+}
+
+
+
+static void Const2_XenoHeal(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(Apply_StatusEffect.DataForUse > GetGameTime())
+	{
+		return;
+	}
+	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.DataForUse = GetGameTime() + 1.0;
+	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+
+	float maxhealth = float(ReturnEntityMaxHealth(entity));
+	float RegenPenalty = 1.0;
+	RegenPenalty *= NpcDoHealthRegenScaling(entity);
+	if(b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity])
+		RegenPenalty *= 0.01;
+	HealEntityGlobal(entity, entity, (maxhealth / 30.0) * RegenPenalty, 2.0, 0.0, HEAL_SELFHEAL);
+	if(float(GetEntProp(entity, Prop_Data, "m_iHealth")) >= maxhealth * 1.25)
+		ApplyStatusEffect(entity, entity, "Xeno's Territory", 1.5);
+
+	//infect
+	ExpidonsaGroupHeal(entity,
+	 120.0,
+	  99,
+	   0.0,
+	   1.0,
+	    false,
+		 Const2_XenoInfect ,
+  		  _,
+   		  true);
+
+}
+
+void Const2_XenoInfect(int entity, int victim, float &healingammount)
+{
+	if(i_NpcIsABuilding[victim])
+		return;
+
+	if(GetTeam(victim) != TFTeam_Red)
+	{
+		if(HasSpecificBuff(victim, "Xeno Infection") || HasSpecificBuff(victim, "Xeno Infection Buff Only"))
+			return;
+		//infects all teams except red
+		Xeno_Resurgance_Enemy(victim);
+	}
+	
+}
+
+
+void Perfected_Instinct_Give(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!(b_ThisWasAnNpc[victim] || victim <= MaxClients))
+		return;
+	
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	float flPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+	int ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_blue_lines", victim, "", {0.0,0.0,0.0});
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+
+	
+	int ModelIndex = GetEntProp(victim, Prop_Send, "m_nModelIndex");
+	char model[PLATFORM_MAX_PATH];
+	ModelIndexToString(ModelIndex, model, PLATFORM_MAX_PATH);
+	int WearableDo = TF2_CreateGlow_White(model, victim, GetEntPropFloat(victim, Prop_Send, "m_flModelScale"));
+	if(IsValidEntity(WearableDo))
+	{
+		SetEntProp(WearableDo, Prop_Send, "m_bGlowEnabled", false);
+		SetEntityRenderMode(WearableDo, RENDER_ENVIRONMENTAL);
+		TE_SetupParticleEffect("utaunt_busysnow_auroraborealis_body_glow_Blu", PATTACH_ABSORIGIN_FOLLOW, WearableDo);
+		TE_WriteNum("m_bControlPoint1", WearableDo);	
+		TE_SendToAll();
+	}
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+	Apply_StatusEffect.WearableUse2 = EntIndexToEntRef(WearableDo);
+
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+void Perfected_InstinctEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		RemoveEntity(Apply_StatusEffect.WearableUse);
+
+	if(IsValidEntity(Apply_StatusEffect.WearableUse2))
+		RemoveEntity(Apply_StatusEffect.WearableUse2);
+}
+
+
+
+float Perfected_Instinct_Dodge(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	if(CheckInHud())
+		return 0.7;
+	if(f_TimeFrozenStill[victim] > GetGameTime(victim))
+		return 0.7;
+	float HitChance = 0.8;
+	int MaxHealth = ReturnEntityMaxHealth(victim);
+	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	Health *= 0.65;
+
+	HitChance *= float(Health) / float(MaxHealth);
+
+	if(HitChance <= 0.1)
+		HitChance = 0.1;
+
+	if(HitChance >= 0.75)
+		HitChance = 0.75;
+
+	if(GetRandomFloat(0.0, 1.0) < HitChance)
+		return 0.7;
+
+	float chargerPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
+	chargerPos[2] += 90.0;
+	TE_ParticleInt(g_particleMissText, chargerPos);
+	TE_SendToAll();
+	int Rand = GetRandomInt(0, sizeof(MissSound) - 1);
+	EmitSoundToAll(MissSound[Rand], victim, _, 80);
+	ApplyStatusEffect(victim, victim, "Perfected Instinct Speed", 0.35);
+	return 0.0;
+}
+
+
+void Const2Modifs_Xeno_Start_Already(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+
+	CClotBody npc = view_as<CClotBody>(victim);
+
+	int Rand = GetRandomInt(0, sizeof(XenoInfect) - 1);
+	EmitSoundToAll(XenoInfect[Rand], victim, SNDCHAN_AUTO, 80,_,0.65);
+	float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+	TE_Particle("breadjar_impact_cloud", WorldSpaceVec, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0);
+}
+void Const2Modifs_Xeno_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+
+	CClotBody npc = view_as<CClotBody>(victim);
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.DataForUse = float(npc.m_iBleedType);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+	npc.m_iBleedType = BLEEDTYPE_XENO;
+	
+	int Rand = GetRandomInt(0, sizeof(XenoInfect) - 1);
+	EmitSoundToAll(XenoInfect[Rand], victim, SNDCHAN_AUTO, 80,_,0.65);
+	float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+	TE_Particle("breadjar_impact_cloud", WorldSpaceVec, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0);
+
+	SetEntityRenderColor_NpcAll(victim, 0.15, 1.5, 0.15);
+}
+void Const2Modifs_Xeno_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
+		return;
+
+	CClotBody npc = view_as<CClotBody>(victim);
+	npc.m_iBleedType = RoundToNearest(Apply_StatusEffect.DataForUse);
 	SetEntityRenderColor_NpcAll(victim, (1.0 / 0.15), (1.0 / 0.15), (1.0 / 0.15));
 }

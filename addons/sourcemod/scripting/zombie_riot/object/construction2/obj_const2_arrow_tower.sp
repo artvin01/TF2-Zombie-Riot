@@ -82,7 +82,7 @@ methodmap ObjectC2ArrowTower < ObjectGeneric
 		npc.m_iWearable1 = npc.EquipItemSeperate("models/props_manor/clocktower_01.mdl");
 		SetVariantString("0.125");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		SetEntityRenderMode(npc.index, RENDER_NONE);
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
 
 		npc.m_bConstructBuilding = true;

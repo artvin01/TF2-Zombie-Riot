@@ -73,6 +73,12 @@ enum
 
 enum
 {
+	BBV_Normal = 0,
+	BBV_Giant = 1,
+	BBV_DontAlter = 999,
+}
+enum
+{
 	Faction_Expidonsa = 1,
 	Faction_Kazimierz,
 	Faction_Victoria,
@@ -469,8 +475,7 @@ bool b_StickyIsSticking[MAXENTITIES];
 float f_EntityRenderColour[MAXENTITIES][3];
 int i_EntityRenderColourSave[MAXENTITIES][3];
 
-//6 wearables
-int i_Wearable[MAXENTITIES][9];
+int i_Wearable[MAXENTITIES][10];
 int i_FreezeWearable[MAXENTITIES];
 int i_InvincibleParticle[MAXENTITIES];
 int i_InvincibleParticlePrev[MAXENTITIES];

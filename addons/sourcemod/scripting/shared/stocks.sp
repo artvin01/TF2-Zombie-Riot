@@ -3581,7 +3581,7 @@ stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float po
 	if(victim != -1)
 	{
 		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
-		if(b_BoundingBoxVariant[victim] == 1)
+		if(b_BoundingBoxVariant[victim] == BBV_Giant)
 		{
 			chargerPos[2] += 120.0;
 		}

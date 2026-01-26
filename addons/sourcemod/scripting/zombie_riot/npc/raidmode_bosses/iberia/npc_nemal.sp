@@ -161,7 +161,7 @@ methodmap Nemal < CClotBody
 		public get()							{ return fl_NextChargeSpecialAttack[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextChargeSpecialAttack[this.index] = TempValueForProperty; }
 	}
-	property float f_NemalRocketJumpCD
+	property float f_NemalRocketJumpCDfea
 	{
 		public get()							{ return fl_NextRangedBarrage_Singular[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextRangedBarrage_Singular[this.index] = TempValueForProperty; }

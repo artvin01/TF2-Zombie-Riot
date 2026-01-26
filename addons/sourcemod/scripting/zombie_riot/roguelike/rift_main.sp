@@ -836,6 +836,7 @@ public void Rogue_Rift1Good_Remove()
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
+			
 			if(IsClientInGame(client))
 			{
 				Music_Stop_All(client);

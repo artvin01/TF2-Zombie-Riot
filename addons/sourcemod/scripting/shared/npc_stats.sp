@@ -704,13 +704,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		SetEntProp(npc, Prop_Data, "m_nSolidType", 2);
 		
-		b_BoundingBoxVariant[npc] = 0; //This will tell lag compensation what to revert to once the calculations are done.
+		b_BoundingBoxVariant[npc] = BBV_Normal; //This will tell lag compensation what to revert to once the calculations are done.
 		static float m_vecMaxs[3];
 		static float m_vecMins[3];
 		if(isGiant)
 		{
 			b_IsGiant[npc] = true;
-			b_BoundingBoxVariant[npc] = 1;
+			b_BoundingBoxVariant[npc] = BBV_Giant;
 			m_vecMaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
 			m_vecMins = view_as<float>( { -30.0, -30.0, 0.0 } );	
 		}			

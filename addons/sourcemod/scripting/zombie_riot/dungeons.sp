@@ -18,6 +18,8 @@ static char TeleEnter[64];
 static char TeleNext[64];
 static int LimitNotice;
 
+
+#define MONEY_SCLAING_PUSHFUTURE 3
 enum struct DMusicInfo
 {
 	int Common;
@@ -2173,8 +2175,8 @@ void Dungeon_EnemySpawned(int entity)
 				// Reward cash depending on the wave scaling and how much left
 				if(!i_IsABuilding[entity] && !i_NpcIsABuilding[entity])
 				{
-					int round = Dungeon_GetRound(true) + 4;
-					int limit = 4 + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
+					int round = Dungeon_GetRound(true) + MONEY_SCLAING_PUSHFUTURE;
+					int limit = MONEY_SCLAING_PUSHFUTURE + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
 					if(round > limit)
 					{
 						round = limit;
@@ -2245,8 +2247,8 @@ bool Dungeon_UpdateMvMStats()
 
 		if(AttackType == 1)
 		{
-			int round = Dungeon_GetRound(true) + 4;
-			int limit = 4 + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
+			int round = Dungeon_GetRound(true) + MONEY_SCLAING_PUSHFUTURE;
+			int limit = MONEY_SCLAING_PUSHFUTURE + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
 			if(round > limit)
 				round = limit;
 			
@@ -2414,7 +2416,7 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 		}
 		GiveOneGuranteed = false;
 		RetryBuffGiving = false;
-		switch(GetRandomInt(1,15))
+		switch(GetRandomInt(1,18))
 		{
 			case 1:
 			{
@@ -2533,11 +2535,24 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 			}
 			case 16:
 			{
-				//free token
 				if(HasSpecificBuff(iNpc, "The First"))
 					RetryBuffGiving = true;
 				else
 					ApplyStatusEffect(iNpc, iNpc, "The First", 999999.9);
+			}
+			case 17:
+			{
+				if(HasSpecificBuff(iNpc, "Perfected Instinct"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Perfected Instinct", 999999.9);
+			}
+			case 18:
+			{
+				if(HasSpecificBuff(iNpc, "Xeno Infection") || HasSpecificBuff(iNpc, "Xeno Infection Buff Only"))
+					RetryBuffGiving = true;
+
+				Xeno_Resurgance_Enemy(iNpc);
 			}
 		}
 	}

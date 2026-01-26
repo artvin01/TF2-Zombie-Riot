@@ -100,7 +100,7 @@ methodmap ObjectDWall1 < ObjectGeneric
 		
 		npc.FuncCanBuild = ClotCanBuild1;
 		npc.m_bConstructBuilding = true;
-		npc.m_bTransparrency = true;
+		npc.m_iTransparrencyMode = 1;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
 		SetRotateByDefaultReturn(npc.index, -180.0);
@@ -152,7 +152,7 @@ methodmap ObjectDWall2 < ObjectGeneric
 		
 		npc.FuncCanBuild = ClotCanBuild2;
 		npc.m_bConstructBuilding = true;
-		npc.m_bTransparrency = true;
+		npc.m_iTransparrencyMode = true;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
 		SetRotateByDefaultReturn(npc.index, -180.0);
@@ -163,7 +163,7 @@ methodmap ObjectDWall2 < ObjectGeneric
 		VecLeft[1] += 40.0;
 		ObjectDWall2 npc_left = view_as<ObjectDWall2>(ObjectGeneric(client, VecLeft, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.8", "600", {40.0, 40.0, 70.0},_,false));
 		npc.m_iExtrabuilding1 = npc_left.index;
-		npc.m_bTransparrency = true;
+		npc.m_iTransparrencyMode = true;
 		npc_left.m_iMasterBuilding = npc.index;
 		SetParent(npc.index, npc_left.index, "root",{0.0, 40.0, 0.0}, true);
 		
@@ -173,7 +173,7 @@ methodmap ObjectDWall2 < ObjectGeneric
 		Vecright[1] -= 40.0;
 		ObjectDWall2 npc_right = view_as<ObjectDWall2>(ObjectGeneric(client, Vecright, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.8", "600", {40.0, 40.0, 70.0},_,false));
 		npc.m_iExtrabuilding2 = npc_right.index;
-		npc.m_bTransparrency = true;
+		npc.m_iTransparrencyMode = true;
 		npc_right.m_iMasterBuilding = npc.index;
 		SetParent(npc.index, npc_right.index, "root",{0.0, -40.0, 0.0}, true);
 
@@ -224,7 +224,7 @@ methodmap ObjectDWall3 < ObjectGeneric
 		
 		npc.FuncCanBuild = ClotCanBuild3;
 		npc.m_bConstructBuilding = true;
-		npc.m_bTransparrency = true;
+		npc.m_iTransparrencyMode = true;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
 		SetRotateByDefaultReturn(npc.index, -180.0);
@@ -235,7 +235,7 @@ methodmap ObjectDWall3 < ObjectGeneric
 		VecLeft[1] += 50.0;
 		ObjectDWall3 npc_left = view_as<ObjectDWall3>(ObjectGeneric(client, VecLeft, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.8", "600", {50.0, 50.0, 80.0},_,false));
 		npc.m_iExtrabuilding1 = npc_left.index;
-		npc.m_bTransparrency = true;
+		npc.m_iTransparrencyMode = true;
 		npc_left.m_iMasterBuilding = npc.index;
 		SetParent(npc.index, npc_left.index, "root",{0.0, 50.0, 0.0}, true);
 		
@@ -245,7 +245,7 @@ methodmap ObjectDWall3 < ObjectGeneric
 		Vecright[1] -= 50.0;
 		ObjectDWall3 npc_right = view_as<ObjectDWall3>(ObjectGeneric(client, Vecright, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.8", "600", {50.0, 50.0, 80.0},_,false));
 		npc.m_iExtrabuilding2 = npc_right.index;
-		npc.m_bTransparrency = true;
+		npc.m_iTransparrencyMode = true;
 		npc_right.m_iMasterBuilding = npc.index;
 		SetParent(npc.index, npc_right.index, "root",{0.0, -50.0, 0.0}, true);
 
