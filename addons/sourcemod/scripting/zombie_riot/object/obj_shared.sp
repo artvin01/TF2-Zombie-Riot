@@ -1252,6 +1252,11 @@ bool Const2_BuildingDestroySpecial(int entity)
 
 	if(IsDungeonCenterId() == i_NpcInternalId[objstats.index])
 	{
+		for(int clients=1; clients<=MaxClients; clients++)
+		{
+			if(IsValidClient(clients))
+				Vehicle_Exit(clients);
+		}
 		int vehicle = -1;
 		while((vehicle = FindEntityByClassname(vehicle, "obj_vehicle")) != -1)
 		{
@@ -1311,6 +1316,7 @@ bool Const2_ReConstructBuilding(int entity)
 		{
 			SetEntProp(vehicle, Prop_Data, "m_bLocked", false);
 		}
+		
 	}
 
 	RemoveEntity(objstats.m_iConstructDeathModel);
