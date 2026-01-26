@@ -125,19 +125,14 @@ static float fl_ShipTurnSpeed;
 	Passive:
 
 		Constructor:
-			-Ship becomes stationary.
-			-4 Beacons spawn. (has a construction phase. like 5 seconds?)
-			-create beams from weapon ports to beacon pos.
-			-Once beacons are constructed. ship goes to normal behavior.
-
-			-Can only create beacons up to a total of 4.
-				so if there are 2 alive, and ship decides to build more, it will only build 2 more to reach the total of 4.
+			Beacons passively spawn randomly.
+			somewhere randomly on the arena.
+			has a max limit.
 
 	Beacons:
 
 		Basic Functionality:
-			- Beacons have 5% of ship hp.
-			- When beacon is damage, 25%(?) of damage taken is transfered to ship
+			- Beacons have 0.5% of ship
 
 		Beacon Shield Phase:
 			Every X seconds the beacons gain a shield (armour) if you don't destroy the armour of all beacons. the ship gains a massive shield (armour)
@@ -145,13 +140,15 @@ static float fl_ShipTurnSpeed;
 		Passive:
 			While beacon is active, a orbital beam is active. acts like stella's orbital ray. should make the system independant.
 
+		beacons transfer 100% of damage taken to ship.
+		so a player does 100 dmg to a beacon. both the beacon and ship take 100 dmg.
+
 	Flight isssues:
 	
 
-		When going over a target ship rotation get wonky.
-
 
 	Notes:
+		Make lantean drone proj deal less dmg to buildings.
 
 		Seperate various parts of flight system into seperate functions:
 			Turning.
@@ -1863,7 +1860,7 @@ static void HandleDroneSystem(RegaliaClass npc)
 static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
 {
 	int Drone = NPC_CreateByName("npc_lantean_drone_projectile", npc.index, Loc, Angles, GetTeam(npc.index), "blue;raidmodescaling_damage");
-	int health = 5000;
+	int health = 5000;	//like 0.1% hp of ship
 	if(Drone > MaxClients)
 	{
 		SetEntProp(Drone, Prop_Data, "m_iHealth", health);
@@ -2086,7 +2083,6 @@ static void HandleMainWeapons(RegaliaClass npc)
 	const float TE_Duration = 0.1;
 	const float Amp = 0.1;
 
-
 	Ruina_Laser_Logic Laser;
 	Laser.client 		= npc.index;
 	Laser.Radius 		= Start_Thickness * 0.5;
@@ -2111,8 +2107,6 @@ static void HandleMainWeapons(RegaliaClass npc)
 	for(int i = 0 ; i < 2 ; i++)	//left right
 	{
 		float End[3]; 	End = npc.GetWeaponSections(Sections[i]);
-
-		
 
 		//if(!npc.bIsShipFacingLoc(End, WantedLoc, Allowance_Pitch, Allowance_Yaw))	//Gimbal lances.
 		//	continue;
