@@ -1172,6 +1172,9 @@ void NPC_ConfigSetup()
 	SkilledCrossbowmanOnMapStart();
 	DemonDevoterOnMapStart();
 	DungeonLoot_MapStart();
+	
+	// Gmod ZS
+	Allymedic_OnMapStart_NPC();
 }
 
 void NPC_MapEnd()
@@ -2558,3 +2561,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/construction2/npc_skilled_crossbowman.sp"
 #include "npc/construction/construction2/npc_demon_devoter.sp"
 #include "npc/construction/npc_dungeon_loot.sp"
+
+// Gmod ZS
+#include "npc/gmod_zs/npc_zs_ally_medic.sp"
