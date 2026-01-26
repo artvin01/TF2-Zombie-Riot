@@ -528,7 +528,7 @@ methodmap RegaliaClass < CClotBody
 	{
 		int current = GetEntProp(this.index, Prop_Data, "m_nBody");
 
-		return (current & group);
+		return view_as<bool>(current & group);
 	}
 	public float[] GetAngles()
 	{
@@ -1317,8 +1317,6 @@ static void DoG_PatternTick(DataPack IncomingData)
 			Data.SoundTimer = GameTime + 0.1;
 			trace_update = true;
 		}
-		
-		const float height =  1500.0;	//1500
 
 		for(int i=0 ; i < Sections ; i++)
 		{
@@ -1332,10 +1330,9 @@ static void DoG_PatternTick(DataPack IncomingData)
 				{
 					LookAtLoc = Data.Loc;
 				}
-				case 1:
+				case 1:	//doesn't work, investigate why.
 				{
 					LookAtLoc = vCreateDoGVectorMesh(Data.Loc, i, Sections, Radius * 0.2, Data.AngleModif);
-					
 				}
 				case 2:
 				{
@@ -1382,9 +1379,7 @@ static void DoG_PatternTick(DataPack IncomingData)
 		Data.SoundTimer = 0.0;
 
 		float recharge_speed = 2.0;
-
 		
-
 		Data.Recharge = GameTime + recharge_speed;
 
 		Data.cylce++;
@@ -1413,8 +1408,6 @@ static void DoG_PatternTick(DataPack IncomingData)
 			else
 				Particle = "drg_manmelter_trail_red";
 
-			
-
 			Projectile.Time 	= Section.Dist / Projectile.speed;
 
 			int projectile = Projectile.Launch_Projectile(Func_On_Proj_DoG_Patterns);
@@ -1432,7 +1425,10 @@ static void DoG_PatternTick(DataPack IncomingData)
 		}
 
 		if(Duration - GameTime < recharge_speed)
+		{
+			delete Data.SectionData;
 			return;
+		}
 
 		Data.AngleModif	= GetRandomFloat(0.0, 360.0);
 
