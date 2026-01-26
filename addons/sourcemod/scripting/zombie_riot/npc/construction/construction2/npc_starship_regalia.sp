@@ -195,10 +195,13 @@ static const float fl_ShipRollClamps = 50.0;
 
 */
 static const float VaultVectorPoints[][3] = {
-	{0.0, 0.0, 0.0},
-	{0.0, 0.0, 0.0}
+	{5975.277344, 880.963745, -5407.267578},
+
+	{4747.448730, 2284.911865, -5419.261230},
+	{7971.000488, -922.880737, -5372.954590}
 };
 
+static ArrayList AL_RegaliaAttachedEntities[MAXENTITIES] = {null, ...};
 static Function func_ShipTurn[MAXENTITIES];
 void StarShip_Regalia_OnMapStart()
 {
@@ -217,6 +220,7 @@ static void ClotPrecache()
 {
 	PrecacheModel(STARSHIP_MODEL);
 	PrecacheSoundArray(g_ShieldDamageSound);
+	PrecacheSoundArray(g_DefaultCapperShootSound);
 	PrecacheSound(REGALIA_IOC_EXPLOSION_SOUND);
 	PrecacheSound(REGALIA_PATTERNS_CHARGE_SOUND);
 }
@@ -235,6 +239,9 @@ methodmap RegaliaClass < CClotBody
 
 		int pitch = GetRandomInt(40, 70);
 		EmitSoundToAll(g_ShieldDamageSound[GetRandomInt(0, sizeof(g_ShieldDamageSound) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.25, pitch);
+	}
+	public void PlayCapperSound() {
+		EmitSoundToAll(g_DefaultCapperShootSound[GetRandomInt(0, sizeof(g_DefaultCapperShootSound) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);	
 	}
 	public void EmitGenerciLaserSound() {
 		if(fl_RuinaLaserSoundTimer[this.index] > GetGameTime())
@@ -341,6 +348,11 @@ methodmap RegaliaClass < CClotBody
 		public get()							{ return b_FUCKYOU[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
 	}
+	property int m_iInternalTravelVaultVectors
+	{
+		public get()							{ return i_SemiAutoWeapon[this.index]; }
+		public set(int TempValueForProperty) 	{ i_SemiAutoWeapon[this.index] = TempValueForProperty; }
+	}
 	public RegaliaClass(float vecPos[3], float vecAng[3], int team, const char[] data)
 	{
 		RegaliaClass npc = view_as<RegaliaClass>(CClotBody(vecPos, vecAng, STARSHIP_MODEL, "1.0", "1000", team, .CustomThreeDimensions = {1000.0, 1000.0, 200.0}, .CustomThreeDimensionsextra = {-1000.0, -1000.0, -200.0}));
@@ -368,6 +380,8 @@ methodmap RegaliaClass < CClotBody
 		//SOLID_VPHYSICS		= 6,	// solid vphysics object, get vcollide from the model and collide with that
 		//but that requires modeling that crudely.
 		//SetEntProp(npc.index, Prop_Data, "m_nSolidType", 4); 
+
+		npc.m_iInternalTravelVaultVectors = -1;
 		
 		npc.CreateBody();
 		npc.ShieldState(false);
@@ -591,33 +605,27 @@ methodmap RegaliaClass < CClotBody
 		this.GetAttachment(Attachment, flPos, flAng);
 		return flPos;
 	}
-	public void AddParticleEntity(int entity)
+	public void AddAttachedEntity(int entity)
 	{
-		for(int i=0 ; i < RUINA_MAX_PARTICLE_ENTS; i++)
+		if(AL_RegaliaAttachedEntities[this.index] == null)
 		{
-			if(i_particle_ref_id[this.index][i] == INVALID_ENT_REFERENCE)
-			{
-				i_particle_ref_id[this.index][i] = EntIndexToEntRef(entity);
-				return;
-			}
+			AL_RegaliaAttachedEntities[this.index] = new ArrayList();
 		}
-		LogStackTrace("Regalia has run out of particle slots. gg");
-	}
-	public void AddLaserEntity(int entity)
-	{
-		for(int i=0 ; i < RUINA_MAX_PARTICLE_ENTS; i++)
-		{
-			if(i_laser_ref_id[this.index][i] == INVALID_ENT_REFERENCE)
-			{
-				i_laser_ref_id[this.index][i] = EntIndexToEntRef(entity);
-				return;
-			}
-		}
-		LogStackTrace("Regalia has run out of laser slots. gg");
+		AL_RegaliaAttachedEntities[this.index].Push(EntIndexToEntRef(entity));
 	}
 	public void CleanEntities()
 	{
-		Ruina_Clean_Particles(this.index);
+		if(AL_RegaliaAttachedEntities[this.index] == null)
+			return;
+
+		for(int i = 0 ; i < AL_RegaliaAttachedEntities[this.index].Length ; i++)
+		{
+			int ent = EntRefToEntIndex(AL_RegaliaAttachedEntities[this.index].Get(i));
+			if(IsValidEntity(ent))
+				RemoveEntity(ent);
+		}
+		delete AL_RegaliaAttachedEntities[this.index];
+		AL_RegaliaAttachedEntities[this.index] = null;
 	}
 	//Flight System:
 	public void SetFlightSystemGoal(float GoalVec[3], Function FuncTurn = INVALID_FUNCTION)
@@ -680,11 +688,36 @@ methodmap RegaliaClass < CClotBody
 		}
 		else
 		{
-			WorldSpaceCenter(this.m_iTarget, TargetLoc);
-			TargetLoc[2]+=450.0;
+			if(this.m_iInternalTravelVaultVectors != -1)
+			{
+				TargetLoc = VaultVectorPoints[this.m_iInternalTravelVaultVectors];
+			}
+			else
+			{
+				WorldSpaceCenter(this.m_iTarget, TargetLoc);
+				TargetLoc[2]+=450.0;
+			}
+
+			float Dist2D = Get2DVectorDistances(DroneLoc, TargetLoc, true);
+			if(Dist2D < (150.0 * 150.0))
+			{
+				if(this.m_iInternalTravelVaultVectors == -1)
+				{
+					this.m_iInternalTravelVaultVectors = GetRandomInt(1, 2);
+				}
+				else if(this.m_iInternalTravelVaultVectors != 0)
+				{
+					this.m_iInternalTravelVaultVectors = -1;
+				}
+			}
+			
 		}
 		
 		float Dist = GetVectorDistance(DroneLoc, TargetLoc, true); 
+
+		
+
+
 
 		bool Vectored_Thrust = false;	
 		//so simply put. space ships aren't limited to the usual "plane movement", they can move in 3d space freely.
@@ -712,6 +745,9 @@ methodmap RegaliaClass < CClotBody
 		{
 			Vectored_Thrust = this.m_bVectoredThrust;
 		}
+
+		if(this.m_bCutThrust)
+			Vectored_Thrust = true;
 
 		this.Fly(TargetLoc, Dist, Vectored_Thrust);
 
@@ -1015,8 +1051,90 @@ methodmap RegaliaClass < CClotBody
 	{
 		this.CleanEntities();
 
-
+		this.ApplyEngineEffects();
 		this.Apply_LanceEffects();
+
+		this.ApplyWingBottomEffects();
+		this.ApplyWingsTopEffects();
+	}
+	public void ApplyEngineEffects()
+	{
+		if(!this.bDoesSectionExist(StarShip_BG_MainDrive))
+			return;
+
+		static const char Sections[][] = {
+			"upper_center_engine_block" ,
+			"lower_center_engine_block" ,
+
+			"upper_left_engine_block" 	,
+			"center_left_engine_block" 	,
+
+			"lower_left_engine_block" 	,
+			"upper_right_engine_block" 	,
+
+			"center_right_engine_block" ,
+			"lower_right_engine_block" 	
+		};
+
+		int rendermode 		= 4;
+		float startwidth 	= 100.0;
+		float endwidth 		= 25.0;
+		float lifetime		= 2.5;
+
+		int skin = GetEntProp(this.index, Prop_Data, "m_nSkin");
+
+		//"effects/beam001_white.vmt"
+		//"effects/beam001_red.vmt" : "effects/beam001_blu.vmt"
+		for(int i= 0 ; i < 8 ; i++)
+		{
+			int trail = TrailAttach_Bone(this.index, Sections[i], skin == 1 ? "effects/beam001_blu.vmt" : "effects/beam001_red.vmt", 255, lifetime, startwidth, endwidth, rendermode);
+			if(IsValidEntity(trail))
+				this.AddAttachedEntity(trail);
+			trail = TrailAttach_Bone(this.index, Sections[i], "effects/beam001_white.vmt", 255, lifetime, startwidth, endwidth, rendermode);
+			if(IsValidEntity(trail))
+				this.AddAttachedEntity(trail);
+		}
+
+		
+		
+	}
+	public void ApplyWingBottomEffects()
+	{	
+		if(!this.bDoesSectionExist(StarShip_BG_BottomDeco))
+			return;
+
+		static const char Sections[][] = {
+			"bottom_left_wing_block",
+			"bottom_right_wing_block"
+		};
+
+		int skin = GetEntProp(this.index, Prop_Data, "m_nSkin");
+
+		for(int i=0 ; i < 2 ; i ++)
+		{
+			int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, skin == 1 ? "raygun_projectile_blue_crit" : "raygun_projectile_red_crit", 0.0);
+			SetParent(this.index, particle_1, Sections[i]);
+			this.AddAttachedEntity(particle_1);
+		}
+	}
+	public void ApplyWingsTopEffects()
+	{
+		if(!this.bDoesSectionExist(StarShip_BG_TopDeco))
+			return;
+
+		static const char Sections[][] = {
+			"top_left_wing_block",
+			"top_right_wing_block" 
+		};
+
+		int skin = GetEntProp(this.index, Prop_Data, "m_nSkin");
+
+		for(int i=0 ; i < 2 ; i ++)
+		{
+			int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, skin == 1 ? "raygun_projectile_blue_crit" : "raygun_projectile_red_crit", 0.0);
+			SetParent(this.index, particle_1, Sections[i]);
+			this.AddAttachedEntity(particle_1);
+		}
 	}
 	public void Apply_LanceEffects()
 	{
@@ -1055,10 +1173,10 @@ methodmap RegaliaClass < CClotBody
 			SetParent(this.index, particle_1, Sections[loop]);
 			SetParent(this.index, particle_2, Sections[loop+1]);
 
-			this.AddLaserEntity(ConnectWithBeamClient(particle_1, particle_2, color[0], color[1], color[2], start, end, amp, BEAM_DIAMOND));
+			this.AddAttachedEntity(ConnectWithBeamClient(particle_1, particle_2, color[0], color[1], color[2], start, end, amp, BEAM_DIAMOND));
 
-			this.AddParticleEntity(particle_1);
-			this.AddParticleEntity(particle_2);
+			this.AddAttachedEntity(particle_1);
+			this.AddAttachedEntity(particle_2);
 		}
 
 	
@@ -1234,6 +1352,15 @@ static void Invoke_RegaliaDoGPatterns(RegaliaClass npc, float Loc[3], float Dura
 
 	Data.SectionData	= new ArrayList(sizeof(RegaliaIONSection));
 
+	for(int i= 0 ; i < REGALIO_ION_SECTIONS ; i++)
+	{
+		RegaliaIONSection Section;
+		Section.Dist = 0.0;
+		Zero(Section.Angles);
+		Zero(Section.LastLoc);
+		Data.SectionData.PushArray(Section);
+	}
+
 	Loc[2]-=50.0;
 
 	DataPack Pack = new DataPack();
@@ -1332,11 +1459,23 @@ static void DoG_PatternTick(DataPack IncomingData)
 				}
 				case 1:	//doesn't work, investigate why.
 				{
-					LookAtLoc = vCreateDoGVectorMesh(Data.Loc, i, Sections, Radius * 0.2, Data.AngleModif);
+					LookAtLoc = vCreateDoGVectorMesh(Data.Loc, i, Sections, Radius * 0.2, Data.AngleModif + 45.0);
 				}
 				case 2:
 				{
-					LookAtLoc = vCreateDoGVectorMesh(Data.Loc, i, Sections, Radius * 0.75, Data.AngleModif);
+					LookAtLoc = vCreateDoGVectorMesh(Data.Loc, i, Sections, Radius * 0.75, Data.AngleModif + 45.0);
+				}
+				case 3:
+				{
+					LookAtLoc = vCreateDoGVectorMesh(Data.Loc, i, Sections, Radius * 0.5, Data.AngleModif + 90.0);
+				}
+				case 4:
+				{
+					LookAtLoc = vCreateDoGVectorMesh(Data.Loc, i, Sections, Radius * 0.5, Data.AngleModif * - 1.0 + 90.0);
+				}
+				case 5:
+				{
+					LookAtLoc = vCreateDoGVectorMesh(Data.Loc, i, Sections, Radius * Ratio, Data.AngleModif * - 1.0 + (90.0 * Ratio));
 				}
 				default:
 				{
@@ -1379,7 +1518,7 @@ static void DoG_PatternTick(DataPack IncomingData)
 		Data.SoundTimer = 0.0;
 
 		float recharge_speed = 2.0;
-		
+
 		Data.Recharge = GameTime + recharge_speed;
 
 		Data.cylce++;
@@ -1393,6 +1532,8 @@ static void DoG_PatternTick(DataPack IncomingData)
 		Projectile.bonus_dmg= 1.0;
 		Projectile.speed 	= 3000.0;
 		Projectile.visible 	= false;
+
+		npc.PlayCapperSound();
 
 		for(int i=0 ; i < Sections ; i++)
 		{
@@ -1435,16 +1576,22 @@ static void DoG_PatternTick(DataPack IncomingData)
 		int amt = 4;
 		float Loc[3];
 		Loc = vGetBestAverageWithinRadius(npc, Radius, amt);
-		
 
-		if(amt != -1)
-			Data.Loc = Loc;
+		Data.Loc = Loc;
+	
+		if(amt == -1)
+		{
+			delete Data.SectionData;
+			npc.m_flShipAbilityActive = GetGameTime(npc.index) + 1.0;
+			npc.m_flRevertControlOverride = GetGameTime(npc.index) + 1.0;
+			return;
+		}
 
 		float ThicknessRing = 30.0;
 		for(int i=0 ; i < 4 ; i++)
 		{
 			TE_SetupBeamRingPoint(Loc, Radius*2.0, Radius*2.0 - 1.0, g_Ruina_BEAM_Laser, 0, 0, 1, fl_Type1_CycleSpeed + recharge_speed, ThicknessRing, 0.1, Color, 1, 0);
-			TE_SendToAll(recharge_speed);
+			TE_SendToAll();
 			Loc[2]+=25.0;
 		}
 
@@ -1743,7 +1890,7 @@ static void LanceeWeaponTurnControl(int iNPC)
 	float WantedLoc[3];
 	RegaliaClass npc = view_as<RegaliaClass>(iNPC);
 
-	if(!npc.m_bVectoredThrust_InUse || !npc.m_bCutThrust)
+	if(!npc.m_bVectoredThrust_InUse && !npc.m_bCutThrust)
 		return;
 
 	if(npc.m_flLanceDuration != FAR_FUTURE)
@@ -1824,9 +1971,12 @@ static void HandleMainWeapons(RegaliaClass npc)
 	float GameTime = GetGameTime(npc.index);
 	if(!npc.bDoesSectionExist(StarShip_BG_ForwardLance))
 	{
-		if(npc.m_flLanceDuration == FAR_FUTURE && npc.m_flShipAbilityActive > GameTime)
+		if(npc.m_bPrimaryLancesActive)
 		{
+			npc.EndFlightSystemGoal(); 
+			npc.EndGenericLaserSound();
 			npc.m_flLanceDuration = 0.0;
+			npc.m_flShipAbilityActive = GameTime + 1.0;
 			npc.m_bPrimaryLancesActive = false;
 		}
 		return;
@@ -2231,4 +2381,21 @@ static void NPC_Death(int iNPC)
 	RegaliaClass npc = view_as<RegaliaClass>(iNPC);
 
 	npc.CleanEntities();
+}
+
+static float Get2DVectorLength(float Vec1[3], bool not_squared = false)
+{
+	float x = Vec1[0]*Vec1[0];
+	float y = Vec1[1]*Vec1[1];
+	return not_squared ? x+y : SquareRoot(x+y);
+}
+static float Get2DVectorDistances(float Vec1[3], float Vec2[3], bool not_squared = false)
+{
+	float x = Vec2[0] - Vec1[0];
+	float y = Vec2[1] - Vec1[1];
+
+	x = x * x;
+	y = y * y;
+
+	return not_squared ? x+y : SquareRoot(x+y);
 }

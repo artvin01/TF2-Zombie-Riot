@@ -6074,3 +6074,35 @@ public float GetDistanceToGround(float pos[3])
 #endif
 	return GetVectorDistance(pos, otherLoc);
 }
+stock int TrailAttach_Bone(int player, char[] attachBone, char[] trail, int alpha, float lifetime=1.0, float startwidth=22.0, float endwidth=0.0, int rendermode)
+{
+	int trailEntity = CreateEntityByName("env_spritetrail");
+	if (IsValidEntity(trailEntity))
+	{
+		char tName[32];
+		GetEntPropString(player, Prop_Data, "m_iName", tName, sizeof(tName));
+		DispatchKeyValue(trailEntity, "targetname", "rpg_fortress");
+		DispatchKeyValue(trailEntity, "parentname", tName);
+
+		char sTemp[5];
+		IntToString(alpha, sTemp, sizeof(sTemp));
+		DispatchKeyValue(trailEntity, "renderamt", sTemp);
+
+		DispatchKeyValueFloat(trailEntity, "lifetime", lifetime);
+		DispatchKeyValueFloat(trailEntity, "startwidth", startwidth);
+		DispatchKeyValueFloat(trailEntity, "endwidth", endwidth);
+		DispatchKeyValue(trailEntity, "spritename", trail);
+		IntToString(rendermode, sTemp, sizeof(sTemp));
+		DispatchKeyValue(trailEntity, "rendermode", sTemp);
+		DispatchSpawn(trailEntity);
+		
+		SetVariantString("!activator");
+		AcceptEntityInput(trailEntity, "SetParent", player, player, 0);
+		SetVariantString(attachBone);
+		AcceptEntityInput(trailEntity, "SetParentAttachment", trailEntity, trailEntity, 0);
+
+		return trailEntity;
+	}
+		
+	return -1;
+}
