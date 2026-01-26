@@ -367,7 +367,7 @@ methodmap RegaliaClass < CClotBody
 		//or if youre very cool, maybe use 
 		//SOLID_VPHYSICS		= 6,	// solid vphysics object, get vcollide from the model and collide with that
 		//but that requires modeling that crudely.
-		SetEntProp(npc.index, Prop_Data, "m_nSolidType", 4); 
+		//SetEntProp(npc.index, Prop_Data, "m_nSolidType", 4); 
 		
 		npc.CreateBody();
 		npc.ShieldState(false);
@@ -528,7 +528,7 @@ methodmap RegaliaClass < CClotBody
 	{
 		int current = GetEntProp(this.index, Prop_Data, "m_nBody");
 
-		return current & group;
+		return (current & group);
 	}
 	public float[] GetAngles()
 	{
@@ -1216,7 +1216,7 @@ enum struct Regalia_DoG_IonData {
 	float AngleModif;
 	float CycleSpeed;
 	float SoundTimer;
-	RegaliaIONSection SectionData[REGALIO_ION_SECTIONS];
+	ArrayList SectionData;
 }
 static void Invoke_RegaliaDoGPatterns(RegaliaClass npc, float Loc[3], float Duration, float Radius)
 {
@@ -1231,6 +1231,8 @@ static void Invoke_RegaliaDoGPatterns(RegaliaClass npc, float Loc[3], float Dura
 	Data.CycleSpeed		= GetGameTime() + fl_Type1_CycleSpeed;
 	Data.SoundTimer		= 0.0;
 	Data.Recharge 		= 0.0;
+
+	Data.SectionData	= new ArrayList(sizeof(RegaliaIONSection));
 
 	Loc[2]-=50.0;
 
@@ -1252,7 +1254,11 @@ static void DoG_PatternTick(DataPack IncomingData)
 	delete IncomingData;
 
 	if(!IsValidEntity(iNPC))
+	{
+		delete Data.SectionData;
 		return;
+	}
+		
 
 	float GameTime = GetGameTime();
 
@@ -1260,6 +1266,7 @@ static void DoG_PatternTick(DataPack IncomingData)
 
 	if(Duration < GameTime)
 	{
+		delete Data.SectionData;
 		return;
 	}
 
@@ -1344,19 +1351,25 @@ static void DoG_PatternTick(DataPack IncomingData)
 			MakeVectorFromPoints(OffsetLOC, LookAtLoc, AnglesToCore);
 			GetVectorAngles(AnglesToCore, AnglesToCore);
 
+			RegaliaIONSection Section;
+			Data.SectionData.GetArray(i, Section);
+
 			Ruina_Laser_Logic Laser;
 			if(trace_update)	//don't do a trace every tick. only once every 0.1s
 			{
 				Laser.DoForwardTrace_Custom(AnglesToCore, OffsetLOC, Radius);
-				Data.SectionData[i].Dist = GetVectorDistance(Laser.Start_Point, Laser.End_Point);
+				
+				Section.Dist = GetVectorDistance(Laser.Start_Point, Laser.End_Point);
 			}
 			else
 			{
 				Laser.Start_Point = OffsetLOC;
-				Get_Fake_Forward_Vec(Data.SectionData[i].Dist, AnglesToCore, Laser.End_Point, Laser.Start_Point);
+				Get_Fake_Forward_Vec(Section.Dist, AnglesToCore, Laser.End_Point, Laser.Start_Point);
 			}
-			Data.SectionData[i].Angles = AnglesToCore;
-			Data.SectionData[i].LastLoc = Laser.Start_Point;
+			Section.Angles = AnglesToCore;
+			Section.LastLoc = Laser.Start_Point;
+
+			Data.SectionData.SetArray(i, Section);
 			TE_SetupBeamPoints(Laser.Start_Point, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness, Thickness, 0, Amp, Color, 3);
 			TE_SendToAll();
 	
@@ -1388,8 +1401,11 @@ static void DoG_PatternTick(DataPack IncomingData)
 
 		for(int i=0 ; i < Sections ; i++)
 		{
-			Projectile.Start_Loc = Data.SectionData[i].LastLoc;
-			Projectile.Angles	 = Data.SectionData[i].Angles;
+			RegaliaIONSection Section;
+			Data.SectionData.GetArray(i, Section);
+
+			Projectile.Start_Loc = Section.LastLoc;
+			Projectile.Angles	 = Section.Angles;
 			
 			char Particle[50];
 			if(i % 2)
@@ -1397,7 +1413,9 @@ static void DoG_PatternTick(DataPack IncomingData)
 			else
 				Particle = "drg_manmelter_trail_red";
 
-			Projectile.Time 	= Data.SectionData[i].Dist / Projectile.speed;
+			
+
+			Projectile.Time 	= Section.Dist / Projectile.speed;
 
 			int projectile = Projectile.Launch_Projectile(Func_On_Proj_DoG_Patterns);
 
@@ -1729,7 +1747,7 @@ static void LanceeWeaponTurnControl(int iNPC)
 	float WantedLoc[3];
 	RegaliaClass npc = view_as<RegaliaClass>(iNPC);
 
-	if(!npc.m_bVectoredThrust_InUse || npc.m_bCutThrust)
+	if(!npc.m_bVectoredThrust_InUse || !npc.m_bCutThrust)
 		return;
 
 	if(npc.m_flLanceDuration != FAR_FUTURE)
