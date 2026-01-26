@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define STARSHIP_MODEL			"models/zombie_riot/starship_5.mdl"
+#define STARSHIP_MODEL			"models/zombie_riot/starship_7.mdl"
 
 static float fl_ShipAcceleration;
 static float fl_ShipDeceleration;
@@ -165,6 +165,7 @@ static const char g_ShieldDamageSound[][] = {
 	"physics/glass/glass_impact_bullet3.wav"
 };
 #define REGALIA_IOC_EXPLOSION_SOUND		"misc/halloween/spell_mirv_explode_primary.wav"
+#define REGALIA_PATTERNS_CHARGE_SOUND	"friends/friend_online.wav"
 
 enum 
 {
@@ -178,10 +179,20 @@ enum
 	StarShip_BG_BottomWeps	= 128,
 	StarShip_BG_Shield		= 256,
 }
+static const float fl_ShipRollClamps = 50.0;
 //todo: get vector points:
 /*
 	Center of arena.
 	Corners of arena top, bottom, etc.
+*/
+/*
+	//corners
+	setpos 4747.448730 2284.911865 -5419.261230;setang 11.383965 -45.166313 0.000000
+	setpos 7971.000488 -922.880737 -5372.954590;setang 16.773966 131.881714 0.000000
+	
+	//center.
+	setpos 5975.277344 880.963745 -5407.267578;setang 13.694007 123.874184 0.000000
+
 */
 static const float VaultVectorPoints[][3] = {
 	{0.0, 0.0, 0.0},
@@ -207,6 +218,7 @@ static void ClotPrecache()
 	PrecacheModel(STARSHIP_MODEL);
 	PrecacheSoundArray(g_ShieldDamageSound);
 	PrecacheSound(REGALIA_IOC_EXPLOSION_SOUND);
+	PrecacheSound(REGALIA_PATTERNS_CHARGE_SOUND);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
@@ -274,6 +286,11 @@ methodmap RegaliaClass < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][5]; 				}
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
 	}
+	property float m_flUnderSlung_Type1_Recharge
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; 				}
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
 	property float m_flShipAbilityActive
 	{
 		public get()							{ return fl_ruina_battery_timeout[this.index]; 				}
@@ -288,6 +305,16 @@ methodmap RegaliaClass < CClotBody
 	{
 		public get()							{ return fl_ThrowPlayerImmenent[this.index]; 				}
 		public set(float TempValueForProperty) 	{ fl_ThrowPlayerImmenent[this.index] = TempValueForProperty; }
+	}
+	property float m_flRevertControlOverride
+	{
+		public get()							{ return i_ClosestAllyCDTarget[this.index]; }
+		public set(float TempValueForProperty) 	{ i_ClosestAllyCDTarget[this.index] = TempValueForProperty; }
+	}
+	property float m_flCurrentRoll
+	{
+		public get()							{ return f_NemesisCauseInfectionBox[this.index]; }
+		public set(float TempValueForProperty) 	{ f_NemesisCauseInfectionBox[this.index] = TempValueForProperty; }
 	}
 	property bool m_bVectoredThrust
 	{
@@ -309,10 +336,10 @@ methodmap RegaliaClass < CClotBody
 		public get()							{ return b_new_target[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_new_target[this.index] = TempValueForProperty; }
 	}
-	property float m_flRevertControlOverride
+	property bool m_bCutThrust
 	{
-		public get()							{ return i_ClosestAllyCDTarget[this.index]; }
-		public set(float TempValueForProperty) 	{ i_ClosestAllyCDTarget[this.index] = TempValueForProperty; }
+		public get()							{ return b_FUCKYOU[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
 	}
 	public RegaliaClass(float vecPos[3], float vecAng[3], int team, const char[] data)
 	{
@@ -345,9 +372,9 @@ methodmap RegaliaClass < CClotBody
 		npc.CreateBody();
 		npc.ShieldState(false);
 		
-		npc.m_iBleedType 			= BLEEDTYPE_METAL;
-		//npc.m_iStepNoiseType 		= STEPSOUND_NORMAL;	
-		//npc.m_iNpcStepVariation 	= STEPTYPE_NORMAL;
+		npc.m_iBleedType 					= BLEEDTYPE_METAL;
+		//npc.m_iStepNoiseType 				= STEPSOUND_NORMAL;	
+		//npc.m_iNpcStepVariation 			= STEPTYPE_NORMAL;
 
 		func_NPCDeath[npc.index]			= NPC_Death;
 		func_NPCOnTakeDamage[npc.index] 	= OnTakeDamage;
@@ -362,6 +389,7 @@ methodmap RegaliaClass < CClotBody
 		fl_ShipHyperDecelerationSpeed = 5.0;
 		fl_ShipHyperDecelerationMax = 0.5;
 
+		npc.m_bCutThrust				= false;
 		npc.m_bShipFlightTowardsActive 	= false;
 		npc.m_bVectoredThrust 			= false;
 		npc.m_bVectoredThrust_InUse		= false;
@@ -398,6 +426,7 @@ methodmap RegaliaClass < CClotBody
 
 		npc.m_flDroneSpawnNext= GetRandomFloat(1.0, 3.0) + GetGameTime();
 		npc.m_flUnderSlung_Type0_Recharge = GetRandomFloat(1.0, 3.0) + GetGameTime();
+		npc.m_flUnderSlung_Type1_Recharge = GetRandomFloat(1.0, 3.0) + GetGameTime();
 		npc.m_flUnderSlung_PrimaryRecharge = 0.0;
 
 
@@ -413,7 +442,6 @@ methodmap RegaliaClass < CClotBody
 		b_NoKnockbackFromSources[npc.index] 	= true;
 		b_ThisNpcIsImmuneToNuke[npc.index] 		= true;
 		b_IgnoreAllCollisionNPC[npc.index]		= true;
-		//b_ForceCollisionWithProjectile[npc.index]=true;
 		npc.m_bDissapearOnDeath 				= true;
 
 
@@ -600,6 +628,7 @@ methodmap RegaliaClass < CClotBody
 			return;
 		}
 
+		this.m_bCutThrust					= false;
 		this.m_flRevertControlOverride		= FAR_FUTURE;
 		func_ShipTurn[this.index] 			= FuncTurn;
 		this.m_bShipFlightTowardsActive 	= true;
@@ -613,6 +642,7 @@ methodmap RegaliaClass < CClotBody
 		this.m_bVectoredThrust 				= false;
 		this.m_flShipAbilityActive 			= GetGameTime(this.index) + 1.0;
 		func_ShipTurn[this.index]			= INVALID_FUNCTION;
+		this.m_bCutThrust					= false;
 	}
 	public void HeadingControl()
 	{
@@ -651,6 +681,7 @@ methodmap RegaliaClass < CClotBody
 		else
 		{
 			WorldSpaceCenter(this.m_iTarget, TargetLoc);
+			TargetLoc[2]+=450.0;
 		}
 		
 		float Dist = GetVectorDistance(DroneLoc, TargetLoc, true); 
@@ -692,6 +723,7 @@ methodmap RegaliaClass < CClotBody
 			func_ShipTurn[this.index] 			= INVALID_FUNCTION;
 			fl_AbilityVectorData[this.index] 	= this.GetAngles();
 			this.m_bVectoredThrust				= false;
+			this.m_bCutThrust					= false;
 		}
 
 		if(func_ShipTurn[this.index] && func_ShipTurn[this.index] != INVALID_FUNCTION)
@@ -818,7 +850,7 @@ methodmap RegaliaClass < CClotBody
 		TurnRates[0] = Data.PitchRotateLeft;
 		TurnRates[1] = Data.YawRotateLeft;
 
-		float MaxSpeed = this.m_flSpeed;
+		float MaxSpeed = this.fGetBaseSpeed();
 		//we gotta turn ALOT, so slow down the this.index to make its turning circle smaller.
 
 		bool HyperDeccel = (Dist < HypeDecell_NearDist);
@@ -836,7 +868,7 @@ methodmap RegaliaClass < CClotBody
 			if(fabs(TurnRates[i]) > 45.0)
 				HyperDeccel = false;
 
-			if(fabs(TurnRates[i]) > 100.0 && this.m_flCurrentSpeed > this.m_flSpeed*0.5)
+			if(fabs(TurnRates[i]) > 100.0 && this.m_flCurrentSpeed > this.m_flSpeed * 0.5)
 				SubDeccel = true;
 		}
 		
@@ -860,7 +892,7 @@ methodmap RegaliaClass < CClotBody
 
 		Angles[2] = -1.0 * Data.YawRotateLeft;
 		
-		const float RotationClamp = 50.0;
+		float RotationClamp = fl_ShipRollClamps;
 
 		//clamp ship rotational angles
 		if(Angles[2] > RotationClamp)
@@ -868,10 +900,10 @@ methodmap RegaliaClass < CClotBody
 		else if(Angles[2] < -RotationClamp)
 			Angles[2] = -RotationClamp;
 
-		if(Vectored_Thrust && this.m_bShipFlightTowardsActive)
+		/*if(Vectored_Thrust && this.m_bShipFlightTowardsActive)
 		{
 
-			if(Dist < (50.0*50.0))
+			if(Dist < (125.0*125.0))
 			{
 				this.m_flCurrentSpeed = 0.0;
 				this.SetVelocity({0.0, 0.0, 0.0});
@@ -881,7 +913,7 @@ methodmap RegaliaClass < CClotBody
 			if(FlySpeed < 10.0)
 				FlySpeed = 10.0;
 
-		}
+		}*/
 
 		fVel[0] = fBuf[0]*FlySpeed;
 		fVel[1] = fBuf[1]*FlySpeed;
@@ -892,8 +924,47 @@ methodmap RegaliaClass < CClotBody
 
 		this.SetVelocity(fVel);
 	}
+	public float fGetBaseSpeed()
+	{
+		float speed = this.m_flSpeed;
+
+		if(this.m_bVectoredThrust_InUse)
+			speed *= 0.8;
+
+		if(this.m_bCutThrust)
+		{
+			speed = this.m_flCurrentSpeed - this.m_flDecceleration;
+		}
+
+		if(speed <= 0.0)
+			speed = 0.0;
+
+		return speed;
+	}
+	public void AdjustShipRoll(float Roll)
+	{
+		float RollChange 	= fabs(this.m_flCurrentRoll - Roll);
+		float RollSpeed		= this.m_flTurnSpeed;
+
+		if(RollChange > RollSpeed)
+		{
+			if(this.m_flCurrentRoll > Roll)
+				this.m_flCurrentRoll  -=RollSpeed;
+			else
+				this.m_flCurrentRoll  +=RollSpeed;
+		}
+		else
+		{
+			if(this.m_flCurrentRoll > Roll)
+				this.m_flCurrentRoll  -=RollChange;
+			else
+				this.m_flCurrentRoll  +=RollChange;
+		}
+	}
 	public void RotateShipModel(float Angles[3])
 	{
+		this.AdjustShipRoll(Angles[2]);
+		Angles[2] = this.m_flCurrentRoll;
 		fl_AbilityVectorData_3[this.index] = Angles;
 		SDKCall_SetLocalAngles(this.index, Angles);	
 		//TeleportEntity(this.index, NULL_VECTOR, Angles);
@@ -908,7 +979,7 @@ methodmap RegaliaClass < CClotBody
 			if(FlySpeed+Acceleration < MaxSpeed)
 				FlySpeed+=Acceleration;
 			else {
-				if(MaxSpeed == this.m_flSpeed)
+				if(MaxSpeed == this.fGetBaseSpeed())
 					FlySpeed = MaxSpeed;
 			}
 		}
@@ -916,8 +987,8 @@ methodmap RegaliaClass < CClotBody
 		//we too fast
 		if(FlySpeed > MaxSpeed || DoNotAccel) {
 			//we faster the base speed. force set
-			if(FlySpeed > this.m_flSpeed) {
-				FlySpeed = this.m_flSpeed;
+			if(FlySpeed > this.fGetBaseSpeed()) {
+				FlySpeed = this.fGetBaseSpeed();
 			}
 			else {
 				//we faster then the max speed assigned due to rotational difference, apply gradual Deceleration and not instant.
@@ -1028,12 +1099,11 @@ static void ClotThink(int iNPC)
 
 	
 }
+static float fl_Type1_CycleSpeed;
 static void HandleUnderSlungWeapons(RegaliaClass npc)
 {
 	if(!npc.bDoesSectionExist(StarShip_BG_BottomWeps))
 		return;
-
-	int type = 0;
 
 	float GameTime = GetGameTime(npc.index);
 
@@ -1042,60 +1112,370 @@ static void HandleUnderSlungWeapons(RegaliaClass npc)
 
 	//CPrintToChatAll("POST npc.m_flShipAbilityActive: %.3f", npc.m_flShipAbilityActive - GameTime);
 	
-	bool Done = false;
-	while(!Done && type <= 4)
+
+	if(npc.m_flUnderSlung_Type0_Recharge < GameTime)
 	{
-		switch(type)
+
+		/*
+		Type 1:
+			Conditions To Enter: Avg Vec point must have atleast X players before commiting
+
+			-Get average highest players concentration in a circle.
+			-Create IOC.
+			-IOC Draw points originate from underslung weapon ports.
+			-While IOC is charging. ship speed slowed. and forced to look towards the IOC end point.
+			-IOC spins.
+		*/
+
+		float radius = 500.0;
+		int amt = 4;
+		float Loc[3];
+		Loc = vGetBestAverageWithinRadius(npc, radius, amt);
+
+		const float DetTime = 5.0;
+		
+		if(amt != -1)
 		{
-			case 0:
-			{
-				if(npc.m_flUnderSlung_Type0_Recharge > GameTime)
-				{
-					type++;
-					continue;
-				}
-				/*
-				Type 1:
-					Conditions To Enter: Avg Vec point must have atleast X players before commiting
+			f3_LastValidPosition[npc.index] 	= Loc;
+			npc.m_flUnderSlung_Type0_Recharge 	= GameTime + 90.0;
+			npc.m_flUnderSlung_PrimaryRecharge 	= GameTime + DetTime + 2.5;
+			npc.m_flShipAbilityActive			= GameTime + DetTime + 1.0;
+			npc.m_bVectoredThrust 				= true;
+			func_ShipTurn[npc.index] 			= IOC_TurnControl;
+			npc.m_flRevertControlOverride		= npc.m_flShipAbilityActive - 1.0;
+			npc.m_bCutThrust					= true;
 
-					-Get average highest players concentration in a circle.
-					-Create IOC.
-					-IOC Draw points originate from underslung weapon ports.
-					-While IOC is charging. ship speed slowed. and forced to look towards the IOC end point.
-					-IOC spins.
-				*/
-
-				float radius = 500.0;
-				int amt = 4;
-
-				float Loc[3];
-				Loc = vGetBestAverageWithinRadius(npc, radius, amt);
-
-				const float DetTime = 5.0;
-				
-				if(amt != -1)
-				{
-					f3_LastValidPosition[npc.index] 	= Loc;
-					npc.m_flUnderSlung_Type0_Recharge 	= GameTime + 15.0;
-					npc.m_flUnderSlung_PrimaryRecharge 	= npc.m_flUnderSlung_Type0_Recharge + 5.0;
-					npc.m_flShipAbilityActive			= GameTime + DetTime + 1.0;
-					npc.m_bVectoredThrust 				= true;
-					func_ShipTurn[npc.index] 			= IOC_TurnControl;
-					npc.m_flRevertControlOverride		= npc.m_flShipAbilityActive - 1.0;
-
-					Invoke_RegaliaIOC(npc, Loc, DetTime);
-				}
-				return;
-			}
-			default:
-			{
-				if(npc.m_flUnderSlung_PrimaryRecharge < GameTime + 1.0)
-					npc.m_flUnderSlung_PrimaryRecharge = GameTime + 1.0;
-				return;
-			}
+			Invoke_RegaliaIOC(npc, Loc, DetTime);
+			return;
 		}
-		type++;
 	}
+	if(npc.m_flUnderSlung_Type1_Recharge < GameTime)
+	{
+		/*
+			Type 2:
+			Conditions To Enter: Avg Vec point must have atleast X players before commiting
+
+			-Get average highest players concentration in a circle.
+			-Create delayed X lasers pattern barrages.
+
+			-When creating a laser pattern. use underslung weapons to create a line from beam to start point.
+		*/
+
+		float radius = 500.0;
+		int amt = 4;
+		float Loc[3];
+		Loc = vGetBestAverageWithinRadius(npc, radius, amt);
+
+		if(amt != -1)
+		{
+			fl_Type1_CycleSpeed = 2.5;
+		
+			const float Duration = 21.0;
+			const float Recharge = 120.0;
+
+			f3_LastValidPosition[npc.index] 	= Loc;
+			npc.m_flUnderSlung_Type1_Recharge 	= GameTime + Recharge;
+			npc.m_flUnderSlung_PrimaryRecharge 	= GameTime + Duration + 2.5;
+			npc.m_flShipAbilityActive			= GameTime + Duration + 1.0;
+			npc.m_bVectoredThrust 				= true;
+			func_ShipTurn[npc.index] 			= IOC_TurnControl;
+			npc.m_flRevertControlOverride		= npc.m_flShipAbilityActive - 1.0;
+			npc.m_bCutThrust					= true;
+
+			Invoke_RegaliaDoGPatterns(npc, Loc, Duration, radius);
+
+			float Thickness = 30.0;
+			int color[4] = {255, 255, 255, 255};
+			for(int i=0 ; i < 4 ; i++)
+			{
+				TE_SetupBeamRingPoint(Loc, radius*2.0, radius*2.0 - 1.0, g_Ruina_BEAM_Laser, 0, 0, 1, fl_Type1_CycleSpeed, Thickness, 0.1, color, 1, 0);
+				TE_SendToAll();
+				Loc[2]+=25.0;
+			}
+			return;
+		}
+	}
+
+	if(npc.m_flUnderSlung_PrimaryRecharge < GameTime + 1.0)
+		npc.m_flUnderSlung_PrimaryRecharge = GameTime + 1.0;
+				
+}
+#define REGALIO_ION_SECTIONS	8
+enum struct RegaliaIONSection {
+	float Dist;
+	float Angles[3];
+	float LastLoc[3];
+}
+enum struct Regalia_DoG_IonData {
+	int iNPC;
+	float Loc[3];
+	float Duration;
+	float Recharge;
+	float Radius;
+	int cylce;
+	float AngleModif;
+	float CycleSpeed;
+	float SoundTimer;
+	RegaliaIONSection SectionData[REGALIO_ION_SECTIONS];
+}
+static void Invoke_RegaliaDoGPatterns(RegaliaClass npc, float Loc[3], float Duration, float Radius)
+{
+	Loc[2]+=50.0;
+	Regalia_DoG_IonData Data;
+	Data.iNPC			= EntIndexToEntRef(npc.index);
+	Data.Loc			= Loc;
+	Data.Duration		= GetGameTime() + Duration;
+	Data.Radius			= Radius;
+	Data.cylce			= 0;
+	Data.AngleModif		= GetRandomFloat(0.0, 360.0);
+	Data.CycleSpeed		= GetGameTime() + fl_Type1_CycleSpeed;
+	Data.SoundTimer		= 0.0;
+	Data.Recharge 		= 0.0;
+
+	Loc[2]-=50.0;
+
+	DataPack Pack = new DataPack();
+	Pack.WriteCellArray(Data, sizeof(Data));
+
+	RequestFrames(DoG_PatternTick, 1, Pack);
+}
+static void DoG_PatternTick(DataPack IncomingData)
+{
+	IncomingData.Reset();
+	Regalia_DoG_IonData Data;
+	IncomingData.ReadCellArray(Data, sizeof(Data));
+
+	int iNPC 		= EntRefToEntIndex(Data.iNPC);
+	float Duration 	= Data.Duration;
+	float Radius 	= Data.Radius;
+
+	delete IncomingData;
+
+	if(!IsValidEntity(iNPC))
+		return;
+
+	float GameTime = GetGameTime();
+
+	RegaliaClass npc = view_as<RegaliaClass>(iNPC);
+
+	if(Duration < GameTime)
+	{
+		return;
+	}
+
+	float BaseChargeTime = fl_Type1_CycleSpeed;
+
+	float SectionLoc[4][3];
+	static const char ShipWeaponsSections[][] = {
+		"underside_weapons_left_outer",
+		"underside_weapons_left_inner",
+		"underside_weapons_right_outer",
+		"underside_weapons_right_inner"
+	};
+
+	for(int i=0 ; i < 4 ; i++)
+	{
+		SectionLoc[i] = npc.GetWeaponSections(ShipWeaponsSections[i]);
+	}
+
+	int Sections = REGALIO_ION_SECTIONS;
+
+	int Color[4] = {255, 255, 255, 255};
+
+	const float Thickness = 18.0;
+	const float TE_Duration = 0.1;
+	const float Amp = 0.1;
+
+	if(Data.Recharge > GameTime)
+	{
+		DataPack Pack = new DataPack();
+		Pack.WriteCellArray(Data, sizeof(Data));
+		RequestFrames(DoG_PatternTick, 11, Pack);
+		return;
+	}
+
+	Data.AngleModif+=1.0;
+	
+	if(Data.AngleModif > 360.0)
+		Data.AngleModif -= 360.0;
+
+	if(Data.CycleSpeed > GameTime)
+	{
+		float Ratio = (Data.CycleSpeed - GameTime) / BaseChargeTime;
+
+		bool trace_update = false;
+		if(Data.SoundTimer < GameTime)
+		{
+			EmitSoundToAll(REGALIA_PATTERNS_CHARGE_SOUND, _, _, BOSS_ZOMBIE_SOUNDLEVEL, _, 1.0, RoundFloat(Ratio * 80.0) + 50);
+			Data.SoundTimer = GameTime + 0.1;
+			trace_update = true;
+		}
+		
+		const float height =  1500.0;	//1500
+
+		for(int i=0 ; i < Sections ; i++)
+		{
+			float OffsetLOC[3]; OffsetLOC = vCreateDoGVectorMesh(Data.Loc, i, Sections, Radius, Data.AngleModif);
+
+			float LookAtLoc[3];
+
+			switch(Data.cylce)
+			{
+				case 0:
+				{
+					LookAtLoc = Data.Loc;
+				}
+				case 1:
+				{
+					LookAtLoc = vCreateDoGVectorMesh(Data.Loc, i, Sections, Radius * 0.2, Data.AngleModif);
+					
+				}
+				case 2:
+				{
+					LookAtLoc = vCreateDoGVectorMesh(Data.Loc, i, Sections, Radius * 0.75, Data.AngleModif);
+				}
+				default:
+				{
+					Data.cylce  = 0;
+				}
+			}
+
+			float AnglesToCore[3];
+			MakeVectorFromPoints(OffsetLOC, LookAtLoc, AnglesToCore);
+			GetVectorAngles(AnglesToCore, AnglesToCore);
+
+			Ruina_Laser_Logic Laser;
+			if(trace_update)	//don't do a trace every tick. only once every 0.1s
+			{
+				Laser.DoForwardTrace_Custom(AnglesToCore, OffsetLOC, Radius);
+				Data.SectionData[i].Dist = GetVectorDistance(Laser.Start_Point, Laser.End_Point);
+			}
+			else
+			{
+				Laser.Start_Point = OffsetLOC;
+				Get_Fake_Forward_Vec(Data.SectionData[i].Dist, AnglesToCore, Laser.End_Point, Laser.Start_Point);
+			}
+			Data.SectionData[i].Angles = AnglesToCore;
+			Data.SectionData[i].LastLoc = Laser.Start_Point;
+			TE_SetupBeamPoints(Laser.Start_Point, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness, Thickness, 0, Amp, Color, 3);
+			TE_SendToAll();
+	
+			TE_SetupBeamPoints(OffsetLOC, SectionLoc[i / 2], g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness*0.25, Thickness*0.25, 0, Amp, Color, 3);
+			TE_SendToAll();
+		}
+	}
+	else	//FIRE!
+	{
+		Data.SoundTimer = 0.0;
+
+		float recharge_speed = 2.0;
+
+		
+
+		Data.Recharge = GameTime + recharge_speed;
+
+		Data.cylce++;
+		Data.CycleSpeed = GameTime + BaseChargeTime + recharge_speed;
+
+		Ruina_Projectiles Projectile;
+		Projectile.iNPC = npc.index;
+		
+		//Projectile.radius = 0.0;
+		Projectile.damage 	= ModifyDamage(100.0);
+		Projectile.bonus_dmg= 1.0;
+		Projectile.speed 	= 3000.0;
+		Projectile.visible 	= false;
+
+		for(int i=0 ; i < Sections ; i++)
+		{
+			Projectile.Start_Loc = Data.SectionData[i].LastLoc;
+			Projectile.Angles	 = Data.SectionData[i].Angles;
+			
+			char Particle[50];
+			if(i % 2)
+				Particle = "drg_manmelter_trail_blue";
+			else
+				Particle = "drg_manmelter_trail_red";
+
+			Projectile.Time 	= Data.SectionData[i].Dist / Projectile.speed;
+
+			int projectile = Projectile.Launch_Projectile(Func_On_Proj_DoG_Patterns);
+
+			if(!IsValidEntity(projectile))
+				continue;
+
+			//SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
+
+			MakeObjectIntangeable(projectile);
+			Projectile.Apply_Particle(Particle);
+
+			TE_SetupBeamPoints(Projectile.Start_Loc, SectionLoc[i / 2], g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration*2.0, Thickness, Thickness, 0, Amp*2.0, Color, 3);
+			TE_SendToAll();
+		}
+
+		if(Duration - GameTime < recharge_speed)
+			return;
+
+		Data.AngleModif	= GetRandomFloat(0.0, 360.0);
+
+		int amt = 4;
+		float Loc[3];
+		Loc = vGetBestAverageWithinRadius(npc, Radius, amt);
+		
+
+		if(amt != -1)
+			Data.Loc = Loc;
+
+		float ThicknessRing = 30.0;
+		for(int i=0 ; i < 4 ; i++)
+		{
+			TE_SetupBeamRingPoint(Loc, Radius*2.0, Radius*2.0 - 1.0, g_Ruina_BEAM_Laser, 0, 0, 1, fl_Type1_CycleSpeed + recharge_speed, ThicknessRing, 0.1, Color, 1, 0);
+			TE_SendToAll(recharge_speed);
+			Loc[2]+=25.0;
+		}
+
+		Data.Loc[2]+=50.0;
+	}
+
+	DataPack Pack = new DataPack();
+	Pack.WriteCellArray(Data, sizeof(Data));
+	RequestFrames(DoG_PatternTick, 1, Pack);
+}
+static void Func_On_Proj_DoG_Patterns(int entity, int other)
+{
+	if(other <= 0)
+	{
+		return;
+	}
+
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+	{
+		Ruina_Remove_Projectile(entity);
+		return;
+	}
+
+	if(IsIn_HitDetectionCooldown(entity,other))
+		return;
+			
+	Set_HitDetectionCooldown(entity, other, GetGameTime() + 0.25);	//if they walk backwards, its likely to hit them 2 times, but who on earth would willingly walk backwards/alongside the trajectory of the projectile
+
+	float ProjectileLoc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+
+	float dmg = fl_ruina_Projectile_dmg[entity];
+
+	if(ShouldNpcDealBonusDamage(other))
+		dmg *= fl_ruina_Projectile_bonus_dmg[entity];
+
+	SDKHooks_TakeDamage(other, entity, entity, dmg, DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE, _, ProjectileLoc); 
+}
+static float[] vCreateDoGVectorMesh(float Core[3], int section, int max_sections, float radius, float modif)
+{
+	float Angles[3]; Angles[1] = (360.0 / max_sections) * section + modif;
+	float OffsetLoc[3];
+	Get_Fake_Forward_Vec(radius, Angles, OffsetLoc, Core);
+	return OffsetLoc;
 }
 static void IOC_TurnControl(int iNPC)
 {
@@ -1112,7 +1492,7 @@ static void IOC_TurnControl(int iNPC)
 	//TE_SendToAll();
 
 	Angles[2] = -1.0 * Data.YawRotateLeft;
-	const float RotationClamp = 50.0;
+	float RotationClamp = fl_ShipRollClamps;
 	const float PitchClamp = 15.0;
 	//clamp ship pitch angles
 	if(Angles[0] > PitchClamp)
@@ -1321,9 +1701,8 @@ static void HandleDroneSystem(RegaliaClass npc)
 }
 static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
 {
-	int Drone = NPC_CreateByName("npc_lantean_drone_projectile", npc.index, Loc, Angles, GetTeam(npc.index), "blue;");
-
-	int health = 100;
+	int Drone = NPC_CreateByName("npc_lantean_drone_projectile", npc.index, Loc, Angles, GetTeam(npc.index), "blue;raidmodescaling_damage");
+	int health = 5000;
 	if(Drone > MaxClients)
 	{
 		SetEntProp(Drone, Prop_Data, "m_iHealth", health);
@@ -1350,7 +1729,7 @@ static void LanceeWeaponTurnControl(int iNPC)
 	float WantedLoc[3];
 	RegaliaClass npc = view_as<RegaliaClass>(iNPC);
 
-	if(!npc.m_bVectoredThrust_InUse)
+	if(!npc.m_bVectoredThrust_InUse || npc.m_bCutThrust)
 		return;
 
 	if(npc.m_flLanceDuration != FAR_FUTURE)
@@ -1398,6 +1777,9 @@ static void LanceeWeaponTurnControl(int iNPC)
 
 			TE_SetupBeamPoints(End, FinalLoc, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Start_Thickness, End_Thickness, 0, Amp, color, 3);
 			TE_SendToAll();
+
+			TE_SetupBeamPoints(End, FinalLoc, g_Ruina_BEAM_lightning, 0, 0, 0, TE_Duration, GetRandomFloat(Start_Thickness *0.5, Start_Thickness * 1.5), GetRandomFloat(End_Thickness *0.5, End_Thickness * 1.5), 0, GetRandomFloat(0.25, 1.0), color, 3);
+			TE_SendToAll();
 		}
 	}
 	else
@@ -1412,7 +1794,7 @@ static void LanceeWeaponTurnControl(int iNPC)
 
 	Angles[2] = -1.0 * Data.YawRotateLeft;
 		
-	const float RotationClamp = 50.0;
+	float RotationClamp = fl_ShipRollClamps;
 
 	//clamp ship rotational angles
 	if(Angles[2] > RotationClamp)
@@ -1473,7 +1855,11 @@ static void HandleMainWeapons(RegaliaClass npc)
 			float Angles[3]; Angles = fl_AbilityVectorData_2[npc.index];
 			Angles[1] += GetRandomInt(0, 1) == 0 ? 90.0 : -90.0;
 			Angles[0] = -30.0;
-			Get_Fake_Forward_Vec(fl_PrimaryLanceTravelDist*3.0, Angles, WantedLoc, GoalVec);
+			Ruina_Laser_Logic Laser;
+			Laser.client = npc.index;
+			Laser.DoForwardTrace_Custom(Angles, GoalVec, fl_PrimaryLanceTravelDist*3.0 + 300.0);
+
+			Get_Fake_Forward_Vec(-300.0, Angles, WantedLoc, Laser.End_Point);
 
 			//TE_SetupBeamPoints(GoalVec, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 10.0, 60.0, 60.0, 0, 0.25, {255, 255, 255, 255}, 3);
 			//TE_SendToAll();
@@ -1499,6 +1885,7 @@ static void HandleMainWeapons(RegaliaClass npc)
 
 			if(npc.bIsShipFacingLoc(Origin, WantedLoc, 10.0, 10.0))
 			{
+				npc.m_bCutThrust = true;
 				npc.m_flLanceDuration = GameTime + fl_PrimaryLanceDuration_Base;
 				npc.m_flShipAbilityActive = GameTime + fl_PrimaryLanceDuration_Base + 1.0;
 				npc.m_flLanceRecharge = FAR_FUTURE;
@@ -1574,6 +1961,8 @@ static void HandleMainWeapons(RegaliaClass npc)
 		Laser.Deal_Damage();
 
 		TE_SetupBeamPoints(End, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Start_Thickness, End_Thickness, 0, Amp, color, 3);
+		TE_SendToAll();
+		TE_SetupBeamPoints(End,  Laser.End_Point, g_Ruina_BEAM_lightning, 0, 0, 0, TE_Duration, GetRandomFloat(Start_Thickness *0.5, Start_Thickness * 1.5), GetRandomFloat(End_Thickness *0.5, End_Thickness * 1.5), 0, GetRandomFloat(0.25, 1.0), color, 3);
 		TE_SendToAll();
 
 		if(i)

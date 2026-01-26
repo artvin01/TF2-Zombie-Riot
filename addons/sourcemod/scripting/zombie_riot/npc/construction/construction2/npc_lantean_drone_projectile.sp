@@ -75,6 +75,8 @@ methodmap LanteanProjectile < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
 
+		npc.m_bNoKillFeed = true;
+
 		if(GetTeam(client) == team)
 			npc.m_iAttacker = client;
 		else
