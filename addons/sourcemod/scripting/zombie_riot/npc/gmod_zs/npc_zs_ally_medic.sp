@@ -234,7 +234,7 @@ static void Allymedic_ClotThink(int iNPC)
 					npc.StartPathing();
 					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_RUN_SECONDARY");
-					npc.m_flSpeed = 320.0;
+					npc.m_flSpeed = 400.0;
 					npc.m_iChanged_WalkCycle = 0;
 				}
 				if(flDistanceToTarget < npc.GetLeadRadius())
