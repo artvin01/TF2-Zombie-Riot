@@ -64,7 +64,6 @@ static int i_lunar_entities[MAXENTITIES][3];
 #define TWIRL_TE_DURATION 0.1
 //#define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/ruler_of_ruina_decends.mp3", now used for wave 15, deivid cant decide 
 #define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/twirl_theme_new.mp3"
-static float fl_player_weapon_score[MAXPLAYERS];
 static float fl_next_textline;
 static float fl_raidmode_freeze;
 static float fl_npc_basespeed;

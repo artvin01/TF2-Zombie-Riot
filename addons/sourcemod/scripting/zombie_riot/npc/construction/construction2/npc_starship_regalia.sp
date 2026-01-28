@@ -334,6 +334,11 @@ methodmap RegaliaClass < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][7]; 				}
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
 	}
+	property float m_flUnderSlung_Type2_Recharge
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][8]; 				}
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
+	}
 	property float m_flShipAbilityActive
 	{
 		public get()							{ return fl_ruina_battery_timeout[this.index]; 				}
@@ -477,6 +482,7 @@ methodmap RegaliaClass < CClotBody
 		//under slungs
 		npc.m_flUnderSlung_Type0_Recharge 	= GetRandomFloat(30.0, 45.0) 	+ GetGameTime();
 		npc.m_flUnderSlung_Type1_Recharge	= GetRandomFloat(30.0, 60.0) 	+ GetGameTime();
+		npc.m_flUnderSlung_Type2_Recharge	= GetRandomFloat(1.0, 30.0)		+ GetGameTime();
 		npc.m_flUnderSlung_PrimaryRecharge = 0.0;
 
 		//core deco weapons
@@ -501,6 +507,8 @@ methodmap RegaliaClass < CClotBody
 
 
 		npc.Handle_SectionParticles();
+
+		Zero(fl_player_weapon_score);
 		
 		return npc;
 	}
@@ -1265,7 +1273,6 @@ static void Handle_SpiralGlaive(RegaliaClass npc)
 
 	if(Found)
 	{
-
 		float VaultLoc[3]; GetAbsOrigin(vault_core, VaultLoc);
 		float Dist = Get2DVectorDistances(ShipLoc, VaultLoc, true);
 
@@ -1274,7 +1281,6 @@ static void Handle_SpiralGlaive(RegaliaClass npc)
 
 		if(Dist > (1500.0 * 1500.0))
 			return;
-
 	}
 	else
 	{
@@ -1534,10 +1540,211 @@ static void HandleUnderSlungWeapons(RegaliaClass npc)
 			return;
 		}
 	}
+	if(npc.m_flUnderSlung_Type2_Recharge < GameTime)
+	{
+		npc.m_flUnderSlung_Type2_Recharge = GameTime + 5.0;
+
+		float Windup = 5.0;
+
+		if(Invoke_RegaliaAnnihilateTarget(npc, Windup))
+		{
+			npc.m_flUnderSlung_Type2_Recharge = GameTime + 60.0;
+
+			npc.m_flUnderSlung_PrimaryRecharge 	= GameTime + Windup + 2.5;
+			npc.m_flShipAbilityActive			= GameTime + Windup + 0.5;
+			npc.m_bVectoredThrust 				= true;
+			func_ShipTurn[npc.index] 			= IOC_TurnControl;
+			npc.m_flRevertControlOverride		= GameTime + Windup + 0.5;
+			npc.m_bCutThrust					= true;
+		}
+	}
 
 	if(npc.m_flUnderSlung_PrimaryRecharge < GameTime + 1.0)
 		npc.m_flUnderSlung_PrimaryRecharge = GameTime + 1.0;
 				
+}
+enum struct RegaliaAnnihilateTarget_Data {
+	int iNPC;
+	int Victim;
+
+	float Windup;
+	float Windup_Base;
+
+	float CuttoffAt;
+	float LastLoc[3];
+
+	float AngleModif;
+
+}
+static bool Invoke_RegaliaAnnihilateTarget(RegaliaClass npc, float Windup)
+{
+	int count = CountPlayersOnRed(2);
+
+	if(count <= 4)
+		return false;
+	
+	float RatioRequired = 0.15;
+	int highest = 0; 
+	for(int client = 1 ; client <= MaxClients ; client++)
+	{
+		if(fl_player_weapon_score[client] <= 0.0)
+			continue;
+			
+		if(fl_player_weapon_score[client] > fl_player_weapon_score[highest])
+			highest = client;
+	}
+
+	if(highest == 0)
+		return false;
+
+	int MaxHealth = SDKCall_GetMaxHealth(npc.index);
+
+	float Damage_Dealt = fl_player_weapon_score[highest] / MaxHealth;
+
+	if(Damage_Dealt < RatioRequired)
+		return false;
+
+	fl_player_weapon_score[highest] = 0.0;
+
+	GetAbsOrigin(highest, f3_LastValidPosition[npc.index]);
+
+	RegaliaAnnihilateTarget_Data Data;
+	Data.iNPC 		= EntIndexToEntRef(npc.index);
+	Data.Victim 	= EntIndexToEntRef(highest);							//target to annihilate
+	Data.CuttoffAt 	= GetGameTime(npc.index) + Windup - 1.0;
+	Data.Windup_Base= Windup;
+	Data.Windup 	= GetGameTime(npc.index) + Data.Windup_Base;
+	Data.LastLoc 	= f3_LastValidPosition[npc.index];
+	Data.AngleModif = GetRandomFloat(0.0, 360.0);
+
+	DataPack Pack = new DataPack();
+	Pack.WriteCellArray(Data, sizeof(Data));
+
+	RequestFrames(Regalia_AnnihilateTarget_Tick, 1, Pack);
+
+	return true;
+}
+static int i_who_to_kill;
+static void Regalia_AnnihilateTarget_Tick(DataPack IncomingData)
+{
+	IncomingData.Reset();
+	RegaliaAnnihilateTarget_Data Data;
+	IncomingData.ReadCellArray(Data, sizeof(Data));
+
+	int iNPC 		= EntRefToEntIndex(Data.iNPC);
+	int target 		= EntRefToEntIndex(Data.Victim);
+
+	delete IncomingData;
+
+	if(!IsValidEntity(iNPC))
+	{
+		return;
+	}
+
+	RegaliaClass npc = view_as<RegaliaClass>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
+	if(!IsValidClient(target) || TeutonType[target] != TEUTON_NONE)
+	{
+		npc.m_flUnderSlung_PrimaryRecharge 	= GameTime + 1.0;
+		npc.m_flShipAbilityActive			= GameTime + 1.0;
+		npc.m_flRevertControlOverride		= GameTime + 1.0;
+	}
+
+	float Ratio = (Data.Windup - GameTime) / Data.Windup_Base;
+
+	if(Data.CuttoffAt > GameTime)
+	{
+		GetAbsOrigin(target, f3_LastValidPosition[npc.index]);
+	}
+
+	Data.LastLoc = f3_LastValidPosition[npc.index];
+	const float radius = 300.0;
+
+
+	Data.AngleModif += 5.0*Ratio;
+
+	if(Data.AngleModif > 360.0)
+		Data.AngleModif -= 360.0;
+
+	const float Thickness = 25.0;
+	const float TE_Duration = 0.1;
+	const float Amp = 0.1;
+	int color[4] = {255, 255, 255, 255};
+	color = iRegaliaColor(npc);
+	const float height =  1500.0;	//1500
+	const int Sections = 8;
+
+	float SectionLoc[4][3];
+	static const char ShipWeaponsSections[][] = {
+		"underside_weapons_left_outer",
+		"underside_weapons_left_inner",
+		"underside_weapons_right_outer",
+		"underside_weapons_right_inner"
+	};
+
+	for(int i=0 ; i < 4 ; i++)
+	{
+		SectionLoc[i] = npc.GetWeaponSections(ShipWeaponsSections[i]);
+	}
+
+	TE_SetupBeamRingPoint(Data.LastLoc, radius*2.0, radius*2.0 - 1.0, g_Ruina_BEAM_Combine_Black, 0, 0, 1, TE_Duration, Thickness, Amp, {255, 255, 255, 255}, 1, 0);
+	TE_SendToAll();
+
+	if(Data.Windup < GameTime)
+	{	
+		i_who_to_kill = target;
+		Explode_Logic_Custom(0.0, npc.index, npc.index, -1, Data.LastLoc, radius,_,_, true, _, _, _, Regalia_Annihilate_IonHitPre);
+
+		for(int z=1 ; z <= 3 ; z++)
+		{
+			for(int i=0 ; i < Sections ; i++)
+			{
+				float OffsetLoc[3]; OffsetLoc = vCreateDoGVectorMesh(Data.LastLoc, i, Sections, (radius / 3.0) * z, Data.AngleModif);
+
+				float SkyLoc[3]; SkyLoc = OffsetLoc; SkyLoc[2]+=height;
+
+				TE_SetupBeamPoints(OffsetLoc, SkyLoc, g_Ruina_BEAM_Combine_Black, 0, 0, 0, (3.0 - (0.5*z)), Thickness, Thickness, 0, Amp, {255, 255, 255, 255}, 3);
+				TE_SendToAll();
+			}
+		}
+
+		return;
+	}
+	else
+	{
+
+		for(int i=0 ; i < Sections ; i++)
+		{
+			float OffsetLoc[3]; OffsetLoc = vCreateDoGVectorMesh(Data.LastLoc, i, Sections, radius * Ratio, Data.AngleModif);
+
+			float SkyLoc[3]; SkyLoc = OffsetLoc; SkyLoc[2]+=height;
+
+			TE_SetupBeamPoints(OffsetLoc, SkyLoc, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness, Thickness, 0, Amp, color, 3);
+			TE_SendToAll();
+
+			TE_SetupBeamPoints(OffsetLoc, SectionLoc[i / 2], g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness*0.5, Thickness*0.5, 0, Amp, color, 3);
+			TE_SendToAll();
+		}
+		
+	}
+
+
+	DataPack Pack = new DataPack();
+	Pack.WriteCellArray(Data, sizeof(Data));
+
+	RequestFrames(Regalia_AnnihilateTarget_Tick, 1, Pack);
+}
+static void Regalia_Annihilate_IonHitPre(int entity, int victim, float damage, int weapon)
+{
+	if(victim == i_who_to_kill)
+	{
+		SDKHooks_TakeDamage(victim, entity, entity, ModifyDamage(150.0), DMG_TRUEDAMAGE|DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE, _, f3_LastValidPosition[entity]); 
+	}
+	else
+	{
+		SDKHooks_TakeDamage(victim, entity, entity, ModifyDamage(75.0), DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE, _, f3_LastValidPosition[entity]); 
+	}
 }
 enum struct RegaliaIONSection {
 	float Dist;
@@ -1676,7 +1883,7 @@ static void DoG_PatternTick(DataPack IncomingData)
 
 		for(int i=0 ; i < Sections ; i++)
 		{
-			float OffsetLOC[3]; OffsetLOC = vCreateDoGVectorMesh(Data.Loc, i, Sections, Radius, Data.AngleModif);
+			float OffsetLoc[3]; OffsetLoc = vCreateDoGVectorMesh(Data.Loc, i, Sections, Radius, Data.AngleModif);
 
 			float LookAtLoc[3];
 
@@ -1713,7 +1920,7 @@ static void DoG_PatternTick(DataPack IncomingData)
 			}
 
 			float AnglesToCore[3];
-			MakeVectorFromPoints(OffsetLOC, LookAtLoc, AnglesToCore);
+			MakeVectorFromPoints(OffsetLoc, LookAtLoc, AnglesToCore);
 			GetVectorAngles(AnglesToCore, AnglesToCore);
 
 			RegaliaIONSection Section;
@@ -1722,13 +1929,13 @@ static void DoG_PatternTick(DataPack IncomingData)
 			Ruina_Laser_Logic Laser;
 			if(trace_update)	//don't do a trace every tick. only once every 0.1s
 			{
-				Laser.DoForwardTrace_Custom(AnglesToCore, OffsetLOC, Radius);
+				Laser.DoForwardTrace_Custom(AnglesToCore, OffsetLoc, Radius);
 				
 				Section.Dist = GetVectorDistance(Laser.Start_Point, Laser.End_Point);
 			}
 			else
 			{
-				Laser.Start_Point = OffsetLOC;
+				Laser.Start_Point = OffsetLoc;
 				Get_Fake_Forward_Vec(Section.Dist, AnglesToCore, Laser.End_Point, Laser.Start_Point);
 			}
 			Section.Angles = AnglesToCore;
@@ -1740,8 +1947,8 @@ static void DoG_PatternTick(DataPack IncomingData)
 		}
 		for(int i=0 ; i < 4 ; i++)
 		{
-			float OffsetLOC[3]; OffsetLOC = vCreateDoGVectorMesh(Data.Loc, i, 4, Radius, Data.AngleModif);
-			TE_SetupBeamPoints(OffsetLOC, SectionLoc[i], g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness*0.25, Thickness*0.25, 0, Amp, color, 3);
+			float OffsetLoc[3]; OffsetLoc = vCreateDoGVectorMesh(Data.Loc, i, 4, Radius, Data.AngleModif);
+			TE_SetupBeamPoints(OffsetLoc, SectionLoc[i], g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness*0.25, Thickness*0.25, 0, Amp, color, 3);
 			TE_SendToAll();
 		}
 	}
@@ -2614,6 +2821,12 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	if(IsValidClient(attacker))
+	{
+		fl_player_weapon_score[attacker]+=damage;
+	}
+
 
 	if(npc.m_flArmorCount > 0.0)
 	{
