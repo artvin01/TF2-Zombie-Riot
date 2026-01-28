@@ -99,7 +99,7 @@ methodmap LanteanProjectile < CClotBody
 
 		npc.m_flTimeTillDeath = GetGameTime() + 15.0;	//default value. should be ovewritten by the spawner
 
-		npc.m_iBleedType 					= BLEEDTYPE_PORTAL;
+		npc.m_iBleedType 					= BLEEDTYPE_METAL;
 
 		func_NPCDeath[npc.index]			= LanteanNPC_Death;
 		func_NPCOnTakeDamage[npc.index] 	= INVALID_FUNCTION;
