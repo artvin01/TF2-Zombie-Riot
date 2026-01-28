@@ -195,19 +195,35 @@ static const float fl_ShipRollClamps = 50.0;
 */
 /*
 	//corners
-	setpos 4747.448730 2284.911865 -5419.261230;setang 11.383965 -45.166313 0.000000
-	setpos 7971.000488 -922.880737 -5372.954590;setang 16.773966 131.881714 0.000000
+
+	setpos 9082.631836 -2384.214600 -4436.337402;setang 11.229923 131.620331 0.000000
+	setpos 6062.663086 -2601.933350 -4586.610352;setang 9.997921 90.348351 0.000000
+	setpos 2630.493408 -2371.841553 -4586.610352;setang 10.613924 43.532391 0.000000
+	setpos 2868.126465 4183.577148 -4586.610352;setang 20.777950 -47.173580 0.000000
+	setpos 6048.231934 4628.753906 -4586.610352;setang 22.779940 -88.907516 0.000000
+	setpos 9135.420898 4535.649902 -4586.610352;setang 22.625938 -128.947525 0.000000
+	setpos 9945.458984 953.970703 -4586.610352;setang 25.859924 -179.922256 0.000
+	setpos 9603.561523 -2316.691650 -4586.610352;setang 20.931932 136.803284 0.000000
+
+
 	
 	//center.
-	setpos 5975.277344 880.963745 -5407.267578;setang 13.694007 123.874184 0.000000
+	setpos 5975.277344 880.963745 -4436.267578;setang 13.694007 123.874184 0.000000
 
 */
 static const float VaultVectorPoints[][3] = {
-	{5975.277344, 880.963745, -5407.267578},
+	{5975.277344, 880.963745, -4436.267578},
 
-	{4747.448730, 2284.911865, -5419.261230},
-	{7971.000488, -922.880737, -5372.954590}
+	{9082.631836, -2384.214600, -4436.337402},
+	{6062.663086, -2601.933350, -4586.610352},
+	{2630.493408, -2371.841553, -4586.610352},
+	{2868.126465, 4183.577148, -4586.610352},
+	{6048.231934, 4628.753906, -4586.610352},
+	{9135.420898, 4535.649902, -4586.610352},
+	{9945.458984, 953.970703, -4586.610352},
+	{9603.561523, -2316.691650, -4586.610352}
 };
+#define REGALIA_RANDOM_LOC_AMT 8
 
 static ArrayList AL_RegaliaAttachedEntities[MAXENTITIES] = {null, ...};
 static Function func_ShipTurn[MAXENTITIES];
@@ -682,8 +698,10 @@ methodmap RegaliaClass < CClotBody
 
 		this.StopPathing();
 
+		bool Wondering = false;
+
 		if(!IsValidEntity(this.m_iTarget))
-			return;
+			Wondering = true;
 
 		float GameTime = GetGameTime(this.index);
 
@@ -694,6 +712,30 @@ methodmap RegaliaClass < CClotBody
 		{
 			TargetLoc = f3_NpcSavePos[this.index];
 		}
+		else if(Wondering)
+		{
+			if(this.m_iInternalTravelVaultVectors != -1)
+			{
+				if(this.m_iInternalTravelVaultVectors == 0)
+					this.m_iInternalTravelVaultVectors = GetRandomInt(1, REGALIA_RANDOM_LOC_AMT);
+
+				TargetLoc = VaultVectorPoints[this.m_iInternalTravelVaultVectors];
+			}
+
+			float Dist2D = Get2DVectorDistances(DroneLoc, TargetLoc, true);
+			if(Dist2D < (150.0 * 150.0))
+			{
+				if(this.m_iInternalTravelVaultVectors != 0)
+				{
+					int currently_on = this.m_iInternalTravelVaultVectors;
+
+					while(currently_on == this.m_iInternalTravelVaultVectors)
+					{
+						this.m_iInternalTravelVaultVectors = GetRandomInt(1, REGALIA_RANDOM_LOC_AMT);
+					}
+				}
+			}
+		}
 		else
 		{
 			if(this.m_iInternalTravelVaultVectors != -1)
@@ -703,7 +745,7 @@ methodmap RegaliaClass < CClotBody
 			else
 			{
 				WorldSpaceCenter(this.m_iTarget, TargetLoc);
-				TargetLoc[2]+=450.0;
+				TargetLoc[2]+=1000.0;
 			}
 
 			float Dist2D = Get2DVectorDistances(DroneLoc, TargetLoc, true);
@@ -711,7 +753,7 @@ methodmap RegaliaClass < CClotBody
 			{
 				if(this.m_iInternalTravelVaultVectors == -1)
 				{
-					this.m_iInternalTravelVaultVectors = GetRandomInt(1, 2);
+					this.m_iInternalTravelVaultVectors = GetRandomInt(1, REGALIA_RANDOM_LOC_AMT);
 				}
 				else if(this.m_iInternalTravelVaultVectors != 0)
 				{
@@ -1204,13 +1246,46 @@ static void Handle_SpiralGlaive(RegaliaClass npc)
 
 	float ShipLoc[3]; GetAbsOrigin(npc.index, ShipLoc);
 
-	float Dist = Get2DVectorDistances(ShipLoc, VaultVectorPoints[0], true);
+	int entity = MaxClients + 1;
+
+	int vault_core = 0;
+	bool Found = false;
+	while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
+	{
+		if(IsValidEnemy(npc.index, entity))
+		{
+			if(IsDungeonCenterId() == i_NpcInternalId[entity])
+			{
+				Found = true;
+				vault_core = entity;
+				break;
+			}
+		}
+	}
+
+	if(Found)
+	{
+
+		float VaultLoc[3]; GetAbsOrigin(vault_core, VaultLoc);
+		float Dist = Get2DVectorDistances(ShipLoc, VaultLoc, true);
+
+		if(Dist < (500.0 * 500.0))	//makes it so the downward deathray doesn't activate right above the main building thus leading to an instant game over.
+			return;
+
+		if(Dist > (1500.0 * 1500.0))
+			return;
+
+	}
+	else
+	{
+		float Dist = Get2DVectorDistances(ShipLoc, VaultVectorPoints[0], true);
+
+		if(Dist > (1500.0 * 1500.0))
+			return;
+	}
 
 	npc.m_flSprial_Recharge = GameTime + 1.0;
-
-	if(Dist < (500.0 * 500.0))
-		return;
-
+	
 	Regalia_SpiralGlave_Data Data;
 
 	Data.iNPC_ref = EntIndexToEntRef(npc.index);
@@ -1229,7 +1304,7 @@ static void Handle_SpiralGlaive(RegaliaClass npc)
 	npc.m_flRevertControlOverride		= npc.m_flShipAbilityActive - 1.0;
 	npc.m_bCutThrust					= true;
 
-	npc.m_flSprial_Recharge				= GameTime + 30.0;
+	npc.m_flSprial_Recharge				= GameTime + 30.0;	//NOT THE ACTUAL RECHARGE!!!! ACTUAL ONE IS LOWER.
 
 	DataPack Pack = new DataPack();
 	Pack.WriteCellArray(Data, sizeof(Data));
@@ -1257,7 +1332,7 @@ static void SpiralGlave_Tick(DataPack IncomingData)
 
 	if(Data.Duration < GameTime)
 	{
-		npc.m_flSprial_Recharge	= GameTime + 15.0;
+		npc.m_flSprial_Recharge	= GameTime + 90.0;
 		return;
 	}
 
@@ -1297,22 +1372,23 @@ static void SpiralGlave_Tick(DataPack IncomingData)
 	const float Radius = 300.0;
 	const float TE_Duration = 0.1;
 	const float ThicknessRing = 25.0;
-	const float Thickness = 25.0;
-	int Color[4] = {255, 255, 255, 255};
+	const float Thickness = 50.0;
+	int color[4] = {255, 255, 255, 255};
+	color = iRegaliaColor(npc);
 
 	if(Windup)
-		Color[3] = RoundToFloor(255.0 * (1.0 - (Data.Windup - GameTime) / Data.Windup_Base));
+		color[3] = RoundToFloor(255.0 * (1.0 - (Data.Windup - GameTime) / Data.Windup_Base));
 
 	float RingLoc[3]; RingLoc = MiddleLoc;
 	
 	RingLoc[2]+=25.0;
-	TE_SetupBeamRingPoint(RingLoc, Radius*2.0, Radius*2.0 - 1.0, g_Ruina_BEAM_Laser, 0, 0, 1, TE_Duration, ThicknessRing, 0.1, Color, 1, 0);
+	TE_SetupBeamRingPoint(RingLoc, Radius*2.0, Radius*2.0 - 1.0, g_Ruina_BEAM_Laser, 0, 0, 1, TE_Duration, ThicknessRing, 0.1, color, 1, 0);
 	TE_SendToAll();
 	RingLoc[2]-=50.0;
-	TE_SetupBeamRingPoint(RingLoc, Radius*2.0, Radius*2.0 - 1.0, g_Ruina_BEAM_Laser, 0, 0, 1, TE_Duration, ThicknessRing, 0.1, Color, 1, 0);
+	TE_SetupBeamRingPoint(RingLoc, Radius*2.0, Radius*2.0 - 1.0, g_Ruina_BEAM_Laser, 0, 0, 1, TE_Duration, ThicknessRing, 0.1, color, 1, 0);
 	TE_SendToAll();
 
-	const float Length = 4000.0;
+	const float Length = 7000.0;
 	const int loops = 8;
 
 	Ruina_Laser_Logic Laser;	//this trace/damage is done every tick. so yeah.
@@ -1320,7 +1396,7 @@ static void SpiralGlave_Tick(DataPack IncomingData)
 	Laser.Radius 		= Thickness * 0.5;
 	Laser.Damage		= ModifyDamage(6.0);
 	Laser.Bonus_Damage 	= ModifyDamage(1.0);
-	Laser.damagetype 	= DMG_PLASMA;
+	Laser.damagetype 	= DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE;
 
 	for(int i=0 ; i < loops ; i++)
 	{
@@ -1331,14 +1407,14 @@ static void SpiralGlave_Tick(DataPack IncomingData)
 		Angles[0] = 90.0 * Ratio;
 		Get_Fake_Forward_Vec(Length, Angles, EndOffsetLoc, OffsetLoc);
 		
-		TE_SetupBeamPoints(OffsetLoc, EndOffsetLoc, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness, Thickness, 0, 0.1, Color, 3);
+		TE_SetupBeamPoints(OffsetLoc, EndOffsetLoc, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness, Thickness, 0, 0.1, color, 3);
 		TE_SendToAll();
 
 		if(!Windup)
 		{
 			Laser.Start_Point 	= OffsetLoc;
 			Laser.End_Point 	= EndOffsetLoc;
-			Laser.Deal_Damage();
+			Laser.Detect_Entities(On_LaserHit);
 			//do damage!
 		}
 	}
@@ -1348,6 +1424,18 @@ static void SpiralGlave_Tick(DataPack IncomingData)
 	Pack.WriteCellArray(Data, sizeof(Data));
 
 	RequestFrames(SpiralGlave_Tick, 1, Pack);
+}
+static void On_LaserHit(int client, int target, int damagetype, float damage)
+{
+	if(IsIn_HitDetectionCooldown(client,target))
+		return;
+			
+	Set_HitDetectionCooldown(client, target, GetGameTime() + 0.25);	//if they walk backwards, its likely to hit them 2 times, but who on earth would willingly walk backwards/alongside the trajectory of the projectile
+
+	float DamageOrigin[3];
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", DamageOrigin);
+
+	SDKHooks_TakeDamage(target, client, client, damage, damagetype, _, DamageOrigin); 
 }
 static float fl_Type1_CycleSpeed;
 static void HandleUnderSlungWeapons(RegaliaClass npc)
@@ -1420,22 +1508,23 @@ static void HandleUnderSlungWeapons(RegaliaClass npc)
 		{
 			fl_Type1_CycleSpeed = 2.5;
 		
-			const float Duration = 21.0;
+			const int Duration = 6;	//how many cycles to do
 			const float Recharge = 120.0;
 
 			f3_LastValidPosition[npc.index] 	= Loc;
 			npc.m_flUnderSlung_Type1_Recharge 	= GameTime + Recharge;
-			npc.m_flUnderSlung_PrimaryRecharge 	= GameTime + Duration + 2.5;
-			npc.m_flShipAbilityActive			= GameTime + Duration + 1.0;
+			npc.m_flUnderSlung_PrimaryRecharge 	= GameTime + 5.0;
+			npc.m_flShipAbilityActive			= GameTime + 5.0;
 			npc.m_bVectoredThrust 				= true;
 			func_ShipTurn[npc.index] 			= IOC_TurnControl;
-			npc.m_flRevertControlOverride		= npc.m_flShipAbilityActive - 1.0;
+			npc.m_flRevertControlOverride		= GameTime + 5.0;
 			npc.m_bCutThrust					= true;
 
 			Invoke_RegaliaDoGPatterns(npc, Loc, Duration, radius);
 
 			float Thickness = 30.0;
 			int color[4] = {255, 255, 255, 255};
+			color = iRegaliaColor(npc);
 			for(int i=0 ; i < 4 ; i++)
 			{
 				TE_SetupBeamRingPoint(Loc, radius*2.0, radius*2.0 - 1.0, g_Ruina_BEAM_Laser, 0, 0, 1, fl_Type1_CycleSpeed, Thickness, 0.1, color, 1, 0);
@@ -1450,7 +1539,6 @@ static void HandleUnderSlungWeapons(RegaliaClass npc)
 		npc.m_flUnderSlung_PrimaryRecharge = GameTime + 1.0;
 				
 }
-#define REGALIO_ION_SECTIONS	8
 enum struct RegaliaIONSection {
 	float Dist;
 	float Angles[3];
@@ -1459,7 +1547,6 @@ enum struct RegaliaIONSection {
 enum struct Regalia_DoG_IonData {
 	int iNPC;
 	float Loc[3];
-	float Duration;
 	float Recharge;
 	float Radius;
 	int cylce;
@@ -1467,14 +1554,17 @@ enum struct Regalia_DoG_IonData {
 	float CycleSpeed;
 	float SoundTimer;
 	ArrayList SectionData;
+
+	int Current_Amt;
+	int CycleDuration;
 }
-static void Invoke_RegaliaDoGPatterns(RegaliaClass npc, float Loc[3], float Duration, float Radius)
+static void Invoke_RegaliaDoGPatterns(RegaliaClass npc, float Loc[3], int Duration, float Radius)
 {
 	Loc[2]+=50.0;
 	Regalia_DoG_IonData Data;
 	Data.iNPC			= EntIndexToEntRef(npc.index);
 	Data.Loc			= Loc;
-	Data.Duration		= GetGameTime() + Duration;
+	Data.CycleDuration  = Duration;
 	Data.Radius			= Radius;
 	Data.cylce			= 0;
 	Data.AngleModif		= GetRandomFloat(0.0, 360.0);
@@ -1482,9 +1572,10 @@ static void Invoke_RegaliaDoGPatterns(RegaliaClass npc, float Loc[3], float Dura
 	Data.SoundTimer		= 0.0;
 	Data.Recharge 		= 0.0;
 
+	Data.Current_Amt 	= 4;
 	Data.SectionData	= new ArrayList(sizeof(RegaliaIONSection));
 
-	for(int i= 0 ; i < REGALIO_ION_SECTIONS ; i++)
+	for(int i= 0 ; i < 16 ; i++)
 	{
 		RegaliaIONSection Section;
 		Section.Dist = 0.0;
@@ -1507,7 +1598,6 @@ static void DoG_PatternTick(DataPack IncomingData)
 	IncomingData.ReadCellArray(Data, sizeof(Data));
 
 	int iNPC 		= EntRefToEntIndex(Data.iNPC);
-	float Duration 	= Data.Duration;
 	float Radius 	= Data.Radius;
 
 	delete IncomingData;
@@ -1522,11 +1612,18 @@ static void DoG_PatternTick(DataPack IncomingData)
 
 	float GameTime = GetGameTime(npc.index);
 	
-	if(Duration < GameTime)
+	if(Data.CycleDuration < 0)
 	{
+		npc.m_flUnderSlung_PrimaryRecharge 	= GameTime + 1.0;
+		npc.m_flShipAbilityActive			= GameTime + 1.0;
+		npc.m_flRevertControlOverride		= GameTime + 1.0;
 		delete Data.SectionData;
 		return;
 	}
+
+	npc.m_flUnderSlung_PrimaryRecharge 	= GameTime + 5.0;
+	npc.m_flShipAbilityActive			= GameTime + 5.0;
+	npc.m_flRevertControlOverride		= GameTime + 5.0;
 
 	float BaseChargeTime = fl_Type1_CycleSpeed;
 
@@ -1543,13 +1640,7 @@ static void DoG_PatternTick(DataPack IncomingData)
 		SectionLoc[i] = npc.GetWeaponSections(ShipWeaponsSections[i]);
 	}
 
-	int Sections = REGALIO_ION_SECTIONS;
-
-	int Color[4] = {255, 255, 255, 255};
-
-	const float Thickness = 18.0;
-	const float TE_Duration = 0.1;
-	const float Amp = 0.1;
+	int Sections = Data.Current_Amt;
 
 	if(Data.Recharge > GameTime)
 	{
@@ -1558,6 +1649,13 @@ static void DoG_PatternTick(DataPack IncomingData)
 		RequestFrames(DoG_PatternTick, 11, Pack);
 		return;
 	}
+
+	int color[4] = {255, 255, 255, 255};
+	color = iRegaliaColor(npc);
+
+	const float Thickness = 18.0;
+	const float TE_Duration = 0.1;
+	const float Amp = 0.1;
 
 	Data.AngleModif+=1.0;
 	
@@ -1588,7 +1686,7 @@ static void DoG_PatternTick(DataPack IncomingData)
 				{
 					LookAtLoc = Data.Loc;
 				}
-				case 1:	//doesn't work, investigate why.
+				case 1:
 				{
 					LookAtLoc = vCreateDoGVectorMesh(Data.Loc, i, Sections, Radius * 0.2, Data.AngleModif + 45.0);
 				}
@@ -1637,16 +1735,22 @@ static void DoG_PatternTick(DataPack IncomingData)
 			Section.LastLoc = Laser.Start_Point;
 
 			Data.SectionData.SetArray(i, Section);
-			TE_SetupBeamPoints(Laser.Start_Point, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness, Thickness, 0, Amp, Color, 3);
+			TE_SetupBeamPoints(Laser.Start_Point, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness, Thickness, 0, Amp, color, 3);
 			TE_SendToAll();
-	
-			TE_SetupBeamPoints(OffsetLOC, SectionLoc[i / 2], g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness*0.25, Thickness*0.25, 0, Amp, Color, 3);
+		}
+		for(int i=0 ; i < 4 ; i++)
+		{
+			float OffsetLOC[3]; OffsetLOC = vCreateDoGVectorMesh(Data.Loc, i, 4, Radius, Data.AngleModif);
+			TE_SetupBeamPoints(OffsetLOC, SectionLoc[i], g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness*0.25, Thickness*0.25, 0, Amp, color, 3);
 			TE_SendToAll();
 		}
 	}
 	else	//FIRE!
 	{
 		Data.SoundTimer = 0.0;
+
+		Data.CycleDuration--;
+		Data.Current_Amt +=2;
 
 		float recharge_speed = 2.0;
 
@@ -1663,8 +1767,6 @@ static void DoG_PatternTick(DataPack IncomingData)
 		Projectile.bonus_dmg= 1.0;
 		Projectile.speed 	= 3000.0;
 		Projectile.visible 	= false;
-
-		
 
 		for(int i=0 ; i < Sections ; i++)
 		{
@@ -1694,13 +1796,16 @@ static void DoG_PatternTick(DataPack IncomingData)
 			MakeObjectIntangeable(projectile);
 			Projectile.Apply_Particle(Particle);
 
-			TE_SetupBeamPoints(Projectile.Start_Loc, SectionLoc[i / 2], g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration*2.0, Thickness, Thickness, 0, Amp*2.0, Color, 3);
+			TE_SetupBeamPoints(Projectile.Start_Loc, SectionLoc[GetRandomInt(0, 3)], g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration*2.0, Thickness, Thickness, 0, Amp*2.0, color, 3);
 			TE_SendToAll();
 		}
 
-		if(Duration - GameTime < recharge_speed)
+		if(Data.CycleDuration < 0)
 		{
 			delete Data.SectionData;
+			npc.m_flUnderSlung_PrimaryRecharge 	= GameTime + 1.0;
+			npc.m_flShipAbilityActive			= GameTime + 1.0;
+			npc.m_flRevertControlOverride		= GameTime + 1.0;
 			return;
 		}
 
@@ -1715,15 +1820,16 @@ static void DoG_PatternTick(DataPack IncomingData)
 		if(amt == -1)
 		{
 			delete Data.SectionData;
-			npc.m_flShipAbilityActive = GetGameTime(npc.index) + 1.0;
-			npc.m_flRevertControlOverride = GetGameTime(npc.index) + 1.0;
+			npc.m_flUnderSlung_PrimaryRecharge 	= GameTime + 1.0;
+			npc.m_flShipAbilityActive			= GameTime + 1.0;
+			npc.m_flRevertControlOverride		= GameTime + 1.0;
 			return;
 		}
 
 		float ThicknessRing = 30.0;
 		for(int i=0 ; i < 4 ; i++)
 		{
-			TE_SetupBeamRingPoint(Loc, Radius*2.0, Radius*2.0 - 1.0, g_Ruina_BEAM_Laser, 0, 0, 1, fl_Type1_CycleSpeed + recharge_speed, ThicknessRing, 0.1, Color, 1, 0);
+			TE_SetupBeamRingPoint(Loc, Radius*2.0, Radius*2.0 - 1.0, g_Ruina_BEAM_Laser, 0, 0, 1, fl_Type1_CycleSpeed + recharge_speed, ThicknessRing, 0.1, color, 1, 0);
 			TE_SendToAll();
 			Loc[2]+=25.0;
 		}
@@ -1807,7 +1913,8 @@ static void Invoke_RegaliaIOC(RegaliaClass npc, float EndLoc[3], const float Det
 {
 	float dmg = ModifyDamage(100.0);
 	const float Radius = 250.0;
-	int Color[4] = {255, 255, 255, 255};
+	int color[4] = {255, 255, 255, 255};
+	color = iRegaliaColor(npc);
 
 	EmitSoundToAll(REGALIA_IOC_STARTUP, _, _, SNDLEVEL_RAIDSIREN, _, 1.0, 50);
 	EmitSoundToAll(REGALIA_IOC_CHARGE_LOOP, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, 50, _, EndLoc);
@@ -1821,11 +1928,13 @@ static void Invoke_RegaliaIOC(RegaliaClass npc, float EndLoc[3], const float Det
 	Pack.WriteFloat(0.0);		//angle modif
 	RequestFrames(RegaliaIOC_Tick, 1, Pack);
 
+	EndLoc[2]+=10.0;
+
 	const float Thickness = 25.0;
 
-	TE_SetupBeamRingPoint(EndLoc, Radius*2.0, 0.0,			 	g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, DetTime, Thickness, 0.75, Color, 1, 0);
+	TE_SetupBeamRingPoint(EndLoc, Radius*2.0, 0.0,			 	g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, DetTime, Thickness, 0.75, color, 1, 0);
 	TE_SendToAll();
-	TE_SetupBeamRingPoint(EndLoc, Radius*2.0, Radius*2.0+0.5, 	g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, DetTime, Thickness, 0.1, Color, 1, 0);
+	TE_SetupBeamRingPoint(EndLoc, Radius*2.0, Radius*2.0+0.5, 	g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, DetTime, Thickness, 0.1, color, 1, 0);
 	TE_SendToAll();
 }
 static void RegaliaIOC_Tick(DataPack Data)
@@ -1869,7 +1978,8 @@ static void RegaliaIOC_Tick(DataPack Data)
 	const float Thickness = 25.0;
 	const float TE_Duration = 0.1;
 	const float Amp = 0.1;
-	int Color[4] = {255, 255, 255, 255};
+	int color[4] = {255, 255, 255, 255};
+	color = iRegaliaColor(npc);
 	const float height =  1500.0;	//1500
 
 	for(int i=0 ; i < Sections ; i++)
@@ -1882,10 +1992,10 @@ static void RegaliaIOC_Tick(DataPack Data)
 
 		float SkyLoc[3]; SkyLoc = OffsetLoc; SkyLoc[2]+=height;
 
-		TE_SetupBeamPoints(OffsetLoc, SkyLoc, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness, Thickness, 0, Amp, Color, 3);
+		TE_SetupBeamPoints(OffsetLoc, SkyLoc, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness, Thickness, 0, Amp, color, 3);
 		TE_SendToAll();
 
-		TE_SetupBeamPoints(OffsetLoc, SectionLoc[i / 2], g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness*0.5, Thickness*0.5, 0, Amp, Color, 3);
+		TE_SetupBeamPoints(OffsetLoc, SectionLoc[i / 2], g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness*0.5, Thickness*0.5, 0, Amp, color, 3);
 		TE_SendToAll();
 	}
 
@@ -1913,7 +2023,7 @@ static void RegaliaIOC_Tick(DataPack Data)
 			float final_radius = Radius*end_ratio;
 			if(final_radius > 4096.0)
 				final_radius= 4095.0;
-			TE_SetupBeamRingPoint(spawnLoc, 0.0, final_radius, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, timer, thicc, 0.1, Color, 1, 0);
+			TE_SetupBeamRingPoint(spawnLoc, 0.0, final_radius, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, timer, thicc, 0.1, color, 1, 0);
 			TE_SendToAll();
 			spawnLoc[2]+=Seperation;
 		}
@@ -2040,6 +2150,7 @@ static void LanceeWeaponTurnControl(int iNPC)
 			"forward_lance_right_end"
 		};
 		int color[4] = {255, 255, 255, 255};
+		color = iRegaliaColor(npc);
 		const float Start_Thickness = 30.0;
 		const float End_Thickness = 20.0;
 		const float TE_Duration = 0.1;
@@ -2218,6 +2329,7 @@ static void HandleMainWeapons(RegaliaClass npc)
 	npc.EmitGenerciLaserSound();
 
 	int color[4] = {255, 255, 255, 255};
+	color = iRegaliaColor(npc);
 	const float Start_Thickness = 30.0;
 	const float End_Thickness = 20.0;
 	const float TE_Duration = 0.1;
@@ -2517,6 +2629,20 @@ static void NPC_Death(int iNPC)
 	StopSound(npc.index, SNDCHAN_VOICE, REGALIA_IOC_CHARGE_LOOP);
 
 	npc.CleanEntities();
+}
+static int[] iRegaliaColor(RegaliaClass npc)
+{
+	int skin = GetEntProp(npc.index, Prop_Data, "m_nSkin");
+
+	int color[4];
+
+	switch(skin)
+	{
+		case 0: color = {255, 200, 75, 255};
+		case 1: color = {0, 255, 255, 255};
+		default:color = {255, 255, 255, 255};
+	}
+	return color;
 }
 
 //static float Get2DVectorLength(float Vec1[3], bool not_squared = false)
