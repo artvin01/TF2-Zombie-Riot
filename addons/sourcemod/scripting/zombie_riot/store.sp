@@ -598,6 +598,7 @@ static const char AmmoNames[][] =
 	"N/A"
 };
 
+static Handle AutoSaveTimer;
 static ArrayList StoreItems;
 static int NPCOnly[MAXPLAYERS];
 static int NPCCash[MAXPLAYERS];
@@ -1038,6 +1039,7 @@ int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
 
 void Store_ConfigSetup()
 {
+	delete AutoSaveTimer;
 	Zero(f_ConfirmSellDo);
 	ClearAllTempAttributes();
 	delete StoreTags;
@@ -1088,6 +1090,22 @@ void Store_ConfigSetup()
 //	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
 //	StoreBalanceLog = new KeyValues("UsageLog");
 //	StoreBalanceLog.ImportFromFile(buffer);
+
+	AutoSaveTimer = CreateTimer(10.0, AutoSaveTime, 1);
+}
+
+static Action AutoSaveTime(Handle timer, int client)
+{
+	int user = client + 1;
+	if(user > MaxClients)
+		user = client;
+	
+	AutoSaveTimer = CreateTimer(10.0, AutoSaveTime, user);
+
+	if(IsClientInGame(client) && !IsFakeClient(client))
+		Database_SaveGameData(client, DBPrio_Normal);
+	
+	return Plugin_Continue;
 }
 
 static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, bool rogueSell, const char[][] whitelist, int whitecount, const char[][] blacklist, int blackcount)
@@ -1966,7 +1984,7 @@ void Store_ClientDisconnect(int client)
 {
 	Store_WeaponSwitch(client, -1);
 	
-	Database_SaveGameData(client);
+	Database_SaveGameData(client, DBPrio_High);
 
 	CashSpent[client] = 0;
 	CashSpentGivePostSetup[client] = 0;
