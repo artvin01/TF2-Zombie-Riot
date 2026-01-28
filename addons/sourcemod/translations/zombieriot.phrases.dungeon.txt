@@ -434,4 +434,8 @@
 	{
 		"en"	"{darkgreen}All enemies are xenofied...\n{gray}Didnt we kill off the xeno virus?"
 	}
+	"Refragmented Heavy Page"
+	{
+		"en"	"Refragmented Heavy Page"
+	}
 }
