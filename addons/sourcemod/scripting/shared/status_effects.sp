@@ -7820,7 +7820,7 @@ void Perfected_Instinct_Give(int victim, StatusEffect Apply_MasterStatusEffect, 
 	{
 		SetEntProp(WearableDo, Prop_Send, "m_bGlowEnabled", false);
 		SetEntityRenderMode(WearableDo, RENDER_ENVIRONMENTAL);
-		TE_SetupParticleEffect("utaunt_busysnow_auroraborealis_body_glow_Blu", PATTACH_ABSORIGIN_FOLLOW, WearableDo);
+		TE_SetupParticleEffect("utaunt_auroraglow_purple_parent", PATTACH_ABSORIGIN_FOLLOW, WearableDo);
 		TE_WriteNum("m_bControlPoint1", WearableDo);	
 		TE_SendToAll();
 	}
