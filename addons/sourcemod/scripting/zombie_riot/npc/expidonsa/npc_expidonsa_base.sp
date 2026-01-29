@@ -341,6 +341,13 @@ stock bool Expidonsa_DontHealSameIndex(int entity, int victim, float &healingamm
 
 	return false;
 }
+stock bool Expidonsa_OnlyHealSameIndex(int entity, int victim, float &healingammount)
+{
+	if(i_NpcInternalId[entity] != i_NpcInternalId[victim])
+		return true;
+
+	return false;
+}
 #if defined ZR
 #define IBERIA_BARRACKS_COOLDOWN_HEAL 2.0
 stock bool IberiaBarracks_HealSelfLimitCD(int entity, int victim, float &healingammount)

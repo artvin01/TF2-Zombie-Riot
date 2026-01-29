@@ -7841,4 +7841,12 @@
 	{
 		"en"	"-Gets heavily buffed when alone\n-Ignores armor (not resistances) at all times\n-When buffed, gains the ability to dodge any attacks is too far away"
 	}
+	"Almagest Kämpfer"
+	{
+		"en"	"Almagest Kämpfer"
+	}
+	"Almagest Kämpfer Desc"
+	{
+		"en"	"-Starts with high armor and 5 shields\n-Heals its own kind near eachother\n-Deals high melee damage and deals 3x damage once the debuff maxes out\n-Applies 2 spearment debuff each hit\n-Will try to surround you at all times"
+	}
 }
