@@ -198,7 +198,7 @@ enum struct RoomInfo
 						BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, this.Key);
 						if(!FileExists(buffer))
 						{
-							LogError("Unknown waveset '%s' for room '%s'", this.Key, name);
+							LogError("Unknown waveset '%s' for room '%s'", buffer, name);
 						}
 						else
 						{
