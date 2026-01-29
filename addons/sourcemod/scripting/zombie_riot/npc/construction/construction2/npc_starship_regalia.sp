@@ -339,6 +339,21 @@ methodmap RegaliaClass < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][8]; 				}
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
 	}
+	property float m_flBeaconRespawnTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][9]; 				}
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
+	}
+	property float m_flBeaconSurgeTimer
+	{
+		public get()							{ return fl_AttackHappensMaximum[this.index][9]; 				}
+		public set(float TempValueForProperty) 	{ fl_AttackHappensMaximum[this.index][9] = TempValueForProperty; }
+	}
+	property float m_flBeaconSurgeActive
+	{
+		public get()							{ return fl_AttackHappensMinimum[this.index]; 				}
+		public set(float TempValueForProperty) 	{ fl_AttackHappensMinimum[this.index] = TempValueForProperty; }
+	}
 	property float m_flShipAbilityActive
 	{
 		public get()							{ return fl_ruina_battery_timeout[this.index]; 				}
@@ -503,8 +518,11 @@ methodmap RegaliaClass < CClotBody
 		//core deco weapons
 		npc.m_flSprial_Recharge				= GetRandomFloat(1.0, 3.0) 		+ GetGameTime();
 		npc.m_flDroneSpawnNext				= GetRandomFloat(1.0, 3.0) 		+ GetGameTime();
-		
 
+		//Special
+
+		npc.m_flBeaconSurgeTimer 			= GetRandomFloat(1.0, 3.0)		+ GetGameTime();
+		npc.m_flBeaconSurgeActive				= FAR_FUTURE;
 
 		//Make immune to speed debuffs and the like
 		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);	
@@ -519,6 +537,14 @@ methodmap RegaliaClass < CClotBody
 		b_ThisNpcIsImmuneToNuke[npc.index] 		= true;
 		b_IgnoreAllCollisionNPC[npc.index]		= true;
 		npc.m_bDissapearOnDeath 				= true;
+
+		//for spawn beacons
+
+		for(int i=0 ; i < 5 ; i++)
+		{
+			npc.m_flBeaconRespawnTimer = 0.0;
+			HandleBeacons(npc);
+		}
 
 
 		npc.Handle_SectionParticles();
@@ -1246,6 +1272,87 @@ static void ClotThink(int iNPC)
 	Handle_SpiralGlaive(npc);
 	HandleBeacons(npc);
 }
+/*
+//too confusing apparently. so uh. gg
+static void HandleBeaconSurge(RegaliaClass npc)
+{
+	float GameTime = GetGameTime(npc.index);
+
+	if(npc.m_flBeaconSurgeActive < GameTime)
+	{
+		npc.m_flBeaconSurgeActive = FAR_FUTURE;
+
+		if(npc.m_iBeaconsExist <= 0)
+			return;
+
+		int Beacons[100];
+		int total = 0;
+		Beacons = iFindBeacons(npc, total);
+
+		if(total == 0)
+		{
+			CPrintToChatAll("Somehow regalia found 0 beacons. even though internaly it says they should exist. what. count: %i", npc.m_iBeaconsExist);
+			return;
+		}
+
+		float AvgRatio = 0.0;
+		for(int i=0 ; i < total ; i++)
+		{
+			Starship_Beacon Beacon = view_as<Starship_Beacon>(Beacons[i]);
+
+			if(Beacon.m_flArmorCount <= 0.0)
+				continue;
+
+			//so, since the beacons armour is 1:1 to max hp, we can get how much armour was left. depending on said ratio we get the avg.
+			AvgRatio += (Beacon.m_flArmorCount / ReturnEntityMaxHealth(Beacon.index));
+
+			Beacon.m_flArmorCount = 0.0;	//and now remove the armour of the beacons!
+		}
+		//once avg is aquired. we apply it to the ship itself!
+		AvgRatio /=total;
+
+		if(AvgRatio > 0.5)
+			AvgRatio = 0.5;	//if they REALLY fuck up badly. limit the shield to 50% of max ship hp.
+
+		float strength = 0.5;	//50% dmg block shield
+		GrantEntityArmor(beacon, false, AvgRatio, strength, 1);
+	}
+
+	if(npc.m_flShipAbilityActive > GameTime)
+		return;
+
+	if(npc.m_flBeaconSurgeTimer > GameTime)
+		return;
+
+	bool force = false;
+
+	if(npc.m_flBeaconSurgeTimer < GameTime + 100.0)
+		force = true;
+
+	//we wand full beacon coverage. but if we wait too long for that. just do it anyway.
+	if(npc.m_iBeaconsExist < 5 && !force)
+		return;
+
+	if(npc.m_iBeaconsExist <= 0)
+		return;
+		
+	npc.m_flBeaconSurgeActive = GameTime + 100.0;
+
+	int Beacons[100];
+	int total = 0;
+	Beacons = iFindBeacons(npc, total);
+
+	float Shield_Power = 1.0;	//hp * this
+	float ArmorProtect = 0.0;	//dmg * this
+
+	for(int i=0 ; i < total ; i++)
+	{
+		int beacon = Beacons[i];
+		GrantEntityArmor(beacon, false, Shield_Power, strenght, 0);
+	}
+}
+*/
+//stock void GrantEntityArmor(int entity, bool Once = true, float ScaleMaxHealth, float ArmorProtect, int ArmorType, float custom_maxarmour = 0.0, int ArmorGiver = -1)
 static const float fl_BeaconSpawnPos[][3] = {
 	{7622.043945, -619.331421, 	-5929.582520},
 	{5854.175293, -764.341980, 	-5929.582520},
@@ -1284,6 +1391,9 @@ static void HandleBeacons(RegaliaClass npc)
 	if(npc.m_flShipAbilityActive > GameTime)
 		return;
 
+	if(npc.m_flBeaconRespawnTimer > GameTime)
+		return;
+
 	bool dungeon = Dungeon_Mode();
 
 	int Beacon = -2;
@@ -1309,6 +1419,7 @@ static void HandleBeacons(RegaliaClass npc)
 	if(Beacon < MaxClients)
 		return;
 
+	npc.m_flBeaconRespawnTimer = GameTime + GetRandomFloat(10.0, 20.0);
 	npc.m_iBeaconsExist++;
 
 	SetEntProp(Beacon, Prop_Data, "m_iHealth", health);
@@ -1689,7 +1800,7 @@ static bool Invoke_RegaliaAnnihilateTarget(RegaliaClass npc, float Windup)
 {
 	int count = CountPlayersOnRed(2);
 
-	//if(count <= 8)
+	//if(count <= 5)
 	//	return false;
 	
 	float RatioRequired = 0.15;
@@ -1773,7 +1884,6 @@ static void Regalia_AnnihilateTarget_Tick(DataPack IncomingData)
 
 	Data.LastLoc = f3_LastValidPosition[npc.index];
 	const float radius = 300.0;
-
 
 	Data.AngleModif += 5.0*Ratio;
 

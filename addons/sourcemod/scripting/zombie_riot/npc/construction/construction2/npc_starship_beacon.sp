@@ -58,6 +58,11 @@ methodmap Starship_Beacon < CClotBody
 	public void PlayDeathSound() {
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 	}
+	property float m_flGiveArmourTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; 				}
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	public Starship_Beacon(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Starship_Beacon npc = view_as<Starship_Beacon>(CClotBody(vecPos, vecAng, BEACON_TOWER_CORE_MODEL, BEACON_TOWER_CORE_MODEL_SIZE, MinibossHealthScaling(180.0), ally, false,true,_,_,{30.0,30.0,350.0}, .NpcTypeLogic = 1));
@@ -69,7 +74,7 @@ methodmap Starship_Beacon < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 
-		npc.m_iWearable1 = npc.EquipItemSeperate(RUINA_CUSTOM_MODELS_3, _, GetTeam(npc.index) == 2 ? 2 : 3, 0.5, -15.0);
+		npc.m_iWearable1 = npc.EquipItemSeperate(RUINA_CUSTOM_MODELS_3, _, GetTeam(npc.index) == 2 ? 2 : 3, 0.5, -10.0);
 		/*
 			const char[] model,
 			const char[] anim = "",
@@ -78,6 +83,8 @@ methodmap Starship_Beacon < CClotBody
 			float offset = 0.0,
 			bool DontParent = false)
 		*/
+
+		npc.m_flGiveArmourTimer = GetRandomFloat(12.5, 17.0) + GetGameTime();
 
 		f_PlayerScalingBuilding = ZRStocks_PlayerScalingDynamic();
 
@@ -150,8 +157,36 @@ methodmap Starship_Beacon < CClotBody
 			}
 		}
 
+		float Pos[3]; GetAbsOrigin(npc.index, Pos);
+		int particle = ParticleEffectAt_Parent(Pos, "teleporter_mvm_bot_persist", npc.index, "", {0.0,0.0,0.0});
+		CreateTimer(5.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+
 		return npc;
 	}
+}
+stock int[] iFindBeacons(CClotBody npc, int &totals)
+{
+	int Beacons[100];
+	totals = 0;
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	{
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
+		{
+			char npc_classname[60];
+			NPC_GetPluginById(i_NpcInternalId[baseboss_index], npc_classname, sizeof(npc_classname));
+			if(StrEqual(npc_classname, "npc_starship_beacon"))
+			{
+				Starship_Beacon beacon = view_as<Starship_Beacon>(baseboss_index);
+				if(EntRefToEntIndex(beacon.m_iState) == npc.index)
+				{
+					Beacons[totals] = baseboss_index;
+					totals++;
+				}
+			}
+		}
+	}
+	return Beacons;
 }
 static void ClotThink(int iNPC)
 {
@@ -179,10 +214,33 @@ static void ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	NotifyOfExistance(npc);
+	//NotifyOfExistance(npc);
+
+	if(npc.m_iState == -1)
+		return;
+
+	if(npc.m_flGiveArmourTimer < GameTime)
+	{
+		int ship = EntRefToEntIndex(npc.m_iState);
+		npc.m_flGiveArmourTimer = GetGameTime(npc.index) + 30.0;
+		//RegaliaClass Ship = view_as<RegaliaClass>(ship);
+
+		//float ship_armour = Ship.m_flArmorCount;
+		//if(ship_armour <= 0.0)
+		//	ship_armour = 0.0;
+
+		int Armour_Give = ReturnEntityMaxHealth(npc.index);
+
+		float Origin[3]; GetAbsOrigin(npc.index, Origin);
+		TE_Particle("teleported_mvm_bot_rings2", Origin, _, _, npc.index, 1, 0);
+
+		//ship max extra armour is 50%.
+		GrantEntityArmor(ship, false, 0.5, 0.5, 1, float(Armour_Give));
+	}
 	
 }
-
+//stock void GrantEntityArmor(int entity, bool Once = true, float ScaleMaxHealth, float ArmorProtect, int ArmorType, float custom_maxarmour = 0.0, int ArmorGiver = -1)
+/*
 static void NotifyOfExistance(Starship_Beacon npc)
 {
 	if(!npc.m_flAttackHappens)
@@ -225,7 +283,7 @@ static void NotifyOfExistance(Starship_Beacon npc)
 		}
 	}
 }
-
+*/
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
