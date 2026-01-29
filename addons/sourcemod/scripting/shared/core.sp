@@ -3122,7 +3122,7 @@ void RemoveNpcThingsAgain(int entity)
 public void OnEntityDestroyed(int entity)
 {
 #if !defined NOG
-	DHook_EntityDestoryed();
+	DHook_EntityDestroyed();
 #endif
 	
 	if(entity > 0 && entity < MAXENTITIES)

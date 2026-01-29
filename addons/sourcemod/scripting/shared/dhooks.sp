@@ -261,12 +261,12 @@ public MRESReturn Dhook_WantsLagCompensationOnEntity(int InitatedClient, Handle 
 	return MRES_Ignored;
 }
 
-void DHook_EntityDestoryed()
+void DHook_EntityDestroyed()
 {
-	RequestFrame(DHook_EntityDestoryedFrame);
+	RequestFrame(DHook_EntityDestroyedFrame);
 }
 
-public void DHook_EntityDestoryedFrame()
+public void DHook_EntityDestroyedFrame()
 {
 	if(RawEntityHooks)
 	{
