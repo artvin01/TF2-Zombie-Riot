@@ -198,7 +198,7 @@ enum struct RoomInfo
 						BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, this.Key);
 						if(!FileExists(buffer))
 						{
-							LogError("Unknown waveset '%s' for room '%s'", buffer, name);
+							LogError("Unknown waveset '%s' for room '%s'", this.Key, name);
 						}
 						else
 						{
@@ -599,10 +599,10 @@ void Dungeon_SetupVote(KeyValues kv)
 						kv.GetString(NULL_STRING, buffer2, sizeof(buffer2));
 						map.SetString(buffer1, buffer2);
 
-						BuildPath(Path_SM, buffer2, sizeof(buffer2), buffer1);
+						BuildPath(Path_SM, buffer2, sizeof(buffer2), CONFIG_CFG, buffer1);
 						if(!FileExists(buffer2))
 						{
-							LogError("Unknown waveset '%s' for raid", buffer2);
+							LogError("Unknown waveset '%s' for raid", buffer1);
 						}
 						else
 						{
