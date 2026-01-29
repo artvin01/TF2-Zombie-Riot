@@ -3650,7 +3650,7 @@
 	}
 	"Collector’s Backpack Desc"
 	{
-		"en"	"The backpack worn by the Aperture Collector. The tech within looks extremely advanced."
+		"en"	"The backpack worn by the Aperture Collector. \nThe tech within looks extremely advanced."
 		"ko"	"애퍼처 수집가가 매고 있던 가방입니다. 안에 들어있는 기술은 극도로 진보된 것 같습니다."
 	}
 	"Ruianian Necklace"
@@ -3660,7 +3660,7 @@
 	}
 	"Ruianian Necklace Desc"
 	{
-		"en"	"A golden necklace with a gem at the end of it. Ruliana gives it to us as a gift from Twirl."
+		"en"	"A golden necklace with a gem at the end of it. \nRuliana gives it to us as a gift from Twirl."
 		"ko"	"끝부분에 보석이 달려있는 황금 목걸이입니다. 루리아나가 트윌의 선물이라며 건네주었습니다."
 	}
 	"Ancient Demon Horn"
@@ -3670,7 +3670,7 @@
 	}
 	"Ancient Demon Horn Desc"
 	{
-		"en"	"Broken off an Ancient Demon we killed. We have no idea what to use it for…"
+		"en"	"Broken off an Ancient Demon we killed. \nWe have no idea what to use it for…"
 		"ko"	"처치한 고대 악마에게서 부러져 나온 뿔입니다. 어디에 써야할지 도통 모르겠군요..."
 	}
 	"Warped Crystal"
@@ -3680,7 +3680,15 @@
 	}
 	"Warped Crystal Desc"
 	{
-		"en"	"Made from the combination of Chaos and Void. Let's hope none of us crystallizes so we don’t get encased in one of these."
+		"en"	"Made from the combination of Chaos and Void. \nLet's hope none of us crystallizes so we don’t get encased in one of these."
 		"ko"	"혼돈과 공허가 융화되어 만들어진 수정입니다.\n우리 중 누군가 결정화 되어 이런 수정에 갇히지 않길 바라야겠죠."
+	}
+	"Tiny Flower"
+	{
+		"en"	"Tiny Flower"
+	}
+	"Tiny Flower Desc"
+	{
+		"en"	"Dropped by Flowering Darkness while retreating. A tiny white flower. \nF*** that flower! The next time we see that p****, we’re killing him!"
 	}
 }
