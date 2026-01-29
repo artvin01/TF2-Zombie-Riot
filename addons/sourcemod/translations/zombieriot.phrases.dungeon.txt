@@ -438,4 +438,8 @@
 	{
 		"en"	"Refragmented Heavy Page"
 	}
+	"Enemy Center Death"
+	{
+		"en"	"{green}Enemy {orange}Control Center {green}destroyed, the next raid attack is weakened!"
+	}
 }

@@ -354,6 +354,7 @@ static int NextRoomIndex = -1;
 static int CurrentBaseIndex = -1;
 static float BattleWaveScale;
 static float EnemyScaling;
+static bool NerfNextRaid;
 static float LastKilledAt[MAXPLAYERS];
 static DungeonZone LastZone[MAXENTITIES];
 
@@ -717,6 +718,7 @@ void Dungeon_RoundEnd()
 	delete GameTimer;
 	AttackType = 0;
 	EnemyScaling = 0.0;
+	NerfNextRaid = false;
 	Zero(LastKilledAt);
 
 	for(int i; i < sizeof(ZoneMarkerRef); i++)
@@ -2035,6 +2037,7 @@ void Dungeon_BattleVictory()
 	{
 		// Reset next attack, give full time after a raid
 		NextAttackAt = GetGameTime() + AttackTime;
+		NerfNextRaid = false;
 
 		Dungeon_SetRandomMusic();
 		CreateNewRivals();	
@@ -2147,6 +2150,10 @@ void Dungeon_MainBuildingDeath(int entity)
 			BaseList.GetArray(CurrentBaseIndex, room);
 			room.RollLoot(pos);
 			room.RollLoot(pos);
+
+			NerfNextRaid = true;
+
+			CPrintToChatAll("%t", "Enemy Center Death");
 		}
 	}
 }
@@ -2198,9 +2205,9 @@ void Dungeon_EnemySpawned(int entity)
 						{
 							round = limit;
 
-							if(!ObjectC2House_CanUpgrade() && ObjectDungeonCenter_Level() >= ObjectDungeonCenter_MaxLevel())
+							if(!ObjectC2House_CanUpgrade() && ObjectDungeonCenter_Level() >= MaxAttacks)
 							{
-
+								LimitNotice = 0;
 							}
 							else if(LimitNotice < 1)
 							{
@@ -2237,6 +2244,24 @@ void Dungeon_EnemySpawned(int entity)
 							
 							f_CreditsOnKill[entity] += float(reward / 5 * 5);
 						}
+					}
+				}
+			}
+			case 2, 3:	// Raid/Final NPC
+			{
+				if(NerfNextRaid)
+				{
+					if(b_thisNpcIsABoss[entity])
+					{
+						fl_Extra_Damage[entity] *= 0.9;
+						fl_Extra_MeleeArmor[entity] *= 1.1;
+						fl_Extra_RangedArmor[entity] *= 1.1;
+					}
+					else
+					{
+						fl_Extra_Damage[entity] *= 0.8;
+						fl_Extra_MeleeArmor[entity] *= 1.25;
+						fl_Extra_RangedArmor[entity] *= 1.25;
 					}
 				}
 			}
