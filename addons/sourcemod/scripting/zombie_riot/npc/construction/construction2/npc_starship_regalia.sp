@@ -121,7 +121,7 @@ static float fl_ShipTurnSpeed;
 				(need to add an attachment there.)
 
 			- Maybe reuse temple of scarlets V0.1 VFX for summoning/teleporting
-
+			- multi use
 	Passive:
 
 		Constructor:
