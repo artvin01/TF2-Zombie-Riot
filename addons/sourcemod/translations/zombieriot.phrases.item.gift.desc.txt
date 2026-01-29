@@ -3689,6 +3689,6 @@
 	}
 	"Tiny Flower Desc"
 	{
-		"en"	"Dropped by Flowering Darkness while retreating. A tiny white flower. \nScrew that flower! The next time we see Flowering Darkness we’re killing him!"
+		"en"	"Another tiny flower from Flowering Darkness, a garden is being maintained by their army. \nAs a garden regrows, as such does their army."
 	}
 }
