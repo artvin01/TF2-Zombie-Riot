@@ -69,9 +69,15 @@ methodmap Starship_Beacon < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 
-		npc.m_iWearable1 = npc.EquipItemSeperate(RUINA_CUSTOM_MODELS_3);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		npc.m_iWearable1 = npc.EquipItemSeperate(RUINA_CUSTOM_MODELS_3, _, GetTeam(npc.index) == 2 ? 2 : 3, 0.5, -15.0);
+		/*
+			const char[] model,
+			const char[] anim = "",
+			int skin = 0,
+			float model_size = 1.0,
+			float offset = 0.0,
+			bool DontParent = false)
+		*/
 
 		f_PlayerScalingBuilding = ZRStocks_PlayerScalingDynamic();
 

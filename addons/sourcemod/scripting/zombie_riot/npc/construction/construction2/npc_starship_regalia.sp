@@ -196,19 +196,19 @@ static const float fl_ShipRollClamps = 50.0;
 /*
 	//corners
 
-	setpos 9082.631836 -2384.214600 -4436.337402;setang 11.229923 131.620331 0.000000
-	setpos 6062.663086 -2601.933350 -4586.610352;setang 9.997921 90.348351 0.000000
-	setpos 2630.493408 -2371.841553 -4586.610352;setang 10.613924 43.532391 0.000000
-	setpos 2868.126465 4183.577148 -4586.610352;setang 20.777950 -47.173580 0.000000
-	setpos 6048.231934 4628.753906 -4586.610352;setang 22.779940 -88.907516 0.000000
-	setpos 9135.420898 4535.649902 -4586.610352;setang 22.625938 -128.947525 0.000000
-	setpos 9945.458984 953.970703 -4586.610352;setang 25.859924 -179.922256 0.000
-	setpos 9603.561523 -2316.691650 -4586.610352;setang 20.931932 136.803284 0.000000
+	9082.631836 -2384.214600 -4436.337402       11.229923 131.620331 0.000000
+	6062.663086 -2601.933350 -4586.610352       9.997921 90.348351 0.000000
+	2630.493408 -2371.841553 -4586.610352       10.613924 43.532391 0.000000
+	2868.126465 4183.577148 -4586.610352       20.777950 -47.173580 0.000000
+	6048.231934 4628.753906 -4586.610352       22.779940 -88.907516 0.000000
+	9135.420898 4535.649902 -4586.610352       22.625938 -128.947525 0.000000
+	9945.458984 953.970703 -4586.610352       25.859924 -179.922256 0.000
+	9603.561523 -2316.691650 -4586.610352       20.931932 136.803284 0.000000
 
 
 	
 	//center.
-	setpos 5975.277344 880.963745 -4436.267578;setang 13.694007 123.874184 0.000000
+	5975.277344 880.963745 -4436.267578       13.694007 123.874184 0.000000
 
 */
 static const float VaultVectorPoints[][3] = {
@@ -714,6 +714,7 @@ methodmap RegaliaClass < CClotBody
 		this.m_flShipAbilityActive 			= GetGameTime(this.index) + 1.0;
 		func_ShipTurn[this.index]			= INVALID_FUNCTION;
 		this.m_bCutThrust					= false;
+		this.m_iInternalTravelVaultVectors 	= -1;
 	}
 	public void HeadingControl()
 	{
@@ -761,18 +762,20 @@ methodmap RegaliaClass < CClotBody
 		}
 		else
 		{
+			bool is_player = false;
 			if(this.m_iInternalTravelVaultVectors != -1)
 			{
 				TargetLoc = VaultVectorPoints[this.m_iInternalTravelVaultVectors];
 			}
 			else
 			{
+				is_player = true;
 				WorldSpaceCenter(this.m_iTarget, TargetLoc);
 				TargetLoc[2]+=1000.0;
 			}
 
 			float Dist2D = Get2DVectorDistances(DroneLoc, TargetLoc, true);
-			if(Dist2D < (150.0 * 150.0))
+			if(Dist2D < (is_player ? (300.0 * 300.0) : (150.0 * 150.0)))
 			{
 				if(this.m_iInternalTravelVaultVectors == -1)
 				{
@@ -1241,11 +1244,35 @@ static void ClotThink(int iNPC)
 	HandleMainWeapons(npc);
 	HandleDroneSystem(npc);
 	Handle_SpiralGlaive(npc);
-	//HandleBeacons(npc);
+	HandleBeacons(npc);
 }
 static const float fl_BeaconSpawnPos[][3] = {
-	{0.0, 0.0, 0.0}
+	{7622.043945, -619.331421, 	-5929.582520},
+	{5854.175293, -764.341980, 	-5929.582520},
+	{4585.667969, 470.419800, 	-5929.582520}, 
+	{4599.006836, 1457.004517, 	-5929.582520},
+	{4820.345215, 2404.140381, 	-5929.582520},
+	{5775.631348, 2674.651367, 	-5929.582520},
+	{7084.973633, 2730.071045, 	-5929.582520},
+	{7824.516113, 1989.070312, 	-5929.582520},
+	{7729.678223, 802.875183, 	-5929.582520}, 
+	{7437.662109, -382.637848, 	-5929.582520},
+	{7208.161621, 592.429443, 	-5929.582520}, 
+	{6539.422852, 1764.437744, 	-5929.582520},
+	{5495.158203, 2109.176758, 	-5929.582520},
+	{5124.044434, 1051.976807, 	-5929.582520},
+	{6872.589844, -677.584900, 	-5929.582520},
+	{7891.919434, 123.480782, 	-5929.582520}, 
+	{7863.694824, 1293.345093, 	-5929.582520},
+	{7957.625000, 2559.701904, 	-5929.582520},
+	{6137.000488, 2693.118896, 	-5929.582520},
+	{4979.221191, 1951.209839, 	-5929.582520},
+	{4312.235840, 281.892914, 	-5929.582520}, 
+	{4259.996582, -741.711670, 	-5929.582520},
+	{6291.461914, 195.441269, 	-5929.582520}, 
+	{4852.110840, 1.806172, 	-5929.582520} 
 };
+static float fl_beacon_spawned_at_pos_recently[sizeof(fl_BeaconSpawnPos)-1];
 static void HandleBeacons(RegaliaClass npc)
 {
 	//we allow 5 beacons
@@ -1259,10 +1286,30 @@ static void HandleBeacons(RegaliaClass npc)
 
 	bool dungeon = Dungeon_Mode();
 
-	int Beacon = NPC_CreateByName("npc_lantean_drone_projectile", npc.index, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, GetTeam(npc.index), "blue;raidmodescaling_damage");
-	int health = RoundToFloor(SDKCall_GetMaxHealth(npc.index) * 0.05);	//like 5% hp of ship
+	int Beacon = -2;
+	int selection = 0;
+	for(int i=0 ; i < sizeof(fl_BeaconSpawnPos)-1 ; i++)
+	{
+		if(!dungeon)
+			break;
+
+		//CPrintToChatAll("fl_beacon_spawned_at_pos_recently[%i] = %.3f", i, fl_beacon_spawned_at_pos_recently[i]);
+		if(fl_beacon_spawned_at_pos_recently[i] == 0.0)
+		{
+			selection = i;
+			break;
+		}
+
+		if(fl_beacon_spawned_at_pos_recently[i] < fl_beacon_spawned_at_pos_recently[selection])
+			selection = i;
+	}
+	
+	Beacon = NPC_CreateByName("npc_starship_beacon", npc.index, fl_BeaconSpawnPos[selection], {0.0, 0.0, 0.0}, GetTeam(npc.index), "style1");
+	int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.05);	//like 5% hp of ship
 	if(Beacon < MaxClients)
 		return;
+
+	npc.m_iBeaconsExist++;
 
 	SetEntProp(Beacon, Prop_Data, "m_iHealth", health);
 	SetEntProp(Beacon, Prop_Data, "m_iMaxHealth", health);
@@ -1270,11 +1317,12 @@ static void HandleBeacons(RegaliaClass npc)
 	Starship_Beacon beacon_npc = view_as<Starship_Beacon>(Beacon);
 	beacon_npc.m_iState = EntIndexToEntRef(npc.index);
 
-	if(dungeon)
-	{
-		TeleportEntity(Beacon, fl_BeaconSpawnPos[GetRandomInt(0, sizeof(fl_BeaconSpawnPos))], NULL_VECTOR, NULL_VECTOR);
-	}
-	else
+	fl_beacon_spawned_at_pos_recently[selection] = GetGameTime();
+
+	//CPrintToChatAll("Selection: %i", fl_beacon_spawned_at_pos_recently);
+	//CPrintToChatAll("Selection = %.3f", fl_beacon_spawned_at_pos_recently[selection]);
+
+	if(!dungeon)
 	{
 		int Decicion = TeleportDiversioToRandLocation(Beacon,_,1250.0, 500.0);
 
@@ -1462,13 +1510,16 @@ static void SpiralGlave_Tick(DataPack IncomingData)
 	Laser.Bonus_Damage 	= ModifyDamage(1.0);
 	Laser.damagetype 	= DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE;
 
+	const float AngleFinal = 75.0;
+	float Adjusted = 90.0 - AngleFinal;
+
 	for(int i=0 ; i < loops ; i++)
 	{
 		float Angles[3]; Angles[1] = (360.0 / loops) * i + Data.Angle;
 		float OffsetLoc[3];
 		Get_Fake_Forward_Vec(Radius, Angles, OffsetLoc, MiddleLoc);
 		float EndOffsetLoc[3];
-		Angles[0] = 90.0 * Ratio;
+		Angles[0] = Adjusted + AngleFinal * Ratio;
 		Get_Fake_Forward_Vec(Length, Angles, EndOffsetLoc, OffsetLoc);
 		
 		TE_SetupBeamPoints(OffsetLoc, EndOffsetLoc, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness, Thickness, 0, 0.1, color, 3);
@@ -1638,8 +1689,8 @@ static bool Invoke_RegaliaAnnihilateTarget(RegaliaClass npc, float Windup)
 {
 	int count = CountPlayersOnRed(2);
 
-	if(count <= 8)
-		return false;
+	//if(count <= 8)
+	//	return false;
 	
 	float RatioRequired = 0.15;
 	int highest = 0; 
@@ -1655,13 +1706,13 @@ static bool Invoke_RegaliaAnnihilateTarget(RegaliaClass npc, float Windup)
 	if(highest == 0)
 		return false;
 
-	int MaxHealth = SDKCall_GetMaxHealth(npc.index);
+	int MaxHealth = ReturnEntityMaxHealth(npc.index);
 
 	float Damage_Dealt = fl_player_weapon_score[highest] / MaxHealth;
 
-	CPrintToChatAll("highest      : %N", highest);
-	CPrintToChatAll("Damage_Dealt : %.5f", Damage_Dealt);
-	CPrintToChatAll("RatioRequired: %.5f", RatioRequired);
+	//CPrintToChatAll("highest      : %N", highest);
+	//CPrintToChatAll("Damage_Dealt : %.5f", Damage_Dealt);
+	//CPrintToChatAll("RatioRequired: %.5f", RatioRequired);
 
 	if(Damage_Dealt < RatioRequired)
 		return false;
@@ -1673,7 +1724,7 @@ static bool Invoke_RegaliaAnnihilateTarget(RegaliaClass npc, float Windup)
 	RegaliaAnnihilateTarget_Data Data;
 	Data.iNPC 		= EntIndexToEntRef(npc.index);
 	Data.Victim 	= EntIndexToEntRef(highest);							//target to annihilate
-	Data.CuttoffAt 	= GetGameTime(npc.index) + Windup - 1.0;
+	Data.CuttoffAt 	= GetGameTime(npc.index) + Windup - 1.25;
 	Data.Windup_Base= Windup;
 	Data.Windup 	= GetGameTime(npc.index) + Data.Windup_Base;
 	Data.LastLoc 	= f3_LastValidPosition[npc.index];
@@ -1729,7 +1780,7 @@ static void Regalia_AnnihilateTarget_Tick(DataPack IncomingData)
 	if(Data.AngleModif > 360.0)
 		Data.AngleModif -= 360.0;
 
-	const float Thickness = 25.0;
+	const float Thickness = 15.0;
 	const float TE_Duration = 0.1;
 	const float Amp = 0.1;
 	int color[4] = {255, 255, 255, 255};
@@ -1758,6 +1809,9 @@ static void Regalia_AnnihilateTarget_Tick(DataPack IncomingData)
 		i_who_to_kill = target;
 		Explode_Logic_Custom(0.0, npc.index, npc.index, -1, Data.LastLoc, radius,_,_, true, _, _, _, Regalia_Annihilate_IonHitPre);
 
+		TE_SetupBeamRingPoint(Data.LastLoc, radius*2.0, 0.0, g_Ruina_BEAM_Combine_Black, 0, 0, 1, 0.89, Thickness, Amp, {255, 255, 255, 255}, 1, 0);
+		TE_SendToAll();
+
 		for(int z=1 ; z <= 3 ; z++)
 		{
 			for(int i=0 ; i < Sections ; i++)
@@ -1766,7 +1820,7 @@ static void Regalia_AnnihilateTarget_Tick(DataPack IncomingData)
 
 				float SkyLoc[3]; SkyLoc = OffsetLoc; SkyLoc[2]+=height;
 
-				TE_SetupBeamPoints(OffsetLoc, SkyLoc, g_Ruina_BEAM_Combine_Black, 0, 0, 0, (3.0 - (0.5*z)), Thickness, Thickness, 0, Amp, {255, 255, 255, 255}, 3);
+				TE_SetupBeamPoints(OffsetLoc, SkyLoc, g_Ruina_BEAM_Combine_Black, 0, 0, 0, (2.0 - (0.25*z)), Thickness, Thickness, 0, Amp, {255, 255, 255, 255}, 3);
 				TE_SendToAll();
 			}
 		}
@@ -1785,7 +1839,7 @@ static void Regalia_AnnihilateTarget_Tick(DataPack IncomingData)
 			TE_SetupBeamPoints(OffsetLoc, SkyLoc, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness, Thickness, 0, Amp, color, 3);
 			TE_SendToAll();
 
-			TE_SetupBeamPoints(OffsetLoc, SectionLoc[i / 2], g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness*0.5, Thickness*0.5, 0, Amp, color, 3);
+			TE_SetupBeamPoints(OffsetLoc, SectionLoc[i / 2], g_Ruina_Laser_BEAM, 0, 0, 0, TE_Duration, Thickness*0.1, Thickness*0.1, 0, Amp, color, 3);
 			TE_SendToAll();
 		}
 		
@@ -2010,7 +2064,7 @@ static void DoG_PatternTick(DataPack IncomingData)
 		for(int i=0 ; i < 4 ; i++)
 		{
 			float OffsetLoc[3]; OffsetLoc = vCreateDoGVectorMesh(Data.Loc, i, 4, Radius, Data.AngleModif);
-			TE_SetupBeamPoints(OffsetLoc, SectionLoc[i], g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness*0.25, Thickness*0.25, 0, Amp, color, 3);
+			TE_SetupBeamPoints(OffsetLoc, SectionLoc[i], g_Ruina_Laser_BEAM, 0, 0, 0, TE_Duration, Thickness*0.25, Thickness*0.25, 0, Amp, color, 3);
 			TE_SendToAll();
 		}
 	}
@@ -2065,7 +2119,7 @@ static void DoG_PatternTick(DataPack IncomingData)
 			MakeObjectIntangeable(projectile);
 			Projectile.Apply_Particle(Particle);
 
-			TE_SetupBeamPoints(Projectile.Start_Loc, SectionLoc[GetRandomInt(0, 3)], g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration*2.0, Thickness, Thickness, 0, Amp*2.0, color, 3);
+			TE_SetupBeamPoints(Projectile.Start_Loc, SectionLoc[GetRandomInt(0, 3)], g_Ruina_Laser_BEAM, 0, 0, 0, TE_Duration*2.0, Thickness, Thickness, 0, Amp*2.0, color, 3);
 			TE_SendToAll();
 		}
 
@@ -2264,7 +2318,7 @@ static void RegaliaIOC_Tick(DataPack Data)
 		TE_SetupBeamPoints(OffsetLoc, SkyLoc, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness, Thickness, 0, Amp, color, 3);
 		TE_SendToAll();
 
-		TE_SetupBeamPoints(OffsetLoc, SectionLoc[i / 2], g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Thickness*0.5, Thickness*0.5, 0, Amp, color, 3);
+		TE_SetupBeamPoints(OffsetLoc, SectionLoc[i / 2], g_Ruina_Laser_BEAM, 0, 0, 0, TE_Duration, Thickness*0.5, Thickness*0.5, 0, Amp, color, 3);
 		TE_SendToAll();
 	}
 
@@ -2378,9 +2432,9 @@ static void HandleDroneSystem(RegaliaClass npc)
 static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
 {
 	int Drone = NPC_CreateByName("npc_lantean_drone_projectile", npc.index, Loc, Angles, GetTeam(npc.index), "blue;raidmodescaling_damage");
-	int health = RoundToFloor(SDKCall_GetMaxHealth(npc.index) * 0.001);	//like 0.1% hp of ship
+	int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.001);	//like 0.1% hp of ship
 
-	const float DroneSpeed = 2000.0;
+	const float DroneSpeed = 750.0;
 	if(Drone > MaxClients)
 	{
 		SetEntProp(Drone, Prop_Data, "m_iHealth", health);
