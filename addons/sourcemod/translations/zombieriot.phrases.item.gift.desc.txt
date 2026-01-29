@@ -3689,6 +3689,6 @@
 	}
 	"Tiny Flower Desc"
 	{
-		"en"	"Dropped by Flowering Darkness while retreating. A tiny white flower. \nF*** that flower! The next time we see that p****, we’re killing him!"
+		"en"	"Dropped by Flowering Darkness while retreating. A tiny white flower. \nScrew that flower! The next time we see Flowering Darkness we’re killing him!"
 	}
 }
