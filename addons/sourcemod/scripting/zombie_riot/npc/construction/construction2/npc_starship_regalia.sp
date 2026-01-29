@@ -166,13 +166,19 @@ static const char g_ShieldDamageSound[][] = {
 	"physics/glass/glass_impact_bullet2.wav",
 	"physics/glass/glass_impact_bullet3.wav"
 };
+static const char g_ShieldBreakSound[][] = {
+	"physics/glass/glass_largesheet_break1.wav"
+};
 static const char g_DoGAttackSound[][] = {
 	"npc/combine_gunship/attack_stop2.wav"
 };
-#define REGALIA_IOC_EXPLOSION_SOUND		"misc/halloween/spell_mirv_explode_primary.wav"
-#define REGALIA_IOC_STARTUP				"ambient/machines/thumper_startup1.wav"
-#define REGALIA_IOC_CHARGE_LOOP			"ambient/machines/thumper_amb.wav"
-#define REGALIA_PATTERNS_CHARGE_SOUND	"friends/friend_online.wav"
+#define REGALIA_IOC_EXPLOSION_SOUND				"misc/halloween/spell_mirv_explode_primary.wav"
+#define REGALIA_IOC_STARTUP						"ambient/machines/thumper_startup1.wav"
+#define REGALIA_IOC_CHARGE_LOOP					"ambient/machines/thumper_amb.wav"
+#define REGALIA_PATTERNS_CHARGE_SOUND			"friends/friend_online.wav"
+#define REGALIA_SPECIAL_IOC_EXPLOSION_SOUND		"ambient/levels/labs/teleport_postblast_thunder1.wav"
+#define REGALIA_SPECIAL_IOC_EXPLOSION_SOUND_2	"ambient/levels/citadel/portal_beam_shoot2.wav"
+#define REGALIA_SPECIAL_IOC_CHARGE_LOOP			"ambient/levels/citadel/zapper_warmup4.wav"
 
 
 enum 
@@ -245,12 +251,16 @@ static void ClotPrecache()
 {
 	PrecacheModel(STARSHIP_MODEL);
 	PrecacheSoundArray(g_ShieldDamageSound);
+	PrecacheSoundArray(g_ShieldBreakSound);
 	PrecacheSoundArray(g_DefaultCapperShootSound);
 	PrecacheSoundArray(g_DoGAttackSound);
 	PrecacheSound(REGALIA_IOC_EXPLOSION_SOUND);
 	PrecacheSound(REGALIA_PATTERNS_CHARGE_SOUND);
 	PrecacheSound(REGALIA_IOC_STARTUP);
 	PrecacheSound(REGALIA_IOC_CHARGE_LOOP);
+	PrecacheSound(REGALIA_SPECIAL_IOC_EXPLOSION_SOUND);
+	PrecacheSound(REGALIA_SPECIAL_IOC_EXPLOSION_SOUND_2);
+	PrecacheSound(REGALIA_SPECIAL_IOC_CHARGE_LOOP);
 
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -267,6 +277,9 @@ methodmap RegaliaClass < CClotBody
 
 		int pitch = GetRandomInt(40, 70);
 		EmitSoundToAll(g_ShieldDamageSound[GetRandomInt(0, sizeof(g_ShieldDamageSound) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.25, pitch);
+	}
+	public void EmitShieldBreakSound() {
+		EmitSoundToAll(g_ShieldBreakSound[GetRandomInt(0, sizeof(g_ShieldBreakSound) - 1)], this.index, _, SNDLEVEL_RAIDSIREN, _, 1.0, 60);
 	}
 	public void PlayCapperSound() {
 		EmitSoundToAll(g_DefaultCapperShootSound[GetRandomInt(0, sizeof(g_DefaultCapperShootSound) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);	
@@ -550,7 +563,7 @@ methodmap RegaliaClass < CClotBody
 		npc.Handle_SectionParticles();
 
 		Zero(fl_player_weapon_score);
-		
+		npc.m_fbRangedSpecialOn = true;		
 		return npc;
 	}
 	public void CreateBody()
@@ -1419,7 +1432,7 @@ static void HandleBeacons(RegaliaClass npc)
 	if(Beacon < MaxClients)
 		return;
 
-	npc.m_flBeaconRespawnTimer = GameTime + GetRandomFloat(10.0, 20.0);
+	npc.m_flBeaconRespawnTimer = GameTime + GetRandomFloat(10.0, 11.0 + (5.0 * npc.m_iBeaconsExist));
 	npc.m_iBeaconsExist++;
 
 	SetEntProp(Beacon, Prop_Data, "m_iHealth", health);
@@ -1795,6 +1808,8 @@ enum struct RegaliaAnnihilateTarget_Data {
 
 	float AngleModif;
 
+	float SoundTimer;
+
 }
 static bool Invoke_RegaliaAnnihilateTarget(RegaliaClass npc, float Windup)
 {
@@ -1840,6 +1855,7 @@ static bool Invoke_RegaliaAnnihilateTarget(RegaliaClass npc, float Windup)
 	Data.Windup 	= GetGameTime(npc.index) + Data.Windup_Base;
 	Data.LastLoc 	= f3_LastValidPosition[npc.index];
 	Data.AngleModif = GetRandomFloat(0.0, 360.0);
+	Data.SoundTimer = 0.0;
 
 	DataPack Pack = new DataPack();
 	Pack.WriteCellArray(Data, sizeof(Data));
@@ -1911,7 +1927,13 @@ static void Regalia_AnnihilateTarget_Tick(DataPack IncomingData)
 		SectionLoc[i] = npc.GetWeaponSections(ShipWeaponsSections[i]);
 	}
 
-	TE_SetupBeamRingPoint(Data.LastLoc, radius*2.0, radius*2.0 - 1.0, g_Ruina_BEAM_Combine_Black, 0, 0, 1, TE_Duration, Thickness, Amp, {255, 255, 255, 255}, 1, 0);
+	if(Data.SoundTimer < GameTime)
+	{
+		Data.SoundTimer = GameTime + 0.2;
+		EmitSoundToAll(REGALIA_SPECIAL_IOC_CHARGE_LOOP, target, SNDCHAN_VOICE, SNDLEVEL_NORMAL, _, 0.7, 166 - RoundToFloor(100 * (1.0 - Ratio)), _, Data.LastLoc);
+	}
+
+	TE_SetupBeamRingPoint(Data.LastLoc, radius*2.0, radius*2.0 - 1.0, g_Ruina_BEAM_Combine_Black, 0, 0, 1, TE_Duration, Thickness*1.5, Amp, {255, 255, 255, 255}, 1, 0);
 	TE_SendToAll();
 
 	if(Data.Windup < GameTime)
@@ -1919,8 +1941,15 @@ static void Regalia_AnnihilateTarget_Tick(DataPack IncomingData)
 		i_who_to_kill = target;
 		Explode_Logic_Custom(0.0, npc.index, npc.index, -1, Data.LastLoc, radius,_,_, true, _, _, _, Regalia_Annihilate_IonHitPre);
 
-		TE_SetupBeamRingPoint(Data.LastLoc, radius*2.0, 0.0, g_Ruina_BEAM_Combine_Black, 0, 0, 1, 0.89, Thickness, Amp, {255, 255, 255, 255}, 1, 0);
+		Data.LastLoc[2]+=10.0;
+		TE_SetupBeamRingPoint(Data.LastLoc, radius*2.0, 0.0, g_Ruina_BEAM_Combine_Black, 0, 0, 1, 1.75, Thickness*1.5, Amp, {255, 255, 255, 255}, 1, 0);
 		TE_SendToAll();
+
+		//a fucking THUNDER CLAP FROM GOD the sound
+		EmitSoundToAll(REGALIA_SPECIAL_IOC_EXPLOSION_SOUND, _, _, SNDLEVEL_RAIDSIREN, _, 1.0, 50);
+		EmitSoundToAll(REGALIA_SPECIAL_IOC_EXPLOSION_SOUND, _, _, SNDLEVEL_RAIDSIREN, _, 1.0, 50);
+
+		EmitSoundToAll(REGALIA_SPECIAL_IOC_EXPLOSION_SOUND_2, _, _, SNDLEVEL_RAIDSIREN, _, 1.0, 100);	
 
 		for(int z=1 ; z <= 3 ; z++)
 		{
@@ -1929,6 +1958,7 @@ static void Regalia_AnnihilateTarget_Tick(DataPack IncomingData)
 				float OffsetLoc[3]; OffsetLoc = vCreateDoGVectorMesh(Data.LastLoc, i, Sections, (radius / 3.0) * z, Data.AngleModif);
 
 				float SkyLoc[3]; SkyLoc = OffsetLoc; SkyLoc[2]+=height;
+				OffsetLoc[2]-= 250.0;
 
 				TE_SetupBeamPoints(OffsetLoc, SkyLoc, g_Ruina_BEAM_Combine_Black, 0, 0, 0, (2.0 - (0.25*z)), Thickness, Thickness, 0, Amp, {255, 255, 255, 255}, 3);
 				TE_SendToAll();
@@ -1939,7 +1969,6 @@ static void Regalia_AnnihilateTarget_Tick(DataPack IncomingData)
 	}
 	else
 	{
-
 		for(int i=0 ; i < Sections ; i++)
 		{
 			float OffsetLoc[3]; OffsetLoc = vCreateDoGVectorMesh(Data.LastLoc, i, Sections, radius * Ratio, Data.AngleModif);
@@ -3058,10 +3087,15 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		fl_player_weapon_score[attacker]+=damage;
 	}
 
-
 	if(npc.m_flArmorCount > 0.0)
 	{
+		npc.m_fbRangedSpecialOn = false;
 		npc.EmitShieldSound();
+	}
+	else if(!npc.m_fbRangedSpecialOn)
+	{
+		npc.m_fbRangedSpecialOn = true;
+		npc.EmitShieldBreakSound();
 	}
 
 	return Plugin_Continue;

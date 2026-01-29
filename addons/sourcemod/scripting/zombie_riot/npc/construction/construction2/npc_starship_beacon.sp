@@ -12,18 +12,14 @@ static const char g_HurtSounds[][] = {
 	")physics/metal/metal_box_impact_bullet2.wav",
 	")physics/metal/metal_box_impact_bullet3.wav",
 };
-static const char g_MeleeMissSounds[][] = {
-	"ui/hitsound_vortex1.wav",
-	"ui/hitsound_vortex2.wav",
-	"ui/hitsound_vortex3.wav",
-	"ui/hitsound_vortex4.wav",
-	"ui/hitsound_vortex5.wav"
+static const char g_ShieldGiveSounds[][] = {
+	"misc/ks_tier_04.wav"
 };
 
 
 #define BEACON_TOWER_CORE_MODEL "models/props_urban/urban_skybuilding005a.mdl"
-#define BEACON_TOWER_CORE_MODEL_SIZE "0.75"
-static float f_PlayerScalingBuilding;
+#define BEACON_TOWER_CORE_MODEL_SIZE "0.5"
+//static float f_PlayerScalingBuilding;
 void Starship_Beacon_OnMapStart_NPC()
 {
 	NPCData data;
@@ -41,6 +37,7 @@ static void ClotPrecache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_ShieldGiveSounds);
 	PrecacheModel(BEACON_TOWER_CORE_MODEL);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -57,6 +54,9 @@ methodmap Starship_Beacon < CClotBody
 	}
 	public void PlayDeathSound() {
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+	}
+	public void PlayShieldGiveSound() {
+		EmitSoundToAll(g_ShieldGiveSounds[GetRandomInt(0, sizeof(g_ShieldGiveSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 	}
 	property float m_flGiveArmourTimer
 	{
@@ -86,7 +86,7 @@ methodmap Starship_Beacon < CClotBody
 
 		npc.m_flGiveArmourTimer = GetRandomFloat(12.5, 17.0) + GetGameTime();
 
-		f_PlayerScalingBuilding = ZRStocks_PlayerScalingDynamic();
+		//f_PlayerScalingBuilding = ZRStocks_PlayerScalingDynamic();
 
 
 		if(StrContains(data, "style1") != -1)
@@ -222,6 +222,11 @@ static void ClotThink(int iNPC)
 	if(npc.m_flGiveArmourTimer < GameTime)
 	{
 		int ship = EntRefToEntIndex(npc.m_iState);
+		if(!IsValidEntity(ship))
+		{
+			npc.m_iState = -1;
+			return;
+		}
 		npc.m_flGiveArmourTimer = GetGameTime(npc.index) + 30.0;
 		//RegaliaClass Ship = view_as<RegaliaClass>(ship);
 
@@ -233,6 +238,8 @@ static void ClotThink(int iNPC)
 
 		float Origin[3]; GetAbsOrigin(npc.index, Origin);
 		TE_Particle("teleported_mvm_bot_rings2", Origin, _, _, npc.index, 1, 0);
+
+		npc.PlayShieldGiveSound();
 
 		//ship max extra armour is 50%.
 		GrantEntityArmor(ship, false, 0.5, 0.5, 1, float(Armour_Give));
