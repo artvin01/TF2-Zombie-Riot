@@ -2200,7 +2200,7 @@ void Dungeon_EnemySpawned(int entity)
 
 							if(!ObjectC2House_CanUpgrade() && ObjectDungeonCenter_Level() >= MaxAttacks)
 							{
-
+								LimitNotice = 0;
 							}
 							else if(LimitNotice < 1)
 							{
