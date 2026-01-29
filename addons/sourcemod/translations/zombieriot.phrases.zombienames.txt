@@ -7793,6 +7793,14 @@
 	{
 		"en"	"Regalia class Battlecruiser"
 	}
+	"Starship Beacon"
+	{
+		"en"	"Starship Beacon"
+	}
+	"Starship Beacon Desc"
+	{
+		"en"	"A stolen magia anchor. kill it. now."
+	}
 	"Lantean Drone Projectile"
 	{
 		"en"	"Lantean Drone"

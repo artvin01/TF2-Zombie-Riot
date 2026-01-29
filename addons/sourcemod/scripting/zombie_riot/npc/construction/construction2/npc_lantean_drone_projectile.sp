@@ -135,11 +135,11 @@ methodmap LanteanProjectile < CClotBody
 		npc.StopPathing();	//don't path.
 
 		fl_LanteanDrone_TurnSpeed			 		= 2.0;
-		fl_LanteanDrone_Acceleration 				= 25.0;
+		fl_LanteanDrone_Acceleration 				= 5.0;
 		fl_LanteanDrone_Deceleration				= 2.5;
 		fl_LanteanDrone_HyperDecelerationNearDist 	= 500.0;
 		fl_LanteanDrone_HyperDecelerationSpeed 		= 10.0;
-		fl_LanteanDrone_HyperDecelerationMax 		= 0.5;
+		fl_LanteanDrone_HyperDecelerationMax 		= 0.25;
 
 		//detection
 		SDKHook(npc.index, SDKHook_Think, 		ProjectileBaseThink);

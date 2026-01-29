@@ -1196,6 +1196,7 @@ void NPC_ConfigSetup()
 	Const2BaseConstructDefender_OnMapStart_NPC();
 	StarShip_Regalia_OnMapStart();
 	Lantean_Drone_Projectile_OnMapStart();
+	Starship_Beacon_OnMapStart_NPC();
 	ChaosGunmenOnMapStart();
 	ChaosBladeThrowerOnMapStart();
 	ChaosFencer_OnMapStart_NPC();
@@ -2606,4 +2607,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/construction2/npc_base_construct_defender.sp"
 #include "npc/construction/construction2/npc_starship_regalia.sp"
 #include "npc/construction/construction2/npc_lantean_drone_projectile.sp"
+#include "npc/construction/construction2/npc_starship_beacon.sp"
 #include "npc/construction/npc_dungeon_loot.sp"
