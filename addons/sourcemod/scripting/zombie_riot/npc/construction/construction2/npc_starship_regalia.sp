@@ -227,6 +227,7 @@ static const float VaultVectorPoints[][3] = {
 
 static ArrayList AL_RegaliaAttachedEntities[MAXENTITIES] = {null, ...};
 static Function func_ShipTurn[MAXENTITIES];
+static bool bShipRaidModeScaling;
 void StarShip_Regalia_OnMapStart()
 {
 	NPCData data;
@@ -258,8 +259,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 }
 methodmap RegaliaClass < CClotBody
 {
-	public void EmitShieldSound()
-	{
+	public void EmitShieldSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
@@ -394,16 +394,25 @@ methodmap RegaliaClass < CClotBody
 		public get()							{ return i_SemiAutoWeapon[this.index]; }
 		public set(int TempValueForProperty) 	{ i_SemiAutoWeapon[this.index] = TempValueForProperty; }
 	}
+	property int m_iBeaconsExist
+	{
+		public get()							{ return i_SurvivalKnifeCount[this.index]; }
+		public set(int TempValueForProperty) 	{ i_SurvivalKnifeCount[this.index] = TempValueForProperty; }
+	}
 	public RegaliaClass(float vecPos[3], float vecAng[3], int team, const char[] data)
 	{
 		RegaliaClass npc = view_as<RegaliaClass>(CClotBody(vecPos, vecAng, STARSHIP_MODEL, "1.0", "1000", team, .CustomThreeDimensions = {1000.0, 1000.0, 200.0}, .CustomThreeDimensionsextra = {-1000.0, -1000.0, -200.0}));
 		
 		i_NpcWeight[npc.index] = 999;
 
+		bShipRaidModeScaling = false;
+
 		npc.CleanEntities();
 		
 		SetEntityRenderMode(npc.index, RENDER_NORMAL);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
+
+		npc.m_iBeaconsExist = 0;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
@@ -411,6 +420,12 @@ methodmap RegaliaClass < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 		}
+		if(StrContains(data, "raid_damage_scaling") != -1)
+		{
+			Do_RaidModeScaling(data);
+			bShipRaidModeScaling = true;
+		}
+		
 		//Setting it to 999 will make our lag comp not resize collision box on shoot
 		b_BoundingBoxVariant[npc.index] = BBV_DontAlter; 
 
@@ -1226,6 +1241,49 @@ static void ClotThink(int iNPC)
 	HandleMainWeapons(npc);
 	HandleDroneSystem(npc);
 	Handle_SpiralGlaive(npc);
+	//HandleBeacons(npc);
+}
+static const float fl_BeaconSpawnPos[][3] = {
+	{0.0, 0.0, 0.0}
+};
+static void HandleBeacons(RegaliaClass npc)
+{
+	//we allow 5 beacons
+	if(npc.m_iBeaconsExist >= 5)
+		return;
+
+	float GameTime = GetGameTime(npc.index);
+
+	if(npc.m_flShipAbilityActive > GameTime)
+		return;
+
+	bool dungeon = Dungeon_Mode();
+
+	int Beacon = NPC_CreateByName("npc_lantean_drone_projectile", npc.index, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, GetTeam(npc.index), "blue;raidmodescaling_damage");
+	int health = RoundToFloor(SDKCall_GetMaxHealth(npc.index) * 0.05);	//like 5% hp of ship
+	if(Beacon < MaxClients)
+		return;
+
+	SetEntProp(Beacon, Prop_Data, "m_iHealth", health);
+	SetEntProp(Beacon, Prop_Data, "m_iMaxHealth", health);
+
+	Starship_Beacon beacon_npc = view_as<Starship_Beacon>(Beacon);
+	beacon_npc.m_iState = EntIndexToEntRef(npc.index);
+
+	if(dungeon)
+	{
+		TeleportEntity(Beacon, fl_BeaconSpawnPos[GetRandomInt(0, sizeof(fl_BeaconSpawnPos))], NULL_VECTOR, NULL_VECTOR);
+	}
+	else
+	{
+		int Decicion = TeleportDiversioToRandLocation(Beacon,_,1250.0, 500.0);
+
+		if(Decicion == 2)
+			Decicion = TeleportDiversioToRandLocation(Beacon, _, 1250.0, 250.0);
+
+		if(Decicion == 2)
+			Decicion = TeleportDiversioToRandLocation(Beacon, _, 1250.0, 0.0);
+	}
 }
 enum struct Regalia_SpiralGlave_Data {
 	int iNPC_ref;
@@ -1580,7 +1638,7 @@ static bool Invoke_RegaliaAnnihilateTarget(RegaliaClass npc, float Windup)
 {
 	int count = CountPlayersOnRed(2);
 
-	if(count <= 4)
+	if(count <= 8)
 		return false;
 	
 	float RatioRequired = 0.15;
@@ -1600,6 +1658,10 @@ static bool Invoke_RegaliaAnnihilateTarget(RegaliaClass npc, float Windup)
 	int MaxHealth = SDKCall_GetMaxHealth(npc.index);
 
 	float Damage_Dealt = fl_player_weapon_score[highest] / MaxHealth;
+
+	CPrintToChatAll("highest      : %N", highest);
+	CPrintToChatAll("Damage_Dealt : %.5f", Damage_Dealt);
+	CPrintToChatAll("RatioRequired: %.5f", RatioRequired);
 
 	if(Damage_Dealt < RatioRequired)
 		return false;
@@ -2316,7 +2378,9 @@ static void HandleDroneSystem(RegaliaClass npc)
 static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
 {
 	int Drone = NPC_CreateByName("npc_lantean_drone_projectile", npc.index, Loc, Angles, GetTeam(npc.index), "blue;raidmodescaling_damage");
-	int health = 5000;	//like 0.1% hp of ship
+	int health = RoundToFloor(SDKCall_GetMaxHealth(npc.index) * 0.001);	//like 0.1% hp of ship
+
+	const float DroneSpeed = 2000.0;
 	if(Drone > MaxClients)
 	{
 		SetEntProp(Drone, Prop_Data, "m_iHealth", health);
@@ -2325,13 +2389,16 @@ static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
 		LanteanProjectile drone_npc = view_as<LanteanProjectile>(Drone);
 		fl_AbilityVectorData[drone_npc.index] = Angles;
 
-		drone_npc.m_flTimeTillDeath = GetGameTime() + 10.0;
-		drone_npc.m_flSpeed = npc.m_flSpeed + 200.0 * GetRandomFloat(0.8, 1.2);
+		drone_npc.m_flTimeTillDeath = GetGameTime() + 10.0 + GetRandomFloat(0.5, 1.5);
+		drone_npc.m_flSpeed = DroneSpeed + 200.0 * GetRandomFloat(0.8, 1.2);
 	}
 }
 static float ModifyDamage(float dmg)
 {
-	return dmg * RaidModeScaling;
+	if(bShipRaidModeScaling)
+		return dmg * RaidModeScaling;
+
+	return dmg * 10.0;
 }
 static float fl_PrimaryLanceDuration_Base 		= 5.0;
 static float fl_PrimaryLanceRecharge_Base 		= 120.0;
@@ -2856,6 +2923,48 @@ static int[] iRegaliaColor(RegaliaClass npc)
 		default:color = {255, 255, 255, 255};
 	}
 	return color;
+}
+static void Do_RaidModeScaling(const char[] data)
+{
+	char buffers[3][64];
+	ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+	//the very first and 2nd char are SC for scaling
+	if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+	{
+		//remove SC
+		ReplaceString(buffers[0], 64, "sc", "");
+		float value = StringToFloat(buffers[0]);
+		RaidModeScaling = value;
+	}
+	else
+	{	
+		RaidModeScaling = float(Waves_GetRoundScale()+1);
+	}
+	
+	if(RaidModeScaling < 35)
+	{
+		RaidModeScaling *= 0.25; //abit low, inreacing
+	}
+	else
+	{
+		RaidModeScaling *= 0.5;
+	}
+	
+	float amount_of_people = ZRStocks_PlayerScalingDynamic();
+	
+	if(amount_of_people > 12.0)
+	{
+		amount_of_people = 12.0;
+	}
+	
+	amount_of_people *= 0.12;
+	
+	if(amount_of_people < 1.0)
+		amount_of_people = 1.0;
+		
+	RaidModeScaling *= amount_of_people;
+
+	RaidModeScaling *= 1.1;
 }
 
 //static float Get2DVectorLength(float Vec1[3], bool not_squared = false)
