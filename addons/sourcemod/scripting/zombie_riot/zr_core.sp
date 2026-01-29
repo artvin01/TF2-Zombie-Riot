@@ -2824,6 +2824,10 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceF
 	
 	Music_EndLastmann();
 	CheckAlivePlayers();
+	if(Dungeon_Mode())
+	{
+		
+	}
 }
 
 float XpFloatGive[MAXPLAYERS];

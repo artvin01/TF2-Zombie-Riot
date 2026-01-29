@@ -2766,7 +2766,7 @@
 	}
 	"Xeno Infection Desc"
 	{
-		"en"	"Npc Gains 30％ Resistance, 40％ Damage, but thinks 15％ slower, and regens over time upto 2x max health, if above 25％ max health, gain immensive buffs untill below\ninfects any enemy with xeno aswell."
+		"en"	"Npc Gains 25％ Resistance, 30％ Damage, but thinks 15％ slower, and regens over time upto 1.35x max health, if above 25％ max health, gain immensive buffs untill below\ninfects any enemy with xeno aswell."
 	}
 	"Xeno"
 	{

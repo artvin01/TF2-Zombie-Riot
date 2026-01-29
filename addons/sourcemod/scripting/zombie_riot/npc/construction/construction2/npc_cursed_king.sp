@@ -278,7 +278,7 @@ static void Clot_SelfDefense(CursedKing npc, float distance, float vecTarget[3],
 					float damage = 300.0;
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						damage *= 10.0;
+						damage *= 7.0;
 					}
 					npc.PlayMeleeHitSound();
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
@@ -360,7 +360,7 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		NpcStats_RuinaAgilityStengthen(npc.index, 0.05, true);
 		ApplyStatusEffect(npc.index, npc.index, "Ruina's Damage", 10.0);
 		if(ApplyDefaults)
-			NpcStats_RuinaDamageStengthen(npc.index, 1.0);
+			NpcStats_RuinaDamageStengthen(npc.index, 0.0);
 		NpcStats_RuinaDamageStengthen(npc.index, 0.1, true);
 		npc.PlayChargeSound();
 		CreateTimer(10.0, Timer_KingRevertTemporaryBuff, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);

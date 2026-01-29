@@ -253,6 +253,10 @@
 		"it"	"Lascia questo incontro"
 		"ko"	"여기서 떠나기"
 	}
+	"Shop Encounter Title Dungeon"
+	{
+		"en"	"You find a room, displaying various items...\nChoosing an item shows what it does."
+	}
 	"Shop Encounter Title"
 	{
 		"en"	"You stumble upon a shop and find an old man selling goods, do you take up his offers?\nChoosing an item shows what it does."

@@ -7298,8 +7298,8 @@ void StatusEffects_Construct2_EnemyModifs()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Xeno");
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.7;
-	data.DamageDealMulti			= 0.4;
+	data.DamageTakenMulti 			= 0.75;
+	data.DamageDealMulti			= 0.3;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= (1.0 / 0.85);
 	data.Positive 					= true;
@@ -7764,7 +7764,7 @@ static void Const2_XenoHeal(int entity, StatusEffect Apply_MasterStatusEffect, E
 	RegenPenalty *= NpcDoHealthRegenScaling(entity);
 	if(b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity])
 		RegenPenalty *= 0.01;
-	HealEntityGlobal(entity, entity, (maxhealth / 30.0) * RegenPenalty, 2.0, 0.0, HEAL_SELFHEAL);
+	HealEntityGlobal(entity, entity, (maxhealth / 50.0) * RegenPenalty, 1.35, 0.0, HEAL_SELFHEAL);
 	if(float(GetEntProp(entity, Prop_Data, "m_iHealth")) >= maxhealth * 1.25)
 		ApplyStatusEffect(entity, entity, "Xeno's Territory", 1.5);
 
