@@ -2198,7 +2198,7 @@ void Dungeon_EnemySpawned(int entity)
 						{
 							round = limit;
 
-							if(!ObjectC2House_CanUpgrade() && ObjectDungeonCenter_Level() >= ObjectDungeonCenter_MaxLevel())
+							if(!ObjectC2House_CanUpgrade() && ObjectDungeonCenter_Level() >= MaxAttacks)
 							{
 
 							}
