@@ -2826,7 +2826,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceF
 	CheckAlivePlayers();
 	if(Dungeon_Mode())
 	{
-		
+		Const2_ReviveAllBuildings(true);
 	}
 }
 

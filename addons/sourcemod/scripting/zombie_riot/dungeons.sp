@@ -17,6 +17,7 @@ static char TeleRival[64];
 static char TeleEnter[64];
 static char TeleNext[64];
 static int LimitNotice;
+static bool NoticenoDungeon;
 
 
 #define MONEY_SCLAING_PUSHFUTURE 3
@@ -759,6 +760,7 @@ static Action Timer_WaitingPeriod(Handle timer)
 }
 */
 // Rogue_RoundStartTimer()
+
 void Dungeon_Start()
 {
 	delete GameTimer;
@@ -787,6 +789,7 @@ void Dungeon_Start()
 	{
 		if(IsClientInGame(client) && GetClientTeam(client) == 2)
 		{
+			ExplainToClientDungeon(client);
 			int amount = SkillTree_GetByName(client, "Ingot Up 1");
 			if(amount > highestLevel)
 				highestLevel = amount;
@@ -1038,13 +1041,13 @@ static void TriggerStartTouch(const char[] output, int caller, int activator, fl
 			else if(StrEqual(name, TeleRival, false))
 			{
 				if(IsValidClient(activator))
-					Force_ExplainBuffToClient(activator, "Explain Dungeon Do", true);
+					ExplainToClientDungeon(activator);
 				zone = Zone_RivalBase;
 			}
 			else if(StrEqual(name, TeleEnter, false))
 			{
 				if(IsValidClient(activator))
-					Force_ExplainBuffToClient(activator, "Explain Dungeon Do", true);
+					ExplainToClientDungeon(activator);
 				zone = Zone_Dungeon;
 			}
 			else if(StrEqual(name, TeleNext, false))
@@ -1056,11 +1059,17 @@ static void TriggerStartTouch(const char[] output, int caller, int activator, fl
 					float time = NextAttackAt - GetGameTime();
 					if(time > 60.0)
 					{
+						NoticenoDungeon = false;
 						if(DelayVoteFor < GetGameTime() && !Rogue_VoteActive())
 							CreateNewDungeon();
 					}
 					else
 					{
+						if(!NoticenoDungeon)
+						{
+							CPrintToChatAll("{crimson}%t", "Dungeon Empty Untill Next Raid");
+						}
+						NoticenoDungeon = true;
 						zone = Zone_HomeBase;
 					}
 				}
@@ -2205,7 +2214,7 @@ void Dungeon_EnemySpawned(int entity)
 						{
 							round = limit;
 
-							if(!ObjectC2House_CanUpgrade() && ObjectDungeonCenter_Level() >= MaxAttacks)
+							if(!ObjectC2House_CanUpgrade() && ObjectDungeonCenter_Level() >= CurrentAttacks)
 							{
 								LimitNotice = 0;
 							}
@@ -2421,6 +2430,23 @@ stock void ToggleEntityByName(const char[] name, bool toggleMode)
 	}
 }
 
+stock int FindByEntityName(const char[] name)
+{
+	for( int i = 1; i <= MAXENTITIES; i++ ) 
+	{
+		if(IsValidEntity(i))
+		{
+			static char buffer[32];
+			GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer));
+			if(StrEqual(buffer, name, false))
+			{
+				return i;
+			}
+		}
+	}
+	return -1;
+}
+
 public void ZRModifs_ModifEnemyChaos(int iNpc)
 {
 	if(i_NpcInternalId[iNpc] == DungeonLoot_Id() ||i_NpcInternalId[iNpc] == Const2Spawner_Id())
@@ -2610,6 +2636,120 @@ public Action Dungeon_Debuff_EnemiesLeft(int client, int args)
 	return Plugin_Handled;
 }
 
+void ExplainToClientDungeon(int activator, bool force = false)
+{
+	//NO TRANSLATIONS SHOULD EXIST FOR THIS.
+	//This is so it can be used as detection without printing anything
+	if(!force)
+	{
+		if(WasAlreadyExplainedToClient(activator, "Explain Dungeon Do"))
+			return;
+
+		if(Items_HasNamedItem(activator, "Construction 2 Tutorial Explain"))
+			return;
+
+		Items_GiveNamedItem(activator, "Construction 2 Tutorial Explain");
+		Force_ExplainBuffToClient(activator, "Explain Dungeon Do", true);
+	}
+	
+	DataPack pack;
+	CreateDataTimer(7.0, Timer_ExplainDungeons, pack, TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(activator));
+	pack.WriteCell(1);
+	
+	//now explain fully.
+}
+public Action Timer_ExplainDungeons(Handle timer, DataPack pack2)
+{
+	pack2.Reset();
+	int client = EntRefToEntIndex(pack2.ReadCell());
+	if(!IsValidClient(client))
+		return Plugin_Stop;
+	int WhichAt = pack2.ReadCell();
+	
+	ExplainDoInternal(client, WhichAt);
+	if(WhichAt >= 6)
+		return Plugin_Stop;
+	WhichAt++;
+	DataPack pack;
+	CreateDataTimer(10.0, Timer_ExplainDungeons, pack, TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteCell(WhichAt);
+	return Plugin_Stop;
+}
+
+
+
+void ExplainDoInternal(int client, int which)
+{
+	switch(which)
+	{
+		case 1, 2, 3, 6:
+		{
+			float pos[3];
+			for(int i; i < ZR_MAX_SPAWNERS; i++)
+			{
+				if(IsValidEntity(i_ObjectsSpawners[i]) && GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_iTeamNum") == TFTeam_Red && !GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_bDisabled"))
+				{
+					GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos);
+					break;
+				}
+			}
+
+			char buffer[255];
+			switch(which)
+			{
+				case 1:
+				{
+					FormatEx(buffer, sizeof(buffer), "%T", "Explain Dungeon Mechanics 1", client);
+				}
+				case 2:
+				{
+					FormatEx(buffer, sizeof(buffer), "%T", "Explain Dungeon Mechanics 2", client);
+				}
+				case 3:
+				{
+					FormatEx(buffer, sizeof(buffer), "%T", "Explain Dungeon Mechanics 3", client);
+				}
+				case 6:
+				{
+					FormatEx(buffer, sizeof(buffer), "%T", "Explain Dungeon Mechanics 6", client);
+				}
+			}
+			
+			pos[2] += 120.0;
+			ShowAnnotationToPlayer(client, pos, buffer, 7.0, 0);
+		}
+		case 4:
+		{
+
+			//	ToggleEntityByName(TeleRival, true);
+			int entity = FindByEntityName(TeleEnter);
+			if(!IsValidEntity(entity))
+				return;
+			char buffer[255];
+			FormatEx(buffer, sizeof(buffer), "%T", "Explain Dungeon Mechanics 4", client);
+			float AbsPos[3];
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsPos);
+			AbsPos[2] += 120.0;
+			ShowAnnotationToPlayer(client, AbsPos, buffer, 7.0, 0);
+		}
+		case 5:
+		{
+
+			//	ToggleEntityByName(TeleRival, true);
+			int entity = FindByEntityName(TeleRival);
+			if(!IsValidEntity(entity))
+				return;
+			char buffer[255];
+			FormatEx(buffer, sizeof(buffer), "%T", "Explain Dungeon Mechanics 5", client);
+			float AbsPos[3];
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsPos);
+			AbsPos[2] += 120.0;
+			ShowAnnotationToPlayer(client, AbsPos, buffer, 7.0, 0);
+		}
+	}
+}
 
 #include "roguelike/dungeon_items.sp"
 #include "roguelike/dungeon_encounters.sp"

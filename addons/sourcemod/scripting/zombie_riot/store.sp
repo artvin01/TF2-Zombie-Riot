@@ -2608,7 +2608,10 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				}
 				case -95:
 				{
-					StartTutorial(client);
+					if(Dungeon_Mode())
+						ExplainToClientDungeon(client, true);
+					else
+						StartTutorial(client);
 				}
 				case -64: //Lower Volume
 				{

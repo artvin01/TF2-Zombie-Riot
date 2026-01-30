@@ -1276,12 +1276,12 @@ bool Const2_BuildingDestroySpecial(int entity)
 	//dont destroy. deactivate.
 	return true;
 }
-void Const2_ReviveAllBuildings()
+void Const2_ReviveAllBuildings(bool DoHalf = false)
 {
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
-		Const2_ReConstructBuilding(entity);
+		Const2_ReConstructBuilding(entity, DoHalf);
 	}				
 	int a;
 	entity = 0;
@@ -1293,7 +1293,7 @@ void Const2_ReviveAllBuildings()
 		}
 	}
 }
-bool Const2_ReConstructBuilding(int entity)
+bool Const2_ReConstructBuilding(int entity, bool DoHalf = false)
 {
 	if(!Dungeon_Mode())
 		return false;
@@ -1302,9 +1302,11 @@ bool Const2_ReConstructBuilding(int entity)
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 	if(!objstats.m_bConstructBuilding)
 		return false;
-
-	SetEntProp(objstats.index, Prop_Data, "m_iHealth", GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth"));
-	SetEntProp(objstats.index, Prop_Data, "m_iRepair", GetEntProp(objstats.index, Prop_Data, "m_iRepairMax"));
+	if(!DoHalf)
+	{
+		SetEntProp(objstats.index, Prop_Data, "m_iHealth", GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth"));
+		SetEntProp(objstats.index, Prop_Data, "m_iRepair", GetEntProp(objstats.index, Prop_Data, "m_iRepairMax"));
+	}
 	
 	if(!IsValidEntity(objstats.m_iConstructDeathModel))
 		return false;
@@ -1316,7 +1318,6 @@ bool Const2_ReConstructBuilding(int entity)
 		{
 			SetEntProp(vehicle, Prop_Data, "m_bLocked", false);
 		}
-		
 	}
 
 	RemoveEntity(objstats.m_iConstructDeathModel);
@@ -1326,6 +1327,12 @@ bool Const2_ReConstructBuilding(int entity)
 	if(IsValidEntity(objstats.m_iWearable1))
 		SetEntityRenderMode(objstats.m_iWearable1, RENDER_NORMAL);
 	objstats.m_flNextDelayTime = 0.0;
+	
+	if(DoHalf)
+	{
+		SetEntProp(objstats.index, Prop_Data, "m_iHealth", GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth") / 2);
+		SetEntProp(objstats.index, Prop_Data, "m_iRepair", GetEntProp(objstats.index, Prop_Data, "m_iRepairMax") / 2);
+	}
 	return true;
 
 }

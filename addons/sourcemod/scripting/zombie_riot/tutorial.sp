@@ -97,6 +97,8 @@ void DoTutorialStep(int client, bool obeycooldown)
 	if(GetClientTeam(client) != 2 || BetWar_Mode())
 		return;
 		
+	if(Dungeon_Mode())
+		ExplainToClientDungeon(client);
 	TutorialShort_ExplainOres(client);
 	if(i_TutorialStep[client] >= 4 || i_TutorialStep[client] == 0)
 	{

@@ -282,13 +282,14 @@ void ResetReplications()
 	}
 }
 
-stock void CreateAttachedAnnotation(int client, int entity, float time, const char[] buffer)
+stock void CreateAttachedAnnotation(int client, int entity, float time, const char[] buffer, float offset = 0.0)
 {
 	Event event = CreateEvent("show_annotation");
 	if(event)
 	{
 		static float pos[3];
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+		pos[2] += offset;
 		event.SetFloat("worldNormalX", pos[0]);
 		event.SetFloat("worldNormalY", pos[1]);
 		event.SetFloat("worldNormalZ", pos[2]);
@@ -3909,7 +3910,7 @@ stock void ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, f
 	SetEventFloat(event, "lifetime", lifetime);
 //	SetEventInt(event, "id", annotation_id*MAXPLAYERS + client + ANNOTATION_OFFSET);
 	SetEventString(event, "text", Text);
-	SetEventString(event, "play_sound", "vo/null.wav");
+	SetEventString(event, "play_sound", "common/null.wav");
 	SetEventInt(event, "visibilityBitfield", (1 << client));
 	FireEvent(event);
 	

@@ -7880,7 +7880,7 @@ void Const2Modifs_Xeno_Start_Already(int victim, StatusEffect Apply_MasterStatus
 	if(!b_ThisWasAnNpc[victim])
 		return;
 
-	CClotBody npc = view_as<CClotBody>(victim);
+//	CClotBody npc = view_as<CClotBody>(victim);
 
 	int Rand = GetRandomInt(0, sizeof(XenoInfect) - 1);
 	EmitSoundToAll(XenoInfect[Rand], victim, SNDCHAN_AUTO, 80,_,0.65);

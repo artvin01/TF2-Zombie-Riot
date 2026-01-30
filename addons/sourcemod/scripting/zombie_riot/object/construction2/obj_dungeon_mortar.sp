@@ -164,6 +164,12 @@ static void DBuildingMortarAction(int enemy, int owner, int mortar)
 	position[2] = spawnLoc[2];
 				
 	position[2] += 3000.0;
+	float AOE_range = 350.0;
+	spawnLoc[2] += 5.0;
+	TE_SetupBeamRingPoint(spawnLoc, AOE_range*2.0, 0.0, g_Ruina_BEAM_lightning, g_Ruina_HALO_Laser, 0, 66, 2.0, 30.0, 0.1, {255,255,125,255}, 1, 0);
+	TE_SendToAll();
+	TE_SetupBeamRingPoint(spawnLoc, AOE_range*2.0, AOE_range*2.0 + 0.1, g_Ruina_BEAM_lightning, g_Ruina_HALO_Laser, 0, 66, 2.0, 30.0, 0.1, {255,255,125,255}, 1, 0);
+	TE_SendToAll();
 
 	int particle = ParticleEffectAt(position, "kartimpacttrail", 2.0);
 	SetEdictFlags(particle, (GetEdictFlags(particle) | FL_EDICT_ALWAYS));
@@ -194,7 +200,7 @@ static Action DMortarFire_Anims(Handle timer, DataPack pack)
 		{
 			EmitSoundToAll(MORTAR_SHOT_INCOMMING, 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 0.7, SNDPITCH_NORMAL, -1, ParticlePos);
 		//	SetColorRGBA(glowColor, r, g, b, alpha);
-			ParticleEffectAt(ParticlePos, "taunt_flip_land_ring", 1.0);
+		//	ParticleEffectAt(ParticlePos, "taunt_flip_land_ring", 1.0);
 			DataPack pack2;
 			CreateDataTimer(1.0, DMortarFire, pack2, TIMER_FLAG_NO_MAPCHANGE);
 			pack2.WriteCell(EntIndexToEntRef(Building));
