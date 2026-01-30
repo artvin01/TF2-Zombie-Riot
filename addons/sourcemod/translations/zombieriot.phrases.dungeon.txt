@@ -444,7 +444,11 @@
 	}
 	"Enemy Center Death"
 	{
-		"en"	"{green}Enemy {orange}Control Center {green}destroyed, the next raid attack is weakened!"
+		"en"	"{green}Enemy {orange}Control Center {green}is destroyed, the next raid attack is weakened!"
+	}
+	"Main Center Death"
+	{
+		"en"	"{crimson}Our {orange}Control Center {crimson}is destroyed, Respawns disabled, vehicles disabled."
 	}
 	"Explain Dungeon Mechanics 1"
 	{

@@ -2637,6 +2637,8 @@ void ExplainToClientDungeon(int activator, bool force = false)
 	//This is so it can be used as detection without printing anything
 	if(!force)
 	{
+		if(!Database_IsCached(activator))
+			return;
 		if(WasAlreadyExplainedToClient(activator, "Explain Dungeon Do"))
 			return;
 

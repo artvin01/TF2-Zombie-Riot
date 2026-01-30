@@ -80,6 +80,7 @@ void Object_MapStart()
 	PrecacheModel("models/props_debris/concrete_debris128pile001a.mdl");
 	Zero2(f_TransmitDelayCheck);
 	Zero(f_CooldownShowRange);
+	PrecacheSound("weapons/bombinomicon_explode1.wav");
 }
 void Object_PluginStart()
 {
@@ -1263,6 +1264,15 @@ bool Const2_BuildingDestroySpecial(int entity)
 			SetEntProp(vehicle, Prop_Data, "m_bLocked", true);
 			AcceptEntityInput(vehicle, "TurnOff");
 		}
+		
+		float pos[3]; GetEntPropVector(objstats.index, Prop_Data, "m_vecAbsOrigin", pos);
+		pos[2] += 5.0;
+		TE_Particle("Explosion_ShockWave_01", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		TE_Particle("grenade_smoke_cycle", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		TE_Particle("hammer_bell_ring_shockwave", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		CreateEarthquake(pos, 1.0, 2000.0, 16.0, 255.0);
+		EmitSoundToAll("weapons/bombinomicon_explode1.wav");
+		CPrintToChatAll("%t", "Main Center Death");
 	}
 
 	b_ThisEntityIgnored[objstats.index] = true;
