@@ -908,5 +908,6 @@ int CustomFogEntity[FogType_COUNT];	// Array of fog controller entity refs set b
 int MapFogEntity;					// Entity ref of the fog controller used by the map, that is currently unused because a custom fog is taking priority
 int ActiveFogEntity;				// Entity ref of the fog controller that is currently active, mostly used for late joins
 
+bool g_PrecachedZombieNPCs;
 bool g_PrecachedMatrixNPCs;
 #endif

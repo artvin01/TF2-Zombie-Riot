@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/zombie_riot/gmod_zs/fast/fast_zombie_sheet"
+	"$alphatest" 1
+	"$bumpmap" "models/zombie_riot/gmod_zs/fast/fast_zombie_sheet_normal"
+	"$surfaceprop" "flesh"
+	"$model" "1"
+	"$halflambert" "1"
+	"$phong" "1"
+	"$phongboost" "5"
+	"$phongexponent" 25
+	//"$phongexponenttexture" "Models/zombie_fast/fast_zombie_phong"
+	//"$phongalbedotint" "1"										
+	"$phongfresnelranges"	"[.2 .6 1]"
+}

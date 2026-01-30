@@ -702,4 +702,34 @@
 		"it"		 "Castellan arriva per porre fine a tutto questo."
 		"ko" 		 "카스텔란이 이 전투를 끝내기 위해 왔습니다."
 	}
+	"Pregnant Spawned"
+	{
+		"en"	"Pregnant has come here to sow disaster."
+		"ko"	"프레그넌트가 이곳에 재앙을 뿌리러 왔습니다."
+	}
+	"Flesh Creeper Spawn"
+	{
+		"en"		"A Flesh Creeper has arrived."
+		"ko"		"신선한 크리퍼가 등장했습니다."
+	}
+	"Infected Spy Spawn"
+	{
+		"en"		"An Infected Spy has appeared."
+		"ko"		"감염된 스파이가 등장했습니다."
+	}
+	"Infected Ninja Spy Spawn"
+	{
+		"en"		"An Infected Ninja Spy has appeared."
+		"ko"		"감염된 닌자 스파이가 등장했습니다."
+	}
+	"DasNaggenvatcher Spawned"
+	{
+		"en"		"Make us whole"
+		"ko"		"우리 하나가 되자"
+	}
+	"Infected Messenger Spawned"
+	{
+		"en"		"An Infected Messenger Spawned has appeared."
+		"ko"		"감염된 전령병이 등장했습니다."
+	}
 }

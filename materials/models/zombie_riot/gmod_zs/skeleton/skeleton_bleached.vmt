@@ -1,0 +1,14 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models/zombie_riot/gmod_zs/skeleton/skeleton_bleached"
+	"$surfaceprop"	"default"
+	"$model"	1
+		"$bumpmap" "null-bumpmap"
+	"$phong" "1"
+	"$phongboost" "0.5"
+	"$phongexponent" "15"
+	"$phongfresnelranges" "[0.5 1 2]"
+	"$rimlight" "1"
+	"$rimlightboost" "1"
+	"$rimlightexponent" "6"
+}

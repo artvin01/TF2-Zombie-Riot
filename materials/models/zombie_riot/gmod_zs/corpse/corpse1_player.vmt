@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/zombie_riot/gmod_zs/corpse/corpse1_player"
+	"$model" 1
+}

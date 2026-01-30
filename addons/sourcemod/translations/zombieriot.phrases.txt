@@ -5687,4 +5687,14 @@
 		"en"	"Simon escaped and gained extra power..."
 		"ko"	"사이먼이 도망쳤습니다. 그의 힘이 더 강해집니다..."
 	}
+	"Zombie Survival Wave Desc"
+	{
+		"en"	"An unknown infection has spread across the globe. You must survive it."
+		"ko"	"정체를 알 수 없는 감염병이 전 세계로 확산되었습니다. 당신은 반드시 살아남아야 합니다."
+	}
+	"zs_survivor01"
+	{
+		"en"	"We found survivors nearby."
+		"ko"	"주변에 있던 생존자를 발견했습니다."
+	}
 }

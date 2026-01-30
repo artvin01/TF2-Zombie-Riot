@@ -7686,4 +7686,284 @@
 		"en"	"A warrior dealing with the demons that got possed by chaos.\n-Once losing his life he will enrage and fullheal\nThis buff lasts only for a few seconds.\n-This can be canceled by dealing enough damage at once, or stunning him and then killing him."
 		"ko"	"혼돈에 침식당한 악마와 싸우던 기사입니다.\n-생명을 잃을 시 격분 상태가 되고 ''혼돈의 악마 빙의'' 버프를 획득\n-해당 행동으로 저지 가능:\n한번에 대량의 피해를 가해 두번째 목숨까지 완전히 소진\n기절을 부여하여 격분 상태가 되지 않게하고, 이 상태에서 처치"
 	}
+	"Ghoul"
+	{
+		"en"	"Ghoul"
+		"ko"	"구울"
+	}
+	"Bloated Zombie"
+	{
+		"en"	"Bloated Zombie"
+		"ko"	"부푼 좀비"
+	}
+	"ZS Zombie"
+	{
+		"en"	"Zombie"
+		"ko"	"좀비"
+	}
+	"Flesh Creeper"
+	{
+		"en"	"Flesh Creeper"
+		"ko"	"신선한 크리퍼"
+	}
+	"Nest"
+	{
+		"en"	"Nest"
+		"ko"	"둥지"
+	}
+	"Skeleton"
+	{
+		"en"	"Skeleton"
+		"ko"	"해골"
+	}
+	"Shadow Walker"
+	{
+		"en"	"Shadow Walker"
+		"ko"	"쉐도우 워커"
+	}
+	"Gore Blaster"
+	{
+		"en"	"Gore Blaster"
+		"ko"	"고어 블래스터"
+	}
+	"Elder Ghoul"
+	{
+		"en"	"Elder Ghoul"
+		"ko"	"엘더 구울"
+	}
+	"Bastardzine"
+	{
+		"en"	"Bastardzine"
+		"ko"	"바스타드자인"
+	}
+	"Vile Bloated Zombie"
+	{
+		"en"	"Vile Bloated Zombie"
+		"ko"	"불쾌한 부푼 좀비"
+	}
+	"Fast Headcrab"
+	{
+		"en"	"Fast Headcrab"
+		"ko"	"패스트 헤드크랩"
+	}
+	"Zombie Runner"
+	{
+		"en"	"Zombie Runner"
+		"ko"	"좀비 러너"
+	}
+	"ZS Spitter"
+	{
+		"en"	"Spitter"
+		"ko"	"스피터"
+	}
+	"Infected Scout"
+	{
+		"en"	"Infected Scout"
+		"ko"	"감염된 스카웃"
+	}
+	"Infected Soldier"
+	{
+		"en"	"Infected Soldier"
+		"ko"	"감염된 솔저"
+	}
+	"Infected Spy"
+	{
+		"en"	"Infected Spy"
+		"ko"	"감염된 스파이"
+	}
+	"Pregnant"
+	{
+		"en"	"Pregnant"
+		"ko"	"프레그넌트"
+	}
+	"Plaguebearer"
+	{
+		"en"	"Plaguebearer"
+		"ko"	"역병 전파자"
+	}
+	"The Butcher"
+	{
+		"en"	"The Butcher"
+		"ko"	"도살자"
+	}
+	"Infected Heavy"
+	{
+		"en"	"Infected Heavy"
+		"ko"	"감염된 헤비"
+	}
+	"Colonel Barrage"
+	{
+		"en"	"Colonel Barrage"
+		"ko"	"탄막 대령"
+	}
+	"Major Vulture"
+	{
+		"en"	"Major Vulture"
+		"ko"	"벌쳐 소령"
+	}
+	"The Chicken Kiev"
+	{
+		"en"	"The Chicken Kiev"
+		"ko"	"치킨 키예프"
+	}
+	"Medimedes"
+	{
+		"en"	"Medimedes"
+		"ko"	"메디메데스"
+	}
+	"Sir Shootsalot"
+	{
+		"en"	"Sir Shootsalot"
+		"ko"	"사격의 기사"
+	}
+	"Freedom Feathers"
+	{
+		"en"	"Freedom Feathers"
+		"ko"	"자유의 깃털"
+	}
+	"ZS Unspeakable"
+	{
+		"en"	"Unclean One"
+		"ko"	"불결한 존재"
+	}
+	"Infected Huntsman Sniper"
+	{
+		"en"	"Infected Huntsman Sniper"
+		"ko"	"감염된 헌츠맨 스나이퍼"
+	}
+	"Infected Kamikaze Demo"
+	{
+		"en"	"Infected Kamikaze Demo"
+		"ko"	"감염된 카미가제 데모맨"
+	}
+	"Infected Demoknight"
+	{
+		"en"	"Infected Demoknight"
+		"ko"	"감염된 데모나이트"
+	}
+	"Infected Engineer"
+	{
+		"en"	"Infected Engineer"
+		"ko"	"감염된 엔지니어"
+	}
+	"Infected Jarate Sniper"
+	{
+		"en"	"Infected Jarate Sniper"
+		"ko"	"감염된 병수도 스나이퍼"
+	}
+	"ZS Eradicator"
+	{
+		"en"	"Eradicator"
+		"ko"	"말살자"
+	}
+	"ZS Howler"
+	{
+		"en"	"Howler"
+		"ko"	"하울러"
+	}
+	"Infected Fat Spy"
+	{
+		"en"	"Infected Fat Spy"
+		"ko"	"감염된 뚱뚱한 스파이"
+	}
+	"Infected Cleaner"
+	{
+		"en"	"Infected CESCO Level 4 Cleaner"
+		"ko"	"감염된 세스코 4등급 청소부"
+	}
+	"Infected Battle Medic"
+	{
+		"en"	"Infected Battle Medic"
+		"ko"	"감염된 전투 메딕"
+	}
+	"Infected Fat Scout"
+	{
+		"en"	"Infected Fat Scout"
+		"ko"	"감염된 샷비"
+	}
+	"Infected Ninja Spy"
+	{
+		"en"	"Infected Ninja Spy"
+		"ko"	"감염된 닌자 스파이"
+	}
+	"ZS Chaos"
+	{
+		"en"	"Chaos Pyro"
+		"ko"	"카오스 파이로"
+	}
+	"Infected Messenger Soldier"
+	{
+		"en"	"Infected Messenger Soldier"
+		"ko"	"감염된 전령병"
+	}
+	"Infected Hazardous Bio-material Collector"
+	{
+		"en"	"Infected Hazardous Bio-material Collector"
+		"ko"	"감염된 유해환경 생체물질 수집가"
+	}
+	"Infected Fire Fighter"
+	{
+		"en"	"Infected Fire Fighter"
+		"ko"	"감염된 소방관"
+	}
+	"Infected Bread Monster"
+	{
+		"en"	"Infected Bread Monster"
+		"ko"	"감염된 빵괴물"
+	}
+	"The neighborhood tough guy"
+	{
+		"en"	"The neighborhood tough guy"
+		"ko"	"동네힘쎈사람"
+	}
+	"Vile Poison Zombie"
+	{
+		"en"	"Vile Poison Zombie"
+		"ko"	"오염된 포이즌 좀비"
+	}
+	"Red Marrow"
+	{
+		"en"	"Red Marrow"
+		"ko"	"레드 머로우"
+	}
+	"OverHeater"
+	{
+		"en"	"OverHeater"
+		"ko"	"오버히터"
+	}
+	"Bonemesh"
+	{
+		"en"	"Bonemesh"
+		"ko"	"본매쉬"
+	}
+	"Infected Sniper"
+	{
+		"en"	"Infected Sniper"
+		"ko"	"감염된 스나이퍼"
+	}
+	"Das Naggenvatcher Doctor"
+	{
+		"en"	"Das Naggenvatcher Doctor"
+		"ko"	"다스 고르통보호기 메딕"
+	}
+	"Stone Age Maker"
+	{
+		"en"	"Stone Age Maker"
+		"ko"	"석기시대 제작자"
+	}
+	"Mass Shooting Lover Marine"
+	{
+		"en"	"Mass Shooting Lover Marine"
+		"ko"	"총 기난사가너무좋아 해병"
+	}
+	"Pheromone Elemental Damage"
+	{
+		"en"	"Pheromone Elemental Damage"
+		"ko"	"페로몬 원소 피해"
+	}
+	"Pheromone Elemental Damage Desc"
+	{
+		"en"	"Elemental damage gauge full.\nPheromones leaking from your body are attracting nearby infected."
+		"ko"	"원소 피해 게이지가 꽉 차면, 당신의 몸에서 흘러나오는 페로몬으로 인해서\n주변의 감염체들이 몰려옵니다."
+	}
 }

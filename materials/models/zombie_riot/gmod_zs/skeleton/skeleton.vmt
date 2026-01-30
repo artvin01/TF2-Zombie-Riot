@@ -1,0 +1,33 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models/zombie_riot/gmod_zs/skeleton/skeleton"
+	"$surfaceprop"	"default"
+	"$halflambert"	1
+	"$model"	1
+	
+	"$bumpmap" "null-bumpmap"
+	"$phong" "1"
+	"$phongboost" "0.5"
+	"$phongexponent" "15"
+	"$phongfresnelranges" "[0.5 1 2]"
+	"$rimlight" "1"
+	"$rimlightboost" "1.5"
+	"$rimlightexponent" "6"
+	
+	Proxies
+	{
+		PlayerColor
+		{
+			resultVar	$color2 // pass the player color value to Gmod
+			default		1.00 1.00 1.00 // unused for now.
+		}
+		Clamp // clamp the chosen color
+		{
+			min 0.8
+			max 1.1
+			srcVar1 "$color2"
+			resultVar "$color2"
+		}
+	}
+	
+}

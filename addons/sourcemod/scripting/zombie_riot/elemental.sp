@@ -14,6 +14,7 @@ enum				// Types
 	Element_Plasma,		// 8
 	Element_Warped,		// 9
 	Element_ManaOverflow,		// 10
+	Elemental_Pheromone, // 11
 
 	Element_MAX
 }
@@ -30,7 +31,8 @@ static const char ElementName[][] =
 	"FOOD",
 	"PL",
 	"WW",
-	"MO"
+	"MO",
+	"PH"
 };
 
 static float LastTime[MAXENTITIES];
@@ -1176,7 +1178,206 @@ void Matrix_Shared_CorruptionPrecache()
 	for (int i = 0; i < sizeof(g_Agent_Summons); i++)
 		NPC_GetByPlugin(g_Agent_Summons[i]);
 }
+void Elemental_AddPheromoneDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
+{
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
+	if(b_NpcIsInvulnerable[victim])
+		return;
 
+	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+
+	if(NpcStats_ElementalAmp(victim))
+	{
+		damage = RoundToNearest(float(damage) * 1.3);
+	}
+	if(victim <= MaxClients)
+	{
+		Armor_DebuffType[victim] = Elemental_Pheromone;
+		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim][Elemental_Pheromone] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
+		{
+			if(i_HealthBeforeSuit[victim] > 0)
+			{
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+			}
+			else
+			{
+				Armor_Charge[victim] -= damage;
+				if(Armor_Charge[victim] < (-Elemental_TriggerDamage(victim, Elemental_Pheromone)))
+				{
+					Armor_Charge[victim] = 0;
+					
+					int count = RoundToCeil(2.0 * MultiGlobalEnemy);
+					Zombie_Spawning(attacker, count);
+
+					float MatrixLoc[3];
+					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", MatrixLoc);
+					spawnRing_Vectors(MatrixLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 54, 77, 43, 255, 1, 1.0, 5.0, 8.0, 1, 125.0 * 2.0);
+					EmitSoundToAll("ambient/energy/weld1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+					f_ArmorCurrosionImmunity[victim][Elemental_Pheromone] = GetGameTime() + 5.0;
+					Force_ExplainBuffToClient(victim, "Pheromone Elemental Damage");
+				}
+			}
+			
+			if(sound || !Armor_Charge[victim])
+				ClientCommand(victim, "playgamesound buttons/combine_button1.wav ; playgamesound buttons/combine_button1.wav");
+		}
+	}
+	else if(!b_NpcHasDied[victim])	// NPCs
+	{
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Elemental_Pheromone));
+		if(damage < 1)
+			return;
+		
+		if(f_ArmorCurrosionImmunity[victim][Element_Corruption] < GetGameTime())
+		{
+			int trigger;
+			if(Citizen_IsIt(victim))	// Rebels
+			{
+				if(!ignoreArmor)
+				{
+					// Has "armor" at 75% HP
+					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 3 / 4))
+						return;
+				}
+			}
+			
+			trigger = Elemental_TriggerDamage(victim, Elemental_Pheromone);
+
+			LastTime[victim] = GetGameTime();
+			LastElement[victim] = Elemental_Pheromone;
+			ElementDamage[victim][Elemental_Pheromone] += damage;
+			if(ElementDamage[victim][Elemental_Pheromone] > trigger)
+			{
+				ElementDamage[victim][Elemental_Pheromone] = 0;
+				f_ArmorCurrosionImmunity[victim][Elemental_Pheromone] = GetGameTime() + 5.0;
+				EmitSoundToAll("ambient/energy/weld1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+				int count = RoundToCeil(3.0 * MultiGlobalEnemy);
+				Zombie_Spawning(attacker, count);
+			}
+			
+			if(attacker && attacker <= MaxClients)
+				ApplyElementalEvent(victim, attacker, damage);
+		}
+	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		//removes repair of buildings.
+		int Repair = GetEntProp(victim, Prop_Data, "m_iRepair");
+		Repair -= damage;
+		if(Repair <= 0)
+			Repair = 0;
+		SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
+	}
+}
+
+static const char g_Zombie_Summons[][] =
+{
+	//wave 1-20 | 0-6
+	"npc_zs_fast_zombie",
+	"npc_zs_runner",
+	"npc_zs_shadow_walker",
+	"npc_zs_skeleton",
+	"npc_zs_zombie",
+	"npc_zs_fast_headcrab",
+	"npc_zs_gore_blaster",
+	"npc_fastzombie_fortified",
+	"npc_headcrabzombie_fortified",
+	"npc_zs_spitter",
+	"npc_fastzombie_fortified",
+	"npc_fastzombie",
+	"npc_headcrabzombie_fortified",
+	"npc_medic_healer",
+	"npc_zs_headcrabzombie",
+	"npc_zs_fastheadcrab_zombie",
+
+	//wave 21-30 | 7-11
+	"npc_zs_kamikaze_demo",
+	"npc_zs_medic_healer",
+	"npc_zs_huntsman",
+	"npc_zs_zombie_demoknight",
+	"npc_zs_zombie_engineer",
+	"npc_zs_zombie_heavy",
+	"npc_zs_zombie_scout",
+	"npc_zs_zombie_sniper_jarate",
+	"npc_zs_zombie_soldier",
+	"npc_zs_zombie_soldier_pickaxe",
+	"npc_zs_zombie_spy",
+	"npc_zombie_pyro_giant_main",
+	"npc_zombie_scout_grave",
+	"npc_zombie_soldier_grave",
+	"npc_zombie_spy_grave",
+	"npc_zombie_demo_main",
+	"npc_zombie_heavy_grave",
+
+	//wave 31 | 12-16
+};
+
+static void Zombie_Spawning(int entity, int count)
+{
+	int max_index = sizeof(g_Zombie_Summons) - 1;
+    int wave = (Waves_GetRoundScale() + 1);
+    int summon;
+
+    if(wave < 20) {
+        summon = GetRandomInt(0, (max_index < 15) ? max_index : 15);
+    } else {
+        summon = GetRandomInt((max_index < 16) ? 0 : 16, max_index);
+    }
+
+	char name[255];
+    FormatEx(name, sizeof(name), "%s", g_Zombie_Summons[summon]);
+	int health = ReturnEntityMaxHealth(entity);
+	if(b_thisNpcIsABoss[entity])
+	{
+		health = (ReturnEntityMaxHealth(entity)/10);
+	}
+	if(b_thisNpcIsARaid[entity])
+	{
+		health = (ReturnEntityMaxHealth(entity)/100);
+	}
+	if(!b_thisNpcIsARaid[entity] && !b_thisNpcIsABoss[entity] && MultiGlobalHealth != 1.0)
+	{
+		//account for max hp sacling, or else we just keep multiplying forever...
+		//because it does the scaling on spawn, but doesnt revert it here when it adds a new npc....
+		//it was the same bug alaxios had, in this case, it has to be reversed.
+		health = RoundToNearest(float(health) / MultiGlobalHealth);
+	}
+	
+	Enemy enemy;
+	enemy.Index = NPC_GetByPlugin(name);
+	enemy.Health = health;
+	enemy.Is_Outlined = false;
+	enemy.Is_Immune_To_Nuke = true;
+	//do not bother outlining.
+	enemy.ExtraMeleeRes = 1.0;
+	enemy.ExtraRangedRes = 1.0;
+	enemy.ExtraSpeed = 1.0;
+	enemy.ExtraDamage = 1.0;
+	enemy.ExtraSize = 1.0;		
+	enemy.Team = GetTeam(entity);
+	for(int i = 0; i < count; i++)
+    {
+        Waves_AddNextEnemy(enemy);
+    }
+	Zombies_Currently_Still_Ongoing += count;
+}
+
+void Zombie_Shared_PheromonePrecache()
+{
+	if (g_PrecachedZombieNPCs)
+		return;
+	
+	g_PrecachedZombieNPCs = true;
+	
+	for (int i = 0; i < sizeof(g_Zombie_Summons); i++)
+		NPC_GetByPlugin(g_Zombie_Summons[i]);
+}
 void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 {
 	if(i_IsVehicle[victim])

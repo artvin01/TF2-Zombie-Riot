@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/zombie_riot/gmod_zs/flesh"
+	"$normalmapalphaenvmapmask" "1"
+                "$bumpmap" "models/zombie_riot/gmod_zs/flesh_nrm"
+	"$nodecal" "0"
+	"$halflambert" 1
+
+	"$phong" "1" 
+	"$phongboost" "1" 
+	"$phongfresnelranges" "[2 5 10]"
+	"$phongexponent" "100"
+}
