@@ -217,6 +217,32 @@ static const float fl_ShipRollClamps = 50.0;
 	5975.277344 880.963745 -4436.267578       13.694007 123.874184 0.000000
 
 */
+static const float fl_BeaconSpawnPos[][3] = {
+	{7622.043945, -619.331421, 	-5929.582520},
+	{5854.175293, -764.341980, 	-5929.582520},
+	{4585.667969, 470.419800, 	-5929.582520}, 
+	{4599.006836, 1457.004517, 	-5929.582520},
+	{4820.345215, 2404.140381, 	-5929.582520},
+	{5775.631348, 2674.651367, 	-5929.582520},
+	{7084.973633, 2730.071045, 	-5929.582520},
+	{7824.516113, 1989.070312, 	-5929.582520},
+	{7729.678223, 802.875183, 	-5929.582520}, 
+	{7437.662109, -382.637848, 	-5929.582520},
+	{7208.161621, 592.429443, 	-5929.582520}, 
+	{6539.422852, 1764.437744, 	-5929.582520},
+	{5495.158203, 2109.176758, 	-5929.582520},
+	{5124.044434, 1051.976807, 	-5929.582520},
+	{6872.589844, -677.584900, 	-5929.582520},
+	{7891.919434, 123.480782, 	-5929.582520}, 
+	{7863.694824, 1293.345093, 	-5929.582520},
+	{7957.625000, 2559.701904, 	-5929.582520},
+	{6137.000488, 2693.118896, 	-5929.582520},
+	{4979.221191, 1951.209839, 	-5929.582520},
+	{4312.235840, 281.892914, 	-5929.582520}, 
+	{4259.996582, -741.711670, 	-5929.582520},
+	{6291.461914, 195.441269, 	-5929.582520}, 
+	{4852.110840, 1.806172, 	-5929.582520} 
+};
 static const float VaultVectorPoints[][3] = {
 	{5975.277344, 880.963745, -4436.267578},
 
@@ -357,12 +383,12 @@ methodmap RegaliaClass < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][9]; 				}
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
 	}
-	property float m_flBeaconSurgeTimer
+	property float m_flConstructorCooldown
 	{
 		public get()							{ return fl_AttackHappensMaximum[this.index][9]; 				}
 		public set(float TempValueForProperty) 	{ fl_AttackHappensMaximum[this.index][9] = TempValueForProperty; }
 	}
-	property float m_flBeaconSurgeActive
+	property float m_flConstructorDuration
 	{
 		public get()							{ return fl_AttackHappensMinimum[this.index]; 				}
 		public set(float TempValueForProperty) 	{ fl_AttackHappensMinimum[this.index] = TempValueForProperty; }
@@ -416,6 +442,11 @@ methodmap RegaliaClass < CClotBody
 	{
 		public get()							{ return b_FUCKYOU[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
+	}
+	property bool m_bCutThrust_Hyper
+	{
+		public get()							{ return b_FUCKYOU_move_anim[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FUCKYOU_move_anim[this.index] = TempValueForProperty; }
 	}
 	property int m_iInternalTravelVaultVectors
 	{
@@ -478,14 +509,14 @@ methodmap RegaliaClass < CClotBody
 		func_NPCThink[npc.index] 			= ClotThink;
 		func_ShipTurn[npc.index]			= INVALID_FUNCTION;
 
-		fl_ShipTurnSpeed = 0.5;
+		npc.m_flTurnSpeed			= 0.5;
+		npc.m_flAcceleration 		= 1.2;
+		npc.m_flDecceleration		= 0.8;
+		npc.m_flHyperDeccelNearDist = 500.0;
+		npc.m_flHyperDeccelSpeed 	= 5.0;
+		npc.m_flHyperDeccelMax 		= 0.5;
 
-		fl_ShipAcceleration = 1.2;
-		fl_ShipDeceleration	= 0.8;
-		fl_ShipHyperDecelerationNearDist = 500.0;
-		fl_ShipHyperDecelerationSpeed = 5.0;
-		fl_ShipHyperDecelerationMax = 0.5;
-
+		npc.m_bCutThrust_Hyper			= true;
 		npc.m_bCutThrust				= false;
 		npc.m_bShipFlightTowardsActive 	= false;
 		npc.m_bVectoredThrust 			= false;
@@ -534,8 +565,8 @@ methodmap RegaliaClass < CClotBody
 
 		//Special
 
-		npc.m_flBeaconSurgeTimer 			= GetRandomFloat(1.0, 3.0)		+ GetGameTime();
-		npc.m_flBeaconSurgeActive				= FAR_FUTURE;
+		npc.m_flConstructorCooldown 		= GetRandomFloat(1.0, 3.0)		+ GetGameTime();
+		npc.m_flConstructorDuration			= FAR_FUTURE;
 
 		//Make immune to speed debuffs and the like
 		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);	
@@ -738,6 +769,7 @@ methodmap RegaliaClass < CClotBody
 			return;
 		}
 
+		this.m_bCutThrust_Hyper				= false;
 		this.m_bCutThrust					= false;
 		this.m_flRevertControlOverride		= FAR_FUTURE;
 		func_ShipTurn[this.index] 			= FuncTurn;
@@ -753,6 +785,7 @@ methodmap RegaliaClass < CClotBody
 		this.m_flShipAbilityActive 			= GetGameTime(this.index) + 1.0;
 		func_ShipTurn[this.index]			= INVALID_FUNCTION;
 		this.m_bCutThrust					= false;
+		this.m_bCutThrust_Hyper				= false;
 		this.m_iInternalTravelVaultVectors 	= -1;
 	}
 	public void HeadingControl()
@@ -871,6 +904,7 @@ methodmap RegaliaClass < CClotBody
 			fl_AbilityVectorData[this.index] 	= this.GetAngles();
 			this.m_bVectoredThrust				= false;
 			this.m_bCutThrust					= false;
+			this.m_bCutThrust_Hyper 			= false;
 		}
 
 		if(func_ShipTurn[this.index] && func_ShipTurn[this.index] != INVALID_FUNCTION)
@@ -1037,7 +1071,7 @@ methodmap RegaliaClass < CClotBody
 
 		if(this.m_bCutThrust)
 		{
-			speed = this.m_flCurrentSpeed - this.m_flDecceleration;
+			speed = this.m_flCurrentSpeed - ( this.m_bCutThrust_Hyper ? this.m_flHyperDeccelSpeed : this.m_flDecceleration);
 		}
 
 		if(speed <= 0.0)
@@ -1284,114 +1318,147 @@ static void ClotThink(int iNPC)
 	HandleDroneSystem(npc);
 	Handle_SpiralGlaive(npc);
 	HandleBeacons(npc);
+	HandleConstructor(npc);
 }
-/*
-//too confusing apparently. so uh. gg
-static void HandleBeaconSurge(RegaliaClass npc)
+static float fl_constructor_summon_time;
+static void HandleConstructor(RegaliaClass npc)
 {
 	float GameTime = GetGameTime(npc.index);
 
-	if(npc.m_flBeaconSurgeActive < GameTime)
+	if(npc.m_flConstructorDuration < GameTime)
 	{
-		npc.m_flBeaconSurgeActive = FAR_FUTURE;
-
-		if(npc.m_iBeaconsExist <= 0)
-			return;
-
-		int Beacons[100];
-		int total = 0;
-		Beacons = iFindBeacons(npc, total);
-
-		if(total == 0)
-		{
-			CPrintToChatAll("Somehow regalia found 0 beacons. even though internaly it says they should exist. what. count: %i", npc.m_iBeaconsExist);
-			return;
-		}
-
-		float AvgRatio = 0.0;
-		for(int i=0 ; i < total ; i++)
-		{
-			Starship_Beacon Beacon = view_as<Starship_Beacon>(Beacons[i]);
-
-			if(Beacon.m_flArmorCount <= 0.0)
-				continue;
-
-			//so, since the beacons armour is 1:1 to max hp, we can get how much armour was left. depending on said ratio we get the avg.
-			AvgRatio += (Beacon.m_flArmorCount / ReturnEntityMaxHealth(Beacon.index));
-
-			Beacon.m_flArmorCount = 0.0;	//and now remove the armour of the beacons!
-		}
-		//once avg is aquired. we apply it to the ship itself!
-		AvgRatio /=total;
-
-		if(AvgRatio > 0.5)
-			AvgRatio = 0.5;	//if they REALLY fuck up badly. limit the shield to 50% of max ship hp.
-
-		float strength = 0.5;	//50% dmg block shield
-		GrantEntityArmor(beacon, false, AvgRatio, strength, 1);
+		npc.m_flShipAbilityActive	= GameTime + 1.0;
+		npc.m_flConstructorCooldown = GameTime + GetRandomFloat(1.0, 3.0);
+		npc.m_flConstructorDuration = FAR_FUTURE;
+		npc.EndFlightSystemGoal();
+		CPrintToChatAll("Summoned");
 	}
+
+	if(npc.m_flConstructorCooldown > GameTime)
+		return;
 
 	if(npc.m_flShipAbilityActive > GameTime)
 		return;
 
-	if(npc.m_flBeaconSurgeTimer > GameTime)
-		return;
+	float ShipLoc[3]; GetAbsOrigin(npc.index, ShipLoc);
 
-	bool force = false;
+	int entity = MaxClients + 1;
 
-	if(npc.m_flBeaconSurgeTimer < GameTime + 100.0)
-		force = true;
-
-	//we wand full beacon coverage. but if we wait too long for that. just do it anyway.
-	if(npc.m_iBeaconsExist < 5 && !force)
-		return;
-
-	if(npc.m_iBeaconsExist <= 0)
-		return;
-		
-	npc.m_flBeaconSurgeActive = GameTime + 100.0;
-
-	int Beacons[100];
-	int total = 0;
-	Beacons = iFindBeacons(npc, total);
-
-	float Shield_Power = 1.0;	//hp * this
-	float ArmorProtect = 0.0;	//dmg * this
-
-	for(int i=0 ; i < total ; i++)
+	int vault_core = 0;
+	bool Found = false;
+	while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 	{
-		int beacon = Beacons[i];
-		GrantEntityArmor(beacon, false, Shield_Power, strenght, 0);
+		if(IsValidEnemy(npc.index, entity))
+		{
+			if(IsDungeonCenterId() == i_NpcInternalId[entity])
+			{
+				Found = true;
+				vault_core = entity;
+				break;
+			}
+		}
 	}
+
+	if(Found)
+	{
+		float VaultLoc[3]; GetAbsOrigin(vault_core, VaultLoc);
+		float Dist = Get2DVectorDistances(ShipLoc, VaultLoc, true);
+
+		if(Dist < (500.0 * 500.0))
+			return;
+
+		if(Dist > (1500.0 * 1500.0))
+			return;
+	}
+	else
+	{
+		float Dist = Get2DVectorDistances(ShipLoc, VaultVectorPoints[0], true);
+
+		if(Dist > (1500.0 * 1500.0))
+			return;
+	}
+
+	npc.m_flConstructorDuration = FAR_FUTURE;
+	npc.m_flConstructorCooldown = FAR_FUTURE;
+	npc.m_flShipAbilityActive	= FAR_FUTURE;
+
+	float WantedLoc[3];
+
+	WantedLoc = fl_BeaconSpawnPos[GetRandomInt(0, sizeof(fl_BeaconSpawnPos)-1)];
+
+	fl_constructor_summon_time	= 10.0;
+
+	float OffsetLoc[3]; GetAbsOrigin(npc.index, OffsetLoc);
+	TE_SetupBeamPoints(OffsetLoc, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 15.0, 50.0, 50.0, 0, 0.1, {255,0,0,255}, 3);
+	TE_SendToAll();
+
+	f3_LastValidPosition[npc.index] = WantedLoc;
+
+	WantedLoc[2]+=800.0;
+
+	TE_SetupBeamPoints(OffsetLoc, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 15.0, 50.0, 50.0, 0, 0.1, {0,0,255,255}, 3);
+	TE_SendToAll();
+
+	npc.SetFlightSystemGoal(WantedLoc, ConstructorTurnControl);
+	npc.m_bVectoredThrust = true;
+
+
+	//npc_almagest_kaempfer
 }
-*/
-//stock void GrantEntityArmor(int entity, bool Once = true, float ScaleMaxHealth, float ArmorProtect, int ArmorType, float custom_maxarmour = 0.0, int ArmorGiver = -1)
-static const float fl_BeaconSpawnPos[][3] = {
-	{7622.043945, -619.331421, 	-5929.582520},
-	{5854.175293, -764.341980, 	-5929.582520},
-	{4585.667969, 470.419800, 	-5929.582520}, 
-	{4599.006836, 1457.004517, 	-5929.582520},
-	{4820.345215, 2404.140381, 	-5929.582520},
-	{5775.631348, 2674.651367, 	-5929.582520},
-	{7084.973633, 2730.071045, 	-5929.582520},
-	{7824.516113, 1989.070312, 	-5929.582520},
-	{7729.678223, 802.875183, 	-5929.582520}, 
-	{7437.662109, -382.637848, 	-5929.582520},
-	{7208.161621, 592.429443, 	-5929.582520}, 
-	{6539.422852, 1764.437744, 	-5929.582520},
-	{5495.158203, 2109.176758, 	-5929.582520},
-	{5124.044434, 1051.976807, 	-5929.582520},
-	{6872.589844, -677.584900, 	-5929.582520},
-	{7891.919434, 123.480782, 	-5929.582520}, 
-	{7863.694824, 1293.345093, 	-5929.582520},
-	{7957.625000, 2559.701904, 	-5929.582520},
-	{6137.000488, 2693.118896, 	-5929.582520},
-	{4979.221191, 1951.209839, 	-5929.582520},
-	{4312.235840, 281.892914, 	-5929.582520}, 
-	{4259.996582, -741.711670, 	-5929.582520},
-	{6291.461914, 195.441269, 	-5929.582520}, 
-	{4852.110840, 1.806172, 	-5929.582520} 
-};
+static void ConstructorTurnControl(int iNPC)
+{
+	RegaliaClass npc = view_as<RegaliaClass>(iNPC);
+
+	if(!npc.m_bVectoredThrust_InUse)
+		return;
+
+	if(!npc.m_bCutThrust_Hyper)
+		npc.m_bCutThrust = (npc.m_flCurrentSpeed > 100.0);
+
+	float WantedLoc[3]; WantedLoc = f3_LastValidPosition[npc.index];
+
+	float Angles[3];
+	VectorTurnData Data;
+	Angles = npc.RotateShipModelTowards(WantedLoc, Data, 2.0);
+	if(npc.m_flConstructorDuration == FAR_FUTURE)
+	{
+		float Origin[3]; GetAbsOrigin(npc.index, Origin);
+		float Dist = Get2DVectorDistances(Origin, WantedLoc, true);
+		if(Angles[0] < -80.0 && Dist < (100.0*100.0) && npc.bIsShipFacingLoc(Origin, WantedLoc, 10.0, 10.0))
+		{
+			npc.m_bCutThrust		= true;
+			npc.m_bCutThrust_Hyper 	= true;
+			npc.m_flConstructorDuration = GetGameTime(npc.index) + fl_constructor_summon_time;
+		}
+	}
+	else
+	{
+		int color[4] = {255, 255, 255, 255};
+		color = iRegaliaColor(npc);
+
+		float OffsetLoc[3]; GetAbsOrigin(npc.index, OffsetLoc);
+		TE_SetupBeamPoints(OffsetLoc, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 50.0, 50.0, 0, 0.1, color, 3);
+		TE_SendToAll();
+	}
+
+	
+
+	Angles[2] = -1.0 * Data.YawRotateLeft;
+	float RotationClamp = fl_ShipRollClamps;
+
+	//clamp ship rotational angles
+	if(Angles[2] > RotationClamp)
+		Angles[2] = RotationClamp;
+	else if(Angles[2] < -RotationClamp)
+		Angles[2] = -RotationClamp;
+
+	if(npc.m_bCutThrust)	//in this case, make roll default to 0.0 to avoid the "Insert Interstellar theme here dot media player four" 
+	{
+		Angles[2] = 0.0;
+	}
+
+	npc.RotateShipModel(Angles);
+}
 static float fl_beacon_spawned_at_pos_recently[sizeof(fl_BeaconSpawnPos)-1];
 static void HandleBeacons(RegaliaClass npc)
 {
@@ -1815,8 +1882,8 @@ static bool Invoke_RegaliaAnnihilateTarget(RegaliaClass npc, float Windup)
 {
 	int count = CountPlayersOnRed(2);
 
-	//if(count <= 5)
-	//	return false;
+	if(count <= 5)
+		return false;
 	
 	float RatioRequired = 0.15;
 	int highest = 0; 
