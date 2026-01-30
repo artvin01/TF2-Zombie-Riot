@@ -1059,17 +1059,11 @@ static void TriggerStartTouch(const char[] output, int caller, int activator, fl
 					float time = NextAttackAt - GetGameTime();
 					if(time > 60.0)
 					{
-						NoticenoDungeon = false;
 						if(DelayVoteFor < GetGameTime() && !Rogue_VoteActive())
 							CreateNewDungeon();
 					}
 					else
 					{
-						if(!NoticenoDungeon)
-						{
-							CPrintToChatAll("{crimson}%t", "Dungeon Empty Untill Next Raid");
-						}
-						NoticenoDungeon = true;
 						zone = Zone_HomeBase;
 					}
 				}
@@ -1224,6 +1218,7 @@ DungeonZone Dungeon_GetEntityZone(int entity, bool forceReset = false)
 static Action DungeonMainTimer(Handle timer)
 {
 	float time = NextAttackAt - GetGameTime();
+	NoticeDungeonNoTimeLeft();
 	if(time > 0.0 || AttackType > 1)
 	{
 		if(AttackType == -1)
@@ -2751,5 +2746,23 @@ void ExplainDoInternal(int client, int which)
 	}
 }
 
+void NoticeDungeonNoTimeLeft()
+{
+	float time = NextAttackAt - GetGameTime();
+	if(time > 60.0)	
+	{
+		NoticenoDungeon = false;
+		return;
+	}
+
+	if(!NoticenoDungeon)
+	{
+		CPrintToChatAll("{crimson}%t", "Dungeon Empty Untill Next Raid");
+	}
+	NoticenoDungeon = true;
+}
 #include "roguelike/dungeon_items.sp"
 #include "roguelike/dungeon_encounters.sp"
+
+
+

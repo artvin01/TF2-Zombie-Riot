@@ -923,5 +923,5 @@ int MapFogEntity;					// Entity ref of the fog controller used by the map, that 
 int ActiveFogEntity;				// Entity ref of the fog controller that is currently active, mostly used for late joins
 
 bool g_PrecachedMatrixNPCs;
-#endif
 int ZoneMarkerRef[Zone_MAX] = {-1, ...};
+#endif

@@ -7542,8 +7542,10 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	Apply_StatusEffect.DataForUse = GetGameTime() + 2.0;
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
-
-	float DamageDeal = float(CurrentCash);
+	float DamageDeal = 1000.0;
+#if defined ZR
+	DamageDeal = float(CurrentCash);
+#endif
 	DamageDeal *= 0.01;
 	if(DamageDeal <= 50.0)
 		DamageDeal = 50.0;
@@ -7671,10 +7673,11 @@ static void Const2_Laggy_Timer(int entity, StatusEffect Apply_MasterStatusEffect
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 
 
+#if defined ZR
 	float pos[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 	Dungeon_TeleportCratesRewards(entity, pos, GetRandomFloat(50.0, 100.0));
-
+#endif
 	if(GetRandomInt(0,2) == 0)
 	{
 		b_isWalking[entity] = false;
@@ -7791,7 +7794,9 @@ void Const2_XenoInfect(int entity, int victim, float &healingammount)
 		if(HasSpecificBuff(victim, "Xeno Infection") || HasSpecificBuff(victim, "Xeno Infection Buff Only"))
 			return;
 		//infects all teams except red
+#if defined ZR
 		Xeno_Resurgance_Enemy(victim);
+#endif
 	}
 	
 }

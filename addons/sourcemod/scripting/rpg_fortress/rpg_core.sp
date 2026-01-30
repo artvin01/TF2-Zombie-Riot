@@ -1132,3 +1132,15 @@ void RPG_FlatRes(int victim, int attacker, int weapon, float &damage)
 		damage = damageMinimum;
 	}
 }
+public bool Dungeon_Mode()
+{
+	return false;
+}
+int Dungeon_GetEntityZone(int entity, bool forceReset = false)
+{
+	return 0;
+}
+public bool Const2_IgnoreBuilding_FindTraget(int entity)
+{
+	return false;
+}

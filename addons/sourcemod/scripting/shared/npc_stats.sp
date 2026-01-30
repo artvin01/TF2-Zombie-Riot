@@ -11731,17 +11731,21 @@ stock void Spawns_CheckBadClient(int client/*, int checkextralogic = 0*/)
 	pos1[2] += 25.0;
 	CNavArea area;
 	float MaxPosCheck = 65.0;
+#if defined ZR
 	int vehicle = Vehicle_Driver(client);
 	if(vehicle != -1)
 		MaxPosCheck = 100.0;
+#endif
 	area = TheNavMesh.GetNavArea(pos1, MaxPosCheck);
 	//no nav area directly under them
 	if(area == NULL_AREA)
 	{
 		pos1[2] -= 25.0;
 		MaxPosCheck = 55.0;
+#if defined ZR
 		if(vehicle != -1)
 			MaxPosCheck = 80.0;
+#endif
 		area = TheNavMesh.GetNearestNavArea(pos1, false, MaxPosCheck, false, true);
 		if(area == NULL_AREA)
 		{

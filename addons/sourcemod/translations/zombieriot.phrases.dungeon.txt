@@ -376,7 +376,7 @@
 	}
 	"Dungeon Empty Untill Next Raid"
 	{
-		"en"	"Didn't find anything yet, check back soon!"
+		"en"	"No more Dungeons will be generated... an attack will happen in 60 seconds."
 	}
 	"Scout Car Desc"
 	{

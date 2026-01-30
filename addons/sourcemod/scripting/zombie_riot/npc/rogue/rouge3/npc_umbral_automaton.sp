@@ -860,16 +860,3 @@ void Umbral_Automaton_Melee_Small(Umbral_Automaton npc, float gameTime, float di
 		}
 	}
 }
-
-
-
-void Recalculate_NavBlockers()
-{
-	int entity = CreateEntityByName("tf_point_nav_interface");
-
-	if (!IsValidEntity(entity))
-		return;
-	AcceptEntityInput(  entity, "RecomputeBlockers" );
-
-	CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-}
