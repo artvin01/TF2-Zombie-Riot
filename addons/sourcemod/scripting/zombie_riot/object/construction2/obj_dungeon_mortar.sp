@@ -170,6 +170,7 @@ static void DBuildingMortarAction(int enemy, int owner, int mortar)
 	TE_SendToAll();
 	TE_SetupBeamRingPoint(spawnLoc, AOE_range*2.0, AOE_range*2.0 + 0.1, g_Ruina_BEAM_lightning, g_Ruina_HALO_Laser, 0, 66, 2.0, 30.0, 0.1, {255,255,125,255}, 1, 0);
 	TE_SendToAll();
+	spawnLoc[2] += 120.0;
 
 	int particle = ParticleEffectAt(position, "kartimpacttrail", 2.0);
 	SetEdictFlags(particle, (GetEdictFlags(particle) | FL_EDICT_ALWAYS));
@@ -181,9 +182,13 @@ static void DBuildingMortarAction(int enemy, int owner, int mortar)
 	CClotBody npcstats = view_as<CClotBody>(mortar);
 	npcstats.m_flAttackHappens = GetGameTime() + CONSTRUCT_FIRERATE;
 	ParticleEffectAt(pos_obj, "skull_island_embers", 2.0);
+	/*
+	int particle1 = ParticleEffectAt(pos_obj, "kartimpacttrail", 2.0);
+	SetEdictFlags(particle1, (GetEdictFlags(particle1) | FL_EDICT_ALWAYS));
+	CreateTimer(0.25, MortarFire_Falling_Shot_MoveUp, EntIndexToEntRef(particle1), TIMER_FLAG_NO_MAPCHANGE);	
+	*/
 	EmitSoundToAll(MORTAR_SHOT, 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, pos_obj);
 }
-
 static Action DMortarFire_Anims(Handle timer, DataPack pack)
 {
 	pack.Reset();
