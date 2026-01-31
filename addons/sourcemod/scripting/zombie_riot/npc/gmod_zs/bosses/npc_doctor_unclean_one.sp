@@ -831,7 +831,7 @@ public void DasNaggenvatcher_OnTakeDamagePost(int victim, int attacker, int infl
 		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_heavy",15000, RoundToCeil(4.0 * MultiGlobalEnemy));
 		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_engineer",12500, RoundToCeil(4.0 * MultiGlobalEnemy));
 		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_kamikaze_demo",3000, RoundToCeil(6.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_random_zombie", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_random_zombie", RoundToCeil(100000.0 * MultiGlobalHighHealthBoss), 1);
 	}
 	else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 	{
@@ -843,7 +843,7 @@ public void DasNaggenvatcher_OnTakeDamagePost(int victim, int attacker, int infl
 		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_vile_poisonheadcrab_zombie",60000, RoundToCeil(6.0 * MultiGlobalEnemy));
 		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_fastheadcrab_zombie",30000, RoundToCeil(6.0 * MultiGlobalEnemy));
 		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_vile_bloated_zombie",30000, RoundToCeil(6.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_random_zombie", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_random_zombie", RoundToCeil(100000.0 * MultiGlobalHighHealthBoss), 1);
 	}
 	else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 	{

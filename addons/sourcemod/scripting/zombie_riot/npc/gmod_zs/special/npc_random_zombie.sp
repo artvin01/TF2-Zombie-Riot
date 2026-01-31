@@ -107,7 +107,7 @@ void ZombieSummonRaidboss(int ZombieSummonbase)
 	SameZombieDisallow[0] = true;
 	while(SameZombieDisallow[NumberRand])
 	{
-		NumberRand = GetRandomInt(1,8);
+		NumberRand = GetRandomInt(1,10);
 	}
 	SameZombieDisallow[NumberRand] = true;
 	switch(NumberRand)

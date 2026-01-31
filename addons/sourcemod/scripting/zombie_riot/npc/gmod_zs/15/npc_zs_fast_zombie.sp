@@ -304,9 +304,9 @@ public void ZSFastZombie_ZSFastZombieThink(int iNPC)
 					if(target > 0) 
 					{
 						if(!ShouldNpcDealBonusDamage(target))
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
-						else
 							SDKHooks_TakeDamage(target, npc.index, npc.index, 30.0, DMG_CLUB, -1, _, vecHit);
+						else
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 						
 						// Hit particle
 						
