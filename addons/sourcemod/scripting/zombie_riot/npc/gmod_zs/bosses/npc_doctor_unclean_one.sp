@@ -610,7 +610,6 @@ public void DasNaggenvatcher_ClotThink(int iNPC)
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			RaidModeTime = GetGameTime() + 10.0;
 			switch(GetRandomInt(0,3))
 			{
 				case 0:

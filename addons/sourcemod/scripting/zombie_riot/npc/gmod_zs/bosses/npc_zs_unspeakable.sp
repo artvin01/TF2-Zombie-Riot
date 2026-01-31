@@ -627,7 +627,6 @@ public void ZsUnspeakable_ClotThink(int iNPC)
 	if(LastMann && !AlreadySaidLastmann)
 	{
 		AlreadySaidLastmann = true;
-		RaidModeTime = GetGameTime() + 10.0;
 		switch(GetRandomInt(0,2))
 		{
 			case 0:
