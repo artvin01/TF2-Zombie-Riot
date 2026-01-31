@@ -41,8 +41,8 @@ void DasNaggenvatcher_OnMapStart()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_doctor_unclean_one");
 	strcopy(data.Icon, sizeof(data.Icon), "expidonsan_doctor");
 	data.IconCustom = true;
-	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
 }
@@ -232,7 +232,7 @@ methodmap DasNaggenvatcher < CClotBody
 		g_dasnaggenvatcher_died=false;
 		g_dasnaggenvatcher_die=0.0;
 		
-		RaidModeTime = GetGameTime(npc.index) + 500.0;
+		RaidModeTime = GetGameTime(npc.index) + 300.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
 		npc.Anger = false;
@@ -275,7 +275,6 @@ methodmap DasNaggenvatcher < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.m_flAbilityOrAttack0 = 0.0;
 		
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iAttacksTillReload = 5;
@@ -334,21 +333,6 @@ public void DasNaggenvatcher_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.04;
 	npc.Update();
-	
-	if(npc.m_flAbilityOrAttack0 < gameTime)
-	{
-		npc.m_flAbilityOrAttack0 = gameTime + 0.25;
-		
-		int target = GetClosestAlly(npc.index, (250.0 * 250.0), _);
-		if(target)
-		{
-			GrantEntityArmor(target, false, 1.0, 0.10, 0);
-			DasNaggenvatcher npc1 = view_as<DasNaggenvatcher>(npc.index);
-			float ProjectileLoc[3];
-			GetEntPropVector(npc1.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-			spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 150, 150, 0, 200, 1, 0.3, 5.0, 8.0, 3, 40.0 * 2.0);	
-		}
-	}
 	
 	if(npc.m_flNextRangedSpecialAttack < gameTime)
 	{
@@ -690,7 +674,6 @@ public void DasNaggenvatcher_ClotThink(int iNPC)
 				DasNaggenvatcherSayWordsAngry(npc.index);
 				npc.Anger = true;
 				b_NpcIsInvulnerable[npc.index] = false;
-				//SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) * 6) / 7);
 			}
 		}
 	}
@@ -843,12 +826,12 @@ public void DasNaggenvatcher_OnTakeDamagePost(int victim, int attacker, int infl
 		npc.PlaySummonSound();
 		npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_soldier_pickaxe",75000, RoundToCeil(6.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_soldier",50000, RoundToCeil(12.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_demoknight",50000, RoundToCeil(12.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_heavy",50000, RoundToCeil(4.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_engineer",50000, RoundToCeil(4.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_kamikaze_demo",50000, RoundToCeil(12.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_soldier_pickaxe",22000, RoundToCeil(6.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_soldier",20000, RoundToCeil(6.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_demoknight",17500, RoundToCeil(6.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_heavy",15000, RoundToCeil(4.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_engineer",12500, RoundToCeil(4.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_kamikaze_demo",3000, RoundToCeil(6.0 * MultiGlobalEnemy));
 		DasNaggenvatcherSpawnEnemy(npc.index,"npc_random_zombie", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
 	}
 	else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
@@ -857,10 +840,10 @@ public void DasNaggenvatcher_OnTakeDamagePost(int victim, int attacker, int infl
 		npc.PlaySummonSound();
 		npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 				
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_eradicator",75000, RoundToCeil(12.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_vile_poisonheadcrab_zombie",75000, RoundToCeil(12.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_fastheadcrab_zombie",75000, RoundToCeil(12.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_vile_bloated_zombie",75000, RoundToCeil(12.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_eradicator",30000, RoundToCeil(6.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_vile_poisonheadcrab_zombie",60000, RoundToCeil(6.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_fastheadcrab_zombie",30000, RoundToCeil(6.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_vile_bloated_zombie",30000, RoundToCeil(6.0 * MultiGlobalEnemy));
 		DasNaggenvatcherSpawnEnemy(npc.index,"npc_random_zombie", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
 	}
 	else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
@@ -869,13 +852,13 @@ public void DasNaggenvatcher_OnTakeDamagePost(int victim, int attacker, int infl
 		npc.PlaySummonSound();
 		npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_ihbc",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_firefighter",100000, RoundToCeil(10.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_breadmonster",100000, RoundToCeil(10.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_fatscout",100000, RoundToCeil(10.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_fatspy",100000, RoundToCeil(10.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_sniper",100000, RoundToCeil(2.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_cleaner",100000, RoundToCeil(2.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_ihbc",25000, RoundToCeil(5.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_firefighter",50000, RoundToCeil(5.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_breadmonster",30000, RoundToCeil(5.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_fatscout",30000, RoundToCeil(5.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_zombie_fatspy",30000, RoundToCeil(2.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_sniper",20000, RoundToCeil(2.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_cleaner",40000, RoundToCeil(2.0 * MultiGlobalEnemy));
 		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_ninja_zombie_spy",25, RoundToCeil(2.0 * MultiGlobalEnemy));
 		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_malfunctioning_heavy", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
 	}
@@ -887,13 +870,13 @@ public void DasNaggenvatcher_OnTakeDamagePost(int victim, int attacker, int infl
 		npc.PlaySummonSound();
 		
 		npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_sniper",100000, RoundToCeil(2.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_mlsm",100000, RoundToCeil(7.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_sam",100000, RoundToCeil(7.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_medic_main",75000, RoundToCeil(20.0 * MultiGlobalEnemy));
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_major_vulture",RoundToCeil(50000.0 * MultiGlobalHighHealthBoss), 1);
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_soldier_barrager", RoundToCeil(1200000.0 * MultiGlobalHighHealthBoss), 1, true);
-		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_flesh_creeper", RoundToCeil(1200000.0 * MultiGlobalHighHealthBoss), 1, true);
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_sniper",20000, RoundToCeil(2.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_mlsm",40000, RoundToCeil(3.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_sam",40000, RoundToCeil(3.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_medic_main",25000, RoundToCeil(6.0 * MultiGlobalEnemy));
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_major_vulture",RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_soldier_barrager", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1, true);
+		DasNaggenvatcherSpawnEnemy(npc.index,"npc_zs_flesh_creeper", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1, true);
 	}			
 }
 

@@ -76,7 +76,7 @@ methodmap InfectedKamikaze < CClotBody
 	}
 	public InfectedKamikaze(float vecPos[3], float vecAng[3], int ally)
 	{
-		InfectedKamikaze npc = view_as<InfectedKamikaze>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "700", ally));
+		InfectedKamikaze npc = view_as<InfectedKamikaze>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "3000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -211,7 +211,7 @@ public void InfectedKamikaze_ClotThink(int iNPC)
 							{
 								
 								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 400.0, DMG_CLUB, -1, _, vecHit);
 									

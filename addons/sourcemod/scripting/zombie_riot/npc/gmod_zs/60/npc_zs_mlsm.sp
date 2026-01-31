@@ -45,7 +45,7 @@ void MassShootingLover_OnMapStart_NPC()
 	PrecacheModel("models/player/sniper.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Mass Shooting Lover Marine");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zs_mslm");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zs_mlsm");
 	strcopy(data.Icon, sizeof(data.Icon), "soldier");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -98,7 +98,7 @@ methodmap MassShootingLover < CClotBody
 
 	public MassShootingLover(float vecPos[3], float vecAng[3], int ally)
 	{
-		MassShootingLover npc = view_as<MassShootingLover>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "7000", ally));
+		MassShootingLover npc = view_as<MassShootingLover>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "40000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -129,13 +129,13 @@ methodmap MassShootingLover < CClotBody
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_trenchgun/c_trenchgun.mdl");
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/soldier/soldier_shako.mdl");
-		npc.m_iWearable3	= npc.EquipItem("head", "models/player/items/soldier/soldier_zombie.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/soldier/soldier_zombie.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		return npc;
 	}
 }

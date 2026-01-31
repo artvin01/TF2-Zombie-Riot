@@ -122,7 +122,7 @@ methodmap Eradicator < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		npc.m_flMeleeArmor = 1.5;
-		npc.m_flRangedArmor = 0.2;
+		npc.m_flRangedArmor = 0.5;
 		
 		npc.m_flSpeed = 260.0;
 		func_NPCDeath[npc.index] = Eradicator_NPCDeath;

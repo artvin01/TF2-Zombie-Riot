@@ -94,7 +94,7 @@ methodmap StoneAgeMaker < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		npc.SetActivity("ACT_MP_RUN_PRIMARY");
-		SetVariantInt(1);
+		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -187,7 +187,7 @@ public void StoneAgeMaker_ClotThink(int iNPC)
 			{
 				npc.m_bisWalking = true;
 				npc.m_iChanged_WalkCycle = 1;
-				npc.SetActivity("ACT_MP_RUN_MELEE");
+				npc.SetActivity("ACT_MP_RUN_PRIMARY");
 				npc.StartPathing();
 				npc.m_flSpeed = 210.0;
 			}
