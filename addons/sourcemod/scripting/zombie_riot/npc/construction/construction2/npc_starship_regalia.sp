@@ -570,7 +570,7 @@ methodmap RegaliaClass < CClotBody
 		//SetVariantString("1.0");
 		//AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		//
-		int skin = 1;	//1=blue, 0=red
+		int skin = 0;	//1=blue, 0=red
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		float Angles[3];
@@ -672,10 +672,18 @@ methodmap RegaliaClass < CClotBody
 			this.m_flGetClosestTargetTime = 0.0;
 
 		float GameTime = GetGameTime(this.index);
-		if(this.m_flGetClosestTargetTime > GameTime)
+		if(this.m_flGetClosestTargetTime > GameTime && !this.m_bPrimaryLancesActive)
 			return this.m_iTarget;
-
-		this.m_iTarget = GetClosestTarget(this.index, _, _ , true, _, _, _, _, _, _, true);
+		if(this.m_bPrimaryLancesActive)
+		{
+			this.m_iTarget = i_Get_Laser_Target(this);
+			if(!IsValidEntity(this.m_iTarget))
+			{
+				this.m_iTarget = GetClosestTarget(this.index, _, _ , true, _, _, f3_LastValidPosition[this.index], _, _, _, true);
+			}
+		}
+		else
+			this.m_iTarget = GetClosestTarget(this.index, _, _ , true, _, _, _, _, _, _, true);
 		this.m_flGetClosestTargetTime = GetGameTime(this.index) + GetRandomRetargetTime();
 		
 		/*
@@ -1405,17 +1413,38 @@ static void HandleConstructor(RegaliaClass npc)
 		npc.m_flConstructorCooldown = GameTime + GetRandomFloat(60.0, 90.0);
 		npc.m_flConstructorDuration = FAR_FUTURE;
 		
-		f3_LastValidPosition[npc.index][2] +=50.0;
-		int SpwanIndex = NPC_CreateByName("npc_almagest_kaempfer", npc.index, f3_LastValidPosition[npc.index], {0.0, 0.0, 0.0}, GetTeam(npc.index));
+		f3_LastValidPosition[npc.index][2] +=10.0;
+		
 		npc.PlayHL2TeleSound(f3_LastValidPosition[npc.index]);
 		npc.EndFlightSystemGoal();
 		npc.EndGenericLaserSound();
 
-		if(SpwanIndex > MaxClients)
+		int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.05);	//0.5% of ship hp
+
+		float Radius = 300.0;
+		float TE_Duration = 1.0;
+		float ThicknessRing = 30.0;
+
+		int style = GetEntProp(npc.index, Prop_Data, "m_nSkin");
+
+		if(style == 3)
+			style = 0;
+		else if(style == 4)
+			style = 1;
+		TE_SetupBeamRingPoint(f3_LastValidPosition[npc.index], Radius*2.0, 0.0, iGetTeamBeamIndex((style == 1 ? 3 : 2)), 0, 0, 1, TE_Duration, ThicknessRing, 0.1, {255, 255, 255, 255}, 1, 0);
+		TE_SendToAll();
+
+		f3_LastValidPosition[npc.index][2] +=40.0;
+
+		for(int i = 0 ; i < 4 ; i++)
 		{
-			int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.1);	//10% of ship hp?	
-			SetEntProp(SpwanIndex, Prop_Data, "m_iHealth", health);
-			SetEntProp(SpwanIndex, Prop_Data, "m_iMaxHealth", health);
+			int SpwanIndex = NPC_CreateByName("npc_almagest_kaempfer", npc.index, f3_LastValidPosition[npc.index], {0.0, 0.0, 0.0}, GetTeam(npc.index));
+
+			if(SpwanIndex > MaxClients)
+			{
+				SetEntProp(SpwanIndex, Prop_Data, "m_iHealth", health);
+				SetEntProp(SpwanIndex, Prop_Data, "m_iMaxHealth", health);
+			}
 		}
 	}
 
@@ -1557,7 +1586,38 @@ static void ConstructorTurnControl(int iNPC)
 
 		npc.EmitGenerciLaserSound();
 
+		float RingRadius = 1200.0;
+		float TE_Duration = 0.1;
+		float ThicknessRing = 30.0;
+
+		int style = GetEntProp(npc.index, Prop_Data, "m_nSkin");
+
+		if(style == 3)
+			style = 0;
+		else if(style == 4)
+			style = 1;
+		
 		DoPrimaryLanceEffects(npc, OffsetLoc, WantedLoc, Radius * 2.0);
+
+		int beam_index = iGetTeamBeamIndex((style == 1 ? 3 : 2));
+
+		OffsetLoc[2]+=600.0;
+		TE_SetupBeamRingPoint(OffsetLoc, RingRadius*2.0, RingRadius * 2.0 - 1.0, beam_index, 0, 0, 1, TE_Duration, ThicknessRing, 0.1, {255, 255, 255, 255}, 1, 0);
+		TE_SendToAll();
+
+		RingRadius *=0.5;
+		OffsetLoc[2]-=300.0;
+		TE_SetupBeamRingPoint(OffsetLoc, RingRadius*2.0, RingRadius * 2.0 - 1.0, beam_index, 0, 0, 1, TE_Duration, ThicknessRing, 0.1, {255, 255, 255, 255}, 1, 0);
+		TE_SendToAll();
+
+		RingRadius *=0.5;
+		OffsetLoc[2]-=300.0;
+		TE_SetupBeamRingPoint(OffsetLoc, RingRadius*2.0, RingRadius * 2.0 - 1.0, beam_index, 0, 0, 1, TE_Duration, ThicknessRing, 0.1, {255, 255, 255, 255}, 1, 0);
+		TE_SendToAll();
+
+		WantedLoc[2]+=10.0;
+		TE_SetupBeamRingPoint(WantedLoc, RingRadius*2.0, RingRadius * 2.0 - 1.0, beam_index, 0, 0, 1, TE_Duration, ThicknessRing, 0.1, {255, 255, 255, 255}, 1, 0);
+		TE_SendToAll();
 	}
 
 	Angles[2] = -1.0 * Data.YawRotateLeft;
@@ -2789,9 +2849,11 @@ static float ModifyDamage(float dmg)
 
 	return dmg * 10.0;
 }
-static float fl_PrimaryLanceDuration_Base 		= 5.0;
+static float fl_PrimaryLanceDuration_Base 		= 20.0;
 static float fl_PrimaryLanceRecharge_Base 		= 120.0;
-static float fl_PrimaryLanceTravelDist			= 800.0;
+static float fl_PrimaryLancesTravelSpeed		= 35.0;
+static float fl_PrimaryLancesTurnSpeed			= 2.5;
+static float fl_primaryLanceDistanceRegulation	= 3000.0;
 static float fl_PrimaryLanceTravelDetectionSize = 25.0;
 static float fl_PrimaryLanceDetectionSize 		= 600.0;
 static void LanceeWeaponTurnControl(int iNPC)
@@ -2802,11 +2864,12 @@ static void LanceeWeaponTurnControl(int iNPC)
 	if(!npc.m_bVectoredThrust_InUse && !npc.m_bCutThrust)
 		return;
 
+	if(!IsValidEntity(npc.m_iTarget))
+		return;
+
 	if(npc.m_flLanceDuration != FAR_FUTURE)
 	{
-		float GameTime = GetGameTime(npc.index);
-		float Ratio = 1.0 - 2.0 * ((npc.m_flLanceDuration - GameTime) / fl_PrimaryLanceDuration_Base);
-		Get_Fake_Forward_Vec(-fl_PrimaryLanceTravelDist * Ratio, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
+		//float GameTime = GetGameTime(npc.index);
 
 		static const char Sections[][] = {
 			"forward_lance_left_end" ,
@@ -2815,6 +2878,26 @@ static void LanceeWeaponTurnControl(int iNPC)
 		const float Start_Thickness = 30.0;
 
 		float Origin[3]; GetAbsOrigin(npc.index, Origin);
+
+		float BeamSpeed = fl_PrimaryLancesTravelSpeed * 0.1515;
+		float TurnSpeed = fl_PrimaryLancesTurnSpeed;
+
+		float TargetLoc[3]; WorldSpaceCenter(npc.m_iTarget, TargetLoc);
+		
+		VectorTurnData Data;
+		Data.Origin			= f3_LastValidPosition[npc.index];
+		Data.TargetVec 		= TargetLoc;
+		Data.CurrentAngles 	= fl_AbilityVectorData_2[npc.index];
+		Data.PitchSpeed		= TurnSpeed;
+		Data.YawSpeed		= TurnSpeed;
+		fl_AbilityVectorData_2[npc.index] = TurnVectorTowardsGoal(Data);
+
+		Get_Fake_Forward_Vec(BeamSpeed, fl_AbilityVectorData_2[npc.index], f3_LastValidPosition[npc.index], f3_LastValidPosition[npc.index]);
+
+		WantedLoc = f3_LastValidPosition[npc.index];
+
+		//TE_SetupBeamPoints(Origin, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 60.0, 60.0, 0, 0.25, {0, 0, 255, 255}, 3);
+		//TE_SendToAll();
 
 		//float TargetLoc[3];
 		//TargetLoc = f3_LastValidPosition[npc.index];
@@ -2825,7 +2908,7 @@ static void LanceeWeaponTurnControl(int iNPC)
 
 			//float Angles[3]; Angles = fl_AbilityVectorData_2[npc.index];
 
-			//if(!npc.bIsShipFacingLoc(End, WantedLoc, Allowance_Pitch, Allowance_Yaw))	//Gimbal lances.
+			//if(!npc.bIsShipFacingLoc(End, WantedLoc, 5.0, 5.0))	//Gimbal lances.
 			//	continue;
 
 			float BeamAngles[3];
@@ -2846,7 +2929,7 @@ static void LanceeWeaponTurnControl(int iNPC)
 	}
 	else
 	{
-		Get_Fake_Forward_Vec(fl_PrimaryLanceTravelDist, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
+		Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * 5.0 * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
 	}
 	
 	
@@ -2866,6 +2949,52 @@ static void LanceeWeaponTurnControl(int iNPC)
 
 	npc.RotateShipModel(Angles);
 
+}
+static int i_Get_Laser_Target(RegaliaClass npc)
+{
+	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+	int enemy_2[MAXPLAYERS];
+	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), false, false);
+	int Tmp_Target = -1;
+	float Angle_Val = 420.0;
+	for(int i; i < sizeof(enemy_2); i++)
+	{
+		if(enemy_2[i])
+		{
+			float Target_Angles = Target_Angle_Value(npc, enemy_2[i]);
+			if(Target_Angles < 45.0 && Target_Angles < Angle_Val)
+			{
+				Angle_Val = Target_Angles;
+				Tmp_Target = enemy_2[i];
+				
+				//CPrintToChatAll("Player %N within 45 degress: %f", Tmp_Target, Target_Angles);
+			}
+		}
+	}
+	return Tmp_Target;
+}
+static float Target_Angle_Value(RegaliaClass npc, int Target)
+{
+	// need position of either the inflictor or the attacker
+	float Vic_Pos[3];
+	WorldSpaceCenter(Target, Vic_Pos);
+	float npc_pos[3];
+	float angle[3];
+	float eyeAngles[3];
+	npc_pos = f3_LastValidPosition[npc.index];
+	eyeAngles = fl_AbilityVectorData_2[npc.index];
+	
+	GetVectorAnglesTwoPoints(npc_pos, Vic_Pos, angle);
+
+	// need the yaw offset from the player's POV, and set it up to be between (-180.0..180.0)
+	float yawOffset = fixAngle(angle[1]) - fixAngle(eyeAngles[1]);
+	if (yawOffset <= -180.0)
+		yawOffset += 360.0;
+	else if (yawOffset > 180.0)
+		yawOffset -= 360.0;
+
+	//if its more then 180, its on the other side of the npc / behind
+	return fabs(yawOffset);
 }
 static void DoPrimaryLanceEffects(RegaliaClass npc, float EndLoc[3], float flPos[3], float diameter)
 {
@@ -2971,7 +3100,7 @@ static void HandleMainWeapons(RegaliaClass npc)
 			Angles[0] = -30.0;
 			Ruina_Laser_Logic Laser;
 			Laser.client = npc.index;
-			Laser.DoForwardTrace_Custom(Angles, GoalVec, fl_PrimaryLanceTravelDist*3.0 + 300.0);
+			Laser.DoForwardTrace_Custom(Angles, GoalVec, fl_primaryLanceDistanceRegulation + 300.0);
 
 			Get_Fake_Forward_Vec(-300.0, Angles, WantedLoc, Laser.End_Point);
 
@@ -2992,23 +3121,31 @@ static void HandleMainWeapons(RegaliaClass npc)
 		if(npc.m_bVectoredThrust_InUse)
 		{
 			float WantedLoc[3];
-			Get_Fake_Forward_Vec(fl_PrimaryLanceTravelDist, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
+			Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * 5.0 * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
 
 			//TE_SetupBeamPoints(Origin, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 60.0, 60.0, 0, 0.25, {0, 255, 0, 255}, 3);
 			//TE_SendToAll();
 
-			if(npc.bIsShipFacingLoc(Origin, WantedLoc, 10.0, 10.0))
+			if(npc.bIsShipFacingLoc(Origin, WantedLoc, 5.0, 5.0))
 			{
+
+				float BeamAngles[3];
+				MakeVectorFromPoints(WantedLoc, f3_LastValidPosition[npc.index], BeamAngles);
+				GetVectorAngles(BeamAngles, BeamAngles);
+				fl_AbilityVectorData_2[npc.index] = BeamAngles;
+				f3_LastValidPosition[npc.index] = WantedLoc;
 				npc.m_bCutThrust = true;
 				npc.m_flLanceDuration = GameTime + fl_PrimaryLanceDuration_Base;
 				npc.m_flShipAbilityActive = GameTime + fl_PrimaryLanceDuration_Base + 1.0;
 				npc.m_flLanceRecharge = FAR_FUTURE;
+
+				
 			}
 		}
 		//else
 		//{
 		//	float WantedLoc[3];
-		//	Get_Fake_Forward_Vec(fl_PrimaryLanceTravelDist, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
+		//	Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * 5.0 * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
 		//	TE_SetupBeamPoints(Origin, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 60.0, 60.0, 0, 0.25, {0, 0, 255, 255}, 3);
 		//	TE_SendToAll();
 		//}
@@ -3022,7 +3159,6 @@ static void HandleMainWeapons(RegaliaClass npc)
 		"forward_lance_left_end" ,
 		"forward_lance_right_end"
 	};
-	
 	
 	float TargetLoc[3];
 
@@ -3046,22 +3182,15 @@ static void HandleMainWeapons(RegaliaClass npc)
 	//TE_SetupBeamPoints(Origin, TargetLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 1.0, 60.0, 60.0, 0, 0.25, {255, 0, 0, 255}, 3);
 	//TE_SendToAll();
 
-	float Ratio = 1.0 - 2.0 * ((npc.m_flLanceDuration - GameTime) / fl_PrimaryLanceDuration_Base);
-
-	float WantedLoc[3];
-
-	float Angles[3]; Angles = fl_AbilityVectorData_2[npc.index];
-	Get_Fake_Forward_Vec(-fl_PrimaryLanceTravelDist * Ratio, Angles, WantedLoc, TargetLoc);
-
 	for(int i = 0 ; i < 2 ; i++)	//left right
 	{
 		float End[3]; 	End = npc.GetWeaponSections(Sections[i]);
 
-		//if(!npc.bIsShipFacingLoc(End, WantedLoc, Allowance_Pitch, Allowance_Yaw))	//Gimbal lances.
+		//if(!npc.bIsShipFacingLoc(End, TargetLoc, 10.0, 10.0))	//Gimbal lances.
 		//	continue;
 
 		float BeamAngles[3];
-		MakeVectorFromPoints(End, WantedLoc, BeamAngles);
+		MakeVectorFromPoints(End, TargetLoc, BeamAngles);
 		GetVectorAngles(BeamAngles, BeamAngles);
 
 		Laser.DoForwardTrace_Custom(BeamAngles, End, -1.0);
@@ -3069,12 +3198,18 @@ static void HandleMainWeapons(RegaliaClass npc)
 
 		DoPrimaryLanceEffects(npc, End, Laser.End_Point, Start_Thickness);
 
+		DataPack pack = new DataPack();
+		pack.WriteFloat(Laser.End_Point[0]);
+		pack.WriteFloat(Laser.End_Point[1]);
+		pack.WriteFloat(Laser.End_Point[2]);
+		pack.WriteCell(1);
+		RequestFrame(MakeExplosionFrameLater, pack);
+
 		if(i)
 			npc.m_flLastDist_Two = GetVectorDistance(End, Laser.End_Point);
 		else
 			npc.m_flLastDist_One = GetVectorDistance(End, Laser.End_Point);
 	}
-	
 }
 static bool bInitialiseMainLances(RegaliaClass npc)
 {
@@ -3090,9 +3225,10 @@ static bool bInitialiseMainLances(RegaliaClass npc)
 	//float Thickness = 60.0;
 	//TE_SetupBeamRingPoint(Loc, radius*2.0, radius*2.0 - 1.0, g_Ruina_BEAM_Laser, 0, 0, 1, 10.0, Thickness, 0.75, {255, 0, 0, 255}, 1, 0);
 	//TE_SendToAll();
-		
+	
+	Loc[2]+=25.0;
 	f3_LastValidPosition[npc.index] = Loc;
-	fl_AbilityVectorData_2[npc.index] = vGetBestAngles(npc, Loc, fl_PrimaryLanceTravelDist, fl_PrimaryLanceTravelDetectionSize, 1.0, amt);
+	fl_AbilityVectorData_2[npc.index] = vGetBestAngles(npc, Loc, fl_PrimaryLancesTravelSpeed * 5.0 * fl_PrimaryLanceDuration_Base + 100.0, fl_PrimaryLanceTravelDetectionSize, 1.0, amt);
 
 	return true;
 }
@@ -3112,7 +3248,7 @@ static float[] vGetBestAngles(RegaliaClass npc, float Center[3], float Dist, flo
 	//get from what line we get the highest chance of hitting targets.
 
 	bool faster = false;
-	
+
 	while(!stop)
 	{
 		if(Angle_Val > 180.0)
@@ -3120,7 +3256,7 @@ static float[] vGetBestAngles(RegaliaClass npc, float Center[3], float Dist, flo
 			stop = true;
 			break;
 		}
-		Angle_Val +=faster ? angle_adjust * 6.0 : angle_adjust;
+		Angle_Val +=faster ? angle_adjust * 3.0 : angle_adjust;
 		float Angles[3]; Angles[1] = Angle_Val;
 		Get_Fake_Forward_Vec(-Dist, Angles, Laser.Start_Point, Center);
 		Get_Fake_Forward_Vec(Dist, Angles, Laser.End_Point, Center);
@@ -3185,6 +3321,9 @@ stock float[] vGetBestAverageWithinRadius(CClotBody npc, float radius, int &play
 
 		if(TeutonType[clients] != TEUTON_NONE)
 			continue;
+
+		if(view_as<CClotBody>(clients).m_bThisEntityIgnored)
+			continue;
 		
 		ValidEnts[amt] = clients;
 		amt++;
@@ -3200,6 +3339,15 @@ stock float[] vGetBestAverageWithinRadius(CClotBody npc, float radius, int &play
 			continue;
 
 		if(team == GetTeam(baseboss_index))
+			continue;
+		
+		if(view_as<CClotBody>(baseboss_index).m_bThisEntityIgnored)
+			continue;
+
+		if(b_NpcIsInvulnerable[baseboss_index])
+			continue;
+		
+		if(b_ThisEntityIgnoredByOtherNpcsAggro[baseboss_index])
 			continue;
 
 		ValidEnts[amt] = baseboss_index;
