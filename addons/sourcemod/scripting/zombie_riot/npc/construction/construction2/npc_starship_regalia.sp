@@ -162,25 +162,39 @@ static float fl_ShipTurnSpeed;
 */
 
 static const char g_ShieldDamageSound[][] = {
-	"physics/glass/glass_impact_bullet1.wav",
-	"physics/glass/glass_impact_bullet2.wav",
-	"physics/glass/glass_impact_bullet3.wav"
+	")physics/glass/glass_impact_bullet1.wav",
+	")physics/glass/glass_impact_bullet2.wav",
+	")physics/glass/glass_impact_bullet3.wav"
 };
 static const char g_ShieldBreakSound[][] = {
-	"physics/glass/glass_largesheet_break1.wav"
+	")physics/glass/glass_largesheet_break1.wav"
 };
 static const char g_DoGAttackSound[][] = {
-	"npc/combine_gunship/attack_stop2.wav"
+	")npc/combine_gunship/attack_stop2.wav"
 };
-#define REGALIA_IOC_EXPLOSION_SOUND				"misc/halloween/spell_mirv_explode_primary.wav"
-#define REGALIA_IOC_STARTUP						"ambient/machines/thumper_startup1.wav"
-#define REGALIA_IOC_CHARGE_LOOP					"ambient/machines/thumper_amb.wav"
-#define REGALIA_PATTERNS_CHARGE_SOUND			"friends/friend_online.wav"
-#define REGALIA_SPECIAL_IOC_EXPLOSION_SOUND		"ambient/levels/labs/teleport_postblast_thunder1.wav"
-#define REGALIA_SPECIAL_IOC_EXPLOSION_SOUND_2	"ambient/levels/citadel/portal_beam_shoot2.wav"
-#define REGALIA_SPECIAL_IOC_CHARGE_LOOP			"ambient/levels/citadel/zapper_warmup4.wav"
+static const char g_HL2_TeleSounds[][] = {
+	")ambient/machines/teleport1.wav",
+	")ambient/machines/teleport3.wav",
+	")ambient/machines/teleport4.wav",
+};
+static const char g_HurtSounds[][] = {
+	")physics/metal/metal_box_impact_bullet1.wav",
+	")physics/metal/metal_box_impact_bullet2.wav",
+	")physics/metal/metal_box_impact_bullet3.wav",
+};
+#define REGALIA_IOC_EXPLOSION_SOUND				")misc/halloween/spell_mirv_explode_primary.wav"
+#define REGALIA_IOC_STARTUP						")ambient/machines/thumper_startup1.wav"
+#define REGALIA_IOC_CHARGE_LOOP					")ambient/machines/thumper_amb.wav"
+#define REGALIA_PATTERNS_CHARGE_SOUND			")friends/friend_online.wav"
+#define REGALIA_SPECIAL_IOC_EXPLOSION_SOUND		")ambient/levels/labs/teleport_postblast_thunder1.wav"
+#define REGALIA_SPECIAL_IOC_EXPLOSION_SOUND_2	")ambient/levels/citadel/portal_beam_shoot2.wav"
+#define REGALIA_SPECIAL_IOC_CHARGE_LOOP			")ambient/levels/citadel/zapper_warmup4.wav"
 
+#define REGALIA_SPIRALGLAVE_SOUND				")ambient/levels/labs/teleport_mechanism_windup4.wav"
+#define REGALIA_DEATH_EXPLOSION_SOUND			")ambient/levels/citadel/portal_open1_adpcm.wav"
 
+#define REGALIA_LANTEAN_DRONE_SHOOT_1 	")weapons/physcannon/energy_sing_flyby1.wav"
+#define REGALIA_LANTEAN_DRONE_SHOOT_2 	")weapons/physcannon/energy_sing_flyby2.wav"
 enum 
 {
 	StarShip_BG_Main 		= 1,
@@ -243,6 +257,7 @@ static const float fl_BeaconSpawnPos[][3] = {
 	{6291.461914, 195.441269, 	-5929.582520}, 
 	{4852.110840, 1.806172, 	-5929.582520} 
 };
+static float fl_beacon_spawned_at_pos_recently[sizeof(fl_BeaconSpawnPos)-1];
 static const float VaultVectorPoints[][3] = {
 	{5975.277344, 880.963745, -4436.267578},
 
@@ -280,6 +295,8 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_ShieldBreakSound);
 	PrecacheSoundArray(g_DefaultCapperShootSound);
 	PrecacheSoundArray(g_DoGAttackSound);
+	PrecacheSoundArray(g_HL2_TeleSounds);
+	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSound(REGALIA_IOC_EXPLOSION_SOUND);
 	PrecacheSound(REGALIA_PATTERNS_CHARGE_SOUND);
 	PrecacheSound(REGALIA_IOC_STARTUP);
@@ -287,6 +304,10 @@ static void ClotPrecache()
 	PrecacheSound(REGALIA_SPECIAL_IOC_EXPLOSION_SOUND);
 	PrecacheSound(REGALIA_SPECIAL_IOC_EXPLOSION_SOUND_2);
 	PrecacheSound(REGALIA_SPECIAL_IOC_CHARGE_LOOP);
+	PrecacheSound(REGALIA_LANTEAN_DRONE_SHOOT_1);
+	PrecacheSound(REGALIA_LANTEAN_DRONE_SHOOT_2);
+	PrecacheSound(REGALIA_SPIRALGLAVE_SOUND);
+	PrecacheSound(REGALIA_DEATH_EXPLOSION_SOUND);
 
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -304,6 +325,12 @@ methodmap RegaliaClass < CClotBody
 		int pitch = GetRandomInt(40, 70);
 		EmitSoundToAll(g_ShieldDamageSound[GetRandomInt(0, sizeof(g_ShieldDamageSound) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.25, pitch);
 	}
+	public void PlayHurtSound() {
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
+			return;	
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+	}
 	public void EmitShieldBreakSound() {
 		EmitSoundToAll(g_ShieldBreakSound[GetRandomInt(0, sizeof(g_ShieldBreakSound) - 1)], this.index, _, SNDLEVEL_RAIDSIREN, _, 1.0, 60);
 	}
@@ -312,6 +339,9 @@ methodmap RegaliaClass < CClotBody
 	}
 	public void PlayPattenShootSound(float Loc[3]) {
 		EmitSoundToAll(g_DoGAttackSound[GetRandomInt(0, sizeof(g_DoGAttackSound) - 1)], _, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.9, 80, _, Loc);	
+	}
+	public void PlayHL2TeleSound(float Loc[3]) {
+		EmitSoundToAll(g_HL2_TeleSounds[GetRandomInt(0, sizeof(g_HL2_TeleSounds) - 1)], _, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.9, 80, _, Loc);	
 	}
 	public void EmitGenerciLaserSound() {
 		if(fl_RuinaLaserSoundTimer[this.index] > GetGameTime())
@@ -417,6 +447,11 @@ methodmap RegaliaClass < CClotBody
 	{
 		public get()							{ return f_NemesisCauseInfectionBox[this.index]; }
 		public set(float TempValueForProperty) 	{ f_NemesisCauseInfectionBox[this.index] = TempValueForProperty; }
+	}
+	property float m_flEmergencyThrustAdjuster
+	{
+		public get()							{ return fl_RegainWalkAnim[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_RegainWalkAnim[this.index] = TempValueForProperty; }
 	}
 	property bool m_bVectoredThrust
 	{
@@ -549,23 +584,23 @@ methodmap RegaliaClass < CClotBody
 
 		//Weapons System.
 		//Forward Lances
-		npc.m_flLanceRecharge = GetRandomFloat(60.0, 75.0) + GetGameTime();
-		npc.m_flLanceDuration = 0.0;
-		npc.m_bPrimaryLancesActive = false;
+		npc.m_flLanceRecharge 				= GetRandomFloat(60.0, 75.0) + GetGameTime();
+		npc.m_flLanceDuration 				= 0.0;
+		npc.m_bPrimaryLancesActive 			= false;
 
 		//under slungs
 		npc.m_flUnderSlung_Type0_Recharge 	= GetRandomFloat(30.0, 45.0) 	+ GetGameTime();
-		npc.m_flUnderSlung_Type1_Recharge	= GetRandomFloat(30.0, 60.0) 	+ GetGameTime();
-		npc.m_flUnderSlung_Type2_Recharge	= GetRandomFloat(1.0, 30.0)		+ GetGameTime();
-		npc.m_flUnderSlung_PrimaryRecharge = 0.0;
+		npc.m_flUnderSlung_Type1_Recharge	= GetRandomFloat(15.0, 60.0) 	+ GetGameTime();
+		npc.m_flUnderSlung_Type2_Recharge	= GetRandomFloat(60.0, 120.0)	+ GetGameTime();
+		npc.m_flUnderSlung_PrimaryRecharge  = 0.0;
 
 		//core deco weapons
-		npc.m_flSprial_Recharge				= GetRandomFloat(1.0, 3.0) 		+ GetGameTime();
+		npc.m_flSprial_Recharge				= GetRandomFloat(90.0, 120.0) 	+ GetGameTime();
 		npc.m_flDroneSpawnNext				= GetRandomFloat(1.0, 3.0) 		+ GetGameTime();
 
 		//Special
 
-		npc.m_flConstructorCooldown 		= GetRandomFloat(1.0, 3.0)		+ GetGameTime();
+		npc.m_flConstructorCooldown 		= GetRandomFloat(30.0, 80.0)	+ GetGameTime();
 		npc.m_flConstructorDuration			= FAR_FUTURE;
 
 		//Make immune to speed debuffs and the like
@@ -583,13 +618,7 @@ methodmap RegaliaClass < CClotBody
 		npc.m_bDissapearOnDeath 				= true;
 
 		//for spawn beacons
-
-		for(int i=0 ; i < 5 ; i++)
-		{
-			npc.m_flBeaconRespawnTimer = 0.0;
-			HandleBeacons(npc);
-		}
-
+		RequestFrame(SummonBeaconsFrameLater, EntIndexToEntRef(npc.index));
 
 		npc.Handle_SectionParticles();
 
@@ -799,6 +828,19 @@ methodmap RegaliaClass < CClotBody
 		if(!IsValidEntity(this.m_iTarget))
 			Wondering = true;
 
+		if(fabs(this.m_flYawLeft) < 10.0)
+		{
+			if(this.m_flEmergencyThrustAdjuster < GetGameTime() - 5.0)
+			{
+				if(fabs(this.m_flYawLeft) <= 2.5)
+					this.m_flEmergencyThrustAdjuster = GetGameTime();
+			}
+			else
+			{
+				this.m_flEmergencyThrustAdjuster = GetGameTime();
+			}
+		}
+
 		float GameTime = GetGameTime(this.index);
 
 		float DroneLoc[3], TargetLoc[3];
@@ -838,6 +880,7 @@ methodmap RegaliaClass < CClotBody
 			if(this.m_iInternalTravelVaultVectors != -1)
 			{
 				TargetLoc = VaultVectorPoints[this.m_iInternalTravelVaultVectors];
+
 			}
 			else
 			{
@@ -916,7 +959,24 @@ methodmap RegaliaClass < CClotBody
 	}
 	property float m_flTurnSpeed
 	{
-		public get()							{ return fl_ShipTurnSpeed; 				}
+		public get()							
+		{ 
+			float speed = fl_ShipTurnSpeed;
+
+			if(this.m_flEmergencyThrustAdjuster < GetGameTime() - 8.0)
+			{
+				float timer = GetGameTime() - this.m_flEmergencyThrustAdjuster;
+
+				timer = timer / 8.0;
+
+				speed *= timer;
+			}
+			if(this.m_bVectoredThrust_InUse)
+			{
+				speed *= 2.0;
+			}	
+			return speed; 				
+		}
 		public set(float TempValueForProperty) 	{ fl_ShipTurnSpeed = TempValueForProperty; }
 	}
 	property float m_flDecceleration
@@ -1284,6 +1344,20 @@ methodmap RegaliaClass < CClotBody
 	
 	}
 }
+static void SummonBeaconsFrameLater(int ref)
+{
+	int iNPC = EntRefToEntIndex(ref);
+
+	if(!IsValidEntity(iNPC))
+		return;
+
+	RegaliaClass npc = view_as<RegaliaClass>(iNPC);
+	for(int i=0 ; i < 5 ; i++)
+	{
+		npc.m_flBeaconRespawnTimer = 0.0;
+		HandleBeacons(npc);
+	}
+}
 static void ClotThink(int iNPC)
 {
 	RegaliaClass npc = view_as<RegaliaClass>(iNPC);
@@ -1328,10 +1402,21 @@ static void HandleConstructor(RegaliaClass npc)
 	if(npc.m_flConstructorDuration < GameTime)
 	{
 		npc.m_flShipAbilityActive	= GameTime + 1.0;
-		npc.m_flConstructorCooldown = GameTime + GetRandomFloat(1.0, 3.0);
+		npc.m_flConstructorCooldown = GameTime + GetRandomFloat(60.0, 90.0);
 		npc.m_flConstructorDuration = FAR_FUTURE;
+		
+		f3_LastValidPosition[npc.index][2] +=50.0;
+		int SpwanIndex = NPC_CreateByName("npc_almagest_kaempfer", npc.index, f3_LastValidPosition[npc.index], {0.0, 0.0, 0.0}, GetTeam(npc.index));
+		npc.PlayHL2TeleSound(f3_LastValidPosition[npc.index]);
 		npc.EndFlightSystemGoal();
-		CPrintToChatAll("Summoned");
+		npc.EndGenericLaserSound();
+
+		if(SpwanIndex > MaxClients)
+		{
+			int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.1);	//10% of ship hp?	
+			SetEntProp(SpwanIndex, Prop_Data, "m_iHealth", health);
+			SetEntProp(SpwanIndex, Prop_Data, "m_iMaxHealth", health);
+		}
 	}
 
 	if(npc.m_flConstructorCooldown > GameTime)
@@ -1383,21 +1468,40 @@ static void HandleConstructor(RegaliaClass npc)
 	npc.m_flShipAbilityActive	= FAR_FUTURE;
 
 	float WantedLoc[3];
+	bool dungeon = Dungeon_Mode();
 
-	WantedLoc = fl_BeaconSpawnPos[GetRandomInt(0, sizeof(fl_BeaconSpawnPos)-1)];
+	int selection = 0;
+	for(int i=0 ; i < sizeof(fl_BeaconSpawnPos)-1 ; i++)
+	{
+		if(!dungeon)
+			break;
+
+		//CPrintToChatAll("fl_beacon_spawned_at_pos_recently[%i] = %.3f", i, fl_beacon_spawned_at_pos_recently[i]);
+		if(fl_beacon_spawned_at_pos_recently[i] == 0.0)
+		{
+			selection = i;
+			break;
+		}
+
+		if(fl_beacon_spawned_at_pos_recently[i] < fl_beacon_spawned_at_pos_recently[selection])
+			selection = i;
+	}
+
+	WantedLoc = fl_BeaconSpawnPos[selection];
+	fl_beacon_spawned_at_pos_recently[selection] = GetGameTime();
 
 	fl_constructor_summon_time	= 10.0;
 
-	float OffsetLoc[3]; GetAbsOrigin(npc.index, OffsetLoc);
-	TE_SetupBeamPoints(OffsetLoc, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 15.0, 50.0, 50.0, 0, 0.1, {255,0,0,255}, 3);
-	TE_SendToAll();
+	//float OffsetLoc[3]; GetAbsOrigin(npc.index, OffsetLoc);
+	//TE_SetupBeamPoints(OffsetLoc, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 15.0, 50.0, 50.0, 0, 0.1, {255,0,0,255}, 3);
+	//TE_SendToAll();
 
 	f3_LastValidPosition[npc.index] = WantedLoc;
 
-	WantedLoc[2]+=800.0;
+	WantedLoc[2]+=1500.0;
 
-	TE_SetupBeamPoints(OffsetLoc, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 15.0, 50.0, 50.0, 0, 0.1, {0,0,255,255}, 3);
-	TE_SendToAll();
+	//TE_SetupBeamPoints(OffsetLoc, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 15.0, 50.0, 50.0, 0, 0.1, {0,0,255,255}, 3);
+	//TE_SendToAll();
 
 	npc.SetFlightSystemGoal(WantedLoc, ConstructorTurnControl);
 	npc.m_bVectoredThrust = true;
@@ -1412,36 +1516,49 @@ static void ConstructorTurnControl(int iNPC)
 	if(!npc.m_bVectoredThrust_InUse)
 		return;
 
-	if(!npc.m_bCutThrust_Hyper)
-		npc.m_bCutThrust = (npc.m_flCurrentSpeed > 100.0);
-
+	float Origin[3]; GetAbsOrigin(npc.index, Origin);
 	float WantedLoc[3]; WantedLoc = f3_LastValidPosition[npc.index];
+	float Dist = Get2DVectorDistances(Origin, WantedLoc, true);
 
 	float Angles[3];
 	VectorTurnData Data;
-	Angles = npc.RotateShipModelTowards(WantedLoc, Data, 2.0);
+	Angles = npc.RotateShipModelTowards(WantedLoc, Data, 1.0);
 	if(npc.m_flConstructorDuration == FAR_FUTURE)
 	{
-		float Origin[3]; GetAbsOrigin(npc.index, Origin);
-		float Dist = Get2DVectorDistances(Origin, WantedLoc, true);
-		if(Angles[0] < -80.0 && Dist < (100.0*100.0) && npc.bIsShipFacingLoc(Origin, WantedLoc, 10.0, 10.0))
+		if(Dist < (50.0*50.0) && npc.bIsShipFacingLoc(Origin, WantedLoc, 10.0, 10.0))
 		{
-			npc.m_bCutThrust		= true;
-			npc.m_bCutThrust_Hyper 	= true;
+			npc.m_flCurrentSpeed *= 0.5;	//THE ULTRA SPEED BRAKES!
+			float ShipNewAngles[3];
+			MakeVectorFromPoints(Origin, WantedLoc, ShipNewAngles);
+			GetVectorAngles(ShipNewAngles, ShipNewAngles);
+			fl_AbilityVectorData[npc.index] = ShipNewAngles;
+			npc.Fly(WantedLoc, Dist, true);	//update current speed / heading	
+			
 			npc.m_flConstructorDuration = GetGameTime(npc.index) + fl_constructor_summon_time;
+			//and now apply the stationary holding system
+			npc.m_bCutThrust_Hyper 	= true;
+			npc.m_bCutThrust = true;
 		}
 	}
 	else
 	{
-		int color[4] = {255, 255, 255, 255};
-		color = iRegaliaColor(npc);
-
 		float OffsetLoc[3]; GetAbsOrigin(npc.index, OffsetLoc);
-		TE_SetupBeamPoints(OffsetLoc, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 50.0, 50.0, 0, 0.1, color, 3);
-		TE_SendToAll();
-	}
 
-	
+		float Radius = 15.0;
+		Ruina_Laser_Logic Laser;
+		Laser.client = npc.index;
+		Laser.Radius 		= Radius;
+		Laser.Damage		= ModifyDamage(50.0);
+		Laser.Bonus_Damage 	= ModifyDamage(10.0);
+		Laser.damagetype 	= DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE;
+		Laser.Start_Point 	= OffsetLoc;
+		Laser.End_Point 	= WantedLoc;
+		Laser.Detect_Entities(On_LaserHit);
+
+		npc.EmitGenerciLaserSound();
+
+		DoPrimaryLanceEffects(npc, OffsetLoc, WantedLoc, Radius * 2.0);
+	}
 
 	Angles[2] = -1.0 * Data.YawRotateLeft;
 	float RotationClamp = fl_ShipRollClamps;
@@ -1459,7 +1576,6 @@ static void ConstructorTurnControl(int iNPC)
 
 	npc.RotateShipModel(Angles);
 }
-static float fl_beacon_spawned_at_pos_recently[sizeof(fl_BeaconSpawnPos)-1];
 static void HandleBeacons(RegaliaClass npc)
 {
 	//we allow 5 beacons
@@ -1612,6 +1728,10 @@ static void Handle_SpiralGlaive(RegaliaClass npc)
 	DataPack Pack = new DataPack();
 	Pack.WriteCellArray(Data, sizeof(Data));
 
+	EmitSoundToAll(REGALIA_SPIRALGLAVE_SOUND, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, RoundToCeil(100 * (14.0/(Data.Duration_Base + Data.Windup_Base))));
+	EmitSoundToAll(REGALIA_SPIRALGLAVE_SOUND, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, RoundToCeil(100 * (14.0/(Data.Duration_Base + Data.Windup_Base))));
+	EmitSoundToAll(REGALIA_SPIRALGLAVE_SOUND, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, RoundToCeil(100 * (14.0/(Data.Duration_Base + Data.Windup_Base))));
+
 	RequestFrames(SpiralGlave_Tick, 1, Pack);
 }
 static void SpiralGlave_Tick(DataPack IncomingData)
@@ -1635,7 +1755,7 @@ static void SpiralGlave_Tick(DataPack IncomingData)
 
 	if(Data.Duration < GameTime)
 	{
-		npc.m_flSprial_Recharge	= GameTime + 90.0;
+		npc.m_flSprial_Recharge	= GameTime + 160.0;
 		return;
 	}
 
@@ -1697,8 +1817,8 @@ static void SpiralGlave_Tick(DataPack IncomingData)
 	Ruina_Laser_Logic Laser;	//this trace/damage is done every tick. so yeah.
 	Laser.client = npc.index;
 	Laser.Radius 		= Thickness * 0.5;
-	Laser.Damage		= ModifyDamage(6.0);
-	Laser.Bonus_Damage 	= ModifyDamage(1.0);
+	Laser.Damage		= ModifyDamage(50.0);
+	Laser.Bonus_Damage 	= ModifyDamage(10.0);
 	Laser.damagetype 	= DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE;
 
 	const float AngleFinal = 75.0;
@@ -1724,7 +1844,6 @@ static void SpiralGlave_Tick(DataPack IncomingData)
 			//do damage!
 		}
 	}
-
 
 	DataPack Pack = new DataPack();
 	Pack.WriteCellArray(Data, sizeof(Data));
@@ -1755,11 +1874,9 @@ static void HandleUnderSlungWeapons(RegaliaClass npc)
 		return;
 
 	//CPrintToChatAll("POST npc.m_flShipAbilityActive: %.3f", npc.m_flShipAbilityActive - GameTime);
-	
 
 	if(npc.m_flUnderSlung_Type0_Recharge < GameTime)
 	{
-
 		/*
 		Type 1:
 			Conditions To Enter: Avg Vec point must have atleast X players before commiting
@@ -2006,7 +2123,7 @@ static void Regalia_AnnihilateTarget_Tick(DataPack IncomingData)
 	if(Data.Windup < GameTime)
 	{	
 		i_who_to_kill = target;
-		Explode_Logic_Custom(0.0, npc.index, npc.index, -1, Data.LastLoc, radius,_,_, true, _, _, _, Regalia_Annihilate_IonHitPre);
+		Explode_Logic_Custom(0.0, npc.index, npc.index, -1, Data.LastLoc, radius,_,_, true, _, _, 0.2, Regalia_Annihilate_IonHitPre);
 
 		Data.LastLoc[2]+=10.0;
 		TE_SetupBeamRingPoint(Data.LastLoc, radius*2.0, 0.0, g_Ruina_BEAM_Combine_Black, 0, 0, 1, 1.75, Thickness*1.5, Amp, {255, 255, 255, 255}, 1, 0);
@@ -2293,7 +2410,7 @@ static void DoG_PatternTick(DataPack IncomingData)
 		
 		//Projectile.radius = 0.0;
 		Projectile.damage 	= ModifyDamage(100.0);
-		Projectile.bonus_dmg= 1.0;
+		Projectile.bonus_dmg= 0.2;
 		Projectile.speed 	= 3000.0;
 		Projectile.visible 	= false;
 
@@ -2414,7 +2531,7 @@ static void IOC_TurnControl(int iNPC)
 
 	float Angles[3];
 	VectorTurnData Data;
-	Angles = npc.RotateShipModelTowards(WantedLoc, Data, 2.0);
+	Angles = npc.RotateShipModelTowards(WantedLoc, Data, 1.0);
 
 	//float OffsetLoc[3]; GetAbsOrigin(npc.index, OffsetLoc);
 	//TE_SetupBeamPoints(OffsetLoc, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 50.0, 50.0, 0, 0.1, {255,255,255,255}, 3);
@@ -2531,7 +2648,7 @@ static void RegaliaIOC_Tick(DataPack Data)
 	if(DetTimer < GetGameTime(npc.index))
 	{
 		StopSound(npc.index, SNDCHAN_VOICE, REGALIA_IOC_CHARGE_LOOP);
-		Explode_Logic_Custom(dmg, npc.index, npc.index, -1, EndLoc, Radius,_,0.8, true);
+		Explode_Logic_Custom(dmg, npc.index, npc.index, -1, EndLoc, Radius,_,0.8, true, _, _, 0.2);
 
 		EmitAmbientSound(REGALIA_IOC_EXPLOSION_SOUND, EndLoc, _, 100, _, _, GetRandomInt(60, 80));
 
@@ -2651,6 +2768,18 @@ static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
 
 		drone_npc.m_flTimeTillDeath = GetGameTime() + 10.0 + GetRandomFloat(0.5, 1.5);
 		drone_npc.m_flSpeed = DroneSpeed + 200.0 * GetRandomFloat(0.8, 1.2);
+
+		switch(GetRandomInt(1, 2))
+		{
+			case 1:
+			{
+				EmitSoundToAll(REGALIA_LANTEAN_DRONE_SHOOT_1, drone_npc.index, _, 65, _, 0.35, 160);
+			}
+			case 2:
+			{
+				EmitSoundToAll(REGALIA_LANTEAN_DRONE_SHOOT_2, drone_npc.index, _, 65, _, 0.35, 160);
+			}
+		}
 	}
 }
 static float ModifyDamage(float dmg)
@@ -2683,12 +2812,7 @@ static void LanceeWeaponTurnControl(int iNPC)
 			"forward_lance_left_end" ,
 			"forward_lance_right_end"
 		};
-		int color[4] = {255, 255, 255, 255};
-		color = iRegaliaColor(npc);
 		const float Start_Thickness = 30.0;
-		const float End_Thickness = 20.0;
-		const float TE_Duration = 0.1;
-		const float Amp = 0.1;
 
 		float Origin[3]; GetAbsOrigin(npc.index, Origin);
 
@@ -2717,11 +2841,7 @@ static void LanceeWeaponTurnControl(int iNPC)
 			float FinalLoc[3];
 			Get_Fake_Forward_Vec(Dist, BeamAngles, FinalLoc, End);
 
-			TE_SetupBeamPoints(End, FinalLoc, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Start_Thickness, End_Thickness, 0, Amp, color, 3);
-			TE_SendToAll();
-
-			TE_SetupBeamPoints(End, FinalLoc, g_Ruina_BEAM_lightning, 0, 0, 0, TE_Duration, GetRandomFloat(Start_Thickness *0.5, Start_Thickness * 1.5), GetRandomFloat(End_Thickness *0.5, End_Thickness * 1.5), 0, GetRandomFloat(0.25, 1.0), color, 3);
-			TE_SendToAll();
+			DoPrimaryLanceEffects(npc, End, FinalLoc, Start_Thickness);
 		}
 	}
 	else
@@ -2732,7 +2852,7 @@ static void LanceeWeaponTurnControl(int iNPC)
 	
 	float Angles[3];
 	VectorTurnData Data;
-	Angles = npc.RotateShipModelTowards(WantedLoc, Data, npc.m_flLanceRecharge == FAR_FUTURE ? 1.1 : 1.2);
+	Angles = npc.RotateShipModelTowards(WantedLoc, Data, 1.0);
 
 	Angles[2] = -1.0 * Data.YawRotateLeft;
 		
@@ -2746,6 +2866,54 @@ static void LanceeWeaponTurnControl(int iNPC)
 
 	npc.RotateShipModel(Angles);
 
+}
+static void DoPrimaryLanceEffects(RegaliaClass npc, float EndLoc[3], float flPos[3], float diameter)
+{
+	float TE_Duration = 0.1;
+
+	int style = GetEntProp(npc.index, Prop_Data, "m_nSkin");
+
+	if(style == 3)
+		style = 0;
+	else if(style == 4)
+		style = 1;
+
+
+	int color[4] = {200, 200, 200, 170};
+
+	color[1] = GetRandomInt(80, 255);
+	color[3] = 100;
+
+	if (style == 1)
+	{
+		color[0] = GetRandomInt(50, 175);
+		color[2] = GetRandomInt(200, 255);
+	}
+	else
+	{
+		color[0] = GetRandomInt(200, 255);
+		color[2] = GetRandomInt(50, 175);
+
+	}
+
+	float Start_Diameter1 = diameter*0.8;
+	float End_Diameter = diameter * 0.5;
+
+	const int Speed_Body = 15;
+	const int Speed_Glow = 15;
+
+	const int FrameRate = 9;
+	const int StartFrame = 0;
+	const int FadeLength = 33;
+
+	TE_SetupBeamPoints(flPos, EndLoc, HYDRAGUT_Beam, 0, StartFrame, FrameRate, TE_Duration, Start_Diameter1, End_Diameter, FadeLength, 1.0, color, Speed_Body);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(flPos, EndLoc, HYDRAGUTCAP_Beam, 0, StartFrame, FrameRate, TE_Duration, Start_Diameter1, End_Diameter, FadeLength, 1.0, color, Speed_Body);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(flPos, EndLoc, iGetTeamBeamIndex((style == 1 ? 3 : 2)), 0, StartFrame, FrameRate, TE_Duration, 0.0, End_Diameter, FadeLength, 1.0, {255, 255, 255, 255}, Speed_Body);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(flPos, EndLoc, g_Ruina_BEAM_Glow, 0, StartFrame, FrameRate, TE_Duration, 0.0, ClampBeamWidth(diameter * 1.28), FadeLength, 1.2, color, Speed_Glow);
+	TE_SendToAll(0.0);
 }
 static void HandleMainWeapons(RegaliaClass npc)
 {
@@ -2862,18 +3030,13 @@ static void HandleMainWeapons(RegaliaClass npc)
 
 	npc.EmitGenerciLaserSound();
 
-	int color[4] = {255, 255, 255, 255};
-	color = iRegaliaColor(npc);
 	const float Start_Thickness = 30.0;
-	const float End_Thickness = 20.0;
-	const float TE_Duration = 0.1;
-	const float Amp = 0.1;
 
 	Ruina_Laser_Logic Laser;
 	Laser.client 		= npc.index;
 	Laser.Radius 		= Start_Thickness * 0.5;
 	Laser.Damage		= ModifyDamage(50.0);
-	Laser.Bonus_Damage 	= ModifyDamage(50.0);
+	Laser.Bonus_Damage 	= ModifyDamage(10.0);
 	Laser.damagetype 	= DMG_PLASMA;
 
 	//float ShipAngles[3]; ShipAngles = npc.GetAngles();
@@ -2904,10 +3067,7 @@ static void HandleMainWeapons(RegaliaClass npc)
 		Laser.DoForwardTrace_Custom(BeamAngles, End, -1.0);
 		Laser.Deal_Damage();
 
-		TE_SetupBeamPoints(End, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, Start_Thickness, End_Thickness, 0, Amp, color, 3);
-		TE_SendToAll();
-		TE_SetupBeamPoints(End,  Laser.End_Point, g_Ruina_BEAM_lightning, 0, 0, 0, TE_Duration, GetRandomFloat(Start_Thickness *0.5, Start_Thickness * 1.5), GetRandomFloat(End_Thickness *0.5, End_Thickness * 1.5), 0, GetRandomFloat(0.25, 1.0), color, 3);
-		TE_SendToAll();
+		DoPrimaryLanceEffects(npc, End, Laser.End_Point, Start_Thickness);
 
 		if(i)
 			npc.m_flLastDist_Two = GetVectorDistance(End, Laser.End_Point);
@@ -3164,6 +3324,10 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.m_fbRangedSpecialOn = true;
 		npc.EmitShieldBreakSound();
 	}
+	else
+	{
+		npc.PlayHurtSound();
+	}
 
 	return Plugin_Continue;
 }
@@ -3172,6 +3336,19 @@ static void NPC_Death(int iNPC)
 	RegaliaClass npc = view_as<RegaliaClass>(iNPC);
 
 	StopSound(npc.index, SNDCHAN_VOICE, REGALIA_IOC_CHARGE_LOOP);
+	npc.EndGenericLaserSound();
+
+	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, 175);
+	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, 150);
+	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, 125);
+	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, 100);
+	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, 75);
+
+	float Loc[3]; GetAbsOrigin(npc.index, Loc);
+	int particle = ParticleEffectAt(Loc, "hammer_bell_ring_shockwave2", 1.0);
+
+	if(IsValidEntity(particle))
+		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 
 	npc.CleanEntities();
 }

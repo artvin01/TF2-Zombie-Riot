@@ -111,6 +111,7 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 
 #define BEAM_COMBINE_BLACK	"materials/sprites/combineball_trail_black_1.vmt"
 #define BEAM_COMBINE_BLUE	"materials/sprites/combineball_trail_blue_1.vmt"
+#define BEAM_COMBINE_RED	"materials/sprites/combineball_trail_red_1.vmt"
 #define BEAM_DIAMOND 		"materials/sprites/physring1.vmt"
 
 int i_Ruina_Overlord_Ref;
@@ -143,9 +144,12 @@ int g_Ruina_BEAM_Glow;
 int g_Ruina_HALO_Laser;
 int g_Ruina_BEAM_Combine_Black;
 int g_Ruina_BEAM_Combine_Blue;
+int g_Ruina_BEAM_Combine_Red;
 int g_Ruina_BEAM_lightning;
 char g_Ruina_Glow_Blue;	//blue
 char g_Ruina_Glow_Red;	//red
+int HYDRAGUT_Beam;
+int HYDRAGUTCAP_Beam;
 
 static char g_EnergyChargeSounds[][] = {
 	"weapons/airboat/airboat_gun_energy1.wav",
@@ -249,6 +253,9 @@ void Ruina_Ai_Core_Mapstart()
 	PrecacheModel(BEAM_COMBINE_BLACK, true);
 
 	i_Ruina_Overlord_Ref = INVALID_ENT_REFERENCE;
+
+	HYDRAGUT_Beam 				= PrecacheModel("materials/sprites/hydragutbeam.vmt");
+	HYDRAGUTCAP_Beam			= PrecacheModel("materials/sprites/hydraspinalcord.vmt");
 	
 	g_Ruina_Laser_BEAM 			= PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	//gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
@@ -257,6 +264,7 @@ void Ruina_Ai_Core_Mapstart()
 	g_Ruina_HALO_Laser 			= PrecacheModel("materials/sprites/halo01.vmt", true);
 	g_Ruina_BEAM_Combine_Black 	= PrecacheModel(BEAM_COMBINE_BLACK, true);
 	g_Ruina_BEAM_Combine_Blue 	= PrecacheModel(BEAM_COMBINE_BLUE, true);
+	g_Ruina_BEAM_Combine_Red	= PrecacheModel(BEAM_COMBINE_RED, true);
 
 	g_Ruina_BEAM_Glow 			= PrecacheModel("sprites/glow02.vmt", true);
 
@@ -2863,6 +2871,15 @@ stock float UTIL_VecToPitch( const float vec[3])
 	pitch = RAD2DEG(pitch);
 
 	return pitch;
+}
+stock int iGetTeamBeamIndex(int team)
+{
+	switch(team)
+	{
+		case 2: return g_Ruina_BEAM_Combine_Red;
+		case 3: return g_Ruina_BEAM_Combine_Blue;
+		default: return g_Ruina_BEAM_Combine_Black;
+	}
 }
 /*
 void Ruina_Move_Entity(int entity, float loc[3], float Ang[3], bool old=false)
