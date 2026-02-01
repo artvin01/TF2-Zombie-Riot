@@ -39,6 +39,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_ShieldGiveSounds);
 	PrecacheModel(BEACON_TOWER_CORE_MODEL);
+	PrecacheModel(BEACON_TOWER_CORE_MODEL);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
