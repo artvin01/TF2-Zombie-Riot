@@ -129,14 +129,14 @@ public void Dungeon_Crate_Crystal2()
 public void Dungeon_Crate_BonusCash25()
 {
 	// 50
-	int amount = GetRandomInt(30, 70);
+	int amount = GetRandomInt(40, 80);
 	GlobalExtraCash += amount;
 	ItemMessage("Gained Extra Cash", amount);
 }
 
 public void Dungeon_Crate_BonusCash100()
 {
-	int amount = GetRandomInt(50, 150);
+	int amount = GetRandomInt(100, 200);
 	GlobalExtraCash += amount;
 	ItemMessage("Gained Extra Cash", amount);
 }
