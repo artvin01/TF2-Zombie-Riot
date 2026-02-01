@@ -62,11 +62,16 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 			}
 		}
 		CClotBody npc = view_as<CClotBody>(entity);
-		if(StrContains(buffers[0], "obj_const_wall1") != -1)
+		if(StrContains(buffers, "obj_dungeon_wall1") != -1)
 		{
 			//global res values
 			npc.m_flMeleeArmor *= 0.75;
 			npc.m_flRangedArmor *= 0.5;
+		}
+		if(StrContains(buffers, "obj_const2_house") != -1 || StrContains(buffers, "obj_dungeon_wall1") != -1)
+		{
+			SDKUnhook(entity, SDKHook_Think, ObjBaseThink);
+			SDKUnhook(entity, SDKHook_ThinkPost, ObjBaseThinkPost);
 		}
 		b_ThisWasAnNpc[entity] = true;
 		i_NpcIsABuilding[entity] = true;
@@ -76,6 +81,11 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 		SetEntityRenderColor(entity, 255, 255, 255, 255);
 		ApplyStatusEffect(entity, entity, "Const2 Scaling For Enemy Base Nerf", 999999.0);
 		npc.m_flMeleeArmor *= 1.5;
+		
+		ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+		if(IsValidEntity(objstats.m_iWearable2))
+			RemoveEntity(objstats.m_iWearable2);
+		//remove text
 	}
 	SetTeam(entity, team);
 	//figure out eventually

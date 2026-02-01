@@ -707,7 +707,8 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		objstats.m_flNextDelayTime = gameTime + 1.0;
 	}
 
-
+	if(GetTeam(objstats.index) != TFTeam_Red)
+		return false;
 
 	BuildingUpdateTextHud(objstats.index);
 
@@ -731,10 +732,6 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 			objstats.m_bBurning = false;
 		}
 	}
-
-	if(GetTeam(objstats.index) != TFTeam_Red)
-		return false;
-
 	int owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
 	if(owner == -1 && !objstats.m_bConstructBuilding && !objstats.m_bNoOwnerRequired)
 	{                                               
@@ -1355,25 +1352,28 @@ public void ObjBaseThink(int building)
 {
 	ObjectGeneric objstats = view_as<ObjectGeneric>(building);
 	//Fixes some issues when mounted
-	if(IsValidEntity(Building_Mounted[building]))
+	if(GetTeam(objstats.index) == TFTeam_Red)
 	{
-		int wearable = objstats.m_iWearable1;
-		if(wearable != -1)
-		{			
-			SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
-		}
-		wearable = objstats.m_iWearable2;
-		if(wearable != -1)
+		if(IsValidEntity(Building_Mounted[building]))
 		{
-			SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+			int wearable = objstats.m_iWearable1;
+			if(wearable != -1)
+			{			
+				SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+			}
+			wearable = objstats.m_iWearable2;
+			if(wearable != -1)
+			{
+				SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+			}
 		}
-	}
 
-	//do not think if you are being carried, unless bomb.
-	if(BombIdVintulum() != i_NpcInternalId[building])
-	{
-		if(BuildingIsBeingCarried(building))
-			return;
+		//do not think if you are being carried, unless bomb.
+		if(BombIdVintulum() != i_NpcInternalId[building])
+		{
+			if(BuildingIsBeingCarried(building))
+				return;
+		}
 	}
 
 	ObjectGeneric_ClotThink(objstats);
@@ -1582,7 +1582,29 @@ public void ObjectGeneric_ClotTakeDamage_Post(int victim, int attacker, int infl
 
 	if((damagetype & DMG_CRUSH))
 		return;
-
+	if(GetTeam(victim) != TFTeam_Red)
+	{
+		int health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
+		int maxhealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
+		float Ratio = float(health) / float(maxhealth);
+			
+		if(Ratio < 0.15)
+		{
+			if(!objstats.m_bBurning)
+			{
+				IgniteTargetEffect(objstats.index, _, _);
+				objstats.m_bBurning = true;
+			}
+		}
+		else
+		{
+			if(objstats.m_bBurning)
+			{
+				ExtinguishTarget(objstats.index);
+				objstats.m_bBurning = false;
+			}
+		}
+	}
 	float Damageafter = damage;
 	//only red buildings get 90% dmg res, this is done so its more easy to read the numbers on the buildings.
 	if(GetTeam(victim) == TFTeam_Red)
