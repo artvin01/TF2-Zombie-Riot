@@ -205,7 +205,7 @@ public void ApertureSentry_ClotThink(int iNPC)
 				AcceptEntityInput(npc.index, "SetBodyGroup");
 				
 				const float animTime = 5.0; // Sentry anim takes about 5 seconds
-				float duration = npc.Anger ? 1.0 : 7.0;
+				float duration = npc.Anger ? 1.0 : 4.0;
 				
 				npc.SetPlaybackRate(animTime / duration);
 				npc.m_flDoingAnimation = gameTime + duration;

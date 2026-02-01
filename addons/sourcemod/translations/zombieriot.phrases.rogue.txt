@@ -459,7 +459,7 @@
 		"en"	"{yellow}Receive an unknown artifact {crimson}but lose 4 Australium Ingots"
 		"it"	"{yellow}Ricevi un artefatto sconosciuto {crimson} ma perdi 4 lingotti di australium"
 		"ru"	"{yellow}Получить неизвестный артефакт{crimson}, но потерять 4 слитков австралия"
-		"ko"	"{yellow}알 수 없는 소장품을 얻습니다. {red}오스트레일륨 주괴를 4 잃습니다.
+		"ko"	"{yellow}알 수 없는 소장품을 얻습니다. {red}오스트레일륨 주괴를 4 잃습니다."
 	}
 	"Eccentric Lore 1a"
 	{

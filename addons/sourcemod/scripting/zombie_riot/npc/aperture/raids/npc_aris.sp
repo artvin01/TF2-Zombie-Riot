@@ -1473,10 +1473,10 @@ static void ARIS_MakeParticleRocketSuitable(int entity, bool fake)
 	SetEntityCollisionGroup(entity, COLLISION_GROUP_DEBRIS);
 	SDKUnhook(entity, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 	
-	if (fake)
-		SDKHook(entity, SDKHook_StartTouch, ARIS_Fake_Rocket_Particle_StartTouch);
+	if(fake)
+		WandProjectile_ApplyFunctionToEntity(entity, ARIS_Fake_Rocket_Particle_StartTouch);
 	else
-		SDKHook(entity, SDKHook_StartTouch, ARIS_Real_Rocket_Particle_StartTouch);
+		WandProjectile_ApplyFunctionToEntity(entity, ARIS_Real_Rocket_Particle_StartTouch);
 	
 	// We want to actually see it
 	SetEntityRenderColor(entity);
@@ -1521,7 +1521,6 @@ static void ARIS_Real_Rocket_Particle_StartTouch(int entity, int target)
 			
 			Explode_Logic_Custom(damage, owner, entity, -1, vecPos, ARIS_ROCKET_BLAST_RADIUS);
 		}
-		
 		RemoveEntity(entity);
 	}
 }

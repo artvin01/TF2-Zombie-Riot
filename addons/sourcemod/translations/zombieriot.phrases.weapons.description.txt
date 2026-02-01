@@ -2244,7 +2244,7 @@
 		"en"	"-Infinite Fire\n-Projectile hit weapon."
 		"it"	"Fuoco infinito, arma a proiettile."
 		"ko"	"-무한정 사격합니다.\n-투사체를 발사하는 무기입니다."
-		"lt"	"-Begalinis Šovimas\n-''Kulko'' Šovimo ginklas'
+		"lt"	"-Begalinis Šovimas\n-''Kulko'' Šovimo ginklas"
 	}
 	"Tornado Blitz Desc Spam1"
 	{
@@ -5375,7 +5375,7 @@
 	"Sigil Blade Pap 3"
 	{
 		"en"	"-Increased damage\n-Increased melee resistance\n-Slower attackspeed\n-You gain the ability to done an Lock Slash onto enemy(By R)\n-The more you travel with your ability, the more damage you deal\n-Sigil cd reduction buffed a bit.\n-You can return to your crystal while charging"
-		"ko"	"-피해량, 근접 피해 저항력 증가\n-공격 속도 감소\n-R키로 적에게 돌진 추격 베기를 사용할 수 있게 됩니다.\n-돌진한 거리가 길수록 더 많은 피해를 입힙니다.\n-인장 쿨타임 감소 효과 상향\n-돌진하는 중에도 수정으로 순간이동 가능
+		"ko"	"-피해량, 근접 피해 저항력 증가\n-공격 속도 감소\n-R키로 적에게 돌진 추격 베기를 사용할 수 있게 됩니다.\n-돌진한 거리가 길수록 더 많은 피해를 입힙니다.\n-인장 쿨타임 감소 효과 상향\n-돌진하는 중에도 수정으로 순간이동 가능"
 	}
 	"RPG Desc"
 	{

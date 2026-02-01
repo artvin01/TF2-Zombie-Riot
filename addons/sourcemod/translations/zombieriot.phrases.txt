@@ -3159,6 +3159,11 @@
 		"en"		"Expidonsan's are here to help us defeat this void outbreak."
 		"ko"		"엑스피돈사가 공허 재앙을 막기 위해 당신에게 합류합니다."
 	}
+	"Umbral_Outbreak_Help_Message"
+	{
+		"en"		"There is no help in sight. Are we really going to die from this outbreak?"
+		"ko"		"아무런 도움의 손길도 보이지 않습니다. 정말로 이 재앙 속에서 죽게 될 운명일까요?"
+	}
 	"Silvester Shares His Power"
 	{
 		"en"		"Silvester shares his power with you..."
@@ -4717,7 +4722,7 @@
 	}
 	"Deep Sea Desc"
 	{
-		"en"	"You head to W.F.'s Outpost after seeing his elite soldiers infected by the xeno virus to see if there are any remaining soldiers there. Turns out there was, but they're infected by the Seaborn virus. And the sea has an army ready to attack the mainland."
+		"en"	"You head to W.F.'s Outpost, after seeing his elite soldiers infected by Xeno, to see if there are any remaining soldiers there. Turns out there was, but they're infected by the Seaborn. And the sea has an army ready to attack the mainland."
 		"fr"	"L'infection Seaborn attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
 		"chi"	"海嗣感染将会侵蚀你的盾。"
 		"it"	"L'infezione Seaborn è arrivata, gli attacchi di Corrosione dell'Armatura infetteranno la tua armatura, curala con le tabelle dell'armatura!"
@@ -4793,6 +4798,11 @@
 		"chi"	"你能阻挡魔法之力吗》"
 		"it"	"Siete in grado di resistere al potere della magia?"
 		"ko"	"움브랄 인커젼 시뮬레이션을 완료한 이후, 트윌이 또 다른 엑스피돈사 시뮬레이션에 그녀의 군대를 보내 싸우게 합니다. 우리가 얼마나 강해졌는지 보기 위해서 말이죠."
+	}
+	"Umbral Outbreak Desc"
+	{
+		"en"	"Before regrouping with Bob and Twirl in Rogue 3, a rift opens before us, releasing Void and Umbral creatures. With Al-Hallam and Vuntulum nearby, we are attacked from every direction."
+		"ko"	"로그3에서 밥, 트윌과 재집결하기 전, 우리 앞에 균열이 열리며 공허와 움브랄 생명체들을 풀어냅니다. 근처에는 알-할람과 번툴룸까지 있으니... 사면초가군요."
 	}
 	"CoF Normal Desc"
 	{

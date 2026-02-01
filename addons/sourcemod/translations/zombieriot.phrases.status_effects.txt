@@ -827,7 +827,7 @@
 	"Pikeman's Slashes Desc"
 	{
 		"en"	"Count increases by 1 for each spearmen hit taken\nAt Max hits taken, all spearmen enemies will deal 300％ more damage to you."
-		"ko"	"창병에게 피해를 받을 때마다 1회 누적\n최대까지 누적 시, 모든 창병 계열 적이 보유자에게 가하는 피해가 300% 증가"
+		"ko"	"창병에게 피해를 받을 때마다 1회 누적\n최대까지 누적 시, 모든 창병 계열 적이 보유자에게 가하는 피해가 300％ 증가"
 	}
 	"Hussar's Warscream"
 	{
