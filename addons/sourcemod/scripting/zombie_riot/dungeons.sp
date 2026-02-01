@@ -56,7 +56,10 @@ enum struct LootInfo
 	{
 		this.Items = new StringMap();
 		if(name[0])
-			name[0] = 'l';
+		{
+			
+		}
+		
 			//erroring go
 
 		if(kv.JumpToKey("Items"))
