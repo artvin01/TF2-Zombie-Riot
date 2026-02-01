@@ -2611,7 +2611,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/construction2/npc_const2_building_spawner.sp"
 #include "npc/construction/construction2/npc_base_construct_defender.sp"
 #include "npc/construction/construction2/npc_starship_regalia.sp"
-#include "npc/construction/construction2/npc_almagest_Proxima.sp"
+#include "npc/construction/construction2/npc_almagest_proxima.sp"
 #include "npc/construction/construction2/npc_lantean_drone_projectile.sp"
 #include "npc/construction/construction2/npc_starship_beacon.sp"
 #include "npc/construction/npc_dungeon_loot.sp"
