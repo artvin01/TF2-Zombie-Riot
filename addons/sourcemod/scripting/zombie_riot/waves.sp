@@ -2105,11 +2105,9 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 		if(WaveWhich == Rounds_Default)
 			if(InSetup || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime() || BetWar_Mode())
 				return false;
-				
-		if(!Rounds[WaveWhich])
-			return false;
-			
 	}
+	if(!Rounds[WaveWhich])
+		return false;
 		
 	if(WaveWhich == Rounds_Default)
 	{

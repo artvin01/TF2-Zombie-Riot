@@ -325,19 +325,19 @@ methodmap RegaliaClass < CClotBody
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;	
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 	}
 	public void EmitShieldBreakSound() {
 		EmitSoundToAll(g_ShieldBreakSound[GetRandomInt(0, sizeof(g_ShieldBreakSound) - 1)], this.index, _, SNDLEVEL_RAIDSIREN, _, 1.0, 60);
 	}
 	public void PlayCapperSound() {
-		EmitSoundToAll(g_DefaultCapperShootSound[GetRandomInt(0, sizeof(g_DefaultCapperShootSound) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);	
+		EmitSoundToAll(g_DefaultCapperShootSound[GetRandomInt(0, sizeof(g_DefaultCapperShootSound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);	
 	}
 	public void PlayPattenShootSound(float Loc[3]) {
-		EmitSoundToAll(g_DoGAttackSound[GetRandomInt(0, sizeof(g_DoGAttackSound) - 1)], _, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.9, 80, _, Loc);	
+		EmitSoundToAll(g_DoGAttackSound[GetRandomInt(0, sizeof(g_DoGAttackSound) - 1)], _, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.9, 80, _, Loc);	
 	}
 	public void PlayHL2TeleSound(float Loc[3]) {
-		EmitSoundToAll(g_HL2_TeleSounds[GetRandomInt(0, sizeof(g_HL2_TeleSounds) - 1)], _, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.9, 80, _, Loc);	
+		EmitSoundToAll(g_HL2_TeleSounds[GetRandomInt(0, sizeof(g_HL2_TeleSounds) - 1)], _, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.9, 80, _, Loc);	
 	}
 	public void EmitGenerciLaserSound() {
 		if(fl_RuinaLaserSoundTimer[this.index] > GetGameTime())
@@ -350,7 +350,10 @@ methodmap RegaliaClass < CClotBody
 		StopCustomSound(this.index, SNDCHAN_STATIC, g_RuinaLaserLoop[GetRandomInt(0, sizeof(g_RuinaLaserLoop) - 1)]);
 	}
 	public void PlayLifeLossSound() {
-		EmitSoundToAll(g_LifeLossSounds[GetRandomInt(0, sizeof(g_LifeLossSounds) - 1)], _, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, 100);	
+		EmitSoundToAll(g_LifeLossSounds[GetRandomInt(0, sizeof(g_LifeLossSounds) - 1)], _, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, _, 1.0, 100);	
+		EmitSoundToAll(g_LifeLossSounds[GetRandomInt(0, sizeof(g_LifeLossSounds) - 1)], _, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, _, 1.0, 100);	
+		EmitSoundToAll(g_LifeLossSounds[GetRandomInt(0, sizeof(g_LifeLossSounds) - 1)], _, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, _, 1.0, 100);	
+		EmitSoundToAll(g_LifeLossSounds[GetRandomInt(0, sizeof(g_LifeLossSounds) - 1)], _, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, _, 1.0, 100);	
 	}
 	property float m_flCurrentSpeed
 	{
@@ -1817,9 +1820,9 @@ static void Handle_SpiralGlaive(RegaliaClass npc)
 	DataPack Pack = new DataPack();
 	Pack.WriteCellArray(Data, sizeof(Data));
 
-	EmitSoundToAll(REGALIA_SPIRALGLAVE_SOUND, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, RoundToCeil(100 * (14.0/(Data.Duration_Base + Data.Windup_Base))));
-	EmitSoundToAll(REGALIA_SPIRALGLAVE_SOUND, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, RoundToCeil(100 * (14.0/(Data.Duration_Base + Data.Windup_Base))));
-	EmitSoundToAll(REGALIA_SPIRALGLAVE_SOUND, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, RoundToCeil(100 * (14.0/(Data.Duration_Base + Data.Windup_Base))));
+	EmitSoundToAll(REGALIA_SPIRALGLAVE_SOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, _, 1.0, RoundToCeil(100 * (14.0/(Data.Duration_Base + Data.Windup_Base))));
+	EmitSoundToAll(REGALIA_SPIRALGLAVE_SOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, _, 1.0, RoundToCeil(100 * (14.0/(Data.Duration_Base + Data.Windup_Base))));
+	EmitSoundToAll(REGALIA_SPIRALGLAVE_SOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, _, 1.0, RoundToCeil(100 * (14.0/(Data.Duration_Base + Data.Windup_Base))));
 
 	RequestFrames(SpiralGlave_Tick, 1, Pack);
 }
@@ -2205,7 +2208,7 @@ static void Regalia_AnnihilateTarget_Tick(DataPack IncomingData)
 	if(Data.SoundTimer < GameTime)
 	{
 		Data.SoundTimer = GameTime + 0.2;
-		EmitSoundToAll(REGALIA_SPECIAL_IOC_CHARGE_LOOP, target, SNDCHAN_VOICE, SNDLEVEL_NORMAL, _, 0.7, 166 - RoundToFloor(100 * (1.0 - Ratio)), _, Data.LastLoc);
+		EmitSoundToAll(REGALIA_SPECIAL_IOC_CHARGE_LOOP, target, SNDCHAN_STATIC, SNDLEVEL_NORMAL, _, 0.7, 166 - RoundToFloor(100 * (1.0 - Ratio)), _, Data.LastLoc);
 	}
 
 	TE_SetupBeamRingPoint(Data.LastLoc, radius*2.0, radius*2.0 - 1.0, g_Ruina_BEAM_Combine_Black, 0, 0, 1, TE_Duration, Thickness*1.5, Amp, {255, 255, 255, 255}, 1, 0);
@@ -2658,7 +2661,7 @@ static void Invoke_RegaliaIOC(RegaliaClass npc, float EndLoc[3], float DetTime)
 	color = iRegaliaColor(npc);
 
 	EmitSoundToAll(REGALIA_IOC_STARTUP, _, _, SNDLEVEL_RAIDSIREN, _, 1.0, 50);
-	EmitSoundToAll(REGALIA_IOC_CHARGE_LOOP, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, 50, _, EndLoc);
+	EmitSoundToAll(REGALIA_IOC_CHARGE_LOOP, npc.index, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, _, 1.0, 50, _, EndLoc);
 
 	DataPack Pack = new DataPack();
 	Pack.WriteCell(EntIndexToEntRef(npc.index));
@@ -2744,7 +2747,7 @@ static void RegaliaIOC_Tick(DataPack Data)
 
 	if(DetTimer < GetGameTime(npc.index))
 	{
-		StopSound(npc.index, SNDCHAN_VOICE, REGALIA_IOC_CHARGE_LOOP);
+		StopSound(npc.index, SNDCHAN_STATIC, REGALIA_IOC_CHARGE_LOOP);
 		Explode_Logic_Custom(dmg, npc.index, npc.index, -1, EndLoc, Radius,_,0.8, true, _, _, 0.2);
 
 		EmitAmbientSound(REGALIA_IOC_EXPLOSION_SOUND, EndLoc, _, 100, _, _, GetRandomInt(60, 80));
@@ -3534,14 +3537,14 @@ static void NPC_Death(int iNPC)
 {
 	RegaliaClass npc = view_as<RegaliaClass>(iNPC);
 
-	StopSound(npc.index, SNDCHAN_VOICE, REGALIA_IOC_CHARGE_LOOP);
+	StopSound(npc.index, SNDCHAN_STATIC, REGALIA_IOC_CHARGE_LOOP);
 	npc.EndGenericLaserSound();
 
-	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, 175);
-	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, 150);
-	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, 125);
-	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, 100);
-	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, 75);
+	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, _, 1.0, 175);
+	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, _, 1.0, 150);
+	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, _, 1.0, 125);
+	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, _, 1.0, 100);
+	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, _, 1.0, 75);
 
 	float Loc[3]; GetAbsOrigin(npc.index, Loc);
 	int particle = ParticleEffectAt(Loc, "hammer_bell_ring_shockwave2", 1.0);
@@ -3549,6 +3552,22 @@ static void NPC_Death(int iNPC)
 	if(IsValidEntity(particle))
 		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 
+	
+	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
+	{
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(IsValidEntity(entitynpc))
+			{
+				if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
+				{
+					SmiteNpcToDeath(entitynpc);
+				}
+			}
+		}
+		Waves_ClearWaves();
+	}
 	npc.CleanEntities();
 }
 static int[] iRegaliaColor(RegaliaClass npc)

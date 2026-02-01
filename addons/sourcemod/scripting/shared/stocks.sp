@@ -3505,8 +3505,13 @@ int inflictor = 0)
 				//we apply 50% more range, reason being is that this goes for collision boxes, so it can be abit off
 				//idealy we should fire a trace and see the distance from the trace
 				//ill do it in abit if i dont forget.
-				float ExplosionRangeFalloff = Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
-				damage_1 *= ExplosionRangeFalloff; //this is 1000, we use squared for optimisations sake
+				float ExplosionRangeFalloff = 1.0;
+				if(b_BoundingBoxVariant[ClosestTarget] != BBV_DontAlter)
+				{
+					//for very very big npcs.
+					ExplosionRangeFalloff = Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
+					damage_1 *= ExplosionRangeFalloff; //this is 1000, we use squared for optimisations sake
+				}
 
 				damage_1 *= damage_reduction;
 				
