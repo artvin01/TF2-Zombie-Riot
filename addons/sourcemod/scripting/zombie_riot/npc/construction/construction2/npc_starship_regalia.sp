@@ -480,6 +480,11 @@ methodmap RegaliaClass < CClotBody
 		public get()							{ return b_FUCKYOU[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
 	}
+	property bool m_bCutAllAbilities
+	{
+		public get()							{ return b_Gunout[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_Gunout[this.index] = TempValueForProperty; }
+	}
 	property bool m_bCutThrust_Hyper
 	{
 		public get()							{ return b_FUCKYOU_move_anim[this.index]; }
@@ -585,6 +590,8 @@ methodmap RegaliaClass < CClotBody
 
 		fl_AbilityVectorData[npc.index] = Angles;
 
+		npc.m_bCutAllAbilities 				= true;
+
 		//Weapons System.
 		//Forward Lances
 		npc.m_flLanceRecharge 				= GetRandomFloat(60.0, 75.0) + GetGameTime();
@@ -593,7 +600,7 @@ methodmap RegaliaClass < CClotBody
 
 		//under slungs
 		npc.m_flUnderSlung_Type0_Recharge 	= GetRandomFloat(30.0, 45.0) 	+ GetGameTime();
-		npc.m_flUnderSlung_Type1_Recharge	= GetRandomFloat(15.0, 60.0) 	+ GetGameTime();
+		npc.m_flUnderSlung_Type1_Recharge	= GetRandomFloat(20.0, 60.0) 	+ GetGameTime();
 		npc.m_flUnderSlung_Type2_Recharge	= GetRandomFloat(60.0, 120.0)	+ GetGameTime();
 		npc.m_flUnderSlung_PrimaryRecharge  = 0.0;
 
@@ -986,6 +993,8 @@ methodmap RegaliaClass < CClotBody
 
 				timer = timer / 8.0;
 
+				timer *=2.5;
+
 				speed *= timer;
 			}
 			if(this.m_bVectoredThrust_InUse)
@@ -1361,7 +1370,7 @@ methodmap RegaliaClass < CClotBody
 	
 	}
 }
-static void CommLines(const char[] SoundString, const char[] TextLines, any...)
+stock void CommLines(const char[] SoundString, const char[] TextLines, any...)
 {
 	if(SoundString[0])
 	{
@@ -1430,6 +1439,11 @@ static void ClotThink(int iNPC)
 	Handle_SpiralGlaive(npc);
 	HandleBeacons(npc);
 	HandleConstructor(npc);
+	HandleCrashSequence(npc);
+}
+static void HandleCrashSequence(RegaliaClass npc)
+{
+
 }
 static float fl_constructor_summon_time;
 static void HandleConstructor(RegaliaClass npc)
@@ -1699,7 +1713,7 @@ static void HandleBeacons(RegaliaClass npc)
 			selection = i;
 	}
 	
-	Beacon = NPC_CreateByName("npc_starship_beacon", npc.index, fl_BeaconSpawnPos[selection], {0.0, 0.0, 0.0}, GetTeam(npc.index), "style1");
+	Beacon = NPC_CreateByName("npc_starship_beacon", npc.index, fl_BeaconSpawnPos[selection], {0.0, 0.0, 0.0}, GetTeam(npc.index), npc.Anger ? "style1;lifeloss" : "style1");
 	int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.05);	//like 5% hp of ship
 	if(Beacon < MaxClients)
 		return;
@@ -1848,6 +1862,12 @@ static void SpiralGlave_Tick(DataPack IncomingData)
 	if(Data.Duration < GameTime)
 	{
 		npc.m_flSprial_Recharge	= GameTime + 160.0;
+		return;
+	}
+
+	if(npc.m_bCutAllAbilities)
+	{
+		npc.m_flShipAbilityActive = GameTime + 1.0;
 		return;
 	}
 
@@ -2167,6 +2187,13 @@ static void Regalia_AnnihilateTarget_Tick(DataPack IncomingData)
 		npc.m_flUnderSlung_PrimaryRecharge 	= GameTime + 1.0;
 		npc.m_flShipAbilityActive			= GameTime + 1.0;
 		npc.m_flRevertControlOverride		= GameTime + 1.0;
+		return;
+	}
+
+	if(npc.m_bCutAllAbilities)
+	{
+		npc.m_flShipAbilityActive = GameTime + 1.0;
+		return;
 	}
 
 	float Ratio = (Data.Windup - GameTime) / Data.Windup_Base;
@@ -2349,6 +2376,13 @@ static void DoG_PatternTick(DataPack IncomingData)
 	}
 
 	RegaliaClass npc = view_as<RegaliaClass>(iNPC);
+
+	if(npc.m_bCutAllAbilities)
+	{
+		npc.m_flShipAbilityActive = GetGameTime(npc.index) + 1.0;
+		delete Data.SectionData;
+		return;
+	}
 
 	float GameTime = GetGameTime(npc.index);
 	
@@ -2700,6 +2734,12 @@ static void RegaliaIOC_Tick(DataPack Data)
 		return;
 
 	RegaliaClass npc = view_as<RegaliaClass>(iNPC);
+
+	if(npc.m_bCutAllAbilities)
+	{
+		npc.m_flShipAbilityActive = GetGameTime(npc.index) + 1.0;
+		return;
+	}
 
 	int Sections = 8;
 
@@ -3087,7 +3127,7 @@ static void DoPrimaryLanceEffects(RegaliaClass npc, float EndLoc[3], float flPos
 static void HandleMainWeapons(RegaliaClass npc)
 {
 	float GameTime = GetGameTime(npc.index);
-	if(!npc.bDoesSectionExist(StarShip_BG_ForwardLance))
+	if(!npc.bDoesSectionExist(StarShip_BG_ForwardLance) || npc.m_bCutAllAbilities)
 	{
 		if(npc.m_bPrimaryLancesActive)
 		{
@@ -3236,7 +3276,7 @@ static void HandleMainWeapons(RegaliaClass npc)
 		Laser.DoForwardTrace_Custom(BeamAngles, End, -1.0);
 		Laser.Deal_Damage();
 
-		DoPrimaryLanceEffects(npc, End, Laser.End_Point, Start_Thickness);
+		//DoPrimaryLanceEffects(npc, End, Laser.End_Point, Start_Thickness);
 
 		DataPack pack = new DataPack();
 		pack.WriteFloat(Laser.End_Point[0]);
