@@ -2091,7 +2091,8 @@ void Waves_ClearWaves(int WaveWhich = Rounds_Default)
 	delete Enemies[WaveWhich][2];
 }
 
-bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Default)
+bool Waves_Progress(bool donotAdvanceRound = false,
+ int WaveWhich = Rounds_Default, bool ForceAdvance = false)
 {
 	/*PrintCenterTextAll("Waves_Progress %d | %d | %d | %d | %d", InSetup ? 0 : 1,
 		Rounds ? 1 : 0,
@@ -2099,12 +2100,16 @@ bool Waves_Progress(bool donotAdvanceRound = false, int WaveWhich = Rounds_Defau
 		GameRules_GetRoundState() == RoundState_BetweenRounds ? 0 : 1,
 		Cooldown > GetGameTime() ? 0 : 1);*/
 
-	if(WaveWhich == Rounds_Default)
-		if(InSetup || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime() || BetWar_Mode())
+	if(!ForceAdvance)
+	{
+		if(WaveWhich == Rounds_Default)
+			if(InSetup || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime() || BetWar_Mode())
+				return false;
+				
+		if(!Rounds[WaveWhich])
 			return false;
 			
-	if(!Rounds[WaveWhich])
-		return false;
+	}
 		
 	if(WaveWhich == Rounds_Default)
 	{

@@ -3520,8 +3520,11 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.Anger = true;
 		npc.PlayLifeLossSound();
 		ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", FAR_FUTURE);
-		CommLines("", "M I S T E R  B E A S T");
-		//b_NpcIsInvulnerable[npc.index] = true;
+	//	CommLines("", "M I S T E R  B E A S T");
+	
+		Waves_ClearWave();
+		Waves_Progress(_,_, true);
+		//go to next wave instantly
 	}
 
 	return Plugin_Continue;
