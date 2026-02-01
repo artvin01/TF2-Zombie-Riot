@@ -226,7 +226,7 @@ static const float fl_ShipRollClamps = 50.0;
 
 
 */
-static const float fl_BeaconSpawnPos[][3] = {
+static float fl_BeaconSpawnPos[][3] = {
 	{7622.043945, -619.331421, 	-5929.582520},
 	{5854.175293, -764.341980, 	-5929.582520},
 	{4585.667969, 470.419800, 	-5929.582520}, 
@@ -253,7 +253,7 @@ static const float fl_BeaconSpawnPos[][3] = {
 	{4852.110840, 1.806172, 	-5929.582520} 
 };
 static float fl_beacon_spawned_at_pos_recently[sizeof(fl_BeaconSpawnPos)-1];
-static const float VaultVectorPoints[][3] = {
+static float VaultVectorPoints[][3] = {
 	{5975.277344, 880.963745, -4436.267578},
 
 	{9082.631836, -2384.214600, -4436.337402},
@@ -417,8 +417,8 @@ methodmap RegaliaClass < CClotBody
 	}
 	property float m_flConstructorCooldown
 	{
-		public get()							{ return fl_AttackHappensMaximum[this.index][9]; 				}
-		public set(float TempValueForProperty) 	{ fl_AttackHappensMaximum[this.index][9] = TempValueForProperty; }
+		public get()							{ return fl_AttackHappensMaximum[this.index]; 				}
+		public set(float TempValueForProperty) 	{ fl_AttackHappensMaximum[this.index] = TempValueForProperty; }
 	}
 	property float m_flConstructorDuration
 	{
@@ -1273,7 +1273,7 @@ methodmap RegaliaClass < CClotBody
 		if(!this.bDoesSectionExist(StarShip_BG_MainDrive))
 			return;
 
-		static const char Sections[][] = {
+		static char Sections[][] = {
 			"upper_center_engine_block" ,
 			"lower_center_engine_block" ,
 

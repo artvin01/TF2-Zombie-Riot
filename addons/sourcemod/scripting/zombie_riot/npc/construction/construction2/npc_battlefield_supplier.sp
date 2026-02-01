@@ -62,9 +62,9 @@ void BattlefieldSupplier_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return BattlefieldSupplier(vecPos, vecAng, team, data);
+	return BattlefieldSupplier(vecPos, vecAng, team);
 }
 methodmap BattlefieldSupplier < CClotBody
 {
@@ -119,7 +119,7 @@ methodmap BattlefieldSupplier < CClotBody
 	}
 	
 	
-	public BattlefieldSupplier(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public BattlefieldSupplier(float vecPos[3], float vecAng[3], int ally)
 	{
 		BattlefieldSupplier npc = view_as<BattlefieldSupplier>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "600", ally));
 		
