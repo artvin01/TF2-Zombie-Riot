@@ -2191,7 +2191,7 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 					else
 						ReviveAll(true);
 					*/
-					ReviveAll(_,_,true);
+					ReviveAll(_,_,true, ForceAdvance);
 
 					CheckAlivePlayers();
 					WaveEndLogicExtra();

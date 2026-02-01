@@ -2705,7 +2705,7 @@ void ZR_CheckValidityOfPostions_OfObjectsInternal(bool recheck)
 		}
 	}
 }
-void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceFullHealth = false)
+void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceFullHealth = false, bool Const2_DontRespawnBuildings = false)
 {
 	//only set false here
 	if(!setmusicfalse)
@@ -2825,7 +2825,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceF
 	
 	Music_EndLastmann();
 	CheckAlivePlayers();
-	if(Dungeon_Mode())
+	if(Dungeon_Mode() && !Const2_DontRespawnBuildings)
 	{
 		Const2_ReviveAllBuildings(true);
 	}
