@@ -333,7 +333,7 @@ methodmap LanteanProjectile < CClotBody
 		if(this.m_flGetClosestTargetTime > GameTime)
 			return this.m_iTarget;
 
-		this.m_iTarget = GetClosestTarget(this.index, _, _ , true, true, _, _, _, _, _, true);
+		this.m_iTarget = GetClosestTarget(this.index, true, _ , true, true, _, _, _, _, _, true);
 		this.m_flGetClosestTargetTime = GetGameTime(this.index) + GetRandomRetargetTime();
 
 		if(!IsValidEntity(this.m_iTarget))
