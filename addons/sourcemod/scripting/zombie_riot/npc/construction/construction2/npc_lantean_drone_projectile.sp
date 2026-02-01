@@ -393,6 +393,10 @@ static void LanteanNPC_SimulateTouch(int iNPC, int target)
 	if(!IsValidEntity(attacker))
 		attacker = npc.index;
 	float Origin[3]; GetAbsOrigin(npc.index, Origin);
+
+	if(ShouldNpcDealBonusDamage(target))
+		damage *=0.2;
+		
 	SDKHooks_TakeDamage(target, attacker, attacker, damage, DMG_PLASMA, _, _, Origin);
 }
 static void DeleteLanteanProjectile(int iNPC)
