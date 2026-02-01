@@ -1114,6 +1114,10 @@ public void BuilderMenu(int client)
 				delete CallbackTimer[client];
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 			}
+			if(!IsValidEntity(ZoneMarkerRef[Zone_HomeBase]))
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+			}
 			else
 			{
 				EmitSoundToAll("player/invuln_on_vaccinator.wav", client, SNDCHAN_STATIC, 70, _, 0.7, 100, .soundtime = GetGameTime() - 1.0);
