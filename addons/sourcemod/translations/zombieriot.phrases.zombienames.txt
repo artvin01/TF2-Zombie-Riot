@@ -7789,6 +7789,15 @@
 	{
 		"en"	"Starship Beacon"
 	}
+	"Regalia Test Line"
+	{
+		"en"	"Hi, I am a piece of text that does lines, please remove me and make a seperate text file for these lines and not clump them into a pre existing one!"
+	}
+	"Regalia Test Line Formated"
+	{
+		"#format"	"{1:t},{2:t},{3:t}"
+		"en"	"number: {1} number: {2} number: {3}"
+	}
 	"Starship Beacon Desc"
 	{
 		"en"	"A stolen magia anchor. kill it. now."

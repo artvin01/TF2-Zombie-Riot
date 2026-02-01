@@ -144,6 +144,10 @@ static float fl_ShipTurnSpeed;
 		so a player does 100 dmg to a beacon. both the beacon and ship take 100 dmg.
 
 	Flight isssues:
+
+
+	make beacons on life 2 summon kampfers on like a 30s cd or smth.
+	make new vec points on new map
 	
 
 
@@ -182,6 +186,12 @@ static const char g_HurtSounds[][] = {
 	")physics/metal/metal_box_impact_bullet2.wav",
 	")physics/metal/metal_box_impact_bullet3.wav",
 };
+static const char g_LifeLossSounds[][] = {
+	")ambient/atmosphere/thunder1.wav",
+	")ambient/atmosphere/thunder2.wav",
+	")ambient/atmosphere/thunder3.wav",
+	")ambient/atmosphere/thunder4.wav",
+};
 #define REGALIA_IOC_EXPLOSION_SOUND				")misc/halloween/spell_mirv_explode_primary.wav"
 #define REGALIA_IOC_STARTUP						")ambient/machines/thumper_startup1.wav"
 #define REGALIA_IOC_CHARGE_LOOP					")ambient/machines/thumper_amb.wav"
@@ -208,27 +218,13 @@ enum
 	StarShip_BG_Shield		= 256,
 }
 static const float fl_ShipRollClamps = 50.0;
-//todo: get vector points:
+
 /*
-	Center of arena.
-	Corners of arena top, bottom, etc.
+	sound\ambient\machines\wall_crash1.wav
 */
 /*
 	//corners
 
-	9082.631836 -2384.214600 -4436.337402       11.229923 131.620331 0.000000
-	6062.663086 -2601.933350 -4586.610352       9.997921 90.348351 0.000000
-	2630.493408 -2371.841553 -4586.610352       10.613924 43.532391 0.000000
-	2868.126465 4183.577148 -4586.610352       20.777950 -47.173580 0.000000
-	6048.231934 4628.753906 -4586.610352       22.779940 -88.907516 0.000000
-	9135.420898 4535.649902 -4586.610352       22.625938 -128.947525 0.000000
-	9945.458984 953.970703 -4586.610352       25.859924 -179.922256 0.000
-	9603.561523 -2316.691650 -4586.610352       20.931932 136.803284 0.000000
-
-
-	
-	//center.
-	5975.277344 880.963745 -4436.267578       13.694007 123.874184 0.000000
 
 */
 static const float fl_BeaconSpawnPos[][3] = {
@@ -297,6 +293,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_DoGAttackSound);
 	PrecacheSoundArray(g_HL2_TeleSounds);
 	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_LifeLossSounds);
 	PrecacheSound(REGALIA_IOC_EXPLOSION_SOUND);
 	PrecacheSound(REGALIA_PATTERNS_CHARGE_SOUND);
 	PrecacheSound(REGALIA_IOC_STARTUP);
@@ -352,6 +349,9 @@ methodmap RegaliaClass < CClotBody
 	}
 	public void EndGenericLaserSound() {
 		StopCustomSound(this.index, SNDCHAN_STATIC, g_RuinaLaserLoop[GetRandomInt(0, sizeof(g_RuinaLaserLoop) - 1)]);
+	}
+	public void PlayLifeLossSound() {
+		EmitSoundToAll(g_LifeLossSounds[GetRandomInt(0, sizeof(g_LifeLossSounds) - 1)], _, SNDCHAN_VOICE, SNDLEVEL_RAIDSIREN, _, 1.0, 100);	
 	}
 	property float m_flCurrentSpeed
 	{
@@ -616,6 +616,12 @@ methodmap RegaliaClass < CClotBody
 		b_ThisNpcIsImmuneToNuke[npc.index] 		= true;
 		b_IgnoreAllCollisionNPC[npc.index]		= true;
 		npc.m_bDissapearOnDeath 				= true;
+
+		npc.CommLines("", "Regalia Test Line");
+		PrecacheSound("zombie_riot/attackofmrbeast.mp3");
+		npc.CommLines("zombie_riot/attackofmrbeast.mp3", "Regalia Test Line Formated", 1, 3, 4);
+
+		npc.m_iHealthBar = 1;
 
 		//for spawn beacons
 		RequestFrame(SummonBeaconsFrameLater, EntIndexToEntRef(npc.index));
@@ -1351,6 +1357,24 @@ methodmap RegaliaClass < CClotBody
 
 	
 	}
+	public void CommLines(const char[] SoundString, const char[] TextLines, any...)
+	{
+		if(SoundString[0])
+		{
+			EmitSoundToAll(SoundString);
+		}
+		
+		for(int i=1 ; i <= MaxClients ; i++)
+		{
+			if(!IsValidClient(i))
+				continue;
+
+			SetGlobalTransTarget(i);
+			char buffer[255];
+			VFormat(buffer, sizeof(buffer), TextLines, 3);
+			CPrintToChat(i, "%s", buffer);	//tranlsation doesn't exactly work correctly with the formating thing???
+		}
+	}
 }
 static void SummonBeaconsFrameLater(int ref)
 {
@@ -1777,6 +1801,9 @@ static void Handle_SpiralGlaive(RegaliaClass npc)
 
 	npc.m_flShipAbilityActive 	= GameTime + Data.Duration_Base + Data.Windup_Base + 1.0;
 
+	Data.Duration_Base 	*= ReturnEntityAttackspeed(npc.index);
+	Data.Windup_Base	*= ReturnEntityAttackspeed(npc.index);
+
 	f3_LastValidPosition[npc.index] 	= VaultVectorPoints[0];
 	npc.m_bVectoredThrust 				= true;
 	func_ShipTurn[npc.index] 			= IOC_TurnControl;
@@ -1860,7 +1887,7 @@ static void SpiralGlave_Tick(DataPack IncomingData)
 	color = iRegaliaColor(npc);
 
 	if(Windup)
-		color[3] = RoundToFloor(255.0 * (1.0 - (Data.Windup - GameTime) / Data.Windup_Base));
+		color[3] = RoundToFloor(255.0 * (1.0 - Ratio));
 
 	float RingLoc[3]; RingLoc = MiddleLoc;
 	
@@ -1953,7 +1980,7 @@ static void HandleUnderSlungWeapons(RegaliaClass npc)
 		float Loc[3];
 		Loc = vGetBestAverageWithinRadius(npc, radius, amt);
 
-		const float DetTime = 5.0;
+		float DetTime = 5.0;
 		
 		if(amt != -1)
 		{
@@ -2100,6 +2127,8 @@ static bool Invoke_RegaliaAnnihilateTarget(RegaliaClass npc, float Windup)
 	Data.LastLoc 	= f3_LastValidPosition[npc.index];
 	Data.AngleModif = GetRandomFloat(0.0, 360.0);
 	Data.SoundTimer = 0.0;
+
+	Data.Windup_Base *= ReturnEntityAttackspeed(npc.index);
 
 	DataPack Pack = new DataPack();
 	Pack.WriteCellArray(Data, sizeof(Data));
@@ -2352,7 +2381,8 @@ static void DoG_PatternTick(DataPack IncomingData)
 	{
 		DataPack Pack = new DataPack();
 		Pack.WriteCellArray(Data, sizeof(Data));
-		RequestFrames(DoG_PatternTick, 11, Pack);
+		int ticks = RoundToCeil(11 * ReturnEntityAttackspeed(npc.index));
+		RequestFrames(DoG_PatternTick, ticks, Pack);
 		return;
 	}
 
@@ -2370,7 +2400,7 @@ static void DoG_PatternTick(DataPack IncomingData)
 
 	if(Data.CycleSpeed > GameTime)
 	{
-		float Ratio = (Data.CycleSpeed - GameTime) / BaseChargeTime;
+		float Ratio = (Data.CycleSpeed - GameTime) / (BaseChargeTime * ReturnEntityAttackspeed(npc.index));
 
 		bool trace_update = false;
 		if(Data.SoundTimer < GameTime)
@@ -2464,6 +2494,7 @@ static void DoG_PatternTick(DataPack IncomingData)
 
 		Data.cylce++;
 		Data.CycleSpeed = GameTime + BaseChargeTime + recharge_speed;
+		
 
 		Ruina_Projectiles Projectile;
 		Projectile.iNPC = npc.index;
@@ -2532,10 +2563,12 @@ static void DoG_PatternTick(DataPack IncomingData)
 			return;
 		}
 
+		float Ring_TE_Duration = fl_Type1_CycleSpeed + recharge_speed * ReturnEntityAttackspeed(npc.index);
+
 		float ThicknessRing = 30.0;
 		for(int i=0 ; i < 4 ; i++)
 		{
-			TE_SetupBeamRingPoint(Loc, Radius*2.0, Radius*2.0 - 1.0, g_Ruina_BEAM_Laser, 0, 0, 1, fl_Type1_CycleSpeed + recharge_speed, ThicknessRing, 0.1, color, 1, 0);
+			TE_SetupBeamRingPoint(Loc, Radius*2.0, Radius*2.0 - 1.0, g_Ruina_BEAM_Laser, 0, 0, 1, Ring_TE_Duration, ThicknessRing, 0.1, color, 1, 0);
 			TE_SendToAll();
 			Loc[2]+=25.0;
 		}
@@ -2615,7 +2648,7 @@ static void IOC_TurnControl(int iNPC)
 
 	npc.RotateShipModel(Angles);
 }
-static void Invoke_RegaliaIOC(RegaliaClass npc, float EndLoc[3], const float DetTime)
+static void Invoke_RegaliaIOC(RegaliaClass npc, float EndLoc[3], float DetTime)
 {
 	float dmg = ModifyDamage(100.0);
 	const float Radius = 250.0;
@@ -2633,6 +2666,8 @@ static void Invoke_RegaliaIOC(RegaliaClass npc, float EndLoc[3], const float Det
 	Pack.WriteFloat(Radius);
 	Pack.WriteFloat(0.0);		//angle modif
 	RequestFrames(RegaliaIOC_Tick, 1, Pack);
+
+	DetTime *=ReturnEntityAttackspeed(npc.index);
 
 	EndLoc[2]+=10.0;
 
@@ -2676,7 +2711,7 @@ static void RegaliaIOC_Tick(DataPack Data)
 	}
 
 
-	AngleModif+=GetRandomFloat(1.0, 2.0);
+	AngleModif+=GetRandomFloat(1.0, 2.0) * ReturnEntityAttackspeed(npc.index);
 
 	if(AngleModif > 360.0)
 		AngleModif -= 360.0;
@@ -3475,6 +3510,17 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	else
 	{
 		npc.PlayHurtSound();
+	}
+
+	if(npc.m_iHealthBar <= 0 && !npc.Anger)
+	{
+		if(bShipRaidModeScaling)
+			RaidModeScaling *= 1.1;
+		npc.Anger = true;
+		npc.PlayLifeLossSound();
+		ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", FAR_FUTURE);
+		//npc.CommLines("", "M I S T E R  B E A S T");
+		//b_NpcIsInvulnerable[npc.index] = true;
 	}
 
 	return Plugin_Continue;

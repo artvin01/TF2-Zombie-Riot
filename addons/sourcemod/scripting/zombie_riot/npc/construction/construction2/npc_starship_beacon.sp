@@ -144,18 +144,18 @@ methodmap Starship_Beacon < CClotBody
 		npc.m_flMeleeArmor = 2.5;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 115.0;
 
-		if(!VIPBuilding_Active() && GetTeam(npc.index) != TFTeam_Red)
-		{
-			for(int i; i < ZR_MAX_SPAWNERS; i++)
-			{
-				if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
-				{
-					Spawns_AddToArray(EntIndexToEntRef(npc.index), true);
-					i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
-					break;
-				}
-			}
-		}
+		//if(!VIPBuilding_Active() && GetTeam(npc.index) != TFTeam_Red)
+		//{
+		//	for(int i; i < ZR_MAX_SPAWNERS; i++)
+		//	{
+		//		if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+		//		{
+		//			Spawns_AddToArray(EntIndexToEntRef(npc.index), true);
+		//			i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
+		//			break;
+		//		}
+		//	}
+		//}
 
 		float Pos[3]; GetAbsOrigin(npc.index, Pos);
 		int particle = ParticleEffectAt_Parent(Pos, "teleporter_mvm_bot_persist", npc.index, "", {0.0,0.0,0.0});
@@ -333,14 +333,14 @@ static void NPC_Death(int entity)
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	makeexplosion(-1, pos, 0, 0);
 
-	for(int i; i < ZR_MAX_SPAWNERS; i++)
-	{
-		if(i_ObjectsSpawners[i] == entity)
-		{
-			i_ObjectsSpawners[i] = 0;
-			break;
-		}
-	}
+	//for(int i; i < ZR_MAX_SPAWNERS; i++)
+	//{
+	//	if(i_ObjectsSpawners[i] == entity)
+	//	{
+	//		i_ObjectsSpawners[i] = 0;
+	//		break;
+	//	}
+	//}
 
 	int Ship = EntRefToEntIndex(npc.m_iState);
 	if(IsValidEntity(Ship))
