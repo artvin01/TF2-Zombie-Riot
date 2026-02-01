@@ -1469,7 +1469,7 @@ static void HandleCrashSequence(RegaliaClass npc)
 
 	if(npc.m_flCrashValuesTimer < GetGameTime())
 	{
-		CPrintToChatAll("Crash Timers Set");
+		//CPrintToChatAll("Crash Timers Set");
 		npc.m_flCrashValuesTimer = FAR_FUTURE;
 		npc.m_flShipAbilityActive = FAR_FUTURE;
 		npc.EndFlightSystemGoal();
@@ -1485,11 +1485,45 @@ static void HandleCrashSequence(RegaliaClass npc)
 	float DroneLoc[3], TargetLoc[3];
 	GetAbsOrigin(npc.index, DroneLoc);
 
+	static const char Sections[][] = {
+		"forward_lance_left_end",
+		"forward_lance_left_start",
+		"forward_lance_right_end",
+		"forward_lance_right_start",
+		"central_weapons_port_left_top",
+		"central_weapons_port_left_bottom",
+		"central_weapons_port_right_top",
+		"central_weapons_port_right_bottom",
+		"underside_weapons_left_outer",
+		"underside_weapons_left_inner",
+		"underside_weapons_right_outer",
+		"underside_weapons_right_inner",
+		"forward_hanger",
+		"upper_center_engine_block",
+		"lower_center_engine_block",
+		"upper_left_engine_block",
+		"center_left_engine_block",
+		"lower_left_engine_block",
+		"upper_right_engine_block",
+		"center_right_engine_block",
+		"lower_right_engine_block",
+		"top_left_wing_block",
+		"top_right_wing_block",
+		"bottom_left_wing_block",
+		"bottom_right_wing_block"
+	};
+
+	for(int i= 0 ; i < GetRandomInt(3, 6) ; i++)
+	{
+		float Loc[3]; Loc = npc.GetWeaponSections(Sections[GetRandomInt(0, sizeof(Sections)-1)]);
+		ParticleEffectAt(Loc, "asplode_hoodoo_embers", 0.5);
+	}
+
 	TargetLoc = f3_NpcSavePos[npc.index];
 
 	float Dist = GetVectorDistance(DroneLoc, TargetLoc, true);
 
-	if(Dist < (50.0 * 50.0))
+	if(Dist < (125.0 * 125.0))
 	{
 		npc.m_flSpeed 			= 0.0;
 		npc.SetVelocity({0.0, 0.0, 0.0});
@@ -1503,6 +1537,15 @@ static float fl_constructor_summon_time;
 static void HandleConstructor(RegaliaClass npc)
 {
 	float GameTime = GetGameTime(npc.index);
+
+	if(npc.m_bCutAllAbilities)
+	{
+		if(npc.m_flConstructorDuration != FAR_FUTURE)
+		{
+			npc.m_flConstructorDuration = FAR_FUTURE;
+		}
+		return;
+	}
 
 	if(npc.m_flConstructorDuration < GameTime)
 	{
@@ -3641,7 +3684,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	if(npc.m_iHealthBar == 0 && post_calc <= 0.0)
 	{
-		CPrintToChatAll("Crash Initiated");
+		//CPrintToChatAll("Crash Initiated");
 		damage = 0.0;
 		npc.m_flCrashValuesTimer		= GetGameTime() + 0.25;
 		npc.m_bCutAllAbilities			= true;
@@ -3657,6 +3700,7 @@ static void NPC_Death(int iNPC)
 
 	StopSound(npc.index, SNDCHAN_STATIC, REGALIA_IOC_CHARGE_LOOP);
 	npc.EndGenericLaserSound();
+	
 
 	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, _, 1.0, 175);
 	EmitSoundToAll(REGALIA_DEATH_EXPLOSION_SOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, _, 1.0, 150);
@@ -3670,6 +3714,8 @@ static void NPC_Death(int iNPC)
 	if(IsValidEntity(particle))
 		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 
+	TE_Particle("hightower_explosion", Loc, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("mvm_soldier_shockwave", Loc, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
