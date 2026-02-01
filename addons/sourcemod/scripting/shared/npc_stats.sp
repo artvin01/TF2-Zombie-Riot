@@ -5432,7 +5432,7 @@ stock int GetClosestTarget(int entity,
 				CClotBody npc = view_as<CClotBody>(i);
 				if (GetTeam(i) != SearcherNpcTeam && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true))
 				{
-					if(Dungeon_Mode())
+					if(Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
 					{
 						if(Dungeon_GetEntityZone(entity) != Dungeon_GetEntityZone(i))
 							continue;
@@ -5477,7 +5477,7 @@ stock int GetClosestTarget(int entity,
 			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client && GetTeam(entity_close) != SearcherNpcTeam)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(Dungeon_Mode())
+				if(Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
 				{
 					if(Dungeon_GetEntityZone(entity) != Dungeon_GetEntityZone(entity_close))
 						continue;
@@ -5539,7 +5539,7 @@ stock int GetClosestTarget(int entity,
 					//if its a downed citizen, dont target.
 					if(Citizen_ThatIsDowned(entity_close))
 						continue;
-					if(Dungeon_Mode())
+					if(Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
 					{
 						if(Dungeon_GetEntityZone(entity) != Dungeon_GetEntityZone(entity_close))
 							continue;
@@ -5595,7 +5595,7 @@ stock int GetClosestTarget(int entity,
 							continue;
 					}
 
-					if(Dungeon_Mode())
+					if(Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
 					{
 						if(Dungeon_GetEntityZone(entity) != Dungeon_GetEntityZone(entity_close))
 							continue;
