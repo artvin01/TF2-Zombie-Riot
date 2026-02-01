@@ -1114,7 +1114,7 @@ public void BuilderMenu(int client)
 				delete CallbackTimer[client];
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 			}
-			if(!IsValidEntity(ZoneMarkerRef[Zone_HomeBase]))
+			else if(!IsValidEntity(ZoneMarkerRef[Zone_HomeBase]))
 			{
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 			}
