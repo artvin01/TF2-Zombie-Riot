@@ -249,7 +249,7 @@ static void ClotThink(int iNPC)
 				{
 					if(npc.m_bEnemyBase)
 					{
-						if(EnemyNpcAliveConst2 >= MaxEnemiesAllowedSpawnNext())
+						if(EnemyNpcAliveConst2 >= RoundToNearest(float(MaxEnemiesAllowedSpawnNext()) * 0.65))
 						{	
 							return;
 						}
