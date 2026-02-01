@@ -55,6 +55,9 @@ enum struct LootInfo
 	bool SetupKv(const char[] name, KeyValues kv)
 	{
 		this.Items = new StringMap();
+		if(name[0])
+			name[0] = 'l';
+			//erroring go
 
 		if(kv.JumpToKey("Items"))
 		{
