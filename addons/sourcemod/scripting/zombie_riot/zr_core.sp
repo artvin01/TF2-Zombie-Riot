@@ -68,6 +68,7 @@ enum DungeonZone
 	Zone_MAX
 }
 
+
 stock int DefaultTotalCash(int wave)
 {
 	static int totalCash[sizeof(DefaultWaveCash)];

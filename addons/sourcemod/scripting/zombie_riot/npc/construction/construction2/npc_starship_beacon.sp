@@ -170,6 +170,7 @@ methodmap Starship_Beacon < CClotBody
 		//		}
 		//	}
 		//}
+		Dungeon_SetEntityZone(npc.index, Zone_HomeBase);
 
 		float Pos[3]; GetAbsOrigin(npc.index, Pos);
 		int particle = ParticleEffectAt_Parent(Pos, "teleporter_mvm_bot_persist", npc.index, "", {0.0,0.0,0.0});
@@ -221,6 +222,8 @@ static void ClotThink(int iNPC)
 	{
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
+		//safety
+		Dungeon_SetEntityZone(npc.index, Zone_HomeBase);
 	}
 
 	if(npc.m_flNextThinkTime > GameTime)

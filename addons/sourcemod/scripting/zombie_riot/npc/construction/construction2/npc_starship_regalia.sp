@@ -572,6 +572,7 @@ methodmap RegaliaClass < CClotBody
 		npc.m_flLastDist_One = 0.0;
 		npc.m_flLastDist_Two = 0.0;
 		npc.m_flRevertControlOverride = FAR_FUTURE;
+		Dungeon_SetEntityZone(npc.index, Zone_HomeBase);
 		
 
 		//npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
@@ -1423,6 +1424,7 @@ static void ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
+	Dungeon_SetEntityZone(npc.index, Zone_HomeBase);
 
 	npc.m_iTarget = npc.iGetTarget();
 
@@ -2920,6 +2922,7 @@ static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
 				EmitSoundToAll(REGALIA_LANTEAN_DRONE_SHOOT_2, drone_npc.index, _, 65, _, 0.35, 160);
 			}
 		}
+		Dungeon_SetEntityZone(Drone, Zone_HomeBase);
 	}
 }
 static float ModifyDamage(float dmg)
