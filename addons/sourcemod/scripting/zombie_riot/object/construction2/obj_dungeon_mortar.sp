@@ -166,10 +166,13 @@ static void DBuildingMortarAction(int enemy, int owner, int mortar)
 	position[2] += 3000.0;
 	float AOE_range = 350.0;
 	spawnLoc[2] += 5.0;
-	TE_SetupBeamRingPoint(spawnLoc, AOE_range*2.0, 0.0, g_Ruina_BEAM_lightning, g_Ruina_HALO_Laser, 0, 66, 2.0, 30.0, 0.1, {255,255,125,255}, 1, 0);
-	TE_SendToAll();
-	TE_SetupBeamRingPoint(spawnLoc, AOE_range*2.0, AOE_range*2.0 + 0.1, g_Ruina_BEAM_lightning, g_Ruina_HALO_Laser, 0, 66, 2.0, 30.0, 0.1, {255,255,125,255}, 1, 0);
-	TE_SendToAll();
+	if(GetTeam(mortar) != TFTeam_Red)
+	{
+		TE_SetupBeamRingPoint(spawnLoc, AOE_range*2.0, 0.0, g_Ruina_BEAM_lightning, g_Ruina_HALO_Laser, 0, 66, 2.0, 30.0, 0.1, {255,255,125,255}, 1, 0);
+		TE_SendToAll();
+		TE_SetupBeamRingPoint(spawnLoc, AOE_range*2.0, AOE_range*2.0 + 0.1, g_Ruina_BEAM_lightning, g_Ruina_HALO_Laser, 0, 66, 2.0, 30.0, 0.1, {255,255,125,255}, 1, 0);
+		TE_SendToAll();
+	}
 	spawnLoc[2] += 120.0;
 
 	int particle = ParticleEffectAt(position, "kartimpacttrail", 2.0);

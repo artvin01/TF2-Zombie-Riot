@@ -274,6 +274,8 @@ static int GetCost(int client, BuildingInfo info, float multi)
 		buildCost = 1;
 	if(Rogue_Mode())
 		buildCost /= 3;
+	if(Dungeon_Mode())
+		buildCost /= 2;
 
 	return buildCost;
 }

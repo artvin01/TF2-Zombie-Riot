@@ -163,7 +163,7 @@ methodmap CursedKing < CClotBody
 		func_NPCThink[npc.index] = ClotThink;
 		npc.m_iMiniLivesLost = 100;
 		
-		npc.m_flSpeed = 270.0;
+		npc.m_flSpeed = 250.0;
 		
 		if(!IsValidEntity(RaidBossActive))
 		{
@@ -275,10 +275,10 @@ static void Clot_SelfDefense(CursedKing npc, float distance, float vecTarget[3],
 				int target = TR_GetEntityIndex(swingTrace);
 				if(target > 0)
 				{
-					float damage = 300.0;
+					float damage = 200.0;
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						damage *= 7.0;
+						damage *= 6.0;
 					}
 					npc.PlayMeleeHitSound();
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
