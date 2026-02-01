@@ -327,7 +327,7 @@ bool Vehicle_ShowInteractHud(int client, int entity)
 	int vehicle = Vehicle_Driver(client);
 	if(vehicle != -1)
 	{
-		if(CanExitVehicle(vehicle, client))
+		if(CanExitVehicle(vehicle))
 		{
 			SetGlobalTransTarget(client);
 			char ButtonDisplay[255];
@@ -375,7 +375,7 @@ bool Vehicle_ShowInteractHud(int client, int entity)
 		}
 	}
 
-	if(!space || !CanEnterVehicle(entity, client))
+	if(!space || !CanEnterVehicle(entity))
 		return false;
 
 	SetGlobalTransTarget(client);
@@ -403,7 +403,7 @@ bool Vehicle_Interact(int client, int weapon, int entity)
 			AdjustClientWeapons(client);
 #endif
 		}
-		else if((slot != -1 || CanExitVehicle(vehicle, client)) && (fabs(forceOutTime[client] - GetGameTime()) < 0.4 || CanExit(vehicle)))
+		else if((slot != -1 || CanExitVehicle(vehicle)) && (fabs(forceOutTime[client] - GetGameTime()) < 0.4 || CanExit(vehicle)))
 		{
 			if(Vehicle_Exit(client) && slot == -1)
 				AcceptEntityInput(vehicle, "HandBrakeOn", client, vehicle);
@@ -434,13 +434,13 @@ bool Vehicle_Interact(int client, int weapon, int entity)
 			return true;
 	}
 
-	if(!CanEnterVehicle(entity, client))
+	if(!CanEnterVehicle(entity))
 		return false;
 
 	return Vehicle_Enter(entity, client);
 }
 
-static stock bool CanEnterVehicle(int entity, int client)
+static stock bool CanEnterVehicle(int entity)
 {
 	if(GetEntProp(entity, Prop_Data, "m_bLocked"))
 		return false;
@@ -451,7 +451,7 @@ static stock bool CanEnterVehicle(int entity, int client)
 	return true;
 }
 
-static stock bool CanExitVehicle(int entity, int client)
+static stock bool CanExitVehicle(int entity)
 {
 	if(GetEntProp(entity, Prop_Data, "m_nSpeed") > GetEntPropFloat(entity, Prop_Data, "m_flMinimumSpeedToEnterExit"))
 		return false;
