@@ -1028,6 +1028,7 @@ void Music_Update(int client)
 				}
 				case 11:
 				{
+					//https://soundcloud.com/saknol/egodeath-scrapped-megalo-replacement-idea
 					EmitCustomToClient(client, "#zombiesurvival/cheese_lastman.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					SetMusicTimer(client, GetTime() + 170);
 				}

@@ -1944,8 +1944,8 @@
 	}
 	"Malfunctioning Shield Desc"
 	{
-		"en"	"A barely functioning Expisondan shield.\n- {green}Every 10 seconds, gain a shield that blocks one instance of damage."
-		"it"	"Uno scudo di Expisondan appena funzionante.\n- {green}Ogni 10 secondi, ottieni uno scudo che blocca un'istanza di danno."
+		"en"	"A barely functioning Expidonsan shield.\n- {green}Every 10 seconds, gain a shield that blocks one instance of damage."
+		"it"	"Uno scudo di Expidonsan appena funzionante.\n- {green}Ogni 10 secondi, ottieni uno scudo che blocca un'istanza di danno."
 		"ko"	"겨우 작동하는 엑스피돈사제 방패.\n- {green}매 10 초마다, 받은 피해를 1회 무효화시키는 보호막이 생성됩니다."
 	}
 	"Bob's Exchange Money"
@@ -2109,7 +2109,7 @@
 	}
 	"Hover Glider Desc"
 	{
-		"en"	"An ancient device of Expisondan origin.\n- {green}Players deal +30％ damage while airborne or swimming."
+		"en"	"An ancient device of Expidonsan origin.\n- {green}Players deal +30％ damage while airborne or swimming."
 		"ru"	"Устройство из старой немецкой технологии.\n- Вы наносите на 30％ больше урона, находясь в воздухе или во время плавания."
 		"it"	"Un antico dispositivo di origine espisondana. \n- {green}I giocatori infliggono +30％ danni mentre sono in volo o nuotano."
 		"ko"	"엑스피돈사에서 제작된 고대의 장치.\n- {green}공중에 떠있거나 수영 상태일때, 공격 피해량 +30％."

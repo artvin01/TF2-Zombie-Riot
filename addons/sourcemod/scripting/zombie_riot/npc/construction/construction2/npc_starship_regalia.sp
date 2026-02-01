@@ -531,6 +531,7 @@ methodmap RegaliaClass < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = true;
+			RaidModeTime = FAR_FUTURE;
 		}
 		if(StrContains(data, "raid_damage_scaling") != -1)
 		{

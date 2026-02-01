@@ -468,7 +468,7 @@
 	}
 	"Explain Dungeon Mechanics 5"
 	{
-		"en"	"Rival bases stay at the strength they started at\nDestryoing the center weakens the next raid!"
+		"en"	"Rival bases stay at the strength they started at\nDestroying the center weakens the next raid!"
 	}
 	"Explain Dungeon Mechanics 6"
 	{
