@@ -63,6 +63,16 @@ methodmap Starship_Beacon < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; 				}
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
+	property float m_flSummonTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; 				}
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property bool m_bSummonkampf
+	{
+		public get()							{ return b_FUCKYOU[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
+	}
 	public Starship_Beacon(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Starship_Beacon npc = view_as<Starship_Beacon>(CClotBody(vecPos, vecAng, BEACON_TOWER_CORE_MODEL, BEACON_TOWER_CORE_MODEL_SIZE, MinibossHealthScaling(180.0), ally, false,true,_,_,{30.0,30.0,350.0}, .NpcTypeLogic = 1));
@@ -88,6 +98,8 @@ methodmap Starship_Beacon < CClotBody
 
 		//f_PlayerScalingBuilding = ZRStocks_PlayerScalingDynamic();
 
+		npc.m_bSummonkampf = (StrContains(data, "lifeloss") != -1);
+		npc.m_flSummonTimer	= GetRandomFloat(12.5, 17.0) + GetGameTime();
 
 		if(StrContains(data, "style1") != -1)
 		{
@@ -216,6 +228,8 @@ static void ClotThink(int iNPC)
 
 	//NotifyOfExistance(npc);
 
+	HandleSummoning(npc);
+
 	if(npc.m_iState == -1)
 		return;
 
@@ -245,6 +259,29 @@ static void ClotThink(int iNPC)
 		GrantEntityArmor(ship, false, 0.5, 0.5, 1, float(Armour_Give) * 0.5);
 	}
 	
+}
+static void HandleSummoning(Starship_Beacon npc)
+{
+	if(!npc.m_bSummonkampf)
+		return;
+	
+	float GameTime = GetGameTime(npc.index);
+
+	if(npc.m_flSummonTimer > GameTime)
+		return;
+
+	npc.m_flSummonTimer = GameTime + 45.0;
+
+	float Loc[3]; GetAbsOrigin(npc.index, Loc); Loc[2]+=50.0;
+
+	int health = ReturnEntityMaxHealth(npc.index);
+	int SpwanIndex = NPC_CreateByName("npc_almagest_proxima", npc.index, Loc, {0.0, 0.0, 0.0}, GetTeam(npc.index));
+
+	if(SpwanIndex > MaxClients)
+	{
+		SetEntProp(SpwanIndex, Prop_Data, "m_iHealth", health);
+		SetEntProp(SpwanIndex, Prop_Data, "m_iMaxHealth", health);
+	}
 }
 //stock void GrantEntityArmor(int entity, bool Once = true, float ScaleMaxHealth, float ArmorProtect, int ArmorType, float custom_maxarmour = 0.0, int ArmorGiver = -1)
 /*
