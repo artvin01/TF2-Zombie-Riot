@@ -353,7 +353,7 @@ void CatapultSelfDefense_Init(Catapult npc, float gameTime)
 			npc.PlayMeleeSound();
 			for(int rocketcount ; rocketcount < 10 ; rocketcount++)
 			{
-				float RocketDamage = 125.0;
+				float RocketDamage = 110.0;
 				float RocketSpeed = 500.0;
 				float vecTarget[3]; 
 				vecTarget = VecAim;
