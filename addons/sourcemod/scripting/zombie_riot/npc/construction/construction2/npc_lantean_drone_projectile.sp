@@ -92,6 +92,8 @@ methodmap LanteanProjectile < CClotBody
 		{
 			npc.m_iWearable1 = ParticleEffectAt_Parent(Origin, "flaregun_energyfield_blue", npc.index, "", {0.0,0.0,0.0});
 		}
+		//is always static
+		AddNpcToAliveList(npc.index, 1);
 
 		npc.m_bUseRaidmodeScaling = StrContains(data, "raidmodescaling_damage") != -1;
 

@@ -2756,6 +2756,8 @@ void NoticeDungeonNoTimeLeft()
 		NoticenoDungeon = false;
 		return;
 	}
+	if(AttackType >= 2)
+		return;
 
 	if(!NoticenoDungeon)
 	{
