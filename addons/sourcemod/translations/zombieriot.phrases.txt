@@ -5694,4 +5694,8 @@
 		"en"	"Simon escaped and gained extra power..."
 		"ko"	"사이먼이 도망쳤습니다. 그의 힘이 더 강해집니다..."
 	}
+	"Outlaws"
+	{
+		"en"	"Outlaws"
+	}
 }
