@@ -261,7 +261,7 @@ static void ClotThink(int iNPC)
 		npc.PlayShieldGiveSound();
 
 		//ship max extra armour is 50%.
-		GrantEntityArmor(ship, false, 0.5, 0.5, 1, float(Armour_Give) * 0.5);
+		GrantEntityArmor(ship, false, 0.5, 0.5, 1, float(Armour_Give) * 0.25);
 	}
 	
 }
