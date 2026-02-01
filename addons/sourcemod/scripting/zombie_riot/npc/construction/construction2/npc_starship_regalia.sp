@@ -512,6 +512,7 @@ methodmap RegaliaClass < CClotBody
 		if(StrContains(data, "raid_hud") != -1)
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidAllowsBuildings = true;
 		}
 		if(StrContains(data, "raid_damage_scaling") != -1)
 		{
