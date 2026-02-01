@@ -485,6 +485,16 @@ methodmap RegaliaClass < CClotBody
 		public get()							{ return b_Gunout[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_Gunout[this.index] = TempValueForProperty; }
 	}
+	property bool m_bCrashSequenceInitiate
+	{
+		public get()							{ return b_NextRangedBarrage_OnGoing[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_NextRangedBarrage_OnGoing[this.index] = TempValueForProperty; }
+	}
+	property float m_flCrashValuesTimer
+	{
+		public get()							{ return fl_RangedSpecialDelay[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_RangedSpecialDelay[this.index] = TempValueForProperty; }
+	}
 	property bool m_bCutThrust_Hyper
 	{
 		public get()							{ return b_FUCKYOU_move_anim[this.index]; }
@@ -526,6 +536,10 @@ methodmap RegaliaClass < CClotBody
 		{
 			Do_RaidModeScaling(data);
 			bShipRaidModeScaling = true;
+		}
+		if(StrContains(data, "crash_sequence") != -1)
+		{
+			b_NpcUnableToDie[npc.index] = true;
 		}
 		
 		//Setting it to 999 will make our lag comp not resize collision box on shoot
@@ -591,7 +605,9 @@ methodmap RegaliaClass < CClotBody
 
 		fl_AbilityVectorData[npc.index] = Angles;
 
-		npc.m_bCutAllAbilities 				= true;
+		npc.m_bCrashSequenceInitiate		= false;
+		npc.m_bCutAllAbilities 				= false;
+		npc.m_flCrashValuesTimer			= 0.0;
 
 		//Weapons System.
 		//Forward Lances
@@ -638,6 +654,7 @@ methodmap RegaliaClass < CClotBody
 		RequestFrame(SummonBeaconsFrameLater, EntIndexToEntRef(npc.index));
 
 		npc.Handle_SectionParticles();
+		
 
 		Zero(fl_player_weapon_score);
 		npc.m_fbRangedSpecialOn = true;		
@@ -905,7 +922,6 @@ methodmap RegaliaClass < CClotBody
 			if(this.m_iInternalTravelVaultVectors != -1)
 			{
 				TargetLoc = VaultVectorPoints[this.m_iInternalTravelVaultVectors];
-
 			}
 			else
 			{
@@ -927,6 +943,11 @@ methodmap RegaliaClass < CClotBody
 				}
 			}
 			
+		}
+
+		if(TargetLoc[0] == 0.0 && TargetLoc[1] == 0.0 && TargetLoc[2] == 0.0)
+		{
+			this.m_iInternalTravelVaultVectors = GetRandomInt(1, REGALIA_RANDOM_LOC_AMT);
 		}
 		
 		float Dist = GetVectorDistance(DroneLoc, TargetLoc, true); 
@@ -1428,9 +1449,6 @@ static void ClotThink(int iNPC)
 
 	npc.m_iTarget = npc.iGetTarget();
 
-	if(!IsValidEntity(npc.m_iTarget))
-		return;
-
 	//core of npc logic above should now be complete. now onto the specialist stuff.
 
 	npc.ShieldState(npc.m_flArmorCount>0.0);	//shield VFX will take directly from npc armour.
@@ -1438,14 +1456,47 @@ static void ClotThink(int iNPC)
 	HandleUnderSlungWeapons(npc);
 	HandleMainWeapons(npc);
 	HandleDroneSystem(npc);
-	Handle_SpiralGlaive(npc);
+	HandleSpiralGlaive(npc);
 	HandleBeacons(npc);
 	HandleConstructor(npc);
 	HandleCrashSequence(npc);
 }
 static void HandleCrashSequence(RegaliaClass npc)
 {
+	if(!npc.m_bCrashSequenceInitiate)	
+		return;
 
+	if(npc.m_flCrashValuesTimer < GetGameTime())
+	{
+		CPrintToChatAll("Crash Timers Set");
+		npc.m_flCrashValuesTimer = FAR_FUTURE;
+		npc.m_flShipAbilityActive = FAR_FUTURE;
+		npc.EndFlightSystemGoal();
+
+		float Loc[3]; Loc = fl_BeaconSpawnPos[GetRandomInt(0, sizeof(fl_BeaconSpawnPos)-1)];
+
+		npc.SetFlightSystemGoal(Loc);
+		return;
+	}
+	else if(npc.m_flCrashValuesTimer != FAR_FUTURE)
+		return;
+
+	float DroneLoc[3], TargetLoc[3];
+	GetAbsOrigin(npc.index, DroneLoc);
+
+	TargetLoc = f3_NpcSavePos[npc.index];
+
+	float Dist = GetVectorDistance(DroneLoc, TargetLoc, true);
+
+	if(Dist < (50.0 * 50.0))
+	{
+		npc.m_flSpeed 			= 0.0;
+		npc.SetVelocity({0.0, 0.0, 0.0});
+		npc.m_flCurrentSpeed	= 0.0;
+		npc.m_bVectoredThrust	= true;
+		b_NpcUnableToDie[npc.index] = false;
+	}
+	
 }
 static float fl_constructor_summon_time;
 static void HandleConstructor(RegaliaClass npc)
@@ -1757,7 +1808,7 @@ enum struct Regalia_SpiralGlave_Data {
 	float Windup_Base;
 
 }
-static void Handle_SpiralGlaive(RegaliaClass npc)
+static void HandleSpiralGlaive(RegaliaClass npc)
 {
 	if(!npc.bDoesSectionExist(StarShip_BG_CoreDeco))
 		return;
@@ -3572,6 +3623,29 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		Waves_ClearWave();
 		Waves_Progress(_,_, true);
 		//go to next wave instantly
+		return Plugin_Continue;
+	}
+
+	if(npc.m_iHealthBar > 0 || !b_NpcUnableToDie[npc.index])
+		return Plugin_Continue;
+
+	if(npc.m_bCrashSequenceInitiate)
+	{
+		damage = 0.0;
+		return Plugin_Continue;
+	}
+
+	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	float post_calc = Health - damage;
+	
+	if(npc.m_iHealthBar == 0 && post_calc <= 0.0)
+	{
+		CPrintToChatAll("Crash Initiated");
+		damage = 0.0;
+		npc.m_flCrashValuesTimer		= GetGameTime() + 0.25;
+		npc.m_bCutAllAbilities			= true;
+		npc.m_bCrashSequenceInitiate 	= true;
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 	}
 
 	return Plugin_Continue;
