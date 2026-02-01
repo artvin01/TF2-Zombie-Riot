@@ -65,7 +65,7 @@ methodmap Starship_Beacon < CClotBody
 	}
 	public Starship_Beacon(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Starship_Beacon npc = view_as<Starship_Beacon>(CClotBody(vecPos, vecAng, BEACON_TOWER_CORE_MODEL, BEACON_TOWER_CORE_MODEL_SIZE, MinibossHealthScaling(180.0), ally, false,true,_,_,{30.0,30.0,350.0}, .NpcTypeLogic = 1));
+		Starship_Beacon npc = view_as<Starship_Beacon>(CClotBody(vecPos, vecAng, BEACON_TOWER_CORE_MODEL, BEACON_TOWER_CORE_MODEL_SIZE, MinibossHealthScaling(180.0), ally, false,true,_,_,{30.0,30.0,60.0}, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -133,6 +133,8 @@ methodmap Starship_Beacon < CClotBody
 		func_NPCThink[npc.index] 		= ClotThink;
 
 		GiveNpcOutLineLastOrBoss(npc.index, true);
+		//is always static
+		AddNpcToAliveList(npc.index, 1);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
@@ -141,7 +143,7 @@ methodmap Starship_Beacon < CClotBody
 		npc.m_flRangedArmor = 1.0;
 		npc.m_flAttackHappens = 0.0;
 
-		npc.m_flMeleeArmor = 2.5;
+		npc.m_flMeleeArmor = 1.75;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 115.0;
 
 		//if(!VIPBuilding_Active() && GetTeam(npc.index) != TFTeam_Red)
