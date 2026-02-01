@@ -851,6 +851,10 @@ void Rogue_StartSetup()	// Waves_RoundStart()
 	else if(StartingItem[0])
 	{
 		Rogue_GiveNamedArtifact(StartingItem);
+		
+		strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), StartingItem);
+		strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), StartingItem);
+		WavesUpdateDifficultyName();
 	}
 
 	Rogue_SetProgressTime(wait, true, true);
@@ -978,6 +982,11 @@ public Action Rogue_EndVote(Handle timer, float time)
 				Rogue_GiveNamedArtifact(vote.Name);
 				strcopy(StartingItem, sizeof(StartingItem), vote.Name);
 				Waves_SetReadyStatus(1);
+
+				strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), StartingItem);
+				strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), StartingItem);
+				WavesUpdateDifficultyName();
+
 			}
 			else
 			{
