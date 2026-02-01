@@ -7795,7 +7795,7 @@
 	}
 	"Regalia Test Line Formated"
 	{
-		"#format"	"{1:t},{2:t},{3:t}"
+		"#format"	"{1:d},{2:d},{3:d}"
 		"en"	"number: {1} number: {2} number: {3}"
 	}
 	"Starship Beacon Desc"

@@ -147,7 +147,6 @@ static float fl_ShipTurnSpeed;
 
 
 	make beacons on life 2 summon kampfers on like a 30s cd or smth.
-	make new vec points on new map
 	
 
 
@@ -617,9 +616,9 @@ methodmap RegaliaClass < CClotBody
 		b_IgnoreAllCollisionNPC[npc.index]		= true;
 		npc.m_bDissapearOnDeath 				= true;
 
-		npc.CommLines("", "Regalia Test Line");
-		PrecacheSound("zombie_riot/attackofmrbeast.mp3");
-		npc.CommLines("zombie_riot/attackofmrbeast.mp3", "Regalia Test Line Formated", 1, 3, 4);
+		//CommLines("", "%t", "Regalia Test Line");
+		//PrecacheSound("zombie_riot/attackofmrbeast.mp3");
+		//CommLines("zombie_riot/attackofmrbeast.mp3", "%t", "Regalia Test Line Formated", 1, 3, 4);
 
 		npc.m_iHealthBar = 1;
 
@@ -1357,23 +1356,25 @@ methodmap RegaliaClass < CClotBody
 
 	
 	}
-	public void CommLines(const char[] SoundString, const char[] TextLines, any...)
+}
+static void CommLines(const char[] SoundString, const char[] TextLines, any...)
+{
+	if(SoundString[0])
 	{
-		if(SoundString[0])
-		{
-			EmitSoundToAll(SoundString);
-		}
-		
-		for(int i=1 ; i <= MaxClients ; i++)
-		{
-			if(!IsValidClient(i))
-				continue;
+		EmitSoundToAll(SoundString);
+	}
+	CCheckTrie();
+	for(int i=1 ; i <= MaxClients ; i++)
+	{
+		if(!IsValidClient(i))
+			continue;
 
-			SetGlobalTransTarget(i);
-			char buffer[255];
-			VFormat(buffer, sizeof(buffer), TextLines, 3);
-			CPrintToChat(i, "%s", buffer);	//tranlsation doesn't exactly work correctly with the formating thing???
-		}
+		char buffer[MAX_BUFFER_LENGTH], buffer2[MAX_BUFFER_LENGTH];
+		SetGlobalTransTarget(i);
+		Format(buffer, sizeof(buffer), "\x01%s", TextLines);
+		VFormat(buffer2, sizeof(buffer2), buffer, 3);
+		CReplaceColorCodes(buffer2);
+		CSendMessage(i, buffer2);
 	}
 }
 static void SummonBeaconsFrameLater(int ref)
@@ -3519,7 +3520,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.Anger = true;
 		npc.PlayLifeLossSound();
 		ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", FAR_FUTURE);
-		//npc.CommLines("", "M I S T E R  B E A S T");
+		CommLines("", "M I S T E R  B E A S T");
 		//b_NpcIsInvulnerable[npc.index] = true;
 	}
 
