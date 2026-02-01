@@ -104,7 +104,7 @@ methodmap Catapult < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Catapult_ClotThink);
 		
 		npc.m_flMeleeArmor = 1.5;
-		npc.m_flRangedArmor = 0.1;
+		npc.m_flRangedArmor = 0.75;
 		
 		
 		npc.StartPathing();
@@ -365,7 +365,7 @@ void CatapultSelfDefense_Init(Catapult npc, float gameTime)
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.75);
 
 				int RocketGet = npc.FireRocket(vecTarget, RocketDamage, RocketSpeed);
-				Attributes_Set(RocketGet, Attrib_MultiBuildingDamage, 10.0);
+				Attributes_Set(RocketGet, Attrib_MultiBuildingDamage, 7.0);
 				//Reducing gravity, reduces speed, lol.
 				SetEntityGravity(RocketGet, 1.0); 	
 				//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.

@@ -105,13 +105,13 @@ public void Dungeon_Crate_Wood()
 
 public void Dungeon_Crate_Iron()
 {
-	int amount = GetRandomInt(3, 5);
+	int amount = GetRandomInt(4, 6);
 	MaterialDelay("iron", amount);
 }
 
 public void Dungeon_Crate_Copper()
 {
-	int amount = GetRandomInt(3, 5);
+	int amount = GetRandomInt(4, 6);
 	MaterialDelay("copper", amount);
 }
 
