@@ -65,7 +65,7 @@ static const char g_MeleeHitSounds[][] =
 	"mvm/melee_impacts/blade_slice_robo01.wav",
 	"mvm/melee_impacts/blade_slice_robo03.wav",
 };
-void AlmagestKaempferOnMapStart()
+void AlmagestProximaOnMapStart()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
@@ -75,8 +75,8 @@ void AlmagestKaempferOnMapStart()
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_Panic_WeaponBroke);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Almagest Kämpfer");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_almagest_kaempfer");
+	strcopy(data.Name, sizeof(data.Name), "Almagest Proxima");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_almagest_proxima");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -87,10 +87,10 @@ void AlmagestKaempferOnMapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AlmagestKaempfer(vecPos, vecAng, team);
+	return AlmagestProxima(vecPos, vecAng, team);
 }
 
-methodmap AlmagestKaempfer < CClotBody
+methodmap AlmagestProxima < CClotBody
 {
 	property float m_flDoIdleSound
 	{
@@ -141,9 +141,9 @@ methodmap AlmagestKaempfer < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
 	
-	public AlmagestKaempfer(float vecPos[3], float vecAng[3], int ally)
+	public AlmagestProxima(float vecPos[3], float vecAng[3], int ally)
 	{
-		AlmagestKaempfer npc = view_as<AlmagestKaempfer>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1000", ally));
+		AlmagestProxima npc = view_as<AlmagestProxima>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
@@ -155,7 +155,7 @@ methodmap AlmagestKaempfer < CClotBody
 		
 
 		func_NPCDeath[npc.index] = ClotDeath;
-		func_NPCOnTakeDamage[npc.index] = AlmagestKaempfer_TakeDamage;
+		func_NPCOnTakeDamage[npc.index] = AlmagestProxima_TakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
 		
 		EnemyShieldCantBreak[npc.index] = true;
@@ -213,7 +213,7 @@ static bool Almagest_DidHealDo;
 
 static void ClotThink(int iNPC)
 {
-	AlmagestKaempfer npc = view_as<AlmagestKaempfer>(iNPC);
+	AlmagestProxima npc = view_as<AlmagestProxima>(iNPC);
 
 	GrantEntityArmor(iNPC, true, 0.5, 0.25, 0);
 	float gameTime = GetGameTime(npc.index);
@@ -250,7 +250,7 @@ static void ClotThink(int iNPC)
 		npc.m_flHealCooldownDo = GetGameTime(npc.index) + 0.5;
 		Almagest_DidHealDo = false;
 		int maxhealth = ReturnEntityMaxHealth(npc.index);
-		ExpidonsaGroupHeal(npc.index, 150.0, 99, float(maxhealth) / 20.0, 1.0, false,Expidonsa_OnlyHealSameIndex, AlmagestKaempferBuff);
+		ExpidonsaGroupHeal(npc.index, 150.0, 99, float(maxhealth) / 20.0, 1.0, false,Expidonsa_OnlyHealSameIndex, AlmagestProximaBuff);
 		if(Almagest_DidHealDo)
 			DesertYadeamDoHealEffect(npc.index, 150.0);
 	}
@@ -260,7 +260,7 @@ static void ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
-		int MovementDo = AlmagestKaempfer_SelfDefense(npc, distance, vecTarget, gameTime); 
+		int MovementDo = AlmagestProxima_SelfDefense(npc, distance, vecTarget, gameTime); 
 		switch(MovementDo)
 		{
 			case 1:
@@ -300,7 +300,7 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-int AlmagestKaempfer_SelfDefense(AlmagestKaempfer npc, float distance, float vecTarget[3], float gameTime)
+int AlmagestProxima_SelfDefense(AlmagestProxima npc, float distance, float vecTarget[3], float gameTime)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -372,7 +372,7 @@ int AlmagestKaempfer_SelfDefense(AlmagestKaempfer npc, float distance, float vec
 }
 static void ClotDeath(int entity)
 {
-	AlmagestKaempfer npc = view_as<AlmagestKaempfer>(entity);
+	AlmagestProxima npc = view_as<AlmagestProxima>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
@@ -396,9 +396,9 @@ static void ClotDeath(int entity)
 }
 
 
-void AlmagestKaempfer_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+void AlmagestProxima_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	AlmagestKaempfer npc = view_as<AlmagestKaempfer>(victim);
+	AlmagestProxima npc = view_as<AlmagestProxima>(victim);
 	float gameTime = GetGameTime(npc.index);
 
 	if(npc.m_flHeadshotCooldown < gameTime)
@@ -409,7 +409,7 @@ void AlmagestKaempfer_TakeDamage(int victim, int &attacker, int &inflictor, floa
 }
 
 
-void AlmagestKaempferBuff(int entity, int victim)
+void AlmagestProximaBuff(int entity, int victim)
 {
 	Almagest_DidHealDo = true;
 	float vecSelf[3];

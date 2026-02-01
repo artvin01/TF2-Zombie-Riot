@@ -280,7 +280,7 @@ void StarShip_Regalia_OnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "HMS: Regalia");	//Regalia Class battlecruisers
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_starship_regalia");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier");
+	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags 		= 0;
 	data.Category 	= Type_Outlaws;
@@ -1438,7 +1438,7 @@ static void HandleConstructor(RegaliaClass npc)
 
 		for(int i = 0 ; i < 4 ; i++)
 		{
-			int SpwanIndex = NPC_CreateByName("npc_almagest_kaempfer", npc.index, f3_LastValidPosition[npc.index], {0.0, 0.0, 0.0}, GetTeam(npc.index));
+			int SpwanIndex = NPC_CreateByName("npc_almagest_proxima", npc.index, f3_LastValidPosition[npc.index], {0.0, 0.0, 0.0}, GetTeam(npc.index));
 
 			if(SpwanIndex > MaxClients)
 			{
@@ -1536,7 +1536,7 @@ static void HandleConstructor(RegaliaClass npc)
 	npc.m_bVectoredThrust = true;
 
 
-	//npc_almagest_kaempfer
+	//npc_almagest_proxima
 }
 static void ConstructorTurnControl(int iNPC)
 {
