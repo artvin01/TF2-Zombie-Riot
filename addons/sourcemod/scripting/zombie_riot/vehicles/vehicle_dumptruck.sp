@@ -49,7 +49,7 @@ methodmap VehicleDumpTruck < VehicleGeneric
 	{
 		VehicleDumpTruck obj = view_as<VehicleDumpTruck>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, data[0] ? "models/vehicles/dumptruck_empty_v2.mdl" : "models/vehicles/dumptruck.mdl", "scripts/vehicles/tf2_dumptruck.txt"));
 		
-		obj.m_bNoAttack = true;
+		obj.m_iGunIndex = -1;
 		obj.AddSeat({18.0, -26.0, 54.0}, 0);	// Side Seat
 
 		if(data[0])

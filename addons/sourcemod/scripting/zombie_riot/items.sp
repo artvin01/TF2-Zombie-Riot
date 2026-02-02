@@ -31,7 +31,8 @@ static const char Categories[][] =
 	"Aperture",
 	"Mutations",
 	"Curtain Occupants",
-	"Necropolains"
+	"Necropolains",
+	"Outlaws"
 };
 
 enum struct GiftItem

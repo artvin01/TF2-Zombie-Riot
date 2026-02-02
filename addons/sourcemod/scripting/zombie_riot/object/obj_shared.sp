@@ -35,12 +35,14 @@ static float RotateByDefault[MAXENTITIES]={0.0, ...};
 int Building_BuildingBeingCarried[MAXENTITIES];
 float f_DamageTakenFloatObj[MAXENTITIES];
 int OwnerOfText[MAXENTITIES];
+float f_CooldownShowRange[MAXPLAYERS];
 
 //Performance improvement, no need to check this littearlly every fucking frame
 //other things DO need it, but not this.
 float f_TransmitDelayCheck[MAXENTITIES][MAXPLAYERS];
 Action b_TransmitBiasDo[MAXENTITIES][MAXPLAYERS];
 
+#define DMGMULTI_CONST2_RED 2.5
 int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
 
 #define ZR_BARRACKS_TROOP_CLASSES			(1 << 3) //Allows training of units, although will limit support buildings to 1.
@@ -49,7 +51,7 @@ int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
 #define EFL_IN_SKYBOX (1 << 17)
 
 #define MAX_REBELS_ALLOWED 4
-
+#define ENEMY_BUILDING_DELAY_THINK 1.0
 float RotateByDefaultReturn(int entity)
 {
 	return RotateByDefault[entity];
@@ -75,7 +77,10 @@ void Object_MapStart()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
+	PrecacheModel("models/props_debris/concrete_debris128pile001a.mdl");
 	Zero2(f_TransmitDelayCheck);
+	Zero(f_CooldownShowRange);
+	PrecacheSound("weapons/bombinomicon_explode1.wav");
 }
 void Object_PluginStart()
 {
@@ -85,9 +90,17 @@ void Object_PluginStart()
 	.DefineIntField("m_iRepair")
 	.DefineIntField("m_iRepairMax")
 	.DefineIntField("m_iMaxHealth")
+	.DefineFloatField("m_flElementRes", Element_MAX)
+	.DefineBoolField("b_BlockDropChances")
 	.DefineBoolField("m_bSentryBuilding")
 	.DefineBoolField("m_bConstructBuilding")
+	.DefineIntField("m_iTransparrencyMode")
 	.DefineFloatField("m_fLastTimeClaimed")
+	.DefineBoolField("m_bCannotBePickedUp")
+	.DefineBoolField("m_bNoOwnerRequired")
+
+	//needed so npc stuff doesnt break
+	.DefineIntField("m_iHealthBar")
 	.EndDataMapDesc();
 	factory.Install();
 }
@@ -134,7 +147,10 @@ methodmap ObjectGeneric < CClotBody
 
 		ObjectGeneric objstats = view_as<ObjectGeneric>(obj);
 		objstats.BaseHealth = StringToInt(basehealth);
-		SetTeam(obj, GetTeam(client));
+		if(IsValidClient(client))
+			SetTeam(obj, GetTeam(client));
+		else
+			SetTeam(obj, TFTeam_Blue);
 			
  		b_CantCollidie[obj] = false;
 	 	b_CantCollidieAlly[obj] = false;
@@ -203,9 +219,11 @@ methodmap ObjectGeneric < CClotBody
 		objstats.FuncCanBuild = defaultFunc;
 		objstats.FuncShowInteractHud = INVALID_FUNCTION;
 
-		SetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity", client);
+		if(IsValidClient(client))
+			SetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity", client);
 		
 		SDKHook(obj, SDKHook_OnTakeDamage, ObjectGeneric_ClotTakeDamage);
+	//	SDKHook(obj, SDKHook_OnTakeDamagePost, ObjectGeneric_ClotTakeDamage_Post);
 		/*
 			how it works:
 			if a building is on cooldown/can have one, we spawn a 2nd prop, see below under fake model.
@@ -406,6 +424,24 @@ methodmap ObjectGeneric < CClotBody
 			}
 		}
 	}
+	property int m_iConstructDeathModel
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_Wearable[this.index][9]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_Wearable[this.index][9] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_Wearable[this.index][9] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	property Function FuncCanUse
 	{
 		public set(Function func)
@@ -464,15 +500,56 @@ methodmap ObjectGeneric < CClotBody
 			return GetEntPropFloat(this.index, Prop_Data, "m_fLastTimeClaimed");
 		}
 	}
+	property bool m_bNoOwnerRequired
+	{
+		public set(bool value)
+		{
+			SetEntProp(this.index, Prop_Data, "m_bNoOwnerRequired", value);
+		}
+		public get()
+		{
+			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bNoOwnerRequired"));
+		}
+	}
 	property bool m_bConstructBuilding
 	{
 		public set(bool value)
 		{
+			//no owner
+			this.m_bNoOwnerRequired = value;
+			if(Dungeon_Mode() && value)
+			{
+				SetEntPropEnt(this.index, Prop_Data, "m_hOwnerEntity", -1);
+				ApplyStatusEffect(this.index, this.index, "Const2 Scaling For Enemy Base Nerf", 999999.0);
+			}
 			SetEntProp(this.index, Prop_Data, "m_bConstructBuilding", value);
 		}
 		public get()
 		{
 			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bConstructBuilding"));
+		}
+	}
+	property int m_iTransparrencyMode
+	{
+		public set(int value)
+		{
+			//no owner
+			SetEntProp(this.index, Prop_Data, "m_iTransparrencyMode", value);
+		}
+		public get()
+		{
+			return GetEntProp(this.index, Prop_Data, "m_iTransparrencyMode");
+		}
+	}
+	property bool m_bCannotBePickedUp
+	{
+		public set(bool value)
+		{
+			SetEntProp(this.index, Prop_Data, "m_bCannotBePickedUp", value);
+		}
+		public get()
+		{
+			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bCannotBePickedUp"));
 		}
 	}
 	property bool m_bBurning
@@ -503,20 +580,6 @@ methodmap ObjectGeneric < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.8, 100);
 	}
 }
-
-public Action SetTransmit_BuildingNotReady(int entity, int client)
-{
-	if(f_TransmitDelayCheck[entity][client] > GetGameTime())
-	{
-		return b_TransmitBiasDo[entity][client];
-	}
-	f_TransmitDelayCheck[entity][client] = GetGameTime() + 0.25;
-
-	b_TransmitBiasDo[entity][client] = SetTransmit_BuildingShared(entity, client, true);
-	return b_TransmitBiasDo[entity][client];
-}
-
-
 public Action SetTransmit_BuildingReady(int entity, int client)
 {
 	if(f_TransmitDelayCheck[entity][client] > GetGameTime())
@@ -549,21 +612,15 @@ static Action SetTransmit_BuildingShared(int entity, int client, bool reverse, b
 		return Plugin_Continue;
 	}
 	int owner;
-
-		
 	owner = GetEntPropEnt(building, Prop_Send, "m_hOwnerEntity");
-	
 	bool hide;
-	if(owner != -1)
+	if(!Ignorethird && EntRefToEntIndex(Building_Mounted[building]) == owner && !view_as<ObjectGeneric>(building).m_bNoOwnerRequired)
 	{
-		if(!Ignorethird && EntRefToEntIndex(Building_Mounted[building]) == owner)
-		{
-			return Plugin_Continue;
-		}
-		else
-		{
-			hide = !CanUseBuilding[building][client];	
-		}
+		return Plugin_Continue;
+	}
+	else
+	{
+		hide = !CanUseBuilding[building][client];	
 	}
 
 	//abomination
@@ -627,8 +684,15 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	if(objstats.m_flNextDelayTime > gameTime)
 		return false;
 
-	objstats.m_flNextDelayTime = gameTime + 0.2;
-
+	//Reduce computation forceably for enemy bases, this nerfs some buildings but thats fine.
+	if(Dungeon_Mode() && objstats.m_bConstructBuilding && GetTeam(objstats.index) != TFTeam_Red)
+	{
+		objstats.m_flNextDelayTime = gameTime + 0.4;
+	} 
+	else
+	{
+		objstats.m_flNextDelayTime = gameTime + 0.2;
+	}
 	Function func = func_NPCThink[objstats.index];
 	if(func && func != INVALID_FUNCTION)
 	{
@@ -636,6 +700,16 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		Call_PushCell(objstats.index);
 		Call_Finish();
 	}
+
+	//force think much slower during peace times
+	if(Dungeon_Mode() && Dungeon_InSetup() && objstats.m_bConstructBuilding && GetTeam(objstats.index) == TFTeam_Red)
+	{
+		if(IsDungeonCenterId() != i_NpcInternalId[objstats.index])
+			objstats.m_flNextDelayTime = gameTime + 5.0;
+	}
+
+	if(GetTeam(objstats.index) != TFTeam_Red)
+		return false;
 
 	BuildingUpdateTextHud(objstats.index);
 
@@ -659,10 +733,9 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 			objstats.m_bBurning = false;
 		}
 	}
-
 	int owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
-	if(owner == -1)
-	{
+	if(owner == -1 && !objstats.m_bConstructBuilding && !objstats.m_bNoOwnerRequired)
+	{                                               
 		//give 30 sec untill it destroys itself
 		if(objstats.LastTimeClaimed + 30.0 < GetGameTime())
 		{
@@ -752,16 +825,50 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 			int wearable = objstats.m_iWearable1;
 			if(wearable != -1)
 			{
-				SetEntityRenderColor(objstats.index, r, g, 0, 100);
-				SetEntityRenderColor(wearable, r, g, 0, 255);
-				SetEntityRenderMode(wearable, RENDER_NORMAL);
+				switch(objstats.m_iTransparrencyMode)
+				{
+					case 2:
+					{
+						SetEntityRenderColor(objstats.index, r, g, 0, 0);
+						SetEntityRenderMode(objstats.index, RENDER_TRANSCOLOR);
+						SetEntityRenderColor(wearable, r, g, 0, 125);
+						SetEntityRenderMode(wearable, RENDER_TRANSCOLOR);
+					}
+					case 1:
+					{
+						SetEntityRenderColor(objstats.index, r, g, 0, 100);
+						SetEntityRenderColor(wearable, r, g, 0, 125);
+						SetEntityRenderMode(wearable, RENDER_TRANSCOLOR);
+					}
+					default:
+					{
+						SetEntityRenderColor(objstats.index, r, g, 0, 100);
+						SetEntityRenderColor(wearable, r, g, 0, 255);
+						SetEntityRenderMode(wearable, RENDER_NORMAL);
+					}
+				}
 			}
 			else
 			{
-				SetEntityRenderColor(objstats.index, r, g, 0, 255);
+				switch(objstats.m_iTransparrencyMode)
+				{
+					case 2:
+					{
+						SetEntityRenderColor(objstats.index, r, g, 0, 0);
+						SetEntityRenderMode(objstats.index, RENDER_TRANSCOLOR);
+					}
+					case 1:
+					{
+						SetEntityRenderColor(objstats.index, r, g, 0, 125);
+						SetEntityRenderMode(objstats.index, RENDER_TRANSCOLOR);
+					}
+					default:
+					{
+						SetEntityRenderColor(objstats.index, r, g, 0, 255);
+					}
+				}
 			}
 		}
-		
 	}
 	return true;
 }
@@ -820,7 +927,8 @@ bool Object_Interact(int client, int weapon, int obj)
 	NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
 	if(StrContains(plugin, "obj_", false) != -1)
 	{
-		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == -1)
+		ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == -1 && !objstats.m_bNoOwnerRequired)
 		{
 			// Claim a unclaimed building
 			if(weapon != -1 && (i_IsWrench[weapon] || Attributes_Get(weapon, 4018, 0.0) >= 1.0))
@@ -829,6 +937,7 @@ bool Object_Interact(int client, int weapon, int obj)
 				{
 					if(Object_CanBuild(FuncCanBuild[entity], client))
 					{
+						
 						SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 						BuildingUpdateTextHud(entity);
 					}
@@ -850,7 +959,6 @@ bool Object_Interact(int client, int weapon, int obj)
 				func = func_NPCInteract[entity];
 				if(func && func != INVALID_FUNCTION)
 				{
-					ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 					Call_StartFunction(null, func);
 					Call_PushCell(client);
 					Call_PushCell(weapon);
@@ -877,6 +985,9 @@ int Object_NamedBuildings(int owner = 0, const char[] name)
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
+		
 		if(owner == 0 || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 		{
 			static char plugin[64];
@@ -896,6 +1007,9 @@ int Object_SupportBuildings(int owner, int &all = 0)
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
+		
 		static char plugin[64];
 		NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
 		if(StrContains(plugin, "obj_", false) != -1)
@@ -950,7 +1064,8 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 	int maxAllowed = 1;
 	
   	int Building_health_attribute = i_MaxSupportBuildingsLimit[client];
-	
+	if(Dungeon_Mode())
+		maxAllowed += 1;
 	maxAllowed += Building_health_attribute; 
 	maxAllowed += Blacksmith_Additional_SupportBuildings(client); 
 	maxAllowed += Merchant_Additional_SupportBuildings(client); 
@@ -986,6 +1101,9 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 
 float Object_GetMaxHealthMulti(int client)
 {
+	if(client < 1)
+		return 1.0;
+	
 	if(client <= MaxClients)
 		return Attributes_GetOnPlayer(client, 286);
 	
@@ -1005,58 +1123,67 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 		damage *= 0.75;
 	}
 	
-	if(CurrentModifOn() == 2 || CurrentModifOn() == 3)
-		damage *= 1.25;
-
-	if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
+	if(GetTeam(victim) == TFTeam_Red)
 	{
-		int scale = Waves_GetRoundScale();
-		if(scale < 2)
+		if(CurrentModifOn() == 2 || CurrentModifOn() == 3)
+			damage *= 1.25;
+
+		if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
 		{
-			//damage *= 1.0;
+			int scale = Waves_GetRoundScale();
+			if(scale < 2)
+			{
+				//damage *= 1.0;
+			}
+			else if(scale < 4)
+			{
+				damage *= 2.0;
+			}
+			else
+			{
+				damage *= 3.0;
+			}
 		}
-		else if(scale < 4)
-		{
-			damage *= 2.0;
-		}
-		else
+		if(Dungeon_Mode()) //Buildings are good but not too good, its mainly construct buildings that are used.
 		{
 			damage *= 3.0;
 		}
 	}
+	else
+	{
+		if(Dungeon_Mode())
+		{
+			float vecTarget[3]; WorldSpaceCenter(attacker, vecTarget );
 
-	damage *= 0.1;
+			float VecSelfNpc[3]; WorldSpaceCenter(victim, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+			if(flDistanceToTarget > (600.0 * 600.0))
+			{
+				damage = 0.0;
+				if(IsValidClient(attacker) && f_CooldownShowRange[attacker] < GetGameTime())
+				{
+					f_CooldownShowRange[attacker] = GetGameTime() + 0.25;
+					float NewPos[3]; 
+					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", NewPos);
+					NewPos[2] += 10.0;
+					spawnRing_Vectors(NewPos, 600.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.15, 2.0, 2.0, 2, _, attacker);
+				}
+				return Plugin_Handled;
+			}
+		}
+	}
+
 	if(Damage_Modifiy(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 	{
 		return Plugin_Handled;
 	}
-	
-	int dmg = FloatToInt_DamageValue_ObjBuilding(victim, damage);
-	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	health -= dmg;
-
-	int Owner = GetEntPropEnt(victim, Prop_Send, "m_hOwnerEntity");
-	if(Owner != -1)
+	if(attacker <= MaxClients && dieingstate[attacker] != 0)
 	{
-		i_BarricadeHasBeenDamaged[Owner] += dmg;
-	}
-	if(health < 0)
-	{
-		DestroyBuildingDo(victim);
+		//no dmg at all.
 		return Plugin_Handled;
 	}
-	
-	ObjectGeneric objstats = view_as<ObjectGeneric>(victim);
-	if(objstats.PlayHurtSound())
-	{
-		damagePosition[2] -= 40.0;
-		TE_ParticleInt(g_particleImpactMetal, damagePosition);
-		TE_SendToAll();
-	}
-	
-	SetEntProp(victim, Prop_Data, "m_iHealth", health);
-	UpdateDoublebuilding(victim);
-	return Plugin_Handled;
+	ObjectGeneric_ClotTakeDamage_Post(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+	return Plugin_Changed;
 }
 
 void DestroyBuildingDo(int entity, bool DontCheckAgain = false)
@@ -1100,9 +1227,126 @@ void DestroyBuildingDo(int entity, bool DontCheckAgain = false)
 	pack.WriteFloat(VecOrigin[2]);
 	pack.WriteCell(0);
 	RequestFrame(MakeExplosionFrameLater, pack);
+	if(Const2_BuildingDestroySpecial(entity))
+	{
+		return;
+	}
+
 	RemoveEntity(entity);
 }
 
+bool Const2_BuildingDestroySpecial(int entity)
+{
+	if(!Dungeon_Mode())
+		return false;
+	if(GetTeam(entity) != TFTeam_Red)
+		return false;
+	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	if(!objstats.m_bConstructBuilding)
+		return false;
+
+	if(IsValidEntity(objstats.m_iConstructDeathModel))
+		return true;
+
+	//already in ignoring, stop
+	if(b_ThisEntityIgnored[objstats.index])
+		return false;
+
+	if(IsDungeonCenterId() == i_NpcInternalId[objstats.index])
+	{
+		for(int clients=1; clients<=MaxClients; clients++)
+		{
+			if(IsValidClient(clients))
+				Vehicle_Exit(clients);
+		}
+		int vehicle = -1;
+		while((vehicle = FindEntityByClassname(vehicle, "obj_vehicle")) != -1)
+		{
+			SetEntProp(vehicle, Prop_Data, "m_bLocked", true);
+			AcceptEntityInput(vehicle, "TurnOff");
+		}
+		
+		float pos[3]; GetEntPropVector(objstats.index, Prop_Data, "m_vecAbsOrigin", pos);
+		pos[2] += 5.0;
+		TE_Particle("Explosion_ShockWave_01", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		TE_Particle("grenade_smoke_cycle", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		TE_Particle("hammer_bell_ring_shockwave", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		CreateEarthquake(pos, 1.0, 2000.0, 16.0, 255.0);
+		EmitSoundToAll("weapons/bombinomicon_explode1.wav");
+		CPrintToChatAll("%t", "Main Center Death");
+	}
+
+	b_ThisEntityIgnored[objstats.index] = true;
+	objstats.m_iConstructDeathModel = objstats.EquipItemSeperate("models/props_debris/concrete_debris128pile001a.mdl", .model_size = 0.75, .DontParent = true);
+	if(IsValidEntity(objstats.index))
+		SetEntityRenderMode(objstats.index, RENDER_NONE);
+	if(IsValidEntity(objstats.m_iWearable1))
+		SetEntityRenderMode(objstats.m_iWearable1, RENDER_NONE);
+	ExtinguishTarget(objstats.index);
+	objstats.m_flNextDelayTime = FAR_FUTURE;
+	//dont destroy. deactivate.
+	return true;
+}
+void Const2_ReviveAllBuildings(bool DoHalf = false)
+{
+	int entity = -1;
+	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
+	{
+		Const2_ReConstructBuilding(entity, DoHalf);
+	}				
+	int a;
+	entity = 0;
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(i_NpcInternalId[entity] == IsConst2Defender())
+		{
+			SetDownedState_Construct(entity, false);
+		}
+	}
+}
+bool Const2_ReConstructBuilding(int entity, bool DoHalf = false)
+{
+	if(!Dungeon_Mode())
+		return false;
+	if(GetTeam(entity) != TFTeam_Red)
+		return false;
+	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	if(!objstats.m_bConstructBuilding)
+		return false;
+	if(!DoHalf)
+	{
+		SetEntProp(objstats.index, Prop_Data, "m_iHealth", GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth"));
+		SetEntProp(objstats.index, Prop_Data, "m_iRepair", GetEntProp(objstats.index, Prop_Data, "m_iRepairMax"));
+	}
+	
+	if(!IsValidEntity(objstats.m_iConstructDeathModel))
+		return false;
+
+	if(IsDungeonCenterId() == i_NpcInternalId[objstats.index])
+	{
+		int vehicle = -1;
+		while((vehicle = FindEntityByClassname(vehicle, "obj_vehicle")) != -1)
+		{
+			SetEntProp(vehicle, Prop_Data, "m_bLocked", false);
+		}
+	}
+
+	RemoveEntity(objstats.m_iConstructDeathModel);
+	b_ThisEntityIgnored[objstats.index] = false;
+	if(IsValidEntity(objstats.index))
+		SetEntityRenderMode(objstats.index, RENDER_NORMAL);
+	if(IsValidEntity(objstats.m_iWearable1))
+		SetEntityRenderMode(objstats.m_iWearable1, RENDER_NORMAL);
+	objstats.m_flNextDelayTime = 0.0;
+	
+	if(DoHalf)
+	{
+		SetEntProp(objstats.index, Prop_Data, "m_iHealth", GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth") / 2);
+		SetEntProp(objstats.index, Prop_Data, "m_iRepair", GetEntProp(objstats.index, Prop_Data, "m_iRepairMax") / 2);
+	}
+	return true;
+
+}
 public void ObjBaseThinkPost(int building)
 {
 	CBaseCombatCharacter(building).SetNextThink(GetGameTime() + 0.1);
@@ -1112,25 +1356,28 @@ public void ObjBaseThink(int building)
 {
 	ObjectGeneric objstats = view_as<ObjectGeneric>(building);
 	//Fixes some issues when mounted
-	if(IsValidEntity(Building_Mounted[building]))
+	if(GetTeam(objstats.index) == TFTeam_Red)
 	{
-		int wearable = objstats.m_iWearable1;
-		if(wearable != -1)
-		{			
-			SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
-		}
-		wearable = objstats.m_iWearable2;
-		if(wearable != -1)
+		if(IsValidEntity(Building_Mounted[building]))
 		{
-			SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+			int wearable = objstats.m_iWearable1;
+			if(wearable != -1)
+			{			
+				SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+			}
+			wearable = objstats.m_iWearable2;
+			if(wearable != -1)
+			{
+				SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+			}
 		}
-	}
 
-	//do not think if you are being carried, unless bomb.
-	if(BombIdVintulum() != i_NpcInternalId[building])
-	{
-		if(BuildingIsBeingCarried(building))
-			return;
+		//do not think if you are being carried, unless bomb.
+		if(BombIdVintulum() != i_NpcInternalId[building])
+		{
+			if(BuildingIsBeingCarried(building))
+				return;
+		}
 	}
 
 	ObjectGeneric_ClotThink(objstats);
@@ -1152,6 +1399,12 @@ void BuildingUpdateTextHud(int building)
 
 	//nope.
 	if(IsValidEntity(objstats.m_iMasterBuilding))
+	{
+		if(IsValidEntity(objstats.m_iWearable2))
+			RemoveEntity(objstats.m_iWearable2);
+		return;
+	}
+	if(GetTeam(objstats.index) != TFTeam_Red || objstats.m_bConstructBuilding)
 	{
 		if(IsValidEntity(objstats.m_iWearable2))
 			RemoveEntity(objstats.m_iWearable2);
@@ -1324,4 +1577,133 @@ public Action SetTransmit_TextBuildingDo(int entity, int client)
 		return Plugin_Continue;
 	else
 		return Plugin_Handled;
+}
+
+public void ObjectGeneric_ClotTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
+{
+	if(RaidBossActive && RaidbossIgnoreBuildingsLogic(2)) //They are ignored anyways
+		return;
+
+	if((damagetype & DMG_CRUSH))
+		return;
+	if(GetTeam(victim) != TFTeam_Red)
+	{
+		ObjectGeneric objstats = view_as<ObjectGeneric>(victim);
+		int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+		int maxhealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+		float Ratio = float(health) / float(maxhealth);
+			
+		if(Ratio < 0.15)
+		{
+			if(!objstats.m_bBurning)
+			{
+				IgniteTargetEffect(victim, _, _);
+				objstats.m_bBurning = true;
+			}
+		}
+		else
+		{
+			if(objstats.m_bBurning)
+			{
+				ExtinguishTarget(victim);
+				objstats.m_bBurning = false;
+			}
+		}
+	}
+	float Damageafter = damage;
+	//only red buildings get 90% dmg res, this is done so its more easy to read the numbers on the buildings.
+	if(GetTeam(victim) == TFTeam_Red)
+		Damageafter *= 0.1;
+	int dmg = FloatToInt_DamageValue_ObjBuilding(victim, Damageafter);
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	health -= dmg;
+	if((Damageafter >= 0.0 || IsInvuln(victim, true) || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0))) //make sure to still show it if they are invinceable!
+	{
+#if !defined RTS
+		if(inflictor > 0 && inflictor <= MaxClients)
+		{
+			GiveRageOnDamage(inflictor, Damageafter);
+#if defined ZR
+			GiveMorphineOnDamage(inflictor, victim, Damageafter, damagetype);
+#endif
+			Calculate_And_Display_hp(inflictor, victim, Damageafter, false);
+		}
+		else if(attacker > 0 && attacker <= MaxClients)
+		{
+			GiveRageOnDamage(attacker, Damageafter);
+#if defined ZR
+			GiveMorphineOnDamage(attacker, victim, Damageafter, damagetype);
+#endif
+			Calculate_And_Display_hp(attacker, victim, Damageafter, false);	
+		}
+		else
+		{
+			float damageCalc = Damageafter;
+			if(health <= 0)
+			{
+				damageCalc += health;
+			}
+			Damage_dealt_in_total[attacker] += damageCalc;
+			Calculate_And_Display_hp(attacker, victim, Damageafter, false);
+		}
+		OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
+#endif
+		//Do not show this event if they are attacked with DOT. Earls bleedin.
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		{
+			Event event = CreateEvent("npc_hurt");
+			if(event) 
+			{
+				int display = RoundToNearest(Damageafter);
+				event.SetInt("entindex", victim);
+				event.SetInt("health", health);
+				event.SetInt("damageamount", display);
+				event.SetBool("crit", (damagetype & DMG_ACID) == DMG_ACID);
+
+				if(attacker > 0 && attacker <= MaxClients)
+				{
+					event.SetInt("attacker_player", GetClientUserId(attacker));
+					event.SetInt("weaponid", 0);
+				}
+				else 
+				{
+					event.SetInt("attacker_player", 0);
+					event.SetInt("weaponid", 0);
+				}
+
+				event.Fire();
+			}
+		}
+		
+	}
+
+	StatusEffect_OnTakeDamagePostVictim(victim, attacker, damage, damagetype);
+	StatusEffect_OnTakeDamagePostAttacker(victim, attacker, damage, damagetype);
+
+	int Owner = GetEntPropEnt(victim, Prop_Send, "m_hOwnerEntity");
+	if(Owner != -1)
+	{
+		i_BarricadeHasBeenDamaged[Owner] += dmg;
+	}
+	if(health < 0)
+	{
+		b_NpcHasDied[victim] = true;
+		DestroyBuildingDo(victim);
+		return;
+	}
+	
+	ObjectGeneric objstats = view_as<ObjectGeneric>(victim);
+	if(objstats.PlayHurtSound())
+	{
+		float damagePosition2[3];
+		damagePosition2 = damagePosition;
+		damagePosition2[2] -= 40.0;
+		TE_ParticleInt(g_particleImpactMetal, damagePosition2);
+		TE_SendToAll();
+	}
+	
+	SetEntProp(victim, Prop_Data, "m_iHealth", health);
+	UpdateDoublebuilding(victim);
+	
+	return;
 }

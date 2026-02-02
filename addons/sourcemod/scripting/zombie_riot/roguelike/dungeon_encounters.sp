@@ -136,7 +136,7 @@ static void FinishShopVote(const Vote vote)
 public float Dungeon_Encounter_Treasure()
 {
 	Rogue_RemoveNamedArtifact("Treasure Key");
-	Dungeon_RollNamedLoot("Treasure Crate");
+	//Dungeon_RollNamedLoot("Treasure Crate");
 	
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_ItemEncounter, "Treasure Vault Encounter Title");
 	Vote vote;
@@ -166,6 +166,52 @@ public float Dungeon_Encounter_Treasure()
 	}
 
 	Rogue_StartGenericVote(30.0);
+	Dungeon_DelayVoteFor(50.0);
 
-	return 50.0;
+	return 0.0;
+}
+
+public float Dungeon_Encounter_ShipEnding()
+{
+	ArrayList list = Rogue_CreateGenericVote(Dungeon_Vote_ShipEnding, "Ship Ending Encounter Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Expidonsa Tech Chip Install");
+	strcopy(vote.Desc, sizeof(vote.Config), "Artifact Info");
+	list.PushArray(vote);
+
+	bool easyMode = Rogue_HasNamedArtifact("Dungeon Level 1");
+	bool found;
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && GetClientTeam(client) == 2 && (CvarRogueSpecialLogic.BoolValue || Items_HasNamedItem(client, "Foreign Expidonsan Chip")))
+		{
+			found = true;
+			break;
+		}
+	}
+
+	if(found)
+	{
+		strcopy(vote.Name, sizeof(vote.Name), "Expidonsa Space Beacon");
+		strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
+		strcopy(vote.Config, sizeof(vote.Config), "Expidonsa Space Beacon");
+		if(easyMode)
+		{
+			vote.Locked = true;
+			strcopy(vote.Append, sizeof(vote.Append), " (Dungeon Level 2)");
+		}
+		list.PushArray(vote);
+	}
+
+	Rogue_StartGenericVote(30.0);
+	Dungeon_DelayVoteFor(35.0);
+
+	return 0.0;
+}
+static void Dungeon_Vote_ShipEnding(const Vote vote, int index)
+{
+	if(vote.Config[0])
+		Rogue_GiveNamedArtifact(vote.Config);
 }

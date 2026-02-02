@@ -11,6 +11,7 @@ static const char SectionName[][] =
 {
 	"Support Buildings",
 	"Unique Buildings",
+	"Construct Buildings",
 	"Construct Buildings"
 };
 
@@ -75,6 +76,10 @@ bool IsPlayerCarringObject(int client)
 		
 	return false;
 }
+int GetCarryingObject(int client)
+{
+	return Player_BuildingBeingCarried[client] == 0 ? -1 : EntRefToEntIndex(Player_BuildingBeingCarried[client]);
+}
 bool BuildingIsBeingCarried(int buildingindx)
 {
 	if(IsValidEntity(Building_BuildingBeingCarried[buildingindx]))
@@ -104,7 +109,7 @@ void Building_ResetRewardValuesWave()
 void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit = true, float AmmoSupply = 0.0, bool SupplyLimit = true)
 {
 	int owner = trueOwner;
-	if(owner > MaxClients)
+	if(!IsValidEntity(owner) || owner > MaxClients)
 		owner = client;
 	
 	//when using your own buildings, you get half as much.
@@ -160,7 +165,8 @@ void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit
 	if(ConvertedAmmoSupplyGive <= 0)
 		return;
 		
-	Resupplies_Supplied[trueOwner] += ConvertedAmmoSupplyGive;
+	if(IsValidEntity(trueOwner))
+		Resupplies_Supplied[trueOwner] += ConvertedAmmoSupplyGive;
 	Resupplies_Supplied[owner] += ConvertedAmmoSupplyGive;
 	if(SupplyLimit)
 	{
@@ -254,10 +260,22 @@ static int GetCost(int client, BuildingInfo info, float multi)
 		//only reduce off buildigns that actually cost more to build.
 		ReduceMetalCost(client, buildCost);
 	}
+	if(HasSpecificBuff(client, "Starting Grace"))
+	{
+		buildCost /= 2;
+	}
+	if(Dungeon_Mode() && !Waves_Started())
+	{
+		buildCost = 99999;
+	}
 
 
+	if(CvarInfiniteCash.BoolValue)
+		buildCost = 1;
 	if(Rogue_Mode())
 		buildCost /= 3;
+	if(Dungeon_Mode())
+		buildCost /= 2;
 
 	return buildCost;
 }
@@ -345,15 +363,38 @@ static void BuildingMenu(int client)
 
 		for(int i; i < sizeof(SectionName); i++)
 		{
-			if(i == 2 && !Construction_Mode() && !Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
-				continue;
+			bool locked;
+			IntToString(i, buffer2, sizeof(buffer2));
 
+			if(!CvarInfiniteCash.BoolValue)
+			{
+				if(Dungeon_Mode())
+				{
+					if(!Waves_Started())
+						locked = true;
+				}
+
+				if(i == 2)
+				{
+					if(!Construction_Mode())
+						continue;
+					
+					if(!Waves_Started())
+						locked = true;
+				}
+				
+				if(i == 3)
+				{
+					if(!Dungeon_Mode())
+						continue;
+					
+					if(Dungeon_GetEntityZone(client) != Zone_HomeBase)
+						locked = true;
+				}
+			}
 			
 			FormatEx(buffer1, sizeof(buffer1), "%t", SectionName[i]);
-			if(i == 2 && !Waves_Started() && !CvarInfiniteCash.BoolValue)
-				menu.AddItem(buffer1, buffer1, ITEMDRAW_DISABLED);
-			else
-				menu.AddItem(buffer1, buffer1);
+			menu.AddItem(buffer2, buffer1, locked ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		}
 	}
 	else
@@ -560,7 +601,9 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 						}
 						default:
 						{
-							MenuSection[client] = choice - 3;
+							char buffer[16];
+							menu.GetItem(choice, buffer, sizeof(buffer));
+							MenuSection[client] = StringToInt(buffer);
 						}
 					}
 				}
@@ -646,6 +689,10 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 											CooldownGive *= 3.0;
 											
 										UpdateDoublebuilding(entity);
+										if(HasSpecificBuff(client, "Starting Grace"))
+										{
+											CooldownGive *= 0.5;
+										}
 										
 										info.Cooldowns[client] = GetGameTime() + CooldownGive;
 										BuildingList.SetArray(id, info);
@@ -677,7 +724,7 @@ int Building_BuildByName(const char[] plugin, int client, float vecPos[3], float
 
 static int BuildByInfo(BuildingInfo info, int client, float vecPos[3], float vecAng[3])
 {
-	int entity = NPC_CreateByName(info.Plugin, client, vecPos, vecAng, GetTeam(client));
+	int entity = NPC_CreateByName(info.Plugin, client, vecPos, vecAng, client < 1 ? TFTeam_Red : GetTeam(client));
 	if(entity != -1)
 	{
 		ObjectGeneric obj = view_as<ObjectGeneric>(entity);
@@ -708,7 +755,9 @@ static int BuildByInfo(BuildingInfo info, int client, float vecPos[3], float vec
 			SetEntProp(obj.index, Prop_Data, "m_iRepairMax", maxrepair);
 			SetEntProp(obj.index, Prop_Data, "m_iRepair", repair);
 		}
-		SetTeam(obj.index, GetTeam(client));
+
+		if(client > 0)
+			SetTeam(obj.index, GetTeam(client));
 
 		GiveBuildingMetalCostOnBuy(entity, 0);
 	}
@@ -801,7 +850,8 @@ void Building_ShowInteractionHud(int client, int entity)
 			//NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
 			//if(StrContains(plugin, "obj_", false) != -1)
 			{
-				if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == -1)
+				ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+				if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == -1 && !objstats.m_bNoOwnerRequired)
 				{
 					Hide_Hud = false;
 					SetGlobalTransTarget(client);
@@ -888,9 +938,19 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") <= MaxClients)
 	{
-		if(!objstats.m_bConstructBuilding)
-			return; //anyone can pick up construct buildings!
+		bool AllowAnyways = false;
+		if(objstats.m_bNoOwnerRequired)
+			AllowAnyways = true;
+		if(objstats.m_bConstructBuilding)
+			AllowAnyways = true;
+		if(!AllowAnyways)
+		{
+			return;
+		}
 	}
+	//dont allow pickup
+	if(objstats.m_bCannotBePickedUp)
+		return; 
 	if(IsValidEntity(objstats.m_iMasterBuilding))
 	{
 		entity = objstats.m_iMasterBuilding;
@@ -918,8 +978,15 @@ public void Pickup_Building_M2_InfRange(int client, int weapon, bool crit)
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") <= MaxClients)
 	{
-		if(!objstats.m_bConstructBuilding)
-			return; //anyone can pick up construct buildings!
+		bool AllowAnyways = false;
+		if(objstats.m_bNoOwnerRequired)
+			AllowAnyways = true;
+		if(objstats.m_bConstructBuilding)
+			AllowAnyways = true;
+		if(!AllowAnyways)
+		{
+			return;
+		}
 	}
 	if(IsValidEntity(objstats.m_iMasterBuilding))
 	{
@@ -1060,6 +1127,13 @@ bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false
 			Player_BuildingBeingCarried[client] = 0;
 			EmitSoundToClient(client, SOUND_TOSS_TF);
 		}
+	}
+
+	// Don't place constructs outside home base
+	if(Dungeon_Mode() && view_as<ObjectGeneric>(buildingindx).m_bConstructBuilding && Dungeon_GetEntityZone(buildingindx, true) != Zone_HomeBase)
+	{
+		int builder_owner = GetEntPropEnt(buildingindx, Prop_Send, "m_hOwnerEntity");
+		DeleteAndRefundBuilding(builder_owner, buildingindx);
 	}
 	return true;
 }
@@ -1965,6 +2039,9 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		float IsAlreadyDowngraded = Attributes_Get(entity, Attrib_BuildingOnly_PreventUpgrade, 0.0);
 		if(CurrentMulti != multi)
 		{
+			//dont
+			if(Dungeon_Mode() && view_as<ObjectGeneric>(entity).m_bConstructBuilding)
+				return;
 			float MultiChange = multi / CurrentMulti;
 			if(MultiChange < 1.0)
 			{
@@ -2297,6 +2374,8 @@ bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 	ObjectGeneric objstats1 = view_as<ObjectGeneric>(entity);
 	if(objstats1.m_bConstructBuilding)
 		return false;	// Too fat
+	if(objstats.m_bNoOwnerRequired)
+		return false;	// no owner!!!
 
 	Building_RotateAllDepencencies(entity);
 	float ModelScale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
@@ -2311,7 +2390,6 @@ bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 		SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_flModelScale", ModelScale);
 		b_IsEntityAlwaysTranmitted[objstats.m_iWearable1] = true;		
 		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingReady);
-	//	SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
 	}
 
 	
@@ -2525,8 +2603,6 @@ void UnequipDispenser(int client, bool destroy = false)
 	//	SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_fadeMaxDist", 0.0);		
 		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 		SDKHook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingReady);
-	//	SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
-	//	SDKHook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
 	}
 
 	//update text

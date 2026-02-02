@@ -69,6 +69,18 @@ stock float fClamp(float fValue, float fMin, float fMax)
 
 	return fValue;
 }
+stock int iClamp(int iValue, int iMin, int iMax)
+{
+	if (iValue < iMin) {
+		return iMin;
+	}
+
+	if (iValue > iMax) {
+		return iMax;
+	}
+
+	return iValue;
+}
 
 stock int GetSpellbook(int client)
 {
@@ -270,13 +282,14 @@ void ResetReplications()
 	}
 }
 
-stock void CreateAttachedAnnotation(int client, int entity, float time, const char[] buffer)
+stock void CreateAttachedAnnotation(int client, int entity, float time, const char[] buffer, float offset = 0.0)
 {
 	Event event = CreateEvent("show_annotation");
 	if(event)
 	{
 		static float pos[3];
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+		pos[2] += offset;
 		event.SetFloat("worldNormalX", pos[0]);
 		event.SetFloat("worldNormalY", pos[1]);
 		event.SetFloat("worldNormalZ", pos[2]);
@@ -3463,6 +3476,7 @@ int inflictor = 0)
 			if(ShouldNpcDealBonusDamage(ClosestTarget))
 			{
 				damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
+				damage_1 *= Attributes_Get(entityToEvaluateFrom, Attrib_MultiBuildingDamage, 1.0);
 			}
 			//against raids, any aoe ability should be better as they are usually alone or its only two.
 			if(b_thisNpcIsARaid[ClosestTarget])
@@ -3496,8 +3510,13 @@ int inflictor = 0)
 				//we apply 50% more range, reason being is that this goes for collision boxes, so it can be abit off
 				//idealy we should fire a trace and see the distance from the trace
 				//ill do it in abit if i dont forget.
-				float ExplosionRangeFalloff = Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
-				damage_1 *= ExplosionRangeFalloff; //this is 1000, we use squared for optimisations sake
+				float ExplosionRangeFalloff = 1.0;
+				if(b_BoundingBoxVariant[ClosestTarget] != BBV_DontAlter)
+				{
+					//for very very big npcs.
+					ExplosionRangeFalloff = Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
+					damage_1 *= ExplosionRangeFalloff; //this is 1000, we use squared for optimisations sake
+				}
 
 				damage_1 *= damage_reduction;
 				
@@ -3573,7 +3592,7 @@ stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float po
 	if(victim != -1)
 	{
 		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
-		if(b_BoundingBoxVariant[victim] == 1)
+		if(b_BoundingBoxVariant[victim] == BBV_Giant)
 		{
 			chargerPos[2] += 120.0;
 		}
@@ -3901,7 +3920,7 @@ stock void ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, f
 	SetEventFloat(event, "lifetime", lifetime);
 //	SetEventInt(event, "id", annotation_id*MAXPLAYERS + client + ANNOTATION_OFFSET);
 	SetEventString(event, "text", Text);
-	SetEventString(event, "play_sound", "vo/null.wav");
+	SetEventString(event, "play_sound", "common/null.wav");
 	SetEventInt(event, "visibilityBitfield", (1 << client));
 	FireEvent(event);
 	
@@ -5206,7 +5225,7 @@ void KillDyingGlowEffect(int client)
 }
 #endif	// ZR
 
-enum g_Collision_Group
+enum
 {
     COLLISION_GROUP_NONE  = 0,
     COLLISION_GROUP_DEBRIS,            // Collides with nothing but world and static stuff
@@ -6065,4 +6084,36 @@ public float GetDistanceToGround(float pos[3])
 	delete trace;
 #endif
 	return GetVectorDistance(pos, otherLoc);
+}
+stock int TrailAttach_Bone(int player, char[] attachBone, char[] trail, int alpha, float lifetime=1.0, float startwidth=22.0, float endwidth=0.0, int rendermode)
+{
+	int trailEntity = CreateEntityByName("env_spritetrail");
+	if (IsValidEntity(trailEntity))
+	{
+		char tName[32];
+		GetEntPropString(player, Prop_Data, "m_iName", tName, sizeof(tName));
+		DispatchKeyValue(trailEntity, "targetname", "rpg_fortress");
+		DispatchKeyValue(trailEntity, "parentname", tName);
+
+		char sTemp[5];
+		IntToString(alpha, sTemp, sizeof(sTemp));
+		DispatchKeyValue(trailEntity, "renderamt", sTemp);
+
+		DispatchKeyValueFloat(trailEntity, "lifetime", lifetime);
+		DispatchKeyValueFloat(trailEntity, "startwidth", startwidth);
+		DispatchKeyValueFloat(trailEntity, "endwidth", endwidth);
+		DispatchKeyValue(trailEntity, "spritename", trail);
+		IntToString(rendermode, sTemp, sizeof(sTemp));
+		DispatchKeyValue(trailEntity, "rendermode", sTemp);
+		DispatchSpawn(trailEntity);
+		
+		SetVariantString("!activator");
+		AcceptEntityInput(trailEntity, "SetParent", player, player, 0);
+		SetVariantString(attachBone);
+		AcceptEntityInput(trailEntity, "SetParentAttachment", trailEntity, trailEntity, 0);
+
+		return trailEntity;
+	}
+		
+	return -1;
 }

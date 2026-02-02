@@ -135,7 +135,7 @@ methodmap HallamDemonWhisperer < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
-		if(!IsValidEntity(RaidBossActive))
+		if(!IsValidEntity(RaidBossActive) && !Dungeon_Mode())
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
@@ -168,10 +168,10 @@ methodmap HallamDemonWhisperer < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 
-		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
-		SetEntityRenderColor(npc.m_iWearable3, 125, 125, 125, 255);
-		SetEntityRenderColor(npc.m_iWearable2, 125, 125, 125, 255);
-		SetEntityRenderColor(npc.m_iWearable1, 125, 125, 125, 255);
+		SetEntityRenderColor(npc.index, 150, 150, 150, 255);
+		SetEntityRenderColor(npc.m_iWearable3, 150, 150, 150, 255);
+		SetEntityRenderColor(npc.m_iWearable2, 150, 150, 150, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 150, 150, 150, 255);
 
 		float flPos[3], flAng[3];
 				

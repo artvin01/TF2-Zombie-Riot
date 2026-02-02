@@ -146,8 +146,8 @@ methodmap ChaosSupporter < CClotBody
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		
-		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
-		SetEntityRenderColor(npc.m_iWearable1, 125, 125, 125, 255);
+		SetEntityRenderColor(npc.index, 150, 150, 150, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 150, 150, 150, 255);
 		
 		float flPos[3], flAng[3];
 				

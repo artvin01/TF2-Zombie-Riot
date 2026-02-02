@@ -291,7 +291,7 @@ public void Cryo_Touch(int entity, int target)
 			return;
 			
 		Set_HitDetectionCooldown(entity,target, FAR_FUTURE);
-
+	
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		static float angles[3];
 		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);		

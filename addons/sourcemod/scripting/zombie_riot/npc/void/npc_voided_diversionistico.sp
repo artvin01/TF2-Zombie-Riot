@@ -52,9 +52,9 @@ void VoidedDiversionistico_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Voided Diversionistico");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_voided_diversionistico");
-	strcopy(data.Icon, sizeof(data.Icon), "Diversionistico");
+	strcopy(data.Icon, sizeof(data.Icon), "spy");
 	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_SUPPORT;
+	data.Flags = MVM_CLASS_FLAG_MISSION;
 	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);

@@ -40,7 +40,7 @@ void ApertureSentry_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_sentry");
 	strcopy(data.Icon, sizeof(data.Icon), "sentry_gun_lvl3_lite");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MISSION;
 	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	NPC_Add(data);

@@ -436,8 +436,6 @@ public Action MedivalConstruct_OnTakeDamage(int victim, int &attacker, int &infl
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
-	
 	return Plugin_Changed;
 }
 

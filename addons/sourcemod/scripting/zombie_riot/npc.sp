@@ -111,18 +111,35 @@ void NPC_ConfigSetup()
 	ObjectFurniture_MapStart();
 	ObjectHelper_MapStart();
 	ObjectVoidstone_MapStart();
-	
-	ObjectDWall_MapStart();
+
+	// Main
 	ObjectDungeonCenter_MapStart();
+	ObjectDWall_MapStart();
+	ObjectC2House_MapStart();
+
+	// Singles
+	ObjectDFactory_MapStart();
 	ObjectGemCrafter_MapStart();
 	ObjectDStove_MapStart();
 
-	ObjectDLightHouse_MapStart();
+	// Level 1
+	ObjectC2Cannon_MapStart();
+	ObjectC2Zap_MapStart();
+	ObjectC2ArrowTower_MapStart();
+
+	// Level 2
+	ObjectDDispenser_MapStart();
 	ObjectDCaliberTurret_MapStart();
 	ObjectDMinigunTurret_MapStart();
-	ObjectDTeslarsMedusa_MapStart();
+	ObjectDMortar_MapStart();
+	ObjectConst2_Altar_MapStart();
+
+	// Level 3
+	ObjectDLightHouse_MapStart();
 	ObjectDStunGun_MapStart();
-	ObjectDDispenser_MapStart();
+	ObjectC2Incinerator_MapStart();
+	ObjectC2LaserIntensifier_MapStart();
+	ObjectDTeslarsMedusa_MapStart();
 	// Constructs
 
 	// Vehicles
@@ -134,6 +151,7 @@ void NPC_ConfigSetup()
 	VehicleDumpTruck_Setup();
 	VehicleLandrover_Setup();
 	VehiclePickup_Setup();
+	VehicleFullAPC_Setup();
 	// Vehicles
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
@@ -1165,6 +1183,27 @@ void NPC_ConfigSetup()
 	BarbaricTeardownOnMapStart();
 	SkilledCrossbowmanOnMapStart();
 	DemonDevoterOnMapStart();
+	Agent61_OnMapStart_NPC();
+	BattlefieldSupplier_OnMapStart_NPC();
+	PlacedSupplies_OnMapStart_NPC();
+	ContractedMotivatorOnMapStart();
+	Catapult_OnMapStart_NPC();
+	CursedKingOnMapStart();
+	TheGreatRam_OnMapStart_NPC();
+	Const2BehemothBehemoth_OnMapStart_NPC();
+	DemonPossesedArmorOnMapStart();
+	GlugOnMapStart();
+	Const2SpawnerOnMapStart();
+	Const2BuildingCreateOnMapStart();
+	Const2BaseConstructDefender_OnMapStart_NPC();
+	StarShip_Regalia_OnMapStart();
+	Lantean_Drone_Projectile_OnMapStart();
+	Starship_Beacon_OnMapStart_NPC();
+	ChaosGunmenOnMapStart();
+	ChaosBladeThrowerOnMapStart();
+	ChaosFencer_OnMapStart_NPC();
+	AlmagestProximaOnMapStart();
+	
 	DungeonLoot_MapStart();
 }
 
@@ -1517,16 +1556,25 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/construction/obj_const_supply.sp"
 #include "object/construction/obj_const_helper.sp"
 #include "object/construction/obj_const_voidstone.sp"
-#include "object/construction/obj_dungeon_center.sp"
-#include "object/construction/obj_dungeon_crafter.sp"
-#include "object/construction/obj_dungeon_dispenser.sp"
-#include "object/construction/obj_dungeon_lighthouse.sp"
-#include "object/construction/obj_dungeon_minigun_turret.sp"
-#include "object/construction/obj_dungeon_stove.sp"
-#include "object/construction/obj_dungeon_stungun.sp"
-#include "object/construction/obj_dungeon_supergun.sp"
-#include "object/construction/obj_dungeon_teslars_medusa.sp"
-#include "object/construction/obj_dungeon_wall.sp"
+#include "object/construction2/obj_dungeon_center.sp"
+#include "object/construction2/obj_dungeon_altar.sp"
+#include "object/construction2/obj_dungeon_crafter.sp"
+#include "object/construction2/obj_dungeon_dispenser.sp"
+#include "object/construction2/obj_dungeon_lighthouse.sp"
+#include "object/construction2/obj_dungeon_minigun_turret.sp"
+#include "object/construction2/obj_dungeon_stove.sp"
+#include "object/construction2/obj_dungeon_stungun.sp"
+#include "object/construction2/obj_dungeon_supergun.sp"
+#include "object/construction2/obj_dungeon_teslars_medusa.sp"
+#include "object/construction2/obj_dungeon_wall.sp"
+#include "object/construction2/obj_const2_cannon.sp"
+#include "object/construction2/obj_const2_zap.sp"
+#include "object/construction2/obj_const2_arrow_tower.sp"
+#include "object/construction2/obj_const2_incinerator.sp"
+#include "object/construction2/obj_const2_house.sp"
+#include "object/construction2/obj_const2_laser_intensifier.sp"
+#include "object/construction2/obj_dungeon_factory.sp"
+#include "object/construction2/obj_dungeon_mortar.sp"
 
 // VEHICLES
 #include "../shared/vehicles/vehicle_shared.sp"
@@ -1538,6 +1586,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "vehicles/vehicle_dumptruck.sp"
 #include "vehicles/vehicle_landrover.sp"
 #include "vehicles/vehicle_pickup.sp"
+#include "vehicles/vehicle_fullapc.sp"
 
 //NORMAL
 #include "npc/normal/npc_headcrabzombie.sp"
@@ -2545,4 +2594,24 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/construction2/npc_barbaric_teardown.sp"
 #include "npc/construction/construction2/npc_skilled_crossbowman.sp"
 #include "npc/construction/construction2/npc_demon_devoter.sp"
+#include "npc/construction/construction2/npc_agent_61.sp"
+#include "npc/construction/construction2/npc_battlefield_supplier.sp"
+#include "npc/construction/construction2/npc_placed_supplies.sp"
+#include "npc/construction/construction2/npc_contracted_motivator.sp"
+#include "npc/construction/construction2/npc_catapult.sp"
+#include "npc/construction/construction2/npc_cursed_king.sp"
+#include "npc/construction/construction2/npc_the_great_ram.sp"
+#include "npc/construction/construction2/npc_behemoth_behemoth.sp"
+#include "npc/construction/construction2/npc_demon_possesed_armor.sp"
+#include "npc/construction/construction2/npc_glug.sp"
+#include "npc/construction/construction2/npc_chaos_gunmen.sp"
+#include "npc/construction/construction2/npc_chaos_bladethrower.sp"
+#include "npc/construction/construction2/npc_chaos_fencer.sp"
+#include "npc/construction/construction2/npc_const2_spawner.sp"
+#include "npc/construction/construction2/npc_const2_building_spawner.sp"
+#include "npc/construction/construction2/npc_base_construct_defender.sp"
+#include "npc/construction/construction2/npc_starship_regalia.sp"
+#include "npc/construction/construction2/npc_almagest_proxima.sp"
+#include "npc/construction/construction2/npc_lantean_drone_projectile.sp"
+#include "npc/construction/construction2/npc_starship_beacon.sp"
 #include "npc/construction/npc_dungeon_loot.sp"

@@ -1033,7 +1033,7 @@ methodmap Citizen < CClotBody
 			npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "eyes", {10.0,0.0,-5.0});
 			npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "eyes", {10.0,0.0,-20.0});
 			npc.StartPathing();
-			SetEntityRenderColor(npc.index, 125, 125, 125, 255);
+			SetEntityRenderColor(npc.index, 150, 150, 150, 255);
 			npc.m_bRebelAgressive = true;
 			npc.m_bStaticNPC = false;
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Chaos Rebel");
@@ -2219,6 +2219,9 @@ void Citizen_SetRandomRole(int entity)
 			i = -1;
 			while((i = FindEntityByClassname(i, "obj_building")) != -1)
 			{
+				if(GetTeam(i) != TFTeam_Red)
+					continue;
+				
 				if(i_NpcInternalId[i] == ObjectBarricade_ID())
 				{
 					hasBuilder = true;
@@ -2979,6 +2982,9 @@ public void Citizen_ClotThink(int iNPC)
 					if(b_ThisEntityIgnored[entity])
 						continue;
 					
+					if(GetTeam(entity) != TFTeam_Red)
+						continue;
+					
 					if(GetEntProp(entity, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(entity))
 						continue;
 					
@@ -3042,6 +3048,9 @@ public void Citizen_ClotThink(int iNPC)
 			while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 			{
 				if(b_ThisEntityIgnored[entity])
+					continue;
+				
+				if(GetTeam(entity) != TFTeam_Red)
 					continue;
 				
 				if(IsValidEntity(Building_HasThisBuilding(entity)) || Building_OnThisBuilding(entity) != -1)
@@ -3175,6 +3184,9 @@ public void Citizen_ClotThink(int iNPC)
 				if(b_ThisEntityIgnored[entity])
 					continue;
 				
+				if(GetTeam(entity) != TFTeam_Red)
+					continue;
+				
 				if(IsValidEntity(Building_HasThisBuilding(entity)) || Building_OnThisBuilding(entity) != -1)
 					continue;
 				
@@ -3265,6 +3277,9 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				if(HealingCooldown[entity] < gameTime)
 				{
+					if(GetTeam(entity) != TFTeam_Red)
+						continue;
+					
 					NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
 					if(!StrContains(buffer, "obj_healingstation") || (!StrContains(buffer, "obj_grill") && view_as<CClotBody>(entity).g_TimesSummoned))
 					{
@@ -3298,6 +3313,9 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				if(HealingCooldown[entity] < gameTime)
 				{
+					if(GetTeam(entity) != TFTeam_Red)
+						continue;
+					
 					NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
 					if(!StrContains(buffer, "obj_perkmachine"))
 					{
@@ -3331,6 +3349,9 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				if(HealingCooldown[entity] < gameTime)
 				{
+					if(GetTeam(entity) != TFTeam_Red)
+						continue;
+					
 					NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
 					if(!StrContains(buffer, "obj_armortable"))
 					{

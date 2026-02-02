@@ -238,7 +238,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	{
 
 #if defined ZR
-		if(GetTeam(entity) != TFTeam_Red)
+		if(GetTeam(entity) != TFTeam_Red && b_BoundingBoxVariant[entity] != BBV_DontAlter)
 #endif
 		{
 			SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", { 100.0, 100.0, 200.0 });
@@ -410,7 +410,7 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset 
 		}
 
 #if defined ZR
-		if(GetTeam(entity) != TFTeam_Red)
+		if(GetTeam(entity) != TFTeam_Red && b_BoundingBoxVariant[entity] != BBV_DontAlter)
 #endif
 		{
 			if(b_LagCompNPC_ExtendBoundingBox)
@@ -425,7 +425,7 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset 
 				CClotBody npc = view_as<CClotBody>(entity);
 				npc.UpdateCollisionBox();
 				
-				if(b_BoundingBoxVariant[entity] == 1)
+				if(b_BoundingBoxVariant[entity] == BBV_Giant)
 				{
 					m_vecMaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
 					m_vecMins = view_as<float>( { -30.0, -30.0, 0.0 } );	

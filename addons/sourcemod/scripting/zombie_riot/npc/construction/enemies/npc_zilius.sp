@@ -121,7 +121,7 @@ void Zilius_TBB_Precahce()
 	PrecacheSound("weapons/cow_mangler_explosion_normal_06.wav");
 	PrecacheSoundCustom("#zombiesurvival/construct/bat_prtsstage1.mp3");
 	
-	if(Construction_Mode())
+	if(Construction_Mode() || Dungeon_Mode())
 		PrecacheModel("models/zombie_riot/special_boss/zilius_1.mdl");
 
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
@@ -313,14 +313,14 @@ methodmap Construction_Raid_Zilius < CClotBody
 	public void SayStuffZilius()
 	{
 		//one in 3 chance.
-		if(GetRandomInt(1,3) != 3)
+		if(GetRandomInt(1,3) != 3 || !Construction_Mode())
 			return;
-
+		
 		switch(GetRandomInt(1,10))
 		{
 			case 1:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Chaos? There's stuff about it that only i and {black}''Bob the second''{default}, oh sorry, i mean {black}''Izan''{default} know about.");
+				CPrintToChatAll("{black}Zilius{default}: Chaos? If only {black}''Izan''{default} was still around to tell you himself.");
 			}
 			case 2:
 			{
@@ -328,7 +328,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 			}
 			case 3:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Our planet, ruined, you all are useless to help against the {violet}curtain{default} or the {violet}void{default}.");
+				CPrintToChatAll("{black}Zilius{default}: You are just as bad as the {violet}curtain{default} and {violet}void{default} was.");
 			}
 			case 4:
 			{
@@ -340,7 +340,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 			}
 			case 6:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Whatever you think expidonsa doesnt have, it does.");
+				CPrintToChatAll("{black}Zilius{default}: Whatever you think expidonsa doesn't have, it does.");
 			}
 			case 7:
 			{
@@ -348,22 +348,22 @@ methodmap Construction_Raid_Zilius < CClotBody
 			}
 			case 8:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Iberians are the only ones i respect, Mazeat is an amalgam of failures.");
+				CPrintToChatAll("{black}Zilius{default}: Iberians are the only ones I respect, Mazeat is an amalgam of failures.");
 			}
 			case 9:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Kahmlstein is such a wasted person, sadly he wasnt apart of the {gold}Prime race{default}.");
+				CPrintToChatAll("{black}Zilius{default}: Kahmlstein is such a wasted person, sadly he wasnt apart of the {gold}prime race{default}.");
 			}
 			case 10:
 			{
-				CPrintToChatAll("{black}Zilius{default}: If you think very logically, Extermination for all of you is the only endgoal to end {violet}Them{default}.");
+				CPrintToChatAll("{black}Zilius{default}: If you think very logically, extermination for all of you is the only to truly finish {violet}them{default}.");
 			}
 		}
 	}
 	public Construction_Raid_Zilius(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Construction_Raid_Zilius npc;
-		if(!Construction_Mode())
+		if(!Construction_Mode() && !Dungeon_Mode())
 			npc = view_as<Construction_Raid_Zilius>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally, false, false, false,true)); //giant!
 		else
 			npc = view_as<Construction_Raid_Zilius>(CClotBody(vecPos, vecAng, "models/zombie_riot/special_boss/zilius_1.mdl", "1.0", "25000", ally, false, false, false,true)); //giant!
@@ -374,7 +374,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
 		
-		if(Construction_Mode())
+		if(Construction_Mode() || Dungeon_Mode())
 		{
 			npc.SetActivity("ACT_BOSS_RUN");
 		}
@@ -644,7 +644,6 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_flWinAnimationSay = 0.0;
 					npc.m_flWinAnimation = 0.0;
 				}
-			
 			}
 			TalkAtWhatAm++;
 		}
@@ -714,7 +713,7 @@ static void Internal_ClotThink(int iNPC)
 		if(npc.IsOnGround())
 		{
 			npc.m_flLandAnimationdo = 0.0;
-			if(Construction_Mode())
+			if(Construction_Mode() || Dungeon_Mode())
 				npc.AddGesture("ACT_BOSS_LAND", _,_,_, 2.0);
 		}	
 	}
@@ -800,18 +799,24 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	if(RoundToCeil(damage) >= health && i_RaidGrantExtra[npc.index] == 1)
 	{
-		CPrintToChatAll("{black}Zilius{default}: Guess you lot are more then worthy. ill let you be, be usefull against the {purple}void{default}.");
-		npc.m_flWinAnimation = GetGameTime() + 50.0;
-		npc.m_flWinAnimationSay = GetGameTime() + 4.0;
-		i_RaidGrantExtra[npc.index] = 1111;
 		if(Construction_Mode())
+		{
+			CPrintToChatAll("{black}Zilius{default}: Guess you lot are more then worthy. ill let you be, be usefull against the {purple}void{default}.");
+			npc.m_flWinAnimation = GetGameTime() + 50.0;
+			npc.m_flWinAnimationSay = GetGameTime() + 4.0;
+			i_RaidGrantExtra[npc.index] = 1111;
 			npc.SetActivity("ACT_BOSS_RUN");
+			RaidModeTime += 9999.0;
+			npc.m_bisWalking = false;
+			npc.StopPathing();
+			npc.m_flSpeed = 0.0;
+		}
 		else
-			npc.SetActivity("ACT_MP_STAND_MELEE");
-		RaidModeTime += 9999.0;
-		npc.m_bisWalking = false;
-		npc.StopPathing();
-		npc.m_flSpeed = 0.0;
+		{
+			i_RaidGrantExtra[npc.index] = 0;
+			b_NpcUnableToDie[npc.index] = false;
+		}
+
 		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
 			int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
@@ -821,8 +826,23 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 				SetEntityCollisionGroup(baseboss_index, 24);
 			}
 		}
+
 		Waves_ClearWaves();
-		GiveProgressDelay(50.0);
+		
+		if(Construction_Mode())
+		{
+			GiveProgressDelay(50.0);
+
+			int time = GetTime() + 60;
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(!b_IsPlayerABot[client] && IsClientInGame(client))
+				{
+					Music_Stop_All(client);
+					SetMusicTimer(client, time);
+				}
+			}
+		}
 	}
 	Internal_Weapon_Lines(npc, attacker);
 
@@ -905,7 +925,7 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 				ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 1.0);	
 				npc.m_flPrepareFlyAtEnemy = GetGameTime(npc.index) + 0.6;
 
-				if(Construction_Mode())
+				if(Construction_Mode() || Dungeon_Mode())
 					npc.AddGesture("ACT_BOSS_JUMP");
 
 				float cooldownDo = 20.0;
@@ -996,7 +1016,7 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 
 					npc.PlayMeleeSound();
 					
-					if(Construction_Mode())
+					if(Construction_Mode() || Dungeon_Mode())
 					{
 						switch(GetRandomInt(1,2))
 						{
@@ -1223,7 +1243,7 @@ bool ZiliusRegenShieldDo(Construction_Raid_Zilius npc)
 			ZiliusApplyEffects(npc.index);
 			npc.m_flShieldRegenCD = GetGameTime(npc.index) + 30.0;
 
-			if(Construction_Mode())
+			if(Construction_Mode() || Dungeon_Mode())
 				npc.SetActivity("ACT_BOSS_RUN");
 			else
 				npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -1251,7 +1271,7 @@ bool ZiliusRegenShieldDo(Construction_Raid_Zilius npc)
 
 		npc.PlayShieldRegenSoundInit();
 		npc.m_bisWalking = false;
-		if(Construction_Mode())
+		if(Construction_Mode() || Dungeon_Mode())
 		{
 			npc.AddActivityViaSequence("boss_shield");
 			npc.SetPlaybackRate(0.5);
@@ -1295,7 +1315,7 @@ bool ZiliusFrontSlicer(Construction_Raid_Zilius npc)
 			npc.GetAttachment("effect_hand_l", flPos, flAng);
 			npc.m_iWearable9 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
 			
-			if(Construction_Mode())
+			if(Construction_Mode() || Dungeon_Mode())
 			{
 				npc.AddActivityViaSequence("boss_dash");
 			}
@@ -1329,7 +1349,7 @@ bool ZiliusFrontSlicer(Construction_Raid_Zilius npc)
 	}
 	if(!npc.m_flFrontSlicerCD)
 	{
-		if(!Construction_Mode())
+		if(!Construction_Mode() && !Dungeon_Mode())
 		{
 			npc.SetPoseParameter_Easy("move_x", 1.0);
 			npc.SetPoseParameter_Easy("move_y", 0.0);
@@ -1353,7 +1373,7 @@ bool ZiliusFrontSlicer(Construction_Raid_Zilius npc)
 			npc.m_flFrontSlicerCD = GetGameTime(npc.index) + 30.0;
 			npc.RemoveGesture("ACT_MP_GESTURE_VC_FISTPUMP_PRIMARY");
 			
-			if(Construction_Mode())
+			if(Construction_Mode() || Dungeon_Mode())
 				npc.SetActivity("ACT_BOSS_RUN");
 			else
 				npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -1538,7 +1558,7 @@ bool ZiliusSpawnPortal(Construction_Raid_Zilius npc)
 			ZiliusApplyEffects(npc.index);
 			npc.m_flSpawnPortal = GetGameTime(npc.index) + 60.0;
 			
-			if(Construction_Mode())
+			if(Construction_Mode() || Dungeon_Mode())
 				npc.SetActivity("ACT_BOSS_RUN");
 			else
 				npc.SetActivity("ACT_MP_RUN_MELEE");

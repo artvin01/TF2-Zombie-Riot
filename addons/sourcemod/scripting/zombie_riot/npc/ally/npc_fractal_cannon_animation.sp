@@ -2,9 +2,7 @@
 #pragma newdecls required
 
 
-static const char g_LaserLoop[][] = {
-	"zombiesurvival/seaborn/loop_laser.mp3"
-};
+
 static const char g_LaserStart[][] = {
 	"npc/combine_gunship/attack_start2.wav"
 };
@@ -24,7 +22,7 @@ void Kit_Fractal_NPC_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
-	Zero(fl_nightmare_cannon_core_sound_timer);
+	Zero(fl_RuinaLaserSoundTimer);
 	PrecacheSoundArray(g_LaserStart);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
@@ -34,11 +32,11 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 methodmap Fracatal_Kit_Animation < CClotBody
 {
 	public void PlayLaserLoopSound() {
-		if(fl_nightmare_cannon_core_sound_timer[this.index] > GetGameTime())
+		if(fl_RuinaLaserSoundTimer[this.index] > GetGameTime())
 			return;
 		
-		EmitCustomToAll(g_LaserLoop[GetRandomInt(0, sizeof(g_LaserLoop) - 1)], this.index, SNDCHAN_STATIC, 75, _, 0.85);
-		fl_nightmare_cannon_core_sound_timer[this.index] = GetGameTime() + 2.25;
+		EmitCustomToAll(g_RuinaLaserLoop[GetRandomInt(0, sizeof(g_RuinaLaserLoop) - 1)], this.index, SNDCHAN_STATIC, 75, _, 0.85);
+		fl_RuinaLaserSoundTimer[this.index] = GetGameTime() + 2.25;
 	}
 	public void PlayLaserStart() {
 
@@ -254,7 +252,7 @@ static void NPC_Death(int entity)
 {
 	Fracatal_Kit_Animation npc = view_as<Fracatal_Kit_Animation>(entity);
 
-	StopCustomSound(npc.index, SNDCHAN_STATIC, g_LaserLoop[GetRandomInt(0, sizeof(g_LaserLoop) - 1)]);
+	StopCustomSound(npc.index, SNDCHAN_STATIC, g_RuinaLaserLoop[GetRandomInt(0, sizeof(g_RuinaLaserLoop) - 1)]);
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

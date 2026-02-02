@@ -191,9 +191,12 @@ static bool BuildingFullName(int entity, char[] buffer, int length)
 {
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	if(owner < 1 || owner > MaxClients || !IsClientInGame(owner))
-		return false;
+	{
+		strcopy(buffer, length, c_NpcName[entity]);
+		return true;
+	}
 
-	Format(buffer, length, "%s (%N)", c_NpcName[owner], owner);
+	Format(buffer, length, "%s (%N)", c_NpcName[entity], owner);
 	return true;
 }
 #endif
@@ -216,6 +219,22 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		priority = true;
 		players = true;
 	}
+#if defined ZR
+	else if(i_IsABuilding[victim])
+	{
+		if(!Bots[botNum])
+			return;
+		
+		if(!BuildingFullName(victim, feed.victim_name, sizeof(feed.victim_name)))
+			return;
+		
+		feed.userid = GetClientUserId(Bots[botNum]);
+		feed.victim_team = GetTeam(victim);
+		botNum++;
+
+		priority = true;
+	}
+#endif
 	else if(!b_NpcHasDied[victim])
 	{
 		if(b_NoKillFeed[victim] || !Bots[botNum])
@@ -243,22 +262,6 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		}
 #endif
 	}
-#if defined ZR
-	else if(i_IsABuilding[victim])
-	{
-		if(!Bots[botNum])
-			return;
-		
-		if(!BuildingFullName(victim, feed.victim_name, sizeof(feed.victim_name)))
-			return;
-		
-		feed.userid = GetClientUserId(Bots[botNum]);
-		feed.victim_team = GetTeam(victim);
-		botNum++;
-
-		priority = true;
-	}
-#endif
 	else
 	{
 		return;
@@ -278,7 +281,11 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 			feed.attacker = GetClientUserId(attacker);
 			players = true;
 		}
+#if defined ZR
+		else if(!b_NpcHasDied[attacker] || i_IsABuilding[attacker])
+#else
 		else if(!b_NpcHasDied[attacker])
+#endif
 		{
 			if(Bots[botNum])
 			{
@@ -293,12 +300,6 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 				feed.attacker = -1;
 			}
 		}
-#if defined ZR
-		else if(i_IsABuilding[attacker])
-		{
-			feed.attacker = -1;
-		}
-#endif
 	}
 
 	if(lasthit > 0)

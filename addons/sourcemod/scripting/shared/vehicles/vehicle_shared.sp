@@ -6,6 +6,12 @@
 
 #define VEHICLE_MAX_SEATS	24
 
+static Handle SDKVehicleSetupMove;
+
+#if defined ZR
+static int ModifiedWeapons[MAXPLAYERS];
+#endif
+
 enum VehicleType
 {
 	VEHICLE_TYPE_CAR_WHEELS = (1 << 0),	// hl2_jeep
@@ -26,6 +32,7 @@ methodmap VehicleGeneric < CClotBody
 		DispatchKeyValueVector(obj, "origin", vecPos);
 		DispatchKeyValueVector(obj, "angles", vecAng);
 		SetEntProp(obj, Prop_Data, "m_nVehicleType", type);
+		SetEntityCollisionGroup(obj, COLLISION_GROUP_VEHICLE); //COLLISION_GROUP_DEBRIS_TRIGGER
 
 		DispatchSpawn(obj);
 
@@ -39,12 +46,21 @@ methodmap VehicleGeneric < CClotBody
 		SDKHook(obj, SDKHook_Think, VehicleThink);
 		SDKHook(obj, SDKHook_OnTakeDamage, VehicleTakeDamage);
 
+		SetEntProp(obj, Prop_Data, "m_controls.handbrake", true);
+
 		return view_as<VehicleGeneric>(obj);
 	}
-	public void AddSeat(const float pos[3], int index)
+	public void SetDriverOffset(const float pos[3])
+	{
+		SetEntPropVector(this.index, Prop_Data, "m_vecDriverOffset", pos);
+	}
+	public void AddSeat(const float pos[3], int index, int gun = 0)
 	{
 		if(index < VEHICLE_MAX_SEATS)
+		{
 			SetEntPropVector(this.index, Prop_Data, "m_vecSeatPos", pos, index);
+			SetEntProp(this.index, Prop_Data, "m_iSeatGunIndex", gun, _, index);
+		}
 	}
 	property int m_hDriver
 	{
@@ -57,15 +73,15 @@ methodmap VehicleGeneric < CClotBody
 			SetEntPropEnt(this.index, Prop_Data, "m_hPlayer2", entity);
 		}
 	}
-	property bool m_bNoAttack
+	property int m_iGunIndex
 	{
 		public get()
 		{
-			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bNoAttack"));
+			return GetEntProp(this.index, Prop_Data, "m_iGunIndex");
 		}
-		public set(bool value)
+		public set(int value)
 		{
-			SetEntProp(this.index, Prop_Data, "m_bNoAttack", value);
+			SetEntProp(this.index, Prop_Data, "m_iGunIndex", value);
 		}
 	}
 }
@@ -78,11 +94,30 @@ void Vehicle_PluginStart()
 	factory.DeriveFromClass("prop_vehicle_driveable");
 	factory.BeginDataMapDesc()
 	.DefineEntityField("m_hPlayer2")
-	.DefineBoolField("m_bNoAttack")
+	.DefineVectorField("m_vecDriverOffset")
+	.DefineIntField("m_iGunIndex")
 	.DefineEntityField("m_hSeatEntity", VEHICLE_MAX_SEATS)
 	.DefineVectorField("m_vecSeatPos", VEHICLE_MAX_SEATS)
+	.DefineIntField("m_iSeatGunIndex", VEHICLE_MAX_SEATS)
+	.DefineFloatField("m_flBrakeFor")
 	.EndDataMapDesc();
 	factory.Install();
+
+	GameData gamedata = new GameData("zombie_riot");
+	
+	DHook_CreateDetour(gamedata, "CPlayerMove::SetupMove", DHookSetupMovePre);
+
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseServerVehicle::SetupMove");
+	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer);
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	SDKVehicleSetupMove = EndPrepSDKCall();
+	if(!SDKVehicleSetupMove)
+		LogError("[Gamedata] Could not find CBaseServerVehicle::SetupMove");
+	
+	delete gamedata;
 
 	RegAdminCmd("sm_remove_vehicles", RemoveVehicleCmd, ADMFLAG_RCON, "Deletes all obj_vehicle entities");
 	RegAdminCmd("sm_seat_offset", SeatOffsetCmd, ADMFLAG_RCON, "Set the offset of your vehicle seat");
@@ -91,6 +126,16 @@ void Vehicle_PluginStart()
 void Vehicle_MapEnd()
 {
 	DoneSoundScript = false;
+}
+
+void Vehicle_PluginEnd()
+{
+	int entity = -1;
+	while((entity = FindEntityByClassname(entity, "obj_vehicle")) != -1)
+	{
+		Vehicle_Exit(entity, false, true);
+		//SDKCall_RemoveImmediate(entity);
+	}
 }
 
 void Vehicle_PrecacheSounds()
@@ -117,6 +162,7 @@ static Action RemoveVehicleCmd(int client, int args)
 	int entity = -1;
 	while((entity = FindEntityByClassname(entity, "obj_vehicle")) != -1)
 	{
+		Vehicle_Exit(entity, false, true);
 		RemoveEntity(entity);
 	}
 
@@ -181,52 +227,133 @@ static void OnDestroy(int entity)
 		RemoveEntity(obj.m_iWearable5);
 }
 
+static MRESReturn DHookSetupMovePre(DHookParam params)
+{
+	if(SDKVehicleSetupMove)
+	{
+		int client = params.Get(1);
+
+		int slot;
+		int vehicle = Vehicle_Driver(client, slot);
+		if(vehicle != -1 && slot == -1)
+		{
+			Address cmd = params.Get(2);
+			Address helper = params.Get(3);
+			Address move = params.Get(4);
+			
+			SDKCall(SDKVehicleSetupMove, GetServerVehicle(vehicle), client, cmd, helper, move);
+		}
+	}
+	
+	return MRES_Ignored;
+}
+
+static Address GetServerVehicle(int vehicle)
+{
+	static int offset = -1;
+	if(offset == -1)
+		FindDataMapInfo(vehicle, "m_pServerVehicle", _, _, offset);
+	
+	if(offset == -1)
+	{
+		LogError("Unable to find offset 'm_pServerVehicle'");
+		return Address_Null;
+	}
+	
+	return view_as<Address>(GetEntData(vehicle, offset));
+}
+
 // If target is a vehicle, returns the driver or passenger with the higher priority, -1 if none
 // If target is a user, returns the vehicle currently on, -1 if none
-int Vehicle_Driver(int target)
+int Vehicle_Driver(int target, int &slot = -1)
 {
 	if(i_IsVehicle[target] == 2)
 	{
 		int driver = view_as<VehicleGeneric>(target).m_hDriver;
 		if(driver == -1)
 		{
-			for(int i; i < VEHICLE_MAX_SEATS; i++)
+			for(slot = 0; slot < VEHICLE_MAX_SEATS; slot++)
 			{
-				int passenger = GetEntPropEnt(target, Prop_Data, "m_hSeatEntity", i);
+				int passenger = GetEntPropEnt(target, Prop_Data, "m_hSeatEntity", slot);
 				if(passenger != -1)
 					return passenger;
 			}
 		}
 
+		slot = -1;
 		return driver;
 	}
 	
 	if(i_IsVehicle[target])
+	{
+		slot = -1;
 		return GetEntPropEnt(target, Prop_Data, "m_hPlayer");
+	}
 	
 	for(int entity = MaxClients + 1; entity < sizeof(i_IsVehicle); entity++)
 	{
 		if(i_IsVehicle[entity] && IsValidEntity(entity))
 		{
-			int driver = view_as<VehicleGeneric>(entity).m_hDriver;
-			if(driver == target)
-				return entity;
-			
-			for(int i; i < VEHICLE_MAX_SEATS; i++)
+			if(i_IsVehicle[entity] == 2)
 			{
-				driver = GetEntPropEnt(entity, Prop_Data, "m_hSeatEntity", i);
+				int driver = view_as<VehicleGeneric>(entity).m_hDriver;
 				if(driver == target)
+				{
+					slot = -1;
 					return entity;
+				}
+				
+				for(slot = 0; slot < VEHICLE_MAX_SEATS; slot++)
+				{
+					driver = GetEntPropEnt(entity, Prop_Data, "m_hSeatEntity", slot);
+					if(driver == target)
+						return entity;
+				}
+			}
+			else if(GetEntPropEnt(entity, Prop_Data, "m_hPlayer") == target)
+			{
+				slot = -1;
+				return entity;
 			}
 		}
 	}
-
+	
+	slot = -1;
 	return -1;
 }
 
 bool Vehicle_ShowInteractHud(int client, int entity)
 {
+	int vehicle = Vehicle_Driver(client);
+	if(vehicle != -1)
+	{
+		if(CanExitVehicle(vehicle))
+		{
+			SetGlobalTransTarget(client);
+			char ButtonDisplay[255];
+			PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+			PrintCenterText(client, "%s%t", ButtonDisplay, "Enter this vehicle");
+			return true;
+		}
+
+		return false;
+	}
+	
 	VehicleGeneric obj = view_as<VehicleGeneric>(entity);
+	
+	Function func = FuncShowInteractHud[entity];
+	if(func && func != INVALID_FUNCTION)
+	{
+		bool result;
+
+		Call_StartFunction(null, FuncShowInteractHud[entity]);
+		Call_PushCell(entity);
+		Call_PushCell(client);
+		Call_Finish(result);
+		
+		if(result)
+			return true;
+	}
 
 	bool space;
 	if(obj.m_hDriver == -1)
@@ -248,22 +375,8 @@ bool Vehicle_ShowInteractHud(int client, int entity)
 		}
 	}
 
-	if(!space)
+	if(!space || !CanEnterVehicle(entity))
 		return false;
-	
-	Function func = FuncShowInteractHud[entity];
-	if(func && func != INVALID_FUNCTION)
-	{
-		bool result;
-
-		Call_StartFunction(null, FuncShowInteractHud[entity]);
-		Call_PushCell(entity);
-		Call_PushCell(client);
-		Call_Finish(result);
-		
-		if(result)
-			return true;
-	}
 
 	SetGlobalTransTarget(client);
 	char ButtonDisplay[255];
@@ -274,7 +387,8 @@ bool Vehicle_ShowInteractHud(int client, int entity)
 
 bool Vehicle_Interact(int client, int weapon, int entity)
 {
-	int vehicle = Vehicle_Driver(client);
+	int slot;
+	int vehicle = Vehicle_Driver(client, slot);
 	if(vehicle != -1)
 	{
 		static float forceOutTime[MAXPLAYERS];
@@ -284,10 +398,15 @@ bool Vehicle_Interact(int client, int weapon, int entity)
 			// Driver is out, I'll take the wheel!
 			AcceptEntityInput(client, "ClearParent");
 			SwitchToDriver(view_as<VehicleGeneric>(vehicle), client);
+
+#if defined ZR
+			AdjustClientWeapons(client);
+#endif
 		}
-		else if(fabs(forceOutTime[client] - GetGameTime()) < 0.4 || CanExit(vehicle))
+		else if((slot != -1 || CanExitVehicle(vehicle)) && (fabs(forceOutTime[client] - GetGameTime()) < 0.4 || CanExit(vehicle)))
 		{
-			Vehicle_Exit(client);
+			if(Vehicle_Exit(client) && slot == -1)
+				AcceptEntityInput(vehicle, "HandBrakeOn", client, vehicle);
 		}
 		else
 		{
@@ -315,7 +434,29 @@ bool Vehicle_Interact(int client, int weapon, int entity)
 			return true;
 	}
 
+	if(!CanEnterVehicle(entity))
+		return false;
+
 	return Vehicle_Enter(entity, client);
+}
+
+static stock bool CanEnterVehicle(int entity)
+{
+	if(GetEntProp(entity, Prop_Data, "m_bLocked"))
+		return false;
+
+	//if(GetEntProp(entity, Prop_Data, "m_nSpeed") > GetEntPropFloat(entity, Prop_Data, "m_flMinimumSpeedToEnterExit"))
+	//	return false;
+
+	return true;
+}
+
+static stock bool CanExitVehicle(int entity)
+{
+	if(GetEntProp(entity, Prop_Data, "m_nSpeed") > GetEntPropFloat(entity, Prop_Data, "m_flMinimumSpeedToEnterExit"))
+		return false;
+
+	return true;
 }
 
 bool Vehicle_Enter(int vehicle, int target)
@@ -336,7 +477,7 @@ bool Vehicle_Enter(int vehicle, int target)
 		for(int i; i < VEHICLE_MAX_SEATS; i++)
 		{
 			GetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", pos1, i);
-			if(pos1[0] && GetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", i) == -1)
+			if((pos1[0] || pos1[1] || pos1[2]) && GetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", i) == -1)
 			{
 				index = i;
 				break;
@@ -381,7 +522,15 @@ bool Vehicle_Enter(int vehicle, int target)
 		SetEntProp(target, Prop_Data, "deadflag", true);
 		SetVariantString("self.AddCustomAttribute(\"no_duck\", 1, -1)");
 		AcceptEntityInput(target, "RunScriptCode");
-		/*ForcePlayerCrouch(target, true, false);*/
+
+		SnapEyeAngles(target, {0.0, 90.0, 0.0});
+
+		if(index >= 0 && GetEntProp(obj.index, Prop_Data, "m_iSeatGunIndex", _, index) < 0)
+			SetEntProp(target, Prop_Send, "m_bDrawViewmodel", false);
+
+#if defined ZR
+		AdjustClientWeapons(target);
+#endif
 	}
 	return true;
 }
@@ -398,13 +547,27 @@ static void SwitchToDriver(VehicleGeneric obj, int target)
 		}
 	}
 
-	float pos[3];
+	float pos[3], offset[3];
 	GetEntPropVector(obj.index, Prop_Data, "m_vecOrigin", pos);
 	TeleportEntity(target, pos, _, {0.0, 0.0, 0.0});
-	SetParent(obj.index, target, "vehicle_driver_eyes", {0.0, 0.0, -68.0});	// Was -40 when being ducked
-	
-	AcceptEntityInput(obj.index, "TurnOn");
+
+	GetEntPropVector(obj.index, Prop_Data, "m_vecDriverOffset", offset);
+	if(offset[0] || offset[1] || offset[2])
+	{
+		SetParent(obj.index, target, "root", offset);
+	}
+	else
+	{
+		offset[2] -= 68.0;	// Was -40 when being ducked
+		SetParent(obj.index, target, "vehicle_driver_eyes", offset);
+	}
+
 	obj.m_hDriver = target;
+	SetEntProp(target, Prop_Send, "m_bDrawViewmodel", obj.m_iGunIndex >= 0);
+
+	AcceptEntityInput(obj.index, "PlayerOn", target, obj.index);
+	AcceptEntityInput(obj.index, "TurnOn");
+	AcceptEntityInput(obj.index, "TurnOn");
 }
 
 // Should be called in PlayerSpawn, PlayerDeath, and ClientDisconnect
@@ -493,22 +656,37 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 		
 		SetVariantString("self.RemoveCustomAttribute(\"no_duck\")");
 		AcceptEntityInput(target, "RunScriptCode");
-		/*ForcePlayerCrouch(target, false);*/
+		
+		SetEntProp(target, Prop_Send, "m_bDrawViewmodel", true);
+
+#if defined ZR
+		AdjustClientWeapons(target);
+#endif
 	}
 
 	if(teleport)
 	{
 		CanExit(obj.index, pos, ang);
-		GetEntPropVector(obj.index, Prop_Data, "m_vecVelocity", vel);
+		GetEntPropVector(obj.index, Prop_Data, "m_vecSmoothedVelocity", vel);
 		pos[2] += 8.0;
 		ang[2] = 0.0;
 		TeleportEntity(target, pos, ang, vel);
 	}
 
-	if(wasDriver)
+	if(wasDriver)	// CPropVehicleDriveable::ExitVehicle
 	{
-		SetEntPropFloat(obj.index, Prop_Data, "m_controls.steering", 0.0);
-		SetEntPropFloat(obj.index, Prop_Data, "m_controls.throttle", 0.0);
+		AcceptEntityInput(obj.index, "PlayerOff", target, obj.index);
+
+		SetVariantInt(0);
+		AcceptEntityInput(obj.index, "AttackAxis", target, obj.index);
+
+		SetVariantInt(0);
+		AcceptEntityInput(obj.index, "Attack2Axis", target, obj.index);
+
+		SetEntProp(obj.index, Prop_Send, "m_nSpeed", 0);
+		SetEntPropFloat(obj.index, Prop_Send, "m_flThrottle", 0.0);
+
+		AcceptEntityInput(obj.index, "TurnOff");
 	}
 }
 
@@ -537,7 +715,7 @@ static Action VehicleThink(int entity)
 	}
 	else if(driver > 0 && driver <= MaxClients)
 	{
-		// TODO: Controller supported?
+		/*
 		int buttons = GetEntProp(driver, Prop_Data, "m_nButtons");
 		
 		if(buttons & IN_MOVERIGHT)
@@ -564,6 +742,48 @@ static Action VehicleThink(int entity)
 		else
 		{
 			SetEntPropFloat(obj.index, Prop_Data, "m_controls.throttle", 0.0);
+		}
+		*/
+
+		if(obj.m_iGunIndex < 0)
+		{
+			float time = GetGameTime() + 0.5;
+			if(GetEntPropFloat(driver, Prop_Send, "m_flNextAttack") < time)
+				SetEntPropFloat(driver, Prop_Send, "m_flNextAttack", time);
+		}
+
+#if defined ZR
+		ZRRammingThink(obj);
+#endif
+
+	}
+
+	float brakeFor = GetEntPropFloat(obj.index, Prop_Data, "m_flBrakeFor");
+	if(brakeFor)
+	{
+		if(brakeFor > GetGameTime())
+		{
+			if(!GetEntProp(obj.index, Prop_Data, "m_controls.handbrake"))
+				AcceptEntityInput(obj.index, "HandBrakeOn", driver, obj.index);
+		}
+		else
+		{
+			SetEntPropFloat(obj.index, Prop_Data, "m_flBrakeFor", 0.0);
+			AcceptEntityInput(obj.index, "HandBrakeOff", driver, obj.index);
+		}
+	}
+
+	for(int i; i < VEHICLE_MAX_SEATS; i++)
+	{
+		if(GetEntProp(obj.index, Prop_Data, "m_iSeatGunIndex", _, i) < 0)
+		{
+			int passenger = GetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", i);
+			if(passenger > 0 && passenger <= MaxClients)
+			{
+				float time = GetGameTime() + 0.5;
+				if(GetEntPropFloat(passenger, Prop_Send, "m_flNextAttack") < time)
+					SetEntPropFloat(passenger, Prop_Send, "m_flNextAttack", time);
+			}
 		}
 	}
 
@@ -645,3 +865,132 @@ static bool CanExit(int vehicle, float origin[3] = NULL_VECTOR, float angles[3] 
 	
 	return false;
 }
+
+#if defined ZR
+static int ZRRamHealth;
+static void ZRRammingThink(VehicleGeneric obj)
+{
+	int client = Vehicle_Driver(obj.index);
+	if(client != -1)
+	{
+		float vel[3];
+		GetEntPropVector(obj.index, Prop_Data, "m_vecSmoothedVelocity", vel);
+		
+		float damage = GetVectorLength(vel, true);
+
+		if(damage > 49999.0)
+		{
+			float scale = ExtraDamageWaveScaling();
+			if(scale < 1.0 || CvarInfiniteCash.BoolValue)
+				scale = 1.0;
+			
+			damage *= scale * 0.0035;
+		}
+		else
+		{
+			damage = 0.0;
+		}
+
+		int type = i_ExplosiveProjectileHexArray[obj.index];
+		i_ExplosiveProjectileHexArray[obj.index] = EP_DEALS_CLUB_DAMAGE;
+		Explode_Logic_Custom(damage, client, obj.index, -1, _, 60.0, 1.0, 1.0, _, 99, false, 0.2, ZRRamDamagePost, ZRRamDamagePre);
+		i_ExplosiveProjectileHexArray[obj.index] = type;
+	}
+}
+
+static float ZRRamDamagePre(VehicleGeneric obj, int victim, float &damage, int weapon)
+{
+	if(damage < 1.0 || IsIn_HitDetectionCooldown(obj.index, victim))
+	{
+		ZRRamHealth = 0;
+		damage = 0.0;
+		return 0.0;
+	}
+
+	ZRRamHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
+	return 0.0;
+}
+
+static void ZRRamDamagePost(VehicleGeneric obj, int victim, float damage, int weapon)
+{
+	Set_HitDetectionCooldown(obj.index, victim, GetGameTime() + 1.0);
+	if(ZRRamHealth < 1)
+		return;
+
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(health > 0)
+	{
+		TeleportEntity(obj.index, _, _, {0.0, 0.0, 0.0});
+	}
+	else
+	{
+		float vel[3];
+		GetEntPropVector(obj.index, Prop_Data, "m_vecSmoothedVelocity", vel);
+
+		float ratio = 1.0 - (ZRRamHealth / (ZRRamHealth - health));
+
+		ScaleVector(vel, ratio);
+
+		TeleportEntity(obj.index, _, _, vel);
+	}
+}
+
+static void AdjustClientWeapons(int client)
+{
+	int slot = -1;
+	int vehicle = Vehicle_Driver(client, slot);
+
+	if(vehicle != -1)
+	{
+		int gun = 0;
+
+		VehicleGeneric obj = view_as<VehicleGeneric>(vehicle);
+		if(slot == -1)
+		{
+			gun = obj.m_iGunIndex;
+		}
+		else
+		{
+			gun = GetEntProp(obj.index, Prop_Data, "m_iSeatGunIndex", _, slot);
+		}
+		
+		if(gun > 0)
+		{
+			if(ModifiedWeapons[client] != gun)
+			{
+				if(ModifiedWeapons[client] > 0)
+					Store_RemoveSpecificItem(client, NULL_STRING, _, ModifiedWeapons[client]);
+				
+				i_ClientHasCustomGearEquipped[client] = 1;
+				ModifiedWeapons[client] = gun;
+
+				int health = GetClientHealth(client);
+				Store_GiveAll(client, health, true);
+				Store_GiveSpecificItem(client, NULL_STRING, _, gun);
+
+				SetAmmo(client, 1, 9999);
+				SetAmmo(client, 2, 9999);
+
+				Manual_Impulse_101(client, health);
+			}
+			return;
+		}
+	}
+
+	RestoreClientWeapons(client);
+}
+
+static void RestoreClientWeapons(int client)
+{
+	if(ModifiedWeapons[client])
+	{
+		i_ClientHasCustomGearEquipped[client] = 0;
+		Store_RemoveSpecificItem(client, NULL_STRING, _, ModifiedWeapons[client]);
+		ModifiedWeapons[client] = 0;
+		
+		//TF2_RemoveCondition(client, TFCond_RestrictToMelee);
+		Store_ApplyAttribs(client);
+		Store_GiveAll(client, GetClientHealth(client));
+	}
+}
+#endif

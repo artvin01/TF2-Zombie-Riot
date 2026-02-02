@@ -161,6 +161,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR
 public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 {
+	Waves_ApplyCooldown(0.0);
 	if(CvarAutoSelectDiff.BoolValue && !Waves_Started())
 	{
 		//Do this only once!
@@ -313,7 +314,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		if(WaitingInQueue[client])
 			TeutonType[client] = TEUTON_WAITING;
 
-		if(i_ClientHasCustomGearEquipped[client])
+		if(i_ClientHasCustomGearEquipped[client] > 1)
 		{
 			SDKCall_GiveCorrectAmmoCount(client);
 
@@ -533,6 +534,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 #if defined ZR
+	Dungeon_PlayerDowned(client);
 	UnequipDispenser(client, true);
 	ArmorDisplayClient(client, true);
 	DataPack pack = new DataPack();
