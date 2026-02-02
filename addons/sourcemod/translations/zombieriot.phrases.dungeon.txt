@@ -257,7 +257,7 @@
 	"Can Opener Desc"
 	{
 		"en"	"When they sealed that can too good.\n{green}Unboxing sealed crates cost 50％ less crystals"
-		"ko"	"쓸데없이 밀봉을 너무 잘 해둔 물건을 마주했을 때.\n{green}봉인된 상자들을 개봉할때 소모되는 수정의 양 50% 감소"
+		"ko"	"쓸데없이 밀봉을 너무 잘 해둔 물건을 마주했을 때.\n{green}봉인된 상자들을 개봉할때 소모되는 수정의 양 50％ 감소"
 	}
 	"Wooden Crate"
 	{
