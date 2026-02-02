@@ -107,7 +107,7 @@ void ObjectDTeslarsMedusa_ClotThink(ObjectDTeslarsMedusa npc)
 	{
 		float DistanceLimit = CONSTRUCT_RANGE;
 
-		npc.m_iTarget = GetClosestTarget(npc.index,_,DistanceLimit,.CanSee = true, .UseVectorDistance = true);
+		npc.m_iTarget = GetClosestTarget(npc.index,_,DistanceLimit,.CanSee = false, .UseVectorDistance = true);
 		npc.m_flGetClosestTargetTime = FAR_FUTURE;
 	}
 	
@@ -115,14 +115,18 @@ void ObjectDTeslarsMedusa_ClotThink(ObjectDTeslarsMedusa npc)
 	{
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
+		if(GetTeam(npc.index) != TFTeam_Red)
+			npc.m_flNextDelayTime = gameTime + ENEMY_BUILDING_DELAY_THINK;
 		return;
 	}
+	/*
 	if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 	{
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
 		return;
 	}
+	*/
 	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);

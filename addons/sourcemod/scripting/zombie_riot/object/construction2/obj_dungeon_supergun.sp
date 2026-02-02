@@ -104,7 +104,7 @@ void ObjectDCaliberTurret_ClotThink(ObjectDCaliberTurret npc)
 	{
 		float DistanceLimit = CONSTRUCT_RANGE;
 
-		npc.m_iTarget = GetClosestTarget(npc.index,_,DistanceLimit,.CanSee = true, .UseVectorDistance = true);
+		npc.m_iTarget = GetClosestTarget(npc.index,_,DistanceLimit,.CanSee = false, .UseVectorDistance = true);
 		npc.m_flGetClosestTargetTime = FAR_FUTURE;
 	}
 	
@@ -116,6 +116,7 @@ void ObjectDCaliberTurret_ClotThink(ObjectDCaliberTurret npc)
 			npc.m_flNextDelayTime = gameTime + 0.4;
 		return;
 	}
+	/*
 	if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 	{
 		npc.m_iTarget = -1;
@@ -124,6 +125,7 @@ void ObjectDCaliberTurret_ClotThink(ObjectDCaliberTurret npc)
 			npc.m_flNextDelayTime = gameTime + 0.4;
 		return;
 	}
+	*/
 	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);

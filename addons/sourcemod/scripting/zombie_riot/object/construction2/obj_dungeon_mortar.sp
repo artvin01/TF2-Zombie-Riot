@@ -118,7 +118,7 @@ static void ClotThink(ObjectDMortar npc)
 	npc.m_flNextDelayTime = gameTime + 0.1;
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, _, CONSTRUCT_RANGE, .CanSee = true, .UseVectorDistance = true, .MinimumDistance = 300.0);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, CONSTRUCT_RANGE, .CanSee = false, .UseVectorDistance = true, .MinimumDistance = 300.0);
 		npc.m_flGetClosestTargetTime = FAR_FUTURE;
 	}
 	
@@ -126,6 +126,8 @@ static void ClotThink(ObjectDMortar npc)
 	{
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
+		if(GetTeam(npc.index) != TFTeam_Red)
+			npc.m_flNextDelayTime = gameTime + ENEMY_BUILDING_DELAY_THINK;
 		return;
 	}
 
@@ -137,6 +139,8 @@ static void ClotThink(ObjectDMortar npc)
 	{
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
+		if(GetTeam(npc.index) != TFTeam_Red)
+			npc.m_flNextDelayTime = gameTime + ENEMY_BUILDING_DELAY_THINK;
 		return;
 	}
 

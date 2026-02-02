@@ -107,7 +107,7 @@ void ObjectC2Cannon_ClotThink(ObjectC2Cannon npc)
 	{
 		float DistanceLimit = CONSTRUCT_RANGE;
 
-		npc.m_iTarget = GetClosestTarget(npc.index,_,DistanceLimit,.CanSee = true, .UseVectorDistance = true);
+		npc.m_iTarget = GetClosestTarget(npc.index,_,DistanceLimit,.CanSee = false, .UseVectorDistance = true);
 		npc.m_flGetClosestTargetTime = FAR_FUTURE;
 	}
 	
@@ -119,6 +119,7 @@ void ObjectC2Cannon_ClotThink(ObjectC2Cannon npc)
 			npc.m_flNextDelayTime = gameTime + ENEMY_BUILDING_DELAY_THINK;
 		return;
 	}
+	/*
 	if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 	{
 		npc.m_iTarget = -1;
@@ -127,6 +128,7 @@ void ObjectC2Cannon_ClotThink(ObjectC2Cannon npc)
 			npc.m_flNextDelayTime = gameTime + ENEMY_BUILDING_DELAY_THINK;
 		return;
 	}
+	*/
 	if(npc.m_flNextMeleeAttack > gameTime)
 	{
 		return;
