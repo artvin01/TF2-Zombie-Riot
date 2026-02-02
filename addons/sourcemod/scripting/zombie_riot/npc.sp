@@ -705,6 +705,10 @@ void NPC_ConfigSetup()
 	Harrison_OnMapStart_NPC();
 	Castellan_OnMapStart_NPC();
 
+//construction2 Victorians
+	Demolitionist_OnMapStart_NPC();
+	Chemical_Specialist_OnMapStart_NPC();
+
 //special
 	Invisible_TRIGGER_OnMapStart_NPC();//It is currently used as a trigger for the Victoria Factory.
 	CaptinoBaguettus_OnMapStart_NPC();//Captino Meinus Follower
@@ -2350,6 +2354,10 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/raidmode_bosses/victoria/npc_the_wall.sp"
 #include "npc/raidmode_bosses/victoria/npc_harrison.sp"
 #include "npc/raidmode_bosses/victoria/npc_castellan.sp"
+
+//construction2 Victorian
+#include "npc/construction/construction2/victorians/npc_demolitionist.sp"
+#include "npc/construction/construction2/victorians/npc_chemical_specialist.sp"
 
 //Matrix Enemies
 #include "npc/matrix/15/npc_agentalan.sp"
