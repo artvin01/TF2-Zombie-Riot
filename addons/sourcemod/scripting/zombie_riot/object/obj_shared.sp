@@ -1584,15 +1584,15 @@ public void ObjectGeneric_ClotTakeDamage_Post(int victim, int attacker, int infl
 		return;
 	if(GetTeam(victim) != TFTeam_Red)
 	{
-		int health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
-		int maxhealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
+		int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+		int maxhealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 		float Ratio = float(health) / float(maxhealth);
 			
 		if(Ratio < 0.15)
 		{
 			if(!objstats.m_bBurning)
 			{
-				IgniteTargetEffect(objstats.index, _, _);
+				IgniteTargetEffect(victim, _, _);
 				objstats.m_bBurning = true;
 			}
 		}
@@ -1600,7 +1600,7 @@ public void ObjectGeneric_ClotTakeDamage_Post(int victim, int attacker, int infl
 		{
 			if(objstats.m_bBurning)
 			{
-				ExtinguishTarget(objstats.index);
+				ExtinguishTarget(victim);
 				objstats.m_bBurning = false;
 			}
 		}
