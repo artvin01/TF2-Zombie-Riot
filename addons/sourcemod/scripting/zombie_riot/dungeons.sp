@@ -365,6 +365,10 @@ static bool NerfNextRaid;
 static float LastKilledAt[MAXPLAYERS];
 static DungeonZone LastZone[MAXENTITIES];
 
+int Dungeon_AttackType()
+{
+	return AttackType;
+}
 void Dungeon_PluginStart()
 {
 	LoadTranslations("zombieriot.phrases.dungeon");

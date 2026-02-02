@@ -2644,6 +2644,14 @@ int MaxEnemiesAllowedSpawnNext(int ExtraRules = 0)
 	{
 		maxenemies /= 2;
 	}
+	if(Dungeon_Mode())
+	{
+		if(Dungeon_AttackType() < 2)
+		{
+			//if its not a base attack reduce spawns by 25%
+			maxenemies = RoundToCeil(float(maxenemies) * 0.75);
+		}
+	}
 	switch(ExtraRules)
 	{
 		case 1:
