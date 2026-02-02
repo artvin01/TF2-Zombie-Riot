@@ -39,7 +39,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cleaver_hit_07.wav",
 };
 static const char g_BuildSound[][] = {
-	"ui/item_metal_weapon_drop.wav",
+	"weapons/medi_shield_deploy.wav",
 };
 
 void Victorian_Protector_OnMapStart_NPC()
@@ -144,7 +144,7 @@ methodmap Victorian_Protector < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 225.0;
-		fl_TotalArmor[npc.index] = 0.75;
+		npc.Anger = false;
 		
 		
 		int skin = 1;
@@ -154,8 +154,8 @@ methodmap Victorian_Protector < CClotBody
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/engineer/bet_pb.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/engineer/sbox2014_antarctic_researcher/sbox2014_antarctic_researcher.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/scout/sum22_brain_bucket_style5/sum22_brain_bucket_style5.mdl");
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2025_heat_shield_style3/hwn2025_heat_shield_style3.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/dec2014_hunter_ushanka/dec2014_hunter_ushanka.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2015_western_beard/hwn2015_western_beard.mdl");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
@@ -182,6 +182,8 @@ public void Victorian_Protector_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
+
+	GrantEntityArmor(iNPC, true, 0.5, 0.0, 0);
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
@@ -211,7 +213,7 @@ public void Victorian_Protector_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		if(npc.m_iChanged_WalkCycle == 1)
+		if(npc.m_iChanged_WalkCycle == 1 && npc.Anger == false)
 		{
 			Victorian_ProtectorBuildObject(npc, flDistanceToTarget); 
 		}
@@ -234,11 +236,32 @@ public Action Victorian_Protector_OnTakeDamage(int victim, int &attacker, int &i
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+	
+	if(npc.m_flArmorCount > 0.0)
 	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
+		float percentageArmorLeft = npc.m_flArmorCount / npc.m_flArmorCountMax;
+
+		if(percentageArmorLeft <= 0.0 && npc.Anger == false)
+		{
+			npc.Anger = true;
+			npc.m_iChanged_WalkCycle = 2;
+			npc.SetActivity("ACT_MP_RUN_MELEE");
+			if(IsValidEntity(npc.m_iWearable1))
+				RemoveEntity(npc.m_iWearable1);
+			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/C_Crossing_Guard/C_Crossing_Guard.mdl");
+			SetVariantString("0.75");
+			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		}
+	}
+	else
+	{
+		if(IsValidEntity(npc.m_iWearable4))
+			RemoveEntity(npc.m_iWearable4);
+		if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+		{
+			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+			npc.m_blPlayHurtAnimation = true;
+		}		
 	}
 	
 	return Plugin_Changed;
@@ -283,20 +306,12 @@ void Victorian_ProtectorBuildObject(Victorian_Protector npc, float distance)
 
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_spikewrench/c_spikewrench.mdl");
-			int spawn_index = NPC_CreateByName("npc_iberia_beacon", -1, pos, ang, GetTeam(npc.index));
-			if(spawn_index > MaxClients)
-			{
-				NpcStats_CopyStats(npc.index, spawn_index);
-				CClotBody npc1 = view_as<CClotBody>(spawn_index);
-				npc1.m_flNextThinkTime = GetGameTime() + 2.0;
-				fl_AbilityOrAttack[spawn_index] = fl_AbilityOrAttack[npc.index];
-				NpcAddedToZombiesLeftCurrently(spawn_index, true);
-				ScalingMultiplyEnemyHpGlobalScale(spawn_index);
-			}
+			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/C_Crossing_Guard/C_Crossing_Guard.mdl");
+			SetVariantString("0.75");
+			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			npc.m_iWearable7 = npc.SpawnShield(5.0, "models/props_mvm/mvm_player_shield.mdl",40.0, false);
 			npc.PlayBuildSound();
 			npc.m_flSpeed = 300.0;
-			fl_TotalArmor[npc.index] = 1.0;
 		}
 	}
 }
@@ -327,10 +342,6 @@ void Victorian_ProtectorSelfDefense(Victorian_Protector npc, float gameTime, int
 						damageDealt *= 1.5;
 
 					int DamageType = DMG_CLUB;
-
-					//prevents knockback!
-					//gimic of new wavetype, but silenceable.
-					
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DamageType, -1, _, vecHit);
 
 					// Hit sound
@@ -357,7 +368,7 @@ void Victorian_ProtectorSelfDefense(Victorian_Protector npc, float gameTime, int
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.2;
+				npc.m_flNextMeleeAttack = gameTime + 1.0;
 			}
 		}
 	}

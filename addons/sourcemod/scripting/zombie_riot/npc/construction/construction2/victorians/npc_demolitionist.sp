@@ -171,8 +171,6 @@ static void Demolitionist_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
-	GrantEntityArmor(iNPC, true, 0.25, 0.75, 0);
-
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -302,9 +300,9 @@ static void DemolitionistSelfDefense(Demolitionist npc, float gameTime, int targ
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS",_,_,_,2.0);
+				npc.m_flAttackHappens = gameTime + 0.55;
+				npc.m_flDoingAnimation = gameTime + 0.55;
 				npc.m_flNextMeleeAttack = gameTime + 1.5;
 			}
 		}

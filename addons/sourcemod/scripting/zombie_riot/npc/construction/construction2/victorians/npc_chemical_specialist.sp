@@ -241,6 +241,8 @@ static void Chemical_Specialist_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();	
 	
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
