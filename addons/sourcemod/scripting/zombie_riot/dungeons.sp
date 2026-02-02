@@ -817,14 +817,15 @@ void Dungeon_Start()
 
 void CreateAllDefaultBuidldings(float pos[3], float ang[3])
 {
-	Building_BuildByName("obj_dungeon_center", 0, pos, ang);
+	int iNpc;
+	iNpc = Building_BuildByName("obj_dungeon_center", 0, pos, ang);
+	SetTeam(iNpc, TFTeam_Red);
 	float PosSave[3];
 	float RandAng[3];
 	PosSave = pos;
 	/*
 		As of now, hardcoded to this map.
 	*/
-	int iNpc;
 	for(int Loop; Loop < 4; Loop++)
 	{
 		PosSave = pos;

@@ -988,6 +988,9 @@ public void Pickup_Building_M2_InfRange(int client, int weapon, bool crit)
 			return;
 		}
 	}
+	//dont allow pickup
+	if(objstats.m_bCannotBePickedUp)
+		return; 
 	if(IsValidEntity(objstats.m_iMasterBuilding))
 	{
 		entity = objstats.m_iMasterBuilding;
