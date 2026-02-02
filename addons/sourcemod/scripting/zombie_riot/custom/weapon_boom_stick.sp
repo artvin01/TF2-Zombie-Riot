@@ -13,6 +13,9 @@ void BoomStick_MapPrecache()
 public void Weapon_Boom_Stick(int client, int weapon, bool crit, int slot)
 {
 	float Ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 4);
+	
+	if(Store_HasNamedItem(client, "Grigori's Personal 12g Ammo"))
+		Attributes_Set(weapon, Attrib_ArmorOnHitMax, 0.15*Ratio);
 
 	if(!TF2_IsPlayerInCondition(client, TFCond_RuneHaste))
 	{
@@ -61,6 +64,9 @@ public void Weapon_Boom_Stick(int client, int weapon, bool crit, int slot)
 public void Weapon_Boom_Stick_Louder(int client, int weapon, bool crit, int slot)
 {
 	float Ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 6);
+	
+	if(Store_HasNamedItem(client, "Grigori's Personal 12g Ammo"))
+		Attributes_Set(weapon, Attrib_ArmorOnHitMax, 0.2*Ratio);
 
 	if(!TF2_IsPlayerInCondition(client, TFCond_RuneHaste))
 	{
@@ -109,6 +115,9 @@ public void Weapon_Boom_Stick_Louder(int client, int weapon, bool crit, int slot
 public void Weapon_Boom_Stick_Loudest(int client, int weapon, bool crit, int slot)
 {
 	float Ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 8);
+	
+	if(Store_HasNamedItem(client, "Grigori's Personal 12g Ammo"))
+		Attributes_Set(weapon, Attrib_ArmorOnHitMax, 0.25*Ratio);
 
 	if(!TF2_IsPlayerInCondition(client, TFCond_RuneHaste))
 	{
@@ -185,6 +194,9 @@ public void Marksman_boom_rifle(int client, int weapon, bool crit, int slot)
 public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, bool crit, int slot)
 {
 	float Ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 6);
+	
+	if(Store_HasNamedItem(client, "Grigori's Personal 12g Ammo"))
+		Attributes_Set(weapon, Attrib_ArmorOnHitMax, 0.2*Ratio);
 
 	if(!TF2_IsPlayerInCondition(client, TFCond_RuneHaste))
 	{
@@ -257,7 +269,7 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, bool crit, in
 		color = {255, 65, 15, 80};
 		float angles[3];
 		GetClientEyeAngles(client, angles);
-		Laser.DoForwardTrace_Custom(angles, Origin, 450.0);
+		Laser.DoForwardTrace_Custom(angles, Origin, 250.0);
 		damage*=10.0;
 		PlayerLaserDoDamageCombined(Laser, damage, damage);
 		DoPlayerLaserEffectsBigger(Laser, color);

@@ -301,6 +301,46 @@
 		"en"	"Stickybomb Launcher Only\nRemoved Detonates stickybombs near the crosshair and directly under your feet"
 		"ko"	"점착 폭탄 발사기 전용\n조준선 근처및 발밑 점착 폭탄 폭파 기능 제거"
 	}
+	"Compressed Explosive"
+	{
+		"en"	"Compressed Explosive"
+		"ko"	"압축된 폭약"
+	}
+	"Inv Compressed Explosive desc"
+	{
+		"en"	"Victorian Launcher Only\nIncreases Explosion Radius by 33％"
+		"ko"	"빅토리아 런처 전용\n폭발 범위 +33％"
+	}
+	"Modern Defense"
+	{
+		"en"	"Modern Defense"
+		"ko"	"현대화 방어"
+	}
+	"Inv Modern Defense desc"
+	{
+		"en"	"Barracks uses Hitscan instead of Projectiles."
+		"ko"	"배럭이 투사체 대신 히트스캔을 사용합니다."
+	}
+	"Mortar Support"
+	{
+		"en"	"Mortar Support"
+		"ko"	"박격포 지원"
+	}
+	"Inv Mortar Support desc"
+	{
+		"en"	"Barracks uses Explosive Projectiles."
+		"ko"	"배럭이 폭발성 투사체를 사용합니다."
+	}
+	"Grigori's Personal 12g Ammo"
+	{
+		"en"	"Grigori's Personal 12g Ammo"
+		"ko"	"그리고리의 개인 소장용 탄약"
+	}
+	"Inv Grigori's Personal 12g Ammo desc"
+	{
+		"en"	"Multi Pellet Weapon Only\nGain armor per enemy hit upto half of your armor.\nIf recently hurt, its only 25％\Damage -20％"
+		"ko"	"산탄 무기 전용\n적중시 아머를 회복하며 최대 아머의 절반까지 회복\n최근에 피해를 받았다면, 이 효과가 25％로 감소합니다.\n피해량 -20％"
+	}
 	
 	//인벤토리 첼린지
 	"Glass Coil"
@@ -317,6 +357,26 @@
 	{
 		"en"	"It is a Very Delicate Glass Coil\nIt seems to be affected by Chaos...\nWhen you progress through the Interitus Group waves from 0 to 30,\nyou will obtain New Items."
 		"ko"	"매우 섬세한 유리 코일 입니다\n혼돈에 영향을 받는것 같습니다...\n인테리투스 연합 웨이브를 0부터 40까지 진행하면 새로운 아이템을 흭득 합니다."
+	}
+	"Special Sandvich Recipe"
+	{
+		"en"	"Special Sandvich Recipe"
+		"ko"	"특별한 샌드비치 레시피"
+	}
+	"Inv Special Sandvich Recipe desc"
+	{
+		"en"	"Merchant Kit Only\nCannot be obtained Grill Sauces and Meats"
+		"ko"	"상인 키트 전용\n그릴 재료 흭득 불가"
+	}
+	"Inv Special Sandvich Recipe desc Extra"
+	{
+		"en"	"This is a special recipe.\nYou need all the ingredients...\nWhen you progress through the Sensal waves With Grill from 0 to 30,\nyou will obtain New Items."
+		"ko"	"특별한 조합법입니다.\n모든 재료가 필요합니다...\n그릴과 함께 센살 웨이브를 0부터 40까지 진행하면 새로운 아이템을 흭득 합니다."
+	}
+	"Inv Special Sandvich Recipe desc for grill"
+	{
+		"en"	"Cannot be obtained Grill Sauces and Meats"
+		"ko"	"그릴 재료 흭득 불가"
 	}
 	
 	//인벤토리 트로피
@@ -335,7 +395,6 @@
 		"en"	"A terrible Chaos is contained within this Coil...\nIt feels like the coil is talking directly to my head..."
 		"ko"	"끔찍한 혼돈이 이 코일에 담겨 있습니다...\n코일이 머릿속에 직접 말을 거는듯한 기분이 듭니다..."
 	}
-	
 	"Little Sandvich SafeHouse"
 	{
 		"en"	"Little Sandvich SafeHous"
@@ -685,8 +744,13 @@
 	}
 	"Inv Chaos Coil Give"
 	{
-		"en"	"The Glass Coil is consumed by {darkblue}Chaos{default}...\n{blue}''Chaos Coil [Rare]''{default}has been unlocked."
-		"ko"	"유리 코일이 {darkblue}혼돈{default}에 침식됐습니다...\n{blue}''혼돈 코일 [희귀]''{default}이(가) 해금됐습니다."
+		"en"	"The Glass Coil is consumed by {darkblue}Chaos{default}...\n{blue}''Chaos Coil''{default}has been unlocked."
+		"ko"	"유리 코일이 {darkblue}혼돈{default}에 침식됐습니다...\n{blue}''혼돈 코일''{default}이(가) 해금됐습니다."
+	}
+	"Inv Little Sandvich SafeHouse Give"
+	{
+		"en"	"We've put together a special recipe using all the ingredients!\n{community}''Little Sandvich SafeHous''{default}has been unlocked."
+		"ko"	"모든 재료를 투입해 특별한 음식을 재작했습니다!\n{community}''작은 샌드비치 안전가옥''{default}이(가) 해금됐습니다."
 	}
 	"Pickup Gift Hero"
 	{
@@ -705,5 +769,4 @@
 		"en"		"{crimson}[ZR]{snow} You have found!"
 		"ko"		"{crimson}[ZR]{snow} 아이템을 발견했습니다!"
 	}
-	
 }

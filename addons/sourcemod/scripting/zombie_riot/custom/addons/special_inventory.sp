@@ -21,11 +21,15 @@ bool Inv_GalssCoil[MAXPLAYERS];
 bool Inv_SuperFocusLens[MAXPLAYERS];
 bool Inv_ExperimentalReactor[MAXPLAYERS];
 bool Inv_StickyFullBurst[MAXPLAYERS];
+bool Inv_CompressedExplosive[MAXPLAYERS];
 float Inv_Nailgun_Slug_Ammo[MAXPLAYERS];
 float Inv_Chaos_Coil_Delay[MAXPLAYERS];
+int Inv_SpecialSandvichProgress[MAXPLAYERS];
 int Inv_ChaosticGlass[MAXPLAYERS];
 int Inv_Chaos_Coil[MAXPLAYERS];
 int Inv_Box_Office_Max[MAXPLAYERS];
+
+static float PreventSameFrameGivearmor[MAXPLAYERS];
 
 public void Custom_Inventory_Reset(int client)
 {
@@ -49,6 +53,7 @@ public void Custom_Inventory_Reset(int client)
 	Inv_SuperFocusLens[client]=false;
 	Inv_ExperimentalReactor[client]=false;
 	Inv_StickyFullBurst[client]=false;
+	Inv_CompressedExplosive[client]=false;
 	if(Inv_Chaos_Coil[client])
 	{
 		int Chaos_Coil = EntRefToEntIndex(Inv_Chaos_Coil[client]);
@@ -101,6 +106,7 @@ stock bool Custom_Inventory_Enable(int client, int entity, int Attribute)
 		case 1018:Inv_SuperFocusLens[client]=true;
 		case 1019:Inv_ExperimentalReactor[client]=true;
 		case 1020:Inv_StickyFullBurst[client]=true;
+		case 1021:Inv_CompressedExplosive[client]=true;
 	}
 	return false;
 }
@@ -123,7 +129,7 @@ public void Custom_Inventory_Attribute(int client, int weapon)
 			{
 				switch(i_CustomWeaponEquipLogic[weapon])
 				{
-					case WEAPON_BOOMSTICK, WEAPON_IS_SHOTGUN:
+					case WEAPON_BOOMSTICK, WEAPON_IS_SHOTGUN, WEAPON_ANGELIC_SHOTGUN, WEAPON_IS_AUTOSHOTGUN:
 					{
 						if(ExtraPellets)
 						{
@@ -193,6 +199,23 @@ public void Custom_Inventory_Attribute(int client, int weapon)
 			else
 				i_WeaponDamageFalloff[weapon]-=0.01;
 		}
+		if(Store_HasNamedItem(client, "Grigori's Personal 12g Ammo"))
+		{
+			if(!Attributes_Has(weapon, 2))
+				Attributes_Set(weapon, 2, 1.0);
+			if(!Attributes_Has(weapon, Attrib_ArmorOnHitMax))
+				Attributes_Set(weapon, Attrib_ArmorOnHitMax, 1.0);
+			Attributes_SetMulti(weapon, 2, 0.8);
+			switch(i_CustomWeaponEquipLogic[weapon])
+			{
+				case WEAPON_BOOMSTICK:
+					Attributes_Set(weapon, Attrib_ArmorOnHitMax, 0.0);
+				case WEAPON_IS_AUTOSHOTGUN:
+					Attributes_SetMulti(weapon, Attrib_ArmorOnHitMax, 0.025);
+				default:
+					Attributes_SetMulti(weapon, Attrib_ArmorOnHitMax, 0.1);
+			}
+		}
 	}
 	if(i_CustomWeaponEquipLogic[weapon]==WEAPON_IS_HPR && Inv_ExperimentalReactor[client])
 	{
@@ -202,17 +225,19 @@ public void Custom_Inventory_Attribute(int client, int weapon)
 	}
 	if(i_CustomWeaponEquipLogic[weapon]==WEAPON_IS_STICKYBOMB && Inv_StickyFullBurst[client])
 		Attributes_Set(weapon, 119, 0.0);
+	if(i_CustomWeaponEquipLogic[weapon]==WEAPON_VICTORIAN_LAUNCHER && Inv_CompressedExplosive[client])
+		Attributes_SetMulti(weapon, 99, 1.33);
 }
 
 public void Custom_Inventory_WaveEnd(int client)
 {
+	int ThisWave = Waves_GetRoundScale()+1;
 	if(!StrContains(WhatDifficultySetting_Internal, "Interitus Group"))
 	{
 		bool Chaostic = view_as<bool>(Store_HasNamedItem(client, "Glass Coil"));
 		if(Chaostic)
 		{
 			Inv_ChaosticGlass[client]++;
-			int ThisWave = Waves_GetRoundScale()+1;
 			if(Inv_ChaosticGlass[client]>=46 && (ThisWave==40 || (ThisWave>=0 && ThisWave<=1)) &&!(Items_HasNamedItem(client, "Chaos Coil")))
 			{
 				Items_GiveNamedItem(client, "Chaos Coil");
@@ -222,6 +247,29 @@ public void Custom_Inventory_WaveEnd(int client)
 		else
 			Inv_ChaosticGlass[client]=0;
 	}
+	if(!StrContains(WhatDifficultySetting_Internal, "Sensal"))
+	{
+		bool bSandvich = view_as<bool>(Store_HasNamedItem(client, "Special Sandvich Recipe"));
+		int building = EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
+		if(building != -1)
+		{
+			if(bSandvich && Merchant_IsAMerchant(client) && StrEqual(c_NpcName[building], "Merchant Grill"))
+			{
+				Inv_SpecialSandvichProgress[client]++;
+				if(Inv_SpecialSandvichProgress[client]>=44 && (ThisWave==40 || (ThisWave>=0 && ThisWave<=1)) &&!(Items_HasNamedItem(client, "Little Sandvich SafeHouse")))
+				{
+					Items_GiveNamedItem(client, "Little Sandvich SafeHouse");
+					CPrintToChat(client, "%t", "Inv Little Sandvich SafeHouse Give");
+				}
+			}
+			else
+				Inv_SpecialSandvichProgress[client]=0;
+		}
+		else
+			Inv_SpecialSandvichProgress[client]=0;
+		PrintToChat(client, "get points %i", Inv_SpecialSandvichProgress[client]);
+	}
+	PrintToChat(client, "WaveEnd");
 	Inv_Box_Office_Max[client]=0;
 }
 
@@ -321,8 +369,36 @@ public float Custom_Inventory_NPCOnTakeDamage(int victim, int attacker, int infl
 			float YPOS = GetVectorDistance(attackerPos, victimPos);
 			if(YPOS>100.0) damage *= 1.10;
 		}
+		if(Store_HasNamedItem(attacker, "Grigori's Personal 12g Ammo"))
+		{
+			float value = Attributes_Get(weapon, Attrib_ArmorOnHitMax, 0.0);
+			if(PreventSameFrameGivearmor[attacker] == GetGameTime())
+				value = 0.0;
+				
+			if(value)
+			{
+				PreventSameFrameGivearmor[attacker] = GetGameTime();
+				if(b_thisNpcIsARaid[victim])
+					value *= 2.0;
+					
+				float attackerPos[3], victimPos[3];
+				GetEntPropVector(attacker, Prop_Send, "m_vecOrigin", attackerPos);
+				GetEntPropVector(victim, Prop_Send, "m_vecOrigin", victimPos);
+				float Dist = GetVectorDistance(attackerPos, victimPos, true);
+				if(Dist<202500.0) //450*450
+				{
+					float WeaponDamageFalloff = i_WeaponDamageFalloff[weapon];
+					if(b_ProximityAmmo[attacker])
+						WeaponDamageFalloff *= 0.8;
+					if(f_TimeUntillNormalHeal[attacker] > GetGameTime())
+						value *= 0.25;
+					
+					value = value*Pow(WeaponDamageFalloff, (Dist/160000.0)); //400*400
+					GiveArmorViaPercentage(attacker, value, 0.5);
+				}
+			}
+		}
 	}
-		
 	return damage;
 }
 
@@ -342,7 +418,7 @@ bool Custom_Inventory_IsShotgun(int weapon)
 	{
 		switch(i_CustomWeaponEquipLogic[weapon])
 		{
-			case WEAPON_BOOMSTICK, WEAPON_IS_SHOTGUN, WEAPON_NAILGUN_SHOTGUN:return true;
+			case WEAPON_BOOMSTICK, WEAPON_IS_SHOTGUN, WEAPON_NAILGUN_SHOTGUN, WEAPON_ANGELIC_SHOTGUN, WEAPON_IS_AUTOSHOTGUN:return true;
 			case WEAPON_RIOT_SHIELD:
 			{
 				if(Attributes_Has(weapon, 45))
@@ -359,7 +435,7 @@ float Custom_Inventory_Falloff(int attacker, int weapon)
 	{
 		switch(i_CustomWeaponEquipLogic[weapon])
 		{
-			case WEAPON_BOOMSTICK, WEAPON_IS_SHOTGUN, WEAPON_NAILGUN_SHOTGUN:return 0.77;
+			case WEAPON_BOOMSTICK, WEAPON_IS_SHOTGUN, WEAPON_NAILGUN_SHOTGUN, WEAPON_ANGELIC_SHOTGUN, WEAPON_IS_AUTOSHOTGUN:return 0.77;
 			case WEAPON_RIOT_SHIELD:
 			{
 				if(Attributes_Has(weapon, 45))
@@ -371,7 +447,7 @@ float Custom_Inventory_Falloff(int attacker, int weapon)
 	{
 		switch(i_CustomWeaponEquipLogic[weapon])
 		{
-			case WEAPON_BOOMSTICK, WEAPON_IS_SHOTGUN, WEAPON_NAILGUN_SHOTGUN:return 0.83;
+			case WEAPON_BOOMSTICK, WEAPON_IS_SHOTGUN, WEAPON_NAILGUN_SHOTGUN, WEAPON_ANGELIC_SHOTGUN, WEAPON_IS_AUTOSHOTGUN:return 0.83;
 			case WEAPON_RIOT_SHIELD:
 			{
 				if(Attributes_Has(weapon, 45))
