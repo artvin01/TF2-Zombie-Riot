@@ -3683,12 +3683,4 @@
 		"en"	"Made from the combination of Chaos and Void. \nLet's hope none of us crystallizes so we don’t get encased in one of these."
 		"ko"	"혼돈과 공허가 융화되어 만들어진 수정입니다.\n우리 중 누군가 결정화 되어 이런 수정에 갇히지 않길 바라야겠죠."
 	}
-	"Tiny Flower"
-	{
-		"en"	"Tiny Flower"
-	}
-	"Tiny Flower Desc"
-	{
-		"en"	"Another tiny flower from Flowering Darkness, a garden is being maintained by their army. \nAs a garden regrows, as such does their army."
-	}
 }
