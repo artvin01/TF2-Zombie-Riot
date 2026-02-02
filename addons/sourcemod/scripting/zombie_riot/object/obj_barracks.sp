@@ -258,6 +258,8 @@ void ObjectBarracks_MapStart()
 	PrecacheModel(SUMMONER_MODEL);
 	PrecacheModel(SUMMONER_MODEL_2);
 	PrecacheModel(SUMMONER_MODEL_3);
+	PrecacheSound("weapons/sniper_shoot.wav");
+	PrecacheSound("weapons/grenade_launcher_shoot.wav");
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks");
@@ -1170,7 +1172,7 @@ void Barracks_BuildingThink(int entity)
 			DoHealingOcean(entity, entity, (500.0 * 500.0), 0.5, true);
 		}
 	}
-	if(IsValidEnemy(client, ValidEnemyToTarget))
+	if(Barracks_ModeManager(npc, client, mounted, pos, GameTime) && IsValidEnemy(client, ValidEnemyToTarget))
 	{
 		if(npc.m_flNextMeleeAttack < GameTime)
 		{
@@ -1309,7 +1311,313 @@ void Barracks_BuildingThink(int entity)
 			i_BuildingReceivedHordings[player.m_iTowerLinked] = true;
 		}			
 	}
-}	
+}
+
+static bool Barracks_ModeManager(BarrackBody npc, int client, bool mounted, float SelfPos[3], float GameTime)
+{
+	if(Store_HasNamedItem(client, "Modern Defense"))
+	{
+		Barracks_ModernDefense_Mode(npc, client, mounted, SelfPos, GameTime);
+		return false;
+	}
+	if(Store_HasNamedItem(client, "Mortar Support"))
+	{
+		Barracks_MortarSupport_Mode(npc, client, mounted, SelfPos, GameTime);
+		return false;
+	}
+	return true;
+}
+
+static void Barracks_MortarSupport_Mode(BarrackBody npc, int client, bool mounted, float SelfPos[3], float GameTime)
+{
+	int MortarLeveL = 0;
+	float BlastDamage = 500.0;
+	float BlastRange = EXPLOSION_RADIUS;
+	float AttackDelay = 10.0;
+	float projectile_speed = 1100.0;
+	float MaximumDistance = 700.0;
+	float MinimumDistance = 500.0;
+	
+	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CASTLE)
+		MortarLeveL = 5;
+	else if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_KREPOST)
+		MortarLeveL = 4;
+	else if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)
+		MortarLeveL = 3;
+	else if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER)
+		MortarLeveL = 2;
+	else if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER)
+		MortarLeveL = 1;
+	switch(MortarLeveL)
+	{
+		case 1: BlastDamage = 1500.0;
+		case 2:
+		{
+			BlastDamage = 4000.0;
+			MaximumDistance = 1000.0;
+		}
+		case 3: BlastDamage = 9000.0;
+		case 4: BlastDamage = 17500.0;
+		case 5:
+		{
+			BlastDamage = 41000.0;
+			MaximumDistance = 1500.0;
+		}
+	}
+	
+	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_MURDERHOLES)
+		MinimumDistance *= 0.77;
+
+	MaximumDistance = Barracks_UnitExtraRangeCalc(npc.index, client, MaximumDistance, true);
+	
+	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CRENELLATIONS)
+		projectile_speed *= 1.5;
+	
+	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CHEMISTY)
+		BlastDamage *= 1.25;
+	if(mounted)
+		BlastDamage *= 0.5;
+	else
+		SelfPos[2]+=45.0;
+	
+	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_STRONGHOLDS)
+		AttackDelay *= 0.85;
+	if(Store_HasNamedItem(client, "Dubious Cheesy Ideas"))
+	{
+		BlastDamage *= 1.25;
+		BlastRange *= 1.1;
+	}
+	if(Store_HasNamedItem(client, "Messed Up Cheesy Brain"))
+	{
+		BlastDamage *= 1.35;
+		BlastRange *= 1.25;
+	}
+	
+	Barracks_UnitExtraDamageCalc(npc.index, client, BlastDamage, 1);
+	
+	if(npc.m_flNextMeleeAttack < GameTime)
+	{
+		int Target = GetClosestTarget((mounted ? client : npc.index), true, MaximumDistance, true, _, _ ,SelfPos, true,_,_,true, (MinimumDistance * MinimumDistance));
+		if(IsValidEnemy(client, Target))
+		{
+			float vecTarget[3];
+			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICS)
+			{
+				BarrackBody playerclient = view_as<BarrackBody>(client);
+				PredictSubjectPositionForProjectiles(mounted ? playerclient : npc, Target, projectile_speed, 55.0,vecTarget);
+				if(!Can_I_See_Enemy_Only(mounted ? client : npc.index, Target)) //cant see enemy in the predicted position, we will instead just attack normally
+					WorldSpaceCenter(Target, vecTarget);
+			}
+			else WorldSpaceCenter(Target, vecTarget);
+			
+			float SpeedReturn[3];
+			int RocketGet = npc.FireRocket(vecTarget, 0.0, projectile_speed,_,_,_,45.0);
+			if(RocketGet != -1)
+			{
+				ArcToLocationViaSpeedProjectile(SelfPos, vecTarget, SpeedReturn, 1.75, 1.0);
+				TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+				Better_Gravity_Rocket(RocketGet, 55.0);
+				fl_Extra_Damage[RocketGet] = BlastDamage;
+				fl_Dead_Ringer_Invis[RocketGet] = BlastRange;
+				SDKHook(RocketGet, SDKHook_StartTouch, HEGrenade_StartTouch);
+			}
+			EmitSoundToAll("weapons/grenade_launcher_shoot.wav", (mounted ? client : npc.index), _, 80, _, 0.7);
+			npc.m_flNextMeleeAttack = GameTime + AttackDelay;
+		}
+	}
+}
+
+static Action HEGrenade_StartTouch(int entity, int target)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+		owner = 0;
+	int inflictor = h_ArrowInflictorRef[entity];
+	if(inflictor != -1)
+		inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+
+	if(inflictor == -1)
+		inflictor = owner;
+		
+	float ProjectileLoc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+	Explode_Logic_Custom(fl_Extra_Damage[entity], owner, inflictor, -1, ProjectileLoc, fl_Dead_Ringer_Invis[entity]);
+	return Plugin_Handled;
+}
+
+static void Barracks_ModernDefense_Mode(BarrackBody npc, int client, bool mounted, float SelfPos[3], float GameTime)
+{
+	int ModernLeveL = 0;
+	int MaxAmmo = 13;
+	float BulletDamage = 13.0;
+	float AttackDelay = 0.3;
+	float ReloadDelay = 1.5;
+	float MaximumDistance = 250.0;
+	
+	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CASTLE)
+		ModernLeveL = 5;
+	else if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_KREPOST)
+		ModernLeveL = 4;
+	else if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)
+		ModernLeveL = 3;
+	else if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER)
+		ModernLeveL = 2;
+	else if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER)
+		ModernLeveL = 1;
+	switch(ModernLeveL)
+	{
+		case 1:
+		{
+			MaxAmmo = 18;
+			BulletDamage = 50.2;
+			MaximumDistance = 300.0;
+		}
+		case 2:
+		{
+			MaxAmmo = 31;
+			BulletDamage = 95.5;
+			AttackDelay = 0.2;
+			ReloadDelay = 3.75;
+			MaximumDistance = 400.0;
+		}
+		case 3:
+		{
+			MaxAmmo = 41;
+			BulletDamage = 170.5;
+			AttackDelay = 0.2;
+			ReloadDelay = 3.75;
+			MaximumDistance = 450.0;
+		}
+		case 4:
+		{
+			MaxAmmo = 50;
+			BulletDamage = 300.0;
+			AttackDelay = 0.1;
+			ReloadDelay = 8.75;
+			MaximumDistance = 450.0;
+		}
+		case 5:
+		{
+			MaxAmmo = 50;
+			BulletDamage = 720.0;
+			AttackDelay = 0.1;
+			ReloadDelay = 7.0;
+			MaximumDistance = 500.0;
+		}
+	}
+	
+	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_MURDERHOLES)
+		MaximumDistance *= 1.15;
+
+	MaximumDistance = Barracks_UnitExtraRangeCalc(npc.index, client, MaximumDistance, true);
+	
+	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICS)
+		ReloadDelay *= 0.8;
+	
+	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CHEMISTY)
+		BulletDamage *= 1.25;
+	if(mounted)
+		BulletDamage *= 0.5;
+	else
+		SelfPos[2]+=45.0;
+	
+	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_STRONGHOLDS)
+		AttackDelay *= 0.85;
+	if(Store_HasNamedItem(client, "Dubious Cheesy Ideas"))
+	{
+		BulletDamage *= 1.25;
+		AttackDelay *= 0.9;
+	}
+	if(Store_HasNamedItem(client, "Messed Up Cheesy Brain"))
+	{
+		BulletDamage *= 1.35;
+		AttackDelay *= 0.75;
+	}
+	
+	Barracks_UnitExtraDamageCalc(npc.index, client, BulletDamage, 1);
+	
+	npc.m_iMaxAmmo = MaxAmmo;
+	if(npc.m_flReloadIn)
+	{
+		if(GameTime > npc.m_flReloadIn)
+		{
+			npc.m_iAmmo=npc.m_iMaxAmmo;
+			npc.m_flReloadIn = 0.0;
+		}
+	}
+	else if(npc.m_iAmmo < 1)
+		npc.m_flReloadIn = GameTime + ReloadDelay;
+	else if(npc.m_flNextMeleeAttack < GameTime)
+	{
+		int Target = GetClosestTarget((mounted ? client : npc.index), true, MaximumDistance, true, _, _ ,SelfPos, true,_,_,true);
+		if(IsValidEnemy(client, Target))
+		{
+			float vecTarget[3]; WorldSpaceCenter(Target, vecTarget);
+			ShootLaser(npc.index, "bullet_tracer02_red", SelfPos, vecTarget, false);
+			SDKHooks_TakeDamage(Target, npc.index, npc.index, BulletDamage, DMG_BULLET, -1, _, vecTarget);
+			npc.m_iAmmo--;
+			switch(ModernLeveL)
+			{
+				case 1: EmitSoundToAll("weapons/pistol/pistol_fire2.wav", (mounted ? client : npc.index), _, 80, _, 0.7);
+				case 2, 3: EmitSoundToAll("weapons/smg1/smg1_fire1.wav", (mounted ? client : npc.index), _, 80, _, 0.7);
+				case 4, 5: EmitSoundToAll("weapons/ar2/fire1.wav", (mounted ? client : npc.index), _, 80, _, 0.7);
+				default: EmitSoundToAll("weapons/pistol/pistol_fire2.wav", (mounted ? client : npc.index), _, 80, _, 0.7);
+			}
+			npc.m_flNextMeleeAttack = GameTime + AttackDelay;
+		}
+	}
+	
+	if(npc.m_flNextRangedAttack < GameTime && i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CRENELLATIONS)
+	{
+		float MinimumDistance = 300.0;
+		switch(ModernLeveL)
+		{
+			case 1: {BulletDamage = 1000.0; MaximumDistance = 700.0;}
+			case 2: {BulletDamage = 3000.0; MaximumDistance = 800.0;}
+			case 3: {BulletDamage = 7200.0; MaximumDistance = 900.0;}
+			case 4: {BulletDamage = 15000.0; MaximumDistance = 1000.0;}
+			case 5: {BulletDamage = 36000.0; MaximumDistance = 1100.0;}
+			default: {BulletDamage = 200.0; MaximumDistance = 600.0;}
+		}
+		
+		
+		MaximumDistance = Barracks_UnitExtraRangeCalc(npc.index, client, MaximumDistance, true);
+		
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CHEMISTY)
+			BulletDamage *= 1.25;
+		if(mounted)
+			BulletDamage *= 0.5;
+		AttackDelay = 10.0;
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_STRONGHOLDS)
+			AttackDelay *= 0.77;
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICS)
+			AttackDelay *= 0.8;
+		if(Store_HasNamedItem(client, "Dubious Cheesy Ideas"))
+		{
+			BulletDamage *= 1.25;
+			AttackDelay *= 0.9;
+		}
+		if(Store_HasNamedItem(client, "Messed Up Cheesy Brain"))
+		{
+			BulletDamage *= 1.35;
+			AttackDelay *= 0.75;
+		}
+		Barracks_UnitExtraDamageCalc(npc.index, client,BulletDamage, 1);
+	
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_MURDERHOLES)
+			MinimumDistance = 0.0;
+	
+		int Target = GetClosestTarget((mounted ? client : npc.index), true, MaximumDistance, true, _, _ ,SelfPos, true,_,_,true, (MinimumDistance * MinimumDistance));
+		if(IsValidEnemy(client, Target))
+		{
+			float vecTarget[3]; WorldSpaceCenter(Target, vecTarget);
+			ShootLaser(npc.index, "bullet_tracer02_red_crit", SelfPos, vecTarget, false);
+			SDKHooks_TakeDamage(Target, npc.index, npc.index, BulletDamage, DMG_BULLET, -1, _, vecTarget);
+			EmitSoundToAll("weapons/sniper_shoot.wav", (mounted ? client : npc.index), _, 80, _, 0.7);
+			npc.m_flNextRangedAttack = GameTime + AttackDelay;
+		}
+	}
+}
 
 /*
 void BuildingHordingsRemoval(int entity)

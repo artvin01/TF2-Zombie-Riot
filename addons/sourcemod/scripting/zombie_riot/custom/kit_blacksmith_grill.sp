@@ -73,6 +73,17 @@ void BlacksmithGrill_NPCTakeDamagePost(int victim, int attacker, float damage)
 {
 	if(attacker <= MaxClients && Merchant_IsAMerchant(attacker) && IsValidEntity(i_PlayerToCustomBuilding[attacker]))
 	{
+		bool bSandvich = view_as<bool>(Store_HasNamedItem(attacker, "Special Sandvich Recipe"));
+		if(bSandvich)
+		{
+			if(InMenu[attacker])
+			{
+				char buffer[64];
+				FormatEx(buffer, sizeof(buffer), "%t", "Inv Special Sandvich Recipe desc for grill");
+				GrillingMenu(attacker, buffer);
+			}
+			return;
+		}
 		int random = RandomSeed + i_NpcInternalId[victim];
 		int sauce = random % S_Special;
 
