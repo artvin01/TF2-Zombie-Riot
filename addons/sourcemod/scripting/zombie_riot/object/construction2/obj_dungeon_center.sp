@@ -44,16 +44,16 @@ void ObjectDungeonCenter_MapStart()
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
 	PrecacheSound("ui/itemcrate_smash_common.wav");
-/*
+
 	BuildingInfo build;
-	build.Section = 3;
+	build.Section = -1;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_center");
 	build.Cost = 400;
 	build.Health = 2000;
 	build.Cooldown = 20.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
-*/
+
 }
 
 int IsDungeonCenterId()
