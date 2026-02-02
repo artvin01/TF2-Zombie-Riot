@@ -1101,6 +1101,9 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 
 float Object_GetMaxHealthMulti(int client)
 {
+	if(client < 1)
+		return 1.0;
+	
 	if(client <= MaxClients)
 		return Attributes_GetOnPlayer(client, 286);
 	
