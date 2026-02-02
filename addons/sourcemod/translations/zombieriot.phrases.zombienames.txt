@@ -7815,17 +7815,6 @@
 		"en"	"Starship Beacon"
 		"ko"	"스타쉽 비컨"
 	}
-	"Regalia Test Line"
-	{
-		"en"	"Hi, I am a piece of text that does lines, please remove me and make a seperate text file for these lines and not clump them into a pre existing one!"
-		"ko"	"안녕하세요, 대사를 출력하는 텍스트랍니다. 이걸 없애고 원래 존재하는 파일 대신 새 파일에 대사를 넣어주세요!"
-	}
-	"Regalia Test Line Formated"
-	{
-		"#format"	"{1:d},{2:d},{3:d}"
-		"en"	"number: {1} number: {2} number: {3}"
-		"ko"	"번호: {1} 번호: {2} 번호: {3}"
-	}
 	"Starship Beacon Desc"
 	{
 		"en"	"A stolen magia anchor. kill it. now."
