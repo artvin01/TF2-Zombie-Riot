@@ -334,7 +334,7 @@
 	"Grigori's Personal 12g Ammo"
 	{
 		"en"	"Grigori's Personal 12g Ammo"
-		"ko"	"그리고리의 개인 소장용 탄약"
+		"ko"	"그리고리의 개인 소장용 12g 탄약"
 	}
 	"Inv Grigori's Personal 12g Ammo desc"
 	{
