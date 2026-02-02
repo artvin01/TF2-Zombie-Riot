@@ -462,15 +462,15 @@
 		"en"	"Verde Soldier Minion"
 		"ko"	"초록색 하수인 솔저"
 	}
-	"Xeno Resurgance"
+	"Xeno Resurgence"
 	{
-		"en"	"Xeno Resurgance"
+		"en"	"Xeno Resurgence"
 		"ko"	"제노의 부활"
 	}
-	"Xeno Resurgance Desc"
+	"Xeno Resurgence Desc"
 	{
 		"en"	"{darkgreen}All enemies are xenofied...\n{gray}Didnt we kill off the xeno virus?"
-		"ko"	"{darkgreen}모든 적들이 제노화 되었습니다...\n{gray}분명 우리가 제노를 끝장냈을텐데요?"
+		"ko"	"{darkgreen}모든 적들이 제노화 됩니다...\n{gray}분명 우리가 제노를 끝장냈을텐데요?"
 	}
 	"Refragmented Heavy Page"
 	{
