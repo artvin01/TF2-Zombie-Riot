@@ -62,7 +62,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 			}
 		}
 		CClotBody npc = view_as<CClotBody>(entity);
-		if(StrContains(buffers[0], "obj_dungeon_wall1") != -1StrContains(buffers[0], "obj_const_wall1") != -1)
+		if(StrContains(buffers[0], "obj_dungeon_wall1") != -1|| StrContains(buffers[0], "obj_const_wall1") != -1)
 		{
 			//global res values
 			npc.m_flMeleeArmor *= 1.25;
