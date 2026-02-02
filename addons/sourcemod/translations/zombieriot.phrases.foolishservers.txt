@@ -263,8 +263,8 @@
 	}
 	"Inv Super Focus Lens desc"
 	{
-		"en"	"Lasering Beamstick Only\nDamage increases by +1000％\nInstead, it becomes Single Laser\Laser Dist -50％, Laser Range -50％"
-		"ko"	"레이저 빔스틱 전용\n피해량이 10배 증가합니다.\n대신 레이져는 직선으로 하나만 발사됩니다.\n사거리 -50％, 범위 -50％"
+		"en"	"Lasering Beamstick Only\nDamage increases by +1000％\nInstead, it becomes Single Laser\Laser Dist -75％, Laser Range -50％"
+		"ko"	"레이저 빔스틱 전용\n피해량이 10배 증가합니다.\n대신 레이져는 직선으로 하나만 발사됩니다.\n사거리 -75％, 범위 -50％"
 	}
 	"Barricade Stabilizer"
 	{
