@@ -2077,7 +2077,7 @@ static void BattleLosted()
 	Zero(i_AmountDowned);
 	AttackType = 0;
 	
-	TeleportToFrom(Zone_Dungeon, Zone_HomeBase);
+	TeleportToFrom(Zone_HomeBase, Zone_Dungeon);
 	//TeleportToFrom(Zone_DungeonWait, Zone_Dungeon);
 
 	CPrintToChatAll("{crimson}%t", "Dungeon Failed");
