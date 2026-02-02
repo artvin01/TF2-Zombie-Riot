@@ -7698,7 +7698,7 @@
 	"Agent 61 Desc"
 	{
 		"en"	"A hired hitman merc, number assosiation unknown.\n-Will find the weakest target on the map and focus them\n-Phases through everything\n-Has challanger buff\n-Shoots his gun once which if hitting, deals a stacking fear debuff."
-		"ko"	"고용된 히트맨 용병입니다. 숫자 관련성 불명.\n-맵에서 가장 취약한 대상을 찾아 집중 공격합니다.\n-모든 것들을 통과하여 지나갑니다.\n-챌린저 버프 보유\n-적중 시 중첩되는 공포 디버프를 부여하는 총기를 사용합니다."
+		"ko"	"고용된 히트맨 용병입니다. 숫자 관련성 불명.\n-맵에서 가장 취약한 대상을 찾아 집중 공격합니다.\n-모든 것들을 통과하여 지나갑니다.\n-챌린저 버프 보유\n-적중 시 '원초적 공포' 디버프를 부여하는 총기를 사용합니다."
 	}
 	"Battlefield Supplier"
 	{
@@ -7728,7 +7728,7 @@
 	"Contracted Motivator Desc"
 	{
 		"en"	"A great motivator to any army\n-attacks in bursts of 3 rockets\n-rockets predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them.\n-Buffs all allies around themselves with War Cry"
-		"ko"	"어느 군대에게나 위대한 동기부여가입니다.\n-한 번에 로켓을 3발 연사\n-표적의 이동 경로를 예측합니다.\n-측면으로 움직이며 대상 주위를 돕니다.\n-높은 근접 피해 1회를 받으면 비무장 상태가 됩니다.\n-주변의 아군들에게 '전투의 함성' 버프 부여"
+		"ko"	"어느 군대에게나 위대한 동기부여가입니다.\n-한 번에 로켓을 3발 연사\n-표적의 이동 경로를 예측합니다.\n-측면으로 움직이며 대상 주위를 돕니다.\n-높은 근접 피해 1회를 받으면 비무장 상태가 됩니다.\n-주변의 아군들에게 '전투의 함성' 버프를 부여합니다."
 	}
 	"Catapult"
 	{
@@ -7738,7 +7738,7 @@
 	"Catapult Desc"
 	{
 		"en"	"Manned Catapult to demolish buildings\n-Shoots a volley of 10 rockets at once towards the nearest target\n-Has a delay before fiering\n-Has a great deviation\n-Attacks buildings with high priority\n-Collision hurts targets"
-		"ko"	"건물을 파괴하기 위한 유인 투석기입니다.\n-가장 가까운 표적에게 한 번에 10발의 로켓을 일제 사격합니다.\n-사격 전 지연이 있음\n-매우 높은 로켓 발사 편차 보유\n-구조물을 우선적으로 공격\n-접촉시 대상에게 피해를 가함"
+		"ko"	"건물을 파괴하기 위한 유인 투석기입니다.\n-가장 가까운 표적에게 한 번에 10발의 로켓을 일제 사격합니다.\n-사격 전 지연이 있음\n-매우 높은 로켓 발사 편차 보유\n-구조물을 우선적으로 공격\n-접촉시 대상에게 피해를 가합니다."
 	}
 	"Cursed King"
 	{
@@ -7748,7 +7748,7 @@
 	"Cursed King Desc"
 	{
 		"en"	"A king that delt too many deals\n-Each 1％ life lost boosts the king with minor buffs for 10 seconds, stacking\n-Once below 25％ health, enrages more and gains the chaos buff\nIts recommended to slowly take him out, not with burst."
-		"ko"	"너무나도 많은 계약을 거래한 왕입니다.\n-체력을 1％ 잃을 때마다 10초 동안 중첩되는 작은 버프들을 얻습니다.\n-체력이 25％ 이하가 되면 격분하여 혼돈 버프를 획득\n-한번에 피해를 가하기보단 조금씩 공격하는 것이 추천됩니다."
+		"ko"	"너무나도 많은 계약을 거래한 왕입니다.\n-체력을 1％ 잃을 때마다 10초 동안 중첩되는 작은 버프들을 얻습니다.\n-체력이 25％ 이하가 되면 격분하여 혼돈 버프를 획득합니다.\n-한번에 피해를 가하기보단 조금씩 공격하는 것이 추천됩니다."
 	}
 	"The Great Ram"
 	{
