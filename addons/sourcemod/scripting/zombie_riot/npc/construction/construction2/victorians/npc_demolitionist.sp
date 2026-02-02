@@ -300,7 +300,7 @@ static void DemolitionistSelfDefense(Demolitionist npc, float gameTime, int targ
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS",_,_,_,2.0);
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS",_,_,_,0.5);
 				npc.m_flAttackHappens = gameTime + 0.55;
 				npc.m_flDoingAnimation = gameTime + 0.55;
 				npc.m_flNextMeleeAttack = gameTime + 1.5;

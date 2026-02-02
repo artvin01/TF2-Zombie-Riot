@@ -116,7 +116,7 @@ methodmap Victorian_Protector < CClotBody
 	
 	public Victorian_Protector(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Victorian_Protector npc = view_as<Victorian_Protector>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "0.8", "600", ally));
+		Victorian_Protector npc = view_as<Victorian_Protector>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "10000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -237,26 +237,19 @@ public Action Victorian_Protector_OnTakeDamage(int victim, int &attacker, int &i
 	if(attacker <= 0)
 		return Plugin_Continue;
 	
-	if(npc.m_flArmorCount > 0.0)
+	if(npc.m_flArmorCount <= 0.0 && npc.Anger == false)
 	{
-		float percentageArmorLeft = npc.m_flArmorCount / npc.m_flArmorCountMax;
-
-		if(percentageArmorLeft <= 0.0 && npc.Anger == false)
-		{
-			npc.Anger = true;
-			npc.m_iChanged_WalkCycle = 2;
-			npc.SetActivity("ACT_MP_RUN_MELEE");
-			if(IsValidEntity(npc.m_iWearable1))
-				RemoveEntity(npc.m_iWearable1);
-			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/C_Crossing_Guard/C_Crossing_Guard.mdl");
-			SetVariantString("0.75");
-			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		}
+		npc.Anger = true;
+		npc.m_iChanged_WalkCycle = 2;
+		npc.SetActivity("ACT_MP_RUN_MELEE");
+		if(IsValidEntity(npc.m_iWearable1))
+			RemoveEntity(npc.m_iWearable1);
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/C_Crossing_Guard/C_Crossing_Guard.mdl");
+		SetVariantString("0.75");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 	}
 	else
 	{
-		if(IsValidEntity(npc.m_iWearable4))
-			RemoveEntity(npc.m_iWearable4);
 		if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 		{
 			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -310,6 +303,7 @@ void Victorian_ProtectorBuildObject(Victorian_Protector npc, float distance)
 			SetVariantString("0.75");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 			npc.m_iWearable7 = npc.SpawnShield(5.0, "models/props_mvm/mvm_player_shield.mdl",40.0, false);
+			SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
 			npc.PlayBuildSound();
 			npc.m_flSpeed = 300.0;
 		}
