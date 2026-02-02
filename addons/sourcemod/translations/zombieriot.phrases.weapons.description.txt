@@ -1597,7 +1597,7 @@
 		"es"	"Llama al MEDICO para marcar un lugar para que el mortero dispare una bomba.\nHace daño masivo en area."
 		"fr"	"Appuyez MEDIC pour marquer un endroit où faire tomber un tir de mortier.\nBon pour les groupes d'ennemis."
 		"it"	"Premi il tasto MEDIC per selezionare un punto in cui il mortaio possa sganciare una granata.\nDanneggia massicciamente il gruppo, ottimo contro le masse."
-		"ko"	"-E를 눌러 박격포 발사 위치를 지정\n-높은 범위 피해를 주므로, 다수의 적 처리에 적합."
+		"ko"	"E를 눌러 박격포 발사 위치를 지정\n-높은 범위 피해를 주므로, 다수의 적 처리에 적합."
 	}
 	"Railgun Desc"
 	{
@@ -1605,7 +1605,7 @@
 		"es"	"Usalo llamando al MEDICO para disparar un gran laser.\nHace MUCHO daño al primer enemigo que golpea."
 		"fr"	"Appuyez MEDIC pour le faire tirer un rayon laser massif.\nInflige beaucoup de dégats au premier ennemi frappé. Bon pour les Boss."
 		"it"	"Usalo con MEDIC per fargli sparare un laser gigante.\nDanneggia enormemente il primo nemico colpito, ottimo contro i boss singoli."
-		"ko"	"-E를 누르면 거대한 레이저를 발사\n-처음으로 적중한 대상에게 매우 높은 피해를 줌. 단일 보스에게 적합."
+		"ko"	"E를 누르면 거대한 레이저를 발사\n처음으로 적중한 대상에게 매우 높은 피해를 줌. 단일 보스에게 적합."
 	}
 	"Food Fridge Desc"
 	{
@@ -1613,7 +1613,7 @@
 		"es"	"Cura 60 de vida al usarse, se mejora con mejoras Medicas."
 		"fr"	"Soigne pour 40 santé. Soins améliorés avec les améliorations Medigun."
 		"it"	"Cura per 60 Salute, scala con i potenziamenti del medico."
-		"ko"	"-사용시 체력 60 회복, 지원 개선의 영향을 받음."
+		"ko"	"사용시 체력 60 회복, 지원 개선의 영향을 받음."
 	}
 	"Village Desc"
 	{
@@ -1623,7 +1623,7 @@
 		"ru"	"Даёт различные усиления союзникам и может быть улучшена для получения дополнительных усилений.\nКупленные усиления сохраняются, если её сломать и восстановить."
 		"chi"   "为队友提供各种Buff，可以升级获得更多的buff\n建筑坏了后Buff将消失"
 		"it"	"Fornisce vari potenziamenti ai compagni di squadra e può essere potenziato per ottenerne altri.\nI potenziamenti acquistati rimangono indipendentemente dal fatto che siano rotti e ricostruiti."
-		"ko"	"-다양한 버프를 제공. 개선시 더 많은 버프를 제공.\n-이 구조물이 파괴되거나 재건되더라도 구매한 버프는 유지됨."
+		"ko"	"다양한 버프를 제공. 개선시 더 많은 버프를 제공.\n-이 구조물이 파괴되거나 재건되더라도 구매한 버프는 유지됨."
 	}
 	
 	"Cannibalism Desc"

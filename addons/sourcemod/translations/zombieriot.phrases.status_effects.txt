@@ -1898,14 +1898,17 @@
 	"Starting Grace Desc"
 	{
 		"en"	"Increases damage dealt by 25％, Decreases damage taken by 15％.\nAll buildings cost and cooldowns on building are 50％ reduced"
+		"ko"	"공격 피해량이 25％ 증가하고, 받는 피해가 15％ 감소합니다.\n모든 구조물의 설치 비용과 쿨타임이 50％ 감소합니다."
 	}
 	"Homebase Momentum"
 	{
 		"en" 	"Homebase Momentum"
+		"ko"	"본거지의 기세"
 	}
 	"Homebase Momentum Desc"
 	{
 		"en"	"During peace times in your homebase, gain 45％ Movementspeed and 50％ Jumpheight, Regen hp fast"
+		"ko"	"평화 페이즈 중 본거지에 있는 동안, 이동 속도가 45％, 점프 높이가 50％ 증가하며, 체력이 빠르게 재생됩니다."
 	}
 	"Anti-Waves"
 	{
@@ -2294,13 +2297,13 @@
 	{
 		"en" 	"Uncureable.\nPurge is after you.\nYou gain Primal fear much faster."
 		"it"	"Inguaribile.\nPurge ti insegue.\nAcquisti la Paura Primordiale molto più velocemente."
-		"ko"	"치유 불가.\n퍼지가 당신을 추격하고 있습니다.\n원초적 두려움을 훨씬 더 빠르게 얻게 됩니다."
+		"ko"	"치유 불가.\n퍼지가 당신을 추격하고 있습니다.\n원초적 공포를 훨씬 더 빠르게 얻게 됩니다."
 	}
 	"Primal Fear"
 	{
 		"en" 	"Primal Fear"
 		"it"	"Paura primaria"
-		"ko" 	"원초적 두려움"
+		"ko" 	"원초적 공포"
 	}
 	"Primal Fear Desc"
 	{
@@ -2313,7 +2316,7 @@
 	{
 		"en" 	"Primal Fear Hide"
 		"it"	"Paura Primaria Nascondi"
-		"ko" 	"원초적 두려움 숨겨짐"
+		"ko" 	"원초적 공포 숨겨짐"
 	}
 	"Liberal Tango"
 	{
@@ -2528,7 +2531,7 @@
 	{
 		"en"	"A bright light, is Ruina helping?\n{green}At stage start, creates a zone that buffs all allies within."
 		"it"	"Una luce intensa, Ruina sta aiutando? All'inizio della fase, crea una zona che potenzia tutti gli alleati al suo interno."
-		"ko"	"밝디 밝은 빛입니다. 루이나가 돕고 있는 걸까요?\n{green}스테이지 시작 시, 범위 내 모든 아군에게 버프를 부여하는 영역을 생성합니다."
+		"ko"	"밝디 밝은 빛이다. 루이나가 돕고 있는 걸까?\n{green}스테이지 시작 시, 범위 내 모든 아군에게 버프를 부여하는 영역을 생성합니다."
 	}
 	"Revival Stim Packs"
 	{
@@ -2540,7 +2543,7 @@
 	{
 		"en"	"Must be what Whiteflower used for his soldiers.\n{green}Upon being revived, gain a 15％ Movementspeed Bonus, and phase through enemies for 5 seconds."
 		"it"	"Deve essere quello che Whiteflower usava per i suoi soldati.\n{green}Una volta rianimato, guadagna un bonus di 15％ alla velocità di movimento e passa attraverso i nemici per 5 secondi."
-		"ko"	"배풍등이 그의 병사들에게 사용했던 것임이 틀림없습니다.\n{green}부활 시, 이동 속도 보너스 15％를 얻고 5초 동안 적을 통과합니다."
+		"ko"	"배풍등이 그의 병사들에게 사용했던 것임이 틀림없다.\n{green}부활 시, 이동 속도 보너스 15％를 얻고 5초 동안 적을 통과합니다."
 	}
 	"Kolum's View"
 	{
@@ -2599,185 +2602,221 @@
 	"The Haste"
 	{
 		"en"	"The Haste"
+		"ko"	"재빠른"
 	}
 	"The Haste Desc"
 	{
 		"en"	"Increases NPC movementspeed by 25％\nIncreases attackspeed by 300％"
+		"ko"	"NPC의 이동 속도가 25％ 증가합니다\n공격 속도가 300％ 증가합니다"
 	}
 	"Haste"
 	{
 		"en"	"Haste"
-	}
-	"The Big"
-	{
-		"en"	"The Haste"
-	}
-	"The Big Desc"
-	{
-		"en"	"Enlarges by 25％\nIncreases Resistance by 75％"
+		"ko"	"재빠른"
 	}
 	"The Big"
 	{
 		"en"	"The Big"
+		"ko"	"커다란"
 	}
 	"The Big Desc"
 	{
 		"en"	"Enlarges by 25％\nIncreases Resistance by 75％"
+		"ko"	"크기가 75％ 증가합니다\n저항력이 75％ 증가합니다"
 	}
 	"Big"
 	{
 		"en"	"Big"
+		"ko"	"커다란"
 	}
 	"The Strong"
 	{
 		"en"	"The Strong"
+		"ko"	"강력한"
 	}
 	"The Strong Desc"
 	{
 		"en"	"Increases Damage by 400％"
+		"ko"	"공격 피해량이 400％ 증가합니다"
 	}
 	"Strong"
 	{
 		"en"	"Strong"
+		"ko"	"강력한"
 	}
 	"The Tiny"
 	{
 		"en"	"The Tiny"
+		"ko"	"작은"
 	}
 	"The Tiny Desc"
 	{
 		"en"	"Reduces size by 75％\nIncreases Movementspeed by 50％"
+		"ko"	"크기가 75％ 감소합니다\n이동 속도가 50％ 증가합니다"
 	}
 	"Tiny"
 	{
 		"en"	"Tiny"
+		"ko"	"작은"
 	}
 	"The Bleeder"
 	{
 		"en"	"The Bleeder"
+		"ko"	"출혈의"
 	}
 	"The Bleeder Desc"
 	{
 		"en"	"On dealing damage, deals the same damage as truedamage bleed again over 4 seconds."
+		"ko"	"피해를 가할 시, 같은 양의 피해를 4초 동안 트루 데미지 출혈로써 가합니다."
 	}
 	"Bleeder"
 	{
 		"en"	"Bleeder"
+		"ko"	"출혈의"
 	}
 	"The Vampire"
 	{
 		"en"	"The Vampire"
+		"ko"	"뱀파이어"
 	}
 	"The Vampire Desc"
 	{
 		"en"	"On dealing damage, heals 1000％ of the damage dealt as health, can heal upto 2x max health."
+		"ko"	"피해를 가할 시, 가한 피해량의 1000％를 체력으로 회복합니다. 최대 체력의 2배까지 치유할 수 있습니다."
 	}
 	"Vampire"
 	{
 		"en"	"Vampire"
+		"ko"	"뱀파이어"
 	}
 	"The Anti Sea"
 	{
 		"en"	"The Anti Sea"
+		"ko"	"바다 대항"
 	}
 	"The Anti Sea Desc"
 	{
 		"en"	"When taking damage, if the enemy is too far away, take 0 damage."
+		"ko"	"피해를 받을 시, 적이 너무 멀리 떨어져있다면 모든 공격의 피해를 0으로 만듭니다."
 	}
 	"Anti Sea"
 	{
 		"en"	"Anti Sea"
+		"ko"	"바다 대항"
 	}
 	"The Sprayer"
 	{
 		"en"	"The Sprayer"
+		"ko"	"난사광"
 	}
 	"The Sprayer Desc"
 	{
 		"en"	"Randomly releases 10 projectiles that home."
+		"ko"	"무작위로 유도성 투사체를 10개 발사합니다."
 	}
 	"Sprayer"
 	{
 		"en"	"Sprayer"
+		"ko"	"난사광"
 	}
 	"The Gravitational"
 	{
 		"en"	"The Gravitational"
+		"ko"	"중력의"
 	}
 	"The Gravitational Desc"
 	{
 		"en"	"Sucks in nearby Players."
+		"ko"	"주변의 플레이어들을 끌어당깁니다."
 	}
 	"Gravitational"
 	{
 		"en"	"Gravitational"
+		"ko"	"중력의"
 	}
 	"1 UP"
 	{
 		"en"	"1 Up"
+		"ko"	"1 UP"
 	}
 	"1 UP Desc"
 	{
 		"en"	"Npc's Gain 1 extra healthbar"
+		"ko"	"NPC가 체력바 1개를 추가로 얻습니다.(생명 +1)"
 	}
 	"Regenerating"
 	{
 		"en"	"Regenerating"
+		"ko"	"재생하는"
 	}
 	"Regenerating Desc"
 	{
 		"en"	"Regenerate 20％ of max health every 3 seconds"
+		"ko"	"매 3초마다 최대 체력의 20％를 재생합니다."
 	}
 	"Laggy"
 	{
 		"en"	"Laggy"
+		"ko"	"렉걸리는"
 	}
 	"Laggy Desc"
 	{
 		"en"	"This npc lags"
+		"ko"	"이 NPC는 렉이 걸립니다."
 	}
 	"Verde"
 	{
 		"en"	"Verde"
+		"ko"	"초록색"
 	}
 	"Verde Desc"
 	{
 		"en"	"This npc is Verde"
+		"ko"	"이 NPC는 초록색입니다."
 	}
 	"Void"
 	{
 		"en"	"Void"
+		"ko"	"공허의"
 	}
 	"Warped"
 	{
 		"en"	"Warped"
+		"ko"	"왜곡된"
 	}
 	"The First"
 	{
 		"en"	"The First"
+		"ko"	"선봉대"
 	}
 	"The First Desc"
 	{
 		"en"	"Npc Gains 30％ Resistance, 300％ Damage, 2x Thinkspeed"
+		"ko"	"NPC의 저항력이 30％, 공격 피해량이 300％, 생각하는 속도가 2배 증가합니다."
 	}
 	"Xeno Infection"
 	{
 		"en"	"Xeno Infection"
+		"ko"	"제노에 감염된"
 	}
 	"Xeno Infection Desc"
 	{
 		"en"	"Npc Gains 25％ Resistance, 30％ Damage, but thinks 15％ slower, and regens over time upto 1.35x max health, if above 25％ max health, gain immensive buffs untill below\ninfects any enemy with xeno aswell."
+		"ko"	"NPC 저항력 25％, 피해량 30％ 증가. 생각 속도 15％ 감소. 최대 체력의 1.35배까지 재생. 체력이 25％ 이상이라면 그 이하가 될때까지 강력한 버프 획득\n다른 적에게도 제노를 감염시킴"
 	}
 	"Xeno"
 	{
 		"en"	"Xeno"
+		"ko"	"제노"
 	}
 	"Perfected Instinct"
 	{
 		"en"	"Perfected Instinct"
+		"ko"	"완성형 무의식의 극의"
 	}
 	"Perfected Instinct Desc"
 	{
 		"en"	"Npc Gains 30％ Resistance, 300％ Damage, 1.5x Thinkspeed, Gains a high chance to dodge attacks, the lower the hp, the higher the chance. On dodge, gain an immensive short speed bonus"
+		"ko"	"NPC 저항력 30％, 피해량 300％ 증가. 생각 속도 1.5배. 높은 확률로 공격을 회피, 체력이 감소할 수록 획률 증가. 회피 시 짧은 시간 동안 이동 속도 대폭 증가"
 	}
 }
