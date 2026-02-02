@@ -118,7 +118,7 @@ methodmap Chemical_Specialist < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 240.0;
+		npc.m_flSpeed = 230.0;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -177,10 +177,7 @@ static void Chemical_Specialist_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 
-	for(int i; i < 10; i++) // Remove all elementals except Plasma 
-	{
-		Elemental_RemoveDamage(iNPC, i, 1.0);
-	}
+	Elemental_ClearDamage(npc.index);
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -287,8 +284,7 @@ static int Chemical_SpecialistSelfDefense(Chemical_Specialist npc, float gameTim
 						float damageDealt = 10.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
-						if(NpcStats_VictorianCallToArms(npc.index))
-							StartBleedingTimer(target, npc.index, 4.0, 4, -1, DMG_TRUEDAMAGE, 0);
+						Elemental_AddNervousDamage(target, npc.index, 25);
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 					}

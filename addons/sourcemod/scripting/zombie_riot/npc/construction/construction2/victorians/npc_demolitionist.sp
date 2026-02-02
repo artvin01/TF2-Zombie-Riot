@@ -26,6 +26,9 @@ static const char g_MeleeAttackSounds[][] = {
 
 static const char g_MeleeHitSounds[] = "weapons/bat_baseball_hit_flesh.wav";
 
+static const char g_ExplosionSounds[] = "weapons/explode1.wav";
+
+
 void Demolitionist_OnMapStart_NPC()
 {
 	NPCData data;
@@ -86,6 +89,11 @@ methodmap Demolitionist < CClotBody
 	{
 		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 90);
 	}
+	public void PlayExplosionSound() 
+	{
+		EmitSoundToAll(g_ExplosionSounds, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+	}
+	
 	
 	public Demolitionist(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -130,7 +138,7 @@ methodmap Demolitionist < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "mmodels/workshop/player/items/heavy/sbox2014_leftover_trap/sbox2014_leftover_trap.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/sbox2014_leftover_trap/sbox2014_leftover_trap.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
@@ -217,8 +225,6 @@ static Action Demolitionist_OnTakeDamage(int victim, int &attacker, int &inflict
 	if(attacker <= 0)
 	return Plugin_Continue;
 	
-	if(IsValidEntity(npc.m_iWearable4))
-		RemoveEntity(npc.m_iWearable4);
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -275,9 +281,11 @@ static void DemolitionistSelfDefense(Demolitionist npc, float gameTime, int targ
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					Explode_Logic_Custom(40.0, -1, npc.index, -1, VecEnemy, 125.0, _, 0.75, true, _, false, _, Demolitionist_ExplodeHit);
+					ParticleEffectAt(VecEnemy, "ExplosionCore_buildings", 0.5);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
+					npc.PlayExplosionSound();
 				} 
 			}
 			delete swingTrace;
