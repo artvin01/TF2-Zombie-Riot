@@ -31,7 +31,7 @@ void SeaSwarmcaller_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Nethersea Swarmcaller");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseaswarmcaller");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_swarmcaller");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_swarmcaller");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;

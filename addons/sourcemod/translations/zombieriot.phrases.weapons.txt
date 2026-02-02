@@ -303,7 +303,7 @@
 	"The Trash Cannon"
 	{
 		"en"		"The Trash Cannon"
-		"ko"		"쓰레기 대포"
+		"ko"		"폐기물 대포"
 	}
 	"Outlaw's Railcannon"
 	{
@@ -1768,7 +1768,7 @@
 	"Compacted Rounds"
 	{
 		"en"		"Compacted Rounds"
-		"ko"		"압축형 탄약"
+		"ko"		"압축된 탄약"
 	}
 	"Antidote Coated Bullets"
 	{
@@ -2101,6 +2101,11 @@
 		"en"		"Enhance Active Weapon"
 		"ko"		"현재 들고있는 무기 강화"
 	}
+	"Enhance Last Bought Weapon"
+	{
+		"en"		"Enhance Last Bought Weapon"
+		"ko"		"가장 최근 구매한 무기 강화"
+	}
 	"Level Perks"//Lvl Perks here
 	{
 		"en"		"Level Perks"
@@ -2306,7 +2311,7 @@
 	"Concentrated Agelitus"
 	{
 		"en"		"Concentrated Agelitus"
-		"ko"		"집중된 어질리투스"
+		"ko"		"농축된 어질리투스"
 	}
 	"Passive Perks"
 	{
@@ -2360,6 +2365,21 @@
 	{
 		"en"		"Hardened Stance"
 		"ko"		"단단한 골격"
+	}
+	"Living Armor"
+	{
+		"en"		"Living Armor"
+		"ko"		"생체 장갑"
+	}
+	"Living Armor Desc"
+	{
+		"en"		"-Armor now regens over 15 seconds if not hurt\n-Armor icon changes\n-Max Armor is halved\n-Armor protects only 50％ instead of 75％\n-Cant get armor from buildings\n-Armor corrosion disables this perk"
+		"ko"		"-피해를 입지 않으면 아머가 15초에 거쳐 재생\n-아머 아이콘 변경, 최대 아머가 절반으로 감소\n-아머의 피해 방어가 75％에서 50％로 감소\n-구조물에서 아머 획득 불가, 아머 부식이 있으면 퍽 비활성화"
+	}
+	"Living Armor Chat"
+	{
+		"en"		"When buying or selling this perk, you lose all armor, and cant regen armor if done outside of setup for some time."
+		"ko"		"이 퍽을 구매 및 판매할 때, 모든 아머를 잃게 되며, 준비 단계가 아니었다면 일시적으로 아머 재생이 중단됩니다."
 	}
 	"Sticky Support Grenades"
 	{
@@ -2538,7 +2558,7 @@
 	"Kahmlsteins Last Will"
 	{
 		"en"		"Kahmlsteins Last Will"
-		"ko"		"카멜슈타인의 마지막 의지"
+		"ko"		"카멜슈타인의 유언장"
 	}
 	"Matrix's Curse"
 	{
@@ -2598,7 +2618,7 @@
 	"Avangard's Processing Core-B"
 	{
 		"en"		"Avangard's Processing Core-B"
-		"ko"		"아방가르드의 처리 코어-B"
+		"ko"		"아방가르드의 프로세싱 코어-B"
 	}
 	"Iberian and Expidonsan Training"
 	{
@@ -2762,7 +2782,7 @@
 		"nl"		"Apen Kennis"
 		"chi"       	"特殊技能"
 		"it"		"Conoscenza della scimmia"
-		"ko"		"원숭이의 지식"
+		"ko"		"원숭이 지식"
 	}
 	"Fast Tack Attacks [Rare]"
 	{
@@ -2930,7 +2950,7 @@
 		"nl"		"Groot Ballonsabotage [Legendarisch]"
 		"chi"		"大型气球毁灭者[传奇]"
 		"it"		"Sabotaggio di Big Bloon [Leggendario]"
-		"ko"		"큰 풍선 파괴공작 [전설]"
+		"ko"		"큰 풍선 파괴 [전설]"
 	}
 	"SUPER Range [Rare]"
 	{
@@ -2966,7 +2986,7 @@
 		"nl"		"Snel Brouwen [Ongewoon]"
 		"chi"		"快速酿造[罕见]"
 		"it"		"Birra veloce [Non comune]"
-		"ko"		"빠른 약품 제조 [특별]"
+		"ko"		"빠른 약 제조 [특별]"
 	}
 	"Strike Down The False [Uncommon]"
 	{
@@ -2978,7 +2998,7 @@
 		"nl"		"Sla neer de valse [ongewoon]"
 		"chi"		"测谎仪[罕见]"
 		"it"		"Abbattere il Falso [Non comune]"
-		"ko"		"가짜를 끌어내려라 [특별]"
+		"ko"		"가짜는 끌어내려 [특별]"
 	}
 	"Flame Jet [Common]"
 	{
@@ -3239,7 +3259,7 @@
 		"ru"       "Нейтронно-звёздная пушка"
 		"chi"       "中子星爆炸炮"
 		"it"		"Cannone a scoppio a stella di neutroni"
-		"ko"	   "중성자별 연발포"
+		"ko"	   "중성자별 격발포"
 	}
 	"People Popper"
 	{
@@ -3659,17 +3679,17 @@
 	"Megawatt Massacre"
 	{
 		"en"	"Megawatt Massacre"
-		"ko"	"메가와트 매서커"
+		"ko"	"메가와트 대학살"
 	}
 	"Crisis Conductor"
 	{
 		"en"	"Crisis Conductor"
-		"ko"	"크라이시스 컨덕터"
+		"ko"	"고비 지휘자"
 	}
 	"Mortal Blackout"
 	{
 		"en"	"Mortal Blackout"
-		"ko"	"모탈 블랙아웃"
+		"ko"	"필멸의 소등"
 	}
 	"Junker Staff"
 	{
@@ -3679,7 +3699,7 @@
 	"Staff of the Skull Servants"
 	{
 		"en"		"Staff of the Skull Servants"
-		"ko"		"저주받은 하인의 스태프"
+		"ko"		"저주받은 하인 스태프"
 	}
 	"Impact Lance"
 	{
@@ -3716,12 +3736,22 @@
 		"en"		"Pristine Expidonsan Repair Device"
 		"ko"		"온전한 엑스피돈사 수리 장치"
 	}
+	"Expert Trapper"
+	{
+		"en"		"Expert Trapper"
+		"ko"		"함정 전문가"
+	}
+	"Builder Weapons"
+	{
+		"en"		"Builder Weapons"
+		"ko"		"건축가 무기"
+	}
 	"Cleanse Gun"
 	{
 		"en"		"Cleanse Gun"
 		"ko"		"정화총"
 	}
-	"Cleanse Gun"
+	"Purifying Cleaner"
 	{
 		"en"		"Purifying Cleaner"
 		"ko"		"정화총 클리너"
@@ -3869,7 +3899,7 @@
 	"Greater Garbage"
 	{
 		"en"		"Greater Garbage"
-		"ko"		"대형 쓰레기 대포"
+		"ko"		"대형 폐기물 대포"
 	}
 	"Trash Metal"
 	{
@@ -4096,11 +4126,6 @@
 		"en"		"CBS's Blade"
 		"ko"		"잔혹한 기독교 스나이퍼의 검"
 	}
-	"Steam Knight's Spear"
-	{
-		"en"		"Steam Knight's Spear"
-		"ko"		"증기 기사의 창"
-	}
 	"Полумесяц"
 	{
 		"en"		"Полумесяц"
@@ -4114,12 +4139,12 @@
 	"Telum Pro Lege"
 	{
 		"en"		"Telum Pro Lege"
-		"ko"		"텔룸 프로 레지(법적 심판 무기)"
+		"ko"		"법적 심판 무기"
 	}
 	"Exactio Legis"
 	{
 		"en"		"Exactio Legis"
-		"ko"		"엑사티오 레지스(법 집행자)"
+		"ko"		"법 집행자"
 	}
 	"Полнолуние"
 	{
@@ -4284,7 +4309,7 @@
 	"Completionist Wand"
 	{
 		"en"		"Completionist Wand"
-		"ko"		"완벽주의자의 완드"
+		"ko"		"완벽주의자 완드"
 	}
 	"A Little Bit Of A Fast Wand"
 	{
@@ -4304,7 +4329,7 @@
 	"King of the Skull Servants"
 	{
 		"en"		"King of the Skull Servants"
-		"ko"		"저주받은 하인들의 왕"
+		"ko"		"저주받은 하인 킹"
 	}
 	"Ruilus Blade"
 	{
@@ -4354,7 +4379,7 @@
 	"Lifetime Supply"
 	{
 		"en"		"Lifetime Supply"
-		"ko"		"평생 배급"
+		"ko"		"수명 공급"
 	}
 	"Neodymium Nightmare"
 	{
@@ -4374,12 +4399,12 @@
 	"Berserker Brew"
 	{
 		"en"		"Berserker Brew"
-		"ko"		"광전사 브루"
+		"ko"		"광전사 포션"
 	}
 	"Unstable Concoction"
 	{
 		"en"		"Unstable Concoction"
-		"ko"		"불안정한 화합물"
+		"ko"		"불안정한 혼합물"
 	}
 	"Lead to Australium"
 	{
@@ -4404,7 +4429,7 @@
 	"Permanent Brew"
 	{
 		"en"		"Permanent Brew"
-		"ko"		"영원의 브루"
+		"ko"		"영원의 포션"
 	}
 	"Transforming Tonic Pap"
 	{
@@ -4419,7 +4444,7 @@
 	"Snowey Attraction Staff"
 	{
 		"en"		"Snowey Attraction Staff"
-		"ko"		"백설의 이끌림의 스태프"
+		"ko"		"백설 이끌림의 스태프"
 	}
 	"Chainblade"
 	{
@@ -5086,6 +5111,26 @@
 		"ko"	"증기 기사의 창"
 		"it"	"Lancia del cavaliere del vapore"
 	}
+	"Explosault Rifle"
+	{
+		"en"	"Explosault Rifle"
+		"ko"	"폭썰트 라이플"
+	}
+	"Enhancement: Heat Sink Discharge"
+	{
+		"en"	"Enhancement: Heat Sink Discharge"
+		"ko"	"개조: 방열판 사출"
+	}
+	"Enhancement: Overheating Protection Removed"
+	{
+		"en"	"Enhancement: Overheating Protection Removed"
+		"ko"	"개조: 과열 보호 제거"
+	}
+	"Enhancement: Airstrike Beacon"
+	{
+		"en"	"Enhancement: Heat Sink Discharge"
+		"ko"	"개조: 폭격 유도 비콘"
+	}
 	"Boomerang"
 	{
 		"en"	"Boomerang"
@@ -5228,7 +5273,7 @@
 	{
 		"en" "Voided Rejuvenator Pack"
 		"it" "Pacchetto ringiovanente per il vuoto"
-		"ko" "공허화된 원기 회복사 상자"
+		"ko" "공허화된 원기 회복사의 상자"
 	}
 	"Cheesy Slimy Aid Kit"
 	{
@@ -5354,14 +5399,14 @@
 		"en" "Plasmic Surprise"
 		"es" "Sorpresa Plasmica"
 		"it" "Sorpresa plasmatica"
-		"ko" "플라즈믹 서프라이즈"
+		"ko" "플라즈마 서프라이즈"
 	}
 	"Plasmic Dosage"
 	{
 		"en" "Plasmic Dosage"
 		"es" "Dosis Plasmica"
 		"it" "Dosaggio plasmatico"
-		"ko" "투약형 플라즈마"
+		"ko" "투약용 플라즈마"
 	}
 	"Plasm-ubblinator"
 	{
@@ -5405,7 +5450,7 @@
 	"Confess Your Fears"
 	{
 		"en"	"Confess Your Fears"
-		"ko"	"네 두려움을 고백하라"
+		"ko"	"네 두려움에 굴복하라"
 	}
 	"Repaired Blade"
 	{
@@ -5498,7 +5543,7 @@
 	{
 		"en"	"The Crimson"
 		"it"	"Il Cremisi"
-		"ko"	"''진홍''"
+		"ko"	"그림자처럼"
 	}
 	"Effect:"
 	{
@@ -5522,7 +5567,7 @@
 	{
 		"en"	"Potion of Flexibility"
 		"it"	"Pozione della Flessibilità"
-		"ko"	"유연성 포션"
+		"ko"	"몸풀기 포션"
 	}
 	"Potion of Flexibility Desc"
 	{
@@ -5570,7 +5615,7 @@
 	{
 		"en"	"Potion of Beef"
 		"it"	"Pozione di manzo"
-		"ko"	"근육 포션"
+		"ko"	"소고기 포션"
 	}
 	"Potion of Beef Desc"
 	{

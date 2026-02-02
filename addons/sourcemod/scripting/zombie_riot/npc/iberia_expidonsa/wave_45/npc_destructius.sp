@@ -51,9 +51,9 @@ void IberianDestructius_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Destructius");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_destructius");
-	strcopy(data.Icon, sizeof(data.Icon), "diversionistico");
+	strcopy(data.Icon, sizeof(data.Icon), "sentry_buster");
 	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_SUPPORT;
+	data.Flags = MVM_CLASS_FLAG_MISSION;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);

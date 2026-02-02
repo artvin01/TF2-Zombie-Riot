@@ -54,61 +54,6 @@ static char g_MeleeMissSounds[][] = {
 	"npc/fast_zombie/claw_miss2.wav",
 };
 
-/*
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "TestName");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_test");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
-	data.Flags = 0;
-	data.Category = Type_Ally;
-	data.Func = ClotSummon;
-	NPC_Add(data);
-
-	#define MVM_CLASS_FLAG_NONE				0
-	#define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// Base Normal
-	#define MVM_CLASS_FLAG_SUPPORT			(1 << 1)	// Base Support
-	#define MVM_CLASS_FLAG_MISSION			(1 << 2)	// Base Support, Always Show
-	#define MVM_CLASS_FLAG_MINIBOSS			(1 << 3)	// Add Red Background
-	#define MVM_CLASS_FLAG_ALWAYSCRIT		(1 << 4)	// Add Blue Borders
-	#define MVM_CLASS_FLAG_SUPPORT_LIMITED	(1 << 5)	// Add to Support?
-
-	Type_Hidden = -1,
-	Type_Ally = 0,
-	Type_Special,
-	Type_Raid,
-	Type_Common,
-	Type_Alt,
-	Type_Xeno,
-	Type_BTD,
-	Type_Medieval,
-	Type_COF,
-	Type_Seaborn,
-	Type_Expidonsa,
-	Type_Interitus
-
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
-{
-	return TestNpcSpawn(vecPos, vecAng, team);
-}
-
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
-{
-	return TestNpcSpawn(vecPos, vecAng, team, data);
-}
-		If barracks
-		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = _NPCDeath;
-		func_NPCThink[npc.index] = _ClotThink;
-
-
-		func_NPCDeath[npc.index] = _NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = _OnTakeDamage;
-		func_NPCThink[npc.index] = _ClotThink;
-		func_NPCAnimEvent[npc.index] = INVALID_FUNCTION;
-	
-*/
-
 static int NPCID;
 
 public void RefragmentedHeadcrabZombie_OnMapStart_NPC()
@@ -125,6 +70,7 @@ public void RefragmentedHeadcrabZombie_OnMapStart_NPC()
 
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/zombie/classic.mdl");
+	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Refragmented Headcrab Zombie");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_refragmented_headcrabzombie");
@@ -181,7 +127,11 @@ methodmap RefragmentedHeadcrabZombie < CClotBody
 		
 	}
 	
-	
+	property bool m_bEnemyIsClose
+	{
+		public get()							{ return b_FUCKYOU[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
+	}
 	
 	public RefragmentedHeadcrabZombie(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -194,31 +144,16 @@ methodmap RefragmentedHeadcrabZombie < CClotBody
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		npc.m_flMeleeArmor = 0.10;
-		npc.m_flRangedArmor = 0.10;
-
-		//This is the guy responsible for the sick ass unusual effect attached to the npc
-		//Originally wasn't a wearable, had to be made a wearable though because tf2 code is gay and flame particles remove the unusual effect
-		npc.m_iWearable1 = TF2_CreateGlow_White("models/zombie/classic.mdl", npc.index, 1.15);
-		if(IsValidEntity(npc.m_iWearable1))
-		{
-			SetEntProp(npc.m_iWearable1, Prop_Send, "m_bGlowEnabled", false);
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_ENVIRONMENTAL);
-			TE_SetupParticleEffect("utaunt_signalinterference_parent", PATTACH_ABSORIGIN_FOLLOW, npc.m_iWearable1);
-			TE_WriteNum("m_bControlPoint1", npc.m_iWearable1);	
-			TE_SendToAll();
-		}
-
-		//MUST be set to render_glow, otherwise aforementioned unusual effect will overlap with the npc's transparent-ness and it'll look shit
-		SetEntityRenderMode(npc.index, RENDER_GLOW);
-		SetEntityRenderColor(npc.index, 0, 0, 125, 200);
+		RefragmentedBase_Init(npc.index);
 		
 		//IDLE
 		npc.m_flSpeed = 200.0;
@@ -232,7 +167,6 @@ methodmap RefragmentedHeadcrabZombie < CClotBody
 	}
 	
 }
-
 
 public void RefragmentedHeadcrabZombie_ClotThink(int iNPC)
 {
@@ -274,25 +208,9 @@ public void RefragmentedHeadcrabZombie_ClotThink(int iNPC)
 		//PluginBot_NormalJump(npc.index);
 	}
 	
-	int closest = npc.m_iTarget;
-
-	//Shitty poopy code but it works, if you're close enough and if you're not a building, the npc will take true damage-damage
-	float vecTarget2[3]; WorldSpaceCenter(closest, vecTarget2);
-	float VecSelfNpc2[3]; WorldSpaceCenter(npc.index, VecSelfNpc2);
-	float distance = GetVectorDistance(vecTarget2, VecSelfNpc2, true);
-	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.25) && !i_IsABuilding[closest])
-	{
-		npc.PlayHurtSound();
-		SDKHooks_TakeDamage(npc.index, closest, closest, 10.0, DMG_TRUEDAMAGE, -1, _, vecMe);
-		//Explode_Logic_Custom(10.0, npc.index, npc.index, -1, vecMe, 15.0, _, _, false, 1, false);
-		SetEntityRenderColor(npc.index, 180, 0, 0, 200);
-	}
-	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.25) && !i_IsABuilding[closest])
-	{
-		SetEntityRenderColor(npc.index, 0, 0, 125, 200);
-	}
+	RefragmentedBase_OnThink(npc.index, 10.0);
 	
+	int closest = npc.m_iTarget;
 	if(IsValidEnemy(npc.index, closest))
 	{
 		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
@@ -420,7 +338,6 @@ public void RefragmentedHeadcrabZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-
-	if(IsValidEntity(npc.m_iWearable1))
-		RemoveEntity(npc.m_iWearable1);
+	
+	RefragmentedBase_OnDeath(npc.index);
 }

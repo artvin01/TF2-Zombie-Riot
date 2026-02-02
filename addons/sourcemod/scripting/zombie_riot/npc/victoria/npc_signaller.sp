@@ -35,8 +35,6 @@ static const char g_hornsound[][] = {
 	"weapons/buff_banner_horn_blue.wav",
 };
 
-static int i_signaller_particle[MAXENTITIES];
-
 void VictorianSignaller_OnMapStart_NPC()
 {
 	NPCData data;
@@ -46,8 +44,18 @@ void VictorianSignaller_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
-	NPC_Add(data);  
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_hornsound);
+	PrecacheModel("models/player/soldier.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -61,7 +69,6 @@ methodmap VictorianSignaller < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
@@ -76,6 +83,41 @@ methodmap VictorianSignaller < CClotBody
 	public void PlayHornSound() 
 	{
 		EmitSoundToAll(g_hornsound[GetRandomInt(0, sizeof(g_hornsound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL , _, 0.5, GetRandomInt(80,110));
+	}
+	
+	property float m_flChangeMovement
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	
+	property float m_fXPosSave
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_fZPosSave
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float m_fYPosSave
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	
+	public void SaveTreePos(float VecTarget[3])
+	{
+		this.m_fXPosSave=VecTarget[0];
+		this.m_fZPosSave=VecTarget[1];
+		this.m_fYPosSave=VecTarget[2];
+	}
+	public void LoadTreePos(float VecTarget[3])
+	{
+		VecTarget[0]=this.m_fXPosSave;
+		VecTarget[1]=this.m_fZPosSave;
+		VecTarget[2]=this.m_fYPosSave;
 	}
 	
 	public VictorianSignaller(float vecPos[3], float vecAng[3], int ally)
@@ -103,14 +145,11 @@ methodmap VictorianSignaller < CClotBody
 		Is_a_Medic[npc.index] = true;
 		npc.m_flSpeed = 200.0;
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flChangeMovement = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_iChanged_WalkCycle = -1;
 		
-		float flPos[3], flAng[3];
-				
-		npc.GetAttachment("m_vecAbsOrigin", flPos, flAng);
-		i_signaller_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_teamcolor_blue", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0}));
-		npc.GetAttachment("", flPos, flAng);
-
+		npc.m_iWearable7 = ParticleEffectAt_Parent(vecPos, "utaunt_aestheticlogo_teamcolor_blue", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0});
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_bugle/c_battalion_bugle.mdl");
 		SetVariantString("1.2");
@@ -139,7 +178,7 @@ methodmap VictorianSignaller < CClotBody
 	}
 }
 
-public void VictorianSignaller_ClotThink(int iNPC)
+static void VictorianSignaller_ClotThink(int iNPC)
 {
 	VictorianSignaller npc = view_as<VictorianSignaller>(iNPC);
 	float gameTime = GetGameTime(npc.index);
@@ -173,13 +212,7 @@ public void VictorianSignaller_ClotThink(int iNPC)
 			SmiteNpcToDeath(npc.index);
 			return;
 		}
-		
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
-		if(!NpcStats_IsEnemySilenced(npc.index))
-		{
-			ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Ally Empowerment", 1.5);
-		}
-			
+		npc.m_flGetClosestTargetTime = gameTime + 1.0;	
 	}
 
 	if(gameTime > npc.m_flNextMeleeAttack)
@@ -189,48 +222,96 @@ public void VictorianSignaller_ClotThink(int iNPC)
 		npc.m_flNextMeleeAttack = gameTime + 7.50;
 	}
 
-	gameTime = GetGameTime() + 0.5;
-
-	if(!NpcStats_IsEnemySilenced(npc.index))
+	int team = GetTeam(npc.index);
+	if(team == 2)
 	{
-		int team = GetTeam(npc.index);
-		if(team == 2)
+		for(int client = 1; client <= MaxClients; client++)
 		{
-			for(int client = 1; client <= MaxClients; client++)
+			if(IsClientInGame(client) && IsEntityAlive(client))
 			{
-				if(IsClientInGame(client) && IsEntityAlive(client))
-				{
-					ApplyStatusEffect(npc.index, client, "Call To Victoria", 2.0);
-				}
+				ApplyStatusEffect(npc.index, client, "Call To Victoria", 2.0);
 			}
 		}
-
-		for(int i; i < i_MaxcountNpcTotal; i++)
+	}
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
-			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+			if(GetTeam(entity) == team)
 			{
-				if(GetTeam(entity) == team)
-				{
-					ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
-				}
+				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
 			}
 		}
 	}
 	if(npc.m_iTargetAlly > 0)
 	{
-		npc.SetGoalEntity(npc.m_iTargetAlly);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		switch(VictorianSignaller_Work(npc, gameTime, flDistanceToTarget))
+		{
+			case 0:
+			{
+				if(npc.m_iChanged_WalkCycle != 0)
+				{
+					npc.StartPathing();
+					npc.m_bisWalking = true;
+					npc.m_bAllowBackWalking = false;
+					npc.m_flSpeed = 200.0;
+					npc.m_iChanged_WalkCycle = 0;
+				}
+				if(flDistanceToTarget < npc.GetLeadRadius())
+				{
+					float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
+				}
+				else
+					npc.SetGoalEntity(npc.m_iTargetAlly);
+			}
+			case 1:
+			{
+				if(npc.m_iChanged_WalkCycle != 1)
+				{
+					npc.StopPathing();
+					npc.m_bisWalking = false;
+					npc.m_bAllowBackWalking = false;
+					npc.m_flSpeed = 0.0;
+					npc.m_iChanged_WalkCycle = 1;
+				}
+			}
+			case 2:
+			{
+				if(npc.m_iChanged_WalkCycle != 2)
+				{
+					npc.StartPathing();
+					npc.m_bisWalking = true;
+					npc.m_bAllowBackWalking = true;
+					npc.m_flSpeed = 200.0;
+					npc.m_iChanged_WalkCycle = 2;
+				}
+				if(flDistanceToTarget < npc.GetLeadRadius())
+				{
+					float vPredictedPos[3];
+					npc.LoadTreePos(vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
+				}
+				else
+					npc.SetGoalEntity(npc.m_iTargetAlly);
+			}
+		}
 	}
-
 	npc.PlayIdleSound();
 }
 
-void VictorianSignaller_NPCDeath(int entity)
+static void VictorianSignaller_NPCDeath(int entity)
 {
 	VictorianSignaller npc = view_as<VictorianSignaller>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable5))
@@ -243,11 +324,74 @@ void VictorianSignaller_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+}
 
-	int particle = EntRefToEntIndex(i_signaller_particle[npc.index]);
-	if(IsValidEntity(particle))
+static int VictorianSignaller_Work(VictorianSignaller npc, float gameTime, float distance)
+{
+	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.7)
 	{
-		RemoveEntity(particle);
-		i_signaller_particle[npc.index]=INVALID_ENT_REFERENCE;
+		if(gameTime > npc.m_flChangeMovement)
+		{
+			npc.m_flChangeMovement=gameTime+GetRandomFloat(3.0, 4.0);
+			float RNGPos[3];
+			VictoriaSignaller_Move(npc, 200.0, 800.0, RNGPos);
+			npc.SaveTreePos(RNGPos);
+		}
+		return (gameTime > npc.m_flChangeMovement-2.0) ? 1 : 2;
+	}
+	return 0;
+}
+
+static void VictoriaSignaller_Move(VictorianSignaller npc, float min, float max, float output[3])
+{
+	float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget);
+	for(int loop = 1; loop <= 500; loop++)
+	{
+		CNavArea RandomArea = GetRandomNearbyArea(vecTarget, max);
+		if(RandomArea == NULL_AREA)
+			break;
+		int NavAttribs = RandomArea.GetAttributes();
+		if(NavAttribs & NAV_MESH_AVOID)
+			continue;
+		float vPredictedPos[3]; RandomArea.GetCenter(vPredictedPos);
+		vPredictedPos[2] += 1.0;
+		
+		if(GetVectorDistance(vPredictedPos, vecTarget, true) < (min * min))
+			continue;
+		
+		if(IsPointHazard(vPredictedPos))
+			continue;
+		if(IsPointHazard(vPredictedPos))
+			continue;
+			
+		static float hullcheckmaxs_Player_Again[3];
+		static float hullcheckmins_Player_Again[3];
+		
+		hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+		hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );	
+		
+		if(IsPointHazard(vPredictedPos))
+			continue;
+		
+		vPredictedPos[2] += 18.0;
+		if(IsPointHazard(vPredictedPos))
+			continue;
+		
+		vPredictedPos[2] -= 18.0;
+		vPredictedPos[2] -= 18.0;
+		vPredictedPos[2] -= 18.0;
+		if(IsPointHazard(vPredictedPos))
+			continue;
+		vPredictedPos[2] += 18.0;
+		vPredictedPos[2] += 18.0;
+		
+		if(IsSpaceOccupiedIgnorePlayers(vPredictedPos, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(vPredictedPos, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
+			continue;
+		
+		if(vPredictedPos[0])
+		{
+			output=vPredictedPos;
+			break;
+		}
 	}
 }

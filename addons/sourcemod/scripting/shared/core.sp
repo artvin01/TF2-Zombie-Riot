@@ -48,16 +48,16 @@
 
 #if defined ZR
 #define NPC_HARD_LIMIT		40
-#define ZR_MAX_NPCS		196
+#define ZR_MAX_NPCS		752
 #define ZR_MAX_LAG_COMP		128 
-#define ZR_MAX_BUILDINGS	128 //cant ever have more then 64 realisticly speaking
+#define ZR_MAX_BUILDINGS	752 //cant ever have more then 64 realisticly speaking
 #define ZR_MAX_TRAPS		64
 #define ZR_MAX_SPAWNERS		256
 #else
 
-#define ZR_MAX_NPCS		256
-#define ZR_MAX_LAG_COMP		256 
-#define ZR_MAX_BUILDINGS	256
+#define ZR_MAX_NPCS		752
+#define ZR_MAX_LAG_COMP		752 
+#define ZR_MAX_BUILDINGS	752
 
 #endif
 
@@ -182,10 +182,10 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 
 #include "global_arrays.sp"
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
-#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_228.mdl"
+#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_230.mdl"
 
 //model uses self made IK rigs, to not break the top stuff.
-#define COMBINE_CUSTOM_2_MODEL 		"models/zombie_riot/combine_attachment_police_secondmodel_22.mdl"
+#define COMBINE_CUSTOM_2_MODEL 		"models/zombie_riot/combine_attachment_police_secondmodel_24.mdl"
 
 #define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_52.mdl"
 /*
@@ -1006,6 +1006,7 @@ public void OnPluginEnd()
 #if defined ZR
 //	Waves_MapEnd(); DO NOT CALL THIS ON PLUGIN END, plugin ends anways, why change anything???
 	RemoveMVMLogicSafety();
+	Vehicle_PluginEnd();
 #endif
 	float WaitingForPlayersTime = FindConVar("mp_waitingforplayers_time").FloatValue;
 	if(WaitingForPlayersTime <= 0.0)
@@ -1141,6 +1142,7 @@ public void OnMapStart()
 	Zero(f_ImmuneToFalldamage);
 	Zero(f_DelayLookingAtHud);
 	Zero(f_TimeUntillNormalHeal);
+	Zero(f_LivingArmorPenalty);
 	Zero(f_ClientWasTooLongInsideHurtZone);
 	Zero(f_ClientWasTooLongInsideHurtZoneDamage);
 	Zero(f_ClientWasTooLongInsideHurtZoneStairs);
@@ -1436,11 +1438,14 @@ public Action Command_Hudnotif(int client, int args)
 public Action GetPos(int client, int args)
 {
 	float pos[3];
+	float Ang[3];
 	GetEntPropVector(client, Prop_Send, "m_vecOrigin", pos);
 	ReplyToCommand(client, "m_vecOrigin: %f %f %f", pos[0], pos[1], pos[2]);
 
-	GetClientEyeAngles(client, pos);
-	ReplyToCommand(client, "m_vecAngles: %f %f %f", pos[0], pos[1], pos[2]);
+	GetClientEyeAngles(client, Ang);
+	ReplyToCommand(client, "m_vecAngles: %f %f %f", Ang[0], Ang[1], Ang[2]);
+
+	ReplyToCommand(client, "Bulding Copypaste: %.1f %.1f %.1f;%.1f %.1f %.1f", pos[0], pos[1], pos[2], Ang[0], Ang[1], Ang[2]);
 	return Plugin_Handled;
 }
 
@@ -1663,7 +1668,7 @@ public void OnClientDisconnect(int client)
 	RTSCamera_ClientDisconnect(client);
 #endif
 
-	i_ClientHasCustomGearEquipped[client] = false;
+	i_ClientHasCustomGearEquipped[client] = 0;
 	i_EntityToAlwaysMeleeHit[client] = 0;
 	ReplicateClient_Svairaccelerate[client] = -1.0;
 	ReplicateClient_BackwardsWalk[client] = -1.0;
@@ -1788,11 +1793,30 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 
 		}
 	}
+
+	if(buttons & (IN_ATTACK2|IN_RELOAD))
+		buttons |= IN_SPEED;
 #endif
 //Is player active? atleast somewhat.
 	if(buttons > 0)
 	{
 		f_PlayerLastKeyDetected[client] = GetGameTime() + 2.0;
+	}
+	if(EntityFuncPlayerRunCmd[client] && EntityFuncPlayerRunCmd[client] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, EntityFuncPlayerRunCmd[client]);
+		Call_PushCell(client);
+		Call_PushCellRef(buttons);
+		Call_PushCellRef(impulse);
+		Call_PushArray(vel, sizeof(vel));
+		Call_PushArray(angles, sizeof(angles));
+		Call_PushCellRef(weapon);
+		Call_PushCellRef(subtype);
+		Call_PushCellRef(cmdnum);
+		Call_PushCellRef(tickcount);
+		Call_PushCellRef(seed);
+		Call_PushArray(mouse, sizeof(mouse));
+		Call_Finish();
 	}
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	
@@ -2589,6 +2613,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 		b_IsATrigger[entity] = false;
 		b_IsATriggerHurt[entity] = false;
+		b_StaticNPC[entity] = false;
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
 		b_CanSeeBuildingValues[entity] = false;
@@ -2690,6 +2715,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Board_EntityCreated(entity);
 
 		Elemental_ClearDamage(entity);
+		Dungeon_EntityCreated(entity);
 #endif
 
 #if defined RPG
@@ -3096,7 +3122,7 @@ void RemoveNpcThingsAgain(int entity)
 public void OnEntityDestroyed(int entity)
 {
 #if !defined NOG
-	DHook_EntityDestoryed();
+	DHook_EntityDestroyed();
 #endif
 	
 	if(entity > 0 && entity < MAXENTITIES)
@@ -3745,7 +3771,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		DHook_RespawnPlayer(target);
 		
 		float pos[3], ang[3];
-		GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
+		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos);
 		GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 		ang[2] = 0.0;
 		SetEntProp(target, Prop_Send, "m_bDucked", true);

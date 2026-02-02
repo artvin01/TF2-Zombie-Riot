@@ -47,7 +47,7 @@ void SeabornGuard_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Seaborn Guard");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_guard");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_guard");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_guard");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;

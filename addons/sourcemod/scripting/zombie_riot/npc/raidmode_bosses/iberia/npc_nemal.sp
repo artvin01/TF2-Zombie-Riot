@@ -108,7 +108,7 @@ void Nemal_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Nemal");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_nemal");
-	strcopy(data.Icon, sizeof(data.Icon), "nemal");
+	strcopy(data.Icon, sizeof(data.Icon), "nemal_1");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -161,7 +161,7 @@ methodmap Nemal < CClotBody
 		public get()							{ return fl_NextChargeSpecialAttack[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextChargeSpecialAttack[this.index] = TempValueForProperty; }
 	}
-	property float f_NemalRocketJumpCD
+	property float f_NemalRocketJumpCDfea
 	{
 		public get()							{ return fl_NextRangedBarrage_Singular[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextRangedBarrage_Singular[this.index] = TempValueForProperty; }

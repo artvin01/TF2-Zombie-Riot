@@ -2247,7 +2247,7 @@ void SSBChair_SummonAlly(int ssb, char[] plugin_name, int health = 0, int count,
 	}
 	else
 	{
-		int postWaves = CurrentRound - Waves_GetMaxRound();
+		int postWaves = CurrentRound[Rounds_Default] - Waves_GetMaxRound();
 		Freeplay_AddEnemy(postWaves, enemy, count);
 		if(count > 0)
 		{

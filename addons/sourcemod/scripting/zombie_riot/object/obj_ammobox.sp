@@ -187,6 +187,8 @@ int AmmoboxUsed(int client, int entity)
 				}
 
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+				if(Dungeon_Mode())
+					ApplyBuildingCollectCooldown(entity, client, 2.5, true);
 				Mana_Hud_Delay[client] = 0.0;
 				return 2;
 			}
@@ -213,6 +215,8 @@ int AmmoboxUsed(int client, int entity)
 					CurrentAmmo[client][i] = GetAmmo(client, i);
 				}
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+				if(Dungeon_Mode())
+					ApplyBuildingCollectCooldown(entity, client, 2.5, true);
 				return true;
 			}
 			else if(weaponindex == 441 || weaponindex == 35)
@@ -226,6 +230,8 @@ int AmmoboxUsed(int client, int entity)
 					CurrentAmmo[client][i] = GetAmmo(client, i);
 				}		
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+				if(Dungeon_Mode())
+					ApplyBuildingCollectCooldown(entity, client, 2.5, true);
 				return true;
 			}
 			else if(AmmoBlacklist(Ammo_type) && i_OverrideWeaponSlot[weapon] != 2) //Disallow Ammo_Hand_Grenade, that ammo type is regenerative!, dont use jar, tf2 needs jar? idk, wierdshit.
@@ -239,10 +245,18 @@ int AmmoboxUsed(int client, int entity)
 					CurrentAmmo[client][i] = GetAmmo(client, i);
 				}
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+				if(Dungeon_Mode())
+					ApplyBuildingCollectCooldown(entity, client, 2.5, true);
 				return true;
 			}
 			else
 			{
+				//not useable if they have armor, or no armor, useable if they are under corrosion
+				if(f_LivingArmorPenalty[client] > GetGameTime() || (Attributes_Get(client, Attrib_Armor_AliveMode, 0.0) != 0.0 && Armor_Charge[client] >= 0))
+				{
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					return false;
+				}
 				int Armor_Max = 150;
 			
 				Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 0.75);
@@ -251,6 +265,8 @@ int AmmoboxUsed(int client, int entity)
 				{
 					GiveArmorViaPercentage(client, 0.1, 1.0);
 					ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+					if(Dungeon_Mode())
+						ApplyBuildingCollectCooldown(entity, client, 2.5, true);
 					Ammo_Count_Used[client] += 1;
 					
 					ClientCommand(client, "playgamesound ambient/machines/machine1_hit2.wav");

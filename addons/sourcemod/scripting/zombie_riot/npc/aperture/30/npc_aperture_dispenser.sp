@@ -25,7 +25,7 @@ void ApertureDispenser_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_dispenser");
 	strcopy(data.Icon, sizeof(data.Icon), "dispenser_lite");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MISSION;
 	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -144,7 +144,7 @@ public void ApertureDispenser_ClotThink(int iNPC)
 				npc.SetCycle(0.01);
 				
 				const float animTime = 10.4;
-				float duration = npc.Anger ? 1.0 : 10.0;
+				float duration = npc.Anger ? 1.0 : 5.0;
 				
 				npc.SetPlaybackRate(animTime / duration);
 				npc.m_flDoingAnimation = gameTime + duration;

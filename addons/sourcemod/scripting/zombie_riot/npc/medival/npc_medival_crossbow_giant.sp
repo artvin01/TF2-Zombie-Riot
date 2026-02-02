@@ -284,7 +284,7 @@ public void MedivalCrossbowGiant_ClotThink(int iNPC)
 						
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
 						npc.m_flJumpStartTime = GetGameTime(npc.index) + 0.7; //Reuse this!
 					}
 					npc.StopPathing();
@@ -332,11 +332,7 @@ public void HandleAnimEventMedival_GiantCrossbowMan(int entity, int event)
 						
 			npc.PlayMeleeSound();
 			
-			float damage = 70.0;
-			if(Medival_Difficulty_Level_NotMath >= 2)
-			{
-				damage = 85.0;
-			}
+			float damage = 80.0;
 			npc.FireArrow(vecTarget, damage, projectile_speed);
 		}
 	}

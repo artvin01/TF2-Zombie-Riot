@@ -38,7 +38,7 @@ void SeaPredator_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Nethersea Predator");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseapredator");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_predator");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_predator");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;
@@ -264,7 +264,7 @@ public Action SeaPredator_OnTakeDamage(int victim, int &attacker, int &inflictor
 		{
 			float chargerPos[3];
 			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
-			if(b_BoundingBoxVariant[victim] == 1)
+			if(b_BoundingBoxVariant[victim] == BBV_Giant)
 			{
 				chargerPos[2] += 120.0;
 			}

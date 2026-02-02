@@ -4,30 +4,44 @@
 	{
 		"#format"	"{1:t}"
 		"en"		"{green}Collected: {yellow}{1}"
+		"ko"		"{green}획득함: {yellow}{1}"
 	}
 	"Dungeon Keep Looking"
 	{
 		"en"	"Keep looking for something else"
+		"ko"	"쓸만한 것들을 계속 수색해보자"
 	}
 	"Dungeon Stop Looking"
 	{
 		"en"	"Stop looking and ready defenses"
+		"ko"	"그만 수색하고 방어를 준비하자"
 	}
 	"Dungeon Failed"
 	{
-		"en"	"All players have left the dungeon..."
+		"en"	"Not enough players left in the dungeon..."
+	}
+	"Dungeon Success"
+	{
+		"en"	"All enemies slain in the dungeon!"
+	}
+	"Dungeon New"
+	{
+		"en"	"A new dungeon opens up..."
 	}
 	"Packing Station"
 	{
 		"en"	"Packing Station"
+		"ko"	"팩 스테이션"
 	}
 	"Packing Station Desc"
 	{
 		"en"	"A construct that packs a random weapon with a random buff"
+		"ko"	"무작위 무기에 무작위 버프를 부여하는 구조물입니다."
 	}
 	"Pack Random Weapon"
 	{
 		"en"	"Pack Random Weapon"
+		"ko"	"무작위 무기 팩"
 	}
 	"Upgrade Using Materials"
 	{
@@ -37,237 +51,427 @@
 	"Upgrade Max"
 	{
 		"en"	"Level MAX"
+		"ko"	"최대 레벨"
+	}
+	"Upgrade Max Limited"
+	{
+		"en"	"Level MAX, Upgrade Control Center"
 	}
 	"Upgrade Building To"
 	{
 		"#format"	"{1:d}"
 		"en"		"Upgrade Building to Level {1}"
+		"ko"		"구조물의 레벨을 {1} 로 증가시킵니다"
 	}
 	"Upgraded Building To"
 	{
 		"#format"	"{1:s},{2:d}"
 		"en"		"{orange}{1} {default}upgraded to {orange}Level {2}"
+		"ko"		"{orange}{1} {default}의 레벨이 {orange}{2} 로 증가했습니다"
 	}
 	"Gained Ammo Supplies"
 	{
 		"#format"	"{1:d}"
 		"en"		"{green}Gained {1} ammo supplies"
+		"ko"		"{green}탄약 보급을 {1} 얻었습니다"
 	}
 	"Gained Extra Cash"
 	{
 		"#format"	"{1:d}"
 		"en"		"{green}Gained {1} extra cash"
+		"ko"		"{green}추가 자금을 {1} 얻었습니다"
 	}
 	"Construct Health"
 	{
 		"en"	"Construct Health"
+		"ko"	"구조물 체력"
 	}
 	"Construct Health Desc"
 	{
 		"en"	"Upgrades all construct building's health."
+		"ko"	"모든 구조물의 체력을 증가시킵니다."
 	}
 	"Weapon Has Packed"
 	{
 		"#format"	"{1:s},{2:t},{3:t}"
 		"en"		"{green}{1} {default}packed with {yellow}{2}\n{3}"
+		"ko"		"{green}{1} {default}의 팩이 다음으로 부여됨 : {yellow}{2}\n{3}"
 	}
 	"Clearance Focus"
 	{
 		"en"	"Clearance Focus"
+		"ko"	"재고 정리 집중"
 	}
 	"Clearance Focus Desc"
 	{
 		"en"	"{green}Price decreased by -30％ to buy and enchance"
+		"ko"	"{green}상점 구매와 무기 강화 가격이 -30％ 감소합니다."
 	}
 	"Power Focus"
 	{
 		"en"	"Power Focus"
+		"ko"	"화력 집중"
 	}
 	"Power Focus Desc"
 	{
 		"en"	"{green}Base damage increased by +20％"
+		"ko"	"{green}기본 피해량이 +20％ 증가합니다."
 	}
 	"Handling Focus"
 	{
 		"en"	"Handling Focus"
+		"ko"	"제어 집중"
 	}
 	"Handling Focus Desc"
 	{
 		"en"	"{green}Firing speed increased by +20％"
+		"ko"	"{green}공격 속도가 +20％ 증가합니다."
 	}
-	"Refresh Focus"
+	"Refreshing Focus"
 	{
-		"en"	"Refresh Focus"
+		"en"	"Refreshing Focus"
 	}
-	"Refresh Focus Desc"
+	"Refreshing Focus Desc"
 	{
 		"en"	"{green}Reload time and mana cost decreased by -20％"
+		"ko"	"{green}재장전 시간, 마나 소모량이 -20％ 감소합니다."
 	}
 	"Defensive Focus"
 	{
 		"en"	"Defensive Focus"
+		"ko"	"수비 집중"
 	}
 	"Defensive Focus Desc"
 	{
 		"en"	"{green}Base damage increased by +40％ {red}only in home base"
+		"ko"	"{green}기본 피해량이 +40％ 증가합니다. {red}이 효과는 거점 내부에서만 적용됩니다."
 	}
 	"Offensive Focus"
 	{
 		"en"	"Offensive Focus"
+		"ko"	"공세 집중"
 	}
 	"Offensive Focus Desc"
 	{
-		"en"	"{green}Base damage increased by +40％ {red}only in dungeons"
+		"en"	"{green}Base damage increased by +40％ {red}only in dungeons and rival bases"
+		"ko"	"{green}기본 피해량이 +40％ 증가합니다. {red}이 효과는 던전 내부에서만 적용됩니다."
 	}
 	"Dungeon Level 1"
 	{
 		"en"	"Dungeon Level 1"
+		"ko"	"던전 레벨 1"
 	}
 	"Dungeon Level 1 Desc"
 	{
-		"en"	"Bob the First tasks us to help build up a new home base, gather up resources, make the base well defended.\n{green}Enemies stats -15％"
+		"en"	"{green}Enemies stats -15％"
+		"ko"	"{green}모든 적의 능력치 -15％"
 	}
 	"Dungeon Level 2"
 	{
 		"en"	"Dungeon Level 2"
+		"ko"	"던전 레벨 2"
 	}
 	"Dungeon Level 2 Desc"
 	{
-		"en"	"Almagest didn't forget how you ruined them."
+		"en"	"Bob the First tasks us to help build up a new home base, gather up resources, make the base well defended."
+		"ko"	"밥 1세가 우리에게 새로운 본거지를 건설하고, 자원을 모으고, 기지를 튼튼하게 대비시키는 임무를 맡겼습니다."
 	}
 	"Dungeon Level 3"
 	{
 		"en"	"Dungeon Level 3"
+		"ko"	"던전 레벨 3"
 	}
 	"Dungeon Level 3 Desc"
 	{
-		"en"	"You remember what he said, who made Chaos.\n{red}Applies Chaos Intrusion modifier"
+		"en"	"{red}Enemies Gain 10％ Stats\n{red}Enemies sometimes get random modifiers."
+		"ko"	"{red}''혼돈의 침입'' 난이도가 적용됩니다."
 	}
 	"Compass Fragment"
 	{
 		"en"	"Compass Fragment"
+		"ko"	"나침반 조각"
 	}
 	"Compass Fragment Desc"
 	{
 		"en"	"Craft in the Control Center"
+		"ko"	"제어 센터에서 제작 가능"
 	}
 	"Dungeon Compass"
 	{
 		"en"	"Dungeon Compass"
+		"ko"	"던전 나침반"
 	}
 	"Dungeon Compass Desc"
 	{
 		"en"	"The next dungeon to appear in vote is guaranteed to be a special variant, will be consumed on use"
+		"ko"	"다음 투표에서 등장하는 던전은 특수한 변형 던전이 되며, 사용 시 이 아이템은 소모됩니다."
 	}
 	"Control Center"
 	{
 		"en"	"Control Center"
+		"ko"	"제어 센터"
 	}
 	"Control Center Desc"
 	{
-		"en"	"A construct that allows doing certain special tasks"
+		"en"	"The objective, protect this building to survive, use it to upgrade and do certain tasks."
+	}
+	"Construct Altar"
+	{
+		"en"	"Construct Altar"
+	}
+	"Construct Altar Desc"
+	{
+		"en"	"Summons a great Construct with help from alaxios, it will defend the controll point."
 	}
 	"No Actions Needed"
 	{
 		"en"	"No Actions Needed"
+		"ko"	"행동 필요 없음"
 	}
 	"Craft Item"
 	{
 		"#format"	"{1:t}"
 		"en"		"Craft {1}"
+		"ko"		"제작: {1}"
 	}
 	"Unbox Item"
 	{
 		"#format"	"{1:t}"
 		"en"		"Unbox {1}"
+		"ko"		"상자 개봉: {1}"
 	}
 	"Can Opener"
 	{
 		"en"	"Can Opener"
+		"ko"	"통조림 따개"
 	}
 	"Can Opener Desc"
 	{
-		"en"	"When they sealed that can too good.\n{green}Unboxing sealed crates no longer cost crystals"
+		"en"	"When they sealed that can too good.\n{green}Unboxing sealed crates cost 50％ less crystals"
 	}
 	"Wooden Crate"
 	{
 		"en"	"Wooden Crate"
+		"ko"	"나무 상자"
+	}
+	"Wooden Pack"
+	{
+		"en"	"Wooden Pack"
 	}
 	"Jalan Crate"
 	{
 		"en"	"Jalan Crate"
+		"ko"	"잘란 상자"
+	}
+	"Jalan Pack"
+	{
+		"en"	"Jalan Pack"
 	}
 	"Rare Jalan Crate"
 	{
 		"en"	"Rare Jalan Crate"
+		"ko"	"희귀 잘란 상자"
 	}
 	"Sealed Jalan Crate"
 	{
 		"en"	"Sealed Jalan Crate"
+		"ko"	"봉인된 잘란 상자"
 	}
 	"Sealed Jalan Crate Desc"
 	{
 		"en"	"Unbox in the Control Center"
+		"ko"	"제어 센터에서 개봉 가능"
 	}
 	"Wizuh Crate"
 	{
 		"en"	"Wizuh Crate"
+		"ko"	"위저 상자"
+	}
+	"Wizuh Pack"
+	{
+		"en"	"Wizuh Pack"
 	}
 	"Rare Wizuh Crate"
 	{
 		"en"	"Rare Wizuh Crate"
+		"ko"	"희귀 위저 상자"
+	}
+	"Sealed Wizuh Crate"
+	{
+		"en"	"Sealed Wizuh Crate"
 	}
 	"Sealed Wizuh Crate Desc"
 	{
 		"en"	"Unbox in the Control Center"
+		"ko"	"제어 센터에서 개봉 가능"
 	}
 	"Ossunia Crate"
 	{
 		"en"	"Ossunia Crate"
+		"ko"	"오수니아 상자"
+	}
+	"Ossunia Pack"
+	{
+		"en"	"Ossunia Pack"
 	}
 	"Rare Ossunia Crate"
 	{
 		"en"	"Rare Ossunia Crate"
+		"ko"	"희귀 오수니아 상자"
+	}
+	"Sealed Ossunia Crate"
+	{
+		"en"	"Sealed Ossunia Crate"
 	}
 	"Sealed Ossunia Crate Desc"
 	{
 		"en"	"Unbox in the Control Center"
+		"ko"	"제어 센터에서 개봉 가능"
+	}
+	"Bofazem Crate"
+	{
+		"en"	"Bofazem Crate"
 	}
 	"Sealed Bofazem Crate"
 	{
 		"en"	"Sealed Bofazem Crate"
+		"ko"	"봉인된 보파젬 상자"
+	}
+	"Sealed Bofazem Crate Desc"
+	{
+		"en"	"Unbox in the Control Center"
 	}
 	"Treasure Crate"
 	{
 		"en"	"Treasure Crate"
+		"ko"	"보물 상자"
 	}
 	"Treasure Key"
 	{
 		"en"	"Treasure Key"
+		"ko"	"보물 열쇠"
 	}
 	"Treasure Key Desc"
 	{
 		"en"	"Treasure Vaults can now appear, will be consumed upon entering"
+		"ko"	"이제 보물 금고가 등장할 수 있으며, 진입시 이 아이템이 소모됩니다."
 	}
 	"Key Fragment"
 	{
 		"en"	"Key Fragment"
+		"ko"	"열쇠 조각"
 	}
 	"Key Fragment Desc"
 	{
 		"en"	"Craft in the Control Center"
+		"ko"	"제어 센터에서 제작 가능"
+	}
+	"Upgrade Build Houses"
+	{
+		"en"	"Upgrade and build more Houses to collect more cash!"
+	}
+	"Dungeon Not Ready Yet"
+	{
+		"en"	"Didn't find anything yet, check back soon!"
+	}
+	"Dungeon Empty Untill Next Raid"
+	{
+		"en"	"No more Dungeons will be generated... an attack will happen in 60 seconds."
+	}
+	"Scout Car Desc"
+	{
+		"en"	"A vehicle that can hold up to 3 players. Able to collect ammo from the an ammo box in the back."
+	}
+	"APC"
+	{
+		"en"	"Armored Personnel Carrier"
+	}
+	"APC Desc"
+	{
+		"en"	"A vehicle that can hold up to 2 players. The passenger wields a powerful mounted turret."
+	}
+	"Spawned Vehicle At"
+	{
+		"#format"	"{1:N},{2:s},{3:s}"
+		"en"		"{orange}{1} {default}built {orange}{2} {default}for {orange}{3}"
+	}
+	"Vehicle Controls"
+	{
+		"en"	"%%+attack3%% TURBO %%+jump%% HANDBRAKE"
+	}
+	"Unlocked Building"
+	{
+		"#format"	"{1:t}"
+		"en"		"Unlocked Construct Building: {orange}{1}"
 	}
 
-	"Common Dungeon"
-	{
-		"en"	"⚔ Dungeon"
-	}
-	"Treasure Vault"
-	{
-		"en"	"Treasure Vault"
-	}
 	"Treasure Vault Encounter Title"
 	{
 		"en"	"We used the Treasure Key to open inside, some items are presented in front of you."
+		"ko"	"보물 열쇠를 사용해 금고를 열었더니, 그 안에 몇 가지 물품들이 있었다."
+	}
+	"Ship Ending Encounter Title"
+	{
+		"en"	"You find some lost Expidonsa technology, should we grab one of these?"
+	}
+	"Expidonsa Space Beacon"
+	{
+		"en"	"Expidonsa Space Beacon"
+	}
+	"Expidonsa Space Beacon Desc"
+	{
+		"en"	"Expidonsa technology, it seems to have been used to track far above.\n{blue}Almagest did not forget"
+	}
+	"Verde Soldier Giant Summoner"
+	{
+		"en"	"Verde Soldier Giant Summoner"
+	}
+	"Verde Soldier Minion"
+	{
+		"en"	"Verde Soldier Minion"
+	}
+	"Xeno Resurgance"
+	{
+		"en"	"Xeno Resurgance"
+	}
+	"Xeno Resurgance Desc"
+	{
+		"en"	"{darkgreen}All enemies are xenofied...\n{gray}Didnt we kill off the xeno virus?"
+	}
+	"Refragmented Heavy Page"
+	{
+		"en"	"Refragmented Heavy Page"
+	}
+	"Enemy Center Death"
+	{
+		"en"	"{green}Enemy {orange}Control Center {green}is destroyed, the next raid attack is weakened!"
+	}
+	"Main Center Death"
+	{
+		"en"	"{crimson}Our {orange}Control Center {crimson}is destroyed, Respawns disabled, vehicles disabled."
+	}
+	"Explain Dungeon Mechanics 1"
+	{
+		"en"	"You can return back to base by pressing (F)\nCancel it by pressing (F) again."
+	}
+	"Explain Dungeon Mechanics 2"
+	{
+		"en"	"Build Construction Buildings with your wrench!\nUpgrade these by Interacting with them!"
+	}
+	"Explain Dungeon Mechanics 3"
+	{
+		"en"	"Gather resources from either portal by completing dungeons and collecting them!"
+	}
+	"Explain Dungeon Mechanics 4"
+	{
+		"en"	"Dungeons are random and get stronger overtime!"
+	}
+	"Explain Dungeon Mechanics 5"
+	{
+		"en"	"Rival bases stay at the strength they started at\nDestroying the center weakens the next raid!"
+	}
+	"Explain Dungeon Mechanics 6"
+	{
+		"en"	"Raids happen after a set time! Prepare your base and get stronger!"
 	}
 }

@@ -1,0 +1,894 @@
+"Phrases"
+{
+	"birdeye_Talk_01-1"
+	{
+		"en"	"Enemy contact"
+		"ko"	"적과 조우했다."
+	}
+	"birdeye_Talk_01-2"
+	{
+		"en"	"Enemy Front"
+		"ko"	"적이 앞에 있다!"
+	}
+	"birdeye_Talk_01-3"
+	{
+		"en"	"I see a Target"
+		"ko"	"목표물이 보인다."
+	}
+	"birdeye_Talk_01-4"
+	{
+		"en"	"Bad guy Front"
+		"ko"	"전방에 적대 목표 발견!"
+	}
+	"birdeye_Talk_01-5"
+	{
+		"en"	"Pipe, Harb I need some fire support here"
+		"ko"	"파이프, 하브, 여기 화력 지원이 필요하다."
+	}
+	"birdeye_Talk_02-1"
+	{
+		"en"	"Pipe down."
+		"ko"	"파이프가 쓰러졌다."
+	}
+	"birdeye_Talk_02-2"
+	{
+		"en"	"Rest in peace bro."
+		"ko"	"푹 쉬라고, 친구."
+	}
+	"birdeye_Talk_03-1"
+	{
+		"en"	"Harbringer down."
+		"ko"	"하브링거가 쓰러졌다."
+	}
+	"birdeye_Talk_03-2"
+	{
+		"en"	"Harb. Harb! Fuck!"
+		"ko"	"하브. 하브! *발!"
+	}
+	"birdeye_Talk_04-1"
+	{
+		"en"	"FUCK THAT!"
+		"ko"	"하브. 하브! 젠장!"
+	}
+	"birdeye_Talk_04-2"
+	{
+		"en"	"Dieeeeeeeeeeeeee!!!"
+		"ko"	"죽어어어어!!!"
+	}
+	"birdeye_Talk_04-3"
+	{
+		"en"	"Aaaahhhhhhhhh!!!"
+		"ko"	"으아아아아아!!!"
+	}
+	"birdeye_Talk_05-1"
+	{
+		"en"	"Eliminated."
+		"ko"	"목표물 제거."
+	}
+	"birdeye_Talk_05-2"
+	{
+		"en"	"Target down."
+		"ko"	"목표물이 쓰러졌다."
+	}
+	"birdeye_Talk_06-1"
+	{
+		"en"	"Changing position."
+		"ko"	"위치를 변경한다."
+	}
+	"birdeye_Talk_06-2"
+	{
+		"en"	"Rearranging position."
+		"ko"	"위치 재설정."
+	}
+	"birdeye_Talk_07-1"
+	{
+		"en"	"Teleporter down!"
+		"ko"	"텔레포터 다운!"
+	}
+	"birdeye_Talk_07-2"
+	{
+		"en"	"Teleporter is broken"
+		"ko"	"텔레포터 고장!"
+	}
+	"birdeye_Talk_07-3"
+	{
+		"en"	"Oh come on!!!"
+		"ko"	"아 제발!!!"
+	}
+	"birdeye_Talk_08-1"
+	{
+		"en"	"We’re back, and got some new tricks"
+		"ko"	"우리가 돌아왔다. 새로운 트릭과 함께."
+	}
+
+	"bigpipe_Talk_01-1"
+	{
+		"en"	"Contact!"
+		"ko"	"적과 조우!"
+	}
+	"bigpipe_Talk_01-2"
+	{
+		"en"	"Open fire!"
+		"ko"	"사격 개시!"
+	}
+	"bigpipe_Talk_01-3"
+	{
+		"en"	"Enemy's Front!"
+		"ko"	"적들이 앞에있다!"
+	}
+	"bigpipe_Talk_01-4"
+	{
+		"en"	"I got visual."
+		"ko"	"목표가 시야에 들어왔다"
+	}
+	"bigpipe_Talk_01-5"
+	{
+		"en"	"Enemies ahead!"
+		"ko"	"적들이 근처에 있다!"
+	}
+	"bigpipe_Talk_02-1"
+	{
+		"en"	"They got eye!"
+		"ko"	"적들이 버드아이를 잡았다!"
+	}
+	"bigpipe_Talk_02-2"
+	{
+		"en"	"Fuck Bird eyes down!"
+		"ko"	"젠장, 버드아이가 쓰러졌다!"
+	}
+	"bigpipe_Talk_02-3"
+	{
+		"en"	"Shit! eyes Dead!"
+		"ko"	"젠장! 버드아이가 치명상을 입었다!"
+	}
+	"bigpipe_Talk_03-1"
+	{
+		"en"	"Harb got Killed"
+		"ko"	"하브가 죽었다."
+	}
+	"bigpipe_Talk_03-2"
+	{
+		"en"	"Hey Harb Respond!"
+		"ko"	"이봐, 하브! 응답해!"
+	}
+	"bigpipe_Talk_03-3"
+	{
+		"en"	"Harbringer is down"
+		"ko"	"하브링거가 쓰러졌다."
+	}
+	"bigpipe_Talk_04-1"
+	{
+		"en"	"Cover me i need to heal"
+		"ko"	"날 엄호해줘! 내 부상을 회복해야한다!"
+	}
+	"bigpipe_Talk_04-2"
+	{
+		"en"	"I need to treat myself"
+		"ko"	"자가수복을 해야해!"
+	}
+	"bigpipe_Talk_05-1"
+	{
+		"en"	"Yeah!"
+		"ko"	"예아!"
+	}
+	"bigpipe_Talk_05-2"
+	{
+		"en"	"Another round of Ale for me"
+		"ko"	"이걸로 또 맥주 한 잔 받겠군."
+	}
+	"bigpipe_Talk_05-3"
+	{
+		"en"	"One Down"
+		"ko"	"한 놈 잡았고."
+	}
+	"bigpipe_Talk_06-1"
+	{
+		"en"	"We won’t go easy this time. Let’s rock"
+		"ko"	"이번엔 쉽게 넘어가진 않을거다. 가자고."
+	}
+
+	"harbringer_Talk_01-1"
+	{
+		"en"	"We got a cluster Fuck here"
+		"ko"	"완전 개판이로군!"
+	}
+	"harbringer_Talk_01-2"
+	{
+		"en"	"Let's Fuck them up"
+		"ko"	"전부 조져버리자고."
+	}
+	"harbringer_Talk_01-3"
+	{
+		"en"	"I see them"
+		"ko"	"저기에 놈들이 보인다."
+	}
+	"harbringer_Talk_01-4"
+	{
+		"en"	"Contact!"
+		"ko"	"적 접근중!"
+	}
+	"harbringer_Talk_02-1"
+	{
+		"en"	"Bird eye is killed"
+		"ko"	"버드아이가 죽었다!"
+	}
+	"harbringer_Talk_02-2"
+	{
+		"en"	"They got Bird eye"
+		"ko"	"놈들이 버드아이를 죽였어!"
+	}
+	"harbringer_Talk_02-3"
+	{
+		"en"	"Bird eye Respond!"
+		"ko"	"버드아이와의 무전이 완전히 끊겼다!"
+	}
+	"harbringer_Talk_03-1"
+	{
+		"en"	"Fuck they killed Pipe"
+		"ko"	"망할, 놈들이 빅 파이프를 죽였어!"
+	}
+	"harbringer_Talk_03-2"
+	{
+		"en"	"Pipe is Dead"
+		"ko"	"빅 파이프가 당했다!"
+	}
+	"harbringer_Talk_03-3"
+	{
+		"en"	"Pipe is Down"
+		"ko"	"빅 파이프가 쓰러졌다!"
+	}
+	"harbringer_Talk_04-1"
+	{
+		"en"	"Report to Base Ops"
+		"ko"	"본부에게 연락해. 상황 종료다."
+	}
+	"harbringer_Talk_04-2"
+	{
+		"en"	"Hostiles are Eliminated"
+		"ko"	"적들을 섬멸했군."
+	}
+	"harbringer_Talk_04-3"
+	{
+		"en"	"Loving this dead silence"
+		"ko"	"시끄럽던 놈들의 주둥이를 다물게 해주는건 우리의 일이지."
+	}
+	"harbringer_Talk_04-4"
+	{
+		"en"	"It's a kill"
+		"ko"	"놈들을 전부 조졌군. 잘 했어!"
+	}
+	"harbringer_Talk_05-1"
+	{
+		"en"	"Deploying armor grenade"
+		"ko"	"아머 수류탄 배치 중."
+	}
+	"harbringer_Talk_05-2"
+	{
+		"en"	"Deploying Armor repair kit"
+		"ko"	"아머 수리 키트 배치 중."
+	}
+	"harbringer_Talk_06-1"
+	{
+		"en"	"Frag Out!"
+		"ko"	"수류탄 투척!"
+	}
+	"harbringer_Talk_06-2"
+	{
+		"en"	"Throwing"
+		"ko"	"이거나 먹어라!"
+	}
+	"harbringer_Talk_07-1"
+	{
+		"en"	"Mercenaries don’t give up easily, and we are pissed."
+		"ko"	"그래, 포기를 안 하시겠다? 그럼 그만큼 더 쳐맞아야지."
+	}
+	
+	"Atomizer_Talk_Intro"
+	{
+		"en"	"Intruders in sight, I won't let them get out alive!"
+		"ko"	"침입자 포착, 절대로 살려보내선 안 된다!"
+	}
+	"Atomizer_Talk_Support-1"
+	{
+		"en"	"Did you really think we would let you sabotage our Radiotower?"
+		"ko"	"우리의 방송탑을 파괴하게 놔둘것 같으냐?"
+	}
+	"Atomizer_Talk_Support-2"
+	{
+		"en"	"Dodge That!"
+		"ko"	"이것도 피해 보시지!"
+	}
+	"Atomizer_Talk_Support-3"
+	{
+		"en"	"Haha! Im locking onto THIS guy!"
+		"ko"	"하하! 난 이자식에게 포격하겠어!"
+	}
+	"Atomizer_Talk_Support-4"
+	{
+		"en"	"You can count on us!"
+		"ko"	"저희만 믿으십시오!"
+	}
+	"Atomizer_Talk_Lastman-1"
+	{
+		"en"	"Ready to die?"
+		"ko"	"죽을 준비는 됐나?"
+	}
+	"Atomizer_Talk_Lastman-2"
+	{
+		"en"	"You can't run forever."
+		"ko"	"영원히 도망칠 수는 없다."
+	}
+	"Atomizer_Talk_Lastman-3"
+	{
+		"en"	"All of your comrades are fallen."
+		"ko"	"네 동료는 전부 죽었다."
+	}
+	"Atomizer_Talk_GameEnd"
+	{
+		"en"	"Mission Accomplished, we will figure out who is behind them"
+		"ko"	"임무 성공. 저 놈들의 배후가 누군지 찾아내야겠군."
+	}
+	"Atomizer_Talk_TimeUp-1"
+	{
+		"en"	"Victoria will be in peace. Once and for all."
+		"ko"	"빅토리아는 영원할 것이다. 너희따위가 망칠 평화가 아니야."
+	}
+	"Atomizer_Talk_TimeUp-2"
+	{
+		"en"	"The troops have arrived and will begin destroying the intruders!"
+		"ko"	"제군들, 침입자들을 제거하라!"
+	}
+	"Atomizer_Talk_TimeUp-3"
+	{
+		"en"	"Backup team has arrived. Catch those damn bastards!"
+		"ko"	"지원군이 도착했군. 저 망할 놈들을 다 쓸어버려!"
+	}
+	"Atomizer_Talk_TimeUp-4"
+	{
+		"en"	"After this, Im heading to Rusted Bolt Pub. {unique}I need beer.{default}"
+		"ko"	"이게 끝나면 녹슨 볼트 선술집을 가야겠군. {unique}맥주 한 잔이 땡기는데.{default}!"
+	}
+	"Atomizer_Talk_Pre_2_Phase"
+	{
+		"en"	"Not Enough Energy! Nitro Fuel going in!"
+		"ko"	"에너지가 부족하군, 연료 공급을 시작한다!"
+	}
+	"Atomizer_Talk_2_Phase"
+	{
+		"en"	"Oh yes! I FEEL ALIVE!"
+		"ko"	"아! 바로 이거야!"
+	}
+	"Atomizer_Talk_Ability"
+	{
+		"en"	"Ready to fly?"
+		"ko"	"하늘을 날아갈 준비는 됐나?"
+	}
+	"Atomizer_Talk_EscapePlan-1"
+	{
+		"en"	"Ugh, I need backup"
+		"ko"	"으, 지원이 필요하다..."
+	}
+	"Atomizer_Talk_EscapePlan-2"
+	{
+		"en"	"I will never let you trample over the glory of {gold}Victoria{default} Again!"
+		"ko"	"네 놈들이 {gold}빅토리아{default}의 평화를 망치게 둘 수는 없는데..!"
+	}
+	"Atomizer_Talk_EscapePlan-3"
+	{
+		"en"	"You intruders will soon face the {crimson}Real Deal.{default}"
+		"ko"	"자만하지 마라. 나 말고 더  {crimson}강력한 자{default}들이 널 막을테니."
+	}
+	
+	"Huscarls_Talk_Intro"
+	{
+		"en"	"You will not Pass ''Iron Gate''!"
+		"ko"	"이 ''강철 게이트''를 지나갈 생각 마라!"
+	}
+	"Huscarls_Talk_Support-1"
+	{
+		"en"	"Let’s see if you can piece through this!"
+		"ko"	"이것도 뚫어보시지!"
+	}
+	"Huscarls_Talk_Support-2"
+	{
+		"en"	"You’ll need more bullets to go through this!"
+		"ko"	"이걸 뚫으려면 더 많은 총알이 필요할 거다!"
+	}
+	"Huscarls_Talk_Support-3"
+	{
+		"en"	"Brace for psychological and physical Impact! Hahaha!"
+		"ko"	"정신적, 물리적 충격에 대비하라고! 하하하!"
+	}
+	"Huscarls_Talk_Support-4"
+	{
+		"en"	"Who said all victorians use explosive in battle Ha!"
+		"ko"	"누가 빅토리안들이 전투에 폭발물만 쓴다고 했지? 하!"
+	}
+	"Huscarls_Talk_Support-5"
+	{
+		"en"	"Surprise Slam! I bet you weren’t ready for this!"
+		"ko"	"깜짝 슬램이다! 이거에 대한 준비는 못했을껄?"
+	}
+	"Huscarls_Talk_Support-6"
+	{
+		"en"	"You’re too close to our commander! Get lost!"
+		"ko"	"우리 지휘관에게 너무 가까이 다가왔잖아! 저리 꺼져라!"
+	}
+	"Huscarls_Talk_Support-7"
+	{
+		"en"	"Heads up!"
+		"ko"	"이거나 받으라고!"
+	}
+	"Huscarls_Talk_Support-8"
+	{
+		"en"	"Who needs mortar when you can literally throw the shells at your enemies haha!"
+		"ko"	"손으로 박격포탄을 던질수 있는데 박격포가 왜 필요하겠냐고! 하하하!"
+	}
+	"Huscarls_Talk_Support-9"
+	{
+		"en"	"You are now facing Victoria's Elite forces."
+		"ko"	"이제 우리 빅토리아 정예 부대와 맞설 시간이다."
+	}
+	"Huscarls_Talk_Support-10"
+	{
+		"en"	"They could dodge 2, but how about 3 now!"
+		"ko"	"두개는 피했어도, 세개는 피할수 있을지 한 번 볼까!"
+	}
+	"Huscarls_Talk_Lastman-1"
+	{
+		"en"	"This is your grave."
+		"ko"	"이 곳이 네 무덤이 될 것이다."
+	}
+	"Huscarls_Talk_Lastman-2"
+	{
+		"en"	"It's really Easy"
+		"ko"	"너무 쉽군."
+	}
+	"Huscarls_Talk_Lastman-3"
+	{
+		"en"	"You'll never see {gold}Victoria{default} again."
+		"ko"	"넌 {gold}빅토리아{default}에 발조차 들이지 못 할 것이다."
+	}
+	"Huscarls_Talk_GameEnd"
+	{
+		"en"	"Even my metal sandbags were tougher than you meatheads."
+		"ko"	"내 강철 샌드백이 너희 고깃덩어리들보다 단단하겠다."
+	}
+	"Huscarls_Talk_TimeUp-1"
+	{
+		"en"	"Ok. Enough. {crimson}Time to Finish.{default}"
+		"ko"	"좋아. 지겹군. {crimson}끝낼 시간이다.{default}"
+	}
+	"Huscarls_Talk_TimeUp-2"
+	{
+		"en"	"{blue}Atomizer{default}? I'm done dealing with the intruder you missed. You have to pay for the beer instead."
+		"ko"	"{blue}인수분해{default}, 네가 놓친 침입자 처리는 이제 끝났다. 자네가 맥주 한 잔 사줘."
+	}
+	"Huscarls_Talk_Pre_2_Phase"
+	{
+		"en"	"Time for Plan B, {gold}Mechanist{default}. teleport the Robots right now!"
+		"ko"	"플랜 B, {gold}메카니스트{default}. 로봇들을 이 곳으로 전부 불러와라!"
+	}
+	"Huscarls_Talk_2_Phase-1"
+	{
+		"en"	"Damn Tin cans, knew they'd break apart so easily."
+		"ko"	"망할 깡통들 같으니. 저렇게나 쉽게 무너져내린단 말인가."
+	}
+	"Huscarls_Talk_2_Phase-2"
+	{
+		"en"	"I should have noticed their performance issues beforehand..."
+		"ko"	"성능 문제를 미리 알아차렸어야 했는데..."
+	}
+	"Huscarls_Talk_Ability1-1"
+	{
+		"en"	"Hit me. I DARE YOU."
+		"ko"	"쳐 보라고. 어디 해봐."
+	}
+	"Huscarls_Talk_Ability1-2"
+	{
+		"en"	"Come closer, I will give you this back."
+		"ko"	"더 가까이 와봐라. 받은 만큼 돌려줘야하니까."
+	}
+	"Huscarls_Talk_BulletArmor"
+	{
+		"en"	"Your pathetic {yellow}bullets{default} and rusty {yellow}sword{default} won’t leave a scratch on my bulletproof vest!"
+		"ko"	"너희들의 약해빠진 {yellow}총알{default}이랑 삭아가는 {yellow}근접{default}들로는 내 방탄에 흠집도 안난다고!"
+	}
+	"Huscarls_Talk_MagicArmor"
+	{
+		"en"	"What is this? Pesky {valve}magic{default}! Sweet liquor to remove their existence out of my mind!"
+		"ko"	"이건 또 뭐야? 징글징글한 {valve}마법{default}이잖아! 이딴건 시원~한 맥주 한잔이면 바로 잊혀진다고!"
+	}
+	"Huscarls_Talk_BlastArmor"
+	{
+		"en"	"Do you call that {darkgray}explosives{default}? Ha! You are far away from understanding {gold}Victorian{default}’s nature"
+		"ko"	"지금 그딴걸 {darkgray}폭발물{default}이라고 부르나? 하! {gold}빅토리아{default}를 이해하긴 멀었군!"
+	}
+	"Huscarls_Talk_EscapePlan-1"
+	{
+		"en"	"Retreat! This is a tactical retreat by the way."
+		"ko"	"후퇴! 이건 전략적 후퇴다!"
+	}
+	"Huscarls_Talk_EscapePlan-2"
+	{
+		"en"	"{gold}Victoria{default} is in trouble."
+		"ko"	"여기 {gold}빅토리아{default}에 문제가 발생했다! 지원을 더 요청한다!"
+	}
+	"Huscarls_Talk_EscapePlan-3"
+	{
+		"en"	"Next time I'll {crimson}crush you{default}"
+		"ko"	"다음엔 네 놈을 꼭 {crimson}박살내주마{default}!"
+	}
+
+	"Harrison_Talk_Support-1"
+	{
+		"en"	"Enabling artillery support. Brace for impact"
+		"ko"	"포격 지원가능. 충격에 대비하라."
+	}
+	"Harrison_Talk_Support-2"
+	{
+		"en"	"I see you Intruders."
+		"ko"	"네가 보인다, 침입자."
+	}
+	"Harrison_Talk_Support-3"
+	{
+		"en"	"Heavy machine gun Armed, Engaging Target."
+		"ko"	"중기관총이 준비됐다, 표적과 교전."
+	}
+	"Harrison_Talk_Support-4"
+	{
+		"en"	"Huh? It’s my turn already?"
+		"ko"	"뭐야, 벌써 내 차례야?"
+	}
+	"Harrison_Talk_Support-5"
+	{
+		"en"	"What a hassle"
+		"ko"	"허, 귀찮군."
+	}
+	"Harrison_Talk_Support-6"
+	{
+		"en"	"Power laser Overdrive Engaged."
+		"ko"	"파워 레이저 오버드라이브 작동."
+	}
+	"Harrison_Talk_Support-7"
+	{
+		"en"	"Roger that. Targetting primary threat"
+		"ko"	"확인. 주 목표 제거 시도."
+	}
+	"Harrison_Talk_Support-8"
+	{
+		"en"	"Right away."
+		"ko"	"수신 양호합니다."
+	}
+	"Harrison_Talk_Support-9"
+	{
+		"en"	"When did you-"
+		"ko"	"아니 언제-"
+	}
+	"Harrison_Talk_Support-10"
+	{
+		"en"	"*sigh* This place is getting too crowded"
+		"ko"	"*한숨* 여기 너무 좁아지고 있는데…"
+	}
+	"Harrison_Talk_Support-11"
+	{
+		"en"	"Victoria Cannon is Ready, Fire Support is coming in"
+		"ko"	"빅토리아 캐논 준비 완료, 화력 지원 전개."
+	}
+	"Harrison_Talk_Intro"
+	{
+		"en"	"Spotted the Intruders. I guess they leave me no chance but to do it myself"
+		"ko"	"침입자 발견. 아무래도 내가 나서야할 것 같군."
+	}
+	"Harrison_Talk_Lastman-1"
+	{
+		"en"	"You guys are weaker than I expected"
+		"ko"	"내 생각보다 훨씬 약하군."
+	}
+	"Harrison_Talk_Lastman-2"
+	{
+		"en"	"Comeon, where is your 'adrenaline'?"
+		"ko"	"허, 네 잘난 '아드레날린'이 다 소모되기라도 한거냐?"
+	}
+	"Harrison_Talk_Lastman-3"
+	{
+		"en"	"Can't believe {lightblue}Huscarls{default} and {blue}Atomizer{default} was defeated by these weaklings."
+		"ko"	"나참, {lightblue}허스칼{default}과 {blue}인수분해{default}가 이런 약골들에게 패퇴했다고?"
+	}
+	"Harrison_Talk_TimeUp-1"
+	{
+		"en"	"That's it. Calling in for special forces."
+		"ko"	"이제 끝이다. 특수 부대를 요청했으니까."
+	}
+	"Harrison_Talk_TimeUp-2"
+	{
+		"en"	"Your small knight pals won't save you now"
+		"ko"	"네 작은 기사 친구들도 이제 널 돕지 못 한다."
+	}
+	"Harrison_Talk_TimeUp-3"
+	{
+		"en"	"The artilleries are fully loaded. Bombardment in 3...2...1..."
+		"ko"	"포격대 준비 완료. 폭격까지 3...2...1..."
+	}
+	"Harrison_Talk_TimeUp-4"
+	{
+		"en"	"{unique}I need beer.{default}"
+		"ko"	"{unique}맥주가 필요해.{default}"
+	}
+	"Harrison_Talk_GameEnd"
+	{
+		"en"	"Mission completed. Back to the control center with my beer keg."
+		"ko"	"미션 완료. 내 맥주통이랑 같이 컨트롤 센터로 돌아가야겠어."
+	}
+	"Harrison_Talk_Pre_2_Phase"
+	{
+		"en"	"Hide if you can. I'll get some ammo for my gun."
+		"ko"	"숨어보시던가. 그러는 동안 난 내 총의 탄약을 보급할테니."
+	}
+	"Harrison_Talk_Ability1-1"
+	{
+		"en"	"Do you think I would miss?"
+		"ko"	"널 놓칠 수는 없지."
+	}
+	"Harrison_Talk_Ability1-2"
+	{
+		"en"	"I see you."
+		"ko"	"네가 보인다."
+	}
+	"Harrison_Talk_Ability1-3"
+	{
+		"en"	"They won't miss you. Probably."
+		"ko"	"절대 놓치지 않는다."
+	}
+	"Harrison_Talk_Ability1-4"
+	{
+		"en"	"Auto Rockets are fully charged"
+		"ko"	"자동 로켓 충전 완료."
+	}
+	"Harrison_Talk_EscapePlan-1"
+	{
+		"en"	"Dammit it hurts!"
+		"ko"	"젠장, 좀 아픈데!"
+	}
+	"Harrison_Talk_EscapePlan-2"
+	{
+		"en"	"I should've brought more Explosives..."
+		"ko"	"폭발물을 더 많이 가져왔어야 하는건데..."
+	}
+	"Harrison_Talk_EscapePlan-3"
+	{
+		"en"	"You intruders will soon face the {crimson}Real Deal.{default}"
+		"ko"	"너희 침입자 놈들은 곧 {crimson}진짜 악몽{default}과 마주하게 될 거다."
+	}
+	
+	"Castellan_Talk_Intro-1"
+	{
+		"en"	"As my men said, you must be the trespassers who sabotaged our radiotower."
+		"ko"	"그래, 자네들이 내 병사들이 말한 우리 방송탑을 망가뜨린 침입자들인가?"
+	}
+	"Castellan_Talk_Intro-2"
+	{
+		"en"	"So you managed to confront me. I hope you are prepared for the consequences of your action."
+		"ko"	"결국 내 앞에 서게 되었군. 앞으로 다가올 너희들의 행동에 대한 대가를 치룰 준비는 되었겠지?"
+	}
+	"Castellan_Talk_Intro-3"
+	{
+		"en"	"Who are you trying to put a brake in our invasion plan? We must put an end to this chaos spreading next to our country!"
+		"ko"	"너희들은 누군데 감히 우리 침공 계획을 방해하는거냐? 우리는 혼돈이 퍼져나가는걸 막아야 한단 말이다!"
+	}
+	"Castellan_Talk_Intro-4"
+	{
+		"en"	"A small simulation eh? I guess I’ll give it a try"
+		"ko"	"이게 그 작은 시뮬레이션이란 말이지? 한 번 해볼까."
+	}
+	"Castellan_Talk_Intro-5"
+	{
+		"en"	"You will pay for daring to stand against us!"
+		"ko"	"여기로 숨어들었다고 우리가 못찾을줄 알았나 용병들. 우리랑 맞선 대가를 치뤄라!"
+	}
+	"Castellan_Talk_Lastman-1"
+	{
+		"en"	"Did my men really failed to stop these weaklings?"
+		"ko"	"내 병사들이 이딴 약골들에게 쩔쩔맸단 말인가..."
+	}
+	"Castellan_Talk_Lastman-2"
+	{
+		"en"	"Put up your best gear and fight me! I didn’t waste my time here to fight such maggots"
+		"ko"	"너희들의 최고의 수단으로 상대해봐라! 나는 너희같은 졸병 따위를 상대하려고 여기서 시간을 낭비할 이유가 없단 말이다!"
+	}
+	"Castellan_Talk_TimeUp-1"
+	{
+		"en"	"That’s enough! We see your plan to buy some time."
+		"ko"	"이제 충분하다! 시간을 질질 끌려는 너희들의 계획은 이미 파악되었다!"
+	}
+	"Castellan_Talk_TimeUp-2"
+	{
+		"en"	"Tanks are refueled with nitro boost. Run over them!"
+		"ko"	"탱크들을 니트로퓨엘로 충전시켰다. 전진!"
+	}
+	"Castellan_Talk_GameEnd-1"
+	{
+		"en"	"total waste of my time."
+		"ko"	"시간낭비로군."
+	}
+	"Castellan_Talk_GameEnd-2"
+	{
+		"en"	"Back to frontline"
+		"ko"	"다시 최전방으로 향하도록 하지."
+	}
+	"Castellan_Talk_Ability1-1"
+	{
+		"en"	"Calling for support!"
+		"ko"	"지원 요청한다!"
+	}
+	"Castellan_Talk_Ability1-2"
+	{
+		"en"	"I need more men on this battlement!"
+		"ko"	"이 전장에 더 많은 사람이 필요하다!"
+	}
+	"Castellan_Talk_Ability1-3"
+	{
+		"en"	"I require some fire support here boys!"
+		"ko"	"용사들아, 이곳에 화력 지원이 필요하다!"
+	}
+	"Castellan_Talk_Ability1-4"
+	{
+		"en"	"Atomizer gave Nitro Fuel to Castellan"
+		"ko"	"인수분해가 니트로퓨엘을 카스텔란에게 주었습니다."
+	}
+	"Castellan_Talk_Ability1-5"
+	{
+		"en"	"Huscarls refurbished Castellan's armor"
+		"ko"	"허스칼이 카스텔란의 방어구를 재정비 했습니다."
+	}
+	"Castellan_Talk_Ability1-6"
+	{
+		"en"	"Harrison refills his ammo with a look of annoyance on his face."
+		"ko"	"해리슨이 귀찮아죽겠다는 표정으로 탄약을 보급했습니다."
+	}
+	"Castellan_AtomizerDesc"
+	{
+		"en"	"{crimson}Permanently increases Attack speed by +10％ (Can Stack)"
+		"ko"	"{crimson}공격 속도 +10％ 영구 증가. (중첩됨)"
+	}
+	"Castellan_HuscarlsDesc"
+	{
+		"en"	"{crimson}Gain armor equal to 5％ of Max HP\nand gain additional resistance to the type that took the most damage for 20 seconds."
+		"ko"	"{crimson}최대 체력의 5％ 만큼의 아머를 얻고, 20초 동안 가장 많은 피해를 입은 타입에 추가 저항을 얻음"
+	}
+	"Castellan_HarrisonDesc"
+	{
+		"en"	"{crimson}Raid Power Permanently increases. (Can Stack)"
+		"ko"	"{crimson}레이드 파워가 영구 상승합니다. (중첩됨)"
+	}
+	"Castellan_Talk_Ability2-1"
+	{
+		"en"	"I got primary target in sight. {skyblue}Harrison{default}!"
+		"ko"	"주 목표가 발견됐다, {skyblue}해리슨{default}!"
+	}
+	"Castellan_Talk_Ability2-2"
+	{
+		"en"	"Grabbing some Rockets. I need some Artillery Support!"
+		"ko"	"로켓을 재장전하겠다. 포격 지원을 부탁한다!"
+	}
+	"Castellan_Talk_Ability2-3"
+	{
+		"en"	"Alright boys, Fire all we got! We cannot waste any more time on here!"
+		"ko"	"좋아, 친구들. 우리가 가진 모든걸 쏟아부어라! 우리는 여기서 더이상 낭비할 시간이 없다!"
+	}
+	"Castellan_Talk_Ability3-1"
+	{
+		"en"	"Rocket-B on action"
+		"ko"	"로켓-B 가동"
+	}
+	"Castellan_Talk_Ability3-2"
+	{
+		"en"	"You can hide but cannot outrun this rocket!"
+		"ko"	"이 공격으로부터 숨을순 있어도 도망치진 못할 거다!"
+	}
+	"Castellan_Talk_Counterattack"
+	{
+		"en"	"Sneaky guy Somewhere. {skyblue}Harrison{default}!"
+		"ko"	"어딘가 얍삽한 녀석이 있다. {skyblue}해리슨{default}!"
+	}
+	"Castellan_Talk_GetLifeLost-1"
+	{
+		"en"	"Im wounded! I need some support while I patch up!"
+		"ko"	"부상당했다! 회복할동안 도움이 필요하겠어!"
+	}
+	"Castellan_Talk_GetLifeLost-2"
+	{
+		"en"	"Ran out of rockets! Im gonna be back with more serious gears."
+		"ko"	"탄약이 다 떨어졌군. 더 위험한 장비들로 돌아올테니 기다리고 있도록."
+	}
+	"Castellan_Talk_LifeLost-1"
+	{
+		"en"	"With the will of iron cast in flames we will bring glory to our Victory!"
+		"ko"	"화염속 철 주물의 의지처럼 우리는 승리를 향해 나아갈 것이다!"
+	}
+	"Castellan_Talk_LifeLost-2"
+	{
+		"en"	"Show no fear or dread! Our soldiers of Victoria will never fall!"
+		"ko"	"물러서지 마라! 우리 빅토리아 병사들은 쓰러지지 않으리라!"
+	}
+	"Castellan_Talk_LifeLost-3"
+	{
+		"en"	"Arm gears, {crimson}Raise voices to the sky{default}, {collectors}Roar our Battle cry! {default}FOR {gold}VICTORIA!!"
+		"ko"	"장비를 재정비해라, {crimson}목소리를 높여라{default}, {collectors}전투 함성을 내질러라! {gold}빅토리아{default}를 위하여!!"
+	}
+	"Castellan_Talk_EscapePlan"
+	{
+		"en"	"Well played. I will return with better gears"
+		"ko"	"잘 싸웠다. 좀더 좋은 장비들을 가지고 돌아오도록 하지."
+	}
+	"Castellan_And_Sensal_Talk-1"
+	{
+		"en"	"Stop the fight this instant."
+		"ko"	"당장 이 싸움을 멈춰라."
+	}
+	"Castellan_And_Sensal_Talk-2"
+	{
+		"en"	"What is happening here?"
+		"ko"	"지금 도대체 무슨 일이 일어나고 있는거지?"
+	}
+	"Castellan_And_Sensal_Talk-3"
+	{
+		"en"	"They attacked us while invading Ziberia, what else is there to add?"
+		"ko"	"우리가 지베리아를 공격하는 동안, 저들이 우릴 공격했습니다. 정당방위인데 무슨 문제라도...?"
+	}
+	"Castellan_And_Sensal_Talk-4"
+	{
+		"en"	"Invading Ziberia? Right after {darkblue}Kahmlstein{default} Perished?"
+		"ko"	"지베리아를 공격하고 있다고? {darkblue}카멜슈타인{default}이 죽은 뒤인데?"
+	}
+	"Castellan_And_Sensal_Talk-5"
+	{
+		"en"	"There are more important matters to attend to.\nZiberia is not like Him."
+		"ko"	"그것보다 더 중요한 처리 사항이 많을텐데.\n지베리아는 그와 사상이 다르다."
+	}
+	"Castellan_And_Sensal_Talk-6"
+	{
+		"en"	"Youre meaning to say that he was the cause?"
+		"ko"	"그럼 그가 원인이었다고 말씀하고 싶으신 겁니까?"
+	}
+	"Castellan_And_Sensal_Talk-7"
+	{
+		"en"	"Correct. The country itself isnt at fault. Now leave, I also believe {gold}Victoria{default} has to deal with {darkblue}chaos{default}."
+		"ko"	"그래. 그 나라 자체에는 잘못이 없어. 이제 이 곳을 떠나라. {gold}빅토리아{default}도 {darkblue}혼돈{default}에 대처해야한다."
+	}
+	"Castellan_And_Sensal_Talk-8"
+	{
+		"en"	"I remember you mentioning chaos before, if you say its in our city walls, then we will immedietly return and assess the situation."
+		"ko"	"그러고보니 전에도 혼돈에 대한걸 말씀하셨죠. 만약 그것들이 우리의 성벽 안으로 진입하게 된다면, 즉시 돌아와서 상황 정리를 돕겠습니다."
+	}
+	"Castellan_And_Sensal_Talk-9"
+	{
+		"en"	"Good."
+		"ko"	"좋다."
+	}
+	"Castellan_And_Sensal_Talk-10"
+	{
+		"en"	"We will return to Victoria now."
+		"ko"	"이제 빅토리아로 돌아가겠습니다."
+	}
+	"Castellan_And_Sensal_Talk-11"
+	{
+		"en"	"{default}Before Sensal left, he asked Captino Menius to share the evidence he collected to you.\nCaptino Menius hands you the classified document with Victoria and Expidonsan logo printed on it: {unique}''A copy of Truthful Evidence''{default}!"
+		"ko"	"{default}센살이 떠나기전, 메니우스에게 부탁하여\n당신에게 빅토리아와 엑스피돈사의 로고가 박힌 서류폴더 하나를 건냅니다: {unique}''진실된 증거자료 [사본]''{default}!"
+	}
+	"Castellan_And_Sensal_Talk-12"
+	{
+		"en"	"{crimson}Meanwhile, you realize Castellan was watching with mixed emotions as he was retreating…{default}"
+		"ko"	"{crimson}그리고 여러분은 카스텔란이 퇴각하면서 이를 노려보고 있음을 깨닫습니다…{default}"
+	}
+	"CaptinoMenius_Talk-1"
+	{
+		"en"	"Great! The Radiotower is down. I can now send clear evidences to sensal. Please hold before the support arrives"
+		"ko"	"좋아! 방송탑이 무너졌군. 이제 센살한테 확실한 증거들을 보낼수 있겠어. 증원이 올때까지 잘 버텨주길 바라겠네."
+	}
+	"CaptinoMenius_Talk-2"
+	{
+		"en"	"{grey}Sensal arrived after he received the transmission from Captino Menius, but Castellan had already left with his army. Ziberia is in deep trouble now…{default}"
+		"ko"	"{grey}센살이 캡티노 메니우스의 전보를 받고 도착했지만, 카스텔란은 이미 그의 군대와 함께 전장으로 떠났습니다. 이제 지베리아는 큰 위험에 처했습니다.{default}"
+	}
+}

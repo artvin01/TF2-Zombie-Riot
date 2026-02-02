@@ -4,7 +4,7 @@
 void VehicleHL2_Setup()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "ATV");
+	strcopy(data.Name, sizeof(data.Name), "Scout Car");
 	strcopy(data.Plugin, sizeof(data.Plugin), "vehicle_jeep");
 	data.Category = Type_Hidden;
 	data.Func = ClotSummonJeep;

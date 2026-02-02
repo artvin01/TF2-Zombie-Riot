@@ -403,6 +403,11 @@ public void XenoSoldierGiant_ClotDamagedPost(int victim, int attacker, int infli
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+
+					if(StrContains(c_NpcName[npc.index], "Verde", false) != -1)
+					{
+						strcopy(c_NpcName[spawn_index], sizeof(c_NpcName[]), "Verde Soldier Minion");
+					}
 				}
 			}
 		}

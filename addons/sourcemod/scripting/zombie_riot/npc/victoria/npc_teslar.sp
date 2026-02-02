@@ -1,32 +1,23 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-
 static const char g_IdleAlertedSounds[][] = {
 	")vo/medic_mvm_heal_shield01.mp3",
 	")vo/medic_mvm_heal_shield02.mp3",
 	")vo/medic_mvm_heal_shield03.mp3",
 	")vo/medic_mvm_heal_shield04.mp3",
-	")vo/medic_mvm_heal_shield05.mp3",
-};
-
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/knife_swing.wav",
+	")vo/medic_mvm_heal_shield05.mp3"
 };
 
 static const char g_MeleeHitSounds[][] = {
 	"weapons/airboat/airboat_gun_energy1.wav",
-	"weapons/airboat/airboat_gun_energy2.wav",
+	"weapons/airboat/airboat_gun_energy2.wav"
 };
+
+static const char g_MeleeAttackSounds[] = "weapons/knife_swing.wav";
 
 void Victorian_Teslar_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DefaultMedic_DeathSounds));	   i++) { PrecacheSound(g_DefaultMedic_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_DefaultMedic_HurtSounds));		i++) { PrecacheSound(g_DefaultMedic_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Teslar");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_teslar");
@@ -34,57 +25,58 @@ void Victorian_Teslar_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static void ClotPrecache()
 {
-	return Teslar(vecPos, vecAng, ally);
+	PrecacheSoundArray(g_DefaultMedic_DeathSounds);
+	PrecacheSoundArray(g_DefaultMedic_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSound(g_MeleeAttackSounds);
+	PrecacheModel("models/player/medic.mdl");
 }
 
-methodmap Teslar < CClotBody
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return VictoriaTeslar(vecPos, vecAng, ally);
+}
+
+methodmap VictoriaTeslar < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
 	}
 	
-	
-	public Teslar(float vecPos[3], float vecAng[3], int ally)
+	public VictoriaTeslar(float vecPos[3], float vecAng[3], int ally)
 	{
-		Teslar npc = view_as<Teslar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1000", ally));
+		VictoriaTeslar npc = view_as<VictoriaTeslar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -95,24 +87,24 @@ methodmap Teslar < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		
-		
-		npc.m_flNextMeleeAttack = 0.0;
-		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
+		func_NPCDeath[npc.index] = VictoriaTeslar_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictoriaTeslar_OnTakeDamage;
+		func_NPCThink[npc.index] = VictoriaTeslar_ClotThink;
 		
 		//IDLE
+		KillFeed_SetKillIcon(npc.index, "batsaber");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.StartPathing();
+		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flAttackHappens = 0.0;
+		npc.m_flAttackHappens_bullshit = 0.0;
+		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flSpeed = 280.0;
-		
+		npc.StartPathing();
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -136,9 +128,9 @@ methodmap Teslar < CClotBody
 	}
 }
 
-static void Internal_ClotThink(int iNPC)
+static void VictoriaTeslar_ClotThink(int iNPC)
 {
-	Teslar npc = view_as<Teslar>(iNPC);
+	VictoriaTeslar npc = view_as<VictoriaTeslar>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -181,7 +173,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		TeslarSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		TeslarSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
 	}
 	else
 	{
@@ -191,9 +183,9 @@ static void Internal_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictoriaTeslar_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Teslar npc = view_as<Teslar>(victim);
+	VictoriaTeslar npc = view_as<VictoriaTeslar>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -207,15 +199,12 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	return Plugin_Changed;
 }
 
-static void Internal_NPCDeath(int entity)
+static void VictoriaTeslar_NPCDeath(int entity)
 {
-	Teslar npc = view_as<Teslar>(entity);
+	VictoriaTeslar npc = view_as<VictoriaTeslar>(entity);
 	if(!npc.m_bGib)
-	{
 		npc.PlayDeathSound();	
-	}
 	ExpidonsaRemoveEffects(entity);
-		
 	
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
@@ -225,79 +214,59 @@ static void Internal_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
 }
 
-void TeslarSelfDefense(Teslar npc, float gameTime, int target, float distance)
+static void TeslarSelfDefense(VictoriaTeslar npc, float gameTime, float distance)
 {
-	if(npc.m_flAttackHappens)
+	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 	{
-		if(npc.m_flAttackHappens < GetGameTime(npc.index))
+		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			npc.m_flAttackHappens = 0.0;
-			
-			Handle swingTrace;
-			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			if(!npc.m_flAttackHappenswillhappen)
 			{
-							
-				target = TR_GetEntityIndex(swingTrace);	
-				
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-				
-				if(IsValidEnemy(npc.index, target))
-				{
-					float damageDealt = 25.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.0;
-
-
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-
-					// Hit sound
-					npc.PlayMeleeHitSound();
-					if(target <= MaxClients)
-					{
-						if(!NpcStats_IsEnemySilenced(npc.index))
-						{
-							if(NpcStats_VictorianCallToArms(npc.index))
-							{
-								ApplyStatusEffect(npc.index, target, "Teslar Shock", 7.5);
-							}
-							else
-							{
-								ApplyStatusEffect(npc.index, target, "Teslar Shock", 5.0);
-							}
-						}
-					}		
-					ApplyStatusEffect(npc.index, target, "Teslar Shock", 7.5);
-				} 
-			}
-			delete swingTrace;
-		}
-	}
-
-	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
-	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
-		{
-			int Enemy_I_See;
-								
-			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
-			if(IsValidEnemy(npc.index, Enemy_I_See))
-			{
-				npc.m_iTarget = Enemy_I_See;
-				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
-						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.PlayMeleeSound();
+				npc.m_flAttackHappens = gameTime+0.25;
+				npc.m_flAttackHappens_bullshit = gameTime+0.39;
+				npc.m_flAttackHappenswillhappen = true;
+			}
+			if(npc.m_flAttackHappens < gameTime && npc.m_flAttackHappens_bullshit >= gameTime && npc.m_flAttackHappenswillhappen)
+			{
+				Handle swingTrace;
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+				npc.FaceTowards(vecTarget, 20000.0);
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
+				{
+					int target = TR_GetEntityIndex(swingTrace);	
+					
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					
+					if(IsValidEnemy(npc.index, target))
+					{
+						float damageDealt = 25.0;
+						if(ShouldNpcDealBonusDamage(target))
+							damageDealt*=2.0;
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+						npc.PlayMeleeHitSound();
+						if(IsValidEnemy(npc.index, target))
+						{
+							if(IsValidClient(target))
+								ApplyStatusEffect(npc.index, target, "Teslar Shock", NpcStats_VictorianCallToArms(npc.index) ? 7.5 : 5.0);
+							else
+								ApplyStatusEffect(npc.index, target, "Teslar Shock", 7.5);
+						}
+					} 
+				}
+				delete swingTrace;
+				npc.m_flNextMeleeAttack = gameTime + 1.2;
+				npc.m_flAttackHappenswillhappen = false;
+			}
+			else if(npc.m_flAttackHappens_bullshit < gameTime && npc.m_flAttackHappenswillhappen)
+			{
+				npc.m_flAttackHappenswillhappen = false;
 				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}
 	}
 }
-

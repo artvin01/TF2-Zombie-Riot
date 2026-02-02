@@ -40,7 +40,7 @@ void ApertureSentry_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_sentry");
 	strcopy(data.Icon, sizeof(data.Icon), "sentry_gun_lvl3_lite");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MISSION;
 	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -205,7 +205,7 @@ public void ApertureSentry_ClotThink(int iNPC)
 				AcceptEntityInput(npc.index, "SetBodyGroup");
 				
 				const float animTime = 5.0; // Sentry anim takes about 5 seconds
-				float duration = npc.Anger ? 1.0 : 7.0;
+				float duration = npc.Anger ? 1.0 : 4.0;
 				
 				npc.SetPlaybackRate(animTime / duration);
 				npc.m_flDoingAnimation = gameTime + duration;

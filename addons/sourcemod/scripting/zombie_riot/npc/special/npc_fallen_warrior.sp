@@ -98,8 +98,8 @@ void FallenWarrior_OnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Guln the Fallen One");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_fallen_warrior");
-	strcopy(data.Icon, sizeof(data.Icon), "demoknight_samurai");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "mb_guln");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;

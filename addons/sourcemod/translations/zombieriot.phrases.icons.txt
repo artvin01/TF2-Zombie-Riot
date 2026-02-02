@@ -86,7 +86,7 @@
 		"fr" 		"Le gardien du Void Vhxis vous arrête."
 		"chi"		"虚空守卫者Vxhis阻挡了你的路。"
 		"it"		"Vhxis, il custode del vuoto, ti blocca."
-		"ko" 		"공허의 수호자, 비흐시스가 당신을 막아섭니다."
+		"ko" 		"공허의 수호자, 비히시스가 당신을 막아섭니다."
 	}
 	"The Messanger Arrived"
 	{
@@ -116,7 +116,7 @@
 	{
 		"en" 		"Shadowing Darkness the throne taker and ruler of the Umbrals."
 		"it"		"Shadowing Darkness, il conquistatore del trono e sovrano degli Umbrali."
-		"ko" 		"왕좌 찬탈자이자 움브랄의 지배자, ''응달''."
+		"ko" 		"왕좌 찬탈자이자 움브랄의 지배자, ''그림자 응달''."
 	}
 	"The Purge Arrived"
 	{
@@ -256,7 +256,7 @@
 		"pt"		"Calamidade da Trupe Carmesim, codinome Fantasma."
 		"chi"       "深红剧团的灾难，代号幽灵"
 		"it"		"Calamità della Compagnia Cremisi, nome in codice Fantasma."
-		"ko" 		"크림슨 극단의 재앙 루시안, 코드네임 팬텀."
+		"ko" 		"극단의 재앙 루시안, 코드네임 팬텀."
 	}
 	"A caped Crimson warrior with Ominous Apparitions is appearing..."
 	{
@@ -276,7 +276,7 @@
 		"pt"		"Um pedaço de sombra. Nunca saiu, nem nunca existiu verdadeiramente."
 		"chi"       "一片阴影。它从未离开过，也从未真正存在过。"
 		"it"		"Una macchia d'ombra. Non se n'è mai andata, né è mai realmente esistita."
-		"ko" 		"그림자의 조각. 결코 떠난 적도, 실제로 존재한 적도 없다."
+		"ko" 		"하나의 그림자. 여태 떠난 적도, 실제로 존재한 적도 없다."
 	}
 	"Medieval Speech 1"
 	{
@@ -508,7 +508,7 @@
 		"fr" 		"Son armure est rouillé et sa lame terne, mais son corps vide se tourne vers vous."
 		"chi"		"他的盔甲早已被铁锈覆盖，长剑也被磨损为铁块。但他的躯壳依旧在向你的方向移动。"
 		"it"		"La sua spada è smussata e l'armatura è arrugginita, ma il suo corpo svuotato si avvicina lentamente a te."
-		"ko" 		"그의 검은 무뎌지고, 갑옷은 녹슬었지만, 그의 텅 비어버린 몸은 천천히 당신을 향해 다가갑니다."
+		"ko" 		"그의 검은 무뎌지고, 갑옷은 녹슬었지만, 그의 텅 비어버린 몸은 천천히 당신을 향해 다가간다."
 	}
 	"Machina Waldch 1"
 	{

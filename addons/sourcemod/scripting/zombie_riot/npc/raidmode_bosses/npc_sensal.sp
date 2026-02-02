@@ -335,6 +335,7 @@ methodmap Sensal < CClotBody
 		if(cutscene2)
 		{
 			i_RaidGrantExtra[npc.index] = 51;
+			b_NoKillFeed[npc.index] = true;
 		}
 		bool tripple = StrContains(data, "triple_enemies") != -1;
 		if(tripple)
@@ -564,49 +565,52 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: Stop the fight this instant.");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-1", false, false);
 			}
 			case 1:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: What is happening here?");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-2", false, false);
 			}
 			case 2:
 			{
-				CPrintToChatAll("{blue}Castellan{default}: They attacked us while invading Ziberia, what else is there to add?");
+				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-3", false);
 			}
 			case 3:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: Invading Ziberia? Right after {darkblue}Kahmlstein{default} Perished?");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-4", false, false);
 			}
 			case 4:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: There are more important matters to attend to.\nZiberia is not like Him.");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-5", false, false);
 			}
 			case 5:
 			{
-				CPrintToChatAll("{blue}Castellan{default}: Youre meaning to say that he was the cause?");
+				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-6", false);
 			}
 			case 6:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: Correct. The country itself isnt at fault. Now leave, I also believe Victoria has to deal with chaos.");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-7", false, false);
 			}
 			case 7:
 			{
-				CPrintToChatAll("{blue}Castellan{default}: I remember you mentioning chaos before, if you say its in our city walls, then we will immedietly return and assess the situation.");
+				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-8", false);
 			}
 			case 8:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: Good.");
+				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-9", false, false);
 			}
 			case 9:
 			{
-				CPrintToChatAll("{blue}Castellan{default}: We will return to Victoria now.");
+				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-10", false);
 				for (int client = 1; client <= MaxClients; client++)
 				{
-					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500 && !Items_HasNamedItem(client, "A copy of Truthful Evidence"))
 					{
-						Items_GiveNamedItem(client, "Avangard's Processing Core-B");
-						CPrintToChat(client,"{default}As Castellan and his army leave, they drop something: {darkblue}''Avangard's Processing Core-B''{default}!");
+						//Players who have already won the trophy will not get a message.
+						Items_GiveNamedItem(client, "A copy of Truthful Evidence");
+						SetGlobalTransTarget(client);
+						CPrintToChat(client, "%t", "Castellan_And_Sensal_Talk-11");
+						CPrintToChat(client, "%t", "Castellan_And_Sensal_Talk-12");
 					}
 				}
 			}

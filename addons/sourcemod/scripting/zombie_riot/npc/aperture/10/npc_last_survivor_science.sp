@@ -139,9 +139,9 @@ public void FatherGrigoriScience_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return FatherGrigoriScience(vecPos, vecAng, team);
+	return FatherGrigoriScience(vecPos, vecAng, team, data);
 }
 methodmap FatherGrigoriScience < CClotBody
 {
@@ -232,7 +232,19 @@ methodmap FatherGrigoriScience < CClotBody
 		EmitSoundToAll(g_ShieldRetractSounds[GetRandomInt(0, sizeof(g_ShieldRetractSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public FatherGrigoriScience(float vecPos[3], float vecAng[3], int ally)
+	property bool m_bShieldDisabled
+	{
+		public get()							{ return b_FUCKYOU[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
+	}
+	
+	property int m_iTimesHealed
+	{
+		public get()							{ return i_OverlordComboAttack[this.index]; }
+		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
+	}
+	
+	public FatherGrigoriScience(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		FatherGrigoriScience npc = view_as<FatherGrigoriScience>(CClotBody(vecPos, vecAng, "models/zombie_riot/grigori/monk_custom.mdl", "1.15", "10000", ally));
 		
@@ -256,7 +268,31 @@ methodmap FatherGrigoriScience < CClotBody
 
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, FatherGrigoriScience_OnTakeDamagePost);
 		GiveNpcOutLineLastOrBoss(npc.index, true);
-					
+		
+		npc.m_bShieldDisabled = false;
+		npc.m_iTimesHealed = 0;
+		
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		
+		int i = 0;
+		while (buffers[i][0] != '\0')
+		{
+			if (StrContains(buffers[i], "noshieldoverlimit") == 0)
+			{
+				// Disable shields when above a specific playercount
+				if (EnableSilentMode)
+					npc.m_bShieldDisabled = true;
+			}
+			else if (StrContains(buffers[i], "noshield") == 0)
+			{
+				// Disable shields no matter what
+				npc.m_bShieldDisabled = true;
+			}
+			
+			i++;
+		}
+		
 		//IDLE
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_iState = 0;
@@ -355,33 +391,37 @@ public void FatherGrigoriScience_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-
-	if(npc.m_flAbilityOrAttack0)
+	
+	if (!npc.m_bShieldDisabled)
 	{
-		if(IsValidEntity(npc.m_iWearable3))
+		if(npc.m_flAbilityOrAttack0)
 		{
-			npc.m_flAbilityOrAttack0 = gameTime + 999.0;
-		}
-		if(npc.m_flAbilityOrAttack0 < GetGameTime(npc.index))
-		{
-			npc.PlayShieldActivateSound();
-			npc.m_iWearable3 = npc.SpawnShield(0.0, "models/props_mvm/mvm_player_shield.mdl",40.0);
-			SetVariantString("1.0");
-			AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-			npc.m_flAbilityOrAttack0 = gameTime + 15.0;
-		}
-	}
-	if(npc.m_flAbilityOrAttack1)
-	{
-		if(npc.m_flAbilityOrAttack1 < GetGameTime(npc.index))
-		{
-			npc.PlayShieldRetractSound();
 			if(IsValidEntity(npc.m_iWearable3))
-			RemoveEntity(npc.m_iWearable3);
-			npc.m_flAbilityOrAttack1 = gameTime + 30.0;
-			npc.m_flAbilityOrAttack0 = gameTime + 15.0;
+			{
+				npc.m_flAbilityOrAttack0 = gameTime + 999.0;
+			}
+			if(npc.m_flAbilityOrAttack0 < GetGameTime(npc.index))
+			{
+				npc.PlayShieldActivateSound();
+				npc.m_iWearable3 = npc.SpawnShield(0.0, "models/props_mvm/mvm_player_shield.mdl",40.0);
+				SetVariantString("1.0");
+				AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+				npc.m_flAbilityOrAttack0 = gameTime + 15.0;
+			}
+		}
+		if(npc.m_flAbilityOrAttack1)
+		{
+			if(npc.m_flAbilityOrAttack1 < GetGameTime(npc.index))
+			{
+				npc.PlayShieldRetractSound();
+				if(IsValidEntity(npc.m_iWearable3))
+				RemoveEntity(npc.m_iWearable3);
+				npc.m_flAbilityOrAttack1 = gameTime + 30.0;
+				npc.m_flAbilityOrAttack0 = gameTime + 15.0;
+			}
 		}
 	}
+	
 	int closest = npc.m_iTarget;
 	
 	if(IsValidEnemy(npc.index, closest, true))
@@ -752,7 +792,14 @@ public void FatherGrigoriScience_DrawIonBeam(float startPosition[3], const int c
 			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 1.0, 100.0, 100.0, 0, NORMAL_ZOMBIE_VOLUME, {10, 255, 10, 255}, 3);
 			TE_SendToAll();
 			position[2] = startPosition[2] + 50.0;
-			ExpidonsaGroupHeal(client, Ionrange, 500, 5000.0, 1.25, true, .LOS = false,.VecDoAt = position);	
+			
+			// Initially heal for 5000, reduce heal by 1250 every time it's used
+			FatherGrigoriScience npc = view_as<FatherGrigoriScience>(client);
+			const float decayPerHeal = 1250.0;
+			float healing = 5000.0 - (npc.m_iTimesHealed++ * decayPerHeal);
+			
+			if (healing > 0.0)
+				ExpidonsaGroupHeal(client, Ionrange, 500, healing, 1.25, true, .LOS = false,.VecDoAt = position);	
 			//new Float:fDirection[3] = {-90.0,0.0,0.0};
 			//env_shooter(fDirection, 25.0, 0.1, fDirection, 800.0, 120.0, 120.0, position, "models/props_wasteland/rockgranite03b.mdl");
 	

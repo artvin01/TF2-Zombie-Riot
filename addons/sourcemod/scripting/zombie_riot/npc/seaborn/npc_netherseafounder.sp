@@ -38,7 +38,7 @@ void SeaFounder_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Nethersea Founder");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseafounder");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_founder");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_founder");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Seaborn;
@@ -353,7 +353,7 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	if(++SpreadTicks > (CurrentRound >= 39 ? 24 : 8))
+	if(++SpreadTicks > (CurrentRound[Rounds_Default] >= 39 ? 24 : 8))
 	{
 		SpreadTicks = (GetURandomInt() % 3) - 1;
 

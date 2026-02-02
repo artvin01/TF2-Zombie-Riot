@@ -45,7 +45,7 @@ void IberiaVivintu_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vivintu");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vivintu");
-	strcopy(data.Icon, sizeof(data.Icon), "scout_stun");
+	strcopy(data.Icon, sizeof(data.Icon), "mark_sniper_r2");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;
@@ -118,7 +118,7 @@ methodmap IberiaVivintu < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaVivintu_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(IberiaVivintu_ClotThink);
 		
-		
+		b_NpcAppliesMarkDebuff[npc.index] = true; 
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 280.0;

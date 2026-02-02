@@ -32,11 +32,21 @@ static int attacks_mode[MAXPLAYERS]={12, ...};
 static int weapon_id[MAXPLAYERS]={0, ...};
 static float QuadSinceLastRemove[MAXPLAYERS]={0.0, ...};
 
+static float BalanceBetweenShotgunAndRifle[MAXPLAYERS]={0.0, ...};
+//	-2.0		-1.0					 -0.5		  	 0.0				+0.5					+1.0			+2.0
+//bonus max    rifile bonus min  		   >			  -   	   rifile skill deactivate  rifile penality min  	 max
+//	max  shotgun penality min  shotgun skill deactivate   -  				  < 			 shotgun bonus min 	   bonus max
+
 #define PURGE_MAX_ENERGY 500.0
 #define PURGE_ENERGY_CLOSE_RANGE 400.0
 #define PURGE_ENERGY_CLOSE_RANGE_MULTI_GAIN 1.4
 #define PURGE_ENERGY_SHOTGUN 3.0
-#define PURGE_ENERGY_RIFLE 1.2
+#define PURGE_ENERGY_RIFLE 1.0
+
+#define PURGE_BALANCE_SHOTGUN_EXTRA_DMG 0.2	//target takes 20% more dmg
+#define PURGE_BALANCE_RIFLE_ENERGY 1.0			//+100% more energy gain
+#define PURGE_BALANCE_SHOTGUN -0.1
+#define PURGE_BALANCE_RIFLE 0.02
 
 #define PURGE_RAM_BASE_DMG 270.0
 #define PURGE_RAM_RADIUS 150.0
@@ -154,13 +164,28 @@ public Action Timer_PurgeKit(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 	PurgeKit_HUD(client, weapon, false);
+
+	//close range indicator
+	//just copied it from npc_the_purge.sp 
+	float clientPos[3];WorldSpaceCenter(client, clientPos);
+	clientPos[2] -= 35.0;
+	float range = PURGE_ENERGY_CLOSE_RANGE;
+	int currentWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(currentWeapon != 0 && currentWeapon != -1 && currentWeapon != INVALID_ENT_REFERENCE)
+	{
+		if(i_CustomWeaponEquipLogic[currentWeapon] == WEAPON_KIT_PURGE_ANNAHILATOR)
+			range = PURGE_ANNAHILATOR_VALID_RANGE;
+		if(i_CustomWeaponEquipLogic[currentWeapon] == WEAPON_KIT_PURGE_MISC)
+			range = PURGE_RAM_RADIUS;
+	}
+	spawnRing_Vectors(clientPos,  range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 200, 1, 0.11, 30.0, 0.0,1,_,client);
 	
 	//PrintToConsoleAll("m_hActiveWeapon: %d", GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
 	if(f_OneShotProtectionTimer[client] > GetGameTime() && !b_KitPurge_Toogle[client])
 	{
 		b_KitPurge_Toogle[client] = true;
 		//PurgeKit_GainEnergy(client, 99999.0);
-		float clientPos[3];WorldSpaceCenter(client, clientPos);
+		//float clientPos[3];WorldSpaceCenter(client, clientPos);
 		float clientAng[3];GetClientEyeAngles(client, clientAng);
 		TE_Particle("hightower_explosion", clientPos, NULL_VECTOR, clientAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
 		EmitSoundToAll(PURGE_EXPLOSION_SOUND, 0, SNDCHAN_AUTO, 100, _, 1.0);
@@ -200,7 +225,9 @@ public void PurgeKit_HUD(int client, int weapon, bool forced)
 		float annahiCD = Ability_Check_Cooldown(client, 3, crusherWeapon);
 		int rampagerWeapon = EntRefToEntIndex(i_KitPurge_Rampager_Ref[client]);
 		float quadCD = Ability_Check_Cooldown(client, 3, rampagerWeapon);
-		char annahiStat[15],quadStat[15];
+		char annahiStat[15],quadStat[15],balance[32],mainStatus[64];
+		balance = "C|______.--+--*--+--.______|R";//index 14 is mid, 3 min, 26 max
+		mainStatus = "";
 		if(annahiCD > 0.0)
 		{
 			if(Annahilator_Remove_Timer[client] != null)
@@ -219,14 +246,110 @@ public void PurgeKit_HUD(int client, int weapon, bool forced)
 		}
 		else
 			quadStat = "Online";
+		bool balanceSide = BalanceBetweenShotgunAndRifle[client] < 0.0;
+		float balanceValue = FloatAbs(BalanceBetweenShotgunAndRifle[client]);
+		int balanceBar = RoundToFloor(balanceValue * 6.0);
+		int textIndex = 14 + balanceBar * (balanceSide ? -1 : 1);
+		balance[textIndex] = balanceBar >= 3 ? (balanceSide ? '\\' : '/') : '|';
+
+		Weapon_Purgeing_HUD_WeaponStatus(client, mainStatus);
+		
 		if(Attributes_Get(weapon, Attrib_PapNumber, 1.0) < 2.0)
-			PrintHintText(client, "Purge System Activated.\nEnergy: [%.0f/%.0f]", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY);
+		{
+			if(mainStatus[0])
+				PrintHintText(client, "Purge System Activated.\n%s\n%s\nEnergy: [%.0f/%.0f]", balance, mainStatus, fl_KitPurge_Energy[client], PURGE_MAX_ENERGY);
+			else
+				PrintHintText(client, "Purge System Activated.\n%s\nEnergy: [%.0f/%.0f]", balance, fl_KitPurge_Energy[client], PURGE_MAX_ENERGY);
+		}
 		else if(Attributes_Get(weapon, Attrib_PapNumber, 1.0) < 4.0)
-			PrintHintText(client, "Purge System Activated.\nEnergy: [%.0f/%.0f]\nAnnihilator:%s", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat);
+		{
+			if(mainStatus[0])
+				PrintHintText(client, "%s\n%s\nEnergy: [%.0f/%.0f]\nAnnihilator:%s", balance, mainStatus, fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat);
+			else
+				PrintHintText(client, "Purge System Activated.\n%s\nEnergy: [%.0f/%.0f]\nAnnihilator:%s", balance, fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat);
+		}
 		else
-			PrintHintText(client, "Purge System Activated.\nEnergy: [%.0f/%.0f]\nAnnihilator:%s\nQuad-Launcher:%s", fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat, quadStat);
+		{
+			if(mainStatus[0])
+				PrintHintText(client, "%s\n%s\nEnergy: [%.0f/%.0f]\nAnnihilator:%s | Quad-Launcher:%s", balance, mainStatus, fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat, quadStat);
+			else
+				PrintHintText(client, "Purge System Activated.\n%s\nEnergy: [%.0f/%.0f]\nAnnihilator:%s | Quad-Launcher:%s", balance, fl_KitPurge_Energy[client], PURGE_MAX_ENERGY, annahiStat, quadStat);
+		}
 		fl_KitPurge_NextHUD[client] = GetGameTime() + 0.4;
 	}
+}
+
+void Weapon_Purgeing_HUD_WeaponStatus(int client, char[] res)
+{
+	bool balanceSide = BalanceBetweenShotgunAndRifle[client] < 0.0;
+	float balanceValue = FloatAbs(BalanceBetweenShotgunAndRifle[client]);
+	int currentWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	// char buffer[64], buffer1[64];
+	if(currentWeapon == EntRefToEntIndex(i_KitPurge_Crusher_Ref[client]))
+	{
+		if(balanceSide)
+		{
+			if(balanceValue > 1.0)
+			{
+				float damageRate = (3.0 - balanceValue) * 0.5;
+				damageRate = 1.0 - damageRate;
+				damageRate = damageRate * 100.0;
+				Format(res, 64, "Crusher Damage: -%.1f％", damageRate);
+			} 
+			else if (balanceValue < 0.5) 
+			{
+				Format(res, 64, "Crusher Damage: +20％ at close range");
+			}
+		}
+		else
+		{
+			if(balanceValue > 1.0) 
+			{
+				float damageRate = balanceValue - 1.0;
+				damageRate = damageRate * 50.0;
+				Format(res, 64, "Crusher Damage: +%.1f％, +20％ extra at close range", damageRate);
+			}
+			else
+			{
+				Format(res, 64, "Crusher Damage: +20％ at close range");
+			}
+		}
+	}
+	if(currentWeapon == EntRefToEntIndex(i_KitPurge_Rampager_Ref[client]))
+	{
+		if(!balanceSide)
+		{
+			if(balanceValue > 1.0)
+			{
+				float damageRate = (3.0 - balanceValue) * 0.5;
+				damageRate = 1.0 - damageRate;
+				damageRate = damageRate * 100.0;
+				Format(res, 64, "Rampager Damage: -%.1f％", damageRate);
+			} 
+			else if (balanceValue < 0.5) 
+			{
+				Format(res, 64, "Rampager: +%.1f％ energy gain", PURGE_BALANCE_RIFLE_ENERGY * 100.0);
+			}
+		}
+		else
+		{
+			if(balanceValue > 1.0) 
+			{
+				float damageRate = balanceValue - 1.0;
+				damageRate = damageRate * 50.0;
+				Format(res, 64, "Rampager Damage +%.1f％, +%.1f％ energy gain", damageRate, PURGE_BALANCE_RIFLE_ENERGY * 100.0);
+			}
+			else
+			{
+				Format(res, 64, "Rampager: +%.1f％ energy gain", PURGE_BALANCE_RIFLE_ENERGY * 100.0);
+			}
+		}
+	}
+}
+
+public void Weapon_Purging_Crusher(int client, int weapon, bool crit, int slot)
+{
+	PurgeKit_Balance(client, PURGE_BALANCE_SHOTGUN);
 }
 
 public void Weapon_Purging_Rampager(int client, int weapon, bool crit, int slot)
@@ -249,6 +372,8 @@ public void Weapon_Purging_Rampager(int client, int weapon, bool crit, int slot)
 			delete Revert_Weapon_Back_Timer[client];
 		Revert_Weapon_Back_Timer[client] = CreateTimer(3.0, Reset_weapon_purging_rampager, client);
 	}
+	i_KitPurge_Rampager_Ref[client] = EntIndexToEntRef(weapon);
+	PurgeKit_Balance(client, PURGE_BALANCE_RIFLE);
 }
 
 public void Weapon_Purging_QuadLauncher(int client, int weapon, bool crit, int slot)
@@ -569,40 +694,104 @@ public void PurgeKit_GainEnergy(int client, float energy)
 	}
 }
 
-public void PurgeKit_NPCTakeDamage_Rampager(int attacker, int victim, float &damage, int weapon)
+public void PurgeKit_Balance(int client, float b)
 {
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_KIT_PURGE_RAMPAGER)
+	if(b != 0)
 	{
-		if(fl_KitPurge_Crusher_Last_Hit[attacker] == GetGameTime(attacker))
-			return;
-		fl_KitPurge_Crusher_Last_Hit[attacker] = GetGameTime(attacker);
-		float attackerPos[3],victimPos[3];
-		WorldSpaceCenter(attacker, attackerPos);
-		WorldSpaceCenter(victim, victimPos);
-		float flDistanceToTarget = GetVectorDistance(attackerPos, victimPos, true);
-		if(flDistanceToTarget < PURGE_ENERGY_CLOSE_RANGE * PURGE_ENERGY_CLOSE_RANGE)
-			PurgeKit_GainEnergy(attacker, PURGE_ENERGY_RIFLE * PURGE_ENERGY_CLOSE_RANGE_MULTI_GAIN);
+		BalanceBetweenShotgunAndRifle[client] += b;
+
+		if(BalanceBetweenShotgunAndRifle[client] < -2.0)
+		{
+			BalanceBetweenShotgunAndRifle[client] = -2.0;
+		}
 		else
-			PurgeKit_GainEnergy(attacker, PURGE_ENERGY_RIFLE);
+		{
+			if(BalanceBetweenShotgunAndRifle[client] > 2.0)
+				BalanceBetweenShotgunAndRifle[client] = 2.0;
+		}
 	}
 }
 
-public void PurgeKit_NPCTakeDamage_Crusher(int attacker, int victim, float &damage, int weapon)
+public float PurgeKit_NPCTakeDamage_Rampager(int attacker, int victim, float damage, int weapon, int damagetype)
 {
+	if(!(damagetype & DMG_BULLET))
+		return damage;
+	
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_KIT_PURGE_RAMPAGER)
+	{
+		float balance = BalanceBetweenShotgunAndRifle[attacker];
+		float damageBonus = 1.0;
+		float extraEnergyGain = 1.0;
+		if(balance < -1.0)
+			damageBonus += (-1.0 - balance) * 0.5;
+		if(balance < 0.5)
+			extraEnergyGain += PURGE_BALANCE_RIFLE_ENERGY;
+		if(balance > 1.0)
+			damageBonus = (3.0 - balance) * 0.5;
+
+		damage *= damageBonus;
+
+		if(!CheckInHud())
+		{
+			float attackerPos[3],victimPos[3];
+			WorldSpaceCenter(attacker, attackerPos);
+			WorldSpaceCenter(victim, victimPos);
+			float flDistanceToTarget = GetVectorDistance(attackerPos, victimPos, true);
+			if(flDistanceToTarget < PURGE_ENERGY_CLOSE_RANGE * PURGE_ENERGY_CLOSE_RANGE)
+				PurgeKit_GainEnergy(attacker, PURGE_ENERGY_RIFLE * PURGE_ENERGY_CLOSE_RANGE_MULTI_GAIN * extraEnergyGain);
+			else
+				PurgeKit_GainEnergy(attacker, PURGE_ENERGY_RIFLE * extraEnergyGain);
+		}
+	}
+	return damage;
+}
+
+public float PurgeKit_NPCTakeDamage_Crusher(int attacker, int victim, float damage, int weapon, int damagetype)
+{
+	// PrintToConsoleAll("damage ini : %f", damage);
+	if(!(damagetype & (DMG_BULLET | DMG_BUCKSHOT)))
+		return damage;
+
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_KIT_PURGE_CRUSHER)
 	{
-		if(fl_KitPurge_Crusher_Last_Hit[attacker] == GetGameTime(attacker))
-			return;
-		fl_KitPurge_Crusher_Last_Hit[attacker] = GetGameTime(attacker);
-		float attackerPos[3],victimPos[3];
-		WorldSpaceCenter(attacker, attackerPos);
-		WorldSpaceCenter(victim, victimPos);
-		float flDistanceToTarget = GetVectorDistance(attackerPos, victimPos, true);
-		if(flDistanceToTarget < PURGE_ENERGY_CLOSE_RANGE * PURGE_ENERGY_CLOSE_RANGE)
-			PurgeKit_GainEnergy(attacker, PURGE_ENERGY_SHOTGUN * PURGE_ENERGY_CLOSE_RANGE_MULTI_GAIN);
-		else
-			PurgeKit_GainEnergy(attacker, PURGE_ENERGY_SHOTGUN);
+		float balance = BalanceBetweenShotgunAndRifle[attacker];
+		// PrintToConsoleAll("balance : %f", balance);
+		float damageBonus = 1.0;
+		if(balance > 1.0)
+			damageBonus += (balance - 1.0) * 0.5;
+		if(balance > -0.5)
+		{
+			float vecTarget[3]; WorldSpaceCenter(victim, vecTarget);
+			float VecSelf[3]; WorldSpaceCenter(attacker, VecSelf);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelf, true);
+			if(flDistanceToTarget <= PURGE_ENERGY_CLOSE_RANGE * PURGE_ENERGY_CLOSE_RANGE)
+				damageBonus += PURGE_BALANCE_SHOTGUN_EXTRA_DMG;
+		}
+		if(balance < -1.0)
+			damageBonus = (balance + 3.0) * 0.5;
+
+		// PrintToConsoleAll("damageBonus : %f", damageBonus);
+		damage *= damageBonus;
+		// PrintToConsoleAll("damage c : %f", damage);
+		// PrintToConsoleAll("CheckInHud : %d", CheckInHud());
+		if(!CheckInHud())
+		{
+			// PrintToConsoleAll("lasthit : %f", fl_KitPurge_Crusher_Last_Hit[attacker]);
+			// PrintToConsoleAll("GetGameTime : %f", GetGameTime(attacker));
+			if(fl_KitPurge_Crusher_Last_Hit[attacker] == GetGameTime(attacker))
+				return damage;
+			fl_KitPurge_Crusher_Last_Hit[attacker] = GetGameTime(attacker);
+			float attackerPos[3],victimPos[3];
+			WorldSpaceCenter(attacker, attackerPos);
+			WorldSpaceCenter(victim, victimPos);
+			float flDistanceToTarget = GetVectorDistance(attackerPos, victimPos, true);
+			if(flDistanceToTarget < PURGE_ENERGY_CLOSE_RANGE * PURGE_ENERGY_CLOSE_RANGE)
+				PurgeKit_GainEnergy(attacker, PURGE_ENERGY_SHOTGUN * PURGE_ENERGY_CLOSE_RANGE_MULTI_GAIN);
+			else
+				PurgeKit_GainEnergy(attacker, PURGE_ENERGY_SHOTGUN);
+		}
 	}
+	return damage;
 }
 
 

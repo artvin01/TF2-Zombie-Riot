@@ -5,40 +5,32 @@
 static const char g_DeathSounds[][] = {
 	"npc/combine_soldier/die1.wav",
 	"npc/combine_soldier/die2.wav",
-	"npc/combine_soldier/die3.wav",
+	"npc/combine_soldier/die3.wav"
 };
 
 static const char g_HurtSounds[][] = {
 	"npc/combine_soldier/pain1.wav",
 	"npc/combine_soldier/pain2.wav",
-	"npc/combine_soldier/pain3.wav",
+	"npc/combine_soldier/pain3.wav"
 };
 
 static const char g_IdleAlertedSounds[][] = {
 	"npc/combine_soldier/vo/alert1.wav",
 	"npc/combine_soldier/vo/bouncerbouncer.wav",
 	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfim.wav",
+	"npc/combine_soldier/vo/contactconfim.wav"
 };
 
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
 	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
+	"weapons/demo_sword_swing3.wav"
 };
 
-static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
-};
+static const char g_MeleeHitSounds[] = "weapons/halloween_boss/knight_axe_hit.wav";
 
 void VictorianPayback_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Payback");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_payback");
@@ -46,13 +38,23 @@ void VictorianPayback_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static void ClotPrecache()
 {
-	return VictorianPayback(vecPos, vecAng, ally);
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSound(g_MeleeHitSounds);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return VictorianPayback(vecPos, vecAng, ally, data);
 }
 
 methodmap VictorianPayback < CClotBody
@@ -61,37 +63,29 @@ methodmap VictorianPayback < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
-	
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-
+		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
+
 	property float m_LimitedLifetime
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
@@ -99,12 +93,26 @@ methodmap VictorianPayback < CClotBody
 	}
 	property float m_PaybackAnimation
 	{
-		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_EditLifetime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float m_EditArmorGain
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	property float m_EditHPGain
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
 	
-	
-	public VictorianPayback(float vecPos[3], float vecAng[3], int ally)
+	public VictorianPayback(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianPayback npc = view_as<VictorianPayback>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.5", "8000", ally, false, true));
 		
@@ -114,23 +122,26 @@ methodmap VictorianPayback < CClotBody
 		int iActivity = npc.LookupActivity("ACT_TEUTON_WALK_NEW");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(16);
+		SetVariantInt(6);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		
-		
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextRangedAttack = 0.0;
 		npc.m_LimitedLifetime = 0.0;
+		npc.m_PaybackAnimation = 0.0;
+		npc.m_EditLifetime = 5.0;
+		npc.m_EditArmorGain = 1.25;
+		npc.m_EditHPGain = 0.5;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
-		
+		func_NPCDeath[npc.index] = VictorianPayback_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictorianPayback_OnTakeDamage;
+		func_NPCThink[npc.index] = VictorianPayback_ClotThink;
 		
 		//IDLE
+		KillFeed_SetKillIcon(npc.index, "claidheamohmor");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -138,6 +149,32 @@ methodmap VictorianPayback < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		b_NpcUnableToDie[npc.index] = true;
 		
+		//Maybe used for special waves
+		static char countext[3][512];
+		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
+		for(int i = 0; i < count; i++)
+		{
+			if(i>=count)break;
+			else if(StrContains(countext[i], "lifetime") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "lifetime", "");
+				npc.m_EditLifetime = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "armor") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "armor", "");
+				npc.m_EditArmorGain = StringToFloat(countext[i]);
+			}
+			else if(StrContains(countext[i], "hp") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "hp", "");
+				npc.m_EditHPGain = StringToFloat(countext[i]);
+			}
+		}
+		
+		fl_ruina_battery_max[npc.index]=npc.m_EditHPGain;
+		fl_ruina_battery[npc.index]=npc.m_EditHPGain;
+		ApplyStatusEffect(npc.index, npc.index, "Battery_TM Charge", 999.0);
 		
 		int skin = 1;
 	//	SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -145,14 +182,18 @@ methodmap VictorianPayback < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
 		SetVariantString("1.1");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec17_brass_bucket/dec17_brass_bucket.mdl");
-		SetVariantString("1.25");
+		
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
+		SetVariantString("1.1");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_heavy_harness/fall17_heavy_harness.mdl");
-		SetVariantString("0.9");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec17_brass_bucket/dec17_brass_bucket.mdl");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_heavy_harness/fall17_heavy_harness.mdl");
+		SetVariantString("0.9");
+		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/bak_caped_crusader/bak_caped_crusader.mdl");
 		SetVariantString("1.25");
@@ -167,21 +208,25 @@ methodmap VictorianPayback < CClotBody
 
 		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 255, 255, 255);
-		SetEntityRenderColor(npc.m_iWearable2, 125, 125, 125, 255);
-		
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 1);
+		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 1.0);
+		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 1.0);
+		SetEntityRenderColor(npc.m_iWearable3, 125, 125, 125, 255);
 
 		return npc;
 	}
 }
 
-static void Internal_ClotThink(int iNPC)
+static void VictorianPayback_ClotThink(int iNPC)
 {
 	VictorianPayback npc = view_as<VictorianPayback>(iNPC);
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	float gameTime = GetGameTime(npc.index);
+	if(npc.m_flNextDelayTime > gameTime)
 	{
 		return;
 	}
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
 	if(npc.m_blPlayHurtAnimation)
@@ -191,67 +236,84 @@ static void Internal_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_PaybackAnimation && b_NpcUnableToDie[npc.index])
+	if(npc.m_PaybackAnimation)
 	{
-		if(npc.m_iChanged_WalkCycle != 5)
+		if(npc.m_iChanged_WalkCycle != 3)
 		{
 			npc.m_bisWalking = false;
-			npc.m_iChanged_WalkCycle = 5;
-			npc.SetActivity("ACT_MUDROCK_RAGE");
+			npc.m_iChanged_WalkCycle = 3;
+			npc.RemoveGesture("ACT_TEUTON_ATTACK_NEW_XENO");
+			npc.RemoveGesture("ACT_TEUTON_ATTACK_NEW");
+			npc.RemoveGesture("ACT_TEUTON_ATTACK_CADE_NEW_XENO");
+			npc.RemoveGesture("ACT_TEUTON_ATTACK_CADE_NEW");
+			npc.SetActivity("ACT_VIVITHORN_CHARGE_STUN");
 			npc.StopPathing();
 			npc.m_flSpeed = 0.0;
 		}
-		if(npc.m_PaybackAnimation < GetGameTime(npc.index) && !npc.m_fbRangedSpecialOn)
+		if(npc.m_PaybackAnimation < gameTime && !npc.m_fbRangedSpecialOn)
 		{
 			npc.m_PaybackAnimation = 0.0;
-			npc.m_LimitedLifetime = GetGameTime(npc.index) + 5.0;
-
-			if(npc.m_iChanged_WalkCycle != 6)
-			{
-				npc.m_bisWalking = true;
-				npc.m_iChanged_WalkCycle = 6;
-				npc.SetActivity("ACT_CUSTOM_RUN_SAMURAI");
-				npc.StartPathing();
-				npc.m_flSpeed = 350.0;
-			}
+			npc.m_LimitedLifetime = gameTime + npc.m_EditLifetime;
 			npc.m_fbRangedSpecialOn = true;
-
-			IgniteTargetEffect(npc.m_iWearable1);
-			if(IsValidEntity(npc.m_iWearable4))
-				RemoveEntity(npc.m_iWearable4);
 			
-			float flPos[3];
-			float flAng[3];
-			npc.GetAttachment("special_weapon_effect", flPos, flAng);
-			float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
-			flMaxhealth *= 0.20;
-			HealEntityGlobal(npc.index, npc.index, flMaxhealth, 1.15, 0.0, HEAL_SELFHEAL);
-			GrantEntityArmor(npc.index, false, 1.5, 0.01, 0);
-
-			npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "special_weapon_effect", {0.0,0.0,0.0});
+			fl_ruina_battery_max[npc.index]=npc.m_EditLifetime;
+			fl_ruina_battery[npc.index]=npc.m_LimitedLifetime;
+			ApplyStatusEffect(npc.index, npc.index, "Battery_TM Charge", 999.0);
+			
+			if(IsValidEntity(npc.m_iWearable2))
+			{
+				ExtinguishTarget(npc.m_iWearable2);
+				IgniteTargetEffect(npc.m_iWearable2);
+			}
+			//b_HideHealth[npc.index]=true;
+			GrantEntityArmor(npc.index, false, npc.m_EditArmorGain, 0.0, 0, float(ReturnEntityMaxHealth(npc.index))*npc.m_EditArmorGain);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(npc.index))*npc.m_EditHPGain));
 			b_NpcIsInvulnerable[npc.index] = false;
 			b_NpcUnableToDie[npc.index]=false;
 		}
 		return;
 	}
+	if(npc.m_fbRangedSpecialOn)
+		fl_ruina_battery[npc.index]=npc.m_LimitedLifetime-gameTime;
 
-	if(npc.m_LimitedLifetime < GetGameTime(npc.index) && npc.Anger)
+	if(npc.m_LimitedLifetime < gameTime && npc.Anger)
 	{
 		b_NpcIsInvulnerable[npc.index] = false;
 		SDKHooks_TakeDamage(npc.index, 0, 0, 1000000.0, DMG_BULLET);
 		SmiteNpcToDeath(npc.index);
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
-	{
+	if(npc.m_flNextThinkTime > gameTime)
 		return;
-	}
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
+	}
+	
+	if(npc.Anger)
+	{
+		if(npc.m_iChanged_WalkCycle != 1)
+		{
+			npc.m_bisWalking = true;
+			npc.m_iChanged_WalkCycle = 1;
+			npc.SetActivity("ACT_TEUTON_WALK_NEW_XENO");
+			npc.StartPathing();
+			npc.m_flSpeed = 350.0;
+		}
+	}
+	else
+	{
+		if(npc.m_iChanged_WalkCycle != 2)
+		{
+			npc.m_bisWalking = true;
+			npc.m_iChanged_WalkCycle = 2;
+			npc.SetActivity("ACT_TEUTON_WALK_NEW");
+			npc.StartPathing();
+			npc.m_flSpeed = 250.0;
+		}
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -270,7 +332,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VictorianPaybackSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		VictorianPaybackSelfDefense(npc,gameTime, flDistanceToTarget); 
 	}
 	else
 	{
@@ -280,7 +342,7 @@ static void Internal_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictorianPayback_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictorianPayback npc = view_as<VictorianPayback>(victim);
 		
@@ -294,7 +356,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 	if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)
 	{
-		npc.m_PaybackAnimation = GetGameTime(npc.index) + 5.0;
+		npc.m_PaybackAnimation = GetGameTime(npc.index) + 4.2;
 		npc.Anger = true;
 		b_NpcIsInvulnerable[npc.index] = true;
 	}
@@ -302,13 +364,11 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	return Plugin_Changed;
 }
 
-static void Internal_NPCDeath(int entity)
+static void VictorianPayback_NPCDeath(int entity)
 {
 	VictorianPayback npc = view_as<VictorianPayback>(entity);
 	if(!npc.m_bGib)
-	{
 		npc.PlayDeathSound();	
-	}
 	
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
@@ -324,111 +384,107 @@ static void Internal_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
 }
 
-void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, int target, float distance)
+static void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, float distance)
 {
-	if(npc.m_flAttackHappens)
+	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 	{
-		if(npc.m_flAttackHappens < GetGameTime(npc.index))
+		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			npc.m_flAttackHappens = 0.0;
-			
-			Handle swingTrace;
-			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, .Npc_type = 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			if(!npc.m_flAttackHappenswillhappen)
 			{
+				float AttackTime=(npc.Anger ? 1.0/0.425 : 1.0);
+				if(!ShouldNpcDealBonusDamage(npc.m_iTarget))
+				{
+					if(npc.Anger)
+						npc.AddGesture("ACT_TEUTON_ATTACK_NEW_XENO", _,_,_, AttackTime);
+					else
+						npc.AddGesture("ACT_TEUTON_ATTACK_NEW", _,_,_, AttackTime);
+				}
+				else
+				{
+					if(npc.Anger)
+						npc.AddGesture("ACT_TEUTON_ATTACK_CADE_NEW_XENO", _,_,_, AttackTime);
+					else
+						npc.AddGesture("ACT_TEUTON_ATTACK_CADE_NEW", _,_,_, AttackTime);
+				}
+				AttackTime=(npc.Anger ? 0.17 : 0.4);
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+				npc.PlayMeleeSound();
+				npc.m_flAttackHappens = gameTime+AttackTime;
+				npc.m_flAttackHappens_bullshit = gameTime+AttackTime+0.14;
+				npc.m_flAttackHappenswillhappen = true;
+			}
+			if(npc.m_flAttackHappens < gameTime && npc.m_flAttackHappens_bullshit >= gameTime && npc.m_flAttackHappenswillhappen)
+			{
+				if(!npc.Anger && ShouldNpcDealBonusDamage(npc.m_iTarget))
+					npc.m_flNextRangedAttack=gameTime+0.45;
+				Handle swingTrace;
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+				npc.FaceTowards(vecTarget, 20000.0);
 				float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-				float MaxHealth = float(ReturnEntityMaxHealth(npc.index));			
-				target = TR_GetEntityIndex(swingTrace);	
-				
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-				
-				if(IsValidEnemy(npc.index, target))
+				float MaxHealth = float(ReturnEntityMaxHealth(npc.index));		
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 				{
-					float damageDealt = 40.0;
-					damageDealt *=  (1.0+(1-(Health/MaxHealth))*4);
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.0;
-					if(NpcStats_VictorianCallToArms(npc.index))
-						damageDealt *= 1.25;
-
-
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-
-					// Hit sound
-					npc.PlayMeleeHitSound();	
-				} 
-			}
-			delete swingTrace;
-		}
-	}
-	if(npc.Anger)
-	{
-		if(npc.m_iChanged_WalkCycle != 1)
-		{
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 1;
-			npc.SetActivity("ACT_TEUTON_WALK_NEW_XENO");
-			npc.StartPathing();
-			npc.m_flSpeed = 350.0;
-		}
-	}
-	else
-	{
-		if(npc.m_iChanged_WalkCycle != 3)
-		{
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 3;
-			npc.SetActivity("ACT_TEUTON_WALK_NEW");
-			npc.StartPathing();
-			npc.m_flSpeed = 250.0;
-		}
-	}
-
-	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
-	{
-		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
-		{
-			int Enemy_I_See;
-								
-			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-
-			if(npc.Anger)
-			{
-				if(IsValidEnemy(npc.index, Enemy_I_See))
-				{
-					npc.m_iTarget = Enemy_I_See;
-					npc.PlayMeleeSound();
-					if(!ShouldNpcDealBonusDamage(npc.m_iTarget))
-						npc.AddGesture("ACT_TEUTON_ATTACK_NEW_XENO", _,_,_, 1.1);
-					else
-						npc.AddGesture("ACT_TEUTON_ATTACK_CADE_NEW_XENO", _,_,_, 1.1);
-							
-					npc.m_flAttackHappens = gameTime + 0.15;
-					npc.m_flNextMeleeAttack = gameTime + 0.5;
-				}
-			}
-			if(!npc.Anger)
-			{
-				if(IsValidEnemy(npc.index, Enemy_I_See))
-				{
-					npc.m_iTarget = Enemy_I_See;
-					npc.PlayMeleeSound();
-					if(!ShouldNpcDealBonusDamage(npc.m_iTarget))
-						npc.AddGesture("ACT_TEUTON_ATTACK_NEW", _,_,_, 1.1);
-					else
-						npc.AddGesture("ACT_TEUTON_ATTACK_CADE_NEW", _,_,_, 1.1);
+					int target = TR_GetEntityIndex(swingTrace);
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
 					
-							
-					npc.m_flAttackHappens = gameTime + 0.15;
-					npc.m_flNextMeleeAttack = gameTime + 1.2;
+					if(IsValidEnemy(npc.index, target))
+					{
+						float damageDealt = 40.0;
+						if(npc.Anger)
+						{
+							damageDealt *=  5.0;//Maximum damage bonus
+							if(ShouldNpcDealBonusDamage(target))
+								damageDealt *=  2.0;
+						}
+						else
+							damageDealt *=  (1.0+(1-(Health/MaxHealth))*4);
+						if(NpcStats_VictorianCallToArms(npc.index))
+							damageDealt *= 1.25;
+
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+						npc.PlayMeleeHitSound();	
+					}
 				}
+				delete swingTrace;
+				npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 0.51 : 1.2);
+				npc.m_flAttackHappenswillhappen = false;
+			}
+			else if(npc.m_flAttackHappens_bullshit < gameTime && npc.m_flAttackHappenswillhappen)
+			{
+				npc.m_flAttackHappenswillhappen = false;
+				npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 0.51 : 1.2);
 			}
 		}
+	}
+	if(npc.m_flNextRangedAttack && npc.m_flNextRangedAttack < gameTime)
+	{
+		Handle swingTrace;
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		npc.FaceTowards(vecTarget, 20000.0);
+		float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+		float MaxHealth = float(ReturnEntityMaxHealth(npc.index));		
+		if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
+		{
+			int target = TR_GetEntityIndex(swingTrace);
+			float vecHit[3];
+			TR_GetEndPosition(vecHit, swingTrace);
+			
+			if(IsValidEnemy(npc.index, target))
+			{
+				float damageDealt = 40.0;
+				damageDealt *=  (1.0+(1-(Health/MaxHealth))*4);
+				if(NpcStats_VictorianCallToArms(npc.index))
+					damageDealt *= 1.25;
+
+				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+				npc.PlayMeleeHitSound();	
+			}
+		}
+		delete swingTrace;
+		npc.m_flNextRangedAttack = 0.0;
 	}
 }
-

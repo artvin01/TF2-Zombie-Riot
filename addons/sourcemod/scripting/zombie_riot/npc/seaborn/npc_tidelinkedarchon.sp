@@ -36,7 +36,7 @@ void TidelinkedArchon_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Tidelinked Archon");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_tidelinkedarchon");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_archon");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_archon");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Seaborn;

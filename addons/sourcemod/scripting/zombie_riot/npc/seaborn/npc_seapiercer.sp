@@ -44,7 +44,7 @@ void SeaPiercer_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Primal Sea Piercer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seapiercer");
-	strcopy(data.Icon, sizeof(data.Icon), "sea_piercer");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_piercer");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Seaborn;

@@ -119,9 +119,8 @@ methodmap Defectio < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 270.0;
 		
-		npc.m_flMeleeArmor = 0.10;
-		npc.m_flRangedArmor = 0.10;
-
+		RefragmentedBase_Init(npc.index);
+		
 		npc.m_iWearable1 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-100.0,true);
 		SetVariantString("2.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -129,22 +128,9 @@ methodmap Defectio < CClotBody
 		if(IsValidEntity(npc.m_iWearable1))
 			SetParent(npc.index, npc.m_iWearable1);
 
-		npc.m_iWearable3 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_crowbar.mdl");
+		npc.m_iWearable2 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_crowbar.mdl");
 		SetVariantString("1.15");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
-		npc.m_iWearable3 = TF2_CreateGlow_White("models/humans/group03/male_09.mdl", npc.index, 1.15);
-		if(IsValidEntity(npc.m_iWearable3))
-		{
-			SetEntProp(npc.m_iWearable3, Prop_Send, "m_bGlowEnabled", false);
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_ENVIRONMENTAL);
-			TE_SetupParticleEffect("utaunt_signalinterference_parent", PATTACH_ABSORIGIN_FOLLOW, npc.m_iWearable3);
-			TE_WriteNum("m_bControlPoint1", npc.m_iWearable3);	
-			TE_SendToAll();
-		}
-
-		SetEntityRenderMode(npc.index, RENDER_GLOW);
-		SetEntityRenderColor(npc.index, 0, 0, 125, 200);
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		return npc;
 	}
@@ -166,22 +152,6 @@ public void Defectio_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
-
-	float vecTarget2[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget2);
-	float VecSelfNpc2[3]; WorldSpaceCenter(npc.index, VecSelfNpc2);
-	float distance2 = GetVectorDistance(vecTarget2, VecSelfNpc2, true);
-	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-	if(distance2 < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.25) && !i_IsABuilding[npc.m_iTarget])
-	{
-		npc.PlayHurtSound();
-		SDKHooks_TakeDamage(npc.index, npc.m_iTarget, npc.m_iTarget, 50.0, DMG_TRUEDAMAGE, -1, _, vecMe);
-		//Explode_Logic_Custom(10.0, npc.index, npc.index, -1, vecMe, 15.0, _, _, false, 1, false);
-		SetEntityRenderColor(npc.index, 180, 0, 0, 200);
-	}
-	if(distance2 > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.25) && !i_IsABuilding[npc.m_iTarget])
-	{
-		SetEntityRenderColor(npc.index, 0, 0, 125, 200);
-	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
@@ -194,6 +164,8 @@ public void Defectio_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
+	
+	RefragmentedBase_OnThink(npc.index, 50.0);
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -256,11 +228,10 @@ public void Defectio_NPCDeath(int entity)
 	}
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
-
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	
+	RefragmentedBase_OnDeath(npc.index);
 }
 
 void DefectioSelfDefense(Defectio npc, float gameTime, int target, float distance)

@@ -3,7 +3,7 @@
 
 static const char g_DeathSounds[][] = {
 	"vo/npc/male01/no01.wav",
-	"vo/npc/male01/no02.wav",
+	"vo/npc/male01/no02.wav"
 };
 
 static const char g_HurtSounds[][] = {
@@ -14,31 +14,20 @@ static const char g_HurtSounds[][] = {
 	"vo/npc/male01/pain06.wav",
 	"vo/npc/male01/pain07.wav",
 	"vo/npc/male01/pain08.wav",
-	"vo/npc/male01/pain09.wav",
+	"vo/npc/male01/pain09.wav"
 };
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/npc/male01/ohno.wav",
 	"vo/npc/male01/overthere01.wav",
-	"vo/npc/male01/overthere02.wav",
+	"vo/npc/male01/overthere02.wav"
 };
 
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/knife_swing.wav",
-};
-
-static const char g_MeleeHitSounds[][] = {
-	"weapons/bat_baseball_hit_flesh.wav",
-};
+static const char g_MeleeAttackSounds[] = "weapons/knife_swing.wav";
+static const char g_MeleeHitSounds[] = "weapons/bat_baseball_hit_flesh.wav";
 
 void VictorianVanguard_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victorian Vanguard");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victorian_vanguard");
@@ -46,8 +35,18 @@ void VictorianVanguard_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSound(g_MeleeAttackSounds);
+	PrecacheSound(g_MeleeHitSounds);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -61,38 +60,28 @@ methodmap VictorianVanguard < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
+		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
 	
 	public VictorianVanguard(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -107,24 +96,20 @@ methodmap VictorianVanguard < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		
-		
-		npc.m_flNextMeleeAttack = 0.0;
-		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+		func_NPCDeath[npc.index] = VictorianVanguard_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictorianVanguard_OnTakeDamage;
+		func_NPCThink[npc.index] = VictorianVanguard_ClotThink;
 		
 		
 		//IDLE
 		npc.m_iState = 0;
+		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.StartPathing();
 		npc.m_flSpeed = 280.0;
-		
+		npc.StartPathing();
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -136,13 +121,12 @@ methodmap VictorianVanguard < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/soldier_warpig/soldier_warpig.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
 
 		return npc;
 	}
 }
 
-static void Internal_ClotThink(int iNPC)
+static void VictorianVanguard_ClotThink(int iNPC)
 {
 	VictorianVanguard npc = view_as<VictorianVanguard>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -187,7 +171,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VictorianVanguardSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		VictorianVanguardSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
 	}
 	else
 	{
@@ -197,7 +181,7 @@ static void Internal_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictorianVanguard_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictorianVanguard npc = view_as<VictorianVanguard>(victim);
 		
@@ -209,18 +193,16 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
 	return Plugin_Changed;
 }
 
-static void Internal_NPCDeath(int entity)
+static void VictorianVanguard_NPCDeath(int entity)
 {
 	VictorianVanguard npc = view_as<VictorianVanguard>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-		
 	
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
@@ -230,94 +212,62 @@ static void Internal_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
 }
 
-void VictorianVanguardSelfDefense(VictorianVanguard npc, float gameTime, int target, float distance)
+static void VictorianVanguardSelfDefense(VictorianVanguard npc, float gameTime, float distance)
 {
-	if(npc.m_flAttackHappens)
+	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25 || npc.m_flAttackHappenswillhappen)
 	{
-		if(npc.m_flAttackHappens < GetGameTime(npc.index))
+		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			npc.m_flAttackHappens = 0.0;
-			
-			Handle swingTrace;
-			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			if(!npc.m_flAttackHappenswillhappen)
 			{
-							
-				target = TR_GetEntityIndex(swingTrace);	
-				
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-				
-				if(IsValidEnemy(npc.index, target))
+				npc.AddGesture("ACT_ARKANTOS_ATTACK_FAST");
+				npc.PlayMeleeSound();
+				npc.m_flAttackHappens = gameTime+0.25;
+				npc.m_flAttackHappens_bullshit = gameTime+0.39;
+				npc.m_flAttackHappenswillhappen = true;
+			}
+			if(npc.m_flAttackHappens < gameTime && npc.m_flAttackHappens_bullshit >= gameTime && npc.m_flAttackHappenswillhappen)
+			{
+				Handle swingTrace;
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+				npc.FaceTowards(vecTarget, 20000.0);
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 				{
-					float damageDealt = 30.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.0;
-
-
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-
-					// Hit sound
-					npc.PlayMeleeHitSound();
-					if(target <= MaxClients)
+					int target = TR_GetEntityIndex(swingTrace);	
+					
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					
+					if(IsValidEnemy(npc.index, target))
 					{
-						if(!NpcStats_IsEnemySilenced(npc.index))
+						float damageDealt = 30.0;
+						if(ShouldNpcDealBonusDamage(target))
+							damageDealt*=2.0;
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+						npc.PlayMeleeHitSound();
+						if(IsValidEnemy(npc.index, target))
 						{
-							bool Knocked = false;
-								
-							if(IsValidClient(target))
+							if(!HasSpecificBuff(target, "Solid Stance"))
 							{
-								if (IsInvuln(target))
+								Custom_Knockback(npc.index, target, (NpcStats_VictorianCallToArms(npc.index) ? -487.5 : -325.0), true);
+								if(IsValidClient(target))
 								{
-									Knocked = true;
-									if(NpcStats_VictorianCallToArms(npc.index))
-									{
-										Custom_Knockback(npc.index, target, -750.0, true);
-									}
-									else
-									{
-										Custom_Knockback(npc.index, target, -500.0, true);										
-									}
-									TF2_AddCondition(target, TFCond_LostFooting, 0.2);
-									TF2_AddCondition(target, TFCond_AirCurrent, 0.2);
-								}
-								else
-								{
-									TF2_AddCondition(target, TFCond_LostFooting, 0.2);
-									TF2_AddCondition(target, TFCond_AirCurrent, 0.2);
+									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 								}
 							}
-										
-							if(!Knocked)
-								Custom_Knockback(npc.index, target, -75.0, true); 
 						}
-					}		
-				} 
+					} 
+				}
+				delete swingTrace;
+				npc.m_flNextMeleeAttack = gameTime + 1.2;
+				npc.m_flAttackHappenswillhappen = false;
 			}
-			delete swingTrace;
-		}
-	}
-
-	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
-	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
-		{
-			int Enemy_I_See;
-								
-			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
-			if(IsValidEnemy(npc.index, Enemy_I_See))
+			else if(npc.m_flAttackHappens_bullshit < gameTime && npc.m_flAttackHappenswillhappen)
 			{
-				npc.m_iTarget = Enemy_I_See;
-				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_ARKANTOS_ATTACK_FAST");
-						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flAttackHappenswillhappen = false;
 				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}

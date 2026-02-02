@@ -31,6 +31,20 @@ public void Modifier_Collect_ChaosIntrusion()
 	CurrentModifActive = CHAOS_INTRUSION;
 }
 
+char SkynameSave[32];
+public void Modifier_Collect_ChaosIntrusion_LvL3_Const2()
+{
+	CvarSkyName.GetString(SkynameSave, sizeof(SkynameSave));
+	Waves_SetSkyName("space_5");
+	ToggleEntityByName("color_correct_entity_hard", true);
+}
+
+public void Modifier_Remove_ChaosIntrusion_LvL3_Const2()
+{
+	Waves_SetSkyName(SkynameSave);
+	ToggleEntityByName("color_correct_entity_hard", false);
+}
+
 public void Modifier_Remove_ChaosIntrusion()
 {
 	CurrentModifActive = 0;
@@ -71,6 +85,10 @@ public void Modifier_Remove_ParanormalActivity()
 	CurrentModifActive = 0;
 }
 
+public int ZR_Get_Modifier()
+{
+	return CurrentModifActive;
+}
 
 public void Modifier_RecolourAlly_SecondaryMercs(int client, StringMap map)
 {

@@ -8,26 +8,17 @@
 static const char g_DeathSounds[][] = {
 	"ambient/explosions/explode_3.wav",
 	"ambient/explosions/explode_4.wav",
-	"ambient/explosions/explode_9.wav",
+	"ambient/explosions/explode_9.wav"
 };
 
 static const char g_HurtSounds[][] = {
 	")physics/metal/metal_box_impact_bullet1.wav",
 	")physics/metal/metal_box_impact_bullet2.wav",
-	")physics/metal/metal_box_impact_bullet3.wav",
+	")physics/metal/metal_box_impact_bullet3.wav"
 };
-/*
-int RadioMastID;
 
-int RadioMastGlobaID()
-{
-	return RadioMastID;
-}
-*/
 void VictoriaRadiomast_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Radiomast");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victoria_radiomast");
@@ -35,37 +26,40 @@ void VictoriaRadiomast_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
 	PrecacheModel(VictoriaRadiomast_MODEL_1);
 	PrecacheModel(VictoriaRadiomast_MODEL_2);
 	PrecacheModel(VictoriaRadiomast_MODEL_3);
 }
 
-
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaRadiomast(vecPos, vecAng, ally);
+	return VictoriaRadiomast(vecPos, vecAng, ally, data);
 }
+
 methodmap VictoriaRadiomast < CClotBody
 {
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
-		
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.3);
 	}
 	
-	public VictoriaRadiomast(float vecPos[3], float vecAng[3], int ally)
+	public VictoriaRadiomast(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictoriaRadiomast npc = view_as<VictoriaRadiomast>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE,"1000000", ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
@@ -82,17 +76,9 @@ methodmap VictoriaRadiomast < CClotBody
 		SetVariantString("0.95");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		
-		npc.m_flMeleeArmor = 2.5;
-		npc.m_flRangedArmor = 1.0;
-
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
-		npc.m_bDissapearOnDeath = true;
-		npc.m_bLostHalfHealth = false;
-		npc.Anger = false;
-		npc.m_flNextMeleeAttack = 0.0;
 		
 		f_ExtraOffsetNpcHudAbove[npc.index] = 200.0;
 		i_NpcIsABuilding[npc.index] = true;
@@ -106,14 +92,22 @@ methodmap VictoriaRadiomast < CClotBody
 			RaidModeScaling = 0.0;
 		}
 
-		func_NPCDeath[npc.index] = view_as<Function>(VictoriaRadiomast_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaRadiomast_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictoriaRadiomast_ClotThink);
+		func_NPCDeath[npc.index] = VictoriaRadiomast_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictoriaRadiomast_OnTakeDamage;
+		func_NPCThink[npc.index] = VictoriaRadiomast_ClotThink;
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
-
+		npc.m_bDissapearOnDeath = true;
+		npc.m_bLostHalfHealth = false;
+		npc.Anger = false;
+		npc.m_bFUCKYOU = (StrContains(data, "death_func") != -1);
+		npc.m_flNextMeleeAttack = 0.0;
+		
+		npc.m_flMeleeArmor = 2.5;
+		npc.m_flRangedArmor = 1.25;
+		
 		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0);
 		switch(Decicion)
 		{
@@ -199,18 +193,15 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
-			{
 				ApplyStatusEffect(npc.index, client, "Call To Victoria", 0.5);
-			}
 		}
 	}
-		
+	//beep say
+	//make it affected by attack speed, idk
 	if(Waves_IsEmpty() && npc.m_flNextMeleeAttack < gameTime)
 	{
-		int ISVOLI= 1;
-		ISVOLI = RoundToNearest(4.0); 
-		int VICTORIA= 1;
-		VICTORIA = RoundToNearest(float(CountPlayersOnRed(1)) * 1.0); 
+		int ISVOLI = 4;
+		int VICTORIA = RoundToNearest(MultiGlobalEnemyBoss * 1.2); 
 		for(int i=1; i<=VICTORIA; i++)
 		{
 			switch(GetRandomInt(1, 4))
@@ -219,7 +210,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 				{
 					for(int ii=1; ii<=ISVOLI; ii++)
 					{
-						switch(GetRandomInt(1, 8))
+						switch(GetRandomInt(1, 9))
 						{
 							case 1:
 							{
@@ -253,6 +244,10 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 							{
 								VictoriaRadiomastSpawnEnemy(npc.index,"npc_igniter",120000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
+							case 9:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_squadleader",65000,2.0, RoundToCeil(1.0 * MultiGlobalEnemy));
+							}
 						}
 					}
 				}
@@ -260,7 +255,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 				{
 					for(int ii=1; ii<=ISVOLI; ii++)
 					{
-						switch(GetRandomInt(1, 9))
+						switch(GetRandomInt(1, 10))
 						{
 							case 1:
 							{
@@ -297,6 +292,10 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 							case 9:
 							{
 								VictoriaRadiomastSpawnEnemy(npc.index,"npc_destructor",35000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 10:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_ironshield",100000,2.0, RoundToCeil(1.0 * MultiGlobalEnemy));
 							}
 						}
 					}
@@ -380,10 +379,6 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 							{
 								VictoriaRadiomastSpawnEnemy(npc.index,"npc_taser",40000,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
-							case 8:
-							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_victorian_tank",250000,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-							}
 						}
 					}
 				}
@@ -403,14 +398,15 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 
 	if(!npc.Anger && npc.m_bLostHalfHealth)
 	{
-		team = GetTeam(npc.index);
-
 		int health = ReturnEntityMaxHealth(npc.index) / 10;
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+
+		char Adddeta[512];
+		FormatEx(Adddeta, sizeof(Adddeta), "target%i;", npc.index);
 		for(int i=1; i<=4; i++)
 		{
-			int other = NPC_CreateByName("npc_radioguard", -1, pos, ang, team, "EX");
+			int other = NPC_CreateByName("npc_radioguard", -1, pos, ang, team, Adddeta);
 			if(other > MaxClients)
 			{
 				if(team != TFTeam_Red)
@@ -428,7 +424,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 				if(b_StaticNPC[other])
 					AddNpcToAliveList(other, 1);
 			}
-			int other1 = NPC_CreateByName("npc_radio_repair", -1, pos, ang, team, "EX");
+			int other1 = NPC_CreateByName("npc_radio_repair", -1, pos, ang, team, Adddeta);
 			if(other1 > MaxClients)
 			{
 				if(team != TFTeam_Red)
@@ -449,7 +445,6 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 		 }
 		npc.Anger = true;
 	}
-
 }
 
 public Action VictoriaRadiomast_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -463,13 +458,12 @@ public Action VictoriaRadiomast_OnTakeDamage(int victim, int &attacker, int &inf
 
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
 	return Plugin_Changed;
 }
 
@@ -477,6 +471,20 @@ public void VictoriaRadiomast_NPCDeath(int entity)
 {
 	VictoriaRadiomast npc = view_as<VictoriaRadiomast>(entity);
 	npc.PlayDeathSound();	
+	
+	if(npc.m_bFUCKYOU)
+	{
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+		{
+			int IsBaguettus = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+			if(IsValidEntity(IsBaguettus) && i_NpcInternalId[IsBaguettus] == CaptinoBaguettus_ID() && !b_NpcHasDied[IsBaguettus])
+			{
+				CaptinoBaguettus Baguettus = view_as<CaptinoBaguettus>(IsBaguettus);
+				Baguettus.m_bFUCKYOU=true;
+				break;
+			}
+		}
+	}
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

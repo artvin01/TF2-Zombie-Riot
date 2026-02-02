@@ -265,12 +265,7 @@ public void MedivalCavalary_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 80.0;
-
-					if(Medival_Difficulty_Level_NotMath >= 3)
-					{
-						damage = 95.0;
-					}
+					float damage = 90.0;
 
 					if(ShouldNpcDealBonusDamage(target))
 					{
