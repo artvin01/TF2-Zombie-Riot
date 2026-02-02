@@ -3683,4 +3683,9 @@
 		"en"	"Made from the combination of Chaos and Void. Let's hope none of us crystallizes so we don’t get encased in one of these."
 		"ko"	"혼돈과 공허가 융화되어 만들어진 수정입니다.\n우리 중 누군가 결정화 되어 이런 수정에 갇히지 않길 바라야겠죠."
 	}
+	"Almagest Data Card"
+	{
+		"en"	"Almagest Data Card"
+		"ko"	"알마게스트 데이터 카드"
+	}
 }
