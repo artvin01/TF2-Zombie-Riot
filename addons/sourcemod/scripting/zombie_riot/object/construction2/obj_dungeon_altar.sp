@@ -14,7 +14,7 @@
 
 #define CONSTRUCT_NAME		"Construct Altar"
 #define CONSTRUCT_RESOURCE1	"iron"
-#define CONSTRUCT_COST1		(5 + (CurrentLevel * 5))
+#define CONSTRUCT_COST1		(3 + (CurrentLevel * 3))
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() * 3)
 #define CONSTRUCT_DAMAGE	(3000.0 * Pow(level + 1.0, 1.25))	//SET ME
 #define CONSTRUCT_FIRERATE	1.0

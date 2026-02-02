@@ -286,7 +286,7 @@ static void ApplyRandomEffect()
 				{
 					if(owned && !hidden && sell > 0 && list.FindValue(i) == -1)
 					{
-						if(Store_GetItemData(i, item, info) && ValidWeapon(i, info))
+						if(Store_GetItemData(i, item, info) && ValidWeapon(i, item, info))
 							list.Push(i);
 					}
 				}
@@ -306,7 +306,7 @@ static void ApplyRandomEffect()
 
 		for(int i; Store_GetItemData(i, item, info); i++)
 		{
-			if(ValidWeapon(i, info))
+			if(ValidWeapon(i, item, info))
 				list.Push(i);
 		}
 		
@@ -351,9 +351,9 @@ static void ApplyRandomEffect()
 	}
 }
 
-static bool ValidWeapon(int index, ItemInfo info)
+static bool ValidWeapon(int index, Item item, ItemInfo info)
 {
-	return info.Cost_Unlock > 0 && info.Cost_Unlock < 99999 && info.Classname[0] && !GemCrafter_HasEffect(index);
+	return info.Cost_Unlock > 0 && info.Cost_Unlock < 99999 && info.Classname[0] && !item.Hidden && !GemCrafter_HasEffect(index);
 }
 
 bool GemCrafter_HasEffect(int index)
