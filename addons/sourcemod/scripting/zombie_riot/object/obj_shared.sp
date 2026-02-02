@@ -1584,6 +1584,7 @@ public void ObjectGeneric_ClotTakeDamage_Post(int victim, int attacker, int infl
 		return;
 	if(GetTeam(victim) != TFTeam_Red)
 	{
+		ObjectGeneric objstats = view_as<ObjectGeneric>(victim);
 		int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 		int maxhealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 		float Ratio = float(health) / float(maxhealth);
