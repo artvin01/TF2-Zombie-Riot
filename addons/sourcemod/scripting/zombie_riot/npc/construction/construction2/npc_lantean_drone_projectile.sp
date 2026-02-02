@@ -388,13 +388,15 @@ static void LanteanNPC_SimulateTouch(int iNPC, int target)
 
 	Set_HitDetectionCooldown(npc.index, target, GetGameTime() + 1.0);
 	npc.m_iPenetrationAmmount++;
-	float damage = 25.0 * (npc.m_bUseRaidmodeScaling ? RaidModeScaling : 10.0);
+	float damage = 10.0 * (npc.m_bUseRaidmodeScaling ? RaidModeScaling : 10.0);
 	int attacker = npc.m_iAttacker;
 	if(!IsValidEntity(attacker))
 		attacker = npc.index;
 	float Origin[3]; GetAbsOrigin(npc.index, Origin);
 
-	if(ShouldNpcDealBonusDamage(target))
+	ObjectGeneric building = view_as<ObjectGeneric>(target);
+
+	if(building.m_bConstructBuilding)
 		damage *=0.2;
 		
 	SDKHooks_TakeDamage(target, attacker, attacker, damage, DMG_PLASMA, _, _, Origin);

@@ -2009,7 +2009,7 @@ static void SpiralGlave_Tick(DataPack IncomingData)
 	color = iRegaliaColor(npc);
 
 	if(Windup)
-		color[3] = RoundToFloor(255.0 * (1.0 - Ratio));
+		color[3] = RoundToFloor(255.0 * (1.0 - (Data.Windup - GameTime) / Data.Windup_Base));
 
 	float RingLoc[3]; RingLoc = MiddleLoc;
 	
@@ -3107,7 +3107,7 @@ static void LanceeWeaponTurnControl(int iNPC)
 	}
 	else
 	{
-		Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * 5.0 * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
+		Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * 2.5 * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
 	}
 	
 	
@@ -3299,7 +3299,7 @@ static void HandleMainWeapons(RegaliaClass npc)
 		if(npc.m_bVectoredThrust_InUse)
 		{
 			float WantedLoc[3];
-			Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * 5.0 * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
+			Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * 2.5 * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
 
 			//TE_SetupBeamPoints(Origin, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 60.0, 60.0, 0, 0.25, {0, 255, 0, 255}, 3);
 			//TE_SendToAll();
