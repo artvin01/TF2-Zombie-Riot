@@ -724,7 +724,7 @@ int Building_BuildByName(const char[] plugin, int client, float vecPos[3], float
 
 static int BuildByInfo(BuildingInfo info, int client, float vecPos[3], float vecAng[3])
 {
-	int entity = NPC_CreateByName(info.Plugin, client, vecPos, vecAng, GetTeam(client));
+	int entity = NPC_CreateByName(info.Plugin, client, vecPos, vecAng, client < 1 ? TFTeam_Red : GetTeam(client));
 	if(entity != -1)
 	{
 		ObjectGeneric obj = view_as<ObjectGeneric>(entity);
@@ -755,7 +755,9 @@ static int BuildByInfo(BuildingInfo info, int client, float vecPos[3], float vec
 			SetEntProp(obj.index, Prop_Data, "m_iRepairMax", maxrepair);
 			SetEntProp(obj.index, Prop_Data, "m_iRepair", repair);
 		}
-		SetTeam(obj.index, GetTeam(client));
+
+		if(client > 0)
+			SetTeam(obj.index, GetTeam(client));
 
 		GiveBuildingMetalCostOnBuy(entity, 0);
 	}

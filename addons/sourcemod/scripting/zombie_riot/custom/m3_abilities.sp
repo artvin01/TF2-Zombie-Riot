@@ -1098,7 +1098,7 @@ static Handle CallbackTimer[MAXPLAYERS];
 
 public void BuilderMenu(int client)
 {
-	if(dieingstate[client] == 0)
+	if(IsPlayerAlive(client) && dieingstate[client] == 0)
 	{	
 		CancelClientMenu(client);
 		SetStoreMenuLogic(client, false);
@@ -1873,6 +1873,10 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 					int entity_close = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 					if(IsValidEntity(entity_close))
 					{
+						// Downed construct buildings
+						if(view_as<ObjectGeneric>(entity_close).m_bConstructBuilding && IsValidEntity(view_as<ObjectGeneric>(entity_close).m_iConstructDeathModel))
+							continue;
+						
 						GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", client_pos);
 						if (GetVectorDistance(powerup_pos, client_pos, true) <= (500.0 * 500.0))
 						{

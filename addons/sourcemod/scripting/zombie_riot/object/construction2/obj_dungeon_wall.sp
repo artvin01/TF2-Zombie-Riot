@@ -14,7 +14,7 @@
 
 #define CONSTRUCT_NAME		"Construct Health"
 #define CONSTRUCT_RESOURCE1	"iron"
-#define CONSTRUCT_COST1		(10 + (CurrentLevel * 10))
+#define CONSTRUCT_COST1		(10 + (CurrentLevel * 5))
 #define CONSTRUCT_MAXLVL	(1 + ObjectDungeonCenter_Level())
 #define CONSTRUCT_MAXCOUNT	(24 + (level * 12))
 

@@ -14,7 +14,7 @@
 
 #define CONSTRUCT_NAME		"Teslar's Medusa"
 #define CONSTRUCT_RESOURCE1	"copper"
-#define CONSTRUCT_COST1		(30 + (CurrentLevel * 10))
+#define CONSTRUCT_COST1		(20 + (CurrentLevel * 5))
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
 #define CONSTRUCT_DAMAGE	(125.0 * Pow(level + 3.0, 2.0))
 #define CONSTRUCT_FIRERATE	1.0
