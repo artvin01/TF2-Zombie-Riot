@@ -102,7 +102,8 @@ void ObjectC2Cannon_ClotThink(ObjectC2Cannon npc)
 	}
 
 	float gameTime = GetGameTime(npc.index);
-	npc.m_flNextDelayTime = gameTime + 0.1;
+	if(GetTeam(npc.index) == TFTeam_Red)
+		npc.m_flNextDelayTime = gameTime + 0.1;
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		float DistanceLimit = CONSTRUCT_RANGE;

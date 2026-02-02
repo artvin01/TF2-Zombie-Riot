@@ -688,7 +688,7 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	if(Dungeon_Mode() && objstats.m_bConstructBuilding && GetTeam(objstats.index) != TFTeam_Red)
 	{
 		objstats.m_flNextDelayTime = gameTime + 0.4;
-	}
+	} 
 	else
 	{
 		objstats.m_flNextDelayTime = gameTime + 0.2;
@@ -704,7 +704,8 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	//force think much slower during peace times
 	if(Dungeon_Mode() && Dungeon_InSetup() && objstats.m_bConstructBuilding && GetTeam(objstats.index) == TFTeam_Red)
 	{
-		objstats.m_flNextDelayTime = gameTime + 1.0;
+		if(IsDungeonCenterId() != i_NpcInternalId[objstats.index])
+			objstats.m_flNextDelayTime = gameTime + 5.0;
 	}
 
 	if(GetTeam(objstats.index) != TFTeam_Red)

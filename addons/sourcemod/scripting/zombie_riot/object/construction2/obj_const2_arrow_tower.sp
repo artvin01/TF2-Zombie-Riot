@@ -107,9 +107,8 @@ void ObjectC2ArrowTower_ClotThink(ObjectC2ArrowTower npc)
 
 	SetEntityRenderMode(npc.index, RENDER_NONE);
 	float gameTime = GetGameTime(npc.index);
-	npc.m_flNextDelayTime = gameTime + 0.1;
-	if(GetTeam(npc.index) != TFTeam_Red)
-		npc.m_flNextDelayTime = gameTime + 0.4;
+	if(GetTeam(npc.index) == TFTeam_Red)
+		npc.m_flNextDelayTime = gameTime + 0.1;
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		float DistanceLimit = CONSTRUCT_RANGE;

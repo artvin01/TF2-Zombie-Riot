@@ -92,7 +92,6 @@ methodmap ObjectDStunGun < ObjectGeneric
 static void ClotThink(ObjectDStunGun npc)
 {
 	float gameTime = GetGameTime(npc.index);
-	npc.m_flNextDelayTime = gameTime + 0.1;
 
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{

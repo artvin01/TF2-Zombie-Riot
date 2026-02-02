@@ -137,7 +137,10 @@ void ObjectDMinigunTurret_ClotThink(ObjectDMinigunTurret npc)
 	}
 
 	float gameTime = GetGameTime(npc.index);
-	npc.m_flNextDelayTime = gameTime + CONSTRUCT_FIRERATE;
+	if(GetTeam(npc.index) == TFTeam_Red)
+		npc.m_flNextDelayTime = gameTime + CONSTRUCT_FIRERATE;
+	else
+		npc.m_flNextDelayTime = gameTime + (CONSTRUCT_FIRERATE * 3.0);
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		float DistanceLimit = CONSTRUCT_RANGE;

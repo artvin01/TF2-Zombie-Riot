@@ -108,7 +108,8 @@ void ObjectC2LaserIntensifier_ClotThink(ObjectC2LaserIntensifier npc)
 	}
 
 	float gameTime = GetGameTime(npc.index);
-	npc.m_flNextDelayTime = gameTime + 0.1;
+	if(GetTeam(npc.index) == TFTeam_Red)
+		npc.m_flNextDelayTime = gameTime + 0.1;
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index,_,CONSTRUCT_RANGE,.CanSee = false, .UseVectorDistance = true);

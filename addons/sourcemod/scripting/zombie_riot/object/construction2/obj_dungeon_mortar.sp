@@ -115,7 +115,6 @@ static void ClotThink(ObjectDMortar npc)
 	if(owner == -1)
 		owner = npc.index;
 
-	npc.m_flNextDelayTime = gameTime + 0.1;
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index, _, CONSTRUCT_RANGE, .CanSee = false, .UseVectorDistance = true, .MinimumDistance = 300.0);
