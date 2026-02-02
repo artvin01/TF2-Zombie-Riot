@@ -455,12 +455,12 @@
 	"Verde Soldier Giant Summoner"
 	{
 		"en"	"Verde Soldier Giant Summoner"
-		"ko"	"미성숙한 거대 소환사 솔저"
+		"ko"	"초록색 거대 소환사 솔저"
 	}
 	"Verde Soldier Minion"
 	{
 		"en"	"Verde Soldier Minion"
-		"ko"	"미성숙한 하수인 솔저"
+		"ko"	"초록색 하수인 솔저"
 	}
 	"Xeno Resurgance"
 	{
