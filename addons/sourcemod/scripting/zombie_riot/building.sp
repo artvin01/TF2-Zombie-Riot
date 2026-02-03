@@ -2850,7 +2850,7 @@ static void Tinker_TouchAnything(int entity, int target)
 	{
 		if(i_NpcIsABuilding[target])
 		{
-			if(view_as<ObjectGeneric>(entity_close).m_bConstructBuilding && IsValidEntity(view_as<ObjectGeneric>(entity_close).m_iConstructDeathModel))
+			if(view_as<ObjectGeneric>(target).m_bConstructBuilding && IsValidEntity(view_as<ObjectGeneric>(target).m_iConstructDeathModel))
 				return;
 			//heal building?
 			bool RepairDone = false;
