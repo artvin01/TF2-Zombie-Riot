@@ -2199,7 +2199,14 @@ stock bool ShieldDeleteProjectileCheck(int owner, int enemy)
 
 void Hook_DHook_UpdateTransmitState(int entity)
 {
-	g_DhookUpdateTransmitState.HookEntity(Hook_Pre, entity, DHook_UpdateTransmitState);
+	if(h_TransmitHookType[entity] != 0)
+	{
+		if(!DHookRemoveHookID(h_TransmitHookType[entity]))
+		{
+			PrintToConsoleAll("Somehow Failed to unhook h_TransmitHookType");
+		}
+	}
+	h_TransmitHookType[entity] = g_DhookUpdateTransmitState.HookEntity(Hook_Pre, entity, DHook_UpdateTransmitState);
 }
 
 public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) //BLOCK!!

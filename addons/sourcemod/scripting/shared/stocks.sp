@@ -3201,6 +3201,7 @@ void Projectile_DealElementalDamage(int victim, int attacker, float Scale = 1.0)
 	}
 }
 
+bool OnlyWarnOnceEver = true;
 stock void Explode_Logic_Custom(float damage,
 int client, //To get attributes from and to see what is my enemy!
 int entity,	//Entity that gets forwarded or traced from/Distance checked.
@@ -3236,8 +3237,19 @@ int inflictor = 0)
 		if(explosion_range_dmg_falloff == EXPLOSION_RANGE_FALLOFF)
 			explosion_range_dmg_falloff = Attributes_Get(weapon, Attrib_OverrideExplodeDmgRadiusFalloff, EXPLOSION_RANGE_FALLOFF);
 	}
-#endif
-
+#endif	
+	if(explosionRadius >= 2100.0)
+	{
+		if(OnlyWarnOnceEver)
+		{
+			OnlyWarnOnceEver = false;
+			LogStackTrace("Please never go above 2k, patch this immedietly");
+			CPrintToChatAll("A Bad error has accurred, you can still play, but please notify an admin and show this code: ''2100+''");
+		}
+		//why is this done? Any range above 2k causes immensive lag.
+		//at that point it  could just be global too.
+		explosionRadius = 2000.0;
+	}
 	//this should make explosives during raids more usefull.
 	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
 	{ 
