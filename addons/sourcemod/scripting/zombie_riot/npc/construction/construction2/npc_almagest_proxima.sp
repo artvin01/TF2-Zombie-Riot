@@ -161,7 +161,7 @@ methodmap AlmagestProxima < CClotBody
 		EnemyShieldCantBreak[npc.index] = true;
 		VausMagicaGiveShield(npc.index, 5);
 
-		npc.m_flSpeed = 330.0;
+		npc.m_flSpeed = 360.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/zombie_riot/weapons/ruina_models_2_5.mdl");
 		SetVariantInt(65536);
