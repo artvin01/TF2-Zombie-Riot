@@ -381,8 +381,8 @@ int GlobalIntencity;
 bool b_HasBeenHereSinceStartOfWave[MAXPLAYERS];
 bool WasHereSinceStartOfWave(int client)
 {
-	if(Dungeon_Mode())
-		return true;
+//	if(Dungeon_Mode())
+//		return true;
 	return b_HasBeenHereSinceStartOfWave[client];
 }
 Cookie CookieScrap;
@@ -2032,7 +2032,11 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			}
 		}
 		if(!TestLastman)
+		{
+			
+			CheckIfAloneOnServer(true);
 			return;
+		}
 	}
 	
 	CheckIfAloneOnServer();

@@ -3216,7 +3216,7 @@ void FlamethrowerAntiCrash(int entity)
 	}
 }
 #if defined ZR || defined RPG
-public void CheckIfAloneOnServer()
+void CheckIfAloneOnServer(bool CountOnly = false)
 {
 	CountPlayersOnRed();
 	b_IsAloneOnServer = false;
@@ -3248,6 +3248,8 @@ public void CheckIfAloneOnServer()
 	{
 		b_IsAloneOnServer = true;	
 	}
+	if(CountOnly)
+		return;
 
 #if defined ZR 
 	if(BetWar_Mode())

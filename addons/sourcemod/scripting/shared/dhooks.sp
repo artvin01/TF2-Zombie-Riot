@@ -1542,6 +1542,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	
 	if(Construction_InSetup() || BetWar_Mode() || Dungeon_CanRespawn())
 	{
+		b_AntiLateSpawn_Allow[client] = true;
 		TeutonType[client] = TEUTON_NONE;
 	}
 	else
