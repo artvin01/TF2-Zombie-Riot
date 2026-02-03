@@ -1618,7 +1618,7 @@ public void OnPostThink(int client)
 			}
 			else if (TeutonType[client] == TEUTON_DEAD)
 			{
-				if(b_HasBeenHereSinceStartOfWave[client])
+				if(WasHereSinceStartOfWave(client))
 				{
 					Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Died Teuton"
 					);

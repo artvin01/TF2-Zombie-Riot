@@ -962,7 +962,7 @@ public void Reinforce(int client, bool NoCD)
 				continue;
 			if(client==client_check || GetTeam(client_check) != TFTeam_Red)
 				continue;
-			if(!b_HasBeenHereSinceStartOfWave[client_check])
+			if(!WasHereSinceStartOfWave(client_check))
 				continue;
 			if(f_PlayerLastKeyDetected[client_check] < GetGameTime())
 				continue;
@@ -2090,7 +2090,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 		if(IsValidClient(PreviousOwner))
 		{
 			int RandomHELLDIVER = GetRandomDeathPlayer(HELLDIVER);
-			if(IsValidClient(RandomHELLDIVER) && GetTeam(RandomHELLDIVER) == TFTeam_Red && TeutonType[RandomHELLDIVER] == TEUTON_DEAD && b_HasBeenHereSinceStartOfWave[RandomHELLDIVER])
+			if(IsValidClient(RandomHELLDIVER) && GetTeam(RandomHELLDIVER) == TFTeam_Red && TeutonType[RandomHELLDIVER] == TEUTON_DEAD && WasHereSinceStartOfWave(RandomHELLDIVER))
 			{
 				TeutonType[RandomHELLDIVER] = TEUTON_NONE;
 				dieingstate[RandomHELLDIVER] = 0;
@@ -2195,7 +2195,7 @@ stock int GetRandomDeathPlayer(int client)
 		if(client==client_check || GetTeam(client_check) != TFTeam_Red)
 			continue;
 
-		if(!b_HasBeenHereSinceStartOfWave[client_check])
+		if(!WasHereSinceStartOfWave(client_check))
 			continue;
 
 		if(f_PlayerLastKeyDetected[client_check] < GetGameTime())

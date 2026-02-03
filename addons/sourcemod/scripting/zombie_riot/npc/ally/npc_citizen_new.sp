@@ -1579,7 +1579,7 @@ stock void Citizen_PlayerReplacement(int client)
 	if(TeutonType[client] != TEUTON_NONE)
 		return;
 	//were they here since the start of the wave?
-	if(!b_HasBeenHereSinceStartOfWave[client])
+	if(!WasHereSinceStartOfWave(client))
 		return;
 	
 

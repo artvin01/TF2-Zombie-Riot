@@ -785,7 +785,7 @@ public float Rogue_Encounter_EmergencyDispatch()
 	int[] players = new int[MaxClients];
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+		if(!b_IsPlayerABot[client] && WasHereSinceStartOfWave(client) && IsClientInGame(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 		{
 			players[count++] = client;
 		}

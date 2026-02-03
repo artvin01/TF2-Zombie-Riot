@@ -3236,7 +3236,7 @@ public void CheckIfAloneOnServer()
 			if(!b_AntiLateSpawn_Allow[client])
 				continue;
 #if defined ZR
-			if(!b_HasBeenHereSinceStartOfWave[client])
+			if(!WasHereSinceStartOfWave(client))
 				continue;
 #endif
 			players += 1;

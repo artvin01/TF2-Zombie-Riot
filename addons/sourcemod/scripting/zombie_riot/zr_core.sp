@@ -379,6 +379,12 @@ int PlayersInGame;
 bool ZombieMusicPlayed;
 int GlobalIntencity;
 bool b_HasBeenHereSinceStartOfWave[MAXPLAYERS];
+bool WasHereSinceStartOfWave(int client)
+{
+	if(Dungeon_Mode())
+		return true;
+	return b_HasBeenHereSinceStartOfWave[client];
+}
 Cookie CookieScrap;
 Cookie CookieXP;
 ArrayList Loadouts[MAXPLAYERS];
@@ -2720,7 +2726,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceF
 	{
 		CheckClientLateJoin(client, false);
 		bool ClientWasInWave = false;
-		if(b_HasBeenHereSinceStartOfWave[client])
+		if(WasHereSinceStartOfWave(client))
 			ClientWasInWave = true;
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		if(IsClientInGame(client))

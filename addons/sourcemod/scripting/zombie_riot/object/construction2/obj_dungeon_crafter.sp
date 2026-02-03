@@ -280,7 +280,7 @@ static void ApplyRandomEffect()
 
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client) == 2)
+			if(WasHereSinceStartOfWave(client) && IsClientInGame(client) && GetClientTeam(client) == 2)
 			{
 				for(int i; Store_GetNextItem(client, i, owned, scale, equip, sell, buffer1, sizeof(buffer1), hidden); i++)
 				{
