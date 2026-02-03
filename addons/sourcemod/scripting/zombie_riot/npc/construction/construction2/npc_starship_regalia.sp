@@ -1559,7 +1559,7 @@ static void HandleConstructor(RegaliaClass npc)
 		npc.EndFlightSystemGoal();
 		npc.EndGenericLaserSound();
 
-		int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.05);	//0.5% of ship hp
+		int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.025);	//0.5% of ship hp
 
 		float Radius = 300.0;
 		float TE_Duration = 1.0;
