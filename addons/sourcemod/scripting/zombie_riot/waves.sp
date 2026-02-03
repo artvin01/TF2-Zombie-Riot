@@ -956,9 +956,9 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 
 		if(limit > 0)
 		{
-			for(int length = Voting.Length; length > limit; length--)
+			while (Voting.Length > limit)
 			{
-				Voting.Erase(MapSeed % length);
+				Voting.Erase(GetURandomInt() % Voting.Length);
 			}
 
 			if(!autoSelect && !FileNetwork_Enabled())
