@@ -2802,7 +2802,7 @@
 	"Xeno Infection Desc"
 	{
 		"en"	"Npc Gains 25％ Resistance, 30％ Damage, but thinks 15％ slower, and regens over time upto 1.35x max health, if above 25％ max health, gain immensive buffs untill below\ninfects any enemy with xeno aswell."
-		"ko"	"NPC 저항력 25％, 피해량 30％ 증가. 생각 속도 15％ 감소. 최대 체력의 1.35배까지 재생. 체력이 25％ 이상이라면 그 이하가 될때까지 강력한 버프 획득\n다른 적에게도 제노를 감염시킴"
+		"ko"	"NPC 저항력 25％, 피해량 30％ 증가. 생각 속도 15％ 감소. 최대 체력의 1.35배까지 재생. 체력이 25％ 이상이라면 그 이하가 될 때까지 강력한 버프 획득\n다른 적에게도 제노를 감염시킴"
 	}
 	"Xeno"
 	{
@@ -2817,6 +2817,6 @@
 	"Perfected Instinct Desc"
 	{
 		"en"	"Npc Gains 30％ Resistance, 300％ Damage, 1.5x Thinkspeed, Gains a high chance to dodge attacks, the lower the hp, the higher the chance. On dodge, gain an immensive short speed bonus"
-		"ko"	"NPC 저항력 30％, 피해량 300％ 증가. 생각 속도 1.5배. 높은 확률로 공격을 회피, 체력이 감소할 수록 획률 증가. 회피 시 짧은 시간 동안 이동 속도 대폭 증가"
+		"ko"	"NPC 저항력 30％, 피해량 300％ 증가. 생각 속도 1.5배. 높은 확률로 공격을 회피, 체력이 감소할 수록 확률 증가. 회피 시 짧은 시간 동안 이동 속도 대폭 증가"
 	}
 }
