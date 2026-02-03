@@ -5580,7 +5580,10 @@ stock int GetClosestTarget(int entity,
 	//If the team searcher is not on red, target buildings, buildings can only be on the player team.
 #if defined ZR
 	//In Construction2 we want them to always try to target buildings.
-	if(SearcherNpcTeam != TFTeam_Red && !RaidbossIgnoreBuildingsLogic(1) && !IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers || (Dungeon_Mode()))) //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
+	 //dunggons ignore this if its a raid attack
+	if(SearcherNpcTeam != TFTeam_Red && !RaidbossIgnoreBuildingsLogic(1) && !IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers ||
+	 (Dungeon_Mode() && Dungeon_AttackType() >= 2))) 
+	 //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
 #else
 	if(!IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers))
 #endif
