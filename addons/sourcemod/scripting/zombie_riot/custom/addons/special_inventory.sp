@@ -269,7 +269,6 @@ public void Custom_Inventory_WaveEnd(int client)
 			Inv_SpecialSandvichProgress[client]=0;
 		PrintToChat(client, "get points %i", Inv_SpecialSandvichProgress[client]);
 	}
-	PrintToChat(client, "WaveEnd");
 	Inv_Box_Office_Max[client]=0;
 }
 
