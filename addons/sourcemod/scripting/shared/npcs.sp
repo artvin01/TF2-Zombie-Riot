@@ -104,7 +104,7 @@ bool NPC_SpawnNext(bool panzer,
 			
 			for(int client=1; client<=MaxClients; client++)
 			{
-				if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && b_HasBeenHereSinceStartOfWave[client])
+				if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && WasHereSinceStartOfWave(client))
 				{
 					if(TeutonType[client] == TEUTON_DEAD || dieingstate[client] > 0)
 					{
@@ -2643,6 +2643,14 @@ int MaxEnemiesAllowedSpawnNext(int ExtraRules = 0)
 	if(KamikazeEventHappening())
 	{
 		maxenemies /= 2;
+	}
+	if(Dungeon_Mode())
+	{
+		if(Dungeon_AttackType() < 2)
+		{
+			//if its not a base attack reduce spawns by 25%
+			maxenemies = RoundToCeil(float(maxenemies) * 0.75);
+		}
 	}
 	switch(ExtraRules)
 	{

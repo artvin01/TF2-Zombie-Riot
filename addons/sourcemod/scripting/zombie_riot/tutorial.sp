@@ -107,7 +107,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 			bool ReturnEnd;
 			CDDisplayHint_LoadoutStore[client] = GetGameTime() + 1.0;
 			char bufferExtra[255];
-			if(!b_HasBeenHereSinceStartOfWave[client] && TeutonType[client] != TEUTON_NONE)
+			if(!WasHereSinceStartOfWave(client) && TeutonType[client] != TEUTON_NONE)
 			{
 				Format(bufferExtra, sizeof(bufferExtra), "%T", "No Attack Info", client);
 			}

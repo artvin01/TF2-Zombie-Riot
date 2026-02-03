@@ -158,7 +158,7 @@ methodmap Agent61 < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Agent61_ClotThink);
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 330.0;
+		npc.m_flSpeed = 400.0;
 		
 		
 		

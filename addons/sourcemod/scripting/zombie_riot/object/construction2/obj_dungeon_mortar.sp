@@ -14,7 +14,7 @@
 
 #define CONSTRUCT_NAME		"Mortar"
 #define CONSTRUCT_RESOURCE1	"copper"
-#define CONSTRUCT_COST1		(20 + (CurrentLevel * 10))
+#define CONSTRUCT_COST1		(15 + (CurrentLevel * 5))
 #define CONSTRUCT_MAXLVL	ObjectDungeonCenter_Level()
 #define CONSTRUCT_DAMAGE	(400.0 * Pow(level + 2.0, 2.0))
 #define CONSTRUCT_FIRERATE	5.0

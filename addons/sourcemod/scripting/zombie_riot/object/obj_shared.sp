@@ -521,6 +521,14 @@ methodmap ObjectGeneric < CClotBody
 			{
 				SetEntPropEnt(this.index, Prop_Data, "m_hOwnerEntity", -1);
 				ApplyStatusEffect(this.index, this.index, "Const2 Scaling For Enemy Base Nerf", 999999.0);
+				if(h_TransmitHookType[this.index] != 0)
+				{
+					if(!DHookRemoveHookID(h_TransmitHookType[this.index]))
+					{
+						PrintToConsoleAll("Somehow Failed to unhook h_TransmitHookType");
+					}
+				}
+				h_TransmitHookType[this.index] = 0;
 			}
 			SetEntProp(this.index, Prop_Data, "m_bConstructBuilding", value);
 		}
@@ -1101,6 +1109,9 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 
 float Object_GetMaxHealthMulti(int client)
 {
+	if(client < 1)
+		return 1.0;
+	
 	if(client <= MaxClients)
 		return Attributes_GetOnPlayer(client, 286);
 	

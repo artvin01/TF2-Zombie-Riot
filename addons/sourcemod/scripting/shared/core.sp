@@ -1631,6 +1631,8 @@ public void OnClientPutInServer(int client)
 		if(b_AntiLateSpawn_Allow[client])
 			b_HasBeenHereSinceStartOfWave[client] = true;
 	}
+	if(Dungeon_Mode())
+		b_HasBeenHereSinceStartOfWave[client] = true;
 #endif
 	MedigunPutInServerclient(client);
 }
@@ -2546,6 +2548,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 //	PrintToChatAll("entity: %i| Clkassname %s",entity, classname);
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		h_TransmitHookType[entity] = 0;
 		f_TimeTillMeleeAttackShould[entity] = 0.0;
 		StatusEffectReset(entity, true);
 		f_InBattleDelay[entity] = 0.0;
@@ -3234,7 +3237,7 @@ public void CheckIfAloneOnServer()
 			if(!b_AntiLateSpawn_Allow[client])
 				continue;
 #if defined ZR
-			if(!b_HasBeenHereSinceStartOfWave[client])
+			if(!WasHereSinceStartOfWave(client))
 				continue;
 #endif
 			players += 1;
