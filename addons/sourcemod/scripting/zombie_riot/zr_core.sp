@@ -1197,7 +1197,7 @@ void ZR_ClientPutInServer(int client)
 	else
 		b_AntiLateSpawn_Allow[client] = false;
 
-	if(BetWar_Mode())
+	if(BetWar_Mode() || Dungeon_Mode())
 		b_AntiLateSpawn_Allow[client] = true;
 }
 

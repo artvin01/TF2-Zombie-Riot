@@ -147,7 +147,7 @@ methodmap ObjectGeneric < CClotBody
 
 		ObjectGeneric objstats = view_as<ObjectGeneric>(obj);
 		objstats.BaseHealth = StringToInt(basehealth);
-		if(IsValidClient(client))
+		if(IsValidEntity(client))
 			SetTeam(obj, GetTeam(client));
 		else
 			SetTeam(obj, TFTeam_Blue);
@@ -219,7 +219,7 @@ methodmap ObjectGeneric < CClotBody
 		objstats.FuncCanBuild = defaultFunc;
 		objstats.FuncShowInteractHud = INVALID_FUNCTION;
 
-		if(IsValidClient(client))
+		if(IsValidEntity(client))
 			SetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity", client);
 		
 		SDKHook(obj, SDKHook_OnTakeDamage, ObjectGeneric_ClotTakeDamage);

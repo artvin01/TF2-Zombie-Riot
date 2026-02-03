@@ -4313,6 +4313,7 @@ public void SetNpcToDeadViaGib(int pThis)
 	SetEntityRenderMode(pThis, RENDER_NONE);
 	SetEdictFlags(pThis, SetEntityTransmitState(pThis, FL_EDICT_DONTSEND));
 	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);	
+	Update_TransmitState(pThis);
 }
 
 public void Kill_Npc(int ref)
@@ -6346,6 +6347,7 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 	{
 		if(IsValidEntity(npc.m_iTeamGlow)) 
 		{
+			Update_TransmitState(entity);
 			RemoveEntity(npc.m_iTeamGlow);
 		}	
 		return;	
@@ -6360,6 +6362,7 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 	{
 		if(!IsValidEntity(npc.m_iTeamGlow))
 		{
+			Update_TransmitState(entity);
 			npc.m_iTeamGlow = TF2_CreateGlow(entity);
 			
 			SetVariantColor(view_as<int>({125, 200, 255, 200}));
@@ -6370,6 +6373,7 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 	{
 		if(IsValidEntity(npc.m_iTeamGlow)) 
 		{
+			Update_TransmitState(entity);
 			RemoveEntity(npc.m_iTeamGlow);
 		}		
 	}
@@ -10716,6 +10720,7 @@ public void MakeEntityRagdollNpc(int pThis)
 #endif
 
 	SDKCall_BecomeRagdollOnClient(pThis, Push);
+	Update_TransmitState(pThis);
 }
 
 void RemoveNpcFromEnemyList(int npc, bool ingoresetteam = false)

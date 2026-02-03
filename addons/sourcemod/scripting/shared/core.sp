@@ -3239,11 +3239,9 @@ public void CheckIfAloneOnServer()
 #if defined ZR
 			if(!WasHereSinceStartOfWave(client))
 				continue;
-#endif
-			players += 1;
-#if defined ZR 
 			player_alone = client;
 #endif
+			players += 1;
 		}
 	}
 	if(players == 1)
