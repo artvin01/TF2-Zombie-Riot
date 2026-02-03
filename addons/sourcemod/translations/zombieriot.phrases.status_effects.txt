@@ -1908,7 +1908,7 @@
 	"Homebase Momentum Desc"
 	{
 		"en"	"During peace times in your homebase, gain 45％ Movementspeed and 50％ Jumpheight, Regen hp fast"
-		"ko"	"평화 페이즈 중 본거지에 있는 동안, 이동 속도가 45％, 점프 높이가 50％ 증가하며, 체력이 빠르게 재생됩니다."
+		"ko"	"평화 기간 중 본거지에 있는 동안, 이동 속도가 45％, 점프 높이가 50％ 증가하며, 체력이 빠르게 재생됩니다."
 	}
 	"Anti-Waves"
 	{
