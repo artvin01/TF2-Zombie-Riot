@@ -334,7 +334,7 @@ methodmap RegaliaClass < CClotBody
 		EmitSoundToAll(g_DefaultCapperShootSound[GetRandomInt(0, sizeof(g_DefaultCapperShootSound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);	
 	}
 	public void PlayPattenShootSound(float Loc[3]) {
-		EmitSoundToAll(g_DoGAttackSound[GetRandomInt(0, sizeof(g_DoGAttackSound) - 1)], _, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.9, 80, _, Loc);	
+		EmitSoundToAll(g_DoGAttackSound[GetRandomInt(0, sizeof(g_DoGAttackSound) - 1)], _, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.25, 80, _, Loc);	
 	}
 	public void PlayHL2TeleSound(float Loc[3]) {
 		EmitSoundToAll(g_HL2_TeleSounds[GetRandomInt(0, sizeof(g_HL2_TeleSounds) - 1)], _, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.9, 80, _, Loc);	
@@ -1026,32 +1026,32 @@ methodmap RegaliaClass < CClotBody
 			}	
 			return speed; 				
 		}
-		public set(float TempValueForProperty) 	{ fl_ShipTurnSpeed = TempValueForProperty; }
+		public set(float TempValueForProperty) 	{ fl_ShipTurnSpeed = (TempValueForProperty / TickrateModify); 				}
 	}
 	property float m_flDecceleration
 	{
-		public get()							{ return fl_ShipDeceleration; 				}
-		public set(float TempValueForProperty) 	{ fl_ShipDeceleration = TempValueForProperty; }
+		public get()							{ return fl_ShipDeceleration; 												}
+		public set(float TempValueForProperty) 	{ fl_ShipDeceleration = (TempValueForProperty / TickrateModify); 			}
 	}
 	property float m_flHyperDeccelSpeed
 	{
-		public get()							{ return fl_ShipHyperDecelerationSpeed; 				}
-		public set(float TempValueForProperty) 	{ fl_ShipHyperDecelerationSpeed = TempValueForProperty; }
+		public get()							{ return fl_ShipHyperDecelerationSpeed; 									}
+		public set(float TempValueForProperty) 	{ fl_ShipHyperDecelerationSpeed = (TempValueForProperty / TickrateModify); 	}
 	}
 	property float m_flAcceleration
 	{
-		public get()							{ return fl_ShipAcceleration; 				}
-		public set(float TempValueForProperty) 	{ fl_ShipAcceleration = TempValueForProperty; }
+		public get()							{ return fl_ShipAcceleration; 												}
+		public set(float TempValueForProperty) 	{ fl_ShipAcceleration = (TempValueForProperty / TickrateModify); 			}
 	}
 	property float m_flHyperDeccelNearDist
 	{
-		public get()							{ return fl_ShipHyperDecelerationNearDist; 				}
-		public set(float TempValueForProperty) 	{ fl_ShipHyperDecelerationNearDist = TempValueForProperty; }
+		public get()							{ return fl_ShipHyperDecelerationNearDist; 									}
+		public set(float TempValueForProperty) 	{ fl_ShipHyperDecelerationNearDist = TempValueForProperty; 					}
 	}
 	property float m_flHyperDeccelMax
 	{
-		public get()							{ return fl_ShipHyperDecelerationMax; 				}
-		public set(float TempValueForProperty) 	{ fl_ShipHyperDecelerationMax = TempValueForProperty; }
+		public get()							{ return fl_ShipHyperDecelerationMax; 										}
+		public set(float TempValueForProperty) 	{ fl_ShipHyperDecelerationMax = TempValueForProperty; 						}
 	}
 	public VectorTurnData RotateShipFlightPathTowards(float GoalVec[3], float multi = 1.0)
 	{
