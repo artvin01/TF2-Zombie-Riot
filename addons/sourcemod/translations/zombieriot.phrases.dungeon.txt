@@ -220,7 +220,7 @@
 	"Control Center Desc"
 	{
 		"en"	"The objective, protect this building to survive, use it to upgrade and do certain tasks."
-		"ko"	"목표물입니다. 이 구조물을 보호하며 살아남으세요. 사용하여 개선과 특정 임무를 수행하세요."
+		"ko"	"목표물입니다. 이 구조물을 보호하며 살아남으세요. 사용하여 개선과 특정 행동을 수행하세요."
 	}
 	"Construct Altar"
 	{
@@ -230,7 +230,7 @@
 	"Construct Altar Desc"
 	{
 		"en"	"Summons a great Construct with help from alaxios, it will defend the controll point."
-		"ko"	"알락시오스의 도움을 통해 위대한 고대 조각상을 소환합니다. 이것이 점령 지점을 방어해줄 것입니다."
+		"ko"	"알락시오스의 도움을 통해 위대한 고대 조각상을 소환합니다. 이것이 거점을 방어해줄 것입니다."
 	}
 	"No Actions Needed"
 	{
@@ -418,7 +418,7 @@
 	{
 		"#format"	"{1:N},{2:s},{3:s}"
 		"en"		"{orange}{1} {default}built {orange}{2} {default}for {orange}{3}"
-		"ko"		"{orange}{1} {default}가 {orange}{2} {default}를 해당 위치에 조립했습니다: {orange}{3}"
+		"ko"		"{orange}{1} {default}이(가) {orange}{2} {default}를 해당 위치에 조립했습니다: {orange}{3}"
 	}
 	"Vehicle Controls"
 	{
@@ -435,7 +435,7 @@
 	"Treasure Vault Encounter Title"
 	{
 		"en"	"We used the Treasure Key to open inside, some items are presented in front of you."
-		"ko"	"보물 열쇠를 사용해 금고를 열었더니, 그 안에 몇 가지 물품들이 있었다."
+		"ko"	"보물 열쇠를 사용해 금고를 열었더니, 그 안에 몇 가지 물품들이 있었습니다."
 	}
 	"Ship Ending Encounter Title"
 	{
@@ -462,12 +462,12 @@
 		"en"	"Verde Soldier Minion"
 		"ko"	"초록색 하수인 솔저"
 	}
-	"Xeno Resurgence"
+	"Xeno Resurgance"
 	{
 		"en"	"Xeno Resurgence"
 		"ko"	"제노의 부활"
 	}
-	"Xeno Resurgence Desc"
+	"Xeno Resurgance Desc"
 	{
 		"en"	"{darkgreen}All enemies are xenofied...\n{gray}Didnt we kill off the xeno virus?"
 		"ko"	"{darkgreen}모든 적들이 제노화 됩니다...\n{gray}분명 우리가 제노를 끝장냈을텐데요?"
