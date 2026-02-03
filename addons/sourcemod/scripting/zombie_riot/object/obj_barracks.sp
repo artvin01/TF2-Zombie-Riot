@@ -1411,7 +1411,7 @@ static void Barracks_MortarSupport_Mode(BarrackBody npc, int client, bool mounte
 			else WorldSpaceCenter(Target, vecTarget);
 			
 			float SpeedReturn[3];
-			int RocketGet = npc.FireRocket(vecTarget, 0.0, projectile_speed,_,_,_,45.0);
+			int RocketGet = npc.FireRocket(vecTarget, 0.0, projectile_speed,_,_,_,45.0, client);
 			if(RocketGet != -1)
 			{
 				ArcToLocationViaSpeedProjectile(SelfPos, vecTarget, SpeedReturn, 1.75, 1.0);
@@ -1554,7 +1554,7 @@ static void Barracks_ModernDefense_Mode(BarrackBody npc, int client, bool mounte
 		{
 			float vecTarget[3]; WorldSpaceCenter(Target, vecTarget);
 			ShootLaser(npc.index, "bullet_tracer02_red", SelfPos, vecTarget, false);
-			SDKHooks_TakeDamage(Target, npc.index, npc.index, BulletDamage, DMG_BULLET, -1, _, vecTarget);
+			SDKHooks_TakeDamage(Target, npc.index, client, BulletDamage, DMG_BULLET, -1, _, vecTarget);
 			npc.m_iAmmo--;
 			switch(ModernLeveL)
 			{
@@ -1612,7 +1612,7 @@ static void Barracks_ModernDefense_Mode(BarrackBody npc, int client, bool mounte
 		{
 			float vecTarget[3]; WorldSpaceCenter(Target, vecTarget);
 			ShootLaser(npc.index, "bullet_tracer02_red_crit", SelfPos, vecTarget, false);
-			SDKHooks_TakeDamage(Target, npc.index, npc.index, BulletDamage, DMG_BULLET, -1, _, vecTarget);
+			SDKHooks_TakeDamage(Target, npc.index, client, BulletDamage, DMG_BULLET, -1, _, vecTarget);
 			EmitSoundToAll("weapons/sniper_shoot.wav", (mounted ? client : npc.index), _, 80, _, 0.7);
 			npc.m_flNextRangedAttack = GameTime + AttackDelay;
 		}
