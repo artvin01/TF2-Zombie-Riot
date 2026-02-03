@@ -356,7 +356,7 @@
 	"Inv Glass Coil desc Extra"
 	{
 		"en"	"It is a Very Delicate Glass Coil\nIt seems to be affected by Chaos...\nWhen you progress through the Interitus Group waves from 0 to 30,\nyou will obtain New Items."
-		"ko"	"매우 섬세한 유리 코일 입니다\n혼돈에 영향을 받는것 같습니다...\n인테리투스 연합 웨이브를 0부터 40까지 진행하면 새로운 아이템을 흭득 합니다."
+		"ko"	"매우 섬세한 유리 코일입니다\n혼돈의 영향을 받는것 같습니다...\n인테리투스 연합 웨이브를 0부터 40까지 진행하면 새로운 아이템을 획득합니다."
 	}
 	"Special Sandvich Recipe"
 	{
@@ -366,17 +366,17 @@
 	"Inv Special Sandvich Recipe desc"
 	{
 		"en"	"Merchant Kit Only\nCannot be obtained Grill Sauces and Meats"
-		"ko"	"상인 키트 전용\n그릴 재료 흭득 불가"
+		"ko"	"상인 키트 전용\n그릴 재료 획득 불가"
 	}
 	"Inv Special Sandvich Recipe desc Extra"
 	{
 		"en"	"This is a special recipe.\nYou need all the ingredients...\nWhen you progress through the Sensal waves With Grill from 0 to 30,\nyou will obtain New Items."
-		"ko"	"특별한 조합법입니다.\n모든 재료가 필요합니다...\n그릴과 함께 센살 웨이브를 0부터 40까지 진행하면 새로운 아이템을 흭득 합니다."
+		"ko"	"특별한 조합법입니다.\n모든 재료가 필요합니다...\n그릴과 함께 센살 웨이브를 0부터 40까지 진행하면 새로운 아이템을 획득합니다."
 	}
 	"Inv Special Sandvich Recipe desc for grill"
 	{
 		"en"	"Cannot be obtained Grill Sauces and Meats"
-		"ko"	"그릴 재료 흭득 불가"
+		"ko"	"그릴 재료 획득 불가"
 	}
 	
 	//인벤토리 트로피
@@ -750,13 +750,13 @@
 	"Inv Little Sandvich SafeHouse Give"
 	{
 		"en"	"We've put together a special recipe using all the ingredients!\n{community}''Little Sandvich SafeHous''{default}has been unlocked."
-		"ko"	"모든 재료를 투입해 특별한 음식을 재작했습니다!\n{community}''작은 샌드비치 안전가옥''{default}이(가) 해금됐습니다."
+		"ko"	"모든 재료를 투입해 특별한 음식을 제작했습니다!\n{community}''작은 샌드비치 안전가옥''{default}이(가) 해금됐습니다."
 	}
 	"Pickup Gift Hero"
 	{
 		"#format"	"{1:s}"
 		"en"		"{crimson}[ZR] {green}''{1}'' picked up a gift box!{default}"
-		"ko"		"{crimson}[ZR] {green}''{1}'' 님이 선물상자를 흭득했습니다!{default}"
+		"ko"		"{crimson}[ZR] {green}''{1}'' 님이 선물상자를 획득했습니다!{default}"
 	}
 	"Pickup XP Gift"
 	{
