@@ -1631,6 +1631,8 @@ public void OnClientPutInServer(int client)
 		if(b_AntiLateSpawn_Allow[client])
 			b_HasBeenHereSinceStartOfWave[client] = true;
 	}
+	if(Dungeon_Mode())
+		b_HasBeenHereSinceStartOfWave[client] = true;
 #endif
 	MedigunPutInServerclient(client);
 }
