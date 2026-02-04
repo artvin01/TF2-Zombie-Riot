@@ -545,7 +545,7 @@ public void ToddHoward_ClotThink(int iNPC)
 						//Kick everyone away in range, except the one target we hate, make sure to check line of sight too.
 						for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
 						{
-							if(IsValidEnemy(npc.index, EnemyLoop) && )
+							if(IsValidEnemy(npc.index, EnemyLoop))
 							{
 								GetEntPropVector(EnemyLoop, Prop_Send, "m_vecOrigin", EnemyPos);
 								float Distance = GetVectorDistance(flPos, EnemyPos);
