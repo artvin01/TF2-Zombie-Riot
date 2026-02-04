@@ -7654,6 +7654,10 @@
 		"it" "'Samivilinn', la Risoluzione del Nord"
 		"ko" "''사미의 의지''"
 	}
+	"Mega Glug, the Great"
+	{
+		"en" "Mega Glug, the Great"
+	}
 	"'Voidivilinn', the Resolution of the Very South"
 	{
 		"en" "'Voidivilinn', the Resolution of the Very South"
