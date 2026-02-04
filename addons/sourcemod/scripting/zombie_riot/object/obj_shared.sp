@@ -1265,7 +1265,10 @@ bool Const2_BuildingDestroySpecial(int entity)
 		for(int clients=1; clients<=MaxClients; clients++)
 		{
 			if(IsValidClient(clients))
+			{
 				Vehicle_Exit(clients);
+				ApplyStatusEffect(objstats.index, clients, "Main Center Death", 999999.9);
+			}
 		}
 		int vehicle = -1;
 		while((vehicle = FindEntityByClassname(vehicle, "obj_vehicle")) != -1)
@@ -1332,6 +1335,14 @@ bool Const2_ReConstructBuilding(int entity, bool DoHalf = false)
 
 	if(IsDungeonCenterId() == i_NpcInternalId[objstats.index])
 	{
+		for(int clients=1; clients<=MaxClients; clients++)
+		{
+			if(IsValidClient(clients))
+			{
+				Vehicle_Exit(clients);
+				RemoveSpecificBuff(clients, "Main Center Death");
+			}
+		}
 		int vehicle = -1;
 		while((vehicle = FindEntityByClassname(vehicle, "obj_vehicle")) != -1)
 		{

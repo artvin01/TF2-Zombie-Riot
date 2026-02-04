@@ -586,34 +586,35 @@ public void ToddHoward_ClotThink(int iNPC)
 											Elemental_AddNervousDamage(EnemyLoop, npc.index, RoundToCeil(damage * RaidModeScaling * 0.1));
 										if(!HasSpecificBuff(EnemyLoop, "Solid Stance"))
 										{
-										//push them away.
-										static float angles[3];
-										GetVectorAnglesTwoPoints(EnemyPos, flPos, angles);
+											//push them away.
+											static float angles[3];
+											GetVectorAnglesTwoPoints(EnemyPos, flPos, angles);
 
-										if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
-											angles[0] = 0.0; // toss out pitch if on ground
+											if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
+												angles[0] = 0.0; // toss out pitch if on ground
 
-										static float velocity[3];
-										GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
-										float attraction_intencity = 1500.0;
-										ScaleVector(velocity, attraction_intencity);
+											static float velocity[3];
+											GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+											float attraction_intencity = 1500.0;
+											ScaleVector(velocity, attraction_intencity);
+															
+															
+											// min Z if on ground
+											if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
+											{
+												velocity[2] = 350.0;
+											}
+											else
+											{
+												velocity[2] = 200.0;
+											}
 														
-														
-										// min Z if on ground
-										if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
-										{
-											velocity[2] = 350.0;
-										}
-										else
-										{
-											velocity[2] = 200.0;
-										}
-													
-										// apply velocity
-										velocity[0] *= -1.0;
-										velocity[1] *= -1.0;
-									//	velocity[2] *= -1.0;
-										TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);    	
+											// apply velocity
+											velocity[0] *= -1.0;
+											velocity[1] *= -1.0;
+										//	velocity[2] *= -1.0;
+											TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);    
+										}	
 									}
 								}
 							}
