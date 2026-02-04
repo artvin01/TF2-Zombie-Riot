@@ -3944,6 +3944,7 @@ public void GiveCompleteInvul(int client, float time)
 	f_ClientInvul[client] = GetGameTime() + time;
 	TF2_AddCondition(client, TFCond_UberchargedCanteen, time);
 	TF2_AddCondition(client, TFCond_MegaHeal, time);
+	ApplyStatusEffect(client, npc.index, "Solid Stance", time);	
 }
 
 public void RemoveInvul(int client)
