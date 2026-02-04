@@ -1542,6 +1542,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	
 	if(Construction_InSetup() || BetWar_Mode() || Dungeon_CanRespawn())
 	{
+		b_AntiLateSpawn_Allow[client] = true;
 		TeutonType[client] = TEUTON_NONE;
 	}
 	else
@@ -2197,7 +2198,36 @@ stock bool ShieldDeleteProjectileCheck(int owner, int enemy)
 	return false;
 }
 
+void Update_TransmitState(int entity)
+{
+	SetEntProp(entity, Prop_Data, "m_nTransmitStateOwnedCounter", 0);
+	Hook_DHook_UpdateTransmitStateInternal(entity);
+	RequestFrames(RevertTransmitDo,1, EntIndexToEntRef(entity), true);
+}
+
+void RevertTransmitDo(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(!IsValidEntity(entity))
+	{
+		return;
+	}
+	SetEntProp(entity, Prop_Data, "m_nTransmitStateOwnedCounter", 1);
+	if(h_TransmitHookType[entity] != 0)
+	{
+		if(!DHookRemoveHookID(h_TransmitHookType[entity]))
+		{
+			PrintToConsoleAll("Somehow Failed to unhook h_TransmitHookType");
+		}
+	}
+	h_TransmitHookType[entity] = 0;
+}
+
 void Hook_DHook_UpdateTransmitState(int entity)
+{
+	Update_TransmitState(entity);
+}
+void Hook_DHook_UpdateTransmitStateInternal(int entity)
 {
 	if(h_TransmitHookType[entity] != 0)
 	{
@@ -2213,21 +2243,21 @@ public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) 
 {
 	if(b_IsEntityNeverTranmitted[entity])
 	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_DONTSEND);
+		returnHook.Value = FL_EDICT_DONTSEND;
 	}
 	else if(b_IsEntityAlwaysTranmitted[entity] || b_thisNpcIsABoss[entity])
 	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+		returnHook.Value = FL_EDICT_ALWAYS;
 	}
 #if defined ZR
 	else if (b_thisNpcHasAnOutline[entity] || !b_NpcHasDied[entity] && Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+		returnHook.Value = FL_EDICT_ALWAYS;
 	}
 #endif
 	else
 	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_PVSCHECK);
+		returnHook.Value = FL_EDICT_PVSCHECK;
 	}
 	return MRES_Supercede;
 }
