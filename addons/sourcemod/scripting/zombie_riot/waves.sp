@@ -3001,7 +3001,7 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 		}
 		
 		if(Construction_Mode())	// In Construction: Base raids must be dealt with
-			subWave = !Construction_FinalBattle();
+			subWave = Construction_FinalBattle();
 		/*
 		if(Dungeon_Mode())
 			subWave = !Dungeon_FinalBattle();

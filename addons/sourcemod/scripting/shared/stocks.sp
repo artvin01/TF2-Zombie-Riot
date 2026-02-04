@@ -3245,7 +3245,7 @@ int inflictor = 0)
 		{
 			OnlyWarnOnceEver = false;
 			LogStackTrace("Please never go above 2k, patch this immedietly");
-			CPrintToChatAll("A Bad error has accurred, you can still play, but please notify an admin and show this code: ''2100+''");
+			CPrintToChatAll("{crimson} A Bad error has accurred, you can still play, but please notify an admin and show this code: ''2100+''");
 		}
 		//why is this done? Any range above 2k causes immensive lag.
 		//at that point it  could just be global too.

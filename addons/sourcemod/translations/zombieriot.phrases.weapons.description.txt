@@ -1722,10 +1722,10 @@
 	
 	"Construction Novice Desc"
 	{
-		"en"	"-Gain 50％ more building health\n-Gain 5.0x sentry damage\n-Gain 1 more support building added\n-Gain 50％ more repair Rate"
-		"fr"	"+50％ durabilité pour constructions, 5.0x dégats par votre mitrailleuse, +2x vitesse de réparation. +1 espace pour construction de support."
-		"chi"	"建筑物血量提高50％，布哨伤害*5，+1辅助建筑上限，+50％建筑修复效率。"
-		"it"	"50％ in più di salute dell'edificio e 5.0x di danno della sentinella, 1 edificio di supporto aggiunto e 50％ in più di tasso di riparazione"
+		"en"	"-Gain 50％ more building health\n-Gain 8.0x sentry damage\n-Gain 1 more support building added\n-Gain 50％ more repair Rate"
+		"fr"	"+50％ durabilité pour constructions, 8.0x dégats par votre mitrailleuse, +2x vitesse de réparation. +1 espace pour construction de support."
+		"chi"	"建筑物血量提高50％，布哨伤害*8，+1辅助建筑上限，+50％建筑修复效率。"
+		"it"	"50％ in più di salute dell'edificio e 8.0x di danno della sentinella, 1 edificio di supporto aggiunto e 50％ in più di tasso di riparazione"
 		"ko"	"-구조물 체력 +50％\n-센트리 피해량 +5배\n-지원 구조물 최대 상한 +1개\n-수리 효율 +50％"
 	}
 	
