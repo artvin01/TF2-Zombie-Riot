@@ -323,6 +323,8 @@ static void ClotThink(int iNPC)
 						
 
 						npc.SetModel("models/editor/ground_node_hint.mdl");
+						//clear firstly
+						WavesDeleteSet(npc.m_iSpawnerAm);
 						Spawner_CreateEnemies(npc.m_iSpawnerAm, data.DataWave);
 						npc.m_flNextThinkTime = gameTime + 0.1;
 						b_NoHealthbar[npc.index] = 0;

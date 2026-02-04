@@ -6963,7 +6963,7 @@ void UnstuckStuckNpc(CClotBody npc)
 	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		//This was an enemy.
-		if(Rogue_Mode())
+		if(Rogue_Mode() || Dungeon_Mode())
 		{
 			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 			return;

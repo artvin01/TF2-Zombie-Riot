@@ -1559,7 +1559,7 @@ static void HandleConstructor(RegaliaClass npc)
 		npc.EndFlightSystemGoal();
 		npc.EndGenericLaserSound();
 
-		int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.025);	//0.5% of ship hp
+		int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.0125);	//0.125% of ship hp
 
 		float Radius = 300.0;
 		float TE_Duration = 1.0;
@@ -2992,7 +2992,7 @@ static void HandleDroneSystem(RegaliaClass npc)
 static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
 {
 	int Drone = NPC_CreateByName("npc_lantean_drone_projectile", npc.index, Loc, Angles, GetTeam(npc.index), "blue;raidmodescaling_damage");
-	int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.001);	//like 0.1% hp of ship
+	int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.0005);	//like 0.05% hp of ship
 
 	const float DroneSpeed = 750.0;
 	if(Drone > MaxClients)
