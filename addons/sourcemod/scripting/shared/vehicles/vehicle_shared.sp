@@ -99,6 +99,9 @@ void Vehicle_PluginStart()
 	.DefineEntityField("m_hSeatEntity", VEHICLE_MAX_SEATS)
 	.DefineVectorField("m_vecSeatPos", VEHICLE_MAX_SEATS)
 	.DefineIntField("m_iSeatGunIndex", VEHICLE_MAX_SEATS)
+#if defined ZR
+	.DefineFloatField("m_flElementRes", Element_MAX)
+#endif
 	.DefineFloatField("m_flBrakeFor")
 	.EndDataMapDesc();
 	factory.Install();

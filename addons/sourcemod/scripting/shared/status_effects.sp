@@ -5031,6 +5031,11 @@ void StatusEffect_TimerCallDo(int victim)
 			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect, false);
 			Apply_StatusEffect.RemoveStatus();
 			i = 0;
+			if(!E_AL_StatusEffects[victim])
+			{
+				//cancel code if empty
+				return;
+			}
 			continue;
 		}
 		if(Apply_MasterStatusEffect.TimerRepeatCall_Func != INVALID_FUNCTION && Apply_MasterStatusEffect.TimerRepeatCall_Func)

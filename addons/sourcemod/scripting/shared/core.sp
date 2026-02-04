@@ -2568,6 +2568,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_PullTowardsTarget[entity] = 0;
 		f_PullStrength[entity] = 0.0;
 #if defined ZR || defined RPG
+		Dungeon_SetEntityZone(entity, Zone_Unknown);
 		CoinEntityCreated(entity);
 #endif
 		//set it to 0!

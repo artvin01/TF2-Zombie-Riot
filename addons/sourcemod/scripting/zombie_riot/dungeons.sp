@@ -2204,7 +2204,7 @@ void Dungeon_EnemySpawned(int entity)
 			}
 			case 1:	// Dungeon NPC
 			{
-				if(Dungeon_GetEntityZone(entity) != Zone_RivalBase)
+				if(Dungeon_GetEntityZone(entity) == Zone_Dungeon)
 				{
 					//nerf enemies in dungeons by 10%
 					fl_Extra_Damage[entity] *= 0.9;
