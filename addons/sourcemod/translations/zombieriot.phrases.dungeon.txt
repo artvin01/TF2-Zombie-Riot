@@ -485,6 +485,7 @@
 	"Main Center Death"
 	{
 		"en"	"{crimson}Our {orange}Control Center {crimson}is destroyed, Respawns disabled, vehicles disabled, players are slowed down by 1.1x."
+		"ko"	"{crimson}우리의 {orange}제어 센터{crimson}가 파괴되었습니다. 부활과 차량이 비활성화되며 플레이어의 이동 속도가 1.1배 느려집니다."
 	}
 	"Explain Dungeon Mechanics 1"
 	{
