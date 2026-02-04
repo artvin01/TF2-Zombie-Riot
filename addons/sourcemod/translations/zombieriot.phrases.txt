@@ -2726,7 +2726,7 @@
 	{
 		"en"		"Favorite this loadout to autobuy it when you connect"
 		"it"		"Preferisci questo equipaggiamento per acquistarlo automaticamente quando ti connetti"
-		"ko"		"이 로드아웃을 즐겨찾기해두면, 나중에 접속했을때 이 로드아웃에 속한 아이템들을 자동으로 구매하게 됩니다."
+		"ko"		"로드아웃 즐겨찾기(접속했을때 로드아웃의 아이템 자동 구매)"
 	}
 	"Un Favorite"
 	{
