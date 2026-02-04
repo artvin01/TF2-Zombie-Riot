@@ -72,7 +72,7 @@
 	{
 		"#format"	"{1:s},{2:d}"
 		"en"		"{orange}{1} {default}upgraded to {orange}Level {2}"
-		"ko"		"{orange}{1} {default}의 레벨이 {orange}{2} 로 증가했습니다"
+		"ko"		"{orange}{1} {default}의 레벨이 {orange}{2} (으)로 증가했습니다"
 	}
 	"Gained Ammo Supplies"
 	{
@@ -210,7 +210,7 @@
 	"Dungeon Compass Desc"
 	{
 		"en"	"The next dungeon to appear in vote is guaranteed to be a special variant, will be consumed on use"
-		"ko"	"다음 투표에서 등장하는 던전은 특수한 변형 던전이 되며, 사용 시 이 아이템은 소모됩니다."
+		"ko"	"다음 투표에서 등장하는 던전이 특수한 변형 던전이 되며, 사용 시 이 아이템은 소모됩니다."
 	}
 	"Control Center"
 	{
@@ -257,7 +257,7 @@
 	"Can Opener Desc"
 	{
 		"en"	"When they sealed that can too good.\n{green}Unboxing sealed crates cost 50％ less crystals"
-		"ko"	"쓸데없이 밀봉을 너무 잘 해둔 물건을 마주했을 때.\n{green}봉인된 상자들을 개봉할때 소모되는 수정의 양 50％ 감소"
+		"ko"	"쓸데없이 밀봉을 너무 잘 해둔 물건을 마주했을 때.\n{green}봉인된 상자들을 개봉할 때 소모되는 수정의 양 50％ 감소"
 	}
 	"Wooden Crate"
 	{
@@ -418,7 +418,7 @@
 	{
 		"#format"	"{1:N},{2:s},{3:s}"
 		"en"		"{orange}{1} {default}built {orange}{2} {default}for {orange}{3}"
-		"ko"		"{orange}{1} {default}이(가) {orange}{2} {default}를 해당 위치에 조립했습니다: {orange}{3}"
+		"ko"		"{orange}{1} {default}이(가) {orange}{2} {default}을(를) 해당 위치에 조립했습니다: {orange}{3}"
 	}
 	"Vehicle Controls"
 	{
