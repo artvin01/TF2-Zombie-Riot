@@ -190,7 +190,7 @@
 	"Dungeon Level 3 Desc"
 	{
 		"en"	"{red}Enemies Gain 10％ Stats\n{red}Enemies sometimes get random modifiers."
-		"ko"	"{red}모든 적의 능력치 +10%\n{red}적들이 때때로 무작위 특수 효과를 얻습니다."
+		"ko"	"{red}모든 적의 능력치 +10％\n{red}적들이 때때로 무작위 특수 효과를 얻습니다."
 	}
 	"Compass Fragment"
 	{
