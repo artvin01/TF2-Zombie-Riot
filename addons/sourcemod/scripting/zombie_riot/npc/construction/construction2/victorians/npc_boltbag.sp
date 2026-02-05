@@ -29,6 +29,11 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/neon_sign_hit_04.wav"
 };
 
+static const char g_SapperHitSounds[][] = {
+	"weapons/rescue_ranger_charge_01.wav",
+	"weapons/rescue_ranger_charge_02.wav",
+};
+
 void Victorian_Resource_Collector_OnMapStart_NPC()
 {
 	NPCData data;
@@ -50,6 +55,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_SapperHitSounds);
 	PrecacheModel("models/bots/bot_worker/bot_worker.mdl");
 }
 
@@ -65,7 +71,7 @@ methodmap ResourceCollector < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 130);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 150);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	public void PlayHurtSound() 
@@ -75,7 +81,7 @@ methodmap ResourceCollector < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 130);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 125);
 	}
 	public void PlayDeathSound() 
 	{
@@ -89,14 +95,17 @@ methodmap ResourceCollector < CClotBody
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
+	public void PlaySapperHitSound() 
+	{
+		EmitSoundToAll(g_SapperHitSounds[GetRandomInt(0, sizeof(g_SapperHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		
+	}
 	
 	public ResourceCollector(float vecPos[3], float vecAng[3], int ally)
 	{
-		ResourceCollector npc = view_as<ResourceCollector>(CClotBody(vecPos, vecAng, "models/bots/bot_worker/bot_worker.mdl", "1.0", "9500", ally));
+		ResourceCollector npc = view_as<ResourceCollector>(CClotBody(vecPos, vecAng, "models/bots/bot_worker/bot_worker.mdl", "0.8", "9500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
-		
-		npc.SetActivity("IDLE");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -107,6 +116,9 @@ methodmap ResourceCollector < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(ResourceCollector_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ResourceCollector_ClotThink);
 		
+		b_DoGibThisNpc[npc.index] = true;
+		b_DissapearOnDeath[npc.index] = true;
+
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -118,7 +130,7 @@ methodmap ResourceCollector < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
-		npc.m_iWearable1 = npc.EquipItemSeperate("models/workshop/player/items/demo/sum22_head_banger/sum22_head_banger.mdl",_,skin,1.9,-104.0);
+		//npc.m_iWearable1 = npc.EquipItemSeperate("models/workshop/player/items/engineer/sum19_brain_interface/sum19_brain_interface.mdl",_,skin,1.9,-120.0);
 
 		return npc;
 	}
@@ -240,14 +252,17 @@ static void ResourceCollectorSelfDefense(ResourceCollector npc, float gameTime, 
 					float damageDealt = 75.0;
 					
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.0;
+						damageDealt *= 5.0;
 
 					int DamageType = DMG_CLUB;
 					
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DamageType, -1, _, vecHit);
 
 					// Hit sound
-					npc.PlayMeleeHitSound();
+					if(ShouldNpcDealBonusDamage(target))
+						npc.PlaySapperHitSound();
+					else
+						npc.PlayMeleeHitSound();
 				} 
 			}
 			delete swingTrace;
