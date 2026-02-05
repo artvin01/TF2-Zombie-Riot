@@ -2,9 +2,12 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/mvm/norm/soldier_mvm_paincrticialdeath01.mp3",
-	"vo/mvm/norm/soldier_mvm_paincrticialdeath02.mp3",
-	"vo/mvm/norm/soldier_mvm_paincrticialdeath03.mp3",
+	")vo/soldier_negativevocalization01.mp3",
+	")vo/soldier_negativevocalization02.mp3",
+	")vo/soldier_negativevocalization03.mp3",
+	")vo/soldier_negativevocalization04.mp3",
+	")vo/soldier_negativevocalization05.mp3",
+	")vo/soldier_negativevocalization06.mp3",
 };
 
 static const char g_HurtSounds[][] = {
@@ -22,8 +25,9 @@ static const char g_HurtSounds[][] = {
 static const char g_IdleAlertedSounds[][] = {
 	"vo/soldier_dominationsniper13.mp3",
 	"vo/soldier_dominationsniper01.mp3",
-	"vo/compmode/cm_soldier_pregamefirst_comp_04.mp3",
-	"vo/compmode/cm_soldier_pregamefirst_comp_05.mp3",
+	"vo/compmode/cm_soldier_pregamefirst_04.mp3",
+	"vo/compmode/cm_soldier_pregamefirst_05.mp3",
+	"vo/compmode/cm_soldier_pregamefirst_06.mp3",
 };
 
 static const char g_RangedAttackSounds[][] = {
@@ -138,6 +142,7 @@ methodmap Airraider < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 250.0;
 		npc.i_GunMode = 1;
+		npc.m_flGravityMulti = 0.35;
 
 		npc.Anger = true;
 		npc.b_AirraiderRocketJump = true;
@@ -155,7 +160,7 @@ methodmap Airraider < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_paratooper_pack/c_paratrooper_parachute.mdl");
-		SetVariantString("2.0");
+		SetVariantString("3.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec2014_skullcap/dec2014_skullcap.mdl");
@@ -177,8 +182,6 @@ methodmap Airraider < CClotBody
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_paratooper_pack/c_paratrooper_pack.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
-
-		TeleportDiversioToRandLocation(npc.index);
 
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
@@ -207,6 +210,27 @@ public void Airraider_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
+	if(!npc.IsOnGround())
+	{
+		npc.m_flRangedArmor = 2.0;
+	}
+	else
+	{
+		npc.m_flRangedArmor = 1.0;
+	}
+
+	if(npc.b_AirraiderRocketJump && npc.f_AirraiderRocketJumpCD_Wearoff > GetGameTime(npc.index))
+	{
+		TeleportDiversioToRandLocation(npc.index);
+		static float flPos[3]; 
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+		flPos[2] += 3000.0;
+		npc.SetVelocity({0.0,0.0,0.0});
+		PluginBot_Jump(npc.index, flPos);
+		npc.f_AirraiderRocketJumpCD_Wearoff = GetGameTime(npc.index) + 1.0;
+		npc.b_AirraiderRocketJump = false;
+	}
+
 	if(npc.IsOnGround())
 	{
 		if(GetGameTime(npc.index) > npc.f_AirraiderRocketJumpCD_Wearoff)
@@ -214,18 +238,9 @@ public void Airraider_ClotThink(int iNPC)
 			npc.Anger = false;
 			if(IsValidEntity(npc.m_iWearable2))
 			RemoveEntity(npc.m_iWearable2);
+			npc.i_GunMode = 0;
+			npc.m_flGravityMulti = 1.0;
 		}
-	}
-
-	if(npc.Anger && npc.b_AirraiderRocketJump && npc.f_AirraiderRocketJumpCD_Wearoff < GetGameTime(npc.index))
-	{
-		static float flPos[3]; 
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-		flPos[2] += 1000.0;
-		npc.SetVelocity({0.0,0.0,0.0});
-		PluginBot_Jump(npc.index, flPos);
-		npc.f_AirraiderRocketJumpCD_Wearoff = GetGameTime(npc.index) + 1.0;
-		npc.b_AirraiderRocketJump = false;
 	}
 
 	if(npc.m_blPlayHurtAnimation)
@@ -305,7 +320,8 @@ public void Airraider_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable8))
-	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
+	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
@@ -391,8 +407,8 @@ void AirraiderSelfDefense(Airraider npc, float gameTime, int target, float dista
 {
 	if(!npc.Anger)
 	{
-		npc.i_GunMode = 0;
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.5))
+		npc.i_GunMode = 0; //Imma use my shotgun now
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0))
 		{
 			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, Enemy_I_See) && gameTime > npc.m_flNextRangedAttack)
@@ -425,11 +441,10 @@ void AirraiderSelfDefense(Airraider npc, float gameTime, int target, float dista
 				}
 				delete swingTrace;
 			}
-			return;
 		}
+		return;
 	}
-	npc.i_GunMode = 1;
-	//isnt melee anymore
+	npc.i_GunMode = 1; //rocket!
 	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 900.0))
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
@@ -446,12 +461,11 @@ void AirraiderSelfDefense(Airraider npc, float gameTime, int target, float dista
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 				
 				npc.PlayRangedSound();
-				npc.FireRocket(vPredictedPos, DamageRocket, projectile_speed);
+				npc.FireRocket(vPredictedPos, DamageRocket, projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl");
 				npc.m_flNextRangedAttack = gameTime + 0.30;
 			}
 		}
 	}
-	//Chase target
 	return;
 }
 

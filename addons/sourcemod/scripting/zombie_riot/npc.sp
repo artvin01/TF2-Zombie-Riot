@@ -713,6 +713,7 @@ void NPC_ConfigSetup()
 	Zapmarker_OnMapStart_NPC();
 	ArmoredMedic_OnMapStart_NPC();
 	Airraider_OnMapStart_NPC();
+	Victorian_Headhunter_OnMapStart_NPC();
 
 //special
 	Invisible_TRIGGER_OnMapStart_NPC();//It is currently used as a trigger for the Victoria Factory.
@@ -2368,6 +2369,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/construction2/victorians/npc_zapmarker.sp"
 #include "npc/construction/construction2/victorians/npc_giant_armored_medic.sp"
 #include "npc/construction/construction2/victorians/npc_airraider.sp"
+#include "npc/construction/construction2/victorians/npc_headhunter.sp"
 
 //Matrix Enemies
 #include "npc/matrix/15/npc_agentalan.sp"
