@@ -122,7 +122,7 @@ methodmap Airraider < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(1);
+		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -142,8 +142,8 @@ methodmap Airraider < CClotBody
 		npc.Anger = true;
 		npc.b_AirraiderRocketJump = true;
 
-		npc.f_AirraiderRocketJumpCD_Wearoff =  GetGameTime(npc.index) + 5.0;
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.0;
+		npc.f_AirraiderRocketJumpCD_Wearoff = GetGameTime(npc.index) + 1.0;
 		
 		
 		int skin = 1;
@@ -174,11 +174,11 @@ methodmap Airraider < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 
-		npc.m_iWearable7 = npc.EquipItem("head", "mmodels/workshop/weapons/c_models/c_paratooper_pack/c_paratrooper_pack.mdl");
+		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_paratooper_pack/c_paratrooper_pack.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
 
-		
+		TeleportDiversioToRandLocation(npc.index);
 
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
@@ -217,15 +217,14 @@ public void Airraider_ClotThink(int iNPC)
 		}
 	}
 
-	if(!npc.Anger && npc.b_AirraiderRocketJump)
+	if(npc.Anger && npc.b_AirraiderRocketJump && npc.f_AirraiderRocketJumpCD_Wearoff < GetGameTime(npc.index))
 	{
-		TeleportDiversioToRandLocation(npc.index);
 		static float flPos[3]; 
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 		flPos[2] += 1000.0;
 		npc.SetVelocity({0.0,0.0,0.0});
 		PluginBot_Jump(npc.index, flPos);
-		npc.f_AirraiderRocketJumpCD_Wearoff = gameTime + 1.0;
+		npc.f_AirraiderRocketJumpCD_Wearoff = GetGameTime(npc.index) + 1.0;
 		npc.b_AirraiderRocketJump = false;
 	}
 
@@ -333,7 +332,7 @@ void AirraiderAnimationChange(Airraider npc)
 				if(npc.m_iChanged_WalkCycle != 1)
 				{
 					ResetAirraiderWeapon(npc, 1);
-					SetVariantInt(1);
+					SetVariantInt(2);
 					AcceptEntityInput(npc.index, "SetBodyGroup");
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 1;
@@ -346,7 +345,7 @@ void AirraiderAnimationChange(Airraider npc)
 				if(npc.m_iChanged_WalkCycle != 2)
 				{
 					ResetAirraiderWeapon(npc, 1);
-					SetVariantInt(1);
+					SetVariantInt(2);
 					AcceptEntityInput(npc.index, "SetBodyGroup");
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 2;
@@ -362,7 +361,7 @@ void AirraiderAnimationChange(Airraider npc)
 				if(npc.m_iChanged_WalkCycle != 3)
 				{
 					ResetAirraiderWeapon(npc, 0);
-					SetVariantInt(0);
+					SetVariantInt(2);
 					AcceptEntityInput(npc.index, "SetBodyGroup");
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 3;
@@ -375,7 +374,7 @@ void AirraiderAnimationChange(Airraider npc)
 				if(npc.m_iChanged_WalkCycle != 4)
 				{
 					ResetAirraiderWeapon(npc, 0);
-					SetVariantInt(0);
+					SetVariantInt(2);
 					AcceptEntityInput(npc.index, "SetBodyGroup");
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 4;
@@ -388,13 +387,13 @@ void AirraiderAnimationChange(Airraider npc)
 
 }
 
-int AirraiderSelfDefense(Airraider npc, float gameTime, int target, float distance)
+void AirraiderSelfDefense(Airraider npc, float gameTime, int target, float distance)
 {
 	if(!npc.Anger)
 	{
+		npc.i_GunMode = 0;
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.5))
 		{
-			npc.i_GunMode = 0;
 			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, Enemy_I_See) && gameTime > npc.m_flNextRangedAttack)
 			{
@@ -431,7 +430,7 @@ int AirraiderSelfDefense(Airraider npc, float gameTime, int target, float distan
 	}
 	npc.i_GunMode = 1;
 	//isnt melee anymore
-	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
+	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 900.0))
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
 		{	
@@ -453,7 +452,7 @@ int AirraiderSelfDefense(Airraider npc, float gameTime, int target, float distan
 		}
 	}
 	//Chase target
-	return 0;
+	return;
 }
 
 void ResetAirraiderWeapon(Airraider npc, int weapon_Type)

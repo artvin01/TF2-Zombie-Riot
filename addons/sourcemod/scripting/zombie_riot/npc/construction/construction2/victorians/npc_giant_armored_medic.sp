@@ -252,7 +252,7 @@ public void ArmoredMedic_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
-		if(flDistanceToTarget < 350000 && Can_I_See_Enemy_Only(npc.index, PrimaryThreatIndex))
+		if(flDistanceToTarget < 400000 && Can_I_See_Enemy_Only(npc.index, PrimaryThreatIndex))
 		{
 			if(flDistanceToTarget < 72500)
 			{
@@ -280,7 +280,7 @@ public void ArmoredMedic_ClotThink(int iNPC)
 			if(b_thisNpcIsABoss[PrimaryThreatIndex])
 				MaxHealth = RoundToCeil(float(MaxHealth) * 0.001);
 
-			HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 20), 1.0);
+			HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth), 1.0);
 
 			ApplyStatusEffect(PrimaryThreatIndex, PrimaryThreatIndex, "Buffweiser", 2.0);
 			float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
