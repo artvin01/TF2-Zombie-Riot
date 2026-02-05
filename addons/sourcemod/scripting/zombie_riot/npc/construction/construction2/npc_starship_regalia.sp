@@ -334,7 +334,7 @@ methodmap RegaliaClass < CClotBody
 		EmitSoundToAll(g_DefaultCapperShootSound[GetRandomInt(0, sizeof(g_DefaultCapperShootSound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);	
 	}
 	public void PlayPattenShootSound(float Loc[3]) {
-		EmitSoundToAll(g_DoGAttackSound[GetRandomInt(0, sizeof(g_DoGAttackSound) - 1)], _, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.25, 80, _, Loc);	
+		EmitSoundToAll(g_DoGAttackSound[GetRandomInt(0, sizeof(g_DoGAttackSound) - 1)], _, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.1, 80, _, Loc);	
 	}
 	public void PlayHL2TeleSound(float Loc[3]) {
 		EmitSoundToAll(g_HL2_TeleSounds[GetRandomInt(0, sizeof(g_HL2_TeleSounds) - 1)], _, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.9, 80, _, Loc);	
@@ -663,6 +663,7 @@ methodmap RegaliaClass < CClotBody
 
 		Zero(fl_player_weapon_score);
 		npc.m_fbRangedSpecialOn = true;		
+		npc.Anger = false;
 		return npc;
 	}
 	public void CreateBody()
@@ -1554,7 +1555,7 @@ static void HandleConstructor(RegaliaClass npc)
 	if(npc.m_flConstructorDuration < GameTime)
 	{
 		npc.m_flShipAbilityActive	= GameTime + 1.0;
-		npc.m_flConstructorCooldown = GameTime + GetRandomFloat(60.0, 90.0);
+		npc.m_flConstructorCooldown = GameTime + GetRandomFloat(90.0, 120.0);
 		npc.m_flConstructorDuration = FAR_FUTURE;
 		
 		f3_LastValidPosition[npc.index][2] +=10.0;
@@ -1580,7 +1581,7 @@ static void HandleConstructor(RegaliaClass npc)
 
 		f3_LastValidPosition[npc.index][2] +=40.0;
 
-		for(int i = 0 ; i < 4 ; i++)
+		for(int i = 0 ; i < 8 ; i++)
 		{
 			int SpwanIndex = NPC_CreateByName("npc_almagest_proxima", npc.index, f3_LastValidPosition[npc.index], {0.0, 0.0, 0.0}, GetTeam(npc.index));
 
@@ -1974,7 +1975,7 @@ static void SpiralGlave_Tick(DataPack IncomingData)
 
 	float Ratio = (Data.Duration - GameTime) / Data.Duration_Base;
 
-	float RotationSpeed = 4.5 * Ratio;
+	float RotationSpeed = (4.5 * Ratio * ReturnEntityAttackspeed(npc.index)) / TickrateModify;
 
 	Data.Angle +=RotationSpeed;
 
@@ -2307,7 +2308,7 @@ static void Regalia_AnnihilateTarget_Tick(DataPack IncomingData)
 	Data.LastLoc = f3_LastValidPosition[npc.index];
 	const float radius = 300.0;
 
-	Data.AngleModif += 5.0*Ratio;
+	Data.AngleModif += (5.0*Ratio * ReturnEntityAttackspeed(npc.index)) / TickrateModify;
 
 	if(Data.AngleModif > 360.0)
 		Data.AngleModif -= 360.0;
@@ -2533,7 +2534,7 @@ static void DoG_PatternTick(DataPack IncomingData)
 	const float TE_Duration = 0.1;
 	const float Amp = 0.1;
 
-	Data.AngleModif+=1.0;
+	Data.AngleModif+=(1.0 * ReturnEntityAttackspeed(npc.index)) / TickrateModify;
 	
 	if(Data.AngleModif > 360.0)
 		Data.AngleModif -= 360.0;
@@ -2857,7 +2858,7 @@ static void RegaliaIOC_Tick(DataPack Data)
 	}
 
 
-	AngleModif+=GetRandomFloat(1.0, 2.0) * ReturnEntityAttackspeed(npc.index);
+	AngleModif+=(GetRandomFloat(1.0, 2.0) * ReturnEntityAttackspeed(npc.index)) / TickrateModify;
 
 	if(AngleModif > 360.0)
 		AngleModif -= 360.0;
@@ -2998,7 +2999,7 @@ static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
 	int Drone = NPC_CreateByName("npc_lantean_drone_projectile", npc.index, Loc, Angles, GetTeam(npc.index), "blue;raidmodescaling_damage");
 	int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.0005);	//like 0.05% hp of ship
 
-	const float DroneSpeed = 750.0;
+	float DroneSpeed = npc.Anger ? 1200.0 : 900.0;
 	if(Drone > MaxClients)
 	{
 		SetEntProp(Drone, Prop_Data, "m_iHealth", health);
@@ -3007,8 +3008,8 @@ static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
 		LanteanProjectile drone_npc = view_as<LanteanProjectile>(Drone);
 		fl_AbilityVectorData[drone_npc.index] = Angles;
 
-		drone_npc.m_flTimeTillDeath = GetGameTime() + 10.0 + GetRandomFloat(0.5, 1.5);
-		drone_npc.m_flSpeed = DroneSpeed + 200.0 * GetRandomFloat(0.8, 1.2);
+		drone_npc.m_flTimeTillDeath = GetGameTime() + 10.0 + GetRandomFloat(0.5, 5.0);
+		drone_npc.m_flSpeed = DroneSpeed + 600.0 * GetRandomFloat(0.8, 1.2);
 
 		switch(GetRandomInt(1, 2))
 		{
@@ -3061,8 +3062,8 @@ static void LanceeWeaponTurnControl(int iNPC)
 
 		float Origin[3]; GetAbsOrigin(npc.index, Origin);
 
-		float BeamSpeed = fl_PrimaryLancesTravelSpeed * 0.1515;
-		float TurnSpeed = fl_PrimaryLancesTurnSpeed;
+		float BeamSpeed = (fl_PrimaryLancesTravelSpeed * 0.1515 * (npc.Anger ? 2.0 : 1.0)) / TickrateModify;
+		float TurnSpeed = (fl_PrimaryLancesTurnSpeed * (npc.Anger ? 2.0 : 1.0)) / TickrateModify;
 
 		float TargetLoc[3]; WorldSpaceCenter(npc.m_iTarget, TargetLoc);
 		
@@ -3111,7 +3112,7 @@ static void LanceeWeaponTurnControl(int iNPC)
 	}
 	else
 	{
-		Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * 2.5 * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
+		Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
 	}
 	
 	
@@ -3303,7 +3304,7 @@ static void HandleMainWeapons(RegaliaClass npc)
 		if(npc.m_bVectoredThrust_InUse)
 		{
 			float WantedLoc[3];
-			Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * 2.5 * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
+			Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
 
 			//TE_SetupBeamPoints(Origin, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 60.0, 60.0, 0, 0.25, {0, 255, 0, 255}, 3);
 			//TE_SendToAll();
@@ -3327,7 +3328,7 @@ static void HandleMainWeapons(RegaliaClass npc)
 		//else
 		//{
 		//	float WantedLoc[3];
-		//	Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * 5.0 * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
+		//	Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
 		//	TE_SetupBeamPoints(Origin, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 60.0, 60.0, 0, 0.25, {0, 0, 255, 255}, 3);
 		//	TE_SendToAll();
 		//}
