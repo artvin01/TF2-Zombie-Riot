@@ -542,6 +542,10 @@ methodmap RegaliaClass < CClotBody
 		{
 			b_NpcUnableToDie[npc.index] = true;
 		}
+		if(StrContains(data, "final") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		
 		//Setting it to 999 will make our lag comp not resize collision box on shoot
 		b_BoundingBoxVariant[npc.index] = BBV_DontAlter; 
@@ -3663,21 +3667,23 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.PlayLifeLossSound();
 		ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", FAR_FUTURE);
 	//	CommLines("", "M I S T E R  B E A S T");
-
-		for(int i; i < i_MaxcountNpcTotal; i++)
+		if(i_RaidGrantExtra[npc.index])
 		{
-			int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-			if(IsValidEntity(entitynpc))
+			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				if(entitynpc != npc.index && entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
+				int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+				if(IsValidEntity(entitynpc))
 				{
-					SmiteNpcToDeath(entitynpc);
+					if(entitynpc != npc.index && entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
+					{
+						SmiteNpcToDeath(entitynpc);
+					}
 				}
 			}
+			Waves_ClearWaves();
+			Waves_Progress(_,_, true);
+			AddNpcToAliveList(npc.index, 1);
 		}
-		Waves_ClearWaves();
-		Waves_Progress(_,_, true);
-		AddNpcToAliveList(npc.index, 1);
 		//go to next wave instantly
 		return Plugin_Continue;
 	}
@@ -3731,18 +3737,21 @@ static void NPC_Death(int iNPC)
 	
 	npc.CleanEntities();
 
-	for(int i; i < i_MaxcountNpcTotal; i++)
+	if(i_RaidGrantExtra[npc.index])
 	{
-		int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-		if(IsValidEntity(entitynpc))
+		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
+			int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(IsValidEntity(entitynpc))
 			{
-				SmiteNpcToDeath(entitynpc);
+				if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
+				{
+					SmiteNpcToDeath(entitynpc);
+				}
 			}
 		}
+		Waves_ClearWaves();
 	}
-	Waves_ClearWaves();
 }
 static int[] iRegaliaColor(RegaliaClass npc)
 {
