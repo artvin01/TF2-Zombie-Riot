@@ -31,7 +31,7 @@
 		"#format"	"{1:N},{2:t}"
 		"en"		"{red}{1} {default}started gathering {orange}{2} {default}and is being attacked!"
 		"it"		"{red}{1} {default}ha iniziato a raccogliere {orange}{2} {default}ed è sotto attacco!"
-		"ko"		"{red}{1} {default}이(가) {orange}{2} {default}를 수집하고 있으며 공격받고 있습니다!"
+		"ko"		"{red}{1} {default}이(가) {orange}{2} {default}을(를) 수집하고 있으며 공격받고 있습니다!"
 	}
 	"Gifts Spawned"
 	{
@@ -64,14 +64,14 @@
 		"#format"	"{1:N},{2:d},{3:t}"
 		"en"		"{red}{1} {default}has used {orange}{2} {3} {default}to make"
 		"it"		"{red}{1} {default}ha utilizzato {orange}{2} {3} {default}per realizzare"
-		"ko"		"{red}{1} {default}이(가) {orange}{2} {3} {default}를 사용하여 다음을 제작했습니다:"
+		"ko"		"{red}{1} {default}이(가) {orange}{2} {3} {default}을(를) 사용하여 다음을 제작했습니다:"
 	}
 	"Player Used 2 to"
 	{
 		"#format"	"{1:N},{2:d},{3:t},{4:d},{5:t}"
 		"en"		"{red}{1} {default}has used {orange}{2} {3} {default}and {orange}{4} {5} {default}to make"
 		"it"		"{red}{1} {default}ha utilizzato {orange}{2} {3} {default}e {orange}{4} {5} {default}per realizzare"
-		"ko"		"{red}{1} {default}이(가) {orange}{2} {3} {default}과 {orange}{4} {5} {default}를 사용하여 다음을 제작했습니다:"
+		"ko"		"{red}{1} {default}이(가) {orange}{2} {3} {default}와(과) {orange}{4} {5} {default}을(를) 사용하여 다음을 제작했습니다:"
 	}
 	"Player Start Research"
 	{

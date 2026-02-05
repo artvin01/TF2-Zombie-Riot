@@ -7657,6 +7657,7 @@
 	"Mega Glug, the Great"
 	{
 		"en" "Mega Glug, the Great"
+		"ko" "위대한 자, 메가 글러그"
 	}
 	"'Voidivilinn', the Resolution of the Very South"
 	{

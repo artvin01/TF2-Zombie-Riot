@@ -4807,6 +4807,7 @@
 	"Whiteflowers Revenge Desc"
 	{
 		"en"	"After we kill Whiteflower in Rogue 1, Flowering Darkness rallies more of his army and sends them to kill us to avenge Whiteflower."
+		"ko"	"로그라이크1에서 배풍등을 쓰러뜨린 이후, 어둠 개화자가 그의 복수를 하기 위해 군단을 더 집결하여 우리에게 보냅니다."
 	}
 	"CoF Normal Desc"
 	{
