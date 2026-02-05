@@ -3663,23 +3663,21 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.PlayLifeLossSound();
 		ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", FAR_FUTURE);
 	//	CommLines("", "M I S T E R  B E A S T");
-		if(GameRules_GetRoundState() == RoundState_ZombieRiot)
+
+		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			for(int i; i < i_MaxcountNpcTotal; i++)
+			int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(IsValidEntity(entitynpc))
 			{
-				int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-				if(IsValidEntity(entitynpc))
+				if(entitynpc != npc.index && entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
 				{
-					if(entitynpc != npc.index && entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
-					{
-						SmiteNpcToDeath(entitynpc);
-					}
+					SmiteNpcToDeath(entitynpc);
 				}
 			}
-			Waves_ClearWaves();
 		}
-		Waves_ClearWave();
+		Waves_ClearWaves();
 		Waves_Progress(_,_, true);
+		AddNpcToAliveList(npc.index, 1);
 		//go to next wave instantly
 		return Plugin_Continue;
 	}
@@ -3731,22 +3729,20 @@ static void NPC_Death(int iNPC)
 	TE_Particle("hightower_explosion", Loc, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	TE_Particle("mvm_soldier_shockwave", Loc, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	
-	if(GameRules_GetRoundState() == RoundState_ZombieRiot)
+	npc.CleanEntities();
+
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		for(int i; i < i_MaxcountNpcTotal; i++)
+		int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(IsValidEntity(entitynpc))
 		{
-			int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-			if(IsValidEntity(entitynpc))
+			if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
 			{
-				if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
-				{
-					SmiteNpcToDeath(entitynpc);
-				}
+				SmiteNpcToDeath(entitynpc);
 			}
 		}
-		Waves_ClearWaves();
 	}
-	npc.CleanEntities();
+	Waves_ClearWaves();
 }
 static int[] iRegaliaColor(RegaliaClass npc)
 {
