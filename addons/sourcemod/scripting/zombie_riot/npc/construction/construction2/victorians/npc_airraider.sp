@@ -221,12 +221,21 @@ public void Airraider_ClotThink(int iNPC)
 
 	if(npc.b_AirraiderRocketJump && npc.f_AirraiderRocketJumpCD_Wearoff > GetGameTime(npc.index))
 	{
-		TeleportDiversioToRandLocation(npc.index);
+		//TeleportDiversioToRandLocation(npc.index); 
+		/*
 		static float flPos[3]; 
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 		flPos[2] += 3000.0;
-		npc.SetVelocity({0.0,0.0,0.0});
 		PluginBot_Jump(npc.index, flPos);
+		*/
+		static float flMyPos[3];
+		static float flMyPos_2[3];
+		flMyPos[2] += 3000.0;
+		WorldSpaceCenter(npc, flMyPos_2);
+
+		flMyPos[0] = flMyPos_2[0];
+		flMyPos[1] = flMyPos_2[1];
+		PluginBot_Jump(npc.index, flMyPos);
 		npc.f_AirraiderRocketJumpCD_Wearoff = GetGameTime(npc.index) + 1.0;
 		npc.b_AirraiderRocketJump = false;
 	}

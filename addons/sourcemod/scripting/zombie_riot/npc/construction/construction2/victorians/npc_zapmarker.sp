@@ -386,7 +386,7 @@ public void Zapmarker_Axe_StartTouch(int entity, int target)
 			inflictor = owner;
 
 		
-		EmitSoundToAll("weapons/cleaver_hit_02.wav", entity, _, 80, _, 0.8, 100);
+		EmitSoundToAll("weapons/3rd_degree_hit_01.wav", entity, _, 80, _, 0.8, 100);
 		if(IsValidEnemy(owner, target))
 			ApplyStatusEffect(owner, target, "Teslar Electricution", NpcStats_VictorianCallToArms(owner) ? 7.5 : 5.0);
 	}

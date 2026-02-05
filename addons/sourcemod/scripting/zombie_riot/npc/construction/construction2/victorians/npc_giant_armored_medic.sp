@@ -105,8 +105,7 @@ methodmap ArmoredMedic < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
+		npc.m_iNpcStepVariation = 0;
 		
 		npc.m_flRangedArmor = 0.8;
 		npc.m_flMeleeArmor = 0.7;	
