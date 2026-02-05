@@ -995,9 +995,10 @@ stock float RemoveExtraSpeed(TFClassType class, float value)
 	}
 }
 
-void RequestFrames(RequestFrameCallback func, int frames, any data=0)
+void RequestFrames(RequestFrameCallback func, int frames, any data=0, bool NoCalcData = false)
 {
-	frames = RoundToNearest(TickrateModify * float(frames));
+	if(!NoCalcData)
+		frames = RoundToNearest(TickrateModify * float(frames));
 	DataPack pack = new DataPack();
 	pack.WriteCell(frames);
 	pack.WriteFunction(func);
@@ -3244,7 +3245,7 @@ int inflictor = 0)
 		{
 			OnlyWarnOnceEver = false;
 			LogStackTrace("Please never go above 2k, patch this immedietly");
-			CPrintToChatAll("A Bad error has accurred, you can still play, but please notify an admin and show this code: ''2100+''");
+			CPrintToChatAll("{crimson} A Bad error has accurred, you can still play, but please notify an admin and show this code: ''2100+''");
 		}
 		//why is this done? Any range above 2k causes immensive lag.
 		//at that point it  could just be global too.
@@ -3886,13 +3887,13 @@ stock void SetPlayerActiveWeapon(int client, int weapon)
 #if defined ZR
 //	WeaponSwtichToWarningPostDestroyed(weapon);
 #endif
-	/*
+	//incase the above fails, do this instead.
 	char buffer[64];
 	GetEntityClassname(weapon, buffer, sizeof(buffer));
 	FakeClientCommand(client, "use %s", buffer); 					//allow client to change
 	SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);	//Force client to change.
 	OnWeaponSwitchPost(client, weapon);
-	*/
+	
 }
 
 stock void DHook_CreateDetour(GameData gamedata, const char[] name, DHookCallback preCallback = INVALID_FUNCTION, DHookCallback postCallback = INVALID_FUNCTION)
@@ -3943,6 +3944,7 @@ public void GiveCompleteInvul(int client, float time)
 	f_ClientInvul[client] = GetGameTime() + time;
 	TF2_AddCondition(client, TFCond_UberchargedCanteen, time);
 	TF2_AddCondition(client, TFCond_MegaHeal, time);
+	ApplyStatusEffect(client, client, "Solid Stance", time);	
 }
 
 public void RemoveInvul(int client)

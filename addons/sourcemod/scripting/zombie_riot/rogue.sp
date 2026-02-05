@@ -427,6 +427,7 @@ void Rogue_MapStart()
 {
 	delete Voting;
 	delete Curses;
+	Rogue_CleanArtifacts();
 	delete Artifacts;
 	delete CurrentCollection;
 	RogueTheme = 0;
@@ -486,6 +487,7 @@ void Rogue_SetupVote(KeyValues kv, const char[] artifactOnly = "")
 	Floor floor;
 
 	delete Curses;
+	Rogue_CleanArtifacts();
 	delete Artifacts;
 	delete CurrentCollection;
 
@@ -870,6 +872,27 @@ void Rogue_StartSetup()	// Waves_RoundStart()
 	}
 }
 
+void Rogue_CleanArtifacts()
+{
+	if(CurrentCollection)
+	{
+		ArrayList list = CurrentCollection;
+		CurrentCollection = null;
+
+		Artifact artifact;
+		int length = list.Length;
+		for(int i; i < length; i++)
+		{
+			Artifacts.GetArray(list.Get(i), artifact);
+			if(artifact.FuncRemove != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, artifact.FuncRemove);
+				Call_Finish();
+			}
+		}
+		delete list;
+	}
+}
 void Rogue_RoundEnd()
 {
 	delete ProgressTimer;

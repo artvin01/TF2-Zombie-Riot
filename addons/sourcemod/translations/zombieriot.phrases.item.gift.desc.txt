@@ -2273,7 +2273,7 @@
 	{
 		"it"	"Ha una salute molto elevata e danni da caos. è completamente immune ai colpi alla testa."
 		"en"	"A heavy, the size of a giant, with strong headgear. \n-Attacks apply Chaos elemental damage. \n-Takes 0 headshot damage."
-		"ko"	"거인과 같은 크기와 강력한 머리 보호구를 장착한 헤비입니다.\n-적중 시 혼돈 원소 피해를 부여합니다.\n-헤드샷 피해를 0으로 받습니다."
+		"ko"	"거인과 같은 크기와 강력한 머리 보호구를 가진 헤비입니다.\n-적중 시 혼돈 원소 피해를 부여합니다.\n-헤드샷 피해를 0으로 받습니다."
 	}
 	"Absolute Incinirator Desc"
 	{
@@ -3580,7 +3580,7 @@
 	}
 	"Copycat Truthful Evidence Desc"
 	{
-		"en"	"This is a Copy of the evidence received from Sensal.\nSee some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Victoria invaded Ziberia.\nyou became the primary target of Victorians due to this…"
+		"en"	"This is a Copy of the evidence received from Sensal.\nSee some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Victoria invaded Ziberia.\nYou became the primary target of Victorians due to this…"
 		"ko"	"센살에게 받은 진실된 증거자료[사본] 입니다.\n이해못할 단어들이 보이지만 숨겨진 뜻이 있는거 같습니다. 이것이 빅토리아가 지베리아를 침공한 이유 같습니다.\n하지만 이것이 빅토리아인들과의 트러블을 만들었습니다."
 	}
 	"Dropped Secret Letter"
@@ -3631,7 +3631,7 @@
 	"Major Voided’s Hat Desc"
 	{
 		"en"	"Somehow still intact after the explosion. A bit big but still usable."
-		"ko"	"어떻게인지 몰라도 폭발 이후에도 멀쩡하게 남아있습니다. 좀 크긴 하지만 쓸 수는 있네요."
+		"ko"	"어떻게인지 몰라도 폭발 이후에도 멀쩡하게 남아있습니다.\n좀 크긴 하지만 쓸 수는 있네요."
 	}
 	"Iberian Badge of Honor"
 	{
@@ -3650,8 +3650,8 @@
 	}
 	"Collector’s Backpack Desc"
 	{
-		"en"	"The backpack worn by the Aperture Collector. The tech within looks extremely advanced."
-		"ko"	"애퍼처 수집가가 매고 있던 가방입니다. 안에 들어있는 기술은 극도로 진보된 것 같습니다."
+		"en"	"The backpack worn by the Aperture Collector. \nThe tech within looks extremely advanced."
+		"ko"	"애퍼처 수집가가 매고 있던 가방입니다.\n안에 들어있는 기술은 극도로 진보된 것 같습니다."
 	}
 	"Ruianian Necklace"
 	{
@@ -3660,8 +3660,8 @@
 	}
 	"Ruianian Necklace Desc"
 	{
-		"en"	"A golden necklace with a gem at the end of it. Ruliana gives it to us as a gift from Twirl."
-		"ko"	"끝부분에 보석이 달려있는 황금 목걸이입니다. 루리아나가 트윌의 선물이라며 건네주었습니다."
+		"en"	"A golden necklace with a gem at the end of it. \nRuliana gives it to us as a gift from Twirl."
+		"ko"	"끝부분에 보석이 달려있는 황금 목걸이입니다.\n루리아나가 트윌의 선물이라며 건네주었습니다."
 	}
 	"Ancient Demon Horn"
 	{
@@ -3670,8 +3670,18 @@
 	}
 	"Ancient Demon Horn Desc"
 	{
-		"en"	"Broken off an Ancient Demon we killed. We have no idea what to use it for…"
-		"ko"	"처치한 고대 악마에게서 부러져 나온 뿔입니다. 어디에 써야할지 도통 모르겠군요..."
+		"en"	"Broken off an Ancient Demon we killed. \nWe have no idea what to use it for…"
+		"ko"	"처치한 고대 악마에게서 부러져 나온 뿔입니다.\n어디에 써야할지 도통 모르겠군요..."
+	}
+	"Tiny Flower"
+	{
+		"en"	"Tiny Flower"
+		"ko"	"작은 꽃"
+	}
+	"Tiny Flower Desc"
+	{
+		"en"	"Another tiny flower from Flowering Darkness, a garden is being maintained by their army. \nAs a garden regrows, as such does their army."
+		"ko"	"어둠 개화자에게서 얻은 또 다른 작은 꽃입니다.\n정원은 그의 군단에 의해 가꾸어집니다.\n정원이 자라날 수록, 그의 군대 역시 자라납니다."
 	}
 	"Warped Crystal"
 	{
@@ -3680,7 +3690,7 @@
 	}
 	"Warped Crystal Desc"
 	{
-		"en"	"Made from the combination of Chaos and Void. Let's hope none of us crystallizes so we don’t get encased in one of these."
+		"en"	"Made from the combination of Chaos and Void. \nLet's hope none of us crystallizes so we don’t get encased in one of these."
 		"ko"	"혼돈과 공허가 융화되어 만들어진 수정입니다.\n우리 중 누군가 결정화 되어 이런 수정에 갇히지 않길 바라야겠죠."
 	}
 	"Almagest Data Card"

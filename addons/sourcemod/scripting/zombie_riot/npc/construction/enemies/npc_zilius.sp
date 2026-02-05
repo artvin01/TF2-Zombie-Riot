@@ -799,7 +799,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	if(RoundToCeil(damage) >= health && i_RaidGrantExtra[npc.index] == 1)
 	{
-		if(Construction_Mode())
+		if(Construction_Mode() || Dungeon_Mode())
 		{
 			CPrintToChatAll("{black}Zilius{default}: Guess you lot are more then worthy. ill let you be, be usefull against the {purple}void{default}.");
 			npc.m_flWinAnimation = GetGameTime() + 50.0;
@@ -829,7 +829,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 		Waves_ClearWaves();
 		
-		if(Construction_Mode())
+		if(Construction_Mode() || Dungeon_Mode())
 		{
 			GiveProgressDelay(50.0);
 

@@ -2204,15 +2204,24 @@ void Dungeon_EnemySpawned(int entity)
 			}
 			case 1:	// Dungeon NPC
 			{
-				if(Dungeon_GetEntityZone(entity) != Zone_RivalBase)
+				if(Dungeon_GetEntityZone(entity) == Zone_Dungeon)
 				{
 					//nerf enemies in dungeons by 10%
 					fl_Extra_Damage[entity] *= 0.9;
 					SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.9));
 					SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.9));
 
-
-					// Reward cash depending on the wave scaling and how much left
+					if(EnemyScaling > 0.0)
+					{
+						fl_Extra_Damage[entity] *= 1.0 + ((EnemyScaling - 1.0) / 3.0);
+						
+						SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * EnemyScaling));
+						SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * EnemyScaling));
+					}
+				}
+				// Reward cash depending on the wave scaling and how much left
+				if(Dungeon_GetEntityZone(entity) == Zone_Dungeon || Dungeon_GetEntityZone(entity) == Zone_RivalBase)
+				{
 					if(!i_IsABuilding[entity] && !i_NpcIsABuilding[entity])
 					{
 						int round = Dungeon_GetRound(true) + MONEY_SCLAING_PUSHFUTURE;
@@ -2260,14 +2269,6 @@ void Dungeon_EnemySpawned(int entity)
 							
 							f_CreditsOnKill[entity] += float(reward / 5 * 5);
 						}
-					}
-
-					if(EnemyScaling > 0.0)
-					{
-						fl_Extra_Damage[entity] *= 1.0 + ((EnemyScaling - 1.0) / 3.0);
-						
-						SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * EnemyScaling));
-						SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * EnemyScaling));
 					}
 				}
 			}

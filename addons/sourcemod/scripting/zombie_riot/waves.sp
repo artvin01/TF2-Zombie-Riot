@@ -956,9 +956,9 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 
 		if(limit > 0)
 		{
-			for(int length = Voting.Length; length > limit; length--)
+			while (Voting.Length > limit)
 			{
-				Voting.Erase(MapSeed % length);
+				Voting.Erase(GetURandomInt() % Voting.Length);
 			}
 
 			if(!autoSelect && !FileNetwork_Enabled())
@@ -3001,7 +3001,7 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 		}
 		
 		if(Construction_Mode())	// In Construction: Base raids must be dealt with
-			subWave = !Construction_FinalBattle();
+			subWave = Construction_FinalBattle();
 		/*
 		if(Dungeon_Mode())
 			subWave = !Dungeon_FinalBattle();

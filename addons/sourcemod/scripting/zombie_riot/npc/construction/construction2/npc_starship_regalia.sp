@@ -542,6 +542,10 @@ methodmap RegaliaClass < CClotBody
 		{
 			b_NpcUnableToDie[npc.index] = true;
 		}
+		if(StrContains(data, "final") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		
 		//Setting it to 999 will make our lag comp not resize collision box on shoot
 		b_BoundingBoxVariant[npc.index] = BBV_DontAlter; 
@@ -1559,7 +1563,7 @@ static void HandleConstructor(RegaliaClass npc)
 		npc.EndFlightSystemGoal();
 		npc.EndGenericLaserSound();
 
-		int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.025);	//0.5% of ship hp
+		int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.0125);	//0.125% of ship hp
 
 		float Radius = 300.0;
 		float TE_Duration = 1.0;
@@ -1811,7 +1815,7 @@ static void HandleBeacons(RegaliaClass npc)
 	}
 	
 	Beacon = NPC_CreateByName("npc_starship_beacon", npc.index, fl_BeaconSpawnPos[selection], {0.0, 0.0, 0.0}, GetTeam(npc.index), npc.Anger ? "style1;lifeloss" : "style1");
-	int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.05);	//like 5% hp of ship
+	int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.07);	//like 7% hp of ship
 	if(Beacon < MaxClients)
 		return;
 
@@ -2992,7 +2996,7 @@ static void HandleDroneSystem(RegaliaClass npc)
 static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
 {
 	int Drone = NPC_CreateByName("npc_lantean_drone_projectile", npc.index, Loc, Angles, GetTeam(npc.index), "blue;raidmodescaling_damage");
-	int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.001);	//like 0.1% hp of ship
+	int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.0005);	//like 0.05% hp of ship
 
 	const float DroneSpeed = 750.0;
 	if(Drone > MaxClients)
@@ -3663,7 +3667,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.PlayLifeLossSound();
 		ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", FAR_FUTURE);
 	//	CommLines("", "M I S T E R  B E A S T");
-		if(GameRules_GetRoundState() == RoundState_ZombieRiot)
+		if(i_RaidGrantExtra[npc.index])
 		{
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
@@ -3677,9 +3681,9 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 				}
 			}
 			Waves_ClearWaves();
+			Waves_Progress(_,_, true);
+			AddNpcToAliveList(npc.index, 1);
 		}
-		Waves_ClearWave();
-		Waves_Progress(_,_, true);
 		//go to next wave instantly
 		return Plugin_Continue;
 	}
@@ -3731,7 +3735,9 @@ static void NPC_Death(int iNPC)
 	TE_Particle("hightower_explosion", Loc, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	TE_Particle("mvm_soldier_shockwave", Loc, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	
-	if(GameRules_GetRoundState() == RoundState_ZombieRiot)
+	npc.CleanEntities();
+
+	if(i_RaidGrantExtra[npc.index])
 	{
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
@@ -3746,7 +3752,6 @@ static void NPC_Death(int iNPC)
 		}
 		Waves_ClearWaves();
 	}
-	npc.CleanEntities();
 }
 static int[] iRegaliaColor(RegaliaClass npc)
 {

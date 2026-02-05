@@ -72,7 +72,7 @@
 	{
 		"#format"	"{1:s},{2:d}"
 		"en"		"{orange}{1} {default}upgraded to {orange}Level {2}"
-		"ko"		"{orange}{1} {default}의 레벨이 {orange}{2} 로 증가했습니다"
+		"ko"		"{orange}{1} {default}의 레벨이 {orange}{2} (으)로 증가했습니다"
 	}
 	"Gained Ammo Supplies"
 	{
@@ -150,7 +150,7 @@
 	"Defensive Focus Desc"
 	{
 		"en"	"{green}Base damage increased by +40％ {red}only in home base"
-		"ko"	"{green}기본 피해량이 +40％ 증가합니다. {red}이 효과는 거점 내부에서만 적용됩니다."
+		"ko"	"{green}기본 피해량이 +40％ 증가합니다. {red}이 효과는 본거지에서만 적용됩니다."
 	}
 	"Offensive Focus"
 	{
@@ -190,7 +190,7 @@
 	"Dungeon Level 3 Desc"
 	{
 		"en"	"{red}Enemies Gain 10％ Stats\n{red}Enemies sometimes get random modifiers."
-		"ko"	"{red}모든 적의 능력치 +10%\n{red}적들이 때때로 무작위 특수 효과를 얻습니다."
+		"ko"	"{red}모든 적의 능력치 +10％\n{red}적들이 때때로 무작위 특수 효과를 얻습니다."
 	}
 	"Compass Fragment"
 	{
@@ -210,7 +210,7 @@
 	"Dungeon Compass Desc"
 	{
 		"en"	"The next dungeon to appear in vote is guaranteed to be a special variant, will be consumed on use"
-		"ko"	"다음 투표에서 등장하는 던전은 특수한 변형 던전이 되며, 사용 시 이 아이템은 소모됩니다."
+		"ko"	"다음 투표에서 등장하는 던전이 특수한 변형 던전이 되며, 사용 시 이 아이템은 소모됩니다."
 	}
 	"Control Center"
 	{
@@ -220,7 +220,7 @@
 	"Control Center Desc"
 	{
 		"en"	"The objective, protect this building to survive, use it to upgrade and do certain tasks."
-		"ko"	"목표물입니다. 이 구조물을 보호하며 살아남으세요. 사용하여 개선과 특정 임무를 수행하세요."
+		"ko"	"목표물입니다. 이 구조물을 보호하며 살아남으세요. 사용하여 개선과 특정 행동을 수행하세요."
 	}
 	"Construct Altar"
 	{
@@ -230,7 +230,7 @@
 	"Construct Altar Desc"
 	{
 		"en"	"Summons a great Construct with help from alaxios, it will defend the controll point."
-		"ko"	"알락시오스의 도움을 통해 위대한 고대 조각상을 소환합니다. 이것이 점령 지점을 방어해줄 것입니다."
+		"ko"	"알락시오스의 도움을 통해 위대한 고대 조각상을 소환합니다. 이것이 본거지를 방어해줄 것입니다."
 	}
 	"No Actions Needed"
 	{
@@ -257,7 +257,7 @@
 	"Can Opener Desc"
 	{
 		"en"	"When they sealed that can too good.\n{green}Unboxing sealed crates cost 50％ less crystals"
-		"ko"	"쓸데없이 밀봉을 너무 잘 해둔 물건을 마주했을 때.\n{green}봉인된 상자들을 개봉할때 소모되는 수정의 양 50％ 감소"
+		"ko"	"쓸데없이 밀봉을 너무 잘 해둔 물건을 마주했을 때.\n{green}봉인된 상자들을 개봉할 때 소모되는 수정의 양 50％ 감소"
 	}
 	"Wooden Crate"
 	{
@@ -418,7 +418,7 @@
 	{
 		"#format"	"{1:N},{2:s},{3:s}"
 		"en"		"{orange}{1} {default}built {orange}{2} {default}for {orange}{3}"
-		"ko"		"{orange}{1} {default}가 {orange}{2} {default}를 해당 위치에 조립했습니다: {orange}{3}"
+		"ko"		"{orange}{1} {default}이(가) {orange}{2} {default}을(를) 해당 위치에 조립했습니다: {orange}{3}"
 	}
 	"Vehicle Controls"
 	{
@@ -435,7 +435,7 @@
 	"Treasure Vault Encounter Title"
 	{
 		"en"	"We used the Treasure Key to open inside, some items are presented in front of you."
-		"ko"	"보물 열쇠를 사용해 금고를 열었더니, 그 안에 몇 가지 물품들이 있었다."
+		"ko"	"보물 열쇠를 사용해 금고를 열었고, 그 안에 몇 가지 물품들이 있었습니다."
 	}
 	"Ship Ending Encounter Title"
 	{
@@ -462,12 +462,12 @@
 		"en"	"Verde Soldier Minion"
 		"ko"	"초록색 하수인 솔저"
 	}
-	"Xeno Resurgence"
+	"Xeno Resurgance"
 	{
 		"en"	"Xeno Resurgence"
 		"ko"	"제노의 부활"
 	}
-	"Xeno Resurgence Desc"
+	"Xeno Resurgance Desc"
 	{
 		"en"	"{darkgreen}All enemies are xenofied...\n{gray}Didnt we kill off the xeno virus?"
 		"ko"	"{darkgreen}모든 적들이 제노화 됩니다...\n{gray}분명 우리가 제노를 끝장냈을텐데요?"
@@ -484,8 +484,8 @@
 	}
 	"Main Center Death"
 	{
-		"en"	"{crimson}Our {orange}Control Center {crimson}is destroyed, Respawns disabled, vehicles disabled."
-		"ko"	"{crimson}우리의 {orange}제어 센터{crimson}가 파괴되었습니다. 부활과 차량이 비활성화됩니다."
+		"en"	"{crimson}Our {orange}Control Center {crimson}is destroyed, Respawns disabled, vehicles disabled, players are slowed down by 1.1x."
+		"ko"	"{crimson}우리의 {orange}제어 센터{crimson}가 파괴되었습니다. 부활과 차량이 비활성화되며 플레이어의 이동 속도가 1.1배 느려집니다."
 	}
 	"Explain Dungeon Mechanics 1"
 	{

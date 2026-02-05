@@ -2568,6 +2568,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_PullTowardsTarget[entity] = 0;
 		f_PullStrength[entity] = 0.0;
 #if defined ZR || defined RPG
+		Dungeon_SetEntityZone(entity, Zone_Unknown);
 		CoinEntityCreated(entity);
 #endif
 		//set it to 0!
@@ -3216,7 +3217,7 @@ void FlamethrowerAntiCrash(int entity)
 	}
 }
 #if defined ZR || defined RPG
-public void CheckIfAloneOnServer()
+void CheckIfAloneOnServer(bool CountOnly = false)
 {
 	CountPlayersOnRed();
 	b_IsAloneOnServer = false;
@@ -3239,17 +3240,17 @@ public void CheckIfAloneOnServer()
 #if defined ZR
 			if(!WasHereSinceStartOfWave(client))
 				continue;
-#endif
-			players += 1;
-#if defined ZR 
 			player_alone = client;
 #endif
+			players += 1;
 		}
 	}
 	if(players == 1)
 	{
 		b_IsAloneOnServer = true;	
 	}
+	if(CountOnly)
+		return;
 
 #if defined ZR 
 	if(BetWar_Mode())

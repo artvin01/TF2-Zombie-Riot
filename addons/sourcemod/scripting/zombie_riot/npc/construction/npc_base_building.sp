@@ -172,7 +172,7 @@ static void StartingBaseBuffGiveBuff(int iNpc)
 	iNpc,
 	-1,
 	spawnLoc,
-	9999.9,
+	2000.9,
 	_,
 	_,
 	false,
