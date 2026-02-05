@@ -3024,6 +3024,18 @@ void StatusEffects_Victoria()
 	data.SlotPriority				= 0;
 	data.HudDisplay_Func			= AmmoTM_Visual_Hud_Func;
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Buffweiser");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "꩜");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.5; //50% less damage taken
+	data.DamageDealMulti			= 1.0; //x2 dmg
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }
 
 stock bool NpcStats_VictorianCallToArms(int victim)

@@ -102,6 +102,9 @@ methodmap Chemical_Specialist < CClotBody
 		
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
+
+		npc.m_flRangedArmor = 0.9;
+		npc.m_flMeleeArmor = 0.7;	
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		

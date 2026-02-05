@@ -303,9 +303,10 @@ void Victorian_ProtectorBuildObject(Victorian_Protector npc, float distance)
 			SetVariantString("0.75");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 			npc.m_iWearable7 = npc.SpawnShield(5.0, "models/props_mvm/mvm_player_shield.mdl",40.0, false);
-			SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
+			SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", 1);
 			npc.PlayBuildSound();
 			npc.m_flSpeed = 300.0;
+			npc.m_flArmorCount = 0.0;
 		}
 	}
 }

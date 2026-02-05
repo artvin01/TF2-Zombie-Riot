@@ -709,7 +709,10 @@ void NPC_ConfigSetup()
 	Demolitionist_OnMapStart_NPC();
 	Chemical_Specialist_OnMapStart_NPC();
 	Victorian_Protector_OnMapStart_NPC();
-	Chemical_Spreader_OnMapStart_NPC();
+	ChemicalSpreader_OnMapStart_NPC();
+	Zapmarker_OnMapStart_NPC();
+	ArmoredMedic_OnMapStart_NPC();
+	Airraider_OnMapStart_NPC();
 
 //special
 	Invisible_TRIGGER_OnMapStart_NPC();//It is currently used as a trigger for the Victoria Factory.
@@ -2362,6 +2365,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/construction2/victorians/npc_chemical_specialist.sp"
 #include "npc/construction/construction2/victorians/npc_protector.sp"
 #include "npc/construction/construction2/victorians/npc_chemical_spreader.sp"
+#include "npc/construction/construction2/victorians/npc_zapmarker.sp"
+#include "npc/construction/construction2/victorians/npc_giant_armored_medic.sp"
+#include "npc/construction/construction2/victorians/npc_airraider.sp"
 
 //Matrix Enemies
 #include "npc/matrix/15/npc_agentalan.sp"
