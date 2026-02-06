@@ -1419,6 +1419,7 @@ static void Barracks_MortarSupport_Mode(BarrackBody npc, int client, bool mounte
 				Better_Gravity_Rocket(RocketGet, 55.0);
 				fl_Extra_Damage[RocketGet] = BlastDamage;
 				fl_Dead_Ringer_Invis[RocketGet] = BlastRange;
+				h_ArrowInflictorRef[RocketGet] = GetClientUserId(client);
 				SDKHook(RocketGet, SDKHook_StartTouch, HEGrenade_StartTouch);
 			}
 			EmitSoundToAll("weapons/grenade_launcher_shoot.wav", (mounted ? client : npc.index), _, 80, _, 0.7);
@@ -1434,14 +1435,11 @@ static Action HEGrenade_StartTouch(int entity, int target)
 		owner = 0;
 	int inflictor = h_ArrowInflictorRef[entity];
 	if(inflictor != -1)
-		inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
-
-	if(inflictor == -1)
-		inflictor = owner;
+		owner = GetClientOfUserId(h_ArrowInflictorRef[entity]);
 		
 	float ProjectileLoc[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-	Explode_Logic_Custom(fl_Extra_Damage[entity], owner, inflictor, -1, ProjectileLoc, fl_Dead_Ringer_Invis[entity]);
+	Explode_Logic_Custom(fl_Extra_Damage[entity], owner, owner, -1, ProjectileLoc, fl_Dead_Ringer_Invis[entity]);
 	return Plugin_Handled;
 }
 
