@@ -2107,12 +2107,8 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 			if(InSetup || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime() || BetWar_Mode())
 				return false;
 	}
-	if(ForceAdvance)
-		PrintToChatAll("Waves_Progress1");
 	if(!Rounds[WaveWhich])
 		return false;
-	if(ForceAdvance)
-		PrintToChatAll("Waves_Progress2");
 		
 	if(WaveWhich == Rounds_Default)
 	{
@@ -2121,8 +2117,6 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 		delete WaveTimer;
 	}
 	
-	if(ForceAdvance)
-		PrintToChatAll("Waves_Progress3");
 	Round round;
 	Wave wave;
 	int length = Rounds[WaveWhich].Length-1;
@@ -2650,7 +2644,7 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 				
 				Music_EndLastmann();
 				RespawnCheckCitizen();
-				ReviveAll();
+				ReviveAll(_,_,_, ForceAdvance);
 				CheckAlivePlayers();
 				BlockOtherRaidMusic = false;
 			}

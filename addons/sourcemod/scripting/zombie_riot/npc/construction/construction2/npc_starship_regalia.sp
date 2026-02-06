@@ -3684,7 +3684,6 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			Waves_ClearWaves();
 			Waves_Progress(_,_, true);
 			AddNpcToAliveList(npc.index, 1);
-			PrintToChatAll("omgh");
 		}
 		//go to next wave instantly
 		return Plugin_Continue;
@@ -3741,7 +3740,6 @@ static void NPC_Death(int iNPC)
 
 	if(i_RaidGrantExtra[npc.index])
 	{
-		PrintToChatAll("testing");
 		Waves_ClearWaves();
 		ForcePlayerWin();
 		for(int i; i < i_MaxcountNpcTotal; i++)
