@@ -635,7 +635,7 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 
 	AcceptEntityInput(target, "ClearParent");
 
-	float pos[3], ang[3], vel[3];
+	float pos[3], ang[3];
 	if(target > 0 && target <= MaxClients)
 	{
 		if(!killed)
