@@ -428,7 +428,6 @@ methodmap Construction_Raid_Zilius < CClotBody
 		
 		if(final)
 		{
-			PrintToChatAll("test1");
 			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
