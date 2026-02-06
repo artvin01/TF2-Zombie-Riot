@@ -303,7 +303,7 @@ void Victorian_ProtectorBuildObject(Victorian_Protector npc, float distance)
 			SetVariantString("0.75");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 			float timeup = 5.0;
-			if(NpcStats_VictorianCallToArms(entity))
+			if(NpcStats_VictorianCallToArms(npc.index))
 				 timeup *= 2.0;
 			npc.m_iWearable7 = npc.SpawnShield(timeup, "models/props_mvm/mvm_player_shield.mdl",40.0, false);
 			SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", 1);

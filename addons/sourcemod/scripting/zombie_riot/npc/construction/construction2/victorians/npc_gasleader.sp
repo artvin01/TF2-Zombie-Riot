@@ -228,6 +228,22 @@ static void Gasleader_ClotThink(int iNPC)
 			Explode_Logic_Custom(10.0, -1, npc.index, -1, vecMe, radius, _, 0.75, true, _, false, _, Gasleader_ExplodePost);
 			npc.m_flRangedSpecialDelay = gametime + 0.5;
 		}
+			float VecI[3]; WorldSpaceCenter(npc.index, VecI);
+		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
+		{
+			if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
+			{
+				if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
+				{
+					static float vecTarget[3]; WorldSpaceCenter(entitycount, vecTarget);
+					if(GetVectorDistance(VecI, vecTarget, true) < (350.0 * 350.0))
+					{
+						ApplyStatusEffect(npc.index, entitycount, "Caffinated", 1.6);
+						ApplyStatusEffect(npc.index, entitycount, "Caffinated Drain", 1.6);
+					}
+				}
+			}
+		}
 	}
 	
 
@@ -239,23 +255,6 @@ static void Gasleader_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = gametime + GetRandomRetargetTime();
-	}
-
-	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-	{
-		if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-		{
-			if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-			{
-				static float vecTarget[3]; WorldSpaceCenter(entitycount, vecTarget);
-				if(GetVectorDistance(VecSelfNpc, vecTarget, true) < (350.0 * 350.0))
-				{
-					ApplyStatusEffect(npc.index, entitycount, "Caffinated", 1.6);
-					ApplyStatusEffect(npc.index, entitycount, "Caffinated Drain", 1.6);
-				}
-			}
-		}
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -521,6 +520,52 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 			{
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 20000.0);
+				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
+				delete swingTrace;
+				bool PlaySound = false;
+				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+				{
+					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
+					{
+						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+						{
+							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
+							float damageDealt = 100.0;
+							int ElementalDamage = 30;
+							if(NpcStats_VictorianCallToArms(npc.index))
+								ElementalDamage *= 2;
+							if(ShouldNpcDealBonusDamage(target))
+								damageDealt*=10.0;
+							if(npc.m_iOverlordComboAttack <= 2)
+							{
+								npc.m_iOverlordComboAttack++;
+								Elemental_AddNervousDamage(target, npc.index, ElementalDamage, true);
+								npc.PlayMeleeHitSound();
+								npc.m_flNextMeleeAttack = gameTime + 0.5;
+							}
+							else
+							{
+								damageDealt *= 3.0;
+								npc.m_iOverlordComboAttack = 0;
+								ElementalDamage *= 3.1;
+								Elemental_AddNervousDamage(target, npc.index, ElementalDamage, true);
+								if(IsValidClient(target) && !HasSpecificBuff(target, "Fluid Movement"))
+								{
+									TF2_StunPlayer(target, 1.5, 0.5, TF_STUNFLAG_SLOWDOWN);
+									Client_Shake(target, 0, 25.0, 12.5, 1.5);
+								}
+								npc.m_flNextMeleeAttack = gameTime + 1.0;
+							}
+							damageDealt *= (npc.m_flPercentageAngry * 5.0) + 1.0;
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);					
+						}
+					}
+				}
+				/*
+				int HowManyEnemeisAoeMelee = 64;
+				Handle swingTrace;
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 				npc.FaceTowards(vecTarget, 20000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee))
@@ -563,13 +608,13 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 						}
 					}
 				}
-				delete swingTrace;
+				*/
 				npc.m_flAttackHappenswillhappen = false;
 			}
 			else if(npc.m_flAttackHappens_bullshit < gameTime && npc.m_flAttackHappenswillhappen)
 			{
 				npc.m_flAttackHappenswillhappen = false;
-				npc.m_flNextMeleeAttack = gameTime + 0.5;
+				npc.m_flNextMeleeAttack = gameTime + 0.1;
 			}
 		}
 		return 2;
@@ -606,8 +651,8 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 10.0;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
-						if(IsValidEnemy(owner, target))
-							ApplyStatusEffect(owner, target, "Cripple", NpcStats_VictorianCallToArms(owner) ? 7.5 : 5.0);
+						if(IsValidEnemy(npc.index, target))
+							ApplyStatusEffect(npc.index, target, "Cripple", NpcStats_VictorianCallToArms(npc.index) ? 7.5 : 5.0);
 						
 					}
 					npc.m_flNextRangedAttack = gameTime + 1.0;

@@ -282,13 +282,15 @@ public void ArmoredMedic_ClotThink(int iNPC)
 			HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth), 1.0);
 
 			ApplyStatusEffect(PrimaryThreatIndex, PrimaryThreatIndex, "Buffweiser", 1.1);
-			if(ShouldNpcDealBonusDamage(target))
+			if(NpcStats_VictorianCallToArms(npc.index))
+			{
 				ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Caffinated", 1.1);
 				ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Caffinated Drain", 1.1);
 				ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Taurine", 1.1);
 				ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Oceanic Scream", 1.1);
 				ApplyStatusEffect(npc.index, PrimaryThreatIndex, "War Cry", 1.1);
 				ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Defensive Backup", 1.1);
+			}
 			float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 			npc.FaceTowards(WorldSpaceVec, 2000.0);
 		}

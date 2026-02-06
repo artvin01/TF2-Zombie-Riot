@@ -463,7 +463,7 @@ void AirraiderSelfDefense(Airraider npc, float gameTime, int target, float dista
 				float projectile_speed = 1000.0;
 				float DamageRocket = 30.0;
 				float vPredictedPos[3];
-				if(NpcStats_VictorianCallToArms(entity))
+				if(NpcStats_VictorianCallToArms(npc.index))
 					DamageRocket *= 1.5;
 				PredictSubjectPositionForProjectiles(npc, target, projectile_speed, _,vPredictedPos);
 				

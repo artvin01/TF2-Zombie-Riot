@@ -290,7 +290,7 @@ static int Chemical_SpecialistSelfDefense(Chemical_Specialist npc, float gameTim
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
 						int ElementalDamge = 25;
-						if(NpcStats_VictorianCallToArms(entity))
+						if(NpcStats_VictorianCallToArms(npc.index))
 							ElementalDamge *= 2;
 						Elemental_AddNervousDamage(target, npc.index, ElementalDamge);
 
