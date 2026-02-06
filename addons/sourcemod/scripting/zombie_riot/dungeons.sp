@@ -2190,7 +2190,7 @@ bool Dungeon_AtLimitNotice()
 
 static float ScaleBasedOnRound(int round)
 {
-	return (500.0 + Pow(float(round), 2.6));
+	return (500.0 + Pow(float(round), 2.7));
 }
 
 void Dungeon_EnemySpawned(int entity)
