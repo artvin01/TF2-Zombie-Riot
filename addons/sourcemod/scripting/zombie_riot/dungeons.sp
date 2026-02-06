@@ -414,7 +414,11 @@ int Dungeon_GetRound(bool forceTime = false)
 		return current + ongoing;
 	}
 	
-	return RoundToFloor(BattleWaveScale);
+	int scale = RoundToFloor(BattleWaveScale);
+	if(scale > MaxWaveScale)
+		scale = MaxWaveScale;
+	
+	return scale;
 }
 
 int Dungeon_CurrentAttacks()
@@ -1982,6 +1986,7 @@ static void StartBattle(const RoomInfo room, float time = 0.1)
 
 		room.Fights.GetValue(buffer, scale);
 		EnemyScaling = ScaleBasedOnRound(round) / ScaleBasedOnRound(scale);
+		PrintToConsoleAll("Dungeon Enemy Scaling: %.2f%%", EnemyScaling * 100.0);
 
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
 		KeyValues kv = new KeyValues("Waves");
@@ -2111,6 +2116,9 @@ void Dungeon_WaveEnd(const float spawner[3] = NULL_VECTOR, bool rivalBase = fals
 		RoomInfo room;
 		RoomList.GetArray(CurrentRoomIndex, room);
 		room.RollLoot(spawner);
+
+		if(BattleWaveScale > 39.0)
+			room.RollLoot(spawner);
 	}
 }
 
@@ -2186,7 +2194,7 @@ bool Dungeon_AtLimitNotice()
 
 static float ScaleBasedOnRound(int round)
 {
-	return (500.0 + Pow(float(round), 2.6));
+	return (500.0 + Pow(float(round), 2.7));
 }
 
 void Dungeon_EnemySpawned(int entity)

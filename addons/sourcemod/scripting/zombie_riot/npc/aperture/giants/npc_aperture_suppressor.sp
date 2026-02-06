@@ -41,7 +41,6 @@ static const char g_IdleAlertedSounds[][] = {
 static const char g_AngrySounds[][] = {
 	"vo/mvm/mght/taunts/demoman_mvm_m_taunts01.mp3",
 	"vo/mvm/mght/taunts/demoman_mvm_m_taunts02.mp3",
-	"vo/mvm/mght/taunts/demoman_mvm_m_taunts03.mp3",
 	"vo/mvm/mght/taunts/demoman_mvm_m_taunts04.mp3",
 	"vo/mvm/mght/taunts/demoman_mvm_m_taunts05.mp3",
 	"vo/mvm/mght/taunts/demoman_mvm_m_taunts06.mp3",

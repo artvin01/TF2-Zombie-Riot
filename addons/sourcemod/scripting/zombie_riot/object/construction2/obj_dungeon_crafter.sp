@@ -323,7 +323,7 @@ static void ApplyRandomEffect()
 		return;
 	}
 
-	int type = GetURandomInt() % Pack_MAX;
+	int type = (1 + (GetURandomInt() % (Pack_MAX - 1)));
 
 	if(!WeaponPacked)
 		WeaponPacked = new IntMap();
