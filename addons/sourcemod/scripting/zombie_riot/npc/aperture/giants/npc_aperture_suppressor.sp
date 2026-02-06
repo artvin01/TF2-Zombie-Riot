@@ -75,6 +75,7 @@ void ApertureSuppressor_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_AngrySounds)); i++) { PrecacheSound(g_AngrySounds[i]); }
 	PrecacheModel("models/bots/demo_boss/bot_demo_boss.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aperture Suppressor");

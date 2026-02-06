@@ -1290,6 +1290,7 @@ void Waves_CacheWaves(KeyValues kv, bool npcs)
 void WavesDeleteSet(int ArrayDo = Rounds_Default)
 {
 	Round round;
+	Waves_ClearWaves(ArrayDo);
 	if(Rounds[ArrayDo])
 	{
 		int length = Rounds[ArrayDo].Length;

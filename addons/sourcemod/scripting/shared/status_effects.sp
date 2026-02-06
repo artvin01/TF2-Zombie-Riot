@@ -4183,6 +4183,7 @@ void StatusEffects_FallenWarrior()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic 			= true;
 	data.OnBuffStarted				= MainCenter_Start;
 	data.OnBuffStoreRefresh			= MainCenter_Start;
 	data.OnBuffEndOrDeleted			= MainCenter_End;
@@ -4191,6 +4192,7 @@ void StatusEffects_FallenWarrior()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+	data.ElementalLogic 			= false;
 
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Unstable Umbral Rift");
