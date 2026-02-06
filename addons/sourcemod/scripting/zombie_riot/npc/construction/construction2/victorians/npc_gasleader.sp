@@ -26,6 +26,10 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_slice_4.wav",
 };
 
+static const char g_MegaMeleeHitSounds[][] = {
+	"items/cart_explode.wav",
+};
+
 static const char g_RangeAttackSounds[] = "weapons/pistol/pistol_fire2.wav";
 
 static const char g_MeleeAttackSounds[] = "weapons/demo_sword_swing1.wav";
@@ -50,6 +54,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_HurtSound);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MegaMeleeHitSounds);
 	PrecacheSound(g_RangeAttackSounds);
 	PrecacheSound(g_MeleeAttackSounds);
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
@@ -91,22 +96,26 @@ methodmap Gasleader < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayRangedSound() {
-		EmitSoundToAll(g_RangeAttackSounds, this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangeAttackSounds, this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayMegaMeleeHitSound() 
+	{
+		EmitSoundToAll(g_MegaMeleeHitSounds[GetRandomInt(0, sizeof(g_MegaMeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	
 	property int i_GunMode
@@ -524,7 +533,6 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 				npc.FaceTowards(VecEnemy, 20000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
-				bool PlaySound = false;
 				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 				{
 					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
@@ -556,9 +564,12 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 									TF2_StunPlayer(target, 1.5, 0.5, TF_STUNFLAG_SLOWDOWN);
 									Client_Shake(target, 0, 25.0, 12.5, 1.5);
 								}
+								ParticleEffectAt(VecEnemy, "Explosion_ShockWave_01", 0.5);
 								npc.m_flNextMeleeAttack = gameTime + 1.0;
 							}
 							damageDealt *= (npc.m_flPercentageAngry * 5.0) + 1.0;
+							float vecHit[3];
+							WorldSpaceCenter(target, vecHit);
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);					
 						}
 					}

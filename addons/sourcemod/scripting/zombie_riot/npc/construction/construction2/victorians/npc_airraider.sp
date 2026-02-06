@@ -148,7 +148,7 @@ methodmap Airraider < CClotBody
 		npc.b_AirraiderRocketJump = true;
 
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.0;
-		npc.f_AirraiderRocketJumpCD_Wearoff = GetGameTime(npc.index) + 1.0;
+		npc.f_AirraiderRocketJumpCD_Wearoff = GetGameTime(npc.index) + 3.0;
 		
 		
 		int skin = 1;
@@ -227,6 +227,15 @@ public void Airraider_ClotThink(int iNPC)
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 		flPos[2] += 3000.0;
 		PluginBot_Jump(npc.index, flPos);
+		
+		static float hullcheckmaxs[3];
+		static float hullcheckmins[3];
+		hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+		hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );
+
+		static float bringMeUp[3];
+		bringMeUp[2] += 50.0;
+		Npc_Teleport_Safe(npc.index, bringMeUp, hullcheckmins, hullcheckmaxs, true);
 		*/
 		static float flMyPos[3];
 		static float flMyPos_2[3];
