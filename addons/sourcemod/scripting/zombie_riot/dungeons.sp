@@ -414,7 +414,11 @@ int Dungeon_GetRound(bool forceTime = false)
 		return current + ongoing;
 	}
 	
-	return RoundToFloor(BattleWaveScale);
+	int scale = RoundToFloor(BattleWaveScale);
+	if(scale > MaxWaveScale)
+		scale = MaxWaveScale;
+	
+	return scale;
 }
 
 int Dungeon_CurrentAttacks()
