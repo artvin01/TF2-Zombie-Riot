@@ -323,6 +323,8 @@ static void Demolitionist_ExplodeHit(int entity, int victim, float damage, int w
 		damage = 200.0;
 		if(ShouldNpcDealBonusDamage(victim))
 			damage *= 8.0;
+		if(NpcStats_VictorianCallToArms(entity))
+			damage *= 2.0;
 		SDKHooks_TakeDamage(victim, entity, inflictor, damage, DMG_BLAST, -1, _, vecHit);
 	}
 }

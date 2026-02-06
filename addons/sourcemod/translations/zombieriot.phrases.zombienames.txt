@@ -5867,6 +5867,42 @@
 		"en"	"Captino Menius"
 		"ko"	"캡티노 메니우스"
 	}
+	"Zapmarker"
+	{
+		"en"	"Zapmarker"
+	}
+	"Resource Collector"
+	{
+		"en"	"Resource Collector"
+	}
+	"Victoria Gasleader"
+	{
+		"en"	"Victorian Chemical Squad Leader"
+	}
+	"Demolitionist"
+	{
+		"en"	"Demolitionist"
+	}
+	"Victorian Protector"
+	{
+		"en"	"Victorian Protector"
+	}
+	"Airraider"
+	{
+		"en"	"Airraider"
+	}
+	"Victorian Headhunter"
+	{
+		"en"	"Victorian Headhunter"
+	}
+	"Chemical Specialist"
+	{
+		"en"	"Chemical Specialist"
+	}
+	"Giant Armored Medibot"
+	{
+		"en"	"Giant Armored Medibot"
+	}
 	"0h No it's Not Fair"
 	{
 		"en"	"=Failed name="

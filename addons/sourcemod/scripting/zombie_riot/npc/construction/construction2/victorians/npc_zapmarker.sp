@@ -334,9 +334,10 @@ void ZapmakerSelfDefense(Zapmaker npc, float gameTime, int target, float distanc
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 2.5;
 
-
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					StartBleedingTimer(target, npc.index, 5.0, 5, -1, DMG_TRUEDAMAGE, 0);
+					if(NpcStats_VictorianCallToArms(npc.index))
+						Elemental_AddNervousDamage(target, npc.index, 5);
+					StartBleedingTimer(target, npc.index, 3.0, 5, -1, DMG_TRUEDAMAGE, 0);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();

@@ -3562,7 +3562,42 @@
 	{
 		"en"	" `Did you really thought you could get out this mess that easily?` \nColonel of Victoria's Army. He has mastered skill for explosives and command \nHe wants your death for the amends of Radiotower's destruction. Do we really have to fight him while we got same enemeis in common? \nHe will utilize all of the abilites that previous raidbosses used and often call in for support"
 	}
-	
+	"Zapmarker Desc"
+	{
+		"en"	"An elite melee unit of victoria \nThrows Zapper's axe to apply teslar debuff to its victim and rush in with melee that applies heavy bleed"
+	}
+	"Resource Collector Desc"
+	{
+		"en"	"A robotic unit designed to collect nearby minerals \nFast and applied more damage to buildings"
+	}
+	"Victoria Gasleader Desc"
+	{
+		"en"	"Victorian Chemical Platoon leader. \n applies armor corrosion elemental damage near while his armor is up \nPulls out a sword that applies more armor corrosion damage on 3rd hit when its target gets close \nBecomes stronger as near allies die"
+	}
+	"Demolitionist Desc"
+	{
+		"en"	"Heavy melee unit of Victorian Chemical Platoon \nSwings a massive hammer to create and explosion that deals MASSIVE damage to buildings"
+	}
+	"Victorian Protector Desc"
+	{
+		"en"	"Carrier unit holding a portable shield \n spawns with an armor and when it gets closer to its target, deployys an energy shield \nIt's shield carrier will be destroyed if its armor runs out"
+	}
+	"Airraider Desc"
+	{
+		"en"	"A surprise assault unit of Victorian Chemical Platoon. \nParachutes in when it spawns and fire its rocket while falling down. \n continues with shotgun when on the ground"
+	}
+	"Victorian Headhunter Desc"
+	{
+		"en"	"An elite sniper of Victorian Chemical Platoon. \n Appears quietly and deals armor corrsion damage \n Deals more damage and elemental damage to enemies with support weapon out"
+	}
+	"Chemical Specialist Desc"
+	{
+		"en"	"A Chemical expert of Victorian Chemical Platoon \n Always head all of its elemental damage taken \n fire bullets coated with armor corrosion liquid"
+	}
+	"Giant Armored Medibot Desc"
+	{
+		"en"	"A Giant support unit of Victorian Chemical Platoon designed only for defense \n its patient receives massive buff and never dies unless oneshot \nIt moves very slowly"
+	}
 	"Avangard's Processing Core-B"
 	{
 		"en"	"Avangard's Processing Core-B"

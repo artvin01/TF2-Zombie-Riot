@@ -252,7 +252,12 @@ static void ResourceCollectorSelfDefense(ResourceCollector npc, float gameTime, 
 					float damageDealt = 75.0;
 					
 					if(ShouldNpcDealBonusDamage(target))
+					{
 						damageDealt *= 5.0;
+						if(NpcStats_VictorianCallToArms(npc.index))
+							damageDealt *= 2.0;
+					}
+						
 
 					int DamageType = DMG_CLUB;
 					

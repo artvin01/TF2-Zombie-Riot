@@ -434,7 +434,14 @@ int Victorian_HeadhunterSelfDefense(Victorian_Headhunter npc, float gameTime)
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		npc.m_flAttackHappens = gameTime + 1.00;
+		if(NpcStats_VictorianCallToArms(npc.index))
+		{
+			npc.m_flAttackHappens = gameTime + 0.65;
+		}
+		else if(!NpcStats_VictorianCallToArms(npc.index))
+		{
+			npc.m_flAttackHappens = gameTime + 1.00;
+		}
 		npc.m_flDoingAnimation = gameTime + 0.95;
 		npc.m_flNextMeleeAttack = gameTime + 2.00;
 	}

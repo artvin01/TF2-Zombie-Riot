@@ -289,7 +289,10 @@ static int Chemical_SpecialistSelfDefense(Chemical_Specialist npc, float gameTim
 						float damageDealt = 10.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
-						Elemental_AddNervousDamage(target, npc.index, 25);
+						int ElementalDamge = 25;
+						if(NpcStats_VictorianCallToArms(entity))
+							ElementalDamge *= 2;
+						Elemental_AddNervousDamage(target, npc.index, ElementalDamge);
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 					}

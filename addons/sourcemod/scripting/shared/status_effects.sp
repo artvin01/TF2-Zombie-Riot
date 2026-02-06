@@ -3026,8 +3026,8 @@ void StatusEffects_Victoria()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Buffweiser");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "꩜");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "BEER");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "BEER"); //BEEEEEERRRRR
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.5; //50% less damage taken
 	data.DamageDealMulti			= 1.0; //x2 dmg

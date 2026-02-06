@@ -302,7 +302,10 @@ void Victorian_ProtectorBuildObject(Victorian_Protector npc, float distance)
 			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/C_Crossing_Guard/C_Crossing_Guard.mdl");
 			SetVariantString("0.75");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-			npc.m_iWearable7 = npc.SpawnShield(5.0, "models/props_mvm/mvm_player_shield.mdl",40.0, false);
+			float timeup = 5.0;
+			if(NpcStats_VictorianCallToArms(entity))
+				 timeup *= 2.0;
+			npc.m_iWearable7 = npc.SpawnShield(timeup, "models/props_mvm/mvm_player_shield.mdl",40.0, false);
 			SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", 1);
 			npc.PlayBuildSound();
 			npc.m_flSpeed = 300.0;
