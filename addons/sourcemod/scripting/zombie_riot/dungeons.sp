@@ -1982,6 +1982,7 @@ static void StartBattle(const RoomInfo room, float time = 0.1)
 
 		room.Fights.GetValue(buffer, scale);
 		EnemyScaling = ScaleBasedOnRound(round) / ScaleBasedOnRound(scale);
+		PrintToConsoleAll("Dungeon Enemy Scaling: %.2f%%", EnemyScaling * 100.0);
 
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
 		KeyValues kv = new KeyValues("Waves");
@@ -2111,6 +2112,9 @@ void Dungeon_WaveEnd(const float spawner[3] = NULL_VECTOR, bool rivalBase = fals
 		RoomInfo room;
 		RoomList.GetArray(CurrentRoomIndex, room);
 		room.RollLoot(spawner);
+
+		if(BattleWaveScale > 39.0)
+			room.RollLoot(spawner);
 	}
 }
 

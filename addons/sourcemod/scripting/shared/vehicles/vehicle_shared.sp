@@ -670,10 +670,10 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 	if(teleport)
 	{
 		CanExit(obj.index, pos, ang);
-		GetEntPropVector(obj.index, Prop_Data, "m_vecSmoothedVelocity", vel);
+		//GetEntPropVector(obj.index, Prop_Data, "m_vecSmoothedVelocity", vel);
 		pos[2] += 8.0;
 		ang[2] = 0.0;
-		TeleportEntity(target, pos, ang, vel);
+		TeleportEntity(target, pos, ang);
 	}
 
 	if(wasDriver)	// CPropVehicleDriveable::ExitVehicle
