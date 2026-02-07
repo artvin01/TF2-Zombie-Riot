@@ -786,7 +786,7 @@
 	"Buffweiser"
 	{
 		"en"	"Buffweiser"
-		"ko"	"타우린"
+		"ko"	"버프와이저"
 	}
 	"Buffweiser Desc"
 	{
