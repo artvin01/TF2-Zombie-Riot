@@ -6,13 +6,13 @@
 #define STARTER_WEAPON_LEVEL	5
 #define MAX_TARGETS_HIT 10
 
-#define MVM_CLASS_FLAG_NONE				0
-#define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// Base Normal
-#define MVM_CLASS_FLAG_SUPPORT			(1 << 1)	// Base Support
-#define MVM_CLASS_FLAG_MISSION			(1 << 2)	// Base Support, Flash Red
-#define MVM_CLASS_FLAG_MINIBOSS			(1 << 3)	// Add Red Background
+#define MVM_CLASS_FLAG_NONE				0			// Show Nothing
+#define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// Normal
+#define MVM_CLASS_FLAG_SUPPORT			(1 << 1)	// Support
+#define MVM_CLASS_FLAG_MISSION			(1 << 2)	// Support - Flashing for Spies, Busters, Engis
+#define MVM_CLASS_FLAG_MINIBOSS			(1 << 3)	// Normal - Red Background
 #define MVM_CLASS_FLAG_ALWAYSCRIT		(1 << 4)	// Add Blue Borders
-#define MVM_CLASS_FLAG_SUPPORT_LIMITED	(1 << 5)	// Add to Support?
+#define MVM_CLASS_FLAG_SUPPORT_LIMITED	(1 << 5)	// Only Visible When Active
 
 public const int AmmoData[][] =
 {
@@ -57,6 +57,18 @@ public const int DefaultWaveCash[] =
 	2500, 2500, 3000, 4000, 25000,
 	3000, 3000, 3000, 3000
 };
+
+enum DungeonZone
+{
+	Zone_Unknown = 0,
+	Zone_HomeBase,
+	Zone_RivalBase,
+	Zone_Dungeon,
+	Zone_DungeonWait,	// Waiting for next dungeon room
+	
+	Zone_MAX
+}
+
 
 stock int DefaultTotalCash(int wave)
 {
@@ -320,7 +332,8 @@ enum
 	Type_Mutation,
 	Type_Curtain,
 	Type_Necropolain,
-	Type_GmodZS
+	Type_GmodZS,
+	Type_Outlaws
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -374,6 +387,12 @@ int PlayersInGame;
 bool ZombieMusicPlayed;
 int GlobalIntencity;
 bool b_HasBeenHereSinceStartOfWave[MAXPLAYERS];
+bool WasHereSinceStartOfWave(int client)
+{
+//	if(Dungeon_Mode())
+//		return true;
+	return b_HasBeenHereSinceStartOfWave[client];
+}
 Cookie CookieScrap;
 Cookie CookieXP;
 ArrayList Loadouts[MAXPLAYERS];
@@ -392,8 +411,8 @@ MusicEnum RaidMusicSpecial1;
 MusicEnum BGMusicSpecial1;
 //custom wave music.
 float f_DelaySpawnsForVariousReasons;
-int CurrentRound;
-int CurrentWave = -1;
+int CurrentRound[Rounds_MAX];
+int CurrentWave[Rounds_MAX] = {-1, ...};
 int StartCash;
 float RoundStartTime;
 char WhatDifficultySetting_Internal[32];
@@ -803,6 +822,7 @@ void ZR_PluginStart()
 	
 	BobTheGod_OnPluginStart();
 	VIPBuilding_PluginStart();
+	NpcConst2Building_CommandPluginStart();
 }
 
 void ZR_MapStart()
@@ -1173,7 +1193,7 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	UpdatePerkName(client);
 	i_HealthBeforeSuit[client] = 0;
-	i_ClientHasCustomGearEquipped[client] = false;
+	i_ClientHasCustomGearEquipped[client] = 0;
 	
 	Construction_PutInServer(client);
 	if(CountPlayersOnServer() == 1)
@@ -1194,7 +1214,7 @@ void ZR_ClientPutInServer(int client)
 	else
 		b_AntiLateSpawn_Allow[client] = false;
 
-	if(BetWar_Mode())
+	if(BetWar_Mode() || Dungeon_Mode())
 		b_AntiLateSpawn_Allow[client] = true;
 }
 
@@ -1427,9 +1447,7 @@ public Action CommandDebugHudTest(int client, int args)
 		ReplyToCommand(client, "[SM] Usage: sm_displayhud <number>");
 	        return Plugin_Handled;
 	}
-
-	int Number = GetCmdArgInt(1);
-	Medival_Wave_Difficulty_Riser(Number);
+	Const2_ReviveAllBuildings();
 	return Plugin_Handled;
 }
 
@@ -1506,7 +1524,7 @@ public Action Command_GiveBuff(int client, int args)
 	//What are you.
 	if(args < 2)
     {
-        ReplyToCommand(client, "[SM] Usage: sm_give_buff <target> <buffname> <duration>");
+        ReplyToCommand(client, "[SM] Usage: sm_give_buff <target or npc name> <buffname> <duration>");
         return Plugin_Handled;
     }
     
@@ -1523,6 +1541,24 @@ public Action Command_GiveBuff(int client, int args)
 	float buffduration = StringToFloat(buf2); 
 	
 
+	//first look for npcs
+	bool FoundAnNpc = false;
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(b_NpcHasDied[entity])
+			continue;
+
+		if (StrContains(pattern, c_NpcName[entity]) == -1)
+			continue;
+		ApplyStatusEffect(entity, entity, buf, buffduration);
+		FoundAnNpc = true;
+	}
+	if(FoundAnNpc)
+	{
+		PrintToChat(client, "Gave the NPCS the buff you asked for!");
+		return Plugin_Handled;
+	}
 	int targets[MAXPLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
@@ -1733,6 +1769,7 @@ public Action Command_SpawnGrigori(int client, int args)
 
 public Action Command_PropVehicle(int client, int args)
 {
+/*
 	float flPos[3], flAng[3];
 	GetClientAbsAngles(client, flAng);
 	if(!SetTeleportEndPoint(client, flPos))
@@ -1754,7 +1791,8 @@ public Action Command_PropVehicle(int client, int args)
 	SetEntProp(vehicle, Prop_Data, "m_nVehicleType", 0);
 
 	DispatchSpawn(vehicle);
-
+*/
+	ReplyToCommand(client, "You probably wanted sm_spawn_npc");
 	return Plugin_Handled;
 }
 
@@ -1763,7 +1801,7 @@ public void OnClientAuthorized(int client)
 	Ammo_Count_Used[client] = 0;
 	CashSpentTotal[client] = 0;
 	
-	if(CurrentRound)
+	if(CurrentRound[Rounds_Default])
 	{
 		// Give extra cash to newly joined
 		int cash = CurrentCash / 20;
@@ -2009,7 +2047,7 @@ void CheckLastMannStanding(int killed)
 }
 void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false, int CheckForLastManAlone = 0)
 {
-	if(!Waves_Started() || Waves_InSetup() || GameRules_GetRoundState() != RoundState_ZombieRiot)
+	if(!Waves_Started() || Waves_InSetup() || GameRules_GetRoundState() != RoundState_ZombieRiot || Dungeon_CanRespawn())
 	{
 		LastMann = false;
 		LastMann_BeforeLastman = false;
@@ -2025,7 +2063,11 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			}
 		}
 		if(!TestLastman)
+		{
+			
+			CheckIfAloneOnServer(true);
 			return;
+		}
 	}
 	
 	CheckIfAloneOnServer();
@@ -2649,7 +2691,7 @@ public Action ZR_CheckValidityOfPostions_OfObjects(Handle timer,bool recheck)
 void ZR_CheckValidityOfPostions_OfObjectsInternal(bool recheck)
 {
 	//if in setup, keep checking.
-	if(Waves_InSetup() && recheck)
+	if(Waves_InSetup() && recheck && !Construction_Mode() && !Dungeon_Mode())
 		CreateTimer(5.0, ZR_CheckValidityOfPostions_OfObjects, true, TIMER_FLAG_NO_MAPCHANGE);
 
 	float pos2[3];
@@ -2713,7 +2755,7 @@ void ZR_CheckValidityOfPostions_OfObjectsInternal(bool recheck)
 		}
 	}
 }
-void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceFullHealth = false)
+void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceFullHealth = false, bool Const2_DontRespawnBuildings = false)
 {
 	//only set false here
 	if(!setmusicfalse)
@@ -2728,7 +2770,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceF
 	{
 		CheckClientLateJoin(client, false);
 		bool ClientWasInWave = false;
-		if(b_HasBeenHereSinceStartOfWave[client])
+		if(WasHereSinceStartOfWave(client))
 			ClientWasInWave = true;
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		if(IsClientInGame(client))
@@ -2833,6 +2875,10 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceF
 	
 	Music_EndLastmann();
 	CheckAlivePlayers();
+	if(Dungeon_Mode() && !Const2_DontRespawnBuildings)
+	{
+		Const2_ReviveAllBuildings(true);
+	}
 }
 
 float XpFloatGive[MAXPLAYERS];
@@ -3447,6 +3493,11 @@ void UpdateCustomFog()
 	if (IsValidEntity(CustomFogEntity[FogType_NPC]))
 	{
 		fogToUse = CustomFogEntity[FogType_NPC];
+		ActiveFogEntity = fogToUse;
+	}
+	else if (IsValidEntity(CustomFogEntity[FogType_Difficulty]))
+	{
+		fogToUse = CustomFogEntity[FogType_Difficulty];
 		ActiveFogEntity = fogToUse;
 	}
 	else if (IsValidEntity(CustomFogEntity[FogType_Wave]))

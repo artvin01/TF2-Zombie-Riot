@@ -63,8 +63,8 @@ void DemonDevoterOnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Demon Devoter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_demon_devoter");
-	strcopy(data.Icon, sizeof(data.Icon), "demo");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "demon_devoter");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = 0;
 	data.Func = ClotSummon;
@@ -265,6 +265,10 @@ static void Clot_SelfDefense(DemonDevoter npc, float distance, float vecTarget[3
 				if(target > 0)
 				{
 					float damage = 60.0;
+					if(ShouldNpcDealBonusDamage(target))
+					{
+						damage *= 2.0;
+					}
 
 					npc.PlayMeleeHitSound();
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);

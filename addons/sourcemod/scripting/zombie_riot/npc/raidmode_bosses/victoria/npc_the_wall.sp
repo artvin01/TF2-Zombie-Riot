@@ -2627,27 +2627,30 @@ static void HuscarlsGrab(Huscarls npc, float gameTime)
 				{
 					if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && !HasSpecificBuff(EnemyLoop, "Solid Stance"))
 					{
-						static float angles[3];
-						GetVectorAnglesTwoPoints(EnemyPos, pos, angles);
-
-						if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
-							angles[0] = 0.0;
-
-						static float velocity[3];
-						GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
-						float attraction_intencity = 1.50;
-						ScaleVector(velocity, Distance * attraction_intencity);
-						
-						if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
-							velocity[2] = fmax(325.0, velocity[2]);
-						
-						TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);   
-						if(EnemyLoop == npc.m_iTarget)
+						if(!HasSpecificBuff(EnemyLoop, "Solid Stance"))
 						{
-							TF2_AddCondition(EnemyLoop, TFCond_HalloweenKartNoTurn, 0.2, 0);
-							TF2_AddCondition(EnemyLoop, TFCond_CompetitiveLoser, 0.2, 0);
-							TF2_AddCondition(EnemyLoop, TFCond_LostFooting, 0.5);
-							TF2_AddCondition(EnemyLoop, TFCond_AirCurrent, 0.5);
+							static float angles[3];
+							GetVectorAnglesTwoPoints(EnemyPos, pos, angles);
+
+							if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
+								angles[0] = 0.0;
+
+							static float velocity[3];
+							GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+							float attraction_intencity = 1.50;
+							ScaleVector(velocity, Distance * attraction_intencity);
+							
+							if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
+								velocity[2] = fmax(325.0, velocity[2]);
+							
+							TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);   
+							if(EnemyLoop == npc.m_iTarget)
+							{
+								TF2_AddCondition(EnemyLoop, TFCond_HalloweenKartNoTurn, 0.2, 0);
+								TF2_AddCondition(EnemyLoop, TFCond_CompetitiveLoser, 0.2, 0);
+								TF2_AddCondition(EnemyLoop, TFCond_LostFooting, 0.5);
+								TF2_AddCondition(EnemyLoop, TFCond_AirCurrent, 0.5);
+							}
 						}
 					}
 				}

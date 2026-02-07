@@ -2048,7 +2048,7 @@
 	{
 		"en"	"You gotten this far, from infections, outbreaks, riots, and chaos. Take a moment to remember the past."
 		"it"	"Siete arrivati fin qui, tra infezioni, epidemie, rivolte e caos. Prendetevi un momento per ricordare il passato."
-		"ko"	"당신은 감염, 재앙, 폭동, 혼돈을 넘어 여기까지 도달했습니다. 과거를 잠시 돌아봅니다..."
+		"ko"	"당신은 감염, 재앙, 폭동, 혼돈을 넘어 여기까지 도달했다. 과거를 잠시 돌아본다..."
 	}
 	"Finale Encounter Option 1"
 	{

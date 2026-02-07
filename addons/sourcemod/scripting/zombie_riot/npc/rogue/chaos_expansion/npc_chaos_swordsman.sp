@@ -182,11 +182,10 @@ methodmap ChaosSwordsman < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcWeight[npc.index] = 1;
+		npc.SetActivity("ACT_RUN");
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_RUN");
-		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
 		
@@ -225,10 +224,10 @@ methodmap ChaosSwordsman < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
-		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
-		SetEntityRenderColor(npc.m_iWearable1, 125, 125, 125, 255);
-		SetEntityRenderColor(npc.m_iWearable2, 125, 125, 125, 255);
-		SetEntityRenderColor(npc.m_iWearable3, 125, 125, 125, 255);
+		SetEntityRenderColor(npc.index, 150, 150, 150, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 150, 150, 150, 255);
+		SetEntityRenderColor(npc.m_iWearable2, 150, 150, 150, 255);
+		SetEntityRenderColor(npc.m_iWearable3, 150, 150, 150, 255);
 		
 		float flPos[3], flAng[3];
 				

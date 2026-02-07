@@ -1670,7 +1670,7 @@ stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflic
 		{
 			ExtraDamageDealt *= 0.5;
 			damage *= ExtraDamageDealt;
-			if(!b_HasBeenHereSinceStartOfWave[attacker])
+			if(!WasHereSinceStartOfWave(attacker))
 			{
 				damage = 0.0;
 				return true;

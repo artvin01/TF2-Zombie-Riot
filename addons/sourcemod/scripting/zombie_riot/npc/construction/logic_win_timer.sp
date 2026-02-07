@@ -20,7 +20,7 @@ void WinTimer_MapStart()
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	TimeCheck = CurrentGame;
-	WaveCheck = CurrentRound;
+	WaveCheck = CurrentRound[Rounds_Default];
 
 	float time = StringToFloat(data);
 
@@ -31,7 +31,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 
 static Action WinTimerNuke(Handle timer)
 {
-	if(CurrentGame == TimeCheck && WaveCheck == CurrentRound)
+	if(CurrentGame == TimeCheck && WaveCheck == CurrentRound[Rounds_Default])
 	{
 		Waves_ClearWaveCurrentSpawningEnemies();
 

@@ -1333,7 +1333,8 @@ public void OnPostThink(int client)
 		}
 
 		int Armor_Max = 10000;
-		int vehicle = Vehicle_Driver(client);
+		int vehicleSlot;
+		int vehicle = Vehicle_Driver(client, vehicleSlot);
 		int armorEnt = client;
 		if(vehicle != -1)
 		{
@@ -1520,7 +1521,7 @@ public void OnPostThink(int client)
 		}
 		if(vehicle != -1)
 		{
-			Format(buffer2, sizeof(buffer2), "%s",Vehicle_Driver(vehicle) == client ? "DRI" : "PAS");
+			Format(buffer2, sizeof(buffer2), "%s", vehicleSlot == -1 ? "DRI" : "PAS");
 		}
 		else if(IsValidEntity(Building_Mounted[client]))
 		{
@@ -1585,9 +1586,7 @@ public void OnPostThink(int client)
 			Format(buffer2, sizeof(buffer2), "%s|---",buffer2);
 		}
 		
-#if defined ZR
 		if(!SkillTree_InMenu(client) && !BetWar_Mode() && GetTeam(client) == TFTeam_Red && TeutonType[client] == TEUTON_NONE)
-#endif
 		{
 			SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.9 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
 			ShowSyncHudText(client, SyncHud_ArmorCounter, "%s\n%s", buffer, buffer2);
@@ -1624,7 +1623,7 @@ public void OnPostThink(int client)
 			}
 			else if (TeutonType[client] == TEUTON_DEAD)
 			{
-				if(b_HasBeenHereSinceStartOfWave[client])
+				if(WasHereSinceStartOfWave(client))
 				{
 					Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Died Teuton"
 					);
@@ -1641,7 +1640,7 @@ public void OnPostThink(int client)
 			if(HudBuffer[0])
 				PrintKeyHintText(client,"%s", HudBuffer);
 		}
-#endif
+#endif	// ZR
 	}
 #if defined ZR
 	if(!OnlyOneAtATime && f_DelayLookingAtHud[client] < GameTime)
@@ -1665,7 +1664,7 @@ public void OnPostThink(int client)
 	}
 	
 //	delete profiler;
-#endif
+#endif	// ZR
 }
 
 public void OnPostThinkPost(int client)
@@ -2177,7 +2176,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 		}
 		//the client was the last man on the server, or alone, give them spawn protection
 		//dont do this if they are under specter saw revival
-		else if(!Rogue_NoLastman() && b_IsAloneOnServer && !applied_lastmann_buffs_once)
+		else if(!Rogue_NoLastman() && b_IsAloneOnServer && !applied_lastmann_buffs_once && i_AmountDowned[victim] != 999)
 		{
 			//lastman for being alone!
 			//force lastman if alone, give inf downs to indicate DEATH.
@@ -2232,7 +2231,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			Rogue_PlayerDowned(victim);	
 			
 			//there are players still left, down them.
-			if((SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 2)) && !HasSpecificBuff(victim, "Nightmare Terror"))
+			if((SpecterCheckIfAutoRevive(victim) || i_AmountDowned[victim] < (2 + Dungeon_DownedBonus())) && !HasSpecificBuff(victim, "Nightmare Terror"))
 			{
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 12");
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
@@ -2250,10 +2249,12 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					i_AmountDowned[victim] = 99;
 				}
 				*/
+
+				Dungeon_PlayerDowned(victim);
 				
 				ApplyRapidSuturing(victim);
 				ExtinguishTargetDebuff(victim);
-				if(!Waves_InSetup())
+				if(!Waves_InSetup() || Dungeon_Started())
 					i_AmountDowned[victim]++;
 				
 				if(Rogue_Rift_VialityThing())
@@ -2863,6 +2864,7 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 	int downsleft;
 	downsleft = 2;
 	downsleft -= i_AmountDowned[client];
+	downsleft += Dungeon_DownedBonus();
 	if(HasSpecificBuff(client, "Nightmare Terror"))
 		downsleft = 0;
 	if(!force_Clear && downsleft <= 0 && !SpecterCheckIfAutoRevive(client))

@@ -198,9 +198,7 @@ public void Construction_AH_Ally(int entity, StringMap map)
 public void Construction_BadExpi_Collect()
 {
 	if(!Construction_FinalBattle())
-	{
 		CreateTimer(4.0, Timer_DialogueNewEnd, 0, TIMER_FLAG_NO_MAPCHANGE);
-	}
 }
 
 static Action Timer_DialogueNewEnd(Handle timer, int part)
@@ -209,6 +207,9 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 	{
 		case 0:
 		{
+			if(Dungeon_Mode())
+				CPrintToChatAll("{crimson}여긴 처음 생존 연산이 진행된 곳이지만, 지금은 단지 게임플레이를 위해 있을 뿐입니다.");
+			
 			CPrintToChatAll("{black}???{default}: 하. 그따위 함정에도 속아넘어가다니.");
 		}
 		case 1:
@@ -356,4 +357,22 @@ public void Construction_RareWeapon_Collect()
 
 	Store_DiscountNamedItem(name, 999, discount);
 	CPrintToChatAll("{green}Recovered Items: {palegreen}%s", name);
+}
+
+
+
+
+public void Xeno_Resurgance_Enemy(int entity)
+{
+	if(i_NpcIsABuilding[entity])
+		return;
+
+	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_XENO)
+		ApplyStatusEffect(entity, entity, "Xeno Infection", 9999.9);
+	else
+		ApplyStatusEffect(entity, entity, "Xeno Infection Buff Only", 9999.9);
+}
+public void Xeno_Resurgance_End()
+{
+	Rogue_RemoveNamedArtifact("Xeno Resurgance");
 }

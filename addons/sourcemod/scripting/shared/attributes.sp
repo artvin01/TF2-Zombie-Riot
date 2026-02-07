@@ -63,11 +63,11 @@ enum
 
 	Attrib_DisallowTinker = 4057,
 	Attrib_Armor_AliveMode = 4058,
+	Attrib_MultiBuildingDamage = 4059,
 	
 	Attrib_MaxArmor_Multiplier = 5000,
 	Attrib_MaxArmor_BaseAdditive = 5001,
 	Attrib_MaxArmor_FinalAdditive = 5002,
-	
 	Attrib_ASPD_StatusCalc,	// Only used in status_effect to determine their current ASPD amount
 }
 

@@ -182,6 +182,11 @@ methodmap ChaosKahmlstein < CClotBody
 		public get()							{ return b_NextRangedBarrage_OnGoing[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_NextRangedBarrage_OnGoing[this.index] = TempValueForProperty; }
 	}
+	property bool m_bBossRushDuo
+	{
+		public get()							{ return b_FlamerToggled[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FlamerToggled[this.index] = TempValueForProperty; }
+	}
 	public void PlayAngerSoundPassed() 
 	{
 		int sound = GetRandomInt(0, sizeof(g_AngerSoundsPassed) - 1);
@@ -327,6 +332,7 @@ methodmap ChaosKahmlstein < CClotBody
 		
 
 		bool final = StrContains(data, "final_item") != -1;
+		npc.m_bBossRushDuo = StrContains(data, "bossrush_duo") != -1;
 		
 		if(final)
 		{
@@ -334,6 +340,12 @@ methodmap ChaosKahmlstein < CClotBody
 			i_khamlCutscene = 14;
 			i_RaidGrantExtra[npc.index] = 1;
 			b_NpcUnableToDie[npc.index] = true;
+		}
+		
+		if (npc.m_bBossRushDuo)
+		{
+			f_khamlCutscene = GetGameTime() + 3.0;
+			i_khamlCutscene = 2;
 		}
 
 		if(StrContains(data, "fake_2") != -1)
@@ -400,6 +412,11 @@ methodmap ChaosKahmlstein < CClotBody
 				RaidModeTime += 45.0;
 				Music_SetRaidMusicSimple("vo/null.mp3", 30, false, 0.5);
 			}
+			else if (npc.m_bBossRushDuo)
+			{
+				RaidModeTime = GetGameTime(npc.index) + 503.0;
+				Music_SetRaidMusicSimple("vo/null.mp3", 30, false, 0.5);
+			}
 			else
 			{
 				bool TotalShits = StrContains(data, "no_music_blitz") != -1;
@@ -421,8 +438,17 @@ methodmap ChaosKahmlstein < CClotBody
 					f_MessengerSpeedUp[npc.index] *= 2.0;
 				}
 			}
-
-			RaidBossActive = EntIndexToEntRef(npc.index);
+			
+			if (npc.m_bBossRushDuo)
+			{
+				if (!IsValidEntity(RaidBossActive))
+					RaidBossActive = EntIndexToEntRef(npc.index);
+			}
+			else
+			{
+				RaidBossActive = EntIndexToEntRef(npc.index);
+			}
+			
 			RaidAllowsBuildings = false;
 					
 			float value;
@@ -573,6 +599,24 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			}
 		}
 		return;
+	}
+	
+	if (npc.m_bBossRushDuo)
+	{
+		if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
+		{
+			for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+			{
+				if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
+				{
+					Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
+				}	
+			}
+		}
+		else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)))
+		{	
+			RaidBossActive = EntIndexToEntRef(npc.index);
+		}
 	}
 
 	if(i_RaidGrantExtra[npc.index] == 1 && i_khamlCutscene != 0)
@@ -750,6 +794,71 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 		}
 		return;
 	}
+	
+	if (npc.m_bBossRushDuo && i_khamlCutscene != 0)
+	{
+		float TimeLeft = f_khamlCutscene - GetGameTime();
+		
+		switch(i_khamlCutscene)
+		{
+			case 2:
+			{
+				if(TimeLeft < 3.0)
+				{
+					//b_thisNpcIsABoss[npc.index] = true;
+					b_NpcIsInvulnerable[npc.index] = true;
+					view_as<CClotBody>(npc.index).StopPathing();
+					
+					for(int i; i < i_MaxcountNpcTotal; i++)
+					{
+						int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+						if(entity != INVALID_ENT_REFERENCE && (b_thisNpcIsARaid[entity] && IsEntityAlive(entity) && entity != npc.index))
+						{
+							//b_thisNpcIsABoss[entity] = true;
+							b_NpcIsInvulnerable[entity] = true;
+							view_as<CClotBody>(entity).StopPathing();
+						}
+					}
+					
+					i_khamlCutscene = 1;
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: You know what, I'm bored as hell. I'll help you out.");
+				}
+			}
+			case 1:
+			{
+				if(TimeLeft < 0.0)
+				{
+					for(int i; i < i_MaxcountNpcTotal; i++)
+					{
+						int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+						if(entity != INVALID_ENT_REFERENCE && (b_thisNpcIsARaid[entity] && IsEntityAlive(entity) && entity != npc.index))
+						{
+							b_NpcIsInvulnerable[entity] = false;
+							view_as<CClotBody>(entity).StartPathing();
+						}
+					}
+					
+					i_khamlCutscene = 0;
+					CPrintToChatAll("{lightblue}The Messenger{default}: Let's get 'em.");
+					//RaidBossActive = EntIndexToEntRef(npc.index);
+					RaidAllowsBuildings = false;
+					RaidModeTime = GetGameTime() + 500.0;
+					
+					MusicEnum music;
+					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns_loop.mp3");
+					music.Time = 240;
+					music.Volume = 1.2;
+					music.Custom = true;
+					strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
+					strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+					Music_SetRaidMusic(music);
+				}
+			}
+		}
+		
+		return;
+	}
+	
 	b_NpcIsInvulnerable[npc.index] = false;
 	if(LastMann && i_RaidGrantExtra[npc.index] < 2)
 	{
@@ -777,6 +886,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			}
 		}
 	}
+	
 	float RaidModeTimeLeft = RaidModeTime - GetGameTime();
 
 	if(RaidModeTimeLeft < 190.0 && i_SpeedUpTime[npc.index] == 0)
@@ -1286,8 +1396,10 @@ public void ChaosKahmlstein_NPCDeath(int entity)
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();	
-
-	RaidBossActive = INVALID_ENT_REFERENCE;
+	
+	if (EntIndexToEntRef(npc.index) == RaidBossActive)
+		RaidBossActive = INVALID_ENT_REFERENCE;
+	
 	if(BlockLoseSay)
 		return;
 

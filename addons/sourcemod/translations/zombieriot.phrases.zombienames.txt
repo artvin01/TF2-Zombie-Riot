@@ -1665,6 +1665,11 @@
 		"it"		"Schwertkrieg"
 		"ko"		"슈베르트크리그"
 	}
+	"Crude Schwertkrieg Copy"
+	{
+		"en"		"Crude Schwertkrieg Copy"
+		"ko"		"조잡한 슈베르트크리그의 복제"
+	}
 	"Phantom Knight"
 	{
 		"en"		"Lucian, ''Blood Diamond''"
@@ -5924,7 +5929,7 @@
 	"Anti Viral Programm Desc"
 	{
 		"en"		"Its an anti virus, and youre the virus.\n-Goes after only one target.\n-If target dies or enough time passes, he fades away\n-Phases through everything."
-		"ko"		"안티바이러스 프로그램입니다. 그리고 이들의 입장에서 당신은 바이러스죠.\n-한 명의 대상만을 추격함\n-대상이 사망하거나 충분한 시간이 지나면 소멸\n-모든 것들을 통과하여 지나갑니다."
+		"ko"		"안티바이러스 프로그램입니다. 그리고 이들의 입장에서 당신은 바이러스죠.\n-한 명의 대상만을 추격합니다.\n-대상이 사망하거나 충분한 시간이 지나면 소멸합니다.\n-모든 것들을 통과하여 지나갑니다."
 	}
 	"Agent Eric"
 	{
@@ -6281,11 +6286,10 @@
 		"it" "Pesantezza oscurata"
 		"ko" "어둠에 삼켜진 헤비"
 	}
-	"ATV"
+	"Scout Car"
 	{
-		"en"	"ATV"
-		"it"	"ATV"
-		"ko"	"ATV"
+		"en"	"Scout Car"
+		"ko"	"정찰 차량"
 	}
 	"Airboat"
 	{
@@ -7552,7 +7556,7 @@
 	{
 		"en"	"An easily irritable Umbral, provoke them at your own risk. \nStarts passive, becoming enraged when hurt."
 		"it"	"Un Umbral facilmente irritabile: provocatelo a vostro rischio e pericolo. \nInizia in modo passivo e si infuria quando viene ferito."
-		"ko"	"쉽게 격노하는 움브랄. 자극하는건 위험이 따릅니다. \n비공격적 상태로 등장하지만, 피해를 받을 시 격노합니다."
+		"ko"	"쉽게 격노하는 움브랄. 자극하는건 위험이 따릅니다. \n비공격적 상태로 등장하지만, 피해를 받을 시 격분합니다."
 	}
 	"Torn Umbral Gate"
 	{
@@ -7650,6 +7654,11 @@
 		"it" "'Samivilinn', la Risoluzione del Nord"
 		"ko" "''사미의 의지''"
 	}
+	"Mega Glug, the Great"
+	{
+		"en" "Mega Glug, the Great"
+		"ko" "위대한 자, 메가 글러그"
+	}
 	"'Voidivilinn', the Resolution of the Very South"
 	{
 		"en" "'Voidivilinn', the Resolution of the Very South"
@@ -7664,7 +7673,7 @@
 	"Barbaric Teardown Desc"
 	{
 		"en"	"Fellow outposts base demolisher's.\n-First 3 hits deal bonus damage\nThese 3 hits deal much higher building damage."
-		"ko"	"전초기지 철거자입니다.\n-처음 3회의 공격이 추가 피해를 가함\n-해당 공격의 적중 대상이 구조물이라면 더 높은 피해를 줌"
+		"ko"	"전초기지 철거자입니다.\n-처음 3회의 공격이 추가 피해를 가합니다.\n-해당 공격의 적중 대상이 구조물이라면 더 높은 피해를 줍니다."
 	}
 	"Skilled Crossbowman"
 	{
@@ -7674,7 +7683,7 @@
 	"Skilled Crossbowman Desc"
 	{
 		"en"	"Extreme skill with their crossbow, but weak to melee\n-attacks in bursts of 3 arrows\n-Arrows predict your movement\n-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them."
-		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다.\n-한 번의 3발의 화살 발사\n-표적의 이동 경로를 예측함\n-측면으로 움직이며 대상 주위를 돔\n-높은 근접 피해 1회를 받으면 비무장 상태가 됨"
+		"ko"	"근접전에 약하지만, 석궁술이 매우 뛰어난 자입니다.\n-한 번에 화살을 3발 연사\n-표적의 이동 경로를 예측합니다.\n-측면으로 움직이며 대상 주위를 돕니다.\n-높은 근접 피해 1회를 받으면 비무장 상태가 됩니다."
 	}
 	"Demon Devoter"
 	{
@@ -7684,7 +7693,197 @@
 	"Demon Devoter Desc"
 	{
 		"en"	"A warrior dealing with the demons that got possed by chaos.\n-Once losing his life he will enrage and fullheal\nThis buff lasts only for a few seconds.\n-This can be canceled by dealing enough damage at once, or stunning him and then killing him."
-		"ko"	"혼돈에 침식당한 악마와 싸우던 기사입니다.\n-생명을 잃을 시 격분 상태가 되고 ''혼돈의 악마 빙의'' 버프를 획득\n-해당 행동으로 저지 가능:\n한번에 대량의 피해를 가해 두번째 목숨까지 완전히 소진\n기절을 부여하여 격분 상태가 되지 않게하고, 이 상태에서 처치"
+		"ko"	"혼돈에 침식당한 악마와 싸우던 기사입니다.\n-생명을 잃을 시 격분 상태가 되고 ''혼돈의 악마 빙의'' 버프를 획득\n-해당 행동으로 저지 가능:\n한번에 대량의 피해를 가해 두번째 생명까지 완전히 소진\n기절을 부여한 상태에서 처치"
+	}
+	"Agent 61"
+	{
+		"en"	"Agent 61"
+		"ko"	"에이전트 61"
+	}
+	"Agent 61 Desc"
+	{
+		"en"	"A hired hitman merc, number assosiation unknown.\n-Will find the weakest target on the map and focus them\n-Phases through everything\n-Has challanger buff\n-Shoots his gun once which if hitting, deals a stacking fear debuff."
+		"ko"	"고용된 히트맨 용병입니다. 숫자 관련성 불명.\n-맵에서 가장 취약한 대상을 찾아 집중 공격합니다.\n-모든 것들을 통과하여 지나갑니다.\n-챌린저 버프 보유\n-적중 시 '원초적 공포' 디버프를 부여하는 총기를 사용합니다."
+	}
+	"Battlefield Supplier"
+	{
+		"en"	"Battlefield Supplier"
+		"ko"	"전장 보급병"
+	}
+	"Battlefield Supplier Desc"
+	{
+		"en"	"Hired supplier.\n-Has a supply drop every 15 seconds when placed down\n-This supplydrop heals & buffs everyone, benifits their own team more.\n-Is slower and gets resistance while holding the supplydrop."
+		"ko"	"고용된 보급병입니다.\n-매 15초마다 보급품을 설치합니다.\n-설치된 보급품은 전원을 치유 및 버프시키며 자신의 팀에 더 많은 이점을 제공합니다.\n-보급품을 들고 있는 동안에는 피해 저항력이 증가하지만, 이동 속도도 감소합니다."
+	}
+	"Placed Supplies"
+	{
+		"en"	"Placed Supplies"
+		"ko"	"설치된 보급품"
+	}
+	"Placed Supplies Desc"
+	{
+		"en"	"Placed Supplies"
+		"ko"	"설치된 보급품"
+	}
+	"Contracted Motivator"
+	{
+		"en"	"Contracted Motivator"
+		"ko"	"계약된 동기부여가"
+	}
+	"Contracted Motivator Desc"
+	{
+		"en"	"A great motivator to any army\n-attacks in bursts of 3 rockets\n-rockets predict your movement\m-Surrounds and strafes around target\n-Dealing enough melee damage in 1 hit will disarm them.\n-Buffs all allies around themselves with War Cry"
+		"ko"	"어느 군대에게나 위대한 동기부여가입니다.\n-한 번에 로켓을 3발 연사\n-표적의 이동 경로를 예측합니다.\n-측면으로 움직이며 대상 주위를 돕니다.\n-높은 근접 피해 1회를 받으면 비무장 상태가 됩니다.\n-주변의 아군들에게 '전투의 함성' 버프를 부여합니다."
+	}
+	"Catapult"
+	{
+		"en"	"Catapult"
+		"ko"	"투석기"
+	}
+	"Catapult Desc"
+	{
+		"en"	"Manned Catapult to demolish buildings\n-Shoots a volley of 10 rockets at once towards the nearest target\n-Has a delay before fiering\n-Has a great deviation\n-Attacks buildings with high priority\n-Collision hurts targets"
+		"ko"	"건물을 파괴하기 위한 유인 투석기입니다.\n-가장 가까운 표적에게 한 번에 10발의 로켓을 일제 사격합니다.\n-사격 전 지연이 있음\n-매우 높은 로켓 발사 편차 보유\n-구조물을 우선적으로 공격\n-접촉시 대상에게 피해를 가합니다."
+	}
+	"Cursed King"
+	{
+		"en"	"Cursed King"
+		"ko"	"저주받은 왕"
+	}
+	"Cursed King Desc"
+	{
+		"en"	"A king that delt too many deals\n-Each 1％ life lost boosts the king with minor buffs for 10 seconds, stacking\n-Once below 25％ health, enrages more and gains the chaos buff\nIts recommended to slowly take him out, not with burst."
+		"ko"	"너무나도 많은 계약을 거래한 왕입니다.\n-체력을 1％ 잃을 때마다 10초 동안 중첩되는 작은 버프들을 얻습니다.\n-체력이 25％ 이하가 되면 격분하여 혼돈 버프를 획득합니다.\n-한번에 피해를 가하기보단 조금씩 공격하는 것이 추천됩니다."
+	}
+	"The Great Ram"
+	{
+		"en"	"The Great Ram"
+		"ko"	"위대한 공성추"
+	}
+	"The Great Ram Desc"
+	{
+		"en"	"A ram made for one purpose only.\n-Attacks your main building only, and slowly goes to it\n-Releases a barrage of rockets every so often\n-Deals constant contact damage\n-Deals ram damage constantly in an AOE."
+		"ko"	"단 하나의 목적을 위해 만들어진 공성추.\n-주요 구조물만을 공격하며, 해당 구조물에 천천히 접근합니다.\n-높은 빈도로 로켓을 일제 사격합니다.\n-접촉시 대상에게 피해를 가합니다.\n-지속적으로 광역 공성추 피해를 가합니다."
+	}
+	"Behemoth Behemoth"
+	{
+		"en"	"Behemoth Behemoth"
+		"ko"	"베헤모스 베헤모스"
+	}
+	"Behemoth Behemoth Desc"
+	{
+		"en"	"A Bigger Behemoth, too many vitamins.\n-Deals chaos damage on hit\n-Has AOE swings\n-Immune to Headshots"
+		"ko"	"더 커다란 베헤모스입니다. 비타민을 너무 먹었나...\n-적중 시 혼돈 원소 피해를 부여합니다.\n-광역 피해를 가하는 공격 보유\n-헤드샷 피해를 0으로 받습니다."
+	}
+	"Demon Possesed Armor"
+	{
+		"en"	"Demon Possessed Armor"
+		"ko"	"악마에 빙의된 갑옷"
+	}
+	"Demon Possesed Armor Desc"
+	{
+		"en"	"An armor possesing a giant warrior.\n-Has 2 lives\n-If he loses his life, he splits apart and his armor and he attacks seperatly\n-This can be canceled by dealing enough damage at once, or stunning him and then killing him."
+		"ko"	"거대한 전사에 빙의한 갑옷입니다.\n-생명을 2개 보유\n-생명을 잃을 시 별개의 적들로 분리되어 공격합니다.\n-해당 행동으로 저지 가능:\n한번에 대량의 피해를 가해 두번째 생명까지 완전히 소진\n기절을 부여한 상태에서 처치"
+	}
+	"Glug"
+	{
+		"en"	"Glug"
+		"ko"	"글러그"
+	}
+	"Glug Desc"
+	{
+		"en"	"A Harmless rockslime.\n-Jumps around randomly\n-Jumps at you if close enough\n-Spins to deal AOE damage if close\n-Splits apart into 3 once on death"
+		"ko"	"무해한 돌 슬라임입니다.\n-무작위로 사방을 뛰어다닙니다.\n-충분히 근접한 경우 플레이어에게 뛰어듭니다.\n-근접 시 회전하여 광역 피해를 가합니다.\n-사망 시 3체로 분열됩니다."
+	}
+	"Olunsta Harbrary the LXIX"
+	{
+		"en"	"Olunsta Harbrary the LXIX"
+		"ko"	"올룬스타 하브러리 69세"
+	}
+	"Gestapo"
+	{
+		"en"	"Gestapo"
+		"ko"	"게슈타포"
+	}
+	"HMS: Regalia"
+	{
+		"en"	"HMS: Regalia"
+		"ko"	"HMS 레갈리아"
+	}
+	"HMS: Regalia Desc"
+	{
+		"en"	"Regalia class Battlecruiser"
+		"ko"	"레갈리아급 순양전함"
+	}
+	"Starship Beacon"
+	{
+		"en"	"Starship Beacon"
+		"ko"	"스타쉽 비컨"
+	}
+	"Starship Beacon Desc"
+	{
+		"en"	"A stolen magia anchor. kill it. now."
+		"ko"	"도둑맞은 마기아 앵커입니다. 어서 파괴하세요. 지금 당장."
+	}
+	"Lantean Drone Projectile"
+	{
+		"en"	"Lantean Drone"
+		"ko"	"랜턴 드론"
+	}
+	"Lantean Drone Projectile Desc"
+	{
+		"en"	"Its like the drones from the lantean wand. but instead they are tracking you."
+		"ko"	"랜턴 스태프의 드론과 유사하지만, 대신 당신을 추적합니다."
+	}
+	"Upgraded Militia"
+	{
+		"en" 		"Upgraded Militia"
+		"ko"		"개선된 시민군"
+	}
+	"Alive Construct"
+	{
+		"en" 		"Alive Construct"
+		"ko"		"살아있는 조각상"
+	}
+	"Chaos Gunman"
+	{
+		"en"	"Chaos Gunman"
+		"ko"	"혼돈의 총잡이"
+	}
+	"Chaos Gunman Desc"
+	{
+		"en"	"-Fires a barrage of bullets dealing immensive damage\n-Predicts if enemy is too close.\n-Stands still while attacking\n-Kites around you while not shooting"
+		"ko"	"-막대한 피해를 가하는 탄환을 일제히 사격합니다.\n-표적이 너무 가까우면 대상의 이동을 예측합니다.\n-공격하는 동안 가만히 서 있습니다.\n-공격하지 않는 동안 대상의 주위를 돕니다."
+	}
+	"Chaos Blade Thrower"
+	{
+		"en"	"Chaos Blade Thrower"
+		"ko"	"혼돈의 칼날 투척꾼"
+	}
+	"Chaos Blade Thrower Desc"
+	{
+		"en"	"-Throws one infinitely piercing Blade"
+		"ko"	"-적을 무한히 관통하는 칼날을 투척합니다."
+	}
+	"Chaos Fencer"
+	{
+		"en"	"Chaos Fencer"
+		"ko"	"혼돈의 펜서"
+	}
+	"Chaos Fencer Desc"
+	{
+		"en"	"-Gets heavily buffed when alone\n-Ignores armor (not resistances) at all times\n-When buffed, gains the ability to dodge any attacks is too far away"
+		"ko"	"-이 적이 혼자 남았다면 대폭 강화됩니다.\n-대상의 아머(저항력 X)를 상시 무시합니다.\n-강화된 상태라면 너무 멀리서 오는 모든 공격을 피하는 능력을 얻습니다."
+	}
+	"Almagest Proxima"
+	{
+		"en"	"Almagest Proxima"
+		"ko"	"알마게스트 프록시마"
+	}
+	"Almagest Proxima Desc"
+	{
+		"en"	"-Starts with high armor and 5 shields\n-Heals its own kind near eachother\n-Deals high melee damage and deals 3x damage once the debuff maxes out\n-Applies 2 spearmen debuff each hit\n-Will try to surround you at all times"
+		"ko"	"-대량의 아머와 5개의 보호막을 보유한 채로 스폰됩니다.\n-동일한 종을 서로 치유합니다.\n-높은 근접 피해를 가합니다.\n-적중 시 '장창병의 참격' 디버프를 2 부여합니다.\n-상시로 대상을 둘러싸려고 시도합니다."
 	}
 	"Ghoul"
 	{

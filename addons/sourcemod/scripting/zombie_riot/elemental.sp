@@ -264,7 +264,7 @@ static void ApplyElementalEvent(int victim, int attacker, int damage)
 	event.Cancel();
 }
 
-void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false, int weapon = -1)
+void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false, int weapon = -1, float slowdown = 0.9)
 {
 	if(i_IsVehicle[victim])
 	{
@@ -305,7 +305,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 					f_ArmorCurrosionImmunity[victim][Element_Nervous] = GetGameTime() + 5.0;
 					
 					if(!HasSpecificBuff(victim, "Fluid Movement"))
-						TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
+						TF2_StunPlayer(victim, 5.0, slowdown, TF_STUNFLAG_SLOWDOWN);
 
 					DealTruedamageToEnemy(0, victim, 500.0);
 					Force_ExplainBuffToClient(victim, "Nervous Impairment Elemental Damage");
@@ -314,6 +314,14 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 			
 			if(sound || !Armor_Charge[victim])
 				ClientCommand(victim, "playgamesound weapons/drg_pomson_drain_01.wav");
+		}
+	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		int health = Object_GetRepairHealth(victim);
+		if(health < 1 || ignoreArmor)
+		{
+			DealTruedamageToEnemy(0, victim, damage * 100.0);
 		}
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
@@ -387,14 +395,6 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 
 			if(attacker && attacker <= MaxClients)
 				ApplyElementalEvent(victim, attacker, damage);
-		}
-	}
-	else if(i_IsABuilding[victim])	// Buildings
-	{
-		int health = Object_GetRepairHealth(victim);
-		if(health < 1 || ignoreArmor)
-		{
-			DealTruedamageToEnemy(0, victim, damage * 100.0);
 		}
 	}
 }
@@ -486,6 +486,10 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 				ClientCommand(victim, "playgamesound friends/friend_online.wav");
 		}
 	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		IncreaseEntityDamageTakenBy(victim, (damage * 0.001), 5.0, true);
+	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
 		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Chaos));
@@ -536,10 +540,6 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			if(attacker && attacker <= MaxClients)
 				ApplyElementalEvent(victim, attacker, damage);
 		}
-	}
-	else if(i_IsABuilding[victim])	// Buildings
-	{
-		IncreaseEntityDamageTakenBy(victim, (damage * 0.001), 5.0, true);
 	}
 }
 
@@ -621,6 +621,16 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 				ClientCommand(victim, "playgamesound npc/scanner/cbot_servoscared.wav ; playgamesound npc/scanner/cbot_servoscared.wav");
 		}
 	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		//removes repair of buildings.
+		int Repair = GetEntProp(victim, Prop_Data, "m_iRepair");
+		Repair -= (damage / 2);
+		if(Repair <= 0)
+			Repair = 0;
+
+		SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
+	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
 		if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID)
@@ -674,16 +684,6 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 			if(attacker && attacker <= MaxClients)
 				ApplyElementalEvent(victim, attacker, damage);
 		}
-	}
-	else if(i_IsABuilding[victim])	// Buildings
-	{
-		//removes repair of buildings.
-		int Repair = GetEntProp(victim, Prop_Data, "m_iRepair");
-		Repair -= (damage / 2);
-		if(Repair <= 0)
-			Repair = 0;
-
-		SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
 	}
 }
 
@@ -739,6 +739,10 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 		// Cyro is treated as Chaos vs Players
 		Elemental_AddChaosDamage(victim, attacker, damagebase, _, true);
 	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		IncreaseEntityDamageTakenBy(victim, (damage * 0.001), 5.0, true);
+	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
 		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Cyro));
@@ -763,10 +767,6 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 			if(attacker && attacker <= MaxClients)
 				ApplyElementalEvent(victim, attacker, damage);
 		}
-	}
-	else if(i_IsABuilding[victim])	// Buildings
-	{
-		IncreaseEntityDamageTakenBy(victim, (damage * 0.001), 5.0, true);
 	}
 }
 
@@ -834,6 +834,10 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 			if(!Armor_Charge[victim])
 				EmitSoundToClient(victim, "beams/beamstart5.wav", victim, SNDCHAN_STATIC, _, _, 1.0, 60);
 		}
+	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
@@ -916,6 +920,10 @@ void Elemental_AddOsmosisDamage(int victim, int attacker, int damagebase)
 	if(victim <= MaxClients)
 	{
 		// No effect currently for Necrosis vs Players
+	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
@@ -1033,6 +1041,15 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 				ClientCommand(victim, "playgamesound buttons/combine_button1.wav ; playgamesound buttons/combine_button1.wav");
 		}
 	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		//removes repair of buildings.
+		int Repair = GetEntProp(victim, Prop_Data, "m_iRepair");
+		Repair -= damage;
+		if(Repair <= 0)
+			Repair = 0;
+		SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
+	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
 		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Corruption));
@@ -1068,15 +1085,6 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 			if(attacker && attacker <= MaxClients)
 				ApplyElementalEvent(victim, attacker, damage);
 		}
-	}
-	else if(i_IsABuilding[victim])	// Buildings
-	{
-		//removes repair of buildings.
-		int Repair = GetEntProp(victim, Prop_Data, "m_iRepair");
-		Repair -= damage;
-		if(Repair <= 0)
-			Repair = 0;
-		SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
 	}
 }
 
@@ -1507,6 +1515,44 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 			}
 		}
 	}
+	else if(i_IsABuilding[victim]) // In the rare occasion you inflict plasmic elemental damage to buildings (4/5/2024 mini incident)
+	{
+		//removes repair of buildings.
+		int Repair = GetEntProp(victim, Prop_Data, "m_iRepair");
+		if(Repair > 0)
+		{
+			Repair -= damage;
+			if(Repair <= 0)
+			{
+				float position[3];
+				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
+				float healing = 20.0; // bleh
+				if(!b_NpcHasDied[attacker])
+				{
+					healing = float(ReturnEntityMaxHealth(attacker)) * 0.005;
+				}
+				else if(IsValidClient(attacker))
+				{
+					if(IsValidEntity(weapon))
+					{
+						healing *= Attributes_GetOnPlayer(attacker, 8, true);
+					}
+				}
+				PlasmicElemental_HealNearby(attacker, healing, position, 200.0, 1.0, 2, GetTeam(attacker));
+					
+				Repair = 0;
+				position[2] += 10.0;
+				for(int i = 0; i < 2; i++)
+				{
+					Cheese_BeamEffect(position, 10.0, 250.0, 0.2, 3.0);
+					position[2] += 20.5;
+				}
+				Cheese_PlaySplat(victim);
+			}
+				
+			SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
+		}
+	}
 	else if(!b_NpcHasDied[victim])	// VS NPCs
 	{
 		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Plasma));
@@ -1571,44 +1617,6 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 
 			if(attacker && attacker <= MaxClients)
 				ApplyElementalEvent(victim, attacker, damage);
-		}
-	}
-	else if(i_IsABuilding[victim]) // In the rare occasion you inflict plasmic elemental damage to buildings (4/5/2024 mini incident)
-	{
-		//removes repair of buildings.
-		int Repair = GetEntProp(victim, Prop_Data, "m_iRepair");
-		if(Repair > 0)
-		{
-			Repair -= damage;
-			if(Repair <= 0)
-			{
-				float position[3];
-				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
-				float healing = 20.0; // bleh
-				if(!b_NpcHasDied[attacker])
-				{
-					healing = float(ReturnEntityMaxHealth(attacker)) * 0.005;
-				}
-				else if(IsValidClient(attacker))
-				{
-					if(IsValidEntity(weapon))
-					{
-						healing *= Attributes_GetOnPlayer(attacker, 8, true);
-					}
-				}
-				PlasmicElemental_HealNearby(attacker, healing, position, 200.0, 1.0, 2, GetTeam(attacker));
-					
-				Repair = 0;
-				position[2] += 10.0;
-				for(int i = 0; i < 2; i++)
-				{
-					Cheese_BeamEffect(position, 10.0, 250.0, 0.2, 3.0);
-					position[2] += 20.5;
-				}
-				Cheese_PlaySplat(victim);
-			}
-				
-			SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
 		}
 	}
 }
@@ -1685,6 +1693,32 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 			}
 		}
 	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		int repair = GetEntProp(victim, Prop_Data, "m_iRepair") - (damage / 2);
+		if(repair < 0)
+			repair = 0;
+
+		SetEntProp(victim, Prop_Data, "m_iRepair", repair);
+
+		repair = GetEntProp(victim, Prop_Data, "m_iRepairMax") - (damage / 2);
+		if(repair < 1)
+			repair = 1;
+
+		SetEntProp(victim, Prop_Data, "m_iRepairMax", repair);
+
+		repair = GetEntProp(victim, Prop_Data, "m_iHealth") - (damage / 2);
+		if(repair < 1)
+			repair = 1;
+
+		SetEntProp(victim, Prop_Data, "m_iHealth", repair);
+
+		repair = GetEntProp(victim, Prop_Data, "m_iMaxHealth") - (damage / 2);
+		if(repair < 1)
+			repair = 1;
+
+		SetEntProp(victim, Prop_Data, "m_iMaxHealth", repair);
+	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
 		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Chaos));
@@ -1758,32 +1792,6 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 		if(attacker && attacker <= MaxClients)
 			ApplyElementalEvent(victim, attacker, damage);
 	}
-	else if(i_IsABuilding[victim])	// Buildings
-	{
-		int repair = GetEntProp(victim, Prop_Data, "m_iRepair") - (damage / 2);
-		if(repair < 0)
-			repair = 0;
-
-		SetEntProp(victim, Prop_Data, "m_iRepair", repair);
-
-		repair = GetEntProp(victim, Prop_Data, "m_iRepairMax") - (damage / 2);
-		if(repair < 1)
-			repair = 1;
-
-		SetEntProp(victim, Prop_Data, "m_iRepairMax", repair);
-
-		repair = GetEntProp(victim, Prop_Data, "m_iHealth") - (damage / 2);
-		if(repair < 1)
-			repair = 1;
-
-		SetEntProp(victim, Prop_Data, "m_iHealth", repair);
-
-		repair = GetEntProp(victim, Prop_Data, "m_iMaxHealth") - (damage / 2);
-		if(repair < 1)
-			repair = 1;
-
-		SetEntProp(victim, Prop_Data, "m_iMaxHealth", repair);
-	}
 }
 
 
@@ -1828,7 +1836,12 @@ bool Elemental_AddManaOverflowDamage(int victim, int attacker, int damagebase, i
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
-	if(!b_NpcHasDied[victim])	// NPCs
+	
+	if(i_IsABuilding[victim])	// Buildings
+	{
+		IncreaseEntityDamageTakenBy(victim, (damage * 0.001), 5.0, true);
+	}
+	else if(!b_NpcHasDied[victim])	// NPCs
 	{
 		//players got their own Overmana Overload, so this is mainly targeted at npcs
 		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_ManaOverflow));
@@ -1885,10 +1898,6 @@ bool Elemental_AddManaOverflowDamage(int victim, int attacker, int damagebase, i
 			if(speedUp > 0.0)
 				f_ArmorCurrosionImmunity[victim][Element_ManaOverflow] -= speedUp;
 		}
-	}
-	else if(i_IsABuilding[victim])	// Buildings
-	{
-		IncreaseEntityDamageTakenBy(victim, (damage * 0.001), 5.0, true);
 	}
 	return triggered;
 }

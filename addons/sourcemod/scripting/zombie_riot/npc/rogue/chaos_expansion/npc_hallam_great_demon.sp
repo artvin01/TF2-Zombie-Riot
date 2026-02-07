@@ -127,7 +127,7 @@ methodmap HallamGreatDemon < CClotBody
 
 
 		
-		if(!IsValidEntity(RaidBossActive))
+		if(!IsValidEntity(RaidBossActive) && !Dungeon_Mode())
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
@@ -243,7 +243,7 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flHealCooldownDo < GetGameTime(npc.index))
+	if(npc.m_flHealCooldownDo < GetGameTime(npc.index) && !Dungeon_Mode())
 	{
 		if(MaxEnemiesAllowedSpawnNext(1) > (EnemyNpcAlive - EnemyNpcAliveStatic))
 		{

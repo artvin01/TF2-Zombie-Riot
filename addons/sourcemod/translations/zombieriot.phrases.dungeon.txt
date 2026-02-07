@@ -18,8 +18,18 @@
 	}
 	"Dungeon Failed"
 	{
-		"en"	"All players have left the dungeon..."
-		"ko"	"모든 플레이어들이 던전을 떠났습니다..."
+		"en"	"Not enough players left in the dungeon..."
+		"ko"	"던전에 충분한 플레이어가 남지 않았습니다..."
+	}
+	"Dungeon Success"
+	{
+		"en"	"All enemies slain in the dungeon!"
+		"ko"	"던전의 모든 적들이 처치되었습니다!"
+	}
+	"Dungeon New"
+	{
+		"en"	"A new dungeon opens up..."
+		"ko"	"새로운 던전이 열립니다..."
 	}
 	"Packing Station"
 	{
@@ -40,11 +50,17 @@
 	{
 		"#format"	"{1:d},{2:d},{3:s}"
 		"en"		"Level {1} / {2}\n{3}to upgrade using materials."
+		"ko"		"Level {1} / {2}\n{3}키를 눌러 자원을 사용해 개선하세요."
 	}
 	"Upgrade Max"
 	{
 		"en"	"Level MAX"
 		"ko"	"최대 레벨"
+	}
+	"Upgrade Max Limited"
+	{
+		"en"	"Level MAX, Upgrade Control Center"
+		"ko"	"최대 레벨입니다. 제어 센터를 개선하세요"
 	}
 	"Upgrade Building To"
 	{
@@ -56,7 +72,7 @@
 	{
 		"#format"	"{1:s},{2:d}"
 		"en"		"{orange}{1} {default}upgraded to {orange}Level {2}"
-		"ko"		"{orange}{1} {default}의 레벨이 {orange}{2} 로 증가했습니다"
+		"ko"		"{orange}{1} {default}의 레벨이 {orange}{2} (으)로 증가했습니다"
 	}
 	"Gained Ammo Supplies"
 	{
@@ -116,12 +132,12 @@
 		"en"	"{green}Firing speed increased by +20％"
 		"ko"	"{green}공격 속도가 +20％ 증가합니다."
 	}
-	"Refresh Focus"
+	"Refreshing Focus"
 	{
-		"en"	"Refresh Focus"
+		"en"	"Refreshing Focus"
 		"ko"	"활력 회복 집중"
 	}
-	"Refresh Focus Desc"
+	"Refreshing Focus Desc"
 	{
 		"en"	"{green}Reload time and mana cost decreased by -20％"
 		"ko"	"{green}재장전 시간, 마나 소모량이 -20％ 감소합니다."
@@ -134,7 +150,7 @@
 	"Defensive Focus Desc"
 	{
 		"en"	"{green}Base damage increased by +40％ {red}only in home base"
-		"ko"	"{green}기본 피해량이 +40％ 증가합니다. {red}이 효과는 거점 내부에서만 적용됩니다."
+		"ko"	"{green}기본 피해량이 +40％ 증가합니다. {red}이 효과는 본거지에서만 적용됩니다."
 	}
 	"Offensive Focus"
 	{
@@ -143,8 +159,8 @@
 	}
 	"Offensive Focus Desc"
 	{
-		"en"	"{green}Base damage increased by +40％ {red}only in dungeons"
-		"ko"	"{green}기본 피해량이 +40％ 증가합니다. {red}이 효과는 던전 내부에서만 적용됩니다."
+		"en"	"{green}Base damage increased by +40％ {red}only in dungeons and rival bases"
+		"ko"	"{green}기본 피해량이 +40％ 증가합니다. {red}이 효과는 던전 내, 적대 기지에게만 적용됩니다."
 	}
 	"Dungeon Level 1"
 	{
@@ -153,8 +169,8 @@
 	}
 	"Dungeon Level 1 Desc"
 	{
-		"en"	"Bob the First tasks us to help build up a new home base, gather up resources, make the base well defended.\n{green}Enemies stats -15％"
-		"ko"	"밥 1세가 우리에게 새로운 본거지를 건설하고, 자원을 모으고, 기지를 튼튼하게 대비시키는 임무를 맡겼습니다.\n{green}모든 적의 능력치 -15％"
+		"en"	"{green}Enemies stats -15％"
+		"ko"	"{green}모든 적의 능력치 -15％"
 	}
 	"Dungeon Level 2"
 	{
@@ -163,8 +179,8 @@
 	}
 	"Dungeon Level 2 Desc"
 	{
-		"en"	"Almagest didn't forget how you ruined them."
-		"ko"	"알마게스트는 당신이 그들의 계획을 망친 것을 잊지 않았습니다."
+		"en"	"Bob the First tasks us to help build up a new home base, gather up resources, make the base well defended."
+		"ko"	"밥 1세가 우리에게 새로운 본거지를 건설하고, 자원을 모으고, 기지를 튼튼하게 대비시키는 임무를 맡겼습니다."
 	}
 	"Dungeon Level 3"
 	{
@@ -173,8 +189,8 @@
 	}
 	"Dungeon Level 3 Desc"
 	{
-		"en"	"You remember what he said, who made Chaos.\n{red}Applies Chaos Intrusion modifier"
-		"ko"	"당신은 그가 말했던 것을 기억합니다. 누가 혼돈을 만들어냈는지. \n{red}''혼돈의 침입'' 난이도가 적용됩니다."
+		"en"	"{red}Enemies Gain 10％ Stats\n{red}Enemies sometimes get random modifiers."
+		"ko"	"{red}모든 적의 능력치 +10％\n{red}적들이 때때로 무작위 특수 효과를 얻습니다."
 	}
 	"Compass Fragment"
 	{
@@ -194,7 +210,7 @@
 	"Dungeon Compass Desc"
 	{
 		"en"	"The next dungeon to appear in vote is guaranteed to be a special variant, will be consumed on use"
-		"ko"	"다음 투표에서 등장하는 던전은 특수한 변형 던전이 되며, 사용 시 이 아이템은 소모됩니다."
+		"ko"	"다음 투표에서 등장하는 던전이 특수한 변형 던전이 되며, 사용 시 이 아이템은 소모됩니다."
 	}
 	"Control Center"
 	{
@@ -203,8 +219,18 @@
 	}
 	"Control Center Desc"
 	{
-		"en"	"A construct that allows doing certain special tasks"
-		"ko"	"특별한 임무를 받을 수 있는 구조물."
+		"en"	"The objective, protect this building to survive, use it to upgrade and do certain tasks."
+		"ko"	"목표물입니다. 이 구조물을 보호하며 살아남으세요. 사용하여 개선과 특정 행동을 수행하세요."
+	}
+	"Construct Altar"
+	{
+		"en"	"Construct Altar"
+		"ko"	"고대 조각상 제단"
+	}
+	"Construct Altar Desc"
+	{
+		"en"	"Summons a great Construct with help from alaxios, it will defend the controll point."
+		"ko"	"알락시오스의 도움을 통해 위대한 고대 조각상을 소환합니다. 이것이 본거지를 방어해줄 것입니다."
 	}
 	"No Actions Needed"
 	{
@@ -230,18 +256,28 @@
 	}
 	"Can Opener Desc"
 	{
-		"en"	"When they sealed that can too good.\n{green}Unboxing sealed crates no longer cost crystals"
-		"ko"	"쓸데없이 밀봉을 너무 잘 해둔 물건을 마주했을 때.\n{green}봉인된 상자들을 개봉할때 더 이상 수정을 소모하지 않습니다"
+		"en"	"When they sealed that can too good.\n{green}Unboxing sealed crates cost 50％ less crystals"
+		"ko"	"쓸데없이 밀봉을 너무 잘 해둔 물건을 마주했을 때.\n{green}봉인된 상자들을 개봉할 때 소모되는 수정의 양 50％ 감소"
 	}
 	"Wooden Crate"
 	{
 		"en"	"Wooden Crate"
 		"ko"	"나무 상자"
 	}
+	"Wooden Pack"
+	{
+		"en"	"Wooden Pack"
+		"ko"	"나무 꾸러미"
+	}
 	"Jalan Crate"
 	{
 		"en"	"Jalan Crate"
 		"ko"	"잘란 상자"
+	}
+	"Jalan Pack"
+	{
+		"en"	"Jalan Pack"
+		"ko"	"잘란 꾸러미"
 	}
 	"Rare Jalan Crate"
 	{
@@ -263,10 +299,20 @@
 		"en"	"Wizuh Crate"
 		"ko"	"위저 상자"
 	}
+	"Wizuh Pack"
+	{
+		"en"	"Wizuh Pack"
+		"ko"	"위저 꾸러미"
+	}
 	"Rare Wizuh Crate"
 	{
 		"en"	"Rare Wizuh Crate"
 		"ko"	"희귀 위저 상자"
+	}
+	"Sealed Wizuh Crate"
+	{
+		"en"	"Sealed Wizuh Crate"
+		"ko"	"봉인된 위저 상자"
 	}
 	"Sealed Wizuh Crate Desc"
 	{
@@ -278,20 +324,40 @@
 		"en"	"Ossunia Crate"
 		"ko"	"오수니아 상자"
 	}
+	"Ossunia Pack"
+	{
+		"en"	"Ossunia Pack"
+		"ko"	"오수니아 꾸러미"
+	}
 	"Rare Ossunia Crate"
 	{
 		"en"	"Rare Ossunia Crate"
 		"ko"	"희귀 오수니아 상자"
+	}
+	"Sealed Ossunia Crate"
+	{
+		"en"	"Sealed Ossunia Crate"
+		"ko"	"봉인된 오수니아 상자"
 	}
 	"Sealed Ossunia Crate Desc"
 	{
 		"en"	"Unbox in the Control Center"
 		"ko"	"제어 센터에서 개봉 가능 "
 	}
+	"Bofazem Crate"
+	{
+		"en"	"Bofazem Crate"
+		"ko"	"보파젬 상자"
+	}
 	"Sealed Bofazem Crate"
 	{
 		"en"	"Sealed Bofazem Crate"
 		"ko"	"봉인된 보파젬 상자"
+	}
+	"Sealed Bofazem Crate Desc"
+	{
+		"en"	"Unbox in the Control Center"
+		"ko"	"제어 센터에서 개봉 가능"
 	}
 	"Treasure Crate"
 	{
@@ -318,20 +384,137 @@
 		"en"	"Craft in the Control Center"
 		"ko"	"제어 센터에서 제작 가능"
 	}
+	"Upgrade Build Houses"
+	{
+		"en"	"Upgrade and build more Houses to collect more cash!"
+		"ko"	"집을 개선하고 건설하여 더 많은 자금을 획득하세요!"
+	}
+	"Dungeon Not Ready Yet"
+	{
+		"en"	"Didn't find anything yet, check back soon!"
+		"ko"	"아직 아무것도 찾지 못했습니다. 나중에 다시 확인해주세요!"
+	}
+	"Dungeon Empty Untill Next Raid"
+	{
+		"en"	"No more Dungeons will be generated... an attack will happen in 60 seconds."
+		"ko"	"더 이상 던전이 생성되지 않습니다... 60초 후에 공격이 발생합니다."
+	}
+	"Scout Car Desc"
+	{
+		"en"	"A vehicle that can hold up to 3 players. Able to collect ammo from the an ammo box in the back."
+		"ko"	"최대 3명의 플레이어를 태울 수 있는 차량입니다. 뒤쪽의 탄약 상자에서 탄약을 얻을 수 있습니다."
+	}
+	"APC"
+	{
+		"en"	"Armored Personnel Carrier"
+		"ko"	"병력 수송 장갑차"
+	}
+	"APC Desc"
+	{
+		"en"	"A vehicle that can hold up to 2 players. The passenger wields a powerful mounted turret."
+		"ko"	"최대 2명의 플레이어를 태울 수 있는 차량입니다. 승객은 차량에 탑재된 강력한 포탑을 사용할 수 있습니다."
+	}
+	"Spawned Vehicle At"
+	{
+		"#format"	"{1:N},{2:s},{3:s}"
+		"en"		"{orange}{1} {default}built {orange}{2} {default}for {orange}{3}"
+		"ko"		"{orange}{1} {default}이(가) {orange}{2} {default}을(를) 해당 위치에 조립했습니다: {orange}{3}"
+	}
+	"Vehicle Controls"
+	{
+		"en"	"%%+attack3%% TURBO %%+jump%% HANDBRAKE"
+		"ko"	"%%+attack3%% 액셀 %%+jump%% 브레이크"
+	}
+	"Unlocked Building"
+	{
+		"#format"	"{1:t}"
+		"en"		"Unlocked Construct Building: {orange}{1}"
+		"ko"		"생존연산 구조물을 해금했습니다: {orange}{1}"
+	}
 
-	"Common Dungeon"
-	{
-		"en"	"⚔ Dungeon"
-		"ko"	"⚔ 던전"
-	}
-	"Treasure Vault"
-	{
-		"en"	"Treasure Vault"
-		"ko"	"보물 금고"
-	}
 	"Treasure Vault Encounter Title"
 	{
 		"en"	"We used the Treasure Key to open inside, some items are presented in front of you."
-		"ko"	"보물 열쇠를 사용해 금고를 열었더니, 그 안에 몇 가지 물품들이 있었다."
+		"ko"	"보물 열쇠를 사용해 금고를 열었고, 그 안에 몇 가지 물품들이 있었습니다."
+	}
+	"Ship Ending Encounter Title"
+	{
+		"en"	"You find some lost Expidonsa technology, should we grab one of these?"
+		"ko"	"유실된 엑스피돈사제 기술들을 발견했습니다. 하나를 가져가야 할까요?"
+	}
+	"Expidonsa Space Beacon"
+	{
+		"en"	"Expidonsa Space Beacon"
+		"ko"	"엑스피돈사 우주 비컨"
+	}
+	"Expidonsa Space Beacon Desc"
+	{
+		"en"	"Expidonsa technology, it seems to have been used to track far above.\n{blue}Almagest did not forget"
+		"ko"	"엑스피돈사제 기술력입니다. 저 너머 높은 곳까지 추적하는데 사용된 것 같습니다.\n{blue}알마게스트는 잊지 않았습니다."
+	}
+	"Verde Soldier Giant Summoner"
+	{
+		"en"	"Verde Soldier Giant Summoner"
+		"ko"	"초록색 거대 소환사 솔저"
+	}
+	"Verde Soldier Minion"
+	{
+		"en"	"Verde Soldier Minion"
+		"ko"	"초록색 하수인 솔저"
+	}
+	"Xeno Resurgance"
+	{
+		"en"	"Xeno Resurgence"
+		"ko"	"제노의 부활"
+	}
+	"Xeno Resurgance Desc"
+	{
+		"en"	"{darkgreen}All enemies are xenofied...\n{gray}Didnt we kill off the xeno virus?"
+		"ko"	"{darkgreen}모든 적들이 제노화 됩니다...\n{gray}분명 우리가 제노를 끝장냈을텐데요?"
+	}
+	"Refragmented Heavy Page"
+	{
+		"en"	"Refragmented Heavy Page"
+		"ko"	"재구성된 헤비 쪽지"
+	}
+	"Enemy Center Death"
+	{
+		"en"	"{green}Enemy {orange}Control Center {green}is destroyed, the next raid attack is weakened!"
+		"ko"	"{green}적의 {orange}제어 센터{green}가 파괴되어, 다음 습격이 약화되었습니다!"
+	}
+	"Main Center Death"
+	{
+		"en"	"{crimson}Our {orange}Control Center {crimson}is destroyed, Respawns disabled, vehicles disabled, players are slowed down by 1.1x."
+		"ko"	"{crimson}우리의 {orange}제어 센터{crimson}가 파괴되었습니다. 부활과 차량이 비활성화되며 플레이어의 이동 속도가 1.1배 느려집니다."
+	}
+	"Explain Dungeon Mechanics 1"
+	{
+		"en"	"You can return back to base by pressing (F)\nCancel it by pressing (F) again."
+		"ko"	"(F)를 눌러 기지로 귀환할 수 있습니다.\n(F)를 다시 누르면 취소할 수 있습니다."
+	}
+	"Explain Dungeon Mechanics 2"
+	{
+		"en"	"Build Construction Buildings with your wrench!\nUpgrade these by Interacting with them!"
+		"ko"	"렌치로 생존연산 구조물을 건설하세요!\n구조물과 상호작용하여 개선하세요!"
+	}
+	"Explain Dungeon Mechanics 3"
+	{
+		"en"	"Gather resources from either portal by completing dungeons and collecting them!"
+		"ko"	"아무 포탈에 들어가 던전을 완료하거나 직접 수집하여 자원을 모으세요!"
+	}
+	"Explain Dungeon Mechanics 4"
+	{
+		"en"	"Dungeons are random and get stronger overtime!"
+		"ko"	"던전은 무작위로 생성되며 시간이 지날 수록 더 강해집니다!"
+	}
+	"Explain Dungeon Mechanics 5"
+	{
+		"en"	"Rival bases stay at the strength they started at\nDestroying the center weakens the next raid!"
+		"ko"	"적대 기지들은 생성되었을 때의 힘을 유지합니다.\n제어 센터를 파괴하면 다음 습격을 약화시킵니다!"
+	}
+	"Explain Dungeon Mechanics 6"
+	{
+		"en"	"Raids happen after a set time! Prepare your base and get stronger!"
+		"ko"	"습격은 일정 시간 후에 발생합니다! 기지를 구축하고 더 강해지세요!"
 	}
 }

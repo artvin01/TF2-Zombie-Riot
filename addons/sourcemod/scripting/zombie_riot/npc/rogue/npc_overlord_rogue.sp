@@ -99,6 +99,12 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 
 methodmap OverlordRogue < CClotBody
 {
+	property bool m_bBossRushDuo
+	{
+		public get()							{ return b_FlamerToggled[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FlamerToggled[this.index] = TempValueForProperty; }
+	}
+	
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
@@ -203,6 +209,7 @@ methodmap OverlordRogue < CClotBody
 		
 		bool final = StrContains(data, "final_item") != -1;
 		bool final2 = StrContains(data, "music_do") != -1;
+		npc.m_bBossRushDuo = StrContains(data, "bossrush_duo") != -1;
 		
 		if(Rogue_HasNamedArtifact("Ascension Stack"))
 			final = false;
@@ -211,7 +218,7 @@ methodmap OverlordRogue < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = 1;
 		}
-		if(final2)
+		if(final2 || npc.m_bBossRushDuo)
 		{
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/wave_music/bat_talulha.mp3");
@@ -242,6 +249,13 @@ methodmap OverlordRogue < CClotBody
 		RaidAllowsBuildings = true;
 		RaidModeScaling = 0.0;
 		RaidModeTime = GetGameTime() + 999.9;
+		
+		if (npc.m_bBossRushDuo)
+		{
+			b_thisNpcIsARaid[npc.index] = true;
+			npc.m_flNextDelayTime = GetGameTime(npc.index) + 2.0;
+			RaidModeTime = GetGameTime() + 500.0;
+		}
 
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
@@ -410,7 +424,16 @@ public void OverlordRogue_ClotThink(int iNPC)
 				
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 				
-				NPC_Ignite(PrimaryThreatIndex, npc.index,8.0, -1, 20.5);
+				// Nerf the burn on boss rush
+				if (npc.m_bBossRushDuo)
+				{
+					if (Can_I_See_Enemy(npc.index, PrimaryThreatIndex))
+						NPC_Ignite(PrimaryThreatIndex, npc.index,8.0, -1, 20.5 * 0.75);
+				}
+				else
+				{
+					NPC_Ignite(PrimaryThreatIndex, npc.index,8.0, -1, 20.5);
+				}
 			}
 		}
 		
@@ -545,7 +568,8 @@ public void OverlordRogue_NPCDeath(int entity)
 	TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 
-	RaidBossActive = INVALID_ENT_REFERENCE;
+	if (EntIndexToEntRef(npc.index) == RaidBossActive)
+		RaidBossActive = INVALID_ENT_REFERENCE;
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

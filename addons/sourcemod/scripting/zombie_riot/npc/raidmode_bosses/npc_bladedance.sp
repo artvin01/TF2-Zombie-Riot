@@ -59,6 +59,12 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 
 methodmap RaidbossBladedance < CClotBody
 {
+	property bool m_bBossRushDuo
+	{
+		public get()							{ return b_FlamerToggled[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FlamerToggled[this.index] = TempValueForProperty; }
+	}
+	
 	public void PlayIdleSound()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -145,6 +151,7 @@ methodmap RaidbossBladedance < CClotBody
 
 		
 		bool final = StrContains(data, "final_item") != -1;
+		npc.m_bBossRushDuo = StrContains(data, "bossrush_duo") != -1;
 		
 		if(Rogue_HasNamedArtifact("Ascension Stack"))
 			final = false;
@@ -195,11 +202,24 @@ methodmap RaidbossBladedance < CClotBody
 
 		RaidModeScaling = 0.0;
 		RaidModeTime = GetGameTime() + ((300.0) * (1.0 + (MultiGlobalEnemy * 0.4)));
-		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "??????????????????????????????????");
-		CPrintToChatAll("{crimson}칼춤{default}: 어떻게 여기까지 온 거지? 날 공격하는 이유가 뭐냐? 네 놈들도 또 공허의 하수인들이겠군?");
-
-		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
+		
+		if (npc.m_bBossRushDuo)
+		{
+			if (!IsValidEntity(RaidBossActive))
+				RaidBossActive = EntIndexToEntRef(npc.index);
+			
+			GiveNpcOutLineLastOrBoss(npc.index, true);
+			RaidAllowsBuildings = false;
+			RaidModeTime = GetGameTime() + 500.0;
+		}
+		else
+		{
+			Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "??????????????????????????????????");
+			CPrintToChatAll("{crimson}칼춤{default}: 어떻게 여기까지 온 거지? 날 공격하는 이유가 뭐냐? 네 놈들도 또 공허의 하수인들이겠군?");
+			
+			RaidBossActive = EntIndexToEntRef(npc.index);
+		}
 
 		return npc;
 	}
@@ -330,8 +350,17 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 				float vPredictedPos[3]; PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 400.0, _,vPredictedPos);
 				npc.FireRocket(vPredictedPos, 1000.0, 400.0, "models/effects/combineball.mdl");
 				npc.PlayRangedSound();
-
-				Elemental_AddNervousDamage(npc.m_iTarget, npc.index, 200);
+				
+				// Add a LOS check and halve nervous impairment slowdown on boss rush
+				if (npc.m_bBossRushDuo)
+				{
+					if (Can_I_See_Enemy(npc.index, npc.m_iTarget))
+						Elemental_AddNervousDamage(npc.m_iTarget, npc.index, 200, .slowdown = 0.45);
+				}
+				else
+				{
+					Elemental_AddNervousDamage(npc.m_iTarget, npc.index, 200);
+				}
 			}
 		}
 	}
@@ -451,9 +480,10 @@ public Action RaidbossBladedance_OnTakeDamage(int victim, int &attacker, int &in
 
 public void RaidbossBladedance_NPCDeath(int entity)
 {
-	Waves_ClearWave();
-
 	RaidbossBladedance npc = view_as<RaidbossBladedance>(entity);
+	
+	if (!npc.m_bBossRushDuo)
+		Waves_ClearWave();
 	
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 		
@@ -489,6 +519,7 @@ public void RaidbossBladedance_NPCDeath(int entity)
 			}
 		}
 		Waves_ClearWaves();
+		ForcePlayerWin();
 	}
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -496,5 +527,6 @@ public void RaidbossBladedance_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 
-	RaidBossActive = INVALID_ENT_REFERENCE;
+	if (EntIndexToEntRef(npc.index) == RaidBossActive)
+		RaidBossActive = INVALID_ENT_REFERENCE;
 }

@@ -245,6 +245,10 @@ stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR
 			if(origin[0] == 0.0 && origin[1] == 0.0 && origin[2] == 0.0)
 				LogStackTrace("Possible unintended 0 0 0 teleport");
 			
+#if defined ZR
+			Dungeon_SetEntityZone(entity, Zone_Unknown);
+#endif
+			
 			Custom_SDKCall_SetLocalOrigin(entity, origin);
 		}
 
@@ -269,6 +273,10 @@ stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR
 	}
 	else
 	{
+#if defined ZR
+		Dungeon_SetEntityZone(entity, Zone_Unknown);
+#endif
+
 		TeleportEntity(entity,origin,angles,velocity);
 	}
 }
@@ -276,6 +284,10 @@ stock void Custom_SDKCall_SetLocalOrigin(int index, const float localOrigin[3])
 {
 	if(g_hSetLocalOrigin)
 	{
+#if defined ZR
+		Dungeon_SetEntityZone(index, Zone_Unknown);
+#endif
+
 		SDKCall(g_hSetLocalOrigin, index, localOrigin);
 	}
 }

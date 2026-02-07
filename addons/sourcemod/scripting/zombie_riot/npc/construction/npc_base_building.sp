@@ -45,6 +45,8 @@ methodmap BaseBuilding < BarrackBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flHeadshotCooldown = 0.0;
 		BuffTimerLimited = GetGameTime() + 90.0;
+		if(Dungeon_Mode()) //give alot more time
+			BuffTimerLimited = GetGameTime() + 160.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
@@ -162,7 +164,6 @@ void BaseBuilding_ClotTakeDamage(int victim, int &attacker, int &inflictor, floa
 
 static void StartingBaseBuffGiveBuff(int iNpc)
 {
-
 	b_NpcIsTeamkiller[iNpc] = true;
 	float spawnLoc[3]; 	
 	WorldSpaceCenter(iNpc, spawnLoc);
@@ -171,7 +172,7 @@ static void StartingBaseBuffGiveBuff(int iNpc)
 	iNpc,
 	-1,
 	spawnLoc,
-	9999.9,
+	2000.9,
 	_,
 	_,
 	false,

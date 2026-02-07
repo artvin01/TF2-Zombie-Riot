@@ -42,8 +42,8 @@ void SkilledCrossbowmanOnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Skilled Crossbowman");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_skilled_crossbowman");
-	strcopy(data.Icon, sizeof(data.Icon), "sniper");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "crossbow");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = 0;
 	data.Func = ClotSummon;
