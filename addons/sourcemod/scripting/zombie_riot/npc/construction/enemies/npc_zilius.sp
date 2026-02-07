@@ -639,6 +639,16 @@ static void Internal_ClotThink(int iNPC)
 				} 
 				default:
 				{
+					for (int client = 1; client <= MaxClients; client++)
+					{
+						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
+						{
+							if(Items_GiveNamedItem(client, "Foreign Expidonsan Chip"))
+							{
+								CPrintToChat(client, "{green}Obtained{yellow} ''Foreign Expidonsan Chip''");
+							}
+						}
+					}
 					ForcePlayerWin();
 					npc.m_flWinAnimationSay = 0.0;
 					npc.m_flWinAnimation = 0.0;
