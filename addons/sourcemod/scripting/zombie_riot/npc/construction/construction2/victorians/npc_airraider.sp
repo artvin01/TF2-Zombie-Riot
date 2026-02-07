@@ -147,9 +147,10 @@ methodmap Airraider < CClotBody
 		npc.Anger = true;
 		npc.b_AirraiderRocketJump = true;
 
-		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.0;
-		npc.f_AirraiderRocketJumpCD_Wearoff = GetGameTime(npc.index) + 3.0;
-		
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.0;
+		npc.f_AirraiderRocketJumpCD_Wearoff = GetGameTime(npc.index) + 1.0;
+		b_NpcIsInvulnerable[npc.index] = true;
+		npc.m_bTeamGlowDefault = false;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -192,6 +193,23 @@ methodmap Airraider < CClotBody
 		NpcColourCosmetic_ViaPaint(npc.m_iWearable3, 1581885);
 		NpcColourCosmetic_ViaPaint(npc.m_iWearable4, 1581885);
 		NpcColourCosmetic_ViaPaint(npc.m_iWearable5, 1581885);
+		
+		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 1.0);
+		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 1.0);
+		SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 1.0);
+		SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMaxDist", 1.0);
+		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 1.0);
+		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 1.0);
+		SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMinDist", 1.0);
+		SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMaxDist", 1.0);
+		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 1.0);
+		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 1.0);
+		SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMinDist", 1.0);
+		SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMaxDist", 1.0);
+		SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMinDist", 1.0);
+		SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMaxDist", 1.0);
+		SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMinDist", 1.0);
+		SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMaxDist", 1.0);
 
 		SetVariantString("deploy_idle");
 		AcceptEntityInput(npc.m_iWearable2, "SetAnimation");
@@ -219,45 +237,61 @@ public void Airraider_ClotThink(int iNPC)
 		npc.m_flRangedArmor = 1.0;
 	}
 
-	if(npc.b_AirraiderRocketJump && npc.f_AirraiderRocketJumpCD_Wearoff > GetGameTime(npc.index))
+	if(npc.b_AirraiderRocketJump)
 	{
-		//TeleportDiversioToRandLocation(npc.index); 
-		/*
-		static float flPos[3]; 
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-		flPos[2] += 3000.0;
-		PluginBot_Jump(npc.index, flPos);
-		
-		static float hullcheckmaxs[3];
-		static float hullcheckmins[3];
-		hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
-		hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );
-
-		static float bringMeUp[3];
-		bringMeUp[2] += 50.0;
-		Npc_Teleport_Safe(npc.index, bringMeUp, hullcheckmins, hullcheckmaxs, true);
-		*/
-		static float flMyPos[3];
-		static float flMyPos_2[3];
-		flMyPos[2] += 3000.0;
-		WorldSpaceCenter(npc, flMyPos_2);
-
-		flMyPos[0] = flMyPos_2[0];
-		flMyPos[1] = flMyPos_2[1];
-		PluginBot_Jump(npc.index, flMyPos);
-		npc.f_AirraiderRocketJumpCD_Wearoff = GetGameTime(npc.index) + 1.0;
-		npc.b_AirraiderRocketJump = false;
+		if(IsValidEntity(npc.m_iTeamGlow))
+			RemoveEntity(npc.m_iTeamGlow);
+		npc.StopPathing();
+		if(npc.f_AirraiderRocketJumpCD_Wearoff < GetGameTime(npc.index))
+		{
+			TeleportDiversioToRandLocation(npc.index); 
+			static float flPos[3]; 
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+			flPos[2] += 3000.0;
+			PluginBot_Jump(npc.index, flPos);
+			SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 1.0);
+			SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMaxDist", 1.0);
+			npc.f_AirraiderRocketJumpCD_Wearoff = GetGameTime(npc.index) + 1.0;
+			npc.b_AirraiderRocketJump = false;
+		}
+		return;
 	}
-
-	if(npc.IsOnGround())
+	else if(npc.IsOnGround())
 	{
-		if(GetGameTime(npc.index) > npc.f_AirraiderRocketJumpCD_Wearoff)
+		if(npc.f_AirraiderRocketJumpCD_Wearoff < GetGameTime(npc.index))
 		{
 			npc.Anger = false;
 			if(IsValidEntity(npc.m_iWearable2))
-			RemoveEntity(npc.m_iWearable2);
+				RemoveEntity(npc.m_iWearable2);
 			npc.i_GunMode = 0;
 			npc.m_flGravityMulti = 1.0;
+		}
+	}
+	else
+	{
+		if(npc.Anger && npc.f_AirraiderRocketJumpCD_Wearoff < GetGameTime(npc.index))
+		{
+			b_NpcIsInvulnerable[npc.index] = false;
+			npc.m_bTeamGlowDefault = true;
+			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
+			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMaxDist", 0.0);
+			if(IsValidEntity(npc.m_iWearable2))
+			{
+				SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 0.0);
+				SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 0.0);
+			}
+			SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMinDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMaxDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMinDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMaxDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMinDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMaxDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMinDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMaxDist", 0.0);
 		}
 	}
 
@@ -472,8 +506,6 @@ void AirraiderSelfDefense(Airraider npc, float gameTime, int target, float dista
 				float projectile_speed = 1000.0;
 				float DamageRocket = 30.0;
 				float vPredictedPos[3];
-				if(NpcStats_VictorianCallToArms(npc.index))
-					DamageRocket *= 1.5;
 				PredictSubjectPositionForProjectiles(npc, target, projectile_speed, _,vPredictedPos);
 				
 				npc.FaceTowards(vPredictedPos, 20000.0);

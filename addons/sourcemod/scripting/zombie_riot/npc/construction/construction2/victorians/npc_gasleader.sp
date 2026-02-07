@@ -287,7 +287,7 @@ static void Gasleader_ClotThink(int iNPC)
 					npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/w_pistol.mdl");
 					SetVariantString("1.5");
 					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-					npc.m_iWearable2 = npc.EquipItem("thorns_backpack_1", "models/weapons/c_models/c_claymore/c_claymore.mdl");
+					npc.m_iWearable2 = npc.EquipItem("thorns_backpack_1", "models/weapons/c_models/c_claymore/c_claymore_xmas.mdl");
 					SetVariantString("1.0");
 					AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 2);
@@ -301,7 +301,7 @@ static void Gasleader_ClotThink(int iNPC)
 					{
 						npc.m_bisWalking = true;
 						npc.m_iChanged_WalkCycle = 0;
-						npc.m_flSpeed = 250.0;
+						npc.m_flSpeed = 225.0;
 						npc.SetActivity("ACT_DARIO_WALK");
 						npc.StartPathing();
 					}	
@@ -312,7 +312,7 @@ static void Gasleader_ClotThink(int iNPC)
 					{
 						npc.m_bisWalking = false;
 						npc.m_iChanged_WalkCycle = 1;
-						npc.m_flSpeed = 250.0;
+						npc.m_flSpeed = 225.0;
 						npc.SetActivity("ACT_DARIO_WALK");
 						npc.StartPathing();
 					}	
@@ -342,7 +342,7 @@ static void Gasleader_ClotThink(int iNPC)
 					SetVariantString("1.5");
 					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 					SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
-					npc.m_iWearable2 = npc.EquipItem("thorns_backpack_1", "models/weapons/c_models/c_claymore/c_claymore.mdl");
+					npc.m_iWearable2 = npc.EquipItem("thorns_backpack_1", "models/weapons/c_models/c_claymore/c_claymore_xmas.mdl");
 					SetVariantString("1.0");
 					AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 2);
@@ -356,7 +356,7 @@ static void Gasleader_ClotThink(int iNPC)
 					{
 						npc.m_bisWalking = true;
 						npc.m_iChanged_WalkCycle = 0;
-						npc.m_flSpeed = 250.0;
+						npc.m_flSpeed = 225.0;
 						npc.SetActivity("ACT_DARIO_WALK");
 						npc.StartPathing();
 					}	
@@ -367,7 +367,7 @@ static void Gasleader_ClotThink(int iNPC)
 					{
 						npc.m_bisWalking = false;
 						npc.m_iChanged_WalkCycle = 1;
-						npc.m_flSpeed = 250.0;
+						npc.m_flSpeed = 225.0;
 						npc.SetActivity("ACT_DARIO_WALK");
 						npc.StartPathing();
 					}	
@@ -551,13 +551,13 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 								npc.m_iOverlordComboAttack++;
 								Elemental_AddNervousDamage(target, npc.index, ElementalDamage, true);
 								npc.PlayMeleeHitSound();
-								npc.m_flNextMeleeAttack = gameTime + 0.5;
+								npc.m_flNextMeleeAttack = gameTime + 0.65;
 							}
 							else
 							{
 								damageDealt *= 3.0;
 								npc.m_iOverlordComboAttack = 0;
-								ElementalDamage *= 3.1;
+								ElementalDamage *= 3;
 								Elemental_AddNervousDamage(target, npc.index, ElementalDamage, true);
 								if(IsValidClient(target) && !HasSpecificBuff(target, "Fluid Movement"))
 								{
@@ -567,7 +567,7 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 								ParticleEffectAt(VecEnemy, "Explosion_ShockWave_01", 0.5);
 								npc.m_flNextMeleeAttack = gameTime + 1.0;
 							}
-							damageDealt *= (npc.m_flPercentageAngry * 5.0) + 1.0;
+							//damageDealt *= (npc.m_flPercentageAngry * 5.0) + 1.0;
 							float vecHit[3];
 							WorldSpaceCenter(target, vecHit);
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);					

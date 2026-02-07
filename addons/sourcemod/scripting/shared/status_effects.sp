@@ -3033,11 +3033,7 @@ void StatusEffects_Victoria()
 	data.DamageDealMulti			= 1.0; //x2 dmg
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
-	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
-	data.OnTakeDamage_DealFunc 	= INVALID_FUNCTION;
-	data.OnTakeDamage_PostVictim	= INVALID_FUNCTION;
-	data.OnTakeDamage_PostAttacker	= INVALID_FUNCTION;
-	data.Status_SpeedFunc 		= INVALID_FUNCTION;
+	data.ElementalLogic				= false;
 	data.HudDisplay_Func 			= INVALID_FUNCTION;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.

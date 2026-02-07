@@ -277,7 +277,7 @@ public void ArmoredMedic_ClotThink(int iNPC)
 			}
 			int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
 			if(b_thisNpcIsABoss[PrimaryThreatIndex])
-				MaxHealth = RoundToCeil(float(MaxHealth) * 0.0001);
+				MaxHealth = RoundToCeil(float(MaxHealth) * 0.00001);
 
 			HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth), 1.0);
 
