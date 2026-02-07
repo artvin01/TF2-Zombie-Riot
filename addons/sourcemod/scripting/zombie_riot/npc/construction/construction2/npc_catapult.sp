@@ -365,7 +365,7 @@ void CatapultSelfDefense_Init(Catapult npc, float gameTime)
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.75);
 
 				int RocketGet = npc.FireRocket(vecTarget, RocketDamage, RocketSpeed);
-				Attributes_Set(RocketGet, Attrib_MultiBuildingDamage, 4.0);
+				Attributes_Set(RocketGet, Attrib_MultiBuildingDamage, 2.0);
 				//Reducing gravity, reduces speed, lol.
 				SetEntityGravity(RocketGet, 1.0); 	
 				//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.

@@ -956,9 +956,9 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 
 		if(limit > 0)
 		{
-			for(int length = Voting.Length; length > limit; length--)
+			while (Voting.Length > limit)
 			{
-				Voting.Erase(MapSeed % length);
+				Voting.Erase(GetURandomInt() % Voting.Length);
 			}
 
 			if(!autoSelect && !FileNetwork_Enabled())
@@ -1290,6 +1290,7 @@ void Waves_CacheWaves(KeyValues kv, bool npcs)
 void WavesDeleteSet(int ArrayDo = Rounds_Default)
 {
 	Round round;
+	Waves_ClearWaves(ArrayDo);
 	if(Rounds[ArrayDo])
 	{
 		int length = Rounds[ArrayDo].Length;
@@ -2125,10 +2126,10 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 	static int panzer_chance;
 	bool GiveAmmoSupplies = !Dungeon_Mode();
 
-	if(CurrentRound[WaveWhich] < length)
+	if(CurrentRound[WaveWhich] < length || ForceAdvance)
 	{
 		Rounds[WaveWhich].GetArray(CurrentRound[WaveWhich], round);
-		if(++CurrentWave[WaveWhich] < round.Waves.Length)
+		if(++CurrentWave[WaveWhich] < round.Waves.Length && !ForceAdvance)
 		{
 			if(WaveWhich == Rounds_Default)
 				f_FreeplayDamageExtra = 1.0;
@@ -2643,7 +2644,7 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 				
 				Music_EndLastmann();
 				RespawnCheckCitizen();
-				ReviveAll();
+				ReviveAll(_,_,_, ForceAdvance);
 				CheckAlivePlayers();
 				BlockOtherRaidMusic = false;
 			}
@@ -3001,7 +3002,7 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 		}
 		
 		if(Construction_Mode())	// In Construction: Base raids must be dealt with
-			subWave = !Construction_FinalBattle();
+			subWave = Construction_FinalBattle();
 		/*
 		if(Dungeon_Mode())
 			subWave = !Dungeon_FinalBattle();

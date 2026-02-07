@@ -995,9 +995,10 @@ stock float RemoveExtraSpeed(TFClassType class, float value)
 	}
 }
 
-void RequestFrames(RequestFrameCallback func, int frames, any data=0)
+void RequestFrames(RequestFrameCallback func, int frames, any data=0, bool NoCalcData = false)
 {
-	frames = RoundToNearest(TickrateModify * float(frames));
+	if(!NoCalcData)
+		frames = RoundToNearest(TickrateModify * float(frames));
 	DataPack pack = new DataPack();
 	pack.WriteCell(frames);
 	pack.WriteFunction(func);
@@ -3080,7 +3081,7 @@ int CountPlayersOnRed(int alive = 0, bool saved = false)
 	for(int client=1; client<=MaxClients; client++)
 	{
 #if defined ZR
-		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+		if(!b_IsPlayerABot[client] && WasHereSinceStartOfWave(client) && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 #else
 		if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client)==2)
 #endif
@@ -3131,7 +3132,7 @@ float ZRStocks_PlayerScalingDynamic(float rebels = 0.5, bool IgnoreMulti = false
 	{
 		if(!b_AntiLateSpawn_Allow[client])
 			continue;
-		if(!b_HasBeenHereSinceStartOfWave[client])
+		if(!WasHereSinceStartOfWave(client))
 			continue;
 		if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 		{ 
@@ -3201,6 +3202,7 @@ void Projectile_DealElementalDamage(int victim, int attacker, float Scale = 1.0)
 	}
 }
 
+bool OnlyWarnOnceEver = true;
 stock void Explode_Logic_Custom(float damage,
 int client, //To get attributes from and to see what is my enemy!
 int entity,	//Entity that gets forwarded or traced from/Distance checked.
@@ -3236,8 +3238,19 @@ int inflictor = 0)
 		if(explosion_range_dmg_falloff == EXPLOSION_RANGE_FALLOFF)
 			explosion_range_dmg_falloff = Attributes_Get(weapon, Attrib_OverrideExplodeDmgRadiusFalloff, EXPLOSION_RANGE_FALLOFF);
 	}
-#endif
-
+#endif	
+	if(explosionRadius >= 2100.0)
+	{
+		if(OnlyWarnOnceEver)
+		{
+			OnlyWarnOnceEver = false;
+			LogStackTrace("Please never go above 2k, patch this immedietly");
+			CPrintToChatAll("{crimson} A Bad error has accurred, you can still play, but please notify an admin and show this code: ''2100+''");
+		}
+		//why is this done? Any range above 2k causes immensive lag.
+		//at that point it  could just be global too.
+		explosionRadius = 2000.0;
+	}
 	//this should make explosives during raids more usefull.
 	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
 	{ 
@@ -3874,13 +3887,13 @@ stock void SetPlayerActiveWeapon(int client, int weapon)
 #if defined ZR
 //	WeaponSwtichToWarningPostDestroyed(weapon);
 #endif
-	/*
+	//incase the above fails, do this instead.
 	char buffer[64];
 	GetEntityClassname(weapon, buffer, sizeof(buffer));
 	FakeClientCommand(client, "use %s", buffer); 					//allow client to change
 	SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);	//Force client to change.
 	OnWeaponSwitchPost(client, weapon);
-	*/
+	
 }
 
 stock void DHook_CreateDetour(GameData gamedata, const char[] name, DHookCallback preCallback = INVALID_FUNCTION, DHookCallback postCallback = INVALID_FUNCTION)
@@ -3931,6 +3944,7 @@ public void GiveCompleteInvul(int client, float time)
 	f_ClientInvul[client] = GetGameTime() + time;
 	TF2_AddCondition(client, TFCond_UberchargedCanteen, time);
 	TF2_AddCondition(client, TFCond_MegaHeal, time);
+	ApplyStatusEffect(client, client, "Solid Stance", time);	
 }
 
 public void RemoveInvul(int client)

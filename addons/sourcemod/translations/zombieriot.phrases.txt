@@ -2495,7 +2495,7 @@
 	{
 		"en"		"Construct Buildings"
 		"it"		"Costruisci Strutture"
-		"ko"		"기타 구조물"
+		"ko"		"생존연산 구조물"
 	}	
 	"Which perk do you desire?"
 	{
@@ -2726,7 +2726,7 @@
 	{
 		"en"		"Favorite this loadout to autobuy it when you connect"
 		"it"		"Preferisci questo equipaggiamento per acquistarlo automaticamente quando ti connetti"
-		"ko"		"이 로드아웃을 즐겨찾기해두면, 나중에 접속했을때 이 로드아웃에 속한 아이템들을 자동으로 구매하게 됩니다."
+		"ko"		"로드아웃 즐겨찾기(접속했을때 로드아웃의 아이템 자동 구매)"
 	}
 	"Un Favorite"
 	{
@@ -4726,7 +4726,7 @@
 		"fr"	"L'infection Seaborn attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
 		"chi"	"海嗣感染将会侵蚀你的盾。"
 		"it"	"L'infezione Seaborn è arrivata, gli attacchi di Corrosione dell'Armatura infetteranno la tua armatura, curala con le tabelle dell'armatura!"
-		"ko"	"제노에 감염된 배풍등의 정예병들을 본 후, 그의 전초기지에 남은 병사가 있는지 확인을 하러 갑니다. 남은 병사가 있었지만... 시테러가 되어있었고... 이미 본토를 공격할 준비를 마친 상태입니다."
+		"ko"	"제노에 감염된 배풍등의 정예병들을 본 후, 그의 전초기지에 남은 병사가 있는지 확인을 하러 갑니다. 그곳엔 시본이 된 병사들이 있었고... 본토를 공격할 준비를 마친 상태였습니다."
 	}
 	"Interitus Desc"
 	{
@@ -4803,6 +4803,11 @@
 	{
 		"en"	"Before regrouping with Bob and Twirl in Rogue 3, a rift opens before us, releasing Void and Umbral creatures. With Al-Hallam and Vuntulum nearby, we are attacked from every direction."
 		"ko"	"로그3에서 밥, 트윌과 재집결하기 전, 우리 앞에 균열이 열리며 공허와 움브랄 생명체들을 풀어냅니다. 근처에는 알-할람과 번툴룸까지 있으니... 사면초가군요."
+	}
+	"Whiteflowers Revenge Desc"
+	{
+		"en"	"After we kill Whiteflower in Rogue 1, Flowering Darkness rallies more of his army and sends them to kill us to avenge Whiteflower."
+		"ko"	"로그라이크1에서 배풍등을 쓰러뜨린 이후, 어둠 개화자가 그의 복수를 하기 위해 군단을 더 집결하여 우리에게 보냅니다."
 	}
 	"CoF Normal Desc"
 	{
@@ -5295,25 +5300,25 @@
 	{
 		"en"	"DPS Class\nFocus on damage and get Hasty Hops perk"
 		"it"	"Classe DPS\nIncentrata sui danni e con il vantaggio Luppolo frettoloso"
-		"ko"	"딜러\n피해에 집중하고 신속 홉 특성을 가짐"
+		"ko"	"딜러\n피해에 집중하고 신속 홉 퍽 보유"
 	}
 	"Tank Class"
 	{
 		"en"	"Tank Class\nFocus on tanking and get Obsidian Oaf perk"
 		"it"	"Classe Tank\nFocalizzarsi sul tanking e ottenere il vantaggio Allocco Ossidiana"
-		"ko"	"탱커\n방어에 집중하고 옵시디언 호프 특성을 가짐"
+		"ko"	"탱커\n방어에 집중하고 옵시디언 호프 퍽 보유"
 	}
 	"Healer Class"
 	{
 		"en"	"Healer Class\nAble to heal, less DPS, and get Regene Berry perk"
 		"it"		"Guaritore di classe\nPossibilità di curare, meno DPS, e ottenere il vantaggio Bacca Regene"
-		"ko"	"메딕\n회복 능력을 가지고 있지만 낮은 피해량을 가짐. 그리고 재생형 열매 특성을 가짐"
+		"ko"	"메딕\n회복 능력을 가지고 있지만 낮은 피해량 보유. 재생형 열매 퍽 보유"
 	}
 	"Builder Class"
 	{
 		"en"	"Builder Class\nAble to build, repair, and get Morning Coffee perk"
 		"it"	"Costruttore di classe\nPuò costruire, riparare e ottenere il vantaggio Caffè del mattino"
-		"ko"	"건축가\n건설과 수리가 가능하며 모닝 커피 특성을 가짐"
+		"ko"	"건축가\n건설과 수리가 가능하며 모닝 커피 퍽 보유"
 	}
 	"Don't Follow Me"
 	{
@@ -5697,5 +5702,6 @@
 	"Outlaws"
 	{
 		"en"	"Outlaws"
+		"ko"	"무법자들"
 	}
 }

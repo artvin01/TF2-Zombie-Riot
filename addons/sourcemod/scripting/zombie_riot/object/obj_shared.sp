@@ -147,7 +147,7 @@ methodmap ObjectGeneric < CClotBody
 
 		ObjectGeneric objstats = view_as<ObjectGeneric>(obj);
 		objstats.BaseHealth = StringToInt(basehealth);
-		if(IsValidClient(client))
+		if(IsValidEntity(client))
 			SetTeam(obj, GetTeam(client));
 		else
 			SetTeam(obj, TFTeam_Blue);
@@ -219,7 +219,7 @@ methodmap ObjectGeneric < CClotBody
 		objstats.FuncCanBuild = defaultFunc;
 		objstats.FuncShowInteractHud = INVALID_FUNCTION;
 
-		if(IsValidClient(client))
+		if(IsValidEntity(client))
 			SetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity", client);
 		
 		SDKHook(obj, SDKHook_OnTakeDamage, ObjectGeneric_ClotTakeDamage);
@@ -521,6 +521,14 @@ methodmap ObjectGeneric < CClotBody
 			{
 				SetEntPropEnt(this.index, Prop_Data, "m_hOwnerEntity", -1);
 				ApplyStatusEffect(this.index, this.index, "Const2 Scaling For Enemy Base Nerf", 999999.0);
+				if(h_TransmitHookType[this.index] != 0)
+				{
+					if(!DHookRemoveHookID(h_TransmitHookType[this.index]))
+					{
+						PrintToConsoleAll("Somehow Failed to unhook h_TransmitHookType");
+					}
+				}
+				h_TransmitHookType[this.index] = 0;
 			}
 			SetEntProp(this.index, Prop_Data, "m_bConstructBuilding", value);
 		}
@@ -1101,6 +1109,9 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 
 float Object_GetMaxHealthMulti(int client)
 {
+	if(client < 1)
+		return 1.0;
+	
 	if(client <= MaxClients)
 		return Attributes_GetOnPlayer(client, 286);
 	
@@ -1254,7 +1265,10 @@ bool Const2_BuildingDestroySpecial(int entity)
 		for(int clients=1; clients<=MaxClients; clients++)
 		{
 			if(IsValidClient(clients))
+			{
 				Vehicle_Exit(clients);
+				ApplyStatusEffect(objstats.index, clients, "Main Center Death", 999999.9);
+			}
 		}
 		int vehicle = -1;
 		while((vehicle = FindEntityByClassname(vehicle, "obj_vehicle")) != -1)
@@ -1321,6 +1335,14 @@ bool Const2_ReConstructBuilding(int entity, bool DoHalf = false)
 
 	if(IsDungeonCenterId() == i_NpcInternalId[objstats.index])
 	{
+		for(int clients=1; clients<=MaxClients; clients++)
+		{
+			if(IsValidClient(clients))
+			{
+				Vehicle_Exit(clients);
+				RemoveSpecificBuff(clients, "Main Center Death");
+			}
+		}
 		int vehicle = -1;
 		while((vehicle = FindEntityByClassname(vehicle, "obj_vehicle")) != -1)
 		{

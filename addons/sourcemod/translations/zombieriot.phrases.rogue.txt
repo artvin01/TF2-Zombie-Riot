@@ -256,6 +256,7 @@
 	"Shop Encounter Title Dungeon"
 	{
 		"en"	"You find a room, displaying various items...\nChoosing an item shows what it does."
+		"ko"	"당신은 다양한 물품이 진열된 방을 발견한다...\n아이템을 선택하면 어떤 효과가 있는지 볼 수 있습니다."
 	}
 	"Shop Encounter Title"
 	{
@@ -263,7 +264,7 @@
 		"pt"	"Você se depara com uma loja com um senhorzinho vendendo coisas, você aceita sua oferta?"
 		"ru"	"Наткнувшись на магазин, вы видите старика, продающего товары, примете ли вы его предложение?"
 		"it"	"Se vi imbattete in un negozio e trovate un anziano che vende merci, accettate le sue offerte?\nScegliendo un oggetto mostra cosa fa."
-		"ko"	"당신은 우연히 한 가게에 들어갔고, 물건을 파는 노인을 발견한다. 그의 거래 제안을 받아들일까?\n아이템을 선택하면 그 아이템의 효과를 볼 수 있음."
+		"ko"	"당신은 우연히 한 가게에 들어갔고, 물건을 파는 노인을 발견한다. 그의 거래 제안을 받아들일까?\n아이템을 선택하면 어떤 효과가 있는지 볼 수 있습니다."
 	}
 	"Shop Encounter Title Ruina"
 	{

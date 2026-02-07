@@ -870,8 +870,8 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 		{
 			if(IsValidEnemy(npc.index, EnemyLoop, true, true))
 			{
-				if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop))
-				{ 	
+				if(!HasSpecificBuff(EnemyLoop, "Solid Stance") && Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop))
+				{
 					GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
 					
 					MakeVectorFromPoints(pos, cpos, velocity);

@@ -13,7 +13,7 @@
 #undef CONSTRUCT_MAXCOUNT
 
 #define CONSTRUCT_NAME		"Control Center"
-#define CONSTRUCT_COST1		(30 + (CurrentLevel * 45))
+#define CONSTRUCT_COST1		(30 + (CurrentLevel * 35))
 #define CONSTRUCT_MAXLVL	3
 #define CONSTRUCT_MAXCOUNT	1
 
@@ -44,16 +44,16 @@ void ObjectDungeonCenter_MapStart()
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
 	PrecacheSound("ui/itemcrate_smash_common.wav");
-/*
+
 	BuildingInfo build;
-	build.Section = 3;
+	build.Section = -1;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_dungeon_center");
 	build.Cost = 400;
 	build.Health = 2000;
 	build.Cooldown = 20.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
-*/
+
 }
 
 int IsDungeonCenterId()
@@ -420,7 +420,7 @@ static void StartingBaseBuffGiveBuff(int iNpc)
 	iNpc,
 	-1,
 	spawnLoc,
-	9999.9,
+	2000.0,
 	_,
 	_,
 	false,
@@ -464,7 +464,7 @@ static void HomebaseMomentumGiveBuff(int iNpc)
 	iNpc,
 	-1,
 	spawnLoc,
-	9999.9,
+	2000.0,
 	_,
 	_,
 	true,

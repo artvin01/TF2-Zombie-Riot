@@ -262,7 +262,7 @@ static void ApplyElementalEvent(int victim, int attacker, int damage)
 	event.Cancel();
 }
 
-void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false, int weapon = -1)
+void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false, int weapon = -1, float slowdown = 0.9)
 {
 	if(i_IsVehicle[victim])
 	{
@@ -303,7 +303,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 					f_ArmorCurrosionImmunity[victim][Element_Nervous] = GetGameTime() + 5.0;
 					
 					if(!HasSpecificBuff(victim, "Fluid Movement"))
-						TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
+						TF2_StunPlayer(victim, 5.0, slowdown, TF_STUNFLAG_SLOWDOWN);
 
 					DealTruedamageToEnemy(0, victim, 500.0);
 					Force_ExplainBuffToClient(victim, "Nervous Impairment Elemental Damage");
