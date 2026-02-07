@@ -57,6 +57,7 @@ public const int DefaultWaveCash[] =
 	2500, 2500, 3000, 4000, 25000,
 	3000, 3000, 3000, 3000
 };
+
 enum DungeonZone
 {
 	Zone_Unknown = 0,
@@ -379,6 +380,12 @@ int PlayersInGame;
 bool ZombieMusicPlayed;
 int GlobalIntencity;
 bool b_HasBeenHereSinceStartOfWave[MAXPLAYERS];
+bool WasHereSinceStartOfWave(int client)
+{
+//	if(Dungeon_Mode())
+//		return true;
+	return b_HasBeenHereSinceStartOfWave[client];
+}
 Cookie CookieScrap;
 Cookie CookieXP;
 ArrayList Loadouts[MAXPLAYERS];
@@ -1191,7 +1198,7 @@ void ZR_ClientPutInServer(int client)
 	else
 		b_AntiLateSpawn_Allow[client] = false;
 
-	if(BetWar_Mode())
+	if(BetWar_Mode() || Dungeon_Mode())
 		b_AntiLateSpawn_Allow[client] = true;
 }
 
@@ -2026,7 +2033,11 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			}
 		}
 		if(!TestLastman)
+		{
+			
+			CheckIfAloneOnServer(true);
 			return;
+		}
 	}
 	
 	CheckIfAloneOnServer();
@@ -2720,7 +2731,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceF
 	{
 		CheckClientLateJoin(client, false);
 		bool ClientWasInWave = false;
-		if(b_HasBeenHereSinceStartOfWave[client])
+		if(WasHereSinceStartOfWave(client))
 			ClientWasInWave = true;
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		if(IsClientInGame(client))

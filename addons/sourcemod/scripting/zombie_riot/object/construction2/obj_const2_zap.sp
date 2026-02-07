@@ -14,7 +14,7 @@
 
 #define CONSTRUCT_NAME		"Zapper Building"
 #define CONSTRUCT_RESOURCE1	"copper"
-#define CONSTRUCT_COST1		(10 + (CurrentLevel * 10))
+#define CONSTRUCT_COST1		(10 + (CurrentLevel * 5))
 #define CONSTRUCT_MAXLVL	(1 + ObjectDungeonCenter_Level())
 #define CONSTRUCT_DAMAGE	(50.0 * Pow(level + 1.0, 2.0))
 #define CONSTRUCT_FIRERATE	0.3

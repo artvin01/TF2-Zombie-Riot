@@ -1652,6 +1652,8 @@ static int i_targets_inrange;
 
 static int Nearby_Players(Stella npc, float Radius, float VecSelfNpc[3] = {0.0,0.0,0.0})
 {
+	if(Radius > 2000.0)
+		Radius = 2000.0;
 	i_targets_inrange = 0;
 	if(VecSelfNpc[2]==0.0)
 		WorldSpaceCenter(npc.index, VecSelfNpc);

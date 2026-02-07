@@ -365,6 +365,10 @@ static bool NerfNextRaid;
 static float LastKilledAt[MAXPLAYERS];
 static DungeonZone LastZone[MAXENTITIES];
 
+int Dungeon_AttackType()
+{
+	return AttackType;
+}
 void Dungeon_PluginStart()
 {
 	LoadTranslations("zombieriot.phrases.dungeon");
@@ -410,7 +414,11 @@ int Dungeon_GetRound(bool forceTime = false)
 		return current + ongoing;
 	}
 	
-	return RoundToFloor(BattleWaveScale);
+	int scale = RoundToFloor(BattleWaveScale);
+	if(scale > MaxWaveScale)
+		scale = MaxWaveScale;
+	
+	return scale;
 }
 
 int Dungeon_CurrentAttacks()
@@ -813,14 +821,15 @@ void Dungeon_Start()
 
 void CreateAllDefaultBuidldings(float pos[3], float ang[3])
 {
-	NPC_CreateByName("obj_dungeon_center", 0, pos, ang, TFTeam_Red);
+	int iNpc;
+	iNpc = Building_BuildByName("obj_dungeon_center", 0, pos, ang);
+	SetTeam(iNpc, TFTeam_Red);
 	float PosSave[3];
 	float RandAng[3];
 	PosSave = pos;
 	/*
 		As of now, hardcoded to this map.
 	*/
-	int iNpc;
 	for(int Loop; Loop < 4; Loop++)
 	{
 		PosSave = pos;
@@ -828,7 +837,7 @@ void CreateAllDefaultBuidldings(float pos[3], float ang[3])
 		PosSave[1] += GetRandomInt(0,1) ? GetRandomFloat(-250.0,-50.0) : GetRandomFloat(50.0, 250.0);
 	//	RandAng[0] = GetRandomFloat(-180.0,180.0);
 		RandAng[1] = GetRandomFloat(-180.0,180.0);
-		iNpc = NPC_CreateByName("obj_dungeon_wall1", -1, PosSave, RandAng, TFTeam_Red);
+		iNpc = Building_BuildByName("obj_dungeon_wall1", -1, PosSave, RandAng);
 		SetTeam(iNpc, TFTeam_Red);
 		ObjectGeneric objstats = view_as<ObjectGeneric>(iNpc);
 		objstats.m_bNoOwnerRequired = true;
@@ -841,7 +850,7 @@ void CreateAllDefaultBuidldings(float pos[3], float ang[3])
 	//	RandAng[0] = GetRandomFloat(-180.0,180.0);
 		RandAng[1] = GetRandomFloat(-180.0,180.0);
 		PosSave[2] += 16.0;
-		iNpc = NPC_CreateByName("obj_ammobox", -1, PosSave, RandAng, TFTeam_Red);
+		iNpc = Building_BuildByName("obj_ammobox", -1, PosSave, RandAng);
 		SetTeam(iNpc, TFTeam_Red);
 		ObjectGeneric objstats = view_as<ObjectGeneric>(iNpc);
 		objstats.m_bNoOwnerRequired = true;
@@ -853,7 +862,7 @@ void CreateAllDefaultBuidldings(float pos[3], float ang[3])
 		PosSave[1] += GetRandomInt(0,1) ? GetRandomFloat(-250.0,-50.0) : GetRandomFloat(50.0, 250.0);
 	//	RandAng[0] = GetRandomFloat(-180.0,180.0);
 		RandAng[1] = GetRandomFloat(-180.0,180.0);
-		iNpc = NPC_CreateByName("obj_armortable", -1, PosSave, RandAng, TFTeam_Red);
+		iNpc = Building_BuildByName("obj_armortable", -1, PosSave, RandAng);
 		SetTeam(iNpc, TFTeam_Red);
 		ObjectGeneric objstats = view_as<ObjectGeneric>(iNpc);
 		objstats.m_bNoOwnerRequired = true;
@@ -865,7 +874,7 @@ void CreateAllDefaultBuidldings(float pos[3], float ang[3])
 		PosSave[1] += GetRandomInt(0,1) ? GetRandomFloat(-250.0,-50.0) : GetRandomFloat(50.0, 250.0);
 	//	RandAng[0] = GetRandomFloat(-180.0,180.0);
 		RandAng[1] = GetRandomFloat(-180.0,180.0);
-		iNpc = NPC_CreateByName("obj_const2_cannon", -1, PosSave, RandAng, TFTeam_Red);
+		iNpc = Building_BuildByName("obj_const2_cannon", -1, PosSave, RandAng);
 		SetTeam(iNpc, TFTeam_Red);
 		ObjectGeneric objstats = view_as<ObjectGeneric>(iNpc);
 		objstats.m_bNoOwnerRequired = true;
@@ -877,7 +886,7 @@ void CreateAllDefaultBuidldings(float pos[3], float ang[3])
 		PosSave[1] += GetRandomInt(0,1) ? GetRandomFloat(-250.0,-50.0) : GetRandomFloat(50.0, 250.0);
 	//	RandAng[0] = GetRandomFloat(-180.0,180.0);
 		RandAng[1] = GetRandomFloat(-180.0,180.0);
-		iNpc = NPC_CreateByName("obj_perkmachine", -1, PosSave, RandAng, TFTeam_Red);
+		iNpc = Building_BuildByName("obj_perkmachine", -1, PosSave, RandAng);
 		SetTeam(iNpc, TFTeam_Red);
 		ObjectGeneric objstats = view_as<ObjectGeneric>(iNpc);
 		objstats.m_bNoOwnerRequired = true;
@@ -1247,7 +1256,7 @@ static Action DungeonMainTimer(Handle timer)
 			{
 				if(IsClientInGame(client))
 				{
-					if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+					if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && !dieingstate[client])
 					{
 						switch(Dungeon_GetEntityZone(client))
 						{
@@ -1977,6 +1986,7 @@ static void StartBattle(const RoomInfo room, float time = 0.1)
 
 		room.Fights.GetValue(buffer, scale);
 		EnemyScaling = ScaleBasedOnRound(round) / ScaleBasedOnRound(scale);
+		PrintToConsoleAll("Dungeon Enemy Scaling: %.2f%%", EnemyScaling * 100.0);
 
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
 		KeyValues kv = new KeyValues("Waves");
@@ -2072,6 +2082,7 @@ static void BattleLosted()
 	Zero(i_AmountDowned);
 	AttackType = 0;
 	
+	TeleportToFrom(Zone_HomeBase, Zone_Dungeon);
 	//TeleportToFrom(Zone_DungeonWait, Zone_Dungeon);
 
 	CPrintToChatAll("{crimson}%t", "Dungeon Failed");
@@ -2105,6 +2116,9 @@ void Dungeon_WaveEnd(const float spawner[3] = NULL_VECTOR, bool rivalBase = fals
 		RoomInfo room;
 		RoomList.GetArray(CurrentRoomIndex, room);
 		room.RollLoot(spawner);
+
+		if(BattleWaveScale > 39.0)
+			room.RollLoot(spawner);
 	}
 }
 
@@ -2158,8 +2172,8 @@ void Dungeon_MainBuildingDeath(int entity)
 
 			RoomInfo room;
 			BaseList.GetArray(CurrentBaseIndex, room);
-			room.RollLoot(pos);
-			room.RollLoot(pos);
+			for(int loop; loop < 20; loop++)
+				room.RollLoot(pos);
 
 			NerfNextRaid = true;
 
@@ -2180,7 +2194,7 @@ bool Dungeon_AtLimitNotice()
 
 static float ScaleBasedOnRound(int round)
 {
-	return (500.0 + Pow(float(round), 2.6));
+	return (500.0 + Pow(float(round), 2.7));
 }
 
 void Dungeon_EnemySpawned(int entity)
@@ -2196,66 +2210,28 @@ void Dungeon_EnemySpawned(int entity)
 				b_StaticNPC[entity] = true;
 				AddNpcToAliveList(entity, 1);
 			}
+			case 0:
+			{
+				Dungeon_GiveNpcMoney(entity);
+			}
 			case 1:	// Dungeon NPC
 			{
-				if(Dungeon_GetEntityZone(entity) != Zone_RivalBase)
+				if(Dungeon_GetEntityZone(entity) == Zone_Dungeon)
 				{
 					//nerf enemies in dungeons by 10%
 					fl_Extra_Damage[entity] *= 0.9;
 					SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.9));
 					SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.9));
 
-
-					// Reward cash depending on the wave scaling and how much left
-					if(!i_IsABuilding[entity] && !i_NpcIsABuilding[entity])
+					if(EnemyScaling > 0.0)
 					{
-						int round = Dungeon_GetRound(true) + MONEY_SCLAING_PUSHFUTURE;
-						int limit = MONEY_SCLAING_PUSHFUTURE + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
-						if(round > limit)
-						{
-							round = limit;
-
-							if(!ObjectC2House_CanUpgrade() && ObjectDungeonCenter_Level() >= CurrentAttacks)
-							{
-								LimitNotice = 0;
-							}
-							else if(LimitNotice < 1)
-							{
-								CPrintToChatAll("{crimson}%t", "Upgrade Build Houses");
-								LimitNotice = 1;
-							}
-							else
-							{
-								LimitNotice++;
-								if(LimitNotice > 49)
-									LimitNotice = -1;
-							}
-						}
-						else
-						{
-							LimitNotice = 0;
-						}
+						fl_Extra_Damage[entity] *= 1.0 + ((EnemyScaling - 1.0) / 3.0);
 						
-						int current = CurrentCash - GlobalExtraCash - StartCash;
-
-						int a, other;
-						while((other = FindEntityByNPC(a)) != -1)
-						{
-							if(!b_NpcHasDied[other] && GetTeam(other) != TFTeam_Red)
-								current += RoundFloat(f_CreditsOnKill[other]);
-						}
-
-						int goal = DefaultTotalCash(round);
-						if(current < goal)
-						{
-							int reward = (goal - current) / RoundToNearest((float((b_thisNpcIsABoss[entity] ? 4 : 40)) * MultiGlobalEnemy));
-							if(reward < 5)
-								reward = 5;
-							
-							f_CreditsOnKill[entity] += float(reward / 5 * 5);
-						}
+						SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * EnemyScaling));
+						SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * EnemyScaling));
 					}
 				}
+				Dungeon_GiveNpcMoney(entity);
 			}
 			case 2, 3:	// Raid/Final NPC
 			{
@@ -2275,14 +2251,6 @@ void Dungeon_EnemySpawned(int entity)
 					}
 				}
 			}
-		}
-
-		if(EnemyScaling > 0.0)
-		{
-			fl_Extra_Damage[entity] *= 1.0 + ((EnemyScaling - 1.0) / 3.0);
-			
-			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * EnemyScaling));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * EnemyScaling));
 		}
 	}
 }
@@ -2770,6 +2738,62 @@ void NoticeDungeonNoTimeLeft()
 		CPrintToChatAll("{crimson}%t", "Dungeon Empty Untill Next Raid");
 	}
 	NoticenoDungeon = true;
+}
+
+void Dungeon_GiveNpcMoney(int entity)
+{
+	if(Dungeon_GetEntityZone(entity) != Zone_Dungeon && Dungeon_GetEntityZone(entity) != Zone_RivalBase)	
+		return;
+
+	if(i_IsABuilding[entity] || i_NpcIsABuilding[entity])
+		return;
+	// Reward cash depending on the wave scaling and how much left
+
+	int round = Dungeon_GetRound(true) + MONEY_SCLAING_PUSHFUTURE;
+	int limit = MONEY_SCLAING_PUSHFUTURE + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
+	if(round > limit)
+	{
+		round = limit;
+
+		if(!ObjectC2House_CanUpgrade() && ObjectDungeonCenter_Level() >= CurrentAttacks)
+		{
+			LimitNotice = 0;
+		}
+		else if(LimitNotice < 1)
+		{
+			CPrintToChatAll("{crimson}%t", "Upgrade Build Houses");
+			LimitNotice = 1;
+		}
+		else
+		{
+			LimitNotice++;
+			if(LimitNotice > 49)
+				LimitNotice = -1;
+		}
+	}
+	else
+	{
+		LimitNotice = 0;
+	}
+	
+	int current = CurrentCash - GlobalExtraCash - StartCash;
+
+	int a, other;
+	while((other = FindEntityByNPC(a)) != -1)
+	{
+		if(!b_NpcHasDied[other] && GetTeam(other) != TFTeam_Red)
+			current += RoundFloat(f_CreditsOnKill[other]);
+	}
+
+	int goal = DefaultTotalCash(round);
+	if(current < goal)
+	{
+		int reward = (goal - current) / RoundToNearest((float((b_thisNpcIsABoss[entity] ? 4 : 40)) * MultiGlobalEnemy));
+		if(reward < 5)
+			reward = 5;
+		
+		f_CreditsOnKill[entity] += float(reward / 5 * 5);
+	}
 }
 #include "roguelike/dungeon_items.sp"
 #include "roguelike/dungeon_encounters.sp"

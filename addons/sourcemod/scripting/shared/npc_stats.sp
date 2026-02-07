@@ -4313,6 +4313,7 @@ public void SetNpcToDeadViaGib(int pThis)
 	SetEntityRenderMode(pThis, RENDER_NONE);
 	SetEdictFlags(pThis, SetEntityTransmitState(pThis, FL_EDICT_DONTSEND));
 	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);	
+	Update_TransmitState(pThis);
 }
 
 public void Kill_Npc(int ref)
@@ -5432,11 +5433,13 @@ stock int GetClosestTarget(int entity,
 				CClotBody npc = view_as<CClotBody>(i);
 				if (GetTeam(i) != SearcherNpcTeam && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true))
 				{
+#if defined ZR
 					if(Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
 					{
 						if(Dungeon_GetEntityZone(entity) != Dungeon_GetEntityZone(i))
 							continue;
 					}
+#endif
 
 					if(CanSee)
 					{
@@ -5477,11 +5480,13 @@ stock int GetClosestTarget(int entity,
 			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client && GetTeam(entity_close) != SearcherNpcTeam)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
+#if defined ZR
 				if(Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
 				{
 					if(Dungeon_GetEntityZone(entity) != Dungeon_GetEntityZone(entity_close))
 						continue;
 				}
+#endif
 #if defined RTS
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
@@ -5576,7 +5581,10 @@ stock int GetClosestTarget(int entity,
 	//If the team searcher is not on red, target buildings, buildings can only be on the player team.
 #if defined ZR
 	//In Construction2 we want them to always try to target buildings.
-	if(SearcherNpcTeam != TFTeam_Red && !RaidbossIgnoreBuildingsLogic(1) && !IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers || (Dungeon_Mode()))) //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
+	 //dunggons ignore this if its a raid attack
+	if(SearcherNpcTeam != TFTeam_Red && !RaidbossIgnoreBuildingsLogic(1) && !IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers ||
+	 (Dungeon_Mode() && Dungeon_AttackType() >= 2))) 
+	 //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
 #else
 	if(!IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers))
 #endif
@@ -5595,6 +5603,7 @@ stock int GetClosestTarget(int entity,
 							continue;
 					}
 
+#if defined ZR
 					if(Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
 					{
 						if(Dungeon_GetEntityZone(entity) != Dungeon_GetEntityZone(entity_close))
@@ -5603,6 +5612,7 @@ stock int GetClosestTarget(int entity,
 						if(Const2_IgnoreBuilding_FindTraget(entity_close))
 							continue;
 					}
+#endif
 
 					if(ExtraValidityFunction != INVALID_FUNCTION)
 					{
@@ -6337,6 +6347,7 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 	{
 		if(IsValidEntity(npc.m_iTeamGlow)) 
 		{
+			Update_TransmitState(entity);
 			RemoveEntity(npc.m_iTeamGlow);
 		}	
 		return;	
@@ -6351,6 +6362,7 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 	{
 		if(!IsValidEntity(npc.m_iTeamGlow))
 		{
+			Update_TransmitState(entity);
 			npc.m_iTeamGlow = TF2_CreateGlow(entity);
 			
 			SetVariantColor(view_as<int>({125, 200, 255, 200}));
@@ -6361,6 +6373,7 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 	{
 		if(IsValidEntity(npc.m_iTeamGlow)) 
 		{
+			Update_TransmitState(entity);
 			RemoveEntity(npc.m_iTeamGlow);
 		}		
 	}
@@ -6950,7 +6963,7 @@ void UnstuckStuckNpc(CClotBody npc)
 	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		//This was an enemy.
-		if(Rogue_Mode())
+		if(Rogue_Mode() || Dungeon_Mode())
 		{
 			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 			return;
@@ -10707,6 +10720,7 @@ public void MakeEntityRagdollNpc(int pThis)
 #endif
 
 	SDKCall_BecomeRagdollOnClient(pThis, Push);
+	Update_TransmitState(pThis);
 }
 
 void RemoveNpcFromEnemyList(int npc, bool ingoresetteam = false)

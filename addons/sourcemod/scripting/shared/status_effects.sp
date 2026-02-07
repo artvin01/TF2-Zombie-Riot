@@ -4188,6 +4188,26 @@ void StatusEffects_FallenWarrior()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
+	strcopy(data.BuffName, sizeof(data.BuffName), "Main Center Death");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic 			= true;
+	data.OnBuffStarted				= MainCenter_Start;
+	data.OnBuffStoreRefresh			= MainCenter_Start;
+	data.OnBuffEndOrDeleted			= MainCenter_End;
+	
+	data.AttackspeedBuff			= -1.0;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	data.ElementalLogic 			= false;
+
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Unstable Umbral Rift");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "UR");
@@ -5045,6 +5065,11 @@ void StatusEffect_TimerCallDo(int victim)
 			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect, false);
 			Apply_StatusEffect.RemoveStatus();
 			i = 0;
+			if(!E_AL_StatusEffects[victim])
+			{
+				//cancel code if empty
+				return;
+			}
 			continue;
 		}
 		if(Apply_MasterStatusEffect.TimerRepeatCall_Func != INVALID_FUNCTION && Apply_MasterStatusEffect.TimerRepeatCall_Func)
@@ -6778,6 +6803,22 @@ float SZF_DamageScalingdeal(int attacker, int victim, StatusEffect Apply_MasterS
 }
 
 
+static void MainCenter_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+		
+	Attributes_SetMulti(victim, 442, 0.9);
+	SDKCall_SetSpeed(victim);
+}
+
+static void MainCenter_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+	Attributes_SetMulti(victim, 442, (1.0 / 0.9));
+	SDKCall_SetSpeed(victim);
+}
 static void Terrified_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	if(!IsValidClient(victim))

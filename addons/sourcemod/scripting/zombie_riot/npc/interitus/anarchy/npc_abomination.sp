@@ -297,14 +297,19 @@ public Action AnarchyAbomination_OnTakeDamage(int victim, int &attacker, int &in
 
 		npc.m_flSpeed = 290.0;
 		npc.Anger = false;
+		float minimumres = 0.05;
+		if(EnableSilentMode)
+		{
+			minimumres = 0.25;
+		}
 		if(damagetype & DMG_CLUB)
 		{
 			if(!NpcStats_IsEnemySilenced(npc.index))
 			{
 				npc.m_flMeleeArmor -= 0.05;
-				if(npc.m_flMeleeArmor < 0.05)
+				if(npc.m_flMeleeArmor < minimumres)
 				{
-					npc.m_flMeleeArmor = 0.05;
+					npc.m_flMeleeArmor = minimumres;
 					npc.Anger = true;
 				}
 			}
@@ -319,10 +324,10 @@ public Action AnarchyAbomination_OnTakeDamage(int victim, int &attacker, int &in
 		else if(!(damagetype & DMG_TRUEDAMAGE))
 		{
 			npc.m_flRangedArmor -= 0.05;
-			if(npc.m_flRangedArmor < 0.05)
+			if(npc.m_flRangedArmor < minimumres)
 			{
 				npc.Anger = true;
-				npc.m_flRangedArmor = 0.05;
+				npc.m_flRangedArmor = minimumres;
 			}
 			
 			npc.m_flMeleeArmor += 0.05;

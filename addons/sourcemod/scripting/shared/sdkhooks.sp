@@ -1618,7 +1618,7 @@ public void OnPostThink(int client)
 			}
 			else if (TeutonType[client] == TEUTON_DEAD)
 			{
-				if(b_HasBeenHereSinceStartOfWave[client])
+				if(WasHereSinceStartOfWave(client))
 				{
 					Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Died Teuton"
 					);
@@ -2171,7 +2171,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 		}
 		//the client was the last man on the server, or alone, give them spawn protection
 		//dont do this if they are under specter saw revival
-		else if(!Rogue_NoLastman() && b_IsAloneOnServer && !applied_lastmann_buffs_once)
+		else if(!Rogue_NoLastman() && b_IsAloneOnServer && !applied_lastmann_buffs_once && i_AmountDowned[victim] != 999)
 		{
 			//lastman for being alone!
 			//force lastman if alone, give inf downs to indicate DEATH.

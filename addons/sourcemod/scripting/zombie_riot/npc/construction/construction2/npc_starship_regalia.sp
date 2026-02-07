@@ -334,7 +334,7 @@ methodmap RegaliaClass < CClotBody
 		EmitSoundToAll(g_DefaultCapperShootSound[GetRandomInt(0, sizeof(g_DefaultCapperShootSound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);	
 	}
 	public void PlayPattenShootSound(float Loc[3]) {
-		EmitSoundToAll(g_DoGAttackSound[GetRandomInt(0, sizeof(g_DoGAttackSound) - 1)], _, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.9, 80, _, Loc);	
+		EmitSoundToAll(g_DoGAttackSound[GetRandomInt(0, sizeof(g_DoGAttackSound) - 1)], _, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.1, 80, _, Loc);	
 	}
 	public void PlayHL2TeleSound(float Loc[3]) {
 		EmitSoundToAll(g_HL2_TeleSounds[GetRandomInt(0, sizeof(g_HL2_TeleSounds) - 1)], _, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.9, 80, _, Loc);	
@@ -542,6 +542,10 @@ methodmap RegaliaClass < CClotBody
 		{
 			b_NpcUnableToDie[npc.index] = true;
 		}
+		if(StrContains(data, "final") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		
 		//Setting it to 999 will make our lag comp not resize collision box on shoot
 		b_BoundingBoxVariant[npc.index] = BBV_DontAlter; 
@@ -659,6 +663,7 @@ methodmap RegaliaClass < CClotBody
 
 		Zero(fl_player_weapon_score);
 		npc.m_fbRangedSpecialOn = true;		
+		npc.Anger = false;
 		return npc;
 	}
 	public void CreateBody()
@@ -1026,32 +1031,32 @@ methodmap RegaliaClass < CClotBody
 			}	
 			return speed; 				
 		}
-		public set(float TempValueForProperty) 	{ fl_ShipTurnSpeed = TempValueForProperty; }
+		public set(float TempValueForProperty) 	{ fl_ShipTurnSpeed = (TempValueForProperty / TickrateModify); 				}
 	}
 	property float m_flDecceleration
 	{
-		public get()							{ return fl_ShipDeceleration; 				}
-		public set(float TempValueForProperty) 	{ fl_ShipDeceleration = TempValueForProperty; }
+		public get()							{ return fl_ShipDeceleration; 												}
+		public set(float TempValueForProperty) 	{ fl_ShipDeceleration = (TempValueForProperty / TickrateModify); 			}
 	}
 	property float m_flHyperDeccelSpeed
 	{
-		public get()							{ return fl_ShipHyperDecelerationSpeed; 				}
-		public set(float TempValueForProperty) 	{ fl_ShipHyperDecelerationSpeed = TempValueForProperty; }
+		public get()							{ return fl_ShipHyperDecelerationSpeed; 									}
+		public set(float TempValueForProperty) 	{ fl_ShipHyperDecelerationSpeed = (TempValueForProperty / TickrateModify); 	}
 	}
 	property float m_flAcceleration
 	{
-		public get()							{ return fl_ShipAcceleration; 				}
-		public set(float TempValueForProperty) 	{ fl_ShipAcceleration = TempValueForProperty; }
+		public get()							{ return fl_ShipAcceleration; 												}
+		public set(float TempValueForProperty) 	{ fl_ShipAcceleration = (TempValueForProperty / TickrateModify); 			}
 	}
 	property float m_flHyperDeccelNearDist
 	{
-		public get()							{ return fl_ShipHyperDecelerationNearDist; 				}
-		public set(float TempValueForProperty) 	{ fl_ShipHyperDecelerationNearDist = TempValueForProperty; }
+		public get()							{ return fl_ShipHyperDecelerationNearDist; 									}
+		public set(float TempValueForProperty) 	{ fl_ShipHyperDecelerationNearDist = TempValueForProperty; 					}
 	}
 	property float m_flHyperDeccelMax
 	{
-		public get()							{ return fl_ShipHyperDecelerationMax; 				}
-		public set(float TempValueForProperty) 	{ fl_ShipHyperDecelerationMax = TempValueForProperty; }
+		public get()							{ return fl_ShipHyperDecelerationMax; 										}
+		public set(float TempValueForProperty) 	{ fl_ShipHyperDecelerationMax = TempValueForProperty; 						}
 	}
 	public VectorTurnData RotateShipFlightPathTowards(float GoalVec[3], float multi = 1.0)
 	{
@@ -1550,7 +1555,7 @@ static void HandleConstructor(RegaliaClass npc)
 	if(npc.m_flConstructorDuration < GameTime)
 	{
 		npc.m_flShipAbilityActive	= GameTime + 1.0;
-		npc.m_flConstructorCooldown = GameTime + GetRandomFloat(60.0, 90.0);
+		npc.m_flConstructorCooldown = GameTime + GetRandomFloat(90.0, 120.0);
 		npc.m_flConstructorDuration = FAR_FUTURE;
 		
 		f3_LastValidPosition[npc.index][2] +=10.0;
@@ -1559,7 +1564,7 @@ static void HandleConstructor(RegaliaClass npc)
 		npc.EndFlightSystemGoal();
 		npc.EndGenericLaserSound();
 
-		int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.05);	//0.5% of ship hp
+		int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.0125);	//0.125% of ship hp
 
 		float Radius = 300.0;
 		float TE_Duration = 1.0;
@@ -1576,7 +1581,7 @@ static void HandleConstructor(RegaliaClass npc)
 
 		f3_LastValidPosition[npc.index][2] +=40.0;
 
-		for(int i = 0 ; i < 4 ; i++)
+		for(int i = 0 ; i < 8 ; i++)
 		{
 			int SpwanIndex = NPC_CreateByName("npc_almagest_proxima", npc.index, f3_LastValidPosition[npc.index], {0.0, 0.0, 0.0}, GetTeam(npc.index));
 
@@ -1811,7 +1816,7 @@ static void HandleBeacons(RegaliaClass npc)
 	}
 	
 	Beacon = NPC_CreateByName("npc_starship_beacon", npc.index, fl_BeaconSpawnPos[selection], {0.0, 0.0, 0.0}, GetTeam(npc.index), npc.Anger ? "style1;lifeloss" : "style1");
-	int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.05);	//like 5% hp of ship
+	int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.07);	//like 7% hp of ship
 	if(Beacon < MaxClients)
 		return;
 
@@ -1970,7 +1975,7 @@ static void SpiralGlave_Tick(DataPack IncomingData)
 
 	float Ratio = (Data.Duration - GameTime) / Data.Duration_Base;
 
-	float RotationSpeed = 4.5 * Ratio;
+	float RotationSpeed = (4.5 * Ratio * ReturnEntityAttackspeed(npc.index)) / TickrateModify;
 
 	Data.Angle +=RotationSpeed;
 
@@ -2009,7 +2014,7 @@ static void SpiralGlave_Tick(DataPack IncomingData)
 	color = iRegaliaColor(npc);
 
 	if(Windup)
-		color[3] = RoundToFloor(255.0 * (1.0 - Ratio));
+		color[3] = RoundToFloor(255.0 * (1.0 - (Data.Windup - GameTime) / Data.Windup_Base));
 
 	float RingLoc[3]; RingLoc = MiddleLoc;
 	
@@ -2303,7 +2308,7 @@ static void Regalia_AnnihilateTarget_Tick(DataPack IncomingData)
 	Data.LastLoc = f3_LastValidPosition[npc.index];
 	const float radius = 300.0;
 
-	Data.AngleModif += 5.0*Ratio;
+	Data.AngleModif += (5.0*Ratio * ReturnEntityAttackspeed(npc.index)) / TickrateModify;
 
 	if(Data.AngleModif > 360.0)
 		Data.AngleModif -= 360.0;
@@ -2529,7 +2534,7 @@ static void DoG_PatternTick(DataPack IncomingData)
 	const float TE_Duration = 0.1;
 	const float Amp = 0.1;
 
-	Data.AngleModif+=1.0;
+	Data.AngleModif+=(1.0 * ReturnEntityAttackspeed(npc.index)) / TickrateModify;
 	
 	if(Data.AngleModif > 360.0)
 		Data.AngleModif -= 360.0;
@@ -2853,7 +2858,7 @@ static void RegaliaIOC_Tick(DataPack Data)
 	}
 
 
-	AngleModif+=GetRandomFloat(1.0, 2.0) * ReturnEntityAttackspeed(npc.index);
+	AngleModif+=(GetRandomFloat(1.0, 2.0) * ReturnEntityAttackspeed(npc.index)) / TickrateModify;
 
 	if(AngleModif > 360.0)
 		AngleModif -= 360.0;
@@ -2992,9 +2997,9 @@ static void HandleDroneSystem(RegaliaClass npc)
 static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
 {
 	int Drone = NPC_CreateByName("npc_lantean_drone_projectile", npc.index, Loc, Angles, GetTeam(npc.index), "blue;raidmodescaling_damage");
-	int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.001);	//like 0.1% hp of ship
+	int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.0005);	//like 0.05% hp of ship
 
-	const float DroneSpeed = 750.0;
+	float DroneSpeed = npc.Anger ? 1200.0 : 900.0;
 	if(Drone > MaxClients)
 	{
 		SetEntProp(Drone, Prop_Data, "m_iHealth", health);
@@ -3003,8 +3008,8 @@ static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
 		LanteanProjectile drone_npc = view_as<LanteanProjectile>(Drone);
 		fl_AbilityVectorData[drone_npc.index] = Angles;
 
-		drone_npc.m_flTimeTillDeath = GetGameTime() + 10.0 + GetRandomFloat(0.5, 1.5);
-		drone_npc.m_flSpeed = DroneSpeed + 200.0 * GetRandomFloat(0.8, 1.2);
+		drone_npc.m_flTimeTillDeath = GetGameTime() + 10.0 + GetRandomFloat(0.5, 5.0);
+		drone_npc.m_flSpeed = DroneSpeed + 600.0 * GetRandomFloat(0.8, 1.2);
 
 		switch(GetRandomInt(1, 2))
 		{
@@ -3057,8 +3062,8 @@ static void LanceeWeaponTurnControl(int iNPC)
 
 		float Origin[3]; GetAbsOrigin(npc.index, Origin);
 
-		float BeamSpeed = fl_PrimaryLancesTravelSpeed * 0.1515;
-		float TurnSpeed = fl_PrimaryLancesTurnSpeed;
+		float BeamSpeed = (fl_PrimaryLancesTravelSpeed * 0.1515 * (npc.Anger ? 2.0 : 1.0)) / TickrateModify;
+		float TurnSpeed = (fl_PrimaryLancesTurnSpeed * (npc.Anger ? 2.0 : 1.0)) / TickrateModify;
 
 		float TargetLoc[3]; WorldSpaceCenter(npc.m_iTarget, TargetLoc);
 		
@@ -3107,7 +3112,7 @@ static void LanceeWeaponTurnControl(int iNPC)
 	}
 	else
 	{
-		Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * 5.0 * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
+		Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
 	}
 	
 	
@@ -3299,7 +3304,7 @@ static void HandleMainWeapons(RegaliaClass npc)
 		if(npc.m_bVectoredThrust_InUse)
 		{
 			float WantedLoc[3];
-			Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * 5.0 * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
+			Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
 
 			//TE_SetupBeamPoints(Origin, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 60.0, 60.0, 0, 0.25, {0, 255, 0, 255}, 3);
 			//TE_SendToAll();
@@ -3323,7 +3328,7 @@ static void HandleMainWeapons(RegaliaClass npc)
 		//else
 		//{
 		//	float WantedLoc[3];
-		//	Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * 5.0 * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
+		//	Get_Fake_Forward_Vec(fl_PrimaryLancesTravelSpeed * fl_PrimaryLanceDuration_Base + 100.0, fl_AbilityVectorData_2[npc.index], WantedLoc, f3_LastValidPosition[npc.index]);
 		//	TE_SetupBeamPoints(Origin, WantedLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 60.0, 60.0, 0, 0.25, {0, 0, 255, 255}, 3);
 		//	TE_SendToAll();
 		//}
@@ -3663,9 +3668,23 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.PlayLifeLossSound();
 		ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", FAR_FUTURE);
 	//	CommLines("", "M I S T E R  B E A S T");
-	
-		Waves_ClearWave();
-		Waves_Progress(_,_, true);
+		if(i_RaidGrantExtra[npc.index])
+		{
+			for(int i; i < i_MaxcountNpcTotal; i++)
+			{
+				int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+				if(IsValidEntity(entitynpc))
+				{
+					if(entitynpc != npc.index && entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
+					{
+						SmiteNpcToDeath(entitynpc);
+					}
+				}
+			}
+			Waves_ClearWaves();
+			Waves_Progress(_,_, true);
+			AddNpcToAliveList(npc.index, 1);
+		}
 		//go to next wave instantly
 		return Plugin_Continue;
 	}
@@ -3717,8 +3736,12 @@ static void NPC_Death(int iNPC)
 	TE_Particle("hightower_explosion", Loc, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	TE_Particle("mvm_soldier_shockwave", Loc, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	
-	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
+	npc.CleanEntities();
+
+	if(i_RaidGrantExtra[npc.index])
 	{
+		Waves_ClearWaves();
+		ForcePlayerWin();
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
@@ -3730,9 +3753,7 @@ static void NPC_Death(int iNPC)
 				}
 			}
 		}
-		Waves_ClearWaves();
 	}
-	npc.CleanEntities();
 }
 static int[] iRegaliaColor(RegaliaClass npc)
 {

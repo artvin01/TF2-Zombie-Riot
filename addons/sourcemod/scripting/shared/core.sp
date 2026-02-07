@@ -1631,6 +1631,8 @@ public void OnClientPutInServer(int client)
 		if(b_AntiLateSpawn_Allow[client])
 			b_HasBeenHereSinceStartOfWave[client] = true;
 	}
+	if(Dungeon_Mode())
+		b_HasBeenHereSinceStartOfWave[client] = true;
 #endif
 	MedigunPutInServerclient(client);
 }
@@ -2546,6 +2548,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 //	PrintToChatAll("entity: %i| Clkassname %s",entity, classname);
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		h_TransmitHookType[entity] = 0;
 		f_TimeTillMeleeAttackShould[entity] = 0.0;
 		StatusEffectReset(entity, true);
 		f_InBattleDelay[entity] = 0.0;
@@ -2565,6 +2568,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_PullTowardsTarget[entity] = 0;
 		f_PullStrength[entity] = 0.0;
 #if defined ZR || defined RPG
+		Dungeon_SetEntityZone(entity, Zone_Unknown);
 		CoinEntityCreated(entity);
 #endif
 		//set it to 0!
@@ -3213,7 +3217,7 @@ void FlamethrowerAntiCrash(int entity)
 	}
 }
 #if defined ZR || defined RPG
-public void CheckIfAloneOnServer()
+void CheckIfAloneOnServer(bool CountOnly = false)
 {
 	CountPlayersOnRed();
 	b_IsAloneOnServer = false;
@@ -3234,19 +3238,19 @@ public void CheckIfAloneOnServer()
 			if(!b_AntiLateSpawn_Allow[client])
 				continue;
 #if defined ZR
-			if(!b_HasBeenHereSinceStartOfWave[client])
+			if(!WasHereSinceStartOfWave(client))
 				continue;
-#endif
-			players += 1;
-#if defined ZR 
 			player_alone = client;
 #endif
+			players += 1;
 		}
 	}
 	if(players == 1)
 	{
 		b_IsAloneOnServer = true;	
 	}
+	if(CountOnly)
+		return;
 
 #if defined ZR 
 	if(BetWar_Mode())

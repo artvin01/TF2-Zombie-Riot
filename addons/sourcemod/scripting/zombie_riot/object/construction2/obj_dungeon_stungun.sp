@@ -14,7 +14,7 @@
 
 #define CONSTRUCT_NAME		"Tranquilizer Turret"
 #define CONSTRUCT_RESOURCE1	"copper"
-#define CONSTRUCT_COST1		(30 + (CurrentLevel * 10))
+#define CONSTRUCT_COST1		(20 + (CurrentLevel * 5))
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() - 1)
 #define CONSTRUCT_DAMAGE	2.0
 #define CONSTRUCT_FIRERATE	(9.0 - (level * 2.0))
