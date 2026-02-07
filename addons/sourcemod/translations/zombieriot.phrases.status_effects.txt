@@ -783,6 +783,16 @@
 		"en"	"Ammo Visualization"
 		"ko"	"탄약 시각화"
 	}
+	"Buffweiser"
+	{
+		"en"	"Buffweiser"
+		"ko"	"버프와이저"
+	}
+	"Buffweiser Desc"
+	{
+		"en"	"Boosts damage dealt by 100％\nReduces damage taken by 50%"
+		"ko"	"공격 피해량이 100％ 증가합니다.\n받는 피해량이 50% 감소합니다."
+	}
 	"False Therapy"
 	{
 		"en"	"False Therapy"
