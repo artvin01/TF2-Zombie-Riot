@@ -540,7 +540,7 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
 						{
 							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
-							float damageDealt = 100.0;
+							float damageDealt = 115.0;
 							int ElementalDamage = 30;
 							if(NpcStats_VictorianCallToArms(npc.index))
 								ElementalDamage *= 2;
@@ -658,7 +658,7 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						float damageDealt = 75.0;
+						float damageDealt = 80.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 10.0;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);

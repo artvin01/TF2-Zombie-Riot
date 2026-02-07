@@ -249,7 +249,7 @@ static void ResourceCollectorSelfDefense(ResourceCollector npc, float gameTime, 
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 75.0;
+					float damageDealt = 50.0;
 					
 					if(ShouldNpcDealBonusDamage(target))
 					{

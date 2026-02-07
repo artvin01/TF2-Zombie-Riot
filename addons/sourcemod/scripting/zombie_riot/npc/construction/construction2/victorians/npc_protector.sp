@@ -302,6 +302,7 @@ void Victorian_ProtectorBuildObject(Victorian_Protector npc, float distance)
 			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/C_Crossing_Guard/C_Crossing_Guard.mdl");
 			SetVariantString("0.75");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
 			float timeup = 5.0;
 			if(NpcStats_VictorianCallToArms(npc.index))
 				 timeup *= 2.0;

@@ -286,7 +286,7 @@ static int Chemical_SpecialistSelfDefense(Chemical_Specialist npc, float gameTim
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						float damageDealt = 10.0;
+						float damageDealt = 35.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
 						int ElementalDamge = 25;

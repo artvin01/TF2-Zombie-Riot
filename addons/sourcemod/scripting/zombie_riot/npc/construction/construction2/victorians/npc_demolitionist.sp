@@ -273,7 +273,7 @@ static void DemolitionistSelfDefense(Demolitionist npc, float gameTime, int targ
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 50.0;
+					float damageDealt = 75.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 8.0;
 
