@@ -783,6 +783,16 @@
 		"en"	"Ammo Visualization"
 		"ko"	"탄약 시각화"
 	}
+	"Buffweiser"
+	{
+		"en"	"Buffweiser"
+		"ko"	"버프와이저"
+	}
+	"Buffweiser Desc"
+	{
+		"en"	"Boosts damage dealt by 100%\nReduces damage taken by 50%"
+		"ko"	"공격 피해량이 100% 증가합니다.\n받는 피해량이 50% 감소합니다."
+	}
 	"False Therapy"
 	{
 		"en"	"False Therapy"
@@ -2801,8 +2811,8 @@
 	}
 	"Xeno Infection Desc"
 	{
-		"en"	"Npc Gains 25％ Resistance, 30％ Damage, but thinks 15％ slower, and regens over time upto 1.35x max health, if above 25％ max health, gain immensive buffs untill below\ninfects any enemy with xeno aswell."
-		"ko"	"NPC 저항력 25％, 피해량 30％ 증가. 생각 속도 15％ 감소. 최대 체력의 1.35배까지 재생. 체력이 25％ 이상이라면 그 이하가 될 때까지 강력한 버프 획득\n다른 적에게도 제노를 감염시킴"
+		"en"	"Npc Gains 35％ Resistance, 40％ Damage, but thinks 10％ slower, and regens over time upto 1.35x max health, if above 25％ max health, gain immensive buffs untill below\ninfects any enemy with xeno aswell."
+		"ko"	"NPC 저항력 35％, 피해량 40％ 증가. 생각 속도 10％ 감소. 최대 체력의 1.35배까지 재생. 체력이 25％ 이상이라면 그 이하가 될 때까지 강력한 버프 획득\n다른 적에게도 제노를 감염시킴"
 	}
 	"Xeno"
 	{

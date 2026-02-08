@@ -414,7 +414,11 @@ int Dungeon_GetRound(bool forceTime = false)
 		return current + ongoing;
 	}
 	
-	return RoundToFloor(BattleWaveScale);
+	int scale = RoundToFloor(BattleWaveScale);
+	if(scale > MaxWaveScale)
+		scale = MaxWaveScale;
+	
+	return scale;
 }
 
 int Dungeon_CurrentAttacks()
@@ -1981,7 +1985,24 @@ static void StartBattle(const RoomInfo room, float time = 0.1)
 		snap.GetKey(length, buffer, sizeof(buffer));
 
 		room.Fights.GetValue(buffer, scale);
-		EnemyScaling = ScaleBasedOnRound(round) / ScaleBasedOnRound(scale);
+		//we will scale down round linearly
+		if(round >= 25)
+		{
+			//we lessen scaling number
+			round += 1;
+		}
+		if(round >= 30)
+		{
+			//we lessen scaling number
+			round += 1;
+		}
+		if(round >= 40)
+		{
+			//we lessen scaling number
+			round += 1;
+		}
+		EnemyScaling = ScaleBasedOnRound((round - 6)) / ScaleBasedOnRound(scale);
+		PrintToConsoleAll("Dungeon Enemy Scaling: %.2f%%", EnemyScaling * 100.0);
 
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
 		KeyValues kv = new KeyValues("Waves");
@@ -2111,6 +2132,9 @@ void Dungeon_WaveEnd(const float spawner[3] = NULL_VECTOR, bool rivalBase = fals
 		RoomInfo room;
 		RoomList.GetArray(CurrentRoomIndex, room);
 		room.RollLoot(spawner);
+
+		if(BattleWaveScale > 39.0)
+			room.RollLoot(spawner);
 	}
 }
 
@@ -2164,8 +2188,8 @@ void Dungeon_MainBuildingDeath(int entity)
 
 			RoomInfo room;
 			BaseList.GetArray(CurrentBaseIndex, room);
-			room.RollLoot(pos);
-			room.RollLoot(pos);
+			for(int loop; loop < 20; loop++)
+				room.RollLoot(pos);
 
 			NerfNextRaid = true;
 
@@ -2186,7 +2210,7 @@ bool Dungeon_AtLimitNotice()
 
 static float ScaleBasedOnRound(int round)
 {
-	return (500.0 + Pow(float(round), 2.6));
+	return (750.0 + Pow(float(round), 2.8));
 }
 
 void Dungeon_EnemySpawned(int entity)
@@ -2202,6 +2226,10 @@ void Dungeon_EnemySpawned(int entity)
 				b_StaticNPC[entity] = true;
 				AddNpcToAliveList(entity, 1);
 			}
+			case 0:
+			{
+				Dungeon_GiveNpcMoney(entity);
+			}
 			case 1:	// Dungeon NPC
 			{
 				if(Dungeon_GetEntityZone(entity) == Zone_Dungeon)
@@ -2213,64 +2241,13 @@ void Dungeon_EnemySpawned(int entity)
 
 					if(EnemyScaling > 0.0)
 					{
-						fl_Extra_Damage[entity] *= 1.0 + ((EnemyScaling - 1.0) / 3.0);
+						fl_Extra_Damage[entity] *= 1.0 + ((EnemyScaling - 1.0) / 4.0);
 						
 						SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * EnemyScaling));
 						SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * EnemyScaling));
 					}
 				}
-				// Reward cash depending on the wave scaling and how much left
-				if(Dungeon_GetEntityZone(entity) == Zone_Dungeon || Dungeon_GetEntityZone(entity) == Zone_RivalBase)
-				{
-					if(!i_IsABuilding[entity] && !i_NpcIsABuilding[entity])
-					{
-						int round = Dungeon_GetRound(true) + MONEY_SCLAING_PUSHFUTURE;
-						int limit = MONEY_SCLAING_PUSHFUTURE + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
-						if(round > limit)
-						{
-							round = limit;
-
-							if(!ObjectC2House_CanUpgrade() && ObjectDungeonCenter_Level() >= CurrentAttacks)
-							{
-								LimitNotice = 0;
-							}
-							else if(LimitNotice < 1)
-							{
-								CPrintToChatAll("{crimson}%t", "Upgrade Build Houses");
-								LimitNotice = 1;
-							}
-							else
-							{
-								LimitNotice++;
-								if(LimitNotice > 49)
-									LimitNotice = -1;
-							}
-						}
-						else
-						{
-							LimitNotice = 0;
-						}
-						
-						int current = CurrentCash - GlobalExtraCash - StartCash;
-
-						int a, other;
-						while((other = FindEntityByNPC(a)) != -1)
-						{
-							if(!b_NpcHasDied[other] && GetTeam(other) != TFTeam_Red)
-								current += RoundFloat(f_CreditsOnKill[other]);
-						}
-
-						int goal = DefaultTotalCash(round);
-						if(current < goal)
-						{
-							int reward = (goal - current) / RoundToNearest((float((b_thisNpcIsABoss[entity] ? 4 : 40)) * MultiGlobalEnemy));
-							if(reward < 5)
-								reward = 5;
-							
-							f_CreditsOnKill[entity] += float(reward / 5 * 5);
-						}
-					}
-				}
+				Dungeon_GiveNpcMoney(entity);
 			}
 			case 2, 3:	// Raid/Final NPC
 			{
@@ -2777,6 +2754,62 @@ void NoticeDungeonNoTimeLeft()
 		CPrintToChatAll("{crimson}%t", "Dungeon Empty Untill Next Raid");
 	}
 	NoticenoDungeon = true;
+}
+
+void Dungeon_GiveNpcMoney(int entity)
+{
+	if(Dungeon_GetEntityZone(entity) != Zone_Dungeon && Dungeon_GetEntityZone(entity) != Zone_RivalBase)	
+		return;
+
+	if(i_IsABuilding[entity] || i_NpcIsABuilding[entity])
+		return;
+	// Reward cash depending on the wave scaling and how much left
+
+	int round = Dungeon_GetRound(true) + MONEY_SCLAING_PUSHFUTURE;
+	int limit = MONEY_SCLAING_PUSHFUTURE + RoundFloat(ObjectC2House_CountBuildings() * 3.5);
+	if(round > limit)
+	{
+		round = limit;
+
+		if(!ObjectC2House_CanUpgrade() && ObjectDungeonCenter_Level() >= CurrentAttacks)
+		{
+			LimitNotice = 0;
+		}
+		else if(LimitNotice < 1)
+		{
+			CPrintToChatAll("{crimson}%t", "Upgrade Build Houses");
+			LimitNotice = 1;
+		}
+		else
+		{
+			LimitNotice++;
+			if(LimitNotice > 49)
+				LimitNotice = -1;
+		}
+	}
+	else
+	{
+		LimitNotice = 0;
+	}
+	
+	int current = CurrentCash - GlobalExtraCash - StartCash;
+
+	int a, other;
+	while((other = FindEntityByNPC(a)) != -1)
+	{
+		if(!b_NpcHasDied[other] && GetTeam(other) != TFTeam_Red)
+			current += RoundFloat(f_CreditsOnKill[other]);
+	}
+
+	int goal = DefaultTotalCash(round);
+	if(current < goal)
+	{
+		int reward = (goal - current) / RoundToNearest((float((b_thisNpcIsABoss[entity] ? 4 : 40)) * MultiGlobalEnemy));
+		if(reward < 5)
+			reward = 5;
+		
+		f_CreditsOnKill[entity] += float(reward / 5 * 5);
+	}
 }
 #include "roguelike/dungeon_items.sp"
 #include "roguelike/dungeon_encounters.sp"

@@ -3740,6 +3740,18 @@ static void NPC_Death(int iNPC)
 
 	if(i_RaidGrantExtra[npc.index])
 	{
+		Waves_ClearWaves();
+		ForcePlayerWin();
+		for (int client = 1; client <= MaxClients; client++)
+		{
+			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
+			{
+				if(Items_GiveNamedItem(client, "Almagest Data Card"))
+				{
+					CPrintToChat(client, "{green}Obtained{yellow} ''Almagest Data Card''");
+				}
+			}
+		}
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
@@ -3751,7 +3763,6 @@ static void NPC_Death(int iNPC)
 				}
 			}
 		}
-		Waves_ClearWaves();
 	}
 }
 static int[] iRegaliaColor(RegaliaClass npc)

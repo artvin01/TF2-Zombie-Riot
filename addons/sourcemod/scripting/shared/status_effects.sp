@@ -3024,6 +3024,20 @@ void StatusEffects_Victoria()
 	data.SlotPriority				= 0;
 	data.HudDisplay_Func			= AmmoTM_Visual_Hud_Func;
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Buffweiser");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "BEER");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "BEER"); //BEEEEEERRRRR
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.5; //50% less damage taken
+	data.DamageDealMulti			= 1.0; //x2 dmg
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.ElementalLogic				= false;
+	data.HudDisplay_Func 			= INVALID_FUNCTION;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }
 
 stock bool NpcStats_VictorianCallToArms(int victim)
@@ -4183,6 +4197,7 @@ void StatusEffects_FallenWarrior()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic 			= true;
 	data.OnBuffStarted				= MainCenter_Start;
 	data.OnBuffStoreRefresh			= MainCenter_Start;
 	data.OnBuffEndOrDeleted			= MainCenter_End;
@@ -4191,6 +4206,7 @@ void StatusEffects_FallenWarrior()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+	data.ElementalLogic 			= false;
 
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Unstable Umbral Rift");
@@ -7337,10 +7353,10 @@ void StatusEffects_Construct2_EnemyModifs()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Xeno");
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.75;
-	data.DamageDealMulti			= 0.3;
+	data.DamageTakenMulti 			= 0.65;
+	data.DamageDealMulti			= 0.4;
 	data.MovementspeedModif			= -1.0;
-	data.AttackspeedBuff			= (1.0 / 0.85);
+	data.AttackspeedBuff			= (1.0 / 0.9);
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= Const2Modifs_Xeno_Start;
@@ -7353,10 +7369,10 @@ void StatusEffects_Construct2_EnemyModifs()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "");
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.7;
+	data.DamageTakenMulti 			= 0.65;
 	data.DamageDealMulti			= 0.4;
 	data.MovementspeedModif			= -1.0;
-	data.AttackspeedBuff			= (1.0 / 0.85);
+	data.AttackspeedBuff			= (1.0 / 0.9);
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= Const2Modifs_Xeno_Start_Already;
