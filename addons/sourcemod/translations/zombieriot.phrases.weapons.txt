@@ -5126,6 +5126,11 @@
 		"en"	"Enhancement: Overheating Protection Removed"
 		"ko"	"개조: 과열 보호 제거"
 	}
+	"Enhancement: Overcharge Capacitor"
+	{
+		"en"	"Enhancement: Overcharge Capacitor"
+		"ko"	"개조: 과충전 축전기"
+	}
 	"Enhancement: Airstrike Beacon"
 	{
 		"en"	"Enhancement: Heat Sink Discharge"
