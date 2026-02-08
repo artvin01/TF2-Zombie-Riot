@@ -7353,10 +7353,10 @@ void StatusEffects_Construct2_EnemyModifs()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Xeno");
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.75;
-	data.DamageDealMulti			= 0.3;
+	data.DamageTakenMulti 			= 0.65;
+	data.DamageDealMulti			= 0.4;
 	data.MovementspeedModif			= -1.0;
-	data.AttackspeedBuff			= (1.0 / 0.85);
+	data.AttackspeedBuff			= (1.0 / 0.9);
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= Const2Modifs_Xeno_Start;
@@ -7369,10 +7369,10 @@ void StatusEffects_Construct2_EnemyModifs()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "");
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.7;
+	data.DamageTakenMulti 			= 0.65;
 	data.DamageDealMulti			= 0.4;
 	data.MovementspeedModif			= -1.0;
-	data.AttackspeedBuff			= (1.0 / 0.85);
+	data.AttackspeedBuff			= (1.0 / 0.9);
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= Const2Modifs_Xeno_Start_Already;
