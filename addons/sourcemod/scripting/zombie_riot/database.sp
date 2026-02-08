@@ -807,7 +807,7 @@ public void Database_LocalGamedata(Database db, int userid, int numQueries, DBRe
 	}
 }
 
-void Database_SaveGameData(int client)
+void Database_SaveGameData(int client, DBPriority prio)
 {
 	if(Local && CurrentGame != -1)
 	{
@@ -862,7 +862,7 @@ void Database_SaveGameData(int client)
 
 			tr.AddQuery(buffer);
 			
-			Local.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
+			Local.Execute(tr, Database_Success, Database_Fail, prio);
 		}
 	}
 }

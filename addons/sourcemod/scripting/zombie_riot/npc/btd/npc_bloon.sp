@@ -148,13 +148,13 @@ static int GetBloonTypeOfData(const char[] data, bool &camo, bool &fortified, bo
 
 static float BloonSpeedMulti()
 {
-	if(CurrentRound < 80)
+	if(CurrentRound[Rounds_Default] < 80)
 		return 1.0;
 	
-	if(CurrentRound < 100)
-		return 1.0 + (CurrentRound - 79) * 0.02;
+	if(CurrentRound[Rounds_Default] < 100)
+		return 1.0 + (CurrentRound[Rounds_Default] - 79) * 0.02;
 	
-	return 1.0 + (CurrentRound - 70) * 0.02;
+	return 1.0 + (CurrentRound[Rounds_Default] - 70) * 0.02;
 }
 
 float Bloon_BaseHealth()

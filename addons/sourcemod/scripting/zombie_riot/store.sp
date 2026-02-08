@@ -598,6 +598,7 @@ static const char AmmoNames[][] =
 	"N/A"
 };
 
+static Handle AutoSaveTimer;
 static ArrayList StoreItems;
 static int NPCOnly[MAXPLAYERS];
 static int NPCCash[MAXPLAYERS];
@@ -1038,6 +1039,7 @@ int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
 
 void Store_ConfigSetup()
 {
+	delete AutoSaveTimer;
 	Zero(f_ConfirmSellDo);
 	ClearAllTempAttributes();
 	delete StoreTags;
@@ -1088,6 +1090,22 @@ void Store_ConfigSetup()
 //	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
 //	StoreBalanceLog = new KeyValues("UsageLog");
 //	StoreBalanceLog.ImportFromFile(buffer);
+
+	AutoSaveTimer = CreateTimer(10.0, AutoSaveTime, 1);
+}
+
+static Action AutoSaveTime(Handle timer, int client)
+{
+	int user = client + 1;
+	if(user > MaxClients)
+		user = client;
+	
+	AutoSaveTimer = CreateTimer(10.0, AutoSaveTime, user);
+
+	if(IsClientInGame(client) && !IsFakeClient(client))
+		Database_SaveGameData(client, DBPrio_Normal);
+	
+	return Plugin_Continue;
 }
 
 static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, bool rogueSell, const char[][] whitelist, int whitecount, const char[][] blacklist, int blackcount)
@@ -1966,7 +1984,7 @@ void Store_ClientDisconnect(int client)
 {
 	Store_WeaponSwitch(client, -1);
 	
-	Database_SaveGameData(client);
+	Database_SaveGameData(client, DBPrio_High);
 
 	CashSpent[client] = 0;
 	CashSpentGivePostSetup[client] = 0;
@@ -2590,7 +2608,10 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				}
 				case -95:
 				{
-					StartTutorial(client);
+					if(Dungeon_Mode())
+						ExplainToClientDungeon(client, true);
+					else
+						StartTutorial(client);
 				}
 				case -64: //Lower Volume
 				{
@@ -2772,9 +2793,11 @@ void Store_DiscountNamedItem(const char[] name, int timed = 0, float discount = 
 			}
 
 			StoreItems.SetArray(i, item);
-			break;
+			return;
 		}
 	}
+
+	PrintToChatAll("ERROR: Store_DiscountNamedItem::%s:%d:%f unknown item", name, timed, discount);
 }
 
 #define ZR_STORE_RESET (1 << 1) //This will reset the entire store to default
@@ -3285,7 +3308,7 @@ static void MenuPage(int client, int section)
 					}
 				}
 			}
-			else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
+			else if(CurrentRound[Rounds_Default] < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
 			{
 				Format(buffer, sizeof(buffer), "%T\n \n%s\n \n%s ", "TF2: Zombie Riot", client, buf, info.Custom_Name);
 			}
@@ -3529,7 +3552,7 @@ static void MenuPage(int client, int section)
 		}
 		else if(UsingChoosenTags[client])
 		{
-			if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
+			if(CurrentRound[Rounds_Default] < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
 			{
 				menu.SetTitle("%T\n%T\n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", client, "Cherrypick Weapon", client, buf);
 			}
@@ -3538,7 +3561,7 @@ static void MenuPage(int client, int section)
 				menu.SetTitle("%T\n%T\n%s\n%T\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", client, "Cherrypick Weapon", client, buf, "Store Discount", client);
 			}
 		}
-		else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
+		else if(CurrentRound[Rounds_Default] < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
 		{
 			menu.SetTitle("%T\n \n%s\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", client, buf, info.Custom_Name);
 		}
@@ -3568,7 +3591,7 @@ static void MenuPage(int client, int section)
 				menu.SetTitle("%T\n%T\n%T\n \n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", client, "The World Machine's Items", client,"All Items are 20％ off here!", client, buf);
 			}
 		}
-		else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
+		else if(CurrentRound[Rounds_Default] < 2 || Rogue_NoDiscount() || Construction_Mode() || Dungeon_Mode() || !Waves_InSetup())
 		{
 			if(UsingChoosenTags[client])
 			{
@@ -5464,7 +5487,7 @@ void Store_ApplyAttribs(int client)
 
 	float value;
 	char buffer1[12];
-	if(!i_ClientHasCustomGearEquipped[client])
+	if(i_ClientHasCustomGearEquipped[client] < 2)
 	{
 		static ItemInfo info;
 		char buffer2[32];
@@ -6522,8 +6545,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_KitOmega(client, entity);
 		Enable_PurgeKit(client, entity);
 		GemCrafter_Enable(client, entity);
+		VehicleFullAPC_WeaponEnable(client, entity);
 		Enable_ExploARWeapon(client, entity);
-
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);
 	}
@@ -6531,14 +6554,14 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	return entity;
 }
 
-int Store_GiveSpecificItem(int client, const char[] name)
+int Store_GiveSpecificItem(int client, const char[] name, bool UpdateSlots = true, int CompareWeaponArray = -1)
 {
 	static Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(StrEqual(name, item.Name, false))
+		if(StrEqual(name, item.Name, false) || CompareWeaponArray == i)
 		{
 			Store_EquipSlotCheck(client, item);
 
@@ -6552,7 +6575,9 @@ int Store_GiveSpecificItem(int client, const char[] name)
 			StoreItems.SetArray(i, item);
 			
 			int entity = Store_GiveItem(client, i, item.Equipped[client]);
-			CheckMultiSlots(client);
+			if(UpdateSlots)
+				CheckMultiSlots(client);
+			
 			return entity;
 		}
 	}
@@ -6666,6 +6691,11 @@ bool Store_PrintLevelItems(int client, int level)
 		}
 	}
 	return found;
+}
+
+int Store_GetItemIndex(const char[] name)
+{
+	return StoreItems.FindString(name, Item::Name);
 }
 
 int Store_GetItemName(int index, int client = 0, char[] buffer, int leng, bool translate = true)
@@ -6882,25 +6912,6 @@ static void ItemCost(int client, Item item, int &cost)
 		{
 			cost = RoundToCeil(float(cost) * 0.9);
 		}
-		/*
-		if(!Rogue_Mode() && (CurrentRound != 0 || CurrentWave != -1) && cost)
-		{
-			switch(CurrentPlayers)
-			{
-				case 0:
-					CheckAlivePlayers();
-				
-				case 1:
-					cost = RoundToNearest(float(cost) * 0.9);
-				
-				case 2:
-					cost = RoundToNearest(float(cost) * 0.92);
-				
-				case 3:
-					cost = RoundToNearest(float(cost) * 0.95);
-			}
-		}
-		*/
 			
 	}
 	

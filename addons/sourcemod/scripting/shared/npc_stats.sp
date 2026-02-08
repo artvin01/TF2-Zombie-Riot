@@ -177,6 +177,92 @@ public Action Command_RemoveAll(int client, int args)
 	return Plugin_Handled;
 }
 
+public Action Command_PetMenu1(int client, int args)
+{
+	//What are you.
+	if(!(client > 0 && client <= MaxClients && IsClientInGame(client)))
+		return Plugin_Handled;
+	
+	if(args < 1)
+	{
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_building <plugin> [health] [data] [team] [damage multi] [speed multi] [ranged armour] [melee armour] [Extra Size] [Think Speed]");
+		return Plugin_Handled;
+	}
+	
+	float flPos[3], flAng[3];
+	GetClientEyeAngles(client, flAng);
+	flAng[0] = 0.0;
+	if(!SetTeleportEndPoint(client, flPos, false))
+	{
+		PrintToChat(client, "Could not find place.");
+		return Plugin_Handled;
+	}
+	
+	//1==index, 2==health, 3==data, 4==ally, 5==rpg lvl 
+	char plugin[64], buffer[64];
+	GetCmdArg(1, plugin, sizeof(plugin));
+	GetCmdArg(3, buffer, sizeof(buffer));
+
+#if defined RTS
+	int team = GetTeam(client);
+#elseif defined ZR
+	int team = TFTeam_Blue;
+#else
+	int team = 4;
+#endif
+	if(args > 3)	//data
+		team = view_as<bool>(GetCmdArgInt(4));
+	
+#if defined RTS
+	int entity = NPC_CreateByName(plugin, team, flPos, flAng, buffer);
+#else
+	int entity = NPC_CreateByName(plugin, client, flPos, flAng, team, buffer);
+#endif
+
+	if(IsValidEntity(entity))
+	{
+
+#if defined ZR
+		if(GetTeam(entity) != view_as<int>(TFTeam_Red))
+		{
+			NpcAddedToZombiesLeftCurrently(entity, true);
+		}
+#endif
+		
+		if(args > 1)
+		{
+			int health = GetCmdArgInt(2);
+			SetEntProp(entity, Prop_Data, "m_iHealth", health);
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		}
+		
+		if(args > 4)
+			fl_Extra_Damage[entity] = GetCmdArgFloat(5);
+		
+		if(args > 5)
+			fl_Extra_Speed[entity] = GetCmdArgFloat(6);
+		
+		if(args > 6)
+			fl_Extra_RangedArmor[entity] = GetCmdArgFloat(7);
+		
+		if(args > 7)
+			fl_Extra_MeleeArmor[entity] = GetCmdArgFloat(8);
+
+		if(args > 8)
+		{
+			float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale * GetCmdArgFloat(9));
+		}
+
+		if(args > 9)
+		{
+			f_AttackSpeedNpcIncrease[entity] = GetCmdArgFloat(10);
+		}
+	}
+
+	return Plugin_Handled;
+}
+
 public Action Command_PetMenu(int client, int args)
 {
 	//What are you.
@@ -190,7 +276,8 @@ public Action Command_PetMenu(int client, int args)
 	}
 	
 	float flPos[3], flAng[3];
-	GetClientAbsAngles(client, flAng);
+	GetClientEyeAngles(client, flAng);
+	flAng[0] = 0.0;
 	if(!SetTeleportEndPoint(client, flPos))
 	{
 		PrintToChat(client, "Could not find place.");
@@ -617,13 +704,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		SetEntProp(npc, Prop_Data, "m_nSolidType", 2);
 		
-		b_BoundingBoxVariant[npc] = 0; //This will tell lag compensation what to revert to once the calculations are done.
+		b_BoundingBoxVariant[npc] = BBV_Normal; //This will tell lag compensation what to revert to once the calculations are done.
 		static float m_vecMaxs[3];
 		static float m_vecMins[3];
 		if(isGiant)
 		{
 			b_IsGiant[npc] = true;
-			b_BoundingBoxVariant[npc] = 1;
+			b_BoundingBoxVariant[npc] = BBV_Giant;
 			m_vecMaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
 			m_vecMins = view_as<float>( { -30.0, -30.0, 0.0 } );	
 		}			
@@ -1436,6 +1523,17 @@ methodmap CClotBody < CBaseCombatCharacter
 		public set(float iFloat) 
 		{
 			this.SetPropFloat(Prop_Data, "f_RegenDoLogic", iFloat); 
+		}
+	}
+	property bool b_BlockDropChances
+	{
+		public get()		 
+		{ 
+			return view_as<bool>(this.GetProp(Prop_Data, "b_BlockDropChances"));
+		}
+		public set(bool iBool) 
+		{
+			this.SetProp(Prop_Data, "b_BlockDropChances", iBool); 
 		}
 	}
 	property int m_iBleedType
@@ -3042,11 +3140,11 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 		
-		if(i_IsVehicle[target])
+		/*if(i_IsVehicle[target])
 		{
 			// Vehicle hitboxes
 			return this.DoAimbotTrace(trace, target, vecSwingStartOffset);
-		}
+		}*/
 		
 		float eyePitch[3];
 		if(Npc_type != 3)
@@ -3761,6 +3859,7 @@ methodmap CClotBody < CBaseCombatCharacter
 public void NPC_Base_InitGamedata()
 {
 	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_ROOT);
+	RegAdminCmd("sm_spawn_building", Command_PetMenu1, ADMFLAG_ROOT);
 	RegAdminCmd("sm_remove_npc", Command_RemoveAll, ADMFLAG_ROOT);
 	
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
@@ -3842,6 +3941,7 @@ public void NPC_Base_InitGamedata()
 		.DefineFloatField("f_JumpedRecently")
 		.DefineIntField("i_Climbinfractions")
 		.DefineFloatField("f_ClimbingAm")
+		.DefineBoolField("b_BlockDropChances")
 #if defined ZR
 		.DefineFloatField("m_flElementRes", Element_MAX)
 #endif
@@ -3861,6 +3961,7 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("m_iTowerdefense_CheckpointAt")
 		.DefineIntField("m_iTowerdefense_Target")
 		.DefineFloatField("f_RegenDoLogic")
+		.DefineBoolField("b_BlockDropChances")
 #if defined ZR
 		.DefineFloatField("m_flElementRes", Element_MAX)
 #endif
@@ -4164,6 +4265,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		MakeObjectIntangeable(pThis);
+
 		b_ThisEntityIgnored[pThis] = true;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
 		//Do not remove pather here.
@@ -4174,7 +4276,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		if(i_IsNpcType[pThis] == 1)
 		{
 			npc.m_bDissapearOnDeath = true;
-			//Need extra, baseboss is very special.
 		}
 		if(!npc.m_bDissapearOnDeath)
 		{
@@ -4212,6 +4313,7 @@ public void SetNpcToDeadViaGib(int pThis)
 	SetEntityRenderMode(pThis, RENDER_NONE);
 	SetEdictFlags(pThis, SetEntityTransmitState(pThis, FL_EDICT_DONTSEND));
 	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);	
+	Update_TransmitState(pThis);
 }
 
 public void Kill_Npc(int ref)
@@ -5261,6 +5363,15 @@ stock int GetClosestTarget(int entity,
 		fldistancelimitAllyNPC = 99999.9;
 		UseVectorDistance = true;
 	}
+	if(Dungeon_Mode())
+	{
+		if(fldistancelimitAllyNPC == 450.0)
+			fldistancelimitAllyNPC = 99999.9;
+		if(Dungeon_GetEntityZone(entity) == Zone_RivalBase)
+		{
+			UseVectorDistance = true;
+		}
+	}
 
 	//in rogue you can get allies, but they shouldnt get any enemies during setups.
 	if(Rogue_Mode())
@@ -5322,6 +5433,14 @@ stock int GetClosestTarget(int entity,
 				CClotBody npc = view_as<CClotBody>(i);
 				if (GetTeam(i) != SearcherNpcTeam && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true))
 				{
+#if defined ZR
+					if(Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
+					{
+						if(Dungeon_GetEntityZone(entity) != Dungeon_GetEntityZone(i))
+							continue;
+					}
+#endif
+
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, i))
@@ -5361,6 +5480,13 @@ stock int GetClosestTarget(int entity,
 			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client && GetTeam(entity_close) != SearcherNpcTeam)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
+#if defined ZR
+				if(Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
+				{
+					if(Dungeon_GetEntityZone(entity) != Dungeon_GetEntityZone(entity_close))
+						continue;
+				}
+#endif
 #if defined RTS
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
@@ -5418,7 +5544,11 @@ stock int GetClosestTarget(int entity,
 					//if its a downed citizen, dont target.
 					if(Citizen_ThatIsDowned(entity_close))
 						continue;
-
+					if(Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
+					{
+						if(Dungeon_GetEntityZone(entity) != Dungeon_GetEntityZone(entity_close))
+							continue;
+					}
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, entity_close))
@@ -5450,9 +5580,11 @@ stock int GetClosestTarget(int entity,
 
 	//If the team searcher is not on red, target buildings, buildings can only be on the player team.
 #if defined ZR
-	if(SearcherNpcTeam != TFTeam_Red && !RaidbossIgnoreBuildingsLogic(1) && !IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers)) //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
-#elseif defined RTS
-	if(!IgnoreBuildings)
+	//In Construction2 we want them to always try to target buildings.
+	 //dunggons ignore this if its a raid attack
+	if(SearcherNpcTeam != TFTeam_Red && !RaidbossIgnoreBuildingsLogic(1) && !IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers ||
+	 (Dungeon_Mode() && Dungeon_AttackType() >= 2))) 
+	 //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
 #else
 	if(!IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers))
 #endif
@@ -5465,26 +5597,19 @@ stock int GetClosestTarget(int entity,
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(!i_IsVehicle[entity_close] && GetTeam(entity_close) != SearcherNpcTeam && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 				{
-#if defined RTS
-					if(ExtraValidityFunction == INVALID_FUNCTION)
-					{
-						// Ignore resources and allies
-						if(Object_GetResource(entity_close) ||
-							RTS_IsEntAlly(entity, entity_close))
-							continue;
-					}
-					else
-					{
-						// Ignore non-resource allies
-						if(!Object_GetResource(entity_close) && RTS_IsEntAlly(entity, entity_close))
-							continue;
-					}
-#endif
-
-#if !defined RTS
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, entity_close))
+							continue;
+					}
+
+#if defined ZR
+					if(Dungeon_Mode() && !CvarInfiniteCash.BoolValue)
+					{
+						if(Dungeon_GetEntityZone(entity) != Dungeon_GetEntityZone(entity_close))
+							continue;
+						//when its this gamemode, we want to make sure to always ignore these buildings
+						if(Const2_IgnoreBuilding_FindTraget(entity_close))
 							continue;
 					}
 #endif
@@ -5509,11 +5634,7 @@ stock int GetClosestTarget(int entity,
 		}
 	}
 
-#if defined RTS
-	return GetClosestTarget_Internal(entity, fldistancelimit, EntityLocation, MinimumDistance);
-#else
 	return GetClosestTarget_Internal(entity, fldistancelimit, fldistancelimitAllyNPC, EntityLocation, UseVectorDistance, MinimumDistance);
-#endif
 }
 
 void GetClosestTarget_AddTarget(int entity, int type)
@@ -5544,7 +5665,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 	int ClosestTarget = -1; 
 
 #if !defined RTS
-	if(i_IsNpcType[entity] == STATIONARY_NPC)
+	if(i_IsNpcType[entity] == STATIONARY_NPC || !b_ThisWasAnNpc[entity])
 	{
 		//Stationary npcs never really need vector distance.
 		UseVectorDistance = true;
@@ -6226,6 +6347,7 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 	{
 		if(IsValidEntity(npc.m_iTeamGlow)) 
 		{
+			Update_TransmitState(entity);
 			RemoveEntity(npc.m_iTeamGlow);
 		}	
 		return;	
@@ -6240,6 +6362,7 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 	{
 		if(!IsValidEntity(npc.m_iTeamGlow))
 		{
+			Update_TransmitState(entity);
 			npc.m_iTeamGlow = TF2_CreateGlow(entity);
 			
 			SetVariantColor(view_as<int>({125, 200, 255, 200}));
@@ -6250,6 +6373,7 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 	{
 		if(IsValidEntity(npc.m_iTeamGlow)) 
 		{
+			Update_TransmitState(entity);
 			RemoveEntity(npc.m_iTeamGlow);
 		}		
 	}
@@ -6744,7 +6868,7 @@ public void NpcStuckInSomething(CClotBody npc, int iNPC)
 		return;
 	if(f_DoNotUnstuckDuration[iNPC] > GetGameTime())
 		return;
-
+		
 	if(i_FailedTriesUnstuck[iNPC][1] == 0)
 	{
 		if (npc.IsOnGround())
@@ -6839,7 +6963,7 @@ void UnstuckStuckNpc(CClotBody npc)
 	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		//This was an enemy.
-		if(Rogue_Mode())
+		if(Rogue_Mode() || Dungeon_Mode())
 		{
 			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 			return;
@@ -8015,7 +8139,7 @@ public bool TraceEntityFilterPlayer2(int entity, int contentsMask)
 	return entity > MaxClients || !entity;
 }
 
-bool SetTeleportEndPoint(int client, float Position[3])
+bool SetTeleportEndPoint(int client, float Position[3], bool DontChange = true)
 {
 	float vAngles[3];
 	float vOrigin[3];
@@ -8032,12 +8156,19 @@ bool SetTeleportEndPoint(int client, float Position[3])
 	if(TR_DidHit(trace))
 	{   	 
    	 	TR_GetEndPosition(vStart, trace);
-		GetVectorDistance(vOrigin, vStart, false);
-		Distance = -35.0;
-   	 	GetAngleVectors(vAngles, vBuffer, NULL_VECTOR, NULL_VECTOR);
-		Position[0] = vStart[0] + (vBuffer[0]*Distance);
-		Position[1] = vStart[1] + (vBuffer[1]*Distance);
-		Position[2] = vStart[2] + (vBuffer[2]*Distance);
+		if(DontChange)
+		{
+			GetVectorDistance(vOrigin, vStart, false);
+			Distance = -35.0;
+			GetAngleVectors(vAngles, vBuffer, NULL_VECTOR, NULL_VECTOR);
+			Position[0] = vStart[0] + (vBuffer[0]*Distance);
+			Position[1] = vStart[1] + (vBuffer[1]*Distance);
+			Position[2] = vStart[2] + (vBuffer[2]*Distance);
+		}
+		else
+		{
+			Position = vStart;
+		}
 	}
 	else
 	{
@@ -10589,6 +10720,7 @@ public void MakeEntityRagdollNpc(int pThis)
 #endif
 
 	SDKCall_BecomeRagdollOnClient(pThis, Push);
+	Update_TransmitState(pThis);
 }
 
 void RemoveNpcFromEnemyList(int npc, bool ingoresetteam = false)
@@ -10849,9 +10981,11 @@ void MapStartResetNpc()
 		b_StaticNPC[i] = false;
 		b_EnemyNpcWasIndexed[i][0] = false;
 		b_EnemyNpcWasIndexed[i][1] = false;
+		b_EnemyNpcWasIndexed[i][2] = false;
 	}
 	EnemyNpcAlive = 0;
 	EnemyNpcAliveStatic = 0;
+	EnemyNpcAliveConst2 = 0;
 }
 
 /*
@@ -10879,6 +11013,26 @@ void AddNpcToAliveList(int iNpc, int which)
 			EnemyNpcAliveStatic += 1;
 		}
 	}
+	if(which == 2)
+	{
+		if(!b_EnemyNpcWasIndexed[iNpc][0])
+		{
+			b_EnemyNpcWasIndexed[iNpc][0] = true;
+			EnemyNpcAlive += 1;
+		}
+		if(!b_EnemyNpcWasIndexed[iNpc][1])
+		{
+			b_DoNotGiveWaveDelay[iNpc] = true; //dont delay spawns if static
+			b_EnemyNpcWasIndexed[iNpc][1] = true;
+			EnemyNpcAliveStatic += 1;
+		}
+		if(!b_EnemyNpcWasIndexed[iNpc][2])
+		{
+			b_DoNotGiveWaveDelay[iNpc] = true; //dont delay spawns if static
+			b_EnemyNpcWasIndexed[iNpc][2] = true;
+			EnemyNpcAliveConst2 += 1;
+		}
+	}
 }
 
 void RemoveFromNpcAliveList(int iNpc)
@@ -10889,14 +11043,21 @@ void RemoveFromNpcAliveList(int iNpc)
 	if(b_EnemyNpcWasIndexed[iNpc][1])
 		EnemyNpcAliveStatic -= 1;
 
+	if(b_EnemyNpcWasIndexed[iNpc][2])
+		EnemyNpcAliveConst2 -= 1;
+
 	b_EnemyNpcWasIndexed[iNpc][0] = false;
 	b_EnemyNpcWasIndexed[iNpc][1] = false;
+	b_EnemyNpcWasIndexed[iNpc][2] = false;
 
 	if(EnemyNpcAlive < 0)
 		EnemyNpcAlive = 0;
 
 	if(EnemyNpcAliveStatic < 0)
 		EnemyNpcAliveStatic = 0;
+
+	if(EnemyNpcAliveConst2 < 0)
+		EnemyNpcAliveConst2 = 0;
 }
 
 #if defined ZR
@@ -11583,12 +11744,23 @@ stock void Spawns_CheckBadClient(int client/*, int checkextralogic = 0*/)
 	GetClientAbsOrigin(client, pos1);
 	pos1[2] += 25.0;
 	CNavArea area;
-	area = TheNavMesh.GetNavArea(pos1, 65.0);
+	float MaxPosCheck = 65.0;
+#if defined ZR
+	int vehicle = Vehicle_Driver(client);
+	if(vehicle != -1)
+		MaxPosCheck = 100.0;
+#endif
+	area = TheNavMesh.GetNavArea(pos1, MaxPosCheck);
 	//no nav area directly under them
 	if(area == NULL_AREA)
 	{
 		pos1[2] -= 25.0;
-		area = TheNavMesh.GetNearestNavArea(pos1, false, 55.0, false, true);
+		MaxPosCheck = 55.0;
+#if defined ZR
+		if(vehicle != -1)
+			MaxPosCheck = 80.0;
+#endif
+		area = TheNavMesh.GetNearestNavArea(pos1, false, MaxPosCheck, false, true);
 		if(area == NULL_AREA)
 		{
 			// Not near a nav mesh, bad

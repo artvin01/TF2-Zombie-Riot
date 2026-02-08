@@ -55,9 +55,6 @@ static const char g_AngerSounds[][] = {
 	"vo/medic_item_secop_round_start07.mp3",
 	"vo/medic_item_secop_kill_assist01.mp3"
 };
-static const char g_LaserComboSound[][] = {
-	"zombiesurvival/seaborn/loop_laser.mp3",
-};
 static const char g_FractalSound[][] = {
 	"weapons/capper_shoot.wav"
 };
@@ -67,7 +64,6 @@ static int i_lunar_entities[MAXENTITIES][3];
 #define TWIRL_TE_DURATION 0.1
 //#define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/ruler_of_ruina_decends.mp3", now used for wave 15, deivid cant decide 
 #define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/twirl_theme_new.mp3"
-static float fl_player_weapon_score[MAXPLAYERS];
 static float fl_next_textline;
 static float fl_raidmode_freeze;
 static float fl_npc_basespeed;
@@ -228,10 +224,10 @@ methodmap Twirl < CClotBody
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 	}
 	public void PlayMagiaOverflowSound() {
-		if(fl_nightmare_cannon_core_sound_timer[this.index] > GetGameTime())
+		if(fl_RuinaLaserSoundTimer[this.index] > GetGameTime())
 			return;
-		EmitCustomToAll(g_LaserComboSound[GetRandomInt(0, sizeof(g_LaserComboSound) - 1)], _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
-		fl_nightmare_cannon_core_sound_timer[this.index] = GetGameTime() + 2.25;
+		EmitCustomToAll(g_RuinaLaserLoop[GetRandomInt(0, sizeof(g_RuinaLaserLoop) - 1)], _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		fl_RuinaLaserSoundTimer[this.index] = GetGameTime() + 2.25;
 	}
 	public void Predictive_Ion(int Target, float Time, float Radius, float dmg)
 	{

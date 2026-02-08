@@ -427,6 +427,7 @@ void Rogue_MapStart()
 {
 	delete Voting;
 	delete Curses;
+	Rogue_CleanArtifacts();
 	delete Artifacts;
 	delete CurrentCollection;
 	RogueTheme = 0;
@@ -486,6 +487,7 @@ void Rogue_SetupVote(KeyValues kv, const char[] artifactOnly = "")
 	Floor floor;
 
 	delete Curses;
+	Rogue_CleanArtifacts();
 	delete Artifacts;
 	delete CurrentCollection;
 
@@ -851,6 +853,10 @@ void Rogue_StartSetup()	// Waves_RoundStart()
 	else if(StartingItem[0])
 	{
 		Rogue_GiveNamedArtifact(StartingItem);
+		
+		strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), StartingItem);
+		strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), StartingItem);
+		WavesUpdateDifficultyName();
 	}
 
 	Rogue_SetProgressTime(wait, true, true);
@@ -866,6 +872,27 @@ void Rogue_StartSetup()	// Waves_RoundStart()
 	}
 }
 
+void Rogue_CleanArtifacts()
+{
+	if(CurrentCollection)
+	{
+		ArrayList list = CurrentCollection;
+		CurrentCollection = null;
+
+		Artifact artifact;
+		int length = list.Length;
+		for(int i; i < length; i++)
+		{
+			Artifacts.GetArray(list.Get(i), artifact);
+			if(artifact.FuncRemove != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, artifact.FuncRemove);
+				Call_Finish();
+			}
+		}
+		delete list;
+	}
+}
 void Rogue_RoundEnd()
 {
 	delete ProgressTimer;
@@ -978,6 +1005,11 @@ public Action Rogue_EndVote(Handle timer, float time)
 				Rogue_GiveNamedArtifact(vote.Name);
 				strcopy(StartingItem, sizeof(StartingItem), vote.Name);
 				Waves_SetReadyStatus(1);
+
+				strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), StartingItem);
+				strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), StartingItem);
+				WavesUpdateDifficultyName();
+
 			}
 			else
 			{
@@ -2247,6 +2279,18 @@ static void StartStage(const Stage stage)
 		}
 	}
 
+	entity = -1;
+	while((entity = FindEntityByClassname(entity, "obj_vehicle")) != -1)
+	{
+		if(b_ThisNpcIsImmuneToNuke[entity])	// Temp car
+		{
+			RemoveEntity(entity);
+			continue;
+		}
+		
+		TeleportEntity(entity, pos, ang, NULL_VECTOR);
+	}
+
 	switch(RogueTheme)
 	{
 		case BlueParadox:
@@ -2549,7 +2593,7 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 
 void Rogue_SetProgressTime(float time, bool hud, bool waitForPlayers = false)
 {
-	if(!Rogue_Mode())
+	if(!waitForPlayers && !Rogue_Mode())
 		return;
 	
 	delete ProgressTimer;
@@ -2856,6 +2900,9 @@ void Rogue_GiveNamedArtifact(const char[] name, bool silent = false, bool noFail
 	
 	if(!CurrentCollection)
 		CurrentCollection = new ArrayList();
+
+	if(!silent && Dungeon_Mode())
+		EmitSoundToAll("ui/itemcrate_smash_rare.wav");
 	
 	Artifact artifact;
 	int length = Artifacts.Length;

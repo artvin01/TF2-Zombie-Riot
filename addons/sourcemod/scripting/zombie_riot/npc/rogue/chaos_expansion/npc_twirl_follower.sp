@@ -19,10 +19,6 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/batsaber_swing2.wav",
 	"weapons/batsaber_swing3.wav"
 };
-static const char g_LaserLoop[][] = {
-	"zombiesurvival/seaborn/loop_laser.mp3"
-};
-
 static int NPCId;
 
 #define TWIRL_FOLLOWER_ATTACK_RANGE GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.5
@@ -178,7 +174,7 @@ methodmap TwirlFollower < CClotBody
 	public void PlayMagiaOverflowSound() {
 		if(fl_AbilityOrAttack[this.index][4] > GetGameTime())
 			return;
-		EmitCustomToAll(g_LaserLoop[GetRandomInt(0, sizeof(g_LaserLoop) - 1)], this.index, SNDCHAN_STATIC, 75, _, 0.85);
+		EmitCustomToAll(g_RuinaLaserLoop[GetRandomInt(0, sizeof(g_RuinaLaserLoop) - 1)], this.index, SNDCHAN_STATIC, 75, _, 0.85);
 		fl_AbilityOrAttack[this.index][4] = GetGameTime() + 2.25;
 	}
 	property float m_flLaserRecharge
@@ -821,7 +817,7 @@ static Action Magia_Overflow_Tick_Follower(int iNPC)
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
 
-		StopCustomSound(npc.index, SNDCHAN_STATIC, g_LaserLoop[GetRandomInt(0, sizeof(g_LaserLoop) - 1)]);
+		StopCustomSound(npc.index, SNDCHAN_STATIC, g_RuinaLaserLoop[GetRandomInt(0, sizeof(g_RuinaLaserLoop) - 1)]);
 
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);

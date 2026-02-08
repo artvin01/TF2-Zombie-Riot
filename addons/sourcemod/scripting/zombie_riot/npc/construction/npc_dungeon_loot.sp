@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static int NPCId;
+
 void DungeonLoot_MapStart()
 {
 	NPCData data;
@@ -8,11 +10,16 @@ void DungeonLoot_MapStart()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dungeon_loot");
 	strcopy(data.Icon, sizeof(data.Icon), "unknown");
 	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_SUPPORT;
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
+}
+
+int DungeonLoot_Id()
+{
+	return NPCId;
 }
 
 static void ClotPrecache()
@@ -22,55 +29,101 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return DungeonLoot(vecPos, vecAng, data);
+	return DungeonLoot(vecPos, data);
 }
 
 methodmap DungeonLoot < CClotBody
 {
-	public void SetLootData(const char[] name, const int color[4])
+	public void SetLootData(const char[] name, float scale)
 	{
-		if(color[2])
+		LootInfo loot;
+		if(Dungeon_GetNamedLoot(name, loot) && loot.Color[3])
 		{
-			if(color[2] != 255)
+			if(loot.Color[3] != 255)
 				SetEntityRenderMode(this.index, RENDER_TRANSCOLOR);
 			
-			SetEntityRenderColor(this.index, color[0], color[1], color[2], color[3]);
+			SetEntityRenderColor(this.index, loot.Color[0], loot.Color[1], loot.Color[2], loot.Color[3]);
 		}
 
 		strcopy(c_NpcName[this.index], sizeof(c_NpcName[]), name);
+		this.m_flAttackHappens_bullshit = scale;
 	}
 
-	public DungeonLoot(float vecPos[3], float vecAng[3], const char[] data)
+	public DungeonLoot(float vecPos[3], const char[] data)
 	{
-		DungeonLoot npc = view_as<DungeonLoot>(CClotBody(vecPos, vecAng, "models/props_2fort/miningcrate002.mdl", "1.0", "10", 3, .NpcTypeLogic = STATIONARY_NPC));
+		float pos[3];
+		pos = vecPos;
+
+		float ang[3];
+		ang[0] = 0.0;
+		ang[1] = float(GetURandomInt() % 360);
+		ang[2] = 0.0;
+		bool RandomPos = false;
 		
+
+		if(data[0] && StrContains(data, "notele", false) == -1)
+		{
+			if(StrContains(data, "randpos", false) != -1)
+			{
+				Dungeon_TeleportRandomly(pos);
+				RandomPos = true;
+			}
+		}
+		
+		DungeonLoot npc = view_as<DungeonLoot>(CClotBody(pos, ang, "models/props_2fort/miningcrate002.mdl", "1.0", "10", 3, .NpcTypeLogic = STATIONARY_NPC));
+		
+		if(data[0] && StrContains(data, "notele", false) == -1)
+		{
+			if(StrContains(data, "randpos", false) == -1)
+			{
+				Dungeon_TeleportCratesRewards(npc.index, pos);
+			}
+		}
+		if(RandomPos)
+		{
+			Dungeon_TeleportCratesRewards(npc.index, pos, 500.0);
+		}
+
 		i_NpcWeight[npc.index] = 999;
 		i_NpcIsABuilding[npc.index] = true;
 		b_NoKnockbackFromSources[npc.index] = true;
-		b_StaticNPC[npc.index] = true;
-		AddNpcToAliveList(npc.index, 1);
 		npc.m_bDissapearOnDeath = true;
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
+		//npc.m_bDoNotGiveWaveDelay = true;
 
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
 		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);
 		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 
+		npc.m_flAttackHappens_bullshit = 0.0;
 		npc.m_flRangedArmor = 0.0;
 		npc.m_bCamo = true;	// For AI attacking resources
 		
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
+		func_NPCThink[npc.index] = ClotThink;
+		AddNpcToAliveList(npc.index, 1);
+		
 		b_NpcUnableToDie[npc.index] = true;
 		b_NoHealthbar[npc.index] = 1;
 
 		if(data[0])
-			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), data);
+		{
+			char buffers[2][48];
+			int count = ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			npc.SetLootData(buffers[0], count > 1 ? StringToFloat(buffers[1]) : 0.0);
+		}
 
 		return npc;
 	}
+}
+
+static void ClotThink(int entity)
+{
+	if(Dungeon_GetEntityZone(entity) == Zone_Dungeon)
+		f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 0.35;
 }
 
 static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -90,10 +143,13 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 				{
 					b_NpcUnableToDie[victim] = false;
 
+					Dungeon_AddBattleScale(view_as<CClotBody>(victim).m_flAttackHappens_bullshit);
+
 					if(Dungeon_LootExists(c_NpcName[victim]))
 					{
-						CPrintToChatAll("%t", "Found Dungeon Loot", c_NpcName[victim]);
+						//CPrintToChatAll("%t", "Found Dungeon Loot", c_NpcName[victim]);
 						Dungeon_RollNamedLoot(c_NpcName[victim]);
+						//EmitSoundToAll("ui/itemcrate_smash_rare.wav");
 					}
 					else
 					{

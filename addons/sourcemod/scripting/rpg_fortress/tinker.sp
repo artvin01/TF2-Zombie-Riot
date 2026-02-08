@@ -1434,13 +1434,13 @@ public void Tinker_XP_Glassy(int client, int weapon)
 
 public void Tinker_XP_Dense(int client, int weapon)
 {
-	Attributes_SetMulti(weapon, 2, 1.005);
+	ApplyTempAttrib(weapon, 2, 1.005, 300.0);
 
 	if(Attributes_Has(weapon, 410))
-		Attributes_SetMulti(weapon, 410, 1.005);
+		ApplyTempAttrib(weapon, 410, 1.005, 300.0);
 	
 	if(Attributes_Has(weapon, 2016))
-		Attributes_SetMulti(weapon, 2016, 1.01);
+		ApplyTempAttrib(weapon, 2016, 1.01, 300.0);
 }
 
 public void Tinker_Attack_Addiction(int client, int weapon, bool crit, int slot)

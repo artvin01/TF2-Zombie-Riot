@@ -187,6 +187,8 @@ int AmmoboxUsed(int client, int entity)
 				}
 
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+				if(Dungeon_Mode())
+					ApplyBuildingCollectCooldown(entity, client, 2.5, true);
 				Mana_Hud_Delay[client] = 0.0;
 				return 2;
 			}
@@ -213,6 +215,8 @@ int AmmoboxUsed(int client, int entity)
 					CurrentAmmo[client][i] = GetAmmo(client, i);
 				}
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+				if(Dungeon_Mode())
+					ApplyBuildingCollectCooldown(entity, client, 2.5, true);
 				return true;
 			}
 			else if(weaponindex == 441 || weaponindex == 35)
@@ -226,6 +230,8 @@ int AmmoboxUsed(int client, int entity)
 					CurrentAmmo[client][i] = GetAmmo(client, i);
 				}		
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+				if(Dungeon_Mode())
+					ApplyBuildingCollectCooldown(entity, client, 2.5, true);
 				return true;
 			}
 			else if(AmmoBlacklist(Ammo_type) && i_OverrideWeaponSlot[weapon] != 2) //Disallow Ammo_Hand_Grenade, that ammo type is regenerative!, dont use jar, tf2 needs jar? idk, wierdshit.
@@ -239,6 +245,8 @@ int AmmoboxUsed(int client, int entity)
 					CurrentAmmo[client][i] = GetAmmo(client, i);
 				}
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+				if(Dungeon_Mode())
+					ApplyBuildingCollectCooldown(entity, client, 2.5, true);
 				return true;
 			}
 			else
@@ -257,6 +265,8 @@ int AmmoboxUsed(int client, int entity)
 				{
 					GiveArmorViaPercentage(client, 0.1, 1.0);
 					ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+					if(Dungeon_Mode())
+						ApplyBuildingCollectCooldown(entity, client, 2.5, true);
 					Ammo_Count_Used[client] += 1;
 					
 					ClientCommand(client, "playgamesound ambient/machines/machine1_hit2.wav");

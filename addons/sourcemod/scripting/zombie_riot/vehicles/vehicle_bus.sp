@@ -34,7 +34,7 @@ methodmap VehicleBus < VehicleGeneric
 		
 		SetEntProp(obj.index, Prop_Send, "m_nSkin", GetURandomInt() % 2);
 
-		obj.m_bNoAttack = true;
+		obj.m_iGunIndex = -1;
 
 		// Bottom
 		obj.AddSeat({-44.0, 108.0, 32.0}, 0);	// Front Left

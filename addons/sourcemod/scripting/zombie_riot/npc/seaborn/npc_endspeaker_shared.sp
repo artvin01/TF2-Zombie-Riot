@@ -282,7 +282,7 @@ methodmap EndSpeaker < CClotBody
 					SetVariantString("attack");
 					AcceptEntityInput(entity, "SetAnimation");
 
-					SetVariantString("OnUser4 !self:Kill::1:1,0,1");
+					SetVariantString("OnUser4 !self:Kill::1:1");
 					AcceptEntityInput(entity, "AddOutput");
 					AcceptEntityInput(entity, "FireUser4");
 				}

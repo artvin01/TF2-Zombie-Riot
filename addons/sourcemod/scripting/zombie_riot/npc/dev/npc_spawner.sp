@@ -156,7 +156,7 @@ public void DevSpawner_ClotThink(int iNPC)
 			}
 			else
 			{
-				char data[64];
+				char data[128];
 				GetEntPropString(npc.index, Prop_Data, "m_iName", data, sizeof(data));
 
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);

@@ -321,7 +321,14 @@ public void UnderTides_ClotThink(int iNPC)
 	}
 }
 
-void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace = true, int player_only = 0, int TraceFrom = -1, float RangeLimit = 0.0)
+void GetHighDefTargets(UnderTides npc,
+ int[] enemy,
+  int count,
+   bool respectTrace = true,
+    int player_only = 0,
+	 int TraceFrom = -1,
+	  float RangeLimit = 0.0,
+	  bool HighDefDo = true)
 {
 	// Prio:
 	// 1. Highest Defense Stat
@@ -370,6 +377,8 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 				for(int i; i < count; i++)
 				{
 					float percentage_ranged = 100.0;
+					if(!HighDefDo)
+						percentage_ranged = 0.0;
 					int i_TheWorld = 0;
 					int testvalue = 1;
 					int testvalue2 = -1;
@@ -382,9 +391,19 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 
 					if(enemy[i])
 					{
-						if(def[i] < percentage_ranged)
+						if(HighDefDo)
 						{
-							continue;
+							if(def[i] < percentage_ranged)
+							{
+								continue;
+							}
+						}
+						else
+						{
+							if(def[i] > percentage_ranged)
+							{
+								continue;
+							}
 						}
 					}
 
@@ -420,6 +439,8 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 					for(int i; i < count; i++)
 					{
 						float percentage_ranged = 100.0;
+						if(!HighDefDo)
+							percentage_ranged = 0.0;
 						int testvalue = 1;
 						int testvalue2 = -1;
 						int attackertestDo = npc.index;
@@ -429,9 +450,17 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 						CheckInHudEnable(1);
 						NPC_OnTakeDamage(entity, attackertestDo, attackertestDo, percentage_ranged, DmgType, testvalue2, testvalue1, testvalue1,testvalue);
 						CheckInHudEnable(0);
-
-						if(enemy[i] && def[i] < percentage_ranged)
-							continue;
+						
+						if(HighDefDo)
+						{
+							if(enemy[i] && def[i] < percentage_ranged)
+								continue;
+						}
+						else
+						{
+							if(enemy[i] && def[i] > percentage_ranged)
+								continue;
+						}
 
 						AddToList(entity, i, enemy, count);
 						AddToList(percentage_ranged, i, def, count);

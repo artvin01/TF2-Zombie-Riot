@@ -320,7 +320,7 @@ public void DepthPerception_RevolverM2(int client, int weapon, bool crit, int sl
 	StartLagCompensation_Base_Boss(client);
 	float flPos[3];
 	GetClientEyePosition(client, flPos);
-	Explode_Logic_Custom(0.0, client, client, weapon, flPos, 9999.9,_,_,true,5,_,_,SherrifRevolverHit);
+	Explode_Logic_Custom(0.0, client, client, weapon, flPos, 2000.9,_,_,true,5,_,_,SherrifRevolverHit);
 	//add LOS check.
 	FinishLagCompensation_Base_boss();
 	if(!FoundTargetRevolver)
@@ -363,7 +363,7 @@ public void DepthPerception_RevolverM2_PAP(int client, int weapon, bool crit, in
 	StartLagCompensation_Base_Boss(client);
 	float flPos[3];
 	GetClientEyePosition(client, flPos);
-	Explode_Logic_Custom(0.0, client, client, weapon, flPos, 9999.9,_,_,true,5,_,_,SherrifRevolverHit);
+	Explode_Logic_Custom(0.0, client, client, weapon, flPos, 2000.9,_,_,true,5,_,_,SherrifRevolverHit);
 	//add LOS check.
 	FinishLagCompensation_Base_boss();
 	if(!FoundTargetRevolver)

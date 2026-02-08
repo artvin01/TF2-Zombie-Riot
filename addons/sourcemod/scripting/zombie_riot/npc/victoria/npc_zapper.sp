@@ -111,7 +111,7 @@ methodmap Victoria_Zapper < CClotBody
 	
 	public Victoria_Zapper(float vecPos[3], float vecAng[3], int ally)
 	{
-		Victoria_Zapper npc = view_as<Victoria_Zapper>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.00", "1900", ally, false, true));
+		Victoria_Zapper npc = view_as<Victoria_Zapper>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.00", "1900", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		

@@ -115,12 +115,7 @@ methodmap ARISBeacon < CClotBody
 		//counts as a static npc, means it wont count towards NPC limit.
 		AddNpcToAliveList(npc.index, 1);
 		
-		MakeObjectIntangeable(npc.index);
-		b_DoNotUnStuck[npc.index] = true;
-		b_NoKnockbackFromSources[npc.index] = true;
-		b_ThisEntityIgnored[npc.index] = true;
 		b_thisNpcIsARaid[npc.index] = true;
-		b_NoKillFeed[npc.index] = true;
 		
 		npc.m_flFullyActiveTime = GetGameTime() + ARISBEACON_BUILDUP_TIME;
 		

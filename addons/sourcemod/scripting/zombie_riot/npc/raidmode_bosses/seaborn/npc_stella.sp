@@ -65,11 +65,6 @@ Give Karlas smth?
 bool b_allow_karlas_transform[MAXENTITIES];
 
 
-
-static const char g_nightmare_cannon_core_sound[][] = {
-	"zombiesurvival/seaborn/loop_laser.mp3",
-};
-
 static const char g_LaserAttackSounds[][] = {
 	"weapons/physcannon/energy_sing_flyby1.wav",
 	"weapons/physcannon/energy_sing_flyby2.wav",
@@ -117,7 +112,7 @@ static char gGlow1;	//blue
 
 void Stella_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_nightmare_cannon_core_sound));   i++) { PrecacheSoundCustom(g_nightmare_cannon_core_sound[i]);	}	//need it to be precached since its used elsewhere
+	for (int i = 0; i < (sizeof(g_RuinaLaserLoop));   i++) { PrecacheSoundCustom(g_RuinaLaserLoop[i]);	}	//need it to be precached since its used elsewhere
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Stella");
@@ -134,7 +129,7 @@ void Stella_OnMapStart_NPC()
 
 static void ClotPrecache()
 {
-	Zero(fl_nightmare_cannon_core_sound_timer);
+	Zero(fl_RuinaLaserSoundTimer);
 
 	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
 
@@ -175,11 +170,11 @@ methodmap Stella < CClotBody
 		public set(bool TempValueForProperty) 	{ b_InKame[this.index] = TempValueForProperty; }
 	}
 	public void PlayNightmareSound() {
-		if(fl_nightmare_cannon_core_sound_timer[this.index] > GetGameTime())
+		if(fl_RuinaLaserSoundTimer[this.index] > GetGameTime())
 			return;
 
-		EmitCustomToAll(g_nightmare_cannon_core_sound[GetRandomInt(0, sizeof(g_nightmare_cannon_core_sound) - 1)], _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
-		fl_nightmare_cannon_core_sound_timer[this.index] = GetGameTime() + 2.25;
+		EmitCustomToAll(g_RuinaLaserLoop[GetRandomInt(0, sizeof(g_RuinaLaserLoop) - 1)], _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		fl_RuinaLaserSoundTimer[this.index] = GetGameTime() + 2.25;
 	}
 
 	public void PlayIdleAlertSound() {
@@ -1657,6 +1652,8 @@ static int i_targets_inrange;
 
 static int Nearby_Players(Stella npc, float Radius, float VecSelfNpc[3] = {0.0,0.0,0.0})
 {
+	if(Radius > 2000.0)
+		Radius = 2000.0;
 	i_targets_inrange = 0;
 	if(VecSelfNpc[2]==0.0)
 		WorldSpaceCenter(npc.index, VecSelfNpc);

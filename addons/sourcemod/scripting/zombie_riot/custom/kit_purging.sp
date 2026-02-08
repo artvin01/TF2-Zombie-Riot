@@ -178,7 +178,7 @@ public Action Timer_PurgeKit(Handle timer, DataPack pack)
 		if(i_CustomWeaponEquipLogic[currentWeapon] == WEAPON_KIT_PURGE_MISC)
 			range = PURGE_RAM_RADIUS;
 	}
-	spawnRing_Vectors(clientPos,  range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 200, 1, 0.11, 30.0, 0.0,1,_,client);
+	spawnRing_Vectors(clientPos,  range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 200, 1, 0.11, 15.0, 0.0,1,_,client);
 	
 	//PrintToConsoleAll("m_hActiveWeapon: %d", GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
 	if(f_OneShotProtectionTimer[client] > GetGameTime() && !b_KitPurge_Toogle[client])
@@ -655,7 +655,8 @@ public Action Weapon_Purging_Owner_OnTakeDamage(int client, int &attacker, int &
 {
 	if(Armor_Charge[client] > 0)
 	{
-		EmitSoundToClient(client, PURGE_ARMOR_HURT_SOUND, _, _, _, _, 1.0);
+		if(dieingstate[client] == 0)
+			EmitSoundToClient(client, PURGE_ARMOR_HURT_SOUND, _, _, _, _, 1.0);
 	}
 	return Plugin_Continue;
 }
@@ -868,21 +869,33 @@ public Action Purging_Annahilator_damageBonus_Fade(Handle timer, DataPack pack)
 public Action Weapon_Purging_QuadLauncher_Remove_Later(Handle h,int ref)
 {
 	int weapon = EntRefToEntIndex(ref);
+	int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
 	if(!IsValidEntity(weapon))
 	{
+		QuadLauncher_Remove_Timer[owner] = null;
 		return Plugin_Stop;
 	}
-	int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
+	
+	bool IsDowned = (dieingstate[owner] != 0);
+	if(IsDowned || !IsPlayerAlive(owner))
+	{
+		if (IsValidEntity(weapon))
+		{
+			if(IsValidClient(owner))
+			{
+				Store_RemoveSpecificItem(owner, "Purging QuadLauncher");
+				TF2_RemoveItem(owner, weapon);
+			}
+		}
+		QuadLauncher_Remove_Timer[owner] = null;
+		return Plugin_Stop;
+	}
+	
 	float ownerPos[3];
 	WorldSpaceCenter(owner, ownerPos);
-	bool IsDowned = (dieingstate[owner] != 0);
 	int weaponN = -1;
-	if(!IsDowned)
-		weaponN = Store_GiveSpecificItem(owner, "Purging Grinder");
-
-	TE_Particle("hightower_explosion", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = owner);
-	TE_Particle("mvm_soldier_shockwave", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-	EmitSoundToClient(owner, PURGE_EXPLOSION_SOUND, owner, SNDCHAN_AUTO, 80, _, 0.8);
+	weaponN = Store_GiveSpecificItem(owner, "Purging Grinder");
+	
 	if (IsValidEntity(weapon))
 	{
 		if(IsValidClient(owner))
@@ -891,6 +904,11 @@ public Action Weapon_Purging_QuadLauncher_Remove_Later(Handle h,int ref)
 			TF2_RemoveItem(owner, weapon);
 		}
 	}
+
+	TE_Particle("hightower_explosion", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = owner);
+	TE_Particle("mvm_soldier_shockwave", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	EmitSoundToClient(owner, PURGE_EXPLOSION_SOUND, owner, SNDCHAN_AUTO, 80, _, 0.8);
+	
 	if(!IsDowned && weaponN != -1)
 	{
 		FakeClientCommand(owner, "use tf_weapon_fists");

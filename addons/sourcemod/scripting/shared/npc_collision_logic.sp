@@ -139,10 +139,14 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		if(GetTeam(otherindex) == -1)
 			return false;
 		
-		if(extrarules == 0)
-			NpcStartTouch(bot_entidx,otherindex);
+		// Allow being hit via attacks
+		if(extrarules == 1)
+			return true;
 		
-		return true;
+		/*if(extrarules == 0)
+			NpcStartTouch(bot_entidx,otherindex);*/
+		
+		return false;
 	}
 	//other entity is an npc
 	if(!b_NpcHasDied[otherindex])

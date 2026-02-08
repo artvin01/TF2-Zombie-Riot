@@ -5,6 +5,7 @@ static float LastGameTime;
 static char LastData[96];
 static bool LastResult;
 static bool DontSpawnFriendly;
+
 void RogueCondition_Setup()
 {
 	NPCData data;

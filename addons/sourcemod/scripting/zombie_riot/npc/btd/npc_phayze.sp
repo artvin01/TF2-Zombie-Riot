@@ -37,7 +37,7 @@ static float MoabSpeed()
 static int CurrentTier()
 {
 	// 39,59,79,99
-	int round = (CurrentRound - 38) / 20;
+	int round = (CurrentRound[Rounds_Default] - 38) / 20;
 	
 	if(round > 3)
 	{
@@ -52,15 +52,15 @@ static int CurrentTier()
 
 static void SetBossBloonPower(int players)
 {
-	if(CurrentRound > 98)
+	if(CurrentRound[Rounds_Default] > 98)
 	{
 		RaidModeScaling = 10.0;
 	}
-	else if(CurrentRound > 78)
+	else if(CurrentRound[Rounds_Default] > 78)
 	{
 		RaidModeScaling = 14.0 / 3.0;
 	}
-	else if(CurrentRound > 58)
+	else if(CurrentRound[Rounds_Default] > 58)
 	{
 		RaidModeScaling = 1.0;
 	}
@@ -70,13 +70,13 @@ static void SetBossBloonPower(int players)
 	}
 	
 	// Reference to late game scaling
-	if(CurrentRound > 99)
+	if(CurrentRound[Rounds_Default] > 99)
 	{
-		RaidModeScaling *= 1.0 + (CurrentRound - 71) * 0.05;
+		RaidModeScaling *= 1.0 + (CurrentRound[Rounds_Default] - 71) * 0.05;
 	}
-	else if(CurrentRound > 79)
+	else if(CurrentRound[Rounds_Default] > 79)
 	{
-		RaidModeScaling *= 1.0 + (CurrentRound - 79) * 0.02;
+		RaidModeScaling *= 1.0 + (CurrentRound[Rounds_Default] - 79) * 0.02;
 	}
 	
 	// Reference to +20% increase in BTD6 co-op

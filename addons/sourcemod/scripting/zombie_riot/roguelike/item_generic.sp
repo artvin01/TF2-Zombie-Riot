@@ -18,8 +18,20 @@ public void FlagShip_Rogue_Refresh_Remove()
 	}
 	Rogue_Refresh_Remove();
 }
+bool TryRefreshRogueAll = false;
 public void Rogue_Refresh_Remove()
 {
+	if(!TryRefreshRogueAll)
+	{
+		TryRefreshRogueAll = true;
+		RequestFrame(Rogue_Refresh_Remove_Internal);
+	}
+}
+//need frame delay to gather them all or else crash!
+
+void Rogue_Refresh_Remove_Internal()
+{
+	TryRefreshRogueAll = false;
 	// Refresh players when removed
 	for(int client = 1; client <= MaxClients; client++)
 	{

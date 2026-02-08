@@ -41,7 +41,6 @@ static const char g_IdleAlertedSounds[][] = {
 static const char g_AngrySounds[][] = {
 	"vo/mvm/mght/taunts/demoman_mvm_m_taunts01.mp3",
 	"vo/mvm/mght/taunts/demoman_mvm_m_taunts02.mp3",
-	"vo/mvm/mght/taunts/demoman_mvm_m_taunts03.mp3",
 	"vo/mvm/mght/taunts/demoman_mvm_m_taunts04.mp3",
 	"vo/mvm/mght/taunts/demoman_mvm_m_taunts05.mp3",
 	"vo/mvm/mght/taunts/demoman_mvm_m_taunts06.mp3",
@@ -75,6 +74,7 @@ void ApertureSuppressor_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_AngrySounds)); i++) { PrecacheSound(g_AngrySounds[i]); }
 	PrecacheModel("models/bots/demo_boss/bot_demo_boss.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aperture Suppressor");

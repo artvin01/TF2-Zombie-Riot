@@ -412,7 +412,7 @@ public Action Addicition_OnTakeDamage(int victim, int &attacker, int &inflictor,
 					fl_Extra_Damage[npcsummon.index] = fl_Extra_Damage[npc.index];
 					fl_Extra_Speed[npcsummon.index] = fl_Extra_Speed[npc.index];
 					fl_Extra_Speed[npcsummon.index] *= 1.5;
-					f_AttackSpeedNpcIncrease[npcsummon.index] *= 4.0;
+					f_AttackSpeedNpcIncrease[npcsummon.index] *= 0.5;
 					NpcStats_CopyStats(npc.index, summon);
 					FreezeNpcInTime(npcsummon.index, 2.0);
 					SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/4);

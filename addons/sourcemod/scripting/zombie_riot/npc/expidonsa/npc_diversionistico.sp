@@ -62,9 +62,9 @@ void Diversionistico_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Diversionistico");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_diversionistico");
-	strcopy(data.Icon, sizeof(data.Icon), "diversionistico");
+	strcopy(data.Icon, sizeof(data.Icon), "spy");
 	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_SUPPORT;
+	data.Flags = MVM_CLASS_FLAG_MISSION;
 	data.Category = Type_Expidonsa;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);

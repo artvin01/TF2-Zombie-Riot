@@ -23,6 +23,7 @@ static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
 static DynamicHook g_DhookCrossbowHolster;
+DynamicHook g_DHookShouldCollide;
 DynamicHook g_DhookUpdateTransmitState; 
 
 static Handle g_detour_CTFGrenadePipebombProjectile_PipebombTouch;
@@ -48,6 +49,15 @@ stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
     }
 
     return res;
+}
+
+DynamicHook CreateDynamicHook(GameData gamedata, const char[] name)
+{
+	DynamicHook hook = DynamicHook.FromConf(gamedata, name);
+	if (!hook)
+		LogError("Failed to create hook setup handle: %s", name);
+	
+	return hook;
 }
 
 void DHook_Setup()
@@ -79,6 +89,7 @@ void DHook_Setup()
 
 
 #if defined ZR
+	g_DHookShouldCollide = CreateDynamicHook(gamedata, "CGameRules::ShouldCollide");
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
 
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
@@ -250,12 +261,12 @@ public MRESReturn Dhook_WantsLagCompensationOnEntity(int InitatedClient, Handle 
 	return MRES_Ignored;
 }
 
-void DHook_EntityDestoryed()
+void DHook_EntityDestroyed()
 {
-	RequestFrame(DHook_EntityDestoryedFrame);
+	RequestFrame(DHook_EntityDestroyedFrame);
 }
 
-public void DHook_EntityDestoryedFrame()
+public void DHook_EntityDestroyedFrame()
 {
 	if(RawEntityHooks)
 	{
@@ -905,6 +916,14 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		{
 			return false;
 		}
+		else if(i_IsVehicle[ent1])
+		{
+			return false;
+		}
+		else if(i_IsVehicle[ent2])
+		{
+			return false;
+		}
 		//We do not want this entity to step on anything aside from the actual world or entities that are treated as the world
 	}
 	//npc has died, ignore all collissions no matter what
@@ -959,7 +978,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 
 #if defined ZR
-	
+		
 		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
 			if(entity2 <= MaxClients && entity2 > 0)
@@ -1337,6 +1356,8 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		int entity = -1;
 		while((entity=FindEntityByClassname(entity, "obj_*")) != -1)
 		{
+			if(b_ThisWasAnNpc[entity])
+				continue;
 			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
 		}
 	}
@@ -1512,11 +1533,16 @@ public MRESReturn DHook_ForceRespawn(int client)
 		return MRES_Supercede;
 	}
 #if defined ZR
+	
+	if(!IsRespawning && Dungeon_InRespawnTimer(client))
+		return MRES_Supercede;
+
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
 	
-	if(Construction_InSetup() || BetWar_Mode() || Dungeon_InSetup())
+	if(Construction_InSetup() || BetWar_Mode() || Dungeon_CanRespawn())
 	{
+		b_AntiLateSpawn_Allow[client] = true;
 		TeutonType[client] = TEUTON_NONE;
 	}
 	else
@@ -1528,6 +1554,8 @@ public MRESReturn DHook_ForceRespawn(int client)
 		if(!b_AntiLateSpawn_Allow[client])
 			TeutonType[client] = TEUTON_DEAD;
 	}
+
+	Dungeon_SetEntityZone(client, Zone_Unknown);
 #endif
 
 #if !defined RTS
@@ -1547,7 +1575,6 @@ public MRESReturn DHook_ForceRespawn(int client)
 	if(!WaitingInQueue[client] && !GameRules_GetProp("m_bInWaitingForPlayers"))
 		Queue_AddPoint(client);
 	
-	
 	if(f_WasRecentlyRevivedViaNonWaveClassChange[client] > GetGameTime())
 	{	
 		return MRES_Ignored;
@@ -1559,6 +1586,8 @@ public MRESReturn DHook_ForceRespawn(int client)
 		RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
 	}
 	
+	if(Dungeon_Mode())
+		i_AmountDowned[client] = 0;
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
 
 	if(Construction_Mode() || BetWar_Mode() || Dungeon_Mode())
@@ -1876,6 +1905,7 @@ int BannerWearableModelIndex[3];
 bool DidEventHandleChange = false;
 void DHooks_MapStart()
 {
+	DHookGamerulesObject();
 	PreventRespawnsAll = 0.0;
 #if defined ZR
 	if(g_DHookTakeDmgPlayer) 
@@ -1890,9 +1920,6 @@ void DHooks_MapStart()
 	DidEventHandleChange = false;
 	RequestFrame(OverrideNpcHurtShortToLong);
 	//g_bCustomEventsAvailable = false;
-
-	//if(g_DHookShouldCollide)
-	//	g_DHookShouldCollide.HookGamerules(Hook_Post, DHook_ShouldCollide);
 }
 
 void OverrideNpcHurtShortToLong()
@@ -2171,30 +2198,66 @@ stock bool ShieldDeleteProjectileCheck(int owner, int enemy)
 	return false;
 }
 
+void Update_TransmitState(int entity)
+{
+	SetEntProp(entity, Prop_Data, "m_nTransmitStateOwnedCounter", 0);
+	Hook_DHook_UpdateTransmitStateInternal(entity);
+	RequestFrames(RevertTransmitDo,1, EntIndexToEntRef(entity), true);
+}
+
+void RevertTransmitDo(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(!IsValidEntity(entity))
+	{
+		return;
+	}
+	SetEntProp(entity, Prop_Data, "m_nTransmitStateOwnedCounter", 1);
+	if(h_TransmitHookType[entity] != 0)
+	{
+		if(!DHookRemoveHookID(h_TransmitHookType[entity]))
+		{
+			PrintToConsoleAll("Somehow Failed to unhook h_TransmitHookType");
+		}
+	}
+	h_TransmitHookType[entity] = 0;
+}
+
 void Hook_DHook_UpdateTransmitState(int entity)
 {
-	g_DhookUpdateTransmitState.HookEntity(Hook_Pre, entity, DHook_UpdateTransmitState);
+	Update_TransmitState(entity);
+}
+void Hook_DHook_UpdateTransmitStateInternal(int entity)
+{
+	if(h_TransmitHookType[entity] != 0)
+	{
+		if(!DHookRemoveHookID(h_TransmitHookType[entity]))
+		{
+			PrintToConsoleAll("Somehow Failed to unhook h_TransmitHookType");
+		}
+	}
+	h_TransmitHookType[entity] = g_DhookUpdateTransmitState.HookEntity(Hook_Pre, entity, DHook_UpdateTransmitState);
 }
 
 public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) //BLOCK!!
 {
 	if(b_IsEntityNeverTranmitted[entity])
 	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_DONTSEND);
+		returnHook.Value = FL_EDICT_DONTSEND;
 	}
 	else if(b_IsEntityAlwaysTranmitted[entity] || b_thisNpcIsABoss[entity])
 	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+		returnHook.Value = FL_EDICT_ALWAYS;
 	}
 #if defined ZR
 	else if (b_thisNpcHasAnOutline[entity] || !b_NpcHasDied[entity] && Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+		returnHook.Value = FL_EDICT_ALWAYS;
 	}
 #endif
 	else
 	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_PVSCHECK);
+		returnHook.Value = FL_EDICT_PVSCHECK;
 	}
 	return MRES_Supercede;
 }
@@ -2301,3 +2364,48 @@ MRESReturn FPlayerCanTakeDamagePost(Address pThis, Handle hReturn, Handle hParam
 	return MRES_Ignored;
 }
 #endif
+
+
+
+
+void DHookGamerulesObject()
+{
+	if (g_DHookShouldCollide)
+		g_DHookShouldCollide.HookGamerules(Hook_Post, DHookCallback_ShouldCollide);
+}
+public MRESReturn DHookCallback_ShouldCollide(DHookReturn ret, DHookParam params)
+{
+	int collisionGroup0 = params.Get(1);
+	int collisionGroup1 = params.Get(2);
+	
+	if (collisionGroup0 > collisionGroup1)
+	{
+		// Swap so that lowest is always first
+		V_swap(collisionGroup0, collisionGroup1);
+	}
+
+	if(collisionGroup0 != COLLISION_GROUP_VEHICLE)
+		return MRES_Ignored;
+
+	// Prevent vehicles from entering respawn rooms
+	if (collisionGroup1 == TFCOLLISION_GROUP_RESPAWNROOMS)
+	{
+		ret.Value = true;
+		return MRES_Supercede;
+	}
+	//allow vehicle to pass through enemies
+	if (collisionGroup1 == COLLISION_GROUP_NPC ||
+	  collisionGroup1 == TFCOLLISION_GROUP_ROCKETS)
+	{
+		ret.Value = false;
+		return MRES_Supercede;
+	}
+	
+	return MRES_Ignored;
+}
+void V_swap(int &x, int &y)
+{
+	int temp = x;
+	x = y;
+	y = temp;
+}

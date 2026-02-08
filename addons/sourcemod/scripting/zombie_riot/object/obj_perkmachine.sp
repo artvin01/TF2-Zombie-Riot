@@ -236,7 +236,8 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 
 static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk, int PrintChatid)
 {
-	if(owner == -1)
+	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	if(owner == -1 && !objstats.m_bNoOwnerRequired)
 		return;
 		
 	if((GetEntityFlags(client) & FL_DUCKING))

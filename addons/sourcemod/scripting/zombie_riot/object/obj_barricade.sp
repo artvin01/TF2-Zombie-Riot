@@ -85,6 +85,9 @@ int ObjectBarricade_Buildings(int owner, int &total = 0)
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
+		if(GetTeam(entity) != TFTeam_Red)
+			continue;
+		
 		if(NPCId == i_NpcInternalId[entity])
 		{
 			total++;

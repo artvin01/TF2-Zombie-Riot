@@ -1259,7 +1259,7 @@ static Action Atomizer_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		damage = 0.0;
 		float chargerPos[3];
 		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
-		if(b_BoundingBoxVariant[victim] == 1)
+		if(b_BoundingBoxVariant[victim] == BBV_Giant)
 		{
 			chargerPos[2] += 120.0;
 		}

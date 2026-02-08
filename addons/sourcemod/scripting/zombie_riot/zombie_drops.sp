@@ -156,30 +156,34 @@ public void DropPowerupChance(int entity)
 			}
 		}
 	}
-	i_KilledThisMany_Nuke += 1;
-	if(i_KilledThisMany_Nuke > i_KillTheseManyMorePowerup_Nuke || b_ForceSpawnNextTimeNuke)
+	if(!Dungeon_Mode())
 	{
-		if((GetRandomFloat(0.0, 1.0) * f_PowerupSpawnMulti) || b_ForceSpawnNextTimeNuke)
+		i_KilledThisMany_Nuke += 1;
+		if(i_KilledThisMany_Nuke > i_KillTheseManyMorePowerup_Nuke || b_ForceSpawnNextTimeNuke)
 		{
-			if(i_AllowNuke)
+			if((GetRandomFloat(0.0, 1.0) * f_PowerupSpawnMulti) || b_ForceSpawnNextTimeNuke)
 			{
-			//	i_AllowNuke = false;
-				
-				float VecOrigin[3];
-				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
-				VecOrigin[2] += 54.0;
-				if(!IsPointHazard(VecOrigin) && !IsPointOutsideMap(VecOrigin)) //Is it valid?
+				if(i_AllowNuke)
 				{
-					b_ForceSpawnNextTimeNuke = false;
-					SpawnNuke(entity);
+				//	i_AllowNuke = false;
+					
+					float VecOrigin[3];
+					GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
+					VecOrigin[2] += 54.0;
+					if(!IsPointHazard(VecOrigin) && !IsPointOutsideMap(VecOrigin)) //Is it valid?
+					{
+						b_ForceSpawnNextTimeNuke = false;
+						SpawnNuke(entity);
+					}
+					else //Not a valid position, we must force it! next time we try!
+					{
+						b_ForceSpawnNextTimeNuke = true;
+					}
+					i_KilledThisMany_Nuke = 0;
 				}
-				else //Not a valid position, we must force it! next time we try!
-				{
-					b_ForceSpawnNextTimeNuke = true;
-				}
-				i_KilledThisMany_Nuke = 0;
 			}
 		}
+			
 	}
 	i_KilledThisMany_Maxammo += 1;
 	if(i_KilledThisMany_Maxammo > i_KillTheseManyMorePowerup_Maxammo || b_ForceSpawnNextTimeAmmo)

@@ -186,7 +186,7 @@ public any Native_GetLevelCount(Handle plugin, int numParams)
 
 public any Native_GetWaveCounts(Handle plugin, int numParams)
 {
-	return CurrentRound;
+	return CurrentRound[Rounds_Default];
 }
 public any Native_HasNamedItem(Handle plugin, int numParams)
 {

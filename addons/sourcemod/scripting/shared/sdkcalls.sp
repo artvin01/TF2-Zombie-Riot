@@ -347,12 +347,23 @@ void UpdateBlockedNavmesh()
 {
 //	sv_cheats.IntValue = 1;
 	//this updates the nav.
-	ServerCommand("sv_cheats 1; nav_load ; sv_cheats 0");
+	Recalculate_NavBlockers();
 //	sv_cheats.IntValue = 0;
 	
 	//This broke and is probably inlined, above is a way easier method.
 //	SDKCall(g_hSDKUpdateBlocked);
 }	
+
+void Recalculate_NavBlockers()
+{
+	int entity = CreateEntityByName("tf_point_nav_interface");
+
+	if (!IsValidEntity(entity))
+		return;
+	AcceptEntityInput(  entity, "RecomputeBlockers" );
+
+	CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+}
 /*
 stock int SpawnBotCustom()
 {

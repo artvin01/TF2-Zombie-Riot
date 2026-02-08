@@ -73,6 +73,12 @@ enum
 
 enum
 {
+	BBV_Normal = 0,
+	BBV_Giant = 1,
+	BBV_DontAlter = 999,
+}
+enum
+{
 	Faction_Expidonsa = 1,
 	Faction_Kazimierz,
 	Faction_Victoria,
@@ -261,6 +267,13 @@ TFClassType WeaponClass[MAXPLAYERS]={TFClass_Scout, ...};
 
 bool b_GivePlayerHint[MAXPLAYERS];
 #if defined ZR
+int MostRecentVoteCancel;
+
+//only used for waves from spawners
+float DelayContinuneWave[Rounds_MAX];
+ArrayList Enemies[Rounds_MAX][3];
+ArrayList Rounds[Rounds_MAX];
+
 int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
 bool b_IgnoreMapMusic[MAXPLAYERS];
 bool b_DisableDynamicMusic[MAXPLAYERS];
@@ -330,9 +343,10 @@ int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 
 
 //only used in zr, however, can also be used for other gamemodes incase theres a limit.
-bool b_EnemyNpcWasIndexed[MAXENTITIES][2];
+bool b_EnemyNpcWasIndexed[MAXENTITIES][3];
 int EnemyNpcAlive = 0;
 int EnemyNpcAliveStatic = 0;
+int EnemyNpcAliveConst2 = 0;
 
 const int i_MaxcountBuilding = ZR_MAX_BUILDINGS;
 
@@ -368,7 +382,7 @@ int ClientAttribResetCount[MAXPLAYERS];
 
 //This is for going through things via lag comp or other reasons to teleport things away.
 //bool Do_Not_Regen_Mana[MAXPLAYERS];;
-bool i_ClientHasCustomGearEquipped[MAXPLAYERS]={false, ...};
+int i_ClientHasCustomGearEquipped[MAXPLAYERS]={0, ...};
 
 float delay_hud[MAXPLAYERS];
 float f_DelayBuildNotif[MAXPLAYERS];
@@ -405,6 +419,8 @@ float f_ClientWasTooLongInsideHurtZone[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneDamage[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneStairs[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneDamageStairs[MAXENTITIES]={0.0, ...};
+
+float fl_player_weapon_score[MAXPLAYERS];
 
 bool b_HideHealth[MAXENTITIES];
 bool b_IsABow[MAXENTITIES];
@@ -461,8 +477,7 @@ bool b_StickyIsSticking[MAXENTITIES];
 float f_EntityRenderColour[MAXENTITIES][3];
 int i_EntityRenderColourSave[MAXENTITIES][3];
 
-//6 wearables
-int i_Wearable[MAXENTITIES][9];
+int i_Wearable[MAXENTITIES][10];
 int i_FreezeWearable[MAXENTITIES];
 int i_InvincibleParticle[MAXENTITIES];
 int i_InvincibleParticlePrev[MAXENTITIES];
@@ -648,6 +663,7 @@ bool b_IgnoreAllCollisionNPC[MAXENTITIES];		//for npc's that noclip
 int iref_PropAppliedToRocket[MAXENTITIES];
 
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
+int h_TransmitHookType[MAXENTITIES];
 int h_NpcCollissionHookType[MAXENTITIES];
 int h_NpcSolidHookType[MAXENTITIES];
 int h_NpcHandleEventHook[MAXENTITIES];
@@ -827,7 +843,7 @@ float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
 int i_PlayIdleAlertSound[MAXENTITIES];
 int i_ammo_count[MAXENTITIES];
 bool b_we_are_reloading[MAXENTITIES];
-float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
+float fl_RuinaLaserSoundTimer[MAXENTITIES];
 int i_wingslot[MAXENTITIES];
 int i_haloslot[MAXENTITIES];
 int i_ClosestAlly[MAXENTITIES];
@@ -841,6 +857,8 @@ float fl_BEAM_DurationTime[MAXENTITIES];	//how long until the laser ends
 float fl_BEAM_ThrottleTime[MAXENTITIES];	//if you want to make a laser only do something 10 times a second instead of 66 during a think hook
 
 float fl_AbilityVectorData[MAXENTITIES][3];	//if you wish to transfer vector data between stuff. or save it for something else
+float fl_AbilityVectorData_2[MAXENTITIES][3];	//if you wish to transfer vector data between stuff. or save it for something else
+float fl_AbilityVectorData_3[MAXENTITIES][3];	//if you wish to transfer vector data between stuff. or save it for something else
 int i_Ruina_Laser_BEAM_HitDetected[100];	//if your laser has to hit more then 100 targets, your doing something wrong.
 int i_AmountProjectiles[MAXENTITIES];
 
@@ -896,6 +914,7 @@ enum
 {
 	FogType_Wave,
 	FogType_NPC,
+	FogType_Difficulty,
 	
 	FogType_COUNT
 }
@@ -905,4 +924,5 @@ int MapFogEntity;					// Entity ref of the fog controller used by the map, that 
 int ActiveFogEntity;				// Entity ref of the fog controller that is currently active, mostly used for late joins
 
 bool g_PrecachedMatrixNPCs;
+int ZoneMarkerRef[Zone_MAX] = {-1, ...};
 #endif

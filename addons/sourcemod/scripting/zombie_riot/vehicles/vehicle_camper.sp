@@ -32,7 +32,7 @@ methodmap VehicleCamper < VehicleGeneric
 	{
 		VehicleCamper obj = view_as<VehicleCamper>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, "models/vehicles/camper.mdl", "scripts/vehicles/tf2_camper.txt"));
 		
-		obj.m_bNoAttack = true;
+		obj.m_iGunIndex = -1;
 		obj.AddSeat({14.0, 0.0, 26.0}, 0);	// Side Seat
 		obj.AddSeat({0.0, -94.0, 118.0}, 1);	// Back Roof
 		obj.AddSeat({0.0, 0.0, 130.0}, 2);	// Front Roof

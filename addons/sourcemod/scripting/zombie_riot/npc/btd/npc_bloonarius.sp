@@ -54,7 +54,7 @@ static int SpawnMulti(int count, int players, bool elite)
 
 static float MoabSpeed(bool elite)
 {
-	if(CurrentRound < (elite ? 39 : 29))
+	if(CurrentRound[Rounds_Default] < (elite ? 39 : 29))
 		return elite ? 31.25 : 62.5;
 	
 	return elite ? 37.5 : 75.0;
@@ -66,11 +66,11 @@ static int CurrentTier(bool elite)
 
 	if(elite)	// 39,59,79,99
 	{
-		round = (CurrentRound - 38) / 20;
+		round = (CurrentRound[Rounds_Default] - 38) / 20;
 	}
 	else	// 9,19,29,39
 	{
-		round = (CurrentRound - 8) / 10;
+		round = (CurrentRound[Rounds_Default] - 8) / 10;
 	}
 
 	if(round > 3)
@@ -88,15 +88,15 @@ static void SetBossBloonPower(int players, bool elite)
 {
 	if(elite)
 	{
-		if(CurrentRound > 98)
+		if(CurrentRound[Rounds_Default] > 98)
 		{
 			RaidModeScaling = 10.0;
 		}
-		else if(CurrentRound > 78)
+		else if(CurrentRound[Rounds_Default] > 78)
 		{
 			RaidModeScaling = 14.0 / 3.0;
 		}
-		else if(CurrentRound > 58)
+		else if(CurrentRound[Rounds_Default] > 58)
 		{
 			RaidModeScaling = 1.0;
 		}
@@ -106,26 +106,26 @@ static void SetBossBloonPower(int players, bool elite)
 		}
 		
 		// Reference to late game scaling
-		if(CurrentRound > 99)
+		if(CurrentRound[Rounds_Default] > 99)
 		{
-			RaidModeScaling *= 1.0 + (CurrentRound - 71) * 0.05;
+			RaidModeScaling *= 1.0 + (CurrentRound[Rounds_Default] - 71) * 0.05;
 		}
-		else if(CurrentRound > 79)
+		else if(CurrentRound[Rounds_Default] > 79)
 		{
-			RaidModeScaling *= 1.0 + (CurrentRound - 79) * 0.02;
+			RaidModeScaling *= 1.0 + (CurrentRound[Rounds_Default] - 79) * 0.02;
 		}
 	}
 	else
 	{
-		if(CurrentRound > 38)
+		if(CurrentRound[Rounds_Default] > 38)
 		{
 			RaidModeScaling = 80.0 / 3.0;
 		}
-		else if(CurrentRound > 28)
+		else if(CurrentRound[Rounds_Default] > 28)
 		{
 			RaidModeScaling = 20.0 / 3.0;
 		}
-		else if(CurrentRound > 18)
+		else if(CurrentRound[Rounds_Default] > 18)
 		{
 			RaidModeScaling = 1.0;
 		}
@@ -209,6 +209,11 @@ methodmap Bloonarius < CClotBody
 			this.m_iAttacksTillMegahit = value;
 		}
 	}
+	property bool m_bBossRush
+	{
+		public get()							{ return b_FlamerToggled[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FlamerToggled[this.index] = TempValueForProperty; }
+	}
 	public int UpdateBloonOnDamage()
 	{
 		if(GetEntProp(this.index, Prop_Data, "m_iHealth") < (GetEntProp(this.index, Prop_Data, "m_iMaxHealth") / 2))
@@ -216,11 +221,15 @@ methodmap Bloonarius < CClotBody
 	}
 	public Bloonarius(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		if(IsValidEntity(RaidBossActive))	// Bloon raids fail if another can't spawn
+		bool bossrush = StrContains(data, "bossrush") != -1;
+		if (!bossrush)
 		{
-			ForcePlayerLoss();
-			RaidBossActive = INVALID_ENT_REFERENCE;
-			return view_as<Bloonarius>(-1);
+			if(IsValidEntity(RaidBossActive))	// Bloon raids fail if another can't spawn
+			{
+				ForcePlayerLoss();
+				RaidBossActive = INVALID_ENT_REFERENCE;
+				return view_as<Bloonarius>(-1);
+			}
 		}
 
 		bool elite = StrContains(data, "classic") != -1;
@@ -256,6 +265,8 @@ methodmap Bloonarius < CClotBody
 		npc.m_iStepNoiseType = 0;	
 		npc.m_flNextMeleeAttack = 0.0;
 		
+		npc.m_bBossRush = bossrush;
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bloonarius_ClotDamagedPost);
 		
 		func_NPCDeath[npc.index] = Bloonarius_NPCDeath;
@@ -282,7 +293,10 @@ methodmap Bloonarius < CClotBody
 		strcopy(music.Artist, sizeof(music.Artist), "Tim Haywood");
 		Music_SetRaidMusic(music);
 		
-		RaidModeTime = 9999999.9; //cant afford to delete it, since duo.
+		if (!bossrush)
+			RaidModeTime = 9999999.9; //cant afford to delete it, since duo.
+		else
+			RaidModeTime = GetGameTime() + 500.0;
 
 		i_PlayMusicSound[npc.index] = 0;
 		ToggleMapMusic(false);
@@ -479,7 +493,7 @@ public void Bloonarius_ClotThink(int iNPC)
 					{
 						if(ShouldNpcDealBonusDamage(npc.m_iTarget))
 						{
-							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 40.0 * float(CurrentRound), DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 40.0 * float(CurrentRound[Rounds_Default]), DMG_CLUB, -1, _, vecHit);
 						}
 						else
 						{

@@ -256,7 +256,15 @@ public float Rogue_Encounter_RiftShop()
 
 static void StartShopVote(bool first)
 {
-	ArrayList list = Rogue_CreateGenericVote(FinishShopVote, "Shop Encounter Title");
+	ArrayList list;
+	if(Dungeon_Mode())
+	{
+		list = Rogue_CreateGenericVote(FinishShopVote, "Shop Encounter Title Dungeon");
+	}
+	else
+	{
+		list = Rogue_CreateGenericVote(FinishShopVote, "Shop Encounter Title");
+	}
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
@@ -836,6 +844,7 @@ public void Rogue_Rift1Good_Remove()
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
+			
 			if(IsClientInGame(client))
 			{
 				Music_Stop_All(client);

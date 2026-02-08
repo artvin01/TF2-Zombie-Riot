@@ -36,16 +36,16 @@ methodmap VehicleAmbulance < VehicleGeneric
 		
 		SetEntProp(obj.index, Prop_Send, "m_nSkin", GetURandomInt() % 2);
 
-		obj.m_bNoAttack = true;
+		obj.m_iGunIndex = -1;
 		obj.AddSeat({16.0, 6.0, 12.0}, 0);	// Side Seat
 
 		// Back Seats
-		obj.AddSeat({-25.0, -60.0, 22.0}, 1);	// Left Center
-		obj.AddSeat({25.0, -30.0, 22.0}, 2);		// Right Front
-		obj.AddSeat({25.0, -88.0, 22.0}, 3);		// Right Back
-		obj.AddSeat({-25.0, -30.0, 22.0}, 4);	// Left Front
-		obj.AddSeat({-25.0, -88.0, 22.0}, 5);	// Left Back
-		obj.AddSeat({25.0, -60.0, 22.0}, 6);		// Right Center
+		obj.AddSeat({-25.0, -60.0, 22.0}, 1, -1);	// Left Center
+		obj.AddSeat({25.0, -30.0, 22.0}, 2, -1);		// Right Front
+		obj.AddSeat({25.0, -88.0, 22.0}, 3, -1);		// Right Back
+		obj.AddSeat({-25.0, -30.0, 22.0}, 4, -1);	// Left Front
+		obj.AddSeat({-25.0, -88.0, 22.0}, 5, -1);	// Left Back
+		obj.AddSeat({25.0, -60.0, 22.0}, 6, -1);		// Right Center
 
 		FuncShowInteractHud[obj.index] = ClotShowInteractHud;
 		func_NPCInteract[obj.index] = ClotInteract;
@@ -63,14 +63,9 @@ static bool ClotShowInteractHud(VehicleFullJeep obj, int client)
 	if(obj.m_hDriver == -1)
 		return false;
 	
-	float ang1[3], ang2[3];
-	GetEntPropVector(obj.index, Prop_Data, "m_angRotation", ang1);
-	GetClientEyeAngles(client, ang2);
-
-	if(fabs(fabs(ang1[1]) - fabs(ang2[1])) > 15.0)
+	if(!VehicleFullJeep_LookingBehindCar(obj.index, client))
 		return false;
 	
-
 	if(Building_Collect_Cooldown[obj.index][client] > GetGameTime())
 	{
 		PrintCenterText(client, "%T", "Object Cooldown", client,Building_Collect_Cooldown[obj.index][client] - GetGameTime());
@@ -88,11 +83,7 @@ static bool ClotInteract(int client, int weapon, VehicleFullJeep obj)
 	if(owner == -1)
 		return false;
 	
-	float ang1[3], ang2[3];
-	GetEntPropVector(obj.index, Prop_Data, "m_angRotation", ang1);
-	GetClientEyeAngles(client, ang2);
-
-	if(fabs(fabs(ang1[1]) - fabs(ang2[1])) > 15.0)
+	if(!VehicleFullJeep_LookingBehindCar(obj.index, client))
 		return false;
 	
 	if(Building_Collect_Cooldown[obj.index][client] > GetGameTime())
