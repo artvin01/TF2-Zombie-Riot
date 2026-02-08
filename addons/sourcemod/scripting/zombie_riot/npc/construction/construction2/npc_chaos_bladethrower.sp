@@ -322,9 +322,10 @@ public void ArrowStartTouchPierce(int arrow, int entity)
 			return;
 		Set_HitDetectionCooldown(arrow,entity, FAR_FUTURE);
 		
+		float DamageGet = f_ArrowDamage[arrow];
 		if(ShouldNpcDealBonusDamage(entity))
 		{
-			f_ArrowDamage[arrow] *= 3.0;
+			DamageGet *= 3.0;
 		}
 
 		int owner = GetEntPropEnt(arrow, Prop_Send, "m_hOwnerEntity");
@@ -340,7 +341,7 @@ public void ArrowStartTouchPierce(int arrow, int entity)
 		if(inflictor == -1)
 			inflictor = owner;
 
-		SDKHooks_TakeDamage(entity, owner, inflictor, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
+		SDKHooks_TakeDamage(entity, owner, inflictor, DamageGet, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
 		Projectile_DealElementalDamage(entity, arrow);
 
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
