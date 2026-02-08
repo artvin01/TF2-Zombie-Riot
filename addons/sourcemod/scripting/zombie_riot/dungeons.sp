@@ -2470,7 +2470,7 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 		}
 		GiveOneGuranteed = false;
 		RetryBuffGiving = false;
-		switch(GetRandomInt(1,18))
+		switch(GetRandomInt(1,17))
 		{
 			case 1:
 			{
@@ -2601,6 +2601,7 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 				else
 					ApplyStatusEffect(iNpc, iNpc, "Perfected Instinct", 999999.9);
 			}
+			/*
 			case 18:
 			{
 				if(HasSpecificBuff(iNpc, "Xeno Infection") || HasSpecificBuff(iNpc, "Xeno Infection Buff Only"))
@@ -2608,6 +2609,7 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 
 				Xeno_Resurgance_Enemy(iNpc);
 			}
+			*/
 		}
 	}
 	
