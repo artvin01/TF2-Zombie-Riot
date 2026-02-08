@@ -87,10 +87,12 @@ methodmap LanteanProjectile < CClotBody
 		if(StrContains(data, "red") != -1)
 		{
 			npc.m_iWearable1 = ParticleEffectAt_Parent(Origin, "flaregun_energyfield_red", npc.index, "", {0.0,0.0,0.0});
+			npc.m_iWearable2 = ParticleEffectAt_Parent(Origin, "raygun_projectile_red_trail", npc.index, "", {0.0,0.0,0.0});
 		}
 		else if(StrContains(data, "blue") != -1)
 		{
 			npc.m_iWearable1 = ParticleEffectAt_Parent(Origin, "flaregun_energyfield_blue", npc.index, "", {0.0,0.0,0.0});
+			npc.m_iWearable2 = ParticleEffectAt_Parent(Origin, "raygun_projectile_blue_trail", npc.index, "", {0.0,0.0,0.0});
 		}
 		//is always static
 		AddNpcToAliveList(npc.index, 1);
@@ -450,6 +452,8 @@ static void LanteanNPC_Death(int iNPC)
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
 
 	SetEntityRenderMode(npc.index, RENDER_NORMAL);
 	SetEntityRenderColor(npc.index, 255, 255, 255, 255);
