@@ -1328,7 +1328,7 @@ methodmap RegaliaClass < CClotBody
 
 		for(int i=0 ; i < 2 ; i ++)
 		{
-			int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, skin == 1 ? "raygun_projectile_blue_crit" : "raygun_projectile_red_crit", 0.0);
+			int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, skin == 1 ? "raygun_projectile_blue_trail" : "raygun_projectile_red_trail", 0.0);
 			SetParent(this.index, particle_1, Sections[i]);
 			this.AddAttachedEntity(particle_1);
 		}
@@ -1347,7 +1347,7 @@ methodmap RegaliaClass < CClotBody
 
 		for(int i=0 ; i < 2 ; i ++)
 		{
-			int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, skin == 1 ? "raygun_projectile_blue_crit" : "raygun_projectile_red_crit", 0.0);
+			int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, skin == 1 ? "raygun_projectile_blue_trail" : "raygun_projectile_red_trail", 0.0);
 			SetParent(this.index, particle_1, Sections[i]);
 			this.AddAttachedEntity(particle_1);
 		}
@@ -2963,6 +2963,11 @@ static void HandleDroneSystem(RegaliaClass npc)
 
 	float ShipAngles[3]; ShipAngles = npc.GetAngles();
 
+	int iTargetList[MAXPLAYERS];
+	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+	GetHighDefTargets(npcGetInfo, iTargetList, sizeof(iTargetList), false, false);
+	int target_loop = 0;
+
 	if(TopSection)
 	{
 		for(int i=0 ; i < 2 ; i++)
@@ -2974,7 +2979,8 @@ static void HandleDroneSystem(RegaliaClass npc)
 				Angles[2] = 0.0;
 				Angles[1] += (360.0 / SpawnAmt) * loop;
 				Angles[0] = -45.0;
-				FireDrones(npc, Loc, Angles);
+				FireDrones(npc, Loc, Angles, iTargetList[target_loop]);
+				target_loop++;
 			}
 		}
 	}
@@ -2989,12 +2995,13 @@ static void HandleDroneSystem(RegaliaClass npc)
 				Angles[2] = 0.0;
 				Angles[1] += (360.0 / SpawnAmt) * loop;
 				Angles[0] = 45.0;
-				FireDrones(npc, Loc, Angles);
+				FireDrones(npc, Loc, Angles, iTargetList[target_loop]);
+				target_loop++;
 			}
 		}
 	}
 }
-static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
+static void FireDrones(CClotBody npc, float Loc[3], float Angles[3], int target = -1)
 {
 	int Drone = NPC_CreateByName("npc_lantean_drone_projectile", npc.index, Loc, Angles, GetTeam(npc.index), "blue;raidmodescaling_damage");
 	int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.0005);	//like 0.05% hp of ship
@@ -3010,6 +3017,9 @@ static void FireDrones(CClotBody npc, float Loc[3], float Angles[3])
 
 		drone_npc.m_flTimeTillDeath = GetGameTime() + 10.0 + GetRandomFloat(0.5, 5.0);
 		drone_npc.m_flSpeed = DroneSpeed + 600.0 * GetRandomFloat(0.8, 1.2);
+
+		if(target > 0)
+			drone_npc.m_iTarget = target;
 
 		switch(GetRandomInt(1, 2))
 		{

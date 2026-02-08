@@ -237,7 +237,7 @@ static void Gasleader_ClotThink(int iNPC)
 			Explode_Logic_Custom(10.0, -1, npc.index, -1, vecMe, radius, _, 0.75, true, _, false, _, Gasleader_ExplodePost);
 			npc.m_flRangedSpecialDelay = gametime + 0.5;
 		}
-			float VecI[3]; WorldSpaceCenter(npc.index, VecI);
+		float VecI[3]; WorldSpaceCenter(npc.index, VecI);
 		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
 		{
 			if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
