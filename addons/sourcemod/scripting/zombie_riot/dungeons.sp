@@ -2236,7 +2236,7 @@ void Dungeon_EnemySpawned(int entity)
 
 					if(EnemyScaling > 0.0)
 					{
-						fl_Extra_Damage[entity] *= 1.0 + ((EnemyScaling - 1.0) / 3.0);
+						fl_Extra_Damage[entity] *= 1.0 + ((EnemyScaling - 1.0) / 4.0);
 						
 						SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * EnemyScaling));
 						SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * EnemyScaling));
