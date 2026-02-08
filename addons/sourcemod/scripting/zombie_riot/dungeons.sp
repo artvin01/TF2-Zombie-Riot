@@ -1985,7 +1985,18 @@ static void StartBattle(const RoomInfo room, float time = 0.1)
 		snap.GetKey(length, buffer, sizeof(buffer));
 
 		room.Fights.GetValue(buffer, scale);
-		EnemyScaling = ScaleBasedOnRound(round) / ScaleBasedOnRound(scale);
+		//we will scale down round linearly
+		if(round >= 30)
+		{
+			//we lessen scaling number
+			round += 2;
+		}
+		else
+		{
+			//we up scaling
+			round -= 5;
+		}
+		EnemyScaling = ScaleBasedOnRound((round - 6)) / ScaleBasedOnRound(scale);
 		PrintToConsoleAll("Dungeon Enemy Scaling: %.2f%%", EnemyScaling * 100.0);
 
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
@@ -2194,7 +2205,7 @@ bool Dungeon_AtLimitNotice()
 
 static float ScaleBasedOnRound(int round)
 {
-	return (500.0 + Pow(float(round), 2.7));
+	return (1000.0 + Pow(float(round), 2.7));
 }
 
 void Dungeon_EnemySpawned(int entity)
