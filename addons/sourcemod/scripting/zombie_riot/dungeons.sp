@@ -2576,7 +2576,7 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 			}
 			case 15:
 			{
-				if(Elemental_DamageRatio(iNpc, Element_Warped) > 0.0)
+				if(b_thisNpcIsARaid[iNpc] || Elemental_DamageRatio(iNpc, Element_Warped) > 0.0)
 				{
 					RetryBuffGiving = true;
 				}

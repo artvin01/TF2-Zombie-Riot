@@ -379,6 +379,10 @@ void ZRModifs_CharBuffToAdd(char[] data)
 		{
 			FormatEx(data, 6, "P");
 		}
+		case PREFIX_GALORE:
+		{
+			FormatEx(data, 6, "PG");
+		}
 	}
 }
 
