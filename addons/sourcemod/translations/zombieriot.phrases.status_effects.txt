@@ -151,7 +151,7 @@
 	{
 		"en"	"Increases Damage Taken by 35％\nSlows NPC'S by 35％\nLowers Damage Delt by 25％"
 		"it"	"Aumenta i danni subiti del 35％\nRallenta gli NPC del 35％\nRiduce i danni subiti del 25％"
-		"ko"	"받는 피해 35％ 증가\nNPC의 속도 35％ 감소\n주는 피해 25％ 감소"
+		"ko"	"받는 피해가 35％ 증가합니다.\nNPC의 속도가 35％ 감소합니다.\n공격 피해량이 25％ 감소합니다."
 	}
 	"Golden Curse"
 	{
@@ -175,7 +175,7 @@
 	{
 		"en"	"Decreases damage dealt by 25％, which lowers over time to 0％"
 		"it"	"Diminuisce i danni inflitti di 25％, che si riducono nel tempo a 0％"
-		"ko"	"적에게 입히는 공격 피해량이 10％ 감소하고, 시간이 지날수록 점점 감소하여 최종적으로 주는 피해량 감소량이 0％까지 떨어집니다."
+		"ko"	"적에게 입히는 공격 피해량이 10％ 감소하고, 시간이 지날수록 점점 감소하여 최종적으로 공격 피해량 감소량이 0％까지 떨어집니다."
 	}
 	"Iberia's Anti Raid"
 	{
@@ -2420,7 +2420,7 @@
 	{
 		"en"	"Increases damage taken by 20％.\nDecreases attack speed by 20％.\nDecreases damage by 20％."
 		"it"	"Aumenta i danni subiti di 20％.\nDiminuisce la velocità d'attacco di 20％.\nDiminuisce i danni di 20％."
-		"ko"	"받는 피해가 20％ 증가합니다.\n공격 속도가 20％ 감소합니다.\n주는 피해가 20％ 감소합니다."
+		"ko"	"받는 피해가 20％ 증가합니다.\n공격 속도가 20％ 감소합니다.\n공격 피해량이 20％ 감소합니다."
 	}
 	"Quantum Entanglement"
 	{
