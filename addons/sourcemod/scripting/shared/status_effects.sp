@@ -7712,6 +7712,8 @@ static void Const2_SefHeal_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 
 	float maxhealth = float(ReturnEntityMaxHealth(entity));
+	if(b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity])
+		maxhealth *= 0.01;
 	HealEntityGlobal(entity, entity, maxhealth / 5.0, 1.0, 0.0, HEAL_SELFHEAL);
 }
 
