@@ -7809,7 +7809,7 @@
 	"Behemoth Behemoth Desc"
 	{
 		"en"	"A Bigger Behemoth, too many vitamins.\n-Deals chaos damage on hit\n-Has AOE swings\n-Immune to Headshots"
-		"ko"	"더 커다란 베헤모스입니다. 비타민을 너무 먹었나...\n-적중 시 혼돈 원소 피해를 부여합니다.\n-광역 피해를 가하는 공격 보유\n-헤드샷 피해를 0으로 받습니다."
+		"ko"	"더 커다란 베헤모스입니다. 비타민을 너무 많이 먹었나...\n-적중 시 혼돈 원소 피해를 부여합니다.\n-광역 피해를 가하는 공격 보유\n-헤드샷 피해를 0으로 받습니다."
 	}
 	"Demon Possesed Armor"
 	{
