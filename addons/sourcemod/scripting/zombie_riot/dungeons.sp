@@ -2466,7 +2466,7 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 	bool RetryBuffGiving = false;
 	bool GiveOneGuranteed = true;
 	int MaxHits = 0;
-	while(GiveOneGuranteed || RetryBuffGiving || GetRandomInt(1,4) == 1)
+	while(GiveOneGuranteed || RetryBuffGiving || GetRandomInt(1,3) == 1)
 	{
 		MaxHits++;
 		if(MaxHits >= 1000)
@@ -2475,7 +2475,7 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 		}
 		GiveOneGuranteed = false;
 		RetryBuffGiving = false;
-		switch(GetRandomInt(1,18))
+		switch(GetRandomInt(1,35))
 		{
 			case 1:
 			{
@@ -2614,7 +2614,128 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 
 				Xeno_Resurgance_Enemy(iNpc);
 			}
-			
+			case 19:
+			{
+				if(HasSpecificBuff(iNpc, "Armoring Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Armoring Prefix", 999999.9);
+			}
+			case 20:
+			{
+				if(HasSpecificBuff(iNpc, "Motivating Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Motivating Prefix", 999999.9);
+			}
+			case 21:
+			{
+				if(HasSpecificBuff(iNpc, "Invisible Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Invisible Prefix", 999999.9);
+			}
+			case 22:
+			{
+				if(HasSpecificBuff(iNpc, "Asexual Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Asexual Prefix", 999999.9);
+			}
+			case 23:
+			{
+				if(HasSpecificBuff(iNpc, "Glug Infested Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Glug Infested Prefix", 999999.9);
+			}
+			case 24:
+			{
+				if(HasSpecificBuff(iNpc, "Explosive Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Explosive Prefix", 999999.9);
+			}
+			case 25:
+			{
+				if(b_thisNpcIsARaid[iNpc] || HasSpecificBuff(iNpc, "Stalker Prefix"))
+					RetryBuffGiving = true;
+				else
+				{
+					ApplyStatusEffect(iNpc, iNpc, "Stalker Prefix", 999999.9);
+					ApplyStatusEffect(iNpc, iNpc, "Stalker Prefix Nerf", 999999.9);
+				}
+			}
+			case 26:
+			{
+				if(HasSpecificBuff(iNpc, "Disco Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Disco Prefix", 999999.9);
+			}
+			case 27:
+			{
+				if(HasSpecificBuff(iNpc, "Toxic Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Toxic Prefix", 999999.9);
+			}
+			case 28:
+			{
+				if(HasSpecificBuff(iNpc, "Boing Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Boing Prefix", 999999.9);
+			}
+			case 29:
+			{
+				if(HasSpecificBuff(iNpc, "Knockback Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Knockback Prefix", 999999.9);
+			}
+			case 30:
+			{
+				if(HasSpecificBuff(iNpc, "Loud Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Loud Prefix", 999999.9);
+			}
+			case 31:
+			{
+				if(HasSpecificBuff(iNpc, "Legendary Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Legendary Prefix", 999999.9);
+			}
+			case 32:
+			{
+				if(HasSpecificBuff(iNpc, "Ragebaiter Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Ragebaiter Prefix", 999999.9);
+			}
+			case 33:
+			{
+				if(HasSpecificBuff(iNpc, "Semi Healthy Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Semi Healthy Prefix", 999999.9);
+			}		
+			case 34:
+			{
+				if(HasSpecificBuff(iNpc, "Fat Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Fat Prefix", 999999.9);
+			}	
+			case 35:
+			{
+				if(HasSpecificBuff(iNpc, "Modifier+ Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Modifier+ Prefix", 999999.9);
+			}	
 		}
 	}
 }

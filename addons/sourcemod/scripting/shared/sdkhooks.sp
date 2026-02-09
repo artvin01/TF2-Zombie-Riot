@@ -2480,6 +2480,7 @@ public Action SDKHook_AmbientSoundHook(char sample[PLATFORM_MAX_PATH], int &enti
 	return Plugin_Continue;
 }
 
+bool LouderSoundStop = false;
 public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH],
 	  int &entity, int &channel, float &volume, int &level, int &pitch, int &flags,
 	  char soundEntry[PLATFORM_MAX_PATH], int &seed)
@@ -2512,6 +2513,26 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	*/
 
 #if defined ZR
+
+	if(StrContains(sample, "#", true) != -1)
+	{
+		
+	}
+	else
+	{
+		if(!LouderSoundStop && HasSpecificBuff(entity, "Loud Prefix"))
+		{
+			level += 20;
+			LouderSoundStop = true;
+			for(int loop1=0; loop1<numClients; loop1++)
+			{
+				int listener = clients[loop1];
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+			}
+			LouderSoundStop = false;
+		}
+	}
 /*
 	if(EnableSilentMode && entity > MaxClients && entity < MAXENTITIES && !b_NpcHasDied[entity] && !(flags & SND_STOP))
 	{

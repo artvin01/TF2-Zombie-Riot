@@ -5900,6 +5900,10 @@
 	{
 		"en"	"Chemical Specialist"
 	}
+	"Chemical Spreader"
+	{
+		"en"	"Chemical Spreader"
+	}
 	"Giant Armored Medibot"
 	{
 		"en"	"Giant Armored Medibot"
