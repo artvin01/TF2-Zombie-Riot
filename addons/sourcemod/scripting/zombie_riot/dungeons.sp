@@ -2432,32 +2432,37 @@ stock int FindByEntityName(const char[] name)
 	return -1;
 }
 
-public void ZRModifs_ModifEnemyChaos(int iNpc)
+public void ZRModifs_ModifEnemyPrefixDuff(int iNpc)
 {
-	if(i_NpcInternalId[iNpc] == DungeonLoot_Id() ||i_NpcInternalId[iNpc] == Const2Spawner_Id())
-		return;
-		
-	fl_Extra_Damage[iNpc] *= 1.10;
-	int Health = GetEntProp(iNpc, Prop_Data, "m_iMaxHealth");
-	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 1.10));
-	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 1.10));
-
+	bool DontBuffBaseStats = false;
 	if(b_thisNpcIsABoss[iNpc])
-		return;
+		DontBuffBaseStats = true;
+	if(b_thisNpcIsARaid[iNpc])
+	{
+		DontBuffBaseStats = true;
+		RaidModeTime = FAR_FUTURE;
+	}
 	if(i_IsABuilding[iNpc])
 		return;
 	if(i_NpcIsABuilding[iNpc])
 		return;
-//	if(Dungeon_GetEntityZone(iNpc) != Zone_Dungeon && Dungeon_GetEntityZone(iNpc) != Zone_RivalBase)
-//		return;
-	//Rare
-	if(GetRandomInt(0,RoundToCeil(35.0 * MultiGlobalEnemy)) != 0)
+
+	if(!DontBuffBaseStats && GetRandomInt(0,RoundToCeil(15.0 * MultiGlobalEnemy)) != 0)
 		return;
-	b_thisNpcHasAnOutline[iNpc] = true;
-	GiveNpcOutLineLastOrBoss(iNpc, true);
-	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 3.0));
-	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 3.0));
-	fl_Extra_Damage[iNpc] *= 1.2;
+
+	if(!DontBuffBaseStats)
+	{
+		b_thisNpcHasAnOutline[iNpc] = true;
+		GiveNpcOutLineLastOrBoss(iNpc, true);
+		SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 3.0));
+		SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 3.0));
+		fl_Extra_Damage[iNpc] *= 1.25;
+	}
+	ZRModifs_GiveRandomPrefix(iNpc);
+	//This is a unique enemy, give mega buffs
+}
+public void ZRModifs_GiveRandomPrefix(int iNpc)
+{
 	bool RetryBuffGiving = false;
 	bool GiveOneGuranteed = true;
 	int MaxHits = 0;
@@ -2470,7 +2475,7 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 		}
 		GiveOneGuranteed = false;
 		RetryBuffGiving = false;
-		switch(GetRandomInt(1,17))
+		switch(GetRandomInt(1,18))
 		{
 			case 1:
 			{
@@ -2601,17 +2606,46 @@ public void ZRModifs_ModifEnemyChaos(int iNpc)
 				else
 					ApplyStatusEffect(iNpc, iNpc, "Perfected Instinct", 999999.9);
 			}
-			/*
+			
 			case 18:
 			{
-				if(HasSpecificBuff(iNpc, "Xeno Infection") || HasSpecificBuff(iNpc, "Xeno Infection Buff Only"))
+				if(HasSpecificBuff(iNpc, "Xeno Infection Buff") || HasSpecificBuff(iNpc, "Xeno Infection Buff Only"))
 					RetryBuffGiving = true;
 
 				Xeno_Resurgance_Enemy(iNpc);
 			}
-			*/
+			
 		}
 	}
+}
+public void ZRModifs_ModifEnemyChaos(int iNpc)
+{
+	if(i_NpcInternalId[iNpc] == DungeonLoot_Id() ||i_NpcInternalId[iNpc] == Const2Spawner_Id())
+		return;
+		
+	fl_Extra_Damage[iNpc] *= 1.10;
+	int Health = GetEntProp(iNpc, Prop_Data, "m_iMaxHealth");
+	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 1.10));
+	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 1.10));
+
+	if(b_thisNpcIsABoss[iNpc])
+		return;
+	if(i_IsABuilding[iNpc])
+		return;
+	if(i_NpcIsABuilding[iNpc])
+		return;
+//	if(Dungeon_GetEntityZone(iNpc) != Zone_Dungeon && Dungeon_GetEntityZone(iNpc) != Zone_RivalBase)
+//		return;
+	//Rare
+	if(GetRandomInt(0,RoundToCeil(35.0 * MultiGlobalEnemy)) != 0)
+		return;
+
+	b_thisNpcHasAnOutline[iNpc] = true;
+	GiveNpcOutLineLastOrBoss(iNpc, true);
+	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 3.0));
+	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 3.0));
+	fl_Extra_Damage[iNpc] *= 1.2;
+	ZRModifs_GiveRandomPrefix(iNpc);
 	
 	//This is a unique enemy, give mega buffs
 }

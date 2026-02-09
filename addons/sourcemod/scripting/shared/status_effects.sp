@@ -7348,7 +7348,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	StatusEffect_AddGlobal(data);
 
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Xeno Infection");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Xeno Infection Buff");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Xeno");
@@ -7846,9 +7846,12 @@ void Const2_XenoInfect(int entity, int victim, float &healingammount)
 
 	if(GetTeam(victim) != TFTeam_Red)
 	{
-		if(HasSpecificBuff(victim, "Xeno Infection") || HasSpecificBuff(victim, "Xeno Infection Buff Only"))
+		if(HasSpecificBuff(victim, "Xeno Infection Buff") || HasSpecificBuff(victim, "Xeno Infection Buff Only"))
 			return;
 		//infects all teams except red
+		float maxhealth = float(ReturnEntityMaxHealth(victim));
+		if(float(GetEntProp(victim, Prop_Data, "m_iHealth")) >= maxhealth * 0.25)
+			return;
 #if defined ZR
 		Xeno_Resurgance_Enemy(victim);
 #endif
