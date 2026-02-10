@@ -2521,6 +2521,14 @@
 		"it"	"Il primo gruppo di mercenari ha già fallito.\n 35 nemici in più, si riproducono 33％ più velocemente, 15％ in più sono vivi contemporaneamente. infliggono +15％ dmg, +25％ dmg ai cad, hanno 50％ + HP, +4％ più velocemente. i nemici guariscono 50％ in più."
 		"ko"	"최초로 출격한 용병들은 실패했습니다.\n웨이브 적 수량 +35％, 생성 속도 +33％, 한번에 존재하는 적의 수 +15％\n적 피해량 +15％, 구조물 대상 피해량 +25％, 체력 +50％, 이동 속도 +4％\n적들의 체력 회복량 +50％"
 	}
+	"Prefixes Galore"
+	{
+		"en"	"Prefixes Galore"
+	}
+	"Prefixes Galore Desc"
+	{
+		"en"	"Prepare for aboslute hell!\nEnemies have a chance to obtain prefixes, if they do, they gain massive buffs aswell.\nBosses and raids gain prefixes guranteed but arent extra buffed\nRaids have infinite time.\nPrefixes can stack."
+	}
 	"Paranormal Activity"
 	{
 		"en"	"Paranormal Activity"
