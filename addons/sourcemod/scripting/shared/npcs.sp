@@ -2767,7 +2767,7 @@ stock int StrLenMB(const char[] str)
 */
 
 #if defined ZR
-void PrintNPCMessageWithPrefixes(int entity, const char[] color, const char[] message)
+void PrintNPCMessageWithPrefixes(int entity, const char[] color, const char[] message, bool messageIsTranslated = false)
 {
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -2778,9 +2778,19 @@ void PrintNPCMessageWithPrefixes(int entity, const char[] color, const char[] me
 		StatusEffects_PrefixName(entity, client, prefix, sizeof(prefix));
 		
 		if (!b_NameNoTranslation[entity])
-			CPrintToChat(client, "{%s}%s%s{default}: %s", color, prefix, c_NpcName[entity], message);
+		{
+			if (!messageIsTranslated)
+				CPrintToChat(client, "{%s}%s%s{default}: %s", color, prefix, c_NpcName[entity], message);
+			else
+				CPrintToChat(client, "{%s}%s%s{default}: %t", color, prefix, c_NpcName[entity], message);
+		}
 		else
-			CPrintToChat(client, "{%s}%s%t{default}: %s", color, prefix, c_NpcName[entity], message);
+		{
+			if (!messageIsTranslated)
+				CPrintToChat(client, "{%s}%s%t{default}: %s", color, prefix, c_NpcName[entity], message);
+			else
+				CPrintToChat(client, "{%s}%s%t{default}: %t", color, prefix, c_NpcName[entity], message);
+		}
 	}
 }
 #endif
