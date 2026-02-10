@@ -7526,7 +7526,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Stalker");
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.01;
+	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= 5.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
@@ -7544,7 +7544,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= 0.75;
+	data.MovementspeedModif			= 0.85;
 	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= false;
 	data.ElementalLogic				= true;
@@ -8044,11 +8044,9 @@ static void Const2_Armoring_Timer(int entity, StatusEffect Apply_MasterStatusEff
 
 	float maxhealth = float(ReturnEntityMaxHealth(entity));
 	if(b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity])
-		maxhealth *= 0.01;
-	GrantEntityArmor(entity, false, 1.0, 0.25, 0, maxhealth / 5.0);
+		maxhealth *= 0.025;
+	GrantEntityArmor(entity, false, 1.0, 0.25, 0, maxhealth / 4.0);
 }
-
-
 
 static void Const2_Laggy_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -8511,6 +8509,10 @@ void Const2Modifs_Stalker_Start(int victim, StatusEffect Apply_MasterStatusEffec
 	if(!b_ThisWasAnNpc[victim])
 		return;
 
+	float maxhealth = float(ReturnEntityMaxHealth(victim));
+	maxhealth *= 100.0;
+	SetEntProp(victim, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
+	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 	SetEntityRenderColor_NpcAll(victim, 0.0, 0.0, 0.0);
 	b_StaticNPC[victim] = true;
 	AddNpcToAliveList(victim, b_StaticNPC[victim] ? 1 : 0);
@@ -8621,7 +8623,7 @@ static void Toxic_Think_Do(int entity, StatusEffect Apply_MasterStatusEffect, E_
 	entity,
 	-1,
 	_,
-	100.0,
+	200.0,
 	_,
 	_,
 	true,

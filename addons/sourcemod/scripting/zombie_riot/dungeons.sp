@@ -2662,8 +2662,16 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 					RetryBuffGiving = true;
 				else
 				{
-					ApplyStatusEffect(iNpc, iNpc, "Stalker Prefix", 999999.9);
-					ApplyStatusEffect(iNpc, iNpc, "Stalker Prefix Nerf", 999999.9);
+					if(GetRandomInt(1,4) == 1)
+					{
+						ApplyStatusEffect(iNpc, iNpc, "Stalker Prefix", 999999.9);
+						ApplyStatusEffect(iNpc, iNpc, "Stalker Prefix Nerf", 999999.9);
+					}
+					else
+					{
+						//make it really really rare	
+						RetryBuffGiving = true;
+					}
 				}
 			}
 			case 26:
