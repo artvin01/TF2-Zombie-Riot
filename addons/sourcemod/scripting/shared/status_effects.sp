@@ -7917,7 +7917,7 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 #if defined ZR
 	DamageDeal = float(CurrentCash);
 #endif
-	DamageDeal *= 0.005;
+	DamageDeal *= 0.0025;
 	if(DamageDeal <= 50.0)
 		DamageDeal = 50.0;
 
@@ -7941,7 +7941,7 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 		Initiate_HomingProjectile(projectile,
 		projectile,
 			90.0,			// float lockonAngleMax,
-			13.0,				//float homingaSec,
+			10.0,				//float homingaSec,
 			false,				// bool LockOnlyOnce,
 			true,				// bool changeAngles,
 			angles);			// float AnglesInitiate[3]);
