@@ -8757,22 +8757,7 @@ static void Ragebaiter_Think_Do(int entity, StatusEffect Apply_MasterStatusEffec
 	}
 	Format(RageText, sizeof(RageText), "Rage Prefix Text %i", GetRandomInt(1,MaxEntries- 1));
 
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if (IsClientInGame(client) && GetTeam(client) == TFTeam_Red)
-		{			
-			char NamePrefix[255];
-			StatusEffects_PrefixName(entity, client, NamePrefix, sizeof(NamePrefix));
-			if(!b_NameNoTranslation[entity])
-			{
-				CPrintToChat(client,"{crimson}%s%s {default}: %t",NamePrefix, c_NpcName[entity], RageText);
-			}
-			else
-			{
-				CPrintToChat(client,"{crimson}%s%t {default}: %t",NamePrefix, c_NpcName[entity], RageText)
-			}
-		}
-	}
+	PrintNPCMessageWithPrefixes(entity, "crimson", RageText, true);
 }
 
 
