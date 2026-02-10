@@ -7089,8 +7089,8 @@ void StatusEffects_Construct2_EnemyModifs()
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= 1.15;
-	data.AttackspeedBuff			= (1.0 / 3.0);
+	data.MovementspeedModif			= 1.1;
+	data.AttackspeedBuff			= (1.0 / 2.0);
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= Const2Modifs_Haste_Start;
@@ -7103,7 +7103,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Big");
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.35;
+	data.DamageTakenMulti 			= 0.5;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
@@ -7119,7 +7119,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Strong");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 2.5;
+	data.DamageDealMulti			= 1.75;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= true;
@@ -7219,7 +7219,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= -1.0;
+	data.MovementspeedModif			= -1.0; 
 	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
@@ -7361,10 +7361,10 @@ void StatusEffects_Construct2_EnemyModifs()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "TF"); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "The First");
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.5;
-	data.DamageDealMulti			= 1.0;
+	data.DamageTakenMulti 			= 0.6;
+	data.DamageDealMulti			= 0.7;
 	data.MovementspeedModif			= -1.0;
-	data.AttackspeedBuff			= (1.0 / 2.0);
+	data.AttackspeedBuff			= (1.0 / 1.5);
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= INVALID_FUNCTION;
@@ -7410,8 +7410,8 @@ void StatusEffects_Construct2_EnemyModifs()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Perfected Instinct");
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.6;
-	data.DamageDealMulti			= 1.75;
+	data.DamageTakenMulti 			= 0.75;
+	data.DamageDealMulti			= 0.4;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= (1.0 / 1.5);
 	data.Positive 					= true;
@@ -7429,7 +7429,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= 4.0;
+	data.MovementspeedModif			= 3.0;
 	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
