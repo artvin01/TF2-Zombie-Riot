@@ -8374,8 +8374,8 @@ void Const2Modifs_Asexual_End(int victim, StatusEffect Apply_MasterStatusEffect,
 		fl_Extra_Speed[summon] = fl_Extra_Speed[victim];
 		fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[victim];
 		fl_Extra_MeleeArmor[summon] = fl_Extra_MeleeArmor[victim];
-		SetEntProp(victim, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
-		SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
+		SetEntProp(summon, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
+		SetEntProp(summon, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 		float flPos[3];
 		flPos = pos;
 		flPos[2] += 300.0;
