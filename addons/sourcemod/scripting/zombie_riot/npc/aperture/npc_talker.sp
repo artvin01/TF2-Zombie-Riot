@@ -97,10 +97,11 @@ static void Talker_Talk(int entity, const char[] message)
 		char prefix[255];
 		StatusEffects_PrefixName(entity, client, prefix, sizeof(prefix));
 		
+		// Name the NPC based on whether the client owns the Expidonsan Research Card
 		if (b_DoNotHideName[client])
 			CPrintToChat(client, "{rare}%s%t{default}: %s", prefix, "Vincent", message);
 		else
-			CPrintToChat(client, "{rare}%s%s{default}: %s", prefix, "???", message);
+			CPrintToChat(client, "{rare}%s%s{default}: %s", prefix, c_NpcName[entity], message);
 	}
 }
 
@@ -1977,8 +1978,9 @@ static void Talker_GatherWavesetCompletion()
 {
 	for (int client = 1; client <= MaxClients; client++)
 	{
-		if (!IsClientInGame(client) || IsFakeClient(client))
+		if (!IsClientInGame(client) || IsFakeClient(client) || AprilFoolsIconOverride() == 1)
 		{
+			// Also specifically get past this if the steam happy modifier is on
 			b_DoNotHideName[client] = false;
 			continue;
 		}
