@@ -7751,6 +7751,7 @@ void Const2Modifs_Big_Start(int victim, StatusEffect Apply_MasterStatusEffect, E
 	if(!b_ThisWasAnNpc[victim])
 		return;
 
+	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", GetEntPropFloat(victim, Prop_Send, "m_flModelScale") * 1.25);
 	float maxhealth = float(ReturnEntityMaxHealth(victim));
 	maxhealth *= 2.0;
 	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
@@ -7761,6 +7762,7 @@ void Const2Modifs_Big_End(int victim, StatusEffect Apply_MasterStatusEffect, E_S
 	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
 		return;
 
+	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", GetEntPropFloat(victim, Prop_Send, "m_flModelScale") * (1.0 / 1.25));
 	float maxhealth = float(ReturnEntityMaxHealth(victim));
 	maxhealth /= 2.0;
 	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
