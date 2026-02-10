@@ -76,6 +76,14 @@ methodmap Talker < CClotBody
 		if (WaveAmAt == 1)
 		{
 			i_ApertureBossesDead = APERTURE_BOSS_NONE;
+			
+			for (int client = 1; client <= MaxClients; client++)
+			{
+				if (!IsClientInGame(client) || IsFakeClient(client) || !b_DoNotHideName[client])
+					continue;
+				
+				CPrintToChat(client, "{rare}Your {unique}Expidonsan Research Card{rare} reminds you of something, the voice you hear sounds familiar...");
+			}
 		}
 		npc.m_iTalkWaveAt = WaveAmAt;
 		
