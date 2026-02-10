@@ -376,9 +376,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				{
 					case 1: 
 					{
-						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
-						enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.85);
+						enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
+						enemy.Health = RoundToFloor((7700000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 					}
 					default: 
 					{
@@ -394,9 +394,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				{
 					case 1: 
 					{
-						enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
-						enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
+						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
+						enemy.Health = RoundToFloor((15000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.85);
 					}
 					default: 
 					{
@@ -447,6 +447,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_agent_thompson");
 				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = 0.75;
+				enemy.ExtraSpeed = 1.15;
+				enemy.ExtraThinkSpeed = 0.9;
 			}
 			case 19:
 			{
@@ -454,13 +456,15 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor((4500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "Im_The_raid;My_Twin";
 				enemy.ExtraDamage = 0.75;
+				enemy.ExtraSpeed = 1.25;
+				enemy.ExtraThinkSpeed = 0.95;
 			}
 			case 20:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_johnson");
 				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = 0.75; // johnson gets way too much damage in freeplay, reduce it
-				enemy.ExtraThinkSpeed = 0.75;
+				enemy.ExtraThinkSpeed = 0.6;
 				enemy.ExtraSpeed = 1.50;
 			}
 			case 21:
@@ -920,7 +924,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 11:	
 		{
-			CPrintToChatAll("{green}MR. X! {gold}- {red}MISTER WHAT!?");
+			CPrintToChatAll("{green}MR. X! {gold}- {red}Mister who? That should say Vivithorn.");
 		}
 		case 12:
 		{
@@ -956,7 +960,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 20:
 		{
-			CPrintToChatAll("{community}Agent... johnson. {crimson}ew.");
+			CPrintToChatAll("{community}Agent... johnson. {crimson}ew. Had to juice him up a bit cause how bad he is");
 		}
 		case 21:
 		{
