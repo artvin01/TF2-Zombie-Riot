@@ -2576,7 +2576,7 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 			}
 			case 15:
 			{
-				if(b_thisNpcIsARaid[iNpc] || Elemental_DamageRatio(iNpc, Element_Warped) > 0.0)
+				if(RaidBossActive == EntIndexToEntRef(iNpc) || b_thisNpcIsARaid[iNpc] || Elemental_DamageRatio(iNpc, Element_Warped) > 0.0)
 				{
 					RetryBuffGiving = true;
 				}
@@ -2658,7 +2658,7 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 			}
 			case 25:
 			{
-				if(b_thisNpcIsARaid[iNpc] || HasSpecificBuff(iNpc, "Stalker Prefix"))
+				if(RaidBossActive == EntIndexToEntRef(iNpc) || b_thisNpcIsARaid[iNpc] || HasSpecificBuff(iNpc, "Stalker Prefix"))
 					RetryBuffGiving = true;
 				else
 				{
