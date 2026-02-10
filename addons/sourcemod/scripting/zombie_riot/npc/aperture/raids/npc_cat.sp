@@ -446,7 +446,7 @@ static void CAT_Timer_IntroMessage(Handle timer, int ref)
 
 static void CAT_Talk(int entity, const char[] message)
 {
-	NPCStats_PrintNPCMessageWithPrefixes(entity, "rare", message);
+	PrintNPCMessageWithPrefixes(entity, "rare", message);
 }
 
 public void CAT_ClotThink(int iNPC)

@@ -464,7 +464,7 @@ static void Vincent_Timer_IntroMessage_Genocide(Handle timer, int ref)
 
 static void Vincent_Talk(int entity, const char[] message)
 {
-	NPCStats_PrintNPCMessageWithPrefixes(entity, "rare", message);
+	PrintNPCMessageWithPrefixes(entity, "rare", message);
 }
 
 public void Vincent_ClotThink(int iNPC)

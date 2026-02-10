@@ -223,7 +223,7 @@ static void Researcher_Timer_IntroMessage_Almagest(Handle timer, int ref)
 
 static void Researcher_Talk(int entity, const char[] message)
 {
-	NPCStats_PrintNPCMessageWithPrefixes(entity, "normal", message);
+	PrintNPCMessageWithPrefixes(entity, "normal", message);
 }
 
 public void ApertureResearcher_ClotThink(int iNPC)

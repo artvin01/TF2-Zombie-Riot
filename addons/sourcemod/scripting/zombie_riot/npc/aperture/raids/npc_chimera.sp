@@ -485,7 +485,7 @@ static void CHIMERA_Timer_IntroMessage(Handle timer, int ref)
 
 static void CHIMERA_Talk(int entity, const char[] message)
 {
-	NPCStats_PrintNPCMessageWithPrefixes(entity, "darkblue", message);
+	PrintNPCMessageWithPrefixes(entity, "darkblue", message);
 }
 
 public void CHIMERA_ClotThink(int iNPC)

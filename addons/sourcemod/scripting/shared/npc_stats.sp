@@ -12234,22 +12234,3 @@ void NPCStats_HandlePaintedWearables()
 		}
 	}
 }
-
-#if defined ZR
-void NPCStats_PrintNPCMessageWithPrefixes(int entity, const char[] color, const char[] message)
-{
-	for (int client = 1; client <= MaxClients; client++)
-	{
-		if (!IsClientInGame(client) || IsFakeClient(client))
-			continue;
-		
-		char prefix[255];
-		StatusEffects_PrefixName(entity, client, prefix, sizeof(prefix));
-		
-		if (!b_NameNoTranslation[entity])
-			CPrintToChat(client, "{%s}%s%s{default}: %s", color, prefix, c_NpcName[entity], message);
-		else
-			CPrintToChat(client, "{%s}%s%t{default}: %s", color, prefix, c_NpcName[entity], message);
-	}
-}
-#endif
