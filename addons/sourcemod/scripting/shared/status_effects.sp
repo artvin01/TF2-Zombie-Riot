@@ -7917,13 +7917,13 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 		return;
 	}
 	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
-	Apply_StatusEffect.DataForUse = GetGameTime() + 2.0;
+	Apply_StatusEffect.DataForUse = GetGameTime() + 4.0;
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 	float DamageDeal = 250.0;
 #if defined ZR
 	DamageDeal = float(CurrentCash);
 #endif
-	DamageDeal *= 0.0025;
+	DamageDeal *= 0.0015;
 	if(DamageDeal <= 50.0)
 		DamageDeal = 50.0;
 
