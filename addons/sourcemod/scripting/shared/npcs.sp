@@ -2770,7 +2770,13 @@ stock int StrLenMB(const char[] str)
 void PrintNPCMessageWithPrefixes(int entity, const char[] color, const char[] message, bool messageIsTranslated = false)
 {
 	bool checkedForPrefixes;
+	bool loud;
 	char finalColor[32];
+	char finalMessage[255];
+	
+	// Only copy the message once if it's not translated
+	if (!messageIsTranslated)
+		strcopy(finalMessage, sizeof(finalMessage), message);
 	
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -2796,28 +2802,33 @@ void PrintNPCMessageWithPrefixes(int entity, const char[] color, const char[] me
 					// To match the rest of ragebaiter text
 					finalColor = "crimson";
 				}
+				
+				if (HasSpecificBuff(entity, "Loud Prefix"))
+					loud = true;
 			}
 			
 			if (finalColor[0] == '\0')
 				strcopy(finalColor, sizeof(finalColor), color);
 			
+			if (!messageIsTranslated && loud)
+				StringToUpper(finalMessage);
+			
 			checkedForPrefixes = true;
 		}
 		
+		if (messageIsTranslated)
+		{
+			// Do some things per-client if the message is translated
+			FormatEx(finalMessage, sizeof(finalMessage), "%T", message, client);
+			
+			if (loud)
+				StringToUpper(finalMessage);
+		}
+		
 		if (!b_NameNoTranslation[entity])
-		{
-			if (!messageIsTranslated)
-				CPrintToChat(client, "{%s}%s%s{default}: %s", finalColor, prefix, c_NpcName[entity], message);
-			else
-				CPrintToChat(client, "{%s}%s%s{default}: %t", finalColor, prefix, c_NpcName[entity], message);
-		}
+			CPrintToChat(client, "{%s}%s%s{default}: %s", finalColor, prefix, c_NpcName[entity], finalMessage);
 		else
-		{
-			if (!messageIsTranslated)
-				CPrintToChat(client, "{%s}%s%t{default}: %s", finalColor, prefix, c_NpcName[entity], message);
-			else
-				CPrintToChat(client, "{%s}%s%t{default}: %t", finalColor, prefix, c_NpcName[entity], message);
-		}
+			CPrintToChat(client, "{%s}%s%t{default}: %s", finalColor, prefix, c_NpcName[entity], finalMessage);
 	}
 }
 #endif
