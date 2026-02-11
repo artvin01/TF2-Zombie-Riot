@@ -176,22 +176,8 @@ methodmap Refragmented_Combine_Police_Pistol < CClotBody
 		func_NPCDeath[npc.index] = RefragmentedCombinePolicePistol_NPCDeath;
 		func_NPCThink[npc.index] = Refragmented_Combine_Police_Pistol_ClotThink;
 
-		npc.m_flMeleeArmor = 0.10;
-		npc.m_flRangedArmor = 0.10;
-
-		npc.m_iWearable3 = TF2_CreateGlow_White("models/police.mdl", npc.index, 1.15);
-		if(IsValidEntity(npc.m_iWearable3))
-		{
-			SetEntProp(npc.m_iWearable3, Prop_Send, "m_bGlowEnabled", false);
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_ENVIRONMENTAL);
-			TE_SetupParticleEffect("utaunt_signalinterference_parent", PATTACH_ABSORIGIN_FOLLOW, npc.m_iWearable3);
-			TE_WriteNum("m_bControlPoint1", npc.m_iWearable3);	
-			TE_SendToAll();
-		}
-
-		SetEntityRenderMode(npc.index, RENDER_GLOW);
-		SetEntityRenderColor(npc.index, 0, 0, 125, 200);
-
+		RefragmentedBase_Init(npc.index);
+		
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 
@@ -248,20 +234,7 @@ public void Refragmented_Combine_Police_Pistol_ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 
-	float vecTarget2[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget2);
-	float VecSelfNpc2[3]; WorldSpaceCenter(npc.index, VecSelfNpc2);
-	float distance = GetVectorDistance(vecTarget2, VecSelfNpc2, true);
-	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.25) && !i_IsABuilding[PrimaryThreatIndex])
-	{
-		npc.PlayHurtSound();
-		SDKHooks_TakeDamage(npc.index, PrimaryThreatIndex, PrimaryThreatIndex, 25.0, DMG_TRUEDAMAGE, -1, _, vecMe);
-		SetEntityRenderColor(npc.index, 180, 0, 0, 200);
-	}
-	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.25) && !i_IsABuilding[PrimaryThreatIndex])
-	{
-		SetEntityRenderColor(npc.index, 0, 0, 125, 200);
-	}
+	RefragmentedBase_OnThink(npc.index, 25.0);
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -502,6 +475,6 @@ public void RefragmentedCombinePolicePistol_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
+	
+	RefragmentedBase_OnDeath(npc.index);
 }

@@ -1052,7 +1052,12 @@ int TF2_CreateGlow_White(const char[] model, int victim, float modelsize)
 	{
 	//	SetEntProp(entity, Prop_Data, "m_iInitialTeamNum", 2);
 	//	SetEntProp(entity, Prop_Send, "m_iTeamNum", 2);
-
+		
+		// Teleport the entity to its future parent before spawning it in case particles are attached, allows them to stop as intended
+		float origin[3];
+		GetAbsOrigin(victim, origin);
+		TeleportEntity(entity, origin);
+		
 		DispatchSpawn(entity);
 
 		SetEntityModel(entity, model);
