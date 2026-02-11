@@ -2632,6 +2632,7 @@
 	"The Big Desc"
 	{
 		"en"	"Enlarges by 25％\nDoubles Health"
+		"ko"	"크기가 75％ 증가합니다\n최대 체력이 2배로 증가합니다"
 	}
 	"Big"
 	{
