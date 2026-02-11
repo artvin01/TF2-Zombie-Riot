@@ -2948,7 +2948,7 @@
 	"Stalker Prefix Desc"
 	{
 		"en"	"Bypasses waves and gains insane buffs but much slower walkspeed"
-		"ko"	"모든 것들을 무시하며 막대한 버프를 얻지만, 이동 속도가 크게 느려집니다."
+		"ko"	"웨이브를 무시하며 막대한 버프를 얻지만, 이동 속도가 크게 느려집니다."
 	}
 	"Disco Prefix"
 	{
