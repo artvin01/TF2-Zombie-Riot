@@ -7743,7 +7743,7 @@
 	"Agent 61 Desc"
 	{
 		"en"	"A hired hitman merc, number assosiation unknown.\n-Will find the weakest target on the map and focus them\n-Phases through everything\n-Has challanger buff\n-Shoots his gun once which if hitting, deals a stacking fear debuff."
-		"ko"	"고용된 히트맨 용병입니다. 숫자 관련성 불명.\n-맵에서 가장 취약한 대상을 찾아 집중 공격합니다.\n-모든 것들을 통과하여 지나갑니다.\n-챌린저 버프 보유\n-적중 시 '원초적 공포' 디버프를 부여하는 총기를 사용합니다."
+		"ko"	"고용된 히트맨 용병입니다. 숫자 관련성 불명.\n-맵에서 가장 취약한 대상을 찾아 집중 공격합니다.\n-모든 것들을 통과하여 지나갑니다.\n-'도전자' 버프 보유\n-적중 시 '원초적 공포' 디버프를 부여하는 총기를 사용합니다."
 	}
 	"Battlefield Supplier"
 	{
@@ -7813,7 +7813,7 @@
 	"Behemoth Behemoth Desc"
 	{
 		"en"	"A Bigger Behemoth, too many vitamins.\n-Deals chaos damage on hit\n-Has AOE swings\n-Immune to Headshots"
-		"ko"	"더 커다란 베헤모스입니다. 비타민을 너무 먹었나...\n-적중 시 혼돈 원소 피해를 부여합니다.\n-광역 피해를 가하는 공격 보유\n-헤드샷 피해를 0으로 받습니다."
+		"ko"	"더 커다란 베헤모스입니다. 비타민을 너무 많이 먹었나...\n-적중 시 혼돈 원소 피해를 부여합니다.\n-광역 피해를 가하는 공격 보유\n-헤드샷 피해를 0으로 받습니다."
 	}
 	"Demon Possesed Armor"
 	{

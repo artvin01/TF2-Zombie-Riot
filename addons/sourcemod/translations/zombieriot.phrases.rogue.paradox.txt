@@ -722,7 +722,7 @@
 	{
 		"en"	"{green}Limited lifetime allies (non citizen and non barracks) gain +30％ max health and +30％ damage, the owner gains +60％ damage for 10 seconds when summoned."
 		"it"	"{green}Gli alleati a vita limitata (non cittadini e non caserma) guadagnano +30％ salute massima e +30％ danni, il proprietario guadagna +60％ danni per 10 secondi quando viene evocato."
-		"ko"	"{green}'배럭 유닛과 반시민을 제외한' 일정 시간 이후 소멸하는 소환물의 최대 체력과 공격 피해량 +30％ 증가 및 해당 유닛을 소환한 주인은 10초 동안 공격 피해량 +60％ 증가."
+		"ko"	"{green}'배럭 유닛, 반시민을 제외한' 일정 시간 후 소멸하는 소환물의 최대 체력, 공격 피해량 +30％ 증가. 해당 유닛의 소환자는 10초 동안 공격 피해량 +60％"
 	}
 	"Minion Energizer"
 	{

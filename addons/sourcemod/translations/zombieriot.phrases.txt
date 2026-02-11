@@ -52,7 +52,7 @@
 		"nl"		"Uw level is omhoog gegaan {1} \nJij hebt gekregen:"
 		"chi"		"恭喜你升级了！当前等级为 {1} 级\n已获得:"
 		"it"		"Sei salito al livello {1}\nHai sbloccato:"
-		"ko"		"레벨업! 레벨이 {1} 가 되었습니다.\n해금한 것:"
+		"ko"		"레벨업! 레벨이 {1} 이(가) 되었습니다.\n해금한 것:"
 	}
 	"None"
 	{
@@ -2537,7 +2537,7 @@
 		"nl"		"De vijand heeft hun uitrusting naar level {1} gebracht!!!"
 		"chi"       "僵尸的装备已升级!!!{1}"
 		"it"		"Il nemico ha ricercato il proprio equipaggiamento a livello {1}!!!"
-		"ko"		"적의 연구가 완료되어 적들의 장비 레벨이 {1} 로 증가했습니다!!!"
+		"ko"		"적의 연구가 완료되어 적들의 장비 레벨이 {1} (으)로 증가했습니다!!!"
 	}
 	"Victory Menu 2"
 	{		
