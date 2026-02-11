@@ -7924,8 +7924,8 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 	DamageDeal = float(CurrentCash);
 #endif
 	DamageDeal *= 0.0015;
-	if(DamageDeal <= 50.0)
-		DamageDeal = 50.0;
+	if(DamageDeal <= 25.0)
+		DamageDeal = 25.0;
 
 	if(DamageDeal > 500.0)
 		DamageDeal = 500.0;
