@@ -6133,3 +6133,13 @@ stock int TrailAttach_Bone(int player, char[] attachBone, char[] trail, int alph
 		
 	return -1;
 }
+
+stock void StringToUpper(char[] buffer)
+{
+	int i; 
+	while (buffer[i] != '\0')
+	{
+		buffer[i] = CharToUpper(buffer[i]);
+		i++;
+	}
+}

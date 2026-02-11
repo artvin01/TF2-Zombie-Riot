@@ -151,7 +151,7 @@
 	{
 		"en"	"Increases Damage Taken by 35％\nSlows NPC'S by 35％\nLowers Damage Delt by 25％"
 		"it"	"Aumenta i danni subiti del 35％\nRallenta gli NPC del 35％\nRiduce i danni subiti del 25％"
-		"ko"	"받는 피해 35％ 증가\nNPC의 속도 35％ 감소\n주는 피해 25％ 감소"
+		"ko"	"받는 피해가 35％ 증가합니다.\nNPC의 속도가 35％ 감소합니다.\n공격 피해량이 25％ 감소합니다."
 	}
 	"Golden Curse"
 	{
@@ -175,7 +175,7 @@
 	{
 		"en"	"Decreases damage dealt by 25％, which lowers over time to 0％"
 		"it"	"Diminuisce i danni inflitti di 25％, che si riducono nel tempo a 0％"
-		"ko"	"적에게 입히는 공격 피해량이 10％ 감소하고, 시간이 지날수록 점점 감소하여 최종적으로 주는 피해량 감소량이 0％까지 떨어집니다."
+		"ko"	"적에게 입히는 공격 피해량이 10％ 감소하고, 시간이 지날수록 점점 감소하여 최종적으로 공격 피해량 감소량이 0％까지 떨어집니다."
 	}
 	"Iberia's Anti Raid"
 	{
@@ -790,8 +790,8 @@
 	}
 	"Buffweiser Desc"
 	{
-		"en"	"Boosts damage dealt by 100%\nReduces damage taken by 50%"
-		"ko"	"공격 피해량이 100% 증가합니다.\n받는 피해량이 50% 감소합니다."
+		"en"	"Boosts damage dealt by 100％\nReduces damage taken by 50％"
+		"ko"	"공격 피해량이 100％ 증가합니다.\n받는 피해량이 50％ 감소합니다."
 	}
 	"False Therapy"
 	{
@@ -2420,7 +2420,7 @@
 	{
 		"en"	"Increases damage taken by 20％.\nDecreases attack speed by 20％.\nDecreases damage by 20％."
 		"it"	"Aumenta i danni subiti di 20％.\nDiminuisce la velocità d'attacco di 20％.\nDiminuisce i danni di 20％."
-		"ko"	"받는 피해가 20％ 증가합니다.\n공격 속도가 20％ 감소합니다.\n주는 피해가 20％ 감소합니다."
+		"ko"	"받는 피해가 20％ 증가합니다.\n공격 속도가 20％ 감소합니다.\n공격 피해량이 20％ 감소합니다."
 	}
 	"Quantum Entanglement"
 	{
@@ -2632,6 +2632,7 @@
 	"The Big Desc"
 	{
 		"en"	"Enlarges by 25％\nDoubles Health"
+		"ko"	"크기가 75％ 증가합니다\n최대 체력이 2배로 증가합니다"
 	}
 	"Big"
 	{
@@ -2831,351 +2832,439 @@
 	"Motivating Prefix"
 	{
 		"en"	"Motivating Prefix"
+		"ko"	"동기부여가 접두사"
 	}
 	"Motivating"
 	{
 		"en"	"Motivating"
+		"ko"	"동기부여가"
 	}
 	"Motivating Prefix Desc"
 	{
 		"en"	"Buffs allies with Warcry around itself."
+		"ko"	"주변의 아군들에게 '전투의 함성' 버프를 부여합니다."
 	}
 	"Invisible Prefix"
 	{
 		"en"	"Invisible Prefix"
+		"ko"	"투명한 접두사"
 	}
 	"Invisible"
 	{
 		"en"	"Invisible"
+		"ko"	"투명한"
 	}
 	"Invisible Prefix Desc"
 	{
 		"en"	"Enemies get invisible at far ranges and get stronger."
+		"ko"	"멀리 떨어져 있을 시 투명해지며, 더 강해집니다."
 	}
 	
 	"Asexual Prefix"
 	{
 		"en"	"Asexual Prefix"
+		"ko"	"무성애자 접두사"
 	}
 	"Asexual"
 	{
 		"en"	"Asexual"
+		"ko"	"무성애자"
 	}
 	"Asexual Prefix Desc"
 	{
 		"en"	"On Death, Splits up into 2 that guranteed get modifiers"
+		"ko"	"사망 시, 확정적으로 접두사를 얻는 적 2명으로 분열됩니다."
 	}
 	"Legendary Prefix"
 	{
 		"en"	"Legendary Prefix"
+		"ko"	"전설적인 접두사"
 	}
 	"Legendary"
 	{
 		"en"	"Legendary"
+		"ko"	"전설적인"
 	}
 	"Legendary Prefix Desc"
 	{
 		"en"	"Gets stronger overtime, at 30 seconds gains max power!"
+		"ko"	"시간이 지날 수록 강해지며, 30초 후 최대까지 강화됩니다."
 	}
 	"Glug Infested Prefix"
 	{
 		"en"	"Glug Infested Prefix"
+		"ko"	"글러그에 감염된 접두사"
 	}
 	"Glug Infested"
 	{
 		"en"	"Glug Infested"
+		"ko"	"글러그에 감염된"
 	}
 	"Glug Infested Desc"
 	{
 		"en"	"When hurt, everyso often, spawns a glug on their side"
+		"ko"	"피격 시, 높은 확률로 자신의 위치에 글러그를 스폰시킵니다."
 	}
 	"Armoring Prefix"
 	{
 		"en"	"Armoring Prefix"
+		"ko"	"장갑화 접두사"
 	}
 	"Armoring"
 	{
 		"en"	"Armoring"
+		"ko"	"장갑화"
 	}
 	"Armoring Prefix Desc"
 	{
 		"en"	"Regenerate armor 20％ of max health every 3 seconds"
+		"ko"	"매 3초마다 최대 체력의 20％ 만큼 아머를 재생합니다."
 	}
 	"Explosive Prefix"
 	{
 		"en"	"Explosive Prefix"
+		"ko"	"폭발성 접두사"
 	}
 	"Explosive"
 	{
 		"en"	"Explosive"
+		"ko"	"폭발성"
 	}
 	"Explosive Prefix Desc"
 	{
 		"en"	"When dead, explodes into a nuke, damaging everyone"
+		"ko"	"사망 시, 핵폭탄처럼 폭발하여 모든 것들에 피해를 가합니다."
 	}
 	"Stalker Prefix"
 	{
 		"en"	"Stalker Prefix"
+		"ko"	"스토커 접두사"
 	}
 	"Stalker"
 	{
 		"en"	"Stalker"
+		"ko"	"스토커"
 	}
 	"Stalker Prefix Desc"
 	{
 		"en"	"Bypasses waves and gains insane buffs but much slower walkspeed"
+		"ko"	"웨이브를 무시하며 막대한 버프를 얻지만, 이동 속도가 크게 느려집니다."
 	}
 	"Disco Prefix"
 	{
 		"en"	"Disco Prefix"
+		"ko"	"디스코 접두사"
 	}
 	"Disco"
 	{
 		"en"	"Disco"
+		"ko"	"디스코"
 	}
 	"Disco Prefix Desc"
 	{
-		"en"	"Flickers lights, partey!!!"
+		"en"	"Flickers lights, party!!!"
+		"ko"	"불빛이 깜빡거립니다. 파티 타임!!!"
 	}
 	"Toxic Prefix"
 	{
 		"en"	"Toxic Prefix"
+		"ko"	"유독성 접두사"
 	}
 	"Toxic"
 	{
 		"en"	"Toxic"
+		"ko"	"유독성"
 	}
 	"Toxic Prefix Desc"
 	{
 		"en"	"Deals damage to enemies around itself"
+		"ko"	"주위의 적들에게 지속적으로 피해를 가합니다."
 	}
 	"Boing Prefix"
 	{
 		"en"	"Boing Prefix"
+		"ko"	"통통 튀는 접두사"
 	}
 	"Boing"
 	{
 		"en"	"Boing"
+		"ko"	"통통 튀는"
 	}
 	"Boing Prefix Desc"
 	{
 		"en"	"Bounces around like a trampoline"
+		"ko"	"트램펄린을 타듯 마구 뛰어다닙니다."
 	}
 	"Knockback Prefix"
 	{
 		"en"	"Knockback Prefix"
+		"ko"	"넉백 접두사"
 	}
 	"Knockback"
 	{
 		"en"	"Knockback"
+		"ko"	"넉백"
 	}
 	"Knockback Prefix Desc"
 	{
 		"en"	"Enemies on dealin damage recieve knockback"
+		"ko"	"피해를 가할 시 넉백 역시 가합니다."
 	}
 	"Loud Prefix"
 	{
 		"en"	"Loud Prefix"
+		"ko"	"시끄러운 접두사"
 	}
 	"Loud"
 	{
 		"en"	"Loud"
+		"ko"	"시끄러운"
 	}
 	"Loud Prefix Desc"
 	{
 		"en"	"Makes all sounds you create 3x as loud"
+		"ko"	"모든 소리가 3배 더 시끄러워집니다."
 	}
 	"Ragebaiter Prefix"
 	{
 		"en"	"Ragebaiter Prefix"
+		"ko"	"분노 조장꾼 접두사"
 	}
 	"Ragebaiter"
 	{
 		"en"	"Ragebaiter"
+		"ko"	"분노 조장꾼"
 	}
 	"Ragebaiter Prefix Desc"
 	{
 		"en"	"Makes you forcefully type nasty stuff in chat"
+		"ko"	"채팅에 썩 좋지 않은 것들을 강제로 쓰게 만듭니다."
 	}
 	"Rage Prefix Text 1"
 	{
 		"en"	"I WILL KILL YOU"
+		"ko"	"죽여버릴거야!!!"
 	}
 	"Rage Prefix Text 2"
 	{
 		"en"	"ok."
+		"ko"	"ㅇㅇ."
 	}
 	"Rage Prefix Text 3"
 	{
 		"en"	"Youre welcome"
+		"ko"	"ㄱㅅ"
 	}
 	"Rage Prefix Text 4"
 	{
 		"en"	"My favorite toast is your BLOOD"
+		"ko"	"내가 가장 좋아하는 술은 네놈 '''피'''야"
 	}
 	"Rage Prefix Text 5"
 	{
 		"en"	"FUCKING ASSHOLE"
+		"ko"	"망할 새끼!!!"
 	}
 	"Rage Prefix Text 6"
 	{
 		"en"	"I HATE EVERYTHING"
+		"ko"	"전부 다 싫어!!!!!!"
 	}
 	"Rage Prefix Text 7"
 	{
 		"en"	"RAAAAAAAAAAAAAAAAAAAAHHHHHH!!!!!!!!!!"
+		"ko"	"으아아아아아아아아아아아아아아!!!!!!!!!!"
 	}
 	"Rage Prefix Text 8"
 	{
 		"en"	"RFHSGDGTWF ZJHEHMTZMBHJTEMNVUETH"
+		"ko"	"그ㅂㅅ붚ㄴ럊ㄹㅇㅈ랴쟁ㅈㄹㅇㅕㅠㅁ쨔ㅠㅃㅎㅗㅂ3ㅡ4ㅗ좀ㅇㄹ허ㅐ3ㅣㄱ"
 	}
 	"Rage Prefix Text 9"
 	{
 		"en"	"Owned BITCH"
+		"ko"	"내가 이겼다 X년아"
 	}
 	"Rage Prefix Text 10"
 	{
 		"en"	"Let me touch you boy"
+		"ko"	"흐흐 등짝 좀 보자"
 	}
 	"Rage Prefix Text 11"
 	{
 		"en"	"My hand + your head = Match made in heaven"
+		"ko"	"내 손 + 니 머리 = 천생연분"
 	}
 	"Rage Prefix Text 12"
 	{
 		"en"	"Guess what? Chicken butt"
+		"ko"	"그거 알어? 닭 응딩이"
 	}
 	"Rage Prefix Text 13"
 	{
 		"en"	"This is getting pretty serious."
+		"ko"	"이거 너무 진지해지는데"
 	}
 	"Rage Prefix Text 14"
 	{
 		"en"	"These hands are rated E for everyone"
+		"ko"	"이 손들은 전체 이용가라지"
 	}
 	"Rage Prefix Text 15"
 	{
 		"en"	"I just took a shit"
+		"ko"	"방금 큰 걸 보고 왔어"
 	}
 	"Rage Prefix Text 16"
 	{
 		"en"	"I found out i have work tomorrow, day ruined"
+		"ko"	"내일이 월요일이라고? 시봉방거"
 	}
 	"Rage Prefix Text 17"
 	{
 		"en"	"I can't win with these     kings    gg  ." 
+		"ko"	"하드가 죽으면? 다이 하드."
 		//This joke only works in english, for your own languge, make some other national joke
 	}
 	"Rage Prefix Text 18"
 	{
 		"en"	"Just browsed 4chan, it was very good, my head enlightened."
+		"ko"	"방금 4챈을 좀 보고 왔는데, 개쩔더라고, 깨달음을 얻은 기분이야."
 	}
 	"Rage Prefix Text 19"
 	{
 		"en"	"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+		"ko"	"ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ"
 	}
 	"Rage Prefix Text 20"
 	{
 		"en"	":trolley:"
+		"ko"	":trolley:"
 	}
 	"Rage Prefix Text 21"
 	{
 		"en"	"bruh"
+		"ko"	"헐"
 	}
 	"Rage Prefix Text 22"
 	{
 		"en"	"i hope no one looks at my plans while im sleeping"
+		"ko"	"내가 자고 있는 사이 누가 내 계획을 보지 않았음 좋겠네"
 	}
 	"Rage Prefix Text 23"
 	{
 		"en"	"HOO HAA"
+		"ko"	"후  하"
 	}
 	"Rage Prefix Text 24"
 	{
 		"en"	"Feeling like snorting cocain rn ngl fr fr"
+		"ko"	"농담 안 하고 마약 빨고 있는 기분이구만"
 	}
 	"Rage Prefix Text 25"
 	{
 		"en"	"I played minecraft"
+		"ko"	"난 마크를 해본 적이 있어"
 	}
 	"Rage Prefix Text 26"
 	{
 		"en"	"I am like, super evil, dude, just kidding go kill yourself."
+		"ko"	"나는 뭐랄까, 아주 사악한 사람이지... 장난이야 나가 죽어"
 	}
 	"Rage Prefix Text 27"
 	{
 		"en"	"I hope youre lactose intollerant cus im about to milk someone."
+		"ko"	"니가 유당불내증이 있음 좋겠네, 곧 누구한테서 우유를 짤거거든"
 	}
 	"Rage Prefix Text 28"
 	{
 		"en"	"Old times interitus is my bitch"
+		"ko"	"올탐 인테리투스는 내 ㅆ년이야"
 	}
 	"Rage Prefix Text 29"
 	{
 		"en"	"☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺"
+		"ko"	"☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺☻☺"
 	}
 	"Rage Prefix Text 30"
 	{
 		"en"	"♅ is looking mighty today. Let me grab that."
+		"ko"	"♅가 오늘 개쩔게 보이는데, 좀 가져올게"
 	}
 	"Rage Prefix Text 31"
 	{
 		"en"	"If you think liking a guy is gay, youre wrong, imagine liking a woman and putting up with their bullshit. now thats gay."
+		"ko"	"만약에 남자를 좋아하는게 게이라고 생각하면 틀렸어, 여자를 좋아하는데 걔네 머시깽이하고 같이 잔다고 생각해봐. 그게 게이지"
 	}
 	"Rage Prefix Text 32"
 	{
 		"en"	"Niko sucks"
+		"ko"	"니코 완전 별로임"
+		//Words from translator. I'm going to consume this ragebaiter prefix guy's soul how dare you say shet about da cat
 	}
 	"Rage Prefix Text 33"
 	{
 		"en"	"Zombie riot is full of SHIT!!"
+		"ko"	"좀라 완전 개쓰레기여!!"
 	}
 	"Rage Prefix Text 34"
 	{
 		"en"	"Shoutout to my homies, they up in this bitch"
+		"ko"	"내 짱친들에게 샤라웃하겠음, 걔네 이 녀석 좋아하는 듯"
 	}
 	"Rage Prefix Text 35"
 	{
 		"en"	"wat u want bitch"
+		"ko"	"대체 뭘 원하는겨 ㅆ년아"
 	}
 	"Rage Prefix Text 36"
 	{
 		"en"	"You ever had gay thoughts? Act on them."
+		"ko"	"게이같은 생각 해본 적 있어? 한번 해보던가."
 	}
 	"Semi Healthy Prefix"
 	{
 		"en"	"Semi Healthy Prefix"
+		"ko"	"약간 건강한 접두사"
 	}
 	"Semi Healthy"
 	{
 		"en"	"Semi Healthy"
+		"ko"	"약간 건강한"
 	}
 	"Semi Healthy Prefix Desc"
 	{
 		"en"	"Increases Max health by 5x, does not immedietly heal"
+		"ko"	"최대 체력이 5배로 증가하며, 즉시 치유를 받지 않습니다."
 	}
 	"Fat Prefix"
 	{
 		"en"	"Fat Prefix"
+		"ko"	"뚱뚱한 접두사"
 	}
 	"Fat"
 	{
 		"en"	"Fat"
+		"ko"	"뚱뚱한"
 	}
 	"Fat Prefix Desc"
 	{
 		"en"	"Increases health by 2x, increases size by 1.35x, slows down npcs by 1.25x"
+		"ko"	"최대 체력이 2배로 증가합니다. 크기가 1.35배로 증가합니다. NPC의 이동 속도가 1.25배 느려집니다."
 	}
 	"Modifier+ Prefix"
 	{
 		"en"	"Modifier+ Prefix"
+		"ko"	"모디파이어+ 접두사"
 	}
 	"Modifier+"
 	{
 		"en"	"Modifier+"
+		"ko"	"모디파이어+"
 	}
 	"Modifier+ Prefix Desc"
 	{
 		"en"	"Gives 2 modifier chances to get additional chances"
+		"ko"	"접두사 부여 확률이 추가로 2번 적용됩니다."
 	}
 }
