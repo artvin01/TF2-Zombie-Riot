@@ -8441,7 +8441,7 @@ float Glug_TakeDamage_Spread(int attacker, int victim, StatusEffect Apply_Master
 #if defined ZR
 		DamageDeal = float(CurrentCash);
 #endif
-		DamageDeal *= 0.01;
+		DamageDeal *= 0.001;
 		if(DamageDeal <= 1.0)
 			DamageDeal = 1.0;
 
