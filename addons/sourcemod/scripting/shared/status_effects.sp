@@ -7927,8 +7927,8 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 	if(DamageDeal <= 50.0)
 		DamageDeal = 50.0;
 
-	if(DamageDeal > 1000.0)
-		DamageDeal = 1000.0;
+	if(DamageDeal > 500.0)
+		DamageDeal = 500.0;
 
 	CClotBody npc = view_as<CClotBody>(entity);
 	float WorldSpaceVec[3]; WorldSpaceCenter(entity, WorldSpaceVec);
@@ -7946,8 +7946,8 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 		
 		Initiate_HomingProjectile(projectile,
 		projectile,
-			90.0,			// float lockonAngleMax,
-			10.0,				//float homingaSec,
+			70.0,			// float lockonAngleMax,
+			8.0,				//float homingaSec,
 			false,				// bool LockOnlyOnce,
 			true,				// bool changeAngles,
 			angles);			// float AnglesInitiate[3]);
