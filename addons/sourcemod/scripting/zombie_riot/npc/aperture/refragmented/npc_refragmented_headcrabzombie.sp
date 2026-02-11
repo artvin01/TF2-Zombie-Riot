@@ -54,61 +54,6 @@ static char g_MeleeMissSounds[][] = {
 	"npc/fast_zombie/claw_miss2.wav",
 };
 
-/*
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "TestName");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_test");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
-	data.Flags = 0;
-	data.Category = Type_Ally;
-	data.Func = ClotSummon;
-	NPC_Add(data);
-
-	#define MVM_CLASS_FLAG_NONE				0
-	#define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// Base Normal
-	#define MVM_CLASS_FLAG_SUPPORT			(1 << 1)	// Base Support
-	#define MVM_CLASS_FLAG_MISSION			(1 << 2)	// Base Support, Always Show
-	#define MVM_CLASS_FLAG_MINIBOSS			(1 << 3)	// Add Red Background
-	#define MVM_CLASS_FLAG_ALWAYSCRIT		(1 << 4)	// Add Blue Borders
-	#define MVM_CLASS_FLAG_SUPPORT_LIMITED	(1 << 5)	// Add to Support?
-
-	Type_Hidden = -1,
-	Type_Ally = 0,
-	Type_Special,
-	Type_Raid,
-	Type_Common,
-	Type_Alt,
-	Type_Xeno,
-	Type_BTD,
-	Type_Medieval,
-	Type_COF,
-	Type_Seaborn,
-	Type_Expidonsa,
-	Type_Interitus
-
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
-{
-	return TestNpcSpawn(vecPos, vecAng, team);
-}
-
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
-{
-	return TestNpcSpawn(vecPos, vecAng, team, data);
-}
-		If barracks
-		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = _NPCDeath;
-		func_NPCThink[npc.index] = _ClotThink;
-
-
-		func_NPCDeath[npc.index] = _NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = _OnTakeDamage;
-		func_NPCThink[npc.index] = _ClotThink;
-		func_NPCAnimEvent[npc.index] = INVALID_FUNCTION;
-	
-*/
-
 static int NPCID;
 
 public void RefragmentedHeadcrabZombie_OnMapStart_NPC()

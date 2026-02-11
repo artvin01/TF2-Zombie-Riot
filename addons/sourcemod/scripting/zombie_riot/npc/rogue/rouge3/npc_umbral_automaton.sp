@@ -143,8 +143,9 @@ methodmap Umbral_Automaton < CClotBody
 	
 	public Umbral_Automaton(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
+		bool NormNPC = StrContains(data, "nostatic") != -1;
 		bool IsGiantDo = StrContains(data, "giant") != -1;
-		bool InstantWakeup = false;
+		bool InstantWakeup = StrContains(data, "instant") != -1;
 		//hard coded im lazy
 		if(StrContains(data, "giant_shadow_statue_4") != -1)
 			InstantWakeup = true;
@@ -290,8 +291,12 @@ methodmap Umbral_Automaton < CClotBody
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 		Is_a_Medic[npc.index] = true;
-		npc.m_bStaticNPC = true;
-		AddNpcToAliveList(npc.index, 1);
+
+		if(!NormNPC)
+		{
+			npc.m_bStaticNPC = true;
+			AddNpcToAliveList(npc.index, 1);
+		}
 		
 
 		npc.m_bDissapearOnDeath = true;
@@ -514,6 +519,12 @@ public Action Umbral_Automaton_OnTakeDamage(int victim, int &attacker, int &infl
 	}
 	if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 	{
+		if(!npc.m_bStaticNPC)
+		{
+			npc.m_bStaticNPC = true;
+			AddNpcToAliveList(npc.index, 1);
+		}
+
 		npc.m_iBleedType = 0;
 		npc.m_flEnemyDead = 1.0;
 		npc.SetPlaybackRate(1.0);
@@ -848,17 +859,4 @@ void Umbral_Automaton_Melee_Small(Umbral_Automaton npc, float gameTime, float di
 			}
 		}
 	}
-}
-
-
-
-void Recalculate_NavBlockers()
-{
-	int entity = CreateEntityByName("tf_point_nav_interface");
-
-	if (!IsValidEntity(entity))
-		return;
-	AcceptEntityInput(  entity, "RecomputeBlockers" );
-
-	CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 }

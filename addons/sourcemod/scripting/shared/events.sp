@@ -161,6 +161,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR
 public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 {
+	Waves_ApplyCooldown(0.0);
 	if(CvarAutoSelectDiff.BoolValue && !Waves_Started())
 	{
 		//Do this only once!
@@ -313,7 +314,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		if(WaitingInQueue[client])
 			TeutonType[client] = TEUTON_WAITING;
 
-		if(i_ClientHasCustomGearEquipped[client])
+		if(i_ClientHasCustomGearEquipped[client] > 1)
 		{
 			SDKCall_GiveCorrectAmmoCount(client);
 
@@ -351,7 +352,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
 			SetVariantInt(0);
 			AcceptEntityInput(client, "SetBodyGroup");
-			if(!b_HasBeenHereSinceStartOfWave[client])
+			if(!WasHereSinceStartOfWave(client))
 			{
 				SetEntPropFloat(client, Prop_Send, "m_flNextAttack", FAR_FUTURE);
 				SetEntPropFloat(weapon_index, Prop_Send, "m_flNextPrimaryAttack", FAR_FUTURE);
@@ -533,6 +534,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 #if defined ZR
+	Dungeon_PlayerDowned(client);
 	UnequipDispenser(client, true);
 	ArmorDisplayClient(client, true);
 	DataPack pack = new DataPack();

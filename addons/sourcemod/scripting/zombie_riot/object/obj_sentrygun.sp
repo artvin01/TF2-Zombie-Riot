@@ -149,7 +149,7 @@ void ObjectSentrygun_ClotThink(ObjectSentrygun npc)
 	delete swingTrace;
 }
 
-void Sentrygun_FaceEnemy(int sentry, int Target)
+void Sentrygun_FaceEnemy(int sentry, int Target, int turnthis = 0)
 {
 	static float rocketAngle[3];
 	GetEntPropVector(sentry, Prop_Data, "m_angRotation", rocketAngle);
@@ -168,5 +168,8 @@ void Sentrygun_FaceEnemy(int sentry, int Target)
 	rocketAngle[0] = 0.0;
 	rocketAngle[1] = ApproachAngle(tmpAngles[1], rocketAngle[1], 500.0);
 
-	TeleportEntity(sentry, NULL_VECTOR, rocketAngle, NULL_VECTOR);
+	if(turnthis)
+		TeleportEntity(turnthis, NULL_VECTOR, rocketAngle, NULL_VECTOR);
+	else
+		TeleportEntity(sentry, NULL_VECTOR, rocketAngle, NULL_VECTOR);
 }

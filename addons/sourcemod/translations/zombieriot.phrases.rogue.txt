@@ -253,13 +253,18 @@
 		"it"	"Lascia questo incontro"
 		"ko"	"여기서 떠나기"
 	}
+	"Shop Encounter Title Dungeon"
+	{
+		"en"	"You find a room, displaying various items...\nChoosing an item shows what it does."
+		"ko"	"당신은 다양한 물품이 진열된 방을 발견한다...\n아이템을 선택하면 어떤 효과가 있는지 볼 수 있습니다."
+	}
 	"Shop Encounter Title"
 	{
 		"en"	"You stumble upon a shop and find an old man selling goods, do you take up his offers?\nChoosing an item shows what it does."
 		"pt"	"Você se depara com uma loja com um senhorzinho vendendo coisas, você aceita sua oferta?"
 		"ru"	"Наткнувшись на магазин, вы видите старика, продающего товары, примете ли вы его предложение?"
 		"it"	"Se vi imbattete in un negozio e trovate un anziano che vende merci, accettate le sue offerte?\nScegliendo un oggetto mostra cosa fa."
-		"ko"	"당신은 우연히 한 가게에 들어갔고, 물건을 파는 노인을 발견한다. 그의 거래 제안을 받아들일까?\n아이템을 선택하면 그 아이템의 효과를 볼 수 있음."
+		"ko"	"당신은 우연히 한 가게에 들어갔고, 물건을 파는 노인을 발견한다. 그의 거래 제안을 받아들일까?\n아이템을 선택하면 어떤 효과가 있는지 볼 수 있습니다."
 	}
 	"Shop Encounter Title Ruina"
 	{
@@ -1940,8 +1945,8 @@
 	}
 	"Malfunctioning Shield Desc"
 	{
-		"en"	"A barely functioning Expisondan shield.\n- {green}Every 10 seconds, gain a shield that blocks one instance of damage."
-		"it"	"Uno scudo di Expisondan appena funzionante.\n- {green}Ogni 10 secondi, ottieni uno scudo che blocca un'istanza di danno."
+		"en"	"A barely functioning Expidonsan shield.\n- {green}Every 10 seconds, gain a shield that blocks one instance of damage."
+		"it"	"Uno scudo di Expidonsan appena funzionante.\n- {green}Ogni 10 secondi, ottieni uno scudo che blocca un'istanza di danno."
 		"ko"	"겨우 작동하는 엑스피돈사제 방패.\n- {green}매 10 초마다, 받은 피해를 1회 무효화시키는 보호막이 생성됩니다."
 	}
 	"Bob's Exchange Money"
@@ -2105,7 +2110,7 @@
 	}
 	"Hover Glider Desc"
 	{
-		"en"	"An ancient device of Expisondan origin.\n- {green}Players deal +30％ damage while airborne or swimming."
+		"en"	"An ancient device of Expidonsan origin.\n- {green}Players deal +30％ damage while airborne or swimming."
 		"ru"	"Устройство из старой немецкой технологии.\n- Вы наносите на 30％ больше урона, находясь в воздухе или во время плавания."
 		"it"	"Un antico dispositivo di origine espisondana. \n- {green}I giocatori infliggono +30％ danni mentre sono in volo o nuotano."
 		"ko"	"엑스피돈사에서 제작된 고대의 장치.\n- {green}공중에 떠있거나 수영 상태일때, 공격 피해량 +30％."

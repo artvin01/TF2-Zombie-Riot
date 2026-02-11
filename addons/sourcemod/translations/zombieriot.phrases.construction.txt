@@ -31,7 +31,7 @@
 		"#format"	"{1:N},{2:t}"
 		"en"		"{red}{1} {default}started gathering {orange}{2} {default}and is being attacked!"
 		"it"		"{red}{1} {default}ha iniziato a raccogliere {orange}{2} {default}ed è sotto attacco!"
-		"ko"		"{red}{1} {default}가 {orange}{2} {default}를 수집하고 있으며 공격받고 있습니다!"
+		"ko"		"{red}{1} {default}이(가) {orange}{2} {default}을(를) 수집하고 있으며 공격받고 있습니다!"
 	}
 	"Gifts Spawned"
 	{
@@ -64,14 +64,14 @@
 		"#format"	"{1:N},{2:d},{3:t}"
 		"en"		"{red}{1} {default}has used {orange}{2} {3} {default}to make"
 		"it"		"{red}{1} {default}ha utilizzato {orange}{2} {3} {default}per realizzare"
-		"ko"		"{red}{1} {default}이(가) {orange}{2} {3} {default}를 사용하여 다음을 제작했습니다:"
+		"ko"		"{red}{1} {default}이(가) {orange}{2} {3} {default}을(를) 사용하여 다음을 제작했습니다:"
 	}
 	"Player Used 2 to"
 	{
 		"#format"	"{1:N},{2:d},{3:t},{4:d},{5:t}"
 		"en"		"{red}{1} {default}has used {orange}{2} {3} {default}and {orange}{4} {5} {default}to make"
 		"it"		"{red}{1} {default}ha utilizzato {orange}{2} {3} {default}e {orange}{4} {5} {default}per realizzare"
-		"ko"		"{red}{1} {default}이(가) {orange}{2} {3} {default}과 {orange}{4} {5} {default}를 사용하여 다음을 제작했습니다:"
+		"ko"		"{red}{1} {default}이(가) {orange}{2} {3} {default}와(과) {orange}{4} {5} {default}을(를) 사용하여 다음을 제작했습니다:"
 	}
 	"Player Start Research"
 	{
@@ -129,14 +129,14 @@
 		"#format"	"{1:s}"
 		"en"	"Start mining {1}?\n A raid might spawn nearby.\nYou need atleast one other player to mine with you to start."
 		"it"	"Iniziare a minare {1}?\n Potrebbe spawnarsi un raid nelle vicinanze.\nPer iniziare è necessario avere almeno un altro giocatore con cui minare."
-		"ko"	"이 {1} 를 채광할까요?\n 레이드가 근처에 스폰될 수도 있습니다.\n채굴하려면 최소한 한 명의 다른 플레이어가 함께 채굴을 시작해야 합니다."
+		"ko"	"이 {1} 을(를) 채광할까요?\n 레이드가 근처에 스폰될 수도 있습니다.\n채굴하려면 최소한 한 명의 다른 플레이어가 함께 채굴을 시작해야 합니다."
 	}
 	"Start Mining Alone"
 	{
 		"#format"	"{1:s}"
 		"en"	"Start mining {1}?\n A raid might spawn nearby."
 		"it"	"Iniziare a minare {1}?\n Potrebbe spawnare un raid nelle vicinanze."
-		"ko"	"이 {1} 를 채광할까요?\n 레이드가 근처에 스폰될 수도 있습니다."
+		"ko"	"이 {1} 을(를) 채광할까요?\n 레이드가 근처에 스폰될 수도 있습니다."
 	}
 	"Broken Server"
 	{
@@ -832,7 +832,7 @@
 	{
 		"en"	"Rebel Calling IV"
 		"it"	"Chiamata ribelle IV"
-		"ko"	"반시민의 호출 IV"
+		"ko"	"반시민 호출 IV"
 	}
 	"Rebel Calling IV Desc"
 	{
@@ -862,7 +862,7 @@
 	{
 		"en"	"A construct that attacks using long-range high-damage rounds."
 		"it"	"Un costrutto che attacca utilizzando proiettili a lunga gittata e ad alto danno."
-		"ko"	"긴 사정거리와 높은 피해를 주는 탄환을 발사하여 공격하는 구조물입니다."
+		"ko"	"긴 사거리와 높은 피해를 주는 탄환을 발사하여 공격하는 구조물입니다."
 	}
 	"Minigun Turret"
 	{
@@ -874,7 +874,7 @@
 	{
 		"en"	"A construct that attacks using short-range rapid firing rounds."
 		"it"	"Un costrutto che attacca utilizzando proiettili a fuoco rapido a corto raggio."
-		"ko"	"짧은 사정거리를 지녔지만 공격 속도가 매우 빠른 공격 구조물입니다."
+		"ko"	"짧은 사거리를 지녔지만 공격 속도가 매우 빠른 공격 구조물입니다."
 	}
 	"Teslar's Medusa"
 	{
@@ -886,7 +886,7 @@
 	{
 		"en"	"A construct that attacks using short-range lightning that chains, slows, and debuffs enemies."
 		"it"	"Un costrutto che attacca usando fulmini a corto raggio che incatenano, rallentano e debuffano i nemici."
-		"ko"	"짧은 사정거리를 지녔지만 여러 대상에게 튕기는 체인 라이트닝 공격을 하는 구조물입니다. 공격이 적중한 대상에게 둔화와 디버프를 부여합니다."
+		"ko"	"짧은 사거리를 지녔지만 여러 대상에게 튕기는 체인 라이트닝 공격을 하는 구조물입니다. 공격이 적중한 대상에게 둔화와 디버프를 부여합니다."
 	}
 	"Flagship Calling"
 	{
@@ -1019,5 +1019,66 @@
 		"en"	"A construct that provides +1 Barracks supply and +1 maximum allies."
 		"it"	"Una struttura che fornisce +1 rifornimento alla caserma e +1 alleati massimi."
 		"ko"	"배럭의 보급품이 +1 증가하고 유닛 상한 수가 +1 증가하는 구조물입니다."
+	}
+	
+	"House"
+	{
+		"en"	"House"
+		"ko"	"집"
+	}
+	"House Desc"
+	{
+		"en"	"Build more to gain more cash."
+		"ko"	"건설하여 더 많은 자금을 획득하세요."
+	}
+	"Incinerator"
+	{
+		"en"	"Incinerator"
+		"ko"	"소각기"
+	}
+	"Incinerator Desc"
+	{
+		"en"	"Burns enemies near it alive."
+		"ko"	"근처에 있는 적들을 산채로 불태웁니다."
+	}
+	"Zapper Building"
+	{
+		"en"	"Zapper Building"
+		"ko"	"재퍼 빌딩"
+	}
+	"Zapper Building Desc"
+	{
+		"en"	"Low range, high attackrate zapper building."
+		"ko"	"짧은 사거리와 높은 공격 속도를 가진 재퍼 빌딩입니다."
+	}
+	"Laser Intensifier"
+	{
+		"en"	"Laser Intensifier"
+		"ko"	"레이저 심화기"
+	}
+	"Laser Intensifier Desc"
+	{
+		"en"	"Attacks faster the more it attacks the same target."
+		"ko"	"같은 대상을 공격할 수록 공격 속도가 증가합니다."
+	}
+	"Arrow Tower"
+	{
+		"en"	"Arrow Tower"
+		"ko"	"화살탑"
+	}
+	"Arrow Tower Desc"
+	{
+		"en"	"Very high range, low damage building"
+		"ko"	"매우 높은 사거리와 낮은 피해량을 가진 구조물입니다."
+	}
+	"Cannon"
+	{
+		"en"	"Cannon"
+		"ko"	"대포"
+	}
+	"Cannon Desc"
+	{
+		"en"	"Jack of all traits, master of none"
+		"ko"	"모든 분야에 탁월하지만, 특화된 분야는 없습니다."
 	}
 }

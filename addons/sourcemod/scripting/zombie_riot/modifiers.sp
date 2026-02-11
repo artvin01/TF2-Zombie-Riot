@@ -9,6 +9,7 @@ static int CurrentModifActive = 0;
 #define OLD_TIMES 3
 #define TURBOLENCES 4
 #define PARANORMAL_ACTIVITY 5
+#define PREFIX_GALORE 6
 
 void Modifier_MiniBossSpawn(bool &spawns)
 {
@@ -31,6 +32,20 @@ public void Modifier_Collect_ChaosIntrusion()
 	CurrentModifActive = CHAOS_INTRUSION;
 }
 
+char SkynameSave[32];
+public void Modifier_Collect_ChaosIntrusion_LvL3_Const2()
+{
+	CvarSkyName.GetString(SkynameSave, sizeof(SkynameSave));
+	Waves_SetSkyName("space_5");
+	ToggleEntityByName("color_correct_entity_hard", true);
+}
+
+public void Modifier_Remove_ChaosIntrusion_LvL3_Const2()
+{
+	Waves_SetSkyName(SkynameSave);
+	ToggleEntityByName("color_correct_entity_hard", false);
+}
+
 public void Modifier_Remove_ChaosIntrusion()
 {
 	CurrentModifActive = 0;
@@ -39,6 +54,10 @@ public void Modifier_Remove_ChaosIntrusion()
 public void Modifier_Collect_SecondaryMercs()
 {
 	CurrentModifActive = SECONDARY_MERCS;
+}
+public void Modifier_Collect_Prefix_Galore()
+{
+	CurrentModifActive = PREFIX_GALORE;
 }
 
 public void Modifier_Remove_SecondaryMercs()
@@ -359,6 +378,10 @@ void ZRModifs_CharBuffToAdd(char[] data)
 		case PARANORMAL_ACTIVITY:
 		{
 			FormatEx(data, 6, "P");
+		}
+		case PREFIX_GALORE:
+		{
+			FormatEx(data, 6, "PG");
 		}
 	}
 }

@@ -2585,6 +2585,11 @@
 		"en"		"Waldch's Expidonsan Sword"
 		"ko"		"왈츠의 엑스피돈사제 검"
 	}
+	"Opened Void Portal"
+	{
+		"en"		"Opened Void Portal"
+		"ko"		"열려진 공허 포탈"
+	}
 	"Expidonsan Battery Device"
 	{
 		"en"		"Expidonsan Battery Device"
@@ -2639,6 +2644,11 @@
 	{
 		"en"		"Omega's Medallion"
 		"ko"		"오메가의 메달리온"
+	}
+	"Mr. X's Files"
+	{
+		"en"		"Mr. X's Files"
+		"ko"		"Mr. X의 파일"
 	}
 	"Inventory"//Inventory here
 	{

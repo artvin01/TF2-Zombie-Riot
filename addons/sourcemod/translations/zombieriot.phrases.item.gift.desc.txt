@@ -2273,7 +2273,7 @@
 	{
 		"it"	"Ha una salute molto elevata e danni da caos. è completamente immune ai colpi alla testa."
 		"en"	"A heavy, the size of a giant, with strong headgear. \n-Attacks apply Chaos elemental damage. \n-Takes 0 headshot damage."
-		"ko"	"체력이 매우 높고 적중시 대상에게 혼돈 원소 피해를 부여하는 헤비입니다.\n이 적에게 가하는 헤드샷 피해는 0으로 고정됩니다."
+		"ko"	"거인과 같은 크기와 강력한 머리 보호구를 가진 헤비입니다.\n-적중 시 혼돈 원소 피해를 부여합니다.\n-헤드샷 피해를 0으로 받습니다."
 	}
 	"Absolute Incinirator Desc"
 	{
@@ -2520,6 +2520,14 @@
 		"en"	"First batch of mercs failed already.\n35％ more enemies, spawn 33％ faster, 15％ more are alive at once.\nThey deal +15％ dmg, +25％ dmg to cades, have 50％ + HP, +4％ faster.\nEnemies heal 50％ more."
 		"it"	"Il primo gruppo di mercenari ha già fallito.\n 35 nemici in più, si riproducono 33％ più velocemente, 15％ in più sono vivi contemporaneamente. infliggono +15％ dmg, +25％ dmg ai cad, hanno 50％ + HP, +4％ più velocemente. i nemici guariscono 50％ in più."
 		"ko"	"최초로 출격한 용병들은 실패했습니다.\n웨이브 적 수량 +35％, 생성 속도 +33％, 한번에 존재하는 적의 수 +15％\n적 피해량 +15％, 구조물 대상 피해량 +25％, 체력 +50％, 이동 속도 +4％\n적들의 체력 회복량 +50％"
+	}
+	"Prefixes Galore"
+	{
+		"en"	"Prefixes Galore"
+	}
+	"Prefixes Galore Desc"
+	{
+		"en"	"Prepare for aboslute hell!\nEnemies have a chance to obtain prefixes, if they do, they gain massive buffs aswell.\nBosses and raids gain prefixes guranteed but arent extra buffed\nRaids have infinite time.\nPrefixes can stack."
 	}
 	"Paranormal Activity"
 	{
@@ -3562,7 +3570,42 @@
 	{
 		"en"	" `Did you really thought you could get out this mess that easily?` \nColonel of Victoria's Army. He has mastered skill for explosives and command \nHe wants your death for the amends of Radiotower's destruction. Do we really have to fight him while we got same enemeis in common? \nHe will utilize all of the abilites that previous raidbosses used and often call in for support"
 	}
-	
+	"Zapmarker Desc"
+	{
+		"en"	"An elite melee unit of victoria \nThrows Zapper's axe to apply teslar debuff to its victim and rush in with melee that applies heavy bleed"
+	}
+	"Resource Collector Desc"
+	{
+		"en"	"A robotic unit designed to collect nearby minerals \nFast and applied more damage to buildings"
+	}
+	"Victoria Gasleader Desc"
+	{
+		"en"	"Victorian Chemical Platoon leader. \n applies armor corrosion elemental damage near while his armor is up \nPulls out a sword that applies more armor corrosion damage on 3rd hit when its target gets close \nBecomes stronger as near allies die"
+	}
+	"Demolitionist Desc"
+	{
+		"en"	"Heavy melee unit of Victorian Chemical Platoon \nSwings a massive hammer to create and explosion that deals MASSIVE damage to buildings"
+	}
+	"Victorian Protector Desc"
+	{
+		"en"	"Carrier unit holding a portable shield \n spawns with an armor and when it gets closer to its target, deployys an energy shield \nIt's shield carrier will be destroyed if its armor runs out"
+	}
+	"Airraider Desc"
+	{
+		"en"	"A surprise assault unit of Victorian Chemical Platoon. \nParachutes in when it spawns and fire its rocket while falling down. \n continues with shotgun when on the ground"
+	}
+	"Victorian Headhunter Desc"
+	{
+		"en"	"An elite sniper of Victorian Chemical Platoon. \n Appears quietly and deals armor corrsion damage \n Deals more damage and elemental damage to enemies with support weapon out"
+	}
+	"Chemical Specialist Desc"
+	{
+		"en"	"A Chemical expert of Victorian Chemical Platoon \n Always head all of its elemental damage taken \n fire bullets coated with armor corrosion liquid"
+	}
+	"Giant Armored Medibot Desc"
+	{
+		"en"	"A Giant support unit of Victorian Chemical Platoon designed only for defense \n its patient receives massive buff and never dies unless oneshot \nIt moves very slowly"
+	}
 	"Avangard's Processing Core-B"
 	{
 		"en"	"Avangard's Processing Core-B"
@@ -3580,7 +3623,7 @@
 	}
 	"Copycat Truthful Evidence Desc"
 	{
-		"en"	"This is a Copy of the evidence received from Sensal.\nSee some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Victoria invaded Ziberia.\nyou became the primary target of Victorians due to this…"
+		"en"	"This is a Copy of the evidence received from Sensal.\nSee some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Victoria invaded Ziberia.\nYou became the primary target of Victorians due to this…"
 		"ko"	"센살에게 받은 진실된 증거자료[사본] 입니다.\n이해못할 단어들이 보이지만 숨겨진 뜻이 있는거 같습니다. 이것이 빅토리아가 지베리아를 침공한 이유 같습니다.\n하지만 이것이 빅토리아인들과의 트러블을 만들었습니다."
 	}
 	"Dropped Secret Letter"
@@ -3631,7 +3674,7 @@
 	"Major Voided’s Hat Desc"
 	{
 		"en"	"Somehow still intact after the explosion. A bit big but still usable."
-		"ko"	"어떻게인지 몰라도 폭발 이후에도 멀쩡하게 남아있습니다. 좀 크긴 하지만 쓸 수는 있네요."
+		"ko"	"어떻게인지 몰라도 폭발 이후에도 멀쩡하게 남아있습니다.\n좀 크긴 하지만 쓸 수는 있네요."
 	}
 	"Iberian Badge of Honor"
 	{
@@ -3650,8 +3693,8 @@
 	}
 	"Collector’s Backpack Desc"
 	{
-		"en"	"The backpack worn by the Aperture Collector. The tech within looks extremely advanced."
-		"ko"	"애퍼처 수집가가 매고 있던 가방입니다. 안에 들어있는 기술은 극도로 진보된 것 같습니다."
+		"en"	"The backpack worn by the Aperture Collector. \nThe tech within looks extremely advanced."
+		"ko"	"애퍼처 수집가가 매고 있던 가방입니다.\n안에 들어있는 기술은 극도로 진보된 것 같습니다."
 	}
 	"Ruianian Necklace"
 	{
@@ -3660,8 +3703,8 @@
 	}
 	"Ruianian Necklace Desc"
 	{
-		"en"	"A golden necklace with a gem at the end of it. Ruliana gives it to us as a gift from Twirl."
-		"ko"	"끝부분에 보석이 달려있는 황금 목걸이입니다. 루리아나가 트윌의 선물이라며 건네주었습니다."
+		"en"	"A golden necklace with a gem at the end of it. \nRuliana gives it to us as a gift from Twirl."
+		"ko"	"끝부분에 보석이 달려있는 황금 목걸이입니다.\n루리아나가 트윌의 선물이라며 건네주었습니다."
 	}
 	"Ancient Demon Horn"
 	{
@@ -3670,8 +3713,18 @@
 	}
 	"Ancient Demon Horn Desc"
 	{
-		"en"	"Broken off an Ancient Demon we killed. We have no idea what to use it for…"
-		"ko"	"처치한 고대 악마에게서 부러져 나온 뿔입니다. 어디에 써야할지 도통 모르겠군요..."
+		"en"	"Broken off an Ancient Demon we killed. \nWe have no idea what to use it for…"
+		"ko"	"처치한 고대 악마에게서 부러져 나온 뿔입니다.\n어디에 써야할지 도통 모르겠군요..."
+	}
+	"Tiny Flower"
+	{
+		"en"	"Tiny Flower"
+		"ko"	"작은 꽃"
+	}
+	"Tiny Flower Desc"
+	{
+		"en"	"Another tiny flower from Flowering Darkness, a garden is being maintained by their army. \nAs a garden regrows, as such does their army."
+		"ko"	"어둠 개화자에게서 얻은 또 다른 작은 꽃입니다.\n정원은 그의 군단에 의해 가꾸어집니다.\n정원이 자라날 수록, 그의 군대 역시 자라납니다."
 	}
 	"Warped Crystal"
 	{
@@ -3680,7 +3733,12 @@
 	}
 	"Warped Crystal Desc"
 	{
-		"en"	"Made from the combination of Chaos and Void. Let's hope none of us crystallizes so we don’t get encased in one of these."
+		"en"	"Made from the combination of Chaos and Void. \nLet's hope none of us crystallizes so we don’t get encased in one of these."
 		"ko"	"혼돈과 공허가 융화되어 만들어진 수정입니다.\n우리 중 누군가 결정화 되어 이런 수정에 갇히지 않길 바라야겠죠."
+	}
+	"Almagest Data Card"
+	{
+		"en"	"Almagest Data Card"
+		"ko"	"알마게스트 데이터 카드"
 	}
 }

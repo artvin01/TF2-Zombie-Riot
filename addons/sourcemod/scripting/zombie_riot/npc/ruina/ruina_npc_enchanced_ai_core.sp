@@ -111,6 +111,8 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 
 #define BEAM_COMBINE_BLACK	"materials/sprites/combineball_trail_black_1.vmt"
 #define BEAM_COMBINE_BLUE	"materials/sprites/combineball_trail_blue_1.vmt"
+#define BEAM_COMBINE_RED	"materials/sprites/combineball_trail_red_1.vmt"
+#define BEAM_DIAMOND 		"materials/sprites/physring1.vmt"
 
 int i_Ruina_Overlord_Ref;
 
@@ -142,9 +144,12 @@ int g_Ruina_BEAM_Glow;
 int g_Ruina_HALO_Laser;
 int g_Ruina_BEAM_Combine_Black;
 int g_Ruina_BEAM_Combine_Blue;
+int g_Ruina_BEAM_Combine_Red;
 int g_Ruina_BEAM_lightning;
 char g_Ruina_Glow_Blue;	//blue
 char g_Ruina_Glow_Red;	//red
+int HYDRAGUT_Beam;
+int HYDRAGUTCAP_Beam;
 
 static char g_EnergyChargeSounds[][] = {
 	"weapons/airboat/airboat_gun_energy1.wav",
@@ -248,21 +253,25 @@ void Ruina_Ai_Core_Mapstart()
 	PrecacheModel(BEAM_COMBINE_BLACK, true);
 
 	i_Ruina_Overlord_Ref = INVALID_ENT_REFERENCE;
+
+	HYDRAGUT_Beam 				= PrecacheModel("materials/sprites/hydragutbeam.vmt");
+	HYDRAGUTCAP_Beam			= PrecacheModel("materials/sprites/hydraspinalcord.vmt");
 	
-	g_Ruina_Laser_BEAM = PrecacheModel("materials/sprites/laserbeam.vmt", true);
+	g_Ruina_Laser_BEAM 			= PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	//gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
-	g_Ruina_BEAM_Diamond = PrecacheModel("materials/sprites/physring1.vmt", true);
-	g_Ruina_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
-	g_Ruina_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
-	g_Ruina_BEAM_Combine_Black 	= PrecacheModel("materials/sprites/combineball_trail_black_1.vmt", true);
-	g_Ruina_BEAM_Combine_Blue 	= PrecacheModel("materials/sprites/combineball_trail_blue_1.vmt", true);
+	g_Ruina_BEAM_Diamond 		= PrecacheModel(BEAM_DIAMOND, true);
+	g_Ruina_BEAM_Laser 			= PrecacheModel("materials/sprites/laser.vmt", true);
+	g_Ruina_HALO_Laser 			= PrecacheModel("materials/sprites/halo01.vmt", true);
+	g_Ruina_BEAM_Combine_Black 	= PrecacheModel(BEAM_COMBINE_BLACK, true);
+	g_Ruina_BEAM_Combine_Blue 	= PrecacheModel(BEAM_COMBINE_BLUE, true);
+	g_Ruina_BEAM_Combine_Red	= PrecacheModel(BEAM_COMBINE_RED, true);
 
-	g_Ruina_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
+	g_Ruina_BEAM_Glow 			= PrecacheModel("sprites/glow02.vmt", true);
 
-	g_Ruina_BEAM_lightning= PrecacheModel("materials/sprites/lgtning.vmt", true);
+	g_Ruina_BEAM_lightning		= PrecacheModel("materials/sprites/lgtning.vmt", true);
 
-	g_Ruina_Glow_Blue = PrecacheModel("sprites/blueglow2.vmt", true);
-	g_Ruina_Glow_Red = PrecacheModel("sprites/redglow2.vmt", true);
+	g_Ruina_Glow_Blue 			= PrecacheModel("sprites/blueglow2.vmt", true);
+	g_Ruina_Glow_Red 			= PrecacheModel("sprites/redglow2.vmt", true);
 }
 static void OffsetGive_BatteryChargeStatus(int ref)
 {
@@ -1564,9 +1573,6 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 	Tempcolor [3] = 80;
 	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.25, Thickness, 0.75, Tempcolor, 1, 0);
 	TE_SendToAll();
-
-	
-
 	Radius = Radius*Radius;
 
 	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
@@ -1578,7 +1584,7 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 			continue;
 		
 		if(!IsClientInGame(client))
-		 	continue;	
+			continue;	
 
 		if(!IsEntityAlive(client))
 			continue;
@@ -1596,10 +1602,6 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 		EmitSoundToClient(client, RUINA_ION_CANNON_SOUND_ATTACK);
 
 		SDKHooks_TakeDamage(client, 0, 0, dmg, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
-
-		int laser;
-		laser = ConnectWithBeam(-1, client, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK, end_point);
-		CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 	}
 	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
@@ -1616,10 +1618,6 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 				continue;
 
 			SDKHooks_TakeDamage(entity, 0, 0, dmg*2.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
-
-			int laser;
-			laser = ConnectWithBeam(-1, entity, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK, end_point);
-			CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
 
@@ -1637,9 +1635,6 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 					continue;
 
 				SDKHooks_TakeDamage(entity, 0, 0, dmg*2.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
-				int laser;
-				laser = ConnectWithBeam(-1, entity, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK, end_point);
-				CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 			}
 		}
 	}
@@ -2730,6 +2725,146 @@ void Ruina_Clean_Particles(int client)
 
 		i_particle_ref_id[client][i] = INVALID_ENT_REFERENCE;
 		i_laser_ref_id[client][i] = INVALID_ENT_REFERENCE;
+	}
+}
+stock bool IsVecEmpty(float vec[3])
+{	
+	for(int i=0 ; i < 3 ; i++) {if(vec[i]) return false;}
+	return true;
+}
+
+enum struct VectorTurnData {
+	float Origin[3];
+	float TargetVec[3];
+	float CurrentAngles[3];
+
+	float PitchSpeed;
+	float YawSpeed;
+
+	float YawRotateLeft;
+	float PitchRotateLeft;
+
+}
+
+stock float[] TurnVectorTowardsGoal(VectorTurnData Data)
+{
+	float desiredPitch;
+	float desiredYaw;
+	if(!IsVecEmpty(Data.Origin)) {
+		//we have a valid origin, therefor assume its a turn from one location vector to another location vector.
+		float SubractedVec[3];
+		MakeVectorFromPoints(Data.Origin, Data.TargetVec, SubractedVec);
+		GetVectorAngles(SubractedVec, SubractedVec);
+
+		desiredYaw   = SubractedVec[1];
+		desiredPitch = SubractedVec[0];	
+	}
+	else {
+		//otherwise the "TargetVec" is angle values.
+		desiredYaw   = Data.TargetVec[1];
+		desiredPitch = Data.TargetVec[0];	
+	}
+
+	float angles[3];
+	angles = Data.CurrentAngles;
+
+	float angleDiff_Yaw = UTIL_AngleDiff( desiredYaw, angles[1] );		//now get the difference between what we want and what we have as our angles
+	float deltaYaw = Data.YawSpeed;										//set turn speed
+	angleDiff_Yaw = fixAngle(angleDiff_Yaw);
+	Data.YawRotateLeft = angleDiff_Yaw;
+	if ( angleDiff_Yaw < -deltaYaw )	
+	{
+		angles[1] -= deltaYaw;
+	}
+	else if ( angleDiff_Yaw > deltaYaw )
+	{
+		angles[1] += deltaYaw;
+	}
+	else
+	{
+		//if the turn speed is higher then the amount needed to turn, just set the turn as the same as the difference
+		angles[1] += angleDiff_Yaw;
+	}
+	Data.YawSpeed = fabs(angleDiff_Yaw) > Data.YawSpeed ? (angleDiff_Yaw  > 0 ? Data.YawSpeed*-1.0 : Data.YawSpeed): angleDiff_Yaw;	//now set the turn rates as a return value.
+	//usefull if you wanna say make an object's "spin" dependant on how fast its turning
+	//Pitch
+	float angleDiff_Pitch = UTIL_AngleDiff( desiredPitch, angles[0] );	//now get the difference between what we want and what we have as our angles
+	float deltaPitch = Data.PitchSpeed;									//set turn speed
+	angleDiff_Pitch = fixAngle(angleDiff_Pitch);
+	Data.PitchRotateLeft = angleDiff_Pitch;
+	if ( angleDiff_Pitch < -deltaPitch )
+	{
+		angles[0] -= deltaPitch;
+	}
+	else if ( angleDiff_Pitch > deltaPitch )
+	{
+		angles[0] += deltaPitch;
+	}
+	else
+	{
+		angles[0] += angleDiff_Pitch;
+	}
+	Data.PitchSpeed = fabs(angleDiff_Pitch) > Data.PitchSpeed ? (angleDiff_Pitch  > 0 ? Data.PitchSpeed*-1.0 : Data.PitchSpeed): angleDiff_Pitch;	//now set the turn rates as a return value.
+	//usefull if you wanna say make an object's "spin" dependant on how fast its turning
+
+
+	return angles;
+}
+stock float UTIL_AngleDiff( float destAngle, float srcAngle )
+{
+	float delta;
+
+	delta = fmodf(destAngle - srcAngle, 360.0);
+	if ( destAngle > srcAngle )
+	{
+		if ( delta >= 180.0 )
+			delta -= 360.0;
+	}
+	else
+	{
+		if ( delta <= -180.0 )
+			delta += 360.0;
+	}
+	return delta;
+}
+stock float UTIL_VecToYaw(const float vec[3])
+{
+	if (vec[1] == 0 && vec[0] == 0)
+		return 0.0;
+	
+	float yaw = ArcTangent2( vec[1], vec[0] );
+
+	yaw = RAD2DEG(yaw);
+
+	if (yaw < 0)
+		yaw += 360;
+
+	return yaw;
+}
+stock float UTIL_VecToPitch( const float vec[3])
+{
+	if (vec[1] == 0 && vec[0] == 0)
+	{
+		if (vec[2] < 0)
+			return 180.0;
+		else
+			return -180.0;
+	}
+
+	float dist = GetVectorLength(vec);
+	float pitch = ArcTangent2( -vec[2], dist );
+
+	pitch = RAD2DEG(pitch);
+
+	return pitch;
+}
+stock int iGetTeamBeamIndex(int team)
+{
+	switch(team)
+	{
+		case 2: return g_Ruina_BEAM_Combine_Red;
+		case 3: return g_Ruina_BEAM_Combine_Blue;
+		default: return g_Ruina_BEAM_Combine_Black;
 	}
 }
 /*

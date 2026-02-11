@@ -47,7 +47,7 @@ void IsharmlaTrans_MapStart()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_isharmla_trans");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_isharmla");
 	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MISSION|MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Flags = MVM_CLASS_FLAG_MISSION|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);

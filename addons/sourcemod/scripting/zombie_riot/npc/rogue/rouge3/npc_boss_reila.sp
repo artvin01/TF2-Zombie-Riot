@@ -7,11 +7,6 @@ static const char g_HurtSounds[][] = {
 	")physics/metal/metal_box_impact_bullet2.wav",
 	")physics/metal/metal_box_impact_bullet3.wav",
 };
-
-
-static const char g_nightmare_cannon_core_sound[][] = {
-	"zombiesurvival/seaborn/loop_laser.mp3",
-};
 static const char g_RangedAttackSounds[][] = {
 	"npc/combine_gunship/attack_start2.wav",
 };
@@ -672,7 +667,7 @@ bool ReilaReflectDamageDo(int iNpc)
 			TimeLeft *= 1.5;
 			if(npc.m_iChanged_WalkCycle != 3)
 			{
-				EmitCustomToAll(g_nightmare_cannon_core_sound[GetRandomInt(0, sizeof(g_nightmare_cannon_core_sound) - 1)], _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 160);
+				EmitCustomToAll(g_RuinaLaserLoop[GetRandomInt(0, sizeof(g_RuinaLaserLoop) - 1)], _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 160);
 				EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
 			
 				npc.m_iChanged_WalkCycle = 3;
