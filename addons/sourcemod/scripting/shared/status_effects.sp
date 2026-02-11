@@ -7103,7 +7103,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Big");
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.5;
+	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
@@ -7752,6 +7752,9 @@ void Const2Modifs_Big_Start(int victim, StatusEffect Apply_MasterStatusEffect, E
 		return;
 
 	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", GetEntPropFloat(victim, Prop_Send, "m_flModelScale") * 1.25);
+	float maxhealth = float(ReturnEntityMaxHealth(victim));
+	maxhealth *= 2.0;
+	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 }
 void Const2Modifs_Big_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -7760,6 +7763,9 @@ void Const2Modifs_Big_End(int victim, StatusEffect Apply_MasterStatusEffect, E_S
 		return;
 
 	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", GetEntPropFloat(victim, Prop_Send, "m_flModelScale") * (1.0 / 1.25));
+	float maxhealth = float(ReturnEntityMaxHealth(victim));
+	maxhealth /= 2.0;
+	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 }
 
 void Const2Modifs_Strong_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -8751,22 +8757,7 @@ static void Ragebaiter_Think_Do(int entity, StatusEffect Apply_MasterStatusEffec
 	}
 	Format(RageText, sizeof(RageText), "Rage Prefix Text %i", GetRandomInt(1,MaxEntries- 1));
 
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if (IsClientInGame(client) && GetTeam(client) == TFTeam_Red)
-		{			
-			char NamePrefix[255];
-			StatusEffects_PrefixName(entity, client, NamePrefix, sizeof(NamePrefix));
-			if(!b_NameNoTranslation[entity])
-			{
-				CPrintToChat(client,"{crimson}%s%s {default}: %t",NamePrefix, c_NpcName[entity], RageText);
-			}
-			else
-			{
-				CPrintToChat(client,"{crimson}%s%t {default}: %t",NamePrefix, c_NpcName[entity], RageText)
-			}
-		}
-	}
+	PrintNPCMessageWithPrefixes(entity, "crimson", RageText, true);
 }
 
 
@@ -8774,13 +8765,13 @@ static void Ragebaiter_Think_Do(int entity, StatusEffect Apply_MasterStatusEffec
 void SemiHealthy_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	float maxhealth = float(ReturnEntityMaxHealth(victim));
-	maxhealth *= 5.0;
+	maxhealth *= 1.5;
 	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 }
 void SemiHealthy_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	float maxhealth = float(ReturnEntityMaxHealth(victim));
-	maxhealth /= 5.0;
+	maxhealth /= 1.5;
 	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 }
 

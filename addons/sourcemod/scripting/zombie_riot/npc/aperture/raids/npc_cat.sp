@@ -421,18 +421,32 @@ methodmap CAT < CClotBody
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 
-		switch(GetRandomInt(0,2))
-		{
-			case 0:
-				CPrintToChatAll("{rare}C.A.T.{default}: CONTROL AGAINST TRESPASSERS, NOW ONLINE");
-			case 1:
-				CPrintToChatAll("{rare}C.A.T.{default}: C.A.T. HAS BEEN ENGAGED");
-			case 2:
-				CPrintToChatAll("{rare}C.A.T.{default}: SYSTEM POWER-UP COMPLETE");
-		}
+		CreateTimer(0.2, CAT_Timer_IntroMessage, EntIndexToEntRef(npc.index));
 
 		return npc;
 	}
+}
+
+static void CAT_Timer_IntroMessage(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (ref == INVALID_ENT_REFERENCE || b_NpcHasDied[entity])
+		return;
+	
+	switch(GetRandomInt(0,2))
+	{
+		case 0:
+			CAT_Talk(entity, "CONTROL AGAINST TRESPASSERS, NOW ONLINE");
+		case 1:
+			CAT_Talk(entity, "C.A.T. HAS BEEN ENGAGED");
+		case 2:
+			CAT_Talk(entity, "SYSTEM POWER-UP COMPLETE");
+	}
+}
+
+static void CAT_Talk(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "rare", message);
 }
 
 public void CAT_ClotThink(int iNPC)
@@ -728,15 +742,15 @@ static void OrbSpam_Ability_ReadyUp(CAT npc)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{rare}C.A.T.{default}: PARTICLE RADIATOR IS {unique}READY");
+			CAT_Talk(npc.index, "PARTICLE RADIATOR IS {unique}READY");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{rare}C.A.T.{default}: PREPARING FOR PARTICLE {crimson}DISPERSAL");
+			CAT_Talk(npc.index, "PREPARING FOR PARTICLE {crimson}DISPERSAL");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{rare}C.A.T.{default}: PARTICLES ARE DONE {crimson}WARMING UP");
+			CAT_Talk(npc.index, "PARTICLES ARE DONE {crimson}WARMING UP");
 		}
 	}
 }
@@ -797,15 +811,15 @@ static void OrbSpam_Ability_End(CAT npc, bool yap = true)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: PARTICLE RADIATOR IS {azure}COOLING-OFF");
+				CAT_Talk(npc.index, "PARTICLE RADIATOR IS {azure}COOLING-OFF");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: PARTICLE DISPERSAL {azure}ACCOMPLISHED");
+				CAT_Talk(npc.index, "PARTICLE DISPERSAL {azure}ACCOMPLISHED");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: PARTICLES ARE {crimson}GONE{default}... {azure}FOR NOW");
+				CAT_Talk(npc.index, "PARTICLES ARE {crimson}GONE{default}... {azure}FOR NOW");
 			}
 		}
 	}
@@ -870,7 +884,7 @@ bool CAT_timeBased(int iNPC)
 			AcceptEntityInput(npc.m_iWearable1, "Enable");
 			npc.m_flBeginTimeWarp = 0.0;
 			
-			CPrintToChatAll("{rare}C.A.T.{default}: ...ACTION SUCCESSFUL");
+			CAT_Talk(npc.index, "...ACTION SUCCESSFUL");
 			
 			float vecPos[3];
 			GetAbsOrigin(npc.index, vecPos);
@@ -961,15 +975,15 @@ static void SelfDegradation_Ability_Start(CAT npc, bool yap = true)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: INITIATING SELF-DEGRADATION");
+				CAT_Talk(npc.index, "INITIATING SELF-DEGRADATION");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION IN PROCESS...");
+				CAT_Talk(npc.index, "SELF-DEGRADATION IN PROCESS...");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: SWITCHING TO SELF-DEGRADATION MODE");
+				CAT_Talk(npc.index, "SWITCHING TO SELF-DEGRADATION MODE");
 			}
 		}
 	}
@@ -1019,15 +1033,15 @@ static void SelfDegradation_Ability_Activate(CAT npc, bool yap = true)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION MODE IS {unique}ONLINE");
+				CAT_Talk(npc.index, "SELF-DEGRADATION MODE IS {unique}ONLINE");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION: {unique}ACTIVATED");
+				CAT_Talk(npc.index, "SELF-DEGRADATION: {unique}ACTIVATED");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION POWER UP, {unique}COMPLETE");
+				CAT_Talk(npc.index, "SELF-DEGRADATION POWER UP, {unique}COMPLETE");
 			}
 		}
 	}
@@ -1059,15 +1073,15 @@ static void SelfDegradation_Ability_Deactivate(CAT npc, bool yap = true)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION MODE IS {crimson}OFFLINE");
+				CAT_Talk(npc.index, "SELF-DEGRADATION MODE IS {crimson}OFFLINE");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION: {crimson}DEACTIVATED");
+				CAT_Talk(npc.index, "SELF-DEGRADATION: {crimson}DEACTIVATED");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION IS {crimson}SHUTTING DOWN");
+				CAT_Talk(npc.index, "SELF-DEGRADATION IS {crimson}SHUTTING DOWN");
 			}
 		}
 	}
@@ -1112,7 +1126,7 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			npc.AddGesture("ACT_MP_STUN_BEGIN");
 			npc.SetActivity("ACT_MP_STUN_MIDDLE");
 			
-			CPrintToChatAll("{rare}C.A.T.{default}: ENABLING {unique}MIND WARP {default}MECHANISMS...");
+			CAT_Talk(npc.index, "ENABLING {unique}MIND WARP {default}MECHANISMS...");
 			
 			npc.Anger = true;
 			npc.m_flBeginTimeWarp = GetGameTime(npc.index) + 2.0;
@@ -1224,7 +1238,7 @@ static void CAT_Weapon_Lines(CAT npc, int client)
 
 	if(valid)
 	{
-		CPrintToChatAll("{rare}C.A.T.{default}: %s", Text_Lines);
+		CAT_Talk(npc.index, Text_Lines);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(15.0, 22.0);
 		b_said_player_weaponline[client] = true;
 	}
@@ -1319,9 +1333,9 @@ static bool CAT_LoseConditions(int iNPC)
 				switch (GetURandomInt() % 2)
 				{
 					case 0:
-						CPrintToChatAll("{rare}C.A.T.{default}: OVERHEATING PROTOC-");
+						CAT_Talk(npc.index, "OVERHEATING PROTOC-");
 					case 1:
-						CPrintToChatAll("{rare}C.A.T.{default}: INITIATING SELF-DES-");
+						CAT_Talk(npc.index, "INITIATING SELF-DES-");
 				}
 				
 				npc.m_flDeathAnim = GetGameTime() + 1.0;
@@ -1347,7 +1361,7 @@ static bool CAT_LoseConditions(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{rare}C.A.T.{default}: BY THE WORDS OF THE ONE AND ONLY GLORIOUS RACE; THERE CAN BE ONLY ONE");
+		CAT_Talk(npc.index, "BY THE WORDS OF THE ONE AND ONLY GLORIOUS RACE; THERE CAN BE ONLY ONE");
 		return true;
 	}
 	
@@ -1355,7 +1369,7 @@ static bool CAT_LoseConditions(int iNPC)
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{rare}C.A.T.{default}: SURRENDER YOUR WEAPONS AND COME WITH ME");
+		CAT_Talk(npc.index, "SURRENDER YOUR WEAPONS AND COME WITH ME");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return true;
 	}

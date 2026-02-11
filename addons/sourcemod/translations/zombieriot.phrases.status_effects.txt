@@ -2631,8 +2631,7 @@
 	}
 	"The Big Desc"
 	{
-		"en"	"Enlarges by 25％\nIncreases Resistance by 65％"
-		"ko"	"크기가 75％ 증가합니다\n저항력이 65％ 증가합니다"
+		"en"	"Enlarges by 25％\nDoubles Health"
 	}
 	"Big"
 	{

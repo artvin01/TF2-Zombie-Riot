@@ -2765,3 +2765,59 @@ stock int StrLenMB(const char[] str)
 	return count;
 }  
 */
+
+#if defined ZR
+void PrintNPCMessageWithPrefixes(int entity, const char[] color, const char[] message, bool messageIsTranslated = false)
+{
+	bool checkedForPrefixes;
+	char finalColor[32];
+	
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!IsClientInGame(client) || IsFakeClient(client))
+			continue;
+		
+		char prefix[255];
+		StatusEffects_PrefixName(entity, client, prefix, sizeof(prefix));
+		
+		// On the first valid client, check for prefixes and modify the message based on them
+		if (!checkedForPrefixes)
+		{
+			bool hasPrefix = prefix[0] != '\0';
+			if (hasPrefix)
+			{
+				if (HasSpecificBuff(entity, "Verde"))
+				{
+					// verd e
+					finalColor = "forestgreen";
+				}
+				else if (HasSpecificBuff(entity, "Ragebaiter Prefix"))
+				{
+					// To match the rest of ragebaiter text
+					finalColor = "crimson";
+				}
+			}
+			
+			if (finalColor[0] == '\0')
+				strcopy(finalColor, sizeof(finalColor), color);
+			
+			checkedForPrefixes = true;
+		}
+		
+		if (!b_NameNoTranslation[entity])
+		{
+			if (!messageIsTranslated)
+				CPrintToChat(client, "{%s}%s%s{default}: %s", finalColor, prefix, c_NpcName[entity], message);
+			else
+				CPrintToChat(client, "{%s}%s%s{default}: %t", finalColor, prefix, c_NpcName[entity], message);
+		}
+		else
+		{
+			if (!messageIsTranslated)
+				CPrintToChat(client, "{%s}%s%t{default}: %s", finalColor, prefix, c_NpcName[entity], message);
+			else
+				CPrintToChat(client, "{%s}%s%t{default}: %t", finalColor, prefix, c_NpcName[entity], message);
+		}
+	}
+}
+#endif
