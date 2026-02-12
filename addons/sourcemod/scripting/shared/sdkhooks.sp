@@ -2520,13 +2520,23 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	}
 	else
 	{
-		if(!LouderSoundStop && HasSpecificBuff(entity, "Loud Prefix"))
+		if(!LouderSoundStop && entity != -1 && HasSpecificBuff(entity, "Loud Prefix"))
 		{
-			level += 20;
+			level += 50;
 			LouderSoundStop = true;
 			for(int loop1=0; loop1<numClients; loop1++)
 			{
 				int listener = clients[loop1];
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
 				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
 				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
 			}

@@ -2495,7 +2495,7 @@
 	{
 		"en"	"Experience ZR on how it feels to be a newbie.\n35％ more enemies, spawn 33％ faster, 15％ more are alive at once.\nThey deal +25％ dmg, +25％ dmg to cades, +60％ HP, +6％ faster, attack 33％ faster.\n1 down, enemies heal 50％ more."
 		"it"	"Esperienza ZR su come ci si sente ad essere un novellino.\n35％ più nemici, spawn 33％ più veloce, 15％ più sono vivi in una volta.\nFanno +25％ dmg, +25％ dmg ai cad, +60％ HP, +6％ più veloce, attacco 33％ più veloce.\n1 down, i nemici guariscono 50％ in più."
-		"ko"	"뉴비 시절 좀비 라이엇의 느낌을 다시 체험해보세요.\n웨이브 적 수량 +35％, 생성 속도 +33％, 한번에 존재하는 적의 수 +15％\n적 피해량, 구조물 대상 피해량 +25％, 체력 +60％, 이동 속도 +6％, 공격 속도 +33％\n다운 횟수는 1번 뿐이며, 적들의 체력 회복량 +50％"
+		"ko"	"뉴비 시절 ZR의 느낌을 다시 체험해보세요.\n웨이브 적 수량 +35％, 생성 속도 +33％, 한번에 존재하는 적의 수 +15％\n적 피해량, 구조물 대상 피해량 +25％, 체력 +60％, 이동 속도 +6％, 공격 속도 +33％\n다운 횟수는 1번 뿐이며, 적들의 체력 회복량 +50％"
 	}
 	"Turbulance"
 	{
@@ -2524,10 +2524,12 @@
 	"Prefixes Galore"
 	{
 		"en"	"Prefixes Galore"
+		"ko"	"접두사 대혼란"
 	}
 	"Prefixes Galore Desc"
 	{
 		"en"	"Prepare for aboslute hell!\nEnemies have a chance to obtain prefixes, if they do, they gain massive buffs aswell.\nBosses and raids gain prefixes guranteed but arent extra buffed\nRaids have infinite time.\nPrefixes can stack."
+		"ko"	"완전한 지옥이로구나!\n적들이 확률적으로 접두사를 얻으며, 이 경우 큰 버프 역시 얻습니다.\n보스, 레이드는 반드시 접두사를 얻지만 추가 버프를 받지 않습니다.\n레이드 시간이 무제한이 됩니다.\n접두사는 중첩 가능합니다."
 	}
 	"Paranormal Activity"
 	{

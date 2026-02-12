@@ -7917,18 +7917,18 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 		return;
 	}
 	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
-	Apply_StatusEffect.DataForUse = GetGameTime() + 2.0;
+	Apply_StatusEffect.DataForUse = GetGameTime() + 4.0;
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 	float DamageDeal = 250.0;
 #if defined ZR
 	DamageDeal = float(CurrentCash);
 #endif
-	DamageDeal *= 0.0025;
-	if(DamageDeal <= 50.0)
-		DamageDeal = 50.0;
+	DamageDeal *= 0.0015;
+	if(DamageDeal <= 25.0)
+		DamageDeal = 25.0;
 
-	if(DamageDeal > 1000.0)
-		DamageDeal = 1000.0;
+	if(DamageDeal > 500.0)
+		DamageDeal = 500.0;
 
 	CClotBody npc = view_as<CClotBody>(entity);
 	float WorldSpaceVec[3]; WorldSpaceCenter(entity, WorldSpaceVec);
@@ -7946,8 +7946,8 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 		
 		Initiate_HomingProjectile(projectile,
 		projectile,
-			90.0,			// float lockonAngleMax,
-			10.0,				//float homingaSec,
+			70.0,			// float lockonAngleMax,
+			8.0,				//float homingaSec,
 			false,				// bool LockOnlyOnce,
 			true,				// bool changeAngles,
 			angles);			// float AnglesInitiate[3]);
@@ -8441,7 +8441,7 @@ float Glug_TakeDamage_Spread(int attacker, int victim, StatusEffect Apply_Master
 #if defined ZR
 		DamageDeal = float(CurrentCash);
 #endif
-		DamageDeal *= 0.01;
+		DamageDeal *= 0.001;
 		if(DamageDeal <= 1.0)
 			DamageDeal = 1.0;
 
