@@ -640,7 +640,7 @@ methodmap Blitzkrieg < CClotBody
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: You've all become quite the annoying little merc's haven't you", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: You've all become quite the annoying little mercs haven't you", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 2:
 					{
