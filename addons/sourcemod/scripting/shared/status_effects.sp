@@ -7943,7 +7943,7 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 		int projectile = npc.FireParticleRocket(FireRandomParticle, DamageDeal, 500.0, 150.0, "raygun_projectile_blue_crit", false);
 		static float angles[3];
 		GetEntPropVector(projectile, Prop_Send, "m_angRotation", angles);
-		WandProjectile_ApplyFunctionToEntity(entity, Rocket_Sprayer_StartTouchs);
+		WandProjectile_ApplyFunctionToEntity(entity, Rocket_Sprayer_StartTouch);
 		
 		Initiate_HomingProjectile(projectile,
 		projectile,
