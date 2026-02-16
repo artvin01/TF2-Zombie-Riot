@@ -2134,7 +2134,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 #endif
 
-	char BufferAdd[6];
+	char BufferAdd[12];
 #if defined ZR
 	if(Victoria_Support_RechargeTime(victim))
 	{

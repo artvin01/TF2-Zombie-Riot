@@ -1595,6 +1595,8 @@ public void OnPostThink(int client)
 			{
 				int downsleft;
 				downsleft = 2;
+				if(ZR_Get_Modifier() == PREFIX_ONESTAND)
+					downsleft = 3;
 
 				downsleft -= i_AmountDowned[client];
 				SDKHooks_UpdateMarkForDeath(client);
@@ -2889,6 +2891,8 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 
 	int downsleft;
 	downsleft = 2;
+	if(ZR_Get_Modifier() == PREFIX_ONESTAND)
+		downsleft = 3;
 	downsleft -= i_AmountDowned[client];
 	downsleft += Dungeon_DownedBonus();
 	if(HasSpecificBuff(client, "Nightmare Terror"))

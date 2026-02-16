@@ -3844,6 +3844,9 @@ public Action ReviveDisplayMessageDelay(Handle timer, int ref)
 	{
 		int downsleft;
 		downsleft = 2;
+		if(ZR_Get_Modifier() == PREFIX_ONESTAND)
+			downsleft = 3;
+
 		downsleft -= i_AmountDowned[target];
 		if(downsleft <= 0)
 		{

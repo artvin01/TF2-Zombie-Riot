@@ -2531,6 +2531,14 @@
 		"en"	"Prepare for aboslute hell!\nEnemies have a chance to obtain prefixes, if they do, they gain massive buffs aswell.\nBosses and raids gain prefixes guranteed but arent extra buffed\nRaids have infinite time.\nPrefixes can stack."
 		"ko"	"완전한 지옥이로구나!\n적들이 확률적으로 접두사를 얻으며, 이 경우 큰 버프 역시 얻습니다.\n보스, 레이드는 반드시 접두사를 얻지만 추가 버프를 받지 않습니다.\n레이드 시간이 무제한이 됩니다.\n접두사는 중첩 가능합니다."
 	}
+	"One Stand"
+	{
+		"en"	"One Stand"
+	}
+	"One Stand Desc"
+	{
+		"en"	"Its all or nothing!\nBosses are nerfed by 20％\nYou gain 1 more down\nYou do not get revived if its not a setup, and raids do not revive anymore."
+	}
 	"Paranormal Activity"
 	{
 		"en"	"Paranormal Activity"

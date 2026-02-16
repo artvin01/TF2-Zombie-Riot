@@ -2641,11 +2641,18 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 						}
 					}
 				}
-				
-				Music_EndLastmann();
-				RespawnCheckCitizen();
-				ReviveAll(_,_,_, ForceAdvance);
-				CheckAlivePlayers();
+				bool RespawnPeople = true;
+				if(ZR_Get_Modifier() == PREFIX_ONESTAND)
+					if(round.Setup < 1.0)
+						RespawnPeople = false;
+						
+				if(RespawnPeople)
+				{
+					Music_EndLastmann();
+					RespawnCheckCitizen();
+					ReviveAll(_,_,_,ForceAdvance,round.Setup >= 1.0);
+					CheckAlivePlayers();
+				}
 				BlockOtherRaidMusic = false;
 			}
 			if(round.AmmoBoxExtra)

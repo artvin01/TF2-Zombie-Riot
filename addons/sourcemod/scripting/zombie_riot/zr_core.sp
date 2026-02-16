@@ -2716,7 +2716,11 @@ void ZR_CheckValidityOfPostions_OfObjectsInternal(bool recheck)
 		}
 	}
 }
-void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceFullHealth = false, bool Const2_DontRespawnBuildings = false)
+void ReviveAll(bool raidspawned = false,
+ bool setmusicfalse = false,
+  bool ForceFullHealth = false,
+   bool Const2_DontRespawnBuildings = false,
+  bool IsSetupRevive = false)
 {
 	//only set false here
 	if(!setmusicfalse)
@@ -2726,7 +2730,9 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceF
 	CreateTimer(1.0, ZR_CheckValidityOfPostions_OfObjects, false, TIMER_FLAG_NO_MAPCHANGE);
 	CreateTimer(5.0, ZR_CheckValidityOfPostions_OfObjects, false, TIMER_FLAG_NO_MAPCHANGE);
 	//needed for map logic!
-
+	
+	if(ZR_Get_Modifier() == PREFIX_ONESTAND && !IsSetupRevive)
+		return;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		CheckClientLateJoin(client, false);
@@ -2833,6 +2839,8 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceF
 			CreateTimer(0.1, Timer_ChangePersonModel, GetClientUserId(client));
 		}
 	}
+	
+	if(ZR_Get_Modifier() == PREFIX_ONESTAND)
 	
 	Music_EndLastmann();
 	CheckAlivePlayers();

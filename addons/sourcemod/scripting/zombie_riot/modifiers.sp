@@ -10,6 +10,7 @@ static int CurrentModifActive = 0;
 #define TURBOLENCES 4
 #define PARANORMAL_ACTIVITY 5
 #define PREFIX_GALORE 6
+#define PREFIX_ONESTAND 7
 
 void Modifier_MiniBossSpawn(bool &spawns)
 {
@@ -58,6 +59,10 @@ public void Modifier_Collect_SecondaryMercs()
 public void Modifier_Collect_Prefix_Galore()
 {
 	CurrentModifActive = PREFIX_GALORE;
+}
+public void Modifier_Collect_OneStand()
+{
+	CurrentModifActive = PREFIX_ONESTAND;
 }
 
 public void Modifier_Remove_SecondaryMercs()
@@ -365,24 +370,42 @@ void ZRModifs_CharBuffToAdd(char[] data)
 	{
 		case CHAOS_INTRUSION:
 		{
-			FormatEx(data, 6, "C");
+			FormatEx(data, 12, "C");
 		}
 		case SECONDARY_MERCS:
 		{
-			FormatEx(data, 6, "S");
+			FormatEx(data, 12, "S");
 		}
 		case OLD_TIMES:
 		{
-			FormatEx(data, 6, "O");
+			FormatEx(data, 12, "O");
 		}
 		case PARANORMAL_ACTIVITY:
 		{
-			FormatEx(data, 6, "P");
+			FormatEx(data, 12, "P");
 		}
 		case PREFIX_GALORE:
 		{
-			FormatEx(data, 6, "PG");
+			FormatEx(data, 12, "G");
 		}
+		case PREFIX_ONESTAND:
+		{
+			FormatEx(data, 12, "OS");
+		}
+	}
+}
+public void ZRModifs_ModifEnemy_OneStand(int iNpc)
+{
+	//if alone on server, this modifier wont do anything.....
+
+	if(b_IsAloneOnServer)
+		return;
+	bool NerfEnemyStats = false;
+	if(b_thisNpcIsABoss[iNpc] || b_thisNpcIsARaid[iNpc])
+	{
+		SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 0.8));
+		SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 0.8));
+		fl_Extra_Damage[iNpc] *= 0.8;
 	}
 }
 

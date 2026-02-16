@@ -1783,6 +1783,14 @@ bool SensalMassLaserAttack(Sensal npc)
 	{
 		UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 		int enemy_2[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
+		/*
+		int SpawnAdditionalLasers = CountPlayersOnRed(1);
+		SpawnAdditionalLasers -= RAIDBOSS_GLOBAL_ATTACKLIMIT;
+		if(SpawnAdditionalLasers <= 0)
+			SpawnAdditionalLasers = 0;
+		*/
+
+		
 		//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 		bool ClientTargeted[MAXENTITIES];
 		GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false);

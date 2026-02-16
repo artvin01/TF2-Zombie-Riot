@@ -7943,6 +7943,7 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 		int projectile = npc.FireParticleRocket(FireRandomParticle, DamageDeal, 500.0, 150.0, "raygun_projectile_blue_crit", false);
 		static float angles[3];
 		GetEntPropVector(projectile, Prop_Send, "m_angRotation", angles);
+		WandProjectile_ApplyFunctionToEntity(entity, Rocket_Sprayer_StartTouchs);
 		
 		Initiate_HomingProjectile(projectile,
 		projectile,
@@ -7956,6 +7957,70 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 	//spray particles
 }
 
+public void Rocket_Sprayer_StartTouch(int entity, int target)
+{
+	if(target > 0 && target < MAXENTITIES)	//did we hit something???
+	{
+		
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(!IsValidEntity(owner))
+		{
+			owner = 0;
+		}
+		
+		int inflictor = h_ArrowInflictorRef[entity];
+		if(inflictor != -1)
+			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+
+		if(inflictor == -1)
+			inflictor = owner;
+			
+		float ProjectileLoc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		float DamageDeal = fl_rocket_particle_dmg[entity];
+		if(ShouldNpcDealBonusDamage(target))
+			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
+
+		int DamageTypes;
+		DamageTypes |= DMG_PREVENT_PHYSICS_FORCE;
+
+		if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_CLUB_DAMAGE))
+		{
+			DamageTypes |= DMG_CLUB;
+		}
+		else
+		{
+			DamageTypes |= DMG_BULLET;
+		}
+
+
+		if(b_should_explode[entity])	//should we "explode" or do "kinetic" damage
+		{
+			i_ExplosiveProjectileHexArray[owner] = i_ExplosiveProjectileHexArray[entity];
+			Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
+		}
+		else
+		{
+			SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DamageTypes, -1, .Zr_damage_custom = ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);	//acts like a kinetic rocket
+		}
+		
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+	}
+	else
+	{
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		//we uhh, missed?
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+	}
+	RemoveEntity(entity);
+}
 
 static void Const2_Gravitational_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -8272,9 +8337,13 @@ float Perfected_Instinct_Dodge(int attacker, int victim, StatusEffect Apply_Mast
 	if(Apply_StatusEffect.DataForUse > GetGameTime())
 		return 0.0;
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
-	Apply_StatusEffect.DataForUse = GetGameTime() + 1.0;
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
-	ApplyStatusEffect(victim, victim, "Perfected Instinct Speed", 0.35);
+	if(!b_thisNpcIsARaid[victim])
+		ApplyStatusEffect(victim, victim, "Perfected Instinct Speed", 0.35);
+	if(b_thisNpcIsAboss[victim])
+		Apply_StatusEffect.DataForUse = GetGameTime() + 3.0;
+
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 	return 0.0;
 }
 
