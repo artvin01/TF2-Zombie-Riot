@@ -627,7 +627,16 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 
 	//If lastman, heal self.
 	if(LastMann)
-		target = client;
+	{
+		if(Ability_Check_Cooldown(client, slot) < 0.0 && (GetClientButtons(client) & IN_DUCK))
+		{
+			target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false);
+		}
+		else
+		{
+			target = client;
+		}
+	}
 
 	bool validAlly;
 
@@ -681,7 +690,7 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 			HealedAllyRand[0] += GetRandomFloat(-10.0, 10.0);
 			HealedAllyRand[1] += GetRandomFloat(-10.0, 10.0);
 			HealedAllyRand[2] += GetRandomFloat(-10.0, 10.0);
-			TE_Particle("vortigaunt_hand_glow", HealedAllyRand, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);	
+			TE_Particle("healhuff_red", HealedAllyRand, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);	
 		}
 		
 		ClientCommand(client, "playgamesound items/suitchargeok1.wav");

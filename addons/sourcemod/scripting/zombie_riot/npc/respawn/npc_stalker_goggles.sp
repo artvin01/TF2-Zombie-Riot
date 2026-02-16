@@ -247,7 +247,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 				}
 				case 3:	// 5.0
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: They tried to re-create my consiousness.");
+					CPrintToChatAll("{darkblue}Waldch{default}: They tried to re-create my consciousness.");
 				}
 				case 5:	// 10.0
 				{

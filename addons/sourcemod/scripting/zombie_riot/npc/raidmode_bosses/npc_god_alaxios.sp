@@ -553,7 +553,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 					{
 						f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
 						fl_Extra_Damage[npc.index] *= 0.75;
-						CPrintToChatAll("{crimson}The infection wont let go. It wants him the most.");
+						CPrintToChatAll("{crimson}The infection won't let go. It wants him the most.");
 						b_NpcUnableToDie[npc.index] = false;
 						RaidModeTime = GetGameTime(npc.index) + 150.0;
 						RaidBossActive = EntIndexToEntRef(npc.index);
@@ -674,7 +674,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 					}
 					case 1:
 					{
-						CPrintToChatAll("{lightblue}God Alaxios{crimson}: IM UNDER CONTROLL, HELP ME.....");
+						CPrintToChatAll("{lightblue}God Alaxios{crimson}: I'M UNDER CONTROL, HELP ME.....");
 					}
 					case 3:
 					{
@@ -765,7 +765,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 		else
 		{
 
-			CPrintToChatAll("{green}The Xeno infection sides with you...??!\nSuddenly a battle ensues between Xeno and the Sea infection with alaxios in possession..");
+			CPrintToChatAll("{green}The Xeno infection sides with you...??!\nSuddenly a battle ensues between Xeno and the Sea infection with Alaxios in possession..");
 			for(int i; i<32; i++)
 			{
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -1458,8 +1458,8 @@ public void GodAlaxios_NPCDeath(int entity)
 		}
 		else
 		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: Im.. im free..?");
-			CPrintToChatAll("{lightblue}God Alaxios instnatly leaves the battlefield... you couldnt even trace him.");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: I'm.. I'm free..?");
+			CPrintToChatAll("{lightblue}God Alaxios instantly leaves the battlefield... you couldn't even trace him.");
 		}
 	}
 	else
@@ -2223,11 +2223,11 @@ void AlaxiosSayWordsAngry(int entity)
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios's head is under full controll, free him.");
+				CPrintToChatAll("{lightblue}God Alaxios's head is under full control, free him.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios, even if strong, cant resist everything.");
+				CPrintToChatAll("{lightblue}God Alaxios, even if strong, can't resist everything.");
 			}
 			case 3:
 			{
@@ -2300,7 +2300,7 @@ bool AlaxiosForceTalk()
 			}
 			case 5:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: You can wield {blue}Seaborn's{default} weapons without succumbing to their corruption, from what i can see atleast...");
+				CPrintToChatAll("{lightblue}God Alaxios{default}: You can wield {blue}Seaborn's{default} weapons without succumbing to their corruption, from what I can see atleast...");
 				i_TalkDelayCheck += 1;
 			}
 			case 6:

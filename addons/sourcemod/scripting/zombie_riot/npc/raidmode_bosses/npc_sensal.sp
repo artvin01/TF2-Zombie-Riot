@@ -1692,7 +1692,7 @@ bool SensalTalkPostWin(Sensal npc)
 	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 	{
 		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of yours now aswell.");
+		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of yours now as well.");
 	}
 	return true; //He is trying to help.
 }

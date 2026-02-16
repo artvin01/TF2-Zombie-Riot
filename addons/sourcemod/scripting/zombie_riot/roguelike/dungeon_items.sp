@@ -170,15 +170,15 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{gray}You hear radio chatter, it doesnt sound familiar to you, but the device {pink}Reila {gray}gave you blinks up, translating for you...");
+			CPrintToChatAll("{gray}You hear radio chatter, it doesn't sound familiar to you, but the device {pink}Reila {gray}gave you blinks up, translating for you...");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{violet}???{default}: Ruanian Magic is just fancy tech, it looks just like ours, its insane.");
+			CPrintToChatAll("{violet}???{default}: Ruanian Magic is just fancy tech, it looks just like ours, it's insane.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{mediumvioletred}???{default}: Well it barely worked, most of this is still our shit, its as if ruanians hate tech or something.");
+			CPrintToChatAll("{mediumvioletred}???{default}: Well it barely worked, most of this is still our shit, it's as if ruanians hate tech or something.");
 		}
 		case 3:
 		{
@@ -186,15 +186,15 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 		}
 		case 4:
 		{
-			CPrintToChatAll("{violet}???{default}: Isnt it unethical, like, there are people in those crystals and we just use that...");
+			CPrintToChatAll("{violet}???{default}: Isn't it unethical, like, there are people in those crystals and we just use that...");
 		}
 		case 5:
 		{
-			CPrintToChatAll("{mediumvioletred}???{default}: What? People? They arent sentient, Its a simulation remember, to keep us up incase someone invades?");
+			CPrintToChatAll("{mediumvioletred}???{default}: What? People? They aren't sentient, it's a simulation remember, to keep us up incase someone invades?");
 		}
 		case 6:
 		{
-			CPrintToChatAll("{mediumvioletred}???{default}: Why the CEO would put up fake enemies is still beyond me, But money is money.");
+			CPrintToChatAll("{mediumvioletred}???{default}: Why the CEO would put up fake enemies is still beyond me, but money is money.");
 		}
 		case 7:
 		{
@@ -202,16 +202,16 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 		}
 		case 8:
 		{
-			CPrintToChatAll("{violet}???{default}: If its fake, then why are we trying to escape? Something's fishy.");
+			CPrintToChatAll("{violet}???{default}: If it's fake, then why are we trying to escape? Something's fishy.");
 		}
 		case 9:
 		{
-			CPrintToChatAll("{violet}???{default}: hey what are you doi-");
+			CPrintToChatAll("{violet}???{default}: Hey what are you doi-");
 			CPrintToChatAll("{gray}Two loud gunshots can be heard, both bodies falling to the floor.");
 		}
 		case 10:
 		{
-			CPrintToChatAll("{gray}???{crimson}: Good employee's don't ask or question, don't break company policy.");
+			CPrintToChatAll("{gray}???{crimson}: Good employees don't ask or question, don't break company policy.");
 		}
 		case 11:
 		{
@@ -219,7 +219,7 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 		}
 		case 12:
 		{
-			CPrintToChatAll("{gray}???{crimson}: You closed those gates on us, {red}i will end your life.");
+			CPrintToChatAll("{gray}???{crimson}: You closed those gates on us, {red}I will end your life.");
 		}
 		case 13:
 		{
@@ -227,7 +227,7 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 		}
 		case 14:
 		{
-			CPrintToChatAll("{crimson}Someone found you, someone is after you, they arent going easy on you no more.");
+			CPrintToChatAll("{crimson}Someone found you, someone is after you, they aren't going easy on you no more.");
 		}
 		default:
 		{
