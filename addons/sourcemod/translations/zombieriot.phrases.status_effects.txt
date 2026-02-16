@@ -2826,8 +2826,8 @@
 	}
 	"Perfected Instinct Desc"
 	{
-		"en"	"Npc Gains 40％ Resistance, 175％ Damage, 1.5x Thinkspeed, Gains a high chance to dodge attacks, the lower the hp, the higher the chance. On dodge, gain an immensive short speed bonus (no speedbonus if itsa raid)"
-		"ko"	"NPC 저항력 40％, 피해량 175％ 증가. 생각 속도 1.5배. 높은 확률로 공격을 회피, 체력이 감소할 수록 확률 증가. 회피 시 짧은 시간 동안 이동 속도 대폭 증가"
+		"en"	"Npc Gains 40％ Resistance, 175％ Damage, 1.5x Thinkspeed, Gains a high chance to dodge attacks, the lower the hp, the higher the chance. On dodge, gain an immensive short speed bonus (no speedbonus if its a raid)"
+		"ko"	"NPC 저항력 40％, 피해량 175％ 증가. 생각 속도 1.5배. 높은 확률로 공격을 회피, 체력이 감소할 수록 확률 증가. 회피 시 짧은 시간 동안 이동 속도 대폭 증가(레이드 보스는 X)"
 	}
 	"Motivating Prefix"
 	{
