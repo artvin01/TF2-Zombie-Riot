@@ -710,12 +710,47 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			enemy.ExtraDamage = 1.0;
 
 			enemy.Is_Immune_To_Nuke = true;
-			if(GetRandomInt(1, 2) == 2)
+			if(GetRandomInt(1, 7) == 2)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_dimensionfrag");
 				enemy.Health = RoundToFloor(((170000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.25)) * HealthMulti);
 				enemy.ExtraDamage = 0.75;
 				count = 20;
+			}
+			if(GetRandomInt(1, 7) == 3)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_ltzens");
+				enemy.Health = RoundToFloor(((170000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.25)) * HealthMulti);
+				enemy.ExtraDamage = 1.11;
+				count = 20;
+			}
+			if(GetRandomInt(1, 7) == 4)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_refract");
+				enemy.Health = RoundToFloor(((170000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.25)) * HealthMulti);
+				enemy.ExtraDamage = 1.11;
+				count = 20;
+			}
+			if(GetRandomInt(1, 7) == 5)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_spuud");
+				enemy.Health = RoundToFloor(((170000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.25)) * HealthMulti);
+				enemy.ExtraDamage = 1.11;
+				count = 20;
+			}
+			if(GetRandomInt(1, 7) == 6)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_rouam");
+				enemy.Health = RoundToFloor(((500000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound())) * HealthMulti);
+				enemy.ExtraDamage = 2.0;
+				count = 5;
+			}
+			if(GetRandomInt(1, 7) == 7)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_keitosis");
+				enemy.Health = RoundToFloor(((3000000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound())) * HealthMulti);
+				enemy.ExtraDamage = 1.5;
+				count = 1;
 			}
 			else
 			{
