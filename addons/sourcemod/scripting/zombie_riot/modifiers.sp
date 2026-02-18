@@ -403,9 +403,9 @@ public void ZRModifs_ModifEnemy_OneStand(int iNpc)
 		
 	if(b_thisNpcIsABoss[iNpc] || b_thisNpcIsARaid[iNpc])
 	{
-		SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 0.8));
-		SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 0.8));
-		fl_Extra_Damage[iNpc] *= 0.8;
+		SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 0.9));
+		SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 0.9));
+		fl_Extra_Damage[iNpc] *= 0.9;
 	}
 }
 

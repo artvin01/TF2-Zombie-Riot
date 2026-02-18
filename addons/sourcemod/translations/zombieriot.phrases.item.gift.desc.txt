@@ -2537,7 +2537,7 @@
 	}
 	"One Stand Desc"
 	{
-		"en"	"Its all or nothing!\nBosses are nerfed by 20％\nYou gain 1 more down\nYou do not get revived if its not a setup, and raids do not revive anymore."
+		"en"	"Its all or nothing!\nRaids and bosses are nerfed by 10％\nYou gain 1 more down\nYou do not get revived if its not a setup, and raids do not revive anymore."
 	}
 	"Paranormal Activity"
 	{
