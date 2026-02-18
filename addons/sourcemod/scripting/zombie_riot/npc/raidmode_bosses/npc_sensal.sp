@@ -1946,7 +1946,7 @@ bool SensalMassLaserAttack(Sensal npc)
 			entity = 0;
 			while((entity = FindEntityByNPC(a)) != -1)
 			{
-				if(Target_CrystalTrue(npc.index, entity))
+				if(Target_CrystalTrue(entity))
 				{
 					foundEnemy = true;
 					float WorldSpaceVec[3]; WorldSpaceCenter(entity, WorldSpaceVec);
@@ -2354,7 +2354,7 @@ static void Sensal_Weapon_Lines(Sensal npc, int client)
 
 
 
-bool Target_CrystalTrue(int entity, int target)
+bool Target_CrystalTrue(int target)
 {
 	if(i_NpcInternalId[target] == SensalTargetLaser_Id())
 	{
