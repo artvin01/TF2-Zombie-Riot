@@ -1085,18 +1085,18 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 					NpcStats_CopyStats(npc.index, spawn_index);
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					
-					int Decicion = TeleportDiversioToRandLocation(spawn_index, true, 1500.0, 1000.0, .NeedLOSPlayer = true);
+					int Decicion = TeleportDiversioToRandLocation(spawn_index, true, 1500.0, 1000.0, .forceSpawn = true,.NeedLOSPlayer = true);
 					switch(Decicion)
 					{
 						case 2:
 						{
-							Decicion = TeleportDiversioToRandLocation(spawn_index, true, 1500.0, 500.0, .NeedLOSPlayer = true);
+							Decicion = TeleportDiversioToRandLocation(spawn_index, true, 1000.0, 500.0,.forceSpawn = true, .NeedLOSPlayer = true);
 							if(Decicion == 2)
 							{
-								Decicion = TeleportDiversioToRandLocation(spawn_index, true, 1500.0, 250.0, .NeedLOSPlayer = true);
+								Decicion = TeleportDiversioToRandLocation(spawn_index, true, 500.0, 250.0,.forceSpawn = true, .NeedLOSPlayer = true);
 								if(Decicion == 2)
 								{
-									Decicion = TeleportDiversioToRandLocation(spawn_index, true, 1500.0, 0.0, .NeedLOSPlayer = true);
+									Decicion = TeleportDiversioToRandLocation(spawn_index, true, 250.0, 0.0,.forceSpawn = true, .NeedLOSPlayer = true);
 									if(Decicion == 2)
 									{
 										//damn, cant find any.... guess we'll just not care about LOS.
@@ -1841,6 +1841,8 @@ bool SensalMassLaserAttack(Sensal npc)
 		{
 			if(Target_CrystalTrue(entity))
 			{
+				if(!Can_I_See_Enemy_Only(npc.index, entity))
+					continue;
 				ClientTargeted[entity] = true;
 				if(!IsValidEntity(i_LaserEntityIndex[entity]))
 				{
@@ -1947,6 +1949,8 @@ bool SensalMassLaserAttack(Sensal npc)
 			{
 				if(Target_CrystalTrue(entity))
 				{
+					if(!Can_I_See_Enemy_Only(npc.index, entity))
+						continue;
 					foundEnemy = true;
 					float WorldSpaceVec[3]; WorldSpaceCenter(entity, WorldSpaceVec);
 					SensalInitiateLaserAttack(npc.index, WorldSpaceVec, flPos);
