@@ -684,6 +684,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		count = 1;
 		thespewer = false;
 	}
+	/*
+	Bugged
 	else if(invulnally)
 	{
 		enemy.Team = TFTeam_Red;
@@ -771,6 +773,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		shouldscale = false;
 		CPrintToChatAll("{gold}Here's a free permanent ally!");
 	}
+	*/
 	else
 	{
 		float bigchance;
