@@ -8340,7 +8340,7 @@ float Perfected_Instinct_Dodge(int attacker, int victim, StatusEffect Apply_Mast
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 	if(!b_thisNpcIsARaid[victim])
 		ApplyStatusEffect(victim, victim, "Perfected Instinct Speed", 0.35);
-	if(b_thisNpcIsAboss[victim])
+	if(b_thisNpcIsABoss[victim])
 		Apply_StatusEffect.DataForUse = GetGameTime() + 3.0;
 
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);

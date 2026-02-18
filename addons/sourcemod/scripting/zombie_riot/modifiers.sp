@@ -400,7 +400,7 @@ public void ZRModifs_ModifEnemy_OneStand(int iNpc)
 
 	if(b_IsAloneOnServer)
 		return;
-	bool NerfEnemyStats = false;
+		
 	if(b_thisNpcIsABoss[iNpc] || b_thisNpcIsARaid[iNpc])
 	{
 		SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 0.8));

@@ -816,6 +816,7 @@ void NPC_ConfigSetup()
 	RaidbossMrX_OnMapStart();
 	GodAlaxios_OnMapStart();
 	Sensal_OnMapStart_NPC();
+	SensalTargetLaser_OnMapStart_NPC();
 	Karlas_OnMapStart_NPC();
 	Stella_OnMapStart_NPC();
 	RaidbossBobTheFirst_OnMapStart();
@@ -2075,6 +2076,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/expidonsa/npc_speedus_adivus.sp"
 #include "npc/expidonsa/npc_anfuhrer_eisenhard.sp"
 #include "npc/raidmode_bosses/npc_sensal.sp"
+#include "npc/raidmode_bosses/npc_sensal_crystal_targeter.sp"
 
 #include "npc/ally/npc_vip_building.sp"
 #include "npc/rogue/npc_overlord_rogue.sp"

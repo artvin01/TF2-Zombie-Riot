@@ -1067,6 +1067,55 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			}
 			npc.m_flRangedSpecialDelay = gameTime + 15.5;
 			npc.StopPathing();
+
+			
+			int SpawnAdditionalLasers = CountPlayersOnRed(1);
+			SpawnAdditionalLasers /= 2;
+			SpawnAdditionalLasers = (RAIDBOSS_GLOBAL_ATTACKLIMIT - SpawnAdditionalLasers);
+			if(SpawnAdditionalLasers <= 3)
+				SpawnAdditionalLasers = 3;
+
+			for(int SpawnNpc ; SpawnNpc < SpawnAdditionalLasers ; SpawnNpc++)
+			{
+				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+				
+				int spawn_index = NPC_CreateByName("npc_sensal_crystal_targeter", -1, pos, ang, 2);
+				if(spawn_index > MaxClients)
+				{
+					NpcStats_CopyStats(npc.index, spawn_index);
+					NpcAddedToZombiesLeftCurrently(spawn_index, true);
+					
+					int Decicion = TeleportDiversioToRandLocation(spawn_index, true, 1500.0, 1000.0, .NeedLOSPlayer = true);
+					switch(Decicion)
+					{
+						case 2:
+						{
+							Decicion = TeleportDiversioToRandLocation(spawn_index, true, 1500.0, 500.0, .NeedLOSPlayer = true);
+							if(Decicion == 2)
+							{
+								Decicion = TeleportDiversioToRandLocation(spawn_index, true, 1500.0, 250.0, .NeedLOSPlayer = true);
+								if(Decicion == 2)
+								{
+									Decicion = TeleportDiversioToRandLocation(spawn_index, true, 1500.0, 0.0, .NeedLOSPlayer = true);
+									if(Decicion == 2)
+									{
+										//damn, cant find any.... guess we'll just not care about LOS.
+										Decicion = TeleportDiversioToRandLocation(spawn_index, true, 1500.0, 0.0);
+									}
+								}
+							}
+						}
+						case 3:
+						{
+							//todo code on what to do if random teleport is disabled
+						}
+					}
+					RequestFrames(KillNpc, 200, EntIndexToEntRef(spawn_index));
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", 999999999);
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 999999999);
+				}
+			}
 			
 			npc.m_flDoingAnimation = gameTime + 99.0;
 			npc.m_bisWalking = false;
@@ -1782,18 +1831,38 @@ bool SensalMassLaserAttack(Sensal npc)
 	if(npc.m_flAttackHappens_2)
 	{
 		UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-		int enemy_2[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
-		/*
-		int SpawnAdditionalLasers = CountPlayersOnRed(1);
-		SpawnAdditionalLasers -= RAIDBOSS_GLOBAL_ATTACKLIMIT;
-		if(SpawnAdditionalLasers <= 0)
-			SpawnAdditionalLasers = 0;
-		*/
+		
 
 		
 		//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 		bool ClientTargeted[MAXENTITIES];
-		GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false);
+		int a;
+		int entity;
+		while((entity = FindEntityByNPC(a)) != -1)
+		{
+			if(Target_CrystalTrue(npc.index, entity))
+			{
+				ClientTargeted[entity] = true;
+				if(!IsValidEntity(i_LaserEntityIndex[entity]))
+				{
+					int red = 200;
+					int green = 200;
+					int blue = 200;
+					if(IsValidEntity(i_LaserEntityIndex[entity]))
+					{
+						RemoveEntity(i_LaserEntityIndex[entity]);
+					}
+
+					int laser;
+					
+					laser = ConnectWithBeam(npc.index, entity, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
+			
+					i_LaserEntityIndex[entity] = EntIndexToEntRef(laser);
+				}
+			}
+		}
+		int enemy_2[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
+		GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false,_,_,_,Target_CrystalFalse);
 		for(int i; i < sizeof(enemy_2); i++)
 		{
 			if(enemy_2[i])
@@ -1853,7 +1922,11 @@ bool SensalMassLaserAttack(Sensal npc)
 				if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 				{
 					RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-				}				
+				}		
+				if(i_NpcInternalId[EnemyLoop] == SensalTargetLaser_Id())
+				{
+					RequestFrame(KillNpc, EntIndexToEntRef(EnemyLoop));
+				}		
 			}
 
 			int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT];
@@ -1865,6 +1938,18 @@ bool SensalMassLaserAttack(Sensal npc)
 				{
 					foundEnemy = true;
 					float WorldSpaceVec[3]; WorldSpaceCenter(enemy[i], WorldSpaceVec);
+					SensalInitiateLaserAttack(npc.index, WorldSpaceVec, flPos);
+				}
+			}
+			
+			a = 0;
+			entity = 0;
+			while((entity = FindEntityByNPC(a)) != -1)
+			{
+				if(Target_CrystalTrue(npc.index, entity))
+				{
+					foundEnemy = true;
+					float WorldSpaceVec[3]; WorldSpaceCenter(entity, WorldSpaceVec);
 					SensalInitiateLaserAttack(npc.index, WorldSpaceVec, flPos);
 				}
 			}
@@ -2265,4 +2350,24 @@ static void Sensal_Weapon_Lines(Sensal npc, int client)
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}
+}
+
+
+
+bool Target_CrystalTrue(int entity, int target)
+{
+	if(i_NpcInternalId[target] == SensalTargetLaser_Id())
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Target_CrystalFalse(int entity, int target)
+{
+	if(i_NpcInternalId[target] == SensalTargetLaser_Id())
+	{
+		return false;
+	}
+	return true;
 }
