@@ -5465,6 +5465,18 @@
 		"it"	"Uroboro Ekas"
 		"ko"	"우로보로스 에카스"
 	}
+	"Xeno Lab Security"
+	{
+		"en"	"Xeno Lab Security"
+	}
+	"Goliath Aircraft"
+	{
+		"en"	"Goliath Aircraft"
+	}
+	"Const2 Spawner"
+	{
+		"en"	"Const2 Spawner"
+	}
 	"Bob's Duck ''Dubby''"
 	{
 		"en"	"Bob's Duck ''Dubby''"
