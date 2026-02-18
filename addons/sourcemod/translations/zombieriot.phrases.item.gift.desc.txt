@@ -2534,10 +2534,12 @@
 	"One Stand"
 	{
 		"en"	"One Stand"
+		"ko"	"하나의 보루"
 	}
 	"One Stand Desc"
 	{
-		"en"	"Its all or nothing!\nRaids and bosses are nerfed by 10％\nYou gain 1 more down\nYou do not get revived if its not a setup, and raids do not revive anymore."
+    "en"	"Its all or nothing!\nRaids and bosses are nerfed by 10％\nYou gain 1 more down\nYou do not get revived if its not a setup, and raids do not revive anymore."
+		"ko"	"살아남거나 죽거나!\n보스들의 스탯이 10％ 감소합니다.\n다운 횟수가 1회 증가합니다.\n준비 기간이 아닐 경우 부활하지 못하며, 레이드 시작 시 부활하지 않습니다."
 	}
 	"Paranormal Activity"
 	{

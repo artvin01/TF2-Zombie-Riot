@@ -3682,6 +3682,7 @@
 	"Rundown Xeno Ouroboros Ekas-2008"
 	{
 		"en"	"Rundown Xeno Ouroboros Ekas-2008"
+		"ko"	"런다운 제노 우로보로스 에카스-2008"
 	}
 	"Wandering Spirit"
 	{
@@ -5468,14 +5469,17 @@
 	"Xeno Lab Security"
 	{
 		"en"	"Xeno Lab Security"
+		"ko"	"제노 연구소 보안장치"
 	}
 	"Goliath Aircraft"
 	{
 		"en"	"Goliath Aircraft"
+		"ko"	"골리앗 비행선"
 	}
 	"Const2 Spawner"
 	{
 		"en"	"Const2 Spawner"
+		"ko"	"생존연산2 스포너"
 	}
 	"Bob's Duck ''Dubby''"
 	{
