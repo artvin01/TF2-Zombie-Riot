@@ -26,15 +26,15 @@ int SensalTargetLaser_Id()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return SensalTargetLaser(vecPos, vecAng, team, data);
+	return SensalTargetLaser(vecPos, vecAng);
 }
 
 methodmap SensalTargetLaser < CClotBody
 {
 	
-	public SensalTargetLaser(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SensalTargetLaser(float vecPos[3], float vecAng[3])
 	{
 		SensalTargetLaser npc = view_as<SensalTargetLaser>(CClotBody(vecPos, vecAng, CRYSTAL_MODEL, "0.01", "999999999", true, true,false,_,_,_, .NpcTypeLogic = 1));
 		
