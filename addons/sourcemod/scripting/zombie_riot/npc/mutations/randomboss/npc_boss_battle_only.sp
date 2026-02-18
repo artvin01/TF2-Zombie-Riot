@@ -266,8 +266,20 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		}
 		case 11:
 		{
-			PluginName = "npc_xeno_raidboss_nemesis";	
-			
+			//needs buffs!!
+			switch(GetRandomInt(1,4))
+			{
+				case 1:
+				{
+					PluginName = "npc_xeno_raidboss_nemesis";
+					Format(CharData, sizeof(CharData), "%s%s",CharData, "enraged");
+				}
+				default:
+				{
+					PluginName = "npc_xeno_raidboss_nemesis";
+				}	
+			}
+
 			enemy.ExtraDamage *= 0.9;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.3); 
 			//he doesnt really scale? i dont know what to do.

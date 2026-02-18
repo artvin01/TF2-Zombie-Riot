@@ -60,6 +60,7 @@ static bool DarknessComing;
 static int setuptimes;
 static float ExtraAttackspeed;
 static bool thespewer;
+static bool invulnally;
 
 static int FreeplayModifActive = 0;
 static float FM_Health;
@@ -273,7 +274,7 @@ int Freeplay_GetDangerLevelCurrent()
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
 	bool shouldscale = true;
-	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer)
+	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer || invulnally)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -379,6 +380,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 						enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
 						enemy.Health = RoundToFloor((7700000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
+						enemy.Data = "enraged";
 					}
 					default: 
 					{
@@ -682,6 +684,96 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		count = 1;
 		thespewer = false;
 	}
+	/*
+	Bugged
+	else if(invulnally)
+	{
+		enemy.Team = TFTeam_Red;
+		count = 1;
+		enemy.ExtraDamage = (Waves_GetRound() * 1.11);
+
+		switch(invulnally)
+		{
+			case 2:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_goggles_follower");
+				enemy.Health = 10000;
+				CPrintToChatAll("{darkblue}Waldch! {gold}- {red}Silvester would be mad at me if he found out I added Waldch all by himself");
+			}
+			case 3:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_kahmlstein_follower");
+				enemy.Health = 10000;
+				CPrintToChatAll("{darkblue}Kahmlstein! {gold}- {red}Hopefully Unspeakable is truly dead this time");
+			}
+			case 4:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_bob_first_follower");
+				enemy.Health = 10000;
+				CPrintToChatAll("{white}Bob! {gold}- {red}His true strength still breaks the simulation.");
+			}
+			case 5:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_twirl_follower");
+				enemy.Health = 10000;
+				CPrintToChatAll("{purple}Twirl! {gold}- {red}She has something special for you guys after this");
+			}
+			case 6:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_zeinafree");
+				enemy.Health = 10000;
+				CPrintToChatAll("{snow}Zeina! {gold}- {snow}Thank you guys for saving me from Zilius");
+			}
+			case 7:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_reila_follower");
+				enemy.Health = 10000;
+				CPrintToChatAll("{pink}Reila! {gold}- {red}Wonder how she's doing after the whole Rifts Between Fates situation");
+			}
+			case 8:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_omega_follower");
+				enemy.Health = 10000;
+				CPrintToChatAll("{gold}Omega! {gold}- {red}The secondary merc met him at Nova Prospect before W.F. died. You guys met him in the Curtain.");
+			}
+			case 9:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_vhxis_follower");
+				enemy.Health = 10000;
+				CPrintToChatAll("{purple}Vhxis! {gold}- {red}It’s kind of your guys fault and Kahml’s that the Unspeakable was able to enter our world.");
+			}
+			case 10:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_sensal_follower");
+				enemy.Health = 10000;
+				CPrintToChatAll("{blue}Sensal! {gold}- {red}Don’t let him know I’ve made him an ally.");
+			}
+			case 11:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_overlord_follower");
+				enemy.Health = 10000;
+				CPrintToChatAll("{crimson}Overlord The Last! {gold}- {red}It's been a while since you've seen him, right");
+			}
+			case 12:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_captino_baguettus");
+				enemy.Health = 10000;
+				CPrintToChatAll("{white}Captino Menius! {gold}- {red}Thanks to Menius and you guys, Ziberia wasn't completely destroyed by Victoria");
+			}
+			default:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_duck_follower");
+				enemy.Health = 10000;
+				enemy.ExtraDamage = (Waves_GetRound() * 10);
+				CPrintToChatAll("{gold}Dubby! {gold}- {red}Bob pet duck");
+			}
+		}
+
+		friendunit = false;
+		shouldscale = false;
+		CPrintToChatAll("{gold}Here's a free permanent ally!");
+	}
+	*/
 	else
 	{
 		float bigchance;
@@ -709,12 +801,48 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			enemy.ExtraDamage = 1.0;
 
 			enemy.Is_Immune_To_Nuke = true;
-			if(GetRandomInt(1, 2) == 2)
+			int roll = GetRandomInt(1, 7);
+			if(roll == 2)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_dimensionfrag");
 				enemy.Health = RoundToFloor(((170000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.25)) * HealthMulti);
 				enemy.ExtraDamage = 0.75;
 				count = 20;
+			}
+			else if(roll == 3)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_ltzens");
+				enemy.Health = RoundToFloor(((250000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.15)) * HealthMulti);
+				enemy.ExtraDamage = 1.25;
+				count = 15;
+			}
+			else if(roll == 4)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_refract");
+				enemy.Health = RoundToFloor(((200000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.20)) * HealthMulti);
+				enemy.ExtraDamage = 1.25;
+				count = 20;
+			}
+			else if(roll == 5)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_spuud");
+				enemy.Health = RoundToFloor(((300000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.11)) * HealthMulti);
+				enemy.ExtraDamage = 1.25;
+				count = 15;
+			}
+			else if(roll == 6)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_rouam");
+				enemy.Health = RoundToFloor(((500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
+				enemy.ExtraDamage = 2.0;
+				count = 5;
+			}
+			else if(roll == 7)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_keitosis");
+				enemy.Health = RoundToFloor(((3000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
+				enemy.ExtraDamage = 1.5;
+				count = 1;
 			}
 			else
 			{
@@ -875,7 +1003,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 static Action Freeplay_RouletteMessage(Handle timer)
 {
-	RaidFight = GetRandomInt(1, 28);
+	RaidFight = GetRandomInt(1, 34);
 	EmitSoundToAll("misc/halloween/spelltick_set.wav", _, _, _, _, _, GetRandomInt(70, 135));
 	switch(RaidFight)
 	{
@@ -1008,7 +1136,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 32:
 		{
-			CPrintToChatAll("{pink}REILA! {gold}- {red}Make sure you attack her first.");
+			CPrintToChatAll("{pink}REILA! {gold}- {red}Make sure you attack Reila herself first.");
 		}
 		case 33:
 		{
