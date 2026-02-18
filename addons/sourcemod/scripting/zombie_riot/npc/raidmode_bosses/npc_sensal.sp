@@ -1070,7 +1070,6 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 
 			
 			int SpawnAdditionalLasers = CountPlayersOnRed(1);
-			SpawnAdditionalLasers /= 2;
 			SpawnAdditionalLasers = (RAIDBOSS_GLOBAL_ATTACKLIMIT - SpawnAdditionalLasers);
 			if(SpawnAdditionalLasers <= 3)
 				SpawnAdditionalLasers = 3;
