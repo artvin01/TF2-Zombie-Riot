@@ -244,6 +244,7 @@ void NPC_ConfigSetup()
 	XenoFortifiedEarlyZombie_OnMapStart_NPC();
 	XenoPatientFew_OnMapStart_NPC();
 	XenoOuroborosEkas_OnMapStart_NPC();
+	XenoLabSecurity_OnMapStart_NPC();
 
 	
 	WanderingSpirit_OnMapStart_NPC();
@@ -1691,6 +1692,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/xeno_lab/npc_xeno_early_infected.sp"
 #include "npc/xeno_lab/npc_xeno_patient_few.sp"
 #include "npc/xeno_lab/npc_xeno_ekas_robo.sp"
+#include "npc/xeno_lab/npc_xeno_lab_security.sp"
 
 #include "npc/special/npc_sawrunner.sp"
 #include "npc/special/npc_l4d2_tank.sp"
