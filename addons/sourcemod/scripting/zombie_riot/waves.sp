@@ -2642,7 +2642,7 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 					}
 				}
 				bool RespawnPeople = true;
-				if(ZR_Get_Modifier() == PREFIX_ONESTAND)
+				if(ZR_Get_Modifier() == /*PREFIX_ONESTAND*/ 7)
 					if(round.Setup < 1.0)
 						RespawnPeople = false;
 						

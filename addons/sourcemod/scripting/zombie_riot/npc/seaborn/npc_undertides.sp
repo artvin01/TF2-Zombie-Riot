@@ -328,7 +328,8 @@ void GetHighDefTargets(UnderTides npc,
     int player_only = 0,
 	 int TraceFrom = -1,
 	  float RangeLimit = 0.0,
-	  bool HighDefDo = true)
+	  bool HighDefDo = true,
+  		Function ExtraValidityFunction = INVALID_FUNCTION)
 {
 	// Prio:
 	// 1. Highest Defense Stat
@@ -371,6 +372,18 @@ void GetHighDefTargets(UnderTides npc,
 					float npc_vec[3]; WorldSpaceCenter(client, npc_vec);
 					float flDistanceToTarget = GetVectorDistance(npc_vec, Pos1, true);
 					if(flDistanceToTarget > RangeLimit)
+						continue;
+				}
+				
+				if(ExtraValidityFunction != INVALID_FUNCTION)
+				{
+					bool WasValid;
+					Call_StartFunction(null, ExtraValidityFunction);
+					Call_PushCell(npc.index);
+					Call_PushCell(client);
+					Call_Finish(WasValid);
+
+					if(!WasValid)
 						continue;
 				}
 
@@ -433,6 +446,17 @@ void GetHighDefTargets(UnderTides npc,
 						float npc_vec[3]; WorldSpaceCenter(entity, npc_vec);
 						float flDistanceToTarget = GetVectorDistance(npc_vec, Pos1, true);
 						if(flDistanceToTarget > RangeLimit)
+							continue;
+					}
+					if(ExtraValidityFunction != INVALID_FUNCTION)
+					{
+						bool WasValid;
+						Call_StartFunction(null, ExtraValidityFunction);
+						Call_PushCell(npc.index);
+						Call_PushCell(entity);
+						Call_Finish(WasValid);
+
+						if(!WasValid)
 							continue;
 					}
 
