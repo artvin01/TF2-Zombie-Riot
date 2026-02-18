@@ -1840,7 +1840,7 @@ bool SensalMassLaserAttack(Sensal npc)
 		int entity;
 		while((entity = FindEntityByNPC(a)) != -1)
 		{
-			if(Target_CrystalTrue(npc.index, entity))
+			if(Target_CrystalTrue(entity))
 			{
 				ClientTargeted[entity] = true;
 				if(!IsValidEntity(i_LaserEntityIndex[entity]))
