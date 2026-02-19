@@ -251,7 +251,6 @@ public void XenoLabSecurity_ClotThink(int iNPC)
 	
 	npc.m_iCombatProtocol++;
 	
-	// every 1000 ticks (10 seconds), get stronger for difficulty. seemed fun to me, if this is too much whoops...
 	if(npc.m_iCombatProtocol >= 1000)
 	{
 		npc.m_iCombatProtocol = 0;
@@ -312,32 +311,37 @@ public void XenoLabSecurity_ClotThink(int iNPC)
 
 void Security_InfectionProtocol(XenoLabSecurity npc, float gameTime)
 {
-	// Brief preparation sound
+	float activationDelay = npc.m_bIsLabVersion ? 1.5 : 1.0;
+	
+	// Stop and prepare
+	npc.m_flSpeed = 0.0;
+	npc.m_bisWalking = false;
+	npc.StopPathing();
 	npc.PlayAngerSound();
 	
 	float pos[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	pos[2] += 45.0;
 	
-	// warning rings - bigger range if lab version and enraged (cant tell if these work....)
 	float range = (npc.m_bIsLabVersion && npc.Anger) ? SECURITY_INFECTION_RANGE * 1.5 : SECURITY_INFECTION_RANGE;
-	spawnRing_Vectors(pos, range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 200, 1, 2.0, 6.0, 8.0, 1, 1.0);
-	spawnRing_Vectors(pos, range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 100, 255, 100, 200, 1, 2.0, 6.0, 8.0, 1, 1.0);
-	spawnRing_Vectors(pos, range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 150, 255, 150, 200, 1, 2.0, 6.0, 8.0, 1, 1.0);
+	
+	spawnRing_Vectors(pos, range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 200, 1, activationDelay, 6.0, 8.0, 1, 0.0);
+	spawnRing_Vectors(pos, range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 100, 255, 100, 200, 1, activationDelay, 6.0, 8.0, 1, 0.0);
+	spawnRing_Vectors(pos, range * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 150, 255, 150, 200, 1, activationDelay, 6.0, 8.0, 1, 0.0);
 	
 	float ang[3];
 	ang[0] = -90.0;
-	int particle = ParticleEffectAt(pos, "green_steam_plume", 2.0);
+	int particle = ParticleEffectAt(pos, "green_steam_plume", activationDelay);
 	TeleportEntity(particle, NULL_VECTOR, ang, NULL_VECTOR);
 	
 	DataPack pack;
-	CreateDataTimer(2.0, Timer_SecurityInfectionBlast, pack, TIMER_FLAG_NO_MAPCHANGE);
+	CreateDataTimer(activationDelay, Timer_SecurityInfectionBlast, pack, TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(npc.index));
 	pack.WriteFloat(range);
 	
-	// Next infection time based on lab version enrage state
+	// next infection time based on lab version enrage state
 	float cooldown = (npc.m_bIsLabVersion && npc.Anger) ? 8.0 : 12.0;
-	npc.m_flNextRangedSpecialAttack = gameTime + 2.0 + cooldown;
+	npc.m_flNextRangedSpecialAttack = gameTime + activationDelay + cooldown;
 }
 
 public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
@@ -351,6 +355,12 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	
 	XenoLabSecurity npc = view_as<XenoLabSecurity>(entity);
+	
+	npc.m_flSpeed = (npc.m_bIsLabVersion && npc.Anger) ? 280.0 : 220.0;
+	npc.m_bisWalking = true;
+	int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+	if(iActivity > 0) npc.StartActivity(iActivity);
+	npc.StartPathing();
 	
 	float pos[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
@@ -409,18 +419,16 @@ void Security_InfectionHit(int entity, int victim, float damage, int weapon)
 		}
 		else
 		{
-			ShowHudText(victim, -1, "CONTAMINATED");
+			ShowHudText(victim, -1, "XENO SECURITY UNIT HAS INFECTED YOU!");
 		}
-		ClientCommand(victim, "playgamesound items/cart_explode.wav");
+		ClientCommand(victim, "playgamesound items/powerup_pickup_plague_infected.wav");
 		
-		// Stronger infection in enraged mode (lab version only)
+		// stronger infection in enraged mode aka lab version only
 		int tickCount = (npc.m_bIsLabVersion && npc.Anger) ? 15 : 10;
 		float tickDamage = (npc.m_bIsLabVersion && npc.Anger) ? 80.0 : 60.0;
 		
-		// Apply infection DoT
 		StartBleedingTimer(victim, entity, tickDamage, tickCount, -1, DMG_SLASH, 0, 1);
 		
-		// Slow effect - stronger when enraged
 		float slowDuration = (npc.m_bIsLabVersion && npc.Anger) ? 3.0 : 2.0;
 		TF2_StunPlayer(victim, slowDuration, 0.5, TF_STUNFLAG_SLOWDOWN);
 	}
