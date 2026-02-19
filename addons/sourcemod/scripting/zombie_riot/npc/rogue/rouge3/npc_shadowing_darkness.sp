@@ -1057,15 +1057,6 @@ public void Shadowing_Darkness_ReflectProjectiles(int entity, int target)
 	{
 		owner = 0;
 	}
-	if(npc.m_iState >= MAX_BOUNCES_SHADOWING_DARKNESS)
-	{
-		int particle = EntRefToEntIndex(i_WandParticle[entity]);
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-		return;
-	}
 	if(IsValidEnemy(entity, target, true, true))
 	{
 		ShadowingDarkness_Projectile_StartTouch(entity, target);	
@@ -1076,9 +1067,26 @@ public void Shadowing_Darkness_ReflectProjectiles(int entity, int target)
 		if(target != 0)
 			return;
 	}
+	if(npc.m_flNextDelayTime > GetGameTime(entity))
+	{
+		return;
+	}
+	//do not bounce instantly
+	npc.m_flNextDelayTime = GetGameTime(entity) + 0.1;
 	npc.m_iState++;
+	if(npc.m_iState >= MAX_BOUNCES_SHADOWING_DARKNESS)
+	{
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		RemoveEntity(entity);
+		return;
+	}
+
 	EntityKilled_HitDetectionCooldown(entity, ShadowingSlicer);
-	float pos[3];
+	float pos[3];	
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	TE_Particle("mvm_soldier_shockwave", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	EmitSoundToAll(g_BounceEnergOrb[GetRandomInt(0, sizeof(g_BounceEnergOrb) - 1)], _, SNDCHAN_AUTO, 80, _,1.0, 150,_,pos);
@@ -1090,7 +1098,13 @@ public void Shadowing_Darkness_ReflectProjectiles(int entity, int target)
 		float ProjectileVel[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", ProjectileVel);
 		NegateVector(ProjectileVel);
-		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, ProjectileVel);
+		Custom_SetAbsVelocity(entity, {0.0,0.0,0.0});	
+		DataPack pack = new DataPack();
+		pack.WriteCell(EntIndexToEntRef(entity));
+		pack.WriteFloat(ProjectileVel[0]);
+		pack.WriteFloat(ProjectileVel[1]);
+		pack.WriteFloat(ProjectileVel[2]);
+		RequestFrames(SetVelocityAtomizerProjectile, 1, pack);
 		return;
 	}
 
@@ -1101,7 +1115,14 @@ public void Shadowing_Darkness_ReflectProjectiles(int entity, int target)
 	WorldSpaceCenter(entity, vecSelf);
 	TE_SetupBeamPoints(vecSelf, EndPos, Shared_BEAM_Laser, 0, 0, 0, 1.5, 3.0, 3.0, 0, 0.0, {255,65,65,125}, 3);
 	TE_SendToAll(0.0);
-	TeleportEntity(entity, NULL_VECTOR, VecAngles, VecSpeed);
+
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteFloat(VecSpeed[0]);
+	pack.WriteFloat(VecSpeed[1]);
+	pack.WriteFloat(VecSpeed[2]);
+	RequestFrames(SetVelocityAtomizerProjectile, 1, pack);
+	TeleportEntity(entity, NULL_VECTOR, VecAngles, NULL_VECTOR);
 	//valid target found, bounce to said target
 }
 

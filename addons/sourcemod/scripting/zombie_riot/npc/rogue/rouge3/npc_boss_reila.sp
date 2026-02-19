@@ -806,11 +806,6 @@ public void Reila_Rocket_Particle_StartTouch(int entity, int target)
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
 				
 		Reila_Rocket_Particle_Think(entity);
-		int particle = EntRefToEntIndex(i_WandParticle[entity]);
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
 	}
 	else
 	{
@@ -821,8 +816,8 @@ public void Reila_Rocket_Particle_StartTouch(int entity, int target)
 		{
 			RemoveEntity(particle);
 		}
+		RemoveEntity(entity);
 	}
-	RemoveEntity(entity);
 }
 
 
@@ -834,6 +829,7 @@ public void Reila_Rocket_Particle_StartTouch(int entity, int target)
 void Reila_Rocket_Particle_Think(int entity)
 {
 	float gameTime = GetGameTime();
+	CBaseCombatCharacter(entity).SetNextThink(gameTime);
 	
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	if (!IsValidEntity(owner))
@@ -844,15 +840,21 @@ void Reila_Rocket_Particle_Think(int entity)
 		RemoveEntity(entity);
 		return;
 	}
+	BossReila proj = view_as<BossReila>(entity);
+	if(proj.m_flNextDelayTime > GetGameTime(entity))
+	{
+		return;
+	}
+	proj.m_flNextDelayTime = GetGameTime(entity) + 1.0;
 	BossReila npc = view_as<BossReila>(owner);
-	
-	float vecPos[3], VecDown[3];
-	GetAbsOrigin(entity, vecPos);
 	
 	float velocity[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", velocity);
 	velocity[2] += 300.0;
 	TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, velocity);		
+
+	float vecPos[3], VecDown[3];
+	GetAbsOrigin(entity, vecPos);
 
 	VecDown = vecPos;
 	VecDown[2] -= 1000.0;
@@ -876,10 +878,9 @@ void Reila_Rocket_Particle_Think(int entity)
 		spawnBeam(0.8, 120, 50, 200, 200, "materials/sprites/laserbeam.vmt", 3.0, 0.2, _, 10.0, vecPos, VecDown);	
 		EmitSoundToAll("weapons/vaccinator_charge_tier_03.wav", _, SNDCHAN_AUTO, 70, _, 0.65, GetRandomInt(80, 110), _, VecDown);
 		spawnRing_Vectors(VecDown, REILA_BOSS_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 100, 50, 150, 200, 1, REILA_BOSS_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
-		
 	}
+
 	delete trace;
-	CBaseCombatCharacter(entity).SetNextThink(gameTime + 1.0);
 }
 
 
