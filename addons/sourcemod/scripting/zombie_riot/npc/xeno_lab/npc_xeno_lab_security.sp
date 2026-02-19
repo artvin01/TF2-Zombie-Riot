@@ -55,7 +55,7 @@ void XenoLabSecurity_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Xeno Lab Security");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_lab_security");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy_champ_vac_blast_giant");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_champ_vac_blast");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Xeno;  // Xeno category for super boss
