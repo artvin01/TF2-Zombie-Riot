@@ -61,6 +61,7 @@ static int setuptimes;
 static float ExtraAttackspeed;
 static bool thespewer;
 static bool invulnally;
+static bool voidoutbreak;
 
 static int FreeplayModifActive = 0;
 static float FM_Health;
@@ -274,7 +275,7 @@ int Freeplay_GetDangerLevelCurrent()
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
 	bool shouldscale = true;
-	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer || invulnally)
+	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer || invulnally || voidoutbreak)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -774,6 +775,14 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		CPrintToChatAll("{gold}Here's a free permanent ally!");
 	}
 	*/
+	else if(voidoutbreak) // prob will be bugged cause I suck at coding, but I hope this one works cause it's simpler than the one above -w-.
+	{
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Index = NPC_GetByPlugin("npc_void_portal");
+
+		count = 5;
+		voidoutbreak = false;
+	}
 	else
 	{
 		float bigchance;
@@ -3070,6 +3079,16 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}Your final challenge.... a {crimson}Nourished Spewer.");
 				thespewer = true;
+			}
+			case 85:
+			{
+				if(voidoutbreak)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{red}Here, have fun handling these {purple}Void Portals.");
+				voidoutbreak = true;
 			}
 			default:
 			{
