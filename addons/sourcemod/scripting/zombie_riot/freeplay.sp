@@ -3119,7 +3119,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Here, have fun handling these {purple}Void Portals.");
 				voidoutbreak = true;
 			}
-			case 85:
+			case 86:
 			{
 				if(zmain)
 				{
