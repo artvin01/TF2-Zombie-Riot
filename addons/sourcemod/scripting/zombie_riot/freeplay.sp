@@ -776,6 +776,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		CPrintToChatAll("{gold}Here's a free permanent ally!");
 	}
 	*/
+	/*
+	didn't even get in the game, rip. understandable though.
 	else if(voidoutbreak) // prob will be bugged cause I suck at coding, but I hope this one works cause it's simpler than the one above -w-.
 	{
 		enemy.Is_Immune_To_Nuke = true;
@@ -812,6 +814,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		}
 		zmain = false;
 	}
+	*/
 	else
 	{
 		float bigchance;
@@ -3109,6 +3112,8 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Your final challenge.... a {crimson}Nourished Spewer.");
 				thespewer = true;
 			}
+			/*
+			ima block these aswell just in case.
 			case 85:
 			{
 				if(voidoutbreak)
@@ -3129,6 +3134,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Hey, what would you call a horde of smart zombies?");
 				zmain = true;
 			}
+			*/
 			default:
 			{
 				strcopy(message, sizeof(message), "{yellow}Nothing!");
