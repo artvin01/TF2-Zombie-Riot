@@ -62,6 +62,7 @@ static float ExtraAttackspeed;
 static bool thespewer;
 static bool invulnally;
 static bool voidoutbreak;
+static bool zmain;
 
 static int FreeplayModifActive = 0;
 static float FM_Health;
@@ -275,7 +276,7 @@ int Freeplay_GetDangerLevelCurrent()
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
 	bool shouldscale = true;
-	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer || invulnally || voidoutbreak)
+	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer || invulnally || voidoutbreak || zmain)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -782,6 +783,34 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 		count = 5;
 		voidoutbreak = false;
+	}
+	else if(zmain) // I'm also hoping this one works aswell. Sorry if I waste your time by having you fix this, to whoever fixes this if this is broken. 
+	{
+		{
+			enemy.Is_Immune_To_Nuke = true;
+			enemy.Index = NPC_GetByPlugin("npc_zmain_headcrab");
+			enemy.Health = RoundToFloor(((62500.0 + HealthBonus) / 65.0 * float(Waves_GetRound())) * HealthMulti);
+			enemy.ExtraDamage = 2.5;
+			enemy.Credits += 35.0;
+			count = 16;
+		}
+		{
+			enemy.Is_Immune_To_Nuke = true;
+			enemy.Index = NPC_GetByPlugin("npc_zmain_headcrabzombie");
+			enemy.Health = RoundToFloor(((125000.0 + HealthBonus) / 65.0 * float(Waves_GetRound())) * HealthMulti);
+			enemy.ExtraDamage = 2.5;
+			enemy.Credits += 35.0;
+			count = 6;
+		}
+		{
+			enemy.Is_Immune_To_Nuke = true;
+			enemy.Index = NPC_GetByPlugin("npc_zmain_poisonzombie");
+			enemy.Health = RoundToFloor(((250000.0 + HealthBonus) / 65.0 * float(Waves_GetRound())) * HealthMulti);
+			enemy.ExtraDamage = 2.5;
+			enemy.Credits += 35.0;
+			count = 4;
+		}
+		zmain = false;
 	}
 	else
 	{
@@ -3089,6 +3118,16 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}Here, have fun handling these {purple}Void Portals.");
 				voidoutbreak = true;
+			}
+			case 85:
+			{
+				if(zmain)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{red}Hey, what would you call a horde of smart zombies?");
+				zmain = true;
 			}
 			default:
 			{
