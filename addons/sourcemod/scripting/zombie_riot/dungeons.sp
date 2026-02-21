@@ -2250,10 +2250,17 @@ void Dungeon_EnemySpawned(int entity)
 				
 				if(EnableSilentMode)
 				{
-					//Too many players, we have to nerf the stats by 35%...
-					fl_Extra_Damage[entity] *= 0.65;
-					SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.65));
-					SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.65));
+					if(i_IsABuilding[entity] || i_NpcIsABuilding[entity])
+					{
+
+					}
+					else
+					{
+						//Too many players, we have to nerf the stats by 35%...
+						fl_Extra_Damage[entity] *= 0.65;
+						SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.65));
+						SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.65));
+					}
 				}
 				Dungeon_GiveNpcMoney(entity);
 			}
