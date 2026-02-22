@@ -3580,10 +3580,10 @@ void DoGlobalMultiScaling()
 	playercount *= 0.88;
 	playercount *= GetScaledPlayerCountMulti(PlayersIngame);
 
-	//We want to reduce scaling at dungeon mode if its above a certain player count
-	//this is due to buildings not really scaling past 14 players.
-	if(Dungeon_Mode())
-		playercount *= GetScaledPlayerCountMulti(PlayersIngame, 0.1);
+	//We want to reduce scaling at dungeon Several gamemodes if its above a certain player counts
+	//this is due to buildings not really scaling past 14 players, or the gameplay being very hectic, this is just to circumvent it a lil
+	if(Dungeon_Mode() || Rogue_Mode())
+		playercount *= GetScaledPlayerCountMulti(PlayersIngame, 0.125);
 
 	float multi = playercount / 4.0;
 	
