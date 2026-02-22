@@ -8421,6 +8421,17 @@ void ContractedMotivatorEffect2(int entity, float range)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 	spawnRing_Vectors(ProjectileLoc, 0.1, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 65, 100, 1, 0.5, 5.0, 0.1, 3, range * 2.0);	
 }
+void ConstractedMotivatorBuffs(int entity, int victim, float &healingammount)
+{
+	if(i_NpcIsABuilding[victim])
+		return;
+
+	if(GetTeam(entity) == GetTeam(victim))
+	{
+		ApplyStatusEffect(entity, victim, "War Cry", 3.0);
+	}
+	
+}
 
 
 
@@ -8460,7 +8471,9 @@ void Const2Modifs_Asexual_End(int victim, StatusEffect Apply_MasterStatusEffect,
 		npc.SetVelocity({0.0,0.0,0.0});
 		PluginBot_Jump(summon, flPos);
 		ApplyStatusEffect(summon, summon, "Unstoppable Force", 2.0);
+#if defined ZR
 		ZRModifs_GiveRandomPrefix(summon);
+#endif
 	}
 }
 
@@ -8552,7 +8565,6 @@ void Const2Modifs_Explosive_End(int victim, StatusEffect Apply_MasterStatusEffec
 	float DamageDeal = 10000.0;
 #if defined ZR
 	DamageDeal = float(CurrentCash);
-#endif
 	DamageDeal *= 0.25;
 	if(DamageDeal <= 100.0)
 		DamageDeal = 100.0;
@@ -8575,6 +8587,7 @@ void Const2Modifs_Explosive_End(int victim, StatusEffect Apply_MasterStatusEffec
 	b_NpcIsTeamkiller[victim] = true;
 	ObjectVintulumBomb npc = view_as<ObjectVintulumBomb>(victim);
 	npc.PlayExplodeDo(true, true);
+#endif
 }
 
 
@@ -8826,7 +8839,9 @@ static void Ragebaiter_Think_Do(int entity, StatusEffect Apply_MasterStatusEffec
 	}
 	Format(RageText, sizeof(RageText), "Rage Prefix Text %i", GetRandomInt(1,MaxEntries- 1));
 
+#if defined ZR
 	PrintNPCMessageWithPrefixes(entity, "crimson", RageText, true);
+#endif
 }
 
 
@@ -8875,7 +8890,154 @@ void Const2Modifs_Modifier_Start(int victim, StatusEffect Apply_MasterStatusEffe
 	//not an npc, ignore.
 	if(!b_ThisWasAnNpc[victim])
 		return;
+#if defined ZR
+	ZRModifs_GiveRandomPrefix(victim);
+	ZRModifs_GiveRandomPrefix(victim);
+#endif
+}
 
-	ZRModifs_GiveRandomPrefix(victim);
-	ZRModifs_GiveRandomPrefix(victim);
+
+
+public void ZRModifs_ParanormalActivityNPC(int iNpc)
+{
+	CClotBody ZNPC = view_as<CClotBody>(iNpc);
+
+	if(IsValidEntity(ZNPC.m_iWearable1) && !b_EntityCantBeColoured[ZNPC.m_iWearable1])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable1, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable1, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable1, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsValidEntity(ZNPC.m_iWearable2) && !b_EntityCantBeColoured[ZNPC.m_iWearable2])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable2, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable2, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable2, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsValidEntity(ZNPC.m_iWearable3) && !b_EntityCantBeColoured[ZNPC.m_iWearable3])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable3, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable3, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable3, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsValidEntity(ZNPC.m_iWearable4) && !b_EntityCantBeColoured[ZNPC.m_iWearable4])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable4, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable4, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable4, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsValidEntity(ZNPC.m_iWearable5) && !b_EntityCantBeColoured[ZNPC.m_iWearable5])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable5, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable5, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable5, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsValidEntity(ZNPC.m_iWearable6) && !b_EntityCantBeColoured[ZNPC.m_iWearable6])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable6, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable6, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable6, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable6, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsValidEntity(ZNPC.m_iWearable7) && !b_EntityCantBeColoured[ZNPC.m_iWearable7])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable7, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable7, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable7, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable7, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsValidEntity(ZNPC.m_iWearable8) && !b_EntityCantBeColoured[ZNPC.m_iWearable8])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable8, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable8, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable8, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable8, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsEntityAlive(ZNPC.m_iWearable1) && !b_EntityCantBeColoured[ZNPC.m_iWearable1])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable1, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable1, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable1, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsEntityAlive(ZNPC.m_iWearable2) && !b_EntityCantBeColoured[ZNPC.m_iWearable2])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable2, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable2, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable2, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsEntityAlive(ZNPC.m_iWearable3) && !b_EntityCantBeColoured[ZNPC.m_iWearable3])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable3, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable3, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable3, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsEntityAlive(ZNPC.m_iWearable4) && !b_EntityCantBeColoured[ZNPC.m_iWearable4])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable4, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable4, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable4, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsEntityAlive(ZNPC.m_iWearable5) && !b_EntityCantBeColoured[ZNPC.m_iWearable5])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable5, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable5, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable5, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsEntityAlive(ZNPC.m_iWearable6) && !b_EntityCantBeColoured[ZNPC.m_iWearable6])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable6, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable6, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable6, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable6, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsEntityAlive(ZNPC.m_iWearable7) && !b_EntityCantBeColoured[ZNPC.m_iWearable7])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable7, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable7, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable7, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable7, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsEntityAlive(ZNPC.m_iWearable8) && !b_EntityCantBeColoured[ZNPC.m_iWearable8])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable8, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable8, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable8, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable8, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+
+	fl_Extra_Damage[iNpc] *= 1.05;
+	SetEntityRenderMode(iNpc, RENDER_TRANSCOLOR);
+	SetEntityRenderColor(iNpc, 0, 0, 0, 150);
+	SetEntPropFloat(iNpc, Prop_Send, "m_fadeMinDist", 600.0);
+	SetEntPropFloat(iNpc, Prop_Send, "m_fadeMaxDist", 700.0);
+	b_NoHealthbar[iNpc] = 1;
+#if defined ZR
+	GiveNpcOutLineLastOrBoss(iNpc, false);
+	b_thisNpcHasAnOutline[iNpc] = true;
+#endif
+
+	/*
+	float SelfPosParanormal[3];
+	float AllyPosParanormal[3];
+	float flDistanceToTargetParanormal = GetVectorDistance(SelfPosParanormal, AllyPosParanormal, true);
+	if(flDistanceToTargetParanormal < (100.0 * 100.0))
+	{
+		fl_Extra_Speed[iNpc] *= 2.0;
+	}
+	if(flDistanceToTargetParanormal > (100.0 * 100.0))
+	{
+		fl_Extra_Speed[iNpc] *= 0.5;
+	}
+	*/
+
 }

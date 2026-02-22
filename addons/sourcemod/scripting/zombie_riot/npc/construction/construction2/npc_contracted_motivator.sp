@@ -126,6 +126,11 @@ methodmap ContractedMotivator < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
+	property float m_fRadiusCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
 	
 	public ContractedMotivator(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -249,7 +254,13 @@ static void ClotThink(int iNPC)
 		 ConstractedMotivatorBuffs ,
   		  _,
    		  true);
-	ContractedMotivatorEffect(npc.index, 500.0);
+
+	if(npc.m_fRadiusCD < gameTime)
+	{
+		npc.m_fRadiusCD = gameTime + 1.0;
+		ContractedMotivatorEffect(npc.index);
+	}
+	
 
 	if(target > 0)
 	{
@@ -435,22 +446,9 @@ void ContractedMotivator_TakeDamage(int victim, int &attacker, int &inflictor, f
 	//keep them alive to keep spawn limits high?
 }
 
-void ContractedMotivatorEffect(int entity, float range)
+void ContractedMotivatorEffect(int entity)
 {
 	float ProjectileLoc[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-	spawnRing_Vectors(ProjectileLoc, range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 65, 200, 1, 0.1, 5.0, 0.1, 3);	
-}
-
-
-void ConstractedMotivatorBuffs(int entity, int victim, float &healingammount)
-{
-	if(i_NpcIsABuilding[victim])
-		return;
-
-	if(GetTeam(entity) == GetTeam(victim))
-	{
-		ApplyStatusEffect(entity, victim, "War Cry", 3.0);
-	}
-	
+	spawnRing_Vectors(ProjectileLoc, 0.1, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 200, 200, 65, 50, 1, 0.25, 5.0, 0.1, 3, 50.0 * 2.0);	
 }

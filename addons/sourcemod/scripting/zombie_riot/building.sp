@@ -1822,7 +1822,7 @@ bool Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 	int iHealth, max_health;
 	if(i_IsVehicle[target])
 	{
-		max_health = 10000;
+		max_health = view_as<VehicleGeneric>(target).m_iMaxArmor;
 		iHealth = Armor_Charge[target];
 	}
 	else

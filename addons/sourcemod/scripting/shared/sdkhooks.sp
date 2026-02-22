@@ -1333,6 +1333,7 @@ public void OnPostThink(int client)
 		int armorEnt = client;
 		if(vehicle != -1)
 		{
+			Armor_Max = view_as<VehicleGeneric>(vehicle).m_iMaxArmor;
 			armorEnt = vehicle;
 		}
 		else

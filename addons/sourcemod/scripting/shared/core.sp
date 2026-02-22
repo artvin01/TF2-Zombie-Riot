@@ -2062,14 +2062,13 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				AllowImpulse = false;
 		}
 
+		f_CooldownForAbilities[client][1] = GetGameTime() + 0.5;
 		if(AllowImpulse)
 		{
 			f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
 			if(DoInteractKeyLogic(angles, client))
 				return Plugin_Continue;
 		}
-
-		f_CooldownForAbilities[client][1] = GetGameTime() + 0.5;
 		// force wait 1 second so it isnt activated automatically
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding != -1)
@@ -2568,7 +2567,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_PullTowardsTarget[entity] = 0;
 		f_PullStrength[entity] = 0.0;
 #if defined ZR || defined RPG
-		Dungeon_SetEntityZone(entity, Zone_Unknown);
 		CoinEntityCreated(entity);
 #endif
 		//set it to 0!
@@ -2585,6 +2583,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_NoKnockbackFromSources[entity] = false;
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
 #if defined ZR
+		Dungeon_SetEntityZone(entity, Zone_Unknown);
 		b_FaceStabber[entity] = false;
 		i_CustomWeaponEquipLogic[entity] = -1;
 		Resistance_for_building_High[entity] = 0.0;

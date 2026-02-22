@@ -27,11 +27,13 @@ methodmap VehicleFullJeep < VehicleGeneric
 {
 	public VehicleFullJeep(const float vecPos[3], const float vecAng[3])
 	{
-		VehicleFullJeep obj = view_as<VehicleFullJeep>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, "models/buggy.mdl", "scripts/vehicles/jeep_test.txt"));
+		VehicleFullJeep obj = view_as<VehicleFullJeep>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, "models/buggy.mdl", "scripts/vehicles/zr_custom/jeep_test.txt"));
 		
 		obj.m_iGunIndex = -1;
 		obj.AddSeat({22.0, -42.0, 12.0}, 0);
 		obj.AddSeat({2.0, -90.0, 34.0}, 1);
+		Armor_Charge[obj.index] = 15000;
+		obj.m_iMaxArmor = 15000;
 
 		FuncShowInteractHud[obj.index] = VehicleFullJeep_ClotShowInteractHud;
 		func_NPCInteract[obj.index] = VehicleFullJeep_ClotInteract;
