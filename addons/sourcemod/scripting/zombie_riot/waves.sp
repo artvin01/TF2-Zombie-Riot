@@ -3580,6 +3580,11 @@ void DoGlobalMultiScaling()
 	playercount *= 0.88;
 	playercount *= GetScaledPlayerCountMulti(PlayersIngame);
 
+	//We want to reduce scaling at dungeon mode if its above a certain player count
+	//this is due to buildings not really scaling past 14 players.
+	if(Dungeon_Mode())
+		playercount *= GetScaledPlayerCountMulti(PlayersIngame, 0.1);
+
 	float multi = playercount / 4.0;
 	
 	Rogue_Rift_MultiScale(multi);
