@@ -11,7 +11,7 @@ void SensalTargetLaser_OnMapStart_NPC()
 	PrecacheModel(CRYSTAL_MODEL);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Sensal Targeter");
+	strcopy(data.Name, sizeof(data.Name), "nothing");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sensal_crystal_targeter");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
