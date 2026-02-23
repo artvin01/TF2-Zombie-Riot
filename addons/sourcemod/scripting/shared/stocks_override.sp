@@ -472,10 +472,9 @@ bool Stock_AcceptEntityInput(int dest, const char[] input, int activator=-1, int
 				too many infractions. slay all npcs no matter what, but do not grant bonuses if it was a raid.
 				this is an emergency, it might actually spam this very very often. In this case, we nuke all npcs immediently.
 				There is a rare bug where it sometimes just doesnt spawn the entity. such as NPC wearables.
-				too many infractions. slay all npcs no matter what, but do not grant bonuses if it was a raid.
 			*/
 			int entity = -1;
-			while((entity=FindEntityByClassname(entity, "zr_base_boss")) != -1)
+			while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
 			{
 #if defined ZR
 				if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)

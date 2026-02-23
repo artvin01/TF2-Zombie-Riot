@@ -2307,10 +2307,12 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					i_DyingParticleIndication[victim][0] = EntIndexToEntRef(entity);
 					SetVariantColor(view_as<int>({0, 255, 0, 255}));
 					AcceptEntityInput(entity, "SetGlowColor");
-
-					entity = SpawnFormattedWorldText("DOWNED", {0.0,0.0,70.0}, 10, {0, 255, 0, 255}, victim);
-					i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
-					b_DyingTextOff[victim] = false;
+					if(!AtEdictLimit(EDICT_PLAYER))
+					{
+						entity = SpawnFormattedWorldText("DOWNED", {0.0,0.0,70.0}, 10, {0, 255, 0, 255}, victim);
+						i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
+						b_DyingTextOff[victim] = false;
+					}
 					
 				}
 				CreateTimer(0.1, Timer_Dieing, victim, TIMER_REPEAT);
