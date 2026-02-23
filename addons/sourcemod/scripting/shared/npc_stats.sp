@@ -10366,7 +10366,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 
 public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 {
-	if(b_IsEntityNeverTranmitted[npc.index] || b_NoHealthbar[npc.index])
+	if(!AtEdictLimit(EDICT_RAID) || b_IsEntityNeverTranmitted[npc.index] || b_NoHealthbar[npc.index] || i_NpcIsABuilding[npc.index] || i_IsABuilding[npc.index])
 	{
 		if(IsValidEntity(npc.m_iTextEntity4))
 		{
@@ -10403,7 +10403,12 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		Format(HealthText, sizeof(HealthText), "%s!(%i)",HealthText, i_HowManyBombsHud[npc.index]);
 	}
-	if(VausMagicaShieldLeft(npc.index) > 0)
+	bool DisplayVausShield = true;
+	if(Dungeon_Mode() && Dungeon_AttackType() < 2)
+	{
+		DisplayVausShield = false;
+	}
+	if(DisplayVausShield && VausMagicaShieldLeft(npc.index) > 0)
 	{
 		Format(HealthText, sizeof(HealthText), "%sS(%i)",HealthText,VausMagicaShieldLeft(npc.index));
 	}
@@ -11554,6 +11559,19 @@ void ExtinguishTarget(int target, bool dontkillTimer = false)
 void IsEntityInvincible_Shield(int entity)
 {
 	int NpcInvulShieldDisplay;
+	if(i_NpcIsABuilding[entity] || i_IsABuilding[entity])
+	{
+		//never display for buildings!!
+		return;
+	}
+	if(Dungeon_Mode() && !AtEdictLimit(EDICT_PLAYER))
+	{
+		if(Dungeon_AttackType() < 2)
+		{
+			//dont display any shields if its dungeon mode!
+			return;
+		}
+	}
 
 	if(HasSpecificBuff(entity, "UBERCHARGED"))
 		NpcInvulShieldDisplay = 3;
@@ -11565,7 +11583,7 @@ void IsEntityInvincible_Shield(int entity)
 #endif
 	if(IsInvuln(entity, true))
 		NpcInvulShieldDisplay = 1;
-	
+		
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(!NpcInvulShieldDisplay || b_ThisEntityIgnored[entity])
 	{
