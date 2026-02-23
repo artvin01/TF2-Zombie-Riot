@@ -5217,7 +5217,7 @@
 	}
 	"Iberia Expi Desc"
 	{
-	  "en" "Iberia and expidonsa, but mainly Iberia, Come back to us for more training. But Nemal and Silvester won't be here this time. They're probably on vacation with Sensal."
+	  "en" "After the main mercs are done with their training, Iberia comes to us, the secondary mercs, for some more training. Nemal and Silvester won't be here this time since they're on vacation with Sensal."
 	  "ko" "이베리아와 엑스피돈사, 그 중에서도 이베리아가 돌아와 더 많은 훈련을 제공하려고 합니다. 하지만 이번엔 네말과 실베스터가 없군요. 아마 센살과 휴가 중일 겁니다."
 	}
 	"Iberia & Nemal"
@@ -5231,7 +5231,7 @@
 	}
 	"Iberia Nemal Desc"
 	{
-		"en" "(10) Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremly seriously."
+		"en" "(10) Iberia and Expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremly seriously."
 		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
 		"it"	"(10) Iberia e expidonsa offrono addestramento per aiutare contro la vera battaglia finale contro il vuoto... Anche se gli iberici sembrano prenderla estremamente sul serio."
 		"ko" "설정 순서: (10) 이베리아와 엑스피돈사가 공허와의 최후의 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 이베리아인들은 이를 매우 심각하게 받아들이는 것 같지만요."
