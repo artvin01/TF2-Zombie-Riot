@@ -261,7 +261,7 @@ float f_TimerStatusEffectsDo[MAXENTITIES];
 
 int Healing_done_in_total[MAXENTITIES];
 int i_PlayerDamaged[MAXENTITIES];
-bool b_PlayerWasAirbornKnockbackReduction[MAXPLAYERS];
+int b_PlayerWasAirbornKnockbackReduction[MAXPLAYERS];
 ConVar CvarRPGInfiniteLevelAndAmmo;
 ConVar CvarXpMultiplier;
 TFClassType CurrentClass[MAXPLAYERS]={TFClass_Scout, ...};

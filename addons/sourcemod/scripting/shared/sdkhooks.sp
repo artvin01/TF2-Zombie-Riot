@@ -510,24 +510,36 @@ public void OnPostThink(int client)
 			{
 				//when standing on an npc you gain less knockack reduction
 				WasAirbornType = 1;
-				if(b_thisNpcIsARaid[GroundEntity])
+				if(b_thisNpcIsARaid[GroundEntity] || RaidBossActive == RefGround)
 					WasAirbornType = 2;
 				//when ontop of a raidboss, gain no knockback reduction.
 			}
 		}
 	}
 
-	if(WasAirbornType == 1 && !b_PlayerWasAirbornKnockbackReduction[client])
+	if(WasAirbornType == 1 && b_PlayerWasAirbornKnockbackReduction[client] != 1)
 	{
 		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
 		if(EntityWearable > 0)
 		{
 			f_ClientInAirSince[client] = GetGameTime() + 5.0;
-			b_PlayerWasAirbornKnockbackReduction[client] = true;
+			b_PlayerWasAirbornKnockbackReduction[client] = 1;
 			Attributes_Set(EntityWearable, 252, 0.5);
 		}
 	}
-	else if((WasAirbornType == 0 || WasAirbornType == 2) && b_PlayerWasAirbornKnockbackReduction[client])
+	else if(WasAirbornType == 0 && b_PlayerWasAirbornKnockbackReduction[client] != 0)
+	{
+		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
+		if(EntityWearable > 0)
+		{
+			//when they land, check if they are in a bad pos
+			Spawns_CheckBadClient(client/*, 2*/);
+			//no need to recheck when they land
+			f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
+			b_PlayerWasAirbornKnockbackReduction[client] = 0;
+		}
+	}
+	else if(WasAirbornType == 2 && b_PlayerWasAirbornKnockbackReduction[client] != 2)
 	{
 		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
 		if(EntityWearable > 0)
@@ -537,7 +549,15 @@ public void OnPostThink(int client)
 			//no need to recheck when they land
 			f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
 			b_PlayerWasAirbornKnockbackReduction[client] = false;
-			Attributes_Set(EntityWearable, 252, 1.0);
+			Attributes_Set(EntityWearable, 252, 1.5);
+
+			//standing ontop of raids now entirely debuffs you.
+			ApplyStatusEffect(client, client, "Terrified", 1.0);
+			TF2_AddCondition(client, TFCond_LostFooting, 1.0);
+			TF2_AddCondition(client, TFCond_AirCurrent, 1.0);
+			UTIL_ScreenFade(client, 800, 0, 0x0001, 0, 0, 0, 100);
+			float damageStand = 5.0;
+			NpcStuckZoneWarning(client, damageStand);
 		}
 	}
 #if defined ZR
@@ -620,6 +640,16 @@ public void OnPostThink(int client)
 
 	if(f_TimerStatusEffectsDo[client] < GetGameTime())
 	{
+		if(WasAirbornType == 2)
+		{
+			//standing ontop of raids now entirely debuffs you.
+			ApplyStatusEffect(client, client, "Terrified", 1.0);
+			TF2_AddCondition(client, TFCond_LostFooting, 1.0);
+			TF2_AddCondition(client, TFCond_AirCurrent, 1.0);
+			UTIL_ScreenFade(client, 800, 0, 0x0001, 0, 0, 0, 100);
+			float damageStand = 5.0;
+			NpcStuckZoneWarning(client, damageStand);
+		}
 		//re using NPC value.
 		StatusEffect_TimerCallDo(client);
 		f_TimerStatusEffectsDo[client] = GetGameTime() + 0.4;
