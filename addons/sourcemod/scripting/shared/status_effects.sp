@@ -8085,6 +8085,8 @@ void Const2_1UpStart(int victim, StatusEffect Apply_MasterStatusEffect, E_Status
 
 	CClotBody npc = view_as<CClotBody>(victim);
 	npc.m_iHealthBar++
+	if(b_thisNpcIsARaid[victim])
+		WaveStart_SubWaveStart(GetGameTime() + 700.0);	//due to lots and lots of time
 }
 
 
@@ -8456,6 +8458,8 @@ void Const2Modifs_Asexual_End(int victim, StatusEffect Apply_MasterStatusEffect,
 	int summon = NPC_CreateById(i_NpcInternalId[victim], -1, pos, ang, GetTeam(victim));
 	if(summon > MaxClients)
 	{
+		if(b_thisNpcIsARaid[summon])
+			WaveStart_SubWaveStart(GetGameTime());	//due to lots and lots of time
 		fl_Extra_Damage[summon] = fl_Extra_Damage[victim];
 		fl_Extra_Speed[summon] = fl_Extra_Speed[victim];
 		fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[victim];

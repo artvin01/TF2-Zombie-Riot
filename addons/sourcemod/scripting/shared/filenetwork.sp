@@ -813,9 +813,11 @@ stock bool HasCustomSound(int client, const char[] sound)
 	return SoundLevel[client] > soundlevel;
 #else
 	//remove warnings
+	if(client)
+		return false;
 	if(sound[0])
 		return false;
-		
+
 	return false;
 #endif
 }

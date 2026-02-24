@@ -626,12 +626,12 @@ void MedicAdjustModel(int client)
 	if(!IsValidEntity(ViewmodelPlayerModel))
 		return;
 		
-	/*
+	
 	if(TeutonType[client] != TEUTON_NONE)
 	{
 		return;
 	}
-	*/
+	
 	if(i_PlayerModelOverrideIndexWearable[client] >= 0)
 	{
 		return;

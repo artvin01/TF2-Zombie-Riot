@@ -5678,6 +5678,7 @@ void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
 	else if(StoreItems)
 	{
 		Store_RemoveSpecificItem(client, "Teutonic Longsword", false);
+		Store_RemoveSpecificItem(client, "Teutonic Longsword Shadow", false);
 	}
 	//OverridePlayerModel(client);
 	//stickies can stay, we delete any non spike stickies.

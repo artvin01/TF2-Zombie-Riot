@@ -349,7 +349,15 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 #endif
 	   		b_ThisEntityIgnored[client] = true;
 			
-	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
+	   		int weapon_index;
+			if(view_as<bool>(Store_HasNamedItem(client, "Shadow's Letter")))
+			{
+				weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword Shadow");
+			}
+			else
+			{
+				weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
+			}
 			SetVariantInt(0);
 			AcceptEntityInput(client, "SetBodyGroup");
 			if(!WasHereSinceStartOfWave(client))
