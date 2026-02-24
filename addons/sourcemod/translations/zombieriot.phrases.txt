@@ -5704,4 +5704,26 @@
 		"en"	"Outlaws"
 		"ko"	"무법자들"
 	}
+	"Unknown"
+	{
+		"en"	"Unknown"
+
+	}
+	"Ranged Damage"
+	{
+		"en"	"Ranged Damage"
+	}
+	"Melee Damage"
+	{
+		"en"	"Melee Damage"
+	}
+	"True Damage"
+	{
+		"en"	"True Damage"
+	}
+	"Last Hit Recieved info"
+	{
+		"#format"	"{1:s},{2:.0f},{3:s},{4:d}"
+		"en"	"You died to {yellow}{1}{snow} dealing {crimson}{2} {3}{snow} with {green}{4} Health Remaining."
+	}
 }

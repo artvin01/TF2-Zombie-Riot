@@ -4154,3 +4154,4 @@ void EntityClearPanicButton()
 	if(CurrentEdictStrikes >= 2)
 		CurrentEdictStrikes = 2;
 }
+

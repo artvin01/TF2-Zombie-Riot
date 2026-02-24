@@ -520,6 +520,8 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR || defined RPG
 		Thirdperson_PlayerSpawn(client);
 #endif
+		LastHitRef[client] = -1;
+		f_LatestDamageTaken[client] = 0.0;
 	}
 }
 
@@ -542,6 +544,8 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 #if defined ZR
+	if (dieingstate[client] == 0)
+		DownedOrKilledClient_Feedback(client, EntRefToEntIndex(LastHitRef[client]), f_LatestDamageTaken[client], event.GetInt("damagebits"));
 	Dungeon_PlayerDowned(client);
 	UnequipDispenser(client, true);
 	ArmorDisplayClient(client, true);

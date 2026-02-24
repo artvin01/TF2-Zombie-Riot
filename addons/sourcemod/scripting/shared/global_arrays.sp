@@ -211,6 +211,8 @@ int Animation_Index[MAXPLAYERS];
 int Animation_Retry[MAXPLAYERS];
 #endif
 
+float f_LatestDamageTaken[MAXPLAYERS];
+int i_LatestHealthLeft[MAXPLAYERS];
 int Building_Mounted[MAXENTITIES];
 bool i_HasBeenBackstabbed[MAXENTITIES];
 bool i_HasBeenHeadShotted[MAXENTITIES];

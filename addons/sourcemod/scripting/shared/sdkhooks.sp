@@ -623,6 +623,13 @@ public void OnPostThink(int client)
 		//re using NPC value.
 		StatusEffect_TimerCallDo(client);
 		f_TimerStatusEffectsDo[client] = GetGameTime() + 0.4;
+		if(f_TimeUntillNormalHeal[client] < GetGameTime())
+		{
+			//badly reset
+			LastHitRef[client] = -1;
+			f_LatestDamageTaken[client] = 0.0;
+			i_LatestHealthLeft[client] = GetEntProp(client, Prop_Send, "m_iHealth");
+		}
 	}
 	if(Rogue_CanRegen() && Armor_regen_delay[client] < GameTime)
 	{
@@ -2044,6 +2051,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 	f_LatestDamageRes[victim] = damage / GetCurrentDamage;
+	f_LatestDamageTaken[victim] = damage;
+	i_LatestHealthLeft[victim] = GetEntProp(victim, Prop_Send, "m_iHealth");
 
 #if !defined RTS
 	int ClientAttacker;
@@ -2347,10 +2356,12 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 
 				KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, autoRevive);
 				CheckLastMannStanding(victim);
+				DownedOrKilledClient_Feedback(victim, attacker, damage, damagetype);
 				return Plugin_Handled;
 			}
 			else
 			{
+				DownedOrKilledClient_Feedback(victim, attacker, damage, damagetype);
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 13");
 				damage = 99999.9;
 				CheckLastMannStanding(victim);

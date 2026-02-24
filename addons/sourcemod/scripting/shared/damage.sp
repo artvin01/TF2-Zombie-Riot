@@ -2183,3 +2183,44 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 		}
 	}
 }
+
+
+float f_DamageWhen[MAXPLAYERS];
+void DownedOrKilledClient_Feedback(int client, int attacker, float damage, int damagetype)
+{
+	if(GetGameTime() == f_DamageWhen[client])
+		return;
+	f_DamageWhen[client] = GetGameTime();
+	char AttackerWho[128];
+	if(attacker <= 0 || (attacker > 0 && (!b_ThisWasAnNpc[attacker] && !i_IsABuilding[attacker])))
+	{
+		Format(AttackerWho, sizeof(AttackerWho), "%T", "Unknown", client);		
+	}
+	else
+	{
+		if (!b_NameNoTranslation[attacker])
+			Format(AttackerWho, sizeof(AttackerWho), "%s",c_NpcName[attacker]);
+		else
+			Format(AttackerWho, sizeof(AttackerWho), "%T",c_NpcName[attacker], client);
+
+		char prefix[255];
+		StatusEffects_PrefixName(attacker, client, prefix, sizeof(prefix));
+
+		Format(AttackerWho, sizeof(AttackerWho), "%s%s",prefix,AttackerWho);
+	}
+	char c_DamageType[64];
+	if((damagetype & DMG_TRUEDAMAGE))
+	{
+		Format(c_DamageType, sizeof(c_DamageType), "%T","True Damage",client);
+	}
+	else if((damagetype & DMG_CLUB))
+	{
+		Format(c_DamageType, sizeof(c_DamageType), "%T","Melee Damage",client);
+	}
+	else
+	{
+		Format(c_DamageType, sizeof(c_DamageType), "%T","Ranged Damage",client);
+	}
+
+	SPrintToChat(client, "%T", "Last Hit Recieved info",client, AttackerWho, damage, c_DamageType, i_LatestHealthLeft[client]);
+}
