@@ -2538,12 +2538,13 @@ void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000,
 public void OnEntityCreated(int entity, const char[] classname)
 {
 #if defined ZR
-	if (entity > 0 && entity <= 2048)
+	if (entity > 0 && entity <= MAXENTITIES)
 	{
 		if(entity > CurrentEntities)
 		{
 			CurrentEntities = entity;
-			if(CurrentEntities >= 2030)
+			//so each strike is closer to the limit.
+			if(CurrentEntities >= ((MAXENTITIES - 28) + (CurrentEdictStrikes * 4)))
 			{
 				EntityClearPanicButton();
 			}
@@ -2556,7 +2557,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	}
 #endif
 //	PrintToChatAll("entity: %i| Clkassname %s",entity, classname);
-	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
+	if (entity > 0 && entity <= MAXENTITIES && IsValidEntity(entity))
 	{
 		h_TransmitHookType[entity] = 0;
 		f_TimeTillMeleeAttackShould[entity] = 0.0;
