@@ -2535,32 +2535,14 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	  int &entity, int &channel, float &volume, int &level, int &pitch, int &flags,
 	  char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
-	/*
-	if(b_IsAmbientGeneric[entity])
+	if(entity <= MaxClients)
 	{
-		if(StrContains(sample, "#", true) != -1)
+		//block shield sounds
+		if(StrContains(sample, "medi_shield_deploy.wav", true) != -1 || StrContains(sample, "vo/medic_mvm_heal_shield", true) != -1)
 		{
-			//loop through all clients it tries to play to
-			//but also make sure it doesnt play to clients who didnt get info from the database.
-			for(int loop1=0; loop1<numClients; loop1++)
-			{
-				int listener = clients[loop1];
-				if(b_IgnoreMapMusic[listener] || !Database_IsCached(listener))
-				{
-					//replace client with client one up so the array doesnt mess up!
-					for(int loop2 = loop1; loop2 < numClients-1; loop2++)
-					{
-						clients[loop2] = clients[loop2+1];
-					}
-					//we move the array one down!
-					loop1--;
-					numClients--;
-				}
-			}
-			return Plugin_Changed;
+			return Plugin_Handled;
 		}
 	}
-	*/
 
 #if defined ZR
 

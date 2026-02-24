@@ -13,6 +13,7 @@ void Events_PluginStart()
 	HookEvent("player_connect_client", OnPlayerConnect, EventHookMode_Pre);
 	HookEvent("player_disconnect", OnPlayerConnect, EventHookMode_Pre);
 	HookEvent("deploy_buff_banner", OnBannerDeploy, EventHookMode_Pre);
+	HookEvent("player_healed", PlayerHealEvent, EventHookMode_Pre);
 	HookEvent("teams_changed", EventHook_TeamsChanged, EventHookMode_PostNoCopy);
 #if defined ZR
 	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_Pre);
@@ -202,6 +203,18 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 	return Plugin_Continue;
 }
 
+public Action PlayerHealEvent(Event event, const char[] name, bool dontBroadcast)
+{
+	int patient = GetClientOfUserId(event.GetInt("patient"));
+	int healer = GetClientOfUserId(event.GetInt("healer"));
+	if(patient == healer)
+	{
+		//prevents medic self heal?
+		SetEntProp(patient, Prop_Send, "m_iHealth", GetEntProp(patient, Prop_Send, "m_iHealth") - event.GetInt("amount"));
+		return Plugin_Handled;
+	}
+	return Plugin_Continue;
+}
 public Action OnBannerDeploy(Event event, const char[] name, bool dontBroadcast)
 {
 	return Plugin_Handled;
@@ -391,7 +404,6 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		TFClassType ClassForStats = WeaponClass[client];
 	   		
 	   		Attributes_Set(weapon_index, 107, RemoveExtraSpeed(ClassForStats, 330.0));
-	   		Attributes_Set(weapon_index, 476, 0.0);
 	   		SetEntityCollisionGroup(client, 1);
 	   		SetEntityCollisionGroup(weapon_index, 1);
 	   		

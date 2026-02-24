@@ -2741,14 +2741,17 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_IsCustomProjectile[entity] = false;
 		if(!StrContains(classname, "entity_revive_marker")
 		  || !StrContains(classname, "tf_projectile_energy_ring")
-		  || !StrContains(classname, "entity_medigun_shield")
 		  || !StrContains(classname, "tf_projectile_energy_ball")
 		  || !StrContains(classname, "item_powerup_rune")
 		  || !StrContains(classname, "vgui_screen"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
-		if(!StrContains(classname, "tf_objective_resource"))
+		else if(!StrContains(classname, "entity_medigun_shield"))
+		{
+			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly_Shield);
+		}
+		else if(!StrContains(classname, "tf_objective_resource"))
 		{
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
@@ -3104,6 +3107,11 @@ void Set_Projectile_CollisionFrame(int ref)
 }
 public void Delete_instantly(int entity)
 {
+	RemoveEntity(entity);
+}
+public void Delete_instantly_Shield(int entity)
+{
+	//StopSound(entity, "/weapons/medi_shield_deploy.wav");
 	RemoveEntity(entity);
 }
 public void MakeFlamesUseless(int entity)

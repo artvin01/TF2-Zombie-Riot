@@ -5938,6 +5938,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						else
 							CrossbowGiveDhook(entity, true);
 					}
+					if(saveslot == TFWeaponSlot_Melee)
+					{	
+						//this melee weapon will deal 0 damage from tf2's view
+						Attributes_Set(entity, 476, 0.0);
+					}
 					HidePlayerWeaponModel(client, entity, true);
 
 				}
