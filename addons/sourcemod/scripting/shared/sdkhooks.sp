@@ -554,12 +554,8 @@ public void OnPostThink(int client)
 			Attributes_Set(EntityWearable, 252, 1.5);
 
 			//standing ontop of raids now entirely debuffs you.
-			ApplyStatusEffect(client, client, "Terrified", 1.0);
 			TF2_AddCondition(client, TFCond_LostFooting, 1.0);
 			TF2_AddCondition(client, TFCond_AirCurrent, 1.0);
-#if defined ZR
-			UTIL_ScreenFade(client, 800, 0, 0x0001, 0, 0, 0, 100);
-#endif
 			float damageStand = 5.0;
 			NpcStuckZoneWarning(client, damageStand);
 		}
@@ -647,10 +643,8 @@ public void OnPostThink(int client)
 		if(WasAirbornType == 2)
 		{
 			//standing ontop of raids now entirely debuffs you.
-			ApplyStatusEffect(client, client, "Terrified", 1.0);
 			TF2_AddCondition(client, TFCond_LostFooting, 1.0);
 			TF2_AddCondition(client, TFCond_AirCurrent, 1.0);
-			UTIL_ScreenFade(client, 800, 0, 0x0001, 0, 0, 0, 100);
 			float damageStand = 5.0;
 			NpcStuckZoneWarning(client, damageStand);
 		}
