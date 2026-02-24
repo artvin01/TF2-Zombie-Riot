@@ -11557,6 +11557,7 @@ void IsEntityInvincible_Shield(int entity)
 		//never display for buildings!!
 		return;
 	}
+#if defined ZR
 	if(Dungeon_Mode() && AtEdictLimit(EDICT_NPC))
 	{
 		if(Dungeon_AttackType() < 2)
@@ -11565,7 +11566,7 @@ void IsEntityInvincible_Shield(int entity)
 			return;
 		}
 	}
-
+#endif
 	if(HasSpecificBuff(entity, "UBERCHARGED"))
 		NpcInvulShieldDisplay = 3;
 

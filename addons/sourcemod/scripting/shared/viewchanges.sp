@@ -627,11 +627,12 @@ void MedicAdjustModel(int client)
 		return;
 		
 	
+#if defined ZR
 	if(TeutonType[client] != TEUTON_NONE)
 	{
 		return;
 	}
-	
+#endif
 	if(i_PlayerModelOverrideIndexWearable[client] >= 0)
 	{
 		return;

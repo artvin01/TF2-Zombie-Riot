@@ -4122,7 +4122,9 @@ void EntityClearPanicButton()
 			if(IsClientInGame(client))
 			{
 				ApplyStatusEffect(client, client, "Terrified", 2.0);
+#if defined ZR
 				UTIL_ScreenFade(client, 800, 0, 0x0001, 0, 0, 0, 200);
+#endif
 			}
 		}
 	}
