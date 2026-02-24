@@ -510,8 +510,10 @@ public void OnPostThink(int client)
 			{
 				//when standing on an npc you gain less knockack reduction
 				WasAirbornType = 1;
+#if defined ZR
 				if(b_thisNpcIsARaid[GroundEntity] || RaidBossActive == RefGround)
 					WasAirbornType = 2;
+#endif
 				//when ontop of a raidboss, gain no knockback reduction.
 			}
 		}
@@ -555,7 +557,9 @@ public void OnPostThink(int client)
 			ApplyStatusEffect(client, client, "Terrified", 1.0);
 			TF2_AddCondition(client, TFCond_LostFooting, 1.0);
 			TF2_AddCondition(client, TFCond_AirCurrent, 1.0);
+#if defined ZR
 			UTIL_ScreenFade(client, 800, 0, 0x0001, 0, 0, 0, 100);
+#endif
 			float damageStand = 5.0;
 			NpcStuckZoneWarning(client, damageStand);
 		}
