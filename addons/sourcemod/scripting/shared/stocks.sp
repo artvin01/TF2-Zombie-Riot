@@ -3202,7 +3202,7 @@ void Projectile_DealElementalDamage(int victim, int attacker, float Scale = 1.0)
 	}
 }
 
-bool OnlyWarnOnceEver = true;
+//bool OnlyWarnOnceEver = true;
 stock void Explode_Logic_Custom(float damage,
 int client, //To get attributes from and to see what is my enemy!
 int entity,	//Entity that gets forwarded or traced from/Distance checked.
@@ -3239,6 +3239,7 @@ int inflictor = 0)
 			explosion_range_dmg_falloff = Attributes_Get(weapon, Attrib_OverrideExplodeDmgRadiusFalloff, EXPLOSION_RANGE_FALLOFF);
 	}
 #endif	
+/*
 	if(explosionRadius >= 2100.0)
 	{
 		if(OnlyWarnOnceEver)
@@ -3251,6 +3252,7 @@ int inflictor = 0)
 		//at that point it  could just be global too.
 		explosionRadius = 2000.0;
 	}
+*/
 	//this should make explosives during raids more usefull.
 	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
 	{ 
