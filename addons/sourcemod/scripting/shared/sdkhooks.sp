@@ -548,7 +548,7 @@ public void OnPostThink(int client)
 			Spawns_CheckBadClient(client/*, 2*/);
 			//no need to recheck when they land
 			f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
-			b_PlayerWasAirbornKnockbackReduction[client] = false;
+			b_PlayerWasAirbornKnockbackReduction[client] = 2;
 			Attributes_Set(EntityWearable, 252, 1.5);
 
 			//standing ontop of raids now entirely debuffs you.

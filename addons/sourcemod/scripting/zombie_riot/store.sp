@@ -5745,7 +5745,7 @@ void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
 	b_CanSeeBuildingValues_Force[client] = false;
 	b_Reinforce[client] = false;
 	i_MaxSupportBuildingsLimit[client] = 0;
-	b_PlayerWasAirbornKnockbackReduction[client] = false;
+	b_PlayerWasAirbornKnockbackReduction[client] = 0;
 	BannerOnEntityCreated(client);
 	FullmoonEarlyReset(client);
 
