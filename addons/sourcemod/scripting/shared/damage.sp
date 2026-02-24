@@ -2198,9 +2198,11 @@ void DownedOrKilledClient_Feedback(int client, int attacker, float damage, int d
 	}
 	else
 	{
+#if defined ZR
 		if (!b_NameNoTranslation[attacker])
 			Format(AttackerWho, sizeof(AttackerWho), "%s",c_NpcName[attacker]);
 		else
+#endif
 			Format(AttackerWho, sizeof(AttackerWho), "%T",c_NpcName[attacker], client);
 
 		char prefix[255];
