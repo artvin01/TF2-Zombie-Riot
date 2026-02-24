@@ -88,6 +88,11 @@ stock void FileNetwork_LibraryAdded(const char[] name)
 				SendNextFile(client);
 		}
 	}
+#else
+	//Remove warning
+	if(name[0])
+		return;
+
 #endif
 }
 
@@ -96,6 +101,10 @@ stock void FileNetwork_LibraryRemoved(const char[] name)
 #if defined _filenetwork_included
 	if(FileNetworkLib && StrEqual(name, "filenetwork"))
 		FileNetworkLib = false;
+#else
+	//Remove warning
+	if(name[0])
+		return;
 #endif
 }
 
@@ -351,6 +360,12 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 		pack.WriteString(sound);
 		RequestFrames(FileNetwork_AddSoundFrame, delay, pack);
 	}
+#else
+	//Remove warning
+	if(altsound[0])
+		return;
+	if(delay)
+		return;
 #endif
 }
 
@@ -997,5 +1012,14 @@ stock void SendSingleFileToClient(int client, const char[] download, Function fu
 		Format(filecheck, sizeof(filecheck), "download/%s", filecheck);
 		DeleteFile(filecheck);
 	}
+#else
+
+	//Remove warning
+	if(client)
+		return;
+	if(download[0])
+		return;
+	if(func)
+		return;
 #endif
 }
