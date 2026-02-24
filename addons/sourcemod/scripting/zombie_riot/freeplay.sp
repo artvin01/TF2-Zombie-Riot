@@ -60,7 +60,6 @@ static bool DarknessComing;
 static int setuptimes;
 static float ExtraAttackspeed;
 static bool thespewer;
-static bool invulnally;
 
 static int FreeplayModifActive = 0;
 static float FM_Health;
@@ -274,7 +273,7 @@ int Freeplay_GetDangerLevelCurrent()
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
 	bool shouldscale = true;
-	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer || invulnally)
+	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -684,96 +683,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		count = 1;
 		thespewer = false;
 	}
-	/*
-	Bugged
-	else if(invulnally)
-	{
-		enemy.Team = TFTeam_Red;
-		count = 1;
-		enemy.ExtraDamage = (Waves_GetRound() * 1.11);
-
-		switch(invulnally)
-		{
-			case 2:
-			{
-				enemy.Index = NPC_GetByPlugin("npc_goggles_follower");
-				enemy.Health = 10000;
-				CPrintToChatAll("{darkblue}Waldch! {gold}- {red}Silvester would be mad at me if he found out I added Waldch all by himself");
-			}
-			case 3:
-			{
-				enemy.Index = NPC_GetByPlugin("npc_kahmlstein_follower");
-				enemy.Health = 10000;
-				CPrintToChatAll("{darkblue}Kahmlstein! {gold}- {red}Hopefully Unspeakable is truly dead this time");
-			}
-			case 4:
-			{
-				enemy.Index = NPC_GetByPlugin("npc_bob_first_follower");
-				enemy.Health = 10000;
-				CPrintToChatAll("{white}Bob! {gold}- {red}His true strength still breaks the simulation.");
-			}
-			case 5:
-			{
-				enemy.Index = NPC_GetByPlugin("npc_twirl_follower");
-				enemy.Health = 10000;
-				CPrintToChatAll("{purple}Twirl! {gold}- {red}She has something special for you guys after this");
-			}
-			case 6:
-			{
-				enemy.Index = NPC_GetByPlugin("npc_zeinafree");
-				enemy.Health = 10000;
-				CPrintToChatAll("{snow}Zeina! {gold}- {snow}Thank you guys for saving me from Zilius");
-			}
-			case 7:
-			{
-				enemy.Index = NPC_GetByPlugin("npc_reila_follower");
-				enemy.Health = 10000;
-				CPrintToChatAll("{pink}Reila! {gold}- {red}Wonder how she's doing after the whole Rifts Between Fates situation");
-			}
-			case 8:
-			{
-				enemy.Index = NPC_GetByPlugin("npc_omega_follower");
-				enemy.Health = 10000;
-				CPrintToChatAll("{gold}Omega! {gold}- {red}The secondary merc met him at Nova Prospect before W.F. died. You guys met him in the Curtain.");
-			}
-			case 9:
-			{
-				enemy.Index = NPC_GetByPlugin("npc_vhxis_follower");
-				enemy.Health = 10000;
-				CPrintToChatAll("{purple}Vhxis! {gold}- {red}It’s kind of your guys fault and Kahml’s that the Unspeakable was able to enter our world.");
-			}
-			case 10:
-			{
-				enemy.Index = NPC_GetByPlugin("npc_sensal_follower");
-				enemy.Health = 10000;
-				CPrintToChatAll("{blue}Sensal! {gold}- {red}Don’t let him know I’ve made him an ally.");
-			}
-			case 11:
-			{
-				enemy.Index = NPC_GetByPlugin("npc_overlord_follower");
-				enemy.Health = 10000;
-				CPrintToChatAll("{crimson}Overlord The Last! {gold}- {red}It's been a while since you've seen him, right");
-			}
-			case 12:
-			{
-				enemy.Index = NPC_GetByPlugin("npc_captino_baguettus");
-				enemy.Health = 10000;
-				CPrintToChatAll("{white}Captino Menius! {gold}- {red}Thanks to Menius and you guys, Ziberia wasn't completely destroyed by Victoria");
-			}
-			default:
-			{
-				enemy.Index = NPC_GetByPlugin("npc_duck_follower");
-				enemy.Health = 10000;
-				enemy.ExtraDamage = (Waves_GetRound() * 10);
-				CPrintToChatAll("{gold}Dubby! {gold}- {red}Bob pet duck");
-			}
-		}
-
-		friendunit = false;
-		shouldscale = false;
-		CPrintToChatAll("{gold}Here's a free permanent ally!");
-	}
-	*/
 	else
 	{
 		float bigchance;
