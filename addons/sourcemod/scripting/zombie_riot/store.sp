@@ -5678,6 +5678,7 @@ void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
 	else if(StoreItems)
 	{
 		Store_RemoveSpecificItem(client, "Teutonic Longsword", false);
+		Store_RemoveSpecificItem(client, "Teutonic Longsword Shadow", false);
 	}
 	//OverridePlayerModel(client);
 	//stickies can stay, we delete any non spike stickies.
@@ -5744,7 +5745,7 @@ void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
 	b_CanSeeBuildingValues_Force[client] = false;
 	b_Reinforce[client] = false;
 	i_MaxSupportBuildingsLimit[client] = 0;
-	b_PlayerWasAirbornKnockbackReduction[client] = false;
+	b_PlayerWasAirbornKnockbackReduction[client] = 0;
 	BannerOnEntityCreated(client);
 	FullmoonEarlyReset(client);
 
@@ -5936,6 +5937,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						}
 						else
 							CrossbowGiveDhook(entity, true);
+					}
+					if(saveslot == TFWeaponSlot_Melee)
+					{	
+						//this melee weapon will deal 0 damage from tf2's view
+						Attributes_Set(entity, 476, 0.0);
 					}
 					HidePlayerWeaponModel(client, entity, true);
 

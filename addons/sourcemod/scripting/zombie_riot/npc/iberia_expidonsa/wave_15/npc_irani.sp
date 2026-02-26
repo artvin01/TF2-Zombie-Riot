@@ -46,7 +46,7 @@ void Iberia_Irani_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Irani");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_irani");
 	strcopy(data.Icon, sizeof(data.Icon), "mark_sniper_r1");
-	data.IconCustom = false;
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;

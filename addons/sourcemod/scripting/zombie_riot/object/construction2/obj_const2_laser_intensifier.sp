@@ -149,19 +149,19 @@ void ObjectC2LaserIntensifier_ClotThink(ObjectC2LaserIntensifier npc)
 		//too far away
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_flAttackspeedRamp = 2.0;
+		npc.m_flAttackspeedRamp = 1.0;
 		return;
 	}
 	if(npc.m_iTarget != npc.m_iTargetAlly)
 	{
-		npc.m_flAttackspeedRamp = 2.0;
+		npc.m_flAttackspeedRamp = 1.0;
 	}
 	else
 	{
-		if(npc.m_flAttackspeedRamp <= 1.0)
-			npc.m_flAttackspeedRamp *= 0.85;
+		if(npc.m_flAttackspeedRamp <= 0.75)
+			npc.m_flAttackspeedRamp *= 0.75;
 		else
-			npc.m_flAttackspeedRamp *= 0.45;
+			npc.m_flAttackspeedRamp *= 0.35;
 
 		if(npc.m_flAttackspeedRamp <= 0.15)
 		{

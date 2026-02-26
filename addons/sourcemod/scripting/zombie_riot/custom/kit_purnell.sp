@@ -359,7 +359,6 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 		float damage = 15.0;
 		damage *= Attributes_Get(weapon, 1, 1.0);
 		damage *= Attributes_Get(weapon, 2, 1.0);
-		damage *= Attributes_Get(weapon, 476, 1.0);
 
 
 		static const float hullMin[3] = {-PURNELL_MAX_BOUNDS, -PURNELL_MAX_BOUNDS, -PURNELL_MAX_BOUNDS};

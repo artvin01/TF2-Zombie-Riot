@@ -316,7 +316,7 @@ public void ChaosFencer_ClotThink(int iNPC)
 			fl_TotalArmor[npc.index] = 0.15;
 		}
 		ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 0.25);	
-		spawnRing_Vectors(VecSelfNpcabs, (180.0 * 0.95) * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 225, 150, 150, 200, 1, /*duration*/ 0.11, 5.0, 2.0, 1);	
+		spawnRing_Vectors(VecSelfNpcabs, (180.0 * 0.95) * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 225, 150, 150, 75, 1, /*duration*/ 0.11, 5.0, 2.0, 1);	
 	}
 	else
 	{
@@ -327,7 +327,7 @@ public void ChaosFencer_ClotThink(int iNPC)
 			npc.m_flSpeed = 90.0;
 			fl_TotalArmor[npc.index] = 0.25;
 		}
-		spawnRing_Vectors(VecSelfNpcabs, (180.0 * 0.95) * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, /*duration*/ 0.11, 5.0, 2.0, 1);	
+		spawnRing_Vectors(VecSelfNpcabs, (180.0 * 0.95) * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 75, 1, /*duration*/ 0.11, 5.0, 2.0, 1);	
 	}
 	
 	int target = npc.m_iTarget;

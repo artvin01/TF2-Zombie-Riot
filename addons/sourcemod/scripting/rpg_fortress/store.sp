@@ -1026,7 +1026,7 @@ void Store_ApplyAttribs(int client)
 
 	float value;
 	char buffer1[12];
-	if(i_ClientHasCustomGearEquipped[client] > 1)
+	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		static ItemInfo info;
 		char buffer2[32];

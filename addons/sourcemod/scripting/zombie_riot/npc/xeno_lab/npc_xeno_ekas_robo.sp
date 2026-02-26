@@ -31,7 +31,7 @@ static char g_MeleeAttackSounds[][] = {
 	"npc/dog/dog_angry3.wav",
 };
 
-
+ 
 public void XenoOuroborosEkas_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }

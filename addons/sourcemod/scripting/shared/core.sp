@@ -90,6 +90,7 @@ enum
 //edit: No, makes you miss more often.
 
 bool EnableSilentMode = false;
+int CurrentEdictStrikes = 0;
 //Comment this out, and reload the plugin once ingame if you wish to have infinite cash.
 
 public const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
@@ -1049,6 +1050,7 @@ void Core_PrecacheGlobalCustom()
 public void OnMapStart()
 {
 	AntiSpamTipGive = 0.0;
+	CurrentEdictStrikes = 0;
 	PrecacheSound("weapons/knife_swing_crit.wav");
 	PrecacheSound("weapons/shotgun/shotgun_dbl_fire.wav");
 	PrecacheSound("npc/vort/attack_shoot.wav");
@@ -2062,14 +2064,13 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				AllowImpulse = false;
 		}
 
+		f_CooldownForAbilities[client][1] = GetGameTime() + 0.5;
 		if(AllowImpulse)
 		{
 			f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
 			if(DoInteractKeyLogic(angles, client))
 				return Plugin_Continue;
 		}
-
-		f_CooldownForAbilities[client][1] = GetGameTime() + 0.5;
 		// force wait 1 second so it isnt activated automatically
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding != -1)
@@ -2536,17 +2537,27 @@ void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000,
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	if(entity > CurrentEntities)
-		CurrentEntities = entity;
-
 #if defined ZR
+	if (entity > 0 && entity <= MAXENTITIES)
+	{
+		if(entity > CurrentEntities)
+		{
+			CurrentEntities = entity;
+			//so each strike is closer to the limit.
+			if(CurrentEntities >= ((MAXENTITIES - 28) + (CurrentEdictStrikes * 4)))
+			{
+				EntityClearPanicButton();
+			}
+		}
+	}
+
 	if (!StrContains(classname, "info_player_teamspawn")) 
 	{
 		RequestFrame(SDKHook_TeamSpawn_SpawnPost, entity);
 	}
 #endif
 //	PrintToChatAll("entity: %i| Clkassname %s",entity, classname);
-	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
+	if (entity > 0 && entity <= MAXENTITIES && IsValidEntity(entity))
 	{
 		h_TransmitHookType[entity] = 0;
 		f_TimeTillMeleeAttackShould[entity] = 0.0;
@@ -2568,7 +2579,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_PullTowardsTarget[entity] = 0;
 		f_PullStrength[entity] = 0.0;
 #if defined ZR || defined RPG
-		Dungeon_SetEntityZone(entity, Zone_Unknown);
 		CoinEntityCreated(entity);
 #endif
 		//set it to 0!
@@ -2585,6 +2595,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_NoKnockbackFromSources[entity] = false;
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
 #if defined ZR
+		Dungeon_SetEntityZone(entity, Zone_Unknown);
 		b_FaceStabber[entity] = false;
 		i_CustomWeaponEquipLogic[entity] = -1;
 		Resistance_for_building_High[entity] = 0.0;
@@ -2730,14 +2741,17 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_IsCustomProjectile[entity] = false;
 		if(!StrContains(classname, "entity_revive_marker")
 		  || !StrContains(classname, "tf_projectile_energy_ring")
-		  || !StrContains(classname, "entity_medigun_shield")
 		  || !StrContains(classname, "tf_projectile_energy_ball")
 		  || !StrContains(classname, "item_powerup_rune")
 		  || !StrContains(classname, "vgui_screen"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
-		if(!StrContains(classname, "tf_objective_resource"))
+		else if(!StrContains(classname, "entity_medigun_shield"))
+		{
+			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly_Shield);
+		}
+		else if(!StrContains(classname, "tf_objective_resource"))
 		{
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
@@ -3093,6 +3107,11 @@ void Set_Projectile_CollisionFrame(int ref)
 }
 public void Delete_instantly(int entity)
 {
+	RemoveEntity(entity);
+}
+public void Delete_instantly_Shield(int entity)
+{
+	//StopSound(entity, "/weapons/medi_shield_deploy.wav");
 	RemoveEntity(entity);
 }
 public void MakeFlamesUseless(int entity)
@@ -3518,6 +3537,11 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 #else
 	if(!StrContains(classname, "tf_wear"))
 	{
+		if(CurrentEdictStrikes >= 1)
+		{
+			//too many strikes
+			return Plugin_Stop;
+		}
 		switch(index)
 		{	
 			case 57, 131, 133, 231, 405, 406, 444, 608, 642, 1099, 1144:
@@ -3844,6 +3868,9 @@ public Action ReviveDisplayMessageDelay(Handle timer, int ref)
 	{
 		int downsleft;
 		downsleft = 2;
+		if(ZR_Get_Modifier() == PREFIX_ONESTAND)
+			downsleft = 3;
+
 		downsleft -= i_AmountDowned[target];
 		if(downsleft <= 0)
 		{
@@ -4030,3 +4057,109 @@ void TakeDamage_DisableMVM()
 #endif
 */
 }
+
+
+
+void EntityClearPanicButton()
+{
+	switch(CurrentEdictStrikes)
+	{
+		case 0:
+		{
+			CPrintToChatAll("{crimson}Strike 1: We almost hit the edict limit, an emergency fix was initiated! All Player cosmetics have been tempomarily removed");
+			CPrintToChatAll("{crimson}Strike 1: We almost hit the edict limit, an emergency fix was initiated! All Player cosmetics have been tempomarily removed");
+			CPrintToChatAll("{crimson}Strike 1: We almost hit the edict limit, an emergency fix was initiated! All Player cosmetics have been tempomarily removed");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{crimson}Strike 2: We almost hit the edict limit, an emergency fix was initiated! All Player cosmetics have been tempomarily removed, all projectiles and outlines are nuked");
+			CPrintToChatAll("{crimson}Strike 2: We almost hit the edict limit, an emergency fix was initiated! All Player cosmetics have been tempomarily removed, all projectiles and outlines are nuked");
+			CPrintToChatAll("{crimson}Strike 2: We almost hit the edict limit, an emergency fix was initiated! All Player cosmetics have been tempomarily removed, all projectiles and outlines are nuked");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{crimson} Strike 3+: We almost hit the edict limit, an emergency fix was initiated! All Non Raid npcs and all Projectiles have been deleted! Raids will no longer grant items!");
+			CPrintToChatAll("{crimson} Strike 3+: We almost hit the edict limit, an emergency fix was initiated! All Non Raid npcs and all Projectiles have been deleted! Raids will no longer grant items!");
+			CPrintToChatAll("{crimson} Strike 3+: We almost hit the edict limit, an emergency fix was initiated! All Non Raid npcs and all Projectiles have been deleted! Raids will no longer grant items!");
+		}
+	}
+	int entity = -1;
+	if(CurrentEdictStrikes >= 1)
+	{
+		while((entity=FindEntityByClassname(entity, "zr_projectile_base")) != -1)
+		{
+			if(IsValidEntity(entity))
+			{
+				RemoveEntity(entity);
+			}
+		}
+		entity = -1;
+		while((entity=FindEntityByClassname(entity, "tf_glow")) != -1)
+		{
+			if(IsValidEntity(entity))
+			{
+				RemoveEntity(entity);
+			}
+		}
+	}
+	if(CurrentEdictStrikes >= 2)
+	{
+		entity = -1;
+		while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+		{
+#if defined ZR
+			if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red && !b_thisNpcIsARaid[entity])
+#else
+			if(IsValidEntity(entity))
+#endif
+			{
+				i_RaidGrantExtra[entity] = 0;
+				b_DissapearOnDeath[entity] = true;
+				b_DoGibThisNpc[entity] = true;
+				SmiteNpcToDeath(entity);
+				SmiteNpcToDeath(entity);
+				SmiteNpcToDeath(entity);
+				SmiteNpcToDeath(entity);
+			}
+		}
+	}
+	if(CurrentEdictStrikes >= 1)
+	{
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				ApplyStatusEffect(client, client, "Terrified", 2.0);
+#if defined ZR
+				UTIL_ScreenFade(client, 800, 0, 0x0001, 0, 0, 0, 200);
+#endif
+			}
+		}
+	}
+	entity = -1;
+	while((entity=FindEntityByClassname(entity, "tf_wearable")) != -1)
+	{
+		if(!IsValidEntity(entity))
+			continue;
+		int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(!IsValidEntity(client))
+		{
+			RemoveEntity(entity);
+			continue;
+		}
+		
+		if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
+			continue;
+		if(EntRefToEntIndex(i_Worldmodel_WeaponModel[client]) == entity)
+			continue;
+		if(EntRefToEntIndex(WeaponRef_viewmodel[client]) == entity)
+			continue;
+			
+		TF2_RemoveWearable(client, entity);
+	}
+	
+	CurrentEdictStrikes++;
+	if(CurrentEdictStrikes >= 2)
+		CurrentEdictStrikes = 2;
+}
+

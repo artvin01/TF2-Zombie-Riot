@@ -793,7 +793,7 @@ void RPGCore_ResourceReduction(int client, int amount, bool isformdrain = false)
 	{
 		Current_Mana[client] = 0;
 		bool CancelDeform = false;
-		if(form.Func_FormEnergyRunOutLogic != INVALID_FUNCTION)
+		if(form.Func_FormEnergyRunOutLogic != INVALID_FUNCTION && form.Func_FormEnergyRunOutLogic != view_as<Function>(0))
 		{
 			Call_StartFunction(null, form.Func_FormEnergyRunOutLogic);
 			Call_PushCell(client);

@@ -510,24 +510,26 @@ public void OnPostThink(int client)
 			{
 				//when standing on an npc you gain less knockack reduction
 				WasAirbornType = 1;
-				if(b_thisNpcIsARaid[GroundEntity])
+#if defined ZR
+				if(b_thisNpcIsARaid[GroundEntity] || RaidBossActive == RefGround)
 					WasAirbornType = 2;
+#endif
 				//when ontop of a raidboss, gain no knockback reduction.
 			}
 		}
 	}
 
-	if(WasAirbornType == 1 && !b_PlayerWasAirbornKnockbackReduction[client])
+	if(WasAirbornType == 1 && b_PlayerWasAirbornKnockbackReduction[client] != 1)
 	{
 		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
 		if(EntityWearable > 0)
 		{
 			f_ClientInAirSince[client] = GetGameTime() + 5.0;
-			b_PlayerWasAirbornKnockbackReduction[client] = true;
+			b_PlayerWasAirbornKnockbackReduction[client] = 1;
 			Attributes_Set(EntityWearable, 252, 0.5);
 		}
 	}
-	else if((WasAirbornType == 0 || WasAirbornType == 2) && b_PlayerWasAirbornKnockbackReduction[client])
+	else if(WasAirbornType == 0 && b_PlayerWasAirbornKnockbackReduction[client] != 0)
 	{
 		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
 		if(EntityWearable > 0)
@@ -536,8 +538,26 @@ public void OnPostThink(int client)
 			Spawns_CheckBadClient(client/*, 2*/);
 			//no need to recheck when they land
 			f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
-			b_PlayerWasAirbornKnockbackReduction[client] = false;
-			Attributes_Set(EntityWearable, 252, 1.0);
+			b_PlayerWasAirbornKnockbackReduction[client] = 0;
+		}
+	}
+	else if(WasAirbornType == 2 && b_PlayerWasAirbornKnockbackReduction[client] != 2)
+	{
+		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
+		if(EntityWearable > 0)
+		{
+			//when they land, check if they are in a bad pos
+			Spawns_CheckBadClient(client/*, 2*/);
+			//no need to recheck when they land
+			f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
+			b_PlayerWasAirbornKnockbackReduction[client] = 2;
+			Attributes_Set(EntityWearable, 252, 1.5);
+
+			//standing ontop of raids now entirely debuffs you.
+			TF2_AddCondition(client, TFCond_LostFooting, 1.0);
+			TF2_AddCondition(client, TFCond_AirCurrent, 1.0);
+			float damageStand = 5.0;
+			NpcStuckZoneWarning(client, damageStand);
 		}
 	}
 #if defined ZR
@@ -620,9 +640,24 @@ public void OnPostThink(int client)
 
 	if(f_TimerStatusEffectsDo[client] < GetGameTime())
 	{
+		if(WasAirbornType == 2)
+		{
+			//standing ontop of raids now entirely debuffs you.
+			TF2_AddCondition(client, TFCond_LostFooting, 1.0);
+			TF2_AddCondition(client, TFCond_AirCurrent, 1.0);
+			float damageStand = 5.0;
+			NpcStuckZoneWarning(client, damageStand);
+		}
 		//re using NPC value.
 		StatusEffect_TimerCallDo(client);
 		f_TimerStatusEffectsDo[client] = GetGameTime() + 0.4;
+		if(f_TimeUntillNormalHeal[client] < GetGameTime())
+		{
+			//badly reset
+			LastHitRef[client] = -1;
+			f_LatestDamageTaken[client] = 0.0;
+			i_LatestHealthLeft[client] = GetEntProp(client, Prop_Send, "m_iHealth");
+		}
 	}
 	if(Rogue_CanRegen() && Armor_regen_delay[client] < GameTime)
 	{
@@ -1333,6 +1368,7 @@ public void OnPostThink(int client)
 		int armorEnt = client;
 		if(vehicle != -1)
 		{
+			Armor_Max = view_as<VehicleGeneric>(vehicle).m_iMaxArmor;
 			armorEnt = vehicle;
 		}
 		else
@@ -1595,6 +1631,8 @@ public void OnPostThink(int client)
 			{
 				int downsleft;
 				downsleft = 2;
+				if(ZR_Get_Modifier() == PREFIX_ONESTAND)
+					downsleft = 3;
 
 				downsleft -= i_AmountDowned[client];
 				SDKHooks_UpdateMarkForDeath(client);
@@ -2041,6 +2079,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 	f_LatestDamageRes[victim] = damage / GetCurrentDamage;
+	f_LatestDamageTaken[victim] = damage;
+	i_LatestHealthLeft[victim] = GetEntProp(victim, Prop_Send, "m_iHealth");
 
 #if !defined RTS
 	int ClientAttacker;
@@ -2304,10 +2344,12 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					i_DyingParticleIndication[victim][0] = EntIndexToEntRef(entity);
 					SetVariantColor(view_as<int>({0, 255, 0, 255}));
 					AcceptEntityInput(entity, "SetGlowColor");
-
-					entity = SpawnFormattedWorldText("DOWNED", {0.0,0.0,70.0}, 10, {0, 255, 0, 255}, victim);
-					i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
-					b_DyingTextOff[victim] = false;
+					if(!AtEdictLimit(EDICT_PLAYER))
+					{
+						entity = SpawnFormattedWorldText("DOWNED", {0.0,0.0,70.0}, 10, {0, 255, 0, 255}, victim);
+						i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
+						b_DyingTextOff[victim] = false;
+					}
 					
 				}
 				CreateTimer(0.1, Timer_Dieing, victim, TIMER_REPEAT);
@@ -2342,10 +2384,12 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 
 				KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, autoRevive);
 				CheckLastMannStanding(victim);
+				DownedOrKilledClient_Feedback(victim, attacker, damage, damagetype);
 				return Plugin_Handled;
 			}
 			else
 			{
+				DownedOrKilledClient_Feedback(victim, attacker, damage, damagetype);
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 13");
 				damage = 99999.9;
 				CheckLastMannStanding(victim);
@@ -2485,32 +2529,14 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	  int &entity, int &channel, float &volume, int &level, int &pitch, int &flags,
 	  char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
-	/*
-	if(b_IsAmbientGeneric[entity])
+	if(entity <= MaxClients)
 	{
-		if(StrContains(sample, "#", true) != -1)
+		//block shield sounds
+		if(StrContains(sample, "medi_shield_deploy.wav", true) != -1 || StrContains(sample, "vo/medic_mvm_heal_shield", true) != -1)
 		{
-			//loop through all clients it tries to play to
-			//but also make sure it doesnt play to clients who didnt get info from the database.
-			for(int loop1=0; loop1<numClients; loop1++)
-			{
-				int listener = clients[loop1];
-				if(b_IgnoreMapMusic[listener] || !Database_IsCached(listener))
-				{
-					//replace client with client one up so the array doesnt mess up!
-					for(int loop2 = loop1; loop2 < numClients-1; loop2++)
-					{
-						clients[loop2] = clients[loop2+1];
-					}
-					//we move the array one down!
-					loop1--;
-					numClients--;
-				}
-			}
-			return Plugin_Changed;
+			return Plugin_Handled;
 		}
 	}
-	*/
 
 #if defined ZR
 
@@ -2734,11 +2760,13 @@ public void OnWeaponSwitchPost(int client, int weapon)
 			if(PreviousSlot != CurrentSlot) //Set back the previous active slot to what it was before.
 			{
 				int WeaponValidCheck = -1;
+				int MaxCapSanity = 0;
 
 				while(WeaponValidCheck != PreviousWeapon)
 				{
 					WeaponValidCheck = Store_CycleItems(client, PreviousSlot);
-					if(WeaponValidCheck == -1)
+					MaxCapSanity++;
+					if(MaxCapSanity >= 10 || WeaponValidCheck == -1)
 						break;
 				}
 				//only if switching to different slot.
@@ -2889,6 +2917,8 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 
 	int downsleft;
 	downsleft = 2;
+	if(ZR_Get_Modifier() == PREFIX_ONESTAND)
+		downsleft = 3;
 	downsleft -= i_AmountDowned[client];
 	downsleft += Dungeon_DownedBonus();
 	if(HasSpecificBuff(client, "Nightmare Terror"))

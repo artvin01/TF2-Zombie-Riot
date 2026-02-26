@@ -2628,7 +2628,7 @@
 	"Iberian and Expidonsan Training"
 	{
 		"en"		"Iberian and Expidonsan Training"
-		"ko"		"엑스피돈사-이베리아 연합 훈련"
+		"ko"		"이베리아-엑스피돈사 연합 훈련"
 	}
 	"Expidonsan Research Card"
 	{

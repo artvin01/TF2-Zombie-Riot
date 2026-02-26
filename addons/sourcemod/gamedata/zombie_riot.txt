@@ -4,28 +4,6 @@
 	{
 		"Signatures"
 		{
-			"CWeaponMedigun::CreateMedigunShield"
-			{
-				// find entity_medigun_shield string with more then just 1 block, the main fuction, 
-				//exit that and there should only be 1 function where its contained
-				//thats it.
-				
-				"windows64"	"\x48\x89\x74\x24\x10\x57\x48\x83\xEC\x30\x8B\x91\x58\x0A\x00\x00"
-				"linux64"		"@_ZN14CWeaponMedigun19CreateMedigunShieldEv"
-				
-				"windows"	"\x55\x8B\xEC\x83\xEC\x34\x8B\x15\x2A\x2A\x2A\x2A"
-				"linux"		"@_ZN14CWeaponMedigun19CreateMedigunShieldEv"
-			}
-			"CTFBaseBoss::ResolvePlayerCollision"
-			{
-				// Announcer.MVM_Tank_Planted, very bottom
-				//Long tthink function where you are in right now,  very bottom again, has a  LOC_ and a sub_, if its long, thats probably it.
-			//	"windows64"	"\x48\x89\x74\x24\x10\x57\x48\x83\xEC\x30\x8B\x91\x58\x0A\x00\x00"
-			//	"linux64"		"@_ZN11CTFBaseBoss22ResolvePlayerCollisionEP9CTFPlayer"
-				
-				"windows"	"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\x68\x01\x00\x00\x56\x57"
-				"linux"		"@_ZN11CTFBaseBoss22ResolvePlayerCollisionEP9CTFPlayer"
-			}
 
 			"CTFPlayerShared::RecalculatePlayerBodygroups"
 			{
@@ -110,14 +88,6 @@
 				"linux"		"@_ZN17CBaseCombatWeapon12FinishReloadEv"
 				"windows"	"\x56\x8B\xF1\x8B\x06\x8B\x80\xF8\x06\x00\x00\xFF\xD0\x84\xC0\x74\x2A\xC6\x86\xD8\x05\x00\x00\x00"
 			}
-			"CTFPlayer::CanAirDash"
-			{
-				//air_dash_count, smaller function.
-				"library"	"server"
-				
-				"linux"		"@_ZNK9CTFPlayer10CanAirDashEv"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x08\x53\x57\x8B\xF9\x8B\x87\xBC\x1B\x00\x00"
-			}
 			"CBaseAnimating::GetBoneCache"
 			{
 				"library"	"server"
@@ -133,14 +103,6 @@
 				
 				"linux"		"@_ZN9CTFPlayer28GetChargeEffectBeingProvidedEv"
 				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x8D\x86\xCC\x22\x00\x00"
-			}
-			"CTFPlayer::RegenThink"
-			{
-				//string RegenThink, small function
-				"library"	"server"
-				
-				"linux"		"@_ZN9CTFPlayer10RegenThinkEv"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x7C\x56\x8B\xF1\x8B\x06"
 			}
 			"CBaseEntity::SetLocalOrigin" // String aBadSetlocalori,   Bad SetLocalOrigin(%f,%f,%f) on %s\n
 			{
@@ -304,16 +266,6 @@
 				"linux"		"@_ZN15CTFPlayerShared13PulseRageBuffENS_13ERageBuffSlotE"
 				"windows"		"\x55\x8B\xEC\x83\xEC\x14\x33\xC0"
 			}
-			"CTFWeaponBaseMelee::DoSwingTraceInternal"
-			{
-				//string "melee_range_multiplier"
-  			  	"library"    "server"
-    			"linux64"      "@_ZN18CTFWeaponBaseMelee20DoSwingTraceInternalER10CGameTracebP10CUtlVectorIS0_10CUtlMemoryIS0_iEE"
-				"windows64"	"\x48\x89\x74\x24\x18\x55\x57\x41\x55\x41\x56\x41\x57\x48\x8D\xAC\x24\xA0\xF6\xFF\xFF"
-				
-				"linux"      "@_ZN18CTFWeaponBaseMelee20DoSwingTraceInternalER10CGameTracebP10CUtlVectorIS0_10CUtlMemoryIS0_iEE"
-				"windows"	"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\x38\x05\x00\x00"
-			}
 			"CTFGCServerSystem::PreClientUpdate"
 			{
 				// "You must set maxplayers to 32 to host Mann vs. Machine\n"
@@ -417,27 +369,6 @@
 					}
 				}
 			}
-			"CWeaponMedigun::CreateMedigunShield"
-			{
-				"signature"	"CWeaponMedigun::CreateMedigunShield"
-				"callconv"  "thiscall"
-				"return"	"void"
-				"this"		"entity"
-			}
-			"CTFBaseBoss::ResolvePlayerCollision"
-			{
-				"signature"	"CTFBaseBoss::ResolvePlayerCollision"
-				"callconv"  "thiscall"
-				"return"	"void"
-				"this"		"entity"
-				"arguments"
-				{
-					"pPlayer"
-					{
-						"type"	"cbaseentity"
-					}
-				}
-			}
 			"CTFCrossbow::Holster"
 			{
 				"offset"	"CTFCrossbow::Holster"
@@ -459,28 +390,6 @@
 				"callconv"    	"thiscall"
 				"return"		"bool"
 				"this"			"entity"
-			}
-			"CTFWeaponBaseMelee::DoSwingTraceInternal"
-			{
-				"signature"	"CTFWeaponBaseMelee::DoSwingTraceInternal"
-				"callconv"    	"thiscall"
-				"return"	"bool"
-				"this"		"entity"
-				"arguments"
-				{
-					"trace"
-					{
-						"type"	"objectptr"
-					}
-					"bCleave"
-					{
-						"type"	"bool"
-					}
-					"pTargetTraceVector"
-					{
-						"type"	"vectorptr"
-					}
-				}
 			}
 			"CTFGameRules::IsQuickBuildTime"
 			{
@@ -610,13 +519,6 @@
 					}
 				}
 			}
-			"CTFPlayer::CanAirDash"
-			{
-				"signature"	"CTFPlayer::CanAirDash"
-				"callconv"	"thiscall"
-				"return"	"bool"
-				"this"		"entity"
-			}
 			"CBaseAnimating::GetBoneCache"
 			{
 				"signature"	"CBaseAnimating::GetBoneCache"
@@ -659,13 +561,6 @@
 						"type"	"int"
 					}
 				}
-			}
-			"CTFPlayer::RegenThink"
-			{
-				"signature"	"CTFPlayer::RegenThink"
-				"callconv"	"thiscall"
-				"return"	"void"
-				"this"		"entity"
 			}
 			"CTFParticleCannon::FireChargedShot"
             {
