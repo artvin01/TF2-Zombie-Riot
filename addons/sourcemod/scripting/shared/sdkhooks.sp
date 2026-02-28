@@ -2760,11 +2760,13 @@ public void OnWeaponSwitchPost(int client, int weapon)
 			if(PreviousSlot != CurrentSlot) //Set back the previous active slot to what it was before.
 			{
 				int WeaponValidCheck = -1;
+				int MaxCapSanity = 0;
 
 				while(WeaponValidCheck != PreviousWeapon)
 				{
 					WeaponValidCheck = Store_CycleItems(client, PreviousSlot);
-					if(WeaponValidCheck == -1)
+					MaxCapSanity++;
+					if(MaxCapSanity >= 10 || WeaponValidCheck == -1)
 						break;
 				}
 				//only if switching to different slot.
