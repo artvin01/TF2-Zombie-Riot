@@ -1164,7 +1164,7 @@
 	{
 		"en"	"{green}Umbral Affinity increased by 3 when reaching a new chapter {red}but Umbral Affinity reduced by 15 while held\n{purple}Chance obtain a rare artifact when consumed"
 		"it"	"{green}l'Affinità Umbrale aumenta di 3 quando si raggiunge un nuovo capitolo {red}ma l'Affinità Umbrale si riduce di 15 mentre si tiene \n{purple}Possibilità di ottenere un artefatto raro quando si consuma"
-		"ko"	"{green}새 챕터 진입 시 움브랄 친화력이 3 증가. {red}대신 이것을 보유하는 동안, 엄브랄 친화력 15 감소\n{purple}관문에 흡수시키면, 확률적으로 희귀 등급 소장품 획득"
+		"ko"	"{green}새 챕터 진입 시 움브랄 친화력이 3 증가. {red}대신 이것을 보유하는 동안, 움브랄 친화력 15 감소\n{purple}관문에 흡수시키면, 확률적으로 희귀 등급 소장품 획득"
 	}
 	"Sprouting Stem"
 	{
