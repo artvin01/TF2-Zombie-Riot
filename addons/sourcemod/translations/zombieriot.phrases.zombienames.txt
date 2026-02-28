@@ -1463,6 +1463,10 @@
 		"it"		"Avanguardia annullata"
 		"ko" 		"공허화된 뱅가드"
 	}
+	"Sea-Infected Voided Vanguard"
+	{
+		"en" 		"Sea-Infected Voided Vanguard"
+	}
 	"Kahmlstein"
 	{
 		"en"		"Kahmlstein"
