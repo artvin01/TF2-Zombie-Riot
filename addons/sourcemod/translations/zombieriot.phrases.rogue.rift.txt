@@ -431,7 +431,7 @@
 	{
 		"en"	"{red}Enemy stats per chapter +4％, start with Fractured voidstone, rift events can occur more often, You have no hope."
 		"it"	"{red}Statistiche dei nemici per capitolo +4％, inizio con la pietra vuota fratturata, gli eventi della spaccatura possono verificarsi più spesso, Non hai speranza."
-		"ko"	"{red}매 챕터마다, 적의 능력치 +4％ 증가. '혼란' 공허석을 보유하고 시작. 균열 이벤트가 더 자주 발생함. 희망이 보이지 않습니다."
+		"ko"	"{red}매 챕터마다, 적의 능력치 +4％ 증가. '혼란' 공허석을 보유하고 시작. 균열 이벤트가 더 자주 발생. 희망이 보이지 않습니다."
 	}
 	"Rift Level 2"
 	{
@@ -2048,7 +2048,7 @@
 	{
 		"en"	"You gotten this far, from infections, outbreaks, riots, and chaos. Take a moment to remember the past."
 		"it"	"Siete arrivati fin qui, tra infezioni, epidemie, rivolte e caos. Prendetevi un momento per ricordare il passato."
-		"ko"	"당신은 감염, 재앙, 폭동, 혼돈을 넘어 여기까지 도달했다. 과거를 잠시 돌아본다..."
+		"ko"	"당신은 감염, 재앙, 폭동 그리고 혼돈을 넘어 여기까지 도달했다. 과거를 잠시 돌아본다..."
 	}
 	"Finale Encounter Option 1"
 	{
@@ -2133,7 +2133,7 @@
 	{
 		"en" "☠ The Umbral Commander"
 		"it" "☠ il Comandante Umbro"
-		"ko" "☠ 움브랄의 사령관"
+		"ko" "☠ 움브랄의 지휘자"
 	}
 	"Sabotaging Electric's"
 	{
