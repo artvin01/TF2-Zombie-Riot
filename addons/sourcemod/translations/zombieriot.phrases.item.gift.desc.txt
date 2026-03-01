@@ -395,7 +395,7 @@
 	{
 		"en" 		"Infections cancers all around.\nWhen hit, activates deadringer and gives Extreamly high res in duration.\nWhen Above half health:\n-Has a ranged bullet attack\nWhen below half health:\n-Ranged rocket attack, deals more damage, is faster, gains resistances."
 		"it"		"Infezioni e tumori ovunque.\nQuando viene colpito, attiva il deadringer e conferisce una res estremamente elevata in termini di durata.\nQuando supera la metà della salute: ha un attacco a distanza con proiettile.\nQuando è al di sotto della metà della salute:\nha un attacco a distanza con razzo, infligge più danni, è più veloce e guadagna resistenze."
-		"ko"		"감염성 암이 온몸에 퍼져 있습니다.\n-피격 시 데드링어 발동, 지속 시간 동안 매우 높은 저항을 얻음.\n-체력이 절반 이상일 때: 원거리 탄환 공격\n체력이 절반 이하일 때: 원거리 공격이 로켓으로 변경\n피해량, 속도, 피해 저항력을 추가로 얻음."
+		"ko"		"감염이 암처럼 온몸에 퍼져 있습니다.\n-피격 시 데드링어 발동, 지속 시간 동안 매우 높은 저항을 얻음.\n-체력이 절반 이상일 때: 원거리 탄환 공격\n체력이 절반 이하일 때: 원거리 공격이 로켓으로 변경\n피해량, 속도, 피해 저항력을 추가로 얻음."
 	}
 		
 	//XENO
@@ -2459,7 +2459,7 @@
 	{
 		"en"	"Certain npc's are ''Masters'', these npc's can command lower level npc's to attak the same targets as them\nThey can also buff them in various ways\nMakes them rally to the master"
 		"it"	"Alcuni npc sono ''Maestri'', questi npc possono comandare agli npc di livello inferiore di attaccare gli stessi bersagli che hanno loro"
-		"en"	"특정 NPC들은 ''마스터''로서, 자신보다 등급이 낮은 NPC들에게 명령을 내려 자신과 같은 대상을 공격하게끔 지휘합니다.\n또한 자기 휘하 인원들의 능력치를 증강시킬 수 있으며,\n마스터 근처로 집결하게 만들 수도 있습니다."
+		"ko"	"특정 NPC들은 ''마스터''로서, 자신보다 등급이 낮은 NPC들에게 명령을 내려 자신과 같은 대상을 공격하게끔 지휘합니다.\n또한 자기 휘하 인원들의 능력치를 증강시킬 수 있으며,\n마스터 근처로 집결하게 만들 수도 있습니다."
 	}
 	"Chaos Intrusion"
 	{
