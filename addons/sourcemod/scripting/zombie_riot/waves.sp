@@ -899,7 +899,11 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 	{
 		// ZS-Classic Gamemode
 		if(kv.GetNum("classicmode"))
-			Classic_Enable();
+			Classic_Enable(true);
+		else
+		{
+			Classic_Enable(false);
+		}
 	}
 
 	bool autoSelect = CvarAutoSelectWave.BoolValue;	
