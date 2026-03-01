@@ -5218,7 +5218,7 @@
 	"Iberia Expi Desc"
 	{
 	  "en" "After the main mercs are done with their training, Iberia comes to us, the secondary mercs, for some more training. Nemal and Silvester won't be here this time since they're on vacation with Sensal."
-	  "ko" "주요 용병들이 훈련을 마친 후, 이베리아가 보조 용병들에게 훈련을 제공하려 합니다. 이번엔 네말과 실베스터가 센살과 휴가 중이기에 없을 겁니다."
+	  "ko" "주요 용병들이 훈련을 마친 후, 이베리아가 더 많은 훈련을 위해 보조 용병들을 방문합니다. 이번엔 네말과 실베스터가 센살과 휴가 중이기에 없을 겁니다."
 	}
 	"Iberia & Nemal"
 	{
