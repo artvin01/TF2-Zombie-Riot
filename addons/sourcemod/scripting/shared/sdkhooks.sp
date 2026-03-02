@@ -2582,7 +2582,15 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		}
 	}
 */
-	
+	if(b_MuteArrowSound[entity])
+	{
+		//Removes arrow sound that we forced in
+		if(StrContains(sample, "weapons/fx/rics/arrow_impact_flesh", true) != -1)
+		{
+			b_MuteArrowSound[entity] = false;
+			return Plugin_Handled;
+		}
+	}
 	if(BetWar_Mode())
 	{
 		if(entity <= MaxClients && entity > 0)

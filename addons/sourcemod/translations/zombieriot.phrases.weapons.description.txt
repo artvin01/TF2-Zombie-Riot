@@ -569,6 +569,10 @@
 		"it"	"Il CD del vostro M1 vi indicherà il tempo necessario per raffreddarsi di nuovo.\nUn surriscaldamento più elevato significa meno danni.\nUna potenza pazzesca a un prezzo economico, ma un alto costo delle munizioni."
 		"ko"	"-기본 공격의 쿨타임은 이 무기의 과열이 식는데 필요한 시간\n과열 수치가 높을수록 공격의 피해량이 감소\n-높은 피해량을 보유, 그러나 탄약 효율이 떨어짐\n-공격이 적을 관통함"
 	}
+	"Brick Desc"
+	{
+		"en"	"-Throw bricks that can headshot enemies\n-Bricks deal knokback\n-On headshot, gain a tempomary buff that on bodyshots, deals headshot damage\n-This buff also increases attackspeed."
+	}
 
 	"Star Shooter Pap 1"
 	{

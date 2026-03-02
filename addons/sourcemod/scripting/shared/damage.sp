@@ -1371,9 +1371,15 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
         {
            return PurgeKit_NPCTakeDamage_Rampager(attacker, victim, damage, weapon, damagetype);
 		}
+        case WEAPON_BRICK:
+        {
+            if(!CheckInHud())
+				return Brick_NPCTakeDamage_Do(attacker, inflictor, victim, damage, weapon, damagetype);
+		}
 	}
 #endif
 
+	
 #if defined RPG
 	if(!CheckInHud())
 	{

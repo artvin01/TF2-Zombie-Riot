@@ -215,6 +215,7 @@ void InitStatusEffects()
 #if defined ZR
 	StatusEffects_Aperture();
 	StatusEffects_Ruiania();
+	StatusEffects_BrickWeapon();
 #endif
 	StatusEffects_WeaponSpecific_VisualiseOnly();
 	StatusEffects_StatusEffectListOnly();
