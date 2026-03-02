@@ -524,6 +524,11 @@
 		"it"		"Lancia-Stelle"
 		"ko" 		"유성 발사기"
 	}
+	"Brick"
+	{
+		"en"		"Brick"
+		"ko" 		"벽돌"
+	}
 	"Rusty Rifle"
 	{
 		"en"		"Rusty Rifle"
