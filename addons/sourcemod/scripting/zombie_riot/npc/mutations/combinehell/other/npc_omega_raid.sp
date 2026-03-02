@@ -750,7 +750,6 @@ static void Omegas_SelfDefense(OmegaRaid npc, float gameTime, int target, float 
 							}
 							if(npc.m_iOverlordComboAttack >= 10)
 							{
-								damage *= RaidModeScaling + 100.0;
 								npc.AddGesture("ACT_PUSH_PLAYER");
 								float duration = 1.0;
 								if(target <= MaxClients && target > 0)
@@ -762,7 +761,7 @@ static void Omegas_SelfDefense(OmegaRaid npc, float gameTime, int target, float 
 								    FreezeNpcInTime(target, duration);
 								}
 								Custom_Knockback(npc.index, targetTrace, 1000.0, true, true);
-								Explode_Logic_Custom(50.0, -1, npc.index, -1, vecTarget, 100.0, _, _, true, _, false);
+								Explode_Logic_Custom(60.0 * RaidModeScaling, -1, npc.index, -1, vecTarget, 100.0, _, _, true, _, false);
 								ParticleEffectAt(vecTarget, "hightower_explosion", 1.0);
 								npc.PlayMeleeStunSound();
 								npc.PlayBoomSound();
