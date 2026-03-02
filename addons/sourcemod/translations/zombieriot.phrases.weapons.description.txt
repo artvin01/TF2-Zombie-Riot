@@ -571,7 +571,7 @@
 	}
 	"Brick Desc"
 	{
-		"en"	"-Throw bricks that can headshot enemies\n-Bricks deal knokback\n-On headshot, gain a tempomary buff that on bodyshots, deals headshot damage\n-This buff also increases attackspeed."
+		"en"	"-Throw bricks that can headshot enemies\n-On headshot, gain a tempomary buff that on bodyshots, deals headshot damage (This doesnt extend the buff)\n-This buff also increases attackspeed."
 	}
 
 	"Star Shooter Pap 1"
