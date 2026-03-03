@@ -496,6 +496,9 @@ public bool TraceEntityEnumerator_Mlynar(int entity, int filterentity)
 
 float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int weapon, int pap = 0)
 {
+	//dont reflect burn or bleed
+	if(damagezrcustom & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
+		return;
 	f_MlynarHurtDuration[victim] = GetGameTime() + 1.0;
 	//insert reflect code.
 	if(f_MlynarReflectCooldown[victim][attacker] < GetGameTime())

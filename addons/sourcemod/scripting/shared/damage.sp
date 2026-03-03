@@ -245,7 +245,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		if(!CheckInHud())
 			OnTakeDamage_ProvokedAnger(Victim_weapon);
 
-		damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon, damagePosition);
+		damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon, damagePosition, i_HexCustomDamageTypes[victim]);
 	}
 	
 	if(OnTakeDamage_ShieldLogic(victim, damagetype))
@@ -854,7 +854,7 @@ stock bool Damage_BuildingAttacker(int &attacker, float &damage)
 }
 
 #if defined ZR
-static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3])
+static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3], int zr_custom_damage)
 {
 	switch(i_CustomWeaponEquipLogic[equipped_weapon])
 	{
@@ -878,17 +878,17 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		case WEAPON_MLYNAR: // weapon_ark
 		{
 			if(!CheckInHud())
-				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon);
+				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon,0,zr_custom_damage);
 		}
 		case WEAPON_MLYNAR_PAP: // weapon_ark
 		{
 			if(!CheckInHud())
-				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1);
+				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1,zr_custom_damage);
 		}
 		case WEAPON_MLYNAR_PAP_2: // weapon_ark
 		{
 			if(!CheckInHud())
-				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 2);
+				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 2, zr_custom_damage);
 		}
 		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS, WEAPON_SKADI:
 		{
