@@ -571,8 +571,7 @@
 	}
 	"Brick Desc"
 	{
-		"en"	"-Throw bricks that can headshot enemies\n-Bricks deal knokback\n-On headshot, gain a tempomary buff that on bodyshots, deals headshot damage\n-This buff also increases attackspeed."
-		"ko"	"-헤드샷이 가능한 벽돌을 투척\n-헤드샷시, 일시적으로 신체 적중시 헤드샷 피해로 적용되는 버프 획득\n-위 버프는 공격 속도 역시 증가시킵니다."
+		"en"	"-Throw bricks that can headshot enemies\n-On headshot, gain a tempomary buff that on bodyshots, deals headshot damage (This doesnt extend the buff)\n-This buff also increases attackspeed."
 	}
 
 	"Star Shooter Pap 1"

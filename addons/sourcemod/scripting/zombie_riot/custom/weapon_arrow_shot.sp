@@ -660,20 +660,15 @@ void PlayBrickSound(int entity)
 
 public float Brick_NPCTakeDamage_Do(int attacker, int inflictor, int victim, float damage, int weapon, int &damagetype)
 {
-	Custom_Knockback(inflictor, victim, 350.0, false, false);
 	if(!(damagetype & DMG_CRIT))
 	{
 		if(HasSpecificBuff(attacker, "Powered Brick") || HasSpecificBuff(inflictor, "Powered Brick"))
 		{
 			damagetype |= DMG_CRIT;
 		}
-		else
-		{
-			return damage;
-		}
+		return damage;
 	}
 
-	
 	//we hit a headshot, what do ?
 	ApplyStatusEffect(attacker, attacker, "Powered Brick", 4.0);
 	return damage;
