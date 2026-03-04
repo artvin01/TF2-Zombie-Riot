@@ -3649,7 +3649,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			int layerCount = this.GetNumAnimOverlays();
 			for(int i; i < layerCount; i++)
 			{
-				view_as<CClotBody>(this.index).SetLayerPlaybackRate(i, 1.0);
+				//we lazely use ReturnEntityAttackspeed(this.index)
+				view_as<CClotBody>(this.index).SetLayerPlaybackRate(i, ReturnEntityAttackspeed(this.index));
 			}
 			view_as<CClotBody>(this.index).SetPlaybackRate(f_LayerSpeedFrozeRestore[this.index], true);
 
@@ -6291,11 +6292,15 @@ public void NpcBaseThinkPost(int iNPC)
 		return;
 		
 	float time = GetGameTime() - lastThink;	// Time since the last time this NPC thought
-
+	f_StunExtraGametimeDuration[iNPC] += (time - (time / ReturnEntityAttackspeed(iNPC)));
+/*
 	if(ReturnEntityAttackspeed(iNPC) < 1.0)	// Buffs
 		f_StunExtraGametimeDuration[iNPC] += (time - (time / ReturnEntityAttackspeed(iNPC)));
 	else	// Nerfs
+	{
 		f_StunExtraGametimeDuration[iNPC] += ((time * ReturnEntityAttackspeed(iNPC)) - time);
+	}
+*/
 }
 void NpcDrawWorldLogic(int entity)
 {
@@ -9977,6 +9982,7 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	int layerCount = CBaseAnimatingOverlay(npc).GetNumAnimOverlays();
 	for(int i; i < layerCount; i++)
 	{
+		CAnimationLayer AnimOverlay = GetAnimOverlay(layerCount);
 		view_as<CClotBody>(npc).SetLayerPlaybackRate(i, 0.0);
 	}
 }
