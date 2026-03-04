@@ -333,7 +333,7 @@ public void Construction_RareWeapon_Collect()
 	char name[64];
 	float discount = 0.7;
 
-	switch(GetURandomInt() % 6)
+	switch(GetURandomInt() % 4)
 	{
 		case 0, 1:
 		{
@@ -349,10 +349,12 @@ public void Construction_RareWeapon_Collect()
 		{
 			strcopy(name, sizeof(name), "Whistle Stop");
 		}
+		/*
 		case 4, 5:
 		{
 			strcopy(name, sizeof(name), "Ancestor Launcher");
 		}
+		*/
 	}
 
 	Store_DiscountNamedItem(name, 999, discount);

@@ -294,7 +294,7 @@ public void RefragmentedCombineElite_ClotThink(int iNPC)
 			if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index) && flDistanceToTarget > 62500 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
-				int projectile = npc.FireParticleRocket(vPredictedPos, 700.0, 400.0, 150.0, "burningplayer_blueglow", true);
+				npc.FireParticleRocket(vPredictedPos, 700.0, 400.0, 150.0, "burningplayer_blueglow", true);
 				npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 5.0;
 				npc.PlayRangedAttackSecondarySound();
 			}
@@ -402,7 +402,7 @@ public void RefragmentedCombineElite_ClotThink(int iNPC)
 								if(target > 0) 
 								{
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 90.0, DMG_CLUB, -1, _, vecHit);
 									}
 									
 									Custom_Knockback(npc.index, target, 400.0);

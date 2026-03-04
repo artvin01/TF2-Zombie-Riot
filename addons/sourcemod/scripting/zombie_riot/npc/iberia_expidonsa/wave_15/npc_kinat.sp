@@ -290,7 +290,9 @@ int IberiaKinatSelfDefense(IberiaKinat npc, float gameTime, int target, float di
 					npc.FaceTowards(vecTarget, 20000.0);
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable3).GetAttachment("muzzle", origin, angles);
-					ShootLaser(npc.m_iWearable3, "bullet_tracer02_blue", origin, vecTarget, false );
+					TE_SetupBeamPoints(origin, vecTarget, g_Ruina_Laser_BEAM, -1, 0, 0, 0.2, 2.0, 0.5, 0, 3.0, {125, 125, 255, 200}, 3);
+					TE_SendToAll();
+					TE_Particle("projectile_fireball_crit_blue", vecTarget, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0);
 					npc.m_iAttacksTillReload--;
 
 					return 0;
