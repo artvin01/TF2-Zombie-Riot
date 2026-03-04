@@ -9982,7 +9982,6 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	int layerCount = CBaseAnimatingOverlay(npc).GetNumAnimOverlays();
 	for(int i; i < layerCount; i++)
 	{
-		CAnimationLayer AnimOverlay = GetAnimOverlay(layerCount);
 		view_as<CClotBody>(npc).SetLayerPlaybackRate(i, 0.0);
 	}
 }
