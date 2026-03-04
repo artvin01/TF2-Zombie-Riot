@@ -5218,7 +5218,7 @@
 	"Iberia Expi Desc"
 	{
 	  "en" "After the main mercs are done with their training, Iberia comes to us, the secondary mercs, for some more training. Nemal and Silvester won't be here this time since they're on vacation with Sensal."
-	  "ko" "이베리아와 엑스피돈사, 그 중에서도 이베리아가 돌아와 더 많은 훈련을 제공하려고 합니다. 하지만 이번엔 네말과 실베스터가 없군요. 아마 센살과 휴가 중일 겁니다."
+	  "ko" "주요 용병들이 훈련을 마친 후, 이베리아가 더 많은 훈련을 위해 보조 용병들을 방문합니다. 이번엔 네말과 실베스터가 센살과 휴가 중이기에 없을 겁니다."
 	}
 	"Iberia & Nemal"
 	{
@@ -5707,23 +5707,27 @@
 	"Unknown"
 	{
 		"en"	"Unknown"
-
+		"ko"	"알 수 없음"
 	}
 	"Ranged Damage"
 	{
 		"en"	"Ranged Damage"
+		"ko"	"원거리 피해"
 	}
 	"Melee Damage"
 	{
 		"en"	"Melee Damage"
+		"ko"	"근접 피해"
 	}
 	"True Damage"
 	{
 		"en"	"True Damage"
+		"ko"	"트루 데미지"
 	}
 	"Last Hit Recieved info"
 	{
 		"#format"	"{1:s},{2:.0f},{3:s},{4:d}"
 		"en"	"You died to {yellow}{1}{snow} dealing {crimson}{2} {3}{snow} with {green}{4} Health Remaining."
+		"ko"	"당신은 {green}잔여 체력 {4}{snow}에서{yellow}{1}{snow}에게 {crimson}{2}의 {3}{snow}을(를) 입고 사망했습니다."
 	}
 }
