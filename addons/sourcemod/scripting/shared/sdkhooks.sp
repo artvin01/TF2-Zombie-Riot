@@ -2534,7 +2534,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 {
 	if(entity <= MaxClients)
 	{
-		//block shield sounds
+		//block shield soundsg
 		if(StrContains(sample, "medi_shield_deploy.wav", true) != -1 || StrContains(sample, "vo/medic_mvm_heal_shield", true) != -1)
 		{
 			return Plugin_Handled;
@@ -2585,13 +2585,16 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		}
 	}
 */
-	if(b_MuteArrowSound[entity])
+	if(entity > 0)
 	{
-		//Removes arrow sound that we forced in
-		if(StrContains(sample, "weapons/fx/rics/arrow_impact_flesh", true) != -1)
+		if(b_MuteArrowSound[entity])
 		{
-			b_MuteArrowSound[entity] = false;
-			return Plugin_Handled;
+			//Removes arrow sound that we forced in
+			if(StrContains(sample, "weapons/fx/rics/arrow_impact_flesh", true) != -1)
+			{
+				b_MuteArrowSound[entity] = false;
+				return Plugin_Handled;
+			}
 		}
 	}
 	if(BetWar_Mode())
