@@ -2145,7 +2145,18 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 				Rogue_TriggerFunction(Artifact::FuncWaveStart);
 
 				if(Classic_Mode())
+				{
 					Classic_NewRoundStart(round.Cash);
+					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+					{
+						int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+						if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
+						{
+							FreezeNpcInTime(entity, 3.0, true);
+						}
+					}
+				}
+					
 			}
 			
 			if(wave.RelayName[0])

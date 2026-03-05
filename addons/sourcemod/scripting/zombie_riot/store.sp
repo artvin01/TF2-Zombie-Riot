@@ -2126,8 +2126,8 @@ public void ReShowSettingsHud(int client)
 	menu2.AddItem("-85", buffer);
 	*/
 
-	Format(buffer, sizeof(buffer), "%T", "Taunt Speed increase", client);
-	if(b_TauntSpeedIncrease[client])
+	Format(buffer, sizeof(buffer), "%T", "Display Backwards Walk Notif", client);
+	if(b_BackwardsWalkNotif[client])
 	{
 		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
@@ -2633,13 +2633,13 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				}
 				case -71: 
 				{
-					if(b_TauntSpeedIncrease[client])
+					if(b_BackwardsWalkNotif[client])
 					{
-						b_TauntSpeedIncrease[client] = false;
+						b_BackwardsWalkNotif[client] = false;
 					}
 					else
 					{
-						b_TauntSpeedIncrease[client] = true;
+						b_BackwardsWalkNotif[client] = true;
 					}
 					ReShowSettingsHud(client);
 				}

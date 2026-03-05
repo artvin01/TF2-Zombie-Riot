@@ -1097,6 +1097,10 @@
 		"it"		"Questa abilità ha ancora un cooldown di {1} secondi!"
 		"ko" 		"이 능력은 {1} 초 후에 사용할 수 있습니다!"
 	}
+	"Backwards Setting"
+	{
+		"en" 		"Reminder: Walking backwards reduces your speed by 30％!"
+	}
 	"Not Enough Ammo"
 	{
 		"#format"	"{1:d}"
@@ -4478,12 +4482,9 @@
 		"it"	"Questi ''Overclock'' modificheranno pesantemente la vostra arma, applicando buffs e nerf"
 		"ko"	"이 ''과부하''는 무기의 효과를 크게 변경하여, 무기에 장점과 단점을 동시에 부여합니다"
 	}
-	"Taunt Speed increase"
+	"Display Backwards Walk Notif"
 	{
-		"en" 	"Taunt Speed increase"
-		"fr" 	"Vitesse des Railleries Augmuntée"
-		"it"	"Aumento della velocità di provocazione"
-		"ko" 	"도발 속도 증가"
+		"en" 	"Display Backwards Walk Notif"
 	}
 	"Interact With Reload"
 	{
