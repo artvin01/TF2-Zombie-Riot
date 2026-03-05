@@ -2147,18 +2147,8 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 				if(Classic_Mode())
 				{
 					Classic_NewRoundStart(round.Cash);
-					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
-					{
-						int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-						if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
-						{
-							FreezeNpcInTime(entity, 3.0, true);
-						}
-					}
-				}
-					
+				}	
 			}
-			
 			if(wave.RelayName[0])
 				ExcuteRelay(wave.RelayName, wave.RelayFire);
 			
@@ -2337,6 +2327,17 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 					else
 					{
 						CPrintToChatAll("{green}%t","Cash Gained This Wave", CashGive);
+					}
+				}
+			}
+			if(Classic_Mode())
+			{
+				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+				{
+					int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+					if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
+					{
+						FreezeNpcInTime(entity, 3.0, true);
 					}
 				}
 			}
