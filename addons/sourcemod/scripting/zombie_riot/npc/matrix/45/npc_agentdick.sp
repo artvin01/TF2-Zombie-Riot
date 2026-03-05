@@ -156,6 +156,9 @@ methodmap AgentDick < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 260.0;
+
+		SetVariantInt(2);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 				
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);

@@ -136,7 +136,7 @@ methodmap AgentTodd < CClotBody
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/jul13_sweet_shades_s1/jul13_sweet_shades_s1_scout.mdl");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/spy/sum24_tuxedo_royale_style1/sum24_tuxedo_royale_style1.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/sum23_prohibition_opposition/sum23_prohibition_opposition.mdl");
 
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/sum21_manndatory_attire_style3/sum21_manndatory_attire_style3_scout.mdl");
 

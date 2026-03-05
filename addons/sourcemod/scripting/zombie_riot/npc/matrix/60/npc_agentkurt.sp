@@ -159,6 +159,9 @@ methodmap AgentKurt < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 260.0;
 				
+		SetVariantInt(2);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
