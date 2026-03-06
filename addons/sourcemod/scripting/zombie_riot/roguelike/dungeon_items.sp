@@ -111,7 +111,7 @@ public void Dungeon_Crate_Iron()
 
 public void Dungeon_Crate_Copper()
 {
-	int amount = GetRandomInt(4, 6);
+	int amount = GetRandomInt(7, 9);
 	MaterialDelay("copper", amount);
 }
 
