@@ -1100,6 +1100,7 @@
 	"Backwards Setting"
 	{
 		"en" 		"Reminder: Walking backwards reduces your speed by 30％!"
+		"ko"		"주의: 뒤로 이동할 때는 이동 속도가 30％ 감소합니다!"
 	}
 	"Not Enough Ammo"
 	{
@@ -4485,6 +4486,7 @@
 	"Display Backwards Walk Notif"
 	{
 		"en" 	"Display Backwards Walk Notif"
+		"ko"	"뒤로 이동시 알림 설정"
 	}
 	"Interact With Reload"
 	{
