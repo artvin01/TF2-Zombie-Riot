@@ -1726,7 +1726,7 @@
 	{
 		"en"	"It's poisoned"
 		"it"	"È avvelenato"
-		"ko"	"독일지도 몰라"
+		"ko"	"독이 섞여 있을지도 몰라"
 	}
 	"Poison Water Desc 1"
 	{
@@ -1749,6 +1749,7 @@
 	"Poison Water Lore 1"
 	{
 		"en"	"Dont take chances with this lake."
+		"ko"	"위험을 감수할 수는 없다."
 	}
 	"Poison Water Lore 2a"
 	{
