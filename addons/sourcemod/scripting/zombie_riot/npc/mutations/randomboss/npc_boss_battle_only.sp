@@ -434,7 +434,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 				case 1:
 				{
 					PluginName = "npc_vincent";	
-					Format(CharData, sizeof(CharData), "%s%s",CharData, "forceangry");
+					Format(CharData, sizeof(CharData), "%s%s",CharData, "forceangry;forcesad");
 				}
 				default:
 				{

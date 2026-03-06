@@ -240,9 +240,9 @@ public Action Umbral_Koulm_OnTakeDamage(int victim, int &attacker, int &inflicto
 
 	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	int CurrentHealth = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-	if(float(maxhealth) * 0.975 > float(CurrentHealth))
+	if(float(maxhealth) * 0.95 > float(CurrentHealth))
 	{
-		ApplyStatusEffect(victim, attacker, "Kolum's View", 7.5);
+		ApplyStatusEffect(victim, attacker, "Kolum's View", 5.0);
 	}
 	
 	return Plugin_Changed;
