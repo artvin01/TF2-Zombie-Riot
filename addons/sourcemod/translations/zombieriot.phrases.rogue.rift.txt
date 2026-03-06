@@ -1746,6 +1746,10 @@
 		"it"	"{green}Ottieni un artefatto, 2000 contanti {red} ma la possibilità di ottenere un artefatto maledetto"
 		"ko"	"{green}소장품과 자금 2000 획득. {red}확률적으로 저주 소장품을 획득하게 됨"
 	}
+	"Poison Water Lore 1"
+	{
+		"en"	"Dont take chances with this lake."
+	}
 	"Poison Water Lore 2a"
 	{
 		"en"	"Looks like it was safe."
