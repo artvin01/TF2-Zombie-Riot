@@ -5731,6 +5731,6 @@
 	{
 		"#format"	"{1:s},{2:.0f},{3:s},{4:d}"
 		"en"	"You died to {yellow}{1}{snow} dealing {crimson}{2} {3}{snow} with {green}{4} Health Remaining."
-		"ko"	"당신은 {green}잔여 체력 {4}{snow}에서{yellow}{1}{snow}에게 {crimson}{2}의 {3}{snow}을(를) 입고 사망했습니다."
+		"ko"	"당신은 {green}잔여 체력 {4}{snow}에서 {yellow}{1}{snow}에게 {crimson}{2}의 {3}{snow}을(를) 입고 사망했습니다."
 	}
 }
