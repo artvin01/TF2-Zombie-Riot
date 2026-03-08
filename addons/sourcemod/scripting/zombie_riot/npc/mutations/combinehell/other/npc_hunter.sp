@@ -382,6 +382,7 @@ void HunterSelfDefense(Hunter npc, float gameTime, int target, int usage)
 					if(IsValidEnemy(npc.index, target))
 					{
 						npc.m_iOverlordComboAttack++;
+						float damageDealt = 100.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 5.0;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
