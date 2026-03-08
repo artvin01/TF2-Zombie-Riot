@@ -899,7 +899,11 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 	{
 		// ZS-Classic Gamemode
 		if(kv.GetNum("classicmode"))
-			Classic_Enable();
+			Classic_Enable(true);
+		else
+		{
+			Classic_Enable(false);
+		}
 	}
 
 	bool autoSelect = CvarAutoSelectWave.BoolValue;	
@@ -2141,9 +2145,10 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 				Rogue_TriggerFunction(Artifact::FuncWaveStart);
 
 				if(Classic_Mode())
+				{
 					Classic_NewRoundStart(round.Cash);
+				}	
 			}
-			
 			if(wave.RelayName[0])
 				ExcuteRelay(wave.RelayName, wave.RelayFire);
 			
@@ -2322,6 +2327,17 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 					else
 					{
 						CPrintToChatAll("{green}%t","Cash Gained This Wave", CashGive);
+					}
+				}
+			}
+			if(Classic_Mode())
+			{
+				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+				{
+					int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+					if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
+					{
+						FreezeNpcInTime(entity, 3.0, true);
 					}
 				}
 			}

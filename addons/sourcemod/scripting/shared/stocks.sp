@@ -5890,6 +5890,7 @@ enum
 	TankThrowLogic = 4,
 	Boomerang = 5,
 	ShadowingSlicer = 6,
+	ReilaSlash = 7,
 }
 
 enum struct HitDetectionEnum

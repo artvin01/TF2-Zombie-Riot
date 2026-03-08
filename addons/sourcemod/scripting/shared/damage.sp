@@ -245,7 +245,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		if(!CheckInHud())
 			OnTakeDamage_ProvokedAnger(Victim_weapon);
 
-		damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon, damagePosition);
+		damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon, damagePosition, i_HexCustomDamageTypes[victim]);
 	}
 	
 	if(OnTakeDamage_ShieldLogic(victim, damagetype))
@@ -854,7 +854,7 @@ stock bool Damage_BuildingAttacker(int &attacker, float &damage)
 }
 
 #if defined ZR
-static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3])
+static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3], int zr_custom_damage)
 {
 	switch(i_CustomWeaponEquipLogic[equipped_weapon])
 	{
@@ -878,17 +878,17 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		case WEAPON_MLYNAR: // weapon_ark
 		{
 			if(!CheckInHud())
-				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon);
+				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon,0,zr_custom_damage);
 		}
 		case WEAPON_MLYNAR_PAP: // weapon_ark
 		{
 			if(!CheckInHud())
-				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1);
+				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1,zr_custom_damage);
 		}
 		case WEAPON_MLYNAR_PAP_2: // weapon_ark
 		{
 			if(!CheckInHud())
-				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 2);
+				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 2, zr_custom_damage);
 		}
 		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS, WEAPON_SKADI:
 		{
@@ -1371,9 +1371,15 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
         {
            return PurgeKit_NPCTakeDamage_Rampager(attacker, victim, damage, weapon, damagetype);
 		}
+        case WEAPON_BRICK:
+        {
+            if(!CheckInHud())
+				return Brick_NPCTakeDamage_Do(attacker, inflictor, victim, damage, weapon, damagetype);
+		}
 	}
 #endif
 
+	
 #if defined RPG
 	if(!CheckInHud())
 	{
@@ -2199,7 +2205,7 @@ void DownedOrKilledClient_Feedback(int client, int attacker, float damage, int d
 	else
 	{
 #if defined ZR
-		if (!b_NameNoTranslation[attacker])
+		if (b_NameNoTranslation[attacker])
 			Format(AttackerWho, sizeof(AttackerWho), "%s",c_NpcName[attacker]);
 		else
 #endif

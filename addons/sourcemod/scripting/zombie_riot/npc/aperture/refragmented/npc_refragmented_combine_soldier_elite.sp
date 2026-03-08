@@ -299,9 +299,7 @@ public void RefragmentedCombineElite_ClotThink(int iNPC)
 			if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index) && flDistanceToTarget > 62500 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
-				int projectile = npc.FireParticleRocket(vPredictedPos, 3000.0, 400.0, 150.0, "burningplayer_blueglow", true);
-				SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-				SDKHook(projectile, SDKHook_StartTouch, Gay_Rocket_Particle_StartTouch);
+				npc.FireParticleRocket(vPredictedPos, 700.0, 400.0, 150.0, "burningplayer_blueglow", true);
 				npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 5.0;
 				npc.PlayRangedAttackSecondarySound();
 			}
@@ -367,7 +365,7 @@ public void RefragmentedCombineElite_ClotThink(int iNPC)
 					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 20.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					
 					npc.PlayRangedSound();
 				}
@@ -409,7 +407,7 @@ public void RefragmentedCombineElite_ClotThink(int iNPC)
 								if(target > 0) 
 								{
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 90.0, DMG_CLUB, -1, _, vecHit);
 									}
 									
 									Custom_Knockback(npc.index, target, 400.0);
@@ -459,44 +457,6 @@ public Action RefragmentedCombineElite_OnTakeDamage(int victim, int &attacker, i
 	}
 	
 	return Plugin_Changed;
-}
-
-public void Gay_Rocket_Particle_StartTouch(int entity, int target)
-{
-	if(target > 0 && target < MAXENTITIES)	//did we hit something???
-	{
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(!IsValidEntity(owner))
-		{
-			owner = 0;
-		}
-		
-		int inflictor = h_ArrowInflictorRef[entity];
-		if(inflictor != -1)
-			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
-
-		if(inflictor == -1)
-			inflictor = owner;
-			
-		float ProjectileLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-
-		if(b_should_explode[entity])	//should we "explode" or do "kinetic" damage
-		{
-			SDKHooks_TakeDamage(target, owner, inflictor, 50.0, DMG_TRUEDAMAGE, -1);	//acts like a kinetic rocket
-		}
-
-	}
-	else
-	{
-		int particle = EntRefToEntIndex(i_WandParticle[entity]);
-		//we uhh, missed?
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-	}
-	RemoveEntity(entity);
 }
 
 public void RefragmentedCombineElite_NPCDeath(int entity)

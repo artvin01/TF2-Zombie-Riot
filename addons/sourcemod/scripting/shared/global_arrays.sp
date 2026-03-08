@@ -338,7 +338,7 @@ bool b_HideCosmeticsPlayer[MAXPLAYERS];
 float f_HealDelayParticle[MAXENTITIES]={1.0, ...};
 
 bool b_IsAloneOnServer = false;
-bool b_TauntSpeedIncrease[MAXPLAYERS] = {true, ...};
+bool b_BackwardsWalkNotif[MAXPLAYERS] = {true, ...};
 Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
@@ -441,6 +441,7 @@ float f_TimeFrozenStill[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
 float f_BannerDurationActive[MAXENTITIES];
 float f_PreventMovementClient[MAXENTITIES];
+float BackwardsWarn[MAXPLAYERS];
 //0 means bad, 1 means good
 float f_BubbleProcStatus[MAXENTITIES][2];
 float f_DuelStatus[MAXENTITIES];

@@ -991,6 +991,7 @@ void NPC_ConfigSetup()
 	ImmutableHeavy_OnMapStart_NPC();
 	VanishingMatter_OnMapStart_NPC();
 	Erasus_OnMapStart_NPC();
+	ErasusDebug_OnMapStart_NPC();
 	AnnoyingSpirit_OnMapStart_NPC();
 	FogOrbHeavy_OnMapStart_NPC();
 
@@ -1727,6 +1728,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/ally/npc_allied_kahml_afterimage.sp"
 #include "npc/ally/npc_allied_kiyru_visualiser.sp"
 #include "npc/ally/npc_allied_ritualist_visualiser.sp"
+#include "npc/ally/npc_erasus_debug.sp"
 
 #include "npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "npc/raidmode_bosses/npc_blitzkrieg.sp"

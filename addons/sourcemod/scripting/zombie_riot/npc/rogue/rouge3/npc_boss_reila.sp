@@ -608,7 +608,7 @@ void ReilaSpawnBalls(int iNpc, float vecTarget[3])
 	{
 		npc.m_iBallsLeftToSpawn--;
 		npc.m_flSpawnBallsDoingCD = GetGameTime(npc.index) + 0.75;					
-		int projectile = npc.FireParticleRocket(vecTarget, 2000.0, 400.0, 150.0, "halloween_rockettrail", true);
+		int projectile = npc.FireParticleRocket(vecTarget, 500.0, 400.0, 150.0, "halloween_rockettrail", true);
 		float ang_Look[3];
 		GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
 		Initiate_HomingProjectile(projectile,
@@ -783,6 +783,10 @@ public void Reila_Rocket_Particle_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
+		if(IsIn_HitDetectionCooldown(entity,target, ReilaSlash))
+			return;
+		Set_HitDetectionCooldown(entity,target, GetGameTime() + 0.4, ReilaSlash);
+
 		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 		if(!IsValidEntity(owner))
 		{

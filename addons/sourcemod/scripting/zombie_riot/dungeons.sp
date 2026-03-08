@@ -270,6 +270,7 @@ enum struct RoomInfo
 		kv.GetString("spawn", this.Spawn, sizeof(this.Spawn));
 		kv.GetString("key", this.Key, sizeof(this.Key));
 		this.FuncStart = KvGetFunction(kv, "func_start");
+		this.CurrentCooldown = 0.0;
 		return true;
 	}
 

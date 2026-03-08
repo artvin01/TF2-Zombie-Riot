@@ -128,7 +128,7 @@ methodmap SkilledCrossbowman < CClotBody
 		npc.m_flSpeed = 220.0;
 		npc.m_iAttacksLeft = 3;
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_52.mdl",_,_, 1.5);
+		npc.m_iWearable1 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_57.mdl",_,_, 1.5);
 		SetVariantInt(4);
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 

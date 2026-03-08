@@ -2285,6 +2285,16 @@
 		"it"	"Potenziamento di Domai Nascosto"
 		"ko"	"강화 영역 관리용"
 	}
+	"Powered Brick"
+	{
+		"en"	"Powered Brick"
+		"ko"	"강화된 벽돌"
+	}
+	"Powered Brick Desc"
+	{
+		"en"	"Your brick will guranteed headshot.\nGain 25％ attackspeed."
+		"ko"	"당신의 벽돌이 반드시 헤드샷으로 적중합니다.\n공격 속도가 +25％ 증가합니다."
+	}
 	"Empowering Domain"
 	{
 		"en"	"Empowering Domain"

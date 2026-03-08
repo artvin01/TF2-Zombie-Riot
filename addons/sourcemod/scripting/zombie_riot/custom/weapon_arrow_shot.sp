@@ -6,10 +6,19 @@ static int Arrows_Ability_Shot[MAXPLAYERS+1]={0, ...};
 #define SPLIT_ANGLE_OFFSET 2.0
 
 #define SOUND_ARROW_SHOOT		"weapons/bow_shoot.wav"
+#define BRICK_MODEL "models/props_debris/concrete_cynderblock001.mdl"
 
 public void Weapon_Arrow_Shoot_Map_Precache()
 {
 	PrecacheSound(SOUND_ARROW_SHOOT);
+	PrecacheModel(BRICK_MODEL);
+	PrecacheSound("physics/concrete/rock_impact_hard1.wav");
+	PrecacheSound("physics/concrete/rock_impact_hard2.wav");
+	PrecacheSound("physics/concrete/rock_impact_hard3.wav");
+	PrecacheSound("physics/concrete/rock_impact_hard4.wav");
+	PrecacheSound("physics/concrete/rock_impact_hard5.wav");
+	PrecacheSound("physics/concrete/rock_impact_hard6.wav");
+	PrecacheSound("weapons/slam/throw.wav");
 }
 
 public void Weapon_Shoot_Arrow(int client, int weapon, bool crit, int slot)
@@ -519,4 +528,167 @@ public void Weapon_Shoot_Arrow_Crossbow_PAP_2(int client, int weapon, bool crit,
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 	}
+}
+
+
+public void WeaponShootBrick(int client, int weapon, bool crit, int slot)
+{
+	float damage = 50.0;
+	damage *= Attributes_Get(weapon, 2, 1.0);
+	damage *= Attributes_Get(weapon, 1, 1.0);
+	b_IsABow[weapon] = true;
+
+		
+	float fAng[3], fPos[3];
+	GetClientEyeAngles(client, fAng);
+	GetClientEyePosition(client, fPos);
+	EmitSoundToAll("weapons/slam/throw.wav", weapon, SNDCHAN_WEAPON, 80, _, 1.0);
+
+	float speed = 3500.0;
+	speed *= Attributes_Get(weapon, 103, 1.0);
+	speed *= Attributes_Get(weapon, 104, 1.0);
+	speed *= Attributes_Get(weapon, 475, 1.0);
+	int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, -1, weapon, "bullet_distortion_trail_tracer");
+	ApplyCustomModelToWandProjectile(projectile, "models/props_debris/concrete_cynderblock001.mdl", 0.8, "");
+	WandProjectile_ApplyFunctionToEntity(projectile, BrickTouchStart);
+}
+
+public void BrickTouchStart(int entity, int target)
+{
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
+	if (target > 0)	
+	{
+		//Code to do damage position and ragdolls
+		static float angles[3];
+		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
+		float vecForward[3];
+		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+		static float Entity_Position[3];
+		WorldSpaceCenter(target, Entity_Position);
+		static float PositionMe[3];
+		WorldSpaceCenter(entity, PositionMe);
+
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
+		float PushforceDamage[3];
+		CalculateDamageForce(vecForward, 10000.0, PushforceDamage);
+	//	SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, PushforceDamage, Entity_Position);	// 2048 is DMG_NOGIB?
+		float speed = 2600.0;
+		int Arrow = SDKCall_CTFCreateArrow(PositionMe, angles, speed, 0.1, 8, owner, owner);
+		if(IsValidEntity(Arrow))
+		{
+			if(HasSpecificBuff(owner, "Powered Brick"))
+				ApplyStatusEffect(owner, Arrow, "Powered Brick", 9999.0);
+
+			SetEntityCollisionGroup(Arrow, 27);
+			SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, f_WandDamage[entity], true);	// Damage
+		//	SetEntData(Arrow, FindSendPropInfo("CTFProjectile_Arrow", "m_iProjectileType ") -1, 1, true);	// m_bPenetrate
+			SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", weapon);
+			SetEntPropEnt(Arrow, Prop_Send, "m_hLauncher", weapon);
+			SetEntProp(Arrow, Prop_Send, "m_bCritical", false);
+			SetEntPropFloat(Arrow, Prop_Send, "m_flModelScale", 0.0);
+			b_MuteArrowSound[Arrow] = true;
+			b_MuteArrowSound[owner] = true;
+			b_IsEntityNeverTranmitted[Arrow] = true;
+			Update_TransmitState(Arrow);
+			SDKCall_StartTouch(Arrow, target);
+		}
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		PlayBrickSound(entity);
+		RemoveEntity(entity);
+	}
+	else if(target == 0)
+	{
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		PlayBrickSound(entity);
+		RemoveEntity(entity);
+	}
+}
+
+
+void PlayBrickSound(int entity)
+{
+	switch(GetRandomInt(1,6))
+	{
+		case 1:
+		{
+			EmitSoundToAll("physics/concrete/rock_impact_hard1.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard1.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard1.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+		}
+		case 2:
+		{
+			EmitSoundToAll("physics/concrete/rock_impact_hard2.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard2.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard2.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+		}
+		case 3:
+		{
+			EmitSoundToAll("physics/concrete/rock_impact_hard3.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard3.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard3.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+		}
+		case 4:
+		{
+			EmitSoundToAll("physics/concrete/rock_impact_hard4.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard4.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard4.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+		}
+		case 5:
+		{
+			EmitSoundToAll("physics/concrete/rock_impact_hard5.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard5.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard5.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+		}
+		case 6:
+		{
+			EmitSoundToAll("physics/concrete/rock_impact_hard6.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard6.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard6.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+		}
+	}
+}
+
+
+
+public float Brick_NPCTakeDamage_Do(int attacker, int inflictor, int victim, float damage, int weapon, int &damagetype)
+{
+	if(!(damagetype & DMG_CRIT))
+	{
+		if(HasSpecificBuff(attacker, "Powered Brick") || HasSpecificBuff(inflictor, "Powered Brick"))
+		{
+			damagetype |= DMG_CRIT;
+		}
+		return damage;
+	}
+
+	//we hit a headshot, what do ?
+	ApplyStatusEffect(attacker, attacker, "Powered Brick", 4.0);
+	return damage;
+}
+
+
+void StatusEffects_BrickWeapon()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Powered Brick");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "PB");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= (1.0 / 1.25);
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }

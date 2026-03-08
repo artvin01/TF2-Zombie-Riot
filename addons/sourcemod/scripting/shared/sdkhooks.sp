@@ -2266,7 +2266,10 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			Rogue_PlayerDowned(victim);	
 			
 			//there are players still left, down them.
-			if((SpecterCheckIfAutoRevive(victim) || i_AmountDowned[victim] < (2 + Dungeon_DownedBonus())) && !HasSpecificBuff(victim, "Nightmare Terror"))
+			int DownsLeft = 2;
+			if(ZR_Get_Modifier() == PREFIX_ONESTAND)
+				DownsLeft = 3;
+			if((SpecterCheckIfAutoRevive(victim) || i_AmountDowned[victim] < (DownsLeft + Dungeon_DownedBonus())) && !HasSpecificBuff(victim, "Nightmare Terror"))
 			{
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 12");
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
@@ -2531,7 +2534,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 {
 	if(entity <= MaxClients)
 	{
-		//block shield sounds
+		//block shield soundsg
 		if(StrContains(sample, "medi_shield_deploy.wav", true) != -1 || StrContains(sample, "vo/medic_mvm_heal_shield", true) != -1)
 		{
 			return Plugin_Handled;
@@ -2582,7 +2585,18 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		}
 	}
 */
-	
+	if(entity > 0)
+	{
+		if(b_MuteArrowSound[entity])
+		{
+			//Removes arrow sound that we forced in
+			if(StrContains(sample, "weapons/fx/rics/arrow_impact_flesh", true) != -1)
+			{
+				b_MuteArrowSound[entity] = false;
+				return Plugin_Handled;
+			}
+		}
+	}
 	if(BetWar_Mode())
 	{
 		if(entity <= MaxClients && entity > 0)

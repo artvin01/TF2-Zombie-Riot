@@ -188,7 +188,7 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 //model uses self made IK rigs, to not break the top stuff.
 #define COMBINE_CUSTOM_2_MODEL 		"models/zombie_riot/combine_attachment_police_secondmodel_24.mdl"
 
-#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_52.mdl"
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_57.mdl"
 /*
 	1 - sensal scythe
 	2 - scythe_throw
@@ -495,6 +495,7 @@ int f_ArrowTrailParticle[MAXENTITIES]={INVALID_ENT_REFERENCE, ...};
 bool b_IsEntityAlwaysTranmitted[MAXENTITIES];
 bool b_IsEntityNeverTranmitted[MAXENTITIES];
 int b_NoHealthbar[MAXENTITIES];
+bool b_MuteArrowSound[MAXENTITIES];
 
 float f_AprilFoolsSetStuff[MAXENTITIES];
 //Arrays for npcs!
@@ -1574,6 +1575,7 @@ public void OnClientPutInServer(int client)
 		return;
 	}
 #endif
+	BackwardsWarn[client] = 0.0;
 	b_GivePlayerHint[client] = false;
 	f_ClientConnectTime[client] = GetGameTime() + 30.0;
 	//do cooldown upon connection.
@@ -1867,8 +1869,34 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 		}
 	}
-	
 	static int holding[MAXPLAYERS];
+	if(b_BackwardsWalkNotif[client])
+	{
+		if(holding[client] & IN_BACK)
+		{
+			if(BackwardsWarn[client])
+			{
+				if(BackwardsWarn[client] < GetGameTime())
+				{
+					SetHudTextParams(-1.0, 0.6, 2.25, 255, 125, 125, 255);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "Backwards Setting", client);	
+					BackwardsWarn[client] = FAR_FUTURE;
+				}
+			}
+			if(!(buttons & IN_BACK))
+			{
+				if(BackwardsWarn[client] != FAR_FUTURE)
+					BackwardsWarn[client] = 0.0;
+				holding[client] &= ~IN_BACK;
+			}
+		}
+		else if(buttons & IN_BACK)
+		{
+			holding[client] |= IN_BACK;
+			if(BackwardsWarn[client] != FAR_FUTURE)
+				BackwardsWarn[client] = GetGameTime() + 3.0;
+		}
+	}
 	if(holding[client] & IN_ATTACK)
 	{
 		if(!(buttons & IN_ATTACK))
@@ -3390,29 +3418,26 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 			{
 				Viewchange_UpdateDelay(client);
 
-				if(!b_TauntSpeedIncrease[client])
+				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon_holding != -1)
 				{
-					int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-					if(weapon_holding != -1)
+					static char classname[64];
+					GetEntityClassname(weapon_holding, classname, sizeof(classname));
+					if(TF2_GetClassnameSlot(classname, weapon_holding) == TFWeaponSlot_Melee)
 					{
-						static char classname[64];
-						GetEntityClassname(weapon_holding, classname, sizeof(classname));
-						if(TF2_GetClassnameSlot(classname, weapon_holding) == TFWeaponSlot_Melee)
-						{
-							float attack_speed;
+						float attack_speed;
+					
+						attack_speed = 1.0 / Attributes_Get(weapon_holding, 6, 1.0);
 						
-							attack_speed = 1.0 / Attributes_Get(weapon_holding, 6, 1.0);
-							
-							if(attack_speed > 5.0)
-							{
-								attack_speed *= 0.5; //Too fast! It makes animations barely play at all
-							}
-							Attributes_Set(client, 201, attack_speed);
+						if(attack_speed > 5.0)
+						{
+							attack_speed *= 0.5; //Too fast! It makes animations barely play at all
 						}
-						else
-						{	
-							Attributes_Set(client, 201, 1.0);
-						}
+						Attributes_Set(client, 201, attack_speed);
+					}
+					else
+					{	
+						Attributes_Set(client, 201, 1.0);
 					}
 				}
 			}
