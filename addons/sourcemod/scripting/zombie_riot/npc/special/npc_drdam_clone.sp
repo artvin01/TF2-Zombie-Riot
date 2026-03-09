@@ -140,6 +140,7 @@ methodmap DrDamClone < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
+		b_thisNpcIsAMiniboss[npc.index] = true;
 		float wave = float(Waves_GetRoundScale()+1);
 		wave *= 0.133333;
 		npc.m_flWaveScale = wave;

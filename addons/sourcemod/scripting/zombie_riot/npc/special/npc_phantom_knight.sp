@@ -171,6 +171,7 @@ methodmap PhantomKnight < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
+		b_thisNpcIsAMiniboss[npc.index] = true;
 		float wave = float(Waves_GetRoundScale()+1); //Wave scaling
 		
 		wave *= 0.133333;
