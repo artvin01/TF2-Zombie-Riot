@@ -260,6 +260,7 @@ methodmap FallenWarrior < CClotBody
 		}
 		npc.m_bDissapearOnDeath = true;
 
+		b_thisNpcIsAMiniboss[npc.index] = true;
 		float wave = float(Waves_GetRoundScale()+1);
 		wave *= 0.133333;
 		npc.m_flWaveScale = wave;

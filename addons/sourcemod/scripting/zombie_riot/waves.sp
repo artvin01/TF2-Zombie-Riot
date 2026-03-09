@@ -4450,11 +4450,11 @@ void Waves_EnemySpawned(int entity)
 		Call_PushCell(entity);
 		Call_Finish();
 	}
-	if(!b_thisNpcIsARaid[entity] && XenoExtraLogic(true))
+	if(!b_thisNpcIsARaid[entity] && !b_thisNpcIsAMiniboss[entity] && XenoExtraLogic(true))
 	{
 		ApplyStatusEffect(entity, entity, "Xeno's Territory", 99999.0);
 	}
-	if(!b_thisNpcIsARaid[entity] && FishExtraLogic(true))
+	if(!b_thisNpcIsARaid[entity] && !b_thisNpcIsAMiniboss[entity] && FishExtraLogic(true))
 	{
 		ApplyStatusEffect(entity, entity, "Corrupted Godly Power", 99999.0);
 	}

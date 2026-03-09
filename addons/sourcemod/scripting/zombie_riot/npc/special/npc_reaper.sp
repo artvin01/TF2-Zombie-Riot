@@ -183,6 +183,7 @@ methodmap GrimReaper < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Reaper_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Reaper_Think);
 		
+		b_thisNpcIsAMiniboss[npc.index] = true;
 		float wave = float(Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
