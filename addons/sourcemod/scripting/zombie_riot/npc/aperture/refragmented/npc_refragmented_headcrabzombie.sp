@@ -182,11 +182,6 @@ public void RefragmentedHeadcrabZombie_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
-
-	if(HasSpecificBuff(npc.index, "Quantum Entanglement"))
-	{
-		RemoveSpecificBuff(npc.index, "Quantum Entanglement");
-	}
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
