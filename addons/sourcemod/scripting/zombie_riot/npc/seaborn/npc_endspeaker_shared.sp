@@ -273,9 +273,9 @@ methodmap EndSpeaker < CClotBody
 				if(entity != -1)
 				{
 					DispatchKeyValue(entity, "model", "models/props_island/crocodile/crocodile.mdl");
-					DispatchKeyValue(entity, "modelscale", "2.5");
 					DispatchKeyValue(entity, "solid", "0");
 					DispatchSpawn(entity);
+					SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 2.5);
 
 					TeleportEntity(entity, vecTarget, NULL_VECTOR, NULL_VECTOR);
 

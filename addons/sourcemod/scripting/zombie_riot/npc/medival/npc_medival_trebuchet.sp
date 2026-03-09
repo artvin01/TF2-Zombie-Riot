@@ -259,11 +259,11 @@ public Action Smite_Timer_Trebuchet(Handle Smite_Logic, DataPack pack)
 		if(IsValidEntity(prop2))
 		{
 			DispatchKeyValue(prop2, "model", "models/props_junk/rock001a.mdl");
-			DispatchKeyValue(prop2, "modelscale", "2.00");
 			DispatchKeyValue(prop2, "StartDisabled", "false");
 			DispatchKeyValue(prop2, "Solid", "0");
 			SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
 			DispatchSpawn(prop2);
+			SetEntPropFloat(prop2, Prop_Send, "m_flModelScale", 2.0);
 			SetEntityCollisionGroup(prop2, 1);
 			AcceptEntityInput(prop2, "DisableShadow");
 			AcceptEntityInput(prop2, "DisableCollision");

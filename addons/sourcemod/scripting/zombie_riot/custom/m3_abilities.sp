@@ -2047,7 +2047,6 @@ stock int Drop_Prop(int client, float fPos[3], float PropSpeed=1200.0, const cha
 		DispatchKeyValueVector(PropMove, "movedir", Down);
 		DispatchKeyValue(PropMove, "targetname", PropNeam_patch);
 		DispatchKeyValue(PropMove, "movedir", "90 0 0");
-		DispatchKeyValue(PropMove, "modelscale", "3");
 		Format(buffer, sizeof(buffer), "%.2f", 5000.0);
 		DispatchKeyValue(PropMove, "movedistance", buffer);
 		Format(buffer, sizeof(buffer), "%.2f", PropSpeed);
@@ -2056,6 +2055,7 @@ stock int Drop_Prop(int client, float fPos[3], float PropSpeed=1200.0, const cha
 		DispatchKeyValue(PropMove, "stopsound", "none");
 		TeleportEntity(PropMove, fPos, NULL_VECTOR, NULL_VECTOR);
 		DispatchSpawn(PropMove);
+		SetEntPropFloat(PropMove, Prop_Send, "m_flModelScale", 3.0);
 		
 		int Prop = CreateEntityByName("prop_dynamic");
 		if(IsValidEntity(Prop))

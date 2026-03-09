@@ -1658,7 +1658,6 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 		if(IsValidEntity(DroneSignal))
 		{
 			DispatchKeyValue(DroneSignal, "model", "models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl");
-			DispatchKeyValue(DroneSignal, "modelscale", "1.00");
 			DispatchKeyValue(DroneSignal, "StartDisabled", "false");
 			DispatchKeyValue(DroneSignal, "Solid", "0");
 			SetEntProp(DroneSignal, Prop_Data, "m_nSolidType", 0);

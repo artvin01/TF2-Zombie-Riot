@@ -46,11 +46,11 @@ enum struct BlockEnum
 			DispatchKeyValueInt(entity, "skin", this.Skin);
 			DispatchKeyValue(entity, "solid", "6");
 			DispatchKeyValueInt(entity, "renderamt", this.Render);
-			DispatchKeyValueFloat(entity, "modelscale", this.Scale);
 			DispatchKeyValue(entity, "rendercolor", this.Color);
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", MIN_FADE_DISTANCE);
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", MAX_FADE_DISTANCE);
 			DispatchSpawn(entity);
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
 
 			for(int i; i < 3; i++)
 			{
@@ -259,8 +259,8 @@ void Plots_ZoneCached()
 				DispatchKeyValue(prop, "targetname", "rpg_fortress");
 				DispatchKeyValue(prop, "model", PlatformModel);
 				DispatchKeyValue(prop, "solid", "2");
-				DispatchKeyValueFloat(prop, "modelscale", PlatformScale);
 				DispatchSpawn(prop);
+				SetEntPropFloat(prop, Prop_Send, "m_flModelScale", PlatformScale);
 				
 				for(int i; i < 3; i++)
 				{

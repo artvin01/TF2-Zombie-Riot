@@ -1593,7 +1593,6 @@ static stock void RenderWaypoints(int client)
 						DispatchKeyValueVector(flag, "origin", pos);
 						DispatchKeyValueVector(flag, "angles", {0.0, -135.0, 0.0});
 						DispatchKeyValue(flag, "model", FLAG_MODEL);
-						DispatchKeyValue(flag, "modelscale", "1.0");
 						DispatchKeyValue(flag, "skin", "2");
 						DispatchKeyValue(flag, "solid", "0");
 

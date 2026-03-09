@@ -65,8 +65,7 @@ enum struct Yamato_Blades
 		{
 			this.Offset_Times = GetGameTime()+0.25;
 			DispatchKeyValue(prop, "model", RUINA_POINT_MODEL);
-			
-			DispatchKeyValue(prop, "modelscale", "0.01");
+		
 			
 
 			int ModelApply = ApplyCustomModelToWandProjectile(prop, RUINA_CUSTOM_MODELS_2, 1.0, "");
@@ -87,6 +86,7 @@ enum struct Yamato_Blades
 			DispatchKeyValue(prop, "solid", "0"); 
 			
 			DispatchSpawn(prop);
+			SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 0.001);
 			
 			ActivateEntity(prop);
 			
