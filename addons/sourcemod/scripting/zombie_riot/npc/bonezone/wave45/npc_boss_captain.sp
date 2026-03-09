@@ -828,7 +828,7 @@ public Action Captain_UnhideAnchor(Handle timer, int ref)
 	int ent = EntRefToEntIndex(ref);
 	if (IsValidEntity(ent))
 	{
-		SetEntPropFloat(ent, Prop_Send, "m_flModelScale", CAPTAIN_SCALE);
+		SetEntPropFloat(ent, Prop_Send, "m_flModelScale", StringToFloat(CAPTAIN_SCALE));
 	}
 
 	return Plugin_Continue;
