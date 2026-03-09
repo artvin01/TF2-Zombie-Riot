@@ -607,7 +607,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		i_FailedTriesUnstuck[npc][1] = 0;
 		flNpcCreationTime[npc] = GetGameTime();
 		DispatchSpawn(npc); //Do this at the end :)
-		SetEntPropFloat(npc, Prop_Send, "m_flModelScale", modelscale);
+		SetEntPropFloat(npc, Prop_Send, "m_flModelScale", StringToFloat(modelscale));
 
 	//	if(NpcTypeLogic == NORMAL_NPC)
 	//Crashes
