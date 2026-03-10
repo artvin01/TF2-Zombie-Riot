@@ -420,7 +420,7 @@ void HunterSelfDefense(Hunter npc, float gameTime, int target, int usage)
 
 		if(gameTime > npc.m_flNextMeleeAttack)
 		{
-			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.5))
 			{
 				int Enemy_I_See;
 				Enemy_I_See = Can_I_See_Enemy(npc.index, target);
