@@ -2063,7 +2063,6 @@ static void RocketBarrage_Think(DataPack pack)
 		if(IsValidEntity(prop2))
 		{
 			DispatchKeyValue(prop2, "model", "models/props_combine/headcrabcannister01a.mdl");
-			DispatchKeyValue(prop2, "modelscale", "1.00");
 			DispatchKeyValue(prop2, "StartDisabled", "false");
 			DispatchKeyValue(prop2, "Solid", "0");
 			SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);

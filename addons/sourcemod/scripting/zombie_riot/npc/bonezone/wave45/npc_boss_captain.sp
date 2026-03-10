@@ -774,7 +774,7 @@ public void Captain_AnimEvent(int entity, int event)
 			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
 			int anchor = npc.FireRocket(targPos, 0.0, Keelhaul_Velocity, "models/weapons/w_models/w_drg_ball.mdl");
-			DispatchKeyValueFloat(anchor, "modelscale", 0.01);
+			SetEntPropFloat(anchor, Prop_Send, "m_flModelScale", 0.01);
 			if (IsValidEntity(anchor))
 			{
 				if (h_NpcSolidHookType[anchor] != 0)
@@ -800,7 +800,7 @@ public void Captain_AnimEvent(int entity, int event)
 					TeleportEntity(prop, pos, ang);
 					SetParent(anchor, prop);
 
-					DispatchKeyValueFloat(prop, "modelscale", 0.01);
+					SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 0.01);
 					CreateTimer(0.1, Captain_UnhideAnchor, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 
 					Anchor_Prop[anchor] = EntIndexToEntRef(prop);
@@ -827,7 +827,9 @@ public Action Captain_UnhideAnchor(Handle timer, int ref)
 {
 	int ent = EntRefToEntIndex(ref);
 	if (IsValidEntity(ent))
-		DispatchKeyValueFloat(ent, "modelscale", StringToFloat(CAPTAIN_SCALE));
+	{
+		SetEntPropFloat(ent, Prop_Send, "m_flModelScale", StringToFloat(CAPTAIN_SCALE));
+	}
 
 	return Plugin_Continue;
 }
@@ -1047,7 +1049,7 @@ void Captain_ShootProjectile(Captain npc, float vicLoc[3], float startPos[3], fl
 		ParticleEffectAt_Parent(startPos, PARTICLE_PEARLS_TRAIL, entity, "attach_fuse");
 		SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
 		SetEntityGravity(entity, Pearls_Gravity);
-		DispatchKeyValueFloat(entity, "modelscale", 1.25);
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.25);
 	}
 }
 

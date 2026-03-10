@@ -925,7 +925,7 @@ void Jester_ShootProjectile(JesterBones npc, float bombPos[3], float bombAng[3],
 		{
 			SDKHook(entity, SDKHook_Touch, Mondo_Touch);
 			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Mondo_DontExplode);
-			DispatchKeyValueFloat(entity, "modelscale", 3.0);
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 3.0);
 			SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
 			SetEntityGravity(entity, (MondoDeathBomb ? BONES_MONDO_GRAVITY_DEATH : BONES_MONDO_GRAVITY));
 			b_IsDeathBomb[entity] = MondoDeathBomb;

@@ -242,9 +242,9 @@ public void Vamp_ThrowKnives(int client, int weapon, int BleedStacks, float DMG_
 			DispatchKeyValue(prop, "targetname", "knifeModel"); 
 			DispatchKeyValue(prop, "spawnflags", "2"); 
 			DispatchKeyValue(prop, "model", modelName);
-			DispatchKeyValue(prop, "modelscale", "2.0"); //comically large cleaver :)
 			DispatchSpawn(prop);
 			MakeObjectIntangeable(prop);
+			SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 2.0);//comically large cleaver :)
 			
 			TeleportEntity(prop, loc, Angles, NULL_VECTOR);
 			SetParent(projectile, prop);

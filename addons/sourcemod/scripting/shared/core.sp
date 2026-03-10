@@ -538,6 +538,7 @@ float fl_AttackHappensMinimum[MAXENTITIES];
 float fl_AttackHappensMaximum[MAXENTITIES];
 bool b_AttackHappenswillhappen[MAXENTITIES];
 bool b_thisNpcIsABoss[MAXENTITIES];
+bool b_thisNpcIsAMiniboss[MAXENTITIES];
 bool b_thisNpcIsARaid[MAXENTITIES]; //This is used for scaling.
 bool b_ShowNpcHealthbar[MAXENTITIES];
 bool b_TryToAvoidTraverse[MAXENTITIES];

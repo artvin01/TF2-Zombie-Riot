@@ -378,7 +378,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 					{
 						enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
 						enemy.Health = RoundToFloor((7700000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
+						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.4);
 						enemy.Data = "enraged";
 					}
 					default: 
@@ -397,13 +397,13 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 					{
 						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
 						enemy.Health = RoundToFloor((15000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.85);
+						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 					}
 					default: 
 					{
 						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
 						enemy.Health = RoundToFloor((15000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.85);
+						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 					}
 				}
 			}

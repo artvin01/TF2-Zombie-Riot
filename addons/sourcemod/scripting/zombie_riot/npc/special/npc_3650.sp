@@ -223,6 +223,7 @@ methodmap ThirtySixFifty < CClotBody
 			Variables
 		*/
 
+		b_thisNpcIsAMiniboss[npc.index] = true;
 		float wave = float(Waves_GetRoundScale()+1);
 		wave *= 0.133333;
 		npc.m_flWaveScale = wave;
@@ -239,7 +240,7 @@ methodmap ThirtySixFifty < CClotBody
 		npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.5;
 		b_NoHealthbar[npc.index] = 0;
 		GiveNpcOutLineLastOrBoss(npc.index, true);
-		b_thisNpcHasAnOutline[npc.index] = true; 
+		b_thisNpcHasAnOutline[npc.index] = true;
 
 		npc.m_flAbilityOrAttack0 = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;

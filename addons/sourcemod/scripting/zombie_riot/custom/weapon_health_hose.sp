@@ -534,7 +534,6 @@ bool SpawnHealthkit_SyringeGun(int client, float VectorGoal[3])
 	{
 		b_ToggleTransparency[prop] = false;
 		DispatchKeyValue(prop, "model", HEALTH_MODEL_SMALL);
-		DispatchKeyValue(prop, "modelscale", "1.0");
 		DispatchKeyValue(prop, "StartDisabled", "false");
 		DispatchKeyValue(prop, "Solid", "2");
 	//	SetEntProp(prop, Prop_Data, "m_nSolidType", 0);

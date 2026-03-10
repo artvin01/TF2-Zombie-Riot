@@ -4819,7 +4819,7 @@
 	}
 	"Therapy Desc"
 	{
-		"en"	"Kit has no self resistance, you instead have high hp regen as youre a doctor.\nYour pistol cannot reload.\nDebuff the enemy with your M2, a melee attack.\nOn melee hit, gain ammo."
+		"en"	"Kit has no self resistance, you instead have high hp regen as you're a doctor.\nYour pistol cannot reload.\nDebuff the enemy with your M2, a melee attack.\nOn melee hit, gain ammo.\nYou revive allies 30％ faster."
 		"it"	"Kit non ha resistenza propria, ma hai un'elevata rigenerazione dei punti salute poiché sei un medico.\nLa tua pistola non può essere ricaricata.\nDebuffa il nemico con il tuo M2, un attacco in mischia.\nQuando colpisci in mischia, ottieni munizioni."
 		"ko"	"피해 저항력은 없지만, 높은 초당 체력 회복량을 보유.\n-권총은 재장전 불가\n-대상 적에게 M2로 근접 공격 적중시 디버프를 부여.\n-근접 공격 적중시, 탄약 획득"
 	}
@@ -4837,7 +4837,7 @@
 	}
 	"Taurus Revolver Desc"
 	{
-		"en"	"A very strong revolver that holds 5 bullets per clip.\nExtremely long reload time."
+		"en"	"A very strong revolver that holds 5 bullets per clip."
 		"it"	"Una pistola molto potente che contiene 5 proiettili per caricatore.\nTempo di ricarica estremamente lungo."
 		"ko"	"최대 5발의 탄을 장전할 수 있는 매우 강한 리볼버입니다.\n재장전 속도가 극도로 느립니다."
 	}

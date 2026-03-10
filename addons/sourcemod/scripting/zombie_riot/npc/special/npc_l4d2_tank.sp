@@ -197,7 +197,7 @@ methodmap L4D2_Tank < CClotBody
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 
-		
+		b_thisNpcIsAMiniboss[npc.index] = true;
 		float wave = float(Waves_GetRoundScale()+1);
 		
 		wave *= 0.133333;

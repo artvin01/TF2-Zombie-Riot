@@ -2332,11 +2332,10 @@ int Ruina_Create_Entity(float Loc[3], float duration, int noclip = false)
 	
 		DispatchKeyValue(prop, "model", RUINA_POINT_MODEL);
 		
-		DispatchKeyValue(prop, "modelscale", "0.001");
-		
 		DispatchKeyValue(prop, "solid", "0"); 
 		
 		DispatchSpawn(prop);
+		SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 0.001);
 		
 		ActivateEntity(prop);
 		

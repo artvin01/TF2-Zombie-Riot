@@ -226,7 +226,7 @@ public Action flip_extra(Handle timer, int client)
 
 			SetEntProp(entity, Prop_Send, "m_usSolidFlags", 8);			// Fire trigger even if not solid (8)
 			
-			DispatchKeyValueFloat(entity, "modelscale", 0.65);
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.65);
 		
 			Coin_flip[client] = EntIndexToEntRef(entity);
 			mb_coin[entity] = true;

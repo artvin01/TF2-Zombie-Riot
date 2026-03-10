@@ -1008,7 +1008,7 @@ void Godfather_ShootProjectile(Godfather npc, float vicLoc[3], float startPos[3]
 			ParticleEffectAt_Parent(startPos, PARTICLE_GODFATHER_MOLOTOV, entity);
 			SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
 			SetEntityGravity(entity, GodfatherMolotov_Gravity);
-			DispatchKeyValueFloat(entity, "modelscale", 1.66);
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.66);
 		}
 	}
 }
