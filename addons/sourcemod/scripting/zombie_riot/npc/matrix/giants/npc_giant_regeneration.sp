@@ -379,6 +379,8 @@ public void GiantRegeneration_ClotThink(int iNPC)
 								if(target > 0) 
 								{
 									float damage = 45.0;
+									if(ShouldNpcDealBonusDamage(target))
+										damage *= 5.0;
 
 									SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 

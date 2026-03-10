@@ -336,6 +336,7 @@ int GrigoriMaxSells = 3;
 int Bob_Exists_Index = -1;
 int CurrentPlayers;
 ConVar zr_voteconfig;
+ConVar zr_disable_barney_rename;
 ConVar zr_tagblacklist;
 ConVar zr_tagwhitelist;
 ConVar zr_tagwhitehard;

@@ -306,7 +306,7 @@ public void CorruptedBarney_ClotThink(int iNPC)
 			if(IsValidClient(client))
 			{
 				Client_Shake(client, 0, 7.0, 7.0, 0.1, false);
-				if(i_RaidGrantExtra[npc.index] == 1)
+				if(i_RaidGrantExtra[npc.index] == 1 && !zr_disable_barney_rename.BoolValue)
 				{
 					FormatEx(Buffer, sizeof(Buffer), "Barney %i", GetRandomInt(1, 2500));
 					SetClientName(client, Buffer);
