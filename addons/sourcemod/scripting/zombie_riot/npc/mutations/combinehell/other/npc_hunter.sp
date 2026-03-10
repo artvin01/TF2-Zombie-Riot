@@ -46,7 +46,7 @@ static char g_SkewerSounds[][] = {
 
 void Hunter_OnMapStart_NPC()
 {
-	PrecacheModel("models/zombie_riot/hl2/hunter.mdl");
+	PrecacheModel("models/zombie_riot/hl2/hunter_fix.mdl");
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
@@ -122,7 +122,7 @@ methodmap Hunter < CClotBody
 	
 	public Hunter(float vecPos[3], float vecAng[3], int ally)
 	{
-		Hunter npc = view_as<Hunter>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/hunter.mdl", "1.0", "1000", ally));
+		Hunter npc = view_as<Hunter>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/hunter_fix.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -133,8 +133,8 @@ methodmap Hunter < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
+		npc.m_iNpcStepVariation = STEPTYPE_TANK;
 
 		func_NPCDeath[npc.index] = view_as<Function>(Hunter_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Hunter_OnTakeDamage);
@@ -150,6 +150,7 @@ methodmap Hunter < CClotBody
 		npc.m_flSpeed = 300.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		npc.m_fbRangedSpecialOn = false;
 		
 		return npc;
 	}
@@ -236,7 +237,7 @@ public void Hunter_ClotThink(int iNPC)
 		}
 		if(npc.m_flAbilityOrAttack1 < gameTime && flDistanceToTarget > 62500 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < gameTime)
 		{
-			int rng = GetRandomInt(0,1);
+			int rng = GetRandomInt(1,1);
 			npc.i_AbilityUsage = rng;
 			switch(npc.i_AbilityUsage)
 			{
@@ -426,10 +427,11 @@ void HunterSelfDefense(Hunter npc, float gameTime, int target, int usage)
 
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
+					npc.m_fbRangedSpecialOn = true;
 					npc.m_iTarget = Enemy_I_See;
 					npc.AddGesture("ACT_HUNTER_MELEE_ATTACK1_VS_PLAYER");
 					npc.PlayMeleeSound();
-					npc.StartPathing();
+					npc.StopPathing();
 							
 					npc.m_flAttackHappens = gameTime + 0.50;
 					npc.m_flDoingAnimation = gameTime + 0.25;
@@ -437,8 +439,22 @@ void HunterSelfDefense(Hunter npc, float gameTime, int target, int usage)
 					return;
 				}
 			}
+			//"Code" that checks when the Hunter should start moving again after swinging
+			if(npc.m_fbRangedSpecialOn)
+			{
+				npc.StopPathing();
+				npc.m_flSpeed = 0.0;
+				npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 0.25;
+				npc.m_fbRangedSpecialOn = false;
+			}
+			if(npc.m_flRangedSpecialDelay > GetGameTime(npc.index))
+			{
+				npc.m_flSpeed = 300.0;
+				npc.StartPathing();
+			}
 		}
 	}
+	/*
 	if(npc.m_flNextRangedSpecialAttack)
 	{
 		if(npc.m_flNextRangedSpecialAttack <= gameTime)
@@ -485,4 +501,5 @@ void HunterSelfDefense(Hunter npc, float gameTime, int target, int usage)
 			}
 		}
 	}
+	*/
 }
