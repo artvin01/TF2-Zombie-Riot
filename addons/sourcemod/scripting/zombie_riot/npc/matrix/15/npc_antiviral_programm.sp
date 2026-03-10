@@ -121,7 +121,7 @@ methodmap Antiviral_Program < CClotBody
 	{
 		float BaseHpValue = 220.0;
 		if(RaidbossIgnoreBuildingsLogic())
-			BaseHpValue *= 0.6;
+			BaseHpValue *= 0.65;
 		Antiviral_Program npc = view_as<Antiviral_Program>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", MinibossHealthScaling(BaseHpValue, true), ally));
 		
 		i_NpcWeight[npc.index] = 1;
