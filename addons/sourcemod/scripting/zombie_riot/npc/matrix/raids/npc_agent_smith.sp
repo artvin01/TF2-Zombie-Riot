@@ -718,7 +718,7 @@ static void Smith_SelfDefense(AgentSmith npc, float gameTime, int target, float 
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-						Elemental_AddCorruptionDamage(targetTrace, npc.index, RoundToNearest(damage * 0.15), true, true);	
+						Elemental_AddCorruptionDamage(target, npc.index, RoundToNearest(damage * 0.15), true, true);	
 						// Hit sound
 						npc.PlayMeleeHitSound();
 					}
