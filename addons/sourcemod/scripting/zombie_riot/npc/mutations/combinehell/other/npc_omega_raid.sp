@@ -232,7 +232,7 @@ methodmap OmegaRaid < CClotBody
 		{
 			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 5;
-			npc.m_flSpeed = 250.0;
+			npc.m_flSpeed = 300.0;
 		}
 		else
 		{
