@@ -761,7 +761,7 @@ static void Smith_Infection(AgentSmith npc)
 	int victim = EntRefToEntIndex(i_Victim_Infection[npc.index]);
 	if(IsValidClient(victim) && TeutonType[victim] == TEUTON_NONE)
 	{
-		float cure_amount = 0.6;
+		float cure_amount = 0.06;
 		float vicPos[3];
 		
 		if(fl_Infection_Meter[victim] >= 10.0)
