@@ -383,20 +383,20 @@ void HunterSelfDefense(Hunter npc, float gameTime, int target, int usage)
 					if(IsValidEnemy(npc.index, target))
 					{
 						npc.m_iOverlordComboAttack++;
-						float damageDealt = 100.0;
+						float damageDealt = 250.0;
 						if(ShouldNpcDealBonusDamage(target))
-							damageDealt *= 5.0;
+							damageDealt *= 2.5;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 						// Hit sound
 						npc.PlayMeleeHitSound();
 					}
-					if(npc.m_iOverlordComboAttack >= 5)
+					if(npc.m_iOverlordComboAttack >= 3)
 					{
 						npc.AddGesture("ACT_MELEE_ATTACK1");
-						float damageDealt = 200.0;
+						float damageDealt = 500.0;
 						if(ShouldNpcDealBonusDamage(target))
-							damageDealt *= 10.0;
+							damageDealt *= 2.0;
 						StartBleedingTimer(target, npc.index,100.0, 3, -1, DMG_TRUEDAMAGE, 0);
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 						npc.m_flNextMeleeAttack = gameTime + 2.0;
