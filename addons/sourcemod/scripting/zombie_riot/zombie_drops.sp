@@ -272,7 +272,6 @@ public void SpawnNuke(int entity)
 	{
 		b_ToggleTransparency[prop] = false;
 		DispatchKeyValue(prop, "model", NUKE_MODEL);
-		DispatchKeyValue(prop, "modelscale", "0.65");
 		DispatchKeyValue(prop, "StartDisabled", "false");
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 		DispatchKeyValue(prop, "Solid", "0");
@@ -281,6 +280,7 @@ public void SpawnNuke(int entity)
 		VecOrigin[2] += 54.0;
 		TeleportEntity(prop, VecOrigin, VecAngles, NULL_VECTOR);
 		DispatchSpawn(prop);
+		SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 0.65);
 		SetEntityCollisionGroup(prop, 1);
 		AcceptEntityInput(prop, "DisableShadow");
 		AcceptEntityInput(prop, "DisableCollision");
@@ -357,7 +357,6 @@ void SpawnMaxAmmo(int entity, bool MenacinglyFlyToPlayer = false)
 	{
 		b_ToggleTransparency[prop] = false;
 		DispatchKeyValue(prop, "model", AMMO_MODEL);
-		DispatchKeyValue(prop, "modelscale", "1.0");
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 		DispatchKeyValue(prop, "StartDisabled", "false");
 		DispatchKeyValue(prop, "Solid", "0");
@@ -498,7 +497,6 @@ void SpawnHealth(int entity, bool MenacinglyFlyToPlayer = false)
 	{
 		b_ToggleTransparency[prop] = false;
 		DispatchKeyValue(prop, "model", HEALTH_MODEL);
-		DispatchKeyValue(prop, "modelscale", "1.0");
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 		DispatchKeyValue(prop, "StartDisabled", "false");
 		DispatchKeyValue(prop, "Solid", "0");
@@ -588,7 +586,6 @@ void SpawnMoney(int entity, bool MenacinglyFlyToPlayer = false)
 	{
 		b_ToggleTransparency[prop] = false;
 		DispatchKeyValue(prop, "model", MONEY_MODEL);
-		DispatchKeyValue(prop, "modelscale", "1.0");
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 		DispatchKeyValue(prop, "StartDisabled", "false");
 		DispatchKeyValue(prop, "Solid", "0");
@@ -727,7 +724,6 @@ public void SpawnGrigoriPowerup(int entity)
 	{
 		b_ToggleTransparency[prop] = false;
 		DispatchKeyValue(prop, "model", GRIGORI_POWERUP_MODEL);
-		DispatchKeyValue(prop, "modelscale", "0.65");
 		DispatchKeyValue(prop, "StartDisabled", "false");
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 		DispatchKeyValue(prop, "Solid", "0");
@@ -736,6 +732,7 @@ public void SpawnGrigoriPowerup(int entity)
 		VecOrigin[2] += 54.0;
 		TeleportEntity(prop, VecOrigin, VecAngles, NULL_VECTOR);
 		DispatchSpawn(prop);
+		SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 0.65);
 		SetEntityCollisionGroup(prop, 1);
 		AcceptEntityInput(prop, "DisableShadow");
 		AcceptEntityInput(prop, "DisableCollision");

@@ -1815,7 +1815,7 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 		
 		if(b_ruina_nerf_healing[healed_target])
 		{//the npc is a special case that needs to get less healing otherwise unfun balance happens
-			healingammount *=0.8;
+			healingammount *=0.5;
 		}
 		else if(b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target])
 		{//this npc is a raid/boss healing target
@@ -2332,11 +2332,10 @@ int Ruina_Create_Entity(float Loc[3], float duration, int noclip = false)
 	
 		DispatchKeyValue(prop, "model", RUINA_POINT_MODEL);
 		
-		DispatchKeyValue(prop, "modelscale", "0.001");
-		
 		DispatchKeyValue(prop, "solid", "0"); 
 		
 		DispatchSpawn(prop);
+		SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 0.001);
 		
 		ActivateEntity(prop);
 		

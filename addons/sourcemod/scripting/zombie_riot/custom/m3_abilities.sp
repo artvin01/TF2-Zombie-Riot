@@ -2047,7 +2047,6 @@ stock int Drop_Prop(int client, float fPos[3], float PropSpeed=1200.0, const cha
 		DispatchKeyValueVector(PropMove, "movedir", Down);
 		DispatchKeyValue(PropMove, "targetname", PropNeam_patch);
 		DispatchKeyValue(PropMove, "movedir", "90 0 0");
-		DispatchKeyValue(PropMove, "modelscale", "3");
 		Format(buffer, sizeof(buffer), "%.2f", 5000.0);
 		DispatchKeyValue(PropMove, "movedistance", buffer);
 		Format(buffer, sizeof(buffer), "%.2f", PropSpeed);
@@ -2066,6 +2065,7 @@ stock int Drop_Prop(int client, float fPos[3], float PropSpeed=1200.0, const cha
 			TeleportEntity(Prop, fPos, NULL_VECTOR, NULL_VECTOR);
 			DispatchSpawn(Prop);
 			SetParent(PropMove, Prop);
+			SetEntPropFloat(Prop, Prop_Send, "m_flModelScale", 1.25);
 		}
 		AcceptEntityInput(PropMove, "Open");
 		SetEntPropEnt(PropMove, Prop_Data, "m_hOwnerEntity", client);

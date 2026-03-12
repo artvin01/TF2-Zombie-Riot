@@ -1046,6 +1046,11 @@ methodmap Citizen < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
+	property float m_flRebelCurrentlyIntangleable
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	
 	property int m_iSeed
 	{
@@ -1688,7 +1693,13 @@ int Citizen_ReviveTicks(int entity, int amount, int client, bool NoAutoRevive = 
 			npc.m_iReviveTicks = 1;
 	}
 	if(npc.m_iReviveTicks < 1)
+	{
 		npc.SetDowned(0, client);
+		npc.UpdateCollision(true);
+		npc.m_flRebelCurrentlyIntangleable = GetGameTime() + 2.0;
+		ApplyStatusEffect(npc.index, npc.index, "Intangible", 2.0);
+		ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 2.0);
+	}
 	
 	return npc.m_iReviveTicks;
 }
@@ -2606,6 +2617,14 @@ public void Citizen_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 		return;
 	
+	if(npc.m_flRebelCurrentlyIntangleable)
+	{
+		if(npc.m_flRebelCurrentlyIntangleable < GetGameTime())
+		{
+			npc.UpdateCollision(npc.m_nDowned || npc.m_bCamo);
+			npc.m_flRebelCurrentlyIntangleable = 0.0;
+		}
+	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 
 	npc.Update();

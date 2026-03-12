@@ -2292,12 +2292,10 @@ int SSBChair_CreateProjectile(SSBChair owner, char model[255], float pos[3], flo
 		ActivateEntity(prop);
 		
 		SetEntityModel(prop, model);
-		char scaleChar[16];
-		Format(scaleChar, sizeof(scaleChar), "%f", scale);
-		DispatchKeyValue(prop, "modelscale", scaleChar);
 		
 		SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", owner.index);
 		SetEntProp(prop, Prop_Data, "m_takedamage", 0, 1);
+		SetEntPropFloat(prop, Prop_Send, "m_flModelScale", scale);
 		
 		char skinChar[16];
 		Format(skinChar, 16, "%i", skin);

@@ -1849,15 +1849,12 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 
 			SizeScale += (float(count -1) * 0.1);
 
-			char FloatString[8];
-			FloatToString(SizeScale, FloatString, sizeof(FloatString));
-
-			DispatchKeyValue(prop, "modelscale", FloatString);
 			DispatchKeyValueVector(prop, "origin",	 SpawnPropPos);
 			direction[2] -= 180.0;
 			direction[1] = GetRandomFloat(-180.0, 180.0);
 			DispatchKeyValueVector(prop, "angles",	 direction);
 			DispatchSpawn(prop);
+			SetEntPropFloat(prop, Prop_Send, "m_flModelScale", SizeScale);
 			TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
 			if(i_ColoursTEPillars[3] != 255)
 				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);

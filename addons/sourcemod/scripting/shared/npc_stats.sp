@@ -541,7 +541,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			DispatchKeyValue(npc, "model",	 model);
 			view_as<CBaseCombatCharacter>(npc).SetModel(model);
 		}
-		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		if(NpcTypeLogic == NORMAL_NPC) //No need for lagcomp on things that dont even move.
 		{
 			DispatchKeyValue(npc,	   "health",	 health);
@@ -608,6 +607,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		i_FailedTriesUnstuck[npc][1] = 0;
 		flNpcCreationTime[npc] = GetGameTime();
 		DispatchSpawn(npc); //Do this at the end :)
+		SetEntPropFloat(npc, Prop_Send, "m_flModelScale", StringToFloat(modelscale));
 
 	//	if(NpcTypeLogic == NORMAL_NPC)
 	//Crashes
@@ -3024,12 +3024,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		DispatchKeyValue(item, "model", model);
 
+		DispatchSpawn(item);
 		if(model_size != 1.0)
 		{
-		//	DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
-			DispatchKeyValueFloat(item, "modelscale", model_size);
+			SetEntPropFloat(item, Prop_Send, "m_flModelScale", model_size);
 		}
-		DispatchSpawn(item);
 		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES|EF_NOSHADOW );
 		SetEntityMoveType(item, MOVETYPE_NONE);
 		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);
@@ -3072,16 +3071,16 @@ methodmap CClotBody < CBaseCombatCharacter
 		int item = CreateEntityByName("prop_dynamic_override");
 		DispatchKeyValue(item, "model", model);
 
+
+		DispatchSpawn(item);
 		if(model_size == 1.0)
 		{
-			DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
+			SetEntPropFloat(item, Prop_Send, "m_flModelScale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
 		}
 		else
 		{
-			DispatchKeyValueFloat(item, "modelscale", model_size);
+			SetEntPropFloat(item, Prop_Send, "m_flModelScale", model_size);
 		}
-
-		DispatchSpawn(item);
 		
 		SetEntityMoveType(item, MOVETYPE_NONE);
 		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);
@@ -7459,22 +7458,6 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 		DispatchKeyValue(prop, "physicsmode", "2");
 		DispatchKeyValue(prop, "massScale", "1.0");
 		DispatchKeyValue(prop, "spawnflags", "2");
-		if(npc.m_bIsGiant)
-		{
-			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
-			{
-				DispatchKeyValue(prop, "modelscale", "1.1");
-			}
-			else
-				DispatchKeyValue(prop, "modelscale", "1.6");
-		}
-		else
-		{
-			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
-			{
-				DispatchKeyValue(prop, "modelscale", "0.8");
-			}
-		}
 
 		float Random_time = GetRandomFloat(6.0, 7.0);
 		if(EnableSilentMode || CurrentGibCount > ZR_MAX_GIBCOUNT_ABSOLUTE)
@@ -7510,6 +7493,22 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 		DispatchKeyValueVector(prop, "origin",	 TempPosition);
 		DispatchKeyValueVector(prop, "angles",	 ang);
 		DispatchSpawn(prop);
+		if(npc.m_bIsGiant)
+		{
+			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
+			{
+				SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 1.1);
+			}
+			else
+				SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 1.6);
+		}
+		else
+		{
+			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
+			{
+				SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 0.8);
+			}
+		}
 		TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, TempForce);
 		SetEntityCollisionGroup(prop, 2); //COLLISION_GROUP_DEBRIS_TRIGGER
 		CreateTimer(Random_time - 1.5, Prop_Gib_FadeSet, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);

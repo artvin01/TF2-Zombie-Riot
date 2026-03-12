@@ -236,7 +236,7 @@ methodmap AgentSmith < CClotBody
 				amount_of_people = 1.0;
 				
 			RaidModeScaling *= amount_of_people;
-			RaidModeTime = GetGameTime(npc.index) + 220.0;
+			RaidModeTime = GetGameTime(npc.index) + 240.0;
 			RaidModeScaling *= 0.85;
 			
 			PrepareSmith_Raid(npc);
@@ -502,9 +502,7 @@ static void RaidSmith_SelfDefense(AgentSmith npc, float gameTime, int target, fl
 							}
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-							Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 100 : 10);
-							//Reduce damage after dealing
-							damage *= 0.92;
+							Elemental_AddCorruptionDamage(targetTrace, npc.index, RoundToNearest(damage * 0.10), true, true);		
 							// On Hit stuff
 							bool Knocked = false;
 							
@@ -515,7 +513,8 @@ static void RaidSmith_SelfDefense(AgentSmith npc, float gameTime, int target, fl
 									if(infection)
 									{
 										TF2_StunPlayer(targetTrace, 13.0, 1.0, TF_STUNFLAGS_BIGBONK|TF_STUNFLAG_NOSOUNDOREFFECT);
-										fl_Infection_Meter[targetTrace] = 0.0;
+										//Give time to react.
+										fl_Infection_Meter[targetTrace] = -1.0;
 										fl_Cure_Meter[targetTrace] = 0.0;
 										npc.ArmorSet(_, true);
 										i_Victim_Infection[npc.index] = EntIndexToEntRef(targetTrace);
@@ -600,7 +599,7 @@ static void RaidSmith_SelfDefense(AgentSmith npc, float gameTime, int target, fl
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 				KillFeed_SetKillIcon(npc.index, "enforcer");
 
-				float damage = 12.0;
+				float damage = 60.0;
 				damage *= RaidModeScaling;
 
 				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "dxhr_sniper_rail_blue");
@@ -714,11 +713,12 @@ static void Smith_SelfDefense(AgentSmith npc, float gameTime, int target, float 
 					if(!npc.m_bFUCKYOU)
 					{
 						if(ShouldNpcDealBonusDamage(target))
-						damage *= 5.0;
+							damage *= 5.0;
 					}
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+						Elemental_AddCorruptionDamage(target, npc.index, RoundToNearest(damage * 0.15), true, true);	
 						// Hit sound
 						npc.PlayMeleeHitSound();
 					}
@@ -761,7 +761,7 @@ static void Smith_Infection(AgentSmith npc)
 	int victim = EntRefToEntIndex(i_Victim_Infection[npc.index]);
 	if(IsValidClient(victim) && TeutonType[victim] == TEUTON_NONE)
 	{
-		float cure_amount = 0.10;
+		float cure_amount = 0.06;
 		float vicPos[3];
 		
 		if(fl_Infection_Meter[victim] >= 10.0)
@@ -773,51 +773,72 @@ static void Smith_Infection(AgentSmith npc)
 		}
 		if(GetClientTeam(victim) == 2 && TeutonType[victim] == TEUTON_NONE)
 		{
+			int r = 65;
+			int g = 200;
+			int b = 65;
+			int a = 200;
+
+			float VecMe[3]; WorldSpaceCenter(npc.index, VecMe);
+			float VecVictim[3]; WorldSpaceCenter(victim, VecVictim);
+			TE_SetupBeamPoints(VecMe, VecVictim, Shared_BEAM_Laser, 0, 0, 0, 0.5, 10.0, 10.0, 5, 5.0, {65,200,65,200}, 3);
+			TE_SendToAll(0.0);
+			spawnRing(victim, 60.0 * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 2.0, 7.1, 1);
+			spawnRing(victim, 60.0 * 2.0, 0.0, 0.0, 30.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 2.0, 7.1, 1);
+			spawnRing(victim, 60.0 * 2.0, 0.0, 0.0, 60.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 2.0, 7.1, 1);
+			float damage = 15.0;
+			damage *= RaidModeScaling;
+			Elemental_AddCorruptionDamage(victim, npc.index, RoundToNearest(damage * 0.10), true, true);	
+
 			//if(!TF2_IsPlayerInCondition(victim, TFCond_Dazed))
 			//{
 			//	TF2_StunPlayer(victim, 0.1, 1.0, TF_STUNFLAG_NOSOUNDOREFFECT);
 			//}
 			float radius = 150.0;
 			GetClientAbsOrigin(victim, vicPos);
+			float DoInfection = 0.0;
 			switch(CountPlayersOnRed(2))
 			{
 				case 2:
 				{
-					fl_Infection_Meter[victim] += 0.12;
+					DoInfection += 0.12;
 				}
 				case 3, 4:
 				{
-					fl_Infection_Meter[victim] += 0.14;
+					DoInfection += 0.14;
 				}
 				case 5, 6:
 				{
-					fl_Infection_Meter[victim] += 0.16;
+					DoInfection += 0.16;
 				}
 				case 7, 8:
 				{
-					fl_Infection_Meter[victim] += 0.17;
+					DoInfection += 0.17;
 				}
 				case 9, 10:
 				{
-					fl_Infection_Meter[victim] += 0.18;
+					DoInfection += 0.18;
 				}
 				case 11, 12:
 				{
-					fl_Infection_Meter[victim] += 0.19;
+					DoInfection += 0.19;
 				}
 				case 13, 14:
 				{
-					fl_Infection_Meter[victim] += 0.20;
+					DoInfection += 0.20;
 				}
 				default: //When there's more than 14 players
 				{
-					fl_Infection_Meter[victim] += 0.22;
+					DoInfection += 0.22;
 				}
 			}
-			PrintCenterText(victim, "Your Infection is rising - %.0f％ | Cure %.0f％", (fl_Infection_Meter[victim] * 10.0), (fl_Cure_Meter[victim] * 10.0));
+			fl_Infection_Meter[victim] += (DoInfection * 0.5);
+			float Displayfor = fl_Infection_Meter[victim];
+			if(Displayfor <= 0.0)
+				Displayfor = 0.0;
+			PrintCenterText(victim, "Your Infection is rising - %.0f％ | Cure %.0f％", (Displayfor * 10.0), (fl_Cure_Meter[victim] * 10.0));
 			for(int clients = 1 ; clients <= MaxClients ; clients++)
 			{
-				if(IsValidClient(clients) && TeutonType[victim] == TEUTON_NONE)
+				if(IsValidClient(clients) && TeutonType[clients] == TEUTON_NONE && IsEntityAlive(clients))
 				{
 					if(clients != victim)
 					{
@@ -828,7 +849,7 @@ static void Smith_Infection(AgentSmith npc)
 						{
 							fl_Cure_Meter[victim] += cure_amount;
 						}
-						PrintCenterText(clients, "%N Is being infected. Stay Near him to Remove the Infection!!\n %.0f％ | Cure %.0f％", victim, (fl_Infection_Meter[victim] * 10.0), (fl_Cure_Meter[victim] * 10.0));
+						PrintCenterText(clients, "%N Is being infected. Stay Near him to Remove the Infection!!\n %.0f％ | Cure %.0f％", victim, (Displayfor * 10.0), (fl_Cure_Meter[victim] * 10.0));
 					}
 				}
 			}
@@ -962,11 +983,11 @@ static void Agent_CloningAmount(AgentSmith npc)
 	if(Waves_InFreeplay())
 	{
 		amount = 4;
-		Agent_Smith_Cloner(npc, amount, ReturnEntityMaxHealth(npc.index)/2, 1.5);
+		Agent_Smith_Cloner(npc, amount, ReturnEntityMaxHealth(npc.index)/2, 3.5);
 	}
 	else
 	{
-		Agent_Smith_Cloner(npc, amount, ReturnEntityMaxHealth(npc.index)/2);
+		Agent_Smith_Cloner(npc, amount, ReturnEntityMaxHealth(npc.index)/2, 2.0);
 	}
 }
 

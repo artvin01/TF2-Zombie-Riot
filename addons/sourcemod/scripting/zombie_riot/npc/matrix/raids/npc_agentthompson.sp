@@ -353,7 +353,7 @@ static void Thompsons_SelfDefense(AgentThompson npc, float gameTime, int target,
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
-				float damage = 35.0;
+				float damage = 28.0;
 				damage *= RaidModeScaling;
 				bool silenced = NpcStats_IsEnemySilenced(npc.index);
 				for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
@@ -371,10 +371,8 @@ static void Thompsons_SelfDefense(AgentThompson npc, float gameTime, int target,
 							{
 								damage = 1.0;
 							}
-							Elemental_AddCorruptionDamage(targetTrace, npc.index, 15);
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-							//Reduce damage after dealing
-							damage *= 0.92;
+							Elemental_AddCorruptionDamage(targetTrace, npc.index, RoundToNearest(damage * 0.15), true, true);	
 							// On Hit stuff
 							bool Knocked = false;
 							if(!PlaySound)
@@ -494,7 +492,7 @@ static void Thompsons_SelfDefense(AgentThompson npc, float gameTime, int target,
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 				KillFeed_SetKillIcon(npc.index, "shotgun_primary");
 
-				float damage = 15.0;
+				float damage = 60.0;
 				damage *= RaidModeScaling;
 
 				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "dxhr_sniper_rail_blue");

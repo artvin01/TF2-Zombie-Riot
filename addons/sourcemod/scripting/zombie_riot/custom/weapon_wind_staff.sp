@@ -230,8 +230,8 @@ static void Wand_Launch_Tornado(int client, int iRot, float speed, float time, f
 
 	SetEntPropEnt(iCarrier, Prop_Send, "m_hOwnerEntity", client);
 	DispatchKeyValue(iCarrier, "model", ENERGY_BALL_MODEL);
-	DispatchKeyValue(iCarrier, "modelscale", "0");
 	DispatchSpawn(iCarrier);
+	SetEntPropFloat(iCarrier, Prop_Send, "m_flModelScale", 0.001);
 
 	TeleportEntity(iCarrier, fPos, NULL_VECTOR, fVel);
 	SetEntityMoveType(iCarrier, MOVETYPE_FLY);	

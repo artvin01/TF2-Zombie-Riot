@@ -855,7 +855,7 @@ void Buccaneer_ShootProjectile(BuccaneerBones npc, float vicLoc[3], float vel, b
 		{
 			SDKHook(entity, SDKHook_Touch, Buccaneer_BigBallTouch);
 			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Buccaneer_DontExplode);
-			DispatchKeyValueFloat(entity, "modelscale", 1.75);
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.75);
 			SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
 			SetEntityGravity(entity, BUFFED_GRAVITY);
 			

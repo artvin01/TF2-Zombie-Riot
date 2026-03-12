@@ -382,7 +382,7 @@ public void AgentDick_ClotThink(int iNPC)
 								{
 									float damageDealt = AgentHealthDamageMulti(npc);
 									if(ShouldNpcDealBonusDamage(target))
-									damageDealt *= 1.5;
+										damageDealt *= 7.5;
 									SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 									Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 35 : 10);
@@ -463,19 +463,19 @@ static float AgentHealthDamageMulti(CClotBody npc)
 	{
 		damage *= 2.0; //120 damage
 		if(ShouldNpcDealBonusDamage(target))
-		damage *= 2.5;
+			damage *= 2.5;
 	}
 	if(ratio <= 0.50)
 	{
 		damage *= 1.5; //180 damage
 		if(ShouldNpcDealBonusDamage(target))
-		damage *= 2.5;
+			damage *= 2.5;
 	}
 	if(ratio <= 0.25)
 	{
 		damage *= 1.25; //225 damage
 		if(ShouldNpcDealBonusDamage(target))
-		damage *= 2.5;
+			damage *= 2.5;
 	}
 	return (0.0 + damage);
 }
