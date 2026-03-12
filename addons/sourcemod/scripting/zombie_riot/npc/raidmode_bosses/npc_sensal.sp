@@ -608,7 +608,6 @@ static void Internal_ClotThink(int iNPC)
 					{
 						if(!Items_HasNamedItem(client, "A copy of Truthful Evidence"))
 						{
-							SetGlobalTransTarget(client);
 							CPrintToChat(client, "%t", "Castellan_And_Sensal_Talk-11");
 							CPrintToChat(client, "%t", "Castellan_And_Sensal_Talk-12");
 						}
