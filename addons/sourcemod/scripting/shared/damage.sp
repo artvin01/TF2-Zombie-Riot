@@ -680,7 +680,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 void NpcArmorExtra(int victim, int &attacker, int &inflictor, float &damage, int &damagetype)
 {
 	CClotBody npc = view_as<CClotBody>(victim);
-	if(npc.m_flArmorCount < 0.0)
+	if(npc.m_flArmorCount <= 0.0)
 		return;
 	if(!CheckInHud())
 	{

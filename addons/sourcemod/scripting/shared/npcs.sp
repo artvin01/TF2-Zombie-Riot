@@ -1811,9 +1811,9 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 	CClotBody npc = view_as<CClotBody>(victim);
 	if(npc.m_iHealthBar > 50000)
 	{
-		red = 255;
+		red = 0;
 		green = 255;
-		blue = 255;
+		blue = 0;
 	}
 
 	static char Debuff_Adder_left[128], Debuff_Adder_right[128], Debuff_Adder[128];
