@@ -447,18 +447,18 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_thompson");
 				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage = 0.80;
-				enemy.ExtraSpeed = 1.30;
-				enemy.ExtraThinkSpeed = 0.8;
+				enemy.ExtraDamage = 0.75;
+				enemy.ExtraSpeed = 1.10;
+				enemy.ExtraThinkSpeed = 0.85;
 			}
 			case 19:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_twins");
 				enemy.Health = RoundToFloor((4500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "Im_The_raid;My_Twin";
-				enemy.ExtraDamage = 0.80;
-				enemy.ExtraSpeed = 1.30;
-				enemy.ExtraThinkSpeed = 0.90;
+				enemy.ExtraDamage = 0.75;
+				enemy.ExtraSpeed = 1.20;
+				enemy.ExtraThinkSpeed = 0.95;
 			}
 			case 20:
 			{
