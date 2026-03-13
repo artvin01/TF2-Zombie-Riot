@@ -181,6 +181,7 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 
 
 
+#include "global_arrays.sp"
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_230.mdl"
 
@@ -767,7 +768,6 @@ int OriginalWeapon_AmmoType[MAXENTITIES];
 #include "stocks.sp"
 #include "wand_projectile.sp"
 
-#include "global_arrays.sp"
 
 public Plugin myinfo =
 {

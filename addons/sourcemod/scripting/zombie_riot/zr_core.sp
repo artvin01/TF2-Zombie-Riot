@@ -693,15 +693,6 @@ float fl_MatrixReflect[MAXENTITIES];
 
 
 
-//custom wave music.
-MusicEnum MusicString1;
-MusicEnum MusicString2;
-MusicEnum MusicSetup1;
-MusicEnum MusicLastmann;
-MusicEnum MusicWin;
-MusicEnum MusicLoss;
-MusicEnum RaidMusicSpecial1;
-MusicEnum BGMusicSpecial1;
 
 void ZR_PluginLoad()
 {

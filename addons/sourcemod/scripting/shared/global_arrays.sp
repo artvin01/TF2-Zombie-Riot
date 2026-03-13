@@ -269,6 +269,17 @@ TFClassType WeaponClass[MAXPLAYERS]={TFClass_Scout, ...};
 
 bool b_GivePlayerHint[MAXPLAYERS];
 #if defined ZR
+
+//custom wave music.
+MusicEnum MusicString1;
+MusicEnum MusicString2;
+MusicEnum MusicSetup1;
+MusicEnum MusicLastmann;
+MusicEnum MusicWin;
+MusicEnum MusicLoss;
+MusicEnum RaidMusicSpecial1;
+MusicEnum BGMusicSpecial1;
+
 int MostRecentVoteCancel;
 
 //only used for waves from spawners

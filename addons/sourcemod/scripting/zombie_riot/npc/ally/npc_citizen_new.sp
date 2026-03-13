@@ -848,7 +848,8 @@ static float HealingCooldown[MAXENTITIES];
 static bool IgnorePlayer[MAXPLAYERS];
 static int CanBuild[MAXENTITIES];
 static int PendingGesture[MAXENTITIES];
-static float CommandCooldown[MAXENTITIES];
+static float BuildOrderedByPlayer[MAXENTITIES];
+//static float CommandCooldown[MAXENTITIES];
 static bool TempRebel[MAXENTITIES];
 static bool Interactable[MAXENTITIES];
 static int PlayerRenameWho[MAXPLAYERS];
@@ -1009,7 +1010,8 @@ methodmap Citizen < CClotBody
 		
 		Zero(HealingCooldown);
 		Zero(IgnorePlayer);
-		Zero(CommandCooldown);
+		BuildOrderedByPlayer[npc.index] = 0.0;
+	//	Zero(CommandCooldown);
 
 		if(team != TFTeam_Red || TempRebel[npc.index])
 		{
@@ -2086,27 +2088,27 @@ static int CitizenMenuH(Menu menu, MenuAction action, int client, int choice)
 				case 4:
 				{
 					CitizenVoteFor(npc.index, client, 0);
-					CommandCooldown[npc.index] = GetGameTime() + 30.0;
+				//	CommandCooldown[npc.index] = GetGameTime() + 30.0;
 				}
 				case 5:
 				{
 					CitizenVoteFor(npc.index, client, 1);
-					CommandCooldown[npc.index] = GetGameTime() + 30.0;
+				//	CommandCooldown[npc.index] = GetGameTime() + 30.0;
 				}
 				case 6:
 				{
 					CitizenVoteFor(npc.index, client, 2);
-					CommandCooldown[npc.index] = GetGameTime() + 30.0;
+				//	CommandCooldown[npc.index] = GetGameTime() + 30.0;
 				}
 				case 7:
 				{
 					CitizenVoteFor(npc.index, client, 3);
-					CommandCooldown[npc.index] = GetGameTime() + 30.0;
+				//	CommandCooldown[npc.index] = GetGameTime() + 30.0;
 				}
 				case 8, 9, 10, 11, 12, 13:
 				{
 					Citizen_UpdateStats(npc.index, index - 7, npc.m_iClassRole);
-					CommandCooldown[npc.index] = GetGameTime() + 30.0;
+				//	CommandCooldown[npc.index] = GetGameTime() + 30.0;
 				}
 				case 14:
 				{
@@ -2140,6 +2142,8 @@ static int CitizenMenuH(Menu menu, MenuAction action, int client, int choice)
 						npc.m_iTargetAlly = client;
 						npc.m_iSeakingObject = index - 9;
 						HealingCooldown[npc.index] = GetGameTime() + 2.0;
+						BuildOrderedByPlayer[npc.index] = GetGameTime() + 10.0;
+						//max time of 10 seconds
 					}
 				}
 				case 25:
@@ -2723,7 +2727,7 @@ public void Citizen_ClotThink(int iNPC)
 		npc.m_iSeakingObject = 0;	// Seaking a building
 
 	// Find new target
-	if(npc.m_flGetClosestTargetTime < gameTime)
+	if(npc.m_flGetClosestTargetTime < gameTime && BuildOrderedByPlayer[npc.index] < gameTime)
 	{
 		autoSeek = true;
 		int newTarget = GetClosestTarget(npc.index, false, autoSeek ? FAR_FUTURE : (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus), npc.m_bCamo, .CanSee = !autoSeek);
@@ -3592,6 +3596,7 @@ public void Citizen_ClotThink(int iNPC)
 
 								if(TryPlace)
 								{
+									BuildOrderedByPlayer[npc.index] = 0.0;
 									if(view_as<ObjectGeneric>(entity).SentryBuilding)
 									{
 										i_PlayerToCustomBuilding[npc.index] = EntIndexToEntRef(entity);
