@@ -2255,7 +2255,6 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		return;
 	if(attacker <= MaxClients)
 	{
-
 		//If a raid hud update happens, it should prefer to update it incase you attack something in the same frame or whaatever.
 		if(RaidHudForce)
 		{
@@ -2305,8 +2304,8 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 				f_damageAddedTogetherGametime[attacker] = GameTime + 0.6;
 			}
 		}
+		f_ArmorDamageDeltHud[attacker] = 0.0;
 	}
-	f_ArmorDamageDeltHud[attacker] = 0.0;
 	if(DontForward)
 		return;
 		
