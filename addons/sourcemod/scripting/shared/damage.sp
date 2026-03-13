@@ -680,49 +680,71 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 void NpcArmorExtra(int victim, int &attacker, int &inflictor, float &damage, int &damagetype)
 {
 	CClotBody npc = view_as<CClotBody>(victim);
-	if(npc.m_flArmorCount > 0.0)
+	if(npc.m_flArmorCount < 0.0)
+		return;
+	if(!CheckInHud())
 	{
-		if(!CheckInHud())
+		if(damagetype & DMG_CLUB)
 		{
-			if(damagetype & DMG_CLUB)
+			float SubtractBy = ((damage * ((npc.m_flArmorProtect - 1.0) * -1.0)) * 1.35);
+			npc.m_flArmorCount -= SubtractBy;
+			
+			//armored enemies get more damage.
+			int DisplayCritSoundTo;
+			if(attacker <= MaxClients)
 			{
-				npc.m_flArmorCount -= ((damage * ((npc.m_flArmorProtect - 1.0) * -1.0)) * 1.35);
-				//armored enemies get more damage.
-				int DisplayCritSoundTo;
-				if(attacker <= MaxClients)
-					DisplayCritSoundTo = attacker;
-				else if(inflictor <= MaxClients)
-					DisplayCritSoundTo = inflictor;
-					
-				if(DisplayCritSoundTo > 0 && DisplayCritSoundTo <= MaxClients)
-				{
-					bool PlaySound = false;
-					if(f_MinicritSoundDelay[DisplayCritSoundTo] < GetGameTime())
-					{
-						PlaySound = true;
-						f_MinicritSoundDelay[DisplayCritSoundTo] = GetGameTime() + 0.25;
-					}
-					
-					DisplayCritAboveNpc(victim, DisplayCritSoundTo, PlaySound,_,_,true); //Display crit above head
-				}
-
+				DisplayCritSoundTo = attacker;
+				f_ArmorDamageDeltHud[attacker] += SubtractBy;
 			}
-			else
+			else if(inflictor <= MaxClients)
 			{
-				npc.m_flArmorCount -= (damage * ((npc.m_flArmorProtect - 1.0) * -1.0));
+				DisplayCritSoundTo = inflictor;
+				f_ArmorDamageDeltHud[inflictor] += SubtractBy;
+			}
+				
+			if(DisplayCritSoundTo > 0 && DisplayCritSoundTo <= MaxClients)
+			{
+				bool PlaySound = false;
+				if(f_MinicritSoundDelay[DisplayCritSoundTo] < GetGameTime())
+				{
+					PlaySound = true;
+					f_MinicritSoundDelay[DisplayCritSoundTo] = GetGameTime() + 0.25;
+				}
+				
+				DisplayCritAboveNpc(victim, DisplayCritSoundTo, PlaySound,_,_,true); //Display crit above head
+			}
+
+		}
+		else
+		{
+			float SubtractBy = ((damage * ((npc.m_flArmorProtect - 1.0) * -1.0)));
+			npc.m_flArmorCount -= SubtractBy;
+			if(attacker <= MaxClients)
+			{
+				f_ArmorDamageDeltHud[attacker] += SubtractBy;
+			}
+			else if(inflictor <= MaxClients)
+			{
+				f_ArmorDamageDeltHud[inflictor] += SubtractBy;
 			}
 		}
-		damage *= npc.m_flArmorProtect; //negate damage
-		if(!CheckInHud())
-		{
-			if(npc.m_iArmorType == 0)
-				npc.PlayHurtArmorSound();
+	}
+	damage *= npc.m_flArmorProtect; //negate damage
+	if(!CheckInHud())
+	{
+		if(npc.m_iArmorType == 0)
+			npc.PlayHurtArmorSound();
 
-			if(npc.m_flArmorCount <= 0.0) //over damage, add as damage.
+		if(npc.m_flArmorCount <= 0.0) //over damage, add as damage.
+		{
+			//let melee be really good against armor and stuff to reward them.
+			damage -= npc.m_flArmorCount;
+			if(attacker <= MaxClients)
 			{
-				//let melee be really good against armor and stuff to reward them.
-				damage -= npc.m_flArmorCount;
+				f_ArmorDamageDeltHud[attacker] += npc.m_flArmorCount;
 			}
+			else if(inflictor <= MaxClients)
+				f_ArmorDamageDeltHud[inflictor] += npc.m_flArmorCount;
 		}
 	}
 }

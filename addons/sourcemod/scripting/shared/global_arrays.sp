@@ -245,6 +245,7 @@ int TeamNumber[MAXENTITIES];
 int i_NextAttackDoubleHit[MAXENTITIES];
 
 bool thirdperson[MAXPLAYERS];
+float f_ArmorDamageDeltHud[MAXPLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
 float f_NoUnstuckVariousReasons[MAXENTITIES];
 //bool b_PlayerIsInAnotherPart[MAXENTITIES];
