@@ -215,7 +215,7 @@ methodmap CorruptedBarney < CClotBody
 		
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/cof/barney.mp3");
-		music.Time = 219;
+		music.Time = 185;
 		music.Volume = 1.25;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "Last Legs");
