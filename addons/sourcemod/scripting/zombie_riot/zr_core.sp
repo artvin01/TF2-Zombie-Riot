@@ -336,6 +336,7 @@ int GrigoriMaxSells = 3;
 int Bob_Exists_Index = -1;
 int CurrentPlayers;
 ConVar zr_voteconfig;
+ConVar zr_disable_barney_rename;
 ConVar zr_tagblacklist;
 ConVar zr_tagwhitelist;
 ConVar zr_tagwhitehard;
@@ -394,15 +395,6 @@ ArrayList Loadouts[MAXPLAYERS];
 float f_RingDelayGift[MAXENTITIES];
 float Resistance_for_building_High[MAXENTITIES];
 
-//custom wave music.
-MusicEnum MusicString1;
-MusicEnum MusicString2;
-MusicEnum MusicSetup1;
-MusicEnum MusicLastmann;
-MusicEnum MusicWin;
-MusicEnum MusicLoss;
-MusicEnum RaidMusicSpecial1;
-MusicEnum BGMusicSpecial1;
 //custom wave music.
 float f_DelaySpawnsForVariousReasons;
 int CurrentRound[Rounds_MAX];
@@ -698,6 +690,9 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/kit_purging.sp"
 #include "custom/weapon_bombplant_smg.sp"
 #include "custom/weapon_guiding_missile.sp"
+
+
+
 
 void ZR_PluginLoad()
 {

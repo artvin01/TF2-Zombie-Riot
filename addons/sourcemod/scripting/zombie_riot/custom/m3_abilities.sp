@@ -2055,7 +2055,6 @@ stock int Drop_Prop(int client, float fPos[3], float PropSpeed=1200.0, const cha
 		DispatchKeyValue(PropMove, "stopsound", "none");
 		TeleportEntity(PropMove, fPos, NULL_VECTOR, NULL_VECTOR);
 		DispatchSpawn(PropMove);
-		SetEntPropFloat(PropMove, Prop_Send, "m_flModelScale", 3.0);
 		
 		int Prop = CreateEntityByName("prop_dynamic");
 		if(IsValidEntity(Prop))
@@ -2066,6 +2065,7 @@ stock int Drop_Prop(int client, float fPos[3], float PropSpeed=1200.0, const cha
 			TeleportEntity(Prop, fPos, NULL_VECTOR, NULL_VECTOR);
 			DispatchSpawn(Prop);
 			SetParent(PropMove, Prop);
+			SetEntPropFloat(Prop, Prop_Send, "m_flModelScale", 1.25);
 		}
 		AcceptEntityInput(PropMove, "Open");
 		SetEntPropEnt(PropMove, Prop_Data, "m_hOwnerEntity", client);

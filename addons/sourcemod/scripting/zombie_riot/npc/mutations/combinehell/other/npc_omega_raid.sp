@@ -232,7 +232,7 @@ methodmap OmegaRaid < CClotBody
 		{
 			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 5;
-			npc.m_flSpeed = 250.0;
+			npc.m_flSpeed = 300.0;
 		}
 		else
 		{
@@ -702,8 +702,6 @@ static void Omegas_SelfDefense(OmegaRaid npc, float gameTime, int target, float 
 								damage = 1.0;
 							}
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-							//Reduce damage after dealing
-							damage *= 0.92;
 							// On Hit stuff
 							bool Knocked = false;
 							if(!PlaySound)

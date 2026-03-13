@@ -768,6 +768,7 @@ int OriginalWeapon_AmmoType[MAXENTITIES];
 #include "stocks.sp"
 #include "wand_projectile.sp"
 
+
 public Plugin myinfo =
 {
 	name		=	"NPC Gamemode Core",

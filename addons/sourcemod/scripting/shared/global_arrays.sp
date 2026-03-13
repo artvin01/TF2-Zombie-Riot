@@ -245,6 +245,7 @@ int TeamNumber[MAXENTITIES];
 int i_NextAttackDoubleHit[MAXENTITIES];
 
 bool thirdperson[MAXPLAYERS];
+float f_ArmorDamageDeltHud[MAXPLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
 float f_NoUnstuckVariousReasons[MAXENTITIES];
 //bool b_PlayerIsInAnotherPart[MAXENTITIES];
@@ -269,6 +270,17 @@ TFClassType WeaponClass[MAXPLAYERS]={TFClass_Scout, ...};
 
 bool b_GivePlayerHint[MAXPLAYERS];
 #if defined ZR
+
+//custom wave music.
+MusicEnum MusicString1;
+MusicEnum MusicString2;
+MusicEnum MusicSetup1;
+MusicEnum MusicLastmann;
+MusicEnum MusicWin;
+MusicEnum MusicLoss;
+MusicEnum RaidMusicSpecial1;
+MusicEnum BGMusicSpecial1;
+
 int MostRecentVoteCancel;
 
 //only used for waves from spawners

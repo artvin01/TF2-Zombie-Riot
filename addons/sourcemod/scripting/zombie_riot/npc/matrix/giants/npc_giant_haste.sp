@@ -276,7 +276,7 @@ public void GiantHaste_ClotThink(int iNPC)
 						{
 							float damage = 50.0;
 							if(ShouldNpcDealBonusDamage(target))
-							damage *= 1.5;
+								damage *= 7.5;
 							if(target > 0)
 							{
 								SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
