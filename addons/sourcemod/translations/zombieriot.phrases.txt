@@ -5399,6 +5399,14 @@
 		"it"	"Costruisci una stazione di cura presso di me"
 		"ko"	"내 위치에 회복 시설을 건설해줘"
 	}
+	"Set My Basepoint"
+	{
+		"en"	"Set My Basepoint"
+	}
+	"Saved Pos for Base"
+	{
+		"en"	"This builder will remember this position and stay near it."
+	}
 	"Build Barricade At Me"
 	{
 		"en"	"Build Barricade At Me"

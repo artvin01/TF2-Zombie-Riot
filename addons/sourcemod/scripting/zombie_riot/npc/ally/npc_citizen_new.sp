@@ -951,6 +951,9 @@ methodmap Citizen < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		b_NpcUnableToDie[npc.index] = team == TFTeam_Red;
+		f3_NpcSavePos[npc.index][0] = 0.0;
+		f3_NpcSavePos[npc.index][1] = 0.0;
+		f3_NpcSavePos[npc.index][2] = 0.0;
 		 
 		func_NPCDeath[npc.index] = Citizen_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Citizen_OnTakeDamage;
@@ -2011,6 +2014,9 @@ static void CitizenMenu(int client, int page = 0)
 					int MaxBuildingsSee = 0;
 					int BuildingsSee = 0;
 					BuildingsSee = BuildingAmountRebel(npc.index, 2, MaxBuildingsSee);
+					FormatEx(buffer, sizeof(buffer), "%t", "Set My Basepoint");
+					menu.AddItem("26", buffer, ITEMDRAW_DEFAULT);
+
 					FormatEx(buffer, sizeof(buffer), "%t (%i/%i)", "Build Barricade At Me",BuildingsSee, MaxBuildingsSee);
 					menu.AddItem("15", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
@@ -2150,6 +2156,11 @@ static int CitizenMenuH(Menu menu, MenuAction action, int client, int choice)
 				{
 					PlayerRenameWho[client] = EntIndexToEntRef(npc.index);
 					CPrintToChat(client, "Type the name in chat for the rebel!");
+				}
+				case 26:
+				{
+					GetAbsOrigin(client, f3_NpcSavePos[npc.index]);
+					CPrintToChat(client, "%t","Saved Pos for Base");
 				}
 			}
 
@@ -2726,11 +2737,31 @@ public void Citizen_ClotThink(int iNPC)
 	if(i_TargetAlly[npc.index] == -1)
 		npc.m_iSeakingObject = 0;	// Seaking a building
 
+	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+	float VecOverridePos[3];
+	if(npc.m_iClassRole == Cit_Builder && !AreVectorsEqual(f3_NpcSavePos[npc.index], view_as<float>({0.0,0.0,0.0})))
+		VecOverridePos = f3_NpcSavePos[npc.index];
+	else
+		VecOverridePos = vecMe;
+
 	// Find new target
-	if(npc.m_flGetClosestTargetTime < gameTime && BuildOrderedByPlayer[npc.index] < gameTime)
+	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		autoSeek = true;
-		int newTarget = GetClosestTarget(npc.index, false, autoSeek ? FAR_FUTURE : (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus), npc.m_bCamo, .CanSee = !autoSeek);
+		float MaxRange = BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus;
+		if(npc.m_iClassRole == Cit_Builder && !AreVectorsEqual(f3_NpcSavePos[npc.index], view_as<float>({0.0,0.0,0.0})))
+		{
+			MaxRange = 900.0;
+			autoSeek = false;
+		}
+		if(autoSeek)
+		{
+			MaxRange = FAR_FUTURE;
+		}
+
+		
+
+		int newTarget = GetClosestTarget(npc.index, false, MaxRange, npc.m_bCamo,_,_,VecOverridePos, .CanSee = !autoSeek);
 		if(newTarget > 0)
 		{
 			target = newTarget;
@@ -2814,7 +2845,7 @@ public void Citizen_ClotThink(int iNPC)
 	bool injured = (health < 60) || (health < (maxhealth / 5));
 	bool seakAlly = npc.m_bGetClosestTargetTimeAlly;
 	
-	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+
 	float vecTarget[3];
 	static char buffer[32];
 
@@ -2835,17 +2866,20 @@ public void Citizen_ClotThink(int iNPC)
 	// Additional check to see if we're surrounded
 	if(!noSafety && target > 0 && (injured || npc.m_iGunType != Cit_Melee) && (ally > 0 || npc.m_iSeakingObject || seakAlly))
 	{
-		WorldSpaceCenter(target, vecTarget);
-		if(GetVectorDistance(vecMe, vecTarget, true) < 20000.0)
+		if(BuildOrderedByPlayer[npc.index] < GetGameTime(npc.index))
 		{
-			seakAlly = false;
-			helpAlly = false;
-			
-			ally = -1;
-			i_TargetAlly[npc.index] = -1;
+			WorldSpaceCenter(target, vecTarget);
+			if(GetVectorDistance(vecMe, vecTarget, true) < 20000.0)
+			{
+				seakAlly = false;
+				helpAlly = false;
+				
+				ally = -1;
+				i_TargetAlly[npc.index] = -1;
 
-			npc.m_iSeakingObject = 0;
-			npc.m_bGetClosestTargetTimeAlly = false;
+				npc.m_iSeakingObject = 0;
+				npc.m_bGetClosestTargetTimeAlly = false;
+			}
 		}
 	}
 
@@ -3015,7 +3049,7 @@ public void Citizen_ClotThink(int iNPC)
 						continue;
 
 					GetAbsOrigin(entity, vecTarget);
-					float dist = GetVectorDistance(vecTarget, vecMe, true);
+					float dist = GetVectorDistance(vecTarget, VecOverridePos, true);
 					if(dist > distance)
 						continue;
 					
@@ -3105,7 +3139,7 @@ public void Citizen_ClotThink(int iNPC)
 					continue;
 
 				GetAbsOrigin(entity, vecTarget);
-				float dist = GetVectorDistance(vecTarget, vecMe, true);
+				float dist = GetVectorDistance(vecTarget, VecOverridePos, true);
 				if(dist < distance)
 					continue;
 				
@@ -3272,7 +3306,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 
 				GetAbsOrigin(entity, vecTarget);
-				float dist = GetVectorDistance(vecTarget, vecMe, true);
+				float dist = GetVectorDistance(vecTarget, VecOverridePos, true);
 				if(dist < distance)
 					continue;
 				
@@ -3343,7 +3377,7 @@ public void Citizen_ClotThink(int iNPC)
 					if(!StrContains(buffer, "obj_perkmachine"))
 					{
 						GetAbsOrigin(entity, vecTarget);
-						float dist = GetVectorDistance(vecTarget, vecMe, true);
+						float dist = GetVectorDistance(vecTarget, VecOverridePos, true);
 						if(dist < distance)
 							continue;
 						
@@ -3379,7 +3413,7 @@ public void Citizen_ClotThink(int iNPC)
 					if(!StrContains(buffer, "obj_armortable"))
 					{
 						GetAbsOrigin(entity, vecTarget);
-						float dist = GetVectorDistance(vecTarget, vecMe, true);
+						float dist = GetVectorDistance(vecTarget, VecOverridePos, true);
 						if(dist < distance)
 							continue;
 						
@@ -4351,7 +4385,7 @@ public void Citizen_ClotThink(int iNPC)
 						if(!IgnorePlayer[client] && IsClientInGame(client) && IsEntityAlive(client))
 						{
 							WorldSpaceCenter(client, vecTarget);
-							float dist = GetVectorDistance(vecTarget, vecMe, true);
+							float dist = GetVectorDistance(vecTarget, VecOverridePos, true);
 							if(dist < distance)
 							{
 								distance = dist;
@@ -4363,7 +4397,34 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 			
-			if(ally == 0)
+			if(npc.m_iClassRole == Cit_Builder && !AreVectorsEqual(f3_NpcSavePos[npc.index], view_as<float>({0.0,0.0,0.0})))
+			{
+				//we are the builder...
+				//find closest ally building
+				float distance = 65000000.0;
+				int entity = MaxClients + 1;
+				while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
+				{
+					if(b_ThisEntityIgnored[entity])
+						continue;
+					
+					if(GetTeam(entity) != TFTeam_Red)
+						continue;
+
+					GetAbsOrigin(entity, vecTarget);
+					float dist = GetVectorDistance(vecTarget, VecOverridePos, true);
+					if(dist > distance)
+						continue;
+					
+					if(!npc.CanPathToAlly(entity))
+						continue;
+					
+					distance = dist;
+					ally = entity;
+					npc.m_iTargetAlly = ally;
+				}
+			}
+			else if(ally == 0)
 			{
 				bool alpha;
 
