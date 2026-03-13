@@ -5404,10 +5404,12 @@
 	"Set My Basepoint"
 	{
 		"en"	"Set My Basepoint"
+		"ko"	"거점 포인트 설정"
 	}
 	"Saved Pos for Base"
 	{
 		"en"	"This builder will remember this position and stay near it."
+		"ko"	"건축가 반시민군이 이 위치를 기억하고 근처에 있을 것입니다."
 	}
 	"Build Barricade At Me"
 	{
