@@ -3720,7 +3720,7 @@ void SdkHooks_SetAndUpdateArmorClientText(int client)
 	HealthColour[0] = 255;
 	HealthColour[1] = 255;
 	HealthColour[2] = 0;
-	HealthColour[3] = 125;
+	HealthColour[3] = 200;
 	int MaxArmor = MaxArmorCalculation(Armor_Level[client], client, 1.0);
 	int ArmorCurrent = Armor_Charge[client];
 	if(ArmorCurrent < 0)
