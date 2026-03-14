@@ -503,7 +503,7 @@
 	{
 		"en"	"Be a hitman of your dreams.\n{green}''Tactician'' weapons gain infinite accuracy, extra cash & speedbonus on a headshot {yellow}(up to a limit for cash gain up to a limit for cash gain) If the weapon cant headshot, same effects apply but weaker."
 		"it"	"{green}Se l'arma non può colpire alla testa, si applicano gli stessi effetti, ma più deboli."
-		"ko"	"나 자신이 히트맨이 되는거다.\n{green}''전술가'' 계열 무기의 정확도가 무한대가 되며, 헤드샷시 추가 자금 및 속도 증진 획득. {yellow}(자금 획득 상한 존재) 헤드샷 불가 무기라면, 대신 약화된 효과가 적용."
+		"ko"	"나 자신이 히트맨이 되는거다.\n{green}''전술가'' 계열 무기의 정확도가 무한대가 되며, 헤드샷시 추가 자금, 속도 증진 획득. {yellow}(자금 획득 상한 O) 헤드샷 불가 무기라면 약화된 효과 적용."
 	}
 	"Hand of Spark"
 	{
