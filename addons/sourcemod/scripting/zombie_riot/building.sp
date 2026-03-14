@@ -2499,6 +2499,7 @@ void TransferDispenserBackToOtherEntity(int client, bool DontEquip = false)
 			if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
 				posStacked[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
 			SDKCall_SetLocalOrigin(entity, posStacked);	
+			Update_TransmitState(entity);
 		}
 		return;
 	}
@@ -2571,14 +2572,14 @@ void UnequipDispenser(int client, bool destroy = false)
 	
 	Building_Mounted[client] = -1;
 	int entity = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
-	if(IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
+	if(IsValidEntity(entity))
 	{
 		float posStacked[3]; 
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", posStacked);
-		AcceptEntityInput(i2_MountedInfoAndBuilding[1][client], "ClearParent");
+		AcceptEntityInput(entity, "ClearParent");
 		if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
 			posStacked[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
-
+		Update_TransmitState(entity);
 		SDKCall_SetLocalOrigin(entity, posStacked);	
 		i2_MountedInfoAndBuilding[1][client] = INVALID_ENT_REFERENCE;
 	}
