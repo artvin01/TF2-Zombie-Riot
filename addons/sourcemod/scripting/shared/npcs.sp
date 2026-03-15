@@ -2020,7 +2020,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		HudOffset += f_HurtHudOffsetX[attacker];
 #endif	// ZR
 
-		SetHudTextParams(HudY, HudOffset, 0.25, red, green, blue, 255, 0, 0.01, 0.01);
+		SetHudTextParams(HudY, HudOffset, 0.5, red, green, blue, 255, 0, 0.01, 0.01);
 		static char ExtraHudHurt[255];
 		
 #if defined ZR
@@ -2125,7 +2125,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		HudOffset += f_HurtHudOffsetX[attacker];
 			
 		SetGlobalTransTarget(attacker);
-		SetHudTextParams(HudY, HudOffset, 0.25, red, green, blue, 255, 0, 0.01, 0.01);
+		SetHudTextParams(HudY, HudOffset, 0.5, red, green, blue, 255, 0, 0.01, 0.01);
 		//todo: better showcase of timer.
 		static char ExtraHudHurt[168];
 
@@ -2245,7 +2245,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 #if !defined RTS
 stock void ResetDamageHud(int client)
 {
-	SetHudTextParams(-1.0, 0.05, 0.25, 0, 0, 0, 255, 0, 0.01, 0.01);
+	SetHudTextParams(-1.0, 0.05, 0.5, 0, 0, 0, 255, 0, 0.01, 0.01);
 	ShowSyncHudText(client, SyncHud, "");
 }
 
