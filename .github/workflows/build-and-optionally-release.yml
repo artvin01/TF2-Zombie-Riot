@@ -98,27 +98,11 @@ jobs:
           cd release_build
           zip -r zr-release-${{ env.SHA_SHORT }}.zip .
 
-      - name: Create Release
+      - name: Release
+        uses: softprops/action-gh-release@v2
         if: github.event_name == 'push'
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-            tag_name: release-${{ env.SHA_SHORT }}
-            release_name: Zombie Riot ${{ env.SHA_SHORT }}
-            body: |
+          files: addons/sourcemod/scripting/release_build/zr-release-${{ env.SHA_SHORT }}.zip
+          tag_name: release-${{ env.SHA_SHORT }}
+          body: |
               ${{ github.event.head_commit.message }}
-            draft: false
-            prerelease: false
-
-      - name: Upload Release
-        if: github.event_name == 'push'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./zr-release-${{ env.SHA_SHORT }}.zip
-          asset_name: zr-release-${{ env.SHA_SHORT }}.zip
-          asset_content_type: application/zip
