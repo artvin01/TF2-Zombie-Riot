@@ -28,8 +28,7 @@ jobs:
           echo "PLUGIN_VERSION_REVISION<<EOF" >> $GITHUB_ENV
           git rev-list --count HEAD >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
-          github_sha_hash=${{ github.sha }}
-          github_sha_short="${github_sha_hash:0:7}"
+          echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       
       - name: Install Dependencies
         run: |
@@ -97,7 +96,7 @@ jobs:
           cp zombie_riot.sp ./release_build
           cp zombie_riot.smx ./release_build
           cd release_build
-          zip -r zr-release-${github_sha_short}.zip .
+          zip -r zr-release-${{ env.SHA_SHORT }}.zip .
 
       - name: Create Release
         if: github.event_name == 'push'
@@ -106,8 +105,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-            tag_name: Release-${github_sha_short}
-            release_name: Zombie Riot ${github_sha_short}
+            tag_name: Release ${{ env.SHA_SHORT }}
+            release_name: Zombie Riot ${{ env.SHA_SHORT }}
             body: |
               ${{ github.event.head_commit.message }}
             draft: false
@@ -120,6 +119,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./zr-release-${github_sha_short}.zip
-          asset_name: zr-release-${github_sha_short}.zip
+          asset_path: ./zr-release-${{ env.SHA_SHORT }}.zip
+          asset_name: zr-release-${{ env.SHA_SHORT }}.zip
           asset_content_type: application/zip
