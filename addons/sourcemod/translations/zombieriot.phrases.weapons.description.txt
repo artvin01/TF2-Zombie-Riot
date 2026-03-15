@@ -3843,6 +3843,7 @@
 	"Armor Visualiser Desc"
 	{
 		"en"	"You can now see the armor of fellow allies via a bar above their head."
+		"ko"	"이제 머리 위의 바를 통해 아군들의 아머를 확인할 수 있습니다."
 	}
 	"Building Health Forcer Desc"
 	{
