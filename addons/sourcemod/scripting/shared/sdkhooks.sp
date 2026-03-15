@@ -3730,7 +3730,7 @@ void SdkHooks_SetAndUpdateArmorClientText(int client)
 		HealthColour[1] = 0;
 		HealthColour[2] = 125;
 	}
-	if(ArmorCurrent == MaxArmor)
+	if(ArmorCurrent >= MaxArmor)
 	{
 		HealthColour[0] = 255;
 		HealthColour[1] = 255;
