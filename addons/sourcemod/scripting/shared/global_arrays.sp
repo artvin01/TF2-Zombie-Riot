@@ -227,6 +227,7 @@ int g_particleImpactPortal;
 float f_damageAddedTogether[MAXPLAYERS];
 float f_damageAddedTogetherGametime[MAXPLAYERS];
 int i_HudVictimToDisplay[MAXPLAYERS];
+float f_RepeatShowHudFor[MAXPLAYERS];
 int i_HudVictimToDisplay2[MAXPLAYERS];
 #endif
 

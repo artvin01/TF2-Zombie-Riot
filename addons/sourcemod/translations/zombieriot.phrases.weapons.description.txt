@@ -3842,11 +3842,7 @@
 	}
 	"Armor Visualiser Desc"
 	{
-		"en"	"You can now see the armor of fellow allies via their shield."
-		"fr"	"Vous permet de voir l'armure de vos alliés."
-		"chi"	"看队友的护甲！"
-		"it"	"È ora possibile vedere l'armatura dei compagni alleati attraverso il loro scudo."
-		"ko"	"이제 모든 아군들의 아머를 확인할 수 있습니다."
+		"en"	"You can now see the armor of fellow allies via a bar above their head."
 	}
 	"Building Health Forcer Desc"
 	{

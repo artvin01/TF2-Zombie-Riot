@@ -1101,7 +1101,8 @@ stock void SetParent(int iParent, int iChild, const char[] szAttachment = "", co
 	{
 		if (szAttachment[0]) // do i even have anything?
 		{
-			SetVariantString(szAttachment); // "head"
+			if(!StrEqual(szAttachment, "root"))
+				SetVariantString(szAttachment); // "head"
 
 			if (maintain_anyways || !AreVectorsEqual(vOffsets, view_as<float>({0.0,0.0,0.0}))) // NULL_VECTOR
 			{
@@ -3986,8 +3987,8 @@ stock int SpawnFormattedWorldText(const char[] format, float origin[3], int text
 			vector[1] += origin[1];
 			vector[2] += origin[2];
 
-			TeleportEntity(worldtext, vector, NULL_VECTOR, NULL_VECTOR);
-			SetParent(entity_parent, worldtext, "", origin);
+			SDKCall_SetLocalOrigin(worldtext, vector);
+			SetParent(entity_parent, worldtext, "root", origin);
 		}
 		else
 		{
@@ -6045,7 +6046,7 @@ void Stocks_ColourPlayernormal(int client)
 	while(TF2U_GetWearable(client, entity, i))
 	{
 #if defined ZR
-		if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+		if(i_WeaponVMTExtraSetting[entity] != -1)
 			continue;
 #endif
 
