@@ -191,13 +191,16 @@ methodmap JohnTheAllmighty < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_TANK;
 		npc.m_bDissapearOnDeath = true;
-		npc.m_iHealthBar = 40;
+
+		//makes him have infinity hp on his bar
+		npc.m_iHealthBar = 99999999;
 
 		func_NPCDeath[npc.index] = view_as<Function>(JohnTheAllmighty_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(JohnTheAllmighty_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(JohnTheAllmighty_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
 		
+		b_thisNpcIsAMiniboss[npc.index] = true;
 		float wave = float(Waves_GetRoundScale()+1);
 		wave *= 0.133333;
 		npc.m_flWaveScale = wave;

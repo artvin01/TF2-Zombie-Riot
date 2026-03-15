@@ -191,12 +191,11 @@ methodmap AlmagestJkei < CClotBody
 		}
 		DispatchKeyValue(item, "model", model);
 
+		DispatchSpawn(item);
 		if(model_size != 1.0)
 		{
-		//	DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
-			DispatchKeyValueFloat(item, "modelscale", model_size);
+			SetEntPropFloat(item, Prop_Send, "m_flModelScale", model_size);
 		}
-		DispatchSpawn(item);
 		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES|EF_NOSHADOW );
 		SetEntityMoveType(item, MOVETYPE_NONE);
 		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);

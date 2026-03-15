@@ -899,7 +899,11 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 	{
 		// ZS-Classic Gamemode
 		if(kv.GetNum("classicmode"))
-			Classic_Enable();
+			Classic_Enable(true);
+		else
+		{
+			Classic_Enable(false);
+		}
 	}
 
 	bool autoSelect = CvarAutoSelectWave.BoolValue;	
@@ -2141,9 +2145,10 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 				Rogue_TriggerFunction(Artifact::FuncWaveStart);
 
 				if(Classic_Mode())
+				{
 					Classic_NewRoundStart(round.Cash);
+				}	
 			}
-			
 			if(wave.RelayName[0])
 				ExcuteRelay(wave.RelayName, wave.RelayFire);
 			
@@ -2322,6 +2327,17 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 					else
 					{
 						CPrintToChatAll("{green}%t","Cash Gained This Wave", CashGive);
+					}
+				}
+			}
+			if(Classic_Mode())
+			{
+				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+				{
+					int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+					if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
+					{
+						FreezeNpcInTime(entity, 3.0, true);
 					}
 				}
 			}
@@ -2641,11 +2657,18 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 						}
 					}
 				}
-				
-				Music_EndLastmann();
-				RespawnCheckCitizen();
-				ReviveAll(_,_,_, ForceAdvance);
-				CheckAlivePlayers();
+				bool RespawnPeople = true;
+				if(ZR_Get_Modifier() == /*PREFIX_ONESTAND*/ 7)
+					if(round.Setup < 1.0)
+						RespawnPeople = false;
+						
+				if(RespawnPeople)
+				{
+					Music_EndLastmann();
+					RespawnCheckCitizen();
+					ReviveAll(_,_,_,ForceAdvance,round.Setup >= 1.0);
+					CheckAlivePlayers();
+				}
 				BlockOtherRaidMusic = false;
 			}
 			if(round.AmmoBoxExtra)
@@ -3573,6 +3596,11 @@ void DoGlobalMultiScaling()
 	playercount *= 0.88;
 	playercount *= GetScaledPlayerCountMulti(PlayersIngame);
 
+	//We want to reduce scaling for several gamemodes if its above a certain player counts
+	//this is due to buildings not really scaling past 14 players, or the gameplay being very hectic, this is just to circumvent it a lil
+	if(Dungeon_Mode() || Rogue_Mode())
+		playercount *= GetScaledPlayerCountMulti(PlayersIngame, 0.125);
+
 	float multi = playercount / 4.0;
 	
 	Rogue_Rift_MultiScale(multi);
@@ -4422,11 +4450,11 @@ void Waves_EnemySpawned(int entity)
 		Call_PushCell(entity);
 		Call_Finish();
 	}
-	if(!b_thisNpcIsARaid[entity] && XenoExtraLogic(true))
+	if(!b_thisNpcIsARaid[entity] && !b_thisNpcIsAMiniboss[entity] && XenoExtraLogic(true))
 	{
 		ApplyStatusEffect(entity, entity, "Xeno's Territory", 99999.0);
 	}
-	if(!b_thisNpcIsARaid[entity] && FishExtraLogic(true))
+	if(!b_thisNpcIsARaid[entity] && !b_thisNpcIsAMiniboss[entity] && FishExtraLogic(true))
 	{
 		ApplyStatusEffect(entity, entity, "Corrupted Godly Power", 99999.0);
 	}

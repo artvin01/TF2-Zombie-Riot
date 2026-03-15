@@ -400,19 +400,19 @@ static void ClotThink(int iNPC)
 						{
 							case 0:
 							{
-								CPrintToChatAll("{darkblue}Kahmlstein{default}: Fight him, ill fend off the gates so nothing goes through!");
+								CPrintToChatAll("{darkblue}Kahmlstein{default}: Fight him, I'll fend off the gates so nothing goes through!");
 							}
 							case 1:
 							{
-								CPrintToChatAll("{darkblue}Kahmlstein{default}: Good luck! ill keep the void things away.");
+								CPrintToChatAll("{darkblue}Kahmlstein{default}: Good luck! I'll keep the void things away.");
 							}
 							case 2:
 							{
-								CPrintToChatAll("{darkblue}Kahmlstein{default}: You got this, ill keep the rest in bay as much as i can.");
+								CPrintToChatAll("{darkblue}Kahmlstein{default}: You got this, I'll keep the rest in bay as much as I can.");
 							}
 							case 3:
 							{
-								CPrintToChatAll("{darkblue}Kahmlstein{default}: I cant help you, i have to make sure no other void things come for this!");
+								CPrintToChatAll("{darkblue}Kahmlstein{default}: I cant help you, I have to make sure no other void things come for this!");
 							}
 						}
 					}
@@ -474,7 +474,7 @@ static void ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Im back, glad youre ok.");
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: I'm back, glad you're ok.");
 			}
 			case 1:
 			{
@@ -482,11 +482,11 @@ static void ClotThink(int iNPC)
 			}
 			case 2:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: I have feeling he aint sentient, somethings controlling him.");
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: I have feeling he ain't sentient, something's controlling him.");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: The more i fight the void, the more i feel like the void isnt an infection.");
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: The more I fight the void, the more I feel like the void isn't an infection.");
 			}
 		}
 		

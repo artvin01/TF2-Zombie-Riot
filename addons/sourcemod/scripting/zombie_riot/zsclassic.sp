@@ -17,12 +17,15 @@ void Classic_MapStart()
 	CashLeft = 0;
 }
 
-void Classic_Enable()
+void Classic_Enable(bool enable)
 {
-	InClassicMode = true;
+	InClassicMode = enable;
 
-	PrecacheMvMIconCustom("classic_defend", false);
-	PrecacheMvMIconCustom("classic_reinforce", false);
+	if(enable)
+	{
+		PrecacheMvMIconCustom("classic_defend", false);
+		PrecacheMvMIconCustom("classic_reinforce", false);
+	}
 }
 
 void Classic_NewRoundStart(int cash)

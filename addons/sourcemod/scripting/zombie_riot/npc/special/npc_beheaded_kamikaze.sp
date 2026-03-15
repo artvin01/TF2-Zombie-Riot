@@ -101,6 +101,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
+		b_thisNpcIsAMiniboss[npc.index] = true;
 		float wave = float(Waves_GetRoundScale()+1); //Wave scaling
 		
 		wave *= 0.133333;

@@ -2627,10 +2627,10 @@ static int Create_Blade(float Loc[3], float size, Karlas npc)
 		return -1;
 	
 	DispatchKeyValue(prop, "model", RUINA_POINT_MODEL);
-	DispatchKeyValue(prop, "modelscale", "0.01");	
 	DispatchKeyValue(prop, "solid", "0"); 
 	DispatchSpawn(prop);
 	ActivateEntity(prop);
+	SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 0.01);
 
 	int ModelApply = ApplyCustomModelToWandProjectile(prop, RUINA_CUSTOM_MODELS_2, size, "");
 	if(IsValidEntity(ModelApply))

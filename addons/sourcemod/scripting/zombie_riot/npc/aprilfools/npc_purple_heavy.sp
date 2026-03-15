@@ -116,6 +116,7 @@ methodmap PurpleHeavy < CClotBody
 		npc.m_flSpeed = 330.0;
 		npc.m_bThisEntityIgnored = true;
 		npc.m_bScalesWithWaves = true;
+		b_NpcUnableToDie[npc.index] = true;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;

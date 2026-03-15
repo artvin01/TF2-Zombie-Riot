@@ -1573,9 +1573,6 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 	Tempcolor [3] = 80;
 	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.25, Thickness, 0.75, Tempcolor, 1, 0);
 	TE_SendToAll();
-
-	
-
 	Radius = Radius*Radius;
 
 	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
@@ -1587,7 +1584,7 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 			continue;
 		
 		if(!IsClientInGame(client))
-		 	continue;	
+			continue;	
 
 		if(!IsEntityAlive(client))
 			continue;
@@ -1605,10 +1602,6 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 		EmitSoundToClient(client, RUINA_ION_CANNON_SOUND_ATTACK);
 
 		SDKHooks_TakeDamage(client, 0, 0, dmg, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
-
-		int laser;
-		laser = ConnectWithBeam(-1, client, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK, end_point);
-		CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 	}
 	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
@@ -1625,10 +1618,6 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 				continue;
 
 			SDKHooks_TakeDamage(entity, 0, 0, dmg*2.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
-
-			int laser;
-			laser = ConnectWithBeam(-1, entity, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK, end_point);
-			CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
 
@@ -1646,9 +1635,6 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 					continue;
 
 				SDKHooks_TakeDamage(entity, 0, 0, dmg*2.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
-				int laser;
-				laser = ConnectWithBeam(-1, entity, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK, end_point);
-				CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 			}
 		}
 	}
@@ -1829,7 +1815,7 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 		
 		if(b_ruina_nerf_healing[healed_target])
 		{//the npc is a special case that needs to get less healing otherwise unfun balance happens
-			healingammount *=0.8;
+			healingammount *=0.5;
 		}
 		else if(b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target])
 		{//this npc is a raid/boss healing target
@@ -2346,11 +2332,10 @@ int Ruina_Create_Entity(float Loc[3], float duration, int noclip = false)
 	
 		DispatchKeyValue(prop, "model", RUINA_POINT_MODEL);
 		
-		DispatchKeyValue(prop, "modelscale", "0.001");
-		
 		DispatchKeyValue(prop, "solid", "0"); 
 		
 		DispatchSpawn(prop);
+		SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 0.001);
 		
 		ActivateEntity(prop);
 		

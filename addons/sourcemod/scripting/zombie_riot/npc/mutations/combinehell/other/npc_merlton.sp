@@ -260,7 +260,7 @@ static void Merlton_Boss_ClotThink(int iNPC)
 					npc.FaceTowards(VecLook, 2000.0);
 					npc.m_flAttackHappens_bullshit = gameTime + 0.3;
 					RemoveSpecificBuff(closest, "MERLT0N-BUFF");
-					ApplyStatusEffect(closest, closest, "MERLT0N-BUFF", 6.0);
+					ApplyStatusEffect(closest, closest, "MERLT0N-BUFF", 8.0);
 					
 					spawnRing_Vectors(VecLook, 100.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, 0.3, 5.0, 8.0, 3, 200.0 * 2.0);	
 				}
@@ -400,13 +400,13 @@ void Merlton_SelfDefense(Merlton_Boss npc, float gameTime, int target, float dis
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = npc.m_fbGunout ? 65.0 : 120.0;
+					float damageDealt = npc.m_fbGunout ? 100.0 : 150.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 5.0;
 
 					if(npc.Anger && !npc.m_fbGunout)
 					{
-						float explosivedmg = 80.0, radius = 160.0;
+						float explosivedmg = 100.0, radius = 160.0;
 						Explode_Logic_Custom(explosivedmg, npc.index, npc.index, -1, _, radius, _, _, true);
 						float pos[3];
 						WorldSpaceCenter(target, pos);

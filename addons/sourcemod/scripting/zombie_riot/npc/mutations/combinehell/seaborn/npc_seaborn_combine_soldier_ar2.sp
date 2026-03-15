@@ -190,7 +190,7 @@ methodmap SeabornCombineSoldierAr2 < CClotBody
 		
 		
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		

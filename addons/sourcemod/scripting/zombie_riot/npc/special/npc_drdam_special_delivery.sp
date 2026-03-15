@@ -157,6 +157,7 @@ methodmap DrDamSpecialDelivery < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		fl_TotalArmor[npc.index] = 0.0001;
 		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
+		b_thisNpcIsAMiniboss[npc.index] = true;
 
 		float wave = float(Waves_GetRoundScale()+1);
 		wave *= 0.133333;

@@ -31,7 +31,7 @@ methodmap VehicleFullAPC < VehicleGeneric
 {
 	public VehicleFullAPC(const float vecPos[3], const float vecAng[3])
 	{
-		VehicleFullAPC obj = view_as<VehicleFullAPC>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, "models/combine_apc.mdl", "scripts/vehicles/apc.txt"));
+		VehicleFullAPC obj = view_as<VehicleFullAPC>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, "models/combine_apc.mdl", "scripts/vehicles/zr_custom/apc.txt"));
 		
 		obj.SetDriverOffset({0.0, -10.0, 40.0});
 		
@@ -39,6 +39,8 @@ methodmap VehicleFullAPC < VehicleGeneric
 		obj.AddSeat({0.0, -60.0, 80.0}, 0, Store_GetItemIndex("APC Rockets"));
 
 		func_NPCThink[obj.index] = ClotThink;
+		Armor_Charge[obj.index] = 15000;
+		obj.m_iMaxArmor = 15000;
 
 		AimPitch = obj.LookupPoseParameter("vehicle_weapon_pitch");
 		AimYaw = obj.LookupPoseParameter("vehicle_weapon_yaw");

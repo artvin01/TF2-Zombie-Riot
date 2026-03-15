@@ -352,8 +352,8 @@ static void Wand_Launch(int client, int iRot, float speed, float time, float dam
 
 	SetEntPropEnt(iCarrier, Prop_Send, "m_hOwnerEntity", client);
 	DispatchKeyValue(iCarrier, "model", ENERGY_BALL_MODEL);
-	DispatchKeyValue(iCarrier, "modelscale", "0");
 	DispatchSpawn(iCarrier);
+	SetEntPropFloat(iCarrier, Prop_Send, "m_flModelScale", 0.001);
 
 	TeleportEntity(iCarrier, fPos, NULL_VECTOR, fVel);
 	SetEntityMoveType(iCarrier, MOVETYPE_FLY);
@@ -456,8 +456,8 @@ static void Wand_Launch_IEM(int client, int iRot, float speed, float time, float
 
 	SetEntPropEnt(iCarrier, Prop_Send, "m_hOwnerEntity", client);
 	DispatchKeyValue(iCarrier, "model", ENERGY_BALL_MODEL);
-	DispatchKeyValue(iCarrier, "modelscale", "0");
 	DispatchSpawn(iCarrier);
+	SetEntPropFloat(iCarrier, Prop_Send, "m_flModelScale", 0.001);
 
 	TeleportEntity(iCarrier, fPos, NULL_VECTOR, fVel);
 	SetEntityMoveType(iCarrier, MOVETYPE_FLY);
@@ -1159,8 +1159,8 @@ stock int CreateWandCutterProjectile(int client, float flSpeed, float flPos[3], 
 
 	SetEntPropEnt(iCarrier, Prop_Send, "m_hOwnerEntity", client);
 	DispatchKeyValue(iCarrier, "model", ENERGY_BALL_MODEL);
-	DispatchKeyValue(iCarrier, "modelscale", "0");
 	DispatchSpawn(iCarrier);
+	SetEntPropFloat(iCarrier, Prop_Send, "m_flModelScale", 0.001);
 
 	TeleportEntity(iCarrier, flPos, NULL_VECTOR, fVel);
 	SetEntityMoveType(iCarrier, MOVETYPE_FLY);

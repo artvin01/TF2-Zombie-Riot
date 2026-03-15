@@ -933,7 +933,7 @@ public void TheMessenger_NPCDeath(int entity)
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: I may or may not heavily underestimated you..");
+					CPrintToChatAll("{lightblue}The Messenger{default}: I may or may not have heavily underestimated you..");
 				}
 				case 3:
 				{

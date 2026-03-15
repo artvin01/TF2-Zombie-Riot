@@ -50,6 +50,8 @@ methodmap VehicleAmbulance < VehicleGeneric
 		FuncShowInteractHud[obj.index] = ClotShowInteractHud;
 		func_NPCInteract[obj.index] = ClotInteract;
 		func_NPCThink[obj.index] = ClotThink;
+		Armor_Charge[obj.index] = 10000;
+		obj.m_iMaxArmor = 10000;
 
 		obj.m_flNextThinkTime = 0.0;
 		obj.m_flNextMeleeAttack = 0.0;

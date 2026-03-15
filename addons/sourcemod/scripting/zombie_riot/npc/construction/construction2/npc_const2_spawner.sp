@@ -300,8 +300,16 @@ static void ClotThink(int iNPC)
 		}
 		case 1:
 		{
-			if(ActiveSpawners[view_as<int>(npc.m_bEnemyBase)] >= 3)
-				return;
+			if(npc.m_bEnemyBase)
+			{
+				if(ActiveSpawners[view_as<int>(npc.m_bEnemyBase)] >= 3)
+					return;
+			}
+			else
+			{
+				if(ActiveSpawners[view_as<int>(npc.m_bEnemyBase)] >= 2)
+					return;
+			}
 
 			DetectedEnemyHit_Const2 = false;
 			Explode_Logic_Custom(0.0, 0, npc.index, 0, _, 500.0, _,_,true,_,_,_,_, DetectedEnemyHit_Const2_Internal);

@@ -1788,9 +1788,6 @@ static void DropItem(int client, int index, float pos[3], int totalAmount)
 				DispatchKeyValue(entity, "health", "1999999999");
 				DispatchKeyValue(entity, "targetname", "rpg_item");
 
-				ang[1] = index == -1 ? -1.0 : kv.GetFloat("modelscale", -1.0);
-				if(ang[1] > 0.0)
-					DispatchKeyValueFloat(entity, "modelscale", ang[1]);
 
 				if(index != -1)
 				{
@@ -1809,6 +1806,9 @@ static void DropItem(int client, int index, float pos[3], int totalAmount)
 				TeleportEntity(entity, pos, NULL_VECTOR, vel, true);
 
 				DispatchSpawn(entity);
+				ang[1] = index == -1 ? -1.0 : kv.GetFloat("modelscale", -1.0);
+				if(ang[1] > 0.0)
+					SetEntPropFloat(entity, Prop_Send, "m_flModelScale", ang[1]);
 			//	SetEntityCollisionGroup(entity, 2);
 			//	b_Is_Player_Projectile[entity] = true;
 				SDKHook(entity, SDKHook_OnTakeDamage, RPG_HookDroppedItemDamageTaken);

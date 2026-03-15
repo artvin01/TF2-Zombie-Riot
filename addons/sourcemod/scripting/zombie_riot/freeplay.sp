@@ -376,9 +376,10 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				{
 					case 1: 
 					{
-						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
-						enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.85);
+						enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
+						enemy.Health = RoundToFloor((7700000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.4);
+						enemy.Data = "enraged";
 					}
 					default: 
 					{
@@ -394,15 +395,15 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				{
 					case 1: 
 					{
-						enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
-						enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
+						enemy.Health = RoundToFloor((15000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 					}
 					default: 
 					{
 						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
 						enemy.Health = RoundToFloor((15000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.85);
+						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 					}
 				}
 			}
@@ -446,21 +447,25 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_thompson");
 				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage = 0.75;
+				enemy.ExtraDamage = 0.80;
+				enemy.ExtraSpeed = 1.30;
+				enemy.ExtraThinkSpeed = 0.8;
 			}
 			case 19:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_twins");
 				enemy.Health = RoundToFloor((4500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "Im_The_raid;My_Twin";
-				enemy.ExtraDamage = 0.75;
+				enemy.ExtraDamage = 0.80;
+				enemy.ExtraSpeed = 1.30;
+				enemy.ExtraThinkSpeed = 0.90;
 			}
 			case 20:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_johnson");
 				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = 0.75; // johnson gets way too much damage in freeplay, reduce it
-				enemy.ExtraThinkSpeed = 0.75;
+				enemy.ExtraThinkSpeed = 0.6;
 				enemy.ExtraSpeed = 1.50;
 			}
 			case 21:
@@ -522,8 +527,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 					case 1: // 
 					{
 						enemy.Index = NPC_GetByPlugin("npc_vincent");
-						enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-						enemy.Data = "sc40;forceangry";
+						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "forceangry;forcesad";
 					}
 					default: // 
 					{
@@ -538,20 +543,31 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor((3000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "force_final_battle";
 				enemy.ExtraDamage = 0.90;
+				enemy.ExtraSpeed = 1.15;
 			}
 			case 33:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_almagest_jkei");
 				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "force_final_battle";
-				enemy.ExtraThinkSpeed = 0.90;
+				enemy.ExtraThinkSpeed = 0.65;
+				enemy.ExtraDamage = 1.15;
+				enemy.ExtraSpeed = 1.25;
 			}
 			case 34:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_shadowing_darkness_boss");
 				enemy.Health = RoundToFloor((10000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				enemy.Data = "sc25;force_final_battle";
+				enemy.Data = "sc40;force_final_battle";
 				enemy.ExtraDamage = 0.75;
+			}
+			case 35:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_zilius");
+				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Data = "bossrush";
+				enemy.ExtraSpeed = 1.10;
+				enemy.ExtraThinkSpeed = 0.85;
 			}
 			default:
 			{
@@ -705,12 +721,48 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			enemy.ExtraDamage = 1.0;
 
 			enemy.Is_Immune_To_Nuke = true;
-			if(GetRandomInt(1, 2) == 2)
+			int roll = GetRandomInt(1, 7);
+			if(roll == 2)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_dimensionfrag");
 				enemy.Health = RoundToFloor(((170000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.25)) * HealthMulti);
 				enemy.ExtraDamage = 0.75;
 				count = 20;
+			}
+			else if(roll == 3)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_ltzens");
+				enemy.Health = RoundToFloor(((250000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.15)) * HealthMulti);
+				enemy.ExtraDamage = 1.25;
+				count = 15;
+			}
+			else if(roll == 4)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_refract");
+				enemy.Health = RoundToFloor(((200000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.20)) * HealthMulti);
+				enemy.ExtraDamage = 1.25;
+				count = 20;
+			}
+			else if(roll == 5)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_spuud");
+				enemy.Health = RoundToFloor(((300000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.11)) * HealthMulti);
+				enemy.ExtraDamage = 1.25;
+				count = 15;
+			}
+			else if(roll == 6)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_rouam");
+				enemy.Health = RoundToFloor(((500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
+				enemy.ExtraDamage = 2.0;
+				count = 5;
+			}
+			else if(roll == 7)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_keitosis");
+				enemy.Health = RoundToFloor(((3000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
+				enemy.ExtraDamage = 1.5;
+				count = 1;
 			}
 			else
 			{
@@ -871,7 +923,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 static Action Freeplay_RouletteMessage(Handle timer)
 {
-	RaidFight = GetRandomInt(1, 28);
+	RaidFight = GetRandomInt(1, 35);
 	EmitSoundToAll("misc/halloween/spelltick_set.wav", _, _, _, _, _, GetRandomInt(70, 135));
 	switch(RaidFight)
 	{
@@ -920,7 +972,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 11:	
 		{
-			CPrintToChatAll("{green}MR. X! {gold}- {red}MISTER WHAT!?");
+			CPrintToChatAll("{green}MR. X! {gold}- {red}Mister who? That should say Vivithorn.");
 		}
 		case 12:
 		{
@@ -948,15 +1000,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 18:
 		{
-			CPrintToChatAll("{community}Agent... thompson. {crimson}ew.");
+			CPrintToChatAll("{community}Agent... thompson. {crimson}ew. I buffed him a bit");
 		}
 		case 19:
 		{
-			CPrintToChatAll("{forestgreen}The.... twins. {crimson}eew.");
+			CPrintToChatAll("{forestgreen}The.... twins. {crimson}eew. I buffed them a bit");
 		}
 		case 20:
 		{
-			CPrintToChatAll("{community}Agent... johnson. {crimson}ew.");
+			CPrintToChatAll("{community}Agent... johnson. {crimson}ew. Had to juice him up a bit cause how bad he is");
 		}
 		case 21:
 		{
@@ -1004,15 +1056,19 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 32:
 		{
-			CPrintToChatAll("{pink}REILA! {gold}- {red}Make sure you attack her first.");
+			CPrintToChatAll("{pink}REILA! {gold}- {red}Make sure you attack Reila herself first. I buffed her cause she has no umbrals supporting her");
 		}
 		case 33:
 		{
-			CPrintToChatAll("{black}JKEI! {gold}- {red}Hope we don't have to fight more from the Almagest Corporation.");
+			CPrintToChatAll("{black}JKEI! {gold}- {red}Hope we don't have to fight more from the Almagest Corporation. I buffed him cause he has no allies with him.");
 		}
 		case 34:
 		{
 			CPrintToChatAll("{darkgray}SHADOWING DARKNESS! {gold}- {red}The hardest challenge we have programmed into this. Good luck beating her.");
+		}
+		case 35:
+		{
+			CPrintToChatAll("{black}Zilius! {gold}- {snow}If you guys beat him, I'll join you as a thanks for saving me from him. {red}I made him stronger cause he doesn't have his army.");
 		}
 		default:
 		{

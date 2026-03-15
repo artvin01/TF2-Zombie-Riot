@@ -726,7 +726,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 					// 20 x 0.25 x 0.2
 					*/
 					ApplyStatusEffect(entity, entity, "Sea Presence", 1.0);
-					ApplyStatusEffect(entity, entity, "Teslar Shock", 1.0);
+					ApplyStatusEffect(entity, entity, "Hypodermic Toxin Injection", 1.0);
 
 					NervousTouching[entity] = NervousTouching[0];
 				}

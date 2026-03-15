@@ -132,7 +132,7 @@ public void Sewmo_ClotThink(int iNPC)
 
 	GrantEntityArmor(iNPC, true, 0.50, 0.1, 0);
 
-	if(npc.m_flArmorCount < 0.0)
+	if(npc.m_flArmorCount <= 0.0)
 	{
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");

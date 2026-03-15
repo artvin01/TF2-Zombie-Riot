@@ -382,7 +382,6 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					
 					SetEntityModel(Drone, SKULL_MODEL);
 					
-					DispatchKeyValue(Drone, "modelscale", "1.25");
 					DispatchKeyValue(Drone, "StartDisabled", "false");
 		
 					DispatchKeyValue(prop, "Health", "9999999999");
@@ -390,6 +389,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					SetEntProp(prop, Prop_Data, "m_takedamage", 0, 1);
 					
 					DispatchSpawn(Drone);
+					SetEntPropFloat(Drone, Prop_Send, "m_flModelScale", 1.25);
 					
 					AcceptEntityInput(Drone, "Enable");
 					

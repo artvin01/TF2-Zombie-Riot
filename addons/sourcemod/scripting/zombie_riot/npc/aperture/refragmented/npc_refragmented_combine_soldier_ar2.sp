@@ -411,7 +411,7 @@ public void RefragmentedCombineSoldierAr2_ClotThink(int iNPC)
 					NormalizeVector(vecDir, vecDir);
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 
-					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 15.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					
 					npc.PlayRangedSound();
 				}

@@ -71,9 +71,7 @@ stock void RogueHelp_BodyAPSD(int entity, StringMap map, float amount)
 {
 	if(map)	// Player
 	{
-		float value;
-
-		value = 1.0;
+		float value = 1.0;
 		map.GetValue("343", value);
 		map.SetValue("343", value / amount);
 	}
@@ -104,7 +102,7 @@ stock void RogueHelp_BodyRes(int entity, StringMap map = null, float amount)
 {
 	if(map)	// Player
 	{
-		float value;
+		float value = 1.0;
 
 		map.GetValue("412", value);
 		map.SetValue("412", value / amount);
@@ -140,9 +138,8 @@ stock void RogueHelp_BodySpeed(int entity, StringMap map, float amount)
 {
 	if(map)	// Player
 	{
-		float value;
+		float value = 1.0;
 
-		value = 1.0;
 		map.GetValue("442", value);
 		map.SetValue("442", value * amount);
 	}

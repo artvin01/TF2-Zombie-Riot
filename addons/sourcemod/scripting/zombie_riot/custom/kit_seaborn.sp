@@ -220,7 +220,9 @@ public void Weapon_SeaRange_M2(int client, int weapon, bool crit, int slot)
 
 	int SpawnMaxEnemies = 2;
 	if(LastMann)
-		SpawnMaxEnemies = 4;
+	{
+		Ability_Apply_Cooldown(client, slot, 45.0);
+	}
 		
 	for(int i; i < SpawnMaxEnemies; i++)
 	{
@@ -256,7 +258,9 @@ public void Weapon_SeaRangePap_M2(int client, int weapon, bool crit, int slot)
 	GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 	int SpawnMaxEnemies = 2;
 	if(LastMann)
-		SpawnMaxEnemies = 4;
+	{
+		Ability_Apply_Cooldown(client, slot, 45.0);
+	}
 		
 	for(int i; i < SpawnMaxEnemies; i++)
 	{
@@ -299,8 +303,7 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 	int SpawnMaxEnemies = 3;
 	if(LastMann)
 	{
-		SpawnMaxEnemies = 6;
-		Ability_Apply_Cooldown(client, slot, 30.0);
+		Ability_Apply_Cooldown(client, slot, 45.0);
 	}
 		
 	for(int i; i < SpawnMaxEnemies; i++)
@@ -309,8 +312,6 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 		if(entity > MaxClients)
 		{
 			int maxhealth = SDKCall_GetMaxHealth(client) / 2; //2x health cus no resistance.
-			if(LastMann)
-				maxhealth *= 2;
 			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);

@@ -730,13 +730,6 @@ float WeaponDamageAttributeMultipliers(int weapon, int Flags = MULTIDMG_NONE, in
 			return DamageBonusLogic;	
 		}
 	}
-//	DamageBonusLogic *= Attributes_Get(weapon, 1000, 1.0); //global dmg multi
-#if defined ZR
-	if(i_CustomWeaponEquipLogic[weapon] != WEAPON_TEUTON_DEAD)
-#endif
-	{
-		DamageBonusLogic *= Attributes_Get(weapon, 476, 1.0); //global dmg multi
-	}
 
 	if(!(Flags & MULTIDMG_BLEED))
 	{

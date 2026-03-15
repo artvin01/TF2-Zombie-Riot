@@ -3195,7 +3195,7 @@
 	{
 		"en"	"{green}Gain Cash and Umbral Affinity."
 		"it"	"{green}Guadagni denaro e Affinità Umbrale."
-		"ko"	"{green}자금을 얻고 엄브랄 친화력이 증가합니다."
+		"ko"	"{green}자금을 얻고 움브랄 친화력이 증가합니다."
 	}
 	"Broken Crest Accept Conlusion"
 	{

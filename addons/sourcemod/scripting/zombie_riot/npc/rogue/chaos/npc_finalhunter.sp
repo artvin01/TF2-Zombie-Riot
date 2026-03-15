@@ -278,7 +278,7 @@ static void ClotThink(int iNPC)
 					if(ScalingDo <= 0.75)
 						ScalingDo = 0.75;
 
-					health -= (maxhealth / RoundToNearest(60.0 / ScalingDo) / 4);
+					health -= ((maxhealth / RoundToNearest(60.0 / ScalingDo)) / 8);
 
 					if(health < 1)
 					{

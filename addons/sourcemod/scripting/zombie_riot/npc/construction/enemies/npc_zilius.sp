@@ -538,7 +538,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
-		SetVariantColor(view_as<int>({0, 0, 0, 150}));
+		SetVariantColor(view_as<int>({50, 50, 150, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		bool ingoremusic = StrContains(data, "triple_enemies") != -1;
 		

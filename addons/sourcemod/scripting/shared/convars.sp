@@ -87,6 +87,7 @@ void ConVar_PluginStart()
 	CvarKickPlayersAt = CreateConVar("zr_kickplayersat", "", "If the server is full, Do reroute or kick", FCVAR_DONTRECORD);
 	CvarRerouteToIpAfk = CreateConVar("zr_rerouteipafk", "", "If the server is full, reroute", FCVAR_DONTRECORD);
 	CvarSkillPoints = CreateConVar("zr_skillpoints", "1", "If skill points are enabled");
+	zr_disable_barney_rename = CreateConVar("zr_disable_barney_rename", "0", "Disables Corrupted Barney's renaming (boring)");
 	CvarRogueSpecialLogic = CreateConVar("zr_roguespeciallogic", "0", "Incase your server wants to remove some restrictions off the roguemode.");
 	CvarLeveling = CreateConVar("zr_playerlevels", "1", "If player levels are enabled");
 	CvarAutoSelectWave = CreateConVar("zr_autoselectwave", "0", "If to automatically set a wave on map start instead of running a vote");

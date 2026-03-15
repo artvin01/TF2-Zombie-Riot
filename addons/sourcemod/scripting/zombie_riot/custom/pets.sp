@@ -62,10 +62,10 @@ void Pets_PlayerResupply(int client)
 		DispatchKeyValue(entity, "solid", "0");
 		DispatchKeyValueFloat(entity, "fademindist", 800.0);
 		DispatchKeyValueFloat(entity, "fademaxdist", 1000.0);
-		DispatchKeyValueFloat(entity, "modelscale", PetResize[index]);
 		DispatchKeyValue(entity, "DefaultAnim", PetAnimation[index][Anim_Idle]);
 		
 		DispatchSpawn(entity);
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", PetResize[index]);
 		
 		//SetEntPropEnt(entity, Prop_Data, "m_hEffectEntity", client);
 		//SDKHook(entity, SDKHook_SetTransmit, PetTransmit);

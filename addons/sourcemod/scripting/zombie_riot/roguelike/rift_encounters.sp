@@ -586,7 +586,7 @@ static Action Timer_AdvanceGulnLore(Handle timer, int progress)
 		}
 		case 11:
 		{
-			CPrintToChatAll("{grey}if, no, WHEN we meet again, I'll make sure to hand you that cake recipe you loved so much from me okay?");
+			CPrintToChatAll("{grey}If, no, WHEN we meet again, I'll make sure to hand you that cake recipe you loved so much from me okay?");
 		}
 		case 12:
 		{

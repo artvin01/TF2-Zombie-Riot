@@ -4205,9 +4205,7 @@ int SSB_CreateProjectile(SupremeSpookmasterBones owner, char model[255], float p
 		ActivateEntity(prop);
 		
 		SetEntityModel(prop, model);
-		char scaleChar[16];
-		Format(scaleChar, sizeof(scaleChar), "%f", scale);
-		DispatchKeyValue(prop, "modelscale", scaleChar);
+		SetEntPropFloat(prop, Prop_Send, "m_flModelScale", scale);
 		
 		SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", owner.index);
 		SetEntProp(prop, Prop_Data, "m_takedamage", 0, 1);

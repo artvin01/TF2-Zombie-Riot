@@ -304,10 +304,14 @@ methodmap Twirl < CClotBody
 
 		float Sky_Loc[3]; Sky_Loc = Predicted_Pos; Sky_Loc[2]+=500.0; Predicted_Pos[2]-=100.0;
 
-		int laser;
-		laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, Predicted_Pos, Sky_Loc);
-		if(IsValidEntity(laser))
-			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+		if(!AtEdictLimit(EDICT_NPC))
+		{
+			int laser;
+			laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, Predicted_Pos, Sky_Loc);
+			if(IsValidEntity(laser))
+				CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		
 			
 		int loop_for = 4;
 
@@ -1169,7 +1173,7 @@ static Action Timer_Twirl_Ion(Handle Timer, DataPack data)
 	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.4, Thickness, 0.75, color, 1, 0);
 	TE_SendToAll();
 
-	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=1000.0; end_point[2]-=100.0;
+	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=1000.0; end_point[2]-=100.0; 
 
 	if(AtEdictLimit(EDICT_NPC))
 		return Plugin_Stop;
@@ -1808,30 +1812,34 @@ static void lunar_Radiance(Twirl npc)
 		}
 	}
 
-	float flPos[3], flAng[3];
-	npc.GetAttachment("effect_hand_r", flPos, flAng);
-	int ent1 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
-	npc.GetAttachment("effect_hand_l", flPos, flAng);
-	int ent2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_red_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
-	if(IsValidEntity(ent1) && IsValidEntity(ent2))
+	if(!AtEdictLimit(EDICT_NPC))
 	{
-		i_lunar_entities[npc.index][0] = EntIndexToEntRef(ent1);
-		i_lunar_entities[npc.index][1] = EntIndexToEntRef(ent2);
-		int color[4];
-		Ruina_Color(color, i_current_wave[npc.index]);
-		int laser = ConnectWithBeamClient(ent1, ent2, color[0], color[1], color[2], 5.0, 5.0, 1.0, LASERBEAM);
-		if(IsValidEntity(laser))
+		float flPos[3], flAng[3];
+		npc.GetAttachment("effect_hand_r", flPos, flAng);
+		int ent1 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+		npc.GetAttachment("effect_hand_l", flPos, flAng);
+		int ent2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_red_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
+		if(IsValidEntity(ent1) && IsValidEntity(ent2))
 		{
-			i_lunar_entities[npc.index][2] = EntIndexToEntRef(laser);
+			i_lunar_entities[npc.index][0] = EntIndexToEntRef(ent1);
+			i_lunar_entities[npc.index][1] = EntIndexToEntRef(ent2);
+			int color[4];
+			Ruina_Color(color, i_current_wave[npc.index]);
+			int laser = ConnectWithBeamClient(ent1, ent2, color[0], color[1], color[2], 5.0, 5.0, 1.0, LASERBEAM);
+			if(IsValidEntity(laser))
+			{
+				i_lunar_entities[npc.index][2] = EntIndexToEntRef(laser);
+			}
+		}
+		else
+		{
+			if(IsValidEntity(ent1))
+				RemoveEntity(ent1);
+			if(IsValidEntity(ent2))
+				RemoveEntity(ent2);
 		}
 	}
-	else
-	{
-		if(IsValidEntity(ent1))
-			RemoveEntity(ent1);
-		if(IsValidEntity(ent2))
-			RemoveEntity(ent2);
-	}
+	
 
 	npc.m_flLunarThrottle = GameTime + 0.5;
 	fl_ruina_battery_timeout[npc.index] = GameTime + 2.5;
@@ -2876,12 +2884,19 @@ static void Fractal_Attack(int iNPC, float VecTarget[3], float dmg, float speed,
 		int color[4];
 		Ruina_Color(color, i_current_wave[iNPC]);
 		Twirl npc = view_as<Twirl>(iNPC);
-		int beam = ConnectWithBeamClient(npc.m_iWearable1, Proj, color[0], color[1], color[2], f_start, f_end, amp, LASERBEAM);
-		i_WandParticle[Proj] = EntIndexToEntRef(beam);
 		DataPack pack;
 		CreateDataTimer(0.1, Laser_Projectile_Timer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		pack.WriteCell(EntIndexToEntRef(iNPC));
-		pack.WriteCell(EntIndexToEntRef(beam));
+		if(!AtEdictLimit(EDICT_NPC))
+		{
+			int beam = ConnectWithBeamClient(npc.m_iWearable1, Proj, color[0], color[1], color[2], f_start, f_end, amp, LASERBEAM);
+			i_WandParticle[Proj] = EntIndexToEntRef(beam);
+			pack.WriteCell(EntIndexToEntRef(beam));
+		}
+		else
+		{
+			pack.WriteCell(-69);
+		}
 		pack.WriteCell(EntIndexToEntRef(Proj));
 		pack.WriteCellArray(color, sizeof(color));
 		pack.WriteFloat(radius);
@@ -2931,14 +2946,18 @@ static Action Laser_Projectile_Timer(Handle timer, DataPack data)
 {
 	data.Reset();
 	int iNPC = EntRefToEntIndex(data.ReadCell());
-	int Laser_Entity = EntRefToEntIndex(data.ReadCell());
+	int Laser_Entity = data.ReadCell();
+
+	if(Laser_Entity != -69)
+		Laser_Entity = EntRefToEntIndex(Laser_Entity);
+
 	int Projectile = EntRefToEntIndex(data.ReadCell());
 	int color[4];
 	data.ReadCellArray(color, sizeof(color));
 	float Radius	= data.ReadFloat();
 	float dmg 		= data.ReadFloat();
 
-	if(!IsValidEntity(iNPC) || !IsValidEntity(Laser_Entity) || !IsValidEntity(Projectile))
+	if(!IsValidEntity(iNPC) || (!IsValidEntity(Laser_Entity) && Laser_Entity != -69) || !IsValidEntity(Projectile))
 	{
 		if(IsValidEntity(Laser_Entity))
 			RemoveEntity(Laser_Entity);
@@ -2948,6 +2967,8 @@ static Action Laser_Projectile_Timer(Handle timer, DataPack data)
 		
 		return Plugin_Stop;
 	}
+
+	
 
 	Ruina_Laser_Logic Laser;
 
@@ -2970,6 +2991,12 @@ static Action Laser_Projectile_Timer(Handle timer, DataPack data)
 	Laser.Bonus_Damage = dmg*6.0;
 	Laser.damagetype = DMG_PLASMA;
 
+
+	if(Laser_Entity == -69)	//The projectile was fired when we are at edict criticality, as such we will render the "laser" with a TE rather then env beam.
+	{
+		TE_SetupBeamPoints(Laser.Start_Point, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, Radius*2.0, Radius*2.0, 0, 0.1, color, 3);
+		TE_SendToAll();
+	}
 	Laser.Deal_Damage(On_LaserHit);
 
 

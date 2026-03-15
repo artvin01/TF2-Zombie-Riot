@@ -512,12 +512,12 @@ public void Rogue_HealthDown1_Enemy(int entity)
 
 public void Rogue_HealthDown2_Enemy(int entity)
 {
-	RogueHelp_BodyHealth(entity, null, 0.85);
+	RogueHelp_BodyHealth(entity, null, 0.88);
 }
 
 public void Rogue_HealthDown3_Enemy(int entity)
 {
-	RogueHelp_BodyHealth(entity, null, 0.8);
+	RogueHelp_BodyHealth(entity, null, 0.85);
 }
 
 public void Rogue_MeleeDamage1_Weapon(int entity)

@@ -52,7 +52,7 @@
 		"nl"		"Uw level is omhoog gegaan {1} \nJij hebt gekregen:"
 		"chi"		"恭喜你升级了！当前等级为 {1} 级\n已获得:"
 		"it"		"Sei salito al livello {1}\nHai sbloccato:"
-		"ko"		"레벨업! 레벨이 {1} 가 되었습니다.\n해금한 것:"
+		"ko"		"레벨업! 레벨이 {1} 이(가) 되었습니다.\n해금한 것:"
 	}
 	"None"
 	{
@@ -1096,6 +1096,11 @@
 		"chi"       "技能冷却还有 {1} 的时间!"
 		"it"		"Questa abilità ha ancora un cooldown di {1} secondi!"
 		"ko" 		"이 능력은 {1} 초 후에 사용할 수 있습니다!"
+	}
+	"Backwards Setting"
+	{
+		"en" 		"Reminder: Walking backwards reduces your speed by 30％!"
+		"ko"		"주의: 뒤로 이동할 때는 이동 속도가 30％ 감소합니다!"
 	}
 	"Not Enough Ammo"
 	{
@@ -2537,7 +2542,7 @@
 		"nl"		"De vijand heeft hun uitrusting naar level {1} gebracht!!!"
 		"chi"       "僵尸的装备已升级!!!{1}"
 		"it"		"Il nemico ha ricercato il proprio equipaggiamento a livello {1}!!!"
-		"ko"		"적의 연구가 완료되어 적들의 장비 레벨이 {1} 로 증가했습니다!!!"
+		"ko"		"적의 연구가 완료되어 적들의 장비 레벨이 {1} (으)로 증가했습니다!!!"
 	}
 	"Victory Menu 2"
 	{		
@@ -4478,12 +4483,10 @@
 		"it"	"Questi ''Overclock'' modificheranno pesantemente la vostra arma, applicando buffs e nerf"
 		"ko"	"이 ''과부하''는 무기의 효과를 크게 변경하여, 무기에 장점과 단점을 동시에 부여합니다"
 	}
-	"Taunt Speed increase"
+	"Display Backwards Walk Notif"
 	{
-		"en" 	"Taunt Speed increase"
-		"fr" 	"Vitesse des Railleries Augmuntée"
-		"it"	"Aumento della velocità di provocazione"
-		"ko" 	"도발 속도 증가"
+		"en" 	"Display Backwards Walk Notif"
+		"ko"	"뒤로 이동시 알림 설정"
 	}
 	"Interact With Reload"
 	{
@@ -5217,8 +5220,8 @@
 	}
 	"Iberia Expi Desc"
 	{
-	  "en" "Iberia and expidonsa, but mainly Iberia, Come back to us for more training. But Nemal and Silvester won't be here this time. They're probably on vacation with Sensal."
-	  "ko" "이베리아와 엑스피돈사, 그 중에서도 이베리아가 돌아와 더 많은 훈련을 제공하려고 합니다. 하지만 이번엔 네말과 실베스터가 없군요. 아마 센살과 휴가 중일 겁니다."
+	  "en" "After the main mercs are done with their training, Iberia comes to us, the secondary mercs, for some more training. Nemal and Silvester won't be here this time since they're on vacation with Sensal."
+	  "ko" "주요 용병들이 훈련을 마친 후, 이베리아가 더 많은 훈련을 위해 보조 용병들을 방문합니다. 이번엔 네말과 실베스터가 센살과 휴가 중이기에 없을 겁니다."
 	}
 	"Iberia & Nemal"
 	{
@@ -5231,7 +5234,7 @@
 	}
 	"Iberia Nemal Desc"
 	{
-		"en" "(10) Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremly seriously."
+		"en" "(10) Iberia and Expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremly seriously."
 		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
 		"it"	"(10) Iberia e expidonsa offrono addestramento per aiutare contro la vera battaglia finale contro il vuoto... Anche se gli iberici sembrano prenderla estremamente sul serio."
 		"ko" "설정 순서: (10) 이베리아와 엑스피돈사가 공허와의 최후의 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 이베리아인들은 이를 매우 심각하게 받아들이는 것 같지만요."
@@ -5397,6 +5400,16 @@
 		"en"	"Build Healing Station At Me"
 		"it"	"Costruisci una stazione di cura presso di me"
 		"ko"	"내 위치에 회복 시설을 건설해줘"
+	}
+	"Set My Basepoint"
+	{
+		"en"	"Set My Basepoint"
+		"ko"	"거점 포인트 설정"
+	}
+	"Saved Pos for Base"
+	{
+		"en"	"This builder will remember this position and stay near it."
+		"ko"	"건축가 반시민군이 이 위치를 기억하고 근처에 있을 것입니다."
 	}
 	"Build Barricade At Me"
 	{
@@ -5703,5 +5716,31 @@
 	{
 		"en"	"Outlaws"
 		"ko"	"무법자들"
+	}
+	"Unknown"
+	{
+		"en"	"Unknown"
+		"ko"	"알 수 없음"
+	}
+	"Ranged Damage"
+	{
+		"en"	"Ranged Damage"
+		"ko"	"원거리 피해"
+	}
+	"Melee Damage"
+	{
+		"en"	"Melee Damage"
+		"ko"	"근접 피해"
+	}
+	"True Damage"
+	{
+		"en"	"True Damage"
+		"ko"	"트루 데미지"
+	}
+	"Last Hit Recieved info"
+	{
+		"#format"	"{1:s},{2:.0f},{3:s},{4:d}"
+		"en"	"You died to {yellow}{1}{snow} dealing {crimson}{2} {3}{snow} with {green}{4} Health Remaining."
+		"ko"	"당신은 {green}잔여 체력 {4}{snow}에서 {yellow}{1}{snow}에게 {crimson}{2}의 {3}{snow}을(를) 입고 사망했습니다."
 	}
 }

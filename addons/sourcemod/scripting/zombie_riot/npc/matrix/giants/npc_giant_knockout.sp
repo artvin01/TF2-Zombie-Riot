@@ -268,7 +268,7 @@ public void GiantKnockout_ClotThink(int iNPC)
 								{
 									float damageDealt = AgentHealthDamageMulti(npc);
 									if(ShouldNpcDealBonusDamage(target))
-									damageDealt *= 1.5;
+										damageDealt *= 7.5;
 									SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 									Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 9 : 7);
@@ -333,7 +333,7 @@ public Action GiantKnockout_OnTakeDamage(int victim, int &attacker, int &inflict
 
 static float AgentHealthDamageMulti(CClotBody npc)
 {
-	float damage = 10.0;
+	float damage = 100.0;
 	float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 	float health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float ratio = health / maxhealth;
@@ -343,19 +343,19 @@ static float AgentHealthDamageMulti(CClotBody npc)
 	{
 		damage *= 2.0;
 		if(ShouldNpcDealBonusDamage(target))
-		damage *= 2.5;
+			damage *= 2.5;
 	}
 	if(ratio <= 0.50)
 	{
 		damage *= 2.0;
 		if(ShouldNpcDealBonusDamage(target))
-		damage *= 2.5;
+			damage *= 2.5;
 	}
 	if(ratio <= 0.25)
 	{
 		damage *= 2.0;
 		if(ShouldNpcDealBonusDamage(target))
-		damage *= 2.5;
+			damage *= 2.5;
 	}
 	return (0.0 + damage);
 }

@@ -1175,9 +1175,7 @@ int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocit
 		ActivateEntity(prop);
 		
 		SetEntityModel(prop, model);
-		char scaleChar[16];
-		Format(scaleChar, sizeof(scaleChar), "%f", scale);
-		DispatchKeyValue(prop, "modelscale", scaleChar);
+		SetEntPropFloat(prop, Prop_Send, "m_flModelScale", scale);
 		
 		SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", client);
 		SetEntProp(prop, Prop_Data, "m_takedamage", 0, 1);

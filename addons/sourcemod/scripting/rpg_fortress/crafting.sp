@@ -96,8 +96,6 @@ enum struct CraftEnum
 			{
 				DispatchKeyValue(entity, "targetname", "rpg_fortress");
 				DispatchKeyValue(entity, "model", this.Model);
-				//DispatchKeyValueFloat(entity, "modelscale", this.Scale);
-				//DispatchKeyValue(entity, "solid", "2");
 				SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", MIN_FADE_DISTANCE);
 				SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", MAX_FADE_DISTANCE);				
 				DispatchSpawn(entity);

@@ -378,7 +378,7 @@ public void AgentEric_ClotThink(int iNPC)
 								{
 									float damageDealt = AgentHealthDamageMulti(npc);
 									if(ShouldNpcDealBonusDamage(target))
-									damageDealt *= 1.5;
+										damageDealt *= 7.5;
 									SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 									Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 25 : 10);

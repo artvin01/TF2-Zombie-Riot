@@ -195,6 +195,7 @@ methodmap MedivalVillager < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 
+		b_thisNpcIsAMiniboss[npc.index] = true;
 		float wave = float(Waves_GetRoundScale()+1);
 		
 		wave *= 0.133333;

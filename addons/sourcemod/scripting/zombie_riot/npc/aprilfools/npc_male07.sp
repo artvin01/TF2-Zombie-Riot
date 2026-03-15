@@ -189,8 +189,8 @@ public void Male07_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,_,999999.9, true);
-		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		//b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 		if(npc.m_iTarget < 1)
 		{
 			b_DoNotChangeTargetTouchNpc[npc.index] = 0;

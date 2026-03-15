@@ -144,7 +144,7 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		
 		int particle = 0;
 
-		if(WandParticle[0]) //If it has something, put it in. usually it has one, but incase its invis for some odd reason, allow it to be that.
+		if(WandParticle[0] && !AtEdictLimit(EDICT_EFFECT)) //If it has something, put it in. usually it has one, but incase its invis for some odd reason, allow it to be that.
 		{
 			particle = ParticleEffectAt(fPos, WandParticle, 0.0); //Inf duartion
 			SDKCall_SetAbsAngle(particle, fAng);
@@ -517,6 +517,10 @@ stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, f
 			npc.AddActivityViaSequence(defaultAnimation);
 		}
 
+		return -1;
+	}
+	if(AtEdictLimit(EDICT_EFFECT))
+	{
 		return -1;
 	}
 	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[rocket]);

@@ -3,6 +3,7 @@
 
 static Handle SDKEquipWearable;
 static Handle SDKGetMaxHealth;
+Handle g_hSDKStartTouch;
 //static Handle g_hStudio_FindAttachment;
 
 static Handle g_hSetAbsOrigin;
@@ -47,7 +48,16 @@ void SDKCall_Setup()
 	SDKGetMaxHealth = EndPrepSDKCall();
 	if(!SDKGetMaxHealth)
 		LogError("[Gamedata] Could not find GetMaxHealth");
-		
+
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "StartTouch");
+	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer);
+	g_hSDKStartTouch = EndPrepSDKCall();
+	if(g_hSDKStartTouch == INVALID_HANDLE)
+	{
+		LogMessage("Failed to create call: StartTouch!");
+	}
+
 	delete gamedata;
 	
 	gamedata = LoadGameConfigFile("zombie_riot");
@@ -70,6 +80,7 @@ void SDKCall_Setup()
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBasePlayer::SnapEyeAngles");
 	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef);
 	if ((g_hSnapEyeAngles = EndPrepSDKCall()) == null) SetFailState("Failed to create SDKCall for CBasePlayer::SnapEyeAngles!");
+	
 
 
 		
@@ -522,5 +533,12 @@ void SDKCall_RemoveImmediate(int entity)
 	if (g_SDKCallRemoveImmediate)
 	{
 		SDKCall(g_SDKCallRemoveImmediate, entity);
+	}
+}
+void SDKCall_StartTouch(int entity, int target)
+{
+	if (g_hSDKStartTouch)
+	{
+		SDKCall(g_hSDKStartTouch, entity, target);
 	}
 }

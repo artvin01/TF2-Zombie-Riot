@@ -273,6 +273,7 @@ methodmap AgentJohnson < CClotBody
 public void Johnson_GroundCheck(int entity, int victim, float damage, int weapon)
 {
 	Custom_Knockback(entity, victim, 1000.0, true);
+	Elemental_AddCorruptionDamage(victim, entity, 2000, true, true);
 }
 
 public void AgentJohnson_ClotThink(int iNPC)
@@ -454,11 +455,9 @@ public void AgentJohnson_ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget, 99999.9);
 					npc.m_flAbilityOrAttack1 = gameTime + 0.45;
 					npc.PlaySlamSound(0);
-					return;
 				}
 			}
 		}
-		
 		Johnsons_SelfDefense(npc, gameTime, npc.m_iTarget, flDistanceToTarget);
 	}
 	else
@@ -504,10 +503,8 @@ static void Johnsons_SelfDefense(AgentJohnson npc, float gameTime, int target, f
 							{
 								damage = 1.0;
 							}
-							Elemental_AddCorruptionDamage(targetTrace, npc.index, 15);
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-							//Reduce damage after dealing
-							damage *= 0.92;
+							Elemental_AddCorruptionDamage(targetTrace, npc.index, RoundToNearest(damage * 0.25), true, true);	
 							// On Hit stuff
 							bool Knocked = false;
 							if(!PlaySound)
@@ -598,7 +595,7 @@ static void Johnsons_SelfDefense(AgentJohnson npc, float gameTime, int target, f
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 				KillFeed_SetKillIcon(npc.index, "pistol");
 
-				float damage = 8.0;
+				float damage = 30.0;
 				damage *= RaidModeScaling;
 
 				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "dxhr_sniper_rail_blue");

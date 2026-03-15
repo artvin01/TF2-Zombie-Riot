@@ -46,7 +46,7 @@ void IberiaDeathMarker_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Death Marker");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_death_marker");
 	strcopy(data.Icon, sizeof(data.Icon), "mark_sniper_r3");
-	data.IconCustom = false;
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;

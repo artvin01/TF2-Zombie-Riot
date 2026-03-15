@@ -585,6 +585,7 @@ public void Weapon_Purging_Crusher_R(int client, int weapon, bool crit, int slot
 		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, PURGE_ANNAHILATOR_COOLDOWN);
 		int weaponN = Store_GiveSpecificItem(client, "Purging Annihilator");
+		Ability_Apply_Cooldown(client, slot, 2.0, weaponN, true);
 		ResetClipOfWeaponStore(weaponN, client, 9999);
 		fl_KitPurge_Annahilator_Tookout_Time[client] = (GetGameTime() + fl_KitPurge_Annahilator_Max_Hold_Time[pap]);
 		if(Annahilator_Remove_Timer[client] != null)
@@ -603,6 +604,19 @@ public void Weapon_Purging_Crusher_R(int client, int weapon, bool crit, int slot
 
 public void Weapon_Purging_Annahilator_R(int client, int weapon, bool crit, int slot)
 {
+	if(Ability_Check_Cooldown(client, slot) > 0.0 && !CvarInfiniteCash.BoolValue)
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+	
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		return;
+	}
 	FakeClientCommandEx(client, "use tf_weapon_shotgun_hwg");
 	Store_RemoveSpecificItem(client, "Purging Annihilator");
 	

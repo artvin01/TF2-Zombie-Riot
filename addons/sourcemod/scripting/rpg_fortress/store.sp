@@ -516,8 +516,8 @@ static void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-42", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed increase");
-	if(b_TauntSpeedIncrease[client])
+	FormatEx(buffer, sizeof(buffer), "%t", "Display Backwards Walk Notif");
+	if(b_BackwardsWalkNotif[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
@@ -961,13 +961,13 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				}
 				case -71: 
 				{
-					if(b_TauntSpeedIncrease[client])
+					if(b_BackwardsWalkNotif[client])
 					{
-						b_TauntSpeedIncrease[client] = false;
+						b_BackwardsWalkNotif[client] = false;
 					}
 					else
 					{
-						b_TauntSpeedIncrease[client] = true;
+						b_BackwardsWalkNotif[client] = true;
 					}
 					ReShowSettingsHud(client);
 				}
@@ -1026,7 +1026,7 @@ void Store_ApplyAttribs(int client)
 
 	float value;
 	char buffer1[12];
-	if(i_ClientHasCustomGearEquipped[client] > 1)
+	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		static ItemInfo info;
 		char buffer2[32];

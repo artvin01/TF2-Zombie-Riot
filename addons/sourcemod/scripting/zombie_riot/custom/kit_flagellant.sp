@@ -894,7 +894,7 @@ static void TriggerDeathDoor(int client, int &healing)
 		int entity, i;
 		while(TF2U_GetWearable(client, entity, i))
 		{
-			if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+			if(i_WeaponVMTExtraSetting[entity] != -1)
 				continue;
 
 			SetEntityRenderMode(entity, RENDER_NORMAL);
