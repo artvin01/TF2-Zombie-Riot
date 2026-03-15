@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions: write-all
     strategy:
       matrix:
         sm-version: [ '1.13.7299' ]
