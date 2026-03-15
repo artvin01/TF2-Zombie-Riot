@@ -5151,10 +5151,10 @@
 		"en"	"Enhancement: Cross-Platform Compatibility"
 		"ko"	"개조: 크로스 플랫폼 호환성"
 	}
-	"Enhancement: Airstrike Beacon"
+	"Enhancement: Precision Strike Beacon"
 	{
-		"en"	"Enhancement: Airstrike Beacon"
-		"ko"	"개조: 폭격 유도 비콘"
+		"en"	"Enhancement: Precision Strike Beacon"
+		"ko"	"개조: 정밀 타격 비콘"
 	}
 	"ER Targeting Remote"
 	{

@@ -23,6 +23,9 @@ static float ExploAR_HUDDelay[MAXPLAYERS];
 static bool Can_I_Fire[MAXPLAYERS] = {false, ...};
 static bool IsDeploy[MAXPLAYERS] = {false, ...};
 static bool IsOverride[MAXPLAYERS] = {false, ...};
+static bool IsExtraDesc_1[MAXPLAYERS] = {false, ...};
+static bool IsExtraDesc_2[MAXPLAYERS] = {false, ...};
+static bool IsExtraDesc_3[MAXPLAYERS] = {false, ...};
 
 static int g_LaserIndex;
 
@@ -312,6 +315,7 @@ public void BombAR_AirStrike_Beacon(int client, int weapon, bool crit, int slot)
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Ammo", SMGAmmoMAX);
 				return;
 			}
+			ClientCommand(client, "playgamesound ui/cyoa_map_open.wav");
 			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 50.0);
 			
@@ -449,6 +453,24 @@ public void Deploy_ExploARWeapon(int client, int weapon)
 			}
 		}
 	}
+	if(!IsExtraDesc_1[client] && ExploAR_WeaponPap[client]==3)
+	{
+		SetGlobalTransTarget(client);
+		CPrintToChat(client, "%s%t", STORE_COLOR, "Explosault Rifle AB 1 Desc Extra");
+		IsExtraDesc_1[client]=true;
+	}
+	if(!IsExtraDesc_2[client] && ExploAR_WeaponPap[client]==4)
+	{
+		SetGlobalTransTarget(client);
+		CPrintToChat(client, "%s%t", STORE_COLOR, "Explosault Rifle AB 2 Desc Extra");
+		IsExtraDesc_2[client]=true;
+	}
+	if(!IsExtraDesc_3[client] && ExploAR_WeaponPap[client]==5)
+	{
+		SetGlobalTransTarget(client);
+		CPrintToChat(client, "%s%t", STORE_COLOR, "Explosault Rifle AB 3 Desc Extra");
+		IsExtraDesc_3[client]=true;
+	}
 }
 public void Holster_ExploARWeapon(int client)
 {
@@ -500,6 +522,9 @@ static Action Timer_Management_ExploAR(Handle timer, DataPack pack)
 	{
 		h_TimerExploARWeaponManagement[client] = null;
 		IsOverride[client]=false;
+		IsExtraDesc_1[client]=false;
+		IsExtraDesc_2[client]=false;
+		IsExtraDesc_3[client]=false;
 		Holster_ExploARWeapon(client);
 		//SDKUnhook(client, SDKHook_PreThink, BombAR_Laser_PreThink);
 		SDKUnhook(client, SDKHook_PreThink, BombAR_M1_PreThink);

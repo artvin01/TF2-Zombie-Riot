@@ -4687,18 +4687,33 @@
 	}
 	"Explosault Rifle AB 1 Desc"
 	{
-		"en"	"Prototype chamber Tech, Heavy modification takes a toll on the Frame\nIncreased Damage, 4 Bust Shot\nMax Overheat: Damm Explodes, launching Owner into the air and dealing damage to nearby Enemies, Armor is BOOM!"
-		"ko"	"시험형 약실 기술, 과한 개조로 총기에 무리를 줍니다.\n피해량 증가, 4점사가 됩니다.\n과열 게이지가 최대일때 폭발하여 사용자를 위로 띄우고 주변적에 피해를 줍니다, 아머가 박살납니다!"
+		"en"	"Prototype chamber Tech, Heavy modification takes a toll on the Frame\nIncreased Damage, 4 Bust Shot"
+		"ko"	"시험형 약실 기술, 과한 개조로 총기에 무리를 줍니다.\n피해량 증가, 4점사가 됩니다."
+	}
+	"Explosault Rifle AB 1 Desc Extra"
+	{
+		"en"	"Max Overheat: Damm Explodes, launching Owner into the air and dealing damage to nearby Enemies, Self-damaged! If you have Armour, it can be smashed and self-damaged invalidated"
+		"ko"	"과열 게이지가 최대일 때 폭발하여 사용자를 위로 띄우고 주변적에 피해를 줍니다, 자가 피해를 받습니다! 아머가 있다면 아머가 박살 나고 자가 피해 무효화 가능"
 	}
 	"Explosault Rifle AB 2 Desc"
 	{
-		"en"	"WIP"
-		"ko"	"WIP"
+		"en"	"It's a small auxiliary drone often used by Victorians, But it's different\nWhen drones exist: charge 'Plasma Swarm' with each attack.\nIncreased Damage&Clip"
+		"ko"	"빅토리아인들이 자주 사용하는 소형 보조 드론입니다, 다만 뭔가 다르군요\n드론이 존재할 때: 공격할 때마다 '플라스마 스웜'을 충전합니다.\n피해량과 장탄수 증가"
+	}
+	"Explosault Rifle AB 2 Desc Extra"
+	{
+		"en"	"If the drone is destroyed, it will be rebuilding in 10s\nPlasma Swarm: Five slow projectile range attacks fired by drones"
+		"ko"	"드론은 파괴되면 10초후 재생성 됩니다.\n플라스마 스웜: 드론이 사격하는 5회의 느린 투사체 범위 공격"
 	}
 	"Explosault Rifle AB 3 Desc"
 	{
-		"en"	"A small blue military laser beacon. How did a civilian get his hands on this?\nUse M3 to load special rounds. Fire it to locate the bombardment area\nbombardment will begin when you reload"
-		"ko"	"작은 청색 군용 비콘입니다. 대체 어떻게 일개 시민들이 이걸 손에 넣게 된걸까요?\n피해량 증가\nM3를 눌러 특수 탄환들을 장전하고 발사해 포격 위치를 지정\n무기를 재장전할시 포격 시작"
+		"en"	"Execute the Precision Strike Protocol. Wait, why do citizens have this?\nPress M2 when the Precision Strike is fully charged to Equipped 'Targeting Remote'\nIncreased Damage&Clip"
+		"ko"	"정밀 타격 프로토콜을 실행 합니다. 잠깐, 시민이 이걸 왜 가지고있죠?\n정밀 타격이 완전히 충전일 때 M2를 눌러 '원격 조준기' 장착\n피해량과 장탄수 증가"
+	}
+	"Explosault Rifle AB 3 Desc Extra"
+	{
+		"en"	"Position precision strike with 'remote aimer'\nWhen ammo runs out, Engageing Precision Strike"
+		"ko"	"'원격 조준기'로 정밀 타격 위치를 지정\n탄약 전부 소진 시 정밀 타격 개시"
 	}
 	"Explosault Rifle Desc Extra"
 	{
@@ -4714,9 +4729,9 @@
 	"ExploAR_Not_Enough_OverHeat"
 	{
 		"#format"	"{1:d}"
-		"en" 	"Not Enough Overheat! You need {1} Overheat!"
-		"de"	"Nicht Genügend Overheat! Du brauchst {1} Overheat!"
-		"ko"	"과열 부족! {1}만큼의 과열이 필요합니다!"
+		"en" 		"Not Enough Overheat! You need {1} Overheat!"
+		"de"		"Nicht Genügend Overheat! Du brauchst {1} Overheat!"
+		"ko"		"과열 부족! {1}만큼의 과열이 필요합니다!"
 	}
 	"ExploAR_Capacitor"
 	{
@@ -4732,19 +4747,19 @@
 	"ExploAR_BarrageMode"
 	{
 		"#format"	"{1:i},{2:i}"
-		"en"	"[Barrage Mode]\nAmmo {1}/{2}"
-		"ko"	"[폭격 모드]\n탄약 {1}/{2}"
+		"en"	"[Precision Strike Mode]\nAmmo {1}/{2}"
+		"ko"	"[정밀 타격 모드]\n탄약 {1}/{2}"
 	}
 	"ExploAR_BarrageEnergy"
 	{
 		"#format"	"{1:i}"
-		"en"	"Barrage {1}％"
-		"ko"	"폭격 {1}％"
+		"en"	"Precision Strike {1}％"
+		"ko"	"정밀 타격 {1}％"
 	}
 	"ExploAR_BarrageEnergy_Max"
 	{
-		"en"	"Barrage MAX"
-		"ko"	"폭격 MAX"
+		"en"	"Precision Strike MAX"
+		"ko"	"정밀 타격 MAX"
 	}
 	"ExploAR_LostRobo"
 	{
