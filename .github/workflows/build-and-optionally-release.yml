@@ -105,7 +105,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-            tag_name: Release ${{ env.SHA_SHORT }}
+            tag_name: release-${{ env.SHA_SHORT }}
             release_name: Zombie Riot ${{ env.SHA_SHORT }}
             body: |
               ${{ github.event.head_commit.message }}
