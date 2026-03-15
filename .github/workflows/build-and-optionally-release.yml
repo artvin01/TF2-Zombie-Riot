@@ -93,7 +93,6 @@ jobs:
         run: |
           cd addons/sourcemod/scripting
           mkdir release_build
-          cp zombie_riot.sp ./release_build
           cp zombie_riot.smx ./release_build
           cd release_build
           zip -r zr-release-${{ env.SHA_SHORT }}.zip .
