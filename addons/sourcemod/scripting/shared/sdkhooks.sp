@@ -20,7 +20,6 @@ static float f_CheckWeaponDouble[MAXPLAYERS];
 bool Client_Had_ArmorDebuff[MAXPLAYERS];
 
 #if defined ZR
-int Armor_WearableModelIndex;
 int Wing_WearlbeIndex;
 #endif
 
@@ -80,7 +79,6 @@ void SDKHook_MapStart()
 #if defined ZR
 	Zero(Mana_Loss_Delay);
 	Zero(Mana_Regen_Block_Timer);
-	Armor_WearableModelIndex = PrecacheModel("models/effects/resist_shield/resist_shield.mdl", true);
 	Wing_WearlbeIndex = PrecacheModel(WINGS_MODELS_1, true);
 #endif
 
@@ -381,6 +379,8 @@ public void OnPostThink_OnlyHurtHud(int client)
 	{
 		b_DisplayDamageHud[client][0] = false;
 		b_DisplayDamageHud[client][1] = false;
+		if(f_RepeatShowHudFor[client] < GetGameTime())
+			b_DisplayDamageHud[client][0] = true;
 		if(zr_showdamagehud.BoolValue)
 			Calculate_And_Display_HP_Hud(client);
 
@@ -467,6 +467,9 @@ public void OnPostThink(int client)
 				b_DisplayDamageHud[client][1] = false;
 			else
 				b_DisplayDamageHud[client][0] = false;
+
+			if(f_RepeatShowHudFor[client] > GetGameTime())
+				b_DisplayDamageHud[client][0] = true;
 		}
 	}
 	if(ReplicateClient_BackwardsWalk[client] != f_Client_BackwardsWalkPenalty[client])
@@ -2313,6 +2316,8 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			
 				f_DisableDyingTimer[victim] = 0.0;
 				dieingstate[victim] -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ReviveTimeCut, false,_, 0.0));
+				
+				SdkHooks_SetAndUpdateArmorClientText(victim);
 				Vehicle_Exit(victim);
 				ForcePlayerCrouch(victim, true);
 				SDKHooks_UpdateMarkForDeath(victim, true);
@@ -2360,7 +2365,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				int i;
 				while(TF2U_GetWearable(victim, entity, i))
 				{
-					if(entity == EntRefToEntIndex(Armor_Wearable[victim]) || i_WeaponVMTExtraSetting[entity] != -1)
+					if(i_WeaponVMTExtraSetting[entity] != -1)
 						continue;
 
 					if(!autoRevive)
@@ -3277,7 +3282,9 @@ void DisplayCosmeticExtraClient(int client, bool deleteOverride = false)
 void ArmorDisplayClient(int client, bool deleteOverride = false)
 {
 	//update aswell.
+	SdkHooks_SetAndUpdateArmorClientText(client);
 	DisplayCosmeticExtraClient(client, deleteOverride);
+	
 	int ShieldLogicDo;
 	if(Armor_Charge[client] > 0)
 	{
@@ -3302,15 +3309,8 @@ void ArmorDisplayClient(int client, bool deleteOverride = false)
 	{
 		ShieldLogicDo = 0;
 	}
-	int entity;
 	if(deleteOverride)
 	{
-		if(IsValidEntity(Armor_Wearable[client]))
-		{
-			entity = EntRefToEntIndex(Armor_Wearable[client]);
-			if(entity > MaxClients)
-				TF2_RemoveWearable(client, entity);
-		}
 		return;
 	}
 	if(ShieldLogicDo == 2)
@@ -3325,53 +3325,7 @@ void ArmorDisplayClient(int client, bool deleteOverride = false)
 		Client_Had_ArmorDebuff[client] = false;
 		TF2_RemoveCondition(client, TFCond_Milked);
 	}
-
-	if(ShieldLogicDo == 1)
-	{
-		if(IsValidEntity(Armor_Wearable[client]))
-		{
-			ArmorDisplayClientColor(client, EntRefToEntIndex(Armor_Wearable[client]));
-			return;
-		}
-		entity = CreateEntityByName("tf_wearable");
-		if(entity > MaxClients)
-		{
-			int team = GetClientTeam(client);
-			SetEntProp(entity, Prop_Send, "m_nModelIndex", Armor_WearableModelIndex);
-
-		//	SetEntProp(entity, Prop_Send, "m_fEffects", 129);
-			SetTeam(entity, team);
-			SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
-			SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
-			SetEntityCollisionGroup(entity, 11);
-			SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
-			
-			DispatchSpawn(entity);
-			SetVariantString("!activator");
-			ActivateEntity(entity);
-
-			Armor_Wearable[client] = EntIndexToEntRef(entity);
-			SDKCall_EquipWearable(client, entity);
-
-			SetEntProp(entity, Prop_Send, "m_fEffects", 0);
-			SetVariantString("!activator");
-			AcceptEntityInput(entity, "SetParent", client);
-		//	SDKCall_SetLocalOrigin(entity, {0.0,0.0,0.0});
-
-			ArmorDisplayClientColor(client, entity);
-			i_OwnerEntityEnvLaser[entity] = EntIndexToEntRef(client);
-			SDKHook(entity, SDKHook_SetTransmit, ShieldSetTransmit);
-		}	
-	}
-	else
-	{
-		if(IsValidEntity(Armor_Wearable[client]))
-		{
-			entity = EntRefToEntIndex(Armor_Wearable[client]);
-			if(entity > MaxClients)
-				TF2_RemoveWearable(client, entity);
-		}
-	}
+	
 }
 
 public Action ShieldSetTransmit(int entity, int client)
@@ -3391,32 +3345,6 @@ public Action ShieldSetTransmit(int entity, int client)
 	return Plugin_Continue;
 }
 
-void ArmorDisplayClientColor(int client, int armor)
-{
-	int Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
-	float Percentage = float(Armor_Charge[client]) / float(Armor_Max);
-
-	Percentage *= 14.0;
-	int Alpha = RoundToCeil(Percentage * Percentage);
-
-	if(Alpha > 200)
-	{
-		Alpha = 200;
-	}
-	if(Alpha <= 30)
-	{
-		Alpha = 30;
-	}
-	int green = 0;
-	int blue = 0;
-	if(Percentage >= 13.95)
-	{
-		green = 125;
-	}
-
-	SetEntityRenderMode(armor, RENDER_TRANSCOLOR);
-	SetEntityRenderColor(armor, green, green, blue, Alpha);
-}
 #endif
 
 #if defined RPG
@@ -3760,5 +3688,84 @@ void UpdatePerkName(int client)
 		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[8],buffer);
 
 	Format(MaxAsignPerkNames[client], sizeof(MaxAsignPerkNames[]), "%s",buffer);
+}
+
+
+void SdkHooks_SetAndUpdateArmorClientText(int client)
+{
+	int ArmorText = EntRefToEntIndex(Armor_Wearable_HudText[client]);
+	if(!IsEntityAlive(client) || TeutonType[client] != TEUTON_NONE || dieingstate[client] != 0)
+	{
+		if(IsValidEntity(ArmorText))
+		{
+			RemoveEntity(ArmorText);
+		}
+		return;
+	}
+	if(!IsValidEntity(ArmorText))
+	{
+		float Offset[3];
+		Offset[2] += 95.0;
+		
+		ArmorText = SpawnFormattedWorldText("----",Offset, 10, {0,0,0,0}, client);
+		DispatchKeyValue(ArmorText, "font", "1");
+		Armor_Wearable_HudText[client] = EntIndexToEntRef(ArmorText);	
+		i_OwnerEntityEnvLaser[ArmorText] = EntIndexToEntRef(client);
+		SDKHook(ArmorText, SDKHook_SetTransmit, ShieldSetTransmit);
+	}
+
+	char ch_ArmorText[32];
+	int HealthColour[4];
+	HealthColour[0] = 255;
+	HealthColour[1] = 255;
+	HealthColour[2] = 0;
+	HealthColour[3] = 200;
+	int MaxArmor = MaxArmorCalculation(Armor_Level[client], client, 1.0);
+	int ArmorCurrent = Armor_Charge[client];
+	if(ArmorCurrent < 0)
+	{
+		ArmorCurrent *= -1;
+		HealthColour[0] = 125;
+		HealthColour[1] = 0;
+		HealthColour[2] = 125;
+	}
+	if(ArmorCurrent >= MaxArmor)
+	{
+		HealthColour[0] = 255;
+		HealthColour[1] = 255;
+		HealthColour[2] = 255;
+	}
+	Format(ch_ArmorText, sizeof(ch_ArmorText), "%s%s", ch_ArmorText, "[");
+	if(ArmorCurrent == 0)
+	{
+		HealthColour[0] = 255;
+		HealthColour[1] = 0;
+		HealthColour[2] = 0;
+
+		for(int i=0; i<(10); i++)
+		{
+			Format(ch_ArmorText, sizeof(ch_ArmorText), "%s%s", ch_ArmorText, ".");
+		}
+	}
+	else
+	{
+		for(int i=0; i<(10); i++)
+		{
+			if(ArmorCurrent >= MaxArmor*(i*(0.1)))
+			{
+				Format(ch_ArmorText, sizeof(ch_ArmorText), "%s%s", ch_ArmorText, "|");
+			}
+			else
+			{
+				Format(ch_ArmorText, sizeof(ch_ArmorText), "%s%s", ch_ArmorText, ".");
+			}
+		}
+	}
+	Format(ch_ArmorText, sizeof(ch_ArmorText), "%s%s", ch_ArmorText, "]");
+	char sColor[32];
+	Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
+
+	DispatchKeyValue(ArmorText,	 "color", sColor);
+	DispatchKeyValue(ArmorText, "message", ch_ArmorText);
 }
 #endif

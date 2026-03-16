@@ -84,7 +84,7 @@ Function func_NPCAnimEvent[MAXENTITIES];
 Function func_NPCActorEmoted[MAXENTITIES];
 Function func_NPCInteract[MAXENTITIES];
 Function FuncShowInteractHud[MAXENTITIES];
-
+Function func_NPCLostHealthBar[MAXENTITIES];
 enum struct WearableColor
 {
 	int color;
@@ -9127,6 +9127,7 @@ public void NPCStats_SetFuncsToZero(int entity)
 	func_NPCActorEmoted[entity] = INVALID_FUNCTION;
 	func_NPCInteract[entity] = INVALID_FUNCTION;
 	FuncShowInteractHud[entity] = INVALID_FUNCTION;
+	func_NPCLostHealthBar[entity] = INVALID_FUNCTION;
 
 	#if defined BONEZONE_BASE
     g_BoneZoneBuffFunction[entity] = INVALID_FUNCTION;

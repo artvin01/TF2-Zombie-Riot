@@ -1,4 +1,4 @@
-name: Compile ZR
+name: Compile artifact and optionally release
 
 on:
   push:
@@ -9,26 +9,28 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions: write-all
     strategy:
       matrix:
-        sm-version: [ '1.13.X' ]
+        sm-version: [ '1.13.7299' ]
     
     steps:
-      - name: Install Checkout
+      - name: Checkout Code
         uses: actions/checkout@v1
       
-      - name: Install Setup SP ${{ matrix.sm-version }}
+      - name: Install SourcePawn Compiler ${{ matrix.sm-version }}
         uses: rumblefrog/setup-sp@master
         with:
           version: ${{ matrix.sm-version }}
       
-      - name: Get GitHub Env
+      - name: Configure GitHub Environment
         run: |
           echo "PLUGIN_VERSION_REVISION<<EOF" >> $GITHUB_ENV
           git rev-list --count HEAD >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
+          echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       
-      - name: Install Misc
+      - name: Install Dependencies
         run: |
           echo "SCRIPTS_PATH=addons/sourcemod/scripting" >> $GITHUB_ENV
           cd addons/sourcemod/scripting
@@ -75,13 +77,31 @@ jobs:
           wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/path/follower.inc"
         working-directory: ./
       
-      - name: Compile ${{ matrix.sm-version }}
+      - name: Compile with SourcePawn ${{ matrix.sm-version }}
         run: |
           spcomp -O2 -v2 -E -i "include" -o zombie_riot.smx zombie_riot.sp
         working-directory: ${{ env.SCRIPTS_PATH }}
       
-      - name: Upload Artifacts
+      - name: Upload Artifact
         uses: actions/upload-artifact@master
         with:
           name: zombie_riot.smx
           path: addons/sourcemod/scripting/zombie_riot.smx
+
+      - name: Prepare Release Archive
+        if: github.event_name == 'push'
+        run: |
+          cd addons/sourcemod/scripting
+          mkdir release_build
+          cp zombie_riot.smx ./release_build
+          cd release_build
+          zip -r zr-release-${{ env.SHA_SHORT }}.zip .
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: github.event_name == 'push'
+        with:
+          files: addons/sourcemod/scripting/release_build/zr-release-${{ env.SHA_SHORT }}.zip
+          tag_name: release-${{ env.SHA_SHORT }}
+          body: |
+              ${{ github.event.head_commit.message }}

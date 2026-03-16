@@ -113,6 +113,7 @@ methodmap RefragmentedMedic < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(RefragmentedMedic_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(RefragmentedMedic_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(RefragmentedMedic_ClotThink);
+		func_NPCLostHealthBar[npc.index] = view_as<Function>(NpcClot_LifeLost);
 		
 		
 		//IDLE
@@ -288,34 +289,7 @@ public Action RefragmentedMedic_OnTakeDamage(int victim, int attacker, int infli
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	if(npc.m_iHealthBar <= 0 && !npc.Anger)
-	{
-		npc.Anger = true;
-		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 3.0;
-		npc.PlayDeathSound();
-		b_NpcIsInvulnerable[npc.index] = true;
-	}
-	if(npc.m_iHealthBar <= 1 && !npc.m_bFUCKYOU)
-	{
-		npc.m_bFUCKYOU = true;
-		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 3.0;
-		npc.PlayDeathSound();
-		b_NpcIsInvulnerable[npc.index] = true;
-	}
-	if(npc.m_iHealthBar <= 2 && !npc.m_bWasSadAlready)
-	{
-		npc.m_bWasSadAlready = true;
-		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 3.0;
-		npc.PlayDeathSound();
-		b_NpcIsInvulnerable[npc.index] = true;
-	}
-	if(npc.m_iHealthBar <= 3 && !npc.m_bFUCKYOU_move_anim)
-	{
-		npc.m_bFUCKYOU_move_anim = true;
-		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 3.0;
-		npc.PlayDeathSound();
-		b_NpcIsInvulnerable[npc.index] = true;
-	}
+
 
 	
 	return Plugin_Changed;
@@ -333,4 +307,12 @@ public void RefragmentedMedic_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 	
 	RefragmentedBase_OnDeath(npc.index);
+}
+static bool NpcClot_LifeLost(int iNPC, int LifeAfter)
+{
+	ApplyStatusEffect(iNPC, iNPC, "Dimensional Turbulence", 3.0);
+	Freeplay_ApplyStatusEffect(iNPC, "Caffinated", 3.0);
+	Freeplay_ApplyStatusEffect(iNPC, "Caffinated Drain", 3.0);
+	ApplyStatusEffect(iNPC, iNPC, "Unstoppable Force", 3.0);
+	return true;
 }

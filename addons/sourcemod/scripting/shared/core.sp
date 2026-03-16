@@ -690,7 +690,7 @@ char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
 float f_ExplodeDamageVulnerabilityNpc[MAXENTITIES];
 #if defined ZR
 float f_DelayNextWaveStartAdvancingDeathNpc;
-int Armor_Wearable[MAXPLAYERS];
+int Armor_Wearable_HudText[MAXPLAYERS];
 int Cosmetic_WearableExtra[MAXPLAYERS];
 #endif
 
@@ -767,6 +767,7 @@ int OriginalWeapon_AmmoType[MAXENTITIES];
 #include "sdkhooks.sp"
 #include "stocks.sp"
 #include "wand_projectile.sp"
+
 
 public Plugin myinfo =
 {
@@ -1703,6 +1704,7 @@ public void OnClientDisconnect(int client)
 
 	b_DisplayDamageHud[client][0] = false;
 	b_DisplayDamageHud[client][1] = false;
+	f_RepeatShowHudFor[client] = 0.0;
 
 #if defined ZR
 	WeaponClass[client] = TFClass_Scout;
@@ -3846,7 +3848,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		int entity, i;
 		while(TF2U_GetWearable(target, entity, i))
 		{
-			if(entity == EntRefToEntIndex(Armor_Wearable[target]) || i_WeaponVMTExtraSetting[entity] != -1)
+			if(i_WeaponVMTExtraSetting[entity] != -1)
 				continue;
 
 			SetEntityRenderMode(entity, RENDER_NORMAL);

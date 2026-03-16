@@ -1100,6 +1100,7 @@
 	"Backwards Setting"
 	{
 		"en" 		"Reminder: Walking backwards reduces your speed by 30％!"
+		"ko"		"주의: 뒤로 이동할 때는 이동 속도가 30％ 감소합니다!"
 	}
 	"Not Enough Ammo"
 	{
@@ -4485,6 +4486,7 @@
 	"Display Backwards Walk Notif"
 	{
 		"en" 	"Display Backwards Walk Notif"
+		"ko"	"뒤로 이동시 알림 설정"
 	}
 	"Interact With Reload"
 	{
@@ -5399,6 +5401,16 @@
 		"it"	"Costruisci una stazione di cura presso di me"
 		"ko"	"내 위치에 회복 시설을 건설해줘"
 	}
+	"Set My Basepoint"
+	{
+		"en"	"Set My Basepoint"
+		"ko"	"거점 포인트 설정"
+	}
+	"Saved Pos for Base"
+	{
+		"en"	"This builder will remember this position and stay near it."
+		"ko"	"건축가 반시민군이 이 위치를 기억하고 근처에 있을 것입니다."
+	}
 	"Build Barricade At Me"
 	{
 		"en"	"Build Barricade At Me"
@@ -5729,6 +5741,6 @@
 	{
 		"#format"	"{1:s},{2:.0f},{3:s},{4:d}"
 		"en"	"You died to {yellow}{1}{snow} dealing {crimson}{2} {3}{snow} with {green}{4} Health Remaining."
-		"ko"	"당신은 {green}잔여 체력 {4}{snow}에서{yellow}{1}{snow}에게 {crimson}{2}의 {3}{snow}을(를) 입고 사망했습니다."
+		"ko"	"당신은 {green}잔여 체력 {4}{snow}에서 {yellow}{1}{snow}에게 {crimson}{2}의 {3}{snow}을(를) 입고 사망했습니다."
 	}
 }

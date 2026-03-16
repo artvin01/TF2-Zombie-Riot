@@ -1466,6 +1466,7 @@
 	"Sea-Infected Voided Vanguard"
 	{
 		"en" 		"Sea-Infected Voided Vanguard"
+		"ko" 		"시테러 감염체 공허화된 뱅가드"
 	}
 	"Kahmlstein"
 	{

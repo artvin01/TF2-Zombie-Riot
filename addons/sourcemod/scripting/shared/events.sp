@@ -590,6 +590,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	SDKHooks_UpdateMarkForDeath(client, true);
 	PurnellDeathsound(client);
 	Vehicle_Exit(client, true);
+	SdkHooks_SetAndUpdateArmorClientText(client);
 #endif
 
 #if defined RPG

@@ -396,15 +396,6 @@ float f_RingDelayGift[MAXENTITIES];
 float Resistance_for_building_High[MAXENTITIES];
 
 //custom wave music.
-MusicEnum MusicString1;
-MusicEnum MusicString2;
-MusicEnum MusicSetup1;
-MusicEnum MusicLastmann;
-MusicEnum MusicWin;
-MusicEnum MusicLoss;
-MusicEnum RaidMusicSpecial1;
-MusicEnum BGMusicSpecial1;
-//custom wave music.
 float f_DelaySpawnsForVariousReasons;
 int CurrentRound[Rounds_MAX];
 int CurrentWave[Rounds_MAX] = {-1, ...};
@@ -699,6 +690,9 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/kit_purging.sp"
 #include "custom/weapon_bombplant_smg.sp"
 #include "custom/weapon_guiding_missile.sp"
+
+
+
 
 void ZR_PluginLoad()
 {
@@ -1850,7 +1844,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
-					if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+					if(i_WeaponVMTExtraSetting[entity] != -1)
 						continue;
 
 					SetEntityRenderMode(entity, RENDER_NORMAL);
@@ -2177,7 +2171,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							int entity, i;
 							while(TF2U_GetWearable(client, entity, i))
 							{
-								if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+								if(i_WeaponVMTExtraSetting[entity] != -1)
 									continue;
 
 								SetEntityRenderMode(entity, RENDER_NORMAL);
@@ -2760,7 +2754,7 @@ void ReviveAll(bool raidspawned = false,
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
-					if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+					if(i_WeaponVMTExtraSetting[entity] != -1)
 						continue;
 
 					SetEntityRenderMode(entity, RENDER_NORMAL);
@@ -2814,7 +2808,7 @@ void ReviveAll(bool raidspawned = false,
 					int entity, i;
 					while(TF2U_GetWearable(client, entity, i))
 					{
-						if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+						if(i_WeaponVMTExtraSetting[entity] != -1)
 							continue;
 							
 						SetEntityRenderMode(entity, RENDER_NORMAL);

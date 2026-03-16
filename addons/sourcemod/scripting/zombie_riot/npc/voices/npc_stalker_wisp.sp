@@ -268,7 +268,7 @@ static void ClotThink(int iNPC)
 				int i;
 				while(TF2U_GetWearable(target, entity, i))
 				{
-					if(entity == EntRefToEntIndex(Armor_Wearable[target]) || i_WeaponVMTExtraSetting[entity] != -1)
+					if(i_WeaponVMTExtraSetting[entity] != -1)
 						continue;
 
 					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
