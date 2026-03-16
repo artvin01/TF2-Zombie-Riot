@@ -68,19 +68,12 @@ static const char g_MeleeStunSounds[][] = {
 	"ambient/energy/zap9.wav",
 };
 
-/*
-static const char g_SpecialAttackSounds[][] = {
-	"npc/attack_helicopter/aheli_megabomb_siren1.wav",
-	"npc/attack_helicopter/aheli_mine_drop1.wav",
-};
-*/
-
 static char g_RangedAttackSounds[][] = {
 	"npc/attack_helicopter/aheli_mine_drop1.wav",
 };
 
-static char g_RangedReloadSound[][] = {
-	"weapons/revolver_worldreload.wav",
+static char g_ArmorSounds[][] = {
+	"physics/metal/metal_box_strain2.wav"
 };
 
 static int LastEnemyTargeted[MAXENTITIES];
@@ -89,6 +82,7 @@ static int LastEnemyTargeted[MAXENTITIES];
 
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
+static int usage;
 
 static int NpcID;
 
@@ -106,10 +100,10 @@ void OmegaRaid_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	for (int i = 0; i < (sizeof(g_MeleeStunSounds));   i++) { PrecacheSound(g_MeleeStunSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_BoomSounds));   i++) { PrecacheSound(g_BoomSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_ArmorSounds));   i++) { PrecacheSound(g_ArmorSounds[i]);   }
 	PrecacheModel("models/combine_super_soldier.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Omega");
@@ -187,8 +181,8 @@ methodmap OmegaRaid < CClotBody
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 		
 	}
-	public void PlayRangedReloadSound() {
-		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
+	public void PlayArmorSound() {
+		EmitSoundToAll(g_ArmorSounds[GetRandomInt(0, sizeof(g_ArmorSounds) - 1)], this.index, _, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 		
 	}
 	public void ArmorSet(float resistance = -1.0, bool uber = false)
@@ -221,7 +215,56 @@ methodmap OmegaRaid < CClotBody
 		public get()							{ return fl_AttackHappens_2[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_AttackHappens_2[this.index] = TempValueForProperty; }
 	}
+	property float m_flThrowSupportGrenadeHappening
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flRollermineSpawn
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	public int FireGrenade(float vecTarget[3])
+	{
+		int entity = CreateEntityByName("tf_projectile_pipe_remote");
+		if(IsValidEntity(entity))
+		{
+			float vecForward[3], vecSwingStart[3], vecAngles[3];
+			this.GetVectors(vecForward, vecSwingStart, vecAngles);
 	
+			GetAbsOrigin(this.index, vecSwingStart);
+			vecSwingStart[2] += 90.0;
+	
+			MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
+			GetVectorAngles(vecAngles, vecAngles);
+	
+			vecSwingStart[0] += vecForward[0] * 64;
+			vecSwingStart[1] += vecForward[1] * 64;
+			vecSwingStart[2] += vecForward[2] * 64;
+	
+			vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*800.0;
+			vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*800.0;
+			vecForward[2] = Sine(DegToRad(vecAngles[0]))*-800.0;
+			
+			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
+			SetEntProp(entity, Prop_Send, "m_iType", 1);
+			
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
+			DispatchSpawn(entity);
+			SetEntityModel(entity, "models/Items/battery.mdl");
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.1);
+			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
+			b_StickyIsSticking[entity] = true;
+			
+	//		SetEntProp(entity, Prop_Send, "m_bTouched", true);
+			SetEntityCollisionGroup(entity, 1);
+			return entity;
+		}
+		return -1;
+	}
 	
 	public OmegaRaid(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -290,7 +333,10 @@ methodmap OmegaRaid < CClotBody
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		npc.m_bWasSadAlready = false;
+		npc.m_fbRangedSpecialOn = false;
 		npc.m_flOmegaAirbornAttack = GetGameTime(npc.index) + 7.5;
+		npc.m_flThrowSupportGrenadeHappening = GetGameTime(npc.index) + 15.0;
+		npc.m_flRollermineSpawn = GetGameTime(npc.index) + 20.0;
 
 		AlreadySaidWin = false;
 		
@@ -393,6 +439,7 @@ static void RocketBarrage_Ability(OmegaRaid npc, int target)
 {
 	if(npc.m_flOmegaAirbornAttack < GetGameTime(npc.index))
 	{
+		usage = 1;
 		if(IsValidEnemy(npc.index, target))
 		{
 			static float flPos[3]; 
@@ -417,7 +464,7 @@ static void RocketBarrage_Ability(OmegaRaid npc, int target)
 			//GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			//pos[2] += 5.0;
 			//float ang_Look[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang_Look);
-			npc.m_flOmegaAirbornAttack = GetGameTime(npc.index) + 30.0;
+			npc.m_flOmegaAirbornAttack = GetGameTime(npc.index) + 20.0;
 			if(npc.Anger)
 				ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 3.0);
 
@@ -471,8 +518,7 @@ static bool Omega_AirAttack(OmegaRaid npc)
 					float DamageCalc = 30.0 * RaidModeScaling;
 					float VecEnemy[3]; WorldSpaceCenter(TargetEnemy, VecEnemy);
 					float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-					npc.FaceTowards(VecEnemy, 150.0);
-					//NemalAirSlice(npc.index, TargetEnemy, DamageCalc, 215, 150, 0, 200.0, 6, 1750.0, "rockettrail_fire");
+					npc.FaceTowards(VecEnemy, 100.0);
 					npc.PlayRangedSound();
 					npc.FireRocket(vecTarget, DamageCalc, 1000.0, "models/weapons/w_missile.mdl", 1.75);
 				}
@@ -492,6 +538,7 @@ static bool Omega_AirAttack(OmegaRaid npc)
 				//npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE_ALLCLASS");
 				return true;
 			}
+			usage = 0;
 			npc.m_iChanged_WalkCycle = 0;
 			i_NpcWeight[npc.index] = 4;
 			b_NoGravity[npc.index] = false;
@@ -538,7 +585,7 @@ public void OmegaRaid_ClotThink(int iNPC)
 					}
 					case 1:
 					{
-						CPrintToChatAll("{gold}Omega{default}: If you can't beat me, the fate of our world is doomed.");
+						CPrintToChatAll("{gold}Omega{default}: If you can't beat me... I guess I'll get out of retirement to save the world myself.");
 					}
 				}
 			}
@@ -595,6 +642,42 @@ public void OmegaRaid_ClotThink(int iNPC)
 			CPrintToChatAll("{gold}Omega{default}: {default}Tempus Fugit.{default}");
 			func_NPCThink[npc.index] = INVALID_FUNCTION;
 			return;
+		}
+	}
+
+	//Spawn Rollermines
+	if(npc.m_flRollermineSpawn < GetGameTime())
+	{	
+		//If he's using the RPG, this animation won't play
+		if(usage != 1)
+		{
+			npc.AddGesture("ACT_COMBINE_THROW_GRENADE");
+		}
+		npc.m_fbRangedSpecialOn = true;
+		OmegaCreateRollermines(npc);
+		npc.m_flRollermineSpawn = GetGameTime(npc.index) + 17.5;
+		//Half-life cooldown reduction
+		if(npc.Anger)
+		{
+			npc.m_flRollermineSpawn = GetGameTime(npc.index) + 12.5;
+		}
+	}
+
+	//Throw Grenade
+	if(npc.m_flThrowSupportGrenadeHappening < GetGameTime())
+	{
+		//If he's using the RPG, this animation won't play
+		if(usage != 1)
+		{
+			npc.AddGesture("ACT_METROPOLICE_DEPLOY_MANHACK");
+		}
+		npc.m_fbRangedSpecialOn = true;
+		OmegaThrowGrenadeHappening(npc);
+		npc.m_flThrowSupportGrenadeHappening = GetGameTime(npc.index) + 30.0;
+		//Half-life cooldown reduction
+		if(npc.Anger)
+		{
+			npc.m_flRollermineSpawn = GetGameTime(npc.index) + 25.0;
 		}
 	}
 
@@ -661,6 +744,254 @@ public void OmegaRaid_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
+
+}
+
+void OmegaThrowGrenadeHappening(OmegaRaid npc)
+{
+	if(npc.m_flThrowSupportGrenadeHappening)
+	{
+		if(npc.m_flThrowSupportGrenadeHappening < GetGameTime())
+		{
+			switch(GetRandomInt(0,4)) //Armornade voicelines
+			{
+				case 0:
+				{
+					CPrintToChatAll("{gold}Omega{default}: See this area? I feel like denying it.");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{gold}Omega{default}: You didn't think you were the only ones with grenades, did you?");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{gold}Omega{default}: I knew these would come in handy.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{gold}Omega{default}: You've got too much space to maneuver around in, I think I'll restrict some of it.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{gold}Omega{default}: I never come unprepared.");
+				}
+			}
+			npc.m_flThrowSupportGrenadeHappening = 0.0;
+			float vecTarget[3];
+			float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
+
+			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			{
+				PredictSubjectPositionForProjectiles(npc, npc.index, 800.0,_,vecTarget);
+			}
+			else
+			{
+				WorldSpaceCenter(npc.index, vecTarget);
+				//incase theres no valid enemy, throw onto ourselves instead.
+			}
+			//damage doesnt matter.
+			int Grenade = npc.FireGrenade(vecTarget);
+			float GrenadeRangeSupport = 250.0;
+			float damage = 60.0;
+			damage *= 0.50;
+			damage *= RaidModeScaling;
+			float HealDo = 0.0;
+			HealDo *= RaidModeScaling;
+			Omega_GrenadeSupportDo(npc.index, Grenade, damage, GrenadeRangeSupport, HealDo);
+			float SpeedReturn[3];
+			ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
+			TeleportEntity(Grenade, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+			//Throw a grenade towards the target!
+		}
+	}
+}
+
+void Omega_GrenadeSupportDo(int entity, int grenade, float damage, float RangeSupport, float HealDo)
+{
+	DataPack pack;
+	CreateDataTimer(1.5, Timer_Omega_SupportGrenade, pack, TIMER_REPEAT);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(EntIndexToEntRef(grenade));
+	pack.WriteFloat(damage);
+	pack.WriteFloat(RangeSupport * 0.9);
+	pack.WriteFloat(HealDo);
+
+	
+	DataPack pack2;
+	CreateDataTimer(0.25, Timer_Omega_SupportGrenadeIndication, pack2, TIMER_REPEAT);
+	pack2.WriteCell(EntIndexToEntRef(entity));
+	pack2.WriteCell(EntIndexToEntRef(grenade));
+	pack2.WriteFloat(damage);
+	pack2.WriteFloat(RangeSupport);
+}
+
+public Action Timer_Omega_SupportGrenadeIndication(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int OwnerNpc = EntRefToEntIndex(pack.ReadCell());
+	int Projectile = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(OwnerNpc))
+	{
+		if(IsValidEntity(Projectile))
+		{
+			//Cancel.
+			RemoveEntity(Projectile);
+		}
+		return Plugin_Stop;
+	}
+	else
+	{
+		if(!IsEntityAlive(OwnerNpc))
+		{
+			if(IsValidEntity(Projectile))
+			{
+				//Cancel.
+				RemoveEntity(Projectile);
+			}
+			return Plugin_Stop;
+		}
+	}
+	if(!IsValidEntity(Projectile))
+		return Plugin_Stop;
+		
+	float DamageDeal = pack.ReadFloat();
+	float RangeSupport = pack.ReadFloat();
+	float RangeSupport2 = RangeSupport * 0.25; 
+	
+
+	float pos[3]; GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", pos);
+	pos[2] += 5.0;
+	if(DamageDeal >= 1.0)
+	{
+		spawnRing_Vectors(pos, RangeSupport * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 200, 1, 0.3, 2.0, 2.0, 2);
+		spawnRing_Vectors(pos, RangeSupport2 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 200, 1, 0.3, 2.0, 2.0, 2);
+	}
+	return Plugin_Continue;
+}
+
+public Action Timer_Omega_SupportGrenade(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int OwnerNpc = EntRefToEntIndex(pack.ReadCell());
+	int Projectile = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(OwnerNpc))
+	{
+		if(IsValidEntity(Projectile))
+		{
+			//Cancel.
+			RemoveEntity(Projectile);
+		}
+		return Plugin_Stop;
+	}
+	else
+	{
+		if(!IsEntityAlive(OwnerNpc))
+		{
+			if(IsValidEntity(Projectile))
+			{
+				//Cancel.
+				RemoveEntity(Projectile);
+			}
+			return Plugin_Stop;
+		}
+	}
+	
+	if(!IsValidEntity(Projectile))
+		return Plugin_Stop;
+		
+	float DamageDeal = pack.ReadFloat();
+	float RangeSupport = pack.ReadFloat();
+	float HealDo = pack.ReadFloat();
+
+	if(DamageDeal >= 1.0)
+	{
+		float pos[3]; GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", pos);
+		pos[2] += 5.0;
+
+		spawnRing_Vectors(pos, 2.0 /*startin range*/, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 200, 1, 0.5, 2.0, 2.0, 2, RangeSupport * 2.0);
+	}
+	if(HealDo >= 1.0)
+	{
+		ExpidonsaGroupHeal(Projectile, RangeSupport, 99, HealDo, 1.15, false, OmegaGiveArmor);
+		EmitSoundToAll("physics/metal/metal_box_strain1.wav", Projectile, _, 100, _, 1.0, 90);
+	}
+	return Plugin_Continue;
+
+}
+//GrantEntityArmor doesn't support "range" so I have to do it like this lol
+
+void OmegaGiveArmor(int entity, int victim, float &healingammount, OmegaRaid npc)
+{
+	GrantEntityArmor(victim, false, 0.1, 0.75, 0, ReturnEntityMaxHealth(npc.index) * 100.0);
+}
+
+void OmegaCreateRollermines(int iNpc)
+{
+	switch(GetRandomInt(0,4)) //Rollermine voicelines
+	{
+		case 0:
+		{
+			CPrintToChatAll("{gold}Omega{default}: Aren't they just the cutest things ever?");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{gold}Omega{default}: Get a load of these uh... rollermines, as I like to call them.");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{gold}Omega{default}: Don't underestimate my mechanical expertise.");
+		}
+		case 3:
+		{
+			CPrintToChatAll("{gold}Omega{default}: Rollermines, roll out. Heh, see what I did there?");
+		}
+		case 4:
+		{
+			CPrintToChatAll("{gold}Omega{default}: Protect me, zappies.");
+		}
+	}
+
+	OmegaRaid npc = view_as<OmegaRaid>(iNpc);
+	
+	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	int summon = NPC_CreateByName("npc_rollermine", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
+	NPC_CreateByName("npc_rollermine", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
+	if(IsValidEntity(summon))
+	{
+		/*
+		int count;
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			summon = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(summon != INVALID_ENT_REFERENCE && IsEntityAlive(summon) && GetTeam(summon) == GetTeam(npc.index))
+			{
+				if(++count)
+				{
+					npc.m_flRangedArmor -= 0.03;
+					npc.m_flMeleeArmor -= 0.03;
+					break;
+				}
+				else if(--count)
+				{
+					npc.m_flRangedArmor += 0.05;
+					npc.m_flMeleeArmor += 0.05;
+					break;
+				}
+			}
+		}
+		*/
+		OmegaRaid npcsummon = view_as<OmegaRaid>(summon);
+		if(GetTeam(npc.index) != TFTeam_Red)
+			Zombies_Currently_Still_Ongoing++;
+
+		fl_Extra_Damage[npcsummon.index] = fl_Extra_Damage[npc.index];
+		fl_Extra_Damage[npcsummon.index] *= 1.5;
+		npcsummon.m_iTargetAlly = iNpc;
+		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/6);
+		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/6);
+		NpcStats_CopyStats(npc.index, summon);
+		//npcsummon.m_iWearable1 = ConnectWithBeam(npc.index, npcsummon.index, 0, 150, 195, 0.5, 0.5, 1.0, "sprites/laserbeam.vmt");
+	}
 }
 
 static void Omegas_SelfDefense(OmegaRaid npc, float gameTime, int target, float flDistanceToTarget)
@@ -816,11 +1147,23 @@ static void Omegas_SelfDefense(OmegaRaid npc, float gameTime, int target, float 
 				if(npc.Anger)
 				{
 					npc.m_flAttackHappens = gameTime + 0.1;
-					npc.m_flNextMeleeAttack = gameTime + 0.30;
+					npc.m_flNextMeleeAttack = gameTime + 0.25;
 				}
 				return;
 			}
 		}
+	}
+	if(npc.m_fbRangedSpecialOn)
+	{
+		npc.StopPathing();
+		npc.m_flSpeed = 0.0;
+		npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 1.0;
+		npc.m_fbRangedSpecialOn = false;
+	}
+	if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
+	{
+		npc.m_flSpeed = 300.0;
+		npc.StartPathing();
 	}
 }
 static Action OmegaRaid_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -1239,7 +1582,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 				case 0:
 					Format(Text_Lines, sizeof(Text_Lines), "Is this some kind of sick joke?");
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Where in the fuck did you get that, {gold}%N{default}.",client);
+					Format(Text_Lines, sizeof(Text_Lines), "Where in the fuck did you get that, {gold}%N{default}?",client);
 			}
 		}
 		case WEAPON_MAGNESIS:
@@ -1488,11 +1831,11 @@ public void RaidMode_OmegaRaid_WinCondition(int entity)
 			}
 			case 1:
 			{
-				OmegaRaid_Reply("{default}I'm sorry for saying this but...you've gone soft, you need to get stronger to be able to defeat {purple}it{default}.");
+				OmegaRaid_Reply("{default}You've gone soft, you need to get stronger to keep up.");
 			}
 			case 2:
 			{
-				OmegaRaid_Reply("{default}You can't lose! The fate of this world is in your hands, god damn it!");
+				OmegaRaid_Reply("{default}You're not ready to take on bigger threats just yet. I'll take care of business.");
 			}
 		}
 	}
