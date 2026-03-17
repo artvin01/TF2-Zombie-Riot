@@ -33,8 +33,8 @@ void Rollermine_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Rollermine");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_rollermine");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "scout_stun_armored");
+	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
@@ -217,7 +217,7 @@ void RollermineSelfDefense(Rollermine npc, float gameTime, int target, float dis
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 25.0;
+					float damageDealt = 200.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
 
