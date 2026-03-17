@@ -468,7 +468,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			PluginName = "npc_shadowing_darkness_boss";	
 			
-			enemy.ExtraDamage *= 0.5;
+			enemy.ExtraDamage *= 0.45;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
 			if(CurrentModifOn() == 4) // TURBOLENCES
 			{
