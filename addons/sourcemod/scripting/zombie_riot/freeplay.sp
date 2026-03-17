@@ -761,7 +761,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_umbral_keitosis");
 				enemy.Health = RoundToFloor(((3000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
-				enemy.ExtraDamage = 1.5;
+				enemy.ExtraDamage = 1.0;
+			  enemy.ExtraThinkSpeed = 0.6;
 				count = 1;
 			}
 			else
