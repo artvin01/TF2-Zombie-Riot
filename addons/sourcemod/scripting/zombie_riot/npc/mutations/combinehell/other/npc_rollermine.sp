@@ -217,7 +217,7 @@ void RollermineSelfDefense(Rollermine npc, float gameTime, int target, float dis
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 25.0;
+					float damageDealt = 200.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
 
