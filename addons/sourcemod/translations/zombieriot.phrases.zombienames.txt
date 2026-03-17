@@ -6272,10 +6272,6 @@
 		"it"		"Cavaliere perduto"
 		"ko"		"길 잃은 기사"
 	}
-	"Rollermine"
-	{
-		"en"		"Rollermine"
-	}
 	"Omega"
 	{
 		"en"		"Omega"

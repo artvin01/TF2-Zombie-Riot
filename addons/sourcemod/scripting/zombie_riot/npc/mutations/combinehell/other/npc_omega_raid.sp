@@ -654,7 +654,7 @@ public void OmegaRaid_ClotThink(int iNPC)
 			npc.AddGesture("ACT_COMBINE_THROW_GRENADE");
 		}
 		npc.m_fbRangedSpecialOn = true;
-		OmegaCreateRollermines(iNPC);
+		OmegaCreateRollermines(npc);
 		npc.m_flRollermineSpawn = GetGameTime(npc.index) + 17.5;
 		//Half-life cooldown reduction
 		if(npc.Anger)
@@ -795,7 +795,7 @@ void OmegaThrowGrenadeHappening(OmegaRaid npc)
 			float damage = 60.0;
 			damage *= 0.50;
 			damage *= RaidModeScaling;
-			float HealDo = 5000.0;
+			float HealDo = 0.0;
 			HealDo *= RaidModeScaling;
 			Omega_GrenadeSupportDo(npc.index, Grenade, damage, GrenadeRangeSupport, HealDo);
 			float SpeedReturn[3];
@@ -955,6 +955,7 @@ void OmegaCreateRollermines(int iNpc)
 	
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	int summon = NPC_CreateByName("npc_rollermine", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
+	NPC_CreateByName("npc_rollermine", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(IsValidEntity(summon))
 	{
 		/*
@@ -986,23 +987,8 @@ void OmegaCreateRollermines(int iNpc)
 		fl_Extra_Damage[npcsummon.index] = fl_Extra_Damage[npc.index];
 		fl_Extra_Damage[npcsummon.index] *= 1.5;
 		npcsummon.m_iTargetAlly = iNpc;
-		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/12);
-		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/12);
-		NpcStats_CopyStats(npc.index, summon);
-		//npcsummon.m_iWearable1 = ConnectWithBeam(npc.index, npcsummon.index, 0, 150, 195, 0.5, 0.5, 1.0, "sprites/laserbeam.vmt");
-	}
-	summon = NPC_CreateByName("npc_rollermine", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
-	if(IsValidEntity(summon))
-	{
-		OmegaRaid npcsummon = view_as<OmegaRaid>(summon);
-		if(GetTeam(npc.index) != TFTeam_Red)
-			Zombies_Currently_Still_Ongoing++;
-
-		fl_Extra_Damage[npcsummon.index] = fl_Extra_Damage[npc.index];
-		fl_Extra_Damage[npcsummon.index] *= 1.5;
-		npcsummon.m_iTargetAlly = iNpc;
-		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/12);
-		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/12);
+		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/6);
+		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/6);
 		NpcStats_CopyStats(npc.index, summon);
 		//npcsummon.m_iWearable1 = ConnectWithBeam(npc.index, npcsummon.index, 0, 150, 195, 0.5, 0.5, 1.0, "sprites/laserbeam.vmt");
 	}
