@@ -316,6 +316,10 @@
 	{
 		"en"	"Quit drinking the beers, Hurcarls!"
 	}
+	"Atomizer_Talk_Support-7"
+	{
+		"en"	"Ay back for another round."
+	}
 	"Atomizer_Talk_Lastman-1"
 	{
 		"en"	"Ready to die?"
@@ -449,6 +453,14 @@
 	"Huscarls_Talk_Support-12"
 	{
 		"en"	"*crack* What was that Harrison?"
+	}
+	"Huscarls_Talk_Support-13"
+	{
+		"en"	"Oh you got beer in here? Nice."
+	}
+	"Huscarls_Talk_Support-14"
+	{
+		"en"	"Back for another round of firing."
 	}
 	"Huscarls_Talk_Lastman-1"
 	{
@@ -598,6 +610,18 @@
 	"Harrison_Talk_Support-13"
 	{
 		"en"	"*ugh* Can we kill them quicker? I need a beer."
+	}
+	"Harrison_Talk_Support-14"
+	{
+		"en"	"*ugh*."
+	}
+	"Harrison_Talk_Support-15"
+	{
+		"en"	"Huh? Oh… leave it until we are done here."
+	}
+	"Harrison_Talk_Support-16"
+	{
+		"en"	"*sigh*."
 	}
 	"Harrison_Talk_Intro"
 	{
