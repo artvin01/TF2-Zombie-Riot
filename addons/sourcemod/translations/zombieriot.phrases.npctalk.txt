@@ -613,15 +613,11 @@
 	}
 	"Harrison_Talk_Support-14"
 	{
-		"en"	"*ugh*."
+		"en"	"*sigh* alright."
 	}
 	"Harrison_Talk_Support-15"
 	{
 		"en"	"Huh? Oh… leave it until we are done here."
-	}
-	"Harrison_Talk_Support-16"
-	{
-		"en"	"*sigh*."
 	}
 	"Harrison_Talk_Intro"
 	{
