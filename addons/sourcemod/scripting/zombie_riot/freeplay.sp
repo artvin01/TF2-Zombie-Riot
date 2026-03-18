@@ -29,7 +29,6 @@ static int SkullTimes;
 static bool ExplodingNPC;
 static bool IsExplodeWave; // to prevent the message from popping up twice
 static int ExplodeNPCDamage;
-static int EnemyShields;
 static int VoidBuff;
 static bool VictoriaBuff;
 static bool SquadBuff;
@@ -169,7 +168,6 @@ void Freeplay_ResetAll()
 	ExplodingNPC = false;
 	IsExplodeWave = false;
 	EscapeModeForNpc = false;
-	EnemyShields = 0;
 	VoidBuff = 0;
 	VictoriaBuff = false;
 	SquadBuff = false;
@@ -1824,23 +1822,6 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemy ranged vulnerability has been multiplied by %.2fx.", randomranged);
 		}
 
-		int randomshield = GetRandomInt(-12, 12);
-		EnemyShields += randomshield;
-		if(EnemyShields > 15)
-			EnemyShields = 15;
-
-		if(EnemyShields < 0)
-			EnemyShields = 0;
-
-		if(randomshield > 0)
-		{
-			CPrintToChatAll("{red}All enemies receieve %d expidonsan shields!", randomshield);
-		}
-		else
-		{
-			CPrintToChatAll("{green}All enemies lose %d expidonsan shields.", randomshield);
-		}
-
 		if(VoidBuff > 2)
 		{
 			CPrintToChatAll("{green}All enemies have lost the Void buff.");
@@ -2642,50 +2623,6 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 54:
 			{
-				if(EnemyShields >= 15)
-				{
-					EnemyShields = 15;
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{red}All enemies receieve 3 expidonsan shields!");
-				EnemyShields += 3;
-			}
-			case 55:
-			{
-				if(EnemyShields >= 15)
-				{
-					EnemyShields = 15;
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{red}All enemies receieve 6 expidonsan shields!");
-				EnemyShields += 6;
-			}
-			case 56:
-			{
-				if(EnemyShields <= 0)
-				{
-					EnemyShields = 0;
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{green}All enemies lose 2 expidonsan shields.");
-				EnemyShields -= 2;
-			}
-			case 57:
-			{
-				if(EnemyShields <= 0)
-				{
-					EnemyShields = 0;
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{green}All enemies lose 4 expidonsan shields.");
-				EnemyShields -= 4;
-			}
-			case 58:
-			{
 				if(VoidBuff > 2)
 				{
 					strcopy(message, sizeof(message), "{green}All enemies have lost the Void buff.");
@@ -2697,7 +2634,7 @@ void Freeplay_SetupStart(bool extra = false)
 					VoidBuff++;
 				}
 			}
-			case 59:
+			case 55:
 			{
 				if(VictoriaBuff)
 				{
@@ -2710,7 +2647,7 @@ void Freeplay_SetupStart(bool extra = false)
 					VictoriaBuff = true;
 				}
 			}
-			case 60:
+			case 56:
 			{
 				if(SquadBuff)
 				{
@@ -2723,7 +2660,7 @@ void Freeplay_SetupStart(bool extra = false)
 					SquadBuff = true;
 				}
 			}
-			case 61:
+			case 57:
 			{
 				if(Coffee)
 				{
@@ -2736,7 +2673,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Coffee = true;
 				}
 			}
-			case 62:
+			case 58:
 			{
 				if(StrangleDebuff > 3)
 				{
@@ -2749,7 +2686,7 @@ void Freeplay_SetupStart(bool extra = false)
 					StrangleDebuff++;
 				}
 			}
-			case 63:
+			case 59:
 			{
 				if(ProsperityDebuff > 3)
 				{
@@ -2762,7 +2699,7 @@ void Freeplay_SetupStart(bool extra = false)
 					ProsperityDebuff++;
 				}
 			}
-			case 64:
+			case 60:
 			{
 				if(SilenceDebuff)
 				{
@@ -2775,7 +2712,7 @@ void Freeplay_SetupStart(bool extra = false)
 					SilenceDebuff = true;
 				}
 			}
-			case 65:
+			case 61:
 			{
 				// 7.5% chance, otherwise retry.
 				if(GetRandomFloat(0.0, 1.0) <= 0.075)
@@ -2789,7 +2726,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 			}
-			case 66:
+			case 62:
 			{
 				if(UnlockedSpeed)
 				{
@@ -2800,7 +2737,7 @@ void Freeplay_SetupStart(bool extra = false)
 				Store_DiscountNamedItem("Adrenaline", 999);
 				strcopy(message, sizeof(message), "{green}Adrenaline is now buyable in the passive store!");
 			}
-			case 67:
+			case 63:
 			{
 				if(CheesyPresence)
 				{
@@ -2813,7 +2750,7 @@ void Freeplay_SetupStart(bool extra = false)
 					CheesyPresence = true;
 				}
 			}
-			case 68:
+			case 64:
 			{
 				if(EloquenceBuff > 2)
 				{
@@ -2826,7 +2763,7 @@ void Freeplay_SetupStart(bool extra = false)
 					EloquenceBuff++;
 				}
 			}
-			case 69:
+			case 65:
 			{
 				if(RampartBuff > 2)
 				{
@@ -2839,7 +2776,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RampartBuff++;
 				}
 			}
-			case 70:
+			case 66:
 			{
 				if(zombiecombine)
 				{
@@ -2849,7 +2786,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Hey, im thinking of something.... What if, a {gold}combine, {red}and a {gold}zombie, {red}were...");
 				zombiecombine = true;
 			}
-			case 71:
+			case 67:
 			{
 				if(moremen)
 				{
@@ -2859,7 +2796,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}III THINK YOU NEED MORE MEN!");
 				moremen = 1;
 			}
-			case 72:
+			case 68:
 			{
 				if(immutable)
 				{
@@ -2869,7 +2806,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{purple}Otherworldly beings approach from a dimensional rip...");
 				immutable = true;
 			}
-			case 73:
+			case 69:
 			{
 				if(merlton)
 				{
@@ -2882,7 +2819,7 @@ void Freeplay_SetupStart(bool extra = false)
 					merlton = true;
 				}
 			}
-			case 74:
+			case 70:
 			{
 				if(EloquenceBuffEnemies > 2)
 				{
@@ -2895,7 +2832,7 @@ void Freeplay_SetupStart(bool extra = false)
 					EloquenceBuffEnemies++;
 				}
 			}
-			case 75:
+			case 71:
 			{
 				if(RampartBuffEnemies > 2)
 				{
@@ -2908,7 +2845,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RampartBuffEnemies++;
 				}
 			}
-			case 76:
+			case 72:
 			{
 				if(HurtleBuffEnemies > 2)
 				{
@@ -2921,7 +2858,7 @@ void Freeplay_SetupStart(bool extra = false)
 					HurtleBuffEnemies++;
 				}
 			}
-			case 77:
+			case 73:
 			{
 				if(HurtleBuff > 2)
 				{
@@ -2934,7 +2871,7 @@ void Freeplay_SetupStart(bool extra = false)
 					HurtleBuff++;
 				}
 			}
-			case 78:
+			case 74:
 			{
 				if(LoveNahTonic)
 				{
@@ -2947,26 +2884,26 @@ void Freeplay_SetupStart(bool extra = false)
 					LoveNahTonic = true;
 				}
 			}
-			case 79:
+			case 75:
 			{
 				strcopy(message, sizeof(message), "{yellow}Y'know what? I'll throw in another extra skull.");
 				ExtraSkulls++;
 			}
-			case 80:
+			case 76:
 			{
 				strcopy(message, sizeof(message), "{yellow}Y'know what? I'll throw in another extra skull.");
 				ExtraSkulls++;
 			//	strcopy(message, sizeof(message), "{yellow}Actually, y'know what? Maybe i'll throw in TWO extra skulls even.");
 			//	ExtraSkulls += 2;
 			}
-			case 81:
+			case 77:
 			{
 				strcopy(message, sizeof(message), "{yellow}Y'know what? I'll throw in another extra skull.");
 				ExtraSkulls++;
 			//	strcopy(message, sizeof(message), "{red}ffffFFFFF-{crimson}FUCK {red}it, THREE EXTRA SKULLS!!!");
 			//	ExtraSkulls += 3;
 			}
-			case 82:
+			case 78:
 			{
 				if(Schizophrenia)
 				{
@@ -2976,7 +2913,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}As you pick this skull, you begin to hear voices in your head...");
 				Schizophrenia = true;
 			}
-			case 83:
+			case 79:
 			{
 				if(DarknessComing)
 				{
@@ -2986,7 +2923,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}THE DARKNESS IS COMING. {crimson}YOU NEED TO RUN.");
 				DarknessComing = true;
 			}
-			case 84:
+			case 80:
 			{
 				if(thespewer)
 				{
