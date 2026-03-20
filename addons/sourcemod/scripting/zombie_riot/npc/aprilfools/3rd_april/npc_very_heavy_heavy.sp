@@ -272,7 +272,7 @@ void VeryHeavyHeavySelfDefense(VeryHeavyHeavy npc, float gameTime, int target, f
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					Custom_Knockback(npc.index, target, 750.0, true, true);
-					ApplyStatusEffect(npc.index, target, "Ragdolled", 3.0);	
+					ApplyStatusEffect(npc.index, target, "Ragdolled", 3.5);	
 					FreezeNpcInTime(target, 3.0);
 
 					// Hit sound

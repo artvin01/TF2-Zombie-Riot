@@ -9093,7 +9093,7 @@ void Ragdolled_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_Status
 	DispatchKeyValue(ragdoll, "model", modelName);
 	DispatchKeyValue(ragdoll, "spawnflags", "4");
 
-	//Set this as the player will collide with the doll.
+	//no collisions
 	SetEntProp(ragdoll, Prop_Data, "m_nSolidType", 2);
 	SetEntityCollisionGroup(ragdoll, 0);
 
@@ -9106,7 +9106,7 @@ void Ragdolled_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_Status
 	SetEntPropEnt(ragdoll, Prop_Data, "m_hOwnerEntity", victim);
 	float SubjectAbsVelocity[3];
 	GetEntPropVector(victim, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
-	ScaleVector(SubjectAbsVelocity, 500.0);
+	ScaleVector(SubjectAbsVelocity, 100.0);
 	TeleportEntity(ragdoll, flPos, angles, SubjectAbsVelocity);    
 	CBaseCombatCharacter(ragdoll).SetNextThink(GetGameTime());
 	SDKHook(ragdoll, SDKHook_ThinkPost, ThinkRagdoll_Post);
@@ -9121,32 +9121,72 @@ static void ThinkRagdoll_Post(int entity)
 	if(!IsValidEntity(owner))
 		return;
 
-	float flPosPlayer[3];
-	GetEntPropVector(owner, Prop_Data, "m_vecAbsOrigin", flPosPlayer);
+	CBaseCombatCharacter(entity).SetNextThink(GetGameTime());
+
+	CClotBody npc = view_as<CClotBody>(entity);
+	
+
+	/*
+	if(npc.m_flNextRunTime < GetGameTime(npc.index))
+	{
+		return;
+	}
+	*/
+	
+
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	{
+		return;
+	}
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.25;
+		//code wont work, speed is capped
 	float flPosRagdoll[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flPosRagdoll);
-	float flDistanceToTarget = GetVectorDistance(flPosPlayer, flPosRagdoll, true);
-	if(flDistanceToTarget >= (40.0 * 40.0))
-	{
-		static float angles[3];
-		GetVectorAnglesTwoPoints(flPosRagdoll, flPosPlayer, angles);
+	
+	float flPosPlayer[3];
+	GetEntPropVector(owner, Prop_Data, "m_vecAbsOrigin", flPosPlayer);
+	float flSetOrigin[3];
+	flSetOrigin = flPosPlayer;
+	flSetOrigin[2] = flPosRagdoll[2];
 
-		static float velocity[3];
-		GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(velocity, (flDistanceToTarget * 100.0));
-		
-		float SubjectAbsVelocity[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
-		velocity[0] += SubjectAbsVelocity[0];
-		velocity[1] += SubjectAbsVelocity[1];
-		velocity[2] += SubjectAbsVelocity[2];
-		PrintToChatAll("velocity 0 %f",velocity[0]);
-		PrintToChatAll("velocity 1 %f",velocity[1]);
-		PrintToChatAll("velocity 2 %f",velocity[2]);
-		// apply velocity
-		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, velocity);   
+	float flDistanceToTarget = GetVectorDistance(flPosPlayer, flPosRagdoll);
+	
+
+	// apply velocity 
+	if(flDistanceToTarget < 40.0)
+		return;
+	static float angles[3];
+	GetVectorAnglesTwoPoints(flPosRagdoll, flPosPlayer, angles);
+
+	static float velocity[3];
+	GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(velocity, (flDistanceToTarget * 100.0));
+	if(flDistanceToTarget < 80.0)
+	{
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, velocity);
 	}
-	CBaseCombatCharacter(entity).SetNextThink(GetGameTime());
+	else
+	{
+		TeleportEntity(entity, flSetOrigin, NULL_VECTOR, velocity);    
+	}
+	//teleport them 0.25 seconds into future.
+
+}
+stock void SetLocalRagdollDelay(DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(entity))
+	{
+		delete pack;
+		return;
+	}
+	float vel[3];
+	vel[0] = pack.ReadFloat();
+	vel[1] = pack.ReadFloat();
+	vel[2] = pack.ReadFloat();
+	delete pack;   
+	TeleportEntity(entity, vel, NULL_VECTOR, NULL_VECTOR);     
 }
 void Ragdolled_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
