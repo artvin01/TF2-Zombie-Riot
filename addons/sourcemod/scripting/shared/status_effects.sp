@@ -2602,6 +2602,23 @@ void StatusEffects_Silence()
 	StatusEffect_AddGlobal(data);
 
 	data.HudDisplay_Func 			= INVALID_FUNCTION;
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Ragdolled");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "lol");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "lol"); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ElementalLogic				= true; //dont get removed.
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnBuffStarted				= Ragdolled_Start;
+	data.OnBuffEndOrDeleted			= Ragdolled_End;
+
+	StatusEffect_AddGlobal(data);
 	//Immunity to stun effects
 	strcopy(data.BuffName, sizeof(data.BuffName), "Clear Head");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ֆ");
@@ -9049,4 +9066,112 @@ public void ZRModifs_ParanormalActivityNPC(int iNpc)
 	}
 	*/
 
+}
+
+
+void Ragdolled_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+	
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	int entity, i;
+	while(TF2U_GetWearable(victim, entity, i))
+	{
+		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+	}
+
+	int ragdoll = CreateEntityByName("prop_ragdoll");
+	if(!IsValidEntity(ragdoll))
+		return;
+	
+	
+	char modelName[256];
+	GetClientModel(victim, modelName, 256);
+	
+	DispatchKeyValue(ragdoll, "model", modelName);
+	DispatchKeyValue(ragdoll, "spawnflags", "4");
+
+	//Set this as the player will collide with the doll.
+	SetEntProp(ragdoll, Prop_Data, "m_nSolidType", 2);
+	SetEntityCollisionGroup(ragdoll, 0);
+
+	float flPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+	float angles[3];
+	GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
+	flPos[2] += 40.0;
+	DispatchSpawn(ragdoll);
+	SetEntPropEnt(ragdoll, Prop_Data, "m_hOwnerEntity", victim);
+	float SubjectAbsVelocity[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+	ScaleVector(SubjectAbsVelocity, 500.0);
+	TeleportEntity(ragdoll, flPos, angles, SubjectAbsVelocity);    
+	CBaseCombatCharacter(ragdoll).SetNextThink(GetGameTime());
+	SDKHook(ragdoll, SDKHook_ThinkPost, ThinkRagdoll_Post);
+
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ragdoll);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+static void ThinkRagdoll_Post(int entity)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+		return;
+
+	float flPosPlayer[3];
+	GetEntPropVector(owner, Prop_Data, "m_vecAbsOrigin", flPosPlayer);
+	float flPosRagdoll[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flPosRagdoll);
+	float flDistanceToTarget = GetVectorDistance(flPosPlayer, flPosRagdoll, true);
+	if(flDistanceToTarget >= (40.0 * 40.0))
+	{
+		static float angles[3];
+		GetVectorAnglesTwoPoints(flPosRagdoll, flPosPlayer, angles);
+
+		static float velocity[3];
+		GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(velocity, (flDistanceToTarget * 100.0));
+		
+		float SubjectAbsVelocity[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+		velocity[0] += SubjectAbsVelocity[0];
+		velocity[1] += SubjectAbsVelocity[1];
+		velocity[2] += SubjectAbsVelocity[2];
+		PrintToChatAll("velocity 0 %f",velocity[0]);
+		PrintToChatAll("velocity 1 %f",velocity[1]);
+		PrintToChatAll("velocity 2 %f",velocity[2]);
+		// apply velocity
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, velocity);   
+	}
+	CBaseCombatCharacter(entity).SetNextThink(GetGameTime());
+}
+void Ragdolled_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	if(!IsValidClient(victim))
+		return;
+	
+	RemoveEntity(Apply_StatusEffect.WearableUse);
+	if(!b_HideCosmeticsPlayer[victim])
+	{
+		int entity, i;
+		while(TF2U_GetWearable(victim, entity, i))
+		{
+			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+		}
+	}
+	else
+	{
+		int entity, i;
+		while(TF2U_GetWearable(victim, entity, i))
+		{
+			if(Viewchanges_NotAWearable(victim, entity))
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+		}
+	}
 }
