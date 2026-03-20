@@ -312,11 +312,11 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			npc.m_fbGunout = true;
 			if(!XenoExtraLogic())
 			{
-				CPrintToChatAll("{darkblue}Waldch{default}: Here or not, infections are no joke.");
+				CPrintToChatAll("{darkblue}Waldch{default}: {green}Xeno{default} is an infection that shouldn't be taken lightly.");
 			}
 			else
 			{
-				CPrintToChatAll("{darkblue}Waldch{default}: Giving up saves your life.");		
+				CPrintToChatAll("{darkblue}Waldch{default}: Just give up and we'll spare your lives.");		
 			}
 		}
 	}
@@ -363,7 +363,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				{
 					i_GogglesHurtTalkMessage[npc.index] = 1;
 					//got hurt by 20% hp.
-					switch(GetRandomInt(1,3))
+					switch(GetRandomInt(1,5))
 					{
 						case 1:
 						{
@@ -371,11 +371,19 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						}
 						case 2:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} get back to me now!");
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} get back to me NOW!");
 						}
 						case 3:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} get here or ill teleport you here!");
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} where are you GOING?!");
+						}
+						case 4:
+						{
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} that's the WRONG WAY!");
+						}
+						case 5:
+						{
+							CPrintToChatAll("{gold}Silvester{default}: Don't make me put you on a leash {darkblue}Waldch{default}!");
 						}
 					}
 				}
@@ -386,7 +394,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				{
 					i_GogglesHurtTalkMessage[npc.index] = 2;
 					//got hurt by 20% hp.
-					switch(GetRandomInt(1,3))
+					switch(GetRandomInt(1,5))
 					{
 						case 1:
 						{
@@ -394,11 +402,19 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						}
 						case 2:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default}... NOW!");
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} don't do that again!");
 						}
 						case 3:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} here, now STAY NEAR ME!");
+							CPrintToChatAll("{gold}Silvester{default}: There {darkblue}Waldch{default}. Now STAY NEAR ME!");
+						}
+						case 4:
+						{
+							CPrintToChatAll("{gold}Silvester{default}: How many times must I tell you this {darkblue}Waldch{default}!");
+						}
+						case 5:
+						{
+							CPrintToChatAll("{gold}Silvester{default}: Our enemies are HERE not THERE {darkblue}Waldch{default}!");
 						}
 					}
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
@@ -517,25 +533,29 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	{
 		if(XenoExtraLogic())
 		{
-			switch(GetURandomInt() % 3)
+			switch(GetRandomInt(0,3))
 			{
 				case 0:
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: Not here, not with him!");
+					CPrintToChatAll("{darkblue}Waldch{default}: I'll avenge you {gold}Silvester{default}!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: You fight like you want to kill him!");
+					CPrintToChatAll("{darkblue}Waldch{default}:{gold}Silvester{default} rest while I take care of them.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: Just you and me!");
+					CPrintToChatAll("{darkblue}Waldch{default}: Just you and me now!");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{darkblue}Waldch{default}: I'll stop you by myself!");
 				}
 			}
 		}
 		else
 		{
-			switch(RoundToFloor(GetURandomFloat() * 4.0))
+			switch(GetRandomInt(0,3))
 			{
 				case 0:
 				{
@@ -543,7 +563,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				}
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: You'll pay for picking on him!");
+					CPrintToChatAll("{darkblue}Waldch{default}: You'll pay for that!");
 				}
 				case 2:
 				{
@@ -1084,7 +1104,7 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(28.0);
 			damage = 0.0;
-			CPrintToChatAll("{darkblue}Waldch{default}: You win, I won't stop you no more...");
+			CPrintToChatAll("{darkblue}Waldch{default}: You win, I won't stop you no anymore...");
 			return Plugin_Handled;
 		}
 
