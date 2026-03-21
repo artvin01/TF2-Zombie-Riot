@@ -363,7 +363,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				{
 					i_GogglesHurtTalkMessage[npc.index] = 1;
 					//got hurt by 20% hp.
-					switch(GetRandomInt(1,5))
+					switch(GetRandomInt(1,4))
 					{
 						case 1:
 						{
@@ -380,10 +380,6 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						case 4:
 						{
 							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} that's the WRONG WAY!");
-						}
-						case 5:
-						{
-							CPrintToChatAll("{gold}Silvester{default}: Don't make me put you on a leash {darkblue}Waldch{default}!");
 						}
 					}
 				}
