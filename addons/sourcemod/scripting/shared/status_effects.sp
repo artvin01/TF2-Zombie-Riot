@@ -3048,6 +3048,26 @@ void StatusEffects_Victoria()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Armor Melt");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "½");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.DamageTakenMulti 			= 0.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= -1.0;
+	
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.OnTakeDamage_TakenFunc 	= Armor_Melt_ResistanceFunc;
+	data.OnTakeDamage_DealFunc 	= INVALID_FUNCTION;
+	data.OnTakeDamage_PostVictim	= INVALID_FUNCTION;
+	data.OnTakeDamage_PostAttacker	= INVALID_FUNCTION;
+	data.Status_SpeedFunc 		= INVALID_FUNCTION;
+	data.HudDisplay_Func 			= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
 
 stock bool NpcStats_VictorianCallToArms(int victim)
@@ -3105,6 +3125,30 @@ void Charge_BatteryTM_Hud_Func(int attacker, int victim, StatusEffect Apply_Mast
 		Format(HudToDisplay, SizeOfChar, "[B™ %.0f％]", Ratio);
 	}
 	#endif
+}
+
+static float Armor_Melt_ResistanceFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, int basedamage)
+{
+	int Armor=0;
+	if(IsValidClient(victim))
+	{
+		Armor = Armor_Charge[victim];
+		if(Armor<1)
+			return 1.0;
+		int MaxArmor = MaxArmorCalculation(Armor_Level[victim], victim, 0.5);
+		if(Armor>MaxArmor)
+			Armor=MaxArmor;
+	}
+	else
+		Armor = RoundToNearest(view_as<CClotBody>(victim).m_flArmorCount);
+	Armor-RoundFloat(basedamage*0.33);
+	if(Armor<0)Armor=0;
+	if(IsValidClient(victim))
+		Armor_Charge[victim]=Armor;
+	else
+		view_as<CClotBody>(victim).m_flArmorCount = Armor;
+	
+	return 1.0;
 }
 
 void StatusEffects_Pernell()
