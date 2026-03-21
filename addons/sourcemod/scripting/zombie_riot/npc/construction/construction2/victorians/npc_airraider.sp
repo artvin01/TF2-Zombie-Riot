@@ -572,7 +572,8 @@ static void AirraiderSelfDefense(Airraider npc, float gameTime, int target, floa
 						float damageDealt = 90.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 2.0;
-
+						
+						KillFeed_SetKillIcon(npc.index, "reserve_shooter");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 					}
 					npc.m_flNextRangedAttack = gameTime + 0.50;
@@ -595,9 +596,9 @@ static void AirraiderSelfDefense(Airraider npc, float gameTime, int target, floa
 				PredictSubjectPositionForProjectiles(npc, target, projectile_speed, _,vPredictedPos);
 				
 				npc.FaceTowards(vPredictedPos, 20000.0);
-				//Play attack anim
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 				
+				KillFeed_SetKillIcon(npc.index, "airstrike");
 				npc.PlayRangedSound();
 				npc.FireRocket(vPredictedPos, DamageRocket, projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl");
 				npc.m_flNextRangedAttack = gameTime + 0.30;

@@ -163,7 +163,7 @@ methodmap ChemicalSpreader < CClotBody
 	}
 }
 
-public void ChemicalSpreader_ClotThink(int iNPC)
+static void ChemicalSpreader_ClotThink(int iNPC)
 {
 	ChemicalSpreader npc = view_as<ChemicalSpreader>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -219,7 +219,7 @@ public void ChemicalSpreader_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action ChemicalSpreader_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action ChemicalSpreader_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	ChemicalSpreader npc = view_as<ChemicalSpreader>(victim);
 		
@@ -235,7 +235,7 @@ public Action ChemicalSpreader_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-public void ChemicalSpreader_NPCDeath(int entity)
+static void ChemicalSpreader_NPCDeath(int entity)
 {
 	ChemicalSpreader npc = view_as<ChemicalSpreader>(entity);
 	if(!npc.m_bGib)
@@ -261,7 +261,7 @@ public void ChemicalSpreader_NPCDeath(int entity)
 
 }
 
-void ChemicalSpreaderSelfDefense(ChemicalSpreader npc)
+static void ChemicalSpreaderSelfDefense(ChemicalSpreader npc)
 {
 	if(npc.m_flPulveriserAttackDelay > GetGameTime(npc.index))
 	{
@@ -293,7 +293,7 @@ void ChemicalSpreaderSelfDefense(ChemicalSpreader npc)
 		npc.PlayMinigunSound(false);
 }
 
-public void ChemicalSpreader_Rocket_Particle_StartTouch(int entity, int target)
+static void ChemicalSpreader_Rocket_Particle_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
@@ -316,9 +316,7 @@ public void ChemicalSpreader_Rocket_Particle_StartTouch(int entity, int target)
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
 		
-		PrintToChat(target, "what");
-		//Elemental_AddNervousDamage(target, owner, 25, true);
-		Elemental_AddChaosDamage(target, owner, 15, true, true);
+		Elemental_AddNervousDamage(target, owner, 25, true);
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 			RemoveEntity(particle);

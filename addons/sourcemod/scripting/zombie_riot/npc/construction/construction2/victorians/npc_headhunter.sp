@@ -272,7 +272,7 @@ public void Victorian_Headhunter_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Victorian_Headhunter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Victorian_Headhunter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Victorian_Headhunter npc = view_as<Victorian_Headhunter>(victim);
 		
@@ -288,7 +288,7 @@ public Action Victorian_Headhunter_OnTakeDamage(int victim, int &attacker, int &
 	return Plugin_Changed;
 }
 
-public void Victorian_Headhunter_NPCDeath(int entity)
+static void Victorian_Headhunter_NPCDeath(int entity)
 {
 	Victorian_Headhunter npc = view_as<Victorian_Headhunter>(entity);
 	if(!npc.m_bGib)
@@ -313,7 +313,7 @@ public void Victorian_Headhunter_NPCDeath(int entity)
 
 }
 
-int Victorian_HeadhunterSelfDefense(Victorian_Headhunter npc, float gameTime)
+static int Victorian_HeadhunterSelfDefense(Victorian_Headhunter npc, float gameTime)
 {
 	if(!npc.m_flAttackHappens)
 	{

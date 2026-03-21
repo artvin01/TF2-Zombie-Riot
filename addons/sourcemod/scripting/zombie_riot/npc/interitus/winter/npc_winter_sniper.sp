@@ -74,6 +74,12 @@ methodmap WinterSniper < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
+	property bool IsMercsTeam
+	{
+		public get()							{ return b_Anger[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_Anger[this.index] = TempValueForProperty; }
+	}
+	
 	public WinterSniper(float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterSniper npc = view_as<WinterSniper>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1500", ally));
@@ -93,6 +99,7 @@ methodmap WinterSniper < CClotBody
 		
 		npc.m_iChanged_WalkCycle = 0;
 		Is_a_Medic[npc.index] = true;
+		npc.IsMercsTeam = (ally==TFTeam_Red&&ZR_Get_Modifier()!=2 ? true : false);
 
 		if(npc.m_iChanged_WalkCycle != 1)
 		{
@@ -112,7 +119,7 @@ methodmap WinterSniper < CClotBody
 		
 		
 		
-		int skin = 1;
+		int skin = (npc.IsMercsTeam ? 0 : 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_tfc_sniperrifle/c_tfc_sniperrifle.mdl");
@@ -334,7 +341,10 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 	}
 	if(npc.m_flAttackHappens)
 	{
-		TE_SetupBeamPoints(origin, ThrowPos[npc.index], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, {0,0,255,255}, 3);
+		int TeamColor[4]={0,0,255,255};
+		if(npc.IsMercsTeam)
+			TeamColor={255,50,50,255};
+		TE_SetupBeamPoints(origin, ThrowPos[npc.index], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, TeamColor, 3);
 		TE_SendToAll(0.0);
 	}
 			
@@ -345,7 +355,10 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
 			
-			ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, ThrowPos[npc.index], false );
+			if(npc.IsMercsTeam)
+				ShootLaser(npc.m_iWearable1, "bullet_tracer01_red_crit", origin, ThrowPos[npc.index], false );
+			else
+				ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, ThrowPos[npc.index], false );
 			float pos_npc[3];
 			WorldSpaceCenter(npc.index, pos_npc);
 			float AngleAim[3];

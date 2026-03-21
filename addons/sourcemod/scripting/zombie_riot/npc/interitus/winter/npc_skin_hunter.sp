@@ -125,7 +125,7 @@ methodmap WinterSkinHunter < CClotBody
 		Is_a_Medic[npc.index] = true;
 		
 		
-		int skin = 1;
+		int skin = (ally==TFTeam_Red&&ZR_Get_Modifier()!=2 ? 0 : 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 
