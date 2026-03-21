@@ -1590,7 +1590,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}Here's a fun fact, space lacks the atmosphere to stop THIS!", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}Here's a fun fact, the atmosphere drastically lowers the potential of this attack... Guess what space lacks!", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
 				}
 				case 2:
 				{
