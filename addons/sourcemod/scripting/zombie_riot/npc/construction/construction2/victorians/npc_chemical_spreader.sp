@@ -287,13 +287,11 @@ void ChemicalSpreaderSelfDefense(ChemicalSpreader npc)
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 		
-		SDKHook(projectile, SDKHook_StartTouch, ChemicalSpreader_Rocket_Particle_StartTouch);		
+		WandProjectile_ApplyFunctionToEntity(projectile, ChemicalSpreader_Rocket_Particle_StartTouch);
 	}
 	if(SpinSound)
 		npc.PlayMinigunSound(false);
 }
-
-
 
 public void ChemicalSpreader_Rocket_Particle_StartTouch(int entity, int target)
 {
@@ -301,9 +299,7 @@ public void ChemicalSpreader_Rocket_Particle_StartTouch(int entity, int target)
 	{
 		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 		if(!IsValidEntity(owner))
-		{
 			owner = 0;
-		}
 		
 		int inflictor = h_ArrowInflictorRef[entity];
 		if(inflictor != -1)
@@ -318,24 +314,21 @@ public void ChemicalSpreader_Rocket_Particle_StartTouch(int entity, int target)
 		if(ShouldNpcDealBonusDamage(target))
 			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
 
-
-		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
+		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
 		
-		Elemental_AddNervousDamage(target, owner, 25, true);
+		PrintToChat(target, "what");
+		//Elemental_AddNervousDamage(target, owner, 25, true);
+		Elemental_AddChaosDamage(target, owner, 15, true, true);
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
-		{
 			RemoveEntity(particle);
-		}
 	}
 	else
 	{
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//we uhh, missed?
 		if(IsValidEntity(particle))
-		{
 			RemoveEntity(particle);
-		}
 	}
 	RemoveEntity(entity);
 }

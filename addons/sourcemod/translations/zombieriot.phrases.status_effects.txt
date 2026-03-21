@@ -793,6 +793,16 @@
 		"en"	"Boosts damage dealt by 100％\nReduces damage taken by 50％"
 		"ko"	"공격 피해량이 100％ 증가합니다.\n받는 피해량이 50％ 감소합니다."
 	}
+	"Armor Melt"
+	{
+		"en"	"Armor Melt"
+		"ko"	"아머 멜트"
+	}
+	"Armor Melt Desc"
+	{
+		"en"	"When the Armor exceeds 50％ of the Maximum Armor, the excess armor is destroyed when damaged.\Increased Armor Damage taken by 33％"
+		"ko"	"아머가 최대 아머의 50％가 넘을때 피해를 받으면 초과 아머는 파괴 됩니다.\n받는 아머 피해량 33％ 증가."
+	}
 	"False Therapy"
 	{
 		"en"	"False Therapy"
