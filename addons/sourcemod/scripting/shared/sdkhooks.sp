@@ -3689,7 +3689,6 @@ void UpdatePerkName(int client)
 
 	Format(MaxAsignPerkNames[client], sizeof(MaxAsignPerkNames[]), "%s",buffer);
 }
-#endif
 
 
 void SdkHooks_SetAndUpdateArmorClientText(int client)
@@ -3769,3 +3768,4 @@ void SdkHooks_SetAndUpdateArmorClientText(int client)
 	DispatchKeyValue(ArmorText,	 "color", sColor);
 	DispatchKeyValue(ArmorText, "message", ch_ArmorText);
 }
+#endif

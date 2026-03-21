@@ -6272,6 +6272,14 @@
 		"it"		"Cavaliere perduto"
 		"ko"		"길 잃은 기사"
 	}
+	"Rollermine"
+	{
+		"en"		"Rollermine"
+	}
+	"Nova Prospekt Overseer"
+	{
+		"en"		"Nova Prospekt Overseer"
+	}
 	"Omega"
 	{
 		"en"		"Omega"

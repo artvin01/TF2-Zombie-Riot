@@ -199,7 +199,8 @@ methodmap Umbral_Automaton < CClotBody
 			{
 				npc.SetActivity("ACT_SHADOW_STATUE_SMALL_WALK");
 			}
-			//just spawn and walk
+			TeleportDiversioToRandLocation(npc.index,_,3000.0, 500.0);
+			//just spawn and walk, and spawns somewhere too
 		}
 		else
 		{

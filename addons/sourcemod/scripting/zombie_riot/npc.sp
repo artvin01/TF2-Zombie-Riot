@@ -971,6 +971,8 @@ void NPC_ConfigSetup()
 	BossSummonRandom_OnMapStart_NPC();
 	//Combine Mutation
 	OmegaRaid_OnMapStart_NPC();
+	Rollermine_OnMapStart_NPC();
+	NovaProspektOverseer_OnMapStart_NPC();
 	LostKnight_OnMapStart_NPC();
 	Merlton_Boss_OnMapStart_NPC();
 	BobFollower_Setup();
@@ -2438,10 +2440,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/matrix/freeplay/npc_freeplay_agentspencer.sp"
 
 //Combine Hell Mutation
+#include "npc/mutations/combinehell/other/npc_nova_prospekt_overseer.sp"
 #include "npc/mutations/combinehell/other/npc_hunter.sp"
 #include "npc/mutations/combinehell/other/npc_merlton.sp"
 #include "npc/mutations/combinehell/other/npc_combine_lost_knight.sp"
 #include "npc/mutations/combinehell/other/npc_omega_raid.sp"
+#include "npc/mutations/combinehell/other/npc_rollermine.sp"
 #include "npc/mutations/combinehell/other/npc_bob_follower.sp"
 #include "npc/mutations/combinehell/seaborn/npc_seaborn_combine_police_pistol.sp"
 #include "npc/mutations/combinehell/seaborn/npc_seaborn_combine_police_smg.sp"

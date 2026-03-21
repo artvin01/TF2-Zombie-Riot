@@ -3415,7 +3415,7 @@ bool Rogue_UpdateMvMStats()
 										Waves_SetWaveClass(objective, i, CurrentUmbral, "affinityneutralv2", MVM_CLASS_FLAG_NORMAL, true);
 									
 									case 3:
-										Waves_SetWaveClass(objective, i, CurrentUmbral, "affinitybadv2", MVM_CLASS_FLAG_MINIBOSS, true);
+										Waves_SetWaveClass(objective, i, CurrentUmbral, "affinitybadv3", MVM_CLASS_FLAG_MINIBOSS, true);
 									
 									default:	// Most Hated
 										Waves_SetWaveClass(objective, i, CurrentUmbral, "affinityworstv2", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
