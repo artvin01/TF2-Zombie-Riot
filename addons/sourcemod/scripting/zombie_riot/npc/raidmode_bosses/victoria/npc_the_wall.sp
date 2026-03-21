@@ -350,7 +350,7 @@ methodmap Huscarls < CClotBody
 		npc.m_iOverrideOwner = 0;
 		static char countext[2][512];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
-		float MAXHitCharge=10000.0;
+		float MAXHitCharge=20000.0;
 		for(int i = 0; i < count; i++)
 		{
 			if(i>=count)break;
@@ -2172,6 +2172,7 @@ static bool Victoria_Support(Huscarls npc)
 	if(Vs_RechargeTime[npc.index] < Vs_RechargeTimeMax[npc.index])
 	{
 		float position[3];
+		int RGBColor[3]={255, 200, 80};
 		position[0] = vecTarget[0];
 		position[1] = vecTarget[1];
 		position[2] = vecTarget[2] + 3000.0;
@@ -2194,14 +2195,15 @@ static bool Victoria_Support(Huscarls npc)
 				if(IsValidClient(client) && !IsFakeClient(client))
 					Vs_LockOn[client]=false;
 			}
+			RGBColor={255, 120, 50};
 		}
 		spawnRing_Vectors(Vs_Temp_Pos[npc.index], (1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0)), 0.0, 0.0, 0.0, LASERBEAM, 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
 		float position2[3];
 		position2[0] = Vs_Temp_Pos[npc.index][0];
 		position2[1] = Vs_Temp_Pos[npc.index][1];
 		position2[2] = Vs_Temp_Pos[npc.index][2] + 40.0;
-		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
-		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, RGBColor[0], RGBColor[1], RGBColor[2], 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, RGBColor[0], RGBColor[1], RGBColor[2], 150, 1, 0.1, 3.0, 0.1, 3);
 		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
 		TE_SendToAll();
 		TE_SetupGlowSprite(Vs_Temp_Pos[npc.index], g_RedPoint, 0.1, 1.0, 255);

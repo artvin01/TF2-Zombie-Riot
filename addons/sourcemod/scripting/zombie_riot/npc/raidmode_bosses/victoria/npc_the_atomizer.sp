@@ -266,6 +266,11 @@ methodmap Atomizer < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
+	property float m_flExtraDMGForBall
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
 	
 	public Atomizer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -330,8 +335,12 @@ methodmap Atomizer < CClotBody
 				case 2:
 				{
 					npc.m_flSpeed = 400.0;
-					npc.m_iMaxAmmo = 30+RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
-					if(npc.m_iMaxAmmo>45)npc.m_iMaxAmmo=45;
+					npc.m_iMaxAmmo = 30+RoundToNearest(float(CountPlayersOnRed(2)) * 3.0);
+					if(npc.m_iMaxAmmo>45)
+					{
+						npc.m_flExtraDMGForBall = 1.0*(npc.m_iMaxAmmo/45.0);
+						npc.m_iMaxAmmo=45;
+					}
 					npc.m_iAmmo = npc.m_iMaxAmmo;
 					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-2", false, true);
 				}
@@ -358,6 +367,7 @@ methodmap Atomizer < CClotBody
 			ParticleSpawned[npc.index] = false;
 			SUPERHIT[npc.index] = false;
 			npc.m_flNiceMiss = 0.0;
+			npc.m_flExtraDMGForBall = 0.0;
 			Vs_Atomizer_To_Huscarls = 0;
 			npc.i_GunMode = 0;
 			npc.m_iOverlordComboAttack = 0;
@@ -365,8 +375,12 @@ methodmap Atomizer < CClotBody
 			npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 5.0;
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 30.0;
 			npc.m_flAngerDelay = GetGameTime(npc.index) + 15.0;
-			npc.m_iMaxAmmo = 20+RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
-			if(npc.m_iMaxAmmo>45)npc.m_iMaxAmmo=45;
+			npc.m_iMaxAmmo = 10+RoundToNearest(float(CountPlayersOnRed(2)) * 3.0);
+			if(npc.m_iMaxAmmo>45)
+			{
+				npc.m_flExtraDMGForBall = 1.0*(npc.m_iMaxAmmo/36.0);
+				npc.m_iMaxAmmo=45;
+			}
 			npc.m_iAmmo = 0;
 			OnMiss[npc.index] = false;
 			npc.m_fbRangedSpecialOn = false;
@@ -1437,8 +1451,12 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 			npc.m_flDoingAnimation = gameTime + 0.45;
 			npc.m_flNextRangedSpecialAttackHappens = gameTime + (DrinkPOWERUP[npc.index] ? 15.0 : 22.5);
 			npc.m_flNextRangedAttack += 1.0;
-			npc.m_iMaxAmmo = (DrinkPOWERUP[npc.index] ? 30 : 20)+RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
-			if(npc.m_iMaxAmmo>45)npc.m_iMaxAmmo=45;
+			npc.m_iMaxAmmo = (DrinkPOWERUP[npc.index] ? 20 : 10)+RoundToNearest(float(CountPlayersOnRed(2)) * 3.0);
+			if(npc.m_iMaxAmmo>45)
+			{
+				npc.m_flExtraDMGForBall = 1.0*(npc.m_iMaxAmmo/36.0);
+				npc.m_iMaxAmmo=45;
+			}
 			npc.m_iAmmo = npc.m_iMaxAmmo;
 		}
 	}
@@ -1543,10 +1561,17 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 								ExtinguishTarget(npc.m_iWearable2);
 							}
 							if(DrinkPOWERUP[npc.index])
-								RocketDamage*=1.25;
+							{
+								if(npc.m_flExtraDMGForBall>1.0)
+									RocketDamage*=npc.m_flExtraDMGForBall;
+								else
+									RocketDamage*=1.25;
+							}
+							else if(npc.m_flExtraDMGForBall>1.0)
+								RocketDamage*=npc.m_flExtraDMGForBall;
 							float RocketSpeed = 1650.0;
-							float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-							float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
+							float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+							float VecStart[3]; WorldSpaceCenter(npc.index, VecStart);
 							float vecDest[3];
 							vecDest = vecTarget;
 							float SpeedReturn[3];
@@ -1992,6 +2017,7 @@ static bool Victoria_Support(Atomizer npc)
 	if(Vs_RechargeTime[npc.index] < Vs_RechargeTimeMax[npc.index])
 	{
 		float position[3];
+		int RGBColor[3]={255, 200, 80};
 		position[0] = vecTarget[0];
 		position[1] = vecTarget[1];
 		position[2] = vecTarget[2] + 3000.0;
@@ -2014,14 +2040,15 @@ static bool Victoria_Support(Atomizer npc)
 				if(IsValidClient(client) && !IsFakeClient(client))
 					Vs_LockOn[client]=false;
 			}
+			RGBColor={255, 120, 50};
 		}
 		spawnRing_Vectors(Vs_Temp_Pos[npc.index], (1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0)), 0.0, 0.0, 0.0, LASERBEAM, 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
 		float position2[3];
 		position2[0] = Vs_Temp_Pos[npc.index][0];
 		position2[1] = Vs_Temp_Pos[npc.index][1];
 		position2[2] = Vs_Temp_Pos[npc.index][2] + 40.0;
-		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
-		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, RGBColor[0], RGBColor[1], RGBColor[2], 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, RGBColor[0], RGBColor[1], RGBColor[2], 150, 1, 0.1, 3.0, 0.1, 3);
 		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
 		TE_SendToAll();
 		TE_SetupGlowSprite(Vs_Temp_Pos[npc.index], g_RedPoint, 0.1, 1.0, 255);
