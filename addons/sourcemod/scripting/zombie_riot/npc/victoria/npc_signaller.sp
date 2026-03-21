@@ -242,12 +242,12 @@ methodmap VictorianSignaller < CClotBody
 			npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec23_trench_warefarer/dec23_trench_warefarer.mdl");
 			SetEntityRenderColor(npc.m_iWearable4, 0, 0, 0, 255);
 			SetEntityRenderColor(npc.m_iWearable5, 100, 100, 100, 255);
+			SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 			SetEntityRenderColor(npc.m_iWearable6, 0, 0, 0, 255);
 		}
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 
 		npc.StartPathing();
