@@ -98,10 +98,15 @@ methodmap VictorianDroneFragments < CClotBody
 		public get()							{ return i_AmountProjectiles[this.index]; }
 		public set(int TempValueForProperty) 	{ i_AmountProjectiles[this.index] = TempValueForProperty; }
 	}
-	property int m_iWaveScale
+	property float m_flNextFireDelay
 	{
-		public get()							{ return i_AttacksTillMegahit[this.index]; }
-		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
+	property float m_flNextFireDelayInternal
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
 	}
 	
 	public void SaveTreePos(float VecEnemy[3])
@@ -141,9 +146,6 @@ methodmap VictorianDroneFragments < CClotBody
 		npc.m_flAttackHappens_bullshit = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
-		npc.m_iWaveScale = Waves_GetRoundScale()+1;
-		if(npc.m_iWaveScale > 10) npc.m_iWaveScale=10;
-		npc.m_iAmmo = 3;
 		npc.m_iMaxAmmo=3;
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextPosDelay = 0.0;
@@ -152,11 +154,13 @@ methodmap VictorianDroneFragments < CClotBody
 		ISVOLI[npc.index]=false;
 		b_we_are_reloading[npc.index]=false;
 		npc.m_bFUCKYOU_move_anim=false;
+		npc.m_bnew_target = false;
 		npc.m_iMainTarget=0;
 		npc.m_fXPosSave=0.0;
 		npc.m_fZPosSave=0.0;
 		npc.m_fYPosSave=0.0;
 		npc.m_flLifeTime=20.0;
+		npc.m_flNextFireDelay=1.5;
 
 		npc.m_flMeleeArmor = 1.00;
 		npc.m_flRangedArmor = 1.00;
@@ -212,15 +216,15 @@ methodmap VictorianDroneFragments < CClotBody
 				ReplaceString(countext[i], sizeof(countext[]), "tracking", "");
 				npc.m_iState = -1;
 			}
+			else if(StrContains(countext[i], "nextfiredelay") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "nextfiredelay", "");
+				npc.m_flNextFireDelay = StringToFloat(countext[i]);
+			}
 			else if(StrContains(countext[i], "raidmode") != -1)
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "raidmode", "");
 				npc.m_bFUCKYOU_move_anim = true;
-			}
-			else if(StrContains(countext[i], "wavescale") != -1)
-			{
-				ReplaceString(countext[i], sizeof(countext[]), "wavescale", "");
-				npc.m_iWaveScale = StringToInt(countext[i]);
 			}
 			else if(StrContains(countext[i], "maxclip") != -1)
 			{
@@ -228,6 +232,7 @@ methodmap VictorianDroneFragments < CClotBody
 				npc.m_iMaxAmmo = StringToInt(countext[i]);
 			}
 		}
+		npc.m_iAmmo = npc.m_iMaxAmmo;
 		
 		if(npc.m_flLifeTime==-1.0||ISVOLI[npc.index])
 		{
@@ -467,6 +472,7 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 				npc.Anger = true;
 			}
 		}
+		
 		case 0:
 		{
 			npc.SetVelocity({0.0,0.0,0.0});
@@ -494,6 +500,8 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 				npc.m_iState=2;
 				if(!npc.m_flAttackHappens_bullshit && npc.m_flLifeTime>0.0)
 					npc.m_flAttackHappens_bullshit = gameTime+npc.m_flLifeTime+0.2;
+				if(npc.m_flNextFireDelay)
+					npc.m_flNextFireDelayInternal=gameTime+npc.m_flNextFireDelay;
 				npc.Anger = true;
 			}
 			else
@@ -532,14 +540,55 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 				SetEntPropVector(npc.index, Prop_Data, "m_angRotation", NPCAng);
 				npc.PlayFinedSound();
 				float flDistanceToTarget = GetVectorDistance(VecEnemy, VecSelfNpc, true);
-				VictoriaFragmentsAssaultMode(npc, gameTime, flDistanceToTarget);
+				if(npc.m_flNextFireDelayInternal)
+				{
+					if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+						npc.m_flNextFireDelayInternal += (0.12 + DEFAULT_UPDATE_DELAY_FLOAT);
+					if(!npc.m_bnew_target)
+					{
+						if(IsValidEntity(npc.m_iWearable6))
+							RemoveEntity(npc.m_iWearable6);
+						npc.m_iWearable6 = ConnectWithBeam(npc.m_iWearable4, npc.m_iTarget, 229, 235, 52, 2.0, 2.0, 0.0, LASERBEAM);
+						npc.m_bnew_target = true;
+					}
+					spawnRing_Vectors(VecEnemy, (b_we_are_reloading[npc.index] ? 125.0 : 85.0) * 2.0, 0.0, 0.0, 0.0, LASERBEAM, 229, 235, 52, 200, 1, 0.12, 3.0, 0.1, 3);
+				
+					if(npc.m_flNextFireDelayInternal < gameTime)
+					{
+						npc.m_flNextFireDelayInternal=0.0;
+						if(npc.m_bnew_target)
+						{
+							if(IsValidEntity(npc.m_iWearable6))
+								RemoveEntity(npc.m_iWearable6);
+							npc.m_bnew_target = false;
+						}
+					}
+				}
+				else
+				{
+					if(npc.m_bnew_target)
+					{
+						if(IsValidEntity(npc.m_iWearable6))
+							RemoveEntity(npc.m_iWearable6);
+						npc.m_bnew_target = false;
+					}
+					VictoriaFragmentsAssaultMode(npc, gameTime, flDistanceToTarget);
+				}
 			}
 			else
 			{
 				npc.m_iAmmo = npc.m_iMaxAmmo;
+				if(npc.m_flNextFireDelay)
+					npc.m_flNextFireDelayInternal=gameTime+npc.m_flNextFireDelay;
 				npc.m_flGetClosestTargetTime=0.0;
 				npc.m_flNextMeleeAttack=0.0;
 				npc.m_bFUCKYOU = false;
+				if(npc.m_bnew_target)
+				{
+					if(IsValidEntity(npc.m_iWearable6))
+						RemoveEntity(npc.m_iWearable6);
+					npc.m_bnew_target = false;
+				}
 			}
 		}
 	}
@@ -624,8 +673,6 @@ static void VictoriaFragmentsAssaultMode(VictorianDroneFragments npc, float game
 							if(DMGTemp>damageDealt)
 								damageDealt=DMGTemp;
 						}
-						else
-							damageDealt*=float(npc.m_iWaveScale)*0.1;
 						Explode_Logic_Custom(damageDealt/(b_we_are_reloading[npc.index] ? 3.0: 5.0), npc.index, npc.index, -1, vecHit, (b_we_are_reloading[npc.index] ? 125.0 : 85.0),_,_,_,4, _, 1.0);
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 					}
