@@ -82,6 +82,7 @@ static bool b_GotBuilding[MAXENTITIES];
 static int i_AttackCount[MAXENTITIES];
 
 static bool b_TheGoons;
+static bool b_AimBuff;
 
 void VictoriaBirdeye_OnMapStart_NPC()
 {
@@ -275,6 +276,8 @@ methodmap VictoriaBirdeye < CClotBody
 			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", Vec);
 			ParticleEffectAt(Vec, "teleported_blue", 0.5);
 		}
+		
+		b_AimBuff = (StrContains(data, "aimbuff") != -1);
 		
 		b_TheGoons=false;
 		if(!StrContains(data, "only"))
@@ -895,13 +898,13 @@ int VictoriaBirdeyeSniperMode(VictoriaBirdeye npc, float gameTime)
 	{
 		if(NpcStats_VictorianCallToArms(npc.index))
 		{
-			npc.m_flAttackHappens = gameTime + (npc.m_iBurst>0 ? 0.2 : 0.65);
+			npc.m_flAttackHappens = gameTime + (npc.m_iBurst>0 ? 0.3 : 0.65);
 		}
 		else if(!NpcStats_VictorianCallToArms(npc.index))
 		{
-			npc.m_flAttackHappens = gameTime + (npc.m_iBurst>0 ? 0.2 : 1.25);
+			npc.m_flAttackHappens = gameTime + (npc.m_iBurst>0 ? 0.3 : 1.25);
 		}
-		npc.m_flDoingAnimation = gameTime + 0.95;
+		npc.m_flDoingAnimation = gameTime + (npc.m_iBurst>0 ? 0.2 : 0.95);
 		if(b_TheGoons)
 		{
 			npc.m_iBurst++;
