@@ -1,46 +1,48 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] = {
-	"vo/heavy_paincrticialdeath01.mp3",
-	"vo/heavy_paincrticialdeath02.mp3",
-	"vo/heavy_paincrticialdeath03.mp3",
+static const char g_DeathSounds[][] =
+{
+	"vo/scout_paincrticialdeath01.mp3",
+	"vo/scout_paincrticialdeath02.mp3",
+	"vo/scout_paincrticialdeath03.mp3"
 };
 
-static const char g_HurtSounds[][] = {
-	"vo/heavy_painsharp01.mp3",
-	"vo/heavy_painsharp02.mp3",
-	"vo/heavy_painsharp03.mp3",
-	"vo/heavy_painsharp04.mp3",
-	"vo/heavy_painsharp05.mp3",
+static const char g_HurtSounds[][] =
+{
+	"vo/scout_painsharp01.mp3",
+	"vo/scout_painsharp02.mp3",
+	"vo/scout_painsharp03.mp3",
+	"vo/scout_painsharp04.mp3",
+	"vo/scout_painsharp05.mp3",
+	"vo/scout_painsharp06.mp3",
+	"vo/scout_painsharp07.mp3",
+	"vo/scout_painsharp08.mp3"
+};
+
+static const char g_IdleAlertedSounds[][] =
+{
+	"vo/scout_battlecry01.mp3",
+	"vo/scout_battlecry02.mp3",
+	"vo/scout_battlecry03.mp3",
+	"vo/scout_battlecry04.mp3",
+	"vo/scout_battlecry05.mp3"
+};
+
+static const char g_MeleeHitSounds[][] =
+{
+	"weapons/holy_mackerel1.wav",
+	"weapons/holy_mackerel2.wav",
+	"weapons/holy_mackerel3.wav",
+};
+
+static const char g_MeleeAttackSounds[][] =
+{
+	"weapons/machete_swing.wav"
 };
 
 
-static const char g_IdleAlertedSounds[][] = {
-	"vo/taunts/heavy_taunts16.mp3",
-	"vo/taunts/heavy_taunts18.mp3",
-	"vo/taunts/heavy_taunts19.mp3",
-};
-
-static const char g_MeleeAttackSounds[][] = {
-	"vo/heavy_meleeing01.mp3",
-	"vo/heavy_meleeing02.mp3",
-	"vo/heavy_meleeing03.mp3",
-	"vo/heavy_meleeing04.mp3",
-	"vo/heavy_meleeing05.mp3",
-	"vo/heavy_meleeing06.mp3",
-	"vo/heavy_meleeing07.mp3",
-	"vo/heavy_meleeing08.mp3",
-};
-
-static const char g_MeleeHitSounds[][] = {
-	"weapons/cbar_hitbod1.wav",
-	"weapons/cbar_hitbod2.wav",
-	"weapons/cbar_hitbod3.wav",
-};
-
-
-void VeryHeavyHeavy_OnMapStart_NPC()
+void FishScout_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -48,22 +50,22 @@ void VeryHeavyHeavy_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Very Heavy Heavy");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_very_heavy_heavy");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy_champ");
+	strcopy(data.Name, sizeof(data.Name), "Fish Scout");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_fish_scout");
+	strcopy(data.Icon, sizeof(data.Icon), "scout");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Interitus;
+	data.Category = -1;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VeryHeavyHeavy(vecPos, vecAng, team);
+	return FishScout(vecPos, vecAng, team);
 }
 
-methodmap VeryHeavyHeavy < CClotBody
+methodmap FishScout < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -102,9 +104,9 @@ methodmap VeryHeavyHeavy < CClotBody
 	}
 	
 	
-	public VeryHeavyHeavy(float vecPos[3], float vecAng[3], int ally)
+	public FishScout(float vecPos[3], float vecAng[3], int ally)
 	{
-		VeryHeavyHeavy npc = view_as<VeryHeavyHeavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "900", ally));
+		FishScout npc = view_as<FishScout>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "25000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -121,36 +123,33 @@ methodmap VeryHeavyHeavy < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(VeryHeavyHeavy_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VeryHeavyHeavy_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VeryHeavyHeavy_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(FishScout_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(FishScout_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(FishScout_ClotThink);
 		
 		
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 280.0;
+		npc.m_flSpeed = 300.0;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/player/items/all_class/sd_tattoos/sd_tattoos_heavy.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_holymackerel/c_holymackerel.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/sbox2014_sole_mate/sbox2014_sole_mate.mdl");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/jul13_katyusha/jul13_katyusha.mdl");
-
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/short2014_all_mercs_mask/short2014_all_mercs_mask_heavy.mdl");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}
 }
 
-public void VeryHeavyHeavy_ClotThink(int iNPC)
+public void FishScout_ClotThink(int iNPC)
 {
-	VeryHeavyHeavy npc = view_as<VeryHeavyHeavy>(iNPC);
+	FishScout npc = view_as<FishScout>(iNPC);
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -199,14 +198,14 @@ public void VeryHeavyHeavy_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VeryHeavyHeavySelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		FishScoutSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	npc.PlayIdleAlertSound();
 }
 
-public Action VeryHeavyHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action FishScout_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VeryHeavyHeavy npc = view_as<VeryHeavyHeavy>(victim);
+	FishScout npc = view_as<FishScout>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -220,9 +219,9 @@ public Action VeryHeavyHeavy_OnTakeDamage(int victim, int &attacker, int &inflic
 	return Plugin_Changed;
 }
 
-public void VeryHeavyHeavy_NPCDeath(int entity)
+public void FishScout_NPCDeath(int entity)
 {
-	VeryHeavyHeavy npc = view_as<VeryHeavyHeavy>(entity);
+	FishScout npc = view_as<FishScout>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -238,7 +237,7 @@ public void VeryHeavyHeavy_NPCDeath(int entity)
 
 }
 
-void VeryHeavyHeavySelfDefense(VeryHeavyHeavy npc, float gameTime, int target, float distance)
+void FishScoutSelfDefense(FishScout npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -259,24 +258,24 @@ void VeryHeavyHeavySelfDefense(VeryHeavyHeavy npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 75.0;
+					float damageDealt = 35.0;
 
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 5.0;
+						damageDealt *= 1.5;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					Custom_Knockback(npc.index, target, 750.0, true, true);
-					ApplyStatusEffect(npc.index, target, "Ragdolled", 3.5);	
-					FreezeNpcInTime(target, 3.0);
 
 					// Hit sound
+					if(IsValidClient(target))
+					{
+						float targetEyes[3];
+						GetClientEyeAngles(target, targetEyes);
+						targetEyes[1] -= 90.0;
+						SnapEyeAngles(target, targetEyes);
+					}
 					npc.PlayMeleeHitSound();
 				} 
-			}
-			if(npc.m_iOverlordComboAttack >= 3)
-			{
-				npc.m_iOverlordComboAttack = 0;
 			}
 			delete swingTrace;
 		}
@@ -294,11 +293,11 @@ void VeryHeavyHeavySelfDefense(VeryHeavyHeavy npc, float gameTime, int target, f
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY", _,_,_, 0.5);
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 						
-				npc.m_flAttackHappens = gameTime + 0.5;
-				npc.m_flDoingAnimation = gameTime + 0.5;
-				npc.m_flNextMeleeAttack = gameTime + 1.0;
+				npc.m_flAttackHappens = gameTime + 0.25;
+				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flNextMeleeAttack = gameTime + 0.45;
 			}
 		}
 	}

@@ -244,7 +244,6 @@ methodmap BlackHeavySoul < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		SetEntPropFloat(npc.index, Prop_Data, "m_flElementRes", 1.0, Element_Chaos);
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flMeleeArmor = 1.25;	
 		
@@ -544,6 +543,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
 		{
+			RaidModeTime += 60.0;
 			npc.PlayAngerSound();
 			npc.Anger = true; //	>:(
 			npc.m_flNextIdleSound = 0.0;
@@ -568,6 +568,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		{
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Super Saiyan 2 Black Heavy Soul");
 			npc.m_iSaiyanState = 2;
+			RaidModeTime += 60.0;
 			fl_TotalArmor[npc.index] *= 0.5;
 			f_AttackSpeedNpcIncrease[npc.index] *= 0.85;
 			npc.PlayAngerSoundShort();			
@@ -589,6 +590,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		{
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Super Saiyan 3 Black Heavy Soul");
 			npc.m_iSaiyanState = 3;
+			RaidModeTime += 60.0;
 			fl_TotalArmor[npc.index] *= 0.5;			
 			f_AttackSpeedNpcIncrease[npc.index] *= 0.85;
 			if(IsValidEntity(npc.m_iWearable2))

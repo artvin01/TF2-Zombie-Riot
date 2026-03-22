@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "freak_fortress_2\bobbroly\mouth"
+	"$lightwarptexture" "freak_fortress_2\bobbroly\lightwarp_mouth"
+	$phong 1
+
+	$bumpmap				"freak_fortress_2\bobbroly\bump"
+	$phongexponent			4
+	$phongboost				0.0
+	$phongfresnelranges		"[0 0.5 1]"
+
+	$rimlight               1
+	$rimlightexponent       2
+	$rimlightboost          1
+}
