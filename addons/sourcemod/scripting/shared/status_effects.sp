@@ -7741,6 +7741,22 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Steam Happy Prefix");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Steam Happy");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.35;
+	data.DamageDealMulti			= 1.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= (1.0 / 2.0);
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= SteamHappy_Prefix_Start;
+	data.OnBuffEndOrDeleted			= Perfected_InstinctEnd;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 
 } 
 
@@ -9069,6 +9085,7 @@ public void ZRModifs_ParanormalActivityNPC(int iNpc)
 }
 
 
+<<<<<<< Updated upstream
 void Ragdolled_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	if(!IsValidClient(victim))
@@ -9214,4 +9231,19 @@ void Ragdolled_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEf
 				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 		}
 	}
+=======
+void SteamHappy_Prefix_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	CClotBody npc = view_as<CClotBody>(victim);
+	int Wearable = npc.EquipItem("head", "models/zombie_riot/steamhappy_hat_8.mdl");
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(Wearable);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+
+
+>>>>>>> Stashed changes
 }
