@@ -9084,8 +9084,6 @@ public void ZRModifs_ParanormalActivityNPC(int iNpc)
 
 }
 
-
-<<<<<<< Updated upstream
 void Ragdolled_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	if(!IsValidClient(victim))
@@ -9231,7 +9229,7 @@ void Ragdolled_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEf
 				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 		}
 	}
-=======
+}
 void SteamHappy_Prefix_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	if(IsValidEntity(Apply_StatusEffect.WearableUse))
@@ -9245,5 +9243,4 @@ void SteamHappy_Prefix_Start(int victim, StatusEffect Apply_MasterStatusEffect, 
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 
 
->>>>>>> Stashed changes
 }
