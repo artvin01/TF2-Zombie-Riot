@@ -151,6 +151,7 @@ methodmap VeryHeavyHeavy < CClotBody
 public void VeryHeavyHeavy_ClotThink(int iNPC)
 {
 	VeryHeavyHeavy npc = view_as<VeryHeavyHeavy>(iNPC);
+	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -171,18 +172,17 @@ public void VeryHeavyHeavy_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-	}
+	int target = npc.m_iTarget;
+	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
+		i_Target[npc.index] = -1;
 	
-	fl_TotalArmor[npc.index] = fl_TotalArmor[npc.index] + 0.005;
-	if(fl_TotalArmor[npc.index] > 1.0)
+	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		fl_TotalArmor[npc.index] = 1.0;
+		target = GetClosestTarget(npc.index);
+		npc.m_iTarget = target;
+		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 	}
-	
+
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -200,11 +200,6 @@ public void VeryHeavyHeavy_ClotThink(int iNPC)
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		VeryHeavyHeavySelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
-	}
-	else
-	{
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
 }

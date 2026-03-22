@@ -151,6 +151,7 @@ methodmap RocketGunner < CClotBody
 public void RocketGunner_ClotThink(int iNPC)
 {
 	RocketGunner npc = view_as<RocketGunner>(iNPC);
+	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -171,10 +172,15 @@ public void RocketGunner_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	int target = npc.m_iTarget;
+	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
+		i_Target[npc.index] = -1;
+	
+	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		target = GetClosestTarget(npc.index);
+		npc.m_iTarget = target;
+		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -198,8 +204,6 @@ public void RocketGunner_ClotThink(int iNPC)
 	else
 	{
 		npc.PlayMinigunSound(false);
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
 }

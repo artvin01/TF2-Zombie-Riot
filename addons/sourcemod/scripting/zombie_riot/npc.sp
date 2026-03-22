@@ -1224,6 +1224,8 @@ void NPC_ConfigSetup()
 	RocketGunner_OnMapStart_NPC();
 	HeavyWeaponsGuy_OnMapStart_NPC();
 	VeryHeavyHeavy_OnMapStart_NPC();
+	SteamHappyfier_OnMapStart_NPC();
+	BlackHeavySoul_OnMapStart_NPC();
 }
 
 void NPC_MapEnd()
@@ -2507,6 +2509,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aprilfools/3rd_april/npc_rocket_gunner.sp"
 #include "npc/aprilfools/3rd_april/npc_heavy_weapons_guy.sp"
 #include "npc/aprilfools/3rd_april/npc_very_heavy_heavy.sp"
+#include "npc/aprilfools/3rd_april/npc_steam_happyfier.sp"
+#include "npc/aprilfools/3rd_april/npc_black_heavy_soul.sp"
 #include "npc/construction/enemies/npc_eirasus.sp"
 #include "npc/construction/enemies/npc_haltera.sp"
 #include "npc/construction/enemies/npc_flaigus.sp"

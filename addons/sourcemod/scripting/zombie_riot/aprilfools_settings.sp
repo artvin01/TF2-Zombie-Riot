@@ -33,6 +33,7 @@ void CheckAprilFools()
 		AddToDownloadsTable("models/zombie_riot/steamhappy_hat_8.vvd");			
 		AddToDownloadsTable("models/zombie_riot/steamhappy_hat_8.dx90.vtx");	
 	}
+	PrecacheModel("models/steamhappy.mdl");			
 	PrecacheSound("zombie_riot/yippe.mp3");
 	AddToDownloadsTable("sound/zombie_riot/yippe.mp3");
 }
