@@ -5,9 +5,7 @@ static const char g_MeleeAttackSounds[][] = {
 	"misc/halloween/strongman_fast_swing_01.wav",
 };
 static const char g_MeleeHitSounds[][] = {
-	"weapons/cbar_hitbod1.wav",
-	"weapons/cbar_hitbod2.wav",
-	"weapons/cbar_hitbod3.wav",
+	"misc/halloween/strongman_fast_impact_01.wav",
 };
 
 
@@ -55,6 +53,7 @@ methodmap Broly < CClotBody
 	}
 	public Broly(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
+		ally = TFTeam_Stalkers;
 		Broly npc = view_as<Broly>(CClotBody(vecPos, vecAng, "models/freak_fortress_2/bobbroly/brolynew.mdl", "1.15", "500000000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 5;
 
@@ -71,20 +70,39 @@ methodmap Broly < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		npc.m_bDissapearOnDeath = true;
-		npc.m_flMeleeArmor = 1.25;	
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+
+
 		
+		npc.Anger = false;
+		npc.m_iState = 0;
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(IsValidEntity(entity))
+			{
+				char npc_classname[60];
+				NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+
+				if(entity != INVALID_ENT_REFERENCE && (StrEqual(npc_classname, "npc_john_the_allmighty") && IsEntityAlive(entity)))
+				{
+					npc.m_iTarget = entity;
+					npc.Anger = true;
+				}
+			}
+		}
+
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 600.0;
+		npc.m_flSpeed = 2000.0;
 
 		BlockLoseSay = false;
 		
-		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
-		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+		f_NpcAdjustFriction[npc.index] = 3.0;
 		b_thisNpcIsARaid[npc.index] = true;
 
 		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
@@ -93,28 +111,13 @@ methodmap Broly < CClotBody
 		}
 		
 
-		npc.m_iHealthBar = 99999999;
-
-		RaidModeTime = GetGameTime(npc.index) + 200.0;
-		RaidBossActive = EntIndexToEntRef(npc.index);
-		RaidAllowsBuildings = false;
 		ApplyStatusEffect(npc.index, npc.index, "Legendary Prefix", 999999.9);
 
 			
 
-		RaidModeScaling = 99999.9; //More then 9 and he raidboss gets some troubles, bufffffffff
-
-		RemoveAllDamageAddition();
 		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Broly_Win);
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aprilfools/broly_theme.mp3");
-		music.Time = 110;
-		music.Volume = 1.5;
-		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Dragon Ball Z: The Legendary Super Saiyan");
-		strcopy(music.Artist, sizeof(music.Artist), "Pantera");
-		Music_SetRaidMusic(music);
 		
+		b_NoHealthbar[npc.index] = 1;
 		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0, .NeedLOSPlayer = true);
 		switch(Decicion)
 		{
@@ -140,15 +143,6 @@ methodmap Broly < CClotBody
 				//todo code on what to do if random teleport is disabled
 			}
 		}
-		for(int client1 = 1; client1 <= MaxClients; client1++)
-		{
-			if(IsClientInGame(client1))
-			{
-				ApplyStatusEffect(npc.index, client1, "Nightmare Terror", 35.0);
-			}
-		}
-		
-		RaidModeTime = GetGameTime() + 35.0;
 
 		
 		return npc;
@@ -166,29 +160,25 @@ static void Internal_ClotThink(int iNPC)
 	npc.Update();
 
 	
-	if(!BlockLoseSay && RaidModeTime < GetGameTime())
-	{
-		CPrintToChatAll("{green}Broly: Insects.");
-		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
-		RaidMusicSpecial1.Clear();
-		BlockLoseSay = true;
-		return;
-	}
-
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	for(int client=1; client<=MaxClients; client++)
+	if(npc.m_iState)
 	{
-		if(IsClientInGame(client))
+		for(int client=1; client<=MaxClients; client++)
 		{
-			ApplyStatusEffect(client, client, "Terrified", 2.0);
-			UTIL_ScreenFade(client, 800, 0, 0x0001, 0, 0, 0, 200);
+			if(IsClientInGame(client))
+			{
+				ApplyStatusEffect(client, client, "Terrified", 2.0);
+				UTIL_ScreenFade(client, 800, 0, 0x0001, 0, 0, 0, 200);
+			}
 		}
+		RaidModeScaling *= 1.1;
 	}
 
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+
 
 	if(!IsValidEntity(RaidBossActive))
 	{
@@ -200,7 +190,61 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	
+	npc.Anger = false;
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(IsValidEntity(entity))
+		{
+			char npc_classname[60];
+			NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+
+			if(entity != INVALID_ENT_REFERENCE && (StrEqual(npc_classname, "npc_john_the_allmighty") && IsEntityAlive(entity)))
+			{
+				npc.Anger = true;
+				npc.m_iTarget = entity;
+			}
+		}
+	}
+
+	if(!npc.Anger && !npc.m_iState)
+	{
+		npc.m_iState = 1;
+		npc.m_iHealthBar = 99999999;
+
+		for(int client1 = 1; client1 <= MaxClients; client1++)
+		{
+			if(IsClientInGame(client1))
+			{
+				ApplyStatusEffect(npc.index, client1, "Nightmare Terror", 35.0);
+			}
+		}
+		
+		RaidModeTime = GetGameTime() + 35.0;
+		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidAllowsBuildings = false;
+		
+		RaidModeScaling = 99999.9; //More then 9 and he raidboss gets some troubles, bufffffffff
+
+		RemoveAllDamageAddition();
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aprilfools/broly_theme.mp3");
+		music.Time = 110;
+		music.Volume = 1.5;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Dragon Ball Z: The Legendary Super Saiyan");
+		strcopy(music.Artist, sizeof(music.Artist), "Pantera");
+		Music_SetRaidMusic(music);
+	}
+	if(!BlockLoseSay && RaidModeTime < GetGameTime() && !npc.Anger)
+	{
+		CPrintToChatAll("{green}Broly: Insects.");
+		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		RaidMusicSpecial1.Clear();
+		BlockLoseSay = true;
+		return;
+	}
+
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -210,16 +254,24 @@ static void Internal_ClotThink(int iNPC)
 		SetGoalVectorIndex = BrolySelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 
 		float TimeLeft = RaidModeTime - GetGameTime();
-		if(TimeLeft > 10.0)
+		if(TimeLeft > 10.0 && npc.m_iState)
 		{
+			npc.StopPathing();
+			npc.m_flSpeed = 0.0;
 			npc.FaceTowards(vecTarget, 15000.0);
 			npc.SetActivity("ACT_MP_STAND_MELEE_ALLCLASS");
 			npc.m_bisWalking = false;
 		}
 		else
 		{
+			npc.StartPathing();
+			if(!npc.m_iState)
+				npc.m_flSpeed = 500.0;
+			else
+				npc.m_flSpeed = 2000.0;
+				
+			npc.m_bisWalking = false;
 			npc.SetActivity("ACT_MP_RUN_MELEE");
-			npc.m_bisWalking = true;
 			switch(SetGoalVectorIndex)
 			{
 				case 0:
@@ -295,7 +347,7 @@ static void Internal_NPCDeath(int entity)
 int BrolySelfDefense(Broly npc, float gameTime, int target, float distance)
 {
 	float TimeLeft = RaidModeTime - GetGameTime();
-	if(TimeLeft > 10.0)
+	if(TimeLeft > 10.0 && npc.m_iState)
 	{
 		return 0;
 	}
@@ -324,11 +376,33 @@ int BrolySelfDefense(Broly npc, float gameTime, int target, float distance)
 							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
 							
-							WorldSpaceCenter(targetTrace, vecHit);
-							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, GetRandomFloat(9999999.9,999999999.9), DMG_CLUB, -1, _, vecHit);								
+							WorldSpaceCenter(targetTrace, vecHit);					
 								
 							
 							// Hit particle
+							if(!npc.m_iState)
+							{
+								
+								char npc_classname[60];
+								NPC_GetPluginById(i_NpcInternalId[targetTrace], npc_classname, sizeof(npc_classname));
+
+								if(StrEqual(npc_classname, "npc_john_the_allmighty"))
+								{
+									SDKUnhook(targetTrace, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
+									Broly npc1 = view_as<Broly>(targetTrace);
+									npc1.m_bDissapearOnDeath = false;
+									RequestFrame(KillNpc, EntIndexToEntRef(targetTrace));
+									CPrintToChatAll("{green}Broly: Weakling.");
+									float pos[3]; GetEntPropVector(targetTrace, Prop_Data, "m_vecAbsOrigin", pos);
+									pos[2] += 50.0;
+									TE_Particle("Explosion_ShockWave_01", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+									TE_Particle("grenade_smoke_cycle", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+									TE_Particle("hammer_bell_ring_shockwave", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+									CreateEarthquake(pos, 1.0, 2000.0, 16.0, 255.0);
+									continue;
+								}
+							}
+							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, GetRandomFloat(9999999.9,999999999.9), DMG_CLUB, -1, _, vecHit);			
 							
 						
 							

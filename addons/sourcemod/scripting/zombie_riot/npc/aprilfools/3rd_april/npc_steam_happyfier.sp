@@ -175,7 +175,7 @@ void GiveSteamhappyBuff(int entity, int victim, float damage, int weapon)
 
 	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
 	{
-		if(b_thisNpcIsABoss[victim] && NPCID != i_NpcInternalId[victim])
+		if(NPCID == i_NpcInternalId[victim])
 			return;
 	
 		ApplyStatusEffect(victim, victim, "Steam Happy Prefix", 999999.9);

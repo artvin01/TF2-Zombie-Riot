@@ -28,6 +28,11 @@ static const char g_RangedAttackPrepareSounds[][] = {
 	"npc/attack_helicopter/aheli_charge_up.wav",
 };
 
+int JohnOPID;
+int JohnOPIDReturn()
+{
+	return JohnOPID;
+}
 void JohnTheAllmighty_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DefaultMedic_DeathSounds));	   i++) { PrecacheSound(g_DefaultMedic_DeathSounds[i]);	   }
@@ -45,15 +50,15 @@ void JohnTheAllmighty_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	JohnOPID = NPC_Add(data);
 	PrecacheSoundCustom("#zombiesurvival/john_the_allmighty.mp3");
 }
 #define JOHN_SLOWDOWN_RANGE 350.0
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return JohnTheAllmighty(vecPos, vecAng, team);
+	return JohnTheAllmighty(vecPos, vecAng, team, data);
 }
 
 methodmap JohnTheAllmighty < CClotBody
@@ -120,7 +125,7 @@ methodmap JohnTheAllmighty < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 	
-	public JohnTheAllmighty(float vecPos[3], float vecAng[3], int ally)
+	public JohnTheAllmighty(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		JohnTheAllmighty npc = view_as<JohnTheAllmighty>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.5", "500000000", ally, false, true, true));
 		
@@ -164,9 +169,21 @@ methodmap JohnTheAllmighty < CClotBody
 			RaidAllowsBuildings = true;
 		}
 		npc.m_flBackupDespawnEmergency = GetGameTime() + 43.0;
+		if(StrContains(data, "inftimer") != -1)
+		{
+			RaidModeTime = FAR_FUTURE;
+			npc.m_flBackupDespawnEmergency = FAR_FUTURE;
+			npc.m_iActualHealth = 99999999;
+			int color[4] = { 15, 15, 15, 240 };
+			SetCustomFog(FogType_NPC, color, color, 205.0, 400.0, 0.85);
+		}
+		else
+		{
+			
+			int color[4] = { 15, 15, 15, 240 };
+			SetCustomFog(FogType_NPC, color, color, 205.0, 400.0, 0.992);
+		}
 		
-		int color[4] = { 15, 15, 15, 240 };
-		SetCustomFog(FogType_NPC, color, color, 205.0, 400.0, 0.992);
 
 		switch(GetRandomInt(1, 4))
 		{
@@ -322,17 +339,7 @@ public void JohnTheAllmighty_NPCDeath(int entity)
 	JohnTheAllmighty npc = view_as<JohnTheAllmighty>(entity);
 
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-		
-	TE_Particle("pyro_blast", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-	TE_Particle("pyro_blast_lines", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-	TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-	TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
 
-	if(EntIndexToEntRef(entity) == RaidBossActive)
-		RaidBossActive = INVALID_ENT_REFERENCE;
-		
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	if(IsValidEntity(npc.m_iWearable7))
@@ -351,6 +358,20 @@ public void JohnTheAllmighty_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 
 	ClearCustomFog(FogType_NPC);
+
+	if(!npc.m_bDissapearOnDeath)
+	{
+		return;
+	}
+	TE_Particle("pyro_blast", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_lines", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	
+	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
+
+	if(EntIndexToEntRef(entity) == RaidBossActive)
+		RaidBossActive = INVALID_ENT_REFERENCE;
 }
 
 void JohnTheAllmightySelfDefense(JohnTheAllmighty npc, float gameTime, float distance)

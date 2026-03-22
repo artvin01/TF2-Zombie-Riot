@@ -1228,6 +1228,7 @@ void NPC_ConfigSetup()
 	BlackHeavySoul_OnMapStart_NPC();
 	Broly_OnMapStart_NPC();
 	FishScout_OnMapStart_NPC();
+	HumanMain_OnMapStart_NPC();
 }
 
 void NPC_MapEnd()
@@ -2515,6 +2516,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aprilfools/3rd_april/npc_black_heavy_soul.sp"
 #include "npc/aprilfools/3rd_april/npc_broly.sp"
 #include "npc/aprilfools/3rd_april/npc_fish_scout.sp"
+#include "npc/aprilfools/3rd_april/npc_human_main.sp"
 
 #include "npc/construction/enemies/npc_eirasus.sp"
 #include "npc/construction/enemies/npc_haltera.sp"

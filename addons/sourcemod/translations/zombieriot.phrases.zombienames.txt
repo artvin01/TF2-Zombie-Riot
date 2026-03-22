@@ -7970,4 +7970,8 @@
 	{
 		"en"	"Super Saiyan 3 Black Heavy Soul"
 	}
+	"Broly"
+	{
+		"en"	"Broly"
+	}
 }

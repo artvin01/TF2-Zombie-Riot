@@ -600,7 +600,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			NpcColourCosmetic_ViaPaint(npc.m_iWearable2, 15185211);
 			if(IsValidEntity(npc.m_iWearable3))
 				RemoveEntity(npc.m_iWearable3);
-			npc.m_iWearable3 = npc.EquipItemSeperate("models/workshop_partner/player/items/all_class/brutal_hair/brutal_hair_heavy.mdl",_,_, 2.25, 55.0);
+			npc.m_iWearable3 = npc.EquipItemSeperate("models/workshop_partner/player/items/all_class/brutal_hair/brutal_hair_heavy.mdl",_,_, 1.75, 55.0);
 			SetEntityRenderColor(npc.m_iWearable3, 255, 255, 0, 255);
 			NpcColourCosmetic_ViaPaint(npc.m_iWearable3, 15185211);
 			npc.PlayAngerSoundShort();			
