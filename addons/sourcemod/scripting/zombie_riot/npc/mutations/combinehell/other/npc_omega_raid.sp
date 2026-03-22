@@ -922,7 +922,7 @@ public Action Timer_Omega_SupportGrenade(Handle timer, DataPack pack)
 
 void OmegaGiveArmor(int entity, int victim, float &healingammount, OmegaRaid npc)
 {
-	GrantEntityArmor(victim, false, 0.1, 0.75, 0, ReturnEntityMaxHealth(npc.index) * 200.0);
+	GrantEntityArmor(victim, false, 0.1, 0.75, 0, ReturnEntityMaxHealth(npc.index) * 75.0);
 }
 
 void OmegaCreateRollermines(int iNpc)
