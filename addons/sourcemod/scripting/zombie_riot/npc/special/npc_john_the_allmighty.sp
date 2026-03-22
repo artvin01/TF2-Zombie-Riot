@@ -168,9 +168,11 @@ methodmap JohnTheAllmighty < CClotBody
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
+		npc.m_iHealthBar = 99999999;
 		npc.m_flBackupDespawnEmergency = GetGameTime() + 43.0;
 		if(StrContains(data, "inftimer") != -1)
 		{
+			npc.m_iHealthBar = 1;
 			RaidModeTime = FAR_FUTURE;
 			npc.m_flBackupDespawnEmergency = FAR_FUTURE;
 			npc.m_iActualHealth = 99999999;
@@ -210,7 +212,6 @@ methodmap JohnTheAllmighty < CClotBody
 		npc.m_bDissapearOnDeath = true;
 
 		//makes him have infinity hp on his bar
-		npc.m_iHealthBar = 99999999;
 
 		func_NPCDeath[npc.index] = view_as<Function>(JohnTheAllmighty_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(JohnTheAllmighty_OnTakeDamage);

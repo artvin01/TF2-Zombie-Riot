@@ -569,6 +569,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Super Saiyan 2 Black Heavy Soul");
 			npc.m_iSaiyanState = 2;
 			RaidModeTime += 60.0;
+			fl_Extra_Speed[npc.index] *= 1.05;
 			fl_TotalArmor[npc.index] *= 0.5;
 			f_AttackSpeedNpcIncrease[npc.index] *= 0.85;
 			npc.PlayAngerSoundShort();			
@@ -591,6 +592,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Super Saiyan 3 Black Heavy Soul");
 			npc.m_iSaiyanState = 3;
 			RaidModeTime += 60.0;
+			fl_Extra_Speed[npc.index] *= 1.05;
 			fl_TotalArmor[npc.index] *= 0.5;			
 			f_AttackSpeedNpcIncrease[npc.index] *= 0.85;
 			if(IsValidEntity(npc.m_iWearable2))
@@ -600,7 +602,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			NpcColourCosmetic_ViaPaint(npc.m_iWearable2, 15185211);
 			if(IsValidEntity(npc.m_iWearable3))
 				RemoveEntity(npc.m_iWearable3);
-			npc.m_iWearable3 = npc.EquipItemSeperate("models/workshop_partner/player/items/all_class/brutal_hair/brutal_hair_heavy.mdl",_,_, 1.75, 55.0);
+			npc.m_iWearable3 = npc.EquipItemSeperate("models/workshop_partner/player/items/all_class/brutal_hair/brutal_hair_heavy.mdl",_,_, 1.75, 75.0);
 			SetEntityRenderColor(npc.m_iWearable3, 255, 255, 0, 255);
 			NpcColourCosmetic_ViaPaint(npc.m_iWearable3, 15185211);
 			npc.PlayAngerSoundShort();			
@@ -801,6 +803,7 @@ bool BlackHeavy_Transform(BlackHeavySoul npc)
 		if(npc.m_iChanged_WalkCycle != 101)
 		{
 			npc.m_iSaiyanState = 1;
+			fl_Extra_Speed[npc.index] *= 1.05;
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Super Saiyan Black Heavy Soul");
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 10.0;
