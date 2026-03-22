@@ -133,7 +133,7 @@ public Action SteamHappyfier_OnTakeDamage(int victim, int &attacker, int &inflic
 
 public void SteamHappyfier_NPCDeath(int entity)
 {
-	SteamHappyfier npc = view_as<SteamHappyfier>(entity);
+	
 }
 
 void SteamHappyfierSelfDefense(SteamHappyfier npc, float gameTime)
