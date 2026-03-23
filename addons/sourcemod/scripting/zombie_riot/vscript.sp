@@ -125,7 +125,9 @@ static void SetupVScript()
 	VScript_RegisterFunction("ZR_GetClientWeapon", VGetClientWeapon, "(client, index)", ScriptField_Int, ScriptField_HScript, ScriptField_Int);
 	VScript_RegisterFunction("ZR_GiveClientWeapon", VGiveClientWeapon, "(client, index, params)", ScriptField_Void, ScriptField_HScript, ScriptField_Int, ScriptField_HScript);
 	VScript_RegisterFunction("ZR_LockWeapons", VLockWeapons, "()", ScriptField_Void);
-	VScript_RegisterFunction("ZR_FindWeapons", VFindWeapons, "(amount)", ScriptField_Void, ScriptField_Int);
+	VScript_RegisterFunction("ZR_RandomizeNPCStore", VRandomizeNPCStore, "(flags, amount, override)", ScriptField_Void, ScriptField_Int, ScriptField_Int, ScriptField_Float);
+	VScript_RegisterFunction("ZR_GetGlobalCash", VGetGlobalCash, "()", ScriptField_Int);
+	VScript_RegisterFunction("ZR_GiveClientAmmo", VGiveClientAmmo, "(client, index, amount)", ScriptField_Void, ScriptField_HScript, ScriptField_Int, ScriptField_Int);
 }
 
 void VScript_SetupStoreTable()
@@ -239,14 +241,40 @@ static void VLockWeapons(ScriptContext context)
 	MapLockedWeapons = true;
 }
 
-void VScript_LockedWeapons()
+bool VScript_LockedWeapons()
 {
 	return MapLockedWeapons;
 }
 
-static void VFindWeapons(ScriptContext context)
+static void VRandomizeNPCStore(ScriptContext context)
 {
-	Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, context.GetArgInt(0));
+	Store_RandomizeNPCStore(context.GetArgInt(0), context.GetArgInt(1), context.GetArgFloat(2));
+}
+
+static void VGetGlobalCash(ScriptContext context)
+{
+	context.SetReturnInt(CurrentCash);
+}
+
+static void VGiveClientAmmo(ScriptContext context)
+{
+	ScriptHandle hclient = context.GetArgHScript(0);
+	if(hclient)
+	{
+		int client = VScript_HScriptToEntity(hclient);
+		if(client > 0 && client <= MaxClients)
+		{
+			int index = context.GetArgInt(1);
+			int amount = context.GetArgInt(2);
+			
+			int ammo = GetAmmo(client, index) + (AmmoData[index][1] * amount);
+			SetAmmo(client, index, ammo);
+			CurrentAmmo[client][index] = ammo;
+			return;
+		}
+	}
+
+	context.RaiseException("Invalid player entity");
 }
 
 static ScriptHandle ExportKeyValues(KeyValues kv)

@@ -1810,6 +1810,9 @@ void Waves_RoundStart(bool event = false)
 	}
 
 	Waves_UpdateMvMStats();
+	
+	VScriptEvent event = new VScriptEvent("ZR_StartSetup");
+	event.Fire();
 }
 
 void Waves_RoundEnd()

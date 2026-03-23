@@ -793,6 +793,7 @@ void ZR_PluginStart()
 	Kritzkrieg_PluginStart();
 	BetWar_PluginStart();
 	Dungeon_PluginStart();
+	VScript_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	

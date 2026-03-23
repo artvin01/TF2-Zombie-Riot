@@ -6922,7 +6922,7 @@ static void ItemCost(int client, Item item, int &cost)
 	if(Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
 	{
 		if(Rogue_UnlockStore() > 1)
-			cost = 99999.9;
+			cost = 999999;
 		
 		cost = RoundToNearest(float(cost) * 1.2); 
 	}
