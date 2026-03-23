@@ -71,6 +71,7 @@ int BlackHeavySoulIDReturn()
 {
 	return BlackHeavySoulId;
 }
+
 void BlackHeavySoul_OnMapStart_NPC()
 {
 	NPCData data;
@@ -343,7 +344,7 @@ methodmap BlackHeavySoul < CClotBody
 			amount_of_people = 1.0;
 			
 		npc.m_flPowAbilityCD = GetGameTime() + 5.0;
-		npc.m_flCongaFastDo = GetGameTime() + 10.0;
+		npc.m_flCongaFastDo = GetGameTime() + 15.0;
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 
@@ -402,6 +403,16 @@ static void Internal_ClotThink(int iNPC)
 		CPrintToChatAll("{blue}BlackHeavySoul{default}: gg Ez.");
 		return;
 
+	}	
+	int target = npc.m_iTarget;
+	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
+		i_Target[npc.index] = -1;
+	
+	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
+	{
+		target = GetClosestTarget(npc.index);
+		npc.m_iTarget = target;
+		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 	}
 	if(BlackHeavy_Transform(npc))
 		return;
@@ -512,11 +523,6 @@ static void Internal_ClotThink(int iNPC)
 				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 		}
-	}
-	else
-	{
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 
 	if(npc.m_flDoingAnimation < GetGameTime(npc.index))

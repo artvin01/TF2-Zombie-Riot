@@ -104,9 +104,9 @@ methodmap VeryHeavyHeavy < CClotBody
 	
 	public VeryHeavyHeavy(float vecPos[3], float vecAng[3], int ally)
 	{
-		VeryHeavyHeavy npc = view_as<VeryHeavyHeavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "900", ally));
+		VeryHeavyHeavy npc = view_as<VeryHeavyHeavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "900", ally, false, true)); 
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -129,20 +129,6 @@ methodmap VeryHeavyHeavy < CClotBody
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 280.0;
-		
-		
-		int skin = 1;
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-	
-
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/player/items/all_class/sd_tattoos/sd_tattoos_heavy.mdl");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/jul13_katyusha/jul13_katyusha.mdl");
-
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/short2014_all_mercs_mask/short2014_all_mercs_mask_heavy.mdl");
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}
@@ -249,9 +235,8 @@ void VeryHeavyHeavySelfDefense(VeryHeavyHeavy npc, float gameTime, int target, f
 			Handle swingTrace;
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
-							
 				target = TR_GetEntityIndex(swingTrace);	
 				
 				float vecHit[3];
@@ -259,7 +244,7 @@ void VeryHeavyHeavySelfDefense(VeryHeavyHeavy npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 75.0;
+					float damageDealt = 150.0;
 
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 5.0;
@@ -274,17 +259,13 @@ void VeryHeavyHeavySelfDefense(VeryHeavyHeavy npc, float gameTime, int target, f
 					npc.PlayMeleeHitSound();
 				} 
 			}
-			if(npc.m_iOverlordComboAttack >= 3)
-			{
-				npc.m_iOverlordComboAttack = 0;
-			}
 			delete swingTrace;
 		}
 	}
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;
 								
@@ -298,7 +279,7 @@ void VeryHeavyHeavySelfDefense(VeryHeavyHeavy npc, float gameTime, int target, f
 						
 				npc.m_flAttackHappens = gameTime + 0.5;
 				npc.m_flDoingAnimation = gameTime + 0.5;
-				npc.m_flNextMeleeAttack = gameTime + 1.0;
+				npc.m_flNextMeleeAttack = gameTime + 1.5;
 			}
 		}
 	}
