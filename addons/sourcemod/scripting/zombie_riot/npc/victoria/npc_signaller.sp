@@ -228,12 +228,22 @@ methodmap VictorianSignaller < CClotBody
 			SetEntityRenderMode(npc.index, RENDER_NONE);
 			SetEntityRenderColor(npc.index, 0, 0, 0, 0);
 			npc.m_iWearable8 = npc.EquipItem("head", "models/bots/soldier_boss/bot_soldier_boss.mdl");
-			SetEntityRenderColor(npc.m_iWearable8, 80, 50, 50, 255);
-			SetEntityRenderColor(npc.m_iWearable4, 50, 50, 50, 255);
 			npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2022_alcoholic_automaton_style2/hwn2022_alcoholic_automaton_style2.mdl");
 			NpcColourCosmetic_ViaPaint(npc.m_iWearable4, 4851968);
 			MakeObjectIntangeable(npc.index);
 			
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 125);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 125);
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 125);
+			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable4, 50, 50, 50, 125);
+			SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 125);
+			SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable8, 80, 50, 50, 125);
 			TeleportDiversioToRandLocation(npc.index,_,1250.0, 750.0);
 		}
 		else

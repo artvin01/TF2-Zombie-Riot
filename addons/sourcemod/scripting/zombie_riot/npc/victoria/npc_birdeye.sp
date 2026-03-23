@@ -904,7 +904,7 @@ int VictoriaBirdeyeSniperMode(VictoriaBirdeye npc, float gameTime)
 		{
 			npc.m_flAttackHappens = gameTime + (npc.m_iBurst>0 ? 0.3 : 1.25);
 		}
-		npc.m_flDoingAnimation = gameTime + (npc.m_iBurst>0 ? 0.2 : 0.95);
+		npc.m_flDoingAnimation = gameTime + (b_AimBuff>0 ? 0.2 : 0.95);
 		if(b_TheGoons)
 		{
 			npc.m_iBurst++;
