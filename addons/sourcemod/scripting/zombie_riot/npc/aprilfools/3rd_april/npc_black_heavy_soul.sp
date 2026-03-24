@@ -299,6 +299,7 @@ methodmap BlackHeavySoul < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "BlackHeavySoul Arrived");
 			}
 		}
+		b_NpcUnableToDie[npc.index] = true;
 
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
@@ -443,6 +444,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 	if(BlackHeavy_Transform(npc))
 		return;
+	npc.PlayIdleAlertSound();
 	if(Black_Heavy_PowDo(npc, GetGameTime(npc.index)))
 	{
 		return;
@@ -478,6 +480,7 @@ static void Internal_ClotThink(int iNPC)
 		RaidModeTime = FAR_FUTURE;
 		f_AttackSpeedNpcIncrease[npc.index] *= 0.85;
 		RaidModeScaling *= 1.5;
+		b_NpcUnableToDie[npc.index] = false;
 		strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Black Heavy Soul");
 		if(IsValidEntity(npc.m_iWearable2))
 			RemoveEntity(npc.m_iWearable2);
@@ -557,7 +560,6 @@ static void Internal_ClotThink(int iNPC)
 	{
 		BlackHeavySoulAnimationChange(npc);
 	}
-	npc.PlayIdleAlertSound();
 }
 
 static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -575,7 +577,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 	if(!npc.Anger)
 	{
-		if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
+		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
 		{
 			RaidModeTime += 60.0;
 			npc.PlayAngerSound();
@@ -603,14 +605,17 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 	else
 	{
-		if(npc.m_iSaiyanState == 1 && (ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+		if(npc.m_iSaiyanState == 1 && (ReturnEntityMaxHealth(npc.index)/8) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Super Saiyan 2 Black Heavy Soul");
 			npc.m_iSaiyanState = 2;
+			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 3.0, _, 4.0, HEAL_ABSOLUTE);
 			RaidModeTime += 60.0;
 			fl_Extra_Speed[npc.index] *= 1.05;
-			fl_TotalArmor[npc.index] *= 0.5;
+			fl_TotalArmor[npc.index] *= 0.65;
+			RaidModeScaling *= 1.05;
 			f_AttackSpeedNpcIncrease[npc.index] *= 0.85;
+			ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 3.0);
 			npc.PlayAngerSoundShort();			
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 10.0;
@@ -626,13 +631,17 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			spawnRing_Vectors(pos, 0.0, 0.0, 0.0, 0.0, "materials/sprites/combineball_trail_black_1.vmt", 185, 80, 185, 255, 1, /*duration*/ 3.0, 80.0, 4.0, 1, 5000.0);	
 			Explode_Logic_Custom(50.0, 0, npc.index, -1, pos ,1000.0, 1.0, _, true, .FunctionToCallOnHit = SsjBlackHeavy_KnockbackDo);
 		}
-		if(npc.m_iSaiyanState == 2 && (ReturnEntityMaxHealth(npc.index)/8) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+		if(npc.m_iSaiyanState == 2 && (ReturnEntityMaxHealth(npc.index)/16) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Super Saiyan 3 Black Heavy Soul");
 			npc.m_iSaiyanState = 3;
+			RaidModeScaling *= 1.05;
+			b_NpcUnableToDie[npc.index] = false;
+			ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 3.0);
+			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 3.0, _, 4.0, HEAL_ABSOLUTE);
 			RaidModeTime += 60.0;
 			fl_Extra_Speed[npc.index] *= 1.05;
-			fl_TotalArmor[npc.index] *= 0.5;			
+			fl_TotalArmor[npc.index] *= 0.65;	
 			f_AttackSpeedNpcIncrease[npc.index] *= 0.85;
 			if(IsValidEntity(npc.m_iWearable2))
 				RemoveEntity(npc.m_iWearable2);
@@ -838,6 +847,8 @@ bool BlackHeavy_Transform(BlackHeavySoul npc)
 		if(npc.m_iChanged_WalkCycle != 101)
 		{
 			npc.m_iSaiyanState = 1;
+			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 2.0, _, 4.0, HEAL_ABSOLUTE);
+			RaidModeScaling *= 1.05;
 			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -880,7 +891,7 @@ bool BlackHeavy_Transform(BlackHeavySoul npc)
 			npc.GetAttachment("", flPos, NULL_VECTOR);
 			npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "utaunt_poweraura_yellow_parent", npc.index, "", {0.0,0.0,0.0});
 			f_AttackSpeedNpcIncrease[npc.index] *= 0.65;
-			fl_TotalArmor[npc.index] *= 0.5;
+			fl_TotalArmor[npc.index] *= 0.65;
 			npc.SetPlaybackRate(1.35);
 
 			npc.m_iChanged_WalkCycle = 101;
@@ -911,9 +922,9 @@ bool BlackHeavy_Transform(BlackHeavySoul npc)
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		b_CannotBeHeadshot[npc.index] = true;
 		b_CannotBeBackstabbed[npc.index] = true;
-		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
-		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
-		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 6.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 6.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 6.0);	
 		npc.AddActivityViaSequence("taunt_mourning_mercs_heavy");
 		npc.SetPlaybackRate(0.8);
 		npc.SetCycle(0.05);
@@ -1138,7 +1149,7 @@ bool Black_Heavy_JumpOfDeath(BlackHeavySoul npc, float gameTime)
 		static float flMyPos[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		flMyPos[2] += 15.0;
-		Explode_Logic_Custom(damageDealt, npc.index, npc.index, -1, flMyPos,250.0, 1.0, _, true, 20);
+		Explode_Logic_Custom(damageDealt, npc.index, npc.index, -1, flMyPos,300.0, 1.0, _, true, 20);
 		TE_Particle("asplode_hoodoo", flMyPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 		EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, flMyPos);
 		EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, flMyPos);
