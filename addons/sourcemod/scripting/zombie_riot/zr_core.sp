@@ -439,6 +439,20 @@ float Armor_regen_delay[MAXPLAYERS];
 ConVar mp_disable_respawn_times;
 //int i_SvRollAngle[MAXPLAYERS];
 
+
+enum
+{
+	PAP_MODE_DEFAULT,
+	PAP_MODE_BUILDING_ONLY
+}
+enum
+{
+	PERK_MODE_DEFAULT,
+	PERK_MODE_ALL_ALLOW
+}
+
+int PapModeDo = PAP_MODE_DEFAULT;
+int PerkModeDo = PERK_MODE_ALL_ALLOW;
 	
 bool DisableSpawnProtection;
 bool DisableRandomSpawns;

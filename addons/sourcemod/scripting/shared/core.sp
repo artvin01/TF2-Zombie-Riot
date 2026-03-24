@@ -923,6 +923,7 @@ public void OnLibraryAdded(const char[] name)
 #if defined ZR
 	FileNetwork_LibraryAdded(name);
 	SteamWorks_LibraryAdded(name);
+	VScript_LibraryAdded(name);
 #endif
 }
 
@@ -931,6 +932,7 @@ public void OnLibraryRemoved(const char[] name)
 #if defined ZR
 	FileNetwork_LibraryRemoved(name);
 	SteamWorks_LibraryRemoved(name);
+	VScript_LibraryRemoved(name);
 #endif
 }
 
@@ -1275,6 +1277,7 @@ public void OnMapEnd()
 	Spawns_MapEnd();
 	Vehicle_MapEnd();
 	NPC_MapEnd();
+	VScript_MapEnd();
 #endif
 
 #if defined RPG

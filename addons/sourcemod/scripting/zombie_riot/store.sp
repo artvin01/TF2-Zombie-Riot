@@ -7,20 +7,6 @@ float f_ConfirmSellDo[MAXPLAYERS];
 
 enum
 {
-	PAP_MODE_DEFAULT,
-	PAP_MODE_BUILDING_ONLY
-}
-enum
-{
-	PERK_MODE_DEFAULT,
-	PERK_MODE_ALL_ALLOW
-}
-
-int PapModeDo = PAP_MODE_DEFAULT;
-int PerkModeDo = PERK_MODE_ALL_ALLOW;
-
-enum
-{
 	PAP_DESC_BOUGHT,
 	PAP_DESC_PREVIEW
 }
@@ -1053,8 +1039,6 @@ int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
 
 void Store_ConfigSetup()
 {
-	PapModeDo = PAP_MODE_DEFAULT;
-	PerkModeDo = PERK_MODE_ALL_ALLOW;
 	delete AutoSaveTimer;
 	Zero(f_ConfirmSellDo);
 	ClearAllTempAttributes();

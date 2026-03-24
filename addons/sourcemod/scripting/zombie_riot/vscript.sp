@@ -52,12 +52,14 @@ void VScript_PluginStart()
 	}
 }
 
-public void VScript_MapEnd()
+void VScript_MapEnd()
 {
 	MapLockedWeapons = false;
+	PapModeDo = PAP_MODE_DEFAULT;
+	PerkModeDo = PERK_MODE_ALL_ALLOW;
 }
 
-public void VScript_LibraryAdded(const char[] name)
+void VScript_LibraryAdded(const char[] name)
 {
 	if(!Loaded && StrEqual(name, VSCRIPT_LIBRARY))
 	{
@@ -68,7 +70,7 @@ public void VScript_LibraryAdded(const char[] name)
 	}
 }
 
-public void VScript_LibraryRemoved(const char[] name)
+void VScript_LibraryRemoved(const char[] name)
 {
 	if(Loaded && StrEqual(name, VSCRIPT_LIBRARY))
 		Loaded = false;
