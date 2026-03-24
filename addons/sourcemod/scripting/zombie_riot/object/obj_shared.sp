@@ -98,6 +98,7 @@ void Object_PluginStart()
 	.DefineFloatField("m_fLastTimeClaimed")
 	.DefineBoolField("m_bCannotBePickedUp")
 	.DefineBoolField("m_bNoOwnerRequired")
+	.DefineIntField("m_iExtraLogic")
 
 	//needed so npc stuff doesnt break
 	.DefineIntField("m_iHealthBar")
@@ -510,6 +511,17 @@ methodmap ObjectGeneric < CClotBody
 		public get()
 		{
 			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bNoOwnerRequired"));
+		}
+	}
+	property bool m_iExtraLogic
+	{
+		public set(bool value)
+		{
+			SetEntProp(this.index, Prop_Data, "m_iExtraLogic", value);
+		}
+		public get()
+		{
+			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_iExtraLogic"));
 		}
 	}
 	property bool m_bConstructBuilding
