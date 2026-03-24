@@ -234,7 +234,7 @@ methodmap NoRandomKranz < CClotBody
 		func_NPCThink[npc.index] = NoRandomKranz_ClotThink;
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 280.0;
 		npc.i_GunMode = 1;
 		
 		npc.m_CreateClones = GetGameTime() + 10.0;
@@ -811,7 +811,7 @@ int NoRandomKranzSelfDefense(NoRandomKranz npc, float gameTime, int target, floa
 				{
 					npc.m_flAttackHappens = gameTime + 0.25;
 					npc.m_flDoingAnimation = gameTime + 0.25;
-					npc.f_NoRandomKranzMeleeCooldown = gameTime + 5.0;
+					npc.f_NoRandomKranzMeleeCooldown = gameTime + 8.0;
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
 					npc.PlayMeleeSound();
 					//We are close enough to melee attack, lets melee.
