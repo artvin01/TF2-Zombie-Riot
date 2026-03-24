@@ -65,6 +65,9 @@ static const char g_LaserGlobalAttackSound[][] = {
 	"weapons/bumper_car_speed_boost_start.wav",
 };
 
+static const char g_SuperJumpSound[][] = {
+	"misc/halloween/spell_blast_jump.wav",
+};
 
 int BlackHeavySoulId;
 int BlackHeavySoulIDReturn()
@@ -101,6 +104,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSoundCustom(g_AngerSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_AngerSounds_short));   i++) { PrecacheSoundCustom(g_AngerSounds_short[i]);   }
 	for (int i = 0; i < (sizeof(g_AngerSoundLoop));   i++) { PrecacheSoundCustom(g_AngerSoundLoop[i]);   }
+	for (int i = 0; i < (sizeof(g_SuperJumpSound)); i++) { PrecacheSound(g_SuperJumpSound[i]); }
 	PrecacheSoundCustom("#zombiesurvival/aprilfools/reteptheme_1.mp3");
 	PrecacheSoundCustom("#zombiesurvival/aprilfools/black_heavy_2.mp3");
 	PrecacheSoundCustom("#zombiesurvival/aprilfools/black_heavy_ultra.mp3");
@@ -132,6 +136,11 @@ methodmap BlackHeavySoul < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flJumpAtEnemy
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
 	property int m_iWhatAbilityDo
 	{
@@ -171,6 +180,7 @@ methodmap BlackHeavySoul < CClotBody
 		
 		if(!this.Anger)
 		{
+			CPrintToChatAll("{black}Black Heavy Soul{default}: I THINK YOU NEED MORE MEN!!");
 			EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 			EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 			this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(8.0, 10.0);	
@@ -184,6 +194,11 @@ methodmap BlackHeavySoul < CClotBody
 		}
 		
 	}
+	public void PlaySuperJumpSound()
+	{
+		EmitSoundToAll(g_SuperJumpSound[GetRandomInt(0, sizeof(g_SuperJumpSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_SuperJumpSound[GetRandomInt(0, sizeof(g_SuperJumpSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}	
 	
 	public void PlayHurtSound() 
 	{
@@ -218,6 +233,7 @@ methodmap BlackHeavySoul < CClotBody
 
 	public void PlayMeleeSound()
 	{
+		NpcSpeechBubble(this.index, "MEN", 15, {0,0,0,255}, {0.0,0.0,100.0}, "");
 		EmitCustomToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 	}
 	public void PlayMeleeHitSound() 
@@ -245,7 +261,6 @@ methodmap BlackHeavySoul < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		npc.m_bDissapearOnDeath = true;
 		npc.m_flMeleeArmor = 1.25;	
 		
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
@@ -344,7 +359,15 @@ methodmap BlackHeavySoul < CClotBody
 			amount_of_people = 1.0;
 			
 		npc.m_flPowAbilityCD = GetGameTime() + 5.0;
-		npc.m_flCongaFastDo = GetGameTime() + 15.0;
+		npc.m_flCongaFastDo = GetGameTime() + 20.0;
+		npc.m_flJumpAtEnemy = GetGameTime() + 10.0;
+
+		if(StrContains(data, "jump_test") != -1)
+		{
+			npc.m_flPowAbilityCD = GetGameTime() + 99999.9;
+			npc.m_flCongaFastDo = GetGameTime() + 9999.9;
+			npc.m_flJumpAtEnemy = GetGameTime() + 2.5;	
+		}
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 
@@ -355,12 +378,15 @@ methodmap BlackHeavySoul < CClotBody
 		music.Time = 110;
 		music.Volume = 2.0;
 		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "??????");
-		strcopy(music.Artist, sizeof(music.Artist), "Retep theme from that one terraria peter griffin mod");
+		strcopy(music.Name, sizeof(music.Name), "Retep theme");
+		strcopy(music.Artist, sizeof(music.Artist), "terraria peter griffin mod");
 		Music_SetRaidMusic(music);
 		
 		SetEntityRenderMode(npc.index, RENDER_NORMAL);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 255);
+		CPrintToChatAll("{black}Black Heavy Soul{default}: You come here and threaten my world!? I will take you down!");
+		CPrintToChatAll("{black}Black Heavy Soul{default}: These Heavy souls are fake and evil! They do nothing except hurt!");
+		CPrintToChatAll("{black}Black Heavy Soul{default}: My own world was threatened by them, them and smith...");
 		
 
 		int skin = 1;
@@ -391,6 +417,7 @@ static void Internal_ClotThink(int iNPC)
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
+			CPrintToChatAll("{black}Black Heavy Soul{default}: Last Noob Left.");
 		}
 	}
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
@@ -400,7 +427,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.SetCycle(0.01);
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{blue}BlackHeavySoul{default}: gg Ez.");
+		CPrintToChatAll("{black}Black Heavy Soul{default}: GG EZs.");
 		return;
 
 	}	
@@ -408,11 +435,11 @@ static void Internal_ClotThink(int iNPC)
 	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
 		i_Target[npc.index] = -1;
 	
-	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
+	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		target = GetClosestTarget(npc.index);
 		npc.m_iTarget = target;
-		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	if(BlackHeavy_Transform(npc))
 		return;
@@ -421,6 +448,10 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 	if(Black_Heavy_CongaVeryFastDo(npc, GetGameTime(npc.index)))
+	{
+		return;
+	}
+	if(Black_Heavy_JumpOfDeath(npc, GetGameTime(npc.index)))
 	{
 		return;
 	}
@@ -454,13 +485,10 @@ static void Internal_ClotThink(int iNPC)
 			RemoveEntity(npc.m_iWearable7);
 		if(IsValidEntity(npc.m_iWearable3))
 			RemoveEntity(npc.m_iWearable3);
-		if(IsValidEntity(npc.m_iWearable5))
-			RemoveEntity(npc.m_iWearable5);
 		if(IsValidEntity(npc.m_iWearable6))
 			RemoveEntity(npc.m_iWearable6);
 			
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2023_power_spike/hwn2023_power_spike.mdl",_,_, 1.0);
-		BlockLoseSay = true;
 	}
 
 	
@@ -554,6 +582,11 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			npc.Anger = true; //	>:(
 			npc.m_flNextIdleSound = 0.0;
 			npc.m_flTransformIn = GetGameTime() + 5.0;
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: RAHHHHHHHH!!! I WILL NOT LET YOU DESTROY MY WOORLD!!!!!!!!!!!");
+			NpcSpeechBubble(npc.index, "RAHHHHHHHH!!! I WILL NOT LET YOU DESTROY MY WOORLD!!!!!!!!!!!", 35, {255,0,0,255}, {0.0,0.0,200.0}, "");
+			npc.m_iWhatAbilityDo = 0;
+			npc.m_flDoingAnimation = 0;
+			npc.m_iChanged_WalkCycle = 0;
 			/*
 			b_RageAnimated[npc.index] = false;
 			RaidModeTime += 60.0;
@@ -636,22 +669,18 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 public void Raidmode_Expidonsa_BlackHeavySoul_Win(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+	BlockLoseSay = true;
+	CPrintToChatAll("{black}Black Heavy Soul{default}: get owned.");
 }
 
 static void Internal_NPCDeath(int entity)
 {
-	BlackHeavySoul npc = view_as<BlackHeavySoul>(entity);
-	/*
-		Explode on death code here please
-
-	*/
-	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-	
-	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
-	npc.PlayDeathSound();	
-
 	RaidBossActive = INVALID_ENT_REFERENCE;
+	if(BlockLoseSay)
+		return;
 
+	CPrintToChatAll("{black}Black Heavy Soul{default}: Nvm fuck you i made it all up.");
+	CPrintToChatAll("{black}Black Heavy Soul{default}: *dies of death*");
 }
 
 void BlackHeavySoulAnimationChange(BlackHeavySoul npc)
@@ -809,6 +838,26 @@ bool BlackHeavy_Transform(BlackHeavySoul npc)
 		if(npc.m_iChanged_WalkCycle != 101)
 		{
 			npc.m_iSaiyanState = 1;
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			fl_Extra_Speed[npc.index] *= 1.05;
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Super Saiyan Black Heavy Soul");
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -1017,4 +1066,92 @@ bool Black_Heavy_CongaVeryFastDo(BlackHeavySoul npc, float gameTime)
 		npc.m_flDoingAnimation = gameTime + 0.25;
 	}
 	return false;
+}
+
+
+//Wwalk Cycle offset is 400
+bool Black_Heavy_JumpOfDeath(BlackHeavySoul npc, float gameTime)
+{
+	if(npc.m_iWhatAbilityDo != 3 && npc.m_iWhatAbilityDo != 0)
+		return false;
+	if(npc.m_flDoingAnimation < gameTime)
+	{
+		if(npc.m_flJumpAtEnemy < gameTime)
+		{
+			if(!IsValidEnemy(npc.index, npc.m_iTarget))
+				return false;
+			if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+				return false;
+
+			npc.m_flJumpAtEnemy = gameTime + 35.0;
+			npc.m_flDoingAnimation = gameTime + 1.0;
+			npc.m_bisWalking = false;
+			npc.StopPathing();
+			npc.AddActivityViaSequence("taunt_table_flip_outro");
+			npc.SetPlaybackRate(0.65);
+			npc.SetCycle(0.01);
+			npc.m_iChanged_WalkCycle = 400;
+			npc.m_iWhatAbilityDo = 3;
+			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
+			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
+		}
+	}
+	if(npc.m_iWhatAbilityDo != 3)
+		return false;
+		
+	if(npc.m_iChanged_WalkCycle == 400)
+	{
+		if(!IsValidEnemy(npc.index, npc.m_iTarget))
+			return true;
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		npc.FaceTowards(vecTarget, 15000.0);
+		if(npc.m_flDoingAnimation < gameTime)
+		{
+			npc.SetPlaybackRate(0.0);
+			npc.m_iChanged_WalkCycle = 401;
+			npc.m_flDoingAnimation = gameTime + 3.0;
+			npc.m_flGravityMulti = 0.65;
+			PluginBot_Jump(npc.index, vecTarget, 4000.0, .timemodify = 4.0);
+			npc.PlaySuperJumpSound();
+			float flPos[3];
+			float flAng[3];
+			npc.GetAttachment("effect_hand_R", flPos, flAng);
+			npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "raygun_projectile_red_crit", npc.index, "effect_hand_R", {0.0,0.0,0.0});
+			
+
+			npc.GetAttachment("effect_hand_L", flPos, flAng);
+			npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "raygun_projectile_red_crit", npc.index, "effect_hand_L", {0.0,0.0,0.0});
+
+		}
+		return true;
+	}
+	
+	if ((npc.IsOnGround() || npc.m_flDoingAnimation < gameTime) && (npc.m_iChanged_WalkCycle == 401))
+	{
+		float damageDealt = 150.0 * RaidModeScaling;
+
+		npc.AddActivityViaSequence("taunt_yeti_layer");
+		npc.SetPlaybackRate(1.0);
+		npc.SetCycle(0.75);
+		npc.m_iChanged_WalkCycle = 402;
+		npc.m_flDoingAnimation = gameTime + 1.5;
+		static float flMyPos[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
+		flMyPos[2] += 15.0;
+		Explode_Logic_Custom(damageDealt, npc.index, npc.index, -1, flMyPos,250.0, 1.0, _, true, 20);
+		TE_Particle("asplode_hoodoo", flMyPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, flMyPos);
+		EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, flMyPos);
+		npc.m_flGravityMulti = 1.0;
+		if(IsValidEntity(npc.m_iWearable5))
+			RemoveEntity(npc.m_iWearable5);
+		if(IsValidEntity(npc.m_iWearable4))
+			RemoveEntity(npc.m_iWearable4);
+	}
+	if (npc.m_iChanged_WalkCycle == 402 && npc.m_flDoingAnimation < gameTime)
+	{
+		npc.m_iChanged_WalkCycle = 0;
+		npc.m_iWhatAbilityDo = 0;
+	}
+	return true;
 }

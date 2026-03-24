@@ -2991,6 +2991,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			Hook_DHook_UpdateTransmitState(entity);
 			b_IsAProjectile[entity] = true;
+			func_WandOnTouch[entity] = INVALID_FUNCTION;
 			
 		}
 #endif

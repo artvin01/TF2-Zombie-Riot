@@ -2,7 +2,6 @@
 #pragma newdecls required
 
 #if defined ZR || defined RPG
-Function func_WandOnTouch[MAXENTITIES];
 Function func_WandOnDestroy[MAXENTITIES] = {INVALID_FUNCTION, ...};
 
 void WandStocks_Map_Precache()

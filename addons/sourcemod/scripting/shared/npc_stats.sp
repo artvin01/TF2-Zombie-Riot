@@ -4904,7 +4904,7 @@ public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadde
 	return from_area.GetCostSoFar() + cost;
 }
 
-bool PluginBot_Jump(int bot_entidx, float vecPos[3], float flMaxSpeed = 1250.0, bool DirectLaunch = false)
+bool PluginBot_Jump(int bot_entidx, float vecPos[3], float flMaxSpeed = 1250.0, bool DirectLaunch = false, float timemodify = 1.0)
 {
 	if(IsEntityTowerDefense(bot_entidx)) //do not allow them to jump.
 	{
@@ -4968,6 +4968,7 @@ bool PluginBot_Jump(int bot_entidx, float vecPos[3], float flMaxSpeed = 1250.0, 
 	float time = speed / gravity;
 
 	time += SquareRoot( (2 * additionalHeight) / gravity );
+	time *= timemodify;
 	
 	// Scale the sideways velocity to get there at the right time
 	SubtractVectors( vecPos, vecNPC, vecJumpVel );

@@ -28,11 +28,6 @@ static const char g_RangedAttackPrepareSounds[][] = {
 	"npc/attack_helicopter/aheli_charge_up.wav",
 };
 
-int JohnOPID;
-int JohnOPIDReturn()
-{
-	return JohnOPID;
-}
 void JohnTheAllmighty_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DefaultMedic_DeathSounds));	   i++) { PrecacheSound(g_DefaultMedic_DeathSounds[i]);	   }
@@ -50,7 +45,7 @@ void JohnTheAllmighty_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
-	JohnOPID = NPC_Add(data);
+	NPC_Add(data);
 	PrecacheSoundCustom("#zombiesurvival/john_the_allmighty.mp3");
 }
 #define JOHN_SLOWDOWN_RANGE 350.0
