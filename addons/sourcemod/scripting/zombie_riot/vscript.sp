@@ -11,7 +11,7 @@ static ScriptCall ScriptFireScriptHook;
 static ScriptCall ScriptAddStoreTable;
 
 // Wrapper for ScriptHandle/FireScriptHook for when the ext is loaded/not
-methodmap VScriptEvent < Handle
+methodmap VScriptEvent < ScriptHandle
 {
 	public VScriptEvent(const char[] name)
 	{
@@ -19,43 +19,14 @@ methodmap VScriptEvent < Handle
 			return null;
 		
 		ScriptHandle handle = VScript_CreateTable();
-		VScript_SetValueString(handle, "__event", name);
+		if(handle)
+			handle.SetString("__event", name);
+		
 		return view_as<VScriptEvent>(handle);
 	}
-	public void SetBool(const char[] key, bool value)
+	public bool SetEntity(const char[] key, int value)
 	{
-		if(this != null)
-			VScript_SetValueBool(view_as<ScriptHandle>(this), key, value);
-	}
-	public void SetFloat(const char[] key, float value)
-	{
-		if(this != null)
-			VScript_SetValueFloat(view_as<ScriptHandle>(this), key, value);
-	}
-	public void SetInt(const char[] key, int value)
-	{
-		if(this != null)
-			VScript_SetValueInt(view_as<ScriptHandle>(this), key, value);
-	}
-	public void SetString(const char[] key, const char[] value)
-	{
-		if(this != null)
-			VScript_SetValueString(view_as<ScriptHandle>(this), key, value);
-	}
-	public void SetEntity(const char[] key, int value)
-	{
-		if(this != null)
-			VScript_SetValueHScript(view_as<ScriptHandle>(this), key, VScript_EntityToHScript(value, true));
-	}
-	public void SetVector(const char[] key, const float value[3])
-	{
-		if(this != null)
-			VScript_SetValueVector(view_as<ScriptHandle>(this), key, value);
-	}
-	public void SetNull(const char[] key)
-	{
-		if(this != null)
-			VScript_SetValueNull(view_as<ScriptHandle>(this), key);
+		return view_as<ScriptHandle>(this).SetHScript(key, VScript_EntityToHScript(value, true));
 	}
 	public bool Fire()
 	{
@@ -63,15 +34,10 @@ methodmap VScriptEvent < Handle
 			return false;
 		
 		char buffer[64];
-		VScript_GetValueString(view_as<ScriptHandle>(this), "__event", buffer, sizeof(buffer));
+		view_as<ScriptHandle>(this).GetString("__event", buffer, sizeof(buffer));
 		ScriptStatus status = ScriptFireScriptHook.Execute(buffer, view_as<ScriptHandle>(this));
 		CloseHandle(this);
 		return status == ScriptStatus_Done;
-	}
-	public void Cancel()
-	{
-		if(this != null)
-			CloseHandle(this);
 	}
 }
 
@@ -146,8 +112,8 @@ void VScript_AddStoreTable(KeyValues kv, const char[] name)
 	ScriptHandle table = ExportKeyValues(kv);
 	if(table)
 	{
-		if(!VScript_ValueExists(table, "custom_name"))
-			VScript_SetValueString(table, "custom_name", name);
+		if(!table.HasKey("custom_name"))
+			table.SetString("custom_name", name);
 		
 		ScriptAddStoreTable.Execute(table);
 		delete table;
@@ -218,14 +184,14 @@ static void VGiveClientWeapon(ScriptContext context)
 			ScriptHandle table = context.GetArgHScript(2);
 			if(table)
 			{
-				if(VScript_ValueExists(table, "owned"))
-					owned = VScript_GetValueInt(table, "owned");
+				if(table.HasKey("owned"))
+					owned = table.GetInt("owned");
 				
-				if(VScript_ValueExists(table, "equip"))
-					equipped = VScript_GetValueBool(table, "equip");
+				if(table.HasKey("equip"))
+					equipped = table.GetBool("equip");
 				
-				if(VScript_ValueExists(table, "sell"))
-					sell = VScript_GetValueInt(table, "sell");
+				if(table.HasKey("sell"))
+					sell = table.GetInt("sell");
 			}
 
 			Store_GiveItemIndex(client, index, owned, equipped, sell);
@@ -300,13 +266,13 @@ static void KvToTable(ScriptHandle table, KeyValues kv)
 			{
 				ScriptHandle subtable = VScript_CreateTable();
 				KvToTable(subtable, kv);
-				VScript_SetValueHScript(table, key, subtable);
+				table.SetHScript(key, subtable);
 				delete subtable;
 			}
 			else
 			{
 				kv.GetString(key, value, sizeof(value));
-				VScript_SetValueString(table, key, value);
+				table.SetString(key, value);
 			}
 		}
 	}

@@ -1811,8 +1811,11 @@ void Waves_RoundStart(bool event = false)
 
 	Waves_UpdateMvMStats();
 	
-	VScriptEvent event = new VScriptEvent("ZR_StartSetup");
-	event.Fire();
+	VScriptEvent vevent = new VScriptEvent("ZR_StartSetup");
+	if(vevent)
+	{
+		vevent.Fire();
+	}
 }
 
 void Waves_RoundEnd()
