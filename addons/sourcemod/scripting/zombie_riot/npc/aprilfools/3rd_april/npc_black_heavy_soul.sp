@@ -585,7 +585,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			CPrintToChatAll("{black}Black Heavy Soul{crimson}: RAHHHHHHHH!!! I WILL NOT LET YOU DESTROY MY WOORLD!!!!!!!!!!!");
 			NpcSpeechBubble(npc.index, "RAHHHHHHHH!!! I WILL NOT LET YOU DESTROY MY WOORLD!!!!!!!!!!!", 35, {255,0,0,255}, {0.0,0.0,200.0}, "");
 			npc.m_iWhatAbilityDo = 0;
-			npc.m_flDoingAnimation = 0;
+			npc.m_flDoingAnimation = 0.0;
 			npc.m_iChanged_WalkCycle = 0;
 			/*
 			b_RageAnimated[npc.index] = false;

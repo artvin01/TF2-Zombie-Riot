@@ -23,9 +23,7 @@ static const char g_IdleAlertedSounds[][] = {
 };
 
 static const char g_RangedAttackSounds[][] = {
-	"weapons/airstrike_fire_01.wav",
-	"weapons/airstrike_fire_02.wav",
-	"weapons/airstrike_fire_03.wav",
+	"weapons/rocket_directhit_shoot_crit.wav",
 };
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/cbar_miss1.wav",
@@ -38,7 +36,14 @@ static const char g_SuperJumpSound[][] = {
 	"misc/halloween/spell_mirv_explode_primary.wav",
 };
 static const char g_PlayGunSound[][] = {
-	"weapons/sniper_rifle_classic_shoot.wav",
+	"weapons/sniper_bazaarbargain_shoot_crit.wav",
+};
+static const char g_LifeLossSound[][] = {
+	"vo/sniper_battlecry01.mp3",
+	"vo/sniper_battlecry02.mp3",
+	"vo/sniper_battlecry03.mp3",
+	"vo/sniper_battlecry04.mp3",
+	"vo/sniper_battlecry06.mp3",
 };
 
 static int NPCID;
@@ -66,6 +71,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_SuperJumpSound)); i++) { PrecacheSound(g_SuperJumpSound[i]); }
 	for (int i = 0; i < (sizeof(g_PlayGunSound)); i++) { PrecacheSound(g_PlayGunSound[i]); }
+	for (int i = 0; i < (sizeof(g_LifeLossSound)); i++) { PrecacheSound(g_LifeLossSound[i]); }
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSoundCustom(g_DeathSounds[i]);	   }
 	PrecacheSoundCustom("#zombiesurvival/aprilfools/kranz_ncrv3.mp3");
 
@@ -124,7 +130,7 @@ methodmap NoRandomKranz < CClotBody
 			return;
 		
 		int sound = GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1);
-		EmitSoundToAll(g_IdleAlertedSounds[sound], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleAlertedSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		DataPack pack;
 
@@ -142,7 +148,7 @@ methodmap NoRandomKranz < CClotBody
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		int sound = GetRandomInt(0, sizeof(g_HurtSounds) - 1);
-		EmitSoundToAll(g_HurtSounds[sound], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		DataPack pack;
 		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);	//don't mind me, just reusing this...
@@ -152,39 +158,54 @@ methodmap NoRandomKranz < CClotBody
 	public void PlayRangedSound()
 	{
 		int sound = GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1);
-		EmitSoundToAll(g_RangedAttackSounds[sound], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);		
+		EmitSoundToAll(g_RangedAttackSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);		
 	}
 	public void PlaySuperJumpSound()
 	{
 		int sound = GetRandomInt(0, sizeof(g_SuperJumpSound) - 1);
-		EmitSoundToAll(g_SuperJumpSound[sound], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_SuperJumpSound[sound], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_SuperJumpSound[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_SuperJumpSound[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound()
 	{
 		int sound = GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1);
-		EmitSoundToAll(g_MeleeAttackSounds[sound], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayGunSound()
 	{
 		int sound = GetRandomInt(0, sizeof(g_PlayGunSound) - 1);
-		EmitSoundToAll(g_PlayGunSound[sound], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_PlayGunSound[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayDupeSound()
 	{
 		int sound = GetRandomInt(0, sizeof(g_PlayGunSound) - 1);
-		EmitSoundToAll(g_PlayGunSound[sound], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_PlayGunSound[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
 		int sound = GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1);
-		EmitSoundToAll(g_MeleeHitSounds[sound], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_MeleeHitSounds[sound], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 	}
 	public void PlayTeleportSound() 
 	{
-		EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", this.index, SNDCHAN_STATIC, 120, _, 4.0);	
+		EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", this.index, SNDCHAN_STATIC, 120, _, 5.0);	
+	}
+	public void PlayLifelossSound() 
+	{
+		int sound = GetRandomInt(0, sizeof(g_LifeLossSound) - 1);
+		EmitSoundToAll(g_LifeLossSound[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_LifeLossSound[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		DataPack pack;
+		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);	//don't mind me, just reusing this...
+		pack.WriteString(g_LifeLossSound[sound]);
+		pack.WriteCell(EntIndexToEntRef(this.index));
+		
+		DataPack pack2;
+		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack2, TIMER_FLAG_NO_MAPCHANGE);	//don't mind me, just reusing this...
+		pack2.WriteString(g_LifeLossSound[sound]);
+		pack2.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
 	
@@ -216,7 +237,8 @@ methodmap NoRandomKranz < CClotBody
 		npc.m_flSpeed = 300.0;
 		npc.i_GunMode = 1;
 		
-		npc.m_CreateClones = GetGameTime() + 5.0;
+		npc.m_CreateClones = GetGameTime() + 10.0;
+		npc.f_NoRandomKranzRocketJumpCD = GetGameTime() + 5.0;
 		if(StrContains(data, "jump_minions") != -1)
 		{
 			npc.m_TimeUntillsuicide = GetGameTime() + 4.5;
@@ -233,9 +255,11 @@ methodmap NoRandomKranz < CClotBody
 			b_NoKillFeed[npc.index] = true;
 			b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 			npc.i_GunMode = 2;
+			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_bazaar_sniper/c_bazaar_sniper.mdl");
 		}
 		else
 		{
+			func_NPCLostHealthBar[npc.index] = view_as<Function>(NpcClot_LifeLost);
 			EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 			EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 			for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -249,6 +273,7 @@ methodmap NoRandomKranz < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 200.0;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
+			b_thisNpcIsARaid[npc.index] = true;
 
 			char buffers[3][64];
 			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
@@ -318,13 +343,12 @@ methodmap NoRandomKranz < CClotBody
 			CPrintToChatAll("{darkblue}No Random Kranz V3{default}: I am not NRCV3 nor Kranz, its over mercs, i have come for you!");
 			CPrintToChatAll("{darkblue}No Random Kranz V3{default}: Us bosses HAVE NO LIMITS!");
 			
+			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_directhit/c_directhit.mdl");
 		}
 
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-
-	//	Weapon
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_bazaar_sniper/c_bazaar_sniper.mdl");
+		npc.m_iHealthBar = 6;
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/short2014_all_eyepatch/short2014_all_eyepatch_soldier.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/sum19_bare_necessities/sum19_bare_necessities.mdl");
@@ -570,7 +594,7 @@ public Action NoRandomKranz_OnTakeDamage(int victim, int &attacker, int &inflict
 
 
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if(RoundToCeil(damage) > Health)
+	if(RoundToCeil(damage) > Health && npc.m_iHealthBar <= 0)
 	{	
 		CPrintToChatAll("{darkblue}No Random Kranz V3{default}: OH COME ON FULL DODGE BUILD AND THEN THIS???");
 		
@@ -740,7 +764,12 @@ int NoRandomKranzSelfDefense(NoRandomKranz npc, float gameTime, int target, floa
 					
 						npc.PlayMeleeHitSound();
 						npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_l"), PATTACH_POINT_FOLLOW, true);
-			
+						
+						BlackHoleRocketDoPos(npc.index, vecHit);
+						BlackHoleRocketDoPos(npc.index, vecHit);
+						BlackHoleRocketDoPos(npc.index, vecHit);
+						BlackHoleRocketDoPos(npc.index, vecHit);
+
 						bool Knocked = false;
 									
 						if(IsValidClient(target_hit))
@@ -905,12 +934,6 @@ int NoRandomKranzSelfDefense(NoRandomKranz npc, float gameTime, int target, floa
 	return 0;
 }
 
-public void BlackHoleRocketDo(int entity)
-{
-	static float flMyPos[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flMyPos);
-	int Particle = ParticleEffectAt(flMyPos, "eyeboss_tp_vortex", 5.0);
-}
 		
 /*
 void NoRandomKranz_Rocket_Base_Explode(int entity, int damage, const float VecPos[3])
@@ -933,9 +956,7 @@ void ResetNoRandomKranzWeapon(NoRandomKranz npc, int weapon_Type)
 	{
 		case 1:
 		{
-			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_bazaar_sniper/c_bazaar_sniper.mdl");
-			SetVariantString("1.0");
-			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_directhit/c_directhit.mdl");
 		}
 		case 0:
 		{
@@ -945,8 +966,6 @@ void ResetNoRandomKranzWeapon(NoRandomKranz npc, int weapon_Type)
 			npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
 
 			npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_crossing_guard/c_crossing_guard.mdl");
-			SetVariantString("1.0");
-			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		}
 	}
 }
@@ -1046,6 +1065,7 @@ int KranzSniperSelfDefense(NoRandomKranz npc, float gameTime)
 			{
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}
+			BlackHoleRocketDoPos(npc.index, ThrowPos[npc.index]);
 			delete hTrace;	
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget,_ ,ThrowPos[npc.index]);
 			npc.PlayGunSound();
@@ -1069,4 +1089,54 @@ int KranzSniperSelfDefense(NoRandomKranz npc, float gameTime)
 		npc.m_flNextMeleeAttack = gameTime + 0.65;
 	}
 	return 1;
+}
+static bool NpcClot_LifeLost(int iNPC, int LifeAfter)
+{
+	NoRandomKranz npc = view_as<NoRandomKranz>(iNPC);
+	ApplyStatusEffect(iNPC, iNPC, "UBERCHARGED", 5.0);
+	ApplyStatusEffect(iNPC, iNPC, "Dimensional Turbulence", 5.0);
+	RaidModeTime += 10.0;
+	npc.PlayLifelossSound();
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			f_DelayLookingAtHud[client] = GetGameTime() + 1.5;
+			PrintCenterText(client, "%s [%i] %s", "No Random Kranz V3 Lost a live!", npc.m_iHealthBar - 1, "lives remain!");
+		}
+	}
+
+	return true;
+}
+
+
+public void BlackHoleRocketDo(int entity)
+{
+	static float flMyPos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flMyPos);
+	BlackHoleRocketDoPos(entity, flMyPos);
+}
+public void BlackHoleRocketDoPos(int entity, float Pos[3])
+{
+	int Particle = ParticleEffectAt(Pos, "eyeboss_tp_vortex", 5.0);	
+	SetTeam(Particle, GetTeam(entity));
+	i_ExplosiveProjectileHexArray[Particle] = EP_NO_KNOCKBACK;
+	DataPack pack;
+	CreateDataTimer(0.25, BlackHoleRocketDo_DmgDo, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+
+	pack.WriteCell(EntIndexToEntRef(Particle)); 
+	pack.WriteFloat(4.0 * RaidModeScaling); 
+}
+public Action BlackHoleRocketDo_DmgDo(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int Particle = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(Particle))
+		return Plugin_Stop;
+	float DamageDeal = pack.ReadFloat();
+	float SpawnPos[3];
+	GetEntPropVector(Particle, Prop_Data, "m_vecAbsOrigin", SpawnPos);
+	Explode_Logic_Custom(DamageDeal, Particle, Particle, -1, SpawnPos, 90.0, 1.0, _, false, 99,_,15.0);
+
+	return Plugin_Continue;
 }

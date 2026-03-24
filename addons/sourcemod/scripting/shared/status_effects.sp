@@ -2618,10 +2618,10 @@ void StatusEffects_Silence()
 	data.OnBuffStarted				= Ragdolled_Start;
 	data.OnBuffEndOrDeleted			= Ragdolled_End;
 	
+	StatusEffect_AddGlobal(data);
+	
 	data.OnBuffStarted				= INVALID_FUNCTION;
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
-
-	StatusEffect_AddGlobal(data);
 	//Immunity to stun effects
 	strcopy(data.BuffName, sizeof(data.BuffName), "Clear Head");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ֆ");
