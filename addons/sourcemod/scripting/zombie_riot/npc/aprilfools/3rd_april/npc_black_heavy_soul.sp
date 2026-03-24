@@ -1128,7 +1128,7 @@ bool Black_Heavy_JumpOfDeath(BlackHeavySoul npc, float gameTime)
 	
 	if ((npc.IsOnGround() || npc.m_flDoingAnimation < gameTime) && (npc.m_iChanged_WalkCycle == 401))
 	{
-		float damageDealt = 150.0 * RaidModeScaling;
+		float damageDealt = 600.0 * RaidModeScaling;
 
 		npc.AddActivityViaSequence("taunt_yeti_layer");
 		npc.SetPlaybackRate(1.0);
