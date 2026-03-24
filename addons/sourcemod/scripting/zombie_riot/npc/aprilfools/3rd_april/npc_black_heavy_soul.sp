@@ -1109,7 +1109,7 @@ bool Black_Heavy_JumpOfDeath(BlackHeavySoul npc, float gameTime)
 		{
 			npc.SetPlaybackRate(0.0);
 			npc.m_iChanged_WalkCycle = 401;
-			npc.m_flDoingAnimation = gameTime + 3.0;
+			npc.m_flDoingAnimation = gameTime + 4.0;
 			npc.m_flGravityMulti = 0.65;
 			PluginBot_Jump(npc.index, vecTarget, 4000.0, .timemodify = 4.0);
 			npc.PlaySuperJumpSound();
