@@ -2617,6 +2617,9 @@ void StatusEffects_Silence()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnBuffStarted				= Ragdolled_Start;
 	data.OnBuffEndOrDeleted			= Ragdolled_End;
+	
+	data.OnBuffStarted				= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 
 	StatusEffect_AddGlobal(data);
 	//Immunity to stun effects
