@@ -65,7 +65,44 @@ static void ClotShowInteractHud(ObjectPerkMachine npc, int client)
 	char ButtonDisplay2[255];
 	PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
 	BuildingVialityDisplay(client, npc.index, ButtonDisplay2, sizeof(ButtonDisplay2));
-	PrintCenterText(client, "%s\n%s%t", ButtonDisplay2, ButtonDisplay,"Perkmachine Tooltip");
+	
+	char Display3[255];
+	switch(npc.m_iExtraLogic)
+	{
+		case 1:
+		{
+			FormatEx(Display3, sizeof(Display3), "%T", "Stockpile Stout", client);
+		}
+		case 2:
+		{
+			FormatEx(Display3, sizeof(Display3), "%T", "Teslar Mule", client);
+		}
+		case 3:
+		{
+			FormatEx(Display3, sizeof(Display3), "%T", "Marksman Beer", client);
+		}
+		case 4:
+		{
+			FormatEx(Display3, sizeof(Display3), "%T", "Hasty Hops", client);
+		}
+		case 5:
+		{
+			FormatEx(Display3, sizeof(Display3), "%T", "Morning Coffee", client);
+		}
+		case 6:
+		{
+			FormatEx(Display3, sizeof(Display3), "%T", "Obsidian Oaf", client);
+		}
+		case 7:
+		{
+			FormatEx(Display3, sizeof(Display3), "%T", "Regene Berry", client);
+		}
+		case 8:
+		{
+			FormatEx(Display3, sizeof(Display3), "%T", "Energy Drink", client);
+		}
+	}
+	PrintCenterText(client, "%s\n%s%t\n%s", ButtonDisplay2, ButtonDisplay, "Perkmachine Tooltip", Display3);
 }
 
 static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
@@ -88,6 +125,11 @@ static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
 		f_TutorialUpdateStep[client] = GetGameTime() + 5.0;
 		SetClientTutorialStep(client, 6);
 		DoTutorialStep(client, false);	
+	}
+	if(npc.m_iExtraLogic)
+	{
+		GivePerkViaMapForce(client, npc);
+		return true;
 	}
 	char buffer[32];
 	Menu menu2 = new Menu(Building_ConfirmMountedAction);
@@ -259,29 +301,40 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 			}
 		}
 	}
-	
-	if(Rogue_ColdWaterActive() && i_CurrentEquippedPerk[client] & what_perk)
+	if(PerkModeDo == PERK_MODE_ALL_ALLOW)
 	{
-		i_CurrentEquippedPerk[client] &= ~what_perk;
-		i_CurrentEquippedPerkPreviously[client] &= ~what_perk;
-		CPrintToChat(client, "{crimson} %T", "You removed the current perk", client);
-	}
-	else
-	{
-		if(PerksOn >= 2)
+		if(i_CurrentEquippedPerk[client] & what_perk)
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			CPrintToChat(client, "{crimson} %T", "Too many Perks", client);
 			return;
-		}
-		if(!Rogue_ColdWaterActive())
-		{
-			i_CurrentEquippedPerk[client] = 0;
-			i_CurrentEquippedPerkPreviously[client] = 0;
 		}
 		i_CurrentEquippedPerk[client] |= what_perk;
 		i_CurrentEquippedPerkPreviously[client] |= what_perk;
-
+	}
+	else
+	{	
+		if(Rogue_ColdWaterActive() && i_CurrentEquippedPerk[client] & what_perk)
+		{
+			i_CurrentEquippedPerk[client] &= ~what_perk;
+			i_CurrentEquippedPerkPreviously[client] &= ~what_perk;
+			CPrintToChat(client, "{crimson} %T", "You removed the current perk", client);
+		}
+		else
+		{
+			if(PerksOn >= 2)
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				CPrintToChat(client, "{crimson} %T", "Too many Perks", client);
+				return;
+			}
+			if(!Rogue_ColdWaterActive())
+			{
+				i_CurrentEquippedPerk[client] = 0;
+				i_CurrentEquippedPerkPreviously[client] = 0;
+			}
+			i_CurrentEquippedPerk[client] |= what_perk;
+			i_CurrentEquippedPerkPreviously[client] |= what_perk;
+		}
 	}
 	UpdatePerkName(client);
 	
@@ -305,4 +358,43 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	Store_GiveAll(client, GetClientHealth(client));	
 	Barracks_UpdateAllEntityUpgrades(client);
 	CPrintToChat(client, "{green} %T", PerkNames_Received[PrintChatid], client);
+}
+
+void GivePerkViaMapForce(int client, ObjectPerkMachine npc)
+{
+	switch(npc.m_iExtraLogic)
+	{
+		case 1:
+		{
+			Do_Perk_Machine_Logic(client, client, entity, PERK_STOCKPILE_STOUT, 2);
+		}
+		case 2:
+		{
+			Do_Perk_Machine_Logic(client, client, entity, PERK_TESLAR_MULE, 2);
+		}
+		case 3:
+		{
+			Do_Perk_Machine_Logic(client, client, entity, PERK_MARKSMAN_BEER, 2);
+		}
+		case 4:
+		{
+			Do_Perk_Machine_Logic(client, client, entity, PERK_HASTY_HOPS, 2);
+		}
+		case 5:
+		{
+			Do_Perk_Machine_Logic(client, client, entity, PERK_MORNING_COFFEE, 2);
+		}
+		case 6:
+		{
+			Do_Perk_Machine_Logic(client, client, entity, PERK_OBSIDIAN, 2);
+		}
+		case 7:
+		{
+			Do_Perk_Machine_Logic(client, client, entity, PERK_REGENE, 2);
+		}
+		case 8:
+		{
+			Do_Perk_Machine_Logic(client, client, entity, PERK_ENERGY_DRINK, 2);
+		}
+	}
 }
