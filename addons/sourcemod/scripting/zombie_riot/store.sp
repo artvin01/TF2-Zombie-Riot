@@ -7,6 +7,14 @@ float f_ConfirmSellDo[MAXPLAYERS];
 
 enum
 {
+	PAP_MODE_DEFAULT,
+	PAP_MODE_BUILDING_ONLY
+}
+
+int PapModeDo = PAP_MODE_DEFAULT;
+
+enum
+{
 	PAP_DESC_BOUGHT,
 	PAP_DESC_PREVIEW
 }
@@ -1039,6 +1047,7 @@ int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
 
 void Store_ConfigSetup()
 {
+	PapModeDo = PAP_MODE_DEFAULT;
 	delete AutoSaveTimer;
 	Zero(f_ConfirmSellDo);
 	ClearAllTempAttributes();
@@ -3825,6 +3834,10 @@ static void MenuPage(int client, int section)
 				// Block showing items if only sell
 				continue;
 			}
+			
+			//do not display pap in the menu if its building only.
+			if(PapModeDo == PAP_MODE_BUILDING_ONLY && item.Internal_ClickEnhance)
+				continue;
 			
 			if (item.ViewTeutonOnly == VIEW_TEUTON_ONLY && TeutonType[client] == 0)
 				continue;

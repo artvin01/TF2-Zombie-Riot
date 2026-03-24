@@ -128,6 +128,7 @@ static void SetupVScript()
 	VScript_RegisterFunction("ZR_RandomizeNPCStore", VRandomizeNPCStore, "(flags, amount, override)", ScriptField_Void, ScriptField_Int, ScriptField_Int, ScriptField_Float);
 	VScript_RegisterFunction("ZR_GetGlobalCash", VGetGlobalCash, "()", ScriptField_Int);
 	VScript_RegisterFunction("ZR_GiveClientAmmo", VGiveClientAmmo, "(client, index, amount)", ScriptField_Void, ScriptField_HScript, ScriptField_Int, ScriptField_Int);
+	VScript_RegisterFunction("ZR_PapModeOnly", VPapModeMapOnly, "(mode)", ScriptField_Int);
 }
 
 void VScript_SetupStoreTable()
@@ -313,4 +314,14 @@ static void KvToTable(ScriptHandle table, KeyValues kv)
 	while(kv.GotoNextKey(false));
 
 	kv.GoBack();
+}
+
+
+//must be set everytime the map reloads
+static void VPapModeMapOnly(ScriptContext context)
+{
+	//1 is buildings only
+	//0 is default via menu
+	int ModeApply = context.GetArgInt(1);
+	PapModeDo = ModeApply;
 }
