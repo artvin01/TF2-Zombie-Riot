@@ -148,14 +148,14 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 			{
 				int owner = -1;
 				owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-				Do_Perk_Machine_Logic(owner, client, entity, (1 << (id - 1)), 1);
+				Do_Perk_Machine_Logic(owner, client, entity, (1 << (id - 1)), id);
 			}
 		}
 	}
 	return 0;
 }
 
-static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk, int PrintChatid)
+void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk, int PrintChatid)
 {
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 	if(owner == -1 && !objstats.m_bNoOwnerRequired)
@@ -250,6 +250,6 @@ void GivePerkViaMapForce(int client, ObjectPerkMachine npc)
 {
 	if(npc.m_iExtraLogic)
 	{
-		Do_Perk_Machine_Logic(client, client, npc.index, (1 << (npc.m_iExtraLogic - 1)), 2);
+		Do_Perk_Machine_Logic(client, client, npc.index, (1 << (npc.m_iExtraLogic - 1)), npc.m_iExtraLogic);
 	}
 }

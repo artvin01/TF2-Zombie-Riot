@@ -104,7 +104,13 @@ static void KvToTable(ScriptHandle table, KeyValues kv)
 			}
 			else
 			{
-				kv.GetString(key, value, sizeof(value));
+				int size = strlen(key);
+				for(int i; i < size; i++)
+				{
+					key[i] = CharToLower(key[i]);
+				}
+
+				kv.GetString(NULL_STRING, value, sizeof(value));
 				table.SetString(key, value);
 			}
 		}
@@ -117,7 +123,7 @@ static void KvToTable(ScriptHandle table, KeyValues kv)
 public void VScript_OnVMInitialized()
 {
 	VScript_Run("function _ZRAddToStoreTable(table) {\n" ...
-		"::ZRStoreData.append(table)\n" ...
+		"ZRStoreData.append(table)\n" ...
 	"}");
 }
 
@@ -321,10 +327,7 @@ static void VGiveClientPerk(ScriptContext context)
 			if(hentity)
 				entity = VScript_HScriptToEntity(hentity);
 			
-			ObjectPerkMachine npc = view_as<ObjectPerkMachine>(entity);
-			npc.m_iExtraLogic = index;
-			npc.m_bNoOwnerRequired = true;
-			GivePerkViaMapForce(client, npc);
+			Do_Perk_Machine_Logic(client, client, entity, (1 << (index - 1)), index);
 			return;
 		}
 	}
