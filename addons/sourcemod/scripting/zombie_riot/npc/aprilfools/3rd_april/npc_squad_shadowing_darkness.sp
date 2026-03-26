@@ -3,20 +3,29 @@
 
 
 static const char g_DeathSounds[][] = {
-	"common/null.wav",
+	"npc/combine_soldier/die1.wav",
+	"npc/combine_soldier/die2.wav",
+	"npc/combine_soldier/die3.wav",
 };
 
 static const char g_HurtSounds[][] = {
-	"common/null.wav",
+	"npc/combine_soldier/pain1.wav",
+	"npc/combine_soldier/pain2.wav",
+	"npc/combine_soldier/pain3.wav",
 };
 
 
 static const char g_IdleAlertedSounds[][] = {
-	"common/null.wav",
+	"npc/combine_soldier/vo/alert1.wav",
+	"npc/combine_soldier/vo/bouncerbouncer.wav",
+	"npc/combine_soldier/vo/boomer.wav",
+	"npc/combine_soldier/vo/contactconfim.wav",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/saxxy_turntogold_05.wav"
+	"weapons/demo_sword_swing1.wav",
+	"weapons/demo_sword_swing2.wav",
+	"weapons/demo_sword_swing3.wav",
 };
 static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_slice_2.wav",
@@ -25,24 +34,24 @@ static const char g_MeleeHitSounds[][] = {
 };
 
 
-int SquadX_BobId;
-int SquadX_BobIDReturn()
+int SquadX_Shadowing_DarknessId;
+int SquadX_Shadowing_DarknessIDReturn()
 {
-	return SquadX_BobId;
+	return SquadX_Shadowing_DarknessId;
 }
 
-void SquadX_Bob_OnMapStart_NPC()
+void SquadX_Shadowing_Darkness_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Bob The First");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_squad_bob");
+	strcopy(data.Name, sizeof(data.Name), "Shadowing Darkness");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_squad_shadowing_darkness");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	SquadX_BobId = NPC_Add(data);
+	SquadX_Shadowing_DarknessId = NPC_Add(data);
 }
 
 static void ClotPrecache()
@@ -56,10 +65,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SquadX_Bob(vecPos, vecAng, team, data);
+	return SquadX_Shadowing_Darkness(vecPos, vecAng, team, data);
 }
 
-methodmap SquadX_Bob < CClotBody
+methodmap SquadX_Shadowing_Darkness < CClotBody
 {
 	property float m_flTransformIn
 	{
@@ -113,17 +122,17 @@ methodmap SquadX_Bob < CClotBody
 	}
 	
 	
-	public SquadX_Bob(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SquadX_Shadowing_Darkness(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		SquadX_Bob npc = view_as<SquadX_Bob>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "40000", ally, _, _, true, false));
+		SquadX_Shadowing_Darkness npc = view_as<SquadX_Shadowing_Darkness>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.15", "40000", ally, _, _, true, false));
 		i_NpcWeight[npc.index] = 4;
+		SetVariantInt(16);
+		AcceptEntityInput(npc.index, "SetBodyGroup");	
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		npc.SetActivity("ACT_RUN_BOB");
+		npc.SetActivity("ACT_SHADOW_RUN");
 		
-		SetVariantInt(1);	// Combine Model
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -131,7 +140,6 @@ methodmap SquadX_Bob < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		npc.m_flMeleeArmor = 1.25;	
-		b_NpcUnableToDie[npc.index] = true;
 		
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
@@ -140,16 +148,10 @@ methodmap SquadX_Bob < CClotBody
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
-
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("1.0");
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		AcceptEntityInput(npc.m_iWearable1, "Enable");
-		IgniteTargetEffect(npc.m_iWearable1);
 		
 		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_bThisNpcIsABoss = true;
+		b_NpcUnableToDie[npc.index] = true;
 
 		
 		return npc;
@@ -158,7 +160,7 @@ methodmap SquadX_Bob < CClotBody
 
 static void Internal_ClotThink(int iNPC)
 {
-	SquadX_Bob npc = view_as<SquadX_Bob>(iNPC);
+	SquadX_Shadowing_Darkness npc = view_as<SquadX_Shadowing_Darkness>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -249,7 +251,7 @@ static void Internal_ClotThink(int iNPC)
 
 static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	SquadX_Bob npc = view_as<SquadX_Bob>(victim);
+	SquadX_Shadowing_Darkness npc = view_as<SquadX_Shadowing_Darkness>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -266,14 +268,22 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 static void Internal_NPCDeath(int entity)
 {
-	SquadX_Bob npc = view_as<SquadX_Bob>(entity);
+	SquadX_Shadowing_Darkness npc = view_as<SquadX_Shadowing_Darkness>(entity);
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 
 }
 
-static void Clot_AnimationChange(SquadX_Bob npc)
+static void Clot_AnimationChange(SquadX_Shadowing_Darkness npc)
 {
 	
 	if(npc.m_iChanged_WalkCycle == 0)
@@ -288,7 +298,7 @@ static void Clot_AnimationChange(SquadX_Bob npc)
 			npc.m_flSpeed = 330.0;
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 3;
-			npc.SetActivity("ACT_RUN_BOB");
+			npc.SetActivity("ACT_SHADOW_RUN");
 			npc.StartPathing();
 		}	
 	}
@@ -299,14 +309,14 @@ static void Clot_AnimationChange(SquadX_Bob npc)
 			npc.m_flSpeed = 330.0;
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 4;
-			npc.SetActivity("ACT_RUN_BOB");
+			npc.SetActivity("ACT_SHADOW_RUN");
 			npc.StartPathing();
 		}	
 	}
 
 }
 
-static int Clot_SelfDefense(SquadX_Bob npc, float gameTime, int target, float distance)
+static int Clot_SelfDefense(SquadX_Shadowing_Darkness npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -335,7 +345,7 @@ static int Clot_SelfDefense(SquadX_Bob npc, float gameTime, int target, float di
 							
 							WorldSpaceCenter(targetTrace, vecHit);
 
-							float damage = 20.0;
+							float damage = 24.0;
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 								
@@ -380,11 +390,20 @@ static int Clot_SelfDefense(SquadX_Bob npc, float gameTime, int target, float di
 					target = Enemy_I_See;
 
 					npc.PlayMeleeSound();
-					npc.AddGesture("ACT_MELEE_BOB");
-							
-					npc.m_flAttackHappens = gameTime + 0.15;
-					npc.m_flNextMeleeAttack = gameTime + 0.35;
-					npc.m_flDoingAnimation = gameTime + 0.15;
+					switch(GetRandomInt(1,2))
+					{
+						case 1:
+						{
+							npc.AddGesture("ACT_SHADOW_ATTACK_1",_,_,_,1.0);
+						}
+						case 2:
+						{
+							npc.AddGesture("ACT_SHADOW_ATTACK_2",_,_,_,1.0);
+						}
+					}
+					npc.m_flAttackHappens = gameTime + 0.2;
+					npc.m_flDoingAnimation = gameTime + 0.2;
+					npc.m_flNextMeleeAttack = gameTime + 0.6;
 				}
 			}
 		}

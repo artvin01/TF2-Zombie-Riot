@@ -1231,6 +1231,11 @@ void NPC_ConfigSetup()
 	HumanMain_OnMapStart_NPC();
 	NoRandomKranz_OnMapStart_NPC();
 	Professional_Fingerer_OnMapStart_NPC();
+	SquadX_Omega_OnMapStart_NPC();
+	SquadX_Bob_OnMapStart_NPC();
+	SquadX_Whiteflower_OnMapStart_NPC();
+	SquadX_Shadowing_Darkness_OnMapStart_NPC();
+	SquadX_Master_OnMapStart_NPC();
 }
 
 void NPC_MapEnd()
@@ -2521,6 +2526,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aprilfools/3rd_april/npc_human_main.sp"
 #include "npc/aprilfools/3rd_april/npc_no_random_kranz.sp"
 #include "npc/aprilfools/3rd_april/npc_professional_fingerer.sp"
+#include "npc/aprilfools/3rd_april/npc_squad_bob.sp"
+#include "npc/aprilfools/3rd_april/npc_squad_omega.sp"
+#include "npc/aprilfools/3rd_april/npc_squad_shadowing_darkness.sp"
+#include "npc/aprilfools/3rd_april/npc_squad_whiteflower.sp"
+#include "npc/aprilfools/3rd_april/npc_squad_master.sp"
 
 #include "npc/construction/enemies/npc_eirasus.sp"
 #include "npc/construction/enemies/npc_haltera.sp"

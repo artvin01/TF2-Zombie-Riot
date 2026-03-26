@@ -7974,4 +7974,12 @@
 	{
 		"en"	"Broly"
 	}
+	"No Random Kranz V3"
+	{
+		"en"	"No Random Kranz V3"
+	}
+	"Mazeat Fabulous Squad X Elite, Solvence of Cringe"
+	{
+		"en"	"Mazeat Fabulous Squad X Elite, Solvence of Cringe"
+	}
 }
