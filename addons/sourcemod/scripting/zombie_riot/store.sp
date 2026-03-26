@@ -3787,7 +3787,7 @@ static void MenuPage(int client, int section)
 			{
 				continue;
 			}
-			else if(starterPlayer && Rogue_UnlockStore() != 1)
+			else if(starterPlayer && !Rogue_UnlockStore())
 			{
 				if(!item.Starter)
 					continue;
@@ -3935,7 +3935,7 @@ static void MenuPage(int client, int section)
 					{
 						continue;
 					}
-					else if(!item.WhiteOut && Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
+					else if(!item.WhiteOut && Rogue_UnlockStore() && !item.NPCSeller && (item.Hidden || !item.RogueAlwaysSell) && !CvarInfiniteCash.BoolValue)
 					{
 						if(Rogue_UnlockStore() > 1)
 							continue;
