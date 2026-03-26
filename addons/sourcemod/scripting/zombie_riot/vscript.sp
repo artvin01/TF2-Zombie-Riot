@@ -82,9 +82,9 @@ static ScriptHandle ExportKeyValues(KeyValues kv)
 		return null;
 	
 	ScriptHandle table = VScript_CreateTable();
-	kv.Rewind();
-	kv.GotoFirstSubKey(false);
-	KvToTable(table, kv);
+	if(kv.GotoFirstSubKey(false))
+		KvToTable(table, kv);
+	
 	return table;
 }
 
