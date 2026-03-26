@@ -5008,6 +5008,9 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 					if(level < 1 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
 						level = 1;
 
+					if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+						OwnedBefore = false;
+
 					//can be papped ? See if yes
 					ItemInfo info2;
 					
