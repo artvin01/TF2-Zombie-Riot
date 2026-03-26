@@ -67,40 +67,9 @@ static void ClotShowInteractHud(ObjectPerkMachine npc, int client)
 	BuildingVialityDisplay(client, npc.index, ButtonDisplay2, sizeof(ButtonDisplay2));
 	
 	char Display3[255];
-	switch(npc.m_iExtraLogic)
+	if(npc.m_iExtraLogic)
 	{
-		case 1:
-		{
-			FormatEx(Display3, sizeof(Display3), "%T", "Stockpile Stout", client);
-		}
-		case 2:
-		{
-			FormatEx(Display3, sizeof(Display3), "%T", "Teslar Mule", client);
-		}
-		case 3:
-		{
-			FormatEx(Display3, sizeof(Display3), "%T", "Marksman Beer", client);
-		}
-		case 4:
-		{
-			FormatEx(Display3, sizeof(Display3), "%T", "Hasty Hops", client);
-		}
-		case 5:
-		{
-			FormatEx(Display3, sizeof(Display3), "%T", "Morning Coffee", client);
-		}
-		case 6:
-		{
-			FormatEx(Display3, sizeof(Display3), "%T", "Obsidian Oaf", client);
-		}
-		case 7:
-		{
-			FormatEx(Display3, sizeof(Display3), "%T", "Regene Berry", client);
-		}
-		case 8:
-		{
-			FormatEx(Display3, sizeof(Display3), "%T", "Energy Drink", client);
-		}
+		FormatEx(Display3, sizeof(Display3), "%T", PerkNames[npc.m_iExtraLogic], client);
 	}
 	PrintCenterText(client, "%s\n%s%t\n%s", ButtonDisplay2, ButtonDisplay, "Perkmachine Tooltip", Display3);
 }
@@ -131,33 +100,16 @@ static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
 		GivePerkViaMapForce(client, npc);
 		return true;
 	}
-	char buffer[32];
+	char data[4], buffer[32];
 	Menu menu2 = new Menu(Building_ConfirmMountedAction);
 	menu2.SetTitle("%t", "Which perk do you desire?");
-		
-	FormatEx(buffer, sizeof(buffer), "%t", "Stockpile Stout");
-	menu2.AddItem("-9", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%t", "Teslar Mule");
-	menu2.AddItem("-8", buffer);
-	
-	FormatEx(buffer, sizeof(buffer), "%t", "Marksman Beer");
-	menu2.AddItem("-7", buffer);
-	
-	FormatEx(buffer, sizeof(buffer), "%t", "Hasty Hops");
-	menu2.AddItem("-6", buffer);
-	
-	FormatEx(buffer, sizeof(buffer), "%t", "Morning Coffee");
-	menu2.AddItem("-5", buffer);
-	
-	FormatEx(buffer, sizeof(buffer), "%t", "Obsidian Oaf");
-	menu2.AddItem("-4", buffer);
-	
-	FormatEx(buffer, sizeof(buffer), "%t", "Regene Berry");
-	menu2.AddItem("-3", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Energy Drink");
-	menu2.AddItem("-10", buffer);
+	for(int i = 1; i < 9; i++)
+	{
+		FormatEx(buffer, sizeof(buffer), "%t", PerkNames[i]);
+		IntToString(i, data, sizeof(data));
+		menu2.AddItem(data, buffer);
+	}
 						
 	menu2.Pagination = 0;
 	menu2.ExitButton = true;
@@ -182,94 +134,21 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 		case MenuAction_Select:
 		{
 			ResetStoreMenuLogic(client);
-			char buffer[24];
+			char buffer[4];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			int id = StringToInt(buffer);
 
 			if((GetURandomInt() % 4) == 0 && Rogue_HasNamedArtifact("System Malfunction"))
 			{
-				id = GetRandomInt(-10, -4);
+				id = GetRandomInt(1, sizeof(PerkNames) - 1);
 			}
 
-			if(id == -3)
+			int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
+			if(IsValidEntity(entity))
 			{
-				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
-				if(IsValidEntity(entity))
-				{
-					int owner = -1;
-					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, PERK_REGENE, 1);
-				}
-			}
-			else if(id == -4)
-			{
-				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
-				if(IsValidEntity(entity))
-				{
-					int owner = -1;
-					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, PERK_OBSIDIAN, 2);
-				}
-			}
-			else if(id == -5)
-			{
-				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
-				if(IsValidEntity(entity))
-				{
-					int owner = -1;
-					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, PERK_MORNING_COFFEE, 3);
-				}
-			}
-			else if(id == -6)
-			{
-				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
-				if(IsValidEntity(entity))
-				{
-					int owner = -1;
-					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, PERK_HASTY_HOPS, 4);
-				}
-			}
-			else if(id == -7)
-			{
-				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
-				if(IsValidEntity(entity))
-				{
-					int owner = -1;
-					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, PERK_MARKSMAN_BEER ,5);
-				}
-			}
-			else if(id == -8)
-			{
-				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
-				if(IsValidEntity(entity))
-				{
-					int owner = -1;
-					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, PERK_TESLAR_MULE ,6);
-				}
-			}
-			else if(id == -9)
-			{
-				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
-				if(IsValidEntity(entity))
-				{
-					int owner = -1;
-					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, PERK_STOCKPILE_STOUT,7);
-				}
-			}
-			else if(id == -10)
-			{
-				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
-				if(IsValidEntity(entity))
-				{
-					int owner = -1;
-					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, PERK_ENERGY_DRINK, 8);
-				}
+				int owner = -1;
+				owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+				Do_Perk_Machine_Logic(owner, client, entity, (1 << (id - 1)), 1);
 			}
 		}
 	}
@@ -291,9 +170,12 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	}
 
 	int PerksOn = 0;
-	if(Rogue_ColdWaterActive())
+	int perklimit = Rogue_ColdWaterActive() ? 2 : 1;
+	bool cooldown = true;
+
+	if(perklimit > 1)
 	{
-		for(int loopCheck = 0; loopCheck < 16; loopCheck++)
+		for(int loopCheck = 0; loopCheck < sizeof(PerkNames); loopCheck++)
 		{
 			if(i_CurrentEquippedPerk[client] & (1 << loopCheck))
 			{
@@ -313,11 +195,12 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	}
 	else
 	{	
-		if(Rogue_ColdWaterActive() && i_CurrentEquippedPerk[client] & what_perk)
+		if(perklimit > 1 && i_CurrentEquippedPerk[client] & what_perk)
 		{
 			i_CurrentEquippedPerk[client] &= ~what_perk;
 			i_CurrentEquippedPerkPreviously[client] &= ~what_perk;
 			CPrintToChat(client, "{crimson} %T", "You removed the current perk", client);
+			cooldown = false;
 		}
 		else
 		{
@@ -327,7 +210,7 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 				CPrintToChat(client, "{crimson} %T", "Too many Perks", client);
 				return;
 			}
-			if(!Rogue_ColdWaterActive())
+			if(perklimit < 2)
 			{
 				i_CurrentEquippedPerk[client] = 0;
 				i_CurrentEquippedPerkPreviously[client] = 0;
@@ -339,8 +222,11 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	UpdatePerkName(client);
 	
 	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
-	ApplyBuildingCollectCooldown(entity, client, 40.0);
-	Building_GiveRewardsUse(client, owner, 25, true, 0.75, true);
+	if(cooldown)
+	{
+		ApplyBuildingCollectCooldown(entity, client, 40.0);
+		Building_GiveRewardsUse(client, owner, 25, true, 0.75, true);
+	}
 
 	float pos[3];
 	float angles[3];
@@ -362,39 +248,8 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 
 void GivePerkViaMapForce(int client, ObjectPerkMachine npc)
 {
-	switch(npc.m_iExtraLogic)
+	if(npc.m_iExtraLogic)
 	{
-		case 1:
-		{
-			Do_Perk_Machine_Logic(client, client, entity, PERK_STOCKPILE_STOUT, 2);
-		}
-		case 2:
-		{
-			Do_Perk_Machine_Logic(client, client, entity, PERK_TESLAR_MULE, 2);
-		}
-		case 3:
-		{
-			Do_Perk_Machine_Logic(client, client, entity, PERK_MARKSMAN_BEER, 2);
-		}
-		case 4:
-		{
-			Do_Perk_Machine_Logic(client, client, entity, PERK_HASTY_HOPS, 2);
-		}
-		case 5:
-		{
-			Do_Perk_Machine_Logic(client, client, entity, PERK_MORNING_COFFEE, 2);
-		}
-		case 6:
-		{
-			Do_Perk_Machine_Logic(client, client, entity, PERK_OBSIDIAN, 2);
-		}
-		case 7:
-		{
-			Do_Perk_Machine_Logic(client, client, entity, PERK_REGENE, 2);
-		}
-		case 8:
-		{
-			Do_Perk_Machine_Logic(client, client, entity, PERK_ENERGY_DRINK, 2);
-		}
+		Do_Perk_Machine_Logic(client, client, npc.index, (1 << (npc.m_iExtraLogic - 1)), 2);
 	}
 }

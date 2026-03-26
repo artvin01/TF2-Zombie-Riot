@@ -513,15 +513,15 @@ methodmap ObjectGeneric < CClotBody
 			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bNoOwnerRequired"));
 		}
 	}
-	property bool m_iExtraLogic
+	property int m_iExtraLogic
 	{
-		public set(bool value)
+		public set(int value)
 		{
 			SetEntProp(this.index, Prop_Data, "m_iExtraLogic", value);
 		}
 		public get()
 		{
-			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_iExtraLogic"));
+			return GetEntProp(this.index, Prop_Data, "m_iExtraLogic");
 		}
 	}
 	property bool m_bConstructBuilding

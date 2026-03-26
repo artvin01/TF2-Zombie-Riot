@@ -31,6 +31,11 @@ float PreventRespawnsAll;
 #define PERK_TESLAR_MULE				(1 << 5)
 #define PERK_STOCKPILE_STOUT			(1 << 6)
 #define PERK_ENERGY_DRINK				(1 << 7)
+#define PERK_LOVER				(1 << 8)
+#define PERK_MARATHON			(1 << 9)
+#define PERK_SEALED				(1 << 10)
+#define PERK_BLOODY				(1 << 11)
+#define PERK_WHO				(1 << 12)
 
 #define HEAL_NO_RULES				0	 	 
 //Nothing special.

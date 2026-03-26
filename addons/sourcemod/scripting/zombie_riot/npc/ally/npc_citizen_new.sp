@@ -1221,6 +1221,11 @@ methodmap Citizen < CClotBody
 				fl_ReloadDelay[this.index] -= 0.2;
 		}
 	}
+	property int m_iGhostPlayer
+	{
+		public get()		{ return this.m_iMedkitAnnoyance; }
+		public set(int value) 	{ this.m_iMedkitAnnoyance = value; }
+	}
 	
 	public void SlowTurn(const float pos[3])
 	{
@@ -1573,8 +1578,15 @@ methodmap Citizen < CClotBody
 	}
 }
 
-stock void Citizen_PlayerReplacement(int client)
+stock void Citizen_PlayerReplacement(int client, bool disconnect)
 {
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(Citizen_IsIt(entity) && view_as<Citizen>(entity).m_iGhostPlayer == client)
+			SmiteNpcToDeath(entity);
+	}
+
 	PlayerRenameWho[client] = -1;
 	if(b_IsPlayerABot[client])
 		return;
@@ -1596,7 +1608,10 @@ stock void Citizen_PlayerReplacement(int client)
 	if(IsClientInGame(client))
 	{
 		//easy, just spawn where they disconnected!
-		Citizen_SpawnAtPoint("temp", client);
+		entity = Citizen_SpawnAtPoint("temp", client);
+		if(entity != -1 && !disconnect)
+			view_as<Citizen>(entity).m_iGhostPlayer = client;
+		
 		return;
 	}
 	//hmm, they crashed and this somehow doesnt work out...

@@ -5462,6 +5462,12 @@ void Store_ApplyAttribs(int client)
 			MovementSpeed = 419.0;
 			map.SetValue("443", 1.25);
 		}
+	
+		if(i_CurrentEquippedPerk[client] & PERK_MARATHON)
+		{
+			MovementSpeed += 15.0;
+		}
+
 		map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 	}
 

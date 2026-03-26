@@ -42,7 +42,6 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"You leveled up to Level {1}\nYou unlocked:"
-		"it"		"Hai raggiunto il Livello {1}\nHai sbloccato:"
 		"ru"		"Ваш уровень повышен до {1}-го\nВы открыли:"
 		"pl"		"Osiągnąłeś poziom {1}\nOdblokowano:"
 		"es"		"Has subido de nivel {1}\nHas desbloqueado:"
@@ -86,7 +85,6 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"Cash: {1}"
-		"it"		"Crediti: {1}"
 		"ru"		"Кредиты: {1}"
 		"pl"		"Kredyty: {1}"
 		"es"		"Dinero: {1}"
@@ -95,14 +93,12 @@
 		"pt"		"Créditos: {1}"
 		"nl"		"Krediet: {1}"
 		"chi"		"现金: {1}"
-		"it"		"Contanti: {1}"
 		"ko"		"자금: {1}"
 	}
 	"Credits_Menu"
 	{
 		"#format"	"{1:d},{2:d}"
 		"en"		"Cash: {1} (+{2})"
-		"it"		"Crediti: {1} (+{2})"
 		"ru"		"Кредиты: {1} (+{2})"
 		"pl"		"Kredyty: {1} (+{2})"
 		"es"		"Dinero: {1} (+{2})"
@@ -518,7 +514,6 @@
 		"chi"       "火箭弹"
 		"ko"		"로켓"
 		"it"		"Razzi"
-		"ko"		"로켓"
 	}
 	"Flamethrower Tank"
 	{
@@ -889,7 +884,6 @@
 		"#format"	"{1:.1f}"
 		"en" 		"This Object still has a cooldown of {1} seconds before another usage."
 		"de"		"Dieses Objekt hat noch eine Abkühlung von {1} Sekunden bevor man sie wieder benutzen kann."
-		"it"		"Questo Oggetto ha ancora un cooldown di {1} secondi prima di poterlo usare."
 		"ru"		"Этот объект перезаряжается. {1} сек. до следующего использования."
 		"pl"		"Ten przedmiot jeszcze będzie się odświerzał przez {1} sekund przed następnym użyciem"
 		"es"		"Ten paciencia, aun quedan {1} segundos para volver a usar esto"
@@ -1191,48 +1185,6 @@
 		"chi"		"！怒斩已完全蓄力！"
 		"it"		"L'ATTACCO DELL'IRA È COMPLETAMENTE CARICO!"
 		"ko"		"분노의 일격이 완전히 충전되었습니다!"
-	}
-	"Magnesis Target Immune to Knockback"
-	{
-		"en"		"Grab target is immune to knockback."
-		"it"		"Il bersaglio della presa è immune ai contraccolpi."
-		"ko"		"잡으려는 대상이 넉백 면역입니다."
-	}
-	"Magnesis Target Invulnerable"
-	{
-		"en"		"Grab target is invulnerable."
-		"it"		"Il bersaglio della presa è invulnerabile."
-		"ko"		"잡으려는 대상이 무적 상태입니다."
-	}
-	"Magnesis Target Too Strong"
-	{
-		"en"		"Grab target is too strong."
-		"it"		"L'obiettivo della presa è troppo forte."
-		"ko"		"잡으려는 대상이 너무 강력합니다."
-	}
-	"Magnesis No Target Found"
-	{
-		"en"		"No valid targets within range."
-		"it"		"Nessun bersaglio valido nel raggio d'azione."
-		"ko"		"사거리 내에 유효한 대상이 없습니다."
-	}
-	"Magnesis Already Grabbed"
-	{
-		"en"		"That enemy is already being grabbed!"
-		"it"		"Quel nemico è già stato catturato!"
-		"ko"		"그 적은 이미 잡고 있는 상태입니다!"
-	}
-	"Magnesis Throw Failed"
-	{
-		"en"		"Not enough mana to throw! Target was dropped instead."
-		"it"		"Non c'è abbastanza mana per lanciare! Il bersaglio è stato invece abbandonato."
-		"ko"		"대상을 던지기 위해 필요한 마나가 부족합니다! 그러므로 대상을 그냥 놓아줍니다."
-	}
-	"Magnesis Grabbed Too Soon"
-	{
-		"en"		"That enemy was grabbed too recently!"
-		"it"		"Quel nemico è stato catturato troppo di recente!"
-		"ko"		"그 적은 최근에 능력으로 잡혔었습니다!"
 	}
 	"Magnesis Standing On Target"
 	{
@@ -1555,6 +1507,46 @@
 		"en" 		"Energy Drink! Gain a 15％ cooldown reduction for Weapons & Extra Gear!"
 		"it"		"Bevanda energetica! Riduzione del cooldown di 15％ per le armi e gli equipaggiamenti extra!"
 		"ko" 		"에너지 드링크! 무기와 추가 장비들의 능력 쿨타임 15％ 감소!"
+	}
+	"Lover's Wine"
+	{
+		"en"	"Lover's Wine"
+	}
+	"Lover's Wine Received"
+	{
+		"en"	"Lover's Wine! Prevents all self-damage, falling damage, and friendy fire."
+	}
+	"Marathon Shake"
+	{
+		"en"	"Marathon Shake"
+	}
+	"Marathon Shake Received"
+	{
+		"en"	"Marathon Shake! Gain +5％ movement speed."
+	}
+	"Sealed Boba"
+	{
+		"en"	"Sealed Boba"
+	}
+	"Sealed Boba Received"
+	{
+		"en"	"Sealed Boba! Prevents losing perks and mounted buildings on death."
+	}
+	"Bloody Ale"
+	{
+		"en"	"Bloody Ale"
+	}
+	"Bloody Ale Received"
+	{
+		"en"	"Bloody Ale! Decreases enemy aggression towards you."
+	}
+	"Who Float"
+	{
+		"en"	"Who Float"
+	}
+	"Who Float Received"
+	{
+		"en"	"Who Float! Spawn a temporary ally during your absence."
 	}
 	"Freeze Bomb Activated"
 	{

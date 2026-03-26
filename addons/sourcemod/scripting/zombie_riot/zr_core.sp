@@ -106,7 +106,13 @@ public const char PerkNames[][] =
 	"Marksman Beer",
 	"Teslar Mule",
 	"Stockpile Stout",
-	"Energy Drink"
+	"Energy Drink",
+
+	"Lover's Wine",
+	"Marathon Shake",
+	"Sealed Boba",
+	"Bloody Ale",
+	"Who Float"
 };
 
 public const char PerkNames_Received[][] =
@@ -119,7 +125,13 @@ public const char PerkNames_Received[][] =
 	"Marksman Beer Received",
 	"Teslar Mule Received",
 	"Stockpile Stout Received",
-	"Energy Drink Received"
+	"Energy Drink Received",
+
+	"Lover's Wine Received",
+	"Marathon Shake Received",
+	"Sealed Boba Received",
+	"Bloody Ale Received",
+	"Who Float Received"
 };
 
 public const char PerkNames_two_Letter[][] =
@@ -132,7 +144,13 @@ public const char PerkNames_two_Letter[][] =
 	"MB",
 	"TM",
 	"SS",
-	"ED"
+	"ED",
+	
+	"LW",
+	"MS",
+	"SB",
+	"BA",
+	"WF"
 };
 
 enum
@@ -1220,7 +1238,7 @@ void ZR_ClientPutInServer(int client)
 
 void ZR_ClientDisconnect(int client)
 {
-	Citizen_PlayerReplacement(client);
+	Citizen_PlayerReplacement(client, true);
 	Native_ZR_OnGetXP(client, XP[client], 1);
 	SetClientTutorialMode(client, false);
 	SetClientTutorialStep(client, 0);

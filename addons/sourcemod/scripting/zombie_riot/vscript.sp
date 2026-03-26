@@ -76,6 +76,44 @@ void VScript_LibraryRemoved(const char[] name)
 		Loaded = false;
 }
 
+static ScriptHandle ExportKeyValues(KeyValues kv)
+{
+	if(kv == null)
+		return null;
+	
+	ScriptHandle table = VScript_CreateTable();
+	kv.Rewind();
+	kv.GotoFirstSubKey(false);
+	KvToTable(table, kv);
+	return table;
+}
+
+static void KvToTable(ScriptHandle table, KeyValues kv)
+{
+	char key[PLATFORM_MAX_PATH], value[PLATFORM_MAX_PATH];
+	do
+	{
+		if(kv.GetSectionName(key, sizeof(key)))
+		{
+			if(kv.GotoFirstSubKey(false))
+			{
+				ScriptHandle subtable = VScript_CreateTable();
+				KvToTable(subtable, kv);
+				table.SetHScript(key, subtable);
+				delete subtable;
+			}
+			else
+			{
+				kv.GetString(key, value, sizeof(value));
+				table.SetString(key, value);
+			}
+		}
+	}
+	while(kv.GotoNextKey(false));
+
+	kv.GoBack();
+}
+
 public void VScript_OnVMInitialized()
 {
 	VScript_Run("function _ZRAddToStoreTable(table) {\n" ...
@@ -96,8 +134,11 @@ static void SetupVScript()
 	VScript_RegisterFunction("ZR_RandomizeNPCStore", VRandomizeNPCStore, "(flags, amount, override)", ScriptField_Void, ScriptField_Int, ScriptField_Int, ScriptField_Float);
 	VScript_RegisterFunction("ZR_GetGlobalCash", VGetGlobalCash, "()", ScriptField_Int);
 	VScript_RegisterFunction("ZR_GiveClientAmmo", VGiveClientAmmo, "(client, index, amount)", ScriptField_Void, ScriptField_HScript, ScriptField_Int, ScriptField_Int);
-	VScript_RegisterFunction("ZR_PapModeOnly", VPapModeMapOnly, "(mode)", ScriptField_Int);
-	VScript_RegisterFunction("ZR_PerkModeOnly", VPerkModeOnly, "(mode)", ScriptField_Int);
+	VScript_RegisterFunction("ZR_PapModeOnly", VPapModeMapOnly, "(mode)", ScriptField_Void, ScriptField_Int);
+	VScript_RegisterFunction("ZR_PerkModeOnly", VPerkModeOnly, "(mode)", ScriptField_Void, ScriptField_Int);
+	VScript_RegisterFunction("ZR_HasClientPerk", VHasClientPerk, "(client, perk)", ScriptField_Bool, ScriptField_HScript, ScriptField_Int);
+	VScript_RegisterFunction("ZR_GiveClientPerk", VGiveClientPerk, "(client, perk, entity)", ScriptField_Void, ScriptField_HScript, ScriptField_Int, ScriptField_HScript);
+	VScript_RegisterFunction("ZR_ShowPackMenu", VShowPackMenu, "(client)", ScriptField_Void, ScriptField_HScript);
 }
 
 void VScript_SetupStoreTable()
@@ -247,58 +288,82 @@ static void VGiveClientAmmo(ScriptContext context)
 	context.RaiseException("Invalid player entity");
 }
 
-static ScriptHandle ExportKeyValues(KeyValues kv)
-{
-	if(kv == null)
-		return null;
-	
-	ScriptHandle table = VScript_CreateTable();
-	kv.Rewind();
-	kv.GotoFirstSubKey(false);
-	KvToTable(table, kv);
-	return table;
-}
-
-static void KvToTable(ScriptHandle table, KeyValues kv)
-{
-	char key[PLATFORM_MAX_PATH], value[PLATFORM_MAX_PATH];
-	do
-	{
-		if(kv.GetSectionName(key, sizeof(key)))
-		{
-			if(kv.GotoFirstSubKey(false))
-			{
-				ScriptHandle subtable = VScript_CreateTable();
-				KvToTable(subtable, kv);
-				table.SetHScript(key, subtable);
-				delete subtable;
-			}
-			else
-			{
-				kv.GetString(key, value, sizeof(value));
-				table.SetString(key, value);
-			}
-		}
-	}
-	while(kv.GotoNextKey(false));
-
-	kv.GoBack();
-}
-
-
 //must be set everytime the map reloads
 static void VPapModeMapOnly(ScriptContext context)
 {
 	//1 is buildings only
 	//0 is default via menu
-	int ModeApply = context.GetArgInt(1);
+	int ModeApply = context.GetArgInt(0);
 	PapModeDo = ModeApply;
 }
+
 //must be set everytime the map reloads
 static void VPerkModeOnly(ScriptContext context)
 {
 	//1 is no perk limit
 	//0 is normal perk logic
-	int ModeApply = context.GetArgInt(1);
+	int ModeApply = context.GetArgInt(0);
 	PerkModeDo = ModeApply;
+}
+
+static void VGiveClientPerk(ScriptContext context)
+{
+	ScriptHandle hclient = context.GetArgHScript(0);
+	if(hclient)
+	{
+		int client = VScript_HScriptToEntity(hclient);
+		if(client > 0 && client <= MaxClients)
+		{
+			int index = context.GetArgInt(1);
+			int entity = -1;
+			
+			ScriptHandle hentity = context.GetArgHScript(2);
+			if(hentity)
+				entity = VScript_HScriptToEntity(hentity);
+			
+			ObjectPerkMachine npc = view_as<ObjectPerkMachine>(entity);
+			npc.m_iExtraLogic = index;
+			npc.m_bNoOwnerRequired = true;
+			GivePerkViaMapForce(client, npc);
+			return;
+		}
+	}
+
+	context.RaiseException("Invalid player entity");
+}
+
+static void VHasClientPerk(ScriptContext context)
+{
+	ScriptHandle hclient = context.GetArgHScript(0);
+	if(hclient)
+	{
+		int client = VScript_HScriptToEntity(hclient);
+		if(client > 0 && client <= MaxClients)
+		{
+			int index = context.GetArgInt(1);
+			context.SetReturnBool(view_as<bool>(i_CurrentEquippedPerk[client] & (1 << (index - 1))));
+			return;
+		}
+	}
+
+	context.RaiseException("Invalid player entity");
+}
+
+static void VShowPackMenu(ScriptContext context)
+{
+	ScriptHandle hclient = context.GetArgHScript(0);
+	if(hclient)
+	{
+		int client = VScript_HScriptToEntity(hclient);
+		if(client > 0 && client <= MaxClients)
+		{
+			int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+			if(weapon != -1)
+				Store_PackMenu(client, StoreWeapon[weapon], -1, client);
+			
+			return;
+		}
+	}
+
+	context.RaiseException("Invalid player entity");
 }
