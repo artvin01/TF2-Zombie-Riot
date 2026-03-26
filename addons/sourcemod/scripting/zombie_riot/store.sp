@@ -1152,9 +1152,9 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 			{
 				for(int a; a < filters; a++)
 				{
-					for(int b; b < whitecount; b++)
+					for(int b; b < blackcount; b++)
 					{
-						if(StrEqual(buffers[a], whitelist[b], false))
+						if(StrEqual(buffers[a], blacklist[b], false))
 						{
 							item.Hidden = true;
 							break;
