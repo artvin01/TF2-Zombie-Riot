@@ -3787,7 +3787,7 @@ static void MenuPage(int client, int section)
 			{
 				continue;
 			}
-			else if(starterPlayer && !Rogue_UnlockStore())
+			else if(starterPlayer && Rogue_UnlockStore() != 1)
 			{
 				if(!item.Starter)
 					continue;
