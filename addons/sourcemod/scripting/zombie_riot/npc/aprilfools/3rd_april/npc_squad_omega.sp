@@ -199,7 +199,7 @@ static void Internal_ClotThink(int iNPC)
 		float SpawnPos[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SpawnPos);
 		npc.m_flPowAbilityCD = GetGameTime(npc.index) + 20.0;
-		int spawn_index = NPC_CreateByName("npc_vincent", -1, SpawnPos, {0.0,0.0,0.0}, GetTeam(npc.index), "spawnomegahelp");
+		NPC_CreateByName("npc_vincent", -1, SpawnPos, {0.0,0.0,0.0}, GetTeam(npc.index), "spawnomegahelp");
 		switch(GetRandomInt(0,4))
 		{
 			case 0:
