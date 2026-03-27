@@ -541,7 +541,17 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 		static float hullcheckmaxs_Player_Again[3];
 		static float hullcheckmins_Player_Again[3];
 		
-		if(b_IsGiant[npc.index])
+		if(f3_CustomMinMaxBoundingBox[npc.index][1] != 0.0)
+		{
+			hullcheckmaxs_Player_Again[0] = f3_CustomMinMaxBoundingBox[npc.index][0];
+			hullcheckmaxs_Player_Again[1] = f3_CustomMinMaxBoundingBox[npc.index][1];
+			hullcheckmaxs_Player_Again[2] = f3_CustomMinMaxBoundingBox[npc.index][2];
+
+			hullcheckmins_Player_Again[0] = -f3_CustomMinMaxBoundingBox[npc.index][0];
+			hullcheckmins_Player_Again[1] = -f3_CustomMinMaxBoundingBox[npc.index][1];
+			hullcheckmins_Player_Again[2] = 0.0;	
+		}
+		else if(b_IsGiant[npc.index])
 		{
 			hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 120.0 } );
 			hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
