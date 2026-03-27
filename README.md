@@ -98,6 +98,7 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 
 If you want to compile, this include is needed!
 - [More Colours](https://github.com/DoctorMcKay/sourcemod-plugins)
+- [IntMap](https://github.com/Ilusion9/intmap-inc-sm)
 - SourcePawn Compiler 1.12.0.7031 (Zr will compile much faster at this version. for a server release, use latest compiler, for testing, 1.12.0.7031.)
 
 

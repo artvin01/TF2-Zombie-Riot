@@ -587,7 +587,7 @@ public Action Fury_Logic(Handle timelytimer, int id)
 			}
 		}
 
-		float dmgToTake = Fury_CurrentHealthDrain[client];
+		float dmgToTake = (i_CurrentEquippedPerk[client] & PERK_LOVER) ? 0.0 : Fury_CurrentHealthDrain[client];
 		if (IsInvuln(client))
 			dmgToTake *= Fury_HPDrain_UberMult[Fury_Tier[client]];
 

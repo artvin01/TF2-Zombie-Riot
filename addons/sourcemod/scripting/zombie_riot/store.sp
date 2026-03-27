@@ -1060,6 +1060,8 @@ void Store_ConfigSetup()
 	
 //	delete StoreBalanceLog;
 	StoreItems = new ArrayList(sizeof(Item));
+
+	VScript_SetupStoreTable();
 	
 	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons");
@@ -1150,9 +1152,9 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 			{
 				for(int a; a < filters; a++)
 				{
-					for(int b; b < whitecount; b++)
+					for(int b; b < blackcount; b++)
 					{
-						if(StrEqual(buffers[a], whitelist[b], false))
+						if(StrEqual(buffers[a], blacklist[b], false))
 						{
 							item.Hidden = true;
 							break;
@@ -1165,7 +1167,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 			}
 		}
 	}
-	
+
 	item.Starter = view_as<bool>(kv.GetNum("starter"));
 	item.WhiteOut = view_as<bool>(kv.GetNum("whiteout"));
 	item.IgnoreSlots = view_as<bool>(kv.GetNum("ignore_equip_region"));
@@ -1179,6 +1181,12 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 	kv.GetSectionName(item.Name, sizeof(item.Name));
 	item.Name[0] = CharToUpper(item.Name[0]);
 	
+	// VSript Table
+	kv.SetNum("parent", item.Section);
+	kv.SetNum("hidden", item.Hidden ? 1 : 0);
+	kv.SetNum("rogue_always_sell", item.RogueAlwaysSell ? 1 : 0);
+	kv.SetNum("nokit", item.NoKit ? 1 : 0);
+
 	if(isItem)
 	{
 		item.Scale = kv.GetNum("scale");
@@ -1193,6 +1201,10 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 		item.NPCWeapon = kv.GetNum("npc_type", -1);
 		item.NPCWeaponAlways = item.NPCWeapon > 9;
 		item.ChildKit = hiddenType == 2;
+		
+		// VSript Table
+		kv.SetNum("childkit", hiddenType == 2 ? 1 : 0);
+		VScript_AddStoreTable(kv, item.Name);
 
 		if(!item.ChildKit)
 		{
@@ -1214,7 +1226,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 		ItemInfo info;
 		info.SetupKV(kv, item.Name);
 		item.ItemInfos.PushArray(info);
-			
+
 		if(item.ParentKit)
 		{
 			if(kv.GotoFirstSubKey())
@@ -1245,6 +1257,9 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 	}
 	else if(kv.GotoFirstSubKey())
 	{
+		// VSript Table
+		VScript_AddStoreTable(kv, item.Name);
+
 		item.Slot = -1;
 		int sec = StoreItems.PushArray(item);
 		
@@ -1698,6 +1713,17 @@ int Store_HasNamedItem(int client, const char[] name)
 	
 	ThrowError("Unknown item name %s", name);
 	return 0;
+}
+
+int Store_HasIndexItem(int client, int index)
+{
+	int length = StoreItems.Length;
+	if(index < 0 || index >= length)
+		return 0;
+	
+	static Item item;
+	StoreItems.GetArray(index, item);
+	return item.Owned[client];
 }
 
 void Store_SetNamedItem(int client, const char[] name, int amount)
@@ -2800,17 +2826,13 @@ void Store_DiscountNamedItem(const char[] name, int timed = 0, float discount = 
 	PrintToChatAll("ERROR: Store_DiscountNamedItem::%s:%d:%f unknown item", name, timed, discount);
 }
 
-#define ZR_STORE_RESET (1 << 1) //This will reset the entire store to default
-#define ZR_STORE_DEFAULT_SALE (1 << 2) //This  will reset the current normally sold items, and put up a new set of items
-#define ZR_STORE_WAVEPASSED (1 << 3) //any storelogic that should be called when a wave passes
-
 void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -1.0)
 {
 	int amount;
 	int length = StoreItems.Length;
 	int[] indexes = new int[length];
 	bool rogue = Rogue_Mode();
-	bool unlock = Rogue_UnlockStore();
+	int unlock = Rogue_UnlockStore();
 
 	static Item item;
 	static ItemInfo info;
@@ -3803,6 +3825,10 @@ static void MenuPage(int client, int section)
 				// Block showing items if only sell
 				continue;
 			}
+
+			//do not display pap in the menu if its building only.
+			if(PapModeDo == PAP_MODE_BUILDING_ONLY && item.Internal_ClickEnhance)
+				continue;
 			
 			if (item.ViewTeutonOnly == VIEW_TEUTON_ONLY && TeutonType[client] == 0)
 				continue;
@@ -3909,8 +3935,11 @@ static void MenuPage(int client, int section)
 					{
 						continue;
 					}
-					else if(!item.WhiteOut && Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
+					else if(!item.WhiteOut && Rogue_UnlockStore() && !item.NPCSeller && (item.Hidden || !item.RogueAlwaysSell) && !CvarInfiniteCash.BoolValue)
 					{
+						if(Rogue_UnlockStore() > 1)
+							continue;
+						
 						Format(buffer, sizeof(buffer), "%s [↑]", info.Custom_Name);
 					}
 					else if(!item.WhiteOut && info.Cost_Unlock > 1000 && !Rogue_UnlockStore() && info.Cost_Unlock > CurrentCash)
@@ -4979,6 +5008,9 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 					if(level < 1 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
 						level = 1;
 
+					if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+						OwnedBefore = false;
+
 					//can be papped ? See if yes
 					ItemInfo info2;
 					
@@ -5433,6 +5465,12 @@ void Store_ApplyAttribs(int client)
 			MovementSpeed = 419.0;
 			map.SetValue("443", 1.25);
 		}
+	
+		if(i_CurrentEquippedPerk[client] & PERK_MARATHON)
+		{
+			MovementSpeed += 15.0;
+		}
+
 		map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 	}
 
@@ -6560,6 +6598,40 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	return entity;
 }
 
+void Store_GiveItemIndex(int client, int index, int owned = 1, bool equipped = true, int sell = 0)
+{
+	if(index < 0 || index >= StoreItems.Length)
+		return;
+	
+	static Item item;
+	StoreItems.GetArray(index, item);
+	Store_EquipSlotCheck(client, item);
+
+	int level = owned - 1;
+	
+	static ItemInfo info;
+	for(; level >= 0; level--)
+	{
+		if(item.GetItemInfo(level, info))
+			break;
+	}
+	
+	item.Owned[client] = level + 1;
+	item.Equipped[client] = equipped;
+	item.BuyPrice[client] = sell;
+	item.Sell[client] = sell;
+	item.BuyWave[client] = -1;
+	StoreItems.SetArray(index, item);
+
+	if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
+	{
+		CheckMultiSlots(client);
+		Manual_Impulse_101(client, GetClientHealth(client));
+		Store_ApplyAttribs(client);
+		Store_GiveAll(client, GetClientHealth(client));
+	}
+}
+
 int Store_GiveSpecificItem(int client, const char[] name, bool UpdateSlots = true, int CompareWeaponArray = -1)
 {
 	static Item item;
@@ -6862,6 +6934,9 @@ static void ItemCost(int client, Item item, int &cost)
 
 	if(Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
 	{
+		if(Rogue_UnlockStore() > 1)
+			cost = 999999;
+		
 		cost = RoundToNearest(float(cost) * 1.2); 
 	}
 	static ItemInfo info;

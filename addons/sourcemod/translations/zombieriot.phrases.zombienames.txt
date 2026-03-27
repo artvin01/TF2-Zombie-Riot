@@ -6276,6 +6276,10 @@
 	{
 		"en"		"Rollermine"
 	}
+	"Nova Prospekt Overseer"
+	{
+		"en"		"Nova Prospekt Overseer"
+	}
 	"Omega"
 	{
 		"en"		"Omega"

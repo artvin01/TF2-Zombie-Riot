@@ -1221,6 +1221,11 @@ methodmap Citizen < CClotBody
 				fl_ReloadDelay[this.index] -= 0.2;
 		}
 	}
+	property int m_iGhostPlayer
+	{
+		public get()		{ return this.m_iMedkitAnnoyance; }
+		public set(int value) 	{ this.m_iMedkitAnnoyance = value; }
+	}
 	
 	public void SlowTurn(const float pos[3])
 	{
@@ -1573,8 +1578,15 @@ methodmap Citizen < CClotBody
 	}
 }
 
-stock void Citizen_PlayerReplacement(int client)
+stock void Citizen_PlayerReplacement(int client, bool disconnect)
 {
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(Citizen_IsIt(entity) && view_as<Citizen>(entity).m_iGhostPlayer == client)
+			SmiteNpcToDeath(entity);
+	}
+
 	PlayerRenameWho[client] = -1;
 	if(b_IsPlayerABot[client])
 		return;
@@ -1596,7 +1608,10 @@ stock void Citizen_PlayerReplacement(int client)
 	if(IsClientInGame(client))
 	{
 		//easy, just spawn where they disconnected!
-		Citizen_SpawnAtPoint("temp", client);
+		entity = Citizen_SpawnAtPoint("temp", client);
+		if(entity != -1 && !disconnect)
+			view_as<Citizen>(entity).m_iGhostPlayer = client;
+		
 		return;
 	}
 	//hmm, they crashed and this somehow doesnt work out...
@@ -2519,7 +2534,7 @@ int Citizen_Count()
 			Citizen npc = view_as<Citizen>(i);
 			//BARNEY NO SCALE BAD !!!!!!!!!!!!!!!!!!!!!! (and alyx ig)
 			//and temp rebels!
-			if(!npc.m_bHero && TempRebel[i])
+			if(TempRebel[i] && !view_as<Citizen>(i).m_iGhostPlayer)
 				count++;
 		}
 	}
@@ -2666,6 +2681,15 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			npc.SetActivity("ACT_PICKUP_RACK", 0.0);
 			PendingGesture[npc.index] = 0;
+		}
+	}
+
+	if(TempRebel[npc.index] && npc.m_iGhostPlayer && IsClientInGame(npc.m_iGhostPlayer))
+	{
+		if(dieingstate[npc.m_iGhostPlayer] == 0 && TeutonType[npc.m_iGhostPlayer] == TEUTON_NONE)
+		{
+			SmiteNpcToDeath(npc.index);
+			return;
 		}
 	}
 
