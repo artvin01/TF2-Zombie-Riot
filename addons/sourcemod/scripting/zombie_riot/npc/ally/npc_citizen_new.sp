@@ -2534,7 +2534,7 @@ int Citizen_Count()
 			Citizen npc = view_as<Citizen>(i);
 			//BARNEY NO SCALE BAD !!!!!!!!!!!!!!!!!!!!!! (and alyx ig)
 			//and temp rebels!
-			if(!npc.m_bHero && TempRebel[i])
+			if(TempRebel[i] && !view_as<Citizen>(i).m_iGhostPlayer)
 				count++;
 		}
 	}
@@ -2681,6 +2681,15 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			npc.SetActivity("ACT_PICKUP_RACK", 0.0);
 			PendingGesture[npc.index] = 0;
+		}
+	}
+
+	if(TempRebel[npc.index] && npc.m_iGhostPlayer && IsClientInGame(npc.m_iGhostPlayer))
+	{
+		if(dieingstate[npc.m_iGhostPlayer] == 0 && TeutonType[npc.m_iGhostPlayer] == TEUTON_NONE)
+		{
+			SmiteNpcToDeath(npc.index);
+			return;
 		}
 	}
 
