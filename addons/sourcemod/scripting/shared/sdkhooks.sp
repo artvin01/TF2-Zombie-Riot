@@ -2298,6 +2298,9 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				DownsLeft = 3;
 			if((SpecterCheckIfAutoRevive(victim) || i_AmountDowned[victim] < (DownsLeft + Dungeon_DownedBonus())) && !HasSpecificBuff(victim, "Nightmare Terror"))
 			{
+				if(i_CurrentEquippedPerk[victim] & PERK_WHO)
+					Citizen_PlayerReplacement(victim, false);
+				
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 12");
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
@@ -2316,9 +2319,6 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				*/
 
 				Dungeon_PlayerDowned(victim);
-
-				if(i_CurrentEquippedPerk[victim] & PERK_WHO)
-					Citizen_PlayerReplacement(victim, false);
 				
 				ApplyRapidSuturing(victim);
 				ExtinguishTargetDebuff(victim);
