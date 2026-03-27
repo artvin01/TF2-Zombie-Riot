@@ -7986,4 +7986,20 @@
 	{
 		"en"	"Mazeat Fabulous Squad X Elite, Solvence of Cringe"
 	}
+	"Bob The First Squad"
+	{
+		"en"	"Bob The First"
+	}
+	"Omega Squad"
+	{
+		"en"	"Omega"
+	}
+	"Whiteflower Squad"
+	{
+		"en"	"Whiteflower"
+	}
+	"Shadowing Darkness Squad"
+	{
+		"en"	"Shadowing Darkness"
+	}
 }

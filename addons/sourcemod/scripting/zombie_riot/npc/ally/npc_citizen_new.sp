@@ -2531,7 +2531,7 @@ int Citizen_Count()
 	{
 		if(i_NpcInternalId[i] == NPCId && GetTeam(i) == TFTeam_Red)
 		{
-			Citizen npc = view_as<Citizen>(i);
+		//	Citizen npc = view_as<Citizen>(i);
 			//BARNEY NO SCALE BAD !!!!!!!!!!!!!!!!!!!!!! (and alyx ig)
 			//and temp rebels!
 			if(TempRebel[i] && !view_as<Citizen>(i).m_iGhostPlayer)

@@ -32,6 +32,13 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_slice_3.wav",
 	"weapons/blade_slice_4.wav",
 };
+static const char g_ChargeDashSound[][] =
+{
+	"weapons/vaccinator_charge_tier_01.wav",
+	"weapons/vaccinator_charge_tier_02.wav",
+	"weapons/vaccinator_charge_tier_03.wav",
+	"weapons/vaccinator_charge_tier_04.wav",
+};
 
 
 int SquadX_WhiteflowerId;
@@ -43,10 +50,10 @@ int SquadX_WhiteflowerIDReturn()
 void SquadX_Whiteflower_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Whiteflower");
+	strcopy(data.Name, sizeof(data.Name), "Whiteflower Squad");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_squad_whiteflower");
 	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = true;
+	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
@@ -56,11 +63,13 @@ void SquadX_Whiteflower_OnMapStart_NPC()
 
 static void ClotPrecache()
 {
+	PrecacheSoundCustom("rpg_fortress/enemy/whiteflower_dash.mp3");
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSoundCustom(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_ChargeDashSound)); i++) { PrecacheSound(g_ChargeDashSound[i]); }
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -89,6 +98,11 @@ methodmap SquadX_Whiteflower < CClotBody
 	{
 		public get()							{ return i_AttacksTillReload[this.index]; }
 		public set(int TempValueForProperty) 	{ i_AttacksTillReload[this.index] = TempValueForProperty; }
+	}
+	property int m_iWhatAbilityDo
+	{
+		public get()							{ return i_MedkitAnnoyance[this.index]; }
+		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
 	}
 
 	public void PlayIdleAlertSound() 
@@ -125,6 +139,16 @@ methodmap SquadX_Whiteflower < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
+	public void PlayDashPrepareSound() 
+	{
+		EmitSoundToAll(g_ChargeDashSound[GetRandomInt(0, sizeof(g_ChargeDashSound) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	
+	property float m_flWasAirbornInJump
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
 	
 	
 	public SquadX_Whiteflower(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -152,6 +176,7 @@ methodmap SquadX_Whiteflower < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+		npc.m_bDissapearOnDeath = true;
 
 		
 		npc.StartPathing();
@@ -205,6 +230,10 @@ static void Internal_ClotThink(int iNPC)
 
 	npc.PlayIdleAlertSound();
 
+	if(Squad_WhiteflowerDash(npc, GetGameTime(npc.index)))
+	{
+		return;
+	}
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -221,10 +250,6 @@ static void Internal_ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(!IsValidEntity(RaidBossActive))
-	{
-		RaidBossActive = EntIndexToEntRef(npc.index);
-	}
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -375,6 +400,7 @@ static int Clot_SelfDefense(SquadX_Whiteflower npc, float gameTime, int target, 
 								
 							
 							// Hit particle
+							npc.m_flPowAbilityCD -= 1.0;
 
 							if(IsValidClient(targetTrace))
 							{
@@ -435,4 +461,108 @@ static int Clot_SelfDefense(SquadX_Whiteflower npc, float gameTime, int target, 
 		}	
 	}
 	return 0;
+}
+
+
+//Wwalk Cycle offset is 200
+bool Squad_WhiteflowerDash(SquadX_Whiteflower npc, float gameTime)
+{
+	if (npc.m_flWasAirbornInJump)
+	{
+		if(npc.IsOnGround() && npc.m_flWasAirbornInJump < gameTime)
+		{
+			b_ThisEntityIgnoredBeingCarried[npc.index] = false;
+			npc.AddGesture("ACT_WHITEFLOWER_DASH_LAND", .SetGestureSpeed = 2.0);
+			npc.m_flWasAirbornInJump = 0.0;
+			ExtinguishTarget(npc.index);
+		}
+		else
+		{
+			WhiteflowerKickLogic(npc.index);
+		}
+	}
+	if(npc.m_iWhatAbilityDo != 1 && npc.m_iWhatAbilityDo != 0)
+		return false;
+	if(npc.m_flDoingAnimation < gameTime)
+	{
+
+		if(npc.m_flPowAbilityCD < gameTime)
+		{
+			if(!IsValidEnemy(npc.index, npc.m_iTarget))
+				return false;
+			if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+				return false;
+			npc.m_flPowAbilityCD = gameTime + 8.0;
+			npc.m_flDoingAnimation = gameTime + 0.35;
+			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 200;
+			npc.SetActivity("ACT_WHITEFLOWER_IDLE");
+			npc.SetPlaybackRate(0.0);
+			npc.m_flSpeed = 0.0;
+			npc.StopPathing();
+			npc.m_iWhatAbilityDo = 1;
+			IgniteTargetEffect(npc.index);
+			float flPos[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+			flPos[2] += 70.0;
+			int particler = ParticleEffectAt(flPos, "scout_dodge_blue", 1.0);
+			SetParent(npc.index, particler);
+			npc.PlayDashPrepareSound();
+		}
+	}
+	if(npc.m_iWhatAbilityDo != 1)
+		return false;
+		
+	if(npc.m_flDoingAnimation < gameTime)
+	{
+		int WhichEnemyToJump = npc.m_iTarget;
+
+		if(IsValidEntity(WhichEnemyToJump))
+		{
+			float WorldSpaceCenterVec[3]; 
+			WorldSpaceCenter(WhichEnemyToJump, WorldSpaceCenterVec);
+			npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
+		}
+		//We want to jump at the enemy the moment we are allowed to!
+		if(npc.m_flDoingAnimation < gameTime)
+		{
+			npc.m_flDoingAnimation = 0.0;
+			if(IsValidEntity(WhichEnemyToJump))
+			{
+				float WorldSpaceCenterVec[3]; 
+				float WorldSpaceCenterVecSelf[3]; 
+				WorldSpaceCenter(WhichEnemyToJump, WorldSpaceCenterVec);
+				WorldSpaceCenter(npc.index, WorldSpaceCenterVecSelf);
+
+				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenterVecSelf, WorldSpaceCenterVec);
+				float SpeedToPredict = flDistanceToTarget * 2.0;
+
+				PredictSubjectPositionForProjectiles(npc, WhichEnemyToJump, SpeedToPredict, _,WorldSpaceCenterVec);
+				//da jump!
+				npc.m_flDoingAnimation = gameTime + 0.45;
+				WorldSpaceCenterVec[2] += 15.0;
+				PluginBot_Jump(npc.index, WorldSpaceCenterVec);
+				f_CheckIfStuckPlayerDelay[npc.index] = GetGameTime() + 1.0;
+				b_ThisEntityIgnoredBeingCarried[npc.index] = true;
+				ApplyStatusEffect(npc.index, npc.index, "Intangible", 1.0);
+				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				Whiteflower_Resetb_TouchedEnemyTarget();
+				npc.m_flWasAirbornInJump = gameTime + 0.5;
+				EmitCustomToAll("rpg_fortress/enemy/whiteflower_dash.mp3", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0, 100);
+				IgniteTargetEffect(npc.index);
+				if(npc.m_iChanged_WalkCycle != 7) 	
+				{
+					npc.m_bisWalking = false;
+					npc.m_iChanged_WalkCycle = 7;
+					npc.SetActivity("ACT_WHITEFLOWER_DASH_FLOAT");
+					npc.AddGesture("ACT_WHITEFLOWER_DASH_START");
+					npc.m_flSpeed = 0.0;
+					npc.StopPathing();
+				}
+			}
+		}
+		npc.m_iWhatAbilityDo = 0;
+		npc.m_flDoingAnimation = gameTime + 1.0;
+	}
+	return true;
 }
