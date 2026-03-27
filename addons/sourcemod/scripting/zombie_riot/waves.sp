@@ -2951,21 +2951,53 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 				}
 				else if(wasLastMann && !Rogue_Mode() && round.Waves.Length)
 				{
-					Cooldown = GetGameTime() + 45.0;
+					char buffer[128];
+					zr_tagblacklist.GetString(buffer, sizeof(buffer));
+					if(StrContains(buffer, "fools26", false) != -1)
+					{
 
-					SpawnTimer(45.0);
-					CreateTimer(45.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+						Cooldown = GetGameTime() + 5.0;
+
+						SpawnTimer(5.0);
+						CreateTimer(5.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+
+						SPrintToChatAll("You were given extra 5 seconds to prepare...");
+					}
+					else
+					{
+						Cooldown = GetGameTime() + 45.0;
+
+						SpawnTimer(45.0);
+						CreateTimer(45.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+
+						SPrintToChatAll("You were given extra 45 seconds to prepare...");
+					}
 					
-					SPrintToChatAll("You were given extra 45 seconds to prepare...");
 				}
 				else if(GiveBreakForPlayers && !Rogue_Mode() && round.Waves.Length)
-				{
-					Cooldown = GetGameTime() + 30.0;
+				{					
+					char buffer[128];
+					zr_tagblacklist.GetString(buffer, sizeof(buffer));
+					if(StrContains(buffer, "fools26", false) != -1)
+					{
 
-					SpawnTimer(30.0);
-					CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-					
-					SPrintToChatAll("You were given extra 30 seconds to prepare, as most of your team died......");
+						Cooldown = GetGameTime() + 5.0;
+
+						SpawnTimer(5.0);
+						CreateTimer(5.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+
+						SPrintToChatAll("You were given extra 5 seconds to prepare, as most of your team died......");
+					}
+					else
+					{
+						Cooldown = GetGameTime() + 30.0;
+	
+						SpawnTimer(30.0);
+						CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+						
+						SPrintToChatAll("You were given extra 30 seconds to prepare, as most of your team died......");
+						
+					}
 				}
 				else
 				{

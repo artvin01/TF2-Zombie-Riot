@@ -144,7 +144,7 @@ static void SetupVScript()
 	VScript_RegisterFunction("ZR_PerkModeOnly", VPerkModeOnly, "(mode)", ScriptField_Void, ScriptField_Int);
 	VScript_RegisterFunction("ZR_HasClientPerk", VHasClientPerk, "(client, perk)", ScriptField_Bool, ScriptField_HScript, ScriptField_Int);
 	VScript_RegisterFunction("ZR_GiveClientPerk", VGiveClientPerk, "(client, perk, entity)", ScriptField_Void, ScriptField_HScript, ScriptField_Int, ScriptField_HScript);
-	VScript_RegisterFunction("ZR_ShowPackMenu", VShowPackMenu, "(client)", ScriptField_Void, ScriptField_HScript);s
+	VScript_RegisterFunction("ZR_ShowPackMenu", VShowPackMenu, "(client)", ScriptField_Void, ScriptField_HScript);
 }
 
 void VScript_SetupStoreTable()
