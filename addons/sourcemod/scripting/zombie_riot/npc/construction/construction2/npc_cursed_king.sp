@@ -79,7 +79,7 @@ void CursedKingOnMapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "cursed_king");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = 0;
+	data.Category = Type_Outlaws;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
