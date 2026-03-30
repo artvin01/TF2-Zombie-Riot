@@ -71,6 +71,10 @@
 		"it"		"L'Expidonsan Sensal miete."
 		"ko" 		"엑스피돈사 출신, 센살이 전장을 휩씁니다."
 	}
+	"BlackHeavySoul Arrived"
+	{
+		"en" 		"Hello"
+	}
 	"Nemal Arrived"
 	{
 		"en" 		"The Iberia/Expidonsan Nemal is here."

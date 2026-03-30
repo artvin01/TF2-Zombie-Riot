@@ -48,7 +48,7 @@ void TheGreatRam_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "the_great_ram");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = 0;
+	data.Category = Type_Outlaws;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

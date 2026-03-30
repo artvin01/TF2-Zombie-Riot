@@ -823,6 +823,15 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 	GrenadePos[2] += 5.0;
 	TE_Particle("ExplosionCore_MidAir", GrenadePos, NULL_VECTOR, NULL_VECTOR, 
 	_, _, _, _, _, _, _, _, _, _, 0.0);
+	//reuse for kaboom
+	Function func = func_WandOnTouch[entity];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(entity);
+		Call_Finish();
+		//todo: convert all on death and on take damage to this.
+	}
 	RemoveEntity(entity);
 	return MRES_Supercede;
 }

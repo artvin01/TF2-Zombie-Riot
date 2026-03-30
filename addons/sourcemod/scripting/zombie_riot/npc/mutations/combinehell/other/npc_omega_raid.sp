@@ -548,7 +548,7 @@ static bool Omega_AirAttack(OmegaRaid npc)
 			npc.SetVelocity({0.0,0.0,-1000.0});
 			//npc.LookupActivity("ACT_BRAWLER_RUN");
 			if(IsValidEntity(npc.m_iWearable8))
-			RemoveEntity(npc.m_iWearable8);
+				RemoveEntity(npc.m_iWearable8);
 			AcceptEntityInput(npc.m_iWearable4, "Disable");
 			npc.m_bisWalking = true;
 		}

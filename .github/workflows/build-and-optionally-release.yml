@@ -46,6 +46,7 @@ jobs:
           wget "https://raw.githubusercontent.com/Batfoxkid/File-Network/main/scripting/include/filenetwork.inc"
           wget "https://raw.githubusercontent.com/nosoop/SMExt-SourceScramble/master/scripting/include/sourcescramble.inc"
           wget "https://raw.githubusercontent.com/KyleSanderson/SteamWorks/master/Pawn/includes/SteamWorks.inc"
+          wget "https://raw.githubusercontent.com/Mikusch/vscript-ext/refs/heads/master/include/vscript.inc"
           wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc.inc"
           mkdir cbasenpc
           cd cbasenpc

@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "freak_fortress_2\bobbroly\Eyes"
+	"$lightwarptexture" "freak_fortress_2\bobbroly\lightwarp_eye"
+}

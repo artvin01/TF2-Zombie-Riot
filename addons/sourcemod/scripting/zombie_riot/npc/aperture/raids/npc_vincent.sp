@@ -222,6 +222,11 @@ methodmap Vincent < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
 	}
+	property int m_iAllyspawnAm
+	{
+		public get()							{ return i_State[this.index]; }
+		public set(int TempValueForProperty) 	{ i_State[this.index] = TempValueForProperty; }
+	}
 	
 	property float m_flNextOilLeak
 	{
@@ -282,9 +287,6 @@ methodmap Vincent < CClotBody
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		RaidBossActive = EntIndexToEntRef(npc.index);
-		RaidAllowsBuildings = false;
-		npc.m_flTalkRepeat = 0.0;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 
 		func_NPCDeath[npc.index] = Vincent_NPCDeath;
@@ -292,130 +294,147 @@ methodmap Vincent < CClotBody
 		func_NPCThink[npc.index] = Vincent_ClotThink;
 		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
 
-		RaidModeTime = GetGameTime() + 200.0;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
-
-		for(int client_check=1; client_check<=MaxClients; client_check++)
-		{
-			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
-			{
-				LookAtTarget(client_check, npc.index);
-				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%s", "Vincent sets foot");
-			}
-		}
-		
-		char buffers[3][64];
-		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
-		//the very first and 2nd char are SC for scaling
-		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
-		{
-			//remove SC
-			ReplaceString(buffers[0], 64, "sc", "");
-			float value = StringToFloat(buffers[0]);
-			RaidModeScaling = value;
-		}
-		else
-		{	
-			RaidModeScaling = float(Waves_GetRoundScale()+1);
-		}
-
-		if(RaidModeScaling < 35)
-		{
-			RaidModeScaling *= 0.25; //abit low, inreacing
-		}
-		else
-		{
-			RaidModeScaling *= 0.5;
-		}
-		
-		float amount_of_people = ZRStocks_PlayerScalingDynamic();
-		if(amount_of_people > 12.0)
-		{
-			amount_of_people = 12.0;
-		}
-		amount_of_people *= 0.12;
-		
-		if(amount_of_people < 1.0)
-			amount_of_people = 1.0;
-			
-		RaidModeScaling *= amount_of_people;
-		//scaling old
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-
 		npc.PlayPassiveSound();
-		npc.Anger = false;
-		if(StrContains(data, "forceangry") != -1)
+		if(StrContains(data, "spawnomegahelp") != -1)
 		{
-			npc.Anger = true;
-			//force angry
-		}
-		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-		{
-			npc.Anger = true;
-		}
-		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS) || StrContains(data, "forcesad") != -1)
-		{
-			npc.m_flRangedArmor *= 0.9;
-			npc.m_flMeleeArmor *= 0.9;	
-			npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_helmet/tw_heavybot_helmet.mdl", _, skin);
-		}
-		VincentSpawnBeacons(npc.index);
-
-		npc.m_flMeleeArmor = 1.25;	
-		npc.m_flOverrideMusicNow = GetGameTime() + 5.0;
-		npc.m_flSpeed = 320.0;
-		if(npc.Anger)
-		{
-			npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_armor/tw_heavybot_armor.mdl", _, skin);
-			RaidModeScaling *= 1.1;
-			Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "V.I.N.C.E.N.T.");
-			EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.7, 80);
-			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
-			CreateTimer(0.2, Vincent_Timer_IntroMessage_Genocide, EntIndexToEntRef(npc.index));
-			npc.m_flRangedArmor *= 0.95;
-			npc.m_flMeleeArmor *= 0.95;	
-			npc.m_flOverrideMusicNow = 0.0;
-			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_angry.mp3");
-			music.Time = 112;
-			music.Volume = 1.0;
-			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "CREATION OF HATRED");
-			strcopy(music.Artist, sizeof(music.Artist), "Exedious");
-			Music_SetRaidMusic(music);
-			RaidModeTime = GetGameTime() + 220.0;
+			npc.m_iAllyspawnAm = 1;
+			npc.m_flThrow_Cooldown = 0.0;
+			npc.m_flNextOilPouring = GetGameTime() + 999.9;
+			ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 9999.9);
+			npc.m_bDissapearOnDeath = true;
 		}
 		else
 		{
-			Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Vincent");
-			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
-			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
-			CreateTimer(0.2, Vincent_Timer_IntroMessage_Neutral, EntIndexToEntRef(npc.index));
-			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_intro.mp3");
-			music.Time = 51;
-			music.Volume = 1.2;
-			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "System Corruption (Intro)");
-			strcopy(music.Artist, sizeof(music.Artist), "Harry Callaghan");
-			Music_SetRaidMusic(music);
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidAllowsBuildings = false;
+			npc.m_flTalkRepeat = 0.0;
+			RaidModeTime = GetGameTime() + 200.0;
+			npc.m_iAllyspawnAm = 0;
+			for(int client_check=1; client_check<=MaxClients; client_check++)
+			{
+				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+				{
+					LookAtTarget(client_check, npc.index);
+					SetGlobalTransTarget(client_check);
+					ShowGameText(client_check, "item_armor", 1, "%s", "Vincent sets foot");
+				}
+			}
+			
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			//the very first and 2nd char are SC for scaling
+			if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+			{
+				//remove SC
+				ReplaceString(buffers[0], 64, "sc", "");
+				float value = StringToFloat(buffers[0]);
+				RaidModeScaling = value;
+			}
+			else
+			{	
+				RaidModeScaling = float(Waves_GetRoundScale()+1);
+			}
+
+			if(RaidModeScaling < 35)
+			{
+				RaidModeScaling *= 0.25; //abit low, inreacing
+			}
+			else
+			{
+				RaidModeScaling *= 0.5;
+			}
+			
+			float amount_of_people = ZRStocks_PlayerScalingDynamic();
+			if(amount_of_people > 12.0)
+			{
+				amount_of_people = 12.0;
+			}
+			amount_of_people *= 0.12;
+			
+			if(amount_of_people < 1.0)
+				amount_of_people = 1.0;
+				
+			RaidModeScaling *= amount_of_people;
+			//scaling old
+			
+
+			npc.Anger = false;
+			if(StrContains(data, "forceangry") != -1)
+			{
+				npc.Anger = true;
+				//force angry
+			}
+			if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+			{
+				npc.Anger = true;
+			}
+			if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS) || StrContains(data, "forcesad") != -1)
+			{
+				npc.m_flRangedArmor *= 0.9;
+				npc.m_flMeleeArmor *= 0.9;	
+				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_helmet/tw_heavybot_helmet.mdl", _, skin);
+			}
+			VincentSpawnBeacons(npc.index);
+
+			npc.m_flMeleeArmor = 1.25;	
+			npc.m_flOverrideMusicNow = GetGameTime() + 5.0;
+			npc.m_flSpeed = 320.0;
+			if(npc.Anger)
+			{
+				npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_armor/tw_heavybot_armor.mdl", _, skin);
+				RaidModeScaling *= 1.1;
+				Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "V.I.N.C.E.N.T.");
+				EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.7, 80);
+				EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
+				CreateTimer(0.2, Vincent_Timer_IntroMessage_Genocide, EntIndexToEntRef(npc.index));
+				npc.m_flRangedArmor *= 0.95;
+				npc.m_flMeleeArmor *= 0.95;	
+				npc.m_flOverrideMusicNow = 0.0;
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_angry.mp3");
+				music.Time = 112;
+				music.Volume = 1.0;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "CREATION OF HATRED");
+				strcopy(music.Artist, sizeof(music.Artist), "Exedious");
+				Music_SetRaidMusic(music);
+				RaidModeTime = GetGameTime() + 220.0;
+			}
+			else
+			{
+				Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Vincent");
+				EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
+				EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
+				CreateTimer(0.2, Vincent_Timer_IntroMessage_Neutral, EntIndexToEntRef(npc.index));
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_intro.mp3");
+				music.Time = 51;
+				music.Volume = 1.2;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "System Corruption (Intro)");
+				strcopy(music.Artist, sizeof(music.Artist), "Harry Callaghan");
+				Music_SetRaidMusic(music);
+			}
+			
+			npc.m_flNextMeleeAttack = 0.0;
+			npc.m_flNextRangedAttack = 0.0;
+			npc.m_flThrow_Cooldown = GetGameTime() + 7.0;
+			
+			npc.m_flNextOilPouring = GetGameTime() + 15.0;
+			Citizen_MiniBossSpawn();
+			Vincent_SpawnFog(npc.index);
+			
 		}
-		
-		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flNextRangedAttack = 0.0;
-		npc.m_flThrow_Cooldown = GetGameTime() + 7.0;
-		
-		npc.m_flNextOilPouring = GetGameTime() + 15.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
 
-		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 		
 		// Make him invisible so we can use human heavy anims
@@ -437,7 +456,6 @@ methodmap Vincent < CClotBody
 		SetVariantColor(view_as<int>({200, 200, 50, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
-		Vincent_SpawnFog(npc.index);
 
 		return npc;
 	}
@@ -1660,6 +1678,11 @@ bool Vincent_SlamThrow(int iNPC, int target)
 			
 			if (npc.m_bTimeUpMode)
 				npc.m_flThrow_Cooldown = GetGameTime(npc.index) + 1.0;
+
+			if(npc.m_iAllyspawnAm)
+			{
+				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+			}
 		}
 		return true;
 	}

@@ -3277,4 +3277,16 @@
 		"en"	"Gives 2 modifier chances to get additional chances"
 		"ko"	"접두사 부여 확률이 추가로 2번 적용됩니다."
 	}
+	"Steam Happy Prefix"
+	{
+		"en"	"Steam Happy Prefix"
+	}
+	"Steam Happy"
+	{
+		"en"	"Steam Happy"
+	}
+	"Steam Happy Prefix Desc"
+	{
+		"en"	"Infected by steam happy, gains insane stats."
+	}
 }

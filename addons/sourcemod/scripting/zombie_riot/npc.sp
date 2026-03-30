@@ -1222,7 +1222,37 @@ void NPC_ConfigSetup()
 	AlmagestProximaOnMapStart();
 	
 	DungeonLoot_MapStart();
-	AmbitiousTrader_OnMapStart_NPC();
+  
+	RocketGunner_OnMapStart_NPC();
+	HeavyWeaponsGuy_OnMapStart_NPC();
+	VeryHeavyHeavy_OnMapStart_NPC();
+	SteamHappyfier_OnMapStart_NPC();
+	BlackHeavySoul_OnMapStart_NPC();
+	Broly_OnMapStart_NPC();
+	FishScout_OnMapStart_NPC();
+	HumanMain_OnMapStart_NPC();
+	NoRandomKranz_OnMapStart_NPC();
+	Professional_Fingerer_OnMapStart_NPC();
+	SquadX_Omega_OnMapStart_NPC();
+	SquadX_Bob_OnMapStart_NPC();
+	SquadX_Whiteflower_OnMapStart_NPC();
+	SquadX_Shadowing_Darkness_OnMapStart_NPC();
+	SquadX_Master_OnMapStart_NPC();
+
+	AustralianKing_OnMapStart_NPC();
+	DismountedTeuton_OnMapStart_NPC();
+	FuckerSwordsman_OnMapStart_NPC();
+	GigaObuch_OnMapStart_NPC();
+	LardFat_OnMapStart_NPC();
+	MountedTeuton_OnMapStart_NPC();
+	PurpleGuy_OnMapStart_NPC();
+	RTDMedic_OnMapStart_NPC();
+	AgentSmithFollower_Setup();
+	AustralianSpider_OnMapStart_NPC();
+	SuctionMedic_OnMapStart_NPC();
+	LivingMetalBall_OnMapStart_NPC();
+	AxeThrowingBarbarian_OnMapStart_NPC();
+  AmbitiousTrader_OnMapStart_NPC();
 	AgentSmithFollower_Setup();
 	KevinmeryFollower_Setup();
 }
@@ -2506,9 +2536,40 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aprilfools/npc_troll_rpg.sp"
 #include "npc/aprilfools/npc_troll_melee.sp"
 
+
 #include "npc/aprilfools/3rd_april/npc_smith_follower.sp"
 #include "npc/aprilfools/3rd_april/npc_kevin_follower.sp"
 #include "npc/aprilfools/3rd_april/npc_ambitious_trader.sp"
+
+#include "npc/aprilfools/3rd_april/npc_rocket_gunner.sp"
+#include "npc/aprilfools/3rd_april/npc_heavy_weapons_guy.sp"
+#include "npc/aprilfools/3rd_april/npc_very_heavy_heavy.sp"
+#include "npc/aprilfools/3rd_april/npc_steam_happyfier.sp"
+#include "npc/aprilfools/3rd_april/npc_black_heavy_soul.sp"
+#include "npc/aprilfools/3rd_april/npc_broly.sp"
+#include "npc/aprilfools/3rd_april/npc_fish_scout.sp"
+#include "npc/aprilfools/3rd_april/npc_human_main.sp"
+#include "npc/aprilfools/3rd_april/npc_no_random_kranz.sp"
+#include "npc/aprilfools/3rd_april/npc_professional_fingerer.sp"
+#include "npc/aprilfools/3rd_april/npc_squad_bob.sp"
+#include "npc/aprilfools/3rd_april/npc_squad_omega.sp"
+#include "npc/aprilfools/3rd_april/npc_squad_shadowing_darkness.sp"
+#include "npc/aprilfools/3rd_april/npc_squad_whiteflower.sp"
+#include "npc/aprilfools/3rd_april/npc_squad_master.sp"
+#include "npc/aprilfools/3rd_april/npc_australianking.sp"
+#include "npc/aprilfools/3rd_april/npc_dismounted_teuton.sp"
+#include "npc/aprilfools/3rd_april/npc_fucker_swordsman.sp"
+#include "npc/aprilfools/3rd_april/npc_giga_obuch.sp"
+#include "npc/aprilfools/3rd_april/npc_lard_fat.sp"
+#include "npc/aprilfools/3rd_april/npc_mounted_teuton.sp"
+#include "npc/aprilfools/3rd_april/npc_purple_guy.sp"
+#include "npc/aprilfools/3rd_april/npc_rtd_medic.sp"
+#include "npc/aprilfools/3rd_april/npc_smith_follower.sp"
+#include "npc/aprilfools/3rd_april/npc_spider.sp"
+#include "npc/aprilfools/3rd_april/npc_suction_medic.sp"
+#include "npc/aprilfools/3rd_april/npc_living_metal_ball.sp"
+#include "npc/aprilfools/3rd_april/npc_axe_throwing_barbarian.sp"
+
 
 #include "npc/construction/enemies/npc_eirasus.sp"
 #include "npc/construction/enemies/npc_haltera.sp"

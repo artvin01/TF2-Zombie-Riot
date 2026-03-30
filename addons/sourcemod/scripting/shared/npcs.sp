@@ -256,8 +256,12 @@ bool NPC_SpawnNext(bool panzer,
 		{
 			deathforcepowerup = 0;
 		}
+
+		char name[16];
+		if(Spawns_NameExists("miniboss"))
+			strcopy(name, sizeof(name), "miniboss");
 		
-		if(Spawns_GetNextPos(pos, ang, _, boss.Delay + 2.0))
+		if(Spawns_GetNextPos(pos, ang, name, boss.Delay + 2.0))
 		{
 			DataPack pack;
 			CreateDataTimer(boss.Delay, Timer_Delay_BossSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
