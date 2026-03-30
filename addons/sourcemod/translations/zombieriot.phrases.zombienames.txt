@@ -6276,6 +6276,10 @@
 	{
 		"en"		"Rollermine"
 	}
+	"Nova Prospekt Overseer"
+	{
+		"en"		"Nova Prospekt Overseer"
+	}
 	"Omega"
 	{
 		"en"		"Omega"
@@ -7981,5 +7985,21 @@
 	"Mazeat Fabulous Squad X Elite, Solvence of Cringe"
 	{
 		"en"	"Mazeat Fabulous Squad X Elite, Solvence of Cringe"
+	}
+	"Bob The First Squad"
+	{
+		"en"	"Bob The First"
+	}
+	"Omega Squad"
+	{
+		"en"	"Omega"
+	}
+	"Whiteflower Squad"
+	{
+		"en"	"Whiteflower"
+	}
+	"Shadowing Darkness Squad"
+	{
+		"en"	"Shadowing Darkness"
 	}
 }

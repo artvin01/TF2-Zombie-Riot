@@ -8,9 +8,9 @@ void SquadX_Master_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Mazeat Fabulous Squad X Elite, Solvence of Cringe");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_squad_master");
 	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Raid;
+	data.IconCustom = false;
+	data.Flags = -1;
+	data.Category = -1;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -146,6 +146,10 @@ methodmap SquadX_Master < CClotBody
 
 		npc.m_iGetTimeDo = GetTime();
 		RemoveAllDamageAddition();
+		if(StrContains(data, "fakeout") != -1)
+		{
+			npc.m_flNextMeleeAttack = 1.0;
+		}
 		return npc;
 	}
 }
@@ -160,9 +164,6 @@ static void Internal_ClotThink(int iNPC)
 			//sync up!!!
 			npc.m_flTimeUntillNextAppear = GetGameTime(npc.index) + 3.0;
 			npc.m_flTimeUntillNextAppearFreeze = 8.4;
-			RaidModeTime = GetGameTime(npc.index) + 200.0;
-			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidAllowsBuildings = false;
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aprilfools/mazeat_fabulous_squad_x.mp3");
 			music.Time = 164;
@@ -203,16 +204,79 @@ static void Internal_ClotThink(int iNPC)
 			CurrentMaxHealth += ReturnEntityMaxHealth(inpcloop1);
 		}
 	}
+	if(npc.m_iAppearState >= 6)
+	{
+		
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", CurrentHealth);
+		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", CurrentMaxHealth);
+		if(CurrentHealth <= 10)
+		{
+			int inpcloop2, a2;
+			while((inpcloop2 = FindEntityByNPC(a2)) != -1)
+			{
+				if(IsValidEntity(inpcloop2) && (
+					i_NpcInternalId[inpcloop2] == SquadX_WhiteflowerIDReturn() ||
+					i_NpcInternalId[inpcloop2] == SquadX_Shadowing_DarknessIDReturn() ||
+					i_NpcInternalId[inpcloop2] == SquadX_OmegaIDReturn() ||
+					i_NpcInternalId[inpcloop2] == SquadX_BobIDReturn()
+					))
+				{
+					float SpawnPos[3];
+					GetEntPropVector(inpcloop2, Prop_Data, "m_vecAbsOrigin", SpawnPos);
+					CreateEarthquake(SpawnPos, 3.0, 9999.9, 35.0, 255.0);
+					TE_Particle("hightower_explosion", SpawnPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+					TE_Particle("grenade_smoke_cycle", SpawnPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+					RequestFrame(KillNpc, EntIndexToEntRef(inpcloop2));
+				}
+			}
+			npc.PlayExplodeSound();
+			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+			return;
+		}
+		
+		if(LastMann)
+		{
+			if(!npc.m_fbGunout)
+			{
+				npc.m_fbGunout = true;
+				CPrintToChatAll("{grey}You hear some wierd ass posing, uh oh.");
+			}
+		}
+		if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+		{
+			func_NPCThink[npc.index] = INVALID_FUNCTION;
+			
+			CPrintToChatAll("{black}All at once{default}: Get Owned");
+			return;
 
-	SetEntProp(npc.index, Prop_Data, "m_iHealth", CurrentHealth);
-	SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", CurrentMaxHealth);
+		}	
+		
+		if(!BlockLoseSay && RaidModeTime < GetGameTime())
+		{
+				
+			CPrintToChatAll("{black}All at once{default}: This is getting pretty serious.");
+			int inpcloop2, a2;
+			while((inpcloop2 = FindEntityByNPC(a2)) != -1)
+			{
+				if(IsValidEntity(inpcloop2) && (
+					i_NpcInternalId[inpcloop2] == SquadX_WhiteflowerIDReturn() ||
+					i_NpcInternalId[inpcloop2] == SquadX_Shadowing_DarknessIDReturn() ||
+					i_NpcInternalId[inpcloop2] == SquadX_OmegaIDReturn() ||
+					i_NpcInternalId[inpcloop2] == SquadX_BobIDReturn()
+					))
+				{
+					ApplyStatusEffect(inpcloop2, inpcloop2, "Perfected Instinct", 999999.9);
+				}
+			}
+			RaidModeScaling *= 3.0;
+		}
+		return;
+	}
 
 	if(npc.m_flTimeUntillNextAppear > GetGameTime(npc.index))
 	{
 		return;
 	}
-	if(npc.m_iAppearState >= 6)
-		return;
 	float SpawnPos[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SpawnPos);
 	switch(npc.m_iAppearState)
@@ -257,8 +321,15 @@ static void Internal_ClotThink(int iNPC)
 			if(spawn_index > 0)
 			{
 				CClotBody npc1 = view_as<CClotBody>(spawn_index);
-				FreezeNpcInTime(spawn_index, npc.m_flTimeUntillNextAppearFreeze);
+				
+				npc1.m_bisWalking = false;
+				npc1.SetActivity("ACT_BOB_INTRO");
+				SetEntProp(npc1.index, Prop_Data, "m_bSequenceLoops", false);
+				npc1.m_flNextDelayTime = GetGameTime() + npc.m_flTimeUntillNextAppearFreeze;
 				npc.m_flTimeUntillNextAppearFreeze -= 1.5;
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index));
+				ApplyStatusEffect(spawn_index, spawn_index, "Disco Prefix 2", 999999.9);
 			}
 		}
 		case 1:
@@ -268,42 +339,128 @@ static void Internal_ClotThink(int iNPC)
 			OriginText[0] += 55.0;
 			OriginText[2] += 55.0;
 			OriginText[1] -= 15.0;
-			int WorldText = SpawnFormattedWorldText("Fabulous Squad", OriginText, 11, {125,255,125,255}, -1, false, false);
+			int WorldText;
+			npc.m_flTimeUntillNextAppear = GetGameTime(npc.index) + 1.5;
+			if(npc.m_flNextMeleeAttack)
+			{
+				WorldText = SpawnFormattedWorldText("Fabulous...?", OriginText, 11, {125,255,125,255}, -1, false, false);
+				CreateTimer(npc.m_flTimeUntillNextAppearFreeze, Timer_RemoveEntity, EntIndexToEntRef(WorldText), TIMER_FLAG_NO_MAPCHANGE);
+				int inpcloop2, a2;
+				while((inpcloop2 = FindEntityByNPC(a2)) != -1)
+				{
+					if(IsValidEntity(inpcloop2) && (i_NpcInternalId[inpcloop2] == SquadX_BobIDReturn()))
+					{
+						NpcSpeechBubble(inpcloop2, "wait shit the others are playing dnd hold on", 8, {255,255,255,255}, {0.0,0.0,80.0}, "");
+					}
+				}
+				npc.m_iAppearState++;
+				return;
+			}
+			WorldText = SpawnFormattedWorldText("Fabulous", OriginText, 11, {125,255,125,255}, -1, false, false);
 			CreateTimer(npc.m_flTimeUntillNextAppearFreeze, Timer_RemoveEntity, EntIndexToEntRef(WorldText), TIMER_FLAG_NO_MAPCHANGE);
 			SpawnPos[1] -= 30.0;
 			CreateEarthquake(SpawnPos, 0.5, 9999.9, 35.0, 255.0);
-			npc.m_flTimeUntillNextAppear = GetGameTime(npc.index) + 1.5;
 			int spawn_index = NPC_CreateByName("npc_squad_omega", -1, SpawnPos, {0.0,0.0,0.0}, GetTeam(npc.index));
 			if(spawn_index > 0)
 			{
 				CClotBody npc1 = view_as<CClotBody>(spawn_index);
-				FreezeNpcInTime(spawn_index, npc.m_flTimeUntillNextAppearFreeze);
+				
+				npc1.m_bisWalking = false;
+				npc1.SetActivity("ACT_OMEGA_INTRO");
+				SetEntProp(npc1.index, Prop_Data, "m_bSequenceLoops", false);
+				npc1.m_iWearable5 = npc1.EquipItem("anim_attachment_RH", "models/weapons/w_rocket_launcher.mdl");
+				
+				CreateTimer(npc.m_flTimeUntillNextAppearFreeze, Timer_RemoveEntity, EntIndexToEntRef(npc1.m_iWearable5), TIMER_FLAG_NO_MAPCHANGE);
+				npc1.m_flNextDelayTime = GetGameTime() + npc.m_flTimeUntillNextAppearFreeze;
 				npc.m_flTimeUntillNextAppearFreeze -= 1.5;
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index));
+				ApplyStatusEffect(spawn_index, spawn_index, "Disco Prefix 2", 999999.9);
 			}
 		}
 		case 2:
 		{
-			
 			float OriginText[3];
 			OriginText = SpawnPos;
 			OriginText[0] += 55.0;
 			OriginText[2] += 25.0;
 			OriginText[1] += 25.0;
+			npc.m_flTimeUntillNextAppear = GetGameTime(npc.index) + 1.5;
+			if(npc.m_flNextMeleeAttack)
+			{
+				int WorldText = SpawnFormattedWorldText("?????", OriginText, 11, {125,125,255,255}, -1, false, false);
+				CreateTimer(npc.m_flTimeUntillNextAppearFreeze, Timer_RemoveEntity, EntIndexToEntRef(WorldText), TIMER_FLAG_NO_MAPCHANGE);
+				npc.m_iAppearState++;
+				return;
+			}
 			int WorldText = SpawnFormattedWorldText("Squad", OriginText, 11, {125,125,255,255}, -1, false, false);
 			CreateTimer(npc.m_flTimeUntillNextAppearFreeze, Timer_RemoveEntity, EntIndexToEntRef(WorldText), TIMER_FLAG_NO_MAPCHANGE);
 			SpawnPos[1] += 30.0;
 			CreateEarthquake(SpawnPos, 0.5, 9999.9, 35.0, 255.0);
-			npc.m_flTimeUntillNextAppear = GetGameTime(npc.index) + 1.5;
 			int spawn_index = NPC_CreateByName("npc_squad_shadowing_darkness", -1, SpawnPos, {0.0,0.0,0.0}, GetTeam(npc.index));
 			if(spawn_index > 0)
 			{
 				CClotBody npc1 = view_as<CClotBody>(spawn_index);
-				FreezeNpcInTime(spawn_index, npc.m_flTimeUntillNextAppearFreeze);
+				
+				npc1.m_bisWalking = false;
+				npc1.SetActivity("ACT_SHADOW_INTRO");
+				SetEntProp(npc1.index, Prop_Data, "m_bSequenceLoops", false);
+				npc1.m_flNextDelayTime = GetGameTime() + npc.m_flTimeUntillNextAppearFreeze;
 				npc.m_flTimeUntillNextAppearFreeze -= 1.5;
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index));
+				ApplyStatusEffect(spawn_index, spawn_index, "Disco Prefix 2", 999999.9);
 			}
 		}
 		case 3:
 		{
+			
+			if(npc.m_flNextMeleeAttack)
+			{
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						Music_Stop_All(client); //This is actually more expensive then i thought.
+						SetMusicTimer(client, GetTime() + 10);
+					}
+				}
+				
+				for(int client = 1; client <= MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						SetEntityFlags(client, GetEntityFlags(client) & ~(FL_FROZEN | FL_ATCONTROLS));
+						SetClientViewEntity(client, client);
+						Thirdperson_PlayerSpawn(client);
+						DoOverlay(client, "", 0);
+						SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN | HIDEHUD_BONUS_PROGRESS); 
+					}
+				}
+				int inpcloop2, a2;
+				while((inpcloop2 = FindEntityByNPC(a2)) != -1)
+				{
+					if(IsValidEntity(inpcloop2) && (
+						i_NpcInternalId[inpcloop2] == SquadX_WhiteflowerIDReturn() ||
+						i_NpcInternalId[inpcloop2] == SquadX_Shadowing_DarknessIDReturn() ||
+						i_NpcInternalId[inpcloop2] == SquadX_OmegaIDReturn() ||
+						i_NpcInternalId[inpcloop2] == SquadX_BobIDReturn()
+						))
+					{
+						RequestFrame(KillNpc, EntIndexToEntRef(inpcloop2));
+					}
+				}
+				ClearAllCameras();
+				if(IsValidEntity(npc.m_iWearable1))
+					RemoveEntity(npc.m_iWearable1);
+				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+				npc.PlayExplodeSound();
+				CreateEarthquake(SpawnPos, 3.0, 9999.9, 35.0, 255.0);
+				TE_Particle("hightower_explosion", SpawnPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+				TE_Particle("grenade_smoke_cycle", SpawnPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+				npc.m_iAppearState++;
+				return;
+			}
 			float OriginText[3];
 			OriginText = SpawnPos;
 			OriginText[0] += 55.0;
@@ -312,17 +469,24 @@ static void Internal_ClotThink(int iNPC)
 			int WorldText = SpawnFormattedWorldText("X Elite", OriginText, 13, {125,255,255,255}, -1, true, false);
 			CreateTimer(npc.m_flTimeUntillNextAppearFreeze, Timer_RemoveEntity, EntIndexToEntRef(WorldText), TIMER_FLAG_NO_MAPCHANGE);
 			
+			
 			SpawnPos[0] += 15.0;
 			SpawnPos[1] += 15.0;
-			SpawnPos[2] += 85.0;
+		//	SpawnPos[2] += 85.0;
 			CreateEarthquake(SpawnPos, 0.5, 9999.9, 35.0, 255.0);
 			npc.m_flTimeUntillNextAppear = GetGameTime(npc.index) + 1.5;
 			int spawn_index = NPC_CreateByName("npc_squad_whiteflower", -1, SpawnPos, {0.0,0.0,0.0}, GetTeam(npc.index));
 			if(spawn_index > 0)
 			{
 				CClotBody npc1 = view_as<CClotBody>(spawn_index);
-				FreezeNpcInTime(spawn_index, npc.m_flTimeUntillNextAppearFreeze);
+				npc1.m_bisWalking = false;
+				npc1.SetActivity("ACT_WF_INTRO");
+				SetEntProp(npc1.index, Prop_Data, "m_bSequenceLoops", false);
+				npc1.m_flNextDelayTime = GetGameTime() + npc.m_flTimeUntillNextAppearFreeze;
 				npc.m_flTimeUntillNextAppearFreeze -= 1.5;
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index));
+				ApplyStatusEffect(spawn_index, spawn_index, "Disco Prefix 2", 999999.9);
 			}
 		}
 		case 4:
@@ -358,6 +522,9 @@ static void Internal_ClotThink(int iNPC)
 			ClearAllCameras();
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
+			RaidModeTime = GetGameTime(npc.index) + 200.0;
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidAllowsBuildings = false;
 			//revert cameras do
 		}
 	}
@@ -367,7 +534,7 @@ static void Internal_ClotThink(int iNPC)
 
 static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	SquadX_Master npc = view_as<SquadX_Master>(victim);
+//	SquadX_Master npc = view_as<SquadX_Master>(victim);
 	
 	//cant be hurt, but shouldnt appear in hud
 	damage = 0.0;
@@ -376,5 +543,5 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 static void Internal_NPCDeath(int entity)
 {
-	SquadX_Master npc = view_as<SquadX_Master>(entity);
+//	SquadX_Master npc = view_as<SquadX_Master>(entity);
 }

@@ -43,10 +43,10 @@ int SquadX_Shadowing_DarknessIDReturn()
 void SquadX_Shadowing_Darkness_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Shadowing Darkness");
+	strcopy(data.Name, sizeof(data.Name), "Shadowing Darkness Squad");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_squad_shadowing_darkness");
 	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = true;
+	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
@@ -60,7 +60,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSoundCustom(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -152,6 +152,7 @@ methodmap SquadX_Shadowing_Darkness < CClotBody
 		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_bThisNpcIsABoss = true;
 		b_NpcUnableToDie[npc.index] = true;
+		npc.m_bDissapearOnDeath = true;
 
 		
 		return npc;
@@ -181,6 +182,12 @@ static void Internal_ClotThink(int iNPC)
 
 	npc.PlayIdleAlertSound();
 
+	//im so lazy so i just stole it
+	Shadowing_Darkness_Boss npc1 = view_as<Shadowing_Darkness_Boss>(iNPC);
+	if(Shadowing_Darkness_UpperDash(npc1, GetGameTime(npc.index), 15.0))
+	{
+		return;
+	}
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -196,11 +203,6 @@ static void Internal_ClotThink(int iNPC)
 	}
 
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
-	if(!IsValidEntity(RaidBossActive))
-	{
-		RaidBossActive = EntIndexToEntRef(npc.index);
-	}
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -350,7 +352,8 @@ static int Clot_SelfDefense(SquadX_Shadowing_Darkness npc, float gameTime, int t
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 								
 							
-							// Hit particle
+							// Hit particles
+							Elemental_AddNecrosisDamage(targetTrace, npc.index, RoundToCeil(RaidModeScaling * 15.0));
 
 							if(IsValidClient(targetTrace))
 							{

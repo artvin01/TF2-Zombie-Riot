@@ -45,10 +45,10 @@ int SquadX_OmegaIDReturn()
 void SquadX_Omega_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Omega");
+	strcopy(data.Name, sizeof(data.Name), "Omega Squad");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_squad_omega");
 	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = true;
+	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
@@ -62,7 +62,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSoundCustom(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -149,6 +149,8 @@ methodmap SquadX_Omega < CClotBody
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
+		npc.m_flPowAbilityCD = GetGameTime(npc.index) + 3.0;
+		npc.m_bDissapearOnDeath = true;
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/combine_super_soldier.mdl");
 		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/player/items/sniper/jarate_headband.mdl",_,_,1.25);
@@ -171,6 +173,9 @@ static void Internal_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
+	npc.m_bisWalking = true;
+	npc.SetActivity("ACT_BRAWLER_RUN");
+	
 	int target = npc.m_iTarget;
 	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
 		i_Target[npc.index] = -1;
@@ -192,6 +197,36 @@ static void Internal_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 
+	if(npc.m_flPowAbilityCD < GetGameTime(npc.index))
+	{
+		float SpawnPos[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SpawnPos);
+		npc.m_flPowAbilityCD = GetGameTime(npc.index) + 20.0;
+		NPC_CreateByName("npc_vincent", -1, SpawnPos, {0.0,0.0,0.0}, GetTeam(npc.index), "spawnomegahelp");
+		switch(GetRandomInt(0,4))
+		{
+			case 0:
+			{
+				CPrintToChatAll("{gold}Omega{default}: VINCENT!!!!! I SUMMON YOU!!!!.");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{gold}Omega{default}: GO VINCENT, DUNK THEM");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{gold}Omega{default}: I forgor my weapons :skull:, so i brought vincent");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{gold}Omega{default}: Go fetch!");
+			}
+			case 4:
+			{
+				CPrintToChatAll("{gold}Omega{default}: I SUMMON VINCENT, THE FORBIDDEN ONE!");
+			}
+		}
+	}
 
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
@@ -199,11 +234,6 @@ static void Internal_ClotThink(int iNPC)
 	}
 
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
-	if(!IsValidEntity(RaidBossActive))
-	{
-		RaidBossActive = EntIndexToEntRef(npc.index);
-	}
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -397,16 +427,16 @@ static int Clot_SelfDefense(SquadX_Omega npc, float gameTime, int target, float 
 					{
 						case 0:
 						{
-							npc.AddGesture("ACT_BRAWLER_ATTACK_LEFT");
+							npc.AddGesture("ACT_BRAWLER_ATTACK_LEFT", .SetGestureSpeed = 2.0);
 						}
 						case 1:
 						{
-							npc.AddGesture("ACT_BRAWLER_ATTACK_RIGHT");
+							npc.AddGesture("ACT_BRAWLER_ATTACK_RIGHT", .SetGestureSpeed = 2.0);
 						}
 					}
-					npc.m_flAttackHappens = gameTime + 0.1;
-					npc.m_flNextMeleeAttack = gameTime + 0.50;
-					npc.m_flDoingAnimation = gameTime + 0.50;
+					npc.m_flAttackHappens = gameTime + 0.05;
+					npc.m_flNextMeleeAttack = gameTime + 0.25;
+					npc.m_flDoingAnimation = gameTime + 0.25;
 				}
 			}
 		}

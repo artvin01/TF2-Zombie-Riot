@@ -34,7 +34,7 @@ int SquadX_BobIDReturn()
 void SquadX_Bob_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Bob The First");
+	strcopy(data.Name, sizeof(data.Name), "Bob The First Squad");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_squad_bob");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = true;
@@ -51,7 +51,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSoundCustom(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -75,6 +75,21 @@ methodmap SquadX_Bob < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flKickComboCooldown
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property int m_iAttackType
+	{
+		public get()		{	return this.m_iOverlordComboAttack;	}
+		public set(int value) 	{	this.m_iOverlordComboAttack = value;	}
+	}
+	property bool b_SwordIgnition
+	{
+		public get()							{ return b_follow[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_follow[this.index] = TempValueForProperty; }
 	}
 
 	public void PlayIdleAlertSound() 
@@ -136,6 +151,7 @@ methodmap SquadX_Bob < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+		npc.m_bDissapearOnDeath = true;
 
 		
 		npc.StartPathing();
@@ -147,6 +163,7 @@ methodmap SquadX_Bob < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		AcceptEntityInput(npc.m_iWearable1, "Enable");
 		IgniteTargetEffect(npc.m_iWearable1);
+		npc.b_SwordIgnition = true;
 		
 		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_bThisNpcIsABoss = true;
@@ -178,7 +195,6 @@ static void Internal_ClotThink(int iNPC)
 	}
 
 	npc.PlayIdleAlertSound();
-
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -194,11 +210,6 @@ static void Internal_ClotThink(int iNPC)
 	}
 
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
-	if(!IsValidEntity(RaidBossActive))
-	{
-		RaidBossActive = EntIndexToEntRef(npc.index);
-	}
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -285,6 +296,12 @@ static void Clot_AnimationChange(SquadX_Bob npc)
 	{
 		if(npc.m_iChanged_WalkCycle != 3)
 		{
+			if(!npc.b_SwordIgnition)
+			{
+				AcceptEntityInput(npc.m_iWearable1, "Enable");
+				IgniteTargetEffect(npc.m_iWearable1);
+				npc.b_SwordIgnition = true;
+			}
 			npc.m_flSpeed = 330.0;
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 3;
@@ -296,6 +313,13 @@ static void Clot_AnimationChange(SquadX_Bob npc)
 	{
 		if(npc.m_iChanged_WalkCycle != 4)
 		{
+			if(!npc.b_SwordIgnition)
+			{
+				AcceptEntityInput(npc.m_iWearable1, "Enable");
+				IgniteTargetEffect(npc.m_iWearable1);
+				npc.b_SwordIgnition = true;
+			}
+			RemoveSpecificBuff(npc.index, "Defensive Backup");
 			npc.m_flSpeed = 330.0;
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 4;
@@ -308,7 +332,7 @@ static void Clot_AnimationChange(SquadX_Bob npc)
 
 static int Clot_SelfDefense(SquadX_Bob npc, float gameTime, int target, float distance)
 {
-	if(npc.m_flAttackHappens)
+	if(npc.m_iAttackType <= 0 && npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
 		{
@@ -354,6 +378,8 @@ static int Clot_SelfDefense(SquadX_Bob npc, float gameTime, int target, float di
 									}
 								}
 							}
+							float VulnerabilityToGive = 0.20;
+							IncreaseEntityDamageTakenBy(targetTrace, VulnerabilityToGive, 10.0, true);
 						} 
 					}
 				}
@@ -361,6 +387,125 @@ static int Clot_SelfDefense(SquadX_Bob npc, float gameTime, int target, float di
 				{
 					npc.PlayMeleeHitSound();
 				}
+			}
+		}
+	}
+	else if(npc.m_iAttackType > 0)
+	{
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		float damage = 60.0 * RaidModeScaling;
+
+		switch(npc.m_iAttackType)
+		{
+			case 2:	// COMBO1 - Frame 44
+			{
+				if(npc.m_flAttackHappens < gameTime)
+				{
+					BobInitiatePunch(npc.index, vecTarget, VecSelfNpc, 0.999, damage * 2.0, true);
+					
+					npc.m_iAttackType = 3;
+					npc.m_flAttackHappens = gameTime + 0.899;
+					npc.m_flDoingAnimation = gameTime + 0.899;
+				}
+			}
+			case 3:	// COMBO1 - Frame 54
+			{
+				if(npc.m_flAttackHappens < gameTime)
+				{
+					BobInitiatePunch(npc.index, vecTarget, VecSelfNpc, 0.5, damage, false);
+					
+					npc.m_iAttackType = -1;
+					npc.m_flAttackHappens = gameTime + 1.555;
+					npc.m_flDoingAnimation = gameTime + 1.555;
+				}
+			}
+			case 4:	// COMBO2 - Frame 32
+			{
+				if(npc.m_flAttackHappens < gameTime)
+				{
+					BobInitiatePunch(npc.index, vecTarget, VecSelfNpc, 0.833, damage, false);
+					
+					npc.m_iAttackType = 5;
+					npc.m_flAttackHappens = gameTime + 0.833;
+					npc.m_flDoingAnimation = gameTime + 0.833;
+				}
+			}
+			case 5:	// COMBO2 - Frame 52
+			{
+				if(npc.m_flAttackHappens < gameTime)
+				{
+					BobInitiatePunch(npc.index, vecTarget, VecSelfNpc, 0.833, damage, false);
+					
+					npc.m_iAttackType = 6;
+					npc.m_flAttackHappens = gameTime + 0.833;
+					npc.m_flDoingAnimation = gameTime + 0.833;
+				}
+			}
+			case 6:	// COMBO2 - Frame 73
+			{
+				if(npc.m_flAttackHappens < gameTime)
+				{
+					BobInitiatePunch(npc.index, vecTarget, VecSelfNpc, 0.875, damage, true);
+					
+					npc.m_iAttackType = -1;
+					npc.m_flAttackHappens = gameTime + 1.083;
+					npc.m_flDoingAnimation = gameTime + 1.083;
+				}
+			}
+		}
+	}
+	else if(npc.m_flNextMeleeAttack < gameTime && npc.m_flKickComboCooldown < gameTime)
+	{
+		//do big slap attack
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		float damage = 60.0 * RaidModeScaling;
+
+		npc.m_flKickComboCooldown = gameTime + 15.0;
+		npc.m_iChanged_WalkCycle = 200;
+		ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 99.0);
+		if(npc.b_SwordIgnition)
+		{
+			AcceptEntityInput(npc.m_iWearable1, "Disable");
+			ExtinguishTarget(npc.m_iWearable1);
+			npc.b_SwordIgnition = false;
+		}
+		switch(GetURandomInt() % 3)
+		{
+			case 0:
+			{
+				npc.StopPathing();
+				npc.m_bisWalking = false;
+				npc.SetActivity("ACT_COMBO1_BOBPRIME");
+				npc.m_iAttackType = 2;
+				npc.m_flAttackHappens = gameTime + 0.916;
+				npc.m_flDoingAnimation = gameTime + 0.916;
+				
+				BobInitiatePunch(npc.index, vecTarget, VecSelfNpc, 0.916, damage, true);
+			}
+			case 1:
+			{
+				npc.StopPathing();
+				npc.m_bisWalking = false;
+				npc.SetActivity("ACT_COMBO2_BOBPRIME");
+				npc.m_iAttackType = 4;
+				npc.m_flAttackHappens = gameTime + 0.5;
+				npc.m_flDoingAnimation = gameTime + 0.5;
+				
+				BobInitiatePunch(npc.index, vecTarget, VecSelfNpc, 0.5, damage, false);
+			}
+			case 2:
+			{
+				npc.StopPathing();
+				npc.m_bisWalking = false;
+				npc.SetActivity("ACT_COMBO3_BOBPRIME");
+				npc.m_flAttackHappens = gameTime + 3.25;
+				npc.m_flDoingAnimation = gameTime + 3.25;
+				npc.m_iAttackType = -1;
+				
+				BobInitiatePunch(npc.index, vecTarget, VecSelfNpc, 2.125, damage * 3.0, true);
+				ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 3.25);
 			}
 		}
 	}

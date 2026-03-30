@@ -548,7 +548,7 @@ static bool Omega_AirAttack(OmegaRaid npc)
 			npc.SetVelocity({0.0,0.0,-1000.0});
 			//npc.LookupActivity("ACT_BRAWLER_RUN");
 			if(IsValidEntity(npc.m_iWearable8))
-			RemoveEntity(npc.m_iWearable8);
+				RemoveEntity(npc.m_iWearable8);
 			AcceptEntityInput(npc.m_iWearable4, "Disable");
 			npc.m_bisWalking = true;
 		}
@@ -922,7 +922,7 @@ public Action Timer_Omega_SupportGrenade(Handle timer, DataPack pack)
 
 void OmegaGiveArmor(int entity, int victim, float &healingammount, OmegaRaid npc)
 {
-	GrantEntityArmor(victim, false, 0.1, 0.75, 0, ReturnEntityMaxHealth(npc.index) * 100.0);
+	GrantEntityArmor(victim, false, 0.1, 0.75, 0, ReturnEntityMaxHealth(npc.index) * 200.0);
 }
 
 void OmegaCreateRollermines(int iNpc)
@@ -986,8 +986,8 @@ void OmegaCreateRollermines(int iNpc)
 		fl_Extra_Damage[npcsummon.index] = fl_Extra_Damage[npc.index];
 		fl_Extra_Damage[npcsummon.index] *= 1.5;
 		npcsummon.m_iTargetAlly = iNpc;
-		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/12);
-		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/12);
+		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/120);
+		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/120);
 		NpcStats_CopyStats(npc.index, summon);
 		//npcsummon.m_iWearable1 = ConnectWithBeam(npc.index, npcsummon.index, 0, 150, 195, 0.5, 0.5, 1.0, "sprites/laserbeam.vmt");
 	}
@@ -1001,8 +1001,8 @@ void OmegaCreateRollermines(int iNpc)
 		fl_Extra_Damage[npcsummon.index] = fl_Extra_Damage[npc.index];
 		fl_Extra_Damage[npcsummon.index] *= 1.5;
 		npcsummon.m_iTargetAlly = iNpc;
-		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/12);
-		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/12);
+		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/120);
+		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/120);
 		NpcStats_CopyStats(npc.index, summon);
 		//npcsummon.m_iWearable1 = ConnectWithBeam(npc.index, npcsummon.index, 0, 150, 195, 0.5, 0.5, 1.0, "sprites/laserbeam.vmt");
 	}

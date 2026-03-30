@@ -559,17 +559,25 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	if (dieingstate[client] == 0)
 		DownedOrKilledClient_Feedback(client, EntRefToEntIndex(LastHitRef[client]), f_LatestDamageTaken[client], event.GetInt("damagebits"));
 	Dungeon_PlayerDowned(client);
-	UnequipDispenser(client, true);
+
+	if(!(i_CurrentEquippedPerk[client] & PERK_SEALED))
+		UnequipDispenser(client, true);
+	
 	ArmorDisplayClient(client, true);
 	DataPack pack = new DataPack();
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(-1);
 	Update_Ammo(pack);
 	Escape_DropItem(client);
-	Armor_Charge[client] = 0; //reset to 0 on death
+
+	if(i_CurrentEquippedPerk[client] & PERK_WHO)
+		Citizen_PlayerReplacement(client, false);
+
+	if(!(i_CurrentEquippedPerk[client] & PERK_SEALED))
+		Armor_Charge[client] = 0; //reset to 0 on death
 
 	//Incase they die, do suit!
-	if(!Rogue_Mode())
+	if(!Rogue_Mode() && !(i_CurrentEquippedPerk[client] & PERK_SEALED))
 	{
 		i_CurrentEquippedPerk[client] = 0;
 		UpdatePerkName(client);

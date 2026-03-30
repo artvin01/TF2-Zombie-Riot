@@ -706,6 +706,10 @@ void BlackHeavySoulAnimationChange(BlackHeavySoul npc)
 
 int BlackHeavySoulSelfDefense(BlackHeavySoul npc, float gameTime, int target, float distance)
 {
+	if(npc.m_iWhatAbilityDo == 2)
+	{	
+		return 0;
+	}
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
