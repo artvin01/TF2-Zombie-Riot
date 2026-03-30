@@ -1249,6 +1249,8 @@ void NPC_ConfigSetup()
 	AgentSmithFollower_Setup();
 	AustralianSpider_OnMapStart_NPC();
 	SuctionMedic_OnMapStart_NPC();
+	LivingMetalBall_OnMapStart_NPC();
+	AxeThrowingBarbarian_OnMapStart_NPC();
 }
 
 void NPC_MapEnd()
@@ -2556,6 +2558,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aprilfools/3rd_april/npc_smith_follower.sp"
 #include "npc/aprilfools/3rd_april/npc_spider.sp"
 #include "npc/aprilfools/3rd_april/npc_suction_medic.sp"
+#include "npc/aprilfools/3rd_april/npc_living_metal_ball.sp"
+#include "npc/aprilfools/3rd_april/npc_axe_throwing_barbarian.sp"
 
 #include "npc/construction/enemies/npc_eirasus.sp"
 #include "npc/construction/enemies/npc_haltera.sp"
