@@ -185,7 +185,6 @@ methodmap NovaProspektOverseer < CClotBody
 		func_NPCThink[npc.index] = NovaProspektOverseer_ClotThink;
 			
 
-		npc.m_iState = 0;
 		npc.m_flSpeed = 250.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -216,7 +215,16 @@ public void NovaProspektOverseer_ClotThink(int iNPC)
 {
 	NovaProspektOverseer npc = view_as<NovaProspektOverseer>(iNPC);
 
-	if(npc.m_flOverseerSelfBuff < GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	{
+		return;
+	}
+	
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	
+	npc.Update();	
+
+	if(npc.m_flOverseerSelfBuff < GetGameTime(npc.index))
 	{
 		if(npc.m_flMeleeArmor < 0.05)
 		{
@@ -233,15 +241,6 @@ public void NovaProspektOverseer_ClotThink(int iNPC)
 		npc.m_flMeleeArmor -= 0.01;
 		npc.m_flOverseerSelfBuff = GetGameTime(npc.index) + 1.0;
 	}
-	
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
-	{
-		return;
-	}
-	
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
-	
-	npc.Update();	
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -302,64 +301,6 @@ public void NovaProspektOverseer_ClotThink(int iNPC)
 		} else {
 			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
-
-		if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index) && flDistanceToTarget < 22500 || npc.m_fbRangedSpecialOn)
-		{
-	//		npc.FaceTowards(vecTarget, 20000.0);
-			if(!npc.m_fbRangedSpecialOn)
-			{
-				npc.AddGesture("ACT_PUSH_PLAYER");
-				npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 0.4;
-				npc.m_fbRangedSpecialOn = true;
-				npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;
-				npc.StopPathing();
-				
-			}
-			if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
-			{
-				npc.m_fbRangedSpecialOn = false;
-				npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 4.0;
-				npc.PlayRangedAttackSecondarySound();
-	
-				float vecSpread = 0.1;
-				
-				npc.FaceTowards(vecTarget, 20000.0);
-				
-				float eyePitch[3];
-				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-						
-				//
-				//
-				
-				
-				float x, y;
-				x = GetRandomFloat( -0.0, 0.0 ) + GetRandomFloat( -0.0, 0.0 );
-				y = GetRandomFloat( -0.0, 0.0 ) + GetRandomFloat( -0.0, 0.0 );
-				
-				float vecDirShooting[3], vecRight[3], vecUp[3];
-				//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
-				
-				vecTarget[2] += 15.0;
-				float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
-				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
-				GetVectorAngles(vecDirShooting, vecDirShooting);
-				vecDirShooting[1] = eyePitch[1];
-				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-				
-				//add the spray
-				float vecDir[3];
-				vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
-				vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
-				vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
-				NormalizeVector(vecDir, vecDir);
-				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				
-				{
-					FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 60.0, 100.0, DMG_CLUB, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
-				}
-			}
-		}
 		
 		//Target close enough to hit
 		if((flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
@@ -387,19 +328,61 @@ public void NovaProspektOverseer_ClotThink(int iNPC)
 						
 						int target = TR_GetEntityIndex(swingTrace);	
 						
-						float damage = 150.0;
 						float vecHit[3];
 						TR_GetEndPosition(vecHit, swingTrace);
 						
 						if(target > 0) 
 						{
+							npc.m_iOverlordComboAttack++;
+							float damage = 150.0;
+							if(npc.m_iOverlordComboAttack >= 1)
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-								damage += 10.0;
-								float OverseerLoc[3]; WorldSpaceCenter(npc.index, OverseerLoc);
-								GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", OverseerLoc);
-								spawnRing_Vectors(OverseerLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 25, 25, 255, 1, 1.0, 5.0, 5.0, 1, 150.0 * 2.0);
+								damage *= 1.20;
 							}
+							if(npc.m_iOverlordComboAttack >= 2)
+							{
+								damage *= 1.20;
+							}
+							if(npc.m_iOverlordComboAttack >= 3)
+							{
+								damage *= 1.20;
+							}
+							if(npc.m_iOverlordComboAttack >= 4)
+							{
+								damage *= 1.20;
+							}
+							if(npc.m_iOverlordComboAttack >= 5)
+							{
+								damage *= 1.20;
+							}
+							if(npc.m_iOverlordComboAttack >= 6)
+							{
+								damage *= 1.20;
+							}
+							if(npc.m_iOverlordComboAttack >= 7)
+							{
+								damage *= 1.20;
+							}
+							if(npc.m_iOverlordComboAttack >= 8)
+							{
+								damage *= 1.20;
+							}
+							if(npc.m_iOverlordComboAttack >= 9)
+							{
+								damage *= 1.20;
+							}
+							if(npc.m_iOverlordComboAttack >= 10)
+							{
+								damage *= 1.20;
+							}
+							if(ShouldNpcDealBonusDamage(target))
+								damage *= 5.0;
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+
+							float OverseerLoc[3]; WorldSpaceCenter(npc.index, OverseerLoc);
+							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", OverseerLoc);
+							spawnRing_Vectors(OverseerLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 25, 25, 255, 1, 1.0, 5.0, 5.0, 1, 150.0 * 2.0);
+		
 							
 							Custom_Knockback(npc.index, target, 350.0);
 							
@@ -408,7 +391,7 @@ public void NovaProspektOverseer_ClotThink(int iNPC)
 							
 							// Hit sound
 							npc.PlayMeleeHitSound();
-						} 
+						}
 					}
 					delete swingTrace;
 					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
