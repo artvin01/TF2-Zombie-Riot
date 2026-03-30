@@ -901,7 +901,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 		i_SpeedUpTime[npc.index] = 2; 
 		f_MessengerSpeedUp[npc.index] *= 1.125;
 		if(i_RaidGrantExtra[npc.index] < 2)
-			CPrintToChatAll("{darkblue}Kahmlstein{default}: Can you even keep up?");
+			CPrintToChatAll("{darkblue}Kahmlstein{default}: Even my dead grandma is more entertaining than this.");
 	}
 	else if(RaidModeTimeLeft < 70 && i_SpeedUpTime[npc.index] == 2)
 	{
