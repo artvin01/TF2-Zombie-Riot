@@ -320,8 +320,12 @@ static void Internal_ClotThink(int iNPC)
 			int spawn_index = NPC_CreateByName("npc_squad_bob", -1, SpawnPos, {0.0,0.0,0.0}, GetTeam(npc.index));
 			if(spawn_index > 0)
 			{
-			//	CClotBody npc1 = view_as<CClotBody>(spawn_index);
-				FreezeNpcInTime(spawn_index, npc.m_flTimeUntillNextAppearFreeze);
+				CClotBody npc1 = view_as<CClotBody>(spawn_index);
+				
+				npc1.m_bisWalking = false;
+				npc1.SetActivity("ACT_BOB_INTRO");
+				SetEntProp(npc1.index, Prop_Data, "m_bSequenceLoops", false);
+				npc1.m_flNextDelayTime = GetGameTime() + npc.m_flTimeUntillNextAppearFreeze;
 				npc.m_flTimeUntillNextAppearFreeze -= 1.5;
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index));
@@ -359,8 +363,15 @@ static void Internal_ClotThink(int iNPC)
 			int spawn_index = NPC_CreateByName("npc_squad_omega", -1, SpawnPos, {0.0,0.0,0.0}, GetTeam(npc.index));
 			if(spawn_index > 0)
 			{
-			//	CClotBody npc1 = view_as<CClotBody>(spawn_index);
-				FreezeNpcInTime(spawn_index, npc.m_flTimeUntillNextAppearFreeze);
+				CClotBody npc1 = view_as<CClotBody>(spawn_index);
+				
+				npc1.m_bisWalking = false;
+				npc1.SetActivity("ACT_OMEGA_INTRO");
+				SetEntProp(npc1.index, Prop_Data, "m_bSequenceLoops", false);
+				npc1.m_iWearable5 = npc1.EquipItem("anim_attachment_RH", "models/weapons/w_rocket_launcher.mdl");
+				
+				CreateTimer(npc.m_flTimeUntillNextAppearFreeze, Timer_RemoveEntity, EntIndexToEntRef(npc1.m_iWearable5), TIMER_FLAG_NO_MAPCHANGE);
+				npc1.m_flNextDelayTime = GetGameTime() + npc.m_flTimeUntillNextAppearFreeze;
 				npc.m_flTimeUntillNextAppearFreeze -= 1.5;
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index));
@@ -389,8 +400,12 @@ static void Internal_ClotThink(int iNPC)
 			int spawn_index = NPC_CreateByName("npc_squad_shadowing_darkness", -1, SpawnPos, {0.0,0.0,0.0}, GetTeam(npc.index));
 			if(spawn_index > 0)
 			{
-			//	CClotBody npc1 = view_as<CClotBody>(spawn_index);
-				FreezeNpcInTime(spawn_index, npc.m_flTimeUntillNextAppearFreeze);
+				CClotBody npc1 = view_as<CClotBody>(spawn_index);
+				
+				npc1.m_bisWalking = false;
+				npc1.SetActivity("ACT_SHADOW_INTRO");
+				SetEntProp(npc1.index, Prop_Data, "m_bSequenceLoops", false);
+				npc1.m_flNextDelayTime = GetGameTime() + npc.m_flTimeUntillNextAppearFreeze;
 				npc.m_flTimeUntillNextAppearFreeze -= 1.5;
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index));
@@ -457,14 +472,17 @@ static void Internal_ClotThink(int iNPC)
 			
 			SpawnPos[0] += 15.0;
 			SpawnPos[1] += 15.0;
-			SpawnPos[2] += 85.0;
+		//	SpawnPos[2] += 85.0;
 			CreateEarthquake(SpawnPos, 0.5, 9999.9, 35.0, 255.0);
 			npc.m_flTimeUntillNextAppear = GetGameTime(npc.index) + 1.5;
 			int spawn_index = NPC_CreateByName("npc_squad_whiteflower", -1, SpawnPos, {0.0,0.0,0.0}, GetTeam(npc.index));
 			if(spawn_index > 0)
 			{
-			//	CClotBody npc1 = view_as<CClotBody>(spawn_index);
-				FreezeNpcInTime(spawn_index, npc.m_flTimeUntillNextAppearFreeze);
+				CClotBody npc1 = view_as<CClotBody>(spawn_index);
+				npc1.m_bisWalking = false;
+				npc1.SetActivity("ACT_WF_INTRO");
+				SetEntProp(npc1.index, Prop_Data, "m_bSequenceLoops", false);
+				npc1.m_flNextDelayTime = GetGameTime() + npc.m_flTimeUntillNextAppearFreeze;
 				npc.m_flTimeUntillNextAppearFreeze -= 1.5;
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index));

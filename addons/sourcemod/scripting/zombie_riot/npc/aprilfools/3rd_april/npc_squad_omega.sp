@@ -173,6 +173,9 @@ static void Internal_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
+	npc.m_bisWalking = true;
+	npc.SetActivity("ACT_BRAWLER_RUN");
+	
 	int target = npc.m_iTarget;
 	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
 		i_Target[npc.index] = -1;

@@ -250,7 +250,8 @@ void LivingMetalBallKB(int entity, int victim, float damage, int weapon)
 		MakeVectorFromPoints(VecEnemy, VecMe, AngleVec);
 		GetVectorAngles(AngleVec, AngleVec);
 		AngleVec[0] = -45.0;
-		Custom_Knockback(victim, entity, 850.0, true, true, true, .OverrideLookAng = AngleVec);
+		Custom_Knockback(victim, entity, 600.0, true, true, true, .OverrideLookAng = AngleVec);
 	}
+	Custom_Knockback(entity, victim, 350.0, true, true, true);
 	npc.m_flNextMeleeAttack = FAR_FUTURE;
 }
