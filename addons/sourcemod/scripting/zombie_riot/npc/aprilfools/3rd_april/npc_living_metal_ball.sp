@@ -81,6 +81,7 @@ methodmap LivingMetalBall < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		npc.m_flMeleeArmor = 2.5;	
+		npc.m_bDissapearOnDeath = true;
 
 		func_NPCDeath[npc.index] = view_as<Function>(LivingMetalBall_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(LivingMetalBall_OnTakeDamage);
@@ -240,9 +241,6 @@ void LivingMetalBallSelfDefense(LivingMetalBall npc, float gameTime, int target,
 
 void LivingMetalBallKB(int entity, int victim, float damage, int weapon)
 {
-	float pos[3]; GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", pos);
-	pos[2] += 45.0;
-	ParticleEffectAt(pos, "asplode_hoodoo_embers", 0.5);
 	LivingMetalBall npc = view_as<LivingMetalBall>(entity);
 	if(npc.m_flNextMeleeAttack != FAR_FUTURE)
 	{
