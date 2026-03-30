@@ -1235,7 +1235,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 				
 				do
 				{
-					ConfigSetup(sec, kv, 2, item.NoKit, RogueAlwaysSell(item), whitelist, 0, blacklist, 0);
+					ConfigSetup(sec, kv, 2, item.NoKit, item.RogueAlwaysSell, whitelist, 0, blacklist, 0);
 				}
 				while(kv.GotoNextKey());
 				kv.GoBack();
@@ -1265,7 +1265,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 		
 		do
 		{
-			ConfigSetup(sec, kv, item.Hidden ? 1 : 0, item.NoKit, RogueAlwaysSell(item), whitelist, whitecount, blacklist, blackcount);
+			ConfigSetup(sec, kv, item.Hidden ? 1 : 0, item.NoKit, item.RogueAlwaysSell, whitelist, whitecount, blacklist, blackcount);
 		}
 		while(kv.GotoNextKey());
 		kv.GoBack();
