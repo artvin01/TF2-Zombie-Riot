@@ -78,6 +78,8 @@ methodmap AustralianSpider < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AustralianSpider_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(AustralianSpider_ClotThink);
 		b_DissapearOnDeath[npc.index] = true;
+		SetEntityRenderMode(npc.index, RENDER_NONE);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
@@ -95,6 +97,9 @@ public void AustralianSpider_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+	
+	if(!IsValidEntity(npc.m_iWearable1))
+		npc.m_iWearable1 = npc.EquipItem("root", "models/props_halloween/smlprop_spider.mdl");
 
 	if(npc.m_blPlayHurtAnimation)
 	{

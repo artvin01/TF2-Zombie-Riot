@@ -15,9 +15,8 @@ void Broly_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Broly");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_broly");
 	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Raid;
+	data.IconCustom = false;
+	data.Category = -1;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);

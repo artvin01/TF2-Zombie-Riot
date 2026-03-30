@@ -150,6 +150,31 @@ methodmap SquadX_Master < CClotBody
 		{
 			npc.m_flNextMeleeAttack = 1.0;
 		}
+		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 2500.0, 1000.0, .NeedLOSPlayer = true);
+		switch(Decicion)
+		{
+			case 2:
+			{
+				Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 500.0, .NeedLOSPlayer = true);
+				if(Decicion == 2)
+				{
+					Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 250.0, .NeedLOSPlayer = true);
+					if(Decicion == 2)
+					{
+						Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 0.0, .NeedLOSPlayer = true);
+						if(Decicion == 2)
+						{
+							//damn, cant find any.... guess we'll just not care about LOS.
+							Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 0.0);
+						}
+					}
+				}
+			}
+			case 3:
+			{
+				//todo code on what to do if random teleport is disabled
+			}
+		}
 		return npc;
 	}
 }

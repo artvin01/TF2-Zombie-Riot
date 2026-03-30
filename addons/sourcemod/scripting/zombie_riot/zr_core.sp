@@ -470,7 +470,7 @@ enum
 }
 
 int PapModeDo = PAP_MODE_DEFAULT;
-int PerkModeDo = PERK_MODE_ALL_ALLOW;
+int PerkModeDo = PERK_MODE_DEFAULT;
 	
 bool DisableSpawnProtection;
 bool DisableRandomSpawns;

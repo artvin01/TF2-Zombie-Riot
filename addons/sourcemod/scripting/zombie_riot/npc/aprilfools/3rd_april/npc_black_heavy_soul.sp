@@ -205,7 +205,7 @@ methodmap BlackHeavySoul < CClotBody
 	
 	public void PlayPowGunSound()
 	{
-		EmitSoundToAll(g_PowGunShot[GetRandomInt(0, sizeof(g_PowGunShot) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_PowGunShot[GetRandomInt(0, sizeof(g_PowGunShot) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.7);
 	}
 
 	public void PlayMeleeSound()
@@ -982,7 +982,7 @@ bool Black_Heavy_PowDo(BlackHeavySoul npc, float gameTime)
 			PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, ProjectileSpeed, _, vecTarget);
 
 			npc.FaceTowards(vecTarget, 20000.0);
-			int entity = npc.FireRocket(vecTarget, 35.0 * RaidModeScaling, ProjectileSpeed, "models/weapons/w_bullet.mdl", 5.0);	
+			int entity = npc.FireRocket(vecTarget, 25.0 * RaidModeScaling, ProjectileSpeed, "models/weapons/w_bullet.mdl", 5.0);	
 			int trail = Trail_Attach(entity, ARROW_TRAIL_RED, 175, 0.25, 20.0, 20.0, 5);
 			i_WandParticle[entity] = EntIndexToEntRef(trail);
 			CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);
