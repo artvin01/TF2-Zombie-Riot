@@ -185,8 +185,8 @@ public void AustralianKing_ClotThink(int iNPC)
 			fl_Extra_Damage[npcsummon.index] = fl_Extra_Damage[npc.index];
 			fl_Extra_Damage[npcsummon.index] *= 1.5;
 			npcsummon.m_iTargetAlly = npc.index;
-			SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/20);
-			SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/20);
+			SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/40);
+			SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/40);
 			NpcStats_CopyStats(npc.index, summon);
 		}
 		npc.m_flSpiderSummon = GetGameTime(npc.index) + 0.5;

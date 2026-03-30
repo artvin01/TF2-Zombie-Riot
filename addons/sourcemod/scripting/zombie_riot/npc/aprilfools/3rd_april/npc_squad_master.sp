@@ -186,9 +186,18 @@ static void Internal_ClotThink(int iNPC)
 	{
 		if(npc.m_iGetTimeDo != GetTime())
 		{
+			for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
+			{
+				int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
+				if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) == TFTeam_Red)
+				{
+					FreezeNpcInTime(baseboss_index, 10.5, true);
+				}
+			}
+
 			//sync up!!!
 			npc.m_flTimeUntillNextAppear = GetGameTime(npc.index) + 3.0;
-			npc.m_flTimeUntillNextAppearFreeze = 8.4;
+			npc.m_flTimeUntillNextAppearFreeze = 10.4;
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aprilfools/mazeat_fabulous_squad_x.mp3");
 			music.Time = 164;

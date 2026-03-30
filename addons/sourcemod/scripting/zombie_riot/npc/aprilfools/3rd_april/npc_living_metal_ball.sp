@@ -228,7 +228,7 @@ void LivingMetalBallSelfDefense(LivingMetalBall npc, float gameTime, int target,
 		if(npc.m_flNextMeleeAttack == FAR_FUTURE)
 		{
 			npc.PlayHitSound();
-			npc.m_flNextMeleeAttack = gameTime + 0.5;
+			npc.m_flNextMeleeAttack = gameTime + 1.0;
 		}
 		else
 		{

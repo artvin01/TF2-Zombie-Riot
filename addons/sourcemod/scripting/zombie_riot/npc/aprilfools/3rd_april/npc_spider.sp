@@ -99,7 +99,7 @@ public void AustralianSpider_ClotThink(int iNPC)
 	npc.Update();
 	
 	if(!IsValidEntity(npc.m_iWearable1))
-		npc.m_iWearable1 = npc.EquipItem("root", "models/props_halloween/smlprop_spider.mdl");
+		npc.m_iWearable1 = npc.EquipItemSeperate("models/props_halloween/smlprop_spider.mdl");
 
 	if(npc.m_blPlayHurtAnimation)
 	{

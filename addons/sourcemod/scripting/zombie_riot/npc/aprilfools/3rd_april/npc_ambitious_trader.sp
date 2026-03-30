@@ -284,7 +284,7 @@ public void AmbitiousTrader_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 45.0;
+					float damage = 200.0;
 
 					if(ShouldNpcDealBonusDamage(target))
 					{

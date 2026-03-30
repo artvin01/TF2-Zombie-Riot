@@ -133,7 +133,6 @@ methodmap LardFat < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_sandwich/c_sandwich.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}
@@ -164,7 +163,7 @@ public void LardFat_ClotThink(int iNPC)
 	if(npc.m_flLardFatDoingEating < GetGameTime())
 	{
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-		Explode_Logic_Custom(1.0, 0, npc.index, -1, pos , 100.0 * 2.0, 1.0, _, true);
+		Explode_Logic_Custom(2.0, 0, npc.index, -1, pos , 100.0 * 2.0, 1.0, _, true);
 	}
 	//Stop Eating
 	if(npc.m_flLardFatStopEating < GetGameTime())

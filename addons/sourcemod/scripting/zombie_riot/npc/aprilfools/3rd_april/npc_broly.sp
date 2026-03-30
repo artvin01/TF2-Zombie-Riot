@@ -401,7 +401,7 @@ int BrolySelfDefense(Broly npc, float gameTime, int target, float distance)
 									continue;
 								}
 							}
-							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, GetRandomFloat(9999999.9,999999999.9), DMG_CLUB, -1, _, vecHit);			
+							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, 99999.9, DMG_TRUEDAMAGE, -1, _, vecHit);			
 							
 						
 							
