@@ -2792,8 +2792,11 @@ bool Rogue_NoLastman()
 	return Rogue_Mode() && !Rogue_Paradox_Lastman();
 }
 
-bool Rogue_UnlockStore()
+int Rogue_UnlockStore()
 {
+	if(VScript_LockedWeapons())
+		return 2;
+	
 	return (Rogue_Mode() && RogueTheme == BlueParadox);
 }
 

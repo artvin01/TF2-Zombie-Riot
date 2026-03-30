@@ -12,8 +12,6 @@ void CheckAprilFools()
 	if(StrContains(buffer, "fools24", false) != -1)
 	{
 		AprilFoolsMode = 1;
-		PrecacheSound("zombie_riot/yippe.mp3");
-		PrecacheModel("models/steamhappy.mdl");
 		PrecacheModel("materials/hud/leaderboard_class_steamhappy.vtf");
 		PrecacheModel("materials/hud/leaderboard_class_steamhappy.vmt");
 		AddToDownloadsTable("materials/hud/leaderboard_class_steamhappy.vtf");	
@@ -29,8 +27,15 @@ void CheckAprilFools()
 		AddToDownloadsTable("materials/steamhappy/happycolors.vtf");
 		AddToDownloadsTable("materials/steamhappy/happycolorable.vtf");
 		AddToDownloadsTable("materials/steamhappy/eye.vtf");
-		AddToDownloadsTable("sound/zombie_riot/yippe.mp3");
+		AddToDownloadsTable("models/zombie_riot/steamhappy_hat_8.dx80.vtx");			
+		AddToDownloadsTable("models/zombie_riot/steamhappy_hat_8.dx90.vtx");			
+		AddToDownloadsTable("models/zombie_riot/steamhappy_hat_8.mdl");			
+		AddToDownloadsTable("models/zombie_riot/steamhappy_hat_8.vvd");			
+		AddToDownloadsTable("models/zombie_riot/steamhappy_hat_8.dx90.vtx");	
 	}
+	PrecacheModel("models/steamhappy.mdl");			
+	PrecacheSound("zombie_riot/yippe.mp3");
+	AddToDownloadsTable("sound/zombie_riot/yippe.mp3");
 }
 int AprilFoolsIconOverride()
 {
@@ -49,7 +54,7 @@ bool AprilFoolsSoundDo(float volumeedited,
 				 bool updatePos = true,
 				 float soundtime = 0.0)
 {
-	if(AprilFoolsMode <= 0)
+	if(AprilFoolsMode <= 0 && !HasSpecificBuff(entity, "Steam Happy Prefix"))
 		return false;
 
 	if(entity <= 0 || entity > MAXENTITIES)
@@ -64,13 +69,10 @@ bool AprilFoolsSoundDo(float volumeedited,
 	if(team == 2)
 		return false;
 
-	switch(AprilFoolsMode)
-	{
-		case 1:
-		{
-			EmitSoundToClient(client, "zombie_riot/yippe.mp3",entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
-		}
-	}
+	
+	if(AprilFoolsMode == 1 || HasSpecificBuff(entity, "Steam Happy Prefix"))
+		EmitSoundToClient(client, "zombie_riot/yippe.mp3",entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
+
 	return true;
 }
 bool ModelReplaceDo(int iNpc, int TeamIs)

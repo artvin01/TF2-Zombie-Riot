@@ -2602,6 +2602,26 @@ void StatusEffects_Silence()
 	StatusEffect_AddGlobal(data);
 
 	data.HudDisplay_Func 			= INVALID_FUNCTION;
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Ragdolled");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "lol");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "lol"); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ElementalLogic				= true; //dont get removed.
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnBuffStarted				= Ragdolled_Start;
+	data.OnBuffEndOrDeleted			= Ragdolled_End;
+	
+	StatusEffect_AddGlobal(data);
+	
+	data.OnBuffStarted				= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 	//Immunity to stun effects
 	strcopy(data.BuffName, sizeof(data.BuffName), "Clear Head");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ֆ");
@@ -7572,6 +7592,22 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.OnBuffEndOrDeleted			= Perfected_InstinctEnd;
 	data.TimerRepeatCall_Func 		= Disco_Timer;
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Disco Prefix 2");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= Disco_Start;
+	data.OnBuffEndOrDeleted			= Perfected_InstinctEnd;
+	data.TimerRepeatCall_Func 		= Disco_Timer;
+	StatusEffect_AddGlobal(data);
 	
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Toxic Prefix");
@@ -7722,6 +7758,22 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= Const2Modifs_Modifier_Start;
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Steam Happy Prefix");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Steam Happy");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.35;
+	data.DamageDealMulti			= 1.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= (1.0 / 2.0);
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= SteamHappy_Prefix_Start;
+	data.OnBuffEndOrDeleted			= Perfected_InstinctEnd;
 	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 
@@ -8343,10 +8395,17 @@ float Perfected_Instinct_Dodge(int attacker, int victim, StatusEffect Apply_Mast
 		return 0.0;
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
-	if(!b_thisNpcIsARaid[victim])
+	if(i_NpcInternalId[victim] == BlackHeavySoulIDReturn())
+	{
 		ApplyStatusEffect(victim, victim, "Perfected Instinct Speed", 0.35);
-	if(b_thisNpcIsABoss[victim])
-		Apply_StatusEffect.DataForUse = GetGameTime() + 3.0;
+	}
+	else
+	{
+		if(!b_thisNpcIsARaid[victim])
+			ApplyStatusEffect(victim, victim, "Perfected Instinct Speed", 0.35);
+		if(b_thisNpcIsABoss[victim])
+			Apply_StatusEffect.DataForUse = GetGameTime() + 3.0;
+	}
 
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 	return 0.0;
@@ -9049,4 +9108,163 @@ public void ZRModifs_ParanormalActivityNPC(int iNpc)
 	}
 	*/
 
+}
+
+void Ragdolled_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+	
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	int entity, i;
+	while(TF2U_GetWearable(victim, entity, i))
+	{
+		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+	}
+
+	int ragdoll = CreateEntityByName("prop_ragdoll");
+	if(!IsValidEntity(ragdoll))
+		return;
+	
+	
+	char modelName[256];
+	GetClientModel(victim, modelName, 256);
+	
+	DispatchKeyValue(ragdoll, "model", modelName);
+	DispatchKeyValue(ragdoll, "spawnflags", "4");
+
+	//no collisions
+	SetEntProp(ragdoll, Prop_Data, "m_nSolidType", 2);
+	SetEntityCollisionGroup(ragdoll, 0);
+
+	float flPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+	float angles[3];
+	GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
+	flPos[2] += 40.0;
+	DispatchSpawn(ragdoll);
+	SetEntPropEnt(ragdoll, Prop_Data, "m_hOwnerEntity", victim);
+	float SubjectAbsVelocity[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+	ScaleVector(SubjectAbsVelocity, 100.0);
+	TeleportEntity(ragdoll, flPos, angles, SubjectAbsVelocity);    
+	CBaseCombatCharacter(ragdoll).SetNextThink(GetGameTime());
+	SDKHook(ragdoll, SDKHook_ThinkPost, ThinkRagdoll_Post);
+
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ragdoll);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+static void ThinkRagdoll_Post(int entity)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+		return;
+
+	CBaseCombatCharacter(entity).SetNextThink(GetGameTime());
+
+	CClotBody npc = view_as<CClotBody>(entity);
+	
+
+	/*
+	if(npc.m_flNextRunTime < GetGameTime(npc.index))
+	{
+		return;
+	}
+	*/
+	
+
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	{
+		return;
+	}
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.25;
+		//code wont work, speed is capped
+	float flPosRagdoll[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flPosRagdoll);
+	
+	float flPosPlayer[3];
+	GetEntPropVector(owner, Prop_Data, "m_vecAbsOrigin", flPosPlayer);
+	float flSetOrigin[3];
+	flSetOrigin = flPosPlayer;
+	flSetOrigin[2] = flPosRagdoll[2];
+
+	float flDistanceToTarget = GetVectorDistance(flPosPlayer, flPosRagdoll);
+	
+
+	// apply velocity 
+	if(flDistanceToTarget < 40.0)
+		return;
+	static float angles[3];
+	GetVectorAnglesTwoPoints(flPosRagdoll, flPosPlayer, angles);
+
+	static float velocity[3];
+	GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(velocity, (flDistanceToTarget * 100.0));
+	if(flDistanceToTarget < 80.0)
+	{
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, velocity);
+	}
+	else
+	{
+		TeleportEntity(entity, flSetOrigin, NULL_VECTOR, velocity);    
+	}
+	//teleport them 0.25 seconds into future.
+
+}
+stock void SetLocalRagdollDelay(DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(entity))
+	{
+		delete pack;
+		return;
+	}
+	float vel[3];
+	vel[0] = pack.ReadFloat();
+	vel[1] = pack.ReadFloat();
+	vel[2] = pack.ReadFloat();
+	delete pack;   
+	TeleportEntity(entity, vel, NULL_VECTOR, NULL_VECTOR);     
+}
+void Ragdolled_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	if(!IsValidClient(victim))
+		return;
+	
+	RemoveEntity(Apply_StatusEffect.WearableUse);
+	if(!b_HideCosmeticsPlayer[victim])
+	{
+		int entity, i;
+		while(TF2U_GetWearable(victim, entity, i))
+		{
+			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+		}
+	}
+	else
+	{
+		int entity, i;
+		while(TF2U_GetWearable(victim, entity, i))
+		{
+			if(Viewchanges_NotAWearable(victim, entity))
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+		}
+	}
+}
+void SteamHappy_Prefix_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	CClotBody npc = view_as<CClotBody>(victim);
+	int Wearable = npc.EquipItem("head", "models/zombie_riot/steamhappy_hat_8.mdl");
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(Wearable);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 }

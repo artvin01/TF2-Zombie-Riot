@@ -4904,7 +4904,7 @@ public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadde
 	return from_area.GetCostSoFar() + cost;
 }
 
-bool PluginBot_Jump(int bot_entidx, float vecPos[3], float flMaxSpeed = 1250.0, bool DirectLaunch = false)
+bool PluginBot_Jump(int bot_entidx, float vecPos[3], float flMaxSpeed = 1250.0, bool DirectLaunch = false, float timemodify = 1.0)
 {
 	if(IsEntityTowerDefense(bot_entidx)) //do not allow them to jump.
 	{
@@ -4968,6 +4968,7 @@ bool PluginBot_Jump(int bot_entidx, float vecPos[3], float flMaxSpeed = 1250.0, 
 	float time = speed / gravity;
 
 	time += SquareRoot( (2 * additionalHeight) / gravity );
+	time *= timemodify;
 	
 	// Scale the sideways velocity to get there at the right time
 	SubtractVectors( vecPos, vecNPC, vecJumpVel );
@@ -5800,6 +5801,9 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 					continue;
 
 				float dist = GetVectorDistance(targetPos[i], EntityLocation, true);
+				if(i_CurrentEquippedPerk[target] & PERK_BLOODY)
+					dist *= 2.0;
+				
 				//if they are in the taunt range, subtract into negatives.
 				float TauntRange;
 				if(target <= MaxClients)
@@ -5869,6 +5873,8 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 
 			GetEntPropVector( target, Prop_Data, "m_vecOrigin", TargetLocation ); //do not use abs, some entities do not have abs.
 			float distanceVector = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+			if(i_CurrentEquippedPerk[target] & PERK_BLOODY)
+				distanceVector *= 2.0;
 
 			float TauntRange;
 			if(target <= MaxClients)
@@ -11805,7 +11811,14 @@ stock void Spawns_CheckBadClient(int client/*, int checkextralogic = 0*/)
 			NpcStuckZoneWarning(client, damage, 0);	
 			if(damage >= 0.25)
 			{
-				SDKHooks_TakeDamage(client, 0, 0, damage, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, -1, _, _, _, ZR_STAIR_ANTI_ABUSE_DAMAGE);
+				if(damage < 1000.0 && (i_CurrentEquippedPerk[client] & PERK_LOVER))
+				{
+					TeleportBackToLastSavePosition(client);
+				}
+				else
+				{
+					SDKHooks_TakeDamage(client, 0, 0, damage, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, -1, _, _, _, ZR_STAIR_ANTI_ABUSE_DAMAGE);
+				}
 			}
 		}
 	}
