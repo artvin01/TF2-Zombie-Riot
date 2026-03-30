@@ -296,7 +296,7 @@ int Professional_FingererSelfDefense(Professional_Fingerer npc, float gameTime)
 			return 0;
 		}
 	}
-	if(Rogue_Mode() && i_npcspawnprotection[npc.index] == NPC_SPAWNPROT_ON)
+	if(i_npcspawnprotection[npc.index] == NPC_SPAWNPROT_ON)
 		return 0;
 	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 	npc.FaceTowards(VecEnemy, 15000.0);
