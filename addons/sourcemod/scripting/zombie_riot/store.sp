@@ -3204,6 +3204,8 @@ void Store_OpenGiftStore(int client, int entity, int price, bool barney)
 int PassClientBoughtLateGame(int client)
 {
 
+	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+		return 0;
 	//its too early in the wave, dont force clients to buy
 	if(CurrentCash <= 5000)
 		return 0;

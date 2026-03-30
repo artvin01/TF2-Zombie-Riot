@@ -176,7 +176,7 @@ public void LivingMetalBall_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		LivingMetalBallSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		LivingMetalBallSelfDefense(npc,GetGameTime(npc.index)); 
 	}
 }
 
@@ -216,7 +216,7 @@ public void LivingMetalBall_NPCDeath(int entity)
 
 }
 
-void LivingMetalBallSelfDefense(LivingMetalBall npc, float gameTime, int target, float distance)
+void LivingMetalBallSelfDefense(LivingMetalBall npc, float gameTime)
 {
 
 	if(gameTime > npc.m_flNextMeleeAttack)
