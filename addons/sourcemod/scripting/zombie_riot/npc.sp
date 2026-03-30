@@ -1033,11 +1033,6 @@ void NPC_ConfigSetup()
 	TrollRPG_OnMapStart_NPC();
 	TrollBrawler_OnMapStart_NPC();
 
-
-	AmbitiousTrader_OnMapStart_NPC();
-	AgentSmithFollower_Setup();
-	KevinmeryFollower_Setup();
-
 	//Expidonsa Rogue forces in Construction
 	Eirasus_OnMapStart_NPC();
 	Haltera_OnMapStart_NPC();
@@ -2507,10 +2502,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aprilfools/npc_troll_pistol.sp"
 #include "npc/aprilfools/npc_troll_rpg.sp"
 #include "npc/aprilfools/npc_troll_melee.sp"
-
-#include "npc/aprilfools/2026/npc_ambitious_trader.sp"
-#include "npc/aprilfools/2026/npc_smith_follower.sp"
-#include "npc/aprilfools/2026/npc_kevin_follower.sp"
 
 #include "npc/construction/enemies/npc_eirasus.sp"
 #include "npc/construction/enemies/npc_haltera.sp"
