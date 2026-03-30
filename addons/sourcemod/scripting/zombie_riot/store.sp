@@ -5436,6 +5436,11 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("343", 1.0); //sentry attackspeed fix
 	map.SetValue("526", 1.0);//
 	map.SetValue("4049", 1.0);// Elemental Res
+	
+	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+	{
+		map.SetValue("4056", 0.05);	// Out of battle regen
+	}
 
 	map.SetValue("442", 1.0);	// Move Speed
 	map.SetValue("49", 1);	// no doublejumps

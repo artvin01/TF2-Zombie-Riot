@@ -463,6 +463,7 @@ enum
 	PAP_MODE_DEFAULT,
 	PAP_MODE_BUILDING_ONLY
 }
+//PAP_MODE_BUILDING_ONLY assumes logic of another gamemode, so we'll reuse that for now.
 enum
 {
 	PERK_MODE_DEFAULT,
