@@ -1235,7 +1235,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 				
 				do
 				{
-					ConfigSetup(sec, kv, 2, item.NoKit, item.RogueAlwaysSell, whitelist, 0, blacklist, 0);
+					ConfigSetup(sec, kv, 2, item.NoKit, RogueAlwaysSell(item), whitelist, 0, blacklist, 0);
 				}
 				while(kv.GotoNextKey());
 				kv.GoBack();
@@ -1265,7 +1265,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 		
 		do
 		{
-			ConfigSetup(sec, kv, item.Hidden ? 1 : 0, item.NoKit, item.RogueAlwaysSell, whitelist, whitecount, blacklist, blackcount);
+			ConfigSetup(sec, kv, item.Hidden ? 1 : 0, item.NoKit, RogueAlwaysSell(item), whitelist, whitecount, blacklist, blackcount);
 		}
 		while(kv.GotoNextKey());
 		kv.GoBack();
@@ -1289,7 +1289,7 @@ bool Store_CanPapItem(int client, int index)
 				if(!parent.NPCSeller && !parent.RogueAlwaysSell)
 					return false;
 			}
-			else if(!item.NPCSeller && !item.RogueAlwaysSell)
+			else if(!item.NPCSeller && !RogueAlwaysSell(item))
 			{
 				return false;
 			}
@@ -2937,7 +2937,7 @@ void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -
 			{
 				if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell && (!item.Hidden)))
 				{
-					if(!item.NPCSeller && !item.RogueAlwaysSell)
+					if(!item.NPCSeller && !RogueAlwaysSell(item))
 					{
 						item.GetItemInfo(0, info);
 						if(info.Cost > 0 && info.Cost_Unlock < (GrigoriCashLogic / 3))
@@ -3937,7 +3937,7 @@ static void MenuPage(int client, int section)
 					{
 						continue;
 					}
-					else if(!item.WhiteOut && Rogue_UnlockStore() && !item.NPCSeller && (item.Hidden || !item.RogueAlwaysSell) && !CvarInfiniteCash.BoolValue)
+					else if(!item.WhiteOut && Rogue_UnlockStore() && !item.NPCSeller && (item.Hidden || (!RogueAlwaysSell(item))) && !CvarInfiniteCash.BoolValue)
 					{
 						if(Rogue_UnlockStore() > 1)
 							continue;
@@ -6939,7 +6939,7 @@ static void ItemCost(int client, Item item, int &cost)
 	cost += item.Scale * scaled; 
 	cost += item.CostPerWave * Waves_GetRoundScale();
 
-	if(Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
+	if(Rogue_UnlockStore() && !item.NPCSeller && !RogueAlwaysSell(item) && !CvarInfiniteCash.BoolValue)
 	{
 		if(Rogue_UnlockStore() > 1)
 			cost = 999999;
@@ -7052,10 +7052,10 @@ static stock void ItemCostPap(const Item item, int &cost)
 				static Item parent;
 				StoreItems.GetArray(item.Section, parent);
 
-				if(!parent.NPCSeller && !parent.RogueAlwaysSell)
+				if(!parent.NPCSeller && !RogueAlwaysSell(parent))
 					NotFoundCost = true;
 			}
-			else if(!item.NPCSeller && !item.RogueAlwaysSell)
+			else if(!item.NPCSeller && !RogueAlwaysSell(item))
 			{
 				NotFoundCost = true;
 			}
@@ -7693,4 +7693,13 @@ public void OnBuyOrSell_LivingArmor(int client)
 	}
 	if(!Waves_InSetup())
 		f_LivingArmorPenalty[client] = GetGameTime() + 20.0;
+}
+
+bool RogueAlwaysSell(Item item)
+{
+	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+		return false;
+
+	return RogueAlwaysSell(item);
+		
 }
