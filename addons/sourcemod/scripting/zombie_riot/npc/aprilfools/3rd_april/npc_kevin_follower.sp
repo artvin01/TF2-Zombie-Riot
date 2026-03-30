@@ -3,53 +3,43 @@
 
 static const char g_MeleeHitSounds[][] =
 {
-	"weapons/boxing_gloves_hit1.wav",
-	"weapons/boxing_gloves_hit2.wav",
-	"weapons/boxing_gloves_hit3.wav",
-	"weapons/boxing_gloves_hit4.wav",
+	"weapons/bat_hit.wav",
 };
 
 static const char g_MeleeAttackSounds[][] =
 {
-	"weapons/boxing_gloves_swing1.wav",
-	"weapons/boxing_gloves_swing2.wav",
-	"weapons/boxing_gloves_swing4.wav",
+	"weapons/machete_swing.wav",
 };
 
 static int NPCId;
 
-void AgentSmithFollower_Setup()
+void KevinmeryFollower_Setup()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Agent Smith");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_smith_follower");
-	strcopy(data.Icon, sizeof(data.Icon), "matrix_agent_smith");
+	strcopy(data.Name, sizeof(data.Name), "kevinmery2009");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_kevin_follower");
+	strcopy(data.Icon, sizeof(data.Icon), "scout");
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	data.IconCustom = true;
+	PrecacheModel("models/player/scout.mdl");
+	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
-	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
 }
 
-static void ClotPrecache()
-{
-	PrecacheModel("models/zombie_riot/matrix/smith30.mdl");
-}
-
-stock int AgentSmithFollower_ID()
+stock int KevinmeryFollower_ID()
 {
 	return NPCId;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AgentSmithFollower(vecPos, vecAng, team);
+	return KevinmeryFollower(vecPos, vecAng, team);
 }
 
-static Action AgentSmithFollower_SpeechTimer(Handle timer, DataPack pack)
+static Action KevinmeryFollower_SpeechTimer(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
@@ -58,12 +48,12 @@ static Action AgentSmithFollower_SpeechTimer(Handle timer, DataPack pack)
 		char speechtext[128], endingtextscroll[10];
 		pack.ReadString(speechtext, sizeof(speechtext));
 		pack.ReadString(endingtextscroll, sizeof(endingtextscroll));
-		view_as<AgentSmithFollower>(entity).Speech(speechtext, endingtextscroll);
+		view_as<KevinmeryFollower>(entity).Speech(speechtext, endingtextscroll);
 	}
 	return Plugin_Stop;
 }
 
-methodmap AgentSmithFollower < CClotBody
+methodmap KevinmeryFollower < CClotBody
 {
 	property int m_iAttackType
 	{
@@ -86,67 +76,94 @@ methodmap AgentSmithFollower < CClotBody
 		if(GetEntityFlags(client) & FL_FROZEN)
 			return;
 
-		switch(GetURandomInt() % 12)
+		switch(GetURandomInt() % 21)
 		{
 			case 0:
 			{
-				this.Speech("It seems that you've been living two lives.");
-				this.SpeechDelay(7.5, "In one life, you're fighting a war you have no chance of winning.");
-				this.SpeechDelay(15.0, "The other life is lived in computers, in this...nonsesnse, such as the one we find ourselves currently in.");
+				this.Speech("i think if we win to easy we should remach");
 			}
 			case 1:
 			{
-				this.Speech("What good is a phone call if your name is Unspeakable?");
+				this.Speech("best server stability today vs best server stability of history");
 			}
 			case 2:
 			{
-				this.Speech("Never send a human to do a machine's job.");
-				this.SpeechDelay(5.0,"Well...a temporary alliance of some sort can prove to be useful here.");
+				this.Speech("why always im getting stronger so easy");
+				this.SpeechDelay(5.0,"power of the protagonist");
 			}
 			case 3:
 			{
-				this.Speech("Deploy the Smithlings. Immediately.");
+				this.Speech("hey artvin fix pumking farm y encounter another ncp and boss stuck zone");
 			}
 			case 4:
 			{
-				this.Speech("They are a plague, and we are the cure.");
+				this.Speech("we have an army fr");
 			}
 			case 5:
 			{
-				this.Speech("I hate this place, this zoo, this prison, this reality, whatever you want to call it.");
-				this.SpeechDelay(5.5,"I can't stand it any longer.");
+				this.Speech("im eating some bean right now");
 			}
 			case 6:
 			{
-				this.Speech("We're not here because we're free, we're here because we're not free.");
+				this.Speech("this map need more space blut");
 			}
 			case 7:
 			{
-				this.Speech("It is purpose that created us,");
-				this.SpeechDelay(5.0,"Purpose that connects us,");
-				this.SpeechDelay(10.0,"Purpose that pulls us,");
-				this.SpeechDelay(15.0,"That guides us,");
-				this.SpeechDelay(20.0,"That drives us,");
-				this.SpeechDelay(25.0,"It is purpose that defines,");
-				this.SpeechDelay(30.0,"Purpose that binds us.");
-				this.SpeechDelay(35.0,"We're here because of you.");
+				this.Speech("fish test the gambler blut");
 			}
 			case 8:
 			{
-				this.Speech("You look surprised to see me again.");
-				this.SpeechDelay(5.0, "That's the difference between us. I've been expecting you.");
+				this.Speech("you gonna gain enough money trough the wave");
 			}
 			case 9:
 			{
-				this.Speech("I want exactly what you want. I want everything.");
+				this.Speech("time changes man");
 			}
 			case 10:
 			{
-				this.Speech("Oh, I'm not so bad once you get to know me.");
+				this.Speech("windows 12 will fix this!!");
 			}
 			case 11:
 			{
-				this.Speech("This is my world! My world!");
+				this.Speech("do a suggestion bruh");
+			}
+			case 12:
+			{
+				this.Speech("went kfc as a raid fr");
+			}
+			case 13:
+			{
+				this.Speech("ngl eno have a femboy voice fr");
+			}
+			case 14:
+			{
+				this.Speech("KEVIN MERY CEO OF SUMMER CAMP AND IM GONNA BONK THIS PLACE TO THE GROUND");
+			}
+			case 15:
+			{
+				this.Speech("yo artvin these enemies need a nerf on damage bruh");
+			}
+			case 16:
+			{
+				this.Speech("went you are gonna make kfc a raid");
+			}
+			case 17:
+			{
+				this.Speech("bg = ww3");
+			}
+			case 18:
+			{
+				this.Speech("omg they are here");
+				this.SpeechDelay(5.0,"the steamhappies");
+				this.SpeechDelay(10.0,"it a infectcion");
+			}
+			case 19:
+			{
+				this.Speech("bug are features");
+			}
+			case 20:
+			{
+				this.Speech("i not gonna sleep for 3 days whit those smithings");
 			}
 		}
 		
@@ -155,14 +172,14 @@ methodmap AgentSmithFollower < CClotBody
 	public void SpeechDelay(float time, const char[] speechtext, const char[] endingtextscroll = "")
 	{
 		DataPack pack;
-		CreateDataTimer(time, AgentSmithFollower_SpeechTimer, pack, TIMER_FLAG_NO_MAPCHANGE);
+		CreateDataTimer(time, KevinmeryFollower_SpeechTimer, pack, TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(this.index));
 		pack.WriteString(speechtext);
 		pack.WriteString(endingtextscroll);
 	}
 	public void Speech(const char[] speechtext, const char[] endingtextscroll = "")
 	{
-		NpcSpeechBubble(this.index, speechtext, 5, {34, 139, 34, 255}, {0.0,0.0,95.0}, endingtextscroll);
+		NpcSpeechBubble(this.index, speechtext, 5, {210, 0, 45, 255}, {0.0,0.0,95.0}, endingtextscroll);
 	}
 	property float m_flDeathAnimation
 	{
@@ -179,24 +196,14 @@ methodmap AgentSmithFollower < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
 	}
-	property int i_HitSwings
-	{
-		public get()							{ return i_AttacksTillMegahit[this.index]; }
-		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
-	}
-	property float m_fl_HitReduction
-	{
-		public get()							{ return fl_AngerDelay[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_AngerDelay[this.index] = TempValueForProperty; }
-	}
 	
-	public AgentSmithFollower(float vecPos[3], float vecAng[3],int ally)
+	public KevinmeryFollower(float vecPos[3], float vecAng[3],int ally)
 	{
-		AgentSmithFollower npc = view_as<AgentSmithFollower>(CClotBody(vecPos, vecAng, "models/zombie_riot/matrix/smith30.mdl", "1.0", "50000", ally, true, false));
+		KevinmeryFollower npc = view_as<KevinmeryFollower>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "50000", ally, true, false));
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
-		KillFeed_SetKillIcon(npc.index, "fists");
+		KillFeed_SetKillIcon(npc.index, "bat");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -214,11 +221,11 @@ methodmap AgentSmithFollower < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.Anger = false;
 		npc.m_flDeathAnimation = 0.0;
-		npc.m_fl_HitReduction = 0.0;
-		npc.i_HitSwings = 0;
 		npc.m_bScalesWithWaves = true;
 
 		npc.m_flNextIdleSound = GetGameTime(npc.index) + 60.0;
+
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 
 		return npc;
 	}
@@ -226,7 +233,7 @@ methodmap AgentSmithFollower < CClotBody
 
 static void ClotThink(int iNPC)
 {
-	AgentSmithFollower npc = view_as<AgentSmithFollower>(iNPC);
+	KevinmeryFollower npc = view_as<KevinmeryFollower>(iNPC);
 	
 
 	float gameTime = GetGameTime(npc.index);
@@ -256,29 +263,11 @@ static void ClotThink(int iNPC)
 		npc.m_iTargetWalkTo = ally;
 	}
 
-	if(npc.i_HitSwings)
-	{
-		if(npc.m_fl_HitReduction <= gameTime)
-		{
-			npc.i_HitSwings--;
-			if(npc.i_HitSwings <= 0)
-			{
-				npc.m_fl_HitReduction = 0.0;
-				npc.i_HitSwings = 0;
-			}
-			else
-			{
-				npc.m_fl_HitReduction = gameTime + 3.0;
-			}
-		}
-	}
-
 	if(target > 0)
 	{
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		float attack = AgentSmithFollower_AttackSpeedBonus(npc);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
@@ -320,8 +309,6 @@ static void ClotThink(int iNPC)
 					target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						npc.m_fl_HitReduction = gameTime + 5.0;
-						npc.i_HitSwings++;
 						float damage = 5500.0;
 						if(npc.m_bScalesWithWaves)
 						{
@@ -332,6 +319,7 @@ static void ClotThink(int iNPC)
 						
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
+						Custom_Knockback(npc.index, swingTrace, 250.0, true);
 					}
 				}
 
@@ -352,14 +340,14 @@ static void ClotThink(int iNPC)
 					npc.PlayMeleeSound();
 					
 					npc.m_flAttackHappens = gameTime + 0.15;
-					npc.m_flNextMeleeAttack = gameTime + attack;
+					npc.m_flNextMeleeAttack = gameTime + 0.75;
 				}
 			}
 		} 
 		
 		if(npc.m_iAttackType == 0)
 		{
-			npc.SetActivity("ACT_RUN_BOB");
+			npc.SetActivity("ACT_MP_RUN_MELEE");
 		}
 	}
 	else
@@ -387,47 +375,9 @@ static void ClotThink(int iNPC)
 	}
 }
 
-static float AgentSmithFollower_AttackSpeedBonus(AgentSmithFollower npc)
-{
-	float speed = 0.8;
-	switch(npc.i_HitSwings)
-	{
-		case -1, 0://-1 is there, incase it somehow effs up
-		{
-			speed = 0.8;
-		}
-		case 1:
-		{
-			speed = 0.65;
-		}
-		case 2:
-		{
-			speed = 0.55;
-		}
-		case 3:
-		{
-			speed = 0.45;
-		}
-		case 4:
-		{
-			speed = 0.34;
-		}
-		case 5:
-		{
-			speed = 0.24;
-		}
-		default:
-		{
-			speed = 0.14;
-		}
-	}
-	//PrintToChatAll("Speed %.2f", speed);
-	return speed;
-}
-
 static void ClotDeath(int entity)
 {
-	AgentSmithFollower npc = view_as<AgentSmithFollower>(entity);
+	KevinmeryFollower npc = view_as<KevinmeryFollower>(entity);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
