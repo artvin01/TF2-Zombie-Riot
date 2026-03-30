@@ -3129,7 +3129,7 @@ public Action Access_StoreViaCommand(int client, int args)
 
 void Store_Menu(int client)
 {
-	if(CvarInfiniteCash.BoolValue)
+	if(CvarInfiniteCash.BoolValue || PapModeDo == PAP_MODE_BUILDING_ONLY)
 	{
 		StarterCashMode[client] = false;
 	}
@@ -7695,7 +7695,7 @@ public void OnBuyOrSell_LivingArmor(int client)
 		f_LivingArmorPenalty[client] = GetGameTime() + 20.0;
 }
 
-bool RogueAlwaysSell(Item item)
+bool RogueAlwaysSell(const Item item)
 {
 	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
 		return false;

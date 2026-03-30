@@ -2784,6 +2784,11 @@ void ReviveAll(bool raidspawned = false,
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		if(IsClientInGame(client))
 		{
+			if(dieingstate[client] > 0)
+			{
+				if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+					continue;
+			}
 			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
 			if(glowentity > MaxClients)
 				RemoveEntity(glowentity);
@@ -2881,8 +2886,6 @@ void ReviveAll(bool raidspawned = false,
 			CreateTimer(0.1, Timer_ChangePersonModel, GetClientUserId(client));
 		}
 	}
-	
-	if(ZR_Get_Modifier() == PREFIX_ONESTAND)
 	
 	Music_EndLastmann();
 	CheckAlivePlayers();
