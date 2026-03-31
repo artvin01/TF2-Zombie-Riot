@@ -79,7 +79,7 @@ global zr can be a shared database across multiple servers, local one should sta
 
 ### Dependencies
 
-Sourcemod 1.13 Is a Must.
+Sourcemod 1.13.7299 Is a Must.
 For both linux and Windows, not all linux gamedata might be here.
 The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot to run:
 
