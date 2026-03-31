@@ -68,7 +68,7 @@ void BlackHeavySoul_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Black Heavy Soul");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_black_heavy_soul");
-	strcopy(data.Icon, sizeof(data.Icon), "");
+	strcopy(data.Icon, sizeof(data.Icon), "blackheavysoul");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;

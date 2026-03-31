@@ -22,7 +22,7 @@ void AustralianSpider_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Australian Spider");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_spider");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
+	strcopy(data.Icon, sizeof(data.Icon), "spider");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Mutation;

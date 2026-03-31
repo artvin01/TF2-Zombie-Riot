@@ -57,8 +57,8 @@ void RTDMedic_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Roll The Dice");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_rtd_medic");
-	strcopy(data.Icon, sizeof(data.Icon), "medic");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "rtd_medic");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;

@@ -76,7 +76,7 @@ methodmap KevinmeryFollower < CClotBody
 		if(GetEntityFlags(client) & FL_FROZEN)
 			return;
 
-		switch(GetURandomInt() % 21)
+		switch(GetURandomInt() % 28)
 		{
 			case 0:
 			{
@@ -165,6 +165,34 @@ methodmap KevinmeryFollower < CClotBody
 			{
 				this.Speech("i not gonna sleep for 3 days whit those smithings");
 			}
+			case 21:
+			{
+				this.Speech("im intakilling that guy");
+			}
+			case 22:
+			{
+				this.Speech("is the enemie that one shot you i every history");
+			}
+			case 23:
+			{
+				this.Speech("we need to cook more cristals");
+			}
+			case 24:
+			{
+				this.Speech("you monsters are just violating a poor creature");
+			}
+			case 25:
+			{
+				this.Speech("we getting good shits");
+			}
+			case 26:
+			{
+				this.Speech("wtf the enemies are diferent in ever wave");
+			}
+			case 27:
+			{
+				this.Speech("man that lucky just happens only 1 time per year");
+			}
 		}
 		
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(36.0, 48.0);
@@ -215,7 +243,7 @@ methodmap KevinmeryFollower < CClotBody
 		func_NPCThink[npc.index] = ClotThink;
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		
-		npc.m_flSpeed = 310.0;
+		npc.m_flSpeed = 330.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
