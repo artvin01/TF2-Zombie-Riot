@@ -94,6 +94,7 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [CollisionHookFIX](https://github.com/voided/CollisionHook)
 - [Source scramble](https://github.com/nosoop/SMExt-SourceScramble)
 - [Load Soundscript](https://github.com/haxtonsale/LoadSoundScript)
+- [vscript-ext](https://github.com/Mikusch/vscript-ext)
 - [Max speed unlocker/Edict Alloc](https://github.com/Mikusch/SourceScramble-Patches) (install both speed unlocker and Alloc)
 
 If you want to compile, this include is needed!
