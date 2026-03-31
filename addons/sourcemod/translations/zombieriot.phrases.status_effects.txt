@@ -3280,13 +3280,16 @@
 	"Steam Happy Prefix"
 	{
 		"en"	"Steam Happy Prefix"
+		"ko"	"Steam Happy 접두사"
 	}
 	"Steam Happy"
 	{
 		"en"	"Steam Happy"
+		"ko"	"Steam Happy"
 	}
 	"Steam Happy Prefix Desc"
 	{
 		"en"	"Infected by steam happy, gains insane stats."
+		"ko"	"Steam Happy 이모지에 감염되어, 파멸적인 버프를 얻습니다."
 	}
 }
