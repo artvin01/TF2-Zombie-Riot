@@ -1362,7 +1362,7 @@
 		"#format"	"{1:.f}"
 		"en" 		"All your unique buildings are on a [{1}] second cooldown."
 		"it"		"Tutti gli Strutture unici hanno un cooldown di [{1}] secondi."
-		"ko"		"당신의 유니크 구조물들이 모두 [{1}]초의 재사용 대기시간을 가집니다."
+		"ko"		"당신의 모든 유니크 구조물들이 [{1}]초의 재사용 대기시간을 가집니다."
 	}
 	"Too Far Away"
 	{
