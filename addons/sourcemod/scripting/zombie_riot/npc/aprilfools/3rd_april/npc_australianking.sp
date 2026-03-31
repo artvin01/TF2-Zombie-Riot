@@ -172,7 +172,7 @@ public void AustralianKing_ClotThink(int iNPC)
 	npc.Update();
 
 	//Australian Spidors
-	if(npc.m_flSpiderSummon < GetGameTime())
+	if(npc.m_flSpiderSummon < GetGameTime(npc.index))
 	{
 		float pos2[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos2);
 		int summon = NPC_CreateByName("npc_spider", -1, pos2, {0.0,0.0,0.0}, GetTeam(npc.index));
@@ -192,16 +192,16 @@ public void AustralianKing_ClotThink(int iNPC)
 		npc.m_flSpiderSummon = GetGameTime(npc.index) + 0.5;
 	}
 	//Start Didgeridoo
-	if(npc.m_flAustralianKingStartDidgeridoo < GetGameTime())
+	if(npc.m_flAustralianKingStartDidgeridoo < GetGameTime(npc.index))
 	{
 		npc.StopPathing();
 		npc.AddActivityViaSequence("taunt_didgeridrongo");
 		npc.SetCycle(10.01);
 		npc.SetPlaybackRate(1.2);
-		npc.m_flNextMeleeAttack = GetGameTime() + 999.0;
+		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 999.0;
 	}
 	//Doing Didgeridoo
-	if(npc.m_flAustralianKingDoingDidgeridoo < GetGameTime())
+	if(npc.m_flAustralianKingDoingDidgeridoo < GetGameTime(npc.index))
 	{
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		Explode_Logic_Custom(0.0, 0, npc.index, -1, pos , 250.0 * 2.0, 1.0, _, true, .FunctionToCallBeforeHit = UmbralAutomaton_Terrified);
@@ -211,7 +211,7 @@ public void AustralianKing_ClotThink(int iNPC)
 		npc.SetPlaybackRate(0.1);
 	}
 	//Stop Didgeridoo
-	if(npc.m_flAustralianKingStopDidgeridoo < GetGameTime())
+	if(npc.m_flAustralianKingStopDidgeridoo < GetGameTime(npc.index))
 	{
 		npc.m_flAustralianKingStartDidgeridoo = GetGameTime(npc.index) + 7.0;
 		npc.m_flAustralianKingDoingDidgeridoo = GetGameTime(npc.index) + 9.0;
@@ -219,7 +219,7 @@ public void AustralianKing_ClotThink(int iNPC)
 		npc.m_flAustralianKingStopDidgeridoo = GetGameTime(npc.index) + 15.0;
 		npc.StartPathing();
 		npc.SetActivity("ACT_MP_RUN_MELEE");
-		npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
+		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
 	}
 
 	if(npc.m_blPlayHurtAnimation)
