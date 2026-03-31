@@ -1642,6 +1642,10 @@ void Store_Reset()
 	for(int c; c<MAXPLAYERS; c++)
 	{
 		StarterCashMode[c] = true;
+		if(CvarInfiniteCash.BoolValue || PapModeDo == PAP_MODE_BUILDING_ONLY)
+		{
+			StarterCashMode[c] = false;
+		}
 		CashSpent[c] = 0;
 		CashSpentTotal[c] = 0;
 		CashSpentLoadout[c] = 0;
@@ -2018,7 +2022,10 @@ void Store_ClientDisconnect(int client)
 	CashSpentTotal[client] = 0;
 	CashSpentLoadout[client] = 0;
 	StarterCashMode[client] = true;
-	
+	if(CvarInfiniteCash.BoolValue || PapModeDo == PAP_MODE_BUILDING_ONLY)
+	{
+		StarterCashMode[client] = false;
+	}
 	static Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
@@ -3740,6 +3747,10 @@ static void MenuPage(int client, int section)
 		if(!Waves_Started())
 		{
 			StarterCashMode[client] = true;
+		}	
+		if(CvarInfiniteCash.BoolValue || PapModeDo == PAP_MODE_BUILDING_ONLY)
+		{
+			StarterCashMode[client] = false;
 		}
 		return;
 	}
