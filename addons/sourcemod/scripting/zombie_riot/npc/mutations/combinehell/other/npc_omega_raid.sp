@@ -795,8 +795,7 @@ void OmegaThrowGrenadeHappening(OmegaRaid npc)
 			float damage = 60.0;
 			damage *= 0.50;
 			damage *= RaidModeScaling;
-			float HealDo = 5000.0;
-			HealDo *= RaidModeScaling;
+			float HealDo = 1.0;
 			Omega_GrenadeSupportDo(npc.index, Grenade, damage, GrenadeRangeSupport, HealDo);
 			float SpeedReturn[3];
 			ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
