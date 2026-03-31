@@ -96,7 +96,7 @@ void GigaObuch_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_giga_obuch");
 	strcopy(data.Icon, sizeof(data.Icon), "obuch");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
 	NPC_Add(data);

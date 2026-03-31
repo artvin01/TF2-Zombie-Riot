@@ -1238,7 +1238,7 @@ void NPC_ConfigSetup()
 	SquadX_Whiteflower_OnMapStart_NPC();
 	SquadX_Shadowing_Darkness_OnMapStart_NPC();
 	SquadX_Master_OnMapStart_NPC();
-
+	KahmlsteinDeadGrandma_OnMapStart_NPC();
 	AustralianKing_OnMapStart_NPC();
 	DismountedTeuton_OnMapStart_NPC();
 	FuckerSwordsman_OnMapStart_NPC();
@@ -1252,7 +1252,7 @@ void NPC_ConfigSetup()
 	SuctionMedic_OnMapStart_NPC();
 	LivingMetalBall_OnMapStart_NPC();
 	AxeThrowingBarbarian_OnMapStart_NPC();
-  AmbitiousTrader_OnMapStart_NPC();
+  	AmbitiousTrader_OnMapStart_NPC();
 	AgentSmithFollower_Setup();
 	KevinmeryFollower_Setup();
 }
@@ -2540,7 +2540,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aprilfools/3rd_april/npc_smith_follower.sp"
 #include "npc/aprilfools/3rd_april/npc_kevin_follower.sp"
 #include "npc/aprilfools/3rd_april/npc_ambitious_trader.sp"
-
+#include "npc/aprilfools/3rd_april/npc_kahmlstein_grandma.sp"
 #include "npc/aprilfools/3rd_april/npc_rocket_gunner.sp"
 #include "npc/aprilfools/3rd_april/npc_heavy_weapons_guy.sp"
 #include "npc/aprilfools/3rd_april/npc_very_heavy_heavy.sp"

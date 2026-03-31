@@ -88,8 +88,8 @@ void AmbitiousTrader_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "A Man Who Is Really Ambitious About Team Fortress 2 Trading");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ambitious_trader");
-	strcopy(data.Icon, sizeof(data.Icon), "scout");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "trader");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
