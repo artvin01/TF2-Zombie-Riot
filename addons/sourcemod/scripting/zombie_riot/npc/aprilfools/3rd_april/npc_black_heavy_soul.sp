@@ -162,7 +162,7 @@ methodmap BlackHeavySoul < CClotBody
 	}
 	public void PlayIdleAlertSound() 
 	{
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		if(!this.Anger)
