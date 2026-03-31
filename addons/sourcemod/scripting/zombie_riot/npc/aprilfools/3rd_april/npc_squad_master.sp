@@ -33,7 +33,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SquadX_Master(vecPos, vecAng, team, data);
+	return SquadX_Master(vecPos, team, data);
 }
 
 methodmap SquadX_Master < CClotBody
@@ -70,7 +70,7 @@ methodmap SquadX_Master < CClotBody
 		EmitSoundToAll(g_ExplosionSoundDo[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_ExplosionSoundDo[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public SquadX_Master(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SquadX_Master(float vecPos[3], int ally, const char[] data)
 	{
 		SquadX_Master npc = view_as<SquadX_Master>(CClotBody(vecPos, {0.0,0.0,0.0}, "models/empty.mdl", "1.0", "40000", ally, _, _, true, false));
 		i_NpcWeight[npc.index] = 999;

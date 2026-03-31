@@ -74,7 +74,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SquadX_Whiteflower(vecPos, vecAng, team, data);
+	return SquadX_Whiteflower(vecPos, vecAng, team);
 }
 
 methodmap SquadX_Whiteflower < CClotBody
@@ -151,7 +151,7 @@ methodmap SquadX_Whiteflower < CClotBody
 	}
 	
 	
-	public SquadX_Whiteflower(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SquadX_Whiteflower(float vecPos[3], float vecAng[3], int ally)
 	{
 		SquadX_Whiteflower npc = view_as<SquadX_Whiteflower>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.15", "40000", ally, _, _, true, false));
 		i_NpcWeight[npc.index] = 4;

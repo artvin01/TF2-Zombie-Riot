@@ -35,7 +35,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Broly(vecPos, vecAng, team, data);
+	return Broly(vecPos, vecAng, team);
 }
 
 methodmap Broly < CClotBody
@@ -51,7 +51,7 @@ methodmap Broly < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public Broly(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Broly(float vecPos[3], float vecAng[3], int ally)
 	{
 		ally = TFTeam_Stalkers;
 		Broly npc = view_as<Broly>(CClotBody(vecPos, vecAng, "models/freak_fortress_2/bobbroly/brolynew.mdl", "1.15", "500000000", ally, false, true, true,true)); //giant!

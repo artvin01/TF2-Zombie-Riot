@@ -67,7 +67,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SquadX_Omega(vecPos, vecAng, team, data);
+	return SquadX_Omega(vecPos, vecAng, team);
 }
 
 methodmap SquadX_Omega < CClotBody
@@ -124,7 +124,7 @@ methodmap SquadX_Omega < CClotBody
 	}
 	
 	
-	public SquadX_Omega(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SquadX_Omega(float vecPos[3], float vecAng[3], int ally)
 	{
 		SquadX_Omega npc = view_as<SquadX_Omega>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "40000", ally, _, _, true, false));
 		i_NpcWeight[npc.index] = 4;
