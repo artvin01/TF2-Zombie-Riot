@@ -573,7 +573,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
 		{
-			RaidModeTime += 100.0;
+			RaidModeTime += 70.0;
 			npc.PlayAngerSound();
 			npc.Anger = true; //	>:(
 			npc.m_flNextIdleSound = 0.0;
@@ -604,7 +604,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Super Saiyan 2 Black Heavy Soul");
 			npc.m_iSaiyanState = 2;
 			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 3.0, _, 4.0, HEAL_ABSOLUTE);
-			RaidModeTime += 100.0;
+			RaidModeTime += 70.0;
 			fl_Extra_Speed[npc.index] *= 1.05;
 			fl_TotalArmor[npc.index] *= 0.65;
 			RaidModeScaling *= 1.05;
@@ -633,7 +633,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			b_NpcUnableToDie[npc.index] = false;
 			ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 3.0);
 			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 3.0, _, 4.0, HEAL_ABSOLUTE);
-			RaidModeTime += 100.0;
+			RaidModeTime += 70.0;
 			fl_Extra_Speed[npc.index] *= 1.05;
 			fl_TotalArmor[npc.index] *= 0.65;	
 			f_AttackSpeedNpcIncrease[npc.index] *= 0.85;
