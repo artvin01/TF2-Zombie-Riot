@@ -174,7 +174,7 @@ float ZRModifs_MaxSpawnsAlive()
 	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
 		Return *= 1.5;
 
-	return 1.0;
+	return Return;
 }
 
 float ZRModifs_SpawnSpeedModif()
@@ -209,7 +209,7 @@ float ZRModifs_SpawnSpeedModif()
 	}
 	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
 		value *= 0.85;
-		
+
 	return value;
 }
 
