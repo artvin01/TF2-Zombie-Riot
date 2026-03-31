@@ -36,8 +36,8 @@ void SquadX_Bob_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bob The First Squad");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_squad_bob");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;

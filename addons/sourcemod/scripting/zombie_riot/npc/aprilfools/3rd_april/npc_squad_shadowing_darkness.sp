@@ -45,8 +45,8 @@ void SquadX_Shadowing_Darkness_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Shadowing Darkness Squad");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_squad_shadowing_darkness");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "shadowingdarkness");
+	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
