@@ -8107,7 +8107,8 @@
 	}
 	"Australian Spider"
 	{
-		"en"	"호주 거미"
+		"en"	"Australian Spider"
+		"ko"	"호주 거미"
 	}
 	"Suction Medic"
 	{
