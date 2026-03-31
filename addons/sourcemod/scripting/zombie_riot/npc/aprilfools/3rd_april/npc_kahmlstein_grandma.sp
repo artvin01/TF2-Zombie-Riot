@@ -293,6 +293,14 @@ public void KahmlsteinDeadGrandma_NPCDeath(int entity)
 
 	EmitSoundToAll("misc/halloween/strongman_bell_01.wav", _, _, _, _, 1.0, 100);	
 	EmitSoundToAll("misc/halloween/strongman_bell_01.wav", _, _, _, _, 1.0, 100);
+
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsValidClient(i))
+		{
+			Client_Shake(i, SHAKE_START, 150.0, _, 3.0);
+		}
+	}
 		
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))
