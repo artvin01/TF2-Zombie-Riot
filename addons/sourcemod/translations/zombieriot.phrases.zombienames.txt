@@ -8010,6 +8010,10 @@
 	{
 		"en"	"Eno"
 	}
+	"Dencube"
+	{
+		"en"	"Dencube"
+	}
 	"Artorias"
 	{
 		"en"	"Artorias"
