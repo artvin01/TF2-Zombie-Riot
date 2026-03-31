@@ -352,6 +352,8 @@ methodmap BlackHeavySoul < CClotBody
 			npc.m_flCongaFastDo = GetGameTime() + 9999.9;
 			npc.m_flJumpAtEnemy = GetGameTime() + 2.5;	
 		}
+		WaveStart_SubWaveStart(GetGameTime() + 500.0);
+		GiveOneRevive();
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 
