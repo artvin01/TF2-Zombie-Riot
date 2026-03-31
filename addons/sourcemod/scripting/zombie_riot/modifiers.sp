@@ -159,17 +159,21 @@ public void ZRModifs_OldTimesNPC(int iNpc)
 
 float ZRModifs_MaxSpawnsAlive()
 {
+	float Return = 1.0;
 	switch(CurrentModifActive)
 	{
 		case CHAOS_INTRUSION:
 		{
-			return 1.10;
+			Return *= 1.10;
 		}
 		case SECONDARY_MERCS, OLD_TIMES:
 		{
-			return 1.20;
+			Return *= 1.20;
 		}
 	}
+	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+		Return *= 1.5;
+
 	return 1.0;
 }
 
@@ -203,23 +207,27 @@ float ZRModifs_SpawnSpeedModif()
 			value *= 0.75;
 		}
 	}
+	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+		value *= 0.85;
+		
 	return value;
 }
 
 float ZRModifs_MaxSpawnWaveModif()
 {
+	float Return = 1.0;
 	switch(CurrentModifActive)
 	{
 		case CHAOS_INTRUSION:
 		{
-			return 1.25;
+			Return *= 1.25;
 		}
 		case SECONDARY_MERCS, OLD_TIMES:
 		{
-			return 1.35;
+			Return *= 1.35;
 		}
 	}
-	return 1.0;
+	return Return;
 }
 
 void ZRModifs_CharBuffToAdd(char[] data)
