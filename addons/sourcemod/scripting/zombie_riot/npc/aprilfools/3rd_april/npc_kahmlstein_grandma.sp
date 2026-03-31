@@ -56,6 +56,7 @@ void KahmlsteinDeadGrandma_OnMapStart_NPC()
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+	PrecacheSound("misc/halloween/strongman_bell_01.wav");
 }
 
 
