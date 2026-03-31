@@ -10,7 +10,6 @@ static const char g_IdleAlertedSounds[][] = {
 	"npc/headcrab_poison/ph_talk3.wav",
 	"npc/headcrab/attack3.wav",
 	"npc/dog/dog_playfull1.wav",
-	"npc/antlion/fly1.wav",
 	"npc/attack_helicopter/aheli_megabomb_siren1.wav",
 	"npc/combine_soldier/vo/overwatchrequestreinforcement.wav",
 	"npc/zombie_poison/pz_pain1.wav",
