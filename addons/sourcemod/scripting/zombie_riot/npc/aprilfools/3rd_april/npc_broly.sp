@@ -16,6 +16,7 @@ void Broly_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_broly");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
+	data.Flags = -1;
 	data.Category = -1;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
