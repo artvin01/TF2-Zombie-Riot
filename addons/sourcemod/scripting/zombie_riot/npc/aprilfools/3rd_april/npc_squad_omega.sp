@@ -295,6 +295,11 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_blPlayHurtAnimation = true;
 	}
 
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth") - RoundToCeil(damage);
+	if(health < 1)
+	{
+		ApplyStatusEffect(victim, victim, "Terrified", 9999.0);
+	}
 	
 	return Plugin_Changed;
 }

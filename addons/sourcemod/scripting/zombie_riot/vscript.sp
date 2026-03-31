@@ -56,7 +56,7 @@ void VScript_MapEnd()
 {
 	MapLockedWeapons = false;
 	PapModeDo = PAP_MODE_DEFAULT;
-	PerkModeDo = PERK_MODE_ALL_ALLOW;
+	PerkModeDo = PERK_MODE_DEFAULT;
 }
 
 void VScript_LibraryAdded(const char[] name)

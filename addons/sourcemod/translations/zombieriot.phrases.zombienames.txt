@@ -8002,4 +8002,96 @@
 	{
 		"en"	"Shadowing Darkness"
 	}
+	"Artvin"
+	{
+		"en"	"Artvin"
+	}
+	"Eno"
+	{
+		"en"	"Eno"
+	}
+	"Dencube"
+	{
+		"en"	"Dencube"
+	}
+	"Artorias"
+	{
+		"en"	"Artorias"
+	}
+	"Rocket Gunner"
+	{
+		"en"	"Rocket Gunner"
+	}
+	"Heavy Weapons Guy"
+	{
+		"en"	"Heavy Weapons Guy"
+	}
+	"Very Heavy Heavy"
+	{
+		"en"	"Very Heavy Heavy"
+	}
+	"Fish Scout"
+	{
+		"en"	"Fish Scout"
+	}
+	"Human Main"
+	{
+		"en"	"Human Main"
+	}
+	"Professional Fingerer"
+	{
+		"en"	"Professional Fingerer"
+	}
+	"King of Australia"
+	{
+		"en"	"King of Australia"
+	}
+	"Dismounted Teuton"
+	{
+		"en"	"Dismounted Teuton"
+	}
+	"Bombasticus Swordus of Fuckyus"
+	{
+		"en"	"Bombasticus Swordus of Fuckyus"
+	}
+	"Giga Obuch"
+	{
+		"en"	"Giga Obuch"
+	}
+	"Lard Fat"
+	{
+		"en"	"Lard Fat"
+	}
+	"Mounted Teuton"
+	{
+		"en"	"Mounted Teuton"
+	}
+	"Purple Guy"
+	{
+		"en"	"Purple Guy"
+	}
+	"Roll The Dice"
+	{
+		"en"	"Roll The Dice"
+	}
+	"Australian Spider"
+	{
+		"en"	"Australian Spider"
+	}
+	"Suction Medic"
+	{
+		"en"	"Suction Medic"
+	}
+	"Living Metal Ball"
+	{
+		"en"	"Living Metal Ball"
+	}
+	"Axe Throwwing Barbarian"
+	{
+		"en"	"Axe Throwwing Barbarian"
+	}
+	"A Man Who Is Really Ambitious About Team Fortress 2 Trading"
+	{
+		"en"	"A Man Who Is Really Ambitious About Team Fortress 2 Trading"
+	}
 }

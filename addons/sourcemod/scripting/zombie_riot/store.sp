@@ -1289,7 +1289,7 @@ bool Store_CanPapItem(int client, int index)
 				if(!parent.NPCSeller && !parent.RogueAlwaysSell)
 					return false;
 			}
-			else if(!item.NPCSeller && !item.RogueAlwaysSell)
+			else if(!item.NPCSeller && !RogueAlwaysSell(item))
 			{
 				return false;
 			}
@@ -1642,6 +1642,10 @@ void Store_Reset()
 	for(int c; c<MAXPLAYERS; c++)
 	{
 		StarterCashMode[c] = true;
+		if(CvarInfiniteCash.BoolValue || PapModeDo == PAP_MODE_BUILDING_ONLY)
+		{
+			StarterCashMode[c] = false;
+		}
 		CashSpent[c] = 0;
 		CashSpentTotal[c] = 0;
 		CashSpentLoadout[c] = 0;
@@ -2018,7 +2022,10 @@ void Store_ClientDisconnect(int client)
 	CashSpentTotal[client] = 0;
 	CashSpentLoadout[client] = 0;
 	StarterCashMode[client] = true;
-	
+	if(CvarInfiniteCash.BoolValue || PapModeDo == PAP_MODE_BUILDING_ONLY)
+	{
+		StarterCashMode[client] = false;
+	}
 	static Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
@@ -2937,7 +2944,7 @@ void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -
 			{
 				if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell && (!item.Hidden)))
 				{
-					if(!item.NPCSeller && !item.RogueAlwaysSell)
+					if(!item.NPCSeller && !RogueAlwaysSell(item))
 					{
 						item.GetItemInfo(0, info);
 						if(info.Cost > 0 && info.Cost_Unlock < (GrigoriCashLogic / 3))
@@ -3129,7 +3136,7 @@ public Action Access_StoreViaCommand(int client, int args)
 
 void Store_Menu(int client)
 {
-	if(CvarInfiniteCash.BoolValue)
+	if(CvarInfiniteCash.BoolValue || PapModeDo == PAP_MODE_BUILDING_ONLY)
 	{
 		StarterCashMode[client] = false;
 	}
@@ -3204,6 +3211,8 @@ void Store_OpenGiftStore(int client, int entity, int price, bool barney)
 int PassClientBoughtLateGame(int client)
 {
 
+	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+		return 0;
 	//its too early in the wave, dont force clients to buy
 	if(CurrentCash <= 5000)
 		return 0;
@@ -3738,6 +3747,10 @@ static void MenuPage(int client, int section)
 		if(!Waves_Started())
 		{
 			StarterCashMode[client] = true;
+		}	
+		if(CvarInfiniteCash.BoolValue || PapModeDo == PAP_MODE_BUILDING_ONLY)
+		{
+			StarterCashMode[client] = false;
 		}
 		return;
 	}
@@ -3935,7 +3948,7 @@ static void MenuPage(int client, int section)
 					{
 						continue;
 					}
-					else if(!item.WhiteOut && Rogue_UnlockStore() && !item.NPCSeller && (item.Hidden || !item.RogueAlwaysSell) && !CvarInfiniteCash.BoolValue)
+					else if(!item.WhiteOut && Rogue_UnlockStore() && !item.NPCSeller && (item.Hidden || (!RogueAlwaysSell(item))) && !CvarInfiniteCash.BoolValue)
 					{
 						if(Rogue_UnlockStore() > 1)
 							continue;
@@ -5436,6 +5449,11 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("343", 1.0); //sentry attackspeed fix
 	map.SetValue("526", 1.0);//
 	map.SetValue("4049", 1.0);// Elemental Res
+	
+	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+	{
+		map.SetValue("4056", 0.05);	// Out of battle regen
+	}
 
 	map.SetValue("442", 1.0);	// Move Speed
 	map.SetValue("49", 1);	// no doublejumps
@@ -6932,7 +6950,7 @@ static void ItemCost(int client, Item item, int &cost)
 	cost += item.Scale * scaled; 
 	cost += item.CostPerWave * Waves_GetRoundScale();
 
-	if(Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
+	if(Rogue_UnlockStore() && !item.NPCSeller && !RogueAlwaysSell(item) && !CvarInfiniteCash.BoolValue)
 	{
 		if(Rogue_UnlockStore() > 1)
 			cost = 999999;
@@ -7045,10 +7063,10 @@ static stock void ItemCostPap(const Item item, int &cost)
 				static Item parent;
 				StoreItems.GetArray(item.Section, parent);
 
-				if(!parent.NPCSeller && !parent.RogueAlwaysSell)
+				if(!parent.NPCSeller && !RogueAlwaysSell(parent))
 					NotFoundCost = true;
 			}
-			else if(!item.NPCSeller && !item.RogueAlwaysSell)
+			else if(!item.NPCSeller && !RogueAlwaysSell(item))
 			{
 				NotFoundCost = true;
 			}
@@ -7686,4 +7704,13 @@ public void OnBuyOrSell_LivingArmor(int client)
 	}
 	if(!Waves_InSetup())
 		f_LivingArmorPenalty[client] = GetGameTime() + 20.0;
+}
+
+bool RogueAlwaysSell(const Item item)
+{
+	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+		return false;
+
+	return RogueAlwaysSell(item);
+		
 }

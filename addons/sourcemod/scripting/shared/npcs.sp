@@ -644,6 +644,13 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 		}
 		if(Waves_InFreeplay())
 			Freeplay_SpawnEnemy(entity);
+		if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+		{
+			//miniboss nerf
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 0.5));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.5));
+			fl_Extra_Damage[entity] 			*= 0.65;
+		}
 	}
 
 	return Plugin_Stop;

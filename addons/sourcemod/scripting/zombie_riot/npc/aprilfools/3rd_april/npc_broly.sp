@@ -15,9 +15,9 @@ void Broly_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Broly");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_broly");
 	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Raid;
+	data.IconCustom = false;
+	data.Flags = -1;
+	data.Category = -1;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -238,7 +238,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 	if(!BlockLoseSay && RaidModeTime < GetGameTime() && !npc.Anger)
 	{
-		CPrintToChatAll("{green}Broly: Insects.");
+		CPrintToChatAll("{green}Broly: I have killed all before i came here, all nothing but insects.");
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		RaidMusicSpecial1.Clear();
 		BlockLoseSay = true;
@@ -402,7 +402,7 @@ int BrolySelfDefense(Broly npc, float gameTime, int target, float distance)
 									continue;
 								}
 							}
-							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, GetRandomFloat(9999999.9,999999999.9), DMG_CLUB, -1, _, vecHit);			
+							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, 99999.9, DMG_TRUEDAMAGE, -1, _, vecHit);			
 							
 						
 							

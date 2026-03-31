@@ -205,7 +205,7 @@ methodmap BlackHeavySoul < CClotBody
 	
 	public void PlayPowGunSound()
 	{
-		EmitSoundToAll(g_PowGunShot[GetRandomInt(0, sizeof(g_PowGunShot) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_PowGunShot[GetRandomInt(0, sizeof(g_PowGunShot) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.7);
 	}
 
 	public void PlayMeleeSound()
@@ -259,6 +259,12 @@ methodmap BlackHeavySoul < CClotBody
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
 		
+		
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
+
+		SetVariantColor(view_as<int>({255, 255, 255, 200}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
 		bool final = StrContains(data, "final_item") != -1;
 		
@@ -386,6 +392,15 @@ static void Internal_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
+	}
+	if(IsValidEntity(npc.m_iWearable3))
+	{
+		float flPos[3]; // original
+		float flAng[3]; // original
+		GetAttachment(npc.index, "head", flPos, flAng);
+		flPos[2] -= 10.0;
+		Custom_SDKCall_SetLocalOrigin(npc.m_iWearable3, flPos);
+		SetEntPropVector(npc.m_iWearable3, Prop_Data, "m_angRotation", flAng);
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
@@ -556,7 +571,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
 		{
-			RaidModeTime += 60.0;
+			RaidModeTime += 100.0;
 			npc.PlayAngerSound();
 			npc.Anger = true; //	>:(
 			npc.m_flNextIdleSound = 0.0;
@@ -587,7 +602,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Super Saiyan 2 Black Heavy Soul");
 			npc.m_iSaiyanState = 2;
 			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 3.0, _, 4.0, HEAL_ABSOLUTE);
-			RaidModeTime += 60.0;
+			RaidModeTime += 100.0;
 			fl_Extra_Speed[npc.index] *= 1.05;
 			fl_TotalArmor[npc.index] *= 0.65;
 			RaidModeScaling *= 1.05;
@@ -616,7 +631,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			b_NpcUnableToDie[npc.index] = false;
 			ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 3.0);
 			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 3.0, _, 4.0, HEAL_ABSOLUTE);
-			RaidModeTime += 60.0;
+			RaidModeTime += 100.0;
 			fl_Extra_Speed[npc.index] *= 1.05;
 			fl_TotalArmor[npc.index] *= 0.65;	
 			f_AttackSpeedNpcIncrease[npc.index] *= 0.85;
@@ -627,7 +642,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			NpcColourCosmetic_ViaPaint(npc.m_iWearable2, 15185211);
 			if(IsValidEntity(npc.m_iWearable3))
 				RemoveEntity(npc.m_iWearable3);
-			npc.m_iWearable3 = npc.EquipItemSeperate("models/workshop_partner/player/items/all_class/brutal_hair/brutal_hair_heavy.mdl",_,_, 1.75, 75.0);
+			npc.m_iWearable3 = npc.EquipItemSeperate("models/workshop_partner/player/items/all_class/brutal_hair/brutal_hair_heavy.mdl",_,_, 1.75, 75.0, true);
 			SetEntityRenderColor(npc.m_iWearable3, 255, 255, 0, 255);
 			NpcColourCosmetic_ViaPaint(npc.m_iWearable3, 15185211);
 			npc.PlayAngerSoundShort();			
@@ -851,6 +866,8 @@ bool BlackHeavy_Transform(BlackHeavySoul npc)
 			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			fl_Extra_Speed[npc.index] *= 1.05;
+			SetVariantColor(view_as<int>({255, 255, 0, 200}));
+			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Super Saiyan Black Heavy Soul");
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 10.0;
@@ -982,7 +999,7 @@ bool Black_Heavy_PowDo(BlackHeavySoul npc, float gameTime)
 			PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, ProjectileSpeed, _, vecTarget);
 
 			npc.FaceTowards(vecTarget, 20000.0);
-			int entity = npc.FireRocket(vecTarget, 35.0 * RaidModeScaling, ProjectileSpeed, "models/weapons/w_bullet.mdl", 5.0);	
+			int entity = npc.FireRocket(vecTarget, 25.0 * RaidModeScaling, ProjectileSpeed, "models/weapons/w_bullet.mdl", 5.0);	
 			int trail = Trail_Attach(entity, ARROW_TRAIL_RED, 175, 0.25, 20.0, 20.0, 5);
 			i_WandParticle[entity] = EntIndexToEntRef(trail);
 			CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);

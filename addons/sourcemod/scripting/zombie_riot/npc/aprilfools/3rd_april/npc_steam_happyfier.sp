@@ -12,7 +12,7 @@ void SteamHappyfier_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Steam Happy");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_steam_happyfier");
-	strcopy(data.Icon, sizeof(data.Icon), "steamhhappy");
+	strcopy(data.Icon, sizeof(data.Icon), "steamhappy");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = -1;
