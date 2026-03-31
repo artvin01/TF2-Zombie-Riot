@@ -74,6 +74,7 @@
 	"BlackHeavySoul Arrived"
 	{
 		"en" 		"Hello"
+		"ko" 		"안녕"
 	}
 	"Nemal Arrived"
 	{
