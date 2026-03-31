@@ -1362,7 +1362,7 @@
 		"#format"	"{1:.f}"
 		"en" 		"All your unique buildings are on a [{1}] second cooldown."
 		"it"		"Tutti gli Strutture unici hanno un cooldown di [{1}] secondi."
-		"ko"		"당신의 고유 건물들이 모두 [{1}]초의 재사용 대기시간을 가집니다."
+		"ko"		"당신의 유니크 구조물들이 모두 [{1}]초의 재사용 대기시간을 가집니다."
 	}
 	"Too Far Away"
 	{
@@ -1511,42 +1511,52 @@
 	"Lover's Wine"
 	{
 		"en"	"Lover's Wine"
+		"ko" 	"사랑꾼의 와인"
 	}
 	"Lover's Wine Received"
 	{
 		"en"	"Lover's Wine! Prevents all self-damage, falling damage, and friendy fire."
+		"ko" 	"사랑꾼의 와인! 모든 자가 피해, 낙하 피해, 아군 공격 피해를 방지합니다."
 	}
 	"Marathon Shake"
 	{
 		"en"	"Marathon Shake"
+		"ko" 	"마라톤 쉐이크"
 	}
 	"Marathon Shake Received"
 	{
 		"en"	"Marathon Shake! Gain +5％ movement speed."
+		"ko" 	"마라톤 쉐이크! 이동 속도가 5％ 증가합니다."
 	}
 	"Sealed Boba"
 	{
 		"en"	"Sealed Boba"
+		"ko" 	"밀봉된 버블티"
 	}
 	"Sealed Boba Received"
 	{
 		"en"	"Sealed Boba! Prevents losing perks and mounted buildings on death."
+		"ko" 	"밀봉된 버블티! 사망시 퍽과 들고 있던 구조물을 잃지 않습니다."
 	}
 	"Bloody Ale"
 	{
 		"en"	"Bloody Ale"
+		"ko" 	"핏빛 에일"
 	}
 	"Bloody Ale Received"
 	{
 		"en"	"Bloody Ale! Decreases enemy aggression towards you."
+		"ko" 	"핏빛 에일! 적이 당신을 덜 노리게 됩니다."
 	}
 	"Who Float"
 	{
 		"en"	"Who Float"
+		"ko" 	"누군가의 플로트"
 	}
 	"Who Float Received"
 	{
 		"en"	"Who Float! Spawn a temporary ally during your absence."
+		"ko" 	"누군가의 플로트! 당신이 사망해있는 동안 일시적인 아군을 스폰합니다."
 	}
 	"Freeze Bomb Activated"
 	{
