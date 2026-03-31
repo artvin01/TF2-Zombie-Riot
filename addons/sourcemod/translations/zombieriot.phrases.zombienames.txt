@@ -8010,6 +8010,10 @@
 	{
 		"en"	"Eno"
 	}
+	"Artorias"
+	{
+		"en"	"Artorias"
+	}
 	"Rocket Gunner"
 	{
 		"en"	"Rocket Gunner"
