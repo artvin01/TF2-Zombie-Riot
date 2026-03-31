@@ -832,6 +832,7 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 		Call_Finish();
 		//todo: convert all on death and on take damage to this.
 	}
+	func_WandOnTouch[entity] = INVALID_FUNCTION;
 	RemoveEntity(entity);
 	return MRES_Supercede;
 }

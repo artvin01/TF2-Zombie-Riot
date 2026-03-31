@@ -319,7 +319,8 @@ static void ClotThink(int iNPC)
 						
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
-						Custom_Knockback(npc.index, swingTrace, 250.0, true);
+						if(!b_thisNpcIsARaid[target] && !b_thisNpcIsABoss[target])
+							Custom_Knockback(npc.index, target, 250.0, true);
 					}
 				}
 

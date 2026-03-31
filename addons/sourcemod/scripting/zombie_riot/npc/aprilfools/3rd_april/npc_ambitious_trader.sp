@@ -88,8 +88,8 @@ void AmbitiousTrader_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "A Man Who Is Really Ambitious About Team Fortress 2 Trading");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ambitious_trader");
-	strcopy(data.Icon, sizeof(data.Icon), "trader");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "scout");
+	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
@@ -193,7 +193,7 @@ methodmap AmbitiousTrader < CClotBody
 		
 		npc.m_flMeleeArmor = 0.25;
 		npc.m_flRangedArmor = 0.25;
-		f_AttackSpeedNpcIncrease[npc.index] = 0.25;
+		f_AttackSpeedNpcIncrease[npc.index] *= 0.25;
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.9");
@@ -284,7 +284,7 @@ public void AmbitiousTrader_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 45.0;
+					float damage = 200.0;
 
 					if(ShouldNpcDealBonusDamage(target))
 					{
@@ -361,7 +361,7 @@ public void AmbitiousTrader_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.AddGesture("ACT_CUSTOM_ATTACK_SWORD");
+					npc.AddGesture("ACT_CUSTOM_ATTACK_SWORD", _,_,_, 0.8);
 					
 
 					npc.PlayMeleeSound();
@@ -369,7 +369,7 @@ public void AmbitiousTrader_ClotThink(int iNPC)
 					npc.m_flAttackHappens = gameTime + 0.35;
 
 					npc.m_flDoingAnimation = gameTime + 0.35;
-					npc.m_flNextMeleeAttack = gameTime + 1.5;
+					npc.m_flNextMeleeAttack = gameTime + 0.5;
 				}
 			}
 		}
@@ -403,9 +403,9 @@ public Action AmbitiousTrader_OnTakeDamage(int victim, int &attacker, int &infli
 		npc.Anger = true;
 		npc.m_flMeleeArmor = 1.25;
 		npc.m_flRangedArmor = 1.25;
-		f_AttackSpeedNpcIncrease[npc.index] = 1.25;
+		f_AttackSpeedNpcIncrease[npc.index] *= 1.25;
 		if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
+			RemoveEntity(npc.m_iWearable2);
 		switch(GetRandomInt(0,2))
 		{
 			case 0:
@@ -422,9 +422,9 @@ public Action AmbitiousTrader_OnTakeDamage(int victim, int &attacker, int &infli
 		npc.m_bFUCKYOU = true;
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
-		f_AttackSpeedNpcIncrease[npc.index] = 1.0;
+		f_AttackSpeedNpcIncrease[npc.index] *= 1.5;
 		if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
+			RemoveEntity(npc.m_iWearable3);
 		switch(GetRandomInt(0,2))
 		{
 			case 0:
@@ -441,9 +441,9 @@ public Action AmbitiousTrader_OnTakeDamage(int victim, int &attacker, int &infli
 		npc.m_bWasSadAlready = true;
 		npc.m_flMeleeArmor = 0.75;
 		npc.m_flRangedArmor = 0.75;
-		f_AttackSpeedNpcIncrease[npc.index] = 0.75;
+		f_AttackSpeedNpcIncrease[npc.index] *= 1.5;
 		if(IsValidEntity(npc.m_iWearable4))
-		RemoveEntity(npc.m_iWearable4);
+			RemoveEntity(npc.m_iWearable4);
 		switch(GetRandomInt(0,2))
 		{
 			case 0:
@@ -460,9 +460,9 @@ public Action AmbitiousTrader_OnTakeDamage(int victim, int &attacker, int &infli
 		npc.m_bFUCKYOU_move_anim = true;
 		npc.m_flMeleeArmor = 0.50;
 		npc.m_flRangedArmor = 0.50;
-		f_AttackSpeedNpcIncrease[npc.index] = 0.50;
+		f_AttackSpeedNpcIncrease[npc.index] *= 2.0;
 		if(IsValidEntity(npc.m_iWearable5))
-		RemoveEntity(npc.m_iWearable5);
+			RemoveEntity(npc.m_iWearable5);
 		switch(GetRandomInt(0,2))
 		{
 			case 0:

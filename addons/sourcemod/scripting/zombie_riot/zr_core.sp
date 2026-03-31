@@ -463,6 +463,7 @@ enum
 	PAP_MODE_DEFAULT,
 	PAP_MODE_BUILDING_ONLY
 }
+//PAP_MODE_BUILDING_ONLY assumes logic of another gamemode, so we'll reuse that for now.
 enum
 {
 	PERK_MODE_DEFAULT,
@@ -470,7 +471,7 @@ enum
 }
 
 int PapModeDo = PAP_MODE_DEFAULT;
-int PerkModeDo = PERK_MODE_ALL_ALLOW;
+int PerkModeDo = PERK_MODE_DEFAULT;
 	
 bool DisableSpawnProtection;
 bool DisableRandomSpawns;
@@ -1984,6 +1985,10 @@ public Action Timer_Dieing(Handle timer, int client)
 
 public void Spawn_Bob_Combine(int client)
 {
+	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+	{
+		return;
+	}
 	float flPos[3], flAng[3];
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
@@ -2443,7 +2448,10 @@ public void SetHealthAfterReviveAgain(int ref)
 	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{
-		SetEntityHealth(client, 50);
+		if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+			SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+		else
+			SetEntityHealth(client, 50);
 	}
 }
 
@@ -2776,6 +2784,11 @@ void ReviveAll(bool raidspawned = false,
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		if(IsClientInGame(client))
 		{
+			if(dieingstate[client] > 0)
+			{
+				if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+					continue;
+			}
 			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
 			if(glowentity > MaxClients)
 				RemoveEntity(glowentity);
@@ -2873,8 +2886,6 @@ void ReviveAll(bool raidspawned = false,
 			CreateTimer(0.1, Timer_ChangePersonModel, GetClientUserId(client));
 		}
 	}
-	
-	if(ZR_Get_Modifier() == PREFIX_ONESTAND)
 	
 	Music_EndLastmann();
 	CheckAlivePlayers();

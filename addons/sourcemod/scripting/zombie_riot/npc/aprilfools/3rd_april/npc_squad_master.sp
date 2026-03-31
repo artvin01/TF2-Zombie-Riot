@@ -150,6 +150,31 @@ methodmap SquadX_Master < CClotBody
 		{
 			npc.m_flNextMeleeAttack = 1.0;
 		}
+		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 2500.0, 1000.0, .NeedLOSPlayer = true);
+		switch(Decicion)
+		{
+			case 2:
+			{
+				Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 500.0, .NeedLOSPlayer = true);
+				if(Decicion == 2)
+				{
+					Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 250.0, .NeedLOSPlayer = true);
+					if(Decicion == 2)
+					{
+						Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 0.0, .NeedLOSPlayer = true);
+						if(Decicion == 2)
+						{
+							//damn, cant find any.... guess we'll just not care about LOS.
+							Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 0.0);
+						}
+					}
+				}
+			}
+			case 3:
+			{
+				//todo code on what to do if random teleport is disabled
+			}
+		}
 		return npc;
 	}
 }
@@ -161,9 +186,18 @@ static void Internal_ClotThink(int iNPC)
 	{
 		if(npc.m_iGetTimeDo != GetTime())
 		{
+			for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
+			{
+				int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
+				if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) == TFTeam_Red)
+				{
+					FreezeNpcInTime(baseboss_index, 10.5, true);
+				}
+			}
+
 			//sync up!!!
 			npc.m_flTimeUntillNextAppear = GetGameTime(npc.index) + 3.0;
-			npc.m_flTimeUntillNextAppearFreeze = 8.4;
+			npc.m_flTimeUntillNextAppearFreeze = 10.4;
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aprilfools/mazeat_fabulous_squad_x.mp3");
 			music.Time = 164;

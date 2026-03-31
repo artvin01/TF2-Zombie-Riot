@@ -252,8 +252,8 @@ void VeryHeavyHeavySelfDefense(VeryHeavyHeavy npc, float gameTime, int target, f
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					Custom_Knockback(npc.index, target, 750.0, true, true);
-					ApplyStatusEffect(npc.index, target, "Ragdolled", 3.5);	
-					FreezeNpcInTime(target, 3.0);
+					ApplyStatusEffect(npc.index, target, "Ragdolled", 2.5);	
+					FreezeNpcInTime(target, 2.0);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -279,7 +279,7 @@ void VeryHeavyHeavySelfDefense(VeryHeavyHeavy npc, float gameTime, int target, f
 						
 				npc.m_flAttackHappens = gameTime + 0.5;
 				npc.m_flDoingAnimation = gameTime + 0.5;
-				npc.m_flNextMeleeAttack = gameTime + 1.5;
+				npc.m_flNextMeleeAttack = gameTime + 3.5;
 			}
 		}
 	}

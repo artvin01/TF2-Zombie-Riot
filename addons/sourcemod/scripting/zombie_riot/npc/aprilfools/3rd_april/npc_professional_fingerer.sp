@@ -372,7 +372,7 @@ int Professional_FingererSelfDefense(Professional_Fingerer npc, float gameTime)
 		//	npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
 			{
-				float damageDealt = 75.0;
+				float damageDealt = 500.0;
 				if(ShouldNpcDealBonusDamage(target))
 					damageDealt *= 10.5;
 

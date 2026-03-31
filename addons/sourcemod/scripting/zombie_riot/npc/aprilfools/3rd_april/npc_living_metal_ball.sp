@@ -80,7 +80,7 @@ methodmap LivingMetalBall < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		npc.m_flMeleeArmor = 2.5;	
+		npc.m_flMeleeArmor = 1.25;	
 		npc.m_bDissapearOnDeath = true;
 
 		func_NPCDeath[npc.index] = view_as<Function>(LivingMetalBall_NPCDeath);
@@ -176,7 +176,7 @@ public void LivingMetalBall_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		LivingMetalBallSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		LivingMetalBallSelfDefense(npc,GetGameTime(npc.index)); 
 	}
 }
 
@@ -216,19 +216,19 @@ public void LivingMetalBall_NPCDeath(int entity)
 
 }
 
-void LivingMetalBallSelfDefense(LivingMetalBall npc, float gameTime, int target, float distance)
+void LivingMetalBallSelfDefense(LivingMetalBall npc, float gameTime)
 {
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		i_ExplosiveProjectileHexArray[npc.index] |= EP_DEALS_CLUB_DAMAGE;
-		float radius = 70.0, damage = 200.0;
+		float radius = 70.0, damage = 300.0;
 		Explode_Logic_Custom(damage, npc.index, npc.index, -1, _, radius, _, _, true, .FunctionToCallOnHit = LivingMetalBallKB);
 
 		if(npc.m_flNextMeleeAttack == FAR_FUTURE)
 		{
 			npc.PlayHitSound();
-			npc.m_flNextMeleeAttack = gameTime + 0.5;
+			npc.m_flNextMeleeAttack = gameTime + 1.0;
 		}
 		else
 		{
