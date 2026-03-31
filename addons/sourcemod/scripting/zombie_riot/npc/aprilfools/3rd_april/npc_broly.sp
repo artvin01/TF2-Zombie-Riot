@@ -237,7 +237,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 	if(!BlockLoseSay && RaidModeTime < GetGameTime() && !npc.Anger)
 	{
-		CPrintToChatAll("{green}Broly: Insects.");
+		CPrintToChatAll("{green}Broly: I have killed all before i came here, all nothing but insects.");
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		RaidMusicSpecial1.Clear();
 		BlockLoseSay = true;
