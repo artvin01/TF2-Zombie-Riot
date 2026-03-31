@@ -8094,4 +8094,8 @@
 	{
 		"en"	"A Man Who Is Really Ambitious About Team Fortress 2 Trading"
 	}
+	"Kahmlstein's Dead Grandma"
+	{
+		"en"	"Kahmlstein's Dead Grandma"
+	}
 }
