@@ -259,6 +259,12 @@ methodmap BlackHeavySoul < CClotBody
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
 		
+		
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
+
+		SetVariantColor(view_as<int>({255, 255, 255, 200}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
 		bool final = StrContains(data, "final_item") != -1;
 		
@@ -386,6 +392,15 @@ static void Internal_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
+	}
+	if(IsValidEntity(npc.m_iWearable3))
+	{
+		float flPos[3]; // original
+		float flAng[3]; // original
+		GetAttachment(npc.index, "head", flPos, flAng);
+		flPos[2] -= 10.0;
+		Custom_SDKCall_SetLocalOrigin(npc.m_iWearable3, flPos);
+		SetEntPropVector(npc.m_iWearable3, Prop_Data, "m_angRotation", flAng);
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
@@ -627,7 +642,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			NpcColourCosmetic_ViaPaint(npc.m_iWearable2, 15185211);
 			if(IsValidEntity(npc.m_iWearable3))
 				RemoveEntity(npc.m_iWearable3);
-			npc.m_iWearable3 = npc.EquipItemSeperate("models/workshop_partner/player/items/all_class/brutal_hair/brutal_hair_heavy.mdl",_,_, 1.75, 75.0);
+			npc.m_iWearable3 = npc.EquipItemSeperate("models/workshop_partner/player/items/all_class/brutal_hair/brutal_hair_heavy.mdl",_,_, 1.75, 75.0, true);
 			SetEntityRenderColor(npc.m_iWearable3, 255, 255, 0, 255);
 			NpcColourCosmetic_ViaPaint(npc.m_iWearable3, 15185211);
 			npc.PlayAngerSoundShort();			
@@ -851,6 +866,8 @@ bool BlackHeavy_Transform(BlackHeavySoul npc)
 			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			fl_Extra_Speed[npc.index] *= 1.05;
+			SetVariantColor(view_as<int>({255, 255, 0, 200}));
+			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Super Saiyan Black Heavy Soul");
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 10.0;
