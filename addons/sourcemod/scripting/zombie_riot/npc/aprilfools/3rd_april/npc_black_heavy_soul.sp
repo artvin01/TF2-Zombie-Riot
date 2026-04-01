@@ -96,7 +96,7 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/aprilfools/black_heavy_2.mp3");
 	PrecacheSoundCustom("#zombiesurvival/aprilfools/black_heavy_ultra.mp3");
 }
-
+ 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return BlackHeavySoul(vecPos, vecAng, team, data);
