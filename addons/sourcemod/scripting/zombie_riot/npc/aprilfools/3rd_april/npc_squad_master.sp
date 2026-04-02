@@ -144,6 +144,7 @@ methodmap SquadX_Master < CClotBody
 		npc.m_flWaitOnTime = 1.0;
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 
+		BlockLoseSay = false;
 		npc.m_iGetTimeDo = GetTime();
 		RemoveAllDamageAddition();
 		if(StrContains(data, "fakeout") != -1)
@@ -282,12 +283,11 @@ static void Internal_ClotThink(int iNPC)
 			
 			CPrintToChatAll("{black}All at once{default}: Get Owned");
 			return;
-
 		}	
 		
 		if(!BlockLoseSay && RaidModeTime < GetGameTime())
 		{
-				
+			BlockLoseSay = true;
 			CPrintToChatAll("{black}All at once{default}: This is getting pretty serious.");
 			int inpcloop2, a2;
 			while((inpcloop2 = FindEntityByNPC(a2)) != -1)

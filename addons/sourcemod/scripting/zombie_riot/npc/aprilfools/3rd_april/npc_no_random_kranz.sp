@@ -60,6 +60,7 @@ void NoRandomKranz_OnMapStart_NPC()
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPCID = NPC_Add(data);
+	PrecacheSoundCustom("#zombiesurvival/aprilfools/black_heavy_ultra.mp3");
 }
 
 static void ClotPrecache()
@@ -440,7 +441,28 @@ public void NoRandomKranz_ClotThink(int iNPC)
 	}
 	if(npc.i_GunMode != 2 && !BlockLoseSay && RaidModeTime < GetGameTime())
 	{
-		BlockLoseSay = true;
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aprilfools/black_heavy_ultra.mp3");
+		music.Time = 167;
+		music.Volume = 1.1;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Ultra Instinct Theme");
+		strcopy(music.Artist, sizeof(music.Artist), "Dragon Ball Super");
+		Music_SetRaidMusic(music);
+		ApplyStatusEffect(npc.index, npc.index, "Perfected Instinct", 999999.9);
+		fl_Extra_Speed[npc.index] 	*= 1.25;
+		if(!npc.Anger)
+		{
+			fl_TotalArmor[npc.index] *= 0.5;
+			f_AttackSpeedNpcIncrease[npc.index] *= 0.65;
+		}
+		npc.Anger = true;
+		RaidModeTime = FAR_FUTURE;
+		f_AttackSpeedNpcIncrease[npc.index] *= 0.85;
+		RaidModeScaling *= 1.5;
+		b_NpcUnableToDie[npc.index] = false;
+		
+		CPrintToChatAll("{darkblue}No Random Kranz V3{default}: My shitty ass transformation conditions are finally met, DIE!!!");
 	}
 	if(npc.i_GunMode != 2 && npc.m_CreateClones < GetGameTime(npc.index))
 	{

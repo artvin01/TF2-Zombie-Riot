@@ -919,9 +919,9 @@ public Action Timer_Omega_SupportGrenade(Handle timer, DataPack pack)
 }
 //GrantEntityArmor doesn't support "range" so I have to do it like this lol
 
-void OmegaGiveArmor(int entity, int victim, float &healingammount, OmegaRaid npc)
+void OmegaGiveArmor(int entity, int victim, float &healingammount)
 {
-	GrantEntityArmor(victim, false, 0.1, 0.75, 0, ReturnEntityMaxHealth(npc.index) * 75.0);
+	GrantEntityArmor(victim, false, 0.1, 0.75, 0, ReturnEntityMaxHealth(victim) * 0.0125);
 }
 
 void OmegaCreateRollermines(int iNpc)
