@@ -951,7 +951,7 @@ public void TheMessenger_NPCDeath(int entity)
 		}
 		else
 		{
-			switch(GetRandomInt(0,4))
+			switch(GetRandomInt(0,5))
 			{
 				case 0:
 				{
@@ -959,17 +959,21 @@ public void TheMessenger_NPCDeath(int entity)
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: YOU WILL REGRET THIS.");
+					CPrintToChatAll("{lightblue}The Messenger{default}: WHY");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: I've failed you..... my Lord..");
+					CPrintToChatAll("{lightblue}The Messenger{default}: YOU WILL REGRET THIS.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: How will I.... tell Him about my failure.");
+					CPrintToChatAll("{lightblue}The Messenger{default}: I've failed you..... my Lord..");
 				}
 				case 4:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: How will I.... tell Him about my failure.");
+				}
+				case 5:
 				{
 					CPrintToChatAll("{lightblue}The Messenger{default}: FUCK FUCK FUCK GOD FUCKING DAMNIT {crimson}FUCK!!!{default}");
 				}
