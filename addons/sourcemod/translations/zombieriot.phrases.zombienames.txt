@@ -6275,10 +6275,12 @@
 	"Rollermine"
 	{
 		"en"		"Rollermine"
+		"ko"		"롤러 마인"
 	}
 	"Nova Prospekt Overseer"
 	{
 		"en"		"Nova Prospekt Overseer"
+		"ko"		"노바 프로스펙트 감시자"
 	}
 	"Omega"
 	{
@@ -7961,141 +7963,176 @@
 	"Black Heavy Soul"
 	{
 		"en"	"Black Heavy Soul"
+		"ko"	"검은 헤비 영혼"
 	}
 	"Super Saiyan Black Heavy Soul"
 	{
 		"en"	"Super Saiyan Black Heavy Soul"
+		"ko"	"초사이어인 검은 헤비 영혼"
 	}
 	"Super Saiyan 2 Black Heavy Soul"
 	{
 		"en"	"Super Saiyan 2 Black Heavy Soul"
+		"ko"	"초사이어인 2 검은 헤비 영혼"
 	}
 	"Super Saiyan 3 Black Heavy Soul"
 	{
 		"en"	"Super Saiyan 3 Black Heavy Soul"
+		"ko"	"초사이어인 3 검은 헤비 영혼"
 	}
 	"Broly"
 	{
 		"en"	"Broly"
+		"ko"	"브로리"
 	}
 	"No Random Kranz V3"
 	{
 		"en"	"No Random Kranz V3"
+		"ko"	"노 랜덤 크란츠 V3"
 	}
 	"Mazeat Fabulous Squad X Elite, Solvence of Cringe"
 	{
 		"en"	"Mazeat Fabulous Squad X Elite, Solvence of Cringe"
+		"ko"	"녹아내리는 오글거림의 마제트 페뷸러스 스쿼드 X 엘리트"
 	}
 	"Bob The First Squad"
 	{
 		"en"	"Bob The First"
+		"ko"	"밥 1세"
 	}
 	"Omega Squad"
 	{
 		"en"	"Omega"
+		"ko"	"오메가"
 	}
 	"Whiteflower Squad"
 	{
 		"en"	"Whiteflower"
+		"ko"	"배풍등"
 	}
 	"Shadowing Darkness Squad"
 	{
 		"en"	"Shadowing Darkness"
+		"ko"	"그림자 응달"
 	}
 	"Artvin"
 	{
 		"en"	"Artvin"
+		"ko"	"Artvin"
 	}
 	"Eno"
 	{
 		"en"	"Eno"
+		"ko"	"Eno"
 	}
 	"Dencube"
 	{
 		"en"	"Dencube"
+		"ko"	"Dencube"
 	}
 	"Artorias"
 	{
 		"en"	"Artorias"
+		"ko"	"Artorias"
 	}
 	"Rocket Gunner"
 	{
 		"en"	"Rocket Gunner"
+		"ko"	"로켓 거너"
 	}
 	"Heavy Weapons Guy"
 	{
 		"en"	"Heavy Weapons Guy"
+		"ko"	"헤비 웨폰 가이"
 	}
 	"Very Heavy Heavy"
 	{
 		"en"	"Very Heavy Heavy"
+		"ko"	"아주 헤비한 헤비"
 	}
 	"Fish Scout"
 	{
 		"en"	"Fish Scout"
+		"ko"	"생선 스카웃"
 	}
 	"Human Main"
 	{
 		"en"	"Human Main"
+		"ko"	"인간 Main"
 	}
 	"Professional Fingerer"
 	{
 		"en"	"Professional Fingerer"
+		"ko"	"전문가 손총수"
 	}
 	"King of Australia"
 	{
 		"en"	"King of Australia"
+		"ko"	"호주의 왕"
 	}
 	"Dismounted Teuton"
 	{
 		"en"	"Dismounted Teuton"
+		"ko"	"내린 튜튼 기사"
 	}
 	"Bombasticus Swordus of Fuckyus"
 	{
 		"en"	"Bombasticus Swordus of Fuckyus"
+		"ko"	"퍼큐스의 봄바스티쿠스 스워두스"
 	}
 	"Giga Obuch"
 	{
 		"en"	"Giga Obuch"
+		"ko"	"기가 오부치"
 	}
 	"Lard Fat"
 	{
 		"en"	"Lard Fat"
+		"ko"	"돼지 기름"
 	}
 	"Mounted Teuton"
 	{
 		"en"	"Mounted Teuton"
+		"ko"	"탄 튜튼 기사"
 	}
 	"Purple Guy"
 	{
 		"en"	"Purple Guy"
+		"ko"	"퍼플 가이"
 	}
 	"Roll The Dice"
 	{
 		"en"	"Roll The Dice"
+		"ko"	"!rtd"
 	}
 	"Australian Spider"
 	{
 		"en"	"Australian Spider"
+		"ko"	"호주 거미"
 	}
 	"Suction Medic"
 	{
 		"en"	"Suction Medic"
+		"ko"	"흡입 메딕"
 	}
 	"Living Metal Ball"
 	{
 		"en"	"Living Metal Ball"
+		"ko"	"살아있는 쇳덩이 공"
 	}
 	"Axe Throwwing Barbarian"
 	{
 		"en"	"Axe Throwwing Barbarian"
+		"ko"	"도끼 투척 야만전사"
 	}
 	"A Man Who Is Really Ambitious About Team Fortress 2 Trading"
 	{
 		"en"	"A Man Who Is Really Ambitious About Team Fortress 2 Trading"
+		"ko"	"팀포2 거래에 야망이 가득한 남자"
 	}
 	"Kahmlstein's Dead Grandma"
 	{
 		"en"	"Kahmlstein's Dead Grandma"
+		"ko"	"카멜슈타인의 돌아가신 할머니"
 	}
 }
