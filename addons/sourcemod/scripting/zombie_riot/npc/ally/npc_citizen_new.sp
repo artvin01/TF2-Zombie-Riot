@@ -1111,7 +1111,15 @@ methodmap Citizen < CClotBody
 	}
 	property int m_iGunValue
 	{
-		public get()		{ return GunValue[this.index]; }
+		public get()		
+		{
+			if(PapModeDo != PAP_MODE_BUILDING_ONLY)
+				return GunValue[this.index]; 
+			else
+			{
+				return (GunValue[this.index] / 2); 
+			}
+		}
 		public set(int value) 	{ GunValue[this.index] = value; }
 	}
 	property bool m_bFirstBlood
