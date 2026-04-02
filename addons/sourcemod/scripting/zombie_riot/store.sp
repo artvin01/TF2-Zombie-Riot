@@ -6337,10 +6337,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						b_StickyExtraGrenades[client] = true;
 					}
-					if(info.SpecialAdditionViaNonAttribute == 7) //Mechanic
-					{
-						b_HasMechanic[client] = true;
-					}
+				//	if(info.SpecialAdditionViaNonAttribute == 7) //Mechanic
+				//	{
+				//		b_HasMechanic[client] = true;
+				//	}
 					if(info.SpecialAdditionViaNonAttribute == 8)
 					{
 						i_MaxSupportBuildingsLimit[client] += info.SpecialAdditionViaNonAttributeInfo;

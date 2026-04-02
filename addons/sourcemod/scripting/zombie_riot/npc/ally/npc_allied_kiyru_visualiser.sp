@@ -400,7 +400,7 @@ public void AlliedKiryuVisaluser_ClotThink(int iNPC)
 			TeleportEntity(npc.m_iWearable9, NULL_VECTOR, flAngles, NULL_VECTOR);
 		}
 	}
-	if(IsValidEnemy(npc.index, npc.m_iTarget) && !VIPBuilding_Active() && !HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
+	if(IsValidEnemy(owner, npc.m_iTarget) && !VIPBuilding_Active() && !HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
 	{	
 		bool AllowStandStill = true;
 		if(npc.m_iKiryuActionWhich == 4)
@@ -506,7 +506,7 @@ void BrawlerHeat1(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 			if(npc.m_iChanged_WalkCycle != 3)
 			{
 				npc.m_iChanged_WalkCycle = 3;
-				if(IsValidEnemy(npc.index, npc.m_iTarget))
+				if(IsValidEnemy(owner, npc.m_iTarget))
 				{
 				
 					SensalCauseKnockback(npc.index, npc.m_iTarget,_,_);
@@ -542,7 +542,7 @@ void BrawlerHeat2(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 			{
 				npc.m_iChanged_WalkCycle = 3;
 				float EnemyVecPos[3]; 
-				if(IsValidEnemy(npc.index, npc.m_iTarget))
+				if(IsValidEnemy(owner, npc.m_iTarget))
 					WorldSpaceCenter(npc.m_iTarget, EnemyVecPos);
 				else
 					WorldSpaceCenter(npc.index, EnemyVecPos);
@@ -572,7 +572,7 @@ void BrawlerHeat3(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 			if(npc.m_iChanged_WalkCycle != 3)
 			{
 				npc.m_iChanged_WalkCycle = 3;
-				if(IsValidEnemy(npc.index, npc.m_iTarget))
+				if(IsValidEnemy(owner, npc.m_iTarget, true))
 				{
 				//	SensalCauseKnockback(npc.index, npc.m_iTarget);
 					npc.PlayHitSound2();
@@ -610,7 +610,7 @@ void BrawlerHeat4(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 			if(npc.m_iChanged_WalkCycle != 3)
 			{
 				npc.m_iChanged_WalkCycle = 3;
-				if(IsValidEnemy(npc.index, npc.m_iTarget, true))
+				if(IsValidEnemy(owner, npc.m_iTarget))
 				{
 					if(!b_thisNpcIsARaid[npc.m_iTarget])
 						SensalCauseKnockback(npc.index, npc.m_iTarget,_,false);
@@ -644,7 +644,7 @@ void BeastBuildingHeat1(int owner, AlliedKiryuVisualiserAbility npc, float GameT
 			{
 				npc.m_iChanged_WalkCycle = 3;
 				float EnemyVecPos[3]; 
-				if(IsValidEnemy(npc.index, npc.m_iTarget))
+				if(IsValidEnemy(owner, npc.m_iTarget))
 					WorldSpaceCenter(npc.m_iTarget, EnemyVecPos);
 				else
 					WorldSpaceCenter(npc.index, EnemyVecPos);

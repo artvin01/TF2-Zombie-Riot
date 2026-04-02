@@ -571,7 +571,7 @@ bool b_FaceStabber[MAXENTITIES];
 int Armor_Level[MAXPLAYERS]={0, ...}; 				//701
 int Grigori_Blessing[MAXPLAYERS]={0, ...}; 				//777
 bool b_HasGlassBuilder[MAXPLAYERS];
-bool b_HasMechanic[MAXPLAYERS];
+//bool b_HasMechanic[MAXPLAYERS];
 int i_MaxSupportBuildingsLimit[MAXPLAYERS];
 bool b_AggreviatedSilence[MAXPLAYERS];
 bool b_ArmorVisualiser[MAXENTITIES];
