@@ -593,7 +593,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.ExtraSpeed = 1.10;
 				enemy.ExtraThinkSpeed = 0.85;
 			}
-			/*
 			case 36:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_squad_master");
@@ -603,13 +602,13 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 37:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_no_random_kranz");
-				enemy.Health = RoundToFloor((500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((750000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_40";
 			}
 			case 38:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_black_heavy_soul");
-				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((4000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_40";
 			}
 			case 39:
@@ -620,7 +619,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.ExtraDamage = 1.10;
 				enemy.MeleeMult = 1.25;
 			}
-			*/
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
@@ -1131,7 +1129,6 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		{
 			CPrintToChatAll("{black}ZILIUS! {gold}- {snow}If you guys beat him, I'll join you as a thanks for saving me from him. {red}I made him stronger cause he doesn't have his army.");
 		}
-		/*
 		case 36:
 		{
 			CPrintToChatAll("{red}MAZEAT {green}FABULOUS {purple}SQUAD {crimson}X {red}E{orange}L{yellow}I{green}T{blue}E{purple}! {gold}- {red}Oh it's so over for you guys...");
@@ -1148,7 +1145,6 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		{
 			CPrintToChatAll("{red}KEVINMERY2009! {gold}- {red}I took data of your strongest mercenary and turned him into a boss!");
 		}
-		*/
 		default:
 		{
 			CPrintToChatAll("{yellow}INFECTED SILVESTER! {gold}- {red}An infected menace!");
