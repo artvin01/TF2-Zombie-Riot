@@ -640,11 +640,11 @@ static void Internal_ClotThink(int iNPC)
 				}
 				case 1:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: None of you criminals are of any importants infront of {gold}Expidonsa{default}.");
+					CPrintToChatAll("{blue}Sensal{default}: None of you criminals are of any importance to {gold}Expidonsa{default}.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: All your friends are gone. Submit to {gold}Expidonsa{default}.");
+					CPrintToChatAll("{blue}Sensal{default}: All your friends are gone. Submit to {gold}Expidonsan{default} might.");
 				}
 			}
 		}
@@ -890,7 +890,7 @@ static void Internal_NPCDeath(int entity)
 		}
 		case 2:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: {gold}Expidonsa{default} is far out of your level of understanding.");
+			CPrintToChatAll("{blue}Sensal{default}: {gold}Expidonsa{default} is beyond your level of understanding.");
 		}
 		case 3:
 		{
@@ -1711,7 +1711,7 @@ bool SensalTalkPostWin(Sensal npc)
 	}
 	if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
 	{
-		CPrintToChatAll("{blue}Sensal{default}: We apologize for the sudden attack, we didn't know, take this as an apology.");
+		CPrintToChatAll("{blue}Sensal{default}: We apologize for the sudden attack. We didn't know, take this as an apology.");
 		
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		BlockLoseSay = true;
@@ -1727,7 +1727,7 @@ bool SensalTalkPostWin(Sensal npc)
 	else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 	{
 		i_SaidLineAlready[npc.index] = 4;
-		CPrintToChatAll("{blue}Sensal{default}: But I see that this was to protect you guys, yet you were able to destroy Calmaticus.");
+		CPrintToChatAll("{blue}Sensal{default}: But I see that this was to protect you guys and yet you were able to destroy {green}Calmaticus.");
 	}
 	else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
 	{
@@ -1737,12 +1737,12 @@ bool SensalTalkPostWin(Sensal npc)
 	else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
 	{
 		i_SaidLineAlready[npc.index] = 2;
-		CPrintToChatAll("{blue}Sensal{default}: We are close friends though we lost contact since he came out of the city.");
+		CPrintToChatAll("{blue}Sensal{default}: We are close friends though we lost contact since he left the city.");
 	}
 	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 	{
 		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of yours now as well.");
+		CPrintToChatAll("{blue}Sensal{default}: ....I see. They are friend of yours now as well.");
 	}
 	return true; //He is trying to help.
 }
@@ -2323,19 +2323,19 @@ static void Sensal_Weapon_Lines(Sensal npc, int client)
 	{
 		
 		case WEAPON_SENSAL_SCYTHE,WEAPON_SENSAL_SCYTHE_PAP_1,WEAPON_SENSAL_SCYTHE_PAP_2,WEAPON_SENSAL_SCYTHE_PAP_3:
-		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "You are trying to wield my weapon, {gold}%N{default}? You do not have the expertiese in it.", client);
-		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "You think you can use it to its fullest potentnial {gold}%N{default}? You dont even own the {gold}Manifestation glove.", client);}	//IT ACTUALLY WORKS, LMFAO
+		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "You are trying to wield my weapon, {gold}%N{default}? You are not competent enough for it.", client);
+		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "You think you can use it to its fullest potential {gold}%N{default}? You do not even own the {gold}Manifestation glove.", client);}	//IT ACTUALLY WORKS, LMFAO
 		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvesters{default} blade? Why is he so nice to everyone...");
 		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default}, you...");}
-		case WEAPON_SICCERINO,WEAPON_WALDCH_SWORD_NOVISUAL:  Format(Text_Lines, sizeof(Text_Lines), "How do you have access to such expidonsan weaponry {gold}%N{default}?",client);
+		case WEAPON_SICCERINO,WEAPON_WALDCH_SWORD_NOVISUAL:  Format(Text_Lines, sizeof(Text_Lines), "How do you have access to such {gold}Expidonsan{default} weaponry {gold}%N{default}?",client);
 		case WEAPON_WALDCH_SWORD_REAL:  Format(Text_Lines, sizeof(Text_Lines), "What? How did you get this elite blade {gold}%N{default}?",client);
 		case WEAPON_NEARL:  Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default} decided to visit Kazimierz?");
 		case WEAPON_KAHMLFIST:  Format(Text_Lines, sizeof(Text_Lines), "Kahmlstein caused enough problems as it is.");
 		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "This machine is gone now, use it better then it has {gold}%N{default}.",client);
 		case WEAPON_IRENE:  Format(Text_Lines, sizeof(Text_Lines), "Iberia's Weapons!? Looks like the secret is out of the bag now...");
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "OH MY GOD, {snow}BOB THE FIRST{default} IS ON YOUR SIDE?!");
-		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "Howd you get {lightblue}Nemal's{default} Weapon {gold}%N{default}?",client);
-		case WEAPON_IMPACT_LANCE:  Format(Text_Lines, sizeof(Text_Lines), "The lance... the only weapon that was forged from both ruina and {gold}expidonsa{default}...");
+		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "How did you get {lightblue}Nemal's{default} weapon {gold}%N{default}?",client);
+		case WEAPON_IMPACT_LANCE:  Format(Text_Lines, sizeof(Text_Lines), "That lance... the only weapon that was forged from both {snow}Ruina{default} and {gold}Expidonsa{default}...");
 		/*
 		//uncomment on release
 		case WEAPON_NECRO_WANDS:

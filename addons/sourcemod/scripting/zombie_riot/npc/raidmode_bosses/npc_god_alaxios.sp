@@ -2300,7 +2300,7 @@ bool AlaxiosForceTalk()
 			}
 			case 5:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: You can wield {blue}Seaborn's{default} weapons without succumbing to their corruption, from what I can see atleast...");
+				CPrintToChatAll("{lightblue}God Alaxios{default}: You can wield {blue}Seaborn's{default} weapons without succumbing to their corruption, from what I can see at least...");
 				i_TalkDelayCheck += 1;
 			}
 			case 6:

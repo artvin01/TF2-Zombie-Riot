@@ -451,7 +451,7 @@ public void TheMessenger_ClotThink(int iNPC)
 	if(i_RaidGrantExtra[npc.index] >= 6)
 	{
 		i_RaidGrantExtra[npc.index] = 6;
-		CPrintToChatAll("{lightblue}The Messenger{default}: {crimson}AHAHAHAHHAHAHAHA!!! ALL OF YOU ARE DEAD!!");
+		CPrintToChatAll("{lightblue}The Messenger{default}: {crimson}AHAHAHAHHAHAHAHA!!! KNEEL BEFORE THE LORD'S MIGHT!");
 		return;
 	}
 	/*
@@ -493,7 +493,7 @@ public void TheMessenger_ClotThink(int iNPC)
 			npc.m_fbGunout = true;
 			if(i_RaidGrantExtra[npc.index] <= 2)
 			{
-				switch(GetRandomInt(0,2))
+				switch(GetRandomInt(0,3))
 				{
 					case 0:
 					{
@@ -502,6 +502,10 @@ public void TheMessenger_ClotThink(int iNPC)
 					case 1:
 					{
 						CPrintToChatAll("{lightblue}The Messenger{default}: It's just you and me now.");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{lightblue}The Messenger{default}: Time for you to forward my message to your superiors.");
 					}
 					case 3:
 					{
@@ -664,7 +668,7 @@ bool Messanger_Elemental_Attack_Projectiles(TheMessenger npc)
 				npc.m_iOverlordComboAttack = 4;
 				fl_TotalArmor[npc.index] = fl_TotalArmor[npc.index] * 0.9;
 				RaidModeScaling *= 1.1;
-				switch(GetRandomInt(0,3))
+				switch(GetRandomInt(0,4))
 				{
 					case 0:
 					{
@@ -681,6 +685,10 @@ bool Messanger_Elemental_Attack_Projectiles(TheMessenger npc)
 					case 3:
 					{
 						CPrintToChatAll("{lightblue}The Messenger{default}: You just brought infinite pain upon you.");
+					}
+					case 4:
+					{
+						CPrintToChatAll("{lightblue}The Messenger{default}: You fucks are just a waste of my time.");
 					}
 				}
 				MessengerInitiateGroupAttack(npc);
@@ -874,7 +882,7 @@ public Action TheMessenger_OnTakeDamage(int victim, int &attacker, int &inflicto
 			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MESSENGER_LAUNCHER)
 			{
 				b_khamlWeaponRage[npc.index] = true;
-				CPrintToChatAll("{lightblue}The Messenger{default}: FUCK you, okay? FUCK you.");
+				CPrintToChatAll("{lightblue}The Messenger{default}: USING MY OWN WEAPON AGAINST ME {crimson} GO FUCK YOURSELF.");
 			}
 		}
 	}
@@ -925,7 +933,7 @@ public void TheMessenger_NPCDeath(int entity)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: Ugh... little fucks.. This ain't over");
+					CPrintToChatAll("{lightblue}The Messenger{default}: Ugh... little fucks.. This ain't over!");
 				}
 				case 1:
 				{
@@ -943,19 +951,27 @@ public void TheMessenger_NPCDeath(int entity)
 		}
 		else
 		{
-			switch(GetRandomInt(0,2))
+			switch(GetRandomInt(0,4))
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: NOT TWICE");
+					CPrintToChatAll("{lightblue}The Messenger{default}: NOT TWICE.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: WHY");
+					CPrintToChatAll("{lightblue}The Messenger{default}: YOU WILL REGRET THIS.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: I just want to impress Him for once... Ugh.....");
+					CPrintToChatAll("{lightblue}The Messenger{default}: I've failed you..... my Lord..");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: How will I.... tell Him about my failure.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{lightblue}The Messenger{default}: FUCK FUCK FUCK GOD FUCKING DAMNIT {crimson}FUCK!!!{default}");
 				}
 			}
 		}
@@ -1368,7 +1384,7 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 		}
 	}
 
-	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after quarter hp/400 hp
 	{
 		npc.Anger = true;
 		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 0.0;
@@ -1376,15 +1392,15 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 		f_MessengerSpeedUp[npc.index] = 1.65;
 		npc.m_flSpeed = 330.0;
 
-		switch(GetRandomInt(0,3))
+		switch(GetRandomInt(0,5))
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Ahahahahahaha, all of you are {crimson}FUCKED!!");
+				CPrintToChatAll("{lightblue}The Messenger{default}: AHAHAHAHAHHA, all of you are so{crimson}FUCKED!!");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: VOID, GRANT ME STRENGTH!");
+				CPrintToChatAll("{lightblue}The Messenger{default}: {purple}VOID{default}, GRANT ME STRENGTH!");
 			}
 			case 2:
 			{
@@ -1392,7 +1408,15 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Remember those cats? {crimson} You're getting it worse.");
+				CPrintToChatAll("{lightblue}The Messenger{default}: Remember those cats? {crimson} You're about to get it worse.");
+			}
+			case 4:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: {crimson} DEATH TO MY ENEMIES!!!.");
+			}
+			case 5:
+			{
+				CPrintToChatAll("{lightblue}The Messenger{default}: {crimson} DIE ALREADY!!!");
 			}
 		}
 	}
@@ -1429,7 +1453,7 @@ public void TheMessenger_Win(int entity)
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Are you seeing me right now? I did it..");
+				CPrintToChatAll("{lightblue}The Messenger{default}: Message...... delivered....");
 			}
 			case 2:
 			{
