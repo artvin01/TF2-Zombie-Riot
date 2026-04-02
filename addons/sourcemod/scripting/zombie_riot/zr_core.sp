@@ -14,6 +14,10 @@
 #define MVM_CLASS_FLAG_ALWAYSCRIT		(1 << 4)	// Add Blue Borders
 #define MVM_CLASS_FLAG_SUPPORT_LIMITED	(1 << 5)	// Only Visible When Active
 
+#define ZR_STORE_RESET (1 << 1) //This will reset the entire store to default
+#define ZR_STORE_DEFAULT_SALE (1 << 2) //This  will reset the current normally sold items, and put up a new set of items
+#define ZR_STORE_WAVEPASSED (1 << 3) //any storelogic that should be called when a wave passes
+
 public const int AmmoData[][] =
 {
 	// Price, Ammo
@@ -102,7 +106,13 @@ public const char PerkNames[][] =
 	"Marksman Beer",
 	"Teslar Mule",
 	"Stockpile Stout",
-	"Energy Drink"
+	"Energy Drink",
+
+	"Lover's Wine",
+	"Marathon Shake",
+	"Sealed Boba",
+	"Bloody Ale",
+	"Who Float"
 };
 
 public const char PerkNames_Received[][] =
@@ -115,7 +125,13 @@ public const char PerkNames_Received[][] =
 	"Marksman Beer Received",
 	"Teslar Mule Received",
 	"Stockpile Stout Received",
-	"Energy Drink Received"
+	"Energy Drink Received",
+
+	"Lover's Wine Received",
+	"Marathon Shake Received",
+	"Sealed Boba Received",
+	"Bloody Ale Received",
+	"Who Float Received"
 };
 
 public const char PerkNames_two_Letter[][] =
@@ -128,7 +144,13 @@ public const char PerkNames_two_Letter[][] =
 	"MB",
 	"TM",
 	"SS",
-	"ED"
+	"ED",
+	
+	"LW",
+	"MS",
+	"SB",
+	"BA",
+	"WF"
 };
 
 enum
@@ -296,7 +318,8 @@ enum
     WEAPON_KIT_PURGE_RAMPAGER = 161,
     WEAPON_KIT_PURGE_ANNAHILATOR = 162,
     WEAPON_KIT_PURGE_MISC = 163,
-	WEAPON_BOMB_AR = 164
+	WEAPON_BOMB_AR = 164,
+	WEAPON_BRICK = 165
 }
 
 enum
@@ -335,6 +358,7 @@ int GrigoriMaxSells = 3;
 int Bob_Exists_Index = -1;
 int CurrentPlayers;
 ConVar zr_voteconfig;
+ConVar zr_disable_barney_rename;
 ConVar zr_tagblacklist;
 ConVar zr_tagwhitelist;
 ConVar zr_tagwhitehard;
@@ -394,15 +418,6 @@ float f_RingDelayGift[MAXENTITIES];
 float Resistance_for_building_High[MAXENTITIES];
 
 //custom wave music.
-MusicEnum MusicString1;
-MusicEnum MusicString2;
-MusicEnum MusicSetup1;
-MusicEnum MusicLastmann;
-MusicEnum MusicWin;
-MusicEnum MusicLoss;
-MusicEnum RaidMusicSpecial1;
-MusicEnum BGMusicSpecial1;
-//custom wave music.
 float f_DelaySpawnsForVariousReasons;
 int CurrentRound[Rounds_MAX];
 int CurrentWave[Rounds_MAX] = {-1, ...};
@@ -442,6 +457,21 @@ float Armor_regen_delay[MAXPLAYERS];
 ConVar mp_disable_respawn_times;
 //int i_SvRollAngle[MAXPLAYERS];
 
+
+enum
+{
+	PAP_MODE_DEFAULT,
+	PAP_MODE_BUILDING_ONLY
+}
+//PAP_MODE_BUILDING_ONLY assumes logic of another gamemode, so we'll reuse that for now.
+enum
+{
+	PERK_MODE_DEFAULT,
+	PERK_MODE_ALL_ALLOW
+}
+
+int PapModeDo = PAP_MODE_DEFAULT;
+int PerkModeDo = PERK_MODE_DEFAULT;
 	
 bool DisableSpawnProtection;
 bool DisableRandomSpawns;
@@ -523,6 +553,7 @@ float fl_MatrixReflect[MAXENTITIES];
 
 #include "npc.sp"	// Global NPC List
 
+#include "vscript.sp"
 #include "aprilfools_settings.sp"
 #include "building.sp"
 #include "database.sp"
@@ -698,6 +729,9 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_bombplant_smg.sp"
 #include "custom/weapon_guiding_missile.sp"
 
+
+
+
 void ZR_PluginLoad()
 {
 	Natives_PluginLoad();
@@ -792,6 +826,7 @@ void ZR_PluginStart()
 	Kritzkrieg_PluginStart();
 	BetWar_PluginStart();
 	Dungeon_PluginStart();
+	VScript_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
@@ -1204,7 +1239,7 @@ void ZR_ClientPutInServer(int client)
 
 void ZR_ClientDisconnect(int client)
 {
-	Citizen_PlayerReplacement(client);
+	Citizen_PlayerReplacement(client, true);
 	Native_ZR_OnGetXP(client, XP[client], 1);
 	SetClientTutorialMode(client, false);
 	SetClientTutorialStep(client, 0);
@@ -1848,7 +1883,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
-					if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+					if(i_WeaponVMTExtraSetting[entity] != -1)
 						continue;
 
 					SetEntityRenderMode(entity, RENDER_NORMAL);
@@ -1950,6 +1985,10 @@ public Action Timer_Dieing(Handle timer, int client)
 
 public void Spawn_Bob_Combine(int client)
 {
+	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+	{
+		return;
+	}
 	float flPos[3], flAng[3];
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
@@ -2175,7 +2214,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							int entity, i;
 							while(TF2U_GetWearable(client, entity, i))
 							{
-								if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+								if(i_WeaponVMTExtraSetting[entity] != -1)
 									continue;
 
 								SetEntityRenderMode(entity, RENDER_NORMAL);
@@ -2409,7 +2448,10 @@ public void SetHealthAfterReviveAgain(int ref)
 	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{
-		SetEntityHealth(client, 50);
+		if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+			SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+		else
+			SetEntityHealth(client, 50);
 	}
 }
 
@@ -2716,7 +2758,11 @@ void ZR_CheckValidityOfPostions_OfObjectsInternal(bool recheck)
 		}
 	}
 }
-void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceFullHealth = false, bool Const2_DontRespawnBuildings = false)
+void ReviveAll(bool raidspawned = false,
+ bool setmusicfalse = false,
+  bool ForceFullHealth = false,
+   bool Const2_DontRespawnBuildings = false,
+  bool IsSetupRevive = false)
 {
 	//only set false here
 	if(!setmusicfalse)
@@ -2726,7 +2772,9 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceF
 	CreateTimer(1.0, ZR_CheckValidityOfPostions_OfObjects, false, TIMER_FLAG_NO_MAPCHANGE);
 	CreateTimer(5.0, ZR_CheckValidityOfPostions_OfObjects, false, TIMER_FLAG_NO_MAPCHANGE);
 	//needed for map logic!
-
+	
+	if(ZR_Get_Modifier() == PREFIX_ONESTAND && !IsSetupRevive)
+		return;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		CheckClientLateJoin(client, false);
@@ -2736,6 +2784,11 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceF
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		if(IsClientInGame(client))
 		{
+			if(dieingstate[client] > 0)
+			{
+				if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+					continue;
+			}
 			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
 			if(glowentity > MaxClients)
 				RemoveEntity(glowentity);
@@ -2752,7 +2805,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceF
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
-					if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+					if(i_WeaponVMTExtraSetting[entity] != -1)
 						continue;
 
 					SetEntityRenderMode(entity, RENDER_NORMAL);
@@ -2806,7 +2859,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceF
 					int entity, i;
 					while(TF2U_GetWearable(client, entity, i))
 					{
-						if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+						if(i_WeaponVMTExtraSetting[entity] != -1)
 							continue;
 							
 						SetEntityRenderMode(entity, RENDER_NORMAL);

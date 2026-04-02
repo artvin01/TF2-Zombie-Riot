@@ -79,7 +79,7 @@ global zr can be a shared database across multiple servers, local one should sta
 
 ### Dependencies
 
-Sourcemod 1.13 Is a Must.
+Sourcemod 1.13.7299 Is a Must.
 For both linux and Windows, not all linux gamedata might be here.
 The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot to run:
 
@@ -94,10 +94,12 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [CollisionHookFIX](https://github.com/voided/CollisionHook)
 - [Source scramble](https://github.com/nosoop/SMExt-SourceScramble)
 - [Load Soundscript](https://github.com/haxtonsale/LoadSoundScript)
+- [vscript-ext](https://github.com/Mikusch/vscript-ext)
 - [Max speed unlocker/Edict Alloc](https://github.com/Mikusch/SourceScramble-Patches) (install both speed unlocker and Alloc)
 
 If you want to compile, this include is needed!
 - [More Colours](https://github.com/DoctorMcKay/sourcemod-plugins)
+- [IntMap](https://github.com/Ilusion9/intmap-inc-sm)
 - SourcePawn Compiler 1.12.0.7031 (Zr will compile much faster at this version. for a server release, use latest compiler, for testing, 1.12.0.7031.)
 
 

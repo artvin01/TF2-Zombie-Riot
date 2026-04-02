@@ -80,7 +80,7 @@ void AlmagestProximaOnMapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = 0;
+	data.Category = Type_Outlaws;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -161,7 +161,7 @@ methodmap AlmagestProxima < CClotBody
 		EnemyShieldCantBreak[npc.index] = true;
 		VausMagicaGiveShield(npc.index, 5);
 
-		npc.m_flSpeed = 400.0;
+		npc.m_flSpeed = 350.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/zombie_riot/weapons/ruina_models_2_5.mdl");
 		SetVariantInt(65536);
@@ -214,8 +214,6 @@ static bool Almagest_DidHealDo;
 static void ClotThink(int iNPC)
 {
 	AlmagestProxima npc = view_as<AlmagestProxima>(iNPC);
-
-	GrantEntityArmor(iNPC, true, 0.5, 0.25, 0);
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
@@ -275,9 +273,11 @@ static void ClotThink(int iNPC)
 					npc.SetGoalEntity(target,npc.m_bAllowBackWalking);
 				}
 				npc.m_bAllowBackWalking = false;
+				npc.m_flSpeed = 350.0;
 			}
 			case 2:
 			{
+				npc.m_flSpeed = 410.0;
 				//juke them
 				npc.m_bAllowBackWalking = true;
 				npc.FaceTowards(vecTarget, 1000.0);	

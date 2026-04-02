@@ -308,6 +308,18 @@
 		"en"	"You can count on us!"
 		"ko"	"저희만 믿으십시오!"
 	}
+	"Atomizer_Talk_Support-5"
+	{
+		"en"	"At least we get to use these more."
+	}
+	"Atomizer_Talk_Support-6"
+	{
+		"en"	"Quit drinking the beers, Hurcarls!"
+	}
+	"Atomizer_Talk_Support-7"
+	{
+		"en"	"Ay back for another round."
+	}
 	"Atomizer_Talk_Lastman-1"
 	{
 		"en"	"Ready to die?"
@@ -433,6 +445,22 @@
 	{
 		"en"	"They could dodge 2, but how about 3 now!"
 		"ko"	"두개는 피했어도, 세개는 피할수 있을지 한 번 볼까!"
+	}
+	"Huscarls_Talk_Support-11"
+	{
+		"en"	"Yea this is pretty fun.”
+	}
+	"Huscarls_Talk_Support-12"
+	{
+		"en"	"*crack* What was that Harrison?"
+	}
+	"Huscarls_Talk_Support-13"
+	{
+		"en"	"Oh you got beer in here? Nice."
+	}
+	"Huscarls_Talk_Support-14"
+	{
+		"en"	"Back for another round of firing."
 	}
 	"Huscarls_Talk_Lastman-1"
 	{
@@ -574,6 +602,22 @@
 	{
 		"en"	"Victoria Cannon is Ready, Fire Support is coming in"
 		"ko"	"빅토리아 캐논 준비 완료, 화력 지원 전개."
+	}
+	"Harrison_Talk_Support-12"
+	{
+		"en"	"I need more space in here."
+	}
+	"Harrison_Talk_Support-13"
+	{
+		"en"	"*ugh* Can we kill them quicker? I need a beer."
+	}
+	"Harrison_Talk_Support-14"
+	{
+		"en"	"*sigh* alright."
+	}
+	"Harrison_Talk_Support-15"
+	{
+		"en"	"Huh? Oh… leave it until we are done here."
 	}
 	"Harrison_Talk_Intro"
 	{
@@ -775,6 +819,14 @@
 	{
 		"en"	"Alright boys, Fire all we got! We cannot waste any more time on here!"
 		"ko"	"좋아, 친구들. 우리가 가진 모든걸 쏟아부어라! 우리는 여기서 더이상 낭비할 시간이 없다!"
+	}
+	"Castellan_Talk_Ability2-4”
+	{
+		"en"	"Keep them coming boys! They are wasting too much of our time!"
+	}
+	"Castellan_Talk_Ability2-5”
+	{
+		"en"	"Knock it off you three and FIRE!"
 	}
 	"Castellan_Talk_Ability3-1"
 	{

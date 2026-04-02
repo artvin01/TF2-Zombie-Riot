@@ -1463,6 +1463,11 @@
 		"it"		"Avanguardia annullata"
 		"ko" 		"공허화된 뱅가드"
 	}
+	"Sea-Infected Voided Vanguard"
+	{
+		"en" 		"Sea-Infected Voided Vanguard"
+		"ko" 		"시테러 감염체 공허화된 뱅가드"
+	}
 	"Kahmlstein"
 	{
 		"en"		"Kahmlstein"
@@ -3679,6 +3684,11 @@
 		"it"	"Uroboro Ekas"
 		"ko"	"우로보로스 에카스"
 	}
+	"Rundown Xeno Ouroboros Ekas-2008"
+	{
+		"en"	"Rundown Xeno Ouroboros Ekas-2008"
+		"ko"	"런다운 제노 우로보로스 에카스-2008"
+	}
 	"Wandering Spirit"
 	{
 		"en"	"Wandering Spirit"
@@ -5461,6 +5471,21 @@
 		"it"	"Uroboro Ekas"
 		"ko"	"우로보로스 에카스"
 	}
+	"Xeno Lab Security"
+	{
+		"en"	"Xeno Lab Security"
+		"ko"	"제노 연구소 보안장치"
+	}
+	"Goliath Aircraft"
+	{
+		"en"	"Goliath Aircraft"
+		"ko"	"골리앗 비행선"
+	}
+	"Const2 Spawner"
+	{
+		"en"	"Const2 Spawner"
+		"ko"	"생존연산2 스포너"
+	}
 	"Bob's Duck ''Dubby''"
 	{
 		"en"	"Bob's Duck ''Dubby''"
@@ -6246,6 +6271,16 @@
 		"en"		"Lost Knight"
 		"it"		"Cavaliere perduto"
 		"ko"		"길 잃은 기사"
+	}
+	"Rollermine"
+	{
+		"en"		"Rollermine"
+		"ko"		"롤러 마인"
+	}
+	"Nova Prospekt Overseer"
+	{
+		"en"		"Nova Prospekt Overseer"
+		"ko"		"노바 프로스펙트 감시자"
 	}
 	"Omega"
 	{
@@ -7743,7 +7778,7 @@
 	"Agent 61 Desc"
 	{
 		"en"	"A hired hitman merc, number assosiation unknown.\n-Will find the weakest target on the map and focus them\n-Phases through everything\n-Has challanger buff\n-Shoots his gun once which if hitting, deals a stacking fear debuff."
-		"ko"	"고용된 히트맨 용병입니다. 숫자 관련성 불명.\n-맵에서 가장 취약한 대상을 찾아 집중 공격합니다.\n-모든 것들을 통과하여 지나갑니다.\n-챌린저 버프 보유\n-적중 시 '원초적 공포' 디버프를 부여하는 총기를 사용합니다."
+		"ko"	"고용된 히트맨 용병입니다. 숫자 관련성 불명.\n-맵에서 가장 취약한 대상을 찾아 집중 공격합니다.\n-모든 것들을 통과하여 지나갑니다.\n-'도전자' 버프 보유\n-적중 시 '원초적 공포' 디버프를 부여하는 총기를 사용합니다."
 	}
 	"Battlefield Supplier"
 	{
@@ -7813,7 +7848,7 @@
 	"Behemoth Behemoth Desc"
 	{
 		"en"	"A Bigger Behemoth, too many vitamins.\n-Deals chaos damage on hit\n-Has AOE swings\n-Immune to Headshots"
-		"ko"	"더 커다란 베헤모스입니다. 비타민을 너무 먹었나...\n-적중 시 혼돈 원소 피해를 부여합니다.\n-광역 피해를 가하는 공격 보유\n-헤드샷 피해를 0으로 받습니다."
+		"ko"	"더 커다란 베헤모스입니다. 비타민을 너무 많이 먹었나...\n-적중 시 혼돈 원소 피해를 부여합니다.\n-광역 피해를 가하는 공격 보유\n-헤드샷 피해를 0으로 받습니다."
 	}
 	"Demon Possesed Armor"
 	{
@@ -7924,5 +7959,180 @@
 	{
 		"en"	"-Starts with high armor and 5 shields\n-Heals its own kind near eachother\n-Deals high melee damage and deals 3x damage once the debuff maxes out\n-Applies 2 spearmen debuff each hit\n-Will try to surround you at all times"
 		"ko"	"-대량의 아머와 5개의 보호막을 보유한 채로 스폰됩니다.\n-동일한 종을 서로 치유합니다.\n-높은 근접 피해를 가합니다.\n-적중 시 '장창병의 참격' 디버프를 2 부여합니다.\n-상시로 대상을 둘러싸려고 시도합니다."
+	}
+	"Black Heavy Soul"
+	{
+		"en"	"Black Heavy Soul"
+		"ko"	"검은 헤비 영혼"
+	}
+	"Super Saiyan Black Heavy Soul"
+	{
+		"en"	"Super Saiyan Black Heavy Soul"
+		"ko"	"초사이어인 검은 헤비 영혼"
+	}
+	"Super Saiyan 2 Black Heavy Soul"
+	{
+		"en"	"Super Saiyan 2 Black Heavy Soul"
+		"ko"	"초사이어인 2 검은 헤비 영혼"
+	}
+	"Super Saiyan 3 Black Heavy Soul"
+	{
+		"en"	"Super Saiyan 3 Black Heavy Soul"
+		"ko"	"초사이어인 3 검은 헤비 영혼"
+	}
+	"Broly"
+	{
+		"en"	"Broly"
+		"ko"	"브로리"
+	}
+	"No Random Kranz V3"
+	{
+		"en"	"No Random Kranz V3"
+		"ko"	"노 랜덤 크란츠 V3"
+	}
+	"Mazeat Fabulous Squad X Elite, Solvence of Cringe"
+	{
+		"en"	"Mazeat Fabulous Squad X Elite, Solvence of Cringe"
+		"ko"	"녹아내리는 오글거림의 마제트 페뷸러스 스쿼드 X 엘리트"
+	}
+	"Bob The First Squad"
+	{
+		"en"	"Bob The First"
+		"ko"	"밥 1세"
+	}
+	"Omega Squad"
+	{
+		"en"	"Omega"
+		"ko"	"오메가"
+	}
+	"Whiteflower Squad"
+	{
+		"en"	"Whiteflower"
+		"ko"	"배풍등"
+	}
+	"Shadowing Darkness Squad"
+	{
+		"en"	"Shadowing Darkness"
+		"ko"	"그림자 응달"
+	}
+	"Artvin"
+	{
+		"en"	"Artvin"
+		"ko"	"Artvin"
+	}
+	"Eno"
+	{
+		"en"	"Eno"
+		"ko"	"Eno"
+	}
+	"Dencube"
+	{
+		"en"	"Dencube"
+		"ko"	"Dencube"
+	}
+	"Artorias"
+	{
+		"en"	"Artorias"
+		"ko"	"Artorias"
+	}
+	"Rocket Gunner"
+	{
+		"en"	"Rocket Gunner"
+		"ko"	"로켓 거너"
+	}
+	"Heavy Weapons Guy"
+	{
+		"en"	"Heavy Weapons Guy"
+		"ko"	"헤비 웨폰 가이"
+	}
+	"Very Heavy Heavy"
+	{
+		"en"	"Very Heavy Heavy"
+		"ko"	"아주 헤비한 헤비"
+	}
+	"Fish Scout"
+	{
+		"en"	"Fish Scout"
+		"ko"	"생선 스카웃"
+	}
+	"Human Main"
+	{
+		"en"	"Human Main"
+		"ko"	"인간 Main"
+	}
+	"Professional Fingerer"
+	{
+		"en"	"Professional Fingerer"
+		"ko"	"전문가 손총수"
+	}
+	"King of Australia"
+	{
+		"en"	"King of Australia"
+		"ko"	"호주의 왕"
+	}
+	"Dismounted Teuton"
+	{
+		"en"	"Dismounted Teuton"
+		"ko"	"내린 튜튼 기사"
+	}
+	"Bombasticus Swordus of Fuckyus"
+	{
+		"en"	"Bombasticus Swordus of Fuckyus"
+		"ko"	"퍼큐스의 봄바스티쿠스 스워두스"
+	}
+	"Giga Obuch"
+	{
+		"en"	"Giga Obuch"
+		"ko"	"기가 오부치"
+	}
+	"Lard Fat"
+	{
+		"en"	"Lard Fat"
+		"ko"	"돼지 기름"
+	}
+	"Mounted Teuton"
+	{
+		"en"	"Mounted Teuton"
+		"ko"	"탄 튜튼 기사"
+	}
+	"Purple Guy"
+	{
+		"en"	"Purple Guy"
+		"ko"	"퍼플 가이"
+	}
+	"Roll The Dice"
+	{
+		"en"	"Roll The Dice"
+		"ko"	"!rtd"
+	}
+	"Australian Spider"
+	{
+		"en"	"Australian Spider"
+		"ko"	"호주 거미"
+	}
+	"Suction Medic"
+	{
+		"en"	"Suction Medic"
+		"ko"	"흡입 메딕"
+	}
+	"Living Metal Ball"
+	{
+		"en"	"Living Metal Ball"
+		"ko"	"살아있는 쇳덩이 공"
+	}
+	"Axe Throwwing Barbarian"
+	{
+		"en"	"Axe Throwwing Barbarian"
+		"ko"	"도끼 투척 야만전사"
+	}
+	"A Man Who Is Really Ambitious About Team Fortress 2 Trading"
+	{
+		"en"	"A Man Who Is Really Ambitious About Team Fortress 2 Trading"
+		"ko"	"팀포2 거래에 야망이 가득한 남자"
+	}
+	"Kahmlstein's Dead Grandma"
+	{
+		"en"	"Kahmlstein's Dead Grandma"
+		"ko"	"카멜슈타인의 돌아가신 할머니"
 	}
 }

@@ -89,6 +89,7 @@ methodmap StalkerGoggles < StalkerShared
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 
+		b_thisNpcIsAMiniboss[npc.index] = true;
 		float wave = float(Waves_GetRoundScale()+1);
 		wave *= 0.133333;
 		npc.m_flWaveScale = wave;
@@ -247,7 +248,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 				}
 				case 3:	// 5.0
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: They tried to re-create my consiousness.");
+					CPrintToChatAll("{darkblue}Waldch{default}: They tried to re-create my consciousness.");
 				}
 				case 5:	// 10.0
 				{

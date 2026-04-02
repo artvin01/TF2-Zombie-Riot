@@ -408,9 +408,9 @@
 	}
 	"Gold-Plated Dice Desc"
 	{
-		"en"	"The gold-plated die has one side representing life. As for the other nineteen sides...\n{green}Enemies gain -15％ max health"
-		"it"	"Il dado placcato d'oro ha un lato che rappresenta la vita. Per quanto riguarda gli altri diciannove lati... \n{green}I nemici guadagnano -15％ di salute massima"
-		"ko"	"금박 장식이 되어 있는 주사위로, 한 면에만 생존을 상징하는 표식이 새겨져있고, 나머지 19개 면에는...\n{green}모든 적들의 최대 체력 -15％."
+		"en"	"The gold-plated die has one side representing life. As for the other nineteen sides...\n{green}Enemies gain -12％ max health"
+		"it"	"Il dado placcato d'oro ha un lato che rappresenta la vita. Per quanto riguarda gli altri diciannove lati... \n{green}I nemici guadagnano -12％ di salute massima"
+		"ko"	"금박 장식이 되어 있는 주사위로, 한 면에만 생존을 상징하는 표식이 새겨져있고, 나머지 19개 면에는...\n{green}모든 적들의 최대 체력 -12％."
 	}
 	"The Profound Silence"
 	{
@@ -420,9 +420,9 @@
 	}
 	"The Profound Silence Desc"
 	{
-		"en"	"A painting that depicts the greatest disaster in Iberian history.\n{green}Enemies gain -20％ max health"
-		"it"	"Un dipinto che raffigura il più grande disastro della storia iberica.\n{green}I nemici guadagnano -20％ di salute massima"
-		"ko"	"이베리아 역사상 가장 컸던 재앙을 그린 작품.\n{green}모든 적들의 최대 체력 -20％."
+		"en"	"A painting that depicts the greatest disaster in Iberian history.\n{green}Enemies gain -15％ max health"
+		"it"	"Un dipinto che raffigura il più grande disastro della storia iberica.\n{green}I nemici guadagnano -15％ di salute massima"
+		"ko"	"이베리아 역사상 가장 컸던 재앙을 그린 작품.\n{green}모든 적들의 최대 체력 -15％."
 	}
 	"Emperor's Favor"
 	{
@@ -722,7 +722,7 @@
 	{
 		"en"	"{green}Limited lifetime allies (non citizen and non barracks) gain +30％ max health and +30％ damage, the owner gains +60％ damage for 10 seconds when summoned."
 		"it"	"{green}Gli alleati a vita limitata (non cittadini e non caserma) guadagnano +30％ salute massima e +30％ danni, il proprietario guadagna +60％ danni per 10 secondi quando viene evocato."
-		"ko"	"{green}'배럭 유닛과 반시민을 제외한' 일정 시간 이후 소멸하는 소환물의 최대 체력과 공격 피해량 +30％ 증가 및 해당 유닛을 소환한 주인은 10초 동안 공격 피해량 +60％ 증가."
+		"ko"	"{green}'배럭 유닛, 반시민을 제외한' 일정 시간 후 소멸하는 소환물의 최대 체력, 공격 피해량 +30％ 증가. 해당 유닛의 소환자는 10초 동안 공격 피해량 +60％"
 	}
 	"Minion Energizer"
 	{
@@ -2070,15 +2070,15 @@
 		"it"	"⚠ Fiore bianco del vendicatore"
 		"ko"	"⚠ 배풍등의 복수자 무리"
 	}
-	"Barricade"
+	"Barricading"
 	{
-		"en"	"⚔ Barricade"
-		"it"	"⚔ Barricata"
+		"en"	"⚔ Barricading"
+		"it"	"⚔ Barricading"
 		"ko"	"⚔ 바리케이드"
 	}
-	"Barricade!"
+	"Barricading!"
 	{
-		"en"	"⚠ Barricade"
+		"en"	"⚠ Barricading"
 		"it"	"⚠ Barricata"
 		"ko"	"⚠ 바리케이드"
 	}

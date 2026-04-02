@@ -52,7 +52,7 @@ void Agent61_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "agent_61");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = 0;
+	data.Category = Type_Outlaws;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

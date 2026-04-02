@@ -308,7 +308,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 				case 2:
 					CPrintToChatAll("{crimson}Bladedance{default}: I god damn hate fighting, get out!");
 				case 3:
-					CPrintToChatAll("{crimson}Bladedance{default}: Wish you could lose at the casino i once owned!");
+					CPrintToChatAll("{crimson}Bladedance{default}: Wish you could lose at the casino I once owned!");
 
 			}
 			
@@ -470,7 +470,7 @@ public Action RaidbossBladedance_OnTakeDamage(int victim, int &attacker, int &in
 			npc.m_flBladedanceAngerResistance = 1.0;
 			ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 25.0);
 			ApplyStatusEffect(npc.index, npc.index, "Godly Motivation", 40.0);
-			CPrintToChatAll("{crimson}Bladedance{default}: You have seen nothing i say! Im the least of your worries!");
+			CPrintToChatAll("{crimson}Bladedance{default}: You have seen nothing I say! I'm the least of your worries!");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
 		}
 	}
@@ -497,14 +497,14 @@ public void RaidbossBladedance_NPCDeath(int entity)
 	
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
-		CPrintToChatAll("{crimson}Bladedance{default}: You and Bob the first.. you both missunderstand who the enemy is.. its {white}Whiteflower{default} you fools! He betrayed {crimson}Guln{default} aswell!");
+		CPrintToChatAll("{crimson}Bladedance{default}: You and Bob the first.. you both misunderstand who the enemy is.. its {white}Whiteflower{default} you fools! He betrayed {crimson}Guln{default} aswell!");
 		CPrintToChatAll("{crimson}Bladedance{default} escapes from you... and gains the ability to copy {crimson}you.");
 		for (int client = 1; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Bob's true fear");
-				CPrintToChat(client,"{default}This battle wasnt something that should have happend. You had little to no chance... This is... {red}''Bob's True fear.''{default}!");
+				CPrintToChat(client,"{default}This battle wasn't something that should have happened. You had little to no chance... This is... {red}''Bob's True fear.''{default}!");
 			}
 		}
 		for(int i; i < i_MaxcountNpcTotal; i++)

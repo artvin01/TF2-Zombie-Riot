@@ -10,6 +10,7 @@ static int CurrentModifActive = 0;
 #define TURBOLENCES 4
 #define PARANORMAL_ACTIVITY 5
 #define PREFIX_GALORE 6
+#define PREFIX_ONESTAND 7
 
 void Modifier_MiniBossSpawn(bool &spawns)
 {
@@ -58,6 +59,10 @@ public void Modifier_Collect_SecondaryMercs()
 public void Modifier_Collect_Prefix_Galore()
 {
 	CurrentModifActive = PREFIX_GALORE;
+}
+public void Modifier_Collect_OneStand()
+{
+	CurrentModifActive = PREFIX_ONESTAND;
 }
 
 public void Modifier_Remove_SecondaryMercs()
@@ -152,162 +157,24 @@ public void ZRModifs_OldTimesNPC(int iNpc)
 	f_AttackSpeedNpcIncrease[iNpc] *= 0.75;
 }
 
-public void ZRModifs_ParanormalActivityNPC(int iNpc)
-{
-	CClotBody ZNPC = view_as<CClotBody>(iNpc);
-
-	if(IsValidEntity(ZNPC.m_iWearable1) && !b_EntityCantBeColoured[ZNPC.m_iWearable1])
-	{
-		SetEntityRenderMode(ZNPC.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(ZNPC.m_iWearable1, 0, 0, 0, 150);
-		SetEntPropFloat(ZNPC.m_iWearable1, Prop_Send, "m_fadeMinDist", 600.0);
-		SetEntPropFloat(ZNPC.m_iWearable1, Prop_Send, "m_fadeMaxDist", 700.0);
-	}
-	if(IsValidEntity(ZNPC.m_iWearable2) && !b_EntityCantBeColoured[ZNPC.m_iWearable2])
-	{
-		SetEntityRenderMode(ZNPC.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(ZNPC.m_iWearable2, 0, 0, 0, 150);
-		SetEntPropFloat(ZNPC.m_iWearable2, Prop_Send, "m_fadeMinDist", 600.0);
-		SetEntPropFloat(ZNPC.m_iWearable2, Prop_Send, "m_fadeMaxDist", 700.0);
-	}
-	if(IsValidEntity(ZNPC.m_iWearable3) && !b_EntityCantBeColoured[ZNPC.m_iWearable3])
-	{
-		SetEntityRenderMode(ZNPC.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(ZNPC.m_iWearable3, 0, 0, 0, 150);
-		SetEntPropFloat(ZNPC.m_iWearable3, Prop_Send, "m_fadeMinDist", 600.0);
-		SetEntPropFloat(ZNPC.m_iWearable3, Prop_Send, "m_fadeMaxDist", 700.0);
-	}
-	if(IsValidEntity(ZNPC.m_iWearable4) && !b_EntityCantBeColoured[ZNPC.m_iWearable4])
-	{
-		SetEntityRenderMode(ZNPC.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(ZNPC.m_iWearable4, 0, 0, 0, 150);
-		SetEntPropFloat(ZNPC.m_iWearable4, Prop_Send, "m_fadeMinDist", 600.0);
-		SetEntPropFloat(ZNPC.m_iWearable4, Prop_Send, "m_fadeMaxDist", 700.0);
-	}
-	if(IsValidEntity(ZNPC.m_iWearable5) && !b_EntityCantBeColoured[ZNPC.m_iWearable5])
-	{
-		SetEntityRenderMode(ZNPC.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(ZNPC.m_iWearable5, 0, 0, 0, 150);
-		SetEntPropFloat(ZNPC.m_iWearable5, Prop_Send, "m_fadeMinDist", 600.0);
-		SetEntPropFloat(ZNPC.m_iWearable5, Prop_Send, "m_fadeMaxDist", 700.0);
-	}
-	if(IsValidEntity(ZNPC.m_iWearable6) && !b_EntityCantBeColoured[ZNPC.m_iWearable6])
-	{
-		SetEntityRenderMode(ZNPC.m_iWearable6, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(ZNPC.m_iWearable6, 0, 0, 0, 150);
-		SetEntPropFloat(ZNPC.m_iWearable6, Prop_Send, "m_fadeMinDist", 600.0);
-		SetEntPropFloat(ZNPC.m_iWearable6, Prop_Send, "m_fadeMaxDist", 700.0);
-	}
-	if(IsValidEntity(ZNPC.m_iWearable7) && !b_EntityCantBeColoured[ZNPC.m_iWearable7])
-	{
-		SetEntityRenderMode(ZNPC.m_iWearable7, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(ZNPC.m_iWearable7, 0, 0, 0, 150);
-		SetEntPropFloat(ZNPC.m_iWearable7, Prop_Send, "m_fadeMinDist", 600.0);
-		SetEntPropFloat(ZNPC.m_iWearable7, Prop_Send, "m_fadeMaxDist", 700.0);
-	}
-	if(IsValidEntity(ZNPC.m_iWearable8) && !b_EntityCantBeColoured[ZNPC.m_iWearable8])
-	{
-		SetEntityRenderMode(ZNPC.m_iWearable8, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(ZNPC.m_iWearable8, 0, 0, 0, 150);
-		SetEntPropFloat(ZNPC.m_iWearable8, Prop_Send, "m_fadeMinDist", 600.0);
-		SetEntPropFloat(ZNPC.m_iWearable8, Prop_Send, "m_fadeMaxDist", 700.0);
-	}
-	if(IsEntityAlive(ZNPC.m_iWearable1) && !b_EntityCantBeColoured[ZNPC.m_iWearable1])
-	{
-		SetEntityRenderMode(ZNPC.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(ZNPC.m_iWearable1, 0, 0, 0, 150);
-		SetEntPropFloat(ZNPC.m_iWearable1, Prop_Send, "m_fadeMinDist", 600.0);
-		SetEntPropFloat(ZNPC.m_iWearable1, Prop_Send, "m_fadeMaxDist", 700.0);
-	}
-	if(IsEntityAlive(ZNPC.m_iWearable2) && !b_EntityCantBeColoured[ZNPC.m_iWearable2])
-	{
-		SetEntityRenderMode(ZNPC.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(ZNPC.m_iWearable2, 0, 0, 0, 150);
-		SetEntPropFloat(ZNPC.m_iWearable2, Prop_Send, "m_fadeMinDist", 600.0);
-		SetEntPropFloat(ZNPC.m_iWearable2, Prop_Send, "m_fadeMaxDist", 700.0);
-	}
-	if(IsEntityAlive(ZNPC.m_iWearable3) && !b_EntityCantBeColoured[ZNPC.m_iWearable3])
-	{
-		SetEntityRenderMode(ZNPC.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(ZNPC.m_iWearable3, 0, 0, 0, 150);
-		SetEntPropFloat(ZNPC.m_iWearable3, Prop_Send, "m_fadeMinDist", 600.0);
-		SetEntPropFloat(ZNPC.m_iWearable3, Prop_Send, "m_fadeMaxDist", 700.0);
-	}
-	if(IsEntityAlive(ZNPC.m_iWearable4) && !b_EntityCantBeColoured[ZNPC.m_iWearable4])
-	{
-		SetEntityRenderMode(ZNPC.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(ZNPC.m_iWearable4, 0, 0, 0, 150);
-		SetEntPropFloat(ZNPC.m_iWearable4, Prop_Send, "m_fadeMinDist", 600.0);
-		SetEntPropFloat(ZNPC.m_iWearable4, Prop_Send, "m_fadeMaxDist", 700.0);
-	}
-	if(IsEntityAlive(ZNPC.m_iWearable5) && !b_EntityCantBeColoured[ZNPC.m_iWearable5])
-	{
-		SetEntityRenderMode(ZNPC.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(ZNPC.m_iWearable5, 0, 0, 0, 150);
-		SetEntPropFloat(ZNPC.m_iWearable5, Prop_Send, "m_fadeMinDist", 600.0);
-		SetEntPropFloat(ZNPC.m_iWearable5, Prop_Send, "m_fadeMaxDist", 700.0);
-	}
-	if(IsEntityAlive(ZNPC.m_iWearable6) && !b_EntityCantBeColoured[ZNPC.m_iWearable6])
-	{
-		SetEntityRenderMode(ZNPC.m_iWearable6, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(ZNPC.m_iWearable6, 0, 0, 0, 150);
-		SetEntPropFloat(ZNPC.m_iWearable6, Prop_Send, "m_fadeMinDist", 600.0);
-		SetEntPropFloat(ZNPC.m_iWearable6, Prop_Send, "m_fadeMaxDist", 700.0);
-	}
-	if(IsEntityAlive(ZNPC.m_iWearable7) && !b_EntityCantBeColoured[ZNPC.m_iWearable7])
-	{
-		SetEntityRenderMode(ZNPC.m_iWearable7, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(ZNPC.m_iWearable7, 0, 0, 0, 150);
-		SetEntPropFloat(ZNPC.m_iWearable7, Prop_Send, "m_fadeMinDist", 600.0);
-		SetEntPropFloat(ZNPC.m_iWearable7, Prop_Send, "m_fadeMaxDist", 700.0);
-	}
-	if(IsEntityAlive(ZNPC.m_iWearable8) && !b_EntityCantBeColoured[ZNPC.m_iWearable8])
-	{
-		SetEntityRenderMode(ZNPC.m_iWearable8, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(ZNPC.m_iWearable8, 0, 0, 0, 150);
-		SetEntPropFloat(ZNPC.m_iWearable8, Prop_Send, "m_fadeMinDist", 600.0);
-		SetEntPropFloat(ZNPC.m_iWearable8, Prop_Send, "m_fadeMaxDist", 700.0);
-	}
-
-	fl_Extra_Damage[iNpc] *= 1.05;
-	SetEntityRenderMode(iNpc, RENDER_TRANSCOLOR);
-	SetEntityRenderColor(iNpc, 0, 0, 0, 150);
-	SetEntPropFloat(iNpc, Prop_Send, "m_fadeMinDist", 600.0);
-	SetEntPropFloat(iNpc, Prop_Send, "m_fadeMaxDist", 700.0);
-	b_NoHealthbar[iNpc] = 1;
-	GiveNpcOutLineLastOrBoss(iNpc, false);
-	b_thisNpcHasAnOutline[iNpc] = true;
-
-	/*
-	float SelfPosParanormal[3];
-	float AllyPosParanormal[3];
-	float flDistanceToTargetParanormal = GetVectorDistance(SelfPosParanormal, AllyPosParanormal, true);
-	if(flDistanceToTargetParanormal < (100.0 * 100.0))
-	{
-		fl_Extra_Speed[iNpc] *= 2.0;
-	}
-	if(flDistanceToTargetParanormal > (100.0 * 100.0))
-	{
-		fl_Extra_Speed[iNpc] *= 0.5;
-	}
-	*/
-
-}
-
 float ZRModifs_MaxSpawnsAlive()
 {
+	float Return = 1.0;
 	switch(CurrentModifActive)
 	{
 		case CHAOS_INTRUSION:
 		{
-			return 1.10;
+			Return *= 1.10;
 		}
 		case SECONDARY_MERCS, OLD_TIMES:
 		{
-			return 1.20;
+			Return *= 1.20;
 		}
 	}
-	return 1.0;
+	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+		Return *= 1.5;
+
+	return Return;
 }
 
 float ZRModifs_SpawnSpeedModif()
@@ -340,23 +207,27 @@ float ZRModifs_SpawnSpeedModif()
 			value *= 0.75;
 		}
 	}
+	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+		value *= 0.85;
+
 	return value;
 }
 
 float ZRModifs_MaxSpawnWaveModif()
 {
+	float Return = 1.0;
 	switch(CurrentModifActive)
 	{
 		case CHAOS_INTRUSION:
 		{
-			return 1.25;
+			Return *= 1.25;
 		}
 		case SECONDARY_MERCS, OLD_TIMES:
 		{
-			return 1.35;
+			Return *= 1.35;
 		}
 	}
-	return 1.0;
+	return Return;
 }
 
 void ZRModifs_CharBuffToAdd(char[] data)
@@ -365,24 +236,42 @@ void ZRModifs_CharBuffToAdd(char[] data)
 	{
 		case CHAOS_INTRUSION:
 		{
-			FormatEx(data, 6, "C");
+			FormatEx(data, 12, "C");
 		}
 		case SECONDARY_MERCS:
 		{
-			FormatEx(data, 6, "S");
+			FormatEx(data, 12, "S");
 		}
 		case OLD_TIMES:
 		{
-			FormatEx(data, 6, "O");
+			FormatEx(data, 12, "O");
 		}
 		case PARANORMAL_ACTIVITY:
 		{
-			FormatEx(data, 6, "P");
+			FormatEx(data, 12, "P");
 		}
 		case PREFIX_GALORE:
 		{
-			FormatEx(data, 6, "PG");
+			FormatEx(data, 12, "G");
 		}
+		case PREFIX_ONESTAND:
+		{
+			FormatEx(data, 12, "OS");
+		}
+	}
+}
+public void ZRModifs_ModifEnemy_OneStand(int iNpc)
+{
+	//if alone on server, this modifier wont do anything.....
+
+	if(b_IsAloneOnServer)
+		return;
+		
+	if(b_thisNpcIsABoss[iNpc] || b_thisNpcIsARaid[iNpc])
+	{
+		SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 0.9));
+		SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 0.9));
+		fl_Extra_Damage[iNpc] *= 0.9;
 	}
 }
 

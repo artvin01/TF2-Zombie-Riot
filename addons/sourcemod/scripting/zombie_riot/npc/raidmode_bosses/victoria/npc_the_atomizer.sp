@@ -1875,7 +1875,6 @@ stock void SetVelocityAtomizerProjectile(DataPack pack)
 	vel[2] = pack.ReadFloat();
 	delete pack;
 	Custom_SetAbsVelocity(entity, vel);	
-
 }
 static bool ONLYBSP(int entity, int contentsMask, any data)
 {

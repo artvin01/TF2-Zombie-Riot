@@ -1095,30 +1095,28 @@ int TF2_CreateGlow_White(const char[] model, int victim, float modelsize)
 stock void SetParent(int iParent, int iChild, const char[] szAttachment = "", const float vOffsets[3] = {0.0,0.0,0.0}, bool maintain_anyways = false)
 {
 	SetVariantString("!activator");
-	AcceptEntityInput(iChild, "SetParent", iParent, iChild);
+	AcceptEntityInput(iChild, "SetParent", iParent, iParent);
 	
-	if (szAttachment[0] != '\0') // Use at least a 0.01 second delay between SetParent and SetParentAttachment inputs.
+	if (szAttachment[0] == '\0') // Use at least a 0.01 second delay between SetParent and SetParentAttachment inputs.
+		return;
+
+	if(!StrEqual(szAttachment, "root"))
+		SetVariantString(szAttachment); // "head"
+
+	if (maintain_anyways || !AreVectorsEqual(vOffsets, view_as<float>({0.0,0.0,0.0}))) // NULL_VECTOR
 	{
-		if (szAttachment[0]) // do i even have anything?
+		if(!maintain_anyways)
 		{
-			SetVariantString(szAttachment); // "head"
+			float Vecpos[3];
 
-			if (maintain_anyways || !AreVectorsEqual(vOffsets, view_as<float>({0.0,0.0,0.0}))) // NULL_VECTOR
-			{
-				if(!maintain_anyways)
-				{
-					float Vecpos[3];
-
-					Vecpos = vOffsets;
-					SDKCall_SetLocalOrigin(iChild,Vecpos);
-				}
-				AcceptEntityInput(iChild, "SetParentAttachmentMaintainOffset", iParent, iChild);
-			}
-			else
-			{
-				AcceptEntityInput(iChild, "SetParentAttachment", iParent, iChild);
-			}
+			Vecpos = vOffsets;
+			SDKCall_SetLocalOrigin(iChild,Vecpos);
 		}
+		AcceptEntityInput(iChild, "SetParentAttachmentMaintainOffset", iParent, iChild);
+	}
+	else
+	{
+		AcceptEntityInput(iChild, "SetParentAttachment", iParent, iChild);
 	}
 }
 
@@ -3979,15 +3977,9 @@ stock int SpawnFormattedWorldText(const char[] format, float origin[3], int text
 		
 		if(entity_parent != -1 && !teleport)
 		{
-			float vector[3];
-			GetAbsOrigin(entity_parent, vector);
-			
-			vector[0] += origin[0];
-			vector[1] += origin[1];
-			vector[2] += origin[2];
 
-			TeleportEntity(worldtext, vector, NULL_VECTOR, NULL_VECTOR);
-			SetParent(entity_parent, worldtext, "", origin);
+			SetParent(entity_parent, worldtext);
+			SDKCall_SetLocalOrigin(worldtext, origin);
 		}
 		else
 		{
@@ -5890,6 +5882,7 @@ enum
 	TankThrowLogic = 4,
 	Boomerang = 5,
 	ShadowingSlicer = 6,
+	ReilaSlash = 7,
 }
 
 enum struct HitDetectionEnum
@@ -6044,7 +6037,7 @@ void Stocks_ColourPlayernormal(int client)
 	while(TF2U_GetWearable(client, entity, i))
 	{
 #if defined ZR
-		if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+		if(i_WeaponVMTExtraSetting[entity] != -1)
 			continue;
 #endif
 
@@ -6132,4 +6125,14 @@ stock int TrailAttach_Bone(int player, char[] attachBone, char[] trail, int alph
 	}
 		
 	return -1;
+}
+
+stock void StringToUpper(char[] buffer)
+{
+	int i; 
+	while (buffer[i] != '\0')
+	{
+		buffer[i] = CharToUpper(buffer[i]);
+		i++;
+	}
 }

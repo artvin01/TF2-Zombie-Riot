@@ -991,7 +991,7 @@ public void Reinforce(int client, bool NoCD)
 
 		
 		i_MaxRevivesAWave++;
-		CPrintToChatAll("{green}%N Is calling for additonal Mercs for temporary assistance...",client);
+		CPrintToChatAll("{green}%N is calling for additonal Mercs for temporary assistance...",client);
 		float position[3];
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", position);
 
@@ -2047,7 +2047,6 @@ stock int Drop_Prop(int client, float fPos[3], float PropSpeed=1200.0, const cha
 		DispatchKeyValueVector(PropMove, "movedir", Down);
 		DispatchKeyValue(PropMove, "targetname", PropNeam_patch);
 		DispatchKeyValue(PropMove, "movedir", "90 0 0");
-		DispatchKeyValue(PropMove, "modelscale", "3");
 		Format(buffer, sizeof(buffer), "%.2f", 5000.0);
 		DispatchKeyValue(PropMove, "movedistance", buffer);
 		Format(buffer, sizeof(buffer), "%.2f", PropSpeed);
@@ -2066,6 +2065,7 @@ stock int Drop_Prop(int client, float fPos[3], float PropSpeed=1200.0, const cha
 			TeleportEntity(Prop, fPos, NULL_VECTOR, NULL_VECTOR);
 			DispatchSpawn(Prop);
 			SetParent(PropMove, Prop);
+			SetEntPropFloat(Prop, Prop_Send, "m_flModelScale", 1.25);
 		}
 		AcceptEntityInput(PropMove, "Open");
 		SetEntPropEnt(PropMove, Prop_Data, "m_hOwnerEntity", client);
@@ -2112,7 +2112,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 				GiveCompleteInvul(RandomHELLDIVER, 3.5);
 				TF2_AddCondition(RandomHELLDIVER, TFCond_SpeedBuffAlly, 2.0);
 				EmitSoundToAll(g_ReinforceReadySounds, RandomHELLDIVER, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-				CPrintToChatAll("{black}Bob The Second {green}responds.... and was able to recuit {yellow}%N!",RandomHELLDIVER);
+				CPrintToChatAll("{black}Bob The Second {green}responds.... and was able to recruit {yellow}%N!",RandomHELLDIVER);
 				DataPack pack_boom = new DataPack();
 				pack_boom.WriteFloat(position[0]);
 				pack_boom.WriteFloat(position[1]);
@@ -2124,7 +2124,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 			{
 				if(IsValidClient(PreviousOwner))
 				{
-					CPrintToChat(PreviousOwner, "{black}Bob The Second {default}Wasnt able to get any merc... he refunds the backup call.");
+					CPrintToChat(PreviousOwner, "{black}Bob The Second {default}wasn't able to get any merc... he refunds the backup call.");
 					HealPointToReinforce(PreviousOwner, 0, 1.0);
 					i_MaxRevivesAWave--;
 				}

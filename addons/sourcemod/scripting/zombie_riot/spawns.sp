@@ -92,6 +92,11 @@ bool Spawns_CanSpawnNext()
 	return false;
 }
 
+bool Spawns_NameExists(const char[] name)
+{
+	return SpawnerList.FindString(name, SpawnerData::Name) != -1;
+}
+
 bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRING, float cooldownOverride = -1.0, int &spawnerSetting = 0)
 {
 	SpawnerData spawn;
@@ -169,7 +174,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			
 			if(!spawn.BaseBoss)
 			{
-				if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
+				if(!StrEqual(name, "miniboss", false) && GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
 				{
 					if(bestIndex != -1 || !construction)
 						continue;

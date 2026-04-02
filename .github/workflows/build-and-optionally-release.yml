@@ -1,0 +1,108 @@
+name: Compile artifact and optionally release
+
+on:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    strategy:
+      matrix:
+        sm-version: [ '1.13.7299' ]
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v1
+      
+      - name: Install SourcePawn Compiler ${{ matrix.sm-version }}
+        uses: rumblefrog/setup-sp@master
+        with:
+          version: ${{ matrix.sm-version }}
+      
+      - name: Configure GitHub Environment
+        run: |
+          echo "PLUGIN_VERSION_REVISION<<EOF" >> $GITHUB_ENV
+          git rev-list --count HEAD >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+          echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+      
+      - name: Install Dependencies
+        run: |
+          echo "SCRIPTS_PATH=addons/sourcemod/scripting" >> $GITHUB_ENV
+          cd addons/sourcemod/scripting
+          cd include
+          wget "https://raw.githubusercontent.com/DoctorMcKay/sourcemod-plugins/master/scripting/include/morecolors.inc"
+          wget "https://raw.githubusercontent.com/peace-maker/DHooks2/dynhooks/sourcemod_files/scripting/include/dhooks.inc"
+          wget "https://raw.githubusercontent.com/asherkin/TF2Items/master/pawn/tf2items.inc"
+          wget "https://raw.githubusercontent.com/FlaminSarge/tf2attributes/master/scripting/include/tf2attributes.inc"
+          wget "https://raw.githubusercontent.com/haxtonsale/LoadSoundScript/master/sourcepawn/loadsoundscript.inc"
+          wget "https://raw.githubusercontent.com/Adrianilloo/Collisionhook/master/extra/collisionhook.inc"
+          wget "https://raw.githubusercontent.com/nosoop/SM-TFEconData/master/scripting/include/tf_econ_data.inc"
+          wget "https://raw.githubusercontent.com/nosoop/SM-TFUtils/master/scripting/include/tf2utils.inc"
+          wget "https://raw.githubusercontent.com/Batfoxkid/File-Network/main/scripting/include/filenetwork.inc"
+          wget "https://raw.githubusercontent.com/nosoop/SMExt-SourceScramble/master/scripting/include/sourcescramble.inc"
+          wget "https://raw.githubusercontent.com/KyleSanderson/SteamWorks/master/Pawn/includes/SteamWorks.inc"
+          wget "https://raw.githubusercontent.com/Mikusch/vscript-ext/refs/heads/master/include/vscript.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc.inc"
+          mkdir cbasenpc
+          cd cbasenpc
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/activity.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/baseanimating.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/baseanimatingoverlay.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/basecombatcharacter.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/baseentity.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/entityfactory.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/matrix.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nav.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/takedamageinfo.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/util.inc"
+          mkdir tf
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/tf/nav.inc" -O "tf/nav.inc"
+          mkdir nextbot
+          cd nextbot
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/behavior.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/body.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/intention.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/knownentity.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/locomotion.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/path.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/vision.inc"
+          mkdir path
+          cd path
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/path/chase.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/path/follower.inc"
+        working-directory: ./
+      
+      - name: Compile with SourcePawn ${{ matrix.sm-version }}
+        run: |
+          spcomp -O2 -v2 -E -i "include" -o zombie_riot.smx zombie_riot.sp
+        working-directory: ${{ env.SCRIPTS_PATH }}
+      
+      - name: Upload Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: zombie_riot.smx
+          path: addons/sourcemod/scripting/zombie_riot.smx
+
+      - name: Prepare Release Archive
+        if: github.event_name == 'push'
+        run: |
+          cd addons/sourcemod/scripting
+          mkdir release_build
+          cp zombie_riot.smx ./release_build
+          cd release_build
+          zip -r zr-release-${{ env.SHA_SHORT }}.zip .
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: github.event_name == 'push'
+        with:
+          files: addons/sourcemod/scripting/release_build/zr-release-${{ env.SHA_SHORT }}.zip
+          tag_name: release-${{ env.SHA_SHORT }}
+          body: |
+              ${{ github.event.head_commit.message }}

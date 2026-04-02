@@ -20,7 +20,6 @@ static float f_CheckWeaponDouble[MAXPLAYERS];
 bool Client_Had_ArmorDebuff[MAXPLAYERS];
 
 #if defined ZR
-int Armor_WearableModelIndex;
 int Wing_WearlbeIndex;
 #endif
 
@@ -80,7 +79,6 @@ void SDKHook_MapStart()
 #if defined ZR
 	Zero(Mana_Loss_Delay);
 	Zero(Mana_Regen_Block_Timer);
-	Armor_WearableModelIndex = PrecacheModel("models/effects/resist_shield/resist_shield.mdl", true);
 	Wing_WearlbeIndex = PrecacheModel(WINGS_MODELS_1, true);
 #endif
 
@@ -381,6 +379,8 @@ public void OnPostThink_OnlyHurtHud(int client)
 	{
 		b_DisplayDamageHud[client][0] = false;
 		b_DisplayDamageHud[client][1] = false;
+		if(f_RepeatShowHudFor[client] < GetGameTime())
+			b_DisplayDamageHud[client][0] = true;
 		if(zr_showdamagehud.BoolValue)
 			Calculate_And_Display_HP_Hud(client);
 
@@ -409,7 +409,14 @@ public void OnPostThink(int client)
 #endif
 			if(damageTrigger > 1.0)
 			{
-				SDKHooks_TakeDamage(client, 0, 0, damageTrigger, DMG_OUTOFBOUNDS, -1,_,_,_,ZR_STAIR_ANTI_ABUSE_DAMAGE);
+				if(damageTrigger < 1000.0 && (i_CurrentEquippedPerk[client] & PERK_LOVER))
+				{
+					TeleportBackToLastSavePosition(client);
+				}
+				else
+				{
+					SDKHooks_TakeDamage(client, 0, 0, damageTrigger, DMG_OUTOFBOUNDS, -1,_,_,_,ZR_STAIR_ANTI_ABUSE_DAMAGE);
+				}
 			}
 		}
 	}
@@ -467,6 +474,9 @@ public void OnPostThink(int client)
 				b_DisplayDamageHud[client][1] = false;
 			else
 				b_DisplayDamageHud[client][0] = false;
+
+			if(f_RepeatShowHudFor[client] > GetGameTime())
+				b_DisplayDamageHud[client][0] = true;
 		}
 	}
 	if(ReplicateClient_BackwardsWalk[client] != f_Client_BackwardsWalkPenalty[client])
@@ -510,24 +520,26 @@ public void OnPostThink(int client)
 			{
 				//when standing on an npc you gain less knockack reduction
 				WasAirbornType = 1;
-				if(b_thisNpcIsARaid[GroundEntity])
+#if defined ZR
+				if(b_thisNpcIsARaid[GroundEntity] || RaidBossActive == RefGround)
 					WasAirbornType = 2;
+#endif
 				//when ontop of a raidboss, gain no knockback reduction.
 			}
 		}
 	}
 
-	if(WasAirbornType == 1 && !b_PlayerWasAirbornKnockbackReduction[client])
+	if(WasAirbornType == 1 && b_PlayerWasAirbornKnockbackReduction[client] != 1)
 	{
 		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
 		if(EntityWearable > 0)
 		{
 			f_ClientInAirSince[client] = GetGameTime() + 5.0;
-			b_PlayerWasAirbornKnockbackReduction[client] = true;
+			b_PlayerWasAirbornKnockbackReduction[client] = 1;
 			Attributes_Set(EntityWearable, 252, 0.5);
 		}
 	}
-	else if((WasAirbornType == 0 || WasAirbornType == 2) && b_PlayerWasAirbornKnockbackReduction[client])
+	else if(WasAirbornType == 0 && b_PlayerWasAirbornKnockbackReduction[client] != 0)
 	{
 		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
 		if(EntityWearable > 0)
@@ -536,8 +548,26 @@ public void OnPostThink(int client)
 			Spawns_CheckBadClient(client/*, 2*/);
 			//no need to recheck when they land
 			f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
-			b_PlayerWasAirbornKnockbackReduction[client] = false;
-			Attributes_Set(EntityWearable, 252, 1.0);
+			b_PlayerWasAirbornKnockbackReduction[client] = 0;
+		}
+	}
+	else if(WasAirbornType == 2 && b_PlayerWasAirbornKnockbackReduction[client] != 2)
+	{
+		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
+		if(EntityWearable > 0)
+		{
+			//when they land, check if they are in a bad pos
+			Spawns_CheckBadClient(client/*, 2*/);
+			//no need to recheck when they land
+			f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
+			b_PlayerWasAirbornKnockbackReduction[client] = 2;
+			Attributes_Set(EntityWearable, 252, 1.5);
+
+			//standing ontop of raids now entirely debuffs you.
+			TF2_AddCondition(client, TFCond_LostFooting, 1.0);
+			TF2_AddCondition(client, TFCond_AirCurrent, 1.0);
+			float damageStand = 5.0;
+			NpcStuckZoneWarning(client, damageStand);
 		}
 	}
 #if defined ZR
@@ -620,9 +650,24 @@ public void OnPostThink(int client)
 
 	if(f_TimerStatusEffectsDo[client] < GetGameTime())
 	{
+		if(WasAirbornType == 2)
+		{
+			//standing ontop of raids now entirely debuffs you.
+			TF2_AddCondition(client, TFCond_LostFooting, 1.0);
+			TF2_AddCondition(client, TFCond_AirCurrent, 1.0);
+			float damageStand = 5.0;
+			NpcStuckZoneWarning(client, damageStand);
+		}
 		//re using NPC value.
 		StatusEffect_TimerCallDo(client);
 		f_TimerStatusEffectsDo[client] = GetGameTime() + 0.4;
+		if(f_TimeUntillNormalHeal[client] < GetGameTime())
+		{
+			//badly reset
+			LastHitRef[client] = -1;
+			f_LatestDamageTaken[client] = 0.0;
+			i_LatestHealthLeft[client] = GetEntProp(client, Prop_Send, "m_iHealth");
+		}
 	}
 	if(Rogue_CanRegen() && Armor_regen_delay[client] < GameTime)
 	{
@@ -1333,6 +1378,7 @@ public void OnPostThink(int client)
 		int armorEnt = client;
 		if(vehicle != -1)
 		{
+			Armor_Max = view_as<VehicleGeneric>(vehicle).m_iMaxArmor;
 			armorEnt = vehicle;
 		}
 		else
@@ -1595,6 +1641,8 @@ public void OnPostThink(int client)
 			{
 				int downsleft;
 				downsleft = 2;
+				if(ZR_Get_Modifier() == PREFIX_ONESTAND)
+					downsleft = 3;
 
 				downsleft -= i_AmountDowned[client];
 				SDKHooks_UpdateMarkForDeath(client);
@@ -1916,6 +1964,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #if defined RPG
 		damage *= 400.0 / float(SDKCall_GetMaxHealth(victim));
 #elseif defined ZR
+		if(i_CurrentEquippedPerk[victim] & PERK_LOVER)
+		{
+			damage = 0.0;
+			TakeDamage_EnableMVM();
+			return Plugin_Handled;	
+		}
+
 		damage *= 0.45;	//Reduce falldmg by passive overall
 		if(RaidbossIgnoreBuildingsLogic(1))
 		{
@@ -1983,7 +2038,17 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		if(damage < 10000.0)
 		{
 			if(!CheckInHud())
+			{
 				NpcStuckZoneWarning(victim, damage);
+				if(damage > 0.0 && damage < 1000.0 && (i_CurrentEquippedPerk[victim] & PERK_LOVER))
+				{
+					TeleportBackToLastSavePosition(victim);
+					
+					damage = 0.0;
+					TakeDamage_EnableMVM();
+					return Plugin_Handled;	
+				}
+			}
 		}
 	}
 #endif
@@ -2041,6 +2106,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 	f_LatestDamageRes[victim] = damage / GetCurrentDamage;
+	f_LatestDamageTaken[victim] = damage;
+	i_LatestHealthLeft[victim] = GetEntProp(victim, Prop_Send, "m_iHealth");
 
 #if !defined RTS
 	int ClientAttacker;
@@ -2226,13 +2293,19 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			Rogue_PlayerDowned(victim);	
 			
 			//there are players still left, down them.
-			if((SpecterCheckIfAutoRevive(victim) || i_AmountDowned[victim] < (2 + Dungeon_DownedBonus())) && !HasSpecificBuff(victim, "Nightmare Terror"))
+			int DownsLeft = 2;
+			if(ZR_Get_Modifier() == PREFIX_ONESTAND)
+				DownsLeft = 3;
+			if((SpecterCheckIfAutoRevive(victim) || i_AmountDowned[victim] < (DownsLeft + Dungeon_DownedBonus())) && !HasSpecificBuff(victim, "Nightmare Terror"))
 			{
+				if(i_CurrentEquippedPerk[victim] & PERK_WHO)
+					Citizen_PlayerReplacement(victim, false);
+				
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 12");
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
 				i_CurrentEquippedPerkPreviously[victim] = i_CurrentEquippedPerk[victim];
-				if(!Rogue_Mode() && !SpecterCheckIfAutoRevive(victim))
+				if(!Rogue_Mode() && !(i_CurrentEquippedPerk[victim] & PERK_SEALED) && !SpecterCheckIfAutoRevive(victim))
 				{
 					i_CurrentEquippedPerk[victim] = 0;
 				}
@@ -2270,6 +2343,8 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			
 				f_DisableDyingTimer[victim] = 0.0;
 				dieingstate[victim] -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ReviveTimeCut, false,_, 0.0));
+				
+				SdkHooks_SetAndUpdateArmorClientText(victim);
 				Vehicle_Exit(victim);
 				ForcePlayerCrouch(victim, true);
 				SDKHooks_UpdateMarkForDeath(victim, true);
@@ -2304,10 +2379,12 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					i_DyingParticleIndication[victim][0] = EntIndexToEntRef(entity);
 					SetVariantColor(view_as<int>({0, 255, 0, 255}));
 					AcceptEntityInput(entity, "SetGlowColor");
-
-					entity = SpawnFormattedWorldText("DOWNED", {0.0,0.0,70.0}, 10, {0, 255, 0, 255}, victim);
-					i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
-					b_DyingTextOff[victim] = false;
+					if(!AtEdictLimit(EDICT_PLAYER))
+					{
+						entity = SpawnFormattedWorldText("DOWNED", {0.0,0.0,70.0}, 10, {0, 255, 0, 255}, victim);
+						i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
+						b_DyingTextOff[victim] = false;
+					}
 					
 				}
 				CreateTimer(0.1, Timer_Dieing, victim, TIMER_REPEAT);
@@ -2315,7 +2392,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				int i;
 				while(TF2U_GetWearable(victim, entity, i))
 				{
-					if(entity == EntRefToEntIndex(Armor_Wearable[victim]) || i_WeaponVMTExtraSetting[entity] != -1)
+					if(i_WeaponVMTExtraSetting[entity] != -1)
 						continue;
 
 					if(!autoRevive)
@@ -2342,10 +2419,12 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 
 				KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, autoRevive);
 				CheckLastMannStanding(victim);
+				DownedOrKilledClient_Feedback(victim, attacker, damage, damagetype);
 				return Plugin_Handled;
 			}
 			else
 			{
+				DownedOrKilledClient_Feedback(victim, attacker, damage, damagetype);
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 13");
 				damage = 99999.9;
 				CheckLastMannStanding(victim);
@@ -2485,32 +2564,14 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	  int &entity, int &channel, float &volume, int &level, int &pitch, int &flags,
 	  char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
-	/*
-	if(b_IsAmbientGeneric[entity])
+	if(entity <= MaxClients)
 	{
-		if(StrContains(sample, "#", true) != -1)
+		//block shield soundsg
+		if(StrContains(sample, "medi_shield_deploy.wav", true) != -1 || StrContains(sample, "vo/medic_mvm_heal_shield", true) != -1)
 		{
-			//loop through all clients it tries to play to
-			//but also make sure it doesnt play to clients who didnt get info from the database.
-			for(int loop1=0; loop1<numClients; loop1++)
-			{
-				int listener = clients[loop1];
-				if(b_IgnoreMapMusic[listener] || !Database_IsCached(listener))
-				{
-					//replace client with client one up so the array doesnt mess up!
-					for(int loop2 = loop1; loop2 < numClients-1; loop2++)
-					{
-						clients[loop2] = clients[loop2+1];
-					}
-					//we move the array one down!
-					loop1--;
-					numClients--;
-				}
-			}
-			return Plugin_Changed;
+			return Plugin_Handled;
 		}
 	}
-	*/
 
 #if defined ZR
 
@@ -2520,13 +2581,23 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	}
 	else
 	{
-		if(!LouderSoundStop && HasSpecificBuff(entity, "Loud Prefix"))
+		if(!LouderSoundStop && entity != -1 && HasSpecificBuff(entity, "Loud Prefix"))
 		{
-			level += 20;
+			level += 50;
 			LouderSoundStop = true;
 			for(int loop1=0; loop1<numClients; loop1++)
 			{
 				int listener = clients[loop1];
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
 				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
 				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
 			}
@@ -2546,7 +2617,18 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		}
 	}
 */
-	
+	if(entity > 0)
+	{
+		if(b_MuteArrowSound[entity])
+		{
+			//Removes arrow sound that we forced in
+			if(StrContains(sample, "weapons/fx/rics/arrow_impact_flesh", true) != -1)
+			{
+				b_MuteArrowSound[entity] = false;
+				return Plugin_Handled;
+			}
+		}
+	}
 	if(BetWar_Mode())
 	{
 		if(entity <= MaxClients && entity > 0)
@@ -2724,11 +2806,13 @@ public void OnWeaponSwitchPost(int client, int weapon)
 			if(PreviousSlot != CurrentSlot) //Set back the previous active slot to what it was before.
 			{
 				int WeaponValidCheck = -1;
+				int MaxCapSanity = 0;
 
 				while(WeaponValidCheck != PreviousWeapon)
 				{
 					WeaponValidCheck = Store_CycleItems(client, PreviousSlot);
-					if(WeaponValidCheck == -1)
+					MaxCapSanity++;
+					if(MaxCapSanity >= 10 || WeaponValidCheck == -1)
 						break;
 				}
 				//only if switching to different slot.
@@ -2879,6 +2963,8 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 
 	int downsleft;
 	downsleft = 2;
+	if(ZR_Get_Modifier() == PREFIX_ONESTAND)
+		downsleft = 3;
 	downsleft -= i_AmountDowned[client];
 	downsleft += Dungeon_DownedBonus();
 	if(HasSpecificBuff(client, "Nightmare Terror"))
@@ -3223,7 +3309,9 @@ void DisplayCosmeticExtraClient(int client, bool deleteOverride = false)
 void ArmorDisplayClient(int client, bool deleteOverride = false)
 {
 	//update aswell.
+	SdkHooks_SetAndUpdateArmorClientText(client);
 	DisplayCosmeticExtraClient(client, deleteOverride);
+	
 	int ShieldLogicDo;
 	if(Armor_Charge[client] > 0)
 	{
@@ -3248,15 +3336,8 @@ void ArmorDisplayClient(int client, bool deleteOverride = false)
 	{
 		ShieldLogicDo = 0;
 	}
-	int entity;
 	if(deleteOverride)
 	{
-		if(IsValidEntity(Armor_Wearable[client]))
-		{
-			entity = EntRefToEntIndex(Armor_Wearable[client]);
-			if(entity > MaxClients)
-				TF2_RemoveWearable(client, entity);
-		}
 		return;
 	}
 	if(ShieldLogicDo == 2)
@@ -3271,53 +3352,7 @@ void ArmorDisplayClient(int client, bool deleteOverride = false)
 		Client_Had_ArmorDebuff[client] = false;
 		TF2_RemoveCondition(client, TFCond_Milked);
 	}
-
-	if(ShieldLogicDo == 1)
-	{
-		if(IsValidEntity(Armor_Wearable[client]))
-		{
-			ArmorDisplayClientColor(client, EntRefToEntIndex(Armor_Wearable[client]));
-			return;
-		}
-		entity = CreateEntityByName("tf_wearable");
-		if(entity > MaxClients)
-		{
-			int team = GetClientTeam(client);
-			SetEntProp(entity, Prop_Send, "m_nModelIndex", Armor_WearableModelIndex);
-
-		//	SetEntProp(entity, Prop_Send, "m_fEffects", 129);
-			SetTeam(entity, team);
-			SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
-			SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
-			SetEntityCollisionGroup(entity, 11);
-			SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
-			
-			DispatchSpawn(entity);
-			SetVariantString("!activator");
-			ActivateEntity(entity);
-
-			Armor_Wearable[client] = EntIndexToEntRef(entity);
-			SDKCall_EquipWearable(client, entity);
-
-			SetEntProp(entity, Prop_Send, "m_fEffects", 0);
-			SetVariantString("!activator");
-			AcceptEntityInput(entity, "SetParent", client);
-		//	SDKCall_SetLocalOrigin(entity, {0.0,0.0,0.0});
-
-			ArmorDisplayClientColor(client, entity);
-			i_OwnerEntityEnvLaser[entity] = EntIndexToEntRef(client);
-			SDKHook(entity, SDKHook_SetTransmit, ShieldSetTransmit);
-		}	
-	}
-	else
-	{
-		if(IsValidEntity(Armor_Wearable[client]))
-		{
-			entity = EntRefToEntIndex(Armor_Wearable[client]);
-			if(entity > MaxClients)
-				TF2_RemoveWearable(client, entity);
-		}
-	}
+	
 }
 
 public Action ShieldSetTransmit(int entity, int client)
@@ -3337,32 +3372,6 @@ public Action ShieldSetTransmit(int entity, int client)
 	return Plugin_Continue;
 }
 
-void ArmorDisplayClientColor(int client, int armor)
-{
-	int Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
-	float Percentage = float(Armor_Charge[client]) / float(Armor_Max);
-
-	Percentage *= 14.0;
-	int Alpha = RoundToCeil(Percentage * Percentage);
-
-	if(Alpha > 200)
-	{
-		Alpha = 200;
-	}
-	if(Alpha <= 30)
-	{
-		Alpha = 30;
-	}
-	int green = 0;
-	int blue = 0;
-	if(Percentage >= 13.95)
-	{
-		green = 125;
-	}
-
-	SetEntityRenderMode(armor, RENDER_TRANSCOLOR);
-	SetEntityRenderColor(armor, green, green, blue, Alpha);
-}
 #endif
 
 #if defined RPG
@@ -3688,23 +3697,92 @@ void UpdatePerkName(int client)
 		Format(MaxAsignPerkNames[client], sizeof(MaxAsignPerkNames[]), "%s", PerkNames_two_Letter[0]);
 		return;
 	}
-	if(i_CurrentEquippedPerk[client] & PERK_REGENE)
-		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[1],buffer);
-	if(i_CurrentEquippedPerk[client] & PERK_OBSIDIAN)
-		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[2],buffer);
-	if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE)
-		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[3],buffer);
-	if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS)
-		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[4],buffer);
-	if(i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
-		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[5],buffer);
-	if(i_CurrentEquippedPerk[client] & PERK_TESLAR_MULE)
-		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[6],buffer);
-	if(i_CurrentEquippedPerk[client] & PERK_STOCKPILE_STOUT)
-		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[7],buffer);
-	if(i_CurrentEquippedPerk[client] & PERK_ENERGY_DRINK)
-		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[8],buffer);
+
+	for(int i = 1; i < sizeof(PerkNames_two_Letter); i++)
+	{
+		if(i_CurrentEquippedPerk[client] & (1 << (i - 1)))
+			Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[i],buffer);
+	}
 
 	Format(MaxAsignPerkNames[client], sizeof(MaxAsignPerkNames[]), "%s",buffer);
+}
+
+
+void SdkHooks_SetAndUpdateArmorClientText(int client)
+{
+	int ArmorText = EntRefToEntIndex(Armor_Wearable_HudText[client]);
+	if(!IsEntityAlive(client) || TeutonType[client] != TEUTON_NONE || dieingstate[client] != 0)
+	{
+		if(IsValidEntity(ArmorText))
+		{
+			RemoveEntity(ArmorText);
+		}
+		return;
+	}
+	if(!IsValidEntity(ArmorText))
+	{
+		float Offset[3];
+		Offset[2] += 95.0;
+		
+		ArmorText = SpawnFormattedWorldText("----",Offset, 10, {0,0,0,0}, client);
+		DispatchKeyValue(ArmorText, "font", "1");
+		Armor_Wearable_HudText[client] = EntIndexToEntRef(ArmorText);	
+		i_OwnerEntityEnvLaser[ArmorText] = EntIndexToEntRef(client);
+		SDKHook(ArmorText, SDKHook_SetTransmit, ShieldSetTransmit);
+	}
+
+	char ch_ArmorText[32];
+	int HealthColour[4];
+	HealthColour[0] = 255;
+	HealthColour[1] = 255;
+	HealthColour[2] = 0;
+	HealthColour[3] = 200;
+	int MaxArmor = MaxArmorCalculation(Armor_Level[client], client, 1.0);
+	int ArmorCurrent = Armor_Charge[client];
+	if(ArmorCurrent < 0)
+	{
+		ArmorCurrent *= -1;
+		HealthColour[0] = 125;
+		HealthColour[1] = 0;
+		HealthColour[2] = 125;
+	}
+	if(ArmorCurrent >= MaxArmor)
+	{
+		HealthColour[0] = 255;
+		HealthColour[1] = 255;
+		HealthColour[2] = 255;
+	}
+	Format(ch_ArmorText, sizeof(ch_ArmorText), "%s%s", ch_ArmorText, "[");
+	if(ArmorCurrent == 0)
+	{
+		HealthColour[0] = 255;
+		HealthColour[1] = 0;
+		HealthColour[2] = 0;
+
+		for(int i=0; i<(10); i++)
+		{
+			Format(ch_ArmorText, sizeof(ch_ArmorText), "%s%s", ch_ArmorText, ".");
+		}
+	}
+	else
+	{
+		for(int i=0; i<(10); i++)
+		{
+			if(ArmorCurrent >= MaxArmor*(i*(0.1)))
+			{
+				Format(ch_ArmorText, sizeof(ch_ArmorText), "%s%s", ch_ArmorText, "|");
+			}
+			else
+			{
+				Format(ch_ArmorText, sizeof(ch_ArmorText), "%s%s", ch_ArmorText, ".");
+			}
+		}
+	}
+	Format(ch_ArmorText, sizeof(ch_ArmorText), "%s%s", ch_ArmorText, "]");
+	char sColor[32];
+	Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
+
+	DispatchKeyValue(ArmorText,	 "color", sColor);
+	DispatchKeyValue(ArmorText, "message", ch_ArmorText);
 }
 #endif

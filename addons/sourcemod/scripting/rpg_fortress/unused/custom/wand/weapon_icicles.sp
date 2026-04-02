@@ -320,16 +320,13 @@ public Action Icicle_DamagingPillar(Handle timer, DataPack pack)
 			SizeScale += (count * 0.1);
 			SizeScale *= Scale;
 
-			char FloatString[8];
-			FloatToString(SizeScale, FloatString, sizeof(FloatString));
-
-			DispatchKeyValue(prop, "modelscale", FloatString);
 			DispatchKeyValueVector(prop, "origin",	 SpawnPropPos);
 			direction[2] -= 180.0;
 			direction[1] -= 180.0;
 			direction[0] = -40.0;
 			DispatchKeyValueVector(prop, "angles",	 direction);
 			DispatchSpawn(prop);
+			SetEntPropFloat(prop, Prop_Send, "m_flModelScale", SizeScale);
 		//	TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
 			SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(prop, 125, 125, 255, 200);

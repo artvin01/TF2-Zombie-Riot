@@ -45,7 +45,7 @@ void SkilledCrossbowmanOnMapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "crossbow");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = 0;
+	data.Category = Type_Outlaws;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -128,7 +128,7 @@ methodmap SkilledCrossbowman < CClotBody
 		npc.m_flSpeed = 220.0;
 		npc.m_iAttacksLeft = 3;
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_52.mdl",_,_, 1.5);
+		npc.m_iWearable1 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_57.mdl",_,_, 1.5);
 		SetVariantInt(4);
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 

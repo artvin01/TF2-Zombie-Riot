@@ -222,6 +222,11 @@ methodmap Vincent < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
 	}
+	property int m_iAllyspawnAm
+	{
+		public get()							{ return i_State[this.index]; }
+		public set(int TempValueForProperty) 	{ i_State[this.index] = TempValueForProperty; }
+	}
 	
 	property float m_flNextOilLeak
 	{
@@ -282,9 +287,6 @@ methodmap Vincent < CClotBody
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		RaidBossActive = EntIndexToEntRef(npc.index);
-		RaidAllowsBuildings = false;
-		npc.m_flTalkRepeat = 0.0;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 
 		func_NPCDeath[npc.index] = Vincent_NPCDeath;
@@ -292,131 +294,147 @@ methodmap Vincent < CClotBody
 		func_NPCThink[npc.index] = Vincent_ClotThink;
 		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
 
-		RaidModeTime = GetGameTime() + 200.0;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
-
-		for(int client_check=1; client_check<=MaxClients; client_check++)
-		{
-			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
-			{
-				LookAtTarget(client_check, npc.index);
-				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%s", "Vincent sets foot");
-			}
-		}
-		
-		char buffers[3][64];
-		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
-		//the very first and 2nd char are SC for scaling
-		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
-		{
-			//remove SC
-			ReplaceString(buffers[0], 64, "sc", "");
-			float value = StringToFloat(buffers[0]);
-			RaidModeScaling = value;
-		}
-		else
-		{	
-			RaidModeScaling = float(Waves_GetRoundScale()+1);
-		}
-
-		if(RaidModeScaling < 35)
-		{
-			RaidModeScaling *= 0.25; //abit low, inreacing
-		}
-		else
-		{
-			RaidModeScaling *= 0.5;
-		}
-		
-		float amount_of_people = ZRStocks_PlayerScalingDynamic();
-		if(amount_of_people > 12.0)
-		{
-			amount_of_people = 12.0;
-		}
-		amount_of_people *= 0.12;
-		
-		if(amount_of_people < 1.0)
-			amount_of_people = 1.0;
-			
-		RaidModeScaling *= amount_of_people;
-		//scaling old
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-
 		npc.PlayPassiveSound();
-		npc.Anger = false;
-		if(StrContains(data, "forceangry") != -1)
+		if(StrContains(data, "spawnomegahelp") != -1)
 		{
-			npc.Anger = true;
-			//force angry
-		}
-		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-		{
-			npc.Anger = true;
-		}
-		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS) || StrContains(data, "forcesad") != -1)
-		{
-			npc.m_flRangedArmor *= 0.9;
-			npc.m_flMeleeArmor *= 0.9;	
-			npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_helmet/tw_heavybot_helmet.mdl", _, skin);
-		}
-		VincentSpawnBeacons(npc.index);
-
-		npc.m_flMeleeArmor = 1.25;	
-		npc.m_flOverrideMusicNow = GetGameTime() + 5.0;
-		npc.m_flSpeed = 320.0;
-		if(npc.Anger)
-		{
-			npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_armor/tw_heavybot_armor.mdl", _, skin);
-			RaidModeScaling *= 1.1;
-			Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "V.I.N.C.E.N.T.");
-			EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.7, 80);
-			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
-			CPrintToChatAll("{rare}%t{default}: You want a death robot? {crimson}I'LL GIVE YOU ONE.", c_NpcName[npc.index]);
-			CPrintToChatAll("{fullred}Initating extermination of infection based organisms.");
-			npc.m_flRangedArmor *= 0.95;
-			npc.m_flMeleeArmor *= 0.95;	
-			npc.m_flOverrideMusicNow = 0.0;
-			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_angry.mp3");
-			music.Time = 112;
-			music.Volume = 1.0;
-			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "CREATION OF HATRED");
-			strcopy(music.Artist, sizeof(music.Artist), "Exedious");
-			Music_SetRaidMusic(music);
-			RaidModeTime = GetGameTime() + 220.0;
+			npc.m_iAllyspawnAm = 1;
+			npc.m_flThrow_Cooldown = 0.0;
+			npc.m_flNextOilPouring = GetGameTime() + 999.9;
+			ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 9999.9);
+			npc.m_bDissapearOnDeath = true;
 		}
 		else
 		{
-			Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Vincent");
-			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
-			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
-			CPrintToChatAll("{rare}%t{default}: Not gonna leave? I'll make you leave myself.", c_NpcName[npc.index]);
-			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_intro.mp3");
-			music.Time = 51;
-			music.Volume = 1.2;
-			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "System Corruption (Intro)");
-			strcopy(music.Artist, sizeof(music.Artist), "Harry Callaghan");
-			Music_SetRaidMusic(music);
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidAllowsBuildings = false;
+			npc.m_flTalkRepeat = 0.0;
+			RaidModeTime = GetGameTime() + 200.0;
+			npc.m_iAllyspawnAm = 0;
+			for(int client_check=1; client_check<=MaxClients; client_check++)
+			{
+				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+				{
+					LookAtTarget(client_check, npc.index);
+					SetGlobalTransTarget(client_check);
+					ShowGameText(client_check, "item_armor", 1, "%s", "Vincent sets foot");
+				}
+			}
+			
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			//the very first and 2nd char are SC for scaling
+			if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+			{
+				//remove SC
+				ReplaceString(buffers[0], 64, "sc", "");
+				float value = StringToFloat(buffers[0]);
+				RaidModeScaling = value;
+			}
+			else
+			{	
+				RaidModeScaling = float(Waves_GetRoundScale()+1);
+			}
+
+			if(RaidModeScaling < 35)
+			{
+				RaidModeScaling *= 0.25; //abit low, inreacing
+			}
+			else
+			{
+				RaidModeScaling *= 0.5;
+			}
+			
+			float amount_of_people = ZRStocks_PlayerScalingDynamic();
+			if(amount_of_people > 12.0)
+			{
+				amount_of_people = 12.0;
+			}
+			amount_of_people *= 0.12;
+			
+			if(amount_of_people < 1.0)
+				amount_of_people = 1.0;
+				
+			RaidModeScaling *= amount_of_people;
+			//scaling old
+			
+
+			npc.Anger = false;
+			if(StrContains(data, "forceangry") != -1)
+			{
+				npc.Anger = true;
+				//force angry
+			}
+			if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+			{
+				npc.Anger = true;
+			}
+			if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS) || StrContains(data, "forcesad") != -1)
+			{
+				npc.m_flRangedArmor *= 0.9;
+				npc.m_flMeleeArmor *= 0.9;	
+				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_helmet/tw_heavybot_helmet.mdl", _, skin);
+			}
+			VincentSpawnBeacons(npc.index);
+
+			npc.m_flMeleeArmor = 1.25;	
+			npc.m_flOverrideMusicNow = GetGameTime() + 5.0;
+			npc.m_flSpeed = 320.0;
+			if(npc.Anger)
+			{
+				npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_armor/tw_heavybot_armor.mdl", _, skin);
+				RaidModeScaling *= 1.1;
+				Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "V.I.N.C.E.N.T.");
+				EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.7, 80);
+				EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
+				CreateTimer(0.2, Vincent_Timer_IntroMessage_Genocide, EntIndexToEntRef(npc.index));
+				npc.m_flRangedArmor *= 0.95;
+				npc.m_flMeleeArmor *= 0.95;	
+				npc.m_flOverrideMusicNow = 0.0;
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_angry.mp3");
+				music.Time = 112;
+				music.Volume = 1.0;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "CREATION OF HATRED");
+				strcopy(music.Artist, sizeof(music.Artist), "Exedious");
+				Music_SetRaidMusic(music);
+				RaidModeTime = GetGameTime() + 220.0;
+			}
+			else
+			{
+				Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Vincent");
+				EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
+				EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
+				CreateTimer(0.2, Vincent_Timer_IntroMessage_Neutral, EntIndexToEntRef(npc.index));
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_intro.mp3");
+				music.Time = 51;
+				music.Volume = 1.2;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "System Corruption (Intro)");
+				strcopy(music.Artist, sizeof(music.Artist), "Harry Callaghan");
+				Music_SetRaidMusic(music);
+			}
+			
+			npc.m_flNextMeleeAttack = 0.0;
+			npc.m_flNextRangedAttack = 0.0;
+			npc.m_flThrow_Cooldown = GetGameTime() + 7.0;
+			
+			npc.m_flNextOilPouring = GetGameTime() + 15.0;
+			Citizen_MiniBossSpawn();
+			Vincent_SpawnFog(npc.index);
+			
 		}
-		
-		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flNextRangedAttack = 0.0;
-		npc.m_flThrow_Cooldown = GetGameTime() + 7.0;
-		
-		npc.m_flNextOilPouring = GetGameTime() + 15.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
 
-		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 		
 		// Make him invisible so we can use human heavy anims
@@ -438,10 +456,33 @@ methodmap Vincent < CClotBody
 		SetVariantColor(view_as<int>({200, 200, 50, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
-		Vincent_SpawnFog(npc.index);
 
 		return npc;
 	}
+}
+
+static void Vincent_Timer_IntroMessage_Neutral(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (ref == INVALID_ENT_REFERENCE || b_NpcHasDied[entity])
+		return;
+	
+	Vincent_Talk(entity, "Not gonna leave? I'll make you leave myself.");
+}
+
+static void Vincent_Timer_IntroMessage_Genocide(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (ref == INVALID_ENT_REFERENCE || b_NpcHasDied[entity])
+		return;
+	
+	Vincent_Talk(entity, "You want a death robot? {crimson}I'LL GIVE YOU ONE.");
+	CPrintToChatAll("{fullred}Initating extermination of infection based organisms.");
+}
+
+static void Vincent_Talk(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "rare", message);
 }
 
 public void Vincent_ClotThink(int iNPC)
@@ -482,23 +523,23 @@ public void Vincent_ClotThink(int iNPC)
 			{
 				if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 				{
-					CPrintToChatAll("{rare}%t{default}: I'm sorry it has come to this. I'm afraid you shouldn't have taken that job...", c_NpcName[npc.index]);
+					Vincent_Talk(npc.index, "I'm sorry it has come to this. I'm afraid you shouldn't have taken that job...");
 				}
 				else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 				{
-					CPrintToChatAll("{rare}%t{crimson}: You are DONE.", c_NpcName[npc.index]);
+					Vincent_Talk(npc.index, "{crimson}You are DONE.");
 				}
 				else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 				{
-					CPrintToChatAll("{rare}%t{default}: You can't keep running away forever.", c_NpcName[npc.index]);
+					Vincent_Talk(npc.index, "You can't keep running away forever.");
 				}
 			}
 			else
 			{
 				if (npc.Anger)
-					CPrintToChatAll("{rare}%t{crimson}: You are DONE.", c_NpcName[npc.index]);
+					Vincent_Talk(npc.index, "{crimson}You are DONE.");
 				else
-					CPrintToChatAll("{rare}%t{default}: You can't keep running away forever.", c_NpcName[npc.index]);
+					Vincent_Talk(npc.index, "You can't keep running away forever.");
 			}
 		}
 	}
@@ -591,15 +632,15 @@ public void Vincent_ClotThink(int iNPC)
 			switch(GetRandomInt(0,4))
 			{
 				case 0:
-					CPrintToChatAll("{rare}%t{default}: Someone turn the heat up.", c_NpcName[npc.index]);
+					Vincent_Talk(npc.index, "Someone turn the heat up.");
 				case 1:
-					CPrintToChatAll("{rare}%t{default}: Is it just me or are you engulfed in flames?", c_NpcName[npc.index]);
+					Vincent_Talk(npc.index, "Is it just me or are you engulfed in flames?");
 				case 2:
-					CPrintToChatAll("{rare}%t{default}: Spreading the inferno.", c_NpcName[npc.index]);
+					Vincent_Talk(npc.index, "Spreading the inferno.");
 				case 3:
-					CPrintToChatAll("{rare}%t{default}: Fire in the hole.", c_NpcName[npc.index]);
+					Vincent_Talk(npc.index, "Fire in the hole.");
 				case 4:
-					CPrintToChatAll("{rare}%t{default}: Lighting it up.", c_NpcName[npc.index]);
+					Vincent_Talk(npc.index, "Lighting it up.");
 			}
 		}
 	}
@@ -795,7 +836,7 @@ public Action Vincent_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 				ApplyStatusEffect(victim, victim, "Infinite Will", 30.0);
 				npc.m_flMegaEnrage = GetGameTime() + 30.0;
 				damage = 0.0;
-				CPrintToChatAll("{rare}%t:{crimson} ...IF YOU THINK I'LL GO DOWN WITHOUT A FIGHT...", c_NpcName[npc.index]);
+				Vincent_Talk(npc.index, "{crimson} ...IF YOU THINK I'LL GO DOWN WITHOUT A FIGHT...");
 				EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.65, 90);
 				EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.65, 90);
 				ApplyStatusEffect(npc.index, npc.index, "Dimensional Turbulence", 30.0);
@@ -947,19 +988,19 @@ static bool Vincent_LoseConditions(int iNPC)
 					{
 						//yapping
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{crimson}: No...", c_NpcName[npc.index]);
+						Vincent_Talk(npc.index, "{crimson}No...");
 					}
 					case 1:
 					{
 						//yapping
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{crimson}: I can't let you get away with this.", c_NpcName[npc.index]);
+						Vincent_Talk(npc.index, "{crimson}I can't let you get away with this.");
 					}
 					case 2:
 					{
 						//yapping
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{crimson}: I WON'T let you get away with this!", c_NpcName[npc.index]);
+						Vincent_Talk(npc.index, "{crimson}I WON'T let you get away with this!");
 					}
 					case 3:
 					{
@@ -971,7 +1012,7 @@ static bool Vincent_LoseConditions(int iNPC)
 						spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
 						spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
 						spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
-						CPrintToChatAll("{rare}%t{crimson}: I'M GONNA DELETE YOU!", c_NpcName[npc.index]);
+						Vincent_Talk(npc.index, "{crimson}I'M GONNA DELETE YOU!");
 						Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Old forgotten expidonsan robot");
 					}
 					case 4:
@@ -1008,32 +1049,32 @@ static bool Vincent_LoseConditions(int iNPC)
 					case 0:
 					{
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{default}: Ah.", c_NpcName[npc.index]);
+						Vincent_Talk(npc.index, "Ah.");
 					}
 					case 1:
 					{
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{default}: It appears that I'm not strong enough to take you down.", c_NpcName[npc.index]);
+						Vincent_Talk(npc.index, "It appears that I'm not strong enough to take you down.");
 					}
 					case 2:
 					{
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{default}: I was hoping to keep the outside world safe with what was left behind here.", c_NpcName[npc.index]);
+						Vincent_Talk(npc.index, "I was hoping to keep the outside world safe with what was left behind here.");
 					}
 					case 3:
 					{
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{default}: But if you're so persistent on taking this gear...", c_NpcName[npc.index]);
+						Vincent_Talk(npc.index, "But if you're so persistent on taking this gear...");
 					}
 					case 4:
 					{
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{default}: I won't try to stop you anymore, knowing that my attempts will be futile.", c_NpcName[npc.index]);
+						Vincent_Talk(npc.index, "I won't try to stop you anymore, knowing that my attempts will be futile.");
 					}
 					case 5:
 					{
 						npc.m_flTalkRepeat = GetGameTime() + 3.0;
-						CPrintToChatAll("{rare}%t{default}: Take this with you, and don't let it fall into the wrong hands, alright?", c_NpcName[npc.index]);
+						Vincent_Talk(npc.index, "Take this with you, and don't let it fall into the wrong hands, alright?");
 					}
 					case 6:
 					{
@@ -1127,7 +1168,9 @@ static bool Vincent_LoseConditions(int iNPC)
 								second = "You got the best of me this time.";
 						}
 						
-						CPrintToChatAll("{rare}%t{default}: %s %s", c_NpcName[npc.index], first, second);
+						char message[255];
+						FormatEx(message, sizeof(message), "%s %s", first, second);
+						Vincent_Talk(npc.index, message);
 						
 						npc.m_flTalkRepeat = GetGameTime() + 1.7;
 					}
@@ -1172,15 +1215,15 @@ static bool Vincent_LoseConditions(int iNPC)
 		//won normally
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			CPrintToChatAll("{rare}%t{default}: It's over, please don't come back.", c_NpcName[npc.index]);
+			Vincent_Talk(npc.index, "It's over, please don't come back.");
 		}
 		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			CPrintToChatAll("{rare}%t{crimson}: Look at what you made me do. {default} At least I avenged {rare}them{default}.", c_NpcName[npc.index]);
+			Vincent_Talk(npc.index, "{crimson}Look at what you made me do. {default} At least I avenged {rare}them{default}.");
 		}
 		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			CPrintToChatAll("{rare}%t{default}: Your reign of chaos ends here.", c_NpcName[npc.index]);
+			Vincent_Talk(npc.index, "Your reign of chaos ends here.");
 		}
 		return true;
 	}
@@ -1635,6 +1678,11 @@ bool Vincent_SlamThrow(int iNPC, int target)
 			
 			if (npc.m_bTimeUpMode)
 				npc.m_flThrow_Cooldown = GetGameTime(npc.index) + 1.0;
+
+			if(npc.m_iAllyspawnAm)
+			{
+				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+			}
 		}
 		return true;
 	}
@@ -1687,11 +1735,11 @@ bool Vincent_SlamThrow(int iNPC, int target)
 			switch(GetRandomInt(0,2))
 			{
 				case 0:
-					CPrintToChatAll("{rare}%t{default}: I'm gonna get you.", c_NpcName[npc.index]);
+					Vincent_Talk(npc.index, "I'm gonna get you.");
 				case 1:
-					CPrintToChatAll("{rare}%t{default}: Here I come!", c_NpcName[npc.index]);
+					Vincent_Talk(npc.index, "Here I come!");
 				case 2:
-					CPrintToChatAll("{rare}%t{default}: You better run!", c_NpcName[npc.index]);
+					Vincent_Talk(npc.index, "You better run!");
 			}
 		}
 		if(IsValidEntity(npc.m_iWearable4))

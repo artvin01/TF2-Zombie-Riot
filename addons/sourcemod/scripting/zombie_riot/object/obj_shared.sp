@@ -98,6 +98,7 @@ void Object_PluginStart()
 	.DefineFloatField("m_fLastTimeClaimed")
 	.DefineBoolField("m_bCannotBePickedUp")
 	.DefineBoolField("m_bNoOwnerRequired")
+	.DefineIntField("m_iExtraLogic")
 
 	//needed so npc stuff doesnt break
 	.DefineIntField("m_iHealthBar")
@@ -139,11 +140,12 @@ methodmap ObjectGeneric < CClotBody
 		DispatchKeyValueVector(obj, "origin",	 vecPos);
 		DispatchKeyValueVector(obj, "angles",	 vecAng);
 		DispatchKeyValue(obj,		 "model",	 model);
-		DispatchKeyValue(obj,	   "modelscale", modelscale);
 		DispatchKeyValue(obj,	   "solid", "2");
 		DispatchKeyValue(obj,	   "physdamagescale", "0.0");
 		DispatchKeyValue(obj,	   "minhealthdmg", "0.0");
 		DispatchSpawn(obj);
+
+		SetEntPropFloat(obj, Prop_Send, "m_flModelScale", StringToFloat(modelscale));
 
 		ObjectGeneric objstats = view_as<ObjectGeneric>(obj);
 		objstats.BaseHealth = StringToInt(basehealth);
@@ -271,16 +273,16 @@ methodmap ObjectGeneric < CClotBody
 	{
 		int item = CreateEntityByName("prop_dynamic_override");
 		DispatchKeyValue(item, "model", model);
+
+		DispatchSpawn(item);
 		if(model_size == 1.0)
 		{
-			DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Data, "m_flModelScale"));
+			SetEntPropFloat(item, Prop_Send, "m_flModelScale", GetEntPropFloat(this.index, Prop_Data, "m_flModelScale"));
 		}
 		else
 		{
-			DispatchKeyValueFloat(item, "modelscale", model_size);
+			SetEntPropFloat(item, Prop_Send, "m_flModelScale", model_size);
 		}
-
-		DispatchSpawn(item);
 		SetEntPropEnt(item, Prop_Send, "m_hOwnerEntity", this.index);
 		
 		SetEntityMoveType(item, MOVETYPE_NONE);
@@ -509,6 +511,17 @@ methodmap ObjectGeneric < CClotBody
 		public get()
 		{
 			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bNoOwnerRequired"));
+		}
+	}
+	property int m_iExtraLogic
+	{
+		public set(int value)
+		{
+			SetEntProp(this.index, Prop_Data, "m_iExtraLogic", value);
+		}
+		public get()
+		{
+			return GetEntProp(this.index, Prop_Data, "m_iExtraLogic");
 		}
 	}
 	property bool m_bConstructBuilding

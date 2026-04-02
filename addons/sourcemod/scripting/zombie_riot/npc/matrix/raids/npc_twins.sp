@@ -495,10 +495,8 @@ static int Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target
 							{
 								damage = 1.0;
 							}
-							Elemental_AddCorruptionDamage(targetTrace, npc.index, 50);
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-							//Reduce damage after dealing
-							damage *= 0.92;
+							Elemental_AddCorruptionDamage(targetTrace, npc.index, RoundToNearest(damage * 0.15), true, true);		
 							// On Hit stuff
 							bool Knocked = false;
 							if(!PlaySound)
@@ -594,7 +592,7 @@ static int Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 				KillFeed_SetKillIcon(npc.index, "enforcer");
 
-				float damage = 15.0;
+				float damage = 30.0;
 				damage *= RaidModeScaling;
 
 				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "dxhr_sniper_rail_blue");

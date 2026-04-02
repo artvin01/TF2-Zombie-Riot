@@ -55,6 +55,11 @@ void RefragmentedBase_OnThink(int entity, float damagePerTick)
 		npc.m_bEnemyIsClose = false;
 		RefragmentedBase_SetEffect(npc.index, false);
 	}
+	//Refragmented enemies shouldn't be allowed to get buffed by this, it makes no sense lore-wise, and gameplay wise, it would cause half of the refragmented enemies to outrun players, which isn't fun.
+	if(HasSpecificBuff(npc.index, "Quantum Entanglement"))
+	{
+		RemoveSpecificBuff(npc.index, "Quantum Entanglement");
+	}
 }
 
 void RefragmentedBase_SetEffect(int entity, bool hurt)

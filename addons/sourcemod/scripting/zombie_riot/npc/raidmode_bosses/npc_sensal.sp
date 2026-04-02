@@ -604,13 +604,15 @@ static void Internal_ClotThink(int iNPC)
 				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-10", false);
 				for (int client = 1; client <= MaxClients; client++)
 				{
-					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500 && !Items_HasNamedItem(client, "A copy of Truthful Evidence"))
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
+						if(!Items_HasNamedItem(client, "A copy of Truthful Evidence"))
+						{
+							CPrintToChat(client, "%t", "Castellan_And_Sensal_Talk-11");
+							CPrintToChat(client, "%t", "Castellan_And_Sensal_Talk-12");
+						}
 						//Players who have already won the trophy will not get a message.
 						Items_GiveNamedItem(client, "A copy of Truthful Evidence");
-						SetGlobalTransTarget(client);
-						CPrintToChat(client, "%t", "Castellan_And_Sensal_Talk-11");
-						CPrintToChat(client, "%t", "Castellan_And_Sensal_Talk-12");
 					}
 				}
 			}
@@ -638,11 +640,11 @@ static void Internal_ClotThink(int iNPC)
 				}
 				case 1:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: None of you criminals are of any importants infront of {gold}Expidonsa{default}.");
+					CPrintToChatAll("{blue}Sensal{default}: None of you criminals are of any importance to {gold}Expidonsa{default}.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: All your friends are gone. Submit to {gold}Expidonsa{default}.");
+					CPrintToChatAll("{blue}Sensal{default}: All your friends are gone. Submit to {gold}Expidonsan{default} might.");
 				}
 			}
 		}
@@ -888,7 +890,7 @@ static void Internal_NPCDeath(int entity)
 		}
 		case 2:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: {gold}Expidonsa{default} is far out of your level of understanding.");
+			CPrintToChatAll("{blue}Sensal{default}: {gold}Expidonsa{default} is beyond your level of understanding.");
 		}
 		case 3:
 		{
@@ -1067,6 +1069,54 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			}
 			npc.m_flRangedSpecialDelay = gameTime + 15.5;
 			npc.StopPathing();
+
+			
+			int SpawnAdditionalLasers = CountPlayersOnRed(1);
+			SpawnAdditionalLasers = (RAIDBOSS_GLOBAL_ATTACKLIMIT - SpawnAdditionalLasers);
+			if(SpawnAdditionalLasers <= 3)
+				SpawnAdditionalLasers = 3;
+
+			for(int SpawnNpc ; SpawnNpc < SpawnAdditionalLasers ; SpawnNpc++)
+			{
+				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+				
+				int spawn_index = NPC_CreateByName("npc_sensal_crystal_targeter", -1, pos, ang, 2);
+				if(spawn_index > MaxClients)
+				{
+					NpcStats_CopyStats(npc.index, spawn_index);
+					NpcAddedToZombiesLeftCurrently(spawn_index, true);
+					
+					int Decicion = TeleportDiversioToRandLocation(spawn_index, true, 1500.0, 1000.0, .forceSpawn = true,.NeedLOSPlayer = true);
+					switch(Decicion)
+					{
+						case 2:
+						{
+							Decicion = TeleportDiversioToRandLocation(spawn_index, true, 1000.0, 500.0,.forceSpawn = true, .NeedLOSPlayer = true);
+							if(Decicion == 2)
+							{
+								Decicion = TeleportDiversioToRandLocation(spawn_index, true, 500.0, 250.0,.forceSpawn = true, .NeedLOSPlayer = true);
+								if(Decicion == 2)
+								{
+									Decicion = TeleportDiversioToRandLocation(spawn_index, true, 250.0, 0.0,.forceSpawn = true, .NeedLOSPlayer = true);
+									if(Decicion == 2)
+									{
+										//damn, cant find any.... guess we'll just not care about LOS.
+										Decicion = TeleportDiversioToRandLocation(spawn_index, true, 1500.0, 0.0);
+									}
+								}
+							}
+						}
+						case 3:
+						{
+							//todo code on what to do if random teleport is disabled
+						}
+					}
+					RequestFrames(KillNpc, 200, EntIndexToEntRef(spawn_index));
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", 999999999);
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 999999999);
+				}
+			}
 			
 			npc.m_flDoingAnimation = gameTime + 99.0;
 			npc.m_bisWalking = false;
@@ -1661,7 +1711,7 @@ bool SensalTalkPostWin(Sensal npc)
 	}
 	if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
 	{
-		CPrintToChatAll("{blue}Sensal{default}: We apologize for the sudden attack, we didn't know, take this as an apology.");
+		CPrintToChatAll("{blue}Sensal{default}: We apologize for the sudden attack. We didn't know, take this as an apology.");
 		
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		BlockLoseSay = true;
@@ -1677,7 +1727,7 @@ bool SensalTalkPostWin(Sensal npc)
 	else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 	{
 		i_SaidLineAlready[npc.index] = 4;
-		CPrintToChatAll("{blue}Sensal{default}: But I see that this was to protect you guys, yet you were able to destroy Calmaticus.");
+		CPrintToChatAll("{blue}Sensal{default}: But I see that this was to protect you guys and yet you were able to destroy {green}Calmaticus.");
 	}
 	else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
 	{
@@ -1687,12 +1737,12 @@ bool SensalTalkPostWin(Sensal npc)
 	else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
 	{
 		i_SaidLineAlready[npc.index] = 2;
-		CPrintToChatAll("{blue}Sensal{default}: We are close friends though we lost contact since he came out of the city.");
+		CPrintToChatAll("{blue}Sensal{default}: We are close friends though we lost contact since he left the city.");
 	}
 	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 	{
 		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of yours now aswell.");
+		CPrintToChatAll("{blue}Sensal{default}: ....I see. They are friend of yours now as well.");
 	}
 	return true; //He is trying to help.
 }
@@ -1782,10 +1832,40 @@ bool SensalMassLaserAttack(Sensal npc)
 	if(npc.m_flAttackHappens_2)
 	{
 		UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-		int enemy_2[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
+		
+
+		
 		//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 		bool ClientTargeted[MAXENTITIES];
-		GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false);
+		int a;
+		int entity;
+		while((entity = FindEntityByNPC(a)) != -1)
+		{
+			if(Target_CrystalTrue(entity))
+			{
+				if(!Can_I_See_Enemy_Only(npc.index, entity))
+					continue;
+				ClientTargeted[entity] = true;
+				if(!IsValidEntity(i_LaserEntityIndex[entity]))
+				{
+					int red = 200;
+					int green = 200;
+					int blue = 200;
+					if(IsValidEntity(i_LaserEntityIndex[entity]))
+					{
+						RemoveEntity(i_LaserEntityIndex[entity]);
+					}
+
+					int laser;
+					
+					laser = ConnectWithBeam(npc.index, entity, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
+			
+					i_LaserEntityIndex[entity] = EntIndexToEntRef(laser);
+				}
+			}
+		}
+		int enemy_2[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
+		GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false,_,_,_,Target_CrystalFalse);
 		for(int i; i < sizeof(enemy_2); i++)
 		{
 			if(enemy_2[i])
@@ -1845,7 +1925,11 @@ bool SensalMassLaserAttack(Sensal npc)
 				if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 				{
 					RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-				}				
+				}		
+				if(i_NpcInternalId[EnemyLoop] == SensalTargetLaser_Id())
+				{
+					RequestFrame(KillNpc, EntIndexToEntRef(EnemyLoop));
+				}		
 			}
 
 			int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT];
@@ -1857,6 +1941,20 @@ bool SensalMassLaserAttack(Sensal npc)
 				{
 					foundEnemy = true;
 					float WorldSpaceVec[3]; WorldSpaceCenter(enemy[i], WorldSpaceVec);
+					SensalInitiateLaserAttack(npc.index, WorldSpaceVec, flPos);
+				}
+			}
+			
+			a = 0;
+			entity = 0;
+			while((entity = FindEntityByNPC(a)) != -1)
+			{
+				if(Target_CrystalTrue(entity))
+				{
+					if(!Can_I_See_Enemy_Only(npc.index, entity))
+						continue;
+					foundEnemy = true;
+					float WorldSpaceVec[3]; WorldSpaceCenter(entity, WorldSpaceVec);
 					SensalInitiateLaserAttack(npc.index, WorldSpaceVec, flPos);
 				}
 			}
@@ -2225,19 +2323,19 @@ static void Sensal_Weapon_Lines(Sensal npc, int client)
 	{
 		
 		case WEAPON_SENSAL_SCYTHE,WEAPON_SENSAL_SCYTHE_PAP_1,WEAPON_SENSAL_SCYTHE_PAP_2,WEAPON_SENSAL_SCYTHE_PAP_3:
-		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "You are trying to wield my weapon, {gold}%N{default}? You do not have the expertiese in it.", client);
-		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "You think you can use it to its fullest potentnial {gold}%N{default}? You dont even own the {gold}Manifestation glove.", client);}	//IT ACTUALLY WORKS, LMFAO
+		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "You are trying to wield my weapon, {gold}%N{default}? You are not competent enough for it.", client);
+		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "You think you can use it to its fullest potential {gold}%N{default}? You do not even own the {gold}Manifestation glove.", client);}	//IT ACTUALLY WORKS, LMFAO
 		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvesters{default} blade? Why is he so nice to everyone...");
 		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default}, you...");}
-		case WEAPON_SICCERINO,WEAPON_WALDCH_SWORD_NOVISUAL:  Format(Text_Lines, sizeof(Text_Lines), "How do you have access to such expidonsan weaponry {gold}%N{default}?",client);
+		case WEAPON_SICCERINO,WEAPON_WALDCH_SWORD_NOVISUAL:  Format(Text_Lines, sizeof(Text_Lines), "How do you have access to such {gold}Expidonsan{default} weaponry {gold}%N{default}?",client);
 		case WEAPON_WALDCH_SWORD_REAL:  Format(Text_Lines, sizeof(Text_Lines), "What? How did you get this elite blade {gold}%N{default}?",client);
 		case WEAPON_NEARL:  Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default} decided to visit Kazimierz?");
 		case WEAPON_KAHMLFIST:  Format(Text_Lines, sizeof(Text_Lines), "Kahmlstein caused enough problems as it is.");
 		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "This machine is gone now, use it better then it has {gold}%N{default}.",client);
 		case WEAPON_IRENE:  Format(Text_Lines, sizeof(Text_Lines), "Iberia's Weapons!? Looks like the secret is out of the bag now...");
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "OH MY GOD, {snow}BOB THE FIRST{default} IS ON YOUR SIDE?!");
-		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "Howd you get {lightblue}Nemal's{default} Weapon {gold}%N{default}?",client);
-		case WEAPON_IMPACT_LANCE:  Format(Text_Lines, sizeof(Text_Lines), "The lance... the only weapon that was forged from both ruina and {gold}expidonsa{default}...");
+		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "How did you get {lightblue}Nemal's{default} weapon {gold}%N{default}?",client);
+		case WEAPON_IMPACT_LANCE:  Format(Text_Lines, sizeof(Text_Lines), "That lance... the only weapon that was forged from both {snow}Ruina{default} and {gold}Expidonsa{default}...");
 		/*
 		//uncomment on release
 		case WEAPON_NECRO_WANDS:
@@ -2257,4 +2355,24 @@ static void Sensal_Weapon_Lines(Sensal npc, int client)
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}
+}
+
+
+
+bool Target_CrystalTrue(int target)
+{
+	if(i_NpcInternalId[target] == SensalTargetLaser_Id())
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Target_CrystalFalse(int entity, int target)
+{
+	if(i_NpcInternalId[target] == SensalTargetLaser_Id())
+	{
+		return false;
+	}
+	return true;
 }

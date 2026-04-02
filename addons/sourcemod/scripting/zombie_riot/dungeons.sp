@@ -270,6 +270,7 @@ enum struct RoomInfo
 		kv.GetString("spawn", this.Spawn, sizeof(this.Spawn));
 		kv.GetString("key", this.Key, sizeof(this.Key));
 		this.FuncStart = KvGetFunction(kv, "func_start");
+		this.CurrentCooldown = 0.0;
 		return true;
 	}
 
@@ -2245,6 +2246,21 @@ void Dungeon_EnemySpawned(int entity)
 						
 						SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * EnemyScaling));
 						SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * EnemyScaling));
+					}
+				}
+				
+				if(EnableSilentMode)
+				{
+					if(i_IsABuilding[entity] || i_NpcIsABuilding[entity])
+					{
+
+					}
+					else
+					{
+						//Too many players, we have to nerf the stats by 35%...
+						fl_Extra_Damage[entity] *= 0.65;
+						SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.65));
+						SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.65));
 					}
 				}
 				Dungeon_GiveNpcMoney(entity);

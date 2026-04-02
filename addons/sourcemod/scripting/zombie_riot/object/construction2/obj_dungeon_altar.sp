@@ -16,9 +16,9 @@
 #define CONSTRUCT_RESOURCE1	"iron"
 #define CONSTRUCT_COST1		(3 + (CurrentLevel * 3))
 #define CONSTRUCT_MAXLVL	(ObjectDungeonCenter_Level() * 3)
-#define CONSTRUCT_DAMAGE	(3000.0 * Pow(level + 1.0, 1.25))	//SET ME
+#define CONSTRUCT_DAMAGE	(4200.0 * Pow(level + 1.0, 1.25))	//SET ME
 #define CONSTRUCT_FIRERATE	1.0
-#define CONSTRUCT_RANGE		(7000.0 * Pow(level + 1.0, 1.25))	//HEALTH
+#define CONSTRUCT_RANGE		(3500.0 * Pow(level + 1.0, 1.25))	//HEALTH
 #define CONSTRUCT_MAXCOUNT	(1)
 
 static int NPCId;

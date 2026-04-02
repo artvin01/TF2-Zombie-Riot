@@ -159,6 +159,9 @@ methodmap AgentKurt < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 260.0;
 				
+		SetVariantInt(2);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
@@ -379,7 +382,7 @@ public void AgentKurt_ClotThink(int iNPC)
 								{
 									float damageDealt = AgentHealthDamageMulti(npc);
 									if(ShouldNpcDealBonusDamage(target))
-									damageDealt *= 2.5;
+										damageDealt *= 7.5;
 									SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 									Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 45 : 10);
@@ -457,19 +460,19 @@ static float AgentHealthDamageMulti(CClotBody npc)
 	{
 		damage *= 2.0; //140 damage
 		if(ShouldNpcDealBonusDamage(target))
-		damage *= 2.5;
+			damage *= 2.5;
 	}
 	if(ratio <= 0.50)
 	{
 		damage *= 1.5; //210 damage
 		if(ShouldNpcDealBonusDamage(target))
-		damage *= 2.5;
+			damage *= 2.5;
 	}
 	if(ratio <= 0.25)
 	{
 		damage *= 1.20; //252 damage
 		if(ShouldNpcDealBonusDamage(target))
-		damage *= 2.5;
+			damage *= 2.5;
 	}
 	return (0.0 + damage);
 }

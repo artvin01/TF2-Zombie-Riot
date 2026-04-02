@@ -445,7 +445,7 @@ public Action AgentAlexander_OnTakeDamage(int victim, int &attacker, int &inflic
 
 static float AgentHealthDamageMulti(CClotBody npc)
 {
-	float damage = 10.0;
+	float damage = 20.0;
 	float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 	float health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float ratio = health / maxhealth;
@@ -455,19 +455,19 @@ static float AgentHealthDamageMulti(CClotBody npc)
 	{
 		damage *= 2.0;
 		if(ShouldNpcDealBonusDamage(target))
-		damage *= 2.5;
+			damage *= 2.5;
 	}
 	if(ratio <= 0.50)
 	{
 		damage *= 2.0;
 		if(ShouldNpcDealBonusDamage(target))
-		damage *= 2.5;
+			damage *= 2.5;
 	}
 	if(ratio <= 0.25)
 	{
 		damage *= 2.0;
 		if(ShouldNpcDealBonusDamage(target))
-		damage *= 2.5;
+			damage *= 2.5;
 	}
 	return (0.0 + damage);
 }

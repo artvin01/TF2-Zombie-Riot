@@ -84,7 +84,7 @@ Function func_NPCAnimEvent[MAXENTITIES];
 Function func_NPCActorEmoted[MAXENTITIES];
 Function func_NPCInteract[MAXENTITIES];
 Function FuncShowInteractHud[MAXENTITIES];
-
+Function func_NPCLostHealthBar[MAXENTITIES];
 enum struct WearableColor
 {
 	int color;
@@ -541,7 +541,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			DispatchKeyValue(npc, "model",	 model);
 			view_as<CBaseCombatCharacter>(npc).SetModel(model);
 		}
-		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		if(NpcTypeLogic == NORMAL_NPC) //No need for lagcomp on things that dont even move.
 		{
 			DispatchKeyValue(npc,	   "health",	 health);
@@ -608,6 +607,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		i_FailedTriesUnstuck[npc][1] = 0;
 		flNpcCreationTime[npc] = GetGameTime();
 		DispatchSpawn(npc); //Do this at the end :)
+		SetEntPropFloat(npc, Prop_Send, "m_flModelScale", StringToFloat(modelscale));
 
 	//	if(NpcTypeLogic == NORMAL_NPC)
 	//Crashes
@@ -3024,12 +3024,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		DispatchKeyValue(item, "model", model);
 
+		DispatchSpawn(item);
 		if(model_size != 1.0)
 		{
-		//	DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
-			DispatchKeyValueFloat(item, "modelscale", model_size);
+			SetEntPropFloat(item, Prop_Send, "m_flModelScale", model_size);
 		}
-		DispatchSpawn(item);
 		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES|EF_NOSHADOW );
 		SetEntityMoveType(item, MOVETYPE_NONE);
 		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);
@@ -3072,16 +3071,16 @@ methodmap CClotBody < CBaseCombatCharacter
 		int item = CreateEntityByName("prop_dynamic_override");
 		DispatchKeyValue(item, "model", model);
 
+
+		DispatchSpawn(item);
 		if(model_size == 1.0)
 		{
-			DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
+			SetEntPropFloat(item, Prop_Send, "m_flModelScale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
 		}
 		else
 		{
-			DispatchKeyValueFloat(item, "modelscale", model_size);
+			SetEntPropFloat(item, Prop_Send, "m_flModelScale", model_size);
 		}
-
-		DispatchSpawn(item);
 		
 		SetEntityMoveType(item, MOVETYPE_NONE);
 		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);
@@ -3649,7 +3648,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			int layerCount = this.GetNumAnimOverlays();
 			for(int i; i < layerCount; i++)
 			{
-				view_as<CClotBody>(this.index).SetLayerPlaybackRate(i, 1.0);
+				//we lazely use ReturnEntityAttackspeed(this.index)
+				view_as<CClotBody>(this.index).SetLayerPlaybackRate(i, ReturnEntityAttackspeed(this.index));
 			}
 			view_as<CClotBody>(this.index).SetPlaybackRate(f_LayerSpeedFrozeRestore[this.index], true);
 
@@ -4904,7 +4904,7 @@ public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadde
 	return from_area.GetCostSoFar() + cost;
 }
 
-bool PluginBot_Jump(int bot_entidx, float vecPos[3], float flMaxSpeed = 1250.0, bool DirectLaunch = false)
+bool PluginBot_Jump(int bot_entidx, float vecPos[3], float flMaxSpeed = 1250.0, bool DirectLaunch = false, float timemodify = 1.0)
 {
 	if(IsEntityTowerDefense(bot_entidx)) //do not allow them to jump.
 	{
@@ -4968,6 +4968,7 @@ bool PluginBot_Jump(int bot_entidx, float vecPos[3], float flMaxSpeed = 1250.0, 
 	float time = speed / gravity;
 
 	time += SquareRoot( (2 * additionalHeight) / gravity );
+	time *= timemodify;
 	
 	// Scale the sideways velocity to get there at the right time
 	SubtractVectors( vecPos, vecNPC, vecJumpVel );
@@ -5149,6 +5150,11 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		
 	if(IsValidEntity(enemy))
 	{
+		if(index <= MaxClients)
+		{
+			//players always have camo detection.
+			camoDetection = true;
+		}
 		if(i_IsVehicle[enemy])
 		{
 #if defined ZR
@@ -5800,6 +5806,9 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 					continue;
 
 				float dist = GetVectorDistance(targetPos[i], EntityLocation, true);
+				if(i_CurrentEquippedPerk[target] & PERK_BLOODY)
+					dist *= 2.0;
+				
 				//if they are in the taunt range, subtract into negatives.
 				float TauntRange;
 				if(target <= MaxClients)
@@ -5869,6 +5878,8 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 
 			GetEntPropVector( target, Prop_Data, "m_vecOrigin", TargetLocation ); //do not use abs, some entities do not have abs.
 			float distanceVector = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+			if(i_CurrentEquippedPerk[target] & PERK_BLOODY)
+				distanceVector *= 2.0;
 
 			float TauntRange;
 			if(target <= MaxClients)
@@ -6291,11 +6302,15 @@ public void NpcBaseThinkPost(int iNPC)
 		return;
 		
 	float time = GetGameTime() - lastThink;	// Time since the last time this NPC thought
-
+	f_StunExtraGametimeDuration[iNPC] += (time - (time / ReturnEntityAttackspeed(iNPC)));
+/*
 	if(ReturnEntityAttackspeed(iNPC) < 1.0)	// Buffs
 		f_StunExtraGametimeDuration[iNPC] += (time - (time / ReturnEntityAttackspeed(iNPC)));
 	else	// Nerfs
+	{
 		f_StunExtraGametimeDuration[iNPC] += ((time * ReturnEntityAttackspeed(iNPC)) - time);
+	}
+*/
 }
 void NpcDrawWorldLogic(int entity)
 {
@@ -7387,14 +7402,7 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 	ScaleVector(damageForce, 0.025); //Reduce overall
 
 	bool Limit_Gibs = false;
-	if(CurrentGibCount > ZR_MAX_GIBCOUNT)
-	{
-		Limit_Gibs = true;
-	}
-	if(EnableSilentMode)
-		Limit_Gibs = true;
-
-	if(forcesilentMode)
+	if(CurrentGibCount > ZR_MAX_GIBCOUNT || EnableSilentMode || forcesilentMode || AtEdictLimit(EDICT_NPC))
 		Limit_Gibs = true;
 
 	if(npc.m_iBleedType == BLEEDTYPE_METAL)
@@ -7461,22 +7469,6 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 		DispatchKeyValue(prop, "physicsmode", "2");
 		DispatchKeyValue(prop, "massScale", "1.0");
 		DispatchKeyValue(prop, "spawnflags", "2");
-		if(npc.m_bIsGiant)
-		{
-			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
-			{
-				DispatchKeyValue(prop, "modelscale", "1.1");
-			}
-			else
-				DispatchKeyValue(prop, "modelscale", "1.6");
-		}
-		else
-		{
-			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
-			{
-				DispatchKeyValue(prop, "modelscale", "0.8");
-			}
-		}
 
 		float Random_time = GetRandomFloat(6.0, 7.0);
 		if(EnableSilentMode || CurrentGibCount > ZR_MAX_GIBCOUNT_ABSOLUTE)
@@ -7512,6 +7504,22 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 		DispatchKeyValueVector(prop, "origin",	 TempPosition);
 		DispatchKeyValueVector(prop, "angles",	 ang);
 		DispatchSpawn(prop);
+		if(npc.m_bIsGiant)
+		{
+			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
+			{
+				SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 1.1);
+			}
+			else
+				SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 1.6);
+		}
+		else
+		{
+			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
+			{
+				SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 0.8);
+			}
+		}
 		TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, TempForce);
 		SetEntityCollisionGroup(prop, 2); //COLLISION_GROUP_DEBRIS_TRIGGER
 		CreateTimer(Random_time - 1.5, Prop_Gib_FadeSet, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
@@ -7523,23 +7531,23 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 		{
 			case BLEEDTYPE_NORMAL:
 			{
-				if(!EnableSilentMode)
+				if(!EnableSilentMode || !AtEdictLimit(EDICT_EFFECT))
 					ParticleSet = ParticleEffectAt(TempPosition, "blood_trail_red_01_goop", Random_time); 
 				SetEntityRenderColor(prop, 255, 0, 0, 255);
 			}
 			case BLEEDTYPE_METAL:
 			{
-				if(!EnableSilentMode)
+				if(!EnableSilentMode || !AtEdictLimit(EDICT_EFFECT))
 					ParticleSet = ParticleEffectAt(TempPosition, "tpdamage_4", Random_time); 
 			}
 			case BLEEDTYPE_RUBBER:
 			{
-				if(!EnableSilentMode)
+				if(!EnableSilentMode || !AtEdictLimit(EDICT_EFFECT))
 					ParticleSet = ParticleEffectAt(TempPosition, "doublejump_trail_alt", Random_time); //This is a permanent particle, gotta delete it manually...
 			}
 			case BLEEDTYPE_XENO:
 			{
-				if(!EnableSilentMode)
+				if(!EnableSilentMode || !AtEdictLimit(EDICT_EFFECT))
 					ParticleSet = ParticleEffectAt(TempPosition, "blood_impact_green_01", Random_time); 
 				SetEntityRenderColor(prop, 0, 255, 0, 255);
 			}
@@ -7549,13 +7557,13 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 			}*/
 			case BLEEDTYPE_SEABORN:
 			{
-				if(!EnableSilentMode)
+				if(!EnableSilentMode || !AtEdictLimit(EDICT_EFFECT))
 					ParticleSet = ParticleEffectAt(TempPosition, "flamethrower_rainbow_bubbles02", Random_time); 
 				SetEntityRenderColor(prop, 65, 65, 255, 255);
 			}
 			case BLEEDTYPE_VOID:
 			{
-				if(!EnableSilentMode)
+				if(!EnableSilentMode || !AtEdictLimit(EDICT_EFFECT))
 				{
 					TE_BloodSprite(TempPosition, { 0.0, 0.0, 0.0 }, 200, 0, 200, 255, 32);
 					TE_SendToAllInRange(TempPosition, RangeType_Visibility);
@@ -9130,6 +9138,7 @@ public void NPCStats_SetFuncsToZero(int entity)
 	func_NPCActorEmoted[entity] = INVALID_FUNCTION;
 	func_NPCInteract[entity] = INVALID_FUNCTION;
 	FuncShowInteractHud[entity] = INVALID_FUNCTION;
+	func_NPCLostHealthBar[entity] = INVALID_FUNCTION;
 
 	#if defined BONEZONE_BASE
     g_BoneZoneBuffFunction[entity] = INVALID_FUNCTION;
@@ -9249,6 +9258,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_AttackHappensMaximum[entity] = 0.0;
 	b_AttackHappenswillhappen[entity] = false;
 	b_thisNpcIsABoss[entity] = false;
+	b_thisNpcIsAMiniboss[entity] = false;
 	b_ShowNpcHealthbar[entity] = false;
 	b_thisNpcIsARaid[entity] = false;
 	b_TryToAvoidTraverse[entity] = false;
@@ -10366,7 +10376,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 
 public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 {
-	if(b_IsEntityNeverTranmitted[npc.index] || b_NoHealthbar[npc.index])
+	if(AtEdictLimit(EDICT_RAID) || b_IsEntityNeverTranmitted[npc.index] || b_NoHealthbar[npc.index] || i_NpcIsABuilding[npc.index] || i_IsABuilding[npc.index])
 	{
 		if(IsValidEntity(npc.m_iTextEntity4))
 		{
@@ -10403,7 +10413,12 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		Format(HealthText, sizeof(HealthText), "%s!(%i)",HealthText, i_HowManyBombsHud[npc.index]);
 	}
-	if(VausMagicaShieldLeft(npc.index) > 0)
+	bool DisplayVausShield = true;
+	if(Dungeon_Mode() && Dungeon_AttackType() < 2)
+	{
+		DisplayVausShield = false;
+	}
+	if(DisplayVausShield && VausMagicaShieldLeft(npc.index) > 0)
 	{
 		Format(HealthText, sizeof(HealthText), "%sS(%i)",HealthText,VausMagicaShieldLeft(npc.index));
 	}
@@ -11554,7 +11569,21 @@ void ExtinguishTarget(int target, bool dontkillTimer = false)
 void IsEntityInvincible_Shield(int entity)
 {
 	int NpcInvulShieldDisplay;
-
+	if(i_NpcIsABuilding[entity] || i_IsABuilding[entity])
+	{
+		//never display for buildings!!
+		return;
+	}
+#if defined ZR
+	if(Dungeon_Mode() && AtEdictLimit(EDICT_NPC))
+	{
+		if(Dungeon_AttackType() < 2)
+		{
+			//dont display any shields if its dungeon mode and above the limit!
+			return;
+		}
+	}
+#endif
 	if(HasSpecificBuff(entity, "UBERCHARGED"))
 		NpcInvulShieldDisplay = 3;
 
@@ -11565,9 +11594,9 @@ void IsEntityInvincible_Shield(int entity)
 #endif
 	if(IsInvuln(entity, true))
 		NpcInvulShieldDisplay = 1;
-	
+		
 	CClotBody npc = view_as<CClotBody>(entity);
-	if(!NpcInvulShieldDisplay || b_ThisEntityIgnored[entity])
+	if(!NpcInvulShieldDisplay || b_ThisEntityIgnored[entity] || AtEdictLimit(EDICT_PLAYER))
 	{
 		IsEntityInvincible_ShieldRemove(entity);
 		return;
@@ -11787,7 +11816,14 @@ stock void Spawns_CheckBadClient(int client/*, int checkextralogic = 0*/)
 			NpcStuckZoneWarning(client, damage, 0);	
 			if(damage >= 0.25)
 			{
-				SDKHooks_TakeDamage(client, 0, 0, damage, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, -1, _, _, _, ZR_STAIR_ANTI_ABUSE_DAMAGE);
+				if(damage < 1000.0 && (i_CurrentEquippedPerk[client] & PERK_LOVER))
+				{
+					TeleportBackToLastSavePosition(client);
+				}
+				else
+				{
+					SDKHooks_TakeDamage(client, 0, 0, damage, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, -1, _, _, _, ZR_STAIR_ANTI_ABUSE_DAMAGE);
+				}
 			}
 		}
 	}

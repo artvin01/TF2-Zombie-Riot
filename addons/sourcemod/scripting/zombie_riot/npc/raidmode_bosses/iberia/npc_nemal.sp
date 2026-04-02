@@ -411,7 +411,7 @@ methodmap Nemal < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Were supposed to train our abilities, remember? Well here i am! Lets start off easy!");
+					CPrintToChatAll("{lightblue}Nemal{default}: We're supposed to train our abilities, remember? Well here I am! Let's start off easy!");
 				}
 				case 1:
 				{
@@ -419,11 +419,11 @@ methodmap Nemal < CClotBody
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: {gold}Silvester{default} is late isnt he? Probably off to some random beach with {blue}Sensal{default} as usual.. without me!!!\nWe said vacation is after this! oh well, lets begin!");
+					CPrintToChatAll("{lightblue}Nemal{default}: {gold}Silvester{default} is late isn't he? Probably off to some random beach with {blue}Sensal{default} as usual.. without me!!!\nWe said vacation is after this! Oh well, let's begin!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Iberians are with us {gold}Expidonsans{default}!... But im kinda both...\nProbably not that important, anyways lets go!");
+					CPrintToChatAll("{lightblue}Nemal{default}: Iberians are with us {gold}Expidonsans{default}!... But I'm kinda both...\nProbably not that important, anyways let's go!");
 				}
 			}
 		}
@@ -434,19 +434,19 @@ methodmap Nemal < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Got a call, {gold}Silvester{default} will be joining soon, he had some buisness apperantly, get ready for... when he comes!");
+					CPrintToChatAll("{lightblue}Nemal{default}: Got a call, {gold}Silvester{default} will be joining soon, he had some buisness apparently, get ready for... when he comes!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: What i would do for {darkblue}Waldch{default} to stop being so mangetic to {gold}Silvester{default} with his Wildingen antics, that isnt his home!!!");
+					CPrintToChatAll("{lightblue}Nemal{default}: What I would do for {darkblue}Waldch{default} to stop being so mangetic to {gold}Silvester{default} with his Wildingen antics, that isn't his home!!!");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: I'll be honest, {blue}Sensal's{default} kinda scary, i mean you fought him, you'd know!");
+					CPrintToChatAll("{lightblue}Nemal{default}: I'll be honest, {blue}Sensal's{default} kinda scary, I mean you fought him, you'd know!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: There sadly aint many Iberians left after what happend to their home country, damn traitorous {blue}seaborn{default}... we took in the surviving iberians and helped them!");
+					CPrintToChatAll("{lightblue}Nemal{default}: There sadly ain't many Iberians left after what happend to their home country, damn traitorous {blue}seaborn{default}... we took in the surviving iberians and helped them!");
 				}
 			}
 		}
@@ -457,15 +457,15 @@ methodmap Nemal < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Enough chatter, i'll start to not restrain myself.");
+					CPrintToChatAll("{lightblue}Nemal{default}: Enough chatter, I'll start to not restrain myself.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: {blue}Sensal{default} wasnt lying when he said you guys got some tricks.");
+					CPrintToChatAll("{lightblue}Nemal{default}: {blue}Sensal{default} wasn't lying when he said you guys got some tricks.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Iberian's have some really widening history, eventually it'll be rebuilt with {gold}Expidonsa's{default} help.");
+					CPrintToChatAll("{lightblue}Nemal{default}: Iberians have some really widening history, eventually it'll be rebuilt with {gold}Expidonsa's{default} help.");
 				}
 				case 3:
 				{
@@ -480,11 +480,11 @@ methodmap Nemal < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Look's like i have to give it all.");
+					CPrintToChatAll("{lightblue}Nemal{default}: Looks like I have to give it all.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: I wont hold back anymore.");
+					CPrintToChatAll("{lightblue}Nemal{default}: I won't hold back anymore.");
 				}
 				case 2:
 				{
@@ -492,7 +492,7 @@ methodmap Nemal < CClotBody
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: I would worry about you, but i don't think thats neccecary.");
+					CPrintToChatAll("{lightblue}Nemal{default}: I would worry about you, but I don't think thats necessary.");
 				}
 			}
 		}
@@ -506,11 +506,11 @@ methodmap Nemal < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Look's like i have to give it all.");
+					CPrintToChatAll("{lightblue}Nemal{default}: Looks like I have to give it all.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: I wont hold back anymore.");
+					CPrintToChatAll("{lightblue}Nemal{default}: I won't hold back anymore.");
 				}
 				case 2:
 				{
@@ -518,7 +518,7 @@ methodmap Nemal < CClotBody
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: I would worry about you, but i don't think thats neccecary.");
+					CPrintToChatAll("{lightblue}Nemal{default}: I would worry about you, but I don't think thats neccecary.");
 				}
 			}
 		}
@@ -603,7 +603,7 @@ methodmap Nemal < CClotBody
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Isnt this overkill?");
+					CPrintToChatAll("{lightblue}Nemal{default}: Isn't this overkill?");
 				}
 				case 3:
 				{
@@ -675,7 +675,7 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: You dont beat me, then youll never be able to face the full force of the {purple}void{default}.");
+					CPrintToChatAll("{lightblue}Nemal{default}: You don't beat me, then you'll never be able to face the full force of the {purple}void{default}.");
 				}
 				case 1:
 				{
@@ -699,7 +699,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: Well... Theres next time.");
+				CPrintToChatAll("{lightblue}Nemal{default}: Well... There's next time.");
 			}
 			case 1:
 			{
@@ -707,7 +707,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: I'm sorry but this is needed, this is training not a daycare.");
+				CPrintToChatAll("{lightblue}Nemal{default}: I'm sorry but this is needed, this is training, not a daycare.");
 			}
 		}
 		return;
@@ -741,7 +741,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: ... Don't dissapoint {darkblue}Kahmlstein{default} like this...");
+				CPrintToChatAll("{lightblue}Nemal{default}: ... Don't disappoint {darkblue}Kahmlstein{default} like this...");
 			}
 			case 2:
 			{
@@ -1011,7 +1011,7 @@ static void Internal_NPCDeath(int entity)
 		}
 		case 3:
 		{
-			CPrintToChatAll("{lightblue}Nemal{default}: I was going to insult you, but i asked for this...");
+			CPrintToChatAll("{lightblue}Nemal{default}: I was going to insult you, but I asked for this...");
 		}
 	}
 
@@ -1786,12 +1786,12 @@ bool NemalTalkPostWin(Nemal npc)
 	else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 	{
 		i_SaidLineAlready[npc.index] = 4;
-		CPrintToChatAll("{lightblue}Nemal{default}: We'll Keep {purple}void gates{default} under controll, tell us when youre ready to kill off the {purple}void{default}  once and for all, as a team!");
+		CPrintToChatAll("{lightblue}Nemal{default}: We'll Keep {purple}void gates{default} under control, tell us when youre ready to kill off the {purple}void{default}  once and for all, as a team!");
 	}
 	else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
 	{
 		i_SaidLineAlready[npc.index] = 3;
-		CPrintToChatAll("{lightblue}Nemal{default}: shhh! dont ruin the fun! Eitherways, good job!");
+		CPrintToChatAll("{lightblue}Nemal{default}: Shhh! Don't ruin the fun! Eitherways, good job!");
 	}
 	else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
 	{
@@ -2070,7 +2070,7 @@ bool NemalSummonSilvester(Nemal npc)
 						}
 						case 3:
 						{
-							CPrintToChatAll("{lightblue}Nemal{default}: Just dont attack the same guy as me, thats unfair!");
+							CPrintToChatAll("{lightblue}Nemal{default}: Just don't attack the same guy as me, thats unfair!");
 						}
 					}
 					npc.m_iChanged_WalkCycle = 3;
@@ -2115,11 +2115,11 @@ bool NemalSummonSilvester(Nemal npc)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: Oh? Looks like {gold}Silvester{default} Is finally comming!");
+				CPrintToChatAll("{lightblue}Nemal{default}: Oh? Looks like {gold}Silvester{default} Is finally coming!");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: The lazy ass {gold}cat{default} is comming right up!");
+				CPrintToChatAll("{lightblue}Nemal{default}: The lazy ass {gold}cat{default} is coming right up!");
 			}
 			case 2:
 			{

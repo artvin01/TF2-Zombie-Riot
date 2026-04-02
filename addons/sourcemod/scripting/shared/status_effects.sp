@@ -215,6 +215,7 @@ void InitStatusEffects()
 #if defined ZR
 	StatusEffects_Aperture();
 	StatusEffects_Ruiania();
+	StatusEffects_BrickWeapon();
 #endif
 	StatusEffects_WeaponSpecific_VisualiseOnly();
 	StatusEffects_StatusEffectListOnly();
@@ -2601,6 +2602,26 @@ void StatusEffects_Silence()
 	StatusEffect_AddGlobal(data);
 
 	data.HudDisplay_Func 			= INVALID_FUNCTION;
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Ragdolled");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "lol");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "lol"); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ElementalLogic				= true; //dont get removed.
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnBuffStarted				= Ragdolled_Start;
+	data.OnBuffEndOrDeleted			= Ragdolled_End;
+	
+	StatusEffect_AddGlobal(data);
+	
+	data.OnBuffStarted				= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 	//Immunity to stun effects
 	strcopy(data.BuffName, sizeof(data.BuffName), "Clear Head");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ֆ");
@@ -7103,7 +7124,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Big");
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.5;
+	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
@@ -7571,6 +7592,22 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.OnBuffEndOrDeleted			= Perfected_InstinctEnd;
 	data.TimerRepeatCall_Func 		= Disco_Timer;
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Disco Prefix 2");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= Disco_Start;
+	data.OnBuffEndOrDeleted			= Perfected_InstinctEnd;
+	data.TimerRepeatCall_Func 		= Disco_Timer;
+	StatusEffect_AddGlobal(data);
 	
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Toxic Prefix");
@@ -7723,6 +7760,22 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Steam Happy Prefix");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Steam Happy");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.35;
+	data.DamageDealMulti			= 1.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= (1.0 / 2.0);
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= SteamHappy_Prefix_Start;
+	data.OnBuffEndOrDeleted			= Perfected_InstinctEnd;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 
 } 
 
@@ -7752,6 +7805,9 @@ void Const2Modifs_Big_Start(int victim, StatusEffect Apply_MasterStatusEffect, E
 		return;
 
 	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", GetEntPropFloat(victim, Prop_Send, "m_flModelScale") * 1.25);
+	float maxhealth = float(ReturnEntityMaxHealth(victim));
+	maxhealth *= 2.0;
+	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 }
 void Const2Modifs_Big_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -7760,6 +7816,9 @@ void Const2Modifs_Big_End(int victim, StatusEffect Apply_MasterStatusEffect, E_S
 		return;
 
 	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", GetEntPropFloat(victim, Prop_Send, "m_flModelScale") * (1.0 / 1.25));
+	float maxhealth = float(ReturnEntityMaxHealth(victim));
+	maxhealth /= 2.0;
+	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 }
 
 void Const2Modifs_Strong_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -7911,18 +7970,18 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 		return;
 	}
 	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
-	Apply_StatusEffect.DataForUse = GetGameTime() + 2.0;
+	Apply_StatusEffect.DataForUse = GetGameTime() + 4.0;
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 	float DamageDeal = 250.0;
 #if defined ZR
 	DamageDeal = float(CurrentCash);
 #endif
-	DamageDeal *= 0.0025;
-	if(DamageDeal <= 50.0)
-		DamageDeal = 50.0;
+	DamageDeal *= 0.0015;
+	if(DamageDeal <= 25.0)
+		DamageDeal = 25.0;
 
-	if(DamageDeal > 1000.0)
-		DamageDeal = 1000.0;
+	if(DamageDeal > 500.0)
+		DamageDeal = 500.0;
 
 	CClotBody npc = view_as<CClotBody>(entity);
 	float WorldSpaceVec[3]; WorldSpaceCenter(entity, WorldSpaceVec);
@@ -7937,11 +7996,12 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 		int projectile = npc.FireParticleRocket(FireRandomParticle, DamageDeal, 500.0, 150.0, "raygun_projectile_blue_crit", false);
 		static float angles[3];
 		GetEntPropVector(projectile, Prop_Send, "m_angRotation", angles);
+		WandProjectile_ApplyFunctionToEntity(entity, Rocket_Sprayer_StartTouch);
 		
 		Initiate_HomingProjectile(projectile,
 		projectile,
-			90.0,			// float lockonAngleMax,
-			10.0,				//float homingaSec,
+			70.0,			// float lockonAngleMax,
+			8.0,				//float homingaSec,
 			false,				// bool LockOnlyOnce,
 			true,				// bool changeAngles,
 			angles);			// float AnglesInitiate[3]);
@@ -7950,6 +8010,70 @@ static void Const2_Sprayer_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 	//spray particles
 }
 
+public void Rocket_Sprayer_StartTouch(int entity, int target)
+{
+	if(target > 0 && target < MAXENTITIES)	//did we hit something???
+	{
+		
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(!IsValidEntity(owner))
+		{
+			owner = 0;
+		}
+		
+		int inflictor = h_ArrowInflictorRef[entity];
+		if(inflictor != -1)
+			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+
+		if(inflictor == -1)
+			inflictor = owner;
+			
+		float ProjectileLoc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		float DamageDeal = fl_rocket_particle_dmg[entity];
+		if(ShouldNpcDealBonusDamage(target))
+			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
+
+		int DamageTypes;
+		DamageTypes |= DMG_PREVENT_PHYSICS_FORCE;
+
+		if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_CLUB_DAMAGE))
+		{
+			DamageTypes |= DMG_CLUB;
+		}
+		else
+		{
+			DamageTypes |= DMG_BULLET;
+		}
+
+
+		if(b_should_explode[entity])	//should we "explode" or do "kinetic" damage
+		{
+			i_ExplosiveProjectileHexArray[owner] = i_ExplosiveProjectileHexArray[entity];
+			Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
+		}
+		else
+		{
+			SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DamageTypes, -1, .Zr_damage_custom = ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);	//acts like a kinetic rocket
+		}
+		
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+	}
+	else
+	{
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		//we uhh, missed?
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+	}
+	RemoveEntity(entity);
+}
 
 static void Const2_Gravitational_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -8014,6 +8138,10 @@ void Const2_1UpStart(int victim, StatusEffect Apply_MasterStatusEffect, E_Status
 
 	CClotBody npc = view_as<CClotBody>(victim);
 	npc.m_iHealthBar++
+#if defined ZR
+	if(b_thisNpcIsARaid[victim])
+		WaveStart_SubWaveStart(GetGameTime() + 700.0);	//due to lots and lots of time
+#endif
 }
 
 
@@ -8266,9 +8394,20 @@ float Perfected_Instinct_Dodge(int attacker, int victim, StatusEffect Apply_Mast
 	if(Apply_StatusEffect.DataForUse > GetGameTime())
 		return 0.0;
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
-	Apply_StatusEffect.DataForUse = GetGameTime() + 1.0;
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
-	ApplyStatusEffect(victim, victim, "Perfected Instinct Speed", 0.35);
+	if(i_NpcInternalId[victim] == BlackHeavySoulIDReturn())
+	{
+		ApplyStatusEffect(victim, victim, "Perfected Instinct Speed", 0.35);
+	}
+	else
+	{
+		if(!b_thisNpcIsARaid[victim])
+			ApplyStatusEffect(victim, victim, "Perfected Instinct Speed", 0.35);
+		if(b_thisNpcIsABoss[victim])
+			Apply_StatusEffect.DataForUse = GetGameTime() + 3.0;
+	}
+
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 	return 0.0;
 }
 
@@ -8346,6 +8485,17 @@ void ContractedMotivatorEffect2(int entity, float range)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 	spawnRing_Vectors(ProjectileLoc, 0.1, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 65, 100, 1, 0.5, 5.0, 0.1, 3, range * 2.0);	
 }
+void ConstractedMotivatorBuffs(int entity, int victim, float &healingammount)
+{
+	if(i_NpcIsABuilding[victim])
+		return;
+
+	if(GetTeam(entity) == GetTeam(victim))
+	{
+		ApplyStatusEffect(entity, victim, "War Cry", 3.0);
+	}
+	
+}
 
 
 
@@ -8370,6 +8520,10 @@ void Const2Modifs_Asexual_End(int victim, StatusEffect Apply_MasterStatusEffect,
 	int summon = NPC_CreateById(i_NpcInternalId[victim], -1, pos, ang, GetTeam(victim));
 	if(summon > MaxClients)
 	{
+#if defined ZR
+		if(b_thisNpcIsARaid[summon])
+			WaveStart_SubWaveStart(GetGameTime());	//due to lots and lots of time
+#endif
 		fl_Extra_Damage[summon] = fl_Extra_Damage[victim];
 		fl_Extra_Speed[summon] = fl_Extra_Speed[victim];
 		fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[victim];
@@ -8385,7 +8539,9 @@ void Const2Modifs_Asexual_End(int victim, StatusEffect Apply_MasterStatusEffect,
 		npc.SetVelocity({0.0,0.0,0.0});
 		PluginBot_Jump(summon, flPos);
 		ApplyStatusEffect(summon, summon, "Unstoppable Force", 2.0);
+#if defined ZR
 		ZRModifs_GiveRandomPrefix(summon);
+#endif
 	}
 }
 
@@ -8435,7 +8591,7 @@ float Glug_TakeDamage_Spread(int attacker, int victim, StatusEffect Apply_Master
 #if defined ZR
 		DamageDeal = float(CurrentCash);
 #endif
-		DamageDeal *= 0.01;
+		DamageDeal *= 0.001;
 		if(DamageDeal <= 1.0)
 			DamageDeal = 1.0;
 
@@ -8477,7 +8633,6 @@ void Const2Modifs_Explosive_End(int victim, StatusEffect Apply_MasterStatusEffec
 	float DamageDeal = 10000.0;
 #if defined ZR
 	DamageDeal = float(CurrentCash);
-#endif
 	DamageDeal *= 0.25;
 	if(DamageDeal <= 100.0)
 		DamageDeal = 100.0;
@@ -8500,6 +8655,7 @@ void Const2Modifs_Explosive_End(int victim, StatusEffect Apply_MasterStatusEffec
 	b_NpcIsTeamkiller[victim] = true;
 	ObjectVintulumBomb npc = view_as<ObjectVintulumBomb>(victim);
 	npc.PlayExplodeDo(true, true);
+#endif
 }
 
 
@@ -8751,22 +8907,9 @@ static void Ragebaiter_Think_Do(int entity, StatusEffect Apply_MasterStatusEffec
 	}
 	Format(RageText, sizeof(RageText), "Rage Prefix Text %i", GetRandomInt(1,MaxEntries- 1));
 
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if (IsClientInGame(client) && GetTeam(client) == TFTeam_Red)
-		{			
-			char NamePrefix[255];
-			StatusEffects_PrefixName(entity, client, NamePrefix, sizeof(NamePrefix));
-			if(!b_NameNoTranslation[entity])
-			{
-				CPrintToChat(client,"{crimson}%s%s {default}: %t",NamePrefix, c_NpcName[entity], RageText);
-			}
-			else
-			{
-				CPrintToChat(client,"{crimson}%s%t {default}: %t",NamePrefix, c_NpcName[entity], RageText)
-			}
-		}
-	}
+#if defined ZR
+	PrintNPCMessageWithPrefixes(entity, "crimson", RageText, true);
+#endif
 }
 
 
@@ -8774,13 +8917,13 @@ static void Ragebaiter_Think_Do(int entity, StatusEffect Apply_MasterStatusEffec
 void SemiHealthy_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	float maxhealth = float(ReturnEntityMaxHealth(victim));
-	maxhealth *= 5.0;
+	maxhealth *= 1.5;
 	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 }
 void SemiHealthy_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	float maxhealth = float(ReturnEntityMaxHealth(victim));
-	maxhealth /= 5.0;
+	maxhealth /= 1.5;
 	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 }
 
@@ -8815,7 +8958,313 @@ void Const2Modifs_Modifier_Start(int victim, StatusEffect Apply_MasterStatusEffe
 	//not an npc, ignore.
 	if(!b_ThisWasAnNpc[victim])
 		return;
+#if defined ZR
+	ZRModifs_GiveRandomPrefix(victim);
+	ZRModifs_GiveRandomPrefix(victim);
+#endif
+}
 
-	ZRModifs_GiveRandomPrefix(victim);
-	ZRModifs_GiveRandomPrefix(victim);
+
+
+public void ZRModifs_ParanormalActivityNPC(int iNpc)
+{
+	CClotBody ZNPC = view_as<CClotBody>(iNpc);
+
+	if(IsValidEntity(ZNPC.m_iWearable1) && !b_EntityCantBeColoured[ZNPC.m_iWearable1])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable1, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable1, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable1, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsValidEntity(ZNPC.m_iWearable2) && !b_EntityCantBeColoured[ZNPC.m_iWearable2])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable2, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable2, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable2, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsValidEntity(ZNPC.m_iWearable3) && !b_EntityCantBeColoured[ZNPC.m_iWearable3])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable3, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable3, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable3, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsValidEntity(ZNPC.m_iWearable4) && !b_EntityCantBeColoured[ZNPC.m_iWearable4])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable4, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable4, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable4, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsValidEntity(ZNPC.m_iWearable5) && !b_EntityCantBeColoured[ZNPC.m_iWearable5])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable5, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable5, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable5, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsValidEntity(ZNPC.m_iWearable6) && !b_EntityCantBeColoured[ZNPC.m_iWearable6])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable6, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable6, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable6, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable6, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsValidEntity(ZNPC.m_iWearable7) && !b_EntityCantBeColoured[ZNPC.m_iWearable7])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable7, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable7, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable7, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable7, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsValidEntity(ZNPC.m_iWearable8) && !b_EntityCantBeColoured[ZNPC.m_iWearable8])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable8, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable8, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable8, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable8, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsEntityAlive(ZNPC.m_iWearable1) && !b_EntityCantBeColoured[ZNPC.m_iWearable1])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable1, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable1, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable1, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsEntityAlive(ZNPC.m_iWearable2) && !b_EntityCantBeColoured[ZNPC.m_iWearable2])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable2, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable2, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable2, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsEntityAlive(ZNPC.m_iWearable3) && !b_EntityCantBeColoured[ZNPC.m_iWearable3])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable3, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable3, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable3, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsEntityAlive(ZNPC.m_iWearable4) && !b_EntityCantBeColoured[ZNPC.m_iWearable4])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable4, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable4, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable4, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsEntityAlive(ZNPC.m_iWearable5) && !b_EntityCantBeColoured[ZNPC.m_iWearable5])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable5, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable5, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable5, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsEntityAlive(ZNPC.m_iWearable6) && !b_EntityCantBeColoured[ZNPC.m_iWearable6])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable6, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable6, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable6, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable6, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsEntityAlive(ZNPC.m_iWearable7) && !b_EntityCantBeColoured[ZNPC.m_iWearable7])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable7, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable7, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable7, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable7, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+	if(IsEntityAlive(ZNPC.m_iWearable8) && !b_EntityCantBeColoured[ZNPC.m_iWearable8])
+	{
+		SetEntityRenderMode(ZNPC.m_iWearable8, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iWearable8, 0, 0, 0, 150);
+		SetEntPropFloat(ZNPC.m_iWearable8, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(ZNPC.m_iWearable8, Prop_Send, "m_fadeMaxDist", 700.0);
+	}
+
+	fl_Extra_Damage[iNpc] *= 1.05;
+	SetEntityRenderMode(iNpc, RENDER_TRANSCOLOR);
+	SetEntityRenderColor(iNpc, 0, 0, 0, 150);
+	SetEntPropFloat(iNpc, Prop_Send, "m_fadeMinDist", 600.0);
+	SetEntPropFloat(iNpc, Prop_Send, "m_fadeMaxDist", 700.0);
+	b_NoHealthbar[iNpc] = 1;
+#if defined ZR
+	GiveNpcOutLineLastOrBoss(iNpc, false);
+	b_thisNpcHasAnOutline[iNpc] = true;
+#endif
+
+	/*
+	float SelfPosParanormal[3];
+	float AllyPosParanormal[3];
+	float flDistanceToTargetParanormal = GetVectorDistance(SelfPosParanormal, AllyPosParanormal, true);
+	if(flDistanceToTargetParanormal < (100.0 * 100.0))
+	{
+		fl_Extra_Speed[iNpc] *= 2.0;
+	}
+	if(flDistanceToTargetParanormal > (100.0 * 100.0))
+	{
+		fl_Extra_Speed[iNpc] *= 0.5;
+	}
+	*/
+
+}
+
+void Ragdolled_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+	
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	int entity, i;
+	while(TF2U_GetWearable(victim, entity, i))
+	{
+		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+	}
+
+	int ragdoll = CreateEntityByName("prop_ragdoll");
+	if(!IsValidEntity(ragdoll))
+		return;
+	
+	
+	char modelName[256];
+	GetClientModel(victim, modelName, 256);
+	
+	DispatchKeyValue(ragdoll, "model", modelName);
+	DispatchKeyValue(ragdoll, "spawnflags", "4");
+
+	//no collisions
+	SetEntProp(ragdoll, Prop_Data, "m_nSolidType", 2);
+	SetEntityCollisionGroup(ragdoll, 0);
+
+	float flPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+	float angles[3];
+	GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
+	flPos[2] += 40.0;
+	DispatchSpawn(ragdoll);
+	SetEntPropEnt(ragdoll, Prop_Data, "m_hOwnerEntity", victim);
+	float SubjectAbsVelocity[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+	ScaleVector(SubjectAbsVelocity, 100.0);
+	TeleportEntity(ragdoll, flPos, angles, SubjectAbsVelocity);    
+	CBaseCombatCharacter(ragdoll).SetNextThink(GetGameTime());
+	SDKHook(ragdoll, SDKHook_ThinkPost, ThinkRagdoll_Post);
+
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ragdoll);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+static void ThinkRagdoll_Post(int entity)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+		return;
+
+	CBaseCombatCharacter(entity).SetNextThink(GetGameTime());
+
+	CClotBody npc = view_as<CClotBody>(entity);
+	
+
+	/*
+	if(npc.m_flNextRunTime < GetGameTime(npc.index))
+	{
+		return;
+	}
+	*/
+	
+
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	{
+		return;
+	}
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.25;
+		//code wont work, speed is capped
+	float flPosRagdoll[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flPosRagdoll);
+	
+	float flPosPlayer[3];
+	GetEntPropVector(owner, Prop_Data, "m_vecAbsOrigin", flPosPlayer);
+	float flSetOrigin[3];
+	flSetOrigin = flPosPlayer;
+	flSetOrigin[2] = flPosRagdoll[2];
+
+	float flDistanceToTarget = GetVectorDistance(flPosPlayer, flPosRagdoll);
+	
+
+	// apply velocity 
+	if(flDistanceToTarget < 40.0)
+		return;
+	static float angles[3];
+	GetVectorAnglesTwoPoints(flPosRagdoll, flPosPlayer, angles);
+
+	static float velocity[3];
+	GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(velocity, (flDistanceToTarget * 100.0));
+	if(flDistanceToTarget < 80.0)
+	{
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, velocity);
+	}
+	else
+	{
+		TeleportEntity(entity, flSetOrigin, NULL_VECTOR, velocity);    
+	}
+	//teleport them 0.25 seconds into future.
+
+}
+stock void SetLocalRagdollDelay(DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(entity))
+	{
+		delete pack;
+		return;
+	}
+	float vel[3];
+	vel[0] = pack.ReadFloat();
+	vel[1] = pack.ReadFloat();
+	vel[2] = pack.ReadFloat();
+	delete pack;   
+	TeleportEntity(entity, vel, NULL_VECTOR, NULL_VECTOR);     
+}
+void Ragdolled_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	if(!IsValidClient(victim))
+		return;
+	
+	RemoveEntity(Apply_StatusEffect.WearableUse);
+	if(!b_HideCosmeticsPlayer[victim])
+	{
+		int entity, i;
+		while(TF2U_GetWearable(victim, entity, i))
+		{
+			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+		}
+	}
+	else
+	{
+		int entity, i;
+		while(TF2U_GetWearable(victim, entity, i))
+		{
+			if(Viewchanges_NotAWearable(victim, entity))
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+		}
+	}
+}
+void SteamHappy_Prefix_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	CClotBody npc = view_as<CClotBody>(victim);
+	int Wearable = npc.EquipItem("head", "models/zombie_riot/steamhappy_hat_8.mdl");
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(Wearable);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 }

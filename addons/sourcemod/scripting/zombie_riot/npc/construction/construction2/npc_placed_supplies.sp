@@ -111,7 +111,7 @@ methodmap PlacedSupplies < CClotBody
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
 
-		npc.m_flSuicideTimer = GetGameTime() + 40.0;
+		npc.m_flSuicideTimer = GetGameTime() + 15.0;
 		//counts as a static npc, means it wont count towards NPC limit.
 		AddNpcToAliveList(npc.index, 1);
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -172,7 +172,7 @@ void PlacedSuppliesEffect(int entity, float range)
 	float ProjectileLoc[3];
 	PlacedSupplies npc1 = view_as<PlacedSupplies>(entity);
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-	spawnRing_Vectors(ProjectileLoc, range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 65, 255, 65, 200, 1, 0.6, 5.0, 0.1, 3);	
+	spawnRing_Vectors(ProjectileLoc, range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 65, 255, 65, 50, 1, 0.51, 5.0, 0.1, 3);	
 	npc1.PlayArmorSound();
 }
 

@@ -244,6 +244,7 @@ void NPC_ConfigSetup()
 	XenoFortifiedEarlyZombie_OnMapStart_NPC();
 	XenoPatientFew_OnMapStart_NPC();
 	XenoOuroborosEkas_OnMapStart_NPC();
+	XenoLabSecurity_OnMapStart_NPC();
 
 	
 	WanderingSpirit_OnMapStart_NPC();
@@ -816,6 +817,7 @@ void NPC_ConfigSetup()
 	RaidbossMrX_OnMapStart();
 	GodAlaxios_OnMapStart();
 	Sensal_OnMapStart_NPC();
+	SensalTargetLaser_OnMapStart_NPC();
 	Karlas_OnMapStart_NPC();
 	Stella_OnMapStart_NPC();
 	RaidbossBobTheFirst_OnMapStart();
@@ -969,6 +971,8 @@ void NPC_ConfigSetup()
 	BossSummonRandom_OnMapStart_NPC();
 	//Combine Mutation
 	OmegaRaid_OnMapStart_NPC();
+	Rollermine_OnMapStart_NPC();
+	NovaProspektOverseer_OnMapStart_NPC();
 	LostKnight_OnMapStart_NPC();
 	Merlton_Boss_OnMapStart_NPC();
 	BobFollower_Setup();
@@ -989,6 +993,7 @@ void NPC_ConfigSetup()
 	ImmutableHeavy_OnMapStart_NPC();
 	VanishingMatter_OnMapStart_NPC();
 	Erasus_OnMapStart_NPC();
+	ErasusDebug_OnMapStart_NPC();
 	AnnoyingSpirit_OnMapStart_NPC();
 	FogOrbHeavy_OnMapStart_NPC();
 
@@ -1217,6 +1222,38 @@ void NPC_ConfigSetup()
 	AlmagestProximaOnMapStart();
 	
 	DungeonLoot_MapStart();
+  
+	RocketGunner_OnMapStart_NPC();
+	HeavyWeaponsGuy_OnMapStart_NPC();
+	VeryHeavyHeavy_OnMapStart_NPC();
+	SteamHappyfier_OnMapStart_NPC();
+	BlackHeavySoul_OnMapStart_NPC();
+	Broly_OnMapStart_NPC();
+	FishScout_OnMapStart_NPC();
+	HumanMain_OnMapStart_NPC();
+	NoRandomKranz_OnMapStart_NPC();
+	Professional_Fingerer_OnMapStart_NPC();
+	SquadX_Omega_OnMapStart_NPC();
+	SquadX_Bob_OnMapStart_NPC();
+	SquadX_Whiteflower_OnMapStart_NPC();
+	SquadX_Shadowing_Darkness_OnMapStart_NPC();
+	SquadX_Master_OnMapStart_NPC();
+	KahmlsteinDeadGrandma_OnMapStart_NPC();
+	AustralianKing_OnMapStart_NPC();
+	DismountedTeuton_OnMapStart_NPC();
+	FuckerSwordsman_OnMapStart_NPC();
+	GigaObuch_OnMapStart_NPC();
+	LardFat_OnMapStart_NPC();
+	MountedTeuton_OnMapStart_NPC();
+	PurpleGuy_OnMapStart_NPC();
+	RTDMedic_OnMapStart_NPC();
+	AustralianSpider_OnMapStart_NPC();
+	SuctionMedic_OnMapStart_NPC();
+	LivingMetalBall_OnMapStart_NPC();
+	AxeThrowingBarbarian_OnMapStart_NPC();
+	AmbitiousTrader_OnMapStart_NPC();
+	AgentSmithFollower_Setup();
+	KevinmeryFollower_Setup();
 }
 
 void NPC_MapEnd()
@@ -1690,6 +1727,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/xeno_lab/npc_xeno_early_infected.sp"
 #include "npc/xeno_lab/npc_xeno_patient_few.sp"
 #include "npc/xeno_lab/npc_xeno_ekas_robo.sp"
+#include "npc/xeno_lab/npc_xeno_lab_security.sp"
 
 #include "npc/special/npc_sawrunner.sp"
 #include "npc/special/npc_l4d2_tank.sp"
@@ -1724,6 +1762,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/ally/npc_allied_kahml_afterimage.sp"
 #include "npc/ally/npc_allied_kiyru_visualiser.sp"
 #include "npc/ally/npc_allied_ritualist_visualiser.sp"
+#include "npc/ally/npc_erasus_debug.sp"
 
 #include "npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "npc/raidmode_bosses/npc_blitzkrieg.sp"
@@ -2075,6 +2114,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/expidonsa/npc_speedus_adivus.sp"
 #include "npc/expidonsa/npc_anfuhrer_eisenhard.sp"
 #include "npc/raidmode_bosses/npc_sensal.sp"
+#include "npc/raidmode_bosses/npc_sensal_crystal_targeter.sp"
 
 #include "npc/ally/npc_vip_building.sp"
 #include "npc/rogue/npc_overlord_rogue.sp"
@@ -2432,10 +2472,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/matrix/freeplay/npc_freeplay_agentspencer.sp"
 
 //Combine Hell Mutation
+#include "npc/mutations/combinehell/other/npc_nova_prospekt_overseer.sp"
 #include "npc/mutations/combinehell/other/npc_hunter.sp"
 #include "npc/mutations/combinehell/other/npc_merlton.sp"
 #include "npc/mutations/combinehell/other/npc_combine_lost_knight.sp"
 #include "npc/mutations/combinehell/other/npc_omega_raid.sp"
+#include "npc/mutations/combinehell/other/npc_rollermine.sp"
 #include "npc/mutations/combinehell/other/npc_bob_follower.sp"
 #include "npc/mutations/combinehell/seaborn/npc_seaborn_combine_police_pistol.sp"
 #include "npc/mutations/combinehell/seaborn/npc_seaborn_combine_police_smg.sp"
@@ -2492,6 +2534,40 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aprilfools/npc_troll_pistol.sp"
 #include "npc/aprilfools/npc_troll_rpg.sp"
 #include "npc/aprilfools/npc_troll_melee.sp"
+
+
+#include "npc/aprilfools/3rd_april/npc_smith_follower.sp"
+#include "npc/aprilfools/3rd_april/npc_kevin_follower.sp"
+#include "npc/aprilfools/3rd_april/npc_ambitious_trader.sp"
+#include "npc/aprilfools/3rd_april/npc_kahmlstein_grandma.sp"
+#include "npc/aprilfools/3rd_april/npc_rocket_gunner.sp"
+#include "npc/aprilfools/3rd_april/npc_heavy_weapons_guy.sp"
+#include "npc/aprilfools/3rd_april/npc_very_heavy_heavy.sp"
+#include "npc/aprilfools/3rd_april/npc_steam_happyfier.sp"
+#include "npc/aprilfools/3rd_april/npc_black_heavy_soul.sp"
+#include "npc/aprilfools/3rd_april/npc_broly.sp"
+#include "npc/aprilfools/3rd_april/npc_fish_scout.sp"
+#include "npc/aprilfools/3rd_april/npc_human_main.sp"
+#include "npc/aprilfools/3rd_april/npc_no_random_kranz.sp"
+#include "npc/aprilfools/3rd_april/npc_professional_fingerer.sp"
+#include "npc/aprilfools/3rd_april/npc_squad_bob.sp"
+#include "npc/aprilfools/3rd_april/npc_squad_omega.sp"
+#include "npc/aprilfools/3rd_april/npc_squad_shadowing_darkness.sp"
+#include "npc/aprilfools/3rd_april/npc_squad_whiteflower.sp"
+#include "npc/aprilfools/3rd_april/npc_squad_master.sp"
+#include "npc/aprilfools/3rd_april/npc_australianking.sp"
+#include "npc/aprilfools/3rd_april/npc_dismounted_teuton.sp"
+#include "npc/aprilfools/3rd_april/npc_fucker_swordsman.sp"
+#include "npc/aprilfools/3rd_april/npc_giga_obuch.sp"
+#include "npc/aprilfools/3rd_april/npc_lard_fat.sp"
+#include "npc/aprilfools/3rd_april/npc_mounted_teuton.sp"
+#include "npc/aprilfools/3rd_april/npc_purple_guy.sp"
+#include "npc/aprilfools/3rd_april/npc_rtd_medic.sp"
+#include "npc/aprilfools/3rd_april/npc_spider.sp"
+#include "npc/aprilfools/3rd_april/npc_suction_medic.sp"
+#include "npc/aprilfools/3rd_april/npc_living_metal_ball.sp"
+#include "npc/aprilfools/3rd_april/npc_axe_throwing_barbarian.sp"
+
 
 #include "npc/construction/enemies/npc_eirasus.sp"
 #include "npc/construction/enemies/npc_haltera.sp"

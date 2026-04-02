@@ -2789,11 +2789,17 @@ void Rogue_PlayerDowned(int client)
 
 bool Rogue_NoLastman()
 {
+	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+		return true;
+		
 	return Rogue_Mode() && !Rogue_Paradox_Lastman();
 }
 
-bool Rogue_UnlockStore()
+int Rogue_UnlockStore()
 {
+	if(VScript_LockedWeapons())
+		return 2;
+	
 	return (Rogue_Mode() && RogueTheme == BlueParadox);
 }
 
@@ -3409,16 +3415,16 @@ bool Rogue_UpdateMvMStats()
 								switch(Rogue_GetUmbralLevel())
 								{
 									case 0:	// Most Friendly
-										Waves_SetWaveClass(objective, i, CurrentUmbral, "affinity_best", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+										Waves_SetWaveClass(objective, i, CurrentUmbral, "affinitybestv2", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
 									
 									case 1, 2:
-										Waves_SetWaveClass(objective, i, CurrentUmbral, "affinity_neutral", MVM_CLASS_FLAG_NORMAL, true);
+										Waves_SetWaveClass(objective, i, CurrentUmbral, "affinityneutralv2", MVM_CLASS_FLAG_NORMAL, true);
 									
 									case 3:
-										Waves_SetWaveClass(objective, i, CurrentUmbral, "affinity_bad", MVM_CLASS_FLAG_MINIBOSS, true);
+										Waves_SetWaveClass(objective, i, CurrentUmbral, "affinitybadv3", MVM_CLASS_FLAG_MINIBOSS, true);
 									
 									default:	// Most Hated
-										Waves_SetWaveClass(objective, i, CurrentUmbral, "affinity_worst", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+										Waves_SetWaveClass(objective, i, CurrentUmbral, "affinityworstv2", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
 								}
 
 								continue;

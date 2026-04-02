@@ -245,7 +245,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		if(!CheckInHud())
 			OnTakeDamage_ProvokedAnger(Victim_weapon);
 
-		damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon, damagePosition);
+		damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon, damagePosition, i_HexCustomDamageTypes[victim]);
 	}
 	
 	if(OnTakeDamage_ShieldLogic(victim, damagetype))
@@ -680,49 +680,71 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 void NpcArmorExtra(int victim, int &attacker, int &inflictor, float &damage, int &damagetype)
 {
 	CClotBody npc = view_as<CClotBody>(victim);
-	if(npc.m_flArmorCount > 0.0)
+	if(npc.m_flArmorCount <= 0.0)
+		return;
+	if(!CheckInHud())
 	{
-		if(!CheckInHud())
+		if(damagetype & DMG_CLUB)
 		{
-			if(damagetype & DMG_CLUB)
+			float SubtractBy = ((damage * ((npc.m_flArmorProtect - 1.0) * -1.0)) * 1.35);
+			npc.m_flArmorCount -= SubtractBy;
+			
+			//armored enemies get more damage.
+			int DisplayCritSoundTo;
+			if(attacker <= MaxClients)
 			{
-				npc.m_flArmorCount -= ((damage * ((npc.m_flArmorProtect - 1.0) * -1.0)) * 1.35);
-				//armored enemies get more damage.
-				int DisplayCritSoundTo;
-				if(attacker <= MaxClients)
-					DisplayCritSoundTo = attacker;
-				else if(inflictor <= MaxClients)
-					DisplayCritSoundTo = inflictor;
-					
-				if(DisplayCritSoundTo > 0 && DisplayCritSoundTo <= MaxClients)
-				{
-					bool PlaySound = false;
-					if(f_MinicritSoundDelay[DisplayCritSoundTo] < GetGameTime())
-					{
-						PlaySound = true;
-						f_MinicritSoundDelay[DisplayCritSoundTo] = GetGameTime() + 0.25;
-					}
-					
-					DisplayCritAboveNpc(victim, DisplayCritSoundTo, PlaySound,_,_,true); //Display crit above head
-				}
-
+				DisplayCritSoundTo = attacker;
+				f_ArmorDamageDeltHud[attacker] += SubtractBy;
 			}
-			else
+			else if(inflictor <= MaxClients)
 			{
-				npc.m_flArmorCount -= (damage * ((npc.m_flArmorProtect - 1.0) * -1.0));
+				DisplayCritSoundTo = inflictor;
+				f_ArmorDamageDeltHud[inflictor] += SubtractBy;
+			}
+				
+			if(DisplayCritSoundTo > 0 && DisplayCritSoundTo <= MaxClients)
+			{
+				bool PlaySound = false;
+				if(f_MinicritSoundDelay[DisplayCritSoundTo] < GetGameTime())
+				{
+					PlaySound = true;
+					f_MinicritSoundDelay[DisplayCritSoundTo] = GetGameTime() + 0.25;
+				}
+				
+				DisplayCritAboveNpc(victim, DisplayCritSoundTo, PlaySound,_,_,true); //Display crit above head
+			}
+
+		}
+		else
+		{
+			float SubtractBy = ((damage * ((npc.m_flArmorProtect - 1.0) * -1.0)));
+			npc.m_flArmorCount -= SubtractBy;
+			if(attacker <= MaxClients)
+			{
+				f_ArmorDamageDeltHud[attacker] += SubtractBy;
+			}
+			else if(inflictor <= MaxClients)
+			{
+				f_ArmorDamageDeltHud[inflictor] += SubtractBy;
 			}
 		}
-		damage *= npc.m_flArmorProtect; //negate damage
-		if(!CheckInHud())
-		{
-			if(npc.m_iArmorType == 0)
-				npc.PlayHurtArmorSound();
+	}
+	damage *= npc.m_flArmorProtect; //negate damage
+	if(!CheckInHud())
+	{
+		if(npc.m_iArmorType == 0)
+			npc.PlayHurtArmorSound();
 
-			if(npc.m_flArmorCount <= 0.0) //over damage, add as damage.
+		if(npc.m_flArmorCount <= 0.0) //over damage, add as damage.
+		{
+			//let melee be really good against armor and stuff to reward them.
+			damage -= npc.m_flArmorCount;
+			if(attacker <= MaxClients)
 			{
-				//let melee be really good against armor and stuff to reward them.
-				damage -= npc.m_flArmorCount;
+				f_ArmorDamageDeltHud[attacker] += npc.m_flArmorCount;
 			}
+			else if(inflictor <= MaxClients)
+				f_ArmorDamageDeltHud[inflictor] += npc.m_flArmorCount;
 		}
 	}
 }
@@ -854,7 +876,7 @@ stock bool Damage_BuildingAttacker(int &attacker, float &damage)
 }
 
 #if defined ZR
-static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3])
+static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3], int zr_custom_damage)
 {
 	switch(i_CustomWeaponEquipLogic[equipped_weapon])
 	{
@@ -878,17 +900,17 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		case WEAPON_MLYNAR: // weapon_ark
 		{
 			if(!CheckInHud())
-				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon);
+				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon,0,zr_custom_damage);
 		}
 		case WEAPON_MLYNAR_PAP: // weapon_ark
 		{
 			if(!CheckInHud())
-				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1);
+				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1,zr_custom_damage);
 		}
 		case WEAPON_MLYNAR_PAP_2: // weapon_ark
 		{
 			if(!CheckInHud())
-				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 2);
+				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 2, zr_custom_damage);
 		}
 		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS, WEAPON_SKADI:
 		{
@@ -1371,9 +1393,15 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
         {
            return PurgeKit_NPCTakeDamage_Rampager(attacker, victim, damage, weapon, damagetype);
 		}
+        case WEAPON_BRICK:
+        {
+            if(!CheckInHud())
+				return Brick_NPCTakeDamage_Do(attacker, inflictor, victim, damage, weapon, damagetype);
+		}
 	}
 #endif
 
+	
 #if defined RPG
 	if(!CheckInHud())
 	{
@@ -1662,6 +1690,12 @@ stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflic
 		{
 			ExtraDamageDealt *= 0.5;
 			damage *= ExtraDamageDealt;
+			char buffer[128];
+			zr_tagblacklist.GetString(buffer, sizeof(buffer));
+			if(StrContains(buffer, "fools26", false) != -1)
+			{
+				damage *= 0.5;
+			}
 			if(!WasHereSinceStartOfWave(attacker))
 			{
 				damage = 0.0;
@@ -2134,7 +2168,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 #endif
 
-	char BufferAdd[6];
+	char BufferAdd[12];
 #if defined ZR
 	if(Victoria_Support_RechargeTime(victim))
 	{
@@ -2182,4 +2216,47 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 			Format(Debuff_Adder_left, SizeOfChar, "%c%s", BufferAdd,Debuff_Adder_left);
 		}
 	}
+}
+
+
+float f_DamageWhen[MAXPLAYERS];
+void DownedOrKilledClient_Feedback(int client, int attacker, float damage, int damagetype)
+{
+	if(GetGameTime() == f_DamageWhen[client])
+		return;
+	f_DamageWhen[client] = GetGameTime();
+	char AttackerWho[128];
+	if(attacker <= 0 || (attacker > 0 && (!b_ThisWasAnNpc[attacker] && !i_IsABuilding[attacker])))
+	{
+		Format(AttackerWho, sizeof(AttackerWho), "%T", "Unknown", client);		
+	}
+	else
+	{
+#if defined ZR
+		if (b_NameNoTranslation[attacker])
+			Format(AttackerWho, sizeof(AttackerWho), "%s",c_NpcName[attacker]);
+		else
+#endif
+			Format(AttackerWho, sizeof(AttackerWho), "%T",c_NpcName[attacker], client);
+
+		char prefix[255];
+		StatusEffects_PrefixName(attacker, client, prefix, sizeof(prefix));
+
+		Format(AttackerWho, sizeof(AttackerWho), "%s%s",prefix,AttackerWho);
+	}
+	char c_DamageType[64];
+	if((damagetype & DMG_TRUEDAMAGE))
+	{
+		Format(c_DamageType, sizeof(c_DamageType), "%T","True Damage",client);
+	}
+	else if((damagetype & DMG_CLUB))
+	{
+		Format(c_DamageType, sizeof(c_DamageType), "%T","Melee Damage",client);
+	}
+	else
+	{
+		Format(c_DamageType, sizeof(c_DamageType), "%T","Ranged Damage",client);
+	}
+
+	SPrintToChat(client, "%T", "Last Hit Recieved info",client, AttackerWho, damage, c_DamageType, i_LatestHealthLeft[client]);
 }

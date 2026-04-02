@@ -266,8 +266,20 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		}
 		case 11:
 		{
-			PluginName = "npc_xeno_raidboss_nemesis";	
-			
+			//needs buffs!!
+			switch(GetRandomInt(1,4))
+			{
+				case 1:
+				{
+					PluginName = "npc_xeno_raidboss_nemesis";
+					Format(CharData, sizeof(CharData), "%s%s",CharData, "enraged");
+				}
+				default:
+				{
+					PluginName = "npc_xeno_raidboss_nemesis";
+				}	
+			}
+
 			enemy.ExtraDamage *= 0.9;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.3); 
 			//he doesnt really scale? i dont know what to do.
@@ -422,7 +434,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 				case 1:
 				{
 					PluginName = "npc_vincent";	
-					Format(CharData, sizeof(CharData), "%s%s",CharData, "forceangry");
+					Format(CharData, sizeof(CharData), "%s%s",CharData, "forceangry;forcesad");
 				}
 				default:
 				{
@@ -448,21 +460,22 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "force_final_battle");
 			
 			enemy.ExtraDamage *= 1.1;
-			enemy.ExtraThinkSpeed *= 0.9;
+			enemy.ExtraThinkSpeed *= 0.85;
 			//no minions, so buff
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.5); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.4); 
 		}
 		case 33:
 		{
 			PluginName = "npc_shadowing_darkness_boss";	
 			
-			enemy.ExtraDamage *= 0.5;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.35); 
+			enemy.ExtraDamage *= 0.45;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
 			if(CurrentModifOn() == 4) // TURBOLENCES
 			{
 				enemy.ExtraDamage *= 0.65;
 				enemy.Health = RoundToNearest(float(enemy.Health) * 0.75); 
 			}
+			enemy.ExtraThinkSpeed *= 1.15;
 		}
 		case 34:
 		{

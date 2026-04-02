@@ -256,8 +256,12 @@ bool NPC_SpawnNext(bool panzer,
 		{
 			deathforcepowerup = 0;
 		}
+
+		char name[16];
+		if(Spawns_NameExists("miniboss"))
+			strcopy(name, sizeof(name), "miniboss");
 		
-		if(Spawns_GetNextPos(pos, ang, _, boss.Delay + 2.0))
+		if(Spawns_GetNextPos(pos, ang, name, boss.Delay + 2.0))
 		{
 			DataPack pack;
 			CreateDataTimer(boss.Delay, Timer_Delay_BossSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -640,6 +644,13 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 		}
 		if(Waves_InFreeplay())
 			Freeplay_SpawnEnemy(entity);
+		if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+		{
+			//miniboss nerf
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 0.5));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.5));
+			fl_Extra_Damage[entity] 			*= 0.65;
+		}
 	}
 
 	return Plugin_Stop;
@@ -1453,7 +1464,23 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	while(health <= 0 && npcBase.m_iHealthBar >= 1)
 	{
 		//has health bars!
-		health += ReturnEntityMaxHealth(victim);
+		bool cancelDamage = false;
+		Function func = func_NPCLostHealthBar[victim];
+		if(func && func != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, func);
+			Call_PushCell(victim);
+			Call_PushCell(npcBase.m_iHealthBar - 1);
+			Call_Finish(cancelDamage);
+		}
+		if(cancelDamage)
+		{
+			health = ReturnEntityMaxHealth(victim);
+		}
+		else
+		{
+			health += ReturnEntityMaxHealth(victim);
+		}
 		SetEntProp(victim, Prop_Data, "m_iHealth", health);
 		npcBase.m_iHealthBar--;
 	}
@@ -1792,6 +1819,13 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		green = 255;
 		blue = 0;
 	}
+	CClotBody npc = view_as<CClotBody>(victim);
+	if(npc.m_iHealthBar > 50000)
+	{
+		red = 0;
+		green = 255;
+		blue = 0;
+	}
 
 	static char Debuff_Adder_left[128], Debuff_Adder_right[128], Debuff_Adder[128];
 	EntityBuffHudShow(victim, attacker, Debuff_Adder_left, Debuff_Adder_right, sizeof(Debuff_Adder));
@@ -1801,7 +1835,6 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 	float GameTime = GetGameTime();
 #endif
 	
-	CClotBody npc = view_as<CClotBody>(victim);
 	
 	int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
 	bool armor_added = false;
@@ -1998,7 +2031,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		HudOffset += f_HurtHudOffsetX[attacker];
 #endif	// ZR
 
-		SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+		SetHudTextParams(HudY, HudOffset, 0.5, red, green, blue, 255, 0, 0.01, 0.01);
 		static char ExtraHudHurt[255];
 		
 #if defined ZR
@@ -2036,6 +2069,11 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			Format(c_MaxHealth, sizeof(c_MaxHealth), "???");
 			Format(c_Health, sizeof(c_Health), "???");
 		}
+		if(npc.m_iHealthBar > 50000)
+		{
+			Format(c_MaxHealth, sizeof(c_MaxHealth), "∞");
+			Format(c_Health, sizeof(c_Health), "∞");
+		}
 		
 #if defined RPG
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "Level %d", Level[victim]);
@@ -2053,7 +2091,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%s\n%s / %s",NamePrefix,c_NpcName[victim], c_Health, c_MaxHealth);
 		}
 		CClotBody npcstats = view_as<CClotBody>(victim);
-		if(b_ThisWasAnNpc[victim] && npcstats.m_iHealthBar > 0)
+		if(b_ThisWasAnNpc[victim] && npcstats.m_iHealthBar > 0 && npcstats.m_iHealthBar < 50000)
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s x%i",ExtraHudHurt, npcstats.m_iHealthBar + 1);
 #endif
 		
@@ -2098,7 +2136,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		HudOffset += f_HurtHudOffsetX[attacker];
 			
 		SetGlobalTransTarget(attacker);
-		SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+		SetHudTextParams(HudY, HudOffset, 0.5, red, green, blue, 255, 0, 0.01, 0.01);
 		//todo: better showcase of timer.
 		static char ExtraHudHurt[168];
 
@@ -2153,6 +2191,11 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			Format(c_MaxHealth, sizeof(c_MaxHealth), "???");
 			Format(c_Health, sizeof(c_Health), "???");
 		}
+		if(npc.m_iHealthBar > 50000)
+		{
+			Format(c_MaxHealth, sizeof(c_MaxHealth), "∞");
+			Format(c_Health, sizeof(c_Health), "∞");
+		}
 		
 		char NamePrefix[255];
 		StatusEffects_PrefixName(victim, attacker, NamePrefix, sizeof(NamePrefix));
@@ -2166,7 +2209,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		}
 		
 		CClotBody npcstats = view_as<CClotBody>(victim);
-		if(b_ThisWasAnNpc[victim] && npcstats.m_iHealthBar > 0)
+		if(b_ThisWasAnNpc[victim] && npcstats.m_iHealthBar > 0 && npcstats.m_iHealthBar < 50000)
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s x%i",ExtraHudHurt, npcstats.m_iHealthBar + 1);
 
 		//add debuff
@@ -2213,7 +2256,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 #if !defined RTS
 stock void ResetDamageHud(int client)
 {
-	SetHudTextParams(-1.0, 0.05, 1.0, 0, 0, 0, 255, 0, 0.01, 0.01);
+	SetHudTextParams(-1.0, 0.05, 0.5, 0, 0, 0, 255, 0, 0.01, 0.01);
 	ShowSyncHudText(client, SyncHud, "");
 }
 
@@ -2223,7 +2266,6 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		return;
 	if(attacker <= MaxClients)
 	{
-
 		//If a raid hud update happens, it should prefer to update it incase you attack something in the same frame or whaatever.
 		if(RaidHudForce)
 		{
@@ -2234,6 +2276,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		{
 			b_DisplayDamageHud[attacker][0] = true;
 			i_HudVictimToDisplay[attacker] = EntIndexToEntRef(victim);
+			f_RepeatShowHudFor[attacker] = GetGameTime() + 2.0;
 		}
 
 		float GameTime = GetGameTime();
@@ -2254,6 +2297,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 					damageCalc += Health;
 				}
 				Damage_dealt_in_total[attacker] += damageCalc;
+				Damage_dealt_in_total[attacker] += f_ArmorDamageDeltHud[attacker];
 			}
 			if(GameTime > f_damageAddedTogetherGametime[attacker])
 			{
@@ -2265,12 +2309,14 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 			if(!ignore) //Cannot be a just show function
 			{
 				f_damageAddedTogether[attacker] += damage;
+				f_damageAddedTogether[attacker] += f_ArmorDamageDeltHud[attacker];
 			}
 			if(damage > 0.0)
 			{
 				f_damageAddedTogetherGametime[attacker] = GameTime + 0.6;
 			}
 		}
+		f_ArmorDamageDeltHud[attacker] = 0.0;
 	}
 	if(DontForward)
 		return;
@@ -2765,3 +2811,70 @@ stock int StrLenMB(const char[] str)
 	return count;
 }  
 */
+
+#if defined ZR
+void PrintNPCMessageWithPrefixes(int entity, const char[] color, const char[] message, bool messageIsTranslated = false)
+{
+	bool checkedForPrefixes;
+	bool loud;
+	char finalColor[32];
+	char finalMessage[255];
+	
+	// Only copy the message once if it's not translated
+	if (!messageIsTranslated)
+		strcopy(finalMessage, sizeof(finalMessage), message);
+	
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!IsClientInGame(client) || IsFakeClient(client))
+			continue;
+		
+		char prefix[255];
+		StatusEffects_PrefixName(entity, client, prefix, sizeof(prefix));
+		
+		// On the first valid client, check for prefixes and modify the message based on them
+		if (!checkedForPrefixes)
+		{
+			bool hasPrefix = prefix[0] != '\0';
+			if (hasPrefix)
+			{
+				if (HasSpecificBuff(entity, "Verde"))
+				{
+					// verd e
+					finalColor = "forestgreen";
+				}
+				else if (HasSpecificBuff(entity, "Ragebaiter Prefix"))
+				{
+					// To match the rest of ragebaiter text
+					finalColor = "crimson";
+				}
+				
+				if (HasSpecificBuff(entity, "Loud Prefix"))
+					loud = true;
+			}
+			
+			if (finalColor[0] == '\0')
+				strcopy(finalColor, sizeof(finalColor), color);
+			
+			if (!messageIsTranslated && loud)
+				StringToUpper(finalMessage);
+			
+			checkedForPrefixes = true;
+		}
+		
+		if (messageIsTranslated)
+		{
+			// Do some things per-client if the message is translated
+			FormatEx(finalMessage, sizeof(finalMessage), "%T", message, client);
+			
+			if (loud)
+				StringToUpper(finalMessage);
+		}
+		
+		if (!b_NameNoTranslation[entity])
+			CPrintToChat(client, "{%s}%s%s{default}: %s", finalColor, prefix, c_NpcName[entity], finalMessage);
+		else
+			CPrintToChat(client, "{%s}%s%t{default}: %s", finalColor, prefix, c_NpcName[entity], finalMessage);
+	}
+}
+#endif
