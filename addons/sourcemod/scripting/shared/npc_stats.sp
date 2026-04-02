@@ -5150,6 +5150,11 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		
 	if(IsValidEntity(enemy))
 	{
+		if(index <= MaxClients)
+		{
+			//players always have camo detection.
+			camoDetection = true;
+		}
 		if(i_IsVehicle[enemy])
 		{
 #if defined ZR

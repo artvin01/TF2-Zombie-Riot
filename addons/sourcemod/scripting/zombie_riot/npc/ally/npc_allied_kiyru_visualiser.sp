@@ -610,7 +610,7 @@ void BrawlerHeat4(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 			if(npc.m_iChanged_WalkCycle != 3)
 			{
 				npc.m_iChanged_WalkCycle = 3;
-				if(IsValidEnemy(npc.index, npc.m_iTarget))
+				if(IsValidEnemy(npc.index, npc.m_iTarget, true))
 				{
 					if(!b_thisNpcIsARaid[npc.m_iTarget])
 						SensalCauseKnockback(npc.index, npc.m_iTarget,_,false);
