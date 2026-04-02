@@ -134,11 +134,11 @@ methodmap LanteanProjectile < CClotBody
 		npc.m_bDissapearOnDeath 				= true;
 		npc.b_BlockDropChances					= true;
 
-		npc.m_flSpeed = 500.0 + GetRandomFloat(0.0, 100.0);		//MAX SPEED
+		npc.m_flSpeed = 400.0 + GetRandomFloat(0.0, 100.0);		//MAX SPEED
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StopPathing();	//don't path.
 
-		npc.m_flTurnSpeed				= 13.2;
+		npc.m_flTurnSpeed				= 11.2;
 		npc.m_flAcceleration			= 33.0;
 		npc.m_flDecceleration			= 16.5;
 		npc.m_flHyperDeccelNearDist		= 500.0;

@@ -290,7 +290,7 @@ public void Isharmla_ClotThink(int iNPC)
 				{
 					float vecAlly[3]; WorldSpaceCenter(npc.m_iTarget, vecAlly);
 
-					int healing = npc.Anger ? 24000 : 16000;
+					int healing = npc.Anger ? 150000 : 100000;
 
 					if(!HasSpecificBuff(npc.m_iTarget, "Growth Blocker"))
 						healing -= 16000;
@@ -319,6 +319,8 @@ public void Isharmla_ClotThink(int iNPC)
 
 					NPCStats_RemoveAllDebuffs(npc.m_iTarget);
 					ApplyStatusEffect(npc.index, npc.m_iTarget, "Godly Motivation", 7.0);
+					ApplyStatusEffect(npc.index, npc.m_iTarget, "UBERCHARGED", 7.0);
+					ApplyStatusEffect(npc.index, npc.m_iTarget, "Dimensional Turbulence", 7.0);
 				}
 				
 				int ally = GetClosestAlly(npc.index, _, npc.m_iTarget);
