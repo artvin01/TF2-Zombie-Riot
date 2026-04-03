@@ -2815,6 +2815,21 @@ stock int StrLenMB(const char[] str)
 #if defined ZR
 void PrintNPCMessageWithPrefixes(int entity, const char[] npcColor, const char[] message, bool messageIsTranslated = false, const char[] customName = "", const char[] messageColor = "")
 {
+	if (c_NpcName[entity][0] == '\0')
+	{
+		// This NPC has no name! It might have not been fully initialized yet, try again until it has a name
+		DataPack pack = new DataPack();
+		RequestFrame(PrintNPCMessageWithPrefixes_Delay, pack);
+		pack.WriteCell(EntIndexToEntRef(entity));
+		pack.WriteString(npcColor);
+		pack.WriteString(message);
+		pack.WriteCell(messageIsTranslated);
+		pack.WriteString(customName);
+		pack.WriteString(messageColor);
+		
+		return;
+	}
+	
 	bool checkedForPrefixes;
 	bool loud;
 	char finalNpcColor[32], finalMessageColor[32];
@@ -2884,5 +2899,29 @@ void PrintNPCMessageWithPrefixes(int entity, const char[] npcColor, const char[]
 		else
 			CPrintToChat(client, "{%s}%s%t{default}: %s%s", finalNpcColor, prefix, c_NpcName[entity], finalMessageColor, finalMessage);
 	}
+}
+
+void PrintNPCMessageWithPrefixes_Delay(DataPack pack)
+{
+	pack.Reset();
+	
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if (entity == INVALID_ENT_REFERENCE || b_NpcHasDied[entity])
+	{
+		delete pack;
+		return;
+	}
+	
+	char message[255], npcColor[64], messageColor[64], customName[255];
+	
+	pack.ReadString(npcColor, sizeof(npcColor));
+	pack.ReadString(message, sizeof(message));
+	bool isTranslated = pack.ReadCell();
+	pack.ReadString(customName, sizeof(customName));
+	pack.ReadString(messageColor, sizeof(messageColor));
+	
+	delete pack;
+	
+	PrintNPCMessageWithPrefixes(entity, npcColor, message, isTranslated, customName, messageColor);
 }
 #endif

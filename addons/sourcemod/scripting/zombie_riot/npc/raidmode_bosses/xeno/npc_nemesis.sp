@@ -316,9 +316,14 @@ methodmap RaidbossNemesis < CClotBody
 		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 25.0;
 
 		if(isEnraged)
+		{
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Enraged Calmaticus");
-		
-		RequestFrame(Frame_IntroMessage, EntIndexToEntRef(npc.index));
+			NPCTalkMessage(npc.index, "YOU WILL BECOME DNA SUPLIMENTS.");
+		}
+		else
+		{
+			NPCTalkMessage(npc.index, "You all will be one with the virus.");
+		}
 		
 		npc.m_iWearable6 = npc.EquipItem("weapon_bone", "models/workshop/player/items/pyro/hw2013_mucus_membrane/hw2013_mucus_membrane.mdl");
 	
@@ -326,23 +331,6 @@ methodmap RaidbossNemesis < CClotBody
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 		return npc;
-	}
-}
-
-static void Frame_IntroMessage(int ref)
-{
-	int iNPC = EntRefToEntIndex(ref);
-	if (iNPC == INVALID_ENT_REFERENCE || b_NpcHasDied[iNPC])
-		return;
-	
-	RaidbossNemesis npc = view_as<RaidbossNemesis>(iNPC);
-	if(npc.m_bIsEnraged)
-	{
-		NPCTalkMessage(iNPC, "YOU WILL BECOME DNA SUPLIMENTS.");
-	}
-	else
-	{
-		NPCTalkMessage(iNPC, "You all will be one with the virus.");
 	}
 }
 

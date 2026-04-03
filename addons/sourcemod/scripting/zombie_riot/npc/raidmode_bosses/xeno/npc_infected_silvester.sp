@@ -370,7 +370,24 @@ methodmap RaidbossSilvester < CClotBody
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-	
+		if(XenoExtraLogic())
+		{
+			switch(GetRandomInt(1,3))
+			{
+				case 1:
+				{
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Is... Is this really where we must change your mind?");
+				}
+				case 2:
+				{
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Please just turn away!");
+				}
+				case 3:
+				{
+					RaidbossSilvester_NPCTalkMessage(npc.index, "This is too risky, we can't let you get any closer!");
+				}
+			}
+		}
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSilvester_OnTakeDamagePost);
 		b_angered_twice[npc.index] = false;
@@ -458,9 +475,7 @@ methodmap RaidbossSilvester < CClotBody
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;		
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
-
-		RequestFrame(Frame_IntroMessage, EntIndexToEntRef(npc.index));
-
+		
 		npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 20.0;
 		npc.m_iInKame = 0;
 
@@ -472,32 +487,6 @@ methodmap RaidbossSilvester < CClotBody
 		
 		SilvesterApplyEffects(npc.index, false);
 		return npc;
-	}
-}
-
-static void Frame_IntroMessage(int ref)
-{
-	int iNPC = EntRefToEntIndex(ref);
-	if (iNPC == INVALID_ENT_REFERENCE || b_NpcHasDied[iNPC])
-		return;
-	
-	if(XenoExtraLogic())
-	{
-		switch(GetRandomInt(1,3))
-		{
-			case 1:
-			{
-				RaidbossSilvester_NPCTalkMessage(iNPC, "Is... Is this really where we must change your mind?");
-			}
-			case 2:
-			{
-				RaidbossSilvester_NPCTalkMessage(iNPC, "Please just turn away!");
-			}
-			case 3:
-			{
-				RaidbossSilvester_NPCTalkMessage(iNPC, "This is too risky, we can't let you get any closer!");
-			}
-		}
 	}
 }
 

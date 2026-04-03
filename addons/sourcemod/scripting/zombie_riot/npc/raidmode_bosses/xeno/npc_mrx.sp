@@ -319,7 +319,7 @@ methodmap RaidbossMrX < CClotBody
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
 		i_SideHurtWhich[npc.index] = 0;
 
-		RequestFrame(Frame_IntroMessage, EntIndexToEntRef(npc.index));
+		NPCTalkMessage(npc.index, "...");
 
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
@@ -331,15 +331,6 @@ methodmap RaidbossMrX < CClotBody
 
 		return npc;
 	}
-}
-
-static void Frame_IntroMessage(int ref)
-{
-	int iNPC = EntRefToEntIndex(ref);
-	if (iNPC == INVALID_ENT_REFERENCE || b_NpcHasDied[iNPC])
-		return;
-	
-	NPCTalkMessage(iNPC, "...");
 }
 
 static void NPCTalkMessage(int iNPC, const char[] message)

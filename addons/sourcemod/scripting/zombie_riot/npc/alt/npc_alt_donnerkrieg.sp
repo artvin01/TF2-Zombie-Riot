@@ -160,7 +160,7 @@ methodmap Donnerkrieg < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
-		RequestFrame(Frame_IntroMessage, EntIndexToEntRef(npc.index));
+		NPCTalkMessage(npc.index, "I have arrived to render judgement");
 	
 		g_b_donner_died=false;
 
@@ -224,15 +224,6 @@ methodmap Donnerkrieg < CClotBody
 		
 		return npc;
 	}
-}
-
-static void Frame_IntroMessage(int ref)
-{
-	int iNPC = EntRefToEntIndex(ref);
-	if (iNPC == INVALID_ENT_REFERENCE || b_NpcHasDied[iNPC])
-		return;
-	
-	NPCTalkMessage(iNPC, "I have arrived to render judgement");
 }
 
 static void NPCTalkMessage(int iNPC, const char[] message, bool identityRevealed = false)

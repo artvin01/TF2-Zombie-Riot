@@ -442,8 +442,6 @@ methodmap Blitzkrieg < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
-		RequestFrame(Frame_IntroMessage, EntIndexToEntRef(npc.index));
-		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
@@ -510,11 +508,51 @@ methodmap Blitzkrieg < CClotBody
 		b_pureblitz = false;
 		if(!b_buffed_blitz)
 		{
+			
 			b_buffed_blitz = StrContains(data, "blitzmayhem") != -1;
 			if(b_buffed_blitz)
 			{
 				strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "TRUE BLITZKRIEG");
 				b_pureblitz = true;
+				switch(GetRandomInt(0,7))
+				{
+					case 0:
+					{
+						NPCTalkMessage(npc.index, "NAHAHAHAHAHAHAHAHAHAHAHA!!!!!");
+					}
+					case 1:
+					{
+						NPCTalkMessage(npc.index, "ICH WERD EUCH ALLE UMBRINGEN!");
+					}
+					case 2:
+					{
+						NPCTalkMessage(npc.index, "DAS IS PURE KRAFT!");
+					}
+					case 3:
+					{
+						NPCTalkMessage(npc.index, "DENKSTE DAS WAR ALLES!!?!?!?!");
+					}
+					case 4:
+					{
+						NPCTalkMessage(npc.index, "DUUUUUUUUUUUUUUU KLEINE RATTE!");
+					}
+					case 5:
+					{
+						NPCTalkMessage(npc.index, "KOMMT HER IHR KLEINEN VIECHER!!");
+					}
+					case 6:
+					{
+						NPCTalkMessage(npc.index, "DIE WAHRE POWER VON RUIANIAN UND EXPIDONSANS!");
+					}
+					case 7:
+					{
+						NPCTalkMessage(npc.index, "VERPISS DICH!!!!!!!!!!!!!");
+					}
+					case 8:
+					{
+						NPCTalkMessage(npc.index, "BLITZKRIEG GEGEN BLITZKRIEG, KOMMT HER!!!!!");
+					}
+				}
 			}
 			else
 			{
@@ -547,8 +585,77 @@ methodmap Blitzkrieg < CClotBody
 		if(b_buffed_blitz && !b_pureblitz)
 		{
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Hyper Blitzkrieg");
-			if(i_current_wave[npc.index] <=30)
+			if(i_current_wave[npc.index] <=10)
+			{
 				RaidModeScaling *=1.5;
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+					{
+						NPCTalkMessage(npc.index, "Hehehe..");
+					}
+					case 1:
+					{
+						NPCTalkMessage(npc.index, "Shall we begin?");
+					}
+				}
+			}
+			else if(i_current_wave[npc.index] <=20)
+			{
+				RaidModeScaling *=1.5;
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+					{
+						NPCTalkMessage(npc.index, "A second chance at besting you.");
+					}
+					case 1:
+					{
+						NPCTalkMessage(npc.index, "You may have lived last time, but can you do it again?");
+					}
+					case 2:
+					{
+						NPCTalkMessage(npc.index, "I'm back for more.");
+					}
+				}
+			}
+			else if(i_current_wave[npc.index] <=30)
+			{
+				RaidModeScaling *=1.5;
+				switch(GetRandomInt(0,2))
+				{
+					case 0:
+					{
+						NPCTalkMessage(npc.index, "Let me introduce you to my best friend......{azure}the Moon.");
+					}
+					case 1:
+					{
+						NPCTalkMessage(npc.index, "You're all a bunch of annoying mercs, aren't you.");
+					}
+					case 2:
+					{
+						NPCTalkMessage(npc.index, "Let's just get this over with.");
+					}
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,2))
+				{
+					case 0:
+					{
+						NPCTalkMessage(npc.index, "This is the end for you.{crimson}NO MORE RUNNING.");
+					}
+					case 1:
+					{
+						NPCTalkMessage(npc.index, "Your hubris will eventually {crimson} fail you.");
+					}
+					case 2:
+					{
+						NPCTalkMessage(npc.index, "POWER LIMITER: DISABLED{crimson} GOOD LUCK.{default}.");
+					}
+				}
+			}
 		}
 		
 		bool final = StrContains(data, "final_item") != -1;
@@ -615,132 +722,6 @@ methodmap Blitzkrieg < CClotBody
 		/*
 		Thanks to Spookmaster for allowing me to port over his "Holy Moonlight" that his dokmed raidboss uses.
 		*/
-	}
-}
-
-static void Frame_IntroMessage(int ref)
-{
-	int iNPC = EntRefToEntIndex(ref);
-	if (iNPC == INVALID_ENT_REFERENCE || b_NpcHasDied[iNPC])
-		return;
-	
-	if (b_buffed_blitz)
-	{
-		if (b_pureblitz)
-		{
-			// TRUE BLITZKRIEG
-			switch(GetRandomInt(0,8))
-			{
-				case 0:
-				{
-					NPCTalkMessage(iNPC, "NAHAHAHAHAHAHAHAHAHAHAHA!!!!!");
-				}
-				case 1:
-				{
-					NPCTalkMessage(iNPC, "ICH WERD EUCH ALLE UMBRINGEN!");
-				}
-				case 2:
-				{
-					NPCTalkMessage(iNPC, "DAS IS PURE KRAFT!");
-				}
-				case 3:
-				{
-					NPCTalkMessage(iNPC, "DENKSTE DAS WAR ALLES!!?!?!?!");
-				}
-				case 4:
-				{
-					NPCTalkMessage(iNPC, "DUUUUUUUUUUUUUUU KLEINE RATTE!");
-				}
-				case 5:
-				{
-					NPCTalkMessage(iNPC, "KOMMT HER IHR KLEINEN VIECHER!!");
-				}
-				case 6:
-				{
-					NPCTalkMessage(iNPC, "DIE WAHRE POWER VON RUIANIAN UND EXPIDONSANS!");
-				}
-				case 7:
-				{
-					NPCTalkMessage(iNPC, "VERPISS DICH!!!!!!!!!!!!!");
-				}
-				case 8:
-				{
-					NPCTalkMessage(iNPC, "BLITZKRIEG GEGEN BLITZKRIEG, KOMMT HER!!!!!");
-				}
-			}
-		}
-		else
-		{
-			// Hyper Blitzkrieg
-			if(i_current_wave[iNPC] <=10)
-			{
-				switch(GetRandomInt(0,1))
-				{
-					case 0:
-					{
-						NPCTalkMessage(iNPC, "Hehehe..");
-					}
-					case 1:
-					{
-						NPCTalkMessage(iNPC, "Shall we begin?");
-					}
-				}
-			}
-			else if(i_current_wave[iNPC] <=20)
-			{
-				switch(GetRandomInt(0,1))
-				{
-					case 0:
-					{
-						NPCTalkMessage(iNPC, "A second chance at besting you.");
-					}
-					case 1:
-					{
-						NPCTalkMessage(iNPC, "You may have lived last time, but can you do it again?");
-					}
-					case 2:
-					{
-						NPCTalkMessage(iNPC, "I'm back for more.");
-					}
-				}
-			}
-			else if(i_current_wave[iNPC] <=30)
-			{
-				switch(GetRandomInt(0,2))
-				{
-					case 0:
-					{
-						NPCTalkMessage(iNPC, "Let me introduce you to my best friend...... {azure}the Moon{default}.");
-					}
-					case 1:
-					{
-						NPCTalkMessage(iNPC, "You're all a bunch of annoying mercs, aren't you.");
-					}
-					case 2:
-					{
-						NPCTalkMessage(iNPC, "Let's just get this over with.");
-					}
-				}
-			}
-			else
-			{
-				switch(GetRandomInt(0,2))
-				{
-					case 0:
-					{
-						NPCTalkMessage(iNPC, "This is the end for you. {crimson}NO MORE RUNNING{default}.");
-					}
-					case 1:
-					{
-						NPCTalkMessage(iNPC, "Your hubris will eventually {crimson}fail you{default}.");
-					}
-					case 2:
-					{
-						NPCTalkMessage(iNPC, "POWER LIMITER: DISABLED. {crimson}GOOD LUCK{default}.");
-					}
-				}
-			}
-		}
 	}
 }
 
