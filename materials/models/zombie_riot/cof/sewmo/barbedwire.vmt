@@ -1,6 +1,0 @@
-"VertexlitGeneric"
-{
-	"$basetexture" "models/zombie_riot/cof/sewmo/barbedwire"
-	"$alphatest" 1
-	 $translucent 1
-}
