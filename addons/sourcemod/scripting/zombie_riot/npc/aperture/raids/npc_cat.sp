@@ -421,30 +421,21 @@ methodmap CAT < CClotBody
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 
-		CreateTimer(0.2, CAT_Timer_IntroMessage, EntIndexToEntRef(npc.index));
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+				NPCTalkMessage(npc.index, "CONTROL AGAINST TRESPASSERS, NOW ONLINE");
+			case 1:
+				NPCTalkMessage(npc.index, "C.A.T. HAS BEEN ENGAGED");
+			case 2:
+				NPCTalkMessage(npc.index, "SYSTEM POWER-UP COMPLETE");
+		}
 
 		return npc;
 	}
 }
 
-static void CAT_Timer_IntroMessage(Handle timer, int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if (ref == INVALID_ENT_REFERENCE || b_NpcHasDied[entity])
-		return;
-	
-	switch(GetRandomInt(0,2))
-	{
-		case 0:
-			CAT_Talk(entity, "CONTROL AGAINST TRESPASSERS, NOW ONLINE");
-		case 1:
-			CAT_Talk(entity, "C.A.T. HAS BEEN ENGAGED");
-		case 2:
-			CAT_Talk(entity, "SYSTEM POWER-UP COMPLETE");
-	}
-}
-
-static void CAT_Talk(int entity, const char[] message)
+static void NPCTalkMessage(int entity, const char[] message)
 {
 	PrintNPCMessageWithPrefixes(entity, "rare", message);
 }
@@ -742,15 +733,15 @@ static void OrbSpam_Ability_ReadyUp(CAT npc)
 	{
 		case 0:
 		{
-			CAT_Talk(npc.index, "PARTICLE RADIATOR IS {unique}READY");
+			NPCTalkMessage(npc.index, "PARTICLE RADIATOR IS {unique}READY");
 		}
 		case 1:
 		{
-			CAT_Talk(npc.index, "PREPARING FOR PARTICLE {crimson}DISPERSAL");
+			NPCTalkMessage(npc.index, "PREPARING FOR PARTICLE {crimson}DISPERSAL");
 		}
 		case 2:
 		{
-			CAT_Talk(npc.index, "PARTICLES ARE DONE {crimson}WARMING UP");
+			NPCTalkMessage(npc.index, "PARTICLES ARE DONE {crimson}WARMING UP");
 		}
 	}
 }
@@ -811,15 +802,15 @@ static void OrbSpam_Ability_End(CAT npc, bool yap = true)
 		{
 			case 0:
 			{
-				CAT_Talk(npc.index, "PARTICLE RADIATOR IS {azure}COOLING-OFF");
+				NPCTalkMessage(npc.index, "PARTICLE RADIATOR IS {azure}COOLING-OFF");
 			}
 			case 1:
 			{
-				CAT_Talk(npc.index, "PARTICLE DISPERSAL {azure}ACCOMPLISHED");
+				NPCTalkMessage(npc.index, "PARTICLE DISPERSAL {azure}ACCOMPLISHED");
 			}
 			case 2:
 			{
-				CAT_Talk(npc.index, "PARTICLES ARE {crimson}GONE{default}... {azure}FOR NOW");
+				NPCTalkMessage(npc.index, "PARTICLES ARE {crimson}GONE{default}... {azure}FOR NOW");
 			}
 		}
 	}
@@ -884,7 +875,7 @@ bool CAT_timeBased(int iNPC)
 			AcceptEntityInput(npc.m_iWearable1, "Enable");
 			npc.m_flBeginTimeWarp = 0.0;
 			
-			CAT_Talk(npc.index, "...ACTION SUCCESSFUL");
+			NPCTalkMessage(npc.index, "...ACTION SUCCESSFUL");
 			
 			float vecPos[3];
 			GetAbsOrigin(npc.index, vecPos);
@@ -975,15 +966,15 @@ static void SelfDegradation_Ability_Start(CAT npc, bool yap = true)
 		{
 			case 0:
 			{
-				CAT_Talk(npc.index, "INITIATING SELF-DEGRADATION");
+				NPCTalkMessage(npc.index, "INITIATING SELF-DEGRADATION");
 			}
 			case 1:
 			{
-				CAT_Talk(npc.index, "SELF-DEGRADATION IN PROCESS...");
+				NPCTalkMessage(npc.index, "SELF-DEGRADATION IN PROCESS...");
 			}
 			case 2:
 			{
-				CAT_Talk(npc.index, "SWITCHING TO SELF-DEGRADATION MODE");
+				NPCTalkMessage(npc.index, "SWITCHING TO SELF-DEGRADATION MODE");
 			}
 		}
 	}
@@ -1033,15 +1024,15 @@ static void SelfDegradation_Ability_Activate(CAT npc, bool yap = true)
 		{
 			case 0:
 			{
-				CAT_Talk(npc.index, "SELF-DEGRADATION MODE IS {unique}ONLINE");
+				NPCTalkMessage(npc.index, "SELF-DEGRADATION MODE IS {unique}ONLINE");
 			}
 			case 1:
 			{
-				CAT_Talk(npc.index, "SELF-DEGRADATION: {unique}ACTIVATED");
+				NPCTalkMessage(npc.index, "SELF-DEGRADATION: {unique}ACTIVATED");
 			}
 			case 2:
 			{
-				CAT_Talk(npc.index, "SELF-DEGRADATION POWER UP, {unique}COMPLETE");
+				NPCTalkMessage(npc.index, "SELF-DEGRADATION POWER UP, {unique}COMPLETE");
 			}
 		}
 	}
@@ -1073,15 +1064,15 @@ static void SelfDegradation_Ability_Deactivate(CAT npc, bool yap = true)
 		{
 			case 0:
 			{
-				CAT_Talk(npc.index, "SELF-DEGRADATION MODE IS {crimson}OFFLINE");
+				NPCTalkMessage(npc.index, "SELF-DEGRADATION MODE IS {crimson}OFFLINE");
 			}
 			case 1:
 			{
-				CAT_Talk(npc.index, "SELF-DEGRADATION: {crimson}DEACTIVATED");
+				NPCTalkMessage(npc.index, "SELF-DEGRADATION: {crimson}DEACTIVATED");
 			}
 			case 2:
 			{
-				CAT_Talk(npc.index, "SELF-DEGRADATION IS {crimson}SHUTTING DOWN");
+				NPCTalkMessage(npc.index, "SELF-DEGRADATION IS {crimson}SHUTTING DOWN");
 			}
 		}
 	}
@@ -1126,7 +1117,7 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			npc.AddGesture("ACT_MP_STUN_BEGIN");
 			npc.SetActivity("ACT_MP_STUN_MIDDLE");
 			
-			CAT_Talk(npc.index, "ENABLING {unique}MIND WARP {default}MECHANISMS...");
+			NPCTalkMessage(npc.index, "ENABLING {unique}MIND WARP {default}MECHANISMS...");
 			
 			npc.Anger = true;
 			npc.m_flBeginTimeWarp = GetGameTime(npc.index) + 2.0;
@@ -1238,7 +1229,7 @@ static void CAT_Weapon_Lines(CAT npc, int client)
 
 	if(valid)
 	{
-		CAT_Talk(npc.index, Text_Lines);
+		NPCTalkMessage(npc.index, Text_Lines);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(15.0, 22.0);
 		b_said_player_weaponline[client] = true;
 	}
@@ -1333,9 +1324,9 @@ static bool CAT_LoseConditions(int iNPC)
 				switch (GetURandomInt() % 2)
 				{
 					case 0:
-						CAT_Talk(npc.index, "OVERHEATING PROTOC-");
+						NPCTalkMessage(npc.index, "OVERHEATING PROTOC-");
 					case 1:
-						CAT_Talk(npc.index, "INITIATING SELF-DES-");
+						NPCTalkMessage(npc.index, "INITIATING SELF-DES-");
 				}
 				
 				npc.m_flDeathAnim = GetGameTime() + 1.0;
@@ -1361,7 +1352,7 @@ static bool CAT_LoseConditions(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CAT_Talk(npc.index, "BY THE WORDS OF THE ONE AND ONLY GLORIOUS RACE; THERE CAN BE ONLY ONE");
+		NPCTalkMessage(npc.index, "BY THE WORDS OF THE ONE AND ONLY GLORIOUS RACE; THERE CAN BE ONLY ONE");
 		return true;
 	}
 	
@@ -1369,7 +1360,7 @@ static bool CAT_LoseConditions(int iNPC)
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CAT_Talk(npc.index, "SURRENDER YOUR WEAPONS AND COME WITH ME");
+		NPCTalkMessage(npc.index, "SURRENDER YOUR WEAPONS AND COME WITH ME");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return true;
 	}
