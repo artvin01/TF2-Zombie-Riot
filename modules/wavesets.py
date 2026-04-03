@@ -1,5 +1,5 @@
 # Parse all NPCs & Wavesets (Normal & Custom, wavesets like Construction are yet to be supported.)
-import util, os, subprocess, pathlib, vtf2img, json, time
+import util, os, subprocess, pathlib, json, time
 import embed, modules.shared
 from collections import defaultdict
 from keyvalues1 import KeyValues1
@@ -225,24 +225,7 @@ def parse():
                         extra_info += f" {modules.shared.FLAG_MAPPINGS[flag]}"
 
                 # Get icon
-                if npc_data.icon!="":
-                    npc_icon_key = "leaderboard_class_"+npc_data.icon+".vtf"
-                    npc_png_icon_path = f"repo_img/{npc_data.icon}.png"
-                    
-                    # Paths to look in for icons
-                    npc_icon_path = f"./TF2-Zombie-Riot/materials/hud/{npc_icon_key}"
-                    premedia_npc_icon_path = f"./premedia_icons/{npc_data.icon}.png"
-                    if os.path.isfile(npc_icon_path):
-                        if not os.path.isfile(npc_png_icon_path):
-                            npc_icon = vtf2img.Parser(f"./TF2-Zombie-Riot/materials/hud/{npc_icon_key}").get_image()
-                            npc_icon.save(npc_png_icon_path)
-                        image = util.md_img(npc_png_icon_path,"A")
-                    elif os.path.isfile(premedia_npc_icon_path):
-                        image = util.md_img(premedia_npc_icon_path,"B")
-                    else:
-                        image = util.md_img("./builtin_img/missing.png","C")
-                else:
-                    image = util.md_img("./builtin_img/missing.png","D")
+                image = modules.shared.get_npc_icon(npc_data.icon)
                 
                 if npc_data.category != "Type_Hidden":
                     desc = "<div class=\"flex_break\"></div>\n"+get_npc(wave_entry_data["plugin"], {"name": npc_name, "image": image})["description"]

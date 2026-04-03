@@ -39,7 +39,7 @@ def parse():
         npc_list_html += util.fill_template(util.read("templates/npc/category_block_start.html"),{"key":category_name})
         for npc in npc_list:
             context = {
-                "npc_name": npc["name"],
+                "npc_name": f"{modules.shared.get_npc_icon(npc["icon"])} {npc["name"]}",
                 "plugin_name": npc["plugin"],
                 "flags": map_flags(npc["flags"]),
                 "health": map_health(npc["health"]),
