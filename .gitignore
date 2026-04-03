@@ -13,7 +13,7 @@ premedia_icons_unused/
 npc_data.json
 npc_data_01.json
 npc_data_02.json
-*.cfg
+*.cfg 
 
 gh-pages/*
 gh-pages/index.html
