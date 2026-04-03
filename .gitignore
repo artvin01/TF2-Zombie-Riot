@@ -14,7 +14,7 @@ npc_data.json
 npc_data_01.json
 npc_data_02.json
 *.cfg 
-
+ 
 gh-pages/*
 gh-pages/index.html
 !gh-pages/static/
