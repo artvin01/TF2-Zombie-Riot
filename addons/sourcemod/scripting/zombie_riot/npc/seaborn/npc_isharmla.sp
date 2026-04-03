@@ -174,7 +174,7 @@ public void Isharmla_ClotThink(int iNPC)
 		b_ThisEntityIgnored[npc.index] = false;
 		
 		// Recover 20% HP
-		HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 5, 1.0,_, HEAL_SELFHEAL);
+		HealEntityGlobal(npc.index, npc.index, float(ReturnEntityMaxHealth(npc.index) / 5), 1.0,_, HEAL_SELFHEAL);
 		return;
 	}
 
@@ -292,7 +292,7 @@ public void Isharmla_ClotThink(int iNPC)
 
 					int healing = npc.Anger ? 150000 : 100000;
 					
-					HealEntityGlobal(npc.index, npc.m_iTarget, healing, 1.0);
+					HealEntityGlobal(npc.index, npc.m_iTarget, float(healing), 1.0);
 
 					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
 					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
@@ -322,7 +322,7 @@ public void Isharmla_ClotThink(int iNPC)
 
 					int healing = npc.Anger ? 150000 : 100000;
 
-					HealEntityGlobal(npc.index, ally, healing, 1.0);
+					HealEntityGlobal(npc.index, ally, float(healing), 1.0);
 
 					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
 					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
