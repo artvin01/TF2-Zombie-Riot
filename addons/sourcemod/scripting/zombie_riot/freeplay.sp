@@ -596,7 +596,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 36:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_squad_master");
-				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((2000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_40";
 			}
 			case 37:
@@ -617,7 +617,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraThinkSpeed = 0.80;
 				enemy.ExtraDamage = 1.10;
-				enemy.MeleeMult = 1.25;
 			}
 			default:
 			{
@@ -1135,7 +1134,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 37:
 		{
-			CPrintToChatAll("{purple}NO RANDOM KRANZ V3! {gold}- {red}Whats with the "no random" part? Also version 3?");
+			CPrintToChatAll("{purple}NO RANDOM KRANZ V3! {gold}- {red}Whats with the ''no random'' part? Also version 3?");
 		}
 		case 38:
 		{
