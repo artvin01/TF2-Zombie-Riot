@@ -370,25 +370,6 @@ methodmap RaidbossSilvester < CClotBody
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		if(XenoExtraLogic())
-		{
-			switch(GetRandomInt(1,3))
-			{
-				case 1:
-				{
-					RaidbossSilvester_NPCTalkMessage(npc.index, "Is... Is this really where we must change your mind?");
-				}
-				case 2:
-				{
-					RaidbossSilvester_NPCTalkMessage(npc.index, "Please just turn away!");
-				}
-				case 3:
-				{
-					RaidbossSilvester_NPCTalkMessage(npc.index, "This is too risky, we can't let you get any closer!");
-				}
-			}
-		}
-		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSilvester_OnTakeDamagePost);
 		b_angered_twice[npc.index] = false;
 		
@@ -484,6 +465,24 @@ methodmap RaidbossSilvester < CClotBody
 		
 		RequestFrame(Silvester_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
 		npc.m_flNextDelayTime = GetGameTime() + 0.2;
+		if(XenoExtraLogic())
+		{
+			switch(GetRandomInt(1,3))
+			{
+				case 1:
+				{
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Is... Is this really where we must change your mind?");
+				}
+				case 2:
+				{
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Please just turn away!");
+				}
+				case 3:
+				{
+					RaidbossSilvester_NPCTalkMessage(npc.index, "This is too risky, we can't let you get any closer!");
+				}
+			}
+		}
 		
 		SilvesterApplyEffects(npc.index, false);
 		return npc;

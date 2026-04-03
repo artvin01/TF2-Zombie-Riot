@@ -160,8 +160,6 @@ methodmap Donnerkrieg < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
-		NPCTalkMessage(npc.index, "I have arrived to render judgement");
-	
 		g_b_donner_died=false;
 
 		b_enraged=false;
@@ -206,6 +204,8 @@ methodmap Donnerkrieg < CClotBody
 		
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
+		
+		NPCTalkMessage(npc.index, "I have arrived to render judgement");
 		
 		g_b_angered=false;
 
