@@ -734,16 +734,6 @@ methodmap Twirl < CClotBody
 		public get()							{ return fl_ThrowDelay[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_ThrowDelay[this.index] = TempValueForProperty; }
 	}
-	property int m_iKarlasFunState
-	{
-		public get()							{ return i_AttacksTillMegahit[this.index]; }
-		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
-	}
-	property float m_flKarlasFunTimer
-	{
-		public get()							{ return fl_GrappleCooldown[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_GrappleCooldown[this.index] = TempValueForProperty; }
-	}
 
 	public char[] GetName()
 	{
@@ -1010,8 +1000,7 @@ methodmap Twirl < CClotBody
 		if(b_tripple_raid)
 		{
 			WaveStart_SubWaveStart(GetGameTime() + 700.0);	//due to lots and lots of time
-			npc.m_iKarlasFunState = 4;
-			npc.m_flKarlasFunTimer = GetGameTime(npc.index);
+			CreateTimer(0.0, Timer_Twirl_TripleIntro, false);
 			RaidModeTime = GetGameTime(npc.index) + 500.0;
 			GiveOneRevive(true);
 
@@ -1349,38 +1338,6 @@ static void ClotThink(int iNPC)
 
 	HandleRaidTimer(npc);
 
-	if(npc.m_iKarlasFunState && npc.m_flKarlasFunTimer < GetGameTime(npc.index))
-	{
-		Karlas allyNpc;
-		
-		for(int i; i < i_MaxcountNpcTotal; i++)
-		{
-			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-			if(IsValidEntity(entity))
-			{
-				char npc_classname[60];
-				NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-
-				if(entity != INVALID_ENT_REFERENCE && StrEqual(npc_classname, "npc_karlas") && IsEntityAlive(entity))
-				{
-					allyNpc = view_as<Karlas>(entity);
-					break;
-				}
-			}
-		}
-		
-		switch (npc.m_iKarlasFunState--)
-		{
-			case 4: Twirl_Lines(npc, "Oh my, looks like the expidonsans went easy on you, we sure wont my dears. Us ruanians work differently~");
-			case 3: Twirl_Lines(npc, "... Except Karlas but shhhh!");
-			case 2: Karlas_Lines(allyNpc, ".....");
-			case 1: Karlas_Lines(allyNpc, ":(");
-			default: npc.m_iKarlasFunState = 0;
-		}
-		
-		npc.m_flKarlasFunTimer = GetGameTime(npc.index) + (npc.m_iKarlasFunState * 0.5);
-	}
-	
 	if((npc.Anger) && npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index) && npc.m_flNextChargeSpecialAttack != FAR_FUTURE)
 	{
 		npc.m_flNextChargeSpecialAttack = FAR_FUTURE;
@@ -4875,4 +4832,30 @@ void TwirlEarsApply(int iNpc, char[] attachment = "head", float size = 1.0)
 	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(particle_ears4_r);
 	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_ears_1_r);
 	i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(Laser_ears_2_r);
+}
+
+static void Timer_Twirl_TripleIntro(Handle timer, bool shouldKarlasChat)
+{
+	int raids[3];
+	raids = i_GetAllPartiesInvolved();
+	
+	if (!shouldKarlasChat && raids[0] != 0)
+	{
+		// Twirl's turn
+		Twirl npc = view_as<Twirl>(raids[0]);
+		
+		Twirl_Lines(npc, "Oh my, looks like the expidonsans went easy on you, we sure wont my dears. Us ruanians work differently~");
+		Twirl_Lines(npc, "... Except Karlas but shhhh!");
+		
+		// We have to wait for Karlas to spawn...
+		CreateTimer(1.0, Timer_Twirl_TripleIntro, true, TIMER_FLAG_NO_MAPCHANGE);
+	}
+	else if (shouldKarlasChat && raids[2] != 0)
+	{
+		// Karlas' turn
+		Karlas allyNpc = view_as<Karlas>(raids[2]);
+		
+		Karlas_Lines(allyNpc, ".....");
+		Karlas_Lines(allyNpc, ":(");			
+	}
 }
