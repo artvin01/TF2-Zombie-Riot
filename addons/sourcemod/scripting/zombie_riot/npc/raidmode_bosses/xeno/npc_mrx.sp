@@ -319,7 +319,7 @@ methodmap RaidbossMrX < CClotBody
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
 		i_SideHurtWhich[npc.index] = 0;
 
-		CreateTimer(0.2, RaidbossMrX_Timer_IntroMessage, EntIndexToEntRef(npc.index));
+		RequestFrame(Frame_IntroMessage, EntIndexToEntRef(npc.index));
 
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
@@ -333,16 +333,16 @@ methodmap RaidbossMrX < CClotBody
 	}
 }
 
-static void RaidbossMrX_Timer_IntroMessage(Handle timer, int ref)
+static void Frame_IntroMessage(int ref)
 {
 	int iNPC = EntRefToEntIndex(ref);
 	if (iNPC == INVALID_ENT_REFERENCE || b_NpcHasDied[iNPC])
 		return;
 	
-	RaidbossMrX_Talk(iNPC, "...");
+	NPCTalkMessage(iNPC, "...");
 }
 
-static void RaidbossMrX_Talk(int iNPC, const char[] message)
+static void NPCTalkMessage(int iNPC, const char[] message)
 {
 	PrintNPCMessageWithPrefixes(iNPC, "green", message, .messageColor = "green");
 }
@@ -1088,7 +1088,7 @@ public void RaidbossMrX_NPCDeath(int entity)
 	{
 		if(XenoExtraLogic())
 		{
-			RaidbossMrX_Talk(npc.index, "I have to activate Project Calmaticus...");
+			NPCTalkMessage(npc.index, "I have to activate Project Calmaticus...");
 		}
 	}
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)

@@ -318,7 +318,7 @@ methodmap RaidbossNemesis < CClotBody
 		if(isEnraged)
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Enraged Calmaticus");
 		
-		CreateTimer(0.2, RaidbossNemesis_Timer_IntroMessage, EntIndexToEntRef(npc.index));
+		RequestFrame(Frame_IntroMessage, EntIndexToEntRef(npc.index));
 		
 		npc.m_iWearable6 = npc.EquipItem("weapon_bone", "models/workshop/player/items/pyro/hw2013_mucus_membrane/hw2013_mucus_membrane.mdl");
 	
@@ -329,7 +329,7 @@ methodmap RaidbossNemesis < CClotBody
 	}
 }
 
-static void RaidbossNemesis_Timer_IntroMessage(Handle timer, int ref)
+static void Frame_IntroMessage(int ref)
 {
 	int iNPC = EntRefToEntIndex(ref);
 	if (iNPC == INVALID_ENT_REFERENCE || b_NpcHasDied[iNPC])
@@ -338,15 +338,15 @@ static void RaidbossNemesis_Timer_IntroMessage(Handle timer, int ref)
 	RaidbossNemesis npc = view_as<RaidbossNemesis>(iNPC);
 	if(npc.m_bIsEnraged)
 	{
-		RaidbossNemesis_Talk(iNPC, "YOU WILL BECOME DNA SUPLIMENTS.");
+		NPCTalkMessage(iNPC, "YOU WILL BECOME DNA SUPLIMENTS.");
 	}
 	else
 	{
-		RaidbossNemesis_Talk(iNPC, "You all will be one with the virus.");
+		NPCTalkMessage(iNPC, "You all will be one with the virus.");
 	}
 }
 
-static void RaidbossNemesis_Talk(int iNPC, const char[] message)
+static void NPCTalkMessage(int iNPC, const char[] message)
 {
 	PrintNPCMessageWithPrefixes(iNPC, "green", message, .customName = "Calmaticus", .messageColor = "green");
 }

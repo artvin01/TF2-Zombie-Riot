@@ -513,7 +513,7 @@ methodmap GodAlaxios < CClotBody
 	}
 }
 
-static void GodAlaxios_Talk(int iNPC, const char[] message)
+static void NPCTalkMessage(int iNPC, const char[] message)
 {
 	PrintNPCMessageWithPrefixes(iNPC, "lightblue", message);
 }
@@ -674,15 +674,15 @@ public void GodAlaxios_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						GodAlaxios_Talk(npc.index, "{crimson}STOP BEING SO WEAK, HELP ME!!!!!");
+						NPCTalkMessage(npc.index, "{crimson}STOP BEING SO WEAK, HELP ME!!!!!");
 					}
 					case 1:
 					{
-						GodAlaxios_Talk(npc.index, "{crimson}I'M UNDER CONTROL, HELP ME.....");
+						NPCTalkMessage(npc.index, "{crimson}I'M UNDER CONTROL, HELP ME.....");
 					}
 					case 3:
 					{
-						GodAlaxios_Talk(npc.index, "{crimson}THIS THING IS TOO MUCH, HELP!!!!!!!!!");
+						NPCTalkMessage(npc.index, "{crimson}THIS THING IS TOO MUCH, HELP!!!!!!!!!");
 					}
 				}
 			}
@@ -692,15 +692,15 @@ public void GodAlaxios_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						GodAlaxios_Talk(npc.index, "You have no chance alone!");
+						NPCTalkMessage(npc.index, "You have no chance alone!");
 					}
 					case 1:
 					{
-						GodAlaxios_Talk(npc.index, "Your weaponry frails in comparison to Atlantis!!");
+						NPCTalkMessage(npc.index, "Your weaponry frails in comparison to Atlantis!!");
 					}
 					case 3:
 					{
-						GodAlaxios_Talk(npc.index, "Consider surrendering?!");
+						NPCTalkMessage(npc.index, "Consider surrendering?!");
 					}
 				}
 			}
@@ -724,7 +724,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 					SetEntityCollisionGroup(baseboss_index, 24);
 				}
 			}
-			GodAlaxios_Talk(npc.index, "No.. No No!! They are coming, prepare to fight together NOW!!!");
+			NPCTalkMessage(npc.index, "No.. No No!! They are coming, prepare to fight together NOW!!!");
 			RaidBossActive = INVALID_ENT_REFERENCE;
 			for(int i; i<32; i++)
 			{
@@ -1170,7 +1170,7 @@ public Action GodAlaxios_OnTakeDamage(int victim, int &attacker, int &inflictor,
 			damage = 0.0;
 			RaidModeTime += 120.0;
 			f_TalkDelayCheck = GetGameTime() + 4.0;
-			GodAlaxios_Talk(npc.index, "{crimson}EEEEEEEEEEEEEEENOOOOOOOOUGH!!!");
+			NPCTalkMessage(npc.index, "{crimson}EEEEEEEEEEEEEEENOOOOOOOOUGH!!!");
 			return Plugin_Handled;
 		}
 	}
@@ -1444,25 +1444,25 @@ public void GodAlaxios_NPCDeath(int entity)
 			{
 				case 0:
 				{
-					GodAlaxios_Talk(npc.index, "I have failed Atlantis...");
+					NPCTalkMessage(npc.index, "I have failed Atlantis...");
 				}
 				case 1:
 				{
-					GodAlaxios_Talk(npc.index, "How was my army defeated..?");
+					NPCTalkMessage(npc.index, "How was my army defeated..?");
 				}
 				case 2:
 				{
-					GodAlaxios_Talk(npc.index, "You dont know what you are doing!");
+					NPCTalkMessage(npc.index, "You dont know what you are doing!");
 				}
 				case 3:
 				{
-					GodAlaxios_Talk(npc.index, "We should be fighting together, not against each other, the {blue}sea{default} will be your doom...");
+					NPCTalkMessage(npc.index, "We should be fighting together, not against each other, the {blue}sea{default} will be your doom...");
 				}
 			}
 		}
 		else
 		{
-			GodAlaxios_Talk(npc.index, "I'm.. I'm free..?");
+			NPCTalkMessage(npc.index, "I'm.. I'm free..?");
 			CPrintToChatAll("{lightblue}God Alaxios instantly leaves the battlefield... you couldn't even trace him.");
 		}
 	}
@@ -2194,19 +2194,19 @@ void AlaxiosSayWords(int entity)
 		{
 			case 0:
 			{
-				GodAlaxios_Talk(entity, "You don't know the dangers you're getting yourself into fighting me and my army at the same time!");
+				NPCTalkMessage(entity, "You don't know the dangers you're getting yourself into fighting me and my army at the same time!");
 			}
 			case 1:
 			{
-				GodAlaxios_Talk(entity, "My army will always help me back up!");
+				NPCTalkMessage(entity, "My army will always help me back up!");
 			}
 			case 2:
 			{
-				GodAlaxios_Talk(entity, "Me and my army, as one, will never be defeated!");
+				NPCTalkMessage(entity, "Me and my army, as one, will never be defeated!");
 			}
 			case 3:
 			{
-				GodAlaxios_Talk(entity, "Together for Atlantis! As one and for all!");
+				NPCTalkMessage(entity, "Together for Atlantis! As one and for all!");
 			}
 		}
 	}
@@ -2245,19 +2245,19 @@ void AlaxiosSayWordsAngry(int entity)
 		{
 			case 0:
 			{
-				GodAlaxios_Talk(entity, "{crimson}ISVOLI!!!! FOR THE PEOPLE!!!!!!!!!!");
+				NPCTalkMessage(entity, "{crimson}ISVOLI!!!! FOR THE PEOPLE!!!!!!!!!!");
 			}
 			case 1:
 			{
-				GodAlaxios_Talk(entity, "{crimson}ISVOLI!!!! FOR ALL THAT IS FORSAKEN!!!!!!!");
+				NPCTalkMessage(entity, "{crimson}ISVOLI!!!! FOR ALL THAT IS FORSAKEN!!!!!!!");
 			}
 			case 2:
 			{
-				GodAlaxios_Talk(entity, "{crimson}ISVOLI!!!! FOR THE FUTURE!!!!!!!");
+				NPCTalkMessage(entity, "{crimson}ISVOLI!!!! FOR THE FUTURE!!!!!!!");
 			}
 			case 3:
 			{
-				GodAlaxios_Talk(entity, "{crimson}ISVOLI!!!! FOR ATLANTIS!!!!!!!!!");
+				NPCTalkMessage(entity, "{crimson}ISVOLI!!!! FOR ATLANTIS!!!!!!!!!");
 			}
 		}
 	}
@@ -2279,52 +2279,52 @@ bool AlaxiosForceTalk(int entity)
 			case 0:
 			{
 				ReviveAll(true);
-				GodAlaxios_Talk(entity, "I will NOT tolerate this dispute any longer!");
+				NPCTalkMessage(entity, "I will NOT tolerate this dispute any longer!");
 				i_TalkDelayCheck += 1;
 			}
 			case 1:
 			{
-				GodAlaxios_Talk(entity, "You have to understand, WE have a {blue}common enemy{default}, and that is {blue}Seaborn{default}.");
+				NPCTalkMessage(entity, "You have to understand, WE have a {blue}common enemy{default}, and that is {blue}Seaborn{default}.");
 				i_TalkDelayCheck += 1;
 			}
 			case 2:
 			{
-				GodAlaxios_Talk(entity, "More wars with each other means more opportunity for them to rise.");
+				NPCTalkMessage(entity, "More wars with each other means more opportunity for them to rise.");
 				i_TalkDelayCheck += 1;
 			}
 			case 3:
 			{
-				GodAlaxios_Talk(entity, "And whilst I am immortal and my army unkillable, we are not incorruptible.");
+				NPCTalkMessage(entity, "And whilst I am immortal and my army unkillable, we are not incorruptible.");
 				i_TalkDelayCheck += 1;
 			}
 			case 4:
 			{
-				GodAlaxios_Talk(entity, "However, I saw your prowess and your abilities.");
+				NPCTalkMessage(entity, "However, I saw your prowess and your abilities.");
 				i_TalkDelayCheck += 1;
 			}
 			case 5:
 			{
-				GodAlaxios_Talk(entity, "You can wield {blue}Seaborn's{default} weapons without succumbing to their corruption, from what I can see at least...");
+				NPCTalkMessage(entity, "You can wield {blue}Seaborn's{default} weapons without succumbing to their corruption, from what I can see at least...");
 				i_TalkDelayCheck += 1;
 			}
 			case 6:
 			{
-				GodAlaxios_Talk(entity, "As such, we need your aid. YOU are our greatest opportunity to cleanse this world of watery horrors.");
+				NPCTalkMessage(entity, "As such, we need your aid. YOU are our greatest opportunity to cleanse this world of watery horrors.");
 				i_TalkDelayCheck += 1;
 			}
 			case 7:
 			{
-				GodAlaxios_Talk(entity, "Of course, we will support you as much as we can. As one, we will thrive once again.");
+				NPCTalkMessage(entity, "Of course, we will support you as much as we can. As one, we will thrive once again.");
 				i_TalkDelayCheck += 1;
 			}
 			case 8:
 			{
-				GodAlaxios_Talk(entity, "When you invade them, we will make sure that their main forces are distracted by us.");
+				NPCTalkMessage(entity, "When you invade them, we will make sure that their main forces are distracted by us.");
 				i_TalkDelayCheck += 1;
 			}
 			case 9:
 			{
-				GodAlaxios_Talk(entity, "ALL HAIL THE MERCENARIES!! {crimson}FOR ATLANTISSSSS!!!!!!!!!!!!!!.");
+				NPCTalkMessage(entity, "ALL HAIL THE MERCENARIES!! {crimson}FOR ATLANTISSSSS!!!!!!!!!!!!!!.");
 				i_TalkDelayCheck = 11;
 				for (int client = 1; client <= MaxClients; client++)
 				{
@@ -2358,19 +2358,19 @@ public void Raidmode_Alaxios_Win(int entity)
 		{
 			case 0:
 			{
-				GodAlaxios_Talk(npc.index, "Atlantis will never fall!");
+				NPCTalkMessage(npc.index, "Atlantis will never fall!");
 			}
 			case 1:
 			{
-				GodAlaxios_Talk(npc.index, "I still have to take care of the {blue}deep sea{default}...");
+				NPCTalkMessage(npc.index, "I still have to take care of the {blue}deep sea{default}...");
 			}
 			case 2:
 			{
-				GodAlaxios_Talk(npc.index, "Threaten our livelyhood and you pay!");
+				NPCTalkMessage(npc.index, "Threaten our livelyhood and you pay!");
 			}
 			case 3:
 			{
-				GodAlaxios_Talk(npc.index, "I have to inform {blue}Sensal{default} about this.");
+				NPCTalkMessage(npc.index, "I have to inform {blue}Sensal{default} about this.");
 			}
 		}
 	}
