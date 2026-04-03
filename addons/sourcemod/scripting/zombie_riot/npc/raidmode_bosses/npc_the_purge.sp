@@ -300,6 +300,14 @@ methodmap ThePurge < CClotBody
 static void ClotThink(int iNPC)
 {
 	ThePurge npc = view_as<ThePurge>(iNPC);
+	float VelAm[3];
+	npc.GetVelocity(VelAm);
+
+	//too slow or attacking npc
+	if(getLinearVelocity(VelAm) <= 20.0 || (IsValidEnemy(npc.index, npc.m_iTarget) && !IsValidClient(npc.m_iTarget)))
+	{
+		ApplyStatusEffect(iNPC, iNPC, "Aimbot", 0.1);
+	}
 	
 	float gameTime = GetGameTime(npc.index);
 	if(i_RaidGrantExtra[iNPC] == RAIDITEM_INDEX_WIN_COND)
@@ -654,7 +662,7 @@ static void ClotThink(int iNPC)
 						if(target > MaxClients)
 							npc.FaceTowards(vecTarget, 9999.0);
 
-						if(HasSpecificBuff(target, "Aimbot"))
+						if(HasSpecificBuff(target, "Aimbot") || HasSpecificBuff(npc.index, "Aimbot"))
 							npc.FaceTowards(vecTarget, 9999.0);
 
 						npc.PlayShotgunSound();
@@ -710,7 +718,7 @@ static void ClotThink(int iNPC)
 						if(target > MaxClients)
 							npc.FaceTowards(vecTarget, 9999.0);
 
-						if(HasSpecificBuff(target, "Aimbot"))
+						if(HasSpecificBuff(target, "Aimbot") || HasSpecificBuff(npc.index, "Aimbot"))
 							npc.FaceTowards(vecTarget, 9999.0);
 
 						float eyePitch[3];
@@ -759,7 +767,7 @@ static void ClotThink(int iNPC)
 					if(target > MaxClients)
 						npc.FaceTowards(vecTarget, 9999.0);
 
-					if(HasSpecificBuff(target, "Aimbot"))
+					if(HasSpecificBuff(target, "Aimbot") || HasSpecificBuff(npc.index, "Aimbot"))
 						npc.FaceTowards(vecTarget, 9999.0);
 
 					npc.PlayMinigunSound();

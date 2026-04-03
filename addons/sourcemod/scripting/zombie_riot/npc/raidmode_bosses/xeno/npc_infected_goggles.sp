@@ -298,7 +298,14 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(iNPC);
 	
 	float gameTime = GetGameTime(npc.index);
+	float VelAm[3];
+	npc.GetVelocity(VelAm);
 
+	//too slow or attacking npc
+	if(getLinearVelocity(VelAm) <= 20.0 || (IsValidEnemy(npc.index, npc.m_iTarget) && !IsValidClient(npc.m_iTarget)))
+	{
+		ApplyStatusEffect(iNPC, iNPC, "Aimbot", 0.1);
+	}
 	//Raidmode timer runs out, they lost.
 	if(npc.m_flPiggyFor)
 	{
@@ -937,6 +944,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						KillFeed_SetKillIcon(npc.index, "pro_smg");
 						
 						npc.FaceTowards(vecTarget, 400.0);
+						if(HasSpecificBuff(npc.index, "Aimbot"))
+							npc.FaceTowards(vecTarget, 9999.0);
 
 						npc.PlaySMGSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");

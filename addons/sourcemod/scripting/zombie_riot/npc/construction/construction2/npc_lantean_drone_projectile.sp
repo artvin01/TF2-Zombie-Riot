@@ -87,16 +87,16 @@ methodmap LanteanProjectile < CClotBody
 		if(StrContains(data, "red") != -1)
 		{
 			npc.m_iWearable1 = ParticleEffectAt_Parent(Origin, "flaregun_energyfield_red", npc.index, "", {0.0,0.0,0.0});
-			npc.m_iWearable2 = ParticleEffectAt(fPos, "raygun_projectile_red_trail", 0.0); //Inf duartion
+			npc.m_iWearable2 = ParticleEffectAt(Origin, "raygun_projectile_red_trail", 0.0); //Inf duartion
 			SDKCall_SetAbsAngle(npc.m_iWearable2, vecAng);
-			SetParent(entity, npc.m_iWearable2);	
+			SetParent(npc.index, npc.m_iWearable2);	
 		}
 		else if(StrContains(data, "blue") != -1)
 		{
 			npc.m_iWearable1 = ParticleEffectAt_Parent(Origin, "flaregun_energyfield_blue", npc.index, "", {0.0,0.0,0.0});
-			npc.m_iWearable2 = ParticleEffectAt(fPos, "raygun_projectile_blue_trail", 0.0); //Inf duartion
+			npc.m_iWearable2 = ParticleEffectAt(Origin, "raygun_projectile_blue_trail", 0.0); //Inf duartion
 			SDKCall_SetAbsAngle(npc.m_iWearable2, vecAng);
-			SetParent(entity, npc.m_iWearable2);	
+			SetParent(npc.index, npc.m_iWearable2);	
 		}
 		//is always static
 		AddNpcToAliveList(npc.index, 1);

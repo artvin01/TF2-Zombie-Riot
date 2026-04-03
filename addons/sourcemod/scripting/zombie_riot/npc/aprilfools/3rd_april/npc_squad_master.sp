@@ -85,6 +85,7 @@ methodmap SquadX_Master < CClotBody
 		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_bThisNpcIsABoss = true;
 		b_NoHealthbar[npc.index] = 1;
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 
 		
 		b_NpcUnableToDie[npc.index] = true;

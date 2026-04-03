@@ -173,8 +173,8 @@ public void Isharmla_ClotThink(int iNPC)
 		b_NoKnockbackFromSources[npc.index] = false;
 		b_ThisEntityIgnored[npc.index] = false;
 		
-		// Recover 2% HP
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (ReturnEntityMaxHealth(npc.index) / 50));
+		// Recover 20% HP
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (ReturnEntityMaxHealth(npc.index) / 5));
 		return;
 	}
 
