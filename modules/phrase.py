@@ -1,5 +1,7 @@
 import util, json
 from keyvalues1 import KeyValues1
+from requests.structures import CaseInsensitiveDict
+
 PHRASES = [
     # wavesets.py
     "zombieriot.phrases.zombienames.txt",
@@ -13,9 +15,7 @@ PHRASES = [
     "zombieriot.phrases.weapons.description.txt",
     "zombieriot.phrases.weapons.txt"
 ]
-PHRASES_MEM = []
 util.log("Parsing all phrases...")
 for p in PHRASES:
     util.log(f"> {p}")
-    PHRASES_MEM.append(KeyValues1.parse(util.read(f"./TF2-Zombie-Riot/addons/sourcemod/translations/{p}"))["Phrases"])
-util.write("phrase_cache.json",json.dumps(PHRASES_MEM,indent=2))
+    util.PHRASES.append(CaseInsensitiveDict(KeyValues1.parse(util.read(f"./TF2-Zombie-Riot/addons/sourcemod/translations/{p}"))["Phrases"]))

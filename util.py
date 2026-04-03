@@ -1,6 +1,5 @@
 import hashlib, os, datetime, json
 from collections import defaultdict
-from requests.structures import CaseInsensitiveDict
 from re import sub
 
 # https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
@@ -163,7 +162,7 @@ ICON_MUSIC = md_img(BUILTIN_IMG+"music.svg","music")
 
 # --------------------------- PHRASES ---------------------------
 
-PHRASES = [CaseInsensitiveDict(phrase) for phrase in json.loads(read("phrase_cache.json"))]
+PHRASES = []
 
 def get_key(k,silent=False,empty_on_fail=False):
     for phr in PHRASES:
