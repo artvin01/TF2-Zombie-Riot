@@ -87,12 +87,16 @@ methodmap LanteanProjectile < CClotBody
 		if(StrContains(data, "red") != -1)
 		{
 			npc.m_iWearable1 = ParticleEffectAt_Parent(Origin, "flaregun_energyfield_red", npc.index, "", {0.0,0.0,0.0});
-			npc.m_iWearable2 = ParticleEffectAt_Parent(Origin, "raygun_projectile_red_trail", npc.index, "", {0.0,0.0,0.0});
+			npc.m_iWearable2 = ParticleEffectAt(fPos, "raygun_projectile_red_trail", 0.0); //Inf duartion
+			SDKCall_SetAbsAngle(npc.m_iWearable2, vecAng);
+			SetParent(entity, npc.m_iWearable2);	
 		}
 		else if(StrContains(data, "blue") != -1)
 		{
 			npc.m_iWearable1 = ParticleEffectAt_Parent(Origin, "flaregun_energyfield_blue", npc.index, "", {0.0,0.0,0.0});
-			npc.m_iWearable2 = ParticleEffectAt_Parent(Origin, "raygun_projectile_blue_trail", npc.index, "", {0.0,0.0,0.0});
+			npc.m_iWearable2 = ParticleEffectAt(fPos, "raygun_projectile_blue_trail", 0.0); //Inf duartion
+			SDKCall_SetAbsAngle(npc.m_iWearable2, vecAng);
+			SetParent(entity, npc.m_iWearable2);	
 		}
 		//is always static
 		AddNpcToAliveList(npc.index, 1);
@@ -134,7 +138,7 @@ methodmap LanteanProjectile < CClotBody
 		npc.m_bDissapearOnDeath 				= true;
 		npc.b_BlockDropChances					= true;
 
-		npc.m_flSpeed = 500.0 + GetRandomFloat(0.0, 100.0);		//MAX SPEED
+		npc.m_flSpeed = 400.0 + GetRandomFloat(0.0, 100.0);		//MAX SPEED
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StopPathing();	//don't path.
 
