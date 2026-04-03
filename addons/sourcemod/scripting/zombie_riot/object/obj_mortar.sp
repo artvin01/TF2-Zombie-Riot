@@ -240,7 +240,7 @@ public Action MortarFire(Handle timer, DataPack pack)
 	{
 		if(IsValidEntity(Building))
 		{
-			float damage = 10.0;
+			float damage = 7.0;
 							
 			damage *= 30.0;
 			

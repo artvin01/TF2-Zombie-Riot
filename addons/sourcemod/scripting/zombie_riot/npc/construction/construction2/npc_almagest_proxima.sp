@@ -315,10 +315,10 @@ int AlmagestProxima_SelfDefense(AlmagestProxima npc, float distance, float vecTa
 				int target = TR_GetEntityIndex(swingTrace);
 				if(target > 0)
 				{
-					float damage = 450.0;
+					float damage = 400.0;
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						damage *= 10.0;
+						damage *= 6.0;
 					}
 					if(StatusEffects_PikemanDebuffMaxStacks(target))
 					{

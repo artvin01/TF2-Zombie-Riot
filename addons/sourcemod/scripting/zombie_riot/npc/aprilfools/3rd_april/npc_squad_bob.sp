@@ -308,6 +308,7 @@ static void Clot_AnimationChange(SquadX_Bob npc)
 				IgniteTargetEffect(npc.m_iWearable1);
 				npc.b_SwordIgnition = true;
 			}
+			RemoveSpecificBuff(npc.index, "Defensive Backup");
 			npc.m_flSpeed = 330.0;
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 3;

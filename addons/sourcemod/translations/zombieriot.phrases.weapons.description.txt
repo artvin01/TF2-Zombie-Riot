@@ -1482,6 +1482,10 @@
 		"it"	"Più danni da sentinella si hanno, più danni fa quest'arma.\nI potenziamenti dell'arma, come i danni, non influiscono su questo aspetto.\nPremere due volte m2 mentre si guarda in alto per raccogliere tutti gli spuntoni in una volta sola.\nArma dopo 0,5 secondi e si scalda fino a raggiungere il massimo dei danni dopo 1 secondo."
 		"ko"	"-적이 건드리면 폭발하는 지뢰 설치\n-지뢰는 설치되고 0.5초 후에 작동하며, 1초가 지나야 온전한 피해를 줄 수 있음\n-위쪽을 보면서 우클릭을 2번 누르면 모든 지뢰를 전부 회수\n-건축가 개선에 따라서 피해량 증가"
 	}
+	"Aresenal's Tripmine Layer Pap Desc"
+	{
+		"en"	"-Increased damage\n-Increased attackspeed"
+	}
 	
 	"Nail Gun Desc"
 	{
@@ -1727,7 +1731,7 @@
 	
 	"Construction Novice Desc"
 	{
-		"en"	"-Gain 50％ more building health\n-Gain 8.0x sentry damage\n-Gain 1 more support building added\n-Gain 50％ more repair Rate"
+		"en"	"-Gain 50％ more building health\n-Gain 8.0x builder damage\n-Gain 1 more support building added\n-Gain 50％ more repair Rate"
 		"fr"	"+50％ durabilité pour constructions, 8.0x dégats par votre mitrailleuse, +2x vitesse de réparation. +1 espace pour construction de support."
 		"chi"	"建筑物血量提高50％，布哨伤害*8，+1辅助建筑上限，+50％建筑修复效率。"
 		"it"	"50％ in più di salute dell'edificio e 8.0x di danno della sentinella, 1 edificio di supporto aggiunto e 50％ in più di tasso di riparazione"
@@ -1736,7 +1740,7 @@
 	
 	"Construction Apprentice Desc"
 	{
-		"en"	"-Gain 65％ more building health\n-Gain 3.1x sentry damage\n-Gain 2 more support building added\n-Gain 50％ more repair Rate"
+		"en"	"-Gain 65％ more building health\n-Gain 3.1x builder damage\n-Gain 2 more support building added\n-Gain 50％ more repair Rate"
 		"fr"	"+65％ durabilité pour constructions, +3.1x dégats par votre mitrailleuse, +50％ vitesse de réparation. +2 espaces pour construction de support."
 		"chi"	"建筑物血量提高65％，布哨伤害*3.1，+2辅助建筑上限，+50％建筑修复效率。"
 		"it"	"65％ in più di salute degli strutture e 3,1x di danni alle sentinelle, 2 strutture di supporto aggiunti e 50％ in più di tasso di riparazione"
@@ -1757,11 +1761,7 @@
 	}
 	"Construction Worker Desc"
 	{
-		"en"	"-Gain 65％ more building health\n-Gain 1.4x sentry damage\n-Gain 1.4x sentry attackspeed\n-Gain 3 more support building added"
-		"fr"	"+65％ durabilité pour constructions, +1.4x dégats par votre mitrailleuse, +1.2x cadence de tir. +3 espaces pour construction de support."
-		"chi"	"建筑物血量提高65％，布哨伤害*1.4，+3辅助建筑上限。"
-		"it"	"65％ più salute delle strutture, aumento del dmg delle sentinelle di 1,4x e della velocità di attacco di 1,2x, aggiunta di altri 3 strutture di supporto"
-		"ko"	"구조물 체력 +65％\n-센트리 피해량 +1.4배\n-센트리 공격 속도 +1.4배\n-지원 구조물 최대 상한 +3개"
+		"en"	"-Gain 65％ more building health\n-Gain 1.4x builder damage\n-Gain 3 more support building added"
 	}
 	
 	"Cosmic Repair Handling book Desc"
@@ -1773,16 +1773,12 @@
 	
 	"Construction Expert Desc"
 	{
-		"en"	"-Gain 70％ more building health\n-Gain 2.25x sentry damage\n-Gain 1.2x sentry attackspeed\n-Gain 4 more support building added"
-		"fr"	"+1.7x durabilité pour constructions, +2.25x dégats par votre mitrailleuse, +1.2x cadence de tir. +4 espaces pour construction de support."
-		"chi"	"建筑物血量*1.7，布哨伤害*2.25，+4辅助建筑上限。"
-		"it"	"1.salute delle strutture aumentata di 7 volte, danni della Sentinella di 2,25 volte e velocità d'attacco aumentata di 1,2 volte, aggiunta di 4 strutture di supporto"
-		"ko"	"구조물 체력 +70％\n-센트리 피해량 +2.25배\n-센트리 공격 속도 +1.2배\n-지원 구조물 최대 상한 +4개"
+		"en"	"-Gain 70％ more building health\n-Gain 2.25x builder damage\n-Gain 4 more support building added"
 	}
 	
 	"Construction Master Desc"
 	{
-		"en"	"-Gain 40％ more building health\n-Gain 2.6x sentry damage\n-Gain 5 more support building added"
+		"en"	"-Gain 40％ more building health\n-Gain 2.6x builder damage\n-Gain 5 more support building added"
 		"fr"	"+1.4x durabilité pour constructions, +2.6x dégats par votre mitrailleuse. +5 espaces pour construction de support."
 		"chi"	"建筑物血量*1.4，布哨伤害*2.6，+5辅助建筑上限。"
 		"it"	"1.salute delle strutture 4 volte superiore e danni della sentinella 2,6 volte superiori, aggiunta di 5 strutture di supporto"
@@ -1791,7 +1787,7 @@
 	
 	"Construction Killer Desc"
 	{
-		"en"	"-Gain 2.5x sentry damage"
+		"en"	"-Gain 2.5x builder damage"
 		"fr"	"+2.5x dégats par votre mitrailleuse"
 		"ru"	"2,5-кратный урон турели."
 		"chi"   "增加2.5倍哨兵伤害"
@@ -2044,12 +2040,7 @@
 	
 	"Wrenchy Hands Desc"
 	{
-		"en"	"-35％ less melee and secondary damage (doesn't include builder weapons)\n-Gain 25％ Faster Repair for both melee and secondary"
-		"fr"	"-35％ dégats pour armes secondaire ou corps-à-corps (armes constructeur sont exclus,) +25％ vitesse de réparation."
-		"ru"	"На 35％ меньше урона от оружия ближнего боя и доп. оружия (кроме оружия строителей), но на 25％ быстрее починка как для ближнего боя, так и для доп. оружия"
-		"chi"   "降低35％的近战和副武器伤害(不包括工程师的武器)，但提高25％的近战和副武器的修复速度"
-		"it"	"35％ meno danni in mischia e secondari (non include le armi da costruttore), ma 25％ Riparazione più veloce per mischia e secondari"
-		"ko"	"-보조 무기와 근접 무기 피해량 -35％ 감소(건축가 무기 제외)\n-보조 무기와 근접 무기의 수리 효율 +25％"
+		"en"	"-5％ less movement speed\n-Gain 25％ Faster Repair for both melee and secondary"
 	}
 	
 	"Sniper Sentry Desc"
