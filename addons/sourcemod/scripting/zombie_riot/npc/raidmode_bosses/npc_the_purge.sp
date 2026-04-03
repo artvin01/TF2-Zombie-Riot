@@ -244,7 +244,7 @@ methodmap ThePurge < CClotBody
 			}
 		}
 		RemoveAllDamageAddition();
-		CPrintToChatAll("{crimson}The Purge{default}: {crimson}Termination: {crimson}Begin.");
+		NPCTalkMessage(npc.index, "{crimson}Termination: {crimson}Begin.");
 			
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
@@ -295,6 +295,11 @@ methodmap ThePurge < CClotBody
 		Citizen_MiniBossSpawn();
 		return npc;
 	}
+}
+
+static void NPCTalkMessage(int iNPC, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(iNPC, "crimson", message);
 }
 
 static void ClotThink(int iNPC)
@@ -356,11 +361,11 @@ static void ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Annihilation Status: Absolute.");
+					NPCTalkMessage(npc.index, "{crimson}Annihilation Status: Absolute.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Triggering Overclock Protocol.");
+					NPCTalkMessage(npc.index, "{crimson}Triggering Overclock Protocol.");
 				}
 			}
 			npc.PlayAngerSound();
@@ -403,7 +408,7 @@ static void ClotThink(int iNPC)
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			CPrintToChatAll("{crimson}The Purge{default}: {crimson} One Biological Signal Remaining.");
+			NPCTalkMessage(npc.index, "{crimson} One Biological Signal Remaining.");
 		}
 	}
 	int target = npc.m_iTarget;
@@ -489,15 +494,15 @@ static void ClotThink(int iNPC)
 					{
 						case 0:
 						{
-							CPrintToChatAll("{crimson}The Purge{default}: {crimson}Activation: Heavy Minigun.");
+							NPCTalkMessage(npc.index, "{crimson}Activation: Heavy Minigun.");
 						}
 						case 1:
 						{
-							CPrintToChatAll("{crimson}The Purge{default}: {crimson}Engaging The Targets.");
+							NPCTalkMessage(npc.index, "{crimson}Engaging The Targets.");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{crimson}The Purge{default}: {crimson}Gunning Them Down.");
+							NPCTalkMessage(npc.index, "{crimson}Gunning Them Down.");
 						}
 					}
 					npc.m_flRangedArmor = 0.5;
@@ -518,15 +523,15 @@ static void ClotThink(int iNPC)
 					{
 						case 0:
 						{
-							CPrintToChatAll("{crimson}The Purge{default}: {crimson}Activation: Rocket Barrage.");
+							NPCTalkMessage(npc.index, "{crimson}Activation: Rocket Barrage.");
 						}
 						case 1:
 						{
-							CPrintToChatAll("{crimson}The Purge{default}: {crimson}Rocket Storm.");
+							NPCTalkMessage(npc.index, "{crimson}Rocket Storm.");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{crimson}The Purge{default}: {crimson}Explosive Typhoon.");
+							NPCTalkMessage(npc.index, "{crimson}Explosive Typhoon.");
 						}
 					}
 
@@ -555,15 +560,15 @@ static void ClotThink(int iNPC)
 					{
 						case 0:
 						{
-							CPrintToChatAll("{crimson}The Purge{default}: {crimson}Activation: Quad Burst Launcher.");
+							NPCTalkMessage(npc.index, "{crimson}Activation: Quad Burst Launcher.");
 						}
 						case 1:
 						{
-							CPrintToChatAll("{crimson}The Purge{default}: {crimson}Grenade Bombardment.");
+							NPCTalkMessage(npc.index, "{crimson}Grenade Bombardment.");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{crimson}The Purge{default}: {crimson}Pipes Of Plight.");
+							NPCTalkMessage(npc.index, "{crimson}Pipes Of Plight.");
 						}
 					}
 				}
@@ -585,15 +590,15 @@ static void ClotThink(int iNPC)
 					{
 						case 0:
 						{
-							CPrintToChatAll("{crimson}The Purge{default}: {crimson}Activation: Bulldozer.");
+							NPCTalkMessage(npc.index, "{crimson}Activation: Bulldozer.");
 						}
 						case 1:
 						{
-							CPrintToChatAll("{crimson}The Purge{default}: {crimson}ERROR: Run Over Targets.");
+							NPCTalkMessage(npc.index, "{crimson}ERROR: Run Over Targets.");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{crimson}The Purge{default}: {crimson}Plowing Through The Terrain.");
+							NPCTalkMessage(npc.index, "{crimson}Plowing Through The Terrain.");
 						}
 					}
 				}
@@ -609,15 +614,15 @@ static void ClotThink(int iNPC)
 					{
 						case 0:
 						{
-							CPrintToChatAll("{crimson}The Purge{default}: {crimson}Re-Oiling Complete. Run Over Targets.");
+							NPCTalkMessage(npc.index, "{crimson}Re-Oiling Complete. Run Over Targets.");
 						}
 						case 1:
 						{
-							CPrintToChatAll("{crimson}The Purge{default}: {crimson}Oil Resupplied. Bulldozing Targets.");
+							NPCTalkMessage(npc.index, "{crimson}Oil Resupplied. Bulldozing Targets.");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{crimson}The Purge{default}: {crimson}Doubling Purging Efforts.");
+							NPCTalkMessage(npc.index, "{crimson}Doubling Purging Efforts.");
 						}
 					}	
 				}
@@ -939,7 +944,7 @@ static void ClotDeathStartThink(int iNPC)
 {
 	ThePurge npc = view_as<ThePurge>(iNPC);
 	
-	CPrintToChatAll("{crimson}The Purge{default}: {crimson}ERROR ERROR ERROR.");
+	NPCTalkMessage(npc.index, "{crimson}ERROR ERROR ERROR.");
 	npc.m_bisWalking = false;
 	npc.SetActivity("taunt_mourning_mercs_heavy", true);
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.5;
@@ -963,7 +968,7 @@ static void ClotDeathLoopThink(int iNPC)
 		return;
 	
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-	CPrintToChatAll("{darkblue}??????????{default}: {crimson} You will regret this.");
+	CPrintToChatAll("{darkblue}??????????{default}: {crimson}You will regret this.");
 				
 	npc.PlayBoomSound();
 	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
@@ -1076,15 +1081,15 @@ public void ThePurge_Win(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{crimson}The Purge{default}: {crimson}Annihilation Completed.");
+				NPCTalkMessage(entity, "{crimson}Annihilation Completed.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{crimson}The Purge{default}: {crimson}Targets Purged.");
+				NPCTalkMessage(entity, "{crimson}Targets Purged.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{crimson}The Purge{default}: {crimson}All Enemies Terminated.");
+				NPCTalkMessage(entity, "{crimson}All Enemies Terminated.");
 			}
 		}
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;

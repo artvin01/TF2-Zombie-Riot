@@ -734,6 +734,16 @@ methodmap Twirl < CClotBody
 		public get()							{ return fl_ThrowDelay[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_ThrowDelay[this.index] = TempValueForProperty; }
 	}
+	property int m_iKarlasFunState
+	{
+		public get()							{ return i_AttacksTillMegahit[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
+	}
+	property float m_flKarlasFunTimer
+	{
+		public get()							{ return fl_GrappleCooldown[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_GrappleCooldown[this.index] = TempValueForProperty; }
+	}
 
 	public char[] GetName()
 	{
@@ -825,8 +835,6 @@ methodmap Twirl < CClotBody
 
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
-
-		c_NpcName[npc.index] = "Twirl";
 
 		b_force_transformation = false;
 
@@ -1002,10 +1010,8 @@ methodmap Twirl < CClotBody
 		if(b_tripple_raid)
 		{
 			WaveStart_SubWaveStart(GetGameTime() + 700.0);	//due to lots and lots of time
-			Twirl_Lines(npc, "Oh my, looks like the expidonsans went easy on you, we sure wont my dears. Us ruanians work differently~");
-			Twirl_Lines(npc, "... Except Karlas but shhhh!");
-			CPrintToChatAll("{crimson}Karlas{snow}: .....");
-			CPrintToChatAll("{crimson}Karlas{snow}: :(");
+			npc.m_iKarlasFunState = 4;
+			npc.m_flKarlasFunTimer = GetGameTime(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 500.0;
 			GiveOneRevive(true);
 
@@ -1087,6 +1093,8 @@ methodmap Twirl < CClotBody
 				case 3: Twirl_Lines(npc, "I need to unwind, and you all look {crimson}perfect{snow} for that!");
 			}
 		}
+
+		c_NpcName[npc.index] = "Twirl";
 
 		i_current_Text = 0;
 
@@ -1341,6 +1349,38 @@ static void ClotThink(int iNPC)
 
 	HandleRaidTimer(npc);
 
+	if(npc.m_iKarlasFunState && npc.m_flKarlasFunTimer < GetGameTime(npc.index))
+	{
+		Karlas allyNpc;
+		
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(IsValidEntity(entity))
+			{
+				char npc_classname[60];
+				NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+
+				if(entity != INVALID_ENT_REFERENCE && StrEqual(npc_classname, "npc_karlas") && IsEntityAlive(entity))
+				{
+					allyNpc = view_as<Karlas>(entity);
+					break;
+				}
+			}
+		}
+		
+		switch (npc.m_iKarlasFunState--)
+		{
+			case 4: Twirl_Lines(npc, "Oh my, looks like the expidonsans went easy on you, we sure wont my dears. Us ruanians work differently~");
+			case 3: Twirl_Lines(npc, "... Except Karlas but shhhh!");
+			case 2: Karlas_Lines(allyNpc, ".....");
+			case 1: Karlas_Lines(allyNpc, ":(");
+			default: npc.m_iKarlasFunState = 0;
+		}
+		
+		npc.m_flKarlasFunTimer = GetGameTime(npc.index) + (npc.m_iKarlasFunState * 0.5);
+	}
+	
 	if((npc.Anger) && npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index) && npc.m_flNextChargeSpecialAttack != FAR_FUTURE)
 	{
 		npc.m_flNextChargeSpecialAttack = FAR_FUTURE;
@@ -4571,13 +4611,7 @@ static void Twirl_Lines(Twirl npc, const char[] text)
 	if(b_test_mode)
 		return;
 
-	for(int i=1 ; i <= MaxClients ; i++)	//should fix translations being buggy with the name.
-	{
-		if(IsValidClient(i) && IsClientInGame(i))
-		{
-			CPrintToChat(i, "%s %s", npc.GetName(), text);
-		}
-	}
+	PrintNPCMessageWithPrefixes(npc.index, NameColour, text, .messageColor = TextColour);
 }
 static float[] GetNPCAngles(CClotBody npc)
 {

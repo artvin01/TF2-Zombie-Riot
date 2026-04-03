@@ -336,7 +336,7 @@ methodmap RaidbossNemesis < CClotBody
 
 static void NPCTalkMessage(int iNPC, const char[] message)
 {
-	PrintNPCMessageWithPrefixes(iNPC, "green", message, .customName = "Calmaticus", .messageColor = "green");
+	PrintNPCMessageWithPrefixes(iNPC, "green", message, .customName = "Calmaticus", .messageColor = "green", .customNameIsTranslated = true);
 }
 
 public void RaidbossNemesis_ClotThink(int iNPC)
