@@ -8,8 +8,9 @@ TF2-Zombie-Riot/
 
 repo_img/
 premedia_icons_unused/
+phrase_cache.json
+npcs_by_category.json
 
-/*.html
 npc_data.json
 npc_data_01.json
 npc_data_02.json

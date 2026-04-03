@@ -1,5 +1,6 @@
-import hashlib, os, datetime
+import hashlib, os, datetime, json
 from collections import defaultdict
+from requests.structures import CaseInsensitiveDict
 from re import sub
 
 # https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
@@ -12,19 +13,12 @@ JSONEncoder.original_default = JSONEncoder.default
 JSONEncoder.default = wrapped_default
 ###
 
-# Use ' ' for spacing in markdown
+# --------------------------- ENV ---------------------------
 
 # wavesets, npc, ...
 CATEGORIES = []
 if "DEBUG" in os.environ:
     CATEGORIES = [x.lower() for x in os.environ["DEBUG"].split(",")]
-
-SCOPE = []
-if "SCOPE" in os.environ:
-    SCOPE = [x.lower() for x in os.environ["SCOPE"].split(",")]
-else:
-    #SCOPE = ["wavesets", "items", "skilltree"]
-    SCOPE = ["wavesets", "items"]
 
 WAVESETS_FILESCOPE = []
 if "FILESCOPE" in os.environ:
@@ -36,10 +30,11 @@ if "TYPESCOPE" in os.environ:
 else:
     WAVESETS_TYPESCOPE = ["Setup", "Custom"]#, "Betting", "Rogue"]
 
-print("CATEGORIES",CATEGORIES)
-print("SCOPE",SCOPE)
-print("FILESCOPE",WAVESETS_FILESCOPE)
-print("TYPESCOPE",WAVESETS_TYPESCOPE)
+print("DEBUG",CATEGORIES)
+print("wavesets:FILESCOPE",WAVESETS_FILESCOPE)
+print("wavesets:TYPESCOPE",WAVESETS_TYPESCOPE)
+
+# --------------------------- UTILITY FUNCTIONS ---------------------------
 
 def id_from_str(string):
     # https://stackoverflow.com/questions/49808639/generate-a-variable-length-hash
@@ -98,7 +93,13 @@ def as_duration(str_):
 
 def fill_template(template, context):
     for k,v in context.items():
-        template=template.replace(k,v)
+        try:
+            template=template.replace(k,v)
+        except TypeError:
+            log("[fill_template] Wrong key or value type!","FAIL")
+            print("Key",k,type(k))
+            print("Value",v,type(v))
+            exit()
     return template
 
 
@@ -159,3 +160,17 @@ BUILTIN_IMG = "https://raw.githubusercontent.com/squarebracket-s/tf2_zr_wikigen/
 ICON_DOWNLOAD = md_img(BUILTIN_IMG+"download.svg", "download")
 ICON_X_SQUARE = md_img(BUILTIN_IMG+"x-square.svg","cross")
 ICON_MUSIC = md_img(BUILTIN_IMG+"music.svg","music")
+
+# --------------------------- PHRASES ---------------------------
+
+PHRASES = [CaseInsensitiveDict(phrase) for phrase in json.loads(read("phrase_cache.json"))]
+
+def get_key(k,silent=False,empty_on_fail=False):
+    for phr in PHRASES:
+        if k in phr:
+            return phr[k]["en"]
+    if not silent: log(f"'{k}' has no english translation!", "WARNING")
+    if empty_on_fail:
+        return ""
+    else:
+        return k

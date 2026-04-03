@@ -1,29 +1,8 @@
 # Parse all items, weapons and their paps.
 import util
 from keyvalues1 import KeyValues1
-from requests.structures import CaseInsensitiveDict
 
 CFG_WEAPONS = KeyValues1.parse(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/weapons.cfg"))["Weapons"]
-
-PHRASES = [
-    "zombieriot.phrases.weapons.description.txt",
-    "zombieriot.phrases.weapons.txt"
-]
-
-PHRASES_MEM = []
-for p in PHRASES:
-    PHRASES_MEM.append(CaseInsensitiveDict(KeyValues1.parse(util.read(f"./TF2-Zombie-Riot/addons/sourcemod/translations/{p}")))["Phrases"])
-
-def get_key(k,silent=False):
-    for phr in PHRASES_MEM:
-        if k in phr:
-            return phr[k]["en"]
-    if not silent: util.log(f"'{k}' has no translation!", "WARNING")
-    if silent:
-        return "" if util.CATEGORIES == "npc" else ""
-    else:
-        return f"{k}" if util.CATEGORIES == "wavesets" else ""
-
 
 class WeaponPap:
     def __init__(self, weapon_name, weapon_data, idx, depth):
@@ -62,7 +41,7 @@ class WeaponPap:
 
 
     def to_md(self):
-        desc = get_key(self.description)
+        desc = util.get_key(self.description)
         
         extra_desc = self.extra_desc if len(self.extra_desc) > 0 else ""
 
@@ -81,7 +60,7 @@ class WeaponPap:
         if len(self.tags)>0: tags = f"{self.tags}"
         else: tags = ""
         extra_desc = self.extra_desc if len(self.extra_desc) > 0 else ""
-        desc = get_key(self.description)
+        desc = util.get_key(self.description)
 
         context = {
             "name": self.name,
@@ -170,7 +149,7 @@ def parse():
 
         if "desc" in weapon_data: 
             k = weapon_data["desc"]
-            description = get_key(k)
+            description = util.get_key(k)
             description = description.replace("\\n","</div>\n<div>").replace("\n<div>-","\n<div> - ") + "\n"
             if description.startswith("-"): description=" - "+description[1:]
         else: description = ""
@@ -203,8 +182,7 @@ def parse():
             for item in data:
                 item_data = data[item]
                 if is_trophy(item_data):
-                    pass
-                    #markdown_header += f"{" "*(depth+1)}{item}  \n" # Trophy:
+                    util.log("Skipping trophy entry")
                 elif is_weapon(item_data):
                     item_html, wtags, item_paps, tags = parse_weapon_data(item,item_data,depth,tags)
                     # item
@@ -252,11 +230,10 @@ def parse():
                 elif item[0].isupper() and is_category(item_data) or "Perks" in item: # unneeded data is always lowercase...
                     html, tags = item_block(item, item_data, depth, html, tags)
                 elif "Trophies" == item: # Item
-                    util.log("skipping Trophies entry")
+                    util.log("Skipping 'Trophies' entry")
                     #_, tags = item_block(item, item_data, depth, markdown, markdown_header, markdown_pap, tags)
                 elif "whiteout" in item_data: # Text shown in menu
                     html += item + "\n"
-                    #markdown_header += f"{" "*(depth+1)}{item}  \n"
             html += "</details>\n"
         return html, tags
 
@@ -266,8 +243,6 @@ def parse():
         if is_item_category(CFG_WEAPONS[item_category]):
             HTML_WEAPON, tags = item_block(item_category,CFG_WEAPONS[item_category],0, HTML_WEAPON, tags)
     
-    #taglist_str = "  \n".join({f" - #{tag}" for tag in tags})
-    #HTML_WEAPON = f"**Available tags:** \n{taglist_str}  \n"+HTML_WEAPON
     tags_html = "".join([f"<div class=\"btn\" tabindex=\"0\" onclick=\"filter_set_tag('{tag}');\">#{tag}</div>" for tag in tags])
     context = {
         "gtags": tags_html,

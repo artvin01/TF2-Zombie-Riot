@@ -1,6 +1,6 @@
 @import url("style.css");
 
-/* Items */
+/* NPCs (same as items but without the filter stuff) */
 
 summary {
     margin-bottom: .5em;
@@ -14,32 +14,6 @@ details summary { font-size: 2em }
 details details summary { font-size: 1.5em }
 details details details summary { font-size: 1em }
 details details details details summary { font-size: .5em }
-
-/* Search */
-.setting {
-    width: 100%;
-    justify-content: center;
-    display: flex;
-    padding: 10px;
-}
-input[type=search] {
-    width: 50%;
-    border: 0px;
-
-    /* Icon */
-    background-image: url("search.svg");
-    background-size: 13px;
-    background-repeat: no-repeat;
-    background-position: 10px center;
-
-    /* .btn styling */
-    background-color: var(--bg-light);
-    color: var(--deep-space-blue);
-    padding: 10px 10px 10px 30px;
-    margin: 5px;
-    user-select: none;
-    cursor: text;
-}
 
 /* Item Previews */
 .hover {
@@ -77,24 +51,6 @@ input[type=search] {
 .hover:hover .tooltip, .hover:focus .tooltip {
     opacity:1;
     top: 125%;
-}
-
-
-/* weapon content */
-
-.money:before {
-    content: "$";
-}
-
-.money {
-    color: rgb(83, 123, 22);
-}
-
-#taglist {
-    display: flex;
-    width: 100%;
-    padding: 10px;
-    flex-wrap:wrap;
 }
 
 @media screen and (max-width: 700px) {

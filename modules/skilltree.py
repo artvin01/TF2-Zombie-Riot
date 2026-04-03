@@ -4,6 +4,7 @@ from keyvalues1 import KeyValues1
 
 SKILLTREE_CFG = KeyValues1.parse(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/skilltree.cfg"))
 
+# TODO once porting: zombieriot.phrases.skilltree.txt has skill name and desc entries!
 def parse():
     util.log("Parsing Skilltree...")
     """

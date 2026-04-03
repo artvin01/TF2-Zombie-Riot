@@ -1,18 +1,10 @@
 # Parse all NPCs & Wavesets (Normal & Custom, wavesets like Construction are yet to be supported.)
-import util, os, subprocess, pathlib, vtf2img, json, time, embed
+import util, os, subprocess, pathlib, vtf2img, json, time
+import embed, modules.shared
 from collections import defaultdict
 from keyvalues1 import KeyValues1
-from requests.structures import CaseInsensitiveDict
 
-FLAG_MAPPINGS = {
-    "MVM_CLASS_FLAG_NONE": "",
-    "MVM_CLASS_FLAG_NORMAL": "Normal",
-    "MVM_CLASS_FLAG_SUPPORT": "Support",
-    "MVM_CLASS_FLAG_MISSION": "<mark>Support</mark>",
-    "MVM_CLASS_FLAG_MINIBOSS": "Miniboss",
-    "MVM_CLASS_FLAG_ALWAYSCRIT": "Crits",
-    "MVM_CLASS_FLAG_SUPPORT_LIMITED": "Limited Support"
-}
+# TODO in waveset display, show npcs flagged as support separately, just like in tf2
 
 PROPERTY_MAPPINGS = {
     "is_boss": "Boss",
@@ -30,296 +22,6 @@ MULTIPLIER_MAPPINGS = {
     "extra_size": "⤡",
 }
 
-PHRASES = [
-    "zombieriot.phrases.zombienames.txt",
-    "zombieriot.phrases.item.gift.desc.txt",
-    "zombieriot.phrases.txt",
-    "zombieriot.phrases.rogue.txt",
-    "zombieriot.phrases.rogue.paradox.txt",
-    "zombieriot.phrases.rogue.rift.txt",
-    "zombieriot.phrases.status_effects.txt"
-]
-
-PHRASES_MEM = []
-for p in PHRASES:
-    PHRASES_MEM.append(CaseInsensitiveDict(KeyValues1.parse(util.read(f"./TF2-Zombie-Riot/addons/sourcemod/translations/{p}")))["Phrases"])
-
-def get_key(k,silent=False):
-    for phr in PHRASES_MEM:
-        if k in phr:
-            return phr[k]["en"]
-    if not silent: util.log(f"'{k}' has no translation!", "WARNING")
-    if silent:
-        return "" if util.CATEGORIES == "npc" else ""
-    else:
-        return f"{k}" if util.CATEGORIES == "wavesets" else ""
-
-
-class NPC:
-    def __init__(self, path):
-        self.path=path
-        util.debug(f"Init NPC {self.path}", "npc", "OKCYAN")
-        self.file_data = util.read(self.path)
-        self.file_data = util.remove_multiline_comments(self.file_data)
-        #self.file_data = self.file_data.replace("	","")
-        if ("npc_donoteveruse" not in self.file_data and "NPC_Add" in self.file_data):
-
-            # Get NPC name
-            # TODO multi-npc files can have different prefixes
-            prefixes = [
-                "data",
-                "lantean_data",
-                "data_buffed" # addons/sourcemod/scripting/zombie_riot/npc/bonezone/wave60/npc_necromancer.sp
-            ]
-            self.name = None
-            for prefix in prefixes:
-                if self.name is None: 
-                    self.main_prefix = prefix
-                    self._get_name()
-            assert self.name is not None
-            
-            # Get plugin, category, flags, health
-            if "shared" in self.path:
-                self._set_npc_data_shared()
-            if self.file_data.count("NPC_Add") > 1:
-                self._set_npc_data_multi()
-            else:
-                self._set_npc_data_single()
-
-            # Get icon
-            try:
-                self.icon = self.file_data.split(f"strcopy({self.main_prefix}.Icon, sizeof({self.main_prefix}.Icon), \"")[1].split("\");")[0]
-            except IndexError:
-                self.icon = ""
-
-            
-            desc_key = f"{self.name} Desc"
-            self.description = get_key(desc_key, silent=True).replace("\\n", "<div class=\"flex_break\"></div>\n") # (Lots of NPCs with intentionally missing descriptions)
-            
-            """
-            npc_obj = {
-                "name": name,
-                "category": category,
-                "description": description, 
-                "plugin": plugin, 
-                "icon": icon, 
-                "health": health, 
-                "flags": flags,
-                "filetype": filetype
-            }
-            """
-
-        self.hidden = not ("npc_donoteveruse" not in self.file_data and "NPC_Add" in self.file_data)
-
-    def _get_name(self):
-        try:
-            self.name = self.file_data.split(f"strcopy({self.main_prefix}.Name, sizeof({self.main_prefix}.Name), \"")[1].split("\");")[0]
-        except IndexError:
-            self.name = None
-    
-
-    def _parse_health_number(self, num):
-        try:
-            float(num)
-            return num
-        except ValueError:
-            # Assume variable
-            npc_vars = self.file_data.split("#define ")
-            npc_vars_dict = {}
-            for i, item in enumerate(npc_vars):
-                if i > 0:
-                    # May parse whole blocks of code as key&value pairs sometimes, but it gets the job done. Doesn't break actual variables in any way
-                    full_str = item.split('"')
-                    k, v = util.normalize_whitespace(full_str[0]).replace(" ",""), full_str[1].replace(" ","")
-                    npc_vars_dict[k] = v
-
-            if num in npc_vars_dict:
-                util.debug(f"[X] {self.path} var {num}", "npc")
-                return util.format_num(npc_vars_dict[num])
-            else:
-                util.debug(f"[ ] {self.path} var {num}", "npc")
-                return "?"
-                #return "dynamic"
-    
-    def _set_npc_data_shared(self):
-        # Several instances of NPC entry data, several instances of CClotBody in separate files
-        self.plugin = self.file_data.split(f"strcopy({self.main_prefix}.Plugin, sizeof({self.main_prefix}.Plugin), \"")
-        self.plugin = [item.split("\");")[0] for i,item in enumerate(self.plugin) if i > 0]
-
-        self.category = self.file_data.split(f"{self.main_prefix}.Category = ")
-        self.category = [item.split(";")[0] for i,item in enumerate(self.category) if i > 0]
-
-        self.flags = self.file_data.split(f"{self.main_prefix}.Flags = ")
-        self.flags = [item.split(";")[0].split("|") for i,item in enumerate(self.flags) if i > 0]
-
-        base_path = self.path.replace(self.path.split("/")[-1],"") # remove deepest item
-        self.health = []
-        for i,p in enumerate(self.plugin):
-            p_data = util.read(base_path+p+".sp")
-            try:
-                h = self.file_data.split("CClotBody(vecPos, vecAng, ")[1].split("));")[0].split(',')[2].replace('"',"").replace(" ","")
-                #if "MinibossHealthScaling" in h:
-                #    h = f"Miniboss health scaling (Base {h.split("(")[1][:-1]}HP)"
-                if ":" in h:
-                    """
-                    extra "data" fields for enemies (lists, numbers or types like "Elite")
-                    'data[0]?x' is probably checking if any value from the waveset cfg exists at all to use x? 
-                    """
-                    cases = h.split(":(")
-                    if len(cases) == 0: cases = h.split(":")
-                    h = {}
-                    def parse_case(c):
-                        if "?" in c:
-                            k,v = c.split("?")
-                            if k.startswith("data"): k="any"
-                        else:
-                            k,v = "default", c
-                        v=v.replace(")","")
-                        return k,v
-                    for case in cases:
-                        if ":" in case:
-                            subcases = case.split(":")
-                            for subcase in subcases:
-                                k,v = parse_case(subcase)
-                                h[k] = self._parse_health_number(v)
-                        else:
-                            k,v = parse_case(case)
-                            h[k] = self._parse_health_number(v)
-                else:
-                    h = self._parse_health_number(health) + "HP"
-            except IndexError:
-                h = "?"
-            self.health.append(h)
-    
-    def _set_npc_data_multi(self):
-        # Several instances of NPC entry data, one instance of CClotBody
-        self.plugin = self.file_data.split(f"strcopy({self.main_prefix}.Plugin, sizeof({self.main_prefix}.Plugin), \"")
-        self.plugin = [item.split("\");")[0] for i,item in enumerate(self.plugin) if i > 0]
-
-        self.category = self.file_data.split(f"{self.main_prefix}.Category = ")
-        self.category = [item.split(";")[0] for i,item in enumerate(self.category) if i > 0]
-
-        self.flags = self.file_data.split(f"{self.main_prefix}.Flags = ")
-        self.flags = [item.split(";")[0].split("|") for i,item in enumerate(self.flags) if i > 0]
-    
-        try:
-            self.health = self.file_data.split("CClotBody(vecPos, vecAng, ")[1].split("));")[0].split(',')[2].replace('"',"").replace(" ","")
-            #if "MinibossHealthScaling" in self.health:
-            #    self.health = f"Miniboss health scaling (Base {self.health.split("(")[1][:-1]}HP)"
-            if ":" in self.health:
-                """
-                extra "data" fields for enemies (lists, numbers or types like "Elite")
-                'data[0]?x' is probably checking if any value from the waveset cfg exists at all to use x? 
-                """
-                cases = self.health.split(":(")
-                if len(cases) == 0: cases = self.health.split(":")
-                self.health = {}
-                def parse_case(c):
-                    if "?" in c:
-                        k,v = c.split("?")
-                        if k.startswith("data"): k="any"
-                    else:
-                        k,v = "default", c
-                    v=v.replace(")","")
-                    return k,v
-                
-                for case in cases:
-                    if ":" in case:
-                        subcases = case.split(":")
-                        for subcase in subcases:
-                            k,v = parse_case(subcase)
-                            self.health[k] = self._parse_health_number(v)
-                    else:
-                        k,v = parse_case(case)
-                        self.health[k] = self._parse_health_number(v)
-            else:
-                self.health = self._parse_health_number(self.health) + "HP"
-        except IndexError:
-            self.health = "?"
-        self.filetype = "multi"
-    
-    def _set_npc_data_single(self):
-        # One instance of everything
-        self.plugin = self.file_data.split(f"strcopy({self.main_prefix}.Plugin, sizeof({self.main_prefix}.Plugin), \"")[1].split("\");")[0]
-
-        try:
-            self.category = self.file_data.split(f"{self.main_prefix}.Category = ")[1].split(";")[0]
-        except IndexError:
-            self.category = f"404 prefix: {self.main_prefix}"
-        
-        try:
-            self.flags = self.file_data.split(f"{self.main_prefix}.Flags = ")[1]
-            self.flags = self.flags.split(";")[0].split("|")
-        except IndexError:
-            self.flags = []
-        
-        try:
-            self.health = self.file_data.split("CClotBody(vecPos, vecAng, ")[1].split("));")[0].split(',')[2].replace('"',"").replace(" ","")
-            #if "MinibossHealthScaling" in self.health:
-            #    self.health = f"Miniboss health scaling (Base {self.health.split("(")[1][:-1]}HP)"
-            if ":" in self.health:
-                """
-                extra "data" fields for enemies (lists, numbers or types like "Elite")
-                'data[0]?x' is probably checking if any value from the waveset cfg exists at all to use x? 
-                """
-                cases = self.health.split(":(")
-                if len(cases) == 0: cases = self.health.split(":")
-                self.health = {}
-                def parse_case(c):
-                    if "?" in c:
-                        k,v = c.split("?")
-                        if k.startswith("data"): k="any"
-                    else:
-                        k,v = "default", c
-                    v=v.replace(")","")
-                    return k,v
-                for case in cases:
-                    if ":" in case:
-                        subcases = case.split(":")
-                        for subcase in subcases:
-                            k,v = parse_case(subcase)
-                            self.health[k] = self._parse_health_number(v)
-                    else:
-                        k,v = parse_case(case)
-                        self.health[k] = self._parse_health_number(v)
-            else:
-                self.health = self._parse_health_number(self.health) + "HP"
-        except IndexError:
-            self.health = "?"
-        
-        self.filetype = "single"
-    
-    def __json__(self):
-        return {
-            "name": self.name,
-            "category": self.category,
-            "description": self.description, 
-            "plugin": self.plugin, 
-            "icon": self.icon, 
-            "health": self.health, 
-            "flags": self.flags,
-            "filetype": self.filetype
-        }
-
-class NPC_Dummy:
-    def __init__(self, npc_obj: NPC):
-        # yes this is stupid. I won't change it.
-        self.name = npc_obj.name
-        self.icon = npc_obj.icon
-        self.description = npc_obj.description
-        self.filetype = npc_obj.filetype
-    
-    def __json__(self):
-        return {
-            "name": self.name,
-            "category": self.category,
-            "description": self.description, 
-            "plugin": self.plugin, 
-            "icon": self.icon, 
-            "health": self.health, 
-            "flags": self.flags,
-            "filetype": self.filetype
-        }
                 
 waveset_cache = {}
 def parse():
@@ -331,14 +33,15 @@ def parse():
 
     def parse_all_npcs():
         npc_by_file = {}
+        npc_by_category = {}
         for file in pathlib.Path(PATH_NPC).glob('**/*'):
             if os.path.isfile(file.absolute()):
-                npc_obj = NPC(str(file.absolute()))
+                npc_obj = modules.shared.NPC(str(file.absolute()))
                 if not npc_obj.hidden:
                     plugin_name = npc_obj.plugin
                     if type(plugin_name) == list:
                         for i,pn in enumerate(plugin_name):
-                            dummy = NPC_Dummy(npc_obj)
+                            dummy = modules.shared.NPC_Dummy(npc_obj)
                             if npc_obj.filetype == "shared":
                                 dummy.health = npc_obj.health[min(len(npc_obj.health)-1,i)]
                             else:
@@ -347,13 +50,19 @@ def parse():
                             dummy.plugin = npc_obj.plugin[min(len(npc_obj.plugin)-1,i)]
                             dummy.flags = npc_obj.flags[min(len(npc_obj.flags)-1,i)]
                             npc_by_file[pn] = dummy
+                            dummy.filename = pn
+                            if dummy.category not in npc_by_category: npc_by_category[dummy.category]=[]
+                            npc_by_category[dummy.category].append(dummy)
                     else:                    
                         npc_by_file[plugin_name] = npc_obj
+                        npc_obj.filename = plugin_name
+                        if npc_obj.category not in npc_by_category: npc_by_category[npc_obj.category]=[]
+                        npc_by_category[npc_obj.category].append(npc_obj)
 
         if "npc" in util.CATEGORIES:
             util.write("npc_data.json",json.dumps(npc_by_file,indent=2))
 
-        return npc_by_file
+        return npc_by_file, npc_by_category
     
 
     def unique_enemy_delays(w):
@@ -379,7 +88,7 @@ def parse():
         npc_cat = f"Category: {npc_data.category}  \n" if npc_data.category != "" else ""
         if "0" not in npc_data.flags and "-1" not in npc_data.flags:
             npc_flags = "Flags: "
-            dflags = ", ".join([FLAG_MAPPINGS[item] for item in npc_data.flags])
+            dflags = ", ".join([modules.shared.FLAG_MAPPINGS[item] for item in npc_data.flags])
             npc_flags += dflags + "  \n"
         else:
             npc_flags = ""
@@ -457,7 +166,7 @@ def parse():
             String spawn ?
             )
             """
-            count = "<b>1</b>" if wave_entry_data["count"] == "0" else wave_entry_data["count"]
+            count = "<span style=\"font-weight:850;\">1</span>" if wave_entry_data["count"] == "0" else wave_entry_data["count"]
             
             if wave_entry_data["plugin"] in NPCS_BY_FILENAME:
                 npc_data = NPCS_BY_FILENAME[wave_entry_data["plugin"]]
@@ -483,7 +192,8 @@ def parse():
                 if type(npc_data.health) == dict:
                     if "data" in wave_entry_data:
                         data_key = wave_entry_data["data"]
-                        # vars
+
+                        # prefixes (logic carried over from zr code)
                         carrier = data_key[0] == "R"
                         elite = (not carrier) and data_key[0] # If first char isn't R but data exists
 
@@ -507,13 +217,12 @@ def parse():
                 extra_info += " ?HP"
             
             # Show NPC Flags
-            # TODO some icons missing even tho they exist
             display_name = npc_name
             desc = ""
             if npc_data:
                 for flag in npc_data.flags:
                     if flag != "0" and flag != "-1":
-                        extra_info += f" {FLAG_MAPPINGS[flag]}"
+                        extra_info += f" {modules.shared.FLAG_MAPPINGS[flag]}"
 
                 # Get icon
                 if npc_data.icon!="":
@@ -535,11 +244,8 @@ def parse():
                 else:
                     image = util.md_img("./builtin_img/missing.png","D")
                 
-                if npc_data.category != "Type_Hidden": # No longer needed. TODO remove npc info on hover if hidden
-                    #display_name = util.to_file_link(npc_name,"NPCs",npc_name,True)
-                    # Add NPC if not hidden & doesn't exist already
-                    desc = "<div class=\"flex_break\"></div>\n"+get_npc(wave_entry_data["plugin"], {"name": npc_name, "image": image})["description"] # TODO use flags for different icon looks
-                    #md_npc += add_npc(wave_entry_data["plugin"], {"name": npc_name, "image": image}) 
+                if npc_data.category != "Type_Hidden":
+                    desc = "<div class=\"flex_break\"></div>\n"+get_npc(wave_entry_data["plugin"], {"name": npc_name, "image": image})["description"]
             else:
                 image = "" if "wavesets" not in util.CATEGORIES else util.md_img("./builtin_img/missing.png","E")
                 
@@ -558,20 +264,18 @@ def parse():
 
                     extra_info += f" {char} {percent_text}％"
 
-            # Add NPC to wave data   
-            if is_betting:
-                # For first table val: int("1.0") -> ValueError | int(float("1.0")) -> 1
-                md_new += f"| {int(float(wave_entry))} | {count} {image if image!="" else ""} {npc_name_prefix} {display_name} {extra_info} |  \n"
-            else:
-                output.append(
-                    {
-                        "count": count,
-                        "img": image if image else "",
-                        "prefix": npc_name_prefix,
-                        "display_name": display_name,
-                        "extra_info": extra_info + desc
-                    }
-                )
+            # Add npc to wave data output for waves.js to be parsed
+            # TODO use flags for different icon looks
+            output.append(
+                {
+                    "delay": float(wave_entry), # NOTE use for betting wars!
+                    "count": count,
+                    "img": image if image else "",
+                    "prefix": npc_name_prefix,
+                    "display_name": display_name,
+                    "extra_info": extra_info + desc
+                }
+            )
         
         return output
     
@@ -677,7 +381,7 @@ def parse():
 
                 if "desc" in wavesets[waveset_name]:
                     waveset_desc_key = wavesets[waveset_name]["desc"]
-                    desc = get_key(waveset_desc_key).replace("\\n","  \n")
+                    desc = util.get_key(waveset_desc_key).replace("\\n","  \n")
                     if desc == "":
                         desc = waveset_desc_key.replace("\\n","  \n") # Blame Artvin PR #895 for not translating a desc
                 else:
@@ -694,7 +398,7 @@ def parse():
         #if "Modifiers" in WAVESET_LIST:
         #    for modifier in WAVESET_LIST["Modifiers"]:
         #        data = WAVESET_LIST["Modifiers"][modifier]
-        #        desc = get_key(data["desc"]).replace("\\n","  \n")
+        #        desc = util.get_key(data["desc"]).replace("\\n","  \n")
         #        MARKDOWN_WAVESETS += f"# {modifier}  \n[Back to top](#modifiers)  \nMinimum level: {float(data["level"])*1000}  \n{desc}  \n"
         
         if not os.path.isdir("gh-pages/wavesets"): subprocess.run(["mkdir", "gh-pages/wavesets"])
@@ -720,7 +424,7 @@ def parse():
             util.log(f"Unsupported waveset cfg {filename}!","WARNING")
             return html_mapsets
         
-        util.log(f"Parsing waveset list cfg: {filename} | Is map? {"maps" in filename}")
+        util.log(f"Parsing waveset list cfg: {filename}")
 
         """
         maps/zr_bunker_old_fish.cfg - currently disabled in zr? and has missing files
@@ -833,7 +537,7 @@ def parse():
     def rogue_item_modal(name, obj={}):
         shop_cost = f"$$ cost \\space △ {obj["shopcost"]} $$\n" if "shopcost" in obj else ""
         dropchance = f"$$ dropchance \\space {obj["dropchance"]} $$\n" if "dropchance" in obj else ""
-        modal = f"$$ \\textbf{{ {get_key(name).replace("&","\\&")} }} $$\n{shop_cost}{dropchance}$$\n{util.as_latex(get_key(f"{name} Desc"))}\n$$"
+        modal = f"$$ \\textbf{{ {util.get_key(name).replace("&","\\&")} }} $$\n{shop_cost}{dropchance}$$\n{util.as_latex(util.get_key(f"{name} Desc"))}\n$$"
         return modal + "  \n"
 
     PATH_NPC = "./TF2-Zombie-Riot/addons/sourcemod/scripting/zombie_riot/npc/"
@@ -842,8 +546,9 @@ def parse():
     if not os.path.isdir("gh-pages/waveset_embeds"): subprocess.run(["mkdir", "gh-pages/waveset_embeds"])
     if not os.path.isdir("repo_img"): subprocess.run(["mkdir", "repo_img"])
 
-    util.log("Parsing NPCs...")
-    NPCS_BY_FILENAME = parse_all_npcs()
+    util.log("Parsing list of NPCs...")
+    NPCS_BY_FILENAME, NPCS_BY_CATEGORY = parse_all_npcs()
+    util.write("npcs_by_category.json", json.dumps(NPCS_BY_CATEGORY,indent=2))
 
     cfg_files = {
         "classic.cfg": "gh-pages/survival.html",

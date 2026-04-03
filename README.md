@@ -15,9 +15,10 @@ The code is currently being rewritten to move the encyclopedia to github pages, 
         - [ ] Construction 1
         - [ ] Construction 2
     - [x] ZR: Special Maps
+- [x] NPC data
 - [x] Item data
   - [x] Items
   - [x] Weapon Paps
-- [ ] Skill tree data
+- [ ] Skilltree data
 
 Icon source: https://github.com/feathericons/feather
