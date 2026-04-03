@@ -2813,11 +2813,11 @@ stock int StrLenMB(const char[] str)
 */
 
 #if defined ZR
-void PrintNPCMessageWithPrefixes(int entity, const char[] color, const char[] message, bool messageIsTranslated = false)
+void PrintNPCMessageWithPrefixes(int entity, const char[] npcColor, const char[] message, bool messageIsTranslated = false, const char[] customName = "", const char[] messageColor = "")
 {
 	bool checkedForPrefixes;
 	bool loud;
-	char finalColor[32];
+	char finalNpcColor[32], finalMessageColor[32];
 	char finalMessage[255];
 	
 	// Only copy the message once if it's not translated
@@ -2841,20 +2841,24 @@ void PrintNPCMessageWithPrefixes(int entity, const char[] color, const char[] me
 				if (HasSpecificBuff(entity, "Verde"))
 				{
 					// verd e
-					finalColor = "forestgreen";
+					finalNpcColor = "forestgreen";
 				}
 				else if (HasSpecificBuff(entity, "Ragebaiter Prefix"))
 				{
 					// To match the rest of ragebaiter text
-					finalColor = "crimson";
+					finalNpcColor = "crimson";
 				}
 				
 				if (HasSpecificBuff(entity, "Loud Prefix"))
 					loud = true;
 			}
 			
-			if (finalColor[0] == '\0')
-				strcopy(finalColor, sizeof(finalColor), color);
+			if (finalNpcColor[0] == '\0')
+				strcopy(finalNpcColor, sizeof(finalNpcColor), npcColor);
+			
+			// Only add a color if it's not default, to save a few characters
+			if (messageColor[0] != '\0')
+				FormatEx(finalMessageColor, sizeof(finalMessageColor), "{%s}", messageColor);
 			
 			if (!messageIsTranslated && loud)
 				StringToUpper(finalMessage);
@@ -2871,10 +2875,14 @@ void PrintNPCMessageWithPrefixes(int entity, const char[] color, const char[] me
 				StringToUpper(finalMessage);
 		}
 		
-		if (!b_NameNoTranslation[entity])
-			CPrintToChat(client, "{%s}%s%s{default}: %s", finalColor, prefix, c_NpcName[entity], finalMessage);
+		bool isCustomName = customName[0] != '\0';
+		
+		if (isCustomName)
+			CPrintToChat(client, "{%s}%s%s{default}: %s%s", finalNpcColor, prefix, customName, finalMessageColor, finalMessage);
+		else if (!b_NameNoTranslation[entity])
+			CPrintToChat(client, "{%s}%s%s{default}: %s%s", finalNpcColor, prefix, c_NpcName[entity], finalMessageColor, finalMessage);
 		else
-			CPrintToChat(client, "{%s}%s%t{default}: %s", finalColor, prefix, c_NpcName[entity], finalMessage);
+			CPrintToChat(client, "{%s}%s%t{default}: %s%s", finalNpcColor, prefix, c_NpcName[entity], finalMessageColor, finalMessage);
 	}
 }
 #endif

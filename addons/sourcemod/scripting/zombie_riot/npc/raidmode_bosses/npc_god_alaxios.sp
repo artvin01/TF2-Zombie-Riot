@@ -513,6 +513,10 @@ methodmap GodAlaxios < CClotBody
 	}
 }
 
+static void GodAlaxios_Talk(int iNPC, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(iNPC, "lightblue", message);
+}
 
 public void GodAlaxios_ClotThink(int iNPC)
 {
@@ -670,15 +674,15 @@ public void GodAlaxios_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{lightblue}God Alaxios{crimson}: STOP BEING SO WEAK, HELP ME!!!!!");
+						GodAlaxios_Talk(npc.index, "{crimson}STOP BEING SO WEAK, HELP ME!!!!!");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{lightblue}God Alaxios{crimson}: I'M UNDER CONTROL, HELP ME.....");
+						GodAlaxios_Talk(npc.index, "{crimson}I'M UNDER CONTROL, HELP ME.....");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{lightblue}God Alaxios{crimson}: THIS THING IS TOO MUCH, HELP!!!!!!!!!");
+						GodAlaxios_Talk(npc.index, "{crimson}THIS THING IS TOO MUCH, HELP!!!!!!!!!");
 					}
 				}
 			}
@@ -688,15 +692,15 @@ public void GodAlaxios_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{lightblue}God Alaxios{default}: You have no chance alone!");
+						GodAlaxios_Talk(npc.index, "You have no chance alone!");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{lightblue}God Alaxios{default}: Your weaponry frails in comparison to Atlantis!!");
+						GodAlaxios_Talk(npc.index, "Your weaponry frails in comparison to Atlantis!!");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{lightblue}God Alaxios{default}: Consider surrendering?!");
+						GodAlaxios_Talk(npc.index, "Consider surrendering?!");
 					}
 				}
 			}
@@ -720,7 +724,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 					SetEntityCollisionGroup(baseboss_index, 24);
 				}
 			}
-			CPrintToChatAll("{lightblue}God Alaxios{default}: No.. No No!! They are coming, prepare to fight together NOW!!!");
+			GodAlaxios_Talk(npc.index, "No.. No No!! They are coming, prepare to fight together NOW!!!");
 			RaidBossActive = INVALID_ENT_REFERENCE;
 			for(int i; i<32; i++)
 			{
@@ -833,7 +837,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 				TF2_StunPlayer(client, 0.5, 0.5, TF_STUNFLAGS_LOSERSTATE);
 			}
 		}
-		if(AlaxiosForceTalk())
+		if(AlaxiosForceTalk(npc.index))
 		{
 			npc.m_bDissapearOnDeath = true;
 			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
@@ -1166,7 +1170,7 @@ public Action GodAlaxios_OnTakeDamage(int victim, int &attacker, int &inflictor,
 			damage = 0.0;
 			RaidModeTime += 120.0;
 			f_TalkDelayCheck = GetGameTime() + 4.0;
-			CPrintToChatAll("{lightblue}God Alaxios{crimson}: EEEEEEEEEEEEEEENOOOOOOOOUGH!!!");
+			GodAlaxios_Talk(npc.index, "{crimson}EEEEEEEEEEEEEEENOOOOOOOOUGH!!!");
 			return Plugin_Handled;
 		}
 	}
@@ -1440,25 +1444,25 @@ public void GodAlaxios_NPCDeath(int entity)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}God Alaxios{default}: I have failed Atlantis...");
+					GodAlaxios_Talk(npc.index, "I have failed Atlantis...");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}God Alaxios{default}: How was my army defeated..?");
+					GodAlaxios_Talk(npc.index, "How was my army defeated..?");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}God Alaxios{default}: You dont know what you are doing!");
+					GodAlaxios_Talk(npc.index, "You dont know what you are doing!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}God Alaxios{default}: We should be fighting together, not against each other, the {blue}sea{default} will be your doom...");
+					GodAlaxios_Talk(npc.index, "We should be fighting together, not against each other, the {blue}sea{default} will be your doom...");
 				}
 			}
 		}
 		else
 		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: I'm.. I'm free..?");
+			GodAlaxios_Talk(npc.index, "I'm.. I'm free..?");
 			CPrintToChatAll("{lightblue}God Alaxios instantly leaves the battlefield... you couldn't even trace him.");
 		}
 	}
@@ -2190,19 +2194,19 @@ void AlaxiosSayWords(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: You don't know the dangers you're getting yourself into fighting me and my army at the same time!");
+				GodAlaxios_Talk(entity, "You don't know the dangers you're getting yourself into fighting me and my army at the same time!");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: My army will always help me back up!");
+				GodAlaxios_Talk(entity, "My army will always help me back up!");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: Me and my army, as one, will never be defeated!");
+				GodAlaxios_Talk(entity, "Me and my army, as one, will never be defeated!");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: Together for Atlantis! As one and for all!");
+				GodAlaxios_Talk(entity, "Together for Atlantis! As one and for all!");
 			}
 		}
 	}
@@ -2241,26 +2245,26 @@ void AlaxiosSayWordsAngry(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}ISVOLI!!!! FOR THE PEOPLE!!!!!!!!!!");
+				GodAlaxios_Talk(entity, "{crimson}ISVOLI!!!! FOR THE PEOPLE!!!!!!!!!!");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}ISVOLI!!!! FOR ALL THAT IS FORSAKEN!!!!!!!");
+				GodAlaxios_Talk(entity, "{crimson}ISVOLI!!!! FOR ALL THAT IS FORSAKEN!!!!!!!");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}ISVOLI!!!! FOR THE FUTURE!!!!!!!");
+				GodAlaxios_Talk(entity, "{crimson}ISVOLI!!!! FOR THE FUTURE!!!!!!!");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}ISVOLI!!!! FOR ATLANTIS!!!!!!!!!");
+				GodAlaxios_Talk(entity, "{crimson}ISVOLI!!!! FOR ATLANTIS!!!!!!!!!");
 			}
 		}
 	}
 }
 
 
-bool AlaxiosForceTalk()
+bool AlaxiosForceTalk(int entity)
 {
 	if(i_TalkDelayCheck == 11)
 	{
@@ -2275,52 +2279,52 @@ bool AlaxiosForceTalk()
 			case 0:
 			{
 				ReviveAll(true);
-				CPrintToChatAll("{lightblue}God Alaxios{default}: I will NOT tolerate this dispute any longer!");
+				GodAlaxios_Talk(entity, "I will NOT tolerate this dispute any longer!");
 				i_TalkDelayCheck += 1;
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: You have to understand, WE have a {blue}common enemy{default}, and that is {blue}Seaborn{default}.");
+				GodAlaxios_Talk(entity, "You have to understand, WE have a {blue}common enemy{default}, and that is {blue}Seaborn{default}.");
 				i_TalkDelayCheck += 1;
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: More wars with each other means more opportunity for them to rise.");
+				GodAlaxios_Talk(entity, "More wars with each other means more opportunity for them to rise.");
 				i_TalkDelayCheck += 1;
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: And whilst I am immortal and my army unkillable, we are not incorruptible.");
+				GodAlaxios_Talk(entity, "And whilst I am immortal and my army unkillable, we are not incorruptible.");
 				i_TalkDelayCheck += 1;
 			}
 			case 4:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: However, I saw your prowess and your abilities.");
+				GodAlaxios_Talk(entity, "However, I saw your prowess and your abilities.");
 				i_TalkDelayCheck += 1;
 			}
 			case 5:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: You can wield {blue}Seaborn's{default} weapons without succumbing to their corruption, from what I can see at least...");
+				GodAlaxios_Talk(entity, "You can wield {blue}Seaborn's{default} weapons without succumbing to their corruption, from what I can see at least...");
 				i_TalkDelayCheck += 1;
 			}
 			case 6:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: As such, we need your aid. YOU are our greatest opportunity to cleanse this world of watery horrors.");
+				GodAlaxios_Talk(entity, "As such, we need your aid. YOU are our greatest opportunity to cleanse this world of watery horrors.");
 				i_TalkDelayCheck += 1;
 			}
 			case 7:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: Of course, we will support you as much as we can. As one, we will thrive once again.");
+				GodAlaxios_Talk(entity, "Of course, we will support you as much as we can. As one, we will thrive once again.");
 				i_TalkDelayCheck += 1;
 			}
 			case 8:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: When you invade them, we will make sure that their main forces are distracted by us.");
+				GodAlaxios_Talk(entity, "When you invade them, we will make sure that their main forces are distracted by us.");
 				i_TalkDelayCheck += 1;
 			}
 			case 9:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: ALL HEIL THE MERCENARIES!! {crimson} FOR ATLANTISSSSS!!!!!!!!!!!!!!.");
+				GodAlaxios_Talk(entity, "ALL HAIL THE MERCENARIES!! {crimson}FOR ATLANTISSSSS!!!!!!!!!!!!!!.");
 				i_TalkDelayCheck = 11;
 				for (int client = 1; client <= MaxClients; client++)
 				{
@@ -2354,19 +2358,19 @@ public void Raidmode_Alaxios_Win(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: Atlantis will never fall!");
+				GodAlaxios_Talk(npc.index, "Atlantis will never fall!");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: I still have to take care of the {blue}deep sea{default}...");
+				GodAlaxios_Talk(npc.index, "I still have to take care of the {blue}deep sea{default}...");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: Threaten our livelyhood and you pay!");
+				GodAlaxios_Talk(npc.index, "Threaten our livelyhood and you pay!");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: I have to inform {blue}Sensal{default} about this.");
+				GodAlaxios_Talk(npc.index, "I have to inform {blue}Sensal{default} about this.");
 			}
 		}
 	}

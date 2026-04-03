@@ -314,15 +314,11 @@ methodmap RaidbossNemesis < CClotBody
 		i_GunMode[npc.index] = 0;
 		i_GunAmmo[npc.index] = 0;
 		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 25.0;
+
 		if(isEnraged)
-		{
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Enraged Calmaticus");
-			CPrintToChatAll("{green}Calmaticus: YOU WILL BECOME DNA SUPLIMENTS.");
-		}
-		else
-		{
-			CPrintToChatAll("{green}Calmaticus: You all will be one with the virus.");
-		}
+		
+		CreateTimer(0.2, RaidbossNemesis_Timer_IntroMessage, EntIndexToEntRef(npc.index));
 		
 		npc.m_iWearable6 = npc.EquipItem("weapon_bone", "models/workshop/player/items/pyro/hw2013_mucus_membrane/hw2013_mucus_membrane.mdl");
 	
@@ -331,6 +327,28 @@ methodmap RaidbossNemesis < CClotBody
 		npc.StartPathing();
 		return npc;
 	}
+}
+
+static void RaidbossNemesis_Timer_IntroMessage(Handle timer, int ref)
+{
+	int iNPC = EntRefToEntIndex(ref);
+	if (iNPC == INVALID_ENT_REFERENCE || b_NpcHasDied[iNPC])
+		return;
+	
+	RaidbossNemesis npc = view_as<RaidbossNemesis>(iNPC);
+	if(npc.m_bIsEnraged)
+	{
+		RaidbossNemesis_Talk(iNPC, "YOU WILL BECOME DNA SUPLIMENTS.");
+	}
+	else
+	{
+		RaidbossNemesis_Talk(iNPC, "You all will be one with the virus.");
+	}
+}
+
+static void RaidbossNemesis_Talk(int iNPC, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(iNPC, "green", message, .customName = "Calmaticus", .messageColor = "green");
 }
 
 public void RaidbossNemesis_ClotThink(int iNPC)
@@ -343,7 +361,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			CPrintToChatAll("{green} The infection got all your friends... Run while you can.");
+			CPrintToChatAll("{green}The infection got all your friends... Run while you can.");
 		}
 	}
 	if(RaidModeTime < GetGameTime())
@@ -352,7 +370,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		i_RaidGrantExtra[npc.index] = 0;
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{green} The infection proves too strong for you to resist as you join his side...");
+		CPrintToChatAll("{green}The infection proves too strong for you to resist as you join his side...");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
