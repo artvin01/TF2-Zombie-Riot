@@ -1,8 +1,0 @@
-"UnlitGeneric"
-{
-	"$basetexture" "zombie_riot/btd/ceramic3"
-	"$surfaceprop" "no_decal"
-	"$translucent" 1
-	"$vertexcolor" 1
-	"$vertexalpha" 1
-}

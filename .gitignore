@@ -1,14 +1,21 @@
-*.dat
-*.exe
-*.smx
-*.inc
-*.vscode
-*.jpg
-*.code-workspace
-mynpcs/
-[Cc]compiled/
-[Dd]esktop.ini
-[Tt]humbs.db
-!zombie_riot.inc
-!textstore.inc
-!adt_trie_sort.inc
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# Local testing
+.obsidian/
+venv/
+TF2-Zombie-Riot/
+
+repo_img/
+premedia_icons_unused/
+
+/*.html
+npc_data.json
+npc_data_01.json
+npc_data_02.json
+*.cfg
+
+gh-pages/*
+gh-pages/index.html
+!gh-pages/static/
+!gh-pages/waveset_viewer.html

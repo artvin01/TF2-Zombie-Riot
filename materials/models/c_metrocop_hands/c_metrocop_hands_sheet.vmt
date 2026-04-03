@@ -1,7 +1,0 @@
-// envmaptint_fix
-"VertexLitGeneric"
-{
-	// Original shader: VertexLitTexture
-	"$basetexture" "models/c_metrocop_hands/c_metrocop_hands_sheet"
-	"$bumpmap" "models/Weapons/V_hand/v_hand_sheet_normal"
-}
