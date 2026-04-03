@@ -230,7 +230,7 @@ static void NPCTalkMessage(int iNPC, const char[] message, bool identityRevealed
 {
 	if (identityRevealed)
 	{
-		PrintNPCMessageWithPrefixes(iNPC, "aqua", message, .customName = "Stella", .messageColor = "snow");
+		PrintNPCMessageWithPrefixes(iNPC, "aqua", message, .customName = "Stella", .messageColor = "snow", .customNameIsTranslated = true);
 	}
 	else
 	{
