@@ -1,0 +1,55 @@
+name: Generate wiki [source update]
+on:
+  push:
+    branches:
+    - 'master'
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: generate-pages
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        ref: wiki_gen
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.14'
+    - name: Setup venv
+      run: python -m venv venv; ./venv/bin/pip install -r requirements.txt
+    
+    - name: Clone ZR repo
+      run: git clone https://github.com/artvin01/TF2-Zombie-Riot
+
+    - name: Parse ZR repo code
+      run: ./venv/bin/python main.py
+    
+    - name: Move repo_img and builtin_img to wiki
+      run: |
+        mv repo_img/ ./gh-pages/repo_img/
+        mv builtin_img/ ./gh-pages/builtin_img/
+        mv premedia_icons/ ./gh-pages/premedia_icons/
+    
+    - name: Upload static files as artifact
+      id: deployment
+      uses: actions/upload-pages-artifact@v4
+      with:
+        path: gh-pages/
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }} 
+    permissions:
+      pages: write
+      id-token: write
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
