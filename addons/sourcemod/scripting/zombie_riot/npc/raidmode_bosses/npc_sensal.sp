@@ -341,7 +341,7 @@ methodmap Sensal < CClotBody
 		if(tripple)
 		{
 			RemoveAllDamageAddition();
-			CPrintToChatAll("{blue}Sensal{default}: This is your final challange, beat all 3 of us at once, Fear the might of {gold}Expidonsa{default}!");
+			NPCTalkMessage(npc.index, "This is your final challange, beat all 3 of us at once, Fear the might of {gold}Expidonsa{default}!");
 			GiveOneRevive(true);
 		}
 		for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -486,6 +486,11 @@ methodmap Sensal < CClotBody
 	}
 }
 
+static void NPCTalkMessage(int entity, const char[] message, bool translated = false)
+{
+	PrintNPCMessageWithPrefixes(entity, "blue", message, translated);
+}
+
 static void Internal_ClotThink(int iNPC)
 {
 	Sensal npc = view_as<Sensal>(iNPC);
@@ -565,11 +570,11 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-1", false, false);
+				NPCTalkMessage(npc.index, "Castellan_And_Sensal_Talk-1", true);
 			}
 			case 1:
 			{
-				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-2", false, false);
+				NPCTalkMessage(npc.index, "Castellan_And_Sensal_Talk-2", true);
 			}
 			case 2:
 			{
@@ -577,11 +582,11 @@ static void Internal_ClotThink(int iNPC)
 			}
 			case 3:
 			{
-				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-4", false, false);
+				NPCTalkMessage(npc.index, "Castellan_And_Sensal_Talk-4", true);
 			}
 			case 4:
 			{
-				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-5", false, false);
+				NPCTalkMessage(npc.index, "Castellan_And_Sensal_Talk-5", true);
 			}
 			case 5:
 			{
@@ -589,7 +594,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			case 6:
 			{
-				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-7", false, false);
+				NPCTalkMessage(npc.index, "Castellan_And_Sensal_Talk-7", true);
 			}
 			case 7:
 			{
@@ -597,7 +602,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			case 8:
 			{
-				NPCPritToChat(npc.index, "{blue}", "Castellan_And_Sensal_Talk-9", false, false);
+				NPCTalkMessage(npc.index, "Castellan_And_Sensal_Talk-9", true);
 			}
 			case 9:
 			{
@@ -636,15 +641,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: You are the last one.");
+					NPCTalkMessage(npc.index, "You are the last one.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: None of you criminals are of any importance to {gold}Expidonsa{default}.");
+					NPCTalkMessage(npc.index, "None of you criminals are of any importance to {gold}Expidonsa{default}.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: All your friends are gone. Submit to {gold}Expidonsan{default} might.");
+					NPCTalkMessage(npc.index, "All your friends are gone. Submit to {gold}Expidonsan{default} might.");
 				}
 			}
 		}
@@ -656,7 +661,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.SetCycle(0.01);
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{blue}Sensal{default}: Refusing to collaborate or even reason with {gold}Expidonsa{default} will result in termination.");
+		NPCTalkMessage(npc.index, "Refusing to collaborate or even reason with {gold}Expidonsa{default} will result in termination.");
 		return;
 	}
 	if(RaidModeTime < GetGameTime())
@@ -670,7 +675,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.SetCycle(0.01);
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		CPrintToChatAll("{blue}Sensal{default}: You are under arrest. The Expidonsan elite forces will take you now.");
+		NPCTalkMessage(npc.index, "You are under arrest. The Expidonsan elite forces will take you now.");
 		for(int i; i<32; i++)
 		{
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -808,7 +813,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
 			
-			CPrintToChatAll("{blue}Sensal{default}: You keep talking about Silvester and Waldch, what is the meaning of this?");
+			NPCTalkMessage(npc.index, "You keep talking about Silvester and Waldch, what is the meaning of this?");
 
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
@@ -865,9 +870,9 @@ static void Internal_NPCDeath(int entity)
 	if(i_RaidGrantExtra[npc.index] == 50)
 	{
 		if(XenoExtraLogic())
-			CPrintToChatAll("{blue}Sensal{default}: This area is restricted for all of you.");
+			NPCTalkMessage(npc.index, "This area is restricted for all of you.");
 		else
-			CPrintToChatAll("{blue}Sensal{default}: You all are coming with me.");
+			NPCTalkMessage(npc.index, "You all are coming with me.");
 
 		return;
 	}
@@ -882,19 +887,19 @@ static void Internal_NPCDeath(int entity)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: Your actions against a fellow {gold}Expidonsan{default} will not be forgiven, I will be back with reinforcements.");
+			NPCTalkMessage(npc.index, "Your actions against a fellow {gold}Expidonsan{default} will not be forgiven, I will be back with reinforcements.");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: Your time will come when you pay for going against the law of {gold}Expidonsa{default}.");
+			NPCTalkMessage(npc.index, "Your time will come when you pay for going against the law of {gold}Expidonsa{default}.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: {gold}Expidonsa{default} is beyond your level of understanding.");
+			NPCTalkMessage(npc.index, "{gold}Expidonsa{default} is beyond your level of understanding.");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: You do not know what you are getting yourself into.");
+			NPCTalkMessage(npc.index, "You do not know what you are getting yourself into.");
 		}
 	}
 
@@ -1711,7 +1716,7 @@ bool SensalTalkPostWin(Sensal npc)
 	}
 	if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
 	{
-		CPrintToChatAll("{blue}Sensal{default}: We apologize for the sudden attack. We didn't know, take this as an apology.");
+		NPCTalkMessage(npc.index, "We apologize for the sudden attack. We didn't know, take this as an apology.");
 		
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		BlockLoseSay = true;
@@ -1727,22 +1732,22 @@ bool SensalTalkPostWin(Sensal npc)
 	else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 	{
 		i_SaidLineAlready[npc.index] = 4;
-		CPrintToChatAll("{blue}Sensal{default}: But I see that this was to protect you guys and yet you were able to destroy {green}Calmaticus.");
+		NPCTalkMessage(npc.index, "But I see that this was to protect you guys and yet you were able to destroy {green}Calmaticus.");
 	}
 	else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
 	{
 		i_SaidLineAlready[npc.index] = 3;
-		CPrintToChatAll("{blue}Sensal{default}: We got sent to rescue him and we saw you attacking him.");
+		NPCTalkMessage(npc.index, "We got sent to rescue him and we saw you attacking him.");
 	}
 	else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
 	{
 		i_SaidLineAlready[npc.index] = 2;
-		CPrintToChatAll("{blue}Sensal{default}: We are close friends though we lost contact since he left the city.");
+		NPCTalkMessage(npc.index, "We are close friends though we lost contact since he left the city.");
 	}
 	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 	{
 		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{blue}Sensal{default}: ....I see. They are friend of yours now as well.");
+		NPCTalkMessage(npc.index, "....I see. They are friend of yours now as well.");
 	}
 	return true; //He is trying to help.
 }
@@ -2351,7 +2356,7 @@ static void Sensal_Weapon_Lines(Sensal npc, int client)
 
 	if(valid)
 	{
-		CPrintToChatAll("{blue}Sensal{default}: %s", Text_Lines);
+		NPCTalkMessage(npc.index, Text_Lines);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}

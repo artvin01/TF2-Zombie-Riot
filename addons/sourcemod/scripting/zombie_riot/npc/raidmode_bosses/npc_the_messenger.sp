@@ -387,18 +387,18 @@ methodmap TheMessenger < CClotBody
 		
 		if (npc.m_bBossRushDuo)
 		{
-			CPrintToChatAll("{lightblue}The Messenger{default}: You're gonna die.");
+			NPCTalkMessage(npc.index, "You're gonna die.");
 		}
 		else if(!final)
 		{
 			if(i_RaidGrantExtra[npc.index] <= 2)
 			{
 				IgniteTargetEffect(npc.m_iWearable1);
-				CPrintToChatAll("{lightblue}The Messenger{default}: Welcome, welcome sinners! I'm bearing a message to you all!");
+				NPCTalkMessage(npc.index, "Welcome, welcome sinners! I'm bearing a message to you all!");
 			}
 			else
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Round two.");
+				NPCTalkMessage(npc.index, "Round two.");
 			}
 		}
 
@@ -435,6 +435,11 @@ methodmap TheMessenger < CClotBody
 	}
 }
 
+static void NPCTalkMessage(int iNPC, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(iNPC, "lightblue", message);
+}
+
 public void TheMessenger_ClotThink(int iNPC)
 {
 	TheMessenger npc = view_as<TheMessenger>(iNPC);
@@ -451,7 +456,7 @@ public void TheMessenger_ClotThink(int iNPC)
 	if(i_RaidGrantExtra[npc.index] >= 6)
 	{
 		i_RaidGrantExtra[npc.index] = 6;
-		CPrintToChatAll("{lightblue}The Messenger{default}: {crimson}AHAHAHAHHAHAHAHA!!! KNEEL BEFORE THE LORD'S MIGHT!");
+		NPCTalkMessage(npc.index, "{crimson}AHAHAHAHHAHAHAHA!!! KNEEL BEFORE THE LORD'S MIGHT!");
 		return;
 	}
 	/*
@@ -469,21 +474,21 @@ public void TheMessenger_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: Shame.");
+					NPCTalkMessage(npc.index, "Shame.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: Are you for real??");
+					NPCTalkMessage(npc.index, "Are you for real??");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: No comment.");
+					NPCTalkMessage(npc.index, "No comment.");
 				}
 			}
 		}
 		else
 		{
-			CPrintToChatAll("{lightblue}The Messenger{default}: ...........");
+			NPCTalkMessage(npc.index, "...........");
 		}
 	}
 	if(LastMann)
@@ -497,19 +502,19 @@ public void TheMessenger_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: Your friends are dead. {crimson}Accept your fate.");
+						NPCTalkMessage(npc.index, "Your friends are dead. {crimson}Accept your fate.");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: It's just you and me now.");
+						NPCTalkMessage(npc.index, "It's just you and me now.");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: Time for you to forward my message to your superiors.");
+						NPCTalkMessage(npc.index, "Time for you to forward my message to your superiors.");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: Give up, you cannot win.");
+						NPCTalkMessage(npc.index, "Give up, you cannot win.");
 					}
 				}
 			}
@@ -519,15 +524,15 @@ public void TheMessenger_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: YOU ARE DEAD");
+						NPCTalkMessage(npc.index, "YOU ARE DEAD");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: I'LL FUCK YOU UP");
+						NPCTalkMessage(npc.index, "I'LL FUCK YOU UP");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: AHAHAHAHAHAHA");
+						NPCTalkMessage(npc.index, "AHAHAHAHAHAHA");
 					}
 				}				
 			}
@@ -672,23 +677,23 @@ bool Messanger_Elemental_Attack_Projectiles(TheMessenger npc)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: No more fucking around.");
+						NPCTalkMessage(npc.index, "No more fucking around.");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: Stop wasting my time shitheads.");
+						NPCTalkMessage(npc.index, "Stop wasting my time shitheads.");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: All sinners will {crimson}DIE.");
+						NPCTalkMessage(npc.index, "All sinners will {crimson}DIE.");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: You just brought infinite pain upon you.");
+						NPCTalkMessage(npc.index, "You just brought infinite pain upon you.");
 					}
 					case 4:
 					{
-						CPrintToChatAll("{lightblue}The Messenger{default}: You fucks are just a waste of my time.");
+						NPCTalkMessage(npc.index, "You fucks are just a waste of my time.");
 					}
 				}
 				MessengerInitiateGroupAttack(npc);
@@ -882,7 +887,7 @@ public Action TheMessenger_OnTakeDamage(int victim, int &attacker, int &inflicto
 			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MESSENGER_LAUNCHER)
 			{
 				b_khamlWeaponRage[npc.index] = true;
-				CPrintToChatAll("{lightblue}The Messenger{default}: USING MY OWN WEAPON AGAINST ME {crimson} GO FUCK YOURSELF.");
+				NPCTalkMessage(npc.index, "USING MY OWN WEAPON AGAINST ME? {crimson}GO FUCK YOURSELF.");
 			}
 		}
 	}
@@ -933,19 +938,19 @@ public void TheMessenger_NPCDeath(int entity)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: Ugh... little fucks.. This ain't over!");
+					NPCTalkMessage(npc.index, "Ugh... little fucks.. This ain't over!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: You're just delaying the inevitable..");
+					NPCTalkMessage(npc.index, "You're just delaying the inevitable..");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: I may or may not have heavily underestimated you..");
+					NPCTalkMessage(npc.index, "I may or may not have heavily underestimated you..");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: No...");
+					NPCTalkMessage(npc.index, "No...");
 				}
 			}
 		}
@@ -955,27 +960,27 @@ public void TheMessenger_NPCDeath(int entity)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: NOT TWICE.");
+					NPCTalkMessage(npc.index, "NOT TWICE.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: WHY");
+					NPCTalkMessage(npc.index, "WHY");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: YOU WILL REGRET THIS.");
+					NPCTalkMessage(npc.index, "YOU WILL REGRET THIS.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: I've failed you..... my Lord..");
+					NPCTalkMessage(npc.index, "I've failed you..... my Lord..");
 				}
 				case 4:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: How will I.... tell Him about my failure.");
+					NPCTalkMessage(npc.index, "How will I.... tell Him about my failure.");
 				}
 				case 5:
 				{
-					CPrintToChatAll("{lightblue}The Messenger{default}: FUCK FUCK FUCK GOD FUCKING DAMNIT {crimson}FUCK!!!{default}");
+					NPCTalkMessage(npc.index, "FUCK FUCK FUCK GOD FUCKING DAMNIT {crimson}FUCK!!!{default}");
 				}
 			}
 		}
@@ -1400,27 +1405,27 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: AHAHAHAHAHHA, all of you are so{crimson}FUCKED!!");
+				NPCTalkMessage(npc.index, "AHAHAHAHAHHA, all of you are so{crimson}FUCKED!!");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: {purple}VOID{default}, GRANT ME STRENGTH!");
+				NPCTalkMessage(npc.index, "{purple}VOID{default}, GRANT ME STRENGTH!");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: You think you won? I'M JUST GETTING STARTED.");
+				NPCTalkMessage(npc.index, "You think you won? I'M JUST GETTING STARTED.");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Remember those cats? {crimson} You're about to get it worse.");
+				NPCTalkMessage(npc.index, "Remember those cats? {crimson} You're about to get it worse.");
 			}
 			case 4:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: {crimson} DEATH TO MY ENEMIES!!!.");
+				NPCTalkMessage(npc.index, "{crimson} DEATH TO MY ENEMIES!!!.");
 			}
 			case 5:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: {crimson} DIE ALREADY!!!");
+				NPCTalkMessage(npc.index, "{crimson} DIE ALREADY!!!");
 			}
 		}
 	}
@@ -1435,15 +1440,15 @@ public void TheMessenger_Win(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Judgement delivered.");
+				NPCTalkMessage(entity, "Judgement delivered.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Your penance is now over.");
+				NPCTalkMessage(entity, "Your penance is now over.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Thus your reign of terror is no more.");
+				NPCTalkMessage(entity, "Thus your reign of terror is no more.");
 			}
 		}
 	}
@@ -1453,15 +1458,15 @@ public void TheMessenger_Win(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: {crimson}TAKE THAT YOU FUCKS");
+				NPCTalkMessage(entity, "{crimson}TAKE THAT YOU FUCKS");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Message...... delivered....");
+				NPCTalkMessage(entity, "Message...... delivered....");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: Are you proud? My Lord....");
+				NPCTalkMessage(entity, "Are you proud? My Lord....");
 			}
 		}
 	}
