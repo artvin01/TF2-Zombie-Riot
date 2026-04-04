@@ -93,19 +93,18 @@ def parse():
         output = []
         has_cash_entry = False
 
-        for wave_entry in wave_data:
-            wave_entry_data = wave_data[wave_entry]
+        for wave_entry, wave_entry_data in wave_data.items():
             try:
                 float(wave_entry)
             except ValueError:
                 if wave_entry.startswith("music_"):
-                    if (mdata := util.music_modal(wave_entry_data)):
-                        output.append(mdata)
+                    if (modal := util.music_modal(wave_entry_data)):
+                        output.append(modal)
                 
                 if wave_entry == "xp":
                     output.append({
                         "type": "info",
-                        "text": f"Wave XP: {wave_entry_data}"
+                        "text": f"Wave XP: {int(wave_entry_data)*5}" # 
                     })
 
                 if wave_entry == "cash":
@@ -261,7 +260,6 @@ def parse():
         wd = defaultdict(str,data)
         output = {
             "waves": {},
-            # TODO show authors, item on win and modified music entries in waveset viewer (or waveset link hover?)
             "authors": {
                 "npc": wd["author_npcs"],
                 "format": wd["author_format"],
@@ -282,8 +280,7 @@ def parse():
             max_waves=max(int(wave),max_waves)
         assert max_waves!=0
 
-        for wave in data:
-            wave_data = data[wave]
+        for wave, wave_data in data.items():
             try:
                 int(wave)
             except ValueError:
@@ -507,7 +504,7 @@ def parse():
 
     if not os.path.isdir("gh-pages/embed"): subprocess.run(["mkdir", "gh-pages/embed"])
     if not os.path.isdir("gh-pages/waveset_embeds"): subprocess.run(["mkdir", "gh-pages/waveset_embeds"])
-    if not os.path.isdir("repo_img"): subprocess.run(["mkdir", "repo_img"])
+    if not os.path.isdir("gh-pages/repo_img"): subprocess.run(["mkdir", "gh-pages/repo_img"])
 
     util.log("Fetching base data...")
     NPCS_BY_FILENAME, NPCS_BY_CATEGORY = parse_all_npcs()

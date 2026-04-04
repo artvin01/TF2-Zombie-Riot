@@ -1,6 +1,6 @@
 @import url("style.css");
 /* Wavesets */
-#waveset_data_bg {
+.waveset_bg {
     margin-top: 2em;
     /*padding-bottom: 1.5em; */ /* normal */
     padding-bottom: 2.5em; /* adjusted for wave npc count */

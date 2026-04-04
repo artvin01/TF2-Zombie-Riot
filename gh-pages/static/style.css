@@ -84,7 +84,7 @@ h3, .h3 {
 }
 
 .hidden {
-    display:none;
+    display:none !important;
 }
 
 /* swap out dots in lists */
@@ -135,9 +135,33 @@ li:before {
     color: rgb(83, 123, 22);
 }
 
-
 @media screen and (max-width: 700px) {
     body {
         padding: 25px;
     }
+}
+
+/* https://stackoverflow.com/a/21320622 */
+@keyframes rotating {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+.rotating {
+  -webkit-animation: rotating 2s linear infinite;
+  -moz-animation: rotating 2s linear infinite;
+  -ms-animation: rotating 2s linear infinite;
+  -o-animation: rotating 2s linear infinite;
+  animation: rotating 2s linear infinite;
 }

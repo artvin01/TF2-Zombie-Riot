@@ -47,6 +47,19 @@ async function parse_waveset(file) {
 
         waveset_data = await response.json();
         max_waves = Number(Object.keys(waveset_data["waves"]).reduce((a, b) => Number(a) > Number(b) ? a : b));
+        let waveset_info = "";
+        if (waveset_data["authors"]["npc"]!=="") {waveset_info+="<div>NPCs by: %s</div>".replace("%s",waveset_data["authors"]["npc"])};
+        if (waveset_data["authors"]["format"]!=="") {waveset_info+="<div>Format by: %s</div>".replace("%s",waveset_data["authors"]["format"])};
+        if (waveset_data["authors"]["raid"]!=="") {waveset_info+="<div>Raidboss by: %s</div>".replace("%s",waveset_data["authors"]["raid"])};
+        if (waveset_data["item_on_win"]!=="") {waveset_info+="<div>Item on win: %s</div>".replace("%s",waveset_data["item_on_win"])};
+        
+        const waveset_info_container = document.getElementById("waveset_info");
+        if (waveset_info!=="") {
+            console.log("unhide");
+            waveset_info_container.parentElement.classList.remove("hidden");
+            waveset_info_container.innerHTML = waveset_info;
+        };
+
         console.log("Max waves:"+max_waves);
         console.log("Fetched "+waveset_file);
         update_wave_display();

@@ -8,9 +8,9 @@
     <title>ZR Encyclopedia - Unknown waveset</title>
 </head>
 <body>
-    <div id="waveset_data_bg">
+    <div class="waveset_bg">
         <!-- Header -->
-        <h2 id="wavesetname"></h2>
+        <h2 id="wavesetname">Unknown waveset</h2>
         <div class="flex_break"></div>
         <h3 id="wave_progress_text">WAVE <input type="number" min="1" max="40" value="1" onchange="set_wave(this.value);">/ <span>40</span></h3>
         <img src="static/link.svg" id="wave_embed_link" tabindex="0" onclick="copy_waveset_embed_link();">
@@ -23,12 +23,19 @@
         <div class="flex_break" style="margin-bottom: 1em;"></div>
         <!-- Body -->
         <div id="npc_container">
-
+            <img src="builtin_img/loader.svg" class="rotating">
         </div>
         
         <div class="flex_break"></div>
         <div id="wave_music_container"></div>
         <div class="flex_break"></div>
         <div id="wave_info_container"></div>
+    </div>
+
+    <div class="waveset_bg hidden">
+        <h2>Waveset Information</h2>
+        <div class="flex_break"></div>
+        <div id="waveset_info"></div>
+    </div>
 </body>
 </html>

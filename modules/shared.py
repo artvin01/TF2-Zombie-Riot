@@ -15,15 +15,15 @@ def get_npc_icon(icon):
         npc_png_icon_path = f"repo_img/{icon}.png"
         
         # Paths to look in for icons
-        npc_icon_path = f"./TF2-Zombie-Riot/materials/hud/{npc_icon_key}"
-        premedia_npc_icon_path = f"./premedia_icons/{icon}.png"
+        npc_icon_path = f"TF2-Zombie-Riot/materials/hud/{npc_icon_key}"
+        premedia_npc_icon_path = f"premedia_icons/{icon}.png"
         if os.path.isfile(npc_icon_path):
-            if not os.path.isfile(npc_png_icon_path):
-                npc_icon = vtf2img.Parser(f"./TF2-Zombie-Riot/materials/hud/{npc_icon_key}").get_image()
-                npc_icon.save(npc_png_icon_path)
-            return util.md_img(npc_png_icon_path,"A")
-        elif os.path.isfile(premedia_npc_icon_path):
-            return util.md_img(premedia_npc_icon_path,"B")
+            if not os.path.isfile("gh-pages/"+npc_png_icon_path): # if file already made
+                npc_icon = vtf2img.Parser(f"TF2-Zombie-Riot/materials/hud/{npc_icon_key}").get_image()
+                npc_icon.save("gh-pages/"+npc_png_icon_path)
+            return util.md_img("./"+npc_png_icon_path,"A")
+        elif os.path.isfile("gh-pages/"+premedia_npc_icon_path):
+            return util.md_img("./"+premedia_npc_icon_path,"B")
         else:
             return util.md_img("./builtin_img/missing.png","C")
     else:
