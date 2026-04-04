@@ -17,4 +17,6 @@ npc_data_02.json
 gh-pages/*
 gh-pages/index.html
 !gh-pages/static/
+!gh-pages/builtin_img/
+!gh-pages/premedia_icons/
 !gh-pages/waveset_viewer.html
