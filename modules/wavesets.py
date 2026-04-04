@@ -4,8 +4,6 @@ import embed, modules.shared
 from collections import defaultdict
 from keyvalues1 import KeyValues1
 
-# TODO in waveset display, show npcs flagged as support separately, just like in tf2
-
 PROPERTY_MAPPINGS = {
     "is_boss": "Boss",
     "is_outlined": "Outline",
@@ -324,31 +322,28 @@ def parse():
         if "Waves" in WAVESET_LIST: # list of wavesets
             wavesets = WAVESET_LIST["Waves"]
             # Outline
-            if len(wavesets)>1:
-                wavesetlist_html += "<ul>\n"
-                for waveset_name in wavesets:
-                    link = f"{util.absolute_link(filename,waveset_name)}.json"
-                    wavesetlist_html += f"<li><a href=\"waveset_viewer.html?w={link}\">{waveset_name}</li>\n"
-                wavesetlist_html += "</ul>\n"
-                if map_mode: 
-                    n = filename.split("/")[-1].replace(".cfg","")
-                    html_mapsets += f"<li><a href=\"{n}.html\">{n}</a></li>"
-            else:
-                if map_mode: 
-                    waveset_name = list(wavesets.keys())[0]
-                    n = filename.split("/")[-1].replace(".cfg","")
-                    link = f"{util.absolute_link(filename,waveset_name)}.json"
-                    html_mapsets += f"<li><a href=\"waveset_viewer.html?w={link}\">{n} - {waveset_name}</li>\n"
-                else:
-                    util.log(f"{filename} - Only one waveset but not in maps/ dir","FAIL")
-                    raise Exception
+            wavesetlist_html += "<ul>\n"
+            for waveset_name in wavesets:
+                link = f"{util.absolute_link(filename,waveset_name)}.json"
+                wavesetlist_html += f"<li><a href=\"waveset_viewer.html?w={link}\">{waveset_name}</a></li>\n"
+            wavesetlist_html += "</ul>\n"
+            if map_mode: 
+                n = filename.split("/")[-1].replace(".cfg","")
+                html_mapsets += f"<li><a href=\"{n}.html\">{n}</a></li>"
 
             # Modifier outline
-            # TODO
-            #if "Modifiers" in WAVESET_LIST:
-            #    MARKDOWN_WAVESETS += f"# Modifiers  \n"
-            #    for modifiers in WAVESET_LIST["Modifiers"]:
-            #        MARKDOWN_WAVESETS += f"- [{modifiers}](#{util.to_section_link(modifiers)})  \n"    
+            if "Modifiers" in WAVESET_LIST:
+                wavesetlist_html += f"<h2>Modifiers</h2>\n"
+                for modifier in WAVESET_LIST["Modifiers"]:
+                    data = WAVESET_LIST["Modifiers"][modifier]
+                    desc = util.get_key(data["desc"]).replace("\\n","</div>\n<div>")
+                    # no idea what the levels here mean
+                    lvl = round(float(data["level"])*1000) # waves.sp line 1018: vote.Level = RoundFloat(kv.GetFloat("level", 1.0) * 1000.0);
+                    context = {
+                        "name": modifier,
+                        "data_modifier": f"<div>Level: {lvl}</div>\n<div>{desc}</div>\n"
+                    }
+                    wavesetlist_html += util.fill_template(util.read("templates/waveset/modifier_preview.html"), context)    
             
             # Data
             for waveset_name in wavesets:
@@ -376,13 +371,6 @@ def parse():
         else: # Waveset itself / map_mode | Assume data being in the cfg file itself. Might only be the case for rogue/const/bettingwars
             util.log(f"{filename} - No 'Waves' key found!","FAIL")
             raise Exception
-        
-        # Modifiers title and desc
-        #if "Modifiers" in WAVESET_LIST:
-        #    for modifier in WAVESET_LIST["Modifiers"]:
-        #        data = WAVESET_LIST["Modifiers"][modifier]
-        #        desc = util.get_key(data["desc"]).replace("\\n","  \n")
-        #        MARKDOWN_WAVESETS += f"# {modifier}  \n[Back to top](#modifiers)  \nMinimum level: {float(data["level"])*1000}  \n{desc}  \n"
         
         if not os.path.isdir("gh-pages/wavesets"): subprocess.run(["mkdir", "gh-pages/wavesets"])
         for f_waveset, f_data in wavesets_json.items():

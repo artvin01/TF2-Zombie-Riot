@@ -1,4 +1,5 @@
 import util, vtf2img, os
+# TODO in waveset display, show npcs flagged as support separately, just like in tf2
 FLAG_MAPPINGS = {
     "MVM_CLASS_FLAG_NONE": "",
     "MVM_CLASS_FLAG_NORMAL": "Normal",

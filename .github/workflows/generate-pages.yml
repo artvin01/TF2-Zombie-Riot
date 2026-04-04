@@ -1,9 +1,8 @@
+name: Generate wiki [wiki update]
 on:
   push:
     branches:
-    - master # zr branch
-    - wiki_gen # wiki branch
-  workflow_dispatch:
+    - 'wiki_gen'
 
 concurrency:
   group: "pages"
@@ -40,6 +39,7 @@ jobs:
         path: gh-pages/
 
   deploy:
+    name: deploy-pages
     runs-on: ubuntu-latest
     environment:
       name: github-pages

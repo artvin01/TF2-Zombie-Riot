@@ -6,7 +6,6 @@ The code is currently being rewritten to move the encyclopedia to github pages, 
 
 # TODO
 - [x] Waveset data
-  - [ ] Better NPC data parsing
   - [ ] Special wavesets
     - [x] ZR: Survival
     - [x] ZR: Raidrush
@@ -16,6 +15,7 @@ The code is currently being rewritten to move the encyclopedia to github pages, 
         - [ ] Construction 2
     - [x] ZR: Special Maps
 - [x] NPC data
+  - [ ] Better NPC data parsing
 - [x] Item data
   - [x] Items
   - [x] Weapon Paps
