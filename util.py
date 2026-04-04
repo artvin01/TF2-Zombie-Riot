@@ -35,6 +35,35 @@ print("wavesets:TYPESCOPE",WAVESETS_TYPESCOPE)
 
 # --------------------------- UTILITY FUNCTIONS ---------------------------
 
+def music_modal(wave_entry_data):
+    if type(wave_entry_data) == str:
+        mfilename = wave_entry_data.replace("#","")
+        music = mfilename
+        try: int(wave_entry_data); return None # skip if not actual music entry e.g. "music_outro_duration"	"65"
+        except ValueError: pass
+    else:
+        wave_entry_data = defaultdict(str,wave_entry_data)
+        music_name = wave_entry_data["file"].replace("#","")
+        if wave_entry_data["name"] != "": music_name = wave_entry_data["name"]
+        if wave_entry_data["author"] != "": author = f"by {wave_entry_data["author"]}"
+        else: author = ""
+        music = f"{music_name} {author}"
+        mfilename = wave_entry_data["file"].replace("#","")
+    file = f"https://raw.githubusercontent.com/artvin01/TF2-Zombie-Riot/refs/heads/master/sound/{mfilename}"
+    return {
+        "type": "music",
+        "name": music,
+        "filepath": file,
+        "filename": mfilename,
+        "file_exists": os.path.isfile(f"./TF2-Zombie-Riot/sound/{mfilename}")
+    }
+
+def cfgtonum(val):
+    try:
+        return int(val)
+    except ValueError:
+        return 0
+
 def id_from_str(string):
     # https://stackoverflow.com/questions/49808639/generate-a-variable-length-hash
     return hashlib.shake_256(string.encode("utf-8")).hexdigest(2)
@@ -49,7 +78,7 @@ def normalize_whitespace(str_):
 
 
 def absolute_link(filename, waveset):
-    return f"{filename.split("/")[-1]}_{to_section_link(waveset)}"
+    return f"{filename.split("/")[-1].replace(".cfg","")}_{to_section_link(waveset)}"
 
 
 def format_num(n):
@@ -155,7 +184,7 @@ def write(filename, val):
         f.write(str(val))
     return True
 
-BUILTIN_IMG = "https://raw.githubusercontent.com/squarebracket-s/tf2_zr_wikigen/refs/heads/main/builtin_img/"
+BUILTIN_IMG = "builtin_img/"
 ICON_DOWNLOAD = md_img(BUILTIN_IMG+"download.svg", "download")
 ICON_X_SQUARE = md_img(BUILTIN_IMG+"x-square.svg","cross")
 ICON_MUSIC = md_img(BUILTIN_IMG+"music.svg","music")

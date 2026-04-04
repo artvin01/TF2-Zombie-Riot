@@ -87,6 +87,37 @@
     height: 90%;
 }
 
+.divider {
+    width: 3px;
+    background-color: var(--ivory);
+    border-radius: 5px;
+    margin: 5px;
+}
+
+#npc_container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+#support_npc_container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* this is the cause of the bandaid fix below, I couldn't find any other way to fix it */
+    margin-left: -43px;
+}
+
+#wave_music_container {
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+.flex_break {
+    flex-basis: 100%;
+}
+
 .tooltip {
   z-index: 1;
   width: max-content;
@@ -149,20 +180,8 @@ input[type=number] {
     text-align: center;
 }
 
-.flex_break {
-    flex-basis: 100%;
-}
-
 @media screen and (max-width: 700px) {
     .tooltip {
         width: min-content; /* TODO properly size this */
     }
-}
-
-#npc_container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-left: 25px;
-    margin-right: 25px;
 }

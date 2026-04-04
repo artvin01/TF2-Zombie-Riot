@@ -3,14 +3,23 @@ let max_waves = 40;
 let waveset = "";
 let waveset_file = null;
 let waveset_data = null;
-const npc_html = `<div tabindex="0" class="wave_npc">
+const npc_modal = `<div tabindex="0" class="wave_npc">
     npcimg
     <div class="wave_npc_count">npccount</div>
 
     <div class="tooltip">
         npcdata
     </div>
-</div>`
+</div>
+`
+const support_npc_modal = `<div class="divider"></div><div id="support_npc_container">
+    npcdata
+    <div class="flex_break"></div>
+    <h2>SUPPORT</h2>
+</div>
+`
+const music_modal = `<audio controls><source src="filepath" type="audio/mpeg"></audio>`
+const music_modal_missing = `<div>musicname</div>`
 function cycle_wave(val) {
     let prev_wave = wave;
     wave = wave + val;
@@ -63,8 +72,8 @@ function update_wave_display() {
     const wave_bar = document.getElementById("wave_progress_bar").getElementsByTagName("div")[0];
     const waveset_name_inner = document.getElementById("wavesetname");
     wave_text.value = wave;
-    if (waveset_data["fakemaxwaves"] !== "" && wave <= Number(waveset_data["fakemaxwaves"])) {
-        max_wave_text.innerHTML = waveset_data["fakemaxwaves"]; // set fake max waves but not internally
+    if (waveset_data["fakemaxwaves"] !== "") {
+        max_wave_text.innerHTML = max_waves + " (" + waveset_data["fakemaxwaves"] + ")"; // set fake max waves but not internally
     } else {
         max_wave_text.innerHTML = max_waves;
     }
@@ -79,17 +88,52 @@ function update_wave_display() {
     document.title = "ZR Encyclopedia - " + waveset_data["name"];
     waveset_name_inner.innerHTML = waveset_data["name"];
 
-    const container = document.getElementById("npc_container");
-    let new_html = ""
-    waveset_data["waves"][String(wave)].forEach(function (npc, _) {
-        const context = {
-            "npcimg": npc["img"],
-            "npccount": npc["count"],
-            "npcdata": "<h2>" + npc["prefix"] + npc["display_name"] + "</h2>" + npc["extra_info"]
+    const npc_container = document.getElementById("npc_container");
+    let npc_html = "";
+    let support_npc_html = "";
+
+    const wave_info_container = document.getElementById("wave_info_container");
+    let wave_info_html = "";
+
+    const wave_music_container = document.getElementById("wave_music_container");
+    let wave_music_html = "";
+
+    // entry types: npc, music, info
+    waveset_data["waves"][String(wave)].forEach(function (entry, _) {
+        if (entry["type"] === "npc") {
+            const context = {
+                "npcimg": entry["img"],
+                "npccount": entry["count"],
+                "npcdata": "<h2>" + entry["prefix"] + entry["display_name"] + "</h2>" + entry["extra_info"]
+            }
+            let modal = fill_template(npc_modal, context);
+            if (entry["is_support"]) {
+                support_npc_html += modal;
+            } else {
+                npc_html += modal;
+            }
+        } else if (entry["type"]=="music") {
+            context = {
+                "filepath": entry["filepath"],
+                "filename": entry["filename"],
+                "musicname": entry["name"]
+            }
+            if (!entry["file_exists"]) {
+                wave_music_html += fill_template(music_modal_missing, context);
+            } else {
+                wave_music_html += fill_template(music_modal, context);
+            }
+        } else if (entry["type"]=="info") {
+            wave_info_html += "<div>text</div>\n".replace("text",entry["text"]);
         }
-        new_html += fill_template(npc_html, context);
     });
-    container.innerHTML = new_html
+
+    wave_music_container.innerHTML = wave_music_html;
+
+    wave_info_container.innerHTML = wave_info_html;
+
+    if (support_npc_html!=="") { npc_html += support_npc_modal.replace("npcdata",support_npc_html) };
+    npc_container.innerHTML = npc_html;
 }
 
 function fill_template(temp, cont) {
@@ -141,11 +185,9 @@ function updateURLParameter(url, param, paramVal){
 async function check_url_params() {
     let queryString = new URLSearchParams(window.location.href.split('?')[1]);
     if (queryString.has("w")) {
-        console.log("PARSE WAVESET")
         await parse_waveset(queryString.get("w"));
     }
     if (queryString.has("wv")) {
-        console.log("SET WAVESET")
         set_wave(queryString.get("wv"));
     }
 }

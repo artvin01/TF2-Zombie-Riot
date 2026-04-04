@@ -7,7 +7,6 @@ import util, json, modules.shared
       "description": "Spawns 2 Refragmented Metro Raiders, kill him to kill them.",
       "plugin": "npc_refragmented_combine_soldier_ar2",
       "icon": "combine_rifle",
-      "health": "1250HP",
       "flags": [
         "0"
       ],
@@ -20,14 +19,6 @@ def map_flags(flags):
     for i,flag in enumerate(flags):
         if flag != "0" and flag != "-1":
             mapped += f"{modules.shared.FLAG_MAPPINGS[flag]}{", " * int(i != len(flags)-1)}"
-    return mapped
-
-def map_health(hp):
-    if type(hp) is not dict:
-        return hp
-    mapped = ""
-    for state,value in hp.items():
-        mapped += f"<div>Case {state}: {value}HP</div>\n"
     return mapped
 
 def parse():
@@ -43,7 +34,6 @@ def parse():
                     "npc_name": f"{modules.shared.get_npc_icon(npc["icon"])} {npc["name"]}",
                     "plugin_name": npc["plugin"],
                     "flags": map_flags(npc["flags"]),
-                    "health": map_health(npc["health"]),
                     "desc": npc["description"],
                 }
                 npc_list_html += util.fill_template(util.read("templates/npc/npc_preview.html"),context)

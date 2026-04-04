@@ -49,7 +49,7 @@ class NPC:
                     self._get_name()
             assert self.name is not None
             
-            # Get plugin, category, flags, health
+            # Get plugin, category, flags
             if "shared" in self.path:
                 self._set_npc_data_shared()
             if self.file_data.count("NPC_Add") > 1:
@@ -65,8 +65,13 @@ class NPC:
 
             
             desc_key = f"{self.name} Desc"
-            self.description = util.get_key(desc_key, empty_on_fail=True, silent=True).replace("\\n", "<div class=\"flex_break\"></div>\n") # (Lots of NPCs with intentionally missing descriptions)
+             # Lots of NPCs with intentionally missing descriptions, hence silent=True
+            self.description = util.get_key(desc_key, empty_on_fail=True, silent=True).replace("\\n", "<div class=\"flex_break\"></div>\n")
             
+            # may be a problem if for example a file has multiple npcs with one that doesn't have the logic
+            self.has_prefix_logic = """bool carrier = data[0] == 'R';
+		bool elite = !carrier && data[0];""" in self.file_data
+
             """
             npc_obj = {
                 "name": name,
@@ -74,9 +79,9 @@ class NPC:
                 "description": description, 
                 "plugin": plugin, 
                 "icon": icon, 
-                "health": health, 
                 "flags": flags,
-                "filetype": filetype
+                "filetype": filetype,
+                "has_prefix_logic": has_prefix_logic
             }
             """
 
@@ -87,30 +92,6 @@ class NPC:
             self.name = self.file_data.split(f"strcopy({self.main_prefix}.Name, sizeof({self.main_prefix}.Name), \"")[1].split("\");")[0]
         except IndexError:
             self.name = None
-    
-
-    def _parse_health_number(self, num):
-        try:
-            float(num)
-            return num
-        except ValueError:
-            # Assume variable
-            npc_vars = self.file_data.split("#define ")
-            npc_vars_dict = {}
-            for i, item in enumerate(npc_vars):
-                if i > 0:
-                    # May parse whole blocks of code as key&value pairs sometimes, but it gets the job done. Doesn't break actual variables in any way
-                    full_str = item.split('"')
-                    k, v = util.normalize_whitespace(full_str[0]).replace(" ",""), full_str[1].replace(" ","")
-                    npc_vars_dict[k] = v
-
-            if num in npc_vars_dict:
-                util.debug(f"[X] {self.path} var {num}", "npc")
-                return util.format_num(npc_vars_dict[num])
-            else:
-                util.debug(f"[ ] {self.path} var {num}", "npc")
-                return "?"
-                #return "dynamic"
     
     def _set_npc_data_shared(self):
         # Several instances of NPC entry data, several instances of CClotBody in separate files
@@ -123,45 +104,6 @@ class NPC:
         self.flags = self.file_data.split(f"{self.main_prefix}.Flags = ")
         self.flags = [item.split(";")[0].split("|") for i,item in enumerate(self.flags) if i > 0]
 
-        base_path = self.path.replace(self.path.split("/")[-1],"") # remove deepest item
-        self.health = []
-        for i,p in enumerate(self.plugin):
-            p_data = util.read(base_path+p+".sp")
-            try:
-                h = self.file_data.split("CClotBody(vecPos, vecAng, ")[1].split("));")[0].split(',')[2].replace('"',"").replace(" ","")
-                #if "MinibossHealthScaling" in h:
-                #    h = f"Miniboss health scaling (Base {h.split("(")[1][:-1]}HP)"
-                if ":" in h:
-                    """
-                    extra "data" fields for enemies (lists, numbers or types like "Elite")
-                    'data[0]?x' is probably checking if any value from the waveset cfg exists at all to use x? 
-                    """
-                    cases = h.split(":(")
-                    if len(cases) == 0: cases = h.split(":")
-                    h = {}
-                    def parse_case(c):
-                        if "?" in c:
-                            k,v = c.split("?")
-                            if k.startswith("data"): k="any"
-                        else:
-                            k,v = "default", c
-                        v=v.replace(")","")
-                        return k,v
-                    for case in cases:
-                        if ":" in case:
-                            subcases = case.split(":")
-                            for subcase in subcases:
-                                k,v = parse_case(subcase)
-                                h[k] = self._parse_health_number(v)
-                        else:
-                            k,v = parse_case(case)
-                            h[k] = self._parse_health_number(v)
-                else:
-                    h = self._parse_health_number(health) + "HP"
-            except IndexError:
-                h = "?"
-            self.health.append(h)
-    
     def _set_npc_data_multi(self):
         # Several instances of NPC entry data, one instance of CClotBody
         self.plugin = self.file_data.split(f"strcopy({self.main_prefix}.Plugin, sizeof({self.main_prefix}.Plugin), \"")
@@ -173,40 +115,6 @@ class NPC:
         self.flags = self.file_data.split(f"{self.main_prefix}.Flags = ")
         self.flags = [item.split(";")[0].split("|") for i,item in enumerate(self.flags) if i > 0]
     
-        try:
-            self.health = self.file_data.split("CClotBody(vecPos, vecAng, ")[1].split("));")[0].split(',')[2].replace('"',"").replace(" ","")
-            #if "MinibossHealthScaling" in self.health:
-            #    self.health = f"Miniboss health scaling (Base {self.health.split("(")[1][:-1]}HP)"
-            if ":" in self.health:
-                """
-                extra "data" fields for enemies (lists, numbers or types like "Elite")
-                'data[0]?x' is probably checking if any value from the waveset cfg exists at all to use x? 
-                """
-                cases = self.health.split(":(")
-                if len(cases) == 0: cases = self.health.split(":")
-                self.health = {}
-                def parse_case(c):
-                    if "?" in c:
-                        k,v = c.split("?")
-                        if k.startswith("data"): k="any"
-                    else:
-                        k,v = "default", c
-                    v=v.replace(")","")
-                    return k,v
-                
-                for case in cases:
-                    if ":" in case:
-                        subcases = case.split(":")
-                        for subcase in subcases:
-                            k,v = parse_case(subcase)
-                            self.health[k] = self._parse_health_number(v)
-                    else:
-                        k,v = parse_case(case)
-                        self.health[k] = self._parse_health_number(v)
-            else:
-                self.health = self._parse_health_number(self.health) + "HP"
-        except IndexError:
-            self.health = "?"
         self.filetype = "multi"
     
     def _set_npc_data_single(self):
@@ -224,40 +132,6 @@ class NPC:
         except IndexError:
             self.flags = []
         
-        try:
-            self.health = self.file_data.split("CClotBody(vecPos, vecAng, ")[1].split("));")[0].split(',')[2].replace('"',"").replace(" ","")
-            #if "MinibossHealthScaling" in self.health:
-            #    self.health = f"Miniboss health scaling (Base {self.health.split("(")[1][:-1]}HP)"
-            if ":" in self.health:
-                """
-                extra "data" fields for enemies (lists, numbers or types like "Elite")
-                'data[0]?x' is probably checking if any value from the waveset cfg exists at all to use x? 
-                """
-                cases = self.health.split(":(")
-                if len(cases) == 0: cases = self.health.split(":")
-                self.health = {}
-                def parse_case(c):
-                    if "?" in c:
-                        k,v = c.split("?")
-                        if k.startswith("data"): k="any"
-                    else:
-                        k,v = "default", c
-                    v=v.replace(")","")
-                    return k,v
-                for case in cases:
-                    if ":" in case:
-                        subcases = case.split(":")
-                        for subcase in subcases:
-                            k,v = parse_case(subcase)
-                            self.health[k] = self._parse_health_number(v)
-                    else:
-                        k,v = parse_case(case)
-                        self.health[k] = self._parse_health_number(v)
-            else:
-                self.health = self._parse_health_number(self.health) + "HP"
-        except IndexError:
-            self.health = "?"
-        
         self.filetype = "single"
     
     def __json__(self):
@@ -267,9 +141,9 @@ class NPC:
             "description": self.description, 
             "plugin": self.plugin, 
             "icon": self.icon, 
-            "health": self.health, 
             "flags": self.flags,
-            "filetype": self.filetype
+            "filetype": self.filetype,
+            "has_prefix_logic": self.has_prefix_logic
         }
 
 class NPC_Dummy:
@@ -279,6 +153,7 @@ class NPC_Dummy:
         self.icon = npc_obj.icon
         self.description = npc_obj.description
         self.filetype = npc_obj.filetype
+        self.has_prefix_logic = npc_obj.has_prefix_logic
     
     def __json__(self):
         return {
@@ -287,7 +162,7 @@ class NPC_Dummy:
             "description": self.description, 
             "plugin": self.plugin, 
             "icon": self.icon, 
-            "health": self.health, 
             "flags": self.flags,
-            "filetype": self.filetype
+            "filetype": self.filetype,
+            "has_prefix_logic": self.has_prefix_logic
         }

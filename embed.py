@@ -15,6 +15,7 @@ color = {
 
 font = {
     "Oswald": ImageFont.truetype('gh-pages/static/Oswald-VariableFont_wght.ttf', 32),
+    "Oswald Small": ImageFont.truetype('gh-pages/static/Oswald-VariableFont_wght.ttf', 16),
     "Noto Sans": ImageFont.truetype('gh-pages/static/NotoSans-VariableFont_wdth,wght.ttf', 16),
 }
 
@@ -25,11 +26,12 @@ HEIGHT = 512
 
 ICON_SIZE = 50
 ICON_PADDING = 6
-ICON_INNER_PADDING = 5
+ICON_INNER_PADDING = 2
 
 
+# TODO show support npcs separately
+def generate_waveset_embed(filename, title, wave, wave_max, entries):
 
-def generate_waveset_embed(filename, title, wave, wave_max, npc_list):
     global ICON_SIZE, ICON_PADDING, ICON_INNER_PADDING
     ICON_SIZE = 50
     ICON_INNER_PADDING = 5
@@ -39,7 +41,7 @@ def generate_waveset_embed(filename, title, wave, wave_max, npc_list):
     bar_padding = 25
     bar_width = WIDTH-((bar_padding+2)*2)
 
-    npc_list_chunks = chunks(npc_list, math.floor((WIDTH-60)/(ICON_SIZE+ICON_PADDING)))
+    npc_list_chunks = chunks([entry for entry in entries if entry["type"] == "npc"], math.floor((WIDTH-60)/(ICON_SIZE+ICON_PADDING)))
 
     dx = 0
     dy = bar_y+bar_height+35
@@ -55,7 +57,7 @@ def generate_waveset_embed(filename, title, wave, wave_max, npc_list):
     drawable.rectangle([(0,0),(WIDTH,HEIGHT)], color["bg_dark"])
     # https://pillow.readthedocs.io/en/stable/deprecations.html#font-size-and-offset-methods
     draw_text_centered(drawable, (WIDTH/2, 10), title, color["text_dark"], font["Oswald"])
-    draw_text_centered(drawable, (WIDTH/2, 65), f"WAVE {wave} / {wave_max}", color["text_dark"], font["Oswald"])
+    draw_text_centered(drawable, (WIDTH/2, 65), f"WAVE {wave} / {wave_max}", color["text_dark"], font["Oswald Small"])
 
     drawable.rounded_rectangle([(bar_padding,bar_y), (WIDTH-bar_padding,bar_y+bar_height)], 4, color["bg_light"], outline=color["deep-space-blue"])
     progress = (wave/wave_max)*bar_width
@@ -81,7 +83,7 @@ def draw_text_centered(drawable, pos, text, fill, font):
 
 def draw_npc(drawable, img, pos, npc):
     left,top = pos[0]-(ICON_SIZE/2), pos[1]-(ICON_SIZE/2)
-    drawable.rounded_rectangle([(left,top), (left+ICON_SIZE,top+ICON_SIZE)], 2, color["bg_light"])
+    drawable.rounded_rectangle([(left,top), (left+ICON_SIZE,top+ICON_SIZE)], 4, color["bg_light"])
     icon_filepath = npc["img"][10:-14]
     icon = Image.open(icon_filepath, 'r')
     s = ICON_SIZE-(ICON_INNER_PADDING*2)

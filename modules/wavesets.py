@@ -40,10 +40,6 @@ def parse():
                     if type(plugin_name) == list:
                         for i,pn in enumerate(plugin_name):
                             dummy = modules.shared.NPC_Dummy(npc_obj)
-                            if npc_obj.filetype == "shared":
-                                dummy.health = npc_obj.health[min(len(npc_obj.health)-1,i)]
-                            else:
-                                dummy.health = npc_obj.health
                             dummy.category = npc_obj.category[min(len(npc_obj.category)-1,i)]
                             dummy.plugin = npc_obj.plugin[min(len(npc_obj.plugin)-1,i)]
                             dummy.flags = npc_obj.flags[min(len(npc_obj.flags)-1,i)]
@@ -57,7 +53,7 @@ def parse():
                         if npc_obj.category not in npc_by_category: npc_by_category[npc_obj.category]=[]
                         npc_by_category[npc_obj.category].append(npc_obj)
 
-        if "npc" in util.CATEGORIES:
+        if "npcs" in util.CATEGORIES:
             util.write("npc_data.json",json.dumps(npc_by_file,indent=2))
 
         return npc_by_file, npc_by_category
@@ -77,12 +73,6 @@ def parse():
     
     def get_npc(plugin, data):
         npc_data = NPCS_BY_FILENAME[plugin]
-        if type(npc_data.health) == dict:
-            npc_health = ""
-            for k,v in npc_data.health.items():
-                npc_health += f"{k.capitalize()}: {v}HP"
-        else:
-            npc_health = f"Default health: {npc_data.health}  \n" if npc_data.health != "" else ""
         npc_cat = f"Category: {npc_data.category}  \n" if npc_data.category != "" else ""
         if "0" not in npc_data.flags and "-1" not in npc_data.flags:
             npc_flags = "Flags: "
@@ -92,7 +82,6 @@ def parse():
             npc_flags = ""
         return {
             "plugin": plugin,
-            "default_health": npc_health,
             "flags": npc_flags,
             "description": npc_data.description
         }
@@ -106,19 +95,27 @@ def parse():
             try:
                 float(wave_entry)
             except ValueError:
-                continue # TODO
                 if wave_entry.startswith("music_"):
-                    if (mdata := util.music_modal(wave_entry_data)): md_new += mdata
+                    if (mdata := util.music_modal(wave_entry_data)):
+                        output.append(mdata)
                 
                 if wave_entry == "xp":
-                    md_new += f"Wave XP: {wave_entry_data}  \n"
+                    output.append({
+                        "type": "info",
+                        "text": f"Wave XP: {wave_entry_data}"
+                    })
 
                 if wave_entry == "cash":
-                    md_new += f"Wave cash: ${wave_entry_data}  \n"
+                    output.append({
+                        "type": "info",
+                        "text": f"Wave cash: <span class=\"money\">{wave_entry_data}</span>"
+                    })
                 
                 if wave_entry == "setup":
-                    md_new += f"Setup time: {util.as_duration(wave_entry_data)}  \n"
-                
+                    output.append({
+                        "type": "info",
+                        "text": f"Setup time: {util.as_duration(wave_entry_data)}"
+                    })
                 continue
             
             """
@@ -136,17 +133,17 @@ def parse():
             Float delay => Hidden //setting this to "0.0" will make it wait for this npc group to die before spawning the next npc group.
 
             # NPC
-            Int health => Flag
+            Int health => Hidden (apparently it's inaccurate)
             Bool is_boss => Flag //if a npc has this, they will get outlined, bonus damage, and their health scales.
             Bool force_scaling => Flag
             Float waiting_time_give ?
             Bool does_not_scale (true if count <= 0) => Flag ?
-            Bool ignore_max_cap ?
+            Bool ignore_max_cap (ignore npc count and spawn forever => Support Type) 
             Bool is_outlined => Flag //if the npc is outlined.
             Bool is_health_scaling => Flag //if the npc's health should scale.
             Bool is_immune_to_nuke => Flag //if immune to the nuke powerup drop.
             Bool is_static ?
-            Int team_npc (default 3) => Special Flag (not in PROPERTY_MAPPINGS) //the team the npc is on. 999 = free for all. 2 = red team, aka ally.
+            Int team_npc (default 3) => Support Type (not in PROPERTY_MAPPINGS) //the team the npc is on. 999 = free for all. 2 = red team, aka ally. (NOTE: red team shown in support section of wave)
             Float cash => Hidden //how much cash this npc drops when it dies, note: this is now mostly redundant since raidmode can automatically calculate this. (thank god). full cash gotten = this*count.
             
             ％
@@ -176,43 +173,24 @@ def parse():
                 npc_name = npc_data.name
             except AttributeError:
                 npc_name = wave_entry_data["plugin"]
-            npc_name_prefix = ""
 
-            # Health data
-            """
-            bool carrier = data[0] == 'R';
-            bool elite = !carrier && data[0];
-            """
+            # Prefix data
+            dd = defaultdict(str, wave_entry_data)
             extra_info = ""
-            if "health" in wave_entry_data:
-                extra_info += f" {util.format_num(wave_entry_data["health"])}HP"
-            elif npc_data:
-                if type(npc_data.health) == dict:
-                    if "data" in wave_entry_data:
-                        data_key = wave_entry_data["data"]
+            npc_name_prefix = ""
+            if npc_data and len(dd["data"])>0 and npc_data.has_prefix_logic:
+                """
+                prefix logic:
+                    bool carrier = data[0] == 'R';
+                    bool elite = !carrier && data[0];
 
-                        # prefixes (logic carried over from zr code)
-                        carrier = data_key[0] == "R"
-                        elite = (not carrier) and data_key[0] # If first char isn't R but data exists
+                usually accompanied with data like:
+                    "Regressed"
+                    "Elite"
 
-                        if carrier: data_key = "carrier"
-                        elif elite: data_key = "elite"
-                        else: data_key = "default";npc_name_prefix="!c"
-
-                        if data_key not in npc_data.health and "any" in npc_data.health: data_key = "any";
-                        elif data_key not in npc_data.health: data_key = "default";
-
-                        npc_name_prefix += wave_entry_data["data"].capitalize()
-                        util.debug(f"Parsing HP Value {npc_data.health} DATA value {wave_entry_data["data"]} CHOSEN value {data_key}", "npc", "OKCYAN")
-                        h = f" {npc_data.health[data_key.lower()]}"
-                    else:
-                        h = npc_data.health["default"]
-                    
-                    extra_info += f" {util.format_num(h)}HP"
-                else:
-                    extra_info += f" {npc_data.health}"
-            else:
-                extra_info += " ?HP"
+                so just add it before the npc name if npc has that logic
+                """
+                npc_name_prefix += wave_entry_data["data"].capitalize()
             
             # Show NPC Flags
             display_name = npc_name
@@ -244,17 +222,21 @@ def parse():
                         percent_text = int(percent)
 
                     extra_info += f" {char} {percent_text}％"
+            
+            # waves.sp line 4165 if(data.Is_Boss < 2 && (support || data.ignore_max_cap || data.Is_Static || data.Team == TFTeam_Red))
 
             # Add npc to wave data output for waves.js to be parsed
             # TODO use flags for different icon looks
             output.append(
                 {
+                    "type": "npc",
                     "delay": float(wave_entry), # NOTE use for betting wars!
                     "count": count,
                     "img": image if image else "",
                     "prefix": npc_name_prefix,
                     "display_name": display_name,
-                    "extra_info": extra_info + desc
+                    "extra_info": extra_info + desc,
+                    "is_support": util.cfgtonum(dd["is_boss"]) < 2 and (dd["ignore_max_cap"]=="1" or dd["team_npc"]=="2" or dd["is_static"]=="1")
                 }
             )
         
@@ -269,6 +251,7 @@ def parse():
         wd = defaultdict(str,data)
         output = {
             "waves": {},
+            # TODO show authors, item on win and modified music entries in waveset viewer (or waveset link hover?)
             "authors": {
                 "npc": wd["author_npcs"],
                 "format": wd["author_format"],
