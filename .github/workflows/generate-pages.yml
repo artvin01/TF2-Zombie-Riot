@@ -28,10 +28,6 @@ jobs:
     - name: Parse ZR repo code
       run: ./venv/bin/python main.py
     
-    - name: Move repo_img to pages
-      run: |
-        mv repo_img/ ./gh-pages/repo_img/
-    
     - name: Upload static files as artifact
       id: deployment
       uses: actions/upload-pages-artifact@v4
