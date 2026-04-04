@@ -1,5 +1,5 @@
 let wave = 1;
-let max_waves = 40; // TODO apply fake max_waves
+let max_waves = 40;
 let waveset = "";
 let waveset_file = null;
 let waveset_data = null;
@@ -63,7 +63,11 @@ function update_wave_display() {
     const wave_bar = document.getElementById("wave_progress_bar").getElementsByTagName("div")[0];
     const waveset_name_inner = document.getElementById("wavesetname");
     wave_text.value = wave;
-    max_wave_text.innerHTML = max_waves;
+    if (waveset_data["fakemaxwaves"] !== "" && wave <= Number(waveset_data["fakemaxwaves"])) {
+        max_wave_text.innerHTML = waveset_data["fakemaxwaves"]; // set fake max waves but not internally
+    } else {
+        max_wave_text.innerHTML = max_waves;
+    }
     wave_bar.style.width = (wave/max_waves)*100 + "%";
 
     if (wave===max_waves) {
@@ -134,11 +138,16 @@ function updateURLParameter(url, param, paramVal){
     return baseURL + "?" + newAdditionalURL + rows_txt;
 }
 
-let paramString = window.location.href.split('?')[1];
-let queryString = new URLSearchParams(paramString);
-for (let pair of queryString.entries()) {
-    if (pair[0]=="w") { parse_waveset(pair[1]) };
-    if (pair[0]=="wv") { set_wave(pair[1]) };
+async function check_url_params() {
+    let queryString = new URLSearchParams(window.location.href.split('?')[1]);
+    if (queryString.has("w")) {
+        console.log("PARSE WAVESET")
+        await parse_waveset(queryString.get("w"));
+    }
+    if (queryString.has("wv")) {
+        console.log("SET WAVESET")
+        set_wave(queryString.get("wv"));
+    }
 }
 
 /* Accessibility */
@@ -147,3 +156,5 @@ document.onkeydown = (e) => {
     document.activeElement.click();
   }
 };
+
+check_url_params();

@@ -274,7 +274,8 @@ def parse():
                 "format": wd["author_format"],
                 "raid": wd["author_raid"]
             },
-            "item_on_win": wd["complete_item"]
+            "item_on_win": wd["complete_item"],
+            "fakemaxwaves": wd["fakemaxwaves"]
         }
         
         wave_idx = 0
@@ -301,8 +302,6 @@ def parse():
             wave_npc_amt = sum([int(util.is_float(entry)) for entry in wave_data])
             if len(wave_data)==0 or wave_npc_amt == 0: continue
             wave_idx += 1
-
-            abovelimit = False if "fakemaxwaves" not in wd else wave_idx > int(wd["fakemaxwaves"]) # If wave number is above specified max fake limit
 
             output["waves"][wave_idx] = parse_wave(wave_data)
             embed.generate_waveset_embed(f"{abslink}_{wave_idx}", name, int(wave), max_waves, output["waves"][wave_idx])
