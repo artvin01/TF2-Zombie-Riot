@@ -7621,6 +7621,10 @@
 		"it"	"U̴̡̕m̶̒b̵͗r̷̂á̴̪l̸̐ ̷̯̽Ẅ̸.̶̾F̶̭̃.̷͗"
 		"ko"	"움̴̡̕브̶̒랄̸̐ ̷̯̽W.̸̈F̶̾.̷̭̃͗"
 	}
+	"Umbral W.F."
+	{
+		"en"	"Umbrals created from the Umbral gate in the image of Whiteflower. \n-Periodically uses Octane kick.
+	}
 	"Umbral Rouam"
 	{
 		"en"	"U̷̖͑m̴b̷̖̿r̵a̴̛͈l̶̬̚ ̴̺̎R̶o̶ȕ̴̙a̵̡͑m̷"
@@ -8045,15 +8049,27 @@
 		"en"	"Heavy Weapons Guy"
 		"ko"	"헤비 웨폰 가이"
 	}
+	"Heavy Weapons Guy Desc"
+	{
+		"en"	"I am Heavy Weapons Guy, and THIS is my weapon."
+	}
 	"Very Heavy Heavy"
 	{
 		"en"	"Very Heavy Heavy"
 		"ko"	"아주 헤비한 헤비"
 	}
+	"Very Heavy Heavy Desc"
+	{
+		"en"	"A Heavy who is bigger, fatter, and of course heavier."
+	}
 	"Fish Scout"
 	{
 		"en"	"Fish Scout"
 		"ko"	"생선 스카웃"
+	}
+	"Fish Scout"
+	{
+		"en"	"Fish. "
 	}
 	"Human Main"
 	{
@@ -8090,6 +8106,10 @@
 		"en"	"Lard Fat"
 		"ko"	"돼지 기름"
 	}
+	"Lard Fat Desc"
+	{
+		"en"	"Fatty lose some weight."
+	}
 	"Mounted Teuton"
 	{
 		"en"	"Mounted Teuton"
@@ -8110,10 +8130,18 @@
 		"en"	"Australian Spider"
 		"ko"	"호주 거미"
 	}
+	"Australian Spider Desc"
+	{
+		"en"	"A Massive spider from Australia. \n-Very fast. \n-Attacks very fast \n-Very small \n-Very much a spider"
+	}
 	"Suction Medic"
 	{
 		"en"	"Suction Medic"
 		"ko"	"흡입 메딕"
+	}
+	"Suction Medic Desc"
+	{
+		"en"	"Masters of the battle medigun, or just masters of sucking on stuff."
 	}
 	"Living Metal Ball"
 	{
@@ -8129,6 +8157,10 @@
 	{
 		"en"	"A Man Who Is Really Ambitious About Team Fortress 2 Trading"
 		"ko"	"팀포2 거래에 야망이 가득한 남자"
+	}
+	"A Man Who Is Really Ambitious About Team Fortress 2 Trading Desc"
+	{
+		"en"	"A Man Who Is Really Ambitious About Team Fortress 2 Trading. "
 	}
 	"Kahmlstein's Dead Grandma"
 	{
