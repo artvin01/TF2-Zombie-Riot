@@ -58,6 +58,9 @@ def parse():
 
         return npc_by_file, npc_by_category
     
+    def parse_default_cash():
+        return util.normalize_whitespace(util.read("TF2-Zombie-Riot/addons/sourcemod/scripting/zombie_riot/zr_core.sp").split("public const int DefaultWaveCash[] =\n{\n")[1].split("\n};")[0]).split(", ")
+    
 
     def unique_enemy_delays(w):
         # Make each wave delay unique as not to lose out on info (for example if 2 enemies have same wave delay)
@@ -86,10 +89,10 @@ def parse():
             "description": npc_data.description
         }
 
-    def parse_wave(wave_data, is_betting=False, force=False):
+    def parse_wave(wave_idx, wave_data, auto_wave_cash, is_betting=False, force=False):
         output = []
-        if is_betting:
-            md_new = "| Budget | NPC |\n| --- | --- |\n"
+        has_cash_entry = False
+
         for wave_entry in wave_data:
             wave_entry_data = wave_data[wave_entry]
             try:
@@ -106,6 +109,7 @@ def parse():
                     })
 
                 if wave_entry == "cash":
+                    has_cash_entry = True
                     output.append({
                         "type": "info",
                         "text": f"Wave cash: <span class=\"money\">{wave_entry_data}</span>"
@@ -240,6 +244,12 @@ def parse():
                 }
             )
         
+        if (not has_cash_entry) and len(DEFAULT_CASH_BY_WAVE)>=wave_idx and auto_wave_cash:
+            output.append({
+                "type": "info",
+                "text": f"Wave cash: <span class=\"money\">{DEFAULT_CASH_BY_WAVE[wave_idx-1]}</span>"
+            })
+
         return output
     
     def parse_waveset(file, data, abslink, name, desc, DEPTH=2):
@@ -286,7 +296,7 @@ def parse():
             if len(wave_data)==0 or wave_npc_amt == 0: continue
             wave_idx += 1
 
-            output["waves"][wave_idx] = parse_wave(wave_data)
+            output["waves"][wave_idx] = parse_wave(wave_idx, wave_data, bool(util.cfgtonum(wd["auto_wave_cash"])))
             embed.generate_waveset_embed(f"{abslink}_{wave_idx}", name, int(wave), max_waves, output["waves"][wave_idx])
         
         waveset_cache[file] = output
@@ -499,8 +509,9 @@ def parse():
     if not os.path.isdir("gh-pages/waveset_embeds"): subprocess.run(["mkdir", "gh-pages/waveset_embeds"])
     if not os.path.isdir("repo_img"): subprocess.run(["mkdir", "repo_img"])
 
-    util.log("Parsing list of NPCs...")
+    util.log("Fetching base data...")
     NPCS_BY_FILENAME, NPCS_BY_CATEGORY = parse_all_npcs()
+    DEFAULT_CASH_BY_WAVE = parse_default_cash()
     util.write("npcs_by_category.json", json.dumps(NPCS_BY_CATEGORY,indent=2))
 
     cfg_files = {
