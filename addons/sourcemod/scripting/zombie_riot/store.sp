@@ -5532,12 +5532,12 @@ void Store_ApplyAttribs(int client)
 	}
 	
 	if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE) //increase sentry damage! Not attack rate, could end ugly.
-	{		
-		map.SetValue("287", 0.65);
+	{
+		map.SetValue("287", 2.6);
 	}
 	else
 	{
-		map.SetValue("287", 0.5);
+		map.SetValue("287", 2.0);
 	}
 	map.SetValue("95", 1.0);
 
@@ -7711,6 +7711,6 @@ bool RogueAlwaysSell(const Item item)
 	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
 		return false;
 
-	return RogueAlwaysSell(item);
+	return item.RogueAlwaysSell;
 		
 }

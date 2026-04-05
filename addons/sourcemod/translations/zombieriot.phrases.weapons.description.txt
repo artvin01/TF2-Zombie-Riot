@@ -1731,20 +1731,20 @@
 	
 	"Construction Novice Desc"
 	{
-		"en"	"-Gain 50％ more building health\n-Gain 8.0x builder damage\n-Gain 1 more support building added\n-Gain 50％ more repair Rate"
-		"fr"	"+50％ durabilité pour constructions, 8.0x dégats par votre mitrailleuse, +2x vitesse de réparation. +1 espace pour construction de support."
-		"chi"	"建筑物血量提高50％，布哨伤害*8，+1辅助建筑上限，+50％建筑修复效率。"
-		"it"	"50％ in più di salute dell'edificio e 8.0x di danno della sentinella, 1 edificio di supporto aggiunto e 50％ in più di tasso di riparazione"
-		"ko"	"-구조물 체력 +50％\n-센트리 피해량 +8배\n-지원 구조물 최대 상한 +1개\n-수리 효율 +50％"
+		"en"	"-Gain 50％ more building health\n-Gain 2.0x builder damage\n-Gain 1 more support building added\n-Gain 50％ more repair Rate"
+		"fr"	"+50％ durabilité pour constructions, 2.0x dégats par votre mitrailleuse, +2x vitesse de réparation. +1 espace pour construction de support."
+		"chi"	"建筑物血量提高50％，布哨伤害*2，+1辅助建筑上限，+50％建筑修复效率。"
+		"it"	"50％ in più di salute dell'edificio e 2.0x di danno della sentinella, 1 edificio di supporto aggiunto e 50％ in più di tasso di riparazione"
+		"ko"	"-구조물 체력 +50％\n-센트리 피해량 +2배\n-지원 구조물 최대 상한 +1개\n-수리 효율 +50％"
 	}
 	
 	"Construction Apprentice Desc"
 	{
-		"en"	"-Gain 65％ more building health\n-Gain 3.1x builder damage\n-Gain 2 more support building added\n-Gain 50％ more repair Rate"
-		"fr"	"+65％ durabilité pour constructions, +3.1x dégats par votre mitrailleuse, +50％ vitesse de réparation. +2 espaces pour construction de support."
-		"chi"	"建筑物血量提高65％，布哨伤害*3.1，+2辅助建筑上限，+50％建筑修复效率。"
-		"it"	"65％ in più di salute degli strutture e 3,1x di danni alle sentinelle, 2 strutture di supporto aggiunti e 50％ in più di tasso di riparazione"
-		"ko"	"-구조물 체력 +65％\n-센트리 피해량 +3.1배\n-지원 구조물 최대 상한 +2개\n-수리 효율 +50％"
+		"en"	"-Gain 65％ more building health\n-Gain 2.0x builder damage\n-Gain 2 more support building added\n-Gain 50％ more repair Rate"
+		"fr"	"+65％ durabilité pour constructions, +2.0x dégats par votre mitrailleuse, +50％ vitesse de réparation. +2 espaces pour construction de support."
+		"chi"	"建筑物血量提高65％，布哨伤害*2.0，+2辅助建筑上限，+50％建筑修复效率。"
+		"it"	"65％ in più di salute degli strutture e 2,0x di danni alle sentinelle, 2 strutture di supporto aggiunti e 50％ in più di tasso di riparazione"
+		"ko"	"-구조물 체력 +65％\n-센트리 피해량 +2.0배\n-지원 구조물 최대 상한 +2개\n-수리 효율 +50％"
 	}
 	
 	"Alien Repair Handling book Desc"
@@ -1761,7 +1761,7 @@
 	}
 	"Construction Worker Desc"
 	{
-		"en"	"-Gain 65％ more building health\n-Gain 1.4x builder damage\n-Gain 3 more support building added"
+		"en"	"-Gain 65％ more building health\n-Gain 1.75x builder damage\n-Gain 3 more support building added"
 	}
 	
 	"Cosmic Repair Handling book Desc"
