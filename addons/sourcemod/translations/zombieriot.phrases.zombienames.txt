@@ -8036,7 +8036,7 @@
 	}
 	"Heavy Weapons Guy Desc"
 	{
-		"en"	"I am Heavy Weapons Guy, and THIS is my weapon."
+		"en"	"I am Heavy Weapons Guy, and THIS is my weapon.\n-Infinite range minigun"
 	}
 	"Very Heavy Heavy"
 	{
@@ -8045,7 +8045,7 @@
 	}
 	"Very Heavy Heavy Desc"
 	{
-		"en"	"A Heavy who is bigger, fatter, and of course heavier."
+		"en"	"A Heavy who is bigger, fatter, and of course heavier.\n-On hit fucking ragdolls you"
 	}
 	"Fish Scout"
 	{
@@ -8093,7 +8093,7 @@
 	}
 	"Lard Fat Desc"
 	{
-		"en"	"Fatty lose some weight."
+		"en"	"Fatty lose some weight.\n-Eats his fat ass sandwich if close and damages you like that"
 	}
 	"Mounted Teuton"
 	{
@@ -8139,7 +8139,7 @@
 	}
 	"Living Metal Ball Desc"
 	{
-		"en"	"Large metal BALLS, what more is there to say besides that they are alive."
+		"en"	"Living Large metal balls\n-Roll towrads you and deal knockback on you and itself on hit"
 	}
 	"Axe Throwing Barbarian"
 	{
@@ -8159,5 +8159,9 @@
 	{
 		"en"	"Kahmlstein's Dead Grandma"
 		"ko"	"카멜슈타인의 돌아가신 할머니"
+	}
+	"Kahmlstein's Dead Grandma Desc"
+	{
+		"en"	"This is so sad"
 	}
 }
