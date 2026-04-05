@@ -3,7 +3,7 @@ let max_waves = 40;
 let waveset = "";
 let waveset_file = null;
 let waveset_data = null;
-const npc_modal = `<div tabindex="0" class="wave_npc">
+const npc_modal = `<div tabindex="0" class="wave_npc $css_flags">
     npcimg
     <div class="wave_npc_count">npccount</div>
 
@@ -118,7 +118,8 @@ function update_wave_display() {
             const context = {
                 "npcimg": entry["img"],
                 "npccount": entry["count"],
-                "npcdata": "<h2>" + entry["prefix"] + entry["display_name"] + "</h2>" + entry["extra_info"]
+                "npcdata": "<h2>" + entry["prefix"] + entry["display_name"] + "</h2>" + entry["extra_info"],
+                "$css_flags": entry["css_class"]
             }
             let modal = fill_template(npc_modal, context);
             if (entry["is_support"]) {
@@ -235,8 +236,3 @@ function set_audio_resource(obj) {
     music_player.innerHTML= mphtml.replace("filepath",obj.getAttribute("file"));
     music_player.parentElement.classList.remove("hidden");
 }
-const music_player = document.getElementById("music_player");
-music_player.addEventListener("loadeddata", () => {
-  music_player.play();
-  // The duration variable now holds the duration (in seconds) of the audio clip
-});

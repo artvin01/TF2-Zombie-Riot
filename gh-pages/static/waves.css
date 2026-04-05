@@ -160,6 +160,30 @@
     margin-top: 1px;
 }
 
+/* css flags (flashing background, red bg, etc.) */
+@keyframes blink {
+    0%,
+    100% {
+        background-color: #cb2402;
+    }
+
+    50% {
+        background-color: var(--ivory);
+    }
+}
+.flag_mission { /* basically unused, I think this is for random events */
+    animation: blink 1s infinite;
+    animation-timing-function: step-end
+}
+.flag_miniboss {
+    background-color: #cb2402;
+}
+.flag_crits {
+    outline-width: 2px;
+    outline-color: #2699ad;
+    outline-style:solid;
+}
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
