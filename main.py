@@ -28,3 +28,6 @@ if "skilltree" in SCOPE:
     print("skilltree.py ----------------------------------------------------------------------------------")
     import modules.skilltree
     modules.skilltree.parse()
+
+import util
+util.write("logs.txt",util.LOGS)

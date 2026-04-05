@@ -29,6 +29,10 @@ if "TYPESCOPE" in os.environ:
 else:
     WAVESETS_TYPESCOPE = ["Setup", "Custom"]#, "Betting", "Rogue"]
 
+LOG_REDACT = "fsdonyhasdunusadnuhdsaiubhdabuih" # bogus string
+if "LOG_REDACT" in os.environ:
+    LOG_REDACT = os.environ["LOG_REDACT"]
+
 print("DEBUG",DEBUG)
 print("wavesets:FILESCOPE",WAVESETS_FILESCOPE)
 print("wavesets:TYPESCOPE",WAVESETS_TYPESCOPE)
@@ -129,7 +133,6 @@ def fill_template(template, context):
             exit()
     return template
 
-
 def debug(str_, category, color="OKGREEN"):
     if category in DEBUG: log(str_,color)
 
@@ -160,14 +163,16 @@ bcolors = {
     "UNDERLINE": (200,200,200)
 }"""
 
-
+LOGS = ""
 def log(message, color="OKGREEN"):
+    global LOGS
     time = f"[{datetime.datetime.now().strftime('%H:%M:%S')}] "
     pre = "[INFO] "
     if color == "WARNING": pre="[WARN] "
     if color == "FAIL": pre="[ERR] "
     if "OK" in color: pre="[LOG] "
     print(bcolors["FAINT"] + time + bcolors["ENDC"] + bcolors[color]  + pre + message + bcolors["ENDC"])
+    LOGS += f"{time}{pre}{message.replace("\n","\\n")}\n".replace(LOG_REDACT,"***")
 
 
 def read(filename):

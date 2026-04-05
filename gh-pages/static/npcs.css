@@ -24,6 +24,10 @@ details details details details summary { font-size: .5em }
     cursor: pointer;
 }
 
+.hover img {
+    width: 16px;
+}
+
 .hover:hover, .hover:focus {
     color: hsl(from var(--link-dark) h s 80%);
 }

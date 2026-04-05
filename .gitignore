@@ -23,3 +23,5 @@ gh-pages/index.html
 
 test.py
 dump/*
+logs.txt
+run_with_logs.sh

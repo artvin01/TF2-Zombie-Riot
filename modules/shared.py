@@ -44,6 +44,8 @@ class NPC:
         util.debug(f"Init NPC {self.path}", "npcs", "OKCYAN")
         self.file_data = util.read(self.path)
         self.file_data = util.remove_multiline_comments(self.file_data)
+        self.file_data = self.file_data.replace("\t"," ");
+        self.file_data = util.normalize_whitespace(self.file_data)
         if ("npc_donoteveruse" not in self.file_data and "NPC_Add" in self.file_data):
 
             # Get NPC name
