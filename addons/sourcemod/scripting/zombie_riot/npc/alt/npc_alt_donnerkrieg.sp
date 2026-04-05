@@ -159,7 +159,7 @@ methodmap Donnerkrieg < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
-			
+		
 		g_b_donner_died=false;
 
 		b_enraged=false;
@@ -205,7 +205,7 @@ methodmap Donnerkrieg < CClotBody
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 		
-		CPrintToChatAll("{crimson}Donnerkrieg{default}: I have arrived to render judgement");
+		NPCTalkMessage(npc.index, "I have arrived to render judgement");
 		
 		g_b_angered=false;
 
@@ -226,6 +226,17 @@ methodmap Donnerkrieg < CClotBody
 	}
 }
 
+static void NPCTalkMessage(int iNPC, const char[] message, bool identityRevealed = false)
+{
+	if (identityRevealed)
+	{
+		PrintNPCMessageWithPrefixes(iNPC, "aqua", message, .customName = "Stella", .messageColor = "snow", .customNameIsTranslated = true);
+	}
+	else
+	{
+		PrintNPCMessageWithPrefixes(iNPC, "crimson", message);
+	}
+}
 
 static void Internal_ClotThink(int iNPC)
 {
@@ -321,11 +332,11 @@ static void Internal_ClotThink(int iNPC)
 			}
 			if(GameTime > g_f_blitz_dialogue_timesincehasbeenhurt)
 			{
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: Blitzkrieg's army is happy to serve you as thanks for setting us free...");
+				NPCTalkMessage(npc.index, "Blitzkrieg's army is happy to serve you as thanks for setting us free...");
 				npc.m_bDissapearOnDeath = true;
 
-				CPrintToChatAll("{aqua}Stella{snow}: Oh also our true names are, {aqua}Stella{snow}, that's me.");
-				CPrintToChatAll("{aqua}Stella{snow}: And he's {crimson}Karlas{snow}!");
+				NPCTalkMessage(npc.index, "Oh also our true names are, {aqua}Stella{snow}, that's me.", true);
+				NPCTalkMessage(npc.index, "And he's {crimson}Karlas{snow}!", true);
 				
 				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 				for (int client = 1; client <= MaxClients; client++)
@@ -340,42 +351,42 @@ static void Internal_ClotThink(int iNPC)
 			else if(GameTime + 3.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 8)
 			{
 				i_SaidLineAlready[npc.index] = 8;
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: With Blitzkrieg gone, the army has been set free, and so...");
+				NPCTalkMessage(npc.index, "With Blitzkrieg gone, the army has been set free, and so...");
 			}
 			else if(GameTime + 5.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 7)
 			{
 				i_SaidLineAlready[npc.index] = 7;
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: However, that doesn't matter anymore.");
+				NPCTalkMessage(npc.index, "However, that doesn't matter anymore.");
 			}
 			else if(GameTime + 8.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 6)
 			{
 				i_SaidLineAlready[npc.index] = 6;
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: The corruption had fully gotten to him.");
+				NPCTalkMessage(npc.index, "The corruption had fully gotten to him.");
 			}
 			else if(GameTime + 10.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 5)
 			{
 				i_SaidLineAlready[npc.index] = 5;
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: If we hadn't complied he would have destroyed us.");
+				NPCTalkMessage(npc.index, "If we hadn't complied he would have destroyed us.");
 			}
 			else if(GameTime + 12.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 4)
 			{
 				i_SaidLineAlready[npc.index] = 4;
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: We had no choice.");
+				NPCTalkMessage(npc.index, "We had no choice.");
 			}
 			else if(GameTime + 14.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 3)
 			{
 				i_SaidLineAlready[npc.index] = 3;
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: We don't have to fight anymore, for you see...");
+				NPCTalkMessage(npc.index, "We don't have to fight anymore, for you see...");
 			}
 			else if(GameTime + 16.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 2)
 			{
 				i_SaidLineAlready[npc.index] = 2;
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: You stopped The rouge machine.");
+				NPCTalkMessage(npc.index, "You stopped The rouge machine.");
 			}
 			else if(GameTime + 18.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 1)
 			{
 				i_SaidLineAlready[npc.index] = 1;
-				CPrintToChatAll("{crimson}Donnerkrieg{default}: Wait no, please stop.");
+				NPCTalkMessage(npc.index, "Wait no, please stop.");
 				ReviveAll(true);
 			}
 		}
@@ -611,15 +622,15 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}That's it, {default}I'm going to kill you.");	
+					NPCTalkMessage(npc.index, "{crimson}That's it, {default}I'm going to kill you.");	
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}Hm, {default}wonder how this will end...");	
+					NPCTalkMessage(npc.index, "{crimson}Hm, {default}wonder how this will end...");	
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}PREPARE {default}Thyself, {yellow}Judgement {default}is near.");	
+					NPCTalkMessage(npc.index, "{crimson}PREPARE {default}Thyself, {yellow}Judgement {default}is near.");	
 				}
 				case 4:
 				{
@@ -627,24 +638,24 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 					{
 						case 5:
 						{
-							CPrintToChatAll("{crimson}Donnerkrieg{default}: Oh not again, now train's gone and {crimson}left{default}.");	
+							NPCTalkMessage(npc.index, "Oh not again, now train's gone and {crimson}left{default}.");	
 							npc.m_bFUCKYOU_move_anim = true;
 						}				
 						default:
 						{
-							CPrintToChatAll("{crimson}Donnerkrieg{default}: Oh not again, now cannon's gone and {crimson}recharged{default}.");	
+							NPCTalkMessage(npc.index, "Oh not again, now cannon's gone and {crimson}recharged{default}.");	
 						}
 							
 					}
 				}
 				case 5:
 				{
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: Aiming this thing is actually quite {crimson}complex {default}ya know.");	
+					NPCTalkMessage(npc.index, "Aiming this thing is actually quite {crimson}complex {default}ya know.");	
 					npc.m_bFUCKYOU = true;
 				}
 				case 6:
 				{
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: Ya know, I'm getting quite bored of {crimson}this.");	
+					NPCTalkMessage(npc.index, "Ya know, I'm getting quite bored of {crimson}this.");	
 				}
 			}
 			
@@ -672,15 +683,15 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 						{
 							case 1:
 							{
-								CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}NIGHTMARE, CANNON!");
+								NPCTalkMessage(npc.index, "{crimson}NIGHTMARE, CANNON!");
 							}
 							case 2:
 							{
-								CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}JUDGEMENT BE UPON THEE!");
+								NPCTalkMessage(npc.index, "{crimson}JUDGEMENT BE UPON THEE!");
 							}
 							case 3:
 							{
-								CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}Annihilation!");	
+								NPCTalkMessage(npc.index, "{crimson}Annihilation!");	
 							}
 						}
 					}
@@ -688,13 +699,13 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 					{
 						if(npc.m_bFUCKYOU_move_anim)
 						{
-							CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}And the city's too far to walk to the end while I...");	
+							NPCTalkMessage(npc.index, "{crimson}And the city's too far to walk to the end while I...");	
 							npc.m_bFUCKYOU_move_anim = false;
 						}
 						else if(npc.m_bFUCKYOU)
 						{
 							npc.m_bFUCKYOU = false;
-							CPrintToChatAll("{crimson}Donnerkrieg{default}: However it's still{crimson} worth the effort.");	
+							NPCTalkMessage(npc.index, "However it's still{crimson} worth the effort.");	
 						}
 						
 					}

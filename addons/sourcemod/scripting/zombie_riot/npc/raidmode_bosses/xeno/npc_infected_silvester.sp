@@ -370,8 +370,6 @@ methodmap RaidbossSilvester < CClotBody
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-	
-		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSilvester_OnTakeDamagePost);
 		b_angered_twice[npc.index] = false;
 		
@@ -458,7 +456,6 @@ methodmap RaidbossSilvester < CClotBody
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;		
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
-
 		
 		npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 20.0;
 		npc.m_iInKame = 0;
@@ -474,23 +471,30 @@ methodmap RaidbossSilvester < CClotBody
 			{
 				case 1:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Is... Is this really where we must change your mind?");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Is... Is this really where we must change your mind?");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Please just turn away!");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Please just turn away!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: This is too risky, we can't let you get any closer!");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "This is too risky, we can't let you get any closer!");
 				}
 			}
 		}
+		
 		SilvesterApplyEffects(npc.index, false);
 		return npc;
 	}
 }
 
+void RaidbossSilvester_NPCTalkMessage(int iNPC, const char[] message, any ...)
+{
+	char buffer[255];
+	VFormat(buffer, sizeof(buffer), message, 3);
+	PrintNPCMessageWithPrefixes(iNPC, "gold", buffer);
+}
 
 static void Internal_ClotThink(int iNPC)
 {
@@ -509,15 +513,15 @@ static void Internal_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Give up and turn yourself in.");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "Give up and turn yourself in.");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Ready to listen to us?");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "Ready to listen to us?");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Maybe you just hate us?");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "Maybe you just hate us?");
 					}
 				}
 			}
@@ -527,15 +531,15 @@ static void Internal_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Death is your only salvation!");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "Death is your only salvation!");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Let me kill you, you're already infected anyway!");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "Let me kill you, you're already infected anyway!");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: ******* like you NEVER listen, do you?");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "******* like you NEVER listen, do you?");
 					}
 				}				
 			}
@@ -648,23 +652,23 @@ static void Internal_ClotThink(int iNPC)
 					case 1:
 					{
 						if(!XenoExtraLogic())
-							CPrintToChatAll("{gold}Silvester{default}: Come here!");
+							RaidbossSilvester_NPCTalkMessage(npc.index, "Come here!");
 						else
-							CPrintToChatAll("{gold}Silvester{default}: Just step away from here!!");
+							RaidbossSilvester_NPCTalkMessage(npc.index, "Just step away from here!!");
 					}
 					case 2:
 					{
 						if(!XenoExtraLogic())
-							CPrintToChatAll("{gold}Silvester{default}: That's it!");
+							RaidbossSilvester_NPCTalkMessage(npc.index, "That's it!");
 						else
-							CPrintToChatAll("{gold}Silvester{default}: I don't want to get infected again..!!");
+							RaidbossSilvester_NPCTalkMessage(npc.index, "I don't want to get infected again..!!");
 					}
 					case 3:
 					{
 						if(!XenoExtraLogic())
-							CPrintToChatAll("{gold}Silvester{default}: Meet the real deal!");
+							RaidbossSilvester_NPCTalkMessage(npc.index, "Meet the real deal!");
 						else
-							CPrintToChatAll("{gold}Silvester{default}: Leave and turn back. This place is too dangerous for you!");
+							RaidbossSilvester_NPCTalkMessage(npc.index, "Leave and turn back. This place is too dangerous for you!");
 					}
 				}
 			}
@@ -675,23 +679,23 @@ static void Internal_ClotThink(int iNPC)
 					case 1:
 					{
 						if(!XenoExtraLogic())
-							CPrintToChatAll("{gold}Silvester{default}: It's over you little..!");
+							RaidbossSilvester_NPCTalkMessage(npc.index, "It's over you little..!");
 						else
-							CPrintToChatAll("{gold}Silvester{default}: No no no.... I can't not again..");
+							RaidbossSilvester_NPCTalkMessage(npc.index, "No no no.... I can't not again..");
 					}
 					case 2:
 					{
 						if(!XenoExtraLogic())
-							CPrintToChatAll("{gold}Silvester{default}: If you won't listen, I'll have to erase you before you become one of them!");
+							RaidbossSilvester_NPCTalkMessage(npc.index, "If you won't listen, I'll have to erase you before you become one of them!");
 						else
-							CPrintToChatAll("{gold}Silvester{default}: So many keep falling for this!!");
+							RaidbossSilvester_NPCTalkMessage(npc.index, "So many keep falling for this!!");
 					}
 					case 3:
 					{
 						if(!XenoExtraLogic())
-							CPrintToChatAll("{gold}Silvester{default}: GO TO HELL YOU MERCS!!!");
+							RaidbossSilvester_NPCTalkMessage(npc.index, "GO TO HELL YOU MERCS!!!");
 						else
-							CPrintToChatAll("{gold}Silvester{default}: ...");
+							RaidbossSilvester_NPCTalkMessage(npc.index, "...");
 					}
 				}
 			}
@@ -861,30 +865,30 @@ static void Internal_ClotThink(int iNPC)
 				case 1:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{gold}Silvester{default}: N-No!");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "N-No!");
 					else
-						CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default}..?");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "{darkblue}Waldch{default}..?");
 				}
 				case 2:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{gold}Silvester{default}: Why him?? Attack me you bunch of cowards!");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "Why him?? Attack me you bunch of cowards!");
 					else
-						CPrintToChatAll("{gold}Silvester{default}: Don't faint, I'm here, I'm here for you!");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "Don't faint, I'm here, I'm here for you!");
 				}
 				case 3:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{gold}Silvester{default}: We're gonna have to do this the hard way.");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "We're gonna have to do this the hard way.");
 					else
-						CPrintToChatAll("{gold}Silvester{default}: ... I won't let you get away with this.");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "... I won't let you get away with this.");
 				}
 				case 4:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{gold}Silvester{default}: Hang on, I've got you.");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "Hang on, I've got you.");
 					else
-						CPrintToChatAll("{gold}Silvester{default}: Please rest, I'll take them out.");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "Please rest, I'll take them out.");
 				}
 			}
 		}
@@ -1374,7 +1378,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(28.0);
 			damage = 0.0;
-			CPrintToChatAll("{gold}Silvester{default}: WHY DO YOU REFUSE TO LISTEN TO OUR WARNINGS!?");
+			RaidbossSilvester_NPCTalkMessage(npc.index, "WHY DO YOU REFUSE TO LISTEN TO OUR WARNINGS!?");
 			return Plugin_Handled;
 		}
 	}
@@ -1407,19 +1411,19 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 				{
 					case 1:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: You think that was my all?");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "You think that was my all?");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: You have no idea what I'm capable of...");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "You have no idea what I'm capable of...");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: You think this is it?");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "You think this is it?");
 					}
 					case 4:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: I'm not close to being done yet!");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "I'm not close to being done yet!");
 					}
 				}
 			}
@@ -1429,19 +1433,19 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 				{
 					case 1:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: You're blinded by your own arrogance!");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "You're blinded by your own arrogance!");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: You think I'm weak alone?!");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "You think I'm weak alone?!");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: You refuse to listen and thus, pay the price!");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "You refuse to listen and thus, pay the price!");
 					}
 					case 4:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: I'll avenge you {darkblue}Waldch{default}!");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "I'll avenge you {darkblue}Waldch{default}!");
 					}
 				}
 			}
@@ -2011,32 +2015,32 @@ bool SharedGiveupSilvester(int entity, int entity2)
 				{
 					ReviveAll(true);
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{gold}Silvester{default}: We tried to help, this will be painful for you.");
+						RaidbossSilvester_NPCTalkMessage(entity, "We tried to help, this will be painful for you.");
 					else
-						CPrintToChatAll("{gold}Silvester{default}: You never listen. I will not assist you anymore.");
+						RaidbossSilvester_NPCTalkMessage(entity, "You never listen. I will not assist you anymore.");
 					i_TalkDelayCheck += 1;
 				}
 				case 1:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{darkblue}Waldch{default}: There is a far greater enemy than us, not even we can beat him.");
+						RaidbossBlueGoggles_NPCTalkMessage(entity2, "There is a far greater enemy than us, not even we can beat him.");
 					else
-						CPrintToChatAll("{darkblue}Waldch{default}: It appears like you already know what you are get yourselves into.");
+						RaidbossBlueGoggles_NPCTalkMessage(entity2, "It appears like you already know what you are get yourselves into.");
 
 					i_TalkDelayCheck += 1;
 				}
 				case 2:
 				{
 					
-					CPrintToChatAll("{darkblue}Waldch{default}: I doubt you can defeat him, but if you do somehow manage to, you will help us in defeating {darkblue}Chaos{default}.");
+					RaidbossBlueGoggles_NPCTalkMessage(entity2, "I doubt you can defeat him, but if you do somehow manage to, you will help us in defeating {darkblue}Chaos{default}.");
 					i_TalkDelayCheck += 1;
 				}
 				case 3:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{gold}Silvester{default}: Good luck.");
+						RaidbossSilvester_NPCTalkMessage(entity, "Good luck.");
 					else
-						CPrintToChatAll("{gold}Silvester{default}: I REFUSE to let this happen again to us two, don't say I didnt warn you!");
+						RaidbossSilvester_NPCTalkMessage(entity, "I REFUSE to let this happen again to us two, don't say I didnt warn you!");
 
 					i_TalkDelayCheck = 5;
 					for (int client = 1; client <= MaxClients; client++)
@@ -2509,11 +2513,11 @@ public void Raidmode_Shared_Xeno_Duo(int entity)
 	{
 		if(XenoExtraLogic())
 		{
-			CPrintToChatAll("{gold}Silvester{default}: You're too stubborn for your own good.");
+			RaidbossSilvester_NPCTalkMessage(entity, "You're too stubborn for your own good.");
 		}
 		else
 		{
-			CPrintToChatAll("{gold}Silvester{default}: Maybe we should've thought of a better way to warn them.");
+			RaidbossSilvester_NPCTalkMessage(entity, "Maybe we should've thought of a better way to warn them.");
 		}
 		return;
 	}
@@ -2521,11 +2525,11 @@ public void Raidmode_Shared_Xeno_Duo(int entity)
 	{
 		if(XenoExtraLogic())
 		{
-			CPrintToChatAll("{darkblue}Waldch{default}: Too far. Turn back.");
+			RaidbossBlueGoggles_NPCTalkMessage(entity, "Too far. Turn back.");
 		}
 		else
 		{
-			CPrintToChatAll("{darkblue}Waldch{default}: Way better than dying to {green}Him{default}.");
+			RaidbossBlueGoggles_NPCTalkMessage(entity, "Way better than dying to {green}Him{default}.");
 		}
 	}
 }
@@ -2598,7 +2602,7 @@ static void Internal_Weapon_Lines(RaidbossSilvester npc, int client)
 
 	if(valid)
 	{
-		CPrintToChatAll("{gold}Silvester{default}: %s", Text_Lines);
+		RaidbossSilvester_NPCTalkMessage(npc.index, "%s", Text_Lines);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}

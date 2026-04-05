@@ -424,6 +424,17 @@ methodmap TrueFusionWarrior < CClotBody
 	}
 }
 
+static void NPCTalkMessage(int iNPC, const char[] message)
+{
+	char name[128];
+	
+	if (b_angered_twice[iNPC])
+		name = "Silvester";
+	else
+		name = "Silvester?";
+	
+	PrintNPCMessageWithPrefixes(iNPC, "gold", message, .customName = name);
+}
 
 public void TrueFusionWarrior_ClotThink(int iNPC)
 {
@@ -438,15 +449,15 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{gold}Silvester?{default}: Run... Away...");
+					NPCTalkMessage(npc.index, "Run... Away...");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{gold}Silvester?{default}: Help...");
+					NPCTalkMessage(npc.index, "Help...");
 				}
-				case 3:
+				case 2:
 				{
-					CPrintToChatAll("{gold}Silvester?{crimson}: AGHHRRR!!!");
+					NPCTalkMessage(npc.index, "{crimson}AGHHRRR!!!");
 				}
 			}
 		}
@@ -455,14 +466,14 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{gold}Silvester?{default}: New... victims to infect...");
+		NPCTalkMessage(npc.index, "New... victims to infect...");
 		return;
 	}
 	if(RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{gold}Silvester?{default}: {green}Xeno{default} virus too strong... to resist.. {crimson}join...{default}");
+		NPCTalkMessage(npc.index, "{green}Xeno{default} virus too strong... to resist.. {crimson}join...{default}");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
@@ -506,7 +517,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		}
 		if(GetGameTime() > npc.m_flTimeSinceHasBeenHurt)
 		{
-			CPrintToChatAll("{gold}Silvester{default}: You will get soon in touch with a friend of mine, I thank you, though beware of the rogue machine... {red}Blitzkrieg.");
+			NPCTalkMessage(npc.index, "You will get soon in touch with a friend of mine, I thank you, though beware of the rogue machine... {red}Blitzkrieg.");
 			npc.m_bDissapearOnDeath = true;
 			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 			for (int client = 1; client <= MaxClients; client++)
@@ -521,22 +532,22 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		else if(GetGameTime() + 5.0 > npc.m_flTimeSinceHasBeenHurt && i_SaidLineAlready[npc.index] < 4)
 		{
 			i_SaidLineAlready[npc.index] = 4;
-			CPrintToChatAll("{gold}Silvester{default}: Help the world, retain the chaos!");
+			NPCTalkMessage(npc.index, "Help the world, retain the chaos!");
 		}
 		else if(GetGameTime() + 10.0 > npc.m_flTimeSinceHasBeenHurt && i_SaidLineAlready[npc.index] < 3)
 		{
 			i_SaidLineAlready[npc.index] = 3;
-			CPrintToChatAll("{gold}Silvester{default}: I thank you, but I will need help from you later, and I will warn you of dangers.");
+			NPCTalkMessage(npc.index, "I thank you, but I will need help from you later, and I will warn you of dangers.");
 		}
 		else if(GetGameTime() + 13.0 > npc.m_flTimeSinceHasBeenHurt && i_SaidLineAlready[npc.index] < 2)
 		{
 			i_SaidLineAlready[npc.index] = 2;
-			CPrintToChatAll("{gold}Silvester{default}: A huge chaos is breaking out, you were able to knock some sense into me..!");
+			NPCTalkMessage(npc.index, "A huge chaos is breaking out, you were able to knock some sense into me..!");
 		}
 		else if(GetGameTime() + 16.5 > npc.m_flTimeSinceHasBeenHurt && i_SaidLineAlready[npc.index] < 1)
 		{
 			i_SaidLineAlready[npc.index] = 1;
-			CPrintToChatAll("{gold}Silvester{default}: Listen to me, please!");
+			NPCTalkMessage(npc.index, "Listen to me, please!");
 		}
 		return; //He is trying to help.
 	}
@@ -983,7 +994,7 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 
 			SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_TBB_Tick);
 
-			CPrintToChatAll("{gold}Silvester{default}: Stop, stop please I beg you, I was infected!");
+			NPCTalkMessage(npc.index, "Stop, stop please I beg you, I was infected!");
 			int i = MaxClients + 1;
 			while((i = FindEntityByClassname(i, "obj_sentrygun")) != -1)
 			{

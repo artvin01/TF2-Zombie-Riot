@@ -447,7 +447,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		{
 			if(CurrentModifOn() == 1)
 			{
-				CPrintToChatAll("{white}%s{default}: The chaos is everywhere, we're too late, join me, dont attack.\nProve me your innocence.", NpcStats_ReturnNpcName(npc.index, true));
+				NPCTalkMessage(npc.index, "The chaos is everywhere, we're too late, join me, dont attack.\nProve me your innocence.");
 			}
 			else
 			{
@@ -455,15 +455,15 @@ methodmap RaidbossBobTheFirst < CClotBody
 				{
 					case 0:
 					{
-						CPrintToChatAll("{white}%s{default}: I'll Handle this one.", NpcStats_ReturnNpcName(npc.index, true));
+						NPCTalkMessage(npc.index, "I'll Handle this one.");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{white}%s{default}: Stella and Karlas, you did enough, stand back.", NpcStats_ReturnNpcName(npc.index, true));
+						NPCTalkMessage(npc.index, "Stella and Karlas, you did enough, stand back.");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{white}%s{default}: I know enough about infections and its weaknesses to fend you off.", NpcStats_ReturnNpcName(npc.index, true));
+						NPCTalkMessage(npc.index, "I know enough about infections and its weaknesses to fend you off.");
 					}
 				}
 			}
@@ -471,6 +471,11 @@ methodmap RaidbossBobTheFirst < CClotBody
 		
 		return npc;
 	}
+}
+
+static void NPCTalkMessage(int iNPC, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(iNPC, "white", message);
 }
 
 public void RaidbossBobTheFirst_ClotThink(int iNPC)
@@ -551,15 +556,15 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{white}%s{default}: Hope my sharp shooting skills will miss your brain, curing is still an option.", NpcStats_ReturnNpcName(npc.index, true));
+						NPCTalkMessage(npc.index, "Hope my sharp shooting skills will miss your brain, curing is still an option.");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{white}%s{default}: If only i could cure it off you with this handgun, have to take lives to save lives.", NpcStats_ReturnNpcName(npc.index, true));
+						NPCTalkMessage(npc.index, "If only i could cure it off you with this handgun, have to take lives to save lives.");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{white}%s{default}: Im starting to reach my limit...", NpcStats_ReturnNpcName(npc.index, true));
+						NPCTalkMessage(npc.index, "Im starting to reach my limit...");
 					}
 				}
 				int MaxHealth = ReturnEntityMaxHealth(npc.index);
@@ -608,15 +613,15 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{white}%s{default}: One infected left.", NpcStats_ReturnNpcName(npc.index, true));
+					NPCTalkMessage(npc.index, "One infected left.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{white}%s{default}: This nightmare ends soon.", NpcStats_ReturnNpcName(npc.index, true));
+					NPCTalkMessage(npc.index, "This nightmare ends soon.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{white}%s{default}: Last. Infected. Left.", NpcStats_ReturnNpcName(npc.index, true));
+					NPCTalkMessage(npc.index, "Last. Infected. Left.");
 				}
 			}
 		}
@@ -640,13 +645,13 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			switch(GetURandomInt() % 3)
 			{
 				case 0:
-					CPrintToChatAll("{white}%s{default}: You weren't supposed to have this infection.", NpcStats_ReturnNpcName(npc.index, true));
+					NPCTalkMessage(npc.index, "You weren't supposed to have this infection.");
 				
 				case 1:
-					CPrintToChatAll("{white}%s{default}: No choice but to kill you, it consumes you.", NpcStats_ReturnNpcName(npc.index, true));
+					NPCTalkMessage(npc.index, "No choice but to kill you, it consumes you.");
 				
 				case 2:
-					CPrintToChatAll("{white}%s{default}: Nobody wins.", NpcStats_ReturnNpcName(npc.index, true));
+					NPCTalkMessage(npc.index, "Nobody wins.");
 			}
 			
 			// Play funny animation intro
@@ -658,7 +663,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		else
 		{
 
-			CPrintToChatAll("{white}%s{default}: You think you can fool me!? Ill destroy you!", NpcStats_ReturnNpcName(npc.index, true));
+			NPCTalkMessage(npc.index, "You think you can fool me!? I'll destroy you!");
 			
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) -1);
 			fl_Extra_Damage[npc.index] = 999.9;
@@ -693,27 +698,27 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				case 2:
 				{
 					ReviveAll(true);
-					CPrintToChatAll("{white}Bob the First{default}: So...");
+					NPCTalkMessage(npc.index, "So...");
 					npc.m_flNextThinkTime = gameTime + 5.0;
 				}
 				case 3:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: What do you think will happpen..?");
+					NPCTalkMessage(npc.index, "What do you think will happen..?");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 4:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: Wait... no... you were fighting it..! No this.. This cannot be!");
+					NPCTalkMessage(npc.index, "Wait... no... you were fighting it..! No this.. This cannot be!");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 5:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: Im too hurt, i cant, i have to run... i cant....");
+					NPCTalkMessage(npc.index, "I'm too hurt, I can't, I have to run... I can't....");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 6:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: ...");
+					NPCTalkMessage(npc.index, "...");
 					npc.m_flNextThinkTime = gameTime + 2.0;
 				}
 				case 7:
@@ -741,37 +746,37 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				case 2:
 				{
 					ReviveAll(true);
-					CPrintToChatAll("{white}Bob the First{default}: No...");
+					NPCTalkMessage(npc.index, "No...");
 					npc.m_flNextThinkTime = gameTime + 5.0;
 				}
 				case 3:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: This infection...");
+					NPCTalkMessage(npc.index, "This infection...");
 					npc.m_flNextThinkTime = gameTime + 3.0;
 				}
 				case 4:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: How did this thing make you this powerful..?");
+					NPCTalkMessage(npc.index, "How did this thing make you this powerful..?");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 5:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: Took out every single Seaborn and took the infection in yourselves...");
+					NPCTalkMessage(npc.index, "Took out every single Seaborn and took the infection in yourselves...");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 6:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: You people fighting these cities and infections...");
+					NPCTalkMessage(npc.index, "You people fighting these cities and infections...");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 7:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: However...");
+					NPCTalkMessage(npc.index, "However...");
 					npc.m_flNextThinkTime = gameTime + 3.0;
 				}
 				case 8:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: I will remove what does not belong to you...");
+					NPCTalkMessage(npc.index, "I will remove what does not belong to you...");
 					npc.m_flNextThinkTime = gameTime + 3.0;
 					CreateTimer(12.0, SafetyFixBobDo, EntIndexToEntRef(npc.index));
 				}
@@ -877,13 +882,13 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			switch(GetURandomInt() % 3)
 			{
 				case 0:
-					CPrintToChatAll("{white}Bob the First{default}: You're in the wrong place in the wrong time!");
+					NPCTalkMessage(npc.index, "You're in the wrong place in the wrong time!");
 				
 				case 1:
-					CPrintToChatAll("{white}Bob the First{default}: This is not how it goes!");
+					NPCTalkMessage(npc.index, "This is not how it goes!");
 				
 				case 2:
-					CPrintToChatAll("{white}Bob the First{default}: Stop trying to change fate!");
+					NPCTalkMessage(npc.index, "Stop trying to change fate!");
 			}
 		}
 		else
@@ -891,16 +896,16 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			switch(GetURandomInt() % 4)
 			{
 				case 0:
-					CPrintToChatAll("{white}Bob the First{default}: Enough of this!");
+					NPCTalkMessage(npc.index, "Enough of this!");
 				
 				case 1:
-					CPrintToChatAll("{white}Bob the First{default}: Do you see yourself? Your slaughter?");
+					NPCTalkMessage(npc.index, "Do you see yourself? Your slaughter?");
 				
 				case 2:
-					CPrintToChatAll("{white}Bob the First{default}: You are no god.");
+					NPCTalkMessage(npc.index, "You are no god.");
 				
 				case 3:
-					CPrintToChatAll("{white}Bob the First{default}: Xeno. Seaborn. Then there's you.");
+					NPCTalkMessage(npc.index, "Xeno. Seaborn. Then there's you.");
 			}
 		}
 
@@ -944,7 +949,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			{
 				b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
 				if(CurrentModifOn() == 1 && i_RaidGrantExtra[npc.index] == 1)
-					CPrintToChatAll("{white}%s{default}: Nevermind then, you're one of the affected.", NpcStats_ReturnNpcName(npc.index, true));
+					NPCTalkMessage(npc.index, "Nevermind then, you're one of the affected.");
 			}
 		}
 		int summon;
@@ -2228,7 +2233,7 @@ public void Raidmode_BobFirst_Win(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 	func_NPCThink[entity] = INVALID_FUNCTION;
-	CPrintToChatAll("{white}Bob the First{default}: Deep sea threat cleaned, finally at peace...");
+	NPCTalkMessage(entity, "Deep sea threat cleaned, finally at peace...");
 }
 
 

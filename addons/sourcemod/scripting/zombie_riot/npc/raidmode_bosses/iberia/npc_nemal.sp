@@ -411,19 +411,19 @@ methodmap Nemal < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: We're supposed to train our abilities, remember? Well here I am! Let's start off easy!");
+					NPCTalkMessage(npc.index, "We're supposed to train our abilities, remember? Well here I am! Let's start off easy!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: {gold}Silvester{default}? Where are you?... \nLate again... \nThis dude... \nHe'll come later, let's start off relaxed!");
+					NPCTalkMessage(npc.index, "{gold}Silvester{default}? Where are you?... \nLate again... \nThis dude... \nHe'll come later, let's start off relaxed!");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: {gold}Silvester{default} is late isn't he? Probably off to some random beach with {blue}Sensal{default} as usual.. without me!!!\nWe said vacation is after this! Oh well, let's begin!");
+					NPCTalkMessage(npc.index, "{gold}Silvester{default} is late isn't he? Probably off to some random beach with {blue}Sensal{default} as usual.. without me!!!\nWe said vacation is after this! Oh well, let's begin!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Iberians are with us {gold}Expidonsans{default}!... But I'm kinda both...\nProbably not that important, anyways let's go!");
+					NPCTalkMessage(npc.index, "Iberians are with us {gold}Expidonsans{default}!... But I'm kinda both...\nProbably not that important, anyways let's go!");
 				}
 			}
 		}
@@ -434,19 +434,19 @@ methodmap Nemal < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Got a call, {gold}Silvester{default} will be joining soon, he had some buisness apparently, get ready for... when he comes!");
+					NPCTalkMessage(npc.index, "Got a call, {gold}Silvester{default} will be joining soon, he had some buisness apparently, get ready for... when he comes!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: What I would do for {darkblue}Waldch{default} to stop being so mangetic to {gold}Silvester{default} with his Wildingen antics, that isn't his home!!!");
+					NPCTalkMessage(npc.index, "What I would do for {darkblue}Waldch{default} to stop being so mangetic to {gold}Silvester{default} with his Wildingen antics, that isn't his home!!!");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: I'll be honest, {blue}Sensal's{default} kinda scary, I mean you fought him, you'd know!");
+					NPCTalkMessage(npc.index, "I'll be honest, {blue}Sensal's{default} kinda scary, I mean you fought him, you'd know!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: There sadly ain't many Iberians left after what happend to their home country, damn traitorous {blue}seaborn{default}... we took in the surviving iberians and helped them!");
+					NPCTalkMessage(npc.index, "There sadly ain't many Iberians left after what happend to their home country, damn traitorous {blue}seaborn{default}... we took in the surviving iberians and helped them!");
 				}
 			}
 		}
@@ -457,19 +457,19 @@ methodmap Nemal < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Enough chatter, I'll start to not restrain myself.");
+					NPCTalkMessage(npc.index, "Enough chatter, I'll start to not restrain myself.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: {blue}Sensal{default} wasn't lying when he said you guys got some tricks.");
+					NPCTalkMessage(npc.index, "{blue}Sensal{default} wasn't lying when he said you guys got some tricks.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Iberians have some really widening history, eventually it'll be rebuilt with {gold}Expidonsa's{default} help.");
+					NPCTalkMessage(npc.index, "Iberians have some really widening history, eventually it'll be rebuilt with {gold}Expidonsa's{default} help.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: {blue}Seaborns{default} and us had some treaty yknow... before they attacked everyone... Thats how we have the idea of what {green}Defenda's{default} are using.");
+					NPCTalkMessage(npc.index, "{blue}Seaborns{default} and us had some treaty yknow... before they attacked everyone... Thats how we have the idea of what {green}Defenda's{default} are using.");
 				}
 			}
 		}
@@ -480,19 +480,19 @@ methodmap Nemal < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Looks like I have to give it all.");
+					NPCTalkMessage(npc.index, "Looks like I have to give it all.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: I won't hold back anymore.");
+					NPCTalkMessage(npc.index, "I won't hold back anymore.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Ready yourself.");
+					NPCTalkMessage(npc.index, "Ready yourself.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: I would worry about you, but I don't think thats necessary.");
+					NPCTalkMessage(npc.index, "I would worry about you, but I don't think thats necessary.");
 				}
 			}
 		}
@@ -506,19 +506,19 @@ methodmap Nemal < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Looks like I have to give it all.");
+					NPCTalkMessage(npc.index, "Looks like I have to give it all.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: I won't hold back anymore.");
+					NPCTalkMessage(npc.index, "I won't hold back anymore.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Ready yourself.");
+					NPCTalkMessage(npc.index, "Ready yourself.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: I would worry about you, but I don't think thats neccecary.");
+					NPCTalkMessage(npc.index, "I would worry about you, but I don't think thats neccecary.");
 				}
 			}
 		}
@@ -595,19 +595,19 @@ methodmap Nemal < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Sorry {blue}Sensal's{default} he's comming a bit late.");
+					NPCTalkMessage(npc.index, "Sorry {blue}Sensal's{default} he's comming a bit late.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Hey {blue}Sensal's{default}, im here.");
+					NPCTalkMessage(npc.index, "Hey {blue}Sensal's{default}, im here.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Isn't this overkill?");
+					NPCTalkMessage(npc.index, "Isn't this overkill?");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Sorry but thats all.");
+					NPCTalkMessage(npc.index, "Sorry but thats all.");
 				}
 			}
 		}
@@ -653,6 +653,11 @@ methodmap Nemal < CClotBody
 	}
 }
 
+static void NPCTalkMessage(int iNPC, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(iNPC, "lightblue", message);
+}
+
 static void Internal_ClotThink(int iNPC)
 {
 	Nemal npc = view_as<Nemal>(iNPC);
@@ -675,15 +680,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: You don't beat me, then you'll never be able to face the full force of the {purple}void{default}.");
+					NPCTalkMessage(npc.index, "You don't beat me, then you'll never be able to face the full force of the {purple}void{default}.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Not beating me means no beating the {purple}void{default}.");
+					NPCTalkMessage(npc.index, "Not beating me means no beating the {purple}void{default}.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: Use that adrenaline against me, come on!");
+					NPCTalkMessage(npc.index, "Use that adrenaline against me, come on!");
 				}
 			}
 		}
@@ -699,15 +704,15 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: Well... There's next time.");
+				NPCTalkMessage(npc.index, "Well... There's next time.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: Too tired today? I get it.");
+				NPCTalkMessage(npc.index, "Too tired today? I get it.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: I'm sorry but this is needed, this is training, not a daycare.");
+				NPCTalkMessage(npc.index, "I'm sorry but this is needed, this is training, not a daycare.");
 			}
 		}
 		return;
@@ -737,15 +742,15 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: You won't defeat {purple}it{default} with that speed.");
+				NPCTalkMessage(npc.index, "You won't defeat {purple}it{default} with that speed.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: ... Don't disappoint {darkblue}Kahmlstein{default} like this...");
+				NPCTalkMessage(npc.index, "... Don't disappoint {darkblue}Kahmlstein{default} like this...");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: As much of an ass{darkblue}Kahmlstein{default} was... he did have something in him.");
+				NPCTalkMessage(npc.index, "As much of an ass{darkblue}Kahmlstein{default} was... he did have something in him.");
 			}
 		}
 		BlockLoseSay = true;
@@ -910,7 +915,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 				RemoveEntity(npc.m_iWearable8);
 			}
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/9);
-			CPrintToChatAll("{lightblue}Nemal{default}: Hey man, you're really hurting me here...");
+			NPCTalkMessage(npc.index, "Hey man, you're really hurting me here...");
 			npc.i_GunMode = 0;
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
@@ -935,7 +940,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			MakeObjectIntangeable(npc.index);
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 			
-			CPrintToChatAll("{lightblue}Nemal{default}: Ouch ouch! Time out, time out!");
+			NPCTalkMessage(npc.index, "Ouch ouch! Time out, time out!");
 			npc.m_iTarget = 0;
 
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
@@ -999,19 +1004,19 @@ static void Internal_NPCDeath(int entity)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{lightblue}Nemal{default}: Okay... ouch.. ow...");
+			NPCTalkMessage(npc.index, "Okay... ouch.. ow...");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{lightblue}Nemal{default}: Okay Okay you won! For now.");
+			NPCTalkMessage(npc.index, "Okay Okay you won! For now.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{lightblue}Nemal{default}: See you next time.... this hurts..");
+			NPCTalkMessage(npc.index, "See you next time.... this hurts..");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{lightblue}Nemal{default}: I was going to insult you, but I asked for this...");
+			NPCTalkMessage(npc.index, "I was going to insult you, but I asked for this...");
 		}
 	}
 
@@ -1766,7 +1771,7 @@ bool NemalTalkPostWin(Nemal npc)
 	}
 	if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
 	{
-		CPrintToChatAll("{lightblue}Nemal{default}: Till later Mercs!");
+		NPCTalkMessage(npc.index, "Till later Mercs!");
 		
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		CClotBody allynpc = view_as<CClotBody>(npc.m_iTargetAlly);
@@ -1786,22 +1791,27 @@ bool NemalTalkPostWin(Nemal npc)
 	else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 	{
 		i_SaidLineAlready[npc.index] = 4;
-		CPrintToChatAll("{lightblue}Nemal{default}: We'll Keep {purple}void gates{default} under control, tell us when youre ready to kill off the {purple}void{default}  once and for all, as a team!");
+		NPCTalkMessage(npc.index, "We'll Keep {purple}void gates{default} under control, tell us when youre ready to kill off the {purple}void{default}  once and for all, as a team!");
 	}
 	else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
 	{
 		i_SaidLineAlready[npc.index] = 3;
-		CPrintToChatAll("{lightblue}Nemal{default}: Shhh! Don't ruin the fun! Eitherways, good job!");
+		NPCTalkMessage(npc.index, "Shhh! Don't ruin the fun! Eitherways, good job!");
 	}
 	else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
 	{
 		i_SaidLineAlready[npc.index] = 2;
-		CPrintToChatAll("{gold}Silvester{default}: Why do you keep pretending you dont know them? Some of them come from a {crimson}Previous{default} era.");
+		CClotBody allynpc = view_as<CClotBody>(npc.m_iTargetAlly);
+		
+		if(IsValidEntity(allynpc.index))
+			RaidbossSilvester_NPCTalkMessage(allynpc.index, "Why do you keep pretending you dont know them? Some of them come from a {crimson}Previous{default} era.");
+		else
+			CPrintToChatAll("{gold}Silvester{default}: Why do you keep pretending you dont know them? Some of them come from a {crimson}Previous{default} era.");
 	}
 	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 	{
 		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{lightblue}Nemal{default}: Well thats it! You passed the test and ontop of that, helped eachother, teamwork!.. probably.");
+		NPCTalkMessage(npc.index, "Well thats it! You passed the test and ontop of that, helped eachother, teamwork!.. probably.");
 		ReviveAll(true);
 	}
 	return true; //He is trying to help.
@@ -1866,7 +1876,7 @@ bool NemalTransformation(Nemal npc)
 			npc.m_flDoingAnimation = 0.0;
 
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 9));
-			CPrintToChatAll("{lightblue}Nemal{default}: Here's my finest creation at work!");
+			NPCTalkMessage(npc.index, "Here's my finest creation at work!");
 				
 			SetVariantColor(view_as<int>({255, 255, 255, 200}));
 			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
@@ -2058,19 +2068,19 @@ bool NemalSummonSilvester(Nemal npc)
 					{
 						case 0:
 						{
-							CPrintToChatAll("{lightblue}Nemal{default}: Ah no worries! I'll totally forgive you!");
+							NPCTalkMessage(npc.index, "Ah no worries! I'll totally forgive you!");
 						}
 						case 1:
 						{
-							CPrintToChatAll("{lightblue}Nemal{default}: You're such a nut you know that right?");
+							NPCTalkMessage(npc.index, "You're such a nut you know that right?");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{lightblue}Nemal{default}: Sorry mercs this guy is signed with ''i dont wanna''");
+							NPCTalkMessage(npc.index, "Sorry mercs this guy is signed with ''i dont wanna''");
 						}
 						case 3:
 						{
-							CPrintToChatAll("{lightblue}Nemal{default}: Just don't attack the same guy as me, thats unfair!");
+							NPCTalkMessage(npc.index, "Just don't attack the same guy as me, thats unfair!");
 						}
 					}
 					npc.m_iChanged_WalkCycle = 3;
@@ -2115,19 +2125,19 @@ bool NemalSummonSilvester(Nemal npc)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: Oh? Looks like {gold}Silvester{default} Is finally coming!");
+				NPCTalkMessage(npc.index, "Oh? Looks like {gold}Silvester{default} Is finally coming!");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: The lazy ass {gold}cat{default} is coming right up!");
+				NPCTalkMessage(npc.index, "The lazy ass {gold}cat{default} is coming right up!");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: Hey look, traning partner!");
+				NPCTalkMessage(npc.index, "Hey look, traning partner!");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: New phone who this? Oh, you finally came!");
+				NPCTalkMessage(npc.index, "New phone who this? Oh, you finally came!");
 			}
 		}
 		if(i_RaidGrantExtra[npc.index] >= 3 && !TripleLol)
@@ -2432,7 +2442,7 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 
 	if(valid)
 	{
-		CPrintToChatAll("{lightblue}Nemal{default}: %s", Text_Lines);
+		NPCTalkMessage(npc.index, Text_Lines);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}
