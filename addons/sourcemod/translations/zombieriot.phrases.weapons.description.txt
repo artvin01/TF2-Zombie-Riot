@@ -174,7 +174,7 @@
 	{
 		"en"		"-Increased damage\n-Increased attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés"
-		"ru"		"Увеличенный урон и скорость атаки."
+		///"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度"
 		"it"		"Aumento dei danni e della velocità d'attacco"
 		"ko"		"-피해량, 공격 속도 증가"
@@ -190,7 +190,7 @@
 	{
 		"en"		"-Increased damage\n-Increased attackspeed\n-consumes 2 bullets per shot."
 		"fr"		"Dégats et cadence de tir améliorés, 2 balles utilisées par tir"
-		"ru"		"Увеличенный урон и скорость атаки, расходует 2 пули за выстрел."
+		///"ru"		"Увеличенный урон и скорость атаки, расходует 2 пули за выстрел."
 		"chi"       "增加伤害和攻击速度，每次射击消耗2发子弹。"
 		"it"		"Aumenta i danni e la velocità d'attacco, consuma 2 proiettili per colpo."
 		"ko"		"-피해량, 공격 속도 증가\n-발사당 2발의 탄약을 소모."
@@ -199,7 +199,7 @@
 	{
 		"en"		"-Increased damage\n-Increased attackspeed\n-Scoping isn't needed anymore but attacks are delayed."
 		"fr"		"Dégats et cadence de tir améliorés, le zoom n'est plus requis, mais les tirs seront retardés"
-		"ru"		"Увеличенный урон и скорость атаки, прицеливание больше не нужно, но атаки имеют задержку."
+		///"ru"		"Увеличенный урон и скорость атаки, прицеливание больше не нужно, но атаки имеют задержку."
 		"chi"       "增加伤害和攻击速度，增大攻击范围，但换弹速度加长"
 		"it"		"Aumenta il danno e la velocità d'attacco, non è più necessaria la mira, ma gli attacchi sono ritardati."
 		"ko"		"-피해량, 공격 속도 증가\n줌이 필요 없어지지만 공격에 지연이 발생."
@@ -214,7 +214,7 @@
 	{
 		"en"		"-Massively Increased damage\n-Increased attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés"
-		"ru"		"Сильно Увеличенный урон и скорость атаки."
+		///"ru"		"Сильно Увеличенный урон и скорость атаки."
 		"chi"       "大幅增加伤害和攻击速度"
 		"it"		"Danno e velocità d'attacco fortemente aumentati"
 		"ko"		"-피해량 대폭 증가\n-공격 속도 증가"
@@ -224,7 +224,7 @@
 	{
 		"en"		"-Increased damage\n-Increased attackspeed\n-Extra Clip size\n-Increased reload Speed"
 		"fr"		"Dégats et cadence de tir améliorés, capacité de munitions augmuntée"
-		"ru"		"Увелич. урон и скорость атаки, а также доп. патроны."
+		///"ru"		"Увелич. урон и скорость атаки, а также доп. патроны."
 		"chi"       "增加伤害和攻击速度和额外的弹药。"
 		"it"		"Aumento dei danni e della velocità d'attacco e munizioni extra."
 		"ko"		"-피해량, 공격 속도, 장탄수, 재장전 속도 증가"
@@ -233,7 +233,7 @@
 	{
 		"en"		"-Increased damage\n-Increased attackspeed\n-Increased reload Speed"
 		"fr"		"Dégats et cadence de tir améliorés"
-		"ru"		"Увеличенный урон и скорость атаки."
+		///"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度"
 		"it"		"Aumento dei danni e della velocità d'attacco."
 		"ko"		"-피해량, 공격 속도, 재장전 속도 증가"
@@ -242,7 +242,7 @@
 	{
 		"en"		"-Increased damage\n-Increased attackspeed\n-Extra Clip size\n-Increased reload Speed"
 		"fr"		"Dégats et cadence de tir améliorés, capacité de munitions augmuntée"
-		"ru"		"Увелич. урон и скорость атаки, а также доп. патроны."
+		///"ru"		"Увелич. урон и скорость атаки, а также доп. патроны."
 		"chi"       "增加伤害和攻击速度和额外的弹药。"
 		"it"		"Aumento dei danni e della velocità d'attacco e munizioni extra."
 		"ko"		"-피해량, 공격 속도, 장탄수, 재장전 속도 증가"
@@ -251,7 +251,7 @@
 	{
 		"en"		"-Increased damage\n-Increased attackspeed\n-Extra Clip size\n-Increased reload Speed"
 		"fr"		"Dégats et cadence de tir améliorés, capacité de munitions augmuntée"
-		"ru"		"Увелич. урон и скорость атаки, а также доп. патроны."
+		///"ru"		"Увелич. урон и скорость атаки, а также доп. патроны."
 		"chi"       "增加伤害和攻击速度和额外的弹药。"
 		"it"		"Aumento dei danni e della velocità d'attacco e munizioni extra."
 		"ko"		"-피해량, 공격 속도, 장탄수, 재장전 속도 증가"
@@ -261,7 +261,7 @@
 	{
 		"en"		"Can headshot.\n-Press M2 To fire a barrage"
 		"fr"		"Les Tirs en Pleine Tête sont possibles. Appuyez sur M2 pour un barrage de flèches"
-		"ru"		"Может стрелять в голову. Нажмите M2, чтобы открыть шквальный огонь."
+		///"ru"		"Может стрелять в голову. Нажмите M2, чтобы открыть шквальный огонь."
 		"chi"       "可以造成爆头伤害！按下M2键发射多个弓箭"
 		"it"		"Può sparare alla testa. Premere M2 Per sparare una raffica"
 		"ko"		"헤드샷이 가능합니다.\n-우클릭으로 화살 세례 능력을 사용 가능"
@@ -270,7 +270,7 @@
 	{
 		"en"		"-Increased damage\n-Increased attackspeed\nM2 ability is stronger"
 		"fr"		"Dégats et cadence de tir améliorés, barrage amélioré"
-		"ru"		"Увеличенный урон и скорость атаки, усилена способность М2."
+		///"ru"		"Увеличенный урон и скорость атаки, усилена способность М2."
 		"chi"       "增加伤害和攻击速度，加强右键技能。"
 		"it"		"Danno e velocità d'attacco aumentati, abilità m2 potenziate."
 		"ko"		"-피해량, 공격 속도 증가\n-우클릭 능력 강화"
@@ -279,7 +279,7 @@
 	{
 		"en"		"-Increased damage\n-Increased attackspeed\nM2 ability is stronger\n-Base attack shoots 3 arrows."
 		"fr"		"Dégats et cadence de tir améliorés, barrage amélioré\nLes attaques réguliers tirent 3 flèches"
-		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2.\nСтреляет 3-я стрелами (обычная)."
+		///"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2.\nСтреляет 3-я стрелами (обычная)."
 		"chi"       "增加伤害和攻击速度，加强右键技能。普通攻击现可发射3支箭。"
 		"it"		"Danno e velocità d'attacco aumentati, abilità m2 potenziata. L'attacco base ora scocca 3 frecce."
 		"ko"		"-피해량, 공격 속도 증가\n-우클릭 능력 강화.\n-이제 기본 공격이 한 번에 화살 3개를 발사."
@@ -297,6 +297,7 @@
 	"Deagle Desc"
 	{
 		"en"		"Deagle that throws objects with m2, shoot them to deal even more damage.\n-Time correctly after a blue flash, and throw multiple for even more damage.\n-This projectile always counts as a HEADSHOT.\n-Has less damage falloff."
+		"ru"		"Gun that throws objects with m2, shoot them to deal extra dmg.\n-Time correctly after a blue flash, and throw multiple for more dmg.\n-This projectile always counts as a HEADSHOT."
 		"it"		"Deagle che lancia oggetti con m2, sparateli per infliggere ancora più danni.\nTemporizzate correttamente dopo un lampo blu e lanciate più oggetti per infliggere ancora più danni.\nQuesto proiettile conta sempre come un COLPO ALLA TESTA.\nHa una caduta dei danni inferiore."
 		"ko"		"오른쪽 마우스로 포물선형 물체를 투척. 물체를 쏴서 맞추면 추가 피해.\n-물체에 파란 섬광이 발생한 후에 쏴맞추거나 여러개를 던질 시 피해량 증가\n-이 물체는 항상 헤드샷 판정임.\n-거리 비례 피해 감소량이 적음"
 	}
@@ -321,6 +322,7 @@
 	"Sherrif Pap 3"
 	{
 		"en"		"-Increased Damage\n-R Ability Allows you to get your Lever-action.\n-Its limited ammo, and also benifits from the same m2 bonus if you wish to combine it.\n-Semifire is much faster then holding m1.\n-It deals explosive damage.\n-Hitting marked targets with your revolver reduces R Cooldown."
+		"ru"		"-Increased Damage\n-R Ability Allows you to get your Lever-action.\n-Its limited ammo, and also benifits from the m2 bonus.\n-Semifire is much faster then holding m1.\n-It deals explosive damage.\n-Hitting marked targets with your revolver reduces R Cooldown."
 		"it"		"Potere Aumento del Danno consente di ottenere l'azione a leva.\nLe munizioni sono limitate e beneficiano anche dello stesso bonus di m2 se si desidera combinarle.\nIl fuoco è molto più veloce rispetto all'uso di m1.\nEffettua danni esplosivi.\nColpire bersagli marcati con il revolver riduce la durata della R."
 		"ko"		"-피해량 증가\n-R: 레버 액션 무기 생성.\n-한정된 탄약을 보유하며, 우클릭 능력과 조합 가능.\n-M1를 꾹 누르는 것보다 반자동 발사가 더 빠름\n-폭발 피해를 가함\n-리볼버로 표적이 부여된 적 타격시 R 능력 쿨타임 감소."
 	}
@@ -360,7 +362,7 @@
 	{
 		"en"		"Semi automatic shotgun, you cannot hold down to shoot.\n-More powerful but harder to use since its single fire nature and poor accuracy\n-Provides an extra 10％ Resistance to all sources while active."
 		"fr"		"Fusil à pompe semi-automatique, vous ne pouvez pas maintenir la détente pour tirer.\nDégats sont améliorés en échange d'une déviation plus grande."
-		"ru"		"Полуавт. дробовик, для стрельбы из которого нельзя удерживать нажатой клавишу.\nМощнее, стреляет одиночными выстрелами и имеет низкую точность."
+		///"ru"		"Полуавт. дробовик, для стрельбы из которого нельзя удерживать нажатой клавишу.\nМощнее, стреляет одиночными выстрелами и имеет низкую точность."
 		"chi"       "半自动霰弹枪，你不能按住射击。虽然强大，但因为它的单一火力性质和较差的准确性，使它更难使用"
 		"it"		"Fucile semiautomatico, non si può tenere premuto per sparare.\nPiù potente ma più difficile da usare per la sua natura a fuoco singolo e la scarsa precisione"
 		"ko"		"반자동 산탄총. 이 무기는 꾹 눌러서 사격할 수 없음.\n-강력하지만 단발성과 명중률이 낮아 다루기 어려움\n-이 무기를 들고 있을 때 모든 피해 저항 10％ 증가"
@@ -369,7 +371,7 @@
 	{
 		"en"		"-Increased damage\n-Increased attackspeed\n-much tighter spread."
 		"fr"		"Dégats et cadence de tir améliorés, déviation réduite."
-		"ru"		"Увеличенный урон и скорость атаки, гораздо более плотный разброс."
+		///"ru"		"Увеличенный урон и скорость атаки, гораздо более плотный разброс."
 		"chi"       "增加伤害和攻击速度，子弹扩散减少。"
 		"it"		"Aumento dei danni e della velocità d'attacco, diffusione molto più stretta."
 		"ko"		"-피해량, 공격 속도, 집탄도 증가"
@@ -379,7 +381,7 @@
 	{
 		"en"		"-Increased damage\n-Increased attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés."
-		"ru"		"Увеличенный урон и скорость атаки."
+		///"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 		"it"		"Aumento dei danni e della velocità d'attacco."
 		"ko"		"-피해량, 공격 속도 증가"
@@ -407,7 +409,7 @@
 	{
 		"en"		"-Increased damage\n-Increased attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés."
-		"ru"		"Увеличенный урон и скорость атаки."
+		///"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 		"it"		"Aumento dei danni e della velocità d'attacco"
 		"ko"		"-피해량, 공격 속도 증가"
@@ -416,7 +418,7 @@
 	{
 		"en"		"-Increased damage\n-Increased attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés."
-		"ru"		"Увеличенный урон и скорость атаки."
+		///"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 		"it"		"Aumento dei danni e della velocità d'attacco"
 		"ko"		"-피해량, 공격 속도 증가"
@@ -425,7 +427,7 @@
 	{
 		"en"		"-Increased damage\n-Increased attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés."
-		"ru"		"Увеличенный урон и скорость атаки."
+		///"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 		"it"		"Aumento dei danni e della velocità d'attacco"
 		"ko"		"-피해량, 공격 속도 증가"
@@ -445,7 +447,7 @@
 	{
 		"en"		"-Increased damage\n-Increased attackspeed\n-Increased reloadspeed"
 		"fr"		"Dégats, cadence de tir et vitesse de rechargement améliorés"
-		"ru"		"Увеличенный урон и немного более высокая скорости атаки и скорость перезарядки."
+		///"ru"		"Увеличенный урон и немного более высокая скорости атаки и скорость перезарядки."
 		"chi"       "增加伤害和攻击速度，每次射击增加额外子弹。"
 		"it"		"Aumento dei danni e velocità di attacco e di ricarica leggermente più rapida"
 		"ko"		"-피해량, 공격 속도, 재장전 속도 증가"
@@ -461,7 +463,7 @@
 	{
 		"en"		"-Increased damage\n-Increased reloadspeed"
 		"fr"		"Dégats et cadence de tir améliorés"
-		"ru"		"Увеличенный урон и скорости перезарядки."
+		///"ru"		"Увеличенный урон и скорости перезарядки."
 		"chi"       "增加伤害和装填速度"
 		"it"		"Aumento del danno e della velocità di ricarica"
 		"ko"		"-피해량, 재장전 속도 증가"
@@ -491,7 +493,7 @@
 	{
 		"en"		"-Increased damage\n-Increased attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés"
-		"ru"		"Увеличенный урон и скорость атаки."
+		///"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 		"it"		"Aumento dei danni e della velocità d'attacco"
 		"ko"		"-피해량, 공격 속도 증가"
@@ -507,7 +509,7 @@
 	{
 		"en"		"-Increased damage\n-Increased range\n-Less falloff"
 		"fr"		"Dégats et cadence de tir améliorés, baisse de puissance avec distance réduite"
-		"ru"		"Увеличенный урон и дальность, а также меньшее падение урона на расстоянии."
+		///"ru"		"Увеличенный урон и дальность, а также меньшее падение урона на расстоянии."
 		"chi"       "增加伤害和射程，伤害衰减程度减少"
 		"it"		"Aumento del danno e della gittata e riduzione del falloff"
 		"ko"		"-피해량, 사거리가 증가\n-거리 비례 피해량 감소"
@@ -541,7 +543,7 @@
 	{
 		"en"		"-Increased damage\n-Increased reloadspeed\n-loads up to 6 shells"
 		"fr"		"Dégats et cadence de tir améliorés, charge 6 munitions à la fois"
-		"ru"		"Увеличенный урон и скорость атаки, заряжает до 6 патронов."
+		///"ru"		"Увеличенный урон и скорость атаки, заряжает до 6 патронов."
 		"chi"       "增加伤害和攻击速度，子弹装载量增加到6发。"
 		"it"		"Aumenta i danni e la velocità d'attacco, carica fino a 6 proiettili."
 		"ko"		"-피해량, 공격 속도 증가\n-최대 6발까지 장전 가능"
@@ -588,7 +590,7 @@
 	{
 		"en"	"Bullets filled with... something.\n-Bounces between enemies.\n-Deals 1.5x dmg during raids."
 		"fr"	"Les singes maîtrisent le tir de balles rebondissantes, qui sautent entre cibles.\n1.5x de dégats lors des Raids."
-		"ru"	"Обученные обезьяны овладевают навыками отскакивания пуль, которые летят от цели к цели, убивая врага.\nНаносят 1,5х урона во время рейдов."
+		///"ru"	"Обученные обезьяны овладевают навыками отскакивания пуль, которые летят от цели к цели, убивая врага.\nНаносят 1,5х урона во время рейдов."
 		"chi"   "经过训练的猴子掌握了弹跳子弹的技能，子弹会从一个目标射到另一个目标，杀死它们。\n对boss造成1.5倍伤害。"
 		"it"	"Le scimmie addestrate padroneggiano l'abilità di far rimbalzare i proiettili, che passano da un bersaglio all'altro, uccidendoli.\nDona 1,5x dmg durante le incursioni."
 		"ko"	"뭔가로 채워진... 탄환들.\n-적중시 탄환이 다른 적에게로 튕깁니다.\n-레이드 보스에게 주는 피해량 1.5배."
@@ -605,7 +607,7 @@
 	{
 		"en"		"-Increased damage\n-Calls in supply drops that gives extra ammo to\nall players and weapon consumes much less ammo."
 		"fr"		"Arme utilise moins de munitions.\nAbilité appèle pour des approvisionnements qui donne des munitions à tous les joueurs."
-		"ru"		"Вызывает сброс припасов с воздуха, которые дают доп. патроны\nвсем игрокам, а оружие потребляет гораздо меньше патронов."
+		///"ru"		"Вызывает сброс припасов с воздуха, которые дают доп. патроны\nвсем игрокам, а оружие потребляет гораздо меньше патронов."
 		"chi"       "升级补给，给所有玩家额外的弹药和武器消耗更少的弹药。"
 		"it"		"Richiama i drop di rifornimento che danno munizioni extra a tutti i giocatori e l'arma consuma molte meno munizioni."
 		"ko"		"-피해량 증가\n-탄약을 보급할 수 있는 보급 상자를 호출할 수 있게 됩니다.\n-무기의 탄약 소모량이 감소."
@@ -614,7 +616,7 @@
 	{
 		"en"		"-Increased damage\n-Removes charging but deals twice the damage."
 		"fr"		"Dégats sont doublés, mais enlève la charge."
-		"ru"		"Убирает заряд, но наносит вдвое больше урона."
+		///"ru"		"Убирает заряд, но наносит вдвое больше урона."
 		"chi"       "删除你的超能，从而造成两倍的伤害！"
 		"it"		"Rimuove la carica ma infligge il doppio dei danni."
 		"ko"		"-피해량 증가\n-이제 충전이 불가능하지만, 피해량이 2배로 증가"
@@ -623,7 +625,7 @@
 	{
 		"en"		"-Increased damage\n-Cripples targets heavily, making them slower and take more damage."
 		"fr"		"Infirme les ennemis, les ralentissant et les font prendre plus de dégats."
-		"ru"		"Сильно калечит цели, делая их медленнее и нанося на больше урона."
+		///"ru"		"Сильно калечит цели, делая их медленнее и нанося на больше урона."
 		"chi"       "严重致残目标，使他们变慢并受到的伤害。"
 		"it"		"Storpia pesantemente i bersagli, rendendoli più lenti e subendo più danni."
 		"ko"		"-피해량 증가\n-적중시 대상의 이동 속도를 둔화시키고 받는 피해를 40％ 증가시킴."
@@ -632,7 +634,7 @@
 	{
 		"en"		"-Increased damage\n-Decreased cooldown on supply drops, increased attack speed, and bouncing\n-bullets for all players is now smart and will target high health targets."
 		"fr"		"Cadence de tir amélioré, temps de rechargement de l'abilité réduite.\nBalles rebondissantes priorisent les cibles plus durables."
-		"ru"		"Уменьшено время восст. сброса припасов, увеличена скорость атаки, а отскакивающие\nпули для всех игроков теперь умные и нацелены на цели с высоким уровнем здоровья."
+		///"ru"		"Уменьшено время восст. сброса припасов, увеличена скорость атаки, а отскакивающие\nпули для всех игроков теперь умные и нацелены на цели с высоким уровнем здоровья."
 		"chi"       "加大补给掉落的频率，增加攻击速度\n所有玩家弹子弹现在是智能的，将瞄准高血量的目标"
 		"it"		"Il cooldown dei rifornimenti è diminuito, la velocità d'attacco è aumentata e i\nproiettili rimbalzanti per tutti i giocatori sono ora intelligenti e mirano a bersagli con salute elevata."
 		"ko"		"-피해량, 공격 속도, 탄환 튕김 증가\n-보급 상자 호출의 쿨타임 감소\n이제 튕기는 탄환은 현재 체력이 많은 적을 최우선으로 추적."
@@ -641,7 +643,7 @@
 	{
 		"en"		"-Increased damage\n-Attack speed increases depending on how dire things become."
 		"fr"		"Cadence de tir s'accélère en fonction de l'urgence de la situation."
-		"ru"		"Скорость атаки увеличивается в зависимости от степени тяжести ситуации."
+		///"ru"		"Скорость атаки увеличивается в зависимости от степени тяжести ситуации."
 		"chi"       "攻击速度的增加取决于情况有多糟糕。"
 		"it"		"La velocità di attacco aumenta a seconda della gravità della situazione."
 		"ko"		"-피해량 증가\n-체력이 줄어들수록 공격 속도가 최대 80％까지 증가."
@@ -679,7 +681,7 @@
 	{
 		"en"	"-Massively increased damage"
 		"fr"	"Dégats améliorés considérablement"
-		"ru"	"Сильно увеличенный урон"
+		///"ru"	"Сильно увеличенный урон"
 		"chi"   "大幅增加伤害"
 		"it"	"Danno enormemente aumentato"
 		"ko"	"-피해량 대폭 증가"
@@ -688,7 +690,7 @@
 	{
 		"en"	"-Massively increased damage"
 		"fr"	"Dégats améliorés considérablement"
-		"ru"	"Сильно увеличенный урон."
+		///"ru"	"Сильно увеличенный урон."
 		"chi"   "大幅增加伤害"
 		"it"	"Danno enormemente aumentato"
 		"ko"	"-피해량 대폭 증가"
@@ -698,7 +700,7 @@
 	{
 		"en"	"-M1 heals allies\n-M2 heals yourself"
 		"fr"	"Soigne vos coéquipiers avec M1, soignez-vous avec M2"
-		"ru"	"Лечит союзников с помощью М1 и себя с помощью М2."
+		///"ru"	"Лечит союзников с помощью М1 и себя с помощью М2."
 		"chi"   "用鼠标左键治疗队友，右键治疗自己"
 		"it"	"Cura i compagni di squadra con m1 e te stesso con m2"
 		"ko"	"-좌클릭으로 아군의 체력을 회복\n-우클릭은 사용자 자신을 치료"
@@ -708,7 +710,7 @@
 	{
 		"en"	"-Cooldown based item.\n-On Use: Restore mana to max"
 		"fr"	"Potion magique qui réstaure votre Mana complètement"
-		"ru"	"Магическое зелье для полного восстановления маны."
+		///"ru"	"Магическое зелье для полного восстановления маны."
 		"chi"   "魔法药水可以完全恢复你的法力"
 		"it"	"Pozione magica per ripristinare completamente il mana"
 		"ko"	"-쿨타임 기반 아이템.\n-사용시: 사용자의 마나를 완전히 회복."
@@ -717,7 +719,7 @@
 	{
 		"en"	"-Applies burn damage"
 		"fr"	"Dégats et cadence de tir améliorés."
-		"ru"	"Увеличенный урон и скорость атаки."
+		///"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
 		"it"	"Aumento dei danni e della velocità d'attacco"
 		"ko"	"-적중시, 화상 피해"
@@ -726,7 +728,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed"
 		"fr"	"Dégats et cadence de tir améliorés."
-		"ru"	"Увеличенный урон и скорость атаки."
+		///"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
 		"it"	"Aumento dei danni e della velocità d'attacco"
 		"ko"	"-피해량, 공격 속도 증가"
@@ -735,7 +737,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed"
 		"fr"	"Dégats et cadence de tir améliorés."
-		"ru"	"Увеличенный урон и скорость атаки."
+		///"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
 		"it"	"Aumento dei danni e della velocità d'attacco"
 		"ko"	"-피해량, 공격 속도 증가"
@@ -744,7 +746,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed"
 		"fr"	"Dégats et cadence de tir améliorés."
-		"ru"	"Увеличенный урон и скорость атаки."
+		///"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
 		"it"	"Aumento dei danni e della velocità d'attacco"
 		"ko"	"-피해량, 공격 속도 증가"
@@ -754,7 +756,7 @@
 	{
 		"en"	"-Pierces enemies with falloff\n-Hitscan laser weapon"
 		"fr"	"Pistolet à rayon laser. Perce les ennemis."
-		"ru"	"Обычный лазерный пистолет. Пробивает врагов."
+		///"ru"	"Обычный лазерный пистолет. Пробивает врагов."
 		"chi"   "基础激光手枪,刺穿敌人"
 		"it"	"Pistola laser di base. Trafigge i nemici."
 		"ko"	"-거리 비례 피해 감소를 가지며 적을 관통.\n-히트스캔 레이저 무기"
@@ -764,7 +766,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-Lower Clipsize"
 		"fr"	"Dégats et cadence de tir améliorés. Capacité du chargeur réduite."
-		"ru"	"Увеличенный урон и скорость атаки, но уменьшенный размер обоймы."
+		///"ru"	"Увеличенный урон и скорость атаки, но уменьшенный размер обоймы."
 		"chi"   "增加伤害和攻击速度，但降低弹丸尺寸"
 		"it"	"Aumento dei danni e della velocità d'attacco, ma riduzione della dimensione degli appunti"
 		"ko"	"-피해량, 공격 속도 증가\n-장탄수 감소"
@@ -785,7 +787,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-Infinite Clipsize"
 		"fr"	"Dégats améliorés. Rechargeur infini."
-	    "ru"	"Увеличенный урон и скорость атаки, нет обоймы, бесконечный размер обоймы."
+	    ///"ru"	"Увеличенный урон и скорость атаки, нет обоймы, бесконечный размер обоймы."
 		"it"	"+DMG, clip infinita."
 		"ko"	"-피해량, 공격 속도 증가\n-장탄수 무제한"
 	}
@@ -816,7 +818,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-allows 6 more stickies."
 		"fr"	"Dégats et cadence de tir améliorés. Peut avoir 6 bombes additionelles"
-		"ru"	"Увелич. урон и скорость атаки, позволяет использовать на 6 больше бомб-липучек."
+		///"ru"	"Увелич. урон и скорость атаки, позволяет использовать на 6 больше бомб-липучек."
 		"chi"   "增加伤害和攻击速度，增加6个粘性炸弹"
 		"it"	"Aumenta i danni e la velocità d'attacco, consente 6 stickies in più."
 		"ko"	"-피해량, 공격 속도 증가\n-점착 폭탄 최대 설치 개수가 6개 증가"
@@ -847,7 +849,7 @@
 	{
 		"en"	"-Weapon shoots randomly"
 		"fr"	"V4lv3 n'35T p45 c0n, TF2 f0ncTioNn3 p4rfaiT3m3nT"
-		"ru"	"V4lv3 н3 гл7пЫ3, TF2 пр0ст0 т4к ра5оТа3т"
+		///"ru"	"V4lv3 н3 гл7пЫ3, TF2 пр0ст0 т4к ра5оТа3т"
 		"chi"   "V社ｾ不傻??tf2閭ｽ没雜问题"
 		"it"	"V4lv3 n0N 3 5C3m4, TF2 fUn510n4"
 		"ko"	"-벨부눈 버부기 어늬더. 튐풔눈 원뱍허궤 적둥헌더.\n-무작위 공격 발동"
@@ -877,7 +879,7 @@
 	{
 		"en"	"-Buff becomes permanent."
 		"fr"	"Rage devient permanent, sans avoir besoin de l'activer."
-		"ru"	"Эффект становится постоянным без необходимости его активации."
+		///"ru"	"Эффект становится постоянным без необходимости его активации."
 		"chi"   "无需触发,Buff即可永久生效。"
 		"it"	"Il buff diventa permanente senza doverlo attivare."
 		"ko"	"-사용시 발동되는 버프 효과가 영구적으로 지속됩니다."
@@ -895,7 +897,7 @@
 	{
 		"en"	"-Increased damage\n-Incrassed bleed time\n-Increased attack speed."
 		"fr"	"Dégats, cadence des attaques, et temps du saignement améliorés."
-		"ru"	"Увеличенный урон, время кровотечения и скорости атаки."
+		///"ru"	"Увеличенный урон, время кровотечения и скорости атаки."
 		"chi"   "增加伤害、流血时间、攻击速度。"
 		"it"	"Aumento dei danni, del tempo di sanguinamento e della velocità d'attacco."
 		"ko"	"-피해량, 공격 속도, 출혈 지속 시간 증가"
@@ -904,7 +906,7 @@
 	{
 		"en"	"-No Backstabs\n-Incrassed damage\n-Increased attack speed.\n-Gain random buff on attack."
 		"fr"	"Dégats améliorés. Enlève le poignardage. Recevez des effets avec M1."
-		"ru"	"Нет удара в спину, увеличенный урон, получение доп. коротких эффектов на [М1]."
+		///"ru"	"Нет удара в спину, увеличенный урон, получение доп. коротких эффектов на [М1]."
 		"it"	"Niente Backstab, aumento dei danni, guadagno di effetti brevi aggiuntivi tramite [M1]."
 		"ko"	"-백스탭 불가\n-피해량, 공격 속도 증가\n-적중시 무작위 버프 획득"
 	}
@@ -912,7 +914,7 @@
 	{
 		"en"	"-Incrassed damage\n\n-Gain more random buffs on attack."
 		"fr"	"Dégats améliorés. Recevez d'avantages des effets avec M1."
-		"ru"	"Увеличенный урон, больше коротких эффектов на [М1]."
+		///"ru"	"Увеличенный урон, больше коротких эффектов на [М1]."
 		"chi"   "增加伤害，增加[M1]的短期效果."
 		"it"	"Aumento del danno, più Effetti brevi su [M1]."
 		"ko"	"-피해량 증가\n-적중 시 더 많은 무작위 버프를 획득"
@@ -929,7 +931,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-Cleave Hits 1 more target"
 		"fr"	"Dégats et cadence des attaques améliorés"
-		"ru"	"Увеличенный урон."
+		///"ru"	"Увеличенный урон."
 		"chi"	"增加伤害和攻速"
 		"it"	"Aumento dei danni e della velocità d'attacco"
 		"ko"	"-피해량, 공격 속도 증가\n-1명의 대상을 추가 타격"
@@ -959,7 +961,7 @@
 	{
 		"en"	"-Deals 30％ more damage to burning enemies.\n-M2 ignites 5 enemies around you"
 		"fr"	"50％ plus de dégats contre les ennemis en feu."
-		"ru"	"Вы наносите на 50％ больше урона горящим врагам."
+		///"ru"	"Вы наносите на 50％ больше урона горящим врагам."
 		"chi"   "你对燃烧的敌人造成的伤害提高50％。"
 		"it"	"Infligge 50％ danni in più ai nemici in fiamme."
 		"ko"	"-불타고 있는 적에게 주는 피해량 +30％\n-우클릭 사용 시 주변의 적 5명을 불태움"
@@ -968,7 +970,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-Ability has less cooldown"
 		"fr"	"Dégats et cadence des attaques améliorés"
-		"ru"	"Увеличенный урон и скорость атаки."
+		///"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
 		"it"	"Aumento dei danni e della velocità d'attacco"
 		"ko"	"-피해량, 공격 속도 증가\n-능력 쿨타임 감소"
@@ -990,7 +992,7 @@
 	{
 		"en"	"-Throws knives that deal your damage on m2\n-Knives regenerate overtime"
 		"fr"	"Lancez des couteaux avec M2"
-		"ru"	"Может метать ножи при помощи М2."
+		///"ru"	"Может метать ножи при помощи М2."
 		"chi"   "按下M2投掷飞刀"
 		"it"	"Può lanciare coltelli con m2"
 		"ko"	"-우클릭으로 칼을 던질 수 있는 무기\n-칼은 시간이 지나면 보급됨."
@@ -1007,7 +1009,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-R Buffs you with more damage and resistancebut sacrafices 20％ of your maxhealth(cant kill you)\n-During buff Ability, have infinite knives."
 		"fr"	"Dégats et cadence des attaques améliorés. Appuyez R pour échanger 20％ santé pour une Rage.\nLa Rage vous donne +30％ cadence des attaques et +35％ de résistance contre les dégats.\nLa Rage vous donne aussi infini couteaux."
-		"ru"	"Увелич. урона и скорости атаки, R - ярость, которая ранит вас на 20％ от вашего макс. здоровья (не может убить вас)\nно вы получаете эфф. 30％ быстрой скорости атаки и 35％ сопротивления урону.\nВо время ярости у вас также есть бесконечные метательные ножи."
+		///"ru"	"Увелич. урона и скорости атаки, R - ярость, которая ранит вас на 20％ от вашего макс. здоровья (не может убить вас)\nно вы получаете эфф. 30％ быстрой скорости атаки и 35％ сопротивления урону.\nВо время ярости у вас также есть бесконечные метательные ножи."
 		"chi"   "增加伤害和攻击速度，R给你20％最大生命值的伤害加成(不会杀死你)\n但你获得30％的攻击速度和35％的抗伤buff。在愤怒期间，你也有无限的投掷刀。"
 		"it"	"Aumenta i danni e la velocità d'attacco, R Ti dà rabbia che ti danneggia per 20％ della tua salute massima (non può ucciderti)\nMa ottieni una velocità d'attacco più veloce di 30％ e un buff di resistenza ai danni di 35％.\nDurante la rabbia hai anche coltelli lanciabili infiniti."
 		"ko"	"-피해량, 공격 속도 증가\n-R키 능력 사용시 최대 체력의 20％에 해당하는 체력을 소모하고 피해량과 저항력 증가(사용자를 죽이지 않음).\n-이 상태에선 칼 투척을 무한대로 사용 가능"
@@ -1022,7 +1024,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-Heals more on backstab."
 		"fr"	"Dégats et cadence des attaques améliorés. Le poignardage donne plus de santé."
-		"ru"	"Увеличенный урон и скорость атаки, нанесение ударов в спину даёт больше здоровья."
+		///"ru"	"Увеличенный урон и скорость атаки, нанесение ударов в спину даёт больше здоровья."
 		"chi"   "增加伤害和攻击速度，背后捅伤增加生命值"
 		"it"	"Aumento dei danni e della velocità d'attacco, le pugnalate alle spalle danno più salute"
 		"ko"	"-피해량, 공격 속도 증가\n-백스탭 성공시 더 많은 체력을 회복"
@@ -1044,7 +1046,7 @@
 	{
 		"en"	"-M2 Parries attacks, and gives energy, take 90％ less damage\n-Parried attacks damage enemies back, scales with enemy damage\n-Parry gives charge\n-Charge allows ranged attacks."
 		"fr"	"Épée légendaire aves des propriétés magiques. Bloquez des attaques avec M2.\nCrée des projectiles quand vouz bloquez avec succès."
-		"ru"	"Легендарный клинок с магическими свойствами, может парировать с помощью М2.\nПарируйте, чтобы отбить слабые снаряды."
+		///"ru"	"Легендарный клинок с магическими свойствами, может парировать с помощью М2.\nПарируйте, чтобы отбить слабые снаряды."
 		"chi"   "一把具有魔法属性的传奇剑，可以用m2格挡"
 		"it"	"Una lama leggendaria con proprietà magiche, che può parare con m2\nParry per ottenere energia che permette di sparare proiettili deboli."
 		"ko"	"-우클릭으로 패링을 발동: 방주 에너지 획득 및 받는 피해 90％ 감소\n-패링한 공격 피해를 적에게 반사(적의 공격 피해에 비례)\n-패링시 에너지를 획득\n-패링시 얻는 충전으로 원거리 공격 가능."
@@ -1053,7 +1055,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-M2 gives more energy\n-Parry deals more damage."
 		"fr"	"Dégats et cadence des attaques améliorés. Crée d'avantage de projectiles quand wous bloquez avec succès.\nRetourne plus de dégats quand vous bloquez."
-		"ru"	"Увеличенный урон и скорость атаки, М2 - даёт снаряды, успешное парирование чего-либо даёт больше снарядов.\nУвеличенная сила отражения парирования."
+		///"ru"	"Увеличенный урон и скорость атаки, М2 - даёт снаряды, успешное парирование чего-либо даёт больше снарядов.\nУвеличенная сила отражения парирования."
 		"chi"   "增加伤害和攻击速度，M2提供炮弹，格挡成功提供更多炮弹。格挡后能量增加"
 		"it"	"Aumenta il danno e la velocità d'attacco, M2 dà più energia,\nparare qualcosa con successo dà più energia"
 		"ko"	"-피해량, 공격 속도 증가\n-패링 사용시 에너지 획득량이 증가\n-패링의 반사 피해량 증가"
@@ -1143,7 +1145,7 @@
 	{
 		"en"	"-5％ extra melee resistance"
 		"fr"	"+5％ résistance contre les dégats corps-à-corps."
-		"ru"	"5％ доп. сопр. атакам ближнего боя."
+		///"ru"	"5％ доп. сопр. атакам ближнего боя."
 		"chi"   "5％额外近战抗性"
 		"it"	"5％ resistenza extra in mischia"
 		"ko"	"-근접 피해 저항력 5％ 증가"
@@ -1152,7 +1154,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed"
 		"fr"	"Dégats et cadence des attaques améliorés"
-		"ru"	"Увеличенный урон и скорость атаки."
+		///"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
 		"it"	"Aumento dei danni e della velocità d'attacco"
 		"ko"	"-피해량, 공격 속도 증가"
@@ -1161,7 +1163,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed"
 		"fr"	"Dégats et cadence des attaques améliorés"
-		"ru"	"Увеличенный урон и скорость атаки."
+		///"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
 		"it"	"Aumento dei danni e della velocità d'attacco"
 		"ko"	"-피해량, 공격 속도 증가"
@@ -1170,7 +1172,7 @@
 	{
 		"en"	"-Massively increased damage\n-Increased attackspeed\n-Move move 5％ slower"
 		"fr"	"Dégats et cadence des attaques améliorés, mais vous vous déplacez 5％ plus lentement."
-		"ru"	"Увеличенный урон и скорость атаки, но вы двигаетесь на 5％ медленнее."
+		///"ru"	"Увеличенный урон и скорость атаки, но вы двигаетесь на 5％ медленнее."
 		"chi"   "增加伤害和攻击速度，但移动速度降低5％。"
 		"it"	"Aumenta i danni e la velocità d'attacco, ma si muove 5％ più lentamente."
 		"ko"	"-피해량 대폭 증가\n-공격 속도 증가\n-이동 속도 -5％"
@@ -1188,7 +1190,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed"
 		"fr"	"Dégats et cadence des attaques améliorés"
-		"ru"	"Увеличенный урон и скорость атаки."
+		///"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
 		"it"	"Aumento dei danni e della velocità d'attacco"
 		"ko"	"-피해량, 공격 속도 증가"
@@ -1204,7 +1206,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-Stronger debuff applied on hit."
 		"fr"	"Dégats et cadence des attaques améliorés. Ennemis frappés prennent 35％ plus de dégats."
-		"ru"	"Увеличенный урон и скорость атаки, эффект значительно сильнее, враги получают на 35％ больше урона."
+		///"ru"	"Увеличенный урон и скорость атаки, эффект значительно сильнее, враги получают на 35％ больше урона."
 		"chi"   "增加伤害和攻击速度，负面效果大大增强。"
 		"it"	"Aumenta i danni e la velocità d'attacco, il debuff è molto più forte, i nemici subiscono 35％ danni in più."
 		"ko"	"-피해량, 공격 속도 증가\n-가하는 디버프의 효과 증가."
@@ -1226,7 +1228,7 @@
 	{
 		"en"	"-M2 Ability gives attackspeed for a short time."
 		"fr"	"Chaque attaque utilise du Mana. M2 accélère la cadence des attaques pour une courte période."
-		"ru"	"Расходует ману с каждым выстрелом. М2 - даёт доп. скорость атаки на короткое время."
+		///"ru"	"Расходует ману с каждым выстрелом. М2 - даёт доп. скорость атаки на короткое время."
 		"chi"   "每次射击消耗法力值。按下鼠标右键在短时间内增加额外的攻击速度。"
 		"it"	"Consuma mana a ogni colpo. M2 Fornisce velocità d'attacco extra per un breve periodo."
 		"ko"	"-우클릭 능력 사용시 짧은 시간 동안 공격 속도 증가"
@@ -1235,7 +1237,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed"
 		"fr"	"Dégats et cadence des attaques améliorés"
-		"ru"	"Увеличенный урон и скорость атаки."
+		///"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
 		"it"	"Aumento dei danni e della velocità d'attacco"
 		"ko"	"-피해량, 공격 속도 증가"
@@ -1244,7 +1246,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-Projectile is blue (Visual only)"
 		"fr"	"Dégats et cadence des attaques améliorés. Les attaques deviennent bleues."
-		"ru"	"Увеличенный урон и скорость атаки, а снаряд становится синим."
+		///"ru"	"Увеличенный урон и скорость атаки, а снаряд становится синим."
 		"chi"   "增加伤害和攻击速度，炮弹变成蓝色"
 		"it"	"Danno e velocità d'attacco aumentati e il proiettile diventa blu"
 		"ko"	"-피해량, 공격 속도 증가\n-투사체의 색상이 파란색이 됨."
@@ -1283,7 +1285,7 @@
 	{
 		"en"	"-Piercing freeze wind on attack\n-Damage causes cryo elemental damage\n-Cryo freezes enemies on hit\n-M2 Ability does AOE damage\n-Frozen enemies take much more damage from this ability.\n-Debuff on hit"
 		"fr"	"Chaque attaque utilise du Mana. Gèle les ennemis avec assez de dégats.\nM2 lance un choc qui inflige 2 plus de dégats contre les ennemis gelés\net gèle les ennemis si assez de dégats sont infligés."
-		"ru"	"Замораживает врагов при достаточн. кол-ве урона.\nM2 - вызывает небольшую ударную волну,\nкоторая наносит замороженным зомби значительно больший урон.\nИ замораживает врагов, если нанести достаточно урона. По замороженным = 2x урон."
+		///"ru"	"Замораживает врагов при достаточн. кол-ве урона.\nM2 - вызывает небольшую ударную волну,\nкоторая наносит замороженным зомби значительно больший урон.\nИ замораживает врагов, если нанести достаточно урона. По замороженным = 2x урон."
 		"chi"	"造成足够伤害冰冻敌人。\nM2在你身旁造成一个冲击波。\n对冰冻敌人造成大量伤害。这个技能也可以冰冻敌人。\n冰冻时，僵尸受到的伤害*2。"
 		"it"	"Congelerà i nemici con un numero sufficiente di danni.\nM2 innesca un'onda d'urto nella vostra posizione che infligge danni massicciamente maggiori agli zombi congelati.\nE congela i nemici se infligge abbastanza danni, se congelati, il buff dei danni è due volte più efficace."
 		"ko"	"-공격시 관통형 냉기 마법 발사\n-피해를 주면 냉기 원소 피해 부여. 냉기는 적중한 적을 얼림\n-우클릭은 광역 피해를 가함\n-얼어붙은 적에게 이 능력으로 입히는 피해가 증가\n-적중시 디버프 부여"
@@ -1299,7 +1301,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-Debuff is stronger"
 		"fr"	"Dégats et cadence des attaques améliorés, le gel est plus fort."
-		"ru"	"Увеличенный урон и скорость атаки, эффект сильнее."
+		///"ru"	"Увеличенный урон и скорость атаки, эффект сильнее."
 		"chi"   "增加伤害和攻击速度，负面效果大大增强。"
 		"it"	"Danno e velocità d'attacco aumentati, il debuff è più forte"
 		"ko"	"-피해량, 공격 속도 증가\n-디버프 효과가 더욱 강력해짐."
@@ -1308,7 +1310,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-Debuff is stronger"
 		"fr"	"Dégats et cadence des attaques améliorés, le gel est plus fort."
-		"ru"	"Увеличенный урон и скорость атаки, эффект сильнее."
+		///"ru"	"Увеличенный урон и скорость атаки, эффект сильнее."
 		"chi"   "增加伤害和攻击速度，负面效果大大增强。"
 		"it"	"Danno e velocità d'attacco aumentati, il debuff è più forte"
 		"ko"	"-피해량, 공격 속도 증가\n-디버프 효과가 더욱 강력해짐."
@@ -1318,7 +1320,7 @@
 	{
 		"en"	"-M2 Summons a very powerful lighting strike at where you aim."
 		"fr"	"Chaque attaque utilise du Mana. M2 convoque un coup de foudre."
-		"ru"	"Потребляет ману с каждым выстрелом. M2 - вызывает очень мощный молниевый удар."
+		///"ru"	"Потребляет ману с каждым выстрелом. M2 - вызывает очень мощный молниевый удар."
 		"chi"   "每次射击消耗法力值。M2召唤一个非常强大的闪电打击"
 		"it"	"Consuma mana a ogni colpo. M2 Evoca un colpo di luce molto potente."
 		"ko"	"-우클릭 사용시 매우 강력한 번개 강타 공격을 가함"
@@ -1327,7 +1329,7 @@
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-M2 gains a delay, but is much stronger."
 		"fr"	"Dégats et cadence des attaques améliorés. Coup de foudre amélioré, mais la convocation est retardé."
-		"ru"	"Значительно увеличенный урон и скорость атаки, M2 имеет задержку, но гораздо мощнее."
+		///"ru"	"Значительно увеличенный урон и скорость атаки, M2 имеет задержку, но гораздо мощнее."
 		"chi"   "大量增加伤害和攻击速度，M2冷却变长，但伤害更高。"
 		"it"	"Aumenta enormemente i danni e la velocità d'attacco, M2 guadagna un ritardo ma è molto più potente."
 		"ko"	"-피해량, 공격 속도 증가\n-우클릭 능력에 지연이 생기지만 훨씬 더 강력해짐."
@@ -1343,6 +1345,7 @@
 	"Lightning Staff Pap 3"
 	{
 		"en"	"-Massively increased Damage\n-much slower attackspeed.\nAbility changes:\n-2x charged Lightning Storm.\n-Your attack chains and is hitscan, each attack will slow the enemies.\n-When no enemies nearby, gain !!, 10％ more dmg and faster ability charge.\n-Projectile speed/Range affect manacost."
+		"ru"	"-Increased dmg\n-Slower AtkSpd.\nAbility:\n-2x charged Lightning Storm.\n-Your attack chains & will slow the enemies.\n-When no enemies nearby, gain 10％ more dmg and faster ability charge.\n-Projectile spd/range affect manacost."
 		"it"	"Aumenta enormemente il danno, ma la velocità d'attacco è molto più lenta.\nLa tua abilità cambia:\n2x carica Tempesta di fulmini.\nIl tuo attacco è a catena, ma attacchi 3 volte più lentamente, ogni attacco rallenta i nemici.\nQuando non ci sono nemici nelle vicinanze, guadagna !!!, 10％ di danno in più e carica più velocemente l'abilità.\nLa velocità/portata dei proiettili influisce sulla manacost."
 		"ko"	"-피해량이 대폭 증가\n-공격 속도가 크게 감소\n-능력 변경: 2배 충전된 번개 폭풍\n-공격이 체인 라이트닝이 되며 히트스캔 방식이며 적을 둔화시킴\n-주변에 적이 없을 때 '!!' 상태를 얻어 피해량이 10％ 증가하고 능력 충전 속도 증가-\n-투사체 속도/사거리가 마나 소모량에 영향을 줍니다."
 	}
@@ -1408,7 +1411,7 @@
 	{
 		"en"	"-Causes Aoe Wind Storms that damage over time."
 		"fr"	"Chaque attaque utilise du Mana. Convoque des tempêtes qui infligent des dégats avec du temps."
-		"ru"	"Вызывает шторм ветра с уроном по области, который наносит урон с течением времени."
+		///"ru"	"Вызывает шторм ветра с уроном по области, который наносит урон с течением времени."
 		"chi"   "形成一个可以造成范围伤害的龙卷风"
 		"it"	"Provoca tempeste di vento che danneggiano in area nel tempo."
 		"ko"	"-시간에 걸쳐 광역 피해를 주는 토네이도를 생성합니다."
@@ -1425,7 +1428,7 @@
 	{
 		"en"	"-Throwable grenade which restores armor on each pulse to all allies\n-Scales with allies armor."
 		"fr"	"Lance un dispenseur d'armure automatique. Donne plus d'armure pour les améliorations passives des coéquipiers affectés."
-		"ru"	"Бросает гранату, которая со временем даёт броню. Улучшенная, если у цели просто улучшена броня."
+		///"ru"	"Бросает гранату, которая со временем даёт броню. Улучшенная, если у цели просто улучшена броня."
 		"chi"   "投掷一枚可以恢复护甲的手榴弹。"
 		"it"	"Lancia una granata che conferisce armatura nel tempo. Potenziata se il bersaglio ha un'armatura migliore."
 		"ko"	"-폭파 범위 내의 아군의 아머를 지속적으로 회복시키는 수류탄입니다.\n-아군의 아머에 따라 회복량이 증가합니다."
@@ -1441,7 +1444,7 @@
 	{
 		"en"	"-A weak dash, twice a round/Raid battle\n-While downed, you can dash again for a much higher seperate cooldown."
 		"fr"	"Propulsion faible. Peut être utilisé pendant que vous êtes KO."
-		"ru"	"Слабый рывок. При падении используйте аварийный рывок с собственной перезарядкой!"
+		///"ru"	"Слабый рывок. При падении используйте аварийный рывок с собственной перезарядкой!"
 		"chi"   "一个微弱的紧急冲刺。当被击倒时，可以激活。"
 		"it"	"Un colpo d'ala debole. Quando viene abbattuto, usa il colpo d'ala d'emergenza con il suo cooldown!"
 		"ko"	"-짧은 대쉬를 사용할 수 있습니다. 레이드나 라운드에서 2회만 사용 가능.\n-다운된 상태라면, 개별적인 더 긴 쿨타임이 있는 긴급 대쉬를 사용할 수 있음."
@@ -1460,7 +1463,7 @@
 	{
 		"en"	"-On use, frozen for 3 seconds, gain resitance during freeze\n-Gain a sepearte suit of armor, power scales with money spend\n-When reaching 0 health, or timer is over, return back to normal."
 		"fr"	"Équippez de l'Armure qui vous assistera en combat.\nL'armure devient plus fort en fonction de l'argent que vous avez dépensé.\nL'armure se brisera pour vous sauver d'être KO.\nLes améliorations de la boutique ne fonctionnent pas quand l'armure est équippé."
-		"ru"	"С небес спускается броня, которая поможет вам в бою.\nПрочность брони зависит от потраченных вами денег.\nУмереть в броне - сломает броню и спасёт вас.\nПерки не работают, но работают напитки в виде перков."
+		///"ru"	"С небес спускается броня, которая поможет вам в бою.\nПрочность брони зависит от потраченных вами денег.\nУмереть в броне - сломает броню и спасёт вас.\nПерки не работают, но работают напитки в виде перков."
 		"chi"   "从空中部署一套盔甲来帮助你战斗。\n它的强度与你花的钱总数成正比。\n当装备着盔甲死亡后会把装备弄坏，你将获得重生(复活甲)。\nBuff对其不起作用，但急速可乐可以。"
 		"it"	"Dispiega un'armatura dal cielo per assisterti in combattimento.\nLa sua Forza varia in base ai soldi spesi in totale.\nMorire con l'armatura indosso la romperà e ti salverà.\nI vantaggi non funzionano, ma i perk-a-cola sì."
 		"ko"	"-사용시, 3초간 고정됨. 고정된 상태에선 저항력 증가\n-퀀텀 슈트의 위력은 총합 자금 사용량에 비례하여 증가\n-이 슈트를 입은 상태로 체력이 0이 되거나 타이머가 0이 될 시, 슈트가 파괴됨"
@@ -1491,7 +1494,7 @@
 	{
 		"en"	"-Shoots nail projectiles\n-Scales with builder upgrades."
 		"fr"	"Arme pour constructeur faible pour le début du jeu."
-		"ru"	"Стартовое оружие строителя, чтобы они могли наносить урон."
+		///"ru"	"Стартовое оружие строителя, чтобы они могли наносить урон."
 		"chi"   "工程师的初始武器"
 		"it"	"Arma iniziale da Costruttore in modo che possa effettivamente infliggere danni."
 		"ko"	"-못 투사체 발사\n-건축가 개선에 따라서 피해량 증가"
@@ -1629,7 +1632,7 @@
 		"en"	"Provides various buffs to teammates and can be upgraded for more buffs.\nBuffs bought stay regardless if broken and rebuilt."
 		"es"	"Provee varios buffs a tus aliados y puede mejorarse para mas buffs.\nLos buffs comprados persisten aun si se destruye y reconstruye."
 		"fr"	"Améliore vos coéquipiers et peut être amélioré pour plus d'améliorations.\nAméliorations restent même si détruit et replacé."
-		"ru"	"Даёт различные усиления союзникам и может быть улучшена для получения дополнительных усилений.\nКупленные усиления сохраняются, если её сломать и восстановить."
+		///"ru"	"Даёт различные усиления союзникам и может быть улучшена для получения дополнительных усилений.\nКупленные усиления сохраняются, если её сломать и восстановить."
 		"chi"   "为队友提供各种Buff，可以升级获得更多的buff\n建筑坏了后Buff将消失"
 		"it"	"Fornisce vari potenziamenti ai compagni di squadra e può essere potenziato per ottenerne altri.\nI potenziamenti acquistati rimangono indipendentemente dal fatto che siano rotti e ricostruiti."
 		"ko"	"다양한 버프를 제공. 개선시 더 많은 버프를 제공.\n-이 구조물이 파괴되거나 재건되더라도 구매한 버프는 유지됨."
@@ -1654,7 +1657,7 @@
 	{
 		"en"	"\n-Gain 15％ more melee attack speed"
 		"fr"	"+15％ cadence des attaques corps-à-corps"
-		"ru"	"На 15％ больше скорость атаки в ближнем бою."
+		///"ru"	"На 15％ больше скорость атаки в ближнем бою."
 		"chi"   "近战攻击速度提高15％"
 		"it"	"15％ più velocità di attacco in mischia"
 		"ko"	"-근접 무기의 공격 속도 15％ 증가."
@@ -1664,7 +1667,7 @@
 	{
 		"en"	"\n-Gain 30％ more melee damage\n-Gain +4 HP on kill\n-Gain +100 HP\n-Gain +5％ melee resistance with melee equipped"
 		"fr"	"+30％ dégats corps-à-corps, +4 santé par victime, +100 santé,\n+5％ résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"На 30％ больше урона в ближнем бою, +4 ед. здоровья при убийстве и +100 ед. здоровья, +5％ сопр. ближнему бою при использ. оружия ближнего боя"
+		///"ru"	"На 30％ больше урона в ближнем бою, +4 ед. здоровья при убийстве и +100 ед. здоровья, +5％ сопр. ближнему бою при использ. оружия ближнего боя"
 		"chi"   "增加30％的近战伤害，杀敌后+4点生命，生命值提升100点，使用近战武器时+5％的近战抗性"
 		"it"	"30％ danni in mischia in più, +4 HP su uccisione e +100 HP, +5％ resistenza in mischia con equipaggiamento da mischia"
 		"ko"	"-근접 무기 피해량 +30％\n-처치시 체력을 +4 회복\n-최대 체력 +100\n-근접 무기 장착 시 근접 피해 저항력 +5％."
@@ -1674,7 +1677,7 @@
 	{
 		"en"	"\n-Gain 50％ more melee damage\n-Gain +5 HP on kill\n-Gain +150 HP\n-Gain +3％ melee resistance with melee equipped"
 		"fr"	"+1.5x dégats corps-à-corps, +5 santé par victime, +150 santé,\n+3％ résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"1,5-кратное увеличение урона в ближнем бою, +5 ед. здоровья при убийстве и +150 ед. здоровья, +3％ сопр. ближнему бою при использ. оружия ближнего боя"
+		///"ru"	"1,5-кратное увеличение урона в ближнем бою, +5 ед. здоровья при убийстве и +150 ед. здоровья, +3％ сопр. ближнему бою при использ. оружия ближнего боя"
 		"chi"   "增加1.5倍的近战伤害，杀敌后+5点生命，生命值提升150点，使用近战武器时+5％的近战抗性"
 		"it"	"1.danno in mischia aumentato di 5 volte, +5 HP in caso di uccisione e +150 HP, +3％ resistenza in mischia con equipaggiamento da mischia"
 		"ko"	"-근접 무기 피해량 +50％\n-처치시 체력을 +5 회복\n-최대 체력 +150\n-근접 무기 장착 시 근접 피해 저항력 +3％."
@@ -1684,7 +1687,7 @@
 	{
 		"en"	"\n-Gain 50％ more melee damage\n-Gain +8 HP on kill\n-Gain +150 HP\n-Gain +3％ melee resistance with melee equipped"
 		"fr"	"+1.5x dégats corps-à-corps, +8 santé par victime, +150 santé,\n+3％ résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"1,5-кратное увеличение урона в ближнем бою, +8 ед. здоровья при убийстве и +150 ед. здоровья, +3％ сопр. ближнему бою при использ. оружия ближнего боя"
+		///"ru"	"1,5-кратное увеличение урона в ближнем бою, +8 ед. здоровья при убийстве и +150 ед. здоровья, +3％ сопр. ближнему бою при использ. оружия ближнего боя"
 		"chi"   "增加30％的近战伤害，杀敌后+8点生命，生命值提升150点，使用近战武器时+5％的近战抗性"
 		"it"	"1.danno in mischia aumentato di 5 volte, +8 HP in caso di uccisione e +150 HP, +3％ resistenza in mischia con equipaggiamento da mischia"
 		"ko"	"-근접 무기 피해량 +50％\n-처치시 체력을 +8 회복\n-최대 체력 +150\n-근접 무기 장착 시 근접 피해 저항력 +3％."
@@ -1694,7 +1697,7 @@
 	{
 		"en"	"\n-Gain 50％ more melee damage\n-Gain +12 HP on kill\n-Gain +250 HP\n-Gain +5％ melee resistance with melee equipped"
 		"fr"	"+1.5x dégats corps-à-corps, +12 santé par victime, +250 santé,\n+5％ résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"1,5-кратное увеличение урона в ближнем бою, +12 ед. здоровья при убийстве и +250 ед. здоровья, +5％ сопр. ближнему бою при использ. оружия ближнего боя"
+		///"ru"	"1,5-кратное увеличение урона в ближнем бою, +12 ед. здоровья при убийстве и +250 ед. здоровья, +5％ сопр. ближнему бою при использ. оружия ближнего боя"
 		"chi"   "增加1.5倍的近战伤害，杀敌后+12点生命，生命值提升250点，使用近战武器时+5％的近战抗性"
 		"it"	"1.danno in mischia aumentato di 5 volte, +12 HP in caso di uccisione e +250 HP, +5％ resistenza in mischia con equipaggiamento da mischia"
 		"ko"	"-근접 무기 피해량 +50％\n-처치시 체력을 +12 회복\n-최대 체력 +250\n-근접 무기 장착 시 근접 피해 저항력 +5％."
@@ -1704,7 +1707,7 @@
 	{
 		"en"	"\n-Gain 65％ more melee damage\n-Gain +22 HP on kill\n-Gain +600 HP\n-Gain +6％ melee resistance with melee equipped"
 		"fr"	"+1.65x dégats corps-à-corps, +22 santé par victime, +600 santé,\n+6％ résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"1,65x увеличение урона в ближнем бою, +22 ед. здоровья при убийстве и +600 ед. здоровья, +6％ сопр. ближнему бою при использ. оружия ближнего боя"
+		///"ru"	"1,65x увеличение урона в ближнем бою, +22 ед. здоровья при убийстве и +600 ед. здоровья, +6％ сопр. ближнему бою при использ. оружия ближнего боя"
 		"chi"   "增加1.65倍的近战伤害，杀敌后+22点生命，生命值提升600点，使用近战武器时+6％的近战抗性"
 		"it"	"1.danno in mischia aumentato di 65 volte, +22 HP su uccisione e +600 HP, +6％ resistenza in mischia con equipaggiamento in mischia"
 		"ko"	"근접 무기 피해량 +65％\n-처치시 체력을 +22 회복\n-최대 체력 +600\n-근접 무기 장착 시 근접 피해 저항력 +6％."
@@ -1713,7 +1716,7 @@
 	{
 		"en"	"\n-Gain 65％ more melee damage\n-Gain +22 HP on kill\n-Gain +600 HP\n-Gain +6％ melee resistance with melee equipped"
 		"fr"	"+1.65x dégats corps-à-corps, +22 santé par victime, +600 santé,\n+6％ résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"1,65x увеличение урона в ближнем бою, +22 ед. здоровья при убийстве и +600 ед. здоровья, +6％ сопр. ближнему бою при использ. оружия ближнего боя"
+		///"ru"	"1,65x увеличение урона в ближнем бою, +22 ед. здоровья при убийстве и +600 ед. здоровья, +6％ сопр. ближнему бою при использ. оружия ближнего боя"
 		"chi"   "增加1.65倍的近战伤害，杀敌后+22点生命，生命值提升600点，使用近战武器时+6％的近战抗性"
 		"it"	"1.danno in mischia aumentato di 65 volte, +22 HP su uccisione e +600 HP, +6％ resistenza in mischia con equipaggiamento in mischia"
 		"ko"	"근접 무기 피해량 +65％\n-처치시 체력을 +22 회복\n-최대 체력 +600\n-근접 무기 장착 시 근접 피해 저항력 +6％."
@@ -1723,7 +1726,7 @@
 	{
 		"en"	"-2x more repair Rate"
 		"fr"	"2x vitesse de réparation"
-		"ru"	"На 2x выше скорость починки."
+		///"ru"	"На 2x выше скорость починки."
 		"chi"   "修复建筑生命值提高2x"
 		"it"	"tasso di riparazione 2 volte superiore"
 		"ko"	"-수리 효율 +2배"
@@ -1789,7 +1792,7 @@
 	{
 		"en"	"-Gain 2.5x builder damage"
 		"fr"	"+2.5x dégats par votre mitrailleuse"
-		"ru"	"2,5-кратный урон турели."
+		///"ru"	"2,5-кратный урон турели."
 		"chi"   "增加2.5倍哨兵伤害"
 		"it"	"2.5x danni alla sentinella"
 		"ko"	"-센트리 피해량 +2.5배"
@@ -1799,7 +1802,7 @@
 	{
 		"en"	"-Gain 10％ more accuracy\n-Gain 20％ faster projectile speed"
 		"fr"	"10％ moins de déviation, +20％ vitesse des projectiles"
-		"ru"	"На 10％ выше точность и на 20％ выше скорость снаряда."
+		///"ru"	"На 10％ выше точность и на 20％ выше скорость снаряда."
 		"chi"   "射击精度提高10％、射速提高20％"
 		"it"	"10％ più precisione e 20％ più velocità del proiettile"
 		"ko"	"-집탄율 +10％\n-투사체 비행 속도 +20％"
@@ -1809,7 +1812,7 @@
 	{
 		"en"	"-Gain 50％ increased Weapon Damage"
 		"fr"	"+50％ dégats"
-		"ru"	"Увеличение урона от оружия на 50％"
+		///"ru"	"Увеличение урона от оружия на 50％"
 		"chi"   "提升50％武器伤害"
 		"it"	"50％ aumento del danno da armamento"
 		"ko"	"-원거리 무기 피해량 +50％"
@@ -1826,7 +1829,7 @@
 	{
 		"en"	"-Gain 60％ increased Weapon Damage"
 		"fr"	"+60％ dégats"
-		"ru"	"Увеличение урона от оружия на 60％"
+		///"ru"	"Увеличение урона от оружия на 60％"
 		"chi"   "提升60％武器伤害"
 		"it"	"60％ aumento del danno delle armi"
 		"ko"	"-원거리 무기 피해량 +60％"
@@ -1836,7 +1839,7 @@
 	{
 		"en"	"-Gain 60％ increased Weapon Damage"
 		"fr"	"+60％ dégats"
-		"ru"	"Увеличение урона от оружия на 60％"
+		///"ru"	"Увеличение урона от оружия на 60％"
 		"chi"   "提升60％武器伤害"
 		"it"	"60％ aumento del danno delle armi"
 		"ko"	"-원거리 무기 피해량 +60％"
@@ -1846,7 +1849,7 @@
 	{
 		"en"	"-Gain 65％ increased Weapon Damage"
 		"fr"	"+65％ dégats"
-		"ru"	"Увеличение урона от оружия на 65％"
+		///"ru"	"Увеличение урона от оружия на 65％"
 		"chi"   "提升65％武器伤害"
 		"it"	"65％ aumento del danno delle armi"
 		"ko"	"-원거리 무기 피해량 +65％"
@@ -1856,7 +1859,7 @@
 	{
 		"en"	"-Gain 25％ Faster Mage Fire Speed\n-Gain 50％ Mana Regen and Max Mana\n-Gain 7％ more mage damage."
 		"fr"	"+25％ cadence des attaques magiques, +50％ Mana maximum et regénération Mana"
-		"ru"	"На 25％ быстрее скорость огненной магии и на 50％ восстановления маны и максимальной маны"
+		///"ru"	"На 25％ быстрее скорость огненной магии и на 50％ восстановления маны и максимальной маны"
 		"chi"   "提升25％法杖攻速，50％的法力回复和最大法力值"
 		"it"	"25％ Velocità del fuoco del mago più veloce e 50％ Rigenerazione del mana e mana massimo, 7％ danni del mago in più."
 		"ko"	"-마법 공격 속도 +25％\n-최대 마나와 마나 재생량 +50％\n-마법 무기 피해량 +7％"
@@ -1866,7 +1869,7 @@
 	{
 		"en"	"-Gain 50％ More Mage Damage"
 		"fr"	"+50％ dégats magiques"
-		"ru"	"На 50％ больше урона от магии."
+		///"ru"	"На 50％ больше урона от магии."
 		"chi"   "提升50％法术伤害"
 		"it"	"50％ Più danni da mago"
 		"ko"	"-마법 무기 피해량 +50％"
@@ -1883,7 +1886,7 @@
 	{
 		"en"	"-Gain 60％ More Mage Damage"
 		"fr"	"+60％ dégats magiques"
-		"ru"	"На 60％ больше урона от магии."
+		///"ru"	"На 60％ больше урона от магии."
 		"chi"   "提升60％法术伤害"
 		"it"	"60％ Più danni da mago"
 		"ko"	"-마법 무기 피해량 +60％"
@@ -1900,7 +1903,7 @@
 	{
 		"en"	"-Gain 65％ More Mage Damage"
 		"fr"	"+65％ dégats magiques"
-		"ru"	"На 65％ больше урона от магии."
+		///"ru"	"На 65％ больше урона от магии."
 		"chi"   "提升65％法术伤害"
 		"it"	"65％ Più danni da mago"
 		"ko"	"-마법 무기 피해량 +65％"
@@ -1910,7 +1913,7 @@
 	{
 		"en"	"-Gain 70％ More Mage Damage"
 		"fr"	"+70％ dégats magiques"
-		"ru"	"На 70％ больше урона от магии."
+		///"ru"	"На 70％ больше урона от магии."
 		"chi"   "提升70％法术伤害"
 		"it"	"70％ Più danni da mago"
 		"ko"	"-마법 무기 피해량 +70％"
@@ -1965,7 +1968,7 @@
 	{
 		"en"	"-Gain +1500 HP"
 		"fr"	"+1500 santé"
-		"ru"	"+1500 ед. здоровья."
+		///"ru"	"+1500 ед. здоровья."
 		"chi"   "+1500生命值"
 		"it"	"+1500 HP"
 		"ko"	"-최대 체력 +1500"
@@ -2021,7 +2024,7 @@
 	{
 		"en"	"-You attack 15％ slower but the lower your health is, the faster you attack, up to 25％ faster\n-Doesn't work with last man alive."
 		"fr"	"-15％ cadence des attaques, cadence des attaques améliore en fonction de santé perdu, jusqu'a +25％."
-		"ru"	"Вы атакуете на 15％ медл., но чем меньше у вас здор., тем быстрее вы атакуете, до 25％ быстрее, не работает, если вы посл. выживший."
+		///"ru"	"Вы атакуете на 15％ медл., но чем меньше у вас здор., тем быстрее вы атакуете, до 25％ быстрее, не работает, если вы посл. выживший."
 		"chi"   "你的攻击速度会慢15％，但是你的血量越低，你的攻击速度就越快\n最快25%，对最后一个活着的人不起作用。"
 		"it"	"Si attacca 15％ più lentamente, ma più la salute è bassa, più si attacca velocemente, fino a 25％ più velocemente, non funziona con l'ultimo uomo vivo."
 		"ko"	"-공격 속도 -15％\n-체력이 낮을 수록 공격 속도가 최대 25％까지 증가\n-최후의 1인일 경우 이 효과가 발동하지 않음"
@@ -2032,7 +2035,7 @@
 	{
 		"en"	"-Gain 15％ more health to buildings\n-15 flat less health\n-5％ less movement speed"
 		"fr"	"+15％ durabilité de vos constructions. -15 santé, -5％ vitesse."
-		"ru"	"На 15％ больше здоровья постройкам, но на 15 меньше здоровья себе и на 5％ меньше скорости передвижения"
+		///"ru"	"На 15％ больше здоровья постройкам, но на 15 меньше здоровья себе и на 5％ меньше скорости передвижения"
 		"chi"   "建筑血量增加15％，但你的生命值减少15，移动速度减少5％"
 		"it"	"15％ salute in più alle strutture, ma 15 salute in meno e 5％ velocità di movimento in meno"
 		"ko"	"-구조물 체력 +15％\n-최대 체력 -15\n-이동 속도 -5％"
@@ -2047,7 +2050,7 @@
 	{
 		"en"	"-Gain 2.0x Builder damage\n-2.3x slower builder attackspeed\n-Gain 2x range for sentry guns and alike"
 		"fr"	"2x dégats et portée, 2.3x cadence de tir plus lente pour vos mitrailleuses"
-		"ru"	"Двойной урон, 2,3-кратное замедление скорости атаки, двукратная дальность для всех турелей"
+		///"ru"	"Двойной урон, 2,3-кратное замедление скорости атаки, двукратная дальность для всех турелей"
 		"chi"   "伤害加倍，但攻击速度降低2.3倍，哨兵的射程增加2倍"
 		"it"	"Danno doppio, velocità d'attacco 2,3 volte più lenta, gittata 2x per i cannoni sentinella e simili"
 		"ko"	"-센트리 건 피해량, 사거리 +2배\n-센트리 건 공격 속도 -2.3배"
@@ -2057,7 +2060,7 @@
 	{
 		"en"	"-10％ less damage\n-Gain 1.4x Attack speed\n-0.5x range for sentry guns and alike"
 		"fr"	"-10％ dégats, 0.5x portée, 1.4x cadence de tir pour vos mitrailleuses"
-		"ru"	"На 10％ меньше урона, 1,4-кратная скорость атаки, 0,5-кратная дальность стрельбы для всех турелей"
+		///"ru"	"На 10％ меньше урона, 1,4-кратная скорость атаки, 0,5-кратная дальность стрельбы для всех турелей"
 		"chi"   "伤害减少10％，但攻击速度提高1.4倍，哨兵的射程增加0.5倍"
 		"it"	"10％ danni in meno, 1,4 volte la velocità d'attacco, 0,5 volte la gittata per le sentinelle e simili"
 		"ko"	"-센트리 건 공격 속도 +1.4배\n-센트리 건 사거리가 -0.5배\n-센트리 건 피해량 -10％"
@@ -2067,7 +2070,7 @@
 	{
 		"en"	"-Gain 30％ more building damage\n-75％ less building HP\n-only have 1 support buidling/cant build more/claim more.\n-Also works with Barraks, gives units 15％ more damage."
 		"fr"	"2x dégats, -75％ durabilité pour vos constructions. +15％ dégats pour les unités de vos casernes.\nPeut seulement avoir 1 espace pour construction de support."
-		"ru"	"На 30％ больше урона у построек, на 75％ меньше ОЗ у построек, можно иметь только 1 здание поддержки/можно строить больше/забрать больше.\nДаёт боевым единицам из казарм на 15％ больше урона."
+		///"ru"	"На 30％ больше урона у построек, на 75％ меньше ОЗ у построек, можно иметь только 1 здание поддержки/можно строить больше/забрать больше.\nДаёт боевым единицам из казарм на 15％ больше урона."
 		"chi"	"+30％建筑伤害，-75％建筑血量，辅助建筑上限限制为1\n兵营获得+15％伤害。"
 		"it"	"30％ danni da costruzione in più, 75％ HP da costruzione in meno, può avere solo 1 edificio di supporto/ non può costruire di più/ reclamare di più.\nFunziona anche con le costruzioni da supporto, dà alle unità 15％ danni in più."
 		"ko"	"-구조물 피해량 +30％\n-구조물 체력 -75％\n-지원 구조물의 최대 상한이 1개로 고정\n-배럭 유닛 피해량 +15％"
@@ -2077,7 +2080,7 @@
 	{
 		"en"	"-Gain 15％ more Weapon damage\n-15％ less firerate"
 		"fr"	"+15％ dégats, -15％ cadence de tir"
-		"ru"	"На 15％ больше урон от оружия, но на 15％ меньше скорострельность"
+		///"ru"	"На 15％ больше урон от оружия, но на 15％ меньше скорострельность"
 		"chi"   "武器伤害提高15％，但射速降低15％"
 		"it"	"15％ in più di danno da arma, ma 15％ in meno di potenza di fuoco"
 		"ko"	"-무기 피해량 +15％\n-공격 속도 -15％"
@@ -2109,7 +2112,7 @@
 	{
 		"en"	"-Gain 25％ more max mana and mana regen\n-Lose -100 HP"
 		"fr"	"+25％ Mana maximum et regénération de Mana, -100 santé"
-		"ru"	"На 25％ больше максимальной маны и регенерации маны, но у вас на 100 меньше ед. здоровья"
+		///"ru"	"На 25％ больше максимальной маны и регенерации маны, но у вас на 100 меньше ед. здоровья"
 		"chi"   "增加25％的最大法力值和法力回复，生命值-100 "
 		"it"	"25％ più mana massimo e rigenerazione del mana, ma avrai 100 HP in meno"
 		"ko"	"-최대 마나, 마나 재생량 +25％\n-최대 체력 -100"
@@ -2143,7 +2146,7 @@
 	{
 		"en"	"-10％ slower movementspeed\n-Gain +200 health"
 		"fr"	"-10％ vitesse, +200 santé"
-		"ru"	"Скорость передвижения на 10％ ниже, но +200 здоровья"
+		///"ru"	"Скорость передвижения на 10％ ниже, но +200 здоровья"
 		"chi"   "移动速度降低10％，但生命值增加200"
 		"it"	"10％ velocità di movimento più lenta, ma +200 salute"
 		"ko"	"-최대 체력 +200\n-이동 속도 -10％"
@@ -2153,7 +2156,7 @@
 	{
 		"en"	"-take 5％ less damage overall\n-100 health."
 		"fr"	"+5％ résistance, -100 santé"
-		"ru"	"Вы получаете на 5％ меньше общего урона, но имеете -100 здоровья."
+		///"ru"	"Вы получаете на 5％ меньше общего урона, но имеете -100 здоровья."
 		"chi"   "你受到的伤害减少5％，但生命值-100。"
 		"it"	"Subisci 5％ danni in meno in generale, ma hai -100 salute."
 		"ko"	"-모든 피해 저항력 +5％\n-최대 체력 -100"
@@ -2163,7 +2166,7 @@
 	{
 		"en"	"-Take 10％ less fall damage"
 		"fr"	"-10％ dégats pour tomber!"
-		"ru"	"Получайте на 10％ меньше урона при падении!"
+		///"ru"	"Получайте на 10％ меньше урона при падении!"
 		"chi"   "减少10％的掉落伤害!"
 		"it"	"Subisce 10％ danni da caduta in meno!"
 		"ko"	"-받는 낙하 피해량 -10％"
@@ -2173,7 +2176,7 @@
 	{
 		"en"	"-Take half the Knockback\n-can be an upside or downside."
 		"fr"	"Prenez la moitié du recul infligé sur vous. Peut être bon ou mauvais..."
-		"ru"	"Получение половины от силы отбрасывания может быть как плюсом, так И минусом..."
+		///"ru"	"Получение половины от силы отбрасывания может быть как плюсом, так И минусом..."
 		"chi"   "受到的击退效果-50％\n可能是好处，可以是坏处..."
 		"it"	"Prendere metà del Knockback, può essere un vantaggio o uno svantaggio..."
 		"ko"	"-받는 넉백량 -50％\n-장점이 될 수도, 단점이 될 수도 있습니다..."
@@ -2182,7 +2185,7 @@
 	{
 		"en"	"You went far enough to deserve this gun for free at the start.\n-infinite, really shitty pistol\n-Can be papped to be godly."
 		"fr"	"Vous avez fait bien assez pour pouvoir utiliser ceci gratuitement. C'est un peu moche, mais ça fonctionne. (lol)"
-		"ru"	"Вы зашли достаточно далеко, чтобы заслужить этот пистолет бесплатно в самом начале. Он немного хуже, чем остальные, но сойдёт. (лол)"
+		///"ru"	"Вы зашли достаточно далеко, чтобы заслужить этот пистолет бесплатно в самом начале. Он немного хуже, чем остальные, но сойдёт. (лол)"
 		"chi"   "你做的很好了，奖励你这把枪。虽然很废物，但他的确是免费的。（憋"
 		"it"	"Sei andato abbastanza lontano da meritare questa pistola gratis all'inizio.\nÈ un po' peggiore delle altre, ma andrà bene. (lol)"
 		"ko"	"당신은 시작부터 이 총을 받을 자격이 있으십니다.\n-무한 탄창, 최저성능의 권총\n-막대한 성능의 무기로 강화될 수 있음"
@@ -2278,7 +2281,7 @@
 	{
 		"en"	"-AOE, gravity obeying projectiles\n-Causes bleedon hit.\n-Reduced pierce for AOE.\n-M2 throws a secondary potion with it's own attack delay."
 		"fr"	"Lancez des potions qui font la plupart des dégats par le saignement.\nPeut frapper jusqu'a 5 cibles, et ignore la plupart des résistances.\nAppuyez sur M2 pour lancer une potion secondaire, avec rechargement."
-		"ru"	"Бросает зелья, которые наносят половину урона, а остальной урон наносит кровотечение.\nСпособно поразить 5 целей по области и игнорирует большинство сопротивлений урону.\nM2 бросает доп. зелье с задержкой атаки."
+		///"ru"	"Бросает зелья, которые наносят половину урона, а остальной урон наносит кровотечение.\nСпособно поразить 5 целей по области и игнорирует большинство сопротивлений урону.\nM2 бросает доп. зелье с задержкой атаки."
 		"chi"   "投掷药水，造成一半的伤害，其余的造成流血伤害。\n能够在溅射中击中5个目标，并且忽略大多数伤害抗性。\nM2投掷二次药水与它自己的攻击延迟"
 		"it"	"Lancia pozioni che infliggono metà del danno e il resto lo infliggono per dissanguamento.\nPuò colpire 5 bersagli nel suo schizzo.\nM2 lancia una pozione secondaria con un proprio ritardo d'attacco."
 		"ko"	"-광역 피해를 입히는 중력의 영향을 받는 투사체 사용\n-적중시 출혈 부여\n-M2로도 포션을 투척할 수 있으며, 개별적인 쿨타임이 적용"
@@ -2287,7 +2290,7 @@
 	{
 		"en"	"-Increased Damage\n-M2 now allows you to thorw a buffing potion at an ally.\n-Non buffed players have an arrow above them."
 		"fr"	"La potion secondaire donne aux coéquipiers un bonus de cadence des attaques pour une courte durée."
-		"ru"	"M2 теперь позволяет бросить союзнику зелье усиления для выбранного оружия, дающее бонус к скорости атаки на время действия."
+		///"ru"	"M2 теперь позволяет бросить союзнику зелье усиления для выбранного оружия, дающее бонус к скорости атаки на время действия."
 		"chi"   "M2现在允许向盟友投掷当前有效的武器强化药水，并在持续时间内获得攻速加成。"
 		"it"	"Aumento dei danni\nM2 ora permette di spingere una pozione di potenziamento verso un alleato.\nI giocatori non potenziati hanno una freccia sopra di loro."
 		"ko"	"-피해량 증가\n-M2 능력으로 아군에게 버프를 부여하는 포션을 던질 수 있음\n-버프가 없는 플레이어들은 머리 위의 화살표로 표시됨"
@@ -2296,7 +2299,7 @@
 	{
 		"en"	"-Increased Damage\n-Able to apply an explosive coat over an enemy which causes an explosion if killed." //still works with terorriser, just unneeded to list. let them figure it out.
 		"fr"	"La potion secondaire applique une substance explosive sur les ennemis, causant une explosion quand ils sont tués.\nFonctionne en concert avec le Fusil Implanteur de Bombes Terroriseurs!"
-		"ru"	"Возможность нанести на врага взрывное покрытие, которое при убийстве вызывает взрыв.\nРаботает с винтовкой террориста!"
+		///"ru"	"Возможность нанести на врага взрывное покрытие, которое при убийстве вызывает взрыв.\nРаботает с винтовкой террориста!"
 		"chi"   "能够在敌人身上涂上一层爆炸衣，如果杀死敌人就会引起爆炸。与恐怖步枪一起工作!"
 		"it"	"Danni aumentati\nIn grado di applicare un rivestimento esplosivo su un nemico che provoca un'esplosione se ucciso."
 		"ko"	"-피해량 증가\n-폭발 코팅을 부여하며, 해당 대상 처치시 폭발합니다."
@@ -2310,7 +2313,7 @@
 	{
 		"en"	"-Increased Damage\n-Buffing potions last longer."
 		"fr"	"Effet de la potion dure pour plus longtemps. Plusieurs alliés peuvent être affectés en même temps."
-		"ru"	"Зелья с усилениями действуют дольше и могут усилить сразу несколько союзников с им выбранным оружием."
+		///"ru"	"Зелья с усилениями действуют дольше и могут усилить сразу несколько союзников с им выбранным оружием."
 		"chi"   "buff药水持续时间更长，并且可以同时buff多个盟友当前的有效武器。"
 		"it"	"Aumento del danno Le pozioni di potenziamento durano più a lungo e sono in grado di potenziare l'arma attiva di più alleati contemporaneamente."
 		"ko"	"-피해량 증가\n-버프 포션의 지속 시간 증가"
@@ -2332,7 +2335,7 @@
 	{
 		"en"	"-Increased Damage\n-M2 will now Increased your fire rate heavily but lower your damage and prevent mana gain for the duration."
 		"fr"	"M2 accélère la cadence des attaques, mais réduit vos dégats et arrête la regénération de Mana pour une courte période."
-		"ru"	"M2 теперь сильно повышает вашу скорострельность, но снижает урон и препятствует получению маны на время действия."
+		///"ru"	"M2 теперь сильно повышает вашу скорострельность, но снижает урон и препятствует получению маны на время действия."
 		"chi"   "M2现在会大大提高你的射速，但会降低你的伤害，并在持续时间内阻止你获得法力值。"
 		"it"	"Aumento del Danno\nM2 ora aumenterà pesantemente la velocità di fuoco, ma diminuirà il danno e impedirà il guadagno di mana per tutta la durata."
 		"ko"	"-피해량 증가\n-M2 능력 사용시 공격 속도 대폭 증가, 대신 능력 지속 시간 동안 피해량이 감소하고 마나 재생이 되지 않음"
@@ -2341,7 +2344,7 @@
 	{
 		"en"	"-Increased Damage\n-Coated enemies now take extra damage from all sources for a few seconds."
 		"fr"	"Les ennemis couverts prennent plus de dégats pour quelques secondes."
-		"ru"	"Враги с покрытием теперь получают дополнительный урон от всех источников в течение нескольких секунд."
+		///"ru"	"Враги с покрытием теперь получают дополнительный урон от всех источников в течение нескольких секунд."
 		"chi"   "被涂层的敌人现在会在几秒钟内受到来自所有来源的额外伤害。"
 		"it"	"Aumento del danno I nemici rivestiti ora subiscono danni extra da tutte le fonti per alcuni secondi."
 		"ko"	"-피해량 증가\n-포션의 코팅 효과를 받은 적들이 받는 모든 피해가 일정 시간 동안 증가"
@@ -2356,7 +2359,7 @@
 	{
 		"en"	"-Increased Damage\n-M2 now affects some nearby allies, granting increased fire rate but lower damage."
 		"fr"	"La potion secondaire donne aux coéquipiers un bonus de cadence des attaques, mais réduit leus dégats, pour une courte durée."
-		"ru"	"M2 теперь действует на некоторых ближайших союзников, увеличивая скорострельность, но снижая урон."
+		///"ru"	"M2 теперь действует на некоторых ближайших союзников, увеличивая скорострельность, но снижая урон."
 		"chi"   "M2现在影响附近的一些盟友，增加射速，但降低伤害。"
 		"it"	"Danno aumentato\nM2 ora colpisce alcuni alleati vicini, garantendo un aumento della cadenza di fuoco ma un danno inferiore."
 		"ko"	"-피해량 증가\n-M2 능력이 근처 아군에게도 영향을 주며, 공격 속도가 크게 증가하지만 피해량이 감소"
@@ -2372,7 +2375,7 @@
 	{
 		"en"	"-Heals an ally for a bit and gives them the medigun buff for 15 seconds and yourself for 5 seconds.\n-Buff works on full HP targets."
 		"fr"	"Soigne les alliés, leur donnant un Buff de 15 secondes, et donnant à vous un Buff pour 5 secondes.\nLe Buff fonctionne même sur les alliés ayant pas besoin de soins."
-		"ru"	"Немного лечит союзника и накладывает на него эфф. лечебной пушки на 15 секунд, а на себя - на 5 секунд.\nЭффект действует на цели с полным ОЗ."
+		///"ru"	"Немного лечит союзника и накладывает на него эфф. лечебной пушки на 15 секунд, а на себя - на 5 секунд.\nЭффект действует на цели с полным ОЗ."
 		"chi"   "稍微治疗队友，并给予他们15秒和你自己5秒的医疗buff。\nBuff适用于满HP目标。"
 		"it"	"Cura un alleato per un po' e gli conferisce il buff di Medigun per 15 secondi e a te stesso per 5 secondi.\nIl buff funziona solo su bersagli con salute al massimo"
 		"ko"	"-아군 1명을 치료하고, 15초 동안 지속되는 메디건 버프를 부여함과 동시에 자신에게 5초간 메디건 버프 부여\n-버프는 체력이 최대인 대상에게만 적용됨."
@@ -2410,7 +2413,7 @@
 	{
 		"en"	"Standard melee unit. Very disposable. Works better when grouped up with more Militia."
 		"fr"	"Unité de mêlée standard. Très jetable. Fonctionne mieux lorsqu'il est regroupé avec plus de milice."
-		"ru"	"Стандартный юнит ближнего боя. Очень одноразовый. Работает лучше, когда объединено с большим количеством ополченцев."
+		///"ru"	"Стандартный юнит ближнего боя. Очень одноразовый. Работает лучше, когда объединено с большим количеством ополченцев."
 		"chi"   "标准近战单位。非常一次性。与更多民兵组合时效果更好。"
 		"it"	"Unità standard da mischia. Molto usa e getta. Funziona meglio se raggruppata con altri Miliziani."
 		"ko"	"표준적인 근접 유닛입니다. 거의 1회용입니다. 더 많은 시민군 물량과 합류하면 그나마 잘 싸울 수 있습니다."
@@ -2419,7 +2422,7 @@
 	{
 		"en"	"Standard ranged unit. Will keep distance away from threat. Does more damage but attacks slower."
 		"fr"	"Unité à distance standard. Gardera ses distances avec la menace. Fait plus de dégâts mais attaque plus lentement."
-		"ru"	"Стандартный юнит дальнего боя. Будет держаться на расстоянии от угрозы. Наносит больше урона, но атакует медленнее."
+		///"ru"	"Стандартный юнит дальнего боя. Будет держаться на расстоянии от угрозы. Наносит больше урона, но атакует медленнее."
 		"chi"   "标准远程单位。会与威胁保持距离。伤害更高，但攻击速度更慢。"
 		"it"	"Unità a distanza standard. Si tiene a distanza dalla minaccia. Fa più danni ma attacca più lentamente."
 		"ko"	"표준적인 원거리 유닛입니다. 항상 공격 대상에게서 거리를 두려고 합니다. 높은 피해를 주지만, 공격 속도가 느립니다."
@@ -2428,7 +2431,7 @@
 	{
 		"en"	"Direct upgrade to Militia. More health and damage."
 		"fr"	"Mise à niveau directe vers Milice. Plus de santé et de dégâts."
-		"ru"	"Прямое обновление до Милиции. Больше здоровья и урона."
+		///"ru"	"Прямое обновление до Милиции. Больше здоровья и урона."
 		"chi"   "直接升级为民兵。更多的健康和伤害。"
 		"it"	"Aggiornamento diretto alla Milizia. Più salute e danni."
 		"ko"	"시민군의 상위 유닛입니다. 체력과 공격력이 증가했습니다."
@@ -2437,7 +2440,7 @@
 	{
 		"en"	"Upgrade to Archers. Fires slower but does more damage from further away."
 		"fr"	"Passez aux archers. Tire plus lentement mais fait plus de dégâts à distance."
-		"ru"	"Обновитесь до лучников. Стреляет медленнее, но наносит больше урона с большего расстояния."
+		///"ru"	"Обновитесь до лучников. Стреляет медленнее, но наносит больше урона с большего расстояния."
 		"chi"   "升级为弓箭手。发射速度较慢，但​​距离较远时造成的伤害更大。"
 		"it"	"Aggiornamento per gli arcieri. Spara più lentamente, ma produce più danni da lontano."
 		"ko"	"궁사의 상위 유닛입니다. 공격 속도가 더 느려졌지만, 공격력과 사거리가 증가했습니다."
@@ -2446,7 +2449,7 @@
 	{
 		"en"	"Upgraded Man-At-Arms. Secret tip - If your unit dies whilst another one is training on full supply, it will spawn in instantly. :)"
 		"fr"	"Homme d'armes amélioré. Astuce secrète - Si votre unité meurt pendant qu'une autre s'entraîne avec un ravitaillement complet, elle apparaîtra instantanément. :)"
-		"ru"	"Модернизированный боец. Секретный совет: если ваш отряд погибнет, пока другой тренируется с полным запасом, он мгновенно появится. :)"
+		///"ru"	"Модернизированный боец. Секретный совет: если ваш отряд погибнет, пока другой тренируется с полным запасом, он мгновенно появится. :)"
 		"chi"   "升级版的武装人员。秘密提示 - 如果你的单位死亡，而另一个单位正在全力训练，它会立即产卵。 :)"
 		"it"	"Uomo-arma potenziato. Suggerimento segreto: se la vostra unità muore mentre un'altra si sta allenando a pieno regime, si riprodurrà all'istante. :)"
 		"ko"	"무장 병사의 상위 유닛입니다. 숨겨진 팁 : 유닛 최대 상한에 도달한 상황에서 유닛 생산을 하면, 전장의 다른 유닛이 사망했을시 배럭 대기열의 유닛 하나가 즉시 생산됩니다. c:"
@@ -2455,7 +2458,7 @@
 	{
 		"en"	"Upgraded Crossbow Man. You can press R on them to hold position behind barricades so they shoot out of harm's way. But you didn't hear it from me!"
 		"fr"	"Arbalétrier amélioré. Vous pouvez appuyer sur R sur eux pour rester derrière les barricades afin qu'ils tirent hors de danger. Mais je ne vous l'ai pas entendu !"
-		"ru"	"Улучшенный арбалетчик. Вы можете нажать R на них, чтобы удерживать позицию за баррикадами и стрелять подальше от опасности. Но вы этого не от меня услышали!"
+		///"ru"	"Улучшенный арбалетчик. Вы можете нажать R на них, чтобы удерживать позицию за баррикадами и стрелять подальше от опасности. Но вы этого не от меня услышали!"
 		"chi"   "升级版弩人。你可以按 R 键让他们保持在路障后面的位置，这样他们就可以避开伤害。但你没有听到我的声音！"
 		"it"	"Uomo balestra potenziato. Potete premere R su di loro per mantenere la posizione dietro le barricate in modo che sparino lontano dal pericolo. Ma non l'avete saputo da me!"
 		"ko"	"석궁병의 상위 유닛입니다. 유닛에게 T키를 눌러 바리케이드 뒤쪽으로 위치를 유지하는 명령을 내릴 수 있습니다."
@@ -2464,7 +2467,7 @@
 	{
 		"en"	"Upgraded Long Swordsman. They become quite resilient."
 		"fr"	"Épéiste long amélioré. Ils deviennent assez résistants."
-		"ru"	"Улучшенный Длинный Мечник. Они становятся достаточно выносливыми."
+		///"ru"	"Улучшенный Длинный Мечник. Они становятся достаточно выносливыми."
 		"chi"   "升级版长剑士。他们变得非常有弹性。"
 		"it"	"Spadaccino lungo potenziato. Diventano piuttosto resistenti."
 		"ko"	"장검병의 상위 유닛입니다. 회복력이 매우 뛰어납니다."
@@ -2473,7 +2476,7 @@
 	{
 		"en"	"Upgrade to Arbalests. Attacks a lot slower but hits a lot harder."
 		"fr"	"Passez aux Arbalètes. Attaque beaucoup plus lentement mais frappe beaucoup plus fort."
-		"ru"	"Обновите до Арбалетов. Атакует намного медленнее, но бьет намного сильнее."
+		///"ru"	"Обновите до Арбалетов. Атакует намного медленнее, но бьет намного сильнее."
 		"chi"   "升级至强弩。攻击速度慢得多，但攻击力却大得多。"
 		"it"	"Aggiornamento ad Arbalest. Attacca molto più lentamente ma colpisce molto più forte."
 		"ko"	"아바레스트병의 상위 유닛입니다. 공격 속도가 더 느려진 대신 공격력이 더욱 증가했습니다."
@@ -2482,7 +2485,7 @@
 	{
 		"en"	"Final basic Ranged unit. They can run and fight effectively in the open."
 		"fr"	"Dernière unité de base à distance. Ils peuvent courir et se battre efficacement à découvert."
-		"ru"	"Последний базовый юнит дальнего боя. Они могут бегать и эффективно сражаться на открытом воздухе."
+		///"ru"	"Последний базовый юнит дальнего боя. Они могут бегать и эффективно сражаться на открытом воздухе."
 		"chi"   "最终的基本远程单位。他们可以在空旷的地方有效地奔跑和战斗。"
 		"it"	"Ultima unità di base a distanza. Possono correre e combattere efficacemente allo scoperto."
 		"ko"	"기본 원거리 유닛의 최상위 등급. 넓은 공간에서 달리면서 싸울 수 있습니다."
@@ -2491,7 +2494,7 @@
 	{
 		"en"	"Final basic Melee unit."
 		"fr"	"Dernière unité de base de mêlée."
-		"ru"	"Последний базовый юнит ближнего боя."
+		///"ru"	"Последний базовый юнит ближнего боя."
 		"chi"   "最终的基本近战单位。"
 		"it"	"Ultima unità di base da mischia."
 		"ko"	"기본 근접 유닛의 최상위 등급."
@@ -2530,7 +2533,7 @@
 	{
 		"en"	"Provides AOE damage around it but lacks self defense"
 		"fr"	"Peu de défense mais peut attaquer plusiers ennemis à la fois."
-		"ru"	"Наносит урон вокруг себя, но не имеет самозащиты"
+		///"ru"	"Наносит урон вокруг себя, но не имеет самозащиты"
 		"chi"   "在周围提供AOE伤害，但缺乏自我防御"
 		"it"	"Fornisce danni AOE intorno a sé, ma manca di autodifesa"
 		"ko"	"주변 범위 내의 모든 적에게 광역 피해를 주지만, 자가 방어 수단이 부족한 유닛입니다."
@@ -2539,7 +2542,7 @@
 	{
 		"en"	"Huge health elite. Can buff allies and players alike, with more damage."
 		"fr"	"Immense élite de la santé. Peut améliorer les alliés et les joueurs, avec plus de dégâts."
-		"ru"	"Огромная элита здравоохранения. Может усиливать как союзников, так и игроков, нанося больший урон."
+		///"ru"	"Огромная элита здравоохранения. Может усиливать как союзников, так и игроков, нанося больший урон."
 		"chi"   "庞大的健康精英。可以增强盟友和玩家的能力，造成更多伤害。"
 		"it"	"Un'enorme salute d'élite. Può buffare sia gli alleati che i giocatori, con un maggior numero di danni."
 		"ko"	"매우 높은 체력을 지닌 정예병입니다. 주변 아군에게 피해량 증가 버프를 부여합니다."
@@ -2569,7 +2572,7 @@
 	{
 		"en" 	"-Wherever you look, the drones fly\n-Going over 10 drones makes the wand go into overcharge meaning they do less damage, and are harder to control\n-M2: Fire several drones at once\n-R: Your drones noclip for 2.5 seconds"
 		"fr" 	"Les drones volent vers l'endroit ou vouz regardes.\nAppuyez M2 pour convoquer plusieurs drones à la fois.\nAppuyez sur R pour faire vos drones passer à travers le terrain pour 2.5 secones.\nDégats sont réduits si vous passez votre limite de surcharge de 10 drones."
-		"ru" 	"Куда бы вы ни посмотрели, туда полетят дроны\nПри превышении 10 дронов жезл перегружается, что означает, что они наносят меньше урона, и их труднее контролировать."
+		///"ru" 	"Куда бы вы ни посмотрели, туда полетят дроны\nПри превышении 10 дронов жезл перегружается, что означает, что они наносят меньше урона, и их труднее контролировать."
 		"chi"   "无论你往哪里看，无人机都在飞。超过10架无人机会让魔杖过度充电，这意味着它们造成的伤害更小，也更难控制"
 		"it"	"Ovunque si guardi, i droni volano\nNel caso in cui si superino i 10 droni, la bacchetta va in sovraccarico, il che significa che fanno meno danni e sono più difficili da controllare\nM2: Spara a più droni contemporaneamente\nR: i droni si bloccano per 2,5 secondi"
 		"ko" 	"-당신이 바라보고 있는 곳으로 드론이 날아감.\n-생성된 드론이 10개 이상이면 과충전되어, 피해량 감소 및 드론 제어가 어려워짐.\n-M2: 드론 여러개 발사\n-R: 드론이 2.5초 동안 노클립 상태가 됨"
@@ -2578,7 +2581,7 @@
 	{
 		"en"	"-Increased Damage\n-Increased Attackspeed\n-Drones can now penetrate more enemies\n-Less damage loss on overcharge"
 		"fr"	"Vos drones peuvent pénétrer plus d'ennemis.\nMoins de perte de dégats pour la surcharge."
-		"ru"	"Теперь ваши дроны могут пробивать больше врагов\nМеньше потери урона при перегрузке."
+		///"ru"	"Теперь ваши дроны могут пробивать больше врагов\nМеньше потери урона при перегрузке."
 		"chi"   "你的无人机现在可以穿透更多的敌人，但在过度充能时伤害损失更少"
 		"it"	"Aumento del danno I tuoi droni ora possono penetrare più nemici\nMeno perdita di danni in caso di sovraccarico"
 		"ko"	"-피해량, 공격 속도 증가\n-드론이 이제 더 많은 적을 관통합니다.\n-과충전 상태일때의 피해량 감소 페널티가 완화"
@@ -2593,7 +2596,7 @@
 	{
 		"en"	"-Attacks a third target\n-Damage Increased"
 		"fr"	"Frappe un troisième ennemi."
-		"ru"	"Атакует третью цель."
+		///"ru"	"Атакует третью цель."
 		"chi"   "可以同时攻击三个目标"
 		"it"	"Attacca un terzo bersaglio"
 		"ko"	"-한 번에 3명의 적을 타격할 수 있게 됨.\n-피해량 증가"
@@ -2608,7 +2611,7 @@
 	{
 		"en"	"-Grants the effect of the previous unbought upgrade"
 		"fr"	"Vous donne l'effet de l'amélioration que vous n'avez pas acheté aupravant."
-		"ru"	"Даёт эффект предыдущего некупленного улучшения."
+		///"ru"	"Даёт эффект предыдущего некупленного улучшения."
 		"chi"   "获得先前未购买升级的效果"
 		"it"	"Conferisce l'effetto del precedente aggiornamento non acquistato"
 		"ko"	"-이전에 구매하지 않았던 무기 개선 효과를 얻습니다."
@@ -2617,7 +2620,7 @@
 	{
 		"en"	"-Increased damage and gains the ability to self revive if enough damage is dealt\n-All ''Seaborn'' faction weapons gain +200 max health."
 		"fr"	"Dégats améliorés. Vous vous ressuscitera vous-même si vous avez infligé assez de dégats.\nTout porteur d'arme Chasseur des Abîmes reçoivent +200 santé maximum."
-		"ru"	"Увеличение урона и способность к самовозрождению при получении достаточного урона."
+		///"ru"	"Увеличение урона и способность к самовозрождению при получении достаточного урона."
 		"chi"   "增加伤害，造成足够伤害后可复活自己。\n所有''深海猎人''武器+200血量上限"
 		"it"	"Aumenta i danni e acquisisce la capacità di auto-rianimarsi se vengono inflitti danni sufficienti.\nTutte le armi della fazione Seaborn guadagnano +200 di salute massima."
 		"ko"	"-피해량 증가\n-충분한 피해를 가한 후 자가 부활이 가능해지는 신규 능력 획득.\n-모든 ''시본'' 진영 무기들에 최대 체력 +200 속성 부여"
@@ -2632,7 +2635,7 @@
 	{
 		"en"	"-Increased Damage\n-Increased Attackspeed\n-Your drones can now penetrate even more targets\n-Less damage loss on penetration\n-Lower damage penalty on overcharge too"
 		"fr"	"Vos drones peuvent pénétrer plus d'ennemis.\nMoins de perte de dégats pour la pénétration.\nMoins de perte de dégats pour la surcharge."
-		"ru"	"Теперь ваши дроны могут пробивать ещё больше целей\nМеньше потери урона при пробивании\nМеньше уменьшения урона при перегрузке тоже"
+		///"ru"	"Теперь ваши дроны могут пробивать ещё больше целей\nМеньше потери урона при пробивании\nМеньше уменьшения урона при перегрузке тоже"
 		"chi"   "你的无人机现在可以穿透更多的目标，更少的穿透伤害损失，更低的充能伤害"
 		"it"	"I tuoi droni possono ora penetrare un numero ancora maggiore di bersagli"
 		"ko"	"-피해량, 공격 속도 증가\n-드론이 더욱 많은 적을 관통합니다.\n-드론의 적 관통시 피해량 감소 페널티와 과충전 상태일때의 피해량 감소 페널티 완화"
@@ -2641,7 +2644,7 @@
 	{
 		"en"	"-Each time you deal damage you gain ''Motivation''\n-R: Switch Between ''Summoned Swords'' and ''Spiral Swords''\n-Hold Mouse 2 to fire your summoned swords at your enemies!\n-You do lose the 10％ melee dmg resist"
 		"fr"	"Obtenez de la «Motivation» pour chaque ennemi frappé, pour utiliser pour vos abilités:\nR: Change entre «Épées Convoquées» et «Épées Spirales»\nM2: Lance les épées vers les ennemis\n-10％ résistance contre les dégats corps-à-corps"
-		"ru"	"Каждый раз, когда вы нанос. урон, вы получ. «Мотивацию», которая исп. как источник энергии для ваших способн.\nR: Перекл. между «Вызванными мечами» и «Спиральными мечами»\nУдерж. ПКМ, чтобы выстрелить вызванными мечами во врагов!\nВы теряете 10％ сопротивления к повреждениям в ближнем бою"
+		///"ru"	"Каждый раз, когда вы нанос. урон, вы получ. «Мотивацию», которая исп. как источник энергии для ваших способн.\nR: Перекл. между «Вызванными мечами» и «Спиральными мечами»\nУдерж. ПКМ, чтобы выстрелить вызванными мечами во врагов!\nВы теряете 10％ сопротивления к повреждениям в ближнем бою"
 		"chi"	"造成伤害获得''帕瓦''，你的技能将会消耗''帕瓦''。\nR:切换模式[召唤剑|剑之环]\n按住M2发射召唤出的剑\n失去前有的10％近战抗性。"
 		"it"	"Ogni volta che infliggi danni guadagni ''Motivazione'', che viene usata come fonte di energia per le tue abilità\nR: Passa da ''Spade evocate'' a ''Spade a spirale''\nTieni premuto il mouse 2 per scagliare le spade evocate contro i tuoi nemici!"
 		"ko"	"-피해를 가할 때마다 ''동기 부여''를 획득\n-R키: 소환검과 나선검 사이를 전환\n-마우스 오른쪽 버튼을 누르고 있는 동안 소환된 검을 적에게 발사(소환검 상태 시)\n-근접 피해 저항력 -10％"
@@ -2657,7 +2660,7 @@
 	{
 		"en"	"-Increased Damage\n-Increased resistance\n-Gains an ability that deals 320％ of damage to 6 nearby enemies and all enemies with Critically Wounded.\n-Critically Wounded debuff now provides two seconds cooldown recharge."
 		"fr"	"Abilité inflige 320％ dégats aux 6 ennemis les plus proches, et à tous les ennemis avec une Plaie Critique.\nTuer un ennemi avec une Plaie Critique redonne une recharge de deux secondes."
-		"ru"	"Получает способность, которая наносит 320％ урона 6 ближайшим врагам и всем врагам с критическим ранением.\nЭфф. крит. ранения теперь перезаряжает время восстановл. на 2 сек."
+		///"ru"	"Получает способность, которая наносит 320％ урона 6 ближайшим врагам и всем врагам с критическим ранением.\nЭфф. крит. ранения теперь перезаряжает время восстановл. на 2 сек."
 		"chi"   "获得一种技能，对附近的6个敌人和所有重伤的敌人造成320％的伤害。\n重伤debuff现在提供2秒的冷却时间。"
 		"it"	"Ottiene un'abilità che infligge 320％ danni a 6 nemici vicini e a tutti i nemici con Ferita critica.\nIl debuff Ferita critica ora fornisce due secondi di ricarica del cooldown."
 		"ko"	"-피해량, 저항력 증가\n-신규 능력 획득: 주변의 최대 6명의 적과 중상 디버프를 가진 모든 적에게 기본 피해량의 320％에 해당하는 피해를 가함\n-중상 상태의 적을 처치하면 능력 쿨타임 2초 감소."
@@ -2666,7 +2669,7 @@
 	{
 		"en"	"-Increased Damage\n-Increased resistance\n-Ability gains a third charge, decreased recharge time, and deals 400％ damage.\nProvides 10 health regeneration while not taking damage."
 		"fr"	"Abilté a trois charges, se recharge plus rapidement, et inflige 400％ dégats.\nPendant que vous êtes hors du combat, vous regénérez 10 soins par seconde."
-		"ru"	"Способность получает третий заряд, уменьшает время перезарядки и наносит 400％ урона.\nПолучает 10 восст. здоровья, пока не получает урон."
+		///"ru"	"Способность получает третий заряд, уменьшает время перезарядки и наносит 400％ урона.\nПолучает 10 восст. здоровья, пока не получает урон."
 		"chi"   "技能获得第三次充能，减少充能时间，造成400％伤害。\n在不受伤害的情况下提供10点生命回复。"
 		"it"	"L'abilità guadagna una terza carica, diminuisce il tempo di ricarica e infligge 400％ danni.\nFornisce 10 rigenerazioni di salute mentre non subisce danni."
 		"ko"	"-피해량, 저항력 증가\n-이제 능력이 기본 피해량의 400％에 해당하는 피해를 주고 3회까지 충전 가능, 재충전 쿨타임 감소\n-피해를 받지 않는 동안 초당 체력을 10 회복."
@@ -2691,7 +2694,7 @@
 	{
 		"en"	"-Faster Attackspeed\n-Spike limit increases\n-damage increases slightly."
 		"fr"	"Dégats et cadence des attaques améliorés. Limite de piques augmuntée."
-		"ru"	"Более высокая скорость атаки, лимит шипов увеличивается, урон немного увеличивается."
+		///"ru"	"Более высокая скорость атаки, лимит шипов увеличивается, урон немного увеличивается."
 		"chi"	"更高的攻速，提高地刺上限以及伤害。"
 		"it"	"Velocità d'attacco più rapida, aumento del limite delle punte, leggero aumento dei danni."
 		"ko"	"-피해량 소폭 증가\n-공격 속도 증가\n-가시 최대 설치 개수 증가"
@@ -2700,7 +2703,7 @@
 	{
 		"en"	"-Throwable grenade which restores health to buildings\n-Pulses give 25％ damage resistance\n-Builder upgrades affect it-\n-Scales with allies armor."
 		"fr"	"Lance un kit de réparation qui répare les construction proches.\n+25％ résistance pour les constructions proches\nAmélioré avec les améliorations pour Constructeur.\nBesoin d'une clé pour fonctionner correctement."
-		"ru"	"Бросает гранату, которая со временем ремонт. постройки рядом с ней.\nУлучш. построек влияют на неё.\nМожет потреб. гаечный ключ в руках для полноценной работы.\nДаёт постройкам 25％ сопр. урону, пока они находятся в радиусе действия."
+		///"ru"	"Бросает гранату, которая со временем ремонт. постройки рядом с ней.\nУлучш. построек влияют на неё.\nМожет потреб. гаечный ключ в руках для полноценной работы.\nДаёт постройкам 25％ сопр. урону, пока они находятся в радиусе действия."
 		"chi"   "投掷一枚手榴弹，随着时间的推移可以修复附近的建筑物。\n建筑升级会影响它。可能需要配备扳手才能完全工作。在有效射程内给予建筑物25％的伤害抗性。"
 		"it"	"Lancia una granata che ripara le strutture vicini nel tempo.\nI potenziamenti dei costruttori la influenzano.\nPuò richiedere l'equipaggiamento di una chiave per funzionare completamente.\nDà agli strutture una resistenza ai danni di 25％ quando sono nel raggio d'azione."
 		"ko"	"-시간에 걸쳐 파동을 방출해 구조물을 수리하는 수류탄을 투척.\n-파동은 피해 저항력을 25％ 증가시킴.\n-이 무기는 건축가 개선의 영향을 받음.\n-아군의 아머에 따라 효과 증가."
@@ -2710,7 +2713,7 @@
 	{
 		"en"	"-Your extra equipment grenades will now instantly stick on where they land instead of rolling."
 		"fr"	"Votre équipement lançable roulent plus, et restent en plaçe."
-		"ru"	"Гранаты для дополнительного снаряжения теперь будут мгновенно прилипать к месту приземления, а не катиться."
+		///"ru"	"Гранаты для дополнительного снаряжения теперь будут мгновенно прилипать к месту приземления, а не катиться."
 		"chi"	"你抛出的手雷现在会粘在地上，防止滚动。"
 		"it"	"Le granate con equipaggiamento extra ora si attaccano istantaneamente al punto in cui atterrano invece di rotolare."
 		"ko"	"-추가 장비들의 수류탄 계열 장비가 더 이상 굴러가지 않습니다. 대신 닿거나 떨어진 곳에 접착됩니다."
@@ -2719,7 +2722,7 @@
 	{
 		"en"	"-Increases damage.\n-Doubles damage falloff\n-Grants an ability that stuns and knockbacks 10 targets, consumes one clip per target hit."
 		"fr"	"Double la perte de dégats avec distance. Abilité étonne et recule 10 ennemis. Abilité utilise un chargeur par victime."
-		"ru"	"Удваивает уменьш. урона на расстоянии, но даёт способность, которая оглушает и отбрасывает 10 цели, расходует одну обойму на каждую поражённую цель."
+		///"ru"	"Удваивает уменьш. урона на расстоянии, но даёт способность, которая оглушает и отбрасывает 10 цели, расходует одну обойму на каждую поражённую цель."
 		"it"	"Aumenta i danni.\nDoppia la caduta dei danni ma concede un'abilità che stordisce e colpisce 10 bersagli, consuma un caricatore per ogni bersaglio colpito."
 		"ko"	"-피해량 증가\n-거리 비례 피해 감소량 2배\n-최대 10명의 적을 기절시키고 넉백시키는 능력 획득. 적중한 적 하나당 장탄 1 소모"
 	}
@@ -2727,7 +2730,7 @@
 	{
 		"en"	"-Increases damage.\n-Increased ability knockback by +5％ and can hit up to 3 targets"
 		"fr"	"+5％ recul pour abilité. Abilité frappe 3 ennemis."
-		"ru"	"Увеличение отдачи способности на +5％ и может поразить до 3 целей."
+		///"ru"	"Увеличение отдачи способности на +5％ и может поразить до 3 целей."
 		"chi"	"技能击退+5％，可击中3个敌人。"
 		"it"	"Aumenta i danni.\nAumenta il knockback dell'abilità di +5％ e può colpire fino a 3 bersagli"
 		"ko"	"-피해량 증가\n-최대 3명의 추가 적을 타격할 수 있게 되며, 능력의 넉백력 +5％"
@@ -2736,7 +2739,7 @@
 	{
 		"en"	"-Increases damage.\n-Increased ability knockback by +5％ and can hit up to 5 targets"
 		"fr"	"+5％ recul pour abilité. Abilité frappe 5 ennemis."
-		"ru"	"Увеличение отдачи способности на +5％ и может поразить до 5 целей."
+		///"ru"	"Увеличение отдачи способности на +5％ и может поразить до 5 целей."
 		"chi"	"技能击退+5％，可击中5个敌人。"
 		"it"	"Aumenta i danni.\nAumenta il knockback dell'abilità di +5％ e può colpire fino a 5 bersagli"
 		"ko"	"-피해량 증가\n-최대 5명의 추가 적을 타격할 수 있게 되며 능력의 넉백력이 +5％ 증가합니다."
@@ -2770,7 +2773,7 @@
 	{
 		"en"	"Direct upgrade to Crossbow Medic. Snipers are a little better than crossbows after all."
 		"fr"	"Mise à niveau directe vers Crossbow Medic. Les tireurs d’élite sont un peu meilleurs que les arbalètes après tout."
-		"ru"	"Прямое обновление до Арбалета Медика. В конце концов, снайперы немного лучше арбалетов."
+		///"ru"	"Прямое обновление до Арбалета Медика. В конце концов, снайперы немного лучше арбалетов."
 		"chi"	"直接升级为弩医生。狙击手毕竟比弩好一点。"
 		"it"	"Potenziamento diretto del Medico della balestra. I cecchini sono un po' meglio delle balestre, dopotutto."
 		"ko"	"석궁병 메딕의 상위 유닛입니다. 그래도 저격소총이 석궁보단 낫죠."
@@ -2779,7 +2782,7 @@
 	{
 		"en"	"A magic unit, does a lot of damage but is immobile when attacking. Very disposable."
 		"fr"	"Une unité magique, fait beaucoup de dégâts mais reste immobile lorsqu'elle attaque. Très jetable."
-		"ru"	"Магический юнит, наносит большой урон, но при атаке неподвижен. Очень одноразовый."
+		///"ru"	"Магический юнит, наносит большой урон, но при атаке неподвижен. Очень одноразовый."
 		"chi"	"魔法单位，造成大量伤害，但攻击时无法移动。非常一次性。"
 		"it"	"Un'unità magica, che fa molti danni ma è immobile quando attacca. Molto usa e getta."
 		"ko"	"마법 유닛입니다. 높은 피해를 주지만 공격하는 동안 이동할 수 없습니다. 거의 1회용입니다."
@@ -2788,7 +2791,7 @@
 	{
 		"en"	"A more educated variant of the basic mage. Very funny, I know."
 		"fr"	"Une variante plus instruite du mage de base. Très drôle, je sais."
-		"ru"	"Более образованный вариант базового мага. Очень смешно, я знаю."
+		///"ru"	"Более образованный вариант базового мага. Очень смешно, я знаю."
 		"chi"	"基本法师的受过更高教育的变体。非常有趣，我知道。"
 		"it"	"Una variante più colta del mago di base. Molto divertente, lo so."
 		"ko"	"기본 마법사의 상위 유닛입니다. 더 똑똑해졌습니다."
@@ -2797,7 +2800,7 @@
 	{
 		"en"	"This Mage has a university degree. It was as worth it as yours, sadly. If you have one."
 		"fr"	"Ce Mage a un diplôme universitaire. Cela valait autant que le vôtre, malheureusement. Si vous en avez un."
-		"ru"	"Этот Маг имеет высшее образование. К сожалению, оно того стоило, как и ваше. Если он у вас есть."
+		///"ru"	"Этот Маг имеет высшее образование. К сожалению, оно того стоило, как и ваше. Если он у вас есть."
 		"chi"	"这位法师拥有大学学位。可悲的是，它和你的一样值得。如果你有的话。"
 		"it"	"Questo Mago ha una laurea. Ne valeva la pena come la tua, purtroppo. Se ne hai una."
 		"ko"	"중급 마법사의 상위 유닛입니다. 이 마법사가 대학 학위를 가지고 있다는데, 당신 학위만큼이나 가치 있었다고 합니다... 당신이 학위를 가지고 있다면 말이죠."
@@ -2806,7 +2809,7 @@
 	{
 		"en"		"A machine capable of burst fire and laser attacks. Stationary when attacking."
 		"fr"		"Une machine capable de tirs en rafale et d'attaques laser. Stationnaire lors de l’attaque."
-		"ru"		"Машина, способная вести очередной огонь и лазерные атаки. Стационарен при атаке."
+		///"ru"		"Машина, способная вести очередной огонь и лазерные атаки. Стационарен при атаке."
 		"chi"		"能够进行连发射击和激光攻击的机器。攻击时保持静止。"
 		"it"		"Macchina in grado di sparare a raffica e di effettuare attacchi laser. Stazionaria quando attacca."
 		"ko"		"연발 공격과 레이저 발사 공격이 가능한 기계입니다. 공격하는 동안 이동할 수 없습니다."
@@ -2815,7 +2818,7 @@
 	{
 		"en"		"Agile Elite melee unit, can teleport to enemies or safety, damaging anyone nearby. Rapidly heals out of combat."
 		"fr"		"Unité de mêlée Agile Elite, peut se téléporter vers les ennemis ou vers un lieu sûr, endommageant toute personne à proximité. Guérit rapidement hors combat."
-		"ru"		"Ловкий элитный отряд ближнего боя может телепортироваться к врагам или в безопасное место, нанося урон всем, кто находится поблизости. Быстро восстанавливается вне боя."
+		///"ru"		"Ловкий элитный отряд ближнего боя может телепортироваться к врагам или в безопасное место, нанося урон всем, кто находится поблизости. Быстро восстанавливается вне боя."
 		"chi"		"敏捷精英近战单位，可以传送到敌人或安全地带，对附近的任何人造成伤害。脱离战斗后迅速痊愈。"
 		"it"		"Agile unità da mischia d'élite, può teletrasportarsi verso i nemici o al sicuro, danneggiando chiunque si trovi nelle vicinanze. Guarisce rapidamente fuori dal combattimento."
 		"ko"		"민첩한 정예 근접 유닛입니다. 안전한 장소 또는 적 근처로 순간이동 하여, 해당 지점 주변의 모든 적에게 피해를 줍니다. 비전투 상태일때 체력을 매우 빠르게 회복합니다."
@@ -2824,7 +2827,7 @@
 	{
 		"en"		"Iku Nagae but human. Is half-mobile and uses stationary, resistant NIGHTMARE CANNON!!!"
 		"fr"		"Iku Nagae mais humain. Est à moitié mobile et utilise un CANON NIGHTMARE stationnaire et résistant !!!"
-		"ru"		"Ику Нагаэ, но человек. Полумобильен и использует стационарную устойчивую КОШМАРНУЮ ПУШКУ!!!"
+		///"ru"		"Ику Нагаэ, но человек. Полумобильен и использует стационарную устойчивую КОШМАРНУЮ ПУШКУ!!!"
 		"chi"		"Iku Nagae 但人类。是半移动的，使用固定的、抗性的噩梦炮！！！"
 		"it"		"Iku Nagae ma umana. È semimobile e usa un cannone stazionario e resistente, il CANNONE DA INCUBO!!!"
 		"ko"		"나가에 이쿠의 인간 버전입니다. 공격 중에도 반쯤 이동이 가능하며, 고정형이고 저항력이 높은 나이트메어 캐논을 사용합니다."
@@ -2833,7 +2836,7 @@
 	{
 		"en"		"A human experiment. Less bulky but more deadly Champion with a ranged attack."
 		"fr"		"Une expérience humaine. Champion moins volumineux mais plus mortel avec une attaque à distance."
-		"ru"		"Человеческий эксперимент. Менее громоздкий, но более смертоносный Чемпион с дальней атакой."
+		///"ru"		"Человеческий эксперимент. Менее громоздкий, но более смертоносный Чемпион с дальней атакой."
 		"chi"		"人体实验。体积较小但更致命的远程攻击冠军。"
 		"it"		"Un esperimento umano. Campione meno ingombrante ma più letale, con attacco a distanza."
 		"ko"		"인체 실험의 결과물입니다. 챔피언 유닛보다 더욱 강력하며 원거리 공격도 사용합니다."
@@ -2842,7 +2845,7 @@
 	{
 		"en"		"A suicide runner with a piercing Bison. Immobile when shooting and has a long reload."
 		"fr"		"Un coureur suicide avec un Bison perçant. Immobile lors du tir et dispose d'un long rechargement."
-		"ru"		"Бегун-самоубийца с пронзительным Бизоном. Неподвижен при стрельбе и имеет долгую перезарядку."
+		///"ru"		"Бегун-самоубийца с пронзительным Бизоном. Неподвижен при стрельбе и имеет долгую перезарядку."
 		"chi"		"一名自杀式跑步者带着一头刺穿的野牛。射击时不动，装弹时间长。"
 		"it"		"Un corridore suicida con un Bison perforante. È immobile quando spara e ha una lunga ricarica."
 		"ko"		"적을 관통하는 정의의 들소를 사용합니다. 사격하는 동안 제자리에서 움직일 수 없게 되며, 재장전 속도가 느립니다."
@@ -2851,7 +2854,7 @@
 	{
 		"en"		"Stronger Mecha Barrager. Don't ask me why just Barrager is a stronger unit, Ruanians are weird."
 		"fr"		"Mecha Barrager plus fort. Ne me demandez pas pourquoi les Barrager sont une unité plus forte, les Ruaniens sont bizarres."
-		"ru"		"Более сильный Механический Баррагер. Не спрашивайте меня, почему именно Баррагер более сильный юнит, руанцы странные."
+		///"ru"		"Более сильный Механический Баррагер. Не спрашивайте меня, почему именно Баррагер более сильный юнит, руанцы странные."
 		"chi"		"更强的机甲暴击者。别问我为什么只有弹幕员是更强的单位，阮人很奇怪。"
 		"it"		"Mecha Barrager più forte. Non chiedetemi perché solo il Barrager sia un'unità più forte, i ruaniani sono strani."
 		"ko"		"더 강해진 기계 폭격수입니다. 왜 인간 폭격수가 기계 폭격수보다 강한건지는 저 이상한 루이나인놈들한테 물어보세요."
@@ -2860,7 +2863,7 @@
 	{
 		"en"		"A literal suicide bomber. Engine heats up on damage, which increases attack speed. Overheats and explodes on death."
 		"fr"		"Un véritable kamikaze. Le moteur chauffe lors des dégâts, ce qui augmente la vitesse d'attaque. Surchauffe et explose à la mort."
-		"ru"		"Настоящий смертник. Двигатель нагревается при нанесении урона, что увеличивает скорость атаки. Перегревается и взрывается при смерти."
+		///"ru"		"Настоящий смертник. Двигатель нагревается при нанесении урона, что увеличивает скорость атаки. Перегревается и взрывается при смерти."
 		"chi"		"名副其实的自杀式炸弹袭击者。引擎在受到伤害时升温，从而提高攻击速度。过热并爆炸死亡。"
 		"it"		"Un vero e proprio kamikaze. Il motore si riscalda in caso di danni, aumentando la velocità di attacco. Si surriscalda ed esplode alla morte."
 		"ko"		"사실상 자폭병입니다. 피해를 받을 때마다 엔진이 과열되어 공격 속도가 증가하며, 최대로 과열되거나 사망하면 폭발합니다."
@@ -2869,7 +2872,7 @@
 	{
 		"en"		"Very long range and performs a strong explosive attack every 5 shots. Stationary when attacking."
 		"fr"		"Très longue portée et effectue une puissante attaque explosive tous les 5 tirs. Stationnaire lors de l’attaque."
-		"ru"		"Очень большая дальность и выполняет сильную взрывную атаку каждые 5 выстрелов. Стационарен при атаке."
+		///"ru"		"Очень большая дальность и выполняет сильную взрывную атаку каждые 5 выстрелов. Стационарен при атаке."
 		"chi"		"射程很远，每5次射击就会产生强烈的爆炸性攻击。攻击时保持静止。"
 		"it"		"Ha un raggio d'azione molto lungo ed esegue un forte attacco esplosivo ogni 5 colpi. Stazionario quando attacca."
 		"ko"		"사거리가 매우 길고 매 5번째 사격마다 폭발하는 탄을 날립니다. 공격하는 동안 제자리에서 이동할 수 없습니다."
@@ -2878,7 +2881,7 @@
 	{
 		"en"		"The ULTIMATE RANGED UNIT! All Ruanian's knowledge and Expidonsan's tech has been combined into this masterpiece! The downside? It costs 2 supply units."
 		"fr"		"L'UNITÉ À DISTANCE ULTIME ! Toutes les connaissances de Ruanian et la technologie d'Expidonsan ont été combinées dans ce chef-d'œuvre ! L'inconvénient ? Cela coûte 2 unités de ravitaillement."
-		"ru"		"САМЫЙ ЛУЧШИЙ ОТДЕЛЕНИЕ ДАЛЬНЕГО ДИАПАЗОНА! Все знания Руаниана и технологии Экспидонсана были объединены в этом шедевре! Недостаток? Это стоит 2 единицы припасов."
+		///"ru"		"САМЫЙ ЛУЧШИЙ ОТДЕЛЕНИЕ ДАЛЬНЕГО ДИАПАЗОНА! Все знания Руаниана и технологии Экспидонсана были объединены в этом шедевре! Недостаток? Это стоит 2 единицы припасов."
 		"chi"		"终极远程单位！ Ruanian 的所有知识和 Expidonsan 的技术都融合到了这部杰作中！缺点是什么？它需要 2 个供应单位。"
 		"it"		"L'ULTIMA UNITA' A DISTANZA! Tutte le conoscenze di Ruanian e la tecnologia di Expidonsan sono state combinate in questo capolavoro! Il lato negativo? Costa 2 unità di rifornimento."
 		"ko"		"원거리 공격형 유닛의 궁극적인 유닛입니다! 대신 보급품을 2 사용합니다. 엑스피돈사인과 루이나인의 협업의 결과물을 만끽하세요."
@@ -4455,6 +4458,7 @@
 	"Skull Servants Desc"
 	{
 		"en"	"-M2 summons a skull to shoot for you\n-M1 launches your skulls which explode for heavy damage.\n-Up to two skulls may orbit you at once\n-Summoning another one will launch the oldest skull.\n-Skulls will automatically launch themselves after some time."
+		"ru"	"-M2 summons a skull to shoot for you\n-M1 launches your skulls which explode.\n-Up to 2 skulls may orbit you\n-Summoning another one will launch the oldest skull.\n-Skulls will launch themselves after some time."
 		"chi"	"M2召唤骷髅头随从。M1可以将它们丢出去，造成大量爆炸伤害。\n最多可召唤两个骷髅，超过上限时会丢出额外的骷髅。\n骷髅在一段时间后会自行飞出去。"
 		"it"	"M2 evoca un teschio che spara per te, M1 lancia i tuoi teschi che esplodono causando danni ingenti.\nPuoi avere fino a due teschi che ti orbitano intorno contemporaneamente.\nEvocandone un altro, verrà lanciato il teschio più vecchio.\nI teschi si lanceranno automaticamente dopo un po' di tempo."
 		"ko"	"-우클릭으로 적을 공격하는 해골을 소환\n-좌클릭으로 해골을 발사, 해골은 폭발하며 높은 피해를 입힘.\n-최대 2개의 해골이 사용자 주변을 순회\n-이 상태에서 해골을 소환시 가장 오래된 해골이 자동으로 발사-\n-해골은 소환후 시간이 지나면 자동으로 발사."
