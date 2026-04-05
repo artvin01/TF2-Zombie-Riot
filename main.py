@@ -30,4 +30,6 @@ if "skilltree" in SCOPE:
     modules.skilltree.parse()
 
 import util
-util.write("logs.txt",util.LOGS)
+if util.LOG_REDACT:
+    util.log("! Writing logs")
+    util.write("logs.txt",util.LOGS)

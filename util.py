@@ -29,7 +29,7 @@ if "TYPESCOPE" in os.environ:
 else:
     WAVESETS_TYPESCOPE = ["Setup", "Custom"]#, "Betting", "Rogue"]
 
-LOG_REDACT = "fsdonyhasdunusadnuhdsaiubhdabuih" # bogus string
+LOG_REDACT = None
 if "LOG_REDACT" in os.environ:
     LOG_REDACT = os.environ["LOG_REDACT"]
 
@@ -172,7 +172,8 @@ def log(message, color="OKGREEN"):
     if color == "FAIL": pre="[ERR] "
     if "OK" in color: pre="[LOG] "
     print(bcolors["FAINT"] + time + bcolors["ENDC"] + bcolors[color]  + pre + message + bcolors["ENDC"])
-    LOGS += f"{time}{pre}{message.replace("\n","\\n")}\n".replace(LOG_REDACT,"***")
+    if LOG_REDACT:
+        LOGS += f"{time}{pre}{message.replace("\n","\\n")}\n".replace(LOG_REDACT,"***")
 
 
 def read(filename):

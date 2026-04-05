@@ -34,7 +34,7 @@ def parse():
                     "npc_name": f"{modules.shared.get_npc_icon(npc["icon"])} {npc["name"]}",
                     "plugin_name": npc["plugin"],
                     "flags": map_flags(npc["flags"]),
-                    "desc": npc["description"],
+                    "desc": f"<div>{npc["description"].replace("\n","</div>\n<div>")}</div>\n"
                 }
                 npc_list_html += util.fill_template(util.read("templates/npc/npc_preview.html"),context)
             npc_list_html += "</details>\n"

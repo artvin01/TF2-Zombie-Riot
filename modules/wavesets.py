@@ -358,6 +358,7 @@ def parse():
         wd = defaultdict(str,data)
         output = {
             "waves": {},
+            "music": {}, # base waveset music, not the per wave one
             "authors": {
                 "npc": wd["author_npcs"],
                 "format": wd["author_format"],
@@ -382,9 +383,9 @@ def parse():
             try:
                 int(wave)
             except ValueError:
-                continue
-                if wave.startswith("music_") and False:
-                    if (mdata := util.music_modal(wave_data)): output += mdata
+                if wave.startswith("music_"):
+                    if (modal := util.music_modal(wave_data)):
+                        output["music"][wave]= modal
                 continue
 
             wave_npc_amt = sum([int(util.is_float(entry)) for entry in wave_data])
