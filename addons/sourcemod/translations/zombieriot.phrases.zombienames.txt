@@ -3224,7 +3224,7 @@
 		"it"	"Weaver interstellare"
 		"ko"	"인터스텔라 위버"
 	}
-	"Interstellar Weaver"
+	"Interstellar Weaver Desc"
 	{
 		"en"	"A Stellar Weaver trashed by Ruina. Now rebuilt by Lelouch to protect him. \n-Is a flying enemy. \n-Targets the nearest target to Lelouch, who isn't his target. \n-Shoots out a barrage of magical fireballs and homing lasers."
 	}
@@ -3554,7 +3554,7 @@
 		"it"	"JØⱧ₦ ₮ⱧɆ ₳Ⱡ₥ł₲Ⱨ₮Ɏ"
 		"ko"	"҉전҉능҉҉자҉҉҉존҉҉҉"
 	}
-	"John The Almighty"
+	"John The Almighty Desc"
 	{
 		"en"	"His almightyness can not be killed. ᏒᏌᑎ"
 	}
@@ -5488,7 +5488,7 @@
 		"en"	"Xeno Lab Security"
 		"ko"	"제노 연구소 보안장치"
 	}
-	"Xeno Lab Security"
+	"Xeno Lab Security Desc"
 	{
 		"en"	"A robot made by the creator of the Xeno infection, made to protect the virus and help it's advance. \n-Periodically charges up an infection blast around itself. \n-If hit by the infection blast, you are afflicted with a heavy bleed. "
 	}
