@@ -3845,23 +3845,12 @@
 		"it"	"Aetherianus"
 		"ko"	"아이테리아누스"
 	}
-	"Aetherianus Desc"
-	{
-		"en"	"Is a stronger variant\nIn addition it buffs the damage of other neavy aether class npc's"
-		"it"	"È una variante più forte.\nInoltre potenzia i danni degli altri PNG di classe neavy aether"
-		"ko"	"아이테르 계열의 최상위 버전입니다.\n주변의 아이테르 계열 NPC들의 공격력을 증가시킵니다."
-	}
+	
 	"Astrianious"
 	{
 		"en"	"Astrianious"
 		"it"	"Astriano"
 		"ko"	"아스트리아니우스"
-	}
-	"Astrianious Desc"
-	{
-		"en"	"Is a stronger variant"
-		"it"	"È una variante più forte"
-		"ko"	"아스트리아 계열의 최상위 버전입니다."
 	}
 	"Draconia"
 	{
@@ -3869,47 +3858,26 @@
 		"it"	"Draconia"
 		"ko"	"드라코니아"
 	}
-	"Draconia Desc"
-	{
-		"en"	"Is a stronger variant\nIn addition, it can refresh ANY shields, regardless of cooldowns\nEliminate as soon as possible"
-		"it"	"È una variante più forte.\nInoltre, può rinfrescare QUALSIASI scudo, indipendentemente dai cooldown"
-		"ko"	"드레이돈 계열의 최상위 버전입니다.\n쿨타임에 관계 없이, 모든 보호막을 복구시킬 수 있습니다.\n최대한 빠르게 제거하세요."
-	}
+	
 	"Dronianis"
 	{
 		"en"	"Dronianis"
 		"it"	"Dronianis"
 		"ko"	"드로니아니스"
 	}
-	"Dronianis Desc"
-	{
-		"en"	"Is a stronger variant\nAlso gives a 25% dmg bonus to everyone around it. self not included"
-		"it"	"È una variante più forte.\nInoltre dà un bonus di 25% di dmg a tutti quelli che lo circondano. sè non incluso"
-		"ko"	"루이나 드론의 최상위 버전입니다.\n자신 주변의 모든 대상의 공격 피해량을 25％ 증가시킵니다. 드로니아니스 자신은 이 효과에서 제외됩니다."
-	}
+	
 	"Euranionis"
 	{
 		"en"	"Euranionis"
 		"it"	"Euranionis"
 		"ko"	"유라니오니스"
 	}
-	"Euranionis Desc"
-	{
-		"en"	"Is a stronger variant"
-		"it"	"È una variante più forte"
-		"ko"	"유로파 계열의 최상위 버전입니다."
-	}
+	
 	"Heliarionus"
 	{
 		"en"	"Heliarionus"
 		"it"	"Heliarionus"
 		"ko"	"헬리아리오누스"
-	}
-	"Heliarionus Desc"
-	{
-		"en"	"Is a stronger variant\nAdditionally gives a 50% dmg bonus to nearby npc's, self not included"
-		"it"	"E' una variante più forte.\nInoltre dà un bonus del 50% di dmg agli npc nelle vicinanze, escluso il sé stesso"
-		"ko"	"헬리아 계열의 최상위 버전입니다.\n자신 주변의 모든 대상의 공격 피해량을 50％ 증가시킵니다. 헬리아리오누스 자신은 이 효과에서 제외됩니다."
 	}
 	"Lazurus"
 	{
@@ -3917,23 +3885,11 @@
 		"it"	"Lazurus"
 		"ko"	"라즈루스"
 	}
-	"Lazurus Desc"
-	{
-		"en"	"Is a stronger variant"
-		"it"	"È una variante più forte"
-		"ko"	"라즈 계열의 최상위 버전입니다."
-	}
 	"Loonarionus"
 	{
 		"en"	"Loonarionus"
 		"it"	"Loonarionus"
 		"ko"	"루나리우스"
-	}
-	"Loonarionus Desc"
-	{
-		"en"	"Is a stronger variant\nAdditionally, can heal other nearby lanius type npc's whenever it teleports or activates its battery."
-		"it"	"È una variante più forte.\nInoltre, può curare gli altri PNG di tipo lanius nelle vicinanze ogni volta che si teletrasporta o attiva la batteria."
-		"ko"	"라니우스 계열의 최상위 버전입니다.\n주변 라니우스 NPC가 순간이동을 하거나 배터리 능력을 발동할 때마다, 대상의 체력을 회복시킵니다."
 	}
 	"Magianius"
 	{
@@ -3941,24 +3897,13 @@
 		"it"	"Magianius"
 		"ko"	"마기아니우스"
 	}
-	"Magianius Desc"
-	{
-		"en"	"Is a stronger variant"
-		"it"	"È una variante più forte"
-		"ko"	"마기아 계열의 최상위 버전입니다."
-	}
 	"Malianius"
 	{
 		"en"	"Malianius"
 		"it"	"Malianius"
 		"ko"	"말리아니우스"
 	}
-	"Malianius Desc"
-	{
-		"en"	"A stronger Variant"
-		"it"	"Una variante più forte"
-		"ko"	"말리우스 계열의 최상위 버전입니다."
-	}
+	
 	"Elite Rulianius"
 	{
 		"en"	"Elite Rulianius"
@@ -3971,24 +3916,14 @@
 		"it"	"Rulianius"
 		"ko"	"루리아니우스"
 	}
-	"Rulianius Desc"
-	{
-		"en"	"A stronger variant\nAdditionally, poses a short range laser pulse"
-		"it"	"Una variante più forte, pone un impulso laser a corto raggio"
-		"ko"	"루리아나 계열의 최상위 버전입니다.\n짧은 범위의 레이저 펄스를 방출합니다."
-	}
+	
 	"Lancelot"
 	{
 		"en"	"Lancelot"
 		"it"	"Lancillotto"
 		"ko"	"랜슬롯"
 	}
-	"Lancelot Desc"
-	{
-		"en"	"Highly dangerous upclose\nOnly has short range attacks\nAlso poses a powerfull particle accelerator, you can tell when its ready due to the particle effect on his hand"
-		"it"	"Molto pericoloso da vicino\nHa solo attacchi a corto raggio\nHa anche un potente acceleratore di particelle, si può capire quando è pronto grazie all'effetto delle particelle sulla sua mano"
-		"ko"	"밀착시 매우 위험합니다.\n-매우 짧은 사거리의 공격만을 보유하고 있습니다.\n-또한 강력한 입자 가속기를 보유하며, 이 스킬 사용시 그의 손에 입자가 모이는 것으로 알 수 있습니다."
-	}
+	
 	"Twirl"
 	{
 		"en"	"Twirl"
