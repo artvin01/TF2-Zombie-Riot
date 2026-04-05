@@ -4034,9 +4034,9 @@
 	}
 	"Ealing Desc"
 	{
-		"en"	"Void Spawn.\nBleeds on hit."
-		"it"	"Spawn del Vuoto.\nSanguina quando viene colpito."
-		"ko"	"공허에서 태어난 존재입니다.\n적중시, 대상에게 출혈을 부여합니다."
+		"en"	"-Bleeds on hit."
+		"it"	"Spawn del Vuoto.\n-Sanguina quando viene colpito."
+		"ko"	"공허에서 태어난 존재입니다.\n-적중시, 대상에게 출혈을 부여합니다."
 	}
 	"Framing Voider"
 	{
@@ -4046,9 +4046,7 @@
 	}
 	"Framing Voider Desc"
 	{
-		"en"	"Void Spawn.\nBuffs enemies around itself on death."
-		"it"	"Void Spawn.\nBuffa i nemici intorno a sé alla morte."
-		"ko"	"공허에서 태어난 존재입니다.\n사망 시, 주변 아군에게 버프를 부여합니다."
+		"en"	"-Buffs void entities around itself on death."
 	}
 	"Growing Exat"
 	{
@@ -4058,9 +4056,9 @@
 	}
 	"Growing Exat Desc"
 	{
-		"en"	"Void Spawn.\nEach singular hit makes it grow in size, the bigger, the stronger."
-		"it"	"Spawn del Vuoto.\nOgni singolo colpo lo fa crescere di dimensioni, più grande, più forte."
-		"ko"	"공허에서 태어난 존재입니다.\n피해를 받을 때마다, 크기가 점점 커집니다. 크기가 커질수록 가하는 피해량도 증가합니다."
+		"en"	"-Each singular hit makes it grow in size, the bigger, the stronger."
+		"it"	"Spawn del Vuoto.\n-Ogni singolo colpo lo fa crescere di dimensioni, più grande, più forte."
+		"ko"	"공허에서 태어난 존재입니다.\n-피해를 받을 때마다, 크기가 점점 커집니다. 크기가 커질수록 가하는 피해량도 증가합니다."
 	}
 	"Mutating Blob"
 	{
@@ -4070,9 +4068,9 @@
 	}
 	"Mutating Blob Desc"
 	{
-		"en"	"Void Spawn.\nWhen dead, corpse acts as a spawnpoint for 1 enemy."
-		"it"	"Spawn del Vuoto.\nQuando è morto, il cadavere agisce come punto di spawn per 1 nemico."
-		"ko"	"공허에서 태어난 존재입니다.\n사망 시, 이 적의 시체는 적의 임시 스폰 포인트가 됩니다. 적 하나가 이 시체를 통해 스폰되면 이 효과는 제거됩니다."
+		"en"	"-When dead, corpse acts as a spawnpoint for 1 enemy."
+		"it"	"Spawn del Vuoto.\n-Quando è morto, il cadavere agisce come punto di spawn per 1 nemico."
+		"ko"	"공허에서 태어난 존재입니다.\n-사망 시, 이 적의 시체는 적의 임시 스폰 포인트가 됩니다. 적 하나가 이 시체를 통해 스폰되면 이 효과는 제거됩니다."
 	}
 	"Void Spreader"
 	{
@@ -4082,9 +4080,7 @@
 	}
 	"Void Spreader Desc"
 	{
-		"en"	"Void Spawn.\nDeals immensive void damage."
-		"it"	"Spawn del Vuoto.\nSubisce danni da vuoto immensi."
-		"ko"	"공허에서 태어난 존재입니다.\n매우 높은 공허 원소 피해를 줍니다."
+		"en"	"-Ranged Attacks\n-Tries to keep distance from you\n-Deals immensive void damage."
 	}
 	"Void Infestor"
 	{
@@ -4094,9 +4090,9 @@
 	}
 	"Void Infestor Desc"
 	{
-		"en"	"Void Spawn.\nWhen dead, spreads void onto the floor, This void spreads at all times and cannot be halted."
-		"it"	"Spawn del Vuoto.\nQuando è morto, diffonde il vuoto sul pavimento. Questo vuoto si diffonde in ogni momento e non può essere fermato."
-		"ko"	"공허에서 태어난 존재입니다.\n사망시, 주변에 공허 점막을 흩뿌립니다. 공허 점막은 계속해서 확장되며 멈출 수 없습니다."
+		"en"	"-When dead, spreads void onto the floor, This void spreads at all times and cannot be halted."
+		"it"	"Spawn del Vuoto.\n-Quando è morto, diffonde il vuoto sul pavimento. Questo vuoto si diffonde in ogni momento e non può essere fermato."
+		"ko"	"공허에서 태어난 존재입니다.\n-사망시, 주변에 공허 점막을 흩뿌립니다. 공허 점막은 계속해서 확장되며 멈출 수 없습니다."
 	}
 	"Voided Hard Crust"
 	{
@@ -4106,9 +4102,9 @@
 	}
 	"Voided Hard Crust Desc"
 	{
-		"en"	"Void Spawn.\nHas Hard flat resistance, attack with high damage single target weapons."
-		"it"	"Spawn del Vuoto.\nHa una resistenza piatta dura, attacca con armi a bersaglio singolo ad alto danno."
-		"ko"	"공허에서 태어난 존재입니다.\n높은 고정 피해 저항력을 보유했으며, 단일 대상에게 매우 높은 피해를 줍니다."
+		"en"	"-Has Hard flat resistance, attack with high damage single target weapons."
+		"it"	"Spawn del Vuoto.\n-Ha una resistenza piatta dura, attacca con armi a bersaglio singolo ad alto danno."
+		"ko"	"공허에서 태어난 존재입니다.\n-높은 고정 피해 저항력을 보유했으며, 단일 대상에게 매우 높은 피해를 줍니다."
 	}
 	"Void Carrier"
 	{
@@ -4118,9 +4114,7 @@
 	}
 	"Void Carrier Desc"
 	{
-		"en"	"Void Spawn.\nGoes to 1 ally, picks them up and throws them at a player."
-		"it"	"Spawn del Vuoto.\nViene da 1 alleato, lo raccoglie e lo lancia contro un giocatore."
-		"ko"	"공허에서 태어난 존재입니다.\n자신의 아군 1명에게 접근하여 대상을 집어든 뒤, 플레이어에게 투척합니다."
+		"en"	"-Goes to 1 ally, picks them up and throws them at a player."
 	}
 	"Void Ixufan"
 	{
@@ -4130,9 +4124,7 @@
 	}
 	"Void Ixufan Desc"
 	{
-		"en"	"Void Mother Spawn.\nIs extra buffed in void terretory, deals immensive void damage."
-		"it"	"Madre del Vuoto.\nÈ extra potenziata nel territorio del vuoto, infligge danni da vuoto immensi."
-		"ko"	"공허 어미에게서 태어난 존재입니다.\n공허 점막 위에 있으면 능력치가 추가로 증가하고, 대상에게 매우 높은 공허 원소 피해를 줍니다."
+		"en"	"-Is extra buffed in void terretory\n-deals immensive void damage."
 	}
 	"Enframed Voider"
 	{
@@ -4142,9 +4134,7 @@
 	}
 	"Enframed Voider Desc"
 	{
-		"en"	"Their intelligence grows.\nBuffs enemies on death."
-		"it"	"La loro intelligenza cresce.\nBuffa i nemici alla morte."
-		"ko"	"그들의 지식은 점점 성장합니다.\n사망시, 주변 적들에게 버프를 부여합니다."
+		"en"	"Their intelligence grows.\n-Buffs void entities on death."
 	}
 	"Blood Pollutor"
 	{
@@ -4154,9 +4144,9 @@
 	}
 	"Blood Pollutor Desc"
 	{
-		"en"	"Deals heavy bleed on hit."
-		"it"	"Provoca una forte emorragia in caso di colpo."
-		"ko"	"적중시, 강력한 출혈을 부여합니다."
+		"en"	"-Deals heavy bleed on hit."
+		"it"	"-Provoca una forte emorragia in caso di colpo."
+		"ko"	"-적중시, 강력한 출혈을 부여합니다."
 	}
 	"Voided Expidonsan Fortifier"
 	{
@@ -4166,9 +4156,7 @@
 	}
 	"Voided Expidonsan Fortifier Desc"
 	{
-		"en"	"An expidonsan fell against the void.\nHas flat resistance, and gains a shield on spawn."
-		"it"	"Un expidonsan caduto contro il vuoto.\nHa una resistenza piatta e guadagna uno scudo al momento della nascita."
-		"ko"	"공허에게 패퇴한 엑스피돈사 소속원입니다.\n높은 고정 피해 저항력을 보유했으며, 스폰시 보호막을 얻습니다."
+		"en"	"An expidonsan fell against the void.\n-Has flat resistance\n-gains a shield on spawn."
 	}
 	"Void Particle"
 	{
@@ -4178,9 +4166,9 @@
 	}
 	"Void Particle Desc"
 	{
-		"en"	"Spreads void on death"
-		"it"	"Si diffonde il vuoto alla morte"
-		"ko"	"사망 시, 공허 점막을 흩뿌립니다."
+		"en"	"-Spreads void on death"
+		"it"	"-Si diffonde il vuoto alla morte"
+		"ko"	"-사망 시, 공허 점막을 흩뿌립니다."
 	}
 	"Hosting Blob"
 	{
@@ -4190,9 +4178,9 @@
 	}
 	"Hosting Blob Desc"
 	{
-		"en"	"On death, acts as 2 spawns."
-		"it"	"Alla morte, agisce come 2 spawn."
-		"ko"	"사망 시, 이 적의 시체는 적의 임시 스폰 포인트가 됩니다. 적 2마리가 이 시체를 통해 스폰되면 이 효과는 제거됩니다."
+		"en"	"-On death, acts as 2 spawns."
+		"it"	"-Alla morte, agisce come 2 spawn."
+		"ko"	"-사망 시, 이 적의 시체는 적의 임시 스폰 포인트가 됩니다. 적 2마리가 이 시체를 통해 스폰되면 이 효과는 제거됩니다."
 	}
 	"Blobbing Monster"
 	{
@@ -4202,9 +4190,7 @@
 	}
 	"Blobbing Monster Desc"
 	{
-		"en"	"Each hit makes it stronger and have more resistance."
-		"it"	"Ogni colpo lo rende più forte e più resistente."
-		"ko"	"피해를 받을 때마다, 능력치가 점차 강해지고 피해 저항력도 증가합니다."
+		"en"	"-Each hit makes it stronger and have more resistance and damage and size."
 	}
 	"Void Sprayer"
 	{
@@ -4214,9 +4200,7 @@
 	}
 	"Void Sprayer Desc"
 	{
-		"en"	"Jumps at you, and deals immensive void damage."
-		"it"	"Salta verso di voi e infligge danni da vuoto immensi."
-		"ko"	"대상에게 점프 돌진을 하여 매우 높은 공허 원소 피해를 줍니다."
+		"en"	"-Jumps at you\n-Ranged Attacks\n-Tries to keep distance from you\n-Deals immensive void damage"
 	}
 	"Void Encasualtor"
 	{
@@ -4226,9 +4210,7 @@
 	}
 	"Void Encasualtor Desc"
 	{
-		"en"	"Teleports to a target they try to attack if they are in void terretory.\nif they didnt attack for a while, then their next attack will make them rapdily attack."
-		"it"	"Si teletrasporta verso un bersaglio che cerca di attaccare se si trova nel territorio vuoto.\nSe non ha attaccato per un po', il suo prossimo attacco lo farà attaccare rapidamente."
-		"ko"	"자신의 표적이 공허 점막 위에 있다면, 그 대상에게 순간이동합니다.\n이 적이 일정 시간 동안 공격하지 않으면, 이 적의 다음 공격의 속도가 매우 빨라집니다."
+		"en"	"-Teleports to a target they try to attack if they are in void terretory\n-if they didnt attack for a while, then their next attack will make them rapdily attack.\n-Deals Void Damage"
 	}
 	"Voided Expidonsan Cleaner"
 	{
@@ -4238,9 +4220,7 @@
 	}
 	"Voided Expidonsan Cleaner Desc"
 	{
-		"en"	"Too many expidonsens fell to them.\nJumps at you, and deals immensive void damage."
-		"it"	"Troppi expidonsen sono caduti su di loro.\nSalta verso di te e infligge danni da vuoto immensi."
-		"ko"	"너무 많은 엑스피돈사인들이 그들에게 패퇴하였습니다.\n대상에게 점프 돌진을 하여 매우 높은 공허 원소 피해를 줍니다."
+		"en"	"Too many expidonsens fell to them.\n-Jumps at you\n-Ranged Attacks\n-Tries to keep distance from you\n-Deals immensive void damage"
 	}
 	"Voided Expidonsan Container"
 	{
@@ -4250,7 +4230,7 @@
 	}
 	"Voided Expidonsan Container Desc"
 	{
-		"en"	"Deals immensive bleed damage on hit."
+		"en"	"-Deals immensive bleed damage on hit."
 		"it"	"Infligge danni da emorragia immensi quando viene colpita."
 		"ko"	"적중시, 대상에게 매우 강력한 출혈 피해를 부여합니다."
 	}
@@ -4262,9 +4242,7 @@
 	}
 	"Sacraficer Desc"
 	{
-		"en"	"On death, buffs allies heavily."
-		"it"	"In caso di morte, potenzia pesantemente gli alleati."
-		"ko"	"사망시, 주변 아군들의 능력치를 매우 크게 증가시키는 버프를 부여합니다."
+		"en"	"-On death, void entities nearby"
 	}
 	"Voiding Bedrock"
 	{
@@ -4274,9 +4252,9 @@
 	}
 	"Voiding Bedrock Desc"
 	{
-		"en"	"Has heavy flat resistance."
-		"it"	"Ha una forte resistenza in piano."
-		"ko"	"매우 높은 고정 피해 저항력을 보유하고 있습니다."
+		"en"	"-Has heavy flat resistance."
+		"it"	"-Ha una forte resistenza in piano."
+		"ko"	"-매우 높은 고정 피해 저항력을 보유하고 있습니다."
 	}
 	"Heavy Perisher"
 	{
@@ -4286,9 +4264,9 @@
 	}
 	"Heavy Perisher Desc"
 	{
-		"en"	"Grows with each hit received."
-		"it"	"Cresce ad ogni colpo ricevuto."
-		"ko"	"피해를 받을 때마다, 크기가 점점 증가하고 능력치와 피해 저항력도 증가합니다."
+		"en"	"-Grows in power with each hit received."
+		"it"	"-Cresce ad ogni colpo ricevuto."
+		"ko"	"-피해를 받을 때마다, 크기가 점점 증가하고 능력치와 피해 저항력도 증가합니다."
 	}
 	"Void Mini-Gatekeeper"
 	{
@@ -4298,9 +4276,9 @@
 	}
 	"Void Mini-Gatekeeper Desc"
 	{
-		"en"	"Acts as 2 spawnpoints on death."
-		"it"	"Agisce come 2 punti di spawn alla morte."
-		"ko"	"사망 시, 이 적의 시체는 적의 임시 스폰 포인트가 됩니다. 적 2마리가 이 시체를 통해 스폰되면 이 효과는 제거됩니다."
+		"en"	"-Acts as 2 spawnpoints on death."
+		"it"	"-Agisce come 2 punti di spawn alla morte."
+		"ko"	"-사망 시, 이 적의 시체는 적의 임시 스폰 포인트가 됩니다. 적 2마리가 이 시체를 통해 스폰되면 이 효과는 제거됩니다."
 	}
 	"Brooding Petra"
 	{
@@ -4310,9 +4288,7 @@
 	}
 	"Brooding Petra Desc"
 	{
-		"en"	"Spreads void whereever it walks.\nIs very slow and spawns minions overtime.\nIts suprisingly Extreamly light."
-		"it"	"Diffonde il vuoto ovunque cammini.\nÈ molto lento e genera servitori in continuazione.\nÈ sorprendentemente estremamente leggero."
-		"ko"	"이 적이 걷는 경로에 공허 점막을 펼칩니다.\n매우 느리지만 일정 시간마다 공허 익수판을 생성합니다.\n매우 가볍습니다."
+		"en"	"-Spreads void whereever it walks.\n-Is very slow and spawns minions overtime.\n-Its suprisingly Extreamly light."
 	}
 	"Kunul"
 	{
@@ -4322,9 +4298,7 @@
 	}
 	"Kunul Desc"
 	{
-		"en"	"Deals extreme bleed damage on hit."
-		"it"	"Infligge danni da dissanguamento estremo quando viene colpita."
-		"ko"	"적중시, 대상에게 극도로 높은 출혈 피해를 부여합니다."
+		"en"	"-Deals extreme bleed damage on hit.\n-Is headshot immune"
 	}
 	"Total Growth"
 	{
@@ -4334,9 +4308,9 @@
 	}
 	"Total Growth Desc"
 	{
-		"en"	"Grows with each hit it receives."
-		"it"	"Cresce ad ogni colpo ricevuto."
-		"ko"	"피해를 받을 때마다, 크기가 점점 증가하고 능력치와 피해 저항력도 증가합니다."
+		"en"	"-Grows with each hit it receives."
+		"it"	"-Cresce ad ogni colpo ricevuto."
+		"ko"	"-피해를 받을 때마다, 크기가 점점 증가하고 능력치와 피해 저항력도 증가합니다."
 	}
 	"Void's Offspring"
 	{
@@ -4346,9 +4320,7 @@
 	}
 	"Void's Offspring Desc"
 	{
-		"en"	"Buffs all void entities on death."
-		"it"	"Migliora tutte le entità nulle alla morte."
-		"ko"	"사망시, 모든 공허 생물에게 버프를 부여합니다."
+		"en"	"-Buffs all void entities on death."
 	}
 	"Voided Expidonsan Rejuvinator"
 	{
@@ -4358,9 +4330,7 @@
 	}
 	"Voided Expidonsan Rejuvinator Desc"
 	{
-		"en"	"One of the finest expidonsan doctors fell to the void.\nheals almost any ally instantly and overheals them, will try to heal every target (silence makes the heal 5x slower)\nHas extreme speeds, will suicide if its alone."
-		"it"	"Uno dei migliori medici expidonsan caduti nel vuoto.\ncura quasi tutti gli alleati istantaneamente e li surriscalda, cercherà di curare ogni bersaglio (il silenzio rende la guarigione 5 volte più lenta)\nHa una velocità estrema, si suicida se è solo."
-		"ko"	"최고의 엑스피돈사인 의사 중 하나가 공허에 침식된 결과물입니다.\n거의 모든 아군을 즉시 치료하며 과치료도 부여합니다. (침묵 상태 시 치유 속도가 5배 느려짐)\n이동 속도가 극도로 빠르지만, 혼자 남을 경우 자살합니다."
+		"en"	"One of the finest expidonsan doctors fell to the void.\n-heals almost any ally instantly and overheals them, will try to heal every target\n-Has extreme speeds\n-will suicide if its alone."
 	}
 	"Speechless"
 	{
@@ -4370,9 +4340,7 @@
 	}
 	"Speechless Desc"
 	{
-		"en"	"One of the first expidonsans to try to explore the void.\n-Each hit it does gives it a shield.\n-Fires an laser if too far away, that also regens it shield.\n-He ignores the shield cooldown if hitting a barricade, or anything with his laser.\n-Gains attackspeed as he attacks, lowers when he doesnt\n-Slows down the faster he attacks."
-		"ko"	"공허를 탐험하려했던 최초의 엑스피돈사인 중 하나입니다.\n공격이 적중할 때마다, 보호막을 얻습니다.\n대상이 너무 멀리 떨어져있다면 레이저를 발사하며, 이 공격으로도 보호막을 얻습니다.\n공격 대상이 바리케이드거나 무엇이든 레이저로 공격했다면, 보호막 재생 쿨타임을 무시하고 보호막을 얻습니다.\n공격할 수록 공격 속도가 점점 증가하지만, 공격하지 않으면 공격 속도가 계속 감소합니다.\n공격 속도가 빠를수록 이동 속도가 감소합니다."
-	
+		"en" 	"Explorers of the voided place, fallen expidonsans\n-Each attack makes them attack faster\n-On attack gains shield\n-Shield cooldown is ignored against barricades\n-Fires an infinite piercing laser with damage delay\n-The faster it attacks the slower it moves\n-Jumps at target\n-Once life is lost:\nGain immensive buffs\nShield lasts longer\nCan no longer heal"
 	}
 	"Unspeakable"
 	{
@@ -4396,9 +4364,7 @@
 	}
 	"Voided Diversionistico Desc"
 	{
-		"en"	"Elite forces, taken by the void.\n-Invisible unless near it. \n-Can backstab you. \n-Attacks inflict Void elemental damage."
-		"it"	"Forze d'élite, prese dal vuoto.\nagiscono come quelle normali, ma sono più lente, visibili da distanze maggiori e infliggono anche danni da vuoto."
-		"ko"	"생전엔 정예 부대였지만, 지금은 공허에 침식된 자들입니다.\n기존 다이버저니스티코와 동일하게 행동하지만, 이동 속도가 느리고 더 먼 거리에서 모습을 드러내며, 대상에게 공허 원소 피해를 줍니다."
+		"en"	"Elite forces, taken by the void.\n-Invisible unless near it. \n-Can backstab you. \n-Attacks inflict Void elemental damage.\n-Slower then average"
 	}
 	"Void Portal"
 	{
@@ -4408,9 +4374,7 @@
 	}
 	"Void Portal Desc"
 	{
-		"en"	"Summons near enemies, stays for 2 waves and spreads void where it stands.\nIt also acts as a spawnpoint for enemies aswell."
-		"it"	"Evoca vicino ai nemici, rimane per 2 ondate e diffonde il vuoto dove si trova.\nFunziona anche come punto di spawn per i nemici."
-		"ko"	"이 적은 등장시 2 웨이브동안 유지됩니다. 공허 점막을 퍼뜨리며 주변의 적들을 소환합니다.\n이 적은 다른 적들의 스폰 포인트로 취급됩니다."
+		"en"	"-Summons near enemies, stays for 2 waves and spreads void where it stands.\n-It also acts as a spawnpoint for enemies aswell.\n-Damages non void entities with true damage"
 	}
 	"Void Creep"
 	{
@@ -4420,7 +4384,7 @@
 	}
 	"Void Creep Desc"
 	{
-		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance(15％), regen, damage(20％) and speed(5％)."
+		"en"	"-Spreads very slowly, cannot be stopped.\n-During raids spreads faster.\n-Buffs all void npcs while on it."
 		"it"	"Si diffonde molto lentamente, non può essere fermato.\nDurante le incursioni si diffonde più rapidamente.\nresistenza(15％), regen, danno(20％) e velocità(5％)."
 		"ko"	"공허 점막은 매우 느리게 확산되며, 멈출 수 없습니다.\n레이드 모드일 경우, 확산 속도가 매우 빨라집니다.\n점막 위에 있는 모든 공허 NPC들의 피해 저항력(15％), 공격 피해량(20％) 이동 속도(5％)를 증가시키고 초당 체력을 회복시킵니다."
 	}
@@ -4433,10 +4397,7 @@
 	}
 	"Void Elemental Damage Desc"
 	{
-		"en"	"Once full, buffs all void npcs around you (with a stronger version) and places void creep below you.\nCan be healed with armor.\nAffected enemies with the buff can be weakened with silence."
-		"es"	"Cuando se llena, los enemigos del Vacio se fortalecen, y liberas fluido del Vacio debajo tuyo.\nSe cura con armadura.\nLos enemigos fortalecidos se pueden debilitar con Silencio."
-		"it"	"Una volta pieno, buffa tutti i npc void intorno a voi (con una versione più forte) e posiziona void creep sotto di voi.\nPuò essere curato con l'armatura.\nI nemici colpiti dal buff possono essere indeboliti con il silenzio."
-		"ko"	"원소 피해 게이지가 꽉 차면, 당신의 위치에 공허 점막이 흩뿌려지며 당신 주변의 모든 공허 NPC에게 더욱 강한 버프를 부여합니다.\n아머를 획득하면 원소 피해를 치유할 수 있습니다.\n이 효과로 부여된 버프는 침묵 상태가 되면 효과가 약화됩니다."
+		"en"	"Once full, buffs all void npcs around you (with a stronger version) and places void creep below you.\nCan be healed with armor"
 	}
 	"Chaos Elemental Damage"
 	{
