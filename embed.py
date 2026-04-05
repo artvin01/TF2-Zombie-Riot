@@ -95,11 +95,7 @@ def draw_npc(drawable, img, pos, npc):
     else:
         img.paste(icon, (math.floor(left+ICON_INNER_PADDING),math.floor(top+ICON_INNER_PADDING)), icon)
 
-    if npc["count"].startswith("<span"):
-        font["Noto Sans"].set_variation_by_name('Black')
-        npc["count"] = npc["count"][31:-7] # wavesets.py->parse->parse_wave
     draw_text_centered(drawable, (pos[0], pos[1]+ICON_SIZE/2), npc["count"], color["text_dark"], font["Noto Sans"])
-    font["Noto Sans"].set_variation_by_name('Regular')
     
 
 # Source - https://stackoverflow.com/a/312464

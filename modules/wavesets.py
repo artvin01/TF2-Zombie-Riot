@@ -135,6 +135,7 @@ def parse():
 
     def parse_wave(wave_idx, wave_data, auto_wave_cash, is_betting=False, force=False):
         output = []
+        output_hashes = {}
         has_cash_entry = False
 
         for wave_entry, wave_entry_data in wave_data.items():
@@ -208,7 +209,9 @@ def parse():
             String spawn ?
             )
             """
-            count = "<span style=\"font-weight:850;\">1</span>" if wave_entry_data["count"] == "0" else wave_entry_data["count"]
+
+            # NOTE count is no longer bold when not scaled!!
+            count = "1" if wave_entry_data["count"] == "0" else wave_entry_data["count"]
             
             if wave_entry_data["plugin"] in NPCS_BY_FILENAME:
                 npc_data = NPCS_BY_FILENAME[wave_entry_data["plugin"]]
@@ -314,19 +317,26 @@ def parse():
                 forced_support = ("MVM_CLASS_FLAG_SUPPORT" in npc_data.flags) or ("MVM_CLASS_FLAG_MISSION" in npc_data.flags) or ("MVM_CLASS_FLAG_SUPPORT_LIMITED" in npc_data.flags)
 
             # Add npc to wave data output for waves.js to be parsed
-            output.append(
-                {
-                    "type": "npc",
-                    "delay": float(wave_entry), # NOTE use for betting wars!
-                    "count": count,
-                    "img": image if image else "",
-                    "prefix": npc_name_prefix,
-                    "display_name": display_name,
-                    "extra_info": extra_info + desc + music,
-                    # waves.sp line 4165 if(data.Is_Boss < 2 && (support || data.ignore_max_cap || data.Is_Static || data.Team == TFTeam_Red))
-                    "is_support": util.cfgtonum(dd["is_boss"]) < 2 and (dd["ignore_max_cap"]=="1" or dd["team_npc"]=="2" or dd["is_static"]=="1" or forced_support)
-                }
-            )
+            npc_output = {
+                "type": "npc",
+                #"delay": float(wave_entry), # NOTE use for betting wars!
+                "img": image if image else "",
+                "prefix": npc_name_prefix,
+                "display_name": display_name,
+                "extra_info": extra_info + desc + music,
+                # waves.sp line 4165 if(data.Is_Boss < 2 && (support || data.ignore_max_cap || data.Is_Static || data.Team == TFTeam_Red))
+                "is_support": util.cfgtonum(dd["is_boss"]) < 2 and (dd["ignore_max_cap"]=="1" or dd["team_npc"]=="2" or dd["is_static"]=="1" or forced_support)
+            }
+            npc_hash = util.id_from_str(json.dumps(npc_output)) # same NPC data will output same hash
+            npc_output["count"] = count
+            if npc_hash not in output_hashes:
+                output.append(
+                    npc_output
+                )
+                output_hashes[npc_hash] = len(output)-1
+            else:
+                output[output_hashes[npc_hash]]["count"] = str(int(output[output_hashes[npc_hash]]["count"]) + int(npc_output["count"]))
+
         
         if (not has_cash_entry) and len(DEFAULT_CASH_BY_WAVE)>=wave_idx and auto_wave_cash:
             output.append({
