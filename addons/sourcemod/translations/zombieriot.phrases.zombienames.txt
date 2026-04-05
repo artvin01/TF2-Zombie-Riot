@@ -8153,7 +8153,7 @@
 	}
 	"A Man Who Is Really Ambitious About Team Fortress 2 Trading Desc"
 	{
-		"en"	"A Man Who Is Really Ambitious About Team Fortress 2 Trading. "
+		"en"	"A Man Who Is Really Ambitious About Team Fortress 2 Trading, really.\n-Each life lost makes him lose a hat and overall stats untill death."
 	}
 	"Kahmlstein's Dead Grandma"
 	{
