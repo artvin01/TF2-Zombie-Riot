@@ -7657,9 +7657,9 @@
 		"it"	"U̴̡̕m̶̒b̵͗r̷̂á̴̪l̸̐ ̷̯̽Ẅ̸.̶̾F̶̭̃.̷͗"
 		"ko"	"움̴̡̕브̶̒랄̸̐ ̷̯̽W.̸̈F̶̾.̷̭̃͗"
 	}
-	"Umbral W.F."
+	"Umbral W.F Desc"
 	{
-		"en"	"Umbrals created from the Umbral gate in the image of Whiteflower. \n-Periodically uses Octane kick.
+		"en"	"Umbrals created from the Umbral gate in the image of Whiteflower. \n-Periodically uses Octane kick."
 	}
 	"Umbral Rouam"
 	{
