@@ -5533,7 +5533,7 @@ void Store_ApplyAttribs(int client)
 	
 	if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE) //increase sentry damage! Not attack rate, could end ugly.
 	{
-		map.SetValue("287", 2.6);
+		map.SetValue("287", 2.34);
 	}
 	else
 	{
