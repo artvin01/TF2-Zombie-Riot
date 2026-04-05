@@ -2930,6 +2930,10 @@
 		"it"		"Diversionistico Elitus"
 		"ko"		"다이버저니스티코 엘리투스"
 	}
+	"Diversionistico Elitus Desc"
+	{
+		"en" 		"Diversionisticos who were promoted to the Elitus status. \n-Invisible unless close to. \n-Can backstab you. \n-Backstabs prevent you from being healed from most things."
+	}
 	"Adiantum"
 	{
 		"en"	"Adiantum"
@@ -3219,6 +3223,10 @@
 		"en"	"Interstellar Weaver"
 		"it"	"Weaver interstellare"
 		"ko"	"인터스텔라 위버"
+	}
+	"Interstellar Weaver Desc"
+	{
+		"en"	"A Stellar Weaver trashed by Ruina. Now rebuilt by Lelouch to protect him. \n-Is a flying enemy. \n-Targets the nearest target to Lelouch, who isn't his target. \n-Shoots out a barrage of magical fireballs and homing lasers."
 	}
 	"Daedalus"
 	{
@@ -3545,6 +3553,10 @@
 		"en"	"JØⱧ₦ ₮ⱧɆ ₳Ⱡ₥ł₲Ⱨ₮Ɏ"
 		"it"	"JØⱧ₦ ₮ⱧɆ ₳Ⱡ₥ł₲Ⱨ₮Ɏ"
 		"ko"	"҉전҉능҉҉자҉҉҉존҉҉҉"
+	}
+	"John The Almighty Desc"
+	{
+		"en"	"His almightyness can not be killed. ᏒᏌᑎ"
 	}
 	"Abomination"
 	{
@@ -4384,7 +4396,7 @@
 	}
 	"Voided Diversionistico Desc"
 	{
-		"en"	"Elite forces, taken by the void.\nActs equal to normal ones, but they are slower , visible from longer ranges and deal void damage aswell."
+		"en"	"Elite forces, taken by the void.\n-Invisible unless near it. \n-Can backstab you. \n-Attacks inflict Void elemental damage."
 		"it"	"Forze d'élite, prese dal vuoto.\nagiscono come quelle normali, ma sono più lente, visibili da distanze maggiori e infliggono anche danni da vuoto."
 		"ko"	"생전엔 정예 부대였지만, 지금은 공허에 침식된 자들입니다.\n기존 다이버저니스티코와 동일하게 행동하지만, 이동 속도가 느리고 더 먼 거리에서 모습을 드러내며, 대상에게 공허 원소 피해를 줍니다."
 	}
@@ -5428,7 +5440,7 @@
 	}	
 	"W.F. Acclaimed Swordsman Desc"
 	{
-		"en"	"Whiteflower’s most prestigious swordman. \n-Performs a barrage of pulse attack, gives resistance during usage."
+		"en"	"Whiteflower’s most prestigious swordman. \n-Performs a barrage of pulse attacks, giving resistance during usage."
 		"ko"	"배풍등이 가장 자랑스러워하는 검객입니다. \n-펄스 폭격 공격을 사용하며, 사용 중에는 저항력이 증가"
 	}
 	"W.F. Ekas Piloteer"
@@ -5445,7 +5457,7 @@
 	}	
 	"W.F. Extreme Knight Giant Desc"
 	{
-		"en"	"A extremely powerfull knight, enhanced into a giant, under Whiteflower's command. \n-Performs a barrage of magic bolts, that retarget if missed."
+		"en"	"An extremely powerful knight, enhanced into a giant, under Whiteflower's command. \n-Performs a barrage of magic bolts that retarget if missed."
 		"ko"	"배풍등의 지휘를 통해 거인으로 성장하게 된 엄청나게 강력한 기사입니다. \n-빗나갈시 다시 재조준하는 마법 볼트를 연사"
 	}
 	"W.F. Raging Blader"
@@ -5462,7 +5474,7 @@
 	}	
 	"Whiteflower The Traitor Desc"
 	{
-		"en"	"-Drops gernades that heal allies and hurts enemies in it range."
+		"en"	"-Drops grenades that heal allies and hurt enemies in its range."
 		"ko"	"-범위 내의 아군의 체력을 회복시키고 적군에게 피해를 주는 수류탄을 던집니다."
 	}	
 	"Ouroboros Ekas"
@@ -5475,6 +5487,10 @@
 	{
 		"en"	"Xeno Lab Security"
 		"ko"	"제노 연구소 보안장치"
+	}
+	"Xeno Lab Security Desc"
+	{
+		"en"	"A robot made by the creator of the Xeno infection, made to protect the virus and help it's advance. \n-Periodically charges up an infection blast around itself. \n-If hit by the infection blast, you are afflicted with a heavy bleed. "
 	}
 	"Goliath Aircraft"
 	{
@@ -6480,6 +6496,22 @@
 		"it"	"Troll Brawler"
 		"ko"	"트롤 싸움꾼"
 	}
+	"Troll Rifler Desc"
+	{
+		"en"	"W.F. Rifler infected by the Troll virus. \n-Has a ranged attack and reloads."
+	}
+	"Troll Cop Desc"
+	{
+		"en"	"W.F. Metro Cop infected by the Troll virus. \n-Has a ranged attack and reloads."
+	}
+	"Troll RPG Carrier Desc"
+	{
+		"en"	"W.F. soldier infected by the Troll virus. \n-Has a aoe ranged attack and reloads."
+	}
+	"Troll Brawler Desc"
+	{
+		"en"	"W.F. soldier infected by the Troll virus. \n-No special effects."
+	}
 	"Crystallized Horror"
 	{
 		"en" 	"Crystallized Horror"
@@ -6593,6 +6625,10 @@
 		"it"	"Simile a Vaus Techicus.\nSegue un alleato quando vuole dare uno scudo, prenderà la velocità dell'alleato e sarà più veloce di lui del 10%"
 		"en"	"Similar to Vaus Techicus.\n-Follows an ally and gives them a shield, taking the ally's speed and becoming 10% faster."
 		"ko"	"바우스 테키커스와 비슷합니다.\n-보호막을 부여할 대상을 따라다니며, 이 상태일때는 보호막을 부여하려는 대상의 이동 속도보다 10％ 더 빨라짐"
+	}
+	"Soldinus ilus Desc"
+	{
+		"en"	"An upgraded version of the Soldine. \n-Can rocketjump. \n-Fires rockets. \n-Can melee attack with a cooldown. \n- Melee deals heavy damage and slides you."
 	}
 	"Instinct's Summon"
 	{
@@ -8120,6 +8156,10 @@
 		"en"	"Purple Guy"
 		"ko"	"퍼플 가이"
 	}
+	"Purple Guy Desc"
+	{
+		"en"	"The bite of 87!? Wait, no, it was the missing children's incident he caused, old sport."
+	}
 	"Roll The Dice"
 	{
 		"en"	"Roll The Dice"
@@ -8141,12 +8181,16 @@
 	}
 	"Suction Medic Desc"
 	{
-		"en"	"Masters of the battle medigun, or just masters of sucking on stuff."
+		"en"	"Masters of the battle medigun, or just masters of sucking on stuff. \n-Sucks away your hp if you're close enough."
 	}
 	"Living Metal Ball"
 	{
 		"en"	"Living Metal Ball"
 		"ko"	"살아있는 쇳덩이 공"
+	}
+	"Living Metal Ball Desc"
+	{
+		"en"	"Large metal BALLS, what more is there to say besides that they are alive."
 	}
 	"Axe Throwwing Barbarian"
 	{

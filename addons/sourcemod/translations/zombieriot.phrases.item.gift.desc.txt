@@ -1594,11 +1594,11 @@
 	}
 	"Soldine Prototype Desc"
 	{
-		"en"	"-Slow giant\n-Shoots rockets at enemies"
+		"en"	"A prototype made by sensal on the way to you.\n-Shoots rockets slowly."
 	}
 	"Soldine Desc"
 	{
-		"en"	"-Can rocketjump\n-Fires rockets\n-Can melee attack with a cooldown, this melee deals heavy damage."
+		"en"	"Re-created by Sensal on his way to you. \n-Can rocketjump. \n-Fires rockets. \n-Can melee attack with a cooldown. \n- Melee deals heavy damage and slides you."
 	}
 	"Protecta Desc"
 	{
