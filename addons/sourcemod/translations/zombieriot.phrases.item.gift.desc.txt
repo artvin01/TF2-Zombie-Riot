@@ -1560,16 +1560,89 @@
 	}
 	"Lanius Desc"
 	{
-		"en"	"A Simple Warrior of the Ruanians\nFunnily enough, even though they prefer magic, it seems that warriors are neccecary no matter the culture...\nBattery: boosts the speed of friendly melee units"
-		"it"	"Un semplice guerriero dei Ruaniani\nSorprendentemente, anche se preferiscono la magia, sembra che i guerrieri siano necessari a prescindere dalla cultura...\nBatteria: aumenta la velocità delle unità amiche in mischia"
-		"ko"	"루이나인들의 기본적인 전사입니다.\n재밌게도, 이 국가는 마법을 선호함에도 불구하고, 문화에 상관없이 전사는 꼭 필요한 것처럼 보입니다...\n배터리: 주변 근접형 아군들의 속도를 증가시킵니다."
+		"en"	"-Melee Attacks\nBattery:\n-Boosts the speed of friendly ruina units around it"
+	}
+	"Laniun Desc"	//Need descs
+	{
+		"en"	"-Melee Attacks\nBattery:\n-Boosts the speed of friendly ruina units around it"
+	}
+	"Loonaris Desc"
+	{
+		"en"	"-Melee Attacks\n-Can Teleport\n-Deals damage to enemies inbetween its origin point and to where it teleports\nBattery:\n-Boosts the speed of friendly ruina units around it"
+	}
+	"Loonarionus Desc"
+	{
+		"en"	"-Melee Attacks\n-Can Teleport\n-Deals damage to enemies inbetween its origin point and to where it teleports\nBattery:\n-Boosts the speed of friendly ruina units around it\n-Heals Lanius-Type npc's around it"
 	}
 	"Magia Desc"
 	{
-		"en"	"A Basic Mage of the Ruanians\nHolds a magic crest\nBattery: boosts the speed of friendly ranged units"
-		"it"	"Un Mago di base dei Ruaniani\nTiene una cresta magica\nBatteria: aumenta la velocità delle unità amiche a distanza"
-		"ko"	"루이나인들의 기본적인 마법사입니다.\n신비한 마법 휘장을 보유하고 있습니다.\n배터리: 주변 원거리형 아군들의 속도를 증가시킵니다."
+		"en"	"-Ranged Projectile Attacks\n-Stays at a distance\nBattery:\n-Boosts the speed of friendly ruina units around it"
 	}
+	"Magnium Desc"
+	{
+		"en"	"-Fires multiple projectiles in sucession, then recharges\n-Stays at a distance\nBattery:\n-Boosts the speed of friendly ruina units around it\n-Fires a homing Projectile"
+	}
+	"Magianas Desc"
+	{
+		"en"	"-Fires multiple projectiles in sucession, then recharges\n-Stays at a distance\nBattery:\n-Boosts the speed of friendly ruina units around it\n-Fires a homing Projectile\n-Gains homing on normal attacks"
+	}
+	"Magianius Desc"
+	{
+		"en"	"-Fires multiple projectiles in sucession, then recharges\n-Stays at a distance\nBattery:\n-Boosts the speed of friendly ruina units around it\n-Fires a homing Projectile\n-Gains homing on normal attacks"
+	}
+	"Helia Desc"
+	{
+		"en"		"-Stays Far away\n-Any npc's within range of it are healed passively\nBattery:\n-Large AOE Healing pulses"
+	}
+	"Heliara Desc"
+	{
+		"en"		"-Stays Far away\n-Any npc's within range of it are healed passively\nBattery:\n-Large AOE Healing pulses"
+	}
+	"Heliaris Desc"
+	{
+		"en"		"-Stays Far away\n-Any npc's within range of it are healed passively\nBattery:\n-Large AOE Healing pulses"
+	}
+	"Heliarionus Desc"
+	{
+		"en"		"-Stays Far away\n-Any npc's within range of it are healed passively\nBattery:\n-Large AOE Healing pulses\n-Gives A large damage bonus to friendly ruina units around it"
+	}
+	"Astria Desc"
+	{
+		"en"		"-Ranged Attacks\n-Giant\n-passively boosts the speed of friendly ruina units around it\nBattery:\n-Calls friendly ruina units to its location, then gives them resistances"
+	}
+	"Astriana Desc"
+	{
+		"en"		"-Ranged Attacks\n-Giant\n-passively boosts the speed of friendly ruina units around it\nBattery:\n-Calls friendly ruina units to its location, then gives them resistances"
+	}
+	"Astrianis Desc"
+	{
+		"en"	"-Ranged Attacks\n-Giant\n-passively boosts the speed of friendly ruina units around it\nBattery:\n-Calls friendly ruina units to its location, then gives them the ability to teleport once"
+	}
+	"Astrianious Desc"
+	{
+		"en"	"-Ranged Attacks\n-Giant\n-passively boosts the speed of friendly ruina units around it\nBattery:\n-Calls friendly ruina units to its location, then gives them the ability to teleport once"
+	}
+	"Europa Desc"
+	{
+		"en"		"-Ranged Attacks\n-Stays far away\n-Groups around Anchors/Helia-Type's\n-Summons Drones\nBattery:\n-Duplicates itself, with lower max health"
+	}
+	"Europis Desc"
+	{
+		"en"		"-Ranged Attacks\n-Stays far away\n-Groups around Anchors/Helia-Type's\n-Summons Drones\nBattery:\n-Duplicates itself, with lower max health"
+	}
+	"Eurainis Desc"
+	{
+		"en"		"-Ranged Attacks\n-Stays far away\n-Groups around Anchors/Helia-Type's\n-Summons Drones/Lanius/Magia\nBattery:\n-Duplicates itself, with lower max health\n-Strong aoe speed bonus after duplication"
+	}
+	"Euranionis Desc"
+	{
+		"en"	"-Ranged Attacks\n-Stays far away\n-Groups around Anchors/Helia-Type's\n-Summons Drones/Lanius/Magia\nBattery:\n-Duplicates itself, with lower max health\n-Strong aoe speed bonus after duplication"
+	}
+	"Daedalus Desc"
+	{
+		"en"	"-Ranged Attacks\n-Stays at a distance\nBattery:\n-Gives a shield to nearbly ruina alies"
+	}
+
 	"Heavy Punuel Desc"
 	{
 		"en"	"-Slow giant\n-Spawns with armor\n-Once armor breaks, gains high speeds"
@@ -1676,30 +1749,15 @@
 		"it"	"Cosa può essere forte come Bob?"
 		"ko"	"밥만큼 강해질 수 있는 자는 누구일까요?"
 	}
-	"Helia Desc"
-	{
-		"en"		"This npc stays at a distance from the main fight.\nAny npc's within range of it are healed passively\nBattery: Heals a group of npc's regardless of range"
-		"it"		"Questo PNG rimane a distanza dal combattimento principale.\nTutti i PNG che si trovano nel suo raggio d'azione vengono curati in modo passivo\nBatteria: cura un gruppo di PNG a prescindere dal raggio d'azione"
-		"ko"		"이 적은 전투 지역에서 거리를 유지합니다.\n이 적의 사거리 내에 있는 모든 적 NPC의 체력이 서서히 회복됩니다.\n배터리: 사거리 제한을 무시하고 아군을 치유합니다."
-	}
-	"Astria Desc"
-	{
-		"en"		"A slow npc that boosts the speed of nearby melee npc's\nBattery: When battery is nearly charged npc's rally around this npc, once fully charged he teleports them to the masters target\nMaster: Commands Melee Npc's..."
-		"it"		"Un PNG lento che aumenta la velocità dei PNG da mischia vicini: Quando la batteria è quasi carica, gli Npc si radunano intorno a questo Npc, una volta completamente carica, li teletrasporta all'obiettivo del padrone: Comanda gli Npc da mischia..."
-		"ko"		"주변 근접형 NPC들의 이동 속도를 증가시켜주는 느린 적군입니다.\n배터리: 배터리가 거의 충전되면, 다른 NPC들이 이 적 주변에 모입니다. 배터리가 완전히 충전되면, 이 NPC가 자신 주변의 모든 NPC를 '마스터'의 목표가 된 대상 근처로 순간이동 시킵니다.\n마스터: 근접형 NPC들을 지휘합니다."
-	}
+	
+	
 	"Aether Desc"
 	{
 		"en"		"A long ranged sniper that casts spells from a far.\nThis npc likes to group up with other long range support npc's"
 		"it"		"Un cecchino a lungo raggio che lancia incantesimi da lontano.\nQuesto npc ama raggrupparsi con altri npc di supporto a lungo raggio"
 		"ko"		"원거리에서 마법을 사용할 수 있는 스나이퍼입니다.\n이 적은 다른 장거리형 NPC들과 뭉쳐다니려는 경향이 있습니다."
 	}
-	"Europa Desc"
-	{
-		"en"		"This npc sits from a far summoning brainless drones\nBattery: Summons itself\nMaster: Low priority, commands ranged npc's"
-		"it"		"Questo npc siede da lontano evocando droni senza cervello\nBatteria: evoca se stesso\nMaestra: Priorità bassa, comanda gli npc a distanza"
-		"ko"		"이 적은 멀리서 지능 없는 드론들을 소환합니다.\n배터리: 자기 자신을 하나 복제합니다\n마스터: 우선도가 낮습니다. 원거리형 NPC들을 지휘합니다."
-	}
+	
 	"Ruina Drone Decs"
 	{
 		"en"		"A very bog standard melee spy, has no gimicks or trickery\nSlave: Melee"
@@ -1730,12 +1788,7 @@
 		"it"		"Un potente strumento di Ruina\nCreato per sorvegliare le ancore di teletrasporto che conducono all'Hub di teletrasporto della città principale"
 		"ko"		"루이나의 강력한 도구입니다.\n주요 도시의 텔레포테이션 허브로 이어지는 텔레포테이션 앵커를 보호하기 위해 만들어졌습니다."
 	}
-	"Daedalus Desc"
-	{
-		"en"	"Gives a shield to nearbly ruina alies"
-		"it"	"Dà uno scudo alle alie quasi rovinabili"
-		"ko"	"주변의 루이나 아군들에게 보호막을 부여합니다."
-	}
+	
 	"Malius Desc"
 	{
 		"en"	"Has the ability to boost nearby npc's battery\nIts best to take these out first..."
@@ -1748,36 +1801,7 @@
 		"it"	"Il laser magico di un mago agisce più che altro come un razzo con un leggero homing"
 		"ko"	"마법 레이저를 발사하는 마법사입니다.\n레이저는 약간의 유도 기능이 있는 로켓처럼 작동합니다.\n그의 공격을 회피할 땐 이것을 기억하세요!"
 	}
-	"Laniun Desc"	//Need descs
-	{
-		"en"	"A stronger variant of Lanius\nHowever, anything inbetween where it teleported takes a bit of damage."
-		"it"	"Una variante più forte di Lanius,\n ma tutto ciò che si trova nel mezzo del teletrasporto subisce un po' di danni."
-		"ko"	"라니우스의 강화 버전입니다.\n텔레포트의 경로에 있는 모든 적에게 약간의 피해를 줍니다."
-	}
-	"Magnium Desc"
-	{
-		"en"	"A stronger magia\nIt casts spell's slower, but can cast 2 of them in a short burst before needing to recharged\nin addition, it has a special magic homing ICBM, very dangerous"
-		"it"	"Una magia più forte lancia incantesimi più lentamente, ma può lanciarne 2 in una breve raffica prima di doverli ricaricare,\n inoltre, ha uno speciale missile balistico magico, molto pericoloso"
-		"ko"	"마기아의 강화 버전입니다.\n느리게 주문을 사용하지만, 한 번에 2개의 주문을 연속으로 사용할 수 있습니다.\n또한 매우 위험한 유도탄 ICBM을 발사할 수 있습니다."
-	}
-	"Heliara Desc"
-	{
-		"en"	"A stronger Helia"
-		"it"	"Una Helia più forte"
-		"ko"	"헬리아의 강화 버전."
-	}
-	"Astriana Desc"
-	{
-		"en"	"Stronger variant"
-		"it"	"Variante più forte"
-		"ko"	"아스트리아의 강화 버전."
-	}
-	"Europis Desc"
-	{
-		"en"	"A stronger Europa, can summon Laz and Magia alonside its drones randomly\nIt also weilds a pizza cutter as its magic weapon!"
-		"it"	"Un'Europa più forte, in grado di evocare Laz e Magia oltre ai suoi droni a caso,\n e di usare un tagliapizza come arma magica!"
-		"ko"	"유로파의 강화 버전. 드론 외에도 라즈와 마기아를 생성할 확률이 생겼습니다.\n또한 마법 무기로 피자 커터를 사용합니다!"
-	}
+	
 	"Draedon Desc"
 	{
 		"en"	"A stronger Daedalus\nthats it, oh also it holds a magic gun instead of a magic dumpster device"
@@ -2121,36 +2145,8 @@
 		"it"		"Il vero nome di ''Schwertkrieg''\nNon solo il suo colpo di teletrasporto diventa più forte, ma ottiene anche la capacità di manipolare più spade intorno a sé\NQueste spade hanno una durata, ogni volta che Karlas esegue un colpo, queste spade si ''rigenerano''"
 		"ko"		"''슈베르트크리그''의 진명입니다.\n순간이동 공격이 더욱 강력해졌으며, 그는 주변에 여러 개의 검을 소환해 조종할 수 있는 능력도 생겼습니다.\n이 검은 지속 시간이 있지만, 카를라스가 공격을 사용할 때마다, 이 검이 다시 재생됩니다."
 	}
-	"Magianas Desc"
-	{
-		"en"	"A stronger Variant"
-		"it"	"Una variante più forte"
-		"ko"	"더욱 강화된 버전."
-	}
-	"Loonaris Desc"
-	{
-		"en"	"A stronger Variant"
-		"it"	"Una variante più forte"
-		"ko"	"더욱 강화된 버전."
-	}
-	"Heliaris Desc"
-	{
-		"en"	"A stronger Variant"
-		"it"	"Una variante più forte"
-		"ko"	"더욱 강화된 버전."
-	}
-	"Astrianis Desc"
-	{
-		"en"	"A stronger Variant"
-		"it"	"Una variante più forte"
-		"ko"	"더욱 강화된 버전."
-	}
-	"Eurainis Desc"
-	{
-		"en"	"Stronger variant, alongside that it creates a powerfull buff field after duplicating itself"
-		"it"	"Variante più forte, insieme al fatto che crea un potente campo di buff dopo essersi duplicato"
-		"ko"	"더욱 강화된 버전. 자가 복제를 성공한 뒤에는, 강력한 버프를 제공하는 장판을 생성합니다."
-	}
+	
+	
 	"Draeonis Desc"
 	{
 		"en"	"Stronger variant"

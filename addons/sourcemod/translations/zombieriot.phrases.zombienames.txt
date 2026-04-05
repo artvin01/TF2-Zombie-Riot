@@ -3857,12 +3857,6 @@
 		"it"	"Astriano"
 		"ko"	"아스트리아니우스"
 	}
-	"Astrianious Desc"
-	{
-		"en"	"Is a stronger variant"
-		"it"	"È una variante più forte"
-		"ko"	"아스트리아 계열의 최상위 버전입니다."
-	}
 	"Draconia"
 	{
 		"en"	"Draconia"
@@ -3893,23 +3887,12 @@
 		"it"	"Euranionis"
 		"ko"	"유라니오니스"
 	}
-	"Euranionis Desc"
-	{
-		"en"	"Is a stronger variant"
-		"it"	"È una variante più forte"
-		"ko"	"유로파 계열의 최상위 버전입니다."
-	}
+	
 	"Heliarionus"
 	{
 		"en"	"Heliarionus"
 		"it"	"Heliarionus"
 		"ko"	"헬리아리오누스"
-	}
-	"Heliarionus Desc"
-	{
-		"en"	"Is a stronger variant\nAdditionally gives a 50% dmg bonus to nearby npc's, self not included"
-		"it"	"E' una variante più forte.\nInoltre dà un bonus del 50% di dmg agli npc nelle vicinanze, escluso il sé stesso"
-		"ko"	"헬리아 계열의 최상위 버전입니다.\n자신 주변의 모든 대상의 공격 피해량을 50％ 증가시킵니다. 헬리아리오누스 자신은 이 효과에서 제외됩니다."
 	}
 	"Lazurus"
 	{
@@ -3929,23 +3912,11 @@
 		"it"	"Loonarionus"
 		"ko"	"루나리우스"
 	}
-	"Loonarionus Desc"
-	{
-		"en"	"Is a stronger variant\nAdditionally, can heal other nearby lanius type npc's whenever it teleports or activates its battery."
-		"it"	"È una variante più forte.\nInoltre, può curare gli altri PNG di tipo lanius nelle vicinanze ogni volta che si teletrasporta o attiva la batteria."
-		"ko"	"라니우스 계열의 최상위 버전입니다.\n주변 라니우스 NPC가 순간이동을 하거나 배터리 능력을 발동할 때마다, 대상의 체력을 회복시킵니다."
-	}
 	"Magianius"
 	{
 		"en"	"Magianius"
 		"it"	"Magianius"
 		"ko"	"마기아니우스"
-	}
-	"Magianius Desc"
-	{
-		"en"	"Is a stronger variant"
-		"it"	"È una variante più forte"
-		"ko"	"마기아 계열의 최상위 버전입니다."
 	}
 	"Malianius"
 	{
