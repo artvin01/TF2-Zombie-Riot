@@ -94,6 +94,10 @@ static void ClotThink(int iNPC)
 	MajorSteam npc = view_as<MajorSteam>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
+	if(npc.Anger)
+	{
+		gameTime = GetGameTime();
+	}
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	

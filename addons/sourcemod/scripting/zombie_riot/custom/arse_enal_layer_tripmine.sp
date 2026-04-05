@@ -66,6 +66,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, bool crit, int slot)
 		delete trace;
 		if (GetVectorDistance(eyePos, spawnLoc, true) <= (450.0 * 450.0))
 		{
+			spawnLoc[2] += 1.0;
 			float Calculate_HP_Spikes = 75.0; 
 		
 			float Bonus_damage;
@@ -77,6 +78,8 @@ public void Weapon_Arsenal_Trap(int client, int weapon, bool crit, int slot)
 			Bonus_damage = attack_speed * Attributes_GetOnPlayer(client, 287, true, true);			//Sentry damage bonus
 
 			Bonus_damage *= BuildingWeaponDamageModif(1);
+			
+			Bonus_damage *= Attributes_Get(weapon, 1, 1.0);
 			
 			if (Bonus_damage <= 1.0)
 				Bonus_damage = 1.0;
@@ -428,24 +431,8 @@ public void Trip_TrackPlanted(int client)
 				GetEntPropVector(ent, Prop_Data, "m_vecAbsOrigin", EntLoc);
 				float Ratio1 = 1.0;
 				if(TimeItWasArmed[ent] > GetGameTime())
-				{
-					Ratio1 = TimeItWasArmed[ent] - GetGameTime();
-					if(Ratio1 < 0.0)
-					{
-						Ratio1 = 0.01;
-					}
-					Ratio1 *= -1.0;
-					Ratio1 += 1.0;
-					if(Ratio1 < 0.25)
-					{
-						Ratio1 = 0.25;
-					}
-					if(Ratio1 > 0.75)
-					{
-						Ratio1 = 0.75;
-					}
-				}
-				
+					continue;
+					
 				for(int entitycount_1; entitycount_1<i_MaxcountTraps; entitycount_1++)
 				{
 					int ent2 = EntRefToEntIndex(i_ObjectsTraps[entitycount_1]);
@@ -455,23 +442,8 @@ public void Trip_TrackPlanted(int client)
 						{
 							float Ratio2 = 1.0;
 							if(TimeItWasArmed[ent2] > GetGameTime())
-							{
-								Ratio2 = TimeItWasArmed[ent2] - GetGameTime();
-								if(Ratio2 < 0.0)
-								{
-									Ratio2 = 0.01;
-								}
-								Ratio2 *= -1.0;
-								Ratio2 += 1.0;
-								if(Ratio2 < 0.25)
-								{
-									Ratio2 = 0.25;
-								}
-								if(Ratio2 > 0.75)
-								{
-									Ratio2 = 0.75;
-								}
-							}
+								continue;
+
 							float EntLoc2[3];
 							GetEntPropVector(ent2, Prop_Data, "m_vecAbsOrigin", EntLoc2);
 							//EntLoc2[2] += 20.0;

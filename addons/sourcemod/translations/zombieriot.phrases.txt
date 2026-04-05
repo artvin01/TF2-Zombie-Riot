@@ -16,12 +16,14 @@
 	"Press To Open Store"
 	{
 		"en"		"TAB OPEN STORE MENU"
+		"ru"		"TAB - МЕНЮ МАГАЗИНА"
 		"it"		"PREMI IL TASTO TAB PER APRIRE IL MENU DEL NEGOZIO"
 		"ko"		"탭(TAB)을 누르면 상점 메뉴를 엽니다"
 	}
 	"Last Alive Alone"
 	{
 		"en"		"You are on your last breath."
+		"ru"		"Вы на последнем издыхании."
 		"ko"		"당신은 죽음의 문턱에 있습니다."
 	}
 	"Last Alive"
@@ -71,6 +73,7 @@
 	{
 		"#format"	"{1:d}"
 		"en"		" \n---Starter Store---\n[Big Sale] in this store!\nStarter Cash: {1}"
+		"ru"		" \nНачальный магазин\n \nCash: {1}"
 		"it"		" \n---Negozio Iniziale---\n[Grandi saldi] in questo negozio! \nContanti Iniziali: {1}"
 		"ko"		" \n---초기 상점---\n이 상점은 [대할인] 중!\n초기 자금: {1}"
 	}
@@ -85,7 +88,7 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"Cash: {1}"
-		"ru"		"Кредиты: {1}"
+		"it"		"Crediti: {1}"
 		"pl"		"Kredyty: {1}"
 		"es"		"Dinero: {1}"
 		"fr"		"Argent: {1}"
@@ -93,13 +96,14 @@
 		"pt"		"Créditos: {1}"
 		"nl"		"Krediet: {1}"
 		"chi"		"现金: {1}"
+		"it"		"Contanti: {1}"
 		"ko"		"자금: {1}"
 	}
 	"Credits_Menu"
 	{
 		"#format"	"{1:d},{2:d}"
 		"en"		"Cash: {1} (+{2})"
-		"ru"		"Кредиты: {1} (+{2})"
+		"it"		"Crediti: {1} (+{2})"
 		"pl"		"Kredyty: {1} (+{2})"
 		"es"		"Dinero: {1} (+{2})"
 		"fr"		"Argent: {1} (+{2})"
@@ -123,7 +127,6 @@
 		"#format"	"{1:d}"
 		"en"		"Extra Cash: +{1}"
 		"es"		"Dinero Extra: +{1}"
-		"ru"		"Дополнительные кредиты: +{1}"
 		"fr"		"Argent Extra: +{1}"
 		"pt"		"Crédito Extra: +{1}"
 		"it"		"Contanti extra: +{1}"
@@ -190,7 +193,7 @@
 	"Healing Done"
 	{
 		"en"		"Healing Done: "
-		"ru"		"вылечено: "
+		"ru"		"Вылечено: "
 		"pl"		"Uleczono: "
 		"es"		"Curación total: "
 		"fr"		"Soins Donnés: "
@@ -218,7 +221,7 @@
 		"#format"	"{1:d},{2:d},{3:d}"
 		"en"		"Lv {1} ({2} / {3})"
 		"fr"		"Niv. {1} ({2} / {3})"
-		"ru"		"Ур. {1} ({2} / {3})"
+		///"ru"		"Ур. {1} ({2} / {3})"
 		"pt"		"Nv. {1} ({2} / {3})"
 		"it"		"Lv {1} ({2} / {3})"
 		"ko"		"레벨 {1} ({2} / {3})"
@@ -237,7 +240,7 @@
 	"Store Discount"
 	{
 		"en"		"-10％ Off Shipping With No Zombies"
-		"ru"		"Скидка -10％ при отсутствии зомби"
+		"ru"		"Скидка -10％"
 		"pl"		"-10％ przeceny na zakupy podczas przerwy pomiędzy rundami"
 		"es"		"10％ de descuento mientras no hay Zombies"
 		"fr"		"Réduction de 10％ Sans les Zombies"
@@ -251,7 +254,7 @@
 	"Equip"
 	{
 		"en"		"Equip"
-		"ru"		"Надеть"
+		///"ru"		"Надеть"
 		"pl"		"Wyposaż"
 		"es"		"Equipar"
 		"fr"		"Équiper"
@@ -265,7 +268,7 @@
 	"Equipped"
 	{
 		"en"		"Equipped"
-		"ru"		"Надето"
+		///"ru"		"Надето"
 		"pl"		"Wyposażono"
  		"es"		"Equipado"
 		"fr"		"Equipé"
@@ -279,7 +282,7 @@
 	"Purchased"
 	{
 		"en"		"Purchased"
-		"ru"		"Куплено"
+		///"ru"		"Куплено"
 		"pl"		"Zakupiono"
 		"es"		"Comprado"
 		"fr"		"Acheté"
@@ -293,7 +296,7 @@
 	"Buy"
 	{
 		"en"		"Buy"
-		"ru"		"Купить"
+		///"ru"		"Купить"
 		"pl"		"Kup"
 	 	"es"		"Comprar"
 		"fr"		"Acheter"
@@ -309,7 +312,7 @@
 		"en"		"Buy with scrap"
 		"fr"		"Acheter avec Feraille"
 		"pt"		"Comprar com sucata"
-		"ru"		"Купить за металл"
+		///"ru"		"Купить за металл"
 		"nl"		"Koop met scrap"
 		"chi"       "使用废料购买"
 		"it"		"Compra con gli scarti"
@@ -318,7 +321,7 @@
 	"Sell"
 	{
 		"en"		"Sell"
-		"ru"		"Продать"
+		///"ru"		"Продать"
 		"pl"		"Sprzedaj"
 		"es"		"Vender"
 		"fr"		"Vendre"
@@ -334,7 +337,7 @@
 		"en"		"Unequip"
 		"es"		"Desequipar"
 		"fr"		"Déséquiper"
-		"ru"		"Снять"
+		///"ru"		"Снять"
 		"de"		"Ablegen"
 		"pt"		"Desquipar"
 		"nl"		"Uit doen"
@@ -347,7 +350,7 @@
 		"en"		"Bought Items"
 		"es"		"Objetos Adquiridos"
 		"fr"		"Objets Achetés"
-		"ru"		"Приобретённое"
+		///"ru"		"Приобретённое"
 		"pt"		"Itens Comprados"
 		"nl"		"Gekochte Artikelen"
 		"chi"       "已购买物品"
@@ -370,6 +373,7 @@
 	"Sell All Items"
 	{
 		"en"		"Sell all items"
+		"ru"		"Продать все"
 		"it"		"Vendi tutti i tuoi articoli"
 		"ko"		"모든 아이템 판매"
 	}
@@ -382,13 +386,14 @@
 	"Confirm Loadout"
 	{
 		"en"		"Exit Starter Store"
+		"ru"		"Выйти из началки"
 		"it"		"Uscita dal Negozio Iniziale"
 		"ko"		"초기 상점 나가기"
 	}
 	"N/A"
 	{
 		"en"		"N/A"
-		"ru"		"Нет"
+		"ru"		"N/A"
 		"pl"		"N/A"
 		"es"		"N/A"
 		"fr"		"N/D"
@@ -401,7 +406,7 @@
 	"N/A Desc"
 	{
 		"en"		"N/A"
-		"ru"		"Нет"
+		"ru"		"N/A"
 		"pl"		"N/A"
 		"es"		"N/A"
 		"fr"		"N/D"
@@ -414,7 +419,7 @@
 	"Primary"
 	{
 		"en"		"Primary"
-		"ru"		"Основное"
+		///"ru"		"Основное"
 		"pl"		"Broń Pierwszorzędna"
 		"es"		"Primaria"
 		"fr"		"Primaire"
@@ -428,7 +433,7 @@
 	"Secondary"
 	{
 		"en"		"Secondary"
-		"ru"		"Дополнительное"
+		///"ru"		"Дополнительное"
 		"pl"		"Broń Drugorzędna"
 		"es"		"Secundaria"
 		"fr"		"Secondaire"
@@ -442,7 +447,7 @@
 	"Scrap Metal"
 	{
 		"en"		"Scrap Metal"
-		"ru"		"Металлолом"
+		///"ru"		"Металлолом"
 		"pl"		"Metal"
 		"es"		"Chatarra"
 		"fr"		"Feraille"
@@ -456,7 +461,7 @@
 	"Ball"
 	{
 	  	"en"		"Ball"
-		"ru"		"Мяч"
+		///"ru"		"Мяч"
 		"pl"		"Piłka"
 		"es"		"Pelota"
 		"fr"		"Balle"
@@ -470,7 +475,7 @@
 	"Food"
 	{
 		"en"		"Food"
-		"ru"		"Еда"
+		///"ru"		"Еда"
 		"pl"		"Jedzenie"
 		"es"		"Comida"
 		"fr"		"Nourriture"
@@ -484,7 +489,7 @@
 	"Jar"
 	{
 		"en"		"Jar"
-		"ru"		"Банка"
+		///"ru"		"Банка"
 		"pl"		"Słoik"
 		"es"		"Frasco"
 		"fr"		"Jarre"		// TF2 utilise le mot jarre pour le jaraté
@@ -504,7 +509,7 @@
 	"Rockets"
 	{
 		"en"		"Rockets"
-		"ru"		"Ракеты"
+		///"ru"		"Ракеты"
 		"pl"		"Rakiety"
 		"es"		"Cohetes"
 		"fr"		"Roquettes"
@@ -514,6 +519,7 @@
 		"chi"       "火箭弹"
 		"ko"		"로켓"
 		"it"		"Razzi"
+		"ko"		"로켓"
 	}
 	"Flamethrower Tank"
 	{
@@ -525,7 +531,7 @@
 	"Flares"
 	{
 		"en"		"Flares"
-		"ru"		"Снаряды ракетницы"
+		///"ru"		"Снаряды ракетницы"
 		"pl"		"Flary"  			
 		"es"		"Bengalas"
 		"fr"		"Fusées"
@@ -539,7 +545,7 @@
 	"Grenades"
 	{
 		"en"		"Grenades"
-		"ru"		"Гранаты"
+		///"ru"		"Гранаты"
 		"pl"		"Granaty"
 		"es"		"Granadas"
 		"fr"		"Grenades"
@@ -553,7 +559,7 @@
 	"Stickybombs"
 	{
 		"en"		"Stickybombs"
-		"ru"		"Бомбы-липучки"
+		///"ru"		"Бомбы-липучки"
 		"pl"		"Bomby samoprzylepne"
 		"es"		"Bombas lapa"
 		"fr"		"Bombes Collantes"
@@ -567,7 +573,7 @@
 	"Minigun Barrel"
 	{
 		"en"		"Minigun Barrel"
-		"ru"		"Барабан пулемёта"
+		///"ru"		"Барабан пулемёта"
 		"pl"		"Magazyn do Miniguna"
 		"es"		"Barril de Metralleta Pesada"
 		"fr"		"Baril de Minigun"
@@ -581,7 +587,7 @@
 	"Custom Bolt"
 	{
 		"en"		"Custom Bolt"
-		"ru"		"Особый болт"
+		///"ru"		"Особый болт"
 		"pl"		"Spersionalizowany bolt"
 		"es"		"Tornillo personalizado"
 		"fr"		"Boulon personnalisé"
@@ -607,7 +613,7 @@
 	"Arrows"
 	{
 		"en"		"Arrows"
-		"ru"		"Стрелы"
+		///"ru"		"Стрелы"
 		"pl"		"Strzały"
 		"es"		"Flechas"
 		"fr"		"Flèches"
@@ -627,7 +633,7 @@
 	"Revolver Rounds"
 	{
 		"en"		"Revolver Rounds"
-		"ru"		"Патроны револьвера"
+		///"ru"		"Патроны револьвера"
 		"pl"		"Amunicja do revolveru"
 		"es"		"Balas de Revolver"
 		"fr"		"Balles de Revolver"
@@ -641,7 +647,7 @@
 	"Shotgun Shells"
 	{
 		"en"		"Shotgun Shells"
-		"ru"		"Патроны дробовика"
+		///"ru"		"Патроны дробовика"
 		"pl"		"Amunicja do strzelby"
 		"es"		"Balas de Escopeta"
 		"fr"		"Balles de Fusil à Pompe"
@@ -655,7 +661,7 @@
 	"Healing Medicine"
 	{
 		"en"		"Healing Medicine"
-		"ru"		"Медицинские заряды"
+		///"ru"		"Медицинские заряды"
 		"pl"		"Medycyna uzdrawiająca"
 		"es"		"Medicamentos"
 		"fr"		"Médicaments"
@@ -669,7 +675,7 @@
 	"Medigun Fluid"
 	{
 		"en"		"Medigun Fluid"
-		"ru"		"Жидк. лечеб. пушки"
+		///"ru"		"Жидк. лечеб. пушки"
 		"pl"		"Ciecz do Mediguna"
 		"es"		"Fluido Médico"
 		"fr"		"Fluide de Medigun"
@@ -684,7 +690,7 @@
 	{
 		"en"		"Laser Battery"
 		"it"		"Batteria laser"
-		"ru"		"Лазерная батарея"
+		///"ru"		"Лазерная батарея"
 		"pl"		"Bateria do lasera"
 		"es"		"Baterias Láser"
 		"fr"		"Batteries de laser"
@@ -710,7 +716,7 @@
 	{
 		"en"		"Potion Supply"
 		"fr"		"Réserves de Potion"
-		"ru"		"Запас зелий"
+		///"ru"		"Запас зелий"
 		"de"		"Trankversorgung"
 		"pt"		"Suplemento de Poções"
 		"nl"		"Toverdrank provisie"
@@ -875,6 +881,7 @@
 	"Object Cooldown NextWave"
 	{
 		"en" 		"This Object is unuseable untill the next wave."
+		"ru"		"Этот объект недоступен до следующей волны"
 		"es"		"Este objeto no es usable hasta la siguiente oleada."
 		"it"		"Questo Oggetto è inutilizzabile fino alla prossima ondata."
 		"ko" 		"이 오브젝트는 다음 웨이브가 시작되기 전까지 사용할 수 없습니다."
@@ -884,6 +891,7 @@
 		"#format"	"{1:.1f}"
 		"en" 		"This Object still has a cooldown of {1} seconds before another usage."
 		"de"		"Dieses Objekt hat noch eine Abkühlung von {1} Sekunden bevor man sie wieder benutzen kann."
+		"it"		"Questo Oggetto ha ancora un cooldown di {1} secondi prima di poterlo usare."
 		"ru"		"Этот объект перезаряжается. {1} сек. до следующего использования."
 		"pl"		"Ten przedmiot jeszcze będzie się odświerzał przez {1} sekund przed następnym użyciem"
 		"es"		"Ten paciencia, aun quedan {1} segundos para volver a usar esto"
@@ -1403,24 +1411,28 @@
 	"Obsidian Oaf"
 	{
 		"en" 		"Obsidian Oaf"
+		"ru"		"Олух Обсидиана"
 		"it"		"Allocco Ossidiana"
 		"ko" 		"옵시디언 호프"
 	}
 	"Morning Coffee"
 	{
 		"en" 		"Morning Coffee"
+		"ru"		"Утренний Кофе"
 		"it"		"Caffè del mattino"
 		"ko" 		"모닝 커피"
 	}	
 	"Hasty Hops"
 	{
 		"en" 		"Hasty Hops"
+		"ru"		"Хмельная Спешка"
 		"it"		"Luppolo frettoloso"
 		"ko" 		"신속 홉"
 	}
 	"Energy Drink"
 	{
 		"en" 		"Energy Drink"
+		"ru"		"Энергетик"
 		"ko" 		"에너지 드링크"
 	}
 	"Marksman Beer"
@@ -1440,7 +1452,7 @@
 	{
 		"en" 		"Teslar Mule"
 		"fr" 		"Vin des Veuves"
-		"ru" 		"Вино вдовы"
+		"ru" 		"Тесла Мул"
 		"pt"		"Vinho Viúvo"
 		"nl"		"Wijn van de weduwe"
 		"chi" 		"恶魔领域"
@@ -1450,6 +1462,7 @@
 	"Stockpile Stout"
 	{
 		"en" 		"Stockpile Stout"
+		"ru"		"Запаситель"
 		"fr" 		"Recyclage Poiré"
 		"pt"		"Pêra Reciclada"
 		"ru" 		"Переработка пуаре"
@@ -1462,49 +1475,56 @@
 		"en" 		"Regene Berry! 2x Revive speed and 15％ more healing speed and 2x Health on revive"
 		"fr" 		"RÉSURRECTION RAPIDE! 2x vitesse de résurrection, taux de soins +15％, 2x soins pour les resucitations"
 		"pt"		"RÁPIDA RESSUREIÇÃO! 2x velocidade de ressureição e cura 15％ a mais e x2 mais vida ao reviver"
-		"ru" 		"РЕАНИМАТОР! 2x скорость оживления и на 15％ быстрее скорость лечения и 2x здоровье при оживлении"
+		"ru" 		"Реаниматор! 2x скорость оживления и на 15％ быстрее скорость лечения и 2x здоровье при оживлении"
 		"it"		"Bacca Rigenerativa! velocità di rianimazione 2x e 15％ in più di velocità di guarigione e 2x Salute in rianimazione"
 		"ko" 		"재생형 열매! 부활 속도 2배 증가 및 치유 속도 15％ 증가, 아군 부활시 회복하는 체력이 2배로 증가"
 	}
 	"Obsidian Oaf Received"
 	{
 		"en" 		"Obsidian Oaf! 15％ Damage resistance and +100HP"
+		"ru"		"Олух Обсидиана! 15％ сопротивления к урону и +100HP"
 		"it"		"Allocco Ossidiana! 15％ Resistenza ai danni e +100HP"
 		"ko" 		"옵시디언 호프! 피해 저항력 +15％ 및 최대 체력 +100 증가."
 	}
 	"Morning Coffee Received"
 	{
 		"en" 		"Morning Coffee! 17％ Extra attack speed and Building Damage"
+		"ru"		"Утренний Кофе! 17％ к скорости атаки и к урону постройками"
 		"it"		"Caffè del mattino! 17％ Velocità d'attacco extra e Danno da struttura"
 		"ko" 		"모닝 커피! 공격 속도와 구조물 피해량이 +17％ 증가."
 	}	
 	"Hasty Hops Received"
 	{
 		"en" 		"Hasty Hops! 1.42x Extra reload, switchspeed and Mana regen"
+		"ru"		"Хмельная Спешка! 1.42x скорость перезарядки, смены оружия и регенерации маны"
 		"it"		"Salti precipitosi! 1.42x Ricarica extra, velocità di commutazione e rigenerazione del mana"
 		"ko" 		"신속 홉! 재장전 속도, 무기 전환 속도, 마나 재생이 1.42배 더 빨라집니다."
 	}
 	"Marksman Beer Received"
 	{
 		"en" 		"Marksman Beer! 1.2x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
+		"ru"		"Снайпер-лайм! 1.2x точности оружия и 1.25x урона по голове и удара в спину\n 1.2x скорости снарядов."
 		"it"		"Birra del Tiratore scelto! 1.2xprecisione dell'arma 2x e danni extra da colpo alla testa e da pugnalata alle spalle 1,25x e velocità del proiettile 1,2x."
 		"ko" 		"명사수 맥주! 무기 명중률이 1.2배 증가하고 헤드샷과 백스탭 피해량이 1.25배만큼 추가로 증가\n 투사체 속도 1.2배 증가."
 	}
 	"Teslar Mule Received"
 	{
 		"en" 		"Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 30％ more damage."
+		"ru"		"Тесла Мул! Перезаряжаемый щит, при активации ослабляет зомби и блокирует 75％ урона.\nОни замедляются и получают на 30% больше урона."
 		"it"		"Mulo di Teslar! Una protezione ricaricabile che indebolisce gli zombi e blocca il 75％ dei danni se attivata. I nemici indeboliti sono fortemente rallentati e subiscono 30％ danni in più."
 		"ko"		"테슬라 뮬! 재충전 가능한 보호막으로, 활성화 시 좀비를 약화시키고 받는 피해의 75％를 막아줍니다.\n약화된 적은 크게 느려지고 받는 피해량이 30％ 증가합니다."
 	}
 	"Stockpile Stout Received"
 	{
 		"en" 		"Stockpile Stout! 33％ More ammo from all non shop sources, and 50％ more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
+		"ru"		"Запаситель! 33％ больше патронов из всех источников, не из магазина, 50％ больше макс. брони\n Вы получаете 2x больше Запасов для ящика."
 		"it"		"Scorte robuste! 33％ Più munizioni da tutte le fonti diverse dal negozio e 50％ in più di armatura massima e di guadagno di armatura.％ Guadagni il doppio delle scorte di munizioni."
 		"ko" 		"비축 흑맥주! 상점을 제외한 모든 요소에서 획득하는 탄약량이 33％ 증가하고 아머 획득량과 아머 최대치가 50％ 증가.\n탄약 보급량이 2배만큼 증가."
 	}
 	"Energy Drink Received"
 	{
 		"en" 		"Energy Drink! Gain a 15％ cooldown reduction for Weapons & Extra Gear!"
+		"ru"		"Энергетик! 15％ быстрее перезарядка способности Оружия & Расходников"
 		"it"		"Bevanda energetica! Riduzione del cooldown di 15％ per le armi e gli equipaggiamenti extra!"
 		"ko" 		"에너지 드링크! 무기와 추가 장비들의 능력 쿨타임 15％ 감소!"
 	}
@@ -1561,6 +1581,7 @@
 	"Freeze Bomb Activated"
 	{
 		"en" 		"Freeze Bomb!"
+		"ru"		"Крио-бомба!"
 		"it"		"Bomba congelante!"
 		"ko" 		"냉동 폭탄!"
 	}
@@ -1599,6 +1620,7 @@
 	"Grigori Shop Extra Activated"
 	{
 		"en" 		"Extra Super Sale!"
+		"ru"		"Супер распродажа!"
 		"fr" 		"Rabais Bonus!"
 		"pt"		"Super Desconto Extra!"
 		"it"		"Super saldi extra!"
@@ -1609,7 +1631,7 @@
 		"en" 		"Help/FAQ"
 		"fr" 		"Aide/FAQ"
 		"pt"		"Ajuda/FAQ"
-		"ru" 		"Помощь/ЧАВО"
+		"ru" 		"Помощь/FAQ"
 		"chi"       "帮助/问题"
 		"it"		"Aiuto/FAQ"
 		"ko" 		"도움/FAQ"
@@ -1886,6 +1908,7 @@
 	"Interact With R" //KEEP THE SPACE!
 	{
 		"en"		"Press [R/ Use] "
+		"ru"		"Нажмите [R] "
 		"it"		"Premere [R/ Usa]"
 		"ko"		" [R/ Use] "
 	}
@@ -1893,12 +1916,14 @@
 	{
 		"#format"	"{1:s},{2:s},{3:.0f}"
 		"en"		"HP: {1} / {2} | Repair left: {3}％"
+		"ru"		"HP: {1} / {2} | Запас починки: {3}％"
 		"it"		"HP: {1} / {2} | Riparazione a sinistra: {3}％"
 		"ko"		"체력: {1} / {2} | 남은 수리 내구도: {3}％"
 	}
 	"Interact With T Spray"
 	{
 		"en"		"Press [T(Spray)/ Use] "
+		"ru"		"Нажмите [T] "
 		"it"		"Premere [T(Spray)/ Usa]"
 		"ko"		" [T(스프레이)/ 사용] "
 	}
@@ -1912,6 +1937,7 @@
 	{
 		"#format"	"{1:d}"
 		"en" 		"on the Ammobox to gain Ammo for your current holding weapon.\nAmmo Supplies Remaining: {1}"
+		"ru"		"на ящик аммуниции, чтобы получить патроны на оружие в руках.\nЗапас ящика: {1}"
 		"it"		"sulla scatola delle munizioni per ottenere le munizioni per l'arma in uso.\nRimanenti: {1}"
 		"ko" 		"키를 누르면 탄약 상자를 통해 현재 당신이 들고 있는 무기의 탄약을 얻습니다.\n남은 탄약 보급량: {1}"
 	}
@@ -1925,12 +1951,14 @@
 	"Armortable Tooltip"
 	{
 		"en" 		"on the Armortable to gain Armor."
+		"ru"		"на верстак брони, чтобы получить броню."
 		"it"		"sulla TavolArmatura per guadagnare Armatura."
 		"ko" 		"키를 눌러 이 아머 테이블을 사용해 아머를 얻으세요."
 	}
 	"Perkmachine Tooltip"
 	{
 		"en" 		"on the Perkmachine to gain a strong perk that lasts till you are dead/downed."
+		"ru"		"на перк-машине чтобы взять перк, который остается до смерти/падения."
 		"it"		"sulla Perkmachine per ottenere un forte potere che durerà fino alla morte o all'esaurimento."
 		"ko" 		"키를 눌러 이 퍽 기계를 사용해 강력한 퍽을 얻으세요. 퍽은 다운 되거나 사망 시 효과가 사라집니다."
 	}
@@ -1960,12 +1988,14 @@
 	"Cannot Pap this"
 	{
 		"en" 		"Your weapon cannot be Enhanced."
+		"ru"		"Ваше Оружие не может быть улучшено."
 		"ko" 		"이 무기는 강화가 불가능합니다."
 	}
 	"Pap Weapon Upgraded"
 	{
 		"#format"	"{1:s}"
 		"en"		"Your weapon has been enhanced to {1}:"
+		"ru"		"Ваше Оружие улучшено до {1}:"
 		"it"		"La tua arma è stata potenziata a {1}:"
 		"ko"		"당신의 무기가 {1} 로 강화됨:"
 	}
@@ -1973,11 +2003,13 @@
 	{
 		"#format"	"{1:s}"
 		"en"		"Enchancement preview for {1}:"
+		"ru"		"Превью улучшений для {1}:"
 		"ko"		"{1} 의 강화 미리보기:"
 	}
 	"Revive Teammate tooltip"
 	{
 		"en" 		"to revive this dying teammate."
+		"ru"		"для оживления тиммейта"
 		"it"		"per rianimare il compagno di squadra morente."
 		"ko" 		"키를 눌러 이 죽어가는 아군을 부활시키세요."
 	}
@@ -2044,7 +2076,7 @@
 	{
 		"en" 		"You can't mount this."
 		"fr" 		"Vous ne pouvez pas monter ceci."
-		"ru" 		"Вы не можете установить это."
+		"ru" 		"Вы не можете взять это."
 		"de"		"Das kannst du nicht aufheben."
 		"pt"		"Você não pode montar isso"
 		"nl"		"Je kan dit niet oppakken."
@@ -2055,6 +2087,7 @@
 	"Village Upgrade Tooltip"
 	{
 		"en" 		"Press [T (spray)] to upgrade your village."
+		"ru"		"Нажмите [T] чтобы улучшить ваше поселение."
 		"it"		"Premere [T (spray)] per potenziare il villaggio."
 		"ko" 		" [T (스프레이)] 키를 눌러 마을을 개선 하세요."
 	}
@@ -2211,7 +2244,7 @@
 		"en"		"Grigori Has been cured!\nYou can talk to him during setup times to get a 20％ Discount on random items!"
 		"es"		"Grigori ha sido curado!\nHablale a cada tanto para ver sus descuentos en su tienda!"
 		"fr"		"Grigori est guéri!\nVous pouvez lui parler lors des temps de préparation pour un rabais de 20％ dans son boutique!"
-		"ru"		"Григорий был вылечен!\nВы можете поговорить с ним во время таймера подготовки, чтобы получить скидку 20％ на случайные предметы!"
+		"ru"		"Григорий был вылечен!\nВы можете поговорить с ним во время подготовки, чтобы получить скидку 20％ на случайные предметы!"
 		"de"		"Grigori wurde geheilt!\nDu kannst mit ihm reden während der Setup zeit um einen 20％ Discount auf zufällige Gegenstände zu bekommen!"
 		"pt"		"Grigori foi curado!\nVocê pode falar com ele durante os intervalos para ter até 20％ de desconto em itens aleatorios!"
 		"nl"		"Grigori werd genezen!\nJe kunt met hem praten tijdens de opstellingstijd om een 20％ korting te krijgen op verschillende items!"
@@ -2228,7 +2261,7 @@
 	"TF2: Zombie Riot"
 	{
 		"en" 		"Zombie Riot\nPress TAB again to close the menu!\nDisplay active weapon in shop with (H)"
-		"ru" 		"Zombie Riot\nСнова нажмите TAB что бы закрыть меню!\nУдерживайте TAB + (H) что бы посмотреть текущее оружие!"
+		"ru" 		"ZR\nTAB > H - показать своё оружие в меню"
 		"fr" 		"Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
 		"chi"		"TF2：僵尸暴动\n按Tab开关菜单\nTAB+(H)显示当前武器！"
 		"it"		"Zombie Riot\nPremi di nuovo TAB per chiudere il menu!\nTieni premuto TAB + (H) per mostrare l'arma corrente!"
@@ -2271,7 +2304,7 @@
 	{
 		"en" 		"Cash After Selling"
 		"fr" 		"Argent après Vente"
-		"ru" 		"Кредитов после продажи"
+		"ru" 		"After"
 		"de"		"Kredit nach verkauf"
 		"pt"		"Créditos após vender"
 		"nl"		"Krediet achter het verkopen"
@@ -2296,7 +2329,7 @@
 		"en"		"All Items are 20％ off here! {$}\nOne Item is 30％ off! {$$}"
 		"es"		"Todos los items aca tienen un descuento del 20%%! {$}\nUn item tiene descuento del 30%%! {$$}"
 		"fr"		"Tous achats ont un rabais de 20％! {$}\nUn achat a un rabais de 30％! {$$}"
-		"ru"		"На все товары скидка 20％! {$}\nНа один товар скидка 30%! {$$}"
+		///"ru"		"На все товары скидка 20％! {$}\nНа один товар скидка 30%! {$$}"
 //		"de"		"All Gegenstände sind 20％ off hier!"
 		"pt"		"Todos os itens estão com 20％ de desconto aqui! {$}\n1 Item está a 30％ de desconto {$$}"
 		"nl"		"Alle items hier hebben een 20％ korting! {$}\nÉén item heeft een 30％ korting! {$$}"
@@ -2308,7 +2341,7 @@
 	{
 		"en"		"All Items are 10％ off here! {$}\nOne Item is 15％ off! {$$}"
 		"fr"		"Tous achats ont un rabais de 10％! {$}\nUn achat a un rabais de 15％! {$$}"
-		"ru"		"На все товары скидка 10％! {$}\nНа один товар скидка 15%! {$$}"
+		///"ru"		"На все товары скидка 10％! {$}\nНа один товар скидка 15%! {$$}"
 //		"de"		"All Gegenstände sind 20％ off hier!"
 		"pt"		"Todos os itens estão com 10％ de desconto aqui! {$}\n1 Item está a 15％ de desconto {$$}"
 		"nl"		"Alle items hier hebben een 10％ korting! {$}\nÉén item heeft een 15％ korting! {$$}"
@@ -2701,7 +2734,7 @@
 	{
 		"en"		"Loadouts"
 		"fr"		"Chargements"
-		"ru"		"Снаряжения"
+		///"ru"		"Снаряжения"
 		"pt"		"Loadouts"
 		"chi"       "预设"
 		"it"		"Equipaggiamti"
@@ -2756,7 +2789,7 @@
 	{
 		"en"		"Delete Loadout"
 		"fr"		"Effacer Chargement"
-		"ru"		"Удалить снаряжение"
+		"ru"		"Удалить Loadout"
 		"pt"		"Deletar Loadout"
 		"nl"		"Verwijder loadout"
 		"chi"       "删除预设值"
@@ -2767,7 +2800,7 @@
 	{
 		"en"		"Enter name in chatbox to create a new loadout.\nIt will save your current bought items with the name you give.\nYou can rebuy said loadout if you have enough cash."
 		"fr"		"Entrez un nom pour votre nouveau chargement dans la boîte de discussion.\nVos achats courants seront enregistrés.\nVous pouvez re-acheter votre chargement avec votre Argent."
-		"ru"		"Введите имя в чат для создания нового снаряжения.\nЭто сохранит ваши купленные предметы с именем, которое вы дали.\nВы можете повторно купить это снаряжение, если у вас достаточно денег."
+		"ru"		"Введите имя в чат для создания нового Loadout.\nЭто сохранит ваши купленные предметы с именем, которое вы дали."
 		"chi"       "在聊天框中输入名字创建一个新的预设\n这将保存您当前购买的物品。如果你有足够的现金，你可以一件购买。"
 		"it"		"Inserisci il nome nella chatbox per creare un nuovo loadout.\nSalverà i tuoi attuali oggetti acquistati con il nome che hai dato.\nPotrai ricomprare questo loadout se hai abbastanza denaro."
 		"ko"		"채팅창에 이름을 입력하여 새 로드아웃을 생성하세요.\n그렇게 하면 현재 구매한 아이템들이 전부 저장됩니다.\n자금이 충분하다면, 로드아웃에 저장된 아이템들을 다시 구매할 수 있습니다."
@@ -2796,7 +2829,7 @@
 	{
 		"en"		"Welcome to Zombie Riot!\nAdvanced weapons will unlock at Level 5"
 		"fr"		"Bienvenue à Zombie Riot!\nLes armes avancées seront disponibles au niveau 5."
-		"ru"		"Добро пожаловать в TF2: Восстание зомби!\nПродвинутое оружие будет открыто на 5-м уровне"
+		"ru"		"Добро пожаловать в Zombie Riot!\nПродвинутое оружие будет открыто на 5-м уровне"
 		"chi"       "欢迎来到TF2:僵尸暴动!高级武器将在5级解锁"
 		"it"		"Benvenuti in Zombie Riot! \nLe armi avanzate si sbloccano al livello 5"
 		"ko"		"TF2: 좀비 라이엇에 오신걸 환영합니다!\n상급 무기들은 5레벨 이상부터 해금됩니다."
@@ -2804,18 +2837,21 @@
 	"Skip Starter"
 	{
 		"en"		"I have played Zombie Riot before"
+		"ru"		"Я уже играл в Zombie Riot раньше"
 		"it"		"Ho già giocato a Zombie Riot"
 		"ko"		"이전에 좀비 라이엇 모드를 해본 적이 있습니다"
 	}
 	"Skip Starter Confirm"
 	{
 		"en"		"Are you already familiar with Zombie Riot?\n \nAre you sure?\nlike, very sure that you know what youre doing?"
+		"ru"		"Вы уже знакомы с Zombie Riot?\n \nВы уверены?\nВы точно знаете, что делаете?"
 		"it"		"Conosci già Zombie Riot? Sei sicuro?\nTipo, molto sicuro di sapere cosa stai facendo?"
 		"ko"		"정말로 좀비 라이엇 모드를 플레이 해보신 적이 있으신가요?\n \n정말이신가요?\n그러니까, 뭘 어떻게 해야하는지 알고 있으신건가요?"
 	}
 	"Skip Starter Button"
 	{
 		"en"		"Pretty sure."
+		"ru"		"Я уверен."
 		"it"		"Ne sono abbastanza sicuro."
 		"ko"		"네."
 	}
@@ -2928,7 +2964,7 @@
 	{
 		"en"		"Armor Hud Setting"
 		"fr"		"Paramètres Armure"
-		"ru"		"Интерфейс брони"
+		"ru"		"Hud брони"
 		"chi"		"装甲Hud设置"
 		"it"		"Impostazione dell'Hud dell'armatura "
 		"ko"		"아머 허드 설정"
@@ -2937,7 +2973,7 @@
 	{
 		"en"		"Hurt Hud Setting"
 		"fr"		"Paramètres Dégats"
-		"ru"		"Интерфейс угроз"
+		"ru"		"Hud угроз"
 		"chi"		"伤害Hud设置"
 		"it"		"Impostazione Danni Hud"
 		"ko"		"피격 허드 설정"
@@ -2946,7 +2982,7 @@
 	{
 		"en"		"Weapon Hud Setting"
 		"fr"		"Paramètres Armes"
-		"ru"		"Интерфейс оружия"
+		"ru"		"Hud оружия"
 		"chi"		"武器Hud设置"
 		"it"		"Impostazione Hud dell'arma"
 		"ko"		"무기 허드 설정"
@@ -2955,7 +2991,7 @@
 	{
 		"en"		"Notif Hud Setting"
 		"fr"		"Paramètres Messages"
-		"ru"		"Интерфейс уведомл."
+		"ru"		"Hud уведомл."
 		"chi"		"通知Hud设置"
 		"it"		"Impostazione Notifica Hud"
 		"ko"		"알림 허드 설정"
@@ -2965,7 +3001,7 @@
 		"#format"	"{1:.3f},{2:.3f}"
 		"en"		"Armor Hud Offset\nX-Axis:{1}\nY-Axis:{2}"
 		"fr"		"Position Indicateur Armure\nX:{1}\nY:{2}"
-		"ru"		"Смещ. интерф. брони\nПо верт.:{1}\nПо гориз.:{2}"
+		"ru"		"Смещ. Hud брони\nПо верт.:{1}\nПо гориз.:{2}"
 		"chi"		"装甲Hud偏移量\nX轴:{1}\nY轴:{2}"
 		"it"		"Armatura Hud Offset\nAsse-X:{1}\nAsse-Y:{2}"
 		"ko"		"아머 허드 위치\nX축:{1}\nY축:{2}"
@@ -2975,7 +3011,7 @@
 		"#format"	"{1:.3f},{2:.3f}"
 		"en"		"Hurt Hud Offset\nX-Axis:{1}\nY-Axis:{2}"
 		"fr"		"Position Indicateur Dégats\nX:{1}\nY:{2}"
-		"ru"		"Смещ. интерф. угроз\nПо верт.:{1}\nПо гориз.:{2}"
+		"ru"		"Смещ. Hud угроз\nПо верт.:{1}\nПо гориз.:{2}"
 		"chi"		"伤害Hud偏移量\nX轴:{1}\nY轴:{2}"
 		"it"		"Danni Hud Offset\nAsse-X:{1}\nAsse-Y:{2}"
 		"ko"		"피격 허드 위치\nX축:{1}\nY축:{2}"
@@ -2985,7 +3021,7 @@
 		"#format"	"{1:.3f},{2:.3f}"
 		"en"		"Weapon Hud Offset\nX-Axis:{1}\nY-Axis:{2}"
 		"fr"		"position Indicateur Armes\nX:{1}\nY:{2}"
-		"ru"		"Смещ. интерф. оруж.\nПо верт.:{1}\nПо гориз.:{2}"
+		"ru"		"Смещ. Hud оруж.\nПо верт.:{1}\nПо гориз.:{2}"
 		"chi"		"武器Hud偏移量\nX轴:{1}\nY轴:{2}"
 		"it"		"Offset Hud dell'arma\nAsse-X:{1}\nAsse-Y:{2}"
 		"ko"		"무기 허드 위치\nX축:{1}\nY축:{2}"
@@ -2995,7 +3031,7 @@
 		"#format"	"{1:.3f},{2:.3f}"
 		"en"		"Notif Hud Offset\nX-Axis:{1}\nY-Axis:{2}"
 		"fr"		"Position Messages\nX:{1}\nY:{2}"
-		"ru"		"Смещ. интерф. увед.\nПо верт.:{1}\nПо гориз.:{2}"
+		"ru"		"Смещ. Hud увед.\nПо верт.:{1}\nПо гориз.:{2}"
 		"chi"		"通知Hud偏移量\nX轴:{1}\nY轴:{2}"
 		"it"		"Notifica Hud Offset\nAsse-X:{1}\nAsse-Y:{2}"
 		"ko"		"알림 허드 위치\nX축:{1}\nY축:{2}"
@@ -3004,7 +3040,7 @@
 	{
 		"en"		"Move Hud Up"
 		"fr"		"Bouger Interface vers le Haut"
-		"ru"		"Интерф. вверх"
+		"ru"		"Hud вверх"
 		"chi"		"向上移动Hud"
 		"it"		"Sposta Hud in alto"
 		"ko"		"허드를 위로 이동"
@@ -3018,12 +3054,14 @@
 	"Cant Display"
 	{
 		"en"		"Your Holding weapon cant be shown in the shop..."
+		"ru"		"Ваше Оружие в руках нельзя показать в магазине..."
 		"it"		"L'arma di mantenimento non può essere mostrata nel negozio..."
 		"ko"		"당신이 들고 있는 무기는 상점에 표시될 수 없습니다..."
 	}
 	"Cant Display Enhance"
 	{
 		"en"		"Your Holding weapon cant be enhanced..."
+		"ru"		"Ваше Оружие в руках не может быть улучшено..."
 		"it"		"L'arma di mantenimento non può essere mostrata nel negozio..."
 		"ko"		"당신이 들고 있는 무기는 강화가 불가능합니다..."
 	}
@@ -3031,7 +3069,7 @@
 	{
 		"en"		"Move Hud Down"
 		"fr"		"Bouger Interface vers le Bas"
-		"ru"		"Интерф. вниз"
+		"ru"		"Hud вниз"
 		"chi"		"向下移动Hud"
 		"it"		"Sposta Hud verso il basso"
 		"ko"		"허드를 아래로 이동"
@@ -3040,7 +3078,7 @@
 	{
 		"en"		"Move Hud Left"
 		"fr"		"Bouger Interface vers la Gauche"
-		"ru"		"Интерф. влево"
+		"ru"		"Hud влево"
 		"chi"		"向左移动Hud"
 		"it"		"Sposta Hud a sinistra"
 		"ko"		"허드를 왼쪽으로 이동"
@@ -3049,7 +3087,7 @@
 	{
 		"en"		"Move Hud Right"
 		"fr"		"Bouger Interface vers la Droite"
-		"ru"		"Интерф. вправо"
+		"ru"		"Hud вправо"
 		"chi"		"向右移动Hud"
 		"it"		"Sposta Hud a destra"
 		"ko"		"허드를 오른쪽으로 이동"
@@ -3085,6 +3123,7 @@
 	"Un-Claim Building"
 	{
 		"en"		"Un-Claim a building."
+		"ru"		"Отказаться от постройки."
 		"fr"		"Abandonner une construction."
 		"chi"		"舍弃建筑"
 		"it"		"Disconosci una struttura."
@@ -3093,6 +3132,7 @@
 	"UnClaim Current Marked Building"
 	{
 		"en"		"Un-Claim the current marked building?"
+		"ru"		"Отказаться от отмеченной постройки?"
 		"fr"		"Abandonner cette construction?"
 		"chi"		"舍弃此建筑？"
 		"it"		"Disconosci l'attuale struttura contrassegnata?"
@@ -3115,6 +3155,7 @@
 	"Destroy all your non-Mounted Buildings"
 	{
 		"en"		"Destroy all your non-Mounted, non-Visible Buildings"
+		"ru"		"Удалить все построки вне поле зрения"
 		"fr"		"Détruire tous les constructions non montés et non visibles."
 		"chi"		"摧毁所有地上建筑"
 		"it"		"Distruggi tutti le Strutture non montati e non visibili"
@@ -3123,6 +3164,7 @@
 	"Destroy all your non-Mounted Buildings Sure"
 	{
 		"en"		"Are you sure that you want to delete all your own non mounted buildings?\nThis will not delete buildings that are in your line of sight."
+		"ru"		"Вы точно хотите удалить все свот постройки все поле зрения?/nПереносимая на спине постройка не будет удалена."
 		"fr"		"Détruire tous vos constructions non montés?\nLes constructions que vous sont visibles ne seront pas détruits."
 		"chi"		"确认摧毁所有地上建筑？\n！不会摧毁视野外建筑！"
 		"it"		"È sicuro di voler eliminare tutti le Strutture non montate? Questo non eliminerà le Strutture che si trovano nella sua linea di vista."
@@ -3425,7 +3467,7 @@
 	{
 		"en"		"Wait for an open slot"
 		"fr"		"Attendre pour une place vacante"
-		"ru"		"Ждать, пока освободится место"
+		"ru"		"Ждать, пока освободится место <--"
 		"chi"		"等待空位"
 		"it"		"Attendi uno slot aperto"
 		"ko"		"빈 자리를 기다리기"
@@ -4639,12 +4681,14 @@
 	"True Fusion Warrior Wave Desc"
 	{
 		"en"	"Lore order: (1) ''Silvester'' Is infected with the xeno virus, his gear prevents the spreading of it. how can we save him from the infection."
+		"ru"	"Lore order: (1) Сильвестр заражен ксено-вирусом, его снаряжение не дает вирусу распространиться. Как же нам спасти его от инфекции."
 		"it"	"Ordine Lore: (1) ''Silvester'' È infettato dal virus xeno, il suo equipaggiamento ne impedisce la diffusione."
 		"ko"	"설정 순서: (1) ‘실베스터’가 제노 바이러스에 감염되었으며, 그의 장비가 감염의 확산을 막고 있습니다. 어떻게 감염에서 해방시켜야 할까요..."
 	}
 	"Alternative Desc"
 	{
 		"en"	"Blitzkrieg sends his army to attack you. Blitz itself does not see you worthy enough to fight it."
+		"ru"	"Блицкриг посылает свою армию, чтобы напасть на вас. Сам Блиц не считает вас достойным, чтобы сразиться с ним."
 		"fr"	"Une tournure sur le mode classique aves des nouveaux ennemis mystérieux!"
 		"chi"	"经典模式，但出现了掌握魔法的心敌人…"
 		"it"	"Combatti con una nuova versione del classico con nuovi nemici magici!"
@@ -5026,12 +5070,14 @@
 	"Weapon Enhancement"
 	{
 		"en"	"Enhancement"
+		"ru"	"Улучшить"
 		"it"	"Visualizza gli aggiornamenti PAP"
 		"ko"	"무기 강화하기"
 	}
 	"Bring up Class Change Menu"
 	{
 		"en"	"Bring up Class Change Menu"
+		"ru"	"Открыть меню смены класса (модельки)"
 		"fr"	"Montrer le Menu de Changement de Classe"
 		"chi"	"打开兵种切换菜单"
 		"it"	"Visualizza il menu di modifica della classe"
@@ -5304,48 +5350,56 @@
 	"DPS Class"
 	{
 		"en"	"DPS Class\nFocus on damage and get Hasty Hops perk"
+		//"ru"	"Класс DPS\nСпециализирован на уроне и получает перк Хмельная Спешка"
 		"it"	"Classe DPS\nIncentrata sui danni e con il vantaggio Luppolo frettoloso"
 		"ko"	"딜러\n피해에 집중하고 신속 홉 퍽 보유"
 	}
 	"Tank Class"
 	{
 		"en"	"Tank Class\nFocus on tanking and get Obsidian Oaf perk"
+		///"ru"	"Класс Танк\nСпециализирован на поглощении урона и получает перк Олух Обсидиана"
 		"it"	"Classe Tank\nFocalizzarsi sul tanking e ottenere il vantaggio Allocco Ossidiana"
 		"ko"	"탱커\n방어에 집중하고 옵시디언 호프 퍽 보유"
 	}
 	"Healer Class"
 	{
 		"en"	"Healer Class\nAble to heal, less DPS, and get Regene Berry perk"
+		///"ru"	"Класс Медик\nМожет лечить, низкий DPS и получает перк Реаниматор"
 		"it"		"Guaritore di classe\nPossibilità di curare, meno DPS, e ottenere il vantaggio Bacca Regene"
 		"ko"	"메딕\n회복 능력을 가지고 있지만 낮은 피해량 보유. 재생형 열매 퍽 보유"
 	}
 	"Builder Class"
 	{
 		"en"	"Builder Class\nAble to build, repair, and get Morning Coffee perk"
+		///"ru"	"Класс Строитель\nМожет строить, чинить и получает перк Утренний Кофе"
 		"it"	"Costruttore di classe\nPuò costruire, riparare e ottenere il vantaggio Caffè del mattino"
 		"ko"	"건축가\n건설과 수리가 가능하며 모닝 커피 퍽 보유"
 	}
 	"Don't Follow Me"
 	{
 		"en"	"Don't Follow Me"
+		"ru"	"Не Следуй за Мной"
 		"it"	"Non seguirmi"
 		"ko"	"나를 따라오지 마세요"
 	}
 	"Switch Class"
 	{
 		"en"	"Switch Class"
+		"ru"	"Сменить Класс"
 		"it"	"Scambia Classe"
 		"ko"	"병과 변경"
 	}
 	"Switch Weapons"
 	{
 		"en"	"Switch Weapons"
+		"ru"	"Сменить Оружие"
 		"it"	"Scambia armi"
 		"ko"	"무기 변경"
 	}
 	"Weapon Preference"
 	{
 		"en"	"Your Preference"
+		"ru"	"Твои Предпочтения"
 		"it"	"La vostra preferenza"
 		"ko"	"이 NPC의 성향 확인"
 	}
@@ -5406,40 +5460,47 @@
 	"Set My Basepoint"
 	{
 		"en"	"Set My Basepoint"
+		"ru"	"Поставить Точку Базы"
 		"ko"	"거점 포인트 설정"
 	}
 	"Saved Pos for Base"
 	{
 		"en"	"This builder will remember this position and stay near it."
+		"ru"	"Строитель запомнит эту точку и будет стоять рядом с ней."
 		"ko"	"건축가 반시민군이 이 위치를 기억하고 근처에 있을 것입니다."
 	}
 	"Build Barricade At Me"
 	{
 		"en"	"Build Barricade At Me"
+		"ru"	"Построй Баррикаду"
 		"it"	"Costruisci una barricata su di me"
 		"ko"	"내 위치에 바리케이드를 건설해줘"
 	}
 	"Build Sentry At Me"
 	{
 		"en"	"Build Sentry At Me"
+		"ru"	"Построй Турель"
 		"it"	"Costruisci sentinelle su di me"
 		"ko"	"내 위치에 센트리 건을 건설해줘"
 	}
 	"Build Ammo Box At Me"
 	{
 		"en"	"Build Ammo Box At Me"
+		"ru"	"Построй Ящик Аммуниции"
 		"it"	"Costruisci la scatola delle munizioni presso di me"
 		"ko"	"내 위치에 탄약 상자를 건설해줘"
 	}
 	"Build Armor Table At Me"
 	{
 		"en"	"Build Armor Table At Me"
+		"ru"	"Построй Верстак Брони"
 		"it"	"Costruisci un tavolo per armature presso di me"
 		"ko"	"내 위치에 아머 테이블을 건설해줘"
 	}
 	"Build Perk Machine At Me"
 	{
 		"en"	"Build Perk Machine At Me"
+		"ru"	"Построй Перк-машину"
 		"it"	"Costruisci la macchina per il Vantaggio presso di me"
 		"ko"	"내 위치에 퍽 기계를 건설해줘"
 	}
@@ -5452,18 +5513,21 @@
 	"Name Rebel"
 	{
 		"en"	"Name Rebel"
+		"ru"	"Дать Имя"
 		"it"	"Nome Ribelle"
 		"ko"	"이 반시민의 이름 변경"
 	}
 	"Pistol"
 	{
 		"en"	"Pistol"
+		"ru"	"Пистолет"
 		"it"	"Pistola"
 		"ko"	"권총"
 	}
 	"SMG"
 	{
 		"en"	"SMG"
+		"ru"	"ППМ"
 		"it"	"SMG"
 		"ko"	"기관단총"
 	}
@@ -5476,18 +5540,21 @@
 	"Shotgun"
 	{
 		"en"	"Shotgun"
+		"ru"	"Дробовик"
 		"it"	"Fucile a pompa"
 		"ko"	"산탄총"
 	}
 	"RPG"
 	{
 		"en"	"RPG"
+		"ru"	"РПГ"
 		"it"	"RPG"
 		"ko"	"RPG"
 	}
 	"Crowbar"
 	{
 		"en"	"Crowbar"
+		"ru"	"Монтировка"
 		"it"	"Piede di porco"
 		"ko"	"쇠지렛대"
 	}
@@ -5566,6 +5633,7 @@
 	"Loadout In Store"
 	{
 		"en"		"You're in the Starter Store!\nBuy the weapons and gear you need with a high discount!\nOnce done, exit the store to access your earned cash!\nPress [TAB] and exit the store with [1]!"
+		"ru"		"Вы в начальном магазине!\nПокупайте оружие и улучшения!\nКогда готовы, выйдите из магазина!\nНажмите [TAB] и выйдите [1]!"
 		"it"		"Sei nel Negozio Iniziale! \nAcquista le armi e l'equipaggiamento di cui hai bisogno con un forte sconto! \nUna volta finito, esci dal negozio per accedere ai soldi guadagnati! \nPremi [TAB] e esci dal negozio con [1]!"
 		"ko"		"초기 상점에 있습니다!\n상점 메뉴에서 높은 할인가로 무기와 장비를 구매하세요!\n구매가 끝났다면, 상점을 나가서 획득한 자금을 사용하세요!\n [TAB] 을 누르고 [1] 로 초기 상점을 나가세요!"
 	}
@@ -5573,11 +5641,13 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"You joined a round in progress.\nBuy Equipment and use [{1:d}] more Cash to qualify.\nYou have access to upgrade your current weapons in your store.\nSales are ignored, but got extra cash."
+		"ru"		"Вы зашли после начала раунда.\nКупите снаряжение на сумму [{1:d}], чтобы начать игру.\nВы можете улучшить оружие в магазине."
 		"ko"		"진행 중인 라운드에 참여했습니다.\n참여 자격을 갖추기 위해 자금을 [{1:d}] 사용하세요.\n상점에서 현재 무기를 업그레이드할 수 있습니다.\n세일은 적용되지 않지만 추가 자금을 받습니다."
 	}
 	"No Attack Info"
 	{
 		"en"		"You can't attack during the wave currently."
+		"ru"		"Вы не можете атаковать на этой волне."
 		"ko"		"현재 웨이브 동안에는 공격할 수 없습니다."
 	}
 	"Getting favorite loadout"

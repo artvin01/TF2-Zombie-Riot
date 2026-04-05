@@ -10,7 +10,7 @@ void SquadX_Master_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = -1;
-	data.Category = -1;
+	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -85,6 +85,7 @@ methodmap SquadX_Master < CClotBody
 		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_bThisNpcIsABoss = true;
 		b_NoHealthbar[npc.index] = 1;
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 
 		
 		b_NpcUnableToDie[npc.index] = true;

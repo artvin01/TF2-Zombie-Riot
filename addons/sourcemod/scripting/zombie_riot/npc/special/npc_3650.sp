@@ -280,29 +280,35 @@ methodmap ThirtySixFifty < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{white}3650{default}: You, zombie guy, follow me.");
+					NPCTalkMessage(npc.index, "You, zombie guy, follow me.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{white}3650{default}: I'm more elite than you are, come on.");
+					NPCTalkMessage(npc.index, "I'm more elite than you are, come on.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{white}3650{default}: You guys can't tell, but I have a mean poker face.");
+					NPCTalkMessage(npc.index, "You guys can't tell, but I have a mean poker face.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{white}3650{default}: THEY have medics, why don't WE have medics?");
+					NPCTalkMessage(npc.index, "THEY have medics, why don't WE have medics?");
 				}
 				case 4:
 				{
-					CPrintToChatAll("{white}3650{default}: At least I still have meatshields.");
+					NPCTalkMessage(npc.index, "At least I still have meatshields.");
 				}
 			}
 		}
 		return npc;
 	}
 }
+
+static void NPCTalkMessage(int iNPC, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(iNPC, "white", message);
+}
+
 static void ClotThink(int iNPC)
 {
 	ThirtySixFifty npc = view_as<ThirtySixFifty>(iNPC);

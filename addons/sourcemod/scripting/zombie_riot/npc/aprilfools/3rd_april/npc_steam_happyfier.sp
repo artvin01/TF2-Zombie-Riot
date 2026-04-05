@@ -15,9 +15,15 @@ void SteamHappyfier_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "steamhappy");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = -1;
+	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPCID = NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	AddToDownloadsTable("sound/zombie_riot/yippe.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)

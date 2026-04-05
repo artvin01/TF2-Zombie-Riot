@@ -596,7 +596,7 @@ methodmap Karlas < CClotBody
 
 		if(StrContains(data, "overdrive") != -1)
 		{
-			CPrintToChatAll("{crimson}Karlas{snow}: >:)");
+			Karlas_Lines(npc, ">:)");
 			b_lostOVERDRIVE[npc.index] = true;
 
 			NpcSpeechBubble(npc.index, ">:)", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
@@ -639,7 +639,7 @@ static void Win_Line(int entity)
 	if(npc.Ally)
 		return;
 		
-	CPrintToChatAll("{crimson}Karlas{snow}: Oyaya?");
+	Karlas_Lines(npc, "Oyaya?");
 }
 void Set_Karlas_Ally(int karlas, int stella, int wave = -2, bool bob, bool tripple)
 {	
@@ -675,7 +675,7 @@ static void Internal_ClotThink(int iNPC)
 	
 	if(RaidModeTime < GetGameTime() && !npc.Ally && !b_lostOVERDRIVE[npc.index])
 	{
-		CPrintToChatAll("{crimson}Karlas{snow}: >:)");
+		Karlas_Lines(npc, ">:)");
 		b_lostOVERDRIVE[npc.index] = true;
 
 		NpcSpeechBubble(npc.index, ">:)", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
@@ -915,7 +915,7 @@ static bool Healing_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceTo
 		if(flDistanceToAlly < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, Ally))
 		{
 			NpcSpeechBubble(npc.index, "..!", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
-			CPrintToChatAll("{crimson}Karlas{snow}: ..!");
+			Karlas_Lines(npc, "..!");
 			CPrintToChatAll("{crimson}Karlas Heals Stella, and provides himself with some adrenaline...");
 			HealEntityGlobal(npc.index, Ally, float((AllyMaxHealth / 7)), 1.0, 0.0, HEAL_ABSOLUTE);
 			ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 5.0);
@@ -2313,8 +2313,8 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			ApplyStatusEffect(ally, ally, "Extreme Anxiety", 999.0);
 			switch(GetRandomInt(0, 1))
 			{
-				case 0: CPrintToChatAll("{crimson}Karlas{snow}: *heavy breathing*");
-				case 1: CPrintToChatAll("{crimson}Karlas{snow}: *slight pain grunt*");
+				case 0: Karlas_Lines(npc, "*heavy breathing*");
+				case 1: Karlas_Lines(npc, "*slight pain grunt*");
 			}
 			RaidModeTime +=17.0; //Extra time due to invuln
 		
@@ -2895,4 +2895,9 @@ public Action Fusion_RepeatSound_Doublevoice(Handle timer, DataPack pack)
 		EmitSoundToAll(sound, entity, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	return Plugin_Handled; 
+}
+
+void Karlas_Lines(Karlas npc, const char[] text)
+{
+	PrintNPCMessageWithPrefixes(npc.index, "{crimson}", text, .messageColor = "{snow}");
 }

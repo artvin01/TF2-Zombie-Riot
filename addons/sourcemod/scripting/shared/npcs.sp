@@ -2813,12 +2813,28 @@ stock int StrLenMB(const char[] str)
 */
 
 #if defined ZR
-void PrintNPCMessageWithPrefixes(int entity, const char[] color, const char[] message, bool messageIsTranslated = false)
+void PrintNPCMessageWithPrefixes(int entity, const char[] npcColor, const char[] message, bool messageIsTranslated = false, const char[] customName = "", const char[] messageColor = "default", bool customNameIsTranslated = false)
 {
+	if (c_NpcName[entity][0] == '\0')
+	{
+		// This NPC has no name! It might have not been fully initialized yet, try again until it has a name
+		DataPack pack = new DataPack();
+		RequestFrame(PrintNPCMessageWithPrefixes_Delay, pack);
+		pack.WriteCell(EntIndexToEntRef(entity));
+		pack.WriteString(npcColor);
+		pack.WriteString(message);
+		pack.WriteCell(messageIsTranslated);
+		pack.WriteString(customName);
+		pack.WriteString(messageColor);
+		pack.WriteCell(customNameIsTranslated);
+		
+		return;
+	}
+	
 	bool checkedForPrefixes;
 	bool loud;
-	char finalColor[32];
-	char finalMessage[255];
+	char finalNpcColor[32], finalMessageColor[32];
+	char finalName[256], finalMessage[256];
 	
 	// Only copy the message once if it's not translated
 	if (!messageIsTranslated)
@@ -2841,20 +2857,44 @@ void PrintNPCMessageWithPrefixes(int entity, const char[] color, const char[] me
 				if (HasSpecificBuff(entity, "Verde"))
 				{
 					// verd e
-					finalColor = "forestgreen";
+					finalNpcColor = "forestgreen";
 				}
 				else if (HasSpecificBuff(entity, "Ragebaiter Prefix"))
 				{
 					// To match the rest of ragebaiter text
-					finalColor = "crimson";
+					finalNpcColor = "crimson";
 				}
 				
 				if (HasSpecificBuff(entity, "Loud Prefix"))
 					loud = true;
 			}
 			
-			if (finalColor[0] == '\0')
-				strcopy(finalColor, sizeof(finalColor), color);
+			if (finalNpcColor[0] == '\0')
+			{
+				FormatEx(finalNpcColor, sizeof(finalNpcColor), "{%s}", npcColor);
+			}
+			else
+			{
+				Format(finalNpcColor, sizeof(finalNpcColor), "{%s}", finalNpcColor);
+			}
+			
+			// Sometimes colors are defined with {}, sometimes without... get rid of dupes to accommodate for everything
+			ReplaceString(finalNpcColor, sizeof(finalNpcColor), "{{", "{");
+			ReplaceString(finalNpcColor, sizeof(finalNpcColor), "}}", "}");
+			
+			if (finalMessageColor[0] == '\0')
+			{
+				FormatEx(finalMessageColor, sizeof(finalMessageColor), "{%s}", messageColor);
+			}
+			else
+			{
+				Format(finalMessageColor, sizeof(finalMessageColor), "{%s}", finalMessageColor);
+			}
+			
+			// Sometimes colors are defined with {}, sometimes without... get rid of dupes to accommodate for everything
+			ReplaceString(finalMessageColor, sizeof(finalMessageColor), "{{", "{");
+			ReplaceString(finalMessageColor, sizeof(finalMessageColor), "}}", "}");
+				
 			
 			if (!messageIsTranslated && loud)
 				StringToUpper(finalMessage);
@@ -2871,10 +2911,64 @@ void PrintNPCMessageWithPrefixes(int entity, const char[] color, const char[] me
 				StringToUpper(finalMessage);
 		}
 		
-		if (!b_NameNoTranslation[entity])
-			CPrintToChat(client, "{%s}%s%s{default}: %s", finalColor, prefix, c_NpcName[entity], finalMessage);
+		bool isCustomName = customName[0] != '\0';
+		if (isCustomName)
+		{
+			if (customNameIsTranslated)
+				FormatEx(finalName, sizeof(finalName), "%T", customName, client);
+			else
+				strcopy(finalName, sizeof(finalName), customName);
+		}
 		else
-			CPrintToChat(client, "{%s}%s%t{default}: %s", finalColor, prefix, c_NpcName[entity], finalMessage);
+		{
+			if (!b_NameNoTranslation[entity])
+				FormatEx(finalName, sizeof(finalName), "%T", c_NpcName[entity], client);
+			else
+				strcopy(finalName, sizeof(finalName), c_NpcName[entity]);
+		}
+		
+		char fullText[512];
+		FormatEx(fullText, sizeof(fullText), "%s%s%s%s: %s", finalNpcColor, prefix, finalName, finalMessageColor, finalMessage);
+		
+		if (strlen(fullText) > 250)
+		{
+			// Some translations or way too many prefixes might make messages overflow. Split them!
+			char splitName[256], splitMessage[256];
+			FormatEx(splitName, sizeof(splitName), "%s%s%s%s:", finalNpcColor, prefix, finalName, finalMessageColor);
+			FormatEx(splitMessage, sizeof(splitMessage), "%s%s", finalMessageColor, finalMessage);
+			
+			CPrintToChat(client, splitName);
+			CPrintToChat(client, splitMessage);
+		}
+		else
+		{
+			CPrintToChat(client, fullText);
+		}
 	}
+}
+
+void PrintNPCMessageWithPrefixes_Delay(DataPack pack)
+{
+	pack.Reset();
+	
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if (entity == INVALID_ENT_REFERENCE || b_NpcHasDied[entity])
+	{
+		delete pack;
+		return;
+	}
+	
+	char message[255], npcColor[32], messageColor[32], customName[255];
+	
+	pack.ReadString(npcColor, sizeof(npcColor));
+	pack.ReadString(message, sizeof(message));
+	bool messageIsTranslated = pack.ReadCell();
+	pack.ReadString(customName, sizeof(customName));
+	pack.ReadString(messageColor, sizeof(messageColor));
+	bool customNameIsTranslated = pack.ReadCell();
+	
+	delete pack;
+	
+	PrintNPCMessageWithPrefixes(entity, npcColor, message, messageIsTranslated, customName, messageColor, customNameIsTranslated);
 }
 #endif
