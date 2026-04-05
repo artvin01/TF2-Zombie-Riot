@@ -53,6 +53,19 @@ async function parse_waveset(file) {
         if (waveset_data["authors"]["raid"]!=="") {waveset_info+="<div>Raidboss by: %s</div>".replace("%s",waveset_data["authors"]["raid"])};
         if (waveset_data["item_on_win"]!=="") {waveset_info+="<div>Item on win: %s</div>".replace("%s",waveset_data["item_on_win"])};
         
+        for (const [key, entry] of Object.entries(waveset_data["music"])) {
+            context = {
+                "filepath": entry["filepath"],
+                "filename": entry["filename"],
+                "musicname": key.split("_")[1] + ": " + entry["name"]
+            }
+            if (!entry["file_exists"]) {
+                waveset_info += fill_template(music_modal_missing, context);
+            } else {
+                waveset_info += fill_template(music_modal, context);
+            }
+        };
+
         const waveset_info_container = document.getElementById("waveset_info");
         if (waveset_info!=="") {
             console.log("unhide");

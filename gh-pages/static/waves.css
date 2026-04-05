@@ -224,7 +224,12 @@ input[type=number] {
 }
 
 /* Audio */
+#music_title {
+    text-transform: capitalize;    
+}
+
 .audio {
+    text-transform: capitalize;
     display: flex;
     align-items: center;
     padding: 5px;
