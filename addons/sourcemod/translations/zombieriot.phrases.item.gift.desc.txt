@@ -452,9 +452,7 @@
 	}
 	"Xeno Father Grigori Desc"
 	{
-		"en" 		"Xeno infection altered Grigori's powers and made him able to summon his lightbeams directly on you.\nHe ditched his grenade and shoots his rockets way faster."
-		"it"		"L'infezione Xeno ha alterato i poteri di Grigori e lo ha reso in grado di evocare i suoi raggi di luce direttamente su di voi.\nHa abbandonato la granata e spara i suoi razzi molto più velocemente."
-		"ko" 		"제노 감염이 그리고리 신부의 힘을 변화시켜, 당신의 위치에 성스러운 빛을 생성할 수 있게 되었습니다.\n-수류탄 대신 로켓을 더욱 빠르게 발사합니다."
+		"en" 		"Xeno infection altered Grigori's powers\n-summons his lightbeams directly ento enemies\n-Shoots explosive bullets from any range with little cooldown"
 	}
 	"Xeno Metro Cop Desc"
 	{
@@ -2074,19 +2072,17 @@
 	}
 	"Ouroboros Ekas Desc"
 	{
-		"en"	"Buffs all enemies on the field massively, if its the last one alive, it gains 5x speed, 2x res."
+		"en"	"-Buffs all enemies on the field massively\n-If last alive (or any of itself left only), it gains 5x speed, 2x res."
 		"it"	"Buffs tutti i nemici sul campo in modo massiccio, se è l'ultimo in vita, guadagna 5x velocità, 2x res."
 		"ko"	"전장 위에 있는 모든 적에게 매우 강력한 버프를 부여합니다. 만약 이 적이 혼자 남았다면, 이 적의 속도가 5배 증가하고 저항력이 2배로 증가합니다."
 	}
 	"Xeno Patient Few Desc"
 	{
-		"en"	"Oneshots any player that isnt ubered.\nDeals massive damage to cades.\nWhen hurt, gains a short burst of speed."
-		"it"	"Spara a qualsiasi giocatore che non sia uberizzato.\nDanneggia pesantemente i cadetti.\nQuando viene ferito, guadagna una breve raffica di velocità."
-		"ko"	"우버차지 상태가 아닌 플레이어를 즉사 시킵니다.\n바리케이드를 상대로 극도로 높은 피해를 줍니다.\n피해를 받으면, 짧게 지속되는 이동 속도 증진을 받습니다."
+		"en"	"-Deals immensive damage against players.\nLow damage to cades.\nWhen hurt, gains a short burst of speed."
 	}
 	"Xeno Early Infected Desc"
 	{
-		"en"	"Very fast but loses its speed once hit."
+		"en"	"-Extreme speeds, loses this on first hit taken"
 		"it"	"Molto veloce, ma perde la sua velocità una volta colpito."
 		"ko"	"이동 속도가 극도로 빠르지만, 한 번이라도 피해를 받으면 이동 속도가 느려집니다."
 	}

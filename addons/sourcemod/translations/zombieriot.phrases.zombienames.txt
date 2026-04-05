@@ -1182,9 +1182,9 @@
 	}
 	"Xeno Infected Lab Doctor Desc"
 	{
-    "it"	"Un medico che cercava di curare il virus xeno nel laboratorio, ha fallito ed è stato infettato lui stesso.\nQuanto più bassi sono i loro HP, tanto più resistenza ottengono quando pensano.\nStordiscili per evitare questo effetto, o colpiscili con un colpo solo."
+   		"it"	"Un medico che cercava di curare il virus xeno nel laboratorio, ha fallito ed è stato infettato lui stesso.\nQuanto più bassi sono i loro HP, tanto più resistenza ottengono quando pensano.\nStordiscili per evitare questo effetto, o colpiscili con un colpo solo."
 
-		"en" 	"A doctor trying to cure the xeno virus in the lab, failed and got infected himself.\n-Each hit they take increases their resitance, up to a limit."
+		"en" 	"A doctor trying to cure the xeno virus in the lab, failed and got infected himself.\n-Lower health increases their resitance, up to a limit."
 		"ko" 	"연구실에 흘러들어온 제노 바이러스를 치료하기 위해 노력한 의사였지만, 실패하고 감염되었습니다.\n-피해를 받을 때마다, 상한까지 피해 저항력이 증가합니다."
 	}
 	"Archer"
