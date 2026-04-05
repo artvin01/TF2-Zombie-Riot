@@ -18,8 +18,8 @@ const support_npc_modal = `<div class="divider"></div><div id="support_npc_conta
     <h2>SUPPORT</h2>
 </div>
 `
-const music_modal = `<audio controls><source src="filepath" type="audio/mpeg"></audio>`
-const music_modal_missing = `<div>musicname</div>`
+const music_modal = `<div onclick="set_audio_resource(this);" file=\"filepath\" name=\"musicname\" class="audio"><img src="builtin_img/music.svg">musicname</div>`
+const music_modal_missing = `<div class="disabled audio"><img src="builtin_img/music.svg">musicname</div>`
 function cycle_wave(val) {
     let prev_wave = wave;
     wave = wave + val;
@@ -162,7 +162,7 @@ function update_wave_display() {
 
 function fill_template(temp, cont) {
     for (let pair of Object.entries(cont)) {
-        temp = temp.replace(pair[0],pair[1]);
+        temp = temp.replaceAll(pair[0],pair[1]);
     }
     return temp
 }
@@ -224,3 +224,13 @@ document.onkeydown = (e) => {
 };
 
 check_url_params();
+
+
+/* Audio player */
+function set_audio_resource(obj) {
+    const title = document.getElementById("music_title");
+    title.innerHTML = obj.getAttribute("name");
+    let t = `<audio controls><source src="filepath" type="audio/mpeg"></audio>`;
+    document.getElementById("music_player").innerHTML= t.replace("filepath",obj.getAttribute("file"));
+    title.parentElement.classList.remove("hidden");
+}

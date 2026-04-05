@@ -20,3 +20,6 @@ gh-pages/index.html
 !gh-pages/builtin_img/
 !gh-pages/premedia_icons/
 !gh-pages/waveset_viewer.html
+
+test.py
+dump/*

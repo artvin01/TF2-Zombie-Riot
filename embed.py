@@ -6,6 +6,7 @@ from re import sub
 
 
 color = {
+    "viewer_bg": (60,65,68),
     "bg_dark": (24, 26, 27),
     "bg_light": (230,234,221),
     "text_dark": (204,200,193),
@@ -54,10 +55,10 @@ def generate_waveset_embed(filename, title, wave, wave_max, entries):
     img = Image.new(mode="RGB", size=(WIDTH, HEIGHT))
     drawable = ImageDraw.Draw(img)
 
-    drawable.rectangle([(0,0),(WIDTH,HEIGHT)], color["bg_dark"])
+    drawable.rectangle([(0,0),(WIDTH,HEIGHT)], color["viewer_bg"])
     # https://pillow.readthedocs.io/en/stable/deprecations.html#font-size-and-offset-methods
     draw_text_centered(drawable, (WIDTH/2, 10), title, color["text_dark"], font["Oswald"])
-    draw_text_centered(drawable, (WIDTH/2, 65), f"WAVE {wave} / {wave_max}", color["text_dark"], font["Oswald Small"])
+    draw_text_centered(drawable, (WIDTH/2, 100), f"WAVE {wave} / {wave_max}", color["text_dark"], font["Oswald Small"])
 
     drawable.rounded_rectangle([(bar_padding,bar_y), (WIDTH-bar_padding,bar_y+bar_height)], 4, color["bg_light"], outline=color["deep-space-blue"])
     progress = (wave/wave_max)*bar_width

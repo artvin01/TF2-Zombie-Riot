@@ -15,11 +15,11 @@
         <h3 id="wave_progress_text">WAVE <input type="number" min="1" max="40" value="1" onchange="set_wave(this.value);">/ <span>40</span></h3>
         <img src="static/link.svg" id="wave_embed_link" tabindex="0" onclick="copy_waveset_embed_link();">
         <div class="flex_break"></div>
-        <div class="wave_btn" tabindex="0" onclick="cycle_wave(-1);"><</div>
+        <div class="wave_btn" tabindex="0" onclick="cycle_wave(-1);">&lt;</div>
         <div id="wave_progress_bar">
             <div style="pointer-events:none;"></div>
         </div>
-        <div class="wave_btn" tabindex="0" onclick="cycle_wave(1);">></div>
+        <div class="wave_btn" tabindex="0" onclick="cycle_wave(1);">&gt;</div>
         <div class="flex_break" style="margin-bottom: 1em;"></div>
         <!-- Body -->
         <div id="npc_container">
@@ -36,6 +36,14 @@
         <h2>Waveset Information</h2>
         <div class="flex_break"></div>
         <div id="waveset_info"></div>
+    </div>
+
+    <div class="waveset_bg hidden">
+        <h2>Music Player</h2>
+        <div class="flex_break"></div>
+        <div id="music_title"></div>
+        <div class="flex_break"></div>
+        <div id="music_player"></div>
     </div>
 </body>
 </html>

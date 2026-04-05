@@ -8,6 +8,7 @@ from keyvalues1 import KeyValues1
 TODO somehow make npc music playable..
 TODO link to teamwork.tf url if map_mode?
 TODO different npc icon looks depending on mvm flags => modules.shared.FLAG_MAPPINGS comments for descs
+TODO implement showing support npcs in embeds
 TODO implement adding these flags automatically instead of set npc flags only
     [x] support
     [x] normal (not shown)

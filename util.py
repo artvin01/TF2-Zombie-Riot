@@ -45,9 +45,9 @@ def music_modal(wave_entry_data):
         wave_entry_data = defaultdict(str,wave_entry_data)
         music_name = wave_entry_data["file"].replace("#","")
         if wave_entry_data["name"] != "": music_name = wave_entry_data["name"]
-        if wave_entry_data["author"] != "": author = f"by {wave_entry_data["author"]}"
+        if wave_entry_data["author"] != "": author = f" - {wave_entry_data["author"]}"
         else: author = ""
-        music = f"{music_name} {author}"
+        music = f"{music_name}{author}"
         mfilename = wave_entry_data["file"].replace("#","")
     file = f"https://raw.githubusercontent.com/artvin01/TF2-Zombie-Riot/refs/heads/master/sound/{mfilename}"
     return {
