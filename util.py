@@ -15,9 +15,9 @@ JSONEncoder.default = wrapped_default
 # --------------------------- ENV ---------------------------
 
 # wavesets, npc, ...
-CATEGORIES = []
+DEBUG = []
 if "DEBUG" in os.environ:
-    CATEGORIES = [x.lower() for x in os.environ["DEBUG"].split(",")]
+    DEBUG = [x.lower() for x in os.environ["DEBUG"].split(",")]
 
 WAVESETS_FILESCOPE = []
 if "FILESCOPE" in os.environ:
@@ -29,7 +29,7 @@ if "TYPESCOPE" in os.environ:
 else:
     WAVESETS_TYPESCOPE = ["Setup", "Custom"]#, "Betting", "Rogue"]
 
-print("DEBUG",CATEGORIES)
+print("DEBUG",DEBUG)
 print("wavesets:FILESCOPE",WAVESETS_FILESCOPE)
 print("wavesets:TYPESCOPE",WAVESETS_TYPESCOPE)
 
@@ -68,9 +68,8 @@ def id_from_str(string):
     # https://stackoverflow.com/questions/49808639/generate-a-variable-length-hash
     return hashlib.shake_256(string.encode("utf-8")).hexdigest(2)
 
-def md_img(url, alt, width=16):
-    #return f'<img src="{url}" alt="{alt}" width="{width}"/>'
-    return f'<img src="{url}" width="{width}"/>'
+def md_img(url, alt):
+    return f'<img src="{url}" alt="{alt}"/>'
 
 
 def normalize_whitespace(str_):
@@ -132,7 +131,7 @@ def fill_template(template, context):
 
 
 def debug(str_, category, color="OKGREEN"):
-    if category in CATEGORIES: log(str_,color)
+    if category in DEBUG: log(str_,color)
 
 
 # Logging
@@ -183,11 +182,6 @@ def write(filename, val):
     with open(filename, 'w+') as f:
         f.write(str(val))
     return True
-
-BUILTIN_IMG = "builtin_img/"
-ICON_DOWNLOAD = md_img(BUILTIN_IMG+"download.svg", "download")
-ICON_X_SQUARE = md_img(BUILTIN_IMG+"x-square.svg","cross")
-ICON_MUSIC = md_img(BUILTIN_IMG+"music.svg","music")
 
 # --------------------------- PHRASES ---------------------------
 

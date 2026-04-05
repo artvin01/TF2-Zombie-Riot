@@ -4,12 +4,52 @@ import embed, modules.shared
 from collections import defaultdict
 from keyvalues1 import KeyValues1
 
+"""
+TODO somehow make npc music playable..
+TODO link to teamwork.tf url if map_mode?
+TODO different npc icon looks depending on mvm flags => modules.shared.FLAG_MAPPINGS comments for descs
+TODO implement adding these flags automatically instead of set npc flags only
+    [x] support
+    [x] normal (not shown)
+    [ ] miniboss
+    [ ] alwayscrit
+
+SetupFlags:
+int flags = 0;
+if(data.Is_Boss < 2 && (support || data.ignore_max_cap || data.Is_Static || data.Team == TFTeam_Red))
+{
+    flags |= MVM_CLASS_FLAG_SUPPORT;
+}
+else
+{
+    flags |= MVM_CLASS_FLAG_NORMAL;
+}
+
+if(data.Is_Boss || data.Is_Outlined)
+    flags |= MVM_CLASS_FLAG_MINIBOSS;
+
+if(data.ExtraMeleeRes < 1.0 || 
+data.ExtraRangedRes < 1.0 || 
+data.ExtraSpeed > 1.0 || 
+data.ExtraDamage > 1.0 || 
+data.ExtraThinkSpeed > 1.0 ||
+data.Is_Boss > 1)
+    flags |= MVM_CLASS_FLAG_ALWAYSCRIT;
+
+return flags; 
+"""
+
 PROPERTY_MAPPINGS = {
-    "is_boss": "Boss",
+    "is_boss": {
+        "1": "Boss",
+        "2": "RaidWithPrepare",
+        "3": "RaidNoPrepare",
+        "4": "" # unknown, used in bossrush
+    },
     "is_outlined": "Outline",
     "force_scaling": "ForceScaling",
     "is_health_scaling": "HealthScaling",
-    "is_immune_to_nuke": "NukeImmunity"
+    "is_immune_to_nuke": "" # deprecated => hidden
 }
 
 MULTIPLIER_MAPPINGS = {
@@ -40,6 +80,10 @@ def parse():
                     if type(plugin_name) == list:
                         for i,pn in enumerate(plugin_name):
                             dummy = modules.shared.NPC_Dummy(npc_obj)
+                            if npc_obj.filetype == "shared":
+                                dummy.health = npc_obj.health[min(len(npc_obj.health)-1,i)]
+                            else:
+                                dummy.health = npc_obj.health
                             dummy.category = npc_obj.category[min(len(npc_obj.category)-1,i)]
                             dummy.plugin = npc_obj.plugin[min(len(npc_obj.plugin)-1,i)]
                             dummy.flags = npc_obj.flags[min(len(npc_obj.flags)-1,i)]
@@ -53,7 +97,7 @@ def parse():
                         if npc_obj.category not in npc_by_category: npc_by_category[npc_obj.category]=[]
                         npc_by_category[npc_obj.category].append(npc_obj)
 
-        if "npcs" in util.CATEGORIES:
+        if "npcs" in util.DEBUG:
             util.write("npc_data.json",json.dumps(npc_by_file,indent=2))
 
         return npc_by_file, npc_by_category
@@ -137,7 +181,7 @@ def parse():
 
             # NPC
             Int health => Hidden (apparently it's inaccurate)
-            Bool is_boss => Flag //if a npc has this, they will get outlined, bonus damage, and their health scales.
+            Bool is_boss => Flag //if a npc has this, they will get outlined, bonus damage, and their health scales. (1: boss 2: raid w/prepare :3 raid w/o prepare 4: ?)
             Bool force_scaling => Flag
             Float waiting_time_give ?
             Bool does_not_scale (true if count <= 0) => Flag ?
@@ -177,23 +221,52 @@ def parse():
             except AttributeError:
                 npc_name = wave_entry_data["plugin"]
 
-            # Prefix data
             dd = defaultdict(str, wave_entry_data)
-            extra_info = ""
             npc_name_prefix = ""
-            if npc_data and len(dd["data"])>0 and npc_data.has_prefix_logic:
-                """
-                prefix logic:
-                    bool carrier = data[0] == 'R';
-                    bool elite = !carrier && data[0];
+            # Health data
+            """
+            bool carrier = data[0] == 'R';
+            bool elite = !carrier && data[0];
+            """
+            extra_info = ""
+            if "health" in wave_entry_data:
+                extra_info += f" {util.format_num(wave_entry_data["health"])}HP"
+            elif npc_data:
+                if type(npc_data.health) == dict:
+                    if len(dd["data"])>0 and npc_data.has_prefix_logic:
+                        """
+                        prefix logic:
+                            bool carrier = data[0] == 'R';
+                            bool elite = !carrier && data[0];
 
-                usually accompanied with data like:
-                    "Regressed"
-                    "Elite"
+                        usually accompanied with data like:
+                            "Regressed"
+                            "Elite"
+                        """
+                        data_key = wave_entry_data["data"]
 
-                so just add it before the npc name if npc has that logic
-                """
-                npc_name_prefix += wave_entry_data["data"].capitalize()
+                        # prefixes (logic carried over from zr code)
+                        carrier = data_key[0] == "R"
+                        elite = (not carrier) and data_key[0] # If first char isn't R but data exists
+
+                        if carrier: data_key = "carrier"
+                        elif elite: data_key = "elite"
+                        else: data_key = "default";npc_name_prefix="!c"
+
+                        if data_key not in npc_data.health and "any" in npc_data.health: data_key = "any";
+                        elif data_key not in npc_data.health: data_key = "default";
+
+                        npc_name_prefix += wave_entry_data["data"].capitalize()
+                        util.debug(f"Parsing HP Value {npc_data.health} DATA value {wave_entry_data["data"]} CHOSEN value {data_key}", "npc", "OKCYAN")
+                        h = f" {npc_data.health[data_key.lower()]}"
+                    else:
+                        h = npc_data.health["default"]
+                    
+                    extra_info += f" {util.format_num(h)}HP"
+                else:
+                    extra_info += f" {npc_data.health}"
+            else:
+                extra_info += " ?HP"
             
             # Show NPC Flags
             display_name = npc_name
@@ -209,12 +282,15 @@ def parse():
                 if npc_data.category != "Type_Hidden":
                     desc = "<div class=\"flex_break\"></div>\n"+get_npc(wave_entry_data["plugin"], {"name": npc_name, "image": image})["description"]
             else:
-                image = "" if "wavesets" not in util.CATEGORIES else util.md_img("./builtin_img/missing.png","E")
+                image = util.md_img("./builtin_img/missing.png","E") # npc not found at all
                 
             for property_, val in PROPERTY_MAPPINGS.items():
                 if property_ in wave_entry_data:
-                    if wave_entry_data[property_] == "1":
-                        extra_info += f" {val}"
+                    if type(val) == dict:
+                        extra_info += f" {val[wave_entry_data[property_]]}"
+                    else:
+                        if wave_entry_data[property_] == "1":
+                            extra_info += f" {val}"
 
             for multiplier, char in MULTIPLIER_MAPPINGS.items():
                 if multiplier in wave_entry_data:
@@ -226,10 +302,18 @@ def parse():
 
                     extra_info += f" {char} {percent_text}％"
             
-            # waves.sp line 4165 if(data.Is_Boss < 2 && (support || data.ignore_max_cap || data.Is_Static || data.Team == TFTeam_Red))
+            # Turn NPC music entries into simple text.
+            # Note that each entry also has a 'filename' param if you need to make this interactive.
+            music = ""
+            for entry in npc_data.music_entries:
+                music += f"<div class=\"music\" ><img src=\"builtin_img/music.svg\"> {entry["name"]} - {entry["artist"]}</div>\n"
+            
+            # Check if NPC has a flag indicating support
+            forced_support=False
+            if npc_data:
+                forced_support = ("MVM_CLASS_FLAG_SUPPORT" in npc_data.flags) or ("MVM_CLASS_FLAG_MISSION" in npc_data.flags) or ("MVM_CLASS_FLAG_SUPPORT_LIMITED" in npc_data.flags)
 
             # Add npc to wave data output for waves.js to be parsed
-            # TODO use flags for different icon looks
             output.append(
                 {
                     "type": "npc",
@@ -238,8 +322,9 @@ def parse():
                     "img": image if image else "",
                     "prefix": npc_name_prefix,
                     "display_name": display_name,
-                    "extra_info": extra_info + desc,
-                    "is_support": util.cfgtonum(dd["is_boss"]) < 2 and (dd["ignore_max_cap"]=="1" or dd["team_npc"]=="2" or dd["is_static"]=="1")
+                    "extra_info": extra_info + desc + music,
+                    # waves.sp line 4165 if(data.Is_Boss < 2 && (support || data.ignore_max_cap || data.Is_Static || data.Team == TFTeam_Red))
+                    "is_support": util.cfgtonum(dd["is_boss"]) < 2 and (dd["ignore_max_cap"]=="1" or dd["team_npc"]=="2" or dd["is_static"]=="1" or forced_support)
                 }
             )
         

@@ -84,7 +84,7 @@ def draw_text_centered(drawable, pos, text, fill, font):
 def draw_npc(drawable, img, pos, npc):
     left,top = pos[0]-(ICON_SIZE/2), pos[1]-(ICON_SIZE/2)
     drawable.rounded_rectangle([(left,top), (left+ICON_SIZE,top+ICON_SIZE)], 4, color["bg_light"])
-    icon_filepath = npc["img"][10:-14]
+    icon_filepath = npc["img"][10:-11]
     if icon_filepath.startswith("./"): # only missing.png paths start with ./
         icon_filepath = icon_filepath.replace("./","gh-pages/")
     icon = Image.open(icon_filepath, 'r')

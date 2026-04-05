@@ -12,7 +12,7 @@ const npc_modal = `<div tabindex="0" class="wave_npc">
     </div>
 </div>
 `
-const support_npc_modal = `<div class="divider"></div><div id="support_npc_container">
+const support_npc_modal = `<div class="divider"></div><div id="support_npc_container" $offset>
     npcdata
     <div class="flex_break"></div>
     <h2>SUPPORT</h2>
@@ -104,6 +104,7 @@ function update_wave_display() {
     const npc_container = document.getElementById("npc_container");
     let npc_html = "";
     let support_npc_html = "";
+    let support_npc_amt = 0;
 
     const wave_info_container = document.getElementById("wave_info_container");
     let wave_info_html = "";
@@ -122,6 +123,7 @@ function update_wave_display() {
             let modal = fill_template(npc_modal, context);
             if (entry["is_support"]) {
                 support_npc_html += modal;
+                support_npc_amt += 1;
             } else {
                 npc_html += modal;
             }
@@ -145,7 +147,16 @@ function update_wave_display() {
 
     wave_info_container.innerHTML = wave_info_html;
 
-    if (support_npc_html!=="") { npc_html += support_npc_modal.replace("npcdata",support_npc_html) };
+    if (support_npc_html!=="") {
+        let support_npc_container_offset = "";
+        if (support_npc_amt>1) { support_npc_container_offset="style=\"margin-left: -43px;\"" };
+        context = {
+            "npcdata":support_npc_html,
+            "$offset":support_npc_container_offset
+        }
+        npc_html += fill_template(support_npc_modal, context);
+    };
+
     npc_container.innerHTML = npc_html;
 }
 

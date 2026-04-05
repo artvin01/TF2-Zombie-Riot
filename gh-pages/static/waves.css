@@ -106,12 +106,17 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center; /* this is the cause of the bandaid fix below, I couldn't find any other way to fix it */
-    margin-left: -43px;
+     /* TODO if support npc is a single one this goes over the divider */
 }
 
 #wave_music_container {
     margin-top: 25px;
     margin-bottom: 15px;
+}
+
+audio {
+    display: block;
+    margin: 5px;
 }
 
 .flex_break {
@@ -135,6 +140,18 @@
   background-color: var(--bg-light);
   color: var(--deep-space-blue);
   text-align: center;
+}
+
+.tooltip .music {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tooltip .music img {
+    height: 16px;
+    width: auto;
+    margin-right:5px;
 }
 
 .wave_npc:hover .tooltip, .wave_npc:focus .tooltip {
