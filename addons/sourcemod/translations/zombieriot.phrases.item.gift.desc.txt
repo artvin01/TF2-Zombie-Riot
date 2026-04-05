@@ -1342,7 +1342,7 @@
 	{
 		"en"		"From the deep sea, We Many will rise.\n- Gains camouflage after several seconds without attacking\n- Deals increased damage when camouflaged"
 		"it"		"Dagli abissi marini, Noi Molti risorgeremo.\n- Acquisisce la mimetizzazione dopo diversi secondi senza attaccare\n- Infligge danni maggiori quando è mimetizzato"
-		"en"		"''심해 속에서, 위매니가 깨어나게 되리라.''\n-잠시 동안 공격하지 않을 경우 동안 위장 버프가 부여\n-위장 상태에선 피해량이 증가합니다."
+		"ko"		"''심해 속에서, 위매니가 깨어나게 되리라.''\n-잠시 동안 공격하지 않을 경우 동안 위장 버프가 부여\n-위장 상태에선 피해량이 증가합니다."
 	}
 	"Citizen Desc"
 	{
