@@ -17,7 +17,7 @@ void Broly_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = -1;
-	data.Category = -1;
+	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);

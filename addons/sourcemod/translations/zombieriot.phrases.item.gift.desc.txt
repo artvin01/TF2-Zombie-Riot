@@ -1852,55 +1852,39 @@
 	}
 	"Perro Desc"
 	{
-		"en"	"A soldier that gets faster and deals more damage with less health.\n- Increases damage and speed as health decreases, up to x4\n- In Red Moon, cap is increased to x8"
-		"it"	"Un soldato che diventa più veloce e infligge più danni con meno salute.\n- Aumenta i danni e la velocità al diminuire della salute, fino a x4\n- In Red Moon, il limite è aumentato a x8"
-		"ko"	"체력이 줄어들수록 피해량과 이동 속도가 증가하는 솔저입니다.\n-체력이 감소할 수록 피해량과 이동 속도 증가\n-붉은 달(로그2): 상한이 8배로 증가"
+		"en"	"A ''dog'' that gets faster and deals more damage with less health\n-Increases damage and speed as health decreases, up to x4\n-In Red Moon, cap is increased to x8"
 	}
 	"Caprinae Desc"
 	{
-		"en"	"A magical demoman that summons clones of itself.\n- Does not attack\n- Periodically summons a clone of self and increases movement speed\n- On death, deals AOE damage\n- In Red Moon, increased damage, speed, and resistance"
-		"it"	"Un demone magico che evoca cloni di se stesso.\n- Non attacca.\n- Evoca periodicamente un clone di se stesso e aumenta la velocità di movimento.\n- Alla morte, infligge danni AOE.\n- In Luna Rossa, aumenta i danni, la velocità e la resistenza"
-		"ko"	"자신을 복제를 소환하는 마법사 데모맨입니다.\n-공격하지 않음\n-주기적으로 자신의 복제를 소환하고 이동 속도 증가\n-자폭 시 광역 피해를 줌.\n-붉은 달(로그2): 체력, 속도, 저항력 증가"
+		"en"	"A magical ''goat'' that summons clones of itself\n- Does not attack\n- Periodically summons a clone of self and increases movement speed\n- On death, deals AOE damage\n- In Red Moon, increased damage, speed, and resistance"
 	}
 	"Liberi Desc"
 	{
-		"en"	"A medic that provides invulnerability to an ally.\n- Does not attack and follows it's allies\n- Grants invulnerability, shields, damage, attack speed, and resistance to it's nearby allies\n- Heals target allies over max health, granting permanent buffs when over x1.5 health\n- In Red Moon, increased buff duration and movement speed"
-		"it"	"Un medico che fornisce invulnerabilità a un alleato.\n- Non attacca e segue i suoi alleati.\n- Concede invulnerabilità, scudi, danni, velocità d'attacco e resistenza agli alleati vicini.\n- Cura gli alleati bersaglio oltre la salute massima, concedendo buff permanenti quando supera la salute x1,5.\n- In Luna Rossa, aumenta la durata dei buff e la velocità di movimento"
-		"ko"	"자신 주변의 아군들에게 무적을 부여하는 메딕입니다.\n-공격하지 않으며 아군을 따라다님.\n-근처의 아군에게 무적, 보호막, 피해량, 공격 속도 그리고 저항력 버프를 부여\n-대상을 과치료하며, 대상의 체력이 1.5배가 되면 영구 지속되는 버프를 부여.\n-붉은 달(로그2): 버프 지속 시간과 이동 속도 증가"
+		"en"	"A ''bird'' with a big peace sign.\n- Does not attack and follows it's allies\n- Grants invulnerability, shields, damage, attack speed, and resistance to it's nearby allies\n- Heals target allies over max health, granting permanent buffs when over x1.5 health\n- In Red Moon, increased buff duration and movement speed"
 	}
 	"Ursus Desc"
 	{
-		"en"	"A heavy with hits that debuff a large amount of Chaos.\n- Attacks inflict Chaos elemental damage\n- In Red Moon, increased elemental damage and damage against buildings"
-		"it"	"Un pesante con colpi che causano un forte debuff di Caos.\n- Gli attacchi infliggono danni elementali da Caos\n- In Luna Rossa, aumentano i danni elementali e i danni contro gli edifici"
-		"ko"	"적중시 대상에게 대량의 혼돈 원소 피해를 부여하는 헤비입니다.\n-적중 시 혼돈 원소 피해 부여\n-붉은 달(로그2): 원소 피해 부여량 및 구조물 대상 피해량 증가"
+		"en"	"A ''bear'' with hits that debuff a large amount of Chaos\n-Attacks inflict high Chaos elemental damage\n-In Red Moon, increased elemental damage and damage against buildings"
 	}
 	"Aegir Desc"
 	{
-		"en"	"A pyro that deals a large amount of extra damage to targets under the effects of Chaos or Jarate.\n- Deals increased damage targets with elemental damage or certain debuffs\n- In Red Moon, this trait is increased"
-		"it"	"Un piroide che infligge una grande quantità di danni extra ai bersagli sotto l'effetto di Caos o Jarate.\n- Infligge danni maggiori ai bersagli con danni elementali o con determinati debuff\n- In Luna Rossa, questo tratto è aumentato"
-		"ko"	"병수도 또는 혼돈 원소 피해를 가진 대상에게 매우 높은 추가 피해를 주는 파이로입니다.\n-원소 피해 혹은 특정 디버프가 부여된 대상에게 추가 피해를 줌.\n-붉은 달(로그2): 이 효과가 증가"
+		"en"	"A ''fish'' that deals a large amount of extra damage to targets under the effects of Chaos or Jarate.\n-Deals increased damage targets with elemental damage or certain debuffs\n-In Red Moon, this trait is increased"
 	}
 	"Cautus Desc"
 	{
-		"en"	"A spy that jumps around often.\n- Periodically jumps at targets\n- Able to backstab, dealing increased damage\n- In Red Moon, attacks always backstab"
-		"it"	"Una spia che salta spesso in giro.\n- Salta periodicamente verso gli obiettivi\n- In grado di eseguire backstab, infliggendo danni maggiori\n- In Red Moon, attacca sempre backstab"
-		"ko"	"자주 뛰어다니는 스파이입니다.\n-주기적으로 대상에게 높게 점프하여 달려듬\n-상대를 백스탭하여 추가 피해를 입힘\n-붉은 달(로그2): 공격이 항상 백스탭 판정이 됨"
+		"en"	"A ''bunny'' that jumps around often\n-Periodically jumps at targets\n-Able to backstab, dealing increased damage\n-In Red Moon, attacks always backstab"
 	}
 	"Vulpo Desc"
 	{
-		"en"	"A engineer that fires ranged attacks with high damage bonus against buildings.\n- Uses a ranged attack\n- In Red Moon, deals increased damage to buildings"
-		"it"	"Un ingegnere che sferra attacchi a distanza con un elevato bonus di danni contro gli edifici.\n- Utilizza un attacco a distanza\n- In Luna Rossa, infligge danni maggiori agli edifici"
-		"ko"	"구조물을 대상으로 높은 추가 피해를 주는 원거리 공격수 엔지니어입니다.\n-원거리 공격을 사용\n-붉은 달(로그2): 구조물 대상 피해량 증가"
+		"en"	"A ''fox'' that fires ranged attacks with high damage bonus against buildings.\n-Uses a ranged attack\n-In Red Moon, deals increased damage to buildings"
 	}
 	"Major Steam Desc"
 	{
-		"en"	"A giant steampunk soldier which reloads while not firing.\nAble to fire when it has enough rounds and can't change target while firing.\n- Uses a ranged attack and reloads\n- Immune to slow, stun, and shift effects\n- Attacks deal AOE and inflict Chaos elemental damage\n- Has resistances that decrease when damage is taken\n- On death, deals AOE damage and summons a Vulpo\nIn Red Moon, increased elemental damage and projectile speed"
-		"it"	"Un gigantesco soldato steampunk che ricarica quando non spara.\n- Può sparare quando ha abbastanza colpi e non può cambiare bersaglio mentre spara.\n- Utilizza un attacco a distanza e ricarica.\n- Immune agli effetti di rallentamento, stordimento e spostamento.\n- Gli attacchi sono AOE e infliggono danni elementali del Caos.\n- Ha resistenze che diminuiscono quando si subiscono danni.\n- Alla morte, infligge danni AOE ed evoca un Vulpo.\nIn Red Moon, aumenta i danni elementali e la velocità dei proiettili"
-		"ko"	"발사하지 않는 상황이면 탄약을 재장전하는 거대 스팀펑크 솔저입니다.\n-탄약이 충분하면 사격 공격을 하며, 사격 중에는 공격 대상을 변경 불가\n-원거리 공격을 사용하며 재장전함\n-둔화, 기절, 미끄러짐 효과에 면역\n-공격이 광역 피해와 혼돈 원소 피해를 부여\n-피해를 받을 때마다, 자신의 피해 저항력이 조금씩 감소.\n-사망 시, 불포를 소환하고 주변에 극도로 높은 피해를 줌\n-붉은 달(로그2): 원소 피해 부여량과 투사체 속도 증가."
+		"en"	"A giant steampunk robot which reloads while not firing.\n-Able to fire when it has enough rounds and can't change target while firing\n-Uses a ranged attack and reloads\n-Immune to slow, stun, and shift effects\n-Attacks deal AOE and inflict Chaos elemental damage\n-Has resistances that decrease when damage is taken\n-On death, deals AOE damage and summons a Vulpo\nIn Red Moon, increased elemental damage and projectile speed"
 	}
 	"Ahim Desc" 
 	{
-		"en"	"A scout that has a cleaver to throw at enemies. \n-Has a ranged attack. \n-Throws a cleaver at the first enemy that's in their range."
+		"en"	"A scout that has a cleaver to throw at enemies\n-Has a ranged attack\n-Throws a cleaver at the first enemy that's in their range."
 		"it"	"Lancia una mannaia quando è abbastanza vicino, poi ingaggia un combattimento in mischia."
 		"ko"	"적들에게 식칼을 던지는 스카웃입니다.\n-원거리 공격을 보유\n-처음 범위 내에 들어온 적에게 식칼을 투척\n-식칼은 재충전되지 않음"
 	}
@@ -1912,21 +1896,15 @@
 	}
 	"Khazaan Desc" 
 	{
-		"en"	"Each 3rd melee attack that hits will give him 50％ more resistance upto 75％ at max."
-		"it"	"Ogni terzo attacco in mischia che colpisce gli conferisce 50％ in più di resistenza, fino a 75％ al massimo."
-		"ko"	"매 3번째 공격마다, 피해 저항력이 50％ 증가합니다. 이 효과로 피해 저항력을 최대 75％까지 증가시킬 수 있습니다."
+		"en"	"-Each 3rd melee if it hits grants decaying resistances\n-3rd hit also knocks you back and deals more damage"
 	}
 	"Sakratan Desc" 
 	{
-		"en"	"A demo with hits that apply chaos. \n- Attacks inflict Chaos elemental damage. "
-		"it"	"Infligge il debuff Caos, che vi fa esplodere, infliggendo 250 danni reali a tutti i nemici che vi circondano.\nQuesto fa sì che tutti gli alleati colpiti ricevano 25％ danni in più per 10 secondi."
-		"ko"	"공격 적중시, 혼돈 원소 피해를 부여하는 데모맨입니다.\n-적중 시 혼돈 원소 피해 부여"
+		"en"	"Attacks inflict high Chaos elemental damage. "
 	}
 	"Yadeam Desc" 
 	{
-		"en"	"A sniper that heals his allies. \n-Heals all allies around himself. \n-Throws explosive jars of piss in a straight line at enemies."
-		"it"	"Guarisce tutti gli alleati intorno a sé, tranne l'altro.\nLancia piscio esplosivo."
-		"ko"	"자신의 아군을 회복시켜주는 스나이퍼입니다.\n-주변의 모든 아군을 회복\n-직선으로 날아가는 폭발성 병수도를 투척"
+		"en"	"A sniper that heals his allies\n-Heals all allies around himself\n-Throws explosive jars of piss in a straight line at enemies."
 	}
 	"Rajul Desc" 
 	{
@@ -1936,130 +1914,93 @@
 	}
 	"Qanaas Desc" 
 	{
-		"en"	"A sniper that spawns randomly around the map.\nTheir aim isnt good so dodging is easy.\nDeals immensive damage to barricades."
-		"it"	"Un cecchino che si riproduce a caso in giro per la mappa.\nLa loro mira non è buona, quindi schivare è facile.\nDanno immenso alle barricate."
-		"ko"	"맵의 무작위 위치에서 생성되는 스나이퍼입니다.\n에임 실력이 좋지 않아 이들의 공격을 비교적 쉽게 피할 수 있습니다.\n바리케이드를 대상으로 매우 높은 피해를 줍니다."
+		"en"	"-Infinite range sniper\n-Spawns randomly around the map\nDeals immensive damage to barricades."
 	}
 	"Atilla Desc" 
 	{
-		"it"	"Infligge pochi danni ma infligge emorragie."
-		"en"	"A spy that deals low damage but inflicts bleed. \n-Attacks afflict bleed on hit."
-		"ko"	"피해량은 낮지만, 적중시 대상에게 출혈을 부여하는 스파이입니다.\n-적중 시 출혈 디버프 부여"
+		"en"	"A spy that deals low damage but inflicts bleed\n-Attacks afflict bleed on hit."
 	}
 	"Ancient Demon Desc" 
 	{
-		"en"	"Each time an enemy dies around them they gain HP, damage, resistance and a speed buff.\nThis also spawns a weaker smaller version of them randmly around the map.\nBuffs stack infinitly.\nDeals chaos damage."
+		"en"	"-Each time an enemy dies around them they gain HP, damage, resistance and a speed buff\nThis also spawns a weaker smaller version of them randmly around the map\n-Buffs stack infinitly\n-Deals chaos damage."
 		"it"	"Ogni volta che un nemico muore intorno a loro, guadagnano HP, danni, resistenza e un potenziamento della velocità.\nQuesto genera anche una versione più debole e più piccola di loro in giro per la mappa.\nI potenziamenti si accumulano all'infinito.\nDanneggia il caos."
 		"ko"	"이 적 근처에서 다른 적이 사망할 때마다, 이 적의 체력, 피해량, 저항력, 이동 속도가 증가합니다.\n이 효과가 발동될 때마다 이 적의 소형화 버전이 맵의 무작위 위치에서 생성됩니다.\n이 버프는 무한대로 중첩됩니다.\n적중 시, 대상에게 혼돈 원소 피해를 부여합니다."
 	}
 	"Winter Sniper Desc" 
 	{
-		"en"	"A stronger Ziberian sniper which deals massive chaos damage."
-		"it"	"Un cecchino ziberiano più forte che infligge ingenti danni da caos."
-		"ko"	"더욱 강력한 지베리아인 저격수입니다.\n-적중 시 대상에게 대량의 혼돈 원소 피해 부여"
+		"en"	"-Infinite range sniper\n-Spawns randomly around the map\nDeals immensive damage to barricades.\n-Deals high Chaos damage"
 	}
 	"Ziberian Miner Desc" 
 	{
-		"en"	"A engineer back from the mines to destroy your buildings. \n-Attacks deal bonus damage to buildings. \n-First attack deals 2x damage."
-		"it"	"Infligge ingenti danni agli edifici."
-		"ko"	"광산에서 돌아온 이 광부 엔지니어가 당신의 구조물을 파괴하러 왔습니다.\n-구조물에 추가 피해를 가합니다.\n-처음으로 적중한 공격이 2배의 피해를 줍니다."
+		"en"	"A engineer back from the mines to destroy your buildings\n-Attacks deal bonus damage to buildings\n-First attack deals 2x damage."
 	}
 	"Snowey Gunner Desc" 
 	{
-		"en"	"Tries to kite you, and has great health and ranged damage."
-		"it"	"Tenta di fare kite e ha un'ottima salute e danni a distanza."
-		"ko"	"공격 대상과 거리 조절 및 거리 유지를 하면서 전투합니다."
+		"en"	"-short Ranged hitscan attack\n-Tries to keep distance between itself and the enemy"
 	}
 	"Freezing Cleaner Desc" 
 	{
-		"en"	"A pyro that, instead of using a flamethrower, uses a cryothrower. \n-Deals only ranged damage. \n-Attacks apply Chaos elemental damage"
-		"it"	"Attacca in modo immensamente veloce e infligge danni AOE, infligge ingenti danni da caos."
-		"ko"	"냉기 방사기를 사용하는 파이로입니다.\n-원거리 피해만을 주며, 적중 시 혼돈 원소 피해를 부여합니다."
+		"en"	"A pyro that, instead of using a flamethrower, uses a cryothrower\n-Deals only ranged damage\n-Attacks apply Chaos elemental damage"
 	}
 	"Airborn Explorer Desc" 
 	{
-		"en"	"Can jump and while midair they gain 3x damage, 3x range, and take 2x ranged damage."
-		"it"	"Può saltare e a mezz'aria guadagna 3x danni, 3x gittata e subisce 2x danni a distanza."
-		"ko"	"자주 점프하며, 공중에 떠있는 상태라면 피해량과 사정거리가 3배로 증가하지만, 받는 원거리 피해가 2배로 증폭됩니다."
+		"en"	"-Can jump at you\n-while midair:\nthey gain 3x damage, 3x range, and take 2x ranged damage."
 	}
 	"Arctic Mage Desc" 
 	{
-		"en"	"When taking damage, depending on the damage he will heal 3 allies around himself.\nIf they receive enough overheal, they will receive a permanent buff.\nGives himself a shield sometimes on hit, and shields allies on hit aswell.\nDeals huge chaos damage."
+		"en"	"-When taking damage, depending on the damage he will heal 3 allies around himself.\n-If they receive enough overheal, they will receive a permanent buff.\n-Gives himself a shield sometimes on hit, and shields allies on hit aswell.\n-Deals huge chaos damage."
 		"it"	"Quando subisce danni, a seconda dei danni subiti, guarisce 3 alleati intorno a sé.Se ricevono abbastanza overheal, riceveranno un buff permanente.A volte si scuote con uno scudo quando viene colpito, e scuote anche gli alleati quando vengono colpiti.Subisce ingenti danni da caos."
 		"ko"	"피해를 받을 때마다, 받은 피해량에 따라 주변의 아군 3명의 체력을 회복시킵니다.(과치료 가능)\n치료 대상이 충분한 과치료 수치를 지녔다면, 대상에게 영구적으로 지속되는 버프를 부여합니다.\n적중 시 때때로 자신 또는 주변 아군에게 보호막을 부여합니다.\n적중 시 매우 높은 혼돈 원소 피해를 부여합니다."
 	}
 	"Frost Hunter Desc" 
 	{
-		"en"	"A scout that finally uses his scattergun, shortly. \n-Deals ranged damage. \n-Takes 2 scattergun shots at the nearest enemy."
+		"en"	"-A scout that finally uses his scattergun, shortly\n-Deals ranged damage\n-Takes 2 scattergun shots at the nearest enemy."
 		"it"	"Spara 2 colpi prima di entrare in mischia."
 		"ko"	"드디어 스캐터건을 사용하는 스카웃입니다... 잠깐 뿐이지만요.\n-원거리 피해를 가함\n-가장 근접한 적에게 2발의 스캐터건 사격을 가함"
 	}
 	"Skin Hunter Desc" 
 	{
-		"en"	"A sniper that gains the interest of skinning his enemies. \n-Heals all allies around himself. \n-Heals all allies around himself. \n-Deals only ranged damage. \n-Throws knives at enemies."
-		"it"	"Guarisce tutti gli alleati intorno a sé, tranne l'altro, e lancia coltelli."
-		"ko"	"적들의 가죽을 벗겨내어 모아두고 싶어하는 스나이퍼입니다.\n-주변의 모든 아군을 회복시킴.\n-칼을 투척하여 원거리 피해를 줌."
+		"en"	"-A hunter that gains the interest of skinning his enemies. \n-Heals all allies around himself\n-Heals all allies around himself\n-Deals only ranged damage\n-Throws knives at enemies."
 	}
 	"Irritated Person Desc" 
 	{
-		"en"	"Each 3rd attack gives a small resistance buff upto 75％.\nThe more he is hurt, the more damage he takes but he gets faster and deals more damage too.\nJumps at you but if enough health is lost, he will instead do a ground pound which damages all enemies."
-		"it"	"Ogni terzo attacco conferisce un piccolo buff di resistenza fino a 75％.\nPiù viene ferito, più danni subisce, ma diventa anche più veloce e infligge più danni.\nSalta verso di voi, ma se si perde abbastanza salute, farà invece un ground pound che danneggia tutti gli avversari."
-		"ko"	"매 3번째 공격마다, 피해 저항력이 증가합니다. 이 효과로 피해 저항력을 최대 75％까지 증가시킬 수 있습니다.\n체력이 줄어들수록 더 많은 피해를 받지만, 그 동시에 피해량과 이동 속도도 증가합니다.\n공격 대상에게 순식간에 접근할 수 있는 돌진을 사용하며, 체력이 절반 이하라면 돌진 대신 슬램을 사용하여 주변의 모든 적에게 피해를 줍니다."
+		"en"	"Each 3rd attack gives a small decaying resitance buff\nThe more he is hurt, the more damage he takes but he gets faster and deals more damage too.\n-Jumps at you but if enough health is lost:\nwill instead do a ground pound which damages all enemies."
 	}
 	"Ransacker Desc" 
 	{
-		"en"	"Just a stronger version of Ahim. \n-Has a ranged attack. n\-Throws a cleaver at the first enemy that's in their range."
-		"it"	"Lancia una mannaia e poi entra in mischia."
-		"ko"	"아힘의 강화 버전.\n-원거리 공격을 보유\n-처음 범위 내에 들어온 적에게 식칼을 투척\n-식칼은 재충전되지 않음"
+		"en"	"Has a ranged attack\n-Throws a cleaver at the first enemy that's in their range."
 	}
 	"Runover Desc" 
 	{
-		"en"	"Ramps up speed over time, at max speed it gains massive damage and resistance, and its sword glows gold, when it melee's, missing or not itll lose this bonus, deals chaos damage if charged."
-		"it"	"Aumenta la velocità nel tempo, alla massima velocità guadagna danni e resistenza massicci, e la sua spada si illumina d'oro, quando si scontra in mischia, mancando o meno, perde questo bonus, infligge danni da caos se carica."
-		"ko"	"시간이 지날수록 이동 속도가 점차 증가합니다. 이동 속도가 최대에 도달 시 피해량과 피해 저항력이 높아지며 혼돈 원소 피해를 부여합니다. 공격 시, 공격의 적중 여부 상관 없이 이 효과는 전부 초기화됩니다."
+		"en"	"-Ramps up speed over time, at max speed it gains massive damage and resistance\n-its sword glows gold at max speed, when it melee's, missing or not itll lose this bonus\n-deals chaos damage if charged."
 	}
 	"Hitman Desc" 
 	{
-		"en"	"A speedy spy that's a ''glass-cannon'' type of enemy. \n-VERY fast. \n-Dodges every second attack. "
-		"it"	"Infligge danni immensi a tutto. è estremamente veloce e schiva ogni 2 attacchi.\n ha pochi HP e subisce 2,5 volte i danni in mischia ma 50％ in meno quelli a distanza."
-		"ko"	"통칭 '유리 대포' 속성의 재빠른 스파이입니다.\n-이동 속도가 극도로 빠름\n-피해를 받을 때마다, 다음에 받는 공격을 1회 회피"
-	
+		"en"	"-Low health\n-VERY fast\n-Dodges every second attack\n-Deals high chaos damage"
 	}
 	"Mad Doctor Desc"
 	{
-		"en"	"attacks very very fast and each 3rd attack gives it resistance and a big attack cooldown to itself.\nEach ATTACK not based on damage heals allies around themselves simular to rajul or arctic mage."
-		"it"	"attacca molto velocemente e ogni terzo attacco gli conferisce resistenza e un grande cooldown d'attacco.\nOgni ATTACCO non basato sul danno cura gli alleati intorno a sé, similmente a rajul o al mago artico."
-		"ko"	"공격 속도가 극도로 빠르며 매 3번째 공격마다 피해 저항력이 증가하고 긴 공격 쿨타임을 가집니다.\n모든 공격은 피해량과 관계없이 주변의 아군들을 치유합니다."
+		"en"	"-attacks very very fast and each 3rd attack gives it resistance and a big attack cooldown to itself.\n-Each ATTACK not based on damage heals allies around themselves simular to rajul or arctic mage."
 	}
 	"Abomination Desc"
 	{
-		"en"	"A pyro disfigured, and now afflicted by chaos, is a force to be reckoned with. \n-Periodically leaps at enemies. \n-Gains resistance to the damage type taken, but loses resistance to the other damage type. \n-Attacks apply Chaos elemental damage."
-		"it"	"Infligge danni immensi nel tempo, infligge danni da caos e brucia.\nOgni attacco che riceve gli conferisce resistenza al tipo di danno che ha ricevuto e vulnerabilità all'altro.\nIl silenzio fa sì che la parte di guadagno di resistenza non avvenga."
-		"ko"	"혼돈에 침식된 변이된 파이로. 무시할 수 없는 힘을 지녔습니다. \n-주기적으로 대상에게 점프해 돌진\n-피격 시, 해당 피해 유형에 대한 피해 저항력을 얻으나, 다른 피해 유형에 대한 저항력은 감소합니다.\n-적중 시 혼돈 원소 피해를 부여"
+		"en"	"Creature created by pure anarchy\n-Periodically leaps at enemies\n-Gains resistance to the damage type taken, but loses resistance to the other damage type\n-Attacks apply Chaos elemental damage."
 	}
 	"Anarchist Enforcer Desc"
 	{
-		"en"	"A sniper that deals huge damage and gives bleed."
-		"it"	"Un cecchino che infligge danni ingenti e dà sanguinamento."
-		"ko"	"적중시, 대상에게 출혈을 부여하는 스나이퍼입니다."
+		"en"	"-Infinite range sniper\n-Spawns randomly around the map\nDeals immensive damage to barricades.\n-Deals high bleed damage"
 	}
 	"Braindead Desc"
 	{
-		"en"	"Shoots 10 shots very fast with high damage, and then reloads for a long time." 
-		"it"	"Spara 10 colpi molto velocemente con danni elevati e poi ricarica a lungo."
-		"ko"	"재빠르게 사격 공격을 10회 가하지만, 재장전 속도가 매우 느립니다."
+		"en"	"-Mid range Assault rifle attacks\n-Reloads after 10 shots" 
 	}
 	"Behemoth Desc"
 	{
-		"it"	"Ha una salute molto elevata e danni da caos. è completamente immune ai colpi alla testa."
-		"en"	"A heavy, the size of a giant, with strong headgear. \n-Attacks apply Chaos elemental damage. \n-Takes 0 headshot damage."
-		"ko"	"거인과 같은 크기와 강력한 머리 보호구를 가진 헤비입니다.\n-적중 시 혼돈 원소 피해를 부여합니다.\n-헤드샷 피해를 0으로 받습니다."
+		"en"	"A heavy, the size of a giant, with strong headgear\n-Attacks apply Chaos elemental damage\n-Takes 0 headshot damage."
 	}
 	"Absolute Incinirator Desc"
 	{
-		"en"	"An enemy that kites you and also burns you with his ''shotgun''."
-		"it"	"Un nemico che vi fa da kiter e vi brucia anche con il suo ''fucile''."
-		"ko"	"공격 대상과 거리 유지 및 거리 조절을 하며, 적중시 대상을 불태우는 '산탄총'을 들고 있습니다."
+		"en"	"-short Ranged hitscan attack\n-Tries to keep distance between itself and the enemy\n-Burns attacker on hit"
 	}
 	"The Messenger Desc"
 	{

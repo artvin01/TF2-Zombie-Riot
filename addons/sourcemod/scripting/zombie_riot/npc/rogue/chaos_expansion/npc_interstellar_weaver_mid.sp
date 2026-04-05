@@ -18,7 +18,7 @@ void Interstellar_Weaver_MapStart_Mid()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Interstellar Weaver");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_interstellar_weaver_mid");
-	data.Category = -1;
+	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	strcopy(data.Icon, sizeof(data.Icon), ""); 						//leaderboard_class_(insert the name)
