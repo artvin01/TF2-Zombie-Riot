@@ -1562,7 +1562,7 @@
 	}
 	"Diversionistico Desc"
 	{
-		"en" 		"An enemy that comes from time to time, Will try to backstab you. (Backstabbing can be silenced)"
+		"en" 		"An enemy that comes from time to time \n-Invisible unless close to. \n-Can backstab you. "
 		"it"		"Un nemico che si presenta di tanto in tanto, cercherà di pugnalarvi alle spalle. (Le pugnalate alle spalle possono essere messe a tacere)"
 		"ko" 		"때때로 등장하는 적으로, 당신을 백스탭하려고 시도합니다.(침묵 상태 시 백스탭 저지 가능)"
 	}
@@ -1616,13 +1616,13 @@
 	}
 	"Soldine Prototype Desc"
 	{
-		"en"	"A prototype made by sensal on the way to you.\nShoots rockets slowly."
+		"en"	"A prototype made by sensal on the way to you.\n-Shoots rockets slowly."
 		"it"	"Un prototipo realizzato da sensal sulla strada per voi.\nSpara razzi lentamente."
 		"ko"	"센살이 제작한 프로토타입으로, 당신에게로 향하고 있습니다.\n-로켓을 매우 느리게 발사합니다."
 	}
 	"Soldine Desc"
 	{
-		"en"	"Re-created by Sensal on his way to you.\nCan rocketjump\nFires rockets\nCan melee attack with a cooldown, this melee deals heavy damage."
+		"en"	"Re-created by Sensal on his way to you. \n-Can rocketjump. \n-Fires rockets. \n-Can melee attack with a cooldown. \n- Melee deals heavy damage and slides you."
 		"it"	"Ricreato da Sensal mentre si reca da voi.\nPuò saltare con i razzi\nPuò attaccare in mischia con un cooldown, questa mischia infligge danni ingenti."
 		"ko"	"센살이 다시 새로 만들어낸 것으로, 당신에게로 향하고 있습니다.\n-로켓 점프를 사용할 수 있습니다.\n-로켓을 발사합니다.\n-매우 높은 피해를 주는, 긴 쿨타임을 가진 근접 공격을 합니다."
 	}
