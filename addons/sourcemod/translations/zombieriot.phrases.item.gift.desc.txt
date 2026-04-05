@@ -458,213 +458,139 @@
 	}
 	"Xeno Metro Cop Desc"
 	{
-		"en" 		"Attacking these zombies will cause them to heavily anger and gain fast speeds."
-		"it"		"Attaccando questi zombie, questi si arrabbiano pesantemente e acquistano velocità."
-		"ko" 		"이 좀비들은 피해를 받으면, 분노하여 이동 속도가 더욱 빨라지게 됩니다.\n-피해를 받을 시 이동 속도 증가"
+		"en" 		"-When hurt, gain insane speeds, with a cooldown"
 	}
 	"Xeno Metro Raider Desc"
 	{
-		"en" 		"When hurt, they will attack 10x as fast, shredding everything."
-		"it"		"Quando sono feriti, attaccano con una velocità 10 volte superiore, distruggendo tutto."
-		"ko" 		"이 좀비는 피해를 받으면, 공격 속도가 10배 증가하여, 근접한 모든 것을 갈아마실 수 있게 됩니다.\n-피해를 받을 시 공격 속도 대폭 증가"
+		"en" 		"-When hurt, gain massive attackspeed"
 	}
 	"Xeno Rifler Desc"
 	{
-		"en" 		"All their abilities have been enhanced by the Xeno infection."
-		"it"		"Tutte le loro capacità sono state potenziate dall'infezione Xeno."
-		"ko" 		"제노 감염으로 인해, 이들의 능력치가 전반적으로 향상되었습니다."
+		"en" 		"-Has a hitscan ranged attack\n-Can Melee aswell"
 	}
 	"Xeno Shotgunner Desc"
 	{
-		"en" 		"Faster and more deadly Shotgunners, they also attack 2x as fast as normal."
-		"it"		"Più veloci e più letali, gli Shotgunner attaccano anche due volte più velocemente del normale."
-		"ko" 		"더욱 빨라지고 더욱 강해진 산탄총병입니다. 원본 개체들보다 2배 더 빠르게 공격합니다."
+		"en" 		"-Attacks rapdidly, only dealing ranged damage"
 	}
 	"Xeno Swordsman Desc"
 	{
-		"en" 		"The xeno infection even was able to infect roman powers.\nPulse attack resistance still applies."
-		"it"		"L'infezione da xeno è stata in grado di infettare persino i poteri romani."
-		"ko" 		"아무래도 제노 감염원들은 로마의 힘까지 감염시킬 수 있는 것 같습니다.\n-펄스 공격을 사용하며, 사용 중 피해 저항력이 증가"
+		"en" 		"-When hurt, jumps at target\n-Causes a pulse attack which grants resistances during it and attacks"
 	}
 	"Xeno Elite Desc"
 	{
-		"en" 		"Xeno infection didnt seem to alter much in this one."
-		"it"		"L'infezione da Xeno non sembra essere cambiata molto in questo caso."
-		"ko" 		"어째 제노 감염 변이가 이 개체에겐 큰 변화를 주지 않은 것 같습니다..."
+		"en" 		"-Has a hitscan ranged attack\n-Can Melee aswell\n-Shoots explosive projectile sometimes"
 	}
 	"Xeno Giant Swordsman Desc"
 	{
-		"en" 		"The xeno infection caused these roman ancients to be able to run and attack way faster!.\nPulse attack resistance still applies."
-		"it"		"L'infezione da xeno ha fatto sì che questi antichi romani fossero in grado di correre e attaccare molto più velocemente!\nLa resistenza agli attacchi a impulsi è ancora valida."
-		"ko" 		"제노 감염으로 인하여 이 고대 로마인들은 더욱 빠르게 이동하고 더욱 빠르게 공격할 수 있게 되었습니다.\n-펄스 공격을 사용하며, 사용 중 피해 저항력이 증가"
+		"en" 		"-Fast Giant enemy\n-Causes a pulse attack which grants resistances during it and attacks"
 	}
 	"Xeno DDT Desc"
 	{
-		"en" 		"They gained cloak abilities, once hurt they will go almost invis for a short time."
-		"it"		"Hanno acquisito l'abilità di occultamento: una volta feriti, diventano quasi invisibili per un breve periodo."
-		"ko" 		"변이로 인해 은폐 능력을 얻었습니다.\n-피해를 받을 시 잠깐 동안 은폐 상태가 됩니다."
+		"en" 		"-Once hurt, grants invisibility for a short bit"
 	}
 	"Xeno Golden Collos Desc"
 	{
-		"en" 		"Even statues of pure gold can be infected by the Xeno Radiation.\nPulse attack resistance still applies."
-		"it"		"Anche le statue d'oro puro possono essere infettate dalle radiazioni Xeno.\nLa resistenza agli attacchi a impulsi è ancora valida."
-		"ko" 		"이 순금 조각상 조차도 제노 감염을 피할 수 없었습니다.\n-펄스 공격을 사용하며, 사용 중 피해 저항력이 증가"
+		"en" 		"-Fast Giant enemy\n-Causes a pulse attack which grants resistances during it and attacks"
 	}
 	"Xeno Overlord Desc"
 	{
-		"en" 		"The overlord got faster, his pulse attack combos you in the air and glitches you around, and he rages 2x as fast.\nPulse attack resistance still applies.\n Rage reisstance is high."
-		"it"		"L'Overlord è diventato più veloce, il suo attacco a impulsi ti combina in aria e ti manda in tilt, e si infuria due volte più velocemente.\nLa resistenza all'attacco a impulsi è ancora valida.La resistenza alla rabbia è alta."
-		"ko" 		"이 대군주는 더욱 빨라지고, 펄스 폭발 공격이 당신을 공중으로 띄울 것이며, 2배 더 빨리 분노 상태가 됩니다.\n-펄스 공격을 사용하며, 사용 중 피해 저항력이 증가\n-분노 상태: 피해 저항력 증가량이 더 높아졌습니다."
+		"en" 		"One of many ''overlords''\n-Performs pulse attack which causes 5 strikes, gives resistance during usage.\n-Rages with cooldown: Damage, attackspeed, resistance."
 	}
 	"Xeno Scout Assaulter Desc"
 	{
-		"en" 		"Hurting these will cause scouts to go at insane speeds."
-		"it"		"Se si danneggiano questi elementi, gli esploratori vanno a velocità folli."
-		"ko" 		"이 스카웃은 피해를 받으면 이동 속도가 엄청나게 빨라집니다.\n-피해를 받을 시 이동 속도 대폭 증가"
+		"en" 		"-When hurt, gain high speed for a bit with cooldown"
 	}
 	"Xeno Engineer Deconstructor Desc"
 	{
-		"en" 		"Their damage towards buildings got increased by 3x times or more."
-		"it"		"I loro danni agli edifici sono aumentati di 3 volte o più."
-		"ko" 		"이들의 구조물 대상 피해량이 2.5배에서 3배로 증가했습니다.\n-구조물에 높은 피해를 가함"
+		"en" 		"-Massive building damage bonus"
 	}
 	"Xeno Heavy Brawler Desc"
 	{
-		"en" 		"These heavies gain even stronger muscles due to the xeno radiation."
-		"it"		"Questi pesanti acquisiscono muscoli ancora più forti a causa delle radiazioni xeno."
-		"ko" 		"제노 감염으로 인해, 이 헤비들의 근육이 더욱 증강되었습니다."
+		"en" 		"-No particular abilities."
 	}
 	"Xeno Flying Armor Desc"
 	{
-		"en" 		"Their splitting abilities have doubled, they now will spawn 2 minions instead of one."
-		"it"		"Le loro abilità di divisione sono raddoppiate, ora generano 2 servitori invece di uno."
-		"ko" 		"이들의 분열 능력이 2배로 증가하여, 이제 분열시 하나 대신 2개로 늘어납니다."
+		"en" 		"-When dying, splits into 2"
 	}
 	"Xeno Tiny Flying Armor Desc"
 	{
-		"en" 		"Just stronger versions of the normal."
-		"it"		"Solo versioni più forti di quelle normali."
-		"ko" 		"이 개체는 기존보다 더욱 강력해졌습니다."
+		"en" 		"-Smaller versions of the Xeno Flying Armor, does not split."
 	}
 	"Xeno Kamikaze Demo Desc"
 	{
-		"en" 		"Do not let these mutants touch your barricades.\nAt all.\nExplodes on death."
-		"it"		"Non permettete che questi mutanti tocchino le vostre barricate.\nEsplode quando muore."
-		"ko" 		"이 변이체들이 절대로 당신의 바리케이드에 가까이 오지 못 하게 하십시오.\n절대로!\n-사망 시 자폭"
+		"en" 		"-Extreme speeds\n-Explodes on death"
 	}
 	"Xeno Medic Supporter Desc"
 	{
-		"en" 		"They heal twice as fast due to xeno compatability."
-		"it"		"Guariscono due volte più velocemente grazie alla compatibilità con gli xeno."
-		"ko" 		"이들의 자체적인 제노 변이 호환성 때문에, 치유 효율이 2배로 증가했습니다."
+		"en" 		"This medic will heal any zombie near it.\n-Touching medic enrages it\n-Enrages on Patient death.\n-Enrage: No longer heals, instead attacks.\n-Heals one ally when not enraged."
 	}
 	"Xeno Giant Heavy Brawler Desc"
 	{
-		"en" 		"The giants have heavily mutated, when dying they will split into the smaller ones."
-		"it"		"I giganti sono fortemente mutati e quando muoiono si dividono in quelli più piccoli."
-		"ko" 		"이 거대 헤비들은 크게 변화했습니다. 사망 시, 소형 개체로 분열합니다."
+		"en" 		"-Slow giant\n-On death, splits into 1 smaller one"
 	}
 	"Xeno Spy Facestabber Desc"
 	{
-		"en" 		"Spy facestabbers are unaffected mostly."
-		"it"		"I facestabber spia sono per lo più inalterati."
-		"ko" 		"아무래도 앞스탭 스파이들에겐 제노 감염으로 인한 변화가 거의 없는것 같습니다."
+		"en" 		"-No particular abilities"
 	}
 	"Xeno Soldier Rocketeer Desc"
 	{
-		"en" 		"They shoot faster and have more health.\nThey predict your movement aswell."
-		"it"		"Sparano più velocemente e hanno più salute.\nPrevedono anche i tuoi movimenti."
-		"ko" 		"원본 개체보다 더욱 빠르게 사격하고 더 많은 체력을 보유했습니다.\n-표적이 된 플레이어의 움직임을 예측합니다."
+		"en" 		"-Faster shooting rocketeer\n-Predicts movement"
 	}
 	"Xeno Soldier Minion Desc"
 	{
-		"en" 		"Xeno Soldier Minion"
-		"it"		"Xeno Soldier Minion"
-		"ko" 		"제노 솔저 하수인입니다."
+		"en" 		"-No particular abilities"
 	}
 	"Xeno Soldier Giant Summoner Desc"
 	{
-		"en" 		"Shoots rockets every second it can, prepare for a barrage of rockets comming your way.\n(can be silenced but once unsilenced, will release all summons at once)"
-		"it"		"Spara razzi ogni secondo che può, preparatevi a una raffica di razzi in arrivo.\n(può essere silenziato ma una volta non silenziato, rilascerà tutte le evocazioni in una volta sola)"
-		"ko" 		"매 초마다 되는 대로 로켓을 발사합니다. 로켓 세례를 대비하시길 바랍니다.\n(침묵을 부여하여 소환을 막을 수 있지만, 침묵이 풀리면 누적된 만큼 한꺼번에 생성됩니다)"
+		"en" 		"He spawns rockets and shoots them at you.\n-When hurt enough at threshholds, summons minions.\n-If he cant summon, gains temp resistance instead."
 	}
 	"Xeno Spy Thief Desc"
 	{
-		"en" 		"Xeno infection seems to have little effect on spy enemies, why so?"
-		"it"		"L'infezione Xeno sembra avere poco effetto sui nemici spia, perché?"
-		"ko" 		"어째 제노 감염이 스파이들에겐 큰 변이를 해주지 않는것 같습니다? 왜일까요?"
+		"en" 		"-No particular abilities"
 	}
 	"Xeno Spy Trickstabber Desc"
 	{
-		"en" 		"Again almost no change.\nThis is suspicious."
-		"it"		"Anche in questo caso quasi nessun cambiamento.\nQuesto è sospetto."
-		"ko" 		"이 스파이 개체도 마찬가지로 거의 변화가 없습니다.\n무언가 이상합니다."
+		"en" 		"-has immensive melee range"
 	}
 	"Xeno Half Cloaked Spy Desc"
 	{
-		"en" 		"Not even recolour, do spies have a special interaction with the xeno virus?"
-		"it"		"Nemmeno ricolorare, le spie hanno un'interazione speciale con il virus xeno?"
-		"ko" 		"이 개체는 심지어 색상 변화조차 일어나지 않았습니다. 혹시 스파이는 제노 바이러스의 감염과 관련된 특별한 상호작용이라도 있는 걸까요?"
+		"en" 		"-Shoots rapidly\n-Half cloaked"
 	}
 	"Xeno Sniper Main Desc"
 	{
-		"en" 		"Hurting them at all causes them to instantly wield their melee."
-		"it"		"Se li si ferisce in qualche modo, si brandiscono istantaneamente le loro armi da mischia."
-		"ko" 		"이 개체들은 피해를 받으면 거의 즉시 근접 무기를 꺼내들 것입니다."
+		"en" 		"-When hurt at all, uses melee"
 	}
 	"Xeno Demoknight Main Desc"
 	{
-		"en" 		"They Jump twice as much and hurt twice as hard."
-		"it"		"Saltano il doppio e fanno male il doppio."
-		"ko" 		"이들은 기존 개체보다 2배 더 높이 뛰고 2배 더 많은 피해를 줍니다."
+		"en" 		"-can jump at target,"
 	}
 	"Xeno Battle Medic Main Desc"
 	{
-		"en" 		"Absolute crazed battle monsters. Once hurt they will go at RAPID speeds and attack VERY fast.\nIf not carefull, they will wipe you out in mere moments."
-		"it"		"Mostri da battaglia assolutamente impazziti. Una volta feriti, vanno a velocità RAPIDA e attaccano MOLTO velocemente.\nSe non si fa attenzione, vi spazzeranno via in pochi istanti."
-		"ko" 		"엄청난 전투광 괴물들입니다. 한 번이라도 피해를 받으면, 이동 속도가 매우 빨라지고 공격 속도가 극도로 빨라지게 됩니다.\n주의하지 않으면, 순식간에 사지가 분해될 것입니다."
+		"en" 		"-When hurt, gain High speed and resitsance for a short bit with cooldown"
 	}
 	"Xeno Giant Pyro Main Desc"
 	{
-		"en" 		"Stronger, faster, hits harder."
-		"it"		"Più forte, più veloce, colpisce più forte."
-		"ko" 		"더욱 강해지고, 빨라졌으며, 더 높은 피해량을 보유했습니다."
+		"en" 		"-No particular abilities"
 	}
 	"Xeno Deutsch Ritter Desc"
 	{
-		"en" 		"Infected, the german Knights become even more powerfull."
-		"it"		"Infettati, i Cavalieri tedeschi diventano ancora più potenti."
-		"ko" 		"강력한 독일 기사, 그가 감염되어 더욱 강력해졌습니다."
+		"en" 		"-Very slow\n-Deals extreme damage\n-Has high health and res"
 	}
 	"Xeno X10 Spy Main Desc"
 	{
-		"en" 		"Is this the first infected Merc of the xeno virus? This would explain why the spy's are unaffected.\nHeals on deadringer, takes no damage while deadringered (resistance can be silenced)"
-		"it"		"Si tratta del primo Merc infettato dal virus xeno? Questo spiegherebbe perché le spie non ne sono affette.\nGuarisce su deadringer, non subisce danni mentre è deadringer (la resistenza può essere silenziata)"
-		"ko" 		"혹시 최초로 제노 바이러스에 감염된 용병일까요? 그럼 다른 스파이 개체들이 감염으로 인한 변화가 없던게 설명이 되겠군요.\n-데드 링어 사용시 체력을 회복하고 지속 시간동안 피해를 받지 않음.(침묵 상태 시 저항력 감소)"
-	}
-	"Nazi Panzer Desc"
-	{
-		"en" 		"Nazi Panzer Soldat from Origins, seems to have teleported here via the 115 teleporter experiments, they are unaffected by the xeno infection."
-		"it"		"Panzer Soldat nazisti di Origins, sembra che si siano teletrasportati qui tramite gli esperimenti del teletrasporto 115, non sono influenzati dall'infezione xeno."
-		"ko" 		"콜 오브 듀티 Origins 세계에서 날아온 나치 판처 솔댓입니다. 아무래도 115 원소 텔레포터 실험으로 인해 날아온 것 같군요. 이들은 제노 바이러스에 감염되지 않았습니다."
+		"en" 		"Infections cancers all around.\nWhen hit, activates deadringer and becomes invuln in duration and heals.\nWhen Above half health:\n-Has a ranged bullet attack\nWhen below half health:\n-Ranged rocket attack, deals more damage, is faster, gains resistances."
 	}
 	"Bob the Overgod of gods and destroyer of multiverses Desc"
 	{
-		"en" 		"The Highest of the highest. Be glad that he is on your side."
-		"it"		"Il più alto dei più alti. Siate felici che sia dalla vostra parte."
-		"ko" 		"최고 중의 최고이신 분입니다. 이 자가 당신과 같은 편이란걸 영광으로 여기세요."
+		"en" 		"-TODO"
 	}
 	"Revived DDT Desc"
 	{
-		"en" 		"A robot following orders.\nAttacks enemies that are marked."
-		"it"		"Un robot che esegue gli ordini.\nAttacca i nemici che sono contrassegnati."
-		"ko" 		"명령을 따르는 로봇입니다.\n-표적이 부여된 대상을 공격합니다."
+		"en" 		"-TODO"
 	}
 	"Spookmaster Boner Desc"
 	{
-		"en" 		"The boner and his funny honk.\nAttacks enemies that are marked."
-		"it"		"L'erezione e il suo buffo clacson.\nAttacca i nemici che sono contrassegnati."
-		"ko" 		"재미있는 경적 소리를 내는 해골바가지 친구입니다.\n-표적이 부여된 대상을 공격합니다."
+		"en" 		"-TODO"
 	}
 	"Cured Father Grigori Desc"
 	{
@@ -680,9 +606,7 @@
 	}
 	"W.F. Mage Desc"
 	{
-		"en" 		"Combines that have the ability to wield magic.\nThe infection seems to alter their mindset..."
-		"it"		"Combinazioni che hanno la capacità di esercitare la magia.\nL'infezione sembra alterare la loro mentalità..."
-		"ko" 		"마법을 사용할 수 있는 능력을 보유한 콤바인들입니다.\n아무래도 감염이 그들의 사고 방식을 바꿔버린것 같습니다..."
+		"en" 		"-Shoots projectiles at far range\n-Melees once close"
 	}
 	"Bloon Desc"
 	{
@@ -740,80 +664,55 @@
 	}
 	"Sawrunner Desc"
 	{
-		"en" 		"The monster from cry of fear, made from pure fear and depression, will go after you. and only you. The xeno infection is having an effect on him, making him even more erratic...\nReceives 2x headshot damage."
-		"it"		"Il monter di cry of fear, fatto di pura paura e depressione, si accanisce su di te. e solo su di te. L'infezione xeno sta avendo effetto su di lui, rendendolo ancora più irregolare...\nRiceve 2x danni da colpo alla testa."
-		"ko" 		"Cry of fear 게임에서 넘어온 괴물. 순수한 공포와 우울함으로 만들어졌으며, 오직 당신만을 쫓을 것입니다.\n-제노 감염원이 그에게 영향을 끼쳐서, 그를 더욱 불규칙한 존재로 만들고 있습니다...\n-받는 헤드샷 피해량 2배"
+		"en" 		"-Health cannot be seen\n-Takes 2x headshot damage\n-Stands still while attacking\n-Attacks deal max health true damage"
 	}
 	"Medic Charger Desc"
 	{
-		"en" 		"A charging jumping Strong Medic Warrior."
-		"it"		"Un Guerriero Medico forte che carica e salta."
-		"ko" 		"도약 돌격을 하는 강력한 메딕 전사입니다."
+		"en" 		"-Jumps at enemies with a cooldown"
 	}
 	"Medic Berserker Desc"
 	{
-		"en" 		"They seem to feed off of blood. \nThe lower health he has, the deadlier he becomes."
-		"it"		"Sembra che si nutrano di sangue. \nPiù la salute è bassa, più diventa letale."
-		"ko" 		"이들은 아무래도 피에 굶주려 있는 듯합니다.\n-체력이 낮아질수록, 능력이 더욱 강력해집니다."
+		"en" 		"-Lower health equals more attackspeed"
 	}
 	"Militia Desc"
 	{
-		"en" 		"From the dark ages, a soldier with basic gear."
-		"it"		"Dai tempi bui, un soldato con l'equipaggiamento di base."
-		"ko" 		"중세 암흑시대 기준으로는 가장 기본적인 장비를 갖춘 병사입니다."
+		"en" 		"-No particular abilities."
 	}
 	"Archer Desc"
 	{
-		"en" 		"A simple archer, capeable of fiering arrows at you."
-		"it"		"Un semplice arciere, capace di scagliare frecce contro di voi."
-		"ko" 		"궁사로서, 당신에게 화살을 발사합니다."
+		"en" 		"-Shoots arrows at target"
 	}
 	"Man-At-Arms Desc"
 	{
-		"en" 		"An Upgraded militia, with better gear."
-		"it"		"Una milizia potenziata, con un equipaggiamento migliore."
-		"ko" 		"더욱 좋은 장비를 갖춘 시민군입니다."
+		"en" 		"-Has melee resistance"
 	}
 	"Skirmisher Desc"
 	{
-		"en" 		"A throwing spearmen, has insane ranged resistance, better attack it with melee."
-		"it"		"Una lancia da lancio ha una resistenza a distanza pazzesca, meglio attaccarla in mischia."
-		"ko" 		"창을 던지는 창병입니다. 매우 높은 원거리 피해 저항을 보유하고 있으므로, 근접 무기로 공격해야합니다."
+		"en" 		"-Shoots arrows at target\n-Has minimum range and retreats if too close\n-Has high ranged res"
 	}
 	"Long Swordsman Desc"
 	{
-		"en" 		"Further upgrades for milita"
-		"it"		"Ulteriori aggiornamenti per le forze armate"
-		"ko" 		"시민군의 강화 버전입니다."
+		"en" 		"-Has melee resistance"
 	}
 	"Twohanded Swordsman Desc"
 	{
-		"en" 		"Further upgrades for milita"
-		"it"		"Ulteriori aggiornamenti per le forze armate"
-		"ko" 		"시민군의 강화 버전입니다."
+		"en" 		"-Has melee resistance"
 	}
 	"Crossbow Man Desc"
 	{
-		"en" 		"Predicts your movement with his arrows"
-		"it"		"Prevede i vostri movimenti con le sue frecce"
-		"ko" 		"석궁병은 당신의 이동 경로를 예측하고 화살을 사격합니다."
+		"en" 		"-SHoots arrows which predict movement"
 	}
 	"Spearman Desc"
 	{
-		"en" 		"A fast, fast attacking, high range, but low health and damage enemy. They can quickly storm, surround and kill you.\nStacks a debuff, read debuff for more info."
-		"ko" 		"빠르고, 빠른 공격 속도에, 긴 사정거리를 보유했지만, 체력과 피해량이 낮습니다. 빠르게 모여들 수 있기에 당신을 둘러싸서 죽이기 쉽습니다.\n-디버프를 쌓습니다. 디버프 내용에서 더 자세히 확인해주세요."
+		"en"		"-Each hit applies a debuff\n-Once debuff is maxed all spearment deal immensive damage"
 	}
 	"Hand Cannoneer Desc"
 	{
-		"en" 		"Deals high damage but cant predict you"
-		"it"		"Infligge un danno elevato ma non può prevederlo"
-		"ko" 		"총통병은 높은 피해를 주는 포탄을 발사하지만, 당신의 이동 경로를 예측하지 못 합니다."
+		"en" 		"-High damage projectiles, no prediction"
 	}
 	"Elite Skirmisher Desc"
 	{
-		"en" 		"An elite variant of the skirmisher, even more deadly!"
-		"it"		"Una variante d'élite dello skirmisher, ancora più letale!"
-		"ko" 		"정예 척후병입니다. 기존 척후병보다 훨씬 강합니다!"
+		"en" 		"-Shoots arrows at target\n-Has minimum range and retreats if too close\n-Has extreme high ranged res"
 	}
 	"Blitzkrieg Desc"
 	{
@@ -829,15 +728,11 @@
 	}
 	"Pikeman Desc"
 	{
-		"en" 		"Stronger Spearman, deals 2x dmg to enemies that mounted a building"
-		"it"		"Lancia più forte, infligge 2 volte i danni ai nemici che hanno montato un edificio"
-		"ko" 		"더욱 강력해진 창병입니다.\n-구조물을 들고 있는 대상에게 가하는 피해량 2배"
+		"en"		"-Each hit applies a debuff\n-Once debuff is maxed all spearment deal immensive damage"
 	}
 	"Medic Supperior Mage Desc"
 	{
-		"en" 		"A medic mage who decided to pay attention in magic class\nBeing close to this mage may not be healthy...\nUses a close range energy burst\nAnd uses a close range magic ion burst"
-		"it"		"Un mago medico che ha deciso di prestare attenzione durante la lezione di magia...\nEssere vicini a questo mago potrebbe non essere salutare...\nUsa un'esplosione di energia a distanza ravvicinata e usa un'esplosione di ioni magici a distanza ravvicinata.."
-		"ko" 		"마법학에 집중한 메딕 마법사입니다.\n이 마법사에게 근접하는건 좋지 않은 선택일 것입니다...\n-근거리 에너지 버스트 공격을 사용\n-근거리 마력 이온 버스트 공격을 사용"
+		"en" 		"-Shoots lasers which slow himself down\n-Causes ION strikes on enemies sometimes\n-Melee attacks if on cooldown"
 	}
 	"Rebel Desc"
 	{
@@ -847,15 +742,11 @@
 	}
 	"Eagle Scout Desc"
 	{
-		"en" 		"A fast aglie scout, similair to an eagle.\nWeak to melee and resistant to ranged attacks."
-		"it"		"Un esploratore veloce, simile a un'aquila.\nDebole in mischia e resistente agli attacchi a distanza."
-		"ko" 		"매우 빠르고 민첩한 정찰병으로, 마치 독수리와도 같습니다.\n-높은 원거리 저항력을 보유, 대신 근접 피해에 취약"
+		"en" 		"-High speed\n-Melee vulnerable"
 	}
 	"Samurai Desc"
 	{
-		"en" 		"A combine who adopted an acient way of battle, highly deadly.\nWill deal 25％ extra damage to any non, melee player, and get angered if attacked by anything non melee."
-		"it"		"Un combine che ha adottato un antico modo di combattere, altamente letale. infligge 25％ danni extra a qualsiasi giocatore non in mischia e si arrabbia se attaccato da qualsiasi cosa non in mischia."
-		"ko" 		"고대의 전투 방식을 선택한 콤바인으로서, 매우 위협적입니다.\n-근접 무기를 사용하지 않는 대상에게 가하는 피해량 +25％\n-근접 무기 이외의 공격으로 피해를 받을 시 분노"
+		"en" 		"-High damage\n-If hurt too much by non melee damage, enrages\nenrage: Speed damage and resitsances buffed"
 	}
 	"The Addiction Desc"
 	{
@@ -937,15 +828,11 @@
 	}
 	"Xeno Malfunctioning Robot Desc"
 	{
-		"en"		"A Xeno Robot that overheats after hitting enough targets. Overheat releases a shockwave that deals massive AoE damage. Figment of Simon's Mind."
-		"it"		"Uno Xeno Robot che si surriscalda dopo aver colpito un numero sufficiente di bersagli. Il surriscaldamento rilascia un'onda d'urto che infligge ingenti danni AoE. Un'immagine della mente di Simon."
-		"ko"		"대상들을 충분히 공격하면 과열되는 제노 로봇입니다. 과열시 충격파를 발생시켜 엄청난 광역 피해를 줍니다. 사이먼의 정신이 형상화된 것입니다."
+		"en"		"-A Xeno Robot that overheats after hitting enough targets\m-Overheat releases a shockwave that deals massive AoE damage."
 	}
 	"Kahmlstein Desc"
 	{
-		"en"		"A far distant battler, he doesnt care about chaos, he just wants to fight, you cant kill him, hell fake his death and just go away as he is bored."
-		"it"		"Un combattente lontano, non gli interessa il caos, vuole solo combattere, non puoi ucciderlo, al limite fingere la sua morte e andarsene, perché si annoia."
-		"ko"		"아주 먼 곳에서 찾아온 싸움꾼입니다. 그는 혼돈을 신경 쓰지 않습니다: 그저 전투를 원할 뿐이죠. 당신은 그를 처치할 수 없습니다. 그를 쓰러뜨려도 그는 죽은 척을 하고 지루해서 다른 곳으로 떠날 것입니다."
+		"en"		"-TODO."
 	}
 	"Chaos Kahmlstein Desc"
 	{
@@ -961,33 +848,23 @@
 	}
 	"Holy Knight Desc"
 	{
-		"en"		"A derivitive of the Deutch ritters\nThese knights decided to study magic while also studying to become a knight"
-		"it"		"Questi cavalieri decisero di studiare la magia mentre studiavano per diventare cavalieri"
-		"ko"		"독일 기사들의 일원입니다.\n이 기사들은 마법학과 기사도를 동시에 공부하기로 결정했었습니다."
+		"en" 		"An extreamly powerfull and tanky w.f. Soldier.\n-High stats, low movement.\n-shoots projectiles sometimes"
 	}
 	"Sniper Railgunner Desc"
 	{
-		"en"		"A sniper who pesters you from a far\nThe coward, he runs away too\nShoots a charged attack after a few shots."
-		"it"		"Un cecchino che ti infastidisce da lontano...\nIl codardo, scappa anche lui...\nSpara un attacco caricato dopo pochi colpi."
-		"ko"		"멀리서 당신을 괴롭히는 적입니다.\n겁쟁이이므로, 그에게 접근시 그는 도주할 것입니다.\n일정 횟수 이상 발사하면, 충전 사격을 발사합니다."
+		"en"		"-High damage high ranged projectiles\n-Minimum range attacks\n-Enough shots cause a mega attack"
 	}
 	"Soldier Barrager Desc"
 	{
-		"en"		"A Soldier who is somewhat inteligent\nHe runs away when his clip is empty and has the ability to load multiple rockets"
-		"it"		"Un Soldato un po' intelligente scappa quando il suo caricatore è vuoto e ha la capacità di caricare più razzi"
-		"ko"		"비교적 영리한 솔저입니다.\n-로켓의 탄약이 없으면 싸우지 않고 도주\n-로켓 세례 공격 사용 가능"
+		"en"		"-Barrage rocket attack and must reload after shooting"
 	}
 	"Capped Ram Desc"
 	{
-		"en"		"takes 0.01％ dmg from ranged attacks and does high damage to barricades."
-		"it"		"subisce 0,01％ danni dagli attacchi a distanza e danneggia fortemente le barricate."
-		"ko"		"이 적은 받는 근접 피해가 2배로 증가하지만, 받는 원거리 피해를 0.01％ 로 줄여서 받으며, 바리케이드에 엄청난 피해를 입힙니다."
+		"en"		"-Attacks buildings dealing high damage\n-Contact damage\n-Takes next to no melee damage"
 	}
 	"The Shit Slapper Desc"
 	{
-		"en"		"An unusually large torsoless zombie\nits been nick-named ''The Shit Slapper'' by people who have encountered it"
-		"it"		"Uno zombie insolitamente grande e senza busto è stato soprannominato ''Lo schiaccianoci'' dalle persone che lo hanno incontrato"
-		"ko"		"괴상하리만큼 거대한 다리 없는 좀비입니다.\n이 적을 만나는 사람들의 대부분이 그를 ''내 다리 내놔'' 라는 명칭으로 부르고 있습니다."
+		"en"		"-Deals high melee damage and knockback\n-The lower hp, the more stats"
 	}
 	"Basic Bones Desc"
 	{
@@ -997,33 +874,23 @@
 	}
 	"Mecha Engineer Desc"
 	{
-		"en"		"A rouge mechanical engineer, a part of the ''Last Hope'' project"
-		"it"		"Un ingegnere meccanico in incognito, che fa parte del progetto ''Ultima Speranza'' "
-		"ko"		"불량 기계 엔지니어. ''마지막 희망'' 프로젝트의 일부입니다."
+		"en"		"-Deals high Building damages"
 	}
 	"Mecha Heavy Desc"
 	{
-		"en"		"A rouge mechanical heavy, a part of the ''Last Hope'' project"
-		"it"		"Un pesante meccanico rouge, parte del progetto ''Last Hope'' "
-		"ko"		"불량 기계 헤비. ''마지막 희망'' 프로젝트의 일부입니다."
+		"en" 		"-No particular abilities."
 	}
 	"Mecha Giant Heavy Desc"
 	{
-		"en"		"A rouge giant mechanical heavy, a part of the ''Last Hope'' project"
-		"it"		"Un gigantesco gigante meccanico pesante, parte del progetto ''Ultima Speranza'' "
-		"ko"		"불량 거대 기계 헤비. ''마지막 희망'' 프로젝트의 일부입니다."
+		"en" 		"-No particular abilities."
 	}
 	"Mecha Giant Pyro Desc"
 	{
-		"en"		"A rouge giant mechanical pyro, a part of the ''Last Hope'' project"
-		"it"		"Un rouge gigante piro meccanico, parte del progetto ''Ultima Speranza'' "
-		"ko"		"불량 거대 기계 파이로. ''마지막 희망'' 프로젝트의 일부입니다."
+		"en" 		"-No particular abilities."
 	}
 	"Mecha Scout Desc"
 	{
-		"en"		"A rouge mechanical scout, a part of the ''Last Hope'' project"
-		"it"		"Un esploratore meccanico rouge, parte del progetto ''Ultima Speranza'' "
-		"ko"		"불량 기계 스카웃. ''마지막 희망'' 프로젝트의 일부입니다."
+		"en" 		"-No particular abilities."
 	}
 	"Donnerkrieg Desc"
 	{
@@ -1045,9 +912,7 @@
 	}
 	"Medic Constructor Desc"
 	{
-		"en"		"A rouge mechanical medic constructor, a part of the ''Last Hope'' project\nHeals allies."
-		"it"		"Un costruttore meccanico medico rouge, parte del progetto ''Ultima Speranza''.\nCura alleati."
-		"ko"		"불량 기계 메딕 구축자. ''마지막 희망'' 프로젝트의 일부입니다.\n-주변의 아군을 치료"
+		"en" 		"This medic will heal any ally near it.\n-Touching medic enrages it\n-Enrages on Patient death.\n-Enrage: No longer heals, instead attacks.\n-Heals one ally when not enraged."
 	}
 	"Gambler Desc"
 	{
@@ -1135,9 +1000,7 @@
 	}
 	"Medieval Scout Desc"
 	{
-		"en"		"Very quick and ranged reistant."
-		"it"		"Molto veloce e resistente alla distanza."
-		"ko"		"매우 빠르며 원거리 피해 저항력을 보유합니다."
+		"en"		"-Fast speed\n-Ranged resistance"
 	}
 	"Medieval Villager Desc"
 	{
@@ -1153,147 +1016,99 @@
 	}
 	"Medieval Construct Desc"
 	{
-		"en"		"A giant Mythical creature, it will consume buildings at rapid paces and heal itself off them."
-		"it"		"Una gigantesca creatura mitica, che consuma edifici a passi rapidi e si cura da sola."
-		"ko"		"거대한 신화 속 생물로서, 빠른 속도로 건물을 포식하고 체력을 회복합니다."
+		"en"		"-Heals on attacking buildings, eating them"
 	}
 	"Champion Desc"
 	{
-		"en"		"Strongest of the milita lines, usually used for elite fighting arenas."
-		"it"		"La più forte delle linee militari, solitamente utilizzata per le arene di combattimento d'élite."
-		"ko"		"가장 강력한 시민군 계열 보병으로, 일반적으로 정예 전투병으로 사용됩니다."
+		"en" 		"-Has melee resistance"
 	}
 	"Light Cavalry Desc"
 	{
-		"en"		"Upgraded Ridden Scout."
-		"it"		"Scout aggiornata e provata."
-		"ko"		"강화된 정찰 기병입니다."
+		"en"		"-no particular abilities"
 	}
 	"Hussar Desc"
 	{
-		"en"		"Buffs allies around it, and protects allies, take out asap.\nBuffs give 10％ more dmg and resistance."
-		"it"		"Buffs agli alleati intorno a lui e protegge gli alleati, da eliminare il prima possibile.\nDa un buff di danno e delle resistenze del 10%."
-		"ko"		"주변 아군들에게 버프를 부여하며, 아군을 보호하는 형태로 전투합니다. 가능하면 최대한 빨리 처치하세요.\n-부여하는 버프는 적의 피해량과 피해 저항력을 10％ 증가"
+		"en"		"-Stands and protects allies\n-Buffs allies sometimes"
 	}
 	"Knight Desc"
 	{
-		"en"		"Has high health but is slower then average cav."
-		"it"		"Ha una salute elevata ma è più lento della media dei cav."
-		"ko"		"높은 체력을 보유하고 있지만, 일반적인 기병보다 느립니다."
+		"en"		"-no particular abilities"
 	}
 	"Obuch Desc"
 	{
-		"en"		"Attacks faster the more he attacks the same enemy."
-		"it"		"Attacca più velocemente quanto più attacca lo stesso nemico."
-		"ko"		"이 적은 같은 대상을 공격할 수록 공격 속도가 점점 증가합니다."
+		"en"		"-Attacks faster the more it attacks\nThis wears off after enough time of no attacks"
 	}
 	"Monk Desc"
 	{
-		"en"		"Heals allies instantly in his damage radius instantly to full."
-		"it"		"Cura istantaneamente gli alleati nel suo raggio di danno fino al massimo."
-		"ko"		"자신의 공격 반경 내에 있는 적들을 매우 빠르게 치유합니다."
+		"en"		"-Stays near allies\n-Attacks enemies and causes a zone which heals allies to full instantly and hurts enemeis"
 	}
 	"Cavalary Desc"
 	{
-		"en"		"A more tough knight."
-		"it"		"Un cavaliere più resistente."
-		"ko"		"더욱 튼튼한 기사입니다."
+		"en"		"-no particular abilities"
 	}
 	"Paladin Desc"
 	{
-		"en"		"A more tough Cavalary."
-		"it"		"Un cavaliere più resistente."
-		"ko"		"더욱 튼튼한 고급 기병입니다."
+		"en"		"-no particular abilities"
 	}
 	"Crossbow Giant Desc"
 	{
-		"en"		"Deals extreme damage and attackspeed, but is very slow."
-		"it"		"Infligge danni estremi e velocità d'attacco, ma è molto lento."
-		"ko"		"엄청난 피해를 주고 공격 속도도 매우 빠르지만, 이동 속도가 매우 느립니다."
+		"en"		"-Slow giant\n-Shoots projectiles that predict fast"
 	}
 	"Swordsman Giant Desc"
 	{
-		"en"		"Deals extreme damage and attackspeed, but is very slow.\nResistant to melee, do not melee."
-		"it"		"Infligge danni estremi e velocità d'attacco, ma è molto lenta.\nResistente al corpo a corpo, non va in mischia."
-		"ko"		"엄청난 피해를 주고 공격 속도도 매우 빠르지만, 이동 속도가 매우 느립니다.\n-높은 근접 피해 저항력 보유, 이 적과 근접전을 펼치지 마세요."
+		"en"		"-Fast attacking giant\n-Has high melee resistance"
 	}
 	"Mounted Archer Desc"
 	{
-		"en"		"an archer on a horse, fast and hard to run from."
-		"it"		"un arciere a cavallo, veloce e difficile da contrastare."
-		"ko"		"말에 탑승한 궁사입니다. 매우 빠르기 때문에 벗어나기가 어렵습니다."
+		"en"		"-Fast archer\n-Arrows predict targets"
 	}
 	"Eagle Warrior Desc"
 	{
-		"en"		"High speed, and range resistant."
-		"it"		"Alta velocità e resistenza alla portata."
-		"ko"		"이동 속도가 매우 빠르며, 원거리 피해 저항력이 있습니다."
+		"en"		"-High speed\n-Ranged resistance"
 	}
 	"Giant Eagle Warrior Desc"
 	{
-		"en"		"Giant version of eagle warriors, they have high knockback."
-		"it"		"Versione gigante dei guerrieri aquila, hanno un elevato knockback."
-		"ko"		"독수리 전사의 거대 버전입니다. 매우 높은 넉백력을 보유하고 있습니다."
+		"en"		"-High speed\n-Ranged resistance\n-Knockback on melee hits"
 	}
 	"Son Of Osiris Desc"
 	{
-		"en"		"Is immune to most debuffs and weaknesses.\nChain lighting will damage all allies around you, the more it chains, the more damage it deals."
-		"it"		"È immune alla maggior parte dei debuff e delle debolezze.\nL'illuminazione a catena danneggia tutti gli alleati intorno a te, più si incatena, più danni infligge."
-		"ko"		"대부분의 디버프와 약화 능력에 면역입니다.\n체인 라이트닝을 사용하여 대상과 그 주변의 모든 적에게 피해를 주며, 적중한 대상이 많을 수록 피해량도 증가합니다."
+		"en"		"-Cannot be shifted, stunned or slowed down\n-Oneshots buildings\n-Attacks chain, each chained target takes more damage"
 	}
 	"Achilles Desc"
 	{
-		"en"		"Launches a high damaging spear that deals immensive damage to buildings\nHe attacks rapidly and can jump aswell."
-		"it"		"Lancia una lancia ad alto potere lesivo che infligge danni immensi agli edifici.\nAttacca rapidamente e può anche saltare."
-		"ko"		"높은 피해의 창을 투척하며, 구조물에 매우 높은 추가 피해를 줍니다.\n점프도 가능하며 공격 속도도 빠릅니다."
+		"en"		"-Rapid melee attacks\n-Has slight ranged resistance\n-Can throw spear dealing immensive building damage with a delay\n-Can jump at enemies"
 	}
 	"Medieval Arbalest Desc"
 	{
-		"en"		"Short range, faster attacking high damage archers."
-		"it"		"Arcieri a corto raggio, che attaccano più velocemente e con danni elevati."
-		"ko"		"아바레스트병은 사거리는 짧지만 공격 속도가 매우 빠르고 높은 피해량을 보유한 궁사입니다."
+		"en"		"-Short range arrows, predicts target"
 	}
 	"Medieval Brawler Desc"
 	{
-		"en"		"Shows up shortly, deals high fast melee punches."
-		"it"		"Appare a breve, sferra pugni veloci in mischia."
-		"ko"		"빠르게 등장하여 매우 빠르고 강력한 주먹질 근접 공격을 합니다."
+		"en"		"-Fast attacking melee"
 	}
 	"Medieval Longbowmen Desc"
 	{
-		"en"		"Longrange, high damage archers."
-		"it"		"Arcieri a lungo raggio e ad alto danno."
-		"ko"		"장궁병은 매우 긴 사정거리와 높은 피해량을 보유한 궁사입니다."
+		"en"		"-Long range arrows, predicts target"
 	}
 	"Medieval Halberdier Desc"
 	{
-		"en"		"Final upgrade line to the spearmen."
-		"it"		"Linea di potenziamento finale per gli sparvieri."
-		"ko"		"미늘창병은 창병 계열 보병의 마지막 테크트리입니다."
+		"en"		"-Each hit applies a debuff\n-Once debuff is maxed all spearment deal immensive damage"
 	}
 	"Medieval Elite Longbowmen Desc"
 	{
-		"en"		"Upgraded longbowmen."
-		"it"		"Arcieri lunghi potenziati."
-		"ko"		"강화된 장궁병입니다."
+		"en"		"-Long range arrows, predicts target"
 	}
 	"Trebuchet Desc"
 	{
-		"en"		"Deals extreme damage to buildings and players, but is unmoving.\nDo not let it hit its attacks, it will instantly devistate anything."
-		"it"		"Infligge danni estremi a edifici e giocatori, ma non si muove.\nNon lasciate che colpisca i suoi attacchi, devasterà istantaneamente qualsiasi cosa."
-		"ko"		"구조물과 플레이어 대상으로 극도로 높은 피해를 가하지만, 공격 중 움직이지 않습니다.\n절대로 이것의 공격이 무언가에 닿게 하지 마십시오. 이것의 공격에 닿는 것들은 거의 확실하게 파쇄될 것입니다."
+		"en"		"-Contact damage to non buildings\n-Shoots Building destroying projectiles that land after a delay doing aoe damage\n-Takes next to no melee damage"
 	}
 	"Ikunagae Desc"
 	{
-		"en"		"High amounts of abilities to throw magic bolts, beware."
-		"it"		"Elevata quantità di abilità di lancio di proiettili magici, attenzione."
-		"ko"		"수많은 마법 볼트를 발사할 수 있는 능력을 보유했습니다. 주의하세요."
+		"en"		"-Shoots barrages of projectiles\n-After finishing projectiles, spawns a minion\n-Normal attack is a laser"
 	}
 	"Mecha Soldier Barrager Desc"
 	{
-		"en"		"Loads a bunch of rockets and then attacks you."
-		"it"		"Carica un mucchio di razzi e poi vi attacca."
-		"ko"		"로켓을 잔뜩 장전한뒤 당신에게 흩뿌려버리는 기계입니다."
+		"en"		"-Barrage of rockets which have to reload"
 	}
 	"Nearl Radiant Sword Desc"
 	{
@@ -1527,7 +1342,7 @@
 	{
 		"en"		"From the deep sea, We Many will rise.\n- Gains camouflage after several seconds without attacking\n- Deals increased damage when camouflaged"
 		"it"		"Dagli abissi marini, Noi Molti risorgeremo.\n- Acquisisce la mimetizzazione dopo diversi secondi senza attaccare\n- Infligge danni maggiori quando è mimetizzato"
-		"en"		"''심해 속에서, 위매니가 깨어나게 되리라.''\n-잠시 동안 공격하지 않을 경우 동안 위장 버프가 부여\n-위장 상태에선 피해량이 증가합니다."
+		"ko"		"''심해 속에서, 위매니가 깨어나게 되리라.''\n-잠시 동안 공격하지 않을 경우 동안 위장 버프가 부여\n-위장 상태에선 피해량이 증가합니다."
 	}
 	"Citizen Desc"
 	{
@@ -1711,45 +1526,31 @@
 	}
 	"Benera Desc"
 	{
-		"en" 		"An expidonsan with a shotgun."
-		"it"		"Un expidonsan con un fucile da caccia."
-		"ko" 		"산탄총을 든 엑스피돈사인입니다."
+		"en" 		"An expidonsan with a shotgun.\n-Close Ranged attack"
 	}
 	"Pental Desc"
 	{
-		"en" 		"a lightsaber, its dangerous."
-		"it"		"una spada laser, è pericoloso."
-		"ko" 		"라이트세이버를 들었습니다. 위험합니다."
+		"en" 		"a lightsaber, its dangerous.\n-No Particular Abilities"
 	}
 	"Defanda Desc"
 	{
-		"en" 		"A heavy tank, heals all allied around itself when hitting an enemy."
-		"it"		"Un tank pesante, che cura tutti gli alleati intorno a sé quando colpisce un nemico."
-		"ko" 		"튼튼한 탱커로서, 공격이 적중하면, 자신과 주변의 아군 NPC들을 전부 회복시킵니다."
+		"en" 		"-Slow moving\n-On hit, heals allies around and itself"
 	}
 	"Selfam Ire Desc"
 	{
-		"en" 		"Gains high speeds upon getting close to an enemy."
-		"it"		"Raggiunge una velocità elevata quando si avvicina a un nemico."
-		"ko" 		"대상 적과 일정 범위 내로 접근시, 이동 속도가 매우 빨라집니다."
+		"en" 		"-Once close to enemies, gains high speed for a short time, with a cooldown"
 	}
 	"Vaus Magica Desc"
 	{
-		"en" 		"Grants a shield to all allied around it."
-		"it"		"Conferisce uno scudo a tutti gli alleati intorno ad esso."
-		"ko" 		"자신 주변의 모든 아군에게 보호막을 부여합니다."
+		"en" 		"-Follows allies\n-Applies shield to all allies around itself every so often.\n-Has a ranged attack"
 	}
 	"Pistoleer Desc"
 	{
-		"en" 		"A easily dodgeable laser, but not so easily dodgeable with everything else going on."
-		"it"		"Un laser facilmente schivabile, ma non così facilmente schivabile con tutto il resto."
-		"ko" 		"회피가 쉬운 레이저를 발사합니다. 하지만 정신 없는 상황에선 레이저를 피하기 어려울 겁니다."
+		"en" 		"-Ranged infinite pierce laser attack that deals damage after a delay"
 	}
 	"Diversionistico Desc"
 	{
-		"en" 		"An enemy that comes from time to time, Will try to backstab you. (Backstabbing can be silenced)"
-		"it"		"Un nemico che si presenta di tanto in tanto, cercherà di pugnalarvi alle spalle. (Le pugnalate alle spalle possono essere messe a tacere)"
-		"ko" 		"때때로 등장하는 적으로, 당신을 백스탭하려고 시도합니다.(침묵 상태 시 백스탭 저지 가능)"
+		"en" 		"-Inivislbe from afar\n-Tries to go behind you\n-Spawns randomly around\n-Can backstab you\n-Ignores barricades\n-If your back is agaisnt the wall, they tase you instead"
 	}
 	"Adiantum Desc"
 	{
@@ -1771,15 +1572,11 @@
 	}
 	"Heavy Punuel Desc"
 	{
-		"en"	"A heavily armored enemy, once armor breaks, he will gain high speeds.\nMelee deals 2x as much damage to the armor."
-		"it"	"Un nemico pesantemente corazzato, una volta che l'armatura si rompe, acquisisce un'elevata velocità.\nMelee infligge il doppio dei danni all'armatura."
-		"ko"	"중장갑을 착용한 적으로, 아머가 파괴되면, 이동 속도가 매우 빨라집니다.\n근접 무기는 이 적의 아머에 가하는 피해량이 2배로 증가합니다."
+		"en"	"-Slow giant\n-Spawns with armor\n-Once armor breaks, gains high speeds"
 	}
 	"Sergeant Ideal Desc"
 	{
-		"en"	"A sergeant who will protect his comerades at the cost of his own life.\nHis shield will guard any ally around himself and take the damage instead."
-		"it"	"Un sergente che proteggerà i suoi commilitoni a costo della propria vita. Il suo scudo proteggerà qualsiasi alleato intorno a sé e subirà i danni al suo posto."
-		"ko"	"자신의 목숨까지 걸어서라도 자신의 동료들을 지키려는 병장입니다.\n-주위에 보호막을 전개합니다.\n-보호막 내의 적을 공격 시, 그 적 대신 아이디얼 병장이 피해를 받습니다."
+		"en"	"-Spam ranged attack\n-Can melee if close\n-All damage taken by allies is redirected to him with some damage penalty"
 	}
 	"VIP Building, The Objective Desc"
 	{
@@ -1789,124 +1586,83 @@
 	}
 	"Rifal Manu Desc"
 	{
-		"en"	"A rifle holder, it deals high ranged damage."
-		"it"	"Porta fucile, infligge danni elevati a distanza."
-		"ko"	"라이플 병사로서, 높은 원거리 피해를 주는 공격을 합니다."
+		"en"	"-Ranged hitscan enemy"
 	}
 	"Siccerino Desc"
 	{
-		"en"	"A trained pental."
-		"it"	"Un pentaleghista addestrato."
-		"ko"	"고된 훈련을 받고 성장한 펜탈입니다."
+		"en"	"-No particular Abilities"
 	}
 	"Soldine Prototype Desc"
 	{
-		"en"	"A prototype made by sensal on the way to you.\nShoots rockets slowly."
-		"it"	"Un prototipo realizzato da sensal sulla strada per voi.\nSpara razzi lentamente."
-		"ko"	"센살이 제작한 프로토타입으로, 당신에게로 향하고 있습니다.\n-로켓을 매우 느리게 발사합니다."
+		"en"	"A prototype made by sensal on the way to you.\n-Shoots rockets slowly."
 	}
 	"Soldine Desc"
 	{
-		"en"	"Re-created by Sensal on his way to you.\nCan rocketjump\nFires rockets\nCan melee attack with a cooldown, this melee deals heavy damage."
-		"it"	"Ricreato da Sensal mentre si reca da voi.\nPuò saltare con i razzi\nPuò attaccare in mischia con un cooldown, questa mischia infligge danni ingenti."
-		"ko"	"센살이 다시 새로 만들어낸 것으로, 당신에게로 향하고 있습니다.\n-로켓 점프를 사용할 수 있습니다.\n-로켓을 발사합니다.\n-매우 높은 피해를 주는, 긴 쿨타임을 가진 근접 공격을 합니다."
+		"en"	"Re-created by Sensal on his way to you. \n-Can rocketjump. \n-Fires rockets. \n-Can melee attack with a cooldown. \n- Melee deals heavy damage and slides you."
 	}
 	"Protecta Desc"
 	{
-		"en" 	"A heavy tank, heals all allied around itself when hitting an enemy.\nHeals on death aswell."
-		"it"	"Un tank pesante, che guarisce tutti gli alleati intorno a sé quando colpisce un nemico.\nGuarisce anche in caso di morte."
-		"ko"	"디판다의 강화 버전입니다.\n-공격 적중 시, 혹은 사망 시 주변 아군들을 회복시킵니다."
+		"en" 	"-A heavy tank, heals all allied around itself when hitting an enemy.\n-Heals on death aswell."
 	}
 	"Sniponeer Desc"
 	{
-		"en"	"A far ranged and better version of the pistoleers' their delay upon hurting is also less."
-		"ru"	"Дальнобольний и улучшенный вариант пистолетчиков' их задержка перед выстрелом так же уменьшена."
-		"it"	"Una versione migliore e a distanza dei pistoleri, il cui ritardo nel ferire è minore."
-		"ko"	"피스톨리어의 강화 버전으로, 장거리에서 사격하며 공격 딜레이가 감소했습니다."
+		"en" 		"-Ranged infinite pierce laser attack that deals damage after a delay\n-More range then pistoleers"
 	}
 	"Ega Bunar Desc"
 	{
-		"en"	"An enemy with heavy armor, although when it breaks they lose all their speed.\nMelee deals 2x as much damage to the armor."
-		"it"	"Un nemico con un'armatura pesante, anche se quando si rompe perde tutta la sua velocità.\nMelee infligge il doppio dei danni all'armatura."
-		"ko"	"중장갑을 착용한 적으로, 이동 속도가 매우 빠르지만, 아머가 파괴되면 이동 속도가 느려집니다.\n근접 무기는 이 적의 아머에 가하는 피해량이 2배로 증가합니다."
+		"en"	"-Spawns with armor\n-Once armor breaks, they lose alot of speed"
 	}
 	"Enega Kapus Desc"
 	{
-		"en"	"A cyborg with a heavy shield that destoys most projectiles and bullets and has heavy ranged resistance.\n(once silenced, the shield breaks and never returns)"
-		"it"	"Un cyborg con uno scudo pesante che distrugge la maggior parte dei proiettili e delle pallottole e ha una forte resistenza a distanza"
-		"ko"	"대부분의 탄환과 투사체를 파괴하고 매우 높은 원거리 피해 저항력이 있는 방패를 착용한 사이보그입니다.\n(침묵 상태 시, 방패가 파괴되고 다시 방패가 재생되지 않습니다)"
+		"en"	"-Spawns with a shield that blocks most projectiles and hitscan\n-Shield breaks after some time\n-Has Ranged resistance"
 	}
 	"Captino Agentus Desc"
 	{
-		"en"	"A captain of the scouting party, he teleports and backstabs, once teleporting he will call reinforcements inform of diversionisticos.\n(Backstab can be silenced)"
-		"it"	"Capitano del gruppo di esplorazione, si teletrasporta e fa il backstab, una volta teletrasportato chiamerà i rinforzi informando i diversionisticos"
-		"ko"	"정찰대의 행동대장입니다.\n-이 적은 순간이동이 가능하고 백스탭을 시도합니다.\n-순간이동 사용시, 다이버저니스티코를 지원군으로 호출합니다.\n(침묵 상태 시 백스탭 저지 가능)"
+		"en" 		"-Inivislbe from afar\n-Tries to go behind you\n-Can backstab you\n-If your back is agaisnt the wall, they tase you instead\n-If attacking a barricade, gives massive shield to allies and gains resistances\n-On stab reduces cooldowns\n-Teleports behind you and spawns another Diversionistico, and gains attackspeed"
 	}
 	"Sensal Desc"
 	{
 		"en"	"The leader of the scouting group and a friend of silvester and Waldch, he is here for what you did.\nEach new time he returns he gains new abilities and gets stronger.\nHe summons scythes that home onto you, summons portals which summon sythes, fires a laser onto all enemies in range aswell.\nGets a shield which is the same as the vaus magica shield upon using any ability.\nSlide on hit (can be silenced)"
-		"it"	"Il capo del gruppo di esploratori e amico di Silvester e Waldch, è qui per quello che avete fatto.Ogni volta che torna guadagna nuove abilità e diventa più forte.\nEvoca falci che si dirigono verso di voi, evoca portali che richiamano falci, spara un laser su tutti i nemici nel raggio d'azione.\nOttiene uno scudo che è lo stesso dello scudo di vaus magica quando usa una qualsiasi abilità.Scivola su un colpo (può essere silenziato)"
-		"ko"	"정찰대의 대장이자 실베스터와 왈츠의 친구입니다. 그는 당신이 저지른 행동 때문에 여기에 왔습니다.\n그가 돌아올 때마다, 그가 사용할 수 있는 능력이 새로 추가되고 더욱 강해집니다.\n대상에게 유도하는 낫을 생성하고, 낫을 생성하는 포탈을 소환하며, 시야 범위 내의 모든 적에게 레이저를 발사합니다.\n능력을 사용할 때마다, 바우스 마기카가 사용하는 보호막과 똑같은 보호막을 얻습니다.\n공격이 적중한 대상은 조작에 상관없이 쭉 미끄러지게 됩니다. (침묵 상태 시, 이 효과가 발생하지 않음)"
 	}
 	"Dual Rea Desc"
 	{
-		"en"	"an elite version of the pentals."
-		"it"	"una versione d'élite dei pental."
-		"ko"	"정예 펜탈입니다."
+		"en"	"-No particular Abilities"
 	}
 	"Guardus Desc"
 	{
-		"en" 	"A heavy tank, heals all allied around itself when hitting an enemy.\nHeals on death aswell.\nMuch stronger."
-		"it"	"Un tank pesante, guarisce tutti gli alleati intorno a sé quando colpisce un nemico.\nGuarisce anche in caso di morte.Molto più forte."
-		"ko"	"프로텍타보다 더욱 강력한 기계 거인입니다.\n-공격 적중 시, 혹은 사망 시 주변 아군들을 회복시킵니다."
+		"en" 	"-A heavy tank, heals all allied around itself when hitting an enemy.\n-Heals on death aswell.\n-Much stronger."
 	}
 	"Vaus Techicus Desc"
 	{
-		"en"	"A better version of the vaus magica's, grants more shield stacks."
-		"it"	"Una versione migliore del vaus magica, concede più stack di scudo."
-		"ko"	"바우스 마기카의 강화 버전으로, 보호막 부여량이 더욱 증가했습니다."
+		"en" 		"-Follows allies\n-Applies shield to all allies around itself every so often.\n-Has a ranged attack"
 	}
 	"Minigun Assisa Desc"
 	{
-		"en"	"A minigun maniac, he will shred anything."
-		"it"	"Maniaco delle minigun, fa a pezzi qualsiasi cosa."
-		"ko"	"미니건 매니아로서, 모든 것을 갈아버립니다."
+		"en"	"-Close ranged hitscan enemy"
 	}
 	"Ignitus Desc"
 	{
-		"en"	"A giant that ignites upon attacking."
-		"it"	"Un gigante che si incendia all'attacco."
-		"ko"	"공격시 적을 불태우는 거인입니다."
+		"en"	"-Ignites enemies on hit"
 	}
 	"Helena Desc"
 	{
-		"en"	"A field medic that enrages when its patient dies, or you get too close to it."
-		"it"	"Un medico da campo che si infuria quando il suo paziente muore o ci si avvicina troppo."
-		"ko"	"헬레나는 전투 의무병으로, 치유 대상이 죽거나 대상이 자신과 너무 가까이 근접하면 격노 합니다."
+		"en" 		"This medic will heal any ally near it.\n-Touching medic enrages it\n-Enrages on Patient death.\n-Enrage: No longer heals, instead attacks.\n-Heals one ally when not enraged."
 	}
 	"Erasus Desc"
 	{
-		"en"	"The best of the best of pantals."
-		"it"	"Il meglio del meglio dei pantali."
-		"ko"	"펜탈의 최상위 등급입니다."
+		"en"	"-No particular Abilities"
 	}
 	"Giant Tankus Desc"
 	{
-		"en"	"A absolute giant of a tank."
-		"it"	"Un gigante assoluto di un carro armato."
-		"ko"	"완벽한 탱커 역할을 하는 거인입니다."
+		"en"	"-Has ranged resistance\n-Has melee vulnerability"
 	}
 	"Anfuhrer Eisenhard Desc"
 	{
-		"en"	"Sub leader of the scouting party.\nHas heavy damage and high health,once losing half his health he gains immensive speed and armor, break the armor to get rid of the effects.\nMelee deals 1.4x as much damage to the armor."
-		"it"	"Ha danni pesanti e salute elevata, una volta persa metà della salute guadagna velocità immensiva e armatura, rompere l'armatura per eliminarne gli effetti."
-		"ko"	"정찰대의 부대장입니다.\n-매우 높은 체력과 피해량을 보유\n-체력이 절반 이하가 되면 대량의 이동 속도와 아머를 얻습니다.\n-아머가 파괴되면 모든 효과를 잃습니다.\n-근접 무기는 이 적의 아머에 가하는 피해량이 2배로 증가합니다."
+		"en"	"-On Hit gives stacking vulnerability for some time\n-On half health:\nGain armor and speed\nOnce armor breaks, speed weakens"
 	}
 	"Speedus Adivus Desc"
 	{
-		"en"	"A high speed saber-ist."
-		"it"	"Un saber-ista ad alta velocità."
-		"ko"	"엄청난 속도를 보유한 라이트세이버 매니아입니다."
+		"en"	"-High Speed"
 	}
 	"Overlord The Last Desc"
 	{

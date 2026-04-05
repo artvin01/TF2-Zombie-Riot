@@ -117,6 +117,7 @@ static ArrayList VotingMods;
 static bool CanReVote;
 static ArrayList MiniBosses;
 static float Cooldown;
+static bool FirstVoteOfGame;
 void Waves_ApplyCooldown(float fl)
 {
 	Cooldown = fl;
@@ -226,6 +227,7 @@ void Waves_MapStart()
 	{
 		delete Rounds[DeleteLoop];
 	}
+	FirstVoteOfGame = true;
 	delete g_AllocPooledStringCache;
 	SkyNameRestore[0] = 0;
 	FakeMaxWaves = 0;
@@ -789,6 +791,19 @@ void Waves_DisplayHintVote()
 			}
 
 			PrintHintTextToAll(buffer);
+		}
+		if(!FirstVoteOfGame)
+		{
+			if(count >= total)
+			{
+				if((VoteEndTime - GetGameTime()) > 5.0)
+					VoteEndTime = GetGameTime() + 5.0;
+			}
+			if((VoteEndTime < GetGameTime()))
+			{
+				MostRecentVoteCancel++;
+				CreateTimer(0.1, Waves_EndVote, MostRecentVoteCancel, TIMER_FLAG_NO_MAPCHANGE);
+			}
 		}
 	}
 }
@@ -4259,6 +4274,7 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 					Music_Stop_All(client);
 				}
 			}	
+			FirstVoteOfGame = false;
 			AlreadySetWaiting = false;
 		}
 		case 1:	// Ready Up

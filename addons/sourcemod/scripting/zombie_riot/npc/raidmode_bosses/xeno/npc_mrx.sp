@@ -319,7 +319,7 @@ methodmap RaidbossMrX < CClotBody
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
 		i_SideHurtWhich[npc.index] = 0;
 
-		CPrintToChatAll("{green}Vivithorn: ...");
+		NPCTalkMessage(npc.index, "...");
 
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
@@ -333,6 +333,11 @@ methodmap RaidbossMrX < CClotBody
 	}
 }
 
+static void NPCTalkMessage(int iNPC, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(iNPC, "green", message, .messageColor = "green");
+}
+
 public void RaidbossMrX_ClotThink(int iNPC)
 {
 	RaidbossMrX npc = view_as<RaidbossMrX>(iNPC);
@@ -343,7 +348,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			CPrintToChatAll("{green} The infection got all your friends... Run while you can.");
+			CPrintToChatAll("{green}The infection got all your friends... Run while you can.");
 		}
 	}
 	if(RaidModeTime < GetGameTime())
@@ -352,7 +357,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 		i_RaidGrantExtra[npc.index] = 0;
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{green} The infection proves too strong for you to resist as you join his side...");
+		CPrintToChatAll("{green}The infection proves too strong for you to resist as you join his side...");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
@@ -1072,29 +1077,18 @@ public void RaidbossMrX_NPCDeath(int entity)
 	RaidModeTime += 3.5; //cant afford to delete it, since duo.
 	if(i_RaidGrantExtra[npc.index] == 0 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
-		for (int client_repat = 1; client_repat <= MaxClients; client_repat++)
+		if(XenoExtraLogic())
 		{
-			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING)
-			{
-				if(XenoExtraLogic())
-				{
-					CPrintToChat(client_repat, "{green}Vivithorn: I have to activate Project Calmaticus...");
-				}
-			}
+			NPCTalkMessage(npc.index, "I have to activate Project Calmaticus...");
 		}
 	}
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
-		for (int client_repat = 1; client_repat <= MaxClients; client_repat++)
+		if(XenoExtraLogic())
 		{
-			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING)
-			{
-				if(XenoExtraLogic())
-				{
-					CPrintToChat(client_repat, "{green}Vivithorn Escapes... but heavily wounded...");
-				}
-			}
+			CPrintToChatAll("{green}Vivithorn escapes... but heavily wounded...");
 		}
+		
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);

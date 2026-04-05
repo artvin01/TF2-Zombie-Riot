@@ -2930,6 +2930,10 @@
 		"it"		"Diversionistico Elitus"
 		"ko"		"다이버저니스티코 엘리투스"
 	}
+	"Diversionistico Elitus Desc"
+	{
+		"en" 		"Diversionisticos who were promoted to the Elitus status. \n-Invisible unless close to. \n-Can backstab you. \n-Backstabs prevent you from being healed from most things."
+	}
 	"Adiantum"
 	{
 		"en"	"Adiantum"
@@ -3219,6 +3223,10 @@
 		"en"	"Interstellar Weaver"
 		"it"	"Weaver interstellare"
 		"ko"	"인터스텔라 위버"
+	}
+	"Interstellar Weaver Desc"
+	{
+		"en"	"A Stellar Weaver trashed by Ruina. Now rebuilt by Lelouch to protect him. \n-Is a flying enemy. \n-Targets the nearest target to Lelouch, who isn't his target. \n-Shoots out a barrage of magical fireballs and homing lasers."
 	}
 	"Daedalus"
 	{
@@ -3545,6 +3553,10 @@
 		"en"	"JØⱧ₦ ₮ⱧɆ ₳Ⱡ₥ł₲Ⱨ₮Ɏ"
 		"it"	"JØⱧ₦ ₮ⱧɆ ₳Ⱡ₥ł₲Ⱨ₮Ɏ"
 		"ko"	"҉전҉능҉҉자҉҉҉존҉҉҉"
+	}
+	"John The Almighty Desc"
+	{
+		"en"	"His almightyness can not be killed. ᏒᏌᑎ"
 	}
 	"Abomination"
 	{
@@ -4384,7 +4396,7 @@
 	}
 	"Voided Diversionistico Desc"
 	{
-		"en"	"Elite forces, taken by the void.\nActs equal to normal ones, but they are slower , visible from longer ranges and deal void damage aswell."
+		"en"	"Elite forces, taken by the void.\n-Invisible unless near it. \n-Can backstab you. \n-Attacks inflict Void elemental damage."
 		"it"	"Forze d'élite, prese dal vuoto.\nagiscono come quelle normali, ma sono più lente, visibili da distanze maggiori e infliggono anche danni da vuoto."
 		"ko"	"생전엔 정예 부대였지만, 지금은 공허에 침식된 자들입니다.\n기존 다이버저니스티코와 동일하게 행동하지만, 이동 속도가 느리고 더 먼 거리에서 모습을 드러내며, 대상에게 공허 원소 피해를 줍니다."
 	}
@@ -5111,9 +5123,7 @@
 	}
 	"Irani Desc"
 	{
-		"en"		"Marks an enemy on hit. Deals no melee knockback"
-		"it"		"Segna un nemico quando viene colpito. Non subisce danni in mischia"
-		"ko"		"적중시, 대상에게 표적을 부여합니다.\n이 적의 근접 공격은 넉백을 가하지 않습니다."
+		"en"		"-Marks an enemy on hit\n-Deals no melee knockback"
 	}
 	"Kinat"
 	{
@@ -5123,9 +5133,9 @@
 	}
 	"Kinat Desc"
 	{
-		"en"		"Deletes 1 projectile from the air with its bullet, if a player is too close, shoots them instead.\nIf enemy is marked, gains bullet on melee hit."
-		"it"		"Elimina 1 proiettile dall'aria con il suo proiettile, se un giocatore è troppo vicino, spara al suo posto.\nSe il nemico è marcato, guadagna il proiettile su un colpo in mischia."
-		"ko"		"공중에 있는 투사체 1개를 탄환으로 적중시켜 파괴합니다. 대상 플레이어가 자신과 너무 근접했다면, 대신 대상을 사격합니다.\n대상이 표적 상태라면, 근접 공격 적중시 탄약을 1 얻습니다."
+		"en"		"-Deletes 1 projectile from the air with its bullet, if a player is too close, shoots them instead.\n-If enemy is marked, gains bullet on melee hit."
+		"it"		"-Elimina 1 proiettile dall'aria con il suo proiettile, se un giocatore è troppo vicino, spara al suo posto.\n-Se il nemico è marcato, guadagna il proiettile su un colpo in mischia."
+		"ko"		"-공중에 있는 투사체 1개를 탄환으로 적중시켜 파괴합니다. 대상 플레이어가 자신과 너무 근접했다면, 대신 대상을 사격합니다.\n-대상이 표적 상태라면, 근접 공격 적중시 탄약을 1 얻습니다."
 	}
 	"Ginus"
 	{
@@ -5135,9 +5145,9 @@
 	}
 	"Ginus Desc"
 	{
-		"en"		"Shoots with 1 bullet, then melees.\nIf enemy is marked, has better aim."
-		"it"		"Spara con 1 proiettile, poi si scontra in mischia.\nSe il nemico è marcato, ha una mira migliore."
-		"ko"		"탄환 사격 공격을 1회 한 뒤에 근접 NPC가 됩니다.\n대상이 표적 상태라면, 조준 실력이 더 좋아집니다."
+		"en"		"-Shoots with 1 bullet, then melees.\n-If enemy is marked, has better aim."
+		"it"		"-Spara con 1 proiettile, poi si scontra in mischia.\n-Se il nemico è marcato, ha una mira migliore."
+		"ko"		"-탄환 사격 공격을 1회 한 뒤에 근접 NPC가 됩니다.\n-대상이 표적 상태라면, 조준 실력이 더 좋아집니다."
 	}
 	"Speedus Initus"
 	{
@@ -5147,9 +5157,9 @@
 	}
 	"Speedus Initus Desc"
 	{
-		"en"		"Very fast, if it hits a melee attack, teleports behind target with a CD.\nIf enemy is marked, CD is reduced."
-		"it"		"Molto veloce, se colpisce un attacco in mischia, si teletrasporta dietro il bersaglio con una CD.\nSe il nemico è marcato, CD è ridotta."
-		"ko"		"매우 빠르며, 근접 공격 적중시 대상의 뒤쪽으로 순간이동 합니다. (쿨타임 있음)\n대상이 표적 상태라면, 순간이동의 쿨타임이 감소합니다."
+		"en"		"-Very fast, if it hits a melee attack, teleports behind target with a CD.\n-If enemy is marked, CD is reduced."
+		"it"		"-Molto veloce, se colpisce un attacco in mischia, si teletrasporta dietro il bersaglio con una CD.\n-Se il nemico è marcato, CD è ridotta."
+		"ko"		"-매우 빠르며, 근접 공격 적중시 대상의 뒤쪽으로 순간이동 합니다. (쿨타임 있음)\n-대상이 표적 상태라면, 순간이동의 쿨타임이 감소합니다."
 	}
 	"Anania"
 	{
@@ -5159,9 +5169,9 @@
 	}
 	"Anania Desc"
 	{
-		"en"		"Gives morale to nearby enemies when it screams its horn."
-		"it"		"Dà morale ai nemici vicini quando urla il suo corno."
-		"ko"		"나팔을 불 때마다 주변의 모든 적의 사기를 증가시킵니다."
+		"en"		"-Gives morale to nearby enemies when it screams its horn."
+		"it"		"-Dà morale ai nemici vicini quando urla il suo corno."
+		"ko"		"-나팔을 불 때마다 주변의 모든 적의 사기를 증가시킵니다."
 	}
 	"Victorian"
 	{
@@ -5171,9 +5181,9 @@
 	}
 	"Victorian Desc"
 	{
-		"en"		"If the ceiling is high enough, shoots a high damage arcing mortar shot.\nIf ceiling is low, then shoots a lower damage slow rocket."
-		"it"		"Se il soffitto è abbastanza alto, spara un colpo di mortaio ad arco ad alto danno.\nSe il soffitto è basso, spara un razzo lento a basso danno."
-		"ko"		"천장이 충분히 높다면, 피해량이 매우 높은 곡선형 박격포를 사격합니다.\n천장이 낮다면, 피해량이 더 낮은 느린 로켓을 발사합니다."
+		"en"		"-If the ceiling is high enough, shoots a high damage arcing mortar shot.\n-If ceiling is low, then shoots a lower damage slow rocket."
+		"it"		"-Se il soffitto è abbastanza alto, spara un colpo di mortaio ad arco ad alto danno.\n-Se il soffitto è basso, spara un razzo lento a basso danno."
+		"ko"		"-천장이 충분히 높다면, 피해량이 매우 높은 곡선형 박격포를 사격합니다.\n-천장이 낮다면, 피해량이 더 낮은 느린 로켓을 발사합니다."
 	}
 	"Inquisitor IIdutas"
 	{
@@ -5183,9 +5193,9 @@
 	}
 	"Inquisitor IIdutas Desc"
 	{
-		"en"		"If its knife is burning, next melee hit launches you up and marks you.\nIf enemy is marked, gains more ammo aswell.\nIf enemy is marked, shoots 3x faster."
-		"it"		"Se il suo coltello è in fiamme, il prossimo colpo in mischia ti lancia in alto e ti marchia.\nSe il nemico è marcato, guadagna anche più munizioni.\nSe il nemico è marcato, spara 3 volte più velocemente."
-		"ko"		"칼이 불타고 있을시, 다음 근접 공격이 적중한 대상을 위로 날려보내고 표적을 부여합니다.\n대상에게 표적 디버프가 있다면, 탄약을 더 많이 얻습니다.\n또한 표적 상태인 대상을 상대로 사격 공격의 속도가 3배 더 빨라집니다."
+		"en"		"-If its knife is burning, next melee hit launches you up and marks you.\n-If enemy is marked, gains more ammo aswell.\n-If enemy is marked, shoots 3x faster."
+		"it"		"-Se il suo coltello è in fiamme, il prossimo colpo in mischia ti lancia in alto e ti marchia.\n-Se il nemico è marcato, guadagna anche più munizioni.\n-Se il nemico è marcato, spara 3 volte più velocemente."
+		"ko"		"-칼이 불타고 있을시, 다음 근접 공격이 적중한 대상을 위로 날려보내고 표적을 부여합니다.\n-대상에게 표적 디버프가 있다면, 탄약을 더 많이 얻습니다.\n-또한 표적 상태인 대상을 상대로 사격 공격의 속도가 3배 더 빨라집니다."
 	}
 	"Vivintu"
 	{
@@ -5195,9 +5205,9 @@
 	}
 	"Vivintu Desc"
 	{
-		"en"		"Marks an enemy on hit. Deals no melee knockback"
-		"it"		"Segna un nemico quando viene colpito. Non subisce danni in mischia"
-		"ko"		"적중시, 대상에게 표적을 부여합니다.\n이 적의 근접 공격은 넉백을 가하지 않습니다."
+		"en"		"-Marks an enemy on hit.\n-Deals no melee knockback"
+		"it"		"-Segna un nemico quando viene colpito.\n-Non subisce danni in mischia"
+		"ko"		"-적중시, 대상에게 표적을 부여합니다.\n-이 적의 근접 공격은 넉백을 가하지 않습니다."
 	}
 	"Cenula"
 	{
@@ -5207,9 +5217,9 @@
 	}
 	"Cenula Desc"
 	{
-		"en"		"Shoots with 2 bullets, then melees.\nIf enemy is marked, has better aim."
-		"it"		"Spara con 2 proiettili, poi si scontra in mischia.\nSe il nemico è marcato, ha una mira migliore."
-		"ko"		"탄환 사격 공격을 2회 한 뒤에 근접 NPC가 됩니다.\n대상이 표적 상태라면, 조준 실력이 더 좋아집니다."
+		"en"		"-Shoots with 2 bullets, then melees.\n-If enemy is marked, has better aim."
+		"it"		"-Spara con 2 proiettili, poi si scontra in mischia.\n-Se il nemico è marcato, ha una mira migliore."
+		"ko"		"-탄환 사격 공격을 2회 한 뒤에 근접 NPC가 됩니다.\n-대상이 표적 상태라면, 조준 실력이 더 좋아집니다."
 	}
 	"Kumbai"
 	{
@@ -5219,9 +5229,9 @@
 	}
 	"Kumbai Desc"
 	{
-		"en"		"If its with melee, attacks with a gun 3 times, backs off if enemy is too close while shooting. Deals no melee knockback"
-		"it"		"Se è in mischia, attacca con una pistola 3 volte, indietreggiando se il nemico è troppo vicino mentre spara. Non subisce danni in mischia"
-		"ko"		"대상이 근접 무기를 들고 있다면, 사격 공격을 3번 하며, 사격 중 적이 자신과 너무 근접해 있다면 후퇴합니다. 이 적의 근접 공격은 넉백을 가하지 않습니다."
+		"en"		"-If its with melee, attacks with a gun 3 times, backs off if enemy is too close while shooting\n-Deals no melee knockback"
+		"it"		"-Se è in mischia, attacca con una pistola 3 volte, indietreggiando se il nemico è troppo vicino mentre spara\n-Non subisce danni in mischia"
+		"ko"		"-대상이 근접 무기를 들고 있다면, 사격 공격을 3번 하며, 사격 중 적이 자신과 너무 근접해 있다면 후퇴합니다\n-이 적의 근접 공격은 넉백을 가하지 않습니다."
 	}
 	"Speedus Instantus"
 	{
@@ -5231,9 +5241,9 @@
 	}
 	"Speedus Instantus Desc"
 	{
-		"en"		"Very fast, if it hits a melee attack, teleports behind target with a CD.\nIf enemy is marked, CD is reduced."
-		"it"		"Molto veloce, se colpisce un attacco in mischia, si teletrasporta dietro il bersaglio con una CD.\nSe il nemico è marcato, la CD è ridotta."
-		"ko"		"매우 빠르며, 근접 공격 적중시 대상의 뒤쪽으로 순간이동 합니다. (쿨타임 있음)\n대상이 표적 상태라면, 순간이동의 쿨타임이 감소합니다."
+		"en"		"-Very fast, if it hits a melee attack, teleports behind target with a CD.\n-If enemy is marked, CD is reduced."
+		"it"		"-Molto veloce, se colpisce un attacco in mischia, si teletrasporta dietro il bersaglio con una CD.\n-Se il nemico è marcato, la CD è ridotta."
+		"ko"		"-매우 빠르며, 근접 공격 적중시 대상의 뒤쪽으로 순간이동 합니다. (쿨타임 있음)\n-대상이 표적 상태라면, 순간이동의 쿨타임이 감소합니다."
 	}
 	"Sea-Xploder"
 	{
@@ -5243,9 +5253,9 @@
 	}
 	"Sea-Xploder Desc"
 	{
-		"en"		"Shoots a delayed C4, If enemy is killed, C4 despawns."
-		"it"		"Spara un C4 ritardato, se il nemico viene ucciso, il C4 si disattiva."
-		"ko"		"지연 후 폭발하는 C4를 발사합니다. 대상이 처치되면, C4가 소멸합니다."
+		"en"		"-Shoots a delayed C4, If enemy is killed, C4 despawns."
+		"it"		"-Spara un C4 ritardato, se il nemico viene ucciso, il C4 si disattiva."
+		"ko"		"-지연 후 폭발하는 C4를 발사합니다. 대상이 처치되면, C4가 소멸합니다."
 	}
 	"Anti Sea Robot"
 	{
@@ -5255,9 +5265,7 @@
 	}
 	"Anti Sea Robot Desc"
 	{
-		"en"		"Deals immensive damage and takes 2x Melee dmg\nTakes 0 dmg outside of its red radius."
-		"it"		"Infligge danni immensivi e subisce 2 volte i danni in mischia.\nPrende 0 danno fuori dal suo raggio rosso"
-		"ko"		"매우 높은 피해를 주지만, 받는 근접 피해가 2배로 증가합니다. \n붉은 영역 바깥에서 들어오는 모든 공격의 피해를 0으로 만듭니다."
+		"en"		"-Deals immensive damage and takes 2x Melee dmg\n-Takes 0 dmg outside of its red radius.\n-Attacks 5x faster against marked enemies"
 	}
 	"Ranka S"
 	{
@@ -5267,9 +5275,9 @@
 	}
 	"Ranka S Desc"
 	{
-		"en"		"Gives armor to all allies near it if it hits something, reduced if its an ubered enemy or a building."
-		"it"		"Dà armatura a tutti gli alleati vicini se colpisce qualcosa, ridotta se si tratta di un nemico uberizzato o di un struttureo."
-		"ko"		"적중시 주변의 모든 아군에게 아머를 부여합니다. 대상이 우버차지 상태이거나 구조물이라면 아머 부여량이 감소합니다."
+		"en"		"-Gives armor to all allies near it if it hits something\nReduced if its an ubered enemy or a building."
+		"it"		"-Dà armatura a tutti gli alleati vicini se colpisce qualcosa, ridotta se si tratta di un nemico uberizzato o di un struttureo."
+		"ko"		"-적중시 주변의 모든 아군에게 아머를 부여합니다. 대상이 우버차지 상태이거나 구조물이라면 아머 부여량이 감소합니다."
 	}
 	"Murdarato"
 	{
@@ -5279,9 +5287,9 @@
 	}
 	"Murdarato Desc"
 	{
-		"en"		"If the ceiling is high enough, shoots a high damage arcing mortar shot.\nIf ceiling is low, then shoots a lower damage slow rocket."
-		"it"		"Se il soffitto è abbastanza alto, spara un colpo di mortaio ad arco ad alto danno.\nSe il soffitto è basso, spara un razzo lento a basso danno."
-		"ko"		"천장이 충분히 높다면, 피해량이 매우 높은 곡선형 박격포를 사격합니다.\n천장이 낮다면, 피해량이 더 낮은 느린 로켓을 발사합니다."
+		"en"		"-If the ceiling is high enough, shoots a high damage arcing mortar shot.\n-If ceiling is low, then shoots a lower damage slow rocket."
+		"it"		"-Se il soffitto è abbastanza alto, spara un colpo di mortaio ad arco ad alto danno.\n-Se il soffitto è basso, spara un razzo lento a basso danno."
+		"ko"		"-천장이 충분히 높다면, 피해량이 매우 높은 곡선형 박격포를 사격합니다.\n-천장이 낮다면, 피해량이 더 낮은 느린 로켓을 발사합니다."
 	}
 	"Ibira Kinat"
 	{
@@ -5291,9 +5299,9 @@
 	}
 	"Ibira Kinat Desc"
 	{
-		"en"		"Deletes 1 projectile from the air with its bullet, if a player is too close, shoots them instead, Has 2 bullets instead.\nIf enemy is marked, gains bullet on melee hit."
-		"it"		"Elimina 1 proiettile dall'aria con il suo proiettile, se un giocatore è troppo vicino, gli spara invece, ha 2 proiettili al suo posto.\nSe il nemico è marcato, guadagna proiettile su colpo in mischia."
-		"ko"		"공중의 투사체 1개를 탄환으로 적중시켜 파괴합니다. 대상 플레이어가 너무 근접했다면, 대신 대상을 사격합니다. 초기에 탄환을 2발 보유합니다.\n대상이 표적 상태라면, 근접 공격 적중시 탄약을 1 얻습니다."
+		"en"		"-Deletes 1 projectile from the air with its bullet, if a player is too close, shoots them instead, Has 2 bullets instead.\n-If enemy is marked, gains bullet on melee hit."
+		"it"		"-Elimina 1 proiettile dall'aria con il suo proiettile, se un giocatore è troppo vicino, gli spara invece, ha 2 proiettili al suo posto.\n-Se il nemico è marcato, guadagna proiettile su colpo in mischia."
+		"ko"		"-공중의 투사체 1개를 탄환으로 적중시켜 파괴합니다. 대상 플레이어가 너무 근접했다면, 대신 대상을 사격합니다. 초기에 탄환을 2발 보유합니다.\n-대상이 표적 상태라면, 근접 공격 적중시 탄약을 1 얻습니다."
 	}
 	"Iberia-Expidonsan Seaborn Eradicator"
 	{
@@ -5303,9 +5311,9 @@
 	}
 	"Iberia-Expidonsan Seaborn Eradicator Desc"
 	{
-		"en"		"Acts as a spawnpoint, unkillable and oneshots anything.\nOnce most allies died, it enrages, loses all its resistance and 99％ hp and gets very fast, loses alot of damage too."
-		"it"		"Agisce come punto di spawn, non è uccidibile e spara a qualsiasi cosa.\nUna volta morti la maggior parte degli alleati, si infuria, perde tutte le resistenze e il 99％ di hp e diventa molto veloce, perdendo anche molti danni."
-		"ko"		"이 적은 다른 적들의 스폰 포인트 역할을 합니다. 이 적은 처치할 수 없으며, 모든 대상을 일격에 즉사시킵니다.\n섬멸자 외의 모든 아군이 처치당하면, 격분 상태가 되어 이동 속도가 매우 빨라지지만, 모든 피해 저항력을 잃고 공격력과 체력이 대폭 감소합니다."
+		"en"		"-Acts as a spawnpoint, unkillable and oneshots anything.\n-Once most allies died, it enrages, loses all its resistance and 99％ hp and gets very fast, loses alot of damage too."
+		"it"		"-Agisce come punto di spawn, non è uccidibile e spara a qualsiasi cosa.\n-Una volta morti la maggior parte degli alleati, si infuria, perde tutte le resistenze e il 99％ di hp e diventa molto veloce, perdendo anche molti danni."
+		"ko"		"-이 적은 다른 적들의 스폰 포인트 역할을 합니다. 이 적은 처치할 수 없으며, 모든 대상을 일격에 즉사시킵니다.\n-섬멸자 외의 모든 아군이 처치당하면, 격분 상태가 되어 이동 속도가 매우 빨라지지만, 모든 피해 저항력을 잃고 공격력과 체력이 대폭 감소합니다."
 	}
 	"Combastia"
 	{
@@ -5315,9 +5323,7 @@
 	}
 	"Combastia Desc"
 	{
-		"en"		"Buffs allies once it screams\nImmune to most bleeds and fire."
-		"it"		"Bufferizza gli alleati una volta che urla.\nImmune alla maggiorparte di fuoco e sanguinamento"
-		"ko"		"함성을 지를때마다, 주변의 모든 아군의 사기를 증가시킵니다.\n대부분의 출혈과 화상 피해에 면역입니다."
+		"en"		"-Buffs allies once it screams\n-Immune to bleeds"
 	}
 	"Morato"
 	{
@@ -5327,9 +5333,9 @@
 	}
 	"Morato Desc"
 	{
-		"en"		"If the ceiling is high enough, shoots a high damage arcing mortar shot.\nIf ceiling is low, then shoots a lower damage slow rocket."
-		"it"		"Se il soffitto è abbastanza alto, spara un colpo di mortaio ad arco ad alto danno.\nSe il soffitto è basso, spara un razzo lento a basso danno."
-		"ko"		"천장이 충분히 높다면, 피해량이 매우 높은 곡선형 박격포를 사격합니다.\n천장이 낮다면, 피해량이 더 낮은 느린 로켓을 발사합니다."
+		"en"		"-If the ceiling is high enough, shoots a high damage arcing mortar shot.\n-If ceiling is low, then shoots a lower damage slow rocket."
+		"it"		"-Se il soffitto è abbastanza alto, spara un colpo di mortaio ad arco ad alto danno.\n-Se il soffitto è basso, spara un razzo lento a basso danno."
+		"ko"		"-천장이 충분히 높다면, 피해량이 매우 높은 곡선형 박격포를 사격합니다.\n-천장이 낮다면, 피해량이 더 낮은 느린 로켓을 발사합니다."
 	}
 	"Speedus Itus"
 	{
@@ -5339,9 +5345,9 @@
 	}
 	"Speedus Itus Desc"
 	{
-		"en"		"Very fast, if it hits a melee attack, teleports behind target with a CD.\nIf enemy is marked, CD is reduced."
-		"it"		"Molto veloce, se colpisce un attacco in mischia, si teletrasporta dietro il bersaglio con una CD.\nSe il nemico è marcato, CD è ridotto."
-		"ko"		"매우 빠르며, 근접 공격을 적중하면, 대상의 뒤쪽으로 순간이동 합니다. (쿨타임 있음)\n대상이 표적 상태라면, 순간이동의 쿨타임이 감소합니다."
+		"en"		"-Very fast, if it hits a melee attack, teleports behind target with a CD.\n-If enemy is marked, CD is reduced."
+		"it"		"-Molto veloce, se colpisce un attacco in mischia, si teletrasporta dietro il bersaglio con una CD.\n-Se il nemico è marcato, CD è ridotto."
+		"ko"		"-매우 빠르며, 근접 공격을 적중하면, 대상의 뒤쪽으로 순간이동 합니다. (쿨타임 있음)\n-대상이 표적 상태라면, 순간이동의 쿨타임이 감소합니다."
 	}
 	"Speedus Elitus"
 	{
@@ -5351,9 +5357,9 @@
 	}
 	"Speedus Elitus Desc"
 	{
-		"en"		"Very fast, if it hits a melee attack, teleports behind target with a CD.\nIf enemy is marked, CD is reduced."
-		"it"		"Molto veloce, se colpisce un attacco in mischia, si teletrasporta dietro il bersaglio con una CD.\nSe il nemico è marcato, CD è ridotto."
-		"ko"		"매우 빠르며, 근접 공격을 적중하면, 대상의 뒤쪽으로 순간이동 합니다. (쿨타임 있음)\n대상이 표적 상태라면, 순간이동의 쿨타임이 감소합니다."
+		"en"		"-Very fast, if it hits a melee attack, teleports behind target with a CD.\n-If enemy is marked, CD is reduced."
+		"it"		"-Molto veloce, se colpisce un attacco in mischia, si teletrasporta dietro il bersaglio con una CD.\n-Se il nemico è marcato, CD è ridotto."
+		"ko"		"-매우 빠르며, 근접 공격을 적중하면, 대상의 뒤쪽으로 순간이동 합니다. (쿨타임 있음)\n-대상이 표적 상태라면, 순간이동의 쿨타임이 감소합니다."
 	}
 	"Sea Dryer"
 	{
@@ -5363,9 +5369,9 @@
 	}
 	"Sea Dryer Desc"
 	{
-		"en"		"Shoots a delayed C4, If enemy is killed, C4 despawns."
-		"it"		"Spara un C4 ritardato, se il nemico viene ucciso, il C4 si disattiva."
-		"ko"		"지연 후 폭발하는 C4를 발사합니다. 대상이 처치되면, C4가 소멸합니다."
+		"en"		"-Shoots a delayed C4, If enemy is killed, C4 despawns."
+		"it"		"-Spara un C4 ritardato, se il nemico viene ucciso, il C4 si disattiva."
+		"ko"		"-지연 후 폭발하는 C4를 발사합니다. 대상이 처치되면, C4가 소멸합니다."
 	}
 	"Runaka"
 	{
@@ -5375,9 +5381,9 @@
 	}
 	"Runaka Desc"
 	{
-		"en"		"Gives armor to all allies near it if it hits something, reduced if its an ubered enemy or a building."
-		"it"		"Dà armatura a tutti gli alleati vicini se colpisce qualcosa, ridotta se si tratta di un nemico uberizzato o di una struttura."
-		"ko"		"적중시 주변의 모든 아군에게 아머를 부여합니다. 대상이 우버차지 상태이거나 구조물이라면 아머 부여량이 감소합니다."
+		"en"		"-Gives armor to all allies near it if it hits something\nreduced if its an ubered enemy or a building."
+		"it"		"-Dà armatura a tutti gli alleati vicini se colpisce qualcosa, ridotta se si tratta di un nemico uberizzato o di una struttura."
+		"ko"		"-적중시 주변의 모든 아군에게 아머를 부여합니다. 대상이 우버차지 상태이거나 구조물이라면 아머 부여량이 감소합니다."
 	}
 	"Inquisitor Irene"
 	{
@@ -5387,9 +5393,9 @@
 	}
 	"Inquisitor Irene Desc"
 	{
-		"en"		"If its knife is burning, next melee hit launches you up and marks you.\nIf enemy is marked, gains more ammo aswell.\nIf enemy is marked, shoots 3x faster.\nCan activate judgement of iberia if close to enemies with a cooldown."
-		"it"		"Se il suo coltello è in fiamme, il prossimo colpo in mischia ti lancia in alto e ti marchia.\nSe il nemico è marcato, guadagna anche più munizioni.\nSe il nemico è marcato, spara 3 volte più velocemente.\nPuò attivare il giudizio di iberia se vicino a nemici con un cooldown."
-		"ko"		"칼이 불타고 있을시, 다음 근접 공격이 적중한 대상을 위로 날려보내고 표적을 부여합니다.\n대상이 표적 상태라면, 탄약을 더 많이 얻습니다.\n또한 표적 상태인 대상을 상대로 사격 공격의 속도가 3배 더 빨라집니다.\n적과 근접하면 이베리아의 심판 능력을 발동합니다. (쿨타임 있음)"
+		"en"		"-If its knife is burning, next melee hit launches you up and marks you.\n-If enemy is marked, gains more ammo aswell.\n-If enemy is marked, shoots 3x faster.\n-Can activate judgement of iberia if close to enemies with a cooldown."
+		"it"		"-Se il suo coltello è in fiamme, il prossimo colpo in mischia ti lancia in alto e ti marchia.\n-Se il nemico è marcato, guadagna anche più munizioni.\n-Se il nemico è marcato, spara 3 volte più velocemente.\n-Può attivare il giudizio di iberia se vicino a nemici con un cooldown."
+		"ko"		"-칼이 불타고 있을시, 다음 근접 공격이 적중한 대상을 위로 날려보내고 표적을 부여합니다.\n-대상이 표적 상태라면, 탄약을 더 많이 얻습니다.\n-또한 표적 상태인 대상을 상대로 사격 공격의 속도가 3배 더 빨라집니다.\n-적과 근접하면 이베리아의 심판 능력을 발동합니다. (쿨타임 있음)"
 	}
 	"Death Marker"
 	{
@@ -5399,15 +5405,9 @@
 	}
 	"Death Marker Desc"
 	{
-		"en"	"Marks an enemy on hit. Deals no melee knockback"
-		"it"	"Segna un nemico quando viene colpito. Non subisce danni in mischia"
-		"ko"	"적중시, 대상에게 표적을 부여합니다.\n이 적의 근접 공격은 넉백을 가하지 않습니다."
-	}
-	"Death Marker Desc"
-	{
-		"en"	"Marks an enemy on hit. Deals no melee knockback"
-		"it"	"Segna un nemico quando viene colpito. Non subisce danni in mischia"
-		"ko"	"적중시, 대상에게 표적을 부여합니다.\n이 적의 근접 공격은 넉백을 가하지 않습니다."
+		"en"	"-Marks an enemy on hit\n-Deals no melee knockback"
+		"it"	"-Segna un nemico quando viene colpito\n-Non subisce danni in mischia"
+		"ko"	"-적중시, 대상에게 표적을 부여합니다.\n-이 적의 근접 공격은 넉백을 가하지 않습니다."
 	}
 	"W.F. Flowering Darkness"
 	{
@@ -5428,7 +5428,7 @@
 	}	
 	"W.F. Acclaimed Swordsman Desc"
 	{
-		"en"	"Whiteflower’s most prestigious swordman. \n-Performs a barrage of pulse attack, gives resistance during usage."
+		"en"	"Whiteflower’s most prestigious swordman. \n-Performs a barrage of pulse attacks, giving resistance during usage."
 		"ko"	"배풍등이 가장 자랑스러워하는 검객입니다. \n-펄스 폭격 공격을 사용하며, 사용 중에는 저항력이 증가"
 	}
 	"W.F. Ekas Piloteer"
@@ -5445,7 +5445,7 @@
 	}	
 	"W.F. Extreme Knight Giant Desc"
 	{
-		"en"	"A extremely powerfull knight, enhanced into a giant, under Whiteflower's command. \n-Performs a barrage of magic bolts, that retarget if missed."
+		"en"	"An extremely powerful knight, enhanced into a giant, under Whiteflower's command. \n-Performs a barrage of magic bolts that retarget if missed."
 		"ko"	"배풍등의 지휘를 통해 거인으로 성장하게 된 엄청나게 강력한 기사입니다. \n-빗나갈시 다시 재조준하는 마법 볼트를 연사"
 	}
 	"W.F. Raging Blader"
@@ -5462,7 +5462,7 @@
 	}	
 	"Whiteflower The Traitor Desc"
 	{
-		"en"	"-Drops gernades that heal allies and hurts enemies in it range."
+		"en"	"-Drops grenades that heal allies and hurt enemies in its range."
 		"ko"	"-범위 내의 아군의 체력을 회복시키고 적군에게 피해를 주는 수류탄을 던집니다."
 	}	
 	"Ouroboros Ekas"
@@ -5475,6 +5475,10 @@
 	{
 		"en"	"Xeno Lab Security"
 		"ko"	"제노 연구소 보안장치"
+	}
+	"Xeno Lab Security Desc"
+	{
+		"en"	"A robot made by the creator of the Xeno infection, made to protect the virus and help it's advance. \n-Periodically charges up an infection blast around itself. \n-If hit by the infection blast, you are afflicted with a heavy bleed. "
 	}
 	"Goliath Aircraft"
 	{
@@ -6480,6 +6484,22 @@
 		"it"	"Troll Brawler"
 		"ko"	"트롤 싸움꾼"
 	}
+	"Troll Rifler Desc"
+	{
+		"en"	"W.F. Rifler infected by the Troll virus. \n-Has a ranged attack and reloads."
+	}
+	"Troll Cop Desc"
+	{
+		"en"	"W.F. Metro Cop infected by the Troll virus. \n-Has a ranged attack and reloads."
+	}
+	"Troll RPG Carrier Desc"
+	{
+		"en"	"W.F. soldier infected by the Troll virus. \n-Has a aoe ranged attack and reloads."
+	}
+	"Troll Brawler Desc"
+	{
+		"en"	"W.F. soldier infected by the Troll virus. \n-No special effects."
+	}
 	"Crystallized Horror"
 	{
 		"en" 	"Crystallized Horror"
@@ -6593,6 +6613,10 @@
 		"it"	"Simile a Vaus Techicus.\nSegue un alleato quando vuole dare uno scudo, prenderà la velocità dell'alleato e sarà più veloce di lui del 10%"
 		"en"	"Similar to Vaus Techicus.\n-Follows an ally and gives them a shield, taking the ally's speed and becoming 10% faster."
 		"ko"	"바우스 테키커스와 비슷합니다.\n-보호막을 부여할 대상을 따라다니며, 이 상태일때는 보호막을 부여하려는 대상의 이동 속도보다 10％ 더 빨라짐"
+	}
+	"Soldinus ilus Desc"
+	{
+		"en"	"An upgraded version of the Soldine. \n-Can rocketjump. \n-Fires rockets. \n-Can melee attack with a cooldown. \n- Melee deals heavy damage and slides you."
 	}
 	"Instinct's Summon"
 	{
@@ -7621,6 +7645,10 @@
 		"it"	"U̴̡̕m̶̒b̵͗r̷̂á̴̪l̸̐ ̷̯̽Ẅ̸.̶̾F̶̭̃.̷͗"
 		"ko"	"움̴̡̕브̶̒랄̸̐ ̷̯̽W.̸̈F̶̾.̷̭̃͗"
 	}
+	"Umbral W.F Desc"
+	{
+		"en"	"Umbrals created from the Umbral gate in the image of Whiteflower. \n-Periodically uses Octane kick."
+	}
 	"Umbral Rouam"
 	{
 		"en"	"U̷̖͑m̴b̷̖̿r̵a̴̛͈l̶̬̚ ̴̺̎R̶o̶ȕ̴̙a̵̡͑m̷"
@@ -8045,15 +8073,27 @@
 		"en"	"Heavy Weapons Guy"
 		"ko"	"헤비 웨폰 가이"
 	}
+	"Heavy Weapons Guy Desc"
+	{
+		"en"	"I am Heavy Weapons Guy, and THIS is my weapon."
+	}
 	"Very Heavy Heavy"
 	{
 		"en"	"Very Heavy Heavy"
 		"ko"	"아주 헤비한 헤비"
 	}
+	"Very Heavy Heavy Desc"
+	{
+		"en"	"A Heavy who is bigger, fatter, and of course heavier."
+	}
 	"Fish Scout"
 	{
 		"en"	"Fish Scout"
 		"ko"	"생선 스카웃"
+	}
+	"Fish Scout"
+	{
+		"en"	"Fish. "
 	}
 	"Human Main"
 	{
@@ -8090,6 +8130,10 @@
 		"en"	"Lard Fat"
 		"ko"	"돼지 기름"
 	}
+	"Lard Fat Desc"
+	{
+		"en"	"Fatty lose some weight."
+	}
 	"Mounted Teuton"
 	{
 		"en"	"Mounted Teuton"
@@ -8099,6 +8143,10 @@
 	{
 		"en"	"Purple Guy"
 		"ko"	"퍼플 가이"
+	}
+	"Purple Guy Desc"
+	{
+		"en"	"The bite of 87!? Wait, no, it was the missing children's incident he caused, old sport."
 	}
 	"Roll The Dice"
 	{
@@ -8110,15 +8158,27 @@
 		"en"	"Australian Spider"
 		"ko"	"호주 거미"
 	}
+	"Australian Spider Desc"
+	{
+		"en"	"A Massive spider from Australia. \n-Very fast. \n-Attacks very fast \n-Very small \n-Very much a spider"
+	}
 	"Suction Medic"
 	{
 		"en"	"Suction Medic"
 		"ko"	"흡입 메딕"
 	}
+	"Suction Medic Desc"
+	{
+		"en"	"Masters of the battle medigun, or just masters of sucking on stuff. \n-Sucks away your hp if you're close enough."
+	}
 	"Living Metal Ball"
 	{
 		"en"	"Living Metal Ball"
 		"ko"	"살아있는 쇳덩이 공"
+	}
+	"Living Metal Ball Desc"
+	{
+		"en"	"Large metal BALLS, what more is there to say besides that they are alive."
 	}
 	"Axe Throwwing Barbarian"
 	{
@@ -8129,6 +8189,10 @@
 	{
 		"en"	"A Man Who Is Really Ambitious About Team Fortress 2 Trading"
 		"ko"	"팀포2 거래에 야망이 가득한 남자"
+	}
+	"A Man Who Is Really Ambitious About Team Fortress 2 Trading Desc"
+	{
+		"en"	"A Man Who Is Really Ambitious About Team Fortress 2 Trading. "
 	}
 	"Kahmlstein's Dead Grandma"
 	{
