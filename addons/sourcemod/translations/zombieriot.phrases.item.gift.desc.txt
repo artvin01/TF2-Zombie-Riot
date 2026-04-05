@@ -1957,7 +1957,7 @@
 	"Mad Doctor Desc"
 	{
 		"en"	"-attacks very very fast and each 3rd attack gives it resistance and a big attack cooldown to itself.\n-Each ATTACK not based on damage heals allies around themselves simular to rajul or arctic mage."
-	
+	}
 	"Abomination Desc"
 	{
 		"en"	"Creature created by pure anarchy\n-Periodically leaps at enemies\n-Gains resistance to the damage type taken, but loses resistance to the other damage type\n-Attacks apply Chaos elemental damage."
