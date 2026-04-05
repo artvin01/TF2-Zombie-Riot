@@ -10,6 +10,15 @@ FLAG_MAPPINGS = {
     "MVM_CLASS_FLAG_ALWAYSCRIT": "Crits", #// Add Blue Borders
     "MVM_CLASS_FLAG_SUPPORT_LIMITED": "Limited Support" #// Only Visible When Active (waveset viewer is static so no way to simulate this)
 }
+FLAG_CSS = {
+    "MVM_CLASS_FLAG_NONE": "", #// Show Nothing
+    "MVM_CLASS_FLAG_NORMAL": "", #// Normal
+    "MVM_CLASS_FLAG_SUPPORT": "", #// Support
+    "MVM_CLASS_FLAG_MISSION": "flag_mission", #// Support - Flashing for Spies, Busters, Engis
+    "MVM_CLASS_FLAG_MINIBOSS": "flag_miniboss", #// Normal - Red Background
+    "MVM_CLASS_FLAG_ALWAYSCRIT": "flag_crits", #// Add Blue Borders
+    "MVM_CLASS_FLAG_SUPPORT_LIMITED": "" #// Only Visible When Active (waveset viewer is static so no way to simulate this)
+}
 def get_npc_icon(icon):
     if icon!="":
         npc_icon_key = "leaderboard_class_"+icon+".vtf"

@@ -1,8 +1,8 @@
 # Parse all items, weapons and their paps.
 import util
-from keyvalues1 import KeyValues1
+import vdf
 
-CFG_WEAPONS = KeyValues1.parse(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/weapons.cfg"))["Weapons"]
+CFG_WEAPONS = vdf.loads(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/weapons.cfg"))["Weapons"]
 
 class WeaponPap:
     def __init__(self, weapon_name, weapon_data, idx, depth):

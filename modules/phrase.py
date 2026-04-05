@@ -1,5 +1,5 @@
 import util, json
-from keyvalues1 import KeyValues1
+import vdf
 from requests.structures import CaseInsensitiveDict
 
 PHRASES = [
@@ -18,4 +18,4 @@ PHRASES = [
 util.log("Parsing all phrases...")
 for p in PHRASES:
     util.log(f"> {p}")
-    util.PHRASES.append(CaseInsensitiveDict(KeyValues1.parse(util.read(f"./TF2-Zombie-Riot/addons/sourcemod/translations/{p}"))["Phrases"]))
+    util.PHRASES.append(CaseInsensitiveDict(vdf.loads(util.read(f"./TF2-Zombie-Riot/addons/sourcemod/translations/{p}"))["Phrases"]))

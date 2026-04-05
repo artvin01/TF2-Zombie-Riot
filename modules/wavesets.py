@@ -2,11 +2,10 @@
 import util, os, subprocess, pathlib, json, time
 import embed, modules.shared
 from collections import defaultdict
-from keyvalues1 import KeyValues1
+import vdf
 
 """
 TODO somehow make npc music playable..
-TODO link to teamwork.tf url if map_mode?
 TODO different npc icon looks depending on mvm flags => modules.shared.FLAG_MAPPINGS comments for descs
 TODO implement showing support npcs in embeds
 TODO implement adding these flags automatically instead of set npc flags only
@@ -274,11 +273,13 @@ def parse():
             
             # Show NPC Flags
             display_name = npc_name
+            npc_css_class = ""
             desc = ""
             if npc_data:
                 for flag in npc_data.flags:
                     if flag != "0" and flag != "-1":
                         extra_info += f" {modules.shared.FLAG_MAPPINGS[flag]}"
+                        npc_css_class += f" {modules.shared.FLAG_CSS[flag]}"
 
                 # Get icon
                 image = modules.shared.get_npc_icon(npc_data.icon)
@@ -326,7 +327,8 @@ def parse():
                 "display_name": display_name,
                 "extra_info": extra_info + desc + music,
                 # waves.sp line 4165 if(data.Is_Boss < 2 && (support || data.ignore_max_cap || data.Is_Static || data.Team == TFTeam_Red))
-                "is_support": util.cfgtonum(dd["is_boss"]) < 2 and (dd["ignore_max_cap"]=="1" or dd["team_npc"]=="2" or dd["is_static"]=="1" or forced_support)
+                "is_support": util.cfgtonum(dd["is_boss"]) < 2 and (dd["ignore_max_cap"]=="1" or dd["team_npc"]=="2" or dd["is_static"]=="1" or forced_support),
+                "css_class": npc_css_class
             }
             npc_hash = util.id_from_str(json.dumps(npc_output)) # same NPC data will output same hash
             npc_output["count"] = count
@@ -440,7 +442,7 @@ def parse():
                 if waveset_file == "classic_iber&expi": wave_cfg=wave_cfg.replace('			"plugin"	"110000000"',"") # overrides actual plugin name before it, which is why it has to be removed
                 wave_cfg = unique_enemy_delays(wave_cfg)
 
-                WAVESET_DATA = KeyValues1.parse(wave_cfg)["Waves"]
+                WAVESET_DATA = vdf.loads(wave_cfg)["Waves"]
 
                 if "desc" in wavesets[waveset_name]:
                     waveset_desc_key = wavesets[waveset_name]["desc"]
@@ -473,7 +475,7 @@ def parse():
             util.log(f"{filename} not in FILESCOPE", "OKBLUE")
             return html_mapsets
         WAVESETLIST_RAW = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{filename}")
-        WAVESETLIST_DATA = KeyValues1.parse(WAVESETLIST_RAW)
+        WAVESETLIST_DATA = vdf.loads(WAVESETLIST_RAW)
         WAVESETLIST_TYPE = list(WAVESETLIST_DATA.keys())[0]
 
         if WAVESETLIST_TYPE not in util.WAVESETS_TYPESCOPE: # Unsupported waveset cfg (Rogue, Bunker, etc.)
@@ -519,7 +521,7 @@ def parse():
     
     #### ZR: Special Maps ####
     def parse_betting(name, data_raw, md_npc, md_mapsets): # zr_bettingwars
-        data = KeyValues1.parse(unique_enemy_delays(data_raw))
+        data = vdf.loads(unique_enemy_delays(data_raw))
         betting_music = util.music_modal(data["Betting"]["BetWars"]["music_background"])
         mn, md_npc = parse_wave(data["Betting"]["Waves"]["Freeplay"], md_npc, is_betting=True, force=True)
 
@@ -577,7 +579,7 @@ def parse():
                 if "wave" in sdata:
                     wave_cfg = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{sdata["wave"]}.cfg")
                     wave_cfg = unique_enemy_delays(wave_cfg)
-                    WAVESET_DATA = KeyValues1.parse(wave_cfg)["Waves"]
+                    WAVESET_DATA = vdf.loads(wave_cfg)["Waves"]
                     md, md_npc = parse_waveset(sdata["wave"], WAVESET_DATA, md, md_npc, DEPTH=4)
                 md_stages +=  f"    - [{sname}](#{util.to_section_link(sname).replace("!","-1")})  \n"
 

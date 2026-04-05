@@ -228,9 +228,15 @@ check_url_params();
 
 /* Audio player */
 function set_audio_resource(obj) {
-    const title = document.getElementById("music_title");
-    title.innerHTML = obj.getAttribute("name");
-    let t = `<audio controls><source src="filepath" type="audio/mpeg"></audio>`;
-    document.getElementById("music_player").innerHTML= t.replace("filepath",obj.getAttribute("file"));
-    title.parentElement.classList.remove("hidden");
+    const player = document.getElementById("music_player")
+    document.getElementById("music_title").innerHTML = obj.getAttribute("name");
+    let mphtml = `<audio controls autoplay><source src="filepath" type="audio/mpeg"></audio>`;
+    const music_player = document.getElementById("music_player");
+    music_player.innerHTML= mphtml.replace("filepath",obj.getAttribute("file"));
+    music_player.parentElement.classList.remove("hidden");
 }
+const music_player = document.getElementById("music_player");
+music_player.addEventListener("loadeddata", () => {
+  music_player.play();
+  // The duration variable now holds the duration (in seconds) of the audio clip
+});
