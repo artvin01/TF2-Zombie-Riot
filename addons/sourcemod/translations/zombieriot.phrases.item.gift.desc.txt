@@ -1526,45 +1526,31 @@
 	}
 	"Benera Desc"
 	{
-		"en" 		"An expidonsan with a shotgun."
-		"it"		"Un expidonsan con un fucile da caccia."
-		"ko" 		"산탄총을 든 엑스피돈사인입니다."
+		"en" 		"An expidonsan with a shotgun.\n-Close Ranged attack"
 	}
 	"Pental Desc"
 	{
-		"en" 		"a lightsaber, its dangerous."
-		"it"		"una spada laser, è pericoloso."
-		"ko" 		"라이트세이버를 들었습니다. 위험합니다."
+		"en" 		"a lightsaber, its dangerous.\n-No Particular Abilities"
 	}
 	"Defanda Desc"
 	{
-		"en" 		"A heavy tank, heals all allied around itself when hitting an enemy."
-		"it"		"Un tank pesante, che cura tutti gli alleati intorno a sé quando colpisce un nemico."
-		"ko" 		"튼튼한 탱커로서, 공격이 적중하면, 자신과 주변의 아군 NPC들을 전부 회복시킵니다."
+		"en" 		"-Slow moving\n-On hit, heals allies around and itself"
 	}
 	"Selfam Ire Desc"
 	{
-		"en" 		"Gains high speeds upon getting close to an enemy."
-		"it"		"Raggiunge una velocità elevata quando si avvicina a un nemico."
-		"ko" 		"대상 적과 일정 범위 내로 접근시, 이동 속도가 매우 빨라집니다."
+		"en" 		"-Once close to enemies, gains high speed for a short time, with a cooldown"
 	}
 	"Vaus Magica Desc"
 	{
-		"en" 		"Grants a shield to all allied around it."
-		"it"		"Conferisce uno scudo a tutti gli alleati intorno ad esso."
-		"ko" 		"자신 주변의 모든 아군에게 보호막을 부여합니다."
+		"en" 		"-Follows allies\n-Applies shield to all allies around itself every so often.\n-Has a ranged attack"
 	}
 	"Pistoleer Desc"
 	{
-		"en" 		"A easily dodgeable laser, but not so easily dodgeable with everything else going on."
-		"it"		"Un laser facilmente schivabile, ma non così facilmente schivabile con tutto il resto."
-		"ko" 		"회피가 쉬운 레이저를 발사합니다. 하지만 정신 없는 상황에선 레이저를 피하기 어려울 겁니다."
+		"en" 		"-Ranged infinite pierce laser attack that deals damage after a delay"
 	}
 	"Diversionistico Desc"
 	{
-		"en" 		"An enemy that comes from time to time, Will try to backstab you. (Backstabbing can be silenced)"
-		"it"		"Un nemico che si presenta di tanto in tanto, cercherà di pugnalarvi alle spalle. (Le pugnalate alle spalle possono essere messe a tacere)"
-		"ko" 		"때때로 등장하는 적으로, 당신을 백스탭하려고 시도합니다.(침묵 상태 시 백스탭 저지 가능)"
+		"en" 		"-Inivislbe from afar\n-Tries to go behind you\n-Spawns randomly around\n-Can backstab you\n-Ignores barricades\n-If your back is agaisnt the wall, they tase you instead"
 	}
 	"Adiantum Desc"
 	{
@@ -1586,15 +1572,11 @@
 	}
 	"Heavy Punuel Desc"
 	{
-		"en"	"A heavily armored enemy, once armor breaks, he will gain high speeds.\nMelee deals 2x as much damage to the armor."
-		"it"	"Un nemico pesantemente corazzato, una volta che l'armatura si rompe, acquisisce un'elevata velocità.\nMelee infligge il doppio dei danni all'armatura."
-		"ko"	"중장갑을 착용한 적으로, 아머가 파괴되면, 이동 속도가 매우 빨라집니다.\n근접 무기는 이 적의 아머에 가하는 피해량이 2배로 증가합니다."
+		"en"	"-Slow giant\n-Spawns with armor\n-Once armor breaks, gains high speeds"
 	}
 	"Sergeant Ideal Desc"
 	{
-		"en"	"A sergeant who will protect his comerades at the cost of his own life.\nHis shield will guard any ally around himself and take the damage instead."
-		"it"	"Un sergente che proteggerà i suoi commilitoni a costo della propria vita. Il suo scudo proteggerà qualsiasi alleato intorno a sé e subirà i danni al suo posto."
-		"ko"	"자신의 목숨까지 걸어서라도 자신의 동료들을 지키려는 병장입니다.\n-주위에 보호막을 전개합니다.\n-보호막 내의 적을 공격 시, 그 적 대신 아이디얼 병장이 피해를 받습니다."
+		"en"	"-Spam ranged attack\n-Can melee if close\n-All damage taken by allies is redirected to him with some damage penalty"
 	}
 	"VIP Building, The Objective Desc"
 	{
@@ -1604,124 +1586,83 @@
 	}
 	"Rifal Manu Desc"
 	{
-		"en"	"A rifle holder, it deals high ranged damage."
-		"it"	"Porta fucile, infligge danni elevati a distanza."
-		"ko"	"라이플 병사로서, 높은 원거리 피해를 주는 공격을 합니다."
+		"en"	"-Ranged hitscan enemy"
 	}
 	"Siccerino Desc"
 	{
-		"en"	"A trained pental."
-		"it"	"Un pentaleghista addestrato."
-		"ko"	"고된 훈련을 받고 성장한 펜탈입니다."
+		"en"	"-No particular Abilities"
 	}
 	"Soldine Prototype Desc"
 	{
-		"en"	"A prototype made by sensal on the way to you.\nShoots rockets slowly."
-		"it"	"Un prototipo realizzato da sensal sulla strada per voi.\nSpara razzi lentamente."
-		"ko"	"센살이 제작한 프로토타입으로, 당신에게로 향하고 있습니다.\n-로켓을 매우 느리게 발사합니다."
+		"en"	"-Slow giant\n-Shoots rockets at enemies"
 	}
 	"Soldine Desc"
 	{
-		"en"	"Re-created by Sensal on his way to you.\nCan rocketjump\nFires rockets\nCan melee attack with a cooldown, this melee deals heavy damage."
-		"it"	"Ricreato da Sensal mentre si reca da voi.\nPuò saltare con i razzi\nPuò attaccare in mischia con un cooldown, questa mischia infligge danni ingenti."
-		"ko"	"센살이 다시 새로 만들어낸 것으로, 당신에게로 향하고 있습니다.\n-로켓 점프를 사용할 수 있습니다.\n-로켓을 발사합니다.\n-매우 높은 피해를 주는, 긴 쿨타임을 가진 근접 공격을 합니다."
+		"en"	"-Can rocketjump\n-Fires rockets\n-Can melee attack with a cooldown, this melee deals heavy damage."
 	}
 	"Protecta Desc"
 	{
-		"en" 	"A heavy tank, heals all allied around itself when hitting an enemy.\nHeals on death aswell."
-		"it"	"Un tank pesante, che guarisce tutti gli alleati intorno a sé quando colpisce un nemico.\nGuarisce anche in caso di morte."
-		"ko"	"디판다의 강화 버전입니다.\n-공격 적중 시, 혹은 사망 시 주변 아군들을 회복시킵니다."
+		"en" 	"-A heavy tank, heals all allied around itself when hitting an enemy.\n-Heals on death aswell."
 	}
 	"Sniponeer Desc"
 	{
-		"en"	"A far ranged and better version of the pistoleers' their delay upon hurting is also less."
-		"ru"	"Дальнобольний и улучшенный вариант пистолетчиков' их задержка перед выстрелом так же уменьшена."
-		"it"	"Una versione migliore e a distanza dei pistoleri, il cui ritardo nel ferire è minore."
-		"ko"	"피스톨리어의 강화 버전으로, 장거리에서 사격하며 공격 딜레이가 감소했습니다."
+		"en" 		"-Ranged infinite pierce laser attack that deals damage after a delay\n-More range then pistoleers"
 	}
 	"Ega Bunar Desc"
 	{
-		"en"	"An enemy with heavy armor, although when it breaks they lose all their speed.\nMelee deals 2x as much damage to the armor."
-		"it"	"Un nemico con un'armatura pesante, anche se quando si rompe perde tutta la sua velocità.\nMelee infligge il doppio dei danni all'armatura."
-		"ko"	"중장갑을 착용한 적으로, 이동 속도가 매우 빠르지만, 아머가 파괴되면 이동 속도가 느려집니다.\n근접 무기는 이 적의 아머에 가하는 피해량이 2배로 증가합니다."
+		"en"	"-Spawns with armor\n-Once armor breaks, they lose alot of speed"
 	}
 	"Enega Kapus Desc"
 	{
-		"en"	"A cyborg with a heavy shield that destoys most projectiles and bullets and has heavy ranged resistance.\n(once silenced, the shield breaks and never returns)"
-		"it"	"Un cyborg con uno scudo pesante che distrugge la maggior parte dei proiettili e delle pallottole e ha una forte resistenza a distanza"
-		"ko"	"대부분의 탄환과 투사체를 파괴하고 매우 높은 원거리 피해 저항력이 있는 방패를 착용한 사이보그입니다.\n(침묵 상태 시, 방패가 파괴되고 다시 방패가 재생되지 않습니다)"
+		"en"	"-Spawns with a shield that blocks most projectiles and hitscan\n-Shield breaks after some time\n-Has Ranged resistance"
 	}
 	"Captino Agentus Desc"
 	{
-		"en"	"A captain of the scouting party, he teleports and backstabs, once teleporting he will call reinforcements inform of diversionisticos.\n(Backstab can be silenced)"
-		"it"	"Capitano del gruppo di esplorazione, si teletrasporta e fa il backstab, una volta teletrasportato chiamerà i rinforzi informando i diversionisticos"
-		"ko"	"정찰대의 행동대장입니다.\n-이 적은 순간이동이 가능하고 백스탭을 시도합니다.\n-순간이동 사용시, 다이버저니스티코를 지원군으로 호출합니다.\n(침묵 상태 시 백스탭 저지 가능)"
+		"en" 		"-Inivislbe from afar\n-Tries to go behind you\n-Can backstab you\n-If your back is agaisnt the wall, they tase you instead\n-If attacking a barricade, gives massive shield to allies and gains resistances\n-On stab reduces cooldowns\n-Teleports behind you and spawns another Diversionistico, and gains attackspeed"
 	}
 	"Sensal Desc"
 	{
 		"en"	"The leader of the scouting group and a friend of silvester and Waldch, he is here for what you did.\nEach new time he returns he gains new abilities and gets stronger.\nHe summons scythes that home onto you, summons portals which summon sythes, fires a laser onto all enemies in range aswell.\nGets a shield which is the same as the vaus magica shield upon using any ability.\nSlide on hit (can be silenced)"
-		"it"	"Il capo del gruppo di esploratori e amico di Silvester e Waldch, è qui per quello che avete fatto.Ogni volta che torna guadagna nuove abilità e diventa più forte.\nEvoca falci che si dirigono verso di voi, evoca portali che richiamano falci, spara un laser su tutti i nemici nel raggio d'azione.\nOttiene uno scudo che è lo stesso dello scudo di vaus magica quando usa una qualsiasi abilità.Scivola su un colpo (può essere silenziato)"
-		"ko"	"정찰대의 대장이자 실베스터와 왈츠의 친구입니다. 그는 당신이 저지른 행동 때문에 여기에 왔습니다.\n그가 돌아올 때마다, 그가 사용할 수 있는 능력이 새로 추가되고 더욱 강해집니다.\n대상에게 유도하는 낫을 생성하고, 낫을 생성하는 포탈을 소환하며, 시야 범위 내의 모든 적에게 레이저를 발사합니다.\n능력을 사용할 때마다, 바우스 마기카가 사용하는 보호막과 똑같은 보호막을 얻습니다.\n공격이 적중한 대상은 조작에 상관없이 쭉 미끄러지게 됩니다. (침묵 상태 시, 이 효과가 발생하지 않음)"
 	}
 	"Dual Rea Desc"
 	{
-		"en"	"an elite version of the pentals."
-		"it"	"una versione d'élite dei pental."
-		"ko"	"정예 펜탈입니다."
+		"en"	"-No particular Abilities"
 	}
 	"Guardus Desc"
 	{
-		"en" 	"A heavy tank, heals all allied around itself when hitting an enemy.\nHeals on death aswell.\nMuch stronger."
-		"it"	"Un tank pesante, guarisce tutti gli alleati intorno a sé quando colpisce un nemico.\nGuarisce anche in caso di morte.Molto più forte."
-		"ko"	"프로텍타보다 더욱 강력한 기계 거인입니다.\n-공격 적중 시, 혹은 사망 시 주변 아군들을 회복시킵니다."
+		"en" 	"-A heavy tank, heals all allied around itself when hitting an enemy.\n-Heals on death aswell.\n-Much stronger."
 	}
 	"Vaus Techicus Desc"
 	{
-		"en"	"A better version of the vaus magica's, grants more shield stacks."
-		"it"	"Una versione migliore del vaus magica, concede più stack di scudo."
-		"ko"	"바우스 마기카의 강화 버전으로, 보호막 부여량이 더욱 증가했습니다."
+		"en" 		"-Follows allies\n-Applies shield to all allies around itself every so often.\n-Has a ranged attack"
 	}
 	"Minigun Assisa Desc"
 	{
-		"en"	"A minigun maniac, he will shred anything."
-		"it"	"Maniaco delle minigun, fa a pezzi qualsiasi cosa."
-		"ko"	"미니건 매니아로서, 모든 것을 갈아버립니다."
+		"en"	"-Close ranged hitscan enemy"
 	}
 	"Ignitus Desc"
 	{
-		"en"	"A giant that ignites upon attacking."
-		"it"	"Un gigante che si incendia all'attacco."
-		"ko"	"공격시 적을 불태우는 거인입니다."
+		"en"	"-Ignites enemies on hit"
 	}
 	"Helena Desc"
 	{
-		"en"	"A field medic that enrages when its patient dies, or you get too close to it."
-		"it"	"Un medico da campo che si infuria quando il suo paziente muore o ci si avvicina troppo."
-		"ko"	"헬레나는 전투 의무병으로, 치유 대상이 죽거나 대상이 자신과 너무 가까이 근접하면 격노 합니다."
+		"en" 		"This medic will heal any ally near it.\n-Touching medic enrages it\n-Enrages on Patient death.\n-Enrage: No longer heals, instead attacks.\n-Heals one ally when not enraged."
 	}
 	"Erasus Desc"
 	{
-		"en"	"The best of the best of pantals."
-		"it"	"Il meglio del meglio dei pantali."
-		"ko"	"펜탈의 최상위 등급입니다."
+		"en"	"-No particular Abilities"
 	}
 	"Giant Tankus Desc"
 	{
-		"en"	"A absolute giant of a tank."
-		"it"	"Un gigante assoluto di un carro armato."
-		"ko"	"완벽한 탱커 역할을 하는 거인입니다."
+		"en"	"-Has ranged resistance\n-Has melee vulnerability"
 	}
 	"Anfuhrer Eisenhard Desc"
 	{
-		"en"	"Sub leader of the scouting party.\nHas heavy damage and high health,once losing half his health he gains immensive speed and armor, break the armor to get rid of the effects.\nMelee deals 1.4x as much damage to the armor."
-		"it"	"Ha danni pesanti e salute elevata, una volta persa metà della salute guadagna velocità immensiva e armatura, rompere l'armatura per eliminarne gli effetti."
-		"ko"	"정찰대의 부대장입니다.\n-매우 높은 체력과 피해량을 보유\n-체력이 절반 이하가 되면 대량의 이동 속도와 아머를 얻습니다.\n-아머가 파괴되면 모든 효과를 잃습니다.\n-근접 무기는 이 적의 아머에 가하는 피해량이 2배로 증가합니다."
+		"en"	"-On Hit gives stacking vulnerability for some time\n-On half health:\nGain armor and speed\nOnce armor breaks, speed weakens"
 	}
 	"Speedus Adivus Desc"
 	{
-		"en"	"A high speed saber-ist."
-		"it"	"Un saber-ista ad alta velocità."
-		"ko"	"엄청난 속도를 보유한 라이트세이버 매니아입니다."
+		"en"	"-High Speed"
 	}
 	"Overlord The Last Desc"
 	{

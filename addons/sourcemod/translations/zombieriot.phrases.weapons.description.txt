@@ -2012,9 +2012,7 @@
 	
 	"Medic's Lost Medical Lisence Desc"
 	{
-		"en"	"-Gain 1.5x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 5％ melee resistance with Healing Support Weapons out"
-		"it"	"1.5x Medigun Heal, 20％ danni extra alle armi di supporto\n5％ resistenza in mischia con Healing Support Weapons disattivata"
-		"ko"	"-메디건 치유 속도 +1.5배\n-지원 무기 피해량 +20％\n-지원 무기 장착 시 근접 피해 저항력 +5％ 증가"
+		"en"	"-Gain 1.5x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 5％ melee resistance with Healing Support Weapons out\n-Revive Allies 25％ faster with support weapons in hand"
 	}
 	
 	"Panic Attack Desc"
