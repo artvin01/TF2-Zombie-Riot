@@ -41,7 +41,7 @@ void Professional_Fingerer_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "heavy");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
-	data.Category = -1;
+	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

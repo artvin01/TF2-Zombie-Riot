@@ -8141,9 +8141,9 @@
 	{
 		"en"	"Large metal BALLS, what more is there to say besides that they are alive."
 	}
-	"Axe Throwwing Barbarian"
+	"Axe Throwing Barbarian"
 	{
-		"en"	"Axe Throwwing Barbarian"
+		"en"	"Axe Throwing Barbarian"
 		"ko"	"도끼 투척 야만전사"
 	}
 	"A Man Who Is Really Ambitious About Team Fortress 2 Trading"

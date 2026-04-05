@@ -18,7 +18,7 @@ void Ruina_Storm_Weaver_Mid_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Stellar Weaver");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_stellar_weaver_middle");
-	data.Category = -1;
+	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	strcopy(data.Icon, sizeof(data.Icon), ""); 						//leaderboard_class_(insert the name)
