@@ -92,6 +92,7 @@ class NPC:
                         "musictitle": self._get_music_val(code,"Name"),
                         "musicartist": self._get_music_val(code,"Artist"),
                         "filepath": filepath,
+                        "filename": mfilename,
                         "file_exists": file_exists
                     }
                     music_hash = util.id_from_str(json.dumps(music_entry)) # same music data will output same hash

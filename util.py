@@ -54,15 +54,16 @@ def music_modal(wave_entry_data):
         if wave_entry_data["name"] != "": title = wave_entry_data["name"]
         
         artist = ""
-        if wave_entry_data["author"] != "": artist = f" - {wave_entry_data["author"]}"
+        if wave_entry_data["author"] != "": artist = wave_entry_data["author"]
         
         mfilename = wave_entry_data["file"].replace("#","")
     
     file = f"https://raw.githubusercontent.com/artvin01/TF2-Zombie-Riot/refs/heads/master/sound/{mfilename}"
     return {
         "type": "music",
-        "title": title,
-        "artist": artist,
+        "musicpre": "",
+        "musictitle": title,
+        "musicartist": artist,
         "filepath": file,
         "filename": mfilename,
         "file_exists": os.path.isfile(f"./TF2-Zombie-Riot/sound/{mfilename}")
@@ -91,7 +92,7 @@ def normalize_whitespace(str_):
 
 
 def absolute_link(filename, waveset):
-    return f"{filename.split("/")[-1].replace(".cfg","")}_{to_section_link(waveset)}"
+    return f"{filename.split("/")[-1].replace(".cfg","")}{"_"*int(waveset!="")}{to_section_link(waveset)}"
 
 
 def format_num(n):

@@ -133,6 +133,7 @@ def parse():
             except ValueError:
                 if wave_entry.startswith("music_"):
                     if (modal := util.music_modal(wave_entry_data)):
+                        MUSIC_BY_TITLE[modal["musictitle"]] = modal
                         output.append(modal)
                 
                 if wave_entry == "xp":
@@ -301,6 +302,7 @@ def parse():
             # Note that each entry also has a 'filename' param if you need to make this interactive.
             music = ""
             for entry in npc_data.music_entries:
+                MUSIC_BY_TITLE[entry["musictitle"]] = entry
                 context=entry.copy()
                 file_exists = context.pop("file_exists")
                 music += util.fill_template(util.read(f"templates/music/music_modal{"_missing"*int(not file_exists)}.html"),context)
@@ -356,6 +358,7 @@ def parse():
                 "format": wd["author_format"],
                 "raid": wd["author_raid"]
             },
+            "desc": desc,
             "item_on_win": wd["complete_item"],
             "fakemaxwaves": wd["fakemaxwaves"]
         }
@@ -377,6 +380,7 @@ def parse():
             except ValueError:
                 if wave.startswith("music_"):
                     if (modal := util.music_modal(wave_data)):
+                        MUSIC_BY_TITLE[modal["musictitle"]] = modal
                         output["music"][wave]= modal
                 continue
 
@@ -495,9 +499,9 @@ def parse():
         if WAVESETLIST_TYPE in ["Setup", "Custom"]:
             HTML_WAVESETS, html_mapsets = parse_waveset_list_cfg_common(WAVESETLIST_DATA, filename, html_mapsets)
         elif WAVESETLIST_TYPE == "Betting":
-            HTML_WAVESETS, md_npc, md_mapsets = parse_betting(filename, WAVESETLIST_RAW, md_mapsets)
+            HTML_WAVESETS, html_mapsets = parse_betting(filename, WAVESETLIST_RAW, html_mapsets)
         elif WAVESETLIST_TYPE == "Rogue":
-            HTML_WAVESETS, md_npc, md_mapsets = parse_rogue(filename, WAVESETLIST_DATA, md_mapsets)
+            HTML_WAVESETS, md_mapsets = parse_rogue(filename, WAVESETLIST_DATA, html_mapsets)
         else:
             HTML_WAVESETS = f"err key {WAVESETLIST_TYPE}"
             util.log("UNSUPPORTED CFG IN OUTPUT!", "FAIL")
@@ -524,37 +528,46 @@ def parse():
         return f"{betting_music}\n  Higher budget means more powerful NPC group\n  {mn}", md_npc, md_mapsets
     
     #### ZR: Rogue ####
-    def parse_rogue(name, data, md_npc, md_mapsets):
+    def parse_rogue(name, data, html_mapsets):
         data=data["Rogue"]
         
         # Starting data (cash, artifacts, rogue 1/2/3)
         #tooltip_data = "Drop chance: All non-collected (and sometimes non-blacklisted) droppable items get added <chance> times to a list, from which an item gets randomly chosen."
         ## {tooltip_data}  \n
         ## -> [Floors](#Floors)  \n
-        music_text = ""
+        wd = defaultdict(str,data)
+        output = {
+            "floors": {},
+            "starting_artifacts": [],
+            "artifacts": [],
+            "curses": [],
+            "music": {}, # base waveset music, not the per wave one
+            "authors": {
+                "npc": wd["author_npcs"],
+                "format": wd["author_format"],
+                "raid": wd["author_raid"]
+            },
+            "item_on_win": wd["complete_item"],
+        }
+
         for entry, val in data.items():
             if "music" in entry:
-                music_text += util.music_modal(val)
-        md_stages = ""
-        md = ""
+                output["music"][entry] = util.music_modal(val)
+
         for artifact in data["Setup"]["Starting"].keys():
-            md += rogue_item_modal(artifact)
+            output["starting_artifacts"].append(rogue_item_modal(artifact))
 
         # Curses
-        md += "# Curses\n"
         for curse in data["Rogue"]["Curses"].keys():
-            md += rogue_item_modal(curse)
+            output["curses"].append(rogue_item_modal(curse))
 
         # All Artifacts
-        md += "# Artifacts\n"
         for artifact in data["Rogue"]["Artifacts"]:
-            # TODO try to replace this with defaultdict again at some point
-            obj = data["Rogue"]["Artifacts"][artifact]
-            if "hidden" in obj:
-                if obj["hidden"]=="1": continue
-            md += rogue_item_modal(artifact, obj)
+            if defaultdict(str, data["Rogue"]["Artifacts"][artifact])["hidden"]=="1": continue
+            output["artifacts"].append(rogue_item_modal(artifact))
         
         # Floors
+        """
         md += "# Floors\n"
         for idx, (floor_name, floor_data) in enumerate(data["Rogue"]["Floors"].items()):
             rooms = floor_data["rooms"]
@@ -575,21 +588,31 @@ def parse():
                     WAVESET_DATA = vdf.loads(wave_cfg)["Waves"]
                     md, md_npc = parse_waveset(sdata["wave"], WAVESET_DATA, md, md_npc, DEPTH=4)
                 md_stages +=  f"    - [{sname}](#{util.to_section_link(sname).replace("!","-1")})  \n"
-
-        md = f"# Rogue {int(data["Rogue"]["roguestyle"])+1}\n\n- [Curses](#Curses)  \n- [Artifacts](#Artifacts)  \n- [Floors](#Floors)  \n{md_stages}\nStarting cash: ${data["Setup"]["cash"]}{music_text}  \n\n" + md
+        """
+        #md = f"# Rogue {int(data["Rogue"]["roguestyle"])+1}\n\n- [Curses](#Curses)  \n- [Artifacts](#Artifacts)  \n- [Floors](#Floors)  \n{md_stages}\nStarting cash: ${data["Setup"]["cash"]}{music_text}  \n\n" + md
 
         # list in home.md, sidebar.md
         n = name.split("/")[-1].replace(".cfg","")
         rogue_num = f" - Rogue {int(data["Rogue"]["roguestyle"])+1}"
-        md_mapsets += f"- [{n+rogue_num}]({n})  \n"
+        html_mapsets += f"<li><a href=\"{n}.html\">{n} {rogue_num}</a></li>"
 
-        return md, md_npc, md_mapsets
+        if not os.path.isdir("gh-pages/wavesets"): subprocess.run(["mkdir", "gh-pages/wavesets"])
+        util.write(f"gh-pages/wavesets/{util.absolute_link(name,"")}.json", json.dumps(output,indent=2))
+
+        context = { # startcash, wavesetlistdata
+            "startcash": wd["Setup"]["cash"],
+            "wavesetlistdata": "???"
+        }
+        HTML_WAVESET_LIST = "html waveset list!!"#util.fill_template(util.read(f"templates/waveset/waveset_list.html"),context)
+        return HTML_WAVESET_LIST, html_mapsets
 
     def rogue_item_modal(name, obj={}):
-        shop_cost = f"$$ cost \\space △ {obj["shopcost"]} $$\n" if "shopcost" in obj else ""
-        dropchance = f"$$ dropchance \\space {obj["dropchance"]} $$\n" if "dropchance" in obj else ""
-        modal = f"$$ \\textbf{{ {util.get_key(name).replace("&","\\&")} }} $$\n{shop_cost}{dropchance}$$\n{util.as_latex(util.get_key(f"{name} Desc"))}\n$$"
-        return modal + "  \n"
+        return {
+            "shop_cost": obj["shopcost"] if "shopcost" in obj else "",
+            "dropchance": obj["dropchance"] if "dropchance" in obj else "",
+            "name": util.get_key(name),
+            "desc": util.get_key(f"{name} Desc")
+        }
 
     PATH_NPC = "./TF2-Zombie-Riot/addons/sourcemod/scripting/zombie_riot/npc/"
 
@@ -600,6 +623,7 @@ def parse():
     util.log("Fetching base data...")
     NPCS_BY_FILENAME, NPCS_BY_CATEGORY = parse_all_npcs()
     DEFAULT_CASH_BY_WAVE = parse_default_cash()
+    MUSIC_BY_TITLE = {}
     util.write("npcs_by_category.json", json.dumps(NPCS_BY_CATEGORY,indent=2))
 
     cfg_files = {
@@ -613,6 +637,8 @@ def parse():
     HTML_SPECIALMAPS = ""
     for f,n in cfg_files.items():
         HTML_SPECIALMAPS = parse_waveset_list_cfg(f, HTML_SPECIALMAPS, filename_md=n)
+    
+    util.write("music_by_title.json", json.dumps(MUSIC_BY_TITLE,indent=2))
 
     # Get current commit SHA for TF2-Zombie-Riot
     COMMIT_SHA = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd="TF2-Zombie-Riot").strip().decode("utf-8")

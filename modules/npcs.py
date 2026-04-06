@@ -29,7 +29,7 @@ def parse():
         category_name = category.replace("Type_","").replace("-1","Unknown").title()
         if category != "Type_Hidden":
             npc_list_html += util.fill_template(util.read("templates/npc/category_block_start.html"),{"key":category_name})
-            for npc in npc_list:
+            for npc in sorted(npc_list, key=lambda npc: npc["name"]):
                 music = ""
                 for entry in npc["music_entries"]:
                     context=entry.copy()

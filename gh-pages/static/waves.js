@@ -18,8 +18,8 @@ const support_npc_modal = `<div class="divider"></div><div id="support_npc_conta
     <h2>SUPPORT</h2>
 </div>
 `
-const music_modal = `<div onclick="set_audio_resource(this);" file=\"filepath\" title=\"musictitle\" artist=\"musicartist\" class="audio"><img src="builtin_img/music.svg">musicpre musictitle musicartist</div>`
-const music_modal_missing = `<div class="disabled audio"><img src="builtin_img/music.svg">musicpre musictitle musicartist</div>`
+const music_modal = `<div onclick="set_audio_resource(this);" file=\"filepath\" title=\"musictitle\" artist=\"musicartist\" class="audio"><img src="builtin_img/music.svg">musicpre musictitle - musicartist</div>`
+const music_modal_missing = `<div class="disabled audio"><img src="builtin_img/music.svg">musicpre musictitle - musicartist</div>`
 function cycle_wave(val) {
     let prev_wave = wave;
     wave = wave + val;
@@ -52,14 +52,15 @@ async function parse_waveset(file) {
         if (waveset_data["authors"]["format"]!=="") {waveset_info+="<div>Format by: %s</div>".replace("%s",waveset_data["authors"]["format"])};
         if (waveset_data["authors"]["raid"]!=="") {waveset_info+="<div>Raidboss by: %s</div>".replace("%s",waveset_data["authors"]["raid"])};
         if (waveset_data["item_on_win"]!=="") {waveset_info+="<div>Item on win: %s</div>".replace("%s",waveset_data["item_on_win"])};
+        if (waveset_data["desc"]!=="") {waveset_info+="<div>%s</div>".replace("%s",waveset_data["desc"])};
         
         for (const [key, entry] of Object.entries(waveset_data["music"])) {
             context = {
                 "filepath": entry["filepath"],
                 "filename": entry["filename"],
                 "musicpre": key.split("_")[1] + ": ",
-                "musictitle": entry["title"],
-                "musicartist": entry["artist"]
+                "musictitle": entry["musictitle"],
+                "musicartist": entry["musicartist"]
             }
             if (!entry["file_exists"]) {
                 waveset_info += fill_template(music_modal_missing, context);
@@ -147,8 +148,8 @@ function update_wave_display() {
                 "filepath": entry["filepath"],
                 "filename": entry["filename"],
                 "musicpre": "",
-                "musictitle": entry["title"],
-                "musicartist": entry["artist"]
+                "musictitle": entry["musictitle"],
+                "musicartist": entry["musicartist"]
             }
             if (!entry["file_exists"]) {
                 wave_music_html += fill_template(music_modal_missing, context);

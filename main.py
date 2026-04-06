@@ -4,7 +4,7 @@ if "SCOPE" in os.environ:
     SCOPE = [x.lower() for x in os.environ["SCOPE"].split(",")]
 else:
     #SCOPE = ["wavesets", "npcs", "items", "skilltree"]
-    SCOPE = ["wavesets", "npcs", "items"]
+    SCOPE = ["wavesets", "npcs", "items", "music"]
 print("SCOPE", SCOPE)
 
 import modules.phrase
@@ -18,6 +18,11 @@ if "npcs" in SCOPE: # NOTE: NPC data parsed into json in modules/wavesets.py
     print("npcs.py ----------------------------------------------------------------------------------")
     import modules.npcs
     modules.npcs.parse()
+
+if "music" in SCOPE: # NOTE: music data parsed into json in modules/wavesets.py
+    print("music.py ----------------------------------------------------------------------------------")
+    import modules.music
+    modules.music.parse()
 
 if "items" in SCOPE:
     print("weapon.py ----------------------------------------------------------------------------------")
