@@ -826,8 +826,6 @@ methodmap Twirl < CClotBody
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 
-		c_NpcName[npc.index] = "Twirl";
-
 		b_force_transformation = false;
 
 		b_test_mode = StrContains(data, "test") != -1;
@@ -1002,10 +1000,7 @@ methodmap Twirl < CClotBody
 		if(b_tripple_raid)
 		{
 			WaveStart_SubWaveStart(GetGameTime() + 700.0);	//due to lots and lots of time
-			Twirl_Lines(npc, "Oh my, looks like the expidonsans went easy on you, we sure wont my dears. Us ruanians work differently~");
-			Twirl_Lines(npc, "... Except Karlas but shhhh!");
-			CPrintToChatAll("{crimson}Karlas{snow}: .....");
-			CPrintToChatAll("{crimson}Karlas{snow}: :(");
+			CreateTimer(0.0, Timer_Twirl_TripleIntro, false);
 			RaidModeTime = GetGameTime(npc.index) + 500.0;
 			GiveOneRevive(true);
 
@@ -1087,6 +1082,8 @@ methodmap Twirl < CClotBody
 				case 3: Twirl_Lines(npc, "I need to unwind, and you all look {crimson}perfect{snow} for that!");
 			}
 		}
+
+		c_NpcName[npc.index] = "Twirl";
 
 		i_current_Text = 0;
 
@@ -4571,13 +4568,7 @@ static void Twirl_Lines(Twirl npc, const char[] text)
 	if(b_test_mode)
 		return;
 
-	for(int i=1 ; i <= MaxClients ; i++)	//should fix translations being buggy with the name.
-	{
-		if(IsValidClient(i) && IsClientInGame(i))
-		{
-			CPrintToChat(i, "%s %s", npc.GetName(), text);
-		}
-	}
+	PrintNPCMessageWithPrefixes(npc.index, NameColour, text, .messageColor = TextColour);
 }
 static float[] GetNPCAngles(CClotBody npc)
 {
@@ -4841,4 +4832,30 @@ void TwirlEarsApply(int iNpc, char[] attachment = "head", float size = 1.0)
 	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(particle_ears4_r);
 	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_ears_1_r);
 	i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(Laser_ears_2_r);
+}
+
+static void Timer_Twirl_TripleIntro(Handle timer, bool shouldKarlasChat)
+{
+	int raids[3];
+	raids = i_GetAllPartiesInvolved();
+	
+	if (!shouldKarlasChat && raids[0] != 0)
+	{
+		// Twirl's turn
+		Twirl npc = view_as<Twirl>(raids[0]);
+		
+		Twirl_Lines(npc, "Oh my, looks like the expidonsans went easy on you, we sure wont my dears. Us ruanians work differently~");
+		Twirl_Lines(npc, "... Except Karlas but shhhh!");
+		
+		// We have to wait for Karlas to spawn...
+		CreateTimer(1.0, Timer_Twirl_TripleIntro, true, TIMER_FLAG_NO_MAPCHANGE);
+	}
+	else if (shouldKarlasChat && raids[2] != 0)
+	{
+		// Karlas' turn
+		Karlas allyNpc = view_as<Karlas>(raids[2]);
+		
+		Karlas_Lines(allyNpc, ".....");
+		Karlas_Lines(allyNpc, ":(");			
+	}
 }

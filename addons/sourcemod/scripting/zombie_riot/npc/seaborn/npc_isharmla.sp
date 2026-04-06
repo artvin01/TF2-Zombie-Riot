@@ -173,8 +173,8 @@ public void Isharmla_ClotThink(int iNPC)
 		b_NoKnockbackFromSources[npc.index] = false;
 		b_ThisEntityIgnored[npc.index] = false;
 		
-		// Recover 2% HP
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (ReturnEntityMaxHealth(npc.index) / 50));
+		// Recover 20% HP
+		HealEntityGlobal(npc.index, npc.index, float(ReturnEntityMaxHealth(npc.index) / 5), 1.0,_, HEAL_SELFHEAL);
 		return;
 	}
 
@@ -290,20 +290,9 @@ public void Isharmla_ClotThink(int iNPC)
 				{
 					float vecAlly[3]; WorldSpaceCenter(npc.m_iTarget, vecAlly);
 
-					int healing = npc.Anger ? 24000 : 16000;
-
-					if(!HasSpecificBuff(npc.m_iTarget, "Growth Blocker"))
-						healing -= 16000;
+					int healing = npc.Anger ? 150000 : 100000;
 					
-					if(healing > 0)
-					{
-						int maxhealth = GetEntProp(npc.m_iTarget, Prop_Data, "m_iMaxHealth");
-						int health = GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") + healing;
-						if(health > maxhealth)
-							health = maxhealth;
-						
-						SetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth", health);
-					}
+					HealEntityGlobal(npc.index, npc.m_iTarget, float(healing), 1.0);
 
 					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
 					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
@@ -318,7 +307,12 @@ public void Isharmla_ClotThink(int iNPC)
 					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 
 					NPCStats_RemoveAllDebuffs(npc.m_iTarget);
-					ApplyStatusEffect(npc.index, npc.m_iTarget, "Godly Motivation", 7.0);
+					float Duration = 7.0;
+					if(b_thisNpcIsABoss[npc.m_iTarget])
+						Duration = 3.0;
+					ApplyStatusEffect(npc.index, npc.m_iTarget, "Godly Motivation", Duration);
+					ApplyStatusEffect(npc.index, npc.m_iTarget, "UBERCHARGED", Duration);
+					ApplyStatusEffect(npc.index, npc.m_iTarget, "Dimensional Turbulence", Duration);
 				}
 				
 				int ally = GetClosestAlly(npc.index, _, npc.m_iTarget);
@@ -326,20 +320,9 @@ public void Isharmla_ClotThink(int iNPC)
 				{
 					float vecAlly[3]; WorldSpaceCenter(ally, vecAlly);
 
-					int healing = npc.Anger ? 24000 : 16000;
+					int healing = npc.Anger ? 150000 : 100000;
 
-					if(HasSpecificBuff(npc.m_iTarget, "Growth Blocker"))
-						healing -= 16000;
-					
-					if(healing > 0)
-					{
-						int maxhealth = ReturnEntityMaxHealth(ally);
-						int health = GetEntProp(ally, Prop_Data, "m_iHealth") + healing;
-						if(health > maxhealth)
-							health = maxhealth;
-						
-						SetEntProp(ally, Prop_Data, "m_iHealth", health);
-					}
+					HealEntityGlobal(npc.index, ally, float(healing), 1.0);
 
 					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
 					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
@@ -354,7 +337,12 @@ public void Isharmla_ClotThink(int iNPC)
 					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 
 					NPCStats_RemoveAllDebuffs(ally);
-					ApplyStatusEffect(npc.index, ally, "Godly Motivation", 7.0);
+					float Duration = 7.0;
+					if(b_thisNpcIsABoss[ally])
+						Duration = 3.0;
+					ApplyStatusEffect(npc.index, ally, "Godly Motivation", Duration);
+					ApplyStatusEffect(npc.index, ally, "UBERCHARGED", Duration);
+					ApplyStatusEffect(npc.index, ally, "Dimensional Turbulence", Duration);
 				}
 			}
 		}

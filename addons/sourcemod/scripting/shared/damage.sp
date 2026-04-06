@@ -1690,6 +1690,12 @@ stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflic
 		{
 			ExtraDamageDealt *= 0.5;
 			damage *= ExtraDamageDealt;
+			char buffer[128];
+			zr_tagblacklist.GetString(buffer, sizeof(buffer));
+			if(StrContains(buffer, "fools26", false) != -1)
+			{
+				damage *= 0.5;
+			}
 			if(!WasHereSinceStartOfWave(attacker))
 			{
 				damage = 0.0;

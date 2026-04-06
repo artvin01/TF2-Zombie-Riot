@@ -14,6 +14,10 @@
 #define MVM_CLASS_FLAG_ALWAYSCRIT		(1 << 4)	// Add Blue Borders
 #define MVM_CLASS_FLAG_SUPPORT_LIMITED	(1 << 5)	// Only Visible When Active
 
+#define ZR_STORE_RESET (1 << 1) //This will reset the entire store to default
+#define ZR_STORE_DEFAULT_SALE (1 << 2) //This  will reset the current normally sold items, and put up a new set of items
+#define ZR_STORE_WAVEPASSED (1 << 3) //any storelogic that should be called when a wave passes
+
 public const int AmmoData[][] =
 {
 	// Price, Ammo
@@ -102,7 +106,13 @@ public const char PerkNames[][] =
 	"Marksman Beer",
 	"Teslar Mule",
 	"Stockpile Stout",
-	"Energy Drink"
+	"Energy Drink",
+
+	"Lover's Wine",
+	"Marathon Shake",
+	"Sealed Boba",
+	"Bloody Ale",
+	"Who Float"
 };
 
 public const char PerkNames_Received[][] =
@@ -115,7 +125,13 @@ public const char PerkNames_Received[][] =
 	"Marksman Beer Received",
 	"Teslar Mule Received",
 	"Stockpile Stout Received",
-	"Energy Drink Received"
+	"Energy Drink Received",
+
+	"Lover's Wine Received",
+	"Marathon Shake Received",
+	"Sealed Boba Received",
+	"Bloody Ale Received",
+	"Who Float Received"
 };
 
 public const char PerkNames_two_Letter[][] =
@@ -128,7 +144,13 @@ public const char PerkNames_two_Letter[][] =
 	"MB",
 	"TM",
 	"SS",
-	"ED"
+	"ED",
+	
+	"LW",
+	"MS",
+	"SB",
+	"BA",
+	"WF"
 };
 
 enum
@@ -435,6 +457,21 @@ float Armor_regen_delay[MAXPLAYERS];
 ConVar mp_disable_respawn_times;
 //int i_SvRollAngle[MAXPLAYERS];
 
+
+enum
+{
+	PAP_MODE_DEFAULT,
+	PAP_MODE_BUILDING_ONLY
+}
+//PAP_MODE_BUILDING_ONLY assumes logic of another gamemode, so we'll reuse that for now.
+enum
+{
+	PERK_MODE_DEFAULT,
+	PERK_MODE_ALL_ALLOW
+}
+
+int PapModeDo = PAP_MODE_DEFAULT;
+int PerkModeDo = PERK_MODE_DEFAULT;
 	
 bool DisableSpawnProtection;
 bool DisableRandomSpawns;
@@ -516,6 +553,7 @@ float fl_MatrixReflect[MAXENTITIES];
 
 #include "npc.sp"	// Global NPC List
 
+#include "vscript.sp"
 #include "aprilfools_settings.sp"
 #include "building.sp"
 #include "database.sp"
@@ -788,6 +826,7 @@ void ZR_PluginStart()
 	Kritzkrieg_PluginStart();
 	BetWar_PluginStart();
 	Dungeon_PluginStart();
+	VScript_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
@@ -1200,7 +1239,7 @@ void ZR_ClientPutInServer(int client)
 
 void ZR_ClientDisconnect(int client)
 {
-	Citizen_PlayerReplacement(client);
+	Citizen_PlayerReplacement(client, true);
 	Native_ZR_OnGetXP(client, XP[client], 1);
 	SetClientTutorialMode(client, false);
 	SetClientTutorialStep(client, 0);
@@ -1946,6 +1985,10 @@ public Action Timer_Dieing(Handle timer, int client)
 
 public void Spawn_Bob_Combine(int client)
 {
+	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+	{
+		return;
+	}
 	float flPos[3], flAng[3];
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
@@ -2405,7 +2448,10 @@ public void SetHealthAfterReviveAgain(int ref)
 	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{
-		SetEntityHealth(client, 50);
+		if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+			SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+		else
+			SetEntityHealth(client, 50);
 	}
 }
 
@@ -2738,6 +2784,11 @@ void ReviveAll(bool raidspawned = false,
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		if(IsClientInGame(client))
 		{
+			if(dieingstate[client] > 0)
+			{
+				if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+					continue;
+			}
 			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
 			if(glowentity > MaxClients)
 				RemoveEntity(glowentity);
@@ -2835,8 +2886,6 @@ void ReviveAll(bool raidspawned = false,
 			CreateTimer(0.1, Timer_ChangePersonModel, GetClientUserId(client));
 		}
 	}
-	
-	if(ZR_Get_Modifier() == PREFIX_ONESTAND)
 	
 	Music_EndLastmann();
 	CheckAlivePlayers();

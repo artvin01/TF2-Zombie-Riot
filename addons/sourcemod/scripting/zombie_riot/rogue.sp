@@ -2789,11 +2789,17 @@ void Rogue_PlayerDowned(int client)
 
 bool Rogue_NoLastman()
 {
+	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+		return true;
+		
 	return Rogue_Mode() && !Rogue_Paradox_Lastman();
 }
 
-bool Rogue_UnlockStore()
+int Rogue_UnlockStore()
 {
+	if(VScript_LockedWeapons())
+		return 2;
+	
 	return (Rogue_Mode() && RogueTheme == BlueParadox);
 }
 

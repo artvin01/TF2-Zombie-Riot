@@ -561,6 +561,7 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 			hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
 			hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
 		}
+
 		if(IsBoxHazard(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again)) //Retry.
 			continue;
 

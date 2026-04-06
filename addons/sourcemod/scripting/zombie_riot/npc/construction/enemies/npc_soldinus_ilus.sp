@@ -71,7 +71,7 @@ void SoldinusIlus_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Soldinus ilus");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_soldinus_ilus");
-	strcopy(data.Icon, sizeof(data.Icon), "Soldine");
+	strcopy(data.Icon, sizeof(data.Icon), "soldine");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Expidonsa;

@@ -66,7 +66,7 @@ void DemonDevoterOnMapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "demon_devoter");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = 0;
+	data.Category = Type_Outlaws;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

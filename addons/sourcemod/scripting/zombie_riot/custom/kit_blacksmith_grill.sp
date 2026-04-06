@@ -212,7 +212,7 @@ static void GrillingUse(int client, int entity)
 		{
 			if(Selling[owner].Length == 0)
 			{
-				ClientCommand(owner, "playgamesound ui/quest_status_tick_novice_complete_pda.wav");
+				ClientCommand(owner, "playgamesound ui/quest_status_tick_novice_pda.wav");
 			}
 			else if(!Rogue_Mode())
 			{

@@ -727,7 +727,9 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		HealedAlly[2] += 10.0;
 		ParticleEffectAt(HealedAlly, "powerup_supernova_explode_red_spikes", 0.5);
 
-	//	Elemental_AddChaosDamage(target, client, 10, _, true);
+	//	if(!(i_CurrentEquippedPerk[target] & PERK_LOVER) && !(i_CurrentEquippedPerk[client] & PERK_LOVER))
+		//	Elemental_AddChaosDamage(target, client, 10, _, true);
+
 		ApplyStatusEffect(client, target, "Flagellants Punishment", 10.0);
 
 		if(target > MaxClients)
@@ -870,6 +872,9 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 
 static void TriggerSelfDamage(int client, float multi)
 {
+	if(i_CurrentEquippedPerk[client] & PERK_LOVER)
+		return;
+	
 	int armor = Armor_Charge[client];
 	int maxhealth = SDKCall_GetMaxHealth(client);
 	Armor_Charge[client] = 0;

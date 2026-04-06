@@ -48,9 +48,21 @@ static char g_RocketSound[][] = {
 static const char g_HealSound[][] = {
 	"items/medshot4.wav",
 };
+static const char g_ChargeDashSound[][] =
+{
+	"weapons/vaccinator_charge_tier_01.wav",
+	"weapons/vaccinator_charge_tier_02.wav",
+	"weapons/vaccinator_charge_tier_03.wav",
+	"weapons/vaccinator_charge_tier_04.wav",
+};
 
 int WhiteflowerID;
 static bool b_TouchedEnemyTarget[MAXENTITIES];
+
+void Whiteflower_Resetb_TouchedEnemyTarget()
+{
+	Zero(b_TouchedEnemyTarget);
+}
 public void Whiteflower_Boss_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -62,6 +74,7 @@ public void Whiteflower_Boss_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);	}
 	for (int i = 0; i < (sizeof(g_RocketSound));	i++) { PrecacheSound(g_RocketSound[i]);	}
 	for (int i = 0; i < (sizeof(g_HealSound)); i++) { PrecacheSound(g_HealSound[i]); }
+	for (int i = 0; i < (sizeof(g_ChargeDashSound)); i++) { PrecacheSound(g_ChargeDashSound[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Whiteflower The Traitor");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_boss");
@@ -151,6 +164,10 @@ methodmap Whiteflower_Boss < CClotBody
 	public void PlayMeleeHitSound()
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
+	}
+	public void PlayDashPrepareSound() 
+	{
+		EmitSoundToAll(g_ChargeDashSound[GetRandomInt(0, sizeof(g_ChargeDashSound) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	property float m_flThrowSupportGrenadeHappening
@@ -595,7 +612,6 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 				npc.m_flWasAirbornInJump = gameTime + 0.5;
 				Zero(b_TouchedEnemyTarget);
 				EmitCustomToAll("rpg_fortress/enemy/whiteflower_dash.mp3", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0, 100);
-				IgniteTargetEffect(npc.index);
 				if(npc.m_iChanged_WalkCycle != 7) 	
 				{
 					npc.m_bisWalking = false;
@@ -863,13 +879,14 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 						else
 							npc.m_flJumpHappening = 1.0;
 
-						float flPos[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-						flPos[2] += 70.0;
-						int particler = ParticleEffectAt(flPos, "scout_dodge_blue", 1.0);
-						SetParent(npc.index, particler);
 						if(npc.m_iChanged_WalkCycle != 6) 	
 						{
+							float flPos[3];
+							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+							flPos[2] += 70.0;
+							int particler = ParticleEffectAt(flPos, "scout_dodge_blue", 1.0);
+							SetParent(npc.index, particler);
+							npc.PlayDashPrepareSound();
 							IgniteTargetEffect(npc.index);
 							npc.m_bisWalking = false;
 							npc.m_iChanged_WalkCycle = 6;

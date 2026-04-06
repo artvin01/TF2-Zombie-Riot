@@ -548,7 +548,7 @@ static bool Omega_AirAttack(OmegaRaid npc)
 			npc.SetVelocity({0.0,0.0,-1000.0});
 			//npc.LookupActivity("ACT_BRAWLER_RUN");
 			if(IsValidEntity(npc.m_iWearable8))
-			RemoveEntity(npc.m_iWearable8);
+				RemoveEntity(npc.m_iWearable8);
 			AcceptEntityInput(npc.m_iWearable4, "Disable");
 			npc.m_bisWalking = true;
 		}
@@ -795,8 +795,7 @@ void OmegaThrowGrenadeHappening(OmegaRaid npc)
 			float damage = 60.0;
 			damage *= 0.50;
 			damage *= RaidModeScaling;
-			float HealDo = 5000.0;
-			HealDo *= RaidModeScaling;
+			float HealDo = 1.0;
 			Omega_GrenadeSupportDo(npc.index, Grenade, damage, GrenadeRangeSupport, HealDo);
 			float SpeedReturn[3];
 			ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
@@ -920,9 +919,9 @@ public Action Timer_Omega_SupportGrenade(Handle timer, DataPack pack)
 }
 //GrantEntityArmor doesn't support "range" so I have to do it like this lol
 
-void OmegaGiveArmor(int entity, int victim, float &healingammount, OmegaRaid npc)
+void OmegaGiveArmor(int entity, int victim, float &healingammount)
 {
-	GrantEntityArmor(victim, false, 0.1, 0.75, 0, ReturnEntityMaxHealth(npc.index) * 200.0);
+	GrantEntityArmor(victim, false, 0.2, 0.75, 0, ReturnEntityMaxHealth(victim) * 0.0125);
 }
 
 void OmegaCreateRollermines(int iNpc)

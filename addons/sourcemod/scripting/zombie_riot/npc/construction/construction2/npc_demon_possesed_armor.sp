@@ -89,7 +89,7 @@ void DemonPossesedArmorOnMapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "possesed_armor");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = 0;
+	data.Category = Type_Outlaws;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

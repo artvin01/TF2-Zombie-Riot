@@ -183,10 +183,10 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 
 #include "global_arrays.sp"
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
-#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_230.mdl"
+#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_231.mdl"
 
 //model uses self made IK rigs, to not break the top stuff.
-#define COMBINE_CUSTOM_2_MODEL 		"models/zombie_riot/combine_attachment_police_secondmodel_24.mdl"
+#define COMBINE_CUSTOM_2_MODEL 		"models/zombie_riot/combine_attachment_police_secondmodel_25.mdl"
 
 #define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_57.mdl"
 /*
@@ -923,6 +923,7 @@ public void OnLibraryAdded(const char[] name)
 #if defined ZR
 	FileNetwork_LibraryAdded(name);
 	SteamWorks_LibraryAdded(name);
+	VScript_LibraryAdded(name);
 #endif
 }
 
@@ -931,6 +932,7 @@ public void OnLibraryRemoved(const char[] name)
 #if defined ZR
 	FileNetwork_LibraryRemoved(name);
 	SteamWorks_LibraryRemoved(name);
+	VScript_LibraryRemoved(name);
 #endif
 }
 
@@ -1275,6 +1277,7 @@ public void OnMapEnd()
 	Spawns_MapEnd();
 	Vehicle_MapEnd();
 	NPC_MapEnd();
+	VScript_MapEnd();
 #endif
 
 #if defined RPG
@@ -2991,6 +2994,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			Hook_DHook_UpdateTransmitState(entity);
 			b_IsAProjectile[entity] = true;
+			func_WandOnTouch[entity] = INVALID_FUNCTION;
 			
 		}
 #endif

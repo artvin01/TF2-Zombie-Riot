@@ -616,7 +616,7 @@ public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
 		return;
 	}
 
-	if(Shadowing_Darkness_UpperDash(npc, gameTime))
+	if(Shadowing_Darkness_UpperDash(npc, gameTime, 35.0))
 	{
 		return;
 	}
@@ -1288,11 +1288,11 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 }
 
 
-bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
+bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime, float CDGive)
 {
 	if(npc.m_flUpperSlashCD < gameTime && npc.m_iState == 0)
 	{
-		npc.m_flUpperSlashCD = gameTime + 35.0;
+		npc.m_flUpperSlashCD = gameTime + CDGive;
 		npc.m_iState = 3;	
 		npc.m_flDoingAnimation = gameTime + 2.3;
 		if(npc.m_iChanged_WalkCycle != 1) 	

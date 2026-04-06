@@ -351,19 +351,19 @@ methodmap Silvester < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Sorry that im late!");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Sorry that im late!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Had to do some errands with {blue}Sensal{default}.");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Had to do some errands with {blue}Sensal{default}.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Here i am!");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Here i am!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Starting easy? Got it!");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Starting easy? Got it!");
 				}
 			}
 		}
@@ -374,19 +374,19 @@ methodmap Silvester < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Just like old times, eh Mercs?");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Just like old times, eh Mercs?");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Its good to practice, i shouldnt slack off.");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Its good to practice, i shouldnt slack off.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Sorry {lightblue}Nemal{default} I should take this more seriously.");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Sorry {lightblue}Nemal{default} I should take this more seriously.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Wish {darkblue}Waldch{default} would come with train with us, but ever since the {crimson}hitman{default} is gone, he can finally do work.");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Wish {darkblue}Waldch{default} would come with train with us, but ever since the {crimson}hitman{default} is gone, he can finally do work.");
 				}
 			}
 		}
@@ -397,19 +397,19 @@ methodmap Silvester < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Here it is.");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Here it is.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Final Challange.");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Final Challange.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: No more holding back.");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "No more holding back.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Im giving it my all.");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Im giving it my all.");
 				}
 			}
 		}
@@ -423,19 +423,19 @@ methodmap Silvester < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Here it is.");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Here it is.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Final Challange.");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Final Challange.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: No more holding back.");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "No more holding back.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Im giving it my all.");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Im giving it my all.");
 				}
 			}
 		}
@@ -594,7 +594,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			npc.m_flInTeleportLogic = 0.0;
 			npc.m_flChangeTargetsSilvester -= 3.0;
-			CPrintToChatAll("{gold}Silvester{default}: Oh damn She is already gone...");
+			RaidbossSilvester_NPCTalkMessage(npc.index, "Oh damn She is already gone...");
 			RemoveSpecificBuff(npc.index, "Very Defensive Backup");
 			return;
 		}
@@ -660,23 +660,23 @@ static void Internal_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Hold on {lightblue}Nemal{default} i'm coming!");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "Hold on {lightblue}Nemal{default} i'm coming!");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Thinking of taking {lightblue}Nemal{default} out first?");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "Thinking of taking {lightblue}Nemal{default} out first?");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: {lightblue}Nemal{default}... {darkblue}Waldch{default}... you both are the same i swear!");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "{lightblue}Nemal{default}... {darkblue}Waldch{default}... you both are the same i swear!");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Rahhh, ill teleport to you wait.");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "Rahhh, ill teleport to you wait.");
 					}
 					case 4:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Here i go !");
+						RaidbossSilvester_NPCTalkMessage(npc.index, "Here i go !");
 					}
 				}
 			}
@@ -693,15 +693,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: You dont beat me, then youll never be able to face the full force of the {purple}void{default}.");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "You dont beat me, then youll never be able to face the full force of the {purple}void{default}.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Not beating me means no beating the {purple}void{default}.");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Not beating me means no beating the {purple}void{default}.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Use that adrenaline against me, come on!");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Use that adrenaline against me, come on!");
 				}
 			}
 		}
@@ -717,15 +717,15 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{gold}Silvester{default}: Gotta go, youll win next time.");
+				RaidbossSilvester_NPCTalkMessage(npc.index, "Gotta go, youll win next time.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{gold}Silvester{default}: Atleast you fought, and didnt run!");
+				RaidbossSilvester_NPCTalkMessage(npc.index, "Atleast you fought, and didnt run!");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{gold}Silvester{default}: I can try to go easier next time, but that wont help with training.");
+				RaidbossSilvester_NPCTalkMessage(npc.index, "I can try to go easier next time, but that wont help with training.");
 			}
 		}
 		return;
@@ -749,7 +749,7 @@ static void Internal_ClotThink(int iNPC)
 			{
 				RemoveEntity(npc.m_iWearable8);
 			}
-			CPrintToChatAll("{gold}Silvester{default}: Youre taking to long to hurt me, ill try harder myself then.");
+			RaidbossSilvester_NPCTalkMessage(npc.index, "Youre taking to long to hurt me, ill try harder myself then.");
 			npc.m_flSilvesterTransformRegardless = FAR_FUTURE;
 			npc.i_GunMode = 0;
 		}
@@ -773,15 +773,15 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{gold}Silvester{default}: Sorry, too slow.");
+				RaidbossSilvester_NPCTalkMessage(npc.index, "Sorry, too slow.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{gold}Silvester{default}: Well thats a boring end.");
+				RaidbossSilvester_NPCTalkMessage(npc.index, "Well thats a boring end.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{gold}Silvester{default}: If you would stop running, this wouldnt happen.");
+				RaidbossSilvester_NPCTalkMessage(npc.index, "If you would stop running, this wouldnt happen.");
 			}
 		}
 		BlockLoseSay = true;
@@ -898,7 +898,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_STAND_MELEE_ALLCLASS");
 					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
-					CPrintToChatAll("{gold}Silvester{default}: Oh you seem to be alone, i'll wait.");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Oh you seem to be alone, i'll wait.");
 					b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 				}	
 			}
@@ -912,7 +912,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_STAND_MELEE");
 					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
-					CPrintToChatAll("{gold}Silvester{default}: Oh you seem to be alone, i'll wait.");
+					RaidbossSilvester_NPCTalkMessage(npc.index, "Oh you seem to be alone, i'll wait.");
 					b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 				}				
 			}
@@ -927,7 +927,7 @@ static void Internal_ClotThink(int iNPC)
 	{
 		if(!b_SilvLine[npc.index])
 		{
-			CPrintToChatAll("{gold}Silvester{default}: Fighting me alone now? Guess ill give it extra.");
+			RaidbossSilvester_NPCTalkMessage(npc.index, "Fighting me alone now? Guess ill give it extra.");
 			b_SilvLine[npc.index] = true;
 			RaidModeScaling *= 1.15;
 		}
@@ -1061,7 +1061,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 				RemoveEntity(npc.m_iWearable8);
 			}
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/2);
-			CPrintToChatAll("{gold}Silvester{default}: Well, looks like i gotta take off the training wheels.");
+			RaidbossSilvester_NPCTalkMessage(npc.index, "Well, looks like i gotta take off the training wheels.");
 			npc.m_flSilvesterTransformRegardless = FAR_FUTURE;
 			npc.i_GunMode = 0;
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
@@ -1084,7 +1084,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			MakeObjectIntangeable(npc.index);
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 			
-			CPrintToChatAll("{gold}Silvester{default}: Not in the face! ah... fine.");
+			RaidbossSilvester_NPCTalkMessage(npc.index, "Not in the face! ah... fine.");
 
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
@@ -1142,19 +1142,19 @@ static void Internal_NPCDeath(int entity)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{gold}Silvester{default}: Welp i gotta help {blue}Sensal{default} again, cya!");
+			RaidbossSilvester_NPCTalkMessage(npc.index, "Welp i gotta help {blue}Sensal{default} again, cya!");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{gold}Silvester{default}: I have some stuff to do, exhausted anyways currently, till later.");
+			RaidbossSilvester_NPCTalkMessage(npc.index, "I have some stuff to do, exhausted anyways currently, till later.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{gold}Silvester{default}: You guys pack a punch!");
+			RaidbossSilvester_NPCTalkMessage(npc.index, "You guys pack a punch!");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{gold}Silvester{default}: Remember when i was infected? I still thank you for helping me!");
+			RaidbossSilvester_NPCTalkMessage(npc.index, "Remember when i was infected? I still thank you for helping me!");
 		}
 	}
 
@@ -1541,7 +1541,7 @@ bool SilvesterTransformation(Silvester npc, bool NemalAssistance)
 			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 5.0);
 			npc.m_flDoingAnimation = 0.0;
 
-			CPrintToChatAll("{gold}Silvester{default}: Here's my scythe!");
+			RaidbossSilvester_NPCTalkMessage(npc.index, "Here's my scythe!");
 			if(NemalAssistance)
 			{
 				CPrintToChatAll("{lightblue}Nemal{default}: Guess ill try harder aswell, or try to.");
@@ -1618,7 +1618,7 @@ static void Silvester_Weapon_Lines(Silvester npc, int client)
 
 	if(valid)
 	{
-		CPrintToChatAll("{gold}Silvester{default}: %s", Text_Lines);
+		RaidbossSilvester_NPCTalkMessage(npc.index, "%s", Text_Lines);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}

@@ -183,30 +183,17 @@ methodmap XenoLabSecurity < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/spr18_starboard_crusader/spr18_starboard_crusader.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/sum23_hog_heels/sum23_hog_heels.mdl");
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
 		SetEntityRenderColor(npc.index, 50, 200, 50, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSALPHA);
 		SetEntityRenderColor(npc.m_iWearable1, 50, 200, 50, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSALPHA);
 		SetEntityRenderColor(npc.m_iWearable2, 50, 200, 50, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSALPHA);
 		SetEntityRenderColor(npc.m_iWearable3, 50, 200, 50, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSALPHA);
 		SetEntityRenderColor(npc.m_iWearable4, 50, 200, 50, 255);
 		
 		npc.m_bThisNpcIsABoss = true;
 		npc.StartPathing();
 		
-		if(isLabVersion)
-		{
-			CPrintToChatAll("{red}[XENO LAB SECURITY PROTOCOL ACTIVATED]");
-			CPrintToChatAll("{crimson}Xeno Lab Security{default}: INTRUDERS DETECTED. INITIATING CONTAINMENT PROCEDURES.");
-		}
-		else
-		{
-			CPrintToChatAll("{red}[XENO SECURITY UNIT DEPLOYED]");
-			CPrintToChatAll("{green}Xeno Security{default}: Target acquired. Commencing elimination protocol.");
-		}
+		RequestFrame(Frame_AnnounceSpawn, EntIndexToEntRef(npc.index));
+
 		npc.PlaySecurityAlertSound();
 		
 		return npc;
@@ -223,6 +210,44 @@ methodmap XenoLabSecurity < CClotBody
 		public get() { return view_as<bool>(this.m_iMedkitAnnoyance); }
 		public set(bool value) { this.m_iMedkitAnnoyance = value ? 1 : 0; }
 	}
+}
+
+static void Frame_AnnounceSpawn(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (entity == INVALID_ENT_REFERENCE || b_NpcHasDied[entity])
+		return;
+	
+	// Needs to be delayed by a frame so everything shows in the right order
+	XenoLabSecurity npc = view_as<XenoLabSecurity>(entity);
+	if (npc.m_bIsLabVersion)
+	{
+		CPrintToChatAll("{red}[XENO LAB SECURITY PROTOCOL ACTIVATED]");
+		NPCTalkMessage(npc.index, "INTRUDERS DETECTED. INITIATING CONTAINMENT PROCEDURES.");
+	}
+	else
+	{
+		CPrintToChatAll("{red}[XENO SECURITY UNIT DEPLOYED]");
+		NPCTalkMessage(npc.index, "Target acquired. Commencing elimination protocol.");
+	}
+}
+
+static void NPCTalkMessage(int iNPC, const char[] message)
+{
+	char customName[64], color[32];
+	
+	XenoLabSecurity npc = view_as<XenoLabSecurity>(iNPC);
+	if (npc.m_bIsLabVersion)
+	{
+		color = "crimson";
+	}
+	else
+	{
+		customName = "Xeno Security";
+		color = "green";
+	}
+	
+	PrintNPCMessageWithPrefixes(iNPC, color, message, .customName = customName);
 }
 
 public void XenoLabSecurity_ClotThink(int iNPC)
@@ -582,12 +607,12 @@ public void XenoLabSecurity_NPCDeath(int entity)
 	
 	if(npc.m_bIsLabVersion)
 	{
-		CPrintToChatAll("{crimson}Xeno Lab Security{default}: CRITICAL SYSTEM FAILURE... CONTAINMENT... BREACH...");
+		NPCTalkMessage(npc.index, "CRITICAL SYSTEM FAILURE... CONTAINMENT... BREACH...");
 		CPrintToChatAll("{green}[CONTAINMENT BREACH - SECURITY SYSTEMS OFFLINE]");
 	}
 	else
 	{
-		CPrintToChatAll("{green}Xeno Security{default}: Termination failed.... report.. status.. {green}relay complete.");
+		NPCTalkMessage(npc.index, "Termination failed.... report.. status.. {green}relay complete.");
 		CPrintToChatAll("{green}[SECURITY UNIT DESTROYED]");
 	}
 }

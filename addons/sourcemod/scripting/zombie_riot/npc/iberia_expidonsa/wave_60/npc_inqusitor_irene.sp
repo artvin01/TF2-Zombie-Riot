@@ -193,6 +193,11 @@ methodmap Iberiainqusitor_irene < CClotBody
 	}
 }
 
+static void NPCTalkMessage(int iNPC, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(iNPC, "snow", message, .customName = "Irene");
+}
+
 public void Iberiainqusitor_irene_ClotThink(int iNPC)
 {
 	Iberiainqusitor_irene npc = view_as<Iberiainqusitor_irene>(iNPC);
@@ -296,7 +301,7 @@ public void Iberiainqusitor_irene_NPCDeath(int entity)
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();	
 	npc.m_bDissapearOnDeath = true;
-	CPrintToChatAll("{snow}Irene{default}: You really think you're killing us? We are mearly simulating a death, no worries.");
+	NPCTalkMessage(npc.index, "You really think you're killing us? We are mearly simulating a death, no worries.");
 		
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
@@ -637,7 +642,7 @@ bool Irene_AbilityAir(Iberiainqusitor_irene npc)
 			if(!Irene_TargetsFound)
 			{
 				npc.m_flAirTimeAbilityHappening = 0.0;
-				CPrintToChatAll("{snow}Irene{default}: ...");
+				NPCTalkMessage(npc.index, "...");
 			}
 			else
 			{
@@ -645,19 +650,19 @@ bool Irene_AbilityAir(Iberiainqusitor_irene npc)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{snow}Irene{default}: My blade will cleave the tides!");
+						NPCTalkMessage(npc.index, "My blade will cleave the tides!");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{snow}Irene{default}: My light will purge the vice!");
+						NPCTalkMessage(npc.index, "My light will purge the vice!");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{snow}Irene{default}: My eyes will find the truth!");
+						NPCTalkMessage(npc.index, "My eyes will find the truth!");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{snow}Irene{default}: My heart will be the judge!");
+						NPCTalkMessage(npc.index, "My heart will be the judge!");
 					}
 				}
 				npc.m_flAirTimeAbilityHappening = GetGameTime(npc.index) + 2.0;
@@ -750,7 +755,7 @@ static void Irene_Weapon_Lines(Iberiainqusitor_irene npc, int client)
 
 	if(valid)
 	{
-		CPrintToChatAll("{snow}Irene{default}: %s", Text_Lines);
+		NPCTalkMessage(npc.index, Text_Lines);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}

@@ -266,7 +266,7 @@ methodmap RavagingIntellect < CClotBody
 			MarkAreaForBuff[0] = 0.0;
 			if(GetRandomInt(0,100) == 100)
 			{
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: What is this, some type of rioting of Zombies?");
+				NPCTalkMessage(npc.index, "What is this, some type of rioting of Zombies?");
 			}
 			else
 			{
@@ -274,27 +274,27 @@ methodmap RavagingIntellect < CClotBody
 				{
 					case 0:
 					{
-						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: You're annoying.");
+						NPCTalkMessage(npc.index, "You're annoying.");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Get out before I make you.");
+						NPCTalkMessage(npc.index, "Get out before I make you.");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Blah blah blah I don't care.");
+						NPCTalkMessage(npc.index, "Blah blah blah I don't care.");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Don't say hi.");
+						NPCTalkMessage(npc.index, "Don't say hi.");
 					}
 					case 4:
 					{
-						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: meow");
+						NPCTalkMessage(npc.index, "meow");
 					}
 				}
 			}
-			Ravaging_SaySpecialLine();
+			Ravaging_SaySpecialLine(npc.index);
 		
 		}
 		else
@@ -357,6 +357,15 @@ methodmap RavagingIntellect < CClotBody
 		Citizen_MiniBossSpawn();
 		return npc;
 	}
+}
+
+static void NPCTalkMessage(int iNPC, const char[] message, any ...)
+{
+	char buffer[255];
+	VFormat(buffer, sizeof(buffer), message, 3);
+	
+	// We just don't want to use the translated name
+	PrintNPCMessageWithPrefixes(iNPC, "darkblue", buffer, .customName = "Ravaging Intellectual");
 }
 
 public void RavagingIntellect_ClotThink(int iNPC)
@@ -700,19 +709,19 @@ public void RavagingIntellect_NPCDeath(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: This is getting on my nerves, i'm leaving.");
+				NPCTalkMessage(npc.index, "This is getting on my nerves, i'm leaving.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Hope you'll have fun dealing with the aftermath.");
+				NPCTalkMessage(npc.index, "Hope you'll have fun dealing with the aftermath.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Just because you can, doesn't mean you should.");
+				NPCTalkMessage(npc.index, "Just because you can, doesn't mean you should.");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: You're really good at pissing me off.");
+				NPCTalkMessage(npc.index, "You're really good at pissing me off.");
 			}
 		}
 		for(int client = 1; client <= MaxClients; client++)
@@ -894,7 +903,7 @@ void RavagingIntellectEars(int iNpc, char[] attachment = "head")
 }
 
 
-void Ravaging_SaySpecialLine()
+void Ravaging_SaySpecialLine(int entity)
 {
 	
 	int victims;
@@ -977,67 +986,67 @@ void Ravaging_SaySpecialLine()
 			if(StrEqual(buffer, "Mikusch", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: ... Looks like {crimson}%N{default} thinks they can impersonate me, {crimson}i will kill you.",client);
+				NPCTalkMessage(entity, "... Looks like {crimson}%N{default} thinks they can impersonate me, {crimson}i will kill you.",client);
 			}
 			else if(StrEqual(buffer, "42", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: ... Hey {crimson}%N{default} why are you against me, arent we supposed to be a team?",client);
+				NPCTalkMessage(entity, "... Hey {crimson}%N{default} why are you against me, arent we supposed to be a team?",client);
 			}
 			else if(StrEqual(buffer, "literail", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Get back to work {crimson}%N{default} , cadets dont get stuff for free.",client);
+				NPCTalkMessage(entity, "Get back to work {crimson}%N{default} , cadets dont get stuff for free.",client);
 			}
 			else if(StrEqual(buffer, "JuneOrJuly", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Get back to work {crimson}%N{default} , cadets dont get stuff for free.",client);
+				NPCTalkMessage(entity, "Get back to work {crimson}%N{default} , cadets dont get stuff for free.",client);
 			}
 			else if(StrEqual(buffer, "wo", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: So about Bombermod {crimson}%N{default}...",client);
+				NPCTalkMessage(entity, "So about Bombermod {crimson}%N{default}...",client);
 			}
 			else if(StrEqual(buffer, "Batfoxkid", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: When will you finally be done with your scp rework {crimson}%N{default}?",client);
+				NPCTalkMessage(entity, "When will you finally be done with your scp rework {crimson}%N{default}?",client);
 			}
 			else if(StrEqual(buffer, "ficool2", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Aren't you supposed to be shilling vscript some more {crimson}%N{default}?",client);
+				NPCTalkMessage(entity, "Aren't you supposed to be shilling vscript some more {crimson}%N{default}?",client);
 			}
-			else if(StrEqual(buffer, "riversid", false))
+			else if(StrEqual(buffer, "rivesid", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: I hope you keep it up {crimson}%N{default}, or else.",client);
+				NPCTalkMessage(entity, "I hope you keep it up {crimson}%N{default}, or else.",client);
 			}
 			else if(StrEqual(buffer, "eno", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: You did quite well so far {crimson}%N, but not well enough.{default}",client);
+				NPCTalkMessage(entity, "You did quite well so far {crimson}%N, but not well enough.{default}",client);
 			}
 			else if(StrEqual(buffer, "alex turtle", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Your szf heros are not here to save you {crimson}%N{default}.",client);
+				NPCTalkMessage(entity, "Your szf heros are not here to save you {crimson}%N{default}.",client);
 			}
 			else if(StrEqual(buffer, "artvin", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: I will not say what you tell me to say {crimson}%N{default}.",client);
+				NPCTalkMessage(entity, "I will not say what you tell me to say {crimson}%N{default}.",client);
 			}
 			else if(StrEqual(buffer, "samuu, the cheesy slime", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: I vote {crimson}%N{default} for admin! (i dont know who you are)",client);
+				NPCTalkMessage(entity, "I vote {crimson}%N{default} for admin! (i dont know who you are)",client);
 			}
 			else if(StrEqual(buffer, "Black_Knight", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Seems i have some hardware issues, can you help me out {crimson}%N{default} ?",client);
+				NPCTalkMessage(entity, "Seems i have some hardware issues, can you help me out {crimson}%N{default} ?",client);
 			}
 		}
 	}

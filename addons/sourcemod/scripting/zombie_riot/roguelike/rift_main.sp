@@ -1087,7 +1087,7 @@ public void Rogue_BookOfWeakness_Ally(int entity, StringMap map)
 public void Rogue_BookOfLiver_Ally(int entity, StringMap map)
 {
 	//give all perks at once
-	i_CurrentEquippedPerk[entity] = ((1 << 20) - 1);
+	i_CurrentEquippedPerk[entity] = (PERK_LOVER - 1);
 
 }
 public void Rogue_BookOfLiver_Remove(int entity)

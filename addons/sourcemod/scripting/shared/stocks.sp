@@ -1095,31 +1095,28 @@ int TF2_CreateGlow_White(const char[] model, int victim, float modelsize)
 stock void SetParent(int iParent, int iChild, const char[] szAttachment = "", const float vOffsets[3] = {0.0,0.0,0.0}, bool maintain_anyways = false)
 {
 	SetVariantString("!activator");
-	AcceptEntityInput(iChild, "SetParent", iParent, iChild);
+	AcceptEntityInput(iChild, "SetParent", iParent, iParent);
 	
-	if (szAttachment[0] != '\0') // Use at least a 0.01 second delay between SetParent and SetParentAttachment inputs.
+	if (szAttachment[0] == '\0') // Use at least a 0.01 second delay between SetParent and SetParentAttachment inputs.
+		return;
+
+	if(!StrEqual(szAttachment, "root"))
+		SetVariantString(szAttachment); // "head"
+
+	if (maintain_anyways || !AreVectorsEqual(vOffsets, view_as<float>({0.0,0.0,0.0}))) // NULL_VECTOR
 	{
-		if (szAttachment[0]) // do i even have anything?
+		if(!maintain_anyways)
 		{
-			if(!StrEqual(szAttachment, "root"))
-				SetVariantString(szAttachment); // "head"
+			float Vecpos[3];
 
-			if (maintain_anyways || !AreVectorsEqual(vOffsets, view_as<float>({0.0,0.0,0.0}))) // NULL_VECTOR
-			{
-				if(!maintain_anyways)
-				{
-					float Vecpos[3];
-
-					Vecpos = vOffsets;
-					SDKCall_SetLocalOrigin(iChild,Vecpos);
-				}
-				AcceptEntityInput(iChild, "SetParentAttachmentMaintainOffset", iParent, iChild);
-			}
-			else
-			{
-				AcceptEntityInput(iChild, "SetParentAttachment", iParent, iChild);
-			}
+			Vecpos = vOffsets;
+			SDKCall_SetLocalOrigin(iChild,Vecpos);
 		}
+		AcceptEntityInput(iChild, "SetParentAttachmentMaintainOffset", iParent, iChild);
+	}
+	else
+	{
+		AcceptEntityInput(iChild, "SetParentAttachment", iParent, iChild);
 	}
 }
 
@@ -3980,15 +3977,9 @@ stock int SpawnFormattedWorldText(const char[] format, float origin[3], int text
 		
 		if(entity_parent != -1 && !teleport)
 		{
-			float vector[3];
-			GetAbsOrigin(entity_parent, vector);
-			
-			vector[0] += origin[0];
-			vector[1] += origin[1];
-			vector[2] += origin[2];
 
-			SDKCall_SetLocalOrigin(worldtext, vector);
-			SetParent(entity_parent, worldtext, "root", origin);
+			SetParent(entity_parent, worldtext);
+			SDKCall_SetLocalOrigin(worldtext, origin);
 		}
 		else
 		{

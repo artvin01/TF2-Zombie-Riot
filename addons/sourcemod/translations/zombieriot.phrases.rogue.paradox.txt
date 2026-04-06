@@ -2070,15 +2070,15 @@
 		"it"	"⚠ Fiore bianco del vendicatore"
 		"ko"	"⚠ 배풍등의 복수자 무리"
 	}
-	"Barricade"
+	"Barricading"
 	{
-		"en"	"⚔ Barricade"
-		"it"	"⚔ Barricata"
+		"en"	"⚔ Barricading"
+		"it"	"⚔ Barricading"
 		"ko"	"⚔ 바리케이드"
 	}
-	"Barricade!"
+	"Barricading!"
 	{
-		"en"	"⚠ Barricade"
+		"en"	"⚠ Barricading"
 		"it"	"⚠ Barricata"
 		"ko"	"⚠ 바리케이드"
 	}

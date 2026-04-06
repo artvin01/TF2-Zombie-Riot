@@ -676,8 +676,6 @@ methodmap Stella < CClotBody
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
-		c_NpcName[npc.index] = "Stella";
 
 		//data: test , force10, force20, force30, force40, hell, solo, triple_enemies, nomusic, anger, twirl, bob, normonly
 
@@ -925,6 +923,9 @@ methodmap Stella < CClotBody
 			}
 			
 		}
+		
+		c_NpcName[npc.index] = "Stella";
+		
 		Zero(b_said_player_weaponline);
 		b_IonStormInitiated[npc.index] = false;
 		b_LastMannLines[npc.index] = false;
@@ -2800,5 +2801,5 @@ void Stella_Lines(Stella npc, const char[] text)
 	if(npc.m_flInvulnerability)
 		return;
 
-	CPrintToChatAll("%s %s", npc.GetName(), text);
+	PrintNPCMessageWithPrefixes(npc.index, NameColour, text, .messageColor = TextColour);
 }
