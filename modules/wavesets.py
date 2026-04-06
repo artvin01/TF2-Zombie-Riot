@@ -476,7 +476,7 @@ def parse():
 
         if WAVESETLIST_TYPE not in util.WAVESETS_TYPESCOPE: # Unsupported waveset cfg (Rogue, Bunker, etc.)
             util.log(f"Unsupported waveset cfg {filename}!","WARNING")
-            return html_mapsets
+            return html_mapsets, html_otherset
         
         util.log(f"Parsing waveset list cfg: {filename}")
 
@@ -515,7 +515,7 @@ def parse():
         name = filename_md.split("/")[-1].replace(".html","")
         if "maps" not in filename: name=name.title()
         util.write(filename_md, util.fill_template(HTML_WAVESETS,{"wavesetlistname":name}))
-        return html_mapsets
+        return html_mapsets, html_otherset
     
     #### ZR: Special Maps ####
     def parse_betting(name, data_raw, md_npc, md_mapsets): # zr_bettingwars
