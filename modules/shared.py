@@ -87,7 +87,9 @@ class NPC:
                     filepath = f"https://raw.githubusercontent.com/artvin01/TF2-Zombie-Riot/refs/heads/master/sound/{mfilename}"
                     file_exists = os.path.isfile(f"./TF2-Zombie-Riot/sound/{mfilename}")
                     self.music_entries.append({
-                        "musicname": f"{self._get_music_val(code,"Name")} - {self._get_music_val(code,"Artist")}",
+                        "musicpre": "",
+                        "musictitle": self._get_music_val(code,"Name"),
+                        "musicartist": self._get_music_val(code,"Artist"),
                         "filepath": filepath,
                         "file_exists": file_exists
                     })

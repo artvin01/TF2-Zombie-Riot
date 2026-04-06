@@ -43,21 +43,26 @@ print("wavesets:TYPESCOPE",WAVESETS_TYPESCOPE)
 def music_modal(wave_entry_data):
     if type(wave_entry_data) == str:
         mfilename = wave_entry_data.replace("#","")
-        music = mfilename
+        title = mfilename
+        artist = "?"
         try: int(wave_entry_data); return None # skip if not actual music entry e.g. "music_outro_duration"	"65"
         except ValueError: pass
     else:
         wave_entry_data = defaultdict(str,wave_entry_data)
-        music_name = wave_entry_data["file"].replace("#","")
-        if wave_entry_data["name"] != "": music_name = wave_entry_data["name"]
-        if wave_entry_data["author"] != "": author = f" - {wave_entry_data["author"]}"
-        else: author = ""
-        music = f"{music_name}{author}"
+        
+        title = wave_entry_data["file"].replace("#","")
+        if wave_entry_data["name"] != "": title = wave_entry_data["name"]
+        
+        artist = ""
+        if wave_entry_data["author"] != "": artist = f" - {wave_entry_data["author"]}"
+        
         mfilename = wave_entry_data["file"].replace("#","")
+    
     file = f"https://raw.githubusercontent.com/artvin01/TF2-Zombie-Riot/refs/heads/master/sound/{mfilename}"
     return {
         "type": "music",
-        "name": music,
+        "title": title,
+        "artist": artist,
         "filepath": file,
         "filename": mfilename,
         "file_exists": os.path.isfile(f"./TF2-Zombie-Riot/sound/{mfilename}")

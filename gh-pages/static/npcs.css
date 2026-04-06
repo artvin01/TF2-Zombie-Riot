@@ -36,7 +36,7 @@ details details details details summary { font-size: .5em }
   z-index: 1;
   height: max-content;
   width: max-content;
-  top: 110%;
+  top: 90%;
   left: 0;
   border-radius: 5px;
   opacity: 0;
@@ -54,7 +54,7 @@ details details details details summary { font-size: .5em }
 
 .hover:hover .tooltip, .hover:focus .tooltip {
     opacity:1;
-    top: 125%;
+    top: 100%;
 }
 
 .hover:focus .tooltip {

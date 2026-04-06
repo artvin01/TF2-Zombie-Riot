@@ -18,8 +18,8 @@ const support_npc_modal = `<div class="divider"></div><div id="support_npc_conta
     <h2>SUPPORT</h2>
 </div>
 `
-const music_modal = `<div onclick="set_audio_resource(this);" file=\"filepath\" name=\"musicname\" class="audio"><img src="builtin_img/music.svg">musicname</div>`
-const music_modal_missing = `<div class="disabled audio"><img src="builtin_img/music.svg">musicname</div>`
+const music_modal = `<div onclick="set_audio_resource(this);" file=\"filepath\" title=\"musictitle\" artist=\"musicartist\" class="audio"><img src="builtin_img/music.svg">musicpre musictitle musicartist</div>`
+const music_modal_missing = `<div class="disabled audio"><img src="builtin_img/music.svg">musicpre musictitle musicartist</div>`
 function cycle_wave(val) {
     let prev_wave = wave;
     wave = wave + val;
@@ -57,7 +57,9 @@ async function parse_waveset(file) {
             context = {
                 "filepath": entry["filepath"],
                 "filename": entry["filename"],
-                "musicname": key.split("_")[1] + ": " + entry["name"]
+                "musicpre": key.split("_")[1] + ": ",
+                "musictitle": entry["title"],
+                "musicartist": entry["artist"]
             }
             if (!entry["file_exists"]) {
                 waveset_info += fill_template(music_modal_missing, context);
@@ -144,7 +146,9 @@ function update_wave_display() {
             context = {
                 "filepath": entry["filepath"],
                 "filename": entry["filename"],
-                "musicname": entry["name"]
+                "musicpre": "",
+                "musictitle": entry["title"],
+                "musicartist": entry["artist"]
             }
             if (!entry["file_exists"]) {
                 wave_music_html += fill_template(music_modal_missing, context);
@@ -237,13 +241,3 @@ document.onkeydown = (e) => {
 };
 
 check_url_params();
-
-
-/* Audio player */
-function set_audio_resource(obj) {
-    document.getElementById("music_title").innerHTML = obj.getAttribute("name");
-    let mphtml = `<audio controls autoplay><source src="filepath" type="audio/mpeg"></audio>`;
-    const music_player = document.getElementById("music_player");
-    music_player.innerHTML= mphtml.replace("filepath",obj.getAttribute("file"));
-    music_player.parentElement.classList.remove("hidden");
-}

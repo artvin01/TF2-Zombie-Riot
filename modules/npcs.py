@@ -25,7 +25,7 @@ def parse():
     util.log("Parsing NPCs into an encyclopedia...")
     NPCS_BY_CATEGORY = json.loads(util.read("npcs_by_category.json"))
     npc_list_html = ""
-    for category, npc_list in NPCS_BY_CATEGORY.items():
+    for category, npc_list in sorted(NPCS_BY_CATEGORY.items()):
         category_name = category.replace("Type_","").replace("-1","Unknown").title()
         if category != "Type_Hidden":
             npc_list_html += util.fill_template(util.read("templates/npc/category_block_start.html"),{"key":category_name})
