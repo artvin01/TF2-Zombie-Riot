@@ -1,4 +1,4 @@
-import util, vtf2img, os
+import util, os
 import json
 
 FLAG_MAPPINGS = {
@@ -19,25 +19,23 @@ FLAG_CSS = {
     "MVM_CLASS_FLAG_ALWAYSCRIT": "flag_crits", #// Add Blue Borders
     "MVM_CLASS_FLAG_SUPPORT_LIMITED": "" #// Only Visible When Active (waveset viewer is static so no way to simulate this)
 }
+
+MISSING_ICON_VTF = "TF2-Zombie-Riot/materials/hud/leaderboard_class_robo_extremethreat.vtf"
+MISSING_ICON_PNG = "repo_img/robo_extremethreat.png"
 def get_npc_icon(icon):
     if icon!="":
-        npc_icon_key = "leaderboard_class_"+icon+".vtf"
-        npc_png_icon_path = f"repo_img/{icon}.png"
-        
-        # Paths to look in for icons
-        npc_icon_path = f"TF2-Zombie-Riot/materials/hud/{npc_icon_key}"
-        premedia_npc_icon_path = f"premedia_icons/{icon}.png"
-        if os.path.isfile(npc_icon_path):
-            if not os.path.isfile("gh-pages/"+npc_png_icon_path): # if file already made
-                npc_icon = vtf2img.Parser(f"TF2-Zombie-Riot/materials/hud/{npc_icon_key}").get_image()
-                npc_icon.save("gh-pages/"+npc_png_icon_path)
-            return util.md_img("./"+npc_png_icon_path,"A")
-        elif os.path.isfile("gh-pages/"+premedia_npc_icon_path):
-            return util.md_img("./"+premedia_npc_icon_path,"B")
+        vtf_path = f"TF2-Zombie-Riot/materials/hud/leaderboard_class_{icon}.vtf"
+        png_path = f"repo_img/{icon}.png"
+        legacy_path = f"premedia_icons/{icon}.png"
+
+        if os.path.isfile(vtf_path):
+            return util.vtftoimg(vtf_path, png_path, "A")
+        elif os.path.isfile("gh-pages/"+legacy_path):
+            return util.html_img("./"+legacy_path,"B")
         else:
-            return util.md_img("./builtin_img/missing.png","C")
+            return util.vtftoimg(MISSING_ICON_VTF,MISSING_ICON_PNG,"C")
     else:
-        return util.md_img("./builtin_img/missing.png","D")
+        return util.vtftoimg(MISSING_ICON_VTF,MISSING_ICON_PNG,"D")
 class NPC:
     def __init__(self, path):
         self.path=path
@@ -85,10 +83,12 @@ class NPC:
             if len(music_cutouts) > 0:
                 util.debug(f"NPC:__init__:music_cutouts\n{json.dumps(music_cutouts,indent=2)}","npcs", "OKBLUE")
                 for code in music_cutouts:
+                    mfilename = self._get_music_val(code,"Path")
+                    filepath = f"https://raw.githubusercontent.com/artvin01/TF2-Zombie-Riot/refs/heads/master/sound/{mfilename}"
                     self.music_entries.append({
-                        "filename": self._get_music_val(code,"Path"),
-                        "name": self._get_music_val(code,"Name"),
-                        "artist": self._get_music_val(code,"Artist")
+                        "musicname": f"{self._get_music_val(code,"Name")} - {self._get_music_val(code,"Artist")}",
+                        "filepath": filepath,
+                        "file_exists": os.path.isfile(f"./TF2-Zombie-Riot/sound/{mfilename}")
                     })
             
             desc_key = f"{self.name} Desc"
@@ -111,7 +111,7 @@ class NPC:
                 "filetype": filetype,
                 "has_prefix_logic": has_prefix_logic,
                 "music_entries": {
-                    "filename", "name", "artist"
+                    "name", "filepath", "file_exists"
                 }
             }
             """

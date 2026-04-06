@@ -218,6 +218,7 @@ def parse():
             else:
                 npc_data = None
                 assert force
+                util.log(f"Plugin name {wave_entry_data["plugin"]} missing!","FAIL")
 
             try:
                 npc_name = npc_data.name
@@ -285,9 +286,9 @@ def parse():
                 image = modules.shared.get_npc_icon(npc_data.icon)
                 
                 if npc_data.category != "Type_Hidden":
-                    desc = "<div class=\"flex_break\"></div>\n"+get_npc(wave_entry_data["plugin"], {"name": npc_name, "image": image})["description"]
+                    desc = f"<div class=\"flex_break\"></div>\n<div>{get_npc(wave_entry_data["plugin"], {"name": npc_name, "image": image})["description"].replace("\n","</div>\n<div>")}</div>\n"
             else:
-                image = util.md_img("./builtin_img/missing.png","E") # npc not found at all
+                image = util.html_img("./builtin_img/missing.png","E") # npc not found at all. this only happens when parse_wave has force=true
                 
             for property_, val in PROPERTY_MAPPINGS.items():
                 if property_ in wave_entry_data:
@@ -311,7 +312,9 @@ def parse():
             # Note that each entry also has a 'filename' param if you need to make this interactive.
             music = ""
             for entry in npc_data.music_entries:
-                music += f"<div class=\"music\" ><img src=\"builtin_img/music.svg\"> {entry["name"]} - {entry["artist"]}</div>\n"
+                context=entry.copy()
+                file_exists = context.pop("file_exists")
+                music += util.fill_template(util.read(f"templates/music/music_modal{"_missing"*int(file_exists)}.html"),context)
             
             # Check if NPC has a flag indicating support
             forced_support=False

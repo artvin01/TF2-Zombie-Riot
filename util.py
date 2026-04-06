@@ -1,4 +1,4 @@
-import hashlib, os, datetime, json
+import hashlib, os, datetime, json, vtf2img
 from collections import defaultdict
 from re import sub
 
@@ -34,6 +34,7 @@ if "LOG_REDACT" in os.environ:
     LOG_REDACT = os.environ["LOG_REDACT"]
 
 print("DEBUG",DEBUG)
+print("LOG_REDACT",LOG_REDACT)
 print("wavesets:FILESCOPE",WAVESETS_FILESCOPE)
 print("wavesets:TYPESCOPE",WAVESETS_TYPESCOPE)
 
@@ -72,9 +73,13 @@ def id_from_str(string):
     # https://stackoverflow.com/questions/49808639/generate-a-variable-length-hash
     return hashlib.shake_256(string.encode("utf-8")).hexdigest(2)
 
-def md_img(url, alt):
+def html_img(url, alt):
     return f'<img src="{url}" alt="{alt}"/>'
 
+def vtftoimg(vtf_path,png_path,alt): # turn an icon into 
+    if not os.path.isfile("gh-pages/"+png_path): # if file already made
+        vtf2img.Parser(vtf_path).get_image().save("gh-pages/"+png_path)
+    return html_img("./"+png_path,alt)
 
 def normalize_whitespace(str_):
     return " ".join(str_.split())

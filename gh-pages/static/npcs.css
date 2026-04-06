@@ -57,6 +57,12 @@ details details details details summary { font-size: .5em }
     top: 125%;
 }
 
+/*
+.hover:focus .tooltip {
+    pointer-events: all;
+    cursor:auto;
+}*/
+
 @media screen and (max-width: 700px) {
     .tooltip {
         width: min-content; /* TODO properly size this */
