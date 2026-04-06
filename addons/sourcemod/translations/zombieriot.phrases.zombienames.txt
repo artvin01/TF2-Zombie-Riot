@@ -3417,11 +3417,19 @@
 		"it"	"Il grande demone di Hallam"
 		"ko"	"할람의 대악마"
 	}
+	"Hallam's Great Demon Desc"
+	{
+		"en"	"Greatest demon in Hallam, now chaos affected..\n-The more the whiseper is thurt the stronger he gets\n-Once whisperer dies, he enrages for a short time\n-Stays at 50% power if whisperer dies\n-Targets anyone attacking whisperer if close\n-Spawns chaos demons every so often\n-Shoots projectiles every so often"
+	}
 	"Ihanal Demon Whisperer"
 	{
 		"en"	"Ihanal Demon Whisperer"
 		"it"	"Ihanal Sussurratore di Demoni"
 		"ko"	"이하날 악마 밀고자"
+	}
+	"Ihanal Demon Whisperer Desc"
+	{
+		"en"	"Taming the great demon with chaos.\n-Heals the great demon and buffs him\n-Buffs great demon if he is close to him\n-If demon dies first, he explodes into 50 chaos demons"
 	}
 	"Winter Sniper"
 	{
@@ -4608,7 +4616,7 @@
 	}
 	"Chaos Injured Cultist Desc"
 	{
-		"en"	"Hes on the brink of death.\nSummons extreme slow areas that nerf attackspeed, and deal immensive damage if power reaches 100%, recives power when taking damage.\nKicks very strongly."
+		"en"	"Hes on the brink of death.\n-Summons extreme slow areas that nerf attackspeed, and deal immensive damage if power reaches 100%, recives power when taking damage\n-Kicks very strongly."
 		"it"	"E' ad un passo dalla morte\nEvoca aree estremamente lente che riducono la velocità d'attacco e infliggono danni immensi se la potenza raggiunge il 100%, recupera energia quando subisce danni."
 		"ko"	"이 자는 죽음의 문턱에 놓였습니다.\n힘이 100％ 에 도달할 경우 막대한 피해를 가하고 공격 속도 디버프를 부여하는 지역을 소환합니다. 피해를 입을 때 힘이 충전됩니다.\n발차기 공격으로 대상을 밀어냅니다."
 	}
@@ -5357,6 +5365,10 @@
 		"it"	"W.F. Ekas Pilota"
 		"ko"	"W.F. 에카스 조종사"
 	}	
+	"W.F. Ekas Piloteer Desc"
+	{
+		"en"	"-Shoots a few bullets then runs upto you to kick\n-After kick, launches a rocket at you and reloads his pistol"
+	}	
 	"W.F. Extreme Knight Giant"
 	{
 		"en"	"W.F. Extreme Knight Giant"
@@ -5374,6 +5386,10 @@
 		"it"	"W.F. Blader infuriato"
 		"ko"	"W.F. 격노의 블레이더"
 	}	
+	"W.F. Raging Blader Desc"
+	{
+		"en"	"-The lower health the faster he attacks\n-once losing a life, regains some health back"
+	}	
 	"Whiteflower The Traitor"
 	{
 		"en"	"Whiteflower The Traitor"
@@ -5382,7 +5398,7 @@
 	}	
 	"Whiteflower The Traitor Desc"
 	{
-		"en"	"-Drops grenades that heal allies and hurt enemies in its range."
+		"en"	"-Drops grenades that heal allies and hurt enemies in its range.\n-Periodically uses Octane kick."
 		"ko"	"-범위 내의 아군의 체력을 회복시키고 적군에게 피해를 주는 수류탄을 던집니다."
 	}	
 	"Ouroboros Ekas"
@@ -6255,6 +6271,10 @@
 		"en"	"Chaos Evil Demon"
 		"it"	"Caos Demone Malvagio"
 		"ko"	"혼돈의 사악한 악마"
+	}
+	"Chaos Evil Demon Desc"
+	{
+		"en"	"-Heals all allies around himself\n-If he heals allies, he heals himself\n-Buffs both healed ally and himself IF he actually healed the targets"
 	}
 	"Disturbed Umbral"
 	{
@@ -7519,7 +7539,7 @@
 	}
 	"Umbral Refract Desc"
 	{
-		"en"	"A fierce Umbral, ready to fight to the bitter end. \nWhen hurt, leaps and fires an exploding laser at the attacker."
+		"en"	"A fierce Umbral, ready to fight to the bitter end\n-When hurt, leaps and fires an exploding laser at the attacker."
 		"it"	"Un Umbral feroce, pronto a combattere fino alla fine. \nSe ferito, salta e spara un laser esplosivo contro l'aggressore."
 		"ko"	"맹렬한 움브랄로, 최후를 맞이할 때까지 싸울 준비가 되어있습니다. \n피해를 받을 때마다, 뛰어오른뒤 공격자에게 폭발성 레이저를 발사합니다."
 	}
@@ -7531,7 +7551,7 @@
 	}
 	"Umbral Koulm Desc"
 	{
-		"en"	"An enigmatic Umbral, you can't tell if they're fighting for or against you. \nGrants Umbral Grace and Elemental Curing to anything within its AOE, \nbut becomes enraged when losing enough HP."
+		"en"	"An enigmatic Umbral, you can't tell if they're fighting for or against you\n-Grants Umbral Grace and Elemental Curing to anything within its AOE\n-becomes enraged when losing enough HP."
 		"it"	"Un Umbral enigmatico, non si capisce se combatte a favore o contro di voi. \nConferisce Grazia Umbrale e Cura Elementale a tutto ciò che si trova all'interno della sua AOE, \nma si infuria quando perde abbastanza HP."
 		"ko"	"수수께끼의 움브랄. 이 존재가 당신을 위해 싸우는건지, 적대하는건지 알 수가 없습니다. \n범위 내 모든 대상에게 움브랄의 은총과 원소 치유를 부여하지만, \n충분한 체력을 잃을 경우 격분합니다."
 	}
@@ -7543,7 +7563,7 @@
 	}
 	"Umbral Keitosis Desc"
 	{
-		"en"	"An unstable Umbral, capable of splitting itself apart. \nGains Power over time, and creates summons upon death. \nSummon stats are increased based on Power, and self destructs upon reaching max Power."
+		"en"	"An unstable Umbral, capable of splitting itself apart\n-Gains Power over time\n-creates summons upon death\n-Summon stats are increased based on Power\n-self destructs upon reaching max Power."
 		"it"	"Un Umbral instabile, capace di dividersi. \nGuadagna potere nel tempo e crea evocazioni alla morte. \nLe statistiche delle evocazioni aumentano in base alla potenza e si autodistruggono quando raggiungono la massima potenza."
 		"ko"	"스스로 분열할 수 있는 불안정한 움브랄입니다. \n시간이 지남에 따라 힘이 증가하며, 사망 시 소환수를 생성합니다. \n소환수의 능력치는 본체의 힘에 따라 증가하며 힘이 최대치에 도달하면 자폭합니다."
 	}
@@ -7555,7 +7575,7 @@
 	}
 	"Umbral Spuud Desc"
 	{
-		"en"	"An incredibly fast Umbral, capable of moving past the speed of light. \nGains additional speed and vulnerability the longer its alive."
+		"en"	"An incredibly fast Umbral, capable of moving past the speed of light\n-Gains additional speed, attackspeed and vulnerability the longer its alive."
 		"it"	"Un Umbral incredibilmente veloce, capace di muoversi oltre la velocità della luce. \nGuadagna ulteriore velocità e vulnerabilità quanto più a lungo è in vita."
 		"ko"	"엄청나게 빠른 움브랄로, 빛의 속도를 넘어 움직일 수 있습니다.\n생존한 시간이 길수록 이동 속도가 더 빨라지지만, 공격 피해에 취약해집니다."
 	}
@@ -7573,8 +7593,8 @@
 	}
 	"Umbral W.F Desc"
 	{
-		"en"	"Umbrals created from the Umbral gate in the image of Whiteflower. \n-Periodically uses Octane kick."
 		"ko"	"배풍등의 모습을 갖추고 움브랄 게이트에서 나타난 움브랄들입니다.\n-주기적으로 옥테인 킥을 사용합니다."
+		"en"	"Umbrals created from the Umbral gate in the image of Whiteflower\n-Periodically uses Octane kick."
 	}
 	"Umbral Rouam"
 	{
@@ -7584,7 +7604,7 @@
 	}
 	"Umbral Rouam Desc"
 	{
-		"en"	"An easily irritable Umbral, provoke them at your own risk. \nStarts passive, becoming enraged when hurt."
+		"en"	"An easily irritable Umbral, provoke them at your own risk\n-Starts passive, becoming enraged when hurt."
 		"it"	"Un Umbral facilmente irritabile: provocatelo a vostro rischio e pericolo. \nInizia in modo passivo e si infuria quando viene ferito."
 		"ko"	"쉽게 격노하는 움브랄. 자극하는건 위험이 따릅니다. \n비공격적 상태로 등장하지만, 피해를 받을 시 격분합니다."
 	}
@@ -7602,7 +7622,7 @@
 	}
 	"Shadowing Darkness, The Ruler Desc"
 	{
-		"en"	"Ruler of the Umbrals. Keeper of the Purgatory Throne. Culprit behind the Void outbreaks. \nTrapped inside the Curtain, she lost her mind long ago. \nShe must be stopped at all costs.\nShe gives necrosis on most of her abilities."
+		"en"	"Ruler of the Umbrals. Keeper of the Purgatory Throne. Culprit behind the Void outbreaks. \nTrapped inside the Curtain, she lost her mind long ago. \nShe must be stopped at all costs.\n-She gives necrosis on most of her abilities."
 		"it"	"Sovrano degli Umbral. Custode del Trono del Purgatorio. Responsabile delle epidemie del Vuoto. \nIntrappolata nella cortina, ha perso la ragione molto tempo fa. \nDeve essere fermata a tutti i costi.\nDà necrosi alla maggior parte delle sue abilità."
 		"ko"	"움브랄의 지배자이자, 연옥 왕좌의 파수꾼입니다. 공허 재앙 발발의 장본인입니다.\n 장막 속에 갇힌 그녀는 오래 전에 이성을 잃었습니다.\n무슨 수를 써서라도 막아내야만 합니다.\n대부분의 능력이 적들에게 쇠약 원소 피해를 부여합니다."
 	}
@@ -7632,9 +7652,7 @@
 	}
 	"Jkei Desc"
 	{
-		"en"	"Ruthless leader of the Almagest squad sent into the Curtain. \nTheir motives remain unclear. \nDeals void damage, and summons drones to deal chaos damage. \nAfter losing a certain amount of HP, becomes invulernerable until the current wave is defeated."
-		"it"	"Spietato leader della squadra Almagest inviata nella Cortina. \nI loro motivi rimangono poco chiari. \nSubisce danni da vuoto ed evoca droni per infliggere danni da caos. \nDopo aver perso una certa quantità di HP, diventa invulnerabile finché non viene sconfitta l'ondata corrente."
-		"ko"	"장막 속으로 파견된 알마게스트 부대의 무자비한 지휘관입니다.\n그들의 동기는 여전히 불분명합니다.\n-공허 속성 피해를 입히고, 드론을 소환하여 혼돈 속성 피해를 입힘\n-체력이 일정 수치 감소시, 현재 웨이브의 적들을 전부 처치할 때까지 이 적이 무적 상태가 됩니다."
+		"en"	"Ruthless leader of the Almagest squad sent into the Curtain. \nTheir motives remain unclear. \n-Deals void damage\n-summons drones to deal chaos damage\n-After losing a certain amount of HP, becomes invulernerable until the current wave is defeated."
 	}
 	"Jkei Drone"
 	{
@@ -7644,7 +7662,7 @@
 	}
 	"Jkei Drone Desc"
 	{
-		"en"	"Construct used by Jkei in battle. \nDeals chaos damage, and after a delay, \nruns towards an ally and self destructs."
+		"en"	"Construct used by Jkei in battle\n-Deals chaos damage, and after a delay\n-runs towards an ally and self destructs."
 		"it"	"Costrutto utilizzato da Jkei in battaglia. \nSubisce danni da caos e, dopo un certo ritardo, \ncorre verso un alleato e si autodistrugge."
 		"ko"	"제이케이가 전투에서 사용하는 제작물입니다. \n혼돈 원소 피해를 주며, 약간의 지연 이후, \n아군을 향해 달려들어 자폭합니다."
 	}
@@ -7656,7 +7674,7 @@
 	}
 	"Reila Desc"
 	{
-		"en" "Former Almagest researcher, now trying to \nclose the rifts and contain the Void at all costs. \nControls the Construct while active, and permanently gains resistance whenever it is reset"
+		"en" "Former Almagest researcher, now trying to close the rifts and contain the Void at all costs\n-Controls the Construct while active, and permanently gains resistance whenever it is reset"
 		"it" "Ex ricercatore dell'Almagest, ora cerca di chiudere \nle spaccature e contenere il Vuoto a tutti i costi. \nControlla il Costrutto quando è attivo e guadagna permanentemente resistenza ogni volta che viene resettato"
 		"ko" "전직 알마게스트 연구원 소속으로, \n이제는 필사적으로 균열을 닫아 어떻게든 공허를 격리시키려고 합니다. \n제작물을 조종하며, 제작물이 초기화되면 영구적으로 피해 저항력을 얻습니다."
 	}
