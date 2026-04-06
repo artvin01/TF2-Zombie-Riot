@@ -3199,7 +3199,7 @@
 	}
 	"Victoria Radiomast Desc"
 	{
-		"en"	"Giant radiotower that receives a signal and spreads it to other places via signaller. \n-Since radiotower is crucial for transmission, Victorians will do everything to preotect it \n-While the Radiotower is alive, endless waves of enemies will appear and all enemies existing in the map will receive signal buff \n-When below half health, summons radio repair and guard to protect and heal"
+		"en"	"Giant radiotower that receives a signal and spreads it to other places via signaller. \nSince radiotower is crucial for transmission, Victorians will do everything to protect it. \n-While the Radiotower is alive, endless waves of enemies will appear and all enemies existing in the map will receive signal buff \n-When below half health, summons radio repair and guard to protect and heal"
 	}
 	"Radio Guard Desc"
 	{
