@@ -98,23 +98,3 @@ details details details details summary { font-size: .5em }
 audio {
     margin-top: 10px;
 }
-
-/* music player */
-.music_bg {
-    margin-top: 2em;
-    margin-right: 2em;
-    padding: 1em;
-    background-color: var(--bg-light);
-    color: var(--deep-space-blue);
-    border-radius: 5px;
-
-    position: fixed;
-    right: 0%;
-    top: 0%;
-
-    display:flex;
-    flex-wrap:wrap;
-    max-width: min-content;
-
-    transition: 1s;
-}

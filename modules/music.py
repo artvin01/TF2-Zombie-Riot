@@ -7,6 +7,7 @@ def parse():
     for title, modal in sorted(music_by_title.items()):
         context=modal.copy()
         file_exists = context.pop("file_exists")
+        context["title"].replace("zombiesurvival/","")
         music_list_html += util.fill_template(util.read(f"templates/music/music_modal{"_missing"*int(not file_exists)}.html"),context)
 
     context = {

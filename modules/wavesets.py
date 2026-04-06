@@ -467,7 +467,7 @@ def parse():
         HTML_WAVESET_LIST = util.fill_template(util.read(f"templates/waveset/{"mapset_overview" if map_mode else "waveset_list"}.html"),context)
         return HTML_WAVESET_LIST, html_mapsets
 
-    def parse_waveset_list_cfg(filename, html_mapsets, filename_md=None):
+    def parse_waveset_list_cfg(filename, html_mapsets, html_otherset, filename_md=None):
         if (filename not in util.WAVESETS_FILESCOPE) and len(util.WAVESETS_FILESCOPE)>0:
             util.log(f"{filename} not in FILESCOPE", "OKBLUE")
             return html_mapsets
@@ -498,13 +498,15 @@ def parse():
 
         if WAVESETLIST_TYPE in ["Setup", "Custom"]:
             HTML_WAVESETS, html_mapsets = parse_waveset_list_cfg_common(WAVESETLIST_DATA, filename, html_mapsets)
-        elif WAVESETLIST_TYPE == "Betting":
-            HTML_WAVESETS, html_mapsets = parse_betting(filename, WAVESETLIST_RAW, html_mapsets)
-        elif WAVESETLIST_TYPE == "Rogue":
-            HTML_WAVESETS, md_mapsets = parse_rogue(filename, WAVESETLIST_DATA, html_mapsets)
         else:
-            HTML_WAVESETS = f"err key {WAVESETLIST_TYPE}"
-            util.log("UNSUPPORTED CFG IN OUTPUT!", "FAIL")
+            if WAVESETLIST_TYPE not in html_otherset: html_otherset[WAVESETLIST_TYPE] = ""
+            if WAVESETLIST_TYPE == "Betting":
+                html_otherset[WAVESETLIST_TYPE] = parse_betting(filename, WAVESETLIST_RAW, html_otherset[WAVESETLIST_TYPE])
+            elif WAVESETLIST_TYPE == "Rogue":
+                html_otherset[WAVESETLIST_TYPE] = parse_rogue(filename, WAVESETLIST_DATA, html_otherset[WAVESETLIST_TYPE])
+            else:
+                util.log(f"UNSUPPORTED WAVESETLIST_TYPE: {WAVESETLIST_TYPE}", "FAIL")
+                exit()
 
         if not filename_md:
             if "maps" in filename:
@@ -635,8 +637,9 @@ def parse():
             cfg_files[f"maps/{file}"] = None
 
     HTML_SPECIALMAPS = ""
+    HTML_OTHERSET = ""
     for f,n in cfg_files.items():
-        HTML_SPECIALMAPS = parse_waveset_list_cfg(f, HTML_SPECIALMAPS, filename_md=n)
+        HTML_SPECIALMAPS, HTML_OTHERSET = parse_waveset_list_cfg(f, HTML_SPECIALMAPS, HTML_OTHERSET, filename_md=n)
     
     util.write("music_by_title.json", json.dumps(MUSIC_BY_TITLE,indent=2))
 
