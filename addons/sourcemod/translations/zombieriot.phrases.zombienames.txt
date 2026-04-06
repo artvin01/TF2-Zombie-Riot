@@ -1183,9 +1183,8 @@
 	"Xeno Infected Lab Doctor Desc"
 	{
    		"it"	"Un medico che cercava di curare il virus xeno nel laboratorio, ha fallito ed è stato infettato lui stesso.\nQuanto più bassi sono i loro HP, tanto più resistenza ottengono quando pensano.\nStordiscili per evitare questo effetto, o colpiscili con un colpo solo."
-
 		"en" 	"A doctor trying to cure the xeno virus in the lab, failed and got infected himself.\n-Lower health increases their resitance, up to a limit."
-		"ko" 	"연구실에 흘러들어온 제노 바이러스를 치료하기 위해 노력한 의사였지만, 실패하고 감염되었습니다.\n-피해를 받을 때마다, 상한까지 피해 저항력이 증가합니다."
+		"ko" 	"연구실에 흘러들어온 제노 바이러스를 치료하기 위해 노력한 의사였지만, 실패하고 감염되었습니다.\n-체력이 감소할 수록 상한까지 피해 저항력이 증가합니다."
 	}
 	"Archer"
 	{
@@ -2933,6 +2932,7 @@
 	"Diversionistico Elitus Desc"
 	{
 		"en" 		"Diversionisticos who were promoted to the Elitus status. \n-Invisible unless close to. \n-Can backstab you. \n-Backstabs prevent you from being healed from most things."
+		"ko"		"엘리투스로 진급한 다이버저니스티코들입니다.\n-멀리있을 때 투명화 상태가 됩니다.\n-백스탭 가능\n-백스탭 시 대상이 받는 대부분의 치유 효과를 무효화시킵니다."
 	}
 	"Adiantum"
 	{
@@ -3227,6 +3227,7 @@
 	"Interstellar Weaver Desc"
 	{
 		"en"	"A Stellar Weaver trashed by Ruina. Now rebuilt by Lelouch to protect him. \n-Is a flying enemy. \n-Targets the nearest target to Lelouch, who isn't his target. \n-Shoots out a barrage of magical fireballs and homing lasers."
+		"ko"	"루이나에게 버려진 스텔라 위버입니다. 이제는 를르슈에 의해 재건되어 그를 보호합니다.\n-비행형 적\n-를르슈와 가장 근접했으며, 를르슈의 표적이 아닌 대상을 표적으로 삼습니다.\n-다수의 마력 화염구와 유도 레이저를 발사합니다."
 	}
 	"Daedalus"
 	{
@@ -3565,6 +3566,7 @@
 	"John The Almighty Desc"
 	{
 		"en"	"His almightyness can not be killed. ᏒᏌᑎ"
+		"ko"	"그의 전능을 죽일 수는 없을 겁니다. 도҈͡망҈쳐҉"
 	}
 	"Abomination"
 	{
@@ -3979,7 +3981,7 @@
 	{
 		"en"	"-Bleeds on hit."
 		"it"	"Spawn del Vuoto.\n-Sanguina quando viene colpito."
-		"ko"	"공허에서 태어난 존재입니다.\n-적중시, 대상에게 출혈을 부여합니다."
+		"ko"	"-적중시, 대상에게 출혈을 부여합니다."
 	}
 	"Framing Voider"
 	{
@@ -3990,6 +3992,7 @@
 	"Framing Voider Desc"
 	{
 		"en"	"-Buffs void entities around itself on death."
+		"ko"	"사망 시, 주변 아군에게 버프를 부여합니다."
 	}
 	"Growing Exat"
 	{
@@ -4001,7 +4004,7 @@
 	{
 		"en"	"-Each singular hit makes it grow in size, the bigger, the stronger."
 		"it"	"Spawn del Vuoto.\n-Ogni singolo colpo lo fa crescere di dimensioni, più grande, più forte."
-		"ko"	"공허에서 태어난 존재입니다.\n-피해를 받을 때마다, 크기가 점점 커집니다. 크기가 커질수록 가하는 피해량도 증가합니다."
+		"ko"	"-피해를 받을 때마다, 크기가 점점 커집니다. 크기가 커질수록 가하는 피해량도 증가합니다."
 	}
 	"Mutating Blob"
 	{
@@ -4013,7 +4016,7 @@
 	{
 		"en"	"-When dead, corpse acts as a spawnpoint for 1 enemy."
 		"it"	"Spawn del Vuoto.\n-Quando è morto, il cadavere agisce come punto di spawn per 1 nemico."
-		"ko"	"공허에서 태어난 존재입니다.\n-사망 시, 이 적의 시체는 적의 임시 스폰 포인트가 됩니다. 적 하나가 이 시체를 통해 스폰되면 이 효과는 제거됩니다."
+		"ko"	"-사망 시, 이 적의 시체는 적의 임시 스폰 포인트가 됩니다. 적 하나가 이 시체를 통해 스폰되면 이 효과는 제거됩니다."
 	}
 	"Void Spreader"
 	{
@@ -4024,6 +4027,7 @@
 	"Void Spreader Desc"
 	{
 		"en"	"-Ranged Attacks\n-Tries to keep distance from you\n-Deals immensive void damage."
+		"ko"	"-원거리 공격 사용\n-표적과 거리를 유지함\n-매우 높은 공허 원소 피해를 줍니다."
 	}
 	"Void Infestor"
 	{
@@ -4058,6 +4062,7 @@
 	"Void Carrier Desc"
 	{
 		"en"	"-Goes to 1 ally, picks them up and throws them at a player."
+		"ko"	"-자신의 아군 1명에게 접근하여 대상을 집어든 뒤, 플레이어에게 투척합니다."
 	}
 	"Void Ixufan"
 	{
@@ -4068,6 +4073,7 @@
 	"Void Ixufan Desc"
 	{
 		"en"	"-Is extra buffed in void terretory\n-deals immensive void damage."
+		"ko"	"-공허 점막 위에 있으면 능력치가 추가로 증가하고, 대상에게 매우 높은 공허 원소 피해를 줍니다."
 	}
 	"Enframed Voider"
 	{
@@ -4078,6 +4084,7 @@
 	"Enframed Voider Desc"
 	{
 		"en"	"Their intelligence grows.\n-Buffs void entities on death."
+		"ko"	"그들의 지식은 점점 성장합니다.\n-사망시, 주변 적들에게 버프를 부여합니다."
 	}
 	"Blood Pollutor"
 	{
@@ -4100,6 +4107,7 @@
 	"Voided Expidonsan Fortifier Desc"
 	{
 		"en"	"An expidonsan fell against the void.\n-Has flat resistance\n-gains a shield on spawn."
+		"ko"	"공허에게 패퇴한 엑스피돈사 소속원입니다.\n-높은 고정 피해 저항력 보유\n-스폰시 보호막을 얻습니다."
 	}
 	"Void Particle"
 	{
@@ -4134,6 +4142,7 @@
 	"Blobbing Monster Desc"
 	{
 		"en"	"-Each hit makes it stronger and have more resistance and damage and size."
+		"ko"	"-피해를 받을 때마다 피해 저항력, 공격 피해량 그리고 크기가 증가합니다."
 	}
 	"Void Sprayer"
 	{
@@ -4144,6 +4153,7 @@
 	"Void Sprayer Desc"
 	{
 		"en"	"-Jumps at you\n-Ranged Attacks\n-Tries to keep distance from you\n-Deals immensive void damage"
+		"ko"	"-대상에게 뛰어듭니다.\n-원거리 공격 사용\n-표적과 거리를 유지함\n-매우 높은 공허 원소 피해를 줍니다."
 	}
 	"Void Encasualtor"
 	{
@@ -4154,6 +4164,7 @@
 	"Void Encasualtor Desc"
 	{
 		"en"	"-Teleports to a target they try to attack if they are in void terretory\n-if they didnt attack for a while, then their next attack will make them rapdily attack.\n-Deals Void Damage"
+		"ko"	"-자신의 표적이 공허 점막 위에 있다면, 그 대상에게 순간이동합니다.\n이 적이 일정 시간 동안 공격하지 않으면, 이 적의 다음 공격의 속도가 매우 빨라집니다.\n-적중 시 공허 원소 피해를 줍니다."
 	}
 	"Voided Expidonsan Cleaner"
 	{
@@ -4164,6 +4175,7 @@
 	"Voided Expidonsan Cleaner Desc"
 	{
 		"en"	"Too many expidonsens fell to them.\n-Jumps at you\n-Ranged Attacks\n-Tries to keep distance from you\n-Deals immensive void damage"
+		"ko"	"너무 많은 엑스피돈사인들이 그들에게 패퇴하였습니다.\n-대상에게 뛰어듭니다.\n-원거리 공격 사용\n-표적과 거리를 유지함\n-매우 높은 공허 원소 피해를 줍니다."
 	}
 	"Voided Expidonsan Container"
 	{
@@ -4175,7 +4187,7 @@
 	{
 		"en"	"-Deals immensive bleed damage on hit."
 		"it"	"Infligge danni da emorragia immensi quando viene colpita."
-		"ko"	"적중시, 대상에게 매우 강력한 출혈 피해를 부여합니다."
+		"ko"	"-적중시, 대상에게 매우 강력한 출혈 피해를 부여합니다."
 	}
 	"Sacraficer"
 	{
@@ -4186,6 +4198,7 @@
 	"Sacraficer Desc"
 	{
 		"en"	"-On death, void entities nearby"
+		"ko"	"-사망 시, 주위의 대상에게 공허 버프를 부여합니다."
 	}
 	"Voiding Bedrock"
 	{
@@ -4232,6 +4245,7 @@
 	"Brooding Petra Desc"
 	{
 		"en"	"-Spreads void whereever it walks.\n-Is very slow and spawns minions overtime.\n-Its suprisingly Extreamly light."
+		"ko"	"-이 적이 걷는 경로에 공허 점막을 펼칩니다.\n-매우 느리지만 일정 시간마다 공허 익수판을 생성합니다.\n-매우 가볍습니다."
 	}
 	"Kunul"
 	{
@@ -4242,6 +4256,7 @@
 	"Kunul Desc"
 	{
 		"en"	"-Deals extreme bleed damage on hit.\n-Is headshot immune"
+		"ko"	"-적중시, 대상에게 극도로 높은 출혈 피해를 부여합니다.\n-헤드샷 피해를 0으로 받습니다."
 	}
 	"Total Growth"
 	{
@@ -4264,6 +4279,7 @@
 	"Void's Offspring Desc"
 	{
 		"en"	"-Buffs all void entities on death."
+		"ko"	"-사망 시, 모든 공허체들에게 버프를 부여합니다."
 	}
 	"Voided Expidonsan Rejuvinator"
 	{
@@ -4274,6 +4290,7 @@
 	"Voided Expidonsan Rejuvinator Desc"
 	{
 		"en"	"One of the finest expidonsan doctors fell to the void.\n-heals almost any ally instantly and overheals them, will try to heal every target\n-Has extreme speeds\n-will suicide if its alone."
+		"ko"	"최고의 엑스피돈사인 의사 중 하나가 공허에 침식된 결과물입니다.\n-거의 모든 아군을 즉시 치료하며 과치료도 부여합니다.\n-이동 속도가 극도로 빠릅니다.\n-혼자 남을 경우 자살합니다."
 	}
 	"Speechless"
 	{
@@ -4284,6 +4301,7 @@
 	"Speechless Desc"
 	{
 		"en" 	"Explorers of the voided place, fallen expidonsans\n-Each attack makes them attack faster\n-On attack gains shield\n-Shield cooldown is ignored against barricades\n-Fires an infinite piercing laser with damage delay\n-The faster it attacks the slower it moves\n-Jumps at target\n-Once life is lost:\nGain immensive buffs\nShield lasts longer\nCan no longer heal"
+		"ko"	"공허화된 공간의 탐험가들, 쓰러진 엑스피돈사인들.\n-공격할 때마다 공격 속도 증가\n-적중 시 보호막 획득\n-바리케이드 공격 시 보호막 쿨다운 무시\n-약간의 지연을 가진 무한히 관통하는 레이저 발사\n-공격 속도가 빠를수록 이동 속도 감소\n-대상에게 뛰어듬\n-생명을 잃을 시:\n막대한 버프 획득\n보호막 지속 시간 증가\n체력 회복 불가능"
 	}
 	"Unspeakable"
 	{
@@ -4308,6 +4326,7 @@
 	"Voided Diversionistico Desc"
 	{
 		"en"	"Elite forces, taken by the void.\n-Invisible unless near it. \n-Can backstab you. \n-Attacks inflict Void elemental damage.\n-Slower then average"
+		"ko"	"생전엔 정예 부대였지만, 지금은 공허에 침식된 자들입니다.\n-멀리있을 때 투명화 상태가 됩니다.\n-백스탭 가능\n-적중 시 공허 원소 피해를 부여합니다.\n-원본보다 더 느립니다."
 	}
 	"Void Portal"
 	{
@@ -4318,6 +4337,7 @@
 	"Void Portal Desc"
 	{
 		"en"	"-Summons near enemies, stays for 2 waves and spreads void where it stands.\n-It also acts as a spawnpoint for enemies aswell.\n-Damages non void entities with true damage"
+		"ko"	"이 적은 등장시 2 웨이브동안 유지됩니다. 공허 점막을 퍼뜨리며 주변의 적들을 소환합니다.\n-이 적은 다른 적들의 스폰 포인트로 취급됩니다.\n-공허체 이외의 대상에게 트루 데미지를 가합니다."
 	}
 	"Void Creep"
 	{
@@ -4329,7 +4349,7 @@
 	{
 		"en"	"-Spreads very slowly, cannot be stopped.\n-During raids spreads faster.\n-Buffs all void npcs while on it."
 		"it"	"Si diffonde molto lentamente, non può essere fermato.\nDurante le incursioni si diffonde più rapidamente.\nresistenza(15％), regen, danno(20％) e velocità(5％)."
-		"ko"	"공허 점막은 매우 느리게 확산되며, 멈출 수 없습니다.\n레이드 모드일 경우, 확산 속도가 매우 빨라집니다.\n점막 위에 있는 모든 공허 NPC들의 피해 저항력(15％), 공격 피해량(20％) 이동 속도(5％)를 증가시키고 초당 체력을 회복시킵니다."
+		"ko"	"-공허 점막은 매우 느리게 확산되며, 멈출 수 없습니다.\n-레이드 모드일 경우, 확산 속도가 매우 빨라집니다.\n-위에 있는 모든 공허체에게 버프를 부여합니다."
 	}
 	"Void Elemental Damage"
 	{
@@ -4341,6 +4361,7 @@
 	"Void Elemental Damage Desc"
 	{
 		"en"	"Once full, buffs all void npcs around you (with a stronger version) and places void creep below you.\nCan be healed with armor"
+		"ko"	"원소 피해 게이지가 꽉 차면, 당신의 위치에 공허 점막이 흩뿌려지며 당신 주변의 모든 공허 NPC에게 더욱 강한 버프를 부여합니다.\n아머를 획득하면 원소 피해를 치유할 수 있습니다."
 	}
 	"Chaos Elemental Damage"
 	{
@@ -5028,6 +5049,7 @@
 	"Irani Desc"
 	{
 		"en"		"-Marks an enemy on hit\n-Deals no melee knockback"
+		"ko"		"-적중시, 대상에게 표적을 부여합니다.\n-이 적의 근접 공격은 넉백을 가하지 않습니다."
 	}
 	"Kinat"
 	{
@@ -5135,7 +5157,7 @@
 	{
 		"en"		"-If its with melee, attacks with a gun 3 times, backs off if enemy is too close while shooting\n-Deals no melee knockback"
 		"it"		"-Se è in mischia, attacca con una pistola 3 volte, indietreggiando se il nemico è troppo vicino mentre spara\n-Non subisce danni in mischia"
-		"ko"		"-대상이 근접 무기를 들고 있다면, 사격 공격을 3번 하며, 사격 중 적이 자신과 너무 근접해 있다면 후퇴합니다\n-이 적의 근접 공격은 넉백을 가하지 않습니다."
+		"ko"		"-대상이 근접 무기를 들고 있다면, 사격 공격을 3번 하며, 사격 중 적이 자신과 너무 근접해 있다면 후퇴합니다.\n-이 적의 근접 공격은 넉백을 가하지 않습니다."
 	}
 	"Speedus Instantus"
 	{
@@ -5170,6 +5192,7 @@
 	"Anti Sea Robot Desc"
 	{
 		"en"		"-Deals immensive damage and takes 2x Melee dmg\n-Takes 0 dmg outside of its red radius.\n-Attacks 5x faster against marked enemies"
+		"ko"		"매우 높은 피해를 주지만, 받는 근접 피해가 2배로 증가합니다. \n붉은 영역 바깥에서 들어오는 모든 공격의 피해를 0으로 만듭니다.\n-표적 상태인 대상에게 5배 더 빠르게 공격합니다."
 	}
 	"Ranka S"
 	{
@@ -5228,6 +5251,7 @@
 	"Combastia Desc"
 	{
 		"en"		"-Buffs allies once it screams\n-Immune to bleeds"
+		"ko"		"함성을 지를때마다, 주변의 모든 아군의 사기를 증가시킵니다.\n출혈 피해에 면역입니다."
 	}
 	"Morato"
 	{
@@ -5374,7 +5398,7 @@
 	}	
 	"Whiteflower The Traitor Desc"
 	{
-		"en"	"-Drops grenades that heal allies and hurt enemies in its range."
+		"en"	"-Drops grenades that heal allies and hurt enemies in its range.\n-Periodically uses Octane kick."
 		"ko"	"-범위 내의 아군의 체력을 회복시키고 적군에게 피해를 주는 수류탄을 던집니다."
 	}	
 	"Ouroboros Ekas"
@@ -5390,7 +5414,8 @@
 	}
 	"Xeno Lab Security Desc"
 	{
-		"en"	"A robot made by the creator of the Xeno infection, made to protect the virus and help it's advance. \n-Periodically charges up an infection blast around itself. \n-If hit by the infection blast, you are afflicted with a heavy bleed. "
+		"en"	"A robot made by the creator of the Xeno infection, made to protect the virus and help it's advance. \n-Periodically charges up an infection blast around itself. \n-If hit by the infection blast, you are afflicted with a heavy bleed."
+		"ko"	"제노 감염원의 창시자가 설계한 로봇이며, 바이러스의 보호와 진보를 위해 만들어졌습니다.\n-주기적으로 주위에 감염성 폭발을 충전합니다.\n-감염성 폭발에 적중 시, 치명적인 출혈 디버프를 얻습니다."
 	}
 	"Goliath Aircraft"
 	{
@@ -6403,18 +6428,22 @@
 	"Troll Rifler Desc"
 	{
 		"en"	"W.F. Rifler infected by the Troll virus. \n-Has a ranged attack and reloads."
+		"ko"	"트롤 바이러스에 감염된 W.F. 소총수입니다.\n-원거리 공격을 사용하며 재장전함"
 	}
 	"Troll Cop Desc"
 	{
 		"en"	"W.F. Metro Cop infected by the Troll virus. \n-Has a ranged attack and reloads."
+		"ko"	"트롤 바이러스에 감염된 W.F.의 기동대입니다.\n-원거리 공격을 사용하며 재장전함"
 	}
 	"Troll RPG Carrier Desc"
 	{
 		"en"	"W.F. soldier infected by the Troll virus. \n-Has a aoe ranged attack and reloads."
+		"ko"	"트롤 바이러스에 감염된 W.F.의 병사입니다.\n-광역 원거리 공격을 사용하며 재장전함"
 	}
 	"Troll Brawler Desc"
 	{
 		"en"	"W.F. soldier infected by the Troll virus. \n-No special effects."
+		"ko"	"트롤 바이러스에 감염된 W.F.의 병사입니다.\n-특수 능력 없음"
 	}
 	"Crystallized Horror"
 	{
@@ -6533,6 +6562,7 @@
 	"Soldinus ilus Desc"
 	{
 		"en"	"An upgraded version of the Soldine. \n-Can rocketjump. \n-Fires rockets. \n-Can melee attack with a cooldown. \n- Melee deals heavy damage and slides you."
+		"ko"	"솔딘의 개선된 버전입니다.-로켓 점프를 사용할 수 있습니다.\n-로켓을 발사합니다.\n-매우 높은 피해를 주는, 긴 쿨타임을 가진 근접 공격을 합니다."
 	}
 	"Instinct's Summon"
 	{
@@ -7563,6 +7593,7 @@
 	}
 	"Umbral W.F Desc"
 	{
+		"ko"	"배풍등의 모습을 갖추고 움브랄 게이트에서 나타난 움브랄들입니다.\n-주기적으로 옥테인 킥을 사용합니다."
 		"en"	"Umbrals created from the Umbral gate in the image of Whiteflower\n-Periodically uses Octane kick."
 	}
 	"Umbral Rouam"
@@ -7990,6 +8021,7 @@
 	"Heavy Weapons Guy Desc"
 	{
 		"en"	"I am Heavy Weapons Guy, and THIS is my weapon.\n-Infinite range minigun"
+		"ko"	"나는 헤비 웨폰 가이다. 그리고 이건... 내 무기지.\n-무제한 사거리를 보유한 미니건을 사용합니다."
 	}
 	"Very Heavy Heavy"
 	{
@@ -7999,15 +8031,17 @@
 	"Very Heavy Heavy Desc"
 	{
 		"en"	"A Heavy who is bigger, fatter, and of course heavier.\n-On hit fucking ragdolls you"
+		"ko"	"더 크고, 더 뚱뚱하며 그리고 당연하게도 더 헤비한 헤비입니다.\n-적중 시 당신을... 래그돌 상태로 만듭니다."
 	}
 	"Fish Scout"
 	{
 		"en"	"Fish Scout"
 		"ko"	"생선 스카웃"
 	}
-	"Fish Scout"
+	"Fish Scout Desc"
 	{
-		"en"	"Fish. "
+		"en"	"Fish."
+		"ko"	"생선."
 	}
 	"Human Main"
 	{
@@ -8017,7 +8051,7 @@
 	"Professional Fingerer"
 	{
 		"en"	"Professional Fingerer"
-		"ko"	"전문가 손총수"
+		"ko"	"전문 손총수"
 	}
 	"King of Australia"
 	{
@@ -8047,6 +8081,7 @@
 	"Lard Fat Desc"
 	{
 		"en"	"Fatty lose some weight.\n-Eats his fat ass sandwich if close and damages you like that"
+		"ko"	"제발 살 좀 빼라 이 뚱땡아.\n-근접 시 무지하게 큰 샌드비치를 먹으며 당신에게도 그 샌드비치마냥 피해를 입힙니다."
 	}
 	"Mounted Teuton"
 	{
@@ -8061,6 +8096,7 @@
 	"Purple Guy Desc"
 	{
 		"en"	"The bite of 87!? Wait, no, it was the missing children's incident he caused, old sport."
+		"ko"	"1987년 입질 사건!? 잠깐만, 아니다. 그 작자가 일으킨 아동 실종 사건이로군, 자네."
 	}
 	"Roll The Dice"
 	{
@@ -8075,6 +8111,7 @@
 	"Australian Spider Desc"
 	{
 		"en"	"A Massive spider from Australia. \n-Very fast. \n-Attacks very fast \n-Very small \n-Very much a spider"
+		"ko"	"호주에서 넘어온 큼지막한 거미입니다.\n-매우 빠른 이동 속도 보유\n-매우 빠른 공격 속도 보유\n-매우 작음\n-매우 거미임"
 	}
 	"Suction Medic"
 	{
@@ -8084,6 +8121,7 @@
 	"Suction Medic Desc"
 	{
 		"en"	"Masters of the battle medigun, or just masters of sucking on stuff. \n-Sucks away your hp if you're close enough."
+		"ko"	"전투 메디건의 달인들입니다... 아니면 그냥 뭔가를 빨아들이는데 달인이거나요.\n-충분히 근접 시 당신의 체력을 빨아들입니다."
 	}
 	"Living Metal Ball"
 	{
@@ -8093,6 +8131,7 @@
 	"Living Metal Ball Desc"
 	{
 		"en"	"Living Large metal balls\n-Roll towrads you and deal knockback on you and itself on hit"
+		"ko"	"살아있는 커다란 쇳덩이 공\n-대상에게 굴러가며, 적중 시 자신과 대상에게 넉백을 가함"
 	}
 	"Axe Throwing Barbarian"
 	{
@@ -8107,6 +8146,7 @@
 	"A Man Who Is Really Ambitious About Team Fortress 2 Trading Desc"
 	{
 		"en"	"A Man Who Is Really Ambitious About Team Fortress 2 Trading, really.\n-Each life lost makes him lose a hat and overall stats untill death."
+		"ko"	"팀포2 거래에 야망이 가득한 남자입니다. 정말로요.\n-생명을 잃을 때마다 사망할 때까지 모자와 전반적인 능력치를 잃습니다."
 	}
 	"Kahmlstein's Dead Grandma"
 	{
@@ -8116,5 +8156,6 @@
 	"Kahmlstein's Dead Grandma Desc"
 	{
 		"en"	"This is so sad"
+		"ko"	"그냥 너무 슬퍼"
 	}
 }
