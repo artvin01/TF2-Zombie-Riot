@@ -5374,7 +5374,7 @@
 	}	
 	"Whiteflower The Traitor Desc"
 	{
-		"en"	"-Drops grenades that heal allies and hurt enemies in its range."
+		"en"	"-Drops grenades that heal allies and hurt enemies in its range.\n-Periodically uses Octane kick."
 		"ko"	"-범위 내의 아군의 체력을 회복시키고 적군에게 피해를 주는 수류탄을 던집니다."
 	}	
 	"Ouroboros Ekas"
