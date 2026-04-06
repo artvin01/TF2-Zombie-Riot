@@ -1,0 +1,23 @@
+name: Check KeyValues1 syntax 
+on:
+  push:
+    branches:
+    - 'wiki_gen'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.14'
+
+    - name: Setup venv
+      run: python -m venv venv; ./venv/bin/pip install vdf==3.4
+    
+    - name: Clone ZR repo
+      run: git clone https://github.com/artvin01/TF2-Zombie-Riot
+
+    - name: Check syntax
+      run: ./venv/bin/python trcheck.py

@@ -22,10 +22,9 @@ TODO
             data.Is_Boss > 1)
                 flags |= MVM_CLASS_FLAG_ALWAYSCRIT;
             
-3. separate music list page
-4. rogue support
-5. skilltree page
-6. const support (last)
+3. rogue support
+4. skilltree page
+5. const support (last)
 """
 
 PROPERTY_MAPPINGS = {
