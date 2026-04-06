@@ -820,11 +820,11 @@
 		"en"	"Alright boys, Fire all we got! We cannot waste any more time on here!"
 		"ko"	"좋아, 친구들. 우리가 가진 모든걸 쏟아부어라! 우리는 여기서 더이상 낭비할 시간이 없다!"
 	}
-	"Castellan_Talk_Ability2-4”
+	"Castellan_Talk_Ability2-4"
 	{
 		"en"	"Keep them coming boys! They are wasting too much of our time!"
 	}
-	"Castellan_Talk_Ability2-5”
+	"Castellan_Talk_Ability2-5"
 	{
 		"en"	"Knock it off you three and FIRE!"
 	}
