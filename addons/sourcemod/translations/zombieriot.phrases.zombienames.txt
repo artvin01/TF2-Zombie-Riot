@@ -8020,7 +8020,7 @@
 		"en"	"Fish Scout"
 		"ko"	"생선 스카웃"
 	}
-	"Fish Scout"
+	"Fish Scout Desc"
 	{
 		"en"	"Fish."
 		"ko"	"생선."
