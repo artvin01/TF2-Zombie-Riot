@@ -546,7 +546,8 @@ methodmap RegaliaClass < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = 1;
 		}
-		/*
+		if(StrContains(data, "music_wiki_1") != -1)
+		{
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/dungeon/final_battle_1.mp3");
 			music.Time = 63;
@@ -555,7 +556,10 @@ methodmap RegaliaClass < CClotBody
 			strcopy(music.Name, sizeof(music.Name), "The Voids");
 			strcopy(music.Artist, sizeof(music.Artist), "Galaxy On Fire 2");
 
-			
+		}
+		if(StrContains(data, "music_wiki_2") != -1)
+		{
+
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/dungeon/final_boss_last_stretch.mp3");
 			music.Time = 9999;
@@ -564,7 +568,8 @@ methodmap RegaliaClass < CClotBody
 			strcopy(music.Name, sizeof(music.Name), "Renegate Justice");
 			strcopy(music.Artist, sizeof(music.Artist), "Galaxy On Fire 2");
 
-		*/
+		}
+		
 		//Setting it to 999 will make our lag comp not resize collision box on shoot
 		b_BoundingBoxVariant[npc.index] = BBV_DontAlter; 
 
