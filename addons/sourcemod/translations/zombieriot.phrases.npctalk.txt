@@ -448,7 +448,7 @@
 	}
 	"Huscarls_Talk_Support-11"
 	{
-		"en"	"Yea this is pretty fun.”
+		"en"	"Yea this is pretty fun."
 	}
 	"Huscarls_Talk_Support-12"
 	{
