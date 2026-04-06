@@ -80,19 +80,24 @@ class NPC:
             # get all music as cutouts, starting at MusicEnum music; and ending at Music_SetRaidMusic( {parameters can vary}
             music_cutouts = [item.split("Music_SetRaidMusic(")[0] for i,item in enumerate(self.file_data.split("MusicEnum music;")) if i > 0]
             self.music_entries = []
+            music_hashes = []
             if len(music_cutouts) > 0:
                 util.debug(f"NPC:__init__:music_cutouts\n{json.dumps(music_cutouts,indent=2)}","npcs", "OKBLUE")
                 for code in music_cutouts:
                     mfilename = self._get_music_val(code,"Path").replace("#","")
                     filepath = f"https://raw.githubusercontent.com/artvin01/TF2-Zombie-Riot/refs/heads/master/sound/{mfilename}"
                     file_exists = os.path.isfile(f"./TF2-Zombie-Riot/sound/{mfilename}")
-                    self.music_entries.append({
+                    music_entry = {
                         "musicpre": "",
                         "musictitle": self._get_music_val(code,"Name"),
                         "musicartist": self._get_music_val(code,"Artist"),
                         "filepath": filepath,
                         "file_exists": file_exists
-                    })
+                    }
+                    music_hash = util.id_from_str(json.dumps(music_entry)) # same music data will output same hash
+                    if music_hash not in music_hashes:
+                        self.music_entries.append(music_entry)
+                        music_hashes.append(music_hash)
             
             desc_key = f"{self.name} Desc"
             # Lots of NPCs with intentionally missing descriptions, hence silent=True

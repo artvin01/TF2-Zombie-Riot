@@ -5,37 +5,27 @@ from collections import defaultdict
 import vdf
 
 """
-TODO separate music list page
-TODO implement showing support npcs & npc flags in embeds (create GIF if blinking/mission flag!)
-TODO implement adding these flags automatically instead of set npc flags only
+TODO
+1. implement showing support npcs & npc flags in embeds (create GIF if blinking/mission flag!)
+2. implement adding these flags automatically instead of set npc flags only
     [x] support
     [x] normal (not shown)
     [ ] miniboss
+            if(data.Is_Boss || data.Is_Outlined)
+                flags |= MVM_CLASS_FLAG_MINIBOSS;
     [ ] alwayscrit
-
-SetupFlags:
-int flags = 0;
-if(data.Is_Boss < 2 && (support || data.ignore_max_cap || data.Is_Static || data.Team == TFTeam_Red))
-{
-    flags |= MVM_CLASS_FLAG_SUPPORT;
-}
-else
-{
-    flags |= MVM_CLASS_FLAG_NORMAL;
-}
-
-if(data.Is_Boss || data.Is_Outlined)
-    flags |= MVM_CLASS_FLAG_MINIBOSS;
-
-if(data.ExtraMeleeRes < 1.0 || 
-data.ExtraRangedRes < 1.0 || 
-data.ExtraSpeed > 1.0 || 
-data.ExtraDamage > 1.0 || 
-data.ExtraThinkSpeed > 1.0 ||
-data.Is_Boss > 1)
-    flags |= MVM_CLASS_FLAG_ALWAYSCRIT;
-
-return flags; 
+            if(data.ExtraMeleeRes < 1.0 || 
+            data.ExtraRangedRes < 1.0 || 
+            data.ExtraSpeed > 1.0 || 
+            data.ExtraDamage > 1.0 || 
+            data.ExtraThinkSpeed > 1.0 ||
+            data.Is_Boss > 1)
+                flags |= MVM_CLASS_FLAG_ALWAYSCRIT;
+            
+3. separate music list page
+4. rogue support
+5. skilltree page
+6. const support (last)
 """
 
 PROPERTY_MAPPINGS = {
