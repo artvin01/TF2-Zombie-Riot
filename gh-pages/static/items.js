@@ -97,6 +97,7 @@ function remove_items_by_tag(root) {
 }
 
 /* Filter by CUSTOM STRING */
+/* only reason defer is needed */
 const item_filter_text = document.getElementById("item_filter_input");
 item_filter_text.addEventListener('input', function (evt) {
     filter_content = evt.target.value;

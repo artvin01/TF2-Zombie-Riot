@@ -114,10 +114,6 @@
     margin-bottom: 15px;
 }
 
-.flex_break {
-    flex-basis: 100%;
-}
-
 .tooltip {
   z-index: 1;
   width: max-content;
@@ -137,21 +133,14 @@
   text-align: center;
 }
 
-.tooltip .music {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.tooltip .music img, .audio img {
-    height: 16px;
-    width: auto;
-    margin-right:5px;
-}
-
 .wave_npc:hover .tooltip, .wave_npc:focus .tooltip {
     opacity:1;
     top: 125%;
+}
+
+.wave_npc:focus .tooltip { /* on click */
+    pointer-events: all;
+    cursor: auto;
 }
 
 .wave_npc_count {
@@ -233,8 +222,13 @@ input[type=number] {
     display: flex;
     align-items: center;
     padding: 5px;
-    pointer-events:all;
     cursor: pointer;
+}
+
+.audio img {
+    height: 16px;
+    width: auto;
+    margin-right:5px;
 }
 
 .audio:hover {
@@ -244,4 +238,23 @@ input[type=number] {
 
 audio {
     margin-top: 10px;
+}
+
+/* tooltip audio */
+.tooltip .audio img {
+    height: 16px;
+    width: auto;
+    margin-right:5px;
+    filter: brightness(15%);
+}
+
+.tooltip .audio {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tooltip .audio:hover {
+    background-color: rgba(255,255,255,0.5);
+    color: var(--deep-space-blue);
 }

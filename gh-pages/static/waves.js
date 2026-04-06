@@ -81,8 +81,7 @@ async function parse_waveset(file) {
     }
 }
 
-// https://stackoverflow.com/a/42111623
-document.getElementById('wave_progress_bar').onclick = function(e) {
+function wavebar_setprogress(e) {
     let prev_wave = wave;
     const rect = e.target.getBoundingClientRect();
     let x = e.clientX - rect.left;
@@ -242,7 +241,6 @@ check_url_params();
 
 /* Audio player */
 function set_audio_resource(obj) {
-    const player = document.getElementById("music_player")
     document.getElementById("music_title").innerHTML = obj.getAttribute("name");
     let mphtml = `<audio controls autoplay><source src="filepath" type="audio/mpeg"></audio>`;
     const music_player = document.getElementById("music_player");

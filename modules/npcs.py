@@ -30,11 +30,16 @@ def parse():
         if category != "Type_Hidden":
             npc_list_html += util.fill_template(util.read("templates/npc/category_block_start.html"),{"key":category_name})
             for npc in npc_list:
+                music = ""
+                for entry in npc["music_entries"]:
+                    context=entry.copy()
+                    file_exists = context.pop("file_exists")
+                    music += util.fill_template(util.read(f"templates/music/music_modal{"_missing"*int(not file_exists)}.html"),context)
                 context = {
                     "npc_name": f"{modules.shared.get_npc_icon(npc["icon"])} {npc["name"]}",
                     "plugin_name": npc["plugin"],
                     "flags": map_flags(npc["flags"]),
-                    "desc": f"<div>{npc["description"].replace("\n","</div>\n<div>")}</div>\n"
+                    "desc": f"<div>{npc["description"].replace("\n","</div>\n<div>")}</div>\n{music}"
                 }
                 npc_list_html += util.fill_template(util.read("templates/npc/npc_preview.html"),context)
             npc_list_html += "</details>\n"

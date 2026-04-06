@@ -83,12 +83,13 @@ class NPC:
             if len(music_cutouts) > 0:
                 util.debug(f"NPC:__init__:music_cutouts\n{json.dumps(music_cutouts,indent=2)}","npcs", "OKBLUE")
                 for code in music_cutouts:
-                    mfilename = self._get_music_val(code,"Path")
+                    mfilename = self._get_music_val(code,"Path").replace("#","")
                     filepath = f"https://raw.githubusercontent.com/artvin01/TF2-Zombie-Riot/refs/heads/master/sound/{mfilename}"
+                    file_exists = os.path.isfile(f"./TF2-Zombie-Riot/sound/{mfilename}")
                     self.music_entries.append({
                         "musicname": f"{self._get_music_val(code,"Name")} - {self._get_music_val(code,"Artist")}",
                         "filepath": filepath,
-                        "file_exists": os.path.isfile(f"./TF2-Zombie-Riot/sound/{mfilename}")
+                        "file_exists": file_exists
                     })
             
             desc_key = f"{self.name} Desc"
@@ -316,7 +317,8 @@ class NPC:
             "icon": self.icon, 
             "flags": self.flags,
             "filetype": self.filetype,
-            "has_prefix_logic": self.has_prefix_logic
+            "has_prefix_logic": self.has_prefix_logic,
+            "music_entries": self.music_entries
         }
 
 class NPC_Dummy:
@@ -327,7 +329,7 @@ class NPC_Dummy:
         self.description = npc_obj.description
         self.filetype = npc_obj.filetype
         self.has_prefix_logic = npc_obj.has_prefix_logic
-        self.music_entries = []
+        self.music_entries = npc_obj.music_entries
     
     def __json__(self):
         return {

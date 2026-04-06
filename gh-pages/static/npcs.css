@@ -57,14 +57,64 @@ details details details details summary { font-size: .5em }
     top: 125%;
 }
 
-/*
 .hover:focus .tooltip {
     pointer-events: all;
     cursor:auto;
-}*/
+}
 
 @media screen and (max-width: 700px) {
     .tooltip {
         width: min-content; /* TODO properly size this */
     }
+}
+
+/* Audio */
+#music_title {
+    text-transform: capitalize;    
+}
+
+.audio {
+    text-transform: capitalize;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    margin-left:-20px;
+    cursor: pointer;
+    width:fit-content;
+}
+
+.audio img {
+    height: 16px;
+    width: auto;
+    filter: brightness(15%);
+    margin-right: 21px;
+}
+
+.audio:hover {
+    background-color: rgba(255,255,255,0.5);
+    color: var(--deep-space-blue);
+}
+
+audio {
+    margin-top: 10px;
+}
+
+/* music player */
+.music_bg {
+    margin-top: 2em;
+    margin-right: 2em;
+    padding: 1em;
+    background-color: var(--bg-light);
+    color: var(--deep-space-blue);
+    border-radius: 5px;
+
+    position: fixed;
+    right: 0%;
+    top: 0%;
+
+    display:flex;
+    flex-wrap:wrap;
+    max-width: min-content;
+
+    transition: 1s;
 }

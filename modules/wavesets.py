@@ -5,9 +5,8 @@ from collections import defaultdict
 import vdf
 
 """
-TODO somehow make npc music playable..
-TODO different npc icon looks depending on mvm flags => modules.shared.FLAG_MAPPINGS comments for descs
-TODO implement showing support npcs in embeds
+TODO separate music list page
+TODO implement showing support npcs & npc flags in embeds (create GIF if blinking/mission flag!)
 TODO implement adding these flags automatically instead of set npc flags only
     [x] support
     [x] normal (not shown)
@@ -314,7 +313,7 @@ def parse():
             for entry in npc_data.music_entries:
                 context=entry.copy()
                 file_exists = context.pop("file_exists")
-                music += util.fill_template(util.read(f"templates/music/music_modal{"_missing"*int(file_exists)}.html"),context)
+                music += util.fill_template(util.read(f"templates/music/music_modal{"_missing"*int(not file_exists)}.html"),context)
             
             # Check if NPC has a flag indicating support
             forced_support=False

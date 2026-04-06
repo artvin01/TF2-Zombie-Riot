@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="static/waves.css">
-    <script src="static/waves.js" defer></script>
+    <script src="static/waves.js"></script>
     <title>ZR Encyclopedia - Unknown waveset</title>
 </head>
 <body>
@@ -16,7 +16,7 @@
         <img src="static/link.svg" id="wave_embed_link" tabindex="0" onclick="copy_waveset_embed_link();">
         <div class="flex_break"></div>
         <div class="wave_btn" tabindex="0" onclick="cycle_wave(-1);">&lt;</div>
-        <div id="wave_progress_bar">
+        <div id="wave_progress_bar" onclick="wavebar_setprogress(event);">
             <div style="pointer-events:none;"></div>
         </div>
         <div class="wave_btn" tabindex="0" onclick="cycle_wave(1);">&gt;</div>

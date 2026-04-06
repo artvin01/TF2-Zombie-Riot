@@ -165,3 +165,7 @@ li:before {
   -o-animation: rotating 2s linear infinite;
   animation: rotating 2s linear infinite;
 }
+
+.flex_break {
+    flex-basis: 100%;
+}
