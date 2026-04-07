@@ -89,7 +89,7 @@ void SetSilvesterPillarColour(int colours[4])
 public void RaidbossSilvester_OnMapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Silvester");
+	strcopy(data.Name, sizeof(data.Name), "Infected Silvester");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_raidboss_silvester");
 	strcopy(data.Icon, sizeof(data.Icon), "silvester_raid");
 	data.IconCustom = true;

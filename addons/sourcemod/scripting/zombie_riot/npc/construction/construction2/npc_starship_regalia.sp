@@ -278,7 +278,7 @@ void StarShip_Regalia_OnMapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags 		= 0;
-	data.Category 	= Type_Outlaws;
+	data.Category 	= Type_Raid;
 	data.Precache 	= ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);

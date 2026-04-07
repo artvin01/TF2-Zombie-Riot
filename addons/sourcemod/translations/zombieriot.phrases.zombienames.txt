@@ -1485,6 +1485,10 @@
 		"it"		"Kahmlstein?"
 		"ko"		"카멜슈타인?"
 	}
+	"Kahmlstein? Desc"
+	{
+		"en"		"A fake kahmlstein, build by the original one\n-Attacks rapidly with his fists\n-Changes up his melee fist attacks to various phases:\nFast attacking\nSlow but heavy damage\nSingular necksnap\n-Once below 1/4th health, enrage:\nWhip out minigun that shoots explosive projectiles\nHas a bit of windup before fireing\ngains massive resistances during it\nLasts for a few seconds"
+	}
 	"Chaos Kahmlstein"
 	{
 		"en"		"Chaos Kahmlstein"
@@ -2134,6 +2138,10 @@
 		"en"		"Zilius"
 		"it"		"Zilius"
 		"ko"		"질리우스"
+	}
+	"Zilius Desc"
+	{
+		"en"		"Racist Expidonsan\n-Buff aura that gives major buffs to expidonsan shields\n-Can gather energy and give himself shield and a temp buff\n-Can strike and fly towards enemies, sloggishly flying and slicing\n-Can summon portals that fire lasers at enemies with a delay\nCan only have 3 portals at once\n-On spawn summons a trapped zeina, that once freed, buffs allies around her"
 	}
 	"Waldch"
 	{
@@ -3429,7 +3437,7 @@
 	}
 	"Ihanal Demon Whisperer Desc"
 	{
-		"en"	"Taming the great demon with chaos.\n-Heals the great demon and buffs him\n-Buffs great demon if he is close to him\n-If demon dies first, he explodes into 50 chaos demons"
+		"en"	"Taming the great demon with chaos.\n-Heals the great demon and buffs him\n-Buffs great demon if he is close to him\n-If demon dies first, he explodes into 50 chaos demons\n-When hurt and near the demon, gives false therapy and makes the demon attack whoever attacked him"
 	}
 	"Winter Sniper"
 	{
@@ -3675,6 +3683,10 @@
 		"en"	"Wildingen Hitman"
 		"it"	"Sicario di Wildingen"
 		"ko"	"와일딩겐 히트맨"
+	}
+	"Wildingen Hitman Desc"
+	{
+		"en"	"Normal version:\n-Shoots from far range and marks on hit\n-After being marked, the next shot oneshots\nRaid version:\nMelee's and marks on hit\n-After being marked, the next shot oneshots\n-Can be hurt on the final wave only\n-First only attacks waldch if he is alive"
 	}
 	"Vivithorn"
 	{
@@ -4312,10 +4324,7 @@
 	}
 	"Unspeakable Desc"
 	{
-		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increased.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks.\n(Silence)makes voidbuff weaker"
-		"ru" 	"Сердце Бездны...\nПервая способность:Засасывает всех союзников и если слишком близко,Наносит очень много урона.\nМожет ударить несколько раз подряд если долго никого не бил.\nВо время его существования,Распостронение бездны Очень усилено.\nКоллоны бездны появляются под врагами.\nЕсли Уровень здоровья пал до низкого начнёт распостронять бездну там где ходит.\n(заглушение)ослабляет Усиление от бездны"
-		"it"	"Cuori del vuoto...\nAbilità1: risucchia tutti gli alleati e, se troppo vicini, li danneggia pesantemente.\nPuò attaccare rapidamente se non ha attaccato per un po'.\nDurante la sua esistenza, la diffusione del vuoto è immensamente aumentata.\nI pilastri del vuoto sono evocati sotto i nemici.\nSe la salute è troppo bassa, diffonderà il vuoto dove cammina.\n(Silenzio)rende il voidbuff più debole"
-		"ko"	"공허의 심장이라고 하는 존재...\n능력1: 주변의 모든 적을 빨아들이며, 근접한 대상에게 높은 피해를 줍니다.\n한동안 공격하지 않았다면, 다음 공격의 속도가 크게 증가.\n이 적이 등장하면, 공허 점막의 확산 속도 대폭 가속.\n플레이어 아래에 공허 기둥을 소환합니다.\n체력이 낮을 경우, 이동할 때마다 공허 점막을 생성.\n(침묵 상태 시) 이 적에게 부여되는 공허 관련 버프가 약화됩니다."
+		"en"	"Hearts of the void...\n-Ability sucks all allies in and if too close, damages them heavily and debuffs, gains ranged resistance and melee vuln during it it.\nCan rapid attack if it didnt attack for a while or after a cooldown.\nDuring its existance, void spreading is immensively increased.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks.\n-Can get a shield each hp threshhold\n(Silence)makes voidbuff weaker"
 	}
 	"Voided Diversionistico"
 	{
@@ -4525,10 +4534,7 @@
 	}
 	"Vhxis Desc"
 	{
-		"en"	"The void keeper, killing him is not a good idea...\n(Silence makes voidbuff weaker)"
-		"ru" 	"Хранитель Бездны,Не стоит его убивать...\n(Заглушение Ослабивает Усиление от бездны)"
-		"it"	"Il custode del vuoto, ucciderlo non è una buona idea...\n(il silenzio rende il voidbuff più debole)"
-		"ko"	"공허의 수호자입니다. 그를 죽이는건 좋은 생각이 아닐 겁니다...\n(침묵 상태 시, 이 적이 받는 공허 관련 버프가 약화)"
+		"en"	"The void keeper, killing him is not a good idea...\n-Can punc the ground with a delay:\nStanding outside of the zone heavily damages you and debuffs you and knocks you up\ninside the zone you get pushed back\nAlso summons earthquake rocks\n-Can summon voided vanguards to buff speed\n-Can Gather energy and explode afte a delay, damaging and spawning alot of ixufan's\n-Stands still and fires a delayed laser at 2 enemies, changing between them\n(Silence makes voidbuff weaker)"
 	}
 	"Chaos Mage"
 	{
@@ -4919,10 +4925,7 @@
 	}
 	"Nemal Desc"
 	{
-		"en"		"Each 4th hit gives you a teslar debuff.\nLays mines:\nRed: damages, marks you, if marked, more damage.\nGreen: Cures of teslar debuff, launches up, cant be sniped for 4 seconds and no fall damage\nEach 10 seconds she marks you if hit with melee.\nLaser attack predicts, anti predict it.\nWave ability predicts if youre marked.\nSimular abilities on Silvester.\nHer melee makes you glide (Silencable)"
-		"ru" 		"Каждая 4-ая атака накладывает Теслар Дебафф.\nУстанавливает мины:\nКрасные:Наносят урон,Помечают вас,Если вы помечены,получаете больше урона.\nЗелёные:Лечит вас от Дебаффа Теслар,Запускает вверх,Не может быть Застрелен в течении 4 секунд и не получает урон от падения\nКаждые 10 секунд помечает вас если ударила вас.\nАттаки Лазерами предугадывают вас,противодействуйте наведению.\nПохожие способности у Сильвестера.\nЕё Ближний бой заставляет скользить вас(Можно Заглушить)"
-		"it"		"Ogni quarto colpo dà un debuff di teslar.\nLancia mine:\nRosso: danneggia, ti segna, se segnato, più danni.\nVerde: Cura il debuff teslar, si lancia verso l'alto, non può essere cecchinato per 4 secondi e non subisce danni da caduta.\nOgni 10 secondi ti segna se colpito in mischia.\nL'attacco laser lo predice, l'abilità anti-descrizione lo predice.\nL'abilità Onda predice se sei segnato.\nAbilità simili su Silvester.\nIl suo corpo a corpo ti fa planare (Silenziabile)"
-		"ko"		"매 4번째 공격이 테슬라 디버프를 부여.\n지뢰 매설:\n빨강: 피해를 주고, 표적 부여. 이미 표적이 있다면 공격 피해량 증가.\n초록: 테슬라 디버프를 제거하고, 공중으로 날아오르며, 4초 동안 낙하 피해 면역 및 저격 당하지 않음.\n매 10초마다, 이 적의 근접 공격이 적중하면 대상에게 표적이 부여됨.\n레이저 공격은 대상의 경로를 예측.\n표적 상태일 경우 레이저 공격이 대상의 움직임을 예측.\n실베스터 역시 유사한 능력 보유.\n그녀의 공격이 적중한 대상은 쭉 미끄러지게 됨. (침묵 상태 시, 이 디버프를 부여하지 않음)"
+		"en"		"-Each 4th hit gives you a teslar debuff.\n-Lays mines:\nRed: damages, marks you, if marked, more damage.\nGreen: Cures of teslar debuff, launches up, cant be sniped for 4 seconds and no fall damage\n-Each 10 seconds she marks you if hit with melee.\n-Laser attack predicts, anti predict it.\n-Wave ability predicts if youre marked.\n-Simular abilities on Silvester.\n-Her melee makes you glide (Silencable)"
 	}
 	"Sentinel"
 	{
@@ -7591,7 +7594,7 @@
 		"it"	"U̴̡̕m̶̒b̵͗r̷̂á̴̪l̸̐ ̷̯̽Ẅ̸.̶̾F̶̭̃.̷͗"
 		"ko"	"움̴̡̕브̶̒랄̸̐ ̷̯̽W.̸̈F̶̾.̷̭̃͗"
 	}
-	"Umbral W.F Desc"
+	"Umbral W.F. Desc"
 	{
 		"ko"	"배풍등의 모습을 갖추고 움브랄 게이트에서 나타난 움브랄들입니다.\n-주기적으로 옥테인 킥을 사용합니다."
 		"en"	"Umbrals created from the Umbral gate in the image of Whiteflower\n-Periodically uses Octane kick."
@@ -7674,9 +7677,7 @@
 	}
 	"Reila Desc"
 	{
-		"en" "Former Almagest researcher, now trying to close the rifts and contain the Void at all costs\n-Controls the Construct while active, and permanently gains resistance whenever it is reset"
-		"it" "Ex ricercatore dell'Almagest, ora cerca di chiudere \nle spaccature e contenere il Vuoto a tutti i costi. \nControlla il Costrutto quando è attivo e guadagna permanentemente resistenza ogni volta che viene resettato"
-		"ko" "전직 알마게스트 연구원 소속으로, \n이제는 필사적으로 균열을 닫아 어떻게든 공허를 격리시키려고 합니다. \n제작물을 조종하며, 제작물이 초기화되면 영구적으로 피해 저항력을 얻습니다."
+		"en" "Former Almagest researcher, now trying to close the rifts and contain the Void at all costs\n-Hp threshholds buff her resistance for abit\n-Fires a laser with a delay that spreads outwards, during it\n-Summons projectiles that cause lighting strikes after a random delay\n-Controls the Construct while active, and permanently gains resistance whenever it is destroyed for time\n-fight starts with very low time\n-Spawns together with umbrals"
 	}
 	"Reila?"
 	{
@@ -7930,13 +7931,17 @@
 	}
 	"Almagest Proxima Desc"
 	{
-		"en"	"-Starts with high armor and 5 shields\n-Heals its own kind near eachother\n-Deals high melee damage and deals 3x damage once the debuff maxes out\n-Applies 2 spearmen debuff each hit\n-Will try to surround you at all times"
+		"en"	"-Starts with 5 shields\n-Heals its own kind near eachother\n-Deals high melee damage and deals 3x damage once the debuff maxes out\n-Applies 2 spearmen debuff each hit\n-Will try to surround you at all times"
 		"ko"	"-대량의 아머와 5개의 보호막을 보유한 채로 스폰됩니다.\n-동일한 종을 서로 치유합니다.\n-높은 근접 피해를 가합니다.\n-적중 시 '장창병의 참격' 디버프를 2 부여합니다.\n-상시로 대상을 둘러싸려고 시도합니다."
 	}
 	"Black Heavy Soul"
 	{
 		"en"	"Black Heavy Soul"
 		"ko"	"검은 헤비 영혼"
+	}
+	"Black Heavy Soul Desc"
+	{
+		"en"	"He killed all the other heavy souls, oh my god..\n-stand still and shoots finger bullets that explode, they rehome once\n-Can jump and do a aoe explosive slam\n-Can conga and deal huge damage in an aoe constnatly, has bad mobility but is fast\n-Transforms a few times in the battle once reaching an hp threshhold, gaining massive stats."
 	}
 	"Super Saiyan Black Heavy Soul"
 	{
@@ -7958,15 +7963,27 @@
 		"en"	"Broly"
 		"ko"	"브로리"
 	}
+	"Broly Desc"
+	{
+		"en"	"Weakling.\n-Stand still and looks at you\n-When he feels like it, runs at light speed and oneshots you"
+	}
 	"No Random Kranz V3"
 	{
 		"en"	"No Random Kranz V3"
 		"ko"	"노 랜덤 크란츠 V3"
 	}
+	"No Random Kranz V3 Desc"
+	{
+		"en"	"-Can rocketjump, while doing so, rockets summon blackholes\n-Fires rockets\n-Can melee attack with a cooldown, this melee deals heavy damage and spawns blackholes.\n-Blackholes cause aoe damage and fade after some time\n-Has 7 lives, each life lost gives major buffs for a short time\n-Occasionally summons 3 sniper verions which on hit with anything spawn blackholes"
+	}
 	"Mazeat Fabulous Squad X Elite, Solvence of Cringe"
 	{
 		"en"	"Mazeat Fabulous Squad X Elite, Solvence of Cringe"
 		"ko"	"녹아내리는 오글거림의 마제트 페뷸러스 스쿼드 X 엘리트"
+	}
+	"Mazeat Fabulous Squad X Elite, Solvence of Cringe Desc"
+	{
+		"en"	"Raid Quadra boss\n-Spawns:\nBob the first:\n-Melee attacks cause stacking vuln\n-Causes air punch attacks\nOmega\n-Punches very fast\n-Summons a one time vincent that dunks you\nWhiteflower:\n-Dashes at you dealing damage\n-Dash cooldown reduced with melee hits\nShadowing darkness:\n-Attacks cause Necrosis\n-teleports above you, slams down, spawns a pool that causes necrosis, and shoots 2 waves that damage you\nAll these raids are heavily dummed down or changed"
 	}
 	"Bob The First Squad"
 	{

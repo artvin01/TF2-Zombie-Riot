@@ -7738,7 +7738,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= 0.25;
 	data.AttackspeedBuff			= -1.0;
-	data.Positive 					= false;
+	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= Const2Modifs_Fat_Start;
 	data.OnBuffEndOrDeleted			= Const2Modifs_Fat_End;
@@ -7754,7 +7754,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= 0.25;
 	data.AttackspeedBuff			= -1.0;
-	data.Positive 					= false;
+	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= Const2Modifs_Modifier_Start;
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;

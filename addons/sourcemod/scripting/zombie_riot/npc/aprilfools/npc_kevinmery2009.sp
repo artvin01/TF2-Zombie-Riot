@@ -59,7 +59,7 @@ void KevinMery_OnMapStart_NPC()
 	data.Precache = ClotPrecache;
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Mutation;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

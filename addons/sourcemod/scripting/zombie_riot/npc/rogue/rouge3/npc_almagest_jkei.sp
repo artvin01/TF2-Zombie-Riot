@@ -58,7 +58,7 @@ void AlmagestJkei_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "rbf_jkei");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Curtain;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);

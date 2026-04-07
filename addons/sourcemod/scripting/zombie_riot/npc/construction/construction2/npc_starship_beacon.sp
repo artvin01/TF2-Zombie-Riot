@@ -25,7 +25,7 @@ void Starship_Beacon_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Starship Beacon");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_starship_beacon");
-	data.Category 	= Type_Outlaws;
+	data.Category 	= Type_Hidden;
 	data.Func 		= ClotSummon;
 	data.Precache 	= ClotPrecache;
 	strcopy(data.Icon, sizeof(data.Icon), "teleporter"); 						//leaderboard_class_(insert the name)

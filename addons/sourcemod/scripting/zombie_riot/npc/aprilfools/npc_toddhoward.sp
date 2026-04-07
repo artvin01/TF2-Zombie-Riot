@@ -83,7 +83,7 @@ public void ToddHoward_OnMapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "toddhoward");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Mutation;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
