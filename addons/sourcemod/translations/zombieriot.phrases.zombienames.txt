@@ -1476,6 +1476,7 @@
 	"Kahmlstein? Desc"
 	{
 		"en"		"A fake kahmlstein, built by the original one\n-Attacks rapidly with his fists\n-Changes up his melee fist attacks to various phases:\nFast attacking\nSlow but heavy damage\nSingular necksnap\n-Once below 1/4th health, enrage:\nWhip out minigun that shoots explosive projectiles\nHas a bit of windup before fireing\ngains massive resistances during it\nLasts for a few seconds"
+		"ko"		"원본이 제작한 가짜 카멜슈타인입니다.\n-주먹으로 빠른 근접 공격을 합니다.\n-여러 페이즈에 따라 근접 공격이 변화합니다:\n빠른 공격\n느리지만 강력한 피해량\n단일 목꺾기 공격\n-체력이 25％ 이하가 될 경우 격분 상태가 됩니다:\n폭발성 투사체를 발사하는 미니건을 꺼냅니다.\n발사 전 예열 시간 보유\n미니건 사용 중 저항력 대폭 증가\n몇초 동안 유지됨"
 	}
 	"Chaos Kahmlstein"
 	{
@@ -2130,6 +2131,7 @@
 	"Zilius Desc"
 	{
 		"en"		"Racist Expidonsan\n-Buff aura that gives major buffs to expidonsan shields\n-Can gather energy and give himself shield and a temp buff\n-Can strike and fly towards enemies, sloggishly flying and slicing\n-Can summon portals that fire lasers at enemies with a delay\nCan only have 3 portals at once\n-On spawn summons a trapped zeina, that once freed, buffs allies around her"
+		"ko"		"인종차별주의자 엑스피돈사인.\n-엑스피돈사 보호막에 대량의 버프를 제공하는 아우라를 보유합니다.\n-에너지를 충전하여 보호막과 짧은 버프를 얻을 수 있습니다.\n-공중으로 떠올라 대상을 향해 날아올 수 있으며, 느릿하게 비행하며 돌진할 수 있습니다.\n-주기적으로 레이저를 발사하는 포탈 소환 가능\n-한번에 3개의 포탈만 존재할 수 있음\n-제이나를 구속한 상태로 스폰되며, 제이나를 풀어줄 경우 주위의 아군에게 버프를 제공합니다."
 	}
 	"Waldch"
 	{
@@ -3415,7 +3417,8 @@
 	}
 	"Hallam's Great Demon Desc"
 	{
-		"en"	"Greatest demon in Hallam, now chaos affected..\n-The more the whiseper is thurt the stronger he gets\n-Once whisperer dies, he enrages for a short time\n-Stays at 50% power if whisperer dies\n-Targets anyone attacking whisperer if close\n-Spawns chaos demons every so often\n-Shoots projectiles every so often"
+		"en"	"Greatest demon in Hallam, now chaos affected..\n-The more the whiseper is hurt the stronger he gets\n-Once whisperer dies, he enrages for a short time\n-Stays at 50％ power if whisperer dies\n-Targets anyone attacking whisperer if close\n-Spawns chaos demons every so often\n-Shoots projectiles every so often"
+		"ko"	"할람의 가장 위대한 악마, 이제는 혼돈에 침식되어 버렸습니다.\n-밀고자의 체력이 감소할 수록 더욱 강해집니다.\n-밀고자 사망 시, 짧은 시간 동안 격분 상태가 됩니다.\n-밀고자 사망 시 힘 수치가 50％로 유지됩니다.\n-근접 시 밀고자를 공격하는 대상을 표적으로 삼습니다.\n-주기적으로 혼돈의 악마를 소환합니다.\n-주기적으로 투사체를 발사합니다."
 	}
 	"Ihanal Demon Whisperer"
 	{
@@ -3426,6 +3429,45 @@
 	"Ihanal Demon Whisperer Desc"
 	{
 		"en"	"Taming the great demon with chaos.\n-Heals the great demon and buffs him\n-Buffs great demon if he is close to him\n-If demon dies first, he explodes into 50 chaos demons\n-When hurt and near the demon, gives false therapy and makes the demon attack whoever attacked him"
+		"ko"	"대악마를 혼돈으로 길들인 자입니다.\n-대악마를 치유하며 버프를 제공합니다.\n-대악마와 근접 시 버프를 제공합니다.\n-대악마가 먼저 사망할 경우, 50체의 혼돈의 악마로 분열됩니다.\n-대악마와 근접한 상태로 피해를 받을 경우, 대악마에게 돌팔이 치료술anaas"
+	{
+		"en"	"Qanaas"
+		"it"	"Qanaas"
+		"ko"	"콰나스"
+	}
+	"Atilla"
+	{
+		"en"	"Atilla"
+		"it"	"Atilla"
+		"ko"	"아틸라"
+	}
+	"Ancient Demon"
+	{
+		"en"	"Ancient Demon"
+		"it"	"Antico demone"
+		"ko"	"고대 악마"
+	}
+	"Hallam's Great Demon"
+	{
+		"en"	"Hallam's Great Demon"
+		"it"	"Il grande demone di Hallam"
+		"ko"	"할람의 대악마"
+	}
+	"Hallam's Great Demon Desc"
+	{
+		"en"	"Greatest demon in Hallam, now chaos affected..\n-The more the whiseper is hurt the stronger he gets\n-Once whisperer dies, he enrages for a short time\n-Stays at 50％ power if whisperer dies\n-Targets anyone attacking whisperer if close\n-Spawns chaos demons every so often\n-Shoots projectiles every so often"
+		"ko"	"할람의 가장 위대한 악마, 이제는 혼돈에 침식되어 버렸습니다.\n-밀고자의 체력이 감소할 수록 더욱 강해집니다.\n-밀고자 사망 시, 짧은 시간 동안 격분 상태가 됩니다.\n-밀고자 사망 시 힘 수치가 50％로 유지됩니다.\n-근접 시 밀고자를 공격하는 대상을 표적으로 삼습니다.\n-주기적으로 혼돈의 악마를 소환합니다.\n-주기적으로 투사체를 발사합니다."
+	}
+	"Ihanal Demon Whisperer"
+	{
+		"en"	"Ihanal Demon Whisperer"
+		"it"	"Ihanal Sussurratore di Demoni"
+		"ko"	"이하날 악마 밀고자"
+	}
+	"Ihanal Demon Whisperer Desc"
+	{
+		"en"	"Taming the great demon with chaos.\n-Heals the great demon and buffs him\n-Buffs great demon if he is close to him\n-If demon dies first, he explodes into 50 chaos demons\n-When hurt and near the demon, gives false therapy and makes the demon attack whoever attacked him"
+		"ko"	"대악마를 혼돈으로 길들인 자입니다.\n-대악마를 치유하며 버프를 제공합니다.\n-대악마와 근접 시 버프를 제공합니다.\n-대악마가 먼저 사망할 경우, 50체의 혼돈의 악마로 분열됩니다.\n-대악마와 근접한 상태로 피해를 받을 경우, 대악마에게 '돌팔이 치료술' 버프를 부여하고 대악마가 공격자를 표적으로 삼게 만듭니다."
 	}
 	"Winter Sniper"
 	{
@@ -3675,6 +3717,7 @@
 	"Wildingen Hitman Desc"
 	{
 		"en"	"Normal version:\n-Shoots from far range and marks on hit\n-After being marked, the next shot oneshots\nRaid version:\nMelee's and marks on hit\n-After being marked, the next shot oneshots\n-Can be hurt on the final wave only\n-First only attacks waldch if he is alive"
+		"ko"	"일반 버전:\n-원거리에서 사격을 하며 적중 시 대상에게 표적을 부여합니다.\n-대상이 표적 상태라면, 적중 시 즉사시킵니다.\n레이드 버전:\n-근접 공격을 사용하며 적중 시 대상에게 표적을 부여합니다.\n-대상이 표적 상태라면, 적중 시 즉사시킵니다.\n-최종 웨이브에서만 피해를 가할 수 있습니다.\n-왈츠가 생존해 있을 경우 우선 표적으로 삼습니다."
 	}
 	"Vivithorn"
 	{
@@ -4312,7 +4355,8 @@
 	}
 	"Unspeakable Desc"
 	{
-		"en"	"Hearts of the void...\n-Ability sucks all allies in and if too close, damages them heavily and debuffs, gains ranged resistance and melee vuln during it it.\nCan rapid attack if it didnt attack for a while or after a cooldown.\nDuring its existance, void spreading is immensively increased.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks.\n-Can get a shield each hp threshhold\n(Silence)makes voidbuff weaker"
+		"en"	"Hearts of the void...\n-Ability sucks all allies in and if too close, damages them heavily and debuffs, gains ranged resistance and melee vuln during it it.\nCan rapid attack if it didnt attack for a while or after a cooldown.\nDuring its existance, void spreading is immensively increased.\nVoid Pillars are summoned below enemies.\nIf too low on health, will spread void where it walks.\n-Can get a shield each hp threshhold\n(Silence)makes voidbuff weaker"
+		"ko"	"공허의 심장이라고 하는 존재...\n-능력1: 주변의 모든 적을 빨아들이며, 근접한 대상에게 높은 피해를 가하고 디버프를 부여하며, 원거리 피해 저항력을 얻고 근접 피해에 취약해집니다.\n-한동안 공격하지 않았거나 쿨다운이 지난 후, 다음 공격의 속도가 크게 증가\n-이 적이 등장하면, 공허 점막의 확산 속도 대폭 가속.\n-대상 아래에 공허 기둥을 소환합니다.\n-체력이 크게 낮아질 경우, 이동한 위치에 공허 점막을 생성\n-체력이 일정 수치 감소할 때마다 보호막을 얻습니다.\n(침묵 상태 시) 이 적에게 부여되는 공허 관련 버프가 약화됩니다."
 	}
 	"Voided Diversionistico"
 	{
@@ -4523,6 +4567,7 @@
 	"Vhxis Desc"
 	{
 		"en"	"The void keeper, killing him is not a good idea...\n-Can punc the ground with a delay:\nStanding outside of the zone heavily damages you and debuffs you and knocks you up\ninside the zone you get pushed back\nAlso summons earthquake rocks\n-Can summon voided vanguards to buff speed\n-Can Gather energy and explode afte a delay, damaging and spawning alot of ixufan's\n-Stands still and fires a delayed laser at 2 enemies, changing between them\n(Silence makes voidbuff weaker)"
+		"ko"	"공허의 수호자입니다. 그를 죽이는건 좋은 생각이 아닐 겁니다...\n-지연 후 지면 강타 공격을 사용:\n구역 밖에 있을 경우 막대한 피해를 가하고 디버프를 부여, 공중으로 대상을 띄웁니다.\n구역 안에 있을 경우 밖으로 밀려납니다.\n또한 지진 바위를 소환합니다.\n-속도 버프를 제공하는 공허화된 뱅가드를 소환할 수 있습니다.\n-지연 후 폭발하는 공격을 사용할 수 있으며, 대상에게 피해를 가하고 다수의 공허 익수판을 소환합니다.\n-제자리에 멈춰 2명의 적에게 지연형 레이저를 번갈아 발사합니다.\n(침묵 상태 시, 이 적이 받는 공허 관련 버프가 약화)"
 	}
 	"Chaos Mage"
 	{
@@ -4610,9 +4655,9 @@
 	}
 	"Chaos Injured Cultist Desc"
 	{
-		"en"	"Hes on the brink of death.\n-Summons extreme slow areas that nerf attackspeed, and deal immensive damage if power reaches 100%, recives power when taking damage\n-Kicks very strongly."
+		"en"	"Hes on the brink of death.\n-Summons extreme slow areas that nerf attackspeed, and deal immensive damage if power reaches 100%, receives power when taking damage\n-Kicks very strongly."
 		"it"	"E' ad un passo dalla morte\nEvoca aree estremamente lente che riducono la velocità d'attacco e infliggono danni immensi se la potenza raggiunge il 100%, recupera energia quando subisce danni."
-		"ko"	"이 자는 죽음의 문턱에 놓였습니다.\n힘이 100％ 에 도달할 경우 막대한 피해를 가하고 공격 속도 디버프를 부여하는 지역을 소환합니다. 피해를 입을 때 힘이 충전됩니다.\n발차기 공격으로 대상을 밀어냅니다."
+		"ko"	"이 자는 죽음의 문턱에 놓였습니다.\n-힘이 100％ 에 도달할 경우 막대한 피해를 가하고 공격 속도 디버프를 부여하는 지역을 소환합니다. 피해를 입을 때 힘이 충전됩니다.\n-발차기 공격으로 대상을 밀어냅니다."
 	}
 	"Voided Erasus"
 	{
@@ -4914,6 +4959,7 @@
 	"Nemal Desc"
 	{
 		"en"		"-Each 4th hit gives you a teslar debuff.\n-Lays mines:\nRed: damages, marks you, if marked, more damage.\nGreen: Cures of teslar debuff, launches up, cant be sniped for 4 seconds and no fall damage\n-Each 10 seconds she marks you if hit with melee.\n-Laser attack predicts, anti predict it.\n-Wave ability predicts if youre marked.\n-Simular abilities on Silvester.\n-Her melee makes you glide (Silencable)"
+		"ko"		"-매 4번째 공격이 테슬라 디버프 부여\n-지뢰 매설:\n빨강: 피해를 주고, 표적 부여. 이미 표적이 있다면 피해량 증가.\n초록: 테슬라 디버프를 제거하고, 공중으로 띄워지며, 4초 동안 낙하 피해 면역 및 저격 당하지 않음.\n-매 10초마다, 이 적의 근접 공격이 적중하면 대상에게 표적 부여\n-레이저 공격은 대상의 경로를 예측\n-표적 상태일 경우 에너지 파동 공격이 대상의 움직임을 예측\n실베스터 역시 유사한 능력 보유.\n적중 시 대상이 쭉 미끄러지게 됨. (침묵 상태 시, 이 효과가 발생하지 않음)"
 	}
 	"Sentinel"
 	{
@@ -5359,6 +5405,7 @@
 	"W.F. Ekas Piloteer Desc"
 	{
 		"en"	"-Shoots a few bullets then runs upto you to kick\n-After kick, launches a rocket at you and reloads his pistol"
+		"ko"	"-총을 수차례 발사한 후 대상에게 돌격하여 발차기 공격 사용\n-발차기 공격 사용 후, 대상에게 로켓을 발사 후 권총 재장전"
 	}	
 	"W.F. Extreme Knight Giant"
 	{
@@ -5380,6 +5427,7 @@
 	"W.F. Raging Blader Desc"
 	{
 		"en"	"-The lower health the faster he attacks\n-once losing a life, regains some health back"
+		"ko"	"-체력이 감소할 수로 공격 속도 증가\n-생명을 잃을 시, 체력을 소량 회복함"
 	}	
 	"Whiteflower The Traitor"
 	{
@@ -5390,7 +5438,7 @@
 	"Whiteflower The Traitor Desc"
 	{
 		"en"	"-Drops grenades that heal allies and hurt enemies in its range.\n-Periodically uses Octane kick."
-		"ko"	"-범위 내의 아군의 체력을 회복시키고 적군에게 피해를 주는 수류탄을 던집니다."
+		"ko"	"-범위 내의 아군의 체력을 회복시키고 적군에게 피해를 주는 수류탄을 던집니다.\n-주기적으로 옥테인 킥을 사용합니다."
 	}	
 	"Ouroboros Ekas"
 	{
@@ -6266,6 +6314,7 @@
 	"Chaos Evil Demon Desc"
 	{
 		"en"	"-Heals all allies around himself\n-If he heals allies, he heals himself\n-Buffs both healed ally and himself IF he actually healed the targets"
+		"ko"	"-주변의 모든 아군에게 치유 제공\n-아군에게 치유를 제공할 시, 자신 역시 치유됨\n-치유가 실제로 제공되었을 경우 아군과 자신에게 버프를 부여"
 	}
 	"Disturbed Umbral"
 	{
@@ -6335,6 +6384,7 @@
 	"Todd Howard Desc"
 	{
 		"en"	"Reskinned alaxios lol"
+		"ko"	"스킨 씌운 알락시오스 ㅎ"
 	}
 	"kevinmery2009"
 	{
@@ -6474,7 +6524,7 @@
 	{
 		"it"	"Simile a un Dual-Rea.\nSpawn con scudi.\nVolerà verso di voi una volta ogni tanto."
 		"en"	"Similar to an Dual-Rea. \n-Spawns with shields.\n-Will Fly towards you once every so often."
-		"ko"	"듀얼 레아와 비슷합니다.\n-보호막을 얻은채로 생성\-n주기적으로 대상을 향해 날아옵니다"
+		"ko"	"듀얼 레아와 비슷합니다.\n-보호막을 얻은채로 생성\n-주기적으로 대상을 향해 날아옵니다."
 	}
 	"Biggun Assisa"
 	{
@@ -7518,7 +7568,7 @@
 	{
 		"en"	"An erratic Umbral, capable of defying the laws of physics. \nMoves in short bursts, as if it were lagging."
 		"it"	"Un Umbral irregolare, capace di sfidare le leggi della fisica. \nSi muove a brevi intervalli, come se fosse in ritardo."
-		"ko"	"물리 법칙을 거스를 수 있는 불규칙한 움브랄. \n마치 렉이라도 걸린 듯 짧게 순간적으로 움직입니다."
+		"ko"	"물리 법칙을 거스를 수 있는 불규칙한 움브랄.\n-마치 렉이라도 걸린 듯 짧게 순간적으로 움직입니다."
 	}
 	"Umbral Refract"
 	{
@@ -7530,7 +7580,7 @@
 	{
 		"en"	"A fierce Umbral, ready to fight to the bitter end\n-When hurt, leaps and fires an exploding laser at the attacker."
 		"it"	"Un Umbral feroce, pronto a combattere fino alla fine. \nSe ferito, salta e spara un laser esplosivo contro l'aggressore."
-		"ko"	"맹렬한 움브랄로, 최후를 맞이할 때까지 싸울 준비가 되어있습니다. \n피해를 받을 때마다, 뛰어오른뒤 공격자에게 폭발성 레이저를 발사합니다."
+		"ko"	"맹렬한 움브랄로, 최후를 맞이할 때까지 싸울 준비가 되어있습니다.\n-피해를 받을 때마다, 뛰어오른뒤 공격자에게 폭발성 레이저를 발사합니다."
 	}
 	"Umbral Koulm"
 	{
@@ -7542,7 +7592,7 @@
 	{
 		"en"	"An enigmatic Umbral, you can't tell if they're fighting for or against you\n-Grants Umbral Grace and Elemental Curing to anything within its AOE\n-becomes enraged when losing enough HP."
 		"it"	"Un Umbral enigmatico, non si capisce se combatte a favore o contro di voi. \nConferisce Grazia Umbrale e Cura Elementale a tutto ciò che si trova all'interno della sua AOE, \nma si infuria quando perde abbastanza HP."
-		"ko"	"수수께끼의 움브랄. 이 존재가 당신을 위해 싸우는건지, 적대하는건지 알 수가 없습니다. \n범위 내 모든 대상에게 움브랄의 은총과 원소 치유를 부여하지만, \n충분한 체력을 잃을 경우 격분합니다."
+		"ko"	"수수께끼의 움브랄. 이 존재가 당신을 위해 싸우는건지, 적대하는건지 알 수가 없습니다.\n-범위 내 모든 대상에게 움브랄의 은총과 원소 치유를 부여합니다.\n-충분한 체력을 잃을 경우 격분합니다."
 	}
 	"Umbral Keitosis"
 	{
@@ -7554,7 +7604,7 @@
 	{
 		"en"	"An unstable Umbral, capable of splitting itself apart\n-Gains Power over time\n-creates summons upon death\n-Summon stats are increased based on Power\n-self destructs upon reaching max Power."
 		"it"	"Un Umbral instabile, capace di dividersi. \nGuadagna potere nel tempo e crea evocazioni alla morte. \nLe statistiche delle evocazioni aumentano in base alla potenza e si autodistruggono quando raggiungono la massima potenza."
-		"ko"	"스스로 분열할 수 있는 불안정한 움브랄입니다. \n시간이 지남에 따라 힘이 증가하며, 사망 시 소환수를 생성합니다. \n소환수의 능력치는 본체의 힘에 따라 증가하며 힘이 최대치에 도달하면 자폭합니다."
+		"ko"	"스스로 분열할 수 있는 불안정한 움브랄입니다.\n-시간이 지남에 따라 힘이 증가합니다.\n-사망 시 소환수를 생성합니다.\n-소환된 움브랄들의 능력치는 본체의 힘에 따라 증가합니다\n-힘이 최대치에 도달하면 자폭합니다."
 	}
 	"Umbral Spuud"
 	{
@@ -7566,7 +7616,7 @@
 	{
 		"en"	"An incredibly fast Umbral, capable of moving past the speed of light\n-Gains additional speed, attackspeed and vulnerability the longer its alive."
 		"it"	"Un Umbral incredibilmente veloce, capace di muoversi oltre la velocità della luce. \nGuadagna ulteriore velocità e vulnerabilità quanto più a lungo è in vita."
-		"ko"	"엄청나게 빠른 움브랄로, 빛의 속도를 넘어 움직일 수 있습니다.\n생존한 시간이 길수록 이동 속도가 더 빨라지지만, 공격 피해에 취약해집니다."
+		"ko"	"엄청나게 빠른 움브랄로, 빛의 속도를 넘어 움직일 수 있습니다.\n-생존한 시간이 길수록 이동 속도와 공격 속도가 더 빨라지지만, 공격 피해에 취약해집니다."
 	}
 	"Umbral Automaton"
 	{
@@ -7582,8 +7632,8 @@
 	}
 	"Umbral W.F. Desc"
 	{
-		"ko"	"배풍등의 모습을 갖추고 움브랄 게이트에서 나타난 움브랄들입니다.\n-주기적으로 옥테인 킥을 사용합니다."
 		"en"	"Umbrals created from the Umbral gate in the image of Whiteflower\n-Periodically uses Octane kick."
+		"ko"	"배풍등의 모습을 갖추고 움브랄 게이트에서 나타난 움브랄들입니다.\n-주기적으로 옥테인 킥을 사용합니다."
 	}
 	"Umbral Rouam"
 	{
@@ -7595,7 +7645,7 @@
 	{
 		"en"	"An easily irritable Umbral, provoke them at your own risk\n-Starts passive, becoming enraged when hurt."
 		"it"	"Un Umbral facilmente irritabile: provocatelo a vostro rischio e pericolo. \nInizia in modo passivo e si infuria quando viene ferito."
-		"ko"	"쉽게 격노하는 움브랄. 자극하는건 위험이 따릅니다. \n비공격적 상태로 등장하지만, 피해를 받을 시 격분합니다."
+		"ko"	"쉽게 격노하는 움브랄. 자극하는건 위험이 따릅니다.\n-비공격적 상태로 등장하지만, 피해를 받을 시 격분합니다."
 	}
 	"Torn Umbral Gate"
 	{
@@ -7613,7 +7663,7 @@
 	{
 		"en"	"Ruler of the Umbrals. Keeper of the Purgatory Throne. Culprit behind the Void outbreaks. \nTrapped inside the Curtain, she lost her mind long ago. \nShe must be stopped at all costs.\n-She gives necrosis on most of her abilities."
 		"it"	"Sovrano degli Umbral. Custode del Trono del Purgatorio. Responsabile delle epidemie del Vuoto. \nIntrappolata nella cortina, ha perso la ragione molto tempo fa. \nDeve essere fermata a tutti i costi.\nDà necrosi alla maggior parte delle sue abilità."
-		"ko"	"움브랄의 지배자이자, 연옥 왕좌의 파수꾼입니다. 공허 재앙 발발의 장본인입니다.\n 장막 속에 갇힌 그녀는 오래 전에 이성을 잃었습니다.\n무슨 수를 써서라도 막아내야만 합니다.\n대부분의 능력이 적들에게 쇠약 원소 피해를 부여합니다."
+		"ko"	"움브랄의 지배자이자, 연옥 왕좌의 파수꾼입니다. 공허 재앙 발발의 원흉입니다.\n 장막 속에 갇힌 그녀는 오래 전에 이성을 잃었습니다.\n무슨 수를 써서라도 막아내야만 합니다.\n-대부분의 능력이 적들에게 쇠약 원소 피해를 부여합니다."
 	}
 	"Almagest Researcher"
 	{
@@ -7642,6 +7692,7 @@
 	"Jkei Desc"
 	{
 		"en"	"Ruthless leader of the Almagest squad sent into the Curtain. \nTheir motives remain unclear. \n-Deals void damage\n-summons drones to deal chaos damage\n-After losing a certain amount of HP, becomes invulernerable until the current wave is defeated."
+		"ko"	"장막 속으로 파견된 알마게스트 부대의 무자비한 지휘관입니다.\n그들의 동기는 여전히 불분명합니다.\n-적중 시 공허 원소 피해를 부여\n-드론을 소환하여 혼돈 원소 피해를 부여\n-체력이 일정 수치 감소시, 현재 웨이브의 적들을 전부 처치할 때까지 이 적이 무적 상태가 됩니다."
 	}
 	"Jkei Drone"
 	{
@@ -7653,7 +7704,7 @@
 	{
 		"en"	"Construct used by Jkei in battle\n-Deals chaos damage, and after a delay\n-runs towards an ally and self destructs."
 		"it"	"Costrutto utilizzato da Jkei in battaglia. \nSubisce danni da caos e, dopo un certo ritardo, \ncorre verso un alleato e si autodistrugge."
-		"ko"	"제이케이가 전투에서 사용하는 제작물입니다. \n혼돈 원소 피해를 주며, 약간의 지연 이후, \n아군을 향해 달려들어 자폭합니다."
+		"ko"	"제이케이가 전투에서 사용하는 제작물입니다.\n-혼돈 원소 피해를 부여하며, 약간의 지연 이후:\n아군을 향해 달려들어 자폭합니다."
 	}
 	"Reila"
 	{
@@ -7664,6 +7715,7 @@
 	"Reila Desc"
 	{
 		"en" "Former Almagest researcher, now trying to close the rifts and contain the Void at all costs\n-Hp threshholds buff her resistance for abit\n-Fires a laser with a delay that spreads outwards, during it\n-Summons projectiles that cause lighting strikes after a random delay\n-Controls the Construct while active, and permanently gains resistance whenever it is destroyed for time\n-fight starts with very low time\n-Spawns together with umbrals"
+		"ko" "전직 알마게스트 연구원 소속으로, 이제는 필사적으로 균열을 닫아 어떻게든 공허를 격리시키려고 합니다.\n-체력이 일정 수치 감소할 때마다 잠시 동안 저항력이 증가합니다.\n-밖으로 퍼져가나는 지연형 레이더를 발사합니다.\n-무작위 지연을 가진 뇌격을 일으키는 투사체를 소환합니다.\n-제작물을 조종하며, 제작물이 파괴되면 영구적으로 피해 저항력을 얻습니다.\n-전투가 적은 타이머를 가지고 시작됩니다.\n-움브랄들과 함께 스폰됩니다."
 	}
 	"Reila?"
 	{
@@ -7918,7 +7970,7 @@
 	"Almagest Proxima Desc"
 	{
 		"en"	"-Starts with 5 shields\n-Heals its own kind near eachother\n-Deals high melee damage and deals 3x damage once the debuff maxes out\n-Applies 2 spearmen debuff each hit\n-Will try to surround you at all times"
-		"ko"	"-대량의 아머와 5개의 보호막을 보유한 채로 스폰됩니다.\n-동일한 종을 서로 치유합니다.\n-높은 근접 피해를 가합니다.\n-적중 시 '장창병의 참격' 디버프를 2 부여합니다.\n-상시로 대상을 둘러싸려고 시도합니다."
+		"ko"	"-5개의 보호막을 보유한 채로 스폰됩니다.\n-동일한 종을 서로 치유합니다.\n-높은 근접 피해를 가합니다.\n-적중 시 '장창병의 참격' 디버프를 2 부여합니다.\n-상시로 대상을 둘러싸려고 시도합니다."
 	}
 	"Black Heavy Soul"
 	{
@@ -7927,7 +7979,8 @@
 	}
 	"Black Heavy Soul Desc"
 	{
-		"en"	"He killed all the other heavy souls, oh my god..\n-stand still and shoots finger bullets that explode, they rehome once\n-Can jump and do a aoe explosive slam\n-Can conga and deal huge damage in an aoe constnatly, has bad mobility but is fast\n-Transforms a few times in the battle once reaching an hp threshhold, gaining massive stats."
+		"en"	"He killed all the other heavy souls, oh my god..\n-stand still and shoots finger bullets that explode, they rehome once\n-Can jump and do a aoe explosive slam\n-Can conga and deal huge damage in an aoe constantly, has bad mobility but is fast\n-Transforms a few times in the battle once reaching an hp threshhold, gaining massive stats."
+		"ko"	"그가 다른 모든 헤비 영혼들을 죽여버린 것 같군요, 이런 세상에...\n-제자리에 멈춰 폭발하는 손가락 총알을 발사하며, 중간에 유도하며 궤도를 변경합니다.\n-뛰어들며 폭발성 지면 강타를 사용할 수 있습니다.\n-콩가를 추며 지속젖ㄱ으로 막대한 광역 피해를 가할 수 있으며, 이동성은 좋지 않으나 매우 빠릅니다.\n-체력이 일정 수치로 감소할 경우 수차례 변신을 하며, 막대한 능력치를 얻습니다."
 	}
 	"Super Saiyan Black Heavy Soul"
 	{
@@ -7952,6 +8005,7 @@
 	"Broly Desc"
 	{
 		"en"	"Weakling.\n-Stand still and looks at you\n-When he feels like it, runs at light speed and oneshots you"
+		"ko"	"약해 빠진 놈.\n-제자리에 가만히 서서 플레이어를 노려봅니다.\n-그가 원할 때, 광속으로 돌진하여 즉사시킵니다."
 	}
 	"No Random Kranz V3"
 	{
@@ -7961,6 +8015,7 @@
 	"No Random Kranz V3 Desc"
 	{
 		"en"	"-Can rocketjump, while doing so, rockets summon blackholes\n-Fires rockets\n-Can melee attack with a cooldown, this melee deals heavy damage and spawns blackholes.\n-Blackholes cause aoe damage and fade after some time\n-Has 7 lives, each life lost gives major buffs for a short time\n-Occasionally summons 3 sniper verions which on hit with anything spawn blackholes"
+		"ko"	"-로켓 점프를 사용할 수 있으며, 이때 발사하는 로켓이 블랙홀을 생성합니다.\n-로켓을 발사합니다.\n-매우 높은 피해를 주고 블랙홀을 생성하는, 긴 쿨타임을 가진 근접 공격을 합니다.\n-블랙홀은 광역 피해를 가하며 시간이 지난 후 소멸합니다.\n-7개의 생명을 보유하며, 생명을 잃을 때마다 잠시 동안 크게 강화됩니다.\n-주기적으로 자신의 저격수 버전을 3명 생성하며, 탄환이 닿은 곳에 블랙홀을 생성합니다."
 	}
 	"Mazeat Fabulous Squad X Elite, Solvence of Cringe"
 	{
@@ -7970,6 +8025,7 @@
 	"Mazeat Fabulous Squad X Elite, Solvence of Cringe Desc"
 	{
 		"en"	"Raid Quadra boss\n-Spawns:\nBob the first:\n-Melee attacks cause stacking vuln\n-Causes air punch attacks\nOmega\n-Punches very fast\n-Summons a one time vincent that dunks you\nWhiteflower:\n-Dashes at you dealing damage\n-Dash cooldown reduced with melee hits\nShadowing darkness:\n-Attacks cause Necrosis\n-teleports above you, slams down, spawns a pool that causes necrosis, and shoots 2 waves that damage you\nAll these raids are heavily dummed down or changed"
+		"ko"	"4중 레이드 보스.\n-스폰되는 대상:\n밥 1세:\n-근접 공격 적중 시 대상에게 중첩 가능한 취약 효과 부여\n오메가:\n-매우 빠른 펀치 공격 보유\n-플레이어를 잡아 내려 찍는 일회성 빈센트를 소환\n배풍등:\n-대상에게 돌격하여 피해를 가함\n-근접 공격 적중 시 돌격 쿨다운 감소\n그림자 응달:\n-공격이 쇠약 원소 피해를 부여\n-대상 위에 순간이동하여 내려찍는 공격을 하며, 이때 해당 위치에 쇠약 원소 피해를 부여하는 장판 생성. 그 후 2개의 파동 발사\n포함된 모든 레이드 보스들은 크게 약화되거나 변경됨"
 	}
 	"Bob The First Squad"
 	{
@@ -8159,6 +8215,6 @@
 	"Kahmlstein's Dead Grandma Desc"
 	{
 		"en"	"This is so sad"
-		"ko"	"그냥 너무 슬퍼"
+		"ko"	"ㅠㅠ"
 	}
 }
