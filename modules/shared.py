@@ -3,12 +3,12 @@ import json
 
 FLAG_MAPPINGS = {
     "MVM_CLASS_FLAG_NONE": "", #// Show Nothing
-    "MVM_CLASS_FLAG_NORMAL": "Normal", #// Normal
-    "MVM_CLASS_FLAG_SUPPORT": "Support", #// Support
-    "MVM_CLASS_FLAG_MISSION": "<mark>Support</mark>", #// Support - Flashing for Spies, Busters, Engis
+    "MVM_CLASS_FLAG_NORMAL": "", #// Normal
+    "MVM_CLASS_FLAG_SUPPORT": "", #// Support
+    "MVM_CLASS_FLAG_MISSION": "", #// Support - Flashing for Spies, Busters, Engis
     "MVM_CLASS_FLAG_MINIBOSS": "Miniboss", #// Normal - Red Background
     "MVM_CLASS_FLAG_ALWAYSCRIT": "Crits", #// Add Blue Borders
-    "MVM_CLASS_FLAG_SUPPORT_LIMITED": "Limited Support" #// Only Visible When Active (waveset viewer is static so no way to simulate this)
+    "MVM_CLASS_FLAG_SUPPORT_LIMITED": "Limited Support" #// Only Visible When Active (waveset viewer is static so no way to simulate this) (also this may be completely unused in zr code)
 }
 FLAG_CSS = {
     "MVM_CLASS_FLAG_NONE": "", #// Show Nothing

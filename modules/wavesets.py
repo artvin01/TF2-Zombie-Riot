@@ -189,10 +189,11 @@ def parse():
             
             if wave_entry_data["plugin"] in NPCS_BY_FILENAME:
                 npc_data = NPCS_BY_FILENAME[wave_entry_data["plugin"]]
+                if ("-1" in npc_data.flags) or (npc_data.category=="Type_Hidden"): continue
             else:
                 npc_data = None
                 assert force
-                util.log(f"Plugin name {wave_entry_data["plugin"]} missing!","FAIL")
+                util.log(f"Plugin name {wave_entry_data["plugin"]} missing!","FAIL")   
 
             try:
                 npc_name = npc_data.name
