@@ -36,6 +36,8 @@ def get_npc_icon(icon):
             return util.vtftoimg(MISSING_ICON_VTF,MISSING_ICON_PNG,"C")
     else:
         return util.vtftoimg(MISSING_ICON_VTF,MISSING_ICON_PNG,"D")
+    
+global_vars = {} # RAIDBOSS_TWIRL_THEME is used for stella but is defined in twirl code...............
 class NPC:
     def __init__(self, path):
         self.path=path
@@ -138,6 +140,7 @@ class NPC:
         # e.g. code.split("strcopy(music.Path, sizeof(music.Path), ")[1].split(");")[0]
         val = code.split(f"strcopy(music.{property_name}, sizeof(music.{property_name}), ")[1].split(");")[0]
         if val in self.npc_vars_dict: return self.npc_vars_dict[val]
+        if val in global_vars: return global_vars[val]
         return val.replace("\"","")
     
     def get_npc_constants(self):
@@ -152,6 +155,9 @@ class NPC:
                 k, v = full_str[0].replace(" ",""), full_str[1].split("\n")[0].split("//")[0].replace(" ","").replace("\"","").replace("static","")
                 util.debug(f"NPC:get_npc_constants:k, v {k}, {v}", "npcs", "OKCYAN")
                 self.npc_vars_dict[k] = v
+                if v.endswith(".mp3"):
+                    global global_vars
+                    global_vars[k]=v
     
     def _parse_health_number(self, num):
         try:
