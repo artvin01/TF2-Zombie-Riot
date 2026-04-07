@@ -919,18 +919,6 @@
 		"it"		"Seghettatore"
 		"ko" 		"쏘우러너"
 	}
-	"Infected Silvester"
-	{
-		"en" 		"Infected Silvester"
-		"it"		"Silvester infetto"
-		"ko" 		"감염된 실베스터"
-	}
-	"Infected Silvester Desc"
-	{
-		"en" 		"An Expidonsan warrior, infected. He Gets stronger everytime he comes back.\nCan you cure him?\nHis ground slam (can be silenced)."
-		"it"		"Un guerriero Expidonsan, infetto. Diventa più forte ogni volta che torna.\nPuoi curarlo? \nIl suo colpo a terra (può essere silenziato)."
-		"ko" 		"감염된 엑스피돈사 출신 전사입니다. 돌아올 때마다 더욱 강력해집니다. \n그를 치유할 수 있을까요?\n침묵을 부여해 그의 지면 충격을 저지할 수 있습니다."
-	}
 	"Silvester's Past Afterimage"
 	{
 		"en" 		"Silvester's Past Afterimage"

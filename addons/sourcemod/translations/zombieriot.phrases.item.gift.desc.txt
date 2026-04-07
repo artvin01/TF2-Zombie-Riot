@@ -1201,15 +1201,11 @@
 	{
 		"en"	"Infected Silvester"
 	}
-	"Infected Silvester Desc"
-	{
-		"en"	"Infected with the xeno virus, try to activate the cure on his belt\n-Summons a laser with a delay, gaining res during it.\nOnce low enough hp, gains stats\n-Can summon explosive projectiles that predict you badly\n-Can pull enemies to him, and at low hp, pushes all up instead, This can be (silenced)"
-	}
 	"Silvester, The Sparring Partner"
 	{
 		"en"	"Silvester, The Sparring Partner"
 	}
-	"Infected Silvester Desc"
+	"Silvester, The Sparring Partner Desc"
 	{
 		"en"	"-Spawns together with nemal\n-If the player is alone, he wont attack\n-If enough time passes or gets hurts too much, transforms and gains stats and abilities\n-Can throw waves of energy that deal huge damage\n-If marked, these predict\n-Can throw quake attacks aswell\n-Jumps into air and throws waves of energy at enemies\n-Teleports to nemal if too far away, gainging resistance during it"
 	}
