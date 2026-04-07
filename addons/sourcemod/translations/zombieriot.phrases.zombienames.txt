@@ -6593,7 +6593,7 @@
 	}
 	"Aperture Combatant Desc"
 	{
-		"en"	"Bludgeons you with his bat, every successful hit increases his attack speed."
+		"en"	"-Bludgeons you with his bat \n-Every successful hit increases his attack speed."
 		"it"	"Ti colpisce con la sua mazza, ogni colpo andato a segno aumenta la sua velocità d'attacco."
 		"ko"	"야구방망이로 구타하며, 공격이 성공적으로 적중할 때마다 공격 속도가 증가합니다."
 	}
@@ -6605,7 +6605,7 @@
 	}
 	"Aperture Shotgunner Desc"
 	{
-		"en"	"Fires a few shots before inexplicably exploding."
+		"en"	"-Fires a few shots before inexplicably exploding."
 		"it"	"Spara alcuni colpi prima di esplodere inspiegabilmente."
 		"ko"	"일정 횟수만큼 사격 후 알 수 없는 이유로 폭발합니다."
 	}
@@ -6617,7 +6617,7 @@
 	}
 	"Aperture Devastator Desc"
 	{
-		"en"	"Fires 2 pills in rapid succession."
+		"en"	"-Fires 2 pills in rapid succession."
 		"it"	"Spara 2 pillole in rapida successione."
 		"ko"	"한 번에 2개의 유탄을 발사합니다."
 	}
@@ -6629,7 +6629,7 @@
 	}
 	"Aperture Huntsman Desc"
 	{
-		"en"	"Shoots arrows that inflict bleed."
+		"en"	"-Shoots arrows that inflict bleed."
 		"it"	"Scaglia frecce che infliggono emorragie."
 		"ko"	"출혈을 부여하는 화살을 사격합니다."
 	}
@@ -6641,7 +6641,7 @@
 	}
 	"Aperture Jumper Desc"
 	{
-		"en"	"Attempts to jump over barricades, every jump increases his damage."
+		"en"	"-Attempts to jump over barricades\n-Every jump increases his damage."
 		"it"	"Tenta di saltare le barricate, ogni salto aumenta i danni."
 		"ko"	"바리케이드를 점프해 뛰어넘으려고 합니다. 점프할 때마다, 공격 피해량이 증가합니다."
 	}
@@ -6653,7 +6653,7 @@
 	}
 	"Aperture Phaser Desc"
 	{
-		"en"	"Phases through barricades, dealing damage in the process."
+		"en"	"-Phases through barricades, dealing damage in the process."
 		"it"	"Passa attraverso le barricate, infliggendo danni nel processo."
 		"ko"	"바리케이드를 위상 형태로 지나가려고 하며, 이 과정에서 피해를 줍니다."
 	}
@@ -6665,7 +6665,7 @@
 	}
 	"Aperture Sniper Desc"
 	{
-		"en"	"Spawns in silently and shoots you from a lengthy distance."
+		"en"	"-Spawns in silently \n-Shoots you from a lengthy distance."
 		"it"	"Si nasconde in silenzio e vi spara da una lunga distanza."
 		"ko"	"소리없이 스폰되며, 먼 거리에서 당신을 사격합니다. "
 	}
@@ -6677,7 +6677,7 @@
 	}
 	"Aperture Specialist Desc"
 	{
-		"en"	"Fires one bullet that debuffs, switches to melee afterwards."
+		"en"	"-Fires one bullet that debuffs\n-Switches to melee afterwards."
 		"it"	"Spara un solo proiettile che indebolisce, poi passa al corpo a corpo."
 		"ko"	"디버프를 부여하는 탄환을 1발 발사한 후, 근접 공격형 NPC가 됩니다."
 	}
@@ -6689,7 +6689,7 @@
 	}
 	"Aperture Supporter Desc"
 	{
-		"en"	"Heals allies, after a few seconds of healing, he can grant übercharge."
+		"en"	"-Heals allies \n-After a few seconds of healing, he can grant übercharge."
 		"it"	"Cura gli alleati, dopo alcuni secondi di guarigione, può concedere l'übercharge."
 		"ko"	"아군을 치유하며, 일정 시간 동안 치유하면 우버차지를 발동합니다."
 	}
@@ -6701,7 +6701,7 @@
 	}
 	"Aperture Demolisher Desc"
 	{
-		"en"	"Fires an extremely slow rocket that deals ludicrous damage to barricades."
+		"en"	"-Fires an extremely slow rocket \n-It deals ludicrous damage to barricades."
 		"it"	"Spara un razzo estremamente lento che infligge danni assurdi alle barricate."
 		"ko"	"매우 느리지만 바리케이드에 매우 높은 피해를 가하는 로켓을 발사합니다."
 	}
@@ -6713,7 +6713,7 @@
 	}
 	"Aperture Repulsor Desc"
 	{
-		"en"	"Knocks you back by shooting at you."
+		"en"	"-Knocks you back by shooting at you."
 		"it"	"Ti fa indietreggiare sparandoti addosso."
 		"ko"	"총으로 당신을 사격하여 당신을 뒤로 밀쳐냅니다."
 	}
@@ -6725,7 +6725,7 @@
 	}
 	"Aperture Minigunner Desc"
 	{
-		"en"	"Slows you down for a very brief moment with his minigun."
+		"en"	"-Slows you down for a very brief moment with his minigun."
 		"it"	"Ti rallenta per un brevissimo momento con la sua minigun."
 		"ko"	"미니건으로 아주 잠깐 동안 당신의 이동 속도를 감소시킵니다."
 	}
@@ -6737,7 +6737,7 @@
 	}
 	"Aperture Combatant V2 Desc"
 	{
-		"en"	"Bludgeons you with his bat, every successful hit increases his attack speed.\nUpgraded version of Aperture Combatant."
+		"en"	"Upgraded version of Aperture Combatant.\n-Bludgeons you with his bat\n-Every successful hit increases his attack speed."
 		"it"	"Ti colpisce con la sua mazza, ogni colpo andato a segno aumenta la sua velocità d'attacco.\nVersione migliorata di Combattente d'apertura."
 		"ko"	"야구방망이로 구타하며, 공격이 성공적으로 적중할 때마다 공격 속도가 증가합니다.\n개선된 애퍼처 투사입니다."
 	}
@@ -6749,7 +6749,7 @@
 	}
 	"Aperture Shotgunner V2 Desc"
 	{
-		"en"	"Fires a few quick shots before inexplicably exploding.\nUpgraded version of Aperture Shotgunner."
+		"en"	"Upgraded version of Aperture Shotgunner.\n-Fires a few quick shots before inexplicably exploding."
 		"it"	"Spara alcuni colpi veloci prima di esplodere inspiegabilmente.\nVersione migliorata di Aperture Shotgunner."
 		"ko"	"일정 횟수만큼 사격 후 알 수 없는 이유로 폭발합니다.\n개선된 애퍼처 산탄총병입니다."
 	}
@@ -6761,7 +6761,7 @@
 	}
 	"Aperture Devastator V2 Desc"
 	{
-		"en"	"Fires 3 pills in rapid succession.\nUpgraded version of Aperture Devastator."
+		"en"	"Upgraded version of Aperture Devastator.\n-Fires 3 pills in rapid succession."
 		"it"	"Spara 3 pillole in rapida successione.\nVersione aggiornata di Devastatore di aperture."
 		"ko"	"한 번에 3개의 유탄을 발사합니다.\n개선된 애퍼처 척살자입니다."
 	}
@@ -6773,7 +6773,7 @@
 	}
 	"Aperture Huntsman V2 Desc"
 	{
-		"en"	"Shoots arrows that inflict bleed.\nUpgraded version of Aperture Huntsman."
+		"en"	"Upgraded version of Aperture Huntsman.\n-Shoots arrows that inflict bleed."
 		"it"	"Scaglia frecce che infliggono emorragie.\nVersione migliorata del Cacciatore di aperture."
 		"ko"	"출혈을 부여하는 화살을 사격합니다.\n개선된 애퍼처 헌츠맨입니다."
 	}
@@ -6785,7 +6785,7 @@
 	}
 	"Aperture Jumper V2 Desc"
 	{
-		"en"	"Attempts to jump over barricades, every jump increases his damage.\nUpgraded version of Aperture Jumper."
+		"en"	"Upgraded version of Aperture Jumper.\n-Attempts to jump over barricades\n-every jump increases his damage."
 		"it"	"Tenta di saltare le barricate, ogni salto aumenta il suo danno.\nVersione migliorata di Aperture Jumper."
 		"ko"	"바리케이드를 점프해 뛰어넘으려고 합니다. 점프할 때마다, 공격 피해량이 증가합니다.\n개선된 애퍼처 도약자입니다."
 	}
@@ -6797,7 +6797,7 @@
 	}
 	"Aperture Phaser V2 Desc"
 	{
-		"en"	"Phases through barricades and players, dealing damage in the process.\nUpgraded version of Aperture Phaser."
+		"en"	"Upgraded version of Aperture Phaser.\n-Phases through barricades and players, dealing damage in the process."
 		"it"	"Passa attraverso le barricate e i giocatori, infliggendo danni nel processo.\nVersione migliorata di Aperture Phaser."
 		"ko"	"바리케이드와 플레이어를 위상 형태로 지나가려고 하며, 이 과정에서 피해를 줍니다.\n개선된 애퍼처 위상병입니다."
 	}
@@ -6809,7 +6809,7 @@
 	}
 	"Aperture Sniper V2 Desc"
 	{
-		"en"	"Spawns in silently and shoots you from a lengthy distance, the laser is more translucent.\nUpgraded version of Aperture Sniper."
+		"en"	"Upgraded version of Aperture Sniper.\n-Spawns in silently and shoots you from a lengthy distance\n-The laser is more translucent."
 		"it"	"Nasce in silenzio e spara da lontano, il laser è più traslucido.\nVersione aggiornata di Aperture Sniper."
 		"ko"	"소리없이 스폰되며, 먼 거리에서 당신을 사격합니다. 레이저가 좀 더 투명합니다.\n개선된 애퍼처 스나이퍼입니다."
 	}
@@ -6821,7 +6821,7 @@
 	}
 	"Aperture Specialist V2 Desc"
 	{
-		"en"	"Fires one bullet that debuffs, switches to melee afterwards.\nUpgraded version of Aperture Specialist."
+		"en"	"Upgraded version of Aperture Specialist.\n-Fires one bullet that debuffs\n-Switches to melee afterwards."
 		"it"	"Spara un solo proiettile che sfavorisce, poi passa al corpo a corpo.\nVersione migliorata di Specialista dell'apertura."
 		"ko"	"디버프를 부여하는 탄환을 1발 발사한 후, 근접 공격형 NPC가 됩니다.\n개선된 애퍼처 스페셜리스트입니다."
 	}
@@ -6833,7 +6833,7 @@
 	}
 	"Aperture Supporter V2 Desc"
 	{
-		"en"	"Heals allies, after a few seconds of healing, he can grant overclock.\nUpgraded version of Aperture Supporter."
+		"en"	"Upgraded version of Aperture Supporter.\n-Heals allies\n-After a few seconds of healing, he can grant overclock."
 		"it"	"Cura gli alleati, dopo alcuni secondi di guarigione può concedere l'overclock.\nVersione potenziata di Aperture Supporter."
 		"ko"	"아군을 치유하며, 일정 시간 동안 치유하면 과부하를 발동합니다.\n개선된 애퍼처 서포터입니다."
 	}
@@ -6845,7 +6845,7 @@
 	}
 	"Aperture Demolisher V2 Desc"
 	{
-		"en"	"Fires an extremely slow rocket that deals ludicrous damage to barricades.\nUpgraded version of Aperture Demolisher."
+		"en"	"Upgraded version of Aperture Demolisher.\n-Fires an extremely slow rocket\n-It deals ludicrous damage to barricades."
 		"it"	"Spara un razzo estremamente lento che infligge danni assurdi alle barricate.\nVersione potenziata di Demolitore di aperture."
 		"ko"	"매우 느리지만 바리케이드에 매우 높은 피해를 가하는 로켓을 발사합니다.\n개선된 애퍼처 철거자입니다."
 	}
@@ -6857,7 +6857,7 @@
 	}
 	"Aperture Repulsor V2 Desc"
 	{
-		"en"	"Knocks you back by shooting at you.\nUpgraded version of Aperture Repulsor."
+		"en"	"Upgraded version of Aperture Repulsor.\n-Knocks you back by shooting at you."
 		"it"	"Ti fa indietreggiare sparandoti addosso.\nVersione potenziata di Aperture Repulsor."
 		"ko"	"총으로 당신을 사격하여 당신을 뒤로 밀쳐냅니다.\n개선된 애퍼처 척력병입니다."
 	}
@@ -6881,7 +6881,7 @@
 	}
 	"Perfected Aperture Combatant Desc"
 	{
-		"en"	"Bludgeons you with his bat, every successful hit increases his attack speed.\nPerfected version of Aperture Combatant."
+		"en"	"Perfected version of Aperture Combatant.\n-Bludgeons you with his bat\n-Every successful hit increases his attack speed."
 		"it"	"Ti colpisce con la sua mazza, ogni colpo andato a segno aumenta la sua velocità d'attacco.\nVersione perfezionata di Aperture Combatant."
 		"ko"	"야구방망이로 구타하며, 공격이 성공적으로 적중할 때마다 공격 속도가 증가합니다.\n완벽하게 개선된 애퍼처 투사입니다."
 	}
@@ -6893,7 +6893,7 @@
 	}
 	"Perfected Aperture Shotgunner Desc"
 	{
-		"en"	"Fires a few quick shots before inexplicably exploding.\nPerfected version of Aperture Shotgunner."
+		"en"	"Perfected version of Aperture Shotgunner.\n-Fires a few quick shots before inexplicably exploding."
 		"it"	"Spara alcuni colpi veloci prima di esplodere inspiegabilmente.\nVersione perfezionata di Aperture Shotgunner."
 		"ko"	"일정 횟수만큼 빠르게 사격한 후, 알 수 없는 이유로 폭발합니다.\n완벽하게 개선된 애퍼처 산탄총병입니다."
 	}
@@ -6905,7 +6905,7 @@
 	}
 	"Perfected Aperture Devastator Desc"
 	{
-		"en"	"Fires 4 pills in rapid succession.\nPerfected version of Aperture Devastator."
+		"en"	"Perfected version of Aperture Devastator.\n-Fires 4 pills in rapid succession."
 		"it"	"Spara 4 pillole in rapida successione.\nVersione perfezionata di Devastatore di aperture."
 		"ko"	"한 번에 4개의 유탄을 발사합니다.\n완벽하게 개선된 애퍼처 척살자입니다."
 	}
@@ -6917,7 +6917,7 @@
 	}
 	"Perfected Aperture Huntsman Desc"
 	{
-		"en"	"Shoots predictive arrows that inflict bleed and burn.\nPerfected version of Aperture Huntsman."
+		"en"	"Perfected version of Aperture Huntsman.\n-Shoots predictive arrows that inflict bleed and burn."
 		"it"	"Scaglia frecce predittive che infliggono sanguinamento e ustioni.\nVersione perfezionata del Cacciatore di aperture."
 		"ko"	"대상의 경로를 예측하여 출혈과 화상을 부여하는 화살을 사격합니다.\n완벽하게 개선된 애퍼처 헌츠맨입니다."
 	}
@@ -6929,7 +6929,7 @@
 	}
 	"Perfected Aperture Jumper Desc"
 	{
-		"en"	"Attempts to jump over barricades, every jump increases his damage.\nPerfected version of Aperture Jumper."
+		"en"	"Perfected version of Aperture Jumper.\n-Attempts to jump over barricades\n-Every jump increases his damage."
 		"it"	"Tenta di saltare le barricate, ogni salto aumenta il suo danno.\nVersione perfezionata di Aperture Jumper."
 		"ko"	"바리케이드를 점프해 뛰어넘으려고 합니다. 점프할 때마다, 공격 피해량이 증가합니다.\n완벽하게 개선된 애퍼처 도약자입니다."
 	}
@@ -6941,7 +6941,7 @@
 	}
 	"Perfected Aperture Phaser Desc"
 	{
-		"en"	"Phases through barricades and players, dealing damage in the process.\nPerfected version of Aperture Phaser."
+		"en"	"Perfected version of Aperture Phaser.\n-Phases through barricades and players, dealing damage in the process."
 		"it"	"Passa attraverso le barricate e i giocatori, infliggendo danni nel processo.\nVersione perfezionata di Aperture Phaser."
 		"ko"	"바리케이드와 플레이어를 위상 형태로 지나가려고 하며, 이 과정에서 피해를 줍니다.\n완벽하게 개선된 애퍼처 위상병입니다."
 	}
@@ -6953,7 +6953,7 @@
 	}
 	"Perfected Aperture Sniper Desc"
 	{
-		"en"	"Spawns in silently and shoots you from a lengthy distance, the laser is nigh invisible unless paying close attention.\nPerfected version of Aperture Sniper."
+		"en"	"Perfected version of Aperture Sniper.\n-Spawns in silently and shoots you from a lengthy distance\n-The laser is nigh invisible unless paying close attention."
 		"it"	"Si schiude in silenzio e spara da una lunga distanza, il laser è quasi invisibile se non si presta molta attenzione.\nVersione perfezionata di Aperture Sniper."
 		"ko"	"소리없이 스폰되며, 먼 거리에서 당신을 사격합니다. 집중하지 않으면 보이지 않을 정도로 레이저가 거의 보이지 않습니다.\n완벽하게 개선된 애퍼처 스나이퍼입니다."
 	}
@@ -6965,7 +6965,7 @@
 	}
 	"Perfected Aperture Specialist Desc"
 	{
-		"en"	"Fires one bullet that debuffs, switches to melee afterwards.\nPerfected version of Aperture Specialist."
+		"en"	"Perfected version of Aperture Specialist.\n-Fires one bullet that debuffs\n-Switches to melee afterwards."
 		"it"	"Spara un solo proiettile che sfavorisce, poi passa al corpo a corpo.\nVersione perfezionata di Specialista delle aperture."
 		"ko"	"디버프를 부여하는 탄환을 1발 발사한 후, 근접 공격형 NPC가 됩니다.\n완벽하게 개선된 애퍼처 스페셜리스트입니다."
 	}
@@ -6977,7 +6977,7 @@
 	}
 	"Perfected Aperture Supporter Desc"
 	{
-		"en"	"Heals allies, grants armor by healing.\nPerfected version of Aperture Supporter."
+		"en"	"Perfected version of Aperture Supporter.\n-Heals allies\n-Grants armor by healing."
 		"it"	"Cura gli alleati, concede l'armatura curando.\nVersione perfezionata di Aperture Supporter."
 		"ko"	"아군을 치유하며, 치유시 아머를 얻습니다.\n완벽하게 개선된 애퍼처 서포터입니다."
 	}
@@ -6989,7 +6989,7 @@
 	}
 	"Perfected Aperture Demolisher Desc"
 	{
-		"en"	"Fires an extremely slow rocket that deals ludicrous damage to barricades.\nPerfected version of Aperture Demolisher."
+		"en"	"Perfected version of Aperture Demolisher.\n-Fires an extremely slow rocket\n-It deals ludicrous damage to barricades."
 		"it"	"Spara un razzo estremamente lento che infligge danni assurdi alle barricate.\nVersione perfezionata di Demolitore di aperture."
 		"ko"	"매우 느리지만 바리케이드에 매우 높은 피해를 가하는 로켓을 발사합니다.\n완벽하게 개선된 애퍼처 철거자입니다."
 	}
@@ -7001,7 +7001,7 @@
 	}
 	"Perfected Aperture Repulsor Desc"
 	{
-		"en"	"Knocks you and himself back by shooting at you.\nPerfected version of Aperture Repulsor."
+		"en"	"Perfected version of Aperture Repulsor.\n-Knocks you and himself back by shooting at you."
 		"it"	"Ti fa indietreggiare sparandoti addosso.\nVersione perfezionata di Aperture Repulsor."
 		"ko"	"총으로 사격하여 당신을 뒤로 밀쳐내고 반동으로 자신도 그만큼 밀려납니다.\n완벽하게 개선된 애퍼처 척력병입니다."
 	}
@@ -7013,7 +7013,7 @@
 	}
 	"Perfected Aperture Minigunner Desc"
 	{
-		"en"	"Slow but loud as shit, deals an enormous amount of damage with his minigun.\nPerfected version of Aperture Minigunner."
+		"en"	"Perfected version of Aperture Minigunner.\n-Slow but loud as shit\n-Deals an enormous amount of damage with his minigun."
 		"it"	"Lento ma rumoroso, infligge un'enorme quantità di danni con la sua minigun.\nVersione perfezionata di Aperture Minigunner."
 		"ko"	"느리지만 고도로 시끄러우며, 미니건이 극도로 높은 피해를 줍니다.\n완벽하게 개선된 애퍼처 미니거너입니다."
 	}
@@ -7025,7 +7025,7 @@
 	}
 	"Aperture Container Desc"
 	{
-		"en"	"On death, applies a random buff to allies close to his vicinity."
+		"en"	"-On death, applies a random buff to allies close to his vicinity."
 		"it"	"Alla morte, applica un buff casuale agli alleati vicini."
 		"ko"	"사망시, 자신 근처에 있는 아군에게 무작위 버프를 부여합니다."
 	}
@@ -7037,7 +7037,7 @@
 	}
 	"Aperture Traveller Desc"
 	{
-		"en"	"Fires a projectile, if it hits, he'll teleport behind the target that got hit."
+		"en"	"-Fires a projectile, if it hits, he'll teleport behind the target that got hit."
 		"it"	"Spara un proiettile che, se colpito, si teletrasporterà dietro il bersaglio colpito."
 		"ko"	"투사체를 발사합니다. 이 투사체가 적중하면, 적중한 대상의 뒤쪽으로 순간이동 합니다."
 	}
@@ -7049,7 +7049,7 @@
 	}
 	"Aperture Builder Desc"
 	{
-		"en"	"Appears anywhere at random, if given enough time, he'll set-up a sentry, dispenser, and a teleporter."
+		"en"	"-Appears anywhere at random\n-If given enough time, he'll set-up a sentry, dispenser, and a teleporter."
 		"it"	"Appare ovunque a caso e, se gli si concede abbastanza tempo, metterà in funzione una sentinella, un dispenser e un teletrasporto."
 		"ko"	"무작위 위치에 생성됩니다. 등장 후 충분한 시간이 지나면, 센트리 건, 디스펜서, 텔레포터를 설치합니다."
 	}
@@ -7061,7 +7061,7 @@
 	}
 	"Aperture Sentry Desc"
 	{
-		"en"	"Fires bullets and homing rockets."
+		"en"	"-Fires bullets\n-Fires homing rockets."
 		"it"	"Spara proiettili e razzi di puntamento."
 		"ko"	"유도탄 로켓과 탄환을 발사합니다."
 	}
@@ -7073,7 +7073,7 @@
 	}
 	"Aperture Dispenser Desc"
 	{
-		"en"	"Grants health and armor to nearby allies."
+		"en"	"-Grants health and armor to nearby allies."
 		"it"	"Conferisce salute e armatura agli alleati vicini."
 		"ko"	"주변의 모든 아군의 체력을 회복시키고 아머를 공급합니다."
 	}
@@ -7085,7 +7085,7 @@
 	}
 	"Aperture Teleporter Desc"
 	{
-		"en"	"Acts as a new spawn point for allies, allies teleported through get the Quantum Entanglement buff."
+		"en"	"-Acts as a new spawn point for allies\n-allies teleported through get the Quantum Entanglement buff."
 		"it"	"Funge da nuovo punto di spawn per gli alleati, gli alleati teletrasportati ottengono il buff Quantum Entanglement."
 		"ko"	"이 적은 다른 적들의 스폰 포인트 역할을 합니다. 이 적의 위치에서 생성된 적은 양자 얽힘 버프를 얻습니다."
 	}
@@ -7109,7 +7109,7 @@
 	}
 	"Aperture Collector Desc"
 	{
-		"en"	"Gets increased resistance and damage by allies dying around him."
+		"en"	"-Gets increased resistance and damage by allies dying around him."
 		"it"	"Aumenta la resistenza e i danni degli alleati che muoiono intorno a lui."
 		"ko"	"주변의 아군이 죽을 때마다, 피해 저항력과 피해량이 증가합니다."
 	}
@@ -7121,7 +7121,7 @@
 	}
 	"Aperture Fueler Desc"
 	{
-		"en"	"Creates a ring of fire whenever attacking with melee, pushes enemies back with it as well."
+		"en"	"-Creates a ring of fire whenever attacking with melee\n-Pushes enemies back with it as well."
 		"it"	"Crea un anello di fuoco quando attacca in mischia e spinge indietro i nemici."
 		"ko"	"근접 공격시 불의 고리가 생성되어 적들을 뒤로 밀칩니다."
 	}
@@ -7133,7 +7133,7 @@
 	}
 	"Aperture Halter Desc"
 	{
-		"en"	"Spawns with a shield deployed, the shield expires on its own but it can be redeployed after some time."
+		"en"	"-Spawns with a shield deployed\n-The shield expires on its own but it can be redeployed after some time."
 		"it"	"Nasce con uno scudo dispiegato, che scade da solo ma può essere ridispiegato dopo qualche tempo."
 		"ko"	"보호막을 전개한 채로 스폰됩니다. 보호막은 시간이 지나면 제거되지만, 시간이 지나면 다시 재배치됩니다."
 	}
@@ -7145,7 +7145,7 @@
 	}
 	"Aperture Suppressor Desc"
 	{
-		"en"	"Gains a temporary speed and damage boost after taking damage."
+		"en"	"-Gains a temporary speed and damage boost after taking damage."
 		"it"	"Ottiene un aumento temporaneo della velocità e dei danni dopo aver subito danni."
 		"ko"	"피해를 받을 때마다, 잠깐 동안 지속되는 피해량 증가 및 이동 속도 증가 효과를 얻습니다."
 	}
@@ -7157,7 +7157,7 @@
 	}
 	"Refragmented Headcrab Zombie Desc"
 	{
-		"en"	"Every few melee hits, it'll spawn another, weaker version of itself."
+		"en"	"-Every few melee hits, it'll spawn another, weaker version of itself."
 		"it"	"Ogni pochi colpi in mischia, genera un'altra versione più debole di se stesso."
 		"ko"	"근접 공격이 일정 횟수 이상 적중하면, 자신의 약화된 버전을 생성합니다."
 	}
@@ -7169,7 +7169,7 @@
 	}
 	"Refragmented Fast Zombie Desc"
 	{
-		"en"	"Faster, stronger, jumps at you a lot more often."
+		"en"	"-Faster, stronger, jumps at you a lot more often."
 		"it"	"Più veloce, più forte, salta addosso molto più spesso."
 		"ko"	"더 빠르고, 강해졌으며, 당신에게 매우 자주 달려듭니다."
 	}
@@ -7181,7 +7181,7 @@
 	}
 	"Refragmented Poison Zombie Desc"
 	{
-		"en"	"Brings terror to anyone responsible for placing barricades."
+		"en"	"Brings terror to anyone responsible for placing barricades. \n-When attacking barricades, launches into the air"
 		"it"	"Porta il terrore a chiunque sia responsabile del posizionamento delle barricate."
 		"ko"	"바리케이드를 설치하는 사람에게 충격과 공포를 주는 존재입니다."
 	}
@@ -7193,7 +7193,7 @@
 	}
 	"Refragmented Metro Cop Desc"
 	{
-		"en"	"Heals by using his pistol."
+		"en"	"-Heals by using his pistol."
 		"it"	"Guarisce usando la pistola."
 		"ko"	"권총 사격시 체력을 회복합니다."
 	}
@@ -7205,7 +7205,7 @@
 	}
 	"Refragmented Metro Raider Desc"
 	{
-		"en"	"Has invulnerability due to being linked with another refragmented, sever the link."
+		"en"	"-Has invulnerability due to being linked with another refragmented, sever the link."
 		"it"	"Ha un'invulnerabilità dovuta al fatto di essere legato a un altro refrattario."
 		"ko"	"다른 재구성된 개체들과 연결되어있어, 이 개체가 무적 상태가 됩니다. 연결을 끊어야합니다."
 	}
@@ -7217,7 +7217,7 @@
 	}
 	"Refragmented W.F. Rifler Desc"
 	{
-		"en"	"Spawns 2 Refragmented Metro Raiders, kill him to kill them."
+		"en"	"-Spawns 2 Refragmented Metro Raiders, kill him to kill them."
 		"it"	"Genera 2 Predatori della metropolitana riframmentati, uccidetelo per ucciderli."
 		"ko"	"시민 보호 특공대 2마리를 생성합니다. 이 적을 죽이면, 이 적이 소환한 시민 보호 특공대도 죽습니다."
 	}
@@ -7313,7 +7313,7 @@
 	}
 	"Perfected Father Grigori Desc"
 	{
-		"en"	"So this is where all of those Grigori copies are coming from...\nAnnabelle is replaced with a Boomstick.\nIon Cannon now heals allies.\nHas a shield that activates passively."
+		"en"	"So this is where all of those Grigori copies are coming from...\n-Annabelle is replaced with a Boomstick.\n-Ion Cannon now heals allies.\n-Has a shield that activates passively."
 		"it"	"Ecco da dove provengono tutte le copie di Grigori...\nAnnabelle è sostituita da un Boomstick.\nIl Cannone a ioni ora cura gli alleati."
 		"ko"	"그 많던 그리고리 신부 짝퉁이 어디서 왔는지 알 것 같군요...\n-애너벨이 아닌 붐스틱을 보유\n-이온 캐논이 이제 아군들을 회복\n-자동으로 활성화되는 보호막을 보유"
 	}
@@ -7325,7 +7325,7 @@
 	}
 	"Aperture Exterminator Desc"
 	{
-		"en"	"Big robot. Very slow, wields a gigantic sword which allows him to hit you from afar.\n Deals true damage."
+		"en"	"Big robot. \n-Very slow\n-Wields a gigantic sword which allows him to hit you from afar.\n-Deals true damage."
 		"it"	"Grande robot. Molto lento, brandisce una spada gigantesca che gli permette di colpire da lontano.\nDanno Puro"
 		"ko"	"거대한 로봇. 매우 느리지만, 멀리서도 타격이 가능한 거대한 검을 휘두릅니다.\n 공격이 트루 대미지를 입힙니다."
 	}
@@ -7337,7 +7337,7 @@
 	}
 	"Aperture Spokesman Desc"
 	{
-		"en"	"The man who speaks for the people.\nGrants Dimensional Turbulance buff to bosses.\nIf left alive for last, he'll get increased resistances and buffs."
+		"en"	"The man who speaks for the people.\n-Grants Dimensional Turbulance buff to bosses.\n-If left alive for last, he'll get increased resistances and buffs."
 		"it"	"L'uomo che parla a nome del popolo.\nGrazie al buff Turbolenza dimensionale ai boss.\nSe lasciato in vita per ultimo, otterrà resistenze e buff aumentati."
 		"ko"	"자신의 사람들을 위해 연설하는 자입니다.\n 보스에게 차원 난기류 버프를 부여합니다.\n이 적이 혼자 남았다면, 다수의 버프와 저항력을 얻습니다."
 	}
@@ -7349,7 +7349,7 @@
 	}
 	"Aperture Researcher Desc"
 	{
-		"en"	"Both an ally and an enemy, this researcher simply wants to get out.\nGoing below 50%% of his health will cause him to inflict everyone with Kinetic Surge."
+		"en"	"Both an ally and an enemy, this researcher simply wants to get out.\n-Going below 50% of his health will cause him to inflict everyone with Kinetic Surge."
 		"it"	"Sia alleato che nemico, questo ricercatore vuole semplicemente andarsene.\nScendere sotto il 50% della sua salute lo porterà a infliggere a tutti un'Ondata Cinetica."
 		"ko"	"아군이자 적군이 될 수도 있는 이 연구원은 단지 이 곳을 서둘러 빠져나가고 싶어할 뿐입니다.\n체력이 50％ 이하가 되면, 적과 아군을 포함한 모든 존재에게 운동 에너지 급증 버프를 부여합니다."
 	}
@@ -7403,7 +7403,7 @@
 	}
 	"Refragmented Winter Sniper Desc"
 	{
-		"en"	"Will attack one target only and focus them down.\nDies after some time.\nIf he hits you while under cryo, he debuffs you harder."
+		"en"	"-Will attack one target only and focus them down.\n-Dies after some time.\n-If he hits you while under cryo, he debuffs you harder."
 		"it"	"Attacca un solo bersaglio e lo abbatte.\nMuore dopo un po' di tempo.\nSe ti colpisce mentre sei sotto crio, ti indebolisce di più."
 		"ko"	"항상 한 대상만 집중해서 공격합니다.\n일정 시간이 지나면 즉사합니다.\n만약 당신이 냉동 디버프를 보유 하고 있다면, 이 적에게서 받는 디버프가 강화됩니다."
 	}
@@ -7415,7 +7415,7 @@
 	}
 	"Refragmented Frost Hunter Desc"
 	{
-		"en"	"Will attack one target only and focus them down.\nDies after some time.\nVery fast and high damage, but dissapears once he hits you once."
+		"en"	"-Will attack one target only and focus them down.\n-Dies after some time.\n-Very fast and high damage, but dissapears once he hits you once."
 		"it"	"Attacca un solo bersaglio e lo abbatte.\nMuore dopo un po' di tempo.\nMolto veloce e con danni elevati, ma scompare una volta colpito una volta."
 		"ko"	"항상 한 대상만 집중해서 공격합니다.\n일정 시간이 지나면 즉사합니다.\n매우 빠르고 높은 피해를 주지만, 대상 적중시 소멸합니다."
 	}

@@ -318,7 +318,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			}
 			case 4:
 			{
-				switch(GetRandomInt(1, 12))
+				switch(GetRandomInt(1, 8))
 				{
 					case 1: // mmmmyes
 					{
@@ -332,19 +332,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 						enemy.Health = RoundToFloor((6500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.Data = "wave_40;res3;seainfection";
 					}
-					case 3: // mmmmyes
-					{
-						enemy.Index = NPC_GetByPlugin("npc_sea_god_alaxios");
-						enemy.Health = RoundToFloor((6500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-						enemy.Data = "wave_40;res3;seainfection";
-					}
-					case 4: // mmmmnono
-					{
-						enemy.Index = NPC_GetByPlugin("npc_sea_toddhoward");
-						enemy.Health = RoundToFloor((6500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-						enemy.Data = "wave_40;res3;seainfection";
-					}
-					case 5: // mmmmno, prob more efficient way to do this, but idk how and I know this will work
+					case 3: // mmmmno
 					{
 						enemy.Index = NPC_GetByPlugin("npc_toddhoward");
 						enemy.Health = RoundToFloor((6500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
