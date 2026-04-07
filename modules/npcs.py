@@ -29,6 +29,7 @@ def parse():
         category_name = category.replace("Type_","").replace("-1","Unknown").title()
         if category != "Type_Hidden":
             npc_list_html += util.fill_template(util.read("templates/npc/category_block_start.html"),{"key":category_name})
+            if category == "Type_Raid": npc_list_html += f'<div style="margin-bottom:1em;">This assumes you are on the final encounter unless stated otherwise.</div>'
             for npc in sorted(npc_list, key=lambda npc: npc["name"]):
                 music = ""
                 for entry in npc["music_entries"]:
