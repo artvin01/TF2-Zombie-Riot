@@ -4696,7 +4696,7 @@
 	}
 	"Blitzkrieg Wave Desc"
 	{
-		"en"	"Lore order: (2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
+		"en"	"Lore order: (2) The machine got hacked by someone... it wants you dead.\nOriginally built by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
 		"it"	"Ordine Lore: (2) La macchina è stata hackerata da qualcuno... ti vuole morto.\nOriginalmente costruito da Kahmlstein insieme a Ruina e Expidonsa...\nNon affrontarlo in nessuna area expidonsan..."
 		"ko"	"설정 순서: (2) 누군가에게 해킹당한 기계입니다... 당신을 죽이고 싶어하죠.\n본래 카멜슈타인, 루이나, 엑스피돈사가 공동 제작한 기계였지만…\n엑스피돈사 지역에서 그와 전투하지 마세요."
 	}

@@ -255,7 +255,7 @@
 	}
 	"W.F. DDT Desc"
 	{
-		"en" 		"Robot Build by W.F. against all.\n-Very Fast"
+		"en" 		"Robot Built by W.F. against all.\n-Very Fast"
 		"it"		"Robot costruito da W.F. contro tutti.\nMolto veloce"
 		"ko" 		"W.F.가 모든 것에 맞서기 위해 제작한 로봇.\n-매우 빠름"
 	}

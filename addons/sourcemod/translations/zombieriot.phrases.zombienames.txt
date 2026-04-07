@@ -1487,7 +1487,7 @@
 	}
 	"Kahmlstein? Desc"
 	{
-		"en"		"A fake kahmlstein, build by the original one\n-Attacks rapidly with his fists\n-Changes up his melee fist attacks to various phases:\nFast attacking\nSlow but heavy damage\nSingular necksnap\n-Once below 1/4th health, enrage:\nWhip out minigun that shoots explosive projectiles\nHas a bit of windup before fireing\ngains massive resistances during it\nLasts for a few seconds"
+		"en"		"A fake kahmlstein, built by the original one\n-Attacks rapidly with his fists\n-Changes up his melee fist attacks to various phases:\nFast attacking\nSlow but heavy damage\nSingular necksnap\n-Once below 1/4th health, enrage:\nWhip out minigun that shoots explosive projectiles\nHas a bit of windup before fireing\ngains massive resistances during it\nLasts for a few seconds"
 	}
 	"Chaos Kahmlstein"
 	{
