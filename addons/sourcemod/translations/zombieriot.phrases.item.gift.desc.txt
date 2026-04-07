@@ -209,7 +209,7 @@
 	{
 		"en" 		"Father Grigori from Crowholm seems to have succumb to the zombie sideeffects.\n-Has a ranged attack\n-Summons lighting strikes on himself\n-On half health: more stats."
 		"it"		"Padre Grigori di Crowholm sembra aver ceduto agli effetti collaterali degli zombi.\n-Ha un attacco a distanza\n-Somministra colpi di luce su di sé\n-A metà salute: più statistiche."
-		"ko" 		"레이븐홈 출신 인물인 그리고리 신부. 아무래도 좀비 바이러스의 부작용에 굴복해버린 것 같습니다.\n-원거리 총기 공격을 보유하며 자신의 위치에 번개 강타를 생성합니다.\n-또한 수류탄을 던질 수도 있으며, 체력이 절반 이하가 될시 스탯이 증가합니다."
+		"ko" 		"크로우홈 출신 인물인 그리고리 신부. 아무래도 좀비 바이러스의 부작용에 굴복해버린 것 같습니다.\n-원거리 총기 공격을 보유하며 자신의 위치에 번개 강타를 생성합니다.\n-또한 수류탄을 던질 수도 있으며, 체력이 절반 이하가 될시 스탯이 증가합니다."
 	}
 	"Metro Cop Desc"
 	{
@@ -637,7 +637,7 @@
 	"W.F. Mage Desc"
 	{
 		"en" 		"-Shoots projectiles at far range\n-Melees once close"
-		"ko"		"-원거리에서 투사체 발사\n-근접 시 근접 공격 사용"
+		"ko"		"-원거리에서 투사체 발사\n-가까이 접근 시 근접 공격 사용"
 	}
 	"Bloon Desc"
 	{
@@ -761,6 +761,7 @@
 	"Blitzkrieg Desc"
 	{
 		"en" 		"A supreme being of rockets, hacked and now used for terrible things\n-shoots rockets that deal more damage the more they travel\n-If outside of his red orb, summons lightning strikes onto you\n-The lower hp, the stronger he gets\n-Once low enough hp, summons moonlight, gaining massive ranged resistance\n-Teleport and dash during moonlight (can be silenced).\nFighting him in expidonsan maps majorly buffs him"
+		"ko" 		"로켓 관련학의 최고위 존재로, 해킹 당하여 끔찍한 일에 쓰여지고 있습니다.\n-비행 거리에 따라 피해가 증가하는 로켓 발사\n-붉은 영역 바깥에서 공격 시 공격자의 위치에 뇌격 소환\n-체력이 감소할 수록 더 강해집니다.\n-체력이 충분히 감소할 경우 '월광'을 사용하며, 원거리 피해 저항력 대폭 증가\n-월광 능력 사용 중 텔레포트와 대쉬를 사용 (침묵 상태 시 효과 저지).\n-엑스피돈사 맵에서 전투 시 대폭 강화됨"
 	}
 	"Pikeman Desc"
 	{
@@ -791,18 +792,22 @@
 	"The Addiction Desc"
 	{
 		"en"		"-The more enemeis remain in the wave he more resistance he gets\n-Shoots a bolt of lighting with a big delay\n-in non nightmare mode he is much slower untill half health"
+		"ko" 		"-웨이브에 남은 적이 많을 수록 저항력 증가\n-긴 지연을 가진 뇌격을 소환합니다.\n-'악몽' 모드가 아닐 경우 체력이 절반으로 감소할 때까지 이동 속도가 대폭 감소합니다."
 	}
 	"Doctor Purnell Desc"
 	{
-		"en" 		"-Shoots explosive bullets\n-Needs to reload after enoguh shots\n-Melee's and if hit, gains back 1 bullet\n-Stays near allies and buffs them for 30 seconds"
+		"en" 		"-Shoots explosive bullets\n-Needs to reload after enough shots\n-Melee's and if hit, gains back 1 bullet\n-Stays near allies and buffs them for 30 seconds"
+		"ko" 		"-폭발성 탄환을 발사합니다.\n-일정 횟수 사격 후 재장전합니다.\n-근접 공격 적중시 권총 탄약을 1발 반환합니다.\n-아군을 따라다니며 30초의 버프를 부여합니다."
 	}
 	"Book Simon Desc"
 	{
 		"en" 		"-Shoots explosive bullets\n-Must reload when shooting too much\n-When close, melee's instead\n-Before the final wave, if he kills anyone he escapes at low health\n-If he successfully escapes, he gains a permanent damage bonus"
+		"ko" 		"-폭발성 탄환을 발사합니다.\n-일정 횟수 사격 후 재장전합니다.\n-가까이 접근 시 근접 공격 사용\n-최종 웨이브 이전에 누군가를 처치할 경우, 체력이 낮을 때 탈출합니다.\n-탈출에 성공할 경우 영구적으로 공격 피해량이 증가합니다."
 	}
 	"Sewmo Desc"
 	{
 		"en" 		"-Spawns with armor\n-Is slow\n-Has extra melee range"
+		"ko" 		"-아머를 가지고 스폰됩니다.\n-더 긴 근접 사거리 보유"
 	}
 	"Faster Desc"
 	{
@@ -830,7 +835,8 @@
 	}
 	"Corrupted Barney Desc"
 	{
-		"en" 		"Its me gordon.\n-Glitches your game, on half health, lags you aswell\n-Has random speed resistances and damage\n-On his map, randomizes cash and perks and downs\n-Spawns Simon and Addiction, both respawn if killed after some time:\n-Simon gives a damage buff, simon keeps the damage bonus from previous waves\nOn death, simon spawns physcos\nAddiction grants resistances\nOn death, summons tallers\n-Both must be killed or else barney cant die\n-If barney's hp is 1 with eiher alive, he gains massive buffs"
+		"en" 		"Its me gordon.\n-Glitches your game, on half health, lags you aswell\n-Has random speed resistances and damage\n-On his map, randomizes cash and perks and downs\n-Spawns Simon and Addiction, both respawn if killed after some time:\n-Simon gives a damage buff, simon keeps the damage bonus from previous waves\nOn death, simon spawns psychos\nAddiction grants resistances\nOn death, summons tallers\n-Both must be killed or else barney cant die\n-If barney's hp is 1 with eiher alive, he gains massive buffs"
+		"ko" 		"고든 나야.\n-게임에 버그를 일으키며, 체력이 절반 이하로 감소 시 렉 역시 유발\n-무작위로 속도, 저항력, 피해량이 변경됨\n-'크라이 오브 피어' 맵일 경우 자금, 퍽, 다운 횟수를 무작위로 바꿈\n-사이먼과 탐닉을 스폰시키며, 이 둘이 처치될 경우 일정 시간 후에 부활:\n사이먼은 피해량 버프를 제공하며, 이전 웨이브에서 얻은 피해량 증가 효과를 유지\n사망 시, 사이코를 소환\n탐닉은 저항력을 제공\n사망 시, 톨러를 소환\n-양쪽 다 처치되지 않을 경우 바니 처치 불가\n-둘 중 하나라도 생존한 상태에서 체력이 1이 될 시 막대한 버프를 받음"
 	}
 	"Baby Desc"
 	{
@@ -936,10 +942,12 @@
 	"Donnerkrieg Desc"
 	{
 		"en"		"Forced into servitutde by Blitzkrieg\n-After a cooldown falls back and prepares a big laser:\nBig laser oneshots everyone and stays alive\nGets Resistances while its up\nIn the raid fight, when Schwert dies, this laser rotates much faster"
+		"ko"		"블리츠크리그에게 패배하여 강제 예속 상태가 되었습니다.\n-쿨다운 후 후퇴하며 거대한 레이저를 준비합니다:\n레이저는 모든 대상을 즉사시키며 계속 유지됨\n사용하는 동안 저항력 증가\n레이드 상태일 경우, 슈베르츠크리그 사망 시 레이저가 더욱 빠르게 회전"
 	}
 	"Schwertkrieg Desc"
 	{
 		"en"		"Forced into servitutde by Blitzkrieg\nHe completely lost his individuality\n-Teleports every so often to an enemy\n-Teleport aftermath causes a delayed explosion\n-In the raid fight, when Donner dies, All stats up heavily"
+		"ko"		"블리츠크리그에게 패배하여 강제 예속 상태가 되었습니다.\n그는 자신의 개성을 완전히 잃고 말았습니다...\n-주기적으로 표적에게 순간이동합니다.\n-순간이동 후 지연형 폭발을 발생시킵니다.\n-레이드 상태일 경우, 도너크리그 사망 시, 전반적인 능력치가 대폭 상승합니다."
 	}
 	"Phantom Knight Desc"
 	{
@@ -1200,24 +1208,28 @@
 	"Infected Silvester"
 	{
 		"en"	"Infected Silvester"
+		"ko"	"감염된 실베스터"
 	}
 	"Silvester, The Sparring Partner"
 	{
 		"en"	"Silvester, The Sparring Partner"
+		"ko"	"훈련 파트너 실베스터"
 	}
 	"Silvester, The Sparring Partner Desc"
 	{
 		"en"	"-Spawns together with nemal\n-If the player is alone, he wont attack\n-If enough time passes or gets hurts too much, transforms and gains stats and abilities\n-Can throw waves of energy that deal huge damage\n-If marked, these predict\n-Can throw quake attacks aswell\n-Jumps into air and throws waves of energy at enemies\n-Teleports to nemal if too far away, gainging resistance during it"
+		"ko"	"-네말과 함께 스폰\n-플레이어가 혼자 남았을 경우 공격하지 않습니다.\n-충분한 시간이 지나거나 피해를 너무 많이 받았을 경우, 변신하여 추가 능력치와 능력을 획득합니다.\n-큰 피해를 가하는 에너지 파동을 발사할 수 있습니다.\n-대상이 표적 상태라면, 이동 경로를 예측합니다.\n-충격파 공격 역시 사용 가능\n-공중으로 떠올라 에너지 파동을 난사합니다.\n-네말과 멀리 떨어질 경우 네말의 위치로 순간이동하며, 그 동안 저항력 증가"
 	}
 	"Silvester Desc"
 	{
 		"en"		"The superpowered warrior returns but something is up. You cured him yes?\n-Spawns together with waldch\n-Fires a laser with a delay, having resistances\nLaser resistance (can be silenced)\n-Causes quakes sometimes\n-Stands still and causes more quakes\n-If near waldch, takes most of the damage and nullifies some of it\n-At low hp, increases stats"
+		"ko"		"초인적인 전사가 다시 돌아왔는데... 뭔가 이상합니다. 분명 우리가 그를 치료해주었을 텐데요?\n-왈츠와 함께 스폰\n-지연을 가진 레이저를 발사하며, 발사하는 동안 저항력 증가\n-레이저 공격 사용 중 저항력 증가(침묵 상태 시 저항 제거)\n-때때로 충격파 공격 사용\n-때때로 가만히 서서 더 많은 충격파를 발생\n-왈츠와 근접한 경우, 왈츠가 받는 피해량의 큰 부분을 감소하여 받습니다.\n-체력이 낮아질 경우, 능력치 증가"
 	}
 	"Waldch Desc"
 	{
 		"en"		"A friend to Silvester and a gunslinger to various weapons and support tools.\nWhat are they doing fighting you?\nIf close or far, with some randomness:\n-Melee hits twice\n-Smg has bad aim but deals huge damage upclose\n-Sniper deals massive damage, Sniper attack prediction (can be silenced)\n-Can summon a c4 that explodes dealing true damage with a delay\n-If damaged too much away from silvester, teleports to him\n-If alone, enrages and gains massive stats"
 		"it"		"Un amico per Silvester e un pistolero per varie armi e strumenti di supporto.\nCosa fanno contro di te? \nPrevisione dell'attacco del cecchino (può essere silenziato)."
-		"ko"		"실베스터의 친구로, 다양한 무기와 지원 도구를 지닌 총잡이입니다.\n이들이 도대체 뭘 위해 당신과 싸우는 걸까요?\n-저격소총 사용 시 대상의 이동 경로를 예측(침묵 상태 시 무효화)"
+		"ko"		"실베스터의 친구로, 다양한 무기와 지원 도구를 지닌 총잡이입니다.\n이들이 도대체 뭘 위해 당신과 싸우는 걸까요?\n-근접하거나 혹은 멀리 떨어져 있을 시, 무작위로:\n-2번 적중 하는 근접 공격 사용\n-SMG는 정확도가 낮지만 근접 시 큰 피해를 가함\n-저격소총은 막대한 피해를 가하며, 대상의 이동 경로를 예측(침묵 상태 시 무효화)\n-지연 후 폭발하여 트루 데미지를 가하는 C4 소환 가능\n-실베스터와 멀리 떨어진 상태로 너무 많은 피해를 받을 경우, 실베스터의 위치로 순간이동\n-혼자 남을 경우, 격분 상태가 되며 능력치 대폭 증가"
 	}
 	"Calmaticus Desc"
 	{
@@ -1354,6 +1366,7 @@
 	"God Alaxios Desc"
 	{
 		"en"		"Summons his army, when reaching hp threshholds.\n-Buffs allies around himself and tries to reach them (but not if alone) (silence reduces how long this is)\n-Melee attacks rapidly and causes you to slide\n-Jumps up and throws a spear at an enemy, exploding\n-Charges a whirlwind, targeted enemy gets pulled in, the rest get pushed back and take damage\n-Once on final army, is immortal\n-Once army dies, he enrages and gains stats"
+		"ko"		"체력이 일정 수치가 될 때마다 그의 군대를 소환합니다.\n-주변의 아군에게 버프를 부여하며, 아군에게 접근하려고 시도(혼자일 경우 X) (침묵 상태 시 버프 지속 시간 감소)\n-빠른 근접 공격을 사용하며 대상을 미끄러지게 만듭니다.\n-뛰어올라 폭발하는 창을 투척합니다.\n-휠윈드를 충전하며, 표적으로 삼은 대상은 끌어당겨지며, 그 외의 대상들은 밀려나며 피해를 받습니다.\n-마지막 군대 소환 시 무적 상태가 됩니다.\n-모든 군대가 처치될 경우, 격분 상태가 되어 능력치가 증가합니다."
 	}
 	"Seaborn Scout Desc"
 	{
@@ -1954,6 +1967,7 @@
 	"Sensal Desc"
 	{
 		"en"	"The leader of the scouting group and a friend of silvester and Waldch, he is here for what you ''did''.\n-He summons scythes that home onto you\n-summons portals which summon sythes\n-fires a laser onto all enemies in range aswell, spawns crystals when he does this which he targets\n-Gets a shield on ability use\n-Low enough hp and he gains stats and heals abit\nSlide on hit (can be silenced)"
+		"ko"	"정찰대의 대장이자 실베스터와 왈츠의 친구입니다. 그는 당신이 저지른 행동 때문에 여기에 왔습니다.\n-대상에게 유도하는 낫을 소환합니다.\n-낫을 생성하는 포탈을 소환합니다.\n-시야 범위 내의 모든 적에게 레이저를 발사하며, 이때 센살이 표적으로 삼는 수정을 소환합니다.\n-능력 사용 시마다 보호막을 얻습니다.\n-체력이 충분히 감소할 경우, 능력치가 증가하며 체력을 소량 회복합니다.\n-공격 적중 시 대상이 쭉 미끄러지게 됩니다. (침묵 상태 시, 이 효과가 발생하지 않음)"
 	}
 	"Dual Rea Desc"
 	{
@@ -2009,11 +2023,12 @@
 	{
 		"en"	"He thinks youre for his crown aswell...\n-Enrages with a cooldown, gaining massive speed, resistance and damage\n-His fire is global range and has a LOS check.\n-Stands when appearing for a while."
 		"it"	"Pensa che anche tu sia per la sua corona...\nIl suo fuoco ha un raggio d'azione globale e ha un controllo di LOS."
-		"ko"	"지금 이 자는 당신이 자신의 왕관을 빼앗으러 왔다고 오해하고 있습니다...\n-그의 사격 공격은 사거리가 무한이지만 시야 내의 적만 타격합니다.\n-등장 후 잠깐동안 제자리에 고정됩니다."
+		"ko"	"지금 이 자는 당신이 자신의 왕관을 빼앗으러 왔다고 오해하고 있습니다...\n-쿨타임이 있는 분노를 발동: 피해량, 공격 속도, 저항력 대폭 증가\n-그의 사격 공격은 사거리가 무한이지만 시야 내의 적만 타격합니다.\n-등장 후 잠깐동안 제자리에 고정됩니다."
 	}
 	"Bladedance The Betrayed Desc"
 	{
-		"en"	"What can be as strong as Bob?\n-Summons explosive orbs, dealing nervous impairment when hrowing them around himself\n-Buffs all allies around himself randomly\n-In rogue he spawns with all bosses upto that point"
+		"en"	"What can be as strong as Bob?\n-Summons explosive orbs, dealing nervous impairment when throwing them around himself\n-Buffs all allies around himself randomly\n-In rogue he spawns with all bosses upto that point"
+		"ko"	"밥만큼 강해질 수 있는 자는 누구일까요?\n-폭발성 구슬을 소환하며, 신경 손상 원소 피해를 부여합니다.\n-무작위적으로 주변의 모든 아군에게 버프를 제공합니다.\n-로그라이크1에서는 해당 시점까지의 보스들을 소환합니다."
 	}
 	"Archosauria Desc"
 	{
@@ -2210,11 +2225,13 @@
 	}
 	"The Messenger Desc"
 	{
-		"en"	"Kahmlsteins forced right hand man, he really wants his attention.\nApart of the no goverment group called Interitus.\n-Wave 10: Deals fire and bleed damage\n-Wave 20: deals massive chaos damage\n-Each time he does his 4 ball attack he gains permanent power and resistance.\n-sEach time he shows his hand sign he will teleport\n-Can equip a gun that shoots balls at you.\n(Silence) Reduces chaos damage he deals."
+		"en"	"Kahmlsteins forced right hand man, he really wants his attention.\nApart of the no goverment group called Interitus.\n-Wave 10: Deals fire and bleed damage\n-Wave 20: deals massive chaos damage\n-Each time he does his 4 ball attack he gains permanent power and resistance.\n-Each time he shows his hand sign he will teleport\n-Can equip a gun that shoots balls at you.\n(Silence) Reduces chaos damage he deals."
+		"ko"	"카멜슈타인에 의해 강제로 그의 오른팔이 된 자. 그는 카멜슈타인의 주목을 이끌고 싶어합니다.\n인테리투스라는 무정부 단체의 소속원입니다.\n-웨이브 10: 출혈과 화상을 부여.\n-웨이브 20: 대량의 혼돈 원소 피해를 부여.\n-4연속 추적형 구체 공격을 사용할 때마다, 레이드 파워와 피해 저항력이 영구적으로 소폭 증가.\n-이 적이 손으로 핸드 사인을 보인 후, 순간이동 합니다.\n-구체를 발사하는 총기를 장착할 수 있습니다.\n(침묵 상태 시)이 적이 부여하는 혼돈 원소 피해량이 감소"
 	}
 	"The Purge Desc"
 	{
 		"en"	"A machine to help the efforts of the Interitus group...\n-It a great arsenal of weapons.\n-Heals when low enough and gains massive power everytime it has its fists out.\n-As time passes it gains massive damage bonuses\n-Its aim is bad so you must kite\n-Its melee rams you with contact damage\n-Minigun makes it stand still to shoot\n-Quad launcher shoots 4 rockets at once\ncan stand still to shoot rockets at people from his back launcher\n-Rest are average guns.\n(Silence)Decreases his healing abit"
+		"ko"	"인테리투스 연합을 돕기 위해 만들어진 기계.\n-다양한 무기를 보유함.\n-체력이 일정 수준 이하로 낮아지면 회복 능력을 사용하고, 주먹을 장착할 때마다 힘이 대폭 상승.\n-시간이 지날 수록 막대한 피해량 버프를 받습니다.\n-조준 실력은 좋지 않기에 카이팅이 필요합니다.\n-근접 공격 사용 시 돌진하며 접촉 시 피해를 가합니다.\n-미니건을 사용하는 동안 제자리에 고정됩니다.\n-4연장 로켓 발사기는 한번에 4발의 로켓을 발사합니다.\n-제자리에 멈춰 후면 로켓 발사기로 대상에게 다수의 로켓을 발사할 수 있습니다.\n-그 외에는 기본적인 총기들입니다.\n(침묵 상태 시)체력 회복량이 소폭 감소"
 	} 
 	"Rouge Expidonsan Doctor Desc"
 	{
@@ -2266,14 +2283,14 @@
 	
 	"Stella Desc"
 	{
-		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\n-She walks through all enemies and isnt collideable\n-Shoots a laser that turns to you slowly, while lasering, around her is a damage and debuff zones\n-Can stand still and summona net that follows you slowly and hurts you\n-Can create a big laser after a delay that deals huge damage, Karlas can redictect this around corners\n-Once karlas dies, she gains massive buffs and alll her abilities are hyper buffed"
+		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\n-She walks through all enemies and isnt collideable\n-Shoots a laser that turns to you slowly, while lasering, around her is a damage and debuff zones\n-Can stand still and summons net that follows you slowly and hurts you\n-Can create a big laser after a delay that deals huge damage, Karlas can redictect this around corners\n-Once karlas dies, she gains massive buffs and all her abilities are hyper buffed"
+		"ko"		"''도너크리그''의 진명입니다.\n그녀의 주문 상태는 블리츠크리그의 노예로 있던 시절보다 훨씬 정제되고 안정적으로 변했습니다.\n-모든 적을 뚫고 지나가며 충돌하지 않음\n-적중 시 대상을 둔화시키는 레이저를 발사하며, 이 동안 주변에 있는 대상에게 피해와 디버프를 가하는 영역을 생성\n-제자리에 멈춰 대상을 느리게 추격하여 피해를 입히는 장판을 생성할 수 있습니다.\n-지연 후 막대한 피해를 가하는 커다란 레이저를 발사하며, 카를라스에게 적중할 경우 반사됩니다.\n-카를라스 사망 시, 막대한 버프를 얻고 모든 능력이 대폭 강화됩니다."
 	}
 	"Karlas Desc"
 	{
 		"en"		"The true name of ''Schwertkrieg''\nAlongside his teleport strike becoming stronger\n-Spawns with stella\n-The more enemies are around him, the faster he swings\n-Stand still and shoots homing projectiles that pierce\n-Heals stella if low on health, on half hp, he loses this ability\n-If stella dies, he gains immortality for 20 seconds unless he also dies\n-Once stella is on last breath, he gets massively buffed\nsummons swords aswell when this happens that spin around him\n-Teleports to an enemy and causes a delayed explosion"
+		"ko"		"''슈베르트크리그''의 진명입니다.\n-순간이동 공격 강화\n-스텔라와 함께 스폰됨\n-주변에 적이 많을 수록 공격 속도 증가\n-제자리에 멈춰 대상을 관통하는 유도 투사체를 발사할 수 있습니다.\n-스텔라의 체력이 너무 낮아질 경우 치유를 제공하며, 체력이 절반 이하로 감소 시 능력 상실\n-스텔라 사망 시, 카를라스도 사망하지 않은 경우 20초 동안 무적화\n-스텔라가 최후의 발악 상태일 경우, 막대한 버프를 얻음\n-이때, 회전하는 검들이 소환됩니다.\n--순간이동 후 지연형 폭발을 발생시킵니다."
 	}
-
-	
 	
 	"Mana Overload"
 	{
@@ -2965,6 +2982,7 @@
 	"Agent Smith Desc"
 	{
 		"en"		"It is purpose that defines us.\n-Initially appears as a normal boss which can multiply for up to 64 times.\n-Appears later on once more, with the ability to infect players and turn them into clones, better cure them fast by standing near them!"
+		"ko"		"''목적이 우리를 정의한다.''\n-처음에는 최대 64회까지 분열할 수 있는 일반적인 보스로 등장합니다.\n-이후 다시 등장할때는, 플레이어를 감염시켜 자신의 클론으로 만드는 능력을 보유하게 됩니다.\n-감염된 플레이어에게 접근하여 최대한 빨리 치유해주세요!"
 	}
 	"Hijacked Red Pill Desc"
 	{
@@ -3098,6 +3116,7 @@
 	"Omega Desc"
 	{
 		"en"		"He has come to save Bob from Whiteflower's Soldiers.\nThe unfortunate part? He thinks you're a part of them.\nDespite performing hand-to-hand combat, he still keeps his trusty Rocket Launcher with him.\n-After enough hits, his hands will start generating enough energy to perform a powerful attack.\n-Sometimes summons permanent armor grandes\n-launches up and shoots rockets with a cooldown"
+		"ko"		"배풍등의 병사들에게서 밥을 구출하기 위해 온 자입니다.\n안타까운건... 그가 당신이 배풍등의 부하들 중 하나라고 착각하고 있다는 겁니다.\n근접전을 펼치나, 그의 믿음직한 로켓 발사기로 로켓 세례도 가합니다.\n-공격이 충분히 적중하면, 그의 손에 기운이 모이면서 강력한 공격을 준비합니다.\n-때때로 영구적으로 남는 아머 수류탄을 생성합니다.\n-하늘로 뛰어올라 로켓을 난사합니다. 쿨타임 보유."
 	}
 	"Major Voided Desc"
 	{
