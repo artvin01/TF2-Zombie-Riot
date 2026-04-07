@@ -189,7 +189,7 @@ def parse():
             
             if wave_entry_data["plugin"] in NPCS_BY_FILENAME:
                 npc_data = NPCS_BY_FILENAME[wave_entry_data["plugin"]]
-                if ("-1" in npc_data.flags) or (npc_data.category=="Type_Hidden"): continue
+                if (npc_data.category=="Type_Hidden"): continue
             else:
                 npc_data = None
                 assert force
@@ -263,6 +263,7 @@ def parse():
                 flags |= MVM_CLASS_FLAG_ALWAYSCRIT;
             """
             npc_css_class = ""
+            npc_extra_flags = []
             if npc_data:
                 cases = {
                     "MVM_CLASS_FLAG_SUPPORT": util.cfgtoint(dd["is_boss"]) < 2 and (dd["ignore_max_cap"]=="1" or dd["team_npc"]=="2" or dd["is_static"]=="1"),
@@ -278,6 +279,7 @@ def parse():
                     if case_ and (flag not in npc_data.flags):
                         extra_info += f" {modules.shared.FLAG_MAPPINGS[flag]}"
                         npc_css_class += f" {modules.shared.FLAG_CSS[flag]}"
+                        npc_extra_flags.append(flag)
 
             # (in code) Predefined NPC flags (plugin_name.sp data.Flags=<x>)
             desc = ""
@@ -286,6 +288,7 @@ def parse():
                     if flag != "0" and flag != "-1":
                         extra_info += f" {modules.shared.FLAG_MAPPINGS[flag]}"
                         npc_css_class += f" {modules.shared.FLAG_CSS[flag]}"
+                        npc_extra_flags.append(flag)
 
                 # Get icon
                 image = modules.shared.get_npc_icon(npc_data.icon)
@@ -317,7 +320,7 @@ def parse():
             # Note that each entry also has a 'filename' param if you need to make this interactive.
             music = ""
             for entry in npc_data.music_entries:
-                MUSIC_BY_TITLE[entry["musictitle"]] = entry
+                #MUSIC_BY_TITLE[entry["musictitle"]] = entry
                 context=entry.copy()
                 file_exists = context.pop("file_exists")
                 music += util.fill_template(util.read(f"templates/music/music_modal{"_missing"*int(not file_exists)}.html"),context)
@@ -331,7 +334,8 @@ def parse():
                 "display_name": npc_name,
                 "extra_info": extra_info + desc + music,
                 # waves.sp line 4165 if(data.Is_Boss < 2 && (support || data.ignore_max_cap || data.Is_Static || data.Team == TFTeam_Red))
-                "css_class": npc_css_class
+                "css_class": npc_css_class,
+                "embed_extra_flags": npc_extra_flags # used by embed.py to determine all coloring
             }
             npc_hash = util.id_from_str(json.dumps(npc_output)) # same NPC data will output same hash
             npc_output["count"] = count

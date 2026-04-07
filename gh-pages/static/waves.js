@@ -188,7 +188,16 @@ function fill_template(temp, cont) {
 
 function copy_waveset_embed_link() {
     let source_url = window.location.href.substring(0,  window.location.href.lastIndexOf('/'));;
-    copyTextToClipboard(`${source_url}/embed/${waveset_file.split(".json")[0].split("/")[1]}_${wave}.jpg`);
+    let ext = ".jpg";
+    waveset_data["waves"][String(wave)].forEach(function (entry, _) {
+        if (entry["type"] === "npc") {
+            if (entry["embed_extra_flags"].includes("MVM_CLASS_FLAG_MISSION")) {
+                ext = ".gif";
+                return;
+            };
+        };
+    });
+    copyTextToClipboard(`${source_url}/embed/${waveset_file.split(".json")[0].split("/")[1]}_${wave}${ext}`);
 }
 
 // https://stackoverflow.com/a/30810322
