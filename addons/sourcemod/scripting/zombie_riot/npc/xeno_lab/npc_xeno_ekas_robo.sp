@@ -43,7 +43,7 @@ public void XenoOuroborosEkas_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/dog.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Ouroboros Ekas");
+	strcopy(data.Name, sizeof(data.Name), "Xeno Ouroboros Ekas");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_robot");
 	strcopy(data.Icon, sizeof(data.Icon), "medic");
 	data.IconCustom = false;
@@ -111,7 +111,7 @@ methodmap XenoOuroborosEkas < CClotBody
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
-		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Ouroboros Ekas-%i", GetRandomInt(1000, 9999));
+		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Xeno Ouroboros Ekas-%i", GetRandomInt(1000, 9999));
 		b_NameNoTranslation[npc.index] = true;
 
 		npc.m_iBleedType = BLEEDTYPE_METAL;

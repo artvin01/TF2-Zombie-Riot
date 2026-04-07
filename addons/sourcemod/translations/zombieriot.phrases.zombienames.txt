@@ -3706,6 +3706,12 @@
 		"it"	"Uroboro Ekas"
 		"ko"	"우로보로스 에카스"
 	}
+	"Xeno Ouroboros Ekas"
+	{
+		"en"	"Ouroboros Ekas"
+		"it"	"Uroboro Ekas"
+		"ko"	"우로보로스 에카스"
+	}
 	"Rundown Xeno Ouroboros Ekas-2008"
 	{
 		"en"	"Rundown Xeno Ouroboros Ekas-2008"

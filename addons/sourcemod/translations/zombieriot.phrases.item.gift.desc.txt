@@ -2242,6 +2242,10 @@
 	}
 	"Ouroboros Ekas Desc"
 	{
+		"en"	"-Buffs all enemies on the field massively\n-If last alive (or any of itself left only), it gains 5x speed, 2x res.\n-On death, summons the W.F. piloteer"
+	}
+	"Xeno Ouroboros Ekas Desc"
+	{
 		"en"	"-Buffs all enemies on the field massively\n-If last alive (or any of itself left only), it gains 5x speed, 2x res."
 		"it"	"Buffs tutti i nemici sul campo in modo massiccio, se è l'ultimo in vita, guadagna 5x velocità, 2x res."
 		"ko"	"-전장 위에 있는 모든 적에게 매우 강력한 버프를 부여합니다.\n-만약 이 적이 혼자, 혹은 이 적 계열만이 남았다면, 이 적의 속도가 5배 증가하고 저항력이 2배로 증가합니다."
