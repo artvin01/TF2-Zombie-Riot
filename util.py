@@ -1,6 +1,7 @@
 import hashlib, os, datetime, json, vtf2img
 from collections import defaultdict
 from re import sub
+from bs4 import BeautifulSoup, Formatter
 
 # https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
 # Allow classes to define __json__ to be JSON serializable
@@ -202,6 +203,9 @@ def read(filename):
 
 
 def write(filename, val):
+    if filename.endswith(".html"):
+        soup=BeautifulSoup(val,features="html.parser")
+        val=soup.prettify(formatter=Formatter("html5",indent=4))
     with open(filename, 'w+') as f:
         f.write(str(val))
     return True

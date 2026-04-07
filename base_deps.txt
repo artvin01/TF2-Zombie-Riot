@@ -3,3 +3,4 @@ pillow
 requests
 urllib3
 vtf2img
+beautifulsoup4
