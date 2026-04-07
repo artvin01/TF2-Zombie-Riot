@@ -12,16 +12,6 @@ static const char g_HurtSounds[][] = {
 	"zombiesurvival/medieval_raid/arkantos_hurt_2.mp3",
 };
 
-
-static const char g_SeaDeathSounds[][] = {
-	"zombiesurvival/medieval_raid/special_mutation/arkantos_death.mp3",
-};
-
-static const char g_SeaHurtSounds[][] = {
-	"zombiesurvival/medieval_raid/special_mutation/arkantos_hurt_1.mp3",
-	"zombiesurvival/medieval_raid/special_mutation/arkantos_hurt_2.mp3",
-};
-
 static const char g_MeleeHitSounds[][] = {
 	"weapons/halloween_boss/knight_axe_hit.wav",
 };
@@ -49,9 +39,6 @@ static char g_SummonSounds[][] = {
 static char g_LastStand[][] = {
 	"zombiesurvival/medieval_raid/arkantos_rage.mp3",
 };
-static char g_SeaLastStand[][] = {
-	"zombiesurvival/medieval_raid/special_mutation/arkantos_rage.mp3",
-};
 
 static char g_RandomGroupScream[][] = {
 	"zombiesurvival/medieval_raid/battlecry1.mp3",
@@ -60,19 +47,12 @@ static char g_RandomGroupScream[][] = {
 	"zombiesurvival/medieval_raid/battlecry4.mp3",
 };
 
-static char g_RandomGroupScreamSea[][] = {
-	"zombiesurvival/medieval_raid/special_mutation/battlecry1.mp3",
-	"zombiesurvival/medieval_raid/special_mutation/battlecry2.mp3",
-	"zombiesurvival/medieval_raid/special_mutation/battlecry3.mp3",
-	"zombiesurvival/medieval_raid/special_mutation/battlecry4.mp3",
-};
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 
 #define SOUND_TITS_LIGHTNING_ABILITY_PAP_SMITE	"mvm/mvm_tank_explode.wav"
 
 #define TODDHOWARD_BUFF_MAXRANGE 750.0
 
-#define TODDHOWARD_SEA_INFECTED 555
 static int NPCId;
 public void ToddHoward_OnMapStart()
 {
@@ -104,22 +84,6 @@ static void ClotPrecache()
 	
 	for (int i = 0; i < (sizeof(g_LastStand));   i++) { PrecacheSoundCustom(g_LastStand[i]);   }
 }
-
-static void ClotPrecache_SeaToddHoward()
-{
-	for (int i = 0; i < (sizeof(g_SeaDeathSounds));       i++) { PrecacheSoundCustom(g_SeaDeathSounds[i]);       }
-	for (int i = 0; i < (sizeof(g_SeaHurtSounds));        i++) { PrecacheSoundCustom(g_SeaHurtSounds[i]);        }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));        i++) { PrecacheSound(g_MeleeHitSounds[i]);        }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));        i++) { PrecacheSound(g_MeleeAttackSounds[i]);        }
-	for (int i = 0; i < (sizeof(g_DefaultMeleeMissSounds));        i++) { PrecacheSound(g_DefaultMeleeMissSounds[i]);        }
-	for (int i = 0; i < (sizeof(g_SlamSounds));        i++) { PrecacheSound(g_SlamSounds[i]);        }
-	for (int i = 0; i < (sizeof(g_SummonSounds));        i++) { PrecacheSound(g_SummonSounds[i]);        }
-	PrecacheSoundCustom("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3");
-	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RandomGroupScreamSea));   i++) { PrecacheSoundCustom(g_RandomGroupScreamSea[i]);   }
-	for (int i = 0; i < (sizeof(g_SeaLastStand));   i++) { PrecacheSoundCustom(g_SeaLastStand[i]);   }
-}
-
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return ToddHoward(vecPos, vecAng, team, data);
@@ -148,38 +112,17 @@ methodmap ToddHoward < CClotBody
 	//		return;
 
 		int sound = GetRandomInt(0, sizeof(g_HurtSounds) - 1);
-		
-		if(i_RaidGrantExtra[this.index] == TODDHOWARD_SEA_INFECTED)
-		{
-			EmitCustomToAll(g_SeaHurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_SeaHurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		}
-		else
-		{
-			EmitCustomToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		}
-	//	this.m_flNextHurtSound = GetGameTime(this.index) + GetRandomFloat(1.6, 2.5);
+		EmitCustomToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayDeathSound() 
 	{
 		int sound = GetRandomInt(0, sizeof(g_DeathSounds) - 1);
 		
-		if(i_RaidGrantExtra[this.index] == TODDHOWARD_SEA_INFECTED)
-		{
-			EmitCustomToAll(g_SeaDeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_SeaDeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_SeaDeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_SeaDeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-
-		}
-		else
-		{
-			EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		}
+		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound() 
 	{
@@ -191,20 +134,10 @@ methodmap ToddHoward < CClotBody
 	}
 	public void PlayMeleeWarCry() 
 	{
-		if(i_RaidGrantExtra[this.index] != TODDHOWARD_SEA_INFECTED)
-		{
-			EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-			EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-			EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-			EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		}
-		else
-		{
-			EmitCustomToAll("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-			EmitCustomToAll("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-			EmitCustomToAll("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-			EmitCustomToAll("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		}
+		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 	}
 	public void PlaySummonSound() 
 	{
@@ -237,20 +170,10 @@ methodmap ToddHoward < CClotBody
 	}
 	public void PlayRageSound() 
 	{
-		if(i_RaidGrantExtra[this.index] == TODDHOWARD_SEA_INFECTED)
-		{
-			EmitCustomToAll(g_SeaLastStand[GetRandomInt(0, sizeof(g_SeaLastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_SeaLastStand[GetRandomInt(0, sizeof(g_SeaLastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_SeaLastStand[GetRandomInt(0, sizeof(g_SeaLastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_SeaLastStand[GetRandomInt(0, sizeof(g_SeaLastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		}
-		else
-		{
-			EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		}
+		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
 	property float m_flAlaxiosSeaInfectedStance
 	{
@@ -316,11 +239,6 @@ methodmap ToddHoward < CClotBody
 		else if(StrContains(data, "wave_40") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 5;
-		}
-		if(StrContains(data, "seainfection") != -1)
-		{
-			b_NpcUnableToDie[npc.index] = true;
-			i_RaidGrantExtra[npc.index] = TODDHOWARD_SEA_INFECTED;
 		}
 
 		bool final = StrContains(data, "final_item") != -1;
@@ -454,185 +372,25 @@ public void ToddHoward_ClotThink(int iNPC)
 	ToddHoward npc = view_as<ToddHoward>(iNPC);
 	
 	float gameTime = GetGameTime(npc.index);
-	if(i_RaidGrantExtra[npc.index] == TODDHOWARD_SEA_INFECTED)
-	{
-		if(i_TalkDelayCheck > 0)
-		{
-			if(npc.m_flAlaxiosSeaInfectedStance < gameTime)
-			{
-				npc.m_flAlaxiosSeaInfectedStance = gameTime + 1.0;
-				i_TalkDelayCheck--;
-				switch(i_TalkDelayCheck)
-				{
-					case 4:
-					{
-						npc.m_bisWalking = false;
-						npc.AddActivityViaSequence("Lucian_Death_Real");
-						npc.SetPlaybackRate(0.75);	
-						npc.PlayDeathSound();
-						CPrintToChatAll("{lightblue}Todd Howard stands down... he is free...");
-					}
-					case 3:
-					{
-						CPrintToChatAll("{lightblue}...?");
-					}
-					case 2:
-					{
-						CPrintToChatAll("{lightblue}...!?!?!?");
-					}
-					case 1:
-					{
-						CPrintToChatAll("{lightblue}!");
-					}
-					case 0:
-					{
-						f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
-						fl_Extra_Damage[npc.index] *= 0.75;
-						CPrintToChatAll("{crimson}The infection wont let go. It wants him the most.");
-						b_NpcUnableToDie[npc.index] = false;
-						RaidModeTime = GetGameTime(npc.index) + 150.0;
-						RaidBossActive = EntIndexToEntRef(npc.index);
-						RaidAllowsBuildings = false;
-						npc.PlayRageSound();
-						SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 4));
-						static float flPos[3]; 
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-						ApplyStatusEffect(npc.index, npc.index, "Oceanic Scream", 999.0);
-						ApplyStatusEffect(npc.index, npc.index, "Caffinated", 999.0);
-						ApplyStatusEffect(npc.index, npc.index, "Caffinated Drain", 999.0);
-						ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 999.0);
-						ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 999.0);
-						ApplyStatusEffect(npc.index, npc.index, "War Cry", 999.0);
-						ApplyStatusEffect(npc.index, npc.index, "UBERCHARGED", 1.0);
-						flPos[2] += 5.0;
-						ParticleEffectAt(flPos, "taunt_yeti_fistslam", 0.25);
-						npc.m_iChanged_WalkCycle = 4;
-						npc.SetActivity("ACT_WALK");
-						npc.m_bisWalking = true;
-						float EnemyPos[3];
-						float Range = 500.0;
-						//Kick everyone away in range, except the one target we hate, make sure to check line of sight too.
-						for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
-						{
-							if(IsValidEnemy(npc.index, EnemyLoop))
-							{
-								GetEntPropVector(EnemyLoop, Prop_Send, "m_vecOrigin", EnemyPos);
-								float Distance = GetVectorDistance(flPos, EnemyPos);
-								if(Distance < Range)
-								{
-									//only apply the laser if they are near us.
-									if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && EnemyLoop == npc.m_iTargetWalkTo)
-									{
-										if(!HasSpecificBuff(EnemyLoop, "Solid Stance"))
-										{
-											//Pull them.
-											static float angles[3];
-											GetVectorAnglesTwoPoints(EnemyPos, flPos, angles);
 
-											if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
-												angles[0] = 0.0; // toss out pitch if on ground
-
-											static float velocity[3];
-											GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
-											float attraction_intencity = 1.50;
-											ScaleVector(velocity, Distance * attraction_intencity);
-															
-															
-											// min Z if on ground
-											if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
-												velocity[2] = fmax(325.0, velocity[2]);
-														
-											// apply velocity
-											TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);   
-										}
-									}
-									else if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop))
-									{
-										float damage = 50.0;
-
-										SDKHooks_TakeDamage(EnemyLoop, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, _);		
-										if(i_RaidGrantExtra[npc.index] == TODDHOWARD_SEA_INFECTED)
-											Elemental_AddNervousDamage(EnemyLoop, npc.index, RoundToCeil(damage * RaidModeScaling * 0.1));
-										if(!HasSpecificBuff(EnemyLoop, "Solid Stance"))
-										{
-											//push them away.
-											static float angles[3];
-											GetVectorAnglesTwoPoints(EnemyPos, flPos, angles);
-
-											if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
-												angles[0] = 0.0; // toss out pitch if on ground
-
-											static float velocity[3];
-											GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
-											float attraction_intencity = 1500.0;
-											ScaleVector(velocity, attraction_intencity);
-															
-															
-											// min Z if on ground
-											if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
-											{
-												velocity[2] = 350.0;
-											}
-											else
-											{
-												velocity[2] = 200.0;
-											}
-														
-											// apply velocity
-											velocity[0] *= -1.0;
-											velocity[1] *= -1.0;
-										//	velocity[2] *= -1.0;
-											TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);    
-										}	
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			return;
-		}
-	}
 	if(GetTeam(npc.index) != TFTeam_Red && LastMann)
 	{
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			if(i_RaidGrantExtra[npc.index] == TODDHOWARD_SEA_INFECTED)
+			switch(GetRandomInt(0,2))
 			{
-				switch(GetRandomInt(0,2))
+				case 0:
 				{
-					case 0:
-					{
-						CPrintToChatAll("{lightblue}Todd Howard{crimson}: STOP BEING SO WEAK, HELP ME!!!!!");
-					}
-					case 1:
-					{
-						CPrintToChatAll("{lightblue}Todd Howard{crimson}: IM UNDER CONTROLL, HELP ME.....");
-					}
-					case 3:
-					{
-						CPrintToChatAll("{lightblue}Todd Howard{crimson}: THIS THING IS TOO MUCH, HELP!!!!!!!!!");
-					}
+					CPrintToChatAll("{lightblue}Todd Howard{default}: You have no chance alone!");
 				}
-			}
-			else
-			{
-				switch(GetRandomInt(0,2))
+				case 1:
 				{
-					case 0:
-					{
-						CPrintToChatAll("{lightblue}Todd Howard{default}: You have no chance alone!");
-					}
-					case 1:
-					{
-						CPrintToChatAll("{lightblue}Todd Howard{default}: Your wallet frails in comparison to Bethesda!!");
-					}
-					case 3:
-					{
-						CPrintToChatAll("{lightblue}Todd Howard{default}: Consider buying Skyrim?!");
-					}
+					CPrintToChatAll("{lightblue}Todd Howard{default}: Your wallet frails in comparison to Bethesda!!");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{lightblue}Todd Howard{default}: Consider buying Skyrim?!");
 				}
 			}
 		}
@@ -644,39 +402,19 @@ public void ToddHoward_ClotThink(int iNPC)
 		
 		ZR_NpcTauntWinClear();
 		ForcePlayerLoss();
-		if(i_RaidGrantExtra[npc.index] != TODDHOWARD_SEA_INFECTED)
+		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			for(int targ; targ<i_MaxcountNpcTotal; targ++)
+			int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
+			if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 			{
-				int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
-				if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
-				{
-					SetTeam(baseboss_index, TFTeam_Red);
-					SetEntityCollisionGroup(baseboss_index, 24);
-				}
+				SetTeam(baseboss_index, TFTeam_Red);
+				SetEntityCollisionGroup(baseboss_index, 24);
 			}
-			CPrintToChatAll("{lightblue}Todd Howard{default}: No.. No No!! The commentary channels are coming, prepare to fight together NOW!!!");
-			RaidBossActive = INVALID_ENT_REFERENCE;
-			for(int i; i<32; i++)
-			{
-				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-				int Spawner_entity = GetRandomActiveSpawner();
-				if(IsValidEntity(Spawner_entity))
-				{
-					GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
-					GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
-				}
-				int spawn_index = NPC_CreateByName("npc_seaslider", -1, pos, ang, TFTeam_Blue);
-				if(spawn_index > MaxClients)
-				{
-					NpcAddedToZombiesLeftCurrently(spawn_index, true);
-					SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
-					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
-					fl_Extra_Damage[spawn_index] = 25.0;
-					fl_Extra_Speed[spawn_index] = 1.5;
-				}
-			}
+		}
+		CPrintToChatAll("{lightblue}Todd Howard{default}: No.. No No!! The commentary channels are coming, prepare to fight together NOW!!!");
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		for(int i; i<32; i++)
+		{
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			int Spawner_entity = GetRandomActiveSpawner();
@@ -685,66 +423,38 @@ public void ToddHoward_ClotThink(int iNPC)
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 			}
-			int spawn_index = NPC_CreateByName("npc_isharmla", -1, pos, ang, TFTeam_Blue);
+			int spawn_index = NPC_CreateByName("npc_seaslider", -1, pos, ang, TFTeam_Blue);
 			if(spawn_index > MaxClients)
 			{
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
-				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 100000000);
-				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 100000000);
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
 				fl_Extra_Damage[spawn_index] = 25.0;
 				fl_Extra_Speed[spawn_index] = 1.5;
 			}
 		}
-		else
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+		int Spawner_entity = GetRandomActiveSpawner();
+		if(IsValidEntity(Spawner_entity))
 		{
-
-			CPrintToChatAll("{green}The Xeno infection sides with you...??!/nSuddenly a battle ensues between Xeno and the Sea infection with alaxios in possession..");
-			for(int i; i<32; i++)
-			{
-				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-				int Spawner_entity = GetRandomActiveSpawner();
-				if(IsValidEntity(Spawner_entity))
-				{
-					GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
-					GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
-				}
-				int spawn_index = NPC_CreateByName("npc_xeno_acclaimed_swordsman", -1, pos, ang, TFTeam_Red);
-				if(spawn_index > MaxClients)
-				{
-					NpcAddedToZombiesLeftCurrently(spawn_index, true);
-					SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
-					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
-					fl_Extra_Damage[spawn_index] = 25.0;
-					fl_Extra_Speed[spawn_index] = 1.5;
-					TeleportNpcToRandomPlayer(spawn_index);
-				}
-			}
-			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			int Spawner_entity = GetRandomActiveSpawner();
-			if(IsValidEntity(Spawner_entity))
-			{
-				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
-				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
-			}
-			int spawn_index = NPC_CreateByName("npc_xeno_raidboss_nemesis", -1, pos, ang, TFTeam_Red);
-			if(spawn_index > MaxClients)
-			{
-				NpcAddedToZombiesLeftCurrently(spawn_index, true);
-				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 100000000);
-				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 100000000);
-				fl_Extra_Damage[spawn_index] = 25.0;
-				fl_Extra_Speed[spawn_index] = 1.5;
-				TeleportNpcToRandomPlayer(spawn_index);
-			}
-			RaidBossActive = EntIndexToEntRef(npc.index);
+			GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+		}
+		int spawn_index = NPC_CreateByName("npc_isharmla", -1, pos, ang, TFTeam_Blue);
+		if(spawn_index > MaxClients)
+		{
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
+			SetEntProp(spawn_index, Prop_Data, "m_iHealth", 100000000);
+			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 100000000);
+			fl_Extra_Damage[spawn_index] = 25.0;
+			fl_Extra_Speed[spawn_index] = 1.5;
 		}
 		npc.m_bDissapearOnDeath = true;
 		BlockLoseSay2 = true;
 		return;
 	}
-	if(i_RaidGrantExtra[npc.index] != TODDHOWARD_SEA_INFECTED && b_angered_twice[npc.index])
+	if(b_angered_twice[npc.index])
 	{
 		npc.m_bDissapearOnDeath = true;
 		BlockLoseSay2 = true;
@@ -774,18 +484,9 @@ public void ToddHoward_ClotThink(int iNPC)
 	if(f_AlaxiosCantDieLimit[npc.index] && f_AlaxiosCantDieLimit[npc.index] < GetGameTime())
 	{
 		int RandSound = GetRandomInt(0, sizeof(g_RandomGroupScream) - 1);
-		if(i_RaidGrantExtra[npc.index] == TODDHOWARD_SEA_INFECTED)
-		{
-			EmitCustomToAll(g_RandomGroupScreamSea[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_RandomGroupScreamSea[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_RandomGroupScreamSea[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		}
-		else
-		{
-			EmitCustomToAll(g_RandomGroupScream[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_RandomGroupScream[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-			EmitCustomToAll(g_RandomGroupScream[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		}
+		EmitCustomToAll(g_RandomGroupScream[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_RandomGroupScream[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_RandomGroupScream[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		f_AlaxiosCantDieLimit[npc.index] = 0.0;
 	}
 	//float point impresicion...
@@ -858,7 +559,7 @@ public void ToddHoward_ClotThink(int iNPC)
 			if(!npc.Anger)
 			{
 				npc.PlayRageSound();
-				ToddHowardSayWordsAngry(npc.index);
+				ToddHowardSayWordsAngry();
 				npc.Anger = true;
 				b_NpcIsInvulnerable[npc.index] = false;
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) * 6) / 7);
@@ -1070,22 +771,6 @@ public Action ToddHoward_OnTakeDamage(int victim, int &attacker, int &inflictor,
 			return Plugin_Handled;
 		}
 	}
-	
-	if(i_RaidGrantExtra[npc.index] == TODDHOWARD_SEA_INFECTED)
-	{
-		if(GetTeam(npc.index) != TFTeam_Red && !b_angered_twice[npc.index] && b_NpcUnableToDie[npc.index])
-		{
-			if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
-			{
-				GiveProgressDelay(55.0);
-				b_angered_twice[npc.index] = true;
-				RaidModeTime = 9999999.9;
-				RaidBossActive = INVALID_ENT_REFERENCE;
-				i_TalkDelayCheck = 5;
-			}
-		}
-		return Plugin_Changed;
-	}
 	if(GetTeam(npc.index) != TFTeam_Red && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 6)
 	{
 		if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
@@ -1153,7 +838,7 @@ public void ToddHoward_OnTakeDamagePost(int victim, int attacker, int inflictor,
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
-			ToddHowardSayWords(npc.index);
+			ToddHowardSayWords();
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
@@ -1200,7 +885,7 @@ public void ToddHoward_OnTakeDamagePost(int victim, int attacker, int inflictor,
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
-			ToddHowardSayWords(npc.index);
+			ToddHowardSayWords();
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
@@ -1248,7 +933,7 @@ public void ToddHoward_OnTakeDamagePost(int victim, int attacker, int inflictor,
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
-			ToddHowardSayWords(npc.index);
+			ToddHowardSayWords();
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
@@ -1261,98 +946,48 @@ public void ToddHoward_OnTakeDamagePost(int victim, int attacker, int inflictor,
 	}
 	else
 	{
-		if(i_RaidGrantExtra[npc.index] == TODDHOWARD_SEA_INFECTED)
+		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
-			if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
-			{
-				npc.g_TimesSummoned = 1;
-				npc.PlaySummonSound();
-				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
+			npc.g_TimesSummoned = 1;
+			npc.PlaySummonSound();
+			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
-				ToddHowardSpawnEnemy(npc.index,"npc_seaborn_kazimersch_knight",100000, RoundToCeil(6.0 * MultiGlobalEnemy));
-				ToddHowardSpawnEnemy(npc.index,"npc_seaborn_kazimersch_archer",50000, RoundToCeil(12.0 * MultiGlobalEnemy));
-				ToddHowardSpawnEnemy(npc.index,"npc_seaborn_kazimersch_melee_assasin",75000, RoundToCeil(4.0 * MultiGlobalEnemy));
-			}
-			else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
-			{
-				npc.g_TimesSummoned = 2;
-				npc.PlaySummonSound();
-				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				
-				ToddHowardSpawnEnemy(npc.index,"npc_seaborn_vanguard",100000, RoundToCeil(12.0 * MultiGlobalEnemy));
-				ToddHowardSpawnEnemy(npc.index,"npc_seaborn_defender",200000, RoundToCeil(12.0 * MultiGlobalEnemy));
-			}
-			else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
-			{
-				npc.g_TimesSummoned = 3;
-				npc.PlaySummonSound();
-				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				ToddHowardSpawnEnemy(npc.index,"npc_seaborn_medic",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
-				ToddHowardSpawnEnemy(npc.index,"npc_seaborn_guard",100000, RoundToCeil(10.0 * MultiGlobalEnemy));
-				ToddHowardSpawnEnemy(npc.index,"npc_seaborn_kazimersch_beserker",250000, RoundToCeil(2.0 * MultiGlobalEnemy));
-				ToddHowardSpawnEnemy(npc.index,"npc_pathshaper", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
-				ToddHowardSpawnEnemy(npc.index,"npc_tidelinkedarchon", RoundToCeil(200000.0 * MultiGlobalHighHealthBoss), 1);
-			}
-			else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
-			{
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
-				ToddHowardSayWords(npc.index);
-				npc.g_TimesSummoned = 4;
-				npc.PlaySummonSound();
-				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				ToddHowardSpawnEnemy(npc.index,"npc_seaborn_vanguard",100000, RoundToCeil(2.0 * MultiGlobalEnemy));
-				ToddHowardSpawnEnemy(npc.index,"npc_seaborn_kazimersch_longrange",75000, RoundToCeil(10.0 * MultiGlobalEnemy));
-				ToddHowardSpawnEnemy(npc.index,"npc_netherseapredator",100000, RoundToCeil(20.0 * MultiGlobalEnemy));	
-				ToddHowardSpawnEnemy(npc.index,"npc_netherseaspewer",50000, RoundToCeil(20.0 * MultiGlobalEnemy));	
-				ToddHowardSpawnEnemy(npc.index,"npc_isharmla", RoundToCeil(1500000.0 * MultiGlobalHighHealthBoss), 1, true);	
-				ToddHowardSpawnEnemy(npc.index,"npc_seaborn_specialist",100000, RoundToCeil(20.0 * MultiGlobalEnemy));	
-			}	
+			ToddHowardSpawnEnemy(npc.index,"npc_error_melee",75000, RoundToCeil(6.0 * MultiGlobalEnemy));
+			ToddHowardSpawnEnemy(npc.index,"npc_error_melee",50000, RoundToCeil(12.0 * MultiGlobalEnemy));
+			ToddHowardSpawnEnemy(npc.index,"npc_error_ranged",50000, RoundToCeil(4.0 * MultiGlobalEnemy));
 		}
-		else
+		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
-			if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
-			{
-				npc.g_TimesSummoned = 1;
-				npc.PlaySummonSound();
-				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-
-				ToddHowardSpawnEnemy(npc.index,"npc_error_melee",75000, RoundToCeil(6.0 * MultiGlobalEnemy));
-				ToddHowardSpawnEnemy(npc.index,"npc_error_melee",50000, RoundToCeil(12.0 * MultiGlobalEnemy));
-				ToddHowardSpawnEnemy(npc.index,"npc_error_ranged",50000, RoundToCeil(4.0 * MultiGlobalEnemy));
-			}
-			else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
-			{
-				npc.g_TimesSummoned = 2;
-				npc.PlaySummonSound();
-				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				
-				ToddHowardSpawnEnemy(npc.index,"npc_error_melee",75000, RoundToCeil(12.0 * MultiGlobalEnemy));
-				ToddHowardSpawnEnemy(npc.index,"npc_error_melee",75000, RoundToCeil(12.0 * MultiGlobalEnemy));
-			}
-			else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
-			{
-				npc.g_TimesSummoned = 3;
-				npc.PlaySummonSound();
-				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				ToddHowardSpawnEnemy(npc.index,"npc_error_ranged",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
-				ToddHowardSpawnEnemy(npc.index,"npc_error_melee",100000, RoundToCeil(10.0 * MultiGlobalEnemy));
-				ToddHowardSpawnEnemy(npc.index,"npc_error_melee",250000, RoundToCeil(2.0 * MultiGlobalEnemy));
-				ToddHowardSpawnEnemy(npc.index,"npc_error_melee", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
-			}
-			else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
-			{
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
-				ToddHowardSayWords(npc.index);
-				npc.g_TimesSummoned = 4;
-				npc.PlaySummonSound();
-				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				ToddHowardSpawnEnemy(npc.index,"npc_error_melee",100000, RoundToCeil(2.0 * MultiGlobalEnemy));
-				ToddHowardSpawnEnemy(npc.index,"npc_error_ranged",75000, RoundToCeil(20.0 * MultiGlobalEnemy));
-				ToddHowardSpawnEnemy(npc.index,"npc_error_melee",RoundToCeil(50000.0 * MultiGlobalHighHealthBoss), 1);
-				ToddHowardSpawnEnemy(npc.index,"npc_error_melee", RoundToCeil(1500000.0 * MultiGlobalHighHealthBoss), 1, true);		
-				ToddHowardSpawnEnemy(npc.index,"npc_error_melee", RoundToCeil(250000.0 * MultiGlobalHighHealthBoss), 1, true);				
-			}			
+			npc.g_TimesSummoned = 2;
+			npc.PlaySummonSound();
+			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
+			
+			ToddHowardSpawnEnemy(npc.index,"npc_error_melee",75000, RoundToCeil(12.0 * MultiGlobalEnemy));
+			ToddHowardSpawnEnemy(npc.index,"npc_error_melee",75000, RoundToCeil(12.0 * MultiGlobalEnemy));
 		}
+		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
+		{
+			npc.g_TimesSummoned = 3;
+			npc.PlaySummonSound();
+			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
+			ToddHowardSpawnEnemy(npc.index,"npc_error_ranged",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
+			ToddHowardSpawnEnemy(npc.index,"npc_error_melee",100000, RoundToCeil(10.0 * MultiGlobalEnemy));
+			ToddHowardSpawnEnemy(npc.index,"npc_error_melee",250000, RoundToCeil(2.0 * MultiGlobalEnemy));
+			ToddHowardSpawnEnemy(npc.index,"npc_error_melee", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
+		}
+		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
+		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
+			ToddHowardSayWords();
+			npc.g_TimesSummoned = 4;
+			npc.PlaySummonSound();
+			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
+			ToddHowardSpawnEnemy(npc.index,"npc_error_melee",100000, RoundToCeil(2.0 * MultiGlobalEnemy));
+			ToddHowardSpawnEnemy(npc.index,"npc_error_ranged",75000, RoundToCeil(20.0 * MultiGlobalEnemy));
+			ToddHowardSpawnEnemy(npc.index,"npc_error_melee",RoundToCeil(50000.0 * MultiGlobalHighHealthBoss), 1);
+			ToddHowardSpawnEnemy(npc.index,"npc_error_melee", RoundToCeil(1500000.0 * MultiGlobalHighHealthBoss), 1, true);		
+			ToddHowardSpawnEnemy(npc.index,"npc_error_melee", RoundToCeil(250000.0 * MultiGlobalHighHealthBoss), 1, true);				
+		}			
 	}
 }
 
@@ -1369,32 +1004,24 @@ public void ToddHoward_NPCDeath(int entity)
 		TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 		npc.PlayDeathSound();
 			
-		if(i_RaidGrantExtra[npc.index] != TODDHOWARD_SEA_INFECTED)
+		switch(GetRandomInt(0,3))
 		{
-			switch(GetRandomInt(0,3))
+			case 0:
 			{
-				case 0:
-				{
-					CPrintToChatAll("{lightblue}Todd Howard{default}: I have failed Bethesda...");
-				}
-				case 1:
-				{
-					CPrintToChatAll("{lightblue}Todd Howard{default}: How was my code defeated..?");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{lightblue}Todd Howard{default}: You dont know what you are doing!");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{lightblue}Todd Howard{default}: We should be fighting together, not against each other, {orange}Rockstar{default} will be your doom...");
-				}
+				CPrintToChatAll("{lightblue}Todd Howard{default}: I have failed Bethesda...");
 			}
-		}
-		else
-		{
-			CPrintToChatAll("{lightblue}Todd Howard{default}: Im.. im free..?");
-			CPrintToChatAll("{lightblue}Todd Howard{default}: He IMMEDIETLY leaves the battlefield... you couldnt even trace him.");
+			case 1:
+			{
+				CPrintToChatAll("{lightblue}Todd Howard{default}: How was my code defeated..?");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{lightblue}Todd Howard{default}: You dont know what you are doing!");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{lightblue}Todd Howard{default}: We should be fighting together, not against each other, {orange}Rockstar{default} will be your doom...");
+			}
 		}
 	}
 	else
@@ -1554,9 +1181,7 @@ void ToddHowardSelfDefense(ToddHoward npc, float gameTime)
 							WorldSpaceCenter(target, vecHit);
 										
 							float damage = 20.0;
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);	
-							if(i_RaidGrantExtra[npc.index] == TODDHOWARD_SEA_INFECTED)
-								Elemental_AddNervousDamage(target, npc.index, RoundToCeil(damage * RaidModeScaling * 0.1));							
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);						
 							
 							bool Knocked = false;
 							
@@ -1730,8 +1355,6 @@ void ToddHowardJumpSpecial(ToddHoward npc, float gameTime)
 				
 			Explode_Logic_Custom(damage, 0, npc.index, -1, ThrowPos,Range, 1.0, _, true, 20);
 			TE_Particle("asplode_hoodoo", ThrowPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-			if(i_RaidGrantExtra[npc.index] == TODDHOWARD_SEA_INFECTED)
-				SeaFounder_SpawnNethersea(ThrowPos);
 			
 			npc.SetVelocity({0.0,0.0,-1000.0});
 
@@ -1942,8 +1565,6 @@ void ToddHowardHurricane(ToddHoward npc, float gameTime)
 							float damage = 50.0;
 
 							SDKHooks_TakeDamage(EnemyLoop, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, _);		
-							if(i_RaidGrantExtra[npc.index] == TODDHOWARD_SEA_INFECTED)
-								Elemental_AddNervousDamage(EnemyLoop, npc.index, RoundToCeil(damage * RaidModeScaling * 0.1));
 							//push them away.
 							static float angles[3];
 							GetVectorAnglesTwoPoints(EnemyPos, pos, angles);
@@ -1999,9 +1620,7 @@ void ToddHowardHurricane(ToddHoward npc, float gameTime)
 									npcenemy.SetVelocity({0.0,0.0,0.0});
 									PluginBot_Jump(npcenemy.index, flPos_1);
 									float damage = 50.0;
-									SDKHooks_TakeDamage(entity_close, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, _);	
-									if(i_RaidGrantExtra[npc.index] == TODDHOWARD_SEA_INFECTED)
-										Elemental_AddNervousDamage(entity_close, npc.index, RoundToCeil(damage * RaidModeScaling * 0.1));
+									SDKHooks_TakeDamage(entity_close, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, _);
 								}
 							}
 						}
@@ -2104,101 +1723,51 @@ void ToddHowardAOEBuff(ToddHoward npc, float gameTime, bool mute = false)
 }
 
 
-void ToddHowardSayWords(int entity)
+void ToddHowardSayWords()
 {
-	if(i_RaidGrantExtra[entity] == TODDHOWARD_SEA_INFECTED)
+	switch(GetRandomInt(0,3))
 	{
-		switch(GetRandomInt(0,3))
+		case 0:
 		{
-			case 0:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard calls upon the infected.");
-			}
-			case 1:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard attracts nearby creatures.");
-			}
-			case 2:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard is reviving dead sea creatures.");
-			}
-			case 3:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard is never alone, infected or not...");
-			}
+			CPrintToChatAll("{lightblue}Todd Howard calls upon the infected.");
 		}
-	}
-	else
-	{
-		switch(GetRandomInt(0,3))
+		case 1:
 		{
-			case 0:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: You don't know the dangers you're getting yourself into fighting me and my army at the same time!");
-			}
-			case 1:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: My army will always help me back up!");
-			}
-			case 2:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: Me and my army, as one, will never be defeated!");
-			}
-			case 3:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: Together for Bethesda! As one and for all!");
-			}
+			CPrintToChatAll("{lightblue}Todd Howard attracts nearby creatures.");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{lightblue}Todd Howard is reviving dead sea creatures.");
+		}
+		case 3:
+		{
+			CPrintToChatAll("{lightblue}Todd Howard is never alone, infected or not...");
 		}
 	}
 }
 
-void ToddHowardSayWordsAngry(int entity)
+void ToddHowardSayWordsAngry()
 {
 	if(!Waves_InFreeplay())
 		RaidModeTime += 30.0;
 
-	if(i_RaidGrantExtra[entity] == TODDHOWARD_SEA_INFECTED)
+	switch(GetRandomInt(0,3))
 	{
-		switch(GetRandomInt(0,3))
+		case 0:
 		{
-			case 0:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard Screams for help...");
-			}
-			case 1:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard's head is under full controll, free him.");
-			}
-			case 2:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard, even if strong, cant resist everything.");
-			}
-			case 3:
-			{
-				CPrintToChatAll("{lightblue}Free him, help him.");
-			}
+			CPrintToChatAll("{lightblue}Todd Howard Screams for help...");
 		}
-	}
-	else
-	{
-		switch(GetRandomInt(0,3))
+		case 1:
 		{
-			case 0:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: {crimson}RAVIOLI!!!! FOR THE PEOPLE!!!!!!!!!!");
-			}
-			case 1:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: {crimson}RAVIOLI!!!! FOR ALL THAT IS FORSAKEN!!!!!!! LIKE THAT ONE ROBLOX GAME!!!!!");
-			}
-			case 2:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: {crimson}RAVIOLI!!!! FOR THE FUTURE!!!!!!!");
-			}
-			case 3:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: {crimson}RAVIOLI!!!! FOR BETHESDA!!!!!!!!!");
-			}
+			CPrintToChatAll("{lightblue}Todd Howard's head is under full controll, free him.");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{lightblue}Todd Howard, even if strong, cant resist everything.");
+		}
+		case 3:
+		{
+			CPrintToChatAll("{lightblue}Free him, help him.");
 		}
 	}
 }
@@ -2286,32 +1855,23 @@ public void Raidmode_ToddHoward_Win(int entity)
 	npc.m_bDissapearOnDeath = true;
 	BlockLoseSay2 = true;
 	
-	if(i_RaidGrantExtra[npc.index] == TODDHOWARD_SEA_INFECTED)
+	switch(GetRandomInt(0,3))
 	{
-		CPrintToChatAll("{lightblue}... You failed as expected, hopefully the xeno can put an end to the sea-Terror clan.");
-		CPrintToChatAll("{crimson}The enemy of my enemy is my ally as they say.");
-		CPrintToChatAll("{green}You thus offer yourself to the xeno infection to fight it......");
-	}
-	else
-	{
-		switch(GetRandomInt(0,3))
+		case 0:
 		{
-			case 0:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: Bethesda will never fall!");
-			}
-			case 1:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: I still have to take care of the {blue}deep sea{default}...");
-			}
-			case 2:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: Threaten our livelyhood and you pay!");
-			}
-			case 3:
-			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: I have to inform {blue}Sensal{default} about this.");
-			}
+			CPrintToChatAll("{lightblue}Todd Howard{default}: Bethesda will never fall!");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{lightblue}Todd Howard{default}: I still have to take care of the {blue}deep sea{default}...");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{lightblue}Todd Howard{default}: Threaten our livelyhood and you pay!");
+		}
+		case 3:
+		{
+			CPrintToChatAll("{lightblue}Todd Howard{default}: I have to inform {blue}Sensal{default} about this.");
 		}
 	}
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
