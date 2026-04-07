@@ -83,11 +83,12 @@ def generate_waveset_embed(filename, title, wave, wave_max, entries):
         drawable.rounded_rectangle([(bar_padding+2,bar_y+2), (bar_padding+2+progress,(bar_y+bar_height)-2)], 4, color["link_dark"], corners=(True,True,True,True) if wave == wave_max else (True, False, False, True))
 
         # draw bar separating support n base npcs
-        sbar_height = 3
-        dy_alt = (dy+math.ceil(enemy_height * base_nlen)-(ICON_PADDING+(ICON_SIZE/2))) # calculate where cursor will be once base list finishes rendering
-        sbar_y = dy_alt+25-(sbar_height/2)
-        drawable.rounded_rectangle([(100,sbar_y), (WIDTH-100,sbar_y+sbar_height)], 4, color["bg_light"])
-        draw_text_centered(drawable, (WIDTH/2, dy_alt+45), "SUPPORT", color["text_dark"], font["Oswald Small"])
+        if support_nlen>0:
+            sbar_height = 3
+            dy_alt = (dy+math.ceil(enemy_height * base_nlen)-(ICON_PADDING+(ICON_SIZE/2))) # calculate where cursor will be once base list finishes rendering
+            sbar_y = dy_alt+25-(sbar_height/2)
+            drawable.rounded_rectangle([(100,sbar_y), (WIDTH-100,sbar_y+sbar_height)], 4, color["bg_light"])
+            draw_text_centered(drawable, (WIDTH/2, dy_alt+45), "SUPPORT", color["text_dark"], font["Oswald Small"])
 
     for i,row in enumerate(base_npc_list_chunks):
         row_w = (ICON_SIZE+ICON_PADDING)*len(row)
@@ -101,22 +102,23 @@ def generate_waveset_embed(filename, title, wave, wave_max, entries):
         else:
             dy += ICON_SIZE+ICON_PADDING+ICON_SIZE/2
     
-    dx = 0    
-    dy += 115
-    for row in support_npc_list_chunks:
-        row_w = (ICON_SIZE+ICON_PADDING)*len(row)
-        dx = (WIDTH/2) - (row_w/2) + (ICON_SIZE+ICON_PADDING)/2
-        for npc in row:
-            [draw_npc(drawable, imgs, (dx,dy), npc, idx) for idx,drawable in enumerate(drawables)]
-            dx += ICON_SIZE+ICON_PADDING
-        dy += ICON_SIZE+ICON_PADDING+ICON_SIZE/2
-    
+    if support_nlen>0:
+        dx = 0    
+        dy += 115
+        for row in support_npc_list_chunks:
+            row_w = (ICON_SIZE+ICON_PADDING)*len(row)
+            dx = (WIDTH/2) - (row_w/2) + (ICON_SIZE+ICON_PADDING)/2
+            for npc in row:
+                [draw_npc(drawable, imgs, (dx,dy), npc, idx) for idx,drawable in enumerate(drawables)]
+                dx += ICON_SIZE+ICON_PADDING
+            dy += ICON_SIZE+ICON_PADDING+ICON_SIZE/2
+        
     if len(imgs) == 1:
-        imgs[0].save(f"gh-pages/embed/{filename}.jpg")
+        imgs[0].save(f"gh-pages/embed/{filename}.gif")
     else:
         imgs[0].save(f"gh-pages/embed/{filename}.gif",
-               save_all = True, append_images = imgs[1:], 
-               optimize = False, duration = 500, loop=0)
+            save_all = True, append_images = imgs[1:], 
+            optimize = False, duration = 500, loop=0)
 
 
 def draw_text_centered(drawable, pos, text, fill, font):
