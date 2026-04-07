@@ -13,11 +13,11 @@ FLAG_MAPPINGS = {
 FLAG_CSS = {
     "MVM_CLASS_FLAG_NONE": "", #// Show Nothing
     "MVM_CLASS_FLAG_NORMAL": "", #// Normal
-    "MVM_CLASS_FLAG_SUPPORT": "", #// Support
+    "MVM_CLASS_FLAG_SUPPORT": "flag_support", #// Support
     "MVM_CLASS_FLAG_MISSION": "flag_mission", #// Support - Flashing for Spies, Busters, Engis
     "MVM_CLASS_FLAG_MINIBOSS": "flag_miniboss", #// Normal - Red Background
     "MVM_CLASS_FLAG_ALWAYSCRIT": "flag_crits", #// Add Blue Borders
-    "MVM_CLASS_FLAG_SUPPORT_LIMITED": "" #// Only Visible When Active (waveset viewer is static so no way to simulate this)
+    "MVM_CLASS_FLAG_SUPPORT_LIMITED": "flag_support_limited" #// Only Visible When Active (waveset viewer is static so no way to simulate this)
 }
 
 MISSING_ICON_VTF = "TF2-Zombie-Riot/materials/hud/leaderboard_class_robo_extremethreat.vtf"

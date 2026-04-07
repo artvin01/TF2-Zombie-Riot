@@ -6,8 +6,8 @@ __pycache__/
 venv/
 TF2-Zombie-Riot/
 
+# NOTE unused premedia icons in tf2_zr_wikigen archive
 premedia_icons_unused/
-npcs_by_category.json
 
 npc_data.json
 npc_data_01.json
@@ -21,8 +21,5 @@ gh-pages/index.html
 !gh-pages/premedia_icons/
 !gh-pages/waveset_viewer.html
 
-test.py
-dump/*
 logs.txt
-run_with_logs.sh
-run_rogue.sh
+npcs_by_category.json

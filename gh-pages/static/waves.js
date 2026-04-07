@@ -38,27 +38,28 @@ function set_wave(val) {
 }
 
 async function parse_waveset(file) {
-    waveset_file = "wavesets/"+file;
+    waveset_file = `wavesets/${file}`;
     try {
         const response = await fetch(waveset_file);
         if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
+            throw new Error(`[parse_waveset] Response status: ${response.status}`);
         }
 
         waveset_data = await response.json();
         max_waves = Number(Object.keys(waveset_data["waves"]).reduce((a, b) => Number(a) > Number(b) ? a : b));
         let waveset_info = "";
-        if (waveset_data["authors"]["npc"]!=="") {waveset_info+="<div>NPCs by: %s</div>".replace("%s",waveset_data["authors"]["npc"])};
-        if (waveset_data["authors"]["format"]!=="") {waveset_info+="<div>Format by: %s</div>".replace("%s",waveset_data["authors"]["format"])};
-        if (waveset_data["authors"]["raid"]!=="") {waveset_info+="<div>Raidboss by: %s</div>".replace("%s",waveset_data["authors"]["raid"])};
-        if (waveset_data["item_on_win"]!=="") {waveset_info+="<div>Item on win: %s</div>".replace("%s",waveset_data["item_on_win"])};
-        if (waveset_data["desc"]!=="") {waveset_info+="<div>%s</div>".replace("%s",waveset_data["desc"])};
+        // TODO for loop
+        if (waveset_data["authors"]["npc"]!=="") {waveset_info+=`<div>NPCs by: ${waveset_data["authors"]["npc"]}</div>`};
+        if (waveset_data["authors"]["format"]!=="") {waveset_info+=`<div>Format by: ${waveset_data["authors"]["format"]}</div>`};
+        if (waveset_data["authors"]["raid"]!=="") {waveset_info+=`<div>Raidboss by: ${waveset_data["authors"]["raid"]}</div>`};
+        if (waveset_data["item_on_win"]!=="") {waveset_info+=`<div>Item on win: ${waveset_data["authors"]["raid"]}</div>`};
+        if (waveset_data["desc"]!=="") {waveset_info+=`<div>${waveset_data["desc"]}</div>`};
         
         for (const [key, entry] of Object.entries(waveset_data["music"])) {
             context = {
                 "filepath": entry["filepath"],
                 "filename": entry["filename"],
-                "musicpre": key.split("_")[1] + ": ",
+                "musicpre": `${key.split("_")[1]}: `,
                 "musictitle": entry["musictitle"],
                 "musicartist": entry["musicartist"]
             }
@@ -71,16 +72,15 @@ async function parse_waveset(file) {
 
         const waveset_info_container = document.getElementById("waveset_info");
         if (waveset_info!=="") {
-            console.log("unhide");
             waveset_info_container.parentElement.classList.remove("hidden");
             waveset_info_container.innerHTML = waveset_info;
         };
 
-        console.log("Max waves:"+max_waves);
-        console.log("Fetched "+waveset_file);
+        console.log(`[parse_waveset] Max waves:${max_waves}`);
+        console.log(`[parse_waveset] Fetched ${waveset_file}`);
         update_wave_display();
     } catch (error) {
-        console.error(error.message);
+        console.error(`[parse_waveset] ${error.message}`);
     }
 }
 
@@ -101,11 +101,11 @@ function update_wave_display() {
     const waveset_name_inner = document.getElementById("wavesetname");
     wave_text.value = wave;
     if (waveset_data["fakemaxwaves"] !== "") {
-        max_wave_text.innerHTML = max_waves + " (" + waveset_data["fakemaxwaves"] + ")"; // set fake max waves but not internally
+        max_wave_text.innerHTML = `${max_waves} (${waveset_data["fakemaxwaves"]})`; // set fake max waves but not internally
     } else {
         max_wave_text.innerHTML = max_waves;
     }
-    wave_bar.style.width = (wave/max_waves)*100 + "%";
+    wave_bar.style.width = `${(wave/max_waves)*100}%`;
 
     if (wave===max_waves) {
         wave_bar.style["border-radius"] = "5px"; 
@@ -113,7 +113,7 @@ function update_wave_display() {
         wave_bar.style["border-radius"] = "5px 0px 0px 5px";
     }
 
-    document.title = "ZR Encyclopedia - " + waveset_data["name"];
+    document.title = `ZR Encyclopedia - ${waveset_data["name"]}`;
     waveset_name_inner.innerHTML = waveset_data["name"];
 
     const npc_container = document.getElementById("npc_container");
@@ -133,11 +133,12 @@ function update_wave_display() {
             const context = {
                 "npcimg": entry["img"],
                 "npccount": entry["count"],
-                "npcdata": "<h2>" + entry["prefix"] + entry["display_name"] + "</h2>" + entry["extra_info"],
+                "npcdata": `<h2>${entry["prefix"]}${entry["display_name"]}</h2>${entry["extra_info"]}`,
                 "$css_flags": entry["css_class"]
             }
             let modal = fill_template(npc_modal, context);
-            if (entry["is_support"]) {
+            let is_support = entry["css_class"].includes("flag_support") || entry["css_class"].includes("flag_support_limited") || entry["css_class"].includes("flag_mission");
+            if (is_support) {
                 support_npc_html += modal;
                 support_npc_amt += 1;
             } else {
@@ -157,7 +158,7 @@ function update_wave_display() {
                 wave_music_html += fill_template(music_modal, context);
             }
         } else if (entry["type"]=="info") {
-            wave_info_html += "<div>text</div>\n".replace("text",entry["text"]);
+            wave_info_html += `<div>${entry["text"]}</div>\n`;
         }
     });
 
@@ -167,7 +168,7 @@ function update_wave_display() {
 
     if (support_npc_html!=="") {
         let support_npc_container_offset = "";
-        if (support_npc_amt>1) { support_npc_container_offset="style=\"margin-left: -43px;\"" };
+        if (support_npc_amt>1) { support_npc_container_offset=`style="margin-left: -43px;"` };
         context = {
             "npcdata":support_npc_html,
             "$offset":support_npc_container_offset
@@ -187,7 +188,7 @@ function fill_template(temp, cont) {
 
 function copy_waveset_embed_link() {
     let source_url = window.location.href.substring(0,  window.location.href.lastIndexOf('/'));;
-    copyTextToClipboard(source_url+"/embed/"+waveset_file.split(".json")[0].split("/")[1]+"_"+wave+".jpg");
+    copyTextToClipboard(`${source_url}/embed/${waveset_file.split(".json")[0].split("/")[1]}_${wave}.jpg`);
 }
 
 // https://stackoverflow.com/a/30810322
@@ -197,9 +198,9 @@ function copyTextToClipboard(text) {
     return;
   }
   navigator.clipboard.writeText(text).then(function() {
-    console.log('Async: Copying to clipboard was successful!');
+    console.log('[copyTextToClipboard] Copied to clipboard');
   }, function(err) {
-    console.error('Async: Could not copy text: ', err);
+    console.error('[copyTextToClipboard] Failed to copy to clipboard: ', err);
   });
 }
 

@@ -6,25 +6,10 @@ import vdf
 
 """
 TODO
-1. implement showing support npcs & npc flags in embeds (create GIF if blinking/mission flag!)
-2. implement adding these flags automatically instead of set npc flags only
-    [x] support
-    [x] normal (not shown)
-    [ ] miniboss
-            if(data.Is_Boss || data.Is_Outlined)
-                flags |= MVM_CLASS_FLAG_MINIBOSS;
-    [ ] alwayscrit
-            if(data.ExtraMeleeRes < 1.0 || 
-            data.ExtraRangedRes < 1.0 || 
-            data.ExtraSpeed > 1.0 || 
-            data.ExtraDamage > 1.0 || 
-            data.ExtraThinkSpeed > 1.0 ||
-            data.Is_Boss > 1)
-                flags |= MVM_CLASS_FLAG_ALWAYSCRIT;
-            
-3. rogue support
-4. skilltree page
-5. const support (last)
+[ ] implement showing support npcs & npc flags in embeds (create GIF if blinking(mission) flag!)
+[ ] rogue support
+[ ] skilltree page
+[ ] const support (last)
 """
 
 PROPERTY_MAPPINGS = {
@@ -261,9 +246,39 @@ def parse():
             else:
                 extra_info += " ?HP"
             
-            # Show NPC Flags
-            display_name = npc_name
+            # (by property in waveset) Auto NPC flags (SetupFlags logic in waves.sp)
+            """
+            Miniboss
+            if(data.Is_Boss || data.Is_Outlined)
+                flags |= MVM_CLASS_FLAG_MINIBOSS;
+
+            Alwayscrit
+            if(data.ExtraMeleeRes < 1.0 || 
+            data.ExtraRangedRes < 1.0 || 
+            data.ExtraSpeed > 1.0 || 
+            data.ExtraDamage > 1.0 || 
+            data.ExtraThinkSpeed > 1.0 ||
+            data.Is_Boss > 1)
+                flags |= MVM_CLASS_FLAG_ALWAYSCRIT;
+            """
             npc_css_class = ""
+            if npc_data:
+                cases = {
+                    "MVM_CLASS_FLAG_SUPPORT": util.cfgtoint(dd["is_boss"]) < 2 and (dd["ignore_max_cap"]=="1" or dd["team_npc"]=="2" or dd["is_static"]=="1"),
+                    "MVM_CLASS_FLAG_MINIBOSS": (util.cfgtoint(dd["is_boss"]) or util.cfgtoint(dd["is_outlined"])),
+                    "MVM_CLASS_FLAG_ALWAYSCRIT": util.cfgtofloat(dd["extra_melee_res"],1.0)<1.0 or \
+                                util.cfgtofloat(dd["extra_ranged_res"],1.0)<1.0 or \
+                                util.cfgtofloat(dd["extra_speed"],1.0)>1.0 or \
+                                util.cfgtofloat(dd["extra_damage"],1.0)>1.0 or \
+                                util.cfgtofloat(dd["extra_thinkspeed"],1.0)>1.0 or \
+                                util.cfgtoint(dd["is_boss"])>1
+                }
+                for flag,case_ in cases.items():
+                    if case_ and (flag not in npc_data.flags):
+                        extra_info += f" {modules.shared.FLAG_MAPPINGS[flag]}"
+                        npc_css_class += f" {modules.shared.FLAG_CSS[flag]}"
+
+            # (in code) Predefined NPC flags (plugin_name.sp data.Flags=<x>)
             desc = ""
             if npc_data:
                 for flag in npc_data.flags:
@@ -306,21 +321,15 @@ def parse():
                 file_exists = context.pop("file_exists")
                 music += util.fill_template(util.read(f"templates/music/music_modal{"_missing"*int(not file_exists)}.html"),context)
             
-            # Check if NPC has a flag indicating support
-            forced_support=False
-            if npc_data:
-                forced_support = ("MVM_CLASS_FLAG_SUPPORT" in npc_data.flags) or ("MVM_CLASS_FLAG_MISSION" in npc_data.flags) or ("MVM_CLASS_FLAG_SUPPORT_LIMITED" in npc_data.flags)
-
             # Add npc to wave data output for waves.js to be parsed
             npc_output = {
                 "type": "npc",
                 #"delay": float(wave_entry), # NOTE use for betting wars!
                 "img": image if image else "",
                 "prefix": npc_name_prefix,
-                "display_name": display_name,
+                "display_name": npc_name,
                 "extra_info": extra_info + desc + music,
                 # waves.sp line 4165 if(data.Is_Boss < 2 && (support || data.ignore_max_cap || data.Is_Static || data.Team == TFTeam_Red))
-                "is_support": util.cfgtonum(dd["is_boss"]) < 2 and (dd["ignore_max_cap"]=="1" or dd["team_npc"]=="2" or dd["is_static"]=="1" or forced_support),
                 "css_class": npc_css_class
             }
             npc_hash = util.id_from_str(json.dumps(npc_output)) # same NPC data will output same hash
@@ -387,7 +396,7 @@ def parse():
             if len(wave_data)==0 or wave_npc_amt == 0: continue
             wave_idx += 1
 
-            output["waves"][wave_idx] = parse_wave(wave_idx, wave_data, bool(util.cfgtonum(wd["auto_wave_cash"])))
+            output["waves"][wave_idx] = parse_wave(wave_idx, wave_data, bool(util.cfgtoint(wd["auto_wave_cash"])))
             embed.generate_waveset_embed(f"{abslink}_{wave_idx}", name, int(wave), max_waves, output["waves"][wave_idx])
         
         waveset_cache[file] = output

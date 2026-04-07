@@ -69,11 +69,17 @@ def music_modal(wave_entry_data):
         "file_exists": os.path.isfile(f"./TF2-Zombie-Riot/sound/{mfilename}")
     }
 
-def cfgtonum(val):
+def cfgtoint(val,default:int=0):
     try:
         return int(val)
     except ValueError:
-        return 0
+        return default
+
+def cfgtofloat(val,default:float=0.0):
+    try:
+        return float(val)
+    except ValueError:
+        return default
 
 def id_from_str(string):
     # https://stackoverflow.com/questions/49808639/generate-a-variable-length-hash
