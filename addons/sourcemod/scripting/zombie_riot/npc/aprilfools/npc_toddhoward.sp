@@ -74,7 +74,6 @@ static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 
 #define TODDHOWARD_SEA_INFECTED 555
 static int NPCId;
-static int NPCId2;
 public void ToddHoward_OnMapStart()
 {
 	NPCData data;
@@ -87,17 +86,6 @@ public void ToddHoward_OnMapStart()
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
-
-	//different due to differnt precaches
-	strcopy(data.Name, sizeof(data.Name), "Sea-Infected Todd Howard");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_toddhoward");
-	data.IconCustom = false;
-	data.Flags = -1;
-	data.Category = Type_Hidden;
-	data.Func = ClotSummon;
-	data.Precache = ClotPrecache_SeaToddHoward;
-	NPCId2 = NPC_Add(data);
-
 
 }
 
@@ -126,7 +114,6 @@ static void ClotPrecache_SeaToddHoward()
 	for (int i = 0; i < (sizeof(g_DefaultMeleeMissSounds));        i++) { PrecacheSound(g_DefaultMeleeMissSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_SlamSounds));        i++) { PrecacheSound(g_SlamSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_SummonSounds));        i++) { PrecacheSound(g_SummonSounds[i]);        }
-	PrecacheSoundCustom("#zombiesurvival/medieval_raid/special_mutation/kazimierz_boss.mp3");
 	PrecacheSoundCustom("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3");
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RandomGroupScreamSea));   i++) { PrecacheSoundCustom(g_RandomGroupScreamSea[i]);   }
@@ -436,33 +423,15 @@ methodmap ToddHoward < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/scout/jul13_greased_lightning/jul13_greased_lightning.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-
-		if(i_RaidGrantExtra[npc.index] == TODDHOWARD_SEA_INFECTED)
-		{
-			SetEntityRenderColor(npc.index, 100, 100, 255, 255);
-			SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 255);
-			SetEntityRenderColor(npc.m_iWearable2, 100, 100, 255, 255);
-			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/special_mutation/kazimierz_boss.mp3");
-			music.Time = 189;
-			music.Volume = 2.0;
-			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "lobotomy corp - insignia decay");
-			strcopy(music.Artist, sizeof(music.Artist), "???");
-			Music_SetRaidMusic(music);
-		}
-		else
-		{
 			
-			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aprilfools/toddhoward.mp3");
-			music.Time = 277;
-			music.Volume = 2.0;
-			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "It Just Works");
-			strcopy(music.Artist, sizeof(music.Artist), "The Chalkeaters");
-			Music_SetRaidMusic(music);
-		}
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aprilfools/toddhoward.mp3");
+		music.Time = 277;
+		music.Volume = 2.0;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "It Just Works");
+		strcopy(music.Artist, sizeof(music.Artist), "The Chalkeaters");
+		Music_SetRaidMusic(music);
 		Citizen_MiniBossSpawn();
 		
 
@@ -869,7 +838,7 @@ public void ToddHoward_ClotThink(int iNPC)
 		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
 			int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
-			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != NPCId && i_NpcInternalId[baseboss_index] != NPCId2 && GetTeam(npc.index) == GetTeam(baseboss_index))
+			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != NPCId && GetTeam(npc.index) == GetTeam(baseboss_index))
 			{
 				allyAlive = true;
 			}

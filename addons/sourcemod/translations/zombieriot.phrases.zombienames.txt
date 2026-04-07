@@ -6332,11 +6332,9 @@
 		"it"	"Todd Howard"
 		"ko"	"토드 하워드"
 	}
-	"Sea-Infected Todd Howard"
+	"Todd Howard Desc"
 	{
-		"en"	"Sea-Infected Todd Howard"
-		"it"	"Todd Howard infettato dal mare"
-		"ko"	"시테러 감염체 토드 하워드"
+		"en"	"Reskinned alaxios lol"
 	}
 	"kevinmery2009"
 	{
