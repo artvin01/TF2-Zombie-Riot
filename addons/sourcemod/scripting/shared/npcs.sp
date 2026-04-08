@@ -444,19 +444,10 @@ bool NPC_SpawnNext(bool panzer,
 						//i put this here instead of in waves.sp as some NPCS dont have an HP defined in the config, resulting in no HP gain.
 						ScalingMultiplyEnemyHpGlobalScale(entity_Spawner);
 					}
-					if(GetTeam(entity_Spawner) == 2)
-					{
-						Rogue_AllySpawned(entity_Spawner);
-						Waves_AllySpawned(entity_Spawner);
-					}
-					else
-					{
-						Rogue_EnemySpawned(entity_Spawner);
-						Waves_EnemySpawned(entity_Spawner);
+					NPC_PostSetup(entity_Spawner);
+					if(GetTeam(entity_Spawner) == 3)
 						Classic_EnemySpawned(entity_Spawner);
-						Construction_EnemySpawned(entity_Spawner);
-						Dungeon_EnemySpawned(entity_Spawner);
-					}
+					
 					if(SpawnSettingsSee == 3)
 					{
 						//a second of protection
@@ -630,18 +621,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 		
 		b_NpcForcepowerupspawn[entity] = forcepowerup;
 
-		if(GetTeam(entity) == 2)
-		{
-			Rogue_AllySpawned(entity);
-			Waves_AllySpawned(entity);
-		}
-		else
-		{
-			Rogue_EnemySpawned(entity);
-			Waves_EnemySpawned(entity);
-			Construction_EnemySpawned(entity);
-			Dungeon_EnemySpawned(entity);
-		}
+		NPC_PostSetup(entity);
 		if(Waves_InFreeplay())
 			Freeplay_SpawnEnemy(entity);
 		if(PapModeDo == PAP_MODE_BUILDING_ONLY)

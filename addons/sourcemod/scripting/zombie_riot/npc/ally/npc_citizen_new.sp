@@ -2481,9 +2481,6 @@ void Citizen_UpdateStats(int entity, int type, int role)
 	npc.m_iAttacksTillReload = npc.m_iGunClip;
 	npc.m_bFirstBlood = false;
 
-	//Rogue_AllySpawned(npc.index);
-	//Waves_AllySpawned(npc.index);
-	
 	npc.UpdateModel();
 
 	if(changed)
