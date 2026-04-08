@@ -1462,7 +1462,6 @@ static void Zilius_KickTouched(int entity, int enemy)
 	ApplyStatusEffect(enemy, enemy, "Anti-Waves", 3.0);
 	Custom_Knockback(enemy, enemy, 500.0, true, false);
 }
-		ApplyStatusEffect(npc.index, npc.index, "Wound Fatigue", 99999.0);
 
 void Zilius_KickLogic(int iNPC)
 {

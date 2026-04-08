@@ -1375,7 +1375,7 @@ void Blade_ReadStats(int client, int tier)
 
 	//Sweep speed scales with attack rate modifiers, but for optimization purposes, can NEVER go below 0.15.
 	if (IsValidEntity(weapon))
-		f_BladeInterval[client] *= Attributes_Get(weapon, 6, 1.0);s
+		f_BladeInterval[client] *= Attributes_Get(weapon, 6, 1.0);
 
 	if (f_BladeInterval[client] < 0.15)
 		f_BladeInterval[client] = 0.15;
