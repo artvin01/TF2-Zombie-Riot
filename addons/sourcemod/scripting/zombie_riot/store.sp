@@ -768,6 +768,8 @@ stock float CooldownReductionAmount(int client)
 	}
 	if(i_CurrentEquippedPerk[client] & PERK_ENERGY_DRINK)
 		Cooldown *= 0.85;
+	if(i_CurrentEquippedPerk[client] & PERK_ENERGY_DRINK_X)
+		Cooldown *= 0.6;
 		
 	return Cooldown;
 }
@@ -5530,15 +5532,23 @@ void Store_ApplyAttribs(int client)
 	{
 		map.SetValue("178", 0.65); //Faster Weapon Switch
 	}
-	
+	if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS_X)
+	{
+		map.SetValue("178", (1.0 / 1.65)); //Faster Weapon Switch
+	}
+
+	float BuildingDmgSet = 2.0;
+	if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE_X)
+	{
+		BuildingDmgSet *= 1.35;
+	}
 	if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE) //increase sentry damage! Not attack rate, could end ugly.
 	{
-		map.SetValue("287", 2.34);
+		BuildingDmgSet *= 1.17;
 	}
-	else
-	{
-		map.SetValue("287", 2.0);
-	}
+
+	map.SetValue("287", BuildingDmgSet);
+	
 	map.SetValue("95", 1.0);
 
 	float value;
@@ -6456,15 +6466,26 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			if(Attributes_Has(entity, 97))
 				Attributes_SetMulti(entity, 97, 0.7);
 		}
+		if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS_X)
+		{
+			//dont give it if it doesnt have it.
+			if(Attributes_Has(entity, 97))
+				Attributes_SetMulti(entity, 97, (1.0 / 1.65));
+		}
 
 		if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE)
 		{
 			if(Attributes_Has(entity, 6))
 				Attributes_SetMulti(entity, 6, 0.85);
 		}
+		if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE_X)
+		{
+			if(Attributes_Has(entity, 6))
+				Attributes_SetMulti(entity, 6, (1.0 / 1.35));
+		}
 
 		//DEADSHOT!
-		if(i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
+		if((i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER) || (i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER_X))
 		{	
 			//dont give it if it doesnt have it.
 			if(Attributes_Has(entity, 103))

@@ -436,7 +436,11 @@ public Action Flagellant_MoreFinishTimer(Handle timer, DataPack pack)
 				HealedAllyRand[2] += GetRandomFloat(-10.0, 10.0);
 				TE_Particle("healthgained_red", HealedAllyRand, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);	
 			}
-			HealEntityGlobal(client, client, float(healing), _, 4.0, _);
+			//wound fatigue is applied and we want this skill to heal just fine
+			if(HasSpecificBuff(client, "Wound Fatigue"))
+				healing /= 2;
+			HealEntityGlobal(client, client, float(healing), _, 4.0, HEAL_FLAG_AM);
+			ApplyStatusEffect(client, client, "Wound Fatigue", 10.0);
 		}
 	}
 	return Plugin_Stop;
@@ -519,7 +523,10 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 				
 				HealEntityGlobal(client, target, healing, 1.0, 2.0, _);
-				HealEntityGlobal(client, client, healing, 1.0, 2.0, _);
+				if(HasSpecificBuff(client, "Wound Fatigue"))
+					healing *= 0.5;
+				HealEntityGlobal(client, client, healing, 1.0, 2.0, HEAL_FLAG_AM);
+				ApplyStatusEffect(client, client, "Wound Fatigue", 10.0);
 				
 				MoreMoreHits[client] += 10;
 				float HealedAlly[3];
@@ -700,7 +707,11 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		TriggerDeathDoor(client, healing);
 		if(healing > 0)
 		{
-			HealEntityGlobal(client, client, float(healing), 1.0, 2.0, _);
+			if(HasSpecificBuff(client, "Wound Fatigue"))
+				healing /= 2;
+			HealEntityGlobal(client, client, float(healing), 1.0, 2.0, HEAL_FLAG_AM);
+			ApplyStatusEffect(client, client, "Wound Fatigue", 10.0);
+			
 			float HealedAlly[3];
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", HealedAlly);
 			HealedAlly[2] += 70.0;
@@ -818,7 +829,11 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 		TriggerDeathDoor(client, healing);
 		if(healing > 0)
 		{
-			HealEntityGlobal(client, client, float(healing), 1.0, 1.0, _);
+			if(HasSpecificBuff(client, "Wound Fatigue"))
+				healing /= 2;
+			HealEntityGlobal(client, client, float(healing), 1.0, 1.0, HEAL_FLAG_AM);
+			ApplyStatusEffect(client, client, "Wound Fatigue", 10.0);
+
 			float HealedAlly[3];
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", HealedAlly);
 			HealedAlly[2] += 70.0;

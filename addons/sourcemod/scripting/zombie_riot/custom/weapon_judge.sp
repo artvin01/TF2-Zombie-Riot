@@ -166,8 +166,5 @@ float GetJudgeReloadCooldown(float cooldown, int client)
 	float returncooldown;
 	returncooldown = cooldown;
 
-	if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS)
-		returncooldown *= 0.65;
-
 	return returncooldown;
 }

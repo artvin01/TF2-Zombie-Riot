@@ -112,7 +112,12 @@ public const char PerkNames[][] =
 	"Marathon Shake",
 	"Sealed Boba",
 	"Bloody Ale",
-	"Who Float"
+	"Who Float",
+	
+	"Morning Coffee X",
+	"Hasty Hops X",
+	"Marksman Beer X",
+	"Energy Drink X",
 };
 
 public const char PerkNames_Received[][] =
@@ -131,7 +136,12 @@ public const char PerkNames_Received[][] =
 	"Marathon Shake Received",
 	"Sealed Boba Received",
 	"Bloody Ale Received",
-	"Who Float Received"
+	"Who Float Received",
+
+	"Morning Coffee X Received",
+	"Hasty Hops X Received",
+	"Marksman Beer X Received",
+	"Energy Drink X Received",
 };
 
 public const char PerkNames_two_Letter[][] =
@@ -150,7 +160,12 @@ public const char PerkNames_two_Letter[][] =
 	"MS",
 	"SB",
 	"BA",
-	"WF"
+	"WF",
+	
+	"MC",
+	"HH",
+	"MB",
+	"ED",
 };
 
 enum

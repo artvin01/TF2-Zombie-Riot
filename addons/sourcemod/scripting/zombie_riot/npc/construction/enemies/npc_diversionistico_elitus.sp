@@ -459,7 +459,6 @@ void Diversionistico_ElitusSelfDefense(Diversionistico_Elitus npc, float gameTim
 						damageDealt *= 0.5;
 						ApplyStatusEffect(npc.index, target, "Anti-Waves", 2.0);
 					}
-
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound

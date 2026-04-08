@@ -703,7 +703,6 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 						//tiger drop negates all damage.
 						f_AntiStuckPhaseThrough[client] = 0.0;
 						f_AntiStuckPhaseThroughFirstCheck[client] = 0.0;
-						IncreaseEntityDamageTakenBy(client, 0.1, 0.75);
 						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_4", 0.75, target);
 						flMaxhealth *= 0.45;
 					}
