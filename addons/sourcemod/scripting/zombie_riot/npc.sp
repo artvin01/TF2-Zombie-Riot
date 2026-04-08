@@ -152,6 +152,7 @@ void NPC_ConfigSetup()
 	VehicleLandrover_Setup();
 	VehiclePickup_Setup();
 	VehicleFullAPC_Setup();
+	VehicleMinecraft_Setup();
 	// Vehicles
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
@@ -1640,6 +1641,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "vehicles/vehicle_landrover.sp"
 #include "vehicles/vehicle_pickup.sp"
 #include "vehicles/vehicle_fullapc.sp"
+#include "vehicles/vehicle_minecraft.sp"
 
 //NORMAL
 #include "npc/normal/npc_headcrabzombie.sp"
