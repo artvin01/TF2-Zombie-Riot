@@ -761,7 +761,7 @@
 	"Blitzkrieg Desc"
 	{
 		"en" 		"A supreme being of rockets, hacked and now used for terrible things\n-shoots rockets that deal more damage the more they travel\n-If outside of his red orb, summons lightning strikes onto you\n-The lower hp, the stronger he gets\n-Once low enough hp, summons moonlight, gaining massive ranged resistance\n-Teleport and dash during moonlight (can be silenced).\nFighting him in expidonsan maps majorly buffs him"
-		"ko" 		"로켓 관련학의 최고위 존재로, 해킹 당하여 끔찍한 일에 쓰여지고 있습니다.\n-비행 거리에 따라 피해가 증가하는 로켓 발사\n-붉은 영역 바깥에서 공격 시 공격자의 위치에 뇌격 소환\n-체력이 감소할 수록 더 강해집니다.\n-체력이 충분히 감소할 경우 '월광'을 사용하며, 원거리 피해 저항력 대폭 증가\n-월광 능력 사용 중 텔레포트와 대쉬를 사용 (침묵 상태 시 효과 저지).\n-엑스피돈사 맵에서 전투 시 대폭 강화됨"
+		"ko" 		"로켓 관련학의 최고위 존재로, 해킹 당하여 끔찍한 일에 쓰여지고 있습니다.\n-비행 거리에 따라 피해가 증가하는 로켓 발사\n-붉은 영역 바깥에서 공격 시 공격자의 위치에 뇌격 소환\n-체력이 감소할 수록 더 강해집니다.\n-체력이 충분히 감소할 경우 '월광'을 사용하며, 원거리 피해 저항력 대폭 증가\n-월광 능력 사용 중 순간이동과 대쉬를 사용 (침묵 상태 시 효과 저지).\n-엑스피돈사 맵에서 전투 시 대폭 강화됨"
 	}
 	"Pikeman Desc"
 	{
