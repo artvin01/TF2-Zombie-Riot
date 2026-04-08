@@ -3821,8 +3821,8 @@
 
 	"Riot Gun Desc"
 	{
-		"en"	"-With Armor, 60％ (bosses 35％) damage resistance from attacks in front of you.\n-Ability stuns enemies in front of you and increases attack speed.\n-Hasty Hops perk reduces ability cooldown.\n-Be slower with shield on, When shield breaks, gain speed with a cooldown (sound)"
-		"it"	"Con l'armatura, 60％ (boss 35％) resistenza ai danni degli attacchi di fronte a voi.\nAbilità che stordisce i nemici di fronte a voi e aumenta la velocità di attacco.\nSpeed-Cola riduce il cooldown dell'abilità.\nE' più lento con lo scudo attivato, quando lo scudo si rompe, guadagna velocità con un cooldown (suono)"
+		"en"	"-With Armor, 60％ (bosses 35％) damage resistance from attacks in front of you.\n-Ability stuns enemies in front of you and increases attack speed.\n-Be slower with shield on, When shield breaks, gain speed with a cooldown (sound)"
+		"it"	"Con l'armatura, 60％ (boss 35％) resistenza ai danni degli attacchi di fronte a voi.\nAbilità che stordisce i nemici di fronte a voi e aumenta la velocità di attacco.\nE' più lento con lo scudo attivato, quando lo scudo si rompe, guadagna velocità con un cooldown (suono)"
 		"ko"	"-아머 보유시 정면의 적에게 받는 피해가 60％ (보스일시 35％) 감소.\n-능력: 정면의 적 기절 및 공격 속도 증가\n-신속 홉 퍽 사용 시 능력 쿨타임 감소\n-방패 전개시 이동 속도 감소. 방패 파괴시 이동 속도 증가(쿨타임 존재)"
 	}
 	"Riot Gun Pap 1"
