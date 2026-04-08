@@ -7942,7 +7942,7 @@
 	"Black Heavy Soul Desc"
 	{
 		"en"	"He killed all the other heavy souls, oh my god..\n-stand still and shoots finger bullets that explode, they rehome once\n-Can jump and do a aoe explosive slam\n-Can conga and deal huge damage in an aoe constantly, has bad mobility but is fast\n-Transforms a few times in the battle once reaching an hp threshhold, gaining massive stats."
-		"ko"	"그가 다른 모든 헤비 영혼들을 죽여버린 것 같군요, 이런 세상에...\n-제자리에 멈춰 폭발하는 손가락 총알을 발사하며, 중간에 유도하며 궤도를 변경합니다.\n-뛰어들며 폭발성 지면 강타를 사용할 수 있습니다.\n-콩가를 추며 지속젖ㄱ으로 막대한 광역 피해를 가할 수 있으며, 이동성은 좋지 않으나 매우 빠릅니다.\n-체력이 일정 수치로 감소할 경우 수차례 변신을 하며, 막대한 능력치를 얻습니다."
+		"ko"	"그가 다른 모든 헤비 영혼들을 죽여버린 것 같군요, 이런 세상에...\n-제자리에 멈춰 폭발하는 손가락 총알을 발사하며, 중간에 유도하며 궤도를 변경합니다.\n-뛰어들며 폭발성 지면 강타를 사용할 수 있습니다.\n-콩가를 추며 지속적으로 막대한 광역 피해를 가할 수 있으며, 이동성은 좋지 않으나 매우 빠릅니다.\n-체력이 일정 수치로 감소할 경우 수차례 변신을 하며, 막대한 능력치를 얻습니다."
 	}
 	"Super Saiyan Black Heavy Soul"
 	{
