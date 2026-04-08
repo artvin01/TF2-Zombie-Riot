@@ -523,6 +523,7 @@ float f_ChargeTerroriserSniper[MAXENTITIES];
 
 int StoreWeapon[MAXENTITIES];
 int i_HealthBeforeSuit[MAXPLAYERS]={0, ...};
+int i_HealthBeforeSuitMaxHP[MAXPLAYERS]={0, ...};
 float f_HealthBeforeSuittime[MAXPLAYERS]={0.0, ...};
 
 int Level[MAXPLAYERS];
@@ -2369,6 +2370,13 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						if(i_HealthBeforeSuit[client] == 0)
 						{
 							SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
+						}
+						else
+						{
+							if(b_IsAloneOnServer)
+								i_HealthBeforeSuit[client] = i_HealthBeforeSuitMaxHP[client];
+							else
+								i_HealthBeforeSuit[client] = i_HealthBeforeSuitMaxHP[client] * 2;
 						}
 						//if in quantum suit, dont.
 

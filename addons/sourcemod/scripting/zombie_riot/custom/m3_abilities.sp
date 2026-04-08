@@ -6,7 +6,6 @@ static float ability_cooldown_2[MAXPLAYERS+1]={0.0, ...};
 static int Attack3AbilitySlotArray[MAXPLAYERS+1]={0, ...};
 static float f_HealDelay[MAXENTITIES];
 static float f_Duration[MAXENTITIES];
-static bool b_ActivatedDuringLastMann[MAXPLAYERS+1];
 static int g_ProjectileModel;
 static int g_ProjectileModelArmor;
 int g_BeamIndex_heal = -1;
@@ -104,7 +103,6 @@ public void M3_Abilities_Precache()
 }
 public void M3_ClearAll()
 {
-	Zero(b_ActivatedDuringLastMann);
 	Zero(ability_cooldown);
 	Zero(ability_cooldown_2);
 	Zero(Attack3AbilitySlotArray);
@@ -1588,11 +1586,6 @@ public void GearTesting(int client)
 			SetEntityMoveType(client, MOVETYPE_NONE);
 
 			i_ClientHasCustomGearEquipped[client] = 2;
-			b_ActivatedDuringLastMann[client] = false;
-			if(LastMann)
-			{
-				b_ActivatedDuringLastMann[client] = true;
-			}
 
 			IncreaseEntityDamageTakenBy(client, 0.5, 3.0);
 			
@@ -1645,6 +1638,7 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 			float startPosition[3];
 			GetClientAbsOrigin(client, startPosition);
 			i_HealthBeforeSuit[client] = GetClientHealth(client);
+			i_HealthBeforeSuitMaxHP[client] = ReturnEntityMaxHealth(client);
 
 			i_ClientHasCustomGearEquipped[client] = 2;
 			
@@ -1715,12 +1709,6 @@ public Action QuantumDeactivate(Handle cut_timer, int ref)
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 		ViewChange_DeleteHands(client);
 		ViewChange_UpdateHands(client, CurrentClass[client]);
-		if(b_ActivatedDuringLastMann[client])
-		{
-			int MaxHealth = SDKCall_GetMaxHealth(client) * 2;
-			SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
-		}
-		b_ActivatedDuringLastMann[client] = false;
 		//if in lastman, then give extra health.
 	}
 	return Plugin_Handled;
