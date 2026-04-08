@@ -1131,7 +1131,7 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 	//redirect damage and reduce it if in range.
 	int AllyEntity = EntRefToEntIndex(i_RaidDuoAllyIndex);
 	int ForceStandStill = CountPlayersOnRed(2);
-	if(ForceStandStill >= 1 && IsEntityAlive(AllyEntity) && !b_NpcIsInvulnerable[AllyEntity] && !IsPartnerGivingUpGoggles(AllyEntity))
+	if(ForceStandStill > 1 && IsEntityAlive(AllyEntity) && !b_NpcIsInvulnerable[AllyEntity] && !IsPartnerGivingUpGoggles(AllyEntity))
 	{
 		static float victimPos[3];
 		static float partnerPos[3];
