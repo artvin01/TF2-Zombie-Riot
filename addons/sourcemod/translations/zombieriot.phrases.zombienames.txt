@@ -3429,44 +3429,6 @@
 	"Ihanal Demon Whisperer Desc"
 	{
 		"en"	"Taming the great demon with chaos.\n-Heals the great demon and buffs him\n-Buffs great demon if he is close to him\n-If demon dies first, he explodes into 50 chaos demons\n-When hurt and near the demon, gives false therapy and makes the demon attack whoever attacked him"
-		"ko"	"대악마를 혼돈으로 길들인 자입니다.\n-대악마를 치유하며 버프를 제공합니다.\n-대악마와 근접 시 버프를 제공합니다.\n-대악마가 먼저 사망할 경우, 50체의 혼돈의 악마로 분열됩니다.\n-대악마와 근접한 상태로 피해를 받을 경우, 대악마에게 돌팔이 치료술anaas"
-	{
-		"en"	"Qanaas"
-		"it"	"Qanaas"
-		"ko"	"콰나스"
-	}
-	"Atilla"
-	{
-		"en"	"Atilla"
-		"it"	"Atilla"
-		"ko"	"아틸라"
-	}
-	"Ancient Demon"
-	{
-		"en"	"Ancient Demon"
-		"it"	"Antico demone"
-		"ko"	"고대 악마"
-	}
-	"Hallam's Great Demon"
-	{
-		"en"	"Hallam's Great Demon"
-		"it"	"Il grande demone di Hallam"
-		"ko"	"할람의 대악마"
-	}
-	"Hallam's Great Demon Desc"
-	{
-		"en"	"Greatest demon in Hallam, now chaos affected..\n-The more the whiseper is hurt the stronger he gets\n-Once whisperer dies, he enrages for a short time\n-Stays at 50％ power if whisperer dies\n-Targets anyone attacking whisperer if close\n-Spawns chaos demons every so often\n-Shoots projectiles every so often"
-		"ko"	"할람의 가장 위대한 악마, 이제는 혼돈에 침식되어 버렸습니다.\n-밀고자의 체력이 감소할 수록 더욱 강해집니다.\n-밀고자 사망 시, 짧은 시간 동안 격분 상태가 됩니다.\n-밀고자 사망 시 힘 수치가 50％로 유지됩니다.\n-근접 시 밀고자를 공격하는 대상을 표적으로 삼습니다.\n-주기적으로 혼돈의 악마를 소환합니다.\n-주기적으로 투사체를 발사합니다."
-	}
-	"Ihanal Demon Whisperer"
-	{
-		"en"	"Ihanal Demon Whisperer"
-		"it"	"Ihanal Sussurratore di Demoni"
-		"ko"	"이하날 악마 밀고자"
-	}
-	"Ihanal Demon Whisperer Desc"
-	{
-		"en"	"Taming the great demon with chaos.\n-Heals the great demon and buffs him\n-Buffs great demon if he is close to him\n-If demon dies first, he explodes into 50 chaos demons\n-When hurt and near the demon, gives false therapy and makes the demon attack whoever attacked him"
 		"ko"	"대악마를 혼돈으로 길들인 자입니다.\n-대악마를 치유하며 버프를 제공합니다.\n-대악마와 근접 시 버프를 제공합니다.\n-대악마가 먼저 사망할 경우, 50체의 혼돈의 악마로 분열됩니다.\n-대악마와 근접한 상태로 피해를 받을 경우, 대악마에게 '돌팔이 치료술' 버프를 부여하고 대악마가 공격자를 표적으로 삼게 만듭니다."
 	}
 	"Winter Sniper"
