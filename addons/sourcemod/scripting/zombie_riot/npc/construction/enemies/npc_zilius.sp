@@ -492,7 +492,6 @@ methodmap Construction_Raid_Zilius < CClotBody
 		
 		ApplyStatusEffect(npc.index, npc.index, "Anti-Waves", 99999.0);
 		//cannot be healed ever
-		
 		b_angered_twice[npc.index] = false;
 		
 		int skin = 1;
@@ -1463,6 +1462,7 @@ static void Zilius_KickTouched(int entity, int enemy)
 	ApplyStatusEffect(enemy, enemy, "Anti-Waves", 3.0);
 	Custom_Knockback(enemy, enemy, 500.0, true, false);
 }
+		ApplyStatusEffect(npc.index, npc.index, "Wound Fatigue", 99999.0);
 
 void Zilius_KickLogic(int iNPC)
 {

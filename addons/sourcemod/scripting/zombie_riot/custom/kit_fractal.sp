@@ -1269,6 +1269,8 @@ static Action Mana_Harvester_Tick(int client)
 
 	if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS)
 		mana_cost = RoundToFloor(mana_cost * 1.33);
+	if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS_X)
+		mana_cost = RoundToFloor(mana_cost * 1.65);
 
 	for(int i=0 ; i < FRACTAL_HARVESTER_MAX_AMT ; i++)
 	{

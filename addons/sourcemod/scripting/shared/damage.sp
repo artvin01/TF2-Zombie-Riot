@@ -861,6 +861,10 @@ stock bool Damage_NPCAttacker(int &attacker,float &damage, int &damagetype)
 		{
 			damage *= 1.25;
 		}
+		if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER_X)
+		{
+			damage *= 1.35;
+		}
 	}
 #endif	//zr
 	return false;
@@ -1556,6 +1560,10 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 			{
 				TotalMeleeRes *= 1.25;
 			}
+			if(!b_NpcHasDied[attacker] && (i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER_X))
+			{
+				TotalMeleeRes *= 1.35;
+			}
 			if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
 			{
 				TotalMeleeRes *= Medival_Difficulty_Level;
@@ -1827,6 +1835,10 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER) //Deadshot!
 					{
 						damage *= 1.25;
+					}	
+					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER_X) //Deadshot!
+					{
+						damage *= 1.35;
 					}	
 #endif					
 					if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.

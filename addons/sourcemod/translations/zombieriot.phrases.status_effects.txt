@@ -1932,6 +1932,14 @@
 		"it"	"Impedisce qualsiasi guarigione.\n{green}Non impedisce la guarigione assoluta."
 		"ko"	"모든 체력 회복을 받을 수 없습니다.\n{green}절대 치유는 이 효과를 무시합니다."
 	}
+	"Wound Fatigue"
+	{
+		"en" 	"Wound Fatigue"
+	}
+	"Wound Fatigue Desc"
+	{
+		"en"	"Healing from most sources is reduced by 50％.\n{green}Doesnt prevent absolute healing."
+	}
 	"Zeinas Protection"
 	{
 		"en" 	"Zeinas Protection"

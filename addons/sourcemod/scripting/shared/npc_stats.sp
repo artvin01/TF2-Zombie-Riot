@@ -1950,6 +1950,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.25;
 		}
+		if(i_CurrentEquippedPerk[this.index] & PERK_HASTY_HOPS_X)
+		{
+			speed_for_return *= 1.25;
+		}
 #endif
 		if(f_TankGrabbedStandStill[this.index] > Gametime)
 		{

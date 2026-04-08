@@ -1164,7 +1164,7 @@ void Raigeki_ReadStats(int client, int weapon, int tier)
 		mult *= Attributes_Get(weapon, 101, 1.0);
 		mult *= Attributes_Get(weapon, 102, 1.0);
 	}
-	if (i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
+	if((i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER) || (i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER_X))
 		mult *= 1.2;
 
 	f_ChargeRadius[client] *= mult;
@@ -1190,8 +1190,6 @@ void Raigeki_ReadStats(int client, int weapon, int tier)
 	//Charge interval (rate at which mana is consumed, charge is given, and Static Electricity deals damage) scales with attack rate modifiers:
 	if (IsValidEntity(weapon))
 		mult = Attributes_Get(weapon, 6, 1.0);
-	if (i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE)
-		mult *= 0.83;
 
 	f_ChargeInterval[client] *= mult;
 	f_NextCharge[client] = GetGameTime() + f_ChargeInterval[client];
@@ -1356,7 +1354,7 @@ void Blade_ReadStats(int client, int tier)
 		f_BladeRange[client] -= diff * 0.4;
 
 	//Beer gets full scaling, because otherwise there's really no point in using it.
-	if (i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
+	if((i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER) || (i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER_X))
 		f_BladeRange[client] *= 1.2;
 
 	//Damage scales with damage modifiers. Obviously.
@@ -1377,9 +1375,8 @@ void Blade_ReadStats(int client, int tier)
 
 	//Sweep speed scales with attack rate modifiers, but for optimization purposes, can NEVER go below 0.15.
 	if (IsValidEntity(weapon))
-		f_BladeInterval[client] *= Attributes_Get(weapon, 6, 1.0);
-	if (i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE)
-		f_BladeInterval[client] *= 0.83;
+		f_BladeInterval[client] *= Attributes_Get(weapon, 6, 1.0);s
+
 	if (f_BladeInterval[client] < 0.15)
 		f_BladeInterval[client] = 0.15;
 

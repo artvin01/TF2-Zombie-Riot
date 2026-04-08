@@ -31,11 +31,16 @@ float PreventRespawnsAll;
 #define PERK_TESLAR_MULE				(1 << 5)
 #define PERK_STOCKPILE_STOUT			(1 << 6)
 #define PERK_ENERGY_DRINK				(1 << 7)
-#define PERK_LOVER				(1 << 8)
-#define PERK_MARATHON			(1 << 9)
-#define PERK_SEALED				(1 << 10)
-#define PERK_BLOODY				(1 << 11)
-#define PERK_WHO				(1 << 12)
+#define PERK_LOVER					(1 << 8)
+#define PERK_MARATHON				(1 << 9)
+#define PERK_SEALED					(1 << 10)
+#define PERK_BLOODY					(1 << 11)
+#define PERK_WHO					(1 << 12)
+	
+#define PERK_MORNING_COFFEE_X		(1 << 13)
+#define PERK_HASTY_HOPS_X			(1 << 14)
+#define PERK_MARKSMAN_BEER_X		(1 << 15)
+#define PERK_ENERGY_DRINK_X			(1 << 16)
 
 #define HEAL_NO_RULES				0	 	 
 //Nothing special.
@@ -46,6 +51,8 @@ float PreventRespawnsAll;
 #define HEAL_SILENCEABLE			(1 << 3) 
 //Silence Entirely nukes this heal
 #define HEAL_PASSIVE_NO_NOTIF		(1 << 4) 
+//Heals but doesnt notify anyone
+#define HEAL_FLAG_AM				(1 << 5) 
 //Heals but doesnt notify anyone
 
 enum

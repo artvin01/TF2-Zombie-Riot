@@ -950,6 +950,10 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				{
 					damage *= 1.25;
 				}
+				if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER_X) //I guesswe can make it stack.
+				{
+					damage *= 1.35;
+				}
 				
 				int pitch = GetRandomInt(90, 110);
 				int random_case = GetRandomInt(1, 2);
@@ -980,7 +984,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					float damage_save = 50.0;
 					damage_save *= Attributes_Get(weapon, 2, 1.0);
 					int BombsToInject = i_ArsenalBombImplanter[weapon];
-					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER) //I guesswe can make it stack.
+					if((i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER) || (i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER_X)) //I guesswe can make it stack.
 					{
 						BombsToInject += 1;
 					}

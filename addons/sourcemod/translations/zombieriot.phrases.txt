@@ -1422,6 +1422,13 @@
 		"it"		"Caffè del mattino"
 		"ko" 		"모닝 커피"
 	}	
+	"Morning Coffee X"
+	{
+		"en" 		"Morning Coffee X"
+		"ru"		"Утренний Кофе X"
+		"it"		"Caffè del mattino X"
+		"ko" 		"모닝 커피 X"
+	}	
 	"Hasty Hops"
 	{
 		"en" 		"Hasty Hops"
@@ -1429,11 +1436,24 @@
 		"it"		"Luppolo frettoloso"
 		"ko" 		"신속 홉"
 	}
+	"Hasty Hops X"
+	{
+		"en" 		"Hasty Hops X"
+		"ru"		"Хмельная Спешка X"
+		"it"		"Luppolo frettoloso X"
+		"ko" 		"신속 홉 X"
+	}
 	"Energy Drink"
 	{
 		"en" 		"Energy Drink"
 		"ru"		"Энергетик"
 		"ko" 		"에너지 드링크"
+	}
+	"Energy Drink X"
+	{
+		"en" 		"Energy Drink X"
+		"ru"		"Энергетик X"
+		"ko" 		"에너지 드링크 X"
 	}
 	"Marksman Beer"
 	{
@@ -1446,6 +1466,18 @@
 		"chi" 		"死亡宣告"
 		"it"		"Birra Tiratore scelto"
 		"ko" 		"명사수 맥주"
+	}
+	"Marksman Beer X"
+	{
+		"en" 		"Marksman Beer X"
+		"fr" 		"Tir Mortel de Daiquiri X"
+		"ru" 		"Снайпер-лайм X"
+		"de"		"Todesschuss Daiquiri X"
+		"pt"		"Tiro morto de Daiquiri X"
+		"nl"		"Dood schot Daiquiri X"
+		"chi" 		"死亡宣告 X"
+		"it"		"Birra Tiratore scelto X"
+		"ko" 		"명사수 맥주 X"
 	}
 	
 	"Teslar Mule"
@@ -1493,6 +1525,13 @@
 		"it"		"Caffè del mattino! 17％ Velocità d'attacco extra e Danno da struttura"
 		"ko" 		"모닝 커피! 공격 속도와 구조물 피해량이 +17％ 증가."
 	}	
+	"Morning Coffee X Received"
+	{
+		"en" 		"Morning Coffee X! 35％ Extra attack speed and Building Damage"
+		"ru"		"Утренний Кофе X! 35％ к скорости атаки и к урону постройками"
+		"it"		"Caffè del mattino X! 35％ Velocità d'attacco extra e Danno da struttura"
+		"ko" 		"모닝 커피 X! 공격 속도와 구조물 피해량이 +35％ 증가."
+	}	
 	"Hasty Hops Received"
 	{
 		"en" 		"Hasty Hops! 1.42x Extra reload, switchspeed and Mana regen"
@@ -1500,12 +1539,26 @@
 		"it"		"Salti precipitosi! 1.42x Ricarica extra, velocità di commutazione e rigenerazione del mana"
 		"ko" 		"신속 홉! 재장전 속도, 무기 전환 속도, 마나 재생이 1.42배 더 빨라집니다."
 	}
+	"Hasty Hops X Received"
+	{
+		"en" 		"Hasty Hops X! 1.65x Extra reload, switchspeed and Mana regen"
+		"ru"		"Хмельная Спешка! 1.65x скорость перезарядки, смены оружия и регенерации маны"
+		"it"		"Salti precipitosi! 1.65x Ricarica extra, velocità di commutazione e rigenerazione del mana"
+		"ko" 		"신속 홉! 재장전 속도, 무기 전환 속도, 마나 재생이 1.65배 더 빨라집니다."
+	}
 	"Marksman Beer Received"
 	{
 		"en" 		"Marksman Beer! 1.2x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
 		"ru"		"Снайпер-лайм! 1.2x точности оружия и 1.25x урона по голове и удара в спину\n 1.2x скорости снарядов."
 		"it"		"Birra del Tiratore scelto! 1.2xprecisione dell'arma 2x e danni extra da colpo alla testa e da pugnalata alle spalle 1,25x e velocità del proiettile 1,2x."
 		"ko" 		"명사수 맥주! 무기 명중률이 1.2배 증가하고 헤드샷과 백스탭 피해량이 1.25배만큼 추가로 증가\n 투사체 속도 1.2배 증가."
+	}
+	"Marksman Beer X Received"
+	{
+		"en" 		"Marksman Beer X! 1.2x Weapon accuracy and 1.35x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
+		"ru"		"Снайпер-лайм X! 1.2x точности оружия и 1.35x урона по голове и удара в спину\n 1.2x скорости снарядов."
+		"it"		"Birra del Tiratore sceltov! 1.2xprecisione dell'arma 2x e danni extra da colpo alla testa e da pugnalata alle spalle 1,35x e velocità del proiettile 1,2x."
+		"ko" 		"명사수 맥주! 무기 명중률이 X 1.2배 증가하고 헤드샷과 백스탭 피해량이 1.35배만큼 추가로 증가\n 투사체 속도 1.2배 증가."
 	}
 	"Teslar Mule Received"
 	{
@@ -1527,6 +1580,13 @@
 		"ru"		"Энергетик! 15％ быстрее перезарядка способности Оружия & Расходников"
 		"it"		"Bevanda energetica! Riduzione del cooldown di 15％ per le armi e gli equipaggiamenti extra!"
 		"ko" 		"에너지 드링크! 무기와 추가 장비들의 능력 쿨타임 15％ 감소!"
+	}
+	"Energy Drink X Received"
+	{
+		"en" 		"Energy Drink X! Gain a 40％ cooldown reduction for Weapons & Extra Gear!"
+		"ru"		"Энергетик X! 40％ быстрее перезарядка способности Оружия & Расходников"
+		"it"		"Bevanda energetica X! Riduzione del cooldown di 40％ per le armi e gli equipaggiamenti extra!"
+		"ko" 		"에너지 드링크 X! 무기와 추가 장비들의 능력 쿨타임 40％ 감소!"
 	}
 	"Lover's Wine"
 	{

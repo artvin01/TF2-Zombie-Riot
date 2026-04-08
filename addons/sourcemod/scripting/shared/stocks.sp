@@ -1374,6 +1374,14 @@ stock int HealEntityGlobal(int healer,
 		if(!(flag_extrarules & (HEAL_ABSOLUTE)))
 			return 0;
 	}
+	if(HasSpecificBuff(receiver, "Wound Fatigue"))
+	{
+		//Ignore all healing that isnt absolute
+		if(!(flag_extrarules & (HEAL_ABSOLUTE)))
+			if(!(flag_extrarules & (HEAL_FLAG_AM)))
+				HealTotal *= 0.5;
+
+	}
 	if(HealTotal < 0)
 	{
 		if(healer > 0)
