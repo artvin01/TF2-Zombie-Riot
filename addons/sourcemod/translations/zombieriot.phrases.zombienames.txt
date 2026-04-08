@@ -3415,7 +3415,7 @@
 	}
 	"Hallam's Great Demon Desc"
 	{
-		"en"	"Greatest demon in Hallam, now chaos affected..\n-The more the whiseper is thurt the stronger he gets\n-Once whisperer dies, he enrages for a short time\n-Stays at 50% power if whisperer dies\n-Targets anyone attacking whisperer if close\n-Spawns chaos demons every so often\n-Shoots projectiles every so often"
+		"en"	"Greatest demon in Hallam, now chaos affected..\n-The more the whisperer is hurt, the stronger he gets\n-Once whisperer dies, he enrages for a short time\n-Stays at 50% power if whisperer dies\n-Targets anyone attacking whisperer if close\n-Spawns chaos demons every so often\n-Shoots projectiles every so often"
 	}
 	"Ihanal Demon Whisperer"
 	{
@@ -7516,7 +7516,7 @@
 	}
 	"Umbral Ltzens Desc"
 	{
-		"en"	"An erratic Umbral, capable of defying the laws of physics. \nMoves in short bursts, as if it were lagging."
+		"en"	"An erratic Umbral, capable of defying the laws of physics. \n-Moves in short bursts, as if it were lagging."
 		"it"	"Un Umbral irregolare, capace di sfidare le leggi della fisica. \nSi muove a brevi intervalli, come se fosse in ritardo."
 		"ko"	"물리 법칙을 거스를 수 있는 불규칙한 움브랄. \n마치 렉이라도 걸린 듯 짧게 순간적으로 움직입니다."
 	}
@@ -7629,7 +7629,7 @@
 	}
 	"Seinr Desc"
 	{
-		"en"	"Almagest researcher who entered his own mech suit in a desperate attempt \nto avoid becoming warped. It didn't work out too well... \nDeals warping damage and has armor that reduces ally speed while active. \nGains speed once armor is lost."
+		"en"	"Almagest researcher who entered his own mech suit in a desperate attempt \nto avoid becoming warped. It didn't work out too well... \n-Deals warping damage and has armor that reduces ally speed while active. \n-Gains speed once armor is lost."
 		"it"	"Il ricercatore Almagest è entrato nella sua tuta mech nel disperato tentativo di evitare di essere deformato.\nNon ha funzionato molto bene... \nSubisce danni da deformazione e ha un'armatura che riduce la velocità degli alleati quando è attiva. \nGuadagna velocità una volta persa l'armatura."
 		"ko"	"왜곡당하지 않기 위해 필사적으로 자신의 메카 슈트를 착용했었던 알마게스트 연구원입니다. \n하지만 그게 그의 뜻대로 되지 않은 것 같습니다... \n왜곡 피해를 입히고 활성화된 동안 아군의 속도를 감소시키는 아머를 보유했습니다. \n아머가 파괴되면, 이동 속도가 증가합니다."
 	}
@@ -7847,7 +7847,7 @@
 	}
 	"HMS: Regalia Desc"
 	{
-		"en"	"Regalia class Battlecruiser"
+		"en"	"Regalia class Battlecruiser\n Stolen by an Almagest scientist who's trapped here after we closed the rift through the Curtain.\n-has 2 phases\n-Flyes high in the sky\n-Spawns beacons around the map\n-Periodically locks onto the closest player to.\n-It will then start charging up a sky laser to strike down on them. \n-Occasionally shoots a powerful laser with high control\n-Able to shoot out Lantean drones\n-Periodically flys above majority of players and creats a circle of lasers\n-These lasers will be facing inwards and spin while also moving further out.\n-Once in phase 2 gains new abilities\n-Can now command spawned beacons to spawn in a Almagest Proxima every so often.\n-Occasionally shoots a laser strait into the ground\n-Sfter some time this will summon a group of Almagest Proxima."
 		"ko"	"레갈리아급 순양전함"
 	}
 	"Starship Beacon"
