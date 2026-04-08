@@ -3342,9 +3342,7 @@
 	}
 	"The Flagellant Desc"
 	{
-		"en"	"Zealotry—an undying blight upon the soul.\nProvides extra health with the ability to heal but inflicts self-damage.\nYou are immune to all bleed effects."
-		"it"	"Zelota: una piaga imperitura sull'anima.\nFornisce salute extra con la possibilità di guarire, ma infligge autodanni.\nSi è immuni a tutti gli effetti di sanguinamento."
-		"ko"	"광신은 영혼을 좀먹는 불사의 병폐라.\n-치유 능력을 보유하게 되고 추가 체력을 얻지만, 공격시 자가 피해를 받음.\n-모든 출혈 디버프 효과에 면역이 됨."
+		"en"	"Zealotry—an undying blight upon the soul.\n-Provides extra health with the ability to heal but inflicts self-damage.\n-You are immune to all bleed effects.\n-On heal, recieve a debuff for 10 seconds that reduces heal"
 	}
 	"The Flagellant Extra Desc"
 	{

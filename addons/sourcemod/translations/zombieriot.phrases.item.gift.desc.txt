@@ -1222,7 +1222,7 @@
 	}
 	"Silvester Desc"
 	{
-		"en"		"The superpowered warrior returns but something is up. You cured him yes?\n-Spawns together with waldch\n-Fires a laser with a delay, having resistances\nLaser resistance (can be silenced)\n-Causes quakes sometimes\n-Stands still and causes more quakes\n-If near waldch, takes most of the damage and nullifies some of it\n-At low hp, increases stats"
+		"en"		"The superpowered warrior returns but something is up. You cured him yes?\n-Spawns together with waldch\n-Fires a laser with a delay, having resistances\nLaser resistance (can be silenced)\n-Causes quakes sometimes\n-Stands still and causes more quakes\n-If near waldch, takes most of the damage and nullifies some of it (Disabled if alone or lastman)\n-At low hp, enrage and increases stats"
 		"ko"		"초인적인 전사가 다시 돌아왔는데... 뭔가 이상합니다. 분명 우리가 그를 치료해주었을 텐데요?\n-왈츠와 함께 스폰\n-지연을 가진 레이저를 발사하며, 발사하는 동안 저항력 증가\n-레이저 공격 사용 중 저항력 증가(침묵 상태 시 저항 제거)\n-때때로 충격파 공격 사용\n-때때로 가만히 서서 더 많은 충격파를 발생\n-왈츠와 근접한 경우, 왈츠가 받는 피해량의 큰 부분을 감소하여 받습니다.\n-체력이 낮아질 경우, 능력치 증가"
 	}
 	"Waldch Desc"
