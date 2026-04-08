@@ -70,6 +70,12 @@ def music_modal(wave_entry_data):
         "file_exists": os.path.isfile(f"./TF2-Zombie-Riot/sound/{mfilename}")
     }
 
+def musicmodal_to_html(modal):
+    context=modal.copy()
+    file_exists = context.pop("file_exists")
+    context["musictitle"]=apply_morecolors(context["musictitle"]).replace("|","") # remove pipes (only the case for red sun songs)
+    context["musicartist"]=apply_morecolors(context["musicartist"])
+    return fill_template(read(f"templates/music/music_modal{"_missing"*int(not file_exists)}.html"),context)
 
 def cfgtoint(val,default:int=0):
     try:
@@ -117,7 +123,7 @@ def format_num(n):
 
 
 def to_section_link(str_):
-    return sub(r'[^a-z0-9]', '', str_.lower())
+    return sub(r'[^a-z0-9]', '-', str_.lower())
 
 
 def remove_multiline_comments(d): # Fixes the script interpreting the comment in npc_headcrabzombie.sp as actual data
@@ -236,10 +242,13 @@ def get_key(k,silent=False,empty_on_fail=False):
 MORECOLORS_JSON = json.loads(read("gh-pages/static/morecolors.json"))
 
 def apply_morecolors(str_):
-    str_=f"<span>{str_}</span>"
+    new=f"<span>{str_}</span>"
+    has_replaced = False
     for colorname in MORECOLORS_JSON.keys():
-        str_=str_.replace(f"{{{colorname}}}", f'</span><span class="mc_{colorname}">')
-    str_.replace("<span></span>","") # remove empty divs
+        new=new.replace(f"{{{colorname}}}", f'</span><span class="mc_{colorname}">')
+        if f"{{{colorname}}}" in str_: has_replaced=True
+    new=new.replace("<span></span>","") # remove empty divs
+    if has_replaced: return new.replace("-"," - ")
     return str_
 
 def divfornewline(str_):

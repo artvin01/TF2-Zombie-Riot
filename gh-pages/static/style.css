@@ -1,5 +1,5 @@
+/* currently used for rogue coloring only & niche music entries */
 @import url("morecolors.css"); 
-/* currently used for rogue coloring only..*/
 
 :root {
 /*    --ash-grey: #b4b8abff;
@@ -64,6 +64,12 @@ h2, .h2 {
 h3, .h3 {
     font-size: 1em;
     font-weight: 500;
+    font-family: "Oswald";
+}
+
+h4, .h4 {
+    font-size: 1em;
+    font-weight: 250;
     font-family: "Oswald";
 }
 

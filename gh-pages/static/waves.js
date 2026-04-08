@@ -18,7 +18,7 @@ const support_npc_modal = `<div class="divider"></div><div id="support_npc_conta
     <h2>SUPPORT</h2>
 </div>
 `
-const music_modal = `<div onclick="set_audio_resource(this);" file=\"filepath\" title=\"musictitle\" artist=\"musicartist\" class="audio"><img src="builtin_img/music.svg">musicpre musictitle - musicartist</div>`
+const music_modal = `<div onclick="set_audio_resource(this);" file=\"filepath\" title='musictitle' artist='musicartist' class="audio"><img src="builtin_img/music.svg">musicpre musictitle - musicartist</div>`
 const music_modal_missing = `<div class="disabled audio"><img src="builtin_img/music.svg">musicpre musictitle - musicartist</div>`
 function cycle_wave(val) {
     let prev_wave = wave;
@@ -46,42 +46,47 @@ async function parse_waveset(file) {
         }
 
         waveset_data = await response.json();
-        max_waves = Number(Object.keys(waveset_data["waves"]).reduce((a, b) => Number(a) > Number(b) ? a : b));
-        let waveset_info = "";
-        // TODO for loop
-        if (waveset_data["authors"]["npc"]!=="") {waveset_info+=`<div>NPCs by: ${waveset_data["authors"]["npc"]}</div>`};
-        if (waveset_data["authors"]["format"]!=="") {waveset_info+=`<div>Format by: ${waveset_data["authors"]["format"]}</div>`};
-        if (waveset_data["authors"]["raid"]!=="") {waveset_info+=`<div>Raidboss by: ${waveset_data["authors"]["raid"]}</div>`};
-        if (waveset_data["item_on_win"]!=="") {waveset_info+=`<div>Item on win: ${waveset_data["authors"]["raid"]}</div>`};
-        if (waveset_data["desc"]!=="") {waveset_info+=`<div>${waveset_data["desc"]}</div>`};
-        
-        for (const [key, entry] of Object.entries(waveset_data["music"])) {
-            context = {
-                "filepath": entry["filepath"],
-                "filename": entry["filename"],
-                "musicpre": `${key.split("_")[1]}: `,
-                "musictitle": entry["musictitle"],
-                "musicartist": entry["musicartist"]
-            }
-            if (!entry["file_exists"]) {
-                waveset_info += fill_template(music_modal_missing, context);
-            } else {
-                waveset_info += fill_template(music_modal, context);
-            }
-        };
-
-        const waveset_info_container = document.getElementById("waveset_info");
-        if (waveset_info!=="") {
-            waveset_info_container.parentElement.classList.remove("hidden");
-            waveset_info_container.innerHTML = waveset_info;
-        };
-
-        console.log(`[parse_waveset] Max waves:${max_waves}`);
-        console.log(`[parse_waveset] Fetched ${waveset_file}`);
-        update_wave_display();
     } catch (error) {
         console.error(`[parse_waveset] ${error.message}`);
     }
+
+    max_waves = Number(Object.keys(waveset_data["waves"]).reduce((a, b) => Number(a) > Number(b) ? a : b));
+    let waveset_info = "";
+    // TODO for loop
+    if (waveset_data["authors"]["npc"]!=="") {waveset_info+=`<div>NPCs by: ${waveset_data["authors"]["npc"]}</div>`};
+    if (waveset_data["authors"]["format"]!=="") {waveset_info+=`<div>Format by: ${waveset_data["authors"]["format"]}</div>`};
+    if (waveset_data["authors"]["raid"]!=="") {waveset_info+=`<div>Raidboss by: ${waveset_data["authors"]["raid"]}</div>`};
+    if (waveset_data["item_on_win"]!=="") {waveset_info+=`<div>Item on win: ${waveset_data["item_on_win"]}</div>`};
+    if (waveset_data["desc"]!=="") {waveset_info+=`<div>${waveset_data["desc"]}</div>`};
+    
+    // wait until morecolors.js loads
+    while(typeof apply_morecolors !== "function") {
+        await sleep(1000);
+    }
+    for (const [key, entry] of Object.entries(waveset_data["music"])) {
+        context = {
+            "filepath": entry["filepath"],
+            "filename": entry["filename"],
+            "musicpre": `${key.split("_")[1]}: `,
+            "musictitle": apply_morecolors(entry["musictitle"].replace("|","")),
+            "musicartist": apply_morecolors(entry["musicartist"])
+        }
+        if (!entry["file_exists"]) {
+            waveset_info += fill_template(music_modal_missing, context);
+        } else {
+            waveset_info += fill_template(music_modal, context);
+        }
+    };
+
+    const waveset_info_container = document.getElementById("waveset_info");
+    if (waveset_info!=="") {
+        waveset_info_container.parentElement.classList.remove("hidden");
+        waveset_info_container.innerHTML = waveset_info;
+    };
+
+    console.log(`[parse_waveset] Max waves:${max_waves}`);
+    console.log(`[parse_waveset] Fetched ${waveset_file}`);
+    update_wave_display();
 }
 
 function wavebar_setprogress(e) {
@@ -149,8 +154,8 @@ function update_wave_display() {
                 "filepath": entry["filepath"],
                 "filename": entry["filename"],
                 "musicpre": "",
-                "musictitle": entry["musictitle"],
-                "musicartist": entry["musicartist"]
+                "musictitle": apply_morecolors(entry["musictitle"].replace("|","")),
+                "musicartist": apply_morecolors(entry["musicartist"])
             }
             if (!entry["file_exists"]) {
                 wave_music_html += fill_template(music_modal_missing, context);
@@ -233,6 +238,10 @@ async function check_url_params() {
     if (queryString.has("wv")) {
         set_wave(queryString.get("wv"));
     }
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 /* Accessibility */

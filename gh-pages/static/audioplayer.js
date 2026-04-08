@@ -2,7 +2,7 @@
 let last_vol = 1.0;
 let last_muted = false;
 function set_audio_resource(obj) {
-    document.getElementById("music_title").innerHTML = obj.getAttribute("title") + " - " + obj.getAttribute("artist");
+    document.getElementById("music_title").innerHTML = apply_morecolors(obj.getAttribute("title")) + " - " + apply_morecolors(obj.getAttribute("artist"));
     let mphtml = `<audio controls autoplay muted><source src="filepath" type="audio/mpeg"></audio>`;
     const music_player = document.getElementById("music_player");
     let audio = document.getElementsByTagName("audio")[0];

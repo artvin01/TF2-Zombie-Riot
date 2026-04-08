@@ -14,6 +14,7 @@ TODO
 
 PROPERTY_MAPPINGS = {
     "is_boss": {
+        "0": "", # used in rogue??? why..
         "1": "Boss",
         "2": "RaidWithPrepare",
         "3": "RaidNoPrepare",
@@ -321,9 +322,7 @@ def parse():
             music = ""
             for entry in npc_data.music_entries:
                 MUSIC_BY_TITLE[entry["musictitle"]] = entry
-                context=entry.copy()
-                file_exists = context.pop("file_exists")
-                music += util.fill_template(util.read(f"templates/music/music_modal{"_missing"*int(not file_exists)}.html"),context)
+                music += util.musicmodal_to_html(entry)
             
             # Add npc to wave data output for waves.js to be parsed
             npc_output = {
@@ -545,13 +544,8 @@ def parse():
     #### ZR: Rogue ####
     def parse_rogue(name, data, html_mapsets):
         data=data["Rogue"]
-        
-        # Starting data (cash, artifacts, rogue 1/2/3)
-        #tooltip_data = "Drop chance: All non-collected (and sometimes non-blacklisted) droppable items get added <chance> times to a list, from which an item gets randomly chosen."
-        ## {tooltip_data}  \n
-        ## -> [Floors](#Floors)  \n
         wd = defaultdict(str,data)
-        # TODO do the outline thing like before, only json info the encounters
+        
         """
         # Rogue 1 overview
         - Artifacts
@@ -567,24 +561,7 @@ def parse():
                 nah
             
         """
-        output = {
-            "floors": {},
-            "starting_artifacts": [],
-            "artifacts": [],
-            "curses": [],
-            "music": {}, # base waveset music, not the per wave one
-            "authors": {
-                "npc": wd["author_npcs"],
-                "format": wd["author_format"],
-                "raid": wd["author_raid"]
-            },
-            "item_on_win": wd["complete_item"],
-        }
         info_html = ""
-
-        #for entry, val in data.items(): # there is no base music...
-        #    if "music" in entry:
-        #        output["music"][entry] = util.music_modal(val)
 
         info_html += "<h2>Starting artifacts</h2>\n"
         for artifact in data["Setup"]["Starting"].keys():
@@ -602,44 +579,37 @@ def parse():
             info_html += rogue_item_modal(curse)
         
         # Floors
-        """
-        md += "# Floors\n"
+        rogue_num = int(data["Rogue"]["roguestyle"])+1
+        if not os.path.isdir("gh-pages/wavesets"): subprocess.run(["mkdir", "gh-pages/wavesets"])
+        info_html += "<h2>Floors</h2>\n"
         for idx, (floor_name, floor_data) in enumerate(data["Rogue"]["Floors"].items()):
             rooms = floor_data["rooms"]
-            md += f"## {idx+1}. {floor_name}\n{rooms} room{"s"*int(int(rooms)>1)}  \n"
+            info_html += f"<h3>{idx+1}. {floor_name}</h3>\n<div>{rooms} room{"s"*int(int(rooms)>1)}</div>\n"
             for entry, val in floor_data.items():
                 if "music" in entry:
-                    md += f"{entry.split("_")[0].title()}: {util.music_modal(val)}"
+                    modal = util.music_modal(val)
+                    MUSIC_BY_TITLE[modal["musictitle"]] = modal
+                    info_html += f"{entry.split("_")[0].title()}: {util.musicmodal_to_html(modal)}"
             
-            md_stages += f"    {idx+1}. {floor_name}  \n"
+            info_html += "<ul>\n"
             for sname, sdata in floor_data["Stages"].items():
-                sd = defaultdict(str, sdata)
-                util.log(f"    {sname}{" "*(35-len(sname))}| {sd["wave"] if "wave" in sdata else "-"}")
-                key_text = f"Only with{"out"*int(sd["keyinverse"]=="1")} key: {sd["key"]}  \n" if "key" in sdata else ""
-                md += f"### {sname}\n{key_text}{"_Encounter_  \n" if sd["camera"].startswith("camera_encounter") else ""}"
-                if "wave" in sdata:
-                    wave_cfg = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{sdata["wave"]}.cfg")
-                    wave_cfg = unique_enemy_delays(wave_cfg)
-                    WAVESET_DATA = vdf.loads(wave_cfg)["Waves"]
-                    md, md_npc = parse_waveset(sdata["wave"], WAVESET_DATA, md, md_npc, DEPTH=4)
-                md_stages +=  f"    - [{sname}](#{util.to_section_link(sname).replace("!","-1")})  \n"
-        """
-        #md = f"# Rogue {int(data["Rogue"]["roguestyle"])+1}\n\n- [Curses](#Curses)  \n- [Artifacts](#Artifacts)  \n- [Floors](#Floors)  \n{md_stages}\nStarting cash: ${data["Setup"]["cash"]}{music_text}  \n\n" + md
+                info_html = parse_rogue_stage(info_html,sname,sdata,name,floor_name,rogue_num)
+            info_html += f"</ul>\n<h4>Final</h4>\n<ul>\n"
+            for sname, sdata in floor_data["Final"].items():
+                info_html = parse_rogue_stage(info_html,sname,sdata,name,floor_name,rogue_num)
+            info_html += f"</ul>\n"
 
         # list in home.md, sidebar.md
         n = name.split("/")[-1].replace(".cfg","")
-        rogue_num = f" - Rogue {int(data["Rogue"]["roguestyle"])+1}"
-        html_mapsets += f"<li><a href=\"{n}.html\">{n} {rogue_num}</a></li>"
+        html_mapsets += f"<li><a href=\"{n}.html\">{n} - Rogue {rogue_num}</a></li>"
 
-        if not os.path.isdir("gh-pages/wavesets"): subprocess.run(["mkdir", "gh-pages/wavesets"])
-        util.write(f"gh-pages/wavesets/{util.absolute_link(name,"")}.json", json.dumps(output,indent=2))
 
         context = { # startcash, wavesetlistdata
             "startcash": wd["Setup"]["cash"],
-            "wavesetlistname": f"Rogue {int(data["Rogue"]["roguestyle"])+1}",
-            "wavesetlistdata": info_html
+            "wavesetlistname": f"Rogue {rogue_num}",
+            "wavesetlistdata": info_html,
         }
-        HTML_WAVESET_LIST = util.fill_template(util.read(f"templates/waveset/waveset_list.html"),context)
+        HTML_WAVESET_LIST = util.fill_template(util.read(f"templates/rogue/roguedata.html"),context)
         # HTML_WAVESET_LIST -> what will be linked to on the ZR: rogue page
         # html_mapsets ->
         return HTML_WAVESET_LIST, html_mapsets
@@ -652,11 +622,42 @@ def parse():
             "desc": util.divfornewline(util.apply_morecolors(util.get_key(f"{name} Desc")))
         }
         return util.fill_template(util.read("templates/rogue/rogue_item.html"),context)
+    
+    def parse_rogue_stage(info_html,sname,sdata,name,floor_name,rogue_num):
+        sname=util.get_key(sname)
+        sdesc=util.get_key(sname + " Desc")
+        sd = defaultdict(str, sdata)
+        util.log(f"    {sname}{" "*(35-len(sname))}| {sd["wave"] if "wave" in sdata else "-"}")
+        key_text = f"Only with{"out"*int(sd["keyinverse"]=="1")} key: {sd["key"]}  \n" if "key" in sdata else ""
+        if "wave" in sdata:
+            wave_cfg = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{sdata["wave"]}.cfg")
+            wave_cfg = unique_enemy_delays(wave_cfg)
+            WAVESET_DATA = vdf.loads(wave_cfg)["Waves"]
+            absl = util.absolute_link(name,floor_name+sname)
+            fullname = f"Rogue {rogue_num} - {floor_name} - {sname}"
+            output = parse_waveset(sdata["wave"], WAVESET_DATA, absl, fullname, "", DEPTH=4)
+            output["name"]=fullname
+            util.write(f"gh-pages/wavesets/{absl}.json",json.dumps(output,indent=2))
+            context = {
+                "name": sname,
+                "absl": absl,
+                "desc": f'{key_text}\n{sdesc}'
+            }
+            info_html += util.fill_template(util.read("templates/rogue/rogue_encounter_wave.html"),context)
+        else:
+            # tool tip with info
+            # required key is the only info it can reliably display..
+            context = {
+                "name": sname,
+                "desc": f'{key_text}\n{sdesc}'
+            }
+            info_html += util.fill_template(util.read("templates/rogue/rogue_encounter.html"),context)
+
+        return info_html
 
     PATH_NPC = "./TF2-Zombie-Riot/addons/sourcemod/scripting/zombie_riot/npc/"
 
     if not os.path.isdir("gh-pages/embed"): subprocess.run(["mkdir", "gh-pages/embed"])
-    if not os.path.isdir("gh-pages/waveset_embeds"): subprocess.run(["mkdir", "gh-pages/waveset_embeds"])
     if not os.path.isdir("gh-pages/repo_img"): subprocess.run(["mkdir", "gh-pages/repo_img"])
 
     util.log("Fetching base data...")

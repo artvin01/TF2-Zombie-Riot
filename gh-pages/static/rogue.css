@@ -1,0 +1,125 @@
+@import url("style.css");
+
+/* Items */
+
+summary {
+    margin-bottom: .5em;
+    margin-top: .5em;
+    font-weight: 500;
+    font-family: "Oswald";
+    display: hidden;
+}
+
+details summary { font-size: 2em }
+details details summary { font-size: 1.5em }
+details details details summary { font-size: 1em }
+details details details details summary { font-size: .5em }
+
+/* Search */
+.setting {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    padding: 10px;
+}
+input[type=search] {
+    width: 50%;
+    border: 0px;
+
+    /* Icon */
+    background-image: url("search.svg");
+    background-size: 13px;
+    background-repeat: no-repeat;
+    background-position: 10px center;
+
+    /* .btn styling */
+    background-color: var(--bg-light);
+    color: var(--deep-space-blue);
+    padding: 10px 10px 10px 30px;
+    margin: 5px;
+    user-select: none;
+    cursor: text;
+}
+
+/* Item Previews */
+.hover {
+    display: table;
+    position: relative;
+    color: var(--link-dark);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.hover:hover, .hover:focus {
+    color: hsl(from var(--link-dark) h s 80%);
+}
+
+.tooltip {
+  z-index: 1;
+  height: max-content;
+  width: max-content;
+  top: 110%;
+  left: 0;
+  border-radius: 5px;
+  opacity: 0;
+  position: absolute;
+  transition: 0.25s;
+  pointer-events: none;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  padding-left: 35px;
+  padding-right: 35px;
+  background-color: var(--bg-light);
+  color: var(--deep-space-blue);
+  text-align: left;
+}
+
+.hover:hover .tooltip, .hover:focus .tooltip {
+    opacity:1;
+    top: 125%;
+}
+
+
+/* weapon content */
+
+#taglist {
+    display: flex;
+    width: 100%;
+    padding: 10px;
+    flex-wrap:wrap;
+}
+
+@media screen and (max-width: 700px) {
+    .tooltip {
+        width: min-content; /* TODO properly size this */
+    }
+}
+
+/* Audio */
+#music_title {
+    text-transform: capitalize;    
+}
+
+.audio {
+    text-transform: capitalize;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    cursor: pointer;
+    width: fit-content;
+}
+
+.audio img {
+    height: 16px;
+    width: auto;
+    margin-right:5px;
+}
+
+.audio:hover {
+    background-color: rgba(255,255,255,0.5);
+    color: var(--ivory);
+}
+
+audio {
+    margin-top: 10px;
+}

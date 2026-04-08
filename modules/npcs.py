@@ -33,9 +33,7 @@ def parse():
             for npc in sorted(npc_list, key=lambda npc: npc["name"]):
                 music = ""
                 for entry in npc["music_entries"]:
-                    context=entry.copy()
-                    file_exists = context.pop("file_exists")
-                    music += util.fill_template(util.read(f"templates/music/music_modal{"_missing"*int(not file_exists)}.html"),context)
+                    music += util.musicmodal_to_html(entry)
                 context = {
                     "npc_name": f"{modules.shared.get_npc_icon(npc["icon"])} {npc["name"]}",
                     "plugin_name": npc["plugin"],

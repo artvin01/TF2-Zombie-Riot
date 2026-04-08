@@ -171,6 +171,9 @@
 .mc_whitesmoke { color: #F5F5F5; }
 .mc_yellow { color: #FFFF00; }
 .mc_yellowgreen { color: #9ACD32; }
+/* custom colors in zr code */
+.mc_redsunfirst { color: #F78C56; }
+.mc_redsunsecond { color: #EEA953; }
 
 span[class^='mc_']{ /* readability */
     text-shadow:
