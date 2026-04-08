@@ -584,7 +584,10 @@ def parse():
         info_html += "<h2>Floors</h2>\n"
         for idx, (floor_name, floor_data) in enumerate(data["Rogue"]["Floors"].items()):
             rooms = floor_data["rooms"]
-            info_html += f"<h3>{idx+1}. {floor_name}</h3>\n<div>{rooms} room{"s"*int(int(rooms)>1)}</div>\n"
+            dd = defaultdict(str, floor_data)
+            key_text = f"<div>Only with{"out"*int(dd["keyinverse"]=="1")} key: {dd["key"]}</div>\n" if "key" in floor_data else ""
+            info_html += f"<h3>{idx+1}. {floor_name}</h3>\n{key_text}<div>{rooms} room{"s"*int(int(rooms)>1)}</div>\n"
+            
             for entry, val in floor_data.items():
                 if "music" in entry:
                     modal = util.music_modal(val)
@@ -623,35 +626,38 @@ def parse():
         }
         return util.fill_template(util.read("templates/rogue/rogue_item.html"),context)
     
-    def parse_rogue_stage(info_html,sname,sdata,name,floor_name,rogue_num):
-        sname=util.get_key(sname)
-        sdesc=util.get_key(sname + " Desc")
+    def parse_rogue_stage(info_html,snameraw,sdata,name,floor_name,rogue_num):
+        sdesc=util.get_key(snameraw + " Desc",empty_on_fail=True)
+        if len(sdesc)>0: sdesc=f"<div>{sdesc}</div>"
+        sname=util.get_key(snameraw)
         sd = defaultdict(str, sdata)
         util.log(f"    {sname}{" "*(35-len(sname))}| {sd["wave"] if "wave" in sdata else "-"}")
-        key_text = f"Only with{"out"*int(sd["keyinverse"]=="1")} key: {sd["key"]}  \n" if "key" in sdata else ""
+        key_text = f"<div>Only with{"out"*int(sd["keyinverse"]=="1")} key: {sd["key"]}</div>\n" if "key" in sdata else ""
         if "wave" in sdata:
+            # waveset viewer link
             wave_cfg = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{sdata["wave"]}.cfg")
             wave_cfg = unique_enemy_delays(wave_cfg)
             WAVESET_DATA = vdf.loads(wave_cfg)["Waves"]
-            absl = util.absolute_link(name,floor_name+sname)
+            absl = util.absolute_link(name,floor_name+snameraw)
             fullname = f"Rogue {rogue_num} - {floor_name} - {sname}"
             output = parse_waveset(sdata["wave"], WAVESET_DATA, absl, fullname, "", DEPTH=4)
             output["name"]=fullname
             util.write(f"gh-pages/wavesets/{absl}.json",json.dumps(output,indent=2))
             context = {
-                "name": sname,
-                "absl": absl,
+                "name": f'<a href="waveset_viewer.html?w={absl}.json">{sname}</a>',
                 "desc": f'{key_text}\n{sdesc}'
             }
-            info_html += util.fill_template(util.read("templates/rogue/rogue_encounter_wave.html"),context)
         else:
             # tool tip with info
-            # required key is the only info it can reliably display..
             context = {
                 "name": sname,
                 "desc": f'{key_text}\n{sdesc}'
             }
+
+        if len(context["desc"])>1:
             info_html += util.fill_template(util.read("templates/rogue/rogue_encounter.html"),context)
+        else:
+            info_html += util.fill_template(util.read("templates/rogue/rogue_encounter_nodesc.html"),context)
 
         return info_html
 
