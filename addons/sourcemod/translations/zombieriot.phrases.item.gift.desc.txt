@@ -942,7 +942,7 @@
 	"Donnerkrieg Desc"
 	{
 		"en"		"Forced into servitutde by Blitzkrieg\n-After a cooldown falls back and prepares a big laser:\nBig laser oneshots everyone and stays alive\nGets Resistances while its up\nIn the raid fight, when Schwert dies, this laser rotates much faster"
-		"ko"		"블리츠크리그에게 패배하여 강제 예속 상태가 되었습니다.\n-쿨다운 후 후퇴하며 거대한 레이저를 준비합니다:\n레이저는 모든 대상을 즉사시키며 계속 유지됨\n사용하는 동안 저항력 증가\n레이드 상태일 경우, 슈베르츠크리그 사망 시 레이저가 더욱 빠르게 회전"
+		"ko"		"블리츠크리그에게 패배하여 강제 예속 상태가 되었습니다.\n-쿨다운 후 후퇴하며 거대한 레이저를 준비합니다:\n레이저는 모든 대상을 즉사시키며 계속 유지됨\n사용하는 동안 저항력 증가\n레이드 상태일 경우, 슈베르트크리그 사망 시 레이저가 더욱 빠르게 회전"
 	}
 	"Schwertkrieg Desc"
 	{
