@@ -2240,7 +2240,7 @@
 		"it"	"Lo spirito che non riusciva ad andare avanti, liberalo.\nDanneggia pesantemente, guarisce all'attacco, se colpisce 4 giocatori si divide."
 		"ko"	"나아가지 못하고 떠도는 영혼입니다. 그를 해방시키세요.\n-매우 높은 피해를 주고, 공격시 체력을 회복합니다.\n-4명의 플레이어를 공격했다면 분열합니다."
 	}
-	"Ouroboros Ekas Desc"
+	"Xeno Ouroboros Ekas Desc"
 	{
 		"en"	"-Buffs all enemies on the field massively\n-If last alive (or any of itself left only), it gains 5x speed, 2x res."
 		"it"	"Buffs tutti i nemici sul campo in modo massiccio, se è l'ultimo in vita, guadagna 5x velocità, 2x res."
