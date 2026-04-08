@@ -3417,7 +3417,7 @@
 	}
 	"Hallam's Great Demon Desc"
 	{
-		"en"	"Greatest demon in Hallam, now chaos affected..\n-The more the whiseper is hurt the stronger he gets\n-Once whisperer dies, he enrages for a short time\n-Stays at 50％ power if whisperer dies\n-Targets anyone attacking whisperer if close\n-Spawns chaos demons every so often\n-Shoots projectiles every so often"
+		"en"	"Greatest demon in Hallam, now chaos affected..\n-The more the whisperer is hurt the stronger he gets\n-Once whisperer dies, he enrages for a short time\n-Stays at 50％ power if whisperer dies\n-Targets anyone attacking whisperer if close\n-Spawns chaos demons every so often\n-Shoots projectiles every so often"
 		"ko"	"할람의 가장 위대한 악마, 이제는 혼돈에 침식되어 버렸습니다.\n-밀고자의 체력이 감소할 수록 더욱 강해집니다.\n-밀고자 사망 시, 짧은 시간 동안 격분 상태가 됩니다.\n-밀고자 사망 시 힘 수치가 50％로 유지됩니다.\n-근접 시 밀고자를 공격하는 대상을 표적으로 삼습니다.\n-주기적으로 혼돈의 악마를 소환합니다.\n-주기적으로 투사체를 발사합니다."
 	}
 	"Ihanal Demon Whisperer"
