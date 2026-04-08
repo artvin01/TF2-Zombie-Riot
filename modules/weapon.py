@@ -59,15 +59,15 @@ class WeaponPap:
     def to_html_preview(self):
         if len(self.tags)>0: tags = f"{self.tags}"
         else: tags = ""
-        extra_desc = self.extra_desc if len(self.extra_desc) > 0 else ""
-        desc = util.get_key(self.description)
+        extra_desc = self.extra_desc.replace("\\n","\n") if len(self.extra_desc) > 0 else ""
+        desc = util.get_key(self.description).replace("\\n","\n")
 
         context = {
             "name": self.name,
             "tags": tags,
             "author": "",
             "cost": f"{self.cost}",
-            "desc": f"<div>{desc.replace("\\n","</div>\n<div>")}</div>\n<div>{extra_desc.replace("\\n","</div>\n<div>")}</div>",
+            "desc": f"{util.divfornewline(desc)}{util.divfornewline(extra_desc)}",
         }
         return util.fill_template(util.read("templates/items/item.html"), context)
     
@@ -150,7 +150,7 @@ def parse():
         if "desc" in weapon_data: 
             k = weapon_data["desc"]
             description = util.get_key(k)
-            description = description.replace("\\n","</div>\n<div>").replace("\n<div>-","\n<div> - ") + "\n"
+            description = description.replace("\\n","\n").replace("\n-","\n - ")
             if description.startswith("-"): description=" - "+description[1:]
         else: description = ""
 
@@ -166,7 +166,7 @@ def parse():
             "tags": tags,
             "author": author,
             "cost": cost,
-            "desc": f"{hidden_str}<div>{lvl}</div>\n<div>{description}</div>\n",
+            "desc": f"{hidden_str}<div>{lvl}</div>{util.divfornewline(description)}",
         }
 
 

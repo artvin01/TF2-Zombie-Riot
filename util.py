@@ -28,7 +28,7 @@ WAVESETS_TYPESCOPE = []
 if "TYPESCOPE" in os.environ:
     WAVESETS_TYPESCOPE = [x.title() for x in os.environ["TYPESCOPE"].split(",")]
 else:
-    WAVESETS_TYPESCOPE = ["Setup", "Custom"]#, "Betting", "Rogue"]
+    WAVESETS_TYPESCOPE = ["Setup", "Custom", "Rogue"]#, "Betting"]
 
 LOG_REDACT = None
 if "LOG_REDACT" in os.environ:
@@ -70,11 +70,13 @@ def music_modal(wave_entry_data):
         "file_exists": os.path.isfile(f"./TF2-Zombie-Riot/sound/{mfilename}")
     }
 
+
 def cfgtoint(val,default:int=0):
     try:
         return int(val)
     except ValueError:
         return default
+
 
 def cfgtofloat(val,default:float=0.0):
     try:
@@ -82,17 +84,21 @@ def cfgtofloat(val,default:float=0.0):
     except ValueError:
         return default
 
+
 def id_from_str(string):
     # https://stackoverflow.com/questions/49808639/generate-a-variable-length-hash
     return hashlib.shake_256(string.encode("utf-8")).hexdigest(2)
 
+
 def html_img(url, alt):
     return f'<img src="{url}" alt="{alt}"/>'
+
 
 def vtftoimg(vtf_path,png_path,alt): # turn an icon into 
     if not os.path.isfile("gh-pages/"+png_path): # if file already made
         vtf2img.Parser(vtf_path).get_image().save("gh-pages/"+png_path)
     return html_img("./"+png_path,alt)
+
 
 def normalize_whitespace(str_):
     return " ".join(str_.split())
@@ -150,6 +156,7 @@ def fill_template(template, context):
             print("Value",v,type(v))
             exit()
     return template
+
 
 def debug(str_, category, color="OKGREEN"):
     if category in DEBUG: log(str_,color)
@@ -223,3 +230,20 @@ def get_key(k,silent=False,empty_on_fail=False):
         return ""
     else:
         return k
+
+# --------------------------- MORECOLORS SUPPORT ---------------------------
+
+MORECOLORS_JSON = json.loads(read("gh-pages/static/morecolors.json"))
+
+def apply_morecolors(str_):
+    str_=f"<span>{str_}</span>"
+    for colorname in MORECOLORS_JSON.keys():
+        str_=str_.replace(f"{{{colorname}}}", f'</span><span class="mc_{colorname}">')
+    str_.replace("<span></span>","") # remove empty divs
+    return str_
+
+def divfornewline(str_):
+    """
+    NOTE: Doesn't take \\\\n
+    """
+    return f"<div>{str_.replace("\n","</div>\n<div>")}</div>\n"

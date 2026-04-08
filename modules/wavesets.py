@@ -6,10 +6,10 @@ import vdf
 
 """
 TODO
-[ ] implement showing support npcs & npc flags in embeds (create GIF if blinking(mission) flag!)
 [ ] rogue support
-[ ] skilltree page
-[ ] const support (last)
+[ ] const support
+[ ] expanded music playlist features
+([ ] skilltree page)
 """
 
 PROPERTY_MAPPINGS = {
@@ -294,7 +294,7 @@ def parse():
                 image = modules.shared.get_npc_icon(npc_data.icon)
                 
                 if npc_data.category != "Type_Hidden":
-                    desc = f"<div class=\"flex_break\"></div>\n<div>{get_npc(wave_entry_data["plugin"], {"name": npc_name, "image": image})["description"].replace("\n","</div>\n<div>")}</div>\n"
+                    desc = f"<div class=\"flex_break\"></div>\n{util.divfornewline(get_npc(wave_entry_data["plugin"], {"name": npc_name, "image": image})["description"])}"
             else:
                 image = util.html_img("./builtin_img/missing.png","E") # npc not found at all. this only happens when parse_wave has force=true
                 
@@ -320,7 +320,7 @@ def parse():
             # Note that each entry also has a 'filename' param if you need to make this interactive.
             music = ""
             for entry in npc_data.music_entries:
-                #MUSIC_BY_TITLE[entry["musictitle"]] = entry
+                MUSIC_BY_TITLE[entry["musictitle"]] = entry
                 context=entry.copy()
                 file_exists = context.pop("file_exists")
                 music += util.fill_template(util.read(f"templates/music/music_modal{"_missing"*int(not file_exists)}.html"),context)
@@ -433,12 +433,12 @@ def parse():
                 wavesetlist_html += f"<h2>Modifiers</h2>\n"
                 for modifier in WAVESET_LIST["Modifiers"]:
                     data = WAVESET_LIST["Modifiers"][modifier]
-                    desc = util.get_key(data["desc"]).replace("\\n","</div>\n<div>")
+                    desc = util.get_key(data["desc"]).replace("\\n","\n")
                     # no idea what the levels here mean
                     lvl = round(float(data["level"])*1000) # waves.sp line 1018: vote.Level = RoundFloat(kv.GetFloat("level", 1.0) * 1000.0);
                     context = {
                         "name": modifier,
-                        "data_modifier": f"<div>Level: {lvl}</div>\n<div>{desc}</div>\n"
+                        "data_modifier": f"<div>Level: {lvl}</div>\n{util.divfornewline(desc)}\n"
                     }
                     wavesetlist_html += util.fill_template(util.read("templates/waveset/modifier_preview.html"), context)    
             
@@ -516,7 +516,7 @@ def parse():
             if WAVESETLIST_TYPE == "Betting":
                 html_otherset[WAVESETLIST_TYPE] = parse_betting(filename, WAVESETLIST_RAW, html_otherset[WAVESETLIST_TYPE])
             elif WAVESETLIST_TYPE == "Rogue":
-                html_otherset[WAVESETLIST_TYPE] = parse_rogue(filename, WAVESETLIST_DATA, html_otherset[WAVESETLIST_TYPE])
+                HTML_WAVESETS,html_otherset[WAVESETLIST_TYPE] = parse_rogue(filename, WAVESETLIST_DATA, html_otherset[WAVESETLIST_TYPE])
             else:
                 util.log(f"UNSUPPORTED WAVESETLIST_TYPE: {WAVESETLIST_TYPE}", "FAIL")
                 exit()
@@ -551,6 +551,22 @@ def parse():
         ## {tooltip_data}  \n
         ## -> [Floors](#Floors)  \n
         wd = defaultdict(str,data)
+        # TODO do the outline thing like before, only json info the encounters
+        """
+        # Rogue 1 overview
+        - Artifacts
+        - Curses
+        - Floors
+            - i. asdnbasid
+                this -> encounter, no enemies. preparsed tooltip
+                that -> link to rogue/waveset viewer with floor_encounter.json as data
+                yuh -> encounter, absolutely no info. just text
+            - ii. sadnasda
+                that
+                this
+                nah
+            
+        """
         output = {
             "floors": {},
             "starting_artifacts": [],
@@ -564,22 +580,26 @@ def parse():
             },
             "item_on_win": wd["complete_item"],
         }
+        info_html = ""
 
-        for entry, val in data.items():
-            if "music" in entry:
-                output["music"][entry] = util.music_modal(val)
+        #for entry, val in data.items(): # there is no base music...
+        #    if "music" in entry:
+        #        output["music"][entry] = util.music_modal(val)
 
+        info_html += "<h2>Starting artifacts</h2>\n"
         for artifact in data["Setup"]["Starting"].keys():
-            output["starting_artifacts"].append(rogue_item_modal(artifact))
-
-        # Curses
-        for curse in data["Rogue"]["Curses"].keys():
-            output["curses"].append(rogue_item_modal(curse))
+            info_html += rogue_item_modal(artifact)
 
         # All Artifacts
+        info_html += "<h2>Artifacts</h2>\n"
         for artifact in data["Rogue"]["Artifacts"]:
             if defaultdict(str, data["Rogue"]["Artifacts"][artifact])["hidden"]=="1": continue
-            output["artifacts"].append(rogue_item_modal(artifact))
+            info_html += rogue_item_modal(artifact,data["Rogue"]["Artifacts"][artifact])
+        
+        # Curses
+        info_html += "<h2>Curses</h2>\n"
+        for curse in data["Rogue"]["Curses"].keys():
+            info_html += rogue_item_modal(curse)
         
         # Floors
         """
@@ -616,18 +636,22 @@ def parse():
 
         context = { # startcash, wavesetlistdata
             "startcash": wd["Setup"]["cash"],
-            "wavesetlistdata": "???"
+            "wavesetlistname": f"Rogue {int(data["Rogue"]["roguestyle"])+1}",
+            "wavesetlistdata": info_html
         }
-        HTML_WAVESET_LIST = "html waveset list!!"#util.fill_template(util.read(f"templates/waveset/waveset_list.html"),context)
+        HTML_WAVESET_LIST = util.fill_template(util.read(f"templates/waveset/waveset_list.html"),context)
+        # HTML_WAVESET_LIST -> what will be linked to on the ZR: rogue page
+        # html_mapsets ->
         return HTML_WAVESET_LIST, html_mapsets
 
     def rogue_item_modal(name, obj={}):
-        return {
-            "shop_cost": obj["shopcost"] if "shopcost" in obj else "",
-            "dropchance": obj["dropchance"] if "dropchance" in obj else "",
+        context = {
+            "shopcost": f"△ {obj["shopcost"]}" if "shopcost" in obj else "",
+            "dropchance": f"dropchance {obj["dropchance"]}" if "dropchance" in obj else "",
             "name": util.get_key(name),
-            "desc": util.get_key(f"{name} Desc")
+            "desc": util.divfornewline(util.apply_morecolors(util.get_key(f"{name} Desc")))
         }
+        return util.fill_template(util.read("templates/rogue/rogue_item.html"),context)
 
     PATH_NPC = "./TF2-Zombie-Riot/addons/sourcemod/scripting/zombie_riot/npc/"
 
@@ -650,10 +674,11 @@ def parse():
             cfg_files[f"maps/{file}"] = None
 
     HTML_SPECIALMAPS = ""
-    HTML_OTHERSET = ""
+    HTML_OTHERSET = {}
     for f,n in cfg_files.items():
         HTML_SPECIALMAPS, HTML_OTHERSET = parse_waveset_list_cfg(f, HTML_SPECIALMAPS, HTML_OTHERSET, filename_md=n)
     
+    util.write("html_otherset.json", json.dumps(HTML_OTHERSET,indent=2))
     util.write("music_by_title.json", json.dumps(MUSIC_BY_TITLE,indent=2))
 
     # Get current commit SHA for TF2-Zombie-Riot
@@ -661,9 +686,17 @@ def parse():
     COMMIT_SHA_SHORT = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd="TF2-Zombie-Riot").strip().decode("utf-8")
 
     context = {
-        "wavesetlistdata": HTML_SPECIALMAPS # list of mapset_overview templates
+        "wavesetlistdata": HTML_SPECIALMAPS, # list of mapset_overview templates
+        "wavesetlistname": "Special Maps"
     }    
     util.write("gh-pages/special.html", util.fill_template(util.read("templates/waveset/mapset_list.html"), context))
+
+    for name, html in HTML_OTHERSET.items():
+        context = {
+            "wavesetlistdata": html,
+            "wavesetlistname": name
+        }
+        util.write(f"gh-pages/{name.lower()}.html", util.fill_template(util.read("templates/waveset/mapset_list.html"),context))
 
     context = {
         "parse_run": f"\n<sub>Code parsed at {util.datetime.datetime.now().strftime('%H:%M:%S %d.%m.%Y')} H:M:S D.M.Y {time.tzname[time.daylight]}</sub><br><sub>Source repository commit <a href=\"https://github.com/artvin01/TF2-Zombie-Riot/commit/{COMMIT_SHA}\">artvin01/TF2-Zombie-Riot@{COMMIT_SHA_SHORT}</a></sub>",

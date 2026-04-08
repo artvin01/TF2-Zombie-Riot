@@ -22,5 +22,6 @@ gh-pages/index.html
 !gh-pages/waveset_viewer.html
 
 logs.txt
-npcs_by_category.json
-music_by_title.json
+run_rogue.sh
+# only ignore json in root dir
+/*.json
