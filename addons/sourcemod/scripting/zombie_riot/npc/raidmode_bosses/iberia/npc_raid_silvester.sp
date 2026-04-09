@@ -86,7 +86,7 @@ static bool b_RageAnimated[MAXENTITIES];
 void Silvester_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Silvester");
+	strcopy(data.Name, sizeof(data.Name), "Silvester, The Sparring Partner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_raid_silvester");
 	strcopy(data.Icon, sizeof(data.Icon), "silvester_raid");
 	data.IconCustom = true;

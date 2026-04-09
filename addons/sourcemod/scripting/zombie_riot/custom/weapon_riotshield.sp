@@ -156,11 +156,6 @@ static void Weapon_RiotShield_M2_Base(int client, int weapon, int slot, int pap)
 				cooldownAbility = 35.0;
 			}
 
-			if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS)
-			{
-				cooldownAbility *= 0.65;
-			}
-
 			Ability_Apply_Cooldown(client, slot, cooldownAbility);
 		}
 		else

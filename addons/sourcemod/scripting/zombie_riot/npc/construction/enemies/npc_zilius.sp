@@ -492,7 +492,6 @@ methodmap Construction_Raid_Zilius < CClotBody
 		
 		ApplyStatusEffect(npc.index, npc.index, "Anti-Waves", 99999.0);
 		//cannot be healed ever
-		
 		b_angered_twice[npc.index] = false;
 		
 		int skin = 1;

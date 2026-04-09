@@ -145,6 +145,8 @@ static void SetupVScript()
 	VScript_RegisterFunction("ZR_HasClientPerk", VHasClientPerk, "(client, perk)", ScriptField_Bool, ScriptField_HScript, ScriptField_Int);
 	VScript_RegisterFunction("ZR_GiveClientPerk", VGiveClientPerk, "(client, perk, entity)", ScriptField_Void, ScriptField_HScript, ScriptField_Int, ScriptField_HScript);
 	VScript_RegisterFunction("ZR_ShowPackMenu", VShowPackMenu, "(client)", ScriptField_Void, ScriptField_HScript);
+	VScript_RegisterFunction("ZR_AddGlobalCash", VAddGlobalCash, "(amount, extra)", ScriptField_Void, ScriptField_Int, ScriptField_Bool);
+	VScript_RegisterFunction("ZR_CreateNPC", VCreateNPC, "(name, pos, ang, params)", ScriptField_HScript, ScriptField_String, ScriptField_Vector, ScriptField_Vector, ScriptField_HScript);
 }
 
 void VScript_SetupStoreTable()
@@ -369,4 +371,140 @@ static void VShowPackMenu(ScriptContext context)
 	}
 
 	context.RaiseException("Invalid player entity");
+}
+
+static void VAddGlobalCash(ScriptContext context)
+{
+	int amount = context.GetArgInt(0);
+	CurrentCash += amount;
+
+	if(context.GetArgBool(1))
+		GlobalExtraCash += amount;
+}
+
+static void VCreateNPC(ScriptContext context)
+{
+	char name[64], buffer[512];
+	float pos[3], ang[3];
+	int client;
+	int team = 3;
+	bool nosetup;
+
+	context.GetArgString(0, name, sizeof(name));
+	context.GetArgVector(1, pos);
+	context.GetArgVector(2, ang);
+	ScriptHandle table = context.GetArgHScript(3);
+
+	if(table.HasKey("client"))
+	{
+		ScriptHandle hclient = table.GetHScript("client");
+		if(hclient)
+		{
+			client = VScript_HScriptToEntity(hclient);
+			delete hclient;
+		}
+	}
+
+	if(table.HasKey("team_npc"))
+		team = table.GetInt("team_npc");
+
+	if(table.HasKey("ignoresetup"))
+		nosetup = table.GetBool("ignoresetup");
+
+	if(table.HasKey("data"))
+		table.GetString("data", buffer, sizeof(buffer));
+
+	int entity = NPC_CreateByName(name, client, pos, ang, team, buffer, true);
+	if(entity != -1)
+	{
+		int boss = table.HasKey("is_boss") ? table.GetInt("is_boss") : 0;
+		int healthscaling = table.HasKey("is_health_scaling") ? table.GetInt("is_health_scaling") : 0;
+		int outline;
+		
+		if(table.HasKey("is_outlined"))
+		{
+			outline = table.GetInt("is_outlined");
+			switch(outline)
+			{
+				case 1:
+					b_thisNpcHasAnOutline[entity] = true;
+				
+				case 2:
+					b_NoHealthbar[entity] = 1;
+			}
+		}
+		
+		if(table.HasKey("is_immune_to_nuke") && table.GetBool("is_immune_to_nuke"))
+			b_ThisNpcIsImmuneToNuke[entity] = true;
+
+		if(table.HasKey("health"))
+		{
+			int health = table.GetInt("health");
+
+			if(boss >= 1 || healthscaling >= 1)
+				health = RoundToNearest(health * MultiGlobalHighHealthBoss);
+
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+			SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		}
+
+		if(table.HasKey("custom_name"))
+		{
+			table.GetString("custom_name", c_NpcName[entity], sizeof(c_NpcName[]));
+			b_NameNoTranslation[entity] = !TranslationPhraseExists(c_NpcName[entity]);
+		}
+
+		CClotBody npc = view_as<CClotBody>(entity);
+		
+		if(table.HasKey("is_static"))
+		{
+			npc.m_bStaticNPC = table.GetBool("is_static");
+			if(npc.m_bStaticNPC && team != TFTeam_Red)
+				AddNpcToAliveList(entity, 1);
+		}
+
+		npc.m_bThisNpcIsABoss = boss > 0;
+
+		if(table.HasKey("cash"))
+			npc.m_fCreditsOnKill = table.GetFloat("cash");
+
+		if(table.HasKey("extra_melee_res"))
+			fl_Extra_MeleeArmor[entity] *= table.GetFloat("extra_melee_res");
+
+		if(table.HasKey("extra_ranged_res"))
+			fl_Extra_RangedArmor[entity] *= table.GetFloat("extra_ranged_res");
+
+		if(table.HasKey("extra_speed"))
+			fl_Extra_Speed[entity] *= table.GetFloat("extra_speed");
+
+		if(table.HasKey("extra_damage"))
+			fl_Extra_Damage[entity] *= table.GetFloat("extra_damage");
+
+		if(table.HasKey("extra_thinkspeed"))
+			f_AttackSpeedNpcIncrease[entity] *= table.GetFloat("extra_thinkspeed");
+
+		if(table.HasKey("extra_size"))
+		{
+			float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale * table.GetFloat("extra_size"));
+		}
+
+		if(boss || outline)
+		{
+			GiveNpcOutLineLastOrBoss(entity, true);
+		}
+		else
+		{
+			GiveNpcOutLineLastOrBoss(entity, false);
+		}
+		
+		if(!nosetup)
+			NPC_PostSetup(entity);
+
+		context.SetReturnHScript(VScript_EntityToHScript(entity, true));
+	}
+	else
+	{
+		context.SetReturnNull();
+	}
 }

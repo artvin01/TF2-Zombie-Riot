@@ -152,6 +152,7 @@ void NPC_ConfigSetup()
 	VehicleLandrover_Setup();
 	VehiclePickup_Setup();
 	VehicleFullAPC_Setup();
+	VehicleMinecraft_Setup();
 	// Vehicles
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
@@ -1415,26 +1416,30 @@ static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float
 			i_NpcInternalId[entity] = id;
 		
 		if(!ignoreSetup)
-		{
-			if(GetTeam(entity) == 2)
-			{
-				Rogue_AllySpawned(entity);
-				Waves_AllySpawned(entity);
-			}
-			else
-			{
-				Rogue_EnemySpawned(entity);
-				Waves_EnemySpawned(entity);
-				Construction_EnemySpawned(entity);
-				Dungeon_EnemySpawned(entity);
-			}
-			Waves_UpdateMvMStats();
-		}
+			NPC_PostSetup(entity);
+		
 		if(BetWar_Mode())
 			b_ShowNpcHealthbar[entity] = true;
 	}
 
 	return entity;
+}
+
+void NPC_PostSetup(int entity)
+{
+	if(GetTeam(entity) == 2)
+	{
+		Rogue_AllySpawned(entity);
+		Waves_AllySpawned(entity);
+	}
+	else
+	{
+		Rogue_EnemySpawned(entity);
+		Waves_EnemySpawned(entity);
+		Construction_EnemySpawned(entity);
+		Dungeon_EnemySpawned(entity);
+	}
+	Waves_UpdateMvMStats();
 }
 
 void ZR_NpcTauntWinClear()
@@ -1636,6 +1641,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "vehicles/vehicle_landrover.sp"
 #include "vehicles/vehicle_pickup.sp"
 #include "vehicles/vehicle_fullapc.sp"
+#include "vehicles/vehicle_minecraft.sp"
 
 //NORMAL
 #include "npc/normal/npc_headcrabzombie.sp"

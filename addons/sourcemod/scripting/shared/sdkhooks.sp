@@ -3592,6 +3592,10 @@ void ManaCalculationsBefore(int client)
 	{
 		mana_regen[client] *= 1.35;
 	}
+	if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS_X)
+	{
+		mana_regen[client] *= 1.5;
+	}
 
 	if(Classic_Mode())
 	{

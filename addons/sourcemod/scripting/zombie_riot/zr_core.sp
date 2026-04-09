@@ -112,7 +112,12 @@ public const char PerkNames[][] =
 	"Marathon Shake",
 	"Sealed Boba",
 	"Bloody Ale",
-	"Who Float"
+	"Who Float",
+	
+	"Morning Coffee X",
+	"Hasty Hops X",
+	"Marksman Beer X",
+	"Energy Drink X",
 };
 
 public const char PerkNames_Received[][] =
@@ -131,7 +136,12 @@ public const char PerkNames_Received[][] =
 	"Marathon Shake Received",
 	"Sealed Boba Received",
 	"Bloody Ale Received",
-	"Who Float Received"
+	"Who Float Received",
+
+	"Morning Coffee X Received",
+	"Hasty Hops X Received",
+	"Marksman Beer X Received",
+	"Energy Drink X Received",
 };
 
 public const char PerkNames_two_Letter[][] =
@@ -150,7 +160,12 @@ public const char PerkNames_two_Letter[][] =
 	"MS",
 	"SB",
 	"BA",
-	"WF"
+	"WF",
+	
+	"MC",
+	"HH",
+	"MB",
+	"ED",
 };
 
 enum
@@ -508,6 +523,7 @@ float f_ChargeTerroriserSniper[MAXENTITIES];
 
 int StoreWeapon[MAXENTITIES];
 int i_HealthBeforeSuit[MAXPLAYERS]={0, ...};
+int i_HealthBeforeSuitMaxHP[MAXPLAYERS]={0, ...};
 float f_HealthBeforeSuittime[MAXPLAYERS]={0.0, ...};
 
 int Level[MAXPLAYERS];
@@ -2354,6 +2370,13 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						if(i_HealthBeforeSuit[client] == 0)
 						{
 							SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
+						}
+						else
+						{
+							if(b_IsAloneOnServer)
+								i_HealthBeforeSuit[client] = i_HealthBeforeSuitMaxHP[client];
+							else
+								i_HealthBeforeSuit[client] = i_HealthBeforeSuitMaxHP[client] * 2;
 						}
 						//if in quantum suit, dont.
 
