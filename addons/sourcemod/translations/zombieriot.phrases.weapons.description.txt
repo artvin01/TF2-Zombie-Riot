@@ -1461,12 +1461,7 @@
 	
 	"Deployable Quantum Suit Desc"
 	{
-		"en"	"-On use, frozen for 3 seconds, gain resitance during freeze\n-Gain a sepearte suit of armor, power scales with money spend\n-When reaching 0 health, or timer is over, return back to normal."
-		"fr"	"Équippez de l'Armure qui vous assistera en combat.\nL'armure devient plus fort en fonction de l'argent que vous avez dépensé.\nL'armure se brisera pour vous sauver d'être KO.\nLes améliorations de la boutique ne fonctionnent pas quand l'armure est équippé."
-		///"ru"	"С небес спускается броня, которая поможет вам в бою.\nПрочность брони зависит от потраченных вами денег.\nУмереть в броне - сломает броню и спасёт вас.\nПерки не работают, но работают напитки в виде перков."
-		"chi"   "从空中部署一套盔甲来帮助你战斗。\n它的强度与你花的钱总数成正比。\n当装备着盔甲死亡后会把装备弄坏，你将获得重生(复活甲)。\nBuff对其不起作用，但急速可乐可以。"
-		"it"	"Dispiega un'armatura dal cielo per assisterti in combattimento.\nLa sua Forza varia in base ai soldi spesi in totale.\nMorire con l'armatura indosso la romperà e ti salverà.\nI vantaggi non funzionano, ma i perk-a-cola sì."
-		"ko"	"-사용시, 3초간 고정됨. 고정된 상태에선 저항력 증가\n-퀀텀 슈트의 위력은 총합 자금 사용량에 비례하여 증가\n-이 슈트를 입은 상태로 체력이 0이 되거나 타이머가 0이 될 시, 슈트가 파괴됨"
+		"en"	"-On use, frozen for 3 seconds, gain resitance during freeze\n-Gain a sepearte suit of armor, power scales with money spend\n-When reaching 0 health, or timer is over, return back to normal.\n-During raids, take extra damage\n-Elemental damage is normal damage to you instead"
 	}
 	
 	"Ranged Spike Layer Desc"
