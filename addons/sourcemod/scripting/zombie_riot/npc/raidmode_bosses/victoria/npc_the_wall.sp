@@ -662,7 +662,7 @@ static void Clone_ClotThink(int iNPC)
 						static float vOrigin[3], vAngles[3];
 						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
 						vAngles[0]=5.0;
-						EntityLookPoint(npc.index, vAngles, VecSelfNpc, vOrigin);
+						HuscarlsLookPoint(npc.index, vAngles, VecSelfNpc, vOrigin);
 						npc.SetGoalVector(vOrigin);
 					}
 				}
@@ -870,7 +870,7 @@ static int Support_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], float
 					else
 					{
 						float vAngles[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
-						EntityLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget);
+						HuscarlsLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget);
 						if(GetVectorDistance(VecSelfNpc, vecTarget, true)<15625.0)
 						{
 							npc.RemoveGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
@@ -1227,7 +1227,7 @@ static void Huscarls_ClotThink(int iNPC)
 				static float vOrigin[3], vAngles[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
 				vAngles[0]=5.0;
-				EntityLookPoint(npc.index, vAngles, VecSelfNpc, vOrigin);
+				HuscarlsLookPoint(npc.index, vAngles, VecSelfNpc, vOrigin);
 				npc.SetGoalVector(vOrigin);
 			}
 		}
@@ -1299,7 +1299,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 				else
 				{
 					float vAngles[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
-					EntityLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget);
+					HuscarlsLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget);
 					if(GetVectorDistance(VecSelfNpc, vecTarget, true)<15625.0)
 					{
 						npc.RemoveGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
@@ -2662,4 +2662,18 @@ static void HuscarlsGrab(Huscarls npc, float gameTime)
 			b_angered_twice[npc.index] = false;
 		}
 	}
+}
+
+static bool HuscarlsLookPoint(int entity, float flAng[3], float flPos[3], float pos[3])
+{
+	Handle trace = TR_TraceRayFilterEx(flPos, flAng, MASK_PLAYERSOLID, RayType_Infinite, ONLYBSP, entity);
+	
+	if(TR_DidHit(trace))
+	{
+		TR_GetEndPosition(pos, trace);
+		CloseHandle(trace);
+		return true;
+	}
+	CloseHandle(trace);
+	return false;
 }
