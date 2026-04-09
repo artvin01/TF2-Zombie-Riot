@@ -6,9 +6,7 @@ import vdf
 
 """
 TODO
-[ ] rogue support
 [ ] const support
-[ ] expanded music playlist features
 ([ ] skilltree page)
 """
 
@@ -627,7 +625,7 @@ def parse():
         return util.fill_template(util.read("templates/rogue/rogue_item.html"),context)
     
     def parse_rogue_stage(info_html,snameraw,sdata,name,floor_name,rogue_num):
-        sdesc=util.get_key(snameraw + " Desc",empty_on_fail=True)
+        sdesc=util.get_key(snameraw + " Desc",empty_on_fail=True,silent=True)
         if len(sdesc)>0: sdesc=f"<div>{sdesc}</div>"
         sname=util.get_key(snameraw)
         sd = defaultdict(str, sdata)

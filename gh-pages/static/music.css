@@ -1,0 +1,62 @@
+@import url("style.css");
+
+/* Audio */
+#music_title {
+    text-transform: capitalize;    
+}
+
+#music_player {
+    width: 100%;
+}
+
+.audio {
+    text-transform: capitalize;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.audio img {
+    height: 16px;
+    width: auto;
+    margin-right:5px;
+}
+
+.audio:hover {
+    background-color: rgba(255,255,255,0.5);
+    color: var(--ivory);
+}
+
+audio {
+    margin-top: 10px;
+    width:100%;
+}
+
+/* music list stuff */
+.setting {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    padding: 10px;
+}
+
+/* music player */
+.music_bg {
+    padding: 1em;
+    background-color: var(--bg-light);
+    color: var(--deep-space-blue);
+    border-radius: 5px 5px 0px 0px;
+
+    position: fixed;
+    left:0%;
+    right:0%;
+    bottom: 0%;
+    width: inherit;
+    
+    display:flex;
+    justify-content: center;
+    flex-wrap:wrap;
+
+    z-index: 1;
+}

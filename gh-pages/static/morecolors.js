@@ -13,17 +13,15 @@ async function init_morecolors() {
 init_morecolors()
 
 function apply_morecolors(str_) {
-    console.log("a");
-    console.log(MORECOLORS_JSON);
     let newstr = `<span>${str_}</span>`;
-    let has_replaced=false
+    let has_replaced=false;
     for (const [colorname,_] of Object.entries(MORECOLORS_JSON)) {
         newstr = newstr.replaceAll(`{${colorname}}`, `</span><span class="mc_${colorname}">`)
         if (str_.includes(`{${colorname}}`)) {
             has_replaced=true
         };
-    }
+    };
     newstr = newstr.replaceAll("<span></span>",""); // remove empty divs
-    if (has_replaced) { return newstr }
+    if (has_replaced) { return newstr };
     return str_
 }
