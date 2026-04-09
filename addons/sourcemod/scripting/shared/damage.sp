@@ -252,8 +252,13 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		return true;
 
 	if(!CheckInHud())
+	{
 		if(RaidbossIgnoreBuildingsLogic(1) && i_HealthBeforeSuit[victim] > 0)
-			damage *= 3.0;	//when a raid is alive, make quantum armor 8x as bad at tanking.
+		{
+			if(!(i_HexCustomDamageTypes[victim] & ZR_ELEMENTAL_QUANTUM))
+				damage *= 3.0;	//when a raid is alive, make quantum armor bad at tanking
+		}
+	}
 	
 	if(!CheckInHud())
 	{
