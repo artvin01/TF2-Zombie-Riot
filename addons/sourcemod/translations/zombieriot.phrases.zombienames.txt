@@ -7873,7 +7873,7 @@
 	}
 	"HMS: Regalia Desc"
 	{
-		"en"	"Regalia class Battlecruiser\n Stolen by an Almagest scientist who's trapped here after we closed the rift through the Curtain.\n-has 2 phases\n-Flyes high in the sky\n-Spawns beacons around the map\n-Periodically locks onto the closest player to.\n-It will then start charging up a sky laser to strike down on them. \n-Occasionally shoots a powerful laser with high control\n-Able to shoot out Lantean drones\n-Periodically flys above majority of players and creats a circle of lasers\n-These lasers will be facing inwards and spin while also moving further out.\n-Once in phase 2 gains new abilities\n-Can now command spawned beacons to spawn in a Almagest Proxima every so often.\n-Occasionally shoots a laser strait into the ground\n-Sfter some time this will summon a group of Almagest Proxima."
+		"en"	"Regalia class Battlecruiser. Stolen by an Almagest scientist who's trapped here after we closed the rift through the Curtain.\n-Has 2 phases and flyes high in the sky\n-Spawns beacons around the map\n-Periodically locks onto the closest player to. It will then start charging up a sky laser to strike down on them. \n-Occasionally shoots a powerful laser with high control\n-Able to shoot out Lantean drones\n-Periodically flies above where most players are ands and creates a circle of lasers. These lasers will be facing inwards and spin while also moving further out.\n-Once in phase 2 gains new abilities. Can now command spawned beacons to spawn in a Almagest Proxima every so often.\n-Also in phase 2, can shoot a laser straight into the ground. After some time, this will summon a group of Almagest Proxima."
 		"ko"	"레갈리아급 순양전함"
 	}
 	"Starship Beacon"
