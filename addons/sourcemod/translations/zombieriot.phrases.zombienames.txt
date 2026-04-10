@@ -7653,9 +7653,7 @@
 	}
 	"Seinr Desc"
 	{
-		"en"	"Almagest researcher who entered his own mech suit in a desperate attempt \nto avoid becoming warped. It didn't work out too well... \n-Deals warping damage and has armor that reduces ally speed while active. \n-Gains speed once armor is lost."
-		"it"	"Il ricercatore Almagest è entrato nella sua tuta mech nel disperato tentativo di evitare di essere deformato.\nNon ha funzionato molto bene... \nSubisce danni da deformazione e ha un'armatura che riduce la velocità degli alleati quando è attiva. \nGuadagna velocità una volta persa l'armatura."
-		"ko"	"왜곡당하지 않기 위해 필사적으로 자신의 메카 슈트를 착용했었던 알마게스트 연구원입니다. \n하지만 그게 그의 뜻대로 되지 않은 것 같습니다... \n왜곡 피해를 입히고 활성화된 동안 아군의 속도를 감소시키는 아머를 보유했습니다. \n아머가 파괴되면, 이동 속도가 증가합니다."
+		"en"	"Almagest researcher who entered his own mech suit in a desperate attempt \nto avoid becoming warped. It didn't work out too well... \n-Deals warping damage and has armor that reduces attacker attackspeed and gfives cryo when hit to the attacker.\n-When armor is up, all allies except himself gain heavy resistances \n-Gains speed once armor is broken\nAlso gives tonic buff to all allies shortly and stuns & invuln allies for a short time"
 	}
 	"Jkei"
 	{
