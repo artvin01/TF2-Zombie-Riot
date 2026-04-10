@@ -7617,7 +7617,7 @@
 	}
 	"Umbral Rouam Desc"
 	{
-		"en"	"An easily irritable Umbral, provoke them at your own risk\n-Starts passive, becoming enraged when hurt."
+		"en"	"An easily irritable Umbral, provoke them at your own risk\n-Starts passive, becoming enraged when hurt.\n-Also enrages after some time."
 		"it"	"Un Umbral facilmente irritabile: provocatelo a vostro rischio e pericolo. \nInizia in modo passivo e si infuria quando viene ferito."
 		"ko"	"쉽게 격노하는 움브랄. 자극하는건 위험이 따릅니다.\n-비공격적 상태로 등장하지만, 피해를 받을 시 격분합니다."
 	}
