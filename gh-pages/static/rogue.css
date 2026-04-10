@@ -121,6 +121,26 @@ input[type=search] {
     color: var(--ivory);
 }
 
+.hover:focus .tooltip {
+    pointer-events: all;
+    cursor:auto;
+}
+
 audio {
     margin-top: 10px;
+}
+
+/* bettingwars (also uses this file because both directly show data instead of a simple list) */
+td, th {
+  border: 1px solid #35393b;
+  border-radius:2px;
+  padding:5px;
+}
+
+table {
+    width: 100%;
+}
+
+table img {
+    width: 16px;
 }

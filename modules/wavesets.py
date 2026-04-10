@@ -316,7 +316,6 @@ def parse():
                     extra_info += f" {char} {percent_text}％"
             
             # Turn NPC music entries into simple text.
-            # Note that each entry also has a 'filename' param if you need to make this interactive.
             music = ""
             for entry in npc_data.music_entries:
                 MUSIC_BY_TITLE[entry["musictitle"]] = entry
@@ -325,7 +324,6 @@ def parse():
             # Add npc to wave data output for waves.js to be parsed
             npc_output = {
                 "type": "npc",
-                #"delay": float(wave_entry), # NOTE use for betting wars!
                 "img": image if image else "",
                 "prefix": npc_name_prefix,
                 "display_name": npc_name,
@@ -336,6 +334,7 @@ def parse():
             }
             npc_hash = util.id_from_str(json.dumps(npc_output)) # same NPC data will output same hash
             npc_output["count"] = count
+            npc_output["delay"] = float(wave_entry) # Budget in betting wars
             if npc_hash not in output_hashes:
                 output.append(
                     npc_output
@@ -508,11 +507,11 @@ def parse():
 
         if WAVESETLIST_TYPE in ["Setup", "Custom"]:
             HTML_WAVESETS, html_mapsets = parse_waveset_list_cfg_common(WAVESETLIST_DATA, filename, html_mapsets)
+        elif WAVESETLIST_TYPE == "Betting":
+            HTML_WAVESETS, html_mapsets = parse_betting(filename, WAVESETLIST_RAW, html_mapsets)
         else:
             if WAVESETLIST_TYPE not in html_otherset: html_otherset[WAVESETLIST_TYPE] = ""
-            if WAVESETLIST_TYPE == "Betting":
-                html_otherset[WAVESETLIST_TYPE] = parse_betting(filename, WAVESETLIST_RAW, html_otherset[WAVESETLIST_TYPE])
-            elif WAVESETLIST_TYPE == "Rogue":
+            if WAVESETLIST_TYPE == "Rogue":
                 HTML_WAVESETS,html_otherset[WAVESETLIST_TYPE] = parse_rogue(filename, WAVESETLIST_DATA, html_otherset[WAVESETLIST_TYPE])
             else:
                 util.log(f"UNSUPPORTED WAVESETLIST_TYPE: {WAVESETLIST_TYPE}", "FAIL")
@@ -529,15 +528,37 @@ def parse():
         return html_mapsets, html_otherset
     
     #### ZR: Special Maps ####
-    def parse_betting(name, data_raw, md_npc, md_mapsets): # zr_bettingwars
+    def parse_betting(name, data_raw, html_mapsets): # zr_bettingwars
         data = vdf.loads(unique_enemy_delays(data_raw))
-        betting_music = util.music_modal(data["Betting"]["BetWars"]["music_background"])
-        mn, md_npc = parse_wave(data["Betting"]["Waves"]["Freeplay"], md_npc, is_betting=True, force=True)
+
+        # Generate a table out of data
+        bettingdata = "<table>\n<tr>\n<th>Budget</th>\n<th>Count</th>\n<th>NPC</th>\n</tr>\n"
+        output = parse_wave(0, data["Betting"]["Waves"]["Freeplay"], False)
+        for entry in output:
+            if entry["type"] == "npc":
+                context = {
+                    "npc_name": f"{entry["img"]} {entry["prefix"]} {entry["display_name"]}",
+                    "plugin_name": "",
+                    "flags": "",
+                    "desc": entry["extra_info"],
+                    "li": "div"
+                }
+                npcdata = util.fill_template(util.read("templates/npc/npc_preview.html"),context)
+                bettingdata += f"<tr>\n<td>{entry["delay"]}</td>\n<td>{entry["count"]}</td>\n<td>{npcdata}</td>\n</tr>\n"
+        bettingdata += "</table>"
 
         n = name.split("/")[-1].replace(".cfg","")
-        md_mapsets += f"- [{n}]({n})  \n"
-        
-        return f"{betting_music}\n  Higher budget means more powerful NPC group\n  {mn}", md_npc, md_mapsets
+        util.write(f"gh-pages/wavesets/{n}.json",json.dumps(output,indent=2))
+        html_mapsets += f"<li><a href=\"{n}.html\">{n}</a></li>"
+
+        mm = util.music_modal(data["Betting"]["BetWars"]["music_background"])
+        MUSIC_BY_TITLE[mm["musictitle"]]=mm
+        betting_music = util.musicmodal_to_html(mm)
+        desc = '<div style="margin-bottom: 1em;margin-top:1em;">Higher budget means more powerful NPC group</div>\n'
+        context = {
+            "wavesetlistdata": betting_music + desc + bettingdata,
+        }
+        return util.fill_template(util.read("templates/betting/bettingdata.html"),context), html_mapsets
     
     #### ZR: Rogue ####
     def parse_rogue(name, data, html_mapsets):
@@ -600,7 +621,7 @@ def parse():
                 info_html = parse_rogue_stage(info_html,sname,sdata,name,floor_name,rogue_num)
             info_html += f"</ul>\n"
 
-        # list in home.md, sidebar.md
+        # List in rogue.html
         n = name.split("/")[-1].replace(".cfg","")
         html_mapsets += f"<li><a href=\"{n}.html\">{n} - Rogue {rogue_num}</a></li>"
 

@@ -28,7 +28,7 @@ WAVESETS_TYPESCOPE = []
 if "TYPESCOPE" in os.environ:
     WAVESETS_TYPESCOPE = [x.title() for x in os.environ["TYPESCOPE"].split(",")]
 else:
-    WAVESETS_TYPESCOPE = ["Setup", "Custom", "Rogue"]#, "Betting"]
+    WAVESETS_TYPESCOPE = ["Setup", "Custom", "Rogue", "Betting"]
 
 LOG_REDACT = None
 if "LOG_REDACT" in os.environ:
@@ -202,7 +202,7 @@ def log(message, color="OKGREEN"):
     if color == "WARNING": pre="[WARN] "
     if color == "FAIL": pre="[ERR] "
     if "OK" in color: pre="[LOG] "
-    print(bcolors["FAINT"] + time + bcolors["ENDC"] + bcolors[color]  + pre + message + bcolors["ENDC"])
+    print(bcolors["FAINT"] + time + bcolors["ENDC"] + bcolors[color]  + pre + message.replace("\n","\\n") + bcolors["ENDC"])
     if LOG_REDACT:
         LOGS += f"{time}{pre}{message.replace("\n","\\n")}\n".replace(LOG_REDACT,"***")
 

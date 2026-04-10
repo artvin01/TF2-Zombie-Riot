@@ -18,8 +18,7 @@ function set_audio_resource(obj) {
         last_muted = audio.muted;
     }
     
-    let onend = `onended="nextsong();"`
-    let mphtml = `<audio controls autoplay muted ${onend}><source src="filepath" type="audio/mpeg"></audio>`;
+    let mphtml = `<audio controls autoplay muted onended="nextsong();"><source src="filepath" type="audio/mpeg"></audio>`;
     const music_player = document.getElementById("music_player");
     music_player.innerHTML= mphtml.replace("filepath",obj.getAttribute("file"));
     music_player.parentElement.classList.remove("hidden");
@@ -36,8 +35,9 @@ function set_audio_resource(obj) {
 
 function nextsong() {
     if (playlist_mode) {
-        let id = Number(last_song_id)+1
+        let id = Number(last_song_id)+1;
         if (shuffle) { id=randint(0,max_songs) };
+        if (id>max_songs) {id=0}; // loop back to start
         set_audio_resource(document.getElementById(id));
     }
 }
