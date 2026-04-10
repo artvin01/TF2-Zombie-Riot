@@ -173,7 +173,7 @@ methodmap Umbral_Rouam < CClotBody
 		SetEntityRenderFx(npc.m_iWearable1, RENDERFX_DISTORT);
 		SetEntityRenderColor(npc.m_iWearable1, 0, 0, 0, 125);
 		npc.m_flRoamCooldown = GetGameTime() + 1.0;
-		npc.m_flAutoEnrage = GetGameTime() + 100.0;
+		npc.m_flAutoEnrage = GetGameTime() + 30.0;
 
 		func_NPCDeath[npc.index] = view_as<Function>(Umbral_Rouam_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Umbral_Rouam_OnTakeDamage);
