@@ -717,7 +717,7 @@ def parse():
                 FinalAttack ✓ same as rogue
                     "construction/ending1_final"	"Expidonsa Tech Chip Install" (possibly the item you get on win?)
                 resourcecount	"50"	// Max amount of resources ✓
-                Resources [parse_const_resource arr]	// Randomly Spawning Resources ✓~
+                Resources [parse_const_resource arr]	// Randomly Spawning Resources ✓~ TODO
                     "npc_material_wood"
                     {
                         "distance"	"500.0"	// Min distance away from base
