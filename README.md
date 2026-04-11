@@ -9,9 +9,9 @@ The code is currently being rewritten to move the encyclopedia to github pages, 
   - [ ] Special wavesets
     - [x] ZR: Survival
     - [x] ZR: Raidrush
-    - [ ] ZR: Rogue
+    - [x] ZR: Rogue
     - [ ] ZR: Construction
-        - [ ] Construction 1
+        - [x] Construction 1
         - [ ] Construction 2
     - [x] ZR: Special Maps
 - [x] NPC data

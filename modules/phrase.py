@@ -11,6 +11,7 @@ PHRASES = [
     "zombieriot.phrases.rogue.paradox.txt",
     "zombieriot.phrases.rogue.rift.txt",
     "zombieriot.phrases.status_effects.txt",
+    "zombieriot.phrases.construction.txt",
     # weapon.py
     "zombieriot.phrases.weapons.description.txt",
     "zombieriot.phrases.weapons.txt"

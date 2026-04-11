@@ -122,7 +122,7 @@ def generate_waveset_embed(filename, title, wave, wave_max, entries):
 
 
 def draw_text_centered(drawable, pos, text, fill, font):
-    text=sub(r'[^a-zA-Z0-9 / \\-]', '', text)
+    text=sub(r'[^a-zA-Z0-9 /\\-_]', '', text)
     left, _, right, _ = font.getbbox(text)
     width = right - left
     drawable.text((pos[0]-(width/2),pos[1]), text, fill=fill,font=font)

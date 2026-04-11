@@ -75,6 +75,10 @@ input[type=search] {
   text-align: left;
 }
 
+li img {
+    width: 16px;
+}
+
 .hover:hover .tooltip, .hover:focus .tooltip {
     opacity:1;
     top: 125%;

@@ -28,7 +28,7 @@ WAVESETS_TYPESCOPE = []
 if "TYPESCOPE" in os.environ:
     WAVESETS_TYPESCOPE = [x.title() for x in os.environ["TYPESCOPE"].split(",")]
 else:
-    WAVESETS_TYPESCOPE = ["Setup", "Custom", "Rogue", "Betting"]
+    WAVESETS_TYPESCOPE = ["Setup", "Custom", "Rogue", "Betting", "Construction"]
 
 LOG_REDACT = None
 if "LOG_REDACT" in os.environ:

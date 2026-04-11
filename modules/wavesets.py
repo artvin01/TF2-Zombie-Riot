@@ -7,6 +7,7 @@ import vdf
 """
 TODO
 [ ] const support
+[ ] show trophies in item list
 ([ ] skilltree page)
 """
 
@@ -35,12 +36,6 @@ MULTIPLIER_MAPPINGS = {
                 
 waveset_cache = {}
 def parse():
-    generated_files = {
-        "npcs.md": "NPCs.md",
-        "home.md": "Home.md",
-        "sidebar.md": "_Sidebar.md"
-    }
-
     def parse_all_npcs():
         npc_by_file = {}
         npc_by_category = {}
@@ -105,7 +100,7 @@ def parse():
             "description": npc_data.description
         }
 
-    def parse_wave(wave_idx, wave_data, auto_wave_cash, is_betting=False, force=False):
+    def parse_wave(wave_idx, wave_data, auto_wave_cash, force=False):
         output = []
         output_hashes = {}
         has_cash_entry = False
@@ -484,7 +479,7 @@ def parse():
         WAVESETLIST_DATA = vdf.loads(WAVESETLIST_RAW)
         WAVESETLIST_TYPE = list(WAVESETLIST_DATA.keys())[0]
 
-        if WAVESETLIST_TYPE not in util.WAVESETS_TYPESCOPE: # Unsupported waveset cfg (Rogue, Bunker, etc.)
+        if (WAVESETLIST_TYPE not in util.WAVESETS_TYPESCOPE) or "maps/zr_holdout.cfg" == filename: # Unsupported waveset cfg (Rogue, Bunker, etc.)
             util.log(f"Unsupported waveset cfg {filename}!","WARNING")
             return html_mapsets, html_otherset
         
@@ -512,7 +507,9 @@ def parse():
         else:
             if WAVESETLIST_TYPE not in html_otherset: html_otherset[WAVESETLIST_TYPE] = ""
             if WAVESETLIST_TYPE == "Rogue":
-                HTML_WAVESETS,html_otherset[WAVESETLIST_TYPE] = parse_rogue(filename, WAVESETLIST_DATA, html_otherset[WAVESETLIST_TYPE])
+                HTML_WAVESETS, html_otherset[WAVESETLIST_TYPE] = parse_rogue(filename, WAVESETLIST_DATA, html_otherset[WAVESETLIST_TYPE])
+            elif WAVESETLIST_TYPE == "Construction":
+                HTML_WAVESETS, html_otherset[WAVESETLIST_TYPE] = parse_const(filename, WAVESETLIST_DATA, html_otherset[WAVESETLIST_TYPE])
             else:
                 util.log(f"UNSUPPORTED WAVESETLIST_TYPE: {WAVESETLIST_TYPE}", "FAIL")
                 exit()
@@ -570,14 +567,14 @@ def parse():
         - Artifacts
         - Curses
         - Floors
-            - i. asdnbasid
-                this -> encounter, no enemies. preparsed tooltip
-                that -> link to rogue/waveset viewer with floor_encounter.json as data
-                yuh -> encounter, absolutely no info. just text
-            - ii. sadnasda
-                that
-                this
-                nah
+            - i. one
+                a -> encounter, no enemies. preparsed tooltip
+                b -> link to rogue/waveset viewer with floor_encounter.json as data
+                c -> encounter, absolutely no info. just text
+            - ii. two
+                d
+                e
+                f
             
         """
         info_html = ""
@@ -680,6 +677,243 @@ def parse():
 
         return info_html
 
+    ### ZR: Construction ###
+    def parse_const(name, data, html_mapsets):
+        data=data["Construction"]
+        if "dungeon" in data["Setup"]: # Const 2
+            return parse_const2(name,data,html_mapsets)
+        elif "construction" in data["Setup"]: # Const 1
+            return parse_const1(name,data,html_mapsets)
+    
+    def parse_const1(name, data, html_mapsets):
+        """
+        # Const1 Structure
+        Construction
+            Setup
+                cash [int] ✓
+                Starting [rogue_item_modal arr] ✓
+                    Pickaxes and a Map => name+desc keys
+            Construction
+                Artifacts [rogue_item_modal arr] ✓
+                Research [parse_const_research arr]
+                    "Tranquilizer Turret"
+                    {
+                        "key"	"Base Level I"
+                        "time"	"40.0"
+
+                        "cost"
+                        {
+                            "water"	"40"
+                            "wizuh"	"10"
+                        }
+                    }
+                Attacks ✓ same as rogue
+                    "0"	// Wave ~1
+                    {
+                        "construction/0_1"	""
+                        "construction/0_2"	""
+                        "construction/0_3"	""
+                    }
+                FinalAttack ✓ same as rogue
+                    "construction/ending1_final"	"Expidonsa Tech Chip Install" (possibly the item you get on win?)
+                resourcecount	"50"	// Max amount of resources ✓
+                Resources [parse_const_resource arr]	// Randomly Spawning Resources ✓~
+                    "npc_material_wood"
+                    {
+                        "distance"	"500.0"	// Min distance away from base
+                        "common"	"1"		// How more likely compared to other resources
+                        "health"	"3000"	// Base health (gets scaled with players and risk)
+                        "defense"	"-100"	// Min damage needed (does not get scaled)
+                    }
+                AttackDrops	// Loot from Attacks (too much to document?) ✗
+                RandomMusic ✓
+                    "0"
+                    {
+                        "file"		"#zombiesurvival/construct/wilderness_1.mp3"
+                        "time"		"183"
+                        "download"	"1"
+                        "name"		"The Wilderness"
+                        "author"	"Kenneth Young & Mat Clark"
+
+                        "interactive" (NOTE show as e.g. 'ByRandom: The Wilderness - Kenneth Young & Mat Clark')
+                        {
+                            "#zombiesurvival/construct/wilderness_2.mp3"	"InterMusic_ConstructIntencity"
+                            "#zombiesurvival/construct/wilderness_3.mp3"	"InterMusic_ConstructBase"
+                            "#zombiesurvival/construct/wilderness_4.mp3"	"InterMusic_ByRandom"
+                            "#zombiesurvival/construct/wilderness_5.mp3"	"InterMusic_ConstructRisk"
+                            "#zombiesurvival/construct/wilderness_6.mp3"	"InterMusic_ByAlone"
+                        }
+                    }
+        """
+        wd = defaultdict(str,data)
+        info_html = ""
+
+        info_html += "<h2>Starting items</h2>\n" # NOTE no idea what they're called, calling them items for now
+        for artifact in data["Setup"]["Starting"].keys():
+            info_html += rogue_item_modal(artifact)
+
+        # All Artifacts
+        info_html += "<h2>Artifacts</h2>\n"
+        info_html += "<ul>\n"
+        for artifact in data["Construction"]["Artifacts"]:
+            if defaultdict(str, data["Construction"]["Artifacts"][artifact])["hidden"]=="1": continue
+            info_html += rogue_item_modal(artifact,data["Construction"]["Artifacts"][artifact])
+        info_html += f"</ul>\n"
+        
+        # All Research
+        info_html += "<h2>Research</h2>\n"
+        info_html += "<ul>\n"
+        for research in data["Construction"]["Research"]:
+            if defaultdict(str, data["Construction"]["Research"][research])["hidden"]=="1": continue
+            info_html += parse_const_research(research,data["Construction"]["Research"][research])
+        info_html += f"</ul>\n"
+        
+        # All Resources
+        info_html += f"<h2>Resources</h2>\n<div>Max resources: {data["Construction"]["resourcecount"]}"
+        info_html += "<ul>\n"
+        for resource in data["Construction"]["Resources"]:
+            info_html += parse_const_resource(resource,data["Construction"]["Resources"][resource])
+        info_html += f"</ul>\n"
+
+        # Random music
+        info_html += "<h2>Music</h2>\n<div>Different cases have different parts of a song.</div>\n"
+        info_html += "<ul>\n"
+        for music in data["Construction"]["RandomMusic"]:
+            info_html += parse_random_music(music,data["Construction"]["RandomMusic"][music])
+        info_html += f"</ul>\n"
+        
+        # Attacks
+        if not os.path.isdir("gh-pages/wavesets"): subprocess.run(["mkdir", "gh-pages/wavesets"])
+        info_html += "<h2>Attacks</h2>\n"
+        for attacknum, waves in data["Construction"]["Attacks"].items():
+            info_html += f"<h3>Attack {attacknum}</h3>\n"
+            
+            info_html += "<ul>\n"
+            for file,keyonwin in waves.items():
+                info_html = parse_const_stage(info_html,file,keyonwin,attacknum)
+            info_html += f"</ul>\n"
+
+        info_html += "<h2>Final Attack</h2>\n"
+        info_html += "<ul>\n"
+        for file, keyonwin in data["Construction"]["FinalAttack"].items():
+            info_html = parse_const_stage(info_html,file,keyonwin,attacknum)
+        info_html += f"</ul>\n"
+
+        # List in construction.html
+        n = name.split("/")[-1].replace(".cfg","")
+        html_mapsets += f"<li><a href=\"{n}.html\">{n} - Construction 1</a></li>"
+
+
+        context = { # startcash, wavesetlistdata
+            "startcash": wd["Setup"]["cash"],
+            "wavesetlistname": f"Construction 1",
+            "wavesetlistdata": info_html,
+        }
+        HTML_WAVESET_LIST = util.fill_template(util.read(f"templates/rogue/roguedata.html"),context)
+        # HTML_WAVESET_LIST -> what will be linked to on the ZR: rogue page
+        # html_mapsets ->
+        return HTML_WAVESET_LIST, html_mapsets
+    
+    def parse_const_research(name,obj):
+        dd=defaultdict(str,obj)
+        key_text = f"<div>Required research: {dd["key"]}</div>\n" if dd["key"]!="" else ""
+        fulldesc = key_text + util.get_key(f"{name} Desc")
+        
+        cost_text = ""
+        for item,amt in obj["cost"].items():
+            cost_text += f"<div>{amt} {modules.shared.get_npc_icon(f"material_{item}")} {item.title()}</div>"
+        context = {
+            "cost": cost_text,
+            "name": util.get_key(name),
+            "desc": util.divfornewline(util.apply_morecolors(fulldesc))
+        }
+        return util.fill_template(util.read("templates/const/const_item.html"),context)
+    
+    def parse_const_resource(name,obj):
+        """
+        TODO
+        "npc_material_wood"
+        {
+            "distance"	"500.0"	// Min distance away from base
+            "common"	"1"		// How more likely compared to other resources
+            "health"	"3000"	// Base health (gets scaled with players and risk)
+            "defense"	"-100"	// Min damage needed (does not get scaled)
+        }
+        """
+        # materials have no description, npc data only used for icons
+        npcinfo = NPCS_BY_FILENAME[name]
+        context = {
+            "name": modules.shared.get_npc_icon(npcinfo.icon) + util.get_key(npcinfo.name),
+        }
+        return util.fill_template(util.read("templates/const/const_item_nodesc.html"),context)
+    
+    def parse_random_music(name,obj):
+        """
+        "0"
+        {
+            "file"		"#zombiesurvival/construct/wilderness_1.mp3" [1]
+            "time"		"183"
+            "download"	"1"
+            "name"		"The Wilderness"
+            "author"	"Kenneth Young & Mat Clark"
+
+            "interactive" (NOTE show as e.g. 'ByRandom: The Wilderness - Kenneth Young & Mat Clark') [2]
+            {
+                "#zombiesurvival/construct/wilderness_2.mp3"	"InterMusic_ConstructIntencity"
+                "#zombiesurvival/construct/wilderness_3.mp3"	"InterMusic_ConstructBase"
+                "#zombiesurvival/construct/wilderness_4.mp3"	"InterMusic_ByRandom"
+                "#zombiesurvival/construct/wilderness_5.mp3"	"InterMusic_ConstructRisk"
+                "#zombiesurvival/construct/wilderness_6.mp3"	"InterMusic_ByAlone"
+            }
+        }
+        """
+        out = ""
+
+        # Base music [1]
+        modal = util.music_modal(obj)
+        MUSIC_BY_TITLE[modal["musictitle"]] = modal
+        out += util.musicmodal_to_html(modal)
+        
+        for file, case in obj["interactive"].items():
+            objc=obj.copy()
+            objc["file"] = file
+            objc["name"] = f"{case.split("_")[1]}:{objc["name"]}"  # don't replace base music
+            modal = util.music_modal(objc)
+            MUSIC_BY_TITLE[modal["musictitle"]] = modal
+            out += f'<div style="margin:1em;"><span class="secondary">{case.split("_")[1]}:</span> {util.musicmodal_to_html(modal)}</div>'
+
+        return out
+
+    
+    def parse_const2(name, data, html_mapsets):
+        # List in construction.html
+        n = name.split("/")[-1].replace(".cfg","")
+        html_mapsets += f"<li><a href=\"{n}.html\" class=\"disabled\">{n} - Construction 2</a></li>"
+        return "",html_mapsets
+
+    def parse_const_stage(info_html,cfgfile,keyonwin,attacknum):
+        util.log(f"    const attack {attacknum}{" "*(35-len(f"const attack {attacknum}"))}| {cfgfile}")
+
+        key_text = f"<div>Key on win: {keyonwin}</div>\n" if keyonwin!="" else ""
+
+        # waveset viewer link
+        wave_cfg = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{cfgfile}.cfg")
+        wave_cfg = unique_enemy_delays(wave_cfg)
+        WAVESET_DATA = vdf.loads(wave_cfg)["Waves"]
+        absl = util.absolute_link("const1",attacknum+cfgfile)
+        fullname = f"Construction1 - Attack {cfgfile.replace("construction/","").replace("construction_rift/","")}" # first part of cfgfile name is attack num itself
+        output = parse_waveset(cfgfile, WAVESET_DATA, absl, fullname, "", DEPTH=4)
+        output["name"]=fullname
+        util.write(f"gh-pages/wavesets/{absl}.json",json.dumps(output,indent=2))
+        context = {
+            "name": f'<a href="waveset_viewer.html?w={absl}.json">{cfgfile.replace("construction/","").replace("construction_rift/","")}</a>',
+            "desc": f'{key_text}'
+        }
+
+        info_html += util.fill_template(util.read("templates/rogue/rogue_encounter_nodesc.html"),context)
+
+        return info_html
+
     PATH_NPC = "./TF2-Zombie-Riot/addons/sourcemod/scripting/zombie_riot/npc/"
 
     if not os.path.isdir("gh-pages/embed"): subprocess.run(["mkdir", "gh-pages/embed"])
@@ -728,4 +962,3 @@ def parse():
         "parse_run": f"\n<sub>Code parsed at {util.datetime.datetime.now().strftime('%H:%M:%S %d.%m.%Y')} H:M:S D.M.Y {time.tzname[time.daylight]}</sub><br><sub>Source repository commit <a href=\"https://github.com/artvin01/TF2-Zombie-Riot/commit/{COMMIT_SHA}\">artvin01/TF2-Zombie-Riot@{COMMIT_SHA_SHORT}</a></sub>",
     }
     util.write("gh-pages/index.html", util.fill_template(util.read("templates/index.html"),context))
-    return generated_files
