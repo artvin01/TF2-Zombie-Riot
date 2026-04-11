@@ -1730,7 +1730,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 		SetGlobalTransTarget(owner);
 		
 		ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
-		ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
+		ApplyStatusEffect(owner, target, 	"Healing Resolve", 5.0);
 	}
 	else
 	{
@@ -1741,7 +1741,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 		SetGlobalTransTarget(owner);
 			
 		ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
-		ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
+		ApplyStatusEffect(owner, target, 	"Healing Resolve", 5.0);
 	}
 
 	
