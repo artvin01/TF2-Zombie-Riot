@@ -6,7 +6,7 @@ import vdf
 
 """
 TODO
-[ ] const support
+[ ] const2 support
 [ ] show trophies in item list
 ([ ] skilltree page)
 """
@@ -717,7 +717,7 @@ def parse():
                 FinalAttack ✓ same as rogue
                     "construction/ending1_final"	"Expidonsa Tech Chip Install" (possibly the item you get on win?)
                 resourcecount	"50"	// Max amount of resources ✓
-                Resources [parse_const_resource arr]	// Randomly Spawning Resources ✓~ TODO
+                Resources [parse_const_resource arr]	// Randomly Spawning Resources ✓
                     "npc_material_wood"
                     {
                         "distance"	"500.0"	// Min distance away from base
@@ -844,8 +844,14 @@ def parse():
         npcinfo = NPCS_BY_FILENAME[name]
         context = {
             "name": modules.shared.get_npc_icon(npcinfo.icon) + util.get_key(npcinfo.name),
+            "cost": "",
+            "desc": f"""<div>Min. distance away from base: {obj["distance"]}hu</div>
+                    <div>Appearance rate: {obj["common"]}</div>
+                    <div>Health: {obj["health"]}HP (scaling)</div>
+                    <div>Min. damage required: {obj["defense"]}HP (no scaling)</div>
+                    """
         }
-        return util.fill_template(util.read("templates/const/const_item_nodesc.html"),context)
+        return util.fill_template(util.read("templates/const/const_item.html"),context)
     
     def parse_random_music(name,obj):
         """
@@ -877,9 +883,7 @@ def parse():
         for file, case in obj["interactive"].items():
             objc=obj.copy()
             objc["file"] = file
-            objc["name"] = f"{case.split("_")[1]}:{objc["name"]}"  # don't replace base music
             modal = util.music_modal(objc)
-            MUSIC_BY_TITLE[modal["musictitle"]] = modal
             out += f'<div style="margin:1em;"><span class="secondary">{case.split("_")[1]}:</span> {util.musicmodal_to_html(modal)}</div>'
 
         return out
