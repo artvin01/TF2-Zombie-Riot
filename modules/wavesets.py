@@ -479,7 +479,7 @@ def parse():
         WAVESETLIST_DATA = vdf.loads(WAVESETLIST_RAW)
         WAVESETLIST_TYPE = list(WAVESETLIST_DATA.keys())[0]
 
-        if (WAVESETLIST_TYPE not in util.WAVESETS_TYPESCOPE) or "maps/zr_holdout.cfg" == filename: # Unsupported waveset cfg (Rogue, Bunker, etc.)
+        if (WAVESETLIST_TYPE not in util.WAVESETS_TYPESCOPE) or "maps/zr_holdout.cfg" == filename: # Unsupported waveset cfg (Bunker, etc.)
             util.log(f"Unsupported waveset cfg {filename}!","WARNING")
             return html_mapsets, html_otherset
         
@@ -488,7 +488,7 @@ def parse():
         """
         maps/zr_bunker_old_fish.cfg - currently disabled in zr? and has missing files
         maps/zr_beastrooms.cfg - empty
-        maps/zr_holdout.cfg - const ?
+        maps/zr_holdout.cfg - scrapped
 
         maps/zr_construction.cfg - const1
         maps/zr_const2_headquarters.cfg - const2 (codename dungeon)
