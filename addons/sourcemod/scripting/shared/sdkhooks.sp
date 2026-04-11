@@ -3749,6 +3749,8 @@ void SdkHooks_SetAndUpdateArmorClientText(int client)
 		HealthColour[0] = 125;
 		HealthColour[1] = 0;
 		HealthColour[2] = 125;
+		if(Armor_DebuffType[client] == Element_Warped)
+			ArmorCurrent /= 4;
 	}
 	if(ArmorCurrent >= MaxArmor)
 	{

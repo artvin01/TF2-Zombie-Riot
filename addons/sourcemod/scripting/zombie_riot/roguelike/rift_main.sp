@@ -781,11 +781,7 @@ public void Rogue_Vote_Rift1(const Vote vote, int index)
 				Rogue_GiveNamedArtifact("Bob's Assistance", true, true);
 		}
 		case 1:
-		{
-			Artifact artifact;
-			if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
-				Rogue_GiveNamedArtifact(artifact.Name);
-				
+		{	
 			Rogue_GiveNamedArtifact("Reila Assistance", true);
 			Rogue_GiveNamedArtifact("Wordless Deed");
 		}
