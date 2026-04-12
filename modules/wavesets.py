@@ -8,6 +8,7 @@ import vdf
 TODO
 [ ] const2 support
 [ ] show trophies in item list
+([ ] sort const and rogue by number, not alphabetically)
 ([ ] skilltree page)
 """
 
@@ -634,11 +635,14 @@ def parse():
         return HTML_WAVESET_LIST, html_mapsets
 
     def rogue_item_modal(name, obj={}):
+        desc = util.divfornewline(util.apply_morecolors(util.get_key(f"{name} Desc")))
+        if type(obj)==str: # keyonwin in const
+            desc += f"\n<div>{obj}</div>\n"
         context = {
             "shopcost": f"△ {obj["shopcost"]}" if "shopcost" in obj else "",
             "dropchance": f"dropchance {obj["dropchance"]}" if "dropchance" in obj else "",
             "name": util.get_key(name),
-            "desc": util.divfornewline(util.apply_morecolors(util.get_key(f"{name} Desc")))
+            "desc": desc
         }
         return util.fill_template(util.read("templates/rogue/rogue_item.html"),context)
     
@@ -685,6 +689,66 @@ def parse():
         elif "construction" in data["Setup"]: # Const 1
             return parse_const1(name,data,html_mapsets)
     
+    def parse_const_stage(info_html,cfgfile,keyonwin,attacknum, constnum):
+        util.log(f"    const attack {attacknum}{" "*(35-len(f"const attack {attacknum}"))}| {cfgfile}")
+
+        key_text = f"<div>Key on win: {keyonwin}</div>\n" if keyonwin!="" else ""
+
+        # waveset viewer link
+        wave_cfg = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{cfgfile}.cfg")
+        wave_cfg = unique_enemy_delays(wave_cfg)
+        WAVESET_DATA = vdf.loads(wave_cfg)["Waves"]
+        absl = util.absolute_link(f"const{constnum}",attacknum+cfgfile)
+        fullname = f"Construction {constnum} - Attack {cfgfile.replace("construction/","").replace("construction_rift/","")}" # first part of cfgfile name is attack num itself
+        output = parse_waveset(cfgfile, WAVESET_DATA, absl, fullname, "", DEPTH=4)
+        output["name"]=fullname
+        util.write(f"gh-pages/wavesets/{absl}.json",json.dumps(output,indent=2))
+        context = {
+            "name": f'<a href="waveset_viewer.html?w={absl}.json">{cfgfile.replace("construction/","").replace("construction_rift/","")}</a>',
+            "desc": f'{key_text}'
+        }
+
+        info_html += util.fill_template(util.read(f"templates/rogue/rogue_encounter{"_nodesc"*int(len(key_text)==0)}.html"),context)
+
+        return info_html
+    
+    def parse_random_music(name,obj):
+        """
+        "0"
+        {
+            "file"		"#zombiesurvival/construct/wilderness_1.mp3" [1]
+            "time"		"183"
+            "download"	"1"
+            "name"		"The Wilderness"
+            "author"	"Kenneth Young & Mat Clark"
+
+            "interactive" (NOTE show as e.g. 'ByRandom: The Wilderness - Kenneth Young & Mat Clark') [2]
+            {
+                "#zombiesurvival/construct/wilderness_2.mp3"	"InterMusic_ConstructIntencity"
+                "#zombiesurvival/construct/wilderness_3.mp3"	"InterMusic_ConstructBase"
+                "#zombiesurvival/construct/wilderness_4.mp3"	"InterMusic_ByRandom"
+                "#zombiesurvival/construct/wilderness_5.mp3"	"InterMusic_ConstructRisk"
+                "#zombiesurvival/construct/wilderness_6.mp3"	"InterMusic_ByAlone"
+            }
+        }
+        """
+        out = ""
+
+        # Base music [1]
+        modal = util.music_modal(obj)
+        MUSIC_BY_TITLE[modal["musictitle"]] = modal
+        out += util.musicmodal_to_html(modal)
+        
+        if "interactive" in obj:
+            for file, case in obj["interactive"].items():
+                objc=obj.copy()
+                objc["file"] = file
+                modal = util.music_modal(objc)
+                out += f'<div style="margin:1em;"><span class="secondary">{case.split("_")[1]}:</span> {util.musicmodal_to_html(modal)}</div>'
+
+        return out
+    
+    ### CONST 1 ###
     def parse_const1(name, data, html_mapsets):
         """
         # Const1 Structure
@@ -745,10 +809,10 @@ def parse():
                         }
                     }
         """
-        wd = defaultdict(str,data)
         info_html = ""
 
-        info_html += "<h2>Starting items</h2>\n" # NOTE no idea what they're called, calling them items for now
+        # Starting Artifacts
+        info_html += "<h2>Starting Artifacts</h2>\n"
         for artifact in data["Setup"]["Starting"].keys():
             info_html += rogue_item_modal(artifact)
 
@@ -790,13 +854,13 @@ def parse():
             
             info_html += "<ul>\n"
             for file,keyonwin in waves.items():
-                info_html = parse_const_stage(info_html,file,keyonwin,attacknum)
+                info_html = parse_const_stage(info_html,file,keyonwin,attacknum,1)
             info_html += f"</ul>\n"
 
         info_html += "<h2>Final Attack</h2>\n"
         info_html += "<ul>\n"
         for file, keyonwin in data["Construction"]["FinalAttack"].items():
-            info_html = parse_const_stage(info_html,file,keyonwin,attacknum)
+            info_html = parse_const_stage(info_html,file,keyonwin,attacknum,1)
         info_html += f"</ul>\n"
 
         # List in construction.html
@@ -804,6 +868,7 @@ def parse():
         html_mapsets += f"<li><a href=\"{n}.html\">{n} - Construction 1</a></li>"
 
 
+        wd = defaultdict(str,data)
         context = { # startcash, wavesetlistdata
             "startcash": wd["Setup"]["cash"],
             "wavesetlistname": f"Construction 1",
@@ -853,70 +918,167 @@ def parse():
         }
         return util.fill_template(util.read("templates/const/const_item.html"),context)
     
-    def parse_random_music(name,obj):
-        """
-        "0"
-        {
-            "file"		"#zombiesurvival/construct/wilderness_1.mp3" [1]
-            "time"		"183"
-            "download"	"1"
-            "name"		"The Wilderness"
-            "author"	"Kenneth Young & Mat Clark"
 
-            "interactive" (NOTE show as e.g. 'ByRandom: The Wilderness - Kenneth Young & Mat Clark') [2]
-            {
-                "#zombiesurvival/construct/wilderness_2.mp3"	"InterMusic_ConstructIntencity"
-                "#zombiesurvival/construct/wilderness_3.mp3"	"InterMusic_ConstructBase"
-                "#zombiesurvival/construct/wilderness_4.mp3"	"InterMusic_ByRandom"
-                "#zombiesurvival/construct/wilderness_5.mp3"	"InterMusic_ConstructRisk"
-                "#zombiesurvival/construct/wilderness_6.mp3"	"InterMusic_ByAlone"
-            }
-        }
-        """
-        out = ""
-
-        # Base music [1]
-        modal = util.music_modal(obj)
-        MUSIC_BY_TITLE[modal["musictitle"]] = modal
-        out += util.musicmodal_to_html(modal)
-        
-        for file, case in obj["interactive"].items():
-            objc=obj.copy()
-            objc["file"] = file
-            modal = util.music_modal(objc)
-            out += f'<div style="margin:1em;"><span class="secondary">{case.split("_")[1]}:</span> {util.musicmodal_to_html(modal)}</div>'
-
-        return out
-
-    
+    ### CONST 2 ###
     def parse_const2(name, data, html_mapsets):
+        """
+        # Const 2 Structure
+        Construction
+            Setup
+                cash ✓
+                Starting [rogue_item_modal arr] ✓
+                    level                item on win
+                    "Dungeon Level 3"	"Foreign Expidonsan Chip"
+            Dungeon
+                music_setup
+                Artifacts (same as rogue) ✓
+                Raids (same as rogue) ✓
+                    "4"
+                    {
+                        "dungeon/final_expidonsa"	""
+                        "dungeon/final_space"		"Expidonsa Space Beacon"
+                    }
+                Bases
+                    "Normal Base 1"
+                    {
+                        "common"		"4"				// How common is this room
+                        "victory"		"2"				// How many loot upon winning
+                        "wavechance"	"0.5"			// Chance of gaining a loot after passing a wave
+                        "waveamount"	"1"				// Max loot rolls per wave pass
+                        "lootscale"		"0.0"			// Battle wave scaling increase per loot obtained
+                        "spawn"			"enemy_base_main"	// Player spawn
+                        "cooldown"		"0.0"		// Room cooldown from appearing in vote
+                        "minwave"		"0"			// Min wave scaling to appear in vote
+                        "maxwave"		"999"		// Max wave scaling to appear in vote
+                        "minattack"		"0"			// Min raid attacks to appear in vote
+                        "maxattack"		"0"			// Max raid attacks to appear in vote
+                        "key"			""			// Required artifact/function call
+                        "func_start"	""
+
+                        "Fights"
+                        {
+                            // Rated by wave number scaling
+                            "dungeon/base_1_1"	"10"
+                        }
+                        "Loots"
+                        {
+                            // Rated by how common
+                            "Wooden Crate"			"120"
+                            "Jalan Crate"			"19"
+                            "Wizuh Crate"			"19"
+                            "Ossunia Crate"			"19"
+                            "Sealed Jalan Crate"	"1"
+                            "Sealed Wizuh Crate"	"1"
+                            "Sealed Ossunia Crate"	"1"
+                        }
+                    }
+                Rooms (dungeon rooms?)
+                    "Common Dungeon 1"
+                    {
+                        "common"		"4"
+                        "victory"		"2"
+                        "wavechance"	"1.0"
+                        "waveamount"	"2"
+                        "lootscale"		"0.31"
+                        "spawn"			"dungeon_1_start"
+
+                        "Fights"
+                        {
+                            "dungeon/spawners/difficulty_1/fight_1/dungeon_1_1"	"15"
+                            "dungeon/spawners/difficulty_3/fight_1/dungeon_1_1"	"30"
+                        }
+                        "Loots"
+                        {
+                            "Wooden Crate"			"120"
+                            "Jalan Crate"			"19"
+                            "Wizuh Crate"			"19"
+                            "Ossunia Crate"			"19"
+                            "Sealed Jalan Crate"	"1"
+                            "Sealed Wizuh Crate"	"1"
+                            "Sealed Ossunia Crate"	"1"
+                        }
+                    }
+                    "Shop"
+                    {
+                        "common"		"2"
+                        "spawn"			"dungeon_3_start"
+                        "cooldown"		"300.0"
+                        "key"			""
+                        "func_start"	"Dungeon_Encounter_Shop"
+                    }
+                Loots
+                    "Wooden Pack"
+                    {
+                        "count"	"1"	// Items gained
+                        "bonus"	"0.0"	// Chance for a bonus item
+                        "color"	"255 255 255 255"	// Entity color
+
+                        "Items"
+                        {
+                            // Rated by how common
+                            "Dungeon_Crate_Ammo"	"1"
+                            "Dungeon_Crate_Wood"	"3"
+                        }
+                    }
+                RandomMusic w/o interactive ✓
+        """
+        info_html = ""
+
+
+        # Starting Artifacts
+        info_html += "<h2>Starting Artifacts</h2>\n"
+        for artifact,keyonwin in data["Setup"]["Starting"].items():
+            info_html += rogue_item_modal(artifact,keyonwin)
+
+        # All Artifacts
+        info_html += "<h2>Artifacts</h2>\n"
+        info_html += "<ul>\n"
+        for artifact in data["Dungeon"]["Artifacts"]:
+            if defaultdict(str, data["Dungeon"]["Artifacts"][artifact])["hidden"]=="1": continue
+            info_html += rogue_item_modal(artifact,data["Dungeon"]["Artifacts"][artifact])
+        info_html += f"</ul>\n"
+
+        # Random music
+        info_html += "<h2>Music</h2>\n"
+        info_html += "<ul>\n"
+        # Setup Music
+        modal = util.music_modal(data["Dungeon"]["music_setup"])
+        MUSIC_BY_TITLE[modal["musictitle"]] = modal
+        info_html += f"Setup: {util.musicmodal_to_html(modal)}"
+        for music in data["Dungeon"]["RandomMusic"]:
+            info_html += parse_random_music(music,data["Dungeon"]["RandomMusic"][music])
+        info_html += f"</ul>\n"
+
+        # Raids
+        if not os.path.isdir("gh-pages/wavesets"): subprocess.run(["mkdir", "gh-pages/wavesets"])
+        info_html += "<h2>Raids</h2>\n"
+        for attacknum, waves in data["Dungeon"]["Raids"].items():
+            try:
+                int(attacknum)
+            except ValueError:
+                continue
+        
+            info_html += f"<h3>Attack {attacknum}</h3>\n"
+            
+            info_html += "<ul>\n"
+            for file,keyonwin in waves.items():
+                info_html = parse_const_stage(info_html,file,keyonwin,attacknum,2)
+            info_html += f"</ul>\n"
+        
         # List in construction.html
         n = name.split("/")[-1].replace(".cfg","")
-        html_mapsets += f"<li><a href=\"{n}.html\" class=\"disabled\">{n} - Construction 2</a></li>"
-        return "",html_mapsets
+        html_mapsets += f"<li><a href=\"{n}.html\">{n} - Construction 2</a></li>"
 
-    def parse_const_stage(info_html,cfgfile,keyonwin,attacknum):
-        util.log(f"    const attack {attacknum}{" "*(35-len(f"const attack {attacknum}"))}| {cfgfile}")
-
-        key_text = f"<div>Key on win: {keyonwin}</div>\n" if keyonwin!="" else ""
-
-        # waveset viewer link
-        wave_cfg = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{cfgfile}.cfg")
-        wave_cfg = unique_enemy_delays(wave_cfg)
-        WAVESET_DATA = vdf.loads(wave_cfg)["Waves"]
-        absl = util.absolute_link("const1",attacknum+cfgfile)
-        fullname = f"Construction1 - Attack {cfgfile.replace("construction/","").replace("construction_rift/","")}" # first part of cfgfile name is attack num itself
-        output = parse_waveset(cfgfile, WAVESET_DATA, absl, fullname, "", DEPTH=4)
-        output["name"]=fullname
-        util.write(f"gh-pages/wavesets/{absl}.json",json.dumps(output,indent=2))
+        wd = defaultdict(str,data)
         context = {
-            "name": f'<a href="waveset_viewer.html?w={absl}.json">{cfgfile.replace("construction/","").replace("construction_rift/","")}</a>',
-            "desc": f'{key_text}'
+            "startcash": wd["Setup"]["cash"],
+            "wavesetlistname": f"Construction 2 (incomplete info)",
+            "wavesetlistdata": info_html,
         }
+        HTML_WAVESET_LIST = util.fill_template(util.read(f"templates/rogue/roguedata.html"),context)
 
-        info_html += util.fill_template(util.read("templates/rogue/rogue_encounter_nodesc.html"),context)
-
-        return info_html
+        return HTML_WAVESET_LIST,html_mapsets
+    
 
     PATH_NPC = "./TF2-Zombie-Riot/addons/sourcemod/scripting/zombie_riot/npc/"
 
@@ -933,7 +1095,7 @@ def parse():
         "classic.cfg": "gh-pages/survival.html",
         "fastmode.cfg": "gh-pages/raidrush.html",
     }
-    for file in os.listdir("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/maps/"):
+    for file in sorted(os.listdir("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/maps/")):
         if ".cfg" in file:
             cfg_files[f"maps/{file}"] = None
 

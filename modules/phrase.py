@@ -12,6 +12,7 @@ PHRASES = [
     "zombieriot.phrases.rogue.rift.txt",
     "zombieriot.phrases.status_effects.txt",
     "zombieriot.phrases.construction.txt",
+    "zombieriot.phrases.dungeon.txt",
     # weapon.py
     "zombieriot.phrases.weapons.description.txt",
     "zombieriot.phrases.weapons.txt"
