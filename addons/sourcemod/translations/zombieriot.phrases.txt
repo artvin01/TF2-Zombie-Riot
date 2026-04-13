@@ -1544,7 +1544,7 @@
 		"en" 		"Hasty Hops X! 1.65x Extra reload, switchspeed and Mana regen"
 		"ru"		"Хмельная Спешка! 1.65x скорость перезарядки, смены оружия и регенерации маны"
 		"it"		"Salti precipitosi! 1.65x Ricarica extra, velocità di commutazione e rigenerazione del mana"
-		"ko" 		"신속 홉! 재장전 속도, 무기 전환 속도, 마나 재생이 1.65배 더 빨라집니다."
+		"ko" 		"신속 홉 X! 재장전 속도, 무기 전환 속도, 마나 재생이 1.65배 더 빨라집니다."
 	}
 	"Marksman Beer Received"
 	{
@@ -1558,7 +1558,7 @@
 		"en" 		"Marksman Beer X! 1.2x Weapon accuracy and 1.35x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
 		"ru"		"Снайпер-лайм X! 1.2x точности оружия и 1.35x урона по голове и удара в спину\n 1.2x скорости снарядов."
 		"it"		"Birra del Tiratore sceltov! 1.2xprecisione dell'arma 2x e danni extra da colpo alla testa e da pugnalata alle spalle 1,35x e velocità del proiettile 1,2x."
-		"ko" 		"명사수 맥주! 무기 명중률이 X 1.2배 증가하고 헤드샷과 백스탭 피해량이 1.35배만큼 추가로 증가\n 투사체 속도 1.2배 증가."
+		"ko" 		"명사수 맥주 X! 무기 명중률이 1.2배 증가하고 헤드샷과 백스탭 피해량이 1.35배만큼 추가로 증가\n 투사체 속도 1.2배 증가."
 	}
 	"Teslar Mule Received"
 	{
