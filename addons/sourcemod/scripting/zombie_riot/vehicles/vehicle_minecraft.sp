@@ -8,7 +8,7 @@ void VehicleMinecraft_Setup()
 	
 	if(!FileExists("scripts/vehicles/tf2_minecraft.txt", true))
 		return;
-	/*
+	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "nothing");
 	strcopy(data.Plugin, sizeof(data.Plugin), "vehicle_mc_minecart");
@@ -16,7 +16,7 @@ void VehicleMinecraft_Setup()
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
-	*/
+	
 }
 
 static void ClotPrecache()
