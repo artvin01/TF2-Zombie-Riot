@@ -5455,6 +5455,7 @@ void Store_ApplyAttribs(int client)
 	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
 	{
 		map.SetValue("4056", 0.05);	// Out of battle regen
+		map.SetValue("4061", 0.02);
 	}
 
 	map.SetValue("442", 1.0);	// Move Speed
@@ -5478,7 +5479,7 @@ void Store_ApplyAttribs(int client)
 	else
 	{
 		
-		float MovementSpeed = 330.0;
+		float MovementSpeed = PapModeDo == PAP_MODE_BUILDING_ONLY ? 360.0 : 330.0;
 		
 		if(VIPBuilding_Active())
 		{
@@ -5488,7 +5489,7 @@ void Store_ApplyAttribs(int client)
 	
 		if(i_CurrentEquippedPerk[client] & PERK_MARATHON)
 		{
-			MovementSpeed += 15.0;
+			MovementSpeed += 20.0;
 		}
 
 		map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed

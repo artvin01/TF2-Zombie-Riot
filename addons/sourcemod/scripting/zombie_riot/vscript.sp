@@ -329,7 +329,7 @@ static void VGiveClientPerk(ScriptContext context)
 			if(hentity)
 				entity = VScript_HScriptToEntity(hentity);
 			
-			Do_Perk_Machine_Logic(client, client, entity, (1 << (index - 1)), index);
+			Do_Perk_Machine_Logic(client, client, entity, (1 << (index - 1)), index, .IsVscriptCall = true);
 			return;
 		}
 	}

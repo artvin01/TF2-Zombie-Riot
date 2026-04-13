@@ -3457,7 +3457,9 @@ void Waves_SetSkyName(const char[] skyname = "", int client = 0)
 
 void WaveEndLogicExtra()
 {
-	SeaFounder_ClearnNethersea();
+	if(PapModeDo != PAP_MODE_BUILDING_ONLY)
+		SeaFounder_ClearnNethersea();
+	
 	VoidArea_ClearnNethersea();
 	FallenWarriorGetRandomSeedEachWave();
 	ResetAbilitiesWaveEnd();
