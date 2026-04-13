@@ -1462,6 +1462,7 @@
 	"Deployable Quantum Suit Desc"
 	{
 		"en"	"-On use, frozen for 3 seconds, gain resitance during freeze\n-Gain a sepearte suit of armor, power scales with money spend\n-When reaching 0 health, or timer is over, return back to normal.\n-During raids, take extra damage\n-Elemental damage is normal damage to you instead"
+		"ko"	"-사용시, 3초간 고정됨. 고정된 상태에선 저항력 증가\n-퀀텀 슈트의 위력은 총합 자금 사용량에 비례하여 증가\n-이 슈트를 입은 상태로 체력이 0이 되거나 타이머가 0이 될 시, 슈트가 파괴됨\n-레이드 모드일 경우 피해를 더 많이 받습니다.\n-원소 피해가 부여될 경우 일반 피해로 적용됩니다."
 	}
 	
 	"Ranged Spike Layer Desc"
@@ -3337,7 +3338,8 @@
 	}
 	"The Flagellant Desc"
 	{
-		"en"	"Zealotry—an undying blight upon the soul.\n-Provides extra health with the ability to heal but inflicts self-damage.\n-You are immune to all bleed effects.\n-On heal, recieve a debuff for 10 seconds that reduces heal"
+		"en"	"Zealotry—an undying blight upon the soul.\n-Provides extra health with the ability to heal but inflicts self-damage.\n-You are immune to all bleed effects.\n-On heal, receive a debuff for 10 seconds that reduces heal"
+		"ko"	"광신은 영혼을 좀먹는 불사의 병폐라.\n-치유 능력을 보유하게 되고 추가 체력을 얻지만, 공격시 자가 피해를 받음.\n-모든 출혈 디버프 효과에 면역\n-치유 시, 받는 치유량을 감소시키는 디버프를 얻음"
 	}
 	"The Flagellant Extra Desc"
 	{
@@ -3816,7 +3818,7 @@
 	{
 		"en"	"-With Armor, 60％ (bosses 35％) damage resistance from attacks in front of you.\n-Ability stuns enemies in front of you and increases attack speed.\n-Be slower with shield on, When shield breaks, gain speed with a cooldown (sound)"
 		"it"	"Con l'armatura, 60％ (boss 35％) resistenza ai danni degli attacchi di fronte a voi.\nAbilità che stordisce i nemici di fronte a voi e aumenta la velocità di attacco.\nE' più lento con lo scudo attivato, quando lo scudo si rompe, guadagna velocità con un cooldown (suono)"
-		"ko"	"-아머 보유시 정면의 적에게 받는 피해가 60％ (보스일시 35％) 감소.\n-능력: 정면의 적 기절 및 공격 속도 증가\n-신속 홉 퍽 사용 시 능력 쿨타임 감소\n-방패 전개시 이동 속도 감소. 방패 파괴시 이동 속도 증가(쿨타임 존재)"
+		"ko"	"-아머 보유시 정면의 적에게 받는 피해가 60％ (보스일시 35％) 감소.\n-능력: 정면의 적 기절 및 공격 속도 증가\n-방패 전개시 이동 속도 감소. 방패 파괴시 이동 속도 증가(쿨타임 존재)"
 	}
 	"Riot Gun Pap 1"
 	{
