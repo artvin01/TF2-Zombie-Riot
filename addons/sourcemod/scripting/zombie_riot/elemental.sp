@@ -281,7 +281,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 		// Warped overrides
 		if(Armor_Charge[victim] < 0 && Armor_DebuffType[victim] == Element_Warped)
 			return;
-		
+
 		Armor_DebuffType[victim] = Element_Nervous;
 		if(f_ArmorCurrosionImmunity[victim][Element_Nervous] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1))
 		{

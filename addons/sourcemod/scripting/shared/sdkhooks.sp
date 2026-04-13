@@ -749,18 +749,28 @@ public void OnPostThink(int client)
 				HealEntityGlobal(client, client, attrib, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 
 			//This heal will show in the hud.
-			attrib = Attributes_GetOnPlayer(client, Attrib_RegenHpOutOfBattle_MaxHealthScaling, true,_, 0.0);	// rage on kill
-			if(attrib)
+			if(f_TimeUntillNormalHeal[client] < GetGameTime())
 			{
-				if(f_TimeUntillNormalHeal[client] < GetGameTime())
+				attrib = Attributes_GetOnPlayer(client, Attrib_RegenHpOutOfBattle_MaxHealthScaling, true,_, 0.0);	// rage on kill
+				if(attrib)
 				{
 					float MaxHealth = float(SDKCall_GetMaxHealth(client));
 					if(MaxHealth > 3000.0)
 						MaxHealth = 3000.0;
 					//show this healing.
-					HealEntityGlobal(client, client, MaxHealth * attrib, 1.0, 0.0, HEAL_SELFHEAL);	
+					HealEntityGlobal(client, client, MaxHealth * attrib, 1.0, 0.0, HEAL_SELFHEAL);
+				}
+
+				if(Armor_Charge[client] < 0)
+				{
+					attrib = Attributes_GetOnPlayer(client, Attrib_RegenElementalOutOfBattleScaling, true,_, 0.0);	// rage on kill
+					if(attrib)
+					{
+						GiveArmorViaPercentage(client, attrib, 1.0, _, true);
+					}
 				}
 			}
+
 			attrib = 0.0;
 			if(ClientPossesesVoidBlade(client) >= 2 && (NpcStats_WeakVoidBuff(client) || NpcStats_StrongVoidBuff(client)))
 			{
