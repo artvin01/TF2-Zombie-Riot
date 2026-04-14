@@ -3838,7 +3838,9 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		SetEntityFlags(target, GetEntityFlags(target)|FL_DUCKING);
 		CClotBody npc = view_as<CClotBody>(target);
 		npc.m_bThisEntityIgnored = false;
-		TeleportEntity(target, pos, ang, NULL_VECTOR);
+		
+		Player_Teleport_Safe(target,pos, true);
+		TeleportEntity(target, NULL_VECTOR, ang, NULL_VECTOR);
 		SetEntityCollisionGroup(target, 5);
 
 		if(WasClientReviving)
