@@ -7619,7 +7619,7 @@
 	{
 		"en"	"An easily irritable Umbral, provoke them at your own risk\n-Starts passive, becoming enraged when hurt.\n-Also enrages after some time."
 		"it"	"Un Umbral facilmente irritabile: provocatelo a vostro rischio e pericolo. \nInizia in modo passivo e si infuria quando viene ferito."
-		"ko"	"쉽게 격노하는 움브랄. 자극하는건 위험이 따릅니다.\n-비공격적 상태로 등장하지만, 피해를 받을 시 격분합니다."
+		"ko"	"쉽게 격노하는 움브랄. 자극하는건 위험이 따릅니다.\n-비공격적 상태로 등장하지만, 피해를 받을 시 격분합니다.\n-또한 일정 시간이 지난 후에도 격분합니다."
 	}
 	"Torn Umbral Gate"
 	{
@@ -7654,6 +7654,7 @@
 	"Seinr Desc"
 	{
 		"en"	"Almagest researcher who entered his own mech suit in a desperate attempt \nto avoid becoming warped. It didn't work out too well... \n-Deals warping damage and has armor that reduces attacker attackspeed and gfives cryo when hit to the attacker.\n-When armor is up, all allies except himself gain heavy resistances \n-Gains speed once armor is broken\nAlso gives tonic buff to all allies shortly and stuns & invuln allies for a short time"
+		"ko"	"왜곡당하지 않기 위해 필사적으로 자신의 메카 슈트를 착용했었던 알마게스트 연구원입니다.\n하지만 그게 그의 뜻대로 되지 않은 것 같습니다... \n-적중 시 왜곡 원소 피해를 부여\n-피격 시 공격자의 공격 속도를 감소시키고 '냉기' 디버프를 부여하는 아머를 보유합니다.\n-아머가 활성화된 동안, 자신을 제외한 모든 아군이 대량의 저항력을 얻습니다.\n-아머가 파괴되면, 이동 속도가 증가합니다.\n-또한 모든 아군에게 잠시 동안 기절 및 무적을 부여하고 이후 '강장제의 고통' 버프를 짧게 부여합니다."
 	}
 	"Jkei"
 	{
@@ -7872,7 +7873,7 @@
 	"HMS: Regalia Desc"
 	{
 		"en"	"Regalia class Battlecruiser. Stolen by an Almagest scientist who's trapped here after we closed the rift through the Curtain.\n-Has 2 phases and flies high in the sky\n-Spawns beacons around the map\n-Periodically locks onto the closest player to. It will then start charging up a sky laser to strike down on them. \n-Occasionally shoots a powerful laser with high control\n-Also can shoot a laser straight into the ground. After some time, this will summon a group of Almagest Proxima.\n-Able to shoot out Lantean drones\n-Periodically flies above where most players are ands and creates a circle of lasers. These lasers will be facing inwards and spin while also moving further out. \n-Once in phase 2, gains a stats boost and a new ability. Can now command all beacons on the map to spawn in an Almagest Proxima every so often."
-		"ko"	"레갈리아급 순양전함"
+		"ko"	"레갈리아급 순양전함입니다. 우리가 장막으로 통하는 균열을 봉쇄한 후 이곳에 갇힌 알마게스트 연구원이 탈취했습니다.\n-2개의 페이즈를 보유하며 공중에 높이 떠 비행합니다.\n-맵 곳곳에 '스타쉽 비컨'을 스폰\n-주기적으로 가장 근접한 대상에게 조준하며, 이후 조준한 대상에게 공중 레이저를 충전합니다.\n-주기적으로 높은 제어력을 가진 레이저를 발사합니다.\n-주기적으로 땅에 좁은 레이저를 발사하며, 일정 시간 후 다수의 알마게스트 프록시마 스폰\n-랜턴 드론을 발사할 수 있습니다.\n-다수의 대상 위에 비행하며 원형 레이저를 발사하며, 이 레이저는 회전하며 안쪽에서부터 밖으로 퍼져나갑니다.\n-2페이즈에 돌입 시, 능력치가 증가하고 신규 능력 추가:\n스폰된 스타쉽 비컨들에 주기적으로 알마게스트 프록시마 소환 명령을 내립니다."
 	}
 	"Starship Beacon"
 	{
