@@ -2253,8 +2253,10 @@ void DownedOrKilledClient_Feedback(int client, int attacker, float damage, int d
 		if (b_NameNoTranslation[attacker])
 			Format(AttackerWho, sizeof(AttackerWho), "%s",c_NpcName[attacker]);
 		else
-#endif
 			Format(AttackerWho, sizeof(AttackerWho), "%T",c_NpcName[attacker], client);
+#else
+		Format(AttackerWho, sizeof(AttackerWho), "%T",c_NpcName[attacker], client);
+#endif
 
 		char prefix[255];
 		StatusEffects_PrefixName(attacker, client, prefix, sizeof(prefix));

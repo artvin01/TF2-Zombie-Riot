@@ -688,6 +688,15 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 		ang[2] = 0.0;
 		TeleportEntity(target, pos, ang);
 	}
+	GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
+	pos[2] += 25.0;
+	
+	DataPack pack = new DataPack();
+	pack.WriteFloat(pos[0]);
+	pack.WriteFloat(pos[1]);
+	pack.WriteFloat(pos[2]);
+	pack.WriteCell(EntIndexToEntRef(target));
+	RequestFrame(TeleportDelayFrameDo, pack);
 
 	if(wasDriver)	// CPropVehicleDriveable::ExitVehicle
 	{
@@ -1039,3 +1048,17 @@ static void RestoreClientWeapons(int client)
 	}
 }
 #endif
+void TeleportDelayFrameDo(DataPack pack)
+{
+	pack.Reset();
+	float vec_pos[3];
+	vec_pos[0] = pack.ReadFloat();
+	vec_pos[1] = pack.ReadFloat();
+	vec_pos[2] = pack.ReadFloat();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	delete pack;
+	if(!IsEntityAlive(client))
+		return;
+		
+	Player_Teleport_Safe(client,vec_pos, true);
+}

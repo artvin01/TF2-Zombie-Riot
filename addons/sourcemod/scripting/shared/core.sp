@@ -4015,7 +4015,7 @@ public void ArrowTouchNonCombatEntity(int entity, int other)
 }
 
 
-void PlayerHasInteract(int client, char[] Buffer, int Buffersize)
+stock void PlayerHasInteract(int client, char[] Buffer, int Buffersize)
 {
 	if(zr_interactforcereload.BoolValue) //Cvar is on
 	{
@@ -4092,7 +4092,7 @@ void TakeDamage_DisableMVM()
 
 
 
-void EntityClearPanicButton()
+stock void EntityClearPanicButton()
 {
 	switch(CurrentEdictStrikes)
 	{

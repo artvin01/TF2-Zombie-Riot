@@ -27,5 +27,19 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, "models/vehicles/minecraft/minecraft_boat.mdl", "scripts/vehicles/tf2_minecraft.txt");
+	return VehicleMinecraft(vecPos, vecAng);
+}
+
+
+methodmap VehicleMinecraft < VehicleGeneric
+{
+	public VehicleMinecraft(const float vecPos[3], const float vecAng[3])
+	{
+		VehicleMinecraft obj = view_as<VehicleMinecraft>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, "models/vehicles/minecraft/minecraft_boat.mdl", "scripts/vehicles/tf2_minecraft.txt"));
+
+		Armor_Charge[obj.index] = 2000;
+		obj.m_iMaxArmor = 2000;
+
+		return obj;
+	}
 }

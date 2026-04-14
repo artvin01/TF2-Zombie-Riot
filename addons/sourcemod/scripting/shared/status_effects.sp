@@ -8418,11 +8418,13 @@ float Perfected_Instinct_Dodge(int attacker, int victim, StatusEffect Apply_Mast
 		return 0.0;
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+#if defined ZR
 	if(i_NpcInternalId[victim] == BlackHeavySoulIDReturn())
 	{
 		ApplyStatusEffect(victim, victim, "Perfected Instinct Speed", 0.35);
 	}
 	else
+#endif
 	{
 		if(!b_thisNpcIsARaid[victim])
 			ApplyStatusEffect(victim, victim, "Perfected Instinct Speed", 0.35);
