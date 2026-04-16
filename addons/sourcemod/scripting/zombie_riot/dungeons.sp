@@ -2489,8 +2489,11 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 		{
 			break;
 		}
+		if(HasSpecificBuff(iNpc, "Stalker Prefix"))
+			break;
 		GiveOneGuranteed = false;
 		RetryBuffGiving = false;
+		
 		switch(GetRandomInt(1,35))
 		{
 			case 1:
@@ -2682,6 +2685,7 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 					{
 						ApplyStatusEffect(iNpc, iNpc, "Stalker Prefix", 999999.9);
 						ApplyStatusEffect(iNpc, iNpc, "Stalker Prefix Nerf", 999999.9);
+						ApplyStatusEffect(iNpc, iNpc, "Anti-Waves", 999999.9);
 					}
 					else
 					{

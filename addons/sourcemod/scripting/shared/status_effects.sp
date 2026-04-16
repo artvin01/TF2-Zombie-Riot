@@ -8697,6 +8697,31 @@ void Const2Modifs_Stalker_Start(int victim, StatusEffect Apply_MasterStatusEffec
 	SetEntityRenderColor_NpcAll(victim, 0.0, 0.0, 0.0);
 	b_StaticNPC[victim] = true;
 	AddNpcToAliveList(victim, b_StaticNPC[victim] ? 1 : 0);
+	RequestFrame(RemoveAllNonStalkerPrefix, EntIndexToEntRef(victim));
+}
+
+void RemoveAllNonStalkerPrefix(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(!IsValidEntity(entity))
+		return;
+	if(!E_AL_StatusEffects[entity])
+		return;
+	
+	static E_StatusEffect Apply_StatusEffect;
+	int length = E_AL_StatusEffects[entity].Length;
+	for(int i; i<length; i++)
+	{
+		E_AL_StatusEffects[entity].GetArray(i, Apply_StatusEffect);
+		StatusEffect Apply_MasterStatusEffect;
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_MasterStatusEffect.PrefixEnemyName[0])
+			if(StrContains(Apply_MasterStatusEffect.PrefixEnemyName, "Stalker") == -1)
+				Apply_StatusEffect.RemoveStatus();
+			
+		//only remove effects.
+	}
+
 }
 void Disco_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
