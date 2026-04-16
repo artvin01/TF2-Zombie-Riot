@@ -1080,21 +1080,6 @@
 		"it"		"Martello"
 		"ko"		"망치"
 	}
-	"Mega Masher"
-	{
-		"en"		"Mega Masher"
-		"ko"		"메가 스매셔"
-	}
-	"Omega Mega Masher"
-	{
-		"en"		"Omega Mega Masher"
-		"ko"		"오메가 메가 매셔"
-	}
-	"Obuch's Hammer"
-	{
-		"en"		"Obuch's Hammer"
-		"ko"		"오부치의 망치"
-	}
 	"Fire Axe"
 	{
 		"en"		"Fire Axe"
@@ -4098,7 +4083,7 @@
 	"Omega Mega Masher"
 	{
 		"en"		"Omega Mega Masher"
-		"en"		"Омега Мега Колотушка"
+		"ru"		"Омега Мега Колотушка"
 		"ko"		"오메가 메가 매셔"
 	}
 	"Obuch's Hammer"
