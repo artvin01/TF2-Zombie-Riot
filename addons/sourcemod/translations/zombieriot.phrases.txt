@@ -5878,25 +5878,31 @@
 	"Zombie Outbreak"
 	{
 		"en"	"Zombie Outbreak"
+		"ko"	"좀비 사태"
 	}
 	"Default Escape Desc"
 	{
 		"en"	"Escape from the zombie horde!"
+		"ko"	"좀비 무리들에게서 탈출하세요!"
 	}
 	"Rising Tides"
 	{
 		"en"	"Rising Tides"
+		"ko"	"라이징 타이즈"
 	}
 	"Seaborn Escape Desc"
 	{
 		"en"	"Escape from the seaborn's spreading mass!"
+		"ko"	"퍼져나가는 시본의 물결에서 탈출하세요!"
 	}
 	"Medieval Empires"
 	{
 		"en"	"Medieval Empires"
+		"ko"	"중세 제국"
 	}
 	"Medieval Escape Desc"
 	{
 		"en"	"Empires are taking over the territory!"
+		"ko"	"제국이 구역을 점령하고 있습니다!"
 	}
 }
