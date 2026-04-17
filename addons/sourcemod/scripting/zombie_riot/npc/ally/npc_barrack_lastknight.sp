@@ -1013,5 +1013,4 @@ void SetDownedState_LastKnight(int iNpc, bool StateDo) // Cleeeearly didn't borr
 		b_NpcIsInvulnerable[iNpc] = false;
 		SetEntProp(iNpc, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(iNpc));
 	}
-	
 }
