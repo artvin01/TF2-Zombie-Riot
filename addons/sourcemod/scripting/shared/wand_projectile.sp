@@ -296,6 +296,15 @@ public void Wand_Base_StartTouch(int entity, int other)
 	int target = other;
 	if(GetTeam(entity) == TFTeam_Red)
 		target = Target_Hit_Wand_Detection(entity, other);
+
+	static float AbsOrigin[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
+	bool Collided = IsPointCollideable(AbsOrigin,entity,other);
+	if(!Collided)
+	{
+		return;
+	}
+	PrintToChatAll("Collided %b",Collided);
 	Function func = func_WandOnTouch[entity];
 	if(func && func != INVALID_FUNCTION)
 	{

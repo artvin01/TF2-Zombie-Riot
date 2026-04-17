@@ -548,7 +548,7 @@ public void WeaponShootBrick(int client, int weapon, bool crit, int slot)
 	speed *= Attributes_Get(weapon, 103, 1.0);
 	speed *= Attributes_Get(weapon, 104, 1.0);
 	speed *= Attributes_Get(weapon, 475, 1.0);
-	int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, -1, weapon, "bullet_distortion_trail_tracer");
+	int projectile = Wand_Projectile_Spawn(client, speed, 1.0, damage, -1, weapon, "bullet_distortion_trail_tracer");
 	ApplyCustomModelToWandProjectile(projectile, "models/props_debris/concrete_cynderblock001.mdl", 0.8, "");
 	WandProjectile_ApplyFunctionToEntity(projectile, BrickTouchStart);
 }

@@ -1060,5 +1060,5 @@ void TeleportDelayFrameDo(DataPack pack)
 	if(!IsEntityAlive(client))
 		return;
 		
-	Player_Teleport_Safe(client,vec_pos, true);
+	Player_Teleport_Safe(client, vec_pos, true, true);
 }

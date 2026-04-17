@@ -2105,6 +2105,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			if(DoInteractKeyLogic(angles, client))
 				return Plugin_Continue;
 		}
+		float Healer[3];
+		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Healer); 
+		PrintToChatAll("IsSafePos? %b", Player_Teleport_Safe(client, Healer, true, true));
 		// force wait 1 second so it isnt activated automatically
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding != -1)
@@ -3839,7 +3842,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		CClotBody npc = view_as<CClotBody>(target);
 		npc.m_bThisEntityIgnored = false;
 		
-		Player_Teleport_Safe(target,pos, true);
+		Player_Teleport_Safe(target,pos, true, true);
 		TeleportEntity(target, NULL_VECTOR, ang, NULL_VECTOR);
 		SetEntityCollisionGroup(target, 5);
 

@@ -4532,7 +4532,7 @@ public bool TeleportDetectEnemy(int entity, int contentsMask, any iExclude)
 	}
 	return false;
 }
-stock bool Player_Teleport_Safe(int client, float endPos[3], bool teleport = true)
+stock bool Player_Teleport_Safe(int client, float endPos[3], bool teleport = true, bool TraceWorldOnly = false)
 {
 	bool FoundSafeSpot = false;
 
@@ -4545,7 +4545,7 @@ stock bool Player_Teleport_Safe(int client, float endPos[3], bool teleport = tru
 	float OriginalPos[3];
 	OriginalPos = endPos;
 
-	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, _, _, TraceWorldOnly))
 		FoundSafeSpot = true;
 
 	for (int x = -1; x < 6; x++)
@@ -4631,7 +4631,7 @@ stock bool Player_Teleport_Safe(int client, float endPos[3], bool teleport = tru
 					case 6:
 						endPos[2] -= TELEPORT_STUCK_CHECK_3;	
 				}
-				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, _, _, TraceWorldOnly))
 					FoundSafeSpot = true;
 			}
 		}
@@ -4639,7 +4639,7 @@ stock bool Player_Teleport_Safe(int client, float endPos[3], bool teleport = tru
 				
 	FoundSafeSpot = false;
 
-	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, _, _, TraceWorldOnly))
 	{
 		FoundSafeSpot = true;
 	}
@@ -10129,7 +10129,7 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 
 //We wish to check if this poisiton is safe or not.
 //This is only for players.
-bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool check_for_Ground_Clerance = false, bool ingoreSafeTrace = false)
+bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool check_for_Ground_Clerance = false, bool ingoreSafeTrace = false, bool TraceWorldOnly = false)
 {
 	int ref;
 	
@@ -10150,6 +10150,10 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool
 	else
 	{
 		SolidityFlags = MASK_NPCSOLID;
+	}
+	if(TraceWorldOnly)
+	{
+		return !(IsSpaceOccupiedWorldOnly(Pos, mins, maxs,entity));
 	}
 	hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, SolidityFlags, BulletAndMeleeTrace, entity);
 
@@ -10943,6 +10947,55 @@ public bool TraceEntityEnumerator_EnumerateTriggers_StairTrigger(int entity, int
 	}
 	
 	return true;
+}
+bool PointCollideableResult;
+stock bool IsPointCollideable(float pos1[3], int entityme, int entitythem)
+{
+	static float CurrentVelocity[3];
+	GetEntPropVector(entityme, Prop_Data, "m_vecAbsVelocity", CurrentVelocity);
+
+	CurrentVelocity[0] *= 0.02;
+	CurrentVelocity[1] *= 0.02;
+	CurrentVelocity[2] *= 0.02;
+
+	static float VecEndLocation[3];
+	VecEndLocation[0] = pos1[0] + CurrentVelocity[0];
+	VecEndLocation[1] = pos1[1] + CurrentVelocity[1];
+	VecEndLocation[2] = pos1[2] + CurrentVelocity[2];
+
+	return IsPointCollideable_Internal(pos1, VecEndLocation, entityme, entitythem);
+}
+stock bool IsPointCollideable_Internal(float pos1[3], float pos2[3], int entityme, int entitythem)
+{
+	PointCollideableResult = false;
+
+	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	TE_SetupBeamPoints(pos1, pos2, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 1.0, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+	TE_SendToAll();
+		
+	Handle trace = TR_TraceRayFilterEx( pos1, pos2, ( MASK_SOLID ), RayType_EndPoint, TraceEntity_MeAndTarget, entitythem );
+	delete trace;
+	return PointCollideableResult;
+}
+
+public bool TraceEntity_MeAndTarget(int entity, int mask, int entitythem)
+{	
+	if(entitythem != entity)
+		return false;
+		
+	PrintToChatAll("2 TraceEntity_MeAndTarget");
+	Handle trace = TR_ClipCurrentRayToEntityEx(MASK_ALL, entity);
+	bool didHit = TR_DidHit(trace);
+	delete trace;
+	
+	if (didHit)
+	{
+		PrintToChatAll("3 TraceEntity_MeAndTarget");
+		PointCollideableResult = true;
+		return true;
+	}
+	
+	return false;
 }
 
 void AddDelayPather(int npcpather, const float DistanceCheap[3])
