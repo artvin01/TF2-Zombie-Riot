@@ -992,7 +992,7 @@ public int BarrackBody_MenuH(Menu menu, MenuAction action, int client, int choic
 							BarracksVillager_MenuSpecial(client, npc.index);
 							return 0;
 						}
-							else if(StrEqual(npc_classname, "npc_barrack_lastknight"))
+						else if(StrEqual(npc_classname, "npc_barrack_lastknight"))
 						{
 							LastKnight_MenuSpecial(client, npc.index);
 							return 0;
