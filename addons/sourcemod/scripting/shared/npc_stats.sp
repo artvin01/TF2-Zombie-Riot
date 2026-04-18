@@ -10951,12 +10951,15 @@ public bool TraceEntityEnumerator_EnumerateTriggers_StairTrigger(int entity, int
 bool PointCollideableResult;
 stock bool IsPointCollideable(float pos1[3], int entityme, int entitythem)
 {
+	//if its the world, we just allow it.
+	if(entitythem == 0)
+		return true;
 	static float CurrentVelocity[3];
 	GetEntPropVector(entityme, Prop_Data, "m_vecAbsVelocity", CurrentVelocity);
 
-	CurrentVelocity[0] *= 0.02;
-	CurrentVelocity[1] *= 0.02;
-	CurrentVelocity[2] *= 0.02;
+	CurrentVelocity[0] *= 0.015;
+	CurrentVelocity[1] *= 0.015;
+	CurrentVelocity[2] *= 0.015;
 
 	static float VecEndLocation[3];
 	VecEndLocation[0] = pos1[0] + CurrentVelocity[0];
@@ -10969,12 +10972,23 @@ stock bool IsPointCollideable_Internal(float pos1[3], float pos2[3], int entitym
 {
 	PointCollideableResult = false;
 
+		
+	TR_TraceRayFilter( pos1, pos2, ( MASK_SOLID ), RayType_EndPoint, TraceEntity_MeAndTarget, entitythem );
+	/*
 	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	TE_SetupBeamPoints(pos1, pos2, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 1.0, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
 	TE_SendToAll();
-		
-	Handle trace = TR_TraceRayFilterEx( pos1, pos2, ( MASK_SOLID ), RayType_EndPoint, TraceEntity_MeAndTarget, entitythem );
-	delete trace;
+	bool didHit = TR_DidHit();
+	
+	if (didHit && PointCollideableResult)
+	{
+		float VectorHit[3];
+		TR_GetEndPosition(VectorHit);
+		SDKCall_SetLocalOrigin(entityme, VectorHit);		
+	}
+	breaks other wands
+	*/
+	
 	return PointCollideableResult;
 }
 
@@ -10983,14 +10997,12 @@ public bool TraceEntity_MeAndTarget(int entity, int mask, int entitythem)
 	if(entitythem != entity)
 		return false;
 		
-	PrintToChatAll("2 TraceEntity_MeAndTarget");
-	Handle trace = TR_ClipCurrentRayToEntityEx(MASK_ALL, entity);
+	Handle trace = TR_ClipCurrentRayToEntityEx(MASK_SOLID, entity);
 	bool didHit = TR_DidHit(trace);
 	delete trace;
 	
 	if (didHit)
 	{
-		PrintToChatAll("3 TraceEntity_MeAndTarget");
 		PointCollideableResult = true;
 		return true;
 	}
