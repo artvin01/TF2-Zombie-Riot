@@ -10972,7 +10972,8 @@ stock bool IsPointCollideable_Internal(float pos1[3], float pos2[3], int entitym
 {
 	PointCollideableResult = false;
 
-		
+	//rid warning
+	entityme = entitythem;
 	TR_TraceRayFilter( pos1, pos2, ( MASK_SOLID ), RayType_EndPoint, TraceEntity_MeAndTarget, entitythem );
 	/*
 	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
