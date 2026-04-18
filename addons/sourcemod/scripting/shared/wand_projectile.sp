@@ -304,7 +304,6 @@ public void Wand_Base_StartTouch(int entity, int other)
 	{
 		return;
 	}
-	PrintToChatAll("Collided %b",Collided);
 	Function func = func_WandOnTouch[entity];
 	if(func && func != INVALID_FUNCTION)
 	{
