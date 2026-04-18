@@ -10966,14 +10966,14 @@ stock bool IsPointCollideable(float pos1[3], int entityme, int entitythem)
 	VecEndLocation[1] = pos1[1] + CurrentVelocity[1];
 	VecEndLocation[2] = pos1[2] + CurrentVelocity[2];
 
-	return IsPointCollideable_Internal(pos1, VecEndLocation, entityme, entitythem);
+	return IsPointCollideable_Internal(pos1, VecEndLocation, entitythem);
 }
-stock bool IsPointCollideable_Internal(float pos1[3], float pos2[3], int entityme, int entitythem)
+stock bool IsPointCollideable_Internal(float pos1[3], float pos2[3], int entitythem)
 {
 	PointCollideableResult = false;
 
 	//rid warning
-	entityme = entitythem;
+
 	TR_TraceRayFilter( pos1, pos2, ( MASK_SOLID ), RayType_EndPoint, TraceEntity_MeAndTarget, entitythem );
 	/*
 	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
