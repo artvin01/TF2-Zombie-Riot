@@ -6,10 +6,7 @@ import vdf
 
 """
 TODO
-[ ] const2 support
-[ ] show trophies in item list
 ([ ] sort const and rogue by number, not alphabetically)
-([ ] skilltree page)
 """
 
 PROPERTY_MAPPINGS = {

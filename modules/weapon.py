@@ -182,7 +182,25 @@ def parse():
             for item in data:
                 item_data = data[item]
                 if is_trophy(item_data):
-                    util.log("Skipping trophy entry")
+                    """
+                    "Magia Wings [???]"
+                        {
+                            "desc"		"Oh how the Stars shine upon those who rule Ruina..." (can be a desc key!)
+                            "cost"		"0"
+                            "textstore"	"Magia Wings [???]"
+                            "visual_desc_only"	"0"
+                            "attributes"	"2 ; 1.0"
+                            "index"		"2" //0 = primary, 1 = secondary, 2 = melee, 3 = Body, 4 = mage?
+                            "slot"		"11" // 11 is cosmetics
+                        }
+                    """
+                    context = {
+                        "name": util.get_key(item, silent=True),
+                        "data_item": util.divfornewline(util.get_key(item_data["desc"], silent=True)),
+                        "wtags": "",
+                        "wcfghidden": ""
+                    }
+                    html += util.fill_template(util.read("templates/items/item_preview.html"), context)
                 elif is_weapon(item_data):
                     item_html, wtags, item_paps, tags = parse_weapon_data(item,item_data,depth,tags)
                     # item
@@ -207,7 +225,8 @@ def parse():
                     context = {
                         "name": item,
                         "data_item": item_html,
-                        "wtags": wtags
+                        "wtags": wtags,
+                        "wcfghidden": ""
                     }
                     html += util.fill_template(util.read("templates/items/item_preview.html"), context)
                     html += f"<div style=\"margin-left: 10px;\">\n"
@@ -220,7 +239,8 @@ def parse():
                             context = {
                                 "name": k,
                                 "data_item": item_html,
-                                "wtags": wtags
+                                "wtags": wtags,
+                                "wcfghidden": ""
                             }
                             html += util.fill_template(util.read("templates/items/item_preview.html"), context)
                             # paps
@@ -230,8 +250,7 @@ def parse():
                 elif item[0].isupper() and is_category(item_data) or "Perks" in item: # unneeded data is always lowercase...
                     html, tags = item_block(item, item_data, depth, html, tags)
                 elif "Trophies" == item: # Item
-                    util.log("Skipping 'Trophies' entry")
-                    #_, tags = item_block(item, item_data, depth, markdown, markdown_header, markdown_pap, tags)
+                    html, tags = item_block(item, item_data, depth, html, tags)
                 elif "whiteout" in item_data: # Text shown in menu
                     html += item + "\n"
             html += "</details>\n"
