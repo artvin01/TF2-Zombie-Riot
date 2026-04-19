@@ -5,7 +5,6 @@
     padding: 1em;
     background-color: var(--bg-light);
     color: var(--deep-space-blue);
-    border-radius: 5px;
 
     position: fixed;
     right: 0%;

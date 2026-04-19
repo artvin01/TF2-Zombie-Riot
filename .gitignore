@@ -20,6 +20,7 @@ gh-pages/index.html
 !gh-pages/builtin_img/
 !gh-pages/premedia_icons/
 !gh-pages/waveset_viewer.html
+!gh-pages/multipliers.html
 
 logs.txt
 run_rogue.sh

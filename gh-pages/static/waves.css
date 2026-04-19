@@ -119,7 +119,6 @@
   width: max-content;
   max-width: 400px;
   top: 110%;
-  border-radius: 5px;
   opacity: 0;
   position: absolute;
   transition: 0.25s;
