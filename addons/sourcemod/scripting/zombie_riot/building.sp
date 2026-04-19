@@ -2389,11 +2389,13 @@ bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 		return false;	// no owner!!!
 
 	Building_RotateAllDepencencies(entity);
-	float ModelScale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
-	ModelScale *= 0.33;
 
+	float ModelScale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+	ModelScale *= (1.0 / 3.0);
 	b_ThisEntityIgnored[entity] = true;
 	b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+	SDKUnhook(entity, SDKHook_SetTransmit, ThirdersonTransmit_Global);
+	SDKHook(entity, SDKHook_SetTransmit, ThirdersonTransmit_Global);
 	
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", ModelScale);
 	if(IsValidEntity(objstats.m_iWearable1))
@@ -2471,6 +2473,7 @@ void ParentDelayFrameForReasons(DataPack pack)
 	SDKCall_SetLocalOrigin(entity, flPos);	
 	SetEntPropVector(entity, Prop_Data, "m_angRotation", flAng);
 	SetParent(InfoTarget, entity, _, _, _);
+	Update_TransmitState(entity);
 	i2_MountedInfoAndBuilding[0][client] = EntIndexToEntRef(InfoTarget);
 }
 
@@ -2503,6 +2506,7 @@ void TransferDispenserBackToOtherEntity(int client, bool DontEquip = false)
 
 			float posStacked[3]; 
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", posStacked);
+			SDKCall_SetLocalOrigin(entity, posStacked);	
 			AcceptEntityInput(entity, "ClearParent");
 			if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
 				posStacked[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
@@ -2584,11 +2588,11 @@ void UnequipDispenser(int client, bool destroy = false)
 	{
 		float posStacked[3]; 
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", posStacked);
+		SDKCall_SetLocalOrigin(entity, posStacked);    
 		AcceptEntityInput(entity, "ClearParent");
-		if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
+		if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])    //wierd offset.
 			posStacked[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
 		Update_TransmitState(entity);
-		SDKCall_SetLocalOrigin(entity, posStacked);	
 		i2_MountedInfoAndBuilding[1][client] = INVALID_ENT_REFERENCE;
 	}
 	if(IsValidEntity(i2_MountedInfoAndBuilding[0][client]))
@@ -2608,6 +2612,7 @@ void UnequipDispenser(int client, bool destroy = false)
 	ModelScale *= 3.0;
 
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", ModelScale);
+	SDKUnhook(entity, SDKHook_SetTransmit, ThirdersonTransmit_Global);
 	if(IsValidEntity(objstats.m_iWearable1))
 	{
 		SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_flModelScale", ModelScale);
@@ -2962,4 +2967,28 @@ bool Building_ValidSpaceEmpty(int buildingindx, float VecBottom[3], float HullMi
 		return false;
 	}
 	return true;
+}
+
+public Action ThirdersonTransmit_Global(int entity, int client)
+{
+	if(client > 0 && client <= MaxClients)
+	{
+		if(b_FirstPersonUsesWorldModel[client])
+		{
+			return Plugin_Continue;
+		}
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(owner == client)
+		{
+			if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
+			{
+				return Plugin_Continue;
+			}
+		}
+		else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != owner || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
+		{
+			return Plugin_Continue;
+		}
+	}
+	return Plugin_Stop;
 }
