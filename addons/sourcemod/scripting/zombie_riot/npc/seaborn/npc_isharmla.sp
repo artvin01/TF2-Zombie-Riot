@@ -102,6 +102,7 @@ methodmap Isharmla < CClotBody
 				RaidModeTime = GetGameTime() + 9000.0;
 				RaidModeScaling = 0.0;
 				RaidAllowsBuildings = true;
+				RaidAllowLastman = false;
 			}
 		}
 
@@ -150,6 +151,7 @@ public void Isharmla_ClotThink(int iNPC)
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 
 		i_TargetAlly[npc.index] = -1;

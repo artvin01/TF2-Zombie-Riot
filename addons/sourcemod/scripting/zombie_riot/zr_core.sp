@@ -2196,6 +2196,10 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 		{
 			LastMann = false;
 		}
+		else if (!ZR_AllowLastman())
+		{
+			LastMann = false;
+		}
 		else
 		{
 			if(!applied_lastmann_buffs_once)
@@ -3590,4 +3594,19 @@ void ShowCustomFogToClient(int client)
 	
 	SetVariantString(buffer);
 	AcceptEntityInput(client, "SetFogController");
+}
+
+
+bool ZR_AllowLastman()
+{
+	if(Rogue_Mode() || Dungeon_Mode())
+		return true;
+	if(Classic_Mode() || Construction_Mode())
+		return false;
+
+	//during raidbosses, allow lastman (that disallow buildings)
+	if(RaidbossIgnoreBuildingsLogic(3))
+		return true;
+		
+	return false;
 }

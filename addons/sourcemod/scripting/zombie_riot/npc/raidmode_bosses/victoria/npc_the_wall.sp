@@ -481,6 +481,7 @@ methodmap Huscarls < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 200.0;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
+			RaidAllowLastman = true;
 
 			if(StrContains(data, "nomusic") == -1)
 			{

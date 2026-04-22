@@ -716,6 +716,7 @@ methodmap Lelouch < CClotBody
 		//this shouldnt ever start, no anti delay here.
 
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 
 		char buffers[3][64];
 		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));

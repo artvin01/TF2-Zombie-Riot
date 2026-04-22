@@ -405,6 +405,7 @@ methodmap Castellan < CClotBody
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 		npc.m_bDoSpawnGesture = true;
 		
 		char buffers[3][64];

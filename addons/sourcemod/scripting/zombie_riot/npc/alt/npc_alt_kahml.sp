@@ -252,6 +252,7 @@ methodmap Kahmlstein < CClotBody
 			else
 				RaidModeScaling *= 1.5;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 		
 		npc.m_bDissapearOnDeath = true;

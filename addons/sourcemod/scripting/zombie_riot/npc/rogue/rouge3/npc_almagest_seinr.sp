@@ -157,6 +157,7 @@ methodmap AlmagestSeinr < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 			RaidModeScaling = 0.0;
 		}
 		npc.StartPathing();

@@ -136,6 +136,7 @@ methodmap TheGreatRam < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 		npc.StartPathing();
 		npc.m_flSpeed = 25.0;

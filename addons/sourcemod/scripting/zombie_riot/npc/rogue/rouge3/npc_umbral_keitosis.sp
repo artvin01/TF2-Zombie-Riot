@@ -140,6 +140,7 @@ methodmap Umbral_Keitosis < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 			RaidModeScaling = 0.0;
 		}
 		npc.m_flScalingDo = 1.0;

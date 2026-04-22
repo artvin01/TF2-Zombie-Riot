@@ -168,6 +168,7 @@ methodmap Gasleader < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 		
 		int skin = 1;

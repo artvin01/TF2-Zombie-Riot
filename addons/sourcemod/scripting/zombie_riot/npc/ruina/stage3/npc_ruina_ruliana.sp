@@ -321,6 +321,7 @@ methodmap Ruliana < CClotBody
 				RaidModeTime = GetGameTime(npc.index) + 9000.0;
 				RaidModeScaling = 8008.5;
 				RaidAllowsBuildings = true;
+				RaidAllowLastman = false;
 			}
 		}
 		else

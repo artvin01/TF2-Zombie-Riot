@@ -437,6 +437,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
+			RaidAllowLastman = true;
 			RaidModeTime = GetGameTime() + 292.0;
 			RaidModeScaling = 0.0;
 			Zero(b_EnemyCloseToMainBob);

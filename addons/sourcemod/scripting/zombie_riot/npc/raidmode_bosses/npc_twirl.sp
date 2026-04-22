@@ -856,6 +856,7 @@ methodmap Twirl < CClotBody
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 	
 		fl_next_textline = 0.0;
 		for(int client_check=1; client_check<=MaxClients; client_check++)

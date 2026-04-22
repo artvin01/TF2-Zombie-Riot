@@ -176,6 +176,7 @@ methodmap XenoLabSecurity < CClotBody
 			RaidModeTime = GetGameTime() + 9000.0;
 			RaidModeScaling = 0.0;  // Super boss safety net
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl");

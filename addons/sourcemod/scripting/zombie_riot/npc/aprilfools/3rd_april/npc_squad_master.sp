@@ -560,6 +560,7 @@ static void Internal_ClotThink(int iNPC)
 			RaidModeTime = GetGameTime(npc.index) + 200.0;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
+			RaidAllowLastman = true;
 			//revert cameras do
 		}
 	}

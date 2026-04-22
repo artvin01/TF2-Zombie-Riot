@@ -300,23 +300,32 @@ public void WeakDash(int client)
 }
 
 
-public void MorphineShotLogic(int client)
+void MorphineShotLogic(int client, bool Oneshot_Protection = false)
 {
-	EmitSoundToAll(SOUND_HEAL_BEAM, client, _, 70, _, 1.0, 70);
-	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 3.0);
 	float MaxHealth = float(SDKCall_GetMaxHealth(client));
-	f_AntiStuckPhaseThrough[client] = GetGameTime() + 3.0 + 0.5;
-	f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + 3.0 + 0.5;
-	ApplyStatusEffect(client, client, "Intangible", 3.0);
-	MorphineCharge[client] = 0.0;
-	if(Rogue_SuperStimsOn())
+	if(!Oneshot_Protection)
 	{
-		HealEntityGlobal(client, client, MaxHealth * 3.0, 1.0, 3.0, HEAL_SELFHEAL);
+		EmitSoundToAll(SOUND_HEAL_BEAM, client, _, 70, _, 1.0, 70);
+		if(Rogue_SuperStimsOn())
+		{
+			HealEntityGlobal(client, client, MaxHealth * 3.0, 1.0, 3.0, HEAL_SELFHEAL);
+		}
+		else
+		{
+			HealEntityGlobal(client, client, MaxHealth * 0.15, 0.5, 3.0, HEAL_SELFHEAL);
+		}
+		MorphineCharge[client] = 0.0;
 	}
 	else
 	{
+		
 		HealEntityGlobal(client, client, MaxHealth * 0.15, 0.5, 3.0, HEAL_SELFHEAL);
 	}
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 3.0);
+	f_AntiStuckPhaseThrough[client] = GetGameTime() + 3.0 + 0.5;
+	f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + 3.0 + 0.5;
+	ApplyStatusEffect(client, client, "Intangible", 3.0);
+
 }
 public void WeakDashLogic(int client)
 {

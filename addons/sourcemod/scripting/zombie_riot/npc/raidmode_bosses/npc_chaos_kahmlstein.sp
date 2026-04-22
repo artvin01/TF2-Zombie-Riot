@@ -450,6 +450,7 @@ methodmap ChaosKahmlstein < CClotBody
 			}
 			
 			RaidAllowsBuildings = false;
+			RaidAllowLastman = true;
 					
 			float value;
 			char buffers[3][64];
@@ -793,6 +794,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 					NPCTalkMessage(npc.index, "...Let's begin.");
 					RaidBossActive = EntIndexToEntRef(npc.index);
 					RaidAllowsBuildings = false;
+					RaidAllowLastman = true;
 				}
 				
 			}
@@ -847,6 +849,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 					CPrintToChatAll("{lightblue}The Messenger{default}: Let's get 'em.");
 					//RaidBossActive = EntIndexToEntRef(npc.index);
 					RaidAllowsBuildings = false;
+					RaidAllowLastman = true;
 					RaidModeTime = GetGameTime() + 500.0;
 					
 					MusicEnum music;

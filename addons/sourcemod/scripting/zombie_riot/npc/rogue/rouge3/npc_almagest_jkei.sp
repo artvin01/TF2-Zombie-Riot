@@ -295,6 +295,7 @@ methodmap AlmagestJkei < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = true;
 			RaidModeScaling = 0.0;
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/rogue3_almagestboss.mp3");
@@ -327,11 +328,13 @@ methodmap AlmagestJkei < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = true;
 			RaidModeScaling = 0.0;
 		}
 		if(StrContains(data, "force_final_battle") != -1)
 		{
 			RaidAllowsBuildings = false;
+			RaidAllowLastman = true;
 		}
 		npc.StartPathing();
 		npc.SetJkeiSpeed(330.0);

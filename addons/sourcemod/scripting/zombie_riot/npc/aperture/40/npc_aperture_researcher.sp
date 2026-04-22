@@ -154,6 +154,7 @@ methodmap ApertureResearcher < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 				
 		int skin = 1;

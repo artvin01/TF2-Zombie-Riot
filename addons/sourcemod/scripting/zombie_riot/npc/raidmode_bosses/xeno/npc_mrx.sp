@@ -247,6 +247,7 @@ methodmap RaidbossMrX < CClotBody
 		func_NPCThink[npc.index] = RaidbossMrX_ClotThink;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 		RaidModeTime = GetGameTime(npc.index) + 9999999.0;
 		npc.m_flRushAttackCD = GetGameTime(npc.index) + 45.0;
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 15.0;

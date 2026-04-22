@@ -1056,6 +1056,7 @@ static void PrepareSmith_Raid(AgentSmith npc)
 	RaidModeTime = GetGameTime(npc.index) + 225.0;
 	RaidBossActive = EntIndexToEntRef(npc.index);
 	RaidAllowsBuildings = false;
+	RaidAllowLastman = true;
 
 	MusicEnum music;
 	strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/neodammerung.mp3");

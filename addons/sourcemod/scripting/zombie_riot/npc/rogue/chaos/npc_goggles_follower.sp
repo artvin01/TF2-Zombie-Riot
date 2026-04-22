@@ -722,6 +722,7 @@ static void ClotThink(int iNPC)
 				RaidModeTime = GetGameTime() + 9000.0;
 				RaidModeScaling = 1.0;
 				RaidAllowsBuildings = true;
+				RaidAllowLastman = false;
 
 				ExpidonsaSword_Waldch(npc.index);
 				if(IsValidEntity(npc.m_iWearable3))

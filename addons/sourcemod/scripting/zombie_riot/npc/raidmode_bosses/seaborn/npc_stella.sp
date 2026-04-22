@@ -724,6 +724,7 @@ methodmap Stella < CClotBody
 		if(!IsValidEntity(RaidBossActive))
 			RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 		
 		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_bThisNpcIsABoss = true;

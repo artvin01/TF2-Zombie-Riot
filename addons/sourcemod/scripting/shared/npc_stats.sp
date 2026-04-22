@@ -11147,6 +11147,7 @@ void RemoveFromNpcAliveList(int iNpc)
 
 #if defined ZR
 bool RaidAllowsBuildings = false;
+bool RaidAllowLastman = true;
 #endif
 
 stock bool RaidbossIgnoreBuildingsLogic(int value = 0)
@@ -11185,6 +11186,19 @@ stock bool RaidbossIgnoreBuildingsLogic(int value = 0)
 				return true;
 			}
 
+			//do not ignore
+		}
+		//cehcks for revive
+		case 3:
+		{
+			if(!RaidAllowLastman)
+				return false;
+
+			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			{
+				//do ignore
+				return true;
+			}
 			//do not ignore
 		}
 		default:

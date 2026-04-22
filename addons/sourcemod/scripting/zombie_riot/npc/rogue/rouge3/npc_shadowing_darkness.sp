@@ -500,6 +500,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 		Citizen_MiniBossSpawn();
 		npc.m_flSwordParticleAttackCD = GetGameTime() + 5.0;
 		npc.m_flUpperSlashCD = GetGameTime() + 15.0;

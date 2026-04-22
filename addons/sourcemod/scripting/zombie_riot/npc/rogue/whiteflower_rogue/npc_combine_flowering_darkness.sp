@@ -239,6 +239,7 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		return npc;

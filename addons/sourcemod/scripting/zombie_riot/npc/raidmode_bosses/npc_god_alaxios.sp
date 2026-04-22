@@ -289,6 +289,7 @@ methodmap GodAlaxios < CClotBody
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RemoveAllDamageAddition();
 
@@ -380,6 +381,7 @@ methodmap GodAlaxios < CClotBody
 		{
 			RaidModeTime = GetGameTime(npc.index) + 9999.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 		if(Waves_InFreeplay())
 		{
@@ -562,6 +564,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 						RaidModeTime = GetGameTime(npc.index) + 150.0;
 						RaidBossActive = EntIndexToEntRef(npc.index);
 						RaidAllowsBuildings = false;
+						RaidAllowLastman = true;
 						npc.PlayRageSound();
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 4));
 						static float flPos[3]; 

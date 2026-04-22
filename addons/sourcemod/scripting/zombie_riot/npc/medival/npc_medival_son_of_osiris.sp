@@ -175,6 +175,7 @@ methodmap MedivalSonOfOsiris < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 
 		func_NPCDeath[npc.index] = MedivalSonOfOsiris_NPCDeath;

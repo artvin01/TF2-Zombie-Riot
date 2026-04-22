@@ -133,6 +133,7 @@ methodmap KahmlsteinDeadGrandma < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime() + 60.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 		
 		npc.StartPathing();

@@ -288,6 +288,7 @@ methodmap OmegaRaid < CClotBody
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 		
 		int iActivity = npc.LookupActivity("ACT_BRAWLER_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);

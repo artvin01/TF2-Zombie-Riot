@@ -124,6 +124,7 @@ methodmap UnderTides < CClotBody
 			RaidModeTime = GetGameTime() + 9000.0;
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 		npc.m_bisWalking = false;
 		npc.SetPlaybackRate(1.0);

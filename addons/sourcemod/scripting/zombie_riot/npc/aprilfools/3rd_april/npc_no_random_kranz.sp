@@ -274,6 +274,7 @@ methodmap NoRandomKranz < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 200.0;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
+			RaidAllowLastman = true;
 			b_thisNpcIsARaid[npc.index] = true;
 
 			char buffers[3][64];
