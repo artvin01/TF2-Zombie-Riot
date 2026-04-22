@@ -887,6 +887,21 @@ stock bool Damage_BuildingAttacker(int &attacker, float &damage)
 #if defined ZR
 static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3], int zr_custom_damage)
 {
+	if(EntityFuncTakeDamage[equipped_weapon][1] && EntityFuncTakeDamage[equipped_weapon][1] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, EntityFuncTakeDamage[equipped_weapon][1]);
+		Call_PushCell(victim);
+		Call_PushCellRef(attacker);
+		Call_PushCellRef(inflictor);
+		Call_PushFloatRef(damage);
+		Call_PushCellRef(damagetype);
+		Call_PushCellRef(weapon);
+		Call_PushCell(equipped_weapon);
+		Call_PushArray(damagePosition, sizeof(damagePosition));
+		Call_PushCell(zr_custom_damage);
+		Call_Finish();
+		return damage;
+	}
 	switch(i_CustomWeaponEquipLogic[equipped_weapon])
 	{
 		case WEAPON_ARK: // weapon_ark
@@ -1093,6 +1108,21 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 	{
 		static int DummyAmmotype = 0; //useless but needed
 		NPC_TraceAttack(victim, attacker, inflictor, damage, damagetype, DummyAmmotype, 0, i_MeleeHitboxHit[attacker]);
+	}
+	if(EntityFuncTakeDamage[weapon][0] && EntityFuncTakeDamage[weapon][0] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, EntityFuncTakeDamage[weapon][0]);
+		Call_PushCell(victim);
+		Call_PushCellRef(attacker);
+		Call_PushCellRef(inflictor);
+		Call_PushFloatRef(damage);
+		Call_PushCellRef(damagetype);
+		Call_PushCellRef(weapon);
+		Call_PushArray(damageForce, sizeof(damageForce));
+		Call_PushArray(damagePosition, sizeof(damagePosition));
+		Call_PushCell(zr_custom_damage);
+		Call_Finish();
+		return damage;
 	}
 	
 	switch(i_CustomWeaponEquipLogic[weapon])

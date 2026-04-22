@@ -660,6 +660,15 @@ public void OnPostThink(int client)
 		}
 		//re using NPC value.
 		StatusEffect_TimerCallDo(client);
+		float ManaRegen = 12.0;
+		float ManaMaxExtra = 500.0;
+		
+		int ie, Weapone;
+		while(TF2_GetItem(client, Weapone, ie))
+		{
+			//look thru weapons
+			StatusEffect_TimerCallDo(Weapone);
+		}
 		f_TimerStatusEffectsDo[client] = GetGameTime() + 0.4;
 		if(f_TimeUntillNormalHeal[client] < GetGameTime())
 		{

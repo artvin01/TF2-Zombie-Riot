@@ -93,6 +93,9 @@ enum struct ItemInfo
 	Function Func_OnPlayerRunCmd;
 	Function Func_WeaponCreated;
 	Function Func_MapStart;
+	Function Func_TakeDamage_Take;
+	Function Func_TakeDamage_Deal;
+	Function Func_TakeDamagePost;
 
 	Function FuncOnPap;
 
@@ -364,6 +367,14 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sfunc_onplayerruncmd", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Func_OnPlayerRunCmd = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_ontakedamage_take", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_TakeDamage_Take = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_ontakedamage_deal", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_TakeDamage_Deal = GetFunctionByName(null, buffer);
 
 		Format(buffer, sizeof(buffer), "%sfunc_weaponcreated", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -750,6 +761,8 @@ float Ability_Check_Cooldown(int client, int what_slot, int thisWeapon = -1)
 stock float CooldownReductionAmount(int client)
 {
 	float Cooldown = 1.0;
+	if(CvarInfiniteCash.BoolValue)
+		Cooldown *= 0.01;
 	if(MazeatItemHas())
 	{
 		Cooldown *= 0.66;
@@ -6187,6 +6200,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					EntityFuncAttack3[entity] = info.FuncAttack3;
 					EntityFuncReload4[entity]  = info.FuncReload4;
 					EntityFuncPlayerRunCmd[entity]  = info.Func_OnPlayerRunCmd;
+					EntityFuncTakeDamage[entity][0]  = info.Func_TakeDamage_Deal;
+					EntityFuncTakeDamage[entity][1]  = info.Func_TakeDamage_Take;
 					
 					b_Do_Not_Compensate[entity] 				= info.NoLagComp;
 					b_Only_Compensate_CollisionBox[entity] 		= info.OnlyLagCompCollision;

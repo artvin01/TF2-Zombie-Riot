@@ -127,7 +127,6 @@ enum struct E_StatusEffect
 	{
 		static StatusEffect Apply_MasterStatusEffect;
 		AL_StatusEffects.GetArray(this.BuffIndex, Apply_MasterStatusEffect);
-	//	PrintToChatAll("RemoveStatus %s", Apply_MasterStatusEffect.BuffName);
 		if(Apply_MasterStatusEffect.OnBuffEndOrDeleted != INVALID_FUNCTION && Apply_MasterStatusEffect.OnBuffEndOrDeleted)
 		{
 			Call_StartFunction(null, Apply_MasterStatusEffect.OnBuffEndOrDeleted);
@@ -254,6 +253,7 @@ void InitStatusEffects()
 	StatusEffects_Construction2();
 	StatusEffects_AllyInvulnDebuffs();
 	StatusEffects_Construct2_EnemyModifs();
+	StatusEffects_HeartBroken();
 }
 
 static int CategoryPage[MAXPLAYERS];
@@ -9317,4 +9317,147 @@ void SteamHappy_Prefix_Start(int victim, StatusEffect Apply_MasterStatusEffect, 
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	Apply_StatusEffect.WearableUse = EntIndexToEntRef(Wearable);
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+
+#define MAXSINKING_STACKS 10
+int SinkingDebuffIndex;
+void StatusEffects_HeartBroken()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Sinking");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Si");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= 0.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnTakeDamage_PostVictim	= Sinking_TakeDamageAttackerPost;
+	data.OnTakeDamage_DealFunc 		= Sinking_DamageDealFunc;
+	data.HudDisplay_Func 			= Func_SinkingMaxStacks;
+	SinkingDebuffIndex = StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Decapitate");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "DE");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnBuffStarted				= Decapitate_Start;
+	data.OnBuffEndOrDeleted			= Decapitate_End;
+	StatusEffect_AddGlobal(data);
+}
+
+void Decapitate_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidEntity(victim))
+		return;
+
+	Attributes_SetMulti(victim, 2, 2.35);
+
+}
+void Decapitate_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidEntity(victim))
+		return;
+
+	Attributes_SetMulti(victim, 2, 1.0 / (2.35));
+}
+float Sinking_DamageDealFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	if(!Apply_StatusEffect.TotalOwners[victim])
+		return 1.0;
+	if(RoundToNearest(Apply_StatusEffect.DataForUse) < MAXSINKING_STACKS)
+		return 1.0;
+	
+	return 0.9;
+}
+void Func_SinkingMaxStacks(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	//only display to client
+	if(Apply_StatusEffect.TotalOwners[attacker])
+	{
+		if(RoundToNearest(Apply_StatusEffect.DataForUse) >= MAXSINKING_STACKS)
+			Format(HudToDisplay, SizeOfChar, "Si", RoundToNearest(Apply_StatusEffect.DataForUse), MAXSINKING_STACKS);
+		else
+			Format(HudToDisplay, SizeOfChar, "Si(%i/%i)", RoundToNearest(Apply_StatusEffect.DataForUse), MAXSINKING_STACKS);
+	}
+	else
+		Format(HudToDisplay, SizeOfChar, "");
+}
+
+void Sinking_TakeDamageAttackerPost(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	if(attacker == victim)
+		return;
+	if(!Apply_StatusEffect.TotalOwners[attacker])
+		return;
+		
+	if(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
+		return;
+	if(!StatusEffects_SinkingDebuffMaxStacks(victim))
+		return;
+	StartBleedingTimer(victim, attacker, damage * 0.025, 10, -1, damagetype, 0);
+}
+stock void StatusEffects_SinkingDebuffAdd(int victim, int valuetoadd)
+{
+	if(!E_AL_StatusEffects[victim])
+		return;
+
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(SinkingDebuffIndex , E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
+		{
+			if(RoundToNearest(Apply_StatusEffect.DataForUse) >= MAXSINKING_STACKS)
+			{
+				//we at max.
+				return;
+			}
+			Apply_StatusEffect.DataForUse += float(valuetoadd);
+			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+		}
+	}
+	if(E_AL_StatusEffects[victim].Length < 1)
+		delete E_AL_StatusEffects[victim];
+
+}
+stock bool StatusEffects_SinkingDebuffMaxStacks(int victim)
+{
+	if(!E_AL_StatusEffects[victim])
+		return false;
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(SinkingDebuffIndex, E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_StatusEffect Apply_StatusEffect;
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
+		{
+			if(RoundToNearest(Apply_StatusEffect.DataForUse) >= 10)
+			{
+				//we at max.
+				return true;
+			}
+		}
+	}
+	if(E_AL_StatusEffects[victim].Length < 1)
+		delete E_AL_StatusEffects[victim];
+
+	return false;
 }
