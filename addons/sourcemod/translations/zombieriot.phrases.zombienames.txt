@@ -8194,8 +8194,4 @@
 	{
 		"en"	"Major Avangard"
 	}
-	"Amiya"
-	{
-		"en"	"Amiya"
-	}
 }
