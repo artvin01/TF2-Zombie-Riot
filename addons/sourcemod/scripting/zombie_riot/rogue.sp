@@ -2792,6 +2792,8 @@ bool Rogue_NoLastman()
 	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
 		return true;
 		
+	if(!ZR_AllowLastman())
+		return false;
 	return Rogue_Mode() && !Rogue_Paradox_Lastman();
 }
 

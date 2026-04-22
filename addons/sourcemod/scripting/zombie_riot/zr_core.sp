@@ -2197,10 +2197,6 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 		{
 			LastMann = false;
 		}
-		else if (!ZR_AllowLastman())
-		{
-			LastMann = false;
-		}
 		else
 		{
 			if(!applied_lastmann_buffs_once)
