@@ -105,7 +105,7 @@ void CoffinToggleVisiblity(int owner, bool Display)
 	if(!Display)
 		return;
 
-	CreateTimer(0.01, Timer_HeartBroken_CoffinHack, EntIndexToEntRef(CoffinEntity), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.1, Timer_HeartBroken_CoffinHack, EntIndexToEntRef(CoffinEntity), TIMER_FLAG_NO_MAPCHANGE);
 }
 public Action Timer_HeartBroken_CoffinHack(Handle timer, any entid)
 {
