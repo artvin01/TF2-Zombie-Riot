@@ -6,11 +6,10 @@ static float f_HeartBroken_HUDDelay[MAXPLAYERS];
 static int ref_CoffinEntity[MAXPLAYERS];
 
 #define COFFIN_MODEL "models/props_manor/coffin_02.mdl"
-int CoffinIdx;
 public void HeartBroken_OnMapStart()
 {
 	Zero(f_HeartBroken_HUDDelay);
-	CoffinIdx = PrecacheModel(COFFIN_MODEL);
+	PrecacheModel(COFFIN_MODEL);
 	PrecacheModel("models/flag/briefcase.mdl");
 }
 
