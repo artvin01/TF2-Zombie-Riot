@@ -80,7 +80,6 @@ public void Enable_KitOmega(int client, int weapon)
 		}
 		
 	}
-	DataPack pack = new DataPack();
 	if(h_KitOmega_Timer[client] != null)
 	{
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_KIT_OMEGA)
@@ -90,6 +89,7 @@ public void Enable_KitOmega(int client, int weapon)
 			if(IsValidHandle(h_KitOmega_Timer[client]))
 				delete h_KitOmega_Timer[client];
 			h_KitOmega_Timer[client] = null;
+			DataPack pack = new DataPack();
 			
 			h_KitOmega_Timer[client] = CreateDataTimer(0.1, Timer_KitOmega, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
@@ -103,6 +103,7 @@ public void Enable_KitOmega(int client, int weapon)
 		{
 			i_KitOmega_WeaponPap[client] = RoundToFloor(Attributes_Get(weapon, 391, 0.0));
 			b_KitOmega_Toggle[client] = false;
+			DataPack pack = new DataPack();
 			
 			h_KitOmega_Timer[client] = CreateDataTimer(0.1, Timer_KitOmega, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
