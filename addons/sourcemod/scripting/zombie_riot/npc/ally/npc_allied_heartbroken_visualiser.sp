@@ -189,6 +189,7 @@ methodmap AlliedHeartbrokenVisualiserAbility < CClotBody
 		int CoffinEntity = CreateEntityByName("prop_dynamic_override");
 		if(IsValidEntity(CoffinEntity))
 		{
+			b_ThisEntityIgnored[CoffinEntity] = true;
 			DispatchKeyValue(CoffinEntity, "model", "models/props_manor/coffin_02.mdl");
 			DispatchKeyValue(CoffinEntity, "solid", "0");
 			SetEntityCollisionGroup(CoffinEntity, 24); //our savior

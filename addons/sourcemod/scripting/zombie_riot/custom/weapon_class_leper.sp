@@ -439,6 +439,7 @@ int SetCameraEffectLeperHew(int client, int &ModelToDelete)
 	int viewcontrol = CreateEntityByName("prop_dynamic");
 	if (IsValidEntity(viewcontrol))
 	{
+		b_ThisEntityIgnored[viewcontrol] = true;
 		GetVectorAnglesTwoPoints(vecSwingEnd, MiddleAngle, vAngleCamera);
 		vAngleCamera[2] -= GetRandomFloat(-20.0 , 20.0);
 		SetEntityModel(viewcontrol, "models/empty.mdl");
@@ -539,6 +540,7 @@ int SetCameraEffectLeperSolemny(int client, int &ModelToDelete)
 	int viewcontrol = CreateEntityByName("prop_dynamic");
 	if (IsValidEntity(viewcontrol))
 	{
+		b_ThisEntityIgnored[viewcontrol] = true;
 		float vAngleCamera[3];
 		GetVectorAnglesTwoPoints(vecSwingEnd, vOrigin, vAngleCamera);
 		vAngleCamera[0] -= 2.0;
@@ -900,6 +902,7 @@ int SetCameraEffectLeperWrath(int client, int &ModelToDelete)
 	int viewcontrol = CreateEntityByName("prop_dynamic");
 	if (IsValidEntity(viewcontrol))
 	{
+		b_ThisEntityIgnored[viewcontrol] = true;
 		float vAngleCamera[3];
 		GetVectorAnglesTwoPoints(vecSwingEnd, vOrigin, vAngleCamera);
 		SetEntityModel(viewcontrol, "models/empty.mdl");

@@ -88,6 +88,7 @@ void Heartbroken_ApplyCoffinBack(int client, bool RemoveOnly)
 	CoffinEntity = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(CoffinEntity))
 	{
+		b_ThisEntityIgnored[CoffinEntity] = true;
 		DispatchKeyValue(CoffinEntity, "model", "models/flag/briefcase.mdl");
 		DispatchKeyValue(CoffinEntity, "solid", "0");
 		SetEntityCollisionGroup(CoffinEntity, 24); //our savior
@@ -237,7 +238,7 @@ public void Heartbroken_Decapitate(int client, int weapon, bool crit, int slot)
 		return;
 	}
 	
-	ApplyStatusEffect(weapon, weapon, "Decapitate", 2.0);
+	ApplyStatusEffect(weapon, weapon, "Decapitate", 1.5);
 	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 15.0);
 	EmitSoundToAll(HEARTBREAK_DASH, client, _, 70, _, 1.0, 80);
@@ -443,6 +444,7 @@ static int HeartBrokenAction(int client, float DamageBase, int target, int which
 	int viewcontrol = CreateEntityByName("prop_dynamic");
 	if (IsValidEntity(viewcontrol))
 	{
+		b_ThisEntityIgnored[viewcontrol] = true;
 		GetVectorAnglesTwoPoints(vecSwingEnd, MiddleAngle, vAngleCamera);
 		SetEntityModel(viewcontrol, "models/empty.mdl");
 		DispatchKeyValueVector(viewcontrol, "origin", vecSwingEnd);

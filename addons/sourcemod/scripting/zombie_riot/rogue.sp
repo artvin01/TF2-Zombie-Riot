@@ -3516,6 +3516,7 @@ void ForceClientViewOntoEntity(int client, int entity)
 		int viewcontrol = CreateEntityByName("prop_dynamic");
 		if (IsValidEntity(viewcontrol))
 		{
+			b_ThisEntityIgnored[viewcontrol] = true;	
 			GetEntPropVector(entity, Prop_Send, "m_angRotation", rotation);
 			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", origin);
 			SetEntityModel(viewcontrol, "models/empty.mdl");

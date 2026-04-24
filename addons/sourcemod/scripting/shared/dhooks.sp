@@ -68,7 +68,8 @@ void DHook_Setup()
 	{
 		SetFailState("Failed to load gamedata (zombie_riot).");
 	} 
-		
+	//some attribs donjt get fully reset for melee range due to swords...
+	DHook_CreateDetour(gamedata, "CTFWeaponBaseMelee::DoSwingTraceInternal", DHook_DoSwingTracePre, _);
 	//so it doesnt remove charge effects
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	//correct cosmetics (most of the time)
@@ -2335,4 +2336,11 @@ void V_swap(int &x, int &y)
 	int temp = x;
 	x = y;
 	y = temp;
+}
+
+//cancel melee, we have our own.
+public MRESReturn DHook_DoSwingTracePre(int entity, DHookReturn returnHook, DHookParam param)
+{
+    returnHook.Value = false;
+    return MRES_Supercede;
 }
