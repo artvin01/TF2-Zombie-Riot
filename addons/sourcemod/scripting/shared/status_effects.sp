@@ -9321,6 +9321,7 @@ void SteamHappy_Prefix_Start(int victim, StatusEffect Apply_MasterStatusEffect, 
 
 #define MAXSINKING_STACKS 10
 int SinkingDebuffIndex;
+int MemorialDebuffIndex;
 void StatusEffects_HeartBroken()
 {
 	StatusEffect data;
@@ -9356,6 +9357,53 @@ void StatusEffects_HeartBroken()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnBuffStarted				= Decapitate_Start;
 	data.OnBuffEndOrDeleted			= Decapitate_End;
+	StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Memorial Possession");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "MP");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnBuffStarted				= Memorial_Possession_Start;
+	data.OnBuffEndOrDeleted			= Memorial_Possession_End;
+	data.HudDisplay_Func 			= Func_MemorialMaxStacks;
+	MemorialDebuffIndex = StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "HB In Parry");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "HB Parried");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 }
 
@@ -9450,6 +9498,116 @@ stock bool StatusEffects_SinkingDebuffMaxStacks(int victim)
 		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
 			if(RoundToNearest(Apply_StatusEffect.DataForUse) >= 10)
+			{
+				//we at max.
+				return true;
+			}
+		}
+	}
+	if(E_AL_StatusEffects[victim].Length < 1)
+		delete E_AL_StatusEffects[victim];
+
+	return false;
+}
+
+
+
+#define MAXMEMORIAL_HITS 2
+void Memorial_Possession_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidEntity(victim))
+		return;
+
+	Attributes_SetMulti(victim, 6, 0.75);
+
+	int owner = GetEntPropEnt(victim, Prop_Data, "m_hOwnerEntity");
+	if(!IsValidClient(owner))
+	{
+		return;
+	}
+	/*
+	int ModelIndex = GetEntProp(owner, Prop_Send, "m_nModelIndex");
+	char model[PLATFORM_MAX_PATH];
+	ModelIndexToString(ModelIndex, model, PLATFORM_MAX_PATH);
+	int WearableDo = TF2_CreateGlow_White(model, owner, GetEntPropFloat(owner, Prop_Send, "m_flModelScale"));
+	if(IsValidEntity(WearableDo))
+	{
+		SetEntProp(WearableDo, Prop_Send, "m_bGlowEnabled", false);
+		SetEntityRenderMode(WearableDo, RENDER_ENVIRONMENTAL);
+		TE_SetupParticleEffect("utaunt_elebound_purple_glow", PATTACH_ABSORIGIN_FOLLOW, WearableDo);
+		TE_WriteNum("m_bControlPoint1", WearableDo);	
+		TE_SendToAll();
+	}
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(WearableDo);
+
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+	*/
+}
+void Memorial_Possession_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidEntity(victim))
+		return;
+
+	Attributes_SetMulti(victim, 6, 1.0 / (0.75));
+
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	
+	RemoveEntity(Apply_StatusEffect.WearableUse);
+	
+}
+
+void Func_MemorialMaxStacks(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	//only display to client
+	if(RoundToNearest(Apply_StatusEffect.DataForUse) >= MAXMEMORIAL_HITS)
+		Format(HudToDisplay, SizeOfChar, "MP", RoundToNearest(Apply_StatusEffect.DataForUse), MAXMEMORIAL_HITS);
+	else
+		Format(HudToDisplay, SizeOfChar, "MP(%i/%i)", RoundToNearest(Apply_StatusEffect.DataForUse), MAXMEMORIAL_HITS);
+
+}
+
+stock void StatusEffects_MemorialDebuffAdd(int victim, int valuetoadd)
+{
+	if(!E_AL_StatusEffects[victim])
+		return;
+
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(MemorialDebuffIndex , E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
+		{
+			if(RoundToNearest(Apply_StatusEffect.DataForUse) >= MAXMEMORIAL_HITS)
+			{
+				//we at max.
+				return;
+			}
+			Apply_StatusEffect.DataForUse += float(valuetoadd);
+			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+		}
+	}
+	if(E_AL_StatusEffects[victim].Length < 1)
+		delete E_AL_StatusEffects[victim];
+
+}
+stock bool StatusEffects_MemorialDebuffMaxStacks(int victim)
+{
+	if(!E_AL_StatusEffects[victim])
+		return false;
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(MemorialDebuffIndex, E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_StatusEffect Apply_StatusEffect;
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
+		{
+			if(RoundToNearest(Apply_StatusEffect.DataForUse) >= MAXMEMORIAL_HITS)
 			{
 				//we at max.
 				return true;
