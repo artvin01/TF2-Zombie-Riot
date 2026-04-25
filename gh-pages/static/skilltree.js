@@ -1,3 +1,10 @@
+/* TODO
+- Click on disabled skill and it aquires the absolute minimum for that
+- Maximize skilltree window
+- Show required key (in desc since too long names?)
+*/
+
+
 // GLOBALS ===================================================
 const ctx = document.getElementById("canvas").getContext("2d");
 const pagetitle = document.getElementById("title");
