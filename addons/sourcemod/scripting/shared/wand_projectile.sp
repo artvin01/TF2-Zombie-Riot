@@ -238,6 +238,13 @@ public void ProjectileBaseThinkInternal(int Projectile, float Multi)
 		Wand_Base_StartTouch(Projectile, 0);
 	delete Projec_HitEntitiesInTheWay;
 	
+	Function func = func_NPCThink[Projectile];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(Projectile);
+		Call_Finish();
+	}
 }
 
 bool ProjectileTraceHitTargets(int entity, int contentsMask, DataPack packFilter)
