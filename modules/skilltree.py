@@ -1,5 +1,5 @@
 # Parse Skilltree
-import util, json, vdf, subprocess
+import util, json, vdf, subprocess, os
 from collections import defaultdict
 from ruamel.yaml import YAML
 
