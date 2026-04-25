@@ -256,19 +256,26 @@ def parse():
             """
             npc_css_class = ""
             npc_extra_flags = []
+
+            cases = {
+                "MVM_CLASS_FLAG_SUPPORT": util.cfgtoint(dd["is_boss"]) < 2 and (dd["ignore_max_cap"]=="1" or dd["team_npc"]=="2" or dd["is_static"]=="1"),
+                "MVM_CLASS_FLAG_MINIBOSS": (util.cfgtoint(dd["is_boss"]) or util.cfgtoint(dd["is_outlined"])),
+                "MVM_CLASS_FLAG_ALWAYSCRIT": util.cfgtofloat(dd["extra_melee_res"],1.0)<1.0 or \
+                            util.cfgtofloat(dd["extra_ranged_res"],1.0)<1.0 or \
+                            util.cfgtofloat(dd["extra_speed"],1.0)>1.0 or \
+                            util.cfgtofloat(dd["extra_damage"],1.0)>1.0 or \
+                            util.cfgtofloat(dd["extra_thinkspeed"],1.0)>1.0 or \
+                            util.cfgtoint(dd["is_boss"])>1
+            }
             if npc_data:
-                cases = {
-                    "MVM_CLASS_FLAG_SUPPORT": util.cfgtoint(dd["is_boss"]) < 2 and (dd["ignore_max_cap"]=="1" or dd["team_npc"]=="2" or dd["is_static"]=="1"),
-                    "MVM_CLASS_FLAG_MINIBOSS": (util.cfgtoint(dd["is_boss"]) or util.cfgtoint(dd["is_outlined"])),
-                    "MVM_CLASS_FLAG_ALWAYSCRIT": util.cfgtofloat(dd["extra_melee_res"],1.0)<1.0 or \
-                                util.cfgtofloat(dd["extra_ranged_res"],1.0)<1.0 or \
-                                util.cfgtofloat(dd["extra_speed"],1.0)>1.0 or \
-                                util.cfgtofloat(dd["extra_damage"],1.0)>1.0 or \
-                                util.cfgtofloat(dd["extra_thinkspeed"],1.0)>1.0 or \
-                                util.cfgtoint(dd["is_boss"])>1
-                }
                 for flag,case_ in cases.items():
                     if case_ and (flag not in npc_data.flags):
+                        extra_info += f" {modules.shared.FLAG_MAPPINGS[flag]}"
+                        npc_css_class += f" {modules.shared.FLAG_CSS[flag]}"
+                        npc_extra_flags.append(flag)
+            else:
+                for flag,case_ in cases.items():
+                    if case_:
                         extra_info += f" {modules.shared.FLAG_MAPPINGS[flag]}"
                         npc_css_class += f" {modules.shared.FLAG_CSS[flag]}"
                         npc_extra_flags.append(flag)

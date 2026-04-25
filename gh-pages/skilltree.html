@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/skilltree.css">
+    <script src="static/skilltree.js" defer></script>
+    <title>ZR Encyclopedia - Skilltree</title>
+</head>
+<body>
+    <h2 id="title">Skilltree</h2>
+    <div class="overlay">
+        <canvas id="canvas"></canvas>
+        <div class="overlaybuttons">
+            <img class="btn btnoverlay" tabindex="0" onclick="skilltree_resetcam();" src="static/rotate-ccw.svg">
+            <!--<img class="btn btnoverlay" tabindex="0" onclick="skilltree_fullscreen();" src="static/maximize.svg">-->
+        </div>
+    </div>
+    <div class="rightalign">
+        <h2>Skillpoints in use: <span id="skillpoint_amt">0</span></h2>
+        <div class="btn" tabindex="0" onclick="skilltree_reset();">RESET</div>
+    </div>
+</body>
+</html>

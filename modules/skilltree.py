@@ -1,8 +1,12 @@
 # Parse Skilltree
-import util
-from keyvalues1 import KeyValues1
+import util, json, vdf
+from collections import defaultdict
+from ruamel.yaml import YAML
 
-SKILLTREE_CFG = KeyValues1.parse(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/skilltree.cfg"))
+yaml=YAML(typ='safe')
+SKILLTREE_CFG = vdf.loads(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/skilltree.cfg"))
+with open("./config/skilltree.yml",'r') as file:
+    PARSECFG = yaml.load(file)
 
 # TODO once porting: zombieriot.phrases.skilltree.txt has skill name and desc entries!
 def parse():
@@ -16,37 +20,48 @@ def parse():
     //	"min"	"-1"	                    // Charge Required from Parent
     //	"key"	""	                        // Inventory Item Required
     """
-    # strange formatting of the string I know
-    MARKDOWN_SKILLTREE = """## Legend
-- MIN: Minimum amount of ranks needed in parent skill to unlock  
-- MAX: Maximum rank  
-- COST: Amount of points needed per rank  
-- REQ: Required item to unlock skill
-
-```mermaid
-    %%{init:{'theme':'forest'}}%%
-    mindmap"""
-    def skill_block(x,y,skill,parent_skill_key,skill_md,depth):
+    skilltree_pointmap = []
+    def skill_block(x,y,skill,parent_skill_key,skill_json,depth):
         depth += 1
         for subskill in skill.keys():
             if subskill.startswith("a"): # detect if key is an actual skill
-                data = skill[subskill]
+                data = defaultdict(str,skill[subskill])
 
-                if "min" in data: min_pts = f"\nMIN {data["min"]}"
-                else: min_pts = ""
+                min_pts = int(data["min"]) if "min" in data else 0
 
-                if "key" in data: required_item = f"\nREQ {data["key"]}"
-                else: required_item = ""
+                required_item = util.get_key(data["key"],empty_on_fail=True,silent=True)
 
-                if "cost" in data: cost = f"\nCOST {data["cost"]}"
-                else: cost = ""
+                cost = data["cost"]
 
-                desc = f"{data["name"]}{cost}\nMAX {data["max"]}{min_pts}{required_item}"
-                skill_md += f'{" "*depth}{subskill}["{desc}"]\n'
-                skill_md = skill_block(x,y,data,subskill,skill_md,depth)
-        return skill_md
+                desc = util.get_key(data["name"] + " Desc")
+
+                nx,ny=x,y
+                if subskill.startswith("abc") and len(subskill) > 3: # Completely flip buildings and revive branch
+                    if subskill[-1] == "a": ny+=1*PARSECFG.get(subskill,1)
+                    if subskill[-1] == "b": nx+=1*PARSECFG.get(subskill,1)
+                    if subskill[-1] == "c": ny-=1*PARSECFG.get(subskill,1)
+                else:
+                    if subskill[-1] == "a": ny-=1*PARSECFG.get(subskill,1)
+                    if subskill[-1] == "b": nx+=1*PARSECFG.get(subskill,1)
+                    if subskill[-1] == "c":
+                        if subskill.startswith("abb") or subskill.startswith("aba") or subskill.startswith("aab"):
+                            nx-=1*PARSECFG.get(subskill,1)
+                        else:
+                            ny+=1*PARSECFG.get(subskill,1)
+
+                #skill_md += f'{" "*depth}{subskill}["{desc}"]\n'
+                skill_json.append({
+                    "name": util.get_key(data["name"]),
+                    "desc": desc,
+                    "minparent": min_pts,
+                    "max": data["max"],
+                    "reqkey": required_item,
+                    "cost": cost,
+                    "path": subskill,
+                    "paths": skill_block(nx,ny,data,subskill,[],depth),
+                    "pos": (nx,ny),
+                })
+        return skill_json
     
-    MARKDOWN_SKILLTREE = skill_block(0,0,SKILLTREE_CFG,list(SKILLTREE_CFG.keys())[0],MARKDOWN_SKILLTREE,0)
-    MARKDOWN_SKILLTREE += "```"
-    util.write("skilltree.md", MARKDOWN_SKILLTREE)
-    return {"skilltree.md": "Skilltree.md"}
+    skilltree_pointmap = skill_block(0,0,SKILLTREE_CFG,list(SKILLTREE_CFG.keys())[0],skilltree_pointmap,0)
+    util.write("gh-pages/skilltree/skilltree.json", json.dumps(skilltree_pointmap,indent=2))

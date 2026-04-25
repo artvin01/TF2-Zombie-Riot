@@ -1,0 +1,22 @@
+# Hardcoded skilltree position offsets as to prevent overlaps
+ab: 7 # Health Up
+# and it's descendants...
+aba: 5 # Health Branch
+abb: 8 # Ingots and Cash Branch
+
+# ingots and cash
+abbaac: 2
+abbb: 3
+
+# health
+abac: 2
+abab: 2
+
+# building and revive
+abcb: 2
+# What.
+accaaaa: -1
+
+# damage and atk speed
+aab: 5
+aaab: 3

@@ -3,8 +3,7 @@ SCOPE = []
 if "SCOPE" in os.environ:
     SCOPE = [x.lower() for x in os.environ["SCOPE"].split(",")]
 else:
-    #SCOPE = ["wavesets", "npcs", "items", "skilltree"]
-    SCOPE = ["wavesets", "npcs", "items", "music"]
+    SCOPE = ["wavesets", "npcs", "items", "music", "skilltree"]
 print("SCOPE", SCOPE)
 
 import modules.phrase

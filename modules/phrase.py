@@ -15,7 +15,9 @@ PHRASES = [
     "zombieriot.phrases.dungeon.txt",
     # weapon.py
     "zombieriot.phrases.weapons.description.txt",
-    "zombieriot.phrases.weapons.txt"
+    "zombieriot.phrases.weapons.txt",
+    # skilltree.py
+    "zombieriot.phrases.skilltree.txt"
 ]
 util.log("Parsing all phrases...")
 for p in PHRASES:

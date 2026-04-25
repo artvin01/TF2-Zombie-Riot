@@ -128,7 +128,7 @@ li:before {
     cursor: pointer;
 }
 
-.btn:hover, .btn:focus {
+.btn:hover {
     background-color: hsl(from var(--bg-light) h s 50%);
 }
 

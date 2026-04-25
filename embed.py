@@ -63,8 +63,10 @@ def generate_waveset_embed(filename, title, wave, wave_max, entries):
     imgs = [Image.new(mode="RGB", size=(WIDTH, HEIGHT))]
 
     # check if entries have at least one npc with the mission flag (red flashing background requires 2 imgs => gif)
-    entries_have_mission_flag = any(("MVM_CLASS_FLAG_MISSION" in defaultdict(str,entry_data)["embed_extra_flags"]) and (entry_data["type"]=="npc") for entry_data in entries)
-    if entries_have_mission_flag: imgs.append(Image.new(mode="RGB", size=(WIDTH, HEIGHT)))
+    # TODO doesn't work on some waves for some reason. see: zr_escape_ Rising Tides W50
+    entries_have_mission_flag = any(("MVM_CLASS_FLAG_MISSION" in defaultdict(list,entry_data)["embed_extra_flags"]) and (entry_data["type"]=="npc") for entry_data in entries)
+    if entries_have_mission_flag:
+        imgs.append(Image.new(mode="RGB", size=(WIDTH, HEIGHT)))
 
     drawables = [ImageDraw.Draw(img) for img in imgs]
     for idx, drawable in enumerate(drawables):

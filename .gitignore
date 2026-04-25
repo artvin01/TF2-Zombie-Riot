@@ -15,12 +15,13 @@ npc_data_02.json
 *.cfg 
  
 gh-pages/*
-gh-pages/index.html
 !gh-pages/static/
 !gh-pages/builtin_img/
 !gh-pages/premedia_icons/
+
 !gh-pages/waveset_viewer.html
 !gh-pages/multipliers.html
+!gh-pages/skilltree.html
 
 logs.txt
 run_rogue.sh
