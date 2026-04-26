@@ -991,8 +991,7 @@ public void Reinforce(int client, bool NoCD)
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Player not detected");
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "Player not detected", client);
 			return;
 		}
 

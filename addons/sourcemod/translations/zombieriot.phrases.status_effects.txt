@@ -847,6 +847,14 @@
 	{
 		"en"	"Count increases by 1 for each hit taken that applies this debuff\nAt Max, hits from this kit or summons deal bleed and take 10％ less dmg\nSome abilities benifit from max or less sinking"
 	}
+	"Call of the Heartbroken"
+	{
+		"en"	"Call of the Heartbroken"
+	}
+	"Call of the Heartbroken Desc"
+	{
+		"en"	"You are tempomary alive again\nYou have to stay near your summoner or else you die."
+	}
 	"Hussar's Warscream"
 	{
 		"en"	"Hussar's Warscream"

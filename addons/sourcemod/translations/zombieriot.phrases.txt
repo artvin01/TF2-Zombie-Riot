@@ -5647,6 +5647,10 @@
 		"ko"	"플레이어를 감지 할 수 없습니다."
 		"it"	"Giocatore non rilevato"
 	}
+	"You cant use this ability if youre alone"
+	{
+		"en"	"You cant use this ability if youre alone on the server"
+	}
 	"Use Only Alive"
 	{
 		"en"	"Can only use while alive."
@@ -5904,5 +5908,10 @@
 	{
 		"en"	"Empires are taking over the territory!"
 		"ko"	"제국이 구역을 점령하고 있습니다!"
+	}
+	"Not Enough Coffins"
+	{
+		"#format"	"{1:d}"
+		"en" 		"You dont own enough coffins, you need atleast {1} Coffins."
 	}
 }

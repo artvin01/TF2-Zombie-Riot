@@ -9,6 +9,8 @@ static float Smite_ChargeTime = 0.99;
 static float Smite_ChargeSpan = 0.33;
 static float Smite_Radius = 250.0;
 static float CoffinCharge[MAXPLAYERS];
+static int WeaponLevel[MAXPLAYERS];
+static float CoffinLoseCD[MAXPLAYERS];
 
 #define MAX_COFFINS 10
 #define COFFIN_MODEL "models/props_manor/coffin_02.mdl"
@@ -34,6 +36,10 @@ static char g_CoffinClaim[][] = {
 static char g_CoffinClaim2[][] = {
 	"player/taunt_luxury_lounge_chair_creak.wav",
 };
+static char g_CoffinRevive[][] = {
+	"ui/halloween_boss_chosen_it.wav",
+};
+bool Precached = false;
 public void HeartBroken_OnMapStart()
 {
 	PrecacheSoundArray(g_CoffinClaim);
@@ -41,6 +47,7 @@ public void HeartBroken_OnMapStart()
 	PrecacheSoundArray(g_ShootHorseSound);
 	PrecacheSoundArray(g_CoffinThrow);
 	PrecacheSoundArray(g_CoffinReel);
+	PrecacheSoundArray(g_CoffinRevive);
 	Zero(f_HeartBroken_HUDDelay);
 	PrecacheModel(COFFIN_MODEL);
 	PrecacheModel(HEARTBREAK_HORSE_MODEL);
@@ -49,8 +56,40 @@ public void HeartBroken_OnMapStart()
 	PrecacheSound(HEARTBREAK_DASHHIT);
 	PrecacheModel("models/flag/briefcase.mdl");
 	Zero(CoffinCharge);
+	Precached = false;
 }
 
+void PrecacheHeartbrokenMusic()
+{
+	if(!Precached)
+	{
+		PrecacheSoundCustom("#zombiesurvival/heatbroken_lastman.mp3",_,1);
+		Precached = true;
+	}
+}
+bool IsHeartBroken(int client)
+{
+	if(h_HeartBroken_Timer[client] != null)
+		return true;
+
+	return false;
+}
+void HeartBrokenMassRevive(int client)
+{
+	CreateTimer(7.0, Timer_ReviveHeartBroken, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+}
+public Action Timer_ReviveHeartBroken(Handle timer, any entid)
+{
+	int client = EntRefToEntIndex(entid);
+	if(IsValidClient(client))
+	{
+		for(int i=0; i<4; i++)
+		{
+			Heartbroken_WildHunt(client, true);
+		}
+	}
+	return Plugin_Stop;
+}
 public void Enable_HeartBroken(int client, int weapon)
 {
 	DataPack pack = new DataPack();
@@ -60,12 +99,13 @@ public void Enable_HeartBroken(int client, int weapon)
 			delete h_HeartBroken_Timer[client];
 		h_HeartBroken_Timer[client] = null;
 	}
+	WeaponLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 	ref_MeleeWeapon[client] = EntIndexToEntRef(weapon);
 	h_HeartBroken_Timer[client] = CreateDataTimer(0.1, Timer_HeartBroken, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(client);
 	pack.WriteCell(EntIndexToEntRef(weapon));
 	pack.WriteCell(EntIndexToEntRef(client));
-
+	PrecacheHeartbrokenMusic();
 	Heartbroken_ApplyCoffinBack(client, false);
 }
 
@@ -83,15 +123,35 @@ static Action Timer_HeartBroken(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
+	b_IsCannibal[client] = true;
 	HeartBroken_HUD(client);
 	return Plugin_Continue;
 }
 static void HeartBroken_HUD(int client)
 {
 	//char weapon_hint[50];
+	if(WeaponLevel[client] >= 5)
+		return;
+		CoffinLoseCD
+	if(CoffinLoseCD[client] < GetGameTime() && !Waves_InSetup())
+	{
+		CoffinLoseCD[client] = GetGameTime() + 60.0;
+
+		CoffinCharge[client] -= 0.1;
+		if(CoffinCharge[client] <= 0.0)
+		{
+			CoffinCharge[client] = 0.0;
+			CoffinLoseCD[client] = GetGameTime() + 120.0;
+		}
+
+	}
 	if(f_HeartBroken_HUDDelay[client] < GetGameTime())
 	{
-		PrintHintText(client,"Coffins [%i/%i]", RoundToFloor(CoffinCharge[client] * float(MAX_COFFINS)), MAX_COFFINS);
+		
+		if(WeaponLevel[client] >= 6)
+			PrintHintText(client,"Coffins [%i/%i]", RoundToFloor(CoffinCharge[client] * float(MAX_COFFINS)), MAX_COFFINS);
+		else
+			PrintHintText(client,"Coffins [%i/%i]", RoundToFloor(CoffinCharge[client] * float(MAX_COFFINS)), MAX_COFFINS / 2);
 		f_HeartBroken_HUDDelay[client] = GetGameTime() + 0.5;
 	}
 }
@@ -163,11 +223,15 @@ public void HeartBroken_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	if(CheckInHud())
 		return;
 
-	GiveCoffinOnDamage(attacker, victim, damage);
+	if(WeaponLevel[victim] >= 5)
+	{
 
-	
-	//more coffins means more damage, 0.2 is the dmg multiplier
-	damage *= (1.0 + (CoffinCharge[attacker] * 0.2));
+		GiveCoffinOnDamage(attacker, victim, damage);
+
+		
+		//more coffins means more damage, 0.2 is the dmg multiplier
+		damage *= (1.0 + (CoffinCharge[attacker] * 0.2));
+	}
 
 	if(zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
 		return;
@@ -209,9 +273,12 @@ public void HeartBroken_OnTakeDamage_Take(int victim, int &attacker, int &inflic
 		RemoveSpecificBuff(victim, "HB In Parry");
 		ApplyStatusEffect(victim, victim, "HB Parried", 10.0);
 		SensalCauseKnockback(victim, attacker, 0.75, true);
-		for(int i=0; i<4; i++)
+		if(WeaponLevel[victim] >= 2)
 		{
-			Heartbroken_ShootHorseProjectile(victim, attacker, 1.0 , 1.5);
+			for(int i=0; i<4; i++)
+			{
+				Heartbroken_ShootHorseProjectile(victim, attacker, 1.0 , 1.5);
+			}
 		}
 		float CounterDamage = 65.0;
 		CounterDamage *= WeaponDamageAttributeMultipliers(equipped_weapon,_,victim);
@@ -609,16 +676,6 @@ public void Horse_Projectile_Hit(int entity, int target)
 	float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 	SDKHooks_TakeDamage(target, entity, owner, Wand_Dmg, DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 	f_WandDamage[entity] *= 0.75;
-	switch(GetRandomInt(1,4)) 
-	{
-		case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
-			
-		case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
-			
-		case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
-		
-		case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
-	}
 	
 }
 
@@ -626,6 +683,13 @@ public void Horse_Projectile_Hit(int entity, int target)
 
 public void Heartbroken_Reqieum(int client, int weapon, bool crit, int slot)
 {
+	int buttons = GetClientButtons(client);
+	bool crouch = (buttons & IN_DUCK) != 0;
+	if(crouch)
+	{
+		Heartbroken_WildHunt(client);
+		return;
+	}
 	if (Ability_Check_Cooldown(client, slot) > 0.0)
 	{
 		float Ability_CD = Ability_Check_Cooldown(client, slot);
@@ -656,10 +720,6 @@ public void Heartbroken_Reqieum(int client, int weapon, bool crit, int slot)
 	}
 
 	Heartbroken_SwitchToMeleeWeapon(client, weapon, crit, slot);
-	
-	int MeleeWeapon = EntRefToEntIndex(ref_MeleeWeapon[client]);
-	if(!IsValidEntity(MeleeWeapon))
-		return;
 
 	Heartbroken_ShootCoffinProjectile(client, target);
 }
@@ -669,8 +729,10 @@ void Heartbroken_ShootCoffinProjectile(int client, int target)
 	int MeleeWeapon = EntRefToEntIndex(ref_MeleeWeapon[client]);
 	if(!IsValidEntity(MeleeWeapon))
 		return;
+	ApplyStatusEffect(client, target, "Coffin Target", 7.0);
 	CoffinToggleVisiblity(client, false);
 	float damage = 65.0;
+	damage *= 4.0;
 	damage *= WeaponDamageAttributeMultipliers(MeleeWeapon,_,client);
 
 	float speed = 900.0;
@@ -763,6 +825,7 @@ public void Coffin_Projectile_Hit(int entity, int target)
 
 			spawnRing_Vectors(VecSave, Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 200, 1, Smite_ChargeTime, 3.0, 0.1, 1, 1.0);
 		}
+		RemoveSpecificBuff(target, "Coffin Target");
 	}
 	else
 	{
@@ -841,8 +904,16 @@ public void Coffin_Projectile_ReturnOwner(int entity, int target)
 		EmitSoundToAll(g_CoffinClaim2[GetRandomInt(0, sizeof(g_CoffinClaim2) - 1)], owner, SNDCHAN_AUTO, 80, _, 0.9, 90);
 		EmitSoundToAll(g_CoffinClaim2[GetRandomInt(0, sizeof(g_CoffinClaim2) - 1)], owner, SNDCHAN_AUTO, 80, _, 0.9, 90);
 		CoffinCharge[owner] += (1.0 / float(MAX_COFFINS));
-		if(CoffinCharge[owner] >= 1.0)
-			CoffinCharge[owner] = 1.0;
+		if(WeaponLevel[owner] >= 6)
+		{
+			if(CoffinCharge[owner] >= 1.0)
+				CoffinCharge[owner] = 1.0;
+		}
+		else
+		{
+			if(CoffinCharge[owner] >= 0.5)
+				CoffinCharge[owner] = 0.5;
+		}
 	}
 	CoffinToggleVisiblity(owner, true);
 	RemoveEntity(entity);
@@ -890,7 +961,7 @@ public Action HeartBroken_Smite_Timer(Handle Smite_Logic, DataPack pack)
 		spawnBeam(0.8, 125, 0, 255, 255, "materials/sprites/laserbeam.vmt", 8.0, 8.2, _, 5.0, secondLoc, spawnLoc);	
 		spawnBeam(0.8, 125, 0, 255, 200, "materials/sprites/lgtning.vmt", 5.0, 5.2, _, 5.0, secondLoc, spawnLoc);	
 		
-		EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, spawnLoc, _, 80, _ , 0.7);
+		EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, spawnLoc, _, 75, _ , 0.5);
 		
 		DataPack pack_boom = new DataPack();
 		pack_boom.WriteFloat(spawnLoc[0]);
@@ -964,4 +1035,125 @@ stock void GiveCoffinOnDamage(int client, int victim, float damage)
 	if(CoffinCharge[client] >= 1.0)
 		CoffinCharge[client] = 1.0;
 	//Has to be atleast 3k.
+}
+
+
+void Heartbroken_WildHunt(int client, bool ForceRevive = false)
+{
+	if(b_IsAloneOnServer)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "You cant use this ability if youre alone", client);
+		return;
+	}
+	if(!ForceRevive && CoffinCharge[client] < 0.5)
+	{
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%T", "Not Enough Coffins", client, RoundToFloor(0.5 * float(MAX_COFFINS)));
+		return;
+	}
+	
+	int MaxCashScale = CurrentCash;
+	if(MaxCashScale > 60000)
+		MaxCashScale = 60000;
+	//taken from reinforce
+	bool DeadPlayer;
+	for(int client_check=1; client_check<=MaxClients; client_check++)
+	{
+		if(!IsValidClient(client_check))
+			continue;
+		if(TeutonType[client_check] == TEUTON_NONE)
+			continue;
+		if(!b_AntiLateSpawn_Allow[client_check])
+			continue;
+		if(client==client_check || GetTeam(client_check) != TFTeam_Red)
+			continue;
+		if(!WasHereSinceStartOfWave(client_check))
+			continue;
+		if(f_PlayerLastKeyDetected[client_check] < GetGameTime())
+			continue;
+		if(HasSpecificBuff(client_check, "Vuntulum Bomb EMP Death"))
+			continue;
+
+		int CashSpendScale = CashSpentTotal[client_check];
+
+		if(CashSpendScale <= 500)
+			CashSpendScale = 500;
+
+		if((CashSpendScale * 3) < (MaxCashScale))
+			continue;
+
+		DeadPlayer=true;
+	}
+
+	if(!DeadPlayer)
+	{
+		if(ForceRevive)
+			return;
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "Player not detected", client);
+		return;
+	}
+
+	
+	int RandomWildHunted = GetRandomDeathPlayer(client);
+	if(!IsValidClient(RandomWildHunted))
+		return;
+
+	if(!ForceRevive)
+		CoffinCharge[client] -= 0.5;
+
+	TeutonType[RandomWildHunted] = TEUTON_NONE;
+	dieingstate[RandomWildHunted] = 0;
+
+	float PosMe[3];
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", PosMe);
+	DHook_RespawnPlayer(RandomWildHunted);
+	ForcePlayerCrouch(RandomWildHunted, false);
+	DataPack pack;
+	CreateDataTimer(0.2, Timer_DelayTele, pack, TIMER_FLAG_NO_MAPCHANGE);
+	//Music_EndLastmann(true);
+	//LastMann = false;
+	//applied_lastmann_buffs_once = false;
+	//SDKHooks_UpdateMarkForDeath(RandomHELLDIVER, true);
+	//SDKHooks_UpdateMarkForDeath(RandomHELLDIVER, false);
+	//More time!!!
+	pack.WriteCell(GetClientUserId(RandomWildHunted));
+	pack.WriteFloat(PosMe[0]);
+	pack.WriteFloat(PosMe[1]);
+	pack.WriteFloat(PosMe[2]);
+
+	EmitSoundToAll(g_CoffinRevive[GetRandomInt(0, sizeof(g_CoffinRevive) - 1)], RandomWildHunted, SNDCHAN_STATIC, 80, _, 1.0, 80);
+	switch(GetRandomInt(1,3))
+	{
+		case 1:
+			CPrintToChat(client, "{purple}You have commanded the loyalty of %N{purple}.",RandomWildHunted);
+		
+		case 2:
+			CPrintToChat(client, "{yellow}%N{purple} is now a part of the Wild Hunt.",RandomWildHunted);
+
+		case 3:
+			CPrintToChat(client, "{purple}Your influence has brought %N{purple} back." ,RandomWildHunted);
+	}
+	switch(GetRandomInt(1,3))
+	{
+		case 1:
+			CPrintToChat(RandomWildHunted, "{yellow}%N's{purple} procession of the Wild Hunt continues.",client);
+		case 2:
+			CPrintToChat(RandomWildHunted, "{yellow}%N's{purple} banquet is nearing full preparation. Aid them.",client);
+		case 3:
+			CPrintToChat(RandomWildHunted, "{purple}Complete {yellow}%N's{purple} vengeance. Leave regret behind.",client);
+	}
+	PosMe[2] += 45.0;
+	TE_Particle("halloween_boss_death_cloud", PosMe, NULL_VECTOR, NULL_VECTOR, RandomWildHunted, _, _, _, _, _, _, _, _, _, 0.0);
+	GiveCompleteInvul(RandomWildHunted, 2.0);
+	TF2_AddCondition(RandomWildHunted, TFCond_SpeedBuffAlly, 2.0);
+	float Duration = 32.0;
+	if(ForceRevive)
+		Duration *= 2.0;
+
+	ApplyStatusEffect(client, RandomWildHunted, "Call of the Heartbroken", Duration);
+	ApplyStatusEffect(client, RandomWildHunted,	"Call of the Heartbroken Internal", Duration + 1.0);
 }

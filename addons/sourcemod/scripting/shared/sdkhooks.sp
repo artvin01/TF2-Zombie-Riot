@@ -1384,7 +1384,7 @@ public void OnPostThink(int client)
 #if defined ZR
 		UpdatePlayerPoints(client);
 
-		if(LastMann || dieingstate[client] > 0)
+		if(HasSpecificBuff(client, "Call of the Heartbroken") || LastMann || dieingstate[client] > 0)
 		{
 			ApplyLastmanOrDyingOverlay(client);
 		}
@@ -2906,6 +2906,12 @@ public void OnWeaponSwitchPre(int client, int weapon)
 
 void ApplyLastmanOrDyingOverlay(int client)
 {
+	if(HasSpecificBuff(client, "Call of the Heartbroken"))
+	{
+		DoOverlay(client, "zombie_riot/filmgrain/filmgrain_4", 1);
+		DoOverlay(client, "debug/yuv");
+		return;
+	}
 	if(LastMann)
 	{
 		switch(Yakuza_Lastman())

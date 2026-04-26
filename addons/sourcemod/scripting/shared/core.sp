@@ -124,6 +124,7 @@ ConVar CvarKickPlayersAt;
 ConVar CvarMaxPlayerAlive;
 ConVar zr_interactforcereload;
 bool BlockOtherRaidMusic = false;
+bool RemoveRagdollDo = false;
 //ConVar CvarDebugOffset;
 
 int CurrentEntities;
@@ -2784,6 +2785,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "entity_medigun_shield"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly_Shield);
+		}
+		else if(!StrContains(classname, "tf_ragdoll"))
+		{
+			if(RemoveRagdollDo)
+				RemoveEntity(entity);
+
+			RemoveRagdollDo = false;
 		}
 		else if(!StrContains(classname, "tf_objective_resource"))
 		{

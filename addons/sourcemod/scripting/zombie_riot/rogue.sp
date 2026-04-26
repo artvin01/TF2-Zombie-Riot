@@ -2793,7 +2793,8 @@ bool Rogue_NoLastman()
 		return true;
 		
 	if(!ZR_AllowLastman())
-		return false;
+		return true;
+
 	return Rogue_Mode() && !Rogue_Paradox_Lastman();
 }
 

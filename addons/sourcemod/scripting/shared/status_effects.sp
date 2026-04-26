@@ -164,6 +164,11 @@ static const char BoingSound[][] =
 	"player/taunt_springrider_squeak4.wav",
 	"player/taunt_springrider_squeak5.wav",
 };
+static const char HeartBroken_Dissapear[][] =
+{
+	"ui/quest_decode_halloween.wav",
+};
+
 void ResetExplainBuffStatus(int client)
 {
 	DisplayChatBuffCD[client] = 0.0;
@@ -187,6 +192,7 @@ void InitStatusEffects()
 	PrecacheSoundArray(MissSound);
 	PrecacheSoundArray(XenoInfect);
 	PrecacheSoundArray(BoingSound);
+	PrecacheSoundArray(HeartBroken_Dissapear);
 
 	DeleteStatusEffectsFromAll();
 	//clear all existing ones
@@ -9405,7 +9411,186 @@ void StatusEffects_HeartBroken()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Coffin Target");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Call of the Heartbroken Internal");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Call of the Heartbroken");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "H");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.25;
+	data.DamageDealMulti			= 0.75;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnBuffStarted				= CallOfHeartBroken_Start;
+	data.OnBuffStoreRefresh			= CallOfHeartBroken_Start;
+	data.OnBuffEndOrDeleted			= CallOfHeartBroken_End;
+	data.HudDisplay_Func 			= Func_HeartBrokenHud;
+	data.TimerRepeatCall_Func 		= CallOfHeartBroken_Timer;
+	StatusEffect_AddGlobal(data);
 }
+
+#define MAX_RANGE_HEARTBROKEN 600.0
+static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	int OwnerAttach = -1;
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if(!Apply_StatusEffect.TotalOwners[i])
+			continue;
+		if(!IsValidClient(i))
+			continue;
+
+		OwnerAttach = i;
+		break;
+	}
+
+
+	if(OwnerAttach == -1 || !IsEntityAlive(OwnerAttach) || !IsHeartBroken(OwnerAttach))
+	{
+		SDKHooks_TakeDamage(entity, entity, entity, 99999.0, DMG_TRUEDAMAGE, _, _, _, true);
+		ForcePlayerSuicide(entity);
+		return;
+	}
+
+	float flPos[3];
+	GetEntPropVector(OwnerAttach, Prop_Data, "m_vecAbsOrigin", flPos);
+	float flMe[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flMe);
+	float flDistanceToTarget = GetVectorDistance(flMe, flPos, true);
+	if(flDistanceToTarget > (MAX_RANGE_HEARTBROKEN * MAX_RANGE_HEARTBROKEN))
+	{
+		Apply_StatusEffect.TimeUntillOver -= 1.0;
+	}
+	
+	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+
+	spawnRing_Vectors(flPos, MAX_RANGE_HEARTBROKEN * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 200, 1, 0.45, 12.0, 6.1, 1, _, entity);
+		
+}
+
+#define MAXMEMORIAL_HITS 2
+void CallOfHeartBroken_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidEntity(victim))
+		return;
+		
+	int OwnerAttach = -1;
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if(!Apply_StatusEffect.TotalOwners[i])
+			continue;
+		if(!IsValidClient(i))
+			continue;
+
+		OwnerAttach = i;
+		break;
+	}
+
+	//
+	if(OwnerAttach == -1 || !IsEntityAlive(OwnerAttach))
+	{
+		SDKHooks_TakeDamage(victim, victim, victim, 99999.0, DMG_TRUEDAMAGE, _, _, _, true);
+		ForcePlayerSuicide(victim);
+		return;
+	}
+	int i,entity;
+	while(TF2U_GetWearable(victim, entity, i))
+	{
+		if(i_WeaponVMTExtraSetting[entity] != -1)
+			continue;
+
+		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(entity, 125, 0, 255, 125);
+	}
+	SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
+	SetEntityRenderColor(victim, 125, 0, 255, 125);
+	
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	int laser = ConnectWithBeam(OwnerAttach, victim, 65, 0, 125, 4.0, 4.0, 0.0, CHAIN_BEAM);
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(laser);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+		
+}
+
+
+void Func_HeartBrokenHud(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	//only display to client
+	Format(HudToDisplay, SizeOfChar, "H(%.1f)", Apply_StatusEffect.TimeUntillOver - GetGameTime());
+}
+
+void CallOfHeartBroken_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+
+	RemoveEntity(Apply_StatusEffect.WearableUse);
+
+	if(!IsEntityAlive(victim))
+		return;
+	if(HasSpecificBuff(victim, "Call of the Heartbroken Internal"))
+	{
+		float PosMe[3];
+		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", PosMe);
+		PosMe[2] += 45.0;
+		TE_Particle("halloween_boss_death_cloud", PosMe, NULL_VECTOR, NULL_VECTOR, victim, _, _, _, _, _, _, _, _, _, 0.0);
+
+		EmitAmbientSound(HeartBroken_Dissapear[GetRandomInt(0, sizeof(HeartBroken_Dissapear) - 1)], PosMe, _, 80, _ , 1.0);
+		RemoveRagdollDo = true;
+		SDKHooks_TakeDamage(victim, victim, victim, 99999.0, DMG_TRUEDAMAGE, _, _, _, true);
+		ForcePlayerSuicide(victim);
+		return;
+	}
+	
+	float PosMe[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", PosMe);
+	DHook_RespawnPlayer(victim);
+	ForcePlayerCrouch(victim, false);
+	DataPack pack;
+	CreateDataTimer(0.1, Timer_DelayTele, pack, TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(GetClientUserId(victim));
+	pack.WriteFloat(PosMe[0]);
+	pack.WriteFloat(PosMe[1]);
+	pack.WriteFloat(PosMe[2]);
+}
+
 
 void Decapitate_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -9424,17 +9609,20 @@ void Decapitate_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusE
 }
 float Sinking_DamageDealFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
-	if(!Apply_StatusEffect.TotalOwners[victim])
-		return 1.0;
-	if(RoundToNearest(Apply_StatusEffect.DataForUse) < MAXSINKING_STACKS)
-		return 1.0;
+	if(!HasSpecificBuff(victim, "Call of the Heartbroken"))
+	{
+		if(!Apply_StatusEffect.TotalOwners[victim])
+			return 1.0;
+		if(RoundToNearest(Apply_StatusEffect.DataForUse) < MAXSINKING_STACKS)
+			return 1.0;
+	}
 	
 	return 0.9;
 }
 void Func_SinkingMaxStacks(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
 	//only display to client
-	if(Apply_StatusEffect.TotalOwners[attacker])
+	if(HasSpecificBuff(attacker, "Call of the Heartbroken") || Apply_StatusEffect.TotalOwners[attacker])
 	{
 		if(RoundToNearest(Apply_StatusEffect.DataForUse) >= MAXSINKING_STACKS)
 			Format(HudToDisplay, SizeOfChar, "Si", RoundToNearest(Apply_StatusEffect.DataForUse), MAXSINKING_STACKS);
@@ -9449,7 +9637,7 @@ void Sinking_TakeDamageAttackerPost(int attacker, int victim, float damage, Stat
 {
 	if(attacker == victim)
 		return;
-	if(!Apply_StatusEffect.TotalOwners[attacker])
+	if(!Apply_StatusEffect.TotalOwners[attacker] && !HasSpecificBuff(attacker, "Call of the Heartbroken"))
 		return;
 		
 	if(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)

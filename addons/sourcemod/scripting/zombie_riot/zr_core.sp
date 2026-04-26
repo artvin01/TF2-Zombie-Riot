@@ -2059,6 +2059,8 @@ void CheckLastMannStanding(int killed)
 			CurrentPlayers++;
 			if(killed != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE/* && dieingstate[client] == 0*/)
 			{
+				if(HasSpecificBuff(client, "Call of the Heartbroken"))
+					continue;
 				if(dieingstate[client] == 0)
 				{
 					PlayersLeftNotDowned++;
@@ -2112,6 +2114,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			if(!b_AntiLateSpawn_Allow[client])
 				continue;
 			CurrentPlayers++;
+			if(HasSpecificBuff(client, "Call of the Heartbroken"))
+				continue;
 			if(killed != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE/* && dieingstate[client] == 0*/)
 			{
 				if(dieingstate[client] > 0)
@@ -2327,6 +2331,12 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						{
 							CPrintToChatAll("{crimson}%N's purging protocol activates.",client);
 							Yakuza_Lastman(14);
+						}
+						if(IsHeartBroken(client))
+						{
+							CPrintToChatAll("{purple}What kindled this flame of wrath that burns within %N..?",client);
+							HeartBrokenMassRevive(client);
+							Yakuza_Lastman(15);
 						}
 						
 						for(int i=1; i<=MaxClients; i++)
@@ -2812,6 +2822,11 @@ void ReviveAll(bool raidspawned = false,
 			{
 				if(PapModeDo == PAP_MODE_BUILDING_ONLY)
 					continue;
+			}
+			if(HasSpecificBuff(client, "Call of the Heartbroken"))
+			{
+				RemoveSpecificBuff(client, "Call of the Heartbroken Internal");
+				RemoveSpecificBuff(client, "Call of the Heartbroken");
 			}
 			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
 			if(glowentity > MaxClients)
@@ -3368,6 +3383,7 @@ void ZR_FastDownloadForce()
 	if(FileNetwork_Enabled())
 		return;
 
+	PrecacheHeartbrokenMusic();
 	PrecacheSharedDarkestMusic();
 	PrecacheTwirlMusic();
 	SeaBornMusicDo();
