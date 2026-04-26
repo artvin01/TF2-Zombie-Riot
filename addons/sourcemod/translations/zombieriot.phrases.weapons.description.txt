@@ -5382,6 +5382,16 @@
 		"en"	"The Heartbroken"
 		"ko"	"마음이 어긋난 자"
 	}
+	"Mirror Sword"
+	{
+		"en"	"Mirror Sword"
+		"ko"	"유리 세계로 얽힌 검"
+	}
+	"Coffin"
+	{
+		"en"	"Coffin"
+		"ko"	"관"
+	}
 	"The Heartbroken Desc"
 	{
 		"en"	"Kill EVERY Enemy.\n-M2 allows you to counter\nA short delay, deal damage back to 1 enemy\nCounter blocks 75％ damage\n-During animations, take 25 less％ damage\n-You passively have cannibalism\n-You are tanky"
