@@ -5387,7 +5387,7 @@
 	}
 	"The Heartbroken Desc 1"
 	{
-		"en"	"-tiny stat increases"
+		"en"	"-Tiny stat increases"
 	}
 	"The Heartbroken Desc 2"
 	{

@@ -49,6 +49,7 @@ public void HeartBroken_OnMapStart()
 	PrecacheSoundArray(g_CoffinReel);
 	PrecacheSoundArray(g_CoffinRevive);
 	Zero(f_HeartBroken_HUDDelay);
+	Zero(CoffinLoseCD);
 	PrecacheModel(COFFIN_MODEL);
 	PrecacheModel(HEARTBREAK_HORSE_MODEL);
 	PrecacheModel(CHAIN_BEAM);
@@ -130,9 +131,9 @@ static Action Timer_HeartBroken(Handle timer, DataPack pack)
 static void HeartBroken_HUD(int client)
 {
 	//char weapon_hint[50];
-	if(WeaponLevel[client] >= 5)
+	if(WeaponLevel[client] < 5)
 		return;
-		CoffinLoseCD
+
 	if(CoffinLoseCD[client] < GetGameTime() && !Waves_InSetup())
 	{
 		CoffinLoseCD[client] = GetGameTime() + 60.0;
@@ -223,7 +224,7 @@ public void HeartBroken_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	if(CheckInHud())
 		return;
 
-	if(WeaponLevel[victim] >= 5)
+	if(WeaponLevel[attacker] >= 5)
 	{
 
 		GiveCoffinOnDamage(attacker, victim, damage);
@@ -714,6 +715,11 @@ public void Heartbroken_Reqieum(int client, int weapon, bool crit, int slot)
 	int target = TR_GetEntityIndex(swingTrace);	
 	delete swingTrace;
 	if(!IsValidEnemy(client, target, true))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
+	if(HasSpecificBuff(target, "Coffin Target"))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return;
