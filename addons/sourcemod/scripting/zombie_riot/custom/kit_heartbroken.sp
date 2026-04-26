@@ -10,7 +10,7 @@ static float Smite_ChargeSpan = 0.33;
 static float Smite_Radius = 250.0;
 static float CoffinCharge[MAXPLAYERS];
 static int WeaponLevel[MAXPLAYERS];
-static float CoffinLoseCD[MAXPLAYERS];
+//static float CoffinLoseCD[MAXPLAYERS];
 static float RecentSwitch[MAXPLAYERS];
 
 #define MAX_COFFINS 10
@@ -51,7 +51,7 @@ public void HeartBroken_OnMapStart()
 	PrecacheSoundArray(g_CoffinRevive);
 	Zero(f_HeartBroken_HUDDelay);
 	Zero(RecentSwitch);
-	Zero(CoffinLoseCD);
+//	Zero(CoffinLoseCD);
 	PrecacheModel(COFFIN_MODEL);
 	PrecacheModel(HEARTBREAK_HORSE_MODEL);
 	PrecacheModel(CHAIN_BEAM);
@@ -135,7 +135,7 @@ static void HeartBroken_HUD(int client)
 	//char weapon_hint[50];
 	if(WeaponLevel[client] < 5)
 		return;
-
+	/*
 	if(CoffinLoseCD[client] < GetGameTime() && !Waves_InSetup())
 	{
 		CoffinLoseCD[client] = GetGameTime() + 120.0;
@@ -146,8 +146,8 @@ static void HeartBroken_HUD(int client)
 			CoffinCharge[client] = 0.0;
 			CoffinLoseCD[client] = GetGameTime() + 240.0;
 		}
-
 	}
+	*/
 	if(f_HeartBroken_HUDDelay[client] < GetGameTime())
 	{
 		
