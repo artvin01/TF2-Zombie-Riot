@@ -352,7 +352,8 @@ bool NPC_SpawnNext(bool panzer,
 					
 					CClotBody npcstats = view_as<CClotBody>(entity_Spawner);
 					
-					npcstats.m_bStaticNPC = enemy.Is_Static;
+					if(enemy.Is_Static)
+						npcstats.m_bStaticNPC = enemy.Is_Static;
 					if(enemy.Is_Static && enemy.Team != TFTeam_Red)
 						AddNpcToAliveList(entity_Spawner, 1);
 
