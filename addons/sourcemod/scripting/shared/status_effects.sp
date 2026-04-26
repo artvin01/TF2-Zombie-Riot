@@ -9724,7 +9724,6 @@ stock bool StatusEffects_SinkingDebuffMaxStacks(int victim)
 
 
 
-#define MAXMEMORIAL_HITS 2
 void Memorial_Possession_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	if(!IsValidEntity(victim))
