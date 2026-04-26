@@ -9499,6 +9499,13 @@ static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusE
 		return;
 	}
 
+	if(!IsEntityAlive(entity))
+	{
+		Apply_StatusEffect.TimeUntillOver = 0.0;
+		int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+		E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+		return;
+	}
 	float flPos[3];
 	GetEntPropVector(OwnerAttach, Prop_Data, "m_vecAbsOrigin", flPos);
 	float flMe[3];
@@ -9557,6 +9564,7 @@ void CallOfHeartBroken_Start(int victim, StatusEffect Apply_MasterStatusEffect, 
 	
 	if(IsValidEntity(Apply_StatusEffect.WearableUse))
 		return;
+	f_OneShotProtectionTimer[victim] = GetGameTime() + Apply_StatusEffect.TimeUntillOver + 1; // 60 second cooldown
 	int laser = ConnectWithBeam(OwnerAttach, victim, 65, 0, 125, 4.0, 4.0, 0.0, CHAIN_BEAM);
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	Apply_StatusEffect.WearableUse = EntIndexToEntRef(laser);

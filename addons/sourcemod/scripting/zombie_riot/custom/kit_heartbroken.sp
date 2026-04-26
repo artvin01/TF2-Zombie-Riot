@@ -759,7 +759,7 @@ public void Heartbroken_Reqieum(int client, int weapon, bool crit, int slot)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return;
 	}
-	Ability_Apply_Cooldown(client, slot, 45.0, weapon);
+	Ability_Apply_Cooldown(client, slot, 60.0, weapon);
 
 	Heartbroken_SwitchToMeleeWeapon(client, weapon, crit, slot);
 
@@ -1087,8 +1087,7 @@ stock void GiveCoffinOnDamage(int client, int victim, float damage)
 	}
 	
 	float DamageForMaxCharge = (Pow(2.0 * MinCashMaxGain, 1.2) + MinCashMaxGain * 3.0);
-	
-	DamageForMaxCharge *= 0.75;
+
 
 
 	CoffinCharge[client] += (damage / DamageForMaxCharge);
