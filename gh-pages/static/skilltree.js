@@ -29,6 +29,7 @@ function setPrimaryButtonState(e) {
 };
 
 ctx.canvas.addEventListener("mousedown", setPrimaryButtonState);
+ctx.canvas.addEventListener("ontouchstart", setPrimaryButtonState);
 document.addEventListener('mousemove', function(event) {
     bounds = ctx.canvas.getBoundingClientRect();
     mousepos = [event.clientX-bounds.left, event.clientY-bounds.top];
@@ -40,6 +41,7 @@ ctx.canvas.oncontextmenu = function() {
   return false;
 }
 ctx.canvas.addEventListener("mouseup", setPrimaryButtonState);
+ctx.canvas.addEventListener("ontouchend", setPrimaryButtonState);
 
 
 ctx.canvas.addEventListener("wheel", function (e) {
@@ -375,3 +377,10 @@ async function parse_skilltree() {
 
 
 parse_skilltree();
+
+/* Accessibility */
+document.onkeydown = (e) => {
+  if (e.key === "Enter") {
+    document.activeElement.click();
+  }
+};
