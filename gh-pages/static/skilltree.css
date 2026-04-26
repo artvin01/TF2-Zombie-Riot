@@ -19,8 +19,16 @@ canvas {
 }
 
 .overlay {
-    position: relative;
-    display: inline;
+    display: grid;
+
+    grid-template: "container";
+    place-items: end;
+    place-content: end;
+}
+
+.overlay > * {
+  grid-area: container;
+  max-width: inherit;
 }
 
 .btnoverlay {
@@ -30,16 +38,10 @@ canvas {
     border-width:3px;
     border-color:#282828;
     border-style:solid;
-
-    display:inline;
-    margin:5px;
+    margin:2px;
 }
 
 .overlaybuttons {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-
     display: flex;
 }
 
@@ -50,6 +52,7 @@ canvas {
 
 /* Help button */
 .hover {
+    margin-right: 5px;
     display: table;
     position: relative;
     color: var(--link-dark);

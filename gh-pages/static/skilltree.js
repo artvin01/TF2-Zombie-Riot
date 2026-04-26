@@ -1,6 +1,7 @@
 // GLOBALS ===================================================
 const ctx = document.getElementById("canvas").getContext("2d");
 const pagetitle = document.getElementById("title");
+const pageheight = window.innerHeight/1.5;
 
 let last_mousepos = [0,0];
 let campos = [0,0];
@@ -86,7 +87,7 @@ ctx.canvas.addEventListener("wheel", function (e) {
 function draw() {
   if (!document.fullscreenElement) {
     ctx.canvas.width = pagetitle.offsetWidth;
-    ctx.canvas.height = 800;
+    ctx.canvas.height = pageheight;
     ctx.canvas.style["border-style"]="solid";
   } else {
     ctx.canvas.width = window.innerWidth;
@@ -120,7 +121,6 @@ function draw() {
   postrun=render(postrun);
 
   if (mousedown) {
-    console.log(`diff ${(mousepos[0]-last_mousepos[0])} mpos ${mousepos[0]} last ${last_mousepos[0]}`)
     campos[0] += (mousepos[0]-last_mousepos[0]);
     campos[1] += (mousepos[1]-last_mousepos[1]);
     ctx.canvas.style.cursor = "grabbing";
