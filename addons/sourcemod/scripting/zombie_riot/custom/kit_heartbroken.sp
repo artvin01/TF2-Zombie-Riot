@@ -11,6 +11,7 @@ static float Smite_Radius = 250.0;
 static float CoffinCharge[MAXPLAYERS];
 static int WeaponLevel[MAXPLAYERS];
 static float CoffinLoseCD[MAXPLAYERS];
+static float RecentSwitch[MAXPLAYERS];
 
 #define MAX_COFFINS 10
 #define COFFIN_MODEL "models/props_manor/coffin_02.mdl"
@@ -49,6 +50,7 @@ public void HeartBroken_OnMapStart()
 	PrecacheSoundArray(g_CoffinReel);
 	PrecacheSoundArray(g_CoffinRevive);
 	Zero(f_HeartBroken_HUDDelay);
+	Zero(RecentSwitch);
 	Zero(CoffinLoseCD);
 	PrecacheModel(COFFIN_MODEL);
 	PrecacheModel(HEARTBREAK_HORSE_MODEL);
@@ -77,7 +79,7 @@ bool IsHeartBroken(int client)
 }
 void HeartBrokenMassRevive(int client)
 {
-	CreateTimer(7.0, Timer_ReviveHeartBroken, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(10.0, Timer_ReviveHeartBroken, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 }
 public Action Timer_ReviveHeartBroken(Handle timer, any entid)
 {
@@ -190,13 +192,13 @@ void Heartbroken_ApplyCoffinBack(int client, bool RemoveOnly)
 	}
 
 	ref_CoffinEntity[client] = EntIndexToEntRef(CoffinEntity);
-	CoffinToggleVisiblity(client, true);
+	CreateTimer(0.1, Timer_HeartBroken_CoffinHack, EntIndexToEntRef(CoffinEntity), TIMER_FLAG_NO_MAPCHANGE);
 	
 }
 
 void CoffinToggleVisiblity(int owner, bool Display)
 {
-	Heartbroken_ApplyCoffinBack(owner, Display);
+	Heartbroken_ApplyCoffinBack(owner, !Display);
 	/*
 	int CoffinEntity = EntRefToEntIndex(ref_CoffinEntity[owner]);
 	if(!IsValidEntity(CoffinEntity))
@@ -245,7 +247,7 @@ public void HeartBroken_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	{	
 		if(!StatusEffects_SinkingDebuffMaxStacks(victim))
 		{
-			Ability_Apply_Cooldown(attacker, 3, Ability_Check_Cooldown(attacker, 3, weapon) - 8.0, weapon, true);
+			Ability_Apply_Cooldown(attacker, 3, Ability_Check_Cooldown(attacker, 3, weapon) - 6.5, weapon, true);
 		}
 		EmitSoundToAll(HEARTBREAK_DASHHIT, attacker, _, 70, _, 1.0, 100);
 		SensalCauseKnockback(attacker, victim, 0.5, false);
@@ -281,12 +283,12 @@ public void HeartBroken_OnTakeDamage_Take(int victim, int &attacker, int &inflic
 		{
 			for(int i=0; i<4; i++)
 			{
-				Heartbroken_ShootHorseProjectile(victim, attacker, 1.0 , 1.5);
+				Heartbroken_ShootHorseProjectile(victim, attacker, 0.5 , 1.5);
 			}
 		}
 		float CounterDamage = 65.0;
 		CounterDamage *= WeaponDamageAttributeMultipliers(equipped_weapon,_,victim);
-		CounterDamage *= 3.0;
+		CounterDamage *= 2.5;
 		static float angles[3];
 		GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
 		float vecForward[3];
@@ -314,6 +316,8 @@ public void HeartBroken_OnTakeDamage_Take(int victim, int &attacker, int &inflic
 }
 public void Heartbroken_Decapitate(int client, int weapon, bool crit, int slot)
 {
+	if(RecentSwitch[client] > GetGameTime())
+		return;
 	if (Ability_Check_Cooldown(client, slot) > 0.0)
 	{
 		float Ability_CD = Ability_Check_Cooldown(client, slot);
@@ -393,7 +397,7 @@ public void Heartbroken_SwitchToMeleeWeapon(int client, int weapon, bool crit, i
 	int MeleeWeapon = EntRefToEntIndex(ref_MeleeWeapon[client]);
 	if(!IsValidEntity(MeleeWeapon))
 		return;
-
+	RecentSwitch[client] = GetGameTime() + 0.25;
 	SetPlayerActiveWeapon(client, MeleeWeapon);
 }
 
@@ -431,6 +435,8 @@ public void Heartbroken_Memorial_Possesion(int client, int weapon, bool crit, in
 }
 public void Heartbroken_Counter(int client, int weapon, bool crit, int slot)
 {
+	if(RecentSwitch[client] > GetGameTime())
+		return;
 	if (Ability_Check_Cooldown(client, slot) > 0.0)
 	{
 		float Ability_CD = Ability_Check_Cooldown(client, slot);
@@ -450,6 +456,7 @@ public void Heartbroken_Counter(int client, int weapon, bool crit, int slot)
 		return;
 	}
 	
+	Ability_Apply_Cooldown(client, slot, 15.0, weapon);
 	HeartBrokenAction(client, -1, 2);
 }
 
@@ -484,7 +491,7 @@ static int HeartBrokenAction(int client, int target, int which)
 			duration = 2.0;
 		}
 	}
-	ApplyStatusEffect(client, client, "Very Defensive Backup", duration);
+	ApplyStatusEffect(client, client, "HeartBroken Animation", duration);
 
 	float vAngles[3];
 	float vOrigin[3];
@@ -624,6 +631,7 @@ void Heartbroken_ShootHorseProjectile(int client, int target, float dmgmotif = 1
 	vOrigin[2] -= 30.0;
 
 	GetClientEyeAngles(client, vAngles);
+	vAngles[0] = 0.0;
 	vAngles[0] += GetRandomFloat(-15.0,15.0);
 	vAngles[1] += GetRandomFloat(-15.0,15.0);
 	fClamp(vAngles[1], -20.0, 20.0);
@@ -694,8 +702,7 @@ public void Horse_Projectile_Hit(int entity, int target)
 
 	float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 	SDKHooks_TakeDamage(target, entity, owner, Wand_Dmg, DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
-	f_WandDamage[entity] *= 0.75;
-	
+	f_WandDamage[entity] *= 0.5;
 }
 
 
@@ -765,7 +772,7 @@ void Heartbroken_ShootCoffinProjectile(int client, int target)
 	ApplyStatusEffect(client, target, "Coffin Target", 7.0);
 	CoffinToggleVisiblity(client, false);
 	float damage = 65.0;
-	damage *= 4.0;
+	damage *= 3.0;
 	damage *= WeaponDamageAttributeMultipliers(MeleeWeapon,_,client);
 
 	float speed = 900.0;
@@ -1058,10 +1065,7 @@ stock void GiveCoffinOnDamage(int client, int victim, float damage)
 	
 	float DamageForMaxCharge = (Pow(2.0 * MinCashMaxGain, 1.2) + MinCashMaxGain * 3.0);
 	
-	DamageForMaxCharge *= 0.5;
-	
-	if(b_thisNpcIsARaid[victim])
-		DamageForMaxCharge *= 0.85;
+	DamageForMaxCharge *= 0.75;
 
 
 	CoffinCharge[client] += (damage / DamageForMaxCharge);
@@ -1084,7 +1088,7 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 	if(LastMann)
 		ReviveCost = 0.3;
 	
-	if(!ForceRevive && CoffinCharge[client] < v)
+	if(!ForceRevive && CoffinCharge[client] < ReviveCost)
 	{
 		SetDefaultHudPosition(client);
 		ShowSyncHudText(client, SyncHud_Notifaction, "%T", "Not Enough Coffins", client, RoundToFloor(ReviveCost * float(MAX_COFFINS)));

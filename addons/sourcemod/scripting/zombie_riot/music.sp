@@ -761,7 +761,8 @@ void Music_Update(int client)
 			{
 				if(TeutonType[client] == TEUTON_NONE)
 				{
-					TF2_AddCondition(client, TFCond_DefenseBuffed, 2.0);
+					if(!Rogue_NoLastman())
+						TF2_AddCondition(client, TFCond_DefenseBuffed, 2.0);
 					
 					Give_Cond_Timer[client] = GetGameTime() + 1.0;
 				}

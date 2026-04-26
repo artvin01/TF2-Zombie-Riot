@@ -5383,7 +5383,7 @@
 	}
 	"The Heartbroken Desc"
 	{
-		"en"	"Kill EVERY Enemy.\n-M2 allows you to counter\nA short delay, after which you deal damage back to 1 enemy\n-Counter blocks 75％ damage\n-During animations, take 50％ less damage\n-You passively have cannibalism"
+		"en"	"Kill EVERY Enemy.\n-M2 allows you to counter\nA short delay, after which you deal damage back to 1 enemy\nCounter blocks 75％ damage\n-During animations, take 25 less damage\n-You passively have cannibalism\n-You have passivelly have more health, knockback res and damage res"
 	}
 	"The Heartbroken Desc 1"
 	{
@@ -5391,19 +5391,19 @@
 	}
 	"The Heartbroken Desc 2"
 	{
-		"en"	"-Overall Stat Increases\n-Hitting enemies gives a new debuff called ''sinking''\n-Your counter now spawns dullahan"
+		"en"	"-Overall Stat Increases\n-Hitting enemies gives a new debuff called ''sinking''\n-Your counter now spawns Dullahan"
 	}
 	"The Heartbroken Desc 3"
 	{
-		"en"	"-Overall Stat Increases\n-Your R now can dash towards an enemy, next hit dealing big damage\nIf the enemy has not maxed sinking stats, reduce cooldowns massively on hit"
+		"en"	"-Overall Stat Increases\n-Your R now can dash towards an enemy, next hit dealing big damage\nIf the enemy has not maxed sinking:\nReduce Dash Cooldown"
 	}
 	"The Heartbroken Desc 4"
 	{
-		"en"	"-Overall Stat Increases\n-Unlock Secondary weapon:\nM1 forces your melee out.\nM2 Enables a combo:\nGain faster attackspeed\nOn 3rd hit, summons a stampede of dullahan's"
+		"en"	"-Overall Stat Increases\n-Unlock Secondary weapon:\n-M1 forces your melee out\n-M2 Enables a combo:\nGain faster attackspeed\nOn 3rd hit, summons a stampede of Dullahan's"
 	}
 	"The Heartbroken Desc 5"
 	{
-		"en"	"-Overall Stat Increases\n-Secondary weapon unlocks new ability:\n-R launches a coffin that deals immensive damage on hit\nIf the enemy is not a boss or special, shove them inside the coffin and Gain 1 coffin.\n-Gain coffin on damage\n-Crouch + R Brings back a player tempomarily for 5 coffins.\n-Coffins give a dammage bonus"
+		"en"    "-Overall Stat Increases\n-Unlock secondary R ability:\n-Launches a coffin that deals immense damage on hit\n-If the enemy is not a boss or special, instakill them and gain 1 coffin stack\n-Crouch+R to temporarily revive players for 5 coffins\n-Gain coffins on damage\n-Coffins give a damage bonus and drain overtime"
 	}
 	"The Heartbroken Desc 6"
 	{

@@ -2382,12 +2382,12 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						else
 							ShowHudText(client, -1, "%T", "Last Alive", client);
 
+						int MaxHealth;
+						MaxHealth = SDKCall_GetMaxHealth(client) * 2;
+						if(b_IsAloneOnServer)
+							MaxHealth /= 2;
 						if(ApplyLastmanBuffs)
 						{
-							int MaxHealth;
-							MaxHealth = SDKCall_GetMaxHealth(client) * 2;
-							if(b_IsAloneOnServer)
-								MaxHealth /= 2;
 							
 							int Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
 							if(b_IsAloneOnServer)
@@ -2402,7 +2402,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							
 						if(i_HealthBeforeSuit[client] == 0)
 						{
-							SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
+							if(ApplyLastmanBuffs)
+								SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
 						}
 						else
 						{

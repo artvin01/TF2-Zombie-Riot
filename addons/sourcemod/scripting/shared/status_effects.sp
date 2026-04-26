@@ -9398,6 +9398,20 @@ void StatusEffects_HeartBroken()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
+	strcopy(data.BuffName, sizeof(data.BuffName), "HeartBroken Animation");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⛨");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.75;
+	data.DamageDealMulti			= -1.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
 	strcopy(data.BuffName, sizeof(data.BuffName), "HB Parried");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -9521,6 +9535,8 @@ void CallOfHeartBroken_Start(int victim, StatusEffect Apply_MasterStatusEffect, 
 	}
 
 	//
+	//no downs
+	i_AmountDowned[victim] = 55;
 	if(OwnerAttach == -1 || !IsEntityAlive(OwnerAttach))
 	{
 		SDKHooks_TakeDamage(victim, victim, victim, 99999.0, DMG_TRUEDAMAGE, _, _, _, true);
@@ -9597,7 +9613,7 @@ void Decapitate_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_Statu
 	if(!IsValidEntity(victim))
 		return;
 
-	Attributes_SetMulti(victim, 2, 2.35);
+	Attributes_SetMulti(victim, 2, 2.0);
 
 }
 void Decapitate_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -9605,7 +9621,7 @@ void Decapitate_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusE
 	if(!IsValidEntity(victim))
 		return;
 
-	Attributes_SetMulti(victim, 2, 1.0 / (2.35));
+	Attributes_SetMulti(victim, 2, 1.0 / (2.0));
 }
 float Sinking_DamageDealFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
@@ -9644,7 +9660,7 @@ void Sinking_TakeDamageAttackerPost(int attacker, int victim, float damage, Stat
 		return;
 	if(!StatusEffects_SinkingDebuffMaxStacks(victim))
 		return;
-	StartBleedingTimer(victim, attacker, damage * 0.025, 10, -1, damagetype, 0);
+	StartBleedingTimer(victim, attacker, damage * 0.025, 5, -1, damagetype, 0);
 }
 stock void StatusEffects_SinkingDebuffAdd(int victim, int valuetoadd)
 {

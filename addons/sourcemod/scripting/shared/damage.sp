@@ -1689,7 +1689,7 @@ stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflic
 	{
 		ExtraDamageDealt = 0.35;
 	}
-	if(!b_IsAloneOnServer)
+	if(!b_IsAloneOnServer && !Rogue_NoLastman())
 	{
 		if(LastMann && GetTeam(victim) != TFTeam_Red)
 		{
