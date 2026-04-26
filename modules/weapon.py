@@ -9,6 +9,7 @@ class WeaponPap:
         self.depth = depth
         pap_key = f"pap_{idx}_"
         key_desc = pap_key+"desc"
+        util.debug(f"Parsing {weapon_name} {pap_key}","weaponpap")
         if key_desc in weapon_data:
             key_customname = pap_key + "custom_name"
             if key_customname in weapon_data: self.name = weapon_data[key_customname]
@@ -34,25 +35,8 @@ class WeaponPap:
             if key_extra_desc in weapon_data: self.extra_desc = weapon_data[key_extra_desc]
             else: self.extra_desc = ""
 
-            self.attributes = weapon_data[pap_key+"attributes"]
-            self.id = util.id_from_str(self.attributes)
-        
         self.valid = key_desc in weapon_data
 
-
-    def to_md(self):
-        desc = util.get_key(self.description)
-        
-        extra_desc = self.extra_desc if len(self.extra_desc) > 0 else ""
-
-        space_header = " "*self.depth
-        space = " "*round(self.depth*1.5) # Scale a bit to align with header spacing
-
-        if len(self.tags)>0: tags = f"{space}{self.tags}  \n"
-        else: tags = ""
-
-        return f"### {space_header} {self.name} \\[{self.id}\\]  \n{tags}{space}${self.cost}  \n{space}{desc.replace("\\n",f"  \n{space}")}  \n{space}{extra_desc.replace("\\n",f"  \n{space}")}  \n"
-    
     def to_link(self):
         return f"{" "*self.depth}{self.name}  \n"
     
