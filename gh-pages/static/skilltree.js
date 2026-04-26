@@ -1,8 +1,3 @@
-/* TODO
-- Maximize skilltree window
-*/
-
-
 // GLOBALS ===================================================
 const ctx = document.getElementById("canvas").getContext("2d");
 const pagetitle = document.getElementById("title");
@@ -177,7 +172,7 @@ function parse_main(data,px,py,parentpts) {
       if (pointdata[data.path] < 0) {pointdata[data.path]=0};
       if (pointdata[data.path]-prev !== 0) {
         total_points += (pointdata[data.path]-prev)*data.cost;
-        document.getElementById("skillpoint_amt").innerHTML=total_points;
+        update_points();
       }
     }
   })
@@ -193,7 +188,7 @@ function parse_main(data,px,py,parentpts) {
     if (lastaction<0) {
       total_points -= data.cost*point_amt;
       pointdata[data.path] = 0;
-      document.getElementById("skillpoint_amt").innerHTML=total_points;
+      update_points()
     } else {
       dounlock=true;
     }
@@ -252,7 +247,7 @@ function parse_main(data,px,py,parentpts) {
         let pointdiff = val.minparent-pointdata[data.path];
         pointdata[data.path] += pointdiff;
         total_points += data.cost*pointdiff;
-        document.getElementById("skillpoint_amt").innerHTML=total_points;
+        update_points()
         unlocked = parentpts >= data.minparent;
         if (!unlocked && point_amt>0) {
           requestunlock = true;
@@ -261,6 +256,13 @@ function parse_main(data,px,py,parentpts) {
     };
   })
   return dounlock
+}
+
+const skillpoint_amt = document.getElementById("skillpoint_amt");
+const level_amt = document.getElementById("level_amt");
+function update_points() {
+  skillpoint_amt.innerHTML=total_points;
+  level_amt.innerHTML=Math.ceil(total_points/2); // 2 skillpoints per level
 }
 
 function render(arr) {
@@ -325,7 +327,7 @@ function skilltree_resetcam() {
 function skilltree_reset() {
   pointdata={};
   total_points=0;
-  document.getElementById("skillpoint_amt").innerHTML=total_points;
+  update_points()
 }
 
 function skilltree_filltree() {
@@ -341,7 +343,7 @@ function skilltree_filltree() {
     });
   };
   _tfill(skilltree_data[0]);
-  document.getElementById("skillpoint_amt").innerHTML=total_points;
+  update_points()
 }
 function skilltree_fullscreen(fullscreen_btn) {
   if (document.fullscreenElement) {

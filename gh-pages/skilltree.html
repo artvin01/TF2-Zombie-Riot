@@ -8,6 +8,7 @@
     <title>ZR Encyclopedia - Skilltree</title>
 </head>
 <body>
+    <i style="margin-bottom: 2em;display: block;"><a href="/TF2-Zombie-Riot/">Back to home</a></i>
     <h2 id="title">Skilltree</h2>
     <div class="overlay">
         <canvas id="canvas"></canvas>
@@ -17,7 +18,10 @@
         </div>
     </div>
     <div class="rightalign">
-        <h2>Skillpoints in use: <span id="skillpoint_amt">0</span></h2>
+        <div>
+            <h2>Skillpoints in use: <span id="skillpoint_amt">0</span></h2>
+            <h2>Required levels: <span id="level_amt">0</span></h2>
+        </div>
         <div class="btncontainer">
             <div class="btn" tabindex="0" onclick="skilltree_reset();">RESET</div>
             <div class="btn" tabindex="0" onclick="skilltree_filltree();">FULL TREE</div>
