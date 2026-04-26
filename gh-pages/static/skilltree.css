@@ -32,15 +32,60 @@ canvas {
     border-style:solid;
 
     display:inline;
-    margin:0px;
+    margin:5px;
 }
 
 .overlaybuttons {
     position: absolute;
     bottom: 8px;
     right: 8px;
+
+    display: flex;
 }
 
 .btncontainer {
     display: flex;
+}
+
+
+/* Help button */
+.hover {
+    display: table;
+    position: relative;
+    color: var(--link-dark);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.hover:hover, .hover:focus {
+    color: hsl(from var(--link-dark) h s 80%);
+}
+
+.tooltip {
+  z-index: 1;
+  height: max-content;
+  width: max-content;
+  bottom: 90%;
+  right: 0;
+  opacity: 0;
+  position: absolute;
+  transition: 0.25s;
+  pointer-events: none;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  padding-left: 35px;
+  padding-right: 35px;
+  background-color: var(--bg-light);
+  color: var(--deep-space-blue);
+  text-align: left;
+}
+
+.hover:hover .tooltip, .hover:focus .tooltip {
+    opacity:1;
+    bottom: 100%;
+}
+
+.hover:focus .tooltip {
+    pointer-events: all;
+    cursor:auto;
 }

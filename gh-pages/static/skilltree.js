@@ -166,7 +166,7 @@ function parse_main(data,px,py,parentpts) {
       if (!(data.path in pointdata)) {pointdata[data.path] = 0};
       let prev = pointdata[data.path];
       if (mouseclick[0]) {pointdata[data.path] += 1;lastaction=1};
-      if (mouseclick[1]) {pointdata[data.path] = Number(data.max);lastaction=1};
+      if (mouseclick[1]) {pointdata[data.path] += data.max==="9999" ? 100 : Number(data.max)-pointdata[data.path];lastaction=1};
       if (mouseclick[2]) {pointdata[data.path] -= 1;lastaction=-1};
       if (pointdata[data.path] > data.max && data.max!=="9999") {pointdata[data.path]=data.max};
       if (pointdata[data.path] < 0) {pointdata[data.path]=0};
