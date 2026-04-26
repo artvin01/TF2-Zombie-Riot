@@ -651,9 +651,11 @@ void Heartbroken_ShootHorseProjectile(int client, int target, float dmgmotif = 1
 	
 	float fAng[3];
 	GetClientEyeAngles(client, fAng);
+	if(!IsEntityAlive(target))
+		target = -1;
 	Initiate_HomingProjectile(projectile,
 	projectile,
-		40.0 * speedmodif,			// float lockonAngleMax,
+		60.0 * speedmodif,			// float lockonAngleMax,
 		10.0 * speedmodif,				//float homingaSec,
 		true,				// bool LockOnlyOnce,
 		true,				// bool changeAngles,

@@ -337,7 +337,7 @@ void Heartbroken_MemorialPossesion(int owner, AlliedHeartbrokenVisualiserAbility
 
 	if(npc.m_flAbilityDo < GameTime)
 	{
-		Heartbroken_ShootHorseProjectile(owner,npc.m_iTarget, 0.75);
+		Heartbroken_ShootHorseProjectile(owner, npc.m_iTarget, 0.75);
 		npc.m_flAbilityDo = GameTime + 0.15;
 	}
 	/*
