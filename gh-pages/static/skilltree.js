@@ -18,19 +18,37 @@ var mousedown = false;
 let mouseclick = [false,false,false];
 let mousepos = [0,0];
 
-function setPrimaryButtonState(e) {
-  if (event.type==="mousedown") {
-    mouseclick[e.button] = true;
+function setPrimaryButtonState(event) {
+  if (event.type==="mousedown" || event.type=="touchstart") {
+    mouseclick[event.button] = true;
   };
   if (ctx.canvas.style.cursor==="grab" | ctx.canvas.style.cursor==="grabbing") {
-    var flags = e.buttons !== undefined ? e.buttons : e.which;
-    mousedown = (flags & 1) === 1;
+    var flags = event.buttons !== undefined ? event.buttons : event.which;
+    mousedown = ((flags & 1) === 1);
+    if (event.type==="touchstart") {
+      event = event.targetTouches[0];
+      bounds = ctx.canvas.getBoundingClientRect();
+      mousepos = [event.clientX-bounds.left, event.clientY-bounds.top];
+      last_mousepos=mousepos;
+      mousedown=true;
+    };
+    if (event.type==="touchend") {
+      mousedown=false;
+    };
   }
 };
 
 ctx.canvas.addEventListener("mousedown", setPrimaryButtonState);
-ctx.canvas.addEventListener("ontouchstart", setPrimaryButtonState);
+ctx.canvas.addEventListener("touchstart", setPrimaryButtonState);
 document.addEventListener('mousemove', function(event) {
+    bounds = ctx.canvas.getBoundingClientRect();
+    mousepos = [event.clientX-bounds.left, event.clientY-bounds.top];
+    if ((event.clientX < bounds.left) || (event.clientY < bounds.top) || (event.clientX > bounds.right) || (event.clientY > bounds.bottom)) {
+      mousedown = false;
+    }
+});
+document.addEventListener('touchmove', function(event) {
+    event = event.targetTouches[0];
     bounds = ctx.canvas.getBoundingClientRect();
     mousepos = [event.clientX-bounds.left, event.clientY-bounds.top];
     if ((event.clientX < bounds.left) || (event.clientY < bounds.top) || (event.clientX > bounds.right) || (event.clientY > bounds.bottom)) {
@@ -40,8 +58,8 @@ document.addEventListener('mousemove', function(event) {
 ctx.canvas.oncontextmenu = function() {
   return false;
 }
+ctx.canvas.addEventListener("touchend", setPrimaryButtonState);
 ctx.canvas.addEventListener("mouseup", setPrimaryButtonState);
-ctx.canvas.addEventListener("ontouchend", setPrimaryButtonState);
 
 
 ctx.canvas.addEventListener("wheel", function (e) {
@@ -96,16 +114,18 @@ function draw() {
   ctx.restore();
 
   ctx.font = `${16*zoom}px Oswald`;
-  ctx.canvas.style.cursor = "grab";
   parse_main(skilltree_data[0],campos[0],campos[1]-150*zoom, 0);
   prerun=render(prerun);
   run=render(run);
   postrun=render(postrun);
 
   if (mousedown) {
-      campos[0] += (mousepos[0]-last_mousepos[0]);
-      campos[1] += (mousepos[1]-last_mousepos[1]);
-      ctx.canvas.style.cursor = "grabbing";
+    console.log(`diff ${(mousepos[0]-last_mousepos[0])} mpos ${mousepos[0]} last ${last_mousepos[0]}`)
+    campos[0] += (mousepos[0]-last_mousepos[0]);
+    campos[1] += (mousepos[1]-last_mousepos[1]);
+    ctx.canvas.style.cursor = "grabbing";
+  } else {
+    ctx.canvas.style.cursor = "grab";
   }
 
   mouseclick=[false,false,false];
