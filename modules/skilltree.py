@@ -8,7 +8,6 @@ SKILLTREE_CFG = vdf.loads(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/
 with open("./config/skilltree.yml",'r') as file:
     PARSECFG = yaml.load(file)
 
-# TODO once porting: zombieriot.phrases.skilltree.txt has skill name and desc entries!
 def parse():
     util.log("Parsing Skilltree...")
     """
@@ -40,6 +39,10 @@ def parse():
                     if subskill[-1] == "a": ny+=1*PARSECFG.get(subskill,1)
                     if subskill[-1] == "b": nx+=1*PARSECFG.get(subskill,1)
                     if subskill[-1] == "c": ny-=1*PARSECFG.get(subskill,1)
+                elif subskill.startswith("abbaac") and len(subskill)>6:
+                    if subskill[-1] == "a": nx-=1*PARSECFG.get(subskill,1)
+                    if subskill[-1] == "b": ny+=1*PARSECFG.get(subskill,1)
+                    #if subskill[-1] == "c": ny-=1*PARSECFG.get(subskill,1)
                 else:
                     if subskill[-1] == "a": ny-=1*PARSECFG.get(subskill,1)
                     if subskill[-1] == "b": nx+=1*PARSECFG.get(subskill,1)

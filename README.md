@@ -20,6 +20,6 @@ Automatic encyclopedia generator for https://github.com/artvin01/TF2-Zombie-Riot
   - [x] Weapon Paps
   - [x] Trophies
   - [ ] Weapon Attributes (Clip, reserve, firerate, etc.)
-- [ ] Skilltree data
+- [x] Skilltree data
 
 Icon source: https://github.com/feathericons/feather

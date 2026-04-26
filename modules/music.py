@@ -10,7 +10,7 @@ def parse():
         if modal["file_exists"]:
             modal['audio"'] = f'audio" id="{music_idx}"' # class="audio" => class="audio" id="<int>"
             music_idx += 1
-        music_list_html += util.musicmodal_to_html(modal)
+            music_list_html += util.musicmodal_to_html(modal)
 
     context = {
         "musicdata": music_list_html
