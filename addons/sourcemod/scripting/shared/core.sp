@@ -2741,6 +2741,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_HasBombImplanted[entity] = false;
 		i_RaidGrantExtra[entity] = 0;
 		i_IsABuilding[entity] = false;
+		
 		i_NervousImpairmentArrowAmount[entity] = 0;
 		i_VoidArrowAmount[entity] = 0;
 		i_ChaosArrowAmount[entity] = 0;

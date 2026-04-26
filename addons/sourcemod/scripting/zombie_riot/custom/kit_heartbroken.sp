@@ -772,6 +772,21 @@ void Heartbroken_ShootCoffinProjectile(int client, int target)
 	if(!IsValidEntity(MeleeWeapon))
 		return;
 	ApplyStatusEffect(client, target, "Coffin Target", 7.0);
+	
+	if(IsInvuln(target) ||
+	 b_thisNpcIsABoss[target] ||
+	  b_thisNpcIsARaid[target] ||
+	   b_StaticNPC[target] ||
+	   i_IsABuilding[target] ||
+	   i_NpcIsABuilding[target] ||
+	    GetTeam(target) == TFTeam_Stalkers)
+		{
+
+		}
+		else
+		{
+			ApplyStatusEffect(target, target, "Infinite Will", 2.0);
+		}
 	CoffinToggleVisiblity(client, false);
 	float damage = 65.0;
 	damage *= 3.0;
@@ -829,7 +844,13 @@ public void Coffin_Projectile_Hit(int entity, int target)
 	if (!IsValidClient(owner))	
 		return;
 
-	if(IsInvuln(target) || b_thisNpcIsABoss[target] || b_thisNpcIsARaid[target] || b_StaticNPC[target] || GetTeam(target) == TFTeam_Stalkers)
+	if(IsInvuln(target) ||
+	 b_thisNpcIsABoss[target] ||
+	  b_thisNpcIsARaid[target] ||
+	   b_StaticNPC[target] ||
+	   i_IsABuilding[target] ||
+	   i_NpcIsABuilding[target] ||
+	    GetTeam(target) == TFTeam_Stalkers)
 	{
 		//Code to do damage position and ragdolls
 		static float angles[3];
