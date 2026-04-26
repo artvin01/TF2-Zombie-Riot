@@ -232,7 +232,7 @@ public void HeartBroken_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	if(WeaponLevel[attacker] >= 5)
 	{
 
-		GiveCoffinOnDamage(attacker, victim, damage);
+		GiveCoffinOnDamage(attacker, damage);
 
 		
 		//more coffins means more damage, 0.2 is the dmg multiplier
@@ -1071,7 +1071,7 @@ static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[
 
 
 
-stock void GiveCoffinOnDamage(int client, int victim, float damage)
+stock void GiveCoffinOnDamage(int client, float damage)
 {
 	int MinCashMaxGain = CurrentCash;
 	if(MinCashMaxGain <= 1000)
