@@ -1216,11 +1216,12 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 	}
 	PosMe[2] += 45.0;
 	TE_Particle("halloween_boss_death_cloud", PosMe, NULL_VECTOR, NULL_VECTOR, RandomWildHunted, _, _, _, _, _, _, _, _, _, 0.0);
-	GiveCompleteInvul(RandomWildHunted, 2.0);
-	TF2_AddCondition(RandomWildHunted, TFCond_SpeedBuffAlly, 2.0);
-	float Duration = 32.0;
+	float Duration = 33.0;
 	if(ForceRevive)
 		Duration *= 2.0;
+	GiveCompleteInvul(RandomWildHunted, 3.0);
+	TF2_AddCondition(RandomWildHunted, TFCond_SpeedBuffAlly, 3.0);
+	MorphineShotLogic(RandomWildHunted, true);
 
 	ApplyStatusEffect(client, RandomWildHunted, "Call of the Heartbroken", Duration);
 	ApplyStatusEffect(client, RandomWildHunted,	"Call of the Heartbroken Internal", Duration + 1.0);

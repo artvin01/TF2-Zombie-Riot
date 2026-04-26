@@ -318,7 +318,6 @@ void MorphineShotLogic(int client, bool Oneshot_Protection = false)
 	}
 	else
 	{
-		
 		HealEntityGlobal(client, client, MaxHealth * 0.15, 0.5, 3.0, HEAL_SELFHEAL);
 	}
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 3.0);

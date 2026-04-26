@@ -2236,6 +2236,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				{
 					if(IsPlayerAlive(client) && !applied_lastmann_buffs_once && !Died[client])
 					{
+						f_OneShotProtectionTimer[client] = 0.0; // 60 second cooldown
 						if(dieingstate[client] > 0)
 						{
 							dieingstate[client] = 0;
