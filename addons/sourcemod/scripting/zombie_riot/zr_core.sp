@@ -2196,28 +2196,37 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				}
 			}
 		}
-
+		/*
 		if(Rogue_NoLastman())
 		{
 			LastMann = false;
 		}
 		else
+		*/
 		{
+			//no lastman buffs.
+			bool ApplyLastmanBuffs = true;
+			if(Rogue_NoLastman())
+				ApplyLastmanBuffs = false;
+		
 			if(!applied_lastmann_buffs_once)
 			{
 				CauseFadeInAndFadeOut(0,1.0,1.0,1.0, "235");
 				PlayTeamDeadSound();
 				Zero(delay_hud); //Allow the hud to immedietly update
-				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+				if(ApplyLastmanBuffs)
 				{
-					int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-					if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
+					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 					{
-						FreezeNpcInTime(entity, 3.0, true);
-						IncreaseEntityDamageTakenBy(entity, 0.000001, 3.0);
+						int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+						if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
+						{
+							FreezeNpcInTime(entity, 3.0, true);
+							IncreaseEntityDamageTakenBy(entity, 0.000001, 3.0);
+						}
 					}
+					RaidModeTime += 3.0;
 				}
-				RaidModeTime += 3.0;
 			}
 
 			ExcuteRelay("zr_lasthuman");
@@ -2373,10 +2382,23 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						else
 							ShowHudText(client, -1, "%T", "Last Alive", client);
 
-						int MaxHealth;
-						MaxHealth = SDKCall_GetMaxHealth(client) * 2;
-						if(b_IsAloneOnServer)
-							MaxHealth /= 2;
+						if(ApplyLastmanBuffs)
+						{
+							int MaxHealth;
+							MaxHealth = SDKCall_GetMaxHealth(client) * 2;
+							if(b_IsAloneOnServer)
+								MaxHealth /= 2;
+							
+							int Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
+							if(b_IsAloneOnServer)
+								Armor_Max /= 2;
+
+							Armor_Charge[client] = Armor_Max;
+							GiveCompleteInvul(client, 3.0);
+						}
+						else //reaction time?
+							GiveCompleteInvul(client, 1.0);
+						
 							
 						if(i_HealthBeforeSuit[client] == 0)
 						{
@@ -2390,13 +2412,6 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 								i_HealthBeforeSuit[client] = i_HealthBeforeSuitMaxHP[client] * 2;
 						}
 						//if in quantum suit, dont.
-
-						int Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
-						if(b_IsAloneOnServer)
-							Armor_Max /= 2;
-
-						Armor_Charge[client] = Armor_Max;
-						GiveCompleteInvul(client, 3.0);
 					}
 				}
 			}

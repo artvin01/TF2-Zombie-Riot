@@ -136,13 +136,13 @@ static void HeartBroken_HUD(int client)
 
 	if(CoffinLoseCD[client] < GetGameTime() && !Waves_InSetup())
 	{
-		CoffinLoseCD[client] = GetGameTime() + 60.0;
+		CoffinLoseCD[client] = GetGameTime() + 120.0;
 
 		CoffinCharge[client] -= 0.1;
 		if(CoffinCharge[client] <= 0.0)
 		{
 			CoffinCharge[client] = 0.0;
-			CoffinLoseCD[client] = GetGameTime() + 120.0;
+			CoffinLoseCD[client] = GetGameTime() + 240.0;
 		}
 
 	}
@@ -196,6 +196,8 @@ void Heartbroken_ApplyCoffinBack(int client, bool RemoveOnly)
 
 void CoffinToggleVisiblity(int owner, bool Display)
 {
+	Heartbroken_ApplyCoffinBack(owner, Display);
+	/*
 	int CoffinEntity = EntRefToEntIndex(ref_CoffinEntity[owner]);
 	if(!IsValidEntity(CoffinEntity))
 		return;
@@ -206,6 +208,7 @@ void CoffinToggleVisiblity(int owner, bool Display)
 		return;
 
 	CreateTimer(0.1, Timer_HeartBroken_CoffinHack, EntIndexToEntRef(CoffinEntity), TIMER_FLAG_NO_MAPCHANGE);
+	*/
 }
 public Action Timer_HeartBroken_CoffinHack(Handle timer, any entid)
 {
@@ -324,6 +327,11 @@ public void Heartbroken_Decapitate(int client, int weapon, bool crit, int slot)
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		return;
 	}
+	if(HasSpecificBuff(weapon, "Memorial Possession"))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
 	Handle swingTrace;
 	b_LagCompNPC_No_Layers = true;
 	float vecSwingForward[3];
@@ -404,15 +412,20 @@ public void Heartbroken_Memorial_Possesion(int client, int weapon, bool crit, in
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		return;
 	}
-	Heartbroken_SwitchToMeleeWeapon(client, weapon, crit, slot);
-	
 	int MeleeWeapon = EntRefToEntIndex(ref_MeleeWeapon[client]);
 	if(!IsValidEntity(MeleeWeapon))
 		return;
+	if(HasSpecificBuff(MeleeWeapon, "Decapitate"))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
+	Heartbroken_SwitchToMeleeWeapon(client, weapon, crit, slot);
+	
 
 	ApplyStatusEffect(MeleeWeapon, MeleeWeapon, "Memorial Possession", 3.0);
 	Rogue_OnAbilityUse(client, MeleeWeapon);
-	Ability_Apply_Cooldown(client, slot, 15.0);
+	Ability_Apply_Cooldown(client, slot, 20.0, weapon);
 	EmitSoundToAll(HEARTBREAK_DASH, client, _, 70, _, 1.0, 80);
 	EmitSoundToAll(HEARTBREAK_DASH, client, _, 70, _, 1.0, 80);
 }
@@ -429,6 +442,11 @@ public void Heartbroken_Counter(int client, int weapon, bool crit, int slot)
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+		return;
+	}
+	if(HasSpecificBuff(weapon, "Memorial Possession") || HasSpecificBuff(weapon, "Decapitate"))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return;
 	}
 	
@@ -627,9 +645,9 @@ void Heartbroken_ShootHorseProjectile(int client, int target, float dmgmotif = 1
 	GetClientEyeAngles(client, fAng);
 	Initiate_HomingProjectile(projectile,
 	projectile,
-		40.0,			// float lockonAngleMax,
+		40.0 * speedmodif,			// float lockonAngleMax,
 		10.0 * speedmodif,				//float homingaSec,
-		false,				// bool LockOnlyOnce,
+		true,				// bool LockOnlyOnce,
 		true,				// bool changeAngles,
 		fAng,
 		target);			// float AnglesInitiate[3]);
@@ -691,6 +709,14 @@ public void Heartbroken_Reqieum(int client, int weapon, bool crit, int slot)
 		Heartbroken_WildHunt(client);
 		return;
 	}
+	int MeleeWeapon = EntRefToEntIndex(ref_MeleeWeapon[client]);
+	if(!IsValidEntity(MeleeWeapon))
+		return;
+	if(HasSpecificBuff(MeleeWeapon, "Memorial Possession") || HasSpecificBuff(MeleeWeapon, "Decapitate"))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
 	if (Ability_Check_Cooldown(client, slot) > 0.0)
 	{
 		float Ability_CD = Ability_Check_Cooldown(client, slot);
@@ -724,6 +750,7 @@ public void Heartbroken_Reqieum(int client, int weapon, bool crit, int slot)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return;
 	}
+	Ability_Apply_Cooldown(client, slot, 45.0, weapon);
 
 	Heartbroken_SwitchToMeleeWeapon(client, weapon, crit, slot);
 
@@ -793,7 +820,7 @@ public void Coffin_Projectile_Hit(int entity, int target)
 	if (!IsValidClient(owner))	
 		return;
 
-	if(IsInvuln(target) || CoffinCharge[owner] >= 1.0 || b_thisNpcIsABoss[target] || b_thisNpcIsARaid[target] || b_StaticNPC[target])
+	if(IsInvuln(target) || b_thisNpcIsABoss[target] || b_thisNpcIsARaid[target] || b_StaticNPC[target] || GetTeam(target) == TFTeam_Stalkers)
 	{
 		//Code to do damage position and ragdolls
 		static float angles[3];
@@ -1053,10 +1080,14 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "You cant use this ability if youre alone", client);
 		return;
 	}
-	if(!ForceRevive && CoffinCharge[client] < 0.5)
+	float ReviveCost = 0.5;
+	if(LastMann)
+		ReviveCost = 0.3;
+	
+	if(!ForceRevive && CoffinCharge[client] < v)
 	{
 		SetDefaultHudPosition(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "%T", "Not Enough Coffins", client, RoundToFloor(0.5 * float(MAX_COFFINS)));
+		ShowSyncHudText(client, SyncHud_Notifaction, "%T", "Not Enough Coffins", client, RoundToFloor(ReviveCost * float(MAX_COFFINS)));
 		return;
 	}
 	
@@ -1109,7 +1140,7 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 		return;
 
 	if(!ForceRevive)
-		CoffinCharge[client] -= 0.5;
+		CoffinCharge[client] -= ReviveCost;
 
 	TeutonType[RandomWildHunted] = TEUTON_NONE;
 	dieingstate[RandomWildHunted] = 0;
