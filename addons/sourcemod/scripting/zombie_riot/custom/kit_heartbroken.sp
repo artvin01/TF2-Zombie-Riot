@@ -632,7 +632,7 @@ void Heartbroken_ShootHorseProjectile(int client, int target, float dmgmotif = 1
 
 	GetClientEyeAngles(client, vAngles);
 	vAngles[0] = 0.0;
-	vAngles[0] += GetRandomFloat(-15.0,15.0);
+	vAngles[0] += GetRandomFloat(-5.0,5.0);
 	vAngles[1] += GetRandomFloat(-15.0,15.0);
 	fClamp(vAngles[1], -20.0, 20.0);
 	float vecSwingForward[3];
@@ -649,8 +649,6 @@ void Heartbroken_ShootHorseProjectile(int client, int target, float dmgmotif = 1
 	SetEntityMoveType(projectile, MOVETYPE_NOCLIP);
 	WandProjectile_ApplyFunctionToEntity(projectile, Horse_Projectile_Hit);
 	
-	float fAng[3];
-	GetClientEyeAngles(client, fAng);
 	if(!IsEntityAlive(target))
 		target = -1;
 	Initiate_HomingProjectile(projectile,
@@ -659,7 +657,7 @@ void Heartbroken_ShootHorseProjectile(int client, int target, float dmgmotif = 1
 		10.0 * speedmodif,				//float homingaSec,
 		true,				// bool LockOnlyOnce,
 		true,				// bool changeAngles,
-		fAng,
+		vAngles,
 		target);			// float AnglesInitiate[3]);
 	int trail = Trail_Attach(projectile, ARROW_TRAIL_RED, 255, 0.45, 30.0, 3.0, 5);
 	SetEntityRenderColor(trail, 65, 0, 255, 255);
