@@ -1216,7 +1216,7 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 	}
 	PosMe[2] += 45.0;
 	TE_Particle("halloween_boss_death_cloud", PosMe, NULL_VECTOR, NULL_VECTOR, RandomWildHunted, _, _, _, _, _, _, _, _, _, 0.0);
-	float Duration = 33.0;
+	float Duration = 45.0;
 	if(ForceRevive)
 		Duration *= 2.0;
 	GiveCompleteInvul(RandomWildHunted, 3.0);
