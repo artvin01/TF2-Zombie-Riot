@@ -273,7 +273,7 @@ public void HeartBroken_OnTakeDamage_Take(int victim, int &attacker, int &inflic
 	if(zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
 		return;
 		
-	if(HasSpecificBuff(victim, "HB In Parry"))
+	if(HasSpecificBuff(victim, "HB In Parry") && IsValidEnemy(victim, attacker, true))
 	{
 		LookAtTarget(victim, attacker);
 		RemoveSpecificBuff(victim, "HB In Parry");
