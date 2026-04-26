@@ -164,7 +164,7 @@ def parse():
         hidden_str = "<i>Hidden</i>\n" if "hidden" in weapon_data else ""
         context = {
             "tags": tags,
-            "author": author,
+            "author": util.apply_morecolors(author),
             "cost": cost,
             "desc": f"{hidden_str}<div>{lvl}</div>{util.divfornewline(description)}",
         }
