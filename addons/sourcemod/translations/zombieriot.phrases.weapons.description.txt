@@ -5403,7 +5403,7 @@
 	}
 	"The Heartbroken Desc 5"
 	{
-		"en"    "-Overall Stat Increases\n-Unlock secondary R ability:\n-Launches a coffin that deals immense damage on hit\n-If the enemy is not a boss or special, instakill them and gain 1 coffin stack\n-Crouch+R to temporarily revive players for 5 coffins\n-Gain coffins on damage\n-Coffins give a damage bonus and drain overtime"
+		"en"    "-Overall Stat Increases\n-Unlock secondary R ability:\n-Launches a coffin that deals immense damage on hit\n-If the enemy is not a boss or special, instakill them and gain 1 coffin stack\n-Crouch+R to temporarily revive players for 5 coffins\n-Gain coffins on damage\n-Coffins give a damage bonus"
 	}
 	"The Heartbroken Desc 6"
 	{
