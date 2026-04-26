@@ -842,18 +842,22 @@
 	"Sinking"
 	{
 		"en"	"Sinking"
+		"ko"	"침잠"
 	}
 	"Sinking Desc"
 	{
 		"en"	"Count increases by 1 for each hit taken that applies this debuff\nAt Max, hits from this kit or summons deal bleed and take 10％ less dmg\nSome abilities benifit from max or less sinking"
+		"ko"	"해당 디버프를 부여하는 공격에 피격 시 1회 누적\n최대까지 누적 시, 해당 무기 키트 및 소환물에 피격 시 출혈 디버프를 얻으며, 받는 피해량 10％ 감소\n일부 능력은 침잠 수치에 따라 추가 효과 발생"
 	}
 	"Call of the Heartbroken"
 	{
 		"en"	"Call of the Heartbroken"
+		"ko"	"마음이 어긋난 자의 부름"
 	}
 	"Call of the Heartbroken Desc"
 	{
 		"en"	"You are tempomary alive again\nYou have to stay near your summoner or else you die."
+		"ko"	"일시적으로 다시 부활하게 됩니다.\n소환자의 근처에 있어야 하며, 근처를 벗어날 시 사망합니다."
 	}
 	"Hussar's Warscream"
 	{
