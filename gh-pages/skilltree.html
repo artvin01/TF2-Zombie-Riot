@@ -13,12 +13,15 @@
         <canvas id="canvas"></canvas>
         <div class="overlaybuttons">
             <img class="btn btnoverlay" tabindex="0" onclick="skilltree_resetcam();" src="static/rotate-ccw.svg">
-            <!--<img class="btn btnoverlay" tabindex="0" onclick="skilltree_fullscreen();" src="static/maximize.svg">-->
+            <img class="btn btnoverlay" tabindex="0" onclick="skilltree_fullscreen(this);" src="static/maximize.svg">
         </div>
     </div>
     <div class="rightalign">
         <h2>Skillpoints in use: <span id="skillpoint_amt">0</span></h2>
-        <div class="btn" tabindex="0" onclick="skilltree_reset();">RESET</div>
+        <div class="btncontainer">
+            <div class="btn" tabindex="0" onclick="skilltree_reset();">RESET</div>
+            <div class="btn" tabindex="0" onclick="skilltree_filltree();">FULL TREE</div>
+        </div>
     </div>
 </body>
 </html>

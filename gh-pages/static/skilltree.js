@@ -1,8 +1,5 @@
 /* TODO
-- Click on disabled skill and it aquires the absolute minimum for that
 - Maximize skilltree window
-- Show required key (in desc since too long names?)
-- Skilltree point sounds (music would be a bit too overkill)
 */
 
 
@@ -18,6 +15,8 @@ let zoom = 1;
 let skilltree_data = [];
 let pointdata = {};
 let total_points = 0;
+
+let lastaction = 0;
 
 // MOUSE FUNCTIONS ===================================================
 var mousedown = false;
@@ -70,8 +69,15 @@ ctx.canvas.addEventListener("wheel", function (e) {
 
 // DRAW ===================================================
 function draw() {
-  ctx.canvas.width = pagetitle.offsetWidth;
-  ctx.canvas.height = 1000;
+  if (!document.fullscreenElement) {
+    ctx.canvas.width = pagetitle.offsetWidth;
+    ctx.canvas.height = 800;
+    ctx.canvas.style["border-style"]="solid";
+  } else {
+    ctx.canvas.width = window.innerWidth;
+    ctx.canvas.height = window.innerHeight;
+    ctx.canvas.style["border-style"]="none";
+  }
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   if (reset_cam) {
     campos = [ctx.canvas.width/2,ctx.canvas.height/2];
@@ -118,26 +124,26 @@ function parse_main(data,px,py,parentpts) {
   let x = data["pos"][0]*200*zoom+campos[0];
   let y = data["pos"][1]*200*zoom+campos[1];
   let unlocked = parentpts >= data.minparent;
+  let dounlock = false;
 
-  let cost=1;
-  if ("cost" in data) {cost=Math.max(Number(data.cost),1);}
   // Draw rect
   run.push({
     "type": "button",
-    "disabled": !unlocked,
+    "disabled": false,
     "fillStyle": unlocked ? "#282828" : "#333333",
     "pos": [x,y],
     "size": [150*zoom,150*zoom],
-    "args": [data,unlocked,cost],
+    "args": [data,unlocked],
     "onhover": {
       "func": function(data) {
         ctx.font = "16px Oswald";
         let text = ctx.measureText(data.desc);
-        let w = text.width+50;
+        let keytext = ctx.measureText(data.reqkey);
+        let w = keytext.width+text.width+50;
         postrun.push({
           "type": "rect",
           "fillStyle": "#b4b8ab",
-          "size": [w,16+50],
+          "size": [w,16+50+(35*Number(data.reqkey.length>0))],
           "pos": [mousepos[0]-(w/2), mousepos[1]+30]
         })
         postrun.push({
@@ -148,21 +154,30 @@ function parse_main(data,px,py,parentpts) {
           "pos": [mousepos[0], mousepos[1]+70],
           "noscale": true
         })
+        if (data.reqkey.length>0) {
+          postrun.push({
+            "type": "text",
+            "fillStyle": "#153243ff",
+            "textAlign": "center",
+            "text": `Required item: ${data.reqkey}`,
+            "pos": [mousepos[0], mousepos[1]+70+35],
+            "noscale": true
+          })
+        }
       },
       "args": [data]
     },
-    "onclick": function(data,unlocked,cost) {
-      if (unlocked) {
-        if (!(data.path in pointdata)) {pointdata[data.path] = 0};
-        let prev = pointdata[data.path];
-        if (mouseclick[0]) {pointdata[data.path] += 1};
-        if (mouseclick[2]) {pointdata[data.path] -= 1};
-        if (pointdata[data.path] > data["max"]) {pointdata[data.path]=data["max"]};
-        if (pointdata[data.path] < 0) {pointdata[data.path]=0};
-        if (pointdata[data.path]-prev !== 0) {
-          total_points += mouseclick[0] ? cost : -cost;
-          document.getElementById("skillpoint_amt").innerHTML=total_points;
-        }
+    "onclick": function(data,unlocked) {
+      if (!(data.path in pointdata)) {pointdata[data.path] = 0};
+      let prev = pointdata[data.path];
+      if (mouseclick[0]) {pointdata[data.path] += 1;lastaction=1};
+      if (mouseclick[1]) {pointdata[data.path] = Number(data.max);lastaction=1};
+      if (mouseclick[2]) {pointdata[data.path] -= 1;lastaction=-1};
+      if (pointdata[data.path] > data.max && data.max!=="9999") {pointdata[data.path]=data.max};
+      if (pointdata[data.path] < 0) {pointdata[data.path]=0};
+      if (pointdata[data.path]-prev !== 0) {
+        total_points += (pointdata[data.path]-prev)*data.cost;
+        document.getElementById("skillpoint_amt").innerHTML=total_points;
       }
     }
   })
@@ -175,9 +190,13 @@ function parse_main(data,px,py,parentpts) {
 
   // Reset points if not unlocked anymore
   if (!unlocked && point_amt>0) {
-    total_points -= cost*point_amt;
-    pointdata[data.path] = 0;
-    document.getElementById("skillpoint_amt").innerHTML=total_points;
+    if (lastaction<0) {
+      total_points -= data.cost*point_amt;
+      pointdata[data.path] = 0;
+      document.getElementById("skillpoint_amt").innerHTML=total_points;
+    } else {
+      dounlock=true;
+    }
   };
 
   postrun.push({
@@ -191,7 +210,7 @@ function parse_main(data,px,py,parentpts) {
     "type": "text",
     "fillStyle": unlocked ? "#ffffff" : "#ffffff22",
     "textAlign": "center",
-    "text": `${point_amt}/${data["max"]}`,
+    "text": `${point_amt}/${data.max==="9999" ? "∞" : data.max}`,
     "pos": [x+75*zoom, y+75*zoom]
   })
   let ay = 75;
@@ -227,8 +246,21 @@ function parse_main(data,px,py,parentpts) {
 
   // Repeat recursively
   data["paths"].forEach(function(val){
-    parse_main(val,x,y,point_amt);
+    if (parse_main(val,x,y,point_amt)) {
+      if (lastaction>0) {
+        if (!(data.path in pointdata)) {pointdata[data.path] = 0};
+        let pointdiff = val.minparent-pointdata[data.path];
+        pointdata[data.path] += pointdiff;
+        total_points += data.cost*pointdiff;
+        document.getElementById("skillpoint_amt").innerHTML=total_points;
+        unlocked = parentpts >= data.minparent;
+        if (!unlocked && point_amt>0) {
+          requestunlock = true;
+        };
+      }
+    };
   })
+  return dounlock
 }
 
 function render(arr) {
@@ -275,7 +307,7 @@ function render(arr) {
 // UTIL ===================================================
 function UiRect(ctx,x,y,w,h,disabled,onhover) {
   ctx.roundRect(x,y,w,h,5);
-  if (mousepos[0]>=x && mousepos[0]<=x+w && mousepos[1]>=y && mousepos[1]<=y+h) {
+  if (mousepos[0]>=x && mousepos[0]<=x+w && mousepos[1]>=y && mousepos[1]<=y+h && ctx.canvas.matches(":hover")) {
     onhover.func(...onhover.args);
     if (!disabled) {
       ctx.canvas.style.cursor = "pointer";
@@ -294,6 +326,31 @@ function skilltree_reset() {
   pointdata={};
   total_points=0;
   document.getElementById("skillpoint_amt").innerHTML=total_points;
+}
+
+function skilltree_filltree() {
+  pointdata={};
+  total_points=0;
+  function _tfill(d) {
+    pointdata[d.path]=Number(d.max);
+    total_points += Number(d.max) * d.cost;
+    d.paths.forEach(function(d2){
+      if (d2.max!=="9999") {
+          _tfill(d2);
+      };
+    });
+  };
+  _tfill(skilltree_data[0]);
+  document.getElementById("skillpoint_amt").innerHTML=total_points;
+}
+function skilltree_fullscreen(fullscreen_btn) {
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+    fullscreen_btn.src = "static/maximize.svg";
+  } else {
+    document.getElementsByClassName("overlay")[0].requestFullscreen();
+    fullscreen_btn.src = "static/minimize.svg";
+  }
 }
 
 // REQUEST ===================================================

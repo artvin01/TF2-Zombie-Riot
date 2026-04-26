@@ -31,23 +31,25 @@ def parse():
                 required_item = util.get_key(data["key"],empty_on_fail=True,silent=True)
 
                 cost = data["cost"]
+                if cost=="":cost=1
+                else: cost=max(int(cost),1)
 
                 desc = util.get_key(data["name"] + " Desc")
 
                 nx,ny=x,y
-                if subskill.startswith("abc") and len(subskill) > 3: # Completely flip buildings and revive branch
-                    if subskill[-1] == "a": ny+=1*PARSECFG.get(subskill,1)
-                    if subskill[-1] == "b": nx+=1*PARSECFG.get(subskill,1)
-                    if subskill[-1] == "c": ny-=1*PARSECFG.get(subskill,1)
-                elif subskill.startswith("abbaac") and len(subskill)>6:
+                if subskill.startswith("abb"):
                     if subskill[-1] == "a": nx-=1*PARSECFG.get(subskill,1)
                     if subskill[-1] == "b": ny+=1*PARSECFG.get(subskill,1)
-                    #if subskill[-1] == "c": ny-=1*PARSECFG.get(subskill,1)
+                    if subskill[-1] == "c": ny-=1*PARSECFG.get(subskill,1)
+                elif subskill.startswith("aba"): # Health Up branch (right)
+                    if subskill[-1] == "a": nx+=1*PARSECFG.get(subskill,1)
+                    if subskill[-1] == "b": ny+=1*PARSECFG.get(subskill,1)
+                    if subskill[-1] == "c": ny-=1*PARSECFG.get(subskill,1)
                 else:
                     if subskill[-1] == "a": ny-=1*PARSECFG.get(subskill,1)
                     if subskill[-1] == "b": nx+=1*PARSECFG.get(subskill,1)
                     if subskill[-1] == "c":
-                        if subskill.startswith("abb") or subskill.startswith("aba") or subskill.startswith("aab"):
+                        if subskill.startswith("abb") or subskill.startswith("aab"):
                             nx-=1*PARSECFG.get(subskill,1)
                         else:
                             ny+=1*PARSECFG.get(subskill,1)
