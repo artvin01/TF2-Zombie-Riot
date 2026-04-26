@@ -104,7 +104,7 @@ public void Enable_HeartBroken(int client, int weapon)
 	}
 	WeaponLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 	ref_MeleeWeapon[client] = EntIndexToEntRef(weapon);
-	h_HeartBroken_Timer[client] = CreateDataTimer(0.1, Timer_HeartBroken, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	h_HeartBroken_Timer[client] = CreateDataTimer(0.1, Timer_HeartBroken, pack, TIMER_REPEAT);
 	pack.WriteCell(client);
 	pack.WriteCell(EntIndexToEntRef(weapon));
 	pack.WriteCell(EntIndexToEntRef(client));
