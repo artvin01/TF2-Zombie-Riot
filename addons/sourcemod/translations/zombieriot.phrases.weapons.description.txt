@@ -5383,7 +5383,7 @@
 	}
 	"The Heartbroken Desc"
 	{
-		"en"	"Kill EVERY Enemy.\n-M2 allows you to counter\nA short delay, after which you deal damage back to 1 enemy\nCounter blocks 75％ damage\n-During animations, take 25 less damage\n-You passively have cannibalism\n-You have passivelly have more health, knockback res and damage res"
+		"en"	"Kill EVERY Enemy.\n-M2 allows you to counter\nA short delay, deal damage back to 1 enemy\nCounter blocks 75％ damage\n-During animations, take 25 less％ damage\n-You passively have cannibalism\n-You are tanky"
 	}
 	"The Heartbroken Desc 1"
 	{
