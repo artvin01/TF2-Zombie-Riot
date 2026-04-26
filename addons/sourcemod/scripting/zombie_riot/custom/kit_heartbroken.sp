@@ -455,7 +455,7 @@ public void Heartbroken_Counter(int client, int weapon, bool crit, int slot)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return;
 	}
-	
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 15.0, weapon);
 	HeartBrokenAction(client, -1, 2);
 }
@@ -759,6 +759,7 @@ public void Heartbroken_Reqieum(int client, int weapon, bool crit, int slot)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return;
 	}
+	Rogue_OnAbilityUse(client, MeleeWeapon);
 	Ability_Apply_Cooldown(client, slot, 60.0, weapon);
 
 	Heartbroken_SwitchToMeleeWeapon(client, weapon, crit, slot);
@@ -1166,7 +1167,13 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 		return;
 
 	if(!ForceRevive)
+	{
+		
+		int MeleeWeapon = EntRefToEntIndex(ref_MeleeWeapon[client]);
+		if(!IsValidEntity(MeleeWeapon))
+			Rogue_OnAbilityUse(client, MeleeWeapon);
 		CoffinCharge[client] -= ReviveCost;
+	}
 
 	TeutonType[RandomWildHunted] = TEUTON_NONE;
 	dieingstate[RandomWildHunted] = 0;
