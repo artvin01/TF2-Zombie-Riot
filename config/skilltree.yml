@@ -11,7 +11,8 @@ abcb: 2
 # luck up branch
 abbb: 3
 #abbaa=>branches go from here
-abbaac: 2
+abbaaca: 2
+abbaacb: -1
 
 # health up brach
 abac: 2
