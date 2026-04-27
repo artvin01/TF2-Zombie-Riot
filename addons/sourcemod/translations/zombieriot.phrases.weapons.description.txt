@@ -5380,7 +5380,7 @@
 	"The Heartbroken"
 	{
 		"en"	"The Heartbroken"
-		"ko"	"마음이 어긋난 자"
+		"ko"	"마음이 찢겨진 자"
 	}
 	"Mirror Sword"
 	{
