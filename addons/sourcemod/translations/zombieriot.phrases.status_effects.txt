@@ -852,7 +852,7 @@
 	"Call of the Heartbroken"
 	{
 		"en"	"Call of the Heartbroken"
-		"ko"	"마음이 어긋난 자의 부름"
+		"ko"	"마음이 찢겨진 자의 부름"
 	}
 	"Call of the Heartbroken Desc"
 	{
