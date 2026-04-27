@@ -115,6 +115,7 @@ function draw() {
   ctx.restore();
 
   ctx.font = `${16*zoom}px Oswald`;
+  ctx.canvas.style.cursor = "grab";
   parse_main(skilltree_data[0],campos[0],campos[1]-150*zoom, 0);
   prerun=render(prerun);
   run=render(run);
@@ -124,8 +125,6 @@ function draw() {
     campos[0] += (mousepos[0]-last_mousepos[0]);
     campos[1] += (mousepos[1]-last_mousepos[1]);
     ctx.canvas.style.cursor = "grabbing";
-  } else {
-    ctx.canvas.style.cursor = "grab";
   }
 
   mouseclick=[false,false,false];
@@ -146,7 +145,6 @@ function parse_main(data,px,py,parentpts) {
   // Draw rect
   run.push({
     "type": "button",
-    "disabled": false,
     "fillStyle": unlocked ? "#282828" : "#333333",
     "pos": [x,y],
     "size": [150*zoom,150*zoom],
@@ -310,7 +308,7 @@ function render(arr) {
     } else if (element.type === "button") {
       ctx.save();
       ctx.beginPath();
-      if (UiRect(ctx,...element.pos,...element.size,element.disabled,element.onhover)) {
+      if (UiRect(ctx,...element.pos,...element.size,element.onhover)) {
         element.onclick(...element.args);
       }
       ctx.fillStyle=element.fillStyle; // Text color
@@ -329,14 +327,12 @@ function render(arr) {
 }
 
 // UTIL ===================================================
-function UiRect(ctx,x,y,w,h,disabled,onhover) {
+function UiRect(ctx,x,y,w,h,onhover) {
   ctx.roundRect(x,y,w,h,5);
   if (mousepos[0]>=x && mousepos[0]<=x+w && mousepos[1]>=y && mousepos[1]<=y+h && ctx.canvas.matches(":hover")) {
     onhover.func(...onhover.args);
-    if (!disabled) {
-      ctx.canvas.style.cursor = "pointer";
-      return mouseclick.some(function(el){return el});
-    }
+    ctx.canvas.style.cursor = "pointer";
+    return mouseclick.some(function(el){return el});
   }
   return false;
 }
