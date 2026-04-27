@@ -60,7 +60,6 @@ void NoRandomKranz_OnMapStart_NPC()
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPCID = NPC_Add(data);
-	PrecacheSoundCustom("#zombiesurvival/aprilfools/black_heavy_ultra.mp3");
 }
 
 static void ClotPrecache()
@@ -75,6 +74,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_LifeLossSound)); i++) { PrecacheSound(g_LifeLossSound[i]); }
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSoundCustom(g_DeathSounds[i]);	   }
 	PrecacheSoundCustom("#zombiesurvival/aprilfools/kranz_ncrv3.mp3");
+	PrecacheSoundCustom("#zombiesurvival/aprilfools/black_heavy_ultra.mp3");
 
 
 }

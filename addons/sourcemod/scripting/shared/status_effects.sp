@@ -9491,18 +9491,20 @@ static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusE
 		break;
 	}
 
+	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 
-	if(OwnerAttach == -1 || !IsEntityAlive(OwnerAttach) || !IsHeartBroken(OwnerAttach))
+	if(OwnerAttach == -1 || (dieingstate[OwnerAttach] == 0 && !IsEntityAlive(OwnerAttach)) || !IsHeartBroken(OwnerAttach))
 	{
+		Apply_StatusEffect.TimeUntillOver = 0.0;
 		SDKHooks_TakeDamage(entity, entity, entity, 99999.0, DMG_TRUEDAMAGE, _, _, _, true);
+		E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 		ForcePlayerSuicide(entity);
 		return;
 	}
-
-	if(!IsEntityAlive(entity))
+	
+	if(dieingstate[entity] == 0 && !IsEntityAlive(entity))
 	{
 		Apply_StatusEffect.TimeUntillOver = 0.0;
-		int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 		E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 		return;
 	}
@@ -9516,7 +9518,6 @@ static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusE
 		Apply_StatusEffect.TimeUntillOver -= 1.0;
 	}
 	
-	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 
 	spawnRing_Vectors(flPos, MAX_RANGE_HEARTBROKEN * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 200, 1, 0.45, 12.0, 6.1, 1, _, entity);
