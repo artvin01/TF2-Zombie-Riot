@@ -5638,18 +5638,19 @@
 	"Barrack Unit not detected"
 	{
 		"en"	"Barrack Unit not detected"
-		"ko"	"배럭 유닛을 감지 할 수 없습니다."	
+		"ko"	"배럭 유닛을 감지할 수 없습니다."	
 		"it"	"Unità baracca non rilevata"
 	}
 	"Player not detected"
 	{
 		"en"	"Player not detected"
-		"ko"	"플레이어를 감지 할 수 없습니다."
+		"ko"	"플레이어를 감지할 수 없습니다."
 		"it"	"Giocatore non rilevato"
 	}
 	"You cant use this ability if youre alone"
 	{
 		"en"	"You cant use this ability if youre alone on the server"
+		"ko"	"서버에 혼자 있는 경우 사용할 수 없습니다."
 	}
 	"Use Only Alive"
 	{
