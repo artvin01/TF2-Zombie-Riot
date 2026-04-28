@@ -3292,7 +3292,7 @@
 	{
 		"en"	"Gain overall resistance and the ability to cleave upto 5 enemies (R)\nDuring animations, take 25％ less damage"
 		"it"	"Guadagna la resistenza generale e la capacità di fendere fino a 5 nemici (R)\nDurante le animazioni, subisce 25％ danni in meno"
-		"ko"	"-모든 피해 저항력 증가. R키 능력으로 주변의 최대 5명의 적을 타격 가능.\n-능력 사용 애니메이션 도중에는 받는 모든 피해량 -25％"
+		"ko"	"-모든 피해 저항력 증가. R키 능력으로 주변의 최대 5명의 적을 타격 가능.\n-능력 사용 애니메이션 도중 받는 피해량 -25％"
 	}
 	"Leper Sword Desc Pap 1"
 	{
@@ -5380,42 +5380,62 @@
 	"The Heartbroken"
 	{
 		"en"	"The Heartbroken"
+		"ko"	"마음이 찢겨진 자"
+	}
+	"Mirror Sword"
+	{
+		"en"	"Mirror Sword"
+		"ko"	"유리 세계로 얽힌 검"
+	}
+	"Coffin"
+	{
+		"en"	"Coffin"
+		"ko"	"관"
 	}
 	"The Heartbroken Desc"
 	{
 		"en"	"Kill EVERY Enemy.\n-M2 allows you to counter\nA short delay, deal damage back to 1 enemy\nCounter blocks 75％ damage\n-During animations, take 25 less％ damage\n-You passively have cannibalism\n-You are tanky"
+		"ko"	"모든 적들의 목을 벤다.\n-우클릭으로 반격 가능:\n짧은 지연 후 1명의 적에게 피해\n반격 시 받는 피해량 75％ 방어\n-능력 사용 애니메이션 도중 받는 피해량 -25％\n-기본적으로 '식인 풍습' 보유\n-더 높은 생존력 보유"
 	}
 	"The Heartbroken Desc 1"
 	{
 		"en"	"-Tiny stat increases"
+		"ko"	"-능력치 소폭 증가"
 	}
 	"The Heartbroken Desc 2"
 	{
 		"en"	"-Overall Stat Increases\n-Hitting enemies gives a new debuff called ''sinking''\n-Your counter now spawns Dullahan"
+		"ko"	"-전반적인 능력치 증가\n-공격 적중 시 '침잠' 디버프 부여\n-반격 시 듀라한 소환"
 	}
 	"The Heartbroken Desc 3"
 	{
 		"en"	"-Overall Stat Increases\n-Your R now can dash towards an enemy, next hit dealing big damage\nIf the enemy has not maxed sinking:\nReduce Dash Cooldown"
+		"ko"	"-전반적인 능력치 증가\n-R키로 적에게 돌진할 수 있으며, 다음에 적중하는 공격의 피해량이 크게 증가\n적이 보유한 침잠이 최대치가 아니라면:\n돌진 쿨다운 감소"
 	}
 	"The Heartbroken Desc 4"
 	{
 		"en"	"-Overall Stat Increases\n-Unlock Secondary weapon:\n-M1 forces your melee out\n-M2 Enables a combo:\nGain faster attackspeed\nOn 3rd hit, summons a stampede of Dullahan's"
+		"ko"	"-전반적인 능력치 증가\n-보조 무기 해금:\n-좌클릭 시 강제로 근접 무기 장착\n-우클릭 시 '콤보'를 활성화:\n공격 속도 증가\n3번째 적중 시, 듀라한 무리를 소환"
 	}
 	"The Heartbroken Desc 5"
 	{
 		"en"    "-Overall Stat Increases\n-Unlock secondary R ability:\n-Launches a coffin that deals immense damage on hit\n-If the enemy is not a boss or special, instakill them and gain 1 coffin stack\n-Crouch+R to temporarily revive players for 5 coffins\n-Gain coffins on damage\n-Coffins give a damage bonus"
+		"ko"	"-전반적인 능력치 증가\n-보조 무기 R키 능력 해금:\n-막대한 피해를 가하는 관을 날림\n-대상이 보스나 특수형 적이 아니라면, 대상을 즉사시키고 '관'을 1 얻음\n-웅크리기+R로 관을 5 소모하여 사망한 플레이어를 일시적으로 부활 가능\n-피해를 가할 시 관을 얻음\n-관은 피해량 보너스를 제공"
 	}
 	"The Heartbroken Desc 6"
 	{
 		"en"	"-Overall Stat Increases\n-Max coffins increased to 10."
+		"ko"	"-전반적인 능력치 증가\n-최대로 보유할 수 있는 관 수치가 10으로 증가"
 	}
 	"The Heartbroken Desc 7"
 	{
 		"en"	"-Overall Stat Increases"
+		"ko"	"-전반적인 능력치 증가"
 	}
 	"The Heartbroken Desc 8"
 	{
 		"en"	"-Overall Stat Increases"
+		"ko"	"-전반적인 능력치 증가"
 	}
 
 }
