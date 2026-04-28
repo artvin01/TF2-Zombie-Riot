@@ -8699,7 +8699,8 @@ void Const2Modifs_Stalker_Start(int victim, StatusEffect Apply_MasterStatusEffec
 	float maxhealth = float(ReturnEntityMaxHealth(victim));
 	maxhealth *= 100.0;
 	SetEntProp(victim, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
-	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
+	//dont set max health
+//	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 	SetEntityRenderColor_NpcAll(victim, 0.0, 0.0, 0.0);
 	b_StaticNPC[victim] = true;
 	AddNpcToAliveList(victim, b_StaticNPC[victim] ? 1 : 0);
@@ -8723,7 +8724,10 @@ void RemoveAllNonStalkerPrefix(int ref)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_MasterStatusEffect.PrefixEnemyName[0])
 			if(StrContains(Apply_MasterStatusEffect.PrefixEnemyName, "Stalker") == -1)
-				Apply_StatusEffect.RemoveStatus();
+			{
+				Apply_StatusEffect.TimeUntillOver = 0.0;
+				E_AL_StatusEffects[entity].SetArray(i, Apply_StatusEffect);
+			}
 			
 		//only remove effects.
 	}
