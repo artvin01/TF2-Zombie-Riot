@@ -53,17 +53,25 @@ enum struct StatusEffect
 
 	void Blank()
 	{
+		
+		this.OnTakeDamage_TakenFunc		= INVALID_FUNCTION;
+		this.OnTakeDamage_DealFunc		= INVALID_FUNCTION;
+		this.Status_SpeedFunc			= INVALID_FUNCTION;
+		this.HudDisplay_Func			= INVALID_FUNCTION;
+		this.TimerRepeatCall_Func		= INVALID_FUNCTION;
 		this.OnTakeDamage_PostVictim	= INVALID_FUNCTION;
 		this.OnTakeDamage_PostAttacker	= INVALID_FUNCTION;
 		this.OnBuffStarted				= INVALID_FUNCTION;
 		this.OnBuffStoreRefresh			= INVALID_FUNCTION;
 		this.OnBuffEndOrDeleted			= INVALID_FUNCTION;
-		this.HudDisplay_Func			= INVALID_FUNCTION;
 		this.DamageTakenMulti 			= -1.0;
 		this.DamageDealMulti 			= -1.0;
 		this.MovementspeedModif 		= -1.0;
 		this.AttackspeedBuff			= -1.0;
 		this.ElementalLogic 			= false;
+		this.FlagAttackspeedLogic		= 0;
+		this.ShouldScaleWithPlayerCount = false;
+
 	}
 }
 
@@ -425,7 +433,9 @@ int StatusEffect_AddGlobal(StatusEffect data)
 		data.LinkedStatusEffect 		= 0;
 		data.LinkedStatusEffectNPC 		= 0;
 	}
-	return AL_StatusEffects.PushArray(data);
+	int ReturnIndex = AL_StatusEffects.PushArray(data);
+	data.Blank();
+	return ReturnIndex;
 }
 
 stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1, bool UpdateAttackspeed = true)
