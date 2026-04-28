@@ -8190,4 +8190,8 @@
 		"en"	"This is so sad"
 		"ko"	"ㅠㅠ"
 	}
+	"Major Avangard"
+	{
+		"en"	"Major Avangard"
+	}
 }

@@ -462,6 +462,10 @@
 	{
 		"en"	"Back for another round of firing."
 	}
+	"Huscarls_Talk_Support-15"
+	{
+		"en"	"Alright"
+	}
 	"Huscarls_Talk_Lastman-1"
 	{
 		"en"	"This is your grave."
