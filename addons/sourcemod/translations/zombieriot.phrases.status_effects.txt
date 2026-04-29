@@ -859,6 +859,14 @@
 		"en"	"You are tempomary alive again\nYou have to stay near your summoner or else you die."
 		"ko"	"일시적으로 다시 부활하게 됩니다.\n소환자의 근처에 있어야 하며, 근처를 벗어날 시 사망합니다."
 	}
+	"Shielding"
+	{
+		"en"	"Shielding"
+	}
+	"Shielding Desc"
+	{
+		"en"	"Blocks 100％ of the damage untill shield is broken\nOverdamage is delt as damage to you\nDoesnt protect from true damage."
+	}
 	"Hussar's Warscream"
 	{
 		"en"	"Hussar's Warscream"

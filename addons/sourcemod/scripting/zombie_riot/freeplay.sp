@@ -2,7 +2,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static bool EscapeModeForNpc;
 static float HealthMulti;
 static int HealthBonus;
 static int EnemyChance;
@@ -168,7 +167,6 @@ void Freeplay_ResetAll()
 	ExplodeNPCDamage = 0;
 	ExplodingNPC = false;
 	IsExplodeWave = false;
-	EscapeModeForNpc = false;
 	EnemyShields = 0;
 	VoidBuff = 0;
 	VictoriaBuff = false;
@@ -1673,13 +1671,12 @@ void Freeplay_SetupStart(bool extra = false)
 {
 	if(i_WaveHasFreeplay != 2)
 		return;
-	
-	bool wrathofirln = false;
 	bool guaranteedraid = false;
 	if(extra)
 	{
 		FreeplayBuffTimer = 0;
 		CreateTimer(4.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
+		/*
 		int irlnreq = 1;
 
 		int wrathchance = GetRandomInt(0, 100);
@@ -1687,16 +1684,17 @@ void Freeplay_SetupStart(bool extra = false)
 		{
 			wrathofirln = true;
 		}
+		*/
 
 		setuptimes--;
 		if(setuptimes <= 0)
 		{
 			guaranteedraid = true;
 			setuptimes = 4;
-			wrathofirln = false;
+		//	wrathofirln = false;
 		}
 
-		if(!wrathofirln && !guaranteedraid)
+		if(/*!wrathofirln && */!guaranteedraid)
 		{
 			EmitSoundToAll("ui/vote_success.wav");
 		}
@@ -1734,7 +1732,7 @@ void Freeplay_SetupStart(bool extra = false)
 	int rand = 6;
 	if((++RerollTry) < 12)
 		rand = GetURandomInt() % 85;
-
+	/*
 	if(wrathofirln)
 	{
 		int randomhp1 = GetRandomInt(-60000, 120000);
@@ -2239,7 +2237,9 @@ void Freeplay_SetupStart(bool extra = false)
 		CPrintToChatAll("{orange}Wrath of Irln: {yellow}(almost) {crimson}ALL SKULLS HAVE BEEN ACTIVATED. The effects are described above.");
 		gay = 0.0;
 	}
-	else if(guaranteedraid)
+	else 
+	*/
+	if(guaranteedraid)
 	{
 		EmitSoundToAll("music/mvm_class_select.wav");
 		EmitSoundToAll("items/powerup_pickup_king.wav");
@@ -2758,8 +2758,12 @@ void Freeplay_SetupStart(bool extra = false)
 				ExplodingNPC = true;
 				EmitSoundToAll("ui/mm_medal_silver.wav");
 			}
+			
 			case 54:
 			{
+				Freeplay_SetupStart();
+				return;
+				/*
 				if(EnemyShields >= 15)
 				{
 					EnemyShields = 15;
@@ -2768,9 +2772,13 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}All enemies receieve 3 expidonsan shields!");
 				EnemyShields += 3;
+				*/
 			}
 			case 55:
 			{
+				Freeplay_SetupStart();
+				/*
+				return;
 				if(EnemyShields >= 15)
 				{
 					EnemyShields = 15;
@@ -2779,9 +2787,13 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}All enemies receieve 6 expidonsan shields!");
 				EnemyShields += 6;
+				*/
 			}
 			case 56:
 			{
+				Freeplay_SetupStart();
+				return;
+				/*
 				if(EnemyShields <= 0)
 				{
 					EnemyShields = 0;
@@ -2790,9 +2802,13 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{green}All enemies lose 2 expidonsan shields.");
 				EnemyShields -= 2;
+				*/
 			}
 			case 57:
 			{
+				Freeplay_SetupStart();
+				return;
+				/*
 				if(EnemyShields <= 0)
 				{
 					EnemyShields = 0;
@@ -2801,7 +2817,9 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{green}All enemies lose 4 expidonsan shields.");
 				EnemyShields -= 4;
+				*/
 			}
+			
 			case 58:
 			{
 				if(VoidBuff > 2)
