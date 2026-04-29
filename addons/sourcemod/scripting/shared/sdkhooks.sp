@@ -2267,11 +2267,20 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 		}
 		else if((LastMann_BeforeLastman || LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime && !SpecterCheckIfAutoRevive(victim))
 		{
+			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
+			if(!LastMann)
+			{
+				if(!PlayersLeftAlive(victim) && GameRules_GetRoundState() == RoundState_ZombieRiot)
+				{
+					// Trigger lastman
+					CheckAlivePlayers();
+					//We trigger lastman if we hit this
+				}
+			}
 			damage = 0.0;
 			GiveCompleteInvul(victim, 3.0);
 			MorphineShotLogic(victim, true);
 			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
-			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
 			return Plugin_Handled;
 		}
 		//all checks passed, now go into here
@@ -2279,30 +2288,16 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 		{
 			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 9");
 			//are they alone? is any player alive that isnt downed left?
-			bool Any_Left = false;
-			for(int client=1; client<=MaxClients; client++)
-			{
-				if(IsClientInGame(client) && GetTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
-				{
-					if(victim != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
-					{
-						Any_Left = true;
-					}
-				}
-			}
 			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 10");
 			//there was no one left, they are the only one left, trigger last man.
 			//make sure they are in a wave.
-			if(!Any_Left && !SpecterCheckIfAutoRevive(victim) && GameRules_GetRoundState() == RoundState_ZombieRiot)
+			if(!PlayersLeftAlive(victim) && !SpecterCheckIfAutoRevive(victim) && GameRules_GetRoundState() == RoundState_ZombieRiot)
 			{
 				// Trigger lastman
 				CheckAlivePlayers(_, victim);
 
-				if(Construction_Mode())
-					return Plugin_Changed;
-
 				// Die in Rogue, there's no lastman
-				return Rogue_NoLastman() ? Plugin_Changed : Plugin_Handled;
+				return Plugin_Handled;
 			}
 			//this updates it .
 			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 11");
@@ -3815,3 +3810,20 @@ void SdkHooks_SetAndUpdateArmorClientText(int client)
 	DispatchKeyValue(ArmorText, "message", ch_ArmorText);
 }
 #endif
+
+
+bool PlayersLeftAlive(int victim)
+{
+	bool Any_Left = true;
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && GetTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
+		{
+			if(victim != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+			{
+				Any_Left = true;
+			}
+		}
+	}
+	return Any_Left;
+}
