@@ -2852,15 +2852,21 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 
 					if(!subgame || Construction_FinalBattle() || Dungeon_FinalBattle())
 					{
-						ResetReplications();
-						cvarTimeScale.SetFloat(0.1);
-						CreateTimer(0.5, SetTimeBack);
-						if(!Music_Disabled())
-							EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
-						
+						if(i_WaveHasFreeplay < 2)
+						{
+							ResetReplications();
+							cvarTimeScale.SetFloat(0.1);
+							CreateTimer(0.5, SetTimeBack);
+							if(!Music_Disabled())
+								EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 
+							RemoveAllCustomMusic(true);
+						}
+						
 						if(i_WaveHasFreeplay > 0)
 						{
+							FreeplayTimeLimit = GetGameTime() + 3607.5; // one hour and 7.5 extra seconds because of setup time smh
+							
 							if(i_WaveHasFreeplay == 1)
 							{
 								Menu menu = new Menu(Waves_FreeplayVote);
@@ -2870,7 +2876,7 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 								menu.ExitButton = false;
 								menu.DisplayVote(players, total, 30);
 							}
-							else
+							else if(i_WaveHasFreeplay == 2)
 							{
 								for (int client = 1; client <= MaxClients; client++)
 								{
@@ -2895,8 +2901,6 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 
 							roundtime.FloatValue = last;
 						}
-						
-						RemoveAllCustomMusic(true);
 					}
 					else
 					{
@@ -3049,7 +3053,7 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 	{
 		bool EarlyReturn = false;
 		//We are in freeplay, past normal waves.
-		if(i_WaveHasFreeplay == 2)
+		if(i_WaveHasFreeplay)
 			EarlyReturn = Waves_NextFreeplayCall(donotAdvanceRound);
 //		else if(i_WaveHasFreeplay == 1)
 //			//EarlyReturn = Waves_NextSpecialWave();
@@ -3178,7 +3182,6 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "freeplay_start_4");
 				}
 			}
-			FreeplayTimeLimit = GetGameTime() + 3607.5; // one hour and 7.5 extra seconds because of setup time smh
 			CPrintToChatAll("{yellow}IMPORTANT: The faster you beat waves, the more cash AND experience you'll get!");
 			CreateTimer(0.1, Freeplay_ExtraCashTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			Freeplay_Info = 0;

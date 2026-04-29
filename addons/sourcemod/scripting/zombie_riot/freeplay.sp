@@ -957,8 +957,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Health = RoundToCeil(enemy.Health * 1.33);
 		enemy.ExtraDamage *= 1.15;
-		if(count > 30)
-			count = 30;
 	}
 
 	if(shouldscale)
@@ -988,8 +986,11 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		count = RoundToCeil(float(count) * countscale);
 	}
 
-	if(count > 30)
-		count = 30;
+	if(i_WaveHasFreeplay == 2)
+	{
+		if(count > 30)
+			count = 30;
+	}
 
 	if(count < 1)
 		count = 1;
@@ -1670,6 +1671,9 @@ float Freeplay_SetupValues()
 }
 void Freeplay_SetupStart(bool extra = false)
 {
+	if(i_WaveHasFreeplay != 2)
+		return;
+	
 	bool wrathofirln = false;
 	bool guaranteedraid = false;
 	if(extra)
