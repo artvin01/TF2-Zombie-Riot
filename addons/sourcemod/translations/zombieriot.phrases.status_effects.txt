@@ -862,10 +862,12 @@
 	"Shielding"
 	{
 		"en"	"Shielding"
+		"ko"	"방비"
 	}
 	"Shielding Desc"
 	{
 		"en"	"Blocks 100％ of the damage untill shield is broken\nOverdamage is delt as damage to you\nDoesnt protect from true damage."
+		"ko"	"방어막이 파괴되기 전까지 피해량의 100％를 방어합니다.\n초과된 피해는 그대로 받게 됩니다.\n트루 데미지를 방어하지는 못합니다."
 	}
 	"Hussar's Warscream"
 	{
