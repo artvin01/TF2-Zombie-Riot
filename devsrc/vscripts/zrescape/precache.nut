@@ -1,5 +1,6 @@
 local SoundList = [
-	"mvm/mvm_money_pickup.wav"
+	"mvm/mvm_money_pickup.wav",
+	"ambient/halloween/thunder_03.wav"
 ]
 
 foreach(strValue in SoundList)

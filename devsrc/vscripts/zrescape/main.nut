@@ -57,6 +57,7 @@ function ShuffleLootbox(ignore)
 	local hChoosen = aRandomPool[rand() % aRandomPool.len()]
 	hChoosen.AcceptInput("Enable", "", null, null)
 	hChoosen.AcceptInput("EnableCollision", "", null, null)
+	hChoosen.AcceptInput("FireUser3", "", null, null)
 	return hChoosen
 }
 
@@ -206,7 +207,7 @@ function MainThink()
 					}
 					else if(startswith(strName, "nopower"))
 					{
-						ClientPrint(hPlayer, HUD_PRINTCENTER, "Need to smelt glass for bottles!")
+						ClientPrint(hPlayer, HUD_PRINTCENTER, "No Power!")
 					}
 					else if(startswith(strName, "ammobox"))
 					{
@@ -357,7 +358,7 @@ function SpinLootbox(hPlayer, hLootbox)
 		ZR_SpentClientCash(hPlayer, g_iLootboxCost)
 		EmitSoundToClient("mvm/mvm_money_pickup.wav", hPlayer)
 
-		hLootbox.AcceptInput("SetAnimation", "Open", null, null)
+		hLootbox.AcceptInput("FireUser1", "", null, null)
 
 		local hEntity = SpawnEntityFromTable("prop_dynamic_override",
 		{
@@ -436,16 +437,18 @@ function LootboxThinking()
 					m.flSpinTime = Time() + 9.0
 					n.hItemOwner <- m.hItemOwner
 					m.hActiveItem.KeyValueFromString("targetname", "_lootweapon")
+
+					self.AcceptInput("FireUser2", "", null, null)
 				}
 				else
 				{
-					m.flSpinTime = Time() + 3.5
+					m.flSpinTime = Time() + 2.5
 					EmitSoundEx({
-						sound_name = "portal/trigger.mp3"
+						sound_name = "ambient/halloween/thunder_03.wav"
 					})
-				}
 
-				self.AcceptInput("SetAnimation", "Close", null, null)
+					self.AcceptInput("FireUser4", "", null, null)
+				}
 			}
 
 			vecOrigin += Vector(0.0, 0.0, 0.8)
