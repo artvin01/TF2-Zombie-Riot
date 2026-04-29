@@ -1256,6 +1256,8 @@ void NPC_ConfigSetup()
 	AmbitiousTrader_OnMapStart_NPC();
 	AgentSmithFollower_Setup();
 	KevinmeryFollower_Setup();
+
+	VScript_CacheNPCs();
 }
 
 void NPC_MapEnd()
