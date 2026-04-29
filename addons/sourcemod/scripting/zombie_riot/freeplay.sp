@@ -1671,6 +1671,9 @@ void Freeplay_SetupStart(bool extra = false)
 {
 	if(i_WaveHasFreeplay != 2)
 		return;
+
+//	bool wrathofirln = false;
+
 	bool guaranteedraid = false;
 	if(extra)
 	{
