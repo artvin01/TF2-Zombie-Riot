@@ -491,7 +491,8 @@ static int HeartBrokenAction(int client, int target, int which)
 			duration = 2.0;
 		}
 	}
-	ApplyStatusEffect(client, client, "HeartBroken Animation", duration);
+	ApplyStatusEffect(client, client, "Shielding", duration);
+	Shielding_Add(client, ReturnEntityMaxHealth(client) / 10);
 
 	float vAngles[3];
 	float vOrigin[3];

@@ -2,7 +2,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static bool EscapeModeForNpc;
 static float HealthMulti;
 static int HealthBonus;
 static int EnemyChance;
@@ -168,7 +167,6 @@ void Freeplay_ResetAll()
 	ExplodeNPCDamage = 0;
 	ExplodingNPC = false;
 	IsExplodeWave = false;
-	EscapeModeForNpc = false;
 	EnemyShields = 0;
 	VoidBuff = 0;
 	VictoriaBuff = false;
@@ -2758,8 +2756,12 @@ void Freeplay_SetupStart(bool extra = false)
 				ExplodingNPC = true;
 				EmitSoundToAll("ui/mm_medal_silver.wav");
 			}
+			
 			case 54:
 			{
+				Freeplay_SetupStart();
+				return;
+				/*
 				if(EnemyShields >= 15)
 				{
 					EnemyShields = 15;
@@ -2768,9 +2770,13 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}All enemies receieve 3 expidonsan shields!");
 				EnemyShields += 3;
+				*/
 			}
 			case 55:
 			{
+				Freeplay_SetupStart();
+				/*
+				return;
 				if(EnemyShields >= 15)
 				{
 					EnemyShields = 15;
@@ -2779,9 +2785,13 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}All enemies receieve 6 expidonsan shields!");
 				EnemyShields += 6;
+				*/
 			}
 			case 56:
 			{
+				Freeplay_SetupStart();
+				return;
+				/*
 				if(EnemyShields <= 0)
 				{
 					EnemyShields = 0;
@@ -2790,9 +2800,13 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{green}All enemies lose 2 expidonsan shields.");
 				EnemyShields -= 2;
+				*/
 			}
 			case 57:
 			{
+				Freeplay_SetupStart();
+				return;
+				/*
 				if(EnemyShields <= 0)
 				{
 					EnemyShields = 0;
@@ -2801,7 +2815,9 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{green}All enemies lose 4 expidonsan shields.");
 				EnemyShields -= 4;
+				*/
 			}
+			
 			case 58:
 			{
 				if(VoidBuff > 2)

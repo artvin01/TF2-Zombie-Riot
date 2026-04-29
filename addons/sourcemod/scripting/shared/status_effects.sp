@@ -260,6 +260,7 @@ void InitStatusEffects()
 	StatusEffects_AllyInvulnDebuffs();
 	StatusEffects_Construct2_EnemyModifs();
 	StatusEffects_HeartBroken();
+	StatusEffects_ShieldLogic();
 }
 
 static int CategoryPage[MAXPLAYERS];
@@ -784,6 +785,7 @@ void StatusEffect_OnTakeDamage_TakenPositive(int victim, int attacker, float &da
 			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
 			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
 			Call_PushCell(damagetype);
+			Call_PushFloatRef(damage);
 			Call_Finish(DamageToNegate);
 		}
 
@@ -9834,4 +9836,98 @@ stock bool StatusEffects_MemorialDebuffMaxStacks(int victim)
 		delete E_AL_StatusEffects[victim];
 
 	return false;
+}
+
+int ShieldBuffindex;
+void StatusEffects_ShieldLogic()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Shielding");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "SH");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.0;
+	data.DamageDealMulti			= -1.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnTakeDamage_TakenFunc 	= Shielding_DamageTakenFunc;
+	data.HudDisplay_Func 			= Func_ShieldingHud;
+	ShieldBuffindex = StatusEffect_AddGlobal(data);
+}
+
+stock void Shielding_Add(int victim, int valuetoadd)
+{
+	if(!E_AL_StatusEffects[victim])
+		return;
+
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(ShieldBuffindex , E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
+		{
+			Apply_StatusEffect.DataForUse += float(valuetoadd);
+			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+		}
+	}
+	if(E_AL_StatusEffects[victim].Length < 1)
+		delete E_AL_StatusEffects[victim];
+
+}
+float Shielding_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float &damage)
+{
+	if(CheckInHud())
+		return 1.0;
+	float CurrentShield = Apply_StatusEffect.DataForUse;
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	float ArmorDmgRes = 1.0;
+	int dmg_through_armour = RoundToCeil(damage * (1.0 - ArmorDmgRes));
+
+	if(RoundToCeil(damage * ArmorDmgRes) >= CurrentShield)
+	{
+		int damage_received_after_calc;
+		damage_received_after_calc = RoundToCeil(damage - CurrentShield);
+		CurrentShield = 0.0;
+		damage = float(damage_received_after_calc);
+	}
+	else
+	{
+		/*
+		switch(GetRandomInt(1,3))
+		{
+			case 1:
+				EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
+			
+			case 2:
+				EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet2.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
+			
+			case 3:
+				EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet3.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
+		}		
+		*/
+		CurrentShield -= damage * ArmorDmgRes;
+		damage = 0.0;
+		damage += float(dmg_through_armour);
+	}
+	Apply_StatusEffect.DataForUse = CurrentShield;
+	if(CurrentShield <= 0.0)
+	{
+		//EmitSoundToClient(victim, "npc/assassin/ball_zap1.wav", victim, SNDCHAN_STATIC, 60, _, 1.0, GetRandomInt(95,105));
+		Apply_StatusEffect.TimeUntillOver = 0.0;
+	}
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+	return 1.0;
+}	
+void Func_ShieldingHud(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	//only display to client
+	Format(HudToDisplay, SizeOfChar, "SH[%i]", RoundToNearest(Apply_StatusEffect.DataForUse));
 }

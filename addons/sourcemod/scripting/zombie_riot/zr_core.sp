@@ -2073,7 +2073,7 @@ void CheckLastMannStanding(int killed)
 		LastMann_BeforeLastman = true;
 	}
 }
-void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false, int CheckForLastManAlone = 0)
+void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false)
 {
 	if(!Waves_Started() || Waves_InSetup() || GameRules_GetRoundState() != RoundState_ZombieRiot || Dungeon_CanRespawn())
 	{

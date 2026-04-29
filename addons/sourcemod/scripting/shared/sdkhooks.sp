@@ -2253,6 +2253,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
 			return Plugin_Handled;
 		}
+		/*
 		//the client was the last man on the server, or alone, give them spawn protection
 		//dont do this if they are under specter saw revival
 		else if(!Rogue_NoLastman() && b_IsAloneOnServer && !applied_lastmann_buffs_once && i_AmountDowned[victim] != 999)
@@ -2265,13 +2266,16 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			damage = 0.0;
 			return Plugin_Handled;
 		}
-		else if((LastMann_BeforeLastman || LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime && !SpecterCheckIfAutoRevive(victim))
+		*/
+		else if((LastMann_BeforeLastman || LastMann || b_IsAloneOnServer) && (!LastMann || f_OneShotProtectionTimer[victim] < GameTime) && !SpecterCheckIfAutoRevive(victim))
 		{
 			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
 			if(!LastMann)
 			{
 				if(!PlayersLeftAlive(victim) && GameRules_GetRoundState() == RoundState_ZombieRiot)
 				{
+					if(b_IsAloneOnServer)
+						i_AmountDowned[victim] = 999;
 					// Trigger lastman
 					CheckAlivePlayers();
 					//We trigger lastman if we hit this
@@ -3814,7 +3818,7 @@ void SdkHooks_SetAndUpdateArmorClientText(int client)
 
 bool PlayersLeftAlive(int victim)
 {
-	bool Any_Left = true;
+	bool Any_Left = false;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
