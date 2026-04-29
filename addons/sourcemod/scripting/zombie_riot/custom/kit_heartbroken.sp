@@ -491,6 +491,8 @@ static int HeartBrokenAction(int client, int target, int which)
 			duration = 2.0;
 		}
 	}
+	//dont let shields stack.
+	RemoveSpecificBuff(client, "Shielding");
 	ApplyStatusEffect(client, client, "Shielding", duration);
 	Shielding_Add(client, ReturnEntityMaxHealth(client) / 10);
 
@@ -1226,4 +1228,6 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 
 	ApplyStatusEffect(client, RandomWildHunted, "Call of the Heartbroken", Duration);
 	ApplyStatusEffect(client, RandomWildHunted,	"Call of the Heartbroken Internal", Duration + 1.0);
+	ApplyStatusEffect(client, client, "Shielding", 3.0);
+	Shielding_Add(client, ReturnEntityMaxHealth(client) / 5);
 }
