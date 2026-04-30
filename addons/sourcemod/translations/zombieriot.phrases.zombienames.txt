@@ -8193,5 +8193,6 @@
 	"Major Avangard"
 	{
 		"en"	"Major Avangard"
+		"ko"	"아방가르드 소령"
 	}
 }
