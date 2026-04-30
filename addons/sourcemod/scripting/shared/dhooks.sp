@@ -2129,10 +2129,15 @@ stock bool ShieldDeleteProjectileCheck(int owner, int enemy)
 void Update_TransmitState(int entity)
 {
 	SetEntProp(entity, Prop_Data, "m_nTransmitStateOwnedCounter", 0);
+	NpcDrawWorldLogic(entity);
+	SetEntProp(entity, Prop_Data, "m_nTransmitStateOwnedCounter", 1);
+	/*
+	SetEntProp(entity, Prop_Data, "m_nTransmitStateOwnedCounter", 0);
 	Hook_DHook_UpdateTransmitStateInternal(entity);
 	RequestFrames(RevertTransmitDo,1, EntIndexToEntRef(entity), true);
+	*/
 }
-
+/*
 void RevertTransmitDo(int ref)
 {
 	int entity = EntRefToEntIndex(ref);
@@ -2141,6 +2146,7 @@ void RevertTransmitDo(int ref)
 		return;
 	}
 	SetEntProp(entity, Prop_Data, "m_nTransmitStateOwnedCounter", 1);
+	
 	if(h_TransmitHookType[entity] != 0)
 	{
 		if(!DHookRemoveHookID(h_TransmitHookType[entity]))
@@ -2149,14 +2155,18 @@ void RevertTransmitDo(int ref)
 		}
 	}
 	h_TransmitHookType[entity] = 0;
+	
 }
+*/
 
 void Hook_DHook_UpdateTransmitState(int entity)
 {
 	Update_TransmitState(entity);
 }
+/*
 void Hook_DHook_UpdateTransmitStateInternal(int entity)
 {
+	SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_PVSCHECK));
 	if(h_TransmitHookType[entity] != 0)
 	{
 		if(!DHookRemoveHookID(h_TransmitHookType[entity]))
@@ -2166,6 +2176,7 @@ void Hook_DHook_UpdateTransmitStateInternal(int entity)
 	}
 	h_TransmitHookType[entity] = g_DhookUpdateTransmitState.HookEntity(Hook_Pre, entity, DHook_UpdateTransmitState);
 }
+*/
 
 public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) //BLOCK!!
 {

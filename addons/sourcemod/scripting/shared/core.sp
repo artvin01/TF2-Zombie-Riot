@@ -2594,7 +2594,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 //	PrintToChatAll("entity: %i| Clkassname %s",entity, classname);
 	if (entity > 0 && entity <= MAXENTITIES && IsValidEntity(entity))
 	{
-		h_TransmitHookType[entity] = 0;
+	//	h_TransmitHookType[entity] = 0;
 		f_TimeTillMeleeAttackShould[entity] = 0.0;
 		StatusEffectReset(entity, true);
 		f_InBattleDelay[entity] = 0.0;
