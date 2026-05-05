@@ -190,6 +190,7 @@ methodmap BossReila < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 60.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = true;
 			RaidModeScaling = 1.0;
 		}
 		npc.StartPathing();
@@ -254,6 +255,7 @@ methodmap BossReila < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 60.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = true;
 			RaidModeScaling = 1.0;
 			
 			i_RaidGrantExtra[npc.index] = 2;
@@ -269,6 +271,7 @@ methodmap BossReila < CClotBody
 		if(StrContains(data, "force_final_battle") != -1)
 		{
 			RaidAllowsBuildings = false;
+			RaidAllowLastman = true;
 		}
 
 		return npc;

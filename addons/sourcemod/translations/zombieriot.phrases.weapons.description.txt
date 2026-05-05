@@ -1462,6 +1462,7 @@
 	"Deployable Quantum Suit Desc"
 	{
 		"en"	"-On use, frozen for 3 seconds, gain resitance during freeze\n-Gain a sepearte suit of armor, power scales with money spend\n-When reaching 0 health, or timer is over, return back to normal.\n-During raids, take extra damage\n-Elemental damage is normal damage to you instead"
+		"ko"	"-사용시, 3초간 고정됨. 고정된 상태에선 저항력 증가\n-퀀텀 슈트의 위력은 총합 자금 사용량에 비례하여 증가\n-이 슈트를 입은 상태로 체력이 0이 되거나 타이머가 0이 될 시, 슈트가 파괴됨\n-레이드 모드일 경우 피해를 더 많이 받습니다.\n-원소 피해가 부여될 경우 일반 피해로 적용됩니다."
 	}
 	
 	"Ranged Spike Layer Desc"
@@ -3291,7 +3292,7 @@
 	{
 		"en"	"Gain overall resistance and the ability to cleave upto 5 enemies (R)\nDuring animations, take 25％ less damage"
 		"it"	"Guadagna la resistenza generale e la capacità di fendere fino a 5 nemici (R)\nDurante le animazioni, subisce 25％ danni in meno"
-		"ko"	"-모든 피해 저항력 증가. R키 능력으로 주변의 최대 5명의 적을 타격 가능.\n-능력 사용 애니메이션 도중에는 받는 모든 피해량 -25％"
+		"ko"	"-모든 피해 저항력 증가. R키 능력으로 주변의 최대 5명의 적을 타격 가능.\n-능력 사용 애니메이션 도중 받는 피해량 -25％"
 	}
 	"Leper Sword Desc Pap 1"
 	{
@@ -3337,7 +3338,8 @@
 	}
 	"The Flagellant Desc"
 	{
-		"en"	"Zealotry—an undying blight upon the soul.\n-Provides extra health with the ability to heal but inflicts self-damage.\n-You are immune to all bleed effects.\n-On heal, recieve a debuff for 10 seconds that reduces heal"
+		"en"	"Zealotry—an undying blight upon the soul.\n-Provides extra health with the ability to heal but inflicts self-damage.\n-You are immune to all bleed effects.\n-On heal, receive a debuff for 10 seconds that reduces heal"
+		"ko"	"광신은 영혼을 좀먹는 불사의 병폐라.\n-치유 능력을 보유하게 되고 추가 체력을 얻지만, 공격시 자가 피해를 받음.\n-모든 출혈 디버프 효과에 면역\n-치유 시, 받는 치유량을 감소시키는 디버프를 얻음"
 	}
 	"The Flagellant Extra Desc"
 	{
@@ -3816,7 +3818,7 @@
 	{
 		"en"	"-With Armor, 60％ (bosses 35％) damage resistance from attacks in front of you.\n-Ability stuns enemies in front of you and increases attack speed.\n-Be slower with shield on, When shield breaks, gain speed with a cooldown (sound)"
 		"it"	"Con l'armatura, 60％ (boss 35％) resistenza ai danni degli attacchi di fronte a voi.\nAbilità che stordisce i nemici di fronte a voi e aumenta la velocità di attacco.\nE' più lento con lo scudo attivato, quando lo scudo si rompe, guadagna velocità con un cooldown (suono)"
-		"ko"	"-아머 보유시 정면의 적에게 받는 피해가 60％ (보스일시 35％) 감소.\n-능력: 정면의 적 기절 및 공격 속도 증가\n-신속 홉 퍽 사용 시 능력 쿨타임 감소\n-방패 전개시 이동 속도 감소. 방패 파괴시 이동 속도 증가(쿨타임 존재)"
+		"ko"	"-아머 보유시 정면의 적에게 받는 피해가 60％ (보스일시 35％) 감소.\n-능력: 정면의 적 기절 및 공격 속도 증가\n-방패 전개시 이동 속도 감소. 방패 파괴시 이동 속도 증가(쿨타임 존재)"
 	}
 	"Riot Gun Pap 1"
 	{
@@ -5447,4 +5449,65 @@
 		"en"	"-M2 fires a Guided missile, the more it flies the more damage it does, upto a limit.\nDoes not deal bonus explosive dmg to raids."
 		"ko"	"-우클릭으로 유도 미사일을 발사하며, 비행 시간이 길 수록 피해량 증가\n-레이드 보스에게 추가 폭발 피해를 가하지 않음"
 	}
+	"The Heartbroken"
+	{
+		"en"	"The Heartbroken"
+		"ko"	"마음이 찢겨진 자"
+	}
+	"Mirror Sword"
+	{
+		"en"	"Mirror Sword"
+		"ko"	"유리 세계로 얽힌 검"
+	}
+	"Coffin"
+	{
+		"en"	"Coffin"
+		"ko"	"관"
+	}
+	"The Heartbroken Desc"
+	{
+		"en"	"Kill EVERY Enemy.\n-M2 allows you to counter\nA short delay, deal damage back to 1 enemy\nCounter blocks 75％ damage\n-Animations give shield, worth ％ of your max hp\n-You passively have cannibalism\n-You are tanky"
+		"ko"	"모든 적들의 목을 벤다.\n-우클릭으로 반격 가능:\n짧은 지연 후 1명의 적에게 피해\n반격 시 받는 피해량 75％ 방어\n-능력 사용 애니메이션 동안 최대 체력의 ％에 해당하는 보호막을 획득\n-기본적으로 '식인 풍습' 보유\n-더 높은 생존력 보유"
+	}
+	"The Heartbroken Desc 1"
+	{
+		"en"	"-Tiny stat increases"
+		"ko"	"-능력치 소폭 증가"
+	}
+	"The Heartbroken Desc 2"
+	{
+		"en"	"-Overall Stat Increases\n-Hitting enemies gives a new debuff called ''sinking''\n-Your counter now spawns Dullahan"
+		"ko"	"-전반적인 능력치 증가\n-공격 적중 시 '침잠' 디버프 부여\n-반격 시 듀라한 소환"
+	}
+	"The Heartbroken Desc 3"
+	{
+		"en"	"-Overall Stat Increases\n-Your R now can dash towards an enemy, next hit dealing big damage\nIf the enemy has not maxed sinking:\nReduce Dash Cooldown"
+		"ko"	"-전반적인 능력치 증가\n-R키로 적에게 돌진할 수 있으며, 다음에 적중하는 공격의 피해량이 크게 증가\n적이 보유한 침잠이 최대치가 아니라면:\n돌진 쿨다운 감소"
+	}
+	"The Heartbroken Desc 4"
+	{
+		"en"	"-Overall Stat Increases\n-Unlock Secondary weapon:\n-M1 forces your melee out\n-M2 Enables a combo:\nGain faster attackspeed\nOn 3rd hit, summons a stampede of Dullahan's"
+		"ko"	"-전반적인 능력치 증가\n-보조 무기 해금:\n-좌클릭 시 강제로 근접 무기 장착\n-우클릭 시 '콤보'를 활성화:\n공격 속도 증가\n3번째 적중 시, 듀라한 무리를 소환"
+	}
+	"The Heartbroken Desc 5"
+	{
+		"en"    "-Overall Stat Increases\n-Unlock secondary R ability:\n-Launches a coffin that deals immense damage on hit\n-If the enemy is not a boss or special, instakill them and gain 1 coffin stack\n-Crouch+R to temporarily revive players for 5 coffins\n-Gain coffins on damage\n-Coffins give a damage bonus"
+		"ko"	"-전반적인 능력치 증가\n-보조 무기 R키 능력 해금:\n-막대한 피해를 가하는 관을 날림\n-대상이 보스나 특수형 적이 아니라면, 대상을 즉사시키고 '관'을 1 얻음\n-웅크리기+R로 관을 5 소모하여 사망한 플레이어를 일시적으로 부활 가능\n-피해를 가할 시 관을 얻음\n-관은 피해량 보너스를 제공"
+	}
+	"The Heartbroken Desc 6"
+	{
+		"en"	"-Overall Stat Increases\n-Max coffins increased to 10."
+		"ko"	"-전반적인 능력치 증가\n-최대로 보유할 수 있는 관 수치가 10으로 증가"
+	}
+	"The Heartbroken Desc 7"
+	{
+		"en"	"-Overall Stat Increases"
+		"ko"	"-전반적인 능력치 증가"
+	}
+	"The Heartbroken Desc 8"
+	{
+		"en"	"-Overall Stat Increases"
+		"ko"	"-전반적인 능력치 증가"
+	}
+
 }

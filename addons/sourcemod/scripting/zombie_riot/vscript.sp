@@ -173,6 +173,27 @@ void VScript_AddStoreTable(KeyValues kv, const char[] name)
 	}
 }
 
+void VScript_CacheNPCs()
+{
+	if(ScriptFireScriptHook)
+	{
+		ScriptHandle table = VScript_CreateTable();
+		ScriptFireScriptHook.Execute("ZR_CacheWaves", table);
+
+		ScriptIterator iter = table.Iterate();
+		while(iter.Next())
+		{
+			char buffer[64], data[512];
+			iter.GetKeyString(buffer, sizeof(buffer));
+			iter.GetKeyString(data, sizeof(data));
+			NPC_GetByPlugin(buffer, _, data);
+		}
+
+		delete iter;
+		delete table;
+	}
+}
+
 static void VGetCurrentCash(ScriptContext context)
 {
 	ScriptHandle hclient = context.GetArgHScript(0);
@@ -329,7 +350,7 @@ static void VGiveClientPerk(ScriptContext context)
 			if(hentity)
 				entity = VScript_HScriptToEntity(hentity);
 			
-			Do_Perk_Machine_Logic(client, client, entity, (1 << (index - 1)), index);
+			Do_Perk_Machine_Logic(client, client, entity, (1 << (index - 1)), index, .IsVscriptCall = true);
 			return;
 		}
 	}

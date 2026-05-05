@@ -239,6 +239,7 @@ methodmap RaidbossNemesis < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossNemesis_OnTakeDamagePost);
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 
 

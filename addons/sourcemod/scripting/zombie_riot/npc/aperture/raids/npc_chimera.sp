@@ -339,6 +339,7 @@ methodmap CHIMERA < CClotBody
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 

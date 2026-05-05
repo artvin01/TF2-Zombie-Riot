@@ -1110,6 +1110,7 @@ static int DoSpecialActionYakuza(int client, float DamageBase, const char[] anim
 	int viewcontrol = CreateEntityByName("prop_dynamic");
 	if (IsValidEntity(viewcontrol))
 	{
+		b_ThisEntityIgnored[viewcontrol] = true;
 		GetVectorAnglesTwoPoints(vecSwingEnd, MiddleAngle, vAngleCamera);
 		SetEntityModel(viewcontrol, "models/empty.mdl");
 		DispatchKeyValueVector(viewcontrol, "origin", vecSwingEnd);

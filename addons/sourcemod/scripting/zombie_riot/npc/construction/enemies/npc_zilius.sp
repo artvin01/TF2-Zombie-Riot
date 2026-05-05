@@ -373,6 +373,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
+		RaidAllowLastman = true;
 		
 		if(Construction_Mode() || Dungeon_Mode())
 		{
@@ -433,7 +434,10 @@ methodmap Construction_Raid_Zilius < CClotBody
 		}
 		
 		if (bossrush)
+		{
 			RaidAllowsBuildings = false;
+			RaidAllowLastman = true;
+		}
 		
 		b_thisNpcIsARaid[npc.index] = true;
 		

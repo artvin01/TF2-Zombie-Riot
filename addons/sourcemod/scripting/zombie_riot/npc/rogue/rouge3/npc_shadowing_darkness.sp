@@ -500,6 +500,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 		Citizen_MiniBossSpawn();
 		npc.m_flSwordParticleAttackCD = GetGameTime() + 5.0;
 		npc.m_flUpperSlashCD = GetGameTime() + 15.0;
@@ -1243,6 +1244,8 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 10));
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 10));
+					b_thisNpcIsABoss[spawn_index] = true;
+					b_thisNpcHasAnOutline[spawn_index] = true;
 
 				}
 				

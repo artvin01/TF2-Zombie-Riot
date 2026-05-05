@@ -172,6 +172,7 @@ methodmap Interstellar_Weaver < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 
 			RaidModeTime = FAR_FUTURE;
 

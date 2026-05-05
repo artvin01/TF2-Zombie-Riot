@@ -102,6 +102,7 @@ methodmap VictoriaRadiomast < CClotBody
 			RaidModeTime = FAR_FUTURE;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 			RaidModeScaling = 0.0;
 		}
 

@@ -262,6 +262,7 @@ int SetCameraEffectAndModel(int client, int &ModelToDelete, int Type, float dama
 	int viewcontrol = CreateEntityByName("prop_dynamic");
 	if (IsValidEntity(viewcontrol))
 	{
+		b_ThisEntityIgnored[viewcontrol] = true;
 		GetVectorAnglesTwoPoints(vecSwingEnd, MiddleAngle, vAngleCamera);
 		SetEntityModel(viewcontrol, "models/empty.mdl");
 		DispatchKeyValueVector(viewcontrol, "origin", vecSwingEnd);

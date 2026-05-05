@@ -163,6 +163,7 @@ methodmap VoidSpeechless < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 			RaidModeScaling = MultiGlobalHealth;
 			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
 				RaidModeScaling = 0.0;

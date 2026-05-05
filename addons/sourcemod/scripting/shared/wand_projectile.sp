@@ -238,6 +238,13 @@ public void ProjectileBaseThinkInternal(int Projectile, float Multi)
 		Wand_Base_StartTouch(Projectile, 0);
 	delete Projec_HitEntitiesInTheWay;
 	
+	Function func = func_NPCThink[Projectile];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(Projectile);
+		Call_Finish();
+	}
 }
 
 bool ProjectileTraceHitTargets(int entity, int contentsMask, DataPack packFilter)
@@ -296,6 +303,14 @@ public void Wand_Base_StartTouch(int entity, int other)
 	int target = other;
 	if(GetTeam(entity) == TFTeam_Red)
 		target = Target_Hit_Wand_Detection(entity, other);
+
+	static float AbsOrigin[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
+	bool Collided = IsPointCollideable(AbsOrigin,entity,other);
+	if(!Collided)
+	{
+		return;
+	}
 	Function func = func_WandOnTouch[entity];
 	if(func && func != INVALID_FUNCTION)
 	{

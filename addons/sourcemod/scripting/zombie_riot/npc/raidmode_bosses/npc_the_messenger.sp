@@ -316,6 +316,7 @@ methodmap TheMessenger < CClotBody
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 	
 		float value;
 		char buffers[3][64];

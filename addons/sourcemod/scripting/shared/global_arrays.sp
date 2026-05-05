@@ -668,6 +668,7 @@ Function EntityFuncAttack2[MAXENTITIES];
 Function EntityFuncAttack3[MAXENTITIES];
 Function EntityFuncReload4[MAXENTITIES];
 Function EntityFuncPlayerRunCmd[MAXENTITIES];
+Function EntityFuncTakeDamage[MAXENTITIES][2];
 //Function EntityFuncReloadSingular5[MAXENTITIES];
 
 float f_ClientMusicVolume[MAXPLAYERS];
@@ -693,7 +694,7 @@ bool b_IgnoreAllCollisionNPC[MAXENTITIES];		//for npc's that noclip
 int iref_PropAppliedToRocket[MAXENTITIES];
 
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
-int h_TransmitHookType[MAXENTITIES];
+//int h_TransmitHookType[MAXENTITIES];
 int h_NpcCollissionHookType[MAXENTITIES];
 int h_NpcSolidHookType[MAXENTITIES];
 int h_NpcHandleEventHook[MAXENTITIES];

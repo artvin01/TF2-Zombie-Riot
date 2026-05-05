@@ -162,6 +162,7 @@ methodmap JohnTheAllmighty < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 43.0;
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 		npc.m_iHealthBar = 99999999;
 		npc.m_flBackupDespawnEmergency = GetGameTime() + 43.0;

@@ -196,6 +196,7 @@ methodmap ToddHoward < CClotBody
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RemoveAllDamageAddition();
 
@@ -257,6 +258,7 @@ methodmap ToddHoward < CClotBody
 		{
 			RaidModeTime = GetGameTime(npc.index) + 9999.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 		if(Waves_InFreeplay())
 		{

@@ -203,6 +203,7 @@ methodmap RaidbossBladedance < CClotBody
 		RaidModeScaling = 0.0;
 		RaidModeTime = GetGameTime() + ((300.0) * (1.0 + (MultiGlobalEnemy * 0.4)));
 		RaidAllowsBuildings = true;
+		RaidAllowLastman = true;
 		
 		if (npc.m_bBossRushDuo)
 		{
@@ -211,6 +212,7 @@ methodmap RaidbossBladedance < CClotBody
 			
 			GiveNpcOutLineLastOrBoss(npc.index, true);
 			RaidAllowsBuildings = false;
+			RaidAllowLastman = true;
 			RaidModeTime = GetGameTime() + 500.0;
 		}
 		else

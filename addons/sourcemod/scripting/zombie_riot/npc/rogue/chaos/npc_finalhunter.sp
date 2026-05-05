@@ -185,6 +185,7 @@ static void ClotThink(int iNPC)
 			RaidModeTime = GetGameTime() + 9000.0;
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = true;
 			Waves_Progress();
 
 			CPrintToChatAll("{darkred}Wildingen Hitman{default}: {black}It's inside me");
@@ -288,6 +289,7 @@ static void ClotThink(int iNPC)
 						RaidModeTime = GetGameTime() + 9000.0;
 						RaidModeScaling = 0.0;
 						RaidAllowsBuildings = true;
+						RaidAllowLastman = true;
 
 						EmitSoundToAll("mvm/mvm_warning.wav");
 						fl_Extra_Speed[npc.index] = 1.5;

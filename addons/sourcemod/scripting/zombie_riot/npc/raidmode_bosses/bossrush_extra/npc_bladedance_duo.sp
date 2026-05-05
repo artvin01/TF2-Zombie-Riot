@@ -204,6 +204,7 @@ methodmap RaidbossBladedance_Duo < CClotBody
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
+		RaidAllowLastman = true;
 
 		return npc;
 	}

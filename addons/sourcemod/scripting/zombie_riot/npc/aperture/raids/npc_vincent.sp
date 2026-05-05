@@ -312,6 +312,7 @@ methodmap Vincent < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
+			RaidAllowLastman = true;
 			npc.m_flTalkRepeat = 0.0;
 			RaidModeTime = GetGameTime() + 200.0;
 			npc.m_iAllyspawnAm = 0;
