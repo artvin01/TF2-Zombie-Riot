@@ -857,14 +857,17 @@
 	"Call of the Heartbroken Desc"
 	{
 		"en"	"You are tempomary alive again\nYou have to stay near your summoner or else you are massively weakened."
+		"ko"	"일시적으로 다시 부활하게 됩니다.\n소환자의 근처에 있지 않는 경우 대폭 약화됩니다."
 	}
 	"Call of the Heartbroken Weakened"
 	{
 		"en"	"Call of the Heartbroken Weakened"
+		"ko"	"마음이 찢겨진 자의 부름 - 약화"
 	}
 	"Call of the Heartbroken Weakened Desc"
 	{
 		"en"	"You are massively weakened outside of your Owner's range."
+		"ko"	"당신의 소환자의 근처를 벗어나 대폭 약화됩니다."
 	}
 	"Shielding"
 	{
