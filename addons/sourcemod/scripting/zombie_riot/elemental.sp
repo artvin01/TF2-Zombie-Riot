@@ -1795,3 +1795,4 @@ void Elemental_AddStaggerDamage(int victim, int attacker, int damagebase)
 			ApplyElementalEvent(victim, attacker, damage);
 	}
 }
+

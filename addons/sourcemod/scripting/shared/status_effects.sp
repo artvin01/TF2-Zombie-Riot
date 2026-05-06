@@ -9534,6 +9534,19 @@ void StatusEffects_HeartBroken()
 	StatusEffect_AddGlobal(data);
 }
 
+int StaggerTypeTarget(int victim)
+{
+	if(HasSpecificBuff(victim, "Stagger++"))
+		return 3;
+	
+	if(HasSpecificBuff(victim, "Stagger+"))
+		return 2;
+	
+	if(HasSpecificBuff(victim, "Stagger"))
+		return 1;
+		
+	return 0;
+}
 #define MAX_RANGE_HEARTBROKEN 600.0
 static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {

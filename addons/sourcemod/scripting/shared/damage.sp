@@ -1556,6 +1556,7 @@ static stock void OnTakeDamageRpgAgressionOnHit(int victim, int &attacker, int &
 
 stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int &damagetype, bool trueArmorOnly = false, int weapon = 0)
 {
+	int StaggerType = StaggerTypeTarget(victim);
 	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
 	{
 		if(!trueArmorOnly)
@@ -1581,9 +1582,21 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 				}
 			}
 #endif
+			//if enemy is staggered, remove all res from this
+			if(StaggerType)
+				if(TotalMeleeRes < 1.0)
+					TotalMeleeRes = 1.0;
 			damage *= TotalMeleeRes;
 		}
-		damage *= fl_TotalArmor[victim];
+		if(!StaggerType)
+		{
+			damage *= fl_TotalArmor[victim];
+		}
+		else
+		{
+			if(fl_TotalArmor[victim] > 1.0)
+				damage *= fl_TotalArmor[victim];
+		}
 	}
 	else if(!(damagetype & DMG_TRUEDAMAGE))
 	{
@@ -1607,9 +1620,21 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 			TotalMeleeRes *= fl_RangedArmor[victim];
 			TotalMeleeRes *= fl_Extra_RangedArmor[victim];
 
+			//if enemy is staggered, remove all res from this
+			if(StaggerType)
+				if(TotalMeleeRes < 1.0)
+					TotalMeleeRes = 1.0;
 			damage *= TotalMeleeRes;
 		}
-		damage *= fl_TotalArmor[victim];
+		if(!StaggerType)
+		{
+			damage *= fl_TotalArmor[victim];
+		}
+		else
+		{
+			if(fl_TotalArmor[victim] > 1.0)
+				damage *= fl_TotalArmor[victim];
+		}
 	}
 	else if((damagetype & DMG_TRUEDAMAGE))
 	{
