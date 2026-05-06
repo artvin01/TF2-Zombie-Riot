@@ -5096,6 +5096,10 @@
 		"it"		"Non ci sono più hamburger! Probabilmente."
 		"ko"		"남은 버거가 없습니다! 아마도."
 	}
+	"No Tinker Left"
+	{
+		"en"		"There is no Tinker User remaining, tinkers disabled."
+	}
 	"Blacksmith No Attribs"
 	{
 		"en"		"You have no tinker stats."

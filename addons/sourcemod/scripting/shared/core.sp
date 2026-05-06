@@ -2135,35 +2135,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		holding[client] |= IN_SCORE;
 		
 #if defined ZR
-		if(GetClientTeam(client) == 2)
+		if(dieingstate[client] == 0)
 		{
-			if(dieingstate[client] == 0)
+			if(WaitingInQueue[client])
 			{
-				if(WaitingInQueue[client])
-				{
-					Queue_Menu(client);
-				}
-				else
-				{
-					Store_Menu(client);
-				}
-			}
-		}
-		else
-		{
-			
-			if(LastStoreMenu[client] || AnyMenuOpen[client])
-			{
-				HideMenuInstantly(client);
-				//show a blank page to instantly hide it
-				CancelClientMenu(client);
-				ClientCommand(client, "slot10");
-				ResetStoreMenuLogic(client);
+				Queue_Menu(client);
 			}
 			else
 			{
-				c_WeaponUseAbilitiesHud[client][0] = 0;
-				Items_EncyclopediaMenu(client);
+				Store_Menu(client);
 			}
 		}
 #endif
@@ -3043,6 +3023,15 @@ public void OnEntityCreated(int entity, const char[] classname)
 			OnManglerCreated(entity);
 		}
 #endif
+		else if(!StrContains(classname, "obj_dispenser") && 
+		!StrContains(classname, "obj_sentrygun") && 
+		!StrContains(classname, "obj_teleporter"))
+		{
+			//base tf2 buildings arent really supported for now
+			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
+			npc.bCantCollidieAlly = true;
+		}
 		else if(!StrContains(classname, "obj_") && !StrEqual(classname, "obj_vehicle"))
 		{
 			b_BuildingHasDied[entity] = false;
@@ -4058,6 +4047,9 @@ stock void PlayerHasInteract(int client, char[] Buffer, int Buffersize)
 int CalcMaxPlayers()
 {
 	int playercount = CvarMaxPlayerAlive.IntValue;
+	if(playercount == -1)
+		return -1;
+		
 	if(playercount < 1)
 		playercount = MAXPLAYERS - 1;
 	/*

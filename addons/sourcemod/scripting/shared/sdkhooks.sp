@@ -2277,7 +2277,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					if(b_IsAloneOnServer)
 						i_AmountDowned[victim] = 999;
 					// Trigger lastman
-					CheckAlivePlayers();
+					CheckAlivePlayers(_,_,_,true);
 					//We trigger lastman if we hit this
 				}
 			}

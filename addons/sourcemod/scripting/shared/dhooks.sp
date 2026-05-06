@@ -1444,6 +1444,7 @@ void DHook_RespawnPlayer(int client)
 	if(TeutonType[client] == TEUTON_NONE)
 		b_HasBeenHereSinceStartOfWave[client] = true;
 	IsRespawning = false;
+	CheckAlivePlayers();
 }
 #endif
 

@@ -7,7 +7,8 @@ void Queue_PutInServer(int client)
 {
 	if(Waves_InVote())
 		return;
-	
+	if(CalcMaxPlayers() == -1)
+		return;
 	int count;
 	for(int i=1; i<=MaxClients; i++)
 	{
@@ -35,6 +36,8 @@ void Queue_AddPoint(int client)
 
 void Queue_DifficultyVoteEnded()
 {
+	if(CalcMaxPlayers() == -1)
+		return;
 	int count;
 	int[] queue = new int[MaxClients];
 	for(int i=1; i<=MaxClients; i++)
@@ -227,6 +230,9 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 
 bool Queue_JoinTeam(int client)
 {
+	if(CalcMaxPlayers() == -1)
+		return false;
+		
 	if(Waves_InVote() || (!WaitingInQueue[client] && GetClientTeam(client) == 2))
 		return false;
 	
