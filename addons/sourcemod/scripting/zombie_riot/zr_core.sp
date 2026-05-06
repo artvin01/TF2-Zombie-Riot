@@ -334,7 +334,8 @@ enum
     WEAPON_KIT_PURGE_ANNAHILATOR = 162,
     WEAPON_KIT_PURGE_MISC = 163,
 	WEAPON_BOMB_AR = 164,
-	WEAPON_BRICK = 165
+	WEAPON_BRICK = 165,
+	WEAPON_BURNINGTHUMB = 166
 }
 
 enum
@@ -745,9 +746,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_bombplant_smg.sp"
 #include "custom/weapon_guiding_missile.sp"
 #include "custom/kit_heartbroken.sp"
-
-
-
+#include "custom/weapon_burningthumb.sp"
 
 void ZR_PluginLoad()
 {

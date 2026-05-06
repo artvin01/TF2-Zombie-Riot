@@ -481,7 +481,7 @@ stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1, b
 
 //Got lazy, tired of doing so many indexs.
 
-int HasSpecificBuff(int victim, const char[] name, int IndexID = -1, int attacker = 0)
+int HasSpecificBuff(int victim, const char[] name, int IndexID = -1, int attacker = 0, float &duration = 0.0)
 {
 	//doesnt even have abuff...
 	if(!E_AL_StatusEffects[victim])
@@ -508,6 +508,8 @@ int HasSpecificBuff(int victim, const char[] name, int IndexID = -1, int attacke
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
+			duration = Apply_StatusEffect.TimeUntillOver - GetGameTime();
+
 			if(Apply_StatusEffect.TotalOwners[attacker])
 				Return = 3;
 			else if(Apply_StatusEffect.TotalOwners[victim])
@@ -9480,6 +9482,56 @@ void StatusEffects_HeartBroken()
 	data.HudDisplay_Func 			= Func_HeartBrokenHud;
 	data.TimerRepeatCall_Func 		= CallOfHeartBroken_Timer;
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Tremor");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "T");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 18; //0 means ignored
+	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func 			= Func_TremorDisplay;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Tremor - Scorch");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "TS");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 18; //0 means ignored
+	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func 			= Func_TremorScorchDisplay;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Stagger");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "∮");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= 0.5;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 19; //0 means ignored
+	data.SlotPriority				= 1;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Stagger+");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "∯");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= 0.75;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 19; //0 means ignored
+	data.SlotPriority				= 2;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Stagger++");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "∰");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= 1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 19; //0 means ignored
+	data.SlotPriority				= 3;
+	StatusEffect_AddGlobal(data);
 }
 
 #define MAX_RANGE_HEARTBROKEN 600.0
@@ -9728,8 +9780,56 @@ stock bool StatusEffects_SinkingDebuffMaxStacks(int victim)
 
 	return false;
 }
+static void Func_TremorDisplay(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	Format(HudToDisplay, SizeOfChar, "T(%d)", RoundToNearest(Apply_StatusEffect.DataForUse));
+}
+static void Func_TremorScorchDisplay(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	Format(HudToDisplay, SizeOfChar, "TS(%d)", RoundToNearest(Apply_StatusEffect.DataForUse));
+}
+stock void StatusEffects_TremorDebuffAdd(int victim, int valuetoadd, char name[64] = "")
+{
+	if(!E_AL_StatusEffects[victim])
+		return 0;
 
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
 
+	int length = E_AL_StatusEffects[victim].Length;
+	for(int i; i < length; i++)
+	{
+		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_MasterStatusEffect.Slot == 18)
+		{
+			if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
+			{
+				strcopy(name, sizeof(name), Apply_MasterStatusEffect.BuffName);
+				int amount = RoundFloat(Apply_StatusEffect.DataForUse);
+
+				if(valuetoadd)
+				{
+					Apply_StatusEffect.DataForUse += float(valuetoadd);
+					if(Apply_StatusEffect.DataForUse > 99.0)
+					{
+						Apply_StatusEffect.DataForUse = 99.0;
+					}
+					else if(Apply_StatusEffect.DataForUse < 1.0)
+					{
+						Apply_StatusEffect.TimeUntillOver = 0.0;
+					}
+					
+					E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+				}
+
+				return amount;
+			}
+		}
+	}
+
+	return 0;
+}
 
 void Memorial_Possession_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {

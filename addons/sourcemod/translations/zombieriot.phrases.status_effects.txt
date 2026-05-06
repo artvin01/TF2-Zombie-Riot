@@ -3332,4 +3332,68 @@
 		"en"	"Infected by steam happy, gains insane stats."
 		"ko"	"Steam Happy 이모지에 감염되어, 파멸적인 버프를 얻습니다."
 	}
+	"Tiantui Star"
+	{
+		"en"	"Tiantui Star"
+	}
+	"Tiantui Star Desc"
+	{
+		"en"	"Increases damage dealt by up to 20％ the faster this unit to the target.\nInflicts +2 more Tremor stack and +5s more Tremor extension."
+	}
+	"Shin - Tiantui Star"
+	{
+		"en"	"Shin - Tiantui Star"
+	}
+	"Shin - Tiantui Star Desc"
+	{
+		"en"	"Increases damage dealt by up to 40％ the faster this unit to the target.\nInflicts +2 more Tremor stack and +10s more Tremor extension."
+	}
+	"Overheat"
+	{
+		"en"	"Overheat"
+	}
+	"Overheat Desc"
+	{
+		"en"	"Decrease damage dealt by up to 50％ based on ammo spent since refresh."
+	}
+	"Tremor"
+	{
+		"en"	"Tremor"
+	}
+	"Tremor Desc"
+	{
+		"en"	"Inflicts Stagger elemental damage when hit by Tremor Burst based on stack count."
+	}
+	"Tremor - Scorch"
+	{
+		"en"	"Tremor - Scorch"
+	}
+	"Tremor - Scorch Desc"
+	{
+		"en"	"Inflicts true damage when hit by Tremor Burst based on stack count and burn damage."
+	}
+	"Stagger"
+	{
+		"en"	"Stagger"
+	}
+	"Stagger Desc"
+	{
+		"en"	"Negates resistances and increases damage taken by up to 50％."
+	}
+	"Stagger+"
+	{
+		"en"	"Stagger+"
+	}
+	"Stagger+ Desc"
+	{
+		"en"	"Negates resistances and increases damage taken by up to 75％."
+	}
+	"Stagger++"
+	{
+		"en"	"Stagger++"
+	}
+	"Stagger++ Desc"
+	{
+		"en"	"Negates resistances and increases damage taken by up to 100％."
+	}
 }
