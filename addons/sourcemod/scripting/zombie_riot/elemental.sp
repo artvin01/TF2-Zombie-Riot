@@ -1774,7 +1774,7 @@ void Elemental_AddStaggerDamage(int victim, int attacker, int damagebase)
 		{
 			ElementDamage[victim][Element_Stagger] -= trigger;
 
-			FreezeNpcInTime(victim, 5.0);
+			FreezeNpcInTime(victim, 2.5);
 
 			if(HasSpecificBuff(victim, "Stagger+"))
 			{

@@ -673,7 +673,6 @@ float fl_Extra_RangedArmor[MAXENTITIES] = {1.0, ...};
 float fl_Extra_Speed[MAXENTITIES] = {1.0, ...};
 float fl_Extra_Damage[MAXENTITIES] = {1.0, ...};
 float fl_GibVulnerablity[MAXENTITIES] = {1.0, ...};
-float f_RoleplayTalkLimit[MAXENTITIES] = {0.0, ...};
 
 bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
@@ -1586,7 +1585,6 @@ public void OnClientPutInServer(int client)
 	f_ClientConnectTime[client] = GetGameTime() + 30.0;
 	//do cooldown upon connection.
 	f_ClientInvul[client] = 0.0;
-	f_RoleplayTalkLimit[client] = 0.0;
 #if !defined NOG
 	DHook_HookClient(client);
 #endif

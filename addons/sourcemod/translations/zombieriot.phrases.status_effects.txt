@@ -3378,7 +3378,7 @@
 	}
 	"Stagger Desc"
 	{
-		"en"	"Negates resistances and increases damage taken by up to 50％."
+		"en"	"Negates base resistances (Not including buffs or debuffs or abilities)\nIncreases damage taken by up to 50％."
 	}
 	"Stagger+"
 	{
@@ -3386,7 +3386,7 @@
 	}
 	"Stagger+ Desc"
 	{
-		"en"	"Negates resistances and increases damage taken by up to 75％."
+		"en"	"Negates base resistances (Not including buffs or debuffs or abilities)\nIncreases damage taken by up to 75％."
 	}
 	"Stagger++"
 	{
@@ -3394,6 +3394,6 @@
 	}
 	"Stagger++ Desc"
 	{
-		"en"	"Negates resistances and increases damage taken by up to 100％."
+		"en"	"Negates base resistances (Not including buffs or debuffs or abilities)\nIncreases damage taken by up to 100％."
 	}
 }
