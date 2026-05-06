@@ -1,21 +1,13 @@
-/*
-	Skill 1
-	Second swing - 1 ammo
-
-	Skill 2
-	Third swing - 1 ammo
-
-	Skill 3
-*/
-
 #pragma semicolon 1
 #pragma newdecls required
 
-//i_WeaponAmmoAdjustable
-static const int MaxAmmo = 30;			// From 12 in-game
+static const int MaxAmmo = 18;			// From 12 in-limbus
 static const int ExtraAmmo = 2;			// Ammo supply cost
 static const float ChargeExtra = 10.0;	// Normal charge cooldown
-static const float BurningDamage = 8.0;	// Burning damage (1 potency)
+static const float BurningDamage = 4.0;	// Burning damage (1 potency)
+static const float TremorTime = 10.0;	// Tremor count time
+static const int TremorStagger = 100;	// Stagger damage per Tremor
+static const float ScorchDamage = 50.0;	// Damage per scorch stack
 
 enum BurningThumbEnum
 {
@@ -48,11 +40,19 @@ static int AmmoSpent[MAXPLAYERS+1];
 static int TotalSpent[MAXPLAYERS+1];
 static bool ShinForm[MAXPLAYERS+1];
 static bool ChargeSpent[MAXPLAYERS+1];
+static bool HasCharged[MAXPLAYERS+1];
 
 void BurningThumb_WaveEnd()
 {
 	for(int client = 1; client <= MaxClients; client++)
 	{
+		if(ShinForm[client])
+		{
+			RemoveSpecificBuff(client, "Shin - Tiantui Star");
+			RemoveSpecificBuff(client, "Tiantui Star");
+			RemoveSpecificBuff(client, "Overheat");
+		}
+
 		AmmoSpent[client] = 0;
 		TotalSpent[client] = 0;
 		ShinForm[client] = false;
@@ -65,6 +65,7 @@ void BurningThumb_Enable(int client, int weapon)
 	{
 		CurrentMove[client] = NoMove;
 		WeaponLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
+		// TODO: Display ammo timer
 	}
 }
 
@@ -72,14 +73,26 @@ public void Weapon_BurningThumb_M1(int client, int weapon, bool crit, int slot)
 {
 	delete ResetMove[client];
 
-	bool final;
-	float cooldown = 0.8;
+	float cooldown = 0.5;
 	switch(LastMove[client])
 	{
-		case NoMove, Slash_3, Tanglecleaver_3, Tigerslayer_5:
+		case NoMove:
 		{
 			// Slash1
 			CurrentMove[client] = Slash_1;
+		}
+		case Slash_3, Tanglecleaver_3, Tigerslayer_5:
+		{
+			if(CurrentMove[client] != LastMove[client])
+			{
+				// X -> Hit -> Slash1
+				CurrentMove[client] = Slash_1;
+			}
+			else
+			{
+				// X -> Miss -> X
+				cooldown = 0.75;
+			}
 		}
 		case Slash_1:
 		{
@@ -88,18 +101,13 @@ public void Weapon_BurningThumb_M1(int client, int weapon, bool crit, int slot)
 				// Slash1 -> Charge -> Slash2
 				CurrentMove[client] = Slash_2;
 			}
-			else if(GetClientButtons(client) & IN_DUCK)
+			else if(CurrentMove[client] != Slash_1)
 			{
-				// Slash1 -> Duck Counter
+				// Slash1 -> Hit -> Counter
 				CurrentMove[client] = Counter_2;
-				cooldown = 1.2;
-				final = true;
 			}
-			else
-			{
-				// Slash1 -> Miss/Hit -> Slash1
-				CurrentMove[client] = Slash_1;
-			}
+			
+			// Slash1 -> Miss -> Slash1
 		}
 		case Slash_2:
 		{
@@ -107,8 +115,7 @@ public void Weapon_BurningThumb_M1(int client, int weapon, bool crit, int slot)
 			{
 				// Slash2 -> Charge -> Slash3
 				CurrentMove[client] = Slash_3;
-				cooldown = 1.2;
-				final = true;
+				cooldown = 0.75;
 			}
 			else if(CurrentMove[client] != Slash_2)
 			{
@@ -118,53 +125,47 @@ public void Weapon_BurningThumb_M1(int client, int weapon, bool crit, int slot)
 
 			// Slash2 -> Miss -> Slash2
 		}
+		case Counter_2:
+		{
+			if(ChargeSpent[client])
+			{
+				// Counter -> Charge -> Slash2
+				CurrentMove[client] = Slash_2;
+			}
+			else
+			{
+				// Counter -> Hit/Miss -> Counter
+				CurrentMove[client] = Slash_1;
+			}
+		}
 		case Tanglecleaver_2:
 		{
 			CurrentMove[client] = Tanglecleaver_3;
-			cooldown = 2.0;
-			final = true;
+			cooldown = 0.75;
 		}
 		case Tigerslayer_4:
 		{
 			CurrentMove[client] = Tigerslayer_5;
-			cooldown = 2.0;
-			final = true;
+			cooldown = 0.75;
 		}
 		default:
 		{
-			CurrentMove[client]++;
-			cooldown = 1.2;
+			CurrentMove[client] = ++LastMove[client];
+			cooldown = 0.75;
 		}
 	}
 
 	SetWeaponCooldown(client, cooldown);
 
-	if(final)
-	{
-		LastMove[client] = NoMove;
-	}
-	else
-	{
-		cooldown += 1.5;
-		LastMove[client] = CurrentMove[client];
-	}
-
-	ResetCombo(client, weapon, cooldown, (final || ChargeSpent[client]));
+	cooldown += 1.5;
+	LastMove[client] = CurrentMove[client];
+	ResetCombo(client, weapon, cooldown, false);
 }
 
 public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
 {
 	if(dieingstate[client] != 0)
 		return;
-
-	if(!ResetMove[client])
-	{
-		// Must attack first
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "Use a move first before charging!");
-		return;
-	}
 	
 	if(ChargeSpent[client])
 	{
@@ -196,8 +197,12 @@ public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
 	Rogue_OnAbilityUse(client, weapon);
 
 	// TODO: Charge Logic
-	
-	if(LastMove[client] != Tigerslayer_0 && LastMove[client] != Tigerslayer_1)
+
+	if(LastMove[client] == NoMove)
+	{
+		LastMove[client] = Slash_1;
+	}
+	else if(LastMove[client] != Tigerslayer_0 && LastMove[client] != Tigerslayer_1)
 	{
 		ChargeSpent[client] = true;
 		SpendAmmo(client, weapon);
@@ -205,7 +210,8 @@ public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
 
 	// Reset combo, apply charge cooldown
 	TF2_AddCondition(client, TFCond_FocusBuff, 19.9);
-	ResetCombo(client, weapon, 3.0, true);
+	HasCharged[client] = true;
+	ResetCombo(client, weapon, 5.0, true);
 }
 
 public void Weapon_BurningThumb_R(int client, int weapon, bool crit, int slot)
@@ -215,8 +221,25 @@ public void Weapon_BurningThumb_R(int client, int weapon, bool crit, int slot)
 		if((GetClientButtons(client) & IN_DUCK) || TotalWeaponAmmo(client, weapon) < 1)
 		{
 			Rogue_OnAbilityUse(client, weapon);
+
+			ShinForm[client] = true;
+			ApplyStatusEffect(client, client, TotalSpent[client] >= (MaxAmmo * 2 / 3) ? "Shin - Tiantui Star" : "Tiantui Star", 999.9);
+			
 			return;
 		}
+	}
+
+	if(WeaponLevel[client] < 2)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+
+		if(!ShinForm[client])
+		{
+			SetDefaultHudPosition(client);
+			ShowSyncHudText(client, SyncHud_Notifaction, "Hold crouch to force a reload!");
+		}
+
+		return;
 	}
 	
 	if(Ability_Check_Cooldown(client, slot) > 0.0)
@@ -245,79 +268,314 @@ public void Weapon_BurningThumb_R(int client, int weapon, bool crit, int slot)
 
 void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 {
+	// Offset the status effect nerf
+	if(ShinForm[attacker])
+		damage *= 2.0;
+	
 	bool resetCharge;
+	int power = 6;
 
 	switch(CurrentMove[attacker])
 	{
 		case Slash_2:
 		{
+			PrintToConsole(attacker, "Double Slash - Blast");
+
+			power = WeaponLevel[attacker] > 1 ? 12 : 10;
+
+			int bonus;
+			if(WeaponLevel[attacker] > 0)
+				bonus = BonusTremorBurn(victim, 4, WeaponLevel[attacker] > 2 ? 3 : 2);
+			
+			InflictTremorPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 2 : 1);
+
 			if(ChargeSpent[attacker] || TotalWeaponAmmo(attacker, weapon) > 0)
 			{
-				InflictBurnPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 2 : 1);
+				if(WeaponLevel[attacker] > 0)
+				{
+					bonus += ShinForm[attacker] ? 2 : 1;
+					if(WeaponLevel[attacker] > 2)
+						damage *= ShinForm[attacker] ? 1.3 : 1.1;
+				}
+				
+				InflictBurnPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 4 : 1);
 
 				resetCharge = true;
 				if(!ChargeSpent[attacker])
 					SpendAmmo(attacker, weapon);
 			}
+			
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			power += bonus;
 		}
 		case Slash_3:
 		{
+			PrintToConsole(attacker, "Triple Slash - Blast");
+
+			power = WeaponLevel[attacker] > 1 ? 16 : 13;
+
+			int bonus;
+			if(WeaponLevel[attacker] > 0)
+				bonus = BonusTremorBurn(victim, 4, WeaponLevel[attacker] > 2 ? 4 : 2);
+
+			InflictTremorCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 2 : 1);
+			
 			if(ChargeSpent[attacker] || TotalWeaponAmmo(attacker, weapon) > 0)
 			{
-				InflictBurnCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 2 : 1);
+				if(WeaponLevel[attacker] > 0)
+				{
+					bonus += ShinForm[attacker] ? 2 : 1;
+					if(WeaponLevel[attacker] > 2)
+						damage *= ShinForm[attacker] ? 1.3 : 1.1;
+				}
+				
+				InflictBurnCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 4 : 1);
 
 				if(!ChargeSpent[attacker])
 					SpendAmmo(attacker, weapon);
 			}
+			
+			if(WeaponLevel[attacker] > 0)
+				InflictTremorBurst(victim, attacker, 1, 3);
+			
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			power += bonus;
+		}
+		case Counter_2:
+		{
+			PrintToConsole(attacker, "I'm Burning Up.");
+
+			// 10 - 15
+			power = WeaponLevel[attacker] > 2 ? 13 : 10;
+			int bonus = BonusTremorBurn(victim, 4, WeaponLevel[attacker] > 2 ? 2 : 1);
+
+			InflictTremorCount(victim, attacker, weapon, 1);
+
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			power += bonus;
 		}
 		case Tanglecleaver_1:
 		{
-			resetCharge = true;
-			if(!ChargeSpent[attacker])
-				SpendAmmo(attacker, weapon);
+			PrintToConsole(attacker, "Tanglecleaver I");
+
+			// 8 - 11
+			power = WeaponLevel[attacker] > 2 ? 9 : 8;
+			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1);
+
+			InflictTremorPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 3 : 2);
+
+			if(ChargeSpent[attacker] || TotalWeaponAmmo(attacker, weapon) > 0)
+			{
+				bonus += ShinForm[attacker] ? 2 : 1;
+				if(WeaponLevel[attacker] > 2)
+					damage *= ShinForm[attacker] ? 1.3 : 1.1;
+				
+				InflictBurnPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 5 : 2);
+
+				resetCharge = true;
+				if(!ChargeSpent[attacker])
+					SpendAmmo(attacker, weapon);
+			}
+
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			power += bonus;
 		}
 		case Tanglecleaver_2:
 		{
-			resetCharge = true;
+			PrintToConsole(attacker, "Tanglecleaver II");
 
-			if(!ChargeSpent[attacker])
-				SpendAmmo(attacker, weapon);
+			// 12 - 17
+			power = WeaponLevel[attacker] > 2 ? 13 : 12;
+			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1) * 2;
+			
+			InflictTremorCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 3 : 2);
+			
+			if(ChargeSpent[attacker] || TotalWeaponAmmo(attacker, weapon) > 0)
+			{
+				bonus += ShinForm[attacker] ? 2 : 1;
+				if(WeaponLevel[attacker] > 2)
+					damage *= ShinForm[attacker] ? 1.3 : 1.1;
+				
+				InflictBurnCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 5 : 2);
+
+				if(!ChargeSpent[attacker])
+					SpendAmmo(attacker, weapon);
+			}
+
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			power += bonus;
 		}
 		case Tanglecleaver_3:
 		{
-			if(!ChargeSpent[attacker])
-				SpendAmmo(attacker, weapon);
+			PrintToConsole(attacker, "Tanglecleaver III");
+
+			// 16 - 23
+			power = WeaponLevel[attacker] > 2 ? 17 : 16;
+			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1) * 3;
+
+			bool ammo = (ChargeSpent[attacker] || TotalWeaponAmmo(attacker, weapon) > 0);
+			if(ammo)
+			{
+				bonus += ShinForm[attacker] ? 2 : 1;
+				if(WeaponLevel[attacker] > 2)
+					damage *= ShinForm[attacker] ? 1.3 : 1.1;
+				
+				damage *= WeaponLevel[attacker] > 2 ? 1.5 : 1.2;
+
+				if(!ChargeSpent[attacker])
+					SpendAmmo(attacker, weapon);
+			}
+			
+			ConvertTremorType(victim, attacker, "Tremor - Scorch");
+
+			int bursts = ammo ? (WeaponLevel[attacker] > 2 ? 3 : 2) : 1;
+			for(int i; i < bursts; i++)
+			{
+				InflictTremorBurst(victim, attacker, 1);
+			}
+			
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			power += bonus;
+
+			float cooldown = 2.0;
+			SetWeaponCooldown(weapon, cooldown);
+			ResetCombo(attacker, weapon, cooldown, true);
+			TF2_RemoveCondition(attacker, TFCond_CritOnKill);
 		}
 		case Tigerslayer_1:
 		{
+			PrintToConsole(attacker, "Savage Tigerslayer's Perfected Flurry of Blades I");
+
+			// 5 - 8
+			power = WeaponLevel[attacker] > 2 ? 6 : 5;
+			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1);
+
+			InflictTremorPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 3 : 2);
+
 			resetCharge = true;
+			
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			power += bonus;
 		}
 		case Tigerslayer_2:
 		{
+			PrintToConsole(attacker, "Savage Tigerslayer's Perfected Flurry of Blades II");
+
+			// 8 - 13
+			power = WeaponLevel[attacker] > 2 ? 9 : 8;
+			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1) * 2;
+
+			InflictTremorCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 3 : 2);
+
 			resetCharge = true;
+			
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			power += bonus;
 		}
 		case Tigerslayer_3:
 		{
-			resetCharge = true;
-			if(!ChargeSpent[attacker])
-				SpendAmmo(attacker, weapon);
+			PrintToConsole(attacker, "Savage Tigerslayer's Perfected Flurry of Blades III");
+
+			// 11 - 18
+			power = WeaponLevel[attacker] > 2 ? 12 : 11;
+			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1) * 3;
+
+			if(ChargeSpent[attacker] || TotalWeaponAmmo(attacker, weapon) > 0)
+			{
+				bonus += ShinForm[attacker] ? 2 : 1;
+				if(WeaponLevel[attacker] > 2)
+					damage *= ShinForm[attacker] ? 1.3 : 1.1;
+				
+				InflictBurnPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 5 : 2);
+
+				resetCharge = true;
+				if(!ChargeSpent[attacker])
+					SpendAmmo(attacker, weapon);
+			}
+			
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			power += bonus;
 		}
 		case Tigerslayer_4:
 		{
-			resetCharge = true;
-			if(!ChargeSpent[attacker])
-				SpendAmmo(attacker, weapon);
+			PrintToConsole(attacker, "Savage Tigerslayer's Perfected Flurry of Blades IV");
+
+			// 14 - 23
+			power = WeaponLevel[attacker] > 2 ? 15 : 14;
+			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1) * 4;
+
+			if(ChargeSpent[attacker] || TotalWeaponAmmo(attacker, weapon) > 0)
+			{
+				bonus += ShinForm[attacker] ? 2 : 1;
+				if(WeaponLevel[attacker] > 2)
+					damage *= ShinForm[attacker] ? 1.3 : 1.1;
+				
+				InflictBurnCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 5 : 2);
+
+				resetCharge = true;
+				if(!ChargeSpent[attacker])
+					SpendAmmo(attacker, weapon);
+			}
+			
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			power += bonus;
 		}
 		case Tigerslayer_5:
 		{
-			if(!ChargeSpent[attacker])
-				SpendAmmo(attacker, weapon);
+			PrintToConsole(attacker, "Savage Tigerslayer's Perfected Flurry of Blades V");
+
+			// 17 - 28
+			power = WeaponLevel[attacker] > 2 ? 18 : 17;
+			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1) * 5;
+
+			bool ammo = (ChargeSpent[attacker] || TotalWeaponAmmo(attacker, weapon) > 0);
+			if(ammo)
+			{
+				bonus += ShinForm[attacker] ? 2 : 1;
+				if(WeaponLevel[attacker] > 2)
+					damage *= ShinForm[attacker] ? 1.3 : 1.1;
+				
+				if(!ChargeSpent[attacker])
+					SpendAmmo(attacker, weapon);
+			}
+			
+			ConvertTremorType(victim, attacker, "Tremor - Scorch");
+
+			int bursts = ammo ? (WeaponLevel[attacker] > 2 ? 3 : 2) : 1;
+			for(int i; i < bursts; i++)
+			{
+				InflictTremorBurst(victim, attacker, 1);
+			}
+
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			power += bonus;
+
+			float cooldown = 2.0;
+			SetWeaponCooldown(weapon, cooldown);
+			ResetCombo(attacker, weapon, cooldown, true);
+			TF2_RemoveCondition(attacker, TFCond_CritOnKill);
 		}
 		default:
 		{
+			PrintToConsole(attacker, "Single Slash - Blast");
+
+			power = WeaponLevel[attacker] > 1 ? 8 : 7;
+
+			int bonus;
+			if(WeaponLevel[attacker] > 0)
+			{
+				bonus = BonusTremorBurn(victim, 4, WeaponLevel[attacker] > 2 ? 3 : 2);
+				InflictTremorPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 2 : 1);
+			}
+			
 			resetCharge = true;
+			
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			power += bonus;
 		}
 	}
+	
+	damage *= float(power) / 7.0;
 
 	if(resetCharge)
 	{
@@ -341,6 +599,7 @@ static void InflictBurnPotency(int victim, int attacker, int weapon, int value)
 		duration = 0.0;
 	
 	NPC_Ignite(victim, attacker, duration, weapon, potency * BurningDamage);
+	PrintToConsole(attacker, "> Burn +%d", potency);
 }
 
 static void InflictBurnCount(int victim, int attacker, int weapon, int value)
@@ -351,67 +610,114 @@ static void InflictBurnCount(int victim, int attacker, int weapon, int value)
 		potency += 2;
 
 	NPC_Ignite(victim, attacker, potency * 3.0, weapon, BurningDamage);
+	PrintToConsole(attacker, "> Burn Extend +%d", potency);
 }
 
-static void InflictTremorPotency(int victim, int attacker, int weapon, int value)
+stock void InflictTremorPotency(int victim, int attacker, int weapon, int value, const char[] name = "Tremor")
 {
 	int potency = value;
 
-	//if(WeaponLevel[attacker] > 2 && ShinForm[attacker] && TotalWeaponAmmo(attacker, weapon) > 0)
-	//	potency += 2;
+	if(HasSpecificBuff(attacker, "Shin - Tiantui Star"))
+	{
+		potency += 2;
+	}
+	else if(ShinForm[attacker])
+	{
+		potency++;
+	}
 	
-	ApplyStatusEffect(attacker, victim, "Tremor", 5.0);
-	StatusEffects_TremorDebuffAdd(victim, potency);
+	ApplyStatusEffect(attacker, victim, name, TremorTime);
+	StatusEffects_TremorDebuffAdd(victim, potency, 0.0);
+
+	if(attacker && attacker <= MaxClients)
+	{
+		PrintToConsole(attacker, "> Tremor +%d", potency);
+		ClientCommand(attacker, (GetURandomInt() % 2) ? "playgamesound weapons/physcannon/energy_bounce1.wav" : "playgamesound weapons/physcannon/energy_bounce2.wav");
+	}
 }
 
-static void InflictTremorCount(int victim, int attacker, int weapon, int value)
+stock void InflictTremorCount(int victim, int attacker, int weapon, int value, const char[] name = "Tremor")
 {
 	int potency = value;
 
-	//if(WeaponLevel[attacker] > 2 && ShinForm[attacker] && TotalWeaponAmmo(attacker, weapon) > 0)
-	//	potency += 2;
-	
-	float duration;
-	if(HasSpecificBuff(victim, "Tremor", _, _, duration))
+	if(HasSpecificBuff(attacker, "Shin - Tiantui Star"))
 	{
-		if(duration < 0.0)
-			duration = 0.0;
-
-		ApplyStatusEffect(attacker, victim, "Tremor", duration + (potency * 5.0));
+		potency += 2;
 	}
-	else
+	else if(ShinForm[attacker])
 	{
-		ApplyStatusEffect(attacker, victim, "Tremor", 5.0);
-		StatusEffects_TremorDebuffAdd(victim, 1);
+		potency++;
+	}
+	
+	ApplyStatusEffect(attacker, victim, name, TremorTime);
+	StatusEffects_TremorDebuffAdd(victim, 0, (potency * TremorTime));
+
+	if(attacker && attacker <= MaxClients)
+	{
+		PrintToConsole(attacker, "> Tremor Extend +%d", potency);
+		ClientCommand(attacker, (GetURandomInt() % 2) ? "playgamesound weapons/physcannon/energy_bounce1.wav" : "playgamesound weapons/physcannon/energy_bounce2.wav");
 	}
 }
 
-stock void InflictTremorBurst(int victim, int attacker, int decrease)
+stock void InflictTremorBurst(int victim, int attacker, int decrease, int minrequire = 0)
 {
+	float timeleft;
 	char name[64];
-	int amount = StatusEffects_TremorDebuffAdd(victim, -decrease, name);
-	if(amount > 0)
+	int amount = StatusEffects_TremorDebuffGet(victim, timeleft, name);
+	if(amount > 0 && timeleft >= (minrequire * TremorTime))
 	{
-		Elemental_AddStaggerDamage(victim, attacker, amount * 100);
+		Elemental_AddStaggerDamage(victim, attacker, amount * TremorStagger);
+		PrintToConsole(attacker, "> Tremor Burst x%d", name, amount);
 
 		if(StrContains(name, "Scorch", false) != -1)
 		{
-			int damage = 0;
-			
-			if(IgniteFor[victim] > 2)
-			{
-				IgniteFor[victim] -= 2;
-
-				damage = RoundFloat(BurnDamage[victim] / BurningDamage / 65.0);
-				if(damage > 99)
-					damage = 99;
-			}
-
-			damage += amount;
-			
-			SDKHooks_TakeDamage(victim, attacker, attacker, damage * 50.0, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+			amount += BurnStacks(victim);
+			SDKHooks_TakeDamage(victim, attacker, attacker, amount * ScorchDamage, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+			PrintToConsole(attacker, "> %s Burst x%d", name, amount);
 		}
+
+		if(decrease)
+			StatusEffects_TremorDebuffAdd(victim, 0, -(decrease * TremorTime));
 	}
+}
+
+stock void ConvertTremorType(int victim, int attacker, const char[] name)
+{
+	float timeleft;
+	int amount = StatusEffects_TremorDebuffGet(victim, timeleft);
+	if(amount > 0 && timeleft > 0.0)
+	{
+		ApplyStatusEffect(attacker, victim, name, TremorTime);
+		PrintToConsole(attacker, "> Amplitude Conversion");
+	}
+}
+
+static int BonusTremorBurn(int victim, int stackper, int maxbonus)
+{
+	int bonus = StatusEffects_TremorDebuffGet(victim) + BurnStacks(victim);
+
+	bonus /= stackper;
+
+	if(bonus > maxbonus)
+		bonus = maxbonus;
+	
+	return bonus;
+}
+
+static int BurnStacks(int victim)
+{
+	int amount = 0;
+	
+	if(IgniteFor[victim] > 2)
+	{
+		IgniteFor[victim] -= 2;
+
+		amount = RoundFloat(BurnDamage[victim] / 48.0);
+		if(amount > 99)
+			amount = 99;
+	}
+
+	return amount;
 }
 
 static void SpendAmmo(int client, int weapon)
@@ -419,16 +725,13 @@ static void SpendAmmo(int client, int weapon)
 	int total = MaxAmmo;
 
 	if(ShinForm[client])
-	{
 		total = total * 2 / 3;
-		total -= AmmoSpent[client];
+	
+	if(AmmoSpent[client] < total)
+	{
+		AmmoSpent[client]++;
 	}
 	else
-	{
-		total -= AmmoSpent[client];
-	}
-
-	if(total < 1)
 	{
 		int type = i_WeaponAmmoAdjustable[weapon];
 		if(type && type < Ammo_MAX)
@@ -437,6 +740,17 @@ static void SpendAmmo(int client, int weapon)
 			CurrentAmmo[client][type] = ammo;
 			SetAmmo(client, type, ammo);
 		}
+	}
+
+	TotalSpent[client]++;
+
+	if(ShinForm[client])
+	{
+		if(AmmoSpent[client] >= total)
+			ApplyStatusEffect(client, client, "Overheat", 999.9);
+		
+		if(TotalSpent[client] >= total)
+			ApplyStatusEffect(client, client, "Shin - Tiantui Star", 999.9);
 	}
 }
 
@@ -447,7 +761,16 @@ static void ResetCombo(int client, int weapon, float cooldown, bool charge)
 
 	Ability_Apply_Cooldown(client, 1, cooldown, weapon, true);
 	if(charge)
-		Ability_Apply_Cooldown(client, 2, cooldown + ChargeExtra, weapon);
+	{
+		if(HasCharged[client])
+		{
+			Ability_Apply_Cooldown(client, 2, cooldown + ChargeExtra, weapon);
+		}
+		else
+		{
+			Ability_Apply_Cooldown(client, 2, cooldown, weapon, true);
+		}
+	}
 }
 
 static Action ResetMoveTimer(Handle timer, int client)
@@ -455,6 +778,7 @@ static Action ResetMoveTimer(Handle timer, int client)
 	ResetMove[client] = null;
 	LastMove[client] = NoMove;
 	ChargeSpent[client] = false;
+	HasCharged[client] = false;
 
 	if(IsClientInGame(client) && IsPlayerAlive(client))
 	{
@@ -491,7 +815,7 @@ static int TotalWeaponAmmo(int client, int weapon)
 {
 	int total = MaxAmmo;
 
-	if(ShinForm[client] == ShinForm_Shin)
+	if(ShinForm[client])
 	{
 		total = total * 2 / 3;
 		total -= AmmoSpent[client];

@@ -9506,7 +9506,7 @@ void StatusEffects_HeartBroken()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Stagger");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "∮");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	data.DamageTakenMulti 			= 0.5;
+	data.DamageTakenMulti 			= 0.3;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 19; //0 means ignored
@@ -9516,7 +9516,7 @@ void StatusEffects_HeartBroken()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Stagger+");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "∯");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	data.DamageTakenMulti 			= 0.75;
+	data.DamageTakenMulti 			= 0.45;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 19; //0 means ignored
@@ -9526,12 +9526,56 @@ void StatusEffects_HeartBroken()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Stagger++");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "∰");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	data.DamageTakenMulti 			= 1.0;
+	data.DamageTakenMulti 			= 0.6;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 19; //0 means ignored
 	data.SlotPriority				= 3;
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Tiantui Star");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "★");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageDealMulti			= 0.5;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 20; //0 means ignored
+	data.SlotPriority				= 1;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Shin - Tiantui Star");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "心");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageDealMulti			= 0.5;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 20; //0 means ignored
+	data.SlotPriority				= 2;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Overheat");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "♨");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= 0.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0;
+	data.OnTakeDamage_TakenFunc		= OverheatDamageTakenFunc;
+	StatusEffect_AddGlobal(data);
+}
+static float OverheatDamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
+{
+	float ratio = GetClientHealth(victim) / float(ReturnEntityMaxHealth(victim));
+	
+	float damagereturn = 0.0;
+	if(ratio < 1.0)
+		damagereturn -= basedamage * ratio * 0.5;
+	
+	return damagereturn;
 }
 
 int StaggerTypeTarget(int victim)
@@ -9801,7 +9845,42 @@ static void Func_TremorScorchDisplay(int attacker, int victim, StatusEffect Appl
 {
 	Format(HudToDisplay, SizeOfChar, "TS(%d)", RoundToNearest(Apply_StatusEffect.DataForUse));
 }
-stock void StatusEffects_TremorDebuffAdd(int victim, int valuetoadd, char name[64] = "")
+stock void StatusEffects_TremorDebuffAdd(int victim, int valuetoadd, float time)
+{
+	if(!E_AL_StatusEffects[victim])
+		return;
+
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+
+	int length = E_AL_StatusEffects[victim].Length;
+	for(int i; i < length; i++)
+	{
+		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_MasterStatusEffect.Slot == 18)
+		{
+			if(valuetoadd)
+			{
+				Apply_StatusEffect.DataForUse += float(valuetoadd);
+				if(Apply_StatusEffect.DataForUse > 99.0)
+				{
+					Apply_StatusEffect.DataForUse = 99.0;
+				}
+				else if(Apply_StatusEffect.DataForUse < 1.0)
+				{
+					Apply_StatusEffect.DataForUse = 1.0;
+				}
+
+				Apply_StatusEffect.TimeUntillOver += time;
+				E_AL_StatusEffects[victim].SetArray(i, Apply_StatusEffect);
+			}
+
+			break;
+		}
+	}
+}
+stock int StatusEffects_TremorDebuffGet(int victim, float &timeleft = 0.0, char name[64] = "")
 {
 	if(!E_AL_StatusEffects[victim])
 		return 0;
@@ -9816,27 +9895,11 @@ stock void StatusEffects_TremorDebuffAdd(int victim, int valuetoadd, char name[6
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_MasterStatusEffect.Slot == 18)
 		{
-			if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
+			timeleft = Apply_StatusEffect.TimeUntillOver - GetGameTime();
+			if(timeleft > 0.0)
 			{
 				strcopy(name, sizeof(name), Apply_MasterStatusEffect.BuffName);
-				int amount = RoundFloat(Apply_StatusEffect.DataForUse);
-
-				if(valuetoadd)
-				{
-					Apply_StatusEffect.DataForUse += float(valuetoadd);
-					if(Apply_StatusEffect.DataForUse > 99.0)
-					{
-						Apply_StatusEffect.DataForUse = 99.0;
-					}
-					else if(Apply_StatusEffect.DataForUse < 1.0)
-					{
-						Apply_StatusEffect.TimeUntillOver = 0.0;
-					}
-					
-					E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
-				}
-
-				return amount;
+				return RoundFloat(Apply_StatusEffect.DataForUse);
 			}
 		}
 	}

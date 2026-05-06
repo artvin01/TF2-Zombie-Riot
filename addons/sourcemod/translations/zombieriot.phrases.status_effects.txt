@@ -3338,7 +3338,7 @@
 	}
 	"Tiantui Star Desc"
 	{
-		"en"	"Increases damage dealt by up to 20％ the faster this unit to the target.\nInflicts +2 more Tremor stack and +5s more Tremor extension."
+		"en"	"Decreases damage dealt by all other weapons.\nIncreases damage dealt by up to 20％ the faster this unit to the target.\nInflicts +1 more Tremor stack and +10s more Tremor extension."
 	}
 	"Shin - Tiantui Star"
 	{
@@ -3346,7 +3346,7 @@
 	}
 	"Shin - Tiantui Star Desc"
 	{
-		"en"	"Increases damage dealt by up to 40％ the faster this unit to the target.\nInflicts +2 more Tremor stack and +10s more Tremor extension."
+		"en"	"Decreases damage dealt by all other weapons.\nIncreases damage dealt by up to 40％ the faster this unit to the target.\nInflicts +2 more Tremor stack and +20s more Tremor extension."
 	}
 	"Overheat"
 	{
@@ -3354,7 +3354,7 @@
 	}
 	"Overheat Desc"
 	{
-		"en"	"Decrease damage dealt by up to 50％ based on ammo spent since refresh."
+		"en"	"Increases resistance by up to 50％ based on lost health."
 	}
 	"Tremor"
 	{
@@ -3370,7 +3370,7 @@
 	}
 	"Tremor - Scorch Desc"
 	{
-		"en"	"Inflicts true damage when hit by Tremor Burst based on stack count and burn damage."
+		"en"	"Inflicts ranged damage when hit by Tremor Burst based on stack count and afterburn damage."
 	}
 	"Stagger"
 	{
@@ -3378,7 +3378,7 @@
 	}
 	"Stagger Desc"
 	{
-		"en"	"Negates base resistances (Not including buffs or debuffs or abilities)\nIncreases damage taken by up to 50％."
+		"en"	"Negates base resistances (Not including buffs or debuffs or abilities)\nIncreases damage taken by up to 30％."
 	}
 	"Stagger+"
 	{
@@ -3386,7 +3386,7 @@
 	}
 	"Stagger+ Desc"
 	{
-		"en"	"Negates base resistances (Not including buffs or debuffs or abilities)\nIncreases damage taken by up to 75％."
+		"en"	"Negates base resistances (Not including buffs or debuffs or abilities)\nIncreases damage taken by up to 45％."
 	}
 	"Stagger++"
 	{
@@ -3394,6 +3394,6 @@
 	}
 	"Stagger++ Desc"
 	{
-		"en"	"Negates base resistances (Not including buffs or debuffs or abilities)\nIncreases damage taken by up to 100％."
+		"en"	"Negates base resistances (Not including buffs or debuffs or abilities)\nIncreases damage taken by up to 60％."
 	}
 }

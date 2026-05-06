@@ -134,10 +134,7 @@ int Elemental_GetDamage(int entity, int type)
 	switch(type)
 	{
 		case Element_Stagger:
-		{
-			if(npc.m_iHealthBar < 1)
-				damage += ReturnEntityMaxHealth(entity) - GetEntProp(entity, Prop_Data, "m_iHealth");
-		}
+			damage += ReturnEntityMaxHealth(entity) - GetEntProp(entity, Prop_Data, "m_iHealth");
 	}
 
 	return damage;
@@ -206,18 +203,16 @@ int Elemental_TriggerDamage(int entity, int type)
 		{
 			if(b_thisNpcIsARaid[entity] || EntRefToEntIndex(RaidBossActive) == entity)
 			{
-				divide = 1.2;
+				divide *= 0.37;
 			}
 			else if(b_thisNpcIsABoss[entity])
 			{
-				divide = 1.5;
+				divide *= 0.5;
 			}
 			else if(b_IsGiant[entity])
 			{
-				divide = 2.0;
+				divide *= 0.667;
 			}
-
-			divide *= fl_GibVulnerablity[entity];
 		}
 		default:
 		{
@@ -274,7 +269,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[128])
 	{
 		if(ElementDamage[entity][i] > 0)
 		{
-			int health = Elemental_TriggerDamage(entity, i) - ElementDamage[entity][i];
+			int health = Elemental_TriggerDamage(entity, i) - Elemental_GetDamage(entity, i);
 			if(health < lowHealth)
 			{
 				low = i;
@@ -288,7 +283,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[128])
 		return false;
 	
 	// <CY 50%>
-	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d％>", ElementName[low], ElementDamage[entity][low] * 100 / Elemental_TriggerDamage(entity, low));
+	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d％>", ElementName[low], Elemental_GetDamage(entity, low) * 100 / Elemental_TriggerDamage(entity, low));
 	return true;
 }
 
@@ -1764,7 +1759,8 @@ void Elemental_AddStaggerDamage(int victim, int attacker, int damagebase)
 		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Stagger));
 		if(damage < 1)
 			return;
-
+		
+		bool triggered;
 		int trigger = Elemental_TriggerDamage(victim, Element_Stagger);
 
 		LastTime[victim] = GetGameTime();
@@ -1772,27 +1768,30 @@ void Elemental_AddStaggerDamage(int victim, int attacker, int damagebase)
 		ElementDamage[victim][Element_Stagger] += damage;
 		while(Elemental_GetDamage(victim, Element_Stagger) > trigger)
 		{
+			triggered = true;
 			ElementDamage[victim][Element_Stagger] -= trigger;
 
-			FreezeNpcInTime(victim, 2.5);
-
-			if(HasSpecificBuff(victim, "Stagger+"))
+			if(HasSpecificBuff(victim, "Stagger+") || HasSpecificBuff(victim, "Stagger++"))
 			{
-				ApplyStatusEffect(attacker, victim, "Stagger++", 5.0);
+				ApplyStatusEffect(attacker, victim, "Stagger++", 10.0);
 				break;
 			}
 			else if(HasSpecificBuff(victim, "Stagger"))
 			{
-				ApplyStatusEffect(attacker, victim, "Stagger+", 5.0);
+				ApplyStatusEffect(attacker, victim, "Stagger+", 10.0);
 			}
 			else
 			{
-				ApplyStatusEffect(attacker, victim, "Stagger", 5.0);
+				ApplyStatusEffect(attacker, victim, "Stagger", 10.0);
+				FreezeNpcInTime(victim, 2.0);
 			}
 		}
 
 		if(attacker && attacker <= MaxClients)
+		{
+			ClientCommand(attacker, triggered ? "playgamesound weapons/physcannon/energy_disintegrate4.wav" : ((GetURandomInt() % 2) ? "playgamesound weapons/physcannon/energy_sing_flyby1.wav" : "playgamesound weapons/physcannon/energy_sing_flyby2.wav"));
 			ApplyElementalEvent(victim, attacker, damage);
+		}
 	}
 }
 
