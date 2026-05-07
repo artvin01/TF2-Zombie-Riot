@@ -53,11 +53,11 @@ void Elemental_ClearDamage(int entity)
 stock bool Elemental_HasDamage(int entity, int type = -1)
 {
 	if(type != -1)
-		return view_as<bool>(ElementDamage[entity][type]);
+		return Elemental_GetDamage(entity, type) > 0;
 	
 	for(int i; i < Element_MAX; i++)
 	{
-		if(ElementDamage[entity][i])
+		if(Elemental_GetDamage(entity, i) > 0)
 			return true;
 	}
 	
@@ -71,7 +71,7 @@ stock bool Elemental_GoingCritical(int entity)
 	
 	for(int i; i < Element_MAX; i++)
 	{
-		if((ElementDamage[entity][i] * 5 / 4) > Elemental_TriggerDamage(entity, i))
+		if((Elemental_GetDamage(entity, i) * 5 / 4) > Elemental_TriggerDamage(entity, i))
 			return true;
 	}
 	
@@ -267,9 +267,10 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[128])
 	int lowHealth = 1000000;
 	for(int i; i < Element_MAX; i++)
 	{
-		if(ElementDamage[entity][i] > 0)
+		int damage = Elemental_GetDamage(entity, i);
+		if(damage > 0)
 		{
-			int health = Elemental_TriggerDamage(entity, i) - Elemental_GetDamage(entity, i);
+			int health = Elemental_TriggerDamage(entity, i) - damage;
 			if(health < lowHealth)
 			{
 				low = i;
@@ -1773,19 +1774,21 @@ void Elemental_AddStaggerDamage(int victim, int attacker, int damagebase)
 
 			if(HasSpecificBuff(victim, "Stagger+") || HasSpecificBuff(victim, "Stagger++"))
 			{
-				ApplyStatusEffect(attacker, victim, "Stagger++", 10.0);
+				ApplyStatusEffect(attacker, victim, "Stagger++", 5.0);
 				break;
 			}
 			else if(HasSpecificBuff(victim, "Stagger"))
 			{
-				ApplyStatusEffect(attacker, victim, "Stagger+", 10.0);
+				ApplyStatusEffect(attacker, victim, "Stagger+", 5.0);
 			}
 			else
 			{
-				ApplyStatusEffect(attacker, victim, "Stagger", 10.0);
-				FreezeNpcInTime(victim, 2.0);
+				ApplyStatusEffect(attacker, victim, "Stagger", 5.0);
 			}
 		}
+
+		if(triggered)
+			FreezeNpcInTime(victim, 2.0);
 
 		if(attacker && attacker <= MaxClients)
 		{

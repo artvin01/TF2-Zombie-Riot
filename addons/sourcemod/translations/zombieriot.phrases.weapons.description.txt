@@ -5437,5 +5437,24 @@
 		"en"	"-Overall Stat Increases"
 		"ko"	"-전반적인 능력치 증가"
 	}
-
+	"Tiantui Star Blade Desc"
+	{
+		"en"	"-Abilities uses ammo and refills on wave end\n-M2 to charge forward, consuming ammo\n-Combos reset charge cooldown\n-R and crouch to reload special ammo and gain a buff (once per wave)"
+	}
+	"Tiantui Star Blade Extra"
+	{
+		"en"	"Basic Attack Combo: apply tremor; extend tremor\nM2 Combo: apply tremor; apply tremor & burn; extend tremor & burn\nR Combo: apply tremor & burn; extend tremor & burn; tremor burst"
+	}
+	"Tiantui Star Blade Pap 1"
+	{
+		"en"	"-Basic attack applies tremor\n-Deals bonus damage against enemies with high amounts of burn and tremor"
+	}
+	"Tiantui Star Blade Pap 2"
+	{
+		"en"	"-Unlocks R ability, powers up for a 3-hit combo\n-Buffed to a 5-hit combo with special ammo\n-Final hit inflicts Tremor - Scorch and Tremor Burst (2 times with ammo)"
+	}
+	"Tiantui Star Blade Pap 3"
+	{
+		"en"	"-Applies more stacks of burn and tremor\n-Increased bonus damage against enemies with burn and tremor\n-R ability inflicts Tremor Burst an additional time (with ammo)"
+	}
 }

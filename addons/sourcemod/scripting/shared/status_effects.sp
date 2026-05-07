@@ -606,6 +606,7 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 #endif
 	int CurrentSlotSaved = Apply_MasterStatusEffect.Slot;
 	int CurrentPriority = Apply_MasterStatusEffect.SlotPriority;
+	float CurrentData = 0.0;
 	if(CurrentSlotSaved > 0)
 	{
 		//This debuff has slot logic, this means we should see which debuff is prioritised
@@ -627,6 +628,12 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 					if(CurrentPriority > Apply_MasterStatusEffect.SlotPriority)
 					{
 						// New buff is high priority, remove this one, stop the loop
+						CurrentData = Apply_StatusEffect.DataForUse;
+						
+						float CurrentTime = Apply_StatusEffect.TimeUntillOver - GetGameTime();
+						if(Duration < CurrentTime)
+							Duration = CurrentTime;
+						
 						StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect, false);
 						Apply_StatusEffect.RemoveStatus();
 						i = 0;
@@ -668,6 +675,7 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 	if(!HadBuffBefore)
 	{
 		Apply_StatusEffect.TimeUntillOver = GetGameTime() + Duration;
+		Apply_StatusEffect.DataForUse = CurrentData;
 	}
 	Apply_StatusEffect.ApplyStatusEffect_Internal(owner, victim, HadBuffBefore, ArrayPosition);
 	if(!HadBuffBefore)
@@ -9536,23 +9544,31 @@ void StatusEffects_HeartBroken()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Tiantui Star");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "★");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	data.DamageDealMulti			= 0.5;
-	data.Positive 					= false;
+	data.DamageDealMulti			= 0.0;
+	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.ElementalLogic				= true;
 	data.Slot						= 20; //0 means ignored
 	data.SlotPriority				= 1;
+	data.OnTakeDamage_DealFunc		= TiantuiDamageDealFunc;
+	data.OnBuffStarted				= TiantuiStart;
+	data.OnBuffStoreRefresh			= TiantuiStart;
+	data.OnBuffEndOrDeleted			= TiantuiEnd;
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Shin - Tiantui Star");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "心");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	data.DamageDealMulti			= 0.5;
-	data.Positive 					= false;
+	data.DamageDealMulti			= 0.0;
+	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.ElementalLogic				= true;
 	data.Slot						= 20; //0 means ignored
 	data.SlotPriority				= 2;
+	data.OnTakeDamage_DealFunc		= TiantuiShinDamageDealFunc;
+	data.OnBuffStarted				= TiantuiStart;
+	data.OnBuffStoreRefresh			= TiantuiStart;
+	data.OnBuffEndOrDeleted			= TiantuiEnd;
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Overheat");
@@ -9567,15 +9583,58 @@ void StatusEffects_HeartBroken()
 	data.OnTakeDamage_TakenFunc		= OverheatDamageTakenFunc;
 	StatusEffect_AddGlobal(data);
 }
-static float OverheatDamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
+static float TiantuiDamageDeal(int attacker, int victim, float basedamage, float bonus, float multi)
+{
+	if(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
+		return 0.0;
+	
+	float vel[3];
+	GetEntPropVector(attacker, Prop_Data, "m_vecVelocity", vel);
+	float speed1 = GetVectorLength(vel) + bonus;
+	if(HasSpecificBuff(attacker, "Overheat"))
+		bonus += 200.0;
+
+	GetEntPropVector(victim, Prop_Data, "m_vecVelocity", vel);
+	float speed2 = GetVectorLength(vel);
+
+	float diff = (speed1 - speed2) / 4000.0;
+	if(diff > 0.2)
+	{
+		diff = 0.2;
+	}
+	else if(diff < 0.075)
+	{
+		diff = 0.0;
+	}
+
+	return (basedamage * diff * multi) - (basedamage * 0.5);
+}
+static float TiantuiDamageDealFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
+{
+	return TiantuiDamageDeal(attacker, victim, basedamage, 100.0, 0.5);
+}
+static float TiantuiShinDamageDealFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
+{
+	return TiantuiDamageDeal(attacker, victim, basedamage, 300.0, 1.0);
+}
+static void TiantuiStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(victim <= MaxClients)
+		MakeBladeBloddy(victim, true);
+}
+static void TiantuiEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(victim <= MaxClients)
+		MakeBladeBloddy(victim, false);
+}
+static float OverheatDamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
 	float ratio = GetClientHealth(victim) / float(ReturnEntityMaxHealth(victim));
 	
-	float damagereturn = 0.0;
-	if(ratio < 1.0)
-		damagereturn -= basedamage * ratio * 0.5;
+	if(ratio > 1.0)
+		ratio = 1.0;
 	
-	return damagereturn;
+	return 0.5 + (ratio * 0.5);
 }
 
 int StaggerTypeTarget(int victim)
@@ -9860,21 +9919,18 @@ stock void StatusEffects_TremorDebuffAdd(int victim, int valuetoadd, float time)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_MasterStatusEffect.Slot == 18)
 		{
-			if(valuetoadd)
+			Apply_StatusEffect.DataForUse += float(valuetoadd);
+			if(Apply_StatusEffect.DataForUse > 99.0)
 			{
-				Apply_StatusEffect.DataForUse += float(valuetoadd);
-				if(Apply_StatusEffect.DataForUse > 99.0)
-				{
-					Apply_StatusEffect.DataForUse = 99.0;
-				}
-				else if(Apply_StatusEffect.DataForUse < 1.0)
-				{
-					Apply_StatusEffect.DataForUse = 1.0;
-				}
-
-				Apply_StatusEffect.TimeUntillOver += time;
-				E_AL_StatusEffects[victim].SetArray(i, Apply_StatusEffect);
+				Apply_StatusEffect.DataForUse = 99.0;
 			}
+			else if(Apply_StatusEffect.DataForUse < 1.0)
+			{
+				Apply_StatusEffect.DataForUse = 1.0;
+			}
+
+			Apply_StatusEffect.TimeUntillOver += time;
+			E_AL_StatusEffects[victim].SetArray(i, Apply_StatusEffect);
 
 			break;
 		}

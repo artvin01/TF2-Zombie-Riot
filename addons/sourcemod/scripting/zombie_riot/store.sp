@@ -793,32 +793,56 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 	if(weapon != -1)
 	{
 		if(StoreWeapon[weapon] > 0)
-		{
-			static Item item;
-			StoreItems.GetArray(StoreWeapon[weapon], item);
-#if defined ZR
-			if(!ignoreCooldown)
-				cooldown *= CooldownReductionAmount(client);
-#endif
-			
-			switch(what_slot)
-			{
-				case 1:
-					item.Cooldown1[client] = cooldown + GetGameTime();
-				
-				case 2:
-					item.Cooldown2[client] = cooldown + GetGameTime();
-				
-				case 3:
-					item.Cooldown3[client] = cooldown + GetGameTime();
-				
-				default:
-					ThrowError("Invalid slot %d", what_slot);
-			}
-			
-			StoreItems.SetArray(StoreWeapon[weapon], item);
-		}
+			Store_ApplyCooldownIndex(client, StoreWeapon[weapon], what_slot, cooldown, ignoreCooldown);
 	}
+}
+
+void Store_ApplyCooldownIndex(int client, int index, int what_slot, float cooldown, bool ignoreCooldown = false)
+{
+	static Item item;
+	StoreItems.GetArray(index, item);
+#if defined ZR
+	if(!ignoreCooldown)
+		cooldown *= CooldownReductionAmount(client);
+#endif
+	
+	switch(what_slot)
+	{
+		case 1:
+			item.Cooldown1[client] = cooldown + GetGameTime();
+		
+		case 2:
+			item.Cooldown2[client] = cooldown + GetGameTime();
+		
+		case 3:
+			item.Cooldown3[client] = cooldown + GetGameTime();
+		
+		default:
+			ThrowError("Invalid slot %d", what_slot);
+	}
+	
+	StoreItems.SetArray(index, item);
+}
+
+stock float Store_GetCooldownIndex(int client, int index, int what_slot)
+{
+	static Item item;
+	StoreItems.GetArray(index, item);
+
+	switch(what_slot)
+	{
+		case 1:
+			return item.Cooldown1[client] - GetGameTime();
+		
+		case 2:
+			return item.Cooldown2[client] - GetGameTime();
+		
+		case 3:
+			return item.Cooldown3[client] - GetGameTime();
+	}
+
+	ThrowError("Invalid slot %d", what_slot);
+	return 0.0;
 }
 
 void Store_OpenItemPage(int client)
@@ -6646,6 +6670,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		GemCrafter_Enable(client, entity);
 		VehicleFullAPC_WeaponEnable(client, entity);
 		Enable_ExploARWeapon(client, entity);
+		BurningThumb_Enable(client, entity);
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);
 	}

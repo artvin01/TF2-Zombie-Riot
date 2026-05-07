@@ -1,13 +1,15 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const int MaxAmmo = 18;			// From 12 in-limbus
-static const int ExtraAmmo = 2;			// Ammo supply cost
-static const float ChargeExtra = 10.0;	// Normal charge cooldown
-static const float BurningDamage = 4.0;	// Burning damage (1 potency)
-static const float TremorTime = 10.0;	// Tremor count time
+static const int MaxAmmo = 12;			// From 12 in-limbus
+static const int ExtraAmmo = 4;			// Ammo supply cost
+static const float ChargeExtra = 30.0;	// Normal charge cooldown
+static const float BurningDamage = 8.0;	// Burning damage (1 potency)
+static const float BurningTime = 3.0;	// Burning duration (1 count)
+static const float TremorTime = 5.0;	// Tremor count time
 static const int TremorStagger = 100;	// Stagger damage per Tremor
 static const float ScorchDamage = 50.0;	// Damage per scorch stack
+static const float RCooldown = 90.0;	// R ability cooldown
 
 enum BurningThumbEnum
 {
@@ -32,15 +34,17 @@ enum BurningThumbEnum
 	Tigerslayer_5
 }
 
+static int WeaponStore;
 static BurningThumbEnum LastMove[MAXPLAYERS+1];
 static BurningThumbEnum CurrentMove[MAXPLAYERS+1];
 static Handle ResetMove[MAXPLAYERS+1];
+static Handle WeaponTimer[MAXPLAYERS+1];
 static int WeaponLevel[MAXPLAYERS+1];
 static int AmmoSpent[MAXPLAYERS+1];
 static int TotalSpent[MAXPLAYERS+1];
 static bool ShinForm[MAXPLAYERS+1];
-static bool ChargeSpent[MAXPLAYERS+1];
-static bool HasCharged[MAXPLAYERS+1];
+static int ChargeSpent[MAXPLAYERS+1];
+static float HasCharged[MAXPLAYERS+1];
 
 void BurningThumb_WaveEnd()
 {
@@ -63,9 +67,17 @@ void BurningThumb_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BURNINGTHUMB)
 	{
+		WeaponStore = StoreWeapon[weapon];
 		CurrentMove[client] = NoMove;
 		WeaponLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
-		// TODO: Display ammo timer
+		
+		delete WeaponTimer[client];
+
+		DataPack pack;
+		WeaponTimer[client] = CreateDataTimer(2.0, UpdateAmmoHud, pack, TIMER_REPEAT);
+		pack.WriteCell(client);
+		pack.WriteCell(GetClientUserId(client));
+		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
 }
 
@@ -73,7 +85,8 @@ public void Weapon_BurningThumb_M1(int client, int weapon, bool crit, int slot)
 {
 	delete ResetMove[client];
 
-	float cooldown = 0.5;
+	bool final;
+	float cooldown = 0.8;
 	switch(LastMove[client])
 	{
 		case NoMove:
@@ -88,10 +101,10 @@ public void Weapon_BurningThumb_M1(int client, int weapon, bool crit, int slot)
 				// X -> Hit -> Slash1
 				CurrentMove[client] = Slash_1;
 			}
-			else
+			else if(LastMove[client] != Slash_3)
 			{
 				// X -> Miss -> X
-				cooldown = 0.75;
+				cooldown = 1.2;
 			}
 		}
 		case Slash_1:
@@ -105,22 +118,33 @@ public void Weapon_BurningThumb_M1(int client, int weapon, bool crit, int slot)
 			{
 				// Slash1 -> Hit -> Counter
 				CurrentMove[client] = Counter_2;
+				cooldown = 1.6;
+				final = true;
 			}
 			
 			// Slash1 -> Miss -> Slash1
 		}
 		case Slash_2:
 		{
-			if(ChargeSpent[client])
+			if(CurrentMove[client] != Slash_2)
 			{
-				// Slash2 -> Charge -> Slash3
-				CurrentMove[client] = Slash_3;
-				cooldown = 0.75;
-			}
-			else if(CurrentMove[client] != Slash_2)
-			{
-				// Slash2 -> Hit -> Slash1
-				CurrentMove[client] = Slash_1;
+				if(ChargeSpent[client])
+				{
+					// Slash2 -> Charge -> Slash3
+					CurrentMove[client] = Slash_3;
+				}
+				else
+				{
+					// Slash2 -> Hit -> Slash1
+					CurrentMove[client] = Slash_1;
+
+					if(HasCharged[client])
+					{
+						// Double slashed instead of triple, correctly put charge on cooldown now
+						Store_ApplyCooldownIndex(client, WeaponStore, 2, (HasCharged[client] - GetGameTime()) + ChargeExtra);
+						HasCharged[client] = 0.0;
+					}
+				}
 			}
 
 			// Slash2 -> Miss -> Slash2
@@ -141,30 +165,35 @@ public void Weapon_BurningThumb_M1(int client, int weapon, bool crit, int slot)
 		case Tanglecleaver_2:
 		{
 			CurrentMove[client] = Tanglecleaver_3;
-			cooldown = 0.75;
+			cooldown = 1.2;
 		}
 		case Tigerslayer_4:
 		{
 			CurrentMove[client] = Tigerslayer_5;
-			cooldown = 0.75;
+			cooldown = 1.2;
 		}
 		default:
 		{
 			CurrentMove[client] = ++LastMove[client];
-			cooldown = 0.75;
+			cooldown = 1.2;
 		}
 	}
 
-	SetWeaponCooldown(client, cooldown);
+	SetWeaponCooldown(weapon, cooldown);
 
-	cooldown += 1.5;
+	if(!final)
+		cooldown += 5.0;
+	
 	LastMove[client] = CurrentMove[client];
-	ResetCombo(client, weapon, cooldown, false);
+	ResetCombo(client, cooldown, final);
+	
+	if(WeaponTimer[client])
+		TriggerTimer(WeaponTimer[client], true);
 }
 
 public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
 {
-	if(dieingstate[client] != 0)
+	if(dieingstate[client] != 0 || TF2_IsPlayerInCondition(client, TFCond_LostFooting))
 		return;
 	
 	if(ChargeSpent[client])
@@ -175,43 +204,158 @@ public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
 		ShowSyncHudText(client, SyncHud_Notifaction, "Already charged, hit an enemy!");
 		return;
 	}
-
-	if(TotalWeaponAmmo(client, weapon) < 1)
-	{
-		// No charges left
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "Not enough ammo!");
-		return;
-	}
 	
-	if(Ability_Check_Cooldown(client, 2) > 0.0)
+	float cooldown = Store_GetCooldownIndex(client, WeaponStore, 2);
+	if(cooldown > 0.0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, 2));
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);
 		return;
 	}
 
-	Rogue_OnAbilityUse(client, weapon);
+	bool hasAmmo = TotalWeaponAmmo(client, weapon) > 0;
+	bool canUse = !hasAmmo;
+	int target = client;
 
-	// TODO: Charge Logic
-
-	if(LastMove[client] == NoMove)
+	if(!canUse)
 	{
-		LastMove[client] = Slash_1;
-	}
-	else if(LastMove[client] != Tigerslayer_0 && LastMove[client] != Tigerslayer_1)
-	{
-		ChargeSpent[client] = true;
-		SpendAmmo(client, weapon);
+		Handle trace;
+		b_LagCompNPC_No_Layers = true;
+		float vec[3];
+		StartLagCompensation_Base_Boss(client);
+		DoSwingTrace_Custom(trace, client, vec, 250.0, false, 60.0, true);
+
+		target = TR_GetEntityIndex(trace);
+		if(IsValidEnemy(client, target, true))
+		{
+			canUse = true;
+		}
+		else
+		{
+			// May hit the wall right now because it's fat
+			DoSwingTrace_Custom(trace, client, vec, 250.0, false, _, true);
+			target = TR_GetEntityIndex(trace);
+			if(IsValidEnemy(client, target, true))
+			{
+				canUse = true;
+			}
+		}
+
+		FinishLagCompensation_Base_boss();
+
+		delete trace;
 	}
 
-	// Reset combo, apply charge cooldown
-	TF2_AddCondition(client, TFCond_FocusBuff, 19.9);
-	HasCharged[client] = true;
-	ResetCombo(client, weapon, 5.0, true);
+	if(canUse)
+	{
+		Rogue_OnAbilityUse(client, weapon);
+
+		if(LastMove[client] == NoMove)
+			LastMove[client] = Slash_1;
+
+		if(hasAmmo)
+		{
+			f_AntiStuckPhaseThrough[client] = GetGameTime() + 1.2;
+			f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + 1.2;
+			ApplyStatusEffect(client, client, "Intangible", 1.2);
+
+			TF2_AddCondition(client, TFCond_LostFooting, 1.2);
+			TF2_AddCondition(client, TFCond_AirCurrent, 1.2);
+
+			DataPack pack = new DataPack();
+			pack.WriteCell(GetClientUserId(client));
+			pack.WriteCell(EntIndexToEntRef(target));
+			ThumbPush(pack, true);
+
+			if(LastMove[client] != Tigerslayer_0 && LastMove[client] != Tigerslayer_1)
+			{
+				ChargeSpent[client] = 2;
+				SpendAmmo(client, weapon);
+			}
+		}
+		else
+		{
+			ChargeSpent[client] = 1;
+		}
+
+		// Reset combo, apply charge cooldown
+		TF2_AddCondition(client, TFCond_FocusBuff, 29.9);
+		HasCharged[client] = GetGameTime();
+		ResetCombo(client, 5.0, true);
+
+		if(WeaponTimer[client])
+			TriggerTimer(WeaponTimer[client], true);
+	}
+	else
+	{
+		if(ResetMove[client])
+			ResetCombo(client, 5.0, false);
+		
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "No target in sight!");
+	}
+}
+
+static void ThumbPushFrame(DataPack pack)
+{
+	ThumbPush(pack, false);
+}
+
+static void ThumbPush(DataPack pack, bool first)
+{
+	pack.Reset();
+	int client = GetClientOfUserId(pack.ReadCell());
+	if(client && dieingstate[client] == 0 && f_AntiStuckPhaseThrough[client] > GetGameTime())
+	{
+		int target = EntRefToEntIndex(pack.ReadCell());
+		if(target != -1)
+		{
+			float power = 700.0;
+
+			float vec1[3], vec2[3];
+			WorldSpaceCenter(client, vec1);
+			WorldSpaceCenter(target, vec2);
+			MakeVectorFromPoints(vec1, vec2, vec1);
+			if(GetVectorLength(vec1, true) < 10000.0)
+			{
+				// In contact, drift away now
+				f_AntiStuckPhaseThrough[client] = GetGameTime() + 0.4;
+				f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + 0.4;
+				ApplyStatusEffect(client, client, "Intangible", 0.4);
+
+				TF2_AddCondition(client, TFCond_LostFooting, 0.4);
+				TF2_AddCondition(client, TFCond_AirCurrent, 0.4);
+			}
+			else
+			{
+				GetVectorAngles(vec1, vec1);
+				GetAngleVectors(vec1, vec1, NULL_VECTOR, NULL_VECTOR);
+
+				ScaleVector(vec1, power);
+
+				if(first)
+				{
+					vec1[2] += 150.0;    // a little boost to alleviate arcing issues
+				}
+				else
+				{
+					GetEntPropVector(client, Prop_Data, "m_vecVelocity", vec2);
+					vec1[2] = vec2[2];
+				}
+
+				TeleportEntity(client, _, _, vec1);
+
+				RequestFrame(ThumbPushFrame, pack);
+				return;
+			}
+		}
+	}
+
+	delete pack;
 }
 
 public void Weapon_BurningThumb_R(int client, int weapon, bool crit, int slot)
@@ -222,6 +366,7 @@ public void Weapon_BurningThumb_R(int client, int weapon, bool crit, int slot)
 		{
 			Rogue_OnAbilityUse(client, weapon);
 
+			AmmoSpent[client] = 0;
 			ShinForm[client] = true;
 			ApplyStatusEffect(client, client, TotalSpent[client] >= (MaxAmmo * 2 / 3) ? "Shin - Tiantui Star" : "Tiantui Star", 999.9);
 			
@@ -242,19 +387,22 @@ public void Weapon_BurningThumb_R(int client, int weapon, bool crit, int slot)
 		return;
 	}
 	
-	if(Ability_Check_Cooldown(client, slot) > 0.0)
+	float cooldown = Store_GetCooldownIndex(client, WeaponStore, 3);
+	if(cooldown > 0.0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);
 		return;
 	}
+
+	Store_ApplyCooldownIndex(client, WeaponStore, 3, RCooldown);
 	
 	Rogue_OnAbilityUse(client, weapon);
-	TF2_AddCondition(client, TFCond_CritOnKill, 19.9);
-	Ability_Apply_Cooldown(client, 2, 0.0, weapon, true);
-	ResetCombo(client, weapon, 5.0, false);
+	TF2_AddCondition(client, TFCond_CritOnKill, 29.9);
+	Store_ApplyCooldownIndex(client, WeaponStore, 2, 0.0, true);
+	ResetCombo(client, 5.0, false);
 
 	if(ShinForm[client] && TotalWeaponAmmo(client, weapon) > 0)
 	{
@@ -264,6 +412,9 @@ public void Weapon_BurningThumb_R(int client, int weapon, bool crit, int slot)
 	{
 		LastMove[client] = Tanglecleaver_0;
 	}
+	
+	if(WeaponTimer[client])
+		TriggerTimer(WeaponTimer[client], true);
 }
 
 void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
@@ -272,6 +423,9 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 	if(ShinForm[attacker])
 		damage *= 2.0;
 	
+	if(CheckInHud())
+		return;
+
 	bool resetCharge;
 	int power = 6;
 
@@ -289,7 +443,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			
 			InflictTremorPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 2 : 1);
 
-			if(ChargeSpent[attacker] || TotalWeaponAmmo(attacker, weapon) > 0)
+			if(ChargeSpent[attacker] == 2 || TotalWeaponAmmo(attacker, weapon) > 0)
 			{
 				if(WeaponLevel[attacker] > 0)
 				{
@@ -301,7 +455,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				InflictBurnPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 4 : 1);
 
 				resetCharge = true;
-				if(!ChargeSpent[attacker])
+				if(ChargeSpent[attacker] != 2)
 					SpendAmmo(attacker, weapon);
 			}
 			
@@ -320,7 +474,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 
 			InflictTremorCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 2 : 1);
 			
-			if(ChargeSpent[attacker] || TotalWeaponAmmo(attacker, weapon) > 0)
+			if(ChargeSpent[attacker] == 2 || TotalWeaponAmmo(attacker, weapon) > 0)
 			{
 				if(WeaponLevel[attacker] > 0)
 				{
@@ -331,7 +485,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				
 				InflictBurnCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 4 : 1);
 
-				if(!ChargeSpent[attacker])
+				if(ChargeSpent[attacker] != 2)
 					SpendAmmo(attacker, weapon);
 			}
 			
@@ -340,6 +494,10 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			
 			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
 			power += bonus;
+
+			float cooldown = 1.0;
+			SetWeaponCooldown(weapon, cooldown);
+			ResetCombo(attacker, cooldown, true);
 		}
 		case Counter_2:
 		{
@@ -364,7 +522,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 
 			InflictTremorPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 3 : 2);
 
-			if(ChargeSpent[attacker] || TotalWeaponAmmo(attacker, weapon) > 0)
+			if(ChargeSpent[attacker] == 2 || TotalWeaponAmmo(attacker, weapon) > 0)
 			{
 				bonus += ShinForm[attacker] ? 2 : 1;
 				if(WeaponLevel[attacker] > 2)
@@ -373,7 +531,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				InflictBurnPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 5 : 2);
 
 				resetCharge = true;
-				if(!ChargeSpent[attacker])
+				if(ChargeSpent[attacker] != 2)
 					SpendAmmo(attacker, weapon);
 			}
 
@@ -390,7 +548,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			
 			InflictTremorCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 3 : 2);
 			
-			if(ChargeSpent[attacker] || TotalWeaponAmmo(attacker, weapon) > 0)
+			if(ChargeSpent[attacker] == 2 || TotalWeaponAmmo(attacker, weapon) > 0)
 			{
 				bonus += ShinForm[attacker] ? 2 : 1;
 				if(WeaponLevel[attacker] > 2)
@@ -398,7 +556,8 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				
 				InflictBurnCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 5 : 2);
 
-				if(!ChargeSpent[attacker])
+				resetCharge = true;
+				if(ChargeSpent[attacker] != 2)
 					SpendAmmo(attacker, weapon);
 			}
 
@@ -413,7 +572,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			power = WeaponLevel[attacker] > 2 ? 17 : 16;
 			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1) * 3;
 
-			bool ammo = (ChargeSpent[attacker] || TotalWeaponAmmo(attacker, weapon) > 0);
+			bool ammo = (ChargeSpent[attacker] == 2 || TotalWeaponAmmo(attacker, weapon) > 0);
 			if(ammo)
 			{
 				bonus += ShinForm[attacker] ? 2 : 1;
@@ -422,7 +581,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				
 				damage *= WeaponLevel[attacker] > 2 ? 1.5 : 1.2;
 
-				if(!ChargeSpent[attacker])
+				if(ChargeSpent[attacker] != 2)
 					SpendAmmo(attacker, weapon);
 			}
 			
@@ -439,7 +598,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 
 			float cooldown = 2.0;
 			SetWeaponCooldown(weapon, cooldown);
-			ResetCombo(attacker, weapon, cooldown, true);
+			ResetCombo(attacker, cooldown, true);
 			TF2_RemoveCondition(attacker, TFCond_CritOnKill);
 		}
 		case Tigerslayer_1:
@@ -480,7 +639,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			power = WeaponLevel[attacker] > 2 ? 12 : 11;
 			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1) * 3;
 
-			if(ChargeSpent[attacker] || TotalWeaponAmmo(attacker, weapon) > 0)
+			if(ChargeSpent[attacker] == 2 || TotalWeaponAmmo(attacker, weapon) > 0)
 			{
 				bonus += ShinForm[attacker] ? 2 : 1;
 				if(WeaponLevel[attacker] > 2)
@@ -489,7 +648,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				InflictBurnPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 5 : 2);
 
 				resetCharge = true;
-				if(!ChargeSpent[attacker])
+				if(ChargeSpent[attacker] != 2)
 					SpendAmmo(attacker, weapon);
 			}
 			
@@ -504,7 +663,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			power = WeaponLevel[attacker] > 2 ? 15 : 14;
 			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1) * 4;
 
-			if(ChargeSpent[attacker] || TotalWeaponAmmo(attacker, weapon) > 0)
+			if(ChargeSpent[attacker] == 2 || TotalWeaponAmmo(attacker, weapon) > 0)
 			{
 				bonus += ShinForm[attacker] ? 2 : 1;
 				if(WeaponLevel[attacker] > 2)
@@ -513,7 +672,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				InflictBurnCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 5 : 2);
 
 				resetCharge = true;
-				if(!ChargeSpent[attacker])
+				if(ChargeSpent[attacker] != 2)
 					SpendAmmo(attacker, weapon);
 			}
 			
@@ -528,14 +687,14 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			power = WeaponLevel[attacker] > 2 ? 18 : 17;
 			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1) * 5;
 
-			bool ammo = (ChargeSpent[attacker] || TotalWeaponAmmo(attacker, weapon) > 0);
+			bool ammo = (ChargeSpent[attacker] == 2 || TotalWeaponAmmo(attacker, weapon) > 0);
 			if(ammo)
 			{
 				bonus += ShinForm[attacker] ? 2 : 1;
 				if(WeaponLevel[attacker] > 2)
 					damage *= ShinForm[attacker] ? 1.3 : 1.1;
 				
-				if(!ChargeSpent[attacker])
+				if(ChargeSpent[attacker] != 2)
 					SpendAmmo(attacker, weapon);
 			}
 			
@@ -552,7 +711,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 
 			float cooldown = 2.0;
 			SetWeaponCooldown(weapon, cooldown);
-			ResetCombo(attacker, weapon, cooldown, true);
+			ResetCombo(attacker, cooldown, true);
 			TF2_RemoveCondition(attacker, TFCond_CritOnKill);
 		}
 		default:
@@ -577,14 +736,88 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 	
 	damage *= float(power) / 7.0;
 
-	if(resetCharge)
+	CurrentMove[attacker] = NoMove;
+	TF2_RemoveCondition(attacker, TFCond_FocusBuff);
+
+	if(resetCharge && HasCharged[attacker])
 	{
 		ChargeSpent[attacker] = false;
-		TF2_RemoveCondition(attacker, TFCond_FocusBuff);
-		Ability_Apply_Cooldown(attacker, 2, 0.0, weapon, true);
+		Store_ApplyCooldownIndex(attacker, WeaponStore, 2, 0.0, true);
 	}
 
-	CurrentMove[attacker] = NoMove;
+	if(WeaponTimer[attacker])
+		TriggerTimer(WeaponTimer[attacker], true);
+}
+
+static Action UpdateAmmoHud(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	if(GetClientOfUserId(pack.ReadCell()) == client)
+	{
+		int weapon = EntRefToEntIndex(pack.ReadCell());
+		if(weapon != -1)
+		{
+			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
+			{
+				char combo[64] = " ";
+
+				BurningThumbEnum move = ResetMove[client] ? LastMove[client] : NoMove;
+				switch(move)
+				{
+					case Slash_1:
+					{
+						if(CurrentMove[client] != Slash_1)
+						{
+							if(ChargeSpent[client])
+							{
+								strcopy(combo, sizeof(combo), "Triple Slash - Blast: 1 / 3");
+							}
+							else
+							{
+								strcopy(combo, sizeof(combo), "I'm Burning Up: 1 / 2");
+							}
+						}
+					}
+					case Slash_2, Slash_3:
+					{
+						BurningThumbEnum index = move - Slash_1;
+						if(CurrentMove[client] != LastMove[client])
+							index++;
+						
+						FormatEx(combo, sizeof(combo), "Triple Slash - Blast: %d / 3", index);
+					}
+					case Counter_2:
+					{
+						strcopy(combo, sizeof(combo), "I'm Burning Up: 2 / 2");
+					}
+					case Tanglecleaver_0, Tanglecleaver_1, Tanglecleaver_2, Tanglecleaver_3:
+					{
+						BurningThumbEnum index = move - Tanglecleaver_1;
+						if(CurrentMove[client] != LastMove[client])
+							index++;
+						
+						FormatEx(combo, sizeof(combo), "Tanglecleaver: %d / 3", index);
+					}
+					case Tigerslayer_0, Tigerslayer_1, Tigerslayer_2, Tigerslayer_3, Tigerslayer_4, Tigerslayer_5:
+					{
+						BurningThumbEnum index = move - Tigerslayer_1;
+						if(CurrentMove[client] != LastMove[client])
+							index++;
+						
+						FormatEx(combo, sizeof(combo), "Savage Tigerslayer's Perfected Flurry of Blades: %d / 5", index);
+					}
+				}
+
+				PrintHintText(client, "%sTigermark Rounds: %d\n%s", ShinForm[client] ? "Savage " : "", TotalWeaponAmmo(client, weapon), combo);
+			}
+			
+			return Plugin_Continue;
+		}
+	}
+	
+	WeaponTimer[client] = null;
+	return Plugin_Stop;
 }
 
 static void InflictBurnPotency(int victim, int attacker, int weapon, int value)
@@ -594,7 +827,7 @@ static void InflictBurnPotency(int victim, int attacker, int weapon, int value)
 	if(WeaponLevel[attacker] > 2 && ShinForm[attacker] && TotalWeaponAmmo(attacker, weapon) > 0)
 		potency += 2;
 	
-	float duration = 3.0 - (IgniteFor[victim] * 0.5);
+	float duration = BurningTime - (IgniteFor[victim] * 0.5);
 	if(duration < 0.0)
 		duration = 0.0;
 	
@@ -609,7 +842,7 @@ static void InflictBurnCount(int victim, int attacker, int weapon, int value)
 	if(WeaponLevel[attacker] > 2 && ShinForm[attacker] && TotalWeaponAmmo(attacker, weapon) > 0)
 		potency += 2;
 
-	NPC_Ignite(victim, attacker, potency * 3.0, weapon, BurningDamage);
+	NPC_Ignite(victim, attacker, potency * BurningTime, weapon, BurningDamage);
 	PrintToConsole(attacker, "> Burn Extend +%d", potency);
 }
 
@@ -666,12 +899,16 @@ stock void InflictTremorBurst(int victim, int attacker, int decrease, int minreq
 	int amount = StatusEffects_TremorDebuffGet(victim, timeleft, name);
 	if(amount > 0 && timeleft >= (minrequire * TremorTime))
 	{
-		Elemental_AddStaggerDamage(victim, attacker, amount * TremorStagger);
+		DataPack pack = new DataPack();
+		pack.WriteCell(EntIndexToEntRef(victim));
+		pack.WriteCell(EntIndexToEntRef(attacker));
+		pack.WriteCell(amount * TremorStagger);
+		RequestFrame(StaggerDamageFrame, pack);
 		PrintToConsole(attacker, "> Tremor Burst x%d", name, amount);
 
 		if(StrContains(name, "Scorch", false) != -1)
 		{
-			amount += BurnStacks(victim);
+			amount += BurnStacks(victim, 2);
 			SDKHooks_TakeDamage(victim, attacker, attacker, amount * ScorchDamage, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 			PrintToConsole(attacker, "> %s Burst x%d", name, amount);
 		}
@@ -679,6 +916,20 @@ stock void InflictTremorBurst(int victim, int attacker, int decrease, int minreq
 		if(decrease)
 			StatusEffects_TremorDebuffAdd(victim, 0, -(decrease * TremorTime));
 	}
+}
+
+static void StaggerDamageFrame(DataPack pack)
+{
+	pack.Reset();
+	int victim = EntRefToEntIndex(pack.ReadCell());
+	if(victim != -1)
+	{
+		int attacker = EntRefToEntIndex(pack.ReadCell());
+		if(attacker != -1)
+			Elemental_AddStaggerDamage(victim, attacker, pack.ReadCell());
+	}
+
+	delete pack;
 }
 
 stock void ConvertTremorType(int victim, int attacker, const char[] name)
@@ -704,13 +955,18 @@ static int BonusTremorBurn(int victim, int stackper, int maxbonus)
 	return bonus;
 }
 
-static int BurnStacks(int victim)
+static int BurnStacks(int victim, int decrease = 0)
 {
 	int amount = 0;
 	
-	if(IgniteFor[victim] > 2)
+	if(IgniteFor[victim] > 0)
 	{
-		IgniteFor[victim] -= 2;
+		if(decrease)
+		{
+			IgniteFor[victim] -= decrease;
+			if(IgniteFor[victim] < 0)
+				IgniteFor[victim] = 0;
+		}
 
 		amount = RoundFloat(BurnDamage[victim] / 48.0);
 		if(amount > 99)
@@ -743,48 +999,56 @@ static void SpendAmmo(int client, int weapon)
 	}
 
 	TotalSpent[client]++;
-
-	if(ShinForm[client])
-	{
-		if(AmmoSpent[client] >= total)
-			ApplyStatusEffect(client, client, "Overheat", 999.9);
-		
-		if(TotalSpent[client] >= total)
-			ApplyStatusEffect(client, client, "Shin - Tiantui Star", 999.9);
-	}
 }
 
-static void ResetCombo(int client, int weapon, float cooldown, bool charge)
+static void ResetCombo(int client, float cooldown, bool charge)
 {
 	delete ResetMove[client];
 	ResetMove[client] = CreateTimer(cooldown, ResetMoveTimer, client);
 
-	Ability_Apply_Cooldown(client, 1, cooldown, weapon, true);
+	Store_ApplyCooldownIndex(client, WeaponStore, 1, cooldown, true);
 	if(charge)
 	{
 		if(HasCharged[client])
 		{
-			Ability_Apply_Cooldown(client, 2, cooldown + ChargeExtra, weapon);
+			Store_ApplyCooldownIndex(client, WeaponStore, 2, (HasCharged[client] - GetGameTime()) + ChargeExtra);
 		}
-		else
+		else if(Store_GetCooldownIndex(client, WeaponStore, 2) < cooldown)
 		{
-			Ability_Apply_Cooldown(client, 2, cooldown, weapon, true);
+			Store_ApplyCooldownIndex(client, WeaponStore, 2, cooldown, true);
 		}
 	}
 }
 
 static Action ResetMoveTimer(Handle timer, int client)
 {
-	ResetMove[client] = null;
-	LastMove[client] = NoMove;
-	ChargeSpent[client] = false;
-	HasCharged[client] = false;
-
 	if(IsClientInGame(client) && IsPlayerAlive(client))
 	{
 		TF2_RemoveCondition(client, TFCond_FocusBuff);
 		TF2_RemoveCondition(client, TFCond_CritOnKill);
+
+		if(HasCharged[client])
+			Store_ApplyCooldownIndex(client, WeaponStore, 2, (HasCharged[client] - GetGameTime()) + ChargeExtra);
+
+		if(ShinForm[client])
+		{
+			int total = MaxAmmo * 2 / 3;
+
+			if(AmmoSpent[client] >= total)
+				ApplyStatusEffect(client, client, "Overheat", 999.9);
+			
+			if(TotalSpent[client] >= total)
+				ApplyStatusEffect(client, client, "Shin - Tiantui Star", 999.9);
+		}
 	}
+
+	ResetMove[client] = null;
+	LastMove[client] = NoMove;
+	ChargeSpent[client] = false;
+	HasCharged[client] = 0.0;
+	
+	if(WeaponTimer[client])
+		TriggerTimer(WeaponTimer[client], true);
 
 	return Plugin_Continue;
 }
@@ -828,6 +1092,9 @@ static int TotalWeaponAmmo(int client, int weapon)
 		if(type && type < Ammo_MAX)
 			total += GetAmmo(client, type) / AmmoData[type][1] / ExtraAmmo;
 	}
+
+	if(CvarInfiniteCash.BoolValue)
+		total = 99;
 
 	return total;
 }

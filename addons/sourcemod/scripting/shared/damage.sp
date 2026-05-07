@@ -1437,6 +1437,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
             if(!CheckInHud())
 				return Brick_NPCTakeDamage_Do(attacker, inflictor, victim, damage, weapon, damagetype);
 		}
+		case WEAPON_BURNINGTHUMB:
+		{
+			BurningThumb_NPCTakeDamage(victim, attacker, damage, weapon);
+		}
 	}
 #endif
 

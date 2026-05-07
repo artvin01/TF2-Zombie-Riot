@@ -2941,6 +2941,7 @@ void ReviveAll(bool raidspawned = false,
 		}
 	}
 	
+	BurningThumb_WaveEnd();
 	Music_EndLastmann();
 	CheckAlivePlayers();
 	if(Dungeon_Mode() && !Const2_DontRespawnBuildings)
