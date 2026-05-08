@@ -3,7 +3,7 @@
 
 static const int MaxAmmo = 12;			// From 12 in-limbus
 static const int ExtraAmmo = 4;			// Ammo supply cost
-static const float ChargeExtra = 30.0;	// Normal charge cooldown
+static const float ChargeExtra = 15.0;	// Normal charge cooldown
 static const float BurningDamage = 8.0;	// Burning damage (1 potency)
 static const float BurningTime = 3.0;	// Burning duration (1 count)
 static const float TremorTime = 5.0;	// Tremor count time
@@ -254,7 +254,7 @@ public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
 		if(LastMove[client] == NoMove)
 			LastMove[client] = Slash_1;
 
-		if(hasAmmo)
+		if(hasAmmo && !(GetClientButtons(client) & IN_DUCK))
 		{
 			Burning_Thumb_ApplyParticle(client, false, 0.5);
 			f_AntiStuckPhaseThrough[client] = GetGameTime() + 1.2;
