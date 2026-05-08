@@ -45,6 +45,7 @@ static int TotalSpent[MAXPLAYERS+1];
 static bool ShinForm[MAXPLAYERS+1];
 static int ChargeSpent[MAXPLAYERS+1];
 static float HasCharged[MAXPLAYERS+1];
+static int PlayerChargeParticle[MAXPLAYERS+1];
 
 void BurningThumb_WaveEnd()
 {
@@ -63,22 +64,19 @@ void BurningThumb_WaveEnd()
 	}
 }
 
-void BurningThumb_Enable(int client, int weapon)
+public void BurningThumb_Enable(int client, int weapon)
 {
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BURNINGTHUMB)
-	{
-		WeaponStore = StoreWeapon[weapon];
-		CurrentMove[client] = NoMove;
-		WeaponLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
-		
-		delete WeaponTimer[client];
+	WeaponStore = StoreWeapon[weapon];
+	CurrentMove[client] = NoMove;
+	WeaponLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
+	
+	delete WeaponTimer[client];
 
-		DataPack pack;
-		WeaponTimer[client] = CreateDataTimer(2.0, UpdateAmmoHud, pack, TIMER_REPEAT);
-		pack.WriteCell(client);
-		pack.WriteCell(GetClientUserId(client));
-		pack.WriteCell(EntIndexToEntRef(weapon));
-	}
+	DataPack pack;
+	WeaponTimer[client] = CreateDataTimer(2.0, UpdateAmmoHud, pack, TIMER_REPEAT);
+	pack.WriteCell(client);
+	pack.WriteCell(GetClientUserId(client));
+	pack.WriteCell(EntIndexToEntRef(weapon));
 }
 
 public void Weapon_BurningThumb_M1(int client, int weapon, bool crit, int slot)
@@ -193,6 +191,7 @@ public void Weapon_BurningThumb_M1(int client, int weapon, bool crit, int slot)
 
 public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
 {
+	Burning_Thumb_ApplyParticle(client, false, 0.5);
 	if(dieingstate[client] != 0 || TF2_IsPlayerInCondition(client, TFCond_LostFooting))
 		return;
 	
@@ -257,6 +256,7 @@ public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
 
 		if(hasAmmo)
 		{
+			Burning_Thumb_ApplyParticle(client, false, 0.5);
 			f_AntiStuckPhaseThrough[client] = GetGameTime() + 1.2;
 			f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + 1.2;
 			ApplyStatusEffect(client, client, "Intangible", 1.2);
@@ -1097,4 +1097,40 @@ static int TotalWeaponAmmo(int client, int weapon)
 		total = 99;
 
 	return total;
+}
+
+
+void Burning_Thumb_ApplyParticle(int client, bool Remove = false, float Duration = 0.5)
+{
+	if(IsValidEntity(PlayerChargeParticle[client]))
+		RemoveEntity(PlayerChargeParticle[client]);
+
+	if(Remove)
+		return;
+
+	int viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(!IsValidEntity(viewmodelModel))
+		return;
+		
+	float flBasePos[3]; // original
+	float flAng[3]; // original
+
+	GetAttachment(viewmodelModel, "effect_hand_r", flBasePos, flAng);
+	flAng[1] -= 90.0;
+
+	float vecSwingForward[3];
+	float vecSwingEnd[3];
+	GetAngleVectors(flAng, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
+	for(int i = 1; i <= 5 ; i++)
+	{
+		vecSwingEnd[0] = flBasePos[0] + vecSwingForward[0] * (15.0 * i);
+		vecSwingEnd[1] = flBasePos[1] + vecSwingForward[1] * (15.0 * i);
+		vecSwingEnd[2] = flBasePos[2] + vecSwingForward[2] * (15.0 * i);
+		float PosToForward[3]; // original
+		PosToForward[0] = vecSwingEnd[0] - flBasePos[0];
+		PosToForward[1] = vecSwingEnd[1] - flBasePos[1];
+		PosToForward[2] = vecSwingEnd[2] - flBasePos[2];
+		int particle = ParticleEffectAt(PosToForward, "raygun_projectile_red_crit", Duration);
+		SetParent(viewmodelModel, particle, "effect_hand_r", PosToForward);
+	}
 }
