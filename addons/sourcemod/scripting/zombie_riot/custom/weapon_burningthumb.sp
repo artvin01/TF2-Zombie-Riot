@@ -534,7 +534,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			if(WeaponLevel[attacker] > 0)
 				bonus = BonusTremorBurn(victim, 4, WeaponLevel[attacker] > 2 ? 4 : 2);
 
-			InflictTremorCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 2 : 1, _, true);
+			InflictTremorCount(victim, attacker, WeaponLevel[attacker] > 2 ? 2 : 1, _, true);
 			
 			if(ChargeSpent[attacker] == 2 || TotalWeaponAmmo(attacker, weapon) > 0)
 			{
@@ -569,7 +569,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			power = WeaponLevel[attacker] > 2 ? 13 : 10;
 			int bonus = BonusTremorBurn(victim, 4, WeaponLevel[attacker] > 2 ? 2 : 1);
 
-			InflictTremorCount(victim, attacker, weapon, 1);
+			InflictTremorCount(victim, attacker, 1);
 
 			//PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
 			power += bonus;
@@ -608,7 +608,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			power = WeaponLevel[attacker] > 2 ? 13 : 12;
 			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1) * 2;
 			
-			InflictTremorCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 3 : 2, _, true);
+			InflictTremorCount(victim, attacker, WeaponLevel[attacker] > 2 ? 3 : 2, _, true);
 			
 			if(ChargeSpent[attacker] == 2 || TotalWeaponAmmo(attacker, weapon) > 0)
 			{
@@ -686,7 +686,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			power = WeaponLevel[attacker] > 2 ? 9 : 8;
 			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1) * 2;
 
-			InflictTremorCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 3 : 2, _, true);
+			InflictTremorCount(victim, attacker, WeaponLevel[attacker] > 2 ? 3 : 2, _, true);
 
 			resetCharge = true;
 			
@@ -958,7 +958,7 @@ stock void InflictTremorPotency(int victim, int attacker, int weapon, int value,
 	}
 }
 
-stock void InflictTremorCount(int victim, int attacker, int weapon, int value, const char[] name = "Tremor", bool console = false)
+stock void InflictTremorCount(int victim, int attacker, int value, const char[] name = "Tremor", bool console = false)
 {
 	int potency = value;
 
