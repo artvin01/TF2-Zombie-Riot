@@ -1080,7 +1080,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 14:
 		{
-			CPrintToChatAll("{purple}UNSPEAKABLE! {gold}- {red}Does he actually speak though?");
+			CPrintToChatAll("{purple}UNSPEAKABLE! {gold}- {red}Does he actually speak though? *note* he does.");
 		}
 		case 15:
 		{
