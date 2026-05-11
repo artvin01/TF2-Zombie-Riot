@@ -239,7 +239,7 @@ methodmap AlliedHeartbrokenVisualiserAbility < CClotBody
 				npc.SetCycle(0.0);
 				npc.SetPlaybackRate(0.0);
 				int Layer = npc.AddGestureViaSequence("Melee_Crouch_Swing");
-				npc.SetLayerCycle(Layer, 0.347);
+				npc.SetLayerCycle(Layer, 0.347); 
 				npc.SetLayerPlaybackRate(Layer, 0.0);
 
 				npc.m_flTimeUntillDone = GetGameTime() + (1.25 * npc.f_SpeedAcelerateAnim);

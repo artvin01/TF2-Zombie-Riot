@@ -756,6 +756,11 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 		//	if(RaidbossIgnoreBuildingsLogic(1))
 		//		damage *= 2.0;
 //
+			DataPack pack = new DataPack();
+			RequestFrame(BurningThumb_ExplodeDamageDoNow, pack);
+			pack.WriteCell(EntIndexToEntRef(attacker));
+			pack.WriteCell(EntIndexToEntRef(weapon));
+			pack.WriteFloatArray(PosDo, sizeof(PosDo));
 		//	Explode_Logic_Custom(damage*2.0, attacker, attacker, weapon, position, 250.0, 0.75, _, _, _, _, _, Ground_Slam);
 		}
 		default:
@@ -1107,7 +1112,44 @@ static void SetWeaponCooldown(int weapon, float &cooldown)
 	pack.WriteCell(EntIndexToEntRef(weapon));
 	pack.WriteFloat(cooldown);
 }
+static void BurningThumb_ExplodeDamageDoNow(DataPack pack)
+{
+	pack.Reset();
 
+	int attacker = EntRefToEntIndex(pack.ReadCell());
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(weapon != -1)
+	{
+		float Pos[3];
+		pack.ReadFloatArray(Pos, sizeof(Pos));
+		
+		float DamageBoomDo = 65.0;
+		DamageBoomDo *= WeaponDamageAttributeMultipliers(weapon);
+		DamageBoomDo *= 3.0;
+
+		Explode_Logic_Custom(DamageBoomDo, attacker, attacker, weapon, Pos, 250.0, 0.75, _, _, _, _, _, BurningThumb_FinalBoom);
+	}
+
+	delete pack;
+}
+
+float BurningThumb_FinalBoom(int entity, int victim, float damage, int weapon)
+{
+	if(entity == victim)
+		return 0.0;
+
+	float VecMe[3]; WorldSpaceCenter(entity, VecMe);
+	float VecEnemy[3]; WorldSpaceCenter(victim, VecEnemy);
+
+	float AngleVec[3];
+	MakeVectorFromPoints(VecMe, VecEnemy, AngleVec);
+	GetVectorAngles(AngleVec, AngleVec);
+
+	AngleVec[0] = -45.0;
+	SensalCauseKnockback(attacker, victim, 1.25, false, AngleVec);
+  
+	return damage;
+}
 static void ApplyWeaponCooldown(DataPack pack)
 {
 	pack.Reset();
