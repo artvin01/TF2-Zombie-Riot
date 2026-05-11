@@ -1,5 +1,7 @@
 # Parse all items, weapons and their paps.
 import vdf, os, subprocess, json
+from gamedata import modelmapping
+
 def read(filename):
     try:
         # Windows-specific fix to: https://stackoverflow.com/questions/9233027/unicodedecodeerror-charmap-codec-cant-decode-byte-x-in-position-y-character
@@ -50,40 +52,27 @@ def decompile_model(path):
 
 class Weapon:
     def __init__(self, weapon_name, weapon_data):
-        self._weapon_name,self.name=weapon_name,weapon_name
-        self._weapon_data=weapon_data
         if "model_weapon_override" in weapon_data:
             decompile_model(weapon_data["model_weapon_override"])
-        self.get_paps_html()
-                    
-    def get_paps_html(self):
-        """
-        pap_#_pappaths define how many paps you can choose from below ("2" paths on "PaP 1" allows you to choose between "PaP 2" and "PaP 3")
-        pap_#_papskip Skips a number of paps to choose ("1" skip on "PaP 1" allows you to choose "PaP 3" instead)
-        """
-        pap_idx = 0
-        pap_html = ""
-        def item_block(parent_pap,idx):
-            for i in range(int(parent_pap.pappaths)):
-                idx += 1
-                pd = WeaponPap(self._weapon_name,self._weapon_data,idx)
-        
-        if "pappaths" in self._weapon_data: init_pap_paths = self._weapon_data["pappaths"]
-        else: init_pap_paths = 1
-        pap_html = item_block(WeaponPap_Dummy(init_pap_paths), pap_idx)
+        elif "classname" in weapon_data:
+            decompile_model(modelmapping[weapon_data["classname"]])
 
-class WeaponPap:
-    def __init__(self, weapon_name, weapon_data, idx):
-        pap_key = f"pap_{idx}_"
-        #print(f"Parsing {weapon_name} {pap_key}","weaponpap")
-        if f"{pap_key}model_weapon_override" in weapon_data:
-            decompile_model(weapon_data[f"{pap_key}model_weapon_override"])
+        # Flat traversal since structure isn't needed in the decompilation process
+        pap_idx = 1
+        while pap_idx > 0:
+            pap_key = f"pap_{pap_idx}_"
+            if f"{pap_key}desc" not in weapon_data:
+                if f"{pap_key}model_weapon_override" in weapon_data:
+                    if weapon_data[f"{pap_key}model_weapon_override"] != "models/empty.mdl":
+                        raise Exception(f"Weapon has model override but no description! {weapon_name} -> {pap_key}")
+                pap_idx = -1
+            else:
+                if f"{pap_key}model_weapon_override" in weapon_data:
+                    decompile_model(weapon_data[f"{pap_key}model_weapon_override"])
+                elif f"{pap_key}classname" in weapon_data:
+                    decompile_model(modelmapping[weapon_data[f"{pap_key}classname"]])
+                pap_idx += 1
 
-class WeaponPap_Dummy:
-    def __init__(self, init_pap_paths):
-        self.papskip = "0"
-        self.pappaths = init_pap_paths
-    
 class GenericItem:
     def __init__(self, item_data):
         self.is_item_category="enhanceweapon_click" not in item_data and "cost" not in item_data

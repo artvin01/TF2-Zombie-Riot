@@ -1,6 +1,6 @@
 # Parse all items, weapons and their paps.
 import util, vdf, os, subprocess, json, f3d
-#from modules.gamedata import items_game
+from modules.gamedata import modelmapping
 
 # Patch pyassimp to prevent null pointer error
 if os.path.isdir("venv/lib/python3.14/site-packages/pyassimp/"):
@@ -112,8 +112,11 @@ class Weapon:
                 elif os.path.isfile(f"tf_decompiled/{pure_filename}.json"): # only generate icon if decompiled data exists
                     self.icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename, prefix="tf_")
                 else:
-                    util.log(f"Skipping thumbnail generation: bodygroup mappings missing for {pure_filename}","WARNING")
-                    
+                    util.log(f"[Weapon] Skipping thumbnail generation: bodygroup mappings missing for {pure_filename}","WARNING")
+        elif "classname" in weapon_data:
+            path = modelmapping[weapon_data["classname"]]
+            pure_filename = path.split("/")[-1].split(".")[0]
+            self.icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename,prefix="tf_")
 
 
     def to_html(self,wcfghidden=True,wtags=None):
@@ -217,7 +220,11 @@ class WeaponPap:
                     elif os.path.isfile(f"tf_decompiled/{pure_filename}.json"): # only generate icon if decompiled data exists
                         self.icon = generate_weapon_icon(weapon_data,self.name,pure_filename, prefix="tf_", bodygroup_prefix=pap_key)
                     else:
-                        util.log(f"Skipping thumbnail generation: bodygroup mappings missing for {pure_filename}","WARNING")
+                        util.log(f"[WeaponPap] Skipping thumbnail generation: bodygroup mappings missing for {pure_filename}","WARNING")
+            elif f"{pap_key}classname" in weapon_data:
+                path = modelmapping[weapon_data[f"{pap_key}classname"]]
+                pure_filename = path.split("/")[-1].split(".")[0]
+                self.icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename,prefix="tf_",bodygroup_prefix=pap_key)
 
         self.valid = key_desc in weapon_data
 
