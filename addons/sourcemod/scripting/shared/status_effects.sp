@@ -8560,31 +8560,39 @@ void Const2Modifs_Asexual_End(int victim, StatusEffect Apply_MasterStatusEffect,
 	float pos[3]; GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", pos);
 	pos[2] += 50.0;
 	float ang[3]; GetEntPropVector(victim, Prop_Data, "m_angRotation", ang);
-	int summon = NPC_CreateById(i_NpcInternalId[victim], -1, pos, ang, GetTeam(victim));
-	if(summon > MaxClients)
+	int team = GetTeam(victim);
+	if(b_thisNpcIsARaid[victim])
 	{
-#if defined ZR
-		if(b_thisNpcIsARaid[summon])
-			WaveStart_SubWaveStart(GetGameTime());	//due to lots and lots of time
-#endif
-		fl_Extra_Damage[summon] = fl_Extra_Damage[victim];
-		fl_Extra_Speed[summon] = fl_Extra_Speed[victim];
-		fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[victim];
-		fl_Extra_MeleeArmor[summon] = fl_Extra_MeleeArmor[victim];
-		SetEntProp(summon, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
-		SetEntProp(summon, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
-		float flPos[3];
-		flPos = pos;
-		flPos[2] += 300.0;
-		flPos[0] += GetRandomInt(0,1) ? GetRandomFloat(-200.0, -100.0) : GetRandomFloat(100.0, 200.0);
-		flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-200.0, -100.0) : GetRandomFloat(200.0, 200.0);
-		CClotBody npc = view_as<CClotBody>(summon);
-		npc.SetVelocity({0.0,0.0,0.0});
-		PluginBot_Jump(summon, flPos);
-		ApplyStatusEffect(summon, summon, "Unstoppable Force", 2.0);
-#if defined ZR
-		ZRModifs_GiveRandomPrefix(summon);
-#endif
+		team = 999;
+	}
+	for(int i; i<2; i++)
+	{
+		int summon = NPC_CreateById(i_NpcInternalId[victim], -1, pos, ang, team);
+		if(summon > MaxClients)
+		{
+	#if defined ZR
+			if(b_thisNpcIsARaid[summon])
+				WaveStart_SubWaveStart(GetGameTime());	//due to lots and lots of time
+	#endif
+			fl_Extra_Damage[summon] = fl_Extra_Damage[victim];
+			fl_Extra_Speed[summon] = fl_Extra_Speed[victim];
+			fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[victim];
+			fl_Extra_MeleeArmor[summon] = fl_Extra_MeleeArmor[victim];
+			SetEntProp(summon, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
+			SetEntProp(summon, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
+			float flPos[3];
+			flPos = pos;
+			flPos[2] += 300.0;
+			flPos[0] += GetRandomInt(0,1) ? GetRandomFloat(-200.0, -100.0) : GetRandomFloat(100.0, 200.0);
+			flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-200.0, -100.0) : GetRandomFloat(200.0, 200.0);
+			CClotBody npc = view_as<CClotBody>(summon);
+			npc.SetVelocity({0.0,0.0,0.0});
+			PluginBot_Jump(summon, flPos);
+			ApplyStatusEffect(summon, summon, "Unstoppable Force", 2.0);
+	#if defined ZR
+			ZRModifs_GiveRandomPrefix(summon);
+	#endif
+		}
 	}
 }
 
@@ -8619,33 +8627,25 @@ float Glug_TakeDamage_Spread(int attacker, int victim, StatusEffect Apply_Master
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	Apply_StatusEffect.DataForUse = GetGameTime() + 10.0;
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
-
-	float maxhealth = float(ReturnEntityMaxHealth(victim));
-	maxhealth *= 0.25;
-	if(b_thisNpcIsARaid[victim] || b_thisNpcIsABoss[victim])
-		maxhealth *= 0.025;
 		
 	float pos[3]; GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(victim, Prop_Data, "m_angRotation", ang);
 	int summon = NPC_CreateByName("npc_glug", -1, pos, ang, GetTeam(victim), "");
 	if(summon > MaxClients)
 	{
-		float DamageDeal = 10.0;
-#if defined ZR
-		DamageDeal = float(CurrentCash);
-#endif
-		DamageDeal *= 0.001;
-		if(DamageDeal <= 1.0)
-			DamageDeal = 1.0;
+		float wave = float(Waves_GetRoundScale()+1);
+		wave *= 0.133333;
+		wave *= MinibossScalingReturn();
+		wave *= 0.75;
 
-		if(DamageDeal > 100.0)
-			DamageDeal = 100.0;
-		fl_Extra_Damage[summon] *= DamageDeal;
+		int Health = StringToInt(MinibossHealthScaling(70.0, true));
+
+		fl_Extra_Damage[summon] *= wave;
 		fl_Extra_Speed[summon] = fl_Extra_Speed[victim];
 		fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[victim];
 		fl_Extra_MeleeArmor[summon] = fl_Extra_MeleeArmor[victim];
-		SetEntProp(summon, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
-		SetEntProp(summon, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
+		SetEntProp(summon, Prop_Data, "m_iHealth", Health);
+		SetEntProp(summon, Prop_Data, "m_iMaxHealth", Health);
 		float flPos[3];
 		flPos = pos;
 		flPos[2] += 300.0;
@@ -8673,12 +8673,14 @@ void Const2Modifs_Explosive_End(int victim, StatusEffect Apply_MasterStatusEffec
 	//not an npc, ignore.
 	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
 		return;
-	float DamageDeal = 10000.0;
+	float DamageDeal = 10.0;
 #if defined ZR
 	DamageDeal = float(CurrentCash);
 	DamageDeal *= 0.25;
 	if(DamageDeal <= 100.0)
 		DamageDeal = 100.0;
+	if(DamageDeal >= 500.0)
+		DamageDeal = 500.0;
 
 	b_NpcIsTeamkiller[victim] = true;
 	Explode_Logic_Custom(DamageDeal,
@@ -8694,13 +8696,33 @@ void Const2Modifs_Explosive_End(int victim, StatusEffect Apply_MasterStatusEffec
 	false,
 	0.01,
 	_,
-	BeheadedKamiBoomInternal);
+	InsaneKnockbackDoExplode);
 	b_NpcIsTeamkiller[victim] = true;
 	ObjectVintulumBomb npc = view_as<ObjectVintulumBomb>(victim);
 	npc.PlayExplodeDo(true, true);
 #endif
 }
 
+float InsaneKnockbackDoExplode(int entity, int victim, float damage, int weapon)
+{
+	if(entity == victim)
+		return 0.0;
+
+	ApplyStatusEffect(entity, victim, "Ragdolled", 2.5);	
+	FreezeNpcInTime(victim, 2.5);
+	ApplyStatusEffect(entity, victim, "Anti-Waves", 5.0);
+	float VecMe[3]; WorldSpaceCenter(entity, VecMe);
+	float VecEnemy[3]; WorldSpaceCenter(victim, VecEnemy);
+
+	float AngleVec[3];
+	MakeVectorFromPoints(VecMe, VecEnemy, AngleVec);
+	GetVectorAngles(AngleVec, AngleVec);
+
+	AngleVec[0] = -45.0;
+	Custom_Knockback(entity, victim, 1500.0, true, true, true, .OverrideLookAng = AngleVec);
+  
+	return damage;
+}
 
 void Const2Modifs_Stalker_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -9471,6 +9493,20 @@ void StatusEffects_HeartBroken()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
+	strcopy(data.BuffName, sizeof(data.BuffName), "Call of the Heartbroken Weakened");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "WEAK");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= 0.5;
+	data.DamageDealMulti			= 0.5;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Call of the Heartbroken");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "H");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -9707,7 +9743,18 @@ static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusE
 	float flDistanceToTarget = GetVectorDistance(flMe, flPos, true);
 	if(flDistanceToTarget > (MAX_RANGE_HEARTBROKEN * MAX_RANGE_HEARTBROKEN))
 	{
-		Apply_StatusEffect.TimeUntillOver -= 1.0;
+		ApplyStatusEffect(entity, entity, "Call of the Heartbroken Weakened", 0.5);
+		if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		{
+			SetEntityRenderColor(EntRefToEntIndex(Apply_StatusEffect.WearableUse), 125, 0, 0, 255);
+		}
+	}
+	else
+	{
+		if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		{
+			SetEntityRenderColor(EntRefToEntIndex(Apply_StatusEffect.WearableUse), 65, 0, 125, 255);
+		}
 	}
 	
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);

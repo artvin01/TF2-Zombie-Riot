@@ -5099,6 +5099,7 @@
 	"No Tinker Left"
 	{
 		"en"		"There is no Tinker User remaining, tinkers disabled."
+		"ko"		"땜장이 키트 사용자가 없습니다. 모루 재련 효과가 비활성화됩니다."
 	}
 	"Blacksmith No Attribs"
 	{

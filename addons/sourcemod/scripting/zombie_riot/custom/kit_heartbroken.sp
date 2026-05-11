@@ -1246,4 +1246,5 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 	ApplyStatusEffect(client, RandomWildHunted,	"Call of the Heartbroken Internal", Duration + 1.0);
 	ApplyStatusEffect(client, RandomWildHunted, "Shielding", 3.0);
 	Shielding_Add(RandomWildHunted, ReturnEntityMaxHealth(RandomWildHunted) / 5);
+	CheckAlivePlayers();
 }
