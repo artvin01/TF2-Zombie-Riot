@@ -292,6 +292,7 @@ public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
 			f_AntiStuckPhaseThrough[client] = GetGameTime() + TimeUntillReach;
 			f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + TimeUntillReach;
 			ApplyStatusEffect(client, client, "Intangible", TimeUntillReach);
+			ApplyStatusEffect(client, client, "Touch Ingored", TimeUntillReach);
 
 			TF2_AddCondition(client, TFCond_LostFooting, TimeUntillReach);
 			TF2_AddCondition(client, TFCond_AirCurrent, TimeUntillReach);
@@ -356,6 +357,7 @@ static void ThumbPush(DataPack pack, bool first)
 				f_AntiStuckPhaseThrough[client] = GetGameTime() + 0.3;
 				f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + 0.3;
 				ApplyStatusEffect(client, client, "Intangible", 0.3);
+				ApplyStatusEffect(client, client, "Touch Ingored", 0.3);
 
 				TF2_AddCondition(client, TFCond_LostFooting, 0.3);
 				TF2_AddCondition(client, TFCond_AirCurrent, 0.3);

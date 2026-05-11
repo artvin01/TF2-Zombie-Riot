@@ -10697,6 +10697,10 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 				//	if(target > MaxClients || GetRandomFloat(0.0, 1.0) < 0.25)
 				//	a 25% chance that they will change targets, so they sometimes dont want to follow you, but only if yorue a client.
 					{
+						if(HasSpecificBuff(target, "Touch Ingored"))
+						{
+							return;
+						}
 						npc.m_iTarget = target;
 						npc.m_flGetClosestTargetTime = GetGameTime(entity) + GetRandomRetargetTime();
 						f_DelayComputingOfPath[entity] = 0.0;
