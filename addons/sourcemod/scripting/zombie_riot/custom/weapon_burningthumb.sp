@@ -1167,7 +1167,7 @@ float BurningThumb_FinalBoom(int entity, int victim, float damage, int weapon)
 	GetVectorAngles(AngleVec, AngleVec);
 
 	AngleVec[0] = -45.0;
-	SensalCauseKnockback(attacker, victim, 1.25, false, AngleVec);
+	SensalCauseKnockback(entity, victim, 1.25, false, AngleVec);
   
 	return damage;
 }
