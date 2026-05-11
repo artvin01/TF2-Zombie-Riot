@@ -870,7 +870,7 @@ static Action UpdateAmmoHud(Handle timer, DataPack pack)
 							index++;
 						
 						FormatEx(combo, sizeof(combo), "Triple Slash - Blast: %d / 3", index);
-						FormatEx(dash, sizeof(dash), "Dash: %d / 2", (ChargeSpent[client] || move == Slash_3) ? 2 : 1);
+						FormatEx(dash, sizeof(dash), "Dashes: %d / 2", (ChargeSpent[client] || move == Slash_3) ? 2 : 1);
 					}
 					case Counter_2:
 					{
@@ -883,7 +883,7 @@ static Action UpdateAmmoHud(Handle timer, DataPack pack)
 							index++;
 						
 						FormatEx(combo, sizeof(combo), "Tanglecleaver: %d / 3", index);
-						FormatEx(dash, sizeof(dash), "Dashes: %d / 3", index + (ChargeSpent[client] ? 1 : 0));
+						FormatEx(dash, sizeof(dash), "Dashes: %d / 3", view_as<int>(index) + (ChargeSpent[client] ? 1 : 0));
 					}
 					case Tigerslayer_0, Tigerslayer_1, Tigerslayer_2, Tigerslayer_3, Tigerslayer_4, Tigerslayer_5:
 					{
@@ -892,7 +892,7 @@ static Action UpdateAmmoHud(Handle timer, DataPack pack)
 							index++;
 						
 						FormatEx(combo, sizeof(combo), "Savage Tigerslayer's Perfected Flurry of Blades: %d / 5", index);
-						FormatEx(dash, sizeof(dash), "Dashes: %d / 5", index + (ChargeSpent[client] ? 1 : 0));
+						FormatEx(dash, sizeof(dash), "Dashes: %d / 5", view_as<int>(index) + (ChargeSpent[client] ? 1 : 0));
 					}
 				}
 
