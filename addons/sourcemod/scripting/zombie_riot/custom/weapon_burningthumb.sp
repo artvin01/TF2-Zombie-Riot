@@ -897,8 +897,9 @@ static Action UpdateAmmoHud(Handle timer, DataPack pack)
 						FormatEx(dash, sizeof(dash), "Dashes: %d / 5", view_as<int>(index) + (ChargeSpent[client] ? 1 : 0));
 					}
 				}
-
-				PrintHintText(client, "%s\n%sTigermark Rounds: %d\n%s", dash, ShinForm[client] ? "Savage " : "", TotalWeaponAmmo(client, weapon), combo);
+				int total = MaxAmmo * 2 / 3;
+				PrintHintText(client, "%s\n%sTigermark Rounds: %d\n%s\nAmmo Spent for Shin: (%i/%i)", dash, ShinForm[client] ? "Savage " : "", TotalWeaponAmmo(client, weapon), combo, AmmoSpent[client], total);
+				
 			}
 			
 			return Plugin_Continue;

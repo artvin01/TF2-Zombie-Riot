@@ -5439,7 +5439,7 @@
 	}
 	"Tiantui Star Blade Desc"
 	{
-		"en"	"-Abilities uses ammo and refills on wave end\n-M2 to charge forward, consuming ammo\n-Combos reset charge cooldown\n-R and crouch to reload special ammo and gain a buff (once per wave)"
+		"en"	"-Abilities uses ammo and refills on wave end\n-M2 to charge forward, consuming ammo\n-Combos reset charge cooldown\n-R and crouch to reload special ammo and gain a buff (use enough ammo for stronger version, once per wave, revives if downed)"
 	}
 	"Tiantui Star Blade Extra"
 	{
