@@ -42,27 +42,27 @@ opt["render.effect.antialiasing.enable"] = True
 opt["render.effect.antialiasing.mode"] = "ssaa"
 opt["render.effect.ambient_occlusion"] = True
 
-def generate_weapon_icon(weapon_data, weapon_name, pure_filename, prefix=""):
-    util.log(f"{weapon_name}, {pure_filename}")
-    if os.path.isfile(f"gh-pages/{prefix}icons/{weapon_name}.png"): # Pre-generated icons
-        util.log(f"{prefix}icons/{weapon_name}.png> Cached!")
-        return f'<div class="secondary notice"><img src="static/info.svg">Experimental weapon preview</div><img class="weapon_preview" src="{prefix}icons/{weapon_name}.png">'
+def generate_weapon_icon(weapon_data, weapon_name, pure_filename, prefix="", bodygroup_prefix=""):
+    util.debug(f"[weaponicon] {weapon_name}, {pure_filename}, {prefix if prefix else "noprefix"}","weaponicon","OKBLUE")
+    if os.path.isfile(f"gh-pages/{prefix}icons/{pure_filename}.png"): # Pre-generated icons
+        util.debug(f"[weaponicon]     {prefix}icons/{pure_filename}.png is cached!","weaponicon","OKCYAN")
+        return f'<div class="secondary notice"><img src="static/info.svg">Experimental weapon preview</div><img class="weapon_preview" src="{prefix}icons/{pure_filename}.png">'
 
     # Get SMD file
-    if "weapon_bodygroup" in weapon_data: mdl_bodygroup = weapon_data["weapon_bodygroup"]
+    if f"{bodygroup_prefix}weapon_bodygroup" in weapon_data: mdl_bodygroup = weapon_data[f"{bodygroup_prefix}weapon_bodygroup"]
     else: mdl_bodygroup = "1"
     smd_path = f"{prefix}decompiled/{json.loads(util.read(f"{prefix}decompiled/{pure_filename}.json"))[mdl_bodygroup]}" # TODO cache
 
     # Convert SMD => OBJ
     with pyassimp.load(smd_path) as assimp_scene: # <class 'contextlib._GeneratorContextManager'> must have storage info
-        pyassimp.export(assimp_scene, f"{prefix}decompiled/{weapon_name}.obj", "obj")
+        pyassimp.export(assimp_scene, f"{prefix}decompiled/{pure_filename}.obj", "obj")
 
     # Generate thumbnail using F3D
-    util.log(f"Generating thumbnail of {prefix}decompiled/{weapon_name}.obj")
+    util.log(f"Generating thumbnail of {prefix}decompiled/{pure_filename}.obj")
     eng.scene.clear()
-    eng.scene.add(f"{prefix}decompiled/{weapon_name}.obj")
-    eng.window.render_to_image(no_background=True).save(f"./gh-pages/{prefix}icons/{weapon_name}.png")
-    return f'<div class="secondary notice"><img src="static/info.svg">Experimental weapon preview</div><img class="weapon_preview" src="{prefix}icons/{weapon_name}.png">'
+    eng.scene.add(f"{prefix}decompiled/{pure_filename}.obj")
+    eng.window.render_to_image(no_background=True).save(f"./gh-pages/{prefix}icons/{pure_filename}.png")
+    return f'<div class="secondary notice"><img src="static/info.svg">Experimental weapon preview</div><img class="weapon_preview" src="{prefix}icons/{pure_filename}.png">'
 
 class Weapon:
     def __init__(self, weapon_name, weapon_data):
@@ -198,6 +198,18 @@ class WeaponPap:
             if key_extra_desc in weapon_data: self.extra_desc = weapon_data[key_extra_desc]
             else: self.extra_desc = ""
 
+            # If weapon uses custom model, fetch source SMD file from bodygroup
+            self.icon = ""
+            if f"{pap_key}model_weapon_override" in weapon_data:
+                if weapon_data[f"{pap_key}model_weapon_override"]!="models/empty.mdl":
+                    pure_filename = weapon_data[f"{pap_key}model_weapon_override"].split("/")[-1].split(".")[0]
+                    if os.path.isfile(f"decompiled/{pure_filename}.json"): # only generate icon if decompiled data exists
+                        self.icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename, bodygroup_prefix=pap_key)
+                    elif os.path.isfile(f"tf_decompiled/{pure_filename}.json"): # only generate icon if decompiled data exists
+                        self.icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename, prefix="tf_", bodygroup_prefix=pap_key)
+                    else:
+                        util.log(f"Skipping thumbnail generation: bodygroup mappings missing for {pure_filename}","WARNING")
+
         self.valid = key_desc in weapon_data
 
     def to_link(self):
@@ -214,7 +226,7 @@ class WeaponPap:
             "tags": tags,
             "author": "",
             "cost": f"{self.cost}",
-            "desc": f"{util.divfornewline(desc)}{util.divfornewline(extra_desc)}",
+            "desc": f"{util.divfornewline(desc)}{util.divfornewline(extra_desc)}{self.icon}",
         }
         return util.fill_template(util.read("templates/items/item.html"), context)
     

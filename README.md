@@ -56,7 +56,7 @@ Expected output:
 ## Generating the Wiki
 **Environment Variables**
 - `SCOPE=wavesets,npcs,items,music,skilltree`: Limit which parts of the wiki are generated.  
-- `DEBUG=npcs,wavesets,weaponpap`: Show more info for specified category.  
+- `DEBUG=npcs,wavesets,weaponpap,weaponicon`: Show more info for specified category.  
   Waveset-specific config:  
 - `FILESCOPE`: Limit waveset data generation to a specific config file, e.g. `FILESCOPE=maps/zr_matrix.cfg`.  
 - `TYPESCOPE=Setup,Custom,Rogue,Betting,Construction`: Limit waveset data generation to a specific type of config file.  
