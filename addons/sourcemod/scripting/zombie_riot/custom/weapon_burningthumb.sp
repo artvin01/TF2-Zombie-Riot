@@ -495,7 +495,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 	{
 		case Slash_2:
 		{
-			//PrintToConsole(attacker, "Double Slash - Blast");
+			PrintToConsole(attacker, "Double Slash - Blast");
 
 			power = WeaponLevel[attacker] > 1 ? 12 : 10;
 
@@ -503,7 +503,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			if(WeaponLevel[attacker] > 0)
 				bonus = BonusTremorBurn(victim, 4, WeaponLevel[attacker] > 2 ? 3 : 2);
 			
-			InflictTremorPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 2 : 1);
+			InflictTremorPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 2 : 1, _, true);
 
 			if(ChargeSpent[attacker] == 2 || TotalWeaponAmmo(attacker, weapon) > 0)
 			{
@@ -521,12 +521,12 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 					SpendAmmo(attacker, weapon);
 			}
 			
-			//PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
 			power += bonus;
 		}
 		case Slash_3:
 		{
-			//PrintToConsole(attacker, "Triple Slash - Blast");
+			PrintToConsole(attacker, "Triple Slash - Blast");
 
 			power = WeaponLevel[attacker] > 1 ? 16 : 13;
 
@@ -534,7 +534,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			if(WeaponLevel[attacker] > 0)
 				bonus = BonusTremorBurn(victim, 4, WeaponLevel[attacker] > 2 ? 4 : 2);
 
-			InflictTremorCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 2 : 1);
+			InflictTremorCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 2 : 1, _, true);
 			
 			if(ChargeSpent[attacker] == 2 || TotalWeaponAmmo(attacker, weapon) > 0)
 			{
@@ -552,9 +552,9 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			}
 			
 			if(WeaponLevel[attacker] > 0)
-				InflictTremorBurst(victim, attacker, 1, 3);
+				InflictTremorBurst(victim, attacker, 1, 3, true);
 			
-			//PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
 			power += bonus;
 
 			float cooldown = 1.0;
@@ -576,13 +576,13 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 		}
 		case Tanglecleaver_1:
 		{
-			//PrintToConsole(attacker, "Tanglecleaver I");
+			PrintToConsole(attacker, "Tanglecleaver I");
 
 			// 8 - 11
 			power = WeaponLevel[attacker] > 2 ? 9 : 8;
 			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1);
 
-			InflictTremorPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 3 : 2);
+			InflictTremorPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 3 : 2, _, true);
 
 			if(ChargeSpent[attacker] == 2 || TotalWeaponAmmo(attacker, weapon) > 0)
 			{
@@ -597,18 +597,18 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 					SpendAmmo(attacker, weapon);
 			}
 
-			//PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
 			power += bonus;
 		}
 		case Tanglecleaver_2:
 		{
-			//PrintToConsole(attacker, "Tanglecleaver II");
+			PrintToConsole(attacker, "Tanglecleaver II");
 
 			// 12 - 17
 			power = WeaponLevel[attacker] > 2 ? 13 : 12;
 			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1) * 2;
 			
-			InflictTremorCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 3 : 2);
+			InflictTremorCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 3 : 2, _, true);
 			
 			if(ChargeSpent[attacker] == 2 || TotalWeaponAmmo(attacker, weapon) > 0)
 			{
@@ -623,12 +623,12 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 					SpendAmmo(attacker, weapon);
 			}
 
-			//PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
 			power += bonus;
 		}
 		case Tanglecleaver_3:
 		{
-			//PrintToConsole(attacker, "Tanglecleaver III");
+			PrintToConsole(attacker, "Tanglecleaver III");
 
 			// 16 - 23
 			power = WeaponLevel[attacker] > 2 ? 17 : 16;
@@ -652,10 +652,10 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			int bursts = ammo ? (WeaponLevel[attacker] > 2 ? 3 : 2) : 1;
 			for(int i; i < bursts; i++)
 			{
-				InflictTremorBurst(victim, attacker, 1);
+				InflictTremorBurst(victim, attacker, 1, true);
 			}
 			
-			//PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
 			power += bonus;
 
 			float cooldown = 2.0;
@@ -665,37 +665,37 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 		}
 		case Tigerslayer_1:
 		{
-			//PrintToConsole(attacker, "Savage Tigerslayer's Perfected Flurry of Blades I");
+			PrintToConsole(attacker, "Savage Tigerslayer's Perfected Flurry of Blades I");
 
 			// 5 - 8
 			power = WeaponLevel[attacker] > 2 ? 6 : 5;
 			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1);
 
-			InflictTremorPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 3 : 2);
+			InflictTremorPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 3 : 2, _, true);
 
 			resetCharge = true;
 			
-			//PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
 			power += bonus;
 		}
 		case Tigerslayer_2:
 		{
-			//PrintToConsole(attacker, "Savage Tigerslayer's Perfected Flurry of Blades II");
+			PrintToConsole(attacker, "Savage Tigerslayer's Perfected Flurry of Blades II");
 
 			// 8 - 13
 			power = WeaponLevel[attacker] > 2 ? 9 : 8;
 			int bonus = BonusTremorBurn(victim, 8, WeaponLevel[attacker] > 2 ? 2 : 1) * 2;
 
-			InflictTremorCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 3 : 2);
+			InflictTremorCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 3 : 2, _, true);
 
 			resetCharge = true;
 			
-			//PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
 			power += bonus;
 		}
 		case Tigerslayer_3:
 		{
-			//PrintToConsole(attacker, "Savage Tigerslayer's Perfected Flurry of Blades III");
+			PrintToConsole(attacker, "Savage Tigerslayer's Perfected Flurry of Blades III");
 
 			// 11 - 18
 			power = WeaponLevel[attacker] > 2 ? 12 : 11;
@@ -714,12 +714,12 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 					SpendAmmo(attacker, weapon);
 			}
 			
-			//PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
 			power += bonus;
 		}
 		case Tigerslayer_4:
 		{
-			//PrintToConsole(attacker, "Savage Tigerslayer's Perfected Flurry of Blades IV");
+			PrintToConsole(attacker, "Savage Tigerslayer's Perfected Flurry of Blades IV");
 
 			// 14 - 23
 			power = WeaponLevel[attacker] > 2 ? 15 : 14;
@@ -738,12 +738,12 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 					SpendAmmo(attacker, weapon);
 			}
 			
-			//PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
 			power += bonus;
 		}
 		case Tigerslayer_5:
 		{
-			//PrintToConsole(attacker, "Savage Tigerslayer's Perfected Flurry of Blades V");
+			PrintToConsole(attacker, "Savage Tigerslayer's Perfected Flurry of Blades V");
 
 			// 17 - 28
 			power = WeaponLevel[attacker] > 2 ? 18 : 17;
@@ -765,10 +765,10 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			int bursts = ammo ? (WeaponLevel[attacker] > 2 ? 3 : 2) : 1;
 			for(int i; i < bursts; i++)
 			{
-				InflictTremorBurst(victim, attacker, 1);
+				InflictTremorBurst(victim, attacker, 1, true);
 			}
 
-			//PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
+			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
 			power += bonus;
 
 			float cooldown = 2.0;
@@ -840,6 +840,7 @@ static Action UpdateAmmoHud(Handle timer, DataPack pack)
 		{
 			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
 			{
+				char dash[64] = " ";
 				char combo[64] = " ";
 
 				BurningThumbEnum move = ResetMove[client] ? LastMove[client] : NoMove;
@@ -847,19 +848,33 @@ static Action UpdateAmmoHud(Handle timer, DataPack pack)
 				{
 					case Slash_1:
 					{
+						if(CurrentMove[client] != Slash_1)
+						{
+							if(ChargeSpent[client])
+							{
+								strcopy(combo, sizeof(combo), "Triple Slash - Blast: 1 / 3");
+							}
+							else
+							{
+								strcopy(combo, sizeof(combo), "I'm Burning Up: 1 / 2");
+							}
+						}
+
 						if(ChargeSpent[client])
-							strcopy(combo, sizeof(combo), "Dashes: 1 / 2");
+							strcopy(dash, sizeof(dash), "Dashes: 1 / 2");
 					}
-					case Slash_2:
+					case Slash_2, Slash_3:
 					{
-						if(ChargeSpent[client])
-						{
-							strcopy(combo, sizeof(combo), "Dashes: 2 / 2");
-						}
-						else
-						{
-							strcopy(combo, sizeof(combo), "Dashes: 1 / 2");
-						}
+						BurningThumbEnum index = move - Slash_1;
+						if(CurrentMove[client] != LastMove[client])
+							index++;
+						
+						FormatEx(combo, sizeof(combo), "Triple Slash - Blast: %d / 3", index);
+						FormatEx(dash, sizeof(dash), "Dash: %d / 2", (ChargeSpent[client] || move == Slash_3) ? 2 : 1);
+					}
+					case Counter_2:
+					{
+						strcopy(combo, sizeof(combo), "I'm Burning Up: 2 / 2");
 					}
 					case Tanglecleaver_0, Tanglecleaver_1, Tanglecleaver_2, Tanglecleaver_3:
 					{
@@ -868,6 +883,7 @@ static Action UpdateAmmoHud(Handle timer, DataPack pack)
 							index++;
 						
 						FormatEx(combo, sizeof(combo), "Tanglecleaver: %d / 3", index);
+						FormatEx(dash, sizeof(dash), "Dashes: %d / 3", index + (ChargeSpent[client] ? 1 : 0));
 					}
 					case Tigerslayer_0, Tigerslayer_1, Tigerslayer_2, Tigerslayer_3, Tigerslayer_4, Tigerslayer_5:
 					{
@@ -876,10 +892,11 @@ static Action UpdateAmmoHud(Handle timer, DataPack pack)
 							index++;
 						
 						FormatEx(combo, sizeof(combo), "Savage Tigerslayer's Perfected Flurry of Blades: %d / 5", index);
+						FormatEx(dash, sizeof(dash), "Dashes: %d / 5", index + (ChargeSpent[client] ? 1 : 0));
 					}
 				}
 
-				PrintHintText(client, "%sTigermark Rounds: %d\n%s", ShinForm[client] ? "Savage " : "", TotalWeaponAmmo(client, weapon), combo);
+				PrintHintText(client, "%s\n%sTigermark Rounds: %d\n%s", dash, ShinForm[client] ? "Savage " : "", TotalWeaponAmmo(client, weapon), combo);
 			}
 			
 			return Plugin_Continue;
@@ -902,7 +919,7 @@ static void InflictBurnPotency(int victim, int attacker, int weapon, int value)
 		duration = 0.0;
 	
 	NPC_Ignite(victim, attacker, duration, weapon, potency * BurningDamage);
-	//PrintToConsole(attacker, "> Burn +%d", potency);
+	PrintToConsole(attacker, "> Burn +%d", potency);
 }
 
 static void InflictBurnCount(int victim, int attacker, int weapon, int value)
@@ -913,10 +930,10 @@ static void InflictBurnCount(int victim, int attacker, int weapon, int value)
 		potency += 2;
 
 	NPC_Ignite(victim, attacker, potency * BurningTime, weapon, BurningDamage);
-	//PrintToConsole(attacker, "> Burn Extend +%d", potency);
+	PrintToConsole(attacker, "> Burn Extend +%d", potency);
 }
 
-stock void InflictTremorPotency(int victim, int attacker, int weapon, int value, const char[] name = "Tremor")
+stock void InflictTremorPotency(int victim, int attacker, int weapon, int value, const char[] name = "Tremor", bool console = false)
 {
 	int potency = value;
 
@@ -934,12 +951,14 @@ stock void InflictTremorPotency(int victim, int attacker, int weapon, int value,
 
 	if(attacker && attacker <= MaxClients)
 	{
-		//PrintToConsole(attacker, "> Tremor +%d", potency);
+		if(console)
+			PrintToConsole(attacker, "> Tremor +%d", potency);
+		
 		ClientCommand(attacker, (GetURandomInt() % 2) ? "playgamesound weapons/physcannon/energy_bounce1.wav" : "playgamesound weapons/physcannon/energy_bounce2.wav");
 	}
 }
 
-stock void InflictTremorCount(int victim, int attacker, int weapon, int value, const char[] name = "Tremor")
+stock void InflictTremorCount(int victim, int attacker, int weapon, int value, const char[] name = "Tremor", bool console = false)
 {
 	int potency = value;
 
@@ -957,12 +976,14 @@ stock void InflictTremorCount(int victim, int attacker, int weapon, int value, c
 
 	if(attacker && attacker <= MaxClients)
 	{
-		//PrintToConsole(attacker, "> Tremor Extend +%d", potency);
+		if(console)
+			PrintToConsole(attacker, "> Tremor Extend +%d", potency);
+		
 		ClientCommand(attacker, (GetURandomInt() % 2) ? "playgamesound weapons/physcannon/energy_bounce1.wav" : "playgamesound weapons/physcannon/energy_bounce2.wav");
 	}
 }
 
-stock void InflictTremorBurst(int victim, int attacker, int decrease, int minrequire = 0)
+stock void InflictTremorBurst(int victim, int attacker, int decrease, int minrequire = 0, bool console = false)
 {
 	float timeleft;
 	char name[64];
@@ -974,13 +995,17 @@ stock void InflictTremorBurst(int victim, int attacker, int decrease, int minreq
 		pack.WriteCell(EntIndexToEntRef(attacker));
 		pack.WriteCell(amount * TremorStagger);
 		RequestFrame(StaggerDamageFrame, pack);
-		//PrintToConsole(attacker, "> Tremor Burst x%d", name, amount);
+
+		if(console)
+			PrintToConsole(attacker, "> Tremor Burst x%d", name, amount);
 
 		if(StrContains(name, "Scorch", false) != -1)
 		{
 			amount += BurnStacks(victim, 2);
 			SDKHooks_TakeDamage(victim, attacker, attacker, amount * ScorchDamage, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
-			//PrintToConsole(attacker, "> %s Burst x%d", name, amount);
+			
+			if(console)
+				PrintToConsole(attacker, "> %s Burst x%d", name, amount);
 		}
 
 		if(decrease)
@@ -1002,14 +1027,16 @@ static void StaggerDamageFrame(DataPack pack)
 	delete pack;
 }
 
-stock void ConvertTremorType(int victim, int attacker, const char[] name)
+stock void ConvertTremorType(int victim, int attacker, const char[] name, bool console = false)
 {
 	float timeleft;
 	int amount = StatusEffects_TremorDebuffGet(victim, timeleft);
 	if(amount > 0 && timeleft > 0.0)
 	{
 		ApplyStatusEffect(attacker, victim, name, TremorTime);
-		//PrintToConsole(attacker, "> Amplitude Conversion");
+
+		if(console)
+			PrintToConsole(attacker, "> Amplitude Conversion");
 	}
 }
 
