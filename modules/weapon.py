@@ -44,8 +44,8 @@ opt["render.effect.ambient_occlusion"] = True
 
 def generate_weapon_icon(weapon_data, weapon_name, pure_filename, prefix=""):
     util.log(f"{weapon_name}, {pure_filename}")
-    if os.path.isfile(f"{prefix}icons/{weapon_name}.png"): # Pre-generated icons
-        util.log("> Cached!")
+    if os.path.isfile(f"gh-pages/{prefix}icons/{weapon_name}.png"): # Pre-generated icons
+        util.log(f"{prefix}icons/{weapon_name}.png> Cached!")
         return f'<div class="secondary notice"><img src="static/info.svg">Experimental weapon preview</div><img class="weapon_preview" src="{prefix}icons/{weapon_name}.png">'
 
     # Get SMD file
