@@ -44,25 +44,34 @@ opt["render.effect.ambient_occlusion"] = True
 
 def generate_weapon_icon(weapon_data, weapon_name, pure_filename, prefix="", bodygroup_prefix=""):
     util.debug(f"[weaponicon] {weapon_name}, {pure_filename}, {prefix if prefix else "noprefix"}","weaponicon","OKBLUE")
-    if os.path.isfile(f"gh-pages/{prefix}icons/{pure_filename}.png"): # Pre-generated icons
-        util.debug(f"[weaponicon]     {prefix}icons/{pure_filename}.png is cached!","weaponicon","OKCYAN")
-        return f'<div class="secondary notice"><img src="static/info.svg">Experimental weapon preview</div><img class="weapon_preview" src="{prefix}icons/{pure_filename}.png">'
 
     # Get SMD file
     if f"{bodygroup_prefix}weapon_bodygroup" in weapon_data: mdl_bodygroup = weapon_data[f"{bodygroup_prefix}weapon_bodygroup"]
     else: mdl_bodygroup = "1"
     smd_path = f"{prefix}decompiled/{json.loads(util.read(f"{prefix}decompiled/{pure_filename}.json"))[mdl_bodygroup]}" # TODO cache
 
+    if smd_path == "decompiled/w_crossbow_reference.smd": return # TODO see below
+
+    util.debug(f"[weaponicon] {"✓" if os.path.isfile(smd_path) else "✗"} {smd_path} : {mdl_bodygroup}","weaponicon","OKBLUE")
+
+    if os.path.isfile(f"gh-pages/{prefix}icons/{pure_filename}_{mdl_bodygroup}.png"): # Pre-generated icons
+        util.debug(f"[weaponicon]     {prefix}icons/{pure_filename}_{mdl_bodygroup}.png is cached!","weaponicon","OKCYAN")
+        return f'<div class="secondary notice"><img src="static/info.svg">Experimental weapon preview</div><img class="weapon_preview" src="{prefix}icons/{pure_filename}_{mdl_bodygroup}.png">'
+
     # Convert SMD => OBJ
+    # TODO pyassimp just HATES this model and I do not know why
+    # [LOG] [weaponicon] Crossbow, custom_weaponry_1_57, noprefix
+    # [LOG] [weaponicon] ✓ decompiled/w_crossbow_reference.smd : 4
+    # pyassimp.errors.AssimpError: Could not import file!
     with pyassimp.load(smd_path) as assimp_scene: # <class 'contextlib._GeneratorContextManager'> must have storage info
-        pyassimp.export(assimp_scene, f"{prefix}decompiled/{pure_filename}.obj", "obj")
+        pyassimp.export(assimp_scene, f"{prefix}decompiled/{pure_filename}_{mdl_bodygroup}.obj", "obj")
 
     # Generate thumbnail using F3D
-    util.log(f"Generating thumbnail of {prefix}decompiled/{pure_filename}.obj")
+    util.log(f"Generating thumbnail of {prefix}decompiled/{pure_filename}_{mdl_bodygroup}.obj")
     eng.scene.clear()
-    eng.scene.add(f"{prefix}decompiled/{pure_filename}.obj")
-    eng.window.render_to_image(no_background=True).save(f"./gh-pages/{prefix}icons/{pure_filename}.png")
-    return f'<div class="secondary notice"><img src="static/info.svg">Experimental weapon preview</div><img class="weapon_preview" src="{prefix}icons/{pure_filename}.png">'
+    eng.scene.add(f"{prefix}decompiled/{pure_filename}_{mdl_bodygroup}.obj")
+    eng.window.render_to_image(no_background=True).save(f"./gh-pages/{prefix}icons/{pure_filename}_{mdl_bodygroup}.png")
+    return f'<div class="secondary notice"><img src="static/info.svg">Experimental weapon preview</div><img class="weapon_preview" src="{prefix}icons/{pure_filename}_{mdl_bodygroup}.png">'
 
 class Weapon:
     def __init__(self, weapon_name, weapon_data):
@@ -204,9 +213,9 @@ class WeaponPap:
                 if weapon_data[f"{pap_key}model_weapon_override"]!="models/empty.mdl":
                     pure_filename = weapon_data[f"{pap_key}model_weapon_override"].split("/")[-1].split(".")[0]
                     if os.path.isfile(f"decompiled/{pure_filename}.json"): # only generate icon if decompiled data exists
-                        self.icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename, bodygroup_prefix=pap_key)
+                        self.icon = generate_weapon_icon(weapon_data,self.name,pure_filename, bodygroup_prefix=pap_key)
                     elif os.path.isfile(f"tf_decompiled/{pure_filename}.json"): # only generate icon if decompiled data exists
-                        self.icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename, prefix="tf_", bodygroup_prefix=pap_key)
+                        self.icon = generate_weapon_icon(weapon_data,self.name,pure_filename, prefix="tf_", bodygroup_prefix=pap_key)
                     else:
                         util.log(f"Skipping thumbnail generation: bodygroup mappings missing for {pure_filename}","WARNING")
 
