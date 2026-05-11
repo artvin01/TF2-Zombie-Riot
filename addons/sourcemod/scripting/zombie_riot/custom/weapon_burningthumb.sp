@@ -47,6 +47,20 @@ static int ChargeSpent[MAXPLAYERS+1];
 static float HasCharged[MAXPLAYERS+1];
 static int PlayerChargeParticle[MAXPLAYERS+1];
 
+#define BURN_DASH_SOUND_AMMO 	"weapons/dragons_fury_shoot.wav"
+#define BURN_DASH_SOUND_EMPTY	"weapons/fx/nearmiss/dragons_fury_nearmiss.wav"
+
+static char g_BurnShootsound[][] = {
+	"weapons/airstrike_fire_01.wav",
+	"weapons/airstrike_fire_02.wav",
+	"weapons/airstrike_fire_03.wav",
+};
+public void BurningThumb_MapStart()
+{
+	PrecacheSound(BURN_DASH_SOUND_AMMO);
+	PrecacheSound(BURN_DASH_SOUND_EMPTY);
+	PrecacheSoundArray(g_BurnShootsound);
+}
 void BurningThumb_WaveEnd()
 {
 	for(int client = 1; client <= MaxClients; client++)
@@ -188,10 +202,9 @@ public void Weapon_BurningThumb_M1(int client, int weapon, bool crit, int slot)
 	if(WeaponTimer[client])
 		TriggerTimer(WeaponTimer[client], true);
 }
-
+#define BURNING_DASHSPEED 720.0
 public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
 {
-	Burning_Thumb_ApplyParticle(client, false, 0.5);
 	if(dieingstate[client] != 0 || TF2_IsPlayerInCondition(client, TFCond_LostFooting))
 		return;
 	
@@ -256,13 +269,32 @@ public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
 
 		if(hasAmmo && !(GetClientButtons(client) & IN_DUCK))
 		{
-			Burning_Thumb_ApplyParticle(client, false, 0.5);
-			f_AntiStuckPhaseThrough[client] = GetGameTime() + 1.2;
-			f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + 1.2;
-			ApplyStatusEffect(client, client, "Intangible", 1.2);
+			float VecAbsClient[3];
+			float VecAbsEntity[3];
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", VecAbsClient);
+			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", VecAbsEntity);
+			float Distance = GetVectorDistance(VecAbsClient, VecAbsEntity);
+			float TimeUntillReach = Distance / BURNING_DASHSPEED;
+			TimeUntillReach += 0.35;
 
-			TF2_AddCondition(client, TFCond_LostFooting, 1.2);
-			TF2_AddCondition(client, TFCond_AirCurrent, 1.2);
+			if(ShinForm[client])
+			{
+				EmitSoundToAll(BURN_DASH_SOUND_AMMO, client, _, _, _, 1.0, 80);
+				EmitSoundToAll(g_BurnShootsound[GetRandomInt(0, sizeof(g_BurnShootsound) - 1)], client, SNDCHAN_AUTO, 80, _, 0.9, 80);
+			}
+			else
+			{
+				EmitSoundToAll(BURN_DASH_SOUND_EMPTY, client, _, _, _, 1.0, 80);	
+				EmitSoundToAll(g_BurnShootsound[GetRandomInt(0, sizeof(g_BurnShootsound) - 1)], client, SNDCHAN_AUTO, 80, _, 0.9, 90);
+			}
+
+			Burning_Thumb_ApplyParticle(client, false, TimeUntillReach);
+			f_AntiStuckPhaseThrough[client] = GetGameTime() + TimeUntillReach;
+			f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + TimeUntillReach;
+			ApplyStatusEffect(client, client, "Intangible", TimeUntillReach);
+
+			TF2_AddCondition(client, TFCond_LostFooting, TimeUntillReach);
+			TF2_AddCondition(client, TFCond_AirCurrent, TimeUntillReach);
 
 			DataPack pack = new DataPack();
 			pack.WriteCell(GetClientUserId(client));
@@ -314,8 +346,6 @@ static void ThumbPush(DataPack pack, bool first)
 		int target = EntRefToEntIndex(pack.ReadCell());
 		if(target != -1)
 		{
-			float power = 700.0;
-
 			float vec1[3], vec2[3];
 			WorldSpaceCenter(client, vec1);
 			WorldSpaceCenter(target, vec2);
@@ -323,19 +353,19 @@ static void ThumbPush(DataPack pack, bool first)
 			if(GetVectorLength(vec1, true) < 10000.0)
 			{
 				// In contact, drift away now
-				f_AntiStuckPhaseThrough[client] = GetGameTime() + 0.4;
-				f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + 0.4;
-				ApplyStatusEffect(client, client, "Intangible", 0.4);
+				f_AntiStuckPhaseThrough[client] = GetGameTime() + 0.3;
+				f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + 0.3;
+				ApplyStatusEffect(client, client, "Intangible", 0.3);
 
-				TF2_AddCondition(client, TFCond_LostFooting, 0.4);
-				TF2_AddCondition(client, TFCond_AirCurrent, 0.4);
+				TF2_AddCondition(client, TFCond_LostFooting, 0.3);
+				TF2_AddCondition(client, TFCond_AirCurrent, 0.3);
 			}
 			else
 			{
 				GetVectorAngles(vec1, vec1);
 				GetAngleVectors(vec1, vec1, NULL_VECTOR, NULL_VECTOR);
 
-				ScaleVector(vec1, power);
+				ScaleVector(vec1, BURNING_DASHSPEED);
 
 				if(first)
 				{
@@ -369,6 +399,7 @@ public void Weapon_BurningThumb_R(int client, int weapon, bool crit, int slot)
 			AmmoSpent[client] = 0;
 			ShinForm[client] = true;
 			ApplyStatusEffect(client, client, TotalSpent[client] >= (MaxAmmo * 2 / 3) ? "Shin - Tiantui Star" : "Tiantui Star", 999.9);
+			BurningThumbtion(client, 1);
 			
 			return;
 		}
@@ -713,6 +744,19 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			SetWeaponCooldown(weapon, cooldown);
 			ResetCombo(attacker, cooldown, true);
 			TF2_RemoveCondition(attacker, TFCond_CritOnKill);
+			
+			//For client only cus too much fancy shit
+			float PosDo[3];
+			WorldSpaceCenter(victim, PosDo);
+
+			EmitSoundToClient(attacker, "mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+			TE_Particle("hightower_explosion", PosDo, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = attacker);
+
+			TE_Particle("mvm_soldier_shockwave", PosDo, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+		//	if(RaidbossIgnoreBuildingsLogic(1))
+		//		damage *= 2.0;
+//
+		//	Explode_Logic_Custom(damage*2.0, attacker, attacker, weapon, position, 250.0, 0.75, _, _, _, _, _, Ground_Slam);
 		}
 		default:
 		{
@@ -1112,9 +1156,19 @@ void Burning_Thumb_ApplyParticle(int client, bool Remove = false, float Duration
 	if(!IsValidEntity(viewmodelModel))
 		return;
 		
+	int trail = Trail_Attach(client, ARROW_TRAIL_RED, 255, 0.45, 60.0, 3.0, 5);
+	SetEntityRenderColor(trail, 200, 177, 124, 75);
+	SDKCall_SetLocalOrigin(trail, {0.0,0.0,50.0});
+	CreateTimer(Duration, Timer_RemoveEntityParent, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(Duration + 0.65, Timer_RemoveEntity, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);
+
 	float flBasePos[3]; // original
 	float flAng[3]; // original
-
+	GetAttachment(viewmodelModel, "eyeglow_R", flBasePos, flAng);
+	int particle = ParticleEffectAt(flBasePos, "raygun_projectile_red_crit", Duration);
+	SetParent(viewmodelModel, particle, "eyeglow_R");
+	AddEntityToThirdPersonTransitMode(client, particle);
+	/*
 	GetAttachment(viewmodelModel, "effect_hand_r", flBasePos, flAng);
 	flAng[1] -= 90.0;
 
@@ -1133,4 +1187,140 @@ void Burning_Thumb_ApplyParticle(int client, bool Remove = false, float Duration
 		int particle = ParticleEffectAt(PosToForward, "raygun_projectile_red_crit", Duration);
 		SetParent(viewmodelModel, particle, "effect_hand_r", PosToForward);
 	}
+	*/
+}
+
+
+#define BURNINGTHUMB_BOUNDS_VIEW_EFFECT 25.0
+#define BURNINGTHUMB_MAXRANGE_VIEW_EFFECT 80.0
+
+static int BurningThumbtion(int client, int which)
+{
+	//Reduce the damage they take
+	char animation[255];
+
+	DoOverlayLogicLeper(client);
+	switch(which)
+	{
+		case 1:
+		{
+			Format(animation, sizeof(animation), "burning_reload");
+		}
+	}
+
+	float vAngles[3];
+	float vOrigin[3];
+	
+	GetClientEyePosition(client, vOrigin);
+	GetClientEyeAngles(client, vAngles);
+	float vecSwingForward[3];
+	float vecSwingEnd[3];
+	GetAngleVectors(vAngles, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
+	vecSwingEnd[0] = vOrigin[0] + vecSwingForward[0] * BURNINGTHUMB_MAXRANGE_VIEW_EFFECT * 0.25;
+	vecSwingEnd[1] = vOrigin[1] + vecSwingForward[1] * BURNINGTHUMB_MAXRANGE_VIEW_EFFECT * 0.25;
+	vecSwingEnd[2] = vOrigin[2] + vecSwingForward[2] * BURNINGTHUMB_MAXRANGE_VIEW_EFFECT * 0.25;
+	vecSwingEnd[2] += 15.0;
+	
+	//always from upwards somewhere.
+	vAngles[0] = GetRandomFloat(-10.0 , -5.0);
+	switch(GetRandomInt(0,1))
+	{
+		case 0:
+		{
+			vAngles[1] += GetRandomFloat(10.0 , 15.0);
+		}
+		case 1:
+		{
+			vAngles[1] -= GetRandomFloat(10.0 , 15.0);
+		}
+	}
+
+	float LeperViewAnglesMins[3];
+	float LeperViewAnglesMaxs[3];
+	LeperViewAnglesMins = view_as<float>({-BURNINGTHUMB_BOUNDS_VIEW_EFFECT, -BURNINGTHUMB_BOUNDS_VIEW_EFFECT, -BURNINGTHUMB_BOUNDS_VIEW_EFFECT});
+	LeperViewAnglesMaxs = view_as<float>({BURNINGTHUMB_BOUNDS_VIEW_EFFECT, BURNINGTHUMB_BOUNDS_VIEW_EFFECT, BURNINGTHUMB_BOUNDS_VIEW_EFFECT});
+
+	GetAngleVectors(vAngles, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
+
+	vecSwingEnd[0] = vOrigin[0] + vecSwingForward[0] * BURNINGTHUMB_MAXRANGE_VIEW_EFFECT;
+	vecSwingEnd[1] = vOrigin[1] + vecSwingForward[1] * BURNINGTHUMB_MAXRANGE_VIEW_EFFECT;
+	vecSwingEnd[2] = vOrigin[2] + vecSwingForward[2] * BURNINGTHUMB_MAXRANGE_VIEW_EFFECT;
+
+	Handle trace = TR_TraceHullFilterEx( vOrigin, vecSwingEnd, LeperViewAnglesMins, LeperViewAnglesMaxs, ( MASK_SOLID ), TraceRayHitWorldOnly, client );
+	if ( TR_GetFraction(trace) < 1.0)
+	{
+		//we hit something, uh oh!
+		TR_GetEndPosition(vecSwingEnd, trace);
+	}
+	GetClientEyeAngles(client, vAngles);
+	vAngles[0] = 0.0;
+	GetAngleVectors(vAngles, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
+
+	delete trace;
+
+	float vecSwingEndMiddle[3];
+	vecSwingEndMiddle[0] = vOrigin[0] + vecSwingForward[0] * BURNINGTHUMB_MAXRANGE_VIEW_EFFECT;
+	vecSwingEndMiddle[1] = vOrigin[1] + vecSwingForward[1] * BURNINGTHUMB_MAXRANGE_VIEW_EFFECT;
+	vecSwingEndMiddle[2] = vOrigin[2] + vecSwingForward[2] * BURNINGTHUMB_MAXRANGE_VIEW_EFFECT;
+	trace = TR_TraceHullFilterEx( vOrigin, vecSwingEndMiddle, LeperViewAnglesMins, LeperViewAnglesMaxs, ( MASK_SOLID ), TraceRayHitWorldOnly, client );
+	if ( TR_GetFraction(trace) < 1.0)
+	{
+		//we hit something, uh oh!
+		TR_GetEndPosition(vecSwingEndMiddle, trace);
+	}
+	delete trace;
+	float vAngleCamera[3];
+	float MiddleAngle[3];
+	MiddleAngle[0] = (vecSwingEndMiddle[0] + vOrigin[0]) / 2.0;
+	MiddleAngle[1] = (vecSwingEndMiddle[1] + vOrigin[1]) / 2.0;
+	MiddleAngle[2] = (vecSwingEndMiddle[2] + vOrigin[2]) / 2.0;
+	
+	int viewcontrol = CreateEntityByName("prop_dynamic");
+	if (IsValidEntity(viewcontrol))
+	{
+		b_ThisEntityIgnored[viewcontrol] = true;
+		GetVectorAnglesTwoPoints(vecSwingEnd, MiddleAngle, vAngleCamera);
+		SetEntityModel(viewcontrol, "models/empty.mdl");
+		if((GetClientButtons(client) & IN_DUCK))
+		{
+			//if client crouches it actually messes up the camera
+			vecSwingEnd[2] += 30.0;
+		}
+		DispatchKeyValueVector(viewcontrol, "origin", vecSwingEnd);
+		DispatchKeyValueVector(viewcontrol, "angles", vAngleCamera);
+		DispatchSpawn(viewcontrol);	
+		SetClientViewEntity(client, viewcontrol);
+	}
+	float vabsAngles[3];
+	float vabsOrigin[3];
+	GetClientAbsOrigin(client, vabsOrigin);
+	GetClientEyeAngles(client, vabsAngles);
+	vabsAngles[0] = 0.0;
+	SetVariantInt(0);
+	AcceptEntityInput(client, "SetForcedTauntCam");	
+
+	int spawn_index = NPC_CreateByName("npc_burningthumb_visualiser", client, vabsOrigin, vabsAngles, -1, animation);
+
+	CClotBody npc = view_as<CClotBody>(spawn_index);
+	npc.m_iWearable9 = viewcontrol;
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+
+	
+	TF2_AddCondition(client, TFCond_FreezeInput, -1.0);
+
+	SetEntityMoveType(client, MOVETYPE_NONE);
+	SetEntProp(client, Prop_Send, "m_bIsPlayerSimulated", 0);
+	SetEntProp(client, Prop_Send, "m_bSimulatedEveryTick", 0);
+//	SetEntProp(client, Prop_Send, "m_bAnimatedEveryTick", 0);
+	SetEntProp(client, Prop_Send, "m_bClientSideAnimation", 0);
+	SetEntProp(client, Prop_Send, "m_bClientSideFrameReset", 1);
+	SetEntProp(client, Prop_Send, "m_bForceLocalPlayerDraw", 1);
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+	}
+
+	return spawn_index;
 }

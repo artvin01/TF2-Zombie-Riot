@@ -9620,12 +9620,30 @@ static float TiantuiShinDamageDealFunc(int attacker, int victim, StatusEffect Ap
 static void TiantuiStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	if(victim <= MaxClients)
+	{
 		MakeBladeBloddy(victim, true);
+		if(IsValidEntity(Apply_StatusEffect.WearableUse))
+			return;
+	
+	
+		float flPos[3];
+		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+		int ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_arcane_yellow_glow", victim, "", {0.0,0.0,0.0});
+		AddEntityToThirdPersonTransitMode(victim, ParticleEffect);
+		
+		int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+		Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+		E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+	}
 }
 static void TiantuiEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	if(victim <= MaxClients)
 		MakeBladeBloddy(victim, false);
+
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	RemoveEntity(Apply_StatusEffect.WearableUse);
 }
 static float OverheatDamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
