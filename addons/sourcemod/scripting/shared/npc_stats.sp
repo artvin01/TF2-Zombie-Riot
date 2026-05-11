@@ -10699,6 +10699,7 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 					{
 						if(HasSpecificBuff(target, "Touch Ingored"))
 						{
+							//dont
 							return;
 						}
 						npc.m_iTarget = target;
