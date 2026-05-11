@@ -1401,6 +1401,10 @@ stock int HealEntityGlobal(int healer,
 		{
 			HealTotal *= 1.5;
 		}
+		if(HasSpecificBuff(healer, "Tiantui Star") || HasSpecificBuff(healer, "Shin - Tiantui Star"))
+		{
+			HealTotal *= 0.5;
+		}
 		if(b_HealthyEssence && GetTeam(receiver) == TFTeam_Red)
 			HealTotal *= 1.25;
 			

@@ -552,7 +552,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			}
 			
 			if(WeaponLevel[attacker] > 0)
-				InflictTremorBurst(victim, attacker, 1, 3, true);
+				InflictTremorBurst(victim, attacker, 1, 2, true);
 			
 			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
 			power += bonus;
@@ -988,7 +988,7 @@ stock void InflictTremorBurst(int victim, int attacker, int decrease, int minreq
 	float timeleft;
 	char name[64];
 	int amount = StatusEffects_TremorDebuffGet(victim, timeleft, name);
-	if(amount > 0 && timeleft >= (minrequire * TremorTime))
+	if(amount > 0 && timeleft > (minrequire * TremorTime))
 	{
 		DataPack pack = new DataPack();
 		pack.WriteCell(EntIndexToEntRef(victim));
