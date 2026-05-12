@@ -3370,7 +3370,7 @@
 	"Overheat Desc"
 	{
 		"en"	"{green}Increases resistance by up to 50％ based on lost health."
-		"ko"	"{green}잃은 체력량에 따라 가하는 피해량이 최대 50％까지 증가합니다."
+		"ko"	"{green}잃은 체력량에 따라 피해 저항력이 최대 50％까지 증가합니다."
 	}
 	"Tremor"
 	{
