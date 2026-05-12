@@ -3350,7 +3350,7 @@
 	"Tiantui Star Desc"
 	{
 		"en"	"{red}Decreases damage dealt by all other weapons.\n{green}Increases damage dealt by up to 20％ the faster this unit to the target.\nInflicts +1 more Tremor stack and +5s more Tremor extension."
-		"ko"	"{red}다른 모든 무기를 통해 가하는 피해 감소\n{green}대상보다 속도가 빠를 수록 가하는 피해량이 최대 20％까지 증가합니다.\n진동 부여량이 1 증가하며 진동 연장이 5초 증가합니다."
+		"ko"	"{red}이 무기 외의 무기로 가하는 피해 감소\n{green}대상보다 속도가 빠를 수록 가하는 피해량이 최대 20％까지 증가합니다.\n진동 부여량이 1 증가하며 진동 연장이 5초 증가합니다."
 	}
 	"Shin - Tiantui Star"
 	{
@@ -3360,7 +3360,7 @@
 	"Shin - Tiantui Star Desc"
 	{
 		"en"	"{red}Decreases damage dealt by all other weapons.\n{green}Increases damage dealt by up to 40％ the faster this unit to the target.\nInflicts +2 more Tremor stack and +10s more Tremor extension."
-		"ko"	"{red}다른 모든 무기를 통해 가하는 피해 감소\n{green}대상보다 속도가 빠를 수록 가하는 피해량이 최대 40％까지 증가합니다.\n진동 부여량이 2 증가하며 진동 연장이 10초 증가합니다."
+		"ko"	"{red}이 무기 외의 무기로 가하는 피해 감소\n{green}대상보다 속도가 빠를 수록 가하는 피해량이 최대 40％까지 증가합니다.\n진동 부여량이 2 증가하며 진동 연장이 10초 증가합니다."
 	}
 	"Overheat"
 	{
