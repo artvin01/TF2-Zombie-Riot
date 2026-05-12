@@ -264,17 +264,20 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[128])
 	
 	// Find the element that's closest to trigger
 	int low = -1;
-	int lowHealth = 1000000;
+	int lowHealth = 10000000;
 	for(int i; i < Element_MAX; i++)
 	{
-		int damage = Elemental_GetDamage(entity, i);
-		if(damage > 0)
+		if(ElementDamage[entity][i])
 		{
-			int health = Elemental_TriggerDamage(entity, i) - damage;
-			if(health < lowHealth)
+			int damage = Elemental_GetDamage(entity, i);
+			if(damage > 0)
 			{
-				low = i;
-				lowHealth = health;
+				int health = Elemental_TriggerDamage(entity, i) - damage;
+				if(health < lowHealth)
+				{
+					low = i;
+					lowHealth = health;
+				}
 			}
 		}
 	}
@@ -1788,11 +1791,11 @@ void Elemental_AddStaggerDamage(int victim, int attacker, int damagebase)
 		}
 
 		if(triggered)
-			FreezeNpcInTime(victim, 2.0);
+			FreezeNpcInTime(victim, 3.0);
 
 		if(attacker && attacker <= MaxClients)
 		{
-			ClientCommand(attacker, triggered ? "playgamesound weapons/physcannon/energy_disintegrate4.wav" : ((GetURandomInt() % 2) ? "playgamesound weapons/physcannon/energy_sing_flyby1.wav" : "playgamesound weapons/physcannon/energy_sing_flyby2.wav"));
+			ClientCommand(attacker, triggered ? "playgamesound physics/glass/glass_sheet_break3.wav" : ((GetURandomInt() % 2) ? "playgamesound weapons/physcannon/energy_sing_flyby1.wav" : "playgamesound weapons/physcannon/energy_sing_flyby2.wav"));
 			ApplyElementalEvent(victim, attacker, damage);
 		}
 	}

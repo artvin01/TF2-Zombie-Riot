@@ -1,15 +1,15 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const int MaxAmmo = 12;			// From 12 in-limbus
-static const int ExtraAmmo = 4;			// Ammo supply cost
-static const float ChargeExtra = 15.0;	// Normal charge cooldown
-static const float BurningDamage = 8.0;	// Burning damage (1 potency)
-static const float BurningTime = 3.0;	// Burning duration (1 count)
-static const float TremorTime = 5.0;	// Tremor count time
-static const int TremorStagger = 100;	// Stagger damage per Tremor
-static const float ScorchDamage = 50.0;	// Damage per scorch stack
-static const float RCooldown = 90.0;	// R ability cooldown
+static const int MaxAmmo = 12;				// From 12 in-limbus
+static const int ExtraAmmo = 4;				// Ammo supply cost
+static const float ChargeExtra = 15.0;		// Normal charge cooldown
+static const float BurningDamage = 8.0;		// Burning damage (1 potency)
+static const float BurningTime = 3.0;		// Burning duration (1 count)
+static const float TremorTime = 5.0;		// Tremor count time
+static const int TremorStagger = 1000;		// Stagger damage per Tremor (up to x99)
+static const float ScorchDamage = 500.0;	// Damage per scorch stack (up to x198)
+static const float RCooldown = 45.0;		// R ability cooldown
 
 enum BurningThumbEnum
 {
@@ -36,7 +36,6 @@ enum BurningThumbEnum
 
 static int WeaponStore;
 static BurningThumbEnum LastMove[MAXPLAYERS+1];
-static BurningThumbEnum CurrentMove[MAXPLAYERS+1];
 static Handle ResetMove[MAXPLAYERS+1];
 static Handle WeaponTimer[MAXPLAYERS+1];
 static int WeaponLevel[MAXPLAYERS+1];
@@ -80,8 +79,8 @@ void BurningThumb_WaveEnd()
 
 public void BurningThumb_Enable(int client, int weapon)
 {
+	LastMove[client] = NoMove;
 	WeaponStore = StoreWeapon[weapon];
-	CurrentMove[client] = NoMove;
 	WeaponLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 	
 	delete WeaponTimer[client];
@@ -97,110 +96,12 @@ public void Weapon_BurningThumb_M1(int client, int weapon, bool crit, int slot)
 {
 	delete ResetMove[client];
 
-	bool final;
 	float cooldown = 0.8;
-	switch(LastMove[client])
-	{
-		case NoMove:
-		{
-			// Slash1
-			CurrentMove[client] = Slash_1;
-		}
-		case Slash_3, Tanglecleaver_3, Tigerslayer_5:
-		{
-			if(CurrentMove[client] != LastMove[client])
-			{
-				// X -> Hit -> Slash1
-				CurrentMove[client] = Slash_1;
-			}
-			else if(LastMove[client] != Slash_3)
-			{
-				// X -> Miss -> X
-				cooldown = 1.2;
-			}
-		}
-		case Slash_1:
-		{
-			if(ChargeSpent[client])
-			{
-				// Slash1 -> Charge -> Slash2
-				CurrentMove[client] = Slash_2;
-			}
-			else if(CurrentMove[client] != Slash_1)
-			{
-				// Slash1 -> Hit -> Counter
-				CurrentMove[client] = Counter_2;
-				cooldown = 1.6;
-				final = true;
-			}
-			
-			// Slash1 -> Miss -> Slash1
-		}
-		case Slash_2:
-		{
-			if(CurrentMove[client] != Slash_2)
-			{
-				if(ChargeSpent[client])
-				{
-					// Slash2 -> Charge -> Slash3
-					CurrentMove[client] = Slash_3;
-				}
-				else
-				{
-					// Slash2 -> Hit -> Slash1
-					CurrentMove[client] = Slash_1;
-
-					if(HasCharged[client])
-					{
-						// Double slashed instead of triple, correctly put charge on cooldown now
-						Store_ApplyCooldownIndex(client, WeaponStore, 2, (HasCharged[client] - GetGameTime()) + ChargeExtra);
-						HasCharged[client] = 0.0;
-					}
-				}
-			}
-
-			// Slash2 -> Miss -> Slash2
-		}
-		case Counter_2:
-		{
-			if(ChargeSpent[client])
-			{
-				// Counter -> Charge -> Slash2
-				CurrentMove[client] = Slash_2;
-			}
-			else
-			{
-				// Counter -> Hit/Miss -> Counter
-				CurrentMove[client] = Slash_1;
-			}
-		}
-		case Tanglecleaver_2:
-		{
-			CurrentMove[client] = Tanglecleaver_3;
-			cooldown = 1.2;
-		}
-		case Tigerslayer_4:
-		{
-			CurrentMove[client] = Tigerslayer_5;
-			cooldown = 1.2;
-		}
-		default:
-		{
-			CurrentMove[client] = ++LastMove[client];
-			cooldown = 1.2;
-		}
-	}
+	if(LastMove[client] >= Tanglecleaver_0 && LastMove[client] <= Tigerslayer_5)
+		cooldown = 1.2;
 
 	SetWeaponCooldown(weapon, cooldown);
-
-	if(!final)
-		cooldown += 5.0;
-	
-	LastMove[client] = CurrentMove[client];
-	ResetCombo(client, cooldown, final);
-	
-	if(WeaponTimer[client])
-		TriggerTimer(WeaponTimer[client], true);
+	ResetCombo(client, cooldown, false);
 }
 #define BURNING_DASHSPEED 720.0
 public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
@@ -263,9 +164,6 @@ public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
 	if(canUse)
 	{
 		Rogue_OnAbilityUse(client, weapon);
-
-		if(LastMove[client] == NoMove)
-			LastMove[client] = Slash_1;
 
 		if(hasAmmo && !(GetClientButtons(client) & IN_DUCK))
 		{
@@ -495,6 +393,22 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 
 	switch(CurrentMove[attacker])
 	{
+		case NoMove, Counter_2, Slash_3, Tanglecleaver_3, Tigerslayer_5:
+		{
+			CurrentMove[attacker] = Slash_1;
+		}
+		case Slash_1:
+		{
+			CurrentMove[attacker] = ChargeSpent[attacker] ? Slash_2 : Counter_2;
+		}
+		default:
+		{
+			CurrentMove[attacker]++;
+		}
+	}
+
+	switch(CurrentMove[attacker])
+	{
 		case Slash_2:
 		{
 			PrintToConsole(attacker, "Double Slash - Blast");
@@ -559,9 +473,10 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
 			power += bonus;
 
-			float cooldown = 1.0;
+			float cooldown = 1.5;
 			SetWeaponCooldown(weapon, cooldown);
 			ResetCombo(attacker, cooldown, true);
+			TF2_RemoveCondition(attacker, TFCond_FocusBuff);
 		}
 		case Counter_2:
 		{
@@ -575,6 +490,10 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 
 			//PrintToConsole(attacker, "> Skill Power: %d (+%d)", power, bonus);
 			power += bonus;
+
+			float cooldown = 1.5;
+			SetWeaponCooldown(weapon, cooldown);
+			ResetCombo(attacker, cooldown, true);
 		}
 		case Tanglecleaver_1:
 		{
@@ -664,6 +583,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			SetWeaponCooldown(weapon, cooldown);
 			ResetCombo(attacker, cooldown, true);
 			TF2_RemoveCondition(attacker, TFCond_CritOnKill);
+			TF2_RemoveCondition(attacker, TFCond_FocusBuff);
 		}
 		case Tigerslayer_1:
 		{
@@ -777,6 +697,7 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			SetWeaponCooldown(weapon, cooldown);
 			ResetCombo(attacker, cooldown, true);
 			TF2_RemoveCondition(attacker, TFCond_CritOnKill);
+			TF2_RemoveCondition(attacker, TFCond_FocusBuff);
 			
 			//For client only cus too much fancy shit
 			float PosDo[3];
@@ -818,9 +739,6 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 	
 	damage *= float(power) / 7.0;
 
-	CurrentMove[attacker] = NoMove;
-	TF2_RemoveCondition(attacker, TFCond_FocusBuff);
-
 	if(resetCharge && HasCharged[attacker])
 	{
 		ChargeSpent[attacker] = false;
@@ -848,57 +766,45 @@ static Action UpdateAmmoHud(Handle timer, DataPack pack)
 				BurningThumbEnum move = ResetMove[client] ? LastMove[client] : NoMove;
 				switch(move)
 				{
-					case Slash_1:
+					case Slash_1, Counter_2:
 					{
-						if(CurrentMove[client] != Slash_1)
-						{
-							if(ChargeSpent[client])
-							{
-								strcopy(combo, sizeof(combo), "Triple Slash - Blast");
-							}
-							else
-							{
-								strcopy(combo, sizeof(combo), "I'm Burning Up");
-							}
-						}
-
 						if(ChargeSpent[client])
-							strcopy(dash, sizeof(dash), "Dashes: 1 / 2");
+						{
+							strcopy(combo, sizeof(combo), "Triple Slash - Blast");
+							strcopy(dash, sizeof(dash), "Dashes Left: 1");
+						}
+						else
+						{
+							strcopy(combo, sizeof(combo), "I'm Burning Up");
+						}
 					}
-					case Slash_2, Slash_3:
+					case Slash_2:
 					{
-						BurningThumbEnum index = move - Slash_1;
-						if(CurrentMove[client] != LastMove[client])
-							index++;
-						
 						FormatEx(combo, sizeof(combo), "Triple Slash - Blast");
-						FormatEx(dash, sizeof(dash), "Dashes: %d / 2", (ChargeSpent[client] || move == Slash_3) ? 2 : 1);
+						FormatEx(dash, sizeof(dash), "Dashes Left: %d", ChargeSpent[client] ? 0 : 1);
 					}
-					case Counter_2:
+					case Slash_3:
 					{
-						strcopy(combo, sizeof(combo), "I'm Burning Up");
+						FormatEx(combo, sizeof(combo), "Triple Slash - Blast");
+						FormatEx(dash, sizeof(dash), "Dashes Left: 0");
 					}
 					case Tanglecleaver_0, Tanglecleaver_1, Tanglecleaver_2, Tanglecleaver_3:
 					{
-						BurningThumbEnum index = move - Tanglecleaver_1;
-						if(CurrentMove[client] != LastMove[client])
-							index++;
+						BurningThumbEnum index = move - Tanglecleaver_0;
 						
 						FormatEx(combo, sizeof(combo), "Tanglecleaver");
-						FormatEx(dash, sizeof(dash), "Dashes: %d / 3", view_as<int>(index) + (ChargeSpent[client] ? 1 : 0));
+						FormatEx(dash, sizeof(dash), "Dashes Left: %d", 3 - view_as<int>(index) - (ChargeSpent[client] ? 1 : 0));
 					}
 					case Tigerslayer_0, Tigerslayer_1, Tigerslayer_2, Tigerslayer_3, Tigerslayer_4, Tigerslayer_5:
 					{
-						BurningThumbEnum index = move - Tigerslayer_1;
-						if(CurrentMove[client] != LastMove[client])
-							index++;
+						BurningThumbEnum index = move - Tigerslayer_0;
 						
 						FormatEx(combo, sizeof(combo), "Savage Tigerslayer's Perfected Flurry of Blades");
-						FormatEx(dash, sizeof(dash), "Dashes: %d / 5", view_as<int>(index) + (ChargeSpent[client] ? 1 : 0));
+						FormatEx(dash, sizeof(dash), "Dashes Left: %d", 5 - view_as<int>(index) - (ChargeSpent[client] ? 1 : 0));
 					}
 				}
 				int total = MaxAmmo * 2 / 3;
-				PrintHintText(client, "%s\n%sTigermark Rounds: %d\n%s\nAmmo Spent for Shin: (%i/%i)", dash, ShinForm[client] ? "Savage " : "", TotalWeaponAmmo(client, weapon), combo, TotalSpent[client], total);
+				PrintHintText(client, "%s\n%s\n%sTigermark Rounds: %d\nAmmo Spent for Shin: (%d / %d)", dash, combo, ShinForm[client] ? "Savage " : "", TotalWeaponAmmo(client, weapon), TotalSpent[client], total);
 				
 			}
 			
