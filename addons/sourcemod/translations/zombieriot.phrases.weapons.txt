@@ -6070,5 +6070,6 @@
 	"Tiantui Star Blade"
 	{
 		"en"	"Tiantui Star's Blade"
+		"ko"	"천퇴성도"
 	}
 }
