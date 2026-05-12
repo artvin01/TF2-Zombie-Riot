@@ -1,13 +1,16 @@
-# https://github.com/dixon2004/python-tf2-utilities/
 import requests, vdf
 from collections import defaultdict
-def get_items_game() -> dict:
-    response = requests.get('https://raw.githubusercontent.com/SteamDatabase/GameTracking-TF2/master/tf/scripts/items/items_game.txt', timeout=10)
+
+# https://github.com/dixon2004/python-tf2-utilities/
+def fetch_game_file(file) -> dict:
+    response = requests.get(f'https://raw.githubusercontent.com/SteamDatabase/GameTracking-TF2/master/{file}', timeout=10)
     if response.status_code == 200:
-        return vdf.loads(response.text.replace('\x00', ''))["items_game"]
+        return vdf.loads(response.text.replace('\x00', ''))
     else:
-        raise Exception("Failed to get items_game.txt.")
-items_game=get_items_game()
+        raise Exception(f"Failed to get {file}.")
+items_game=fetch_game_file("tf/scripts/items/items_game.txt")["items_game"]
+strings_english=fetch_game_file("tf/resource/tf_english.txt")["lang"]["Tokens"]
+
 modelmapping = {}
 for key, data in items_game["items"].items():
     data=defaultdict(str,data)

@@ -1,6 +1,6 @@
 # Parse all items, weapons and their paps.
 import util, vdf, os, subprocess, json, f3d
-from modules.gamedata import modelmapping
+from modules.gamedata import items_game, modelmapping, strings_english
 
 # Patch pyassimp to prevent null pointer error
 if os.path.isdir("venv/lib/python3.14/site-packages/pyassimp/"):
@@ -13,7 +13,6 @@ CFG_WEAPONS = vdf.loads(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zo
 
 """
 TODO
-[ ] Weapon Attributes (Clip, reserve, firerate, etc.)
 [ ] Tooltip CSS rework as to fit the attributes
 [ ] Fix: When searching for weapon kit, its weapons may not be shown if the name differs from the kit name
 """
@@ -101,6 +100,28 @@ class Weapon:
             self.lvl = f"<div>Level: {weapon_data["level"]}</div>"
         else:
             self.lvl = ""
+        
+        self.attributes = []
+        if "attributes" in weapon_data:
+            _attrs=weapon_data["attributes"].split(";")
+            try:
+                for index, value in zip(_attrs[0::2],_attrs[1::2],strict=True):
+                    if index.strip() in items_game["attributes"]: # TODO there are some custom attributes, gotta make manual entries for those to be included
+                        attribute_data = items_game["attributes"][index.strip()]
+                        if "hidden" in attribute_data: 
+                            if attribute_data["hidden"]=="1": continue
+                        if "description_string" in attribute_data:
+                            desc_str = attribute_data["description_string"].strip("#")
+                            val_str = str(int(float(value)*100))
+                            if desc_str in strings_english:
+                                desc = strings_english[desc_str].replace("%s1", val_str)
+                                if val_str.startswith("-"):
+                                    desc=desc.strip("+") # Prevent attributes showing up as "+-200% [attribute desc]"
+                            else:
+                                desc = f"{val_str}% {desc_str}"
+                            self.attributes.append(desc)
+            except ValueError:
+                pass # The Trash Cannon
 
         # If weapon uses custom model, fetch source SMD file from bodygroup
         self.icon = ""
@@ -129,7 +150,7 @@ class Weapon:
                     "tags": self.tags,
                     "author": util.apply_morecolors(self.author),
                     "cost": self.cost,
-                    "desc": f"{hidden_str}{self.lvl}{util.divfornewline(self.description)}{self.icon}",
+                    "desc": f"{hidden_str}{self.lvl}{util.divfornewline(self.description)}{self.icon}{util.divfornewline("\n".join(self.attributes))}",
                 }    
             ),
             "wtags": wtags or self.tags,

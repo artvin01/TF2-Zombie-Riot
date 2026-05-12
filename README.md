@@ -86,5 +86,6 @@ All generated files will be put in `gh-pages/`. If you want to know which of tho
   - [x] Items
   - [x] Weapon Paps
   - [x] Trophies
-  - [ ] Weapon Attributes (Clip, reserve, firerate, etc.)
+  - [x] Weapon Attributes (Clip, reserve, firerate, etc.)
+  - [ ] Weapon CSS rework
 - [x] Skilltree data
