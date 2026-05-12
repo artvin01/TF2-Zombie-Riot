@@ -391,23 +391,23 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 	bool resetCharge;
 	int power = 6;
 
-	switch(CurrentMove[attacker])
+	switch(LastMove[attacker])
 	{
 		case NoMove, Counter_2, Slash_3, Tanglecleaver_3, Tigerslayer_5:
 		{
-			CurrentMove[attacker] = Slash_1;
+			LastMove[attacker] = Slash_1;
 		}
 		case Slash_1:
 		{
-			CurrentMove[attacker] = ChargeSpent[attacker] ? Slash_2 : Counter_2;
+			LastMove[attacker] = ChargeSpent[attacker] ? Slash_2 : Counter_2;
 		}
 		default:
 		{
-			CurrentMove[attacker]++;
+			LastMove[attacker]++;
 		}
 	}
 
-	switch(CurrentMove[attacker])
+	switch(LastMove[attacker])
 	{
 		case Slash_2:
 		{
