@@ -854,11 +854,11 @@ static Action UpdateAmmoHud(Handle timer, DataPack pack)
 						{
 							if(ChargeSpent[client])
 							{
-								strcopy(combo, sizeof(combo), "Triple Slash - Blast: 1 / 3");
+								strcopy(combo, sizeof(combo), "Triple Slash - Blast");
 							}
 							else
 							{
-								strcopy(combo, sizeof(combo), "I'm Burning Up: 1 / 2");
+								strcopy(combo, sizeof(combo), "I'm Burning Up");
 							}
 						}
 
@@ -871,12 +871,12 @@ static Action UpdateAmmoHud(Handle timer, DataPack pack)
 						if(CurrentMove[client] != LastMove[client])
 							index++;
 						
-						FormatEx(combo, sizeof(combo), "Triple Slash - Blast: %d / 3", index);
+						FormatEx(combo, sizeof(combo), "Triple Slash - Blast");
 						FormatEx(dash, sizeof(dash), "Dashes: %d / 2", (ChargeSpent[client] || move == Slash_3) ? 2 : 1);
 					}
 					case Counter_2:
 					{
-						strcopy(combo, sizeof(combo), "I'm Burning Up: 2 / 2");
+						strcopy(combo, sizeof(combo), "I'm Burning Up");
 					}
 					case Tanglecleaver_0, Tanglecleaver_1, Tanglecleaver_2, Tanglecleaver_3:
 					{
@@ -884,7 +884,7 @@ static Action UpdateAmmoHud(Handle timer, DataPack pack)
 						if(CurrentMove[client] != LastMove[client])
 							index++;
 						
-						FormatEx(combo, sizeof(combo), "Tanglecleaver: %d / 3", index);
+						FormatEx(combo, sizeof(combo), "Tanglecleaver");
 						FormatEx(dash, sizeof(dash), "Dashes: %d / 3", view_as<int>(index) + (ChargeSpent[client] ? 1 : 0));
 					}
 					case Tigerslayer_0, Tigerslayer_1, Tigerslayer_2, Tigerslayer_3, Tigerslayer_4, Tigerslayer_5:
@@ -893,12 +893,12 @@ static Action UpdateAmmoHud(Handle timer, DataPack pack)
 						if(CurrentMove[client] != LastMove[client])
 							index++;
 						
-						FormatEx(combo, sizeof(combo), "Savage Tigerslayer's Perfected Flurry of Blades: %d / 5", index);
+						FormatEx(combo, sizeof(combo), "Savage Tigerslayer's Perfected Flurry of Blades");
 						FormatEx(dash, sizeof(dash), "Dashes: %d / 5", view_as<int>(index) + (ChargeSpent[client] ? 1 : 0));
 					}
 				}
 				int total = MaxAmmo * 2 / 3;
-				PrintHintText(client, "%s\n%sTigermark Rounds: %d\n%s\nAmmo Spent for Shin: (%i/%i)", dash, ShinForm[client] ? "Savage " : "", TotalWeaponAmmo(client, weapon), combo, AmmoSpent[client], total);
+				PrintHintText(client, "%s\n%sTigermark Rounds: %d\n%s\nAmmo Spent for Shin: (%i/%i)", dash, ShinForm[client] ? "Savage " : "", TotalWeaponAmmo(client, weapon), combo, TotalSpent[client], total);
 				
 			}
 			
