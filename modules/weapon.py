@@ -115,7 +115,7 @@ class Weapon:
                             if attribute_data["description_format"] == "value_is_percentage":
                                 val_str = str(int((float(value)*100)-100))
                             elif attribute_data["description_format"] == "value_is_inverted_percentage":
-                                val_str = str(int((float(value)*100)-100)) # TODO possibly incorrect
+                                val_str = str(-int((float(value)*100)-100))
                             elif attribute_data["description_format"] == "value_is_additive_percentage":
                                 val_str = str(int(float(value)*100))
                             elif attribute_data["description_format"] == "value_is_additive":
@@ -259,7 +259,7 @@ class WeaponPap:
                                 if attribute_data["description_format"] == "value_is_percentage":
                                     val_str = str(int((float(value)*100)-100))
                                 elif attribute_data["description_format"] == "value_is_inverted_percentage":
-                                    val_str = str(-int((float(value)*100)-100)) # TODO possibly incorrect
+                                    val_str = str(-int((float(value)*100)-100))
                                 elif attribute_data["description_format"] == "value_is_additive_percentage":
                                     val_str = str(int(float(value)*100))
                                 elif attribute_data["description_format"] == "value_is_additive":
