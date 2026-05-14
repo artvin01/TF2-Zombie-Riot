@@ -120,17 +120,14 @@ class Weapon:
                                 val_str = str(int(float(value)*100))
                             elif attribute_data["description_format"] == "value_is_additive":
                                 val_str = value
+                            val_str=val_str.strip()
 
                             if val_str != "0":
                                 if desc_str in strings_english:
-                                    desc = strings_english[desc_str].replace("%s1", val_str)
-                                    if val_str.startswith("-") and desc.startswith("+"):
-                                        if attr_type == "positive":
-                                            attr_type = "negative"
-                                            desc=desc[1:] # Prevent attributes showing up as "+-200% [attribute desc]"
-                                        elif attr_type == "negative":
-                                            attr_type = "positive"
-                                            desc=desc[1:]
+                                    desc_pre = strings_english[desc_str]
+                                    if val_str.startswith("-"):
+                                        if desc_pre.startswith("+") or desc_pre.startswith("-"): desc_pre=desc_pre[1:] # Prevent attributes showing up as "+-200% [attribute desc]"
+                                    desc = desc_pre.replace("%s1", val_str)
                                 else:
                                     desc = f"{val_str} {desc_str}"
                                 self.attributes[attr_type].append(desc)
@@ -267,13 +264,14 @@ class WeaponPap:
                                     val_str = str(int(float(value)*100))
                                 elif attribute_data["description_format"] == "value_is_additive":
                                     val_str = value
+                                val_str=val_str.strip()
 
                                 if val_str != "0":
                                     if desc_str in strings_english:
-                                        desc = strings_english[desc_str].replace("%s1", val_str)
-                                        if val_str.startswith("-") and desc.startswith("+") and attr_type == "positive":
-                                            attr_type = "negative"
-                                            desc=desc[1:] # Prevent attributes showing up as "+-200% [attribute desc]"
+                                        desc_pre = strings_english[desc_str]
+                                        if val_str.startswith("-"):
+                                            if desc_pre.startswith("+") or desc_pre.startswith("-"): desc_pre=desc_pre[1:] # Prevent attributes showing up as "+-200% [attribute desc]"
+                                        desc = desc_pre.replace("%s1", val_str)
                                     else:
                                         desc = f"{val_str} {desc_str}"
                                     self.attributes[attr_type].append(desc)

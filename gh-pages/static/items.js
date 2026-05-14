@@ -110,18 +110,20 @@ async function iter_item(item) {
     /* Add attributes */
     /* + - 0 */
     
-    if (Object.keys(item["attributes"]).length>0) {
-        attribute_container = item_tooltip.appendChild(create_element("div", "attribute_container"));
-        ATTRIBUTE_TYPES.forEach(attr_type => {
-            if (attr_type in item["attributes"]) {
-                item["attributes"][attr_type].forEach(attribute => {
-                    attribute.split("\n").forEach(line => {
-                        attribute_container.appendChild(create_element("div",`attribute_line ${attr_type}`,line));
+    if ("attributes" in item && item["type"] !== "perk") {
+        if (Object.keys(item["attributes"]).length>0) {
+            attribute_container = item_tooltip.appendChild(create_element("div", "attribute_container"));
+            ATTRIBUTE_TYPES.forEach(attr_type => {
+                if (attr_type in item["attributes"]) {
+                    item["attributes"][attr_type].forEach(attribute => {
+                        attribute.split("\n").forEach(line => {
+                            attribute_container.appendChild(create_element("div",`attribute_line ${attr_type}`,line));
+                        });
                     });
-                });
-            }
-        });
-    }
+                };
+            });
+        };
+    };
 
     /* Prevent tooltips from going outside of viewport */
     // TODO recalculate on every window resize. inconvenient but I don't want to rewrite tooltips yet
