@@ -12069,6 +12069,8 @@ static bool TriesClimbingUpLedge(CBaseNPC_Locomotion loco, const float goal[3], 
 		MaxSpeedjump = 150.0;
 	float GoalAm[3];
 	GoalAm = goal;
+	//ignore what height, they WANNA.
+	GoalAm[2] = feet[2];
 	if (GetVectorDistance(feet, GoalAm) > MaxSpeedjump)
 	{
 		return false;
