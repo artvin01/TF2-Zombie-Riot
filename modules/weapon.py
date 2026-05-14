@@ -1,6 +1,8 @@
 # Parse all items, weapons and their paps.
 import util, vdf, os, subprocess, json, f3d
 from modules.gamedata import items_game, modelmapping, strings_english
+from collections import defaultdict
+
 
 # Patch pyassimp to prevent null pointer error
 if os.path.isdir("venv/lib/python3.14/site-packages/pyassimp/"):
@@ -10,12 +12,6 @@ if os.path.isdir("venv/lib/python3.14/site-packages/pyassimp/"):
 import pyassimp
 
 CFG_WEAPONS = vdf.loads(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/weapons.cfg"))["Weapons"]
-
-"""
-TODO
-[ ] Tooltip CSS rework as to fit the attributes
-[ ] Fix: When searching for weapon kit, its weapons may not be shown if the name differs from the kit name
-"""
 
 # https://github.com/f3d-app/f3d/blob/master/examples/libf3d/python/offscreen-thumbnail/offscreen_thumbnail.py
 f3d.Engine.autoload_plugins()
@@ -55,7 +51,7 @@ def generate_weapon_icon(weapon_data, weapon_name, pure_filename, prefix="", bod
 
     if os.path.isfile(f"gh-pages/{prefix}icons/{pure_filename}_{mdl_bodygroup}.png"): # Pre-generated icons
         util.debug(f"[weaponicon]     {prefix}icons/{pure_filename}_{mdl_bodygroup}.png is cached!","weaponicon","OKCYAN")
-        return f'<div class="secondary notice"><img src="static/info.svg">Experimental weapon preview</div><img class="weapon_preview" src="{prefix}icons/{pure_filename}_{mdl_bodygroup}.png">'
+        return f"{prefix}icons/{pure_filename}_{mdl_bodygroup}.png"
 
     # Convert SMD => OBJ
     # TODO pyassimp just HATES this model and I do not know why
@@ -69,8 +65,9 @@ def generate_weapon_icon(weapon_data, weapon_name, pure_filename, prefix="", bod
     util.log(f"Generating thumbnail of {prefix}decompiled/{pure_filename}_{mdl_bodygroup}.obj")
     eng.scene.clear()
     eng.scene.add(f"{prefix}decompiled/{pure_filename}_{mdl_bodygroup}.obj")
+    eng.interactor.trigger_command("set_camera isometric")
     eng.window.render_to_image(no_background=True).save(f"./gh-pages/{prefix}icons/{pure_filename}_{mdl_bodygroup}.png")
-    return f'<div class="secondary notice"><img src="static/info.svg">Experimental weapon preview</div><img class="weapon_preview" src="{prefix}icons/{pure_filename}_{mdl_bodygroup}.png">'
+    return f"{prefix}icons/{pure_filename}_{mdl_bodygroup}.png"
 
 class Weapon:
     def __init__(self, weapon_name, weapon_data):
@@ -88,6 +85,7 @@ class Weapon:
 
         self.cost = weapon_data["cost"]
         if self.cost=="0": self.cost="Free"
+        else: self.cost = f"${self.cost}"
 
         if "desc" in weapon_data: 
             k = weapon_data["desc"]
@@ -97,11 +95,11 @@ class Weapon:
         else: self.description = ""
 
         if "level" in weapon_data:
-            self.lvl = f"<div>Level: {weapon_data["level"]}</div>"
+            self.lvl = weapon_data["level"]
         else:
             self.lvl = ""
         
-        self.attributes = []
+        self.attributes = defaultdict(list)
         if "attributes" in weapon_data:
             _attrs=weapon_data["attributes"].split(";")
             try:
@@ -112,20 +110,36 @@ class Weapon:
                             if attribute_data["hidden"]=="1": continue
                         if "description_string" in attribute_data:
                             desc_str = attribute_data["description_string"].strip("#")
-                            val_str = str(int(float(value)*100))
-                            if desc_str in strings_english:
-                                desc = strings_english[desc_str].replace("%s1", val_str)
-                                if val_str.startswith("-"):
-                                    desc=desc.strip("+") # Prevent attributes showing up as "+-200% [attribute desc]"
-                            else:
-                                desc = f"{val_str}% {desc_str}"
-                            self.attributes.append(desc)
+                            attr_type = attribute_data["effect_type"]
+                            # some of these calculations may be incorrect
+                            if attribute_data["description_format"] == "value_is_percentage":
+                                val_str = str(int((float(value)*100)-100))
+                            elif attribute_data["description_format"] == "value_is_inverted_percentage":
+                                val_str = str(int((float(value)*100)-100)) # TODO possibly incorrect
+                            elif attribute_data["description_format"] == "value_is_additive_percentage":
+                                val_str = str(int(float(value)*100))
+                            elif attribute_data["description_format"] == "value_is_additive":
+                                val_str = value
+
+                            if val_str != "0":
+                                if desc_str in strings_english:
+                                    desc = strings_english[desc_str].replace("%s1", val_str)
+                                    if val_str.startswith("-"):
+                                        attr_type = "negative"
+                                        desc=desc.strip("+") # Prevent attributes showing up as "+-200% [attribute desc]"
+                                else:
+                                    desc = f"{val_str} {desc_str}"
+                                self.attributes[attr_type].append(desc)
             except ValueError:
                 pass # The Trash Cannon
 
         # If weapon uses custom model, fetch source SMD file from bodygroup
         self.icon = ""
-        if "model_weapon_override" in weapon_data:
+        if weapon_name == "Wrench":
+            path = "models/weapons/c_models/c_wrench/c_wrench.mdl"
+            pure_filename = path.split("/")[-1].split(".")[0]
+            self.icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename,prefix="tf_")
+        elif "model_weapon_override" in weapon_data:
             if weapon_data["model_weapon_override"]!="models/empty.mdl":
                 pure_filename = weapon_data["model_weapon_override"].split("/")[-1].split(".")[0]
                 if os.path.isfile(f"decompiled/{pure_filename}.json"): # only generate icon if decompiled data exists
@@ -138,6 +152,8 @@ class Weapon:
             path = modelmapping[weapon_data["classname"]]
             pure_filename = path.split("/")[-1].split(".")[0]
             self.icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename,prefix="tf_")
+        
+        self.parse_enhancements()
 
 
     def to_html(self,wcfghidden=True,wtags=None):
@@ -158,78 +174,111 @@ class Weapon:
         }
         return util.fill_template(util.read("templates/items/item_preview.html"), context)
     
-
-    def paps_to_html(self,wcfghidden=True,wtags=None):
-        context = {
-            "wtags": wtags or self.tags,
-            "wcfghidden": "weapon_cfghidden" if ("hidden" in self._weapon_data) and wcfghidden else "" # paps are hidden by default
-        }
-        return util.fill_template(self.get_paps_html(), context)
     
-
-    def get_paps_html(self):
+    def parse_enhancements(self):
         """
         pap_#_pappaths define how many paps you can choose from below ("2" paths on "PaP 1" allows you to choose between "PaP 2" and "PaP 3")
         pap_#_papskip Skips a number of paps to choose ("1" skip on "PaP 1" allows you to choose "PaP 3" instead)
         """
+        self.subweapons = {
+            "name": "Weapon Enhancements",
+            "items": []
+        }
         pap_idx = 0
         pap_html = ""
-        def item_block(parent_pap,idx,html,depth):
-            html += f"<div class=\"weapon_pap wcfghidden hidden\" weapon_tags=\"wtags\" style=\"margin-left: {(depth+1)*10}px;\">\n"
+        def item_block(parent_pap,idx,output):
             for i in range(int(parent_pap.pappaths)):
                 idx += 1
-                if int(parent_pap.pappaths)>1:
-                    html += f"<i>Path {i+1}</i>\n"
-                pd = WeaponPap(self._weapon_name,self._weapon_data,idx,depth)
+                #if int(parent_pap.pappaths)>1:
+                #    output += f"<i>Path {i+1}</i>\n"
+                pd = WeaponPap(self._weapon_name,self._weapon_data,idx)
                 if pd.valid:
-                    html += pd.to_html()
-                    if pd.pappaths!="0": html = item_block(pd, idx+int(pd.papskip), html, depth+1)
-            html += "</div>\n"
-            return html
+                    if pd.pappaths!="0": pd.subweapons = item_block(pd, idx+int(pd.papskip), defaultdict(list))
+                    output["items"].append(pd)
+            return output
         
-        if "pappaths" in self._weapon_data: init_pap_paths = self._weapon_data["pappaths"]
-        else: init_pap_paths = 1
-        pap_html = item_block(WeaponPap_Dummy(init_pap_paths), pap_idx, pap_html, 0)
-        if len(pap_html)>0:
-            pap_html += "\n"
-        return pap_html
+        init_pap_paths = defaultdict(int,self._weapon_data)["pappaths"] or 1
+        self.subweapons["items"] = item_block(WeaponPap_Dummy(init_pap_paths), pap_idx, defaultdict(list))["items"]
     
 
-    def add_global_tags(self, gtags):
+    def add_global_tags(self):
         for tag in self.taglist:
-            if tag.capitalize() not in gtags and tag not in gtags and len(tag)>2: gtags.append(tag)
-        return gtags
+            if tag.capitalize() not in GLOBAL_TAGS and tag not in GLOBAL_TAGS and len(tag)>2: GLOBAL_TAGS.append(tag)
+    
+    def __json__(self):
+        return {
+            "type": getattr(self,"type","weapon"),
+            "tags": self.tags.split(),
+            "name": self.name,
+            "description": self.description,
+            "author": self.author, # TODO apply morecolors on js side
+            "lvl": self.lvl,
+            "cost": self.cost,
+            "is_hidden": defaultdict(str,self._weapon_data)["hidden"]=="1",
+            "icon": self.icon,
+            "attributes": self.attributes,
+            "subweapons": getattr(self, "subweapons", {}) # kit weps, enhancements
+        }
 
 class WeaponPap:
-    def __init__(self, weapon_name, weapon_data, idx, depth):
-        self.depth = depth
+    def __init__(self, weapon_name, weapon_data, idx):
+        self._weapon_name,self.name=weapon_name,weapon_name
+        self._weapon_data=weapon_data
+        self._weapon_data_df = defaultdict(str,weapon_data)
+
         pap_key = f"pap_{idx}_"
         key_desc = pap_key+"desc"
         util.debug(f"Parsing {weapon_name} {pap_key}","weaponpap")
         if key_desc in weapon_data:
+            if pap_key+"tags" in weapon_data: self.tags = " ".join(f"#{tag}" for tag in weapon_data[pap_key+"tags"].split(";") if tag != "")
+            else: self.tags = ""
+
+            self.cost = weapon_data[pap_key+"cost"]
+
             key_customname = pap_key + "custom_name"
             if key_customname in weapon_data: self.name = weapon_data[key_customname]
             else: self.name = weapon_name
             
-            self.description = weapon_data[key_desc]
+            self.description = util.get_key(weapon_data[key_desc]).replace("\\n","\n")
 
-            self.cost = weapon_data[pap_key+"cost"]
+            # TODO unified function
+            self.attributes = defaultdict(list)
+            if f"{pap_key}attributes" in weapon_data:
+                _attrs=weapon_data[f"{pap_key}attributes"].split(";")
+                try:
+                    for index, value in zip(_attrs[0::2],_attrs[1::2],strict=True):
+                        if index.strip() in items_game["attributes"]: # TODO there are some custom attributes, gotta make manual entries for those to be included
+                            attribute_data = items_game["attributes"][index.strip()]
+                            if "hidden" in attribute_data: 
+                                if attribute_data["hidden"]=="1": continue
+                            if "description_string" in attribute_data:
+                                desc_str = attribute_data["description_string"].strip("#")
+                                attr_type = attribute_data["effect_type"]
+                                # some of these calculations may be incorrect
+                                if attribute_data["description_format"] == "value_is_percentage":
+                                    val_str = str(int((float(value)*100)-100))
+                                elif attribute_data["description_format"] == "value_is_inverted_percentage":
+                                    val_str = str(int((float(value)*100)-100)) # TODO possibly incorrect
+                                elif attribute_data["description_format"] == "value_is_additive_percentage":
+                                    val_str = str(int(float(value)*100))
+                                elif attribute_data["description_format"] == "value_is_additive":
+                                    val_str = value
 
-            if pap_key+"tags" in weapon_data: self.tags = " ".join(f"#{tag}" for tag in weapon_data[pap_key+"tags"].split(";") if tag != "")
-            else: self.tags = ""
+                                if val_str != "0":
+                                    if desc_str in strings_english:
+                                        desc = strings_english[desc_str].replace("%s1", val_str)
+                                        if val_str.startswith("-"):
+                                            attr_type = "negative"
+                                            desc=desc.strip("+") # Prevent attributes showing up as "+-200% [attribute desc]"
+                                    else:
+                                        desc = f"{val_str} {desc_str}"
+                                    self.attributes[attr_type].append(desc)
+                except ValueError:
+                    pass # The Trash Cannon
 
-            # There has got to a better way to do this
-            key_papskip = pap_key+"papskip"
-            if key_papskip in weapon_data: self.papskip = weapon_data[key_papskip]
-            else: self.papskip = "0"
-
-            key_pappaths = pap_key+"pappaths"
-            if key_pappaths in weapon_data: self.pappaths = weapon_data[key_pappaths]
-            else: self.pappaths = "1"
-
-            key_extra_desc = pap_key+"extra_desc"
-            if key_extra_desc in weapon_data: self.extra_desc = weapon_data[key_extra_desc]
-            else: self.extra_desc = ""
+            self.papskip = self._weapon_data_df[f"{pap_key}papskip"] or "0"
+            self.pappaths = self._weapon_data_df[f"{pap_key}pappaths"] or "1"
+            self.extra_desc = self._weapon_data_df[f"{pap_key}extra_desc"].replace("\\n","\n")
 
             # If weapon uses custom model, fetch source SMD file from bodygroup
             self.icon = ""
@@ -249,30 +298,20 @@ class WeaponPap:
 
         self.valid = key_desc in weapon_data
 
-    def to_link(self):
-        return f"{" "*self.depth}{self.name}  \n"
-    
-    def to_html_preview(self):
-        if len(self.tags)>0: tags = f"{self.tags}"
-        else: tags = ""
-        extra_desc = self.extra_desc.replace("\\n","\n") if len(self.extra_desc) > 0 else ""
-        desc = util.get_key(self.description).replace("\\n","\n")
-
-        context = {
+    def __json__(self):
+        return {
+            "type": "weaponpap", # items.js directly shows nested subweapons if type=="weaponpap"
+            "tags": self.tags.split(),
             "name": self.name,
-            "tags": tags,
-            "author": "",
-            "cost": f"{self.cost}",
-            "desc": f"{util.divfornewline(desc)}{util.divfornewline(extra_desc)}{self.icon}",
+            "description": self.description,
+            #"author": self.author, # TODO apply morecolors on js side
+            #"lvl": self.lvl,
+            "cost": self.cost,
+            #"is_hidden": defaultdict(str,self._weapon_data)["hidden"]=="1",
+            "icon": self.icon,
+            "attributes": self.attributes,
+            "subweapons": getattr(self, "subweapons", {})
         }
-        return util.fill_template(util.read("templates/items/item.html"), context)
-    
-    def to_html(self):
-        context = { # wtags left out intentionally, it is replaced later
-            "name": self.name,
-            "data_item": self.to_html_preview()
-        }
-        return util.fill_template(util.read("templates/items/item_preview.html"), context)
 
 class WeaponPap_Dummy:
     def __init__(self, init_pap_paths):
@@ -285,78 +324,85 @@ class GenericItem:
         self.is_weapon=(("desc" in item_data) or ("author" in item_data)) and not "weaponkit" in item_data
         self.is_weapon_kit="weaponkit" in item_data
         self.is_trophy="desc" in item_data and "visual_desc_only" in item_data
-        self.is_category="author" not in item_data and "filter" in item_data and "whiteout" not in item_data
+        self.is_category="author" not in item_data and ("filter" in item_data or "nokit" in item_data) and "whiteout" not in item_data
         self.is_text="whiteout" in item_data
 
-def parse():
-    util.log("Parsing Weapon List...")
+util.log("Parsing Weapon List...")
 
-    HTML_WEAPON = ""
-    def item_block(key, data, depth, html, tags):
-        if "hidden" not in data:
-            depth += 1
-            contents=""
-            for item in data:
-                item_data = data[item]
-                itm = GenericItem(item_data)
-                if itm.is_trophy:
-                    """
-                    "Magia Wings [???]"
-                        {
-                            "desc"		"Oh how the Stars shine upon those who rule Ruina..." (can be a desc key!)
-                            "cost"		"0"
-                            "textstore"	"Magia Wings [???]"
-                            "visual_desc_only"	"0"
-                            "attributes"	"2 ; 1.0"
-                            "index"		"2" //0 = primary, 1 = secondary, 2 = melee, 3 = Body, 4 = mage?
-                            "slot"		"11" // 11 is cosmetics
-                        }
-                    """
-                    context = {
-                        "name": util.get_key(item, silent=True),
-                        "data_item": util.divfornewline(util.get_key(item_data["desc"], silent=True)),
-                        "wtags": "",
-                        "wcfghidden": ""
+def item_block(key, data, output, type_override=None):
+    if ("hidden" not in data):# or key=="Koshi's Goods":
+        if key=="Koshi's Goods":
+            output["$description"] = [
+                "Only available in Freeplay."
+            ]
+        for item in data:
+            item_data = data[item]
+            itm = GenericItem(item_data)
+            if itm.is_trophy:
+                """
+                "Magia Wings [???]"
+                    {
+                        "desc"		"Oh how the Stars shine upon those who rule Ruina..." (can be a desc key!)
+                        "cost"		"0"
+                        "textstore"	"Magia Wings [???]"
+                        "visual_desc_only"	"0"
+                        "attributes"	"2 ; 1.0"
+                        "index"		"2" //0 = primary, 1 = secondary, 2 = melee, 3 = Body, 4 = mage?
+                        "slot"		"11" // 11 is cosmetics
                     }
-                    contents += util.fill_template(util.read("templates/items/item_preview.html"), context)
-                elif itm.is_weapon:
-                    wep = Weapon(item,item_data)
-                    tags=wep.add_global_tags(tags)
-                    contents += wep.to_html()
-                    contents += wep.paps_to_html()
-                elif itm.is_weapon_kit:
-                    kit = Weapon(item,item_data)
-                    tags=kit.add_global_tags(tags)
-                    contents += kit.to_html(wcfghidden=False)
+                """
+                output["$items"].append({
+                    "type": "trophy",
+                    "name": util.get_key(item, silent=True),
+                    "description": util.get_key(item_data["desc"], silent=True),
+                    "wtags": "",
+                    "wcfghidden": ""
+                })
+                #html += util.fill_template(util.read("templates/items/item_preview.html"), context)
+            elif itm.is_weapon:
+                wep = Weapon(item,item_data)
+                if type_override: wep.type=type_override
+                wep.add_global_tags()
+                output["$items"].append(wep)
+            elif itm.is_weapon_kit:
+                kit = Weapon(item,item_data)
+                kit.add_global_tags()
+                kit.subweapons = {
+                    "name": "Kit Items",
+                    "items": []
+                }
 
-                    # kit items (has pap)
-                    def _kitweps():
-                        h=""
-                        for k,v in item_data.items():
-                            if GenericItem(v).is_weapon:
-                                kitwep = Weapon(k,v)
-                                h += kitwep.to_html(wcfghidden=False, wtags=kit.tags)
-                                h += kitwep.paps_to_html(wcfghidden=False, wtags=kit.tags)
-                        return h
-                    contents += f'<div style="margin-left: 10px;">\n{_kitweps()}</div>\n'
-                elif item[0].isupper() and itm.is_category or "Perks" in item: # unneeded data is always lowercase...
-                    contents, tags = item_block(item, item_data, depth, contents, tags)
-                elif "Trophies" == item: # Item
-                    contents, tags = item_block(item, item_data, depth, contents, tags)
-                elif itm.is_text: # Text shown in menu
-                    contents += f"{item}\n"
-            html += f'<details>\n    <summary class="noselect">{key}</summary>{contents}</details>\n'
-        return html, tags
+                # kit items (has pap)
+                for k,v in item_data.items():
+                    if GenericItem(v).is_weapon:
+                        kit.subweapons["items"].append(Weapon(k,v))
+                
+                output["$items"].append(kit)
+            elif item[0].isupper() and itm.is_category or "Perks" in item: # unneeded data is always lowercase...
+                prev_override = type_override
+                if item == "Level Perks":
+                    type_override = "perk"
+                elif item == "Barracks Civilization":
+                    type_override = "barrack"
+                output[item] = item_block(item, item_data, defaultdict(list),type_override)
+                type_override = prev_override
+            elif "Trophies" == item:
+                output[item] = item_block(item, item_data, defaultdict(list))
+            elif itm.is_text: # Text shown in menu
+                output["$description"].append(item)
+    return output
 
+GLOBAL_TAGS = []
+WEAPONSDATA = {}
+type_override = None
+for item_category in CFG_WEAPONS:
+    if GenericItem(CFG_WEAPONS[item_category]).is_item_category:
+        if item_category == "Upgrades":
+            type_override = "upgrade"
+        output = item_block(item_category, CFG_WEAPONS[item_category], defaultdict(list),type_override)
+        type_override = None
+        if output: # no empty categories
+            WEAPONSDATA[item_category] = output
 
-    tags = []
-    for item_category in CFG_WEAPONS:
-        if GenericItem(CFG_WEAPONS[item_category]).is_item_category:
-            HTML_WEAPON, tags = item_block(item_category,CFG_WEAPONS[item_category],0, HTML_WEAPON, tags)
-    
-    tags_html = "".join([f"<div class=\"btn\" tabindex=\"0\" onclick=\"filter_set_tag('{tag}');\">#{tag}</div>" for tag in tags])
-    context = {
-        "gtags": tags_html,
-        "itemdata": HTML_WEAPON
-    }
-    util.write("gh-pages/items.html", util.fill_template(util.read("templates/items/items.html"), context))
+if not os.path.isdir("gh-pages/items"): subprocess.run(["mkdir", "gh-pages/items"]) # TODO unified dir for all .json data i.e. put skilltree and weapon json in one directory
+util.write("gh-pages/items/items.json", json.dumps(WEAPONSDATA,indent=2))

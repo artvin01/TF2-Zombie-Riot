@@ -73,19 +73,14 @@ All generated files will be put in `gh-pages/`. If you want to know which of tho
 # TODO
 - [x] Waveset data
   - [ ] Special wavesets
-    - [x] ZR: Survival
-    - [x] ZR: Raidrush
-    - [x] ZR: Rogue
     - [ ] ZR: Construction
-        - [x] Construction 1
         - [ ] Construction 2 (partial support)
-    - [x] ZR: Special Maps
 - [x] NPC data
   - [ ] Better NPC data parsing
 - [x] Item data
-  - [x] Items
-  - [x] Weapon Paps
-  - [x] Trophies
-  - [x] Weapon Attributes (Clip, reserve, firerate, etc.)
   - [ ] Weapon CSS rework
+    - [x] Basic weapon list
+    - [ ] Weapon Enhancements (+ Icons)
+    - [ ] Weapon Kits
+    - [ ] Search filters
 - [x] Skilltree data

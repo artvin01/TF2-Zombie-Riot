@@ -34,6 +34,8 @@ gh-pages/*
 !gh-pages/waveset_viewer.html
 !gh-pages/multipliers.html
 !gh-pages/skilltree.html
+!gh-pages/items.html
+!gh-pages/items_legacy.html
 
 logs.txt
 run_rogue.sh

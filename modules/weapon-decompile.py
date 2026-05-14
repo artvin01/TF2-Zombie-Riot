@@ -52,7 +52,9 @@ def decompile_model(path):
 
 class Weapon:
     def __init__(self, weapon_name, weapon_data):
-        if "model_weapon_override" in weapon_data:
+        if weapon_name == "Wrench":
+            decompile_model("models/weapons/c_models/c_wrench/c_wrench.mdl")
+        elif "model_weapon_override" in weapon_data:
             decompile_model(weapon_data["model_weapon_override"])
         elif "classname" in weapon_data:
             decompile_model(modelmapping[weapon_data["classname"]])

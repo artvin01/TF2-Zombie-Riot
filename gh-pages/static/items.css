@@ -40,71 +40,6 @@ input[type=search] {
     user-select: none;
     cursor: text;
 }
-
-/* Item Previews */
-.hover {
-    display: table;
-    position: relative;
-    color: var(--link-dark);
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.hover:hover, .hover:focus {
-    color: hsl(from var(--link-dark) h s 80%);
-}
-
-.tooltip {
-  z-index: 1;
-  height: max-content;
-  width: max-content;
-  top: 110%;
-  left: 0;
-  opacity: 0;
-  position: absolute;
-  transition: 0.25s;
-  pointer-events: none;
-  padding-top: 25px;
-  padding-bottom: 25px;
-  padding-left: 35px;
-  padding-right: 35px;
-  background-color: var(--bg-light);
-  color: var(--deep-space-blue);
-  text-align: left;
-}
-
-
-/* temp weapon icon css */
-.notice {
-    display: flex;
-    align-items: center;
-    padding: 5px;
-    margin-left:-20px;
-    width:fit-content;
-}
-
-.notice img {
-    height: 16px;
-    width: auto;
-    margin-right: 21px;
-}
-
-.weapon_preview {
-    max-height: 128px;
-}
-
-.hover:hover .tooltip, .hover:focus .tooltip {
-    opacity:1;
-    top: 125%;
-}
-
-/* no items found spacing */
-#noitems {
-    margin-top: 30px;
-}
-
-/* weapon content */
-
 #taglist {
     display: flex;
     width: 100%;
@@ -112,8 +47,129 @@ input[type=search] {
     flex-wrap:wrap;
 }
 
-@media screen and (max-width: 700px) {
-    .tooltip {
-        width: min-content; /* TODO properly size this */
-    }
+/* Blocks */
+.block {
+    background-color: #26292b;
+    border: solid #ccc8c1 3px;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 2em;
+}
+
+.block h1 {
+    padding-left: .75em;
+}
+.block-desc_container {
+    margin-left: 2em;
+    padding-left: .75em;
+    margin-bottom: 15px;
+    border-left: 5px #333333 solid;
+}
+
+
+
+/* Item grid */
+.item_grid {
+    width:auto; /* empty */
+    margin-bottom: .5em;
+    margin-left: 1em;
+}
+.item_instance {
+    display: inline-flex;
+    justify-content: center;
+    align-content: center;
+
+    width: 64px;
+    height: 64px;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 5px;
+    border: solid #ccc8c1 2px;
+    background-color: #282828;
+
+    /* Tooltips */
+    position: relative;
+    text-decoration: none;
+    cursor: pointer;
+}
+.item_instance:hover {
+    background-color: #333333;
+}
+
+.item_icon {
+    width: inherit;
+    height: inherit;
+}
+
+.item_price {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(83, 123, 22, 50%);
+    border-radius:5px;
+    color: #ffffff;
+}
+
+/* Tooltips =========================================== */
+.item_tooltip {
+    z-index: 1;
+    top: 105%;
+    opacity: 0;
+    position: absolute;
+    transition: 0.25s;
+    pointer-events: none;
+
+    background-color: var(--bg-dark);
+    border: 1px #ccc8c1 solid;
+
+    width: max-content;
+    text-align: center;
+
+    padding: 25px;
+}
+
+.item_instance:hover .item_tooltip {
+    opacity:1;
+    top: 115%;
+}
+
+/* Rightbound tooltip */
+.item_tooltip_toright {
+    top: -50%;
+    left: 105%;
+}
+.item_instance:hover .item_tooltip_toright {
+    top: -50%;
+    opacity:1;
+    left: 115%;
+}
+/* Leftbound tooltip */
+.item_tooltip_toleft {
+    top: -50%;
+    right: 105%;
+}
+.item_instance:hover .item_tooltip_toleft {
+    top: -50%;
+    opacity:1;
+    right: 115%;
+}
+
+/* Tooltip styling */
+.item_tooltip h2 {
+    margin: 0;
+}
+
+/* Attributes =========================================== */
+.attribute_container {
+    background-color: #26292b;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+.attribute_container .positive {
+    color: #99CCFF
+}
+
+.attribute_container .negative {
+    color: #FF4040
 }

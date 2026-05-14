@@ -374,25 +374,25 @@ function skilltree_fullscreen(fullscreen_btn) {
 }
 
 // REQUEST ===================================================
-async function parse_skilltree() {
+async function fetch_skilltree() {
     data_file = `skilltree/skilltree.json`;
     try {
         const response = await fetch(data_file);
         if (!response.ok) {
-            throw new Error(`[parse_waveset] Response status: ${response.status}`);
+            throw new Error(`[fetch_skilltree] Response status: ${response.status}`);
         }
 
         skilltree_data = await response.json();
     } catch (error) {
-        console.error(`[parse_waveset] ${error.message}`);
+        console.error(`[fetch_skilltree] ${error.message}`);
     }
 
-    console.log(`[parse_skilltree] Fetched ${data_file}`);
+    console.log(`[fetch_skilltree] Fetched ${data_file}`);
     window.requestAnimationFrame(draw);
 }
 
 
-parse_skilltree();
+fetch_skilltree();
 
 /* Accessibility */
 document.onkeydown = (e) => {

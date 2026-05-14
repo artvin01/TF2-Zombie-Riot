@@ -297,7 +297,8 @@ def parse():
                 if npc_data.category != "Type_Hidden":
                     desc = f"<div class=\"flex_break\"></div>\n{util.divfornewline(get_npc(wave_entry_data["plugin"], {"name": npc_name, "image": image})["description"])}"
             else:
-                image = util.html_img("./builtin_img/missing.png","E") # npc not found at all. this only happens when parse_wave has force=true
+                # temporarily an actual missing image
+                image = util.html_img("missing.png","E") # npc not found at all. this only happens when parse_wave has force=true
                 
             for property_, val in PROPERTY_MAPPINGS.items():
                 if property_ in wave_entry_data:

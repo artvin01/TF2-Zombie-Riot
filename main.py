@@ -26,7 +26,6 @@ if "music" in SCOPE: # NOTE: music data parsed into json in modules/wavesets.py
 if "items" in SCOPE:
     print("weapon.py ----------------------------------------------------------------------------------")
     import modules.weapon
-    modules.weapon.parse()
 
 if "skilltree" in SCOPE:
     print("skilltree.py ----------------------------------------------------------------------------------")
