@@ -124,9 +124,9 @@ class Weapon:
                             if val_str != "0":
                                 if desc_str in strings_english:
                                     desc = strings_english[desc_str].replace("%s1", val_str)
-                                    if val_str.startswith("-"):
+                                    if val_str.startswith("-") and desc.startswith("+") and attr_type == "positive":
                                         attr_type = "negative"
-                                        desc=desc.strip("+") # Prevent attributes showing up as "+-200% [attribute desc]"
+                                        desc=desc[1:] # Prevent attributes showing up as "+-200% [attribute desc]"
                                 else:
                                     desc = f"{val_str} {desc_str}"
                                 self.attributes[attr_type].append(desc)
@@ -267,9 +267,6 @@ class WeaponPap:
                                 if val_str != "0":
                                     if desc_str in strings_english:
                                         desc = strings_english[desc_str].replace("%s1", val_str)
-                                        if val_str.startswith("-"):
-                                            attr_type = "negative"
-                                            desc=desc.strip("+") # Prevent attributes showing up as "+-200% [attribute desc]"
                                     else:
                                         desc = f"{val_str} {desc_str}"
                                     self.attributes[attr_type].append(desc)
