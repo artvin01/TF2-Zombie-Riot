@@ -58,6 +58,34 @@ async function iter_item(item) {
         item_icon = create_element("img", "item_icon")
         item_icon.src = item["icon"];
         item_el.appendChild(item_icon);
+    } else if (item["type"]=="weaponkit") { // weaponkit subweapon icon carousel
+        // Missing && existing: Show existing only
+        // Show either if only missing or only existing
+        kit_container = item_el.appendChild(create_element("div", "kit_icon_container"));
+        const max = item["subweapons"]["items"].length;
+
+        // Detect if there is at least one existing icon
+        let missing_icon_count = 0;
+        item["subweapons"]["items"].forEach(subweapon => { if (!Boolean(subweapon.icon)) { missing_icon_count+=1; } });
+        
+        function kit_icon_onload(element, idx, max, missing_icon_count) {
+            if (max-missing_icon_count === 1) { // single item
+                element.style["opacity"] = "1";
+            } else { // multi-item
+                element.style.setProperty("--delay", `${(idx*2)-2}s`);
+                element.style["animation-duration"] = `${max*2}s`;
+            };
+        }
+        item["subweapons"]["items"].forEach((subweapon, idx) => {
+            if (Boolean(subweapon["icon"])) { // Insert rendered icon
+                item_icon = create_element("img", "item_icon kit_icon");
+                item_icon.src = subweapon["icon"]
+                kit_icon_onload(item_icon, idx, max, missing_icon_count)
+                kit_container.appendChild(item_icon);
+            } else if (max==1) { // Insert missing icon
+                insert_svg("builtin_img/missing_item.svg", "#b2b2b2", "item_icon kit_icon", kit_container, { "args": [idx, max, missing_icon_count-1], "func": kit_icon_onload });
+            }
+        });
     } else {
         switch (item["type"]) {
             case "trophy":
@@ -108,8 +136,6 @@ async function iter_item(item) {
     });
     
     /* Add attributes */
-    /* + - 0 */
-    
     if ("attributes" in item && item["type"] !== "perk") {
         if (Object.keys(item["attributes"]).length>0) {
             attribute_container = item_tooltip.appendChild(create_element("div", "attribute_container"));
@@ -126,7 +152,7 @@ async function iter_item(item) {
     };
 
     /* Prevent tooltips from going outside of viewport */
-    // TODO recalculate on every window resize. inconvenient but I don't want to rewrite tooltips yet
+    // TODO add mousein/out events to each item_instance for tooltip recalc
     tooltip_bbox = item_tooltip.getBoundingClientRect();
     if (tooltip_bbox.left < 0) {
         item_tooltip.classList.add("item_tooltip_toright");
@@ -182,13 +208,13 @@ async function load_svg(url) {
             throw new Error('Parsed content is not an SVG');
         }
 
-        console.log(`Set ${url} to element`)
+        console.log(`[load_svg] Success: ${url}`)
         return svgElement;
     } catch (error) {
-        console.error('Error:', error);
+        console.log(`[load_svg] Error: ${error}`)
     }
 }
-async function insert_svg(url, color, classes, parent) {
+async function insert_svg(url, color, classes, parent, onload) {
     if (SVG_LIST[url]===undefined) {
         SVG_LIST[url] = load_svg(url);
     };
@@ -196,7 +222,10 @@ async function insert_svg(url, color, classes, parent) {
     const svgElement = cached.cloneNode(true);
     svgElement.style.color = color;
     if (classes!="") { svgElement.classList.add(...classes.split(" ")) };
-    parent.appendChild(svgElement);
+    new_el = parent.appendChild(svgElement);
+    if (onload!==undefined) {
+        onload["func"](new_el, ...onload["args"]);
+    }
 }
 
 fetch_items();

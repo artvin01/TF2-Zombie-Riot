@@ -96,9 +96,42 @@ input[type=search] {
     background-color: #333333;
 }
 
+/* Icons ======================================= */
 .item_icon {
     width: inherit;
     height: inherit;
+}
+
+.kit_icon_container {
+    position: relative;
+    width: 64px;
+}
+
+.kit_icon {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    animation-iteration-count: infinite;
+    animation-delay: var(--delay);
+}
+
+.item_instance:hover .kit_icon {
+    animation-name: kit_icon_cycle;
+    opacity: 0;
+    animation-timeline: 50%;
+}
+
+/* cycle between several images in kit container */
+@keyframes kit_icon_cycle {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 .item_price {

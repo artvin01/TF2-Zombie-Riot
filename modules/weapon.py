@@ -368,6 +368,7 @@ def item_block(key, data, output, type_override=None):
                 output["$items"].append(wep)
             elif itm.is_weapon_kit:
                 kit = Weapon(item,item_data)
+                if type_override: kit.type=type_override
                 kit.add_global_tags()
                 kit.subweapons = {
                     "name": "Kit Items",
@@ -386,6 +387,8 @@ def item_block(key, data, output, type_override=None):
                     type_override = "perk"
                 elif item == "Barracks Civilization":
                     type_override = "barrack"
+                elif item == "Weapon Kits":
+                    type_override = "weaponkit"
                 output[item] = item_block(item, item_data, defaultdict(list),type_override)
                 type_override = prev_override
             elif "Trophies" == item:
