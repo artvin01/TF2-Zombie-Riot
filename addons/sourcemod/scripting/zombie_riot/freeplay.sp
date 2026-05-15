@@ -608,6 +608,20 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.ExtraThinkSpeed = 0.80;
 				enemy.ExtraDamage = 1.10;
 			}
+			case 40:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_overlord_rogue");
+				enemy.Health = RoundToFloor((4000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.ExtraSpeed = 1.5;
+				enemy.Data = "bossrush_duo";
+			}
+			{
+				enemy.Index = NPC_GetByPlugin("npc_bladedance");
+				enemy.Health = RoundToFloor((4000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.ExtraSpeed = 1.5;
+				enemy.ExtraDamage = 0.75;
+				enemy.Data = "bossrush_duo";
+			}
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
