@@ -226,12 +226,31 @@ function parse_main(data,px,py,angle) {
     },
   })
   
+  // Weapon Icon
   postrun.push({
     "type": "image",
     "pos": [x+7, y+7],
     "size": [64,64],
     "path": data.icon.length>0 ? data.icon : "builtin_img/missing_item_gray.svg"
   })
+
+  // Weapon Cost
+  let size = calc_text_size("16px Noto Sans", data.cost);
+  const top = (y+74)-size.height-5;
+  postrun.push({
+    "type": "roundrect",
+    "fillStyle": "rgba(83, 123, 22, 50%)",
+    "pos": [x,top],
+    "size": [size.width,size.height+6]
+  });
+  postrun.push({
+    "type": "text",
+    "fillStyle": "#ffffff",
+    "textAlign": "left",
+    "text": data.cost,
+    "pos": [x,top+size.height+2.5],
+    "font": "16px Noto Sans"
+  });
   
   if (data.subweapons!==undefined && data.subweapons.items !== undefined) {
     let part = 2*Math.PI / (data.subweapons.items.length+1);
@@ -283,6 +302,18 @@ function render(arr) {
       ctx.save();
       ctx.beginPath();
       ctx.rect(...element.pos,...element.size);
+      ctx.fillStyle=element.fillStyle; // Text color
+      ctx.fill();
+      if (element.strokeStyle !== undefined) {
+        ctx.lineWidth = element.lineWidth;
+        ctx.strokeStyle = element.strokeStyle;
+        ctx.stroke();
+      }
+      ctx.restore();
+    } else if (element.type === "roundrect") {
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(...element.pos,...element.size,5);
       ctx.fillStyle=element.fillStyle; // Text color
       ctx.fill();
       if (element.strokeStyle !== undefined) {
