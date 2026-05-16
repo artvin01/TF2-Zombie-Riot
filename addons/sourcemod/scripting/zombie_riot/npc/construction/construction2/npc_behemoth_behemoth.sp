@@ -51,7 +51,7 @@ void Const2BehemothBehemoth_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "behemoth_behemoth");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Interitus;
+	data.Category = Type_Outlaws;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -117,6 +117,7 @@ methodmap Const2BehemothBehemoth < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 		
 		SetVariantInt(3);

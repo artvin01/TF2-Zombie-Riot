@@ -47,7 +47,7 @@ void RaidbossBladedance_Duo_MapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Raid;
+	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -204,6 +204,7 @@ methodmap RaidbossBladedance_Duo < CClotBody
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
+		RaidAllowLastman = true;
 
 		return npc;
 	}

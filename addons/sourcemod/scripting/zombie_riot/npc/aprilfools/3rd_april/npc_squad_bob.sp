@@ -39,7 +39,7 @@ void SquadX_Bob_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Raid;
+	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	SquadX_BobId = NPC_Add(data);
@@ -56,7 +56,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SquadX_Bob(vecPos, vecAng, team, data);
+	return SquadX_Bob(vecPos, vecAng, team);
 }
 
 methodmap SquadX_Bob < CClotBody
@@ -94,7 +94,7 @@ methodmap SquadX_Bob < CClotBody
 
 	public void PlayIdleAlertSound() 
 	{
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -128,7 +128,7 @@ methodmap SquadX_Bob < CClotBody
 	}
 	
 	
-	public SquadX_Bob(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SquadX_Bob(float vecPos[3], float vecAng[3], int ally)
 	{
 		SquadX_Bob npc = view_as<SquadX_Bob>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "40000", ally, _, _, true, false));
 		i_NpcWeight[npc.index] = 4;
@@ -308,6 +308,7 @@ static void Clot_AnimationChange(SquadX_Bob npc)
 				IgniteTargetEffect(npc.m_iWearable1);
 				npc.b_SwordIgnition = true;
 			}
+			RemoveSpecificBuff(npc.index, "Defensive Backup");
 			npc.m_flSpeed = 330.0;
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 3;

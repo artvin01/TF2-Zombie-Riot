@@ -839,6 +839,36 @@
 		"en"	"Count increases by 1 for each spearmen hit taken\nAt Max hits taken, all spearmen enemies will deal 300％ more damage to you."
 		"ko"	"창병에게 피해를 받을 때마다 1회 누적\n최대까지 누적 시, 모든 창병 계열 적이 보유자에게 가하는 피해가 300％ 증가"
 	}
+	"Sinking"
+	{
+		"en"	"Sinking"
+		"ko"	"침잠"
+	}
+	"Sinking Desc"
+	{
+		"en"	"Count increases by 1 for each hit taken that applies this debuff\nAt Max, hits from this kit or summons deal bleed and take 10％ less dmg\nSome abilities benifit from max or less sinking"
+		"ko"	"해당 디버프를 부여하는 공격에 피격 시 1회 누적\n최대까지 누적 시, 해당 무기 키트 및 소환물에 피격 시 출혈 디버프를 얻으며, 받는 피해량 10％ 감소\n일부 능력은 침잠 수치에 따라 추가 효과 발생"
+	}
+	"Call of the Heartbroken"
+	{
+		"en"	"Call of the Heartbroken"
+		"ko"	"마음이 찢겨진 자의 부름"
+	}
+	"Call of the Heartbroken Desc"
+	{
+		"en"	"You are tempomary alive again\nYou have to stay near your summoner or else you die."
+		"ko"	"일시적으로 다시 부활하게 됩니다.\n소환자의 근처에 있어야 하며, 근처를 벗어날 시 사망합니다."
+	}
+	"Shielding"
+	{
+		"en"	"Shielding"
+		"ko"	"방비"
+	}
+	"Shielding Desc"
+	{
+		"en"	"Blocks 100％ of the damage untill shield is broken\nOverdamage is delt as damage to you\nDoesnt protect from true damage."
+		"ko"	"방어막이 파괴되기 전까지 피해량의 100％를 방어합니다.\n초과된 피해는 그대로 받게 됩니다.\n트루 데미지를 방어하지는 못합니다."
+	}
 	"Hussar's Warscream"
 	{
 		"en"	"Hussar's Warscream"
@@ -1931,6 +1961,16 @@
 		"en"	"Prevents any healing.\n{green}Doesnt prevent absolute healing."
 		"it"	"Impedisce qualsiasi guarigione.\n{green}Non impedisce la guarigione assoluta."
 		"ko"	"모든 체력 회복을 받을 수 없습니다.\n{green}절대 치유는 이 효과를 무시합니다."
+	}
+	"Wound Fatigue"
+	{
+		"en" 	"Wound Fatigue"
+		"ko" 	"상처에서 비롯된 피로"
+	}
+	"Wound Fatigue Desc"
+	{
+		"en"	"Healing from most sources is reduced by 50％.\n{green}Doesnt prevent absolute healing."
+		"ko"	"대부분의 체력 회복이 50％ 감소합니다.\n{green}절대 치유는 이 효과를 무시합니다."
 	}
 	"Zeinas Protection"
 	{
@@ -3280,13 +3320,16 @@
 	"Steam Happy Prefix"
 	{
 		"en"	"Steam Happy Prefix"
+		"ko"	"Steam Happy 접두사"
 	}
 	"Steam Happy"
 	{
 		"en"	"Steam Happy"
+		"ko"	"Steam Happy"
 	}
 	"Steam Happy Prefix Desc"
 	{
 		"en"	"Infected by steam happy, gains insane stats."
+		"ko"	"Steam Happy 이모지에 감염되어, 파멸적인 버프를 얻습니다."
 	}
 }

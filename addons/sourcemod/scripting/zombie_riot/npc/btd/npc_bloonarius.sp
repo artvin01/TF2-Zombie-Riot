@@ -274,6 +274,7 @@ methodmap Bloonarius < CClotBody
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = elite;
+		RaidAllowLastman = false;
 		
 		SetBossBloonPower(CountPlayersOnRed(), elite);
 		

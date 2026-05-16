@@ -119,6 +119,7 @@ methodmap IsharmlaTrans < CClotBody
 
 		npc.DispatchParticleEffect(npc.index, "halloween_boss_summon", vecPos, vecAng, vecPos);
 		npc.PlaySpawnSound();
+		ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 5.0);
 		
 		return npc;
 	}

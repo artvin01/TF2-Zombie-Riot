@@ -278,7 +278,7 @@ void StarShip_Regalia_OnMapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags 		= 0;
-	data.Category 	= Type_Outlaws;
+	data.Category 	= Type_Raid;
 	data.Precache 	= ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -531,6 +531,7 @@ methodmap RegaliaClass < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = true;
 			RaidModeTime = FAR_FUTURE;
 		}
 		if(StrContains(data, "raid_damage_scaling") != -1)
@@ -545,6 +546,29 @@ methodmap RegaliaClass < CClotBody
 		if(StrContains(data, "final") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 1;
+		}
+		if(StrContains(data, "music_wiki_1") != -1)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/dungeon/final_battle_1.mp3");
+			music.Time = 63;
+			music.Volume = 1.65;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "The Voids");
+			strcopy(music.Artist, sizeof(music.Artist), "Galaxy On Fire 2");
+
+		}
+		if(StrContains(data, "music_wiki_2") != -1)
+		{
+
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/dungeon/final_boss_last_stretch.mp3");
+			music.Time = 9999;
+			music.Volume = 1.65;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Renegate Justice");
+			strcopy(music.Artist, sizeof(music.Artist), "Galaxy On Fire 2");
+
 		}
 		
 		//Setting it to 999 will make our lag comp not resize collision box on shoot

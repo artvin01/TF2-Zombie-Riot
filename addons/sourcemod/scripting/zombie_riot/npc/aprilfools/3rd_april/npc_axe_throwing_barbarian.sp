@@ -94,12 +94,12 @@ void AxeThrowingBarbarian_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Axe Throwwing Barbarian");
+	strcopy(data.Name, sizeof(data.Name), "Axe Throwing Barbarian");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_axe_throwing_barbarian");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "psycho");
+	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = -1;
+	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

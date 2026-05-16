@@ -20,6 +20,7 @@ float PreventRespawnsAll;
 #define ZR_DAMAGE_NPC_REFLECT					(1 << 10)	//this npc reflects damage to another npc that can also reflect damage, use this to filter out the damage.
 #define ZR_DAMAGE_CANNOTGIB_REGARDLESS			(1 << 11)
 #define ZR_DAMAGE_ALLOW_SELFHURT				(1 << 12)
+#define ZR_ELEMENTAL_QUANTUM					(1 << 13)
 
 
 #define PERK_NONE						0
@@ -31,11 +32,16 @@ float PreventRespawnsAll;
 #define PERK_TESLAR_MULE				(1 << 5)
 #define PERK_STOCKPILE_STOUT			(1 << 6)
 #define PERK_ENERGY_DRINK				(1 << 7)
-#define PERK_LOVER				(1 << 8)
-#define PERK_MARATHON			(1 << 9)
-#define PERK_SEALED				(1 << 10)
-#define PERK_BLOODY				(1 << 11)
-#define PERK_WHO				(1 << 12)
+#define PERK_LOVER					(1 << 8)
+#define PERK_MARATHON				(1 << 9)
+#define PERK_SEALED					(1 << 10)
+#define PERK_BLOODY					(1 << 11)
+#define PERK_WHO					(1 << 12)
+	
+#define PERK_MORNING_COFFEE_X		(1 << 13)
+#define PERK_HASTY_HOPS_X			(1 << 14)
+#define PERK_MARKSMAN_BEER_X		(1 << 15)
+#define PERK_ENERGY_DRINK_X			(1 << 16)
 
 #define HEAL_NO_RULES				0	 	 
 //Nothing special.
@@ -46,6 +52,8 @@ float PreventRespawnsAll;
 #define HEAL_SILENCEABLE			(1 << 3) 
 //Silence Entirely nukes this heal
 #define HEAL_PASSIVE_NO_NOTIF		(1 << 4) 
+//Heals but doesnt notify anyone
+#define HEAL_FLAG_AM				(1 << 5) 
 //Heals but doesnt notify anyone
 
 enum
@@ -571,7 +579,7 @@ bool b_FaceStabber[MAXENTITIES];
 int Armor_Level[MAXPLAYERS]={0, ...}; 				//701
 int Grigori_Blessing[MAXPLAYERS]={0, ...}; 				//777
 bool b_HasGlassBuilder[MAXPLAYERS];
-bool b_HasMechanic[MAXPLAYERS];
+//bool b_HasMechanic[MAXPLAYERS];
 int i_MaxSupportBuildingsLimit[MAXPLAYERS];
 bool b_AggreviatedSilence[MAXPLAYERS];
 bool b_ArmorVisualiser[MAXENTITIES];
@@ -660,6 +668,7 @@ Function EntityFuncAttack2[MAXENTITIES];
 Function EntityFuncAttack3[MAXENTITIES];
 Function EntityFuncReload4[MAXENTITIES];
 Function EntityFuncPlayerRunCmd[MAXENTITIES];
+Function EntityFuncTakeDamage[MAXENTITIES][2];
 //Function EntityFuncReloadSingular5[MAXENTITIES];
 
 float f_ClientMusicVolume[MAXPLAYERS];
@@ -685,7 +694,7 @@ bool b_IgnoreAllCollisionNPC[MAXENTITIES];		//for npc's that noclip
 int iref_PropAppliedToRocket[MAXENTITIES];
 
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
-int h_TransmitHookType[MAXENTITIES];
+//int h_TransmitHookType[MAXENTITIES];
 int h_NpcCollissionHookType[MAXENTITIES];
 int h_NpcSolidHookType[MAXENTITIES];
 int h_NpcHandleEventHook[MAXENTITIES];

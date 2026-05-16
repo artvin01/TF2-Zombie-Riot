@@ -154,6 +154,7 @@ methodmap ApertureResearcher < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 				
 		int skin = 1;
@@ -176,11 +177,25 @@ methodmap ApertureResearcher < CClotBody
 
 		if(ally == TFTeam_Blue)
 		{
-			CreateTimer(0.2, Researcher_Timer_IntroMessage_Almagest, EntIndexToEntRef(npc.index));
+			NPCTalkMessage(npc.index, "𝙹ᓵ⍑ リ╎ᓵ⍑ℸ ̣ ↸╎ᒷᓭᒷ ᒷꖌᒷꖎ⍑ᔑ⎓ℸ ̣ᒷリ ꖌ∷ᒷᔑℸ ̣⚍∷ᒷリ!!!");
 		}
 		else
 		{
-			CreateTimer(0.2, Researcher_Timer_IntroMessage_Aperture, EntIndexToEntRef(npc.index));
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+				{
+					NPCTalkMessage(npc.index, "I really didn't want to end up in here!");
+				}
+				case 1:
+				{
+					NPCTalkMessage(npc.index, "Why here?! Couldn't it have been any other place on this planet?!");
+				}
+				case 2:
+				{
+					NPCTalkMessage(npc.index, "Please don't harm me, I-...");
+				}
+			}
 		}
 
 		TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
@@ -189,39 +204,7 @@ methodmap ApertureResearcher < CClotBody
 	}
 }
 
-static void Researcher_Timer_IntroMessage_Aperture(Handle timer, int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if (ref == INVALID_ENT_REFERENCE || b_NpcHasDied[entity])
-		return;
-	
-	switch(GetRandomInt(0,2))
-	{
-		case 0:
-		{
-			Researcher_Talk(entity, "I really didn't want to end up in here!");
-		}
-		case 1:
-		{
-			Researcher_Talk(entity, "Why here?! Couldn't it have been any other place on this planet?!");
-		}
-		case 2:
-		{
-			Researcher_Talk(entity, "Please don't harm me, I-...");
-		}
-	}
-}
-
-static void Researcher_Timer_IntroMessage_Almagest(Handle timer, int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if (ref == INVALID_ENT_REFERENCE || b_NpcHasDied[entity])
-		return;
-	
-	Researcher_Talk(entity, "𝙹ᓵ⍑ リ╎ᓵ⍑ℸ ̣ ↸╎ᒷᓭᒷ ᒷꖌᒷꖎ⍑ᔑ⎓ℸ ̣ᒷリ ꖌ∷ᒷᔑℸ ̣⚍∷ᒷリ!!!");
-}
-
-static void Researcher_Talk(int entity, const char[] message)
+static void NPCTalkMessage(int entity, const char[] message)
 {
 	PrintNPCMessageWithPrefixes(entity, "normal", message);
 }
@@ -266,15 +249,15 @@ public void ApertureResearcher_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					Researcher_Talk(npc.index, "Well, given your history, I wasn't expecting you to be so helpful! I'm out of here!");
+					NPCTalkMessage(npc.index, "Well, given your history, I wasn't expecting you to be so helpful! I'm out of here!");
 				}
 				case 1:
 				{
-					Researcher_Talk(npc.index, "Your contributions to Expidonsa will not go unnoticed! I'm out!");
+					NPCTalkMessage(npc.index, "Your contributions to Expidonsa will not go unnoticed! I'm out!");
 				}
 				case 2:
 				{
-					Researcher_Talk(npc.index, "That was a close call, thanks for staying neutral! Teleporter, start!");
+					NPCTalkMessage(npc.index, "That was a close call, thanks for staying neutral! Teleporter, start!");
 				}
 			}
 		}
@@ -358,7 +341,7 @@ public void ApertureResearcher_NPCDeath(int entity)
 
 	if(GetTeam(npc.index) == TFTeam_Blue)
 	{
-		Researcher_Talk(npc.index, "⍊ᒷ∷↸ᔑᒲᒲℸ ̣, ↸╎ᒷ ⍑ᔑʖᒷリ ↸𝙹ᓵ⍑ ᓭᓵ⍑𝙹リ ∴ᔑᓭ ↸∷ᔑ⚍⎓!");
+		NPCTalkMessage(npc.index, "⍊ᒷ∷↸ᔑᒲᒲℸ ̣, ↸╎ᒷ ⍑ᔑʖᒷリ ↸𝙹ᓵ⍑ ᓭᓵ⍑𝙹リ ∴ᔑᓭ ↸∷ᔑ⚍⎓!");
 	}
 	else
 	{
@@ -366,15 +349,15 @@ public void ApertureResearcher_NPCDeath(int entity)
 		{
 			case 0:
 			{
-				Researcher_Talk(npc.index, "I'm out of here!");
+				NPCTalkMessage(npc.index, "I'm out of here!");
 			}
 			case 1:
 			{
-				Researcher_Talk(npc.index, "Teleporter reconfigured, see you in never!");
+				NPCTalkMessage(npc.index, "Teleporter reconfigured, see you in never!");
 			}
 			case 2:
 			{
-				Researcher_Talk(npc.index, "Start the machine, start the machine!");
+				NPCTalkMessage(npc.index, "Start the machine, start the machine!");
 			}
 		}	
 	}

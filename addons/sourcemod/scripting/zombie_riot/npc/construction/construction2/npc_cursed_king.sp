@@ -171,6 +171,7 @@ methodmap CursedKing < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 5);

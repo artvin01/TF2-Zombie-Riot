@@ -185,6 +185,7 @@ methodmap GentleSpy < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = true;
 			RaidModeScaling = 0.0;
 		}
 		func_NPCDeath[npc.index] = view_as<Function>(GentleSpy_NPCDeath);

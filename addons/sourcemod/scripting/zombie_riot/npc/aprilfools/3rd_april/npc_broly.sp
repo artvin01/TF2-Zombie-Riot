@@ -17,7 +17,7 @@ void Broly_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = -1;
-	data.Category = -1;
+	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -35,7 +35,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Broly(vecPos, vecAng, team, data);
+	return Broly(vecPos, vecAng, team);
 }
 
 methodmap Broly < CClotBody
@@ -51,7 +51,7 @@ methodmap Broly < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public Broly(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Broly(float vecPos[3], float vecAng[3], int ally)
 	{
 		ally = TFTeam_Stalkers;
 		Broly npc = view_as<Broly>(CClotBody(vecPos, vecAng, "models/freak_fortress_2/bobbroly/brolynew.mdl", "1.15", "500000000", ally, false, true, true,true)); //giant!
@@ -223,6 +223,7 @@ static void Internal_ClotThink(int iNPC)
 		RaidModeTime = GetGameTime() + 35.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = false;
 		
 		RaidModeScaling = 99999.9; //More then 9 and he raidboss gets some troubles, bufffffffff
 

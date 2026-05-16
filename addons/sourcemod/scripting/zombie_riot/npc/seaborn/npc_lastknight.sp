@@ -156,6 +156,7 @@ methodmap LastKnight < CClotBody
 			else
 				RaidModeScaling *= 1.5;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 		
 		return npc;
@@ -171,6 +172,11 @@ methodmap LastKnight < CClotBody
 			this.m_iMedkitAnnoyance = value;
 		}
 	}
+}
+
+static void NPCTalkMessage(int iNPC, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(iNPC, "gray", message);
 }
 
 public void LastKnight_ClotThink(int iNPC)
@@ -240,7 +246,7 @@ public void LastKnight_ClotThink(int iNPC)
 			if(!found)
 			{
 				PeaceKnight = 1;
-				CPrintToChatAll("{gray}The Last Knight{default}: You have proven yourself, you're against the ocean, and you're not my enemy.");
+				NPCTalkMessage(npc.index, "You have proven yourself, you're against the ocean, and you're not my enemy.");
 
 				int owner;
 				for(int client = 1; client <= MaxClients; client++)

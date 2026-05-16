@@ -32,7 +32,7 @@ void LivingMetalBall_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_champ");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = -1;
+	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 	PrecacheSound("npc/roller/mine/rmine_movefast_loop1.wav");
@@ -252,6 +252,6 @@ void LivingMetalBallKB(int entity, int victim, float damage, int weapon)
 		AngleVec[0] = -45.0;
 		Custom_Knockback(victim, entity, 600.0, true, true, true, .OverrideLookAng = AngleVec);
 	}
-	Custom_Knockback(entity, victim, 350.0, true, true, true);
+	Custom_Knockback(entity, victim, 350.0, true, false, true);
 	npc.m_flNextMeleeAttack = FAR_FUTURE;
 }

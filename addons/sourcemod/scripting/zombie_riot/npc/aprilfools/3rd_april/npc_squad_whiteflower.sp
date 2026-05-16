@@ -55,7 +55,7 @@ void SquadX_Whiteflower_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "whiteflower");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Raid;
+	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	SquadX_WhiteflowerId = NPC_Add(data);
@@ -74,7 +74,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SquadX_Whiteflower(vecPos, vecAng, team, data);
+	return SquadX_Whiteflower(vecPos, vecAng, team);
 }
 
 methodmap SquadX_Whiteflower < CClotBody
@@ -107,7 +107,7 @@ methodmap SquadX_Whiteflower < CClotBody
 
 	public void PlayIdleAlertSound() 
 	{
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -151,7 +151,7 @@ methodmap SquadX_Whiteflower < CClotBody
 	}
 	
 	
-	public SquadX_Whiteflower(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SquadX_Whiteflower(float vecPos[3], float vecAng[3], int ally)
 	{
 		SquadX_Whiteflower npc = view_as<SquadX_Whiteflower>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.15", "40000", ally, _, _, true, false));
 		i_NpcWeight[npc.index] = 4;

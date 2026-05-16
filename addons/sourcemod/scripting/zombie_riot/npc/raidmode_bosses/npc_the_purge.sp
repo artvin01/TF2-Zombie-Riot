@@ -244,11 +244,12 @@ methodmap ThePurge < CClotBody
 			}
 		}
 		RemoveAllDamageAddition();
-		CPrintToChatAll("{crimson}The Purge{default}: {crimson}Engaging the targets.");
+		NPCTalkMessage(npc.index, "{crimson}Termination: {crimson}Begin.");
 			
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 		
 		
 		char buffers[3][64];
@@ -297,9 +298,22 @@ methodmap ThePurge < CClotBody
 	}
 }
 
+static void NPCTalkMessage(int iNPC, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(iNPC, "crimson", message);
+}
+
 static void ClotThink(int iNPC)
 {
 	ThePurge npc = view_as<ThePurge>(iNPC);
+	float VelAm[3];
+	npc.GetVelocity(VelAm);
+
+	//too slow or attacking npc
+	if(getLinearVelocity(VelAm) <= 20.0 || (IsValidEnemy(npc.index, npc.m_iTarget) && !IsValidClient(npc.m_iTarget)))
+	{
+		ApplyStatusEffect(iNPC, iNPC, "Aimbot", 0.1);
+	}
 	
 	float gameTime = GetGameTime(npc.index);
 	if(i_RaidGrantExtra[iNPC] == RAIDITEM_INDEX_WIN_COND)
@@ -344,7 +358,17 @@ static void ClotThink(int iNPC)
 	{
 		if(npc.m_iGunType != 11)
 		{
-			CPrintToChatAll("{crimson}The Purge{default}: {crimson}Annihilation status: Absolute.");
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+				{
+					NPCTalkMessage(npc.index, "{crimson}Annihilation Status: Absolute.");
+				}
+				case 1:
+				{
+					NPCTalkMessage(npc.index, "{crimson}Triggering Overclock Protocol.");
+				}
+			}
 			npc.PlayAngerSound();
 			npc.PlayMinigunStartSound();
 			npc.m_iGunType = 11;
@@ -385,7 +409,7 @@ static void ClotThink(int iNPC)
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			CPrintToChatAll("{crimson}The Purge{default}: {crimson}Last moving target detected.");
+			NPCTalkMessage(npc.index, "{crimson} One Biological Signal Remaining.");
 		}
 	}
 	int target = npc.m_iTarget;
@@ -467,8 +491,21 @@ static void ClotThink(int iNPC)
 					npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 0.5 : 1.0);
 					npc.m_flSpeed = 50.0;
 					cooldown = 6.0;
-					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Engage.");
-
+					switch(GetRandomInt(0,2))
+					{
+						case 0:
+						{
+							NPCTalkMessage(npc.index, "{crimson}Activation: Heavy Minigun.");
+						}
+						case 1:
+						{
+							NPCTalkMessage(npc.index, "{crimson}Engaging The Targets.");
+						}
+						case 2:
+						{
+							NPCTalkMessage(npc.index, "{crimson}Gunning Them Down.");
+						}
+					}
 					npc.m_flRangedArmor = 0.5;
 					npc.m_flMeleeArmor = 0.75;
 
@@ -483,7 +520,21 @@ static void ClotThink(int iNPC)
 					npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 1.65 : 3.25);
 					npc.m_flSpeed = 1.0;
 					cooldown = 5.3;
-					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Activation: Rocket barrage.");
+					switch(GetRandomInt(0,2))
+					{
+						case 0:
+						{
+							NPCTalkMessage(npc.index, "{crimson}Activation: Rocket Barrage.");
+						}
+						case 1:
+						{
+							NPCTalkMessage(npc.index, "{crimson}Rocket Storm.");
+						}
+						case 2:
+						{
+							NPCTalkMessage(npc.index, "{crimson}Explosive Typhoon.");
+						}
+					}
 
 					if(npc.Anger)
 						npc.SetPlaybackRate(2.0);
@@ -506,7 +557,21 @@ static void ClotThink(int iNPC)
 					npc.m_flRangedArmor = 1.0;
 					npc.m_flMeleeArmor = 1.5;
 					EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
-					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Quad Burst Launcher online.");
+					switch(GetRandomInt(0,2))
+					{
+						case 0:
+						{
+							NPCTalkMessage(npc.index, "{crimson}Activation: Quad Burst Launcher.");
+						}
+						case 1:
+						{
+							NPCTalkMessage(npc.index, "{crimson}Grenade Bombardment.");
+						}
+						case 2:
+						{
+							NPCTalkMessage(npc.index, "{crimson}Pipes Of Plight.");
+						}
+					}
 				}
 				case 9:	// Grenade -> Fists
 				{
@@ -522,7 +587,21 @@ static void ClotThink(int iNPC)
 
 					npc.m_flRangedArmor = 1.5;
 					npc.m_flMeleeArmor = 2.25;
-					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Weapons Error. Run over targets.");
+					switch(GetRandomInt(0,2))
+					{
+						case 0:
+						{
+							NPCTalkMessage(npc.index, "{crimson}Activation: Bulldozer.");
+						}
+						case 1:
+						{
+							NPCTalkMessage(npc.index, "{crimson}ERROR: Run Over Targets.");
+						}
+						case 2:
+						{
+							NPCTalkMessage(npc.index, "{crimson}Plowing Through The Terrain.");
+						}
+					}
 				}
 				case 10:	// Healing -> Fists
 				{
@@ -532,7 +611,21 @@ static void ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_RUN_MELEE");
 					npc.m_flSpeed = 500.0;
 					cooldown = 5.0;
-					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Re-Oiling Complete. Run over targets.");
+					switch(GetRandomInt(0,2))
+					{
+						case 0:
+						{
+							NPCTalkMessage(npc.index, "{crimson}Re-Oiling Complete. Run Over Targets.");
+						}
+						case 1:
+						{
+							NPCTalkMessage(npc.index, "{crimson}Oil Resupplied. Bulldozing Targets.");
+						}
+						case 2:
+						{
+							NPCTalkMessage(npc.index, "{crimson}Doubling Purging Efforts.");
+						}
+					}	
 				}
 			}
 
@@ -575,7 +668,7 @@ static void ClotThink(int iNPC)
 						if(target > MaxClients)
 							npc.FaceTowards(vecTarget, 9999.0);
 
-						if(HasSpecificBuff(target, "Aimbot"))
+						if(HasSpecificBuff(target, "Aimbot") || HasSpecificBuff(npc.index, "Aimbot"))
 							npc.FaceTowards(vecTarget, 9999.0);
 
 						npc.PlayShotgunSound();
@@ -631,7 +724,7 @@ static void ClotThink(int iNPC)
 						if(target > MaxClients)
 							npc.FaceTowards(vecTarget, 9999.0);
 
-						if(HasSpecificBuff(target, "Aimbot"))
+						if(HasSpecificBuff(target, "Aimbot") || HasSpecificBuff(npc.index, "Aimbot"))
 							npc.FaceTowards(vecTarget, 9999.0);
 
 						float eyePitch[3];
@@ -680,7 +773,7 @@ static void ClotThink(int iNPC)
 					if(target > MaxClients)
 						npc.FaceTowards(vecTarget, 9999.0);
 
-					if(HasSpecificBuff(target, "Aimbot"))
+					if(HasSpecificBuff(target, "Aimbot") || HasSpecificBuff(npc.index, "Aimbot"))
 						npc.FaceTowards(vecTarget, 9999.0);
 
 					npc.PlayMinigunSound();
@@ -852,7 +945,7 @@ static void ClotDeathStartThink(int iNPC)
 {
 	ThePurge npc = view_as<ThePurge>(iNPC);
 	
-	CPrintToChatAll("{crimson}The Purge{default}: {crimson}ERROR ERROR ERROR.");
+	NPCTalkMessage(npc.index, "{crimson}ERROR ERROR ERROR.");
 	npc.m_bisWalking = false;
 	npc.SetActivity("taunt_mourning_mercs_heavy", true);
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.5;
@@ -876,7 +969,7 @@ static void ClotDeathLoopThink(int iNPC)
 		return;
 	
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-	CPrintToChatAll("{darkblue}??????????{default}: You will regret this.");
+	CPrintToChatAll("{darkblue}??????????{default}: {crimson}You will regret this.");
 				
 	npc.PlayBoomSound();
 	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
@@ -984,7 +1077,22 @@ static void ClotDeath(int entity)
 
 public void ThePurge_Win(int entity)
 {
-	CPrintToChatAll("{crimson}The Purge{default}: {crimson}Annihilation completed.");
+	
+	switch(GetRandomInt(0,2))
+		{
+			case 0:
+			{
+				NPCTalkMessage(entity, "{crimson}Annihilation Completed.");
+			}
+			case 1:
+			{
+				NPCTalkMessage(entity, "{crimson}Targets Purged.");
+			}
+			case 2:
+			{
+				NPCTalkMessage(entity, "{crimson}All Enemies Terminated.");
+			}
+		}
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 }
 

@@ -333,6 +333,7 @@ methodmap VoidUnspeakable < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 200.0;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
+			RaidAllowLastman = true;
 			float value;
 			char buffers[3][64];
 			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));

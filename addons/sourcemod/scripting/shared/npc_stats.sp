@@ -1950,6 +1950,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.25;
 		}
+		if(i_CurrentEquippedPerk[this.index] & PERK_HASTY_HOPS_X)
+		{
+			speed_for_return *= 1.25;
+		}
 #endif
 		if(f_TankGrabbedStandStill[this.index] > Gametime)
 		{
@@ -4528,7 +4532,7 @@ public bool TeleportDetectEnemy(int entity, int contentsMask, any iExclude)
 	}
 	return false;
 }
-stock bool Player_Teleport_Safe(int client, float endPos[3], bool teleport = true)
+stock bool Player_Teleport_Safe(int client, float endPos[3], bool teleport = true, bool TraceWorldOnly = false)
 {
 	bool FoundSafeSpot = false;
 
@@ -4541,7 +4545,7 @@ stock bool Player_Teleport_Safe(int client, float endPos[3], bool teleport = tru
 	float OriginalPos[3];
 	OriginalPos = endPos;
 
-	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, _, _, TraceWorldOnly))
 		FoundSafeSpot = true;
 
 	for (int x = -1; x < 6; x++)
@@ -4627,7 +4631,7 @@ stock bool Player_Teleport_Safe(int client, float endPos[3], bool teleport = tru
 					case 6:
 						endPos[2] -= TELEPORT_STUCK_CHECK_3;	
 				}
-				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, _, _, TraceWorldOnly))
 					FoundSafeSpot = true;
 			}
 		}
@@ -4635,7 +4639,7 @@ stock bool Player_Teleport_Safe(int client, float endPos[3], bool teleport = tru
 				
 	FoundSafeSpot = false;
 
-	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, _, _, TraceWorldOnly))
 	{
 		FoundSafeSpot = true;
 	}
@@ -5150,6 +5154,11 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		
 	if(IsValidEntity(enemy))
 	{
+		if(index <= MaxClients)
+		{
+			//players always have camo detection.
+			camoDetection = true;
+		}
 		if(i_IsVehicle[enemy])
 		{
 #if defined ZR
@@ -6480,7 +6489,7 @@ public void NpcBaseThink(int iNPC)
 		//this is just as a temp fix, remove whenver.
 		//If it isnt custom, then these npcs ignore triggers
 	//	SetEntityMoveType(iNPC, MOVETYPE_CUSTOM);
-		NpcDrawWorldLogic(iNPC);
+		Update_TransmitState(iNPC);
 		f_TextEntityDelay[iNPC] = GetGameTime() + GetRandomFloat(0.25, 0.35);
 		Npc_DebuffWorldTextUpdate(npc);
 		IsEntityInvincible_Shield(iNPC);
@@ -10120,7 +10129,7 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 
 //We wish to check if this poisiton is safe or not.
 //This is only for players.
-bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool check_for_Ground_Clerance = false, bool ingoreSafeTrace = false)
+bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool check_for_Ground_Clerance = false, bool ingoreSafeTrace = false, bool TraceWorldOnly = false)
 {
 	int ref;
 	
@@ -10141,6 +10150,10 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool
 	else
 	{
 		SolidityFlags = MASK_NPCSOLID;
+	}
+	if(TraceWorldOnly)
+	{
+		return !(IsSpaceOccupiedWorldOnly(Pos, mins, maxs,entity));
 	}
 	hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, SolidityFlags, BulletAndMeleeTrace, entity);
 
@@ -10935,6 +10948,68 @@ public bool TraceEntityEnumerator_EnumerateTriggers_StairTrigger(int entity, int
 	
 	return true;
 }
+bool PointCollideableResult;
+stock bool IsPointCollideable(float pos1[3], int entityme, int entitythem)
+{
+	//if its the world, we just allow it.
+	if(entitythem == 0)
+		return true;
+	static float CurrentVelocity[3];
+	GetEntPropVector(entityme, Prop_Data, "m_vecAbsVelocity", CurrentVelocity);
+
+	CurrentVelocity[0] *= 0.015;
+	CurrentVelocity[1] *= 0.015;
+	CurrentVelocity[2] *= 0.015;
+
+	static float VecEndLocation[3];
+	VecEndLocation[0] = pos1[0] + CurrentVelocity[0];
+	VecEndLocation[1] = pos1[1] + CurrentVelocity[1];
+	VecEndLocation[2] = pos1[2] + CurrentVelocity[2];
+
+	return IsPointCollideable_Internal(pos1, VecEndLocation, entitythem);
+}
+stock bool IsPointCollideable_Internal(float pos1[3], float pos2[3], int entitythem)
+{
+	PointCollideableResult = false;
+
+	//rid warning
+
+	TR_TraceRayFilter( pos1, pos2, ( MASK_SOLID ), RayType_EndPoint, TraceEntity_MeAndTarget, entitythem );
+	/*
+	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	TE_SetupBeamPoints(pos1, pos2, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 1.0, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+	TE_SendToAll();
+	bool didHit = TR_DidHit();
+	
+	if (didHit && PointCollideableResult)
+	{
+		float VectorHit[3];
+		TR_GetEndPosition(VectorHit);
+		SDKCall_SetLocalOrigin(entityme, VectorHit);		
+	}
+	breaks other wands
+	*/
+	
+	return PointCollideableResult;
+}
+
+public bool TraceEntity_MeAndTarget(int entity, int mask, int entitythem)
+{	
+	if(entitythem != entity)
+		return false;
+		
+	Handle trace = TR_ClipCurrentRayToEntityEx(MASK_SOLID, entity);
+	bool didHit = TR_DidHit(trace);
+	delete trace;
+	
+	if (didHit)
+	{
+		PointCollideableResult = true;
+		return true;
+	}
+	
+	return false;
+}
 
 void AddDelayPather(int npcpather, const float DistanceCheap[3])
 {
@@ -11072,6 +11147,7 @@ void RemoveFromNpcAliveList(int iNpc)
 
 #if defined ZR
 bool RaidAllowsBuildings = false;
+bool RaidAllowLastman = true;
 #endif
 
 stock bool RaidbossIgnoreBuildingsLogic(int value = 0)
@@ -11110,6 +11186,19 @@ stock bool RaidbossIgnoreBuildingsLogic(int value = 0)
 				return true;
 			}
 
+			//do not ignore
+		}
+		//cehcks for revive
+		case 3:
+		{
+			if(!RaidAllowLastman)
+				return false;
+
+			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			{
+				//do ignore
+				return true;
+			}
 			//do not ignore
 		}
 		default:

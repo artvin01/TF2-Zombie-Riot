@@ -97,6 +97,10 @@ static void ClotThink(int iNPC)
 	MajorVoided npc = view_as<MajorVoided>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
+	if(npc.Anger)
+	{
+		gameTime = GetGameTime();
+	}
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	

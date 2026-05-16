@@ -124,6 +124,7 @@ ConVar CvarKickPlayersAt;
 ConVar CvarMaxPlayerAlive;
 ConVar zr_interactforcereload;
 bool BlockOtherRaidMusic = false;
+bool RemoveRagdollDo = false;
 //ConVar CvarDebugOffset;
 
 int CurrentEntities;
@@ -2593,7 +2594,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 //	PrintToChatAll("entity: %i| Clkassname %s",entity, classname);
 	if (entity > 0 && entity <= MAXENTITIES && IsValidEntity(entity))
 	{
-		h_TransmitHookType[entity] = 0;
+	//	h_TransmitHookType[entity] = 0;
 		f_TimeTillMeleeAttackShould[entity] = 0.0;
 		StatusEffectReset(entity, true);
 		f_InBattleDelay[entity] = 0.0;
@@ -2740,6 +2741,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_HasBombImplanted[entity] = false;
 		i_RaidGrantExtra[entity] = 0;
 		i_IsABuilding[entity] = false;
+		
 		i_NervousImpairmentArrowAmount[entity] = 0;
 		i_VoidArrowAmount[entity] = 0;
 		i_ChaosArrowAmount[entity] = 0;
@@ -2784,6 +2786,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "entity_medigun_shield"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly_Shield);
+		}
+		else if(!StrContains(classname, "tf_ragdoll"))
+		{
+			if(RemoveRagdollDo)
+				RemoveEntity(entity);
+
+			RemoveRagdollDo = false;
 		}
 		else if(!StrContains(classname, "tf_objective_resource"))
 		{
@@ -3838,7 +3847,9 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		SetEntityFlags(target, GetEntityFlags(target)|FL_DUCKING);
 		CClotBody npc = view_as<CClotBody>(target);
 		npc.m_bThisEntityIgnored = false;
-		TeleportEntity(target, pos, ang, NULL_VECTOR);
+		
+		Player_Teleport_Safe(target,pos, true, true);
+		TeleportEntity(target, NULL_VECTOR, ang, NULL_VECTOR);
 		SetEntityCollisionGroup(target, 5);
 
 		if(WasClientReviving)
@@ -4015,7 +4026,7 @@ public void ArrowTouchNonCombatEntity(int entity, int other)
 }
 
 
-void PlayerHasInteract(int client, char[] Buffer, int Buffersize)
+stock void PlayerHasInteract(int client, char[] Buffer, int Buffersize)
 {
 	if(zr_interactforcereload.BoolValue) //Cvar is on
 	{
@@ -4092,7 +4103,7 @@ void TakeDamage_DisableMVM()
 
 
 
-void EntityClearPanicButton()
+stock void EntityClearPanicButton()
 {
 	switch(CurrentEdictStrikes)
 	{

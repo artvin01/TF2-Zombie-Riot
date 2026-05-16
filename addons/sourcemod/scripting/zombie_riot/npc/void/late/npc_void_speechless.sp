@@ -163,6 +163,7 @@ methodmap VoidSpeechless < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 			RaidModeScaling = MultiGlobalHealth;
 			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
 				RaidModeScaling = 0.0;
@@ -177,19 +178,19 @@ methodmap VoidSpeechless < CClotBody
 			{
 				case 0:
 				{
-					CPrintToChatAll("{violet}Speechless{default}: It controlls us, it knows our immunity to chaos, kill us...");
+					NPCTalkMessage(npc.index, "It controlls us, it knows our immunity to chaos, kill us...");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{violet}Speechless{default}: Help me..");
+					NPCTalkMessage(npc.index, "Help me..");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{violet}Speechless{default}: Tell {blue}Sensal{default}.. his shields are useless...");
+					NPCTalkMessage(npc.index, "Tell {blue}Sensal{default}.. his shields are useless...");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{violet}Speechless{default}: I cannot controll my body...");
+					NPCTalkMessage(npc.index, "I cannot controll my body...");
 				}
 			}
 		}
@@ -222,6 +223,11 @@ methodmap VoidSpeechless < CClotBody
 		
 		return npc;
 	}
+}
+
+static void NPCTalkMessage(int iNPC, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(iNPC, "violet", message);
 }
 
 public void VoidSpeechless_ClotThink(int iNPC)
@@ -622,7 +628,7 @@ void ExpidonsanExplorerLifeLoss(VoidSpeechless npc)
 		ApplyStatusEffect(npc.index, npc.index, "Zilius Prime Technology", 99999.0);
 		if(i_RaidGrantExtra[npc.index] == 1)
 		{
-			CPrintToChatAll("{violet}Speechless{default}: Zilius was right... Im sorry...\n{purple}It takes full controll of The expidonsans body.");
+			NPCTalkMessage(npc.index, "Zilius was right... Im sorry...\n{purple}It takes full controll of The expidonsans body.");
 			CPrintToChatAll("{violet}The forgotten expidonsans suit activates its protocolls and repells the void as much as it can, as such, blocks all healing from itself.");
 		}
 		if(IsValidEntity(npc.m_iWearable3))

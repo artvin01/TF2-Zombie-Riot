@@ -919,18 +919,6 @@
 		"it"		"Seghettatore"
 		"ko" 		"쏘우러너"
 	}
-	"Infected Silvester"
-	{
-		"en" 		"Infected Silvester"
-		"it"		"Silvester infetto"
-		"ko" 		"감염된 실베스터"
-	}
-	"Infected Silvester Desc"
-	{
-		"en" 		"An Expidonsan warrior, infected. He Gets stronger everytime he comes back.\nCan you cure him?\nHis ground slam (can be silenced)."
-		"it"		"Un guerriero Expidonsan, infetto. Diventa più forte ogni volta che torna.\nPuoi curarlo? \nIl suo colpo a terra (può essere silenziato)."
-		"ko" 		"감염된 엑스피돈사 출신 전사입니다. 돌아올 때마다 더욱 강력해집니다. \n그를 치유할 수 있을까요?\n침묵을 부여해 그의 지면 충격을 저지할 수 있습니다."
-	}
 	"Silvester's Past Afterimage"
 	{
 		"en" 		"Silvester's Past Afterimage"
@@ -1182,10 +1170,9 @@
 	}
 	"Xeno Infected Lab Doctor Desc"
 	{
-    "it"	"Un medico che cercava di curare il virus xeno nel laboratorio, ha fallito ed è stato infettato lui stesso.\nQuanto più bassi sono i loro HP, tanto più resistenza ottengono quando pensano.\nStordiscili per evitare questo effetto, o colpiscili con un colpo solo."
-
-		"en" 	"A doctor trying to cure the xeno virus in the lab, failed and got infected himself.\n-Each hit they take increases their resitance, up to a limit."
-		"ko" 	"연구실에 흘러들어온 제노 바이러스를 치료하기 위해 노력한 의사였지만, 실패하고 감염되었습니다.\n-피해를 받을 때마다, 상한까지 피해 저항력이 증가합니다."
+   		"it"	"Un medico che cercava di curare il virus xeno nel laboratorio, ha fallito ed è stato infettato lui stesso.\nQuanto più bassi sono i loro HP, tanto più resistenza ottengono quando pensano.\nStordiscili per evitare questo effetto, o colpiscili con un colpo solo."
+		"en" 	"A doctor trying to cure the xeno virus in the lab, failed and got infected himself.\n-Lower health increases their resitance, up to a limit."
+		"ko" 	"연구실에 흘러들어온 제노 바이러스를 치료하기 위해 노력한 의사였지만, 실패하고 감염되었습니다.\n-체력이 감소할 수록 상한까지 피해 저항력이 증가합니다."
 	}
 	"Archer"
 	{
@@ -1485,6 +1472,11 @@
 		"nl"		"Kahmlstein?"
 		"it"		"Kahmlstein?"
 		"ko"		"카멜슈타인?"
+	}
+	"Kahmlstein? Desc"
+	{
+		"en"		"A fake kahmlstein, built by the original one\n-Attacks rapidly with his fists\n-Changes up his melee fist attacks to various phases:\nFast attacking\nSlow but heavy damage\nSingular necksnap\n-Once below 1/4th health, enrage:\nWhip out minigun that shoots explosive projectiles\nHas a bit of windup before fireing\ngains massive resistances during it\nLasts for a few seconds"
+		"ko"		"원본이 제작한 가짜 카멜슈타인입니다.\n-주먹으로 빠른 근접 공격을 합니다.\n-여러 페이즈에 따라 근접 공격이 변화합니다:\n빠른 공격\n느리지만 강력한 피해량\n단일 목꺾기 공격\n-체력이 25％ 이하가 될 경우 격분 상태가 됩니다:\n폭발성 투사체를 발사하는 미니건을 꺼냅니다.\n발사 전 예열 시간 보유\n미니건 사용 중 저항력 대폭 증가\n몇초 동안 유지됨"
 	}
 	"Chaos Kahmlstein"
 	{
@@ -2135,6 +2127,11 @@
 		"en"		"Zilius"
 		"it"		"Zilius"
 		"ko"		"질리우스"
+	}
+	"Zilius Desc"
+	{
+		"en"		"Racist Expidonsan\n-Buff aura that gives major buffs to expidonsan shields\n-Can gather energy and give himself shield and a temp buff\n-Can strike and fly towards enemies, sloggishly flying and slicing\n-Can summon portals that fire lasers at enemies with a delay\nCan only have 3 portals at once\n-On spawn summons a trapped zeina, that once freed, buffs allies around her"
+		"ko"		"인종차별주의자 엑스피돈사인.\n-엑스피돈사 보호막에 대량의 버프를 제공하는 아우라를 보유합니다.\n-에너지를 충전하여 보호막과 짧은 버프를 얻을 수 있습니다.\n-공중으로 떠올라 대상을 향해 날아올 수 있으며, 느릿하게 비행하며 돌진할 수 있습니다.\n-주기적으로 레이저를 발사하는 포탈 소환 가능\n-한번에 3개의 포탈만 존재할 수 있음\n-제이나를 구속한 상태로 스폰되며, 제이나를 풀어줄 경우 주위의 아군에게 버프를 제공합니다."
 	}
 	"Waldch"
 	{
@@ -2930,6 +2927,11 @@
 		"it"		"Diversionistico Elitus"
 		"ko"		"다이버저니스티코 엘리투스"
 	}
+	"Diversionistico Elitus Desc"
+	{
+		"en" 		"Diversionisticos who were promoted to the Elitus status. \n-Invisible unless close to. \n-Can backstab you. \n-Backstabs prevent you from being healed from most things."
+		"ko"		"엘리투스로 진급한 다이버저니스티코들입니다.\n-멀리있을 때 투명화 상태가 됩니다.\n-백스탭 가능\n-백스탭 시 대상이 받는 대부분의 치유 효과를 무효화시킵니다."
+	}
 	"Adiantum"
 	{
 		"en"	"Adiantum"
@@ -3220,6 +3222,11 @@
 		"it"	"Weaver interstellare"
 		"ko"	"인터스텔라 위버"
 	}
+	"Interstellar Weaver Desc"
+	{
+		"en"	"A Stellar Weaver trashed by Ruina. Now rebuilt by Lelouch to protect him. \n-Is a flying enemy. \n-Targets the nearest target to Lelouch, who isn't his target. \n-Shoots out a barrage of magical fireballs and homing lasers."
+		"ko"	"루이나에게 버려진 스텔라 위버입니다. 이제는 를르슈에 의해 재건되어 그를 보호합니다.\n-비행형 적\n-를르슈와 가장 근접했으며, 를르슈의 표적이 아닌 대상을 표적으로 삼습니다.\n-다수의 마력 화염구와 유도 레이저를 발사합니다."
+	}
 	"Daedalus"
 	{
 		"en"	"Daedalus"
@@ -3408,11 +3415,21 @@
 		"it"	"Il grande demone di Hallam"
 		"ko"	"할람의 대악마"
 	}
+	"Hallam's Great Demon Desc"
+	{
+		"en"	"Greatest demon in Hallam, now chaos affected..\n-The more the whisperer is hurt the stronger he gets\n-Once whisperer dies, he enrages for a short time\n-Stays at 50％ power if whisperer dies\n-Targets anyone attacking whisperer if close\n-Spawns chaos demons every so often\n-Shoots projectiles every so often"
+		"ko"	"할람의 가장 위대한 악마, 이제는 혼돈에 침식되어 버렸습니다.\n-밀고자의 체력이 감소할 수록 더욱 강해집니다.\n-밀고자 사망 시, 짧은 시간 동안 격분 상태가 됩니다.\n-밀고자 사망 시 힘 수치가 50％로 유지됩니다.\n-근접 시 밀고자를 공격하는 대상을 표적으로 삼습니다.\n-주기적으로 혼돈의 악마를 소환합니다.\n-주기적으로 투사체를 발사합니다."
+	}
 	"Ihanal Demon Whisperer"
 	{
 		"en"	"Ihanal Demon Whisperer"
 		"it"	"Ihanal Sussurratore di Demoni"
 		"ko"	"이하날 악마 밀고자"
+	}
+	"Ihanal Demon Whisperer Desc"
+	{
+		"en"	"Taming the great demon with chaos.\n-Heals the great demon and buffs him\n-Buffs great demon if he is close to him\n-If demon dies first, he explodes into 50 chaos demons\n-When hurt and near the demon, gives false therapy and makes the demon attack whoever attacked him"
+		"ko"	"대악마를 혼돈으로 길들인 자입니다.\n-대악마를 치유하며 버프를 제공합니다.\n-대악마와 근접 시 버프를 제공합니다.\n-대악마가 먼저 사망할 경우, 50체의 혼돈의 악마로 분열됩니다.\n-대악마와 근접한 상태로 피해를 받을 경우, 대악마에게 '돌팔이 치료술' 버프를 부여하고 대악마가 공격자를 표적으로 삼게 만듭니다."
 	}
 	"Winter Sniper"
 	{
@@ -3546,6 +3563,11 @@
 		"it"	"JØⱧ₦ ₮ⱧɆ ₳Ⱡ₥ł₲Ⱨ₮Ɏ"
 		"ko"	"҉전҉능҉҉자҉҉҉존҉҉҉"
 	}
+	"John The Almighty Desc"
+	{
+		"en"	"His almightyness can not be killed. ᏒᏌᑎ"
+		"ko"	"그의 전능을 죽일 수는 없을 겁니다. 도҈͡망҈쳐҉"
+	}
 	"Abomination"
 	{
 		"en"	"Abomination"
@@ -3654,6 +3676,11 @@
 		"it"	"Sicario di Wildingen"
 		"ko"	"와일딩겐 히트맨"
 	}
+	"Wildingen Hitman Desc"
+	{
+		"en"	"Normal version:\n-Shoots from far range and marks on hit\n-After being marked, the next shot oneshots\nRaid version:\nMelee's and marks on hit\n-After being marked, the next shot oneshots\n-Can be hurt on the final wave only\n-First only attacks waldch if he is alive"
+		"ko"	"일반 버전:\n-원거리에서 사격을 하며 적중 시 대상에게 표적을 부여합니다.\n-대상이 표적 상태라면, 적중 시 즉사시킵니다.\n레이드 버전:\n-근접 공격을 사용하며 적중 시 대상에게 표적을 부여합니다.\n-대상이 표적 상태라면, 적중 시 즉사시킵니다.\n-최종 웨이브에서만 피해를 가할 수 있습니다.\n-왈츠가 생존해 있을 경우 우선 표적으로 삼습니다."
+	}
 	"Vivithorn"
 	{
 		"en"	"Vivithorn"
@@ -3678,7 +3705,13 @@
 		"it"	"Pochi pazienti Xeno"
 		"ko"	"제노 소수 환자"
 	}
-	"Ouroboros Ekas"
+	"Xeno Ouroboros Ekas"
+	{
+		"en"	"Ouroboros Ekas"
+		"it"	"Uroboro Ekas"
+		"ko"	"우로보로스 에카스"
+	}
+	"Xeno Ouroboros Ekas"
 	{
 		"en"	"Ouroboros Ekas"
 		"it"	"Uroboro Ekas"
@@ -3833,23 +3866,12 @@
 		"it"	"Aetherianus"
 		"ko"	"아이테리아누스"
 	}
-	"Aetherianus Desc"
-	{
-		"en"	"Is a stronger variant\nIn addition it buffs the damage of other neavy aether class npc's"
-		"it"	"È una variante più forte.\nInoltre potenzia i danni degli altri PNG di classe neavy aether"
-		"ko"	"아이테르 계열의 최상위 버전입니다.\n주변의 아이테르 계열 NPC들의 공격력을 증가시킵니다."
-	}
+	
 	"Astrianious"
 	{
 		"en"	"Astrianious"
 		"it"	"Astriano"
 		"ko"	"아스트리아니우스"
-	}
-	"Astrianious Desc"
-	{
-		"en"	"Is a stronger variant"
-		"it"	"È una variante più forte"
-		"ko"	"아스트리아 계열의 최상위 버전입니다."
 	}
 	"Draconia"
 	{
@@ -3857,47 +3879,26 @@
 		"it"	"Draconia"
 		"ko"	"드라코니아"
 	}
-	"Draconia Desc"
-	{
-		"en"	"Is a stronger variant\nIn addition, it can refresh ANY shields, regardless of cooldowns\nEliminate as soon as possible"
-		"it"	"È una variante più forte.\nInoltre, può rinfrescare QUALSIASI scudo, indipendentemente dai cooldown"
-		"ko"	"드레이돈 계열의 최상위 버전입니다.\n쿨타임에 관계 없이, 모든 보호막을 복구시킬 수 있습니다.\n최대한 빠르게 제거하세요."
-	}
+	
 	"Dronianis"
 	{
 		"en"	"Dronianis"
 		"it"	"Dronianis"
 		"ko"	"드로니아니스"
 	}
-	"Dronianis Desc"
-	{
-		"en"	"Is a stronger variant\nAlso gives a 25% dmg bonus to everyone around it. self not included"
-		"it"	"È una variante più forte.\nInoltre dà un bonus di 25% di dmg a tutti quelli che lo circondano. sè non incluso"
-		"ko"	"루이나 드론의 최상위 버전입니다.\n자신 주변의 모든 대상의 공격 피해량을 25％ 증가시킵니다. 드로니아니스 자신은 이 효과에서 제외됩니다."
-	}
+	
 	"Euranionis"
 	{
 		"en"	"Euranionis"
 		"it"	"Euranionis"
 		"ko"	"유라니오니스"
 	}
-	"Euranionis Desc"
-	{
-		"en"	"Is a stronger variant"
-		"it"	"È una variante più forte"
-		"ko"	"유로파 계열의 최상위 버전입니다."
-	}
+	
 	"Heliarionus"
 	{
 		"en"	"Heliarionus"
 		"it"	"Heliarionus"
 		"ko"	"헬리아리오누스"
-	}
-	"Heliarionus Desc"
-	{
-		"en"	"Is a stronger variant\nAdditionally gives a 50% dmg bonus to nearby npc's, self not included"
-		"it"	"E' una variante più forte.\nInoltre dà un bonus del 50% di dmg agli npc nelle vicinanze, escluso il sé stesso"
-		"ko"	"헬리아 계열의 최상위 버전입니다.\n자신 주변의 모든 대상의 공격 피해량을 50％ 증가시킵니다. 헬리아리오누스 자신은 이 효과에서 제외됩니다."
 	}
 	"Lazurus"
 	{
@@ -3905,23 +3906,11 @@
 		"it"	"Lazurus"
 		"ko"	"라즈루스"
 	}
-	"Lazurus Desc"
-	{
-		"en"	"Is a stronger variant"
-		"it"	"È una variante più forte"
-		"ko"	"라즈 계열의 최상위 버전입니다."
-	}
 	"Loonarionus"
 	{
 		"en"	"Loonarionus"
 		"it"	"Loonarionus"
 		"ko"	"루나리우스"
-	}
-	"Loonarionus Desc"
-	{
-		"en"	"Is a stronger variant\nAdditionally, can heal other nearby lanius type npc's whenever it teleports or activates its battery."
-		"it"	"È una variante più forte.\nInoltre, può curare gli altri PNG di tipo lanius nelle vicinanze ogni volta che si teletrasporta o attiva la batteria."
-		"ko"	"라니우스 계열의 최상위 버전입니다.\n주변 라니우스 NPC가 순간이동을 하거나 배터리 능력을 발동할 때마다, 대상의 체력을 회복시킵니다."
 	}
 	"Magianius"
 	{
@@ -3929,24 +3918,13 @@
 		"it"	"Magianius"
 		"ko"	"마기아니우스"
 	}
-	"Magianius Desc"
-	{
-		"en"	"Is a stronger variant"
-		"it"	"È una variante più forte"
-		"ko"	"마기아 계열의 최상위 버전입니다."
-	}
 	"Malianius"
 	{
 		"en"	"Malianius"
 		"it"	"Malianius"
 		"ko"	"말리아니우스"
 	}
-	"Malianius Desc"
-	{
-		"en"	"A stronger Variant"
-		"it"	"Una variante più forte"
-		"ko"	"말리우스 계열의 최상위 버전입니다."
-	}
+	
 	"Elite Rulianius"
 	{
 		"en"	"Elite Rulianius"
@@ -3959,24 +3937,14 @@
 		"it"	"Rulianius"
 		"ko"	"루리아니우스"
 	}
-	"Rulianius Desc"
-	{
-		"en"	"A stronger variant\nAdditionally, poses a short range laser pulse"
-		"it"	"Una variante più forte, pone un impulso laser a corto raggio"
-		"ko"	"루리아나 계열의 최상위 버전입니다.\n짧은 범위의 레이저 펄스를 방출합니다."
-	}
+	
 	"Lancelot"
 	{
 		"en"	"Lancelot"
 		"it"	"Lancillotto"
 		"ko"	"랜슬롯"
 	}
-	"Lancelot Desc"
-	{
-		"en"	"Highly dangerous upclose\nOnly has short range attacks\nAlso poses a powerfull particle accelerator, you can tell when its ready due to the particle effect on his hand"
-		"it"	"Molto pericoloso da vicino\nHa solo attacchi a corto raggio\nHa anche un potente acceleratore di particelle, si può capire quando è pronto grazie all'effetto delle particelle sulla sua mano"
-		"ko"	"밀착시 매우 위험합니다.\n-매우 짧은 사거리의 공격만을 보유하고 있습니다.\n-또한 강력한 입자 가속기를 보유하며, 이 스킬 사용시 그의 손에 입자가 모이는 것으로 알 수 있습니다."
-	}
+	
 	"Twirl"
 	{
 		"en"	"Twirl"
@@ -4022,9 +3990,9 @@
 	}
 	"Ealing Desc"
 	{
-		"en"	"Void Spawn.\nBleeds on hit."
-		"it"	"Spawn del Vuoto.\nSanguina quando viene colpito."
-		"ko"	"공허에서 태어난 존재입니다.\n적중시, 대상에게 출혈을 부여합니다."
+		"en"	"-Bleeds on hit."
+		"it"	"Spawn del Vuoto.\n-Sanguina quando viene colpito."
+		"ko"	"-적중시, 대상에게 출혈을 부여합니다."
 	}
 	"Framing Voider"
 	{
@@ -4034,9 +4002,8 @@
 	}
 	"Framing Voider Desc"
 	{
-		"en"	"Void Spawn.\nBuffs enemies around itself on death."
-		"it"	"Void Spawn.\nBuffa i nemici intorno a sé alla morte."
-		"ko"	"공허에서 태어난 존재입니다.\n사망 시, 주변 아군에게 버프를 부여합니다."
+		"en"	"-Buffs void entities around itself on death."
+		"ko"	"사망 시, 주변 아군에게 버프를 부여합니다."
 	}
 	"Growing Exat"
 	{
@@ -4046,9 +4013,9 @@
 	}
 	"Growing Exat Desc"
 	{
-		"en"	"Void Spawn.\nEach singular hit makes it grow in size, the bigger, the stronger."
-		"it"	"Spawn del Vuoto.\nOgni singolo colpo lo fa crescere di dimensioni, più grande, più forte."
-		"ko"	"공허에서 태어난 존재입니다.\n피해를 받을 때마다, 크기가 점점 커집니다. 크기가 커질수록 가하는 피해량도 증가합니다."
+		"en"	"-Each singular hit makes it grow in size, the bigger, the stronger."
+		"it"	"Spawn del Vuoto.\n-Ogni singolo colpo lo fa crescere di dimensioni, più grande, più forte."
+		"ko"	"-피해를 받을 때마다, 크기가 점점 커집니다. 크기가 커질수록 가하는 피해량도 증가합니다."
 	}
 	"Mutating Blob"
 	{
@@ -4058,9 +4025,9 @@
 	}
 	"Mutating Blob Desc"
 	{
-		"en"	"Void Spawn.\nWhen dead, corpse acts as a spawnpoint for 1 enemy."
-		"it"	"Spawn del Vuoto.\nQuando è morto, il cadavere agisce come punto di spawn per 1 nemico."
-		"ko"	"공허에서 태어난 존재입니다.\n사망 시, 이 적의 시체는 적의 임시 스폰 포인트가 됩니다. 적 하나가 이 시체를 통해 스폰되면 이 효과는 제거됩니다."
+		"en"	"-When dead, corpse acts as a spawnpoint for 1 enemy."
+		"it"	"Spawn del Vuoto.\n-Quando è morto, il cadavere agisce come punto di spawn per 1 nemico."
+		"ko"	"-사망 시, 이 적의 시체는 적의 임시 스폰 포인트가 됩니다. 적 하나가 이 시체를 통해 스폰되면 이 효과는 제거됩니다."
 	}
 	"Void Spreader"
 	{
@@ -4070,9 +4037,8 @@
 	}
 	"Void Spreader Desc"
 	{
-		"en"	"Void Spawn.\nDeals immensive void damage."
-		"it"	"Spawn del Vuoto.\nSubisce danni da vuoto immensi."
-		"ko"	"공허에서 태어난 존재입니다.\n매우 높은 공허 원소 피해를 줍니다."
+		"en"	"-Ranged Attacks\n-Tries to keep distance from you\n-Deals immensive void damage."
+		"ko"	"-원거리 공격 사용\n-표적과 거리를 유지함\n-매우 높은 공허 원소 피해를 줍니다."
 	}
 	"Void Infestor"
 	{
@@ -4082,9 +4048,9 @@
 	}
 	"Void Infestor Desc"
 	{
-		"en"	"Void Spawn.\nWhen dead, spreads void onto the floor, This void spreads at all times and cannot be halted."
-		"it"	"Spawn del Vuoto.\nQuando è morto, diffonde il vuoto sul pavimento. Questo vuoto si diffonde in ogni momento e non può essere fermato."
-		"ko"	"공허에서 태어난 존재입니다.\n사망시, 주변에 공허 점막을 흩뿌립니다. 공허 점막은 계속해서 확장되며 멈출 수 없습니다."
+		"en"	"-When dead, spreads void onto the floor, This void spreads at all times and cannot be halted."
+		"it"	"Spawn del Vuoto.\n-Quando è morto, diffonde il vuoto sul pavimento. Questo vuoto si diffonde in ogni momento e non può essere fermato."
+		"ko"	"공허에서 태어난 존재입니다.\n-사망시, 주변에 공허 점막을 흩뿌립니다. 공허 점막은 계속해서 확장되며 멈출 수 없습니다."
 	}
 	"Voided Hard Crust"
 	{
@@ -4094,9 +4060,9 @@
 	}
 	"Voided Hard Crust Desc"
 	{
-		"en"	"Void Spawn.\nHas Hard flat resistance, attack with high damage single target weapons."
-		"it"	"Spawn del Vuoto.\nHa una resistenza piatta dura, attacca con armi a bersaglio singolo ad alto danno."
-		"ko"	"공허에서 태어난 존재입니다.\n높은 고정 피해 저항력을 보유했으며, 단일 대상에게 매우 높은 피해를 줍니다."
+		"en"	"-Has Hard flat resistance, attack with high damage single target weapons."
+		"it"	"Spawn del Vuoto.\n-Ha una resistenza piatta dura, attacca con armi a bersaglio singolo ad alto danno."
+		"ko"	"공허에서 태어난 존재입니다.\n-높은 고정 피해 저항력을 보유했으며, 단일 대상에게 매우 높은 피해를 줍니다."
 	}
 	"Void Carrier"
 	{
@@ -4106,9 +4072,8 @@
 	}
 	"Void Carrier Desc"
 	{
-		"en"	"Void Spawn.\nGoes to 1 ally, picks them up and throws them at a player."
-		"it"	"Spawn del Vuoto.\nViene da 1 alleato, lo raccoglie e lo lancia contro un giocatore."
-		"ko"	"공허에서 태어난 존재입니다.\n자신의 아군 1명에게 접근하여 대상을 집어든 뒤, 플레이어에게 투척합니다."
+		"en"	"-Goes to 1 ally, picks them up and throws them at a player."
+		"ko"	"-자신의 아군 1명에게 접근하여 대상을 집어든 뒤, 플레이어에게 투척합니다."
 	}
 	"Void Ixufan"
 	{
@@ -4118,9 +4083,8 @@
 	}
 	"Void Ixufan Desc"
 	{
-		"en"	"Void Mother Spawn.\nIs extra buffed in void terretory, deals immensive void damage."
-		"it"	"Madre del Vuoto.\nÈ extra potenziata nel territorio del vuoto, infligge danni da vuoto immensi."
-		"ko"	"공허 어미에게서 태어난 존재입니다.\n공허 점막 위에 있으면 능력치가 추가로 증가하고, 대상에게 매우 높은 공허 원소 피해를 줍니다."
+		"en"	"-Is extra buffed in void terretory\n-deals immensive void damage."
+		"ko"	"-공허 점막 위에 있으면 능력치가 추가로 증가하고, 대상에게 매우 높은 공허 원소 피해를 줍니다."
 	}
 	"Enframed Voider"
 	{
@@ -4130,9 +4094,8 @@
 	}
 	"Enframed Voider Desc"
 	{
-		"en"	"Their intelligence grows.\nBuffs enemies on death."
-		"it"	"La loro intelligenza cresce.\nBuffa i nemici alla morte."
-		"ko"	"그들의 지식은 점점 성장합니다.\n사망시, 주변 적들에게 버프를 부여합니다."
+		"en"	"Their intelligence grows.\n-Buffs void entities on death."
+		"ko"	"그들의 지식은 점점 성장합니다.\n-사망시, 주변 적들에게 버프를 부여합니다."
 	}
 	"Blood Pollutor"
 	{
@@ -4142,9 +4105,9 @@
 	}
 	"Blood Pollutor Desc"
 	{
-		"en"	"Deals heavy bleed on hit."
-		"it"	"Provoca una forte emorragia in caso di colpo."
-		"ko"	"적중시, 강력한 출혈을 부여합니다."
+		"en"	"-Deals heavy bleed on hit."
+		"it"	"-Provoca una forte emorragia in caso di colpo."
+		"ko"	"-적중시, 강력한 출혈을 부여합니다."
 	}
 	"Voided Expidonsan Fortifier"
 	{
@@ -4154,9 +4117,8 @@
 	}
 	"Voided Expidonsan Fortifier Desc"
 	{
-		"en"	"An expidonsan fell against the void.\nHas flat resistance, and gains a shield on spawn."
-		"it"	"Un expidonsan caduto contro il vuoto.\nHa una resistenza piatta e guadagna uno scudo al momento della nascita."
-		"ko"	"공허에게 패퇴한 엑스피돈사 소속원입니다.\n높은 고정 피해 저항력을 보유했으며, 스폰시 보호막을 얻습니다."
+		"en"	"An expidonsan fell against the void.\n-Has flat resistance\n-gains a shield on spawn."
+		"ko"	"공허에게 패퇴한 엑스피돈사 소속원입니다.\n-높은 고정 피해 저항력 보유\n-스폰시 보호막을 얻습니다."
 	}
 	"Void Particle"
 	{
@@ -4166,9 +4128,9 @@
 	}
 	"Void Particle Desc"
 	{
-		"en"	"Spreads void on death"
-		"it"	"Si diffonde il vuoto alla morte"
-		"ko"	"사망 시, 공허 점막을 흩뿌립니다."
+		"en"	"-Spreads void on death"
+		"it"	"-Si diffonde il vuoto alla morte"
+		"ko"	"-사망 시, 공허 점막을 흩뿌립니다."
 	}
 	"Hosting Blob"
 	{
@@ -4178,9 +4140,9 @@
 	}
 	"Hosting Blob Desc"
 	{
-		"en"	"On death, acts as 2 spawns."
-		"it"	"Alla morte, agisce come 2 spawn."
-		"ko"	"사망 시, 이 적의 시체는 적의 임시 스폰 포인트가 됩니다. 적 2마리가 이 시체를 통해 스폰되면 이 효과는 제거됩니다."
+		"en"	"-On death, acts as 2 spawns."
+		"it"	"-Alla morte, agisce come 2 spawn."
+		"ko"	"-사망 시, 이 적의 시체는 적의 임시 스폰 포인트가 됩니다. 적 2마리가 이 시체를 통해 스폰되면 이 효과는 제거됩니다."
 	}
 	"Blobbing Monster"
 	{
@@ -4190,9 +4152,8 @@
 	}
 	"Blobbing Monster Desc"
 	{
-		"en"	"Each hit makes it stronger and have more resistance."
-		"it"	"Ogni colpo lo rende più forte e più resistente."
-		"ko"	"피해를 받을 때마다, 능력치가 점차 강해지고 피해 저항력도 증가합니다."
+		"en"	"-Each hit makes it stronger and have more resistance and damage and size."
+		"ko"	"-피해를 받을 때마다 피해 저항력, 공격 피해량 그리고 크기가 증가합니다."
 	}
 	"Void Sprayer"
 	{
@@ -4202,9 +4163,8 @@
 	}
 	"Void Sprayer Desc"
 	{
-		"en"	"Jumps at you, and deals immensive void damage."
-		"it"	"Salta verso di voi e infligge danni da vuoto immensi."
-		"ko"	"대상에게 점프 돌진을 하여 매우 높은 공허 원소 피해를 줍니다."
+		"en"	"-Jumps at you\n-Ranged Attacks\n-Tries to keep distance from you\n-Deals immensive void damage"
+		"ko"	"-대상에게 뛰어듭니다.\n-원거리 공격 사용\n-표적과 거리를 유지함\n-매우 높은 공허 원소 피해를 줍니다."
 	}
 	"Void Encasualtor"
 	{
@@ -4214,9 +4174,8 @@
 	}
 	"Void Encasualtor Desc"
 	{
-		"en"	"Teleports to a target they try to attack if they are in void terretory.\nif they didnt attack for a while, then their next attack will make them rapdily attack."
-		"it"	"Si teletrasporta verso un bersaglio che cerca di attaccare se si trova nel territorio vuoto.\nSe non ha attaccato per un po', il suo prossimo attacco lo farà attaccare rapidamente."
-		"ko"	"자신의 표적이 공허 점막 위에 있다면, 그 대상에게 순간이동합니다.\n이 적이 일정 시간 동안 공격하지 않으면, 이 적의 다음 공격의 속도가 매우 빨라집니다."
+		"en"	"-Teleports to a target they try to attack if they are in void terretory\n-if they didnt attack for a while, then their next attack will make them rapdily attack.\n-Deals Void Damage"
+		"ko"	"-자신의 표적이 공허 점막 위에 있다면, 그 대상에게 순간이동합니다.\n이 적이 일정 시간 동안 공격하지 않으면, 이 적의 다음 공격의 속도가 매우 빨라집니다.\n-적중 시 공허 원소 피해를 줍니다."
 	}
 	"Voided Expidonsan Cleaner"
 	{
@@ -4226,9 +4185,8 @@
 	}
 	"Voided Expidonsan Cleaner Desc"
 	{
-		"en"	"Too many expidonsens fell to them.\nJumps at you, and deals immensive void damage."
-		"it"	"Troppi expidonsen sono caduti su di loro.\nSalta verso di te e infligge danni da vuoto immensi."
-		"ko"	"너무 많은 엑스피돈사인들이 그들에게 패퇴하였습니다.\n대상에게 점프 돌진을 하여 매우 높은 공허 원소 피해를 줍니다."
+		"en"	"Too many expidonsens fell to them.\n-Jumps at you\n-Ranged Attacks\n-Tries to keep distance from you\n-Deals immensive void damage"
+		"ko"	"너무 많은 엑스피돈사인들이 그들에게 패퇴하였습니다.\n-대상에게 뛰어듭니다.\n-원거리 공격 사용\n-표적과 거리를 유지함\n-매우 높은 공허 원소 피해를 줍니다."
 	}
 	"Voided Expidonsan Container"
 	{
@@ -4238,9 +4196,9 @@
 	}
 	"Voided Expidonsan Container Desc"
 	{
-		"en"	"Deals immensive bleed damage on hit."
+		"en"	"-Deals immensive bleed damage on hit."
 		"it"	"Infligge danni da emorragia immensi quando viene colpita."
-		"ko"	"적중시, 대상에게 매우 강력한 출혈 피해를 부여합니다."
+		"ko"	"-적중시, 대상에게 매우 강력한 출혈 피해를 부여합니다."
 	}
 	"Sacraficer"
 	{
@@ -4250,9 +4208,8 @@
 	}
 	"Sacraficer Desc"
 	{
-		"en"	"On death, buffs allies heavily."
-		"it"	"In caso di morte, potenzia pesantemente gli alleati."
-		"ko"	"사망시, 주변 아군들의 능력치를 매우 크게 증가시키는 버프를 부여합니다."
+		"en"	"-On death, void entities nearby"
+		"ko"	"-사망 시, 주위의 대상에게 공허 버프를 부여합니다."
 	}
 	"Voiding Bedrock"
 	{
@@ -4262,9 +4219,9 @@
 	}
 	"Voiding Bedrock Desc"
 	{
-		"en"	"Has heavy flat resistance."
-		"it"	"Ha una forte resistenza in piano."
-		"ko"	"매우 높은 고정 피해 저항력을 보유하고 있습니다."
+		"en"	"-Has heavy flat resistance."
+		"it"	"-Ha una forte resistenza in piano."
+		"ko"	"-매우 높은 고정 피해 저항력을 보유하고 있습니다."
 	}
 	"Heavy Perisher"
 	{
@@ -4274,9 +4231,9 @@
 	}
 	"Heavy Perisher Desc"
 	{
-		"en"	"Grows with each hit received."
-		"it"	"Cresce ad ogni colpo ricevuto."
-		"ko"	"피해를 받을 때마다, 크기가 점점 증가하고 능력치와 피해 저항력도 증가합니다."
+		"en"	"-Grows in power with each hit received."
+		"it"	"-Cresce ad ogni colpo ricevuto."
+		"ko"	"-피해를 받을 때마다, 크기가 점점 증가하고 능력치와 피해 저항력도 증가합니다."
 	}
 	"Void Mini-Gatekeeper"
 	{
@@ -4286,9 +4243,9 @@
 	}
 	"Void Mini-Gatekeeper Desc"
 	{
-		"en"	"Acts as 2 spawnpoints on death."
-		"it"	"Agisce come 2 punti di spawn alla morte."
-		"ko"	"사망 시, 이 적의 시체는 적의 임시 스폰 포인트가 됩니다. 적 2마리가 이 시체를 통해 스폰되면 이 효과는 제거됩니다."
+		"en"	"-Acts as 2 spawnpoints on death."
+		"it"	"-Agisce come 2 punti di spawn alla morte."
+		"ko"	"-사망 시, 이 적의 시체는 적의 임시 스폰 포인트가 됩니다. 적 2마리가 이 시체를 통해 스폰되면 이 효과는 제거됩니다."
 	}
 	"Brooding Petra"
 	{
@@ -4298,9 +4255,8 @@
 	}
 	"Brooding Petra Desc"
 	{
-		"en"	"Spreads void whereever it walks.\nIs very slow and spawns minions overtime.\nIts suprisingly Extreamly light."
-		"it"	"Diffonde il vuoto ovunque cammini.\nÈ molto lento e genera servitori in continuazione.\nÈ sorprendentemente estremamente leggero."
-		"ko"	"이 적이 걷는 경로에 공허 점막을 펼칩니다.\n매우 느리지만 일정 시간마다 공허 익수판을 생성합니다.\n매우 가볍습니다."
+		"en"	"-Spreads void whereever it walks.\n-Is very slow and spawns minions overtime.\n-Its suprisingly Extreamly light."
+		"ko"	"-이 적이 걷는 경로에 공허 점막을 펼칩니다.\n-매우 느리지만 일정 시간마다 공허 익수판을 생성합니다.\n-매우 가볍습니다."
 	}
 	"Kunul"
 	{
@@ -4310,9 +4266,8 @@
 	}
 	"Kunul Desc"
 	{
-		"en"	"Deals extreme bleed damage on hit."
-		"it"	"Infligge danni da dissanguamento estremo quando viene colpita."
-		"ko"	"적중시, 대상에게 극도로 높은 출혈 피해를 부여합니다."
+		"en"	"-Deals extreme bleed damage on hit.\n-Is headshot immune"
+		"ko"	"-적중시, 대상에게 극도로 높은 출혈 피해를 부여합니다.\n-헤드샷 피해를 0으로 받습니다."
 	}
 	"Total Growth"
 	{
@@ -4322,9 +4277,9 @@
 	}
 	"Total Growth Desc"
 	{
-		"en"	"Grows with each hit it receives."
-		"it"	"Cresce ad ogni colpo ricevuto."
-		"ko"	"피해를 받을 때마다, 크기가 점점 증가하고 능력치와 피해 저항력도 증가합니다."
+		"en"	"-Grows with each hit it receives."
+		"it"	"-Cresce ad ogni colpo ricevuto."
+		"ko"	"-피해를 받을 때마다, 크기가 점점 증가하고 능력치와 피해 저항력도 증가합니다."
 	}
 	"Void's Offspring"
 	{
@@ -4334,9 +4289,8 @@
 	}
 	"Void's Offspring Desc"
 	{
-		"en"	"Buffs all void entities on death."
-		"it"	"Migliora tutte le entità nulle alla morte."
-		"ko"	"사망시, 모든 공허 생물에게 버프를 부여합니다."
+		"en"	"-Buffs all void entities on death."
+		"ko"	"-사망 시, 모든 공허체들에게 버프를 부여합니다."
 	}
 	"Voided Expidonsan Rejuvinator"
 	{
@@ -4346,9 +4300,8 @@
 	}
 	"Voided Expidonsan Rejuvinator Desc"
 	{
-		"en"	"One of the finest expidonsan doctors fell to the void.\nheals almost any ally instantly and overheals them, will try to heal every target (silence makes the heal 5x slower)\nHas extreme speeds, will suicide if its alone."
-		"it"	"Uno dei migliori medici expidonsan caduti nel vuoto.\ncura quasi tutti gli alleati istantaneamente e li surriscalda, cercherà di curare ogni bersaglio (il silenzio rende la guarigione 5 volte più lenta)\nHa una velocità estrema, si suicida se è solo."
-		"ko"	"최고의 엑스피돈사인 의사 중 하나가 공허에 침식된 결과물입니다.\n거의 모든 아군을 즉시 치료하며 과치료도 부여합니다. (침묵 상태 시 치유 속도가 5배 느려짐)\n이동 속도가 극도로 빠르지만, 혼자 남을 경우 자살합니다."
+		"en"	"One of the finest expidonsan doctors fell to the void.\n-heals almost any ally instantly and overheals them, will try to heal every target\n-Has extreme speeds\n-will suicide if its alone."
+		"ko"	"최고의 엑스피돈사인 의사 중 하나가 공허에 침식된 결과물입니다.\n-거의 모든 아군을 즉시 치료하며 과치료도 부여합니다.\n-이동 속도가 극도로 빠릅니다.\n-혼자 남을 경우 자살합니다."
 	}
 	"Speechless"
 	{
@@ -4358,9 +4311,8 @@
 	}
 	"Speechless Desc"
 	{
-		"en"	"One of the first expidonsans to try to explore the void.\n-Each hit it does gives it a shield.\n-Fires an laser if too far away, that also regens it shield.\n-He ignores the shield cooldown if hitting a barricade, or anything with his laser.\n-Gains attackspeed as he attacks, lowers when he doesnt\n-Slows down the faster he attacks."
-		"ko"	"공허를 탐험하려했던 최초의 엑스피돈사인 중 하나입니다.\n공격이 적중할 때마다, 보호막을 얻습니다.\n대상이 너무 멀리 떨어져있다면 레이저를 발사하며, 이 공격으로도 보호막을 얻습니다.\n공격 대상이 바리케이드거나 무엇이든 레이저로 공격했다면, 보호막 재생 쿨타임을 무시하고 보호막을 얻습니다.\n공격할 수록 공격 속도가 점점 증가하지만, 공격하지 않으면 공격 속도가 계속 감소합니다.\n공격 속도가 빠를수록 이동 속도가 감소합니다."
-	
+		"en" 	"Explorers of the voided place, fallen expidonsans\n-Each attack makes them attack faster\n-On attack gains shield\n-Shield cooldown is ignored against barricades\n-Fires an infinite piercing laser with damage delay\n-The faster it attacks the slower it moves\n-Jumps at target\n-Once life is lost:\nGain immensive buffs\nShield lasts longer\nCan no longer heal"
+		"ko"	"공허화된 공간의 탐험가들, 쓰러진 엑스피돈사인들.\n-공격할 때마다 공격 속도 증가\n-적중 시 보호막 획득\n-바리케이드 공격 시 보호막 쿨다운 무시\n-약간의 지연을 가진 무한히 관통하는 레이저 발사\n-공격 속도가 빠를수록 이동 속도 감소\n-대상에게 뛰어듬\n-생명을 잃을 시:\n막대한 버프 획득\n보호막 지속 시간 증가\n체력 회복 불가능"
 	}
 	"Unspeakable"
 	{
@@ -4371,10 +4323,8 @@
 	}
 	"Unspeakable Desc"
 	{
-		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increased.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks.\n(Silence)makes voidbuff weaker"
-		"ru" 	"Сердце Бездны...\nПервая способность:Засасывает всех союзников и если слишком близко,Наносит очень много урона.\nМожет ударить несколько раз подряд если долго никого не бил.\nВо время его существования,Распостронение бездны Очень усилено.\nКоллоны бездны появляются под врагами.\nЕсли Уровень здоровья пал до низкого начнёт распостронять бездну там где ходит.\n(заглушение)ослабляет Усиление от бездны"
-		"it"	"Cuori del vuoto...\nAbilità1: risucchia tutti gli alleati e, se troppo vicini, li danneggia pesantemente.\nPuò attaccare rapidamente se non ha attaccato per un po'.\nDurante la sua esistenza, la diffusione del vuoto è immensamente aumentata.\nI pilastri del vuoto sono evocati sotto i nemici.\nSe la salute è troppo bassa, diffonderà il vuoto dove cammina.\n(Silenzio)rende il voidbuff più debole"
-		"ko"	"공허의 심장이라고 하는 존재...\n능력1: 주변의 모든 적을 빨아들이며, 근접한 대상에게 높은 피해를 줍니다.\n한동안 공격하지 않았다면, 다음 공격의 속도가 크게 증가.\n이 적이 등장하면, 공허 점막의 확산 속도 대폭 가속.\n플레이어 아래에 공허 기둥을 소환합니다.\n체력이 낮을 경우, 이동할 때마다 공허 점막을 생성.\n(침묵 상태 시) 이 적에게 부여되는 공허 관련 버프가 약화됩니다."
+		"en"	"Hearts of the void...\n-Ability sucks all allies in and if too close, damages them heavily and debuffs, gains ranged resistance and melee vuln during it it.\nCan rapid attack if it didnt attack for a while or after a cooldown.\nDuring its existance, void spreading is immensively increased.\nVoid Pillars are summoned below enemies.\nIf too low on health, will spread void where it walks.\n-Can get a shield each hp threshhold\n(Silence)makes voidbuff weaker"
+		"ko"	"공허의 심장이라고 하는 존재...\n-능력1: 주변의 모든 적을 빨아들이며, 근접한 대상에게 높은 피해를 가하고 디버프를 부여하며, 원거리 피해 저항력을 얻고 근접 피해에 취약해집니다.\n-한동안 공격하지 않았거나 쿨다운이 지난 후, 다음 공격의 속도가 크게 증가\n-이 적이 등장하면, 공허 점막의 확산 속도 대폭 가속.\n-대상 아래에 공허 기둥을 소환합니다.\n-체력이 크게 낮아질 경우, 이동한 위치에 공허 점막을 생성\n-체력이 일정 수치 감소할 때마다 보호막을 얻습니다.\n(침묵 상태 시) 이 적에게 부여되는 공허 관련 버프가 약화됩니다."
 	}
 	"Voided Diversionistico"
 	{
@@ -4384,9 +4334,8 @@
 	}
 	"Voided Diversionistico Desc"
 	{
-		"en"	"Elite forces, taken by the void.\nActs equal to normal ones, but they are slower , visible from longer ranges and deal void damage aswell."
-		"it"	"Forze d'élite, prese dal vuoto.\nagiscono come quelle normali, ma sono più lente, visibili da distanze maggiori e infliggono anche danni da vuoto."
-		"ko"	"생전엔 정예 부대였지만, 지금은 공허에 침식된 자들입니다.\n기존 다이버저니스티코와 동일하게 행동하지만, 이동 속도가 느리고 더 먼 거리에서 모습을 드러내며, 대상에게 공허 원소 피해를 줍니다."
+		"en"	"Elite forces, taken by the void.\n-Invisible unless near it. \n-Can backstab you. \n-Attacks inflict Void elemental damage.\n-Slower then average"
+		"ko"	"생전엔 정예 부대였지만, 지금은 공허에 침식된 자들입니다.\n-멀리있을 때 투명화 상태가 됩니다.\n-백스탭 가능\n-적중 시 공허 원소 피해를 부여합니다.\n-원본보다 더 느립니다."
 	}
 	"Void Portal"
 	{
@@ -4396,9 +4345,8 @@
 	}
 	"Void Portal Desc"
 	{
-		"en"	"Summons near enemies, stays for 2 waves and spreads void where it stands.\nIt also acts as a spawnpoint for enemies aswell."
-		"it"	"Evoca vicino ai nemici, rimane per 2 ondate e diffonde il vuoto dove si trova.\nFunziona anche come punto di spawn per i nemici."
-		"ko"	"이 적은 등장시 2 웨이브동안 유지됩니다. 공허 점막을 퍼뜨리며 주변의 적들을 소환합니다.\n이 적은 다른 적들의 스폰 포인트로 취급됩니다."
+		"en"	"-Summons near enemies, stays for 2 waves and spreads void where it stands.\n-It also acts as a spawnpoint for enemies aswell.\n-Damages non void entities with true damage"
+		"ko"	"이 적은 등장시 2 웨이브동안 유지됩니다. 공허 점막을 퍼뜨리며 주변의 적들을 소환합니다.\n-이 적은 다른 적들의 스폰 포인트로 취급됩니다.\n-공허체 이외의 대상에게 트루 데미지를 가합니다."
 	}
 	"Void Creep"
 	{
@@ -4408,9 +4356,9 @@
 	}
 	"Void Creep Desc"
 	{
-		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance(15％), regen, damage(20％) and speed(5％)."
+		"en"	"-Spreads very slowly, cannot be stopped.\n-During raids spreads faster.\n-Buffs all void npcs while on it."
 		"it"	"Si diffonde molto lentamente, non può essere fermato.\nDurante le incursioni si diffonde più rapidamente.\nresistenza(15％), regen, danno(20％) e velocità(5％)."
-		"ko"	"공허 점막은 매우 느리게 확산되며, 멈출 수 없습니다.\n레이드 모드일 경우, 확산 속도가 매우 빨라집니다.\n점막 위에 있는 모든 공허 NPC들의 피해 저항력(15％), 공격 피해량(20％) 이동 속도(5％)를 증가시키고 초당 체력을 회복시킵니다."
+		"ko"	"-공허 점막은 매우 느리게 확산되며, 멈출 수 없습니다.\n-레이드 모드일 경우, 확산 속도가 매우 빨라집니다.\n-위에 있는 모든 공허체에게 버프를 부여합니다."
 	}
 	"Void Elemental Damage"
 	{
@@ -4421,10 +4369,8 @@
 	}
 	"Void Elemental Damage Desc"
 	{
-		"en"	"Once full, buffs all void npcs around you (with a stronger version) and places void creep below you.\nCan be healed with armor.\nAffected enemies with the buff can be weakened with silence."
-		"es"	"Cuando se llena, los enemigos del Vacio se fortalecen, y liberas fluido del Vacio debajo tuyo.\nSe cura con armadura.\nLos enemigos fortalecidos se pueden debilitar con Silencio."
-		"it"	"Una volta pieno, buffa tutti i npc void intorno a voi (con una versione più forte) e posiziona void creep sotto di voi.\nPuò essere curato con l'armatura.\nI nemici colpiti dal buff possono essere indeboliti con il silenzio."
-		"ko"	"원소 피해 게이지가 꽉 차면, 당신의 위치에 공허 점막이 흩뿌려지며 당신 주변의 모든 공허 NPC에게 더욱 강한 버프를 부여합니다.\n아머를 획득하면 원소 피해를 치유할 수 있습니다.\n이 효과로 부여된 버프는 침묵 상태가 되면 효과가 약화됩니다."
+		"en"	"Once full, buffs all void npcs around you (with a stronger version) and places void creep below you.\nCan be healed with armor"
+		"ko"	"원소 피해 게이지가 꽉 차면, 당신의 위치에 공허 점막이 흩뿌려지며 당신 주변의 모든 공허 NPC에게 더욱 강한 버프를 부여합니다.\n아머를 획득하면 원소 피해를 치유할 수 있습니다."
 	}
 	"Chaos Elemental Damage"
 	{
@@ -4588,10 +4534,8 @@
 	}
 	"Vhxis Desc"
 	{
-		"en"	"The void keeper, killing him is not a good idea...\n(Silence makes voidbuff weaker)"
-		"ru" 	"Хранитель Бездны,Не стоит его убивать...\n(Заглушение Ослабивает Усиление от бездны)"
-		"it"	"Il custode del vuoto, ucciderlo non è una buona idea...\n(il silenzio rende il voidbuff più debole)"
-		"ko"	"공허의 수호자입니다. 그를 죽이는건 좋은 생각이 아닐 겁니다...\n(침묵 상태 시, 이 적이 받는 공허 관련 버프가 약화)"
+		"en"	"The void keeper, killing him is not a good idea...\n-Can punc the ground with a delay:\nStanding outside of the zone heavily damages you and debuffs you and knocks you up\ninside the zone you get pushed back\nAlso summons earthquake rocks\n-Can summon voided vanguards to buff speed\n-Can Gather energy and explode afte a delay, damaging and spawning alot of ixufan's\n-Stands still and fires a delayed laser at 2 enemies, changing between them\n(Silence makes voidbuff weaker)"
+		"ko"	"공허의 수호자입니다. 그를 죽이는건 좋은 생각이 아닐 겁니다...\n-지연 후 지면 강타 공격을 사용:\n구역 밖에 있을 경우 막대한 피해를 가하고 디버프를 부여, 공중으로 대상을 띄웁니다.\n구역 안에 있을 경우 밖으로 밀려납니다.\n또한 지진 바위를 소환합니다.\n-속도 버프를 제공하는 공허화된 뱅가드를 소환할 수 있습니다.\n-지연 후 폭발하는 공격을 사용할 수 있으며, 대상에게 피해를 가하고 다수의 공허 익수판을 소환합니다.\n-제자리에 멈춰 2명의 적에게 지연형 레이저를 번갈아 발사합니다.\n(침묵 상태 시, 이 적이 받는 공허 관련 버프가 약화)"
 	}
 	"Chaos Mage"
 	{
@@ -4679,9 +4623,9 @@
 	}
 	"Chaos Injured Cultist Desc"
 	{
-		"en"	"Hes on the brink of death.\nSummons extreme slow areas that nerf attackspeed, and deal immensive damage if power reaches 100%, recives power when taking damage.\nKicks very strongly."
+		"en"	"Hes on the brink of death.\n-Summons extreme slow areas that nerf attackspeed, and deal immensive damage if power reaches 100%, receives power when taking damage\n-Kicks very strongly."
 		"it"	"E' ad un passo dalla morte\nEvoca aree estremamente lente che riducono la velocità d'attacco e infliggono danni immensi se la potenza raggiunge il 100%, recupera energia quando subisce danni."
-		"ko"	"이 자는 죽음의 문턱에 놓였습니다.\n힘이 100％ 에 도달할 경우 막대한 피해를 가하고 공격 속도 디버프를 부여하는 지역을 소환합니다. 피해를 입을 때 힘이 충전됩니다.\n발차기 공격으로 대상을 밀어냅니다."
+		"ko"	"이 자는 죽음의 문턱에 놓였습니다.\n-힘이 100％ 에 도달할 경우 막대한 피해를 가하고 공격 속도 디버프를 부여하는 지역을 소환합니다. 피해를 입을 때 힘이 충전됩니다.\n-발차기 공격으로 대상을 밀어냅니다."
 	}
 	"Voided Erasus"
 	{
@@ -4982,10 +4926,8 @@
 	}
 	"Nemal Desc"
 	{
-		"en"		"Each 4th hit gives you a teslar debuff.\nLays mines:\nRed: damages, marks you, if marked, more damage.\nGreen: Cures of teslar debuff, launches up, cant be sniped for 4 seconds and no fall damage\nEach 10 seconds she marks you if hit with melee.\nLaser attack predicts, anti predict it.\nWave ability predicts if youre marked.\nSimular abilities on Silvester.\nHer melee makes you glide (Silencable)"
-		"ru" 		"Каждая 4-ая атака накладывает Теслар Дебафф.\nУстанавливает мины:\nКрасные:Наносят урон,Помечают вас,Если вы помечены,получаете больше урона.\nЗелёные:Лечит вас от Дебаффа Теслар,Запускает вверх,Не может быть Застрелен в течении 4 секунд и не получает урон от падения\nКаждые 10 секунд помечает вас если ударила вас.\nАттаки Лазерами предугадывают вас,противодействуйте наведению.\nПохожие способности у Сильвестера.\nЕё Ближний бой заставляет скользить вас(Можно Заглушить)"
-		"it"		"Ogni quarto colpo dà un debuff di teslar.\nLancia mine:\nRosso: danneggia, ti segna, se segnato, più danni.\nVerde: Cura il debuff teslar, si lancia verso l'alto, non può essere cecchinato per 4 secondi e non subisce danni da caduta.\nOgni 10 secondi ti segna se colpito in mischia.\nL'attacco laser lo predice, l'abilità anti-descrizione lo predice.\nL'abilità Onda predice se sei segnato.\nAbilità simili su Silvester.\nIl suo corpo a corpo ti fa planare (Silenziabile)"
-		"ko"		"매 4번째 공격이 테슬라 디버프를 부여.\n지뢰 매설:\n빨강: 피해를 주고, 표적 부여. 이미 표적이 있다면 공격 피해량 증가.\n초록: 테슬라 디버프를 제거하고, 공중으로 날아오르며, 4초 동안 낙하 피해 면역 및 저격 당하지 않음.\n매 10초마다, 이 적의 근접 공격이 적중하면 대상에게 표적이 부여됨.\n레이저 공격은 대상의 경로를 예측.\n표적 상태일 경우 레이저 공격이 대상의 움직임을 예측.\n실베스터 역시 유사한 능력 보유.\n그녀의 공격이 적중한 대상은 쭉 미끄러지게 됨. (침묵 상태 시, 이 디버프를 부여하지 않음)"
+		"en"		"-Each 4th hit gives you a teslar debuff.\n-Lays mines:\nRed: damages, marks you, if marked, more damage.\nGreen: Cures of teslar debuff, launches up, cant be sniped for 4 seconds and no fall damage\n-Each 10 seconds she marks you if hit with melee.\n-Laser attack predicts, anti predict it.\n-Wave ability predicts if youre marked.\n-Simular abilities on Silvester.\n-Her melee makes you glide (Silencable)"
+		"ko"		"-매 4번째 공격이 테슬라 디버프 부여\n-지뢰 매설:\n빨강: 피해를 주고, 표적 부여. 이미 표적이 있다면 피해량 증가.\n초록: 테슬라 디버프를 제거하고, 공중으로 띄워지며, 4초 동안 낙하 피해 면역 및 저격 당하지 않음.\n-매 10초마다, 이 적의 근접 공격이 적중하면 대상에게 표적 부여\n-레이저 공격은 대상의 경로를 예측\n-표적 상태일 경우 에너지 파동 공격이 대상의 움직임을 예측\n실베스터 역시 유사한 능력 보유.\n적중 시 대상이 쭉 미끄러지게 됨. (침묵 상태 시, 이 효과가 발생하지 않음)"
 	}
 	"Sentinel"
 	{
@@ -5111,9 +5053,8 @@
 	}
 	"Irani Desc"
 	{
-		"en"		"Marks an enemy on hit. Deals no melee knockback"
-		"it"		"Segna un nemico quando viene colpito. Non subisce danni in mischia"
-		"ko"		"적중시, 대상에게 표적을 부여합니다.\n이 적의 근접 공격은 넉백을 가하지 않습니다."
+		"en"		"-Marks an enemy on hit\n-Deals no melee knockback"
+		"ko"		"-적중시, 대상에게 표적을 부여합니다.\n-이 적의 근접 공격은 넉백을 가하지 않습니다."
 	}
 	"Kinat"
 	{
@@ -5123,9 +5064,9 @@
 	}
 	"Kinat Desc"
 	{
-		"en"		"Deletes 1 projectile from the air with its bullet, if a player is too close, shoots them instead.\nIf enemy is marked, gains bullet on melee hit."
-		"it"		"Elimina 1 proiettile dall'aria con il suo proiettile, se un giocatore è troppo vicino, spara al suo posto.\nSe il nemico è marcato, guadagna il proiettile su un colpo in mischia."
-		"ko"		"공중에 있는 투사체 1개를 탄환으로 적중시켜 파괴합니다. 대상 플레이어가 자신과 너무 근접했다면, 대신 대상을 사격합니다.\n대상이 표적 상태라면, 근접 공격 적중시 탄약을 1 얻습니다."
+		"en"		"-Deletes 1 projectile from the air with its bullet, if a player is too close, shoots them instead.\n-If enemy is marked, gains bullet on melee hit."
+		"it"		"-Elimina 1 proiettile dall'aria con il suo proiettile, se un giocatore è troppo vicino, spara al suo posto.\n-Se il nemico è marcato, guadagna il proiettile su un colpo in mischia."
+		"ko"		"-공중에 있는 투사체 1개를 탄환으로 적중시켜 파괴합니다. 대상 플레이어가 자신과 너무 근접했다면, 대신 대상을 사격합니다.\n-대상이 표적 상태라면, 근접 공격 적중시 탄약을 1 얻습니다."
 	}
 	"Ginus"
 	{
@@ -5135,9 +5076,9 @@
 	}
 	"Ginus Desc"
 	{
-		"en"		"Shoots with 1 bullet, then melees.\nIf enemy is marked, has better aim."
-		"it"		"Spara con 1 proiettile, poi si scontra in mischia.\nSe il nemico è marcato, ha una mira migliore."
-		"ko"		"탄환 사격 공격을 1회 한 뒤에 근접 NPC가 됩니다.\n대상이 표적 상태라면, 조준 실력이 더 좋아집니다."
+		"en"		"-Shoots with 1 bullet, then melees.\n-If enemy is marked, has better aim."
+		"it"		"-Spara con 1 proiettile, poi si scontra in mischia.\n-Se il nemico è marcato, ha una mira migliore."
+		"ko"		"-탄환 사격 공격을 1회 한 뒤에 근접 NPC가 됩니다.\n-대상이 표적 상태라면, 조준 실력이 더 좋아집니다."
 	}
 	"Speedus Initus"
 	{
@@ -5147,9 +5088,9 @@
 	}
 	"Speedus Initus Desc"
 	{
-		"en"		"Very fast, if it hits a melee attack, teleports behind target with a CD.\nIf enemy is marked, CD is reduced."
-		"it"		"Molto veloce, se colpisce un attacco in mischia, si teletrasporta dietro il bersaglio con una CD.\nSe il nemico è marcato, CD è ridotta."
-		"ko"		"매우 빠르며, 근접 공격 적중시 대상의 뒤쪽으로 순간이동 합니다. (쿨타임 있음)\n대상이 표적 상태라면, 순간이동의 쿨타임이 감소합니다."
+		"en"		"-Very fast, if it hits a melee attack, teleports behind target with a CD.\n-If enemy is marked, CD is reduced."
+		"it"		"-Molto veloce, se colpisce un attacco in mischia, si teletrasporta dietro il bersaglio con una CD.\n-Se il nemico è marcato, CD è ridotta."
+		"ko"		"-매우 빠르며, 근접 공격 적중시 대상의 뒤쪽으로 순간이동 합니다. (쿨타임 있음)\n-대상이 표적 상태라면, 순간이동의 쿨타임이 감소합니다."
 	}
 	"Anania"
 	{
@@ -5159,9 +5100,9 @@
 	}
 	"Anania Desc"
 	{
-		"en"		"Gives morale to nearby enemies when it screams its horn."
-		"it"		"Dà morale ai nemici vicini quando urla il suo corno."
-		"ko"		"나팔을 불 때마다 주변의 모든 적의 사기를 증가시킵니다."
+		"en"		"-Gives morale to nearby enemies when it screams its horn."
+		"it"		"-Dà morale ai nemici vicini quando urla il suo corno."
+		"ko"		"-나팔을 불 때마다 주변의 모든 적의 사기를 증가시킵니다."
 	}
 	"Victorian"
 	{
@@ -5171,9 +5112,9 @@
 	}
 	"Victorian Desc"
 	{
-		"en"		"If the ceiling is high enough, shoots a high damage arcing mortar shot.\nIf ceiling is low, then shoots a lower damage slow rocket."
-		"it"		"Se il soffitto è abbastanza alto, spara un colpo di mortaio ad arco ad alto danno.\nSe il soffitto è basso, spara un razzo lento a basso danno."
-		"ko"		"천장이 충분히 높다면, 피해량이 매우 높은 곡선형 박격포를 사격합니다.\n천장이 낮다면, 피해량이 더 낮은 느린 로켓을 발사합니다."
+		"en"		"-If the ceiling is high enough, shoots a high damage arcing mortar shot.\n-If ceiling is low, then shoots a lower damage slow rocket."
+		"it"		"-Se il soffitto è abbastanza alto, spara un colpo di mortaio ad arco ad alto danno.\n-Se il soffitto è basso, spara un razzo lento a basso danno."
+		"ko"		"-천장이 충분히 높다면, 피해량이 매우 높은 곡선형 박격포를 사격합니다.\n-천장이 낮다면, 피해량이 더 낮은 느린 로켓을 발사합니다."
 	}
 	"Inquisitor IIdutas"
 	{
@@ -5183,9 +5124,9 @@
 	}
 	"Inquisitor IIdutas Desc"
 	{
-		"en"		"If its knife is burning, next melee hit launches you up and marks you.\nIf enemy is marked, gains more ammo aswell.\nIf enemy is marked, shoots 3x faster."
-		"it"		"Se il suo coltello è in fiamme, il prossimo colpo in mischia ti lancia in alto e ti marchia.\nSe il nemico è marcato, guadagna anche più munizioni.\nSe il nemico è marcato, spara 3 volte più velocemente."
-		"ko"		"칼이 불타고 있을시, 다음 근접 공격이 적중한 대상을 위로 날려보내고 표적을 부여합니다.\n대상에게 표적 디버프가 있다면, 탄약을 더 많이 얻습니다.\n또한 표적 상태인 대상을 상대로 사격 공격의 속도가 3배 더 빨라집니다."
+		"en"		"-If its knife is burning, next melee hit launches you up and marks you.\n-If enemy is marked, gains more ammo aswell.\n-If enemy is marked, shoots 3x faster."
+		"it"		"-Se il suo coltello è in fiamme, il prossimo colpo in mischia ti lancia in alto e ti marchia.\n-Se il nemico è marcato, guadagna anche più munizioni.\n-Se il nemico è marcato, spara 3 volte più velocemente."
+		"ko"		"-칼이 불타고 있을시, 다음 근접 공격이 적중한 대상을 위로 날려보내고 표적을 부여합니다.\n-대상에게 표적 디버프가 있다면, 탄약을 더 많이 얻습니다.\n-또한 표적 상태인 대상을 상대로 사격 공격의 속도가 3배 더 빨라집니다."
 	}
 	"Vivintu"
 	{
@@ -5195,9 +5136,9 @@
 	}
 	"Vivintu Desc"
 	{
-		"en"		"Marks an enemy on hit. Deals no melee knockback"
-		"it"		"Segna un nemico quando viene colpito. Non subisce danni in mischia"
-		"ko"		"적중시, 대상에게 표적을 부여합니다.\n이 적의 근접 공격은 넉백을 가하지 않습니다."
+		"en"		"-Marks an enemy on hit.\n-Deals no melee knockback"
+		"it"		"-Segna un nemico quando viene colpito.\n-Non subisce danni in mischia"
+		"ko"		"-적중시, 대상에게 표적을 부여합니다.\n-이 적의 근접 공격은 넉백을 가하지 않습니다."
 	}
 	"Cenula"
 	{
@@ -5207,9 +5148,9 @@
 	}
 	"Cenula Desc"
 	{
-		"en"		"Shoots with 2 bullets, then melees.\nIf enemy is marked, has better aim."
-		"it"		"Spara con 2 proiettili, poi si scontra in mischia.\nSe il nemico è marcato, ha una mira migliore."
-		"ko"		"탄환 사격 공격을 2회 한 뒤에 근접 NPC가 됩니다.\n대상이 표적 상태라면, 조준 실력이 더 좋아집니다."
+		"en"		"-Shoots with 2 bullets, then melees.\n-If enemy is marked, has better aim."
+		"it"		"-Spara con 2 proiettili, poi si scontra in mischia.\n-Se il nemico è marcato, ha una mira migliore."
+		"ko"		"-탄환 사격 공격을 2회 한 뒤에 근접 NPC가 됩니다.\n-대상이 표적 상태라면, 조준 실력이 더 좋아집니다."
 	}
 	"Kumbai"
 	{
@@ -5219,9 +5160,9 @@
 	}
 	"Kumbai Desc"
 	{
-		"en"		"If its with melee, attacks with a gun 3 times, backs off if enemy is too close while shooting. Deals no melee knockback"
-		"it"		"Se è in mischia, attacca con una pistola 3 volte, indietreggiando se il nemico è troppo vicino mentre spara. Non subisce danni in mischia"
-		"ko"		"대상이 근접 무기를 들고 있다면, 사격 공격을 3번 하며, 사격 중 적이 자신과 너무 근접해 있다면 후퇴합니다. 이 적의 근접 공격은 넉백을 가하지 않습니다."
+		"en"		"-If its with melee, attacks with a gun 3 times, backs off if enemy is too close while shooting\n-Deals no melee knockback"
+		"it"		"-Se è in mischia, attacca con una pistola 3 volte, indietreggiando se il nemico è troppo vicino mentre spara\n-Non subisce danni in mischia"
+		"ko"		"-대상이 근접 무기를 들고 있다면, 사격 공격을 3번 하며, 사격 중 적이 자신과 너무 근접해 있다면 후퇴합니다.\n-이 적의 근접 공격은 넉백을 가하지 않습니다."
 	}
 	"Speedus Instantus"
 	{
@@ -5231,9 +5172,9 @@
 	}
 	"Speedus Instantus Desc"
 	{
-		"en"		"Very fast, if it hits a melee attack, teleports behind target with a CD.\nIf enemy is marked, CD is reduced."
-		"it"		"Molto veloce, se colpisce un attacco in mischia, si teletrasporta dietro il bersaglio con una CD.\nSe il nemico è marcato, la CD è ridotta."
-		"ko"		"매우 빠르며, 근접 공격 적중시 대상의 뒤쪽으로 순간이동 합니다. (쿨타임 있음)\n대상이 표적 상태라면, 순간이동의 쿨타임이 감소합니다."
+		"en"		"-Very fast, if it hits a melee attack, teleports behind target with a CD.\n-If enemy is marked, CD is reduced."
+		"it"		"-Molto veloce, se colpisce un attacco in mischia, si teletrasporta dietro il bersaglio con una CD.\n-Se il nemico è marcato, la CD è ridotta."
+		"ko"		"-매우 빠르며, 근접 공격 적중시 대상의 뒤쪽으로 순간이동 합니다. (쿨타임 있음)\n-대상이 표적 상태라면, 순간이동의 쿨타임이 감소합니다."
 	}
 	"Sea-Xploder"
 	{
@@ -5243,9 +5184,9 @@
 	}
 	"Sea-Xploder Desc"
 	{
-		"en"		"Shoots a delayed C4, If enemy is killed, C4 despawns."
-		"it"		"Spara un C4 ritardato, se il nemico viene ucciso, il C4 si disattiva."
-		"ko"		"지연 후 폭발하는 C4를 발사합니다. 대상이 처치되면, C4가 소멸합니다."
+		"en"		"-Shoots a delayed C4, If enemy is killed, C4 despawns."
+		"it"		"-Spara un C4 ritardato, se il nemico viene ucciso, il C4 si disattiva."
+		"ko"		"-지연 후 폭발하는 C4를 발사합니다. 대상이 처치되면, C4가 소멸합니다."
 	}
 	"Anti Sea Robot"
 	{
@@ -5255,9 +5196,8 @@
 	}
 	"Anti Sea Robot Desc"
 	{
-		"en"		"Deals immensive damage and takes 2x Melee dmg\nTakes 0 dmg outside of its red radius."
-		"it"		"Infligge danni immensivi e subisce 2 volte i danni in mischia.\nPrende 0 danno fuori dal suo raggio rosso"
-		"ko"		"매우 높은 피해를 주지만, 받는 근접 피해가 2배로 증가합니다. \n붉은 영역 바깥에서 들어오는 모든 공격의 피해를 0으로 만듭니다."
+		"en"		"-Deals immensive damage and takes 2x Melee dmg\n-Takes 0 dmg outside of its red radius.\n-Attacks 5x faster against marked enemies"
+		"ko"		"매우 높은 피해를 주지만, 받는 근접 피해가 2배로 증가합니다. \n붉은 영역 바깥에서 들어오는 모든 공격의 피해를 0으로 만듭니다.\n-표적 상태인 대상에게 5배 더 빠르게 공격합니다."
 	}
 	"Ranka S"
 	{
@@ -5267,9 +5207,9 @@
 	}
 	"Ranka S Desc"
 	{
-		"en"		"Gives armor to all allies near it if it hits something, reduced if its an ubered enemy or a building."
-		"it"		"Dà armatura a tutti gli alleati vicini se colpisce qualcosa, ridotta se si tratta di un nemico uberizzato o di un struttureo."
-		"ko"		"적중시 주변의 모든 아군에게 아머를 부여합니다. 대상이 우버차지 상태이거나 구조물이라면 아머 부여량이 감소합니다."
+		"en"		"-Gives armor to all allies near it if it hits something\nReduced if its an ubered enemy or a building."
+		"it"		"-Dà armatura a tutti gli alleati vicini se colpisce qualcosa, ridotta se si tratta di un nemico uberizzato o di un struttureo."
+		"ko"		"-적중시 주변의 모든 아군에게 아머를 부여합니다. 대상이 우버차지 상태이거나 구조물이라면 아머 부여량이 감소합니다."
 	}
 	"Murdarato"
 	{
@@ -5279,9 +5219,9 @@
 	}
 	"Murdarato Desc"
 	{
-		"en"		"If the ceiling is high enough, shoots a high damage arcing mortar shot.\nIf ceiling is low, then shoots a lower damage slow rocket."
-		"it"		"Se il soffitto è abbastanza alto, spara un colpo di mortaio ad arco ad alto danno.\nSe il soffitto è basso, spara un razzo lento a basso danno."
-		"ko"		"천장이 충분히 높다면, 피해량이 매우 높은 곡선형 박격포를 사격합니다.\n천장이 낮다면, 피해량이 더 낮은 느린 로켓을 발사합니다."
+		"en"		"-If the ceiling is high enough, shoots a high damage arcing mortar shot.\n-If ceiling is low, then shoots a lower damage slow rocket."
+		"it"		"-Se il soffitto è abbastanza alto, spara un colpo di mortaio ad arco ad alto danno.\n-Se il soffitto è basso, spara un razzo lento a basso danno."
+		"ko"		"-천장이 충분히 높다면, 피해량이 매우 높은 곡선형 박격포를 사격합니다.\n-천장이 낮다면, 피해량이 더 낮은 느린 로켓을 발사합니다."
 	}
 	"Ibira Kinat"
 	{
@@ -5291,9 +5231,9 @@
 	}
 	"Ibira Kinat Desc"
 	{
-		"en"		"Deletes 1 projectile from the air with its bullet, if a player is too close, shoots them instead, Has 2 bullets instead.\nIf enemy is marked, gains bullet on melee hit."
-		"it"		"Elimina 1 proiettile dall'aria con il suo proiettile, se un giocatore è troppo vicino, gli spara invece, ha 2 proiettili al suo posto.\nSe il nemico è marcato, guadagna proiettile su colpo in mischia."
-		"ko"		"공중의 투사체 1개를 탄환으로 적중시켜 파괴합니다. 대상 플레이어가 너무 근접했다면, 대신 대상을 사격합니다. 초기에 탄환을 2발 보유합니다.\n대상이 표적 상태라면, 근접 공격 적중시 탄약을 1 얻습니다."
+		"en"		"-Deletes 1 projectile from the air with its bullet, if a player is too close, shoots them instead, Has 2 bullets instead.\n-If enemy is marked, gains bullet on melee hit."
+		"it"		"-Elimina 1 proiettile dall'aria con il suo proiettile, se un giocatore è troppo vicino, gli spara invece, ha 2 proiettili al suo posto.\n-Se il nemico è marcato, guadagna proiettile su colpo in mischia."
+		"ko"		"-공중의 투사체 1개를 탄환으로 적중시켜 파괴합니다. 대상 플레이어가 너무 근접했다면, 대신 대상을 사격합니다. 초기에 탄환을 2발 보유합니다.\n-대상이 표적 상태라면, 근접 공격 적중시 탄약을 1 얻습니다."
 	}
 	"Iberia-Expidonsan Seaborn Eradicator"
 	{
@@ -5303,9 +5243,9 @@
 	}
 	"Iberia-Expidonsan Seaborn Eradicator Desc"
 	{
-		"en"		"Acts as a spawnpoint, unkillable and oneshots anything.\nOnce most allies died, it enrages, loses all its resistance and 99％ hp and gets very fast, loses alot of damage too."
-		"it"		"Agisce come punto di spawn, non è uccidibile e spara a qualsiasi cosa.\nUna volta morti la maggior parte degli alleati, si infuria, perde tutte le resistenze e il 99％ di hp e diventa molto veloce, perdendo anche molti danni."
-		"ko"		"이 적은 다른 적들의 스폰 포인트 역할을 합니다. 이 적은 처치할 수 없으며, 모든 대상을 일격에 즉사시킵니다.\n섬멸자 외의 모든 아군이 처치당하면, 격분 상태가 되어 이동 속도가 매우 빨라지지만, 모든 피해 저항력을 잃고 공격력과 체력이 대폭 감소합니다."
+		"en"		"-Acts as a spawnpoint, unkillable and oneshots anything.\n-Once most allies died, it enrages, loses all its resistance and 99％ hp and gets very fast, loses alot of damage too."
+		"it"		"-Agisce come punto di spawn, non è uccidibile e spara a qualsiasi cosa.\n-Una volta morti la maggior parte degli alleati, si infuria, perde tutte le resistenze e il 99％ di hp e diventa molto veloce, perdendo anche molti danni."
+		"ko"		"-이 적은 다른 적들의 스폰 포인트 역할을 합니다. 이 적은 처치할 수 없으며, 모든 대상을 일격에 즉사시킵니다.\n-섬멸자 외의 모든 아군이 처치당하면, 격분 상태가 되어 이동 속도가 매우 빨라지지만, 모든 피해 저항력을 잃고 공격력과 체력이 대폭 감소합니다."
 	}
 	"Combastia"
 	{
@@ -5315,9 +5255,8 @@
 	}
 	"Combastia Desc"
 	{
-		"en"		"Buffs allies once it screams\nImmune to most bleeds and fire."
-		"it"		"Bufferizza gli alleati una volta che urla.\nImmune alla maggiorparte di fuoco e sanguinamento"
-		"ko"		"함성을 지를때마다, 주변의 모든 아군의 사기를 증가시킵니다.\n대부분의 출혈과 화상 피해에 면역입니다."
+		"en"		"-Buffs allies once it screams\n-Immune to bleeds"
+		"ko"		"함성을 지를때마다, 주변의 모든 아군의 사기를 증가시킵니다.\n출혈 피해에 면역입니다."
 	}
 	"Morato"
 	{
@@ -5327,9 +5266,9 @@
 	}
 	"Morato Desc"
 	{
-		"en"		"If the ceiling is high enough, shoots a high damage arcing mortar shot.\nIf ceiling is low, then shoots a lower damage slow rocket."
-		"it"		"Se il soffitto è abbastanza alto, spara un colpo di mortaio ad arco ad alto danno.\nSe il soffitto è basso, spara un razzo lento a basso danno."
-		"ko"		"천장이 충분히 높다면, 피해량이 매우 높은 곡선형 박격포를 사격합니다.\n천장이 낮다면, 피해량이 더 낮은 느린 로켓을 발사합니다."
+		"en"		"-If the ceiling is high enough, shoots a high damage arcing mortar shot.\n-If ceiling is low, then shoots a lower damage slow rocket."
+		"it"		"-Se il soffitto è abbastanza alto, spara un colpo di mortaio ad arco ad alto danno.\n-Se il soffitto è basso, spara un razzo lento a basso danno."
+		"ko"		"-천장이 충분히 높다면, 피해량이 매우 높은 곡선형 박격포를 사격합니다.\n-천장이 낮다면, 피해량이 더 낮은 느린 로켓을 발사합니다."
 	}
 	"Speedus Itus"
 	{
@@ -5339,9 +5278,9 @@
 	}
 	"Speedus Itus Desc"
 	{
-		"en"		"Very fast, if it hits a melee attack, teleports behind target with a CD.\nIf enemy is marked, CD is reduced."
-		"it"		"Molto veloce, se colpisce un attacco in mischia, si teletrasporta dietro il bersaglio con una CD.\nSe il nemico è marcato, CD è ridotto."
-		"ko"		"매우 빠르며, 근접 공격을 적중하면, 대상의 뒤쪽으로 순간이동 합니다. (쿨타임 있음)\n대상이 표적 상태라면, 순간이동의 쿨타임이 감소합니다."
+		"en"		"-Very fast, if it hits a melee attack, teleports behind target with a CD.\n-If enemy is marked, CD is reduced."
+		"it"		"-Molto veloce, se colpisce un attacco in mischia, si teletrasporta dietro il bersaglio con una CD.\n-Se il nemico è marcato, CD è ridotto."
+		"ko"		"-매우 빠르며, 근접 공격을 적중하면, 대상의 뒤쪽으로 순간이동 합니다. (쿨타임 있음)\n-대상이 표적 상태라면, 순간이동의 쿨타임이 감소합니다."
 	}
 	"Speedus Elitus"
 	{
@@ -5351,9 +5290,9 @@
 	}
 	"Speedus Elitus Desc"
 	{
-		"en"		"Very fast, if it hits a melee attack, teleports behind target with a CD.\nIf enemy is marked, CD is reduced."
-		"it"		"Molto veloce, se colpisce un attacco in mischia, si teletrasporta dietro il bersaglio con una CD.\nSe il nemico è marcato, CD è ridotto."
-		"ko"		"매우 빠르며, 근접 공격을 적중하면, 대상의 뒤쪽으로 순간이동 합니다. (쿨타임 있음)\n대상이 표적 상태라면, 순간이동의 쿨타임이 감소합니다."
+		"en"		"-Very fast, if it hits a melee attack, teleports behind target with a CD.\n-If enemy is marked, CD is reduced."
+		"it"		"-Molto veloce, se colpisce un attacco in mischia, si teletrasporta dietro il bersaglio con una CD.\n-Se il nemico è marcato, CD è ridotto."
+		"ko"		"-매우 빠르며, 근접 공격을 적중하면, 대상의 뒤쪽으로 순간이동 합니다. (쿨타임 있음)\n-대상이 표적 상태라면, 순간이동의 쿨타임이 감소합니다."
 	}
 	"Sea Dryer"
 	{
@@ -5363,9 +5302,9 @@
 	}
 	"Sea Dryer Desc"
 	{
-		"en"		"Shoots a delayed C4, If enemy is killed, C4 despawns."
-		"it"		"Spara un C4 ritardato, se il nemico viene ucciso, il C4 si disattiva."
-		"ko"		"지연 후 폭발하는 C4를 발사합니다. 대상이 처치되면, C4가 소멸합니다."
+		"en"		"-Shoots a delayed C4, If enemy is killed, C4 despawns."
+		"it"		"-Spara un C4 ritardato, se il nemico viene ucciso, il C4 si disattiva."
+		"ko"		"-지연 후 폭발하는 C4를 발사합니다. 대상이 처치되면, C4가 소멸합니다."
 	}
 	"Runaka"
 	{
@@ -5375,9 +5314,9 @@
 	}
 	"Runaka Desc"
 	{
-		"en"		"Gives armor to all allies near it if it hits something, reduced if its an ubered enemy or a building."
-		"it"		"Dà armatura a tutti gli alleati vicini se colpisce qualcosa, ridotta se si tratta di un nemico uberizzato o di una struttura."
-		"ko"		"적중시 주변의 모든 아군에게 아머를 부여합니다. 대상이 우버차지 상태이거나 구조물이라면 아머 부여량이 감소합니다."
+		"en"		"-Gives armor to all allies near it if it hits something\nreduced if its an ubered enemy or a building."
+		"it"		"-Dà armatura a tutti gli alleati vicini se colpisce qualcosa, ridotta se si tratta di un nemico uberizzato o di una struttura."
+		"ko"		"-적중시 주변의 모든 아군에게 아머를 부여합니다. 대상이 우버차지 상태이거나 구조물이라면 아머 부여량이 감소합니다."
 	}
 	"Inquisitor Irene"
 	{
@@ -5387,9 +5326,9 @@
 	}
 	"Inquisitor Irene Desc"
 	{
-		"en"		"If its knife is burning, next melee hit launches you up and marks you.\nIf enemy is marked, gains more ammo aswell.\nIf enemy is marked, shoots 3x faster.\nCan activate judgement of iberia if close to enemies with a cooldown."
-		"it"		"Se il suo coltello è in fiamme, il prossimo colpo in mischia ti lancia in alto e ti marchia.\nSe il nemico è marcato, guadagna anche più munizioni.\nSe il nemico è marcato, spara 3 volte più velocemente.\nPuò attivare il giudizio di iberia se vicino a nemici con un cooldown."
-		"ko"		"칼이 불타고 있을시, 다음 근접 공격이 적중한 대상을 위로 날려보내고 표적을 부여합니다.\n대상이 표적 상태라면, 탄약을 더 많이 얻습니다.\n또한 표적 상태인 대상을 상대로 사격 공격의 속도가 3배 더 빨라집니다.\n적과 근접하면 이베리아의 심판 능력을 발동합니다. (쿨타임 있음)"
+		"en"		"-If its knife is burning, next melee hit launches you up and marks you.\n-If enemy is marked, gains more ammo aswell.\n-If enemy is marked, shoots 3x faster.\n-Can activate judgement of iberia if close to enemies with a cooldown."
+		"it"		"-Se il suo coltello è in fiamme, il prossimo colpo in mischia ti lancia in alto e ti marchia.\n-Se il nemico è marcato, guadagna anche più munizioni.\n-Se il nemico è marcato, spara 3 volte più velocemente.\n-Può attivare il giudizio di iberia se vicino a nemici con un cooldown."
+		"ko"		"-칼이 불타고 있을시, 다음 근접 공격이 적중한 대상을 위로 날려보내고 표적을 부여합니다.\n-대상이 표적 상태라면, 탄약을 더 많이 얻습니다.\n-또한 표적 상태인 대상을 상대로 사격 공격의 속도가 3배 더 빨라집니다.\n-적과 근접하면 이베리아의 심판 능력을 발동합니다. (쿨타임 있음)"
 	}
 	"Death Marker"
 	{
@@ -5399,15 +5338,9 @@
 	}
 	"Death Marker Desc"
 	{
-		"en"	"Marks an enemy on hit. Deals no melee knockback"
-		"it"	"Segna un nemico quando viene colpito. Non subisce danni in mischia"
-		"ko"	"적중시, 대상에게 표적을 부여합니다.\n이 적의 근접 공격은 넉백을 가하지 않습니다."
-	}
-	"Death Marker Desc"
-	{
-		"en"	"Marks an enemy on hit. Deals no melee knockback"
-		"it"	"Segna un nemico quando viene colpito. Non subisce danni in mischia"
-		"ko"	"적중시, 대상에게 표적을 부여합니다.\n이 적의 근접 공격은 넉백을 가하지 않습니다."
+		"en"	"-Marks an enemy on hit\n-Deals no melee knockback"
+		"it"	"-Segna un nemico quando viene colpito\n-Non subisce danni in mischia"
+		"ko"	"-적중시, 대상에게 표적을 부여합니다.\n-이 적의 근접 공격은 넉백을 가하지 않습니다."
 	}
 	"W.F. Flowering Darkness"
 	{
@@ -5428,7 +5361,7 @@
 	}	
 	"W.F. Acclaimed Swordsman Desc"
 	{
-		"en"	"Whiteflower’s most prestigious swordman. \n-Performs a barrage of pulse attack, gives resistance during usage."
+		"en"	"Whiteflower’s most prestigious swordman. \n-Performs a barrage of pulse attacks, giving resistance during usage."
 		"ko"	"배풍등이 가장 자랑스러워하는 검객입니다. \n-펄스 폭격 공격을 사용하며, 사용 중에는 저항력이 증가"
 	}
 	"W.F. Ekas Piloteer"
@@ -5436,6 +5369,11 @@
 		"en"	"W.F. Ekas Piloteer"
 		"it"	"W.F. Ekas Pilota"
 		"ko"	"W.F. 에카스 조종사"
+	}	
+	"W.F. Ekas Piloteer Desc"
+	{
+		"en"	"-Shoots a few bullets then runs upto you to kick\n-After kick, launches a rocket at you and reloads his pistol"
+		"ko"	"-총을 수차례 발사한 후 대상에게 돌격하여 발차기 공격 사용\n-발차기 공격 사용 후, 대상에게 로켓을 발사 후 권총 재장전"
 	}	
 	"W.F. Extreme Knight Giant"
 	{
@@ -5445,7 +5383,7 @@
 	}	
 	"W.F. Extreme Knight Giant Desc"
 	{
-		"en"	"A extremely powerfull knight, enhanced into a giant, under Whiteflower's command. \n-Performs a barrage of magic bolts, that retarget if missed."
+		"en"	"An extremely powerful knight, enhanced into a giant, under Whiteflower's command. \n-Performs a barrage of magic bolts that retarget if missed."
 		"ko"	"배풍등의 지휘를 통해 거인으로 성장하게 된 엄청나게 강력한 기사입니다. \n-빗나갈시 다시 재조준하는 마법 볼트를 연사"
 	}
 	"W.F. Raging Blader"
@@ -5453,6 +5391,11 @@
 		"en"	"W.F. Raging Blader"
 		"it"	"W.F. Blader infuriato"
 		"ko"	"W.F. 격노의 블레이더"
+	}	
+	"W.F. Raging Blader Desc"
+	{
+		"en"	"-The lower health the faster he attacks\n-once losing a life, regains some health back"
+		"ko"	"-체력이 감소할 수로 공격 속도 증가\n-생명을 잃을 시, 체력을 소량 회복함"
 	}	
 	"Whiteflower The Traitor"
 	{
@@ -5462,19 +5405,30 @@
 	}	
 	"Whiteflower The Traitor Desc"
 	{
-		"en"	"-Drops gernades that heal allies and hurts enemies in it range."
-		"ko"	"-범위 내의 아군의 체력을 회복시키고 적군에게 피해를 주는 수류탄을 던집니다."
+		"en"	"-Drops grenades that heal allies and hurt enemies in its range.\n-Periodically uses Octane kick."
+		"ko"	"-범위 내의 아군의 체력을 회복시키고 적군에게 피해를 주는 수류탄을 던집니다.\n-주기적으로 옥테인 킥을 사용합니다."
 	}	
 	"Ouroboros Ekas"
 	{
 		"en"	"Ouroboros Ekas"
 		"it"	"Uroboro Ekas"
 		"ko"	"우로보로스 에카스"
+	}	
+	"Ouroboros Ekas Desc"
+	{
+		"en"	"-Buffs all enemies on the field massively\n-If last alive (or any of itself left only), it gains 5x speed, 2x res.\n-On death, it's piloteer jumps out to continue the fight"
+		"it"	"Buffs tutti i nemici sul campo in modo massiccio, se è l'ultimo in vita, guadagna 5x velocità, 2x res."
+		"ko"	"-전장 위에 있는 모든 적에게 매우 강력한 버프를 부여합니다.\n-만약 이 적이 혼자, 혹은 이 적 계열만이 남았다면, 이 적의 속도가 5배 증가하고 저항력이 2배로 증가합니다."
 	}
 	"Xeno Lab Security"
 	{
 		"en"	"Xeno Lab Security"
 		"ko"	"제노 연구소 보안장치"
+	}
+	"Xeno Lab Security Desc"
+	{
+		"en"	"A robot made by the creator of the Xeno infection, made to protect the virus and help it's advance. \n-Periodically charges up an infection blast around itself. \n-If hit by the infection blast, you are afflicted with a heavy bleed."
+		"ko"	"제노 감염원의 창시자가 설계한 로봇이며, 바이러스의 보호와 진보를 위해 만들어졌습니다.\n-주기적으로 주위에 감염성 폭발을 충전합니다.\n-감염성 폭발에 적중 시, 치명적인 출혈 디버프를 얻습니다."
 	}
 	"Goliath Aircraft"
 	{
@@ -6275,10 +6229,12 @@
 	"Rollermine"
 	{
 		"en"		"Rollermine"
+		"ko"		"롤러 마인"
 	}
 	"Nova Prospekt Overseer"
 	{
 		"en"		"Nova Prospekt Overseer"
+		"ko"		"노바 프로스펙트 감시자"
 	}
 	"Omega"
 	{
@@ -6328,6 +6284,11 @@
 		"en"	"Chaos Evil Demon"
 		"it"	"Caos Demone Malvagio"
 		"ko"	"혼돈의 사악한 악마"
+	}
+	"Chaos Evil Demon Desc"
+	{
+		"en"	"-Heals all allies around himself\n-If he heals allies, he heals himself\n-Buffs both healed ally and himself IF he actually healed the targets"
+		"ko"	"-주변의 모든 아군에게 치유 제공\n-아군에게 치유를 제공할 시, 자신 역시 치유됨\n-치유가 실제로 제공되었을 경우 아군과 자신에게 버프를 부여"
 	}
 	"Disturbed Umbral"
 	{
@@ -6394,11 +6355,10 @@
 		"it"	"Todd Howard"
 		"ko"	"토드 하워드"
 	}
-	"Sea-Infected Todd Howard"
+	"Todd Howard Desc"
 	{
-		"en"	"Sea-Infected Todd Howard"
-		"it"	"Todd Howard infettato dal mare"
-		"ko"	"시테러 감염체 토드 하워드"
+		"en"	"Reskinned alaxios lol"
+		"ko"	"스킨 씌운 알락시오스 ㅎ"
 	}
 	"kevinmery2009"
 	{
@@ -6478,6 +6438,26 @@
 		"it"	"Troll Brawler"
 		"ko"	"트롤 싸움꾼"
 	}
+	"Troll Rifler Desc"
+	{
+		"en"	"W.F. Rifler infected by the Troll virus. \n-Has a ranged attack and reloads."
+		"ko"	"트롤 바이러스에 감염된 W.F. 소총수입니다.\n-원거리 공격을 사용하며 재장전함"
+	}
+	"Troll Cop Desc"
+	{
+		"en"	"W.F. Metro Cop infected by the Troll virus. \n-Has a ranged attack and reloads."
+		"ko"	"트롤 바이러스에 감염된 W.F.의 기동대입니다.\n-원거리 공격을 사용하며 재장전함"
+	}
+	"Troll RPG Carrier Desc"
+	{
+		"en"	"W.F. soldier infected by the Troll virus. \n-Has a aoe ranged attack and reloads."
+		"ko"	"트롤 바이러스에 감염된 W.F.의 병사입니다.\n-광역 원거리 공격을 사용하며 재장전함"
+	}
+	"Troll Brawler Desc"
+	{
+		"en"	"W.F. soldier infected by the Troll virus. \n-No special effects."
+		"ko"	"트롤 바이러스에 감염된 W.F.의 병사입니다.\n-특수 능력 없음"
+	}
 	"Crystallized Horror"
 	{
 		"en" 	"Crystallized Horror"
@@ -6518,7 +6498,7 @@
 	{
 		"it"	"Simile a un Dual-Rea.\nSpawn con scudi.\nVolerà verso di voi una volta ogni tanto."
 		"en"	"Similar to an Dual-Rea. \n-Spawns with shields.\n-Will Fly towards you once every so often."
-		"ko"	"듀얼 레아와 비슷합니다.\n-보호막을 얻은채로 생성\-n주기적으로 대상을 향해 날아옵니다"
+		"ko"	"듀얼 레아와 비슷합니다.\n-보호막을 얻은채로 생성\n-주기적으로 대상을 향해 날아옵니다."
 	}
 	"Biggun Assisa"
 	{
@@ -6592,6 +6572,11 @@
 		"en"	"Similar to Vaus Techicus.\n-Follows an ally and gives them a shield, taking the ally's speed and becoming 10% faster."
 		"ko"	"바우스 테키커스와 비슷합니다.\n-보호막을 부여할 대상을 따라다니며, 이 상태일때는 보호막을 부여하려는 대상의 이동 속도보다 10％ 더 빨라짐"
 	}
+	"Soldinus ilus Desc"
+	{
+		"en"	"An upgraded version of the Soldine. \n-Can rocketjump. \n-Fires rockets. \n-Can melee attack with a cooldown. \n- Melee deals heavy damage and slides you."
+		"ko"	"솔딘의 개선된 버전입니다.-로켓 점프를 사용할 수 있습니다.\n-로켓을 발사합니다.\n-매우 높은 피해를 주는, 긴 쿨타임을 가진 근접 공격을 합니다."
+	}
 	"Instinct's Summon"
 	{
 		"en"	"Instinct's Summon"
@@ -6626,9 +6611,9 @@
 	}
 	"Aperture Combatant Desc"
 	{
-		"en"	"Bludgeons you with his bat, every successful hit increases his attack speed."
+		"en"	"-Bludgeons you with his bat \n-Every successful hit increases his attack speed."
 		"it"	"Ti colpisce con la sua mazza, ogni colpo andato a segno aumenta la sua velocità d'attacco."
-		"ko"	"야구방망이로 구타하며, 공격이 성공적으로 적중할 때마다 공격 속도가 증가합니다."
+		"ko"	"-야구방망이로 대상을 구타합니다.\n-공격이 성공적으로 적중할 때마다 공격 속도가 증가합니다."
 	}
 	"Aperture Shotgunner"
 	{
@@ -6638,9 +6623,9 @@
 	}
 	"Aperture Shotgunner Desc"
 	{
-		"en"	"Fires a few shots before inexplicably exploding."
+		"en"	"-Fires a few shots before inexplicably exploding."
 		"it"	"Spara alcuni colpi prima di esplodere inspiegabilmente."
-		"ko"	"일정 횟수만큼 사격 후 알 수 없는 이유로 폭발합니다."
+		"ko"	"-일정 횟수만큼 사격 후 알 수 없는 이유로 폭발합니다."
 	}
 	"Aperture Devastator"
 	{
@@ -6650,9 +6635,9 @@
 	}
 	"Aperture Devastator Desc"
 	{
-		"en"	"Fires 2 pills in rapid succession."
+		"en"	"-Fires 2 pills in rapid succession."
 		"it"	"Spara 2 pillole in rapida successione."
-		"ko"	"한 번에 2개의 유탄을 발사합니다."
+		"ko"	"-한 번에 2개의 유탄을 발사합니다."
 	}
 	"Aperture Huntsman"
 	{
@@ -6662,9 +6647,9 @@
 	}
 	"Aperture Huntsman Desc"
 	{
-		"en"	"Shoots arrows that inflict bleed."
+		"en"	"-Shoots arrows that inflict bleed."
 		"it"	"Scaglia frecce che infliggono emorragie."
-		"ko"	"출혈을 부여하는 화살을 사격합니다."
+		"ko"	"-출혈을 부여하는 화살을 사격합니다."
 	}
 	"Aperture Jumper"
 	{
@@ -6674,9 +6659,9 @@
 	}
 	"Aperture Jumper Desc"
 	{
-		"en"	"Attempts to jump over barricades, every jump increases his damage."
+		"en"	"-Attempts to jump over barricades\n-Every jump increases his damage."
 		"it"	"Tenta di saltare le barricate, ogni salto aumenta i danni."
-		"ko"	"바리케이드를 점프해 뛰어넘으려고 합니다. 점프할 때마다, 공격 피해량이 증가합니다."
+		"ko"	"-바리케이드를 점프해 뛰어넘으려고 합니다.\n-점프할 때마다, 공격 피해량이 증가합니다."
 	}
 	"Aperture Phaser"
 	{
@@ -6686,9 +6671,9 @@
 	}
 	"Aperture Phaser Desc"
 	{
-		"en"	"Phases through barricades, dealing damage in the process."
+		"en"	"-Phases through barricades, dealing damage in the process."
 		"it"	"Passa attraverso le barricate, infliggendo danni nel processo."
-		"ko"	"바리케이드를 위상 형태로 지나가려고 하며, 이 과정에서 피해를 줍니다."
+		"ko"	"-바리케이드를 위상 형태로 지나가려고 하며, 이 과정에서 피해를 줍니다."
 	}
 	"Aperture Sniper"
 	{
@@ -6698,9 +6683,9 @@
 	}
 	"Aperture Sniper Desc"
 	{
-		"en"	"Spawns in silently and shoots you from a lengthy distance."
+		"en"	"-Spawns in silently \n-Shoots you from a lengthy distance."
 		"it"	"Si nasconde in silenzio e vi spara da una lunga distanza."
-		"ko"	"소리없이 스폰되며, 먼 거리에서 당신을 사격합니다. "
+		"ko"	"-소리없이 스폰됩니다.\n-먼 거리에서 당신을 사격합니다."
 	}
 	"Aperture Specialist"
 	{
@@ -6710,9 +6695,9 @@
 	}
 	"Aperture Specialist Desc"
 	{
-		"en"	"Fires one bullet that debuffs, switches to melee afterwards."
+		"en"	"-Fires one bullet that debuffs\n-Switches to melee afterwards."
 		"it"	"Spara un solo proiettile che indebolisce, poi passa al corpo a corpo."
-		"ko"	"디버프를 부여하는 탄환을 1발 발사한 후, 근접 공격형 NPC가 됩니다."
+		"ko"	"-디버프를 부여하는 탄환을 1발 발사한 후, 근접 공격형 NPC가 됩니다."
 	}
 	"Aperture Supporter"
 	{
@@ -6722,9 +6707,9 @@
 	}
 	"Aperture Supporter Desc"
 	{
-		"en"	"Heals allies, after a few seconds of healing, he can grant übercharge."
+		"en"	"-Heals allies \n-After a few seconds of healing, he can grant übercharge."
 		"it"	"Cura gli alleati, dopo alcuni secondi di guarigione, può concedere l'übercharge."
-		"ko"	"아군을 치유하며, 일정 시간 동안 치유하면 우버차지를 발동합니다."
+		"ko"	"-아군을 치유하며, 일정 시간 동안 치유하면 우버차지를 발동합니다."
 	}
 	"Aperture Demolisher"
 	{
@@ -6734,9 +6719,9 @@
 	}
 	"Aperture Demolisher Desc"
 	{
-		"en"	"Fires an extremely slow rocket that deals ludicrous damage to barricades."
+		"en"	"-Fires an extremely slow rocket \n-It deals ludicrous damage to barricades."
 		"it"	"Spara un razzo estremamente lento che infligge danni assurdi alle barricate."
-		"ko"	"매우 느리지만 바리케이드에 매우 높은 피해를 가하는 로켓을 발사합니다."
+		"ko"	"-매우 느리지만 바리케이드에 매우 높은 피해를 가하는 로켓을 발사합니다."
 	}
 	"Aperture Repulsor"
 	{
@@ -6746,9 +6731,9 @@
 	}
 	"Aperture Repulsor Desc"
 	{
-		"en"	"Knocks you back by shooting at you."
+		"en"	"-Knocks you back by shooting at you."
 		"it"	"Ti fa indietreggiare sparandoti addosso."
-		"ko"	"총으로 당신을 사격하여 당신을 뒤로 밀쳐냅니다."
+		"ko"	"-총으로 당신을 사격하여 당신을 뒤로 밀쳐냅니다."
 	}
 	"Aperture Minigunner"
 	{
@@ -6758,9 +6743,9 @@
 	}
 	"Aperture Minigunner Desc"
 	{
-		"en"	"Slows you down for a very brief moment with his minigun."
+		"en"	"-Slows you down for a very brief moment with his minigun."
 		"it"	"Ti rallenta per un brevissimo momento con la sua minigun."
-		"ko"	"미니건으로 아주 잠깐 동안 당신의 이동 속도를 감소시킵니다."
+		"ko"	"-미니건으로 아주 잠깐 동안 당신의 이동 속도를 감소시킵니다."
 	}
 	"Aperture Combatant V2"
 	{
@@ -6770,9 +6755,9 @@
 	}
 	"Aperture Combatant V2 Desc"
 	{
-		"en"	"Bludgeons you with his bat, every successful hit increases his attack speed.\nUpgraded version of Aperture Combatant."
+		"en"	"Upgraded version of Aperture Combatant.\n-Bludgeons you with his bat\n-Every successful hit increases his attack speed."
 		"it"	"Ti colpisce con la sua mazza, ogni colpo andato a segno aumenta la sua velocità d'attacco.\nVersione migliorata di Combattente d'apertura."
-		"ko"	"야구방망이로 구타하며, 공격이 성공적으로 적중할 때마다 공격 속도가 증가합니다.\n개선된 애퍼처 투사입니다."
+		"ko"	"개선된 애퍼처 투사입니다.\n-야구방망이로 대상을 구타합니다.\n-공격이 성공적으로 적중할 때마다 공격 속도가 증가합니다."
 	}
 	"Aperture Shotgunner V2"
 	{
@@ -6782,9 +6767,9 @@
 	}
 	"Aperture Shotgunner V2 Desc"
 	{
-		"en"	"Fires a few quick shots before inexplicably exploding.\nUpgraded version of Aperture Shotgunner."
+		"en"	"Upgraded version of Aperture Shotgunner.\n-Fires a few quick shots before inexplicably exploding."
 		"it"	"Spara alcuni colpi veloci prima di esplodere inspiegabilmente.\nVersione migliorata di Aperture Shotgunner."
-		"ko"	"일정 횟수만큼 사격 후 알 수 없는 이유로 폭발합니다.\n개선된 애퍼처 산탄총병입니다."
+		"ko"	"개선된 애퍼처 산탄총병입니다.\n-일정 횟수만큼 사격 후 알 수 없는 이유로 폭발합니다."
 	}
 	"Aperture Devastator V2"
 	{
@@ -6794,9 +6779,9 @@
 	}
 	"Aperture Devastator V2 Desc"
 	{
-		"en"	"Fires 3 pills in rapid succession.\nUpgraded version of Aperture Devastator."
+		"en"	"Upgraded version of Aperture Devastator.\n-Fires 3 pills in rapid succession."
 		"it"	"Spara 3 pillole in rapida successione.\nVersione aggiornata di Devastatore di aperture."
-		"ko"	"한 번에 3개의 유탄을 발사합니다.\n개선된 애퍼처 척살자입니다."
+		"ko"	"개선된 애퍼처 척살자입니다.\n-한 번에 3개의 유탄을 발사합니다."
 	}
 	"Aperture Huntsman V2"
 	{
@@ -6806,9 +6791,9 @@
 	}
 	"Aperture Huntsman V2 Desc"
 	{
-		"en"	"Shoots arrows that inflict bleed.\nUpgraded version of Aperture Huntsman."
+		"en"	"Upgraded version of Aperture Huntsman.\n-Shoots arrows that inflict bleed."
 		"it"	"Scaglia frecce che infliggono emorragie.\nVersione migliorata del Cacciatore di aperture."
-		"ko"	"출혈을 부여하는 화살을 사격합니다.\n개선된 애퍼처 헌츠맨입니다."
+		"ko"	"개선된 애퍼처 헌츠맨입니다.\n-출혈을 부여하는 화살을 사격합니다."
 	}
 	"Aperture Jumper V2"
 	{
@@ -6818,9 +6803,9 @@
 	}
 	"Aperture Jumper V2 Desc"
 	{
-		"en"	"Attempts to jump over barricades, every jump increases his damage.\nUpgraded version of Aperture Jumper."
+		"en"	"Upgraded version of Aperture Jumper.\n-Attempts to jump over barricades\n-every jump increases his damage."
 		"it"	"Tenta di saltare le barricate, ogni salto aumenta il suo danno.\nVersione migliorata di Aperture Jumper."
-		"ko"	"바리케이드를 점프해 뛰어넘으려고 합니다. 점프할 때마다, 공격 피해량이 증가합니다.\n개선된 애퍼처 도약자입니다."
+		"ko"	"개선된 애퍼처 도약자입니다.\n-바리케이드를 점프해 뛰어넘으려고 합니다.\n-점프할 때마다, 공격 피해량이 증가합니다."
 	}
 	"Aperture Phaser V2"
 	{
@@ -6830,9 +6815,9 @@
 	}
 	"Aperture Phaser V2 Desc"
 	{
-		"en"	"Phases through barricades and players, dealing damage in the process.\nUpgraded version of Aperture Phaser."
+		"en"	"Upgraded version of Aperture Phaser.\n-Phases through barricades and players, dealing damage in the process."
 		"it"	"Passa attraverso le barricate e i giocatori, infliggendo danni nel processo.\nVersione migliorata di Aperture Phaser."
-		"ko"	"바리케이드와 플레이어를 위상 형태로 지나가려고 하며, 이 과정에서 피해를 줍니다.\n개선된 애퍼처 위상병입니다."
+		"ko"	"개선된 애퍼처 위상병입니다.\n-바리케이드와 플레이어를 위상 형태로 지나가려고 하며, 이 과정에서 피해를 줍니다."
 	}
 	"Aperture Sniper V2"
 	{
@@ -6842,9 +6827,9 @@
 	}
 	"Aperture Sniper V2 Desc"
 	{
-		"en"	"Spawns in silently and shoots you from a lengthy distance, the laser is more translucent.\nUpgraded version of Aperture Sniper."
+		"en"	"Upgraded version of Aperture Sniper.\n-Spawns in silently and shoots you from a lengthy distance\n-The laser is more translucent."
 		"it"	"Nasce in silenzio e spara da lontano, il laser è più traslucido.\nVersione aggiornata di Aperture Sniper."
-		"ko"	"소리없이 스폰되며, 먼 거리에서 당신을 사격합니다. 레이저가 좀 더 투명합니다.\n개선된 애퍼처 스나이퍼입니다."
+		"ko"	"개선된 애퍼처 스나이퍼입니다.\n-소리없이 스폰됩니다.\n-먼 거리에서 당신을 사격합니다.\n-레이저가 좀 더 투명합니다."
 	}
 	"Aperture Specialist V2"
 	{
@@ -6854,9 +6839,9 @@
 	}
 	"Aperture Specialist V2 Desc"
 	{
-		"en"	"Fires one bullet that debuffs, switches to melee afterwards.\nUpgraded version of Aperture Specialist."
+		"en"	"Upgraded version of Aperture Specialist.\n-Fires one bullet that debuffs\n-Switches to melee afterwards."
 		"it"	"Spara un solo proiettile che sfavorisce, poi passa al corpo a corpo.\nVersione migliorata di Specialista dell'apertura."
-		"ko"	"디버프를 부여하는 탄환을 1발 발사한 후, 근접 공격형 NPC가 됩니다.\n개선된 애퍼처 스페셜리스트입니다."
+		"ko"	"개선된 애퍼처 스페셜리스트입니다.\n-디버프를 부여하는 탄환을 1발 발사한 후, 근접 공격형 NPC가 됩니다."
 	}
 	"Aperture Supporter V2"
 	{
@@ -6866,9 +6851,9 @@
 	}
 	"Aperture Supporter V2 Desc"
 	{
-		"en"	"Heals allies, after a few seconds of healing, he can grant overclock.\nUpgraded version of Aperture Supporter."
+		"en"	"Upgraded version of Aperture Supporter.\n-Heals allies\n-After a few seconds of healing, he can grant overclock."
 		"it"	"Cura gli alleati, dopo alcuni secondi di guarigione può concedere l'overclock.\nVersione potenziata di Aperture Supporter."
-		"ko"	"아군을 치유하며, 일정 시간 동안 치유하면 과부하를 발동합니다.\n개선된 애퍼처 서포터입니다."
+		"ko"	"개선된 애퍼처 서포터입니다.\n-아군을 치유하며, 일정 시간 동안 치유하면 과부하를 발동합니다."
 	}
 	"Aperture Demolisher V2"
 	{
@@ -6878,9 +6863,9 @@
 	}
 	"Aperture Demolisher V2 Desc"
 	{
-		"en"	"Fires an extremely slow rocket that deals ludicrous damage to barricades.\nUpgraded version of Aperture Demolisher."
+		"en"	"Upgraded version of Aperture Demolisher.\n-Fires an extremely slow rocket\n-It deals ludicrous damage to barricades."
 		"it"	"Spara un razzo estremamente lento che infligge danni assurdi alle barricate.\nVersione potenziata di Demolitore di aperture."
-		"ko"	"매우 느리지만 바리케이드에 매우 높은 피해를 가하는 로켓을 발사합니다.\n개선된 애퍼처 철거자입니다."
+		"ko"	"개선된 애퍼처 철거자입니다.\n-매우 느리지만 바리케이드에 매우 높은 피해를 가하는 로켓을 발사합니다."
 	}
 	"Aperture Repulsor V2"
 	{
@@ -6890,9 +6875,9 @@
 	}
 	"Aperture Repulsor V2 Desc"
 	{
-		"en"	"Knocks you back by shooting at you.\nUpgraded version of Aperture Repulsor."
+		"en"	"Upgraded version of Aperture Repulsor.\n-Knocks you back by shooting at you."
 		"it"	"Ti fa indietreggiare sparandoti addosso.\nVersione potenziata di Aperture Repulsor."
-		"ko"	"총으로 당신을 사격하여 당신을 뒤로 밀쳐냅니다.\n개선된 애퍼처 척력병입니다."
+		"ko"	"개선된 애퍼처 척력병입니다.\n-총으로 당신을 사격하여 당신을 뒤로 밀쳐냅니다."
 	}
 	"Aperture Minigunner V2"
 	{
@@ -6902,9 +6887,9 @@
 	}
 	"Aperture Minigunner V2 Desc"
 	{
-		"en"	"Moves quietly and fast with his minigun.\nUpgraded version of Aperture Minigunner."
+		"en"	"Upgraded version of Aperture Minigunner.\n-Moves quietly and fast with his minigun."
 		"it"	"Si muove silenziosamente e velocemente con la sua minigun.\nVersione aggiornata di Aperture Minigunner."
-		"ko"	"미니건을 든 채로 조용하고 빠르게 움직입니다.\n개선된 애퍼처 미니거너입니다."
+		"ko"	"개선된 애퍼처 미니거너입니다.\n-미니건을 든 채로 조용하고 빠르게 움직입니다."
 	}
 	"Perfected Aperture Combatant"
 	{
@@ -6914,9 +6899,9 @@
 	}
 	"Perfected Aperture Combatant Desc"
 	{
-		"en"	"Bludgeons you with his bat, every successful hit increases his attack speed.\nPerfected version of Aperture Combatant."
+		"en"	"Perfected version of Aperture Combatant.\n-Bludgeons you with his bat\n-Every successful hit increases his attack speed."
 		"it"	"Ti colpisce con la sua mazza, ogni colpo andato a segno aumenta la sua velocità d'attacco.\nVersione perfezionata di Aperture Combatant."
-		"ko"	"야구방망이로 구타하며, 공격이 성공적으로 적중할 때마다 공격 속도가 증가합니다.\n완벽하게 개선된 애퍼처 투사입니다."
+		"ko"	"완벽하게 개선된 애퍼처 투사입니다.\n-야구방망이로 대상을 구타합니다.\n-공격이 성공적으로 적중할 때마다 공격 속도가 증가합니다."
 	}
 	"Perfected Aperture Shotgunner"
 	{
@@ -6926,9 +6911,9 @@
 	}
 	"Perfected Aperture Shotgunner Desc"
 	{
-		"en"	"Fires a few quick shots before inexplicably exploding.\nPerfected version of Aperture Shotgunner."
+		"en"	"Perfected version of Aperture Shotgunner.\n-Fires a few quick shots before inexplicably exploding."
 		"it"	"Spara alcuni colpi veloci prima di esplodere inspiegabilmente.\nVersione perfezionata di Aperture Shotgunner."
-		"ko"	"일정 횟수만큼 빠르게 사격한 후, 알 수 없는 이유로 폭발합니다.\n완벽하게 개선된 애퍼처 산탄총병입니다."
+		"ko"	"완벽하게 개선된 애퍼처 산탄총병입니다.\n-일정 횟수만큼 빠르게 사격한 후, 알 수 없는 이유로 폭발합니다."
 	}
 	"Perfected Aperture Devastator"
 	{
@@ -6938,9 +6923,9 @@
 	}
 	"Perfected Aperture Devastator Desc"
 	{
-		"en"	"Fires 4 pills in rapid succession.\nPerfected version of Aperture Devastator."
+		"en"	"Perfected version of Aperture Devastator.\n-Fires 4 pills in rapid succession."
 		"it"	"Spara 4 pillole in rapida successione.\nVersione perfezionata di Devastatore di aperture."
-		"ko"	"한 번에 4개의 유탄을 발사합니다.\n완벽하게 개선된 애퍼처 척살자입니다."
+		"ko"	"완벽하게 개선된 애퍼처 척살자입니다.\n-한 번에 4개의 유탄을 발사합니다."
 	}
 	"Perfected Aperture Huntsman"
 	{
@@ -6950,9 +6935,9 @@
 	}
 	"Perfected Aperture Huntsman Desc"
 	{
-		"en"	"Shoots predictive arrows that inflict bleed and burn.\nPerfected version of Aperture Huntsman."
+		"en"	"Perfected version of Aperture Huntsman.\n-Shoots predictive arrows that inflict bleed and burn."
 		"it"	"Scaglia frecce predittive che infliggono sanguinamento e ustioni.\nVersione perfezionata del Cacciatore di aperture."
-		"ko"	"대상의 경로를 예측하여 출혈과 화상을 부여하는 화살을 사격합니다.\n완벽하게 개선된 애퍼처 헌츠맨입니다."
+		"ko"	"완벽하게 개선된 애퍼처 헌츠맨입니다.\n-대상의 이동 경로를 예측하여 출혈과 화상을 부여하는 화살을 사격합니다."
 	}
 	"Perfected Aperture Jumper"
 	{
@@ -6962,9 +6947,9 @@
 	}
 	"Perfected Aperture Jumper Desc"
 	{
-		"en"	"Attempts to jump over barricades, every jump increases his damage.\nPerfected version of Aperture Jumper."
+		"en"	"Perfected version of Aperture Jumper.\n-Attempts to jump over barricades\n-Every jump increases his damage."
 		"it"	"Tenta di saltare le barricate, ogni salto aumenta il suo danno.\nVersione perfezionata di Aperture Jumper."
-		"ko"	"바리케이드를 점프해 뛰어넘으려고 합니다. 점프할 때마다, 공격 피해량이 증가합니다.\n완벽하게 개선된 애퍼처 도약자입니다."
+		"ko"	"완벽하게 개선된 애퍼처 도약자입니다.\n-바리케이드를 점프해 뛰어넘으려고 합니다.\n-점프할 때마다, 공격 피해량이 증가합니다."
 	}
 	"Perfected Aperture Phaser"
 	{
@@ -6974,9 +6959,9 @@
 	}
 	"Perfected Aperture Phaser Desc"
 	{
-		"en"	"Phases through barricades and players, dealing damage in the process.\nPerfected version of Aperture Phaser."
+		"en"	"Perfected version of Aperture Phaser.\n-Phases through barricades and players, dealing damage in the process."
 		"it"	"Passa attraverso le barricate e i giocatori, infliggendo danni nel processo.\nVersione perfezionata di Aperture Phaser."
-		"ko"	"바리케이드와 플레이어를 위상 형태로 지나가려고 하며, 이 과정에서 피해를 줍니다.\n완벽하게 개선된 애퍼처 위상병입니다."
+		"ko"	"완벽하게 개선된 애퍼처 위상병입니다.\n-바리케이드와 플레이어를 위상 형태로 지나가려고 하며, 이 과정에서 피해를 줍니다."
 	}
 	"Perfected Aperture Sniper"
 	{
@@ -6986,9 +6971,9 @@
 	}
 	"Perfected Aperture Sniper Desc"
 	{
-		"en"	"Spawns in silently and shoots you from a lengthy distance, the laser is nigh invisible unless paying close attention.\nPerfected version of Aperture Sniper."
+		"en"	"Perfected version of Aperture Sniper.\n-Spawns in silently and shoots you from a lengthy distance\n-The laser is nigh invisible unless paying close attention."
 		"it"	"Si schiude in silenzio e spara da una lunga distanza, il laser è quasi invisibile se non si presta molta attenzione.\nVersione perfezionata di Aperture Sniper."
-		"ko"	"소리없이 스폰되며, 먼 거리에서 당신을 사격합니다. 집중하지 않으면 보이지 않을 정도로 레이저가 거의 보이지 않습니다.\n완벽하게 개선된 애퍼처 스나이퍼입니다."
+		"ko"	"완벽하게 개선된 애퍼처 스나이퍼입니다.\n-소리없이 스폰됩니다.\n-먼 거리에서 당신을 사격합니다.\n-집중하지 않으면 보이지 않을 정도로 레이저가 거의 보이지 않습니다."
 	}
 	"Perfected Aperture Specialist"
 	{
@@ -6998,9 +6983,9 @@
 	}
 	"Perfected Aperture Specialist Desc"
 	{
-		"en"	"Fires one bullet that debuffs, switches to melee afterwards.\nPerfected version of Aperture Specialist."
+		"en"	"Perfected version of Aperture Specialist.\n-Fires one bullet that debuffs\n-Switches to melee afterwards."
 		"it"	"Spara un solo proiettile che sfavorisce, poi passa al corpo a corpo.\nVersione perfezionata di Specialista delle aperture."
-		"ko"	"디버프를 부여하는 탄환을 1발 발사한 후, 근접 공격형 NPC가 됩니다.\n완벽하게 개선된 애퍼처 스페셜리스트입니다."
+		"ko"	"완벽하게 개선된 애퍼처 스페셜리스트입니다.\n-디버프를 부여하는 탄환을 1발 발사한 후, 근접 공격형 NPC가 됩니다."
 	}
 	"Perfected Aperture Supporter"
 	{
@@ -7010,9 +6995,9 @@
 	}
 	"Perfected Aperture Supporter Desc"
 	{
-		"en"	"Heals allies, grants armor by healing.\nPerfected version of Aperture Supporter."
+		"en"	"Perfected version of Aperture Supporter.\n-Heals allies\n-Grants armor by healing."
 		"it"	"Cura gli alleati, concede l'armatura curando.\nVersione perfezionata di Aperture Supporter."
-		"ko"	"아군을 치유하며, 치유시 아머를 얻습니다.\n완벽하게 개선된 애퍼처 서포터입니다."
+		"ko"	"완벽하게 개선된 애퍼처 서포터입니다.\n-아군을 치유하며, 치유시 아머를 얻습니다.\n"
 	}
 	"Perfected Aperture Demolisher"
 	{
@@ -7022,9 +7007,9 @@
 	}
 	"Perfected Aperture Demolisher Desc"
 	{
-		"en"	"Fires an extremely slow rocket that deals ludicrous damage to barricades.\nPerfected version of Aperture Demolisher."
+		"en"	"Perfected version of Aperture Demolisher.\n-Fires an extremely slow rocket\n-It deals ludicrous damage to barricades."
 		"it"	"Spara un razzo estremamente lento che infligge danni assurdi alle barricate.\nVersione perfezionata di Demolitore di aperture."
-		"ko"	"매우 느리지만 바리케이드에 매우 높은 피해를 가하는 로켓을 발사합니다.\n완벽하게 개선된 애퍼처 철거자입니다."
+		"ko"	"완벽하게 개선된 애퍼처 철거자입니다.\n-매우 느리지만 바리케이드에 매우 높은 피해를 가하는 로켓을 발사합니다."
 	}
 	"Perfected Aperture Repulsor"
 	{
@@ -7034,9 +7019,9 @@
 	}
 	"Perfected Aperture Repulsor Desc"
 	{
-		"en"	"Knocks you and himself back by shooting at you.\nPerfected version of Aperture Repulsor."
+		"en"	"Perfected version of Aperture Repulsor.\n-Knocks you and himself back by shooting at you."
 		"it"	"Ti fa indietreggiare sparandoti addosso.\nVersione perfezionata di Aperture Repulsor."
-		"ko"	"총으로 사격하여 당신을 뒤로 밀쳐내고 반동으로 자신도 그만큼 밀려납니다.\n완벽하게 개선된 애퍼처 척력병입니다."
+		"ko"	"완벽하게 개선된 애퍼처 척력병입니다.\n-총으로 사격하여 당신을 뒤로 밀쳐내고 반동으로 자신도 그만큼 밀려납니다."
 	}
 	"Perfected Aperture Minigunner"
 	{
@@ -7046,9 +7031,9 @@
 	}
 	"Perfected Aperture Minigunner Desc"
 	{
-		"en"	"Slow but loud as shit, deals an enormous amount of damage with his minigun.\nPerfected version of Aperture Minigunner."
+		"en"	"Perfected version of Aperture Minigunner.\n-Slow but loud as shit\n-Deals an enormous amount of damage with his minigun."
 		"it"	"Lento ma rumoroso, infligge un'enorme quantità di danni con la sua minigun.\nVersione perfezionata di Aperture Minigunner."
-		"ko"	"느리지만 고도로 시끄러우며, 미니건이 극도로 높은 피해를 줍니다.\n완벽하게 개선된 애퍼처 미니거너입니다."
+		"ko"	"완벽하게 개선된 애퍼처 미니거너입니다.\n-느리지만 고도로 시끄럽습니다.\n-미니건이 극도로 높은 피해를 줍니다."
 	}
 	"Aperture Container"
 	{
@@ -7058,9 +7043,9 @@
 	}
 	"Aperture Container Desc"
 	{
-		"en"	"On death, applies a random buff to allies close to his vicinity."
+		"en"	"-On death, applies a random buff to allies close to his vicinity."
 		"it"	"Alla morte, applica un buff casuale agli alleati vicini."
-		"ko"	"사망시, 자신 근처에 있는 아군에게 무작위 버프를 부여합니다."
+		"ko"	"-사망시, 자신 근처에 있는 아군에게 무작위 버프를 부여합니다."
 	}
 	"Aperture Traveller"
 	{
@@ -7070,9 +7055,9 @@
 	}
 	"Aperture Traveller Desc"
 	{
-		"en"	"Fires a projectile, if it hits, he'll teleport behind the target that got hit."
+		"en"	"-Fires a projectile, if it hits, he'll teleport behind the target that got hit."
 		"it"	"Spara un proiettile che, se colpito, si teletrasporterà dietro il bersaglio colpito."
-		"ko"	"투사체를 발사합니다. 이 투사체가 적중하면, 적중한 대상의 뒤쪽으로 순간이동 합니다."
+		"ko"	"-투사체를 발사합니다. 이 투사체가 적중하면, 적중한 대상의 뒤쪽으로 순간이동 합니다."
 	}
 	"Aperture Builder"
 	{
@@ -7082,9 +7067,9 @@
 	}
 	"Aperture Builder Desc"
 	{
-		"en"	"Appears anywhere at random, if given enough time, he'll set-up a sentry, dispenser, and a teleporter."
+		"en"	"-Appears anywhere at random\n-If given enough time, he'll set-up a sentry, dispenser, and a teleporter."
 		"it"	"Appare ovunque a caso e, se gli si concede abbastanza tempo, metterà in funzione una sentinella, un dispenser e un teletrasporto."
-		"ko"	"무작위 위치에 생성됩니다. 등장 후 충분한 시간이 지나면, 센트리 건, 디스펜서, 텔레포터를 설치합니다."
+		"ko"	"-무작위 위치에 생성됩니다.\n-등장 후 충분한 시간이 지나면, 센트리 건, 디스펜서, 텔레포터를 설치합니다."
 	}
 	"Aperture Sentry"
 	{
@@ -7094,9 +7079,9 @@
 	}
 	"Aperture Sentry Desc"
 	{
-		"en"	"Fires bullets and homing rockets."
+		"en"	"-Fires bullets\n-Fires homing rockets."
 		"it"	"Spara proiettili e razzi di puntamento."
-		"ko"	"유도탄 로켓과 탄환을 발사합니다."
+		"ko"	"-유도탄 로켓과 탄환을 발사합니다."
 	}
 	"Aperture Dispenser"
 	{
@@ -7106,9 +7091,9 @@
 	}
 	"Aperture Dispenser Desc"
 	{
-		"en"	"Grants health and armor to nearby allies."
+		"en"	"-Grants health and armor to nearby allies."
 		"it"	"Conferisce salute e armatura agli alleati vicini."
-		"ko"	"주변의 모든 아군의 체력을 회복시키고 아머를 공급합니다."
+		"ko"	"-주변의 모든 아군의 체력을 회복시키고 아머를 공급합니다."
 	}
 	"Aperture Teleporter"
 	{
@@ -7118,9 +7103,9 @@
 	}
 	"Aperture Teleporter Desc"
 	{
-		"en"	"Acts as a new spawn point for allies, allies teleported through get the Quantum Entanglement buff."
+		"en"	"-Acts as a new spawn point for allies\n-allies teleported through get the Quantum Entanglement buff."
 		"it"	"Funge da nuovo punto di spawn per gli alleati, gli alleati teletrasportati ottengono il buff Quantum Entanglement."
-		"ko"	"이 적은 다른 적들의 스폰 포인트 역할을 합니다. 이 적의 위치에서 생성된 적은 양자 얽힘 버프를 얻습니다."
+		"ko"	"-이 적은 다른 적들의 스폰 포인트 역할을 합니다.\n-이 적의 위치에서 생성된 적은 양자 얽힘 버프를 얻습니다."
 	}
 	"Portal Gate"
 	{
@@ -7132,7 +7117,7 @@
 	{
 		"en"	"Gates that seem to be opening up on their own...or are they?\nPortal Gates teleport foes that you may or may not have went up against in the past.\nLiving beings that are deemed too weak get refragmented."
 		"it"	"Porte che sembrano aprirsi da sole... o forse sì?\nLe Porte del Portale teletrasportano i nemici che si possono o meno aver affrontato in passato.\nGli esseri viventi ritenuti troppo deboli vengono riframmentati."
-		"ko"	"저절로 열리는 듯한 관문...인 것 같습니다?\n차원 관문은 과거에 맞섰거나 맞서지 않은 적들을 순간이동 시킵니다.\n살아있는 생명체 중, 너무 약하다고 판단되는 존재는 재구성됩니다."
+		"ko"	"저절로 열리는 듯한 관문...인 것 같습니다?\n-차원 관문은 과거에 맞섰거나 맞서지 않은 적들을 순간이동 시킵니다.\n-살아있는 생명체 중, 너무 약하다고 판단되는 존재는 재구성됩니다."
 	}
 	"Aperture Collector"
 	{
@@ -7142,9 +7127,9 @@
 	}
 	"Aperture Collector Desc"
 	{
-		"en"	"Gets increased resistance and damage by allies dying around him."
+		"en"	"-Gets increased resistance and damage by allies dying around him."
 		"it"	"Aumenta la resistenza e i danni degli alleati che muoiono intorno a lui."
-		"ko"	"주변의 아군이 죽을 때마다, 피해 저항력과 피해량이 증가합니다."
+		"ko"	"-주변의 아군이 죽을 때마다, 피해 저항력과 피해량이 증가합니다."
 	}
 	"Aperture Fueler"
 	{
@@ -7154,9 +7139,9 @@
 	}
 	"Aperture Fueler Desc"
 	{
-		"en"	"Creates a ring of fire whenever attacking with melee, pushes enemies back with it as well."
+		"en"	"-Creates a ring of fire whenever attacking with melee\n-Pushes enemies back with it as well."
 		"it"	"Crea un anello di fuoco quando attacca in mischia e spinge indietro i nemici."
-		"ko"	"근접 공격시 불의 고리가 생성되어 적들을 뒤로 밀칩니다."
+		"ko"	"-근접 공격시 불의 고리가 생성됩니다.\n-적중 시 적들을 뒤로 밀칩니다."
 	}
 	"Aperture Halter"
 	{
@@ -7166,9 +7151,9 @@
 	}
 	"Aperture Halter Desc"
 	{
-		"en"	"Spawns with a shield deployed, the shield expires on its own but it can be redeployed after some time."
+		"en"	"-Spawns with a shield deployed\n-The shield expires on its own but it can be redeployed after some time."
 		"it"	"Nasce con uno scudo dispiegato, che scade da solo ma può essere ridispiegato dopo qualche tempo."
-		"ko"	"보호막을 전개한 채로 스폰됩니다. 보호막은 시간이 지나면 제거되지만, 시간이 지나면 다시 재배치됩니다."
+		"ko"	"-보호막을 전개한 채로 스폰됩니다.\n-보호막은 시간이 지나면 제거되지만, 시간이 지나면 다시 재배치됩니다."
 	}
 	"Aperture Suppressor"
 	{
@@ -7178,9 +7163,9 @@
 	}
 	"Aperture Suppressor Desc"
 	{
-		"en"	"Gains a temporary speed and damage boost after taking damage."
+		"en"	"-Gains a temporary speed and damage boost after taking damage."
 		"it"	"Ottiene un aumento temporaneo della velocità e dei danni dopo aver subito danni."
-		"ko"	"피해를 받을 때마다, 잠깐 동안 지속되는 피해량 증가 및 이동 속도 증가 효과를 얻습니다."
+		"ko"	"-피해를 받을 때마다, 잠깐 동안 지속되는 피해량 증가 및 이동 속도 증가 효과를 얻습니다."
 	}
 	"Refragmented Headcrab Zombie"
 	{
@@ -7190,9 +7175,9 @@
 	}
 	"Refragmented Headcrab Zombie Desc"
 	{
-		"en"	"Every few melee hits, it'll spawn another, weaker version of itself."
+		"en"	"-Every few melee hits, it'll spawn another, weaker version of itself."
 		"it"	"Ogni pochi colpi in mischia, genera un'altra versione più debole di se stesso."
-		"ko"	"근접 공격이 일정 횟수 이상 적중하면, 자신의 약화된 버전을 생성합니다."
+		"ko"	"-근접 공격이 일정 횟수 이상 적중하면, 자신의 약화된 버전을 생성합니다."
 	}
 	"Refragmented Fast Zombie"
 	{
@@ -7202,9 +7187,9 @@
 	}
 	"Refragmented Fast Zombie Desc"
 	{
-		"en"	"Faster, stronger, jumps at you a lot more often."
+		"en"	"-Faster, stronger, jumps at you a lot more often."
 		"it"	"Più veloce, più forte, salta addosso molto più spesso."
-		"ko"	"더 빠르고, 강해졌으며, 당신에게 매우 자주 달려듭니다."
+		"ko"	"-더 빠르고, 강해졌으며, 당신에게 매우 자주 달려듭니다."
 	}
 	"Refragmented Poison Zombie"
 	{
@@ -7214,9 +7199,9 @@
 	}
 	"Refragmented Poison Zombie Desc"
 	{
-		"en"	"Brings terror to anyone responsible for placing barricades."
+		"en"	"Brings terror to anyone responsible for placing barricades. \n-When attacking barricades, launches into the air"
 		"it"	"Porta il terrore a chiunque sia responsabile del posizionamento delle barricate."
-		"ko"	"바리케이드를 설치하는 사람에게 충격과 공포를 주는 존재입니다."
+		"ko"	"바리케이드를 설치하는 사람에게 충격과 공포를 주는 존재입니다.\n-바리케이드를 공격할 시, 공중으로 뛰어오릅니다."
 	}
 	"Refragmented Metro Cop"
 	{
@@ -7226,9 +7211,9 @@
 	}
 	"Refragmented Metro Cop Desc"
 	{
-		"en"	"Heals by using his pistol."
+		"en"	"-Heals by using his pistol."
 		"it"	"Guarisce usando la pistola."
-		"ko"	"권총 사격시 체력을 회복합니다."
+		"ko"	"-권총 사격시 체력을 회복합니다."
 	}
 	"Refragmented Metro Raider"
 	{
@@ -7238,9 +7223,9 @@
 	}
 	"Refragmented Metro Raider Desc"
 	{
-		"en"	"Has invulnerability due to being linked with another refragmented, sever the link."
+		"en"	"-Has invulnerability due to being linked with another refragmented, sever the link."
 		"it"	"Ha un'invulnerabilità dovuta al fatto di essere legato a un altro refrattario."
-		"ko"	"다른 재구성된 개체들과 연결되어있어, 이 개체가 무적 상태가 됩니다. 연결을 끊어야합니다."
+		"ko"	"-다른 재구성된 개체들과 연결되어있어, 이 개체가 무적 상태가 됩니다. 연결을 끊어야합니다."
 	}
 	"Refragmented W.F. Rifler"
 	{
@@ -7250,9 +7235,9 @@
 	}
 	"Refragmented W.F. Rifler Desc"
 	{
-		"en"	"Spawns 2 Refragmented Metro Raiders, kill him to kill them."
+		"en"	"-Spawns 2 Refragmented Metro Raiders, kill him to kill them."
 		"it"	"Genera 2 Predatori della metropolitana riframmentati, uccidetelo per ucciderli."
-		"ko"	"시민 보호 특공대 2마리를 생성합니다. 이 적을 죽이면, 이 적이 소환한 시민 보호 특공대도 죽습니다."
+		"ko"	"-재구성된 시민 보호 특공대 2체를 생성합니다. 이 적을 죽이면, 이 적이 소환한 시민 보호 특공대도 죽습니다."
 	}
 	"Refragmented W.F. Elite"
 	{
@@ -7264,7 +7249,7 @@
 	{
 		"en"	"Has overall increased stats, fires an accumulated source of energy that deals true damage."
 		"it"	"Ha statistiche complessivamente aumentate, spara una fonte di energia accumulata che infligge danni reali."
-		"ko"	"전체적인 능력치가 증가했으며, 트루 대미지를 입히는 에너지볼을 사격합니다."
+		"ko"	"-전반적인 능력치가 증가했으며, 트루 대미지를 입히는 에너지볼을 사격합니다."
 	}
 	"Refragmented Heavy"
 	{
@@ -7276,7 +7261,7 @@
 	{
 		"en"	"Warps around, making him a hard target to focus down."
 		"it"	"Si deforma, rendendolo un bersaglio difficile da colpire."
-		"ko"	"이리저리 순간이동하여 집중하기 어려운 대상입니다."
+		"ko"	"-이리저리 순간이동하여 집중하기 어려운 대상입니다."
 	}
 	"Refragmented Medic"
 	{
@@ -7288,7 +7273,7 @@
 	{
 		"en"	"Possesses multiple lives, every life lost grants him invulnerability for a few seconds."
 		"it"	"Possiede più vite, ogni vita persa gli conferisce invulnerabilità per alcuni secondi."
-		"ko"	"죽어도 여러번 부활하며, 부활할 때마다 일정 시간 동안 무적 상태가 됩니다."
+		"ko"	"-죽어도 여러번 부활하며, 부활할 때마다 일정 시간 동안 무적 상태가 됩니다."
 	}
 	"Refragmented Spy"
 	{
@@ -7300,7 +7285,7 @@
 	{
 		"en"	"Facestabs you and self-heals by doing so."
 		"it"	"Vi affronta e si auto-guarisce così."
-		"ko"	"무조건 백스탭 판정 공격을 가하며 피해를 주면 체력을 회복합니다."
+		"ko"	"-무조건 백스탭 판정 공격을 가하며 피해를 가할 시 체력을 회복합니다."
 	}
 	"Refragmented Parasihtta"
 	{
@@ -7312,7 +7297,7 @@
 	{
 		"en"	"Deals no damage, but inflicts you with envenomed."
 		"it"	"Non infligge alcun danno, ma infligge un'envenomed."
-		"ko"	"대상을 공격해도 피해를 주지 않으며, 대신 중독성 코팅 디버프를 부여합니다."
+		"ko"	"-대상을 공격해도 피해를 주지 않으며, 대신 '중독성 코팅' 디버프를 부여합니다."
 	}
 	"Refragmented Hostis"
 	{
@@ -7324,7 +7309,7 @@
 	{
 		"en"	"Pulls you in, then knocks you away."
 		"it"	"Ti attira e poi ti butta via."
-		"ko"	"대상을 끌어당긴 후, 다시 날려버립니다."
+		"ko"	"-대상을 끌어당긴 후, 다시 날려버립니다."
 	}
 	"Refragmented Defectio"
 	{
@@ -7336,7 +7321,7 @@
 	{
 		"en"	"Takes 0 damage inside of his blue radius."
 		"it"	"Subisce 0 danni all'interno del suo raggio blu."
-		"ko"	"이 적의 파란 범위 내에 있다면, 이 적에게 주는 피해가 0으로 고정됩니다."
+		"ko"	"-이 적의 파란 범위 내에 있다면, 이 적에게 주는 피해가 0으로 고정됩니다."
 	}
 	"Perfected Father Grigori"
 	{
@@ -7346,7 +7331,7 @@
 	}
 	"Perfected Father Grigori Desc"
 	{
-		"en"	"So this is where all of those Grigori copies are coming from...\nAnnabelle is replaced with a Boomstick.\nIon Cannon now heals allies.\nHas a shield that activates passively."
+		"en"	"So this is where all of those Grigori copies are coming from...\n-Annabelle is replaced with a Boomstick.\n-Ion Cannon now heals allies.\n-Has a shield that activates passively."
 		"it"	"Ecco da dove provengono tutte le copie di Grigori...\nAnnabelle è sostituita da un Boomstick.\nIl Cannone a ioni ora cura gli alleati."
 		"ko"	"그 많던 그리고리 신부 짝퉁이 어디서 왔는지 알 것 같군요...\n-애너벨이 아닌 붐스틱을 보유\n-이온 캐논이 이제 아군들을 회복\n-자동으로 활성화되는 보호막을 보유"
 	}
@@ -7358,9 +7343,9 @@
 	}
 	"Aperture Exterminator Desc"
 	{
-		"en"	"Big robot. Very slow, wields a gigantic sword which allows him to hit you from afar.\n Deals true damage."
+		"en"	"Big robot. \n-Very slow\n-Wields a gigantic sword which allows him to hit you from afar.\n-Deals true damage."
 		"it"	"Grande robot. Molto lento, brandisce una spada gigantesca che gli permette di colpire da lontano.\nDanno Puro"
-		"ko"	"거대한 로봇. 매우 느리지만, 멀리서도 타격이 가능한 거대한 검을 휘두릅니다.\n 공격이 트루 대미지를 입힙니다."
+		"ko"	"거대한 로봇.\n-매우 느린 이동 속도\n-멀리서도 타격이 가능한 거대한 검을 휘두릅니다.\n-공격이 트루 대미지를 입힙니다."
 	}
 	"Aperture Spokesman"
 	{
@@ -7370,9 +7355,9 @@
 	}
 	"Aperture Spokesman Desc"
 	{
-		"en"	"The man who speaks for the people.\nGrants Dimensional Turbulance buff to bosses.\nIf left alive for last, he'll get increased resistances and buffs."
+		"en"	"The man who speaks for the people.\n-Grants Dimensional Turbulance buff to bosses.\n-If left alive for last, he'll get increased resistances and buffs."
 		"it"	"L'uomo che parla a nome del popolo.\nGrazie al buff Turbolenza dimensionale ai boss.\nSe lasciato in vita per ultimo, otterrà resistenze e buff aumentati."
-		"ko"	"자신의 사람들을 위해 연설하는 자입니다.\n 보스에게 차원 난기류 버프를 부여합니다.\n이 적이 혼자 남았다면, 다수의 버프와 저항력을 얻습니다."
+		"ko"	"자신의 사람들을 위해 연설하는 자입니다.\n-보스에게 차원 난기류 버프를 부여합니다.\n-이 적이 혼자 남았다면, 다수의 버프와 저항력을 얻습니다."
 	}
 	"Aperture Researcher"
 	{
@@ -7382,9 +7367,9 @@
 	}
 	"Aperture Researcher Desc"
 	{
-		"en"	"Both an ally and an enemy, this researcher simply wants to get out.\nGoing below 50%% of his health will cause him to inflict everyone with Kinetic Surge."
+		"en"	"Both an ally and an enemy, this researcher simply wants to get out.\n-Going below 50％ of his health will cause him to inflict everyone with Kinetic Surge."
 		"it"	"Sia alleato che nemico, questo ricercatore vuole semplicemente andarsene.\nScendere sotto il 50% della sua salute lo porterà a infliggere a tutti un'Ondata Cinetica."
-		"ko"	"아군이자 적군이 될 수도 있는 이 연구원은 단지 이 곳을 서둘러 빠져나가고 싶어할 뿐입니다.\n체력이 50％ 이하가 되면, 적과 아군을 포함한 모든 존재에게 운동 에너지 급증 버프를 부여합니다."
+		"ko"	"아군이자 적군이 될 수도 있는 이 연구원은 단지 이 곳을 서둘러 빠져나가고 싶어할 뿐입니다.\n-체력이 50％ 이하가 되면, 적과 아군을 포함한 모든 존재에게 운동 에너지 급증 버프를 부여합니다."
 	}
 	"C.A.T."
 	{
@@ -7436,9 +7421,9 @@
 	}
 	"Refragmented Winter Sniper Desc"
 	{
-		"en"	"Will attack one target only and focus them down.\nDies after some time.\nIf he hits you while under cryo, he debuffs you harder."
+		"en"	"-Will attack one target only and focus them down.\n-Dies after some time.\n-If he hits you while under cryo, he debuffs you harder."
 		"it"	"Attacca un solo bersaglio e lo abbatte.\nMuore dopo un po' di tempo.\nSe ti colpisce mentre sei sotto crio, ti indebolisce di più."
-		"ko"	"항상 한 대상만 집중해서 공격합니다.\n일정 시간이 지나면 즉사합니다.\n만약 당신이 냉동 디버프를 보유 하고 있다면, 이 적에게서 받는 디버프가 강화됩니다."
+		"ko"	"항상 한 대상만 집중해서 공격합니다.\n-일정 시간이 지나면 즉사합니다.\n-적중한 대상이 냉동 디버프를 보유하고 있다면, 이 적에게서 받는 디버프가 강화됩니다."
 	}
 	"Refragmented Frost Hunter"
 	{
@@ -7448,9 +7433,9 @@
 	}
 	"Refragmented Frost Hunter Desc"
 	{
-		"en"	"Will attack one target only and focus them down.\nDies after some time.\nVery fast and high damage, but dissapears once he hits you once."
+		"en"	"-Will attack one target only and focus them down.\n-Dies after some time.\n-Very fast and high damage, but dissapears once he hits you once."
 		"it"	"Attacca un solo bersaglio e lo abbatte.\nMuore dopo un po' di tempo.\nMolto veloce e con danni elevati, ma scompare una volta colpito una volta."
-		"ko"	"항상 한 대상만 집중해서 공격합니다.\n일정 시간이 지나면 즉사합니다.\n매우 빠르고 높은 피해를 주지만, 대상 적중시 소멸합니다."
+		"ko"	"항상 한 대상만 집중해서 공격합니다.\n-일정 시간이 지나면 즉사합니다.\n-매우 빠르고 높은 피해를 주지만, 대상 적중 시 소멸합니다."
 	}
 	"Vincent"
 	{
@@ -7555,9 +7540,9 @@
 	}
 	"Umbral Ltzens Desc"
 	{
-		"en"	"An erratic Umbral, capable of defying the laws of physics. \nMoves in short bursts, as if it were lagging."
+		"en"	"An erratic Umbral, capable of defying the laws of physics. \n-Moves in short bursts, as if it were lagging."
 		"it"	"Un Umbral irregolare, capace di sfidare le leggi della fisica. \nSi muove a brevi intervalli, come se fosse in ritardo."
-		"ko"	"물리 법칙을 거스를 수 있는 불규칙한 움브랄. \n마치 렉이라도 걸린 듯 짧게 순간적으로 움직입니다."
+		"ko"	"물리 법칙을 거스를 수 있는 불규칙한 움브랄.\n-마치 렉이라도 걸린 듯 짧게 순간적으로 움직입니다."
 	}
 	"Umbral Refract"
 	{
@@ -7567,9 +7552,9 @@
 	}
 	"Umbral Refract Desc"
 	{
-		"en"	"A fierce Umbral, ready to fight to the bitter end. \nWhen hurt, leaps and fires an exploding laser at the attacker."
+		"en"	"A fierce Umbral, ready to fight to the bitter end\n-When hurt, leaps and fires an exploding laser at the attacker."
 		"it"	"Un Umbral feroce, pronto a combattere fino alla fine. \nSe ferito, salta e spara un laser esplosivo contro l'aggressore."
-		"ko"	"맹렬한 움브랄로, 최후를 맞이할 때까지 싸울 준비가 되어있습니다. \n피해를 받을 때마다, 뛰어오른뒤 공격자에게 폭발성 레이저를 발사합니다."
+		"ko"	"맹렬한 움브랄로, 최후를 맞이할 때까지 싸울 준비가 되어있습니다.\n-피해를 받을 때마다, 뛰어오른뒤 공격자에게 폭발성 레이저를 발사합니다."
 	}
 	"Umbral Koulm"
 	{
@@ -7579,9 +7564,9 @@
 	}
 	"Umbral Koulm Desc"
 	{
-		"en"	"An enigmatic Umbral, you can't tell if they're fighting for or against you. \nGrants Umbral Grace and Elemental Curing to anything within its AOE, \nbut becomes enraged when losing enough HP."
+		"en"	"An enigmatic Umbral, you can't tell if they're fighting for or against you\n-Grants Umbral Grace and Elemental Curing to anything within its AOE\n-becomes enraged when losing enough HP."
 		"it"	"Un Umbral enigmatico, non si capisce se combatte a favore o contro di voi. \nConferisce Grazia Umbrale e Cura Elementale a tutto ciò che si trova all'interno della sua AOE, \nma si infuria quando perde abbastanza HP."
-		"ko"	"수수께끼의 움브랄. 이 존재가 당신을 위해 싸우는건지, 적대하는건지 알 수가 없습니다. \n범위 내 모든 대상에게 움브랄의 은총과 원소 치유를 부여하지만, \n충분한 체력을 잃을 경우 격분합니다."
+		"ko"	"수수께끼의 움브랄. 이 존재가 당신을 위해 싸우는건지, 적대하는건지 알 수가 없습니다.\n-범위 내 모든 대상에게 움브랄의 은총과 원소 치유를 부여합니다.\n-충분한 체력을 잃을 경우 격분합니다."
 	}
 	"Umbral Keitosis"
 	{
@@ -7591,9 +7576,9 @@
 	}
 	"Umbral Keitosis Desc"
 	{
-		"en"	"An unstable Umbral, capable of splitting itself apart. \nGains Power over time, and creates summons upon death. \nSummon stats are increased based on Power, and self destructs upon reaching max Power."
+		"en"	"An unstable Umbral, capable of splitting itself apart\n-Gains Power over time\n-creates summons upon death\n-Summon stats are increased based on Power\n-self destructs upon reaching max Power."
 		"it"	"Un Umbral instabile, capace di dividersi. \nGuadagna potere nel tempo e crea evocazioni alla morte. \nLe statistiche delle evocazioni aumentano in base alla potenza e si autodistruggono quando raggiungono la massima potenza."
-		"ko"	"스스로 분열할 수 있는 불안정한 움브랄입니다. \n시간이 지남에 따라 힘이 증가하며, 사망 시 소환수를 생성합니다. \n소환수의 능력치는 본체의 힘에 따라 증가하며 힘이 최대치에 도달하면 자폭합니다."
+		"ko"	"스스로 분열할 수 있는 불안정한 움브랄입니다.\n-시간이 지남에 따라 힘이 증가합니다.\n-사망 시 소환수를 생성합니다.\n-소환된 움브랄들의 능력치는 본체의 힘에 따라 증가합니다\n-힘이 최대치에 도달하면 자폭합니다."
 	}
 	"Umbral Spuud"
 	{
@@ -7603,9 +7588,9 @@
 	}
 	"Umbral Spuud Desc"
 	{
-		"en"	"An incredibly fast Umbral, capable of moving past the speed of light. \nGains additional speed and vulnerability the longer its alive."
+		"en"	"An incredibly fast Umbral, capable of moving past the speed of light\n-Gains additional speed, attackspeed and vulnerability the longer its alive."
 		"it"	"Un Umbral incredibilmente veloce, capace di muoversi oltre la velocità della luce. \nGuadagna ulteriore velocità e vulnerabilità quanto più a lungo è in vita."
-		"ko"	"엄청나게 빠른 움브랄로, 빛의 속도를 넘어 움직일 수 있습니다.\n생존한 시간이 길수록 이동 속도가 더 빨라지지만, 공격 피해에 취약해집니다."
+		"ko"	"엄청나게 빠른 움브랄로, 빛의 속도를 넘어 움직일 수 있습니다.\n-생존한 시간이 길수록 이동 속도와 공격 속도가 더 빨라지지만, 공격 피해에 취약해집니다."
 	}
 	"Umbral Automaton"
 	{
@@ -7619,6 +7604,11 @@
 		"it"	"U̴̡̕m̶̒b̵͗r̷̂á̴̪l̸̐ ̷̯̽Ẅ̸.̶̾F̶̭̃.̷͗"
 		"ko"	"움̴̡̕브̶̒랄̸̐ ̷̯̽W.̸̈F̶̾.̷̭̃͗"
 	}
+	"Umbral W.F. Desc"
+	{
+		"en"	"Umbrals created from the Umbral gate in the image of Whiteflower\n-Periodically uses Octane kick."
+		"ko"	"배풍등의 모습을 갖추고 움브랄 게이트에서 나타난 움브랄들입니다.\n-주기적으로 옥테인 킥을 사용합니다."
+	}
 	"Umbral Rouam"
 	{
 		"en"	"U̷̖͑m̴b̷̖̿r̵a̴̛͈l̶̬̚ ̴̺̎R̶o̶ȕ̴̙a̵̡͑m̷"
@@ -7627,9 +7617,9 @@
 	}
 	"Umbral Rouam Desc"
 	{
-		"en"	"An easily irritable Umbral, provoke them at your own risk. \nStarts passive, becoming enraged when hurt."
+		"en"	"An easily irritable Umbral, provoke them at your own risk\n-Starts passive, becoming enraged when hurt.\n-Also enrages after some time."
 		"it"	"Un Umbral facilmente irritabile: provocatelo a vostro rischio e pericolo. \nInizia in modo passivo e si infuria quando viene ferito."
-		"ko"	"쉽게 격노하는 움브랄. 자극하는건 위험이 따릅니다. \n비공격적 상태로 등장하지만, 피해를 받을 시 격분합니다."
+		"ko"	"쉽게 격노하는 움브랄. 자극하는건 위험이 따릅니다.\n-비공격적 상태로 등장하지만, 피해를 받을 시 격분합니다.\n-또한 일정 시간이 지난 후에도 격분합니다."
 	}
 	"Torn Umbral Gate"
 	{
@@ -7645,9 +7635,9 @@
 	}
 	"Shadowing Darkness, The Ruler Desc"
 	{
-		"en"	"Ruler of the Umbrals. Keeper of the Purgatory Throne. Culprit behind the Void outbreaks. \nTrapped inside the Curtain, she lost her mind long ago. \nShe must be stopped at all costs.\nShe gives necrosis on most of her abilities."
+		"en"	"Ruler of the Umbrals. Keeper of the Purgatory Throne. Culprit behind the Void outbreaks. \nTrapped inside the Curtain, she lost her mind long ago. \nShe must be stopped at all costs.\n-She gives necrosis on most of her abilities."
 		"it"	"Sovrano degli Umbral. Custode del Trono del Purgatorio. Responsabile delle epidemie del Vuoto. \nIntrappolata nella cortina, ha perso la ragione molto tempo fa. \nDeve essere fermata a tutti i costi.\nDà necrosi alla maggior parte delle sue abilità."
-		"ko"	"움브랄의 지배자이자, 연옥 왕좌의 파수꾼입니다. 공허 재앙 발발의 장본인입니다.\n 장막 속에 갇힌 그녀는 오래 전에 이성을 잃었습니다.\n무슨 수를 써서라도 막아내야만 합니다.\n대부분의 능력이 적들에게 쇠약 원소 피해를 부여합니다."
+		"ko"	"움브랄의 지배자이자, 연옥 왕좌의 파수꾼입니다. 공허 재앙 발발의 원흉입니다.\n 장막 속에 갇힌 그녀는 오래 전에 이성을 잃었습니다.\n무슨 수를 써서라도 막아내야만 합니다.\n-대부분의 능력이 적들에게 쇠약 원소 피해를 부여합니다."
 	}
 	"Almagest Researcher"
 	{
@@ -7663,9 +7653,8 @@
 	}
 	"Seinr Desc"
 	{
-		"en"	"Almagest researcher who entered his own mech suit in a desperate attempt \nto avoid becoming warped. It didn't work out too well... \nDeals warping damage and has armor that reduces ally speed while active. \nGains speed once armor is lost."
-		"it"	"Il ricercatore Almagest è entrato nella sua tuta mech nel disperato tentativo di evitare di essere deformato.\nNon ha funzionato molto bene... \nSubisce danni da deformazione e ha un'armatura che riduce la velocità degli alleati quando è attiva. \nGuadagna velocità una volta persa l'armatura."
-		"ko"	"왜곡당하지 않기 위해 필사적으로 자신의 메카 슈트를 착용했었던 알마게스트 연구원입니다. \n하지만 그게 그의 뜻대로 되지 않은 것 같습니다... \n왜곡 피해를 입히고 활성화된 동안 아군의 속도를 감소시키는 아머를 보유했습니다. \n아머가 파괴되면, 이동 속도가 증가합니다."
+		"en"	"Almagest researcher who entered his own mech suit in a desperate attempt \nto avoid becoming warped. It didn't work out too well... \n-Deals warping damage and has armor that reduces attacker attackspeed and gfives cryo when hit to the attacker.\n-When armor is up, all allies except himself gain heavy resistances \n-Gains speed once armor is broken\nAlso gives tonic buff to all allies shortly and stuns & invuln allies for a short time"
+		"ko"	"왜곡당하지 않기 위해 필사적으로 자신의 메카 슈트를 착용했었던 알마게스트 연구원입니다.\n하지만 그게 그의 뜻대로 되지 않은 것 같습니다... \n-적중 시 왜곡 원소 피해를 부여\n-피격 시 공격자의 공격 속도를 감소시키고 '냉기' 디버프를 부여하는 아머를 보유합니다.\n-아머가 활성화된 동안, 자신을 제외한 모든 아군이 대량의 저항력을 얻습니다.\n-아머가 파괴되면, 이동 속도가 증가합니다.\n-또한 모든 아군에게 잠시 동안 기절 및 무적을 부여하고 이후 '강장제의 고통' 버프를 짧게 부여합니다."
 	}
 	"Jkei"
 	{
@@ -7675,9 +7664,8 @@
 	}
 	"Jkei Desc"
 	{
-		"en"	"Ruthless leader of the Almagest squad sent into the Curtain. \nTheir motives remain unclear. \nDeals void damage, and summons drones to deal chaos damage. \nAfter losing a certain amount of HP, becomes invulernerable until the current wave is defeated."
-		"it"	"Spietato leader della squadra Almagest inviata nella Cortina. \nI loro motivi rimangono poco chiari. \nSubisce danni da vuoto ed evoca droni per infliggere danni da caos. \nDopo aver perso una certa quantità di HP, diventa invulnerabile finché non viene sconfitta l'ondata corrente."
-		"ko"	"장막 속으로 파견된 알마게스트 부대의 무자비한 지휘관입니다.\n그들의 동기는 여전히 불분명합니다.\n-공허 속성 피해를 입히고, 드론을 소환하여 혼돈 속성 피해를 입힘\n-체력이 일정 수치 감소시, 현재 웨이브의 적들을 전부 처치할 때까지 이 적이 무적 상태가 됩니다."
+		"en"	"Ruthless leader of the Almagest squad sent into the Curtain. \nTheir motives remain unclear. \n-Deals void damage\n-summons drones to deal chaos damage\n-After losing a certain amount of HP, becomes invulernerable until the current wave is defeated."
+		"ko"	"장막 속으로 파견된 알마게스트 부대의 무자비한 지휘관입니다.\n그들의 동기는 여전히 불분명합니다.\n-적중 시 공허 원소 피해를 부여\n-드론을 소환하여 혼돈 원소 피해를 부여\n-체력이 일정 수치 감소시, 현재 웨이브의 적들을 전부 처치할 때까지 이 적이 무적 상태가 됩니다."
 	}
 	"Jkei Drone"
 	{
@@ -7687,9 +7675,9 @@
 	}
 	"Jkei Drone Desc"
 	{
-		"en"	"Construct used by Jkei in battle. \nDeals chaos damage, and after a delay, \nruns towards an ally and self destructs."
+		"en"	"Construct used by Jkei in battle\n-Deals chaos damage, and after a delay\n-runs towards an ally and self destructs."
 		"it"	"Costrutto utilizzato da Jkei in battaglia. \nSubisce danni da caos e, dopo un certo ritardo, \ncorre verso un alleato e si autodistrugge."
-		"ko"	"제이케이가 전투에서 사용하는 제작물입니다. \n혼돈 원소 피해를 주며, 약간의 지연 이후, \n아군을 향해 달려들어 자폭합니다."
+		"ko"	"제이케이가 전투에서 사용하는 제작물입니다.\n-혼돈 원소 피해를 부여하며, 약간의 지연 이후:\n아군을 향해 달려들어 자폭합니다."
 	}
 	"Reila"
 	{
@@ -7699,9 +7687,8 @@
 	}
 	"Reila Desc"
 	{
-		"en" "Former Almagest researcher, now trying to \nclose the rifts and contain the Void at all costs. \nControls the Construct while active, and permanently gains resistance whenever it is reset"
-		"it" "Ex ricercatore dell'Almagest, ora cerca di chiudere \nle spaccature e contenere il Vuoto a tutti i costi. \nControlla il Costrutto quando è attivo e guadagna permanentemente resistenza ogni volta che viene resettato"
-		"ko" "전직 알마게스트 연구원 소속으로, \n이제는 필사적으로 균열을 닫아 어떻게든 공허를 격리시키려고 합니다. \n제작물을 조종하며, 제작물이 초기화되면 영구적으로 피해 저항력을 얻습니다."
+		"en" "Former Almagest researcher, now trying to close the rifts and contain the Void at all costs\n-Hp threshholds buff her resistance for abit\n-Fires a laser with a delay that spreads outwards, during it\n-Summons projectiles that cause lighting strikes after a random delay\n-Controls the Construct while active, and permanently gains resistance whenever it is destroyed for time\n-fight starts with very low time\n-Spawns together with umbrals"
+		"ko" "전직 알마게스트 연구원 소속으로, 이제는 필사적으로 균열을 닫아 어떻게든 공허를 격리시키려고 합니다.\n-체력이 일정 수치 감소할 때마다 잠시 동안 저항력이 증가합니다.\n-밖으로 퍼져가나는 지연형 레이더를 발사합니다.\n-무작위 지연을 가진 뇌격을 일으키는 투사체를 소환합니다.\n-제작물을 조종하며, 제작물이 파괴되면 영구적으로 피해 저항력을 얻습니다.\n-전투가 적은 타이머를 가지고 시작됩니다.\n-움브랄들과 함께 스폰됩니다."
 	}
 	"Reila?"
 	{
@@ -7885,8 +7872,8 @@
 	}
 	"HMS: Regalia Desc"
 	{
-		"en"	"Regalia class Battlecruiser"
-		"ko"	"레갈리아급 순양전함"
+		"en"	"Regalia class Battlecruiser. Stolen by an Almagest scientist who's trapped here after we closed the rift through the Curtain.\n-Has 2 phases and flies high in the sky\n-Spawns beacons around the map\n-Periodically locks onto the closest player to. It will then start charging up a sky laser to strike down on them. \n-Occasionally shoots a powerful laser with high control\n-Also can shoot a laser straight into the ground. After some time, this will summon a group of Almagest Proxima.\n-Able to shoot out Lantean drones\n-Periodically flies above where most players are ands and creates a circle of lasers. These lasers will be facing inwards and spin while also moving further out. \n-Once in phase 2, gains a stats boost and a new ability. Can now command all beacons on the map to spawn in an Almagest Proxima every so often."
+		"ko"	"레갈리아급 순양전함입니다. 우리가 장막으로 통하는 균열을 봉쇄한 후 이곳에 갇힌 알마게스트 연구원이 탈취했습니다.\n-2개의 페이즈를 보유하며 공중에 높이 떠 비행합니다.\n-맵 곳곳에 '스타쉽 비컨'을 스폰\n-주기적으로 가장 근접한 대상에게 조준하며, 이후 조준한 대상에게 공중 레이저를 충전합니다.\n-주기적으로 높은 제어력을 가진 레이저를 발사합니다.\n-주기적으로 땅에 좁은 레이저를 발사하며, 일정 시간 후 다수의 알마게스트 프록시마 스폰\n-랜턴 드론을 발사할 수 있습니다.\n-다수의 대상 위에 비행하며 원형 레이저를 발사하며, 이 레이저는 회전하며 안쪽에서부터 밖으로 퍼져나갑니다.\n-2페이즈에 돌입 시, 능력치가 증가하고 신규 능력 추가:\n스폰된 스타쉽 비컨들에 주기적으로 알마게스트 프록시마 소환 명령을 내립니다."
 	}
 	"Starship Beacon"
 	{
@@ -7955,143 +7942,257 @@
 	}
 	"Almagest Proxima Desc"
 	{
-		"en"	"-Starts with high armor and 5 shields\n-Heals its own kind near eachother\n-Deals high melee damage and deals 3x damage once the debuff maxes out\n-Applies 2 spearmen debuff each hit\n-Will try to surround you at all times"
-		"ko"	"-대량의 아머와 5개의 보호막을 보유한 채로 스폰됩니다.\n-동일한 종을 서로 치유합니다.\n-높은 근접 피해를 가합니다.\n-적중 시 '장창병의 참격' 디버프를 2 부여합니다.\n-상시로 대상을 둘러싸려고 시도합니다."
+		"en"	"-Starts with 5 shields\n-Heals its own kind near eachother\n-Deals high melee damage and deals 3x damage once the debuff maxes out\n-Applies 2 spearmen debuff each hit\n-Will try to surround you at all times"
+		"ko"	"-5개의 보호막을 보유한 채로 스폰됩니다.\n-동일한 계열의 적을 서로 치유합니다.\n-높은 근접 피해를 가합니다.\n-적중 시 '장창병의 참격' 디버프를 2 부여합니다.\n-상시로 대상을 둘러싸려고 시도합니다."
 	}
 	"Black Heavy Soul"
 	{
 		"en"	"Black Heavy Soul"
+		"ko"	"검은 헤비 영혼"
+	}
+	"Black Heavy Soul Desc"
+	{
+		"en"	"He killed all the other heavy souls, oh my god..\n-stand still and shoots finger bullets that explode, they rehome once\n-Can jump and do a aoe explosive slam\n-Can conga and deal huge damage in an aoe constantly, has bad mobility but is fast\n-Transforms a few times in the battle once reaching an hp threshhold, gaining massive stats."
+		"ko"	"그가 다른 모든 헤비 영혼들을 죽여버린 것 같군요, 이런 세상에...\n-제자리에 멈춰 폭발하는 손가락 총알을 발사하며, 중간에 유도하며 궤도를 변경합니다.\n-뛰어들며 폭발성 지면 강타를 사용할 수 있습니다.\n-콩가를 추며 지속적으로 막대한 광역 피해를 가할 수 있으며, 이동성은 좋지 않으나 매우 빠릅니다.\n-체력이 일정 수치로 감소할 경우 수차례 변신을 하며, 막대한 능력치를 얻습니다."
 	}
 	"Super Saiyan Black Heavy Soul"
 	{
 		"en"	"Super Saiyan Black Heavy Soul"
+		"ko"	"초사이어인 검은 헤비 영혼"
 	}
 	"Super Saiyan 2 Black Heavy Soul"
 	{
 		"en"	"Super Saiyan 2 Black Heavy Soul"
+		"ko"	"초사이어인 2 검은 헤비 영혼"
 	}
 	"Super Saiyan 3 Black Heavy Soul"
 	{
 		"en"	"Super Saiyan 3 Black Heavy Soul"
+		"ko"	"초사이어인 3 검은 헤비 영혼"
 	}
 	"Broly"
 	{
 		"en"	"Broly"
+		"ko"	"브로리"
+	}
+	"Broly Desc"
+	{
+		"en"	"Weakling.\n-Stand still and looks at you\n-When he feels like it, runs at light speed and oneshots you"
+		"ko"	"약해 빠진 놈.\n-제자리에 가만히 서서 플레이어를 노려봅니다.\n-그가 원할 때, 광속으로 돌진하여 즉사시킵니다."
 	}
 	"No Random Kranz V3"
 	{
 		"en"	"No Random Kranz V3"
+		"ko"	"노 랜덤 크란츠 V3"
+	}
+	"No Random Kranz V3 Desc"
+	{
+		"en"	"-Can rocketjump, while doing so, rockets summon blackholes\n-Fires rockets\n-Can melee attack with a cooldown, this melee deals heavy damage and spawns blackholes.\n-Blackholes cause aoe damage and fade after some time\n-Has 7 lives, each life lost gives major buffs for a short time\n-Occasionally summons 3 sniper verions which on hit with anything spawn blackholes"
+		"ko"	"-로켓 점프를 사용할 수 있으며, 이때 발사하는 로켓이 블랙홀을 생성합니다.\n-로켓을 발사합니다.\n-매우 높은 피해를 주고 블랙홀을 생성하는, 긴 쿨타임을 가진 근접 공격을 합니다.\n-블랙홀은 광역 피해를 가하며 시간이 지난 후 소멸합니다.\n-7개의 생명을 보유하며, 생명을 잃을 때마다 잠시 동안 크게 강화됩니다.\n-주기적으로 자신의 저격수 버전을 3명 생성하며, 탄환이 닿은 곳에 블랙홀을 생성합니다."
 	}
 	"Mazeat Fabulous Squad X Elite, Solvence of Cringe"
 	{
 		"en"	"Mazeat Fabulous Squad X Elite, Solvence of Cringe"
+		"ko"	"녹아내리는 오글거림의 마제트 페뷸러스 스쿼드 X 엘리트"
+	}
+	"Mazeat Fabulous Squad X Elite, Solvence of Cringe Desc"
+	{
+		"en"	"Raid Quadra boss\n-Spawns:\nBob the first:\n-Melee attacks cause stacking vuln\n-Causes air punch attacks\nOmega\n-Punches very fast\n-Summons a one time vincent that dunks you\nWhiteflower:\n-Dashes at you dealing damage\n-Dash cooldown reduced with melee hits\nShadowing darkness:\n-Attacks cause Necrosis\n-teleports above you, slams down, spawns a pool that causes necrosis, and shoots 2 waves that damage you\nAll these raids are heavily dummed down or changed"
+		"ko"	"4중 레이드 보스.\n-스폰되는 대상:\n밥 1세:\n-근접 공격 적중 시 대상에게 중첩 가능한 취약 효과 부여\n오메가:\n-매우 빠른 펀치 공격 보유\n-플레이어를 잡아 내려 찍는 일회성 빈센트를 소환\n배풍등:\n-대상에게 돌격하여 피해를 가함\n-근접 공격 적중 시 돌격 쿨다운 감소\n그림자 응달:\n-공격이 쇠약 원소 피해를 부여\n-대상 위에 순간이동하여 내려찍는 공격을 하며, 이때 해당 위치에 쇠약 원소 피해를 부여하는 장판 생성. 그 후 2개의 파동 발사\n포함된 모든 레이드 보스들은 크게 약화되거나 변경됨"
 	}
 	"Bob The First Squad"
 	{
 		"en"	"Bob The First"
+		"ko"	"밥 1세"
 	}
 	"Omega Squad"
 	{
 		"en"	"Omega"
+		"ko"	"오메가"
 	}
 	"Whiteflower Squad"
 	{
 		"en"	"Whiteflower"
+		"ko"	"배풍등"
 	}
 	"Shadowing Darkness Squad"
 	{
 		"en"	"Shadowing Darkness"
+		"ko"	"그림자 응달"
 	}
 	"Artvin"
 	{
 		"en"	"Artvin"
+		"ko"	"Artvin"
 	}
 	"Eno"
 	{
 		"en"	"Eno"
+		"ko"	"Eno"
 	}
 	"Dencube"
 	{
 		"en"	"Dencube"
+		"ko"	"Dencube"
 	}
 	"Artorias"
 	{
 		"en"	"Artorias"
+		"ko"	"Artorias"
 	}
 	"Rocket Gunner"
 	{
 		"en"	"Rocket Gunner"
+		"ko"	"로켓 거너"
 	}
 	"Heavy Weapons Guy"
 	{
 		"en"	"Heavy Weapons Guy"
+		"ko"	"헤비 웨폰 가이"
+	}
+	"Heavy Weapons Guy Desc"
+	{
+		"en"	"I am Heavy Weapons Guy, and THIS is my weapon.\n-Infinite range minigun"
+		"ko"	"나는 헤비 웨폰 가이다. 그리고 이건... 내 무기지.\n-무제한 사거리를 보유한 미니건을 사용합니다."
 	}
 	"Very Heavy Heavy"
 	{
 		"en"	"Very Heavy Heavy"
+		"ko"	"아주 헤비한 헤비"
+	}
+	"Very Heavy Heavy Desc"
+	{
+		"en"	"A Heavy who is bigger, fatter, and of course heavier.\n-On hit fucking ragdolls you"
+		"ko"	"더 크고, 더 뚱뚱하며 그리고 당연하게도 더 헤비한 헤비입니다.\n-적중 시 당신을... 래그돌 상태로 만듭니다."
 	}
 	"Fish Scout"
 	{
 		"en"	"Fish Scout"
+		"ko"	"생선 스카웃"
+	}
+	"Fish Scout Desc"
+	{
+		"en"	"Fish."
+		"ko"	"생선."
 	}
 	"Human Main"
 	{
 		"en"	"Human Main"
+		"ko"	"인간 Main"
 	}
 	"Professional Fingerer"
 	{
 		"en"	"Professional Fingerer"
+		"ko"	"전문 손총수"
 	}
 	"King of Australia"
 	{
 		"en"	"King of Australia"
+		"ko"	"호주의 왕"
 	}
 	"Dismounted Teuton"
 	{
 		"en"	"Dismounted Teuton"
+		"ko"	"내린 튜튼 기사"
 	}
 	"Bombasticus Swordus of Fuckyus"
 	{
 		"en"	"Bombasticus Swordus of Fuckyus"
+		"ko"	"퍼큐스의 봄바스티쿠스 스워두스"
 	}
 	"Giga Obuch"
 	{
 		"en"	"Giga Obuch"
+		"ko"	"기가 오부치"
 	}
 	"Lard Fat"
 	{
 		"en"	"Lard Fat"
+		"ko"	"돼지 기름"
+	}
+	"Lard Fat Desc"
+	{
+		"en"	"Fatty lose some weight.\n-Eats his fat ass sandwich if close and damages you like that"
+		"ko"	"제발 살 좀 빼라 이 뚱땡아.\n-근접 시 무지하게 큰 샌드비치를 먹으며 당신에게도 그 샌드비치마냥 피해를 입힙니다."
 	}
 	"Mounted Teuton"
 	{
 		"en"	"Mounted Teuton"
+		"ko"	"탄 튜튼 기사"
 	}
 	"Purple Guy"
 	{
 		"en"	"Purple Guy"
+		"ko"	"퍼플 가이"
+	}
+	"Purple Guy Desc"
+	{
+		"en"	"The bite of 87!? Wait, no, it was the missing children's incident he caused, old sport."
+		"ko"	"1987년 입질 사건!? 잠깐만, 아니다. 그 작자가 일으킨 아동 실종 사건이로군, 자네."
 	}
 	"Roll The Dice"
 	{
 		"en"	"Roll The Dice"
+		"ko"	"!rtd"
 	}
 	"Australian Spider"
 	{
 		"en"	"Australian Spider"
+		"ko"	"호주 거미"
+	}
+	"Australian Spider Desc"
+	{
+		"en"	"A Massive spider from Australia. \n-Very fast. \n-Attacks very fast \n-Very small \n-Very much a spider"
+		"ko"	"호주에서 넘어온 큼지막한 거미입니다.\n-매우 빠른 이동 속도 보유\n-매우 빠른 공격 속도 보유\n-매우 작음\n-매우 거미임"
 	}
 	"Suction Medic"
 	{
 		"en"	"Suction Medic"
+		"ko"	"흡입 메딕"
+	}
+	"Suction Medic Desc"
+	{
+		"en"	"Masters of the battle medigun, or just masters of sucking on stuff. \n-Sucks away your hp if you're close enough."
+		"ko"	"전투 메디건의 달인들입니다... 아니면 그냥 뭔가를 빨아들이는데 달인이거나요.\n-충분히 근접 시 당신의 체력을 빨아들입니다."
 	}
 	"Living Metal Ball"
 	{
 		"en"	"Living Metal Ball"
+		"ko"	"살아있는 쇳덩이 공"
 	}
-	"Axe Throwwing Barbarian"
+	"Living Metal Ball Desc"
 	{
-		"en"	"Axe Throwwing Barbarian"
+		"en"	"Living Large metal balls\n-Roll towrads you and deal knockback on you and itself on hit"
+		"ko"	"살아있는 커다란 쇳덩이 공\n-대상에게 굴러가며, 적중 시 자신과 대상에게 넉백을 가함"
+	}
+	"Axe Throwing Barbarian"
+	{
+		"en"	"Axe Throwing Barbarian"
+		"ko"	"도끼 투척 야만전사"
 	}
 	"A Man Who Is Really Ambitious About Team Fortress 2 Trading"
 	{
 		"en"	"A Man Who Is Really Ambitious About Team Fortress 2 Trading"
+		"ko"	"팀포2 거래에 야망이 가득한 남자"
+	}
+	"A Man Who Is Really Ambitious About Team Fortress 2 Trading Desc"
+	{
+		"en"	"A Man Who Is Really Ambitious About Team Fortress 2 Trading, really.\n-Each life lost makes him lose a hat and overall stats untill death."
+		"ko"	"팀포2 거래에 야망이 가득한 남자입니다. 정말로요.\n-생명을 잃을 때마다 사망할 때까지 모자와 전반적인 능력치를 잃습니다."
+	}
+	"Kahmlstein's Dead Grandma"
+	{
+		"en"	"Kahmlstein's Dead Grandma"
+		"ko"	"카멜슈타인의 돌아가신 할머니"
+	}
+	"Kahmlstein's Dead Grandma Desc"
+	{
+		"en"	"This is so sad"
+		"ko"	"ㅠㅠ"
+	}
+	"Major Avangard"
+	{
+		"en"	"Major Avangard"
+		"ko"	"아방가르드 소령"
 	}
 }

@@ -20,7 +20,6 @@ void CheckAprilFools()
 		AddToDownloadsTable("models/steamhappy.dx90.vtx");			
 		AddToDownloadsTable("models/steamhappy.mdl");			
 		AddToDownloadsTable("models/steamhappy.vvd");			
-		AddToDownloadsTable("models/steamhappy.dx90.vtx");	
 		AddToDownloadsTable("materials/steamhappy/happycolors.vmt");		
 		AddToDownloadsTable("materials/steamhappy/happycolorable.vmt");		
 		AddToDownloadsTable("materials/steamhappy/eye.vmt");		
@@ -32,10 +31,10 @@ void CheckAprilFools()
 		AddToDownloadsTable("models/zombie_riot/steamhappy_hat_8.mdl");			
 		AddToDownloadsTable("models/zombie_riot/steamhappy_hat_8.vvd");			
 		AddToDownloadsTable("models/zombie_riot/steamhappy_hat_8.dx90.vtx");	
+		AddToDownloadsTable("sound/zombie_riot/yippe.mp3");
 	}
 	PrecacheModel("models/steamhappy.mdl");			
 	PrecacheSound("zombie_riot/yippe.mp3");
-	AddToDownloadsTable("sound/zombie_riot/yippe.mp3");
 }
 int AprilFoolsIconOverride()
 {

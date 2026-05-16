@@ -162,6 +162,7 @@ methodmap JohnTheAllmighty < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 43.0;
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 		npc.m_iHealthBar = 99999999;
 		npc.m_flBackupDespawnEmergency = GetGameTime() + 43.0;
@@ -186,19 +187,19 @@ methodmap JohnTheAllmighty < CClotBody
 		{
 			case 1:
 			{
-				CPrintToChatAll("{crimson}John The Almighty{default}: I need some money donations, care to give it?");
+				NPCTalkMessage(npc.index, "I need some money donations, care to give it?");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{crimson}John The Almighty{crimson}: I will sell your organs.");
+				NPCTalkMessage(npc.index, "{crimson}I will sell your organs.");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{crimson}John The Almighty{default}: You will fund my efforts.");
+				NPCTalkMessage(npc.index, "You will fund my efforts.");
 			}
 			case 4:
 			{
-				CPrintToChatAll("{crimson}John The Almighty{default}: You look easy to rob.");
+				NPCTalkMessage(npc.index, "You look easy to rob.");
 			}
 		}
 		npc.m_iBleedType = 0;
@@ -243,6 +244,11 @@ methodmap JohnTheAllmighty < CClotBody
 		
 		return npc;
 	}
+}
+
+static void NPCTalkMessage(int iNPC, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(iNPC, "crimson", message, .customName = "John The Almighty");
 }
 
 public void JohnTheAllmighty_ClotThink(int iNPC)
@@ -494,7 +500,7 @@ public void JohnTheAllmighty_OnTakeDamagePost(int victim, int attacker, int infl
 	if(npc.m_iActualHealth <= 0)
 	{
 		SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
-		CPrintToChatAll("{crimson}John The Almighty {default}: OH NUTS! I left my oven on! Bye!");
+		NPCTalkMessage(npc.index, "OH NUTS! I left my oven on! Bye!");
 		CPrintToChatAll("{green}He also left behind his wallet and drops you an extra cash.");
 		npc.m_iActualHealth = 9999999;
 		for(int client = 1; client <= MaxClients; client++)

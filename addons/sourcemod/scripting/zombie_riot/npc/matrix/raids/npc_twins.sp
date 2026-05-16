@@ -790,6 +790,7 @@ static void RaidPrepare(Matrix_Twins npc)
 
 	RaidBossActive = EntIndexToEntRef(npc.index);
 	RaidAllowsBuildings = false;
+	RaidAllowLastman = true;
 	RaidModeTime = GetGameTime(npc.index) + 200.0;
 	
 	b_thisNpcIsARaid[npc.index] = true;

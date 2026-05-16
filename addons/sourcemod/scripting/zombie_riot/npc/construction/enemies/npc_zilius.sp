@@ -373,6 +373,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
+		RaidAllowLastman = true;
 		
 		if(Construction_Mode() || Dungeon_Mode())
 		{
@@ -433,7 +434,10 @@ methodmap Construction_Raid_Zilius < CClotBody
 		}
 		
 		if (bossrush)
+		{
 			RaidAllowsBuildings = false;
+			RaidAllowLastman = true;
+		}
 		
 		b_thisNpcIsARaid[npc.index] = true;
 		
@@ -492,7 +496,6 @@ methodmap Construction_Raid_Zilius < CClotBody
 		
 		ApplyStatusEffect(npc.index, npc.index, "Anti-Waves", 99999.0);
 		//cannot be healed ever
-		
 		b_angered_twice[npc.index] = false;
 		
 		int skin = 1;

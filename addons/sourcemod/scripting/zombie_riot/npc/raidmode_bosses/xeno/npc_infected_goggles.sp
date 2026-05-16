@@ -293,12 +293,26 @@ methodmap RaidbossBlueGoggles < CClotBody
 	}
 }
 
+void RaidbossBlueGoggles_NPCTalkMessage(int iNPC, const char[] message, any ...)
+{
+	char buffer[255];
+	VFormat(buffer, sizeof(buffer), message, 3);
+	PrintNPCMessageWithPrefixes(iNPC, "darkblue", buffer);
+}
+
 public void RaidbossBlueGoggles_ClotThink(int iNPC)
 {
 	RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(iNPC);
 	
 	float gameTime = GetGameTime(npc.index);
+	float VelAm[3];
+	npc.GetVelocity(VelAm);
 
+	//too slow or attacking npc
+	if(getLinearVelocity(VelAm) <= 20.0 || (IsValidEnemy(npc.index, npc.m_iTarget) && !IsValidClient(npc.m_iTarget)))
+	{
+		ApplyStatusEffect(iNPC, iNPC, "Aimbot", 0.1);
+	}
 	//Raidmode timer runs out, they lost.
 	if(npc.m_flPiggyFor)
 	{
@@ -312,11 +326,11 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			npc.m_fbGunout = true;
 			if(!XenoExtraLogic())
 			{
-				CPrintToChatAll("{darkblue}Waldch{default}: Here or not, infections are no joke.");
+				RaidbossBlueGoggles_NPCTalkMessage(npc.index, "{green}Xeno{default} is an infection that shouldn't be taken lightly.");
 			}
 			else
 			{
-				CPrintToChatAll("{darkblue}Waldch{default}: Giving up saves your life.");		
+				RaidbossBlueGoggles_NPCTalkMessage(npc.index, "Just give up and we'll spare your lives.");		
 			}
 		}
 	}
@@ -363,19 +377,23 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				{
 					i_GogglesHurtTalkMessage[npc.index] = 1;
 					//got hurt by 20% hp.
-					switch(GetRandomInt(1,3))
+					switch(GetRandomInt(1,4))
 					{
 						case 1:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: Stop seperating yourself from me {darkblue}Waldch{default}!!");
+							RaidbossSilvester_NPCTalkMessage(AllyEntity, "Stop seperating yourself from me {darkblue}Waldch{default}!!");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} get back to me now!");
+							RaidbossSilvester_NPCTalkMessage(AllyEntity, "{darkblue}Waldch{default} get back to me NOW!");
 						}
 						case 3:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} get here or ill teleport you here!");
+							RaidbossSilvester_NPCTalkMessage(AllyEntity, "{darkblue}Waldch{default} where are you GOING?!");
+						}
+						case 4:
+						{
+							RaidbossSilvester_NPCTalkMessage(AllyEntity, "{darkblue}Waldch{default} that's the WRONG WAY!");
 						}
 					}
 				}
@@ -386,19 +404,27 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				{
 					i_GogglesHurtTalkMessage[npc.index] = 2;
 					//got hurt by 20% hp.
-					switch(GetRandomInt(1,3))
+					switch(GetRandomInt(1,5))
 					{
 						case 1:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: God dammit {darkblue}Waldch{default}!");
+							RaidbossSilvester_NPCTalkMessage(AllyEntity, "God dammit {darkblue}Waldch{default}!");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default}... NOW!");
+							RaidbossSilvester_NPCTalkMessage(AllyEntity, "{darkblue}Waldch{default} don't do that again!");
 						}
 						case 3:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} here, now STAY NEAR ME!");
+							RaidbossSilvester_NPCTalkMessage(AllyEntity, "There {darkblue}Waldch{default}. Now STAY NEAR ME!");
+						}
+						case 4:
+						{
+							RaidbossSilvester_NPCTalkMessage(AllyEntity, "How many times must I tell you this {darkblue}Waldch{default}!");
+						}
+						case 5:
+						{
+							RaidbossSilvester_NPCTalkMessage(AllyEntity, "Our enemies are HERE not THERE {darkblue}Waldch{default}!");
 						}
 					}
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
@@ -517,41 +543,45 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	{
 		if(XenoExtraLogic())
 		{
-			switch(GetURandomInt() % 3)
+			switch(GetRandomInt(0,3))
 			{
 				case 0:
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: Not here, not with him!");
+					RaidbossBlueGoggles_NPCTalkMessage(npc.index, "I'll avenge you {gold}Silvester{default}!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: You fight like you want to kill him!");
+					CPrintToChatAll("{darkblue}Waldch{default}:{gold}Silvester{default} rest while I take care of them.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: Just you and me!");
+					RaidbossBlueGoggles_NPCTalkMessage(npc.index, "Just you and me now!");
+				}
+				case 3:
+				{
+					RaidbossBlueGoggles_NPCTalkMessage(npc.index, "I'll stop you by myself!");
 				}
 			}
 		}
 		else
 		{
-			switch(RoundToFloor(GetURandomFloat() * 4.0))
+			switch(GetRandomInt(0,3))
 			{
 				case 0:
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: You really shouldn't have done that!");
+					RaidbossBlueGoggles_NPCTalkMessage(npc.index, "You really shouldn't have done that!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: You'll pay for picking on him!");
+					RaidbossBlueGoggles_NPCTalkMessage(npc.index, "You'll pay for that!");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: Quit this right now!");
+					RaidbossBlueGoggles_NPCTalkMessage(npc.index, "Quit this right now!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: You little ****!");
+					RaidbossBlueGoggles_NPCTalkMessage(npc.index, "You little ****!");
 				}
 			}
 		}
@@ -921,6 +951,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						KillFeed_SetKillIcon(npc.index, "pro_smg");
 						
 						npc.FaceTowards(vecTarget, 400.0);
+						if(HasSpecificBuff(npc.index, "Aimbot"))
+							npc.FaceTowards(vecTarget, 9999.0);
 
 						npc.PlaySMGSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
@@ -1084,7 +1116,7 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(28.0);
 			damage = 0.0;
-			CPrintToChatAll("{darkblue}Waldch{default}: You win, I won't stop you no more...");
+			RaidbossBlueGoggles_NPCTalkMessage(npc.index, "You win, I won't stop you no anymore...");
 			return Plugin_Handled;
 		}
 
@@ -1098,7 +1130,8 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 
 	//redirect damage and reduce it if in range.
 	int AllyEntity = EntRefToEntIndex(i_RaidDuoAllyIndex);
-	if(IsEntityAlive(AllyEntity) && !b_NpcIsInvulnerable[AllyEntity] && !IsPartnerGivingUpGoggles(AllyEntity))
+	int ForceStandStill = CountPlayersOnRed(2);
+	if(ForceStandStill > 1 && IsEntityAlive(AllyEntity) && !b_NpcIsInvulnerable[AllyEntity] && !IsPartnerGivingUpGoggles(AllyEntity))
 	{
 		static float victimPos[3];
 		static float partnerPos[3];

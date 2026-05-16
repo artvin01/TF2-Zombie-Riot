@@ -74,6 +74,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_LifeLossSound)); i++) { PrecacheSound(g_LifeLossSound[i]); }
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSoundCustom(g_DeathSounds[i]);	   }
 	PrecacheSoundCustom("#zombiesurvival/aprilfools/kranz_ncrv3.mp3");
+	PrecacheSoundCustom("#zombiesurvival/aprilfools/black_heavy_ultra.mp3");
 
 
 }
@@ -273,6 +274,7 @@ methodmap NoRandomKranz < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 200.0;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
+			RaidAllowLastman = true;
 			b_thisNpcIsARaid[npc.index] = true;
 
 			char buffers[3][64];
@@ -440,7 +442,28 @@ public void NoRandomKranz_ClotThink(int iNPC)
 	}
 	if(npc.i_GunMode != 2 && !BlockLoseSay && RaidModeTime < GetGameTime())
 	{
-		BlockLoseSay = true;
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aprilfools/black_heavy_ultra.mp3");
+		music.Time = 167;
+		music.Volume = 1.1;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Ultra Instinct Theme");
+		strcopy(music.Artist, sizeof(music.Artist), "Dragon Ball Super");
+		Music_SetRaidMusic(music);
+		ApplyStatusEffect(npc.index, npc.index, "Perfected Instinct", 999999.9);
+		fl_Extra_Speed[npc.index] 	*= 1.25;
+		if(!npc.Anger)
+		{
+			fl_TotalArmor[npc.index] *= 0.5;
+			f_AttackSpeedNpcIncrease[npc.index] *= 0.65;
+		}
+		npc.Anger = true;
+		RaidModeTime = FAR_FUTURE;
+		f_AttackSpeedNpcIncrease[npc.index] *= 0.85;
+		RaidModeScaling *= 1.5;
+		b_NpcUnableToDie[npc.index] = false;
+		
+		CPrintToChatAll("{darkblue}No Random Kranz V3{default}: My shitty ass transformation conditions are finally met, DIE!!!");
 	}
 	if(npc.i_GunMode != 2 && npc.m_CreateClones < GetGameTime(npc.index))
 	{

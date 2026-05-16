@@ -252,8 +252,13 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		return true;
 
 	if(!CheckInHud())
+	{
 		if(RaidbossIgnoreBuildingsLogic(1) && i_HealthBeforeSuit[victim] > 0)
-			damage *= 3.0;	//when a raid is alive, make quantum armor 8x as bad at tanking.
+		{
+			if(!(i_HexCustomDamageTypes[victim] & ZR_ELEMENTAL_QUANTUM))
+				damage *= 3.0;	//when a raid is alive, make quantum armor bad at tanking
+		}
+	}
 	
 	if(!CheckInHud())
 	{
@@ -861,6 +866,10 @@ stock bool Damage_NPCAttacker(int &attacker,float &damage, int &damagetype)
 		{
 			damage *= 1.25;
 		}
+		if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER_X)
+		{
+			damage *= 1.35;
+		}
 	}
 #endif	//zr
 	return false;
@@ -878,6 +887,21 @@ stock bool Damage_BuildingAttacker(int &attacker, float &damage)
 #if defined ZR
 static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3], int zr_custom_damage)
 {
+	if(EntityFuncTakeDamage[equipped_weapon][1] && EntityFuncTakeDamage[equipped_weapon][1] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, EntityFuncTakeDamage[equipped_weapon][1]);
+		Call_PushCell(victim);
+		Call_PushCellRef(attacker);
+		Call_PushCellRef(inflictor);
+		Call_PushFloatRef(damage);
+		Call_PushCellRef(damagetype);
+		Call_PushCellRef(weapon);
+		Call_PushCell(equipped_weapon);
+		Call_PushArray(damagePosition, sizeof(damagePosition));
+		Call_PushCell(zr_custom_damage);
+		Call_Finish();
+		return damage;
+	}
 	switch(i_CustomWeaponEquipLogic[equipped_weapon])
 	{
 		case WEAPON_ARK: // weapon_ark
@@ -1084,6 +1108,21 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 	{
 		static int DummyAmmotype = 0; //useless but needed
 		NPC_TraceAttack(victim, attacker, inflictor, damage, damagetype, DummyAmmotype, 0, i_MeleeHitboxHit[attacker]);
+	}
+	if(EntityFuncTakeDamage[weapon][0] && EntityFuncTakeDamage[weapon][0] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, EntityFuncTakeDamage[weapon][0]);
+		Call_PushCell(victim);
+		Call_PushCellRef(attacker);
+		Call_PushCellRef(inflictor);
+		Call_PushFloatRef(damage);
+		Call_PushCellRef(damagetype);
+		Call_PushCellRef(weapon);
+		Call_PushArray(damageForce, sizeof(damageForce));
+		Call_PushArray(damagePosition, sizeof(damagePosition));
+		Call_PushCell(zr_custom_damage);
+		Call_Finish();
+		return damage;
 	}
 	
 	switch(i_CustomWeaponEquipLogic[weapon])
@@ -1556,6 +1595,10 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 			{
 				TotalMeleeRes *= 1.25;
 			}
+			if(!b_NpcHasDied[attacker] && (i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER_X))
+			{
+				TotalMeleeRes *= 1.35;
+			}
 			if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
 			{
 				TotalMeleeRes *= Medival_Difficulty_Level;
@@ -1646,7 +1689,7 @@ stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflic
 	{
 		ExtraDamageDealt = 0.35;
 	}
-	if(!b_IsAloneOnServer)
+	if(!b_IsAloneOnServer && !Rogue_NoLastman())
 	{
 		if(LastMann && GetTeam(victim) != TFTeam_Red)
 		{
@@ -1827,6 +1870,10 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER) //Deadshot!
 					{
 						damage *= 1.25;
+					}	
+					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER_X) //Deadshot!
+					{
+						damage *= 1.35;
 					}	
 #endif					
 					if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
@@ -2236,8 +2283,10 @@ void DownedOrKilledClient_Feedback(int client, int attacker, float damage, int d
 		if (b_NameNoTranslation[attacker])
 			Format(AttackerWho, sizeof(AttackerWho), "%s",c_NpcName[attacker]);
 		else
-#endif
 			Format(AttackerWho, sizeof(AttackerWho), "%T",c_NpcName[attacker], client);
+#else
+		Format(AttackerWho, sizeof(AttackerWho), "%T",c_NpcName[attacker], client);
+#endif
 
 		char prefix[255];
 		StatusEffects_PrefixName(attacker, client, prefix, sizeof(prefix));

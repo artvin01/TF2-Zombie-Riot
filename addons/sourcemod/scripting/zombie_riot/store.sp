@@ -93,6 +93,9 @@ enum struct ItemInfo
 	Function Func_OnPlayerRunCmd;
 	Function Func_WeaponCreated;
 	Function Func_MapStart;
+	Function Func_TakeDamage_Take;
+	Function Func_TakeDamage_Deal;
+	Function Func_TakeDamagePost;
 
 	Function FuncOnPap;
 
@@ -364,6 +367,14 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sfunc_onplayerruncmd", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Func_OnPlayerRunCmd = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_ontakedamage_take", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_TakeDamage_Take = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_ontakedamage_deal", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_TakeDamage_Deal = GetFunctionByName(null, buffer);
 
 		Format(buffer, sizeof(buffer), "%sfunc_weaponcreated", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -750,6 +761,8 @@ float Ability_Check_Cooldown(int client, int what_slot, int thisWeapon = -1)
 stock float CooldownReductionAmount(int client)
 {
 	float Cooldown = 1.0;
+	if(CvarInfiniteCash.BoolValue)
+		Cooldown *= 0.01;
 	if(MazeatItemHas())
 	{
 		Cooldown *= 0.66;
@@ -768,6 +781,8 @@ stock float CooldownReductionAmount(int client)
 	}
 	if(i_CurrentEquippedPerk[client] & PERK_ENERGY_DRINK)
 		Cooldown *= 0.85;
+	if(i_CurrentEquippedPerk[client] & PERK_ENERGY_DRINK_X)
+		Cooldown *= 0.6;
 		
 	return Cooldown;
 }
@@ -5453,6 +5468,7 @@ void Store_ApplyAttribs(int client)
 	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
 	{
 		map.SetValue("4056", 0.05);	// Out of battle regen
+		map.SetValue("4061", 0.02);
 	}
 
 	map.SetValue("442", 1.0);	// Move Speed
@@ -5476,7 +5492,7 @@ void Store_ApplyAttribs(int client)
 	else
 	{
 		
-		float MovementSpeed = 330.0;
+		float MovementSpeed = PapModeDo == PAP_MODE_BUILDING_ONLY ? 360.0 : 330.0;
 		
 		if(VIPBuilding_Active())
 		{
@@ -5486,7 +5502,7 @@ void Store_ApplyAttribs(int client)
 	
 		if(i_CurrentEquippedPerk[client] & PERK_MARATHON)
 		{
-			MovementSpeed += 15.0;
+			MovementSpeed += 20.0;
 		}
 
 		map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
@@ -5530,15 +5546,23 @@ void Store_ApplyAttribs(int client)
 	{
 		map.SetValue("178", 0.65); //Faster Weapon Switch
 	}
-	
-	if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE) //increase sentry damage! Not attack rate, could end ugly.
-	{		
-		map.SetValue("287", 0.65);
-	}
-	else
+	if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS_X)
 	{
-		map.SetValue("287", 0.5);
+		map.SetValue("178", (1.0 / 1.65)); //Faster Weapon Switch
 	}
+
+	float BuildingDmgSet = 2.0;
+	if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE_X)
+	{
+		BuildingDmgSet *= 1.35;
+	}
+	if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE) //increase sentry damage! Not attack rate, could end ugly.
+	{
+		BuildingDmgSet *= 1.17;
+	}
+
+	map.SetValue("287", BuildingDmgSet);
+	
 	map.SetValue("95", 1.0);
 
 	float value;
@@ -5792,7 +5816,7 @@ void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
 	b_HasGlassBuilder[client] = false;
 	b_LeftForDead[client] = false;
 	b_StickyExtraGrenades[client] = false;
-	b_HasMechanic[client] = false;
+//	b_HasMechanic[client] = false;
 	b_AggreviatedSilence[client] = false;
 	b_ProximityAmmo[client] = false;
 	b_ExpertTrapper[client] = false;
@@ -6176,6 +6200,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					EntityFuncAttack3[entity] = info.FuncAttack3;
 					EntityFuncReload4[entity]  = info.FuncReload4;
 					EntityFuncPlayerRunCmd[entity]  = info.Func_OnPlayerRunCmd;
+					EntityFuncTakeDamage[entity][0]  = info.Func_TakeDamage_Deal;
+					EntityFuncTakeDamage[entity][1]  = info.Func_TakeDamage_Take;
 					
 					b_Do_Not_Compensate[entity] 				= info.NoLagComp;
 					b_Only_Compensate_CollisionBox[entity] 		= info.OnlyLagCompCollision;
@@ -6337,10 +6363,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						b_StickyExtraGrenades[client] = true;
 					}
-					if(info.SpecialAdditionViaNonAttribute == 7) //Mechanic
-					{
-						b_HasMechanic[client] = true;
-					}
+				//	if(info.SpecialAdditionViaNonAttribute == 7) //Mechanic
+				//	{
+				//		b_HasMechanic[client] = true;
+				//	}
 					if(info.SpecialAdditionViaNonAttribute == 8)
 					{
 						i_MaxSupportBuildingsLimit[client] += info.SpecialAdditionViaNonAttributeInfo;
@@ -6456,15 +6482,26 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			if(Attributes_Has(entity, 97))
 				Attributes_SetMulti(entity, 97, 0.7);
 		}
+		if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS_X)
+		{
+			//dont give it if it doesnt have it.
+			if(Attributes_Has(entity, 97))
+				Attributes_SetMulti(entity, 97, (1.0 / 1.65));
+		}
 
 		if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE)
 		{
 			if(Attributes_Has(entity, 6))
 				Attributes_SetMulti(entity, 6, 0.85);
 		}
+		if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE_X)
+		{
+			if(Attributes_Has(entity, 6))
+				Attributes_SetMulti(entity, 6, (1.0 / 1.35));
+		}
 
 		//DEADSHOT!
-		if(i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
+		if((i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER) || (i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER_X))
 		{	
 			//dont give it if it doesnt have it.
 			if(Attributes_Has(entity, 103))
@@ -7711,6 +7748,6 @@ bool RogueAlwaysSell(const Item item)
 	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
 		return false;
 
-	return RogueAlwaysSell(item);
+	return item.RogueAlwaysSell;
 		
 }

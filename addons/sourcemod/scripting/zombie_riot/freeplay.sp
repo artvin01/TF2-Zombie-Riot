@@ -2,7 +2,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static bool EscapeModeForNpc;
 static float HealthMulti;
 static int HealthBonus;
 static int EnemyChance;
@@ -168,7 +167,6 @@ void Freeplay_ResetAll()
 	ExplodeNPCDamage = 0;
 	ExplodingNPC = false;
 	IsExplodeWave = false;
-	EscapeModeForNpc = false;
 	EnemyShields = 0;
 	VoidBuff = 0;
 	VictoriaBuff = false;
@@ -318,13 +316,25 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			}
 			case 4:
 			{
-				switch(GetRandomInt(1, 4))
+				switch(GetRandomInt(1, 8))
 				{
 					case 1: // mmmmyes
 					{
 						enemy.Index = NPC_GetByPlugin("npc_sea_god_alaxios");
 						enemy.Health = RoundToFloor((6500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.Data = "wave_40;res3;seainfection";
+					}
+					case 2: // mmmmyes
+					{
+						enemy.Index = NPC_GetByPlugin("npc_sea_god_alaxios");
+						enemy.Health = RoundToFloor((6500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_40;res3;seainfection";
+					}
+					case 3: // mmmmno
+					{
+						enemy.Index = NPC_GetByPlugin("npc_toddhoward");
+						enemy.Health = RoundToFloor((6500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_40;res3";
 					}
 					default: // alaxios has no timer in freeplay by default btw
 					{
@@ -447,31 +457,28 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_thompson");
 				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage = 0.80;
-				enemy.ExtraSpeed = 1.30;
-				enemy.ExtraThinkSpeed = 0.8;
+				enemy.ExtraDamage = 0.75;
 			}
 			case 19:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_twins");
 				enemy.Health = RoundToFloor((4500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "Im_The_raid;My_Twin";
-				enemy.ExtraDamage = 0.80;
-				enemy.ExtraSpeed = 1.30;
-				enemy.ExtraThinkSpeed = 0.90;
+				enemy.ExtraDamage = 0.75;
+				enemy.ExtraSpeed = 1.10;
 			}
 			case 20:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_johnson");
 				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage = 0.75; // johnson gets way too much damage in freeplay, reduce it
+				enemy.ExtraDamage = 0.70; // johnson gets way too much damage in freeplay, reduce it
 				enemy.ExtraThinkSpeed = 0.6;
 				enemy.ExtraSpeed = 1.50;
 			}
 			case 21:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_smith");
-				enemy.Health = RoundToFloor((8000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "raid_time";
 			}
 			case 22:
@@ -503,7 +510,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 27:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_omega_raid");
-				enemy.Health = RoundToFloor((8000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 28:
 			{
@@ -568,6 +575,38 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Data = "bossrush";
 				enemy.ExtraSpeed = 1.10;
 				enemy.ExtraThinkSpeed = 0.85;
+			}
+			case 36:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_squad_master");
+				enemy.Health = RoundToFloor((2000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Data = "wave_30";
+				enemy.ExtraSpeed = 0.85;
+			}
+			case 37:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_no_random_kranz");
+				enemy.Health = RoundToFloor((750000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Data = "wave_40";
+				enemy.ExtraThinkSpeed = 1.15;
+				enemy.ExtraDamage = 0.8;
+				enemy.ExtraSpeed = 0.9;
+			}
+			case 38:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_black_heavy_soul");
+				enemy.Health = RoundToFloor((4000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Data = "wave_40";
+				enemy.ExtraThinkSpeed = 1.15;
+				enemy.ExtraDamage = 0.8;
+				enemy.ExtraSpeed = 0.9;
+			}
+			case 39:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_kevinmery2009");
+				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.ExtraThinkSpeed = 0.80;
+				enemy.ExtraDamage = 1.10;
 			}
 			default:
 			{
@@ -721,12 +760,12 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			enemy.ExtraDamage = 1.0;
 
 			enemy.Is_Immune_To_Nuke = true;
-			int roll = GetRandomInt(1, 7);
+			int roll = GetRandomInt(1, 15);
 			if(roll == 2)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_dimensionfrag");
 				enemy.Health = RoundToFloor(((170000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.25)) * HealthMulti);
-				enemy.ExtraDamage = 0.75;
+				enemy.ExtraDamage = 0.70;
 				count = 20;
 			}
 			else if(roll == 3)
@@ -761,13 +800,71 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_umbral_keitosis");
 				enemy.Health = RoundToFloor(((3000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
-				enemy.ExtraDamage = 1.5;
+				enemy.ExtraDamage = 1.09;
+				enemy.ExtraThinkSpeed = 0.75;
 				count = 1;
+			}
+			else if(roll == 8)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_whiteflowers");
+				enemy.Health = RoundToFloor(((250000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.11)) * HealthMulti);
+				enemy.ExtraDamage = 1.25;
+				count = 10;
+			}
+			else if(roll == 9)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_dimensionfrag");
+				enemy.Health = RoundToFloor(((170000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.25)) * HealthMulti);
+				enemy.ExtraDamage = 0.70;
+				count = 20;
+			}
+			else if(roll == 10)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_ltzens");
+				enemy.Health = RoundToFloor(((250000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.15)) * HealthMulti);
+				enemy.ExtraDamage = 1.25;
+				count = 15;
+			}
+			else if(roll == 11)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_refract");
+				enemy.Health = RoundToFloor(((200000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.20)) * HealthMulti);
+				enemy.ExtraDamage = 1.25;
+				count = 20;
+			}
+			else if(roll == 12)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_spuud");
+				enemy.Health = RoundToFloor(((300000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.11)) * HealthMulti);
+				enemy.ExtraDamage = 1.25;
+				count = 15;
+			}
+			else if(roll == 13)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_rouam");
+				enemy.Health = RoundToFloor(((500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
+				enemy.ExtraDamage = 2.0;
+				count = 5;
+			}
+			else if(roll == 14)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_umbral_whiteflowers");
+				enemy.Health = RoundToFloor(((250000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.11)) * HealthMulti);
+				enemy.ExtraDamage = 1.25;
+				count = 10;
+			}
+			else if(roll == 15)
+			{
+				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
+				enemy.Health = RoundToFloor(((350000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
+				enemy.ExtraDamage = 0.95;
+				count = 10;
 			}
 			else
 			{
 				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
 				enemy.Health = RoundToFloor(((350000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
+				enemy.ExtraDamage = 0.95;
 				count = 10;
 			}
 
@@ -858,8 +955,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Health = RoundToCeil(enemy.Health * 1.33);
 		enemy.ExtraDamage *= 1.15;
-		if(count > 30)
-			count = 30;
 	}
 
 	if(shouldscale)
@@ -889,8 +984,11 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		count = RoundToCeil(float(count) * countscale);
 	}
 
-	if(count > 30)
-		count = 30;
+	if(i_WaveHasFreeplay == 2)
+	{
+		if(count > 30)
+			count = 30;
+	}
 
 	if(count < 1)
 		count = 1;
@@ -923,7 +1021,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 static Action Freeplay_RouletteMessage(Handle timer)
 {
-	RaidFight = GetRandomInt(1, 35);
+	RaidFight = GetRandomInt(1, 39);
 	EmitSoundToAll("misc/halloween/spelltick_set.wav", _, _, _, _, _, GetRandomInt(70, 135));
 	switch(RaidFight)
 	{
@@ -1068,7 +1166,23 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 35:
 		{
-			CPrintToChatAll("{black}Zilius! {gold}- {snow}If you guys beat him, I'll join you as a thanks for saving me from him. {red}I made him stronger cause he doesn't have his army.");
+			CPrintToChatAll("{black}ZILIUS! {gold}- {snow}If you guys beat him, I'll join you as a thanks for saving me from him. {red}I made him stronger cause he doesn't have his army.");
+		}
+		case 36:
+		{
+			CPrintToChatAll("{red}MAZEAT {green}FABULOUS {purple}SQUAD {crimson}X {red}E{orange}L{yellow}I{green}T{blue}E{purple}! {gold}- {red}Oh it's so over for you guys...");
+		}
+		case 37:
+		{
+			CPrintToChatAll("{purple}NO RANDOM KRANZ V3! {gold}- {red}Whats with the ''no random'' part? Also version 3?");
+		}
+		case 38:
+		{
+			CPrintToChatAll("{black}BLACK HEAVY SOUL! {gold}- {red}The evil soul. But why is he a saiyan?");
+		}
+		case 39:
+		{
+			CPrintToChatAll("{red}KEVINMERY2009! {gold}- {red}I took data of your strongest mercenary and turned him into a boss!");
 		}
 		default:
 		{
@@ -1555,12 +1669,17 @@ float Freeplay_SetupValues()
 }
 void Freeplay_SetupStart(bool extra = false)
 {
-	bool wrathofirln = false;
+	if(i_WaveHasFreeplay != 2)
+		return;
+
+//	bool wrathofirln = false;
+
 	bool guaranteedraid = false;
 	if(extra)
 	{
 		FreeplayBuffTimer = 0;
 		CreateTimer(4.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
+		/*
 		int irlnreq = 1;
 
 		int wrathchance = GetRandomInt(0, 100);
@@ -1568,16 +1687,17 @@ void Freeplay_SetupStart(bool extra = false)
 		{
 			wrathofirln = true;
 		}
+		*/
 
 		setuptimes--;
 		if(setuptimes <= 0)
 		{
 			guaranteedraid = true;
 			setuptimes = 4;
-			wrathofirln = false;
+		//	wrathofirln = false;
 		}
 
-		if(!wrathofirln && !guaranteedraid)
+		if(/*!wrathofirln && */!guaranteedraid)
 		{
 			EmitSoundToAll("ui/vote_success.wav");
 		}
@@ -1615,7 +1735,7 @@ void Freeplay_SetupStart(bool extra = false)
 	int rand = 6;
 	if((++RerollTry) < 12)
 		rand = GetURandomInt() % 85;
-
+	/*
 	if(wrathofirln)
 	{
 		int randomhp1 = GetRandomInt(-60000, 120000);
@@ -2120,7 +2240,9 @@ void Freeplay_SetupStart(bool extra = false)
 		CPrintToChatAll("{orange}Wrath of Irln: {yellow}(almost) {crimson}ALL SKULLS HAVE BEEN ACTIVATED. The effects are described above.");
 		gay = 0.0;
 	}
-	else if(guaranteedraid)
+	else 
+	*/
+	if(guaranteedraid)
 	{
 		EmitSoundToAll("music/mvm_class_select.wav");
 		EmitSoundToAll("items/powerup_pickup_king.wav");
@@ -2639,8 +2761,12 @@ void Freeplay_SetupStart(bool extra = false)
 				ExplodingNPC = true;
 				EmitSoundToAll("ui/mm_medal_silver.wav");
 			}
+			
 			case 54:
 			{
+				Freeplay_SetupStart();
+				return;
+				/*
 				if(EnemyShields >= 15)
 				{
 					EnemyShields = 15;
@@ -2649,9 +2775,13 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}All enemies receieve 3 expidonsan shields!");
 				EnemyShields += 3;
+				*/
 			}
 			case 55:
 			{
+				Freeplay_SetupStart();
+				/*
+				return;
 				if(EnemyShields >= 15)
 				{
 					EnemyShields = 15;
@@ -2660,9 +2790,13 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}All enemies receieve 6 expidonsan shields!");
 				EnemyShields += 6;
+				*/
 			}
 			case 56:
 			{
+				Freeplay_SetupStart();
+				return;
+				/*
 				if(EnemyShields <= 0)
 				{
 					EnemyShields = 0;
@@ -2671,9 +2805,13 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{green}All enemies lose 2 expidonsan shields.");
 				EnemyShields -= 2;
+				*/
 			}
 			case 57:
 			{
+				Freeplay_SetupStart();
+				return;
+				/*
 				if(EnemyShields <= 0)
 				{
 					EnemyShields = 0;
@@ -2682,7 +2820,9 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{green}All enemies lose 4 expidonsan shields.");
 				EnemyShields -= 4;
+				*/
 			}
+			
 			case 58:
 			{
 				if(VoidBuff > 2)
@@ -2999,7 +3139,7 @@ void Freeplay_SetupStart(bool extra = false)
 			{
 				strcopy(message, sizeof(message), "{yellow}Nothing!");
 				// If this shows up, FIX YOUR CODE :)
-			}
+			}	
 		}
 
 		RerollTry = 0;
@@ -3010,7 +3150,6 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{yellow}The exploding enemy skull lasts 1 wave. | Current Base damage: %d", ExplodeNPCDamage);
 			IsExplodeWave = true;
 		}
-
 		if(SkullTimes > 0)
 		{
 			SkullTimes--;

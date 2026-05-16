@@ -96,7 +96,7 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/aprilfools/black_heavy_2.mp3");
 	PrecacheSoundCustom("#zombiesurvival/aprilfools/black_heavy_ultra.mp3");
 }
-
+ 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return BlackHeavySoul(vecPos, vecAng, team, data);
@@ -162,7 +162,7 @@ methodmap BlackHeavySoul < CClotBody
 	}
 	public void PlayIdleAlertSound() 
 	{
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		if(!this.Anger)
@@ -177,7 +177,7 @@ methodmap BlackHeavySoul < CClotBody
 			EmitCustomToAll(g_AngerSoundLoop[GetRandomInt(0, sizeof(g_AngerSoundLoop) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 			EmitCustomToAll(g_AngerSoundLoop[GetRandomInt(0, sizeof(g_AngerSoundLoop) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 			EmitCustomToAll(g_AngerSoundLoop[GetRandomInt(0, sizeof(g_AngerSoundLoop) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-			this.m_flNextIdleSound = GetGameTime() + 6.5;		
+			this.m_flNextIdleSound = GetGameTime(this.index) + 6.5;		
 		}
 		
 	}
@@ -287,6 +287,7 @@ methodmap BlackHeavySoul < CClotBody
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 
 		char buffers[3][64];
 		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
@@ -352,6 +353,8 @@ methodmap BlackHeavySoul < CClotBody
 			npc.m_flCongaFastDo = GetGameTime() + 9999.9;
 			npc.m_flJumpAtEnemy = GetGameTime() + 2.5;	
 		}
+		WaveStart_SubWaveStart(GetGameTime() + 500.0);
+		GiveOneRevive();
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 
@@ -571,7 +574,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
 		{
-			RaidModeTime += 100.0;
+			RaidModeTime += 70.0;
 			npc.PlayAngerSound();
 			npc.Anger = true; //	>:(
 			npc.m_flNextIdleSound = 0.0;
@@ -602,7 +605,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Super Saiyan 2 Black Heavy Soul");
 			npc.m_iSaiyanState = 2;
 			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 3.0, _, 4.0, HEAL_ABSOLUTE);
-			RaidModeTime += 100.0;
+			RaidModeTime += 70.0;
 			fl_Extra_Speed[npc.index] *= 1.05;
 			fl_TotalArmor[npc.index] *= 0.65;
 			RaidModeScaling *= 1.05;
@@ -631,7 +634,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			b_NpcUnableToDie[npc.index] = false;
 			ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 3.0);
 			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 3.0, _, 4.0, HEAL_ABSOLUTE);
-			RaidModeTime += 100.0;
+			RaidModeTime += 70.0;
 			fl_Extra_Speed[npc.index] *= 1.05;
 			fl_TotalArmor[npc.index] *= 0.65;	
 			f_AttackSpeedNpcIncrease[npc.index] *= 0.85;

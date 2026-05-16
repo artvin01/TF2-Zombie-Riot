@@ -399,6 +399,7 @@ methodmap Atomizer < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + npc.m_flFTL;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
+			RaidAllowLastman = true;
 
 			if(StrContains(data, "nomusic") == -1)
 			{

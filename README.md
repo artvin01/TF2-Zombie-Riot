@@ -79,8 +79,7 @@ global zr can be a shared database across multiple servers, local one should sta
 
 ### Dependencies
 
-Sourcemod 1.13.7299 Is a Must.
-For both linux and Windows, not all linux gamedata might be here.
+### [Sourcemod 1.13.7299](https://sm.alliedmods.net/smdrop/1.13/sourcemod-1.13.0-git7299-windows.zip) Is a Must.
 The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot to run:
 
 - [Flaming Sarge's TF2Attribute fork](https://github.com/FlaminSarge/tf2attributes)
@@ -99,7 +98,6 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 
 If you want to compile, this include is needed!
 - [More Colours](https://github.com/DoctorMcKay/sourcemod-plugins)
-- [IntMap](https://github.com/Ilusion9/intmap-inc-sm)
 - SourcePawn Compiler 1.12.0.7031 (Zr will compile much faster at this version. for a server release, use latest compiler, for testing, 1.12.0.7031.)
 
 

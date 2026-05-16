@@ -253,7 +253,7 @@ void Lelouch_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Lelouch");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_lelouch");
-	data.Category = Type_BlueParadox;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	strcopy(data.Icon, sizeof(data.Icon), "lelouch"); 						//leaderboard_class_(insert the name)
@@ -716,6 +716,7 @@ methodmap Lelouch < CClotBody
 		//this shouldnt ever start, no anti delay here.
 
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 
 		char buffers[3][64];
 		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));

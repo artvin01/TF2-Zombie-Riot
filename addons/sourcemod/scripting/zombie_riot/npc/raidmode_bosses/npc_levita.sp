@@ -79,6 +79,7 @@ public void Levita_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Levita");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_levita");
 	data.Func = ClotSummon;
+	data.Category = Type_Hidden;
 	//data.Precache = ClotPrecache;
 	ClotPrecache();
 	NPC_Add(data);

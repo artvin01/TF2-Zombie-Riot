@@ -79,7 +79,7 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VICTORIAN_LAUNCHER)
 		{
-			if(i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
+			if((i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER) || (i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER_X))
 			{
 				if(!Victoria_PerkDeadShot[client])
 				{
@@ -102,7 +102,7 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 	}
 	else if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VICTORIAN_LAUNCHER)
 	{
-		if(i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
+		if((i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER) || (i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER_X))
 		{
 			if(!Victoria_PerkDeadShot[client])
 			{

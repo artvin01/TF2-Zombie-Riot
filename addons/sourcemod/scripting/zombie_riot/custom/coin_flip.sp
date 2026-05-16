@@ -260,6 +260,10 @@ public Action flip_extra(Handle timer, int client)
 			{
 				damage_multiplier[entity] *= 1.25;
 			}
+			if(i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER_X)
+			{
+				damage_multiplier[entity] *= 1.35;
+			}
 			
 			if(i_HeadshotAffinity[client] == 1)
 			{

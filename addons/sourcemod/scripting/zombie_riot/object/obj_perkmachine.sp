@@ -155,13 +155,13 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 	return 0;
 }
 
-void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk, int PrintChatid)
+void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk, int PrintChatid, bool IsVscriptCall = false)
 {
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 	if(owner == -1 && !objstats.m_bNoOwnerRequired)
 		return;
 		
-	if((GetEntityFlags(client) & FL_DUCKING))
+	if(!IsVscriptCall && (GetEntityFlags(client) & FL_DUCKING))
 	{
 		CPrintToChat(client, "{green} %T", PerkNames_Received[PrintChatid], client);
 		ObjectPerkMachine npc = view_as<ObjectPerkMachine>(entity);
