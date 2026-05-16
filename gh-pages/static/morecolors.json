@@ -173,5 +173,6 @@
   "yellow": "#FFFF00",
   "yellowgreen": "#9ACD32",
   "redsunfirst": "#F78C56",
-  "redsunsecond": "#EEA953"
+  "redsunsecond": "#EEA953",
+  "default": "#FFFFFF"
 }

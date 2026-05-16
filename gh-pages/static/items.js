@@ -8,6 +8,8 @@ upgrade
 */
 
 let item_data = [];
+let item_by_id = {};
+let global_cur_item_id = 0;
 const ATTRIBUTE_TYPES = ["positive", "negative", "neutral"] // order important
 
 async function parse_items() {
@@ -46,44 +48,35 @@ async function parse_item_list(parent_element, item_data) {
     item_grid.classList.add("item_grid")
     item_grid = parent_element.appendChild(item_grid);
     for (const item of item_data) {
-        await iter_item(item);
+        iter_item(item_grid, item, true);
     }
 }
 
-async function iter_item(item) {
-    item_el = item_grid.appendChild(create_element("div", "item_instance"));
-    
+function iter_item(parent_element, item, sw_opt) {
+    item_el = parent_element.appendChild(create_element("div", "item_instance"));
+    console.log(`Load item ${item["name"]}`);
+    global_cur_item_id += 1;
+
     /* Add icon to item instance */
     if (Boolean(item["icon"])) {
         item_icon = create_element("img", "item_icon")
         item_icon.src = item["icon"];
         item_el.appendChild(item_icon);
     } else if (item["type"]=="weaponkit") { // weaponkit subweapon icon carousel
-        // Missing && existing: Show existing only
-        // Show either if only missing or only existing
         kit_container = item_el.appendChild(create_element("div", "kit_icon_container"));
         const max = item["subweapons"]["items"].length;
 
         // Detect if there is at least one existing icon
-        let missing_icon_count = 0;
-        item["subweapons"]["items"].forEach(subweapon => { if (!Boolean(subweapon.icon)) { missing_icon_count+=1; } });
+        let has_existing_icons = false;
+        item["subweapons"]["items"].forEach(subweapon => { if (Boolean(subweapon.icon)) { has_existing_icons=true; } });
         
-        function kit_icon_onload(element, idx, max, missing_icon_count) {
-            if (max-missing_icon_count === 1) { // single item
-                element.style["opacity"] = "1";
-            } else { // multi-item
-                element.style.setProperty("--delay", `${(idx*2)-2}s`);
-                element.style["animation-duration"] = `${max*2}s`;
-            };
-        }
         item["subweapons"]["items"].forEach((subweapon, idx) => {
             if (Boolean(subweapon["icon"])) { // Insert rendered icon
                 item_icon = create_element("img", "item_icon kit_icon");
                 item_icon.src = subweapon["icon"]
-                kit_icon_onload(item_icon, idx, max, missing_icon_count)
                 kit_container.appendChild(item_icon);
-            } else if (max==1) { // Insert missing icon
-                insert_svg("builtin_img/missing_item.svg", "#b2b2b2", "item_icon kit_icon", kit_container, { "args": [idx, max, missing_icon_count-1], "func": kit_icon_onload });
+            } else if ((max==1) || !has_existing_icons) { // Insert missing icon
+                insert_svg("builtin_img/missing_item.svg", "#b2b2b2", "item_icon kit_icon", kit_container);
             }
         });
     } else {
@@ -134,7 +127,7 @@ async function iter_item(item) {
     item["description"].split("\n").forEach(line => {
         item_tooltip.appendChild(create_element("div", "", line));
     });
-    
+
     /* Add attributes */
     if ("attributes" in item && item["type"] !== "perk") {
         if (Object.keys(item["attributes"]).length>0) {
@@ -151,6 +144,49 @@ async function iter_item(item) {
         };
     };
 
+    /* Subweapon viewing functionality */
+    if ("subweapons" in item) {
+        if ("items" in item["subweapons"]) {
+            if (sw_opt) { // popup on click
+                item_el.style["cursor"] = "pointer";
+                item_tooltip.appendChild(create_element("div", "secondary item_notice", `Click to view ${item["subweapons"]["name"]}`)) // Show "Click to view Weapon Enhancements/Kit Items" in tooltip
+                
+                // map id to item data for future events
+                item_by_id[global_cur_item_id] = item
+                item_el.dataset.id = global_cur_item_id;
+                
+                item_el.addEventListener("click", (event) => {
+                    console.log(`Clicked item ID ${event.target.dataset.id}`);
+                    item = item_by_id[event.target.dataset.id];
+                    // modal container
+                    modal = create_element("div", "subweapon_modal");
+                    modal.id = "sw_modal";
+                    modal = document.body.appendChild(modal);
+                    modal_content = modal.appendChild(create_element("div","subweapon_modal_content"));
+
+                    // title
+                    modal_content.appendChild(create_element("h1","",`${item["name"]}: ${item["subweapons"]["name"]}`));
+                    insert_svg("builtin_img/x.svg", "#ccc8c1", "close_button", modal_content, {
+                        "args": [],
+                        "func": function(element){
+                            element.addEventListener("click", (event) => {
+                                modal = document.getElementById("sw_modal");
+                                modal.remove();
+                            });
+                        }
+                    });
+
+                    // draggable container for subweapons
+                    swr_canvas = modal.appendChild(create_element("canvas","subweapon_container"));
+                    swr_item = item;
+                    swr_setup();
+                    reset_cam = true;
+                    window.requestAnimationFrame(draw);
+                });
+            }
+        }
+    }
+
     /* Prevent tooltips from going outside of viewport */
     // TODO add mousein/out events to each item_instance for tooltip recalc
     tooltip_bbox = item_tooltip.getBoundingClientRect();
@@ -159,6 +195,7 @@ async function iter_item(item) {
     } else if (tooltip_bbox.right > window.innerWidth) {
         item_tooltip.classList.add("item_tooltip_toleft");
     }
+    return item_el
 }
 
 
@@ -190,7 +227,7 @@ function isUppercase(word){
 function create_element(tag, classes, content) {
     content = content || "";
     el = document.createElement(tag);
-    if (classes!="") { el.classList.add(...classes.split(" ")); }
+    if (classes!=="" && classes!==undefined) { el.classList.add(...classes.split(" ")); }
     el.innerHTML = content;
     return el
 }

@@ -1,21 +1,6 @@
 @import url("style.css");
 
-/* Items */
-
-summary {
-    margin-bottom: .5em;
-    margin-top: .5em;
-    font-weight: 500;
-    font-family: "Oswald";
-    display: hidden;
-}
-
-details summary { font-size: 2em }
-details details summary { font-size: 1.5em }
-details details details summary { font-size: 1em }
-details details details details summary { font-size: .5em }
-
-/* Search */
+/* Search (not updated) =================================== */
 .setting {
     width: 100%;
     justify-content: center;
@@ -47,12 +32,16 @@ input[type=search] {
     flex-wrap:wrap;
 }
 
-/* Blocks */
+/* Blocks =================================== */
 .block {
     background-color: #26292b;
     border: solid #ccc8c1 3px;
     border-radius: 5px;
     padding: 5px;
+    margin-top: 2em;
+}
+
+.block .block {
     margin: 2em;
 }
 
@@ -68,11 +57,12 @@ input[type=search] {
 
 
 
-/* Item grid */
+/* Item grid =================================== */
 .item_grid {
     width:auto; /* empty */
     margin-bottom: .5em;
     margin-left: 1em;
+    margin-right: 1em;
 }
 .item_instance {
     display: inline-flex;
@@ -90,60 +80,31 @@ input[type=search] {
     /* Tooltips */
     position: relative;
     text-decoration: none;
-    cursor: pointer;
 }
 .item_instance:hover {
     background-color: #333333;
 }
 
-/* Icons ======================================= */
+/* Icons ------------------------------------- */
 .item_icon {
     width: inherit;
     height: inherit;
+    pointer-events: none;
 }
 
 .kit_icon_container {
     position: relative;
     width: 64px;
+    pointer-events: none;
 }
 
 .kit_icon {
     position: absolute;
     width: 64px;
     height: 64px;
-    animation-iteration-count: infinite;
-    animation-delay: var(--delay);
 }
 
-.item_instance:hover .kit_icon {
-    animation-name: kit_icon_cycle;
-    opacity: 0;
-    animation-timeline: 50%;
-}
-
-/* cycle between several images in kit container */
-@keyframes kit_icon_cycle {
-    0% {
-        opacity: 0;
-    }
-    50% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-    }
-}
-
-.item_price {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    background-color: rgba(83, 123, 22, 50%);
-    border-radius:5px;
-    color: #ffffff;
-}
-
-/* Tooltips =========================================== */
+/* Tooltips =================================== */
 .item_tooltip {
     z-index: 1;
     top: 105%;
@@ -192,7 +153,7 @@ input[type=search] {
     margin: 0;
 }
 
-/* Attributes =========================================== */
+/* Attributes ------------------------------------- */
 .attribute_container {
     background-color: #26292b;
     padding: 5px;
@@ -205,4 +166,73 @@ input[type=search] {
 
 .attribute_container .negative {
     color: #FF4040
+}
+
+/* Item misc ------------------------------------- */
+.item_notice {
+    margin-top: 15px;
+}
+
+.item_price {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(83, 123, 22, 50%);
+    border-radius:5px;
+    color: #ffffff;
+    pointer-events: none;
+}
+
+
+/* Subweapon view =================================== */
+/* Main modal container (Title + SW container) */
+.subweapon_modal {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 50%);
+}
+
+.subweapon_modal_content {
+    position: relative;
+    margin: 25px;
+    margin-bottom: 0;
+}
+.subweapon_modal_content h1 {
+    margin-bottom: 10px;
+}
+.subweapon_modal_content .close_button {
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    background-color:#26292b;
+    border:#ccc8c1 solid 1px;
+    padding: 5px;
+
+    width: 35px;
+    height: 35px;
+
+    cursor: pointer;
+}
+/* Subweapon container (canvas) */
+.subweapon_container {
+    --margin: 25px;
+    --border-width: 1px;
+    position: relative;
+    background-color:#26292b;
+    border:#ccc8c1 solid 1px;
+
+    border-width: var(--border-width);
+    margin-left: var(--margin);
+    width: calc(100% - (var(--margin) * 2 + var(--border-width) * 2)); /* 25px*2 + account for 1px*2 border */
+    height: calc(100% - (125px + var(--border-width) * 2));
+}
+
+/* Disable scroll on main page while modal is open */
+body:has(.subweapon_modal) {
+    overflow: hidden;
 }

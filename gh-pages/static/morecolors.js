@@ -25,3 +25,9 @@ function apply_morecolors(str_) {
     if (has_replaced) { return newstr };
     return str_
 }
+function remove_morecolors(str_) {
+    for (const [colorname,_] of Object.entries(MORECOLORS_JSON)) {
+        str_ = str_.replaceAll(`{${colorname}}`, "")
+    };
+    return str_
+}

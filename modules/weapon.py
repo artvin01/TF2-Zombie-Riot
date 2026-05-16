@@ -45,7 +45,7 @@ def generate_weapon_icon(weapon_data, weapon_name, pure_filename, prefix="", bod
     else: mdl_bodygroup = "1"
     smd_path = f"{prefix}decompiled/{json.loads(util.read(f"{prefix}decompiled/{pure_filename}.json"))[mdl_bodygroup]}" # TODO cache
 
-    if smd_path == "decompiled/w_crossbow_reference.smd": return # TODO see below
+    if smd_path == "decompiled/w_crossbow_reference.smd": return "" # TODO see below
 
     util.debug(f"[weaponicon] {"✓" if os.path.isfile(smd_path) else "✗"} {smd_path} : {mdl_bodygroup}","weaponicon","OKBLUE")
 
@@ -111,7 +111,7 @@ class Weapon:
                         if "description_string" in attribute_data:
                             desc_str = attribute_data["description_string"].strip("#")
                             attr_type = attribute_data["effect_type"]
-                            # some of these calculations may be incorrect
+                            # some of these calculations may be incorrect, it seems like it's impossible to keep the positive/negative types correct without hardcoding
                             if attribute_data["description_format"] == "value_is_percentage":
                                 val_str = str(int((float(value)*100)-100))
                             elif attribute_data["description_format"] == "value_is_inverted_percentage":
@@ -200,7 +200,8 @@ class Weapon:
         
         init_pap_paths = defaultdict(int,self._weapon_data)["pappaths"] or 1
         self.subweapons["items"] = item_block(WeaponPap_Dummy(init_pap_paths), pap_idx, defaultdict(list))["items"]
-    
+        if len(self.subweapons["items"])==0:
+            self.subweapons = {}
 
     def add_global_tags(self):
         for tag in self.taglist:
@@ -234,7 +235,7 @@ class WeaponPap:
             if pap_key+"tags" in weapon_data: self.tags = " ".join(f"#{tag}" for tag in weapon_data[pap_key+"tags"].split(";") if tag != "")
             else: self.tags = ""
 
-            self.cost = weapon_data[pap_key+"cost"]
+            self.cost = f"${weapon_data[pap_key+"cost"]}"
 
             key_customname = pap_key + "custom_name"
             if key_customname in weapon_data: self.name = weapon_data[key_customname]
