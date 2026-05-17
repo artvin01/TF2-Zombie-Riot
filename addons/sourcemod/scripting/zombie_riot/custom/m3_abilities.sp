@@ -226,15 +226,18 @@ stock void GiveMorphineOnDamage(int client, int victim, float damage, int damage
 }
 public void MorphineShot(int client)
 {
-	if(dieingstate[client] > 0 || MorphineMaxed(client))
+	if(!CvarInfiniteCash.BoolValue)
 	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		return;
-	}
-	if(MorphineCharge[client] < 1.0)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		return;
+		if(dieingstate[client] > 0 || MorphineMaxed(client))
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return;
+		}
+		if(MorphineCharge[client] < 1.0)
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return;
+		}
 	}
 	i_MaxMorhpinesThisRound[client] += 1;
 	MorphineShotLogic(client);	
