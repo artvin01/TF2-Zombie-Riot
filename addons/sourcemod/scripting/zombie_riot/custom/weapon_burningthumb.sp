@@ -101,7 +101,7 @@ public void Weapon_BurningThumb_M1(int client, int weapon, bool crit, int slot)
 		cooldown = 1.2;
 
 	SetWeaponCooldown(weapon, cooldown);
-	ResetCombo(client, cooldown, false);
+	ResetCombo(client, cooldown + 5.0, false);
 }
 #define BURNING_DASHSPEED 720.0
 public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
