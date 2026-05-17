@@ -94,7 +94,7 @@ methodmap Male07 < CClotBody
 		music.Volume = 1.8;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "it's Male07");
-		strcopy(music.Artist, sizeof(music.Artist), "Holy fuck");
+		strcopy(music.Artist, sizeof(music.Artist), "Holy fuck (song name is HIDE, author is Daniel Herrera)");
 		Music_SetRaidMusic(music);
 		
 		func_NPCDeath[npc.index] = Male07_NPCDeath;
