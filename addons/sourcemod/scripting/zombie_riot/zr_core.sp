@@ -2842,6 +2842,7 @@ void ReviveAll(bool raidspawned = false,
 			{
 				RemoveSpecificBuff(client, "Call of the Heartbroken Internal");
 				RemoveSpecificBuff(client, "Call of the Heartbroken");
+				RemoveSpecificBuff(client, "Coffin's Return");
 			}
 			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
 			if(glowentity > MaxClients)

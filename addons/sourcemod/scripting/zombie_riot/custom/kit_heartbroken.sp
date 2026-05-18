@@ -1098,7 +1098,7 @@ stock void GiveCoffinOnDamage(int client, int victim, float damage)
 	DamageForMaxCharge *= 0.5;
 
 	if(b_thisNpcIsARaid[victim])
-		DamageForMaxCharge *= 0.85;
+		DamageForMaxCharge *= 0.5;
 
 	CoffinCharge[client] += (damage / DamageForMaxCharge);
 	if(WeaponLevel[client] >= 6)
@@ -1243,6 +1243,9 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 	MorphineShotLogic(RandomWildHunted, true);
 
 	ApplyStatusEffect(client, RandomWildHunted, "Call of the Heartbroken", Duration);
+	if(!ForceRevive)
+		ApplyStatusEffect(client, RandomWildHunted, "Coffin's Return", Duration);
+
 	ApplyStatusEffect(client, RandomWildHunted,	"Call of the Heartbroken Internal", Duration + 1.0);
 	ApplyStatusEffect(client, RandomWildHunted, "Shielding", 3.0);
 	Shielding_Add(RandomWildHunted, ReturnEntityMaxHealth(RandomWildHunted) / 5);

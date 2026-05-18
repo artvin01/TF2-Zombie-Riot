@@ -2959,10 +2959,15 @@ static void HandleDroneSystem(RegaliaClass npc)
 
 	float GameTime = GetGameTime(npc.index);
 
+/*
 	if(npc.m_flDroneSpawnNext > GameTime)
 		return;
 
 	npc.m_flDroneSpawnNext = GameTime + 12.5;
+*/
+	npc.m_flDroneSpawnNext = FAR_FUTURE;
+	if(npc.m_flDroneSpawnNext > GameTime)
+		return;
 
 	bool TopSection 	= true;
 	bool BottomSection 	= true;

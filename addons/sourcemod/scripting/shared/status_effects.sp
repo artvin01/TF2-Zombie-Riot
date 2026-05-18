@@ -9506,6 +9506,21 @@ void StatusEffects_HeartBroken()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
+	strcopy(data.BuffName, sizeof(data.BuffName), "Coffin's Return");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "CR");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnTakeDamage_PostAttacker	= TakeDamagePostAtttacker_CoffinsReturn;
+	StatusEffect_AddGlobal(data);
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Call of the Heartbroken Weakened");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "WEAK");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -9631,6 +9646,28 @@ void StatusEffects_HeartBroken()
 	data.SlotPriority				= 0;
 	data.OnTakeDamage_TakenFunc		= OverheatDamageTakenFunc;
 	StatusEffect_AddGlobal(data);
+}
+void TakeDamagePostAtttacker_CoffinsReturn(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	
+	int OwnerAttach = -1;
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if(!Apply_StatusEffect.TotalOwners[i])
+			continue;
+		if(!IsValidClient(i))
+			continue;
+
+		OwnerAttach = i;
+		break;
+	}
+	if(OwnerAttach == -1)
+		return;
+		
+	if(HasSpecificBuff(attacker, "Call of the Heartbroken Weakened"))
+		return;
+	GiveCoffinOnDamage(OwnerAttach,victim, damage);
+
 }
 static float TiantuiDamageDeal(int attacker, int victim, float basedamage, float bonus, float multi)
 {
