@@ -668,6 +668,7 @@ Function EntityFuncAttack2[MAXENTITIES];
 Function EntityFuncAttack3[MAXENTITIES];
 Function EntityFuncReload4[MAXENTITIES];
 Function EntityFuncPlayerRunCmd[MAXENTITIES];
+Function EntityFuncOnKill[MAXENTITIES];
 Function EntityFuncTakeDamage[MAXENTITIES][2];
 //Function EntityFuncReloadSingular5[MAXENTITIES];
 

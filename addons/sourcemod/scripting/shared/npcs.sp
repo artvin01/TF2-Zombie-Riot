@@ -2469,10 +2469,34 @@ void NPC_DeadEffects(int entity)
 #endif
 
 			Attributes_OnKill(entity, client, WeaponLastHit);
+			Npc_WeaponOnKillDo(entity, client, WeaponLastHit);
 		}
 	}
 }
+void Npc_WeaponOnKillDo(int entity, int client, int weapon)
+{
+	if(EntityFuncOnKill[weapon_holding] && EntityFuncOnKill[weapon_holding]!=INVALID_FUNCTION)
+	{
+		Action action;
+		Call_StartFunction(null, EntityFuncOnKill[weapon_holding]);
+		Call_PushCell(entity);
+		Call_PushCell(client);
+		Call_PushCell(weapon);
+		Call_Finish();
+	}
+}
+/*
+	Usage:
+	CFG:
+	"func_onkill"	"KillEffectDoWeapon"
 
+	Plugin:
+	void KillEffectDoWeapon(int entity, int client, int weapon)
+	{
+	
+	}
+
+*/
 #if defined ZR
 stock void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false)
 {
