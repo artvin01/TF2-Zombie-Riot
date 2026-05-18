@@ -2491,7 +2491,7 @@ void Npc_WeaponOnKillDo(int entity, int client, int weapon)
 	"func_onkill"	"KillEffectDoWeapon"
 
 	Plugin:
-	void KillEffectDoWeapon(int victim, int killer, int weapon)
+	public void KillEffectDoWeapon(int victim, int killer, int weapon)
 	{
 
 	}
