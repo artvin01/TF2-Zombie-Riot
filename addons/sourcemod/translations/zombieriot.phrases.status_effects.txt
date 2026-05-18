@@ -862,10 +862,12 @@
 	"Coffin's Return"
 	{
 		"en"	"Coffin's Return"
+		"ko"	"관의 귀환"
 	}
 	"Coffin's Return Desc"
 	{
 		"en"	"You have been summoned with Coffins.\nWhile in the circle of your summoner, you generate coffins for them on damage."
+		"ko"	"관 소모를 통해 소환되었습니다.\n소환자 근처의 원 안에 있을 때, 피해를 가하여 소환자에게 관을 제공할 수 있습니다."
 	}
 	"Call of the Heartbroken Weakened"
 	{
