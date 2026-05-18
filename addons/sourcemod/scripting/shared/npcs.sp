@@ -2475,10 +2475,10 @@ void NPC_DeadEffects(int entity)
 }
 void Npc_WeaponOnKillDo(int entity, int client, int weapon)
 {
-	if(EntityFuncOnKill[weapon_holding] && EntityFuncOnKill[weapon_holding]!=INVALID_FUNCTION)
+	if(EntityFuncOnKill[weapon] && EntityFuncOnKill[weapon]!=INVALID_FUNCTION)
 	{
 		Action action;
-		Call_StartFunction(null, EntityFuncOnKill[weapon_holding]);
+		Call_StartFunction(null, EntityFuncOnKill[weapon]);
 		Call_PushCell(entity);
 		Call_PushCell(client);
 		Call_PushCell(weapon);
@@ -2491,9 +2491,9 @@ void Npc_WeaponOnKillDo(int entity, int client, int weapon)
 	"func_onkill"	"KillEffectDoWeapon"
 
 	Plugin:
-	void KillEffectDoWeapon(int entity, int client, int weapon)
+	void KillEffectDoWeapon(int victim, int killer, int weapon)
 	{
-	
+
 	}
 
 */
