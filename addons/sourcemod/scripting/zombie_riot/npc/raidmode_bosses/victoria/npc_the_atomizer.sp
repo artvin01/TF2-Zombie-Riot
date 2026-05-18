@@ -399,6 +399,7 @@ methodmap Atomizer < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + npc.m_flFTL;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
+			RaidAllowLastman = true;
 
 			if(StrContains(data, "nomusic") == -1)
 			{
@@ -877,6 +878,13 @@ static void Atomizer_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flSpeed = npc.m_flBaseSpeed+(((npc.m_flFTL-(RaidModeTime - GetGameTime()))/npc.m_flFTL)*150.0);
+	if(RaidModeTime == FAR_FUTURE)
+	{
+		npc.m_flSpeed = 350.0;
+	}
+	if(npc.m_flSpeed >= 400.0)
+		npc.m_flSpeed = 400.0;
+		
 	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red)
 	{
 		BlockLoseSay = true;

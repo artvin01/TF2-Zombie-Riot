@@ -269,6 +269,7 @@ methodmap Shadow_FloweringDarkness < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		return npc;

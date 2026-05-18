@@ -134,6 +134,7 @@ methodmap Simon < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidModeScaling = fl_Damage_Boost;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 			CPrintToChatAll("{crimson}%t","Simon Wants To Escape");
 		}
 		

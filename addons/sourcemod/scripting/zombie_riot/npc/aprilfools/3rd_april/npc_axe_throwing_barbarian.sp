@@ -96,8 +96,8 @@ void AxeThrowingBarbarian_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Axe Throwing Barbarian");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_axe_throwing_barbarian");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "psycho");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;

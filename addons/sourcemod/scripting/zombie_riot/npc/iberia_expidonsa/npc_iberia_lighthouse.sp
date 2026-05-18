@@ -159,6 +159,7 @@ methodmap IberiaLighthouse < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 
 
@@ -326,6 +327,7 @@ public void IberiaLighthouse_ClotThink(int iNPC)
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidModeTime = GetGameTime(npc.index) + 9000.0;
 		RaidAllowsBuildings = true;
+		RaidAllowLastman = false;
 	}
 	//global range.
 	npc.m_flNextRangedSpecialAttack = 0.0;

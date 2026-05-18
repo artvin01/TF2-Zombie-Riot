@@ -353,7 +353,12 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	if(++SpreadTicks > (CurrentRound[Rounds_Default] >= 39 ? 24 : 8))
+	bool escapeMode = PapModeDo == PAP_MODE_BUILDING_ONLY;
+	int ticks = (CurrentRound[Rounds_Default] >= 39 ? 24 : 8);
+	if(escapeMode)
+		ticks /= 2;
+
+	if(++SpreadTicks > ticks)
 	{
 		SpreadTicks = (GetURandomInt() % 3) - 1;
 
@@ -377,22 +382,32 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 
 			if(list.FindValue(nav1) == -1)
 			{
-				for(NavDirType b; b < NUM_DIRECTIONS; b++)
+				if(!escapeMode)
 				{
-					int count = nav1.GetAdjacentCount(b);
-					for(int c; c < count; c++)
+					for(NavDirType b; b < NUM_DIRECTIONS; b++)
 					{
-						if(AllowMaxSpread >= 25)
+						int count = nav1.GetAdjacentCount(b);
+						for(int c; c < count; c++)
 						{
-							break;
-						}
-						CNavArea nav2 = nav1.GetAdjacentArea(b, c);
-						if(nav2 != NULL_AREA && !nav2.HasAttributes(NAV_MESH_NO_HOSTAGES) && NavList.FindValue(nav2) == -1)
-						{
-							AllowMaxSpread++;
-							NavList.Push(nav2);
+							if(AllowMaxSpread >= 25)
+							{
+								break;
+							}
+							CNavArea nav2 = nav1.GetAdjacentArea(b, c);
+							if(nav2 != NULL_AREA && !nav2.HasAttributes(NAV_MESH_NO_HOSTAGES) && NavList.FindValue(nav2) == -1)
+							{
+								AllowMaxSpread++;
+								NavList.Push(nav2);
+							}
 						}
 					}
+				}
+				else if(GetURandomInt() % 3)
+				{
+					// Decay creep in escape mode
+					NavList.Erase(a);
+					a--;
+					length--;
 				}
 			}
 		}
@@ -595,6 +610,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 	}
 
 	NervousTouching[0] = GetGameTime() + 0.5;
+	bool escapeMode = PapModeDo == PAP_MODE_BUILDING_ONLY;
 	
 	float pos[3];
 
@@ -665,6 +681,9 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 					{
 						damageDeal = 2.0;
 					}
+
+					if(escapeMode)
+						damageDeal *= 0.5;
 
 					SDKHooks_TakeDamage(client, 0, 0, damageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, _, _, pos);
 					// 120 x 0.25 x 0.2

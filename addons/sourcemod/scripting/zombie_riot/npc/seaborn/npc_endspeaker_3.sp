@@ -49,6 +49,7 @@ methodmap EndSpeaker3 < EndSpeakerNormal
 			else
 				RaidModeScaling *= 1.5;
 			RaidAllowsBuildings = true;
+			RaidAllowLastman = false;
 		}
 		return npc;
 	}

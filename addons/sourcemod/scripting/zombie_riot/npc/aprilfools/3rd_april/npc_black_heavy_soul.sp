@@ -177,7 +177,7 @@ methodmap BlackHeavySoul < CClotBody
 			EmitCustomToAll(g_AngerSoundLoop[GetRandomInt(0, sizeof(g_AngerSoundLoop) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 			EmitCustomToAll(g_AngerSoundLoop[GetRandomInt(0, sizeof(g_AngerSoundLoop) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 			EmitCustomToAll(g_AngerSoundLoop[GetRandomInt(0, sizeof(g_AngerSoundLoop) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-			this.m_flNextIdleSound = GetGameTime() + 6.5;		
+			this.m_flNextIdleSound = GetGameTime(this.index) + 6.5;		
 		}
 		
 	}
@@ -287,6 +287,7 @@ methodmap BlackHeavySoul < CClotBody
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 
 		char buffers[3][64];
 		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));

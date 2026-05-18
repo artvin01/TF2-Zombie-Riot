@@ -703,7 +703,6 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 						//tiger drop negates all damage.
 						f_AntiStuckPhaseThrough[client] = 0.0;
 						f_AntiStuckPhaseThroughFirstCheck[client] = 0.0;
-						IncreaseEntityDamageTakenBy(client, 0.1, 0.75);
 						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_4", 0.75, target);
 						flMaxhealth *= 0.45;
 					}
@@ -1111,6 +1110,7 @@ static int DoSpecialActionYakuza(int client, float DamageBase, const char[] anim
 	int viewcontrol = CreateEntityByName("prop_dynamic");
 	if (IsValidEntity(viewcontrol))
 	{
+		b_ThisEntityIgnored[viewcontrol] = true;
 		GetVectorAnglesTwoPoints(vecSwingEnd, MiddleAngle, vAngleCamera);
 		SetEntityModel(viewcontrol, "models/empty.mdl");
 		DispatchKeyValueVector(viewcontrol, "origin", vecSwingEnd);

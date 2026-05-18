@@ -452,11 +452,11 @@ static bool StartRiftVote(bool first)
 	ArrayList list = Rogue_CreateGenericVote(FinishRiftVote, "Rift Consume Encounter Title");
 	Vote vote;
 
-	int needToUseNow;
-	if(Rogue_GetFloor() == 4 && Rogue_HasNamedArtifact("Wordless Deed"))
-		needToUseNow = ConsumeLimit == 1 ? 2 : 1;
+//	int needToUseNow;
+//	if(Rogue_GetFloor() == 4 && Rogue_HasNamedArtifact("Wordless Deed"))
+//		needToUseNow = ConsumeLimit == 1 ? 2 : 1;
 	
-	if(!needToUseNow)
+//	if(!needToUseNow)
 	{
 		strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
 		strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
@@ -465,6 +465,7 @@ static bool StartRiftVote(bool first)
 	}
 
 	int found;
+	/*
 	if(needToUseNow == 2)	// Need to consume the item now!
 	{
 		strcopy(vote.Name, sizeof(vote.Name), "Wordless Deed");
@@ -473,12 +474,13 @@ static bool StartRiftVote(bool first)
 		list.PushArray(vote);
 		found++;
 	}
+	*/
 
 	ArrayList collection = Rogue_GetCurrentCollection();
 
 	if(collection)
 	{
-		vote.Locked = needToUseNow == 2;
+	//	vote.Locked = needToUseNow == 2;
 
 		Artifact artifact;
 		int length = collection.Length;
@@ -779,7 +781,7 @@ public void Rogue_Vote_Rift1(const Vote vote, int index)
 				Rogue_GiveNamedArtifact("Bob's Assistance", true, true);
 		}
 		case 1:
-		{
+		{	
 			Rogue_GiveNamedArtifact("Reila Assistance", true);
 			Rogue_GiveNamedArtifact("Wordless Deed");
 		}

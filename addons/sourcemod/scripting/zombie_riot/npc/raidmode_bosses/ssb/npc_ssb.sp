@@ -4017,6 +4017,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 		RaidModeTime = GetGameTime(npc.index) + SSB_RaidTime[SSB_WavePhase];
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;

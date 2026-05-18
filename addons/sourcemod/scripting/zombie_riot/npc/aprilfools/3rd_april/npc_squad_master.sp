@@ -10,7 +10,7 @@ void SquadX_Master_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = -1;
-	data.Category = Type_Hidden;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -322,6 +322,7 @@ static void Internal_ClotThink(int iNPC)
 			int viewcontrol = CreateEntityByName("prop_dynamic");
 			if (IsValidEntity(viewcontrol))
 			{
+				b_ThisEntityIgnored[viewcontrol] = true;
 				float OriginCamrea[3];
 				OriginCamrea = SpawnPos;
 				OriginCamrea[0] += 150.0;
@@ -560,6 +561,7 @@ static void Internal_ClotThink(int iNPC)
 			RaidModeTime = GetGameTime(npc.index) + 200.0;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
+			RaidAllowLastman = true;
 			//revert cameras do
 		}
 	}

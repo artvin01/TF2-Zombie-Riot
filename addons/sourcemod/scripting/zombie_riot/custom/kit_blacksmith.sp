@@ -69,6 +69,11 @@ void Blacksmith_ExtraDesc(int client, int index)
 {
 	if(Tinkers)
 	{
+		if(!Blacksmith_Any_IsASmith())
+		{
+			CPrintToChat(client, "{crimson} %t" , "No Tinker Left");
+			return;
+		}
 		int account = GetSteamAccountID(client, false);
 		if(account)
 		{
@@ -100,6 +105,15 @@ bool Blacksmith_IsASmith(int client)
 {
 	return view_as<bool>(EffectTimer[client]);
 }
+bool Blacksmith_Any_IsASmith()
+{
+	for(int i=1; i<=MaxClients; i++)
+	{
+		if(Blacksmith_IsASmith(i))
+			return true;
+	}
+	return false;
+}
 
 void Blacksmith_Enable(int client, int weapon)
 {
@@ -119,6 +133,8 @@ void Blacksmith_Enable(int client, int weapon)
 
 	if(Tinkers)
 	{
+		if(!Blacksmith_Any_IsASmith())
+			return;
 		DetectWeaponNoTinker(weapon, client);
 		int account = GetSteamAccountID(client, false);
 		if(account)

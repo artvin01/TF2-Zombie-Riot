@@ -50,7 +50,7 @@ void SquadX_Omega_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "omega");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Raid;
+	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	SquadX_OmegaId = NPC_Add(data);

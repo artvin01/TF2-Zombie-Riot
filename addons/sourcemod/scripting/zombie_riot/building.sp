@@ -2210,6 +2210,14 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		{
 			view_as<BarrackBody>(entity).BonusFireRate /= 0.85;
 		}
+		if(!(i_CurrentEquippedPerk[entity] & PERK_MORNING_COFFEE_X) && (i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE_X))
+		{
+			view_as<BarrackBody>(entity).BonusFireRate *= (1.0 / 1.35);
+		}
+		if((i_CurrentEquippedPerk[entity] & PERK_MORNING_COFFEE_X) && !(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE_X))
+		{
+			view_as<BarrackBody>(entity).BonusFireRate /= (1.0 / 1.35);
+		}
 		if((i_CurrentEquippedPerk[entity] & PERK_OBSIDIAN) && !(i_CurrentEquippedPerk[client] & PERK_OBSIDIAN))
 		{
 			if(BarracksUpgrade)

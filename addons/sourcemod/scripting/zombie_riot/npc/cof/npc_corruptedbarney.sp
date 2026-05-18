@@ -210,6 +210,7 @@ methodmap CorruptedBarney < CClotBody
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = true;
 		b_NameNoTranslation[npc.index] = true;
 		npc.m_flBossSpawnBeacon = 1.0;
 		

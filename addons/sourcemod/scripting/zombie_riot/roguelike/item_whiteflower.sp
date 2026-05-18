@@ -365,8 +365,8 @@ public void Rogue_RottenBone_Enemy(int entity)
 {
 	if(RottenBone)
 	{
-		fl_Extra_MeleeArmor[entity] *= 1.0 + (RottenBone * 0.00015);
-		fl_Extra_RangedArmor[entity] *= 1.0 + (RottenBone * 0.00015);
+		fl_Extra_MeleeArmor[entity] *= 1.0 + (float(RottenBone) * 0.00015);
+		fl_Extra_RangedArmor[entity] *= 1.0 + (float(RottenBone) * 0.00015);
 
 		if(RottenBone < 3000)
 			RottenBone++;

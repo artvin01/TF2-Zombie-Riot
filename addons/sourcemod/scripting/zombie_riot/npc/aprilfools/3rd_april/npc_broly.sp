@@ -223,6 +223,7 @@ static void Internal_ClotThink(int iNPC)
 		RaidModeTime = GetGameTime() + 35.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
+		RaidAllowLastman = false;
 		
 		RaidModeScaling = 99999.9; //More then 9 and he raidboss gets some troubles, bufffffffff
 
