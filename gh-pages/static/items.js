@@ -9,16 +9,11 @@ upgrade
 
 let item_data = [];
 let item_by_id = {};
-let global_cur_item_id = 0;
 const ATTRIBUTE_TYPES = ["positive", "negative", "neutral"] // order important
 
 async function parse_items() {
-    /*
-        parent_element: Which element the parsed contents of this run will be placed into.
-    */
     async function item_block(parent_element,parent_data) {
         for (const [category, data] of Object.entries(parent_data)) {
-            console.log(category);
             if (isUppercase(category)) { // nest
                 block = document.createElement("div");
                 block.classList.add("block");
@@ -40,7 +35,8 @@ async function parse_items() {
         }
     }
 
-    item_block(document.body, item_data);
+    await item_block(document.body, item_data);
+    interface_goto(...check_url_params())
 }
 
 async function parse_item_list(parent_element, item_data) {
@@ -54,8 +50,7 @@ async function parse_item_list(parent_element, item_data) {
 
 function iter_item(parent_element, item, sw_opt) {
     item_el = parent_element.appendChild(create_element("div", "item_instance"));
-    console.log(`Load item ${item["name"]}`);
-    global_cur_item_id += 1;
+    //console.log(`Load item ${item["name"]}`);
 
     /* Add icon to item instance */
     if (Boolean(item["icon"])) {
@@ -145,47 +140,37 @@ function iter_item(parent_element, item, sw_opt) {
     };
 
     /* Subweapon viewing functionality */
-    if ("subweapons" in item) {
+    /* Map item to an id (Viewing subweapons, Weapon selectors) */
+    item_by_id[item.wid] = item
+    item_el.dataset.id = item.wid;
+    if ("subweapons" in item) { 
         if ("items" in item["subweapons"]) {
             if (sw_opt) { // popup on click
                 item_el.style["cursor"] = "pointer";
                 item_tooltip.appendChild(create_element("div", "secondary item_notice", `Click to view ${item["subweapons"]["name"]}`)) // Show "Click to view Weapon Enhancements/Kit Items" in tooltip
                 
-                // map id to item data for future events
-                item_by_id[global_cur_item_id] = item
-                item_el.dataset.id = global_cur_item_id;
-                
                 item_el.addEventListener("click", (event) => {
-                    console.log(`Clicked item ID ${event.target.dataset.id}`);
                     item = item_by_id[event.target.dataset.id];
-                    // modal container
-                    modal = create_element("div", "subweapon_modal");
-                    modal.id = "sw_modal";
-                    modal = document.body.appendChild(modal);
-                    modal_content = modal.appendChild(create_element("div","subweapon_modal_content"));
-
-                    // title
-                    modal_content.appendChild(create_element("h1","",`${item["name"]}: ${item["subweapons"]["name"]}`));
-                    insert_svg("builtin_img/x.svg", "#ccc8c1", "close_button", modal_content, {
-                        "args": [],
-                        "func": function(element){
-                            element.addEventListener("click", (event) => {
-                                modal = document.getElementById("sw_modal");
-                                modal.remove();
-                            });
-                        }
-                    });
-
-                    // draggable container for subweapons
-                    swr_canvas = modal.appendChild(create_element("canvas","subweapon_container"));
-                    swr_item = item;
-                    swr_setup();
-                    reset_cam = true;
-                    window.requestAnimationFrame(draw);
+                    open_subweapon_modal(item);
                 });
             }
         }
     }
+
+    /* Weapon selector clipboard shortcut */
+    item_el.addEventListener("contextmenu", (event) => {
+        event.preventDefault();
+        let source_url = window.location.href.split('?')[0]; // get url w/o params
+        navigator.clipboard.writeText(`${source_url}?wid=${event.target.dataset.id}`);
+        
+        let notification = create_element("div","notify_copied","Link copied!");
+        notification.style["top"] = `${event.clientY + window.scrollY - 32}px`;
+        notification = document.body.appendChild(notification);
+        notification.style["left"] = `${event.clientX - (notification.getBoundingClientRect().width/2)}px`;
+        setTimeout(function(notification){
+            notification.remove();
+        }, 1000, notification)
+    });
 
     /* Prevent tooltips from going outside of viewport */
     // TODO add mousein/out events to each item_instance for tooltip recalc
@@ -198,7 +183,54 @@ function iter_item(parent_element, item, sw_opt) {
     return item_el
 }
 
+// INTERFACE ===================================================
+async function interface_goto(wid,swid) {
+    if (wid===null) {return}; // no params given
+    const query = `[data-id='${wid}']`;
+    const search = document.querySelectorAll(query)
+    if (search.length===1) {
+        const welement = search[0];
+        welement.scrollIntoView({"behavior": "smooth", "block": "center"});
+        if (swid===null) { // No swid: Scroll weapon into view and highlight for 3s 
+            welement.classList.add("highlight");
+            setTimeout(function(welement){
+                welement.classList.remove("highlight");
+            }, 3000, welement)
+        } else { // Swid: Scroll to weapon, open swmodal and highlight
+            open_subweapon_modal(item_by_id[wid]);
+            // TODO highlight subweapon
+            swr_highlight = {"id":swid,"time":Date.now()+3000};
+        }
+    } else if (search.length>1) {
+        console.warn("[interface_goto] Found multiple matches for weapon id!")
+    }
+}
+async function open_subweapon_modal(item) {
+    // modal container
+    modal = create_element("div", "subweapon_modal");
+    modal.id = "sw_modal";
+    modal = document.body.appendChild(modal);
+    modal_content = modal.appendChild(create_element("div","subweapon_modal_content"));
 
+    // title
+    modal_content.appendChild(create_element("h1","",`${item["name"]}: ${item["subweapons"]["name"]}`));
+    insert_svg("builtin_img/x.svg", "#ccc8c1", "close_button", modal_content, {
+        "args": [],
+        "func": function(element){
+            element.addEventListener("click", (event) => {
+                modal = document.getElementById("sw_modal");
+                modal.remove();
+            });
+        }
+    });
+
+    // draggable container for subweapons
+    swr_canvas = modal.appendChild(create_element("canvas","subweapon_container"));
+    swr_item = item;
+    swr_setup();
+    reset_cam = true;
+    window.requestAnimationFrame(draw);
+}
 
 // REQUEST ===================================================
 async function fetch_items() {
@@ -219,7 +251,7 @@ async function fetch_items() {
     //window.requestAnimationFrame(draw);
 }
 
-// LIB
+// LIB ===================================================
 let SVG_LIST = {};
 function isUppercase(word){
   return /^\p{Lu}/u.test( word );
@@ -263,6 +295,10 @@ async function insert_svg(url, color, classes, parent, onload) {
     if (onload!==undefined) {
         onload["func"](new_el, ...onload["args"]);
     }
+}
+function check_url_params() {
+    let queryString = new URLSearchParams(window.location.href.split('?')[1]);
+    return [queryString.get("wid"), queryString.get("swid")] // null if empty
 }
 
 fetch_items();

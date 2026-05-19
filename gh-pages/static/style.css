@@ -185,3 +185,25 @@ li:before {
     font-style:italic;
     opacity:.7;
 }
+
+/* "Copied!" notifier */
+.notify_copied {
+    position: absolute;
+    pointer-events: none;
+    background-color: rgba(83, 123, 22, 50%);
+    border-radius: 5px;
+    animation: fadeout-upwards 1s;
+    padding: 2px;
+    opacity: 0; /* no flashing when element deleted */
+}
+
+@keyframes fadeout-upwards {
+    0% {
+        translate: translateY(0px);
+        opacity: 1;
+    }
+    100% {
+        translate: translateY(50px);
+        opacity: 0;
+    }
+}

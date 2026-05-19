@@ -73,6 +73,7 @@ class Weapon:
     def __init__(self, weapon_name, weapon_data):
         self._weapon_name,self.name=weapon_name,weapon_name
         self._weapon_data=weapon_data
+        self.weapon_id = util.id_from_str(weapon_name)
 
         if "tags" in weapon_data:
             self.taglist = weapon_data["tags"].split(";")
@@ -102,7 +103,7 @@ class Weapon:
         self.attributes = defaultdict(list)
         if "attributes" in weapon_data:
             _attrs=weapon_data["attributes"].split(";")
-            try:
+            if len(_attrs) % 2 == 0: # TODO remove when trash cannon attrs fixed
                 for index, value in zip(_attrs[0::2],_attrs[1::2],strict=True):
                     if index.strip() in items_game["attributes"]: # TODO there are some custom attributes, gotta make manual entries for those to be included
                         attribute_data = items_game["attributes"][index.strip()]
@@ -131,8 +132,6 @@ class Weapon:
                                 else:
                                     desc = f"{val_str} {desc_str}"
                                 self.attributes[attr_type].append(desc)
-            except ValueError:
-                pass # The Trash Cannon
 
         # If weapon uses custom model, fetch source SMD file from bodygroup
         self.icon = ""
@@ -157,25 +156,6 @@ class Weapon:
         self.parse_enhancements()
 
 
-    def to_html(self,wcfghidden=True,wtags=None):
-        hidden_str = "<i>Hidden</i>\n" if "hidden" in self._weapon_data else ""
-        context = {
-            "name": self.name,
-            "data_item": util.fill_template(
-                util.read("templates/items/item.html"), 
-                {
-                    "tags": self.tags,
-                    "author": util.apply_morecolors(self.author),
-                    "cost": self.cost,
-                    "desc": f"{hidden_str}{self.lvl}{util.divfornewline(self.description)}{self.icon}{util.divfornewline("\n".join(self.attributes))}",
-                }    
-            ),
-            "wtags": wtags or self.tags,
-            "wcfghidden": "weapon_cfghidden hidden" if ("hidden" in self._weapon_data) and wcfghidden else ""
-        }
-        return util.fill_template(util.read("templates/items/item_preview.html"), context)
-    
-    
     def parse_enhancements(self):
         """
         pap_#_pappaths define how many paps you can choose from below ("2" paths on "PaP 1" allows you to choose between "PaP 2" and "PaP 3")
@@ -212,6 +192,7 @@ class Weapon:
             "type": getattr(self,"type","weapon"),
             "tags": self.tags.split(),
             "name": self.name,
+            "wid": self.weapon_id,
             "description": self.description,
             "author": self.author, # TODO apply morecolors on js side
             "lvl": self.lvl,
@@ -227,6 +208,8 @@ class WeaponPap:
         self._weapon_name,self.name=weapon_name,weapon_name
         self._weapon_data=weapon_data
         self._weapon_data_df = defaultdict(str,weapon_data)
+        # TODO reliable subweapon id generation
+        
 
         pap_key = f"pap_{idx}_"
         key_desc = pap_key+"desc"
@@ -247,7 +230,7 @@ class WeaponPap:
             self.attributes = defaultdict(list)
             if f"{pap_key}attributes" in weapon_data:
                 _attrs=weapon_data[f"{pap_key}attributes"].split(";")
-                try:
+                if len(_attrs) % 2 == 0: # TODO remove when trash cannon pap attrs fixed
                     for index, value in zip(_attrs[0::2],_attrs[1::2],strict=True):
                         if index.strip() in items_game["attributes"]: # TODO there are some custom attributes, gotta make manual entries for those to be included
                             attribute_data = items_game["attributes"][index.strip()]
@@ -276,8 +259,6 @@ class WeaponPap:
                                     else:
                                         desc = f"{val_str} {desc_str}"
                                     self.attributes[attr_type].append(desc)
-                except ValueError:
-                    pass # The Trash Cannon
 
             self.papskip = self._weapon_data_df[f"{pap_key}papskip"] or "0"
             self.pappaths = self._weapon_data_df[f"{pap_key}pappaths"] or "1"

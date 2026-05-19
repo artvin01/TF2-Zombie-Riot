@@ -234,5 +234,19 @@ input[type=search] {
 
 /* Disable scroll on main page while modal is open */
 body:has(.subweapon_modal) {
-    overflow: hidden;
+    overflow: hidden; /* Prevents weapon links scrolling to weapon while subweapon modal is open... */
+}
+
+/* Weapon linking =================================== */
+.highlight {
+    animation: highlight 1s infinite ease-in-out;
+    z-index: 1;
+}
+@keyframes highlight {
+    0% {
+        filter: brightness(100%);
+    }
+    50% {
+        filter: brightness(250%); /* 2.5x */
+    }
 }

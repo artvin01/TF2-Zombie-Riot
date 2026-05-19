@@ -8,7 +8,9 @@ let last_mousepos = [0,0];
 let campos = [0,0];
 let reset_cam = true;
 
+// TODO reliable subweapon id generation
 let swr_item = {};
+let swr_highlight = {"id": -1, "time":0};
 
 // MOUSE FUNCTIONS ===================================================
 var mousedown = false;
@@ -71,7 +73,7 @@ function draw() {
   ctx.fillStyle=`rgba(255,0,0,50%)`;
   
   ctx.canvas.style.cursor = "grab";
-  parse_main(swr_item, campos[0]-(subweapon_dist+38), campos[1]-38, 0);
+  parse_main(swr_item, campos[0]-(subweapon_dist+38), campos[1]-38, 0, "a");
   prerun=render(prerun);
   run=render(run);
   postrun=render(postrun);
@@ -92,7 +94,7 @@ prerun = []
 run = []
 postrun = []
 const subweapon_dist = 76 + 50;
-function parse_main(data,px,py,angle) {
+function parse_main(data,px,py,angle,sw_id) {
   // calculate tri_x and tri_y given length and angle
   const tri_y = subweapon_dist * Math.sin(angle);
   const tri_x = Math.sqrt(subweapon_dist**2 - tri_y**2);
@@ -224,6 +226,15 @@ function parse_main(data,px,py,angle) {
       },
       "args": [data]
     },
+    "onrclick": {
+      "args": [data],
+      "func": function(data) {
+        // copy link
+        let source_url = window.location.href.split('?')[0]; // get url w/o params
+        navigator.clipboard.writeText(`${source_url}?wid=${swr_item.wid}&swid=${sw_id}`);
+        // TODO copied notif
+      }
+    }
   })
   
   // Weapon Icon
@@ -237,13 +248,13 @@ function parse_main(data,px,py,angle) {
   // Weapon Cost
   let size = calc_text_size("16px Noto Sans", data.cost);
   const top = (y+74)-size.height-5;
-  postrun.push({
+  postrun.push({ // bg
     "type": "roundrect",
     "fillStyle": "rgba(83, 123, 22, 50%)",
     "pos": [x,top],
     "size": [size.width,size.height+6]
   });
-  postrun.push({
+  postrun.push({ // text
     "type": "text",
     "fillStyle": "#ffffff",
     "textAlign": "left",
@@ -251,15 +262,32 @@ function parse_main(data,px,py,angle) {
     "pos": [x,top+size.height+2.5],
     "font": "16px Noto Sans"
   });
+
+  // Highlight overlay
+  if (swr_highlight.id===sw_id) {
+    let alpha = Math.abs(Math.sin(Date.now()/400))*30;
+    if ( (swr_highlight.time>Date.now()) || (swr_highlight.time!==0 && alpha>1) ) { // second condition is to smoothly fade out instead of vanishing
+      postrun.push({
+        "type": "roundrect",
+        "fillStyle": `rgba(255, 255, 255, ${alpha}%)`,
+        "pos": [x,y],
+        "size": [76, 76]
+      });
+    } else {
+      swr_highlight.id = -1
+      swr_highlight.time = 0
+    }
+  }
   
   if (data.subweapons!==undefined && data.subweapons.items !== undefined) {
     let part = 2*Math.PI / (data.subweapons.items.length+1);
     data.subweapons.items.forEach(function(val,idx){
       let new_angle = part*idx;
+      let new_sw_id = sw_id + "abcd".slice(idx,idx+1);
       if (part !== Math.PI) {
         new_angle -= part * 0.5 * (data.subweapons.items.length-1);
       }
-      parse_main(val,x,y, new_angle);
+      parse_main(val,x,y, new_angle, new_sw_id);
     });
   };
 }
@@ -288,8 +316,12 @@ function render(arr) {
       ctx.save();
       ctx.beginPath();
       ctx.fillStyle=element.fillStyle;
-      if (UiRect(ctx,...element.pos,...element.size,element.onhover)) {
+      events = UiRect(ctx,...element.pos,...element.size,element.onhover)
+      if (events.includes("hover")) {
         ctx.fillStyle = element.onhover.fillStyle;
+      }
+      if (events.includes("rclick")) {
+        element.onrclick.func(...element.onrclick.args);
       }
       ctx.fill();
       if (element.strokeStyle !== undefined) {
@@ -341,9 +373,11 @@ function UiRect(ctx,x,y,w,h,onhover) {
   ctx.roundRect(x,y,w,h,5);
   if (mousepos[0]>=x && mousepos[0]<=x+w && mousepos[1]>=y && mousepos[1]<=y+h && ctx.canvas.matches(":hover")) {
     onhover.func(...onhover.args);
-    return true
+    events = ["hover"];
+    if (mouseclick[2]) { events.push("rclick") };
+    return events;
   }
-  return false;
+  return [];
 }
 function longestString(array) {
     return array.reduce(function (a, b) {

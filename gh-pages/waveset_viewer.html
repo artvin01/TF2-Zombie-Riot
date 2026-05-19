@@ -15,7 +15,7 @@
         <h2 id="wavesetname">Unknown waveset</h2>
         <div class="flex_break"></div>
         <h3 id="wave_progress_text">WAVE <input type="number" min="1" max="40" value="1" onchange="set_wave(this.value);">/ <span>40</span></h3>
-        <img src="static/link.svg" id="wave_embed_link" tabindex="0" onclick="copy_waveset_embed_link();">
+        <img src="static/link.svg" id="wave_embed_link" tabindex="0" onclick="copy_waveset_embed_link(event);">
         <div class="flex_break"></div>
         <div class="wave_btn" tabindex="0" onclick="cycle_wave(-1);">&lt;</div>
         <div id="wave_progress_bar" onclick="wavebar_setprogress(event);">

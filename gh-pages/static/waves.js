@@ -190,22 +190,17 @@ function fill_template(temp, cont) {
     return temp
 }
 
-function copy_waveset_embed_link() {
+function copy_waveset_embed_link(event) {
     let source_url = window.location.href.substring(0,  window.location.href.lastIndexOf('/'));;
-    copyTextToClipboard(`${source_url}/embed/${waveset_file.split(".json")[0].split("/")[1]}_${wave}.gif`);
-}
+    navigator.clipboard.writeText(`${source_url}/embed/${waveset_file.split(".json")[0].split("/")[1]}_${wave}.gif`);
 
-// https://stackoverflow.com/a/30810322
-function copyTextToClipboard(text) {
-  if (!navigator.clipboard) {
-    fallbackCopyTextToClipboard(text);
-    return;
-  }
-  navigator.clipboard.writeText(text).then(function() {
-    console.log('[copyTextToClipboard] Copied to clipboard');
-  }, function(err) {
-    console.error('[copyTextToClipboard] Failed to copy to clipboard: ', err);
-  });
+    let notification = create_element("div","notify_copied","Link copied!");
+    notification.style["top"] = `${event.clientY + window.scrollY - 32}px`;
+    notification = document.body.appendChild(notification);
+    notification.style["left"] = `${event.clientX - (notification.getBoundingClientRect().width/2)}px`;
+    setTimeout(function(notification){
+        notification.remove();
+    }, 1000, notification)
 }
 
 // http://stackoverflow.com/a/10997390/11236
@@ -241,6 +236,14 @@ async function check_url_params() {
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function create_element(tag, classes, content) {
+    content = content || "";
+    el = document.createElement(tag);
+    if (classes!=="" && classes!==undefined) { el.classList.add(...classes.split(" ")); }
+    el.innerHTML = content;
+    return el
 }
 
 /* Accessibility */
