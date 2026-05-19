@@ -2477,7 +2477,6 @@ void Npc_WeaponOnKillDo(int entity, int client, int weapon)
 {
 	if(EntityFuncOnKill[weapon] && EntityFuncOnKill[weapon]!=INVALID_FUNCTION)
 	{
-		Action action;
 		Call_StartFunction(null, EntityFuncOnKill[weapon]);
 		Call_PushCell(entity);
 		Call_PushCell(client);
