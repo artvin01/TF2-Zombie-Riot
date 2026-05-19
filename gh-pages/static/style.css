@@ -192,18 +192,19 @@ li:before {
     pointer-events: none;
     background-color: rgba(83, 123, 22, 50%);
     border-radius: 5px;
-    animation: fadeout-upwards 1s;
+    animation: fadeout-upwards 1s linear;
     padding: 2px;
     opacity: 0; /* no flashing when element deleted */
+    --top: 0;
 }
 
 @keyframes fadeout-upwards {
     0% {
-        translate: translateY(0px);
         opacity: 1;
+        top: var(--top);
     }
     100% {
-        translate: translateY(50px);
         opacity: 0;
+        top: calc(var(--top) - 20px);
     }
 }

@@ -74,6 +74,7 @@ function draw() {
   
   ctx.canvas.style.cursor = "grab";
   parse_main(swr_item, campos[0]-(subweapon_dist+38), campos[1]-38, 0, "a");
+  particles_tick();
   prerun=render(prerun);
   run=render(run);
   postrun=render(postrun);
@@ -93,6 +94,7 @@ function draw() {
 prerun = []
 run = []
 postrun = []
+particles = []
 const subweapon_dist = 76 + 50;
 function parse_main(data,px,py,angle,sw_id) {
   // calculate tri_x and tri_y given length and angle
@@ -232,7 +234,10 @@ function parse_main(data,px,py,angle,sw_id) {
         // copy link
         let source_url = window.location.href.split('?')[0]; // get url w/o params
         navigator.clipboard.writeText(`${source_url}?wid=${swr_item.wid}&swid=${sw_id}`);
-        // TODO copied notif
+        particles.push({
+          "pos": [mousepos[0], mousepos[1]-32],
+          "start": Date.now() 
+        })
       }
     }
   })
@@ -290,6 +295,39 @@ function parse_main(data,px,py,angle,sw_id) {
       parse_main(val,x,y, new_angle, new_sw_id);
     });
   };
+}
+
+// Draw "Link copied!" popups for subweapons. Hardcoded for now.
+let last_time = Date.now();
+function particles_tick() {
+  let size = calc_text_size("16px Noto Sans", "Link copied!");
+  let dt = Date.now() - last_time;
+  particles.forEach((particle, idx) => {
+    let lifetime = Date.now() - particle.start;
+    if (lifetime <= 1000) {
+      // move
+      particle.pos[1] -= dt/50;
+      // render
+      let opacity = (1000-lifetime)/1000;
+      postrun.push({ // bg
+        "type": "roundrect",
+        "fillStyle": `rgba(83, 123, 22, ${50*opacity}%)`,
+        "pos": [particle.pos[0]-(size.width/2)-2, particle.pos[1]],
+        "size": [size.width+4,size.height+6]
+      });
+      postrun.push({ // text
+        "type": "text",
+        "fillStyle": `rgba(255, 255, 255, ${100*opacity}%)`,
+        "textAlign": "left",
+        "text": "Link copied!",
+        "pos": [particle.pos[0]-(size.width/2), particle.pos[1]+size.height+2.5],
+        "font": "16px Noto Sans"
+      });
+    } else {
+      particles.splice(idx,1);
+    }
+  });
+  last_time = Date.now();
 }
 
 IMG_CACHE = {};

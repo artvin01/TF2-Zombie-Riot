@@ -164,7 +164,7 @@ function iter_item(parent_element, item, sw_opt) {
         navigator.clipboard.writeText(`${source_url}?wid=${event.target.dataset.id}`);
         
         let notification = create_element("div","notify_copied","Link copied!");
-        notification.style["top"] = `${event.clientY + window.scrollY - 32}px`;
+        notification.style.setProperty("--top",`${event.clientY + window.scrollY - 32}px`);
         notification = document.body.appendChild(notification);
         notification.style["left"] = `${event.clientX - (notification.getBoundingClientRect().width/2)}px`;
         setTimeout(function(notification){
