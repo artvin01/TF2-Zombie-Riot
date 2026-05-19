@@ -2475,6 +2475,9 @@ void NPC_DeadEffects(int entity)
 }
 void Npc_WeaponOnKillDo(int entity, int client, int weapon)
 {
+	if(!IsValidEntity(WeaponLastHit))
+		return;
+		
 	if(EntityFuncOnKill[weapon] && EntityFuncOnKill[weapon]!=INVALID_FUNCTION)
 	{
 		Call_StartFunction(null, EntityFuncOnKill[weapon]);
