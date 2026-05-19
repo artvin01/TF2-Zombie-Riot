@@ -7,6 +7,8 @@ perk
 upgrade
 */
 
+// TODO toggle for hidden weapons
+
 let item_data = [];
 let item_by_id = {};
 const ATTRIBUTE_TYPES = ["positive", "negative", "neutral"] // order important

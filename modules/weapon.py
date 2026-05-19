@@ -69,6 +69,15 @@ def generate_weapon_icon(weapon_data, weapon_name, pure_filename, prefix="", bod
     eng.window.render_to_image(no_background=True).save(f"./gh-pages/{prefix}icons/{pure_filename}_{mdl_bodygroup}.png")
     return f"{prefix}icons/{pure_filename}_{mdl_bodygroup}.png"
 
+
+# Item blacklist for hidden items that aren't indicated as hidden
+
+from ruamel.yaml import YAML
+
+yaml=YAML(typ='safe')
+with open("./config/item_blacklist.yml",'r') as file:
+    ITEM_BLACKLIST = yaml.load(file)
+
 class Weapon:
     def __init__(self, weapon_name, weapon_data):
         self._weapon_name,self.name=weapon_name,weapon_name
@@ -322,6 +331,7 @@ def item_block(key, data, output, type_override=None):
         for item in data:
             item_data = data[item]
             itm = GenericItem(item_data)
+            if item in ITEM_BLACKLIST: continue
             if itm.is_trophy:
                 """
                 "Magia Wings [???]"
