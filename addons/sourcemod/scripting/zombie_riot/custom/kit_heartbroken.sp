@@ -133,7 +133,7 @@ static Action Timer_HeartBroken(Handle timer, DataPack pack)
 static void HeartBroken_HUD(int client)
 {
 	//char weapon_hint[50];
-	if(WeaponLevel[client] < 5)
+	if(WeaponLevel[client] < 3)
 		return;
 	/*
 	if(CoffinLoseCD[client] < GetGameTime() && !Waves_InSetup())
@@ -229,11 +229,10 @@ public void HeartBroken_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	if(CheckInHud())
 		return;
 
+	//allow coffin gain at anypoint so they can gather it up beffore upgrading to this
+	GiveCoffinOnDamage(attacker,victim,  damage);
 	if(WeaponLevel[attacker] >= 5)
 	{
-
-		GiveCoffinOnDamage(attacker,victim,  damage);
-
 		//more coffins means more damage, 0.2 is the dmg multiplier
 		damage *= (1.0 + (CoffinCharge[attacker] * 0.2));
 	}
@@ -726,6 +725,8 @@ public void Heartbroken_Reqieum(int client, int weapon, bool crit, int slot)
 	}
 	int MeleeWeapon = EntRefToEntIndex(ref_MeleeWeapon[client]);
 	if(!IsValidEntity(MeleeWeapon))
+		return;
+	if(WeaponLevel[client] < 5)
 		return;
 	if(HasSpecificBuff(MeleeWeapon, "Memorial Possession") || HasSpecificBuff(MeleeWeapon, "Decapitate"))
 	{

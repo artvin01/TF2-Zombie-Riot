@@ -5409,18 +5409,16 @@
 	}
 	"The Heartbroken Desc 3"
 	{
-		"en"	"-Overall Stat Increases\n-Your R now can dash towards an enemy, next hit dealing big damage\nIf the enemy has not maxed sinking:\nReduce Dash Cooldown"
-		"ko"	"-전반적인 능력치 증가\n-R키로 적에게 돌진할 수 있으며, 다음에 적중하는 공격의 피해량이 크게 증가\n적이 보유한 침잠이 최대치가 아니라면:\n돌진 쿨다운 감소"
+		"en"	"-Overall Stat Increases\n-Your R now can dash towards an enemy, next hit dealing big damage\nIf the enemy has not maxed sinking:\nReduce Dash Cooldown\n-Unlock Secondary weapon:\n-Crouch+R to temporarily revive players for 5 coffins\n-Gain coffins on damage, and from summoned allies, raids give 2x as much"
 	}
 	"The Heartbroken Desc 4"
 	{
-		"en"	"-Overall Stat Increases\n-Unlock Secondary weapon:\n-M1 forces your melee out\n-M2 Enables a combo:\nGain faster attackspeed\nOn 3rd hit, summons a stampede of Dullahan's"
+		"en"	"-Overall Stat Increases\n-Secondary weapon:\n-M1 forces your melee out\n-M2 Enables a combo:\nGain faster attackspeed\nOn 3rd hit, summons a stampede of Dullahan's"
 		"ko"	"-전반적인 능력치 증가\n-보조 무기 해금:\n-좌클릭 시 강제로 근접 무기 장착\n-우클릭 시 '콤보'를 활성화:\n공격 속도 증가\n3번째 적중 시, 듀라한 무리를 소환"
 	}
 	"The Heartbroken Desc 5"
 	{
-		"en"    "-Overall Stat Increases\n-Unlock secondary R ability:\n-Launches a coffin that deals immense damage on hit\n-If the enemy is not a boss or special, instakill them and gain 1 coffin stack\n-Crouch+R to temporarily revive players for 5 coffins\n-Gain coffins on damage\n-Coffins give a damage bonus"
-		"ko"	"-전반적인 능력치 증가\n-보조 무기 R키 능력 해금:\n-막대한 피해를 가하는 관을 날림\n-대상이 보스나 특수형 적이 아니라면, 대상을 즉사시키고 '관'을 1 얻음\n-웅크리기+R로 관을 5 소모하여 사망한 플레이어를 일시적으로 부활 가능\n-피해를 가할 시 관을 얻음\n-관은 피해량 보너스를 제공"
+		"en"    "-Overall Stat Increases\n-Unlock secondary R ability:\n-Launches a coffin that deals immense damage on hit\n-If the enemy is not a boss or special, instakill them and gain 1 coffin stack\n-Coffins give a damage bonus"
 	}
 	"The Heartbroken Desc 6"
 	{

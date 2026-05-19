@@ -1927,6 +1927,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				Call_Finish(action);
 			}
 		}
+		
 	}
 	
 	//support in_use
@@ -2683,6 +2684,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		EntityFuncAttack2[entity] = INVALID_FUNCTION;
 		EntityFuncAttack3[entity] = INVALID_FUNCTION;
 		EntityFuncReload4[entity] = INVALID_FUNCTION;
+		EntityFuncOnKill[entity] = INVALID_FUNCTION;
 		EntityFuncAttackInstant[entity] = INVALID_FUNCTION;
 		b_Is_Player_Projectile_Through_Npc[entity] = false;
 		b_IgnorePlayerCollisionNPC[entity] = false;
