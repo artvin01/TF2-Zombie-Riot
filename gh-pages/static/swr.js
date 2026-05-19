@@ -278,9 +278,15 @@ function parse_main(data,px,py,angle,sw_id) {
         "pos": [x,y],
         "size": [76, 76]
       });
+      if (swr_highlight.cam_updated===undefined) {
+        campos[0]=campos[0]-xoff-36;
+        campos[1]=campos[1]-yoff-36;
+        swr_highlight.cam_updated = true;
+      }
     } else {
       swr_highlight.id = -1
       swr_highlight.time = 0
+      swr_highlight.cam_updated = undefined;
     }
   }
   
