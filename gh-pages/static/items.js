@@ -261,7 +261,6 @@ async function fetch_items() {
 }
 
 // LIB ===================================================
-let SVG_LIST = {};
 function isUppercase(word){
   return /^\p{Lu}/u.test( word );
 }
@@ -272,6 +271,7 @@ function create_element(tag, classes, content) {
     el.innerHTML = content;
     return el
 }
+let SVG_LIST = {};
 async function load_svg(url) {
     try {
         const response = await fetch(url);

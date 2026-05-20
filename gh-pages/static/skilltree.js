@@ -148,52 +148,56 @@ function parse_main(data,px,py,parentpts) {
     "fillStyle": unlocked ? "#282828" : "#333333",
     "pos": [x,y],
     "size": [150*zoom,150*zoom],
-    "args": [data,unlocked],
     "onhover": {
       "func": function(data) {
-        ctx.font = "16px Oswald";
+        ctx.font = "16px Noto Sans";
         let text = ctx.measureText(data.desc);
         let keytext = ctx.measureText(data.reqkey);
         let w = keytext.width+text.width+50;
         postrun.push({
-          "type": "rect",
-          "fillStyle": "#b4b8ab",
+          "type": "roundrect",
+          "fillStyle": "#181a1b",
+          "strokeStyle": "#ccc8c1",
+          "lineWidth": 1,
           "size": [w,16+50+(35*Number(data.reqkey.length>0))],
           "pos": [mousepos[0]-(w/2), mousepos[1]+30]
-        })
+        });
         postrun.push({
           "type": "text",
-          "fillStyle": "#153243ff",
+          "fillStyle": "#ccc8c1",
           "textAlign": "center",
           "text": data.desc,
           "pos": [mousepos[0], mousepos[1]+70],
-          "noscale": true
+          "font": "16px Noto Sans"
         })
         if (data.reqkey.length>0) {
           postrun.push({
             "type": "text",
-            "fillStyle": "#153243ff",
+            "fillStyle": "#ccc8c1",
             "textAlign": "center",
             "text": `Required item: ${data.reqkey}`,
             "pos": [mousepos[0], mousepos[1]+70+35],
-            "noscale": true
+            "font": "16px Noto Sans"
           })
         }
       },
       "args": [data]
     },
-    "onclick": function(data,unlocked) {
-      if (!(data.path in pointdata)) {pointdata[data.path] = 0};
-      let prev = pointdata[data.path];
-      if (mouseclick[0]) {pointdata[data.path] += 1;lastaction=1};
-      if (mouseclick[1]) {pointdata[data.path] += data.max==="9999" ? 100 : Number(data.max)-pointdata[data.path];lastaction=1};
-      if (mouseclick[2]) {pointdata[data.path] -= 1;lastaction=-1};
-      if (pointdata[data.path] > data.max && data.max!=="9999") {pointdata[data.path]=data.max};
-      if (pointdata[data.path] < 0) {pointdata[data.path]=0};
-      if (pointdata[data.path]-prev !== 0) {
-        total_points += (pointdata[data.path]-prev)*data.cost;
-        update_points();
-      }
+    "onclick": {
+      "func": function(data,unlocked) {
+        if (!(data.path in pointdata)) {pointdata[data.path] = 0};
+        let prev = pointdata[data.path];
+        if (mouseclick[0]) {pointdata[data.path] += 1;lastaction=1};
+        if (mouseclick[1]) {pointdata[data.path] += data.max==="9999" ? 100 : Number(data.max)-pointdata[data.path];lastaction=1};
+        if (mouseclick[2]) {pointdata[data.path] -= 1;lastaction=-1};
+        if (pointdata[data.path] > data.max && data.max!=="9999") {pointdata[data.path]=data.max};
+        if (pointdata[data.path] < 0) {pointdata[data.path]=0};
+        if (pointdata[data.path]-prev !== 0) {
+          total_points += (pointdata[data.path]-prev)*data.cost;
+          update_points();
+        }
+      },
+      "args": [data,unlocked]
     }
   })
   
@@ -287,13 +291,12 @@ function update_points() {
 
 function render(arr) {
   arr.forEach(function(element) {
+    // TODO switch case
     if (element.type === "text") {
       ctx.save()
       ctx.fillStyle=element.fillStyle; // Text color
       ctx.textAlign=element.textAlign;
-      if (element.noscale) {
-        ctx.font = "16px Oswald";
-      }
+      ctx.font = element.font;
       ctx.fillText(element.text, ...element.pos);
       ctx.restore();
     } else if (element.type === "line") {
@@ -308,19 +311,54 @@ function render(arr) {
     } else if (element.type === "button") {
       ctx.save();
       ctx.beginPath();
-      if (UiRect(ctx,...element.pos,...element.size,element.onhover)) {
-        element.onclick(...element.args);
+      ctx.fillStyle=element.fillStyle;
+      events = UiRect(ctx,...element.pos,...element.size,element.onhover)
+      if (events.includes("hover")) {
+        ctx.fillStyle = element.onhover.fillStyle;
       }
-      ctx.fillStyle=element.fillStyle; // Text color
+      if (events.includes("click")) {
+        element.onclick.func(...element.onclick.args);
+      }
       ctx.fill();
+      if (element.strokeStyle !== undefined) {
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = element.strokeStyle;
+        ctx.stroke();
+      }
       ctx.restore();
     } else if (element.type === "rect") {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(...element.pos,...element.size);
+      ctx.fillStyle=element.fillStyle; // Text color
+      ctx.fill();
+      if (element.strokeStyle !== undefined) {
+        ctx.lineWidth = element.lineWidth;
+        ctx.strokeStyle = element.strokeStyle;
+        ctx.stroke();
+      }
+      ctx.restore();
+    } else if (element.type === "roundrect") {
       ctx.save();
       ctx.beginPath();
       ctx.roundRect(...element.pos,...element.size,5);
       ctx.fillStyle=element.fillStyle; // Text color
       ctx.fill();
+      if (element.strokeStyle !== undefined) {
+        ctx.lineWidth = element.lineWidth;
+        ctx.strokeStyle = element.strokeStyle;
+        ctx.stroke();
+      }
       ctx.restore();
+    } else if (element.type === "image") {
+      if (IMG_CACHE[element.path]===undefined) {
+        IMG_CACHE[element.path] = new Image();
+        IMG_CACHE[element.path].src = element.path;
+      };
+      let cached = IMG_CACHE[element.path];
+      if (cached.then === undefined) {
+        ctx.drawImage(cached,element.pos[0],element.pos[1],element.size[0],element.size[1])
+      };
     }
   })
   return [];
@@ -331,10 +369,12 @@ function UiRect(ctx,x,y,w,h,onhover) {
   ctx.roundRect(x,y,w,h,5);
   if (mousepos[0]>=x && mousepos[0]<=x+w && mousepos[1]>=y && mousepos[1]<=y+h && ctx.canvas.matches(":hover")) {
     onhover.func(...onhover.args);
-    ctx.canvas.style.cursor = "pointer";
-    return mouseclick.some(function(el){return el});
+    events = ["hover"];
+    if (mouseclick[2]) { events.push("rclick") };
+    if (mouseclick.some(function(el){return el})) { events.push("click") };
+    return events;
   }
-  return false;
+  return [];
 }
 
 // INTERFACE ===================================================

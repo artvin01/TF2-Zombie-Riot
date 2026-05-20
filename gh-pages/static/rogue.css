@@ -56,22 +56,21 @@ input[type=search] {
 }
 
 .tooltip {
-  z-index: 1;
-  height: max-content;
-  width: max-content;
-  top: 110%;
-  left: 0;
-  opacity: 0;
-  position: absolute;
-  transition: 0.25s;
-  pointer-events: none;
-  padding-top: 25px;
-  padding-bottom: 25px;
-  padding-left: 35px;
-  padding-right: 35px;
-  background-color: var(--bg-light);
-  color: var(--deep-space-blue);
-  text-align: left;
+    z-index: 1;
+    top: 105%;
+    opacity: 0;
+    position: absolute;
+    transition: 0.25s;
+    pointer-events: none;
+
+    background-color: var(--bg-dark);
+    border: 1px #ccc8c1 solid;
+
+    width: max-content;
+    text-align: left;
+    color: var(--text-dark);
+
+    padding: 25px;
 }
 
 li img {

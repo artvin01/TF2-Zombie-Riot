@@ -195,7 +195,7 @@ function copy_waveset_embed_link(event) {
     navigator.clipboard.writeText(`${source_url}/embed/${waveset_file.split(".json")[0].split("/")[1]}_${wave}.gif`);
 
     let notification = create_element("div","notify_copied","Link copied!");
-    notification.style["top"] = `${event.clientY + window.scrollY - 32}px`;
+    notification.style.setProperty("--top",`${event.clientY + window.scrollY - 32}px`);
     notification = document.body.appendChild(notification);
     notification.style["left"] = `${event.clientX - (notification.getBoundingClientRect().width/2)}px`;
     setTimeout(function(notification){
@@ -234,6 +234,9 @@ async function check_url_params() {
     }
 }
 
+
+// lib
+// TODO unified lib js
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }

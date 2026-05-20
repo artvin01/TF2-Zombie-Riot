@@ -175,10 +175,12 @@
 .mc_redsunfirst { color: #F78C56; }
 .mc_redsunsecond { color: #EEA953; }
 
-span[class^='mc_']{ /* readability */
+/* readability (now readable because tooltip backgrounds are dark)
+span[class^='mc_']{
     text-shadow:
-   -1px -1px 0 #555,  
-    1px -1px 0 #555,
-    -1px 1px 0 #555,
-     1px 1px 0 #555;
+   -1px -1px 0 #777,  
+    1px -1px 0 #777,
+    -1px 1px 0 #777,
+     1px 1px 0 #777;
 }
+*/

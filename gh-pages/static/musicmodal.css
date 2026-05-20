@@ -2,9 +2,9 @@
 .music_bg {
     margin-top: 2em;
     margin-right: 2em;
-    padding: 1em;
-    background-color: var(--bg-light);
-    color: var(--deep-space-blue);
+    padding: 1em;    
+    background-color: var(--bg-dark);
+    border: 1px #ccc8c1 solid;
 
     position: fixed;
     right: 0%;
