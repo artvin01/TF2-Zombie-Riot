@@ -201,10 +201,17 @@ async function interface_goto(wid,swid) {
         } else { // Swid: Scroll to weapon, open swmodal and highlight
             open_subweapon_modal(item_by_id[wid]);
             // TODO highlight subweapon
-            swr_highlight = {"id":swid,"time":Date.now()+3000};
+            swr_highlight = {"id":swid,"time":Date.now()+3000,"valid":false};
         }
     } else if (search.length>1) {
         console.warn("[interface_goto] Found multiple matches for weapon id!")
+    } else {
+        notif_container = document.body.appendChild(create_element("div","notify_container"));
+        notification = notif_container.appendChild(create_element("div","notify_notfound","Weapon not found!"));
+        notification.style.padding = "4px"; // no red dot before load
+        setTimeout(function(notification){
+            notification.remove();
+        }, 2000, notif_container)
     }
 }
 async function open_subweapon_modal(item) {

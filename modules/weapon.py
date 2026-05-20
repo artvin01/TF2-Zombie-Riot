@@ -3,7 +3,7 @@ import util, vdf, os, subprocess, json, f3d
 from modules.gamedata import items_game, modelmapping, strings_english
 from collections import defaultdict
 
-
+# THUMBNAIL ========================================================================
 # Patch pyassimp to prevent null pointer error
 if os.path.isdir("venv/lib/python3.14/site-packages/pyassimp/"):
     util.write("venv/lib/python3.14/site-packages/pyassimp/core.py", util.read("venv/lib/python3.14/site-packages/pyassimp/core.py").replace("""else:
@@ -11,7 +11,6 @@ if os.path.isdir("venv/lib/python3.14/site-packages/pyassimp/"):
                         setattr(target, name, [obj[i] for i in range(length)])"""))
 import pyassimp
 
-CFG_WEAPONS = vdf.loads(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/weapons.cfg"))["Weapons"]
 
 # https://github.com/f3d-app/f3d/blob/master/examples/libf3d/python/offscreen-thumbnail/offscreen_thumbnail.py
 f3d.Engine.autoload_plugins()
@@ -69,15 +68,15 @@ def generate_weapon_icon(weapon_data, weapon_name, pure_filename, prefix="", bod
     eng.window.render_to_image(no_background=True).save(f"./gh-pages/{prefix}icons/{pure_filename}_{mdl_bodygroup}.png")
     return f"{prefix}icons/{pure_filename}_{mdl_bodygroup}.png"
 
-
+# CONFIG ========================================================================
+CFG_WEAPONS = vdf.loads(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/weapons.cfg"))["Weapons"]
 # Item blacklist for hidden items that aren't indicated as hidden
-
 from ruamel.yaml import YAML
-
 yaml=YAML(typ='safe')
 with open("./config/item_blacklist.yml",'r') as file:
     ITEM_BLACKLIST = yaml.load(file)
 
+# MAIN ========================================================================
 class Weapon:
     def __init__(self, weapon_name, weapon_data):
         self._weapon_name,self.name=weapon_name,weapon_name
@@ -112,35 +111,34 @@ class Weapon:
         self.attributes = defaultdict(list)
         if "attributes" in weapon_data:
             _attrs=weapon_data["attributes"].split(";")
-            if len(_attrs) % 2 == 0: # TODO remove when trash cannon attrs fixed
-                for index, value in zip(_attrs[0::2],_attrs[1::2],strict=True):
-                    if index.strip() in items_game["attributes"]: # TODO there are some custom attributes, gotta make manual entries for those to be included
-                        attribute_data = items_game["attributes"][index.strip()]
-                        if "hidden" in attribute_data: 
-                            if attribute_data["hidden"]=="1": continue
-                        if "description_string" in attribute_data:
-                            desc_str = attribute_data["description_string"].strip("#")
-                            attr_type = attribute_data["effect_type"]
-                            # some of these calculations may be incorrect, it seems like it's impossible to keep the positive/negative types correct without hardcoding
-                            if attribute_data["description_format"] == "value_is_percentage":
-                                val_str = str(int((float(value)*100)-100))
-                            elif attribute_data["description_format"] == "value_is_inverted_percentage":
-                                val_str = str(-int((float(value)*100)-100))
-                            elif attribute_data["description_format"] == "value_is_additive_percentage":
-                                val_str = str(int(float(value)*100))
-                            elif attribute_data["description_format"] == "value_is_additive":
-                                val_str = value
-                            val_str=val_str.strip()
+            for index, value in zip(_attrs[0::2],_attrs[1::2],strict=True):
+                if index.strip() in items_game["attributes"]: # TODO there are some custom attributes, gotta make manual entries for those to be included
+                    attribute_data = items_game["attributes"][index.strip()]
+                    if "hidden" in attribute_data: 
+                        if attribute_data["hidden"]=="1": continue
+                    if "description_string" in attribute_data:
+                        desc_str = attribute_data["description_string"].strip("#")
+                        attr_type = attribute_data["effect_type"]
+                        # some of these calculations may be incorrect, it seems like it's impossible to keep the positive/negative types correct without hardcoding
+                        if attribute_data["description_format"] == "value_is_percentage":
+                            val_str = str(int((float(value)*100)-100))
+                        elif attribute_data["description_format"] == "value_is_inverted_percentage":
+                            val_str = str(-int((float(value)*100)-100))
+                        elif attribute_data["description_format"] == "value_is_additive_percentage":
+                            val_str = str(int(float(value)*100))
+                        elif attribute_data["description_format"] == "value_is_additive":
+                            val_str = value
+                        val_str=val_str.strip()
 
-                            if val_str != "0":
-                                if desc_str in strings_english:
-                                    desc_pre = strings_english[desc_str]
-                                    if val_str.startswith("-"):
-                                        if desc_pre.startswith("+") or desc_pre.startswith("-"): desc_pre=desc_pre[1:] # Prevent attributes showing up as "+-200% [attribute desc]"
-                                    desc = desc_pre.replace("%s1", val_str)
-                                else:
-                                    desc = f"{val_str} {desc_str}"
-                                self.attributes[attr_type].append(desc)
+                        if val_str != "0":
+                            if desc_str in strings_english:
+                                desc_pre = strings_english[desc_str]
+                                if val_str.startswith("-"):
+                                    if desc_pre.startswith("+") or desc_pre.startswith("-"): desc_pre=desc_pre[1:] # Prevent attributes showing up as "+-200% [attribute desc]"
+                                desc = desc_pre.replace("%s1", val_str)
+                            else:
+                                desc = f"{val_str} {desc_str}"
+                            self.attributes[attr_type].append(desc)
 
         # If weapon uses custom model, fetch source SMD file from bodygroup
         self.icon = ""
@@ -239,35 +237,34 @@ class WeaponPap:
             self.attributes = defaultdict(list)
             if f"{pap_key}attributes" in weapon_data:
                 _attrs=weapon_data[f"{pap_key}attributes"].split(";")
-                if len(_attrs) % 2 == 0: # TODO remove when trash cannon pap attrs fixed
-                    for index, value in zip(_attrs[0::2],_attrs[1::2],strict=True):
-                        if index.strip() in items_game["attributes"]: # TODO there are some custom attributes, gotta make manual entries for those to be included
-                            attribute_data = items_game["attributes"][index.strip()]
-                            if "hidden" in attribute_data: 
-                                if attribute_data["hidden"]=="1": continue
-                            if "description_string" in attribute_data:
-                                desc_str = attribute_data["description_string"].strip("#")
-                                attr_type = attribute_data["effect_type"]
-                                # some of these calculations may be incorrect
-                                if attribute_data["description_format"] == "value_is_percentage":
-                                    val_str = str(int((float(value)*100)-100))
-                                elif attribute_data["description_format"] == "value_is_inverted_percentage":
-                                    val_str = str(-int((float(value)*100)-100))
-                                elif attribute_data["description_format"] == "value_is_additive_percentage":
-                                    val_str = str(int(float(value)*100))
-                                elif attribute_data["description_format"] == "value_is_additive":
-                                    val_str = value
-                                val_str=val_str.strip()
+                for index, value in zip(_attrs[0::2],_attrs[1::2],strict=True):
+                    if index.strip() in items_game["attributes"]: # TODO there are some custom attributes, gotta make manual entries for those to be included
+                        attribute_data = items_game["attributes"][index.strip()]
+                        if "hidden" in attribute_data: 
+                            if attribute_data["hidden"]=="1": continue
+                        if "description_string" in attribute_data:
+                            desc_str = attribute_data["description_string"].strip("#")
+                            attr_type = attribute_data["effect_type"]
+                            # some of these calculations may be incorrect
+                            if attribute_data["description_format"] == "value_is_percentage":
+                                val_str = str(int((float(value)*100)-100))
+                            elif attribute_data["description_format"] == "value_is_inverted_percentage":
+                                val_str = str(-int((float(value)*100)-100))
+                            elif attribute_data["description_format"] == "value_is_additive_percentage":
+                                val_str = str(int(float(value)*100))
+                            elif attribute_data["description_format"] == "value_is_additive":
+                                val_str = value
+                            val_str=val_str.strip()
 
-                                if val_str != "0":
-                                    if desc_str in strings_english:
-                                        desc_pre = strings_english[desc_str]
-                                        if val_str.startswith("-"):
-                                            if desc_pre.startswith("+") or desc_pre.startswith("-"): desc_pre=desc_pre[1:] # Prevent attributes showing up as "+-200% [attribute desc]"
-                                        desc = desc_pre.replace("%s1", val_str)
-                                    else:
-                                        desc = f"{val_str} {desc_str}"
-                                    self.attributes[attr_type].append(desc)
+                            if val_str != "0":
+                                if desc_str in strings_english:
+                                    desc_pre = strings_english[desc_str]
+                                    if val_str.startswith("-"):
+                                        if desc_pre.startswith("+") or desc_pre.startswith("-"): desc_pre=desc_pre[1:] # Prevent attributes showing up as "+-200% [attribute desc]"
+                                    desc = desc_pre.replace("%s1", val_str)
+                                else:
+                                    desc = f"{val_str} {desc_str}"
+                                self.attributes[attr_type].append(desc)
 
             self.papskip = self._weapon_data_df[f"{pap_key}papskip"] or "0"
             self.pappaths = self._weapon_data_df[f"{pap_key}pappaths"] or "1"

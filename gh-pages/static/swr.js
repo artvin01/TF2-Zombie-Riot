@@ -74,6 +74,21 @@ function draw() {
   
   ctx.canvas.style.cursor = "grab";
   parse_main(swr_item, campos[0]-(subweapon_dist+38), campos[1]-38, 0, "a");
+  if (swr_highlight.valid===false) {
+    swr_highlight = {
+      "id": -1,
+      "time": 0
+    }
+    particles.push({
+      "pos": [(ctx.canvas.width/2), 32],
+      "start": Date.now(),
+      "text": "Subweapon not found!",
+      "bgcolor": [200, 50, 22],
+      "maxtime": 2000,
+      "aftertime": 2000*0.9,
+      "fixed": true
+    })
+  }
   particles_tick();
   prerun=render(prerun);
   run=render(run);
@@ -235,8 +250,12 @@ function parse_main(data,px,py,angle,sw_id) {
         let source_url = window.location.href.split('?')[0]; // get url w/o params
         navigator.clipboard.writeText(`${source_url}?wid=${swr_item.wid}&swid=${sw_id}`);
         particles.push({
-          "pos": [mousepos[0], mousepos[1]-32],
-          "start": Date.now() 
+          "pos": [mousepos[0]-campos[0], mousepos[1]-32-campos[1]],
+          "start": Date.now(),
+          "text": "Link copied!",
+          "bgcolor": [83, 123, 22],
+          "maxtime": 1000,
+          "aftertime": 0,
         })
       }
     }
@@ -270,6 +289,7 @@ function parse_main(data,px,py,angle,sw_id) {
 
   // Highlight overlay
   if (swr_highlight.id===sw_id) {
+    swr_highlight.valid = true;
     let alpha = Math.abs(Math.sin(Date.now()/400))*30;
     if ( (swr_highlight.time>Date.now()) || (swr_highlight.time!==0 && alpha>1) ) { // second condition is to smoothly fade out instead of vanishing
       postrun.push({
@@ -278,15 +298,24 @@ function parse_main(data,px,py,angle,sw_id) {
         "pos": [x,y],
         "size": [76, 76]
       });
-      if (swr_highlight.cam_updated===undefined) {
-        campos[0]=campos[0]-xoff-36;
-        campos[1]=campos[1]-yoff-36;
-        swr_highlight.cam_updated = true;
+
+      // pan camera to item, cancel if user drags
+      if (swr_highlight.panstate===undefined) {
+        swr_highlight.posx = (campos[0]-xoff-36);
+        swr_highlight.posy = (campos[1]-yoff-36);
+        swr_highlight.panstate = false;
+      } else if (swr_highlight.panstate===false) {
+        campos[0]+=(swr_highlight.posx - campos[0])/6;
+        campos[1]+=(swr_highlight.posy - campos[1])/6;
+        let dist = Math.sqrt((swr_highlight.posx-campos[0])**2 + (swr_highlight.posy-campos[1])**2);
+        if (dist < 1 || mousedown) {
+          swr_highlight.panstate = true;
+        }
       }
     } else {
       swr_highlight.id = -1
       swr_highlight.time = 0
-      swr_highlight.cam_updated = undefined;
+      swr_highlight.panstate = undefined;
     }
   }
   
@@ -303,32 +332,44 @@ function parse_main(data,px,py,angle,sw_id) {
   };
 }
 
-// Draw "Link copied!" popups for subweapons. Hardcoded for now.
+// Draw text popups (such as "Link copied!")
 let last_time = Date.now();
 function particles_tick() {
-  let size = calc_text_size("16px Noto Sans", "Link copied!");
   let dt = Date.now() - last_time;
   particles.forEach((particle, idx) => {
     let lifetime = Date.now() - particle.start;
-    if (lifetime <= 1000) {
+    if (lifetime <= particle.maxtime) {
       // move
-      particle.pos[1] -= dt/50;
+      let opacity = 1;
+      if (lifetime > particle.aftertime) {
+        let total = particle.maxtime - particle.aftertime;
+        particle.pos[1] -= dt/(total/20);
+        opacity = (total-(lifetime-particle.aftertime))/total;
+      }
       // render
-      let opacity = (1000-lifetime)/1000;
+      let size = calc_text_size("16px Noto Sans", particle.text);
+      if (!particle.fixed) { // undefined -> true
+        particle.pos[0] += campos[0];
+        particle.pos[1] += campos[1];
+      }
       postrun.push({ // bg
         "type": "roundrect",
-        "fillStyle": `rgba(83, 123, 22, ${50*opacity}%)`,
-        "pos": [particle.pos[0]-(size.width/2)-2, particle.pos[1]],
-        "size": [size.width+4,size.height+6]
+        "fillStyle": `rgba(${particle.bgcolor.join(",")}, ${50*opacity}%)`,
+        "pos": [particle.pos[0]-(size.width/2)-4, particle.pos[1]-4],
+        "size": [size.width+8,size.height+8]
       });
       postrun.push({ // text
         "type": "text",
         "fillStyle": `rgba(255, 255, 255, ${100*opacity}%)`,
         "textAlign": "left",
-        "text": "Link copied!",
-        "pos": [particle.pos[0]-(size.width/2), particle.pos[1]+size.height+2.5],
+        "text": particle.text,
+        "pos": [particle.pos[0]-(size.width/2), particle.pos[1]+size.height-1],
         "font": "16px Noto Sans"
       });
+      if (!particle.fixed) {
+        particle.pos[0] -= campos[0];
+        particle.pos[1] -= campos[1];
+      }
     } else {
       particles.splice(idx,1);
     }

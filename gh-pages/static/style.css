@@ -197,6 +197,22 @@ li:before {
     opacity: 0; /* no flashing when element deleted */
     --top: 0;
 }
+.notify_notfound {
+    position: fixed;
+    pointer-events: none;
+    background-color: rgba(200, 50, 22, 50%);
+    border-radius: 5px;
+    animation: fadeout-later 2s linear;
+    opacity: 0; /* no flashing when element deleted */
+    --top: 32px;
+
+    display: flex;
+    align-items: center;
+}
+.notify_container {
+    display:flex;
+    justify-content: center;
+}
 
 @keyframes fadeout-upwards {
     0% {
@@ -206,5 +222,20 @@ li:before {
     100% {
         opacity: 0;
         top: calc(var(--top) - 20px);
+    }
+}
+
+@keyframes fadeout-later {
+    0% {
+        opacity: 1;
+        top: var(--top);
+    }
+    90% {
+        opacity: 1;
+        top: var(--top);
+    }
+    100% {
+        opacity: 0;
+        top: calc(var(--top) - 10px);
     }
 }
