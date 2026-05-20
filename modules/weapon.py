@@ -345,9 +345,11 @@ def item_block(key, data, output, type_override=None):
                         "slot"		"11" // 11 is cosmetics
                     }
                 """
+                name = util.get_key(item, silent=True)
                 output["$items"].append({
                     "type": "trophy",
-                    "name": util.get_key(item, silent=True),
+                    "name": name,
+                    "wid": util.id_from_str(name),
                     "description": util.get_key(item_data["desc"], silent=True),
                     "wtags": "",
                     "wcfghidden": ""

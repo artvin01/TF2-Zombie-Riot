@@ -45,7 +45,7 @@ audio {
 .music_bg {
     padding: 1em;
     background-color: var(--bg-dark);
-    border-top: 1px #ccc8c1 solid;
+    border-top: 1px var(--text-dark) solid;
     color: var(--text-dark);
 
     position: fixed;

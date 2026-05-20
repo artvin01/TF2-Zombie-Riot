@@ -36,7 +36,7 @@ canvas {
     height: 24px;
     border-radius: 5px;
     border-width:3px;
-    border-color:#ccc8c1;
+    border-color:var(--text-dark);
     border-style:solid;
     margin:2px;
 }
@@ -75,7 +75,7 @@ canvas {
     pointer-events: none;
 
     background-color: var(--bg-dark);
-    border: 1px #ccc8c1 solid;
+    border: 1px var(--text-dark) solid;
 
     width: max-content;
     text-align: left;

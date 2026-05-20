@@ -42,7 +42,7 @@ details details details details summary { font-size: .5em }
     pointer-events: none;
 
     background-color: var(--bg-dark);
-    border: 1px #ccc8c1 solid;
+    border: 1px var(--text-dark) solid;
 
     width: max-content;
     text-align: left;

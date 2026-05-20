@@ -4,7 +4,7 @@
     margin-right: 2em;
     padding: 1em;    
     background-color: var(--bg-dark);
-    border: 1px #ccc8c1 solid;
+    border: 1px var(--text-dark) solid;
 
     position: fixed;
     right: 0%;

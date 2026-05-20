@@ -11,6 +11,7 @@ upgrade
 
 let item_data = [];
 let item_by_id = {};
+let item_by_contents = {};
 const ATTRIBUTE_TYPES = ["positive", "negative", "neutral"] // order important
 
 async function parse_items() {
@@ -143,20 +144,31 @@ function iter_item(parent_element, item, sw_opt) {
 
     /* Subweapon viewing functionality */
     /* Map item to an id (Viewing subweapons, Weapon selectors) */
-    item_by_id[item.wid] = item
     item_el.dataset.id = item.wid;
-    if ("subweapons" in item) { 
-        if ("items" in item["subweapons"]) {
-            if (sw_opt) { // popup on click
-                item_el.style["cursor"] = "pointer";
-                item_tooltip.appendChild(create_element("div", "secondary item_notice", `Click to view ${item["subweapons"]["name"]}`)) // Show "Click to view Weapon Enhancements/Kit Items" in tooltip
-                
-                item_el.addEventListener("click", (event) => {
-                    item = item_by_id[event.target.dataset.id];
-                    open_subweapon_modal(item);
-                });
-            }
+    if (sw_opt) { // popup on click
+        item_by_id[item.wid] = item
+        contents = [
+            item.name,
+            item.description
+        ]
+        if (item.tags!==undefined) {
+            contents.push(item.tags.join(" "));
         }
+        item_by_contents[contents.join(" ")] = item
+        if ("subweapons" in item) { 
+            if ("items" in item["subweapons"]) {
+                    item_el.style["cursor"] = "pointer";
+                    item_tooltip.appendChild(create_element("div", "secondary item_notice", `Click to view ${item["subweapons"]["name"]}`)) // Show "Click to view Weapon Enhancements/Kit Items" in tooltip
+                    
+                    item_el.addEventListener("click", (event) => {
+                        item = item_by_id[event.target.dataset.id];
+                        open_subweapon_modal(item);
+                        let bounds = swr_canvas.getBoundingClientRect();
+                        mousepos[0] = event.clientX-bounds.left;
+                        mousepos[1] = event.clientY-bounds.top;
+                    });
+                }
+            }
     }
 
     /* Weapon selector clipboard shortcut */
@@ -191,11 +203,19 @@ async function interface_goto(wid,swid) {
     const query = `[data-id='${wid}']`;
     const search = document.querySelectorAll(query)
     if (search.length===1) {
+        // remove all existing highlights first & clear their timeouts
+        let highlights = document.body.getElementsByClassName("highlight");
+        while (highlights.length) {
+            clearTimeout(highlights[0].dataset.timeout_id);
+            delete highlights[0].dataset.timeout_id;
+            highlights[0].classList.remove("highlight");
+        }
+        // highlight/open sw modal
         const welement = search[0];
         welement.scrollIntoView({"behavior": "smooth", "block": "center"});
         if (swid===null) { // No swid: Scroll weapon into view and highlight for 3s 
             welement.classList.add("highlight");
-            setTimeout(function(welement){
+            welement.dataset.timeout_id = setTimeout(function(welement){
                 welement.classList.remove("highlight");
             }, 3000, welement)
         } else { // Swid: Scroll to weapon, open swmodal and highlight
@@ -215,7 +235,7 @@ async function interface_goto(wid,swid) {
 }
 async function open_subweapon_modal(item) {
     // modal container
-    modal = create_element("div", "subweapon_modal");
+    modal = create_element("div", "modal");
     modal.id = "sw_modal";
     modal = document.body.appendChild(modal);
     modal_content = modal.appendChild(create_element("div","subweapon_modal_content"));
@@ -238,6 +258,91 @@ async function open_subweapon_modal(item) {
     swr_setup();
     reset_cam = true;
     window.requestAnimationFrame(draw);
+}
+
+// reference: https://unixpapa.com/js/key.html
+document.addEventListener("keydown", (event) => {
+    if (event.code==="KeyK" && event.ctrlKey) { 
+        event.preventDefault();  // Prevent Ctrl+K browser search keybind
+        search_modal = document.getElementById("search_modal");
+        if (search_modal === null) {
+            open_search();
+        } else {
+            search_modal.remove();
+        }
+    };
+    if (event.code==="Escape") {
+        if ((search_modal = document.getElementById("search_modal")) !== null) {
+            search_modal.remove();
+        }
+    }
+    if (event.code==="Enter") {
+        if ((search_results = document.getElementById("search_results")) !== null) {
+            if (search_results.innerHTML.length > 0) {
+                document.getElementById("search_modal").remove();
+                interface_goto(search_results.getElementsByClassName("item_instance")[0].dataset.id,null) // get first item (best match) and go to it
+            }
+        }
+    }
+})
+
+async function open_search() {
+    modal = create_element("div", "modal");
+    modal.id = "search_modal";
+    modal = document.body.appendChild(modal);
+    modal_container = modal.appendChild(create_element("div","search_modal_container"));
+    modal_content = modal_container.appendChild(create_element("div","search_modal_content"));
+
+    let search_bar = create_element("input");
+    search_bar.type = "search";
+    search_bar.addEventListener("input", search);
+    search_bar = modal_content.appendChild(search_bar);
+    search_bar.focus();
+}
+
+async function search(event) {
+    // get results container and create if not present
+    let results_container = document.getElementById("search_results");
+    if (results_container===null) {
+        results_container = create_element("div","search_modal_results");
+        results_container.id = "search_results";
+        event.target.parentElement.appendChild(create_element("div","flex_break"));
+        results_container = event.target.parentElement.appendChild(results_container);
+    }
+    results_container.innerHTML="";
+    // From the uFuzzy example: https://github.com/leeoniya/uFuzzy
+    let haystack = Object.keys(item_by_contents);
+    let needle = event.target.value;
+    let opts = {};
+    let uf = new uFuzzy(opts);
+
+    // pre-filter
+    let idxs = uf.filter(haystack, needle);
+
+    // idxs can be null when the needle is non-searchable (has no alpha-numeric chars)
+    if (idxs != null && idxs.length > 0) {
+        let info = uf.info(idxs, haystack, needle);
+
+        // order is a double-indirection array (a re-order of the passed-in idxs)
+        // this allows corresponding info to be grabbed directly by idx, if needed
+        let order = uf.sort(info, haystack, needle).slice(0,30);
+
+        // render post-filtered & ordered matches
+        order.forEach(element => {
+            // using info.idx here instead of idxs because uf.info() may have
+            // further reduced the initial idxs based on prefix/suffix rules
+            let content_key = haystack[info.idx[element]];
+            let item = item_by_contents[content_key];
+            let item_el = iter_item(results_container, item, false);
+            // tooltip text
+            item_el.style["cursor"] = "pointer";
+            item_el.getElementsByClassName("item_tooltip")[0].appendChild(create_element("div", "secondary item_notice", `Click to go to weapon`));
+            item_el.addEventListener("click", (event) => {
+                document.getElementById("search_modal").remove();
+                interface_goto(event.target.dataset.id,null);
+            });
+        });
+    }
 }
 
 // REQUEST ===================================================

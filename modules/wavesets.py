@@ -695,7 +695,7 @@ def parse():
             return parse_const1(name,data,html_mapsets)
     
     def parse_const_stage(info_html,cfgfile,keyonwin,attacknum, constnum):
-        util.log(f"    const attack {attacknum}{" "*(35-len(f"const attack {attacknum}"))}| {cfgfile}")
+        util.log(f"    Attack {attacknum}{" "*(35-len(f"Attack {attacknum}"))}| {cfgfile}")
 
         key_text = f"<div>Key on win: {keyonwin}</div>\n" if keyonwin!="" else ""
 

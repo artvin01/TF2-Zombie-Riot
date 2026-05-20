@@ -1,30 +1,6 @@
 @import url("style.css");
 
-/* Search (not updated) =================================== */
-.setting {
-    width: 100%;
-    justify-content: center;
-    display: flex;
-    padding: 10px;
-}
-input[type=search] {
-    width: 50%;
-    border: 0px;
-
-    /* Icon */
-    background-image: url("search.svg");
-    background-size: 13px;
-    background-repeat: no-repeat;
-    background-position: 10px center;
-
-    /* .btn styling */
-    background-color: var(--bg-light);
-    color: var(--deep-space-blue);
-    padding: 10px 10px 10px 30px;
-    margin: 5px;
-    user-select: none;
-    cursor: text;
-}
+/* Not updated =================================== */
 #taglist {
     display: flex;
     width: 100%;
@@ -35,7 +11,7 @@ input[type=search] {
 /* Blocks =================================== */
 .block {
     background-color: #26292b;
-    border: solid #ccc8c1 3px;
+    border: solid var(--text-dark) 3px;
     border-radius: 5px;
     padding: 5px;
     margin-top: 2em;
@@ -74,7 +50,7 @@ input[type=search] {
     padding: 5px;
     margin: 5px;
     border-radius: 5px;
-    border: solid #ccc8c1 2px;
+    border: solid var(--text-dark) 2px;
     background-color: #282828;
 
     /* Tooltips */
@@ -106,7 +82,7 @@ input[type=search] {
 
 /* Tooltips =================================== */
 .item_tooltip {
-    z-index: 1;
+    z-index: 2;
     top: 105%;
     opacity: 0;
     position: absolute;
@@ -114,7 +90,7 @@ input[type=search] {
     pointer-events: none;
 
     background-color: var(--bg-dark);
-    border: 1px #ccc8c1 solid;
+    border: 1px var(--text-dark) solid;
 
     width: max-content;
     text-align: center;
@@ -183,10 +159,23 @@ input[type=search] {
     pointer-events: none;
 }
 
+/* Item linking ------------------------------------- */
+.highlight {
+    animation: highlight 1s infinite ease-in-out;
+    z-index: 1;
+}
+@keyframes highlight {
+    0% {
+        filter: brightness(100%);
+    }
+    50% {
+        filter: brightness(250%); /* 2.5x */
+    }
+}
 
-/* Subweapon view =================================== */
+/* Modals =================================== */
 /* Main modal container (Title + SW container) */
-.subweapon_modal {
+.modal {
     position: fixed;
     z-index: 2;
     top: 0;
@@ -195,7 +184,12 @@ input[type=search] {
     height: 100%;
     background-color: rgba(0, 0, 0, 50%);
 }
+/* Disable scroll on main page while modal is open */
+body:has(.modal) {
+    overflow: hidden; /* TODO Prevents weapon links scrolling to weapon while subweapon modal is open */
+}
 
+/* Subweapon view ------------------------------------- */
 .subweapon_modal_content {
     position: relative;
     margin: 25px;
@@ -210,7 +204,7 @@ input[type=search] {
     top: 0;
 
     background-color:#26292b;
-    border:#ccc8c1 solid 1px;
+    border:var(--text-dark) solid 1px;
     padding: 5px;
 
     width: 35px;
@@ -224,7 +218,7 @@ input[type=search] {
     --border-width: 1px;
     position: relative;
     background-color:#26292b;
-    border:#ccc8c1 solid 1px;
+    border:var(--text-dark) solid 1px;
 
     border-width: var(--border-width);
     margin-left: var(--margin);
@@ -232,21 +226,72 @@ input[type=search] {
     height: calc(100% - (125px + var(--border-width) * 2));
 }
 
-/* Disable scroll on main page while modal is open */
-body:has(.subweapon_modal) {
-    overflow: hidden; /* Prevents weapon links scrolling to weapon while subweapon modal is open... */
+/* Search modal ------------------------------------- */
+/* Structure 
+.modal: Covers whole page, dims stuff behind
+.search_modal_container Flex Container
+.search_modal_content
+*/
+.modal:has(.search_modal_content) {
+    display: flex;
+    justify-content: center;
 }
 
-/* Weapon linking =================================== */
-.highlight {
-    animation: highlight 1s infinite ease-in-out;
-    z-index: 1;
+.search_modal_container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+
+    width: 100%;
+    margin-right: 8px;
+    margin-top: calc(100vh * 0.4);
 }
-@keyframes highlight {
-    0% {
-        filter: brightness(100%);
-    }
-    50% {
-        filter: brightness(250%); /* 2.5x */
-    }
+.search_modal_content {
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    height:fit-content;
+    width: 65%;
+}
+input[type=search] {
+    align-self:flex-start; /* no stretching */
+    width: 100%;
+
+    border: 0px;
+    outline: none;
+    font-size: 32px;
+
+    /* Icon */
+    background-image: url("search.svg");
+    background-size: calc(32px - 3px);
+    background-repeat: no-repeat;
+    background-position: 10px center;
+
+    /* .btn styling */
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+    border: 1px var(--text-dark) solid;
+    padding: 10px;
+    padding-left: calc(32px + 17px);
+    margin: 5px;
+    user-select: none;
+    cursor: text;
+}
+
+.search_modal_results {
+    justify-self:baseline;
+    display: flex;
+    justify-content: center;
+    flex-wrap:wrap;
+
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+    border: 1px var(--text-dark) solid;
+    padding: 10px;
+    margin: 5px;
+    height:fit-content;
+}
+.search_modal_results:empty {
+    padding: 0;
+    border: 0;
 }
