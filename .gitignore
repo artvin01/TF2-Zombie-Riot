@@ -30,6 +30,7 @@ gh-pages/*
 !gh-pages/builtin_img/
 !gh-pages/premedia_icons/
 !gh-pages/tf_icons/
+!gh-pages/lib/
 
 !gh-pages/waveset_viewer.html
 !gh-pages/multipliers.html
