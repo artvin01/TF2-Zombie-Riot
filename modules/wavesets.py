@@ -7,8 +7,6 @@ TODO
 [ ] Complete const2 support
 [ ] Include main music parts
 [ ] Class-based templates?
-[ ] Overall improve NPC parsing
-([ ] sort const and rogue by number, not alphabetically)
 """
 
 PROPERTY_MAPPINGS = {
@@ -130,7 +128,7 @@ def parse():
                 if wave_entry == "setup":
                     output.append({
                         "type": "info",
-                        "text": f"Setup time: {util.as_duration(wave_entry_data)}"
+                        "text": f"Setup time: {util.as_duration(int(wave_entry_data))}"
                     })
                 continue
             

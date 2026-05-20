@@ -36,13 +36,16 @@ opt["render.effect.antialiasing.enable"] = True
 opt["render.effect.antialiasing.mode"] = "ssaa"
 opt["render.effect.ambient_occlusion"] = True
 
+BODYGROUP_MAPPINGS={} # file cache to prevent multiple reads
 def generate_weapon_icon(weapon_data, weapon_name, pure_filename, prefix="", bodygroup_prefix=""):
     util.debug(f"[weaponicon] {weapon_name}, {pure_filename}, {prefix if prefix else "noprefix"}","weaponicon","OKBLUE")
 
     # Get SMD file
     if f"{bodygroup_prefix}weapon_bodygroup" in weapon_data: mdl_bodygroup = weapon_data[f"{bodygroup_prefix}weapon_bodygroup"]
     else: mdl_bodygroup = "1"
-    smd_path = f"{prefix}decompiled/{json.loads(util.read(f"{prefix}decompiled/{pure_filename}.json"))[mdl_bodygroup]}" # TODO cache
+
+    if (bodygroupmap_path:=f"{prefix}decompiled/{pure_filename}.json") not in BODYGROUP_MAPPINGS: BODYGROUP_MAPPINGS[bodygroupmap_path] = json.loads(util.read(bodygroupmap_path))
+    smd_path = f"{prefix}decompiled/{BODYGROUP_MAPPINGS[bodygroupmap_path][mdl_bodygroup]}"
 
     if smd_path == "decompiled/w_crossbow_reference.smd": return "" # TODO see below
 

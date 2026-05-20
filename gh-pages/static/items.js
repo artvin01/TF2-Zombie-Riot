@@ -200,7 +200,6 @@ async function interface_goto(wid,swid) {
             }, 3000, welement)
         } else { // Swid: Scroll to weapon, open swmodal and highlight
             open_subweapon_modal(item_by_id[wid]);
-            // TODO highlight subweapon
             swr_highlight = {"id":swid,"time":Date.now()+3000,"valid":false};
         }
     } else if (search.length>1) {

@@ -71,16 +71,16 @@ venv\Scripts\python.exe main.py
 All generated files will be put in `gh-pages/`. If you want to know which of those aren't automatically generated, see the `.gitignore`.
 
 # TODO
-- [x] Waveset data
+- [ ] Front-end revamp
+  - [ ] Items
+    - [ ] Search filters
+  - [ ] Waveset viewer
+  - [ ] Music list
+  - [ ] File structure cleanup
+  - [ ] Fix embed animations
+- [ ] Improved NPC data parsing (low priority)
+- [x] Waveset data (low priority)
   - [ ] Special wavesets
     - [ ] ZR: Construction
-        - [ ] Construction 2 (partial support)
-- [x] NPC data
-  - [ ] Better NPC data parsing
-- [x] Item data
-  - [ ] Weapon CSS rework
-    - [x] Basic weapon list
-    - [ ] Weapon Enhancements (+ Icons)
-    - [ ] Weapon Kits
-    - [ ] Search filters
-- [x] Skilltree data
+        - [ ] (Full support) Construction 2
+  - [ ] Proper waveset sorting
