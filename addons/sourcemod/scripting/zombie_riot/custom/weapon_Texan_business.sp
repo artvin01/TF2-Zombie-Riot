@@ -35,6 +35,7 @@ public void Weapon_TexanBuisness(int attacker, float &damage, int damagetype)
 
 			TeleportEntity(attacker, NULL_VECTOR, NULL_VECTOR, velocity);
 		}
+		SummonerRenerateResources(attacker, 3.2, 0.0, true);
 	}
 }
 
