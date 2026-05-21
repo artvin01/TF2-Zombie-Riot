@@ -1,10 +1,12 @@
 /*
 Entry types:
-weapon (may also be kit)
+weapon
 weaponpap
+weaponkit
+upgrade
 trophy
 perk
-upgrade
+barrack
 */
 
 // TODO toggle for hidden weapons
@@ -12,6 +14,9 @@ upgrade
 let item_data = [];
 let item_by_id = {};
 let item_by_contents = {};
+let isParsing = true;
+let highestPrice = 0;
+let priceRange = [0, Infinity];
 const ATTRIBUTE_TYPES = ["positive", "negative", "neutral"] // order important
 
 async function parse_items() {
@@ -21,10 +26,15 @@ async function parse_items() {
                 block = document.createElement("div");
                 block.classList.add("block");
                 block.innerHTML = `<h1>${category}</h1>`
-                await item_block(parent_element.appendChild(block), data);
+                let new_block = parent_element.appendChild(block)
+                await item_block(new_block, data);
             } 
+
             if (category==="$items") {
-                await parse_item_list(parent_element, data)
+                hide = await parse_item_list(parent_element, data);
+                if (hide) {
+                    parent_element.classList.add("hidden");
+                }
             }
 
             if (category==="$description") {
@@ -35,10 +45,13 @@ async function parse_items() {
                     container.appendChild(desc_el);
                 });
             }
-        }
+        };
     }
 
+    isParsing = true;
     await item_block(document.body, item_data);
+    isParsing = false;
+
     interface_goto(...check_url_params())
 }
 
@@ -46,9 +59,15 @@ async function parse_item_list(parent_element, item_data) {
     item_grid = document.createElement("div")
     item_grid.classList.add("item_grid")
     item_grid = parent_element.appendChild(item_grid);
+    hide_parent_block = true;
     for (const item of item_data) {
-        iter_item(item_grid, item, true);
-    }
+        rawcost = Number(item.rawcost || 0);
+        if ((rawcost>=priceRange[0] && rawcost<=priceRange[1])) {
+            hide_parent_block = false;
+            iter_item(item_grid, item, true);
+        }
+    };
+    return hide_parent_block;
 }
 
 function iter_item(parent_element, item, sw_opt) {
@@ -65,8 +84,7 @@ function iter_item(parent_element, item, sw_opt) {
         const max = item["subweapons"]["items"].length;
 
         // Detect if there is at least one existing icon
-        let has_existing_icons = false;
-        item["subweapons"]["items"].forEach(subweapon => { if (Boolean(subweapon.icon)) { has_existing_icons=true; } });
+        let has_existing_icons = item["subweapons"]["items"].some(function(subweapon){return Boolean(subweapon.icon)});
         
         item["subweapons"]["items"].forEach((subweapon, idx) => {
             if (Boolean(subweapon["icon"])) { // Insert rendered icon
@@ -99,6 +117,9 @@ function iter_item(parent_element, item, sw_opt) {
 
     /* Add price tag */
     tag = item["cost"]
+    if (Number.isInteger(Number(item.rawcost))) {
+        highestPrice = Math.max(highestPrice,Number(item.rawcost));
+    }
     if (tag === "Free" && Boolean(item["lvl"])) {
         tag = `LVL${item["lvl"]}`
     }
@@ -195,6 +216,41 @@ function iter_item(parent_element, item, sw_opt) {
         item_tooltip.classList.add("item_tooltip_toleft");
     }
     return item_el
+}
+
+async function setup_filters() {
+    if (isParsing) {
+        setTimeout(setup_filters, 100);
+    } else {
+        // Setup cost slider filter
+        var slider = document.getElementById('cost_slider');
+        noUiSlider.create(slider, {
+            start: [0, highestPrice],
+            step: 100,
+            connect: true,
+            range: {
+                'min': 0,
+                'max': highestPrice
+            },
+            tooltips: {
+                to: function(numericValue) {
+                    return `$${numericValue.toFixed(0)}`;
+                }
+            }
+        });
+        slider.noUiSlider.on('update', function (values) {
+            priceRange = values;
+            document.querySelectorAll("[data-sliderid='0']")[0].value = Number(priceRange[0]);
+            document.querySelectorAll("[data-sliderid='1']")[0].value = Number(priceRange[1]);
+
+            let blocks = document.body.getElementsByClassName("block");
+            while (blocks.length) {
+                blocks[0].remove();
+            }
+            parse_items();
+        });
+
+    }
 }
 
 // INTERFACE ===================================================
@@ -419,5 +475,24 @@ function check_url_params() {
     let queryString = new URLSearchParams(window.location.href.split('?')[1]);
     return [queryString.get("wid"), queryString.get("swid")] // null if empty
 }
+function validate_numeric(event) {
+    var key = event.key;
+    if (event.key === "Enter") {
+        slider_oninput(event);
+    }
+    var regex = /^[0-9\.]$/; // Check if the key is a number or a dot
+    if (!regex.test(key)) {
+        event.preventDefault(); // Block unwanted characters
+    }
+}
+function slider_oninput(event) {
+    let newval = [event.target.value,null];
+    if (event.target.dataset.sliderid==="1") {
+        newval = [null,event.target.value];
+    }
+    document.getElementById("cost_slider").noUiSlider.set(newval);
+}
+
 
 fetch_items();
+setup_filters();

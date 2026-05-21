@@ -6,13 +6,24 @@
         <link rel="stylesheet" href="static/items.css">
         <script src="static/morecolors.js"></script>
         <script src="static/items.js" defer></script>
-        <script src="lib/uFuzzy.iife.min.js"></script>
         <script src="static/swr.js" defer></script>
+        <!-- Libraries -->
+        <!-- uFuzzy: Item filter by string -->
+        <script src="lib/uFuzzy.iife.min.js"></script>
+        <!-- noUiSlider: Item filter by cost -->
+        <link href="lib/nouislider.min.css" rel="stylesheet">
+        <script src="lib/nouislider.min.js"></script>
         <title>ZR Encyclopedia - Items</title>
     </head>
     <body>
         <div class="header">
-            <i><a href="/TF2-Zombie-Riot/">Back to home</a></i><br>
+            <i><a href="/TF2-Zombie-Riot/">Back to home</a></i>
+            <div class="slider_container">
+                <div class="text">Price range</div>
+                <input type="text" onkeypress='validate_numeric(event)' data-sliderid="0" maxlength="5">
+                <div id="cost_slider"></div>
+                <input type="text" onkeypress='validate_numeric(event)' data-sliderid="1" maxlength="5">
+            </div>
             <div id="search" onclick="open_search()">
                 <img src="builtin_img/search.svg">
                 <span class="secondary">Ctrl+K</span>

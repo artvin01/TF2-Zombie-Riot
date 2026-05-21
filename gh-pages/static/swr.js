@@ -121,7 +121,7 @@ function parse_main(data,px,py,angle,sw_id) {
   const x = xoff+campos[0];
   const y = yoff+campos[1];
 
-  if (run.length>0) {
+  if (sw_id.length!==1) {
     // Draw line from parent to own
     prerun.push({
       "type": "line",
@@ -270,22 +270,24 @@ function parse_main(data,px,py,angle,sw_id) {
   })
 
   // Weapon Cost
-  let size = calc_text_size("16px Noto Sans", data.cost);
-  const top = (y+74)-size.height-5;
-  postrun.push({ // bg
-    "type": "roundrect",
-    "fillStyle": "rgba(83, 123, 22, 50%)",
-    "pos": [x,top],
-    "size": [size.width,size.height+6]
-  });
-  postrun.push({ // text
-    "type": "text",
-    "fillStyle": "#ffffff",
-    "textAlign": "left",
-    "text": data.cost,
-    "pos": [x,top+size.height+2.5],
-    "font": "16px Noto Sans"
-  });
+  if (!(swr_item.type==="weaponkit" && sw_id.length===2)) {
+    let size = calc_text_size("16px Noto Sans", data.cost);
+    const top = (y+74)-size.height-5;
+    postrun.push({ // bg
+      "type": "roundrect",
+      "fillStyle": "rgba(83, 123, 22, 50%)",
+      "pos": [x,top],
+      "size": [size.width,size.height+6]
+    });
+    postrun.push({ // text
+      "type": "text",
+      "fillStyle": "#ffffff",
+      "textAlign": "left",
+      "text": data.cost,
+      "pos": [x,top+size.height+2.5],
+      "font": "16px Noto Sans"
+    });
+  };
 
   // Highlight overlay
   if (swr_highlight.id===sw_id) {

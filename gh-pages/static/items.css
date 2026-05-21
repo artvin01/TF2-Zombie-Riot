@@ -27,6 +27,35 @@
     padding-right: 6px;
 }
 
+#cost_slider {
+    width: 100%;
+}
+
+.slider_container {
+    width: 500px;
+    margin: 25px;
+}
+
+.slider_container .text {
+    min-width: fit-content;
+}
+
+.slider_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.slider_container input {
+    width: 48px;
+    field-sizing: content; /* Will be available in Firefox release 152 https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Releases/152 */
+    padding: 5px;
+    margin: 0px 15px 0px 15px;
+    background-color: #ccc8c1;
+    border: 0;
+    outline: 0;
+}
+
 /* Blocks =================================== */
 .block {
     background-color: #26292b;

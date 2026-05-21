@@ -95,9 +95,9 @@ class Weapon:
         if "author" in weapon_data: self.author = f"By {weapon_data["author"]}"
         else: self.author = ""
 
-        self.cost = weapon_data["cost"]
-        if self.cost=="0": self.cost="Free"
-        else: self.cost = f"${self.cost}"
+        self.rawcost = weapon_data["cost"];
+        if self.rawcost=="0": self.cost="Free"
+        else: self.cost = f"${self.rawcost}"
 
         if "desc" in weapon_data: 
             k = weapon_data["desc"]
@@ -207,6 +207,7 @@ class Weapon:
             "author": self.author, # TODO apply morecolors on js side
             "lvl": self.lvl,
             "cost": self.cost,
+            "rawcost": self.rawcost,
             "is_hidden": defaultdict(str,self._weapon_data)["hidden"]=="1",
             "icon": self.icon,
             "attributes": self.attributes,
@@ -228,7 +229,8 @@ class WeaponPap:
             if pap_key+"tags" in weapon_data: self.tags = " ".join(f"#{tag}" for tag in weapon_data[pap_key+"tags"].split(";") if tag != "")
             else: self.tags = ""
 
-            self.cost = f"${weapon_data[pap_key+"cost"]}"
+            self.cost = f"${weapon_data[f"{pap_key}cost"]}"
+            self.rawcost = weapon_data[f"{pap_key}cost"]
 
             key_customname = pap_key + "custom_name"
             if key_customname in weapon_data: self.name = weapon_data[key_customname]
@@ -300,6 +302,7 @@ class WeaponPap:
             #"author": self.author, # TODO apply morecolors on js side
             #"lvl": self.lvl,
             "cost": self.cost,
+            "rawcost": self.rawcost,
             #"is_hidden": defaultdict(str,self._weapon_data)["hidden"]=="1",
             "icon": self.icon,
             "attributes": self.attributes,
