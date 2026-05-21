@@ -11,8 +11,13 @@
         <title>ZR Encyclopedia - Items</title>
     </head>
     <body>
-        <i><a href="/TF2-Zombie-Riot/">Back to home</a></i><br>
-        <i><a href="/TF2-Zombie-Riot/items_legacy.html">Legacy items page</a></i>
+        <div class="header">
+            <i><a href="/TF2-Zombie-Riot/">Back to home</a></i><br>
+            <div id="search" onclick="open_search()">
+                <img src="builtin_img/search.svg">
+                <span class="secondary">Ctrl+K</span>
+            </div>
+        </div>
         <div class="block hidden">
             <div id="taglist">
                 <div class="btn btn-active" tabindex="0" onclick="filter_set_tag('All');">All</div>

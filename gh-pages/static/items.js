@@ -288,6 +288,9 @@ document.addEventListener("keydown", (event) => {
 
 async function open_search() {
     modal = create_element("div", "modal");
+    modal.addEventListener("click", function(){
+        document.getElementById("search_modal").remove();
+    })
     modal.id = "search_modal";
     modal = document.body.appendChild(modal);
     modal_container = modal.appendChild(create_element("div","search_modal_container"));
@@ -295,6 +298,7 @@ async function open_search() {
 
     let search_bar = create_element("input");
     search_bar.type = "search";
+    search_bar.addEventListener("click", (event)=>{event.stopPropagation()});
     search_bar.addEventListener("input", search);
     search_bar = modal_content.appendChild(search_bar);
     search_bar.focus();
@@ -306,6 +310,7 @@ async function search(event) {
     if (results_container===null) {
         results_container = create_element("div","search_modal_results");
         results_container.id = "search_results";
+        results_container.addEventListener("click", (event)=>{event.stopPropagation()});
         event.target.parentElement.appendChild(create_element("div","flex_break"));
         results_container = event.target.parentElement.appendChild(results_container);
     }
@@ -328,15 +333,16 @@ async function search(event) {
         let order = uf.sort(info, haystack, needle).slice(0,30);
 
         // render post-filtered & ordered matches
-        order.forEach(element => {
+        order.forEach((element, element_index) => {
             // using info.idx here instead of idxs because uf.info() may have
             // further reduced the initial idxs based on prefix/suffix rules
-            let content_key = haystack[info.idx[element]];
-            let item = item_by_contents[content_key];
-            let item_el = iter_item(results_container, item, false);
+            let idx = info.idx[element];
+            let item = item_by_contents[haystack[idx]];
+            const item_el = iter_item(results_container, item, false);
             // tooltip text
             item_el.style["cursor"] = "pointer";
-            item_el.getElementsByClassName("item_tooltip")[0].appendChild(create_element("div", "secondary item_notice", `Click to go to weapon`));
+            const item_tooltip = item_el.getElementsByClassName("item_tooltip")[0]
+            item_tooltip.appendChild(create_element("div", "secondary item_notice", `Click to go to weapon`));
             item_el.addEventListener("click", (event) => {
                 document.getElementById("search_modal").remove();
                 interface_goto(event.target.dataset.id,null);
