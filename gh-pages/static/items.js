@@ -16,6 +16,7 @@ let item_by_id = {};
 let item_by_contents = {};
 let isParsing = true;
 let highestPrice = 0;
+let allowSliderUpdates = false;
 let priceRange = [0, Infinity];
 const ATTRIBUTE_TYPES = ["positive", "negative", "neutral"] // order important
 
@@ -220,8 +221,9 @@ function iter_item(parent_element, item, sw_opt) {
 
 async function setup_filters() {
     if (isParsing) {
-        setTimeout(setup_filters, 100);
+        fa = setTimeout(setup_filters, 100);
     } else {
+        clearTimeout(fa);
         // Setup cost slider filter
         var slider = document.getElementById('cost_slider');
         noUiSlider.create(slider, {
@@ -238,18 +240,25 @@ async function setup_filters() {
                 }
             }
         });
+
+        // Restrict slider updates since this is called 2 times on initiation for whatever reasonnnnnnnnnn
         slider.noUiSlider.on('update', function (values) {
-            priceRange = values;
-            document.querySelectorAll("[data-sliderid='0']")[0].value = Number(priceRange[0]);
-            document.querySelectorAll("[data-sliderid='1']")[0].value = Number(priceRange[1]);
+            if (allowSliderUpdates) {
+                priceRange = values;
+                document.querySelectorAll("[data-sliderid='0']")[0].value = Number(priceRange[0]);
+                document.querySelectorAll("[data-sliderid='1']")[0].value = Number(priceRange[1]);
 
-            let blocks = document.body.getElementsByClassName("block");
-            while (blocks.length) {
-                blocks[0].remove();
-            }
-            parse_items();
+                let blocks = document.body.getElementsByClassName("block");
+                while (blocks.length) {
+                    blocks[0].remove();
+                }
+                parse_items();
+            };
         });
-
+        priceRange = [0,highestPrice];
+        document.querySelectorAll("[data-sliderid='0']")[0].value = Number(priceRange[0]);
+        document.querySelectorAll("[data-sliderid='1']")[0].value = Number(priceRange[1]);
+        allowSliderUpdates = true;
     }
 }
 
@@ -279,10 +288,16 @@ async function interface_goto(wid,swid) {
             swr_highlight = {"id":swid,"time":Date.now()+3000,"valid":false};
         }
     } else if (search.length>1) {
+        notif_container = document.body.appendChild(create_element("div","notify_container"));
+        notification = notif_container.appendChild(create_element("div","notify_notfound","Found multiple item matches!"));
+        notification.style.padding = "4px"; // no red dot before load
+        setTimeout(function(notification){
+            notification.remove();
+        }, 2000, notif_container)
         console.warn("[interface_goto] Found multiple matches for weapon id!")
     } else {
         notif_container = document.body.appendChild(create_element("div","notify_container"));
-        notification = notif_container.appendChild(create_element("div","notify_notfound","Weapon not found!"));
+        notification = notif_container.appendChild(create_element("div","notify_notfound","Item not found!"));
         notification.style.padding = "4px"; // no red dot before load
         setTimeout(function(notification){
             notification.remove();

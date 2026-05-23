@@ -326,10 +326,10 @@ class GenericItem:
 util.log("Parsing Weapon List...")
 
 def item_block(key, data, output, type_override=None):
-    if ("hidden" not in data):# or key=="Koshi's Goods":
+    if ("hidden" not in data) or key=="Koshi's Goods":
         if key=="Koshi's Goods":
             output["$description"] = [
-                "Only available in Freeplay."
+                "Only available in the Freeplay gamemode."
             ]
         for item in data:
             item_data = data[item]
@@ -357,7 +357,6 @@ def item_block(key, data, output, type_override=None):
                     "wtags": "",
                     "wcfghidden": ""
                 })
-                #html += util.fill_template(util.read("templates/items/item_preview.html"), context)
             elif itm.is_weapon:
                 wep = Weapon(item,item_data)
                 if type_override: wep.type=type_override
