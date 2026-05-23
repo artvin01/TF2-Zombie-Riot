@@ -98,7 +98,7 @@ bool Attribute_IntAttribute(int attribute)
 {
 	switch(attribute)
 	{
-		case 180, 701, 314, 834, 866, 867, Attrib_BarracksSupplyRate, Attrib_FinalBuilder, Attrib_GlassBuilder, Attrib_WildingenBuilder:
+		case 16, 98, 110, 111, 180, 701, 314, 834, 866, 867, Attrib_BarracksSupplyRate, Attrib_FinalBuilder, Attrib_GlassBuilder, Attrib_WildingenBuilder:
 			return true;
 	}
 
