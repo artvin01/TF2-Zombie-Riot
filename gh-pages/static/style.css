@@ -39,6 +39,10 @@ body {
     font-family: "Noto Sans";
 }
 
+* {
+    scrollbar-width: thin;
+}
+
 /* Link Styling */
 a {
     color: var(--link-dark);

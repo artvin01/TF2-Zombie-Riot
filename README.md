@@ -74,6 +74,9 @@ All generated files will be put in `gh-pages/`. If you want to know which of tho
 - [ ] Front-end revamp
   - [ ] Items
     - [ ] Search filters
+      - [x] Price range filter
+      - [x] Text query
+      - [ ] Item tag list
   - [ ] Waveset viewer
   - [ ] Music list
   - [ ] File structure cleanup
