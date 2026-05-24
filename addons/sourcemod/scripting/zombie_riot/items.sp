@@ -84,7 +84,7 @@ void Items_SetupConfig()
 	kv.GotoFirstSubKey();
 	
 	GiftItem item;
-	do	// TODO: Replace ArrayList with IntMap
+	do
 	{
 		kv.GetSectionName(item.Name, sizeof(item.Name));
 		int index = StringToInt(item.Name);
