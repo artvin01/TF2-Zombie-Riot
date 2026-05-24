@@ -6067,4 +6067,9 @@
 		"ru"		"Механический Террор"
 		"ko"	"기계화된 공포"
 	}
+	"Tiantui Star Blade"
+	{
+		"en"	"Tiantui Star's Blade"
+		"ko"	"천퇴성도"
+	}
 }

@@ -226,15 +226,18 @@ stock void GiveMorphineOnDamage(int client, int victim, float damage, int damage
 }
 public void MorphineShot(int client)
 {
-	if(dieingstate[client] > 0 || MorphineMaxed(client))
+	if(!CvarInfiniteCash.BoolValue)
 	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		return;
-	}
-	if(MorphineCharge[client] < 1.0)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		return;
+		if(dieingstate[client] > 0 || MorphineMaxed(client))
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return;
+		}
+		if(MorphineCharge[client] < 1.0)
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return;
+		}
 	}
 	i_MaxMorhpinesThisRound[client] += 1;
 	MorphineShotLogic(client);	
@@ -1884,6 +1887,7 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 							if(CurrentMetal > 0)
 							{
 								int HealthAfter = HealEntityGlobal(client, entity_close, float(healing_Amount), .MaxHealPermitted = CurrentMetal);
+								ReduceMetalCost(client, HealthAfter);
 
 								CurrentMetal -= (HealthAfter) / 5;
 							}
@@ -2114,6 +2118,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 				pack_boom.WriteFloat(position[2]);
 				pack_boom.WriteCell(1);
 				RequestFrame(MakeExplosionFrameLater, pack_boom);
+				CheckAlivePlayers();
 			}
 			else
 			{

@@ -259,13 +259,13 @@
 	{
 		"en"	"Cheesy Presence"
 		"it"	"Presenza formaggioso"
-		"ko"	"저질스러운 존재"
+		"ko"	"치즈스러운 존재감"
 	}
 	"Cheesy Presence Desc"
 	{
 		"en"	"{orange}Oh how cheesed you are...\n{green}Increases damage and resistance by +15％\nIncreases npc speed by +25％.\nIncreases attack/reload speed & healrate by +15％."
 		"it"		"{orange}Quanto sei formaggioso...\n{green}Aumenta i danni e la resistenza di +15％, aumenta la velocità degli npc di +25％, aumenta la velocità di attacco/ricarica e la velocità di guarigione di +15％."
-		"ko"	"{orange}이렇게 저질스러울 수가...\n{green}공격 피해량과 피해 저항력이 +15％ 증가합니다.\nNPC의 이동 속도가 +25％ 증가합니다.\n공격 속도, 재장전 속도, 치유 속도가 +15％ 증가합니다."
+		"ko"	"{orange}이렇게 치즈스러울 수가...\n{green}공격 피해량과 피해 저항력이 +15％ 증가합니다.\nNPC의 이동 속도가 +25％ 증가합니다.\n공격, 재장전, 치유 속도가 +15％ 증가합니다."
 	}
 	"Freeplay Eloquence I"
 	{
@@ -847,7 +847,7 @@
 	"Sinking Desc"
 	{
 		"en"	"Count increases by 1 for each hit taken that applies this debuff\nAt Max, hits from this kit or summons deal bleed and take 10％ less dmg\nSome abilities benifit from max or less sinking"
-		"ko"	"해당 디버프를 부여하는 공격에 피격 시 1회 누적\n최대까지 누적 시, 해당 무기 키트 및 소환물에 피격 시 출혈 디버프를 얻으며, 받는 피해량 10％ 감소\n일부 능력은 침잠 수치에 따라 추가 효과 발생"
+		"ko"	"해당 디버프를 부여하는 공격에 피격 시 1회 누적\n최대까지 누적 시, 무기 키트 공격에 피격 시 출혈 디버프를 얻으며, 받는 피해량 10％ 감소\n일부 능력은 침잠에 따라 추가 효과 발생"
 	}
 	"Call of the Heartbroken"
 	{
@@ -856,8 +856,26 @@
 	}
 	"Call of the Heartbroken Desc"
 	{
-		"en"	"You are tempomary alive again\nYou have to stay near your summoner or else you die."
-		"ko"	"일시적으로 다시 부활하게 됩니다.\n소환자의 근처에 있어야 하며, 근처를 벗어날 시 사망합니다."
+		"en"	"You are tempomary alive again\nYou have to stay near your summoner or else you are massively weakened."
+		"ko"	"일시적으로 다시 부활하게 됩니다.\n소환자의 근처에 있지 않는 경우 대폭 약화됩니다."
+	}
+	"Coffin's Return"
+	{
+		"en"	"Coffin's Return"
+	}
+	"Coffin's Return Desc"
+	{
+		"en"	"You have been summoned with Coffins.\nWhile in the circle of your summoner, you generate coffins for them on damage."
+	}
+	"Call of the Heartbroken Weakened"
+	{
+		"en"	"Call of the Heartbroken Weakened"
+		"ko"	"마음이 찢겨진 자의 부름 - 약화"
+	}
+	"Call of the Heartbroken Weakened Desc"
+	{
+		"en"	"You are massively weakened outside of your Owner's range."
+		"ko"	"당신의 소환자의 근처를 벗어나 대폭 약화됩니다."
 	}
 	"Shielding"
 	{
@@ -3331,5 +3349,85 @@
 	{
 		"en"	"Infected by steam happy, gains insane stats."
 		"ko"	"Steam Happy 이모지에 감염되어, 파멸적인 버프를 얻습니다."
+	}
+	"Tiantui Star"
+	{
+		"en"	"Tiantui Star"
+		"ko"	"천퇴성"
+	}
+	"Tiantui Star Desc"
+	{
+		"en"	"{red}Decreases damage dealt by all other weapons.\n{green}Increases damage dealt by up to 20％ the faster this unit to the target.\nInflicts +1 more Tremor stack and +5s more Tremor extension."
+		"ko"	"{red}이 무기 외의 무기로 가하는 피해 감소\n{green}대상보다 속도가 빠를 수록 가하는 피해량이 최대 20％까지 증가합니다.\n진동 부여량이 1 증가하며 진동 연장이 5초 증가합니다."
+	}
+	"Shin - Tiantui Star"
+	{
+		"en"	"Shin - Tiantui Star"
+		"ko"	"신 - 천퇴성"
+	}
+	"Shin - Tiantui Star Desc"
+	{
+		"en"	"{red}Decreases damage dealt by all other weapons.\n{green}Increases damage dealt by up to 40％ the faster this unit to the target.\nInflicts +2 more Tremor stack and +10s more Tremor extension."
+		"ko"	"{red}이 무기 외의 무기로 가하는 피해 감소\n{green}대상보다 속도가 빠를 수록 가하는 피해량이 최대 40％까지 증가합니다.\n진동 부여량이 2 증가하며 진동 연장이 10초 증가합니다."
+	}
+	"Overheat"
+	{
+		"en"	"Overheat"
+		"ko"	"오버히트"
+	}
+	"Overheat Desc"
+	{
+		"en"	"{green}Increases resistance by up to 50％ based on lost health."
+		"ko"	"{green}잃은 체력량에 따라 피해 저항력이 최대 50％까지 증가합니다."
+	}
+	"Tremor"
+	{
+		"en"	"Tremor"
+		"ko"	"진동"
+	}
+	"Tremor Desc"
+	{
+		"en"	"Inflicts Stagger elemental damage when hit by Tremor Burst based on stack count."
+		"ko"	"'진동 폭발'에 적중 시 중첩에 따라 흐트러짐 원소 피해를 부여합니다."
+	}
+	"Tremor - Scorch"
+	{
+		"en"	"Tremor - Scorch"
+		"ko"	"진동 - 작열"
+	}
+	"Tremor - Scorch Desc"
+	{
+		"en"	"Inflicts ranged damage when hit by Tremor Burst based on stack count and afterburn damage."
+		"ko"	"'진동 폭발'에 적중 시 중첩과 화상 지속 피해에 따라 원거리 피해를 받습니다."
+	}
+	"Stagger"
+	{
+		"en"	"Stagger"
+		"ko"	"흐트러짐"
+	}
+	"Stagger Desc"
+	{
+		"en"	"Negates base resistances (excludes status effects)\nIncreases damage taken by up to 30％."
+		"ko"	"기본 저항력을 무시합니다.(상태이상 효과 제외)\n받는 피해량이 최대 30％까지 증가합니다."
+	}
+	"Stagger+"
+	{
+		"en"	"Stagger+"
+		"ko"	"흐트러짐+"
+	}
+	"Stagger+ Desc"
+	{
+		"en"	"Negates base resistances (excludes status effects)\nIncreases damage taken by up to 45％."
+		"ko"	"기본 저항력을 무시합니다.(상태이상 효과 제외)\n받는 피해량이 최대 45％까지 증가합니다."
+	}
+	"Stagger++"
+	{
+		"en"	"Stagger++"
+		"ko"	"흐트러짐++"
+	}
+	"Stagger++ Desc"
+	{
+		"en"	"Negates base resistances (excludes status effects)\nIncreases damage taken by up to 60％."
+		"ko"	"기본 저항력을 무시합니다.(상태이상 효과 제외)\n받는 피해량이 최대 60％까지 증가합니다."
 	}
 }

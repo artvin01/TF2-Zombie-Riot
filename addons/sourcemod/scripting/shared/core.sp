@@ -673,7 +673,6 @@ float fl_Extra_RangedArmor[MAXENTITIES] = {1.0, ...};
 float fl_Extra_Speed[MAXENTITIES] = {1.0, ...};
 float fl_Extra_Damage[MAXENTITIES] = {1.0, ...};
 float fl_GibVulnerablity[MAXENTITIES] = {1.0, ...};
-float f_RoleplayTalkLimit[MAXENTITIES] = {0.0, ...};
 
 bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
@@ -1586,7 +1585,6 @@ public void OnClientPutInServer(int client)
 	f_ClientConnectTime[client] = GetGameTime() + 30.0;
 	//do cooldown upon connection.
 	f_ClientInvul[client] = 0.0;
-	f_RoleplayTalkLimit[client] = 0.0;
 #if !defined NOG
 	DHook_HookClient(client);
 #endif
@@ -1929,6 +1927,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				Call_Finish(action);
 			}
 		}
+		
 	}
 	
 	//support in_use
@@ -2135,35 +2134,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		holding[client] |= IN_SCORE;
 		
 #if defined ZR
-		if(GetClientTeam(client) == 2)
+		if(dieingstate[client] == 0)
 		{
-			if(dieingstate[client] == 0)
+			if(WaitingInQueue[client])
 			{
-				if(WaitingInQueue[client])
-				{
-					Queue_Menu(client);
-				}
-				else
-				{
-					Store_Menu(client);
-				}
-			}
-		}
-		else
-		{
-			
-			if(LastStoreMenu[client] || AnyMenuOpen[client])
-			{
-				HideMenuInstantly(client);
-				//show a blank page to instantly hide it
-				CancelClientMenu(client);
-				ClientCommand(client, "slot10");
-				ResetStoreMenuLogic(client);
+				Queue_Menu(client);
 			}
 			else
 			{
-				c_WeaponUseAbilitiesHud[client][0] = 0;
-				Items_EncyclopediaMenu(client);
+				Store_Menu(client);
 			}
 		}
 #endif
@@ -2705,6 +2684,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		EntityFuncAttack2[entity] = INVALID_FUNCTION;
 		EntityFuncAttack3[entity] = INVALID_FUNCTION;
 		EntityFuncReload4[entity] = INVALID_FUNCTION;
+		EntityFuncOnKill[entity] = INVALID_FUNCTION;
 		EntityFuncAttackInstant[entity] = INVALID_FUNCTION;
 		b_Is_Player_Projectile_Through_Npc[entity] = false;
 		b_IgnorePlayerCollisionNPC[entity] = false;
@@ -3043,6 +3023,15 @@ public void OnEntityCreated(int entity, const char[] classname)
 			OnManglerCreated(entity);
 		}
 #endif
+		else if(!StrContains(classname, "obj_dispenser") && 
+		!StrContains(classname, "obj_sentrygun") && 
+		!StrContains(classname, "obj_teleporter"))
+		{
+			//base tf2 buildings arent really supported for now
+			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
+			npc.bCantCollidieAlly = true;
+		}
 		else if(!StrContains(classname, "obj_") && !StrEqual(classname, "obj_vehicle"))
 		{
 			b_BuildingHasDied[entity] = false;
@@ -4058,6 +4047,9 @@ stock void PlayerHasInteract(int client, char[] Buffer, int Buffersize)
 int CalcMaxPlayers()
 {
 	int playercount = CvarMaxPlayerAlive.IntValue;
+	if(playercount == -1)
+		return -1;
+		
 	if(playercount < 1)
 		playercount = MAXPLAYERS - 1;
 	/*

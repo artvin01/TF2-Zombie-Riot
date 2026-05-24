@@ -481,7 +481,7 @@ stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1, b
 
 //Got lazy, tired of doing so many indexs.
 
-int HasSpecificBuff(int victim, const char[] name, int IndexID = -1, int attacker = 0)
+int HasSpecificBuff(int victim, const char[] name, int IndexID = -1, int attacker = 0, float &duration = 0.0)
 {
 	//doesnt even have abuff...
 	if(!E_AL_StatusEffects[victim])
@@ -508,6 +508,8 @@ int HasSpecificBuff(int victim, const char[] name, int IndexID = -1, int attacke
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
+			duration = Apply_StatusEffect.TimeUntillOver - GetGameTime();
+
 			if(Apply_StatusEffect.TotalOwners[attacker])
 				Return = 3;
 			else if(Apply_StatusEffect.TotalOwners[victim])
@@ -604,6 +606,7 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 #endif
 	int CurrentSlotSaved = Apply_MasterStatusEffect.Slot;
 	int CurrentPriority = Apply_MasterStatusEffect.SlotPriority;
+	float CurrentData = 0.0;
 	if(CurrentSlotSaved > 0)
 	{
 		//This debuff has slot logic, this means we should see which debuff is prioritised
@@ -625,6 +628,12 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 					if(CurrentPriority > Apply_MasterStatusEffect.SlotPriority)
 					{
 						// New buff is high priority, remove this one, stop the loop
+						CurrentData = Apply_StatusEffect.DataForUse;
+						
+						float CurrentTime = Apply_StatusEffect.TimeUntillOver - GetGameTime();
+						if(Duration < CurrentTime)
+							Duration = CurrentTime;
+						
 						StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect, false);
 						Apply_StatusEffect.RemoveStatus();
 						i = 0;
@@ -666,6 +675,7 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 	if(!HadBuffBefore)
 	{
 		Apply_StatusEffect.TimeUntillOver = GetGameTime() + Duration;
+		Apply_StatusEffect.DataForUse = CurrentData;
 	}
 	Apply_StatusEffect.ApplyStatusEffect_Internal(owner, victim, HadBuffBefore, ArrayPosition);
 	if(!HadBuffBefore)
@@ -2524,6 +2534,19 @@ void StatusEffects_Silence()
 	*/
 	strcopy(data.BuffName, sizeof(data.BuffName), "Intangible");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ᶅ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Touch Ingored");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
@@ -8550,31 +8573,39 @@ void Const2Modifs_Asexual_End(int victim, StatusEffect Apply_MasterStatusEffect,
 	float pos[3]; GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", pos);
 	pos[2] += 50.0;
 	float ang[3]; GetEntPropVector(victim, Prop_Data, "m_angRotation", ang);
-	int summon = NPC_CreateById(i_NpcInternalId[victim], -1, pos, ang, GetTeam(victim));
-	if(summon > MaxClients)
+	int team = GetTeam(victim);
+	if(b_thisNpcIsARaid[victim])
 	{
-#if defined ZR
-		if(b_thisNpcIsARaid[summon])
-			WaveStart_SubWaveStart(GetGameTime());	//due to lots and lots of time
-#endif
-		fl_Extra_Damage[summon] = fl_Extra_Damage[victim];
-		fl_Extra_Speed[summon] = fl_Extra_Speed[victim];
-		fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[victim];
-		fl_Extra_MeleeArmor[summon] = fl_Extra_MeleeArmor[victim];
-		SetEntProp(summon, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
-		SetEntProp(summon, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
-		float flPos[3];
-		flPos = pos;
-		flPos[2] += 300.0;
-		flPos[0] += GetRandomInt(0,1) ? GetRandomFloat(-200.0, -100.0) : GetRandomFloat(100.0, 200.0);
-		flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-200.0, -100.0) : GetRandomFloat(200.0, 200.0);
-		CClotBody npc = view_as<CClotBody>(summon);
-		npc.SetVelocity({0.0,0.0,0.0});
-		PluginBot_Jump(summon, flPos);
-		ApplyStatusEffect(summon, summon, "Unstoppable Force", 2.0);
-#if defined ZR
-		ZRModifs_GiveRandomPrefix(summon);
-#endif
+		team = 999;
+	}
+	for(int i; i<2; i++)
+	{
+		int summon = NPC_CreateById(i_NpcInternalId[victim], -1, pos, ang, team);
+		if(summon > MaxClients)
+		{
+	#if defined ZR
+			if(b_thisNpcIsARaid[summon])
+				WaveStart_SubWaveStart(GetGameTime());	//due to lots and lots of time
+	#endif
+			fl_Extra_Damage[summon] = fl_Extra_Damage[victim];
+			fl_Extra_Speed[summon] = fl_Extra_Speed[victim];
+			fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[victim];
+			fl_Extra_MeleeArmor[summon] = fl_Extra_MeleeArmor[victim];
+			SetEntProp(summon, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
+			SetEntProp(summon, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
+			float flPos[3];
+			flPos = pos;
+			flPos[2] += 300.0;
+			flPos[0] += GetRandomInt(0,1) ? GetRandomFloat(-200.0, -100.0) : GetRandomFloat(100.0, 200.0);
+			flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-200.0, -100.0) : GetRandomFloat(200.0, 200.0);
+			CClotBody npc = view_as<CClotBody>(summon);
+			npc.SetVelocity({0.0,0.0,0.0});
+			PluginBot_Jump(summon, flPos);
+			ApplyStatusEffect(summon, summon, "Unstoppable Force", 2.0);
+	#if defined ZR
+			ZRModifs_GiveRandomPrefix(summon);
+	#endif
+		}
 	}
 }
 
@@ -8609,33 +8640,25 @@ float Glug_TakeDamage_Spread(int attacker, int victim, StatusEffect Apply_Master
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	Apply_StatusEffect.DataForUse = GetGameTime() + 10.0;
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
-
-	float maxhealth = float(ReturnEntityMaxHealth(victim));
-	maxhealth *= 0.25;
-	if(b_thisNpcIsARaid[victim] || b_thisNpcIsABoss[victim])
-		maxhealth *= 0.025;
 		
 	float pos[3]; GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(victim, Prop_Data, "m_angRotation", ang);
 	int summon = NPC_CreateByName("npc_glug", -1, pos, ang, GetTeam(victim), "");
 	if(summon > MaxClients)
 	{
-		float DamageDeal = 10.0;
-#if defined ZR
-		DamageDeal = float(CurrentCash);
-#endif
-		DamageDeal *= 0.001;
-		if(DamageDeal <= 1.0)
-			DamageDeal = 1.0;
+		float wave = float(Waves_GetRoundScale()+1);
+		wave *= 0.133333;
+		wave *= MinibossScalingReturn();
+		wave *= 0.75;
 
-		if(DamageDeal > 100.0)
-			DamageDeal = 100.0;
-		fl_Extra_Damage[summon] *= DamageDeal;
+		int Health = StringToInt(MinibossHealthScaling(70.0, true));
+
+		fl_Extra_Damage[summon] *= wave;
 		fl_Extra_Speed[summon] = fl_Extra_Speed[victim];
 		fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[victim];
 		fl_Extra_MeleeArmor[summon] = fl_Extra_MeleeArmor[victim];
-		SetEntProp(summon, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
-		SetEntProp(summon, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
+		SetEntProp(summon, Prop_Data, "m_iHealth", Health);
+		SetEntProp(summon, Prop_Data, "m_iMaxHealth", Health);
 		float flPos[3];
 		flPos = pos;
 		flPos[2] += 300.0;
@@ -8663,12 +8686,14 @@ void Const2Modifs_Explosive_End(int victim, StatusEffect Apply_MasterStatusEffec
 	//not an npc, ignore.
 	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
 		return;
-	float DamageDeal = 10000.0;
+	float DamageDeal = 10.0;
 #if defined ZR
 	DamageDeal = float(CurrentCash);
 	DamageDeal *= 0.25;
 	if(DamageDeal <= 100.0)
 		DamageDeal = 100.0;
+	if(DamageDeal >= 500.0)
+		DamageDeal = 500.0;
 
 	b_NpcIsTeamkiller[victim] = true;
 	Explode_Logic_Custom(DamageDeal,
@@ -8684,13 +8709,33 @@ void Const2Modifs_Explosive_End(int victim, StatusEffect Apply_MasterStatusEffec
 	false,
 	0.01,
 	_,
-	BeheadedKamiBoomInternal);
+	InsaneKnockbackDoExplode);
 	b_NpcIsTeamkiller[victim] = true;
 	ObjectVintulumBomb npc = view_as<ObjectVintulumBomb>(victim);
 	npc.PlayExplodeDo(true, true);
 #endif
 }
 
+float InsaneKnockbackDoExplode(int entity, int victim, float damage, int weapon)
+{
+	if(entity == victim)
+		return 0.0;
+
+	ApplyStatusEffect(entity, victim, "Ragdolled", 2.5);	
+	FreezeNpcInTime(victim, 2.5);
+	ApplyStatusEffect(entity, victim, "Anti-Waves", 5.0);
+	float VecMe[3]; WorldSpaceCenter(entity, VecMe);
+	float VecEnemy[3]; WorldSpaceCenter(victim, VecEnemy);
+
+	float AngleVec[3];
+	MakeVectorFromPoints(VecMe, VecEnemy, AngleVec);
+	GetVectorAngles(AngleVec, AngleVec);
+
+	AngleVec[0] = -45.0;
+	Custom_Knockback(entity, victim, 1500.0, true, true, true, .OverrideLookAng = AngleVec);
+  
+	return damage;
+}
 
 void Const2Modifs_Stalker_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -9461,6 +9506,35 @@ void StatusEffects_HeartBroken()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
+	strcopy(data.BuffName, sizeof(data.BuffName), "Coffin's Return");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "CR");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnTakeDamage_PostAttacker	= TakeDamagePostAtttacker_CoffinsReturn;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Call of the Heartbroken Weakened");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "WEAK");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= 0.5;
+	data.DamageDealMulti			= 0.5;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Call of the Heartbroken");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "H");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -9480,8 +9554,206 @@ void StatusEffects_HeartBroken()
 	data.HudDisplay_Func 			= Func_HeartBrokenHud;
 	data.TimerRepeatCall_Func 		= CallOfHeartBroken_Timer;
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Tremor");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "T");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 18; //0 means ignored
+	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func 			= Func_TremorDisplay;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Tremor - Scorch");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "TS");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 18; //0 means ignored
+	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func 			= Func_TremorScorchDisplay;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Stagger");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "∮");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= 0.3;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 19; //0 means ignored
+	data.SlotPriority				= 1;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Stagger+");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "∯");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= 0.45;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 19; //0 means ignored
+	data.SlotPriority				= 2;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Stagger++");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "∰");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= 0.6;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 19; //0 means ignored
+	data.SlotPriority				= 3;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Tiantui Star");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "★");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageDealMulti			= 0.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 20; //0 means ignored
+	data.SlotPriority				= 1;
+	data.OnTakeDamage_DealFunc		= TiantuiDamageDealFunc;
+	data.OnBuffStarted				= TiantuiStart;
+	data.OnBuffStoreRefresh			= TiantuiStart;
+	data.OnBuffEndOrDeleted			= TiantuiEnd;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Shin - Tiantui Star");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "心");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageDealMulti			= 0.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 20; //0 means ignored
+	data.SlotPriority				= 2;
+	data.OnTakeDamage_DealFunc		= TiantuiShinDamageDealFunc;
+	data.OnBuffStarted				= TiantuiStart;
+	data.OnBuffStoreRefresh			= TiantuiStart;
+	data.OnBuffEndOrDeleted			= TiantuiEnd;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Overheat");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "♨");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= 0.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0;
+	data.OnTakeDamage_TakenFunc		= OverheatDamageTakenFunc;
+	StatusEffect_AddGlobal(data);
+}
+void TakeDamagePostAtttacker_CoffinsReturn(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	
+	int OwnerAttach = -1;
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if(!Apply_StatusEffect.TotalOwners[i])
+			continue;
+		if(!IsValidClient(i))
+			continue;
+
+		OwnerAttach = i;
+		break;
+	}
+	if(OwnerAttach == -1)
+		return;
+		
+	if(HasSpecificBuff(attacker, "Call of the Heartbroken Weakened"))
+		return;
+	GiveCoffinOnDamage(OwnerAttach,victim, damage);
+
+}
+static float TiantuiDamageDeal(int attacker, int victim, float basedamage, float bonus, float multi)
+{
+	if(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
+		return 0.0;
+	
+	float vel[3];
+	GetEntPropVector(attacker, Prop_Data, "m_vecVelocity", vel);
+	float speed1 = GetVectorLength(vel) + bonus;
+	if(HasSpecificBuff(attacker, "Overheat"))
+		bonus += 200.0;
+
+	GetEntPropVector(victim, Prop_Data, "m_vecVelocity", vel);
+	float speed2 = GetVectorLength(vel);
+
+	float diff = (speed1 - speed2) / 4000.0;
+	if(diff > 0.2)
+	{
+		diff = 0.2;
+	}
+	else if(diff < 0.075)
+	{
+		diff = 0.0;
+	}
+
+	return (basedamage * diff * multi) - (basedamage * 0.5);
+}
+static float TiantuiDamageDealFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
+{
+	return TiantuiDamageDeal(attacker, victim, basedamage, 100.0, 0.5);
+}
+static float TiantuiShinDamageDealFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
+{
+	return TiantuiDamageDeal(attacker, victim, basedamage, 300.0, 1.0);
+}
+static void TiantuiStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(victim <= MaxClients)
+	{
+		MakeBladeBloddy(victim, true);
+		if(IsValidEntity(Apply_StatusEffect.WearableUse))
+			return;
+	
+	
+		float flPos[3];
+		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+		int ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_arcane_yellow_glow", victim, "", {0.0,0.0,0.0});
+		AddEntityToThirdPersonTransitMode(victim, ParticleEffect);
+		
+		int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+		Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+		E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+	}
+}
+static void TiantuiEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(victim <= MaxClients)
+		MakeBladeBloddy(victim, false);
+
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	RemoveEntity(Apply_StatusEffect.WearableUse);
+}
+static float OverheatDamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	float ratio = GetClientHealth(victim) / float(ReturnEntityMaxHealth(victim));
+	
+	if(ratio > 1.0)
+		ratio = 1.0;
+	
+	return 0.5 + (ratio * 0.5);
 }
 
+int StaggerTypeTarget(int victim)
+{
+	if(HasSpecificBuff(victim, "Stagger++"))
+		return 3;
+	
+	if(HasSpecificBuff(victim, "Stagger+"))
+		return 2;
+	
+	if(HasSpecificBuff(victim, "Stagger"))
+		return 1;
+		
+	return 0;
+}
 #define MAX_RANGE_HEARTBROKEN 600.0
 static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -9521,7 +9793,18 @@ static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusE
 	float flDistanceToTarget = GetVectorDistance(flMe, flPos, true);
 	if(flDistanceToTarget > (MAX_RANGE_HEARTBROKEN * MAX_RANGE_HEARTBROKEN))
 	{
-		Apply_StatusEffect.TimeUntillOver -= 1.0;
+		ApplyStatusEffect(entity, entity, "Call of the Heartbroken Weakened", 0.5);
+		if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		{
+			SetEntityRenderColor(EntRefToEntIndex(Apply_StatusEffect.WearableUse), 125, 0, 0, 255);
+		}
+	}
+	else
+	{
+		if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		{
+			SetEntityRenderColor(EntRefToEntIndex(Apply_StatusEffect.WearableUse), 65, 0, 125, 255);
+		}
 	}
 	
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
@@ -9728,8 +10011,72 @@ stock bool StatusEffects_SinkingDebuffMaxStacks(int victim)
 
 	return false;
 }
+static void Func_TremorDisplay(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	Format(HudToDisplay, SizeOfChar, "T(%d)", RoundToNearest(Apply_StatusEffect.DataForUse));
+}
+static void Func_TremorScorchDisplay(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	Format(HudToDisplay, SizeOfChar, "TS(%d)", RoundToNearest(Apply_StatusEffect.DataForUse));
+}
+stock void StatusEffects_TremorDebuffAdd(int victim, int valuetoadd, float time)
+{
+	if(!E_AL_StatusEffects[victim])
+		return;
 
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
 
+	int length = E_AL_StatusEffects[victim].Length;
+	for(int i; i < length; i++)
+	{
+		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_MasterStatusEffect.Slot == 18)
+		{
+			Apply_StatusEffect.DataForUse += float(valuetoadd);
+			if(Apply_StatusEffect.DataForUse > 99.0)
+			{
+				Apply_StatusEffect.DataForUse = 99.0;
+			}
+			else if(Apply_StatusEffect.DataForUse < 1.0)
+			{
+				Apply_StatusEffect.DataForUse = 1.0;
+			}
+
+			Apply_StatusEffect.TimeUntillOver += time;
+			E_AL_StatusEffects[victim].SetArray(i, Apply_StatusEffect);
+
+			break;
+		}
+	}
+}
+stock int StatusEffects_TremorDebuffGet(int victim, float &timeleft = 0.0, char name[64] = "")
+{
+	if(!E_AL_StatusEffects[victim])
+		return 0;
+
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+
+	int length = E_AL_StatusEffects[victim].Length;
+	for(int i; i < length; i++)
+	{
+		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_MasterStatusEffect.Slot == 18)
+		{
+			timeleft = Apply_StatusEffect.TimeUntillOver - GetGameTime();
+			if(timeleft > 0.0)
+			{
+				strcopy(name, sizeof(name), Apply_MasterStatusEffect.BuffName);
+				return RoundFloat(Apply_StatusEffect.DataForUse);
+			}
+		}
+	}
+
+	return 0;
+}
 
 void Memorial_Possession_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {

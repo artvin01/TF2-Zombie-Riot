@@ -1384,7 +1384,7 @@ public void OnPostThink(int client)
 #if defined ZR
 		UpdatePlayerPoints(client);
 
-		if(HasSpecificBuff(client, "Call of the Heartbroken") || LastMann || dieingstate[client] > 0)
+		if(HasSpecificBuff(client, "Call of the Heartbroken Weakened") || LastMann || dieingstate[client] > 0)
 		{
 			ApplyLastmanOrDyingOverlay(client);
 		}
@@ -2267,7 +2267,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			return Plugin_Handled;
 		}
 		*/
-		else if((LastMann_BeforeLastman || LastMann || b_IsAloneOnServer) && (!LastMann || f_OneShotProtectionTimer[victim] < GameTime) && !SpecterCheckIfAutoRevive(victim))
+		else if((LastMann_BeforeLastman || LastMann || b_IsAloneOnServer) && ((b_IsAloneOnServer && !LastMann) || f_OneShotProtectionTimer[victim] < GameTime) && !SpecterCheckIfAutoRevive(victim))
 		{
 			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
 			if(!LastMann)
@@ -2277,7 +2277,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					if(b_IsAloneOnServer)
 						i_AmountDowned[victim] = 999;
 					// Trigger lastman
-					CheckAlivePlayers();
+					CheckAlivePlayers(_,_,_,true);
 					//We trigger lastman if we hit this
 				}
 			}
@@ -2905,7 +2905,7 @@ public void OnWeaponSwitchPre(int client, int weapon)
 
 void ApplyLastmanOrDyingOverlay(int client)
 {
-	if(HasSpecificBuff(client, "Call of the Heartbroken"))
+	if(HasSpecificBuff(client, "Call of the Heartbroken Weakened"))
 	{
 		DoOverlay(client, "zombie_riot/filmgrain/filmgrain_4", 1);
 		DoOverlay(client, "debug/yuv");

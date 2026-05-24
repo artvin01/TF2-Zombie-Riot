@@ -93,6 +93,7 @@ enum struct ItemInfo
 	Function Func_OnPlayerRunCmd;
 	Function Func_WeaponCreated;
 	Function Func_MapStart;
+	Function Func_OnKill;
 	Function Func_TakeDamage_Take;
 	Function Func_TakeDamage_Deal;
 	Function Func_TakeDamagePost;
@@ -371,6 +372,10 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sfunc_ontakedamage_take", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Func_TakeDamage_Take = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_onkill", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_OnKill = GetFunctionByName(null, buffer);
 
 		Format(buffer, sizeof(buffer), "%sfunc_ontakedamage_deal", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -793,32 +798,56 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 	if(weapon != -1)
 	{
 		if(StoreWeapon[weapon] > 0)
-		{
-			static Item item;
-			StoreItems.GetArray(StoreWeapon[weapon], item);
-#if defined ZR
-			if(!ignoreCooldown)
-				cooldown *= CooldownReductionAmount(client);
-#endif
-			
-			switch(what_slot)
-			{
-				case 1:
-					item.Cooldown1[client] = cooldown + GetGameTime();
-				
-				case 2:
-					item.Cooldown2[client] = cooldown + GetGameTime();
-				
-				case 3:
-					item.Cooldown3[client] = cooldown + GetGameTime();
-				
-				default:
-					ThrowError("Invalid slot %d", what_slot);
-			}
-			
-			StoreItems.SetArray(StoreWeapon[weapon], item);
-		}
+			Store_ApplyCooldownIndex(client, StoreWeapon[weapon], what_slot, cooldown, ignoreCooldown);
 	}
+}
+
+void Store_ApplyCooldownIndex(int client, int index, int what_slot, float cooldown, bool ignoreCooldown = false)
+{
+	static Item item;
+	StoreItems.GetArray(index, item);
+#if defined ZR
+	if(!ignoreCooldown)
+		cooldown *= CooldownReductionAmount(client);
+#endif
+	
+	switch(what_slot)
+	{
+		case 1:
+			item.Cooldown1[client] = cooldown + GetGameTime();
+		
+		case 2:
+			item.Cooldown2[client] = cooldown + GetGameTime();
+		
+		case 3:
+			item.Cooldown3[client] = cooldown + GetGameTime();
+		
+		default:
+			ThrowError("Invalid slot %d", what_slot);
+	}
+	
+	StoreItems.SetArray(index, item);
+}
+
+stock float Store_GetCooldownIndex(int client, int index, int what_slot)
+{
+	static Item item;
+	StoreItems.GetArray(index, item);
+
+	switch(what_slot)
+	{
+		case 1:
+			return item.Cooldown1[client] - GetGameTime();
+		
+		case 2:
+			return item.Cooldown2[client] - GetGameTime();
+		
+		case 3:
+			return item.Cooldown3[client] - GetGameTime();
+	}
+
+	ThrowError("Invalid slot %d", what_slot);
+	return 0.0;
 }
 
 void Store_OpenItemPage(int client)
@@ -6202,6 +6231,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					EntityFuncPlayerRunCmd[entity]  = info.Func_OnPlayerRunCmd;
 					EntityFuncTakeDamage[entity][0]  = info.Func_TakeDamage_Deal;
 					EntityFuncTakeDamage[entity][1]  = info.Func_TakeDamage_Take;
+					EntityFuncOnKill[entity]  = info.Func_OnKill;
 					
 					b_Do_Not_Compensate[entity] 				= info.NoLagComp;
 					b_Only_Compensate_CollisionBox[entity] 		= info.OnlyLagCompCollision;

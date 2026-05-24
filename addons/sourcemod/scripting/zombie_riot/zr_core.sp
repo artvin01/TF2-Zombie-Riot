@@ -334,7 +334,8 @@ enum
     WEAPON_KIT_PURGE_ANNAHILATOR = 162,
     WEAPON_KIT_PURGE_MISC = 163,
 	WEAPON_BOMB_AR = 164,
-	WEAPON_BRICK = 165
+	WEAPON_BRICK = 165,
+	WEAPON_BURNINGTHUMB = 166
 }
 
 enum
@@ -745,9 +746,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_bombplant_smg.sp"
 #include "custom/weapon_guiding_missile.sp"
 #include "custom/kit_heartbroken.sp"
-
-
-
+#include "custom/weapon_burningthumb.sp"
 
 void ZR_PluginLoad()
 {
@@ -2073,7 +2072,7 @@ void CheckLastMannStanding(int killed)
 		LastMann_BeforeLastman = true;
 	}
 }
-void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false)
+void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false, bool CheckDownedState = false)
 {
 	if(!Waves_Started() || Waves_InSetup() || GameRules_GetRoundState() != RoundState_ZombieRiot || Dungeon_CanRespawn())
 	{
@@ -2104,6 +2103,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	LastMann_BeforeLastman = false;
 	CurrentPlayers = 0;
 	int PlayersLeftNotDowned = 0;
+	int PlayersLeftAliveHere = 0;
 
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -2132,9 +2132,10 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				
 		if(!b_IsAloneOnServer)
 		{
-			//normal server rules
 			if(dieingstate[client] == 0)
 				PlayersLeftNotDowned++;
+			//normal server rules
+			PlayersLeftAliveHere++;
 		}
 		else
 		{
@@ -2143,19 +2144,34 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			if(i_AmountDowned[client] < 700)
 			{
 				PlayersLeftNotDowned = 99;
+				PlayersLeftAliveHere = 99;
 			}
 			else
 			{
+				PlayersLeftAliveHere = 1;
 				PlayersLeftNotDowned = 1;
 				LastMann_BeforeLastman = false;
 				LastMann = true;
 			}
 		}
 	}
-
+	
 	if(PlayersLeftNotDowned == 1)
 	{
 		LastMann_BeforeLastman = true;
+		if(!CheckDownedState)
+		{
+			if(PlayersLeftAliveHere > 1)
+			{
+				if(LastMann)
+				{
+					Yakuza_Lastman(0);
+				}
+				LastMannScreenEffect = false;
+				//there are players left, dont trigger lastman
+				LastMann = false;
+			}
+		}
 	}
 	else
 	{
@@ -2826,6 +2842,7 @@ void ReviveAll(bool raidspawned = false,
 			{
 				RemoveSpecificBuff(client, "Call of the Heartbroken Internal");
 				RemoveSpecificBuff(client, "Call of the Heartbroken");
+				RemoveSpecificBuff(client, "Coffin's Return");
 			}
 			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
 			if(glowentity > MaxClients)
@@ -2925,6 +2942,7 @@ void ReviveAll(bool raidspawned = false,
 		}
 	}
 	
+	BurningThumb_WaveEnd();
 	Music_EndLastmann();
 	CheckAlivePlayers();
 	if(Dungeon_Mode() && !Const2_DontRespawnBuildings)

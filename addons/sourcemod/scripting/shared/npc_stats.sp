@@ -10697,6 +10697,11 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 				//	if(target > MaxClients || GetRandomFloat(0.0, 1.0) < 0.25)
 				//	a 25% chance that they will change targets, so they sometimes dont want to follow you, but only if yorue a client.
 					{
+						if(HasSpecificBuff(target, "Touch Ingored"))
+						{
+							//dont
+							return;
+						}
 						npc.m_iTarget = target;
 						npc.m_flGetClosestTargetTime = GetGameTime(entity) + GetRandomRetargetTime();
 						f_DelayComputingOfPath[entity] = 0.0;
@@ -12064,6 +12069,8 @@ static bool TriesClimbingUpLedge(CBaseNPC_Locomotion loco, const float goal[3], 
 		MaxSpeedjump = 150.0;
 	float GoalAm[3];
 	GoalAm = goal;
+	//ignore what height, they WANNA.
+	GoalAm[2] = feet[2];
 	if (GetVectorDistance(feet, GoalAm) > MaxSpeedjump)
 	{
 		return false;
