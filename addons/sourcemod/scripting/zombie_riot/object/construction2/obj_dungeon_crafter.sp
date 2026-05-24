@@ -47,6 +47,7 @@ static int NPCId;
 static float GlobalCooldown;
 static int LastGameTime;
 
+
 static IntMap WeaponPacked;
 
 void ObjectGemCrafter_MapStart()

@@ -8646,12 +8646,16 @@ float Glug_TakeDamage_Spread(int attacker, int victim, StatusEffect Apply_Master
 	int summon = NPC_CreateByName("npc_glug", -1, pos, ang, GetTeam(victim), "");
 	if(summon > MaxClients)
 	{
-		float wave = float(Waves_GetRoundScale()+1);
+		float wave = 10.0
+		int Health = 10000;
+#if defined ZR
+		wave = float(Waves_GetRoundScale()+1);
 		wave *= 0.133333;
 		wave *= MinibossScalingReturn();
 		wave *= 0.75;
 
-		int Health = StringToInt(MinibossHealthScaling(70.0, true));
+		Health = StringToInt(MinibossHealthScaling(70.0, true));
+#endif
 
 		fl_Extra_Damage[summon] *= wave;
 		fl_Extra_Speed[summon] = fl_Extra_Speed[victim];
@@ -9666,8 +9670,9 @@ void TakeDamagePostAtttacker_CoffinsReturn(int attacker, int victim, float damag
 		
 	if(HasSpecificBuff(attacker, "Call of the Heartbroken Weakened"))
 		return;
+#if defined ZR
 	GiveCoffinOnDamage(OwnerAttach,victim, damage);
-
+#endif
 }
 static float TiantuiDamageDeal(int attacker, int victim, float basedamage, float bonus, float multi)
 {
@@ -9707,7 +9712,9 @@ static void TiantuiStart(int victim, StatusEffect Apply_MasterStatusEffect, E_St
 {
 	if(victim <= MaxClients)
 	{
+#if defined ZR
 		MakeBladeBloddy(victim, true);
+#endif
 		if(IsValidEntity(Apply_StatusEffect.WearableUse))
 			return;
 	
@@ -9724,8 +9731,10 @@ static void TiantuiStart(int victim, StatusEffect Apply_MasterStatusEffect, E_St
 }
 static void TiantuiEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
+#if defined ZR
 	if(victim <= MaxClients)
 		MakeBladeBloddy(victim, false);
+#endif
 
 	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
 		return;
@@ -9757,6 +9766,7 @@ int StaggerTypeTarget(int victim)
 #define MAX_RANGE_HEARTBROKEN 600.0
 static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
+#if defined ZR
 	int OwnerAttach = -1;
 	for (int i = 1; i <= MaxClients; i++)
 	{
@@ -9810,12 +9820,13 @@ static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusE
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 
 	spawnRing_Vectors(flPos, MAX_RANGE_HEARTBROKEN * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 200, 1, 0.45, 12.0, 6.1, 1, _, entity);
-		
+#endif
 }
 
 #define MAXMEMORIAL_HITS 2
 void CallOfHeartBroken_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
+#if defined ZR
 	if(!IsValidEntity(victim))
 		return;
 		
@@ -9859,7 +9870,7 @@ void CallOfHeartBroken_Start(int victim, StatusEffect Apply_MasterStatusEffect, 
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	Apply_StatusEffect.WearableUse = EntIndexToEntRef(laser);
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
-		
+#endif	
 }
 
 
@@ -9871,6 +9882,7 @@ void Func_HeartBrokenHud(int attacker, int victim, StatusEffect Apply_MasterStat
 
 void CallOfHeartBroken_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
+#if defined ZR
 	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
 		return;
 
@@ -9903,6 +9915,7 @@ void CallOfHeartBroken_End(int victim, StatusEffect Apply_MasterStatusEffect, E_
 	pack.WriteFloat(PosMe[0]);
 	pack.WriteFloat(PosMe[1]);
 	pack.WriteFloat(PosMe[2]);
+#endif
 }
 
 
