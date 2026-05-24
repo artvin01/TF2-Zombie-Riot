@@ -874,8 +874,16 @@ public void Coffin_Projectile_Hit(int entity, int target)
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 		SDKHooks_TakeDamage(target, entity, owner, Wand_Dmg, DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 
-		EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, Entity_Position);
-		EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, Entity_Position);
+		if(LastMann)
+		{
+			EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, Entity_Position);
+			EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, Entity_Position);
+		}
+		else
+		{
+			EmitSoundToClient(owner, SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, Entity_Position);
+			EmitSoundToClient(owner, SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, Entity_Position);
+		}
 		
 		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", Entity_Position);	
 		Entity_Position[2] += 10.0;
@@ -893,8 +901,10 @@ public void Coffin_Projectile_Hit(int entity, int target)
 			WritePackFloat(pack, VecSave[1]);
 			WritePackFloat(pack, VecSave[2]);
 			WritePackFloat(pack, Wand_Dmg * 0.25);
-
-			spawnRing_Vectors(VecSave, Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 200, 1, Smite_ChargeTime, 3.0, 0.1, 1, 1.0);
+			int DisplayToClient = 0;
+			if(!LastMann)
+				DisplayToClient = owner;
+			spawnRing_Vectors(VecSave, Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 200, 1, Smite_ChargeTime, 3.0, 0.1, 1, 1.0, DisplayToClient);
 		}
 		RemoveSpecificBuff(target, "Coffin Target");
 	}
@@ -1013,6 +1023,9 @@ public Action HeartBroken_Smite_Timer(Handle Smite_Logic, DataPack pack)
 	
 	float damage = ReadPackFloat(pack);
 	
+	int DisplayToClient = 0;
+	if(!LastMann)
+		DisplayToClient = client;
 	if (NumLoops >= Smite_ChargeTime)
 	{
 		float secondLoc[3];
@@ -1023,16 +1036,23 @@ public Action HeartBroken_Smite_Timer(Handle Smite_Logic, DataPack pack)
 		
 		for (int sequential = 1; sequential <= 2; sequential++)
 		{
-			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 120, 1, 0.33, 4.0, 0.4, 1, (Smite_Radius * 5.0)/float(sequential));
+			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 120, 1, 0.33, 4.0, 0.4, 1, (Smite_Radius * 5.0)/float(sequential), DisplayToClient);
 			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
 		}
 		
 		secondLoc[2] = 9999.0;
 		
-		spawnBeam(0.8, 125, 0, 255, 255, "materials/sprites/laserbeam.vmt", 8.0, 8.2, _, 5.0, secondLoc, spawnLoc);	
-		spawnBeam(0.8, 125, 0, 255, 200, "materials/sprites/lgtning.vmt", 5.0, 5.2, _, 5.0, secondLoc, spawnLoc);	
+		spawnBeam(0.8, 125, 0, 255, 255, "materials/sprites/laserbeam.vmt", 8.0, 8.2, _, 5.0, secondLoc, spawnLoc, DisplayToClient);	
+		spawnBeam(0.8, 125, 0, 255, 200, "materials/sprites/lgtning.vmt", 5.0, 5.2, _, 5.0, secondLoc, spawnLoc, DisplayToClient);	
 		
-		EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, spawnLoc, _, 75, _ , 0.5);
+		if(LastMann)
+		{
+			EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 75, SND_NOFLAGS, 0.5, SNDPITCH_NORMAL, -1, spawnLoc);
+		}
+		else
+		{
+			EmitSoundToClient(client, SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 75, SND_NOFLAGS, 0.5, SNDPITCH_NORMAL, -1, spawnLoc);
+		}
 		
 		DataPack pack_boom = new DataPack();
 		pack_boom.WriteFloat(spawnLoc[0]);
@@ -1048,9 +1068,17 @@ public Action HeartBroken_Smite_Timer(Handle Smite_Logic, DataPack pack)
 	}
 	else
 	{
-		spawnRing_Vectors(spawnLoc, Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 120, 1, 0.33, 3.0, 0.1, 1, 1.0);
-		EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, 0.7, GetRandomInt(80, 110));
+		spawnRing_Vectors(spawnLoc, Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 120, 1, 0.33, 3.0, 0.1, 1, 1.0, DisplayToClient);
 		
+		if(LastMann)
+		{
+			EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, 0, SNDCHAN_AUTO, 60, SND_NOFLAGS, 0.7, GetRandomInt(80, 110), -1, spawnLoc);
+		}
+		else
+		{
+			EmitSoundToClient(client, SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, 0, SNDCHAN_AUTO, 60, SND_NOFLAGS, 0.7, GetRandomInt(80, 110), -1, spawnLoc);
+		}
+
 		ResetPack(pack);
 		WritePackCell(pack, GetClientUserId(client));
 		WritePackFloat(pack, NumLoops + Smite_ChargeSpan);
@@ -1062,7 +1090,7 @@ public Action HeartBroken_Smite_Timer(Handle Smite_Logic, DataPack pack)
 	
 	return Plugin_Continue;
 }
-static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
+static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0}, int client = 0)
 {
 	int color[4];
 	color[0] = r;
@@ -1074,7 +1102,10 @@ static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[
 
 	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
 	
-	TE_SendToAll();
+	if(client == 0)
+		TE_SendToAll();
+	else
+		TE_SendToClient(client);
 }
 
 

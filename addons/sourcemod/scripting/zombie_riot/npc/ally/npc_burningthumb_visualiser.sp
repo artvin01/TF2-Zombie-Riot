@@ -35,9 +35,11 @@ methodmap BurningThumbVisualiserAbility < CClotBody
 	public void PlayInitSound() 
 	{
 		EmitSoundToAll(g_InitiateSound[GetRandomInt(0, sizeof(g_InitiateSound) - 1)], this.index, SNDCHAN_STATIC, 80, _, 1.0, 90, .soundtime = GetGameTime() - 1.0);
+		EmitSoundToAll(g_InitiateSound[GetRandomInt(0, sizeof(g_InitiateSound) - 1)], this.index, SNDCHAN_STATIC, 80, _, 1.0, 90, .soundtime = GetGameTime() - 1.0);
 	}
 	public void PlayReloadSound() 
 	{
+		EmitSoundToAll(g_ReloadSoundPlay[GetRandomInt(0, sizeof(g_ReloadSoundPlay) - 1)], this.index, SNDCHAN_STATIC, 80, _, 1.0, 80);
 		EmitSoundToAll(g_ReloadSoundPlay[GetRandomInt(0, sizeof(g_ReloadSoundPlay) - 1)], this.index, SNDCHAN_STATIC, 80, _, 1.0, 80);
 	}
 
