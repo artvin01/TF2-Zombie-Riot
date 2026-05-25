@@ -328,7 +328,6 @@ methodmap ChaosKahmlstein < CClotBody
 		i_SpeedUpTime[npc.index] = 0;
 		npc.g_TimesSummoned = 0;
 		
-		b_thisNpcIsARaid[npc.index] = true;
 		
 
 		bool final = StrContains(data, "final_item") != -1;
@@ -356,7 +355,6 @@ methodmap ChaosKahmlstein < CClotBody
 			b_ThisNpcIsImmuneToNuke[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
-			b_thisNpcIsARaid[npc.index] = true;
 			npc.m_flNextChargeSpecialAttack = 0.0;
 			b_NoKillFeed[npc.index] = true;
 			b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
@@ -370,7 +368,6 @@ methodmap ChaosKahmlstein < CClotBody
 			b_ThisNpcIsImmuneToNuke[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
-			b_thisNpcIsARaid[npc.index] = true;
 			npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 10.0;
 			npc.i_GunMode = 1;
 			b_NoKillFeed[npc.index] = true;
@@ -385,7 +382,6 @@ methodmap ChaosKahmlstein < CClotBody
 			b_ThisNpcIsImmuneToNuke[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
-			b_thisNpcIsARaid[npc.index] = true;
 			npc.m_flRangedSpecialDelay = 0.0;
 			b_NoKillFeed[npc.index] = true;
 			b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
@@ -393,6 +389,7 @@ methodmap ChaosKahmlstein < CClotBody
 		}
 		else
 		{
+			b_thisNpcIsARaid[npc.index] = true;
 			RemoveAllDamageAddition();
 			func_NPCFuncWin[npc.index] = view_as<Function>(ChaosKahmlstein_Win);
 			SDKHook(npc.index, SDKHook_OnTakeDamagePost, ChaosKahmlstein_OnTakeDamagePost);

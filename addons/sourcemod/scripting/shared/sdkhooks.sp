@@ -3813,7 +3813,6 @@ void SdkHooks_SetAndUpdateArmorClientText(int client)
 	DispatchKeyValue(ArmorText,	 "color", sColor);
 	DispatchKeyValue(ArmorText, "message", ch_ArmorText);
 }
-#endif
 
 
 bool PlayersLeftAlive(int victim)
@@ -3831,3 +3830,4 @@ bool PlayersLeftAlive(int victim)
 	}
 	return Any_Left;
 }
+#endif
