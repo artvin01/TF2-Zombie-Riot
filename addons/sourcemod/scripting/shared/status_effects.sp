@@ -261,6 +261,7 @@ void InitStatusEffects()
 	StatusEffects_Construct2_EnemyModifs();
 	StatusEffects_HeartBroken();
 	StatusEffects_ShieldLogic();
+	StatusEffects_Red_Mist();
 }
 
 static int CategoryPage[MAXPLAYERS];
@@ -10290,4 +10291,36 @@ void Func_ShieldingHud(int attacker, int victim, StatusEffect Apply_MasterStatus
 {
 	//only display to client
 	Format(HudToDisplay, SizeOfChar, "SH[%i]", RoundToNearest(Apply_StatusEffect.DataForUse));
+}
+
+void StatusEffects_Red_Mist()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Mark Of Prey");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "✫");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Ego Manifestation");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ↂ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= 0.85; //15% less dmg taken
+	data.DamageDealMulti			= 0.35; //35% more dmg dealt
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }

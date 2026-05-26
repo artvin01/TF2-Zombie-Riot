@@ -747,6 +747,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_guiding_missile.sp"
 #include "custom/kit_heartbroken.sp"
 #include "custom/weapon_burningthumb.sp"
+#include "custom/kit_red_mist.sp"
 
 void ZR_PluginLoad()
 {
