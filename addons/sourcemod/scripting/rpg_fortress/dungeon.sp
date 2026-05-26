@@ -572,6 +572,7 @@ enum struct DungeonEnum
 				
 				
 				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR);
+				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
 				
 				DispatchSpawn(entity);
 				SetEntityCollisionGroup(entity, 2);
@@ -590,7 +591,6 @@ enum struct DungeonEnum
 				if(this.Wear3[0])
 					GivePropAttachment(entity, this.Wear3);
 				
-				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
 				
 				SetVariantString(this.Idle);
 				AcceptEntityInput(entity, "SetDefaultAnimation", entity, entity);

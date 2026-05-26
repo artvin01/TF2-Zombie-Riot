@@ -49,8 +49,8 @@ enum struct BlockEnum
 			DispatchKeyValue(entity, "rendercolor", this.Color);
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", MIN_FADE_DISTANCE);
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", MAX_FADE_DISTANCE);
-			DispatchSpawn(entity);
 			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
+			DispatchSpawn(entity);
 
 			for(int i; i < 3; i++)
 			{
@@ -259,8 +259,8 @@ void Plots_ZoneCached()
 				DispatchKeyValue(prop, "targetname", "rpg_fortress");
 				DispatchKeyValue(prop, "model", PlatformModel);
 				DispatchKeyValue(prop, "solid", "2");
-				DispatchSpawn(prop);
 				SetEntPropFloat(prop, Prop_Send, "m_flModelScale", PlatformScale);
+				DispatchSpawn(prop);
 				
 				for(int i; i < 3; i++)
 				{
