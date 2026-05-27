@@ -50,8 +50,8 @@ static const char DigDown[] = "npc/antlion/digdown1.wav";
 static const char DigUp[] = "npc/antlion/digup1.wav";
 static const char GrabBuff[] = "npc/antlion/land1.wav";
 
-static int EndspeakerLowId;
-static int EndspeakerHighId;
+static int HeraldLowId;
+static int HeraldHighId;
 
 void Herald_MapStart()
 {
@@ -71,14 +71,14 @@ void Herald_MapStart()
 	PrecacheModel("models/antlion_guard.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "The Endspeaker, Will of We Many");
+	strcopy(data.Name, sizeof(data.Name), "Herald of the Abyss");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_herald_1");
-	strcopy(data.Icon, sizeof(data.Icon), "ds_endspeaker");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_herald");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL;
 	data.Category = Type_Seaborn;
 	data.Func = ClotSummon1;
-	EndspeakerLowId = NPC_Add(data);
+	HeraldLowId = NPC_Add(data);
 
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_herald_2");
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
@@ -94,7 +94,7 @@ void Herald_MapStart()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_herald_4");
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Func = ClotSummon4;
-	EndspeakerHighId = NPC_Add(data);
+	HeraldHighId = NPC_Add(data);
 }
 
 static any ClotSummon1(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -499,8 +499,8 @@ bool Herald_GetPos(float pos[3])
 	{
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE &&
-			i_NpcInternalId[entity] >= EndspeakerLowId &&
-			i_NpcInternalId[entity] <= EndspeakerHighId &&
+			i_NpcInternalId[entity] >= HeraldLowId &&
+			i_NpcInternalId[entity] <= HeraldHighId &&
 			IsEntityAlive(entity))
 		{
 			WorldSpaceCenter(entity, pos);

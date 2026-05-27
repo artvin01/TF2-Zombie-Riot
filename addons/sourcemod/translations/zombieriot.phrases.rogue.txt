@@ -2773,8 +2773,8 @@
 	}
 	"Empty Plate Desc"
 	{
-		"en"	"Waiter! Waiter! More Endspeakers please!\n{green}Steal and consume dropped Remains as new Artifacts, max of 5"
-		"it"	"Cameriere! Cameriere! Più Endspeaker per favore! \n{green}Sfrutta e consuma i Resti caduti come nuovi Artefatti, massimo 5"
+		"en"	"Waiter! Waiter! More Heralds please!\n{green}Steal and consume dropped Remains as new Artifacts, max of 5"
+		"it"	"Cameriere! Cameriere! Più Herald per favore! \n{green}Sfrutta e consuma i Resti caduti come nuovi Artefatti, massimo 5"
 		"ko"	"신탁 도살자 하나 주문이요!\n{green}전장에 배치된 남겨진 유해들을 빼앗아 흡수하고 소장품으로 만듭니다. 최대 5개까지 흡수 가능."
 	}
 	"Founder Fondue"

@@ -2335,13 +2335,13 @@
 		"it"		"Resti consumabili"
 		"ko"		"남겨진 유해들"
 	}
-	"The Endspeaker, Will of We Many"
+	"Herald of the Abyss"
 	{
-		"en"		"The Endspeaker, Will of We Many"
+		"en"		"Herald of the Abyss"
 		"pt"		"O Último Falante, A Vontade de Muitos"
 		"ru"		"Говорящий с концом, воля многих из нас"
 		"chi"		"屠谕者，大群意志"
-		"it"		"L'Endspeaker, Volontà di Noi Molti"
+		"it"		"L'Herald, Volontà di Noi Molti"
 		"ko"		"신탁 도살자, 위매니의 의지"
 	}
 	"Nethersea Founder"
