@@ -94,9 +94,9 @@ methodmap SeabornHeavy < CClotBody
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 

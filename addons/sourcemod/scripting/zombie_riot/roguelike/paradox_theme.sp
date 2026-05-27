@@ -223,7 +223,7 @@ public void Rogue_HeavyRain_Ally(int entity, StringMap map)
 		{
 			switch(i_CustomWeaponEquipLogic[weapon])
 			{
-				case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS, WEAPON_SEABORNMELEE, WEAPON_SKADI:
+				case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS, WEAPON_DWELLERMELEE, WEAPON_SKADI:
 				{
 					seaborn = true;
 					break;
@@ -249,7 +249,7 @@ public void Rogue_HeavyRain_Ally(int entity, StringMap map)
 
 public void Rogue_HeavyRain_Enemy(int entity)
 {
-	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_SEABORN)
+	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_DWELLER)
 	{
 		fl_Extra_Speed[entity] *= 1.1;
 	}

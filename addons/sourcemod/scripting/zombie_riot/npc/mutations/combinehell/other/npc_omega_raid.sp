@@ -1497,7 +1497,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 					Format(Text_Lines, sizeof(Text_Lines), "Y'know what? I HOPE {green}he{default} comes back.",client);
 			}
 		}
-		case WEAPON_SEABORN_MISC:
+		case WEAPON_DWELLER_MISC:
 		{
 			if(Waves_InFreeplay())
 			{

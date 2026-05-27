@@ -275,7 +275,7 @@ void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 		int aspect = random % A_Water;
 
 		// Special Aspects
-		//if(i_BleedType[victim] == BLEEDTYPE_SEABORN && !b_thisNpcIsABoss[victim] && (random % 9) == 0)
+		//if(i_BleedType[victim] == BLEEDTYPE_DWELLER && !b_thisNpcIsABoss[victim] && (random % 9) == 0)
 		//{
 		//	aspect = A_Water;
 		//}
@@ -300,7 +300,7 @@ void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 		{
 			// +1 or -1
 			int aspect2 = (random + ((i_NpcInternalId[victim] % 2) ? 1 : -1)) % A_Water;
-			//if(i_BleedType[victim] == BLEEDTYPE_SEABORN)
+			//if(i_BleedType[victim] == BLEEDTYPE_DWELLER)
 			//	aspect2 = A_Water;
 			
 			Aspects[attacker][aspect2] += gain;

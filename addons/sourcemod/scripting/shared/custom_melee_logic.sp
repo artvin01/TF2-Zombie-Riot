@@ -202,7 +202,7 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				SagaAttackBeforeSwing(client);
 			}
-			case WEAPON_SEABORNMELEE:
+			case WEAPON_DWELLERMELEE:
 			{
 				SeaMelee_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
 			}
@@ -841,7 +841,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 #if defined ZR
 					switch(i_CustomWeaponEquipLogic[weapon])
 					{
-						case WEAPON_SEABORNMELEE, WEAPON_HAMMER_NONPAP, WEAPON_HAMMER_PAP_1:
+						case WEAPON_DWELLERMELEE, WEAPON_HAMMER_NONPAP, WEAPON_HAMMER_PAP_1:
 						{
 							damage *= 0.5;
 						}

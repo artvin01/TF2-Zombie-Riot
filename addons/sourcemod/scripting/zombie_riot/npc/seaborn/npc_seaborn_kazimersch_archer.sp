@@ -105,16 +105,16 @@ methodmap KazimierzKnightArcher < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_SEABORN_WALK_RANGED");
+		int iActivity = npc.LookupActivity("ACT_DWELLER_WALK_RANGED");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
 		func_NPCDeath[npc.index] = KazimierzKnightArcher_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = KazimierzKnightArcher_OnTakeDamage;
@@ -252,7 +252,7 @@ public void KazimierzKnightArcher_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_SEABORN_WALK_RANGED");
+					npc.SetActivity("ACT_DWELLER_WALK_RANGED");
 				}
 			}
 			case 1:
@@ -265,7 +265,7 @@ public void KazimierzKnightArcher_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_SEABORN_WALK_RANGED");
+					npc.SetActivity("ACT_DWELLER_WALK_RANGED");
 				}	
 
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
@@ -276,7 +276,7 @@ public void KazimierzKnightArcher_ClotThink(int iNPC)
 					npc.m_iTarget = Enemy_I_See;
 
 					npc.m_flSpeed = 0.0;
-					npc.AddGesture("ACT_SEABORN_ATTACK_RANGED_1");
+					npc.AddGesture("ACT_DWELLER_ATTACK_RANGED_1");
 
 
 					npc.m_flAttackHappens = gameTime + 0.35;

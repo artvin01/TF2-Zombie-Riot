@@ -55,7 +55,7 @@ methodmap Isharmla < CClotBody
 		npc.SetActivity("ACT_SKADI_WALK");
 		npc.m_bisWalking = true;
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		

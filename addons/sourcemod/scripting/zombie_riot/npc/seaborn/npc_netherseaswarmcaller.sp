@@ -77,12 +77,12 @@ methodmap SeaSwarmcaller < CSeaBody
 		
 		npc.SetElite(elite, carrier);
 		i_NpcWeight[npc.index] = 3;
-		npc.SetActivity("ACT_SEABORN_WALK_TOOL_3");
+		npc.SetActivity("ACT_DWELLER_WALK_TOOL_3");
 		KillFeed_SetKillIcon(npc.index, "saw_kill");
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
 		func_NPCDeath[npc.index] = SeaSwarmcaller_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = SeaSwarmcaller_OnTakeDamage;

@@ -291,7 +291,7 @@ public void Rogue_AntiXeno_Enemy(int entity)
 
 public void Rogue_AntiSeaborn_Enemy(int entity)
 {
-	if(i_BleedType[entity] == BLEEDTYPE_SEABORN)
+	if(i_BleedType[entity] == BLEEDTYPE_DWELLER)
 	{
 		fl_Extra_MeleeArmor[entity] *= 1.75;
 		fl_Extra_RangedArmor[entity] *= 1.75;

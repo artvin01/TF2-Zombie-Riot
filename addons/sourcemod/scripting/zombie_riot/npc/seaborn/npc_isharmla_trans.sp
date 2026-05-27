@@ -93,9 +93,9 @@ methodmap IsharmlaTrans < CClotBody
 		npc.SetActivity("ACT_MP_STAND_ITEM1");
 		KillFeed_SetKillIcon(npc.index, "headtaker");
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
 		func_NPCDeath[npc.index] = IsharmlaTrans_NPCDeath;
 		func_NPCThink[npc.index] = IsharmlaTrans_ClotThink;

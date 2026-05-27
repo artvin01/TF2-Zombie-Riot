@@ -85,9 +85,9 @@ methodmap SeabornDefender < CClotBody
 		npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
 		KillFeed_SetKillIcon(npc.index, "splendid_screen");
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
 		func_NPCDeath[npc.index] = SeabornDefender_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = SeabornDefender_OnTakeDamage;

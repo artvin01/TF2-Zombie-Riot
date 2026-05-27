@@ -91,9 +91,9 @@ methodmap SeaRunner < CSeaBody
 		npc.SetActivity("ACT_RUN");
 		KillFeed_SetKillIcon(npc.index, "bread_bite");
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
 		func_NPCDeath[npc.index] = SeaRunner_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = SeaRunner_OnTakeDamage;

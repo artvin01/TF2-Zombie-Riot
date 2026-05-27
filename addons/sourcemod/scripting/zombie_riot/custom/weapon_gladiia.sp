@@ -317,12 +317,12 @@ float Gladiia_OnTakeDamageSelf(int victim, int attacker, float damage, int damag
 	{
 		case 1:
 		{
-			if(i_BleedType[attacker] == BLEEDTYPE_SEABORN)
+			if(i_BleedType[attacker] == BLEEDTYPE_DWELLER)
 				return damage * 0.925;//0.85;
 		}
 		case 2:
 		{
-			if(i_BleedType[attacker] == BLEEDTYPE_SEABORN)
+			if(i_BleedType[attacker] == BLEEDTYPE_DWELLER)
 				return damage * 0.875;//0.75;
 		}
 		case 3:

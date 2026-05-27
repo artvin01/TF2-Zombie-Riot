@@ -97,11 +97,11 @@ methodmap SeaReefbreaker < CSeaBody
 		
 		npc.SetElite(elite, carrier);
 		i_NpcWeight[npc.index] = 4;
-		npc.SetActivity("ACT_SEABORN_WALK_BESERK");
+		npc.SetActivity("ACT_DWELLER_WALK_BESERK");
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		KillFeed_SetKillIcon(npc.index, "nessieclub");
 		
 		func_NPCDeath[npc.index] = SeaReefbreaker_NPCDeath;
@@ -338,7 +338,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 					npc.m_flNextMeleeAttack = gameTime + 1.5;
 					npc.PlayMeleeSound();
 
-					npc.AddGesture("ACT_SEABORN_ATTACK_BESERK_1");	// TODO: Set anim
+					npc.AddGesture("ACT_DWELLER_ATTACK_BESERK_1");	// TODO: Set anim
 					npc.m_flAttackHappens = gameTime + 0.35;
 					npc.m_flDoingAnimation = gameTime + 0.35;
 				}

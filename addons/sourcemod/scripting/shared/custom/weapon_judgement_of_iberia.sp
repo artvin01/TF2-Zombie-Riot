@@ -127,7 +127,7 @@ public void Weapon_Amphi_DoubleStrike(int client, int weapon, bool crit, int slo
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
 			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-			if(IsValidEntity(entity) && i_BleedType[entity] == BLEEDTYPE_SEABORN)
+			if(IsValidEntity(entity) && i_BleedType[entity] == BLEEDTYPE_DWELLER)
 			{
 				ThereWasSeaborn = true;
 				break;
@@ -145,7 +145,7 @@ public void Weapon_Amphi_DoubleStrike(int client, int weapon, bool crit, int slo
 				{
 					switch(i_CustomWeaponEquipLogic[Active_weapon])
 					{
-						case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC, WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS, WEAPON_SKADI:
+						case WEAPON_DWELLERMELEE, WEAPON_DWELLER_MISC, WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS, WEAPON_SKADI:
 						{
 							ThereWasSeaborn = true;
 							break;

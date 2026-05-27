@@ -329,7 +329,7 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 		case Merchant_Jaye:
 		{
 			// Jaye: Bonus Damage vs Seaborn
-			if(i_BleedType[victim] == BLEEDTYPE_SEABORN)
+			if(i_BleedType[victim] == BLEEDTYPE_DWELLER)
 			{
 				switch(MerchantLevel[attacker])
 				{

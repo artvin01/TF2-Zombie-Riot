@@ -2424,7 +2424,7 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 					Format(Text_Lines, sizeof(Text_Lines), "if {green}he{default} comes back im blaming {gold}%N{default}.",client);
 			}
 		}
-		case WEAPON_SEABORN_MISC:
+		case WEAPON_DWELLER_MISC:
 		{
 			switch(GetRandomInt(0,1))
 			{

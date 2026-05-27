@@ -81,7 +81,7 @@ methodmap VestaDestructor < CSeaBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		i_NpcWeight[npc.index] = 3;
-		npc.SetActivity("ACT_SEABORN_WALK_TOOL_3");
+		npc.SetActivity("ACT_DWELLER_WALK_TOOL_3");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

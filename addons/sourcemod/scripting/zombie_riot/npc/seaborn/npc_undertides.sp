@@ -82,9 +82,9 @@ methodmap UnderTides < CClotBody
 
 		i_NpcWeight[npc.index] = 999;
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		npc.m_bDissapearOnDeath = true;
 		
 		func_NPCDeath[npc.index] = UnderTides_NPCDeath;

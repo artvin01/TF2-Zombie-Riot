@@ -1952,7 +1952,7 @@ static void Atomizer_Weapon_Lines(Atomizer npc, int client)
 
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		/*case WEAPON_SEABORNMELEE: switch(GetRandomInt(0,3)){
+		/*case WEAPON_DWELLERMELEE: switch(GetRandomInt(0,3)){
 			case 0: Format(Text_Lines, sizeof(Text_Lines), "Damn it! {darkblue}Seaborn{default} is here Again!");
 			case 1: Format(Text_Lines, sizeof(Text_Lines), "ha. {darkblue}Seaborn{default}!?");
 			case 2: Format(Text_Lines, sizeof(Text_Lines), "I found an {darkblue}Infected{default} person, I need a Backup!");

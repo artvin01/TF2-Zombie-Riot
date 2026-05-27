@@ -98,9 +98,9 @@ methodmap SeabornGuard < CClotBody
 		npc.SetActivity("ACT_CUSTOM_WALK_SWORD");
 		KillFeed_SetKillIcon(npc.index, "claidheamohmor");
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
 		func_NPCDeath[npc.index] = SeabornGuard_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;

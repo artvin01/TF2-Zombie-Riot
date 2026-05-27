@@ -109,7 +109,7 @@ methodmap LastKnight < CClotBody
 		npc.SetActivity("ACT_LAST_KNIGHT_WALK");
 		KillFeed_SetKillIcon(npc.index, "spy_cicle");
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		

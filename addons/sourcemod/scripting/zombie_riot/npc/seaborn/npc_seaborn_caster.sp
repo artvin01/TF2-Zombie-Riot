@@ -83,9 +83,9 @@ methodmap SeabornCaster < CClotBody
 		npc.SetActivity("ACT_RUN");
 		KillFeed_SetKillIcon(npc.index, "merasmus_zap");
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
 		func_NPCDeath[npc.index] = SeabornCaster_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
@@ -199,7 +199,7 @@ public void SeabornCaster_ClotThink(int iNPC)
 				npc.m_iTarget = target;
 				npc.m_flNextMeleeAttack = gameTime + 1.65;
 
-				npc.AddGesture("ACT_SEABORN_ATTACK_TOOL_2");
+				npc.AddGesture("ACT_DWELLER_ATTACK_TOOL_2");
 				npc.m_flAttackHappens = gameTime + 0.25;
 				//npc.m_flDoingAnimation = gameTime + 1.2;
 				npc.m_flHeadshotCooldown = gameTime + 0.55;

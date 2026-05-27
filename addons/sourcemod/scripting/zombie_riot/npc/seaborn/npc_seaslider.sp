@@ -100,9 +100,9 @@ methodmap SeaSlider < CSeaBody
 		npc.SetActivity("ACT_WALK_ON_FIRE");
 		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
 		func_NPCDeath[npc.index] = SeaSlider_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = SeaSlider_OnTakeDamage;

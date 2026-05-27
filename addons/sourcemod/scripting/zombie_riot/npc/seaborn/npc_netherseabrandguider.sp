@@ -97,12 +97,12 @@ methodmap SeaBrandguider < CSeaBody
 		
 		npc.SetElite(elite, carrier);
 		i_NpcWeight[npc.index] = 4;
-		npc.SetActivity("ACT_SEABORN_WALK_TOOL_1");
+		npc.SetActivity("ACT_DWELLER_WALK_TOOL_1");
 		KillFeed_SetKillIcon(npc.index, "freedom_staff");
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
 		func_NPCDeath[npc.index] = SeaBrandguider_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = SeaBrandguider_OnTakeDamage;
@@ -243,7 +243,7 @@ public void SeaBrandguider_ClotThink(int iNPC)
 					npc.m_flNextMeleeAttack = gameTime + 2.0;
 					npc.PlayMeleeSound();
 
-					npc.AddGesture("ACT_SEABORN_ATTACK_TOOL_1");	// TODO: Set anim
+					npc.AddGesture("ACT_DWELLER_ATTACK_TOOL_1");	// TODO: Set anim
 					npc.m_flAttackHappens = gameTime + 0.45;
 					//npc.m_flDoingAnimation = gameTime + 1.2;
 					npc.m_flHeadshotCooldown = gameTime + 1.0;

@@ -124,16 +124,16 @@ methodmap KazimierzKnight < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_SEABORN_WALK_TOOL_1");
+		int iActivity = npc.LookupActivity("ACT_DWELLER_WALK_TOOL_1");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
 		func_NPCDeath[npc.index] = KazimierzKnight_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = KazimierzKnight_OnTakeDamage;
@@ -328,7 +328,7 @@ public void KazimierzKnight_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_SEABORN_WALK_TOOL_1");
+					npc.SetActivity("ACT_DWELLER_WALK_TOOL_1");
 				}
 			}
 			case 1:
@@ -341,7 +341,7 @@ public void KazimierzKnight_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_SEABORN_WALK_TOOL_1");
+					npc.SetActivity("ACT_DWELLER_WALK_TOOL_1");
 				}	
 
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
@@ -351,7 +351,7 @@ public void KazimierzKnight_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.AddGesture("ACT_SEABORN_ATTACK_TOOL_1");
+					npc.AddGesture("ACT_DWELLER_ATTACK_TOOL_1");
 					
 
 					npc.PlayMeleeSound();
@@ -366,8 +366,8 @@ public void KazimierzKnight_ClotThink(int iNPC)
 			case 2:
 			{		
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				npc.RemoveGesture("ACT_SEABORN_ATTACK_TOOL_1");
-				npc.AddGesture("ACT_SEABORN_DEFEND_TOOL_1");
+				npc.RemoveGesture("ACT_DWELLER_ATTACK_TOOL_1");
+				npc.AddGesture("ACT_DWELLER_DEFEND_TOOL_1");
 				npc.m_flAttackHappens = 0.0;
 					
 				npc.m_fbRangedSpecialOn = false;

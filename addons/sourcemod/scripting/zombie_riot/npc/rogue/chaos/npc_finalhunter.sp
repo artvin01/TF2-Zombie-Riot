@@ -179,7 +179,7 @@ static void ClotThink(int iNPC)
 			float pos[3];
 			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 			SeaFounder_SpawnNethersea(pos);
-			npc.m_iBleedType = BLEEDTYPE_SEABORN;
+			npc.m_iBleedType = BLEEDTYPE_DWELLER;
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime() + 9000.0;

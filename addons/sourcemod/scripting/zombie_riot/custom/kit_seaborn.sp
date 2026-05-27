@@ -75,7 +75,7 @@ void SeaBornMusicDo()
 }
 void SeaMelee_Enable(int client, int weapon)
 {
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SEABORNMELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_ULPIANUS)
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_DWELLERMELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_ULPIANUS)
 	{
 		MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 
@@ -104,7 +104,7 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 			{
 				switch(i_CustomWeaponEquipLogic[weapon])
 				{
-					case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC, WEAPON_ULPIANUS:
+					case WEAPON_DWELLERMELEE, WEAPON_DWELLER_MISC, WEAPON_ULPIANUS:
 					{
 						if(LastMann)
 						{

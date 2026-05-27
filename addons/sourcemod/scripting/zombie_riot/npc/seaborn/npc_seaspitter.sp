@@ -99,9 +99,9 @@ methodmap SeaSpitter < CSeaBody
 		npc.SetActivity("ACT_WALK");
 		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
 		func_NPCDeath[npc.index] = SeaSpitter_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = SeaSpitter_OnTakeDamage;

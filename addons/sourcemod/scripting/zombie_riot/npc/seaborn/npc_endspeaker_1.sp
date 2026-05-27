@@ -11,9 +11,9 @@ methodmap Herald1 < HeraldSmall
 		i_NpcWeight[npc.index] = 0;
 		npc.SetActivity("ACT_RUN");
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bHardMode = view_as<bool>(data[0]);
 		

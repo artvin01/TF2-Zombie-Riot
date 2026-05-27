@@ -101,9 +101,9 @@ methodmap SeabornVanguard < CClotBody
 		npc.SetActivity("ACT_CUSTOM_WALK_SAMURAI");
 		KillFeed_SetKillIcon(npc.index, "demokatana");
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
 		func_NPCDeath[npc.index] = SeabornVanguard_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;

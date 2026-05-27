@@ -20,9 +20,9 @@ methodmap Herald3 < HeraldNormal
 		npc.EatBuffs();
 		npc.PlaySpawnSound();
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		npc.m_bDissapearOnDeath = true;
 		
 		func_NPCDeath[npc.index] = Herald3_NPCDeath;

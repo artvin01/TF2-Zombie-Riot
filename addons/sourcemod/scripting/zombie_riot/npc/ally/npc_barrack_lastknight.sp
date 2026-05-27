@@ -147,7 +147,7 @@ methodmap BarrackLastKnight < BarrackBody
 		KillFeed_SetKillIcon(npc.index, "spy_cicle");
 		
 		npc.m_bSelectableByAll = true;
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		
 		npc.m_flSpeed = 150.0;
 		npc.m_bisWalking = true;
@@ -434,11 +434,11 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 										{
 											if(npc.m_fbRangedSpecialOn) // If charge is active he hits a second time and has extra effects
 											{
-												SDKHooks_TakeDamage(target, npc.index, client, i_BleedType[target] == BLEEDTYPE_SEABORN ? 80000.0 : 50000.0, DMG_CLUB, -1, _, vecHit);
+												SDKHooks_TakeDamage(target, npc.index, client, i_BleedType[target] == BLEEDTYPE_DWELLER ? 80000.0 : 50000.0, DMG_CLUB, -1, _, vecHit);
 												npc.m_flCharge = GameTime + 15.0;
 												npc.m_fbRangedSpecialOn = false;
 												
-												if(i_BleedType[target] == BLEEDTYPE_SEABORN)
+												if(i_BleedType[target] == BLEEDTYPE_DWELLER)
 												{
 													Custom_Knockback(npc.index, target, 1200.0, true);  // Seaborn Yeeter 9000
 													FreezeNpcInTime(target, 3.0);
@@ -449,7 +449,7 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 													FreezeNpcInTime(target, 1.0);
 												}
 											}
-											SDKHooks_TakeDamage(target, npc.index, client, i_BleedType[target] == BLEEDTYPE_SEABORN ? 40000.0 : 25000.0, DMG_CLUB, -1, _, vecHit);
+											SDKHooks_TakeDamage(target, npc.index, client, i_BleedType[target] == BLEEDTYPE_DWELLER ? 40000.0 : 25000.0, DMG_CLUB, -1, _, vecHit);
 											npc.PlayMeleeHitSound();
 										}
 										else
@@ -522,7 +522,7 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 										
 										if(AttackCount > 4)
 										{
-											SDKHooks_TakeDamage(target, npc.index, client, i_BleedType[target] == BLEEDTYPE_SEABORN ? 30000.0 : 20000.0, DMG_CLUB, -1, _, vecHit);
+											SDKHooks_TakeDamage(target, npc.index, client, i_BleedType[target] == BLEEDTYPE_DWELLER ? 30000.0 : 20000.0, DMG_CLUB, -1, _, vecHit);
 											npc.PlayFreezeSound();
 											AttackCount = 0;
 											
@@ -535,7 +535,7 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 										}
 										else
 										{
-											SDKHooks_TakeDamage(target, npc.index, client, i_BleedType[target] == BLEEDTYPE_SEABORN ? 30000.0 : 20000.0, DMG_CLUB, -1, _, vecHit);
+											SDKHooks_TakeDamage(target, npc.index, client, i_BleedType[target] == BLEEDTYPE_DWELLER ? 30000.0 : 20000.0, DMG_CLUB, -1, _, vecHit);
 										}
 										npc.PlayMeleeHitSound(); 
 									}
@@ -725,7 +725,7 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 										
 										if(target > 0)
 										{
-											SDKHooks_TakeDamage(target, npc.index, client, i_BleedType[target] == BLEEDTYPE_SEABORN ? 40000.0 : 25000.0, DMG_CLUB, -1, _, vecHit);
+											SDKHooks_TakeDamage(target, npc.index, client, i_BleedType[target] == BLEEDTYPE_DWELLER ? 40000.0 : 25000.0, DMG_CLUB, -1, _, vecHit);
 											ApplyStatusEffect(npc.index, target, "Near Zero", 1.5);
 											ApplyStatusEffect(npc.index, target, "Teslar Shock", 1.5);
 											npc.PlaySpearSound();

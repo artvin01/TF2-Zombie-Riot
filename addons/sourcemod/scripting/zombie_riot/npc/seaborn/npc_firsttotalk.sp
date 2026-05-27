@@ -85,12 +85,12 @@ methodmap FirstToTalk < CClotBody
 
 		i_NpcWeight[npc.index] = 4;
 		npc.m_bisWalking = true;
-		npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
+		npc.SetActivity("ACT_DWELLER_WALK_FIRST_1");
 		KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
 		func_NPCDeath[npc.index] = FirstToTalk_NPCDeath;
 		func_NPCThink[npc.index] = FirstToTalk_ClotThink;
@@ -190,7 +190,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 				{
 					npc.PlayAngerSound();
 					npc.m_bisWalking = false;
-					npc.SetActivity("ACT_SEABORN_FIRST_ATTACK_2");
+					npc.SetActivity("ACT_DWELLER_FIRST_ATTACK_2");
 					b_NpcIsInvulnerable[npc.index] = true;
 					
 					vecTarget[2] += 10.0;
@@ -223,7 +223,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 				}
 				else
 				{
-					npc.AddGesture("ACT_SEABORN_FIRST_ATTACK_1");
+					npc.AddGesture("ACT_DWELLER_FIRST_ATTACK_1");
 					
 					npc.m_flAttackHappens = gameTime + 0.35;
 
@@ -255,7 +255,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 			{
 				b_NpcIsInvulnerable[npc.index] = false;
 				npc.m_bisWalking = true;
-				npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
+				npc.SetActivity("ACT_DWELLER_WALK_FIRST_1");
 			}
 		}
 	}

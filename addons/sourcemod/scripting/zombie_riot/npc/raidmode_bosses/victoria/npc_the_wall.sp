@@ -2100,7 +2100,7 @@ static void Huscarls_Weapon_Lines(Huscarls npc, int client)
 
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		/*ase WEAPON_SEABORNMELEE: switch(GetRandomInt(0,3)){
+		/*ase WEAPON_DWELLERMELEE: switch(GetRandomInt(0,3)){
 			case 0: Format(Text_Lines, sizeof(Text_Lines), "Okay, now there's {darkblue}Seaborn{default} too.");
 			case 1: Format(Text_Lines, sizeof(Text_Lines), "I need some {red}Napalm{default} to fry the {darkblue}Seaborn{default}.");
 			case 2: Format(Text_Lines, sizeof(Text_Lines), "I found an {darkblue}Infected{default} person, I need a Backup!");

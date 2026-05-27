@@ -266,7 +266,7 @@ methodmap ToddHoward < CClotBody
 		}
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		if(StrContains(data, "seainfection") != -1)
-			npc.m_iBleedType = BLEEDTYPE_SEABORN;
+			npc.m_iBleedType = BLEEDTYPE_DWELLER;
 
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
@@ -1522,7 +1522,7 @@ void ToddHowardHurricane(ToddHoward npc, float gameTime)
 		
 		if(npc.m_flNextRangedAttackHappening < GetGameTime(npc.index))
 		{
-			npc.AddGesture("ACT_SEABORN_ATTACK_BESERK_1");
+			npc.AddGesture("ACT_DWELLER_ATTACK_BESERK_1");
 			npc.m_flDoingAnimation = gameTime + 0.5;
 			npc.m_flNextRangedAttackHappening = 0.0;
 			static float flPos[3]; 
