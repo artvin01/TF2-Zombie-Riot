@@ -38,7 +38,7 @@ void Remain_MapStart()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Consumable Remains");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_endspeaker_freeplay");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_herald_freeplay");
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	RemainsID = NPC_Add(data);
@@ -54,7 +54,7 @@ methodmap Remains < CClotBody
 	public Remains(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		if(!data[0])
-			return view_as<Remains>(EndSpeaker(vecPos, vecAng, ally));
+			return view_as<Remains>(Herald(vecPos, vecAng, ally));
 		
 		int type = StringToInt(data);
 		if(type < 0 || type >= sizeof(RemainModels))
@@ -140,7 +140,7 @@ static void ShowScuffedRemainsCircle(int entity)
 static bool IsClosestRemain(int thisEntity)
 {
 	float pos[3];
-	bool hard = EndSpeaker_GetPos(pos);
+	bool hard = Herald_GetPos(pos);
 
 	int remain1, remain2;
 	float dist1 = FAR_FUTURE;

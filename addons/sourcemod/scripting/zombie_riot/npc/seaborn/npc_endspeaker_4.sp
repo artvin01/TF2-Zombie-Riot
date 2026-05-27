@@ -1,17 +1,17 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-methodmap EndSpeaker4 < EndSpeakerLarge
+methodmap Herald4 < HeraldLarge
 {
-	public EndSpeaker4(int ally)
+	public Herald4(int ally)
 	{
 		float vecPos[3], vecAng[3];
-		view_as<EndSpeaker>(0).GetSpawn(vecPos, vecAng);
+		view_as<Herald>(0).GetSpawn(vecPos, vecAng);
 
 		char health[12];
-		IntToString(view_as<EndSpeaker>(0).m_iBaseHealth * 7, health, sizeof(health));
+		IntToString(view_as<Herald>(0).m_iBaseHealth * 7, health, sizeof(health));
 
-		EndSpeaker4 npc = view_as<EndSpeaker4>(CClotBody(vecPos, vecAng, "models/antlion_guard.mdl", "1.15", health, ally, false, true));
+		Herald4 npc = view_as<Herald4>(CClotBody(vecPos, vecAng, "models/antlion_guard.mdl", "1.15", health, ally, false, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_RUN");
@@ -24,9 +24,9 @@ methodmap EndSpeaker4 < EndSpeakerLarge
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		func_NPCDeath[npc.index] = EndSpeaker4_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = EndSpeaker_OnTakeDamage;
-		func_NPCThink[npc.index] = EndSpeaker4_ClotThink;
+		func_NPCDeath[npc.index] = Herald4_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Herald_OnTakeDamage;
+		func_NPCThink[npc.index] = Herald4_ClotThink;
 		
 		npc.m_flSpeed = 325.0;	// 0.8 + 0.5 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -54,9 +54,9 @@ methodmap EndSpeaker4 < EndSpeakerLarge
 	}
 }
 
-public void EndSpeaker4_ClotThink(int iNPC)
+public void Herald4_ClotThink(int iNPC)
 {
-	EndSpeaker4 npc = view_as<EndSpeaker4>(iNPC);
+	Herald4 npc = view_as<Herald4>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -221,9 +221,9 @@ public void EndSpeaker4_ClotThink(int iNPC)
 	}
 }
 
-void EndSpeaker4_NPCDeath(int entity)
+void Herald4_NPCDeath(int entity)
 {
-	EndSpeaker4 npc = view_as<EndSpeaker4>(entity);
+	Herald4 npc = view_as<Herald4>(entity);
 	
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();

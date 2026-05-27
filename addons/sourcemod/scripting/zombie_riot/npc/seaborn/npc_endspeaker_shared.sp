@@ -53,7 +53,7 @@ static const char GrabBuff[] = "npc/antlion/land1.wav";
 static int EndspeakerLowId;
 static int EndspeakerHighId;
 
-void EndSpeaker_MapStart()
+void Herald_MapStart()
 {
 	PrecacheSoundArray(LargeDeath);
 	PrecacheSoundArray(LargeAnger);
@@ -72,7 +72,7 @@ void EndSpeaker_MapStart()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "The Endspeaker, Will of We Many");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_endspeaker_1");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_herald_1");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_endspeaker");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL;
@@ -80,18 +80,18 @@ void EndSpeaker_MapStart()
 	data.Func = ClotSummon1;
 	EndspeakerLowId = NPC_Add(data);
 
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_endspeaker_2");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_herald_2");
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon2;
 	NPC_Add(data);
 
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_endspeaker_3");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_herald_3");
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Func = ClotSummon3;
 	NPC_Add(data);
 
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_endspeaker_4");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_herald_4");
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Func = ClotSummon4;
 	EndspeakerHighId = NPC_Add(data);
@@ -99,22 +99,22 @@ void EndSpeaker_MapStart()
 
 static any ClotSummon1(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return EndSpeaker1(vecPos, vecAng, team, data);
+	return Herald1(vecPos, vecAng, team, data);
 }
 
 static any ClotSummon2(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return EndSpeaker2(team);
+	return Herald2(team);
 }
 
 static any ClotSummon3(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return EndSpeaker3(team);
+	return Herald3(team);
 }
 
 static any ClotSummon4(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return EndSpeaker4(team);
+	return Herald4(team);
 }
 
 #define BUFF_FOUNDER		(1 << 0)
@@ -130,7 +130,7 @@ static int BaseHealth;
 static float SpawnPos[3];
 static float SpawnAng[3];
 
-methodmap EndSpeaker < CClotBody
+methodmap Herald < CClotBody
 {
 	public void PlayDeathSound() 
 	{
@@ -140,27 +140,27 @@ methodmap EndSpeaker < CClotBody
 	{
 		EmitSoundToAll(DigUp[GetRandomInt(0, sizeof(DigUp) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public EndSpeaker(float vecPos[3], float vecAng[3], int ally)
+	public Herald(float vecPos[3], float vecAng[3], int ally)
 	{
 		FreeplayStage++;
 		switch(FreeplayStage)
 		{
 			case 2:
 			{
-				return view_as<EndSpeaker>(EndSpeaker2(ally));
+				return view_as<Herald>(Herald2(ally));
 			}
 			case 3:
 			{
-				return view_as<EndSpeaker>(EndSpeaker3(ally));
+				return view_as<Herald>(Herald3(ally));
 			}
 			case 4:
 			{
-				return view_as<EndSpeaker>(EndSpeaker4(ally));
+				return view_as<Herald>(Herald4(ally));
 			}
 		}
 		
 		FreeplayStage = 1;
-		return view_as<EndSpeaker>(EndSpeaker1(vecPos, vecAng, ally, "Elite"));
+		return view_as<Herald>(Herald1(vecPos, vecAng, ally, "Elite"));
 	}
 	public void GetSpawn(float pos[3], float ang[3])
 	{
@@ -413,7 +413,7 @@ methodmap EndSpeaker < CClotBody
 	}
 }
 
-methodmap EndSpeakerLarge < EndSpeaker
+methodmap HeraldLarge < Herald
 {
 	public void PlayDeathSound() 
 	{
@@ -429,7 +429,7 @@ methodmap EndSpeakerLarge < EndSpeaker
 	}
 }
 
-methodmap EndSpeakerNormal < EndSpeaker
+methodmap HeraldNormal < Herald
 {
 	public void PlayMeleeSound()
  	{
@@ -441,7 +441,7 @@ methodmap EndSpeakerNormal < EndSpeaker
 	}
 }
 
-methodmap EndSpeakerSmall < EndSpeaker
+methodmap HeraldSmall < Herald
 {
 	public void PlayMeleeSound()
  	{
@@ -453,12 +453,12 @@ methodmap EndSpeakerSmall < EndSpeaker
 	}
 }
 
-public Action EndSpeaker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Herald_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
 	
-	EndSpeaker npc = view_as<EndSpeaker>(victim);
+	Herald npc = view_as<Herald>(victim);
 	float gameTime = GetGameTime(npc.index);
 
 	static int Pity;
@@ -488,12 +488,12 @@ public Action EndSpeaker_OnTakeDamage(int victim, int &attacker, int &inflictor,
 	return Plugin_Changed;
 }
 
-public void EndSpeaker_BurrowAnim(const char[] output, int caller, int activator, float delay)
+public void Herald_BurrowAnim(const char[] output, int caller, int activator, float delay)
 {
 	RemoveEntity(caller);
 }
 
-bool EndSpeaker_GetPos(float pos[3])
+bool Herald_GetPos(float pos[3])
 {
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{

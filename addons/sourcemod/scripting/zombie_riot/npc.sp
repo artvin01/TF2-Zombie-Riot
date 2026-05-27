@@ -368,7 +368,7 @@ void NPC_ConfigSetup()
 	SeaSpewer_Precache();
 	SeaSwarmcaller_Precache();
 	SeaReefbreaker_Precache();
-	EndSpeaker_MapStart();
+	Herald_MapStart();
 	SeabornScout_Precache();
 	SeabornSoldier_Precache();
 	CitizenRunner_Precache();
@@ -2054,11 +2054,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/seaborn/npc_seaborn_kazimersch_beserker.sp"
 #include "npc/seaborn/npc_seaborn_kazimersch_longrange.sp"
 #include "npc/seaborn/npc_remains.sp"
-#include "npc/seaborn/npc_endspeaker_shared.sp"
-#include "npc/seaborn/npc_endspeaker_1.sp"
-#include "npc/seaborn/npc_endspeaker_2.sp"
-#include "npc/seaborn/npc_endspeaker_3.sp"
-#include "npc/seaborn/npc_endspeaker_4.sp"
+#include "npc/seaborn/npc_herald_shared.sp"
+#include "npc/seaborn/npc_herald_1.sp"
+#include "npc/seaborn/npc_herald_2.sp"
+#include "npc/seaborn/npc_herald_3.sp"
+#include "npc/seaborn/npc_herald_4.sp"
 #include "npc/seaborn/npc_netherseafounder.sp"
 #include "npc/seaborn/npc_netherseapredator.sp"
 #include "npc/seaborn/npc_netherseabrandguider.sp"

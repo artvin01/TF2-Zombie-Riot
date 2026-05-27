@@ -1,11 +1,11 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-methodmap EndSpeaker1 < EndSpeakerSmall
+methodmap Herald1 < HeraldSmall
 {
-	public EndSpeaker1(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Herald1(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		EndSpeaker1 npc = view_as<EndSpeaker1>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.0", "1200", ally, false, _, true));
+		Herald1 npc = view_as<Herald1>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.0", "1200", ally, false, _, true));
 		// 10000 x 0.4 x 0.3
 
 		i_NpcWeight[npc.index] = 0;
@@ -17,9 +17,9 @@ methodmap EndSpeaker1 < EndSpeakerSmall
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bHardMode = view_as<bool>(data[0]);
 		
-		func_NPCDeath[npc.index] = EndSpeaker1_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = EndSpeaker_OnTakeDamage;
-		func_NPCThink[npc.index] = EndSpeaker1_ClotThink;
+		func_NPCDeath[npc.index] = Herald1_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Herald_OnTakeDamage;
+		func_NPCThink[npc.index] = Herald1_ClotThink;
 		
 		npc.m_flSpeed = 250.0;	// 0.8 + 0.2 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -43,9 +43,9 @@ methodmap EndSpeaker1 < EndSpeakerSmall
 	}
 }
 
-public void EndSpeaker1_ClotThink(int iNPC)
+public void Herald1_ClotThink(int iNPC)
 {
-	EndSpeaker1 npc = view_as<EndSpeaker1>(iNPC);
+	Herald1 npc = view_as<Herald1>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -94,9 +94,9 @@ public void EndSpeaker1_ClotThink(int iNPC)
 	}
 }
 
-void EndSpeaker1_NPCDeath(int entity)
+void Herald1_NPCDeath(int entity)
 {
-	EndSpeaker1 npc = view_as<EndSpeaker1>(entity);
+	Herald1 npc = view_as<Herald1>(entity);
 	
 	npc.PlayDeathSound();
 
@@ -119,7 +119,7 @@ void EndSpeaker1_NPCDeath(int entity)
 		SetVariantString("BurrowIn");
 		AcceptEntityInput(entity_death, "SetAnimation");
 		
-		HookSingleEntityOutput(entity_death, "OnAnimationDone", EndSpeaker_BurrowAnim, true);
+		HookSingleEntityOutput(entity_death, "OnAnimationDone", Herald_BurrowAnim, true);
 
 		SetEntityRenderColor(entity_death, 100, 100, 255, 255);
 	}

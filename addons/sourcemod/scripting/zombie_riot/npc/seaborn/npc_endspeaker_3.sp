@@ -1,17 +1,17 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-methodmap EndSpeaker3 < EndSpeakerNormal
+methodmap Herald3 < HeraldNormal
 {
-	public EndSpeaker3(int ally)
+	public Herald3(int ally)
 	{
 		float vecPos[3], vecAng[3];
-		view_as<EndSpeaker>(0).GetSpawn(vecPos, vecAng);
+		view_as<Herald>(0).GetSpawn(vecPos, vecAng);
 
 		char health[12];
-		IntToString(view_as<EndSpeaker>(0).m_iBaseHealth * 4, health, sizeof(health));
+		IntToString(view_as<Herald>(0).m_iBaseHealth * 4, health, sizeof(health));
 
-		EndSpeaker3 npc = view_as<EndSpeaker3>(CClotBody(vecPos, vecAng, "models/antlion.mdl", "1.15", health, ally, false));
+		Herald3 npc = view_as<Herald3>(CClotBody(vecPos, vecAng, "models/antlion.mdl", "1.15", health, ally, false));
 		
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_RUN");
@@ -25,9 +25,9 @@ methodmap EndSpeaker3 < EndSpeakerNormal
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		npc.m_bDissapearOnDeath = true;
 		
-		func_NPCDeath[npc.index] = EndSpeaker3_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = EndSpeaker_OnTakeDamage;
-		func_NPCThink[npc.index] = EndSpeaker3_ClotThink;
+		func_NPCDeath[npc.index] = Herald3_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Herald_OnTakeDamage;
+		func_NPCThink[npc.index] = Herald3_ClotThink;
 		
 		npc.m_flSpeed = 325.0;	// 0.8 + 0.5 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -55,9 +55,9 @@ methodmap EndSpeaker3 < EndSpeakerNormal
 	}
 }
 
-public void EndSpeaker3_ClotThink(int iNPC)
+public void Herald3_ClotThink(int iNPC)
 {
-	EndSpeaker3 npc = view_as<EndSpeaker3>(iNPC);
+	Herald3 npc = view_as<Herald3>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -231,9 +231,9 @@ public void EndSpeaker3_ClotThink(int iNPC)
 	}
 }
 
-void EndSpeaker3_NPCDeath(int entity)
+void Herald3_NPCDeath(int entity)
 {
-	EndSpeaker3 npc = view_as<EndSpeaker3>(entity);
+	Herald3 npc = view_as<Herald3>(entity);
 	
 	npc.PlayDeathSound();
 
@@ -276,7 +276,7 @@ void EndSpeaker3_NPCDeath(int entity)
 		SetVariantString("digin");
 		AcceptEntityInput(entity_death, "SetAnimation");
 		
-		HookSingleEntityOutput(entity_death, "OnAnimationDone", EndSpeaker_BurrowAnim, true);
+		HookSingleEntityOutput(entity_death, "OnAnimationDone", Herald_BurrowAnim, true);
 
 		SetEntityRenderColor(entity_death, 200, 200, 255, 255);
 	}
