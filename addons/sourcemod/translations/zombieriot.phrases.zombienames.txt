@@ -2760,9 +2760,9 @@
 		"it"		"Torre"
 		"ko"		"배럭 망루"
 	}
-	"Dweller Nest"
+	"Dweller Bishop"
 	{
-		"en"		"Dweller Nest"
+		"en"		"Dweller Bishop"
 		"chi"		"接潮主教"
 		"it"		"Vescovo collegato a Tidelink"
 		"ko"		"파도의 주교"

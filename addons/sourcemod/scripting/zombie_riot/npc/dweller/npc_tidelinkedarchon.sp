@@ -134,7 +134,7 @@ public void DwellerArchon_ClotThink(int iNPC)
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		int maxhealth = ReturnEntityMaxHealth(npc.index) * 5;
 		
-		int entity = NPC_CreateByName("npc_dwellernest", -1, pos, ang, GetTeam(npc.index));
+		int entity = NPC_CreateByName("npc_dwellerbishop", -1, pos, ang, GetTeam(npc.index));
 		if(entity > MaxClients)
 		{
 			i_TargetAlly[npc.index] = EntIndexToEntRef(entity);

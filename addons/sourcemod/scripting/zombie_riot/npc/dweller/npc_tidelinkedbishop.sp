@@ -19,11 +19,11 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/bow_shoot.wav"
 };
 
-void DwellerNest_Precache()
+void DwellerBishop_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Dweller Nest");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dwellernest");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Bishop");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dwellerbishop");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_bishop");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
@@ -34,10 +34,10 @@ void DwellerNest_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return DwellerNest(vecPos, vecAng, team);
+	return DwellerBishop(vecPos, vecAng, team);
 }
 
-methodmap DwellerNest < CClotBody
+methodmap DwellerBishop < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -56,9 +56,9 @@ methodmap DwellerNest < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public DwellerNest(float vecPos[3], float vecAng[3], int ally)
+	public DwellerBishop(float vecPos[3], float vecAng[3], int ally)
 	{
-		DwellerNest npc = view_as<DwellerNest>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.6", "40000", ally, false, true));
+		DwellerBishop npc = view_as<DwellerBishop>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.6", "40000", ally, false, true));
 		// 40000 x 1.0
 
 		SetVariantInt(6);
@@ -72,9 +72,9 @@ methodmap DwellerNest < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 
-		func_NPCDeath[npc.index] = DwellerNest_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = DwellerNest_OnTakeDamage;
-		func_NPCThink[npc.index] = DwellerNest_ClotThink;
+		func_NPCDeath[npc.index] = DwellerBishop_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = DwellerBishop_OnTakeDamage;
+		func_NPCThink[npc.index] = DwellerBishop_ClotThink;
 		
 		npc.m_flSpeed = 200.0;//100.0;	// 0.4 x 250
 		npc.m_flMeleeArmor = 1.25;
@@ -101,9 +101,9 @@ methodmap DwellerNest < CClotBody
 	}
 }
 
-public void DwellerNest_ClotThink(int iNPC)
+public void DwellerBishop_ClotThink(int iNPC)
 {
-	DwellerNest npc = view_as<DwellerNest>(iNPC);
+	DwellerBishop npc = view_as<DwellerBishop>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -268,19 +268,19 @@ public void DwellerNest_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public void DwellerNest_DownedThink(int entity)
+public void DwellerBishop_DownedThink(int entity)
 {
-	DwellerNest npc = view_as<DwellerNest>(entity);
+	DwellerBishop npc = view_as<DwellerBishop>(entity);
 	npc.SetActivity("ACT_TrueStrength_RAGE");
 	npc.SetPlaybackRate(0.5);
-	SDKUnhook(entity, SDKHook_Think, DwellerNest_DownedThink);
+	SDKUnhook(entity, SDKHook_Think, DwellerBishop_DownedThink);
 }
 
-void DwellerNest_OnTakeDamage(int victim, int attacker, float damage)
+void DwellerBishop_OnTakeDamage(int victim, int attacker, float damage)
 {
 	if(attacker > 0)
 	{
-		DwellerNest npc = view_as<DwellerNest>(victim);
+		DwellerBishop npc = view_as<DwellerBishop>(victim);
 
 		if(!b_NpcIsInvulnerable[npc.index] && (damage * 2.0) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
@@ -289,14 +289,14 @@ void DwellerNest_OnTakeDamage(int victim, int attacker, float damage)
 			b_NpcIsInvulnerable[npc.index] = true;
 			npc.StopPathing();
 
-			SDKHook(victim, SDKHook_Think, DwellerNest_DownedThink);
+			SDKHook(victim, SDKHook_Think, DwellerBishop_DownedThink);
 		}
 	}
 }
 
-void DwellerNest_NPCDeath(int entity)
+void DwellerBishop_NPCDeath(int entity)
 {
-	DwellerNest npc = view_as<DwellerNest>(entity);
+	DwellerBishop npc = view_as<DwellerBishop>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 

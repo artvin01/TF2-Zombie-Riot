@@ -393,7 +393,7 @@ void NPC_ConfigSetup()
 	DwellerSupporter_Precache();
 	SaintAdrian_Precache();
 	DwellerArchon_Precache();
-	DwellerNest_Precache();
+	DwellerBishop_Precache();
 	Pathshaper_Precache();
 	PathshaperFractal_Precache();
 	AbyssLeviathan_Precache();

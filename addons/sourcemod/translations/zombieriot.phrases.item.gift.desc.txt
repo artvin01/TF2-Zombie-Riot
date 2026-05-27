@@ -1536,9 +1536,9 @@
 		"it"		"Una torre al vostro fianco."
 		"ko"		"당신의 팀에 소속된 망루입니다."
 	}
-	"Dweller Nest Desc"
+	"Dweller bishop Desc"
 	{
-		"en"		"A nest that has partially mutated.\nIt is part human, partly—\nUses a ranged attack\n- When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max"
+		"en"		"A bishop that has partially mutated.\nIt is part human, partly—\nUses a ranged attack\n- When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max"
 		"it"		"Quando la sua ''altra metà'' è viva e non è in coma, entra in coma quando gli HP raggiungono lo 0 e inizia a rigenerarsi quando gli HP raggiungono il massimo"
 		"ko"		"이 주교의 생명 형태는 이미 변화되어 있다.\n한 쪽은 인간으로 보이고, 다른 한 쪽은...\n-원거리 공격을 사용\n-임사 형태가 아닌 '파도의 멸사체' 가 살아있다면, 체력이 0이 됐을때 죽지 않고 '임사 형태'가 된 뒤, 체력을 천천히 회복합니다.\n-이 상태에서 체력이 전부 회복되면 다시 부활합니다."
 	}
