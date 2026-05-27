@@ -2081,7 +2081,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/dweller/npc_saintadrian.sp"
 #include "npc/dweller/npc_mirroring.sp"
 #include "npc/dweller/npc_mirroring_fractal.sp"
-#include "npc/dweller/npc_dwellernest.sp"
+#include "npc/dweller/npc_dwellerbishop.sp"
 #include "npc/dweller/npc_dwellerarchon.sp"
 #include "npc/dweller/npc_dweller_guard.sp"
 #include "npc/dweller/npc_dweller_defender.sp"
