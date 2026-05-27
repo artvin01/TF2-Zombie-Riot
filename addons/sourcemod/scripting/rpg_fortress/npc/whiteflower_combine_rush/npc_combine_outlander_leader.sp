@@ -141,7 +141,7 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 					switch(GetRandomInt(0,2))
 					{
 						case 0:
-							NpcSpeechBubble(this.index, "Would have hoped you were Irene.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Would have hoped you were Amphi.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 						case 1:
 							NpcSpeechBubble(this.index, "Why do these birds still try?", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 						case 2:

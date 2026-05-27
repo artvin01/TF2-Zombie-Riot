@@ -117,7 +117,7 @@ bool Construction_Material_Interact(int client, int entity)
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", vecOreOrigin);
 
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], client, SNDCHAN_AUTO, 80, _, 0.8, _);
-		TE_SetupBeamPoints(vecOrigin, vecOreOrigin, IreneReturnLaserSprite(), 0, 0, 0, 0.35, 1.0, 1.2, 1, 1.0, {255,50,50,255}, 0);
+		TE_SetupBeamPoints(vecOrigin, vecOreOrigin, AmphiReturnLaserSprite(), 0, 0, 0, 0.35, 1.0, 1.2, 1, 1.0, {255,50,50,255}, 0);
 		TE_SendToAll();
 		return true;
 	}
@@ -142,7 +142,7 @@ public Action MineMaterial_Passively(Handle timer, DataPack pack)
 		{
 			//close enough...
 			EmitSoundToAll(g_MeleeHitSound[GetRandomInt(0, sizeof(g_MeleeHitSound) - 1)], client, SNDCHAN_AUTO, 80, _, 0.8, _);
-			TE_SetupBeamPoints(vecOrigin, vecOreOrigin, IreneReturnLaserSprite(), 0, 0, 0, 0.35, 1.0, 1.2, 1, 1.0, {255,255,255,255}, 0);
+			TE_SetupBeamPoints(vecOrigin, vecOreOrigin, AmphiReturnLaserSprite(), 0, 0, 0, 0.35, 1.0, 1.2, 1, 1.0, {255,255,255,255}, 0);
 			TE_SendToAll();
 			SDKHooks_TakeDamage(EntityRock, client, client, 500.0, DMG_TRUEDAMAGE);
 			//deal true damage overtime.

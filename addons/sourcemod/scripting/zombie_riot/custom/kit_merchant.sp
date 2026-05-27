@@ -597,7 +597,7 @@ void Merchant_NPCTakeDamagePost(int attacker, float damage, int weapon)
 					color[2] = 0;
 					color[3] = 255;
 					float amp = 0.3;
-					TE_SetupBeamPoints(VicLoc, VicLoc2, IreneReturnLaserSprite(), 0, 0, 0, 0.15, 1.0, 1.2, 1, amp, color, 0);
+					TE_SetupBeamPoints(VicLoc, VicLoc2, AmphiReturnLaserSprite(), 0, 0, 0, 0.15, 1.0, 1.2, 1, amp, color, 0);
 					TE_SendToAll();
 				}
 			}

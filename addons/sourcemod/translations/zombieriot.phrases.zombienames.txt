@@ -5318,13 +5318,13 @@
 		"it"		"-Dà armatura a tutti gli alleati vicini se colpisce qualcosa, ridotta se si tratta di un nemico uberizzato o di una struttura."
 		"ko"		"-적중시 주변의 모든 아군에게 아머를 부여합니다. 대상이 우버차지 상태이거나 구조물이라면 아머 부여량이 감소합니다."
 	}
-	"Inquisitor Irene"
+	"Inquisitor Amphi"
 	{
-		"en"		"Inquisitor Irene"
-		"it"		"Inquisitore Irene"
+		"en"		"Inquisitor Amphi"
+		"it"		"Inquisitore Amphi"
 		"ko"		"재판관 아이린"
 	}
-	"Inquisitor Irene Desc"
+	"Inquisitor Amphi Desc"
 	{
 		"en"		"-If its knife is burning, next melee hit launches you up and marks you.\n-If enemy is marked, gains more ammo aswell.\n-If enemy is marked, shoots 3x faster.\n-Can activate judgement of iberia if close to enemies with a cooldown."
 		"it"		"-Se il suo coltello è in fiamme, il prossimo colpo in mischia ti lancia in alto e ti marchia.\n-Se il nemico è marcato, guadagna anche più munizioni.\n-Se il nemico è marcato, spara 3 volte più velocemente.\n-Può attivare il giudizio di iberia se vicino a nemici con un cooldown."

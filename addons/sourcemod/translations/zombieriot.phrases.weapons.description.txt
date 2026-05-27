@@ -2266,7 +2266,7 @@
 		"lt"	"-Daugiau Žalos\n-Greičiau šaundo"
 	}
 	
-	"Irene Weapon Desc"
+	"Amphi Weapon Desc"
 	{
 		"en"	"-Double strikes with m1\n-Charge ability on hit\n-Ability causes enemies to levitate near you, and automatically are shot by you with AOE explosives\n-deal more damage to airborn targets with your gun\n-If ''Seaborn'' exist, gain gain 15％ bonus attackspeed."
 		"fr"	"Chaque attaque frappe deux fois.\nObtenez une abilité après 42 coups.\nAbilité lance les ennemis dans l'air et les bombarde aves des tirs explosifs.\n+15％ cadence des attaques si des Seaborns existe."

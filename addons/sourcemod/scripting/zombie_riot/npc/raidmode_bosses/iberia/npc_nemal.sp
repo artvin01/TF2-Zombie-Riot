@@ -2339,7 +2339,7 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 				case 0:
 					Format(Text_Lines, sizeof(Text_Lines), "Hey hey thats my good {snow}friends{default} weapon {gold}%N{default}! She's a very nice Iberian.",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Oh {snow}Irene{default}, looks like you have a student, their name is {gold}%N{default}!",client);
+					Format(Text_Lines, sizeof(Text_Lines), "Oh {snow}Amphi{default}, looks like you have a student, their name is {gold}%N{default}!",client);
 			}
 		}
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "Were here to train.... why......");
