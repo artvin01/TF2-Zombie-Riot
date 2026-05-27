@@ -644,7 +644,7 @@ void NPC_ConfigSetup()
 	IberiaSeaDryer_OnMapStart_NPC();
 	IberiaRunaka_OnMapStart_NPC();
 	IberiaDeathMarker_OnMapStart_NPC();
-	Iberia_inqusitor_AMPHI_OnMapStart_NPC();
+	Iberia_inqusitor_amphi_OnMapStart_NPC();
 
 //Victorian Raid
 //wave 1~10
@@ -2336,7 +2336,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/iberia_expidonsa/wave_60/npc_runaka.sp"
 #include "npc/iberia_expidonsa/wave_60/npc_speedus_elitus.sp"
 #include "npc/iberia_expidonsa/wave_60/npc_sea_dryer.sp"
-#include "npc/iberia_expidonsa/wave_60/npc_inqusitor_AMPHI.sp"
+#include "npc/iberia_expidonsa/wave_60/npc_inqusitor_amphi.sp"
 
 
 #include "npc/raidmode_bosses/iberia/npc_nemal.sp"

@@ -3,8 +3,8 @@
 
 #define AMPHI_BOSS_RANGE 400.0
 #define AMPHI_EXPLOSIVES 150.0
-bool Irene_CurrentEnemyVictimised[MAXENTITIES];
-bool Irene_TargetsFound;
+bool Amphi_CurrentEnemyVictimised[MAXENTITIES];
+bool Amphi_TargetsFound;
 
 
 
@@ -43,7 +43,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_hit3.wav",
 	"weapons/blade_hit4.wav",
 };
-void Iberia_inqusitor_irene_OnMapStart_NPC()
+void Iberia_inqusitor_amphi_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -52,8 +52,8 @@ void Iberia_inqusitor_irene_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Inquisitor Irene");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_inqusitor_irene");
+	strcopy(data.Name, sizeof(data.Name), "Inquisitor Amphi");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_inqusitor_amphi");
 	strcopy(data.Icon, sizeof(data.Icon), "judgement_1");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -65,9 +65,9 @@ void Iberia_inqusitor_irene_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Iberiainqusitor_irene(vecPos, vecAng, team);
+	return Iberiainqusitor_amphi(vecPos, vecAng, team);
 }
-methodmap Iberiainqusitor_irene < CClotBody
+methodmap Iberiainqusitor_amphi < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -129,9 +129,9 @@ methodmap Iberiainqusitor_irene < CClotBody
 	}
 	
 	
-	public Iberiainqusitor_irene(float vecPos[3], float vecAng[3], int ally)
+	public Iberiainqusitor_amphi(float vecPos[3], float vecAng[3], int ally)
 	{
-		Iberiainqusitor_irene npc = view_as<Iberiainqusitor_irene>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1000000", ally));
+		Iberiainqusitor_amphi npc = view_as<Iberiainqusitor_amphi>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1000000", ally));
 		
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -147,9 +147,9 @@ methodmap Iberiainqusitor_irene < CClotBody
 
 
 
-		func_NPCDeath[npc.index] = view_as<Function>(Iberiainqusitor_irene_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Iberiainqusitor_irene_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Iberiainqusitor_irene_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Iberiainqusitor_amphi_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Iberiainqusitor_amphi_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Iberiainqusitor_amphi_ClotThink);
 		npc.i_GunMode = 0;
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
@@ -196,12 +196,12 @@ methodmap Iberiainqusitor_irene < CClotBody
 
 static void NPCTalkMessage(int iNPC, const char[] message)
 {
-	PrintNPCMessageWithPrefixes(iNPC, "snow", message, .customName = "Irene");
+	PrintNPCMessageWithPrefixes(iNPC, "snow", message, .customName = "Amphi");
 }
 
-public void Iberiainqusitor_irene_ClotThink(int iNPC)
+public void Iberiainqusitor_amphi_ClotThink(int iNPC)
 {
-	Iberiainqusitor_irene npc = view_as<Iberiainqusitor_irene>(iNPC);
+	Iberiainqusitor_amphi npc = view_as<Iberiainqusitor_amphi>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -221,7 +221,7 @@ public void Iberiainqusitor_irene_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-	if(Irene_AbilityAir(npc))
+	if(Amphi_AbilityAir(npc))
 	{
 		return;
 	}
@@ -238,7 +238,7 @@ public void Iberiainqusitor_irene_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = Iberiainqusitor_ireneSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		int ActionDo = Iberiainqusitor_amphiSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		switch(ActionDo)
 		{
 			case 0:
@@ -278,14 +278,14 @@ public void Iberiainqusitor_irene_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Iberiainqusitor_irene_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Iberiainqusitor_amphi_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Iberiainqusitor_irene npc = view_as<Iberiainqusitor_irene>(victim);
+	Iberiainqusitor_amphi npc = view_as<Iberiainqusitor_amphi>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	Irene_Weapon_Lines(npc, attacker);
+	Amphi_Weapon_Lines(npc, attacker);
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -295,9 +295,9 @@ public Action Iberiainqusitor_irene_OnTakeDamage(int victim, int &attacker, int 
 	return Plugin_Changed;
 }
 
-public void Iberiainqusitor_irene_NPCDeath(int entity)
+public void Iberiainqusitor_amphi_NPCDeath(int entity)
 {
-	Iberiainqusitor_irene npc = view_as<Iberiainqusitor_irene>(entity);
+	Iberiainqusitor_amphi npc = view_as<Iberiainqusitor_amphi>(entity);
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();	
@@ -320,7 +320,7 @@ public void Iberiainqusitor_irene_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int Iberiainqusitor_ireneSelfDefense(Iberiainqusitor_irene npc, float gameTime, int target, float distance)
+int Iberiainqusitor_amphiSelfDefense(Iberiainqusitor_amphi npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAirTimeAbilityCD < gameTime)
 	{
@@ -342,7 +342,7 @@ int Iberiainqusitor_ireneSelfDefense(Iberiainqusitor_irene npc, float gameTime, 
 			npc.m_flAirTimeAbilityCD = gameTime + 20.0;
 			float DurationOfBlink = 1.5;
 			npc.m_flAirTimeAbilityHappening = gameTime + DurationOfBlink;
-			Irene_TargetsFound = false;
+			Amphi_TargetsFound = false;
 			float NewPos[3]; 
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", NewPos);
 			NewPos[2] += 10.0;
@@ -574,11 +574,11 @@ int Iberiainqusitor_ireneSelfDefense(Iberiainqusitor_irene npc, float gameTime, 
 	return 0;
 }
 
-bool Irene_AbilityAir(Iberiainqusitor_irene npc)
+bool Amphi_AbilityAir(Iberiainqusitor_amphi npc)
 {
 	if(npc.m_flAirTimeAbilityHappening)
 	{
-		if(Irene_TargetsFound)
+		if(Amphi_TargetsFound)
 		{
 			if(npc.m_flAirTimeAbilityHappeningDelay < GetGameTime(npc.index))
 			{
@@ -595,7 +595,7 @@ bool Irene_AbilityAir(Iberiainqusitor_irene npc)
 				float damageDealBoom = 350.0;	
 				for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 				{
-					if(Irene_CurrentEnemyVictimised[EnemyLoop] && IsValidEnemy(npc.index, EnemyLoop))
+					if(Amphi_CurrentEnemyVictimised[EnemyLoop] && IsValidEnemy(npc.index, EnemyLoop))
 					{
 						float vecHit[3];
 						WorldSpaceCenter(EnemyLoop, vecHit);
@@ -612,7 +612,7 @@ bool Irene_AbilityAir(Iberiainqusitor_irene npc)
 								EmitSoundToAll("mvm/giant_common/giant_common_explodes_02.wav", EnemyLoop, _, 85, _, 0.2);
 							}
 						}
-						TE_SetupBeamPoints(origin, vecHit, IreneReturnLaserSprite(), 0, 0, 0, life, 1.0, 1.2, 1, amp, color, 0);
+						TE_SetupBeamPoints(origin, vecHit, AmphiReturnLaserSprite(), 0, 0, 0, life, 1.0, 1.2, 1, amp, color, 0);
 						TE_SendToAll();
 
 						spawnRing_Vectors(vecHit, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AMPHI_EXPLOSIVES);	
@@ -630,17 +630,17 @@ bool Irene_AbilityAir(Iberiainqusitor_irene npc)
 		}
 		if(npc.m_flAirTimeAbilityHappening < GetGameTime(npc.index))
 		{
-			Irene_TargetsFound = false;
+			Amphi_TargetsFound = false;
 			
 			EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", npc.index, _, 90, _, 0.85);
-			Zero(Irene_CurrentEnemyVictimised);
+			Zero(Amphi_CurrentEnemyVictimised);
 			float DamageDeal = 400.0;
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			spawnRing_Vectors(pos, AMPHI_BOSS_RANGE * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 12.0, 10.0, 2);
 			spawnRing_Vectors(pos, AMPHI_BOSS_RANGE * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 12.0, 10.0, 2);
 			spawnRing_Vectors(pos, AMPHI_BOSS_RANGE * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 12.0, 10.0, 2);
-			Explode_Logic_Custom(DamageDeal, 0, npc.index, -1, _, AMPHI_BOSS_RANGE, 1.0, _, true, 20,_,_,_,Irene_AirExploder);
-			if(!Irene_TargetsFound)
+			Explode_Logic_Custom(DamageDeal, 0, npc.index, -1, _, AMPHI_BOSS_RANGE, 1.0, _, true, 20,_,_,_,Amphi_AirExploder);
+			if(!Amphi_TargetsFound)
 			{
 				npc.m_flAirTimeAbilityHappening = 0.0;
 				NPCTalkMessage(npc.index, "...");
@@ -688,9 +688,9 @@ bool Irene_AbilityAir(Iberiainqusitor_irene npc)
 	return false;
 }
 
-float Irene_AirExploder(int entity, int victim, float damage, int weapon)
+float Amphi_AirExploder(int entity, int victim, float damage, int weapon)
 {
-	Irene_TargetsFound = true;
+	Amphi_TargetsFound = true;
 	//Knock target up
 	if(NpcStats_IberiaIsEnemyMarked(victim))
 	{
@@ -702,13 +702,13 @@ float Irene_AirExploder(int entity, int victim, float damage, int weapon)
 		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,1000.0});
 
 	ApplyStatusEffect(entity, victim, "Marked", 20.0);
-	Irene_CurrentEnemyVictimised[victim] = true;
+	Amphi_CurrentEnemyVictimised[victim] = true;
 	return damage;
 }
 
 
 
-static void Irene_Weapon_Lines(Iberiainqusitor_irene npc, int client)
+static void Amphi_Weapon_Lines(Iberiainqusitor_amphi npc, int client)
 {
 	if(client > MaxClients)
 		return;
