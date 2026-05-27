@@ -35,7 +35,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_hit3.wav",
 	"weapons/blade_hit4.wav",
 };
-void IberiaKumbai_OnMapStart_NPC()
+void AlminaKumbai_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -49,7 +49,7 @@ void IberiaKumbai_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "spy");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -57,9 +57,9 @@ void IberiaKumbai_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaKumbai(vecPos, vecAng, team);
+	return AlminaKumbai(vecPos, vecAng, team);
 }
-methodmap IberiaKumbai < CClotBody
+methodmap AlminaKumbai < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -102,9 +102,9 @@ methodmap IberiaKumbai < CClotBody
 	}
 	
 	
-	public IberiaKumbai(float vecPos[3], float vecAng[3], int ally)
+	public AlminaKumbai(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaKumbai npc = view_as<IberiaKumbai>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "2500", ally));
+		AlminaKumbai npc = view_as<AlminaKumbai>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "2500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -118,9 +118,9 @@ methodmap IberiaKumbai < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaKumbai_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaKumbai_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaKumbai_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaKumbai_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaKumbai_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaKumbai_ClotThink);
 		
 		
 		
@@ -145,9 +145,9 @@ methodmap IberiaKumbai < CClotBody
 	}
 }
 
-public void IberiaKumbai_ClotThink(int iNPC)
+public void AlminaKumbai_ClotThink(int iNPC)
 {
-	IberiaKumbai npc = view_as<IberiaKumbai>(iNPC);
+	AlminaKumbai npc = view_as<AlminaKumbai>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -180,7 +180,7 @@ public void IberiaKumbai_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = IberiaKumbaiSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		int ActionDo = AlminaKumbaiSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		switch(ActionDo)
 		{
 			case 0:
@@ -220,9 +220,9 @@ public void IberiaKumbai_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaKumbai_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaKumbai_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaKumbai npc = view_as<IberiaKumbai>(victim);
+	AlminaKumbai npc = view_as<AlminaKumbai>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -236,9 +236,9 @@ public Action IberiaKumbai_OnTakeDamage(int victim, int &attacker, int &inflicto
 	return Plugin_Changed;
 }
 
-public void IberiaKumbai_NPCDeath(int entity)
+public void AlminaKumbai_NPCDeath(int entity)
 {
-	IberiaKumbai npc = view_as<IberiaKumbai>(entity);
+	AlminaKumbai npc = view_as<AlminaKumbai>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -260,7 +260,7 @@ public void IberiaKumbai_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int IberiaKumbaiSelfDefense(IberiaKumbai npc, float gameTime, int target, float distance)
+int AlminaKumbaiSelfDefense(AlminaKumbai npc, float gameTime, int target, float distance)
 {
 	if(npc.m_iAttacksTillReload >= 1)
 	{
@@ -301,7 +301,7 @@ int IberiaKumbaiSelfDefense(IberiaKumbai npc, float gameTime, int target, float 
 						ShootLaser(npc.m_iWearable3, "bullet_tracer02_blue", origin, vecHit, false );
 						npc.m_flNextMeleeAttack = gameTime + 0.6;
 						npc.m_iAttacksTillReload --;
-						if(NpcStats_IberiaIsEnemyMarked(target))
+						if(NpcStats_AlminaIsEnemyMarked(target))
 						{
 							npc.m_flNextMeleeAttack = gameTime + 0.25;
 						}

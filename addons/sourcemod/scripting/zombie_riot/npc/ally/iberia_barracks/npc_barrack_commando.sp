@@ -34,7 +34,7 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/demoman_autoonfire03.mp3",
 };
 
-public void Barracks_Iberia_Commando_Precache() // Arrivati qui
+public void Barracks_Almina_Commando_Precache() // Arrivati qui
 {
 	PrecacheModel("models/player/demo.mdl");
 	PrecacheSoundArray(g_RangedAttackSounds);
@@ -44,7 +44,7 @@ public void Barracks_Iberia_Commando_Precache() // Arrivati qui
 	PrecacheSoundArray(g_IdleAlertedSounds);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Commando");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Alminan Commando");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_commando");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
@@ -56,10 +56,10 @@ public void Barracks_Iberia_Commando_Precache() // Arrivati qui
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Iberia_Commando(client, vecPos, vecAng);
+	return Barrack_Almina_Commando(client, vecPos, vecAng);
 }
 
-methodmap Barrack_Iberia_Commando < BarrackBody
+methodmap Barrack_Almina_Commando < BarrackBody
 {
 	public void PlayIdleSound()
 	{
@@ -81,7 +81,7 @@ methodmap Barrack_Iberia_Commando < BarrackBody
 	{
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME*0.2, 100);
 	}
-	public void Iberia_Play_Demo_Fuck_You()
+	public void Almina_Play_Demo_Fuck_You()
 	{
 		EmitSoundToAll(g_ICastFuckYou[GetRandomInt(0, sizeof(g_ICastFuckYou) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
@@ -89,14 +89,14 @@ methodmap Barrack_Iberia_Commando < BarrackBody
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME*0.5, 100);
 	}
-	public Barrack_Iberia_Commando(int client, float vecPos[3], float vecAng[3])
+	public Barrack_Almina_Commando(int client, float vecPos[3], float vecAng[3])
 	{
-		Barrack_Iberia_Commando npc = view_as<Barrack_Iberia_Commando>(BarrackBody(client, vecPos, vecAng, "400", "models/player/demo.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Almina_Commando npc = view_as<Barrack_Almina_Commando>(BarrackBody(client, vecPos, vecAng, "400", "models/player/demo.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		i_NpcWeight[npc.index] = 1;
 
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Iberia_Commando_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Iberia_Commando_ClotThink;
+		func_NPCDeath[npc.index] = Barrack_Almina_Commando_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Almina_Commando_ClotThink;
 
 		npc.m_flSpeed = 150.0;
 		
@@ -137,9 +137,9 @@ methodmap Barrack_Iberia_Commando < BarrackBody
 	}
 }
 
-public void Barrack_Iberia_Commando_ClotThink(int iNPC)
+public void Barrack_Almina_Commando_ClotThink(int iNPC)
 {
-	Barrack_Iberia_Commando npc = view_as<Barrack_Iberia_Commando>(iNPC);
+	Barrack_Almina_Commando npc = view_as<Barrack_Almina_Commando>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	GrantEntityArmor(iNPC, true, 0.5, 0.66, 0);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
@@ -162,7 +162,7 @@ public void Barrack_Iberia_Commando_ClotThink(int iNPC)
 					if(!npc.m_flAttackHappenswillhappen)
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-						npc.Iberia_Play_Demo_Fuck_You();  // NO!
+						npc.Almina_Play_Demo_Fuck_You();  // NO!
 						npc.m_flNextRangedAttack = GameTime + 1.0;
 						npc.m_flAttackHappens = GameTime + (0.3 * npc.BonusFireRate);
 						npc.m_flAttackHappens_bullshit = GameTime + (0.54 * npc.BonusFireRate);
@@ -260,14 +260,14 @@ public void Barrack_Iberia_Commando_ClotThink(int iNPC)
 	}
 }
 
-void Barrack_Iberia_Commando_NPCDeath(int entity)
+void Barrack_Almina_Commando_NPCDeath(int entity)
 {
-	Barrack_Iberia_Commando npc = view_as<Barrack_Iberia_Commando>(entity);
+	Barrack_Almina_Commando npc = view_as<Barrack_Almina_Commando>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayDeathSound();
 }
 
-void ResetCommandoWeapon(Barrack_Iberia_Commando npc, int weapon_Type)
+void ResetCommandoWeapon(Barrack_Almina_Commando npc, int weapon_Type)
 {
 	if(IsValidEntity(npc.m_iWearable1))
 	{

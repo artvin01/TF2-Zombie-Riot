@@ -423,7 +423,7 @@ methodmap Nemal < CClotBody
 				}
 				case 3:
 				{
-					NPCTalkMessage(npc.index, "Iberians are with us {gold}Expidonsans{default}!... But I'm kinda both...\nProbably not that important, anyways let's go!");
+					NPCTalkMessage(npc.index, "Alminans are with us {gold}Expidonsans{default}!... But I'm kinda both...\nProbably not that important, anyways let's go!");
 				}
 			}
 		}
@@ -446,7 +446,7 @@ methodmap Nemal < CClotBody
 				}
 				case 3:
 				{
-					NPCTalkMessage(npc.index, "There sadly ain't many Iberians left after what happend to their home country, damn traitorous {blue}seaborn{default}... we took in the surviving alminans and helped them!");
+					NPCTalkMessage(npc.index, "There sadly ain't many Alminans left after what happend to their home country, damn traitorous {blue}seaborn{default}... we took in the surviving alminans and helped them!");
 				}
 			}
 		}
@@ -465,7 +465,7 @@ methodmap Nemal < CClotBody
 				}
 				case 2:
 				{
-					NPCTalkMessage(npc.index, "Iberians have some really widening history, eventually it'll be rebuilt with {gold}Expidonsa's{default} help.");
+					NPCTalkMessage(npc.index, "Alminans have some really widening history, eventually it'll be rebuilt with {gold}Expidonsa's{default} help.");
 				}
 				case 3:
 				{
@@ -1571,7 +1571,7 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 								}
 							}
 										
-							if(!NpcStats_IberiaIsEnemyMarked(targetTrace))
+							if(!NpcStats_AlminaIsEnemyMarked(targetTrace))
 							{
 								if(!Knocked)
 									Custom_Knockback(npc.index, targetTrace, 450.0, true);
@@ -1784,8 +1784,8 @@ bool NemalTalkPostWin(Nemal npc)
 		{
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
-				Items_GiveNamedItem(client, "Iberian and Expidonsan Training");
-				CPrintToChat(client,"{default}You feel more skilled and obtain: {gold}''Iberian and Expidonsan Training''{default}!");
+				Items_GiveNamedItem(client, "Alminan and Expidonsan Training");
+				CPrintToChat(client,"{default}You feel more skilled and obtain: {gold}''Alminan and Expidonsan Training''{default}!");
 			}
 		}
 	}
@@ -2337,7 +2337,7 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Hey hey thats my good {snow}friends{default} weapon {gold}%N{default}! She's a very nice Iberian.",client);
+					Format(Text_Lines, sizeof(Text_Lines), "Hey hey thats my good {snow}friends{default} weapon {gold}%N{default}! She's a very nice Alminan.",client);
 				case 1:
 					Format(Text_Lines, sizeof(Text_Lines), "Oh {snow}Amphi{default}, looks like you have a student, their name is {gold}%N{default}!",client);
 			}
@@ -2493,7 +2493,7 @@ bool Vertical = false, bool ForcePredict = false)
 		VecTarget[2] = vecSelf[2];
 	}
 
-	if(NpcStats_IberiaIsEnemyMarked(target) || ForcePredict)
+	if(NpcStats_AlminaIsEnemyMarked(target) || ForcePredict)
 	{
 		CClotBody npc = view_as<CClotBody>(iNpc);
 		//predict.
@@ -3041,7 +3041,7 @@ float NemalMineExploder(int entity, int victim, float damage, int weapon)
 {
 	DetonateCurrentMine = true;
 	//Knock target up
-	if(NpcStats_IberiaIsEnemyMarked(victim))
+	if(NpcStats_AlminaIsEnemyMarked(victim))
 	{
 		damage *= 2.5;
 	}

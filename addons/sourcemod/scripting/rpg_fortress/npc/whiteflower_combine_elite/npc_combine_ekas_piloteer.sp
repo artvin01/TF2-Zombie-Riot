@@ -122,7 +122,7 @@ methodmap Whiteflower_Ekas_Piloteer < CClotBody
 			{
 				static Race race;
 				Races_GetClientInfo(target, race);
-				if(StrEqual(race.Name, "Iberian"))
+				if(StrEqual(race.Name, "Alminan"))
 				{
 					switch(GetRandomInt(0,2))
 					{
@@ -131,7 +131,7 @@ methodmap Whiteflower_Ekas_Piloteer < CClotBody
 						case 1:
 							NpcSpeechBubble(this.index, "Their head is a good source of fear for alminans.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 						case 2:
-							NpcSpeechBubble(this.index, "Iberians are so dumb.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Alminans are so dumb.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 					}
 					return;
 				}

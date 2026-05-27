@@ -13,13 +13,13 @@ static char g_RandomGroupScream[][] = {
 
 float GlobalCooldownWarCry;
 
-void IberiaEntityCreated(int entity)
+void AlminaEntityCreated(int entity)
 {
 	b_EntityHasthink[entity] = false;
 	f_MoraleBoostCurrent[entity] = 0.0;
 	b_NpcAppliesMarkDebuff[entity] = false;
 }
-#define IBERIA_MAX_MORALE_ALLOWED 1000.0
+#define ALMINA_MAX_MORALE_ALLOWED 1000.0
 
 int MoraleBoostLevelAt(int entity)
 {
@@ -72,8 +72,8 @@ void GiveEntityMoraleBoost(int entity, float MoraleValue)
 			SDKHook(entity, SDKHook_Think, MoraleLevelThink);	
 	}
 
-	if(f_MoraleBoostCurrent[entity] >= IBERIA_MAX_MORALE_ALLOWED)
-		f_MoraleBoostCurrent[entity] = IBERIA_MAX_MORALE_ALLOWED;
+	if(f_MoraleBoostCurrent[entity] >= ALMINA_MAX_MORALE_ALLOWED)
+		f_MoraleBoostCurrent[entity] = ALMINA_MAX_MORALE_ALLOWED;
 }
 
 void MoraleLevelThink(int entity)

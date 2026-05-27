@@ -23,7 +23,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cleaver_hit_07.wav",
 };
 
-void Iberia_Victorian_OnMapStart_NPC()
+void Almina_Victorian_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DefaultMedic_DeathSounds));	   i++) { PrecacheSound(g_DefaultMedic_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_DefaultMedic_HurtSounds));		i++) { PrecacheSound(g_DefaultMedic_HurtSounds[i]);		}
@@ -36,7 +36,7 @@ void Iberia_Victorian_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "soldier_crit");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -44,9 +44,9 @@ void Iberia_Victorian_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaVictorian(vecPos, vecAng, team);
+	return AlminaVictorian(vecPos, vecAng, team);
 }
-methodmap IberiaVictorian < CClotBody
+methodmap AlminaVictorian < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -90,9 +90,9 @@ methodmap IberiaVictorian < CClotBody
 	}
 	
 	
-	public IberiaVictorian(float vecPos[3], float vecAng[3], int ally)
+	public AlminaVictorian(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaVictorian npc = view_as<IberiaVictorian>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1500", ally));
+		AlminaVictorian npc = view_as<AlminaVictorian>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -107,9 +107,9 @@ methodmap IberiaVictorian < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaVictorian_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaVictorian_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaVictorian_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaVictorian_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaVictorian_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaVictorian_ClotThink);
 		
 		
 		
@@ -133,9 +133,9 @@ methodmap IberiaVictorian < CClotBody
 	}
 }
 
-public void IberiaVictorian_ClotThink(int iNPC)
+public void AlminaVictorian_ClotThink(int iNPC)
 {
-	IberiaVictorian npc = view_as<IberiaVictorian>(iNPC);
+	AlminaVictorian npc = view_as<AlminaVictorian>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -207,7 +207,7 @@ public void IberiaVictorian_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = IberiaVictorianSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
+		int ActionDo = AlminaVictorianSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
 		switch(ActionDo)
 		{
 			case 0:
@@ -242,9 +242,9 @@ public void IberiaVictorian_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaVictorian_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaVictorian_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaVictorian npc = view_as<IberiaVictorian>(victim);
+	AlminaVictorian npc = view_as<AlminaVictorian>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -258,9 +258,9 @@ public Action IberiaVictorian_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-public void IberiaVictorian_NPCDeath(int entity)
+public void AlminaVictorian_NPCDeath(int entity)
 {
-	IberiaVictorian npc = view_as<IberiaVictorian>(entity);
+	AlminaVictorian npc = view_as<AlminaVictorian>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -282,7 +282,7 @@ public void IberiaVictorian_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int IberiaVictorianSelfDefense(IberiaVictorian npc, float gameTime, float distance)
+int AlminaVictorianSelfDefense(AlminaVictorian npc, float gameTime, float distance)
 {
 	//Direct mode
 	if(gameTime > npc.m_flNextMeleeAttack)

@@ -34,7 +34,7 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/scout_standonthepoint05.mp3",
 };
 
-void Barracks_Iberia_Runner_Precache()
+void Barracks_Almina_Runner_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -43,7 +43,7 @@ void Barracks_Iberia_Runner_Precache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheModel("models/player/scout.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Runner");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Alminan Runner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_runner");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -54,10 +54,10 @@ void Barracks_Iberia_Runner_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Iberia_Runner(client, vecPos, vecAng);
+	return Barrack_Almina_Runner(client, vecPos, vecAng);
 }
 
-methodmap Barrack_Iberia_Runner < BarrackBody
+methodmap Barrack_Almina_Runner < BarrackBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -97,15 +97,15 @@ methodmap Barrack_Iberia_Runner < BarrackBody
 
 	}
 
-	public Barrack_Iberia_Runner(int client, float vecPos[3], float vecAng[3])
+	public Barrack_Almina_Runner(int client, float vecPos[3], float vecAng[3])
 	{
-		Barrack_Iberia_Runner npc = view_as<Barrack_Iberia_Runner>(BarrackBody(client, vecPos, vecAng, "130", "models/player/scout.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Almina_Runner npc = view_as<Barrack_Almina_Runner>(BarrackBody(client, vecPos, vecAng, "130", "models/player/scout.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Iberia_Runner_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Iberia_Runner_ClotThink;
+		func_NPCDeath[npc.index] = Barrack_Almina_Runner_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Almina_Runner_ClotThink;
 		npc.m_flSpeed = 250.0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -138,9 +138,9 @@ methodmap Barrack_Iberia_Runner < BarrackBody
 	}
 }
 
-public void Barrack_Iberia_Runner_ClotThink(int iNPC)
+public void Barrack_Almina_Runner_ClotThink(int iNPC)
 {
-	Barrack_Iberia_Runner npc = view_as<Barrack_Iberia_Runner>(iNPC);
+	Barrack_Almina_Runner npc = view_as<Barrack_Almina_Runner>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
 	GrantEntityArmor(iNPC, true, 1.0, 0.66, 0);
@@ -205,9 +205,9 @@ public void Barrack_Iberia_Runner_ClotThink(int iNPC)
 	}
 }
 
-void Barrack_Iberia_Runner_NPCDeath(int entity)
+void Barrack_Almina_Runner_NPCDeath(int entity)
 {
-	Barrack_Iberia_Runner npc = view_as<Barrack_Iberia_Runner>(entity);
+	Barrack_Almina_Runner npc = view_as<Barrack_Almina_Runner>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }

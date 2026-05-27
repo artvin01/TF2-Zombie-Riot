@@ -39,7 +39,7 @@ static const char g_SapperHitSounds[][] = {
 
 
 
-void IberianDestructius_OnMapStart_NPC()
+void AlminanDestructius_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -54,16 +54,16 @@ void IberianDestructius_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "sentry_buster");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MISSION;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberianDestructius(vecPos, vecAng, team);
+	return AlminanDestructius(vecPos, vecAng, team);
 }
 
-methodmap IberianDestructius < CClotBody
+methodmap AlminanDestructius < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -107,9 +107,9 @@ methodmap IberianDestructius < CClotBody
 	}
 	
 	
-	public IberianDestructius(float vecPos[3], float vecAng[3], int ally)
+	public AlminanDestructius(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberianDestructius npc = view_as<IberianDestructius>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.9", "6000", ally));
+		AlminanDestructius npc = view_as<AlminanDestructius>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.9", "6000", ally));
 		
 		i_NpcWeight[npc.index] = 2;
 
@@ -125,9 +125,9 @@ methodmap IberianDestructius < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberianDestructius_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberianDestructius_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberianDestructius_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminanDestructius_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminanDestructius_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminanDestructius_ClotThink);
 		
 		
 		npc.StartPathing();
@@ -165,9 +165,9 @@ methodmap IberianDestructius < CClotBody
 	}
 }
 
-public void IberianDestructius_ClotThink(int iNPC)
+public void AlminanDestructius_ClotThink(int iNPC)
 {
-	IberianDestructius npc = view_as<IberianDestructius>(iNPC);
+	AlminanDestructius npc = view_as<AlminanDestructius>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -214,7 +214,7 @@ public void IberianDestructius_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		IberianDestructiusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		AlminanDestructiusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -224,9 +224,9 @@ public void IberianDestructius_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberianDestructius_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminanDestructius_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberianDestructius npc = view_as<IberianDestructius>(victim);
+	AlminanDestructius npc = view_as<AlminanDestructius>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -240,9 +240,9 @@ public Action IberianDestructius_OnTakeDamage(int victim, int &attacker, int &in
 	return Plugin_Changed;
 }
 
-public void IberianDestructius_NPCDeath(int entity)
+public void AlminanDestructius_NPCDeath(int entity)
 {
-	IberianDestructius npc = view_as<IberianDestructius>(entity);
+	AlminanDestructius npc = view_as<AlminanDestructius>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -267,7 +267,7 @@ public void IberianDestructius_NPCDeath(int entity)
 
 }
 
-void IberianDestructiusSelfDefense(IberianDestructius npc, float gameTime, int target, float distance)
+void AlminanDestructiusSelfDefense(AlminanDestructius npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{

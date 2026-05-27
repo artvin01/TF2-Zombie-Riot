@@ -40,7 +40,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_hit4.wav",
 };
 
-void IberiaCenula_OnMapStart_NPC()
+void AlminaCenula_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -54,7 +54,7 @@ void IberiaCenula_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "sniper");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -62,9 +62,9 @@ void IberiaCenula_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaCenula(vecPos, vecAng, team);
+	return AlminaCenula(vecPos, vecAng, team);
 }
-methodmap IberiaCenula < CClotBody
+methodmap AlminaCenula < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -107,9 +107,9 @@ methodmap IberiaCenula < CClotBody
 	}
 	
 	
-	public IberiaCenula(float vecPos[3], float vecAng[3], int ally)
+	public AlminaCenula(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaCenula npc = view_as<IberiaCenula>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "2000", ally));
+		AlminaCenula npc = view_as<AlminaCenula>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "2000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -125,9 +125,9 @@ methodmap IberiaCenula < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaCenula_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaCenula_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaCenula_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaCenula_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaCenula_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaCenula_ClotThink);
 		npc.m_iAttacksTillReload = 2;
 		
 		
@@ -150,9 +150,9 @@ methodmap IberiaCenula < CClotBody
 	}
 }
 
-public void IberiaCenula_ClotThink(int iNPC)
+public void AlminaCenula_ClotThink(int iNPC)
 {
-	IberiaCenula npc = view_as<IberiaCenula>(iNPC);
+	AlminaCenula npc = view_as<AlminaCenula>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -188,11 +188,11 @@ public void IberiaCenula_ClotThink(int iNPC)
 		int ActionDo;
 		if(npc.m_iAttacksTillReload >= 1)
 		{
-			ActionDo = IberiaCenulaSelfDefense_Gun(npc,GetGameTime(npc.index));
+			ActionDo = AlminaCenulaSelfDefense_Gun(npc,GetGameTime(npc.index));
 		}
 		else
 		{
-			ActionDo = IberiaCenulaSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+			ActionDo = AlminaCenulaSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		}
 
 		switch(ActionDo)
@@ -251,9 +251,9 @@ public void IberiaCenula_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaCenula_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaCenula_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaCenula npc = view_as<IberiaCenula>(victim);
+	AlminaCenula npc = view_as<AlminaCenula>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -267,9 +267,9 @@ public Action IberiaCenula_OnTakeDamage(int victim, int &attacker, int &inflicto
 	return Plugin_Changed;
 }
 
-public void IberiaCenula_NPCDeath(int entity)
+public void AlminaCenula_NPCDeath(int entity)
 {
-	IberiaCenula npc = view_as<IberiaCenula>(entity);
+	AlminaCenula npc = view_as<AlminaCenula>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -291,7 +291,7 @@ public void IberiaCenula_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int IberiaCenulaSelfDefense_Gun(IberiaCenula npc, float gameTime)
+int AlminaCenulaSelfDefense_Gun(AlminaCenula npc, float gameTime)
 {
 	float DistanceCheckMax = (NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0);
 	
@@ -411,7 +411,7 @@ int IberiaCenulaSelfDefense_Gun(IberiaCenula npc, float gameTime)
 	return 3;
 }
 
-int IberiaCenulaSelfDefense(IberiaCenula npc, float gameTime, int target, float distance)
+int AlminaCenulaSelfDefense(AlminaCenula npc, float gameTime, int target, float distance)
 {
 	//we use our melee.
 	if(npc.m_iChanged_WalkCycle != 4)

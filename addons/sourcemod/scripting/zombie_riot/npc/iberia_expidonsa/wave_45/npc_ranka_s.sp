@@ -34,7 +34,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/airboat/airboat_gun_energy2.wav",
 };
 
-void IberiaRanka_S_OnMapStart_NPC()
+void AlminaRanka_S_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -48,17 +48,17 @@ void IberiaRanka_S_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "seargent_ideal");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaRanka_S(vecPos, vecAng, team);
+	return AlminaRanka_S(vecPos, vecAng, team);
 }
 
-methodmap IberiaRanka_S < CClotBody
+methodmap AlminaRanka_S < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -100,9 +100,9 @@ methodmap IberiaRanka_S < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
-	public IberiaRanka_S(float vecPos[3], float vecAng[3], int ally)
+	public AlminaRanka_S(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaRanka_S npc = view_as<IberiaRanka_S>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "15000", ally, false, true));
+		AlminaRanka_S npc = view_as<AlminaRanka_S>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "15000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -119,9 +119,9 @@ methodmap IberiaRanka_S < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaRanka_S_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaRanka_S_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaRanka_S_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaRanka_S_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaRanka_S_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaRanka_S_ClotThink);
 		Ranka_S_ArmorStick_Effect(npc.index);
 		
 		
@@ -145,9 +145,9 @@ methodmap IberiaRanka_S < CClotBody
 	}
 }
 
-public void IberiaRanka_S_ClotThink(int iNPC)
+public void AlminaRanka_S_ClotThink(int iNPC)
 {
-	IberiaRanka_S npc = view_as<IberiaRanka_S>(iNPC);
+	AlminaRanka_S npc = view_as<AlminaRanka_S>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -190,7 +190,7 @@ public void IberiaRanka_S_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		IberiaRanka_SSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		AlminaRanka_SSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -200,9 +200,9 @@ public void IberiaRanka_S_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaRanka_S_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaRanka_S_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaRanka_S npc = view_as<IberiaRanka_S>(victim);
+	AlminaRanka_S npc = view_as<AlminaRanka_S>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -217,9 +217,9 @@ public Action IberiaRanka_S_OnTakeDamage(int victim, int &attacker, int &inflict
 }
 
 
-public void IberiaRanka_S_NPCDeath(int entity)
+public void AlminaRanka_S_NPCDeath(int entity)
 {
-	IberiaRanka_S npc = view_as<IberiaRanka_S>(entity);
+	AlminaRanka_S npc = view_as<AlminaRanka_S>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -243,7 +243,7 @@ public void IberiaRanka_S_NPCDeath(int entity)
 
 }
 
-void IberiaRanka_SSelfDefense(IberiaRanka_S npc, float gameTime, int target, float distance)
+void AlminaRanka_SSelfDefense(AlminaRanka_S npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -287,11 +287,11 @@ void IberiaRanka_SSelfDefense(IberiaRanka_S npc, float gameTime, int target, flo
 					{
 						npc.m_flArmorToGive = 1000.0;
 					}
-					if(NpcStats_IberiaIsEnemyMarked(target))
+					if(NpcStats_AlminaIsEnemyMarked(target))
 						npc.m_flArmorToGive *= 1.5;
 						
-					ExpidonsaGroupHeal(npc.index, 150.0, 4, 0.0, 1.0, true,IberiaBeaconGiveArmor);
-					IberiaArmorEffect(npc.index, 150.0);
+					ExpidonsaGroupHeal(npc.index, 150.0, 4, 0.0, 1.0, true,AlminaBeaconGiveArmor);
+					AlminaArmorEffect(npc.index, 150.0);
 				} 
 			}
 			delete swingTrace;

@@ -42,7 +42,7 @@ static const char g_BuildSound[][] = {
 	"ui/item_metal_weapon_drop.wav",
 };
 
-void IberiaBeaconConstructor_OnMapStart_NPC()
+void AlminaBeaconConstructor_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -56,7 +56,7 @@ void IberiaBeaconConstructor_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "engineer");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -64,9 +64,9 @@ void IberiaBeaconConstructor_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return IberiaBeaconConstructor(vecPos, vecAng, team, data);
+	return AlminaBeaconConstructor(vecPos, vecAng, team, data);
 }
-methodmap IberiaBeaconConstructor < CClotBody
+methodmap AlminaBeaconConstructor < CClotBody
 {
 	property float m_flArmorToGive
 	{
@@ -114,9 +114,9 @@ methodmap IberiaBeaconConstructor < CClotBody
 	}
 	
 	
-	public IberiaBeaconConstructor(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public AlminaBeaconConstructor(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		IberiaBeaconConstructor npc = view_as<IberiaBeaconConstructor>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "600", ally));
+		AlminaBeaconConstructor npc = view_as<AlminaBeaconConstructor>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "600", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -133,9 +133,9 @@ methodmap IberiaBeaconConstructor < CClotBody
 
 		npc.m_flArmorToGive = StringToFloat(data);
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaBeaconConstructor_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaBeaconConstructor_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaBeaconConstructor_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaBeaconConstructor_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaBeaconConstructor_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaBeaconConstructor_ClotThink);
 		
 		
 		//IDLE
@@ -163,9 +163,9 @@ methodmap IberiaBeaconConstructor < CClotBody
 	}
 }
 
-public void IberiaBeaconConstructor_ClotThink(int iNPC)
+public void AlminaBeaconConstructor_ClotThink(int iNPC)
 {
-	IberiaBeaconConstructor npc = view_as<IberiaBeaconConstructor>(iNPC);
+	AlminaBeaconConstructor npc = view_as<AlminaBeaconConstructor>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -210,11 +210,11 @@ public void IberiaBeaconConstructor_ClotThink(int iNPC)
 		}
 		if(npc.m_iChanged_WalkCycle == 1)
 		{
-			IberiaBeaconConstructorBuildObject(npc, flDistanceToTarget); 
+			AlminaBeaconConstructorBuildObject(npc, flDistanceToTarget); 
 		}
 		else
 		{
-			IberiaBeaconConstructorSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+			AlminaBeaconConstructorSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		}
 	}
 	else
@@ -225,9 +225,9 @@ public void IberiaBeaconConstructor_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaBeaconConstructor_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaBeaconConstructor_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaBeaconConstructor npc = view_as<IberiaBeaconConstructor>(victim);
+	AlminaBeaconConstructor npc = view_as<AlminaBeaconConstructor>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -241,9 +241,9 @@ public Action IberiaBeaconConstructor_OnTakeDamage(int victim, int &attacker, in
 	return Plugin_Changed;
 }
 
-public void IberiaBeaconConstructor_NPCDeath(int entity)
+public void AlminaBeaconConstructor_NPCDeath(int entity)
 {
-	IberiaBeaconConstructor npc = view_as<IberiaBeaconConstructor>(entity);
+	AlminaBeaconConstructor npc = view_as<AlminaBeaconConstructor>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -265,7 +265,7 @@ public void IberiaBeaconConstructor_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-void IberiaBeaconConstructorBuildObject(IberiaBeaconConstructor npc, float distance)
+void AlminaBeaconConstructorBuildObject(AlminaBeaconConstructor npc, float distance)
 {
 	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
 	{
@@ -297,7 +297,7 @@ void IberiaBeaconConstructorBuildObject(IberiaBeaconConstructor npc, float dista
 		}
 	}
 }
-void IberiaBeaconConstructorSelfDefense(IberiaBeaconConstructor npc, float gameTime, int target, float distance)
+void AlminaBeaconConstructorSelfDefense(AlminaBeaconConstructor npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{

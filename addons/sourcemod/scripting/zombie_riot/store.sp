@@ -772,7 +772,7 @@ stock float CooldownReductionAmount(int client)
 	{
 		Cooldown *= 0.66;
 	}
-	if(HasSpecificBuff(client, "Zalminan Flagship Weaponry"))
+	if(HasSpecificBuff(client, "Ziberian Flagship Weaponry"))
 	{
 		Cooldown *= 0.85;
 	}

@@ -249,7 +249,7 @@ void RPG_MapStart()
 	Wand_Map_Precache();
 	
 	Transform_Expidonsa_MapStart();
-	Transform_Iberian_MapStart();
+	Transform_Alminan_MapStart();
 	Transform_MercHuman_MapStart();
 	Transform_Ruianian_MapStart();
 	Transform_Seaborn_MapStart();

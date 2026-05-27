@@ -36,7 +36,7 @@ static const char g_IdleAlert[][] =
 	"vo/engineer_battlecry05.mp3",
 };
 
-void Barracks_Iberia_Boomstick_Precache()
+void Barracks_Almina_Boomstick_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -46,7 +46,7 @@ void Barracks_Iberia_Boomstick_Precache()
 	
 	PrecacheModel("models/player/engineer.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Iberia Boomstick");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Almina Boomstick");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_boomstick");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -57,10 +57,10 @@ void Barracks_Iberia_Boomstick_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Iberia_Boomstick(client, vecPos, vecAng);
+	return Barrack_Almina_Boomstick(client, vecPos, vecAng);
 }
 
-methodmap Barrack_Iberia_Boomstick < BarrackBody
+methodmap Barrack_Almina_Boomstick < BarrackBody
 {
 	public void PlayIdleSound()
 	{
@@ -100,15 +100,15 @@ methodmap Barrack_Iberia_Boomstick < BarrackBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 
-	public Barrack_Iberia_Boomstick(int client, float vecPos[3], float vecAng[3])
+	public Barrack_Almina_Boomstick(int client, float vecPos[3], float vecAng[3])
 	{
-		Barrack_Iberia_Boomstick npc = view_as<Barrack_Iberia_Boomstick>(BarrackBody(client, vecPos, vecAng, "250", "models/player/engineer.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Almina_Boomstick npc = view_as<Barrack_Almina_Boomstick>(BarrackBody(client, vecPos, vecAng, "250", "models/player/engineer.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Iberia_Boomstick_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Iberia_Boomstick_ClotThink;
+		func_NPCDeath[npc.index] = Barrack_Almina_Boomstick_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Almina_Boomstick_ClotThink;
 		npc.m_flSpeed = 150.0;
 
 		npc.m_flNextRangedAttack = 0.0;
@@ -136,9 +136,9 @@ methodmap Barrack_Iberia_Boomstick < BarrackBody
 	}
 }
 
-public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
+public void Barrack_Almina_Boomstick_ClotThink(int iNPC)
 {
-	Barrack_Iberia_Boomstick npc = view_as<Barrack_Iberia_Boomstick>(iNPC);
+	Barrack_Almina_Boomstick npc = view_as<Barrack_Almina_Boomstick>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	
 	GrantEntityArmor(iNPC, true, 0.5, 0.66, 0);	
@@ -207,9 +207,9 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 	}
 }
 
-void Barrack_Iberia_Boomstick_NPCDeath(int entity)
+void Barrack_Almina_Boomstick_NPCDeath(int entity)
 {
-	Barrack_Iberia_Boomstick npc = view_as<Barrack_Iberia_Boomstick>(entity);
+	Barrack_Almina_Boomstick npc = view_as<Barrack_Almina_Boomstick>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }

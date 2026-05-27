@@ -49,7 +49,7 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/bat_draw_swoosh2.wav",
 };
 
-void Iberia_SpeedusInitus_OnMapStart_NPC()
+void Almina_SpeedusInitus_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -65,7 +65,7 @@ void Iberia_SpeedusInitus_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "speedy_adivus");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -315,7 +315,7 @@ void SpeedusInitusSelfDefense(SpeedusInitus npc, float gameTime, int target, flo
 							TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 							npc.FaceTowards(VecEnemy, 15000.0);
 							npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 3.5;
-							if(NpcStats_IberiaIsEnemyMarked(target))
+							if(NpcStats_AlminaIsEnemyMarked(target))
 								npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 2.5;
 
 							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7; //so they cant instastab you!

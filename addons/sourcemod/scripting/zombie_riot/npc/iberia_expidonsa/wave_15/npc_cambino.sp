@@ -35,7 +35,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_hit3.wav",
 	"weapons/blade_hit4.wav",
 };
-void Iberia_Cambino_OnMapStart_NPC()
+void Almina_Cambino_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -49,7 +49,7 @@ void Iberia_Cambino_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "spy");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -57,9 +57,9 @@ void Iberia_Cambino_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaCambino(vecPos, vecAng, team);
+	return AlminaCambino(vecPos, vecAng, team);
 }
-methodmap IberiaCambino < CClotBody
+methodmap AlminaCambino < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -102,9 +102,9 @@ methodmap IberiaCambino < CClotBody
 	}
 	
 	
-	public IberiaCambino(float vecPos[3], float vecAng[3], int ally)
+	public AlminaCambino(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaCambino npc = view_as<IberiaCambino>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally));
+		AlminaCambino npc = view_as<AlminaCambino>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -118,9 +118,9 @@ methodmap IberiaCambino < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaCambino_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaCambino_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaCambino_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaCambino_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaCambino_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaCambino_ClotThink);
 		
 		
 		
@@ -145,9 +145,9 @@ methodmap IberiaCambino < CClotBody
 	}
 }
 
-public void IberiaCambino_ClotThink(int iNPC)
+public void AlminaCambino_ClotThink(int iNPC)
 {
-	IberiaCambino npc = view_as<IberiaCambino>(iNPC);
+	AlminaCambino npc = view_as<AlminaCambino>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -180,7 +180,7 @@ public void IberiaCambino_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = IberiaCambinoSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		int ActionDo = AlminaCambinoSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		switch(ActionDo)
 		{
 			case 0:
@@ -217,9 +217,9 @@ public void IberiaCambino_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaCambino_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaCambino_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaCambino npc = view_as<IberiaCambino>(victim);
+	AlminaCambino npc = view_as<AlminaCambino>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -233,9 +233,9 @@ public Action IberiaCambino_OnTakeDamage(int victim, int &attacker, int &inflict
 	return Plugin_Changed;
 }
 
-public void IberiaCambino_NPCDeath(int entity)
+public void AlminaCambino_NPCDeath(int entity)
 {
-	IberiaCambino npc = view_as<IberiaCambino>(entity);
+	AlminaCambino npc = view_as<AlminaCambino>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -257,7 +257,7 @@ public void IberiaCambino_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int IberiaCambinoSelfDefense(IberiaCambino npc, float gameTime, int target, float distance)
+int AlminaCambinoSelfDefense(AlminaCambino npc, float gameTime, int target, float distance)
 {
 	if(npc.m_iAttacksTillReload >= 1)
 	{
@@ -298,7 +298,7 @@ int IberiaCambinoSelfDefense(IberiaCambino npc, float gameTime, int target, floa
 						ShootLaser(npc.m_iWearable3, "bullet_tracer02_blue", origin, vecHit, false );
 						npc.m_flNextMeleeAttack = gameTime + 0.75;
 						npc.m_iAttacksTillReload --;
-						if(NpcStats_IberiaIsEnemyMarked(target))
+						if(NpcStats_AlminaIsEnemyMarked(target))
 						{
 							npc.m_flNextMeleeAttack = gameTime + 0.3;
 						}

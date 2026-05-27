@@ -88,8 +88,8 @@
 	}
 	"Dense Frost Desc"
 	{
-		"en"	"{yellow}EVERYONE takes continous non-fatal damage {red}except for Zalmina units"
-		"it"	"{yellow}TUTTI subiscono danni continui e non mortali {red}ad eccezione delle unità di Zalmina"
+		"en"	"{yellow}EVERYONE takes continous non-fatal damage {red}except for Ziberia units"
+		"it"	"{yellow}TUTTI subiscono danni continui e non mortali {red}ad eccezione delle unità di Ziberia"
 		"ko"	"{yellow}모든 유닛의 체력이 시간에 걸쳐 계속해서 감소합니다. (1 이하로는 감소하지 않음) {red}지베리아 유닛들은 이 효과에서 제외됩니다."
 	}
 	"Dense Frost Lore"
@@ -244,13 +244,13 @@
 		"it"	"Vuoi fare un po' di pasta?{green} Gli alleati guadagnano +125 salute massima e 1000 contanti"
 		"ko"	"라면 한 번 끓여먹어볼까?\n{green}추가 자금을 +1000 얻습니다. 모든 아군의 최대 체력 +125."
 	}
-	"Zalminan Chocolate"
+	"Ziberian Chocolate"
 	{
-		"en"	"Zalminan Chocolate"
-		"it"	"Cioccolato Zalminano"
+		"en"	"Ziberian Chocolate"
+		"it"	"Cioccolato Ziberiano"
 		"ko"	"지베리아제 초콜릿"
 	}
-	"Zalminan Chocolate Desc"
+	"Ziberian Chocolate Desc"
 	{
 		"en"	"It's cold, amazing!\n{green}Allies gain +50 max health and 1250 Cash"
 		"it"	"È freddo, fantastico! Gli alleati guadagnano +50 salute massima e 1250 contanti"
@@ -420,7 +420,7 @@
 	}
 	"The Profound Silence Desc"
 	{
-		"en"	"A painting that depicts the greatest disaster in Iberian history.\n{green}Enemies gain -15％ max health"
+		"en"	"A painting that depicts the greatest disaster in Alminan history.\n{green}Enemies gain -15％ max health"
 		"it"	"Un dipinto che raffigura il più grande disastro della storia iberica.\n{green}I nemici guadagnano -15％ di salute massima"
 		"ko"	"이베리아 역사상 가장 컸던 재앙을 그린 작품.\n{green}모든 적들의 최대 체력 -15％."
 	}
@@ -1080,7 +1080,7 @@
 	}
 	"Children's Puppet Desc"
 	{
-		"en"	"A simple puppet made by Iberian children using trinkets found on the seacoast.\n{green}Enemies take Heavy mage damage every second while stunned"
+		"en"	"A simple puppet made by Alminan children using trinkets found on the seacoast.\n{green}Enemies take Heavy mage damage every second while stunned"
 		"it"	"Una semplice marionetta realizzata dai bambini iberici con i ninnoli trovati sulla costa.\n{green}I nemici subiscono danni pesanti da mago ogni secondo mentre sono storditi"
 		"ko"	"이베리아 아이들이 바닷가의 이상한 물건으로 만든 초라한 인형.\n{green}기절한 적은 초당 높은 마법 피해를 받습니다."
 	}
@@ -1128,7 +1128,7 @@
 	}
 	"Black Tulip Desc"
 	{
-		"en"	"The Silence crushed the Iberians, so she wishes to speak up.\n{green}Ally damage and healing increases up to +60％ over 120s, {red}resets after using a weapon ability"
+		"en"	"The Silence crushed the Alminans, so she wishes to speak up.\n{green}Ally damage and healing increases up to +60％ over 120s, {red}resets after using a weapon ability"
 		"it"	"Il Silenzio ha schiacciato gli iberici, quindi desidera parlare.\n{green}Il danno e la guarigione dell'alleato aumentano fino a +60％ in 120s, {red}si ripristina dopo aver usato un'abilità dell'arma"
 		"ko"	"침묵에 억압받는 이베리아인들을 위해 그녀는 목소리를 낼 것이다.\n{green}아군의 공격 피해량과 치유량이 120초에 걸쳐 최대 60％까지 증가. {red}무기 능력 발동시, 이 효과가 초기화."
 	}
@@ -2436,15 +2436,15 @@
 		"it"	"⚠ demoni del caos vaganti"
 		"ko"	"⚠ 방황하는 혼돈의 악마들"
 	}
-	"Antagonising Iberians"
+	"Antagonising Alminans"
 	{
-		"en"	"⚔ Antagonising Iberians"
+		"en"	"⚔ Antagonising Alminans"
 		"it"	"⚔ Antagonisti degli iberici"
 		"ko"	"⚔ 악당 이베리아인"
 	}
-	"Antagonising Iberians!"
+	"Antagonising Alminans!"
 	{
-		"en"	"⚠ Antagonising Iberians"
+		"en"	"⚠ Antagonising Alminans"
 		"it"	"⚠ Antagonisti degli iberici"
 		"ko"	"⚠ 악당 이베리아인"
 	}

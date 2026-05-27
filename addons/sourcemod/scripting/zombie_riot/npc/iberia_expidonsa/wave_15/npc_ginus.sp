@@ -40,7 +40,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_hit4.wav",
 };
 
-void Iberia_Ginus_OnMapStart_NPC()
+void Almina_Ginus_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -54,7 +54,7 @@ void Iberia_Ginus_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "sniper");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -62,9 +62,9 @@ void Iberia_Ginus_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaGinus(vecPos, vecAng, team);
+	return AlminaGinus(vecPos, vecAng, team);
 }
-methodmap IberiaGinus < CClotBody
+methodmap AlminaGinus < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -107,9 +107,9 @@ methodmap IberiaGinus < CClotBody
 	}
 	
 	
-	public IberiaGinus(float vecPos[3], float vecAng[3], int ally)
+	public AlminaGinus(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaGinus npc = view_as<IberiaGinus>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1000", ally));
+		AlminaGinus npc = view_as<AlminaGinus>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -125,9 +125,9 @@ methodmap IberiaGinus < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaGinus_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaGinus_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaGinus_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaGinus_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaGinus_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaGinus_ClotThink);
 		npc.m_iAttacksTillReload = 1;
 		
 		
@@ -150,9 +150,9 @@ methodmap IberiaGinus < CClotBody
 	}
 }
 
-public void IberiaGinus_ClotThink(int iNPC)
+public void AlminaGinus_ClotThink(int iNPC)
 {
-	IberiaGinus npc = view_as<IberiaGinus>(iNPC);
+	AlminaGinus npc = view_as<AlminaGinus>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -188,11 +188,11 @@ public void IberiaGinus_ClotThink(int iNPC)
 		int ActionDo;
 		if(npc.m_iAttacksTillReload >= 1)
 		{
-			ActionDo = IberiaGinusSelfDefense_Gun(npc,GetGameTime(npc.index));
+			ActionDo = AlminaGinusSelfDefense_Gun(npc,GetGameTime(npc.index));
 		}
 		else
 		{
-			ActionDo = IberiaGinusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+			ActionDo = AlminaGinusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		}
 
 		switch(ActionDo)
@@ -251,9 +251,9 @@ public void IberiaGinus_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaGinus_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaGinus_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaGinus npc = view_as<IberiaGinus>(victim);
+	AlminaGinus npc = view_as<AlminaGinus>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -267,9 +267,9 @@ public Action IberiaGinus_OnTakeDamage(int victim, int &attacker, int &inflictor
 	return Plugin_Changed;
 }
 
-public void IberiaGinus_NPCDeath(int entity)
+public void AlminaGinus_NPCDeath(int entity)
 {
-	IberiaGinus npc = view_as<IberiaGinus>(entity);
+	AlminaGinus npc = view_as<AlminaGinus>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -291,7 +291,7 @@ public void IberiaGinus_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int IberiaGinusSelfDefense_Gun(IberiaGinus npc, float gameTime)
+int AlminaGinusSelfDefense_Gun(AlminaGinus npc, float gameTime)
 {
 	float DistanceCheckMax = (NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0);
 	
@@ -406,14 +406,14 @@ int IberiaGinusSelfDefense_Gun(IberiaGinus npc, float gameTime)
 	{
 		npc.m_flAttackHappens = gameTime + 0.9;
 		npc.m_flDoingAnimation = gameTime + 0.55;
-		if(NpcStats_IberiaIsEnemyMarked(npc.m_iTargetWalkTo))
+		if(NpcStats_AlminaIsEnemyMarked(npc.m_iTargetWalkTo))
 			npc.m_flDoingAnimation = gameTime + 0.8;
 		npc.m_flNextMeleeAttack = gameTime + 2.5;
 	}
 	return 3;
 }
 
-int IberiaGinusSelfDefense(IberiaGinus npc, float gameTime, int target, float distance)
+int AlminaGinusSelfDefense(AlminaGinus npc, float gameTime, int target, float distance)
 {
 	//we use our melee.
 	if(npc.m_iChanged_WalkCycle != 4)

@@ -889,17 +889,17 @@
 	}
 	"Castellan_And_Sensal_Talk-3"
 	{
-		"en"	"They attacked us while invading Zalmina, what else is there to add?"
+		"en"	"They attacked us while invading Ziberia, what else is there to add?"
 		"ko"	"우리가 지베리아를 공격하는 동안, 저들이 우릴 공격했습니다. 정당방위인데 무슨 문제라도...?"
 	}
 	"Castellan_And_Sensal_Talk-4"
 	{
-		"en"	"Invading Zalmina? Right after {darkblue}Kahmlstein{default} Perished?"
+		"en"	"Invading Ziberia? Right after {darkblue}Kahmlstein{default} Perished?"
 		"ko"	"지베리아를 공격하고 있다고? {darkblue}카멜슈타인{default}이 죽은 뒤인데?"
 	}
 	"Castellan_And_Sensal_Talk-5"
 	{
-		"en"	"There are more important matters to attend to.\nZalmina is not like Him."
+		"en"	"There are more important matters to attend to.\nZiberia is not like Him."
 		"ko"	"그것보다 더 중요한 처리 사항이 많을텐데.\n지베리아는 그와 사상이 다르다."
 	}
 	"Castellan_And_Sensal_Talk-6"
@@ -944,7 +944,7 @@
 	}
 	"CaptinoMenius_Talk-2"
 	{
-		"en"	"{grey}Sensal arrived after he received the transmission from Captino Menius, but Castellan had already left with his army. Zalmina is in deep trouble now…{default}"
+		"en"	"{grey}Sensal arrived after he received the transmission from Captino Menius, but Castellan had already left with his army. Ziberia is in deep trouble now…{default}"
 		"ko"	"{grey}센살이 캡티노 메니우스의 전보를 받고 도착했지만, 카스텔란은 이미 그의 군대와 함께 전장으로 떠났습니다. 이제 지베리아는 큰 위험에 처했습니다.{default}"
 	}
 }

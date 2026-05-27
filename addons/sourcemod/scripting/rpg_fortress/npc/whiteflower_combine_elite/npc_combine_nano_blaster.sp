@@ -102,14 +102,14 @@ methodmap Whiteflower_Nano_Blaster < CClotBody
 			{
 				static Race race;
 				Races_GetClientInfo(target, race);
-				if(StrEqual(race.Name, "Iberian"))
+				if(StrEqual(race.Name, "Alminan"))
 				{
 					switch(GetRandomInt(0,2))
 					{
 						case 0:
-							NpcSpeechBubble(this.index, "Iberians are attacking, over.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Alminans are attacking, over.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 						case 1:
-							NpcSpeechBubble(this.index, "Iberian counter attack is going on, over.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Alminan counter attack is going on, over.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 						case 2:
 							NpcSpeechBubble(this.index, "Need backup, more soon, over.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 					}

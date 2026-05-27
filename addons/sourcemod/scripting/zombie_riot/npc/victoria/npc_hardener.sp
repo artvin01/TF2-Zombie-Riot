@@ -451,7 +451,7 @@ static int VictorianHardener_Work(VictorianHardener npc, float gameTime, float d
 		if(npc.m_flNextRangedAttack < gameTime)
 		{
 			ExpidonsaGroupHeal(npc.index, 200.0, 5, 2500.0, 0.0, false,Expidonsa_DontHealSameIndex);
-			IberiaArmorEffect(npc.index, 200.0);
+			AlminaArmorEffect(npc.index, 200.0);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			int MAXEffect;
 			for(int entitycount; entitycount<MAXENTITIES; entitycount++)

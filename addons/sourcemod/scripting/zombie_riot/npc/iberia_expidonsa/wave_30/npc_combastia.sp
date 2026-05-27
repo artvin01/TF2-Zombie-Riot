@@ -40,7 +40,7 @@ static const char g_MoraleScream[][] = {
 	"vo/heavy_battlecry05.mp3",
 };
 
-void IberiaCombastia_OnMapStart_NPC()
+void AlminaCombastia_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -56,17 +56,17 @@ void IberiaCombastia_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_urgent");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaCombastia(vecPos, vecAng, team);
+	return AlminaCombastia(vecPos, vecAng, team);
 }
 
-methodmap IberiaCombastia < CClotBody
+methodmap AlminaCombastia < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -107,9 +107,9 @@ methodmap IberiaCombastia < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public IberiaCombastia(float vecPos[3], float vecAng[3], int ally)
+	public AlminaCombastia(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaCombastia npc = view_as<IberiaCombastia>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "9000", ally, false, true));
+		AlminaCombastia npc = view_as<AlminaCombastia>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "9000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -126,9 +126,9 @@ methodmap IberiaCombastia < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaCombastia_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaCombastia_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaCombastia_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaCombastia_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaCombastia_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaCombastia_ClotThink);
 		ApplyStatusEffect(npc.index, npc.index, "Thick Blood", 999999.0);	
 		
 		
@@ -139,7 +139,7 @@ methodmap IberiaCombastia < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetMoraleDoIberia(npc.index, 17.0);
+		SetMoraleDoAlmina(npc.index, 17.0);
 		
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec23_torchers_trench_coat/dec23_torchers_trench_coat.mdl");
@@ -158,9 +158,9 @@ methodmap IberiaCombastia < CClotBody
 	}
 }
 
-public void IberiaCombastia_ClotThink(int iNPC)
+public void AlminaCombastia_ClotThink(int iNPC)
 {
-	IberiaCombastia npc = view_as<IberiaCombastia>(iNPC);
+	AlminaCombastia npc = view_as<AlminaCombastia>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -187,7 +187,7 @@ public void IberiaCombastia_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	IberiaMoraleGivingDo(iNPC, GetGameTime(npc.index));
+	AlminaMoraleGivingDo(iNPC, GetGameTime(npc.index));
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -204,7 +204,7 @@ public void IberiaCombastia_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		IberiaCombastiaSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		AlminaCombastiaSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -214,9 +214,9 @@ public void IberiaCombastia_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaCombastia_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaCombastia_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaCombastia npc = view_as<IberiaCombastia>(victim);
+	AlminaCombastia npc = view_as<AlminaCombastia>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -231,9 +231,9 @@ public Action IberiaCombastia_OnTakeDamage(int victim, int &attacker, int &infli
 }
 
 
-public void IberiaCombastia_NPCDeath(int entity)
+public void AlminaCombastia_NPCDeath(int entity)
 {
-	IberiaCombastia npc = view_as<IberiaCombastia>(entity);
+	AlminaCombastia npc = view_as<AlminaCombastia>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -256,7 +256,7 @@ public void IberiaCombastia_NPCDeath(int entity)
 
 }
 
-void IberiaCombastiaSelfDefense(IberiaCombastia npc, float gameTime, int target, float distance)
+void AlminaCombastiaSelfDefense(AlminaCombastia npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{

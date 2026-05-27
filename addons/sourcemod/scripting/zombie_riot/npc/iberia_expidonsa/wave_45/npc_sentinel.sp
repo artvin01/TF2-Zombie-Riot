@@ -42,7 +42,7 @@ static const char g_WarCry[][] = {
 };
 
 
-void IberianSentinel_OnMapStart_NPC()
+void AlminanSentinel_OnMapStart_NPC()
 { 	
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -58,16 +58,16 @@ void IberianSentinel_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "soldier_backup");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberianSentinal(vecPos, vecAng, team);
+	return AlminanSentinal(vecPos, vecAng, team);
 }
 
-methodmap IberianSentinal < CClotBody
+methodmap AlminanSentinal < CClotBody
 {
 	property float m_flArmorToGive
 	{
@@ -119,9 +119,9 @@ methodmap IberianSentinal < CClotBody
 	}
 	
 	
-	public IberianSentinal(float vecPos[3], float vecAng[3], int ally)
+	public AlminanSentinal(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberianSentinal npc = view_as<IberianSentinal>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.15", "15000", ally, false, true));
+		AlminanSentinal npc = view_as<AlminanSentinal>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.15", "15000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 
@@ -142,9 +142,9 @@ methodmap IberianSentinal < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_iAttacksTillReload = 0;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberianSentinel_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberianSentinel_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberianSentinel_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminanSentinel_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminanSentinel_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminanSentinel_ClotThink);
 		
 		
 		npc.StartPathing();
@@ -177,9 +177,9 @@ methodmap IberianSentinal < CClotBody
 	}
 }
 
-public void IberianSentinel_ClotThink(int iNPC)
+public void AlminanSentinel_ClotThink(int iNPC)
 {
-	IberianSentinal npc = view_as<IberianSentinal>(iNPC);
+	AlminanSentinal npc = view_as<AlminanSentinal>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -198,7 +198,7 @@ public void IberianSentinel_ClotThink(int iNPC)
 	
 	if(npc.m_flArmorCount <= 0.0 && !npc.m_fbRangedSpecialOn)
 	{
-		IberiaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 9900.0);
+		AlminaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 9900.0);
 		npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 
 		float flPos[3];
@@ -252,7 +252,7 @@ public void IberianSentinel_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		IberianSentinelSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		AlminanSentinelSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -262,9 +262,9 @@ public void IberianSentinel_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminanSentinel_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberianSentinal npc = view_as<IberianSentinal>(victim);
+	AlminanSentinal npc = view_as<AlminanSentinal>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -278,9 +278,9 @@ public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-public void IberianSentinel_NPCDeath(int entity)
+public void AlminanSentinel_NPCDeath(int entity)
 {
-	IberianSentinal npc = view_as<IberianSentinal>(entity);
+	AlminanSentinal npc = view_as<AlminanSentinal>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -305,7 +305,7 @@ public void IberianSentinel_NPCDeath(int entity)
 
 }
 
-void IberianSentinelSelfDefense(IberianSentinal npc, float gameTime, int target, float distance)
+void AlminanSentinelSelfDefense(AlminanSentinal npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -363,7 +363,7 @@ void IberianSentinelSelfDefense(IberianSentinal npc, float gameTime, int target,
 	}
 }
 
-void SentinelAOEBuff(IberianSentinal npc, float gameTime)
+void SentinelAOEBuff(AlminanSentinal npc, float gameTime)
 {
 	float pos1[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);

@@ -42,7 +42,7 @@ static const char g_suitup[][] = {
 
 
 
-void IberianIronborus_OnMapStart_NPC()
+void AlminanIronborus_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -57,16 +57,16 @@ void IberianIronborus_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_chief");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberianIronBorus(vecPos, vecAng, team);
+	return AlminanIronBorus(vecPos, vecAng, team);
 }
 
-methodmap IberianIronBorus < CClotBody
+methodmap AlminanIronBorus < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -110,9 +110,9 @@ methodmap IberianIronBorus < CClotBody
 	}
 	
 	
-	public IberianIronBorus(float vecPos[3], float vecAng[3], int ally)
+	public AlminanIronBorus(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberianIronBorus npc = view_as<IberianIronBorus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.35", "8000", ally, false, true));
+		AlminanIronBorus npc = view_as<AlminanIronBorus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.35", "8000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 
@@ -133,9 +133,9 @@ methodmap IberianIronBorus < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_iAttacksTillReload = 0;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberianIronborus_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberianIronborus_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberianIronborus_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminanIronborus_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminanIronborus_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminanIronborus_ClotThink);
 		
 		
 		npc.StartPathing();
@@ -169,9 +169,9 @@ methodmap IberianIronBorus < CClotBody
 	}
 }
 
-public void IberianIronborus_ClotThink(int iNPC)
+public void AlminanIronborus_ClotThink(int iNPC)
 {
-	IberianIronBorus npc = view_as<IberianIronBorus>(iNPC);
+	AlminanIronBorus npc = view_as<AlminanIronBorus>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -229,7 +229,7 @@ public void IberianIronborus_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		IberianIronborusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		AlminanIronborusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -239,9 +239,9 @@ public void IberianIronborus_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberianIronborus_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminanIronborus_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberianIronBorus npc = view_as<IberianIronBorus>(victim);
+	AlminanIronBorus npc = view_as<AlminanIronBorus>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -255,9 +255,9 @@ public Action IberianIronborus_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-public void IberianIronborus_NPCDeath(int entity)
+public void AlminanIronborus_NPCDeath(int entity)
 {
-	IberianIronBorus npc = view_as<IberianIronBorus>(entity);
+	AlminanIronBorus npc = view_as<AlminanIronBorus>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -282,7 +282,7 @@ public void IberianIronborus_NPCDeath(int entity)
 
 }
 
-void IberianIronborusSelfDefense(IberianIronBorus npc, float gameTime, int target, float distance)
+void AlminanIronborusSelfDefense(AlminanIronBorus npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -310,7 +310,7 @@ void IberianIronborusSelfDefense(IberianIronBorus npc, float gameTime, int targe
 					if(npc.Anger)
 						damageDealt *= 2.0;
 						
-					if(NpcStats_IberiaIsEnemyMarked(target))
+					if(NpcStats_AlminaIsEnemyMarked(target))
 						damageDealt *= 1.5;
 
 
@@ -347,7 +347,7 @@ void IberianIronborusSelfDefense(IberianIronBorus npc, float gameTime, int targe
 	}
 }
 
-void IronborusQuantum(IberianIronBorus npc)
+void IronborusQuantum(AlminanIronBorus npc)
 {
 	if(!npc.m_fbRangedSpecialOn)
 	{

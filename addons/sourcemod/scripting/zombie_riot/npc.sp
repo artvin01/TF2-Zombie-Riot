@@ -519,7 +519,7 @@ void NPC_ConfigSetup()
 	DesertAtilla_OnMapStart_NPC();
 	DesertAncientDemon_OnMapStart_NPC();
 	WinterSniper_OnMapStart_NPC();
-	WinterZalminanMiner_OnMapStart_NPC();
+	WinterZiberianMiner_OnMapStart_NPC();
 	WinterSnoweyGunner_OnMapStart_NPC();
 	WinterFreezingCleaner_OnMapStart_NPC();
 	WinterAirbornExplorer_OnMapStart_NPC();
@@ -599,52 +599,52 @@ void NPC_ConfigSetup()
 	//void events
 	VoidedDiversionistico_OnMapStart_NPC();
 
-//Iberia Expidonsa
+//Almina Expidonsa
 	//Overall usage
-	Iberia_Beacon_OnMapStart_NPC();
-	IberiaBeaconConstructor_OnMapStart_NPC();
-	Iberia_Lighthouse_OnMapStart_NPC();
+	Almina_Beacon_OnMapStart_NPC();
+	AlminaBeaconConstructor_OnMapStart_NPC();
+	Almina_Lighthouse_OnMapStart_NPC();
 	Huirgrajo_Precache();
 	
 // wave 1-15
-	Iberia_Cambino_OnMapStart_NPC();
-	Iberia_Irani_OnMapStart_NPC();
-	Iberia_Kinat_OnMapStart_NPC();
-	Iberia_Ginus_OnMapStart_NPC();
-	Iberia_SpeedusInitus_OnMapStart_NPC();
-	Iberia_Anania_OnMapStart_NPC();
-	Iberia_Victorian_OnMapStart_NPC();
-	Iberia_inqusitor_iidutas_OnMapStart_NPC();
+	Almina_Cambino_OnMapStart_NPC();
+	Almina_Irani_OnMapStart_NPC();
+	Almina_Kinat_OnMapStart_NPC();
+	Almina_Ginus_OnMapStart_NPC();
+	Almina_SpeedusInitus_OnMapStart_NPC();
+	Almina_Anania_OnMapStart_NPC();
+	Almina_Victorian_OnMapStart_NPC();
+	Almina_inqusitor_iidutas_OnMapStart_NPC();
   
 
 //wave 16 -30
-	IberiaVivintu_OnMapStart_NPC();
-	IberiaCenula_OnMapStart_NPC();
-	IberiaKumbai_OnMapStart_NPC();
-	IberiaSpeedusInstantus_OnMapStart_NPC();
-	IberiaCombastia_OnMapStart_NPC();
-	IberiaMorato_OnMapStart_NPC();
-	IberiaSeaXploder_OnMapStart_NPC();
-	Iberia_AntiSeaRobot_OnMapStart_NPC();
+	AlminaVivintu_OnMapStart_NPC();
+	AlminaCenula_OnMapStart_NPC();
+	AlminaKumbai_OnMapStart_NPC();
+	AlminaSpeedusInstantus_OnMapStart_NPC();
+	AlminaCombastia_OnMapStart_NPC();
+	AlminaMorato_OnMapStart_NPC();
+	AlminaSeaXploder_OnMapStart_NPC();
+	Almina_AntiSeaRobot_OnMapStart_NPC();
 
 // 31-45
 
-	IberiaRanka_S_OnMapStart_NPC();
-	IberiaMurdarato_OnMapStart_NPC();
-	IberiaEliteKinat_OnMapStart_NPC();
-	Iberia_SeabornAnnihilator_OnMapStart_NPC();
-	IberianSentinel_OnMapStart_NPC();
-	IberianIronborus_OnMapStart_NPC();
-	IberianDestructius_OnMapStart_NPC();
-	IberiaSpeedusItus_OnMapStart_NPC();
+	AlminaRanka_S_OnMapStart_NPC();
+	AlminaMurdarato_OnMapStart_NPC();
+	AlminaEliteKinat_OnMapStart_NPC();
+	Almina_SeabornAnnihilator_OnMapStart_NPC();
+	AlminanSentinel_OnMapStart_NPC();
+	AlminanIronborus_OnMapStart_NPC();
+	AlminanDestructius_OnMapStart_NPC();
+	AlminaSpeedusItus_OnMapStart_NPC();
 
 //wave 45-60
 
-	IberiaSpeedusElitus_OnMapStart_NPC();
-	IberiaSeaDryer_OnMapStart_NPC();
-	IberiaRunaka_OnMapStart_NPC();
-	IberiaDeathMarker_OnMapStart_NPC();
-	Iberia_inqusitor_amphi_OnMapStart_NPC();
+	AlminaSpeedusElitus_OnMapStart_NPC();
+	AlminaSeaDryer_OnMapStart_NPC();
+	AlminaRunaka_OnMapStart_NPC();
+	AlminaDeathMarker_OnMapStart_NPC();
+	Almina_inqusitor_amphi_OnMapStart_NPC();
 
 //Victorian Raid
 //wave 1~10
@@ -787,28 +787,28 @@ void NPC_ConfigSetup()
 	
 	Barracks_Combine_Commander_Precache();
 
-	//Iberia Barracks
-	Barracks_Iberia_Runner_Precache();
-	Barracks_Iberia_Gunner_Precache();
+	//Almina Barracks
+	Barracks_Almina_Runner_Precache();
+	Barracks_Almina_Gunner_Precache();
 
-	Barracks_Iberia_Tanker_Precache();
-	Barracks_Iberia_Rocketeer_Precache();
+	Barracks_Almina_Tanker_Precache();
+	Barracks_Almina_Rocketeer_Precache();
 
-	Barracks_Iberia_Healer_Precache();
-	Barracks_Iberia_Boomstick_Precache();
+	Barracks_Almina_Healer_Precache();
+	Barracks_Almina_Boomstick_Precache();
 	
-	Barracks_Iberia_Healtanker_Precache();
-	Barracks_Iberia_Elite_Gunner_Precache();
+	Barracks_Almina_Healtanker_Precache();
+	Barracks_Almina_Elite_Gunner_Precache();
 	
-	Barracks_Iberia_Guards_Precache();
-	Barracks_Iberia_Commando_Precache();
+	Barracks_Almina_Guards_Precache();
+	Barracks_Almina_Commando_Precache();
 
-	Barracks_Iberia_Headhunter_Precache();
-	Barrack_Iberia_Inquisitor_Lynsen_Precache();
+	Barracks_Almina_Headhunter_Precache();
+	Barrack_Almina_Inquisitor_Lynsen_Precache();
 
-	Barracks_Iberia_Lighthouse_Guardian_Precache();
+	Barracks_Almina_Lighthouse_Guardian_Precache();
 	
-	//Iberia Last Hope
+	//Almina Last Hope
 	Barracks_Thorns();
 
 	// Raid Low Prio
@@ -2154,7 +2154,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/interitus/desert/npc_ancient_demon.sp"
 
 #include "npc/interitus/winter/npc_winter_sniper.sp"
-#include "npc/interitus/winter/npc_zalminan_miner.sp"
+#include "npc/interitus/winter/npc_ziberian_miner.sp"
 #include "npc/interitus/winter/npc_snowey_gunner.sp"
 #include "npc/interitus/winter/npc_freezing_cleaner.sp"
 #include "npc/interitus/winter/npc_airborn_explorer.sp"

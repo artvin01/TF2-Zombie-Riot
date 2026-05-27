@@ -36,7 +36,7 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/demoman_battlecry04.mp3",
 };
 
-void Barracks_Iberia_Guards_Precache()
+void Barracks_Almina_Guards_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -45,7 +45,7 @@ void Barracks_Iberia_Guards_Precache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheModel("models/player/demo.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Guards");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Alminan Guards");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_guards");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -56,10 +56,10 @@ void Barracks_Iberia_Guards_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barracks_Iberia_Guards(client, vecPos, vecAng);
+	return Barracks_Almina_Guards(client, vecPos, vecAng);
 }
 
-methodmap  Barracks_Iberia_Guards < BarrackBody
+methodmap  Barracks_Almina_Guards < BarrackBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -99,16 +99,16 @@ methodmap  Barracks_Iberia_Guards < BarrackBody
 
 	}
 
-	public Barracks_Iberia_Guards(int client, float vecPos[3], float vecAng[3])
+	public Barracks_Almina_Guards(int client, float vecPos[3], float vecAng[3])
 	{
-		Barracks_Iberia_Guards npc = view_as<Barracks_Iberia_Guards>(BarrackBody(client, vecPos, vecAng, "900", "models/player/demo.mdl", STEPTYPE_COMBINE,"0.55",_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barracks_Almina_Guards npc = view_as<Barracks_Almina_Guards>(BarrackBody(client, vecPos, vecAng, "900", "models/player/demo.mdl", STEPTYPE_COMBINE,"0.55",_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barracks_Iberia_Guards_NPCDeath;
-		func_NPCThink[npc.index] = Barracks_Iberia_Guards_ClotThink;
-		func_NPCOnTakeDamage[npc.index] = Barrack_Iberia_Guards_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barracks_Almina_Guards_NPCDeath;
+		func_NPCThink[npc.index] = Barracks_Almina_Guards_ClotThink;
+		func_NPCOnTakeDamage[npc.index] = Barrack_Almina_Guards_OnTakeDamage;
 		npc.m_flSpeed = 200.0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -139,9 +139,9 @@ methodmap  Barracks_Iberia_Guards < BarrackBody
 	}
 }
 
-public void Barracks_Iberia_Guards_ClotThink(int iNPC)
+public void Barracks_Almina_Guards_ClotThink(int iNPC)
 {
-	Barracks_Iberia_Guards npc = view_as<Barracks_Iberia_Guards>(iNPC);
+	Barracks_Almina_Guards npc = view_as<Barracks_Almina_Guards>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
 	GrantEntityArmor(iNPC, true, 0.25, 0.66, 0);
@@ -186,7 +186,7 @@ public void Barracks_Iberia_Guards_ClotThink(int iNPC)
 							{
 								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),9000.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlayMeleeHitSound();
-								ExpidonsaGroupHeal(npc.index, 150.0, 4, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),337.0, 0)), 1.0, true, IberiaBarracks_HealSelfLimitCD);
+								ExpidonsaGroupHeal(npc.index, 150.0, 4, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),337.0, 0)), 1.0, true, AlminaBarracks_HealSelfLimitCD);
 								DesertYadeamDoHealEffect(npc.index, 150.0);
 							} 
 						}
@@ -208,13 +208,13 @@ public void Barracks_Iberia_Guards_ClotThink(int iNPC)
 	}
 }
 
-public Action Barrack_Iberia_Guards_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Barrack_Almina_Guards_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	Barracks_Iberia_Guards npc = view_as<Barracks_Iberia_Guards>(victim);
+	Barracks_Almina_Guards npc = view_as<Barracks_Almina_Guards>(victim);
 	
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
@@ -238,11 +238,11 @@ public Action Barrack_Iberia_Guards_OnTakeDamage(int victim, int &attacker, int 
 	return Plugin_Changed;
 }
 
-void Barracks_Iberia_Guards_NPCDeath(int entity)
+void Barracks_Almina_Guards_NPCDeath(int entity)
 {
-	Barracks_Iberia_Guards npc = view_as<Barracks_Iberia_Guards>(entity);
+	Barracks_Almina_Guards npc = view_as<Barracks_Almina_Guards>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	ExpidonsaGroupHeal(npc.index, 300.0, 4, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),600.0, 0)), 1.0, true, IberiaBarracks_HealSelfLimitCD);
+	ExpidonsaGroupHeal(npc.index, 300.0, 4, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),600.0, 0)), 1.0, true, AlminaBarracks_HealSelfLimitCD);
 	DesertYadeamDoHealEffect(npc.index, 300.0);
 	npc.PlayNPCDeath();
 }

@@ -2680,9 +2680,9 @@
 		"en"		"Avangard's Processing Core-B"
 		"ko"		"아방가르드의 프로세싱 코어-B"
 	}
-	"Iberian and Expidonsan Training"
+	"Alminan and Expidonsan Training"
 	{
-		"en"		"Iberian and Expidonsan Training"
+		"en"		"Alminan and Expidonsan Training"
 		"ko"		"이베리아-엑스피돈사 연합 훈련"
 	}
 	"Expidonsan Research Card"
@@ -3220,15 +3220,15 @@
 		"ru"		"Цивилизации казармы"
 		"ko"		"배럭 유닛 설정"
 	}
-	"Iberia and Expidonsan's Help"
+	"Almina and Expidonsan's Help"
 	{
-		"en"		"Iberia and Expidonsan's Help"
+		"en"		"Almina and Expidonsan's Help"
 		"ru"		"Помощь Иберии и Экспидонса"
 		"ko"		"이베리아와 엑스피돈사인들의 도움"
 	}
-	"Iberia's Last Hope..."
+	"Almina's Last Hope..."
 	{
-		"en"		"Iberia's Last Hope"
+		"en"		"Almina's Last Hope"
 		"ru"		"Последняя Надежда Иберии"
 		"ko"		"이베리아의 마지막 희망"
 	}
@@ -3611,13 +3611,13 @@
 		"it"		"Stazione di cura montata sui ribelli"
 		"ko"	   "반시민군의 실장형 회복 기구"
 	}
-	"Judgement Of Iberia"
+	"Judgement Of Almina"
 	{
-		"en"       "Judgement Of Iberia"
+		"en"       "Judgement Of Almina"
 		"fr"       "Judgement de Ibéria"
 		"ru"       "Суд Иберии"
 		"chi"      "伊比利亚之判"
-		"it"		"Giudizio di Iberia"
+		"it"		"Giudizio di Almina"
 		"ko"		"이베리아의 심판"
 	}
 	"Tornado-Blitz"
@@ -4464,9 +4464,9 @@
 		"ru"		"Свежий Заголовок"
 		"ko"		"최신 신문 기사"
 	}
-	"Zalminan Political News"
+	"Ziberian Political News"
 	{
-		"en"		"Zalminan Political News"
+		"en"		"Ziberian Political News"
 		"ru"		"Новости Политики Зибири"
 		"ko"		"지베리아 정치 뉴스"
 	}

@@ -34,7 +34,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/airboat/airboat_gun_energy2.wav",
 };
 
-void IberiaRunaka_OnMapStart_NPC()
+void AlminaRunaka_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -48,17 +48,17 @@ void IberiaRunaka_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "seargent_ideal");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaRunaka(vecPos, vecAng, team);
+	return AlminaRunaka(vecPos, vecAng, team);
 }
 
-methodmap IberiaRunaka < CClotBody
+methodmap AlminaRunaka < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -100,9 +100,9 @@ methodmap IberiaRunaka < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
-	public IberiaRunaka(float vecPos[3], float vecAng[3], int ally)
+	public AlminaRunaka(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaRunaka npc = view_as<IberiaRunaka>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "100000", ally, false, true));
+		AlminaRunaka npc = view_as<AlminaRunaka>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "100000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -119,9 +119,9 @@ methodmap IberiaRunaka < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaRunaka_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaRunaka_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaRunaka_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaRunaka_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaRunaka_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaRunaka_ClotThink);
 		Runaka_ArmorStick_Effect(npc.index);
 		
 		
@@ -147,9 +147,9 @@ methodmap IberiaRunaka < CClotBody
 	}
 }
 
-public void IberiaRunaka_ClotThink(int iNPC)
+public void AlminaRunaka_ClotThink(int iNPC)
 {
-	IberiaRunaka npc = view_as<IberiaRunaka>(iNPC);
+	AlminaRunaka npc = view_as<AlminaRunaka>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -192,7 +192,7 @@ public void IberiaRunaka_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		IberiaRunakaSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		AlminaRunakaSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -202,9 +202,9 @@ public void IberiaRunaka_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaRunaka_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaRunaka_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaRunaka npc = view_as<IberiaRunaka>(victim);
+	AlminaRunaka npc = view_as<AlminaRunaka>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -219,9 +219,9 @@ public Action IberiaRunaka_OnTakeDamage(int victim, int &attacker, int &inflicto
 }
 
 
-public void IberiaRunaka_NPCDeath(int entity)
+public void AlminaRunaka_NPCDeath(int entity)
 {
-	IberiaRunaka npc = view_as<IberiaRunaka>(entity);
+	AlminaRunaka npc = view_as<AlminaRunaka>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -245,7 +245,7 @@ public void IberiaRunaka_NPCDeath(int entity)
 
 }
 
-void IberiaRunakaSelfDefense(IberiaRunaka npc, float gameTime, int target, float distance)
+void AlminaRunakaSelfDefense(AlminaRunaka npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -289,10 +289,10 @@ void IberiaRunakaSelfDefense(IberiaRunaka npc, float gameTime, int target, float
 					{
 						npc.m_flArmorToGive = 3000.0;
 					}
-					if(NpcStats_IberiaIsEnemyMarked(target))
+					if(NpcStats_AlminaIsEnemyMarked(target))
 						npc.m_flArmorToGive *= 1.5;
-					ExpidonsaGroupHeal(npc.index, 150.0, 4, 0.0, 1.0, true,IberiaBeaconGiveArmor);
-					IberiaArmorEffect(npc.index, 150.0);
+					ExpidonsaGroupHeal(npc.index, 150.0, 4, 0.0, 1.0, true,AlminaBeaconGiveArmor);
+					AlminaArmorEffect(npc.index, 150.0);
 				} 
 			}
 			delete swingTrace;

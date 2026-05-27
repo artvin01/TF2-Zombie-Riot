@@ -2152,9 +2152,9 @@
 	}
 	"Scrapped Wallet Desc"
 	{
-		"en"	"Old zalminan wallet, has some pictures inside and some leftover cash.\n- {green}Gain 500 Cash and deal +1％ damage."
+		"en"	"Old ziberian wallet, has some pictures inside and some leftover cash.\n- {green}Gain 500 Cash and deal +1％ damage."
 		"ru"	"Старый русский бумажник, внутри несколько фотографий и немного оставшихся денег.\n- +500 кредитов и на 1％ больше урона."
-		"it"	"Vecchio portafoglio zalminano, ha alcune foto all'interno e qualche avanzo di denaro.\n- {green} Guadagna 500 contanti e infligge +1％ danni."
+		"it"	"Vecchio portafoglio ziberiano, ha alcune foto all'interno e qualche avanzo di denaro.\n- {green} Guadagna 500 contanti e infligge +1％ danni."
 		"ko"	"오래된 지베리아제 지갑. 안에는 사진 몇 장과 약간의 돈이 들어있다.\n- {green}추가 자금 +500, 공격 피해량 +1％."
 	}
 	"Golden Coin"
@@ -2186,15 +2186,15 @@
 	}
 	"Spanish Specialised Gunpowder"
 	{
-		"en"	"Iberia Specialised Gunpowder"
-		"it"	"Polvere da sparo specializzata in Iberia"
+		"en"	"Almina Specialised Gunpowder"
+		"it"	"Polvere da sparo specializzata in Almina"
 		"ko"	"이베리아제 특수 화약"
 	}
 	"Spanish Specialised Gunpowder Desc"
 	{
-		"en"	"Gunpower created in Iberia, and made specifically for Iberian Inquisitors.\n- {green}Players gain +15％ ranged and mage damage."
+		"en"	"Gunpower created in Almina, and made specifically for Alminan Inquisitors.\n- {green}Players gain +15％ ranged and mage damage."
 		"ru"	"Оружие, созданное в Испании специально для испанских войск.\n- +15％ к урону в дальнем бою."
-		"it"	"Potere delle armi creato in Iberia e realizzato specificamente per gli Inquisitori iberici.\n- {green}I giocatori guadagnano +15％ danni a distanza e da mago."
+		"it"	"Potere delle armi creato in Almina e realizzato specificamente per gli Inquisitori iberici.\n- {green}I giocatori guadagnano +15％ danni a distanza e da mago."
 		"ko"	"이베리아에서 개발된 화약. 특히 이베리아 재판관들을 위해 만들어진 것이다.\n- {green}원거리 및 마법 공격 피해량 +15％."
 	}
 	"Supply Depot"
@@ -2657,9 +2657,9 @@
 		"it"	"Ma non c'è nessuno..."
 		"ko"	"여기엔 아무도 없는 것 같다..."
 	}
-	"W.F. Mercenary Iberian"
+	"W.F. Mercenary Alminan"
 	{
-		"en"	"W.F. Mercenary Iberian"
+		"en"	"W.F. Mercenary Alminan"
 		"it"	"W.F. Mercenario Iberico"
 		"ko"	"W.F. 용병 이베리아인"
 	}

@@ -2338,7 +2338,7 @@ static void Sensal_Weapon_Lines(Sensal npc, int client)
 		case WEAPON_NEARL:  Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default} decided to visit Kazimierz?");
 		case WEAPON_KAHMLFIST:  Format(Text_Lines, sizeof(Text_Lines), "Kahmlstein caused enough problems as it is.");
 		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "This machine is gone now, use it better then it has {gold}%N{default}.",client);
-		case WEAPON_AMPHI:  Format(Text_Lines, sizeof(Text_Lines), "Iberia's Weapons!? Looks like the secret is out of the bag now...");
+		case WEAPON_AMPHI:  Format(Text_Lines, sizeof(Text_Lines), "Almina's Weapons!? Looks like the secret is out of the bag now...");
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "OH MY GOD, {snow}BOB THE FIRST{default} IS ON YOUR SIDE?!");
 		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "How did you get {lightblue}Nemal's{default} weapon {gold}%N{default}?",client);
 		case WEAPON_IMPACT_LANCE:  Format(Text_Lines, sizeof(Text_Lines), "That lance... the only weapon that was forged from both {snow}Ruina{default} and {gold}Expidonsa{default}...");

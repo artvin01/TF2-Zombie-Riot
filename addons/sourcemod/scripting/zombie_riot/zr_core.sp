@@ -357,7 +357,7 @@ enum
 	Type_BlueParadox,
 	Type_Void,
 	Type_Ruina,
-	Type_IberiaExpiAlliance,
+	Type_AlminaExpiAlliance,
 	Type_WhiteflowerSpecial,
 	Type_Victoria,
 	Type_Matrix,

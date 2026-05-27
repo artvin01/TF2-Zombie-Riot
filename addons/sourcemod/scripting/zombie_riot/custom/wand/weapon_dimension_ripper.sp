@@ -656,7 +656,7 @@ public void Weapon_Dimension_Summon_Void_PAP(int client, int weapon, bool &resul
 	}
 }
 
-public void Weapon_Dimension_Summon_Iberia(int client, int weapon, bool &result, int slot, int pap_logic)
+public void Weapon_Dimension_Summon_Almina(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	switch(GetRandomInt(1, 5))
 	{
@@ -677,7 +677,7 @@ public void Weapon_Dimension_Summon_Iberia(int client, int weapon, bool &result,
 	}
 }
 
-public void Weapon_Dimension_Summon_Iberia_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
+public void Weapon_Dimension_Summon_Almina_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	switch(GetRandomInt(1, 5))
 	{

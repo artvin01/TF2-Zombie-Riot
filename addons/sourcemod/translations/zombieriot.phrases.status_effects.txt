@@ -177,13 +177,13 @@
 		"it"	"Diminuisce i danni inflitti di 25％, che si riducono nel tempo a 0％"
 		"ko"	"적에게 입히는 공격 피해량이 10％ 감소하고, 시간이 지날수록 점점 감소하여 최종적으로 공격 피해량 감소량이 0％까지 떨어집니다."
 	}
-	"Iberia's Anti Raid"
+	"Almina's Anti Raid"
 	{
-		"en"	"Iberia's Anti Raid"
-		"it"	"Anti Raid di Iberia"
+		"en"	"Almina's Anti Raid"
+		"it"	"Anti Raid di Almina"
 		"ko"	"이베리아의 레이드 대항마"
 	}
-	"Iberia's Anti Raid Desc"
+	"Almina's Anti Raid Desc"
 	{
 		"en"	"Increases Damage Taken by 10％"
 		"it"	"Aumenta i danni subiti del 10"
@@ -1606,13 +1606,13 @@
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 12％"
 		"ko"	"공격 속도, 재장전 속도, 치유 속도가 12％ 증가합니다."
 	}
-	"Iberia Light"
+	"Almina Light"
 	{
-		"en"	"Iberia Light"
-		"it"	"Luce Iberia"
+		"en"	"Almina Light"
+		"it"	"Luce Almina"
 		"ko"	"이베리아의 빛"
 	}
-	"Iberia Light Desc"
+	"Almina Light Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by 10％"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 10％"
@@ -1702,13 +1702,13 @@
 		"it"	"Cambia casualmente i danni e gli elementi dell'HUD a seconda del livello."
 		"ko"	"보유한 혼돈 침식도에 비례하여 피해량과 허드 요소가 무작위로 변경됩니다."
 	}
-	"Iberia Morale Boost"
+	"Almina Morale Boost"
 	{
-		"en" 	"Iberia Morale Boost"
-		"it"	"Aumento del morale di Iberia"
+		"en" 	"Almina Morale Boost"
+		"it"	"Aumento del morale di Almina"
 		"ko"	"이베리아 사기 증진"
 	}
-	"Iberia Morale Boost Desc"
+	"Almina Morale Boost Desc"
 	{
 		"en"	"Increases damage, speed and resistances.\nThis dependant on how high the motivation is, 1 being the lowest, 4 being the highest.\nWith each tier giving much more."
 		"it"	"Aumenta i danni, la velocità e le resistenze.\nQuesto dipende da quanto è alta la motivazione, 1 è la più bassa, 4 è la più alta.\nCon ogni livello che dà molto di più."
@@ -2303,13 +2303,13 @@
 		"it"	"Aumenta i danni di +25％ e la resistenza di +15％ quando si è nel raggio della Bolla Plasmata."
 		"ko"	"플라즈마화된 버블의 반경 내에 있는 동안 공격 피해량이 25％ 증가하고 피해 저항력이 15％ 증가합니다."
 	}
-	"Zalminan Flagship Weaponry"
+	"Ziberian Flagship Weaponry"
 	{
-		"en"	"Zalminan Flagship Weaponry"
-		"it"	"Armamento della nave ammiraglia zalminana"
+		"en"	"Ziberian Flagship Weaponry"
+		"it"	"Armamento della nave ammiraglia ziberiana"
 		"ko"	"지베리아 기함 무장"
 	}
-	"Zalminan Flagship Weaponry Desc"
+	"Ziberian Flagship Weaponry Desc"
 	{
 		"en" 	"Take 25％ Less damage\nDeal 10％ More damage\nAttack 10％ Faster.\nReduces cooldowns by 15％"
 		"it"	"Subisce 25％ meno danni\nSubisce 10％ più danni\n Attacca 10％ più velocemente.\nRiduce i cooldown di 15％"

@@ -14,7 +14,7 @@ public void FlagShip_Rogue_Refresh_Remove()
 		if(!IsValidEntity(entity))
 			continue;
 			
-		RemoveSpecificBuff(entity, "Zalminan Flagship Weaponry");
+		RemoveSpecificBuff(entity, "Ziberian Flagship Weaponry");
 	}
 	Rogue_Refresh_Remove();
 }

@@ -107,10 +107,10 @@
 		"it"		"Ruina"
 		"ko" 		"루이나"
 	}
-	"Iberia Expidonsa Alliance"
+	"Almina Expidonsa Alliance"
 	{
-		"en" 		"Iberia Expidonsa Alliance"
-		"it"		"Alleanza Iberia Expidonsa"
+		"en" 		"Almina Expidonsa Alliance"
+		"it"		"Alleanza Almina Expidonsa"
 		"ko" 		"이베리아 - 엑스피돈사 연합"
 	}
 	"Whiteflower Specials"
@@ -1281,8 +1281,8 @@
 	}
 	"Sal Viento Bishop Quintus Desc"
 	{
-		"en"		"A member of the Church of the Deep who snuck into disaster-ravaged Iberia.\nHe changed the law of the land through his sincere beliefs, in pursuit of the perfect form, yet he was unable to fathom the will of the ocean.\nThen again, who could?\n- Spawns at a random position, does not move, and becomes a spawn point\n- Uses a ranged attack, up to 2 targets with the highest ranged resistance in range\n- Attacks inflict Nervous Impairment\n- Periodically attacks up to 8 targets\n- Periodically deals damage to all targets in line-of-sight"
-		"it"		"Un membro della Chiesa degli Abissi che si è intrufolato nell'Iberia devastata dal disastro.\nHa cambiato la legge della terra grazie alle sue sincere convinzioni, alla ricerca della forma perfetta, ma non è riuscito a comprendere la volontà dell'oceano.\nD'altronde, chi potrebbe farlo?\n- Si riproduce in una posizione casuale, non si muove e diventa un punto di spawn \n- Utilizza un attacco a distanza, fino a 2 bersagli con la resistenza a distanza più alta nel raggio d'azione \n- Gli attacchi infliggono menomazioni nervose \n- Attacca periodicamente fino a 8 bersagli \n- Infligge periodicamente danni a tutti i bersagli in linea visiva"
+		"en"		"A member of the Church of the Deep who snuck into disaster-ravaged Almina.\nHe changed the law of the land through his sincere beliefs, in pursuit of the perfect form, yet he was unable to fathom the will of the ocean.\nThen again, who could?\n- Spawns at a random position, does not move, and becomes a spawn point\n- Uses a ranged attack, up to 2 targets with the highest ranged resistance in range\n- Attacks inflict Nervous Impairment\n- Periodically attacks up to 8 targets\n- Periodically deals damage to all targets in line-of-sight"
+		"it"		"Un membro della Chiesa degli Abissi che si è intrufolato nell'Almina devastata dal disastro.\nHa cambiato la legge della terra grazie alle sue sincere convinzioni, alla ricerca della forma perfetta, ma non è riuscito a comprendere la volontà dell'oceano.\nD'altronde, chi potrebbe farlo?\n- Si riproduce in una posizione casuale, non si muove e diventa un punto di spawn \n- Utilizza un attacco a distanza, fino a 2 bersagli con la resistenza a distanza più alta nel raggio d'azione \n- Gli attacchi infliggono menomazioni nervose \n- Attacca periodicamente fino a 8 bersagli \n- Infligge periodicamente danni a tutti i bersagli in linea visiva"
 		"ko"		"참사가 벌어진 후 이베리아에 잠입한 심해 교회의 일원 중 하나.\n자신의 이념으로 율법을 왜곡하고, 개인의 완벽함을 추구했으나 바다의 뜻에는 전혀 침투할 수 없었다.\n그런 게 가능한 사람이 있기는 할까?\n-무작위 위치에 생성, 움직이지 않지만 다른 적들을 생성하는 임시 스폰 지점이 됨.\n-원거리 공격을 사용하며, 피해 저항력이 가장 높은 대상 2명만을 노림\n-주기적으로 최대 8명까지 공격하며, 시야 내 모든 목표물에게 피해를 가하는 공격 보유"
 	}
 	"Armorless Union Knight Desc"
@@ -1502,7 +1502,7 @@
 	}
 	"Saint Carmen Desc"
 	{
-		"en"		"The last surviving Saint of Iberia, living well past mortal life expectancy.\nHis longevity came at a price, but he remembers his duty and his enemies, despite having lost his reason.\n- Targets enemy and allies\n- Attacks levitate the target and deals extra hit of True damage"
+		"en"		"The last surviving Saint of Almina, living well past mortal life expectancy.\nHis longevity came at a price, but he remembers his duty and his enemies, despite having lost his reason.\n- Targets enemy and allies\n- Attacks levitate the target and deals extra hit of True damage"
 		"it"		"La sua longevità ha avuto un prezzo, ma ricorda il suo dovere e i suoi nemici, nonostante abbia perso la ragione.\n- Bersaglia il nemico e gli alleati\n- Gli attacchi fanno levitare il bersaglio e infliggono un colpo extra di danno Vero"
 		"ko"		"이베리아에 남은 유일한 성도로 일반 사람보다 훨씬 나이가 많다.\n이베리아의 생명 연장 시술은 대가가 따르지만, 그는 정신을 잃더라도 본인의 사명과 적을 분명하게 기억하고 있다.\n-피아구분 없이 모든 것을 공격\n-적중 시, 대상을 공중으로 띄우고 추가 트루 대미지를 입힘"
 	}
@@ -2136,7 +2136,7 @@
 		"en"	"-Infinite range sniper\n-Spawns randomly around the map\nDeals immensive damage to barricades.\n-Deals high Chaos damage"
 		"ko"	"-무제한 사거리를 보유한 저격수입니다.\n-맵의 무작위 위치에서 생성됩니다.\n-바리케이드를 대상으로 매우 높은 피해를 줍니다.\n-적중 시 높은 혼돈 원소 피해를 부여합니다."
 	}
-	"Zalminan Miner Desc" 
+	"Ziberian Miner Desc" 
 	{
 		"en"	"A engineer back from the mines to destroy your buildings\n-Attacks deal bonus damage to buildings\n-First attack deals 2x damage."
 		"ko"	"광산에서 돌아온 이 광부 엔지니어가 당신의 구조물을 파괴하러 왔습니다.\n-구조물에 추가 피해를 가합니다.\n-처음으로 적중한 공격이 2배의 피해를 줍니다."
@@ -2472,79 +2472,79 @@
 		"it"		"Possiede un arsenale di armi, non si fida di chi lo ostacola."
 		"ko"		"코드명 BAD COP. 각종 무기를 보유하고 있으며, 자신의 길을 막는 자들을 절대 신뢰하지 않습니다."
 	}
-	"Barracks Iberian Runner Desc"
+	"Barracks Alminan Runner Desc"
 	{
 		"en"		"Fast basic unit which has very light armor"
 		"it"		"Unità di base veloce con armatura molto leggera"
 		"ko"		"매우 빠른 기본적인 경장갑 유닛."
 	}
-	"Barracks Iberian Gunner Desc"
+	"Barracks Alminan Gunner Desc"
 	{
 		"en"		"Basic Ranged unit which can shoot while moving. Has very slow speed"
 		"it"		"Unità di base a distanza che può sparare mentre si muove. Ha una velocità molto bassa"
 		"ko"		"이동 중에도 사격할 수 있는 기본적인 원거리 유닛입니다. 이동 속도가 매우 느립니다."
 	}
-	"Barracks Iberian Tanker Desc"
+	"Barracks Alminan Tanker Desc"
 	{
 		"en"		"A stronger unit with basic armor"
 		"it"		"Un'unità più forte con armatura di base"
 		"ko"		"기본적인 장갑을 갖춘 강한 유닛입니다."
 	}	
-	"Barracks Iberian Rocketeer Desc"
+	"Barracks Alminan Rocketeer Desc"
 	{
 		"en"		"Ranged unit which fires strong Rocket. It cannot predict"
 		"it"		"Unità a distanza che spara forti razzi. Non può prevedere"
 		"ko"		"강력한 로켓을 발사하는 원거리 유닛입니다. 하지만 대상 이동 경로 예측은 불가능합니다."
 	}	
-	"Barracks Iberian Healer Desc"
+	"Barracks Alminan Healer Desc"
 	{
 		"en"		"A melee unit that has basic armor and can heal allies on attack and death"
 		"it"		"Un'unità da mischia dotata di armatura di base e in grado di curare gli alleati in caso di attacco e morte"
 		"ko"		"기본적인 장갑을 갖춘 근접 유닛으로, 공격할 때마다 주변 아군을 치료하며 사망 시에도 치료 효과가 발동합니다. "
 	}
-	"Barracks Iberian Healtanker Desc" 
+	"Barracks Alminan Healtanker Desc" 
 	{
 		"en"		"Stong melee unit that has heavy armor and can heal allies on attack and death"
 		"it"		"Unità da mischia forte, dotata di armatura pesante e in grado di curare gli alleati in caso di attacco e morte"
 		"ko"		"중장갑을 갖춘 튼튼한 근접 유닛입니다. 공격할 때마다 주변 아군을 치료하며 사망 시에도 치료 효과가 발동합니다."
 	}	
-	"Barracks Iberia Boomstick Desc"
+	"Barracks Almina Boomstick Desc"
 	{
 		"en"		"Slow but strong hitting ranged unit"
 		"it"		"Unità a distanza lenta ma che colpisce con forza"
 		"ko"		"느리지만, 원거리에서 강력한 공격을 가하는 원거리 유닛입니다."
 	}
-	"Barracks Iberian Guards Desc"
+	"Barracks Alminan Guards Desc"
 	{
 		"en"		"Tanky melee units that could gain armor on hit"
 		"it"		"Unità da mischia che possono guadagnare armatura in caso di colpo"
 		"ko"		"적중시 아머를 회복하는 튼튼한 근접 유닛."
 	}
-	"Barracks Iberian Elite Gunner Desc"
+	"Barracks Alminan Elite Gunner Desc"
 	{
 		"en"		"A ranged unit that fires 6 shots very rapidly and reloads"
 		"it"		"Un'unità a distanza che spara 6 colpi molto rapidamente e si ricarica"
 		"ko"		"6발을 빠르게 속사하는 원거리 유닛."
 	}	
-	"Barracks Iberian Commando Desc"
+	"Barracks Alminan Commando Desc"
 	{
 		"en"		"A slow but strong gunner, has an explosive surprise to anybody daring to approach him"
 		"it"		"Un artigliere lento ma forte, ha una sorpresa esplosiva per chiunque osi avvicinarsi a lui"
 		"ko"		"느리지만 매우 강력한 거너로서, 그에게 감히 접근하려는 모든 적들을 후회하게 만들어줄 화력을 선사합니다."
 	}
-	"Barracks Iberia Headhunter Desc"
+	"Barracks Almina Headhunter Desc"
 	{
 		"en"		"Melee assassin unit with a rapid fire attack, deals more damage to enemies below 50％ hp"
 		"it"		"Unità assassina da mischia con attacco a fuoco rapido, infligge più danni ai nemici con meno di 50％ hp"
 		"ko"		"공격 속도가 매우 빠른 기습형 근접 유닛입니다. 대상의 체력이 50％ 이하라면, 추가 피해를 줍니다."
 	}	
-	"Barracks Iberia Inquisitor Lynsen Desc"
+	"Barracks Almina Inquisitor Lynsen Desc"
 	{
 		"en"		"One of the best inquisitors trained by Amphi, able to mark enemies and rain death upon them, works well with other inquisitors."
 		"it"		"Uno dei migliori inquisitori addestrati da Amphi, in grado di marcare i nemici e di far piovere morte su di loro, lavora bene con gli altri inquisitori"
 		"ko"		"아이린이 훈련시킨 최고의 재판관 중 한 명으로, 적을 표적으로 지정하고 죽음의 세례를 선사합니다. 다른 재판관들과 시너지가 좋습니다."
 	}	
-	"Barracks Iberian Lighthouse Guardian Desc"
+	"Barracks Alminan Lighthouse Guardian Desc"
 	{
 		"en"		"Super unit that takes 2 slot, when he has armor he heals and buff allies, when he loses the armor he uses a shotgun for high dmg at the cost of supporting"
 		"it"		"Super unità che occupa 2 slot, quando ha l'armatura cura e buffa gli alleati, quando perde l'armatura usa un fucile a pompa per un alto numero di dmg al costo del supporto"
@@ -3484,7 +3484,7 @@
 	}
 	"Copycat Truthful Evidence Desc"
 	{
-		"en"	"This is a Copy of the evidence received from Sensal.\nSee some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Victoria invaded Zalmina.\nYou became the primary target of Victorians due to this…"
+		"en"	"This is a Copy of the evidence received from Sensal.\nSee some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Victoria invaded Ziberia.\nYou became the primary target of Victorians due to this…"
 		"ko"	"센살에게 받은 진실된 증거자료[사본] 입니다.\n이해못할 단어들이 보이지만 숨겨진 뜻이 있는거 같습니다. 이것이 빅토리아가 지베리아를 침공한 이유 같습니다.\n하지만 이것이 빅토리아인들과의 트러블을 만들었습니다."
 	}
 	"Dropped Secret Letter"
@@ -3537,14 +3537,14 @@
 		"en"	"Somehow still intact after the explosion. A bit big but still usable."
 		"ko"	"어떻게인지 몰라도 폭발 이후에도 멀쩡하게 남아있습니다.\n좀 크긴 하지만 쓸 수는 있네요."
 	}
-	"Iberian Badge of Honor"
+	"Alminan Badge of Honor"
 	{
-		"en"	"Iberian Badge of Honor"
+		"en"	"Alminan Badge of Honor"
 		"ko"	"이베리아의 영광의 배지"
 	}
-	"Iberian Badge of Honor Desc"
+	"Alminan Badge of Honor Desc"
 	{
-		"en"	"Amphi gives you this for all you have done for Iberia, \ndating back to before you were employed by Bob the Second."
+		"en"	"Amphi gives you this for all you have done for Almina, \ndating back to before you were employed by Bob the Second."
 		"ko"	"아이린이 당신이 이베리아를 위해 행한 모든 것에 대한 감사로 이것을 주었습니다.\n당신이 밥 2세에게 고용되기 전의 날짜까지 거슬러 올라가네요."
 	}
 	"Collector’s Backpack"

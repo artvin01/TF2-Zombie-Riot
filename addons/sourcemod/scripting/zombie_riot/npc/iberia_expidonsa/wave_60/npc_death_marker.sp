@@ -35,7 +35,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cleaver_hit_07.wav",
 };
 
-void IberiaDeathMarker_OnMapStart_NPC()
+void AlminaDeathMarker_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -48,7 +48,7 @@ void IberiaDeathMarker_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "mark_sniper_r3");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -56,9 +56,9 @@ void IberiaDeathMarker_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaDeathMarker(vecPos, vecAng, team);
+	return AlminaDeathMarker(vecPos, vecAng, team);
 }
-methodmap IberiaDeathMarker < CClotBody
+methodmap AlminaDeathMarker < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -97,9 +97,9 @@ methodmap IberiaDeathMarker < CClotBody
 	}
 	
 	
-	public IberiaDeathMarker(float vecPos[3], float vecAng[3], int ally)
+	public AlminaDeathMarker(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaDeathMarker npc = view_as<IberiaDeathMarker>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "10000", ally));
+		AlminaDeathMarker npc = view_as<AlminaDeathMarker>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "10000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -114,9 +114,9 @@ methodmap IberiaDeathMarker < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaDeathMarker_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaDeathMarker_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaDeathMarker_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaDeathMarker_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaDeathMarker_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaDeathMarker_ClotThink);
 		
 		b_NpcAppliesMarkDebuff[npc.index] = true; 
 		
@@ -142,9 +142,9 @@ methodmap IberiaDeathMarker < CClotBody
 	}
 }
 
-public void IberiaDeathMarker_ClotThink(int iNPC)
+public void AlminaDeathMarker_ClotThink(int iNPC)
 {
-	IberiaDeathMarker npc = view_as<IberiaDeathMarker>(iNPC);
+	AlminaDeathMarker npc = view_as<AlminaDeathMarker>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -187,7 +187,7 @@ public void IberiaDeathMarker_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		IberiaDeathMarkerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		AlminaDeathMarkerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -197,9 +197,9 @@ public void IberiaDeathMarker_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaDeathMarker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaDeathMarker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaDeathMarker npc = view_as<IberiaDeathMarker>(victim);
+	AlminaDeathMarker npc = view_as<AlminaDeathMarker>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -213,9 +213,9 @@ public Action IberiaDeathMarker_OnTakeDamage(int victim, int &attacker, int &inf
 	return Plugin_Changed;
 }
 
-public void IberiaDeathMarker_NPCDeath(int entity)
+public void AlminaDeathMarker_NPCDeath(int entity)
 {
-	IberiaDeathMarker npc = view_as<IberiaDeathMarker>(entity);
+	AlminaDeathMarker npc = view_as<AlminaDeathMarker>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -237,7 +237,7 @@ public void IberiaDeathMarker_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-void IberiaDeathMarkerSelfDefense(IberiaDeathMarker npc, float gameTime, int target, float distance)
+void AlminaDeathMarkerSelfDefense(AlminaDeathMarker npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{

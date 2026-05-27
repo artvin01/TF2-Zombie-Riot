@@ -4348,10 +4348,10 @@
 	}
 	"Vows of the Sea Desc"
 	{
-		"en"	"Hits two targets at once, grants massive amount of health, and heal on taking damage.\nIberia will fall, but let it shine for others, The Profound Silence."
+		"en"	"Hits two targets at once, grants massive amount of health, and heal on taking damage.\nAlmina will fall, but let it shine for others, The Profound Silence."
 		"fr"	"Santé améliorée. Vous soigne quand vous prenez des dégats. Frappe deux ennemis à la fois."
 		"chi"	"同时击中两个目标，大量治疗。受击后回血。\n伊比利亚虽将沦陷，但它依会闪耀。"
-		"it"	"Colpisce due bersagli alla volta, garantisce un'enorme quantità di salute e guarisce quando subisce danni.\nIberia cadrà, ma lascia che risplenda per gli altri, Il Profondo Silenzio."
+		"it"	"Colpisce due bersagli alla volta, garantisce un'enorme quantità di salute e guarisce quando subisce danni.\nAlmina cadrà, ma lascia che risplenda per gli altri, Il Profondo Silenzio."
 		"ko"	"한 번에 2명의 대상을 타격할 수 있으며, 최대 체력이 크게 증가하고, 피해를 받을시 체력을 회복합니다.\n이베리아는 멸망하겠지만, 다른 이들을 위해 빛나게 하리라."
 	}
 	"Vows of the Sea Pap"
@@ -5324,7 +5324,7 @@
 	}
 	"Purging Desc"
 	{
-		"en"	"Become the Zalminan greatest invention... A monster.\n-Gain 2 weapons, Shotgun and Rampager rifle\n-Press M2 To easy switch between them\n-Charge energy on hit, used for later paps\n-Weapons has overheat and will lose damage the more you use them\n-The more one weapon overheats the stronger other weapons becomes\n-Also gain special buffs if other weapon is overheated\n-Gain 40％ more energy from hitting enemies up close."
+		"en"	"Become the Ziberian greatest invention... A monster.\n-Gain 2 weapons, Shotgun and Rampager rifle\n-Press M2 To easy switch between them\n-Charge energy on hit, used for later paps\n-Weapons has overheat and will lose damage the more you use them\n-The more one weapon overheats the stronger other weapons becomes\n-Also gain special buffs if other weapon is overheated\n-Gain 40％ more energy from hitting enemies up close."
 		"ko"	"지베리아의 가장 위대한 발명품... 괴물이 되세요.\n-산탄총, 램페이저 라이플 두 무기 보유: 우클릭으로 무기를 쉽게 전환 가능\n-적중 시 에너지 충전, 이는 무기 강화 후 사용\n-무기 사용시 과열되어 피해량이 감소하나, 과열될 수록 다른 무기가 강화\n-다른 무기가 과열된 상태일 시 특수 버프 획득\n-근접한 적 공격시 에너지 충전량 40％ 증가"
     }
 	"Purging Pap N"

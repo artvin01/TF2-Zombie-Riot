@@ -36,7 +36,7 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/taunts/heavy_taunts19.mp3",
 };
 
-void Barracks_Iberia_Healtanker_Precache()
+void Barracks_Almina_Healtanker_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -45,7 +45,7 @@ void Barracks_Iberia_Healtanker_Precache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheModel("models/player/heavy.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Healtanker");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Alminan Healtanker");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_healtanker");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -56,10 +56,10 @@ void Barracks_Iberia_Healtanker_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barracks_Iberia_Healtanker(client, vecPos, vecAng);
+	return Barracks_Almina_Healtanker(client, vecPos, vecAng);
 }
 
-methodmap  Barracks_Iberia_Healtanker < BarrackBody
+methodmap  Barracks_Almina_Healtanker < BarrackBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -99,15 +99,15 @@ methodmap  Barracks_Iberia_Healtanker < BarrackBody
 
 	}
 
-	public Barracks_Iberia_Healtanker(int client, float vecPos[3], float vecAng[3])
+	public Barracks_Almina_Healtanker(int client, float vecPos[3], float vecAng[3])
 	{
-		Barracks_Iberia_Healtanker npc = view_as<Barracks_Iberia_Healtanker>(BarrackBody(client, vecPos, vecAng, "500", "models/player/heavy.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barracks_Almina_Healtanker npc = view_as<Barracks_Almina_Healtanker>(BarrackBody(client, vecPos, vecAng, "500", "models/player/heavy.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barracks_Iberia_Healtanker_NPCDeath;
-		func_NPCThink[npc.index] = Barracks_Iberia_Healtanker_ClotThink;
+		func_NPCDeath[npc.index] = Barracks_Almina_Healtanker_NPCDeath;
+		func_NPCThink[npc.index] = Barracks_Almina_Healtanker_ClotThink;
 		npc.m_flSpeed = 200.0;
 		
 		SetVariantInt(3);
@@ -137,9 +137,9 @@ methodmap  Barracks_Iberia_Healtanker < BarrackBody
 	}
 }
 
-public void Barracks_Iberia_Healtanker_ClotThink(int iNPC)
+public void Barracks_Almina_Healtanker_ClotThink(int iNPC)
 {
-	Barracks_Iberia_Healtanker npc = view_as<Barracks_Iberia_Healtanker>(iNPC);
+	Barracks_Almina_Healtanker npc = view_as<Barracks_Almina_Healtanker>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
 	GrantEntityArmor(iNPC, true, 0.5, 0.66, 0);
@@ -184,7 +184,7 @@ public void Barracks_Iberia_Healtanker_ClotThink(int iNPC)
 							{
 								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1762.5, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlayMeleeHitSound();
-								ExpidonsaGroupHeal(npc.index, 150.0, 3, 400.0, 1.0, true, IberiaBarracks_HealSelfLimitCD);
+								ExpidonsaGroupHeal(npc.index, 150.0, 3, 400.0, 1.0, true, AlminaBarracks_HealSelfLimitCD);
 								DesertYadeamDoHealEffect(npc.index, 150.0);
 							} 
 						}
@@ -206,11 +206,11 @@ public void Barracks_Iberia_Healtanker_ClotThink(int iNPC)
 	}
 }
 
-void Barracks_Iberia_Healtanker_NPCDeath(int entity)
+void Barracks_Almina_Healtanker_NPCDeath(int entity)
 {
-	Barracks_Iberia_Healtanker npc = view_as<Barracks_Iberia_Healtanker>(entity);
+	Barracks_Almina_Healtanker npc = view_as<Barracks_Almina_Healtanker>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	ExpidonsaGroupHeal(npc.index, 300.0, 3, 1200.0, 1.0, true, IberiaBarracks_HealSelfLimitCD);
+	ExpidonsaGroupHeal(npc.index, 300.0, 3, 1200.0, 1.0, true, AlminaBarracks_HealSelfLimitCD);
 	DesertYadeamDoHealEffect(npc.index, 300.0);
 	npc.PlayNPCDeath();
 }

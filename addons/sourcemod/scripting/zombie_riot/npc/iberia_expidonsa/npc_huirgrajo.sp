@@ -36,7 +36,7 @@ void Huirgrajo_Precache()
 	strcopy(data.Icon, sizeof(data.Icon), "guardian");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -269,7 +269,7 @@ static void ClotThink(int iNPC)
 		// 
 		// 2a. Past Wave 31
 		// 2b. Past Wave 21 and ally died
-		if(npc.m_flNextMeleeAttack < gameTime && npc.m_flWaveScale > 3.1 && (ally == -1 || NpcStats_IberiaIsEnemyMarked(target)))
+		if(npc.m_flNextMeleeAttack < gameTime && npc.m_flWaveScale > 3.1 && (ally == -1 || NpcStats_AlminaIsEnemyMarked(target)))
 		{
 			npc.m_flNextMeleeAttack = gameTime + ((GetURandomInt() % (npc.Anger ? 3 : 2)) ? 1.0 : 8.0);
 			FatherGrigori_IOC_Invoke(EntIndexToEntRef(npc.index), target);

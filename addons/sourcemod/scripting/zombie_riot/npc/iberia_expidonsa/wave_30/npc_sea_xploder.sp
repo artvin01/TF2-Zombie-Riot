@@ -30,7 +30,7 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/stickybomblauncher_shoot.wav",
 };
 
-void IberiaSeaXploder_OnMapStart_NPC()
+void AlminaSeaXploder_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -43,7 +43,7 @@ void IberiaSeaXploder_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "demo");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -51,9 +51,9 @@ void IberiaSeaXploder_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaSeaXploder(vecPos, vecAng, team);
+	return AlminaSeaXploder(vecPos, vecAng, team);
 }
-methodmap IberiaSeaXploder < CClotBody
+methodmap AlminaSeaXploder < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -141,9 +141,9 @@ methodmap IberiaSeaXploder < CClotBody
 		return -1;
 	}
 
-	public IberiaSeaXploder(float vecPos[3], float vecAng[3], int ally)
+	public AlminaSeaXploder(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaSeaXploder npc = view_as<IberiaSeaXploder>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "3500", ally));
+		AlminaSeaXploder npc = view_as<AlminaSeaXploder>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "3500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -156,9 +156,9 @@ methodmap IberiaSeaXploder < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaSeaXploder_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaSeaXploder_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaSeaXploder_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaSeaXploder_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaSeaXploder_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaSeaXploder_ClotThink);
 		
 		
 		
@@ -184,9 +184,9 @@ methodmap IberiaSeaXploder < CClotBody
 	}
 }
 
-public void IberiaSeaXploder_ClotThink(int iNPC)
+public void AlminaSeaXploder_ClotThink(int iNPC)
 {
-	IberiaSeaXploder npc = view_as<IberiaSeaXploder>(iNPC);
+	AlminaSeaXploder npc = view_as<AlminaSeaXploder>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -219,7 +219,7 @@ public void IberiaSeaXploder_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = IberiaSeaXploderSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
+		int ActionDo = AlminaSeaXploderSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
 		switch(ActionDo)
 		{
 			case 0:
@@ -257,9 +257,9 @@ public void IberiaSeaXploder_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaSeaXploder_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaSeaXploder_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaSeaXploder npc = view_as<IberiaSeaXploder>(victim);
+	AlminaSeaXploder npc = view_as<AlminaSeaXploder>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -273,9 +273,9 @@ public Action IberiaSeaXploder_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-public void IberiaSeaXploder_NPCDeath(int entity)
+public void AlminaSeaXploder_NPCDeath(int entity)
 {
-	IberiaSeaXploder npc = view_as<IberiaSeaXploder>(entity);
+	AlminaSeaXploder npc = view_as<AlminaSeaXploder>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -297,7 +297,7 @@ public void IberiaSeaXploder_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int IberiaSeaXploderSelfDefense(IberiaSeaXploder npc, float gameTime, float distance)
+int AlminaSeaXploderSelfDefense(AlminaSeaXploder npc, float gameTime, float distance)
 {
 	//Direct mode
 	if(gameTime > npc.m_flNextMeleeAttack)
@@ -318,7 +318,7 @@ int IberiaSeaXploderSelfDefense(IberiaSeaXploder npc, float gameTime, float dist
 				float SpeedReturn[3];
 
 				int RocketGet = npc.FireGrenade(vecTarget);
-				IberiaSeaXploder_ShootRollingMineToEnemy(npc.index, RocketGet, RocketDamage, 65.0, 3.0);
+				AlminaSeaXploder_ShootRollingMineToEnemy(npc.index, RocketGet, RocketDamage, 65.0, 3.0);
 				//Reducing gravity, reduces speed, lol.
 				SetEntityGravity(RocketGet, 1.0); 	
 				//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
@@ -356,7 +356,7 @@ int IberiaSeaXploderSelfDefense(IberiaSeaXploder npc, float gameTime, float dist
 }
 
 
-void IberiaSeaXploder_ShootRollingMineToEnemy(int iNpc, int Projectile, float damage, float radius, float MaxDurationC4)
+void AlminaSeaXploder_ShootRollingMineToEnemy(int iNpc, int Projectile, float damage, float radius, float MaxDurationC4)
 {
 	DataPack pack;
 	CreateDataTimer(0.1, Timer_SeaXploderC4, pack, TIMER_REPEAT);

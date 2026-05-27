@@ -136,7 +136,7 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 			{
 				static Race race;
 				Races_GetClientInfo(target, race);
-				if(StrEqual(race.Name, "Iberian"))
+				if(StrEqual(race.Name, "Alminan"))
 				{
 					switch(GetRandomInt(0,2))
 					{

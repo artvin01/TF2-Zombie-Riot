@@ -45,7 +45,7 @@ void AngelicShotgun_Enable(int client, int weapon)
 			delete h_TimerAngelicShotgun[client];
 			h_TimerAngelicShotgun[client] = null;
 			i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
-			b_PossesItemTraining[client] = Items_HasNamedItem(client, "Iberian and Expidonsan Training");
+			b_PossesItemTraining[client] = Items_HasNamedItem(client, "Alminan and Expidonsan Training");
 			DataPack pack;
 			h_TimerAngelicShotgun[client] = CreateDataTimer(0.1, Timer_Management_Angelic_Shotgun, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
@@ -58,7 +58,7 @@ void AngelicShotgun_Enable(int client, int weapon)
 	{
 		i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 		
-		b_PossesItemTraining[client] = Items_HasNamedItem(client, "Iberian and Expidonsan Training");
+		b_PossesItemTraining[client] = Items_HasNamedItem(client, "Alminan and Expidonsan Training");
 		DataPack pack;
 		h_TimerAngelicShotgun[client] = CreateDataTimer(0.1, Timer_Management_Angelic_Shotgun, pack, TIMER_REPEAT);
 		pack.WriteCell(client);

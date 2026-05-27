@@ -49,11 +49,11 @@ static const char g_MoraleScream[][] = {
 
 float f_MoraleAddAnania[MAXENTITIES];
 
-void SetMoraleDoIberia(int entity, float Value)
+void SetMoraleDoAlmina(int entity, float Value)
 {
 	f_MoraleAddAnania[entity] = Value;
 }
-void Iberia_Anania_OnMapStart_NPC()
+void Almina_Anania_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -69,17 +69,17 @@ void Iberia_Anania_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_steelfist");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Iberia_Anania(vecPos, vecAng, team);
+	return Almina_Anania(vecPos, vecAng, team);
 }
 
-methodmap Iberia_Anania < CClotBody
+methodmap Almina_Anania < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -125,9 +125,9 @@ methodmap Iberia_Anania < CClotBody
 	}
 	
 	
-	public Iberia_Anania(float vecPos[3], float vecAng[3], int ally)
+	public Almina_Anania(float vecPos[3], float vecAng[3], int ally)
 	{
-		Iberia_Anania npc = view_as<Iberia_Anania>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "3500", ally, false, true));
+		Almina_Anania npc = view_as<Almina_Anania>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "3500", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -144,9 +144,9 @@ methodmap Iberia_Anania < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(Iberia_Anania_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Iberia_Anania_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Iberia_Anania_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Almina_Anania_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Almina_Anania_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Almina_Anania_ClotThink);
 		
 		
 		npc.StartPathing();
@@ -156,7 +156,7 @@ methodmap Iberia_Anania < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetMoraleDoIberia(npc.index, 15.0);
+		SetMoraleDoAlmina(npc.index, 15.0);
 		
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/heavy/mustachehat/mustachehat.mdl");
@@ -176,9 +176,9 @@ methodmap Iberia_Anania < CClotBody
 	}
 }
 
-public void Iberia_Anania_ClotThink(int iNPC)
+public void Almina_Anania_ClotThink(int iNPC)
 {
-	Iberia_Anania npc = view_as<Iberia_Anania>(iNPC);
+	Almina_Anania npc = view_as<Almina_Anania>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -205,7 +205,7 @@ public void Iberia_Anania_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	IberiaMoraleGivingDo(iNPC, GetGameTime(npc.index));
+	AlminaMoraleGivingDo(iNPC, GetGameTime(npc.index));
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -222,7 +222,7 @@ public void Iberia_Anania_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		Iberia_AnaniaSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		Almina_AnaniaSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -232,9 +232,9 @@ public void Iberia_Anania_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Iberia_Anania_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Almina_Anania_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Iberia_Anania npc = view_as<Iberia_Anania>(victim);
+	Almina_Anania npc = view_as<Almina_Anania>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -249,9 +249,9 @@ public Action Iberia_Anania_OnTakeDamage(int victim, int &attacker, int &inflict
 }
 
 
-public void Iberia_Anania_NPCDeath(int entity)
+public void Almina_Anania_NPCDeath(int entity)
 {
-	Iberia_Anania npc = view_as<Iberia_Anania>(entity);
+	Almina_Anania npc = view_as<Almina_Anania>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -274,7 +274,7 @@ public void Iberia_Anania_NPCDeath(int entity)
 
 }
 
-void Iberia_AnaniaSelfDefense(Iberia_Anania npc, float gameTime, int target, float distance)
+void Almina_AnaniaSelfDefense(Almina_Anania npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -332,9 +332,9 @@ void Iberia_AnaniaSelfDefense(Iberia_Anania npc, float gameTime, int target, flo
 }
 
 
-void IberiaMoraleGivingDo(int iNpc, float gameTime, bool DoSounds = true, float range = 500.0)
+void AlminaMoraleGivingDo(int iNpc, float gameTime, bool DoSounds = true, float range = 500.0)
 {
-	Iberia_Anania npc = view_as<Iberia_Anania>(iNpc);
+	Almina_Anania npc = view_as<Almina_Anania>(iNpc);
 	if(gameTime < npc.m_flDoingAnimation)
 	{
 		return;
@@ -369,24 +369,24 @@ void IberiaMoraleGivingDo(int iNpc, float gameTime, bool DoSounds = true, float 
 		99,
 		false,
 		_,
-		IberiaMoraleGiving);
+		AlminaMoraleGiving);
 		b_NpcIsTeamkiller[npc.index] = false;
 	}
 }
 
 
-void IberiaMoraleGiving(int entity, int victim, float damage, int weapon)
+void AlminaMoraleGiving(int entity, int victim, float damage, int weapon)
 {
 	if(entity == victim)
 		return;
 
 	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && (!b_NpcHasDied[victim] || victim <= MaxClients))
 	{
-		IberiaMoraleGivingInternal(entity,victim);
+		AlminaMoraleGivingInternal(entity,victim);
 	}
 }
 
-void IberiaMoraleGivingInternal(int shielder, int victim)
+void AlminaMoraleGivingInternal(int shielder, int victim)
 {
 	CClotBody npc = view_as<CClotBody>(shielder);
 	npc.m_flNextRangedSpecialAttack = FAR_FUTURE;

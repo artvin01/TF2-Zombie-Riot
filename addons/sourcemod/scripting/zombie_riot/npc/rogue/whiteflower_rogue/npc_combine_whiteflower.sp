@@ -314,7 +314,7 @@ methodmap Whiteflower_Boss < CClotBody
 		music.Time = 187;
 		music.Volume = 1.0;
 		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Iberia's Last Stand");
+		strcopy(music.Name, sizeof(music.Name), "Almina's Last Stand");
 		strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 		Music_SetRaidMusic(music);
 

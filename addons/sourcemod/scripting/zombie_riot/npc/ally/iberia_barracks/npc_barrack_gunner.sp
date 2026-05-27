@@ -28,7 +28,7 @@ static const char g_IdleAlert[][] =
 	"vo/taunts/soldier_taunts18.mp3"
 };
 
-void Barracks_Iberia_Gunner_Precache()
+void Barracks_Almina_Gunner_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -37,7 +37,7 @@ void Barracks_Iberia_Gunner_Precache()
 	PrecacheModel("models/player/soldier.mdl");
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Gunner");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Alminan Gunner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_gunner");
 	data.IconCustom = false;
 	
@@ -49,10 +49,10 @@ void Barracks_Iberia_Gunner_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Iberia_Gunner(client, vecPos, vecAng);
+	return Barrack_Almina_Gunner(client, vecPos, vecAng);
 }
 
-methodmap Barrack_Iberia_Gunner < BarrackBody
+methodmap Barrack_Almina_Gunner < BarrackBody
 {
 	public void PlayIdleSound()
 	{
@@ -84,9 +84,9 @@ methodmap Barrack_Iberia_Gunner < BarrackBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 
-	public Barrack_Iberia_Gunner(int client, float vecPos[3], float vecAng[3])
+	public Barrack_Almina_Gunner(int client, float vecPos[3], float vecAng[3])
 	{
-		Barrack_Iberia_Gunner npc = view_as<Barrack_Iberia_Gunner>(BarrackBody(client, vecPos, vecAng, "120", "models/player/soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Almina_Gunner npc = view_as<Barrack_Almina_Gunner>(BarrackBody(client, vecPos, vecAng, "120", "models/player/soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 
@@ -96,8 +96,8 @@ methodmap Barrack_Iberia_Gunner < BarrackBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Iberia_Gunner_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Iberia_Gunner_ClotThink;
+		func_NPCDeath[npc.index] = Barrack_Almina_Gunner_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Almina_Gunner_ClotThink;
 		npc.m_flSpeed = 100.0;
 
 		npc.m_flNextRangedAttack = 0.0;
@@ -126,9 +126,9 @@ methodmap Barrack_Iberia_Gunner < BarrackBody
 	}
 }
 
-public void Barrack_Iberia_Gunner_ClotThink(int iNPC)
+public void Barrack_Almina_Gunner_ClotThink(int iNPC)
 {
-	Barrack_Iberia_Gunner npc = view_as<Barrack_Iberia_Gunner>(iNPC);
+	Barrack_Almina_Gunner npc = view_as<Barrack_Almina_Gunner>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	
 	GrantEntityArmor(iNPC, true, 0.5, 0.66, 0);
@@ -190,9 +190,9 @@ public void Barrack_Iberia_Gunner_ClotThink(int iNPC)
 	}
 }
 
-void Barrack_Iberia_Gunner_NPCDeath(int entity)
+void Barrack_Almina_Gunner_NPCDeath(int entity)
 {
-	Barrack_Iberia_Gunner npc = view_as<Barrack_Iberia_Gunner>(entity);
+	Barrack_Almina_Gunner npc = view_as<Barrack_Almina_Gunner>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }

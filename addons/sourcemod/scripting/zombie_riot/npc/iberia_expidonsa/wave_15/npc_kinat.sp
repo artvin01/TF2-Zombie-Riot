@@ -38,7 +38,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_hit4.wav",
 };
 
-void Iberia_Kinat_OnMapStart_NPC()
+void Almina_Kinat_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -52,7 +52,7 @@ void Iberia_Kinat_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_deflector");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -60,9 +60,9 @@ void Iberia_Kinat_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaKinat(vecPos, vecAng, team);
+	return AlminaKinat(vecPos, vecAng, team);
 }
-methodmap IberiaKinat < CClotBody
+methodmap AlminaKinat < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -105,9 +105,9 @@ methodmap IberiaKinat < CClotBody
 	}
 	
 	
-	public IberiaKinat(float vecPos[3], float vecAng[3], int ally)
+	public AlminaKinat(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaKinat npc = view_as<IberiaKinat>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1000", ally));
+		AlminaKinat npc = view_as<AlminaKinat>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -121,9 +121,9 @@ methodmap IberiaKinat < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaKinat_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaKinat_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaKinat_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaKinat_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaKinat_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaKinat_ClotThink);
 		npc.m_iAttacksTillReload = 1;
 		
 		
@@ -145,9 +145,9 @@ methodmap IberiaKinat < CClotBody
 	}
 }
 
-public void IberiaKinat_ClotThink(int iNPC)
+public void AlminaKinat_ClotThink(int iNPC)
 {
-	IberiaKinat npc = view_as<IberiaKinat>(iNPC);
+	AlminaKinat npc = view_as<AlminaKinat>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -180,7 +180,7 @@ public void IberiaKinat_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = IberiaKinatSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		int ActionDo = AlminaKinatSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		switch(ActionDo)
 		{
 			case 0:
@@ -217,9 +217,9 @@ public void IberiaKinat_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaKinat_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaKinat_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaKinat npc = view_as<IberiaKinat>(victim);
+	AlminaKinat npc = view_as<AlminaKinat>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -233,9 +233,9 @@ public Action IberiaKinat_OnTakeDamage(int victim, int &attacker, int &inflictor
 	return Plugin_Changed;
 }
 
-public void IberiaKinat_NPCDeath(int entity)
+public void AlminaKinat_NPCDeath(int entity)
 {
-	IberiaKinat npc = view_as<IberiaKinat>(entity);
+	AlminaKinat npc = view_as<AlminaKinat>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -257,7 +257,7 @@ public void IberiaKinat_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int IberiaKinatSelfDefense(IberiaKinat npc, float gameTime, int target, float distance)
+int AlminaKinatSelfDefense(AlminaKinat npc, float gameTime, int target, float distance)
 {
 	if(npc.m_iAttacksTillReload >= 1)
 	{
@@ -391,7 +391,7 @@ int IberiaKinatSelfDefense(IberiaKinat npc, float gameTime, int target, float di
 						damageDealt *= 1.15;
 
 					int DamageType = DMG_CLUB;
-					if(NpcStats_IberiaIsEnemyMarked(target))
+					if(NpcStats_AlminaIsEnemyMarked(target))
 						npc.m_iAttacksTillReload++;
 
 					//prevents knockback!

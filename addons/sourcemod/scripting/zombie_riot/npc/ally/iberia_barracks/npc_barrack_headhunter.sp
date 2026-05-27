@@ -34,7 +34,7 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/spy_battlecry04.mp3",
 };
 
-void Barracks_Iberia_Headhunter_Precache()
+void Barracks_Almina_Headhunter_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -44,7 +44,7 @@ void Barracks_Iberia_Headhunter_Precache()
 	PrecacheModel("models/player/spy.mdl");
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Iberia Headhunter");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Almina Headhunter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_headhunter");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -55,10 +55,10 @@ void Barracks_Iberia_Headhunter_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Iberia_Headhunter(client, vecPos, vecAng);
+	return Barrack_Almina_Headhunter(client, vecPos, vecAng);
 }
 
-methodmap Barrack_Iberia_Headhunter < BarrackBody
+methodmap Barrack_Almina_Headhunter < BarrackBody
 {
 	property float m_flPieRapidMelee
 	{
@@ -103,15 +103,15 @@ methodmap Barrack_Iberia_Headhunter < BarrackBody
 
 	}
 
-	public Barrack_Iberia_Headhunter(int client, float vecPos[3], float vecAng[3])
+	public Barrack_Almina_Headhunter(int client, float vecPos[3], float vecAng[3])
 	{
-		Barrack_Iberia_Headhunter npc = view_as<Barrack_Iberia_Headhunter>(BarrackBody(client, vecPos, vecAng, "800", "models/player/spy.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Almina_Headhunter npc = view_as<Barrack_Almina_Headhunter>(BarrackBody(client, vecPos, vecAng, "800", "models/player/spy.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Iberia_Headhunter_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Iberia_Headhunter_ClotThink;
+		func_NPCDeath[npc.index] = Barrack_Almina_Headhunter_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Almina_Headhunter_ClotThink;
 		npc.m_flSpeed = 300.0;
 		
 		SetVariantInt(0);
@@ -141,9 +141,9 @@ methodmap Barrack_Iberia_Headhunter < BarrackBody
 	}
 }
 
-public void Barrack_Iberia_Headhunter_ClotThink(int iNPC)
+public void Barrack_Almina_Headhunter_ClotThink(int iNPC)
 {
-	Barrack_Iberia_Headhunter npc = view_as<Barrack_Iberia_Headhunter>(iNPC);
+	Barrack_Almina_Headhunter npc = view_as<Barrack_Almina_Headhunter>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	GrantEntityArmor(iNPC, true, 0.5, 0.66, 0);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
@@ -236,9 +236,9 @@ public void Barrack_Iberia_Headhunter_ClotThink(int iNPC)
 	}
 }
 
-void Barrack_Iberia_Headhunter_NPCDeath(int entity)
+void Barrack_Almina_Headhunter_NPCDeath(int entity)
 {
-	Barrack_Iberia_Headhunter npc = view_as<Barrack_Iberia_Headhunter>(entity);
+	Barrack_Almina_Headhunter npc = view_as<Barrack_Almina_Headhunter>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }   

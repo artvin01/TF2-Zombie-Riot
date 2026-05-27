@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 
-#define IBERIA_BEACON "models/props_combine/combinethumper001a.mdl"
+#define ALMINA_BEACON "models/props_combine/combinethumper001a.mdl"
 
 static const char g_DeathSounds[][] = {
 	")physics/metal/metal_canister_impact_hard1.wav",
@@ -20,29 +20,29 @@ static const char g_GiveArmor[][] = {
 	"physics/metal/metal_box_strain1.wav",
 };
 
-void Iberia_Beacon_OnMapStart_NPC()
+void Almina_Beacon_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_GiveArmor));		i++) { PrecacheSound(g_GiveArmor[i]);		}
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Iberia Beacon");
+	strcopy(data.Name, sizeof(data.Name), "Almina Beacon");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_almina_beacon");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.Flags = -1;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
-	PrecacheModel(IBERIA_BEACON);
+	PrecacheModel(ALMINA_BEACON);
 	GlobalCooldownWarCry = 0.0;
 }
 
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaBeacon(vecPos, vecAng, team);
+	return AlminaBeacon(vecPos, vecAng, team);
 }
-methodmap IberiaBeacon < CClotBody
+methodmap AlminaBeacon < CClotBody
 {
 	property float m_flArmorToGive
 	{
@@ -69,9 +69,9 @@ methodmap IberiaBeacon < CClotBody
 		EmitSoundToAll(g_GiveArmor[GetRandomInt(0, sizeof(g_GiveArmor) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public IberiaBeacon(float vecPos[3], float vecAng[3], int ally)
+	public AlminaBeacon(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaBeacon npc = view_as<IberiaBeacon>(CClotBody(vecPos, vecAng, IBERIA_BEACON, "0.15", MinibossHealthScaling(50.0, true), ally, .NpcTypeLogic = 1));
+		AlminaBeacon npc = view_as<AlminaBeacon>(CClotBody(vecPos, vecAng, ALMINA_BEACON, "0.15", MinibossHealthScaling(50.0, true), ally, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -91,12 +91,12 @@ methodmap IberiaBeacon < CClotBody
 
 
 		npc.m_flArmorToGive = 25.0;
-		SetMoraleDoIberia(npc.index, 5.0);
+		SetMoraleDoAlmina(npc.index, 5.0);
 		//these are default settings! please redefine these when spawning!
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaBeacon_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaBeacon_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaBeacon_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaBeacon_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaBeacon_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaBeacon_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -111,9 +111,9 @@ methodmap IberiaBeacon < CClotBody
 	}
 }
 
-public void IberiaBeacon_ClotThink(int iNPC)
+public void AlminaBeacon_ClotThink(int iNPC)
 {
-	IberiaBeacon npc = view_as<IberiaBeacon>(iNPC);
+	AlminaBeacon npc = view_as<AlminaBeacon>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -146,34 +146,34 @@ public void IberiaBeacon_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.0;
 
 	
-	ExpidonsaGroupHeal(npc.index, 200.0, 10, 0.0, 1.0, false,IberiaBeaconGiveArmor);
-	IberiaArmorEffect(npc.index, 200.0);
+	ExpidonsaGroupHeal(npc.index, 200.0, 10, 0.0, 1.0, false,AlminaBeaconGiveArmor);
+	AlminaArmorEffect(npc.index, 200.0);
 	npc.m_flNextRangedSpecialAttack = 0.0;
-	IberiaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 200.0);
+	AlminaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 200.0);
 }
 
-void IberiaArmorEffect(int entity, float range)
+void AlminaArmorEffect(int entity, float range)
 {
 	float ProjectileLoc[3];
-	IberiaBeacon npc1 = view_as<IberiaBeacon>(entity);
+	AlminaBeacon npc1 = view_as<AlminaBeacon>(entity);
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 	spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 125, 125, 0, 200, 1, 0.5, 5.0, 8.0, 3, range * 2.0);	
 	npc1.PlayArmorSound();
 }
 
-void IberiaBeaconGiveArmor(int entity, int victim, float &healingammount)
+void AlminaBeaconGiveArmor(int entity, int victim, float &healingammount)
 {
 	if(i_NpcIsABuilding[victim])
 		return;
 
-	IberiaBeacon npc1 = view_as<IberiaBeacon>(entity);
+	AlminaBeacon npc1 = view_as<AlminaBeacon>(entity);
 	GrantEntityArmor(victim, false, 2.0, 0.33, 0,
 	npc1.m_flArmorToGive * 0.5);
 }
 
-public Action IberiaBeacon_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaBeacon_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaBeacon npc = view_as<IberiaBeacon>(victim);
+	AlminaBeacon npc = view_as<AlminaBeacon>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -187,9 +187,9 @@ public Action IberiaBeacon_OnTakeDamage(int victim, int &attacker, int &inflicto
 	return Plugin_Changed;
 }
 
-public void IberiaBeacon_NPCDeath(int entity)
+public void AlminaBeacon_NPCDeath(int entity)
 {
-	IberiaBeacon npc = view_as<IberiaBeacon>(entity);
+	AlminaBeacon npc = view_as<AlminaBeacon>(entity);
 	npc.PlayDeathSound();	
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);

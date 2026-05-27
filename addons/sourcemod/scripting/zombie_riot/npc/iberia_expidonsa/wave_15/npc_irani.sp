@@ -35,7 +35,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cleaver_hit_07.wav",
 };
 
-void Iberia_Irani_OnMapStart_NPC()
+void Almina_Irani_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -48,7 +48,7 @@ void Iberia_Irani_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "mark_sniper_r1");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -56,9 +56,9 @@ void Iberia_Irani_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaIrani(vecPos, vecAng, team);
+	return AlminaIrani(vecPos, vecAng, team);
 }
-methodmap IberiaIrani < CClotBody
+methodmap AlminaIrani < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -97,9 +97,9 @@ methodmap IberiaIrani < CClotBody
 	}
 	
 	
-	public IberiaIrani(float vecPos[3], float vecAng[3], int ally)
+	public AlminaIrani(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaIrani npc = view_as<IberiaIrani>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "600", ally));
+		AlminaIrani npc = view_as<AlminaIrani>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "600", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -114,9 +114,9 @@ methodmap IberiaIrani < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaIrani_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaIrani_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaIrani_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaIrani_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaIrani_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaIrani_ClotThink);
 		
 		b_NpcAppliesMarkDebuff[npc.index] = true; 
 		
@@ -140,9 +140,9 @@ methodmap IberiaIrani < CClotBody
 	}
 }
 
-public void IberiaIrani_ClotThink(int iNPC)
+public void AlminaIrani_ClotThink(int iNPC)
 {
-	IberiaIrani npc = view_as<IberiaIrani>(iNPC);
+	AlminaIrani npc = view_as<AlminaIrani>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -185,7 +185,7 @@ public void IberiaIrani_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		IberiaIraniSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		AlminaIraniSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -195,9 +195,9 @@ public void IberiaIrani_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaIrani_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaIrani_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaIrani npc = view_as<IberiaIrani>(victim);
+	AlminaIrani npc = view_as<AlminaIrani>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -211,9 +211,9 @@ public Action IberiaIrani_OnTakeDamage(int victim, int &attacker, int &inflictor
 	return Plugin_Changed;
 }
 
-public void IberiaIrani_NPCDeath(int entity)
+public void AlminaIrani_NPCDeath(int entity)
 {
-	IberiaIrani npc = view_as<IberiaIrani>(entity);
+	AlminaIrani npc = view_as<AlminaIrani>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -235,7 +235,7 @@ public void IberiaIrani_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-void IberiaIraniSelfDefense(IberiaIrani npc, float gameTime, int target, float distance)
+void AlminaIraniSelfDefense(AlminaIrani npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{

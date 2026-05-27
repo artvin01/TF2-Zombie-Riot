@@ -3247,9 +3247,9 @@
 	}
 	"Victoria_Help_Message"
 	{
-		"en"		"Zalminan Guerillas are here to help."
+		"en"		"Ziberian Guerillas are here to help."
 		"ko"		"지베리아 게릴라의 지원이 도착했습니다."
-		"it"		"I Guerriglieri Zalminani sono qui per aiutare."
+		"it"		"I Guerriglieri Ziberiani sono qui per aiutare."
 	}
 	"RadioTower_here_Message"
 	{
@@ -5331,25 +5331,25 @@
 		"it"	"HHH grasso"
 		"ko"	"뚱뚱한 말도 없고 머리도 없는 기만병"
 	}
-	"Iberia Expi Desc"
+	"Almina Expi Desc"
 	{
-	  "en" "After the main mercs are done with their training, Iberia comes to us, the secondary mercs, for some more training. Nemal and Silvester won't be here this time since they're on vacation with Sensal."
+	  "en" "After the main mercs are done with their training, Almina comes to us, the secondary mercs, for some more training. Nemal and Silvester won't be here this time since they're on vacation with Sensal."
 	  "ko" "주요 용병들이 훈련을 마친 후, 이베리아가 더 많은 훈련을 위해 보조 용병들을 방문합니다. 이번엔 네말과 실베스터가 센살과 휴가 중이기에 없을 겁니다."
 	}
-	"Iberia & Nemal"
+	"Almina & Nemal"
 	{
-		"en" "Iberia & Nemal"
+		"en" "Almina & Nemal"
 		"ru" "Иберия & Немал"
-		"fr" "Iberia & Nemal"
+		"fr" "Almina & Nemal"
 		"chi"	"伊比利亚 & 尼莫尔"
-		"it"	"Iberia e Nemal"
+		"it"	"Almina e Nemal"
 		"ko" "이베리아 & 네말"
 	}
-	"Iberia Nemal Desc"
+	"Almina Nemal Desc"
 	{
-		"en" "(10) Iberia and Expidonsa offer training to help against the true final battle against the void... Although alminans seem to take it extremly seriously."
-		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
-		"it"	"(10) Iberia e expidonsa offrono addestramento per aiutare contro la vera battaglia finale contro il vuoto... Anche se gli iberici sembrano prenderla estremamente sul serio."
+		"en" "(10) Almina and Expidonsa offer training to help against the true final battle against the void... Although alminans seem to take it extremly seriously."
+		"fr" "Almina et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Alminans prennent ceci extrêmement sérieusement, pourtant."
+		"it"	"(10) Almina e expidonsa offrono addestramento per aiutare contro la vera battaglia finale contro il vuoto... Anche se gli iberici sembrano prenderla estremamente sul serio."
 		"ko" "설정 순서: (10) 이베리아와 엑스피돈사가 공허와의 최후의 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 이베리아인들은 이를 매우 심각하게 받아들이는 것 같지만요."
 	}
 	"Revenant's Shadow"
@@ -5630,8 +5630,8 @@
 	}
 	"Victoria Raid Desc"
 	{
-		"en" 	"Lore order: (11) You are asked by Sensal to visit Zalmina where it is currently under attack by Victoria."
-		"it"	"Ordine Lore: (11) Sensal vi chiede di visitare Zalmina, attualmente attaccata da Victoria."
+		"en" 	"Lore order: (11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
+		"it"	"Ordine Lore: (11) Sensal vi chiede di visitare Ziberia, attualmente attaccata da Victoria."
 		"ko"	"설정 순서: (11) 센살은 당신에게 현재 빅토리아에게 공격받고 있는 지베리아를 방문해달라고 부탁했습니다."
 	}
 	"Ability already Active"

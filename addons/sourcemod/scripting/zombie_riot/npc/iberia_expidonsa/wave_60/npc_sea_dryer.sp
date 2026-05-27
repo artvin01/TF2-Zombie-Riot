@@ -30,7 +30,7 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/stickybomblauncher_shoot.wav",
 };
 
-void IberiaSeaDryer_OnMapStart_NPC()
+void AlminaSeaDryer_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -43,7 +43,7 @@ void IberiaSeaDryer_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "demo");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -51,9 +51,9 @@ void IberiaSeaDryer_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaSeaDryer(vecPos, vecAng, team);
+	return AlminaSeaDryer(vecPos, vecAng, team);
 }
-methodmap IberiaSeaDryer < CClotBody
+methodmap AlminaSeaDryer < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -141,9 +141,9 @@ methodmap IberiaSeaDryer < CClotBody
 		return -1;
 	}
 
-	public IberiaSeaDryer(float vecPos[3], float vecAng[3], int ally)
+	public AlminaSeaDryer(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaSeaDryer npc = view_as<IberiaSeaDryer>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "12000", ally));
+		AlminaSeaDryer npc = view_as<AlminaSeaDryer>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "12000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -156,9 +156,9 @@ methodmap IberiaSeaDryer < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaSeaDryer_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaSeaDryer_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaSeaDryer_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaSeaDryer_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaSeaDryer_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaSeaDryer_ClotThink);
 		
 		
 		
@@ -184,9 +184,9 @@ methodmap IberiaSeaDryer < CClotBody
 	}
 }
 
-public void IberiaSeaDryer_ClotThink(int iNPC)
+public void AlminaSeaDryer_ClotThink(int iNPC)
 {
-	IberiaSeaDryer npc = view_as<IberiaSeaDryer>(iNPC);
+	AlminaSeaDryer npc = view_as<AlminaSeaDryer>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -219,7 +219,7 @@ public void IberiaSeaDryer_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = IberiaSeaDryerSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
+		int ActionDo = AlminaSeaDryerSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
 		switch(ActionDo)
 		{
 			case 0:
@@ -257,9 +257,9 @@ public void IberiaSeaDryer_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaSeaDryer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaSeaDryer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaSeaDryer npc = view_as<IberiaSeaDryer>(victim);
+	AlminaSeaDryer npc = view_as<AlminaSeaDryer>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -273,9 +273,9 @@ public Action IberiaSeaDryer_OnTakeDamage(int victim, int &attacker, int &inflic
 	return Plugin_Changed;
 }
 
-public void IberiaSeaDryer_NPCDeath(int entity)
+public void AlminaSeaDryer_NPCDeath(int entity)
 {
-	IberiaSeaDryer npc = view_as<IberiaSeaDryer>(entity);
+	AlminaSeaDryer npc = view_as<AlminaSeaDryer>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -297,7 +297,7 @@ public void IberiaSeaDryer_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int IberiaSeaDryerSelfDefense(IberiaSeaDryer npc, float gameTime, float distance)
+int AlminaSeaDryerSelfDefense(AlminaSeaDryer npc, float gameTime, float distance)
 {
 	//Direct mode
 	if(gameTime > npc.m_flNextMeleeAttack)
@@ -318,7 +318,7 @@ int IberiaSeaDryerSelfDefense(IberiaSeaDryer npc, float gameTime, float distance
 				float SpeedReturn[3];
 
 				int RocketGet = npc.FireGrenade(vecTarget);
-				IberiaSeaXploder_ShootRollingMineToEnemy(npc.index, RocketGet, RocketDamage, 65.0, 3.0);
+				AlminaSeaXploder_ShootRollingMineToEnemy(npc.index, RocketGet, RocketDamage, 65.0, 3.0);
 				//Reducing gravity, reduces speed, lol.
 				SetEntityGravity(RocketGet, 1.0); 	
 				//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.

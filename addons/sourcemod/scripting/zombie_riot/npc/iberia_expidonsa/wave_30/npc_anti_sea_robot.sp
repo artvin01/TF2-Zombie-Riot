@@ -23,7 +23,7 @@ static const char g_MeleeHitSounds[][] = {
 	"npc/scanner/cbot_discharge1.wav",
 };
 
-void Iberia_AntiSeaRobot_OnMapStart_NPC()
+void Almina_AntiSeaRobot_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -37,17 +37,17 @@ void Iberia_AntiSeaRobot_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "tank");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Iberia_AntiSeaRobot(vecPos, vecAng, team, data);
+	return Almina_AntiSeaRobot(vecPos, vecAng, team, data);
 }
 
-methodmap Iberia_AntiSeaRobot < CClotBody
+methodmap Almina_AntiSeaRobot < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -85,9 +85,9 @@ methodmap Iberia_AntiSeaRobot < CClotBody
 	}
 	
 	
-	public Iberia_AntiSeaRobot(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Almina_AntiSeaRobot(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Iberia_AntiSeaRobot npc = view_as<Iberia_AntiSeaRobot>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.35", "3500", ally, false, true));
+		Almina_AntiSeaRobot npc = view_as<Almina_AntiSeaRobot>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.35", "3500", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -108,9 +108,9 @@ methodmap Iberia_AntiSeaRobot < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(Iberia_AntiSeaRobot_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Iberia_AntiSeaRobot_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Iberia_AntiSeaRobot_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Almina_AntiSeaRobot_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Almina_AntiSeaRobot_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Almina_AntiSeaRobot_ClotThink);
 		
 		
 		npc.StartPathing();
@@ -120,7 +120,7 @@ methodmap Iberia_AntiSeaRobot < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetMoraleDoIberia(npc.index, 35.0);
+		SetMoraleDoAlmina(npc.index, 35.0);
 		
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_fists_of_steel/c_fists_of_steel.mdl");
@@ -140,9 +140,9 @@ methodmap Iberia_AntiSeaRobot < CClotBody
 	}
 }
 
-public void Iberia_AntiSeaRobot_ClotThink(int iNPC)
+public void Almina_AntiSeaRobot_ClotThink(int iNPC)
 {
-	Iberia_AntiSeaRobot npc = view_as<Iberia_AntiSeaRobot>(iNPC);
+	Almina_AntiSeaRobot npc = view_as<Almina_AntiSeaRobot>(iNPC);
 	if(npc.g_TimesSummoned == 0)
 	{
 		if(!IsValidEntity(npc.m_iWearable6))
@@ -187,7 +187,7 @@ public void Iberia_AntiSeaRobot_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	IberiaMoraleGivingDo(iNPC, GetGameTime(npc.index));
+	AlminaMoraleGivingDo(iNPC, GetGameTime(npc.index));
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -204,7 +204,7 @@ public void Iberia_AntiSeaRobot_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		Iberia_AntiSeaRobotSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		Almina_AntiSeaRobotSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -214,9 +214,9 @@ public void Iberia_AntiSeaRobot_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Iberia_AntiSeaRobot_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Almina_AntiSeaRobot_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Iberia_AntiSeaRobot npc = view_as<Iberia_AntiSeaRobot>(victim);
+	Almina_AntiSeaRobot npc = view_as<Almina_AntiSeaRobot>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -240,9 +240,9 @@ public Action Iberia_AntiSeaRobot_OnTakeDamage(int victim, int &attacker, int &i
 }
 
 
-public void Iberia_AntiSeaRobot_NPCDeath(int entity)
+public void Almina_AntiSeaRobot_NPCDeath(int entity)
 {
-	Iberia_AntiSeaRobot npc = view_as<Iberia_AntiSeaRobot>(entity);
+	Almina_AntiSeaRobot npc = view_as<Almina_AntiSeaRobot>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -265,7 +265,7 @@ public void Iberia_AntiSeaRobot_NPCDeath(int entity)
 
 }
 
-void Iberia_AntiSeaRobotSelfDefense(Iberia_AntiSeaRobot npc, float gameTime, int target, float distance)
+void Almina_AntiSeaRobotSelfDefense(Almina_AntiSeaRobot npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -317,7 +317,7 @@ void Iberia_AntiSeaRobotSelfDefense(Iberia_AntiSeaRobot npc, float gameTime, int
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
 				npc.m_flNextMeleeAttack = gameTime + 1.0;
-				if(NpcStats_IberiaIsEnemyMarked(npc.m_iTarget))
+				if(NpcStats_AlminaIsEnemyMarked(npc.m_iTarget))
 					npc.m_flNextMeleeAttack = gameTime + 0.35;
 			}
 		}

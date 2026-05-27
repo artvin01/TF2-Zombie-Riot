@@ -2098,7 +2098,7 @@ void StatusEffects_BuildingAntiRaid()
 {
 	//dont display as its a direct cause of elemental
 	StatusEffect data;
-	strcopy(data.BuffName, sizeof(data.BuffName), "Iberia's Anti Raid");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Almina's Anti Raid");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "R");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -2801,7 +2801,7 @@ void StatusEffects_DebuffMarked()
 	DebuffMarkedIndex = StatusEffect_AddGlobal(data);
 }
 
-stock bool NpcStats_IberiaIsEnemyMarked(int victim)
+stock bool NpcStats_AlminaIsEnemyMarked(int victim)
 {
 	return CheckBuffIndex(victim, DebuffMarkedIndex);
 }
@@ -5037,7 +5037,7 @@ void StatusEffects_StatusEffectListOnly()
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Iberia Light");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Almina Light");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "i");
 	data.Positive 					= true;
 	data.AttackspeedBuff			= (1.0 / 1.1);
@@ -5078,7 +5078,7 @@ void StatusEffects_StatusEffectListOnly()
 	data.Positive 					= false;
 	StatusEffect_AddGlobal(data);
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Iberia Morale Boost");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Almina Morale Boost");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "W");
 	data.Positive 					= true;
 	StatusEffect_AddGlobal(data);
@@ -5529,7 +5529,7 @@ void StatusEffects_Construction()
 	data.AttackspeedBuff			= (1.0 / 1.3);
 	StatusEffect_AddGlobal(data);
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Zalminan Flagship Weaponry");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Ziberian Flagship Weaponry");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "վ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	//-1.0 means unused

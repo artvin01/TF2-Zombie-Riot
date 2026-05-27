@@ -28,7 +28,7 @@ static const char g_AngerSound[][] =
 	"vo/halloween_boss/knight_laugh03.mp3",
 	"vo/halloween_boss/knight_laugh04.mp3"
 };
-void Iberia_SeabornAnnihilator_OnMapStart_NPC()
+void Almina_SeabornAnnihilator_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
@@ -37,22 +37,22 @@ void Iberia_SeabornAnnihilator_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_AngerSound)); i++) { PrecacheSound(g_AngerSound[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Iberia-Expidonsan Seaborn Eradicator");
+	strcopy(data.Name, sizeof(data.Name), "Almina-Expidonsan Seaborn Eradicator");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_eradicator");
 	strcopy(data.Icon, sizeof(data.Icon), "seaborn_annihilator");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Iberia_SeabornAnnihilator(vecPos, vecAng, team);
+	return Almina_SeabornAnnihilator(vecPos, vecAng, team);
 }
 
-methodmap Iberia_SeabornAnnihilator < CClotBody
+methodmap Almina_SeabornAnnihilator < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -92,9 +92,9 @@ methodmap Iberia_SeabornAnnihilator < CClotBody
 	}
 	
 	
-	public Iberia_SeabornAnnihilator(float vecPos[3], float vecAng[3], int ally)
+	public Almina_SeabornAnnihilator(float vecPos[3], float vecAng[3], int ally)
 	{
-		Iberia_SeabornAnnihilator npc = view_as<Iberia_SeabornAnnihilator>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "50000000", ally, false, true));
+		Almina_SeabornAnnihilator npc = view_as<Almina_SeabornAnnihilator>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "50000000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 5;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -116,9 +116,9 @@ methodmap Iberia_SeabornAnnihilator < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(Iberia_SeabornAnnihilator_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Iberia_SeabornAnnihilator_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Iberia_SeabornAnnihilator_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Almina_SeabornAnnihilator_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Almina_SeabornAnnihilator_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Almina_SeabornAnnihilator_ClotThink);
 		
 		
 		npc.StartPathing();
@@ -140,7 +140,7 @@ methodmap Iberia_SeabornAnnihilator < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetMoraleDoIberia(npc.index, 100.0);
+		SetMoraleDoAlmina(npc.index, 100.0);
 		Is_a_Medic[npc.index] = true;
 		
 
@@ -170,9 +170,9 @@ methodmap Iberia_SeabornAnnihilator < CClotBody
 	}
 }
 
-public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
+public void Almina_SeabornAnnihilator_ClotThink(int iNPC)
 {
-	Iberia_SeabornAnnihilator npc = view_as<Iberia_SeabornAnnihilator>(iNPC);
+	Almina_SeabornAnnihilator npc = view_as<Almina_SeabornAnnihilator>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -204,7 +204,7 @@ public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
 		{
 			RemoveEntity(npc.m_iWearable1);
 		}
-		IberiaLighthouse npc2 = view_as<IberiaLighthouse>(iNPC);
+		AlminaLighthouse npc2 = view_as<AlminaLighthouse>(iNPC);
 		npc2.PlayDeathSound();
 		if(npc.m_flEnrageHappening < GetGameTime())
 		{
@@ -265,7 +265,7 @@ public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	IberiaMoraleGivingDo(iNPC, GetGameTime(npc.index),_, 1000.0);
+	AlminaMoraleGivingDo(iNPC, GetGameTime(npc.index),_, 1000.0);
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -282,7 +282,7 @@ public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		Iberia_SeabornAnnihilatorSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		Almina_SeabornAnnihilatorSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -292,9 +292,9 @@ public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Iberia_SeabornAnnihilator_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Almina_SeabornAnnihilator_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Iberia_SeabornAnnihilator npc = view_as<Iberia_SeabornAnnihilator>(victim);
+	Almina_SeabornAnnihilator npc = view_as<Almina_SeabornAnnihilator>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -309,9 +309,9 @@ public Action Iberia_SeabornAnnihilator_OnTakeDamage(int victim, int &attacker, 
 }
 
 
-public void Iberia_SeabornAnnihilator_NPCDeath(int entity)
+public void Almina_SeabornAnnihilator_NPCDeath(int entity)
 {
-	Iberia_SeabornAnnihilator npc = view_as<Iberia_SeabornAnnihilator>(entity);
+	Almina_SeabornAnnihilator npc = view_as<Almina_SeabornAnnihilator>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -344,7 +344,7 @@ public void Iberia_SeabornAnnihilator_NPCDeath(int entity)
 
 }
 
-void Iberia_SeabornAnnihilatorSelfDefense(Iberia_SeabornAnnihilator npc, float gameTime, int target, float distance)
+void Almina_SeabornAnnihilatorSelfDefense(Almina_SeabornAnnihilator npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{

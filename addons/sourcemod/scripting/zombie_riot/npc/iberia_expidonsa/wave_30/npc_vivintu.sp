@@ -35,7 +35,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cleaver_hit_07.wav",
 };
 
-void IberiaVivintu_OnMapStart_NPC()
+void AlminaVivintu_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -48,7 +48,7 @@ void IberiaVivintu_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "mark_sniper_r2");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -56,9 +56,9 @@ void IberiaVivintu_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaVivintu(vecPos, vecAng, team);
+	return AlminaVivintu(vecPos, vecAng, team);
 }
-methodmap IberiaVivintu < CClotBody
+methodmap AlminaVivintu < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -97,9 +97,9 @@ methodmap IberiaVivintu < CClotBody
 	}
 	
 	
-	public IberiaVivintu(float vecPos[3], float vecAng[3], int ally)
+	public AlminaVivintu(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaVivintu npc = view_as<IberiaVivintu>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "2000", ally));
+		AlminaVivintu npc = view_as<AlminaVivintu>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "2000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -114,9 +114,9 @@ methodmap IberiaVivintu < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaVivintu_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaVivintu_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaVivintu_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaVivintu_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaVivintu_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaVivintu_ClotThink);
 		
 		b_NpcAppliesMarkDebuff[npc.index] = true; 
 		
@@ -142,9 +142,9 @@ methodmap IberiaVivintu < CClotBody
 	}
 }
 
-public void IberiaVivintu_ClotThink(int iNPC)
+public void AlminaVivintu_ClotThink(int iNPC)
 {
-	IberiaVivintu npc = view_as<IberiaVivintu>(iNPC);
+	AlminaVivintu npc = view_as<AlminaVivintu>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -187,7 +187,7 @@ public void IberiaVivintu_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		IberiaVivintuSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		AlminaVivintuSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -197,9 +197,9 @@ public void IberiaVivintu_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaVivintu_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaVivintu_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaVivintu npc = view_as<IberiaVivintu>(victim);
+	AlminaVivintu npc = view_as<AlminaVivintu>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -213,9 +213,9 @@ public Action IberiaVivintu_OnTakeDamage(int victim, int &attacker, int &inflict
 	return Plugin_Changed;
 }
 
-public void IberiaVivintu_NPCDeath(int entity)
+public void AlminaVivintu_NPCDeath(int entity)
 {
-	IberiaVivintu npc = view_as<IberiaVivintu>(entity);
+	AlminaVivintu npc = view_as<AlminaVivintu>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -237,7 +237,7 @@ public void IberiaVivintu_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-void IberiaVivintuSelfDefense(IberiaVivintu npc, float gameTime, int target, float distance)
+void AlminaVivintuSelfDefense(AlminaVivintu npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{

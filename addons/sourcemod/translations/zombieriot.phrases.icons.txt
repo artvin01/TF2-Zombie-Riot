@@ -78,10 +78,10 @@
 	}
 	"Nemal Arrived"
 	{
-		"en" 		"The Iberia/Expidonsan Nemal is here."
+		"en" 		"The Almina/Expidonsan Nemal is here."
 		"ru" 		"Иберец/Экспидонец Немал прибыла."
-		"fr" 		"Le Iberiain/Expidonsian Nemal est ici."
-		"it"		"L'Iberia/Expidonsan Nemal è arrivato."
+		"fr" 		"Le Alminain/Expidonsian Nemal est ici."
+		"it"		"L'Almina/Expidonsan Nemal è arrivato."
 		"ko" 		"이베리아/엑스피돈사 출신, 네말이 등장했습니다."
 	}
 	"Vhxis arrived"
@@ -417,11 +417,11 @@
 		"it"	"È apparso un Portale del Vuoto..."
 		"ko"	"공허 게이트가 나타났습니다..."
 	}
-	"Iberian Lighthouse Teleported in!"
+	"Alminan Lighthouse Teleported in!"
 	{
-		"en"	"Iberian Lighthouse Teleported in!"
+		"en"	"Alminan Lighthouse Teleported in!"
 		"ru" 	"Маяк Иберии Телепортировался!"
-		"fr"	"Une phare Iberiain s'est téléporté ici!"
+		"fr"	"Une phare Alminain s'est téléporté ici!"
 		"it"	"Faro iberico teletrasportato!"
 		"ko"	"이베리아 등대가 나타났습니다!"
 	}

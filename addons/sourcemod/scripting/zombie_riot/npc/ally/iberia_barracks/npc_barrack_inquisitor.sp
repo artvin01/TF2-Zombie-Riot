@@ -36,7 +36,7 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/spy_battlecry04.mp3",
 };
 
-void Barrack_Iberia_Inquisitor_Lynsen_Precache()
+void Barrack_Almina_Inquisitor_Lynsen_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -47,7 +47,7 @@ void Barrack_Iberia_Inquisitor_Lynsen_Precache()
 	PrecacheModel("models/player/spy.mdl");
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Iberia Inquisitor Lynsen");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Almina Inquisitor Lynsen");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_inquisitor");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -58,10 +58,10 @@ void Barrack_Iberia_Inquisitor_Lynsen_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Iberia_Inquisitor_Lynsen(client, vecPos, vecAng);
+	return Barrack_Almina_Inquisitor_Lynsen(client, vecPos, vecAng);
 }
 
-methodmap Barrack_Iberia_Inquisitor_Lynsen < BarrackBody
+methodmap Barrack_Almina_Inquisitor_Lynsen < BarrackBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -107,15 +107,15 @@ methodmap Barrack_Iberia_Inquisitor_Lynsen < BarrackBody
 
 	}
 
-	public Barrack_Iberia_Inquisitor_Lynsen(int client, float vecPos[3], float vecAng[3])
+	public Barrack_Almina_Inquisitor_Lynsen(int client, float vecPos[3], float vecAng[3])
 	{
-		Barrack_Iberia_Inquisitor_Lynsen npc = view_as<Barrack_Iberia_Inquisitor_Lynsen>(BarrackBody(client, vecPos, vecAng, "750", "models/player/spy.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Almina_Inquisitor_Lynsen npc = view_as<Barrack_Almina_Inquisitor_Lynsen>(BarrackBody(client, vecPos, vecAng, "750", "models/player/spy.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Iberia_Inquisitor_Lynsen_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Iberia_Inquisitor_Lynsen_ClotThink;
+		func_NPCDeath[npc.index] = Barrack_Almina_Inquisitor_Lynsen_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Almina_Inquisitor_Lynsen_ClotThink;
 		npc.m_flSpeed = 300.0;
 		
 		SetVariantInt(0);
@@ -141,9 +141,9 @@ methodmap Barrack_Iberia_Inquisitor_Lynsen < BarrackBody
 	}
 }
 
-public void Barrack_Iberia_Inquisitor_Lynsen_ClotThink(int iNPC)
+public void Barrack_Almina_Inquisitor_Lynsen_ClotThink(int iNPC)
 {
-	Barrack_Iberia_Inquisitor_Lynsen npc = view_as<Barrack_Iberia_Inquisitor_Lynsen>(iNPC);
+	Barrack_Almina_Inquisitor_Lynsen npc = view_as<Barrack_Almina_Inquisitor_Lynsen>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	GrantEntityArmor(iNPC, true, 0.5, 0.66, 0);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
@@ -184,7 +184,7 @@ public void Barrack_Iberia_Inquisitor_Lynsen_ClotThink(int iNPC)
 						
 								npc.m_flNextRangedAttack = GameTime + (1.0 * npc.BonusFireRate);
 								npc.m_iAttacksTillReload ++;
-								if(NpcStats_IberiaIsEnemyMarked(target))
+								if(NpcStats_AlminaIsEnemyMarked(target))
 								{
 									npc.m_flNextRangedAttack = GameTime + (0.5 * npc.BonusFireRate);
 									npc.m_iAttacksTillReload --;
@@ -255,14 +255,14 @@ public void Barrack_Iberia_Inquisitor_Lynsen_ClotThink(int iNPC)
 	}
 }
 
-void Barrack_Iberia_Inquisitor_Lynsen_NPCDeath(int entity)
+void Barrack_Almina_Inquisitor_Lynsen_NPCDeath(int entity)
 {
-	Barrack_Iberia_Inquisitor_Lynsen npc = view_as<Barrack_Iberia_Inquisitor_Lynsen>(entity);
+	Barrack_Almina_Inquisitor_Lynsen npc = view_as<Barrack_Almina_Inquisitor_Lynsen>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }   
 
-void ResetInquisitorWeapon(Barrack_Iberia_Inquisitor_Lynsen npc, int weapon_Type)
+void ResetInquisitorWeapon(Barrack_Almina_Inquisitor_Lynsen npc, int weapon_Type)
 {
 	if(IsValidEntity(npc.m_iWearable1))
 	{

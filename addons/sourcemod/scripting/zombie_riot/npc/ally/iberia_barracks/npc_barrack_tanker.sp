@@ -36,7 +36,7 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/taunts/heavy_taunts19.mp3",
 };
 
-void Barracks_Iberia_Tanker_Precache()
+void Barracks_Almina_Tanker_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -45,7 +45,7 @@ void Barracks_Iberia_Tanker_Precache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheModel("models/player/heavy.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Tanker");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Alminan Tanker");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_tanker");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -56,10 +56,10 @@ void Barracks_Iberia_Tanker_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Iberia_Tanker(client, vecPos, vecAng);
+	return Barrack_Almina_Tanker(client, vecPos, vecAng);
 }
 
-methodmap Barrack_Iberia_Tanker < BarrackBody
+methodmap Barrack_Almina_Tanker < BarrackBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -99,15 +99,15 @@ methodmap Barrack_Iberia_Tanker < BarrackBody
 
 	}
 
-	public Barrack_Iberia_Tanker(int client, float vecPos[3], float vecAng[3])
+	public Barrack_Almina_Tanker(int client, float vecPos[3], float vecAng[3])
 	{
-		Barrack_Iberia_Tanker npc = view_as<Barrack_Iberia_Tanker>(BarrackBody(client, vecPos, vecAng, "175", "models/player/heavy.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Almina_Tanker npc = view_as<Barrack_Almina_Tanker>(BarrackBody(client, vecPos, vecAng, "175", "models/player/heavy.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Iberia_Tanker_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Iberia_Tanker_ClotThink;
+		func_NPCDeath[npc.index] = Barrack_Almina_Tanker_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Almina_Tanker_ClotThink;
 		npc.m_flSpeed = 160.0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -130,9 +130,9 @@ methodmap Barrack_Iberia_Tanker < BarrackBody
 	}
 }
 
-public void Barrack_Iberia_Tanker_ClotThink(int iNPC)
+public void Barrack_Almina_Tanker_ClotThink(int iNPC)
 {
-	Barrack_Iberia_Tanker npc = view_as<Barrack_Iberia_Tanker>(iNPC);
+	Barrack_Almina_Tanker npc = view_as<Barrack_Almina_Tanker>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
 	GrantEntityArmor(iNPC, true, 1.0, 0.66, 0);
@@ -197,9 +197,9 @@ public void Barrack_Iberia_Tanker_ClotThink(int iNPC)
 	}
 }
 
-void Barrack_Iberia_Tanker_NPCDeath(int entity)
+void Barrack_Almina_Tanker_NPCDeath(int entity)
 {
-	Barrack_Iberia_Tanker npc = view_as<Barrack_Iberia_Tanker>(entity);
+	Barrack_Almina_Tanker npc = view_as<Barrack_Almina_Tanker>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }

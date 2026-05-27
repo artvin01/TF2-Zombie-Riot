@@ -1145,7 +1145,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_AMPHI:
 		{
 			if(!CheckInHud())
-				Npc_OnTakeDamage_Iberia(attacker, damagetype);
+				Npc_OnTakeDamage_Almina(attacker, damagetype);
 		}
 		case 7://WEAPON_PHLOG:
 		{

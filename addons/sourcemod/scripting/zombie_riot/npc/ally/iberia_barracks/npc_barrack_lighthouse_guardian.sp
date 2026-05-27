@@ -58,7 +58,7 @@ static const char g_WarCry[][] = {
 	"weapons/medi_shield_deploy.wav",
 };
 
-void Barracks_Iberia_Lighthouse_Guardian_Precache()
+void Barracks_Almina_Lighthouse_Guardian_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -71,7 +71,7 @@ void Barracks_Iberia_Lighthouse_Guardian_Precache()
 	PrecacheSoundArray(g_WarCry);
 	PrecacheModel("models/player/engineer.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Lighthouse Guardian");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Alminan Lighthouse Guardian");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_lighthouse_guardian");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -82,10 +82,10 @@ void Barracks_Iberia_Lighthouse_Guardian_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barracks_Iberia_Lighthouse_Guardian(client, vecPos, vecAng);
+	return Barracks_Almina_Lighthouse_Guardian(client, vecPos, vecAng);
 }
 
-methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
+methodmap  Barracks_Almina_Lighthouse_Guardian < BarrackBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -155,15 +155,15 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 
 	}
 
-	public Barracks_Iberia_Lighthouse_Guardian(int client, float vecPos[3], float vecAng[3])
+	public Barracks_Almina_Lighthouse_Guardian(int client, float vecPos[3], float vecAng[3])
 	{
-		Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(BarrackBody(client, vecPos, vecAng, "2100", "models/player/engineer.mdl", STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_resistance.mdl"));
+		Barracks_Almina_Lighthouse_Guardian npc = view_as<Barracks_Almina_Lighthouse_Guardian>(BarrackBody(client, vecPos, vecAng, "2100", "models/player/engineer.mdl", STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_resistance.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
-		func_NPCDeath[npc.index] = Barracks_Iberia_Lighthouse_Guardian_NPCDeath;
-		func_NPCThink[npc.index] = Barracks_Iberia_Lighthouse_Guardian_ClotThink;
-		func_NPCOnTakeDamage[npc.index] = Barrack_Iberia_Lighthouse_Guardian_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barracks_Almina_Lighthouse_Guardian_NPCDeath;
+		func_NPCThink[npc.index] = Barracks_Almina_Lighthouse_Guardian_ClotThink;
+		func_NPCOnTakeDamage[npc.index] = Barrack_Almina_Lighthouse_Guardian_OnTakeDamage;
 		npc.m_flSpeed = 180.0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -206,9 +206,9 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 	}
 }
 
-public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
+public void Barracks_Almina_Lighthouse_Guardian_ClotThink(int iNPC)
 {
-	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(iNPC);
+	Barracks_Almina_Lighthouse_Guardian npc = view_as<Barracks_Almina_Lighthouse_Guardian>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
 	GrantEntityArmor(iNPC, true, 0.75, 0.66, 0);
@@ -270,7 +270,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 				if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 				{
 					npc.m_flNextRangedSpecialAttack = GameTime + 5.0;
-					ExpidonsaGroupHeal(npc.index, 150.0, 2, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),507.0, 0), 1.0, true, IberiaBarracks_HealSelfLimitCD);
+					ExpidonsaGroupHeal(npc.index, 150.0, 2, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),507.0, 0), 1.0, true, AlminaBarracks_HealSelfLimitCD);
 					DesertYadeamDoHealEffect(npc.index, 150.0);
 					GuardianAOEBuff(npc,GetGameTime(npc.index));
 
@@ -361,13 +361,13 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 	}
 }
 
-public Action Barrack_Iberia_Lighthouse_Guardian_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Barrack_Almina_Lighthouse_Guardian_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(victim);
+	Barracks_Almina_Lighthouse_Guardian npc = view_as<Barracks_Almina_Lighthouse_Guardian>(victim);
 
 	float percentageArmorLeft = npc.m_flArmorCount / npc.m_flArmorCountMax;
 	if(percentageArmorLeft <= 0.0)
@@ -382,7 +382,7 @@ public Action Barrack_Iberia_Lighthouse_Guardian_OnTakeDamage(int victim, int &a
 			{
 				case 0:
 				{
-					NpcSpeechBubble(npc.index, "For IBERIA!", 5, {75, 255, 255, 255}, {0.0,0.0,60.0}, "");
+					NpcSpeechBubble(npc.index, "For ALMINA!", 5, {75, 255, 255, 255}, {0.0,0.0,60.0}, "");
 				}
 				case 1:
 				{
@@ -421,17 +421,17 @@ public Action Barrack_Iberia_Lighthouse_Guardian_OnTakeDamage(int victim, int &a
 	return Plugin_Changed;
 }
 
-void Barracks_Iberia_Lighthouse_Guardian_NPCDeath(int entity)
+void Barracks_Almina_Lighthouse_Guardian_NPCDeath(int entity)
 {
-	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(entity);
+	Barracks_Almina_Lighthouse_Guardian npc = view_as<Barracks_Almina_Lighthouse_Guardian>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	ExpidonsaGroupHeal(npc.index, 300.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2000.0, 0), 1.0, true, IberiaBarracks_HealSelfLimitCD);
+	ExpidonsaGroupHeal(npc.index, 300.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2000.0, 0), 1.0, true, AlminaBarracks_HealSelfLimitCD);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	npc.PlayNPCDeath();
 }
 
-void GuardianAOEBuff(Barracks_Iberia_Lighthouse_Guardian npc, float gameTime)
+void GuardianAOEBuff(Barracks_Almina_Lighthouse_Guardian npc, float gameTime)
 {
 	float pos1[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);

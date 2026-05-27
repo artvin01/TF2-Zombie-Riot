@@ -389,8 +389,8 @@ enum
 	Thorns = 1,
 	Alternative = 2,
 	Combine = 3,
-	Iberia_Thorns = 4,
-	Iberia_Thornless = 5,
+	Almina_Thorns = 4,
+	Almina_Thornless = 5,
 	Civ_number_2
 }
 
@@ -563,7 +563,7 @@ static int SummonerCombine[][] =
 	
 };
 
-static const char SummonerIberiaNPC[][] =
+static const char SummonerAlminaNPC[][] =
 {
 	"npc_barrack_runner",
 	"npc_barrack_gunner",
@@ -587,7 +587,7 @@ static const char SummonerIberiaNPC[][] =
 	"npc_barrack_guards",
 };
 
-static int SummonerIberiaComplete[][] =
+static int SummonerAlminaComplete[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level
 	{ 0, 5, 20, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
@@ -613,7 +613,7 @@ static int SummonerIberiaComplete[][] =
 };
 
 
-static const char SummonerIberiaIncompleteNPC[][] =
+static const char SummonerAlminaIncompleteNPC[][] =
 {
 	"npc_barrack_runner",
 	
@@ -635,7 +635,7 @@ static const char SummonerIberiaIncompleteNPC[][] =
 	"npc_barrack_villager"
 };
 
-static int SummonerIberiaInComplete[][] =
+static int SummonerAlminaInComplete[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level
 	{ 0, 5, 15, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
@@ -763,8 +763,8 @@ static const char CivName[][] =
 	"Thorns Assitance",
 	"Blitzkrieg's Army",
 	"Guln's Companions",
-	"Iberia and Expidonsan's",
-	"Iberia and Expidonsan's",
+	"Almina and Expidonsan's",
+	"Almina and Expidonsan's",
 };
 
 static void SetupNPCIndexes()
@@ -789,14 +789,14 @@ static void SetupNPCIndexes()
 		SummonerAlternative[i][NPCIndex] = NPC_GetByPlugin(SummonerAlternativeNPC[i]);
 	}
 	
-	for(int i; i < sizeof(SummonerIberiaComplete); i++)
+	for(int i; i < sizeof(SummonerAlminaComplete); i++)
 	{
-		SummonerIberiaComplete[i][NPCIndex] = NPC_GetByPlugin(SummonerIberiaNPC[i]);
+		SummonerAlminaComplete[i][NPCIndex] = NPC_GetByPlugin(SummonerAlminaNPC[i]);
 	}
 	
-	for(int i; i < sizeof(SummonerIberiaInComplete); i++)
+	for(int i; i < sizeof(SummonerAlminaInComplete); i++)
 	{
-		SummonerIberiaInComplete[i][NPCIndex] = NPC_GetByPlugin(SummonerIberiaIncompleteNPC[i]);
+		SummonerAlminaInComplete[i][NPCIndex] = NPC_GetByPlugin(SummonerAlminaIncompleteNPC[i]);
 	}
 }
 
@@ -804,11 +804,11 @@ static int GetUnitCount(int civ)
 {
 	switch(civ)
 	{
-		case Iberia_Thornless:
-			return sizeof(SummonerIberiaInComplete);
+		case Almina_Thornless:
+			return sizeof(SummonerAlminaInComplete);
 			
-		case Iberia_Thorns:
-			return sizeof(SummonerIberiaComplete);
+		case Almina_Thorns:
+			return sizeof(SummonerAlminaComplete);
 
 		case Thorns:
 			return sizeof(SummonerThorns);
@@ -828,11 +828,11 @@ static int GetSData(int civ, int unit, int index)
 {
 	switch(civ)
 	{
-		case Iberia_Thornless:
-			return SummonerIberiaInComplete[unit][index];
+		case Almina_Thornless:
+			return SummonerAlminaInComplete[unit][index];
 			
-		case Iberia_Thorns:
-			return SummonerIberiaComplete[unit][index];
+		case Almina_Thorns:
+			return SummonerAlminaComplete[unit][index];
 
 		case Thorns:
 			return SummonerThorns[unit][index];
@@ -893,17 +893,17 @@ public void Building_Summoner(int client, int entity)
 	ResearchIn[client] = 0.0;
 	CommandMode[client] = 0;
 	TrainingQueue[client] = -1;
-	CivType[client] = Store_HasNamedItem(client, "Iberia's Last Hope") ? Thorns : Default;
+	CivType[client] = Store_HasNamedItem(client, "Almina's Last Hope") ? Thorns : Default;
 
 	if(CivType[client] == Default)
 	{
-		CivType[client] = Store_HasNamedItem(client, "Iberia and Expidonsan's Help") ? Iberia_Thornless : Default;
+		CivType[client] = Store_HasNamedItem(client, "Almina and Expidonsan's Help") ? Almina_Thornless : Default;
 		if(CivType[client] != Default)
 		{
 			//looks like they have last hope equipped! Do they also possess almina?
-			if(Items_HasNamedItem(client, "Iberia's Last Hope"))
+			if(Items_HasNamedItem(client, "Almina's Last Hope"))
 			{
-				CivType[client] = Iberia_Thorns;
+				CivType[client] = Almina_Thorns;
 			}
 		}
 	}

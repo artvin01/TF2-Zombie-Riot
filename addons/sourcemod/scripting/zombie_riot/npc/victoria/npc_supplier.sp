@@ -209,9 +209,9 @@ static void VictorianSupplier_ClotThink(int iNPC)
 	{
 		npc.m_flNextRangedAttackHappening = GetGameTime(npc.index) + 5.0;
 		if(NpcStats_VictorianCallToArms(npc.index))
-			IberiaArmorEffect(npc.index, 300.0);
+			AlminaArmorEffect(npc.index, 300.0);
 		else
-			IberiaArmorEffect(npc.index, 200.0);
+			AlminaArmorEffect(npc.index, 200.0);
 	}
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{

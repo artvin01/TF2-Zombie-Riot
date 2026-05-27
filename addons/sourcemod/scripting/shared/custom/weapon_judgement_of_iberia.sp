@@ -40,7 +40,7 @@ int AmphiReturnLaserSprite()
 	return LaserSprite;	
 }
 
-void Npc_OnTakeDamage_Iberia(int attacker, int damagetype)
+void Npc_OnTakeDamage_Almina(int attacker, int damagetype)
 {
 	if(damagetype & DMG_CLUB) //We only count normal melee hits.
 	{
@@ -229,22 +229,22 @@ public void Amphi_Cooldown_Logic(int client, int weapon)
 			{
 				if(i_AmphiHitsDone[client] < AMPHI_JUDGEMENT_MAX_HITS_NEEDED)
 				{
-					PrintHintText(client,"Seaborn Detected.\nJudgement Of Iberia [%i%/%i]", i_AmphiHitsDone[client], AMPHI_JUDGEMENT_MAX_HITS_NEEDED);
+					PrintHintText(client,"Seaborn Detected.\nJudgement Of Almina [%i%/%i]", i_AmphiHitsDone[client], AMPHI_JUDGEMENT_MAX_HITS_NEEDED);
 				}
 				else
 				{
-					PrintHintText(client,"Seaborn Detected.\nJudgement Of Iberia [READY!]");
+					PrintHintText(client,"Seaborn Detected.\nJudgement Of Almina [READY!]");
 				}
 			}
 			else
 			{	
 				if(i_AmphiHitsDone[client] < AMPHI_JUDGEMENT_MAX_HITS_NEEDED)
 				{
-					PrintHintText(client,"Judgement Of Iberia [%i%/%i]", i_AmphiHitsDone[client], AMPHI_JUDGEMENT_MAX_HITS_NEEDED);
+					PrintHintText(client,"Judgement Of Almina [%i%/%i]", i_AmphiHitsDone[client], AMPHI_JUDGEMENT_MAX_HITS_NEEDED);
 				}
 				else
 				{
-					PrintHintText(client,"Judgement Of Iberia [READY!]");
+					PrintHintText(client,"Judgement Of Almina [READY!]");
 				}
 			}
 			

@@ -1067,88 +1067,88 @@
 		"it"		"Caserma Collos"
 		"ko" 		"배럭 콤바인 황금 거인"
 	}
-	"Barracks Iberian Runner"
+	"Barracks Alminan Runner"
 	{
-		"en"		"Iberian Runner"
+		"en"		"Alminan Runner"
 		"ru" 		"Бегун Иберии"
 		"it"		"Corridore iberico"
 		"ko" 		"배럭 이베리아 러너"
 	}
-	"Barracks Iberian Gunner"
+	"Barracks Alminan Gunner"
 	{
-		"en"		"Iberian Gunner"
+		"en"		"Alminan Gunner"
 		"ru" 		"Стрелок Иберии"
 		"it"		"Artigliere iberico"
 		"ko" 		"배럭 이베리아 총잡이"
 	}
-	"Barracks Iberian Tanker"
+	"Barracks Alminan Tanker"
 	{
-		"en"		"Iberian Tanker"
+		"en"		"Alminan Tanker"
 		"it"		"Nave cisterna iberica"
 		"ko" 		"배럭 이베리아 탱커"
 	}	
-	"Barracks Iberian Rocketeer"
+	"Barracks Alminan Rocketeer"
 	{
-		"en"		"Iberian Rocketeer"
+		"en"		"Alminan Rocketeer"
 		"ru" 		"Ракетомётчик Иберии"
 		"it"		"Razziatore iberico"
 		"ko" 		"배럭 이베리아 로켓사수"
 	}	
-	"Barracks Iberian Healer"
+	"Barracks Alminan Healer"
 	{
-		"en"		"Iberian Healer"
+		"en"		"Alminan Healer"
 		"ru" 		"Медик Иберии"
 		"it"		"Guaritore iberico"
 		"ko" 		"배럭 이베리아 의무병"
 	}
-	"Barracks Iberian Healtanker"
+	"Barracks Alminan Healtanker"
 	{
-		"en"		"Iberian Healtanker"
+		"en"		"Alminan Healtanker"
 		"ru" 		"Лечащий танк иберии"
 		"it"		"Healtanker iberico"
 		"ko" 		"배럭 이베리아 회복 탱커"
 	}	
-	"Barracks Iberia Boomstick"
+	"Barracks Almina Boomstick"
 	{
-		"en"		"Iberian Boomsticker"
+		"en"		"Alminan Boomsticker"
 		"ru" 		"Бумстикер Иберии"
 		"it"		"Boomsticker iberico"
 		"ko" 		"배럭 이베리아 붐스틱병"
 	}
-	"Barracks Iberian Guards"
+	"Barracks Alminan Guards"
 	{
-		"en"		"Iberian Guards"
+		"en"		"Alminan Guards"
 		"ru" 		"Стражи Иберии"
 		"it"		"Guardie iberiche"
 		"ko" 		"배럭 이베리아 경비병"
 	}
-	"Barracks Iberian Commando"
+	"Barracks Alminan Commando"
 	{
-		"en"		"Iberian Commando"
+		"en"		"Alminan Commando"
 		"it"		"Commando iberico"
 		"ko" 		"배럭 이베리아 코만도"
 	}
-	"Barracks Iberian Elite Gunner"
+	"Barracks Alminan Elite Gunner"
 	{
-		"en"		"Iberian Elite Gunner"
+		"en"		"Alminan Elite Gunner"
 		"ru" 		"Элитный Стрелок Иберии"
 		"it"		"Artigliere d'élite iberico"
 		"ko" 		"배럭 이베리아 정예 총잡이"
 	}	
-	"Barracks Iberia Headhunter"
+	"Barracks Almina Headhunter"
 	{
-		"en"		"Iberian Headhunter"
+		"en"		"Alminan Headhunter"
 		"ru" 		"Охотник за головами Иберии"
 		"it"		"Cacciatore di teste iberico"
 		"ko" 		"배럭 이베리아 헤드헌터"
 	}	
-	"Barracks Iberia Inquisitor Lynsen"
+	"Barracks Almina Inquisitor Lynsen"
 	{
 		"en"		"Inquisitor Lynsen"
 		"it"		"Inquisitore Lynsen"
 		"ko" 		"재판관 린슨"
 	}
-	"Barracks Iberian Lighthouse Guardian"
+	"Barracks Alminan Lighthouse Guardian"
 	{
 		"en"		"Guardian of the Lighthouse"
 		"ru" 		"Хранитель Маяка"
@@ -2703,9 +2703,9 @@
 		"it"		"Santa Carmen"
 		"ko"		"성도 카르멘"
 	}
-	"Iberian Inqusitors"
+	"Alminan Inqusitors"
 	{
-		"en"		"Iberian Inqusitors"
+		"en"		"Alminan Inqusitors"
 		"it"		"Inquisitori iberici"
 		"ko"		"이베리아 재판관"
 	}
@@ -3437,10 +3437,10 @@
 		"it"	"Cecchino d'inverno"
 		"ko"	"겨울 저격수"
 	}
-	"Zalminan Miner"
+	"Ziberian Miner"
 	{
-		"en"	"Zalminan Miner"
-		"it"	"Minatore Zalminano"
+		"en"	"Ziberian Miner"
+		"it"	"Minatore Ziberiano"
 		"ko"	"지베리아인 광부"
 	}
 	"Snowey Gunner"
@@ -4965,13 +4965,13 @@
 		"it"		"Fissa gli strutture e infligge loro ingenti danni."
 		"ko"		"구조물을 집중적으로 노리며, 구조물을 대상으로 매우 높은 피해를 줍니다."
 	}
-	"Iberia Beacon"
+	"Almina Beacon"
 	{
-		"en"		"Iberia Beacon"
-		"it"		"Faro di Iberia"
+		"en"		"Almina Beacon"
+		"it"		"Faro di Almina"
 		"ko"		"이베리아 신호소"
 	}
-	"Iberia Beacon Desc"
+	"Almina Beacon Desc"
 	{
 		"en"		"after 4 seconds, each 2 seconds it gives armor and morale to nearby enemies.\nMorale:\nW buff, Each number means its stronger upto 4.\nIt buffs movementspeed, damage and resistance Exponentially the higher the morale.\nAt morale 4, they scream."
 		"it"		"dopo 4 secondi, ogni 2 secondi dà armatura e morale ai nemici vicini.\nMorale:\nW buff, ogni numero significa che è più forte fino a 4.\nBuffa la velocità di movimento, i danni e la resistenza in modo esponenziale più alto è il morale.\nAl morale 4, urlano."
@@ -4989,13 +4989,13 @@
 		"it"		"Posiziona i fari se abbastanza vicini, ha una resistenza di 50％ e una velocità ridotta quando ne trasporta uno."
 		"ko"		"충분히 근접하면 신호소를 설치합니다. 신호소를 들고 있는 동안에는 피해 저항력이 50％ 증가하지만, 이동 속도도 감소합니다."
 	}
-	"Iberia Lighthouse"
+	"Almina Lighthouse"
 	{
-		"en"		"Iberia Lighthouse"
-		"it"		"Faro di Iberia"
+		"en"		"Almina Lighthouse"
+		"it"		"Faro di Almina"
 		"ko"		"이베리아 등대"
 	}
-	"Iberia Lighthouse Desc"
+	"Almina Lighthouse Desc"
 	{
 		"en"		"Gives morale to any NPC in its line of sight, snipes enemies from afar, has a secondary shortrange gun.\nIf low enough or enough time passes, Huirgrajo appears."
 		"it"		"Dà morale a qualsiasi PNG nella sua linea di vista, coglie i nemici da lontano, ha un'arma secondaria a corto raggio.\nSe è abbastanza basso o passa abbastanza tempo, Huirgrajo appare."
@@ -5235,13 +5235,13 @@
 		"it"		"-Elimina 1 proiettile dall'aria con il suo proiettile, se un giocatore è troppo vicino, gli spara invece, ha 2 proiettili al suo posto.\n-Se il nemico è marcato, guadagna proiettile su colpo in mischia."
 		"ko"		"-공중의 투사체 1개를 탄환으로 적중시켜 파괴합니다. 대상 플레이어가 너무 근접했다면, 대신 대상을 사격합니다. 초기에 탄환을 2발 보유합니다.\n-대상이 표적 상태라면, 근접 공격 적중시 탄약을 1 얻습니다."
 	}
-	"Iberia-Expidonsan Seaborn Eradicator"
+	"Almina-Expidonsan Seaborn Eradicator"
 	{
-		"en"		"Iberia-Expidonsan Seaborn Eradicator"
-		"it"		"Sradicatore di corna marittime Iberia-Expidonsan"
+		"en"		"Almina-Expidonsan Seaborn Eradicator"
+		"it"		"Sradicatore di corna marittime Almina-Expidonsan"
 		"ko"		"이베리아-엑스피돈사 연합 시본 섬멸자"
 	}
-	"Iberia-Expidonsan Seaborn Eradicator Desc"
+	"Almina-Expidonsan Seaborn Eradicator Desc"
 	{
 		"en"		"-Acts as a spawnpoint, unkillable and oneshots anything.\n-Once most allies died, it enrages, loses all its resistance and 99％ hp and gets very fast, loses alot of damage too."
 		"it"		"-Agisce come punto di spawn, non è uccidibile e spara a qualsiasi cosa.\n-Una volta morti la maggior parte degli alleati, si infuria, perde tutte le resistenze e il 99％ di hp e diventa molto veloce, perdendo anche molti danni."
@@ -7409,8 +7409,8 @@
 	}
 	"C.H.I.M.E.R.A. Desc"
 	{
-		"en"	"Built by someone in Zalmina. Does not belong in the labs, maybe it's looking for something?\nIs very fast paced, seems to be trying to replicate Sensal's Portal Gates"
-		"it"	"Costruito da qualcuno in Zalmina. Non appartiene ai laboratori, forse sta cercando qualcosa?\nÈ molto veloce, sembra che stia cercando di replicare le Porte del Portale di Sensal"
+		"en"	"Built by someone in Ziberia. Does not belong in the labs, maybe it's looking for something?\nIs very fast paced, seems to be trying to replicate Sensal's Portal Gates"
+		"it"	"Costruito da qualcuno in Ziberia. Non appartiene ai laboratori, forse sta cercando qualcosa?\nÈ molto veloce, sembra che stia cercando di replicare le Porte del Portale di Sensal"
 		"ko"	"지베리아의 누군가가 만든 기계입니다. 이 연구소와 관련이 없는 존재입니다. 대체 뭘 찾고 있는 걸까요?\n속도가 매우 빠르며, 센살의 차원문을 복제하려고 시도하는 것 같습니다."
 	}
 	"Refragmented Winter Sniper"

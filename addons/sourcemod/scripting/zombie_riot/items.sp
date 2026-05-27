@@ -24,7 +24,7 @@ static const char Categories[][] =
 	"Chaos Allience",
 	"Voided Subjects",
 	"Ruina",
-	"Iberia Expidonsa Alliance",
+	"Almina Expidonsa Alliance",
 	"Whiteflower Specials",
 	"Victoria",
 	"Matrix",

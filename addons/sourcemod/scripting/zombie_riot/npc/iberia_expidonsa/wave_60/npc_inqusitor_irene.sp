@@ -43,7 +43,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_hit3.wav",
 	"weapons/blade_hit4.wav",
 };
-void Iberia_inqusitor_amphi_OnMapStart_NPC()
+void Almina_inqusitor_amphi_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -57,7 +57,7 @@ void Iberia_inqusitor_amphi_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "judgement_1");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -65,9 +65,9 @@ void Iberia_inqusitor_amphi_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Iberiainqusitor_amphi(vecPos, vecAng, team);
+	return Alminainqusitor_amphi(vecPos, vecAng, team);
 }
-methodmap Iberiainqusitor_amphi < CClotBody
+methodmap Alminainqusitor_amphi < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -129,9 +129,9 @@ methodmap Iberiainqusitor_amphi < CClotBody
 	}
 	
 	
-	public Iberiainqusitor_amphi(float vecPos[3], float vecAng[3], int ally)
+	public Alminainqusitor_amphi(float vecPos[3], float vecAng[3], int ally)
 	{
-		Iberiainqusitor_amphi npc = view_as<Iberiainqusitor_amphi>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1000000", ally));
+		Alminainqusitor_amphi npc = view_as<Alminainqusitor_amphi>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1000000", ally));
 		
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -147,9 +147,9 @@ methodmap Iberiainqusitor_amphi < CClotBody
 
 
 
-		func_NPCDeath[npc.index] = view_as<Function>(Iberiainqusitor_amphi_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Iberiainqusitor_amphi_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Iberiainqusitor_amphi_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Alminainqusitor_amphi_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Alminainqusitor_amphi_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Alminainqusitor_amphi_ClotThink);
 		npc.i_GunMode = 0;
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
@@ -199,9 +199,9 @@ static void NPCTalkMessage(int iNPC, const char[] message)
 	PrintNPCMessageWithPrefixes(iNPC, "snow", message, .customName = "Amphi");
 }
 
-public void Iberiainqusitor_amphi_ClotThink(int iNPC)
+public void Alminainqusitor_amphi_ClotThink(int iNPC)
 {
-	Iberiainqusitor_amphi npc = view_as<Iberiainqusitor_amphi>(iNPC);
+	Alminainqusitor_amphi npc = view_as<Alminainqusitor_amphi>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -238,7 +238,7 @@ public void Iberiainqusitor_amphi_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = Iberiainqusitor_amphiSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		int ActionDo = Alminainqusitor_amphiSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		switch(ActionDo)
 		{
 			case 0:
@@ -278,9 +278,9 @@ public void Iberiainqusitor_amphi_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Iberiainqusitor_amphi_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Alminainqusitor_amphi_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Iberiainqusitor_amphi npc = view_as<Iberiainqusitor_amphi>(victim);
+	Alminainqusitor_amphi npc = view_as<Alminainqusitor_amphi>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -295,9 +295,9 @@ public Action Iberiainqusitor_amphi_OnTakeDamage(int victim, int &attacker, int 
 	return Plugin_Changed;
 }
 
-public void Iberiainqusitor_amphi_NPCDeath(int entity)
+public void Alminainqusitor_amphi_NPCDeath(int entity)
 {
-	Iberiainqusitor_amphi npc = view_as<Iberiainqusitor_amphi>(entity);
+	Alminainqusitor_amphi npc = view_as<Alminainqusitor_amphi>(entity);
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();	
@@ -320,7 +320,7 @@ public void Iberiainqusitor_amphi_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int Iberiainqusitor_amphiSelfDefense(Iberiainqusitor_amphi npc, float gameTime, int target, float distance)
+int Alminainqusitor_amphiSelfDefense(Alminainqusitor_amphi npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAirTimeAbilityCD < gameTime)
 	{
@@ -392,7 +392,7 @@ int Iberiainqusitor_amphiSelfDefense(Iberiainqusitor_amphi npc, float gameTime, 
 						ShootLaser(npc.m_iWearable3, "bullet_tracer02_blue", origin, vecHit, false );
 						npc.m_flNextMeleeAttack = gameTime + 0.75;
 						npc.m_iAttacksTillReload --;
-						if(NpcStats_IberiaIsEnemyMarked(target))
+						if(NpcStats_AlminaIsEnemyMarked(target))
 						{
 							npc.m_flNextMeleeAttack = gameTime + 0.2;
 						}
@@ -574,7 +574,7 @@ int Iberiainqusitor_amphiSelfDefense(Iberiainqusitor_amphi npc, float gameTime, 
 	return 0;
 }
 
-bool Amphi_AbilityAir(Iberiainqusitor_amphi npc)
+bool Amphi_AbilityAir(Alminainqusitor_amphi npc)
 {
 	if(npc.m_flAirTimeAbilityHappening)
 	{
@@ -692,7 +692,7 @@ float Amphi_AirExploder(int entity, int victim, float damage, int weapon)
 {
 	Amphi_TargetsFound = true;
 	//Knock target up
-	if(NpcStats_IberiaIsEnemyMarked(victim))
+	if(NpcStats_AlminaIsEnemyMarked(victim))
 	{
 		damage *= 2.5;
 	}
@@ -708,7 +708,7 @@ float Amphi_AirExploder(int entity, int victim, float damage, int weapon)
 
 
 
-static void Amphi_Weapon_Lines(Iberiainqusitor_amphi npc, int client)
+static void Amphi_Weapon_Lines(Alminainqusitor_amphi npc, int client)
 {
 	if(client > MaxClients)
 		return;

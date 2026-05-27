@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define IBERIA_LIGHTHOUSE_MODEL_1 "models/props_sunshine/lighthouse_blu_bottom.mdl"
-#define IBERIA_LIGHTHOUSE_MODEL_2 "models/props_sunshine/lighthouse_top_skybox.mdl"
+#define ALMINA_LIGHTHOUSE_MODEL_1 "models/props_sunshine/lighthouse_blu_bottom.mdl"
+#define ALMINA_LIGHTHOUSE_MODEL_2 "models/props_sunshine/lighthouse_top_skybox.mdl"
 
 static const char g_DeathSounds[][] = {
 	"ambient/explosions/explode_3.wav",
@@ -31,24 +31,24 @@ int LighthouseGlobaID()
 }
 
 
-void Iberia_Lighthouse_OnMapStart_NPC()
+void Almina_Lighthouse_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackShortSounds)); i++) { PrecacheSound(g_MeleeAttackShortSounds[i]); }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Iberia Lighthouse");
+	strcopy(data.Name, sizeof(data.Name), "Almina Lighthouse");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_almina_lighthouse");
 	strcopy(data.Icon, sizeof(data.Icon), "lighthouse_1");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	LighthouseID = NPC_Add(data);
-	PrecacheModel(IBERIA_LIGHTHOUSE_MODEL_1);
-	PrecacheModel(IBERIA_LIGHTHOUSE_MODEL_2);
+	PrecacheModel(ALMINA_LIGHTHOUSE_MODEL_1);
+	PrecacheModel(ALMINA_LIGHTHOUSE_MODEL_2);
 }
 
 static void ClotPrecache()
@@ -57,9 +57,9 @@ static void ClotPrecache()
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaLighthouse(vecPos, vecAng, team);
+	return AlminaLighthouse(vecPos, vecAng, team);
 }
-methodmap IberiaLighthouse < CClotBody
+methodmap AlminaLighthouse < CClotBody
 {
 	public void PlayHurtSound() 
 	{
@@ -116,19 +116,19 @@ methodmap IberiaLighthouse < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
 	}
-	public IberiaLighthouse(float vecPos[3], float vecAng[3], int ally)
+	public AlminaLighthouse(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaLighthouse npc = view_as<IberiaLighthouse>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, MinibossHealthScaling(100.0), ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
+		AlminaLighthouse npc = view_as<AlminaLighthouse>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, MinibossHealthScaling(100.0), ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 		i_NpcWeight[npc.index] = 999;
 		b_NpcUnableToDie[npc.index] = true;
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
-		npc.m_iWearable1 = npc.EquipItemSeperate(IBERIA_LIGHTHOUSE_MODEL_1);
+		npc.m_iWearable1 = npc.EquipItemSeperate(ALMINA_LIGHTHOUSE_MODEL_1);
 		SetVariantString("0.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		npc.m_iWearable2 = npc.EquipItemSeperate(IBERIA_LIGHTHOUSE_MODEL_2,_,_,_,170.0);
+		npc.m_iWearable2 = npc.EquipItemSeperate(ALMINA_LIGHTHOUSE_MODEL_2,_,_,_,170.0);
 		SetVariantString("2.7");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
@@ -163,11 +163,11 @@ methodmap IberiaLighthouse < CClotBody
 		}
 
 
-		SetMoraleDoIberia(npc.index, 1.0);
+		SetMoraleDoAlmina(npc.index, 1.0);
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaLighthouse_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaLighthouse_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaLighthouse_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaLighthouse_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaLighthouse_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaLighthouse_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -204,7 +204,7 @@ methodmap IberiaLighthouse < CClotBody
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 			{
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "voice_player", 1, "%t", "Iberian Lighthouse Teleported in!");
+				ShowGameText(client_check, "voice_player", 1, "%t", "Alminan Lighthouse Teleported in!");
 			}
 		}
 		EmitSoundToAll("weapons/rescue_ranger_teleport_receive_01.wav", npc.index, SNDCHAN_STATIC, 120, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
@@ -221,7 +221,7 @@ methodmap IberiaLighthouse < CClotBody
 			event.SetFloat("lifetime", 7.0);
 		//	event.SetInt("visibilityBitfield", (1<<client));
 			//event.SetBool("show_effect", effect);
-			event.SetString("text", "Iberian Lighthouse!");
+			event.SetString("text", "Alminan Lighthouse!");
 			event.SetString("play_sound", "vo/null.mp3");
 			IdRef++;
 			event.SetInt("id", IdRef); //What to enter inside? Need a way to identify annotations by entindex!
@@ -233,9 +233,9 @@ methodmap IberiaLighthouse < CClotBody
 	}
 }
 
-public void IberiaLighthouse_ClotThink(int iNPC)
+public void AlminaLighthouse_ClotThink(int iNPC)
 {
-	IberiaLighthouse npc = view_as<IberiaLighthouse>(iNPC);
+	AlminaLighthouse npc = view_as<AlminaLighthouse>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -331,14 +331,14 @@ public void IberiaLighthouse_ClotThink(int iNPC)
 	}
 	//global range.
 	npc.m_flNextRangedSpecialAttack = 0.0;
-	IberiaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 9999.0);
-	IberiaLighthouseCloseDefense(npc, GetGameTime(npc.index));
-	IberiaLighthouseDefense(npc, GetGameTime(npc.index));
+	AlminaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 9999.0);
+	AlminaLighthouseCloseDefense(npc, GetGameTime(npc.index));
+	AlminaLighthouseDefense(npc, GetGameTime(npc.index));
 }
 
-public Action IberiaLighthouse_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaLighthouse_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaLighthouse npc = view_as<IberiaLighthouse>(victim);
+	AlminaLighthouse npc = view_as<AlminaLighthouse>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -364,9 +364,9 @@ public Action IberiaLighthouse_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-public void IberiaLighthouse_NPCDeath(int entity)
+public void AlminaLighthouse_NPCDeath(int entity)
 {
-	IberiaLighthouse npc = view_as<IberiaLighthouse>(entity);
+	AlminaLighthouse npc = view_as<AlminaLighthouse>(entity);
 	npc.PlayDeathSound();	
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
@@ -381,7 +381,7 @@ public void IberiaLighthouse_NPCDeath(int entity)
 
 
 
-int IberiaLighthouseDefense(IberiaLighthouse npc, float gameTime)
+int AlminaLighthouseDefense(AlminaLighthouse npc, float gameTime)
 {
 	if(!npc.m_flAttackHappens)
 	{
@@ -498,7 +498,7 @@ int IberiaLighthouseDefense(IberiaLighthouse npc, float gameTime)
 	return 1;
 }
 
-int IberiaLighthouseCloseDefense(IberiaLighthouse npc, float gameTime)
+int AlminaLighthouseCloseDefense(AlminaLighthouse npc, float gameTime)
 {
 	float DistanceCheckMax = (NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0);
 	

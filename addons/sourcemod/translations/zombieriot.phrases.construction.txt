@@ -896,8 +896,8 @@
 	}
 	"Flagship Calling Desc"
 	{
-		"en"	"Increase Movementspeed by 10％\nGain the ''Zalminan Flagship Weaponry''."
-		"it"	"Aumenta la velocità di movimento del 10%\nOttieni l'arma Chiamata di punta Zalminana."
+		"en"	"Increase Movementspeed by 10％\nGain the ''Ziberian Flagship Weaponry''."
+		"it"	"Aumenta la velocità di movimento del 10%\nOttieni l'arma Chiamata di punta Ziberiana."
 		"ko"	"이동 속도가 10％ 증가합니다.\n''지베리아 기함 무장'' 버프를 얻습니다."
 	}
 	"Tranquilizer Turret"

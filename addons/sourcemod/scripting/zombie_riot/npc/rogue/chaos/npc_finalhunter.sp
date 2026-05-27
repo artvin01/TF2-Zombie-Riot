@@ -320,7 +320,7 @@ static void ClotThink(int iNPC)
 							if(ShouldNpcDealBonusDamage(target))
 								damage *= 50.0;
 							
-							if(NpcStats_IberiaIsEnemyMarked(target))
+							if(NpcStats_AlminaIsEnemyMarked(target))
 								damage *= 100.0;
 
 							npc.PlayMeleeHitSound();

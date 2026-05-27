@@ -130,7 +130,7 @@ public void Rogue_SoulArknights_Weapon(int entity, int client)
 		StrContains(buffer, "Quibai's Elegance", false) != -1 ||
 		StrContains(buffer, "Preaching Sword", false) != -1 ||
 		StrContains(buffer, "Guln's Blade", false) != -1 ||
-		StrContains(buffer, "Judgement Of Iberia", false) != -1 ||
+		StrContains(buffer, "Judgement Of Almina", false) != -1 ||
 		StrContains(buffer, "Passanger's Device", false) != -1 ||
 		StrContains(buffer, "The Standchen", false) != -1 ||
 		StrContains(buffer, "Merchant's Wrench", false) != -1 ||

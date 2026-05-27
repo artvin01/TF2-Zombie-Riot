@@ -28,7 +28,7 @@ static const char g_IdleAlert[][] =
 	"vo/taunts/soldier_taunts18.mp3"
 };
 
-void Barracks_Iberia_Rocketeer_Precache()
+void Barracks_Almina_Rocketeer_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -37,7 +37,7 @@ void Barracks_Iberia_Rocketeer_Precache()
 	PrecacheModel("models/player/soldier.mdl");
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Rocketeer");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Alminan Rocketeer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_rocketeer");
 	data.IconCustom = false;
 	
@@ -49,10 +49,10 @@ void Barracks_Iberia_Rocketeer_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Iberia_Rocketeer(client, vecPos, vecAng);
+	return Barrack_Almina_Rocketeer(client, vecPos, vecAng);
 }
 
-methodmap Barrack_Iberia_Rocketeer < BarrackBody
+methodmap Barrack_Almina_Rocketeer < BarrackBody
 {
 	public void PlayIdleSound()
 	{
@@ -84,9 +84,9 @@ methodmap Barrack_Iberia_Rocketeer < BarrackBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 
-	public Barrack_Iberia_Rocketeer(int client, float vecPos[3], float vecAng[3])
+	public Barrack_Almina_Rocketeer(int client, float vecPos[3], float vecAng[3])
 	{
-		Barrack_Iberia_Rocketeer npc = view_as<Barrack_Iberia_Rocketeer>(BarrackBody(client, vecPos, vecAng, "150", "models/player/soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Almina_Rocketeer npc = view_as<Barrack_Almina_Rocketeer>(BarrackBody(client, vecPos, vecAng, "150", "models/player/soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 
@@ -96,8 +96,8 @@ methodmap Barrack_Iberia_Rocketeer < BarrackBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Iberia_Rocketeer_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Iberia_Rocketeer_ClotThink;
+		func_NPCDeath[npc.index] = Barrack_Almina_Rocketeer_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Almina_Rocketeer_ClotThink;
 		npc.m_flSpeed = 100.0;
 
 		npc.m_flNextRangedAttack = 0.0;
@@ -123,9 +123,9 @@ methodmap Barrack_Iberia_Rocketeer < BarrackBody
 	}
 }
 
-public void Barrack_Iberia_Rocketeer_ClotThink(int iNPC)
+public void Barrack_Almina_Rocketeer_ClotThink(int iNPC)
 {
-	Barrack_Iberia_Rocketeer npc = view_as<Barrack_Iberia_Rocketeer>(iNPC);
+	Barrack_Almina_Rocketeer npc = view_as<Barrack_Almina_Rocketeer>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	
 	GrantEntityArmor(iNPC, true, 0.5, 0.66, 0);
@@ -176,9 +176,9 @@ public void Barrack_Iberia_Rocketeer_ClotThink(int iNPC)
 	}
 }
 
-void Barrack_Iberia_Rocketeer_NPCDeath(int entity)
+void Barrack_Almina_Rocketeer_NPCDeath(int entity)
 {
-	Barrack_Iberia_Rocketeer npc = view_as<Barrack_Iberia_Rocketeer>(entity);
+	Barrack_Almina_Rocketeer npc = view_as<Barrack_Almina_Rocketeer>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }

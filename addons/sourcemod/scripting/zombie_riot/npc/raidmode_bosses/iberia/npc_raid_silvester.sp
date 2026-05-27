@@ -1306,7 +1306,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 			if(!NemalAssistance)
 				cooldownDo *= 0.5;
 
-			if(NpcStats_IberiaIsEnemyMarked(target))
+			if(NpcStats_AlminaIsEnemyMarked(target))
 				cooldownDo *= 0.5;
 
 			npc.m_flSilvesterAirbornAttack = GetGameTime(npc.index) + cooldownDo;
@@ -1480,7 +1480,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 					if(i_RaidGrantExtra[npc.index] >= 4)
 						cooldownDo *= 0.75;
 
-					if(NpcStats_IberiaIsEnemyMarked(Enemy_I_See))
+					if(NpcStats_AlminaIsEnemyMarked(Enemy_I_See))
 						cooldownDo *= 0.35;
 
 					npc.f_SilvesterMeleeSliceHappeningCD = gameTime + cooldownDo;
