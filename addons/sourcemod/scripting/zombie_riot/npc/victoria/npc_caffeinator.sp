@@ -30,15 +30,15 @@ static const char g_MeleeHitSounds[][] = {
 
 static const char g_MeleeAttackSounds[] = "weapons/knife_swing.wav";
 
-void VictorianCaffeinator_OnMapStart_NPC()
+void VestanCaffeinator_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Caffeinator");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_caffeinator");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_caffeinator");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_caffeinator");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -59,9 +59,9 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianCaffeinator(vecPos, vecAng, ally);
+	return VestanCaffeinator(vecPos, vecAng, ally);
 }
-methodmap VictorianCaffeinator < CClotBody
+methodmap VestanCaffeinator < CClotBody
 {
 	public void PlayIdleAlertSound()
 	{
@@ -94,9 +94,9 @@ methodmap VictorianCaffeinator < CClotBody
 		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public VictorianCaffeinator(float vecPos[3], float vecAng[3], int ally)
+	public VestanCaffeinator(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianCaffeinator npc = view_as<VictorianCaffeinator>(CClotBody(vecPos, vecAng, "models/bots/medic/bot_medic.mdl", "1.0", "30000", ally));
+		VestanCaffeinator npc = view_as<VestanCaffeinator>(CClotBody(vecPos, vecAng, "models/bots/medic/bot_medic.mdl", "1.0", "30000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -108,9 +108,9 @@ methodmap VictorianCaffeinator < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		func_NPCDeath[npc.index] = VictorianCaffeinator_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianCaffeinator_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianCaffeinator_ClotThink;
+		func_NPCDeath[npc.index] = VestanCaffeinator_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanCaffeinator_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanCaffeinator_ClotThink;
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -191,9 +191,9 @@ methodmap VictorianCaffeinator < CClotBody
 	}
 }
 
-static void VictorianCaffeinator_ClotThink(int iNPC)
+static void VestanCaffeinator_ClotThink(int iNPC)
 {
-	VictorianCaffeinator npc = view_as<VictorianCaffeinator>(iNPC);
+	VestanCaffeinator npc = view_as<VestanCaffeinator>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -274,7 +274,7 @@ static void VictorianCaffeinator_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
-		switch(VictorianCaffeinator_Work(npc, GetGameTime(npc.index), flDistanceToTarget))
+		switch(VestanCaffeinator_Work(npc, GetGameTime(npc.index), flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -341,9 +341,9 @@ static void VictorianCaffeinator_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictorianCaffeinator_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &m_iWearable3, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanCaffeinator_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &m_iWearable3, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianCaffeinator npc = view_as<VictorianCaffeinator>(victim);
+	VestanCaffeinator npc = view_as<VestanCaffeinator>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -357,9 +357,9 @@ static Action VictorianCaffeinator_OnTakeDamage(int victim, int &attacker, int &
 	return Plugin_Changed;
 }
 
-static void VictorianCaffeinator_NPCDeath(int entity)
+static void VestanCaffeinator_NPCDeath(int entity)
 {
-	VictorianCaffeinator npc = view_as<VictorianCaffeinator>(entity);
+	VestanCaffeinator npc = view_as<VestanCaffeinator>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -383,7 +383,7 @@ static void VictorianCaffeinator_NPCDeath(int entity)
 	npc.StopHealing();
 }
 
-static int VictorianCaffeinator_Work(VictorianCaffeinator npc, float gameTime, float distance)
+static int VestanCaffeinator_Work(VestanCaffeinator npc, float gameTime, float distance)
 {
 	if(npc.m_bFUCKYOU)
 	{
@@ -403,7 +403,7 @@ static int VictorianCaffeinator_Work(VictorianCaffeinator npc, float gameTime, f
 						{
 							ApplyStatusEffect(npc.index, entitycount, "Caffinated", 2.6);
 							ApplyStatusEffect(npc.index, entitycount, "Caffinated Drain", 2.6);
-							if(NpcStats_VictorianCallToArms(npc.index))
+							if(NpcStats_VestanCallToArms(npc.index))
 							{
 								ApplyStatusEffect(npc.index, entitycount, "Taurine", 2.6);
 							}
@@ -487,7 +487,7 @@ static int VictorianCaffeinator_Work(VictorianCaffeinator npc, float gameTime, f
 				HealEntityGlobal(npc.index, npc.m_iTarget, float(MaxHealth / 80), 1.0);
 				ApplyStatusEffect(npc.index, npc.m_iTarget, "Caffinated", 1.1);
 				ApplyStatusEffect(npc.index, npc.m_iTarget, "Caffinated Drain", 1.1);
-				if(NpcStats_VictorianCallToArms(npc.index))
+				if(NpcStats_VestanCallToArms(npc.index))
 					ApplyStatusEffect(npc.index, npc.m_iTarget, "Taurine", 1.1);
 				
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);

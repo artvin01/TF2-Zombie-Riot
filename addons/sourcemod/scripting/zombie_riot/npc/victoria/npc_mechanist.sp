@@ -41,15 +41,15 @@ static int NPCId;
 static bool b_JobFinish[MAXENTITIES];
 static bool b_AdvansedConstruction[MAXENTITIES];
 
-void VictorianMechanist_as_OnMapStart_NPC()
+void VestanMechanist_as_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Mechanist");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mechanist");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_mechanist");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_mechanist");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
@@ -66,17 +66,17 @@ static void ClotPrecache()
 	PrecacheModel("models/player/engineer.mdl");
 }
 
-int VictorianMechanist_ID()
+int VestanMechanist_ID()
 {
 	return NPCId;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianMechanist_as(vecPos, vecAng, ally, data);
+	return VestanMechanist_as(vecPos, vecAng, ally, data);
 }
 
-methodmap VictorianMechanist_as < CClotBody
+methodmap VestanMechanist_as < CClotBody
 {
 	public void PlayIdleAlertSound()
 	{
@@ -119,9 +119,9 @@ methodmap VictorianMechanist_as < CClotBody
 		public set(int TempValueForProperty) 	{ i_AmountProjectiles[this.index] = TempValueForProperty; }
 	}
 	
-	public VictorianMechanist_as(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanMechanist_as(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianMechanist_as npc = view_as<VictorianMechanist_as>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.2", "35000", ally, false));
+		VestanMechanist_as npc = view_as<VestanMechanist_as>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.2", "35000", ally, false));
 		
 		i_NpcWeight[npc.index] = 3;
 
@@ -134,9 +134,9 @@ methodmap VictorianMechanist_as < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		func_NPCDeath[npc.index] = VictorianMechanist_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianMechanist_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianMechanist_ClotThink;
+		func_NPCDeath[npc.index] = VestanMechanist_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanMechanist_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanMechanist_ClotThink;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "wrench");
@@ -312,9 +312,9 @@ methodmap VictorianMechanist_as < CClotBody
 	}
 }
 
-static void VictorianMechanist_ClotThink(int iNPC)
+static void VestanMechanist_ClotThink(int iNPC)
 {
-	VictorianMechanist_as npc = view_as<VictorianMechanist_as>(iNPC);
+	VestanMechanist_as npc = view_as<VestanMechanist_as>(iNPC);
 	
 	float GameTime = GetGameTime(npc.index);
 
@@ -351,7 +351,7 @@ static void VictorianMechanist_ClotThink(int iNPC)
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-			VictorianMechanist_SelfDefense(npc, GameTime, flDistanceToTarget);
+			VestanMechanist_SelfDefense(npc, GameTime, flDistanceToTarget);
 			if(npc.m_iChanged_WalkCycle != 2) 	
 			{
 				Is_a_Medic[npc.index]=false;
@@ -381,7 +381,7 @@ static void VictorianMechanist_ClotThink(int iNPC)
 			flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		}
 		
-		switch(VictorianMechanist_Work(npc, GameTime, flDistanceToTarget))
+		switch(VestanMechanist_Work(npc, GameTime, flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -417,7 +417,7 @@ static void VictorianMechanist_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static int VictorianMechanist_Work(VictorianMechanist_as npc, float gameTime, float distance)
+static int VestanMechanist_Work(VestanMechanist_as npc, float gameTime, float distance)
 {
 	if(npc.m_iWorkCycle)
 	{
@@ -426,7 +426,7 @@ static int VictorianMechanist_Work(VictorianMechanist_as npc, float gameTime, fl
 		{
 			case 1:
 			{
-				iAvangardEnt = VictorianMechanist_Teleport_Avangard(npc);
+				iAvangardEnt = VestanMechanist_Teleport_Avangard(npc);
 				if(IsValidAvangard(iAvangardEnt) && GetTeam(iAvangardEnt) == GetTeam(npc.index))
 				{
 					npc.m_iAvangardRef=EntIndexToEntRef(iAvangardEnt);
@@ -448,7 +448,7 @@ static int VictorianMechanist_Work(VictorianMechanist_as npc, float gameTime, fl
 						WorldSpaceCenter(npc.index, VecSelfNpc);
 						WorldSpaceCenter(npc.m_iTarget, vecTarget);
 						float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-						VictorianMechanist_SelfDefense(npc, gameTime, flDistanceToTarget);
+						VestanMechanist_SelfDefense(npc, gameTime, flDistanceToTarget);
 					}
 					else
 					{
@@ -472,11 +472,11 @@ static int VictorianMechanist_Work(VictorianMechanist_as npc, float gameTime, fl
 										float vecTarget[3]; WorldSpaceCenter(iAvangardEnt, vecTarget);
 										npc.FaceTowards(vecTarget, 15000.0);
 										//8 : 13 hit to Avangard Activation
-										i_AttacksTillMegahit[iAvangardEnt] += (NpcStats_VictorianCallToArms(npc.index) ? 35 : 20);
+										i_AttacksTillMegahit[iAvangardEnt] += (NpcStats_VestanCallToArms(npc.index) ? 35 : 20);
 										if(!HasSpecificBuff(iAvangardEnt, "Growth Blocker"))
 										{
 											int MaxHealth = ReturnEntityMaxHealth(iAvangardEnt);
-											HealEntityGlobal(npc.index, iAvangardEnt, float(MaxHealth)*(NpcStats_VictorianCallToArms(npc.index) ? 0.15 : 0.1), 1.0);
+											HealEntityGlobal(npc.index, iAvangardEnt, float(MaxHealth)*(NpcStats_VestanCallToArms(npc.index) ? 0.15 : 0.1), 1.0);
 										}
 										npc.PlayMeleeHitSound();
 										npc.m_flNextMeleeAttack = gameTime + 0.8;
@@ -519,14 +519,14 @@ static int VictorianMechanist_Work(VictorianMechanist_as npc, float gameTime, fl
 						WorldSpaceCenter(npc.index, VecSelfNpc);
 						WorldSpaceCenter(npc.m_iTarget, vecTarget);
 						float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-						VictorianMechanist_SelfDefense(npc, gameTime, flDistanceToTarget);
+						VestanMechanist_SelfDefense(npc, gameTime, flDistanceToTarget);
 					}
 					else if(!HasSpecificBuff(iAvangardEnt, "Growth Blocker"))
 					{
 						int MaxHealth = ReturnEntityMaxHealth(iAvangardEnt);
 						int Health = GetEntProp(iAvangardEnt, Prop_Data, "m_iHealth");
 						if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25
-						&& (Health<MaxHealth || NpcStats_VictorianCallToArms(npc.index)))
+						&& (Health<MaxHealth || NpcStats_VestanCallToArms(npc.index)))
 						{
 							if(npc.m_flNextMeleeAttack < gameTime)
 							{
@@ -544,8 +544,8 @@ static int VictorianMechanist_Work(VictorianMechanist_as npc, float gameTime, fl
 									float vecTarget[3]; WorldSpaceCenter(iAvangardEnt, vecTarget);
 									npc.FaceTowards(vecTarget, 15000.0);
 									if(Health<MaxHealth)
-										HealEntityGlobal(npc.index, iAvangardEnt, float(MaxHealth)*(NpcStats_VictorianCallToArms(npc.index) ? 0.15 : 0.1), 1.0);
-									else if(NpcStats_VictorianCallToArms(npc.index))
+										HealEntityGlobal(npc.index, iAvangardEnt, float(MaxHealth)*(NpcStats_VestanCallToArms(npc.index) ? 0.15 : 0.1), 1.0);
+									else if(NpcStats_VestanCallToArms(npc.index))
 										GrantEntityArmor(iAvangardEnt, false, 1.5, 0.5, 0, float(MaxHealth / 400));
 									npc.PlayMeleeHitSound();
 									npc.m_flNextMeleeAttack = gameTime + 0.8;
@@ -601,7 +601,7 @@ static int VictorianMechanist_Work(VictorianMechanist_as npc, float gameTime, fl
 	return 1;
 }
 
-static void VictorianMechanist_SelfDefense(VictorianMechanist_as npc, float gameTime, float distance)
+static void VestanMechanist_SelfDefense(VestanMechanist_as npc, float gameTime, float distance)
 {
 	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 	{
@@ -653,9 +653,9 @@ static void VictorianMechanist_SelfDefense(VictorianMechanist_as npc, float game
 	}
 }
 
-static Action VictorianMechanist_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanMechanist_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianMechanist_as npc = view_as<VictorianMechanist_as>(victim);
+	VestanMechanist_as npc = view_as<VestanMechanist_as>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -669,9 +669,9 @@ static Action VictorianMechanist_OnTakeDamage(int victim, int &attacker, int &in
 	return Plugin_Changed;
 }
 
-static void VictorianMechanist_NPCDeath(int entity)
+static void VestanMechanist_NPCDeath(int entity)
 {
-	VictorianMechanist_as npc = view_as<VictorianMechanist_as>(entity);
+	VestanMechanist_as npc = view_as<VestanMechanist_as>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
@@ -691,7 +691,7 @@ static void VictorianMechanist_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable7);
 }
 
-static int VictorianMechanist_Teleport_Avangard(VictorianMechanist_as npc)
+static int VestanMechanist_Teleport_Avangard(VestanMechanist_as npc)
 {
 	float AproxRandomSpaceToWalkTo[3];
 
@@ -775,5 +775,5 @@ static int VictorianMechanist_Teleport_Avangard(VictorianMechanist_as npc)
 
 static bool IsValidAvangard(int entity)
 {
-	return (IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianAvangard_ID() && !b_NpcHasDied[entity]);
+	return (IsValidEntity(entity) && i_NpcInternalId[entity] == VestanAvangard_ID() && !b_NpcHasDied[entity]);
 }

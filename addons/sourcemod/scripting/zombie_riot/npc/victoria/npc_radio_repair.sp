@@ -52,15 +52,15 @@ static const char g_TeleportSounds[][] = {
 
 static const char g_MeleeAttackSounds[] = "weapons/knife_swing.wav";
 
-void VictoriaRepair_OnMapStart_NPC()
+void VestaRepair_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Radio Repair");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_radio_repair");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_radiorepair");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_radiorepair");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -83,9 +83,9 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaRepair(vecPos, vecAng, ally, data);
+	return VestaRepair(vecPos, vecAng, ally, data);
 }
-methodmap VictoriaRepair < CClotBody
+methodmap VestaRepair < CClotBody
 {
 	public void PlayIdleAlertSound()
 	{
@@ -165,9 +165,9 @@ methodmap VictoriaRepair < CClotBody
 		VecTarget[2]=this.m_fYPosSave;
 	}
 
-	public VictoriaRepair(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestaRepair(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictoriaRepair npc = view_as<VictoriaRepair>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "5500", ally));
+		VestaRepair npc = view_as<VestaRepair>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "5500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -179,9 +179,9 @@ methodmap VictoriaRepair < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		func_NPCDeath[npc.index] = VictoriaRepair_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaRepair_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaRepair_ClotThink;
+		func_NPCDeath[npc.index] = VestaRepair_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestaRepair_OnTakeDamage;
+		func_NPCThink[npc.index] = VestaRepair_ClotThink;
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -287,9 +287,9 @@ methodmap VictoriaRepair < CClotBody
 	}
 }
 
-static void VictoriaRepair_ClotThink(int iNPC)
+static void VestaRepair_ClotThink(int iNPC)
 {
-	VictoriaRepair npc = view_as<VictoriaRepair>(iNPC);
+	VestaRepair npc = view_as<VestaRepair>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -367,7 +367,7 @@ static void VictoriaRepair_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
-		switch(VictoriaRepair_Work(npc, GetGameTime(npc.index), flDistanceToTarget))
+		switch(VestaRepair_Work(npc, GetGameTime(npc.index), flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -476,7 +476,7 @@ static void VictoriaRepair_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static int VictoriaRepair_Work(VictoriaRepair npc, float gameTime, float distance)
+static int VestaRepair_Work(VestaRepair npc, float gameTime, float distance)
 {
 	if(npc.m_bFUCKYOU)
 	{
@@ -569,7 +569,7 @@ static int VictoriaRepair_Work(VictoriaRepair npc, float gameTime, float distanc
 			{
 				npc.m_flChangeMovement=gameTime+GetRandomFloat(4.0, 6.0);
 				float RNGPos[3];
-				VictoriaRepair_Move(npc, 800.0, 1024.0, RNGPos);
+				VestaRepair_Move(npc, 800.0, 1024.0, RNGPos);
 				npc.SaveTreePos(RNGPos);
 			}
 			return (gameTime > npc.m_flChangeMovement-2.0) ? 1 : 4;
@@ -578,9 +578,9 @@ static int VictoriaRepair_Work(VictoriaRepair npc, float gameTime, float distanc
 	}
 }
 
-static Action VictoriaRepair_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &m_iWearable3, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestaRepair_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &m_iWearable3, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaRepair npc = view_as<VictoriaRepair>(victim);
+	VestaRepair npc = view_as<VestaRepair>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -594,9 +594,9 @@ static Action VictoriaRepair_OnTakeDamage(int victim, int &attacker, int &inflic
 	return Plugin_Changed;
 }
 
-static void VictoriaRepair_NPCDeath(int entity)
+static void VestaRepair_NPCDeath(int entity)
 {
-	VictoriaRepair npc = view_as<VictoriaRepair>(entity);
+	VestaRepair npc = view_as<VestaRepair>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -620,7 +620,7 @@ static void VictoriaRepair_NPCDeath(int entity)
 	npc.StopHealing();
 }
 
-static void VictoriaRepair_Move(VictoriaRepair npc, float min, float max, float output[3])
+static void VestaRepair_Move(VestaRepair npc, float min, float max, float output[3])
 {
 	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 	for(int loop = 1; loop <= 500; loop++)

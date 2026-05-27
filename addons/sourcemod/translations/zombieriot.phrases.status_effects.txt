@@ -751,15 +751,15 @@
 		"ko"	"받는 피해량이 25％ 증가합니다."
 		"it"	"Aumenta i danni subiti di 25％"
 	}
-	"Call To Victoria"
+	"Call To Vesta"
 	{
-		"en"	"Call To Victoria"
+		"en"	"Call To Vesta"
 		"ko"	"빅토리아의 부름"
 		"it"	"Chiamata a Vittoria"
 	}
-	"Call To Victoria Desc"
+	"Call To Vesta Desc"
 	{
-		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 20％\nBoosts NPC'S Movementspeed by 15％\nAll Victorian enemeies gain extra abilities upon reciving this buff."
+		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 20％\nBoosts NPC'S Movementspeed by 15％\nAll Vestan enemeies gain extra abilities upon reciving this buff."
 		"ko"	"받는 피해량 20％ 감소\n공격 피해량 20％ 증가\nNPC의 이동 속도 15％ 증가\n해당 버프를 보유한 빅토리아 계열 적들은 추가 능력을 얻습니다."
 		"it"	"Riduce i danni subiti del 20％\nAumenta i danni inflitti del 20％\nAumenta la velocità di movimento degli NPC del 15％\nTutti i nemici vittoriani ottengono abilità extra quando ricevono questo buff."
 	}
@@ -1349,19 +1349,19 @@
 	}
 	"Castle Breaking Power Desc"
 	{
-		"en"	"Increases Victorian weapons damage by 10％"
+		"en"	"Increases Vestan weapons damage by 10％"
 		"it"	"Aumenta i danni delle armi vittoriane del 10％"
 		"ko"	"''빅토리아'' 진영 무기들의 피해량이 10％ 증가합니다."
 	}
-	"Victorian Launcher's Call"
+	"Vestan Launcher's Call"
 	{
-		"en"	"Victorian Launcher's Call"
+		"en"	"Vestan Launcher's Call"
 		"it"	"Il richiamo del lanciatore vittoriano"
 		"ko"	"빅토리아 런처의 부름"
 	}
-	"Victorian Launcher's Call Desc"
+	"Vestan Launcher's Call Desc"
 	{
-		"en"	"Increases Victorian Weapons Explosive Radius by 10％"
+		"en"	"Increases Vestan Weapons Explosive Radius by 10％"
 		"it"	"Aumenta il raggio di esplosione delle armi vittoriane del 10％"
 		"ko"	"''빅토리아'' 진영 무기들의 폭발 범위가 10％ 증가합니다."
 	}
@@ -1372,7 +1372,7 @@
 	}
 	"Explosault Rifle Buff Desc"
 	{
-		"en"	"''Victoria'' faction will have 10％ less blast damage reduce per target"
+		"en"	"''Vesta'' faction will have 10％ less blast damage reduce per target"
 		"ko"	"''빅토리아'' 진영 무기들의 폭발 타겟당 피해량 감소가 10％ 완화됩니다."
 	}
 	"Tinkering Curiosity"
@@ -1446,13 +1446,13 @@
 		"it"	"Ignora."
 		"ko"	"이 텍스트는 무시하십시오."
 	}
-	"Victorian Launcher Overdrive"
+	"Vestan Launcher Overdrive"
 	{
 		"en"	"Ignore"
 		"it"	"Ignora"
 		"ko"	"이 텍스트는 무시하십시오."
 	}
-	"Victorian Launcher Overdrive Desc"
+	"Vestan Launcher Overdrive Desc"
 	{
 		"en"	"Ignore"
 		"it"	"Ignora"
@@ -1654,16 +1654,16 @@
 		"it"	"Riduce i danni causati dai marchi nethersea dell'80％"
 		"ko"	"명흔으로 받는 피해가 80％ 감소합니다."
 	}
-	"Victoria Nuke"
+	"Vesta Nuke"
 	{
-		"en"	"Victoria Nuke"
+		"en"	"Vesta Nuke"
 		"it"	"Bomba Atomica Vittoria"
 		"ko"	"빅토리아 핵"
 	}
-	"Victoria Nuke Desc"
+	"Vesta Nuke Desc"
 	{
-		"en"	"Launches a Victoria Nuke when full.\nRemoves Locked On from all enemies when at a certain amount."
-		"it"	"Lancia una Victoria Nuke quando è piena.\nRimuove Locked On da tutti i nemici quando raggiunge una certa quantità."
+		"en"	"Launches a Vesta Nuke when full.\nRemoves Locked On from all enemies when at a certain amount."
+		"it"	"Lancia una Vesta Nuke quando è piena.\nRimuove Locked On da tutti i nemici quando raggiunge una certa quantità."
 		"ko"	"이것이 꽉 차면 빅토리아 핵이 발사됩니다.\n일정 수치 이상이 되면, 모든 적에게 부여된 목표 고정 효과를 제거합니다."
 	}
 	"Locked On"
@@ -1674,8 +1674,8 @@
 	}
 	"Locked On Desc"
 	{
-		"en"	"The Victoria Nuke will always target the victim."
-		"it"	"La Victoria Nuke si rivolge sempre alla vittima."
+		"en"	"The Vesta Nuke will always target the victim."
+		"it"	"La Vesta Nuke si rivolge sempre alla vittima."
 		"ko"	"빅토리아 핵은 항상 이 효과가 부여된 대상을 타겟으로 삼습니다."
 	}
 	"Shield"

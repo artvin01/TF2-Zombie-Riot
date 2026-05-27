@@ -30,7 +30,7 @@ static bool IsExplodeWave; // to prevent the message from popping up twice
 static int ExplodeNPCDamage;
 static int EnemyShields;
 static int VoidBuff;
-static bool VictoriaBuff;
+static bool VestaBuff;
 static bool SquadBuff;
 static bool Coffee;
 static int StrangleDebuff;
@@ -169,7 +169,7 @@ void Freeplay_ResetAll()
 	IsExplodeWave = false;
 	EnemyShields = 0;
 	VoidBuff = 0;
-	VictoriaBuff = false;
+	VestaBuff = false;
 	SquadBuff = false;
 	Coffee = false;
 	StrangleDebuff = 0;
@@ -1124,7 +1124,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 25:	
 		{
-			CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {red}In the name of vestia, he won't allow you further in!");
+			CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {red}In the name of vesta, he won't allow you further in!");
 		}
 		case 26:
 		{
@@ -1360,8 +1360,8 @@ void Freeplay_SpawnEnemy(int entity)
 		if(VoidBuff > 0)
 			Freeplay_ApplyStatusEffect(entity, "Void Strength I", 6.0);
 	
-		if(VictoriaBuff)
-			Freeplay_ApplyStatusEffect(entity, "Call To Victoria", 10.0);
+		if(VestaBuff)
+			Freeplay_ApplyStatusEffect(entity, "Call To Vesta", 10.0);
 	
 		if(SquadBuff)
 			Freeplay_ApplyStatusEffect(entity, "Squad Leader", 20.0);	
@@ -1969,15 +1969,15 @@ void Freeplay_SetupStart(bool extra = false)
 			VoidBuff++;
 		}
 
-		if(VictoriaBuff)
+		if(VestaBuff)
 		{
-			CPrintToChatAll("{green}All enemies have lost the Call to Victoria buff.");
-			VictoriaBuff = false;
+			CPrintToChatAll("{green}All enemies have lost the Call to Vesta buff.");
+			VestaBuff = false;
 		}
 		else
 		{
-			CPrintToChatAll("{red}All enemies now gain the Call to Victoria buff!");
-			VictoriaBuff = true;
+			CPrintToChatAll("{red}All enemies now gain the Call to Vesta buff!");
+			VestaBuff = true;
 		}
 
 		if(SquadBuff)
@@ -2836,15 +2836,15 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 59:
 			{
-				if(VictoriaBuff)
+				if(VestaBuff)
 				{
-					strcopy(message, sizeof(message), "{green}All enemies have lost the Call to Victoria buff.");
-					VictoriaBuff = false;
+					strcopy(message, sizeof(message), "{green}All enemies have lost the Call to Vesta buff.");
+					VestaBuff = false;
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Call to Victoria buff!");
-					VictoriaBuff = true;
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Call to Vesta buff!");
+					VestaBuff = true;
 				}
 			}
 			case 60:

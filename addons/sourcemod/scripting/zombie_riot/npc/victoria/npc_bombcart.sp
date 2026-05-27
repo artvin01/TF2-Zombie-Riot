@@ -5,15 +5,15 @@ static const char g_IdleAlertedSounds[] = "pl_hoodoo/alarm_clock_ticking_3.wav";
 
 static const char g_MeleeHitSounds[] = "ambient/bumper_car_floor_break.wav";
 
-void VictoriaBombcart_Precache()
+void VestaBombcart_Precache()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bomb Cart");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bombcart");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_bombcart");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_bombcart");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -28,10 +28,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaBombcart(vecPos, vecAng, ally);
+	return VestaBombcart(vecPos, vecAng, ally);
 }
 
-methodmap VictoriaBombcart < CClotBody
+methodmap VestaBombcart < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -47,9 +47,9 @@ methodmap VictoriaBombcart < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 100));
 	}
 
-	public VictoriaBombcart(float vecPos[3], float vecAng[3], int ally)
+	public VestaBombcart(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaBombcart npc = view_as<VictoriaBombcart>(CClotBody(vecPos, vecAng, "models/combine_apc_dynamic.mdl", "0.25", "750", ally));
+		VestaBombcart npc = view_as<VestaBombcart>(CClotBody(vecPos, vecAng, "models/combine_apc_dynamic.mdl", "0.25", "750", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -57,9 +57,9 @@ methodmap VictoriaBombcart < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = 0;
 
-		func_NPCDeath[npc.index] = VictoriaBombcart_NPCDeath;
+		func_NPCDeath[npc.index] = VestaBombcart_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaBombcart_ClotThink;
+		func_NPCThink[npc.index] = VestaBombcart_ClotThink;
 		
 		KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
 		npc.m_bDissapearOnDeath = true;
@@ -76,9 +76,9 @@ methodmap VictoriaBombcart < CClotBody
 	}
 }
 
-static void VictoriaBombcart_ClotThink(int iNPC)
+static void VestaBombcart_ClotThink(int iNPC)
 {
-	VictoriaBombcart npc = view_as<VictoriaBombcart>(iNPC);
+	VestaBombcart npc = view_as<VestaBombcart>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -170,9 +170,9 @@ static void VictoriaBombcart_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-static void VictoriaBombcart_NPCDeath(int entity)
+static void VestaBombcart_NPCDeath(int entity)
 {
-	VictoriaBombcart npc = view_as<VictoriaBombcart>(entity);
+	VestaBombcart npc = view_as<VestaBombcart>(entity);
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -181,7 +181,7 @@ static void VictoriaBombcart_NPCDeath(int entity)
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition); 
 	startPosition[2] += 45;
 	
-	if(NpcStats_VictorianCallToArms(npc.index))
+	if(NpcStats_VestanCallToArms(npc.index))
 	{
 		Explode_Logic_Custom(100.0, -1, npc.index, -1, startPosition, 150.0, _, _, true, _, false, 1.0);
 		ParticleEffectAt(startPosition, "rd_robot_explosion_smoke_linger", 2.0);

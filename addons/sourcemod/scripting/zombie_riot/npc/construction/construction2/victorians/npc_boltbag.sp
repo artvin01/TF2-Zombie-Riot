@@ -34,15 +34,15 @@ static const char g_SapperHitSounds[][] = {
 	"weapons/rescue_ranger_charge_02.wav",
 };
 
-void Victorian_Resource_Collector_OnMapStart_NPC()
+void Vestan_Resource_Collector_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Resource Collector");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_resource_collector");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_ironshield");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_ironshield");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -162,7 +162,7 @@ static void ResourceCollector_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	if(NpcStats_VictorianCallToArms(npc.index))
+	if(NpcStats_VestanCallToArms(npc.index))
 	{
 		npc.m_flSpeed = 400.0;
 	}
@@ -254,7 +254,7 @@ static void ResourceCollectorSelfDefense(ResourceCollector npc, float gameTime, 
 					if(ShouldNpcDealBonusDamage(target))
 					{
 						damageDealt *= 5.0;
-						if(NpcStats_VictorianCallToArms(npc.index))
+						if(NpcStats_VestanCallToArms(npc.index))
 							damageDealt *= 2.0;
 					}
 						

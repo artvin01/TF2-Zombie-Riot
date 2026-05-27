@@ -33,15 +33,15 @@ static const char g_FuckyouSounds[][] = {
 
 static const char g_MeleeAttackSounds[] = "weapons/knife_swing.wav";
 
-void VictorianHardener_OnMapStart_NPC()
+void VestanHardener_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Hardender");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_hardener");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_hardener");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_hardener");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -63,10 +63,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianHardener(vecPos, vecAng, ally, data);
+	return VestanHardener(vecPos, vecAng, ally, data);
 }
 
-methodmap VictorianHardener < CClotBody
+methodmap VestanHardener < CClotBody
 {
 
 	public void PlayIdleAlertSound()
@@ -131,9 +131,9 @@ methodmap VictorianHardener < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
 
-	public VictorianHardener(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanHardener(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianHardener npc = view_as<VictorianHardener>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1500", ally));
+		VestanHardener npc = view_as<VestanHardener>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -145,9 +145,9 @@ methodmap VictorianHardener < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		func_NPCDeath[npc.index] = VictorianHardener_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianHardener_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianHardener_ClotThink;
+		func_NPCDeath[npc.index] = VestanHardener_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanHardener_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanHardener_ClotThink;
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -252,9 +252,9 @@ methodmap VictorianHardener < CClotBody
 	}
 }
 
-static void VictorianHardener_ClotThink(int iNPC)
+static void VestanHardener_ClotThink(int iNPC)
 {
-	VictorianHardener npc = view_as<VictorianHardener>(iNPC);
+	VestanHardener npc = view_as<VestanHardener>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -335,7 +335,7 @@ static void VictorianHardener_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
-		switch(VictorianHardener_Work(npc, GetGameTime(npc.index), flDistanceToTarget))
+		switch(VestanHardener_Work(npc, GetGameTime(npc.index), flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -402,9 +402,9 @@ static void VictorianHardener_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictorianHardener_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &m_iWearable3, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanHardener_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &m_iWearable3, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianHardener npc = view_as<VictorianHardener>(victim);
+	VestanHardener npc = view_as<VestanHardener>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -418,9 +418,9 @@ static Action VictorianHardener_OnTakeDamage(int victim, int &attacker, int &inf
 	return Plugin_Changed;
 }
 
-static void VictorianHardener_NPCDeath(int entity)
+static void VestanHardener_NPCDeath(int entity)
 {
-	VictorianHardener npc = view_as<VictorianHardener>(entity);
+	VestanHardener npc = view_as<VestanHardener>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -444,7 +444,7 @@ static void VictorianHardener_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable7);
 }
 
-static int VictorianHardener_Work(VictorianHardener npc, float gameTime, float distance)
+static int VestanHardener_Work(VestanHardener npc, float gameTime, float distance)
 {
 	if(npc.m_bFUCKYOU)
 	{
@@ -469,7 +469,7 @@ static int VictorianHardener_Work(VictorianHardener npc, float gameTime, float d
 							if(b_thisNpcIsABoss[entitycount])
 								MaxHealth = RoundToCeil(float(MaxHealth) * 0.05);
 								
-							if(NpcStats_VictorianCallToArms(npc.index))
+							if(NpcStats_VestanCallToArms(npc.index))
 							{
 								MaxHealth *= 2.0;
 								ApplyStatusEffect(npc.index, entitycount, "Defensive Backup", 3.0);
@@ -553,7 +553,7 @@ static int VictorianHardener_Work(VictorianHardener npc, float gameTime, float d
 				if(b_thisNpcIsABoss[npc.m_iTarget])
 					MaxHealth = RoundToCeil(float(MaxHealth) * 0.05);
 					
-				if(NpcStats_VictorianCallToArms(npc.index))
+				if(NpcStats_VestanCallToArms(npc.index))
 				{
 					MaxHealth *= 2.0;
 					ApplyStatusEffect(npc.index, npc.m_iTarget, "Defensive Backup", 3.0);

@@ -46,15 +46,15 @@ static const char g_AngerSounds[][] = {
 
 static const char g_MeleeHitSounds[] = "weapons/halloween_boss/knight_axe_hit.wav";
 
-void Victorian_Charger_OnMapStart_NPC()
+void Vestan_Charger_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Charger");
+	strcopy(data.Name, sizeof(data.Name), "Vesta Charger");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_charger");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_charger");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_charger");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -73,10 +73,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianCharger(vecPos, vecAng, ally);
+	return VestanCharger(vecPos, vecAng, ally);
 }
 
-methodmap VictorianCharger < CClotBody
+methodmap VestanCharger < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -116,9 +116,9 @@ methodmap VictorianCharger < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
-	public VictorianCharger(float vecPos[3], float vecAng[3], int ally)
+	public VestanCharger(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianCharger npc = view_as<VictorianCharger>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1000", ally));
+		VestanCharger npc = view_as<VestanCharger>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -133,9 +133,9 @@ methodmap VictorianCharger < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = VictorianCharger_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianCharger_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianCharger_ClotThink;
+		func_NPCDeath[npc.index] = VestanCharger_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanCharger_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanCharger_ClotThink;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "bushwacka");
@@ -176,9 +176,9 @@ methodmap VictorianCharger < CClotBody
 	}
 }
 
-static void VictorianCharger_ClotThink(int iNPC)
+static void VestanCharger_ClotThink(int iNPC)
 {
-	VictorianCharger npc = view_as<VictorianCharger>(iNPC);
+	VestanCharger npc = view_as<VestanCharger>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -248,7 +248,7 @@ static void VictorianCharger_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VictorianChargerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		VestanChargerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -258,9 +258,9 @@ static void VictorianCharger_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictorianCharger_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanCharger_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianCharger npc = view_as<VictorianCharger>(victim);
+	VestanCharger npc = view_as<VestanCharger>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -274,9 +274,9 @@ static Action VictorianCharger_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-static void VictorianCharger_NPCDeath(int entity)
+static void VestanCharger_NPCDeath(int entity)
 {
-	VictorianCharger npc = view_as<VictorianCharger>(entity);
+	VestanCharger npc = view_as<VestanCharger>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -290,7 +290,7 @@ static void VictorianCharger_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static void VictorianChargerSelfDefense(VictorianCharger npc, float gameTime, int target, float distance)
+static void VestanChargerSelfDefense(VestanCharger npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{

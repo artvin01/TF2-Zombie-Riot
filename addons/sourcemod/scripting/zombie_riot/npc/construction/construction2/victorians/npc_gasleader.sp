@@ -37,12 +37,12 @@ static const char g_MeleeAttackSounds[] = "weapons/demo_sword_swing1.wav";
 void Gasleader_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Gasleader");
+	strcopy(data.Name, sizeof(data.Name), "Vesta Gasleader");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_gasleader");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_aviator");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_aviator");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -543,7 +543,7 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float damageDealt = 115.0;
 							int ElementalDamage = 30;
-							if(NpcStats_VictorianCallToArms(npc.index))
+							if(NpcStats_VestanCallToArms(npc.index))
 								ElementalDamage *= 2;
 							if(ShouldNpcDealBonusDamage(target))
 								damageDealt*=10.0;
@@ -591,7 +591,7 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 						{
 							float damageDealt = 100.0;
 							int ElementalDamage = 30;
-							if(NpcStats_VictorianCallToArms(npc.index))
+							if(NpcStats_VestanCallToArms(npc.index))
 								ElementalDamage *= 2;
 							if(ShouldNpcDealBonusDamage(target))
 								damageDealt*=10.0;
@@ -664,7 +664,7 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 							damageDealt *= 10.0;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 						if(IsValidEnemy(npc.index, target))
-							ApplyStatusEffect(npc.index, target, "Cripple", NpcStats_VictorianCallToArms(npc.index) ? 7.5 : 5.0);
+							ApplyStatusEffect(npc.index, target, "Cripple", NpcStats_VestanCallToArms(npc.index) ? 7.5 : 5.0);
 						
 					}
 					npc.m_flNextRangedAttack = gameTime + 1.0;

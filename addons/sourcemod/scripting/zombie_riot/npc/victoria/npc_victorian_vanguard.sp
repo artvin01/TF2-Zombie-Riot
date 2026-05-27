@@ -26,15 +26,15 @@ static const char g_IdleAlertedSounds[][] = {
 static const char g_MeleeAttackSounds[] = "weapons/knife_swing.wav";
 static const char g_MeleeHitSounds[] = "weapons/bat_baseball_hit_flesh.wav";
 
-void VictorianVanguard_OnMapStart_NPC()
+void VestanVanguard_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victorian Vanguard");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestian_vanguard");
+	strcopy(data.Name, sizeof(data.Name), "Vestan Vanguard");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestan_vanguard");
 	strcopy(data.Icon, sizeof(data.Icon), "spearmen");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -51,10 +51,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianVanguard(vecPos, vecAng, ally);
+	return VestanVanguard(vecPos, vecAng, ally);
 }
 
-methodmap VictorianVanguard < CClotBody
+methodmap VestanVanguard < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -83,9 +83,9 @@ methodmap VictorianVanguard < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public VictorianVanguard(float vecPos[3], float vecAng[3], int ally)
+	public VestanVanguard(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianVanguard npc = view_as<VictorianVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1000", ally,false));
+		VestanVanguard npc = view_as<VestanVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1000", ally,false));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -99,9 +99,9 @@ methodmap VictorianVanguard < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		func_NPCDeath[npc.index] = VictorianVanguard_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianVanguard_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianVanguard_ClotThink;
+		func_NPCDeath[npc.index] = VestanVanguard_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanVanguard_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanVanguard_ClotThink;
 		
 		
 		//IDLE
@@ -126,9 +126,9 @@ methodmap VictorianVanguard < CClotBody
 	}
 }
 
-static void VictorianVanguard_ClotThink(int iNPC)
+static void VestanVanguard_ClotThink(int iNPC)
 {
-	VictorianVanguard npc = view_as<VictorianVanguard>(iNPC);
+	VestanVanguard npc = view_as<VestanVanguard>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -171,7 +171,7 @@ static void VictorianVanguard_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VictorianVanguardSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
+		VestanVanguardSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
 	}
 	else
 	{
@@ -181,9 +181,9 @@ static void VictorianVanguard_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictorianVanguard_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanVanguard_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianVanguard npc = view_as<VictorianVanguard>(victim);
+	VestanVanguard npc = view_as<VestanVanguard>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -196,9 +196,9 @@ static Action VictorianVanguard_OnTakeDamage(int victim, int &attacker, int &inf
 	return Plugin_Changed;
 }
 
-static void VictorianVanguard_NPCDeath(int entity)
+static void VestanVanguard_NPCDeath(int entity)
 {
-	VictorianVanguard npc = view_as<VictorianVanguard>(entity);
+	VestanVanguard npc = view_as<VestanVanguard>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -214,7 +214,7 @@ static void VictorianVanguard_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static void VictorianVanguardSelfDefense(VictorianVanguard npc, float gameTime, float distance)
+static void VestanVanguardSelfDefense(VestanVanguard npc, float gameTime, float distance)
 {
 	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25 || npc.m_flAttackHappenswillhappen)
 	{
@@ -251,7 +251,7 @@ static void VictorianVanguardSelfDefense(VictorianVanguard npc, float gameTime, 
 						{
 							if(!HasSpecificBuff(target, "Solid Stance"))
 							{
-								Custom_Knockback(npc.index, target, (NpcStats_VictorianCallToArms(npc.index) ? -487.5 : -325.0), true);
+								Custom_Knockback(npc.index, target, (NpcStats_VestanCallToArms(npc.index) ? -487.5 : -325.0), true);
 								if(IsValidClient(target))
 								{
 									TF2_AddCondition(target, TFCond_LostFooting, 0.5);

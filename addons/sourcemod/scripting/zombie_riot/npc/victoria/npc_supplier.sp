@@ -39,15 +39,15 @@ static const char g_RangeAttackSounds[] = "weapons/barret_arm_zap.wav";
 
 static const char g_HealSound[] = "physics/metal/metal_box_strain1.wav";
 
-void VictorianSupplier_OnMapStart_NPC()
+void VestanSupplier_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Supplier");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_supplier");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_suppliers");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_suppliers");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
@@ -66,10 +66,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianSupplier(vecPos, vecAng, ally, data);
+	return VestanSupplier(vecPos, vecAng, ally, data);
 }
 
-methodmap VictorianSupplier < CClotBody
+methodmap VestanSupplier < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -119,9 +119,9 @@ methodmap VictorianSupplier < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
 	
-	public VictorianSupplier(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanSupplier(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianSupplier npc = view_as<VictorianSupplier>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "750", ally));
+		VestanSupplier npc = view_as<VestanSupplier>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "750", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -132,9 +132,9 @@ methodmap VictorianSupplier < CClotBody
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
-		func_NPCDeath[npc.index] = VictorianSupplier_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianSupplier_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianSupplier_ClotThink;
+		func_NPCDeath[npc.index] = VestanSupplier_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanSupplier_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanSupplier_ClotThink;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -202,13 +202,13 @@ methodmap VictorianSupplier < CClotBody
 	}
 }
 
-static void VictorianSupplier_ClotThink(int iNPC)
+static void VestanSupplier_ClotThink(int iNPC)
 {
-	VictorianSupplier npc = view_as<VictorianSupplier>(iNPC);
+	VestanSupplier npc = view_as<VestanSupplier>(iNPC);
 	if(npc.m_flNextRangedAttackHappening < GetGameTime(npc.index))
 	{
 		npc.m_flNextRangedAttackHappening = GetGameTime(npc.index) + 5.0;
-		if(NpcStats_VictorianCallToArms(npc.index))
+		if(NpcStats_VestanCallToArms(npc.index))
 			AlminaArmorEffect(npc.index, 300.0);
 		else
 			AlminaArmorEffect(npc.index, 200.0);
@@ -250,7 +250,7 @@ static void VictorianSupplier_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		switch(VictorianSupplier_Work(npc, GetGameTime(npc.index)))
+		switch(VestanSupplier_Work(npc, GetGameTime(npc.index)))
 		{
 			case 0:
 			{
@@ -306,14 +306,14 @@ static void VictorianSupplier_ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.00;
-		if(NpcStats_VictorianCallToArms(npc.index))
+		if(NpcStats_VestanCallToArms(npc.index))
 			ExpidonsaGroupHeal(npc.index, 100.0, 3, (50.0* fl_Extra_Damage[npc.index]), 1.0, false,SupplierGiveArmorSignalled);
 		else
 			ExpidonsaGroupHeal(npc.index, 100.0, 3, (25.0* fl_Extra_Damage[npc.index]), 1.0, false,SupplierGiveArmor);
 	}
 }
 
-static int VictorianSupplier_Work(VictorianSupplier npc, float gameTime)
+static int VestanSupplier_Work(VestanSupplier npc, float gameTime)
 {
 	//Ranged units will behave differently.
 	//Get the closest visible target via distance checks, not via pathing check.
@@ -374,7 +374,7 @@ static void SupplierGiveArmor(int entity, int victim)
 	if(i_NpcIsABuilding[victim])
 		return;
 
-	VictorianSupplier npc = view_as<VictorianSupplier>(entity);
+	VestanSupplier npc = view_as<VestanSupplier>(entity);
 	GrantEntityArmor(victim, false, 2.0, npc.m_flExtraArmorResist, 0,
 	(npc.m_flArmorToGive * 0.5) * fl_Extra_Damage[npc.index]);
 }
@@ -384,14 +384,14 @@ static void SupplierGiveArmorSignalled(int entity, int victim)
 	if(i_NpcIsABuilding[victim])
 		return;
 
-	VictorianSupplier npc = view_as<VictorianSupplier>(entity);
+	VestanSupplier npc = view_as<VestanSupplier>(entity);
 	GrantEntityArmor(victim, false, 2.0, npc.m_flExtraArmorResist, 0,
 	(npc.m_flArmorToGive * 0.75) * fl_Extra_Damage[npc.index]);
 }
 
-static Action VictorianSupplier_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanSupplier_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianSupplier npc = view_as<VictorianSupplier>(victim);
+	VestanSupplier npc = view_as<VestanSupplier>(victim);
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
@@ -403,9 +403,9 @@ static Action VictorianSupplier_OnTakeDamage(int victim, int &attacker, int &inf
 	return Plugin_Changed;
 }
 
-static void VictorianSupplier_NPCDeath(int entity)
+static void VestanSupplier_NPCDeath(int entity)
 {
-	VictorianSupplier npc = view_as<VictorianSupplier>(entity);
+	VestanSupplier npc = view_as<VestanSupplier>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();	
 	

@@ -16,7 +16,7 @@ static const char g_IdleAlertedSounds[][] = {
 
 static const char g_DeathSounds[] = ")vo/pyro_negativevocalization01.mp3";
 
-void VictoriaScorcher_OnMapStart_NPC()
+void VestaScorcher_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Scorcher");
@@ -24,7 +24,7 @@ void VictoriaScorcher_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "pyro");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
@@ -43,10 +43,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaScorcher(vecPos, vecAng, ally);
+	return VestaScorcher(vecPos, vecAng, ally);
 }
 
-methodmap VictoriaScorcher < CClotBody
+methodmap VestaScorcher < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -100,9 +100,9 @@ methodmap VictoriaScorcher < CClotBody
 		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
 	}
 	
-	public VictoriaScorcher(float vecPos[3], float vecAng[3], int ally)
+	public VestaScorcher(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaScorcher npc = view_as<VictoriaScorcher>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "6300", ally));
+		VestaScorcher npc = view_as<VestaScorcher>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "6300", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -119,9 +119,9 @@ methodmap VictoriaScorcher < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = VictoriaScorcher_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaScorcher_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaScorcher_ClotThink;
+		func_NPCDeath[npc.index] = VestaScorcher_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestaScorcher_OnTakeDamage;
+		func_NPCThink[npc.index] = VestaScorcher_ClotThink;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "degreaser");
@@ -153,9 +153,9 @@ methodmap VictoriaScorcher < CClotBody
 	}
 }
 
-static void VictoriaScorcher_ClotThink(int iNPC)
+static void VestaScorcher_ClotThink(int iNPC)
 {
-	VictoriaScorcher npc = view_as<VictoriaScorcher>(iNPC);
+	VestaScorcher npc = view_as<VestaScorcher>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -198,7 +198,7 @@ static void VictoriaScorcher_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VictoriaScorcherSelfDefense(npc); 
+		VestaScorcherSelfDefense(npc); 
 	}
 	else
 	{
@@ -209,9 +209,9 @@ static void VictoriaScorcher_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictoriaScorcher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestaScorcher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaScorcher npc = view_as<VictoriaScorcher>(victim);
+	VestaScorcher npc = view_as<VestaScorcher>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -225,9 +225,9 @@ static Action VictoriaScorcher_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-static void VictoriaScorcher_NPCDeath(int entity)
+static void VestaScorcher_NPCDeath(int entity)
 {
-	VictoriaScorcher npc = view_as<VictoriaScorcher>(entity);
+	VestaScorcher npc = view_as<VestaScorcher>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -241,7 +241,7 @@ static void VictoriaScorcher_NPCDeath(int entity)
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))
 	{
-		VictoriaScorcher prop = view_as<VictoriaScorcher>(entity_death);
+		VestaScorcher prop = view_as<VestaScorcher>(entity_death);
 		float pos[3];
 		float Angles[3];
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", Angles);
@@ -330,7 +330,7 @@ static void VictoriaScorcher_NPCDeath(int entity)
 
 }
 
-static void VictoriaScorcherSelfDefense(VictoriaScorcher npc)
+static void VestaScorcherSelfDefense(VestaScorcher npc)
 {
 	if(npc.m_flScorcherAttackDelay > GetGameTime(npc.index))
 		return;
@@ -350,13 +350,13 @@ static void VictoriaScorcherSelfDefense(VictoriaScorcher npc)
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 		
-		WandProjectile_ApplyFunctionToEntity(projectile, VictoriaScorcher_Rocket_Particle_StartTouch);		
+		WandProjectile_ApplyFunctionToEntity(projectile, VestaScorcher_Rocket_Particle_StartTouch);		
 	}
 	if(SpinSound)
 		npc.PlayMinigunSound(false);
 }
 
-public void VictoriaScorcher_Rocket_Particle_StartTouch(int entity, int target)
+public void VestaScorcher_Rocket_Particle_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
@@ -390,7 +390,7 @@ public void VictoriaScorcher_Rocket_Particle_StartTouch(int entity, int target)
 			if (!IsInvuln(target))
 			{
 				float Burntime = 1.0;
-				if(NpcStats_VictorianCallToArms(owner))
+				if(NpcStats_VestanCallToArms(owner))
 				{
 					Burntime *= 2.0;
 				}

@@ -43,10 +43,10 @@ void Zapper_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Zapper");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zapper");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_zapper");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_zapper");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -66,10 +66,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Victoria_Zapper(vecPos, vecAng, ally);
+	return Vesta_Zapper(vecPos, vecAng, ally);
 }
 
-methodmap Victoria_Zapper < CClotBody
+methodmap Vesta_Zapper < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -109,9 +109,9 @@ methodmap Victoria_Zapper < CClotBody
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 	
-	public Victoria_Zapper(float vecPos[3], float vecAng[3], int ally)
+	public Vesta_Zapper(float vecPos[3], float vecAng[3], int ally)
 	{
-		Victoria_Zapper npc = view_as<Victoria_Zapper>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.00", "1900", ally));
+		Vesta_Zapper npc = view_as<Vesta_Zapper>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.00", "1900", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -127,9 +127,9 @@ methodmap Victoria_Zapper < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		func_NPCDeath[npc.index] = VictoriaZapper_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaZapper_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaZapper_ClotThink;
+		func_NPCDeath[npc.index] = VestaZapper_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestaZapper_OnTakeDamage;
+		func_NPCThink[npc.index] = VestaZapper_ClotThink;
 		
 		//IDLE
 		npc.m_flSpeed = 275.0;
@@ -172,9 +172,9 @@ methodmap Victoria_Zapper < CClotBody
 	}
 }
 
-static void VictoriaZapper_ClotThink(int iNPC)
+static void VestaZapper_ClotThink(int iNPC)
 {
-	Victoria_Zapper npc = view_as<Victoria_Zapper>(iNPC);
+	Vesta_Zapper npc = view_as<Vesta_Zapper>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -217,7 +217,7 @@ static void VictoriaZapper_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VictoriaZapperSelfdefense(npc, GetGameTime(npc.index), flDistanceToTarget); 
+		VestaZapperSelfdefense(npc, GetGameTime(npc.index), flDistanceToTarget); 
 		npc.PlayIdleAlertSound();
 	}
 	else
@@ -227,7 +227,7 @@ static void VictoriaZapper_ClotThink(int iNPC)
 	}
 }
 
-static void VictoriaZapperSelfdefense(Victoria_Zapper npc, float gameTime, float distance)
+static void VestaZapperSelfdefense(Vesta_Zapper npc, float gameTime, float distance)
 {
 	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 	{
@@ -261,7 +261,7 @@ static void VictoriaZapperSelfdefense(Victoria_Zapper npc, float gameTime, float
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 						npc.PlayMeleeHitSound();
 						if(IsValidEnemy(npc.index, target))
-							ApplyStatusEffect(npc.index, target, "Teslar Electricution", NpcStats_VictorianCallToArms(npc.index) ? 7.5 : 5.0);
+							ApplyStatusEffect(npc.index, target, "Teslar Electricution", NpcStats_VestanCallToArms(npc.index) ? 7.5 : 5.0);
 					} 
 				}
 				delete swingTrace;
@@ -277,9 +277,9 @@ static void VictoriaZapperSelfdefense(Victoria_Zapper npc, float gameTime, float
 	}
 }
 
-static Action VictoriaZapper_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestaZapper_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Victoria_Zapper npc = view_as<Victoria_Zapper>(victim);
+	Vesta_Zapper npc = view_as<Vesta_Zapper>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -293,9 +293,9 @@ static Action VictoriaZapper_OnTakeDamage(int victim, int &attacker, int &inflic
 	return Plugin_Changed;
 }
 
-static void VictoriaZapper_NPCDeath(int entity)
+static void VestaZapper_NPCDeath(int entity)
 {
-	Victoria_Zapper npc = view_as<Victoria_Zapper>(entity);
+	Vesta_Zapper npc = view_as<Vesta_Zapper>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();	
 	

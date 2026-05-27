@@ -102,7 +102,7 @@ static const char g_SupportSounds[] = "vo/scout_revenge05.mp3";
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
 
-/* Victoria Nuke */
+/* Vesta Nuke */
 static float Vs_DelayTime[MAXENTITIES];
 float Vs_RechargeTime[MAXENTITIES];
 float Vs_RechargeTimeMax[MAXENTITIES];
@@ -128,9 +128,9 @@ static int g_Laser;
 void Atomizer_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Atomizer");
+	strcopy(data.Name, sizeof(data.Name), "Vesta Atomizer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_atomizer");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_atomizer_raid");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_atomizer_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -158,7 +158,7 @@ static void ClotPrecache()
 	PrecacheSound(g_BoomSounds);
 	PrecacheSound(g_IncomingBoomSounds);
 	PrecacheSound("weapons/bumper_car_spawn.wav");
-	PrecacheSoundCustom("#zombiesurvival/vestia_1/raid_atomizer.mp3");
+	PrecacheSoundCustom("#zombiesurvival/vesta_1/raid_atomizer.mp3");
 	
 	g_Laser = PrecacheModel(LASERBEAM);
 	g_RedPoint = PrecacheModel("sprites/redglow1.vmt");
@@ -380,7 +380,7 @@ methodmap Atomizer < CClotBody
 			fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 			
 			Vs_RechargeTimeMax[npc.index] = 20.0;
-			Victoria_Support_RechargeTimeMax(npc.index, 20.0);
+			Vesta_Support_RechargeTimeMax(npc.index, 20.0);
 			
 			EmitSoundToAll("weapons/bumper_car_spawn.wav", _, _, _, _, 1.0);	
 			EmitSoundToAll("weapons/bumper_car_spawn.wav", _, _, _, _, 1.0);	
@@ -404,7 +404,7 @@ methodmap Atomizer < CClotBody
 			if(StrContains(data, "nomusic") == -1)
 			{
 				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/vestia_1/raid_atomizer.mp3");
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/vesta_1/raid_atomizer.mp3");
 				music.Time = 128;
 				music.Volume = 2.0;
 				music.Custom = true;
@@ -414,7 +414,7 @@ methodmap Atomizer < CClotBody
 			}
 			
 			NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Intro", false, true);
-			Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);
+			Vs_Atomizer_To_Huscarls=Vesta_Melee_or_Ranged(npc);
 			
 			char buffers[3][64];
 			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
@@ -819,14 +819,14 @@ static void Atomizer_ClotThink(int iNPC)
 {
 	Atomizer npc = view_as<Atomizer>(iNPC);
 	float gameTime = GetGameTime(npc.index);
-	bool GETVictoria_Support = Victoria_Support(npc);
+	bool GETVesta_Support = Vesta_Support(npc);
 	
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
-	if(NpcStats_VictorianCallToArms(npc.index) && !ParticleSpawned[npc.index])
+	if(NpcStats_VestanCallToArms(npc.index) && !ParticleSpawned[npc.index])
 	{
 		float flPos[3], flAng[3];
 				
@@ -906,31 +906,31 @@ static void Atomizer_ClotThink(int iNPC)
 			{
 				case 1:
 				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_batter",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					VestaRadiomastSpawnEnemy(npc.index,"npc_batter",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}
 				case 2:
 				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_charger",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					VestaRadiomastSpawnEnemy(npc.index,"npc_charger",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}
 				case 3:
 				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_teslar",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					VestaRadiomastSpawnEnemy(npc.index,"npc_teslar",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}	
 				case 4:
 				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_vestian_vanguard",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					VestaRadiomastSpawnEnemy(npc.index,"npc_vestan_vanguard",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}
 				case 5:
 				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_supplier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					VestaRadiomastSpawnEnemy(npc.index,"npc_supplier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}
 				case 6:
 				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_ballista",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					VestaRadiomastSpawnEnemy(npc.index,"npc_ballista",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}
 				case 7:
 				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_grenadier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					VestaRadiomastSpawnEnemy(npc.index,"npc_grenadier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}
 			}
 		}
@@ -940,35 +940,35 @@ static void Atomizer_ClotThink(int iNPC)
 			{
 				case 1:
 				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_humbee",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					VestaRadiomastSpawnEnemy(npc.index,"npc_humbee",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}
 				case 2:
 				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_shotgunner",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					VestaRadiomastSpawnEnemy(npc.index,"npc_shotgunner",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}
 				case 3:
 				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_bulldozer",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					VestaRadiomastSpawnEnemy(npc.index,"npc_bulldozer",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}	
 				case 4:
 				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_hardener",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					VestaRadiomastSpawnEnemy(npc.index,"npc_hardener",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}
 				case 5:
 				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_raider",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					VestaRadiomastSpawnEnemy(npc.index,"npc_raider",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}
 				case 6:
 				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_zapper",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					VestaRadiomastSpawnEnemy(npc.index,"npc_zapper",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}
 				case 7:
 				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_payback",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					VestaRadiomastSpawnEnemy(npc.index,"npc_payback",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}
 				case 8:
 				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_blocker",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					VestaRadiomastSpawnEnemy(npc.index,"npc_blocker",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}
 			}
 		}
@@ -980,7 +980,7 @@ static void Atomizer_ClotThink(int iNPC)
 		{
 			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == GetTeam(npc.index))
-				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.3);
+				ApplyStatusEffect(npc.index, entity, "Call To Vesta", 0.3);
 		}
 	}
 	if(npc.m_blPlayHurtAnimation)
@@ -1026,7 +1026,7 @@ static void Atomizer_ClotThink(int iNPC)
 				npc.m_flDoingAnimation = gameTime + 1.5;	
 				npc.m_flDelay_Attribute = gameTime + 1.4;
 				npc.m_iState=1;
-				if(!LastMann)Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);
+				if(!LastMann)Vs_Atomizer_To_Huscarls=Vesta_Melee_or_Ranged(npc);
 			}
 			case 1:
 			{
@@ -1055,7 +1055,7 @@ static void Atomizer_ClotThink(int iNPC)
 					SetVariantString("1.2");
 					AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
+					ApplyStatusEffect(npc.index, npc.index, "Call To Vesta", 999.9);
 					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_2_Phase", false, false);
 					npc.m_iState=0;
 					npc.m_bFUCKYOU_move_anim=true;
@@ -1071,7 +1071,7 @@ static void Atomizer_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(GETVictoria_Support && npc.m_flDoingAnimation < gameTime)
+	if(GETVesta_Support && npc.m_flDoingAnimation < gameTime)
 	{
 	
 	
@@ -1494,7 +1494,7 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 						AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 						SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 						npc.m_flNiceMiss = gameTime + 10.0;
-						if(!LastMann)Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);
+						if(!LastMann)Vs_Atomizer_To_Huscarls=Vesta_Melee_or_Ranged(npc);
 						npc.m_iState=2;
 					}
 				}
@@ -1688,7 +1688,7 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
 					
 					float time = 0.125;
-					if(NpcStats_VictorianCallToArms(npc.index))
+					if(NpcStats_VestanCallToArms(npc.index))
 					{
 						time *= 0.5;
 					}
@@ -1761,7 +1761,7 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 		if(target <= MaxClients && !IsInvuln(target))
 			if(!HasSpecificBuff(target, "Fluid Movement"))
 				TF2_StunPlayer(target, 2.0, 0.4, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
-		ApplyStatusEffect(owner, target, "Teslar Shock", NpcStats_VictorianCallToArms(owner) ? 7.5 : 5.0);
+		ApplyStatusEffect(owner, target, "Teslar Shock", NpcStats_VestanCallToArms(owner) ? 7.5 : 5.0);
 	}
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if(IsValidEntity(particle))
@@ -1889,7 +1889,7 @@ static bool ONLYBSP(int entity, int contentsMask, any data)
 	return !entity;
 }
 
-static int Victoria_Melee_or_Ranged(Atomizer npc)
+static int Vesta_Melee_or_Ranged(Atomizer npc)
 {
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 	int enemy[MAXENTITIES];
@@ -1960,7 +1960,7 @@ static void Atomizer_Weapon_Lines(Atomizer npc, int client)
 		case WEAPON_EXPLORER: switch(GetRandomInt(0,2)){
 			case 0: Format(Text_Lines, sizeof(Text_Lines), "{purple}Void{default}...");
 			case 1: Format(Text_Lines, sizeof(Text_Lines), "HQ? There's a serious problem. He's using the {purple}Void{default}.");
-			case 2: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{default}, You're going to pay a price for bringing {purple}Void{default} into Victoria!", client);}*/
+			case 2: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{default}, You're going to pay a price for bringing {purple}Void{default} into Vesta!", client);}*/
 		default:
 		{
 			valid = false;
@@ -1975,15 +1975,15 @@ static void Atomizer_Weapon_Lines(Atomizer npc, int client)
 	}
 }
 
-/* Victoria Nuke */
-static bool Victoria_Support(Atomizer npc)
+/* Vesta Nuke */
+static bool Vesta_Support(Atomizer npc)
 {
 	float GameTime = GetGameTime();
 	if(Vs_DelayTime[npc.index] > GameTime)
 		return false;
 	Vs_DelayTime[npc.index] = GameTime + 0.1;
 	
-	Vs_Target[npc.index] = Victoria_GetTargetDistance(npc.index, true, false);
+	Vs_Target[npc.index] = Vesta_GetTargetDistance(npc.index, true, false);
 	if(!IsValidEnemy(npc.index, Vs_Target[npc.index]))
 		return false;
 	if(Vs_RechargeTime[npc.index] >= 1.0 && Vs_RechargeTime[npc.index] <= 3.0 && IsValidEntity(Vs_ParticleSpawned[npc.index]))
@@ -2064,19 +2064,19 @@ static bool Victoria_Support(Atomizer npc)
 	return false;
 }
 
-void Victoria_Support_RechargeTimeMax(int entity, float MAXTime=20.0)
+void Vesta_Support_RechargeTimeMax(int entity, float MAXTime=20.0)
 {
 	Vs_RechargeTimeMax[entity]=MAXTime;
 }
 
-int Victoria_Support_RechargeTime(int entity)
+int Vesta_Support_RechargeTime(int entity)
 {
 	if(Vs_RechargeTime[entity] <= 0.0 || Vs_RechargeTimeMax[entity]<=0.0)
 		return 0;
 	return RoundToFloor((Vs_RechargeTime[entity]/Vs_RechargeTimeMax[entity])*100.0);
 }
 
-stock int Victoria_GetTargetDistance(int entity, bool inversion, bool ICantSEE)
+stock int Vesta_GetTargetDistance(int entity, bool inversion, bool ICantSEE)
 {
 	float TargetDistance = 0.0, EntityLocation[3];
 	int ClosestTarget = 0;

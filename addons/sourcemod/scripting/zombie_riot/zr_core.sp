@@ -270,7 +270,7 @@ enum
 	WEAPON_GRENADEHUD = 98,
 	WEAPON_WEST_REVOLVER = 99,
 	WEAPON_OBUCH = 100,
-	WEAPON_VICTORIAN_LAUNCHER = 101,
+	WEAPON_VESTAN_LAUNCHER = 101,
 	WEAPON_BOOM_HAMMER = 102,
 	WEAPON_MERCHANT = 103,
 	WEAPON_MERCHANTGUN = 104,
@@ -359,7 +359,7 @@ enum
 	Type_Ruina,
 	Type_AlminaExpiAlliance,
 	Type_WhiteflowerSpecial,
-	Type_Victoria,
+	Type_Vesta,
 	Type_Matrix,
 	Type_Aperture,
 	Type_Mutation,
@@ -715,7 +715,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_messenger.sp"
 #include "custom/kit_blacksmith.sp"
 #include "custom/weapon_deagle_west.sp"
-#include "custom/weapon_vestian.sp"
+#include "custom/weapon_vestan.sp"
 #include "custom/weapon_obuch.sp"
 #include "custom/kit_merchant.sp"
 #include "custom/weapon_mg42.sp"
@@ -1057,7 +1057,7 @@ void ZR_MapStart()
 	ResetMapStartMessengerWeapon();
 	ResetMapStartWest();
 	Object_MapStart();
-	ResetMapStartVictoria();
+	ResetMapStartVesta();
 	Obuch_Mapstart();
 	Ulpianus_MapStart();
 	Magnesis_Precache();

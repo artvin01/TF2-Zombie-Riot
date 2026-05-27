@@ -34,10 +34,10 @@ void Demolitionist_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Demolitionist");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_demolitionist");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_bulldozer");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_bulldozer");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -323,7 +323,7 @@ static void Demolitionist_ExplodeHit(int entity, int victim, float damage, int w
 		damage = 200.0;
 		if(ShouldNpcDealBonusDamage(victim))
 			damage *= 8.0;
-		if(NpcStats_VictorianCallToArms(entity))
+		if(NpcStats_VestanCallToArms(entity))
 			damage *= 2.0;
 		SDKHooks_TakeDamage(victim, entity, inflictor, damage, DMG_BLAST, -1, _, vecHit);
 	}

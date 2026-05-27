@@ -27,15 +27,15 @@ static const char g_RangeAttackSounds[] = "weapons/ar2/fire1.wav";
 static const char g_charge_sound[] = "misc/halloween/spell_blast_jump.wav";
 
 
-void VIctorianAmbusher_OnMapStart_NPC()
+void VestanAmbusher_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Brassbunker Ambusher");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ambusher");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_ambusher");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_ambusher");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -54,10 +54,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VIctorianAmbusher(vecPos, vecAng, ally, data);
+	return VestanAmbusher(vecPos, vecAng, ally, data);
 }
 
-methodmap VIctorianAmbusher < CClotBody
+methodmap VestanAmbusher < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -101,9 +101,9 @@ methodmap VIctorianAmbusher < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 	
-	public VIctorianAmbusher(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanAmbusher(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VIctorianAmbusher npc = view_as<VIctorianAmbusher>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "12000", ally));
+		VestanAmbusher npc = view_as<VestanAmbusher>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "12000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -114,9 +114,9 @@ methodmap VIctorianAmbusher < CClotBody
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		func_NPCDeath[npc.index] = view_as<Function>(VIctorianAmbusher_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VIctorianAmbusher_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VIctorianAmbusher_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(VestanAmbusher_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VestanAmbusher_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(VestanAmbusher_ClotThink);
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -185,9 +185,9 @@ methodmap VIctorianAmbusher < CClotBody
 	}
 }
 
-static void VIctorianAmbusher_ClotThink(int iNPC)
+static void VestanAmbusher_ClotThink(int iNPC)
 {
-	VIctorianAmbusher npc = view_as<VIctorianAmbusher>(iNPC);
+	VestanAmbusher npc = view_as<VestanAmbusher>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -221,7 +221,7 @@ static void VIctorianAmbusher_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
-		int NowIDO = VIctorianAmbusherSelfDefense(npc, npc.m_iTarget, GetGameTime(npc.index));
+		int NowIDO = VestanAmbusherSelfDefense(npc, npc.m_iTarget, GetGameTime(npc.index));
 		switch(NowIDO)
 		{
 			case 0:
@@ -315,9 +315,9 @@ static void VIctorianAmbusher_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VIctorianAmbusher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanAmbusher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VIctorianAmbusher npc = view_as<VIctorianAmbusher>(victim);
+	VestanAmbusher npc = view_as<VestanAmbusher>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -331,9 +331,9 @@ static Action VIctorianAmbusher_OnTakeDamage(int victim, int &attacker, int &inf
 	return Plugin_Changed;
 }
 
-static void VIctorianAmbusher_NPCDeath(int entity)
+static void VestanAmbusher_NPCDeath(int entity)
 {
-	VIctorianAmbusher npc = view_as<VIctorianAmbusher>(entity);
+	VestanAmbusher npc = view_as<VestanAmbusher>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -353,7 +353,7 @@ static void VIctorianAmbusher_NPCDeath(int entity)
 
 }
 
-static int VIctorianAmbusherSelfDefense(VIctorianAmbusher npc, int target, float gameTime)
+static int VestanAmbusherSelfDefense(VestanAmbusher npc, int target, float gameTime)
 {
 	if(npc.m_iAmmo < 1)
 		return 3;
@@ -365,7 +365,7 @@ static int VIctorianAmbusherSelfDefense(VIctorianAmbusher npc, int target, float
 		if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)
 		{
 			npc.PlayChargeSound();
-			if(NpcStats_VictorianCallToArms(npc.index))
+			if(NpcStats_VestanCallToArms(npc.index))
 				npc.m_flCharge_delay = GetGameTime(npc.index) + 3.5;
 			else
 				npc.m_flCharge_delay = GetGameTime(npc.index) + 90.0;

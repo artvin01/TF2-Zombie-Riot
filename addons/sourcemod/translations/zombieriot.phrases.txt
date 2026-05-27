@@ -3245,7 +3245,7 @@
 		"ko"		"저 멀리 거대한 방송탑이 보입니다."
 		"it"		"Si vede in lontananza una gigantesca torre radio."
 	}
-	"Victoria_Help_Message"
+	"Vesta_Help_Message"
 	{
 		"en"		"Ziberian Guerillas are here to help."
 		"ko"		"지베리아 게릴라의 지원이 도착했습니다."
@@ -5623,15 +5623,15 @@
 		"it"	"Piede di porco"
 		"ko"	"쇠지렛대"
 	}
-	"Victoria Survival Desc"
+	"Vesta Survival Desc"
 	{
-		"en" 	"Before Bob the First comes to us for help in Rogue 2, we come across a Victoria outpost. They decide to attack us. Guess they're pissed off about beating them before."
+		"en" 	"Before Bob the First comes to us for help in Rogue 2, we come across a Vesta outpost. They decide to attack us. Guess they're pissed off about beating them before."
 		"ko" 	"로그2에서 밥 1세가 도움을 위해 찾아오기 전, 빅토리아 전초기지를 지나가게 되고... 그들이 당신을 공격해옵니다?! 아무래도 이전에 그들을 패퇴시킨 것에 화가 난 것 같군요."
 	}
-	"Victoria Raid Desc"
+	"Vesta Raid Desc"
 	{
-		"en" 	"Lore order: (11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
-		"it"	"Ordine Lore: (11) Sensal vi chiede di visitare Ziberia, attualmente attaccata da Victoria."
+		"en" 	"Lore order: (11) You are asked by Sensal to visit Ziberia where it is currently under attack by Vesta."
+		"it"	"Ordine Lore: (11) Sensal vi chiede di visitare Ziberia, attualmente attaccata da Vesta."
 		"ko"	"설정 순서: (11) 센살은 당신에게 현재 빅토리아에게 공격받고 있는 지베리아를 방문해달라고 부탁했습니다."
 	}
 	"Ability already Active"

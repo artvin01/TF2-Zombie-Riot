@@ -55,10 +55,10 @@ void Zapmarker_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Zapmarker");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zapmarker");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_zapper"); 	//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_zapper"); 	//leaderboard_class_(insert the name)
 	data.IconCustom = false;								//download needed?
 	data.Flags = 0;											//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -335,7 +335,7 @@ void ZapmakerSelfDefense(Zapmaker npc, float gameTime, int target, float distanc
 						damageDealt *= 2.5;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					if(NpcStats_VictorianCallToArms(npc.index))
+					if(NpcStats_VestanCallToArms(npc.index))
 						Elemental_AddNervousDamage(target, npc.index, 5);
 					StartBleedingTimer(target, npc.index, 3.0, 2, -1, DMG_TRUEDAMAGE, 0);
 
@@ -389,7 +389,7 @@ public void Zapmarker_Axe_StartTouch(int entity, int target)
 		
 		EmitSoundToAll("weapons/3rd_degree_hit_01.wav", entity, _, 80, _, 0.8, 100);
 		if(IsValidEnemy(owner, target))
-			ApplyStatusEffect(owner, target, "Teslar Electricution", NpcStats_VictorianCallToArms(owner) ? 7.5 : 5.0);
+			ApplyStatusEffect(owner, target, "Teslar Electricution", NpcStats_VestanCallToArms(owner) ? 7.5 : 5.0);
 	}
 	RemoveEntity(entity);
 }

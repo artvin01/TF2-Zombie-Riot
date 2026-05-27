@@ -68,7 +68,7 @@ static int SaveSolidType[MAXENTITIES];
 
 static int NitroFuelStack[MAXENTITIES];
 
-/* Victoria Nuke */
+/* Vesta Nuke */
 static float Vs_DelayTime[MAXENTITIES];
 static int Vs_Stats[MAXENTITIES];
 static float Vs_Temp_Pos[MAXENTITIES][3];
@@ -103,9 +103,9 @@ static bool ParticleSpawned[MAXENTITIES];
 void Castellan_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Castellan");
+	strcopy(data.Name, sizeof(data.Name), "Vesta Castellan");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_castellan");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_castellan_raid");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_castellan_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -134,7 +134,7 @@ static void ClotPrecache()
 	PrecacheSound("weapons/airstrike_fire_crit.wav", true);
 	PrecacheSound("weapons/cow_mangler_explode.wav", true);
 	
-	PrecacheSoundCustom("#zombiesurvival/vestia_1/raid_castellan.mp3");
+	PrecacheSoundCustom("#zombiesurvival/vesta_1/raid_castellan.mp3");
 	
 	PrecacheModel("models/player/soldier.mdl");
 	g_BluePoint = PrecacheModel("sprites/blueglow1.vmt");
@@ -237,7 +237,7 @@ methodmap Castellan < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
-	property float m_flVICTORIA_NUKE_SETUP
+	property float m_flVESTA_NUKE_SETUP
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
@@ -364,7 +364,7 @@ methodmap Castellan < CClotBody
 		npc.m_flTimeUntillSupportSpawn = GetGameTime() + 5.0;
 		npc.m_flTimeUntillHomingStrike = GetGameTime() + 10.0;
 		npc.m_flTimeUntillAirStrike = GetGameTime() + 30.0;
-		npc.m_flVICTORIA_NUKE_SETUP = GetGameTime() + 45.0;
+		npc.m_flVESTA_NUKE_SETUP = GetGameTime() + 45.0;
 		npc.m_flRequestDrone = GetGameTime() + 15.0;
 		npc.m_flTimeSinceHasBeenHurt = 0.0;
 		npc.m_flAirStrike_Silo_1 = 0.0;
@@ -372,7 +372,7 @@ methodmap Castellan < CClotBody
 		npc.m_flAirStrike_Silo_3 = 0.0;
 		
 		Vs_RechargeTimeMax[npc.index] = 18.0;
-		Victoria_Support_RechargeTimeMax(npc.index, 18.0);
+		Vesta_Support_RechargeTimeMax(npc.index, 18.0);
 		Vs_Stats[npc.index] = 0;
 		
 		Zero(b_said_player_weaponline);
@@ -479,7 +479,7 @@ methodmap Castellan < CClotBody
 		if(StrContains(data, "nomusic") == -1)
 		{
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/vestia_1/raid_castellan.mp3");
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/vesta_1/raid_castellan.mp3");
 			music.Time = 154;
 			music.Volume = 2.0;
 			music.Custom = true;
@@ -543,7 +543,7 @@ methodmap Castellan < CClotBody
 	}
 }
 
-static void Castellan_FORVICTORIA(int iNPC)
+static void Castellan_FORVESTA(int iNPC)
 {
 	Castellan npc = view_as<Castellan>(iNPC);
 	float gameTime = GetGameTime(npc.index);
@@ -553,7 +553,7 @@ static void Castellan_FORVICTORIA(int iNPC)
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
-	Victoria_Support(npc, 1, false);
+	Vesta_Support(npc, 1, false);
 	
 	if(LastMann)
 	{
@@ -582,7 +582,7 @@ static void Castellan_FORVICTORIA(int iNPC)
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		for(int i; i<10; i++)
 		{
-			int spawn_index = NPC_CreateByName("npc_vestian_tank", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "alway_mount_lmg;turnrate20000.0");
+			int spawn_index = NPC_CreateByName("npc_vestan_tank", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "alway_mount_lmg;turnrate20000.0");
 			if(spawn_index > MaxClients)
 			{
 				NpcStats_CopyStats(npc.index, spawn_index);
@@ -742,9 +742,9 @@ static void Castellan_FORVICTORIA(int iNPC)
 					case 1:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_LifeLost-2", false, false);
 					case 2:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_LifeLost-3", false, false);
 				}
-				npc.m_iTarget = Victoria_GetTargetDistance(npc.index, true, false);
+				npc.m_iTarget = Vesta_GetTargetDistance(npc.index, true, false);
 				GetAbsOrigin(npc.m_iTarget, VecSelfNpc);
-				NPC_CreateByName("npc_vestia_factory", -1, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), "type-d;donusetele");
+				NPC_CreateByName("npc_vesta_factory", -1, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), "type-d;donusetele");
 				npc.m_flGetClosestTargetTime=0.0;
 				RaidModeTime += 35.0;
 				func_NPCThink[npc.index] = Castellan_ClotThink;
@@ -800,14 +800,14 @@ static void Castellan_ClotThink(int iNPC)
 			npc.m_iState = 0;
 			npc.m_flDoingAnimation = 0.0;
 			npc.m_bFUCKYOU_move_anim=true;
-			func_NPCThink[npc.index] = Castellan_FORVICTORIA;
+			func_NPCThink[npc.index] = Castellan_FORVESTA;
 			return;
 		}
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == GetTeam(npc.index))
-				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.3);
+				ApplyStatusEffect(npc.index, entity, "Call To Vesta", 0.3);
 		}
 	}
 	
@@ -841,7 +841,7 @@ static void Castellan_ClotThink(int iNPC)
 		else if(b_NpcIsInvulnerable[npc.index])
 			npc.m_flAntiInvulnEmergencyFix = gameTime + 1.0;
 			
-		if(NpcStats_VictorianCallToArms(npc.index) && !ParticleSpawned[npc.index])
+		if(NpcStats_VestanCallToArms(npc.index) && !ParticleSpawned[npc.index])
 		{
 			float flPos[3], flAng[3];
 			npc.GetAttachment("eyeglow_L", flPos, flAng);
@@ -852,14 +852,14 @@ static void Castellan_ClotThink(int iNPC)
 	}
 	else npc.m_flAntiInvulnEmergencyFix = gameTime + 1.0;
 	
-	if(CastellanInvis && (npc.m_flVICTORIA_NUKE_SETUP < gameTime || !npc.m_iHealthBar || npc.m_bHalfRage))
+	if(CastellanInvis && (npc.m_flVESTA_NUKE_SETUP < gameTime || !npc.m_iHealthBar || npc.m_bHalfRage))
 	{
 		//It's probably fair
 		static int AddNuke;
 		static bool Mk2;
-		if(npc.m_flVICTORIA_NUKE_SETUP==1.0)
+		if(npc.m_flVESTA_NUKE_SETUP==1.0)
 		{
-			if(Victoria_Support(npc, AddNuke, Mk2))
+			if(Vesta_Support(npc, AddNuke, Mk2))
 			{
 				if(!npc.m_iHealthBar)
 					AddNuke=2;
@@ -867,7 +867,7 @@ static void Castellan_ClotThink(int iNPC)
 					AddNuke=1;
 				else
 					AddNuke=0;
-				if(NpcStats_VictorianCallToArms(npc.index))
+				if(NpcStats_VestanCallToArms(npc.index))
 					Mk2=true;
 				else
 					Mk2=false;
@@ -878,11 +878,11 @@ static void Castellan_ClotThink(int iNPC)
 			AddNuke=0;
 			switch(GetRandomInt(0,1))
 			{
-				case 0:NPCPritToChat_Override("Victoria Harrison", "{skyblue}", "Harrison_Talk_Support-1", false);
-				case 1:NPCPritToChat_Override("Victoria Harrison", "{skyblue}", "Harrison_Talk_Support-11", false);
+				case 0:NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-1", false);
+				case 1:NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-11", false);
 			}
 			EmitSoundToAll("ambient/alarms/doomsday_lift_alarm.wav");
-			npc.m_flVICTORIA_NUKE_SETUP=1.0;
+			npc.m_flVESTA_NUKE_SETUP=1.0;
 		}
 	}
 
@@ -913,7 +913,7 @@ static void Castellan_ClotThink(int iNPC)
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		for(int i; i<10; i++)
 		{
-			int spawn_index = NPC_CreateByName("npc_vestian_tank", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "alway_mount_lmg;turnrate20000.0");
+			int spawn_index = NPC_CreateByName("npc_vestan_tank", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "alway_mount_lmg;turnrate20000.0");
 			if(spawn_index > MaxClients)
 			{
 				NpcStats_CopyStats(npc.index, spawn_index);
@@ -1287,7 +1287,7 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", SelfPos);
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", AllyAng);
 			}
-			int SensalSpawn = NPC_CreateByName("npc_sensal", -1, SelfPos, AllyAng, GetTeam(npc.index), "vestia_cutscene");
+			int SensalSpawn = NPC_CreateByName("npc_sensal", -1, SelfPos, AllyAng, GetTeam(npc.index), "vesta_cutscene");
 			if(IsValidEntity(SensalSpawn))
 			{
 				if(GetTeam(SensalSpawn) != TFTeam_Red)
@@ -1303,16 +1303,16 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 				int GetDrone = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if (IsValidEntity(GetDrone) && !b_NpcHasDied[GetDrone] && GetTeam(GetDrone) == TFTeam_Blue)
 				{
-					if(i_NpcInternalId[GetDrone] == VictorianFragments_ID())
+					if(i_NpcInternalId[GetDrone] == VestanFragments_ID())
 					{
-						VictorianDroneFragments DroneCPU = view_as<VictorianDroneFragments>(GetDrone);
+						VestanDroneFragments DroneCPU = view_as<VestanDroneFragments>(GetDrone);
 						DroneCPU.m_iState = 2;
 						NPCStats_RemoveAllDebuffs(GetDrone, 1.0);
 						SetTeam(GetDrone, TFTeam_Red);
 					}
-					else if(i_NpcInternalId[GetDrone] == VictorianAnvil_ID())
+					else if(i_NpcInternalId[GetDrone] == VestanAnvil_ID())
 					{
-						VictorianDroneAnvil DroneCPU = view_as<VictorianDroneAnvil>(GetDrone);
+						VestanDroneAnvil DroneCPU = view_as<VestanDroneAnvil>(GetDrone);
 						DroneCPU.m_iTarget = npc.index;
 						NPCStats_RemoveAllDebuffs(GetDrone, 1.0);
 						SetTeam(GetDrone, TFTeam_Red);
@@ -1369,9 +1369,9 @@ static void Castellan_NPCDeath(int entity)
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
 		int GetFactory = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-		if (IsValidEntity(GetFactory) && i_NpcInternalId[GetFactory] == VictorianFactory_ID() && !b_NpcHasDied[GetFactory] && GetTeam(GetFactory) == TFTeam_Blue)
+		if (IsValidEntity(GetFactory) && i_NpcInternalId[GetFactory] == VestanFactory_ID() && !b_NpcHasDied[GetFactory] && GetTeam(GetFactory) == TFTeam_Blue)
 		{
-			VictorianFactory vFactory = view_as<VictorianFactory>(GetFactory);
+			VestanFactory vFactory = view_as<VestanFactory>(GetFactory);
 			i_AttacksTillMegahit[vFactory.index] = 608;
 			bExtraction=true;
 		}
@@ -1385,7 +1385,7 @@ static void Castellan_NPCDeath(int entity)
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
 		int GetDrone = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-		if (IsValidEntity(GetDrone) && !b_NpcHasDied[GetDrone] && (i_NpcInternalId[GetDrone] == VictorianFragments_ID() || i_NpcInternalId[GetDrone] == VictorianAnvil_ID()) && GetTeam(GetDrone) == TFTeam_Blue)
+		if (IsValidEntity(GetDrone) && !b_NpcHasDied[GetDrone] && (i_NpcInternalId[GetDrone] == VestanFragments_ID() || i_NpcInternalId[GetDrone] == VestanAnvil_ID()) && GetTeam(GetDrone) == TFTeam_Blue)
 		{
 			b_NpcForcepowerupspawn[GetDrone] = 0;
 			i_RaidGrantExtra[GetDrone] = 0;
@@ -1423,7 +1423,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 			{
 				if(IsValidClient(Temp_Target[1]))
 					Vs_LockOn[Temp_Target[1]]=false;
-				Temp_Target[1] = Victoria_GetTargetDistance(npc.index, true, false);
+				Temp_Target[1] = Vesta_GetTargetDistance(npc.index, true, false);
 			}
 		}
 		if(!npc.m_iHealthBar)
@@ -1434,7 +1434,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 			{
 				if(IsValidClient(Temp_Target[2]))
 					Vs_LockOn[Temp_Target[2]]=false;
-				Temp_Target[2] = Victoria_GetPayback(npc.index, false, false);
+				Temp_Target[2] = Vesta_GetPayback(npc.index, false, false);
 			}
 		}
 		RaidModeTime += (0.12 + DEFAULT_UPDATE_DELAY_FLOAT);
@@ -1479,7 +1479,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 					ResetCastellanWeapon(npc, 1);
 					npc.m_iAmmo = npc.m_iMaxAmmo;
 					npc.m_flStealthDuration = 0.0;
-					npc.m_flTimeUntillAirStrike = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 30.0 : 40.0);
+					npc.m_flTimeUntillAirStrike = gameTime + (NpcStats_VestanCallToArms(npc.index) ? 30.0 : 40.0);
 					npc.m_iState = -1;
 				}
 			}
@@ -1641,7 +1641,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 							npc.m_flDoingAnimation += 0.15;
 						}
 					}
-					npc.m_flTimeUntillHomingStrike = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 22.5 : 35.0);
+					npc.m_flTimeUntillHomingStrike = gameTime + (NpcStats_VestanCallToArms(npc.index) ? 22.5 : 35.0);
 					npc.m_iState = -1;
 				}
 			}
@@ -1683,17 +1683,17 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 		switch(GetRandomInt(0,2))
 		{
 			case 0:whattarget=npc.m_iTarget;
-			case 1:whattarget=Victoria_GetPayback(npc.index, false, false);
-			case 2:whattarget=Victoria_GetTargetDistance(npc.index, false, false);
+			case 1:whattarget=Vesta_GetPayback(npc.index, false, false);
+			case 2:whattarget=Vesta_GetTargetDistance(npc.index, false, false);
 		}
 		FormatEx(Adddeta, sizeof(Adddeta), "lifetime30.0;raidmode;tracking;");
-		if(NpcStats_VictorianCallToArms(npc.index))
+		if(NpcStats_VestanCallToArms(npc.index))
 			FormatEx(Adddeta, sizeof(Adddeta), "%smk2;", Adddeta);
 		static bool NextDrone;
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
 			int GetCPU = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-			if(IsValidEntity(GetCPU) && i_NpcInternalId[GetCPU] == VictorianFactory_ID() && !b_NpcHasDied[GetCPU] && GetTeam(GetCPU) == GetTeam(npc.index))
+			if(IsValidEntity(GetCPU) && i_NpcInternalId[GetCPU] == VestanFactory_ID() && !b_NpcHasDied[GetCPU] && GetTeam(GetCPU) == GetTeam(npc.index))
 			{
 				WorldSpaceCenter(GetCPU, VecSelfNpc);
 				VecSelfNpc[2]+=45.0;
@@ -1703,14 +1703,14 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 				if(NextDrone)
 				{
 					FormatEx(Adddeta, sizeof(Adddeta), "%soverridetarget%i", Adddeta, EntIndexToEntRef(npc.index));
-					DroneIndex = NPC_CreateByName("npc_vestia_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+					DroneIndex = NPC_CreateByName("npc_vesta_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 					maxhealth = RoundToCeil(RaidModeScaling * 21239.0);
 					red=45, green=237, blue=164;
 				}
 				else
 				{
 					FormatEx(Adddeta, sizeof(Adddeta), "%soverridetarget%i", Adddeta, EntIndexToEntRef(whattarget));
-					DroneIndex = NPC_CreateByName("npc_vestia_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+					DroneIndex = NPC_CreateByName("npc_vesta_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 					maxhealth = RoundToCeil(RaidModeScaling * 11278.0);
 					red=229, green=235, blue=52;
 				}
@@ -1729,7 +1729,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 				}
 				if(IsValidEntity(DroneSignal))
 				{
-					VictorianFactory CPU = view_as<VictorianFactory>(GetCPU);
+					VestanFactory CPU = view_as<VestanFactory>(GetCPU);
 					if(IsValidEntity(CPU.m_iWearable5))
 						RemoveEntity(CPU.m_iWearable5);
 					CPU.m_iWearable5=ConnectWithBeam(CPU.index, DroneSignal, red, green, blue, 3.0, 3.0, 0.0, LASERBEAM);
@@ -1738,7 +1738,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 		}
 		NextDrone=!NextDrone;
 		npc.PlayDroneSummonSound();
-		npc.m_flRequestDrone = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 28.0 : 40.0);
+		npc.m_flRequestDrone = gameTime + (NpcStats_VestanCallToArms(npc.index) ? 28.0 : 40.0);
 	}
 	else if(npc.m_flTimeUntillAirStrike < gameTime)
 	{
@@ -1785,9 +1785,9 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 					npc.m_flStealthDuration = gameTime + 10.0;
 
 					if(!npc.m_iHealthBar)
-						Temp_Target[2] = Victoria_GetPayback(npc.index, false, false);
+						Temp_Target[2] = Vesta_GetPayback(npc.index, false, false);
 					if(npc.m_bHalfRage)
-						Temp_Target[1] = Victoria_GetTargetDistance(npc.index, true, false);
+						Temp_Target[1] = Vesta_GetTargetDistance(npc.index, true, false);
 					Temp_Target[0] = npc.m_iTarget;
 					if(IsValidClient(Temp_Target[0]))
 						Vs_LockOn[Temp_Target[0]] = true;
@@ -1869,7 +1869,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 			}
 		
 			npc.m_iAmmo--;
-			npc.m_flNextRangedAttack = gameTime + ((NpcStats_VictorianCallToArms(npc.index) ? 0.62 : 0.8)*AttackSpeed);
+			npc.m_flNextRangedAttack = gameTime + ((NpcStats_VestanCallToArms(npc.index) ? 0.62 : 0.8)*AttackSpeed);
 		}
 		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.5))
 			npc.m_flGetClosestTargetTime -= 0.076;
@@ -1966,13 +1966,13 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 						npc.PlayMeleeHitSound();
 				}
 				npc.m_flAttackHappens = 0.0;
-				npc.m_flNextMeleeAttack = gameTime + ((NpcStats_VictorianCallToArms(npc.index) ? 0.9 : 1.0)*AttackSpeed);
+				npc.m_flNextMeleeAttack = gameTime + ((NpcStats_VestanCallToArms(npc.index) ? 0.9 : 1.0)*AttackSpeed);
 				npc.m_flAttackHappenswillhappen = false;
 			}
 			else if(npc.m_flAttackHappens_bullshit < gameTime && npc.m_flAttackHappenswillhappen)
 			{
 				npc.m_flAttackHappenswillhappen = false;
-				npc.m_flNextMeleeAttack = gameTime + ((NpcStats_VictorianCallToArms(npc.index) ? 0.9 : 1.0)*AttackSpeed);
+				npc.m_flNextMeleeAttack = gameTime + ((NpcStats_VestanCallToArms(npc.index) ? 0.9 : 1.0)*AttackSpeed);
 			}
 		}
 	}
@@ -2026,8 +2026,8 @@ static void ResetCastellanWeapon(Castellan npc, int weapon_Type)
 static void WhyNoFactory(int ref)
 {
 	int entity = EntRefToEntIndex(ref);
-	NPC_CreateByName("npc_vestia_factory", -1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, GetTeam(entity), "type-d");
-	NPC_CreateByName("npc_vestia_factory", -1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, GetTeam(entity), "type-d");
+	NPC_CreateByName("npc_vesta_factory", -1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, GetTeam(entity), "type-d");
+	NPC_CreateByName("npc_vesta_factory", -1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, GetTeam(entity), "type-d");
 }
 
 static int CreateSupport_Castellan(int entity, int enemySelect, float SelfPos[3], int WhatBoss, int SetAbility=0)
@@ -2170,7 +2170,7 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				NPCPritToChat_Override("Victoria Harrison", "{skyblue}", "Harrison_Talk_Support-7", false);
+				NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-7", false);
 				npc.m_bAirStrikeTalk=0;
 				npc.m_flAttackHappens_2=0.0;
 			}
@@ -2179,7 +2179,7 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				NPCPritToChat_Override("Victoria Harrison", "{skyblue}", "Harrison_Talk_Support-8", false);
+				NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-8", false);
 				npc.m_flAttackHappens_2 = gameTime + 0.8;
 				npc.m_bAirStrikeTalk=4;
 			}
@@ -2188,7 +2188,7 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				NPCPritToChat_Override("Victoria Atomizer", "{blue}", "Atomizer_Talk_Support-3", false);
+				NPCPritToChat_Override("Vesta Atomizer", "{blue}", "Atomizer_Talk_Support-3", false);
 				npc.m_flAttackHappens_2 = gameTime + 0.6;
 				npc.m_bAirStrikeTalk=5;
 			}
@@ -2197,7 +2197,7 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				NPCPritToChat_Override("Victoria Harrison", "{skyblue}", "Harrison_Talk_Support-9", false);
+				NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-9", false);
 				npc.m_bAirStrikeTalk=0;
 				npc.m_flAttackHappens_2=0.0;
 			}
@@ -2206,7 +2206,7 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				NPCPritToChat_Override("Victoria Atomizer", "{blue}", "Atomizer_Talk_Support-4", false);
+				NPCPritToChat_Override("Vesta Atomizer", "{blue}", "Atomizer_Talk_Support-4", false);
 				npc.m_flAttackHappens_2 = gameTime + 0.8;
 				npc.m_bAirStrikeTalk=7;
 			}
@@ -2215,7 +2215,7 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				NPCPritToChat_Override("Victoria Huscarls", "{lightblue}", "Huscarls_Talk_Support-10", false);
+				NPCPritToChat_Override("Vesta Huscarls", "{lightblue}", "Huscarls_Talk_Support-10", false);
 				npc.m_flAttackHappens_2 = gameTime + 0.8;
 				npc.m_bAirStrikeTalk=8;
 			}
@@ -2224,7 +2224,7 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				NPCPritToChat_Override("Victoria Harrison", "{skyblue}", "Harrison_Talk_Support-10", false);
+				NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-10", false);
 				npc.m_bAirStrikeTalk=0;
 				npc.m_flAttackHappens_2=0.0;
 			}
@@ -2511,7 +2511,7 @@ static void CastellanAirStrike(Castellan npc, int Target, int Silo, float gameTi
 	}
 }
 
-static bool Victoria_Support(Castellan npc, int AddNuke, bool Mk2)
+static bool Vesta_Support(Castellan npc, int AddNuke, bool Mk2)
 {
 	float GameTime = GetGameTime(npc.index);
 	if(Vs_DelayTime[npc.index] > GameTime)
@@ -2526,8 +2526,8 @@ static bool Victoria_Support(Castellan npc, int AddNuke, bool Mk2)
 	if(AddNuke>1)
 		enemy[2] = npc.index;
 	if(AddNuke>0)
-		enemy[1] = Victoria_GetPayback(npc.index, true, false);
-	enemy[0] = Victoria_GetTargetDistance(npc.index, true, false);
+		enemy[1] = Vesta_GetPayback(npc.index, true, false);
+	enemy[0] = Vesta_GetTargetDistance(npc.index, true, false);
 	
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -2633,7 +2633,7 @@ static bool Victoria_Support(Castellan npc, int AddNuke, bool Mk2)
 	return Vs_Fired;
 }
 
-stock int Victoria_GetPayback(int entity, bool inversion, bool ICantSEE)
+stock int Vesta_GetPayback(int entity, bool inversion, bool ICantSEE)
 {
 	float TargetDMG = 0.0;
 	int ClosestTarget = 0;

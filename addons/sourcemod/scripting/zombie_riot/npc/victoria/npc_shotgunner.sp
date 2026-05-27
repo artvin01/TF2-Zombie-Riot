@@ -24,15 +24,15 @@ static const char g_IdleAlertedSounds[][] = {
 
 static const char g_RangeAttackSounds[] = "weapons/family_business_shoot.wav";
 
-void VictorianShotgunner_OnMapStart_NPC()
+void VestanShotgunner_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Shotgunner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_shotgunner");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_shotgunner");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_shotgunner");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
@@ -50,10 +50,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianShotgunner(vecPos, vecAng, ally);
+	return VestanShotgunner(vecPos, vecAng, ally);
 }
 
-methodmap VictorianShotgunner < CClotBody
+methodmap VestanShotgunner < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -78,9 +78,9 @@ methodmap VictorianShotgunner < CClotBody
 		EmitSoundToAll(g_RangeAttackSounds[GetRandomInt(0, sizeof(g_RangeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 85);
 	}
 	
-	public VictorianShotgunner(float vecPos[3], float vecAng[3], int ally)
+	public VestanShotgunner(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianShotgunner npc = view_as<VictorianShotgunner>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "1750", ally));
+		VestanShotgunner npc = view_as<VestanShotgunner>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "1750", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -97,9 +97,9 @@ methodmap VictorianShotgunner < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = VictorianShotgunner_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianShotgunner_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianShotgunner_ClotThink;
+		func_NPCDeath[npc.index] = VestanShotgunner_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanShotgunner_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanShotgunner_ClotThink;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "panic_attack");
@@ -122,9 +122,9 @@ methodmap VictorianShotgunner < CClotBody
 	}
 }
 
-static void VictorianShotgunner_ClotThink(int iNPC)
+static void VestanShotgunner_ClotThink(int iNPC)
 {
-	VictorianShotgunner npc = view_as<VictorianShotgunner>(iNPC);
+	VestanShotgunner npc = view_as<VestanShotgunner>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -166,7 +166,7 @@ static void VictorianShotgunner_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		switch(VictorianShotgunnerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget))
+		switch(VestanShotgunnerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -200,9 +200,9 @@ static void VictorianShotgunner_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictorianShotgunner_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanShotgunner_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianShotgunner npc = view_as<VictorianShotgunner>(victim);
+	VestanShotgunner npc = view_as<VestanShotgunner>(victim);
 	
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -216,9 +216,9 @@ static Action VictorianShotgunner_OnTakeDamage(int victim, int &attacker, int &i
 	return Plugin_Changed;
 }
 
-static void VictorianShotgunner_NPCDeath(int entity)
+static void VestanShotgunner_NPCDeath(int entity)
 {
-	VictorianShotgunner npc = view_as<VictorianShotgunner>(entity);
+	VestanShotgunner npc = view_as<VestanShotgunner>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();	
 	
@@ -234,7 +234,7 @@ static void VictorianShotgunner_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static int VictorianShotgunnerSelfDefense(VictorianShotgunner npc, float gameTime, int target, float distance)
+static int VestanShotgunnerSelfDefense(VestanShotgunner npc, float gameTime, int target, float distance)
 {
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
@@ -265,7 +265,7 @@ static int VictorianShotgunnerSelfDefense(VictorianShotgunner npc, float gameTim
 						float damageDealt = 10.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
-						if(NpcStats_VictorianCallToArms(npc.index))
+						if(NpcStats_VestanCallToArms(npc.index))
 							StartBleedingTimer(target, npc.index, 4.0, 4, -1, DMG_TRUEDAMAGE, 0);
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);

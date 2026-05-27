@@ -23,7 +23,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cleaver_hit_07.wav",
 };
 
-void Almina_Victorian_OnMapStart_NPC()
+void Almina_Vestan_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DefaultMedic_DeathSounds));	   i++) { PrecacheSound(g_DefaultMedic_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_DefaultMedic_HurtSounds));		i++) { PrecacheSound(g_DefaultMedic_HurtSounds[i]);		}
@@ -31,8 +31,8 @@ void Almina_Victorian_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victorian");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestian");
+	strcopy(data.Name, sizeof(data.Name), "Vestan");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestan");
 	strcopy(data.Icon, sizeof(data.Icon), "soldier_crit");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -44,9 +44,9 @@ void Almina_Victorian_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AlminaVictorian(vecPos, vecAng, team);
+	return AlminaVestan(vecPos, vecAng, team);
 }
-methodmap AlminaVictorian < CClotBody
+methodmap AlminaVestan < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -90,9 +90,9 @@ methodmap AlminaVictorian < CClotBody
 	}
 	
 	
-	public AlminaVictorian(float vecPos[3], float vecAng[3], int ally)
+	public AlminaVestan(float vecPos[3], float vecAng[3], int ally)
 	{
-		AlminaVictorian npc = view_as<AlminaVictorian>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1500", ally));
+		AlminaVestan npc = view_as<AlminaVestan>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -107,9 +107,9 @@ methodmap AlminaVictorian < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(AlminaVictorian_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaVictorian_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(AlminaVictorian_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlminaVestan_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlminaVestan_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlminaVestan_ClotThink);
 		
 		
 		
@@ -133,9 +133,9 @@ methodmap AlminaVictorian < CClotBody
 	}
 }
 
-public void AlminaVictorian_ClotThink(int iNPC)
+public void AlminaVestan_ClotThink(int iNPC)
 {
-	AlminaVictorian npc = view_as<AlminaVictorian>(iNPC);
+	AlminaVestan npc = view_as<AlminaVestan>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -207,7 +207,7 @@ public void AlminaVictorian_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = AlminaVictorianSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
+		int ActionDo = AlminaVestanSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
 		switch(ActionDo)
 		{
 			case 0:
@@ -242,9 +242,9 @@ public void AlminaVictorian_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action AlminaVictorian_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlminaVestan_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	AlminaVictorian npc = view_as<AlminaVictorian>(victim);
+	AlminaVestan npc = view_as<AlminaVestan>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -258,9 +258,9 @@ public Action AlminaVictorian_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-public void AlminaVictorian_NPCDeath(int entity)
+public void AlminaVestan_NPCDeath(int entity)
 {
-	AlminaVictorian npc = view_as<AlminaVictorian>(entity);
+	AlminaVestan npc = view_as<AlminaVestan>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -282,7 +282,7 @@ public void AlminaVictorian_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int AlminaVictorianSelfDefense(AlminaVictorian npc, float gameTime, float distance)
+int AlminaVestanSelfDefense(AlminaVestan npc, float gameTime, float distance)
 {
 	//Direct mode
 	if(gameTime > npc.m_flNextMeleeAttack)

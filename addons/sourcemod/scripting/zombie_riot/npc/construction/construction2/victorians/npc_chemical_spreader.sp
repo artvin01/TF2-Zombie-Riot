@@ -32,10 +32,10 @@ void ChemicalSpreader_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Chemical Spreader");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chemical_spreader");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_pulverizer");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_pulverizer");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
 	Rogue_Paradox_AddWinterNPC(id);

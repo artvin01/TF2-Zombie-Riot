@@ -5104,13 +5104,13 @@
 		"it"		"-Dà morale ai nemici vicini quando urla il suo corno."
 		"ko"		"-나팔을 불 때마다 주변의 모든 적의 사기를 증가시킵니다."
 	}
-	"Victorian"
+	"Vestan"
 	{
-		"en"		"Victorian"
+		"en"		"Vestan"
 		"it"		"Vittoriano"
 		"ko"		"빅토리안"
 	}
-	"Victorian Desc"
+	"Vestan Desc"
 	{
 		"en"		"-If the ceiling is high enough, shoots a high damage arcing mortar shot.\n-If ceiling is low, then shoots a lower damage slow rocket."
 		"it"		"-Se il soffitto è abbastanza alto, spara un colpo di mortaio ad arco ad alto danno.\n-Se il soffitto è basso, spara un razzo lento a basso danno."
@@ -5463,7 +5463,7 @@
 		"ko"	"가죽부츠 정찰대 타자"
 		"it"	"Pastella per stivali in pelle"
 	}
-	"Victoria Charger"
+	"Vesta Charger"
 	{
 		"en"	"Leatherboots Charger"
 		"ko"	"가죽부츠 정찰대 돌격병"
@@ -5475,13 +5475,13 @@
 		"ko"	"가죽부츠 정찰대 테슬라"
 		"it"	"Stivali in pelle Teslar"
 	}
-	"Victorian Vanguard"
+	"Vestan Vanguard"
 	{
 		"en"	"Leatherboots Vanguard"
 		"ko"	"가죽부츠 정찰대 뱅가드"
 		"it"	"Stivali di pelle Vanguard"
 	}
-	"Victorian Igniter"
+	"Vestan Igniter"
 	{
 		"en"	"Leatherboots Igniter"
 		"ko"	"가죽부츠 정찰대 점화병"
@@ -5493,7 +5493,7 @@
 		"ko"	"가죽부츠 정찰대 투척병"
 		"it"	"Granatiere con stivali di pelle"
 	}
-	"Victorian ScoutSquad Leader"
+	"Vestan ScoutSquad Leader"
 	{
 		"en"	"Leatherboots Leader"
 		"ko"	"가죽부츠 정찰대 리더"
@@ -5531,7 +5531,7 @@
 	}
 	"Signaller"
 	{
-		"en"	"Victorian Signaller"
+		"en"	"Vestan Signaller"
 		"ko"	"빅토리아 전령병"
 		"it"	"Segnalatore vittoriano"
 	}
@@ -5595,19 +5595,19 @@
 		"ko"	"강철게이트 블로커"
 		"it"	"Bloccatore di Irongate"
 	}
-	"Victoria Destructor"
+	"Vesta Destructor"
 	{
 		"en"	"Irongate Destructor"
 		"ko"	"강철게이트 파괴자"
 		"it"	"Distruttore di Irongate"
 	}
-	"Victoria Tactical Protector"
+	"Vesta Tactical Protector"
 	{
 		"en"	"Irongate Tactical Protector"
 		"ko"	"강철게이트 전술 프로텍터"
 		"it"	"Protezione tattica Irongate"
 	}
-	"Victoria Aviator"
+	"Vesta Aviator"
 	{
 		"en"	"Irongate Aviator"
 		"ko"	"강철게이트 조종사"
@@ -5667,13 +5667,13 @@
 		"ko"	"트루퍼 대전차 보병"
 		"it"	"Soldato Fanteria Anti-Armatura"
 	}
-	"Victorian Mortar"
+	"Vestan Mortar"
 	{
 		"en"	"Trooper Mortar"
 		"ko"	"트루퍼 박격포병"
 		"it"	"Mortaio Trooper"
 	}
-	"Victorian Artillerist"
+	"Vestan Artillerist"
 	{
 		"en"	"Trooper Artillerist"
 		"ko"	"트루퍼 자주포병"
@@ -5700,7 +5700,7 @@
 		"ko"	"트루퍼 브리칭 전차"
 		"it"	"Soldato Breachcart"
 	}
-	"Victoria Tacticalunit"
+	"Vesta Tacticalunit"
 	{
 		"en"	"Trooper Tactical Operator"
 		"ko"	"트루퍼 전술 오퍼레이터"
@@ -5753,32 +5753,32 @@
 		"ko"	"브라스벙커 파쇄자"
 		"it"	"Polverizzatore Brassbunker"
 	}
-	"Victoria Taser"
+	"Vesta Taser"
 	{
 		"en"	"Brassbunker Taser"
 		"ko"	"브라스벙커 테이저"
 		"it"	"Brassbunker Taser"
 	}
-	"Victoria Tank"
+	"Vesta Tank"
 	{
 		"en"	"Brassbunker Tank"
 		"ko"	"브라스벙커 탱크"
 		"it"	"Serbatoio Brassbunker"
 	}
-	"Victorian Assault Vehicle"
+	"Vestan Assault Vehicle"
 	{
 		"en"	"Brassbunker Assault Vehicle"
 		"ko"	"브라스벙커 돌격 차량"
 	}
-	"Victoria Factory"
+	"Vesta Factory"
 	{
-		"en"	"Victorian Factory"
+		"en"	"Vestan Factory"
 		"ko"	"빅토리아 군수공장"
 		"it"	"Fabbrica vittoriana"
 	}
-	"Victoria Radiomast"
+	"Vesta Radiomast"
 	{
-		"en"	"Victorian Radiomast"
+		"en"	"Vestan Radiomast"
 		"ko"	"빅토리아 방송탑"
 		"it"	"Radiomatica vittoriana"
 	}
@@ -5794,49 +5794,49 @@
 		"ko"	"방송탑 수리병"
 		"it"	"Riparazione radio"
 	}
-	"Victoria Anvil"
+	"Vesta Anvil"
 	{
 		"en"	"''Anvil''"
 		"ko"	"''모루''"
 		"it"	"''Incudine''"
 	}
-	"Victoria Anvil MK2"
+	"Vesta Anvil MK2"
 	{
 		"en"	"''Anvil'' Mk2"
 		"ko"	"''모루'' Mk2"
 		"it"	"''Incudine'' Mk2"
 	}
-	"Victoria Fragments"
+	"Vesta Fragments"
 	{
 		"en"	"''Fragments''"
 		"ko"	"''파편''"
 		"it"	"''Frammenti''"
 	}
-	"Victoria Fragments MK2"
+	"Vesta Fragments MK2"
 	{
 		"en"	"''Fragments'' Mk2"
 		"ko"	"''파편'' Mk2"
 		"it"	"''Frammenti'' Mk2"
 	}
-	"Victoria Atomizer"
+	"Vesta Atomizer"
 	{
 		"en"	"Atomizer"
 		"ko"	"인수분해"
 		"it"	"Atomizzatore"
 	}
-	"Victoria Huscarls"
+	"Vesta Huscarls"
 	{
 		"en"	"Huscarls"
 		"ko"	"허스칼"
 		"it"	"Huscarls"
 	}
-	"Victoria Harrison"
+	"Vesta Harrison"
 	{
 		"en"	"Harrison"
 		"ko"	"해리슨"
 		"it"	"Harrison"
 	}
-	"Victoria Castellan"
+	"Vesta Castellan"
 	{
 		"en"	"Castellan"
 		"ko"	"카스텔란"
@@ -5855,25 +5855,25 @@
 	{
 		"en"	"Resource Collector"
 	}
-	"Victoria Gasleader"
+	"Vesta Gasleader"
 	{
-		"en"	"Victorian Chemical Squad Leader"
+		"en"	"Vestan Chemical Squad Leader"
 	}
 	"Demolitionist"
 	{
 		"en"	"Demolitionist"
 	}
-	"Victorian Protector"
+	"Vestan Protector"
 	{
-		"en"	"Victorian Protector"
+		"en"	"Vestan Protector"
 	}
 	"Airraider"
 	{
 		"en"	"Airraider"
 	}
-	"Victorian Headhunter"
+	"Vestan Headhunter"
 	{
-		"en"	"Victorian Headhunter"
+		"en"	"Vestan Headhunter"
 	}
 	"Chemical Specialist"
 	{
@@ -6243,9 +6243,9 @@
 		"it"		"Omega"
 		"ko"		"오메가"
 	}
-	"Victoria"
+	"Vesta"
 	{
-		"en"		"Victoria"
+		"en"		"Vesta"
 		"it"		"Vittoria"
 		"ko"		"빅토리아"
 	}

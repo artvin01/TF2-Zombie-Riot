@@ -215,7 +215,7 @@ void InitStatusEffects()
 	StatusEffects_DebuffMarked();
 	StatusEffects_Silence();
 	StatusEffects_LogosDebuff();
-	StatusEffects_Victoria();
+	StatusEffects_Vesta();
 	StatusEffects_Pernell();
 	StatusEffects_Medieval();
 	StatusEffects_MERLT0N_BUFF();
@@ -2972,8 +2972,8 @@ void StatusEffects_CombineCommander()
 	StatusEffect_AddGlobal(data);
 }
 
-int VictoriaCallToArmsIndex;
-void StatusEffects_Victoria()
+int VestaCallToArmsIndex;
+void StatusEffects_Vesta()
 {
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Squad Leader");
@@ -3018,7 +3018,7 @@ void StatusEffects_Victoria()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Call To Victoria");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Call To Vesta");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "@");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "@"); //dont display above head, so empty
 	//Takes 20% less damage, and deals 20% more damage
@@ -3031,7 +3031,7 @@ void StatusEffects_Victoria()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	VictoriaCallToArmsIndex = StatusEffect_AddGlobal(data);
+	VestaCallToArmsIndex = StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Taurine");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "T");
@@ -3046,7 +3046,7 @@ void StatusEffects_Victoria()
 	data.SlotPriority				= 0;
 	StatusEffect_AddGlobal(data);
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Victorian Launcher Overdrive");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Vestan Launcher Overdrive");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	data.DamageTakenMulti 			= -1.0;
@@ -3111,9 +3111,9 @@ void StatusEffects_Victoria()
 	StatusEffect_AddGlobal(data);
 }
 
-stock bool NpcStats_VictorianCallToArms(int victim)
+stock bool NpcStats_VestanCallToArms(int victim)
 {
-	return CheckBuffIndex(victim, VictoriaCallToArmsIndex);
+	return CheckBuffIndex(victim, VestaCallToArmsIndex);
 }
 
 void AmmoTM_Visual_Hud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
@@ -4697,7 +4697,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Victorian Launcher's Call");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Vestan Launcher's Call");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "㎾");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -5047,7 +5047,7 @@ void StatusEffects_StatusEffectListOnly()
 
 	data.AttackspeedBuff			= 0.0;
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Victoria Nuke");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Vesta Nuke");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "◈");
 	data.Positive 					= false;
 	StatusEffect_AddGlobal(data);

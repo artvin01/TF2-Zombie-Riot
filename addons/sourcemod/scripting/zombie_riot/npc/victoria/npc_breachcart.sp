@@ -42,15 +42,15 @@ static const char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/takedown.wav"
 };
 
-void VictoriaBreachcart_MapStart()
+void VestaBreachcart_MapStart()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Breachcart");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_breachcart");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_breachcart");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_breachcart");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -67,10 +67,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaBreachcart(vecPos, vecAng, ally);
+	return VestaBreachcart(vecPos, vecAng, ally);
 }
 
-methodmap VictoriaBreachcart < CClotBody
+methodmap VestaBreachcart < CClotBody
 {
 	public void PlayDeathSound() 
 	{
@@ -107,9 +107,9 @@ methodmap VictoriaBreachcart < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 
-	public VictoriaBreachcart(float vecPos[3], float vecAng[3], int ally)
+	public VestaBreachcart(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaBreachcart npc = view_as<VictoriaBreachcart>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, _, true));
+		VestaBreachcart npc = view_as<VestaBreachcart>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_RIDER_RUN");
@@ -123,9 +123,9 @@ methodmap VictoriaBreachcart < CClotBody
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = VictoriaBreachcart_ClotDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaBreachcart_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaBreachcart_ClotThink;
+		func_NPCDeath[npc.index] = VestaBreachcart_ClotDeath;
+		func_NPCOnTakeDamage[npc.index] = VestaBreachcart_OnTakeDamage;
+		func_NPCThink[npc.index] = VestaBreachcart_ClotThink;
 		
 		npc.m_flSpeed = 150.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -154,9 +154,9 @@ methodmap VictoriaBreachcart < CClotBody
 	}
 }
 
-static void VictoriaBreachcart_ClotThink(int iNPC)
+static void VestaBreachcart_ClotThink(int iNPC)
 {
-	VictoriaBreachcart npc = view_as<VictoriaBreachcart>(iNPC);
+	VestaBreachcart npc = view_as<VestaBreachcart>(iNPC);
 
 	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 10.0);
 
@@ -190,7 +190,7 @@ static void VictoriaBreachcart_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		VictoriaBreachcart_Work(npc, GetGameTime(npc.index), flDistanceToTarget);
+		VestaBreachcart_Work(npc, GetGameTime(npc.index), flDistanceToTarget);
 		npc.StartPathing();
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
@@ -209,9 +209,9 @@ static void VictoriaBreachcart_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictoriaBreachcart_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestaBreachcart_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaBreachcart npc = view_as<VictoriaBreachcart>(victim);
+	VestaBreachcart npc = view_as<VestaBreachcart>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -225,9 +225,9 @@ static Action VictoriaBreachcart_OnTakeDamage(int victim, int &attacker, int &in
 	return Plugin_Changed;
 }
 
-static void VictoriaBreachcart_ClotDeath(int entity)
+static void VestaBreachcart_ClotDeath(int entity)
 {
-	VictoriaBreachcart npc = view_as<VictoriaBreachcart>(entity);
+	VestaBreachcart npc = view_as<VestaBreachcart>(entity);
 
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 
@@ -247,7 +247,7 @@ static void VictoriaBreachcart_ClotDeath(int entity)
 		RemoveEntity(npc.m_iWearable5);
 }
 
-static void VictoriaBreachcart_Work(VictoriaBreachcart npc, float gameTime, float distance)
+static void VestaBreachcart_Work(VestaBreachcart npc, float gameTime, float distance)
 {
 	if(npc.m_flBombCartSpawnTime < gameTime)
 	{
@@ -276,7 +276,7 @@ static void VictoriaBreachcart_Work(VictoriaBreachcart npc, float gameTime, floa
 				npc.PlaSpawnBombCartSound();
 				npc.AddGesture("ACT_RIDER_CHEER");
 				float Cooldown = 5.0;
-				if(NpcStats_VictorianCallToArms(npc.index))
+				if(NpcStats_VestanCallToArms(npc.index))
 					Cooldown *= 0.75;
 				npc.m_flBombCartSpawnTime = gameTime + Cooldown;
 			}

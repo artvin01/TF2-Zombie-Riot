@@ -88,7 +88,7 @@ static bool GETBFG[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 static bool AirRaidStart[MAXENTITIES];
 
-/* Victoria Nuke */
+/* Vesta Nuke */
 static float Vs_DelayTime[MAXENTITIES];
 static int Vs_Stats[MAXENTITIES];
 static float Vs_Temp_Pos[MAXENTITIES][3];
@@ -102,9 +102,9 @@ static int g_Laser;
 void Harrison_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Harrison");
+	strcopy(data.Name, sizeof(data.Name), "Vesta Harrison");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_harrison");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_harrison_raid");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_harrison_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -133,7 +133,7 @@ static void ClotPrecache()
 	PrecacheSound(g_LaserBeamSoundsStart);
 	PrecacheSound("mvm/ambient_mp3/mvm_siren.mp3");
 	PrecacheSound("weapons/ar2/npc_ar2_reload.wav");
-	PrecacheSoundCustom("#zombiesurvival/vestia_1/raid_harrison.mp3");
+	PrecacheSoundCustom("#zombiesurvival/vesta_1/raid_harrison.mp3");
 	
 	PrecacheModel("models/player/sniper.mdl");
 	PrecacheModel("models/weapons/w_models/w_drg_ball.mdl");
@@ -399,7 +399,7 @@ methodmap Harrison < CClotBody
 			Zero(b_said_player_weaponline);
 			fl_said_player_weaponline_time[npc.index] = GetGameTime(npc.index) + GetRandomFloat(0.0, 5.0);
 			Vs_RechargeTimeMax[npc.index] = 20.0;
-			Victoria_Support_RechargeTimeMax(npc.index, 20.0);
+			Vesta_Support_RechargeTimeMax(npc.index, 20.0);
 			Vs_Stats[npc.index] = 0;
 			
 			EmitSoundToAll("weapons/ar2/npc_ar2_reload.wav", _, _, _, _, 1.0);
@@ -473,7 +473,7 @@ methodmap Harrison < CClotBody
 			if(StrContains(data, "nomusic") == -1)
 			{
 				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/vestia_1/raid_harrison.mp3");
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/vesta_1/raid_harrison.mp3");
 				music.Time = 92;
 				music.Volume = 1.0;
 				music.Custom = true;
@@ -993,9 +993,9 @@ static void Harrison_ClotThink(int iNPC)
 {
 	Harrison npc = view_as<Harrison>(iNPC);
 	float gameTime = GetGameTime(npc.index);
-	//bool GETVictoria_Support = Victoria_Support(npc);
+	//bool GETVesta_Support = Vesta_Support(npc);
 	
-	if(!YaWeFxxked[npc.index] && !AirRaidStart[npc.index] && NpcStats_VictorianCallToArms(npc.index) && Victoria_Support(npc))
+	if(!YaWeFxxked[npc.index] && !AirRaidStart[npc.index] && NpcStats_VestanCallToArms(npc.index) && Vesta_Support(npc))
 	{
 	
 	}
@@ -1013,7 +1013,7 @@ static void Harrison_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
-	if(NpcStats_VictorianCallToArms(npc.index) && !ParticleSpawned[npc.index])
+	if(NpcStats_VestanCallToArms(npc.index) && !ParticleSpawned[npc.index])
 	{
 		float flPos[3], flAng[3];
 				
@@ -1063,11 +1063,11 @@ static void Harrison_ClotThink(int iNPC)
 		}
 		YaWeFxxked[npc.index] = true;
 		Vs_RechargeTimeMax[npc.index] = 3.0;
-		Victoria_Support_RechargeTimeMax(npc.index, 3.0);
+		Vesta_Support_RechargeTimeMax(npc.index, 3.0);
 		Vs_RechargeTime[npc.index]=0.0;
 		GETBFG[npc.index] = true;
 	}
-	if(GETBFG[npc.index] && Victoria_Support(npc))
+	if(GETBFG[npc.index] && Vesta_Support(npc))
 		GETBFG[npc.index] = false;
 	
 	if(npc.m_blPlayHurtAnimation)
@@ -1167,7 +1167,7 @@ static void Harrison_ClotThink(int iNPC)
 					npc.SetPlaybackRate(1.0);
 					npc.m_flDoingAnimation = gameTime + 0.5;
 					npc.m_iChanged_WalkCycle = 0;
-					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
+					ApplyStatusEffect(npc.index, npc.index, "Call To Vesta", 999.9);
 					
 					npc.m_flSpeed = 300.0;
 					if(IsValidEntity(npc.m_iWearable8))
@@ -1482,7 +1482,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
 				for(int i; i < sizeof(enemy); i++)
 				{
-					for(int k; k < (NpcStats_VictorianCallToArms(npc.index) ? 2 : 1); k++)
+					for(int k; k < (NpcStats_VestanCallToArms(npc.index) ? 2 : 1); k++)
 					{
 						if(enemy[i])
 						{
@@ -1738,7 +1738,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
 						
 						float time = 0.1;
-						if(NpcStats_VictorianCallToArms(npc.index))
+						if(NpcStats_VestanCallToArms(npc.index))
 						{
 							time *= 0.75;
 						}
@@ -2108,7 +2108,7 @@ static void RocketBarrage_Think(DataPack pack)
 	RequestFrames(RocketBarrage_Think, frames_offset, pack2);
 }
 
-static bool Victoria_Support(Harrison npc)
+static bool Vesta_Support(Harrison npc)
 {
 	float GameTime = GetGameTime(npc.index);
 	if(Vs_DelayTime[npc.index] > GameTime)

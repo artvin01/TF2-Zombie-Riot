@@ -53,7 +53,7 @@ void Airraider_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "soldine");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

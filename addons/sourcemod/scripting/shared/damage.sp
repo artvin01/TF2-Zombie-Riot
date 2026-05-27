@@ -2246,9 +2246,9 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 
 	char BufferAdd[12];
 #if defined ZR
-	if(Victoria_Support_RechargeTime(victim))
+	if(Vesta_Support_RechargeTime(victim))
 	{
-		FormatEx(Debuff_Adder_left, SizeOfChar, "%s[◈ %i％]", Debuff_Adder_left, Victoria_Support_RechargeTime(victim));
+		FormatEx(Debuff_Adder_left, SizeOfChar, "%s[◈ %i％]", Debuff_Adder_left, Vesta_Support_RechargeTime(victim));
 	}
 	else if(IsValidClient(victim) && Vs_LockOn[victim])
 	{

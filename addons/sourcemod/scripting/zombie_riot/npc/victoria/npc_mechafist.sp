@@ -37,15 +37,15 @@ static const char g_MeleeHitSounds[] = "weapons/bat_baseball_hit_flesh.wav";
 
 static const char g_MeleeThreeHitSounds[] = "weapons/gunslinger_three_hit.wav";
 
-void VictorianMechafist_OnMapStart_NPC()
+void VestanMechafist_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Mechafist");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mechafist");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_mechafist");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_mechafist");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -64,10 +64,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianMechafist(vecPos, vecAng, ally, data);
+	return VestanMechafist(vecPos, vecAng, ally, data);
 }
 
-methodmap VictorianMechafist < CClotBody
+methodmap VestanMechafist < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -106,9 +106,9 @@ methodmap VictorianMechafist < CClotBody
 		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
 	}
 	
-	public VictorianMechafist(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanMechafist(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianMechafist npc = view_as<VictorianMechafist>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.15", "9000", ally,false));
+		VestanMechafist npc = view_as<VestanMechafist>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.15", "9000", ally,false));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -123,9 +123,9 @@ methodmap VictorianMechafist < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] =  VictorianMechafist_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianMechafist_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianMechafist_ClotThink;
+		func_NPCDeath[npc.index] =  VestanMechafist_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanMechafist_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanMechafist_ClotThink;
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -167,9 +167,9 @@ methodmap VictorianMechafist < CClotBody
 	}
 }
 
-static void VictorianMechafist_ClotThink(int iNPC)
+static void VestanMechafist_ClotThink(int iNPC)
 {
-	VictorianMechafist npc = view_as<VictorianMechafist>(iNPC);
+	VestanMechafist npc = view_as<VestanMechafist>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 		return;
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
@@ -208,7 +208,7 @@ static void VictorianMechafist_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VictorianMechafistSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget); 
+		VestanMechafistSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget); 
 	}
 	else
 	{
@@ -217,9 +217,9 @@ static void VictorianMechafist_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictorianMechafist_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanMechafist_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianMechafist npc = view_as<VictorianMechafist>(victim);
+	VestanMechafist npc = view_as<VestanMechafist>(victim);
 	
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -233,9 +233,9 @@ static Action VictorianMechafist_OnTakeDamage(int victim, int &attacker, int &in
 	return Plugin_Changed;
 }
 
-static void VictorianMechafist_NPCDeath(int entity)
+static void VestanMechafist_NPCDeath(int entity)
 {
-	VictorianMechafist npc = view_as<VictorianMechafist>(entity);
+	VestanMechafist npc = view_as<VestanMechafist>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();	
 	
@@ -249,7 +249,7 @@ static void VictorianMechafist_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static void VictorianMechafistSelfDefense(VictorianMechafist npc, float gameTime, float distance)
+static void VestanMechafistSelfDefense(VestanMechafist npc, float gameTime, float distance)
 {
 	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 	{
@@ -281,7 +281,7 @@ static void VictorianMechafistSelfDefense(VictorianMechafist npc, float gameTime
 							KillFeed_SetKillIcon(npc.index, "robot_arm_kill");
 							if(!HasSpecificBuff(target, "Solid Stance"))
 							{
-								Custom_Knockback(npc.index, target, (NpcStats_VictorianCallToArms(npc.index) ? -750.0 : -500.0), true);
+								Custom_Knockback(npc.index, target, (NpcStats_VestanCallToArms(npc.index) ? -750.0 : -500.0), true);
 								if(IsValidClient(target))
 								{
 									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
@@ -296,7 +296,7 @@ static void VictorianMechafistSelfDefense(VictorianMechafist npc, float gameTime
 							KillFeed_SetKillIcon(npc.index, "robot_arm_combo_kill");
 							if(!HasSpecificBuff(target, "Solid Stance"))
 							{
-								Custom_Knockback(npc.index, target, (NpcStats_VictorianCallToArms(npc.index) ? 1000.0 : 750.0), true);
+								Custom_Knockback(npc.index, target, (NpcStats_VestanCallToArms(npc.index) ? 1000.0 : 750.0), true);
 								if(IsValidClient(target))
 								{
 									TF2_AddCondition(target, TFCond_LostFooting, 0.5);

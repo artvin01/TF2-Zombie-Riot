@@ -1,9 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define VictoriaRadiomast_MODEL_1 "models/props_spytech/radio_tower001.mdl"
-#define VictoriaRadiomast_MODEL_2 "models/props_powerhouse/powerhouse_turbine.mdl"
-#define VictoriaRadiomast_MODEL_3 "models/props_urban/urban_skytower006.mdl"
+#define VestaRadiomast_MODEL_1 "models/props_spytech/radio_tower001.mdl"
+#define VestaRadiomast_MODEL_2 "models/props_powerhouse/powerhouse_turbine.mdl"
+#define VestaRadiomast_MODEL_3 "models/props_urban/urban_skytower006.mdl"
 
 static const char g_DeathSounds[][] = {
 	"ambient/explosions/explode_3.wav",
@@ -17,15 +17,15 @@ static const char g_HurtSounds[][] = {
 	")physics/metal/metal_box_impact_bullet3.wav"
 };
 
-void VictoriaRadiomast_OnMapStart_NPC()
+void VestaRadiomast_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Radiomast");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestia_radiomast");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_radiomast");
+	strcopy(data.Name, sizeof(data.Name), "Vesta Radiomast");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vesta_radiomast");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_radiomast");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -35,17 +35,17 @@ static void ClotPrecache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
-	PrecacheModel(VictoriaRadiomast_MODEL_1);
-	PrecacheModel(VictoriaRadiomast_MODEL_2);
-	PrecacheModel(VictoriaRadiomast_MODEL_3);
+	PrecacheModel(VestaRadiomast_MODEL_1);
+	PrecacheModel(VestaRadiomast_MODEL_2);
+	PrecacheModel(VestaRadiomast_MODEL_3);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaRadiomast(vecPos, vecAng, ally, data);
+	return VestaRadiomast(vecPos, vecAng, ally, data);
 }
 
-methodmap VictoriaRadiomast < CClotBody
+methodmap VestaRadiomast < CClotBody
 {
 	public void PlayHurtSound() 
 	{
@@ -59,20 +59,20 @@ methodmap VictoriaRadiomast < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.3);
 	}
 	
-	public VictoriaRadiomast(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestaRadiomast(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictoriaRadiomast npc = view_as<VictoriaRadiomast>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE,"1000000", ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
+		VestaRadiomast npc = view_as<VestaRadiomast>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE,"1000000", ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
-		npc.m_iWearable1 = npc.EquipItemSeperate(VictoriaRadiomast_MODEL_1,_,1);
+		npc.m_iWearable1 = npc.EquipItemSeperate(VestaRadiomast_MODEL_1,_,1);
 		SetVariantString("0.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		npc.m_iWearable2 = npc.EquipItemSeperate(VictoriaRadiomast_MODEL_2,_,_,_,70.0);
+		npc.m_iWearable2 = npc.EquipItemSeperate(VestaRadiomast_MODEL_2,_,_,_,70.0);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		npc.m_iWearable3 = npc.EquipItemSeperate(VictoriaRadiomast_MODEL_3,_,1);
+		npc.m_iWearable3 = npc.EquipItemSeperate(VestaRadiomast_MODEL_3,_,1);
 		SetVariantString("0.95");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
@@ -93,9 +93,9 @@ methodmap VictoriaRadiomast < CClotBody
 			RaidModeScaling = 0.0;
 		}
 
-		func_NPCDeath[npc.index] = VictoriaRadiomast_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaRadiomast_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaRadiomast_ClotThink;
+		func_NPCDeath[npc.index] = VestaRadiomast_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestaRadiomast_OnTakeDamage;
+		func_NPCThink[npc.index] = VestaRadiomast_ClotThink;
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -134,7 +134,7 @@ methodmap VictoriaRadiomast < CClotBody
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 			{
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "obj_status_dispenser", 1, "%t", "Victorian Radiomast Is Here!");
+				ShowGameText(client_check, "obj_status_dispenser", 1, "%t", "Vestan Radiomast Is Here!");
 			}
 		}
 		EmitSoundToAll("weapons/rescue_ranger_teleport_receive_01.wav", npc.index, SNDCHAN_STATIC, 120, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
@@ -161,9 +161,9 @@ methodmap VictoriaRadiomast < CClotBody
 	}
 }
 
-public void VictoriaRadiomast_ClotThink(int iNPC)
+public void VestaRadiomast_ClotThink(int iNPC)
 {
-	VictoriaRadiomast npc = view_as<VictoriaRadiomast>(iNPC);
+	VestaRadiomast npc = view_as<VestaRadiomast>(iNPC);
 	float gameTime = GetGameTime(npc.index);
 
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -194,7 +194,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
-				ApplyStatusEffect(npc.index, client, "Call To Victoria", 0.5);
+				ApplyStatusEffect(npc.index, client, "Call To Vesta", 0.5);
 		}
 	}
 	//beep say
@@ -202,8 +202,8 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 	if(Waves_IsEmpty() && npc.m_flNextMeleeAttack < gameTime)
 	{
 		int ISVOLI = 4;
-		int VICTORIA = RoundToNearest(MultiGlobalEnemyBoss * 1.2); 
-		for(int i=1; i<=VICTORIA; i++)
+		int VESTA = RoundToNearest(MultiGlobalEnemyBoss * 1.2); 
+		for(int i=1; i<=VESTA; i++)
 		{
 			switch(GetRandomInt(1, 4))
 			{
@@ -215,39 +215,39 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 						{
 							case 1:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_batter",30000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_batter",30000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 2:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_charger",35000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_charger",35000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 3:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_teslar",35000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_teslar",35000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}	
 							case 4:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_vestian_vanguard",35000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_vestan_vanguard",35000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 5:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_supplier",30000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_supplier",30000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 6:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_ballista",30000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_ballista",30000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 7:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_grenadier",30000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_grenadier",30000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 8:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_igniter",120000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_igniter",120000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 9:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_squadleader",65000,2.0, RoundToCeil(1.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_squadleader",65000,2.0, RoundToCeil(1.0 * MultiGlobalEnemy));
 							}
 						}
 					}
@@ -260,43 +260,43 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 						{
 							case 1:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_humbee",120000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_humbee",120000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 2:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_shotgunner",30000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_shotgunner",30000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 3:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_bulldozer",120000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_bulldozer",120000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}	
 							case 4:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_hardener",30000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_hardener",30000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 5:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_raider",30000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_raider",30000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 6:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_zapper",35000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_zapper",35000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 7:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_payback",120000,2.25, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_payback",120000,2.25, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 8:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_blocker",35000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_blocker",35000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 9:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_destructor",35000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_destructor",35000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 10:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_ironshield",100000,2.0, RoundToCeil(1.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_ironshield",100000,2.0, RoundToCeil(1.0 * MultiGlobalEnemy));
 							}
 						}
 					}
@@ -309,39 +309,39 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 						{
 							case 1:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_basebreaker",40000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_basebreaker",40000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 2:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_booster",40000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_booster",40000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 3:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_scorcher",40000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_scorcher",40000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}	
 							case 4:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_mowdown",150000,1.3, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_mowdown",150000,1.3, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 5:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_mechafist",45000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_mechafist",45000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 6:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_assaulter",40000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_assaulter",40000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 7:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_antiarmor_infantry",40000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_antiarmor_infantry",40000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 8:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_mortar",40000,1.3, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_mortar",40000,1.3, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 9:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_breachcart",160000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_breachcart",160000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 						}
 					}
@@ -354,31 +354,31 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 						{
 							case 1:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_caffeinator",40000,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_caffeinator",40000,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 2:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_welder",45000,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_welder",45000,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 3:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_mechanist",50000,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_mechanist",50000,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}	
 							case 4:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_tanker",45000,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_tanker",45000,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 5:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_pulverizer",40000,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_pulverizer",40000,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 6:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_ambusher",40000,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_ambusher",40000,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 7:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_taser",40000,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VestaRadiomastSpawnEnemy(npc.index,"npc_taser",40000,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 						}
 					}
@@ -393,7 +393,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
-			ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
+			ApplyStatusEffect(npc.index, entity, "Call To Vesta", 0.5);
 		}
 	}
 
@@ -448,9 +448,9 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 	}
 }
 
-public Action VictoriaRadiomast_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action VestaRadiomast_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaRadiomast npc = view_as<VictoriaRadiomast>(victim);
+	VestaRadiomast npc = view_as<VestaRadiomast>(victim);
 	
 	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) 
 	{
@@ -468,9 +468,9 @@ public Action VictoriaRadiomast_OnTakeDamage(int victim, int &attacker, int &inf
 	return Plugin_Changed;
 }
 
-public void VictoriaRadiomast_NPCDeath(int entity)
+public void VestaRadiomast_NPCDeath(int entity)
 {
-	VictoriaRadiomast npc = view_as<VictoriaRadiomast>(entity);
+	VestaRadiomast npc = view_as<VestaRadiomast>(entity);
 	npc.PlayDeathSound();	
 	
 	if(npc.m_bFUCKYOU)
@@ -505,9 +505,9 @@ public void VictoriaRadiomast_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable8);
 }
 
-void VictoriaRadiomastSpawnEnemy(int iNPC, char[] plugin_name, int health = 0, float damage, int count, bool is_a_boss = false)
+void VestaRadiomastSpawnEnemy(int iNPC, char[] plugin_name, int health = 0, float damage, int count, bool is_a_boss = false)
 {
-	VictoriaRadiomast npc = view_as<VictoriaRadiomast>(iNPC);
+	VestaRadiomast npc = view_as<VestaRadiomast>(iNPC);
 	if(GetTeam(npc.index) == TFTeam_Red)
 	{
 		count /= 2;

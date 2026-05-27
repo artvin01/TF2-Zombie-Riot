@@ -677,9 +677,9 @@
 		"it"		"Una promessa è una promessa"
 		"ko"		"약속은 약속이니까"
 	}
-	"Victorian Radiomast Is Here!"
+	"Vestan Radiomast Is Here!"
 	{
-		"en"	"Victorian Radiomast Is Here! Break this to end the infinite wave"
+		"en"	"Vestan Radiomast Is Here! Break this to end the infinite wave"
 		"it"	"Il Radiomast vittoriano è arrivato! Rompilo per porre fine all'onda infinita."
 		"ko"	"빅토리아 방송탑이 여기에 있습니다! 파괴하여 무한 웨이브를 중단시키세요!"
 	}
@@ -697,7 +697,7 @@
 	}
 	"Harrison Arrived"
 	{
-		"en" 		 "The Pilot of Victorian Artillery, Harrison Arrived."
+		"en" 		 "The Pilot of Vestan Artillery, Harrison Arrived."
 		"it"		 "Il pilota dell'artiglieria vittoriana, Harrison, è arrivato."
 		"ko" 		 "빅토리아 포병대의 조종사, 해리슨이 도착했습니다."
 	}

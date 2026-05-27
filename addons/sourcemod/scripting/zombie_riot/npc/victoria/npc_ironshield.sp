@@ -18,15 +18,15 @@ static const char g_DeathSounds[] = "npc/scanner/scanner_explode_crash2.wav";
 static const char g_MeleeAttackSounds[] = "ambient/materials/metal_groan.wav";
 static const char g_MeleeHitSounds[] = "npc/scanner/cbot_discharge1.wav";
 
-void VictorianIronShield_OnMapStart_NPC()
+void VestanIronShield_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "IronShield");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ironshield");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_ironshield");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_ironshield");
 	data.IconCustom = true;	
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -45,9 +45,9 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianIronShield(vecPos, vecAng, ally, data);
+	return VestanIronShield(vecPos, vecAng, ally, data);
 }
-methodmap VictorianIronShield < CClotBody
+methodmap VestanIronShield < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -90,9 +90,9 @@ methodmap VictorianIronShield < CClotBody
 		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
 	}
 	
-	public VictorianIronShield(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanIronShield(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianIronShield npc = view_as<VictorianIronShield>(CClotBody(vecPos, vecAng, "models/bots/heavy_boss/bot_heavy_boss.mdl", "1.5", "65000", ally, false, true));
+		VestanIronShield npc = view_as<VestanIronShield>(CClotBody(vecPos, vecAng, "models/bots/heavy_boss/bot_heavy_boss.mdl", "1.5", "65000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -112,9 +112,9 @@ methodmap VictorianIronShield < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		
-		func_NPCDeath[npc.index] = VictorianIronShield_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianIronShield_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianIronShield_ClotThink;
+		func_NPCDeath[npc.index] = VestanIronShield_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanIronShield_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanIronShield_ClotThink;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "steel_fists");
@@ -168,9 +168,9 @@ methodmap VictorianIronShield < CClotBody
 	}
 }
 
-static void VictorianIronShield_ClotThink(int iNPC)
+static void VestanIronShield_ClotThink(int iNPC)
 {
-	VictorianIronShield npc = view_as<VictorianIronShield>(iNPC);
+	VestanIronShield npc = view_as<VestanIronShield>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -201,7 +201,7 @@ static void VictorianIronShield_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		VictorianIronShieldSelfdefense(npc, GetGameTime(npc.index), flDistanceToTarget);
+		VestanIronShieldSelfdefense(npc, GetGameTime(npc.index), flDistanceToTarget);
 		if(npc.m_iChanged_WalkCycle != 1)
 		{
 			npc.m_bisWalking = true;
@@ -240,7 +240,7 @@ static void VictorianIronShield_ClotThink(int iNPC)
 	
 }
 
-static void VictorianIronShieldSelfdefense(VictorianIronShield npc, float gameTime, float distance)
+static void VestanIronShieldSelfdefense(VestanIronShield npc, float gameTime, float distance)
 {
 	if(distance < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 	{
@@ -251,7 +251,7 @@ static void VictorianIronShieldSelfdefense(VictorianIronShield npc, float gameTi
 				if(npc.m_iOverlordComboAttack <= npc.m_iThirdPunch)
 				{
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-					npc.m_iOverlordComboAttack+=(NpcStats_VictorianCallToArms(npc.index) ? 3 : 1);
+					npc.m_iOverlordComboAttack+=(NpcStats_VestanCallToArms(npc.index) ? 3 : 1);
 				}
 				else
 				{
@@ -306,9 +306,9 @@ static void VictorianIronShieldSelfdefense(VictorianIronShield npc, float gameTi
 	}
 }
 
-static Action VictorianIronShield_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanIronShield_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianIronShield npc = view_as<VictorianIronShield>(victim);
+	VestanIronShield npc = view_as<VestanIronShield>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -321,9 +321,9 @@ static Action VictorianIronShield_OnTakeDamage(int victim, int &attacker, int &i
 	return Plugin_Changed;
 }
 
-static void VictorianIronShield_NPCDeath(int entity)
+static void VestanIronShield_NPCDeath(int entity)
 {
-	VictorianIronShield npc = view_as<VictorianIronShield>(entity);
+	VestanIronShield npc = view_as<VestanIronShield>(entity);
 	
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 
@@ -370,7 +370,7 @@ static void VictorianIronShield_NPCDeath(int entity)
 
 static void ThirdPunch_AoE(int entity, int victim, float damage, int weapon)
 {
-	VictorianIronShield npc = view_as<VictorianIronShield>(entity);
+	VestanIronShield npc = view_as<VestanIronShield>(entity);
 	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
 	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim))
 	{

@@ -38,7 +38,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/bat_draw_swoosh2.wav"
 };
 
-void Victoria_Batter_OnMapStart_NPC()
+void Vesta_Batter_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Batter");
@@ -46,7 +46,7 @@ void Victoria_Batter_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "scout_bat");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -64,10 +64,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaBatter(vecPos, vecAng, ally);
+	return VestaBatter(vecPos, vecAng, ally);
 }
 
-methodmap VictoriaBatter < CClotBody
+methodmap VestaBatter < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -99,9 +99,9 @@ methodmap VictoriaBatter < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public VictoriaBatter(float vecPos[3], float vecAng[3], int ally)
+	public VestaBatter(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaBatter npc = view_as<VictoriaBatter>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "750", ally));
+		VestaBatter npc = view_as<VestaBatter>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "750", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -116,9 +116,9 @@ methodmap VictoriaBatter < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(VictoriaBatter_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaBatter_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictoriaBatter_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(VestaBatter_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VestaBatter_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(VestaBatter_ClotThink);
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "bat");
@@ -149,9 +149,9 @@ methodmap VictoriaBatter < CClotBody
 	}
 }
 
-static void VictoriaBatter_ClotThink(int iNPC)
+static void VestaBatter_ClotThink(int iNPC)
 {
-	VictoriaBatter npc = view_as<VictoriaBatter>(iNPC);
+	VestaBatter npc = view_as<VestaBatter>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -177,7 +177,7 @@ static void VictoriaBatter_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	if(NpcStats_VictorianCallToArms(npc.index))
+	if(NpcStats_VestanCallToArms(npc.index))
 	{
 		npc.m_flSpeed = 400.0;
 	}
@@ -202,7 +202,7 @@ static void VictoriaBatter_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VictoriaBatterSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		VestaBatterSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -214,9 +214,9 @@ static void VictoriaBatter_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictoriaBatter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestaBatter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaBatter npc = view_as<VictoriaBatter>(victim);
+	VestaBatter npc = view_as<VestaBatter>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -230,9 +230,9 @@ static Action VictoriaBatter_OnTakeDamage(int victim, int &attacker, int &inflic
 	return Plugin_Changed;
 }
 
-static void VictoriaBatter_NPCDeath(int entity)
+static void VestaBatter_NPCDeath(int entity)
 {
-	VictoriaBatter npc = view_as<VictoriaBatter>(entity);
+	VestaBatter npc = view_as<VestaBatter>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -247,7 +247,7 @@ static void VictoriaBatter_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static void VictoriaBatterSelfDefense(VictoriaBatter npc, float gameTime, int target, float distance)
+static void VestaBatterSelfDefense(VestaBatter npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{

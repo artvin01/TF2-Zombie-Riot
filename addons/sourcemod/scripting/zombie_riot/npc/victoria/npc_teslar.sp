@@ -16,15 +16,15 @@ static const char g_MeleeHitSounds[][] = {
 
 static const char g_MeleeAttackSounds[] = "weapons/knife_swing.wav";
 
-void Victorian_Teslar_OnMapStart_NPC()
+void Vestan_Teslar_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Teslar");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_teslar");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_teslars"); 
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_teslars"); 
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -42,10 +42,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaTeslar(vecPos, vecAng, ally);
+	return VestaTeslar(vecPos, vecAng, ally);
 }
 
-methodmap VictoriaTeslar < CClotBody
+methodmap VestaTeslar < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -74,9 +74,9 @@ methodmap VictoriaTeslar < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public VictoriaTeslar(float vecPos[3], float vecAng[3], int ally)
+	public VestaTeslar(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaTeslar npc = view_as<VictoriaTeslar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1000", ally));
+		VestaTeslar npc = view_as<VestaTeslar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -91,9 +91,9 @@ methodmap VictoriaTeslar < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		func_NPCDeath[npc.index] = VictoriaTeslar_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaTeslar_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaTeslar_ClotThink;
+		func_NPCDeath[npc.index] = VestaTeslar_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestaTeslar_OnTakeDamage;
+		func_NPCThink[npc.index] = VestaTeslar_ClotThink;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "batsaber");
@@ -128,9 +128,9 @@ methodmap VictoriaTeslar < CClotBody
 	}
 }
 
-static void VictoriaTeslar_ClotThink(int iNPC)
+static void VestaTeslar_ClotThink(int iNPC)
 {
-	VictoriaTeslar npc = view_as<VictoriaTeslar>(iNPC);
+	VestaTeslar npc = view_as<VestaTeslar>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -183,9 +183,9 @@ static void VictoriaTeslar_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictoriaTeslar_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestaTeslar_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaTeslar npc = view_as<VictoriaTeslar>(victim);
+	VestaTeslar npc = view_as<VestaTeslar>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -199,9 +199,9 @@ static Action VictoriaTeslar_OnTakeDamage(int victim, int &attacker, int &inflic
 	return Plugin_Changed;
 }
 
-static void VictoriaTeslar_NPCDeath(int entity)
+static void VestaTeslar_NPCDeath(int entity)
 {
-	VictoriaTeslar npc = view_as<VictoriaTeslar>(entity);
+	VestaTeslar npc = view_as<VestaTeslar>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();	
 	ExpidonsaRemoveEffects(entity);
@@ -216,7 +216,7 @@ static void VictoriaTeslar_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static void TeslarSelfDefense(VictoriaTeslar npc, float gameTime, float distance)
+static void TeslarSelfDefense(VestaTeslar npc, float gameTime, float distance)
 {
 	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 	{
@@ -252,7 +252,7 @@ static void TeslarSelfDefense(VictoriaTeslar npc, float gameTime, float distance
 						if(IsValidEnemy(npc.index, target))
 						{
 							if(IsValidClient(target))
-								ApplyStatusEffect(npc.index, target, "Teslar Shock", NpcStats_VictorianCallToArms(npc.index) ? 7.5 : 5.0);
+								ApplyStatusEffect(npc.index, target, "Teslar Shock", NpcStats_VestanCallToArms(npc.index) ? 7.5 : 5.0);
 							else
 								ApplyStatusEffect(npc.index, target, "Teslar Shock", 7.5);
 						}

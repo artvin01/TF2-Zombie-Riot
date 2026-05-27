@@ -74,15 +74,15 @@ static const char g_JamSounds[][] = {
 	"vo/sniper_jeers08.mp3"
 };
 
-void VictoriaAssaulter_OnMapStart_NPC()
+void VestaAssaulter_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Assaulter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_assaulter");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_assaulter");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_assaulter");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -102,10 +102,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaAssaulter(vecPos, vecAng, ally, data);
+	return VestaAssaulter(vecPos, vecAng, ally, data);
 }
 
-methodmap VictoriaAssaulter < CClotBody
+methodmap VestaAssaulter < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -168,9 +168,9 @@ methodmap VictoriaAssaulter < CClotBody
 		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
 	}
 
-	public VictoriaAssaulter(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestaAssaulter(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictoriaAssaulter npc = view_as<VictoriaAssaulter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "6000", ally));
+		VestaAssaulter npc = view_as<VestaAssaulter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "6000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -188,9 +188,9 @@ methodmap VictoriaAssaulter < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		func_NPCDeath[npc.index] = VictoriaAssaulter_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaAssaulter_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaAssaulter_ClotThink;
+		func_NPCDeath[npc.index] = VestaAssaulter_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestaAssaulter_OnTakeDamage;
+		func_NPCThink[npc.index] = VestaAssaulter_ClotThink;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "pro_smg");
@@ -252,9 +252,9 @@ methodmap VictoriaAssaulter < CClotBody
 	}
 }
 
-static void VictoriaAssaulter_ClotThink(int iNPC)
+static void VestaAssaulter_ClotThink(int iNPC)
 {
-	VictoriaAssaulter npc = view_as<VictoriaAssaulter>(iNPC);
+	VestaAssaulter npc = view_as<VestaAssaulter>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -290,7 +290,7 @@ static void VictoriaAssaulter_ClotThink(int iNPC)
 
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		switch(VictoriaAssaulterSelfDefense(npc,GetGameTime(npc.index),flDistanceToTarget))
+		switch(VestaAssaulterSelfDefense(npc,GetGameTime(npc.index),flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -417,9 +417,9 @@ static void VictoriaAssaulter_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictoriaAssaulter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestaAssaulter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaAssaulter npc = view_as<VictoriaAssaulter>(victim);
+	VestaAssaulter npc = view_as<VestaAssaulter>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -433,9 +433,9 @@ static Action VictoriaAssaulter_OnTakeDamage(int victim, int &attacker, int &inf
 	return Plugin_Changed;
 	}
 
-static void VictoriaAssaulter_NPCDeath(int entity)
+static void VestaAssaulter_NPCDeath(int entity)
 {
-	VictoriaAssaulter npc = view_as<VictoriaAssaulter>(entity);
+	VestaAssaulter npc = view_as<VestaAssaulter>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -457,7 +457,7 @@ static void VictoriaAssaulter_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static int VictoriaAssaulterSelfDefense(VictoriaAssaulter npc, float gameTime, float distance)
+static int VestaAssaulterSelfDefense(VestaAssaulter npc, float gameTime, float distance)
 {
 	if(npc.m_bFUCKYOU)
 	{
@@ -534,7 +534,7 @@ static int VictoriaAssaulterSelfDefense(VictoriaAssaulter npc, float gameTime, f
 						npc.m_iOverlordComboAttack --;
 						Cooldown = 0.2;
 					}
-					if(NpcStats_VictorianCallToArms(npc.index))
+					if(NpcStats_VestanCallToArms(npc.index))
 						Cooldown *= 0.5;
 					npc.m_flNextRangedAttack = gameTime + Cooldown;
 

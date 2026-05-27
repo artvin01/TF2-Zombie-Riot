@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
-	"$basetexture" "hud/leaderboard_class_vestia_radiomast"
+	"$basetexture" "hud/leaderboard_class_vesta_radiomast"
 	"$vertexcolor" 1
 	"$no_fullbright" 1
 	"$ignorez" 1

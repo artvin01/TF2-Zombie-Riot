@@ -29,7 +29,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_hit4.wav"
 };
 
-void Victorian_Tacticalunit_OnMapStart_NPC()
+void Vestan_Tacticalunit_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -39,22 +39,22 @@ void Victorian_Tacticalunit_OnMapStart_NPC()
 	PrecacheModel("models/player/scout.mdl");
 	PrecacheModel(LASERBEAM);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Tacticalunit");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestia_tacticalunit");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_tacticalunits"); 
+	strcopy(data.Name, sizeof(data.Name), "Vesta Tacticalunit");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vesta_tacticalunit");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_tacticalunits"); 
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaTacticalunit(vecPos, vecAng, ally, data);
+	return VestaTacticalunit(vecPos, vecAng, ally, data);
 }
 
-methodmap VictoriaTacticalunit < CClotBody
+methodmap VestaTacticalunit < CClotBody
 {
 	public void PlayHurtSound() 
 	{
@@ -111,9 +111,9 @@ methodmap VictoriaTacticalunit < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 	
-	public VictoriaTacticalunit(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestaTacticalunit(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictoriaTacticalunit npc = view_as<VictoriaTacticalunit>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "7500", ally));
+		VestaTacticalunit npc = view_as<VestaTacticalunit>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "7500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -125,9 +125,9 @@ methodmap VictoriaTacticalunit < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		func_NPCDeath[npc.index] = view_as<Function>(VictoriaTacticalunit_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaTacticalunit_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictoriaTacticalunit_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(VestaTacticalunit_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VestaTacticalunit_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(VestaTacticalunit_ClotThink);
 		
 		i_GunAmmo[npc.index]=0;
 		b_we_are_reloading[npc.index]=false;
@@ -207,9 +207,9 @@ methodmap VictoriaTacticalunit < CClotBody
 	}
 }
 
-static void VictoriaTacticalunit_ClotThink(int iNPC)
+static void VestaTacticalunit_ClotThink(int iNPC)
 {
-	VictoriaTacticalunit npc = view_as<VictoriaTacticalunit>(iNPC);
+	VestaTacticalunit npc = view_as<VestaTacticalunit>(iNPC);
 	
 	float gameTime = GetGameTime(npc.index);
 	
@@ -262,7 +262,7 @@ static void VictoriaTacticalunit_ClotThink(int iNPC)
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
 				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
+				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VestanFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
 					NoFactory=false;
 			}
 			if(NoFactory)
@@ -307,15 +307,15 @@ static void VictoriaTacticalunit_ClotThink(int iNPC)
 				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 				{
 					int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-					if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
+					if(IsValidEntity(entity) && i_NpcInternalId[entity] == VestanFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
 					{
 						WorldSpaceCenter(entity, VecSelfNpc);
 						VecSelfNpc[2]+=45.0;
 						int spawn_index;
 						if(i_ammo_count[npc.index])
-							spawn_index = NPC_CreateByName("npc_vestia_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+							spawn_index = NPC_CreateByName("npc_vesta_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 						else
-							spawn_index = NPC_CreateByName("npc_vestia_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+							spawn_index = NPC_CreateByName("npc_vesta_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 						if(spawn_index > MaxClients)
 						{
 							int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*npc.m_flDroneHealth);
@@ -337,9 +337,9 @@ static void VictoriaTacticalunit_ClotThink(int iNPC)
 				VecSelfNpc[2]+=45.0;
 				int spawn_index;
 				if(i_ammo_count[npc.index])
-					spawn_index = NPC_CreateByName("npc_vestia_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+					spawn_index = NPC_CreateByName("npc_vesta_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 				else
-					spawn_index = NPC_CreateByName("npc_vestia_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+					spawn_index = NPC_CreateByName("npc_vesta_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 				if(spawn_index > MaxClients)
 				{
 					int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*npc.m_flDroneHealth);
@@ -381,7 +381,7 @@ static void VictoriaTacticalunit_ClotThink(int iNPC)
 
 			npc.Anger=false;
 		}
-		VictoriaTacticalunitAssaultMode(npc.index, gameTime, npc.m_iTarget, DistanceToTarget);
+		VestaTacticalunitAssaultMode(npc.index, gameTime, npc.m_iTarget, DistanceToTarget);
 		if(npc.m_iChanged_WalkCycle != 1)
 		{
 			npc.m_bisWalking = true;
@@ -404,9 +404,9 @@ static void VictoriaTacticalunit_ClotThink(int iNPC)
 	}
 }
 
-static Action VictoriaTacticalunit_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestaTacticalunit_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaTacticalunit npc = view_as<VictoriaTacticalunit>(victim);
+	VestaTacticalunit npc = view_as<VestaTacticalunit>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -420,9 +420,9 @@ static Action VictoriaTacticalunit_OnTakeDamage(int victim, int &attacker, int &
 	return Plugin_Changed;
 }
 
-static void VictoriaTacticalunit_NPCDeath(int entity)
+static void VestaTacticalunit_NPCDeath(int entity)
 {
-	VictoriaTacticalunit npc = view_as<VictoriaTacticalunit>(entity);
+	VestaTacticalunit npc = view_as<VestaTacticalunit>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -447,9 +447,9 @@ static void VictoriaTacticalunit_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable8);
 }
 
-static void VictoriaTacticalunitAssaultMode(int iNPC, float gameTime, int target, float distance)
+static void VestaTacticalunitAssaultMode(int iNPC, float gameTime, int target, float distance)
 {
-	VictoriaTacticalunit npc = view_as<VictoriaTacticalunit>(iNPC);
+	VestaTacticalunit npc = view_as<VestaTacticalunit>(iNPC);
 	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 	{
 		if(npc.m_flNextMeleeAttack < gameTime)
@@ -503,7 +503,7 @@ static void VictoriaTacticalunitAssaultMode(int iNPC, float gameTime, int target
 
 static void AoEHit(int entity, int victim, float damage, int weapon)
 {
-	VictoriaTacticalunit npc = view_as<VictoriaTacticalunit>(entity);
+	VestaTacticalunit npc = view_as<VestaTacticalunit>(entity);
 	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
 	float damageDealt = 65.0;
 	if(ShouldNpcDealBonusDamage(victim))

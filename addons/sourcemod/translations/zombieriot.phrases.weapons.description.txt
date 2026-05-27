@@ -144,11 +144,11 @@
 		"ko"	"카시미어"
 		"it"	"Kazimierz"
 	}
-	"Victoria"
+	"Vesta"
 	{
-		"en"	"Victoria"
+		"en"	"Vesta"
 		"ko"	"빅토리아"
-		"it"	"Victoria"
+		"it"	"Vesta"
 	}
 	"Psychic Warlord"
 	{
@@ -4060,15 +4060,15 @@
 		"it"	"Addestrare il proprio esercito e potenziarlo."
 		"ko"	"당신만의 유닛을 생산하고 개선함."
 	}
-	"Victorian 1 Desc"
+	"Vestan 1 Desc"
 	{
-		"en"	"The pride of Victoria.\nMortar that deals more damage the longer it travels, upto 1 second. \n-Slow attack speed and grants heavy ranged resistance."
-		"fr"	"Un mortier qui fais plus de dégats avec le temps pris pour frapper une cible.\nCadence de tir lente.\nRésistance contre les attaques à distance, mais donne une vulnérabilité contre les attaques corps-à-corps.\nLa fierté de Victoria."
+		"en"	"The pride of Vesta.\nMortar that deals more damage the longer it travels, upto 1 second. \n-Slow attack speed and grants heavy ranged resistance."
+		"fr"	"Un mortier qui fais plus de dégats avec le temps pris pour frapper une cible.\nCadence de tir lente.\nRésistance contre les attaques à distance, mais donne une vulnérabilité contre les attaques corps-à-corps.\nLa fierté de Vesta."
 		"chi"	"维多利亚的骄傲。\n随着距离增加伤害的迫击炮。上限为1秒。\n装备时大幅度增加远程抗性，减少近战抗性。\n低射速。"
 		"ko"	"빅토리아의 자랑.\n-투사체가 비행한 시간에 따라 피해량이 증가하는 박격포. 최대 1초까지 계산.\n-공격 속도가 느리며 원거리 피해 저항력이 크게 증가."
-		"it"	"L'orgoglio di Victoria. Un mortaio che infligge più danni quanto più a lungo viaggia, fino a 1 secondo. \nLa velocità d'attacco è bassa e garantisce una forte resistenza a distanza."
+		"it"	"L'orgoglio di Vesta. Un mortaio che infligge più danni quanto più a lungo viaggia, fino a 1 secondo. \nLa velocità d'attacco è bassa e garantisce una forte resistenza a distanza."
 	}
-	"Victorian 2 Desc"
+	"Vestan 2 Desc"
 	{
 		"en"	"-Increased Damage\n-Increased Ranged Resistance\n-Increased attackspeed\n-New ability - Charged Shot: Press M2 to load up 10 powerful shells. \n-When reaching 5, you will be able to fire all remaining shells.\n-Warning! You will lose health and your weapon will be overheated and cannot shoot rocket for short period"
 		"fr"	"Dégats, cadence de tir et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer jusqu'a 10 tirs.\nCeci vous infligera des dégats et vous empêchera d'utiliser votre arme pour quelques secondes!"
@@ -4076,70 +4076,70 @@
 		"ko"	"-피해량, 원거리 피해 저항력, 공격 속도 증가\n-신규 우클릭 능력 - 충전 사격: 강력한 포탄을 10개까지 장전합니다.\n-잔여 포탄이 5발이 될 경우 전탄 발사 사용가능.\n-경고! 전탄 발사시, 자가 피해를 입고 짧은 시간 동안 포탄 발사 불가."
 		"it"	"Aumenta i danni, le res a distanza e la velocità di fuoco. \nNuova funzionalità - Colpo a raffica: Premere M2 per caricare 10 potenti proiettili. \nUna volta raggiunti i 5, sarà possibile sparare tutti i proiettili rimanenti.\nAttenzione! Perderete salute e l'arma si surriscalderà e non potrà sparare razzi per un breve periodo"
 	}
-	"Victorian 3 Desc"
+	"Vestan 3 Desc"
 	{
-		"en"	"The Glorious Spear of Victoria.\n-Increased Damage\n-Increased Ranged Resistance\n-New ability - Barrage: For 30 seconds, your attack speed will be shortened immensively and after 15 seconds, the damage will be increased too.\n-Warning! Your health will start to drain after 15 seconds"
+		"en"	"The Glorious Spear of Vesta.\n-Increased Damage\n-Increased Ranged Resistance\n-New ability - Barrage: For 30 seconds, your attack speed will be shortened immensively and after 15 seconds, the damage will be increased too.\n-Warning! Your health will start to drain after 15 seconds"
 		"fr"	"Dégats et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer un barrage, qui accélère votre cadence de tir et améliora ensuite les dégats après 15 secondes.\nCeci va drainer votre santé après 15 secondes!"
 		"chi"	"维多利亚的光荣之矛。\n增加伤害以及远程抗性。\n新技能：弹幕。30秒内，大幅度提升发射速度。15秒后增加伤害。\n[警告]15秒后会同时开始扣除血量。"
 		"ko"	"빅토리아의 영광스러운 창.\n-피해량, 원거리 피해 저항력 증가\n-신규 R키 능력 - 폭격: 30초 동안 공격 속도가 크게 증가하고, 15초 후 피해량 역시 대폭 증가.\n-경고! 15초 후에 체력이 감소하기 시작합니다."
 		"it"	"La Gloriosa Lancia di Vittoria. \nAumento dei danni e della resistenza a distanza. \nNuova abilità - Sbarramento: Per 30 secondi, la velocità d'attacco si riduce immensamente e dopo 15 secondi aumenta anche il danno. \nAttenzione! La salute inizierà a scarseggiare dopo 15 secondi"
 	}
-	"VictorianLauncher Desc Extra"
+	"VestanLauncher Desc Extra"
 	{
-		"en"	"Increases the Explosion Radius of 'Victoria' faction by +10％."
-		"it"	"Aumenta il raggio di esplosione della fazione 'Victoria' di +10％."
+		"en"	"Increases the Explosion Radius of 'Vesta' faction by +10％."
+		"it"	"Aumenta il raggio di esplosione della fazione 'Vesta' di +10％."
 		"ko"	"''빅토리아'' 진영 무기의 폭발 반경이 10％ 증가."
 	}
-	"VictorianLauncher 5 Perk Desc"
+	"VestanLauncher 5 Perk Desc"
 	{
 		"en"	"Extra Projectile speed +200Hu\nAim Assist Activate"
 		"ko"	"-추가 투사체 속도 +200Hu\n-조준 지원 활성화"
 		"it"	"Velocità extra del proiettile +200Hu\nAttivazione dell'assistenza alla mira"
 	}
-	"VictorianLauncher 5 Perk On"
+	"VestanLauncher 5 Perk On"
 	{
 		"en"	"[Aim Assist Online]"
 		"ko"	"[조준 지원 활성화]"
 		"it"	"[Assistenza Mira Online]"
 	}
-	"VictorianLauncher OverHeated"
+	"VestanLauncher OverHeated"
 	{
 		"en"	"!OVERHEATED! [DMG X0.5]"
 		"ko"	"!과열됨! [피해량 X0.5]"
 		"it"	"SURRISCALDATO! [DANNO X0.5]"
 	}
-	"VictorianLauncher OverDrive"
+	"VestanLauncher OverDrive"
 	{
 		"en"	"!OVERDRIVE! [Gradually lose HP]"
 		"ko"	"!과부하! [체력 지속 감소]"
 		"it"	"OVERDRIVE! [Perde gradualmente HP]"
 	}
-	"VictorianLauncher RapidFire"
+	"VestanLauncher RapidFire"
 	{
 		"en"	"Rapid Fire"
 		"ko"	"연사 모드"
 		"it"	"Fuoco rapido"
 	}
-	"VictorianLauncher ManuallyR"
+	"VestanLauncher ManuallyR"
 	{
 		"en"	"Press R Again to Manually Deactivate"
 		"ko"	"R키를 눌러 수동으로 비활성화"
 		"it"	"Premi nuovamente R per disattivare manualmente"
 	}
-	"VictorianLauncher CRockets"
+	"VestanLauncher CRockets"
 	{
 		"en"	"Charged Rockets"
 		"ko"	"고폭성 로켓"
 		"it"	"Razzi caricati"
 	}
-	"VictorianLauncher SuperShot"
+	"VestanLauncher SuperShot"
 	{
 		"#format"	"{1:i}"
 		"en"	"SUPER SHOT READY! [Next shot: X {1} DMG]"
 		"ko"	"전탄 발사 준비! [다음 공격 피해량 X {1}]"
 		"it"	"SUPER COLPO PRONTO! [Prossimo colpo: X {1} DMG]"
 	}
-	"VictorianLauncher ManuallyM2"
+	"VestanLauncher ManuallyM2"
 	{
 		"en"	"Press M2 Again to Fire all at once"
 		"ko"	"M2를 다시 눌러 전탄 발사"
@@ -4635,9 +4635,9 @@
 	}
 	"CastleBreaker Desc"
 	{
-		"en"	"A Spear that Victoria's trained vanguards use.\n-This weapon has long reach but short width.\n-Can gain cost per kill\n-Deals extra damage to building enemies"
+		"en"	"A Spear that Vesta's trained vanguards use.\n-This weapon has long reach but short width.\n-Can gain cost per kill\n-Deals extra damage to building enemies"
 		"ko"	"훈련된 빅토리아의 선봉대가 사용하는 창입니다.\n이 무기는 근접 공격 사거리가 길지만, 근접 공격 범위가 좁습니다.\n-처치시 자금을 획득\n구조물 계열의 적에게 추가 피해를 입힘"
-		"it"	"Una lancia utilizzata dalle avanguardie addestrate da Victoria.\nQuesta arma ha una lunga gittata ma una larghezza ridotta.\nPuò ottenere un costo per ogni uccisione.\nInfligge danni aggiuntivi ai nemici che costruiscono."
+		"it"	"Una lancia utilizzata dalle avanguardie addestrate da Vesta.\nQuesta arma ha una lunga gittata ma una larghezza ridotta.\nPuò ottenere un costo per ogni uccisione.\nInfligge danni aggiuntivi ai nemici che costruiscono."
 	}
 	"CastleBreaker Pap 1"
 	{
@@ -4653,19 +4653,19 @@
 	}
 	"CastleBreaker Pap 3"
 	{
-		"en"	"\nA giant spear used by Giant Victorian Elite robots. They are both powerful and heavy.\n-Increased damage\n-Increased attackspeed\n-Unlocks new ability(M2)\n-Attack 2 targets at once and attack twice."
-		"it"	"Statistiche potenziate.\nUna lancia gigante utilizzata dai robot Giant Victorian Elite. \nSono potenti e pesanti.\nSblocca una nuova abilità (M2).\nAttacca 2 bersagli contemporaneamente e attacca due volte."
+		"en"	"\nA giant spear used by Giant Vestan Elite robots. They are both powerful and heavy.\n-Increased damage\n-Increased attackspeed\n-Unlocks new ability(M2)\n-Attack 2 targets at once and attack twice."
+		"it"	"Statistiche potenziate.\nUna lancia gigante utilizzata dai robot Giant Vestan Elite. \nSono potenti e pesanti.\nSblocca una nuova abilità (M2).\nAttacca 2 bersagli contemporaneamente e attacca due volte."
 		"ko"	"거대 빅토리아 정예 로봇이 사용하는 거대한 창입니다. 강력하면서 무겁습니다.\n-피해량, 공격 속도 증가\n-신규 우클릭 능력: 공격이 빠른 2연속 공격이 되며 한 번에 2명의 적을 타격합니다."
 	}
 	"CastleBreaker Desc Extra"
 	{
-		"en"	"Increases the Damage of ''Victoria'' faction by +10％."
-		"it"	"Aumenta il danno della fazione ''Victoria'' del +10％."
+		"en"	"Increases the Damage of ''Vesta'' faction by +10％."
+		"it"	"Aumenta il danno della fazione ''Vesta'' del +10％."
 		"ko"	"''빅토리아'' 진영 무기의 피해량 +10％"
 	}
 	"Explosault Rifle Desc"
 	{
-		"en"	"Heavily modified AR that some vestian civilians managed to come up with.\nFire fast projectiles that plant bomb on its target and detonate on reload\nFiring this weapon constantly will build up overheat which will result in damage loss"
+		"en"	"Heavily modified AR that some vestan civilians managed to come up with.\nFire fast projectiles that plant bomb on its target and detonate on reload\nFiring this weapon constantly will build up overheat which will result in damage loss"
 		"ko"	"빅토리아 시민들이 손수 제작한 마개조된 돌격소총입니다.\n적중 시 폭탄 설치, 재장전으로 기폭\n계속 사용할수록 과열이 쌓여 피해량 감소"
 	}
 	"Explosault Rifle HSD 1 Desc"
@@ -4690,7 +4690,7 @@
 	}
 	"Explosault Rifle Desc Extra"
 	{
-		"en"	"''Victoria'' faction will have 10％ less blast damage reduce per target"
+		"en"	"''Vesta'' faction will have 10％ less blast damage reduce per target"
 		"ko"	"''빅토리아'' 진영 무기의 폭발 타겟당 피해량 감소를 10％ 완화시킵니다!"
 	}
 	"Zealot Dash Denie Spam"

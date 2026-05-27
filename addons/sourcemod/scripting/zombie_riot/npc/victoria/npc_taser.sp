@@ -27,15 +27,15 @@ static const char g_ReloadSound[] = "weapons/ar2/npc_ar2_reload.wav";
 
 static const char g_RangeAttackSounds[] = "weapons/capper_shoot.wav";
 
-void VictoriaTaser_OnMapStart_NPC()
+void VestaTaser_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Taser");
+	strcopy(data.Name, sizeof(data.Name), "Vesta Taser");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_taser");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_taser");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_taser");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -53,10 +53,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaTaser(vecPos, vecAng, ally, data);
+	return VestaTaser(vecPos, vecAng, ally, data);
 }
 
-methodmap VictoriaTaser < CClotBody
+methodmap VestaTaser < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -101,9 +101,9 @@ methodmap VictoriaTaser < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
 
-	public VictoriaTaser(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestaTaser(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictoriaTaser npc = view_as<VictoriaTaser>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "25000", ally));
+		VestaTaser npc = view_as<VestaTaser>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "25000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -114,9 +114,9 @@ methodmap VictoriaTaser < CClotBody
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		func_NPCDeath[npc.index] = VictoriaTaser_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaTaser_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaTaser_ClotThink;
+		func_NPCDeath[npc.index] = VestaTaser_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestaTaser_OnTakeDamage;
+		func_NPCThink[npc.index] = VestaTaser_ClotThink;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -195,9 +195,9 @@ methodmap VictoriaTaser < CClotBody
 	}
 }
 
-static void VictoriaTaser_ClotThink(int iNPC)
+static void VestaTaser_ClotThink(int iNPC)
 {
-	VictoriaTaser npc = view_as<VictoriaTaser>(iNPC);
+	VestaTaser npc = view_as<VestaTaser>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -234,7 +234,7 @@ static void VictoriaTaser_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		switch(VictoriaTaserSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget))
+		switch(VestaTaserSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -280,9 +280,9 @@ static void VictoriaTaser_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictoriaTaser_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestaTaser_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaTaser npc = view_as<VictoriaTaser>(victim);
+	VestaTaser npc = view_as<VestaTaser>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -295,9 +295,9 @@ static Action VictoriaTaser_OnTakeDamage(int victim, int &attacker, int &inflict
 	return Plugin_Changed;
 }
 
-static void VictoriaTaser_NPCDeath(int entity)
+static void VestaTaser_NPCDeath(int entity)
 {
-	VictoriaTaser npc = view_as<VictoriaTaser>(entity);
+	VestaTaser npc = view_as<VestaTaser>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();	
 	
@@ -315,13 +315,13 @@ static void VictoriaTaser_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static int VictoriaTaserSelfDefense(VictoriaTaser npc, float gameTime, float distance)
+static int VestaTaserSelfDefense(VestaTaser npc, float gameTime, float distance)
 {
 	if(npc.m_flAttackHappens || !npc.m_iAmmo)
 	{
 		if(!npc.m_flAttackHappens)
 		{
-			npc.m_flAttackHappens=gameTime+(NpcStats_VictorianCallToArms(npc.index) ? 1.5 : 2.0);
+			npc.m_flAttackHappens=gameTime+(NpcStats_VestanCallToArms(npc.index) ? 1.5 : 2.0);
 			npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY", true);
 			npc.PlayReloadSound();
 			
@@ -346,9 +346,9 @@ static int VictoriaTaserSelfDefense(VictoriaTaser npc, float gameTime, float dis
 			float projectile_speed = npc.m_flCustomProjectileSpeed;
 			
 			int projectile = npc.FireParticleRocket(vecTarget, 75.0 , projectile_speed, 100.0 , "raygun_projectile_blue_crit");
-			WandProjectile_ApplyFunctionToEntity(projectile, VictoriaTaser_Rocket_Particle_StartTouch);
+			WandProjectile_ApplyFunctionToEntity(projectile, VestaTaser_Rocket_Particle_StartTouch);
 
-			npc.m_flNextRangedAttack=gameTime+(NpcStats_VictorianCallToArms(npc.index) ? 0.75 : 1.0);
+			npc.m_flNextRangedAttack=gameTime+(NpcStats_VestanCallToArms(npc.index) ? 0.75 : 1.0);
 			npc.m_iAmmo--;
 			return 1;
 		}
@@ -356,7 +356,7 @@ static int VictoriaTaserSelfDefense(VictoriaTaser npc, float gameTime, float dis
 	return(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.0 && Can_I_See_Enemy_Only(npc.index, npc.m_iTarget)) ? 1 : 0;
 }
 
-static void VictoriaTaser_Rocket_Particle_StartTouch(int entity, int target)
+static void VestaTaser_Rocket_Particle_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
@@ -382,7 +382,7 @@ static void VictoriaTaser_Rocket_Particle_StartTouch(int entity, int target)
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		if(!IsInvuln(target))
 		{
-			if(NpcStats_VictorianCallToArms(entity))
+			if(NpcStats_VestanCallToArms(entity))
 			{
 				ApplyStatusEffect(owner, target, "Teslar Electricution", 4.0);
 				if(!HasSpecificBuff(target, "Fluid Movement") && target <= MaxClients)

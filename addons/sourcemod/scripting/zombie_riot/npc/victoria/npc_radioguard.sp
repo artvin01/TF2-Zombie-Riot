@@ -21,15 +21,15 @@ static const char g_RangeAttackSounds[] = "mvm/giant_soldier/giant_soldier_rocke
 
 static int i_radioguard_particle[MAXENTITIES];
 
-void Victorian_Radioguard_OnMapStart_NPC()
+void Vestan_Radioguard_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Radio Guard");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_radioguard");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_radioguard");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_radioguard");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -46,10 +46,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Victorian_Radioguard(vecPos, vecAng, ally, data);
+	return Vestan_Radioguard(vecPos, vecAng, ally, data);
 }
 
-methodmap Victorian_Radioguard < CClotBody
+methodmap Vestan_Radioguard < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -80,9 +80,9 @@ methodmap Victorian_Radioguard < CClotBody
 		public set(int TempValueForProperty) 	{ this.m_iState = TempValueForProperty; }
 	}
 
-	public Victorian_Radioguard(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Vestan_Radioguard(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Victorian_Radioguard npc = view_as<Victorian_Radioguard>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", "80000", ally, .isGiant = true));
+		Vestan_Radioguard npc = view_as<Vestan_Radioguard>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", "80000", ally, .isGiant = true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -94,9 +94,9 @@ methodmap Victorian_Radioguard < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
-		func_NPCDeath[npc.index] = view_as<Function>(Victorian_Radioguard_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Victorian_Radioguard_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Victorian_Radioguard_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Vestan_Radioguard_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Vestan_Radioguard_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Vestan_Radioguard_ClotThink);
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -148,9 +148,9 @@ methodmap Victorian_Radioguard < CClotBody
 	}
 }
 
-static void Victorian_Radioguard_ClotThink(int iNPC)
+static void Vestan_Radioguard_ClotThink(int iNPC)
 {
-	Victorian_Radioguard npc = view_as<Victorian_Radioguard>(iNPC);
+	Vestan_Radioguard npc = view_as<Vestan_Radioguard>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -208,7 +208,7 @@ static void Victorian_Radioguard_ClotThink(int iNPC)
 				npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 			}
 		}
-		switch(VictorianRadioguardSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget, TooFar))
+		switch(VestanRadioguardSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget, TooFar))
 		{
 			case 0:
 			{
@@ -287,9 +287,9 @@ static void Victorian_Radioguard_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action Victorian_Radioguard_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Vestan_Radioguard_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Victorian_Radioguard npc = view_as<Victorian_Radioguard>(victim);
+	Vestan_Radioguard npc = view_as<Vestan_Radioguard>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -303,9 +303,9 @@ static Action Victorian_Radioguard_OnTakeDamage(int victim, int &attacker, int &
 	return Plugin_Changed;
 }
 
-static void Victorian_Radioguard_NPCDeath(int entity)
+static void Vestan_Radioguard_NPCDeath(int entity)
 {
-	Victorian_Radioguard npc = view_as<Victorian_Radioguard>(entity);
+	Vestan_Radioguard npc = view_as<Vestan_Radioguard>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -332,7 +332,7 @@ static void Victorian_Radioguard_NPCDeath(int entity)
 	}
 }
 
-static int VictorianRadioguardSelfDefense(Victorian_Radioguard npc, float gameTime, float distance, bool TooFar)
+static int VestanRadioguardSelfDefense(Vestan_Radioguard npc, float gameTime, float distance, bool TooFar)
 {
 	if(gameTime < npc.m_flNextRangedAttack-4.0)
 	{
@@ -357,10 +357,10 @@ static int VictorianRadioguardSelfDefense(Victorian_Radioguard npc, float gameTi
 				npc.PlayRangeSound();
 				float RocketDamage = 150.0;
 				float RocketSpeed = 950.0;
-				if(NpcStats_VictorianCallToArms(npc.index))
+				if(NpcStats_VestanCallToArms(npc.index))
 					RocketDamage *= 2.0;
 				int projectile = npc.FireParticleRocket(vecTarget, RocketDamage , RocketSpeed , 450.0 , "spell_fireball_small_blue", true);
-				WandProjectile_ApplyFunctionToEntity(projectile, Victoria_RadioGuard_Particle_StartTouch);
+				WandProjectile_ApplyFunctionToEntity(projectile, Vesta_RadioGuard_Particle_StartTouch);
 				npc.m_flNextRangedAttack = gameTime + 5.0;
 				npc.m_flAttackHappenswillhappen = false;
 			}
@@ -374,7 +374,7 @@ static int VictorianRadioguardSelfDefense(Victorian_Radioguard npc, float gameTi
 	return 0;
 }
 
-static void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
+static void Vesta_RadioGuard_Particle_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
@@ -403,7 +403,7 @@ static void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
 			
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
-		if(NpcStats_VictorianCallToArms(owner))
+		if(NpcStats_VestanCallToArms(owner))
 		{
 			float ProjectileLoc[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 			Explode_Logic_Custom(0.0, owner, inflictor, -1, ProjectileLoc, 100.0, _, _, true, _, false, _, Weeeeeeeeeiiiiii);
@@ -432,7 +432,7 @@ static void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 			RemoveEntity(entity);
 			return;
 		}
-		if(NpcStats_VictorianCallToArms(owner))
+		if(NpcStats_VestanCallToArms(owner))
 		{
 			float ProjectileLoc[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 			Explode_Logic_Custom(0.0, owner, inflictor, -1, ProjectileLoc, 100.0, _, _, true, _, false, _, Weeeeeeeeeiiiiii);
@@ -447,7 +447,7 @@ static void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 
 static void Weeeeeeeeeiiiiii(int entity, int victim, float damage, int weapon)
 {
-	Victorian_Radioguard npc = view_as<Victorian_Radioguard>(entity);
+	Vestan_Radioguard npc = view_as<Vestan_Radioguard>(entity);
 	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
 	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim))
 	{

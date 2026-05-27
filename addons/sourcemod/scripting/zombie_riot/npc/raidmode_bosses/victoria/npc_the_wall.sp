@@ -62,7 +62,7 @@ static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_KaboomSounds[] = "items/cart_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
 
-/* Victoria Nuke */
+/* Vesta Nuke */
 static float Vs_DelayTime[MAXENTITIES];
 static int Vs_Target[MAXENTITIES];
 static int Vs_ParticleSpawned[MAXENTITIES];
@@ -89,9 +89,9 @@ static bool Frozen_Player[MAXPLAYERS];
 void Huscarls_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Huscarls");
+	strcopy(data.Name, sizeof(data.Name), "Vesta Huscarls");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_the_wall");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_huscarls_raid");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_huscarls_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -125,7 +125,7 @@ static void ClotPrecache()
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("items/powerup_pickup_knockout.wav", true);
 	PrecacheSound("items/powerup_pickup_resistance.wav", true);
-	PrecacheSoundCustom("#zombiesurvival/vestia_1/huscarl_ost_new.mp3");
+	PrecacheSoundCustom("#zombiesurvival/vesta_1/huscarl_ost_new.mp3");
 
 	PrecacheModel("models/props_mvm/mvm_player_shield.mdl", true);
 	PrecacheModel("models/props_mvm/mvm_player_shield2.mdl", true);
@@ -453,7 +453,7 @@ methodmap Huscarls < CClotBody
 			npc.m_flNextRangedBarrage_Spam = 0.0;
 			
 			Vs_RechargeTimeMax[npc.index] = 15.0;
-			Victoria_Support_RechargeTimeMax(npc.index, 15.0);
+			Vesta_Support_RechargeTimeMax(npc.index, 15.0);
 
 			ParticleSpawned[npc.index] = false;
 			
@@ -486,7 +486,7 @@ methodmap Huscarls < CClotBody
 			if(StrContains(data, "nomusic") == -1)
 			{
 				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/vestia_1/huscarl_ost_new.mp3");
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/vesta_1/huscarl_ost_new.mp3");
 				music.Time = 232;
 				music.Volume = 1.7;
 				music.Custom = true;
@@ -723,7 +723,7 @@ static void Clone_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					GET_RAGED_TARGET=Victoria_GetTargetDistance(npc.index, true, true);
+					GET_RAGED_TARGET=Vesta_GetTargetDistance(npc.index, true, true);
 					npc.AddActivityViaSequence("layer_taunt_cyoa_PDA_intro");
 					npc.SetCycle(0.0);
 					npc.SetPlaybackRate(0.8);
@@ -1022,7 +1022,7 @@ static void Huscarls_ClotThink(int iNPC)
 	
 	GrantEntityArmor(iNPC, true, 0.05, 0.5, 0);
 
-	if(NpcStats_VictorianCallToArms(npc.index) && !ParticleSpawned[npc.index])
+	if(NpcStats_VestanCallToArms(npc.index) && !ParticleSpawned[npc.index])
 	{
 		float flPos[3], flAng[3];
 				
@@ -1031,7 +1031,7 @@ static void Huscarls_ClotThink(int iNPC)
 		npc.GetAttachment("", flPos, flAng);
 		ParticleSpawned[npc.index] = true;
 	}
-	if(npc.m_bLostHalfHealth && Victoria_Support(npc))
+	if(npc.m_bLostHalfHealth && Vesta_Support(npc))
 	{
 		/*none*/
 	}
@@ -1115,7 +1115,7 @@ static void Huscarls_ClotThink(int iNPC)
 		{
 			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == GetTeam(npc.index))
-				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.3);
+				ApplyStatusEffect(npc.index, entity, "Call To Vesta", 0.3);
 		}
 	}
 	
@@ -1252,7 +1252,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 		else
 			RemoveSpecificBuff(npc.index, "Battery_TM Charge");
 		npc.m_flHuscarlsAdaptiveArmorDuration=0.0;
-		npc.m_flHuscarlsAdaptiveArmorCoolDown = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 20.0 : 30.0);
+		npc.m_flHuscarlsAdaptiveArmorCoolDown = gameTime + (NpcStats_VestanCallToArms(npc.index) ? 20.0 : 30.0);
 	}
 	
 	if(b_angered_twice[npc.index] && npc.m_flHuscarlsRushCoolDown-(0.28 + DEFAULT_UPDATE_DELAY_FLOAT) > gameTime && npc.m_flHuscarlsRushCoolDown-3.6 < gameTime)
@@ -1383,7 +1383,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 				{
 					if(HasSpecificBuff(npc.index, "Intangible"))
 						RemoveSpecificBuff(npc.index, "Intangible");
-					npc.m_flHuscarlsRushCoolDown = gameTime+(NpcStats_VictorianCallToArms(npc.index) ? 14.0 : 15.0);
+					npc.m_flHuscarlsRushCoolDown = gameTime+(NpcStats_VestanCallToArms(npc.index) ? 14.0 : 15.0);
 					npc.m_iState = -1;
 					SetEntityCollisionGroup(npc.index, COLLISION_GROUP_PLAYER);
 					for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -1434,7 +1434,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 						IgniteFist=true;
 						fl_ruina_battery[npc.index]+=fl_ruina_battery_max[npc.index];
 					}
-					if(NpcStats_VictorianCallToArms(npc.index))
+					if(NpcStats_VestanCallToArms(npc.index))
 					{
 						IgniteFist=true;
 						fl_ruina_battery[npc.index]+=fl_ruina_battery_max[npc.index]*0.3;
@@ -1465,7 +1465,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 			npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 		npc.PlayShieldSound();
 		Fire_Shield_Projectile(npc, 10.0);
-		npc.m_flHuscarlsDeployEnergyShieldCoolDown = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 15.0 : 21.0);
+		npc.m_flHuscarlsDeployEnergyShieldCoolDown = gameTime + (NpcStats_VestanCallToArms(npc.index) ? 15.0 : 21.0);
 	}
 	else if(npc.m_flNextRangedBarrage_Singular < gameTime)
 	{
@@ -1474,7 +1474,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 		{
 			case 0:
 			{
-				GET_RAGED_TARGET=Victoria_GetTargetDistance(npc.index, true, true);
+				GET_RAGED_TARGET=Vesta_GetTargetDistance(npc.index, true, true);
 				npc.AddActivityViaSequence("layer_taunt_cyoa_PDA_intro");
 				npc.SetCycle(0.0);
 				npc.SetPlaybackRate(0.8);
@@ -1539,8 +1539,8 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 						CreateTimer(2.5, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
 						npc.PlayThrowSound();
 					}
-					npc.m_flDoingAnimation = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 0.26 : 0.32);
-					if(npc.m_iState>=4 && !NpcStats_VictorianCallToArms(npc.index))
+					npc.m_flDoingAnimation = gameTime + (NpcStats_VestanCallToArms(npc.index) ? 0.26 : 0.32);
+					if(npc.m_iState>=4 && !NpcStats_VestanCallToArms(npc.index))
 						npc.m_iState=7;
 					else
 						npc.m_iState++;
@@ -1549,7 +1549,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 			case 7:
 			{
 				npc.m_flDoingAnimation = 0.0;
-				npc.m_flNextRangedBarrage_Singular = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 25.0 : 30.0);
+				npc.m_flNextRangedBarrage_Singular = gameTime + (NpcStats_VestanCallToArms(npc.index) ? 25.0 : 30.0);
 				if(npc.m_flNextRangedBarrage_Spam)
 				{
 					npc.m_flNextRangedBarrage_Singular -= npc.m_flNextRangedBarrage_Spam;
@@ -1598,7 +1598,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 			{
 				if(npc.m_flDoingAnimation < gameTime)
 				{
-					npc.m_flHuscarlsGroundSlamCoolDown = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 17.0 : 18.0);
+					npc.m_flHuscarlsGroundSlamCoolDown = gameTime + (NpcStats_VestanCallToArms(npc.index) ? 17.0 : 18.0);
 					npc.m_iState = -1;
 				}
 			}
@@ -1847,7 +1847,7 @@ static Action Huscarls_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		if(!npc.m_bLostHalfHealth)
 		{
 			EmitSoundToAll("ambient/alarms/doomsday_lift_alarm.wav");
-			NPCPritToChat_Override("Victoria Harrison", "{skyblue}", "Harrison_Talk_Support-1", false);
+			NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-1", false);
 			npc.m_bLostHalfHealth = true;
 		}
 		if(!npc.Anger)
@@ -1863,7 +1863,7 @@ static Action Huscarls_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		if(!npc.m_bLostHalfHealth)
 		{
 			EmitSoundToAll("ambient/alarms/doomsday_lift_alarm.wav");
-			NPCPritToChat_Override("Victoria Harrison", "{skyblue}", "Harrison_Talk_Support-1", false);
+			NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-1", false);
 			npc.m_bLostHalfHealth = true;
 		}
 	}
@@ -2150,14 +2150,14 @@ static void HuscarlIntoAir(Huscarls npc, bool ReAime)
 	}
 }
 
-static bool Victoria_Support(Huscarls npc)
+static bool Vesta_Support(Huscarls npc)
 {
 	float GameTime = GetGameTime(npc.index);
 	if(Vs_DelayTime[npc.index] > GameTime)
 		return false;
 	Vs_DelayTime[npc.index] = GameTime + 0.1;
 	
-	Vs_Target[npc.index] = Victoria_GetTargetDistance(npc.index, false, false);
+	Vs_Target[npc.index] = Vesta_GetTargetDistance(npc.index, false, false);
 	if(!IsValidEnemy(npc.index, Vs_Target[npc.index]))
 		return false;
 	if(Vs_RechargeTime[npc.index] >= 1.0 && Vs_RechargeTime[npc.index] <= 3.0 && IsValidEntity(Vs_ParticleSpawned[npc.index]))
@@ -2429,7 +2429,7 @@ static bool TinCan_Raid(Huscarls npc, float gameTime)
 					for(int i = 1; i <= 3; i++)
 					{
 						int TinCan=npc.LoadLifeSupportDevice(i);
-						if(IsValidEntity(TinCan)&& i_NpcInternalId[TinCan] == VictorianAvangard_ID()
+						if(IsValidEntity(TinCan)&& i_NpcInternalId[TinCan] == VestanAvangard_ID()
 						&& !b_NpcHasDied[TinCan] && GetTeam(TinCan) == GetTeam(npc.index))
 						{
 							FreezeNpcInTime(TinCan, 1.6, true);
@@ -2451,7 +2451,7 @@ static bool TinCan_Raid(Huscarls npc, float gameTime)
 					for(int i = 1; i <= 3; i++)
 					{
 						int TinCan=npc.LoadLifeSupportDevice(i);
-						if(IsValidEntity(TinCan)&& i_NpcInternalId[TinCan] == VictorianAvangard_ID()
+						if(IsValidEntity(TinCan)&& i_NpcInternalId[TinCan] == VestanAvangard_ID()
 						&& !b_NpcHasDied[TinCan] && GetTeam(TinCan) == GetTeam(npc.index))
 						{
 							FreezeNpcInTime(TinCan, 1.6, true);
@@ -2484,7 +2484,7 @@ static bool TinCan_Raid(Huscarls npc, float gameTime)
 		for(int i = 1; i <= 3; i++)
 		{
 			int TinCan=npc.LoadLifeSupportDevice(i);
-			if(IsValidEntity(TinCan)&& i_NpcInternalId[TinCan] == VictorianAvangard_ID()
+			if(IsValidEntity(TinCan)&& i_NpcInternalId[TinCan] == VestanAvangard_ID()
 			&& !b_NpcHasDied[TinCan] && GetTeam(TinCan) == GetTeam(npc.index))
 				StillAlive=true;
 		}
@@ -2530,7 +2530,7 @@ static bool TinCan_Raid(Huscarls npc, float gameTime)
 					SetEntProp(npc.index, Prop_Data, "m_iHealth", health+RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 0.1));
 					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)+RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 0.25));
 					b_NpcIsInvulnerable[npc.index] = false;
-					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
+					ApplyStatusEffect(npc.index, npc.index, "Call To Vesta", 999.9);
 					FullySpawnTinCan=false;
 					npc.m_bFUCKYOU_move_anim=false;
 				}
@@ -2551,7 +2551,7 @@ static void HuscarlsGrab(Huscarls npc, float gameTime)
 	static float EnemyPos[3];
 	static float pos[3]; 
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-	float Range = (NpcStats_VictorianCallToArms(npc.index) ? 450.0 : 325.0);
+	float Range = (NpcStats_VestanCallToArms(npc.index) ? 450.0 : 325.0);
 	spawnRing_Vectors(pos, Range * 2.0, 0.0, 0.0, 5.0, LASERBEAM, 220, 220, 255, 150, 1, 0.1, 3.0, 0.1, 3);
 	spawnRing_Vectors(pos, Range * 2.0, 0.0, 0.0, 25.0, LASERBEAM, 220, 220, 255, 150, 1, 0.1, 3.0, 0.1, 3);
 	spawnRing_Vectors(pos, Range * 2.0, 0.0, 0.0, 45.0, LASERBEAM, 220, 220, 255, 150, 1, 0.1, 3.0, 0.1, 3);

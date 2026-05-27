@@ -21,15 +21,15 @@ static const char g_DronPingSounds[] = "misc/rd_finale_beep01.wav";
 
 static const char g_MeleeHitSounds[] = "npc/scanner/cbot_discharge1.wav";
 
-void Victorian_TacticalProtector_OnMapStart_NPC()
+void Vestan_TacticalProtector_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Tactical Protector");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestia_protector");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_tacticalprotectors"); 
+	strcopy(data.Name, sizeof(data.Name), "Vesta Tactical Protector");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vesta_protector");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_tacticalprotectors"); 
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -47,10 +47,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaProtector(vecPos, vecAng, ally, data);
+	return VestaProtector(vecPos, vecAng, ally, data);
 }
 
-methodmap VictoriaProtector < CClotBody
+methodmap VestaProtector < CClotBody
 {
 	public void PlayHurtSound() 
 	{
@@ -103,9 +103,9 @@ methodmap VictoriaProtector < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
 	
-	public VictoriaProtector(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestaProtector(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictoriaProtector npc = view_as<VictoriaProtector>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.45", "15000", ally, false, true));
+		VestaProtector npc = view_as<VestaProtector>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.45", "15000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -117,9 +117,9 @@ methodmap VictoriaProtector < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
-		func_NPCDeath[npc.index] = VictoriaProtector_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaProtector_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaProtector_ClotThink;
+		func_NPCDeath[npc.index] = VestaProtector_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestaProtector_OnTakeDamage;
+		func_NPCThink[npc.index] = VestaProtector_ClotThink;
 		
 		npc.m_flLifeTime=20.0;
 		npc.m_flDroneHealth=0.35;
@@ -195,9 +195,9 @@ methodmap VictoriaProtector < CClotBody
 	}
 }
 
-static void VictoriaProtector_ClotThink(int iNPC)
+static void VestaProtector_ClotThink(int iNPC)
 {
-	VictoriaProtector npc = view_as<VictoriaProtector>(iNPC);
+	VestaProtector npc = view_as<VestaProtector>(iNPC);
 	
 	float gameTime = GetGameTime(npc.index);
 	
@@ -252,7 +252,7 @@ static void VictoriaProtector_ClotThink(int iNPC)
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
 				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
+				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VestanFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
 					NoFactory=false;
 			}
 			if(NoFactory)
@@ -289,15 +289,15 @@ static void VictoriaProtector_ClotThink(int iNPC)
 						for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 						{
 							int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-							if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
+							if(IsValidEntity(entity) && i_NpcInternalId[entity] == VestanFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
 							{
 								WorldSpaceCenter(entity, VecSelfNpc);
 								VecSelfNpc[2]+=45.0;
 								int spawn_index;
 								if(i_ammo_count[npc.index])
-									spawn_index = NPC_CreateByName("npc_vestia_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+									spawn_index = NPC_CreateByName("npc_vesta_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 								else
-									spawn_index = NPC_CreateByName("npc_vestia_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+									spawn_index = NPC_CreateByName("npc_vesta_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 								if(spawn_index > MaxClients)
 								{
 									int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*npc.m_flDroneHealth);
@@ -319,9 +319,9 @@ static void VictoriaProtector_ClotThink(int iNPC)
 						VecSelfNpc[2]+=45.0;
 						int spawn_index;
 						if(i_ammo_count[npc.index])
-							spawn_index = NPC_CreateByName("npc_vestia_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+							spawn_index = NPC_CreateByName("npc_vesta_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 						else
-							spawn_index = NPC_CreateByName("npc_vestia_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+							spawn_index = NPC_CreateByName("npc_vesta_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 						if(spawn_index > MaxClients)
 						{
 							int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*npc.m_flDroneHealth);
@@ -359,7 +359,7 @@ static void VictoriaProtector_ClotThink(int iNPC)
 		}
 	}
 
-	int AI = VictoriaProtectorAssaultMode(npc.index, gameTime, target, DistanceToTarget);
+	int AI = VestaProtectorAssaultMode(npc.index, gameTime, target, DistanceToTarget);
 	switch(AI)
 	{
 		case 0, 1://notfound, cooldown
@@ -398,9 +398,9 @@ static void VictoriaProtector_ClotThink(int iNPC)
 	}
 }
 
-static Action VictoriaProtector_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestaProtector_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaProtector npc = view_as<VictoriaProtector>(victim);
+	VestaProtector npc = view_as<VestaProtector>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -435,9 +435,9 @@ static Action VictoriaProtector_OnTakeDamage(int victim, int &attacker, int &inf
 	return Plugin_Changed;
 }
 
-static void VictoriaProtector_NPCDeath(int entity)
+static void VestaProtector_NPCDeath(int entity)
 {
-	VictoriaProtector npc = view_as<VictoriaProtector>(entity);
+	VestaProtector npc = view_as<VestaProtector>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -462,9 +462,9 @@ static void VictoriaProtector_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable8);
 }
 
-static int VictoriaProtectorAssaultMode(int iNPC, float gameTime, int target, float distance)
+static int VestaProtectorAssaultMode(int iNPC, float gameTime, int target, float distance)
 {
-	VictoriaProtector npc = view_as<VictoriaProtector>(iNPC);
+	VestaProtector npc = view_as<VestaProtector>(iNPC);
 	if(distance < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 	{
 		if(npc.m_flNextMeleeAttack < gameTime)

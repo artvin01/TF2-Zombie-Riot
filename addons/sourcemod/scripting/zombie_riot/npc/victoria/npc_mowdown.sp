@@ -24,15 +24,15 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/mvm/mght/heavy_mvm_m_specials05.mp3"
 };
 
-void VictoriaMowdown_OnMapStart_NPC()
+void VestaMowdown_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Mowdown");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mowdown");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_mowdown");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_mowdown");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -52,10 +52,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaMowdown(vecPos, vecAng, ally);
+	return VestaMowdown(vecPos, vecAng, ally);
 }
 
-methodmap VictoriaMowdown < CClotBody
+methodmap VestaMowdown < CClotBody
 {
 	property int i_GunMode
 	{
@@ -102,9 +102,9 @@ methodmap VictoriaMowdown < CClotBody
         }
     }
 
-	public VictoriaMowdown(float vecPos[3], float vecAng[3], int ally)
+	public VestaMowdown(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaMowdown npc = view_as<VictoriaMowdown>(CClotBody(vecPos, vecAng, "models/bots/heavy_boss/bot_heavy_boss.mdl", "1.4", "26000", ally, .isGiant = true));
+		VestaMowdown npc = view_as<VestaMowdown>(CClotBody(vecPos, vecAng, "models/bots/heavy_boss/bot_heavy_boss.mdl", "1.4", "26000", ally, .isGiant = true));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -112,9 +112,9 @@ methodmap VictoriaMowdown < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_DEPLOYED_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		func_NPCDeath[npc.index] = VictoriaMowdown_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaMowdown_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaMowdown_ClotThink;
+		func_NPCDeath[npc.index] = VestaMowdown_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestaMowdown_OnTakeDamage;
+		func_NPCThink[npc.index] = VestaMowdown_ClotThink;
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
@@ -153,9 +153,9 @@ methodmap VictoriaMowdown < CClotBody
 	}
 }
 
-static void VictoriaMowdown_ClotThink(int iNPC)
+static void VestaMowdown_ClotThink(int iNPC)
 {
-	VictoriaMowdown npc = view_as<VictoriaMowdown>(iNPC);
+	VestaMowdown npc = view_as<VestaMowdown>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -164,7 +164,7 @@ static void VictoriaMowdown_ClotThink(int iNPC)
 	npc.Update();
 
 	f_HeadshotDamageMultiNpc[npc.index] = 1.0;
-	if(NpcStats_VictorianCallToArms(npc.index))
+	if(NpcStats_VestanCallToArms(npc.index))
 	{
 		f_HeadshotDamageMultiNpc[npc.index] = 0.0;
 	}
@@ -204,7 +204,7 @@ static void VictoriaMowdown_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VictoriaMowdownSelfDefense(npc); 
+		VestaMowdownSelfDefense(npc); 
 	}
 	else
 	{
@@ -215,9 +215,9 @@ static void VictoriaMowdown_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictoriaMowdown_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestaMowdown_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaMowdown npc = view_as<VictoriaMowdown>(victim);
+	VestaMowdown npc = view_as<VestaMowdown>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -231,9 +231,9 @@ static Action VictoriaMowdown_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-static void VictoriaMowdown_NPCDeath(int entity)
+static void VestaMowdown_NPCDeath(int entity)
 {
-	VictoriaMowdown npc = view_as<VictoriaMowdown>(entity);
+	VestaMowdown npc = view_as<VestaMowdown>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -256,7 +256,7 @@ static void VictoriaMowdown_NPCDeath(int entity)
 
 }
 
-static void VictoriaMowdownSelfDefense(VictoriaMowdown npc)
+static void VestaMowdownSelfDefense(VestaMowdown npc)
 {
 	int target;
 	target = npc.m_iTarget;

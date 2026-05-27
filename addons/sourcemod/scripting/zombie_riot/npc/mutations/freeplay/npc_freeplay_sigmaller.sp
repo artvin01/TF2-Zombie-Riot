@@ -43,7 +43,7 @@ void FreeplaySigmaller_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "SIGMALLER");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_freeplay_sigmaller");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_signaller");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_signaller");
 	Laser = PrecacheModel("materials/sprites/laserbeam.vmt");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
@@ -268,7 +268,7 @@ public void FreeplaySigmaller_ClotThink(int iNPC)
 			{
 				if(GetTeam(entity) == GetTeam(npc.index))
 				{
-					ApplyStatusEffect(npc.index, entity, "Call To Victoria", 60.0);
+					ApplyStatusEffect(npc.index, entity, "Call To Vesta", 60.0);
 					fl_Extra_Speed[entity] *= 1.02;
 					fl_Extra_MeleeArmor[entity] *= 0.98;
 					fl_Extra_RangedArmor[entity] *= 0.98;

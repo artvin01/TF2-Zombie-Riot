@@ -42,7 +42,7 @@ static const char g_BuildSound[][] = {
 	"weapons/medi_shield_deploy.wav",
 };
 
-void Victorian_Protector_OnMapStart_NPC()
+void Vestan_Protector_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -51,12 +51,12 @@ void Victorian_Protector_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_BuildSound)); i++) { PrecacheSound(g_BuildSound[i]); }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victorian Protector");
+	strcopy(data.Name, sizeof(data.Name), "Vestan Protector");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_protector");
 	strcopy(data.Icon, sizeof(data.Icon), "engineer");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -64,9 +64,9 @@ void Victorian_Protector_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Victorian_Protector(vecPos, vecAng, team, data);
+	return Vestan_Protector(vecPos, vecAng, team, data);
 }
-methodmap Victorian_Protector < CClotBody
+methodmap Vestan_Protector < CClotBody
 {
 	property float m_flArmorToGive
 	{
@@ -114,9 +114,9 @@ methodmap Victorian_Protector < CClotBody
 	}
 	
 	
-	public Victorian_Protector(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Vestan_Protector(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Victorian_Protector npc = view_as<Victorian_Protector>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "10000", ally));
+		Vestan_Protector npc = view_as<Vestan_Protector>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "10000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -133,9 +133,9 @@ methodmap Victorian_Protector < CClotBody
 
 		npc.m_flArmorToGive = StringToFloat(data);
 
-		func_NPCDeath[npc.index] = view_as<Function>(Victorian_Protector_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Victorian_Protector_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Victorian_Protector_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Vestan_Protector_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Vestan_Protector_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Vestan_Protector_ClotThink);
 		
 		
 		//IDLE
@@ -166,9 +166,9 @@ methodmap Victorian_Protector < CClotBody
 	}
 }
 
-public void Victorian_Protector_ClotThink(int iNPC)
+public void Vestan_Protector_ClotThink(int iNPC)
 {
-	Victorian_Protector npc = view_as<Victorian_Protector>(iNPC);
+	Vestan_Protector npc = view_as<Vestan_Protector>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -215,11 +215,11 @@ public void Victorian_Protector_ClotThink(int iNPC)
 		}
 		if(npc.m_iChanged_WalkCycle == 1 && npc.Anger == false)
 		{
-			Victorian_ProtectorBuildObject(npc, flDistanceToTarget); 
+			Vestan_ProtectorBuildObject(npc, flDistanceToTarget); 
 		}
 		else
 		{
-			Victorian_ProtectorSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+			Vestan_ProtectorSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		}
 	}
 	else
@@ -230,9 +230,9 @@ public void Victorian_Protector_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Victorian_Protector_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Vestan_Protector_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Victorian_Protector npc = view_as<Victorian_Protector>(victim);
+	Vestan_Protector npc = view_as<Vestan_Protector>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -260,9 +260,9 @@ public Action Victorian_Protector_OnTakeDamage(int victim, int &attacker, int &i
 	return Plugin_Changed;
 }
 
-public void Victorian_Protector_NPCDeath(int entity)
+public void Vestan_Protector_NPCDeath(int entity)
 {
-	Victorian_Protector npc = view_as<Victorian_Protector>(entity);
+	Vestan_Protector npc = view_as<Vestan_Protector>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -284,7 +284,7 @@ public void Victorian_Protector_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-void Victorian_ProtectorBuildObject(Victorian_Protector npc, float distance)
+void Vestan_ProtectorBuildObject(Vestan_Protector npc, float distance)
 {
 	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
 	{
@@ -304,7 +304,7 @@ void Victorian_ProtectorBuildObject(Victorian_Protector npc, float distance)
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 			SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
 			float timeup = 5.0;
-			if(NpcStats_VictorianCallToArms(npc.index))
+			if(NpcStats_VestanCallToArms(npc.index))
 				 timeup *= 2.0;
 			npc.m_iWearable7 = npc.SpawnShield(timeup, "models/props_mvm/mvm_player_shield.mdl",40.0, false);
 			SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", 1);
@@ -314,7 +314,7 @@ void Victorian_ProtectorBuildObject(Victorian_Protector npc, float distance)
 		}
 	}
 }
-void Victorian_ProtectorSelfDefense(Victorian_Protector npc, float gameTime, int target, float distance)
+void Vestan_ProtectorSelfDefense(Vestan_Protector npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{

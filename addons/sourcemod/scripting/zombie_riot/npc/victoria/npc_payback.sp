@@ -29,15 +29,15 @@ static const char g_MeleeAttackSounds[][] = {
 
 static const char g_MeleeHitSounds[] = "weapons/halloween_boss/knight_axe_hit.wav";
 
-void VictorianPayback_OnMapStart_NPC()
+void VestanPayback_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Payback");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_payback");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_payback_v2");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_payback_v2");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -54,10 +54,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianPayback(vecPos, vecAng, ally, data);
+	return VestanPayback(vecPos, vecAng, ally, data);
 }
 
-methodmap VictorianPayback < CClotBody
+methodmap VestanPayback < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -112,9 +112,9 @@ methodmap VictorianPayback < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
 	
-	public VictorianPayback(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanPayback(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianPayback npc = view_as<VictorianPayback>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.5", "8000", ally, false, true));
+		VestanPayback npc = view_as<VestanPayback>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.5", "8000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -136,9 +136,9 @@ methodmap VictorianPayback < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		func_NPCDeath[npc.index] = VictorianPayback_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianPayback_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianPayback_ClotThink;
+		func_NPCDeath[npc.index] = VestanPayback_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanPayback_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanPayback_ClotThink;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "claidheamohmor");
@@ -218,9 +218,9 @@ methodmap VictorianPayback < CClotBody
 	}
 }
 
-static void VictorianPayback_ClotThink(int iNPC)
+static void VestanPayback_ClotThink(int iNPC)
 {
-	VictorianPayback npc = view_as<VictorianPayback>(iNPC);
+	VestanPayback npc = view_as<VestanPayback>(iNPC);
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 	{
@@ -332,7 +332,7 @@ static void VictorianPayback_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VictorianPaybackSelfDefense(npc,gameTime, flDistanceToTarget); 
+		VestanPaybackSelfDefense(npc,gameTime, flDistanceToTarget); 
 	}
 	else
 	{
@@ -342,9 +342,9 @@ static void VictorianPayback_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictorianPayback_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanPayback_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianPayback npc = view_as<VictorianPayback>(victim);
+	VestanPayback npc = view_as<VestanPayback>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -364,9 +364,9 @@ static Action VictorianPayback_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-static void VictorianPayback_NPCDeath(int entity)
+static void VestanPayback_NPCDeath(int entity)
 {
-	VictorianPayback npc = view_as<VictorianPayback>(entity);
+	VestanPayback npc = view_as<VestanPayback>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();	
 	
@@ -386,7 +386,7 @@ static void VictorianPayback_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, float distance)
+static void VestanPaybackSelfDefense(VestanPayback npc, float gameTime, float distance)
 {
 	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 	{
@@ -442,7 +442,7 @@ static void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, fl
 						}
 						else
 							damageDealt *=  (1.0+(1-(Health/MaxHealth))*4);
-						if(NpcStats_VictorianCallToArms(npc.index))
+						if(NpcStats_VestanCallToArms(npc.index))
 							damageDealt *= 1.25;
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
@@ -477,7 +477,7 @@ static void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, fl
 			{
 				float damageDealt = 40.0;
 				damageDealt *=  (1.0+(1-(Health/MaxHealth))*4);
-				if(NpcStats_VictorianCallToArms(npc.index))
+				if(NpcStats_VestanCallToArms(npc.index))
 					damageDealt *= 1.25;
 
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);

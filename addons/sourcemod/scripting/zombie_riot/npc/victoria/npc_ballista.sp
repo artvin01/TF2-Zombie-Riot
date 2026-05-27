@@ -36,15 +36,15 @@ static const char g_ReloadSound[] = "weapons/ar2/npc_ar2_reload.wav";
 
 static const char g_RangeAttackSounds[] = "weapons/rocket_shoot.wav";
 
-void VictorianBallista_OnMapStart_NPC()
+void VestanBallista_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ballista");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ballista");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_ballistas");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_ballistas");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -62,10 +62,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianBallista(vecPos, vecAng, ally, data);
+	return VestanBallista(vecPos, vecAng, ally, data);
 }
 
-methodmap VictorianBallista < CClotBody
+methodmap VestanBallista < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -96,9 +96,9 @@ methodmap VictorianBallista < CClotBody
 		EmitSoundToAll(g_ReloadSound, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public VictorianBallista(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanBallista(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianBallista npc = view_as<VictorianBallista>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1000", ally));
+		VestanBallista npc = view_as<VestanBallista>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -109,9 +109,9 @@ methodmap VictorianBallista < CClotBody
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		func_NPCDeath[npc.index] = view_as<Function>(VictorianBallista_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictorianBallista_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictorianBallista_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(VestanBallista_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VestanBallista_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(VestanBallista_ClotThink);
 		
 		npc.m_flNextRangedAttack = 0.0;
 		
@@ -167,9 +167,9 @@ methodmap VictorianBallista < CClotBody
 	}
 }
 
-static void VictorianBallista_ClotThink(int iNPC)
+static void VestanBallista_ClotThink(int iNPC)
 {
-	VictorianBallista npc = view_as<VictorianBallista>(iNPC);
+	VestanBallista npc = view_as<VestanBallista>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -207,7 +207,7 @@ static void VictorianBallista_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		switch(VictorianBallistaSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget))
+		switch(VestanBallistaSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -252,9 +252,9 @@ static void VictorianBallista_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictorianBallista_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanBallista_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianBallista npc = view_as<VictorianBallista>(victim);
+	VestanBallista npc = view_as<VestanBallista>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -268,9 +268,9 @@ static Action VictorianBallista_OnTakeDamage(int victim, int &attacker, int &inf
 	return Plugin_Changed;
 }
 
-static void VictorianBallista_NPCDeath(int entity)
+static void VestanBallista_NPCDeath(int entity)
 {
-	VictorianBallista npc = view_as<VictorianBallista>(entity);
+	VestanBallista npc = view_as<VestanBallista>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();	
 	
@@ -286,13 +286,13 @@ static void VictorianBallista_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static int VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime, float distance)
+static int VestanBallistaSelfDefense(VestanBallista npc, float gameTime, float distance)
 {
 	if(npc.m_flAttackHappens || !npc.m_iAmmo)
 	{
 		if(!npc.m_flAttackHappens)
 		{
-			npc.m_flAttackHappens=gameTime+(NpcStats_VictorianCallToArms(npc.index) ? 1.5 : 2.0);
+			npc.m_flAttackHappens=gameTime+(NpcStats_VestanCallToArms(npc.index) ? 1.5 : 2.0);
 			npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY", true,_,_,0.5);
 			npc.m_flAttackHappenswillhappen=false;
 			npc.PlayReloadSound();

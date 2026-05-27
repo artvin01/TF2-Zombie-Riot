@@ -25,15 +25,15 @@ static const char g_IdleAlertedSounds[][] = {
 
 static const char g_ThrowSounds[] = "weapons/cleaver_throw.wav";
 
-void VictorianGrenadier_OnMapStart_NPC()
+void VestanGrenadier_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Grenadier");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_grenadier");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_grenadiers");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_grenadiers");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -49,9 +49,9 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianGrenadier(vecPos, vecAng, ally);
+	return VestanGrenadier(vecPos, vecAng, ally);
 }
-methodmap VictorianGrenadier < CClotBody
+methodmap VestanGrenadier < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -84,9 +84,9 @@ methodmap VictorianGrenadier < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
-	public VictorianGrenadier(float vecPos[3], float vecAng[3], int ally)
+	public VestanGrenadier(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianGrenadier npc = view_as<VictorianGrenadier>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally,false));
+		VestanGrenadier npc = view_as<VestanGrenadier>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally,false));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -102,9 +102,9 @@ methodmap VictorianGrenadier < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(VictorianGrenadier_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictorianGrenadier_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictorianGrenadier_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(VestanGrenadier_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VestanGrenadier_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(VestanGrenadier_ClotThink);
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
@@ -134,9 +134,9 @@ methodmap VictorianGrenadier < CClotBody
 	}
 }
 
-static void VictorianGrenadier_ClotThink(int iNPC)
+static void VestanGrenadier_ClotThink(int iNPC)
 {
-	VictorianGrenadier npc = view_as<VictorianGrenadier>(iNPC);
+	VestanGrenadier npc = view_as<VestanGrenadier>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -204,7 +204,7 @@ static void VictorianGrenadier_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = VictorianGrenadierSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
+		int ActionDo = VestanGrenadierSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
 		switch(ActionDo)
 		{
 			case 0:
@@ -239,9 +239,9 @@ static void VictorianGrenadier_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictorianGrenadier_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanGrenadier_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianGrenadier npc = view_as<VictorianGrenadier>(victim);
+	VestanGrenadier npc = view_as<VestanGrenadier>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -255,9 +255,9 @@ static Action VictorianGrenadier_OnTakeDamage(int victim, int &attacker, int &in
 	return Plugin_Changed;
 }
 
-static void VictorianGrenadier_NPCDeath(int entity)
+static void VestanGrenadier_NPCDeath(int entity)
 {
-	VictorianGrenadier npc = view_as<VictorianGrenadier>(entity);
+	VestanGrenadier npc = view_as<VestanGrenadier>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -279,7 +279,7 @@ static void VictorianGrenadier_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float distance)
+static int VestanGrenadierSelfDefense(VestanGrenadier npc, float gameTime, float distance)
 {
 	//Direct mode
 	if(gameTime > npc.m_flNextMeleeAttack)
@@ -327,7 +327,7 @@ static int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime,
 					npc.FireRocket(vecTarget, RocketDamage, RocketSpeed, "models/workshop/weapons/c_models/c_caber/c_caber.mdl", 1.2);
 				}
 				
-				if(NpcStats_VictorianCallToArms(npc.index))
+				if(NpcStats_VestanCallToArms(npc.index))
 				{
 					npc.m_flNextMeleeAttack = gameTime + 1.0;
 				}

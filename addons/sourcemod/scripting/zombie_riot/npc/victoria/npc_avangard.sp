@@ -18,15 +18,15 @@ static bool b_AdvansedConstruction[MAXENTITIES];
 
 static float fActivationSound;
 
-void VictorianOfflineAvangard_MapStart()
+void VestanOfflineAvangard_MapStart()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Avangard");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_avangard");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_avangard");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_avangard");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
@@ -42,17 +42,17 @@ static void ClotPrecache()
 	PrecacheModel("models/bots/soldier_boss/bot_soldier_boss.mdl");
 }
 
-int VictorianAvangard_ID()
+int VestanAvangard_ID()
 {
 	return NPCId;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianOfflineAvangard(vecPos, vecAng, ally, data);
+	return VestanOfflineAvangard(vecPos, vecAng, ally, data);
 }
 
-methodmap VictorianOfflineAvangard < CClotBody
+methodmap VestanOfflineAvangard < CClotBody
 {
 	public void PlayActivationSound()
  	{
@@ -103,9 +103,9 @@ methodmap VictorianOfflineAvangard < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 	
-	public VictorianOfflineAvangard(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanOfflineAvangard(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianOfflineAvangard npc = view_as<VictorianOfflineAvangard>(CClotBody(vecPos, vecAng, "models/bots/soldier_boss/bot_soldier_boss.mdl", "1.75", "100000", ally, _, true));
+		VestanOfflineAvangard npc = view_as<VestanOfflineAvangard>(CClotBody(vecPos, vecAng, "models/bots/soldier_boss/bot_soldier_boss.mdl", "1.75", "100000", ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_MP_STUN_MIDDLE");
@@ -120,9 +120,9 @@ methodmap VictorianOfflineAvangard < CClotBody
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = VictorianOfflineAvangard_ClotDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianOfflineAvangard_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianOfflineAvangard_ClotThink;
+		func_NPCDeath[npc.index] = VestanOfflineAvangard_ClotDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanOfflineAvangard_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanOfflineAvangard_ClotThink;
 		
 		npc.m_flSpeed = 100.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -218,9 +218,9 @@ methodmap VictorianOfflineAvangard < CClotBody
 	}
 }
 
-static Action VictorianOfflineAvangard_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanOfflineAvangard_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianWelder npc = view_as<VictorianWelder>(victim);
+	VestanWelder npc = view_as<VestanWelder>(victim);
 	
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -234,9 +234,9 @@ static Action VictorianOfflineAvangard_OnTakeDamage(int victim, int &attacker, i
 	return Plugin_Changed;
 }
 
-static void VictorianOfflineAvangard_ClotThink(int iNPC)
+static void VestanOfflineAvangard_ClotThink(int iNPC)
 {
-	VictorianOfflineAvangard npc = view_as<VictorianOfflineAvangard>(iNPC);
+	VestanOfflineAvangard npc = view_as<VestanOfflineAvangard>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -475,7 +475,7 @@ static void VictorianOfflineAvangard_ClotThink(int iNPC)
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 		{
 			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
-			if (IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianMechanist_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
+			if (IsValidEntity(entity) && i_NpcInternalId[entity] == VestanMechanist_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
 			{
 				villagerexists = true;
 			}
@@ -488,9 +488,9 @@ static void VictorianOfflineAvangard_ClotThink(int iNPC)
 	}
 }
 
-static void VictorianOfflineAvangard_ClotDeath(int entity)
+static void VestanOfflineAvangard_ClotDeath(int entity)
 {
-	VictorianOfflineAvangard npc = view_as<VictorianOfflineAvangard>(entity);
+	VestanOfflineAvangard npc = view_as<VestanOfflineAvangard>(entity);
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 	npc.PlayDeathSound();
 

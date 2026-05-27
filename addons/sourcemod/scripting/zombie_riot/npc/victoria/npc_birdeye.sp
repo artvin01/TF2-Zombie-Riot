@@ -83,7 +83,7 @@ static int i_AttackCount[MAXENTITIES];
 
 static bool b_TheGoons;
 
-void VictoriaBirdeye_OnMapStart_NPC()
+void VestaBirdeye_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Birdeye");
@@ -91,7 +91,7 @@ void VictoriaBirdeye_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "sniper_headshot");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -113,10 +113,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaBirdeye(vecPos, vecAng, ally, data);
+	return VestaBirdeye(vecPos, vecAng, ally, data);
 }
 
-methodmap VictoriaBirdeye < CClotBody
+methodmap VestaBirdeye < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -189,9 +189,9 @@ methodmap VictoriaBirdeye < CClotBody
 		public set(int TempValueForProperty) 	{ i_AttackCount[this.index] = TempValueForProperty; }
 	}
 	
-	public VictoriaBirdeye(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestaBirdeye(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictoriaBirdeye npc = view_as<VictoriaBirdeye>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "150000", ally));
+		VestaBirdeye npc = view_as<VestaBirdeye>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "150000", ally));
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -201,9 +201,9 @@ methodmap VictoriaBirdeye < CClotBody
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		func_NPCDeath[npc.index] = VictoriaBirdeye_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaBirdeye_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaBirdeye_ClotThink;
+		func_NPCDeath[npc.index] = VestaBirdeye_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestaBirdeye_OnTakeDamage;
+		func_NPCThink[npc.index] = VestaBirdeye_ClotThink;
 		
 		npc.m_iChanged_WalkCycle = 0;
 		npc.g_TimesSummoned = 0;
@@ -299,13 +299,13 @@ methodmap VictoriaBirdeye < CClotBody
 				case 1:NPCPritToChat_Override("Bigpipe", "{forestgreen}", "bigpipe_Talk_06-1", false);
 				case 2:NPCPritToChat_Override("Harbringer", "{sienna}", "harbringer_Talk_07-1", false);
 			}
-			RequestFrame(VictoriaBirdeye_SpawnAllyDuo, EntIndexToEntRef(npc.index));
+			RequestFrame(VestaBirdeye_SpawnAllyDuo, EntIndexToEntRef(npc.index));
 		}
 		else if(!StrContains(data, "damn_trio"))
 		{
 			b_TheGoons=true;
 			npc.m_flMeleeArmor -= 0.25;
-			RequestFrame(VictoriaBirdeye_SpawnAllyDuo, EntIndexToEntRef(npc.index));
+			RequestFrame(VestaBirdeye_SpawnAllyDuo, EntIndexToEntRef(npc.index));
 		}
 		else
 		{
@@ -328,15 +328,15 @@ methodmap VictoriaBirdeye < CClotBody
 				case 12:NPCPritToChat_Override("Harbringer", "{sienna}", "harbringer_Talk_01-3", false);
 				case 13:NPCPritToChat_Override("Harbringer", "{sienna}", "harbringer_Talk_01-4", false);
 			}
-			RequestFrame(VictoriaBirdeye_SpawnAllyDuo, EntIndexToEntRef(npc.index));
+			RequestFrame(VestaBirdeye_SpawnAllyDuo, EntIndexToEntRef(npc.index));
 		}
 		return npc;
 	}
 }
 
-static void VictoriaBirdeye_ClotThink(int iNPC)
+static void VestaBirdeye_ClotThink(int iNPC)
 {
-	VictoriaBirdeye npc = view_as<VictoriaBirdeye>(iNPC);
+	VestaBirdeye npc = view_as<VestaBirdeye>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -482,11 +482,11 @@ static void VictoriaBirdeye_ClotThink(int iNPC)
 		}
 		if(npc.m_bFUCKYOU||!npc.m_bFUCKYOU&&(Can_I_See_Enemy_Only(npc.index, npc.m_iTargetWalkTo)&&npc.m_flNextRangedAttack>GetGameTime(npc.index)))
 		{
-			ExtraBehavior = VictoriaBirdeyeAssaultMode(npc,GetGameTime(npc.index), npc.m_iTargetWalkTo, flDistanceToTarget); 
+			ExtraBehavior = VestaBirdeyeAssaultMode(npc,GetGameTime(npc.index), npc.m_iTargetWalkTo, flDistanceToTarget); 
 		}
 		else
 		{
-			ExtraBehavior = VictoriaBirdeyeSniperMode(npc,GetGameTime(npc.index));
+			ExtraBehavior = VestaBirdeyeSniperMode(npc,GetGameTime(npc.index));
 			if(npc.m_iAttacksTillReload!=1)
 			{
 				KillFeed_SetKillIcon(npc.index, "headshot");
@@ -641,9 +641,9 @@ static void VictoriaBirdeye_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictoriaBirdeye_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestaBirdeye_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaBirdeye npc = view_as<VictoriaBirdeye>(victim);
+	VestaBirdeye npc = view_as<VestaBirdeye>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -669,7 +669,7 @@ static Action VictoriaBirdeye_OnTakeDamage(int victim, int &attacker, int &infli
 
 static Action Timer_BirdEyeTele(Handle timer, int iNPC)
 {
-	VictoriaBirdeye npc = view_as<VictoriaBirdeye>(iNPC);
+	VestaBirdeye npc = view_as<VestaBirdeye>(iNPC);
 	float Vec[3], VecOld[3];
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", VecOld);
 	bool FUCKU=false;
@@ -745,9 +745,9 @@ static Action Timer_BirdEyeTele(Handle timer, int iNPC)
 	return Plugin_Stop;
 }
 
-static void VictoriaBirdeye_NPCDeath(int entity)
+static void VestaBirdeye_NPCDeath(int entity)
 {
-	VictoriaBirdeye npc = view_as<VictoriaBirdeye>(entity);
+	VestaBirdeye npc = view_as<VestaBirdeye>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -768,7 +768,7 @@ static void VictoriaBirdeye_NPCDeath(int entity)
 
 }
 
-int VictoriaBirdeyeSniperMode(VictoriaBirdeye npc, float gameTime)
+int VestaBirdeyeSniperMode(VestaBirdeye npc, float gameTime)
 {
 	if(!npc.m_flAttackHappens)
 	{
@@ -893,11 +893,11 @@ int VictoriaBirdeyeSniperMode(VictoriaBirdeye npc, float gameTime)
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(NpcStats_VictorianCallToArms(npc.index))
+		if(NpcStats_VestanCallToArms(npc.index))
 		{
 			npc.m_flAttackHappens = gameTime + (npc.m_iBurst>0 ? 0.2 : 0.65);
 		}
-		else if(!NpcStats_VictorianCallToArms(npc.index))
+		else if(!NpcStats_VestanCallToArms(npc.index))
 		{
 			npc.m_flAttackHappens = gameTime + (npc.m_iBurst>0 ? 0.2 : 1.25);
 		}
@@ -925,7 +925,7 @@ int VictoriaBirdeyeSniperMode(VictoriaBirdeye npc, float gameTime)
 	return 1;
 }
 
-static int VictoriaBirdeyeAssaultMode(VictoriaBirdeye npc, float gameTime, int target, float distance)
+static int VestaBirdeyeAssaultMode(VestaBirdeye npc, float gameTime, int target, float distance)
 {
 	if(npc.m_iAmmo < 1)
 		return 4;
@@ -1122,12 +1122,12 @@ static int VictoriaBirdeyeAssaultMode(VictoriaBirdeye npc, float gameTime, int t
 	return 0;
 }
 
-static void VictoriaBirdeye_SpawnAllyDuo(int ref)
+static void VestaBirdeye_SpawnAllyDuo(int ref)
 {
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
-		VictoriaBirdeye npc = view_as<VictoriaBirdeye>(entity);
+		VestaBirdeye npc = view_as<VestaBirdeye>(entity);
 		float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		int maxhealth;
@@ -1140,7 +1140,7 @@ static void VictoriaBirdeye_SpawnAllyDuo(int ref)
 		{
 			NpcStats_CopyStats(entity, spawn_index);
 			//i_ally_index = EntIndexToEntRef(spawn_index);
-			//VictoriaHarbringer_Set_Ally_Index(entity);
+			//VestaHarbringer_Set_Ally_Index(entity);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToFloor(maxhealth*2.5));
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToFloor(maxhealth*2.5));
@@ -1155,7 +1155,7 @@ static void VictoriaBirdeye_SpawnAllyDuo(int ref)
 		if(spawn_index2 > MaxClients)
 		{
 			//i_ally_index = EntIndexToEntRef(spawn_index2);
-			//VictoriaBigPipe_Set_Ally_Index(entity);
+			//VestaBigPipe_Set_Ally_Index(entity);
 			NpcAddedToZombiesLeftCurrently(spawn_index2, true);
 			SetEntProp(spawn_index2, Prop_Data, "m_iHealth", RoundToFloor(maxhealth*1.5));
 			SetEntProp(spawn_index2, Prop_Data, "m_iMaxHealth", RoundToFloor(maxhealth*1.5));

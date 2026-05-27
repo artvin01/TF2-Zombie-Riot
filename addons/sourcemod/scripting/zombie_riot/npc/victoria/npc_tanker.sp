@@ -22,15 +22,15 @@ static const char g_IdleAlertedSounds[][] = {
 
 static const char g_RangeAttackSounds[] = "weapons/shotgun_shoot.wav";
 
-void VIctorianTanker_OnMapStart_NPC()
+void VestanTanker_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Tanker");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_tanker");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_tanker");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_tanker");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
@@ -48,10 +48,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VIctorianTanker(vecPos, vecAng, ally, data);
+	return VestanTanker(vecPos, vecAng, ally, data);
 }
 
-methodmap VIctorianTanker < CClotBody
+methodmap VestanTanker < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -82,9 +82,9 @@ methodmap VIctorianTanker < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
-	public VIctorianTanker(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanTanker(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VIctorianTanker npc = view_as<VIctorianTanker>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "22000", ally));
+		VestanTanker npc = view_as<VestanTanker>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "22000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -99,9 +99,9 @@ methodmap VIctorianTanker < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = VIctorianTanker_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VIctorianTanker_OnTakeDamage;
-		func_NPCThink[npc.index] = VIctorianTanker_ClotThink;
+		func_NPCDeath[npc.index] = VestanTanker_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanTanker_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanTanker_ClotThink;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "reserve_shooter");
@@ -148,9 +148,9 @@ methodmap VIctorianTanker < CClotBody
 	}
 }
 
-static void VIctorianTanker_ClotThink(int iNPC)
+static void VestanTanker_ClotThink(int iNPC)
 {
-	VIctorianTanker npc = view_as<VIctorianTanker>(iNPC);
+	VestanTanker npc = view_as<VestanTanker>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -169,7 +169,7 @@ static void VIctorianTanker_ClotThink(int iNPC)
 	}
 
 	float TrueArmor = 1.0;
-	if(NpcStats_VictorianCallToArms(npc.index))
+	if(NpcStats_VestanCallToArms(npc.index))
 		TrueArmor *= npc.m_flTrueArmor;
 	fl_TotalArmor[npc.index] = TrueArmor;
 
@@ -197,7 +197,7 @@ static void VIctorianTanker_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		switch(VIctorianTankerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget))
+		switch(VestanTankerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -231,9 +231,9 @@ static void VIctorianTanker_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VIctorianTanker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanTanker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VIctorianTanker npc = view_as<VIctorianTanker>(victim);
+	VestanTanker npc = view_as<VestanTanker>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -254,9 +254,9 @@ static Action VIctorianTanker_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-static void VIctorianTanker_NPCDeath(int entity)
+static void VestanTanker_NPCDeath(int entity)
 {
-	VIctorianTanker npc = view_as<VIctorianTanker>(entity);
+	VestanTanker npc = view_as<VestanTanker>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -275,7 +275,7 @@ static void VIctorianTanker_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static int VIctorianTankerSelfDefense(VIctorianTanker npc, float gameTime, int target, float distance)
+static int VestanTankerSelfDefense(VestanTanker npc, float gameTime, int target, float distance)
 {
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{

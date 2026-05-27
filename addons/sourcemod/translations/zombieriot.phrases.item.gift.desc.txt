@@ -3204,7 +3204,7 @@
 	{
 		"en"	"Basic melee unit of Leatherboots Scoutsquad.\n-Moves faster when direct operation orders are given \n-(When signalled) Gain speed boost"
 	}
-	"Victoria Charger Desc"
+	"Vesta Charger Desc"
 	{
 		"en"	"Melee unit with shortest melee range of Leatherboots Scoutsquad.\n-They are slow at first but accelerates into high speed\n-Their damage multiplies by their current speed\n-Moves faster when direct operation orders are given \n-(When signalled) Accelerate faster"
 	}
@@ -3212,7 +3212,7 @@
 	{
 		"en"	"Basic melee unit with electrical stick of Leatherboots Scoutsquad.\n-Apply teslar debuff to their victim on hit \n-(When signalled) Duration of the debuff is increased"
 	}
-	"Victorian Vanguard Desc"
+	"Vestan Vanguard Desc"
 	{
 		"en"	"Melee unit of Leatherboots Scoutsquad that has long range.\n-slightly pulls their victim on hit \n-(When signalled) pull stronger"
 	}
@@ -3224,7 +3224,7 @@
 	{
 		"en"	"Cyborg Ranged unit of Leatherboots Scoutsquad. \n-Fires 3 projectiles per attack \n-(When signalled) reload faster"
 	}
-	"Victorian Igniter Desc"
+	"Vestan Igniter Desc"
 	{
 		"en"	"Giant ranged unit of Leatherboots Scoutsquad. \n-Fires a flare that ignites its target \n-(When signalled) afterburn damage increased"
 	}
@@ -3232,13 +3232,13 @@
 	{
 		"en"	"Ranged unit of Leatherboots Scoutsquad. \n-It throws an inaccurate grenade \n-(When signalled) firing speed increased"
 	}
-	"Victorian ScoutSquad Leader Desc"
+	"Vestan ScoutSquad Leader Desc"
 	{
 		"en"	"Capable leader of Leatherboots Scoutsquad \n-Fires a shotgun with limited ammo that applies stacking vulnerability. \n-When it runs out of ammo, it will pull out his axe and perform melee attacks. \n-With some cooldowns, it will grant heavy speedboost to all enemies near him \n-(When signalled) Never lose ammo"
 	}
 	"Signaller Desc"
 	{
-		"en"	"Elite unit of Victorian army. \nHe receives a direct opertion order from radiotower and deliver it to all enemies \n-While alive, all the enemies get Signal buff which increases their damage and speed. \n-Also, all vestian enemies will unlock special traits"
+		"en"	"Elite unit of Vestan army. \nHe receives a direct opertion order from radiotower and deliver it to all enemies \n-While alive, all the enemies get Signal buff which increases their damage and speed. \n-Also, all vestan enemies will unlock special traits"
 	}
 	"Humbee Desc"
 	{
@@ -3276,7 +3276,7 @@
 	{
 		"en"	"Melee unit of Irongate Defense Units. \n-got a skill to block incoming damage. \n-When damaged, enters defense mode, and gains high damage resistance. \n-When attacking, every 4th damage deals higher damage \n-(When signalled) block cooldown reduced"
 	}
-	"Victoria Destructor Desc"
+	"Vesta Destructor Desc"
 	{
 		"en"	"Ranged unit of Irongate Defense Units. \n-Creates explosion that ignites all targets. \n-Performs stronger explosion when he receives a direct operation order \-(When signalled) wider explosion range"
 	}
@@ -3284,7 +3284,7 @@
 	{
 		"en"	"Powerful Mecha of Irongate Defense Units. \n-moves slowly but hits hard. \n-Performs aoe attack every few attacks. \n-Also, when destroyed, drops the aviator to continue the fight \n-(When signalled) performs aoe attack often"
 	}
-	"Victoria Aviator Desc"
+	"Vesta Aviator Desc"
 	{
 		"en"	"Elite mechanists who rides the Ironshield Mecha. \n-It will ride Ironshield after few seconds. \n-It fires a shotgun and slams the enemy to the ground with hammer \n-(When signalled) calls Ironshield faster"
 	}
@@ -3312,14 +3312,14 @@
 	{
 		"en"	"Elite ranged unit of Stormtrooper Team. \n-He is holding disposable RPG. \n-When target is in range, fire a rocket and rush in with his melee \-(When signalled) Damage heavily increased"
 	}
-	"Victorian Mortar Desc"
+	"Vestan Mortar Desc"
 	{
-		"en"	"Fearless Ranged unit of Victorian army. \n-Fires 2 rockets in arc at random position near its target. \n-(When signalled) Rocket explodes twice, second explosion will deal half of the first explosion"
+		"en"	"Fearless Ranged unit of Vestan army. \n-Fires 2 rockets in arc at random position near its target. \n-(When signalled) Rocket explodes twice, second explosion will deal half of the first explosion"
 		"ko"	"원거리 광역 적으로 타겟 주변에 랜덤한 지점으로 로켓 두개를 날립니다\n(시그널 버프시) 두번 폭발합니다. 두번째 폭발은 데미지가 반감됩니다"
 	}
-	"Victorian Artillerist Desc"
+	"Vestan Artillerist Desc"
   {
-    "en"  "Elite ranged unit of Victorian army. \n-Has infinite attack range. \n-Bombard the target and the area around it with some windup \n-(When signalled) Attackspeed hastened massively"
+    "en"  "Elite ranged unit of Vestan army. \n-Has infinite attack range. \n-Bombard the target and the area around it with some windup \n-(When signalled) Attackspeed hastened massively"
 		"ko"	"초원거리에서 타깃 지점으로 광역포격을 합니다.\n(시그널 버프시) 공격속도가 빨라집니다"
 	}
 	"Bomb Cart Desc"
@@ -3332,15 +3332,15 @@
 	}
 	"Birdeye Desc"
 	{
-		"en"	"One of the elite mercenaries hired by Castellan. Always support Harbringer and Bigpipe. \n-Birdeye enjoys watching its victim suffer in pain by sniping targets with special vulnerability bullet. \n-Equipped with teleportation device that he will use it to reposition himself from incoming threats \n-He also got transmitter from vestian army to get specific orders and locks into target much faster\n-(When signalled) Always hit target within sight"
+		"en"	"One of the elite mercenaries hired by Castellan. Always support Harbringer and Bigpipe. \n-Birdeye enjoys watching its victim suffer in pain by sniping targets with special vulnerability bullet. \n-Equipped with teleportation device that he will use it to reposition himself from incoming threats \n-He also got transmitter from vestan army to get specific orders and locks into target much faster\n-(When signalled) Always hit target within sight"
 	}
 	"Harbringer Desc"
 	{
-		"en"	"One of the elite mercenaries hired by Castellan. Always get along with Bigpipe and Birdeye. \n-Holds LMG and rushes in fast speed. \n-He also got painkiller and transmitter from vestian army which he would use it on command \n-(When signalled) sets max cap of damage that he could take per hit"
+		"en"	"One of the elite mercenaries hired by Castellan. Always get along with Bigpipe and Birdeye. \n-Holds LMG and rushes in fast speed. \n-He also got painkiller and transmitter from vestan army which he would use it on command \n-(When signalled) sets max cap of damage that he could take per hit"
 	}
 	"Bigpipe Desc"
 	{
-		"en"	"One of the elite mercenaries hired by Castellan. Always get along with Bigpipe and Birdeye. \n-Equipped with special grenade launcher, Bigpipe fires arching pipes that will explode on contact. \n-He perfroms good crowd-control against enemies and building destruction\n-He is also equipped with HE ammunition and vestian transmitter which he will use on given orders \n-(When signalled) Ignite targets hit by pipes"
+		"en"	"One of the elite mercenaries hired by Castellan. Always get along with Bigpipe and Birdeye. \n-Equipped with special grenade launcher, Bigpipe fires arching pipes that will explode on contact. \n-He perfroms good crowd-control against enemies and building destruction\n-He is also equipped with HE ammunition and vestan transmitter which he will use on given orders \n-(When signalled) Ignite targets hit by pipes"
 	}
 	"Caffeinator Desc"
 	{
@@ -3370,102 +3370,102 @@
 	{
 		"en"	"Ranged unit of Brassbunker Special Force. \n-They randomly spawn around the players and ambush them.\n-They are equipped with disposable jetpack which will launch towards their target once \n-Also, when they are reloading, they run away and take cover \n-(When signalled) Jump cd decreased heavily"
 	}
-	"Victoria Taser Desc"
+	"Vesta Taser Desc"
 	{
 		"en"	"Elite ranged unit of Brassbunker Special Force armed with taser. \n-Slows down its victim heavily . \n-(When signalled) attacks faster"
 	}
-	"Victoria Tank Desc"
+	"Vesta Tank Desc"
 	{
 		"en"	"Elite Vehicle of Brassbunker Special Force. \n-Slow and powerful unit that fires a rocket dealing deadly damage. \n-However, it turns slowly and moves slowly \n-Upon death, it releases the squad it was carrying with \n-(When signalled) projecticle speed increased"
 	}
-	"Victorian Assault Vehicle Desc"
+	"Vestan Assault Vehicle Desc"
     {
-		"en"  "Armored Transport Vehicle of Victorian army. \n-It slowly speeds up to build up momentum and damage. \n-It prioritizes buildings over players /n-Spawn units from other factions when it rams into building \-(When signalled) Spawn units more often"
+		"en"  "Armored Transport Vehicle of Vestan army. \n-It slowly speeds up to build up momentum and damage. \n-It prioritizes buildings over players /n-Spawn units from other factions when it rams into building \-(When signalled) Spawn units more often"
 		"ko"	"강화 병력 수송차량으로 건물을 우선시하며 여러 적들을 수송합니다.\n이동속도가 점차 빨라짐\n구조물을 공격시 적을 하차시킵니다\n(시그널 버프시) 더 빨라진 공격속도"
 	}
-	"Victoria Radiomast Desc"
+	"Vesta Radiomast Desc"
 	{
-		"en"	"Giant radiotower that receives a signal and spreads it to other places via signaller. \nSince radiotower is crucial for transmission, Victorians will do everything to protect it. \n-While the Radiotower is alive, endless waves of enemies will appear and all enemies existing in the map will receive signal buff \n-When below half health, summons radio repair and guard to protect and heal"
+		"en"	"Giant radiotower that receives a signal and spreads it to other places via signaller. \nSince radiotower is crucial for transmission, Vestans will do everything to protect it. \n-While the Radiotower is alive, endless waves of enemies will appear and all enemies existing in the map will receive signal buff \n-When below half health, summons radio repair and guard to protect and heal"
 	}
 	"Radio Guard Desc"
 	{
-		"en"	"Guard who protects Victorian Radiotower. \n-He is armed with speical cannon that pushes enemies far away when hit\n-Slows down its victim heavily. \n-However, he will lose his ability to push when Radiotower is gone \n-(When signalled) Pushes enemies with rocket"
+		"en"	"Guard who protects Vestan Radiotower. \n-He is armed with speical cannon that pushes enemies far away when hit\n-Slows down its victim heavily. \n-However, he will lose his ability to push when Radiotower is gone \n-(When signalled) Pushes enemies with rocket"
 	}
 	"Radio Repair Desc"
 	{
-		"en"	"Medic who repairs Victorian Radiotower instead of allies. \n-They do not care about surroundings and only heal.\n-They will also provide small defense boost to their targets"
+		"en"	"Medic who repairs Vestan Radiotower instead of allies. \n-They do not care about surroundings and only heal.\n-They will also provide small defense boost to their targets"
 	}
-	"Victoria Anvil Desc"
+	"Vesta Anvil Desc"
 	{
-		"en"	"Victorian supportive drone which spawns from drone factory\n-They fly and heal all allies within the area. \n-Upgraded version, MK2, will heal more and even apply small defense buff to allies"
+		"en"	"Vestan supportive drone which spawns from drone factory\n-They fly and heal all allies within the area. \n-Upgraded version, MK2, will heal more and even apply small defense buff to allies"
 	}
-	"Victoria Fragments Desc"
+	"Vesta Fragments Desc"
 	{
-		"en"	"Victorian aggresive drone which spawns from drone factory\n-Hover to designated area and fire leads at the enemies within range. \n-Upgraded version, MK2, will deal more damage"
+		"en"	"Vestan aggresive drone which spawns from drone factory\n-Hover to designated area and fire leads at the enemies within range. \n-Upgraded version, MK2, will deal more damage"
 	}
-	"Victoria Factory Desc"
+	"Vesta Factory Desc"
 	{
-		"en"	"Victorian frontline arms factory which create and store drones \n-When specific enemies order support fire or heal, it will release the drones to support them.\n-Victorian Drone factory in invincible and will only retreat before raid \n-Upgraded version, MK2, will deal more damage"
+		"en"	"Vestan frontline arms factory which create and store drones \n-When specific enemies order support fire or heal, it will release the drones to support them.\n-Vestan Drone factory in invincible and will only retreat before raid \n-Upgraded version, MK2, will deal more damage"
 	}
-	"Victoria Tactical Protector Desc"
+	"Vesta Tactical Protector Desc"
 	{
 		"en"	"Giant robot unit that calls for Anvil drone when below half health \n-However, they will not order drones if factory does not exist in the map"
 	}
-	"Victoria Tacticalunit Desc"
+	"Vesta Tacticalunit Desc"
 	{
 		"en"	"Fast unit armed with kukri and pointer \n-They will call in Fragment drones using their pointers \n-However, they will not order drones if factory does not exist in the map"
 	}
-	"Victoria Atomizer Desc"
+	"Vesta Atomizer Desc"
 	{
-		"en"	" `You can't outrun me!` \nCaptain of Victoria's Leatherboots Scoutsquad. Priorities speed over everything \nFires barrage of homing energy balls which will slow targets down and often drags all people to him to swing a homerun \n Harrison will help Atomizer by controlling vestian artillery and target the furtherest target from atomizer dealing devastating damage"
+		"en"	" `You can't outrun me!` \nCaptain of Vesta's Leatherboots Scoutsquad. Priorities speed over everything \nFires barrage of homing energy balls which will slow targets down and often drags all people to him to swing a homerun \n Harrison will help Atomizer by controlling vestan artillery and target the furtherest target from atomizer dealing devastating damage"
 	}
-	"Victoria Huscarls Desc"
+	"Vesta Huscarls Desc"
 	{
-		"en"	" `You're up against the wall and I am the fucking wall!` \nLieutenant of Victoria's Irongate Defense Units. Aquires adaptive armor on each amount of health loss \nPeform various abilities focused on defense and blocking attacks\nHe will summon Brassbunker Avangards when he is in danger. However, they are not ready yet so easy to kill \n Harrison will help Atomizer by controlling vestian artillery and target the furtherest target from atomizer dealing devastating damage"
+		"en"	" `You're up against the wall and I am the fucking wall!` \nLieutenant of Vesta's Irongate Defense Units. Aquires adaptive armor on each amount of health loss \nPeform various abilities focused on defense and blocking attacks\nHe will summon Brassbunker Avangards when he is in danger. However, they are not ready yet so easy to kill \n Harrison will help Atomizer by controlling vestan artillery and target the furtherest target from atomizer dealing devastating damage"
 	}
-	"Victoria Harrison Desc"
+	"Vesta Harrison Desc"
 	{
-		"en"	" `Do I really have to do this myself?` \nLieutenant Colonel of Victoria's Stormtrooper Team and controller of Victorian Artillery. \nUtilizes lots of ranged firearms \nHe will call in massive airstrikes and rearm himself when he takes enough damage. Then, he will set Victorian Artillery to automode and greatly increase his firepower "
+		"en"	" `Do I really have to do this myself?` \nLieutenant Colonel of Vesta's Stormtrooper Team and controller of Vestan Artillery. \nUtilizes lots of ranged firearms \nHe will call in massive airstrikes and rearm himself when he takes enough damage. Then, he will set Vestan Artillery to automode and greatly increase his firepower "
 	}
-	"Victoria Castellan Desc"
+	"Vesta Castellan Desc"
 	{
-		"en"	" `Did you really thought you could get out this mess that easily?` \nColonel of Victoria's Army. He has mastered skill for explosives and command \nHe wants your death for the amends of Radiotower's destruction. Do we really have to fight him while we got same enemeis in common? \nHe will utilize all of the abilites that previous raidbosses used and often call in for support"
+		"en"	" `Did you really thought you could get out this mess that easily?` \nColonel of Vesta's Army. He has mastered skill for explosives and command \nHe wants your death for the amends of Radiotower's destruction. Do we really have to fight him while we got same enemeis in common? \nHe will utilize all of the abilites that previous raidbosses used and often call in for support"
 	}
 	"Zapmarker Desc"
 	{
-		"en"	"An elite melee unit of vestia \n-Throws Zapper's axe to apply teslar debuff to its victim\n-Then rush in with melee that applies heavy bleed"
+		"en"	"An elite melee unit of vesta \n-Throws Zapper's axe to apply teslar debuff to its victim\n-Then rush in with melee that applies heavy bleed"
 	}
 	"Resource Collector Desc"
 	{
 		"en"	"A robotic unit designed to collect nearby minerals \n-Fast and applied more damage to buildings"
 	}
-	"Victoria Gasleader Desc"
+	"Vesta Gasleader Desc"
 	{
-		"en"	"Victorian Chemical Platoon leader. \n-applies armor corrosion elemental damage near while his armor is up \n-Pulls out a sword that applies more armor corrosion damage on 3rd hit when its target gets close \n-Becomes stronger as near allies die"
+		"en"	"Vestan Chemical Platoon leader. \n-applies armor corrosion elemental damage near while his armor is up \n-Pulls out a sword that applies more armor corrosion damage on 3rd hit when its target gets close \n-Becomes stronger as near allies die"
 	}
 	"Demolitionist Desc"
 	{
-		"en"	"Heavy melee unit of Victorian Chemical Platoon \n-Swings a massive hammer to create and explosion that deals MASSIVE damage to buildings"
+		"en"	"Heavy melee unit of Vestan Chemical Platoon \n-Swings a massive hammer to create and explosion that deals MASSIVE damage to buildings"
 	}
-	"Victorian Protector Desc"
+	"Vestan Protector Desc"
 	{
 		"en"	"Carrier unit holding a portable shield \n-spawns with an armor and when it gets closer to its target, deployys an energy shield \n-It's shield carrier will be destroyed if its armor runs out"
 	}
 	"Airraider Desc"
 	{
-		"en"	"A surprise assault unit of Victorian Chemical Platoon. \n-Parachutes in when it spawns and fire its rocket while falling down. \n-continues with shotgun when on the ground"
+		"en"	"A surprise assault unit of Vestan Chemical Platoon. \n-Parachutes in when it spawns and fire its rocket while falling down. \n-continues with shotgun when on the ground"
 	}
-	"Victorian Headhunter Desc"
+	"Vestan Headhunter Desc"
 	{
-		"en"	"An elite sniper of Victorian Chemical Platoon. \n-Appears quietly and deals armor corrsion damage \n-Deals more damage and elemental damage to enemies with support weapon out"
+		"en"	"An elite sniper of Vestan Chemical Platoon. \n-Appears quietly and deals armor corrsion damage \n-Deals more damage and elemental damage to enemies with support weapon out"
 	}
 	"Chemical Specialist Desc"
 	{
-		"en"	"A Chemical expert of Victorian Chemical Platoon \n-Always head all of its elemental damage taken \n-fire bullets coated with armor corrosion liquid"
+		"en"	"A Chemical expert of Vestan Chemical Platoon \n-Always head all of its elemental damage taken \n-fire bullets coated with armor corrosion liquid"
 	}
 	"Giant Armored Medibot Desc"
 	{
-		"en"	"A Giant support unit of Victorian Chemical Platoon designed only for defense \n-its patient receives massive buff and never dies unless oneshot \n-It moves very slowly"
+		"en"	"A Giant support unit of Vestan Chemical Platoon designed only for defense \n-its patient receives massive buff and never dies unless oneshot \n-It moves very slowly"
 	}
 	"Avangard's Processing Core-B"
 	{
@@ -3474,7 +3474,7 @@
 	}
 	"Avangard's Processing Core-B Desc"
 	{
-		"en"	"After destroying the Radiomast at the Victorian outpost, along with the soldiers there, you find this on the ground. drop by one of the Avanguards we killed."
+		"en"	"After destroying the Radiomast at the Vestan outpost, along with the soldiers there, you find this on the ground. drop by one of the Avanguards we killed."
 		"ko"	"빅토리아 전초기지의 방송탑을 파괴한 후, 땅에 널부러진 병사들 사이에서 발견했습니다.\n쓰러뜨린 아방가르드 중 하나에게서 떨어져 나온 것 같습니다."
 	}
 	"Copycat Truthful Evidence"
@@ -3484,7 +3484,7 @@
 	}
 	"Copycat Truthful Evidence Desc"
 	{
-		"en"	"This is a Copy of the evidence received from Sensal.\nSee some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Victoria invaded Ziberia.\nYou became the primary target of Victorians due to this…"
+		"en"	"This is a Copy of the evidence received from Sensal.\nSee some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Vesta invaded Ziberia.\nYou became the primary target of Vestans due to this…"
 		"ko"	"센살에게 받은 진실된 증거자료[사본] 입니다.\n이해못할 단어들이 보이지만 숨겨진 뜻이 있는거 같습니다. 이것이 빅토리아가 지베리아를 침공한 이유 같습니다.\n하지만 이것이 빅토리아인들과의 트러블을 만들었습니다."
 	}
 	"Dropped Secret Letter"

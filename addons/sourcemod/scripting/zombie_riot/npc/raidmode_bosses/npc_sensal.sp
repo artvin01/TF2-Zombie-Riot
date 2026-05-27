@@ -331,7 +331,7 @@ methodmap Sensal < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = 50;
 		}
-		bool cutscene2 = StrContains(data, "vestia_cutscene") != -1;
+		bool cutscene2 = StrContains(data, "vesta_cutscene") != -1;
 		if(cutscene2)
 		{
 			i_RaidGrantExtra[npc.index] = 51;
@@ -579,7 +579,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			case 2:
 			{
-				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-3", false);
+				NPCPritToChat_Override("Vesta Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-3", false);
 			}
 			case 3:
 			{
@@ -591,7 +591,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			case 5:
 			{
-				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-6", false);
+				NPCPritToChat_Override("Vesta Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-6", false);
 			}
 			case 6:
 			{
@@ -599,7 +599,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			case 7:
 			{
-				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-8", false);
+				NPCPritToChat_Override("Vesta Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-8", false);
 			}
 			case 8:
 			{
@@ -607,7 +607,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			case 9:
 			{
-				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-10", false);
+				NPCPritToChat_Override("Vesta Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-10", false);
 				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)

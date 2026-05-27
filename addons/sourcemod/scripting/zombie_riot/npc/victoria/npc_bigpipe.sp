@@ -44,7 +44,7 @@ static const char g_ReloadSound[] = "weapons/ar2/npc_ar2_reload.wav";
 static bool b_TheGoons;
 static int i_IntimidatingFire[MAXENTITIES];
 
-void VictoriaBigpipe_OnMapStart_NPC()
+void VestaBigpipe_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bigpipe");
@@ -52,7 +52,7 @@ void VictoriaBigpipe_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "big_pipe");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -74,10 +74,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaBigpipe(vecPos, vecAng, ally, data);
+	return VestaBigpipe(vecPos, vecAng, ally, data);
 }
 
-methodmap VictoriaBigpipe < CClotBody
+methodmap VestaBigpipe < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -182,9 +182,9 @@ methodmap VictoriaBigpipe < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
 	
-	public VictoriaBigpipe(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestaBigpipe(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictoriaBigpipe npc = view_as<VictoriaBigpipe>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally,false));
+		VestaBigpipe npc = view_as<VestaBigpipe>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally,false));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -232,9 +232,9 @@ methodmap VictoriaBigpipe < CClotBody
 			}
 		}
 
-		func_NPCDeath[npc.index] = VictoriaBigpipe_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaBigpipe_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaBigpipe_ClotThink;
+		func_NPCDeath[npc.index] = VestaBigpipe_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestaBigpipe_OnTakeDamage;
+		func_NPCThink[npc.index] = VestaBigpipe_ClotThink;
 		
 		//IDLE
 		npc.m_iChanged_WalkCycle=1;
@@ -285,9 +285,9 @@ methodmap VictoriaBigpipe < CClotBody
 	}
 }
 
-static void VictoriaBigpipe_ClotThink(int iNPC)
+static void VestaBigpipe_ClotThink(int iNPC)
 {
-	VictoriaBigpipe npc = view_as<VictoriaBigpipe>(iNPC);
+	VestaBigpipe npc = view_as<VestaBigpipe>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -463,7 +463,7 @@ static void VictoriaBigpipe_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		switch(VictoriaBigpipeSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget))
+		switch(VestaBigpipeSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -560,9 +560,9 @@ static void VictoriaBigpipe_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictoriaBigpipe_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestaBigpipe_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaBigpipe npc = view_as<VictoriaBigpipe>(victim);
+	VestaBigpipe npc = view_as<VestaBigpipe>(victim);
 		
 	if(attacker<=0||!IsValidEntity(attacker))
 		return Plugin_Continue;
@@ -588,9 +588,9 @@ static Action VictoriaBigpipe_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-static void VictoriaBigpipe_NPCDeath(int entity)
+static void VestaBigpipe_NPCDeath(int entity)
 {
-	VictoriaBigpipe npc = view_as<VictoriaBigpipe>(entity);
+	VestaBigpipe npc = view_as<VestaBigpipe>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -612,7 +612,7 @@ static void VictoriaBigpipe_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float distance)
+static int VestaBigpipeSelfDefense(VestaBigpipe npc, float gameTime, float distance)
 {
 	if(npc.m_iTargetWalkTo!=npc.m_iTarget)
 	{
@@ -971,7 +971,7 @@ static void HEGrenade(int entity, int victim, float damage, int weapon)
 		if(ShouldNpcDealBonusDamage(victim))
 			damage *= 3.0;
 		SDKHooks_TakeDamage(victim, entity, inflictor, damage, DMG_BLAST, -1, _, vecHit);
-		if(NpcStats_VictorianCallToArms(entity))
+		if(NpcStats_VestanCallToArms(entity))
 		{
 			damage*=0.01;
 			NPC_Ignite(victim, entity, 7.5, -1, damage);

@@ -6,21 +6,21 @@ static const char g_HealSound[] = "physics/metal/metal_box_strain1.wav";
 
 static int NPCId;
 
-void VictorianDroneAnvil_MapStart()
+void VestanDroneAnvil_MapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Anvil");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestia_anvil");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_anvil");
+	strcopy(data.Name, sizeof(data.Name), "Vesta Anvil");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vesta_anvil");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_anvil");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPCId=NPC_Add(data);
 }
 
-int VictorianAnvil_ID()
+int VestanAnvil_ID()
 {
 	return NPCId;
 }
@@ -38,10 +38,10 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 	vecAng[0]=0.0;
 	vecAng[1]=0.0;
 	vecAng[2]=0.0;
-	return VictorianDroneAnvil(vecPos, vecAng, ally, data);
+	return VestanDroneAnvil(vecPos, vecAng, ally, data);
 }
 
-methodmap VictorianDroneAnvil < CClotBody
+methodmap VestanDroneAnvil < CClotBody
 {
 	public void PlayDeathSound() 
 	{
@@ -79,9 +79,9 @@ methodmap VictorianDroneAnvil < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 	
-	public VictorianDroneAnvil(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanDroneAnvil(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(CClotBody(vecPos, vecAng, "models/props_teaser/saucer.mdl", "1.0", "3000", ally, _, true, .CustomThreeDimensions = {20.0, 20.0, 20.0}, .CustomThreeDimensionsextra = {-20.0, -20.0, -20.0}));
+		VestanDroneAnvil npc = view_as<VestanDroneAnvil>(CClotBody(vecPos, vecAng, "models/props_teaser/saucer.mdl", "1.0", "3000", ally, _, true, .CustomThreeDimensions = {20.0, 20.0, 20.0}, .CustomThreeDimensionsextra = {-20.0, -20.0, -20.0}));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -91,9 +91,9 @@ methodmap VictorianDroneAnvil < CClotBody
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = VictorianDroneAnvil_ClotDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianDroneAnvil_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianDroneAnvil_ClotThink;
+		func_NPCDeath[npc.index] = VestanDroneAnvil_ClotDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanDroneAnvil_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanDroneAnvil_ClotThink;
 		
 		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;
@@ -137,7 +137,7 @@ methodmap VictorianDroneAnvil < CClotBody
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "mk2", "");
 				b_we_are_reloading[npc.index] = true;
-				strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Victoria Anvil MK2");
+				strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Vesta Anvil MK2");
 			}
 			else if(StrContains(countext[i], "factory") != -1)
 			{
@@ -194,7 +194,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		GetAbsOrigin(npc.index, Vec);
 		if(FactorySpawndo)
 		{
-			int GetFactory=GetRandomVictoriaFactory(npc.index);
+			int GetFactory=GetRandomVestaFactory(npc.index);
 			if(GetFactory&&IsValidEntity(GetFactory))
 				GetAbsOrigin(GetFactory, Vec);
 		}
@@ -205,9 +205,9 @@ methodmap VictorianDroneAnvil < CClotBody
 	}
 }
 
-static Action VictorianDroneAnvil_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanDroneAnvil_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(victim);
+	VestanDroneAnvil npc = view_as<VestanDroneAnvil>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -221,9 +221,9 @@ static Action VictorianDroneAnvil_OnTakeDamage(int victim, int &attacker, int &i
 	return Plugin_Changed;
 }
 
-static void VictorianDroneAnvil_ClotThink(int iNPC)
+static void VestanDroneAnvil_ClotThink(int iNPC)
 {
-	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(iNPC);
+	VestanDroneAnvil npc = view_as<VestanDroneAnvil>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -256,7 +256,7 @@ static void VictorianDroneAnvil_ClotThink(int iNPC)
 	}
 	else
 	{
-		npc.m_flSpeed = NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 300.0;
+		npc.m_flSpeed = NpcStats_VestanCallToArms(npc.index) ? 400.0 : 300.0;
 	}
 
 	if(npc.m_flNextThinkTime > gameTime)
@@ -285,10 +285,10 @@ static void VictorianDroneAnvil_ClotThink(int iNPC)
 		npc.StopHealing();
 		npc.Healing = false;
 		npc.m_bnew_target = false;
-		npc.m_iTargetAlly = VictoriaAnvilGetTarget(npc.index, gameTime);
+		npc.m_iTargetAlly = VestaAnvilGetTarget(npc.index, gameTime);
 	}
 	
-	int AI = VictoriaAnvilDefenseMode(npc.index, gameTime, npc.m_iTargetAlly, DistanceToTarget);
+	int AI = VestaAnvilDefenseMode(npc.index, gameTime, npc.m_iTargetAlly, DistanceToTarget);
 	switch(AI)
 	{
 		case 0://attack
@@ -329,9 +329,9 @@ static void VictorianDroneAnvil_ClotThink(int iNPC)
 	}
 }
 
-static int VictoriaAnvilGetTarget(int iNPC, float gameTime)
+static int VestaAnvilGetTarget(int iNPC, float gameTime)
 {
-	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(iNPC);
+	VestanDroneAnvil npc = view_as<VestanDroneAnvil>(iNPC);
 	if(!IsValidAlly(npc.index,npc.m_iTargetAlly))
 	{
 		npc.m_iTargetAlly = GetClosestAlly(npc.index);
@@ -344,9 +344,9 @@ static int VictoriaAnvilGetTarget(int iNPC, float gameTime)
 	return npc.m_iTargetAlly;
 }
 
-static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float distance)
+static int VestaAnvilDefenseMode(int iNPC, float gameTime, int target, float distance)
 {
-	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(iNPC);
+	VestanDroneAnvil npc = view_as<VestanDroneAnvil>(iNPC);
 	if(npc.m_iTarget&&b_NpcIsInvulnerable[npc.m_iTarget])
 	{
 		npc.StopHealing();
@@ -369,13 +369,13 @@ static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float 
 				npc.m_bnew_target = true;
 			}
 			//CreateTimer(0.1, Timer_MachineShop, npc.index, TIMER_FLAG_NO_MAPCHANGE);
-			//VictorianFactory npc = view_as<VictorianFactory>(iNPC);
+			//VestanFactory npc = view_as<VestanFactory>(iNPC);
 			float entitypos[3], dist;
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
 				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity) && entity!=npc.index && GetTeam(entity) == GetTeam(npc.index)
-				&& i_NpcInternalId[entity] != VictorianFragments_ID() && i_NpcInternalId[entity] != VictorianAnvil_ID())
+				&& i_NpcInternalId[entity] != VestanFragments_ID() && i_NpcInternalId[entity] != VestanAnvil_ID())
 				{
 					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);
 					dist = GetVectorDistance(vecTarget, entitypos);
@@ -409,9 +409,9 @@ static int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float 
 	return 1;
 }
 
-static void VictorianDroneAnvil_ClotDeath(int entity)
+static void VestanDroneAnvil_ClotDeath(int entity)
 {
-	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(entity);
+	VestanDroneAnvil npc = view_as<VestanDroneAnvil>(entity);
 
 	npc.StopHealing();
 	npc.PlayDeathSound();

@@ -30,7 +30,7 @@ static void ClotPrecache()
 	NPC_GetByPlugin("npc_medival_archer");
 	NPC_GetByPlugin("npc_selfam_ire");
 	NPC_GetByPlugin("npc_searunner");
-	NPC_GetByPlugin("npc_vestian");
+	NPC_GetByPlugin("npc_vestan");
 	NPC_GetByPlugin("npc_refragmented_headcrabzombie");
 	NPC_GetByPlugin("npc_refragmented_fastzombie");
 	NPC_GetByPlugin("npc_refragmented_poisonzombie");
@@ -169,7 +169,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 8,9:
 				{
-					PortalGateSpawn(npc.index, "npc_vestian", pos, ang, team, 800);
+					PortalGateSpawn(npc.index, "npc_vestan", pos, ang, team, 800);
 				}
 				case 10:
 				{
@@ -382,7 +382,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 8,9:
 				{
-					PortalGateSpawn(npc.index, "npc_vestian", pos, ang, team, 800);
+					PortalGateSpawn(npc.index, "npc_vestan", pos, ang, team, 800);
 				}
 				case 10:
 				{

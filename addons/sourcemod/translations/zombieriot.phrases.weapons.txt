@@ -5320,9 +5320,9 @@
 		"it"	"Lanciatore di antenati"
 		"ko"	"''조상'' 발사기"
 	}
-	"Victorian Launcher"
+	"Vestan Launcher"
 	{
-		"en"	"Victorian Launcher"
+		"en"	"Vestan Launcher"
 		"ru"	"Викторианская Пушка"
 		"ko"	"빅토리아 런처"
 		"it"	"Lanciatore vittoriano"

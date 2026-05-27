@@ -152,9 +152,9 @@ static void Invisible_TRIGGER_ClotThink(int iNPC)
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
 				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-				if (IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Blue)
+				if (IsValidEntity(entity) && i_NpcInternalId[entity] == VestanFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Blue)
 				{
-					VictorianFactory vFactory = view_as<VictorianFactory>(entity);
+					VestanFactory vFactory = view_as<VestanFactory>(entity);
 					vFactory.m_flNextRangedAttack = GetGameTime(vFactory.index) + 10.0;
 					if(f_DelaySpawnsForVariousReasons < GetGameTime() + 21.0)
 					{
@@ -176,9 +176,9 @@ static void Invisible_TRIGGER_ClotThink(int iNPC)
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
 				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-				if (IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Blue)
+				if (IsValidEntity(entity) && i_NpcInternalId[entity] == VestanFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Blue)
 				{
-					VictorianFactory vFactory = view_as<VictorianFactory>(entity);
+					VestanFactory vFactory = view_as<VestanFactory>(entity);
 					i_AttacksTillMegahit[vFactory.index] = 608;
 					bExtraction=true;
 				}
@@ -196,9 +196,9 @@ static void Invisible_TRIGGER_ClotThink(int iNPC)
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
 				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-				if (IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Blue)
+				if (IsValidEntity(entity) && i_NpcInternalId[entity] == VestanFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Blue)
 				{
-					VictorianFactory vFactory = view_as<VictorianFactory>(entity);
+					VestanFactory vFactory = view_as<VestanFactory>(entity);
 					vFactory.m_flNextRangedAttack = GetGameTime(vFactory.index) + 10.0;
 					if(f_DelaySpawnsForVariousReasons < GetGameTime() + 21.0)
 					{
@@ -227,9 +227,9 @@ static void Invisible_TRIGGER_ClotThink(int iNPC)
 						int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 						if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Blue)
 						{
-							if(i_NpcInternalId[entity] == VictorianFactory_ID())
+							if(i_NpcInternalId[entity] == VestanFactory_ID())
 							{
-								VictorianFactory vFactory = view_as<VictorianFactory>(entity);
+								VestanFactory vFactory = view_as<VestanFactory>(entity);
 								i_AttacksTillMegahit[vFactory.index] = 608;
 								bExtraction=true;
 								break;

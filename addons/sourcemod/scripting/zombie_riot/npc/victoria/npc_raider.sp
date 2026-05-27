@@ -35,7 +35,7 @@ static const char g_ReloadSound[] = "weapons/ar2/npc_ar2_reload.wav";
 
 static const char g_RangeAttackSounds[] = "weapons/doom_rocket_launcher.wav";
 
-void VictorianRaider_OnMapStart_NPC()
+void VestanRaider_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Raider");
@@ -43,7 +43,7 @@ void VictorianRaider_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "soldier_crit");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -62,10 +62,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianRaider(vecPos, vecAng, ally, data);
+	return VestanRaider(vecPos, vecAng, ally, data);
 }
 
-methodmap VictorianRaider < CClotBody
+methodmap VestanRaider < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -94,9 +94,9 @@ methodmap VictorianRaider < CClotBody
 		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.2);
 	}
 
-	public VictorianRaider(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanRaider(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianRaider npc = view_as<VictorianRaider>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "2250", ally));
+		VestanRaider npc = view_as<VestanRaider>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "2250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -107,9 +107,9 @@ methodmap VictorianRaider < CClotBody
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		func_NPCDeath[npc.index] = VictorianRaider_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianRaider_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianRaider_ClotThink;
+		func_NPCDeath[npc.index] = VestanRaider_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanRaider_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanRaider_ClotThink;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -171,9 +171,9 @@ methodmap VictorianRaider < CClotBody
 	}
 }
 
-static void VictorianRaider_ClotThink(int iNPC)
+static void VestanRaider_ClotThink(int iNPC)
 {
-	VictorianRaider npc = view_as<VictorianRaider>(iNPC);
+	VestanRaider npc = view_as<VestanRaider>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -205,7 +205,7 @@ static void VictorianRaider_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		switch(VictorianRaiderSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget))
+		switch(VestanRaiderSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -251,9 +251,9 @@ static void VictorianRaider_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictorianRaider_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanRaider_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianRaider npc = view_as<VictorianRaider>(victim);
+	VestanRaider npc = view_as<VestanRaider>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -267,9 +267,9 @@ static Action VictorianRaider_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-static void VictorianRaider_NPCDeath(int entity)
+static void VestanRaider_NPCDeath(int entity)
 {
-	VictorianRaider npc = view_as<VictorianRaider>(entity);
+	VestanRaider npc = view_as<VestanRaider>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -290,7 +290,7 @@ static void VictorianRaider_NPCDeath(int entity)
 
 }
 
-static int VictorianRaiderSelfDefense(VictorianRaider npc, float gameTime, float distance)
+static int VestanRaiderSelfDefense(VestanRaider npc, float gameTime, float distance)
 {
 	if(npc.m_flAttackHappens || !npc.m_iAmmo)
 	{
@@ -321,7 +321,7 @@ static int VictorianRaiderSelfDefense(VictorianRaider npc, float gameTime, float
 			float Hitdamage = 40.0;
 			WorldSpaceCenter(npc.m_iTarget, vecTarget);
 
-			if(NpcStats_VictorianCallToArms(npc.index))
+			if(NpcStats_VestanCallToArms(npc.index))
 				Hitdamage *= 2.0;
 				
 			npc.FireParticleRocket(vecTarget, Hitdamage , projectile_speed , 150.0 , "drg_cow_rockettrail_normal_blue");

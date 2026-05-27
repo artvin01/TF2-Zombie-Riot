@@ -26,7 +26,7 @@ static const char Categories[][] =
 	"Ruina",
 	"Almina Expidonsa Alliance",
 	"Whiteflower Specials",
-	"Victoria",
+	"Vesta",
 	"Matrix",
 	"Aperture",
 	"Mutations",

@@ -16,15 +16,15 @@ static const char g_IdleAlertedSounds[][] = {
 
 static const char g_DeathSounds[] = ")vo/pyro_negativevocalization01.mp3";
 
-void VictorianPulverizer_OnMapStart_NPC()
+void VestanPulverizer_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Pulverizer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_pulverizer");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_pulverizer");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_pulverizer");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
@@ -43,10 +43,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianPulverizer(vecPos, vecAng, ally);
+	return VestanPulverizer(vecPos, vecAng, ally);
 }
 
-methodmap VictorianPulverizer < CClotBody
+methodmap VestanPulverizer < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -99,9 +99,9 @@ methodmap VictorianPulverizer < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 	
-	public VictorianPulverizer(float vecPos[3], float vecAng[3], int ally)
+	public VestanPulverizer(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianPulverizer npc = view_as<VictorianPulverizer>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "27000", ally));
+		VestanPulverizer npc = view_as<VestanPulverizer>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "27000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -118,9 +118,9 @@ methodmap VictorianPulverizer < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(VictorianPulverizer_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictorianPulverizer_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictorianPulverizer_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(VestanPulverizer_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VestanPulverizer_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(VestanPulverizer_ClotThink);
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "phlogistinator");
@@ -150,9 +150,9 @@ methodmap VictorianPulverizer < CClotBody
 	}
 }
 
-static void VictorianPulverizer_ClotThink(int iNPC)
+static void VestanPulverizer_ClotThink(int iNPC)
 {
-	VictorianPulverizer npc = view_as<VictorianPulverizer>(iNPC);
+	VestanPulverizer npc = view_as<VestanPulverizer>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -195,7 +195,7 @@ static void VictorianPulverizer_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VictorianPulverizerSelfDefense(npc); 
+		VestanPulverizerSelfDefense(npc); 
 	}
 	else
 	{
@@ -206,9 +206,9 @@ static void VictorianPulverizer_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictorianPulverizer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanPulverizer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianPulverizer npc = view_as<VictorianPulverizer>(victim);
+	VestanPulverizer npc = view_as<VestanPulverizer>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -222,9 +222,9 @@ static Action VictorianPulverizer_OnTakeDamage(int victim, int &attacker, int &i
 	return Plugin_Changed;
 }
 
-static void VictorianPulverizer_NPCDeath(int entity)
+static void VestanPulverizer_NPCDeath(int entity)
 {
-	VictorianPulverizer npc = view_as<VictorianPulverizer>(entity);
+	VestanPulverizer npc = view_as<VestanPulverizer>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -238,7 +238,7 @@ static void VictorianPulverizer_NPCDeath(int entity)
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))
 	{
-		VictorianPulverizer prop = view_as<VictorianPulverizer>(entity_death);
+		VestanPulverizer prop = view_as<VestanPulverizer>(entity_death);
 		float pos[3];
 		float Angles[3];
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", Angles);
@@ -315,7 +315,7 @@ static void VictorianPulverizer_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static void VictorianPulverizerSelfDefense(VictorianPulverizer npc)
+static void VestanPulverizerSelfDefense(VestanPulverizer npc)
 {
 	if(npc.m_flPulveriserAttackDelay > GetGameTime(npc.index))
 		return;
@@ -335,13 +335,13 @@ static void VictorianPulverizerSelfDefense(VictorianPulverizer npc)
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 		
-		WandProjectile_ApplyFunctionToEntity(projectile, VictorianPulverizer_Particle_StartTouch);
+		WandProjectile_ApplyFunctionToEntity(projectile, VestanPulverizer_Particle_StartTouch);
 	}
 	if(SpinSound)
 		npc.PlayFlameThrowerSound(false);
 }
 
-static void VictorianPulverizer_Particle_StartTouch(int entity, int target)
+static void VestanPulverizer_Particle_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
@@ -365,7 +365,7 @@ static void VictorianPulverizer_Particle_StartTouch(int entity, int target)
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		float BurninHell = 1.0;
-		if(NpcStats_VictorianCallToArms(owner))
+		if(NpcStats_VestanCallToArms(owner))
 			BurninHell *= 3.0;
 		BurninHell *= 0.5;
 		NPC_Ignite(target, owner,20.0, -1, BurninHell);

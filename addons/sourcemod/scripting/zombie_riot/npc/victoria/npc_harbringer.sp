@@ -44,7 +44,7 @@ static int BeamIndex;
 static float fl_Har_Delay[MAXENTITIES];
 static float fl_Har_Duration[MAXENTITIES];
 
-void VictoriaHarbringer_OnMapStart_NPC()
+void VestaHarbringer_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Harbringer");
@@ -52,7 +52,7 @@ void VictoriaHarbringer_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "knight");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -72,10 +72,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaHarbringer(vecPos, vecAng, ally, data);
+	return VestaHarbringer(vecPos, vecAng, ally, data);
 }
 
-methodmap VictoriaHarbringer < CClotBody
+methodmap VestaHarbringer < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -128,9 +128,9 @@ methodmap VictoriaHarbringer < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 
-	public VictoriaHarbringer(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestaHarbringer(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictoriaHarbringer npc = view_as<VictoriaHarbringer>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "1000", ally));
+		VestaHarbringer npc = view_as<VestaHarbringer>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -178,9 +178,9 @@ methodmap VictoriaHarbringer < CClotBody
 			}
 		}
 		
-		func_NPCDeath[npc.index] = VictoriaHarbringer_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaHarbringer_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaHarbringer_ClotThink;
+		func_NPCDeath[npc.index] = VestaHarbringer_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestaHarbringer_OnTakeDamage;
+		func_NPCThink[npc.index] = VestaHarbringer_ClotThink;
 		
 		//IDLE
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -225,9 +225,9 @@ methodmap VictoriaHarbringer < CClotBody
 	}
 }
 
-static void VictoriaHarbringer_ClotThink(int iNPC)
+static void VestaHarbringer_ClotThink(int iNPC)
 {
-	VictoriaHarbringer npc = view_as<VictoriaHarbringer>(iNPC);
+	VestaHarbringer npc = view_as<VestaHarbringer>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -257,7 +257,7 @@ static void VictoriaHarbringer_ClotThink(int iNPC)
 			{
 				if(IsClientInGame(client) && IsEntityAlive(client))
 				{
-					ApplyStatusEffect(npc.index, client, "Call To Victoria", 2.0);
+					ApplyStatusEffect(npc.index, client, "Call To Vesta", 2.0);
 				}
 			}
 		}
@@ -268,7 +268,7 @@ static void VictoriaHarbringer_ClotThink(int iNPC)
 			{
 				if(GetTeam(entity) == team)
 				{
-					ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
+					ApplyStatusEffect(npc.index, entity, "Call To Vesta", 0.5);
 				}
 			}
 		}
@@ -318,7 +318,7 @@ static void VictoriaHarbringer_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VictoriaHarbringerSelfDefense(npc,GetGameTime(npc.index)); 
+		VestaHarbringerSelfDefense(npc,GetGameTime(npc.index)); 
 	}
 	else
 	{
@@ -328,9 +328,9 @@ static void VictoriaHarbringer_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictoriaHarbringer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestaHarbringer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaHarbringer npc = view_as<VictoriaHarbringer>(victim);
+	VestaHarbringer npc = view_as<VestaHarbringer>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -340,7 +340,7 @@ static Action VictoriaHarbringer_OnTakeDamage(int victim, int &attacker, int &in
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	if(NpcStats_VictorianCallToArms(npc.index))
+	if(NpcStats_VestanCallToArms(npc.index))
 	{
 		int health = ReturnEntityMaxHealth(npc.index) / 30;
 
@@ -353,9 +353,9 @@ static Action VictoriaHarbringer_OnTakeDamage(int victim, int &attacker, int &in
 	return Plugin_Changed;
 }
 
-static void VictoriaHarbringer_NPCDeath(int entity)
+static void VestaHarbringer_NPCDeath(int entity)
 {
-	VictoriaHarbringer npc = view_as<VictoriaHarbringer>(entity);
+	VestaHarbringer npc = view_as<VestaHarbringer>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -377,7 +377,7 @@ static void VictoriaHarbringer_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime)
+static void VestaHarbringerSelfDefense(VestaHarbringer npc, float gameTime)
 {
 	int target;
 	//some Ranged units will behave differently.

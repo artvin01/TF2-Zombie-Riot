@@ -41,10 +41,10 @@ void Chemical_Specialist_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Chemical Specialist");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chemical_specialist");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_shotgunner");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_shotgunner");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
@@ -290,7 +290,7 @@ static int Chemical_SpecialistSelfDefense(Chemical_Specialist npc, float gameTim
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
 						int ElementalDamge = 25;
-						if(NpcStats_VictorianCallToArms(npc.index))
+						if(NpcStats_VestanCallToArms(npc.index))
 							ElementalDamge *= 2;
 						Elemental_AddNervousDamage(target, npc.index, ElementalDamge);
 

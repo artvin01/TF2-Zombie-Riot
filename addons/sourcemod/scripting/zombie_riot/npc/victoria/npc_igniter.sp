@@ -20,15 +20,15 @@ static const char g_DeathSounds[] = ")vo/pyro_negativevocalization01.mp3";
 
 static const char g_RangeAttackSounds[] = "weapons/flaregun_shoot.wav";
 
-void VictorianIgniter_OnMapStart_NPC()
+void VestanIgniter_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victorian Igniter");
+	strcopy(data.Name, sizeof(data.Name), "Vestan Igniter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_igniter");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_igniter");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_igniter");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -45,10 +45,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaIgniter(vecPos, vecAng, ally);
+	return VestaIgniter(vecPos, vecAng, ally);
 }
 
-methodmap VictoriaIgniter < CClotBody
+methodmap VestaIgniter < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -76,9 +76,9 @@ methodmap VictoriaIgniter < CClotBody
 		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 
-	public VictoriaIgniter(float vecPos[3], float vecAng[3], int ally)
+	public VestaIgniter(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaIgniter npc = view_as<VictoriaIgniter>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "3500", ally, .isGiant = true));
+		VestaIgniter npc = view_as<VestaIgniter>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "3500", ally, .isGiant = true));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -95,9 +95,9 @@ methodmap VictoriaIgniter < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		func_NPCDeath[npc.index] = VictoriaIgniter_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaIgniter_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaIgniter_ClotThink;
+		func_NPCDeath[npc.index] = VestaIgniter_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestaIgniter_OnTakeDamage;
+		func_NPCThink[npc.index] = VestaIgniter_ClotThink;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "flaregun");
@@ -122,9 +122,9 @@ methodmap VictoriaIgniter < CClotBody
 	}
 }
 
-static void VictoriaIgniter_ClotThink(int iNPC)
+static void VestaIgniter_ClotThink(int iNPC)
 {
-	VictoriaIgniter npc = view_as<VictoriaIgniter>(iNPC);
+	VestaIgniter npc = view_as<VestaIgniter>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -157,7 +157,7 @@ static void VictoriaIgniter_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		switch(VictoriaIgniterSelfDefense(npc,GetGameTime(npc.index),flDistanceToTarget))
+		switch(VestaIgniterSelfDefense(npc,GetGameTime(npc.index),flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -201,9 +201,9 @@ static void VictoriaIgniter_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictoriaIgniter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestaIgniter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaIgniter npc = view_as<VictoriaIgniter>(victim);
+	VestaIgniter npc = view_as<VestaIgniter>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -217,9 +217,9 @@ static Action VictoriaIgniter_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-static void VictoriaIgniter_NPCDeath(int entity)
+static void VestaIgniter_NPCDeath(int entity)
 {
-	VictoriaIgniter npc = view_as<VictoriaIgniter>(entity);
+	VestaIgniter npc = view_as<VestaIgniter>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -235,7 +235,7 @@ static void VictoriaIgniter_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static int VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime, float distance)
+static int VestaIgniterSelfDefense(VestaIgniter npc, float gameTime, float distance)
 {
 	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
@@ -257,7 +257,7 @@ static int VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime, float
 					CreateTimer(8.0, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 					CreateTimer(8.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 					
-					WandProjectile_ApplyFunctionToEntity(projectile, VictoriaIgniter_Rocket_Particle_StartTouch);
+					WandProjectile_ApplyFunctionToEntity(projectile, VestaIgniter_Rocket_Particle_StartTouch);
 					return 1;
 				}
 			}
@@ -266,7 +266,7 @@ static int VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime, float
 	return (distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*10.0 && Can_I_See_Enemy_Only(npc.index, npc.m_iTarget)) ? 1 : 0;
 }
 
-static void VictoriaIgniter_Rocket_Particle_StartTouch(int entity, int target)
+static void VestaIgniter_Rocket_Particle_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < MAXENTITIES)
 	{
@@ -289,7 +289,7 @@ static void VictoriaIgniter_Rocket_Particle_StartTouch(int entity, int target)
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
 		
-		NPC_Ignite(target, owner, (NpcStats_VictorianCallToArms(owner) ? 7.5 : 5.0), -1, 4.0);
+		NPC_Ignite(target, owner, (NpcStats_VestanCallToArms(owner) ? 7.5 : 5.0), -1, 4.0);
 
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))

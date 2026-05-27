@@ -10,15 +10,15 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/demo_charge_hit_world3.wav"
 };
 
-void VictoriaTank_MapStart()
+void VestaTank_MapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Tank");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestian_tank");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_tank");
+	strcopy(data.Name, sizeof(data.Name), "Vesta Tank");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestan_tank");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_tank");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -41,10 +41,10 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 	vecAng[0]=0.0;
 	vecAng[1]=0.0;
 	vecAng[2]=0.0;
-	return VictoriaTank(vecPos, vecAng, ally, data);
+	return VestaTank(vecPos, vecAng, ally, data);
 }
 
-methodmap VictoriaTank < CClotBody
+methodmap VestaTank < CClotBody
 {
 	public void PlayDeathSound() 
 	{
@@ -69,9 +69,9 @@ methodmap VictoriaTank < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
-	public VictoriaTank(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestaTank(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictoriaTank npc = view_as<VictoriaTank>(CClotBody(vecPos, vecAng, "models/player/items/taunts/tank/tank.mdl", "2.5", "300000", ally, _, true));
+		VestaTank npc = view_as<VestaTank>(CClotBody(vecPos, vecAng, "models/player/items/taunts/tank/tank.mdl", "2.5", "300000", ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
@@ -83,9 +83,9 @@ methodmap VictoriaTank < CClotBody
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = VictoriaTank_ClotDeath;
+		func_NPCDeath[npc.index] = VestaTank_ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaTank_ClotThink;
+		func_NPCThink[npc.index] = VestaTank_ClotThink;
 		
 		f_NpcTurnPenalty[npc.index] = 0.5;
 		npc.m_flSpeed = 90.0;
@@ -101,7 +101,7 @@ methodmap VictoriaTank < CClotBody
 		f_ExtraOffsetNpcHudAbove[npc.index] = -45.0;
 		
 		//Maybe used for special waves
-		/*Call To Victoria activates this NPC's LMG.*/
+		/*Call To Vesta activates this NPC's LMG.*/
 		if(StrContains(data, "mount_lmg") != -1)
 			npc.m_bFUCKYOU = true;
 		/*Always activate LMG*/
@@ -217,9 +217,9 @@ methodmap VictoriaTank < CClotBody
 	}
 }
 
-static void VictoriaTank_ClotThink(int iNPC)
+static void VestaTank_ClotThink(int iNPC)
 {
-	VictoriaTank npc = view_as<VictoriaTank>(iNPC);
+	VestaTank npc = view_as<VestaTank>(iNPC);
 
 	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 20.0);
 
@@ -291,7 +291,7 @@ static void VictoriaTank_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
-		VictoriaTank_Work(npc, gameTime, distance);
+		VestaTank_Work(npc, gameTime, distance);
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
@@ -311,9 +311,9 @@ static void VictoriaTank_ClotThink(int iNPC)
 	}
 }
 
-static void VictoriaTank_ClotDeath(int entity)
+static void VestaTank_ClotDeath(int entity)
 {
-	VictoriaTank npc = view_as<VictoriaTank>(entity);
+	VestaTank npc = view_as<VestaTank>(entity);
 
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 
@@ -384,7 +384,7 @@ static void VictoriaTank_ClotDeath(int entity)
 	}
 }
 
-static void VictoriaTank_Work(VictoriaTank npc, float gameTime, float distance)
+static void VestaTank_Work(VestaTank npc, float gameTime, float distance)
 {
 	/*Launch the DAMMMN Rocket*/
 	if(npc.m_flNextRangedAttack < gameTime)
@@ -396,7 +396,7 @@ static void VictoriaTank_Work(VictoriaTank npc, float gameTime, float distance)
 			float damageDeal = 600.0;
 			float ProjectileSpeed = 1400.0;
 
-			if(NpcStats_VictorianCallToArms(npc.index))
+			if(NpcStats_VestanCallToArms(npc.index))
 				ProjectileSpeed *= 1.25;
 
 			npc.PlayRangeSound();
@@ -456,7 +456,7 @@ static void VictoriaTank_Work(VictoriaTank npc, float gameTime, float distance)
 		}
 	}
 	/*LMG || I hate this part -Baka*/
-	if(npc.m_fbRangedSpecialOn || (npc.m_bFUCKYOU&&NpcStats_VictorianCallToArms(npc.index)))
+	if(npc.m_fbRangedSpecialOn || (npc.m_bFUCKYOU&&NpcStats_VestanCallToArms(npc.index)))
 	{
 		float eyePitch[3], subPitch[3], VecSelfNpc[3];
 		int GetClosestEnemyToAttack = GetClosestTarget(npc.index, .CanSee=true);

@@ -9,18 +9,18 @@
 #define SOUND_RAPID_SHOT_HYPER "mvm/mvm_warning.wav"
 #define SOUND_OVERHEAT "player/medic_charged_death.wav"
 
-#define MAX_VICTORIAN_SUPERCHARGE 10
+#define MAX_VESTAN_SUPERCHARGE 10
 
-static Handle h_TimerVictorianLauncher[MAXPLAYERS+1] = {null, ...};
+static Handle h_TimerVestanLauncher[MAXPLAYERS+1] = {null, ...};
 
 static int g_GrenadeModel;
 static int g_LaserIndex;
 
 //wtf Why are there so many particles??
-static float VictoriaLauncher_HUDDelay[MAXPLAYERS];
-static int VictoriaParticle_I[MAXPLAYERS];
-static int VictoriaParticle_II[MAXPLAYERS];
-static int VictoriaParticle_III[MAXPLAYERS];
+static float VestaLauncher_HUDDelay[MAXPLAYERS];
+static int VestaParticle_I[MAXPLAYERS];
+static int VestaParticle_II[MAXPLAYERS];
+static int VestaParticle_III[MAXPLAYERS];
 
 static float fHESH_FlyTime[MAXENTITIES];
 static float fHESH_DMG[MAXENTITIES];
@@ -39,24 +39,24 @@ static bool Burst_Mode[MAXPLAYERS];
 static float Rapid_Mode[MAXPLAYERS];
 static bool Overheat_Mode[MAXPLAYERS];
 
-static float Victoria_TmepSpeed[MAXPLAYERS];
-static float Victoria_DoubleTapR[MAXPLAYERS];
-static bool Victoria_PerkDeadShot[MAXPLAYERS];
+static float Vesta_TmepSpeed[MAXPLAYERS];
+static float Vesta_DoubleTapR[MAXPLAYERS];
+static bool Vesta_PerkDeadShot[MAXPLAYERS];
 
-void ResetMapStartVictoria()
+void ResetMapStartVesta()
 {
-	Victoria_Map_Precache();
+	Vesta_Map_Precache();
 	Zero(Load_SuperCharge);
 	Zero(Load_Maximum);
 	Zero(Charge_Mode);
 	Zero(Burst_Mode);
 	Zero(Rapid_Mode);
 	Zero(Overheat_Mode);
-	Zero(Victoria_PerkDeadShot);
-	Zero(Victoria_DoubleTapR);
-	Zero(Victoria_TmepSpeed);
+	Zero(Vesta_PerkDeadShot);
+	Zero(Vesta_DoubleTapR);
+	Zero(Vesta_TmepSpeed);
 }
-static void Victoria_Map_Precache()
+static void Vesta_Map_Precache()
 {
 	PrecacheSound(SOUND_VIC_SHOT);
 	PrecacheSound(SOUND_VIC_IMPACT);
@@ -72,88 +72,88 @@ static void Victoria_Map_Precache()
 	g_GrenadeModel = PrecacheModel(model);
 }
 
-public void Enable_Victorian_Launcher(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
+public void Enable_Vestan_Launcher(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if(h_TimerVictorianLauncher[client] != null)
+	if(h_TimerVestanLauncher[client] != null)
 	{
 		//This timer already exists.
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VICTORIAN_LAUNCHER)
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VESTAN_LAUNCHER)
 		{
 			if((i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER) || (i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER_X))
 			{
-				if(!Victoria_PerkDeadShot[client])
+				if(!Vesta_PerkDeadShot[client])
 				{
-					Victoria_PerkDeadShot[client]=true;
+					Vesta_PerkDeadShot[client]=true;
 					SetGlobalTransTarget(client);
-					PrintToChat(client, "%t", "VictorianLauncher 5 Perk Desc");
+					PrintToChat(client, "%t", "VestanLauncher 5 Perk Desc");
 				}
 			}
 			else
 			{
-				Victoria_PerkDeadShot[client]=false;
+				Vesta_PerkDeadShot[client]=false;
 			}
-			delete h_TimerVictorianLauncher[client];
-			h_TimerVictorianLauncher[client] = null;
+			delete h_TimerVestanLauncher[client];
+			h_TimerVestanLauncher[client] = null;
 			DataPack pack;
-			h_TimerVictorianLauncher[client] = CreateDataTimer(0.1, Timer_VictoriaLauncher, pack, TIMER_REPEAT);
+			h_TimerVestanLauncher[client] = CreateDataTimer(0.1, Timer_VestaLauncher, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
 	}
-	else if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VICTORIAN_LAUNCHER)
+	else if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VESTAN_LAUNCHER)
 	{
 		if((i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER) || (i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER_X))
 		{
-			if(!Victoria_PerkDeadShot[client])
+			if(!Vesta_PerkDeadShot[client])
 			{
-				Victoria_PerkDeadShot[client]=true;
+				Vesta_PerkDeadShot[client]=true;
 				SetGlobalTransTarget(client);
-				PrintToChat(client, "%t", "VictorianLauncher 5 Perk Desc");
+				PrintToChat(client, "%t", "VestanLauncher 5 Perk Desc");
 			}
 		}
 		else
 		{
-			Victoria_PerkDeadShot[client]=false;
+			Vesta_PerkDeadShot[client]=false;
 		}
 		DataPack pack;
-		h_TimerVictorianLauncher[client] = CreateDataTimer(0.1, Timer_VictoriaLauncher, pack, TIMER_REPEAT);
+		h_TimerVestanLauncher[client] = CreateDataTimer(0.1, Timer_VestaLauncher, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
-	if(Store_IsWeaponFaction(client, weapon, Faction_Victoria))	// Victoria
+	if(Store_IsWeaponFaction(client, weapon, Faction_Vesta))	// Vesta
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			if(h_TimerVictorianLauncher[i])
+			if(h_TimerVestanLauncher[i])
 			{
-				ApplyStatusEffect(weapon, weapon, "Victorian Launcher's Call", 9999999.0);
+				ApplyStatusEffect(weapon, weapon, "Vestan Launcher's Call", 9999999.0);
 				Attributes_SetMulti(weapon, 99, 1.1);
 			}
 		}
 	}
 }
 
-static Action Timer_VictoriaLauncher(Handle timer, DataPack pack)
+static Action Timer_VestaLauncher(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		h_TimerVictorianLauncher[client] = null;
+		h_TimerVestanLauncher[client] = null;
 		Zero(Load_SuperCharge);
 		Zero(Load_Maximum);
 		Zero(Charge_Mode);
 		Zero(Burst_Mode);
 		Zero(Rapid_Mode);
 		Zero(Overheat_Mode);
-		int entity = EntRefToEntIndex(VictoriaParticle_I[client]);
+		int entity = EntRefToEntIndex(VestaParticle_I[client]);
 		if(IsValidEntity(entity))
 			RemoveEntity(entity);
-		entity = EntRefToEntIndex(VictoriaParticle_II[client]);
+		entity = EntRefToEntIndex(VestaParticle_II[client]);
 		if(IsValidEntity(entity))
 			RemoveEntity(entity);
-		entity = EntRefToEntIndex(VictoriaParticle_III[client]);
+		entity = EntRefToEntIndex(VestaParticle_III[client]);
 		if(IsValidEntity(entity))
 			RemoveEntity(entity);
 		return Plugin_Stop;
@@ -163,16 +163,16 @@ static Action Timer_VictoriaLauncher(Handle timer, DataPack pack)
 	bool HoldOn;
 	if(weapon_holding == weapon)
 	{
-		Victoria_Launcher_HUD(client);
+		Vesta_Launcher_HUD(client);
 		HoldOn=true;
 	}
-	Victoria_Launcher_Effect(client, HoldOn);
+	Vesta_Launcher_Effect(client, HoldOn);
 	return Plugin_Continue;
 }
 
-static void Victoria_Launcher_HUD(int client)
+static void Vesta_Launcher_HUD(int client)
 {
-	if(VictoriaLauncher_HUDDelay[client] < GetGameTime())
+	if(VestaLauncher_HUDDelay[client] < GetGameTime())
 	{
 		char C_point_hints[512]="";
 		
@@ -185,51 +185,51 @@ static void Victoria_Launcher_HUD(int client)
 		else
 		{
 			Format(C_point_hints, sizeof(C_point_hints),
-			"%s\n%t", C_point_hints, "VictorianLauncher OverHeated");
+			"%s\n%t", C_point_hints, "VestanLauncher OverHeated");
 		}
 		if(Rapid_Mode[client]>GetGameTime())
 		{
 			if(Overheat_Mode[client])
 				Format(C_point_hints, sizeof(C_point_hints),
-				"%s\n%t", C_point_hints, "VictorianLauncher OverDrive");
+				"%s\n%t", C_point_hints, "VestanLauncher OverDrive");
 			else
 				Format(C_point_hints, sizeof(C_point_hints),
-				"%s\n%t", C_point_hints, "VictorianLauncher RapidFire");
+				"%s\n%t", C_point_hints, "VestanLauncher RapidFire");
 			Format(C_point_hints, sizeof(C_point_hints),
-			"%s\n%t\n[%.2f]", C_point_hints, "VictorianLauncher ManuallyR", Rapid_Mode[client]-GetGameTime());
+			"%s\n%t\n[%.2f]", C_point_hints, "VestanLauncher ManuallyR", Rapid_Mode[client]-GetGameTime());
 		}
 		else if(Charge_Mode[client])
 		{
 			if(Burst_Mode[client])
 			{
 				Format(C_point_hints, sizeof(C_point_hints),
-				"%s\n%t", C_point_hints, "VictorianLauncher SuperShot", Load_SuperCharge[client]);
+				"%s\n%t", C_point_hints, "VestanLauncher SuperShot", Load_SuperCharge[client]);
 			}
 			else
 			{
 				Format(C_point_hints, sizeof(C_point_hints),
-				"%s\n%t[%i/%i]", C_point_hints, "VictorianLauncher CRockets", Load_SuperCharge[client], Load_Maximum[client]);
+				"%s\n%t[%i/%i]", C_point_hints, "VestanLauncher CRockets", Load_SuperCharge[client], Load_Maximum[client]);
 				if(Load_SuperCharge[client]>1 && Load_SuperCharge[client]<=5)
 					Format(C_point_hints, sizeof(C_point_hints),
-					"%s\n%t", C_point_hints, "VictorianLauncher ManuallyM2");
+					"%s\n%t", C_point_hints, "VestanLauncher ManuallyM2");
 			}
 		}
-		if(Victoria_PerkDeadShot[client])
+		if(Vesta_PerkDeadShot[client])
 		{
 			Format(C_point_hints, sizeof(C_point_hints),
-			"%s\n%t", C_point_hints, "VictorianLauncher 5 Perk On");
+			"%s\n%t", C_point_hints, "VestanLauncher 5 Perk On");
 		}
 
 		if(C_point_hints[0] != '\0')
 		{
 			PrintHintText(client,"%s", C_point_hints);
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-			VictoriaLauncher_HUDDelay[client] = GetGameTime() + 0.5;
+			VestaLauncher_HUDDelay[client] = GetGameTime() + 0.5;
 		}
 	}
 }
 
-static void Victoria_Launcher_Effect(int client, bool HoldOn=false)
+static void Vesta_Launcher_Effect(int client, bool HoldOn=false)
 {
 	if(CvarInfiniteCash.BoolValue)
 	{
@@ -244,15 +244,15 @@ static void Victoria_Launcher_Effect(int client, bool HoldOn=false)
 		else
 			Ability_Apply_Cooldown(client, 3, 0.0);
 	}
-	if(Victoria_PerkDeadShot[client] && HoldOn)
+	if(Vesta_PerkDeadShot[client] && HoldOn)
 	{
-		if(Victoria_TmepSpeed[client] <= 0.0)
-			Victoria_TmepSpeed[client] = 800.0;
+		if(Vesta_TmepSpeed[client] <= 0.0)
+			Vesta_TmepSpeed[client] = 800.0;
 		static int color[4] = {200, 255, 50, 200};
 		static Handle swingTrace;
 		static float pos[3], vecSwingForward[3];
 		StartPlayerOnlyLagComp(client, true);
-		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, Victoria_TmepSpeed[client], false, 45.0, true);
+		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, Vesta_TmepSpeed[client], false, 45.0, true);
 		int target = TR_GetEntityIndex(swingTrace);	
 		if(IsValidEnemy(client, target))
 		{
@@ -262,7 +262,7 @@ static void Victoria_Launcher_Effect(int client, bool HoldOn=false)
 		{
 			delete swingTrace;
 			int MaxTargethit = -1;
-			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, Victoria_TmepSpeed[client], false, 45.0, true, MaxTargethit);
+			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, Vesta_TmepSpeed[client], false, 45.0, true, MaxTargethit);
 			TR_GetEndPosition(pos, swingTrace);
 			delete swingTrace;
 			swingTrace = TR_TraceRayFilterEx(pos, {90.0, 0.0, 0.0}, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
@@ -279,24 +279,24 @@ static void Victoria_Launcher_Effect(int client, bool HoldOn=false)
 	{
 		//It's ridiculous, but this is the solution I came up with.
 		if(HoldOn)
-			ApplyStatusEffect(client, client, "Victorian Launcher Overdrive", 1.0);
+			ApplyStatusEffect(client, client, "Vestan Launcher Overdrive", 1.0);
 		else //Once you activate the ability, don't swap to another weapon.
 			SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime()+1.0);
 		VL_EYEParticle(client);
-		int entity = EntRefToEntIndex(VictoriaParticle_I[client]);
+		int entity = EntRefToEntIndex(VestaParticle_I[client]);
 		if(!IsValidEntity(entity))
 		{
 			float flPos[3];
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
 			int particle = ParticleEffectAt(flPos, "medic_resist_fire", 0.0);
 			SetParent(client, particle, "m_vecAbsOrigin");
-			VictoriaParticle_I[client] = EntIndexToEntRef(particle);
+			VestaParticle_I[client] = EntIndexToEntRef(particle);
 		}
 		if(!Overheat_Mode[client])
 		{
 			if(Rapid_Mode[client]-GetGameTime()<=15.0)
 			{
-				entity = EntRefToEntIndex(VictoriaParticle_II[client]);
+				entity = EntRefToEntIndex(VestaParticle_II[client]);
 				if(!IsValidEntity(entity))
 				{
 					float flPos[3];
@@ -304,7 +304,7 @@ static void Victoria_Launcher_Effect(int client, bool HoldOn=false)
 					int particle = ParticleEffectAt(flPos, "utaunt_lavalamp_yellow_glow", 0.0);
 					AddEntityToThirdPersonTransitMode(client, particle);
 					SetParent(client, particle, "m_vecAbsOrigin");
-					VictoriaParticle_II[client] = EntIndexToEntRef(particle);
+					VestaParticle_II[client] = EntIndexToEntRef(particle);
 				}
 				EmitSoundToAll(SOUND_RAPID_SHOT_HYPER, client, SNDCHAN_AUTO, 70, _, 0.9);
 				Overheat_Mode[client]=true;
@@ -330,13 +330,13 @@ static void Victoria_Launcher_Effect(int client, bool HoldOn=false)
 		VL_EYEParticle(client);
 	else
 	{
-		int entity = EntRefToEntIndex(VictoriaParticle_I[client]);
+		int entity = EntRefToEntIndex(VestaParticle_I[client]);
 		if(IsValidEntity(entity))
 			RemoveEntity(entity);
-		entity = EntRefToEntIndex(VictoriaParticle_II[client]);
+		entity = EntRefToEntIndex(VestaParticle_II[client]);
 		if(IsValidEntity(entity))
 			RemoveEntity(entity);
-		entity = EntRefToEntIndex(VictoriaParticle_III[client]);
+		entity = EntRefToEntIndex(VestaParticle_III[client]);
 		if(IsValidEntity(entity))
 			RemoveEntity(entity);
 		if(Overheat_Mode[client])
@@ -347,7 +347,7 @@ static void Victoria_Launcher_Effect(int client, bool HoldOn=false)
 	}
 }
 
-public void Weapon_Victoria_Main(int client, int weapon, bool crit)
+public void Weapon_Vesta_Main(int client, int weapon, bool crit)
 {
 	int new_ammo = GetAmmo(client, 8);
 	if(new_ammo < 3)
@@ -440,7 +440,7 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 	RocketDMG*=1.1;
 	if(RaidbossIgnoreBuildingsLogic(1))
 		RocketRadius*=1.2;
-	if(Victoria_PerkDeadShot[client])
+	if(Vesta_PerkDeadShot[client])
 	{
 		DEADSHOT=true;
 		RocketSpeed+=200.0;
@@ -449,7 +449,7 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 	if(Overheat <= 0.0)
 		Overheat = 0.0;
 	else RocketDMG*=0.5;
-	VictoriaLauncher_HUDDelay[client]=0.0;
+	VestaLauncher_HUDDelay[client]=0.0;
 	int entity = CreateEntityByName("tf_projectile_rocket");
 	if(IsValidEntity(entity))
 	{
@@ -492,7 +492,7 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 			}
 			FinishLagCompensation_Base_boss();
 			delete swingTrace;
-			Victoria_TmepSpeed[client]=RocketSpeed;
+			Vesta_TmepSpeed[client]=RocketSpeed;
 			ArcToLocationViaSpeedProjectile(VecStart, vec, SpeedReturn, 1.0, 1.0);
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 		}
@@ -514,7 +514,7 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 			DHookRemoveHookID(h_NpcSolidHookType[entity]);
 		h_NpcSolidHookType[entity] = 0;
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre);//I reused*2 code. I'm too lazy.
-		SDKHook(entity, SDKHook_StartTouch, Victorian_HESH_Touch);
+		SDKHook(entity, SDKHook_StartTouch, Vestan_HESH_Touch);
 		Better_Gravity_Rocket(entity, 55.0);
 		GetAbsOrigin(entity, Position);
 		int particle;
@@ -568,7 +568,7 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 	}
 }
 
-public void Weapon_Victoria_Sub(int client, int weapon, bool crit, int slot)
+public void Weapon_Vesta_Sub(int client, int weapon, bool crit, int slot)
 {
 	if(Rapid_Mode[client]<GetGameTime())
 	{
@@ -597,7 +597,7 @@ public void Weapon_Victoria_Sub(int client, int weapon, bool crit, int slot)
 		{
 			Rogue_OnAbilityUse(client, weapon);
 			EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 70, _, 1.0);
-			Load_Maximum[client] = RoundToZero(MAX_VICTORIAN_SUPERCHARGE*Attributes_Get(weapon, 4, 1.0));
+			Load_Maximum[client] = RoundToZero(MAX_VESTAN_SUPERCHARGE*Attributes_Get(weapon, 4, 1.0));
 			Load_SuperCharge[client]=Load_Maximum[client];
 			Charge_Mode[client]=true;
 		}
@@ -617,7 +617,7 @@ public void Weapon_Victoria_Sub(int client, int weapon, bool crit, int slot)
 	}
 }
 
-public void Weapon_Victoria_Spe(int client, int weapon, bool crit, int slot)
+public void Weapon_Vesta_Spe(int client, int weapon, bool crit, int slot)
 {
 	if(b_InteractWithReload[client])
 	{ 
@@ -630,9 +630,9 @@ public void Weapon_Victoria_Spe(int client, int weapon, bool crit, int slot)
 			GetClientEyeAngles(client, angles);
 			if(angles[0] < -70.0)
 			{
-				if(Victoria_DoubleTapR[client] < GetGameTime())
+				if(Vesta_DoubleTapR[client] < GetGameTime())
 				{
-					Victoria_DoubleTapR[client] = GetGameTime() + 0.2;
+					Vesta_DoubleTapR[client] = GetGameTime() + 0.2;
 					R_AbilityBlock=true;
 				}
 			}
@@ -690,7 +690,7 @@ public void Weapon_Victoria_Spe(int client, int weapon, bool crit, int slot)
 	}
 }
 
-static void Victorian_HESH_Touch(int entity, int target)
+static void Vestan_HESH_Touch(int entity, int target)
 {
 	if(target < 0)	
 	{
@@ -744,7 +744,7 @@ static void Did_Someone_Get_Hit(int entity, int victim, float damage, int weapon
 }
 static void VL_EYEParticle(int client)
 {
-	int entity = EntRefToEntIndex(VictoriaParticle_I[client]);
+	int entity = EntRefToEntIndex(VestaParticle_I[client]);
 	if(!IsValidEntity(entity))
 	{
 		entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
@@ -756,7 +756,7 @@ static void VL_EYEParticle(int client)
 			int particle = ParticleEffectAt(flPos, "eye_powerup_red_lvl_2", 0.0);
 			AddEntityToThirdPersonTransitMode(entity, particle);
 			SetParent(entity, particle, "eyeglow_l");
-			VictoriaParticle_I[client] = EntIndexToEntRef(particle);
+			VestaParticle_I[client] = EntIndexToEntRef(particle);
 		}
 	}
 }

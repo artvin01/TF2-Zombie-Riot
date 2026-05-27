@@ -49,12 +49,12 @@ static const char g_suitup[] = "mvm/mvm_tank_start.wav";
 void Aviator_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Aviator");
+	strcopy(data.Name, sizeof(data.Name), "Vesta Aviator");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aviator");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_aviator");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_aviator");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);

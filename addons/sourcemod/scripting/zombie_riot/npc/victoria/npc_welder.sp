@@ -41,15 +41,15 @@ static const char g_SapperHitSounds[][] = {
 static const char g_MeleeAttackSounds[] = "weapons/knife_swing.wav";
 static const char g_MeleeHitSounds[] = "weapons/bat_baseball_hit_flesh.wav";
 
-void VictorianWelder_OnMapStart_NPC()
+void VestanWelder_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Welder");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_welder");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_welder"); 
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_welder"); 
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -68,10 +68,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianWelder(vecPos, vecAng, ally, data);
+	return VestanWelder(vecPos, vecAng, ally, data);
 }
 
-methodmap VictorianWelder < CClotBody
+methodmap VestanWelder < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -125,9 +125,9 @@ methodmap VictorianWelder < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
 	
-	public VictorianWelder(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanWelder(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianWelder npc = view_as<VictorianWelder>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.15", "25000", ally,false));
+		VestanWelder npc = view_as<VestanWelder>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.15", "25000", ally,false));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -142,9 +142,9 @@ methodmap VictorianWelder < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		func_NPCDeath[npc.index] = VictorianWelder_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianWelder_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianWelder_ClotThink;
+		func_NPCDeath[npc.index] = VestanWelder_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanWelder_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanWelder_ClotThink;
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -217,9 +217,9 @@ methodmap VictorianWelder < CClotBody
 	}
 }
 
-static void VictorianWelder_ClotThink(int iNPC)
+static void VestanWelder_ClotThink(int iNPC)
 {
-	VictorianWelder npc = view_as<VictorianWelder>(iNPC);
+	VestanWelder npc = view_as<VestanWelder>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -262,7 +262,7 @@ static void VictorianWelder_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VictorianWelderSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
+		VestanWelderSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
 	}
 	else
 	{
@@ -272,9 +272,9 @@ static void VictorianWelder_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictorianWelder_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanWelder_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianWelder npc = view_as<VictorianWelder>(victim);
+	VestanWelder npc = view_as<VestanWelder>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -287,9 +287,9 @@ static Action VictorianWelder_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-static void VictorianWelder_NPCDeath(int entity)
+static void VestanWelder_NPCDeath(int entity)
 {
-	VictorianWelder npc = view_as<VictorianWelder>(entity);
+	VestanWelder npc = view_as<VestanWelder>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();	
 
@@ -305,7 +305,7 @@ static void VictorianWelder_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static void VictorianWelderSelfDefense(VictorianWelder npc, float gameTime, float distance)
+static void VestanWelderSelfDefense(VestanWelder npc, float gameTime, float distance)
 {
 	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 	{
@@ -338,7 +338,7 @@ static void VictorianWelderSelfDefense(VictorianWelder npc, float gameTime, floa
 						{
 							damageDealt*=5.0;
 							float fixedArmorgain = float(ReturnEntityMaxHealth(npc.index))*npc.m_flArmorToGive;
-							if(NpcStats_VictorianCallToArms(npc.index))
+							if(NpcStats_VestanCallToArms(npc.index))
 								fixedArmorgain *= npc.m_flCallToArmArmorToGive;
 							GrantEntityArmor(npc.index, false, npc.m_flMaxArmor, npc.m_flExtraArmorResist, 0, fixedArmorgain);
 							npc.PlaySapperHitSound();

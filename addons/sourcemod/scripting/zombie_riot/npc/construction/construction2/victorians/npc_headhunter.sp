@@ -73,7 +73,7 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 
-void Victorian_Headhunter_OnMapStart_NPC()
+void Vestan_Headhunter_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -81,12 +81,12 @@ void Victorian_Headhunter_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victorian Headhunter");
+	strcopy(data.Name, sizeof(data.Name), "Vestan Headhunter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_headhunter");
 	strcopy(data.Icon, sizeof(data.Icon), "sniper_headshot");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -94,10 +94,10 @@ void Victorian_Headhunter_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Victorian_Headhunter(vecPos, vecAng, team);
+	return Vestan_Headhunter(vecPos, vecAng, team);
 }
 
-methodmap Victorian_Headhunter < CClotBody
+methodmap Vestan_Headhunter < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -130,9 +130,9 @@ methodmap Victorian_Headhunter < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 60, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public Victorian_Headhunter(float vecPos[3], float vecAng[3], int ally)
+	public Vestan_Headhunter(float vecPos[3], float vecAng[3], int ally)
 	{
-		Victorian_Headhunter npc = view_as<Victorian_Headhunter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "4000", ally));
+		Vestan_Headhunter npc = view_as<Vestan_Headhunter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "4000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -143,9 +143,9 @@ methodmap Victorian_Headhunter < CClotBody
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		func_NPCDeath[npc.index] = view_as<Function>(Victorian_Headhunter_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Victorian_Headhunter_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Victorian_Headhunter_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Vestan_Headhunter_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Vestan_Headhunter_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Vestan_Headhunter_ClotThink);
 		
 		npc.m_iChanged_WalkCycle = 0;
 
@@ -190,9 +190,9 @@ methodmap Victorian_Headhunter < CClotBody
 	}
 }
 
-public void Victorian_Headhunter_ClotThink(int iNPC)
+public void Vestan_Headhunter_ClotThink(int iNPC)
 {
-	Victorian_Headhunter npc = view_as<Victorian_Headhunter>(iNPC);
+	Vestan_Headhunter npc = view_as<Vestan_Headhunter>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -225,7 +225,7 @@ public void Victorian_Headhunter_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ExtraBehavior = Victorian_HeadhunterSelfDefense(npc,GetGameTime(npc.index)); 
+		int ExtraBehavior = Vestan_HeadhunterSelfDefense(npc,GetGameTime(npc.index)); 
 
 		switch(ExtraBehavior)
 		{
@@ -272,9 +272,9 @@ public void Victorian_Headhunter_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Victorian_Headhunter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Vestan_Headhunter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Victorian_Headhunter npc = view_as<Victorian_Headhunter>(victim);
+	Vestan_Headhunter npc = view_as<Vestan_Headhunter>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -288,9 +288,9 @@ public Action Victorian_Headhunter_OnTakeDamage(int victim, int &attacker, int &
 	return Plugin_Changed;
 }
 
-public void Victorian_Headhunter_NPCDeath(int entity)
+public void Vestan_Headhunter_NPCDeath(int entity)
 {
-	Victorian_Headhunter npc = view_as<Victorian_Headhunter>(entity);
+	Vestan_Headhunter npc = view_as<Vestan_Headhunter>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -313,7 +313,7 @@ public void Victorian_Headhunter_NPCDeath(int entity)
 
 }
 
-int Victorian_HeadhunterSelfDefense(Victorian_Headhunter npc, float gameTime)
+int Vestan_HeadhunterSelfDefense(Vestan_Headhunter npc, float gameTime)
 {
 	if(!npc.m_flAttackHappens)
 	{
@@ -437,11 +437,11 @@ int Victorian_HeadhunterSelfDefense(Victorian_Headhunter npc, float gameTime)
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(NpcStats_VictorianCallToArms(npc.index))
+		if(NpcStats_VestanCallToArms(npc.index))
 		{
 			npc.m_flAttackHappens = gameTime + 0.65;
 		}
-		else if(!NpcStats_VictorianCallToArms(npc.index))
+		else if(!NpcStats_VestanCallToArms(npc.index))
 		{
 			npc.m_flAttackHappens = gameTime + 1.00;
 		}

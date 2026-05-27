@@ -613,7 +613,7 @@ void NPC_ConfigSetup()
 	Almina_Ginus_OnMapStart_NPC();
 	Almina_SpeedusInitus_OnMapStart_NPC();
 	Almina_Anania_OnMapStart_NPC();
-	Almina_Victorian_OnMapStart_NPC();
+	Almina_Vestan_OnMapStart_NPC();
 	Almina_inqusitor_iidutas_OnMapStart_NPC();
   
 
@@ -646,62 +646,62 @@ void NPC_ConfigSetup()
 	AlminaDeathMarker_OnMapStart_NPC();
 	Almina_inqusitor_amphi_OnMapStart_NPC();
 
-//Victorian Raid
+//Vestan Raid
 //wave 1~10
-	Victoria_Batter_OnMapStart_NPC();
-	Victorian_Charger_OnMapStart_NPC();
-	Victorian_Teslar_OnMapStart_NPC();
-	VictorianBallista_OnMapStart_NPC();
-	VictorianVanguard_OnMapStart_NPC();
-	VictorianSupplier_OnMapStart_NPC();
-	VictorianIgniter_OnMapStart_NPC();
-	VictorianGrenadier_OnMapStart_NPC();
-	VictorianSquadleader_OnMapStart_NPC();
-	VictorianSignaller_OnMapStart_NPC();
+	Vesta_Batter_OnMapStart_NPC();
+	Vestan_Charger_OnMapStart_NPC();
+	Vestan_Teslar_OnMapStart_NPC();
+	VestanBallista_OnMapStart_NPC();
+	VestanVanguard_OnMapStart_NPC();
+	VestanSupplier_OnMapStart_NPC();
+	VestanIgniter_OnMapStart_NPC();
+	VestanGrenadier_OnMapStart_NPC();
+	VestanSquadleader_OnMapStart_NPC();
+	VestanSignaller_OnMapStart_NPC();
 	
 //wave 11~20
-	VictorianHumbee_MapStart();
-	VictorianShotgunner_OnMapStart_NPC();
+	VestanHumbee_MapStart();
+	VestanShotgunner_OnMapStart_NPC();
 	Bulldozer_OnMapStart_NPC();
-	VictorianHardener_OnMapStart_NPC();
-	VictorianRaider_OnMapStart_NPC();
+	VestanHardener_OnMapStart_NPC();
+	VestanRaider_OnMapStart_NPC();
 	Zapper_OnMapStart_NPC();
-	VictorianPayback_OnMapStart_NPC();
+	VestanPayback_OnMapStart_NPC();
 	Blocker_OnMapStart_NPC();
-	VictoriaDestructor_Precache();
-	VictorianIronShield_OnMapStart_NPC();
+	VestaDestructor_Precache();
+	VestanIronShield_OnMapStart_NPC();
 	Aviator_OnMapStart_NPC();
 	
 //wave 21~30
-	Victoria_BaseBreaker_OnMapStart_NPC();
-	VictoriaAntiarmorInfantry_OnMapStart_NPC();
-	VictoriaAssaulter_OnMapStart_NPC();
-	VictorianMechafist_OnMapStart_NPC();
-	VictorianBooster_OnMapStart_NPC();
-	VictoriaScorcher_OnMapStart_NPC();
-	VictoriaMowdown_OnMapStart_NPC();
-	VictoriaMortar_OnMapStart_NPC();
-	VictoriaArtillerist_OnMapStart_NPC();
-	VictoriaBreachcart_MapStart();
-	VictoriaBombcart_Precache();
-	VictoriaBigpipe_OnMapStart_NPC();
-	VictoriaHarbringer_OnMapStart_NPC();
-	VictoriaBirdeye_OnMapStart_NPC();
+	Vesta_BaseBreaker_OnMapStart_NPC();
+	VestaAntiarmorInfantry_OnMapStart_NPC();
+	VestaAssaulter_OnMapStart_NPC();
+	VestanMechafist_OnMapStart_NPC();
+	VestanBooster_OnMapStart_NPC();
+	VestaScorcher_OnMapStart_NPC();
+	VestaMowdown_OnMapStart_NPC();
+	VestaMortar_OnMapStart_NPC();
+	VestaArtillerist_OnMapStart_NPC();
+	VestaBreachcart_MapStart();
+	VestaBombcart_Precache();
+	VestaBigpipe_OnMapStart_NPC();
+	VestaHarbringer_OnMapStart_NPC();
+	VestaBirdeye_OnMapStart_NPC();
 
 //wave 31~40
-	VictorianCaffeinator_OnMapStart_NPC();
-	VictorianMechanist_as_OnMapStart_NPC();
-	VictorianOfflineAvangard_MapStart();
-	VictorianWelder_OnMapStart_NPC();
+	VestanCaffeinator_OnMapStart_NPC();
+	VestanMechanist_as_OnMapStart_NPC();
+	VestanOfflineAvangard_MapStart();
+	VestanWelder_OnMapStart_NPC();
 	VIctorianTanker_OnMapStart_NPC();
-	VictorianAssaultVehicle_OnMapStart();
-	VictorianPulverizer_OnMapStart_NPC();
+	VestanAssaultVehicle_OnMapStart();
+	VestanPulverizer_OnMapStart_NPC();
 	VIctorianAmbusher_OnMapStart_NPC();
-	VictoriaTank_MapStart();
-	VictoriaTaser_OnMapStart_NPC();
-	VictoriaRadiomast_OnMapStart_NPC();
-	VictoriaRepair_OnMapStart_NPC();
-	Victorian_Radioguard_OnMapStart_NPC();
+	VestaTank_MapStart();
+	VestaTaser_OnMapStart_NPC();
+	VestaRadiomast_OnMapStart_NPC();
+	VestaRepair_OnMapStart_NPC();
+	Vestan_Radioguard_OnMapStart_NPC();
 
 //raid
 	Atomizer_OnMapStart_NPC();
@@ -709,26 +709,26 @@ void NPC_ConfigSetup()
 	Harrison_OnMapStart_NPC();
 	Castellan_OnMapStart_NPC();
 
-//construction2 Victorians
+//construction2 Vestans
 	Demolitionist_OnMapStart_NPC();
 	Chemical_Specialist_OnMapStart_NPC();
-	Victorian_Protector_OnMapStart_NPC();
+	Vestan_Protector_OnMapStart_NPC();
 	ChemicalSpreader_OnMapStart_NPC();
 	Zapmarker_OnMapStart_NPC();
 	ArmoredMedic_OnMapStart_NPC();
 	Airraider_OnMapStart_NPC();
-	Victorian_Headhunter_OnMapStart_NPC();
-	Victorian_Resource_Collector_OnMapStart_NPC();
+	Vestan_Headhunter_OnMapStart_NPC();
+	Vestan_Resource_Collector_OnMapStart_NPC();
 	Gasleader_OnMapStart_NPC();	
 
 //special
-	Invisible_TRIGGER_OnMapStart_NPC();//It is currently used as a trigger for the Victoria Factory.
+	Invisible_TRIGGER_OnMapStart_NPC();//It is currently used as a trigger for the Vesta Factory.
 	CaptinoBaguettus_OnMapStart_NPC();//Captino Meinus Follower
-	VictorianFactory_MapStart();
-	VictorianDroneFragments_MapStart();
-	VictorianDroneAnvil_MapStart();
-	Victorian_Tacticalunit_OnMapStart_NPC();
-	Victorian_TacticalProtector_OnMapStart_NPC();
+	VestanFactory_MapStart();
+	VestanDroneFragments_MapStart();
+	VestanDroneAnvil_MapStart();
+	Vestan_Tacticalunit_OnMapStart_NPC();
+	Vestan_TacticalProtector_OnMapStart_NPC();
 	TEST_Dummy_OnMapStart_NPC();
 
 	//Alt Barracks
@@ -2308,7 +2308,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/almina_expidonsa/wave_15/npc_ginus.sp"
 #include "npc/almina_expidonsa/wave_15/npc_speedus_initus.sp"
 #include "npc/almina_expidonsa/wave_15/npc_anania.sp"
-#include "npc/almina_expidonsa/wave_15/npc_vestian.sp"
+#include "npc/almina_expidonsa/wave_15/npc_vestan.sp"
 #include "npc/almina_expidonsa/wave_15/npc_inqusitor_iidutas.sp"
 
 
@@ -2342,90 +2342,90 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/raidmode_bosses/almina/npc_nemal.sp"
 #include "npc/raidmode_bosses/almina/npc_raid_silvester.sp"
 
-//Victoria
+//Vesta
 //special
-#include "npc/vestia/npc_invisible_trigger.sp"
-#include "npc/vestia/npc_vestian_factory.sp"
-#include "npc/vestia/npc_vestia_tacticalprotector.sp"
-#include "npc/vestia/npc_vestia_tacticalunit.sp"
-#include "npc/vestia/npc_test_dummy.sp"
-#include "npc/vestia/npc_baguettus.sp"
+#include "npc/vesta/npc_invisible_trigger.sp"
+#include "npc/vesta/npc_vestan_factory.sp"
+#include "npc/vesta/npc_vesta_tacticalprotector.sp"
+#include "npc/vesta/npc_vesta_tacticalunit.sp"
+#include "npc/vesta/npc_test_dummy.sp"
+#include "npc/vesta/npc_baguettus.sp"
 
 //Wave 1~10
-#include "npc/vestia/npc_batter.sp"
-#include "npc/vestia/npc_charger.sp"
-#include "npc/vestia/npc_teslar.sp"
-#include "npc/vestia/npc_vestian_vanguard.sp"
-#include "npc/vestia/npc_supplier.sp"
-#include "npc/vestia/npc_ballista.sp"
-#include "npc/vestia/npc_igniter.sp"
-#include "npc/vestia/npc_grenadier.sp"
-#include "npc/vestia/npc_squadleader.sp"
-#include "npc/vestia/npc_signaller.sp"
+#include "npc/vesta/npc_batter.sp"
+#include "npc/vesta/npc_charger.sp"
+#include "npc/vesta/npc_teslar.sp"
+#include "npc/vesta/npc_vestan_vanguard.sp"
+#include "npc/vesta/npc_supplier.sp"
+#include "npc/vesta/npc_ballista.sp"
+#include "npc/vesta/npc_igniter.sp"
+#include "npc/vesta/npc_grenadier.sp"
+#include "npc/vesta/npc_squadleader.sp"
+#include "npc/vesta/npc_signaller.sp"
 
 //wave 11~20
-#include "npc/vestia/npc_humbee.sp"
-#include "npc/vestia/npc_shotgunner.sp"
-#include "npc/vestia/npc_bulldozer.sp"
-#include "npc/vestia/npc_hardener.sp"
-#include "npc/vestia/npc_raider.sp"
-#include "npc/vestia/npc_zapper.sp"
-#include "npc/vestia/npc_payback.sp"
-#include "npc/vestia/npc_blocker.sp"
-#include "npc/vestia/npc_destructor.sp"
-#include "npc/vestia/npc_ironshield.sp"
-#include "npc/vestia/npc_aviator.sp"
+#include "npc/vesta/npc_humbee.sp"
+#include "npc/vesta/npc_shotgunner.sp"
+#include "npc/vesta/npc_bulldozer.sp"
+#include "npc/vesta/npc_hardener.sp"
+#include "npc/vesta/npc_raider.sp"
+#include "npc/vesta/npc_zapper.sp"
+#include "npc/vesta/npc_payback.sp"
+#include "npc/vesta/npc_blocker.sp"
+#include "npc/vesta/npc_destructor.sp"
+#include "npc/vesta/npc_ironshield.sp"
+#include "npc/vesta/npc_aviator.sp"
 
 //wave 21~30
-#include "npc/vestia/npc_basebreaker.sp"
-#include "npc/vestia/npc_booster.sp"
-#include "npc/vestia/npc_scorcher.sp"
-#include "npc/vestia/npc_mowdown.sp"
-#include "npc/vestia/npc_mechafist.sp"
-#include "npc/vestia/npc_assaulter.sp"
-#include "npc/vestia/npc_antiarmor_infantry.sp"
-#include "npc/vestia/npc_mortar.sp"
-#include "npc/vestia/npc_vestian_artillerist.sp"
-#include "npc/vestia/npc_bombcart.sp"
-#include "npc/vestia/npc_breachcart.sp"
-#include "npc/vestia/npc_birdeye.sp"
-#include "npc/vestia/npc_harbringer.sp"
-#include "npc/vestia/npc_bigpipe.sp"
+#include "npc/vesta/npc_basebreaker.sp"
+#include "npc/vesta/npc_booster.sp"
+#include "npc/vesta/npc_scorcher.sp"
+#include "npc/vesta/npc_mowdown.sp"
+#include "npc/vesta/npc_mechafist.sp"
+#include "npc/vesta/npc_assaulter.sp"
+#include "npc/vesta/npc_antiarmor_infantry.sp"
+#include "npc/vesta/npc_mortar.sp"
+#include "npc/vesta/npc_vestan_artillerist.sp"
+#include "npc/vesta/npc_bombcart.sp"
+#include "npc/vesta/npc_breachcart.sp"
+#include "npc/vesta/npc_birdeye.sp"
+#include "npc/vesta/npc_harbringer.sp"
+#include "npc/vesta/npc_bigpipe.sp"
 
 //wave 31~40
-#include "npc/vestia/npc_caffeinator.sp"
-#include "npc/vestia/npc_welder.sp"
-#include "npc/vestia/npc_mechanist.sp"
-#include "npc/vestia/npc_avangard.sp"
-#include "npc/vestia/npc_tanker.sp"
-#include "npc/vestia/npc_pulverizer.sp"
-#include "npc/vestia/npc_ambusher.sp"
-#include "npc/vestia/npc_taser.sp"
-#include "npc/vestia/npc_vestian_tank.sp"
-#include "npc/vestia/npc_drive_in_my_car.sp"
-#include "npc/vestia/npc_vestia_radiomast.sp"
-#include "npc/vestia/npc_radioguard.sp"
-#include "npc/vestia/npc_radio_repair.sp"
-#include "npc/vestia/npc_vestian_moru.sp"
-#include "npc/vestia/npc_vestian_fragments.sp"
+#include "npc/vesta/npc_caffeinator.sp"
+#include "npc/vesta/npc_welder.sp"
+#include "npc/vesta/npc_mechanist.sp"
+#include "npc/vesta/npc_avangard.sp"
+#include "npc/vesta/npc_tanker.sp"
+#include "npc/vesta/npc_pulverizer.sp"
+#include "npc/vesta/npc_ambusher.sp"
+#include "npc/vesta/npc_taser.sp"
+#include "npc/vesta/npc_vestan_tank.sp"
+#include "npc/vesta/npc_drive_in_my_car.sp"
+#include "npc/vesta/npc_vesta_radiomast.sp"
+#include "npc/vesta/npc_radioguard.sp"
+#include "npc/vesta/npc_radio_repair.sp"
+#include "npc/vesta/npc_vestan_moru.sp"
+#include "npc/vesta/npc_vestan_fragments.sp"
 
 //raidbosses
-#include "npc/raidmode_bosses/vestia/npc_the_atomizer.sp"
-#include "npc/raidmode_bosses/vestia/npc_the_wall.sp"
-#include "npc/raidmode_bosses/vestia/npc_harrison.sp"
-#include "npc/raidmode_bosses/vestia/npc_castellan.sp"
+#include "npc/raidmode_bosses/vesta/npc_the_atomizer.sp"
+#include "npc/raidmode_bosses/vesta/npc_the_wall.sp"
+#include "npc/raidmode_bosses/vesta/npc_harrison.sp"
+#include "npc/raidmode_bosses/vesta/npc_castellan.sp"
 
-//construction2 Victorian
-#include "npc/construction/construction2/vestians/npc_demolitionist.sp"
-#include "npc/construction/construction2/vestians/npc_chemical_specialist.sp"
-#include "npc/construction/construction2/vestians/npc_protector.sp"
-#include "npc/construction/construction2/vestians/npc_chemical_spreader.sp"
-#include "npc/construction/construction2/vestians/npc_zapmarker.sp"
-#include "npc/construction/construction2/vestians/npc_giant_armored_medic.sp"
-#include "npc/construction/construction2/vestians/npc_airraider.sp"
-#include "npc/construction/construction2/vestians/npc_headhunter.sp"
-#include "npc/construction/construction2/vestians/npc_boltbag.sp"
-#include "npc/construction/construction2/vestians/npc_gasleader.sp"
+//construction2 Vestan
+#include "npc/construction/construction2/vestans/npc_demolitionist.sp"
+#include "npc/construction/construction2/vestans/npc_chemical_specialist.sp"
+#include "npc/construction/construction2/vestans/npc_protector.sp"
+#include "npc/construction/construction2/vestans/npc_chemical_spreader.sp"
+#include "npc/construction/construction2/vestans/npc_zapmarker.sp"
+#include "npc/construction/construction2/vestans/npc_giant_armored_medic.sp"
+#include "npc/construction/construction2/vestans/npc_airraider.sp"
+#include "npc/construction/construction2/vestans/npc_headhunter.sp"
+#include "npc/construction/construction2/vestans/npc_boltbag.sp"
+#include "npc/construction/construction2/vestans/npc_gasleader.sp"
 
 //Matrix Enemies
 #include "npc/matrix/15/npc_agentalan.sp"

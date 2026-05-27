@@ -35,15 +35,15 @@ static const char g_hornsound[][] = {
 	"weapons/buff_banner_horn_blue.wav",
 };
 
-void VictorianSignaller_OnMapStart_NPC()
+void VestanSignaller_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Signaller");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_signaller");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_signaller");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_signaller");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -60,10 +60,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianSignaller(vecPos, vecAng, ally);
+	return VestanSignaller(vecPos, vecAng, ally);
 }
 
-methodmap VictorianSignaller < CClotBody
+methodmap VestanSignaller < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -120,9 +120,9 @@ methodmap VictorianSignaller < CClotBody
 		VecTarget[2]=this.m_fYPosSave;
 	}
 	
-	public VictorianSignaller(float vecPos[3], float vecAng[3], int ally)
+	public VestanSignaller(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianSignaller npc = view_as<VictorianSignaller>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "6000", ally));
+		VestanSignaller npc = view_as<VestanSignaller>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "6000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -138,9 +138,9 @@ methodmap VictorianSignaller < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
-		func_NPCDeath[npc.index] = VictorianSignaller_NPCDeath;
+		func_NPCDeath[npc.index] = VestanSignaller_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianSignaller_ClotThink;
+		func_NPCThink[npc.index] = VestanSignaller_ClotThink;
 		
 		Is_a_Medic[npc.index] = true;
 		npc.m_flSpeed = 200.0;
@@ -178,9 +178,9 @@ methodmap VictorianSignaller < CClotBody
 	}
 }
 
-static void VictorianSignaller_ClotThink(int iNPC)
+static void VestanSignaller_ClotThink(int iNPC)
 {
-	VictorianSignaller npc = view_as<VictorianSignaller>(iNPC);
+	VestanSignaller npc = view_as<VestanSignaller>(iNPC);
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
@@ -229,7 +229,7 @@ static void VictorianSignaller_ClotThink(int iNPC)
 		{
 			if(IsClientInGame(client) && IsEntityAlive(client))
 			{
-				ApplyStatusEffect(npc.index, client, "Call To Victoria", 2.0);
+				ApplyStatusEffect(npc.index, client, "Call To Vesta", 2.0);
 			}
 		}
 	}
@@ -240,7 +240,7 @@ static void VictorianSignaller_ClotThink(int iNPC)
 		{
 			if(GetTeam(entity) == team)
 			{
-				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
+				ApplyStatusEffect(npc.index, entity, "Call To Vesta", 0.5);
 			}
 		}
 	}
@@ -249,7 +249,7 @@ static void VictorianSignaller_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		switch(VictorianSignaller_Work(npc, gameTime, flDistanceToTarget))
+		switch(VestanSignaller_Work(npc, gameTime, flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -304,9 +304,9 @@ static void VictorianSignaller_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-static void VictorianSignaller_NPCDeath(int entity)
+static void VestanSignaller_NPCDeath(int entity)
 {
-	VictorianSignaller npc = view_as<VictorianSignaller>(entity);
+	VestanSignaller npc = view_as<VestanSignaller>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
@@ -326,7 +326,7 @@ static void VictorianSignaller_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static int VictorianSignaller_Work(VictorianSignaller npc, float gameTime, float distance)
+static int VestanSignaller_Work(VestanSignaller npc, float gameTime, float distance)
 {
 	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.7)
 	{
@@ -334,7 +334,7 @@ static int VictorianSignaller_Work(VictorianSignaller npc, float gameTime, float
 		{
 			npc.m_flChangeMovement=gameTime+GetRandomFloat(3.0, 4.0);
 			float RNGPos[3];
-			VictoriaSignaller_Move(npc, 200.0, 800.0, RNGPos);
+			VestaSignaller_Move(npc, 200.0, 800.0, RNGPos);
 			npc.SaveTreePos(RNGPos);
 		}
 		return (gameTime > npc.m_flChangeMovement-2.0) ? 1 : 2;
@@ -342,7 +342,7 @@ static int VictorianSignaller_Work(VictorianSignaller npc, float gameTime, float
 	return 0;
 }
 
-static void VictoriaSignaller_Move(VictorianSignaller npc, float min, float max, float output[3])
+static void VestaSignaller_Move(VestanSignaller npc, float min, float max, float output[3])
 {
 	float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget);
 	for(int loop = 1; loop <= 500; loop++)

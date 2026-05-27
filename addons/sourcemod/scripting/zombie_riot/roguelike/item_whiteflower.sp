@@ -116,7 +116,7 @@ public void Rogue_SoulArknights_Weapon(int entity, int client)
 	Store_GetItemName(StoreWeapon[entity], client, buffer, sizeof(buffer), false);
 	if(Store_IsWeaponFaction(client, entity, Faction_Seaborn) ||
 		Store_IsWeaponFaction(client, entity, Faction_Kazimierz) ||
-		Store_IsWeaponFaction(client, entity, Faction_Victoria) ||
+		Store_IsWeaponFaction(client, entity, Faction_Vesta) ||
 		StrContains(buffer, "The Enforcer", false) != -1 ||
 		StrContains(buffer, "Riot Gun", false) != -1 ||
 		StrContains(buffer, "Angelica Shotgonnus", false) != -1 ||

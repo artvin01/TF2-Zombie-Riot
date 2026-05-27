@@ -282,7 +282,7 @@ public void ArmoredMedic_ClotThink(int iNPC)
 			HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth), 1.0);
 
 			ApplyStatusEffect(PrimaryThreatIndex, PrimaryThreatIndex, "Buffweiser", 1.1);
-			if(NpcStats_VictorianCallToArms(npc.index))
+			if(NpcStats_VestanCallToArms(npc.index))
 			{
 				ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Taurine", 1.1);
 			}

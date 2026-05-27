@@ -9,15 +9,15 @@ static bool OneCaramelldansen;
 static float g_CD_LandingSound;
 static float FactoryTooLuod;
 
-void VictorianFactory_MapStart()
+void VestanFactory_MapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Factory");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestia_factory");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_factory");
+	strcopy(data.Name, sizeof(data.Name), "Vesta Factory");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vesta_factory");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_factory");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
@@ -37,7 +37,7 @@ static void ClotPrecache()
 //	PrecacheSoundCustom("#zombiesurvival/aprilfools/caramelldansen.mp3");
 }
 
-int VictorianFactory_ID()
+int VestanFactory_ID()
 {
 	return NPCId;
 }
@@ -47,7 +47,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 	vecAng[0]=0.0;
 	vecAng[1]=0.0;
 	vecAng[2]=0.0;
-	return VictorianFactory(vecPos, vecAng, ally, data);
+	return VestanFactory(vecPos, vecAng, ally, data);
 }
 
 static char[] GetBuildingHealth()
@@ -81,7 +81,7 @@ static char[] GetBuildingHealth()
 	return buffer;
 }
 
-methodmap VictorianFactory < CClotBody
+methodmap VestanFactory < CClotBody
 {
 	public void PlayDeathSound() 
 	{
@@ -135,9 +135,9 @@ methodmap VictorianFactory < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
 	
-	public VictorianFactory (float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanFactory (float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianFactory npc = view_as<VictorianFactory>(CClotBody(vecPos, vecAng, "models/props_skybox/train_building004_skybox.mdl", "2.0", GetBuildingHealth(), ally, _, true, .NpcTypeLogic = 1));
+		VestanFactory npc = view_as<VestanFactory>(CClotBody(vecPos, vecAng, "models/props_skybox/train_building004_skybox.mdl", "2.0", GetBuildingHealth(), ally, _, true, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -210,7 +210,7 @@ methodmap VictorianFactory < CClotBody
 			}
 			else if(StrContains(countext[i], "type-d") != -1)
 			{
-				//Spawn Disable - Victoria Wave uses this setting.
+				//Spawn Disable - Vesta Wave uses this setting.
 				ReplaceString(countext[i], sizeof(countext[]), "type-d", "");
 				npc.m_iState = -4;
 			}
@@ -319,7 +319,7 @@ methodmap VictorianFactory < CClotBody
 
 static void FactoryCPU(int iNPC)
 {
-	VictorianFactory npc = view_as<VictorianFactory>(iNPC);
+	VestanFactory npc = view_as<VestanFactory>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -353,7 +353,7 @@ static void FactoryCPU(int iNPC)
 			float Vec[3], Ang[3];
 			GetAbsOrigin(npc.m_iWearable3, Vec);
 			//CreateTimer(0.1, Timer_MachineShop, npc.index, TIMER_FLAG_NO_MAPCHANGE);
-			//VictorianFactory npc = view_as<VictorianFactory>(iNPC);
+			//VestanFactory npc = view_as<VestanFactory>(iNPC);
 			float entitypos[3], distance;
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
@@ -607,7 +607,7 @@ static void FactoryCPU(int iNPC)
 						if(gameTime > npc.m_flAttackHappens)
 						{
 							GetAbsOrigin(npc.m_iWearable3, Vec);
-							int spawn_index = NPC_CreateByName("npc_vestia_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), "mk2;isvoli");
+							int spawn_index = NPC_CreateByName("npc_vesta_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), "mk2;isvoli");
 							if(spawn_index > MaxClients)
 							{
 								NpcStats_CopyStats(npc.index, spawn_index);
@@ -703,9 +703,9 @@ static void FactoryCPU(int iNPC)
 						Vec[2]+=45.0;
 						int spawn_index;
 						if(npc.m_iState==1)
-							spawn_index = NPC_CreateByName("npc_vestia_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+							spawn_index = NPC_CreateByName("npc_vesta_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 						else
-							spawn_index = NPC_CreateByName("npc_vestia_anvil", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+							spawn_index = NPC_CreateByName("npc_vesta_anvil", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 						if(spawn_index > MaxClients)
 						{
 							int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.7);
@@ -750,9 +750,9 @@ static void FactoryCPU(int iNPC)
 						Vec[2]+=45.0;
 						int spawn_index;
 						if(npc.m_iState==1)
-							spawn_index = NPC_CreateByName("npc_vestia_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+							spawn_index = NPC_CreateByName("npc_vesta_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 						else
-							spawn_index = NPC_CreateByName("npc_vestia_anvil", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+							spawn_index = NPC_CreateByName("npc_vesta_anvil", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 						if(spawn_index > MaxClients)
 						{
 							int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.7);
@@ -905,7 +905,7 @@ static void FactoryCPU(int iNPC)
 
 static void Factory_Got_Explod(int entity)
 {
-	VictorianFactory npc = view_as<VictorianFactory>(entity);
+	VestanFactory npc = view_as<VestanFactory>(entity);
 
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 	if(!SilentDestruction)
@@ -944,7 +944,7 @@ static void Factory_Got_Explod(int entity)
 		RemoveEntity(npc.m_iWearable8);
 }
 
-stock int GetRandomVictoriaFactory(int entity, const char[] InputNPCId="npc_vestia_factory")
+stock int GetRandomVestaFactory(int entity, const char[] InputNPCId="npc_vesta_factory")
 {
 	int GetFactory = StringToInt(InputNPCId);
 	if(!GetFactory)

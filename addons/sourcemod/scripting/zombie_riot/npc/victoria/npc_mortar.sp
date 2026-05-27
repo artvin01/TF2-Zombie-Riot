@@ -17,15 +17,15 @@ static const char g_ExplosionSounds[][]= {
 
 static const char g_RageAttackSounds[] = "weapons/doom_rocket_launcher.wav";
 
-void VictoriaMortar_OnMapStart_NPC()
+void VestaMortar_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victorian Mortar");
+	strcopy(data.Name, sizeof(data.Name), "Vestan Mortar");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mortar");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_artillerist");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_artillerist");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -43,9 +43,9 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaMortar(vecPos, vecAng, ally);
+	return VestaMortar(vecPos, vecAng, ally);
 }
-methodmap VictoriaMortar < CClotBody
+methodmap VestaMortar < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -77,9 +77,9 @@ methodmap VictoriaMortar < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
-	public VictoriaMortar(float vecPos[3], float vecAng[3], int ally)
+	public VestaMortar(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaMortar npc = view_as<VictoriaMortar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "4000", ally));
+		VestaMortar npc = view_as<VestaMortar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "4000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -92,9 +92,9 @@ methodmap VictoriaMortar < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = VictoriaMortar_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaMortar_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaMortar_ClotThink;
+		func_NPCDeath[npc.index] = VestaMortar_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestaMortar_OnTakeDamage;
+		func_NPCThink[npc.index] = VestaMortar_ClotThink;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "quake_rl");
@@ -116,7 +116,7 @@ methodmap VictoriaMortar < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_directhit/c_directhit.mdl");
 		
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/cloud_crasher/cloud_crasher.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_vestian_villainy/hwn2022_vestian_villainy.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_vestan_villainy/hwn2022_vestan_villainy.mdl");
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/cc_summer2015_the_vascular_vestment/cc_summer2015_the_vascular_vestment.mdl");
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/dec22_wooly_pulli_style1/dec22_wooly_pulli_style1.mdl");
 
@@ -137,9 +137,9 @@ methodmap VictoriaMortar < CClotBody
 	}
 }
 
-static void VictoriaMortar_ClotThink(int iNPC)
+static void VestaMortar_ClotThink(int iNPC)
 {
-	VictoriaMortar npc = view_as<VictoriaMortar>(iNPC);
+	VestaMortar npc = view_as<VestaMortar>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 		return;
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
@@ -181,7 +181,7 @@ static void VictoriaMortar_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		switch(VictoriaMortarSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget))
+		switch(VestaMortarSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -261,9 +261,9 @@ static void VictoriaMortar_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictoriaMortar_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestaMortar_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaMortar npc = view_as<VictoriaMortar>(victim);
+	VestaMortar npc = view_as<VestaMortar>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -277,9 +277,9 @@ static Action VictoriaMortar_OnTakeDamage(int victim, int &attacker, int &inflic
 	return Plugin_Changed;
 }
 
-static void VictoriaMortar_NPCDeath(int entity)
+static void VestaMortar_NPCDeath(int entity)
 {
-	VictoriaMortar npc = view_as<VictoriaMortar>(entity);
+	VestaMortar npc = view_as<VestaMortar>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();	
 	
@@ -299,7 +299,7 @@ static void VictoriaMortar_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static int VictoriaMortarSelfDefense(VictoriaMortar npc, float gameTime, float distance)
+static int VestaMortarSelfDefense(VestaMortar npc, float gameTime, float distance)
 {
 	//Direct mode
 	if(gameTime > npc.m_flNextRangedAttack)
@@ -316,7 +316,7 @@ static int VictoriaMortarSelfDefense(VictoriaMortar npc, float gameTime, float d
 				float RocketDamage = 200.0;
 				float RocketSpeed = 650.0;
 				float CoolDown = 4.0;
-				/*if(NpcStats_VictorianCallToArms(npc.index))
+				/*if(NpcStats_VestanCallToArms(npc.index))
 					RocketDamage += RocketDamage*0.5;*/
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart);
 				if(npc.m_iState)
@@ -441,7 +441,7 @@ static void HEGrenade(int entity, int victim, float damage, int weapon)
 		if(ShouldNpcDealBonusDamage(victim))
 			damage *= 3.0;
 		//wtf beep
-		if(NpcStats_VictorianCallToArms(entity))
+		if(NpcStats_VestanCallToArms(entity))
 		{
 			for(int i=0; i<2; i++)
 				SDKHooks_TakeDamage(victim, entity, inflictor, damage, DMG_BLAST, -1, _, vecHit);

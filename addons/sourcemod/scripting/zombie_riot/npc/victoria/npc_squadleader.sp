@@ -40,16 +40,16 @@ static const char g_WarCry[] = "mvm/mvm_warning.wav";
 
 static float f_GlobalSoundCD;
 
-void VictorianSquadleader_OnMapStart_NPC()
+void VestanSquadleader_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victorian ScoutSquad Leader");
+	strcopy(data.Name, sizeof(data.Name), "Vestan ScoutSquad Leader");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_squadleader");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_squadleaders");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_squadleaders");
 	data.IconCustom = true;
 	data.Flags = 0;
 	f_GlobalSoundCD = 0.0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -69,12 +69,12 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianSquadleader(vecPos, vecAng, ally, data);
+	return VestanSquadleader(vecPos, vecAng, ally, data);
 }
 
 #define LEADER_BUFF_MAXRANGE 250.0 		
 
-methodmap VictorianSquadleader < CClotBody
+methodmap VestanSquadleader < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -114,9 +114,9 @@ methodmap VictorianSquadleader < CClotBody
 		f_GlobalSoundCD = GetGameTime() + 5.0;
 	}
 	
-	public VictorianSquadleader(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanSquadleader(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianSquadleader npc = view_as<VictorianSquadleader>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "15000", ally, false, true));
+		VestanSquadleader npc = view_as<VestanSquadleader>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "15000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -131,9 +131,9 @@ methodmap VictorianSquadleader < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = VictorianSquadleader_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianSquadleader_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianSquadleader_ClotThink;
+		func_NPCDeath[npc.index] = VestanSquadleader_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanSquadleader_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanSquadleader_ClotThink;
 		
 		//IDLE
 		KillFeed_SetKillIcon(npc.index, "family_business");
@@ -185,9 +185,9 @@ methodmap VictorianSquadleader < CClotBody
 	}
 }
 
-static void VictorianSquadleader_ClotThink(int iNPC)
+static void VestanSquadleader_ClotThink(int iNPC)
 {
-	VictorianSquadleader npc = view_as<VictorianSquadleader>(iNPC);
+	VestanSquadleader npc = view_as<VestanSquadleader>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -219,7 +219,7 @@ static void VictorianSquadleader_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		switch(VictorianSquadleaderSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget))
+		switch(VestanSquadleaderSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -251,12 +251,12 @@ static void VictorianSquadleader_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
-	VictorianSquadleaderAOEbuff(npc,GetGameTime(npc.index));
+	VestanSquadleaderAOEbuff(npc,GetGameTime(npc.index));
 }
 
-static void VictorianSquadleader_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static void VestanSquadleader_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianSquadleader npc = view_as<VictorianSquadleader>(victim);
+	VestanSquadleader npc = view_as<VestanSquadleader>(victim);
 		
 	if(attacker <= 0)
 		return;
@@ -268,9 +268,9 @@ static void VictorianSquadleader_OnTakeDamage(int victim, int &attacker, int &in
 	}
 }
 
-static void VictorianSquadleader_NPCDeath(int entity)
+static void VestanSquadleader_NPCDeath(int entity)
 {
-	VictorianSquadleader npc = view_as<VictorianSquadleader>(entity);
+	VestanSquadleader npc = view_as<VestanSquadleader>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();	
 	
@@ -288,7 +288,7 @@ static void VictorianSquadleader_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-static int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, int target, float distance)
+static int VestanSquadleaderSelfDefense(VestanSquadleader npc, float gameTime, int target, float distance)
 {
 	if(npc.m_iAmmo <= 0)
 	{
@@ -373,7 +373,7 @@ static int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameT
 				Handle swingTrace;
 				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 				{
-					if(!NpcStats_VictorianCallToArms(npc.index))
+					if(!NpcStats_VestanCallToArms(npc.index))
 						npc.m_iAmmo--;
 					target = TR_GetEntityIndex(swingTrace);	
 					
@@ -447,7 +447,7 @@ static int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameT
 	return 0;
 }
 
-void VictorianSquadleaderAOEbuff(VictorianSquadleader npc, float gameTime, bool mute = false)
+void VestanSquadleaderAOEbuff(VestanSquadleader npc, float gameTime, bool mute = false)
 {
 	float pos1[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
@@ -475,7 +475,7 @@ void VictorianSquadleaderAOEbuff(VictorianSquadleader npc, float gameTime, bool 
 		{
 			float bufftime = 25.0;
 			npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
-			if(NpcStats_VictorianCallToArms(npc.index))
+			if(NpcStats_VestanCallToArms(npc.index))
 				bufftime -= 10.0;
 			npc.m_flAttackHappens_bullshit = gameTime + bufftime;
 			static int r;

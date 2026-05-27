@@ -14,15 +14,15 @@ static const char g_HornSounds[][] = {
 	"ambient_mp3/mvm_warehouse/car_horn05.mp3"
 };
 
-void VictorianAssaultVehicle_OnMapStart()
+void VestanAssaultVehicle_OnMapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victorian Assault Vehicle");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestian_assault_vehicle");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_assault_vehicle");
+	strcopy(data.Name, sizeof(data.Name), "Vestan Assault Vehicle");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestan_assault_vehicle");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_assault_vehicle");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -44,10 +44,10 @@ static void ClotPrecache()
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	vecAng = view_as<float>( { 0.0, 0.0, 0.0 } );
-	return VictorianAssaultVehicle(vecPos, vecAng, team, data);
+	return VestanAssaultVehicle(vecPos, vecAng, team, data);
 }
 
-methodmap VictorianAssaultVehicle < CClotBody
+methodmap VestanAssaultVehicle < CClotBody
 {
 	public void PlayMeleeHitSound()
 	{
@@ -112,18 +112,18 @@ methodmap VictorianAssaultVehicle < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
 	}
 	
-	public VictorianAssaultVehicle(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanAssaultVehicle(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianAssaultVehicle npc = view_as<VictorianAssaultVehicle>(CClotBody(vecPos, vecAng, "models/combine_apc_dynamic.mdl", "0.8", "30000", ally, .isGiant = true));
+		VestanAssaultVehicle npc = view_as<VestanAssaultVehicle>(CClotBody(vecPos, vecAng, "models/combine_apc_dynamic.mdl", "0.8", "30000", ally, .isGiant = true));
 		i_NpcWeight[npc.index] = 5;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = 0;
 		
-		func_NPCDeath[npc.index] = VictorianAssaultVehicle_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianAssaultVehicle_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianAssaultVehicle_ClotThink;
+		func_NPCDeath[npc.index] = VestanAssaultVehicle_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanAssaultVehicle_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanAssaultVehicle_ClotThink;
 
 		KillFeed_SetKillIcon(npc.index, "resurfacer");
 		npc.m_iState = 0;
@@ -282,9 +282,9 @@ methodmap VictorianAssaultVehicle < CClotBody
 	}
 }
 
-public void VictorianAssaultVehicle_ClotThink(int iNPC)
+public void VestanAssaultVehicle_ClotThink(int iNPC)
 {
-	VictorianAssaultVehicle npc = view_as<VictorianAssaultVehicle>(iNPC);
+	VestanAssaultVehicle npc = view_as<VestanAssaultVehicle>(iNPC);
 	
 	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 10.0);
 	
@@ -361,7 +361,7 @@ public void VictorianAssaultVehicle_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
-		VictorianAssaultVehicle_Work(npc, gameTime, distance);
+		VestanAssaultVehicle_Work(npc, gameTime, distance);
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
@@ -381,7 +381,7 @@ public void VictorianAssaultVehicle_ClotThink(int iNPC)
 	npc.PlayLoopSound();
 }
 
-static void VictorianAssaultVehicle_Work(VictorianAssaultVehicle npc, float gameTime, float distance)
+static void VestanAssaultVehicle_Work(VestanAssaultVehicle npc, float gameTime, float distance)
 {
 	if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 	{
@@ -443,22 +443,22 @@ static void VictorianAssaultVehicle_Work(VictorianAssaultVehicle npc, float game
 						}
 					}
 				}
-				npc.m_flNextMeleeAttack = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 1.0 : 1.5);
+				npc.m_flNextMeleeAttack = gameTime + (NpcStats_VestanCallToArms(npc.index) ? 1.0 : 1.5);
 				npc.m_flSpawnTime = gameTime;
 				npc.m_flAttackHappenswillhappen = false;
 			}
 			else if(npc.m_flAttackHappens_bullshit < gameTime && npc.m_flAttackHappenswillhappen)
 			{
 				npc.m_flAttackHappenswillhappen = false;
-				npc.m_flNextMeleeAttack = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 1.0 : 1.5);
+				npc.m_flNextMeleeAttack = gameTime + (NpcStats_VestanCallToArms(npc.index) ? 1.0 : 1.5);
 			}
 		}
 	}
 }
 
-static Action VictorianAssaultVehicle_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanAssaultVehicle_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianAssaultVehicle npc = view_as<VictorianAssaultVehicle>(victim);
+	VestanAssaultVehicle npc = view_as<VestanAssaultVehicle>(victim);
 	if(attacker <= 0)
 		return Plugin_Continue;
 	int maxhealth = ReturnEntityMaxHealth(npc.index);
@@ -478,9 +478,9 @@ static Action VictorianAssaultVehicle_OnTakeDamage(int victim, int &attacker, in
 	return Plugin_Continue;
 }
 
-static void VictorianAssaultVehicle_NPCDeath(int entity)
+static void VestanAssaultVehicle_NPCDeath(int entity)
 {
-	VictorianAssaultVehicle npc = view_as<VictorianAssaultVehicle>(entity);
+	VestanAssaultVehicle npc = view_as<VestanAssaultVehicle>(entity);
 	if(!npc.m_bGib)
 	{
 //		npc.PlayDeathSound();	

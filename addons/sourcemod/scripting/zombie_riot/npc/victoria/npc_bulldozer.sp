@@ -50,10 +50,10 @@ void Bulldozer_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bulldozer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bulldozer");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_bulldozer");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_bulldozer");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -198,7 +198,7 @@ static void Bulldozer_ClotThink(int iNPC)
 	
 	float TrueArmor = 1.0;
 
-	if(NpcStats_VictorianCallToArms(npc.index))
+	if(NpcStats_VestanCallToArms(npc.index))
 	{
 		TrueArmor *= 0.7;
 	}

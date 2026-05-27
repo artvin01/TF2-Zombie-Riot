@@ -47,15 +47,15 @@ static const char g_FuckyouSounds[][] = {
 	"vo/taunts/medic_taunts15.mp3"
 };
 
-void VictorianBooster_OnMapStart_NPC()
+void VestanBooster_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Booster");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_booster");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_booster");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_booster");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -76,9 +76,9 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianBooster(vecPos, vecAng, ally);
+	return VestanBooster(vecPos, vecAng, ally);
 }
-methodmap VictorianBooster < CClotBody
+methodmap VestanBooster < CClotBody
 {
 
 	public void PlayIdleAlertSound()
@@ -127,9 +127,9 @@ methodmap VictorianBooster < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 
-	public VictorianBooster(float vecPos[3], float vecAng[3], int ally)
+	public VestanBooster(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianBooster npc = view_as<VictorianBooster>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "4000", ally));
+		VestanBooster npc = view_as<VestanBooster>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "4000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -141,9 +141,9 @@ methodmap VictorianBooster < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		func_NPCDeath[npc.index] = VictorianBooster_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianBooster_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianBooster_ClotThink;
+		func_NPCDeath[npc.index] = VestanBooster_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanBooster_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanBooster_ClotThink;
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -173,7 +173,7 @@ methodmap VictorianBooster < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		npc.m_iWearable2	= npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_vestian_villainy/hwn2022_vestian_villainy.mdl");
+		npc.m_iWearable2	= npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_vestan_villainy/hwn2022_vestan_villainy.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
@@ -215,9 +215,9 @@ methodmap VictorianBooster < CClotBody
 	}
 }
 
-static void VictorianBooster_ClotThink(int iNPC)
+static void VestanBooster_ClotThink(int iNPC)
 {
-	VictorianBooster npc = view_as<VictorianBooster>(iNPC);
+	VestanBooster npc = view_as<VestanBooster>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 		return;
@@ -296,7 +296,7 @@ static void VictorianBooster_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
-		switch(VictorianBooster_Work(npc, GetGameTime(npc.index), flDistanceToTarget))
+		switch(VestanBooster_Work(npc, GetGameTime(npc.index), flDistanceToTarget))
 		{
 			case 0:
 			{
@@ -363,9 +363,9 @@ static void VictorianBooster_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static Action VictorianBooster_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &m_iWearable3, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanBooster_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &m_iWearable3, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianBooster npc = view_as<VictorianBooster>(victim);
+	VestanBooster npc = view_as<VestanBooster>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -379,9 +379,9 @@ static Action VictorianBooster_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-static void VictorianBooster_NPCDeath(int entity)
+static void VestanBooster_NPCDeath(int entity)
 {
-	VictorianBooster npc = view_as<VictorianBooster>(entity);
+	VestanBooster npc = view_as<VestanBooster>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -403,7 +403,7 @@ static void VictorianBooster_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 }
 
-static int VictorianBooster_Work(VictorianBooster npc, float gameTime, float distance)
+static int VestanBooster_Work(VestanBooster npc, float gameTime, float distance)
 {
 	if(npc.m_bFUCKYOU)
 	{
@@ -422,7 +422,7 @@ static int VictorianBooster_Work(VictorianBooster npc, float gameTime, float dis
 						if(GetVectorDistance(VecSelfNpc, vecTarget, true) < (200.0 * 200.0))
 						{
 							ApplyStatusEffect(npc.index, entitycount, "Oceanic Scream", 1.1);
-							if(NpcStats_VictorianCallToArms(npc.index))
+							if(NpcStats_VestanCallToArms(npc.index))
 								ApplyStatusEffect(npc.index, entitycount, "War Cry", 1.1);
 						}
 					}
@@ -503,7 +503,7 @@ static int VictorianBooster_Work(VictorianBooster npc, float gameTime, float dis
 
 				HealEntityGlobal(npc.index, npc.m_iTarget, float(MaxHealth / 80), 1.0);
 				ApplyStatusEffect(npc.index, npc.m_iTarget, "Oceanic Scream", 1.1);
-				if(NpcStats_VictorianCallToArms(npc.index))
+				if(NpcStats_VestanCallToArms(npc.index))
 					ApplyStatusEffect(npc.index, npc.m_iTarget, "War Cry", 1.1);
 				
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);

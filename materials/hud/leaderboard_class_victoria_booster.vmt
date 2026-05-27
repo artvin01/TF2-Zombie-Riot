@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
-	"$basetexture" "hud/leaderboard_class_vestia_booster"
+	"$basetexture" "hud/leaderboard_class_vesta_booster"
 	"$vertexcolor" 1
 	"$no_fullbright" 1
 	"$ignorez" 1

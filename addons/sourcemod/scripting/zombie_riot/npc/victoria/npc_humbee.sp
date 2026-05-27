@@ -4,15 +4,15 @@
 static const char g_DeathSounds[] = "mvm/giant_soldier/giant_soldier_explode.wav";
 static const char g_RangeAttackSounds[] = "weapons/rocket_blackbox_shoot.wav";
 
-void VictorianHumbee_MapStart()
+void VestanHumbee_MapStart()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Humbee");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_humbee");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_humbee");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_humbee");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -27,10 +27,10 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianHumbee(vecPos, vecAng, ally, data);
+	return VestanHumbee(vecPos, vecAng, ally, data);
 }
 
-methodmap VictorianHumbee < CClotBody
+methodmap VestanHumbee < CClotBody
 {
 	public void PlayDeathSound() 
 	{
@@ -41,9 +41,9 @@ methodmap VictorianHumbee < CClotBody
 		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.6, _);
 	}
 	
-	public VictorianHumbee(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanHumbee(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianHumbee npc = view_as<VictorianHumbee>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "9000", ally, _, true));
+		VestanHumbee npc = view_as<VestanHumbee>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "9000", ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_KART_IDLE");
@@ -59,9 +59,9 @@ methodmap VictorianHumbee < CClotBody
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = VictorianHumbee_ClotDeath;
+		func_NPCDeath[npc.index] = VestanHumbee_ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianHumbee_ClotThink;
+		func_NPCThink[npc.index] = VestanHumbee_ClotThink;
 		
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 		npc.m_flSpeed = 231.0;
@@ -92,9 +92,9 @@ methodmap VictorianHumbee < CClotBody
 	}
 }
 
-static void VictorianHumbee_ClotThink(int iNPC)
+static void VestanHumbee_ClotThink(int iNPC)
 {
-	VictorianHumbee npc = view_as<VictorianHumbee>(iNPC);
+	VestanHumbee npc = view_as<VestanHumbee>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -136,7 +136,7 @@ static void VictorianHumbee_ClotThink(int iNPC)
 			{	
 				float damageDeal = 35.0;
 				float ProjectileSpeed = 600.0;
-				if(NpcStats_VictorianCallToArms(npc.index))
+				if(NpcStats_VestanCallToArms(npc.index))
 				{
 					ProjectileSpeed *= 1.5;
 				}
@@ -161,9 +161,9 @@ static void VictorianHumbee_ClotThink(int iNPC)
 	}
 }
 
-static void VictorianHumbee_ClotDeath(int entity)
+static void VestanHumbee_ClotDeath(int entity)
 {
-	VictorianHumbee npc = view_as<VictorianHumbee>(entity);
+	VestanHumbee npc = view_as<VestanHumbee>(entity);
 
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 

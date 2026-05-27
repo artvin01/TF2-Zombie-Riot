@@ -8,21 +8,21 @@ static const char g_RangeAttackSounds[] = "weapons/sentry_shoot3.wav";
 static bool ISVOLI[MAXENTITIES];
 static int NPCId;
 
-void VictorianDroneFragments_MapStart()
+void VestanDroneFragments_MapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Fragments");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestia_fragments");
-	strcopy(data.Icon, sizeof(data.Icon), "vestia_fragments");
+	strcopy(data.Name, sizeof(data.Name), "Vesta Fragments");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vesta_fragments");
+	strcopy(data.Icon, sizeof(data.Icon), "vesta_fragments");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPCId=NPC_Add(data);
 }
 
-int VictorianFragments_ID()
+int VestanFragments_ID()
 {
 	return NPCId;
 }
@@ -43,10 +43,10 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 	vecAng[0]=0.0;
 	vecAng[1]=-90.0;
 	vecAng[2]=0.0;
-	return VictorianDroneFragments(vecPos, vecAng, ally, data);
+	return VestanDroneFragments(vecPos, vecAng, ally, data);
 }
 
-methodmap VictorianDroneFragments < CClotBody
+methodmap VestanDroneFragments < CClotBody
 {
 	public void PlayDeathSound() 
 	{
@@ -117,9 +117,9 @@ methodmap VictorianDroneFragments < CClotBody
 		VecEnemy[2]=this.m_fYPosSave;
 	}
 	
-	public VictorianDroneFragments(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VestanDroneFragments(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianDroneFragments npc = view_as<VictorianDroneFragments>(CClotBody(vecPos, vecAng, "models/props_teaser/saucer.mdl", "1.0", "3000", ally, _, true, .CustomThreeDimensions = {20.0, 20.0, 20.0}, .CustomThreeDimensionsextra = {-20.0, -20.0, -20.0}));
+		VestanDroneFragments npc = view_as<VestanDroneFragments>(CClotBody(vecPos, vecAng, "models/props_teaser/saucer.mdl", "1.0", "3000", ally, _, true, .CustomThreeDimensions = {20.0, 20.0, 20.0}, .CustomThreeDimensionsextra = {-20.0, -20.0, -20.0}));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -129,9 +129,9 @@ methodmap VictorianDroneFragments < CClotBody
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = VictorianDroneFragments_ClotDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianDroneFragments_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianDroneFragments_ClotThink;
+		func_NPCDeath[npc.index] = VestanDroneFragments_ClotDeath;
+		func_NPCOnTakeDamage[npc.index] = VestanDroneFragments_OnTakeDamage;
+		func_NPCThink[npc.index] = VestanDroneFragments_ClotThink;
 		
 		KillFeed_SetKillIcon(npc.index, "obj_sentrygun2");
 		
@@ -190,7 +190,7 @@ methodmap VictorianDroneFragments < CClotBody
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "mk2", "");
 				b_we_are_reloading[npc.index] = true;
-				strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Victoria Fragments MK2");
+				strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Vesta Fragments MK2");
 			}
 			else if(StrContains(countext[i], "factory") != -1)
 			{
@@ -299,7 +299,7 @@ methodmap VictorianDroneFragments < CClotBody
 		GetAbsOrigin(npc.index, Vec);
 		if(FactorySpawndo)
 		{
-			int GetFactory=GetRandomVictoriaFactory(npc.index);
+			int GetFactory=GetRandomVestaFactory(npc.index);
 			if(GetFactory&&IsValidEntity(GetFactory))
 				GetAbsOrigin(GetFactory, Vec);
 		}
@@ -310,9 +310,9 @@ methodmap VictorianDroneFragments < CClotBody
 	}
 }
 
-static void VictorianDroneFragments_ClotThink(int iNPC)
+static void VestanDroneFragments_ClotThink(int iNPC)
 {
-	VictorianDroneFragments npc = view_as<VictorianDroneFragments>(iNPC);
+	VestanDroneFragments npc = view_as<VestanDroneFragments>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -345,7 +345,7 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 	}
 	else
 	{
-		npc.m_flSpeed = NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 300.0;
+		npc.m_flSpeed = NpcStats_VestanCallToArms(npc.index) ? 400.0 : 300.0;
 	}
 
 	if(npc.m_flNextThinkTime > gameTime)
@@ -425,7 +425,7 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 			
 			if(npc.m_flGetClosestTargetTime < gameTime)
 			{
-				npc.m_iTarget = VictoriaFragmentsGetTarget(npc);
+				npc.m_iTarget = VestaFragmentsGetTarget(npc);
 				npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 			}
 			if(IsValidEnemy(npc.index,npc.m_iTarget))
@@ -440,7 +440,7 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 				SetEntPropVector(npc.index, Prop_Data, "m_angRotation", NPCAng);
 				npc.PlayFinedSound();
 				float flDistanceToTarget = GetVectorDistance(VecEnemy, VecSelfNpc, true);
-				VictoriaFragmentsAssaultMode(npc, gameTime, flDistanceToTarget);
+				VestaFragmentsAssaultMode(npc, gameTime, flDistanceToTarget);
 			}
 			else
 			{
@@ -517,7 +517,7 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 			npc.m_bisWalking = false;
 			if(npc.m_flGetClosestTargetTime < gameTime)
 			{
-				npc.m_iTarget = VictoriaFragmentsGetTarget(npc);
+				npc.m_iTarget = VestaFragmentsGetTarget(npc);
 				npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 			}
 			if(IsValidEnemy(npc.index,npc.m_iTarget))
@@ -532,7 +532,7 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 				SetEntPropVector(npc.index, Prop_Data, "m_angRotation", NPCAng);
 				npc.PlayFinedSound();
 				float flDistanceToTarget = GetVectorDistance(VecEnemy, VecSelfNpc, true);
-				VictoriaFragmentsAssaultMode(npc, gameTime, flDistanceToTarget);
+				VestaFragmentsAssaultMode(npc, gameTime, flDistanceToTarget);
 			}
 			else
 			{
@@ -545,7 +545,7 @@ static void VictorianDroneFragments_ClotThink(int iNPC)
 	}
 }
 
-static  int VictoriaFragmentsGetTarget(VictorianDroneFragments npc)
+static  int VestaFragmentsGetTarget(VestanDroneFragments npc)
 {
 	int GetClosestEnemyToAttack = GetClosestTarget(npc.index,_,_,_,_,_,_,true,_,_,true);
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -578,7 +578,7 @@ static  int VictoriaFragmentsGetTarget(VictorianDroneFragments npc)
 	return -1;
 }
 
-static void VictoriaFragmentsAssaultMode(VictorianDroneFragments npc, float gameTime, float distance)
+static void VestaFragmentsAssaultMode(VestanDroneFragments npc, float gameTime, float distance)
 {
 	if(!npc.m_iAmmo&&npc.m_flNextMeleeAttack)
 	{
@@ -643,9 +643,9 @@ static void VictoriaFragmentsAssaultMode(VictorianDroneFragments npc, float game
 	}
 }
 
-static void VictorianDroneFragments_ClotDeath(int entity)
+static void VestanDroneFragments_ClotDeath(int entity)
 {
-	VictorianDroneFragments npc = view_as<VictorianDroneFragments>(entity);
+	VestanDroneFragments npc = view_as<VestanDroneFragments>(entity);
 
 	npc.PlayDeathSound();
 
@@ -667,9 +667,9 @@ static void VictorianDroneFragments_ClotDeath(int entity)
 		RemoveEntity(npc.m_iWearable8);
 }
 
-static Action VictorianDroneFragments_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VestanDroneFragments_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianDroneFragments npc = view_as<VictorianDroneFragments>(victim);
+	VestanDroneFragments npc = view_as<VestanDroneFragments>(victim);
 	
 	if(attacker <= 0)
 		return Plugin_Continue;
