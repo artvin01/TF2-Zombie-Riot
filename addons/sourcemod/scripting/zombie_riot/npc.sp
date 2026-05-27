@@ -519,7 +519,7 @@ void NPC_ConfigSetup()
 	DesertAtilla_OnMapStart_NPC();
 	DesertAncientDemon_OnMapStart_NPC();
 	WinterSniper_OnMapStart_NPC();
-	WinterZiberianMiner_OnMapStart_NPC();
+	WinterZalminanMiner_OnMapStart_NPC();
 	WinterSnoweyGunner_OnMapStart_NPC();
 	WinterFreezingCleaner_OnMapStart_NPC();
 	WinterAirbornExplorer_OnMapStart_NPC();
@@ -2014,19 +2014,19 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/ally/combine_barracks/npc_barrack_combine_super.sp"
 #include "npc/ally/combine_barracks/npc_barrack_combine_commander.sp"
 
-#include "npc/ally/iberia_barracks/npc_barrack_runner.sp"
-#include "npc/ally/iberia_barracks/npc_barrack_gunner.sp"
-#include "npc/ally/iberia_barracks/npc_barrack_tanker.sp"
-#include "npc/ally/iberia_barracks/npc_barrack_rocketeer.sp"
-#include "npc/ally/iberia_barracks/npc_barrack_healer.sp"
-#include "npc/ally/iberia_barracks/npc_barrack_boomstick.sp"
-#include "npc/ally/iberia_barracks/npc_barrack_healtanker.sp"
-#include "npc/ally/iberia_barracks/npc_barrack_guards.sp"
-#include "npc/ally/iberia_barracks/npc_barrack_elite_gunner.sp"
-#include "npc/ally/iberia_barracks/npc_barrack_commando.sp"
-#include "npc/ally/iberia_barracks/npc_barrack_headhunter.sp"
-#include "npc/ally/iberia_barracks/npc_barrack_inquisitor.sp"
-#include "npc/ally/iberia_barracks/npc_barrack_lighthouse_guardian.sp"
+#include "npc/ally/almina_barracks/npc_barrack_runner.sp"
+#include "npc/ally/almina_barracks/npc_barrack_gunner.sp"
+#include "npc/ally/almina_barracks/npc_barrack_tanker.sp"
+#include "npc/ally/almina_barracks/npc_barrack_rocketeer.sp"
+#include "npc/ally/almina_barracks/npc_barrack_healer.sp"
+#include "npc/ally/almina_barracks/npc_barrack_boomstick.sp"
+#include "npc/ally/almina_barracks/npc_barrack_healtanker.sp"
+#include "npc/ally/almina_barracks/npc_barrack_guards.sp"
+#include "npc/ally/almina_barracks/npc_barrack_elite_gunner.sp"
+#include "npc/ally/almina_barracks/npc_barrack_commando.sp"
+#include "npc/ally/almina_barracks/npc_barrack_headhunter.sp"
+#include "npc/ally/almina_barracks/npc_barrack_inquisitor.sp"
+#include "npc/ally/almina_barracks/npc_barrack_lighthouse_guardian.sp"
 
 #include "npc/ally/npc_nearl_sword.sp"
 #include "npc/ally/npc_goliath_aircraft.sp"
@@ -2154,7 +2154,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/interitus/desert/npc_ancient_demon.sp"
 
 #include "npc/interitus/winter/npc_winter_sniper.sp"
-#include "npc/interitus/winter/npc_ziberian_miner.sp"
+#include "npc/interitus/winter/npc_zalminan_miner.sp"
 #include "npc/interitus/winter/npc_snowey_gunner.sp"
 #include "npc/interitus/winter/npc_freezing_cleaner.sp"
 #include "npc/interitus/winter/npc_airborn_explorer.sp"
@@ -2296,51 +2296,51 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 
 
-#include "npc/iberia_expidonsa/npc_iberia_base.sp"
-#include "npc/iberia_expidonsa/npc_iberia_beacon.sp"
-#include "npc/iberia_expidonsa/npc_iberia_lighthouse.sp"
-#include "npc/iberia_expidonsa/npc_beacon_constructor.sp"
-#include "npc/iberia_expidonsa/npc_huirgrajo.sp"
+#include "npc/almina_expidonsa/npc_almina_base.sp"
+#include "npc/almina_expidonsa/npc_almina_beacon.sp"
+#include "npc/almina_expidonsa/npc_almina_lighthouse.sp"
+#include "npc/almina_expidonsa/npc_beacon_constructor.sp"
+#include "npc/almina_expidonsa/npc_huirgrajo.sp"
 
-#include "npc/iberia_expidonsa/wave_15/npc_irani.sp"
-#include "npc/iberia_expidonsa/wave_15/npc_cambino.sp"
-#include "npc/iberia_expidonsa/wave_15/npc_kinat.sp"
-#include "npc/iberia_expidonsa/wave_15/npc_ginus.sp"
-#include "npc/iberia_expidonsa/wave_15/npc_speedus_initus.sp"
-#include "npc/iberia_expidonsa/wave_15/npc_anania.sp"
-#include "npc/iberia_expidonsa/wave_15/npc_victorian.sp"
-#include "npc/iberia_expidonsa/wave_15/npc_inqusitor_iidutas.sp"
-
-
-#include "npc/iberia_expidonsa/wave_30/npc_vivintu.sp"
-#include "npc/iberia_expidonsa/wave_30/npc_cenula.sp"
-#include "npc/iberia_expidonsa/wave_30/npc_kumbai.sp"
-#include "npc/iberia_expidonsa/wave_30/npc_speedus_instantus.sp"
-#include "npc/iberia_expidonsa/wave_30/npc_combastia.sp"
-#include "npc/iberia_expidonsa/wave_30/npc_iberia_morato.sp"
-#include "npc/iberia_expidonsa/wave_30/npc_sea_xploder.sp"
-#include "npc/iberia_expidonsa/wave_30/npc_anti_sea_robot.sp"
+#include "npc/almina_expidonsa/wave_15/npc_irani.sp"
+#include "npc/almina_expidonsa/wave_15/npc_cambino.sp"
+#include "npc/almina_expidonsa/wave_15/npc_kinat.sp"
+#include "npc/almina_expidonsa/wave_15/npc_ginus.sp"
+#include "npc/almina_expidonsa/wave_15/npc_speedus_initus.sp"
+#include "npc/almina_expidonsa/wave_15/npc_anania.sp"
+#include "npc/almina_expidonsa/wave_15/npc_victorian.sp"
+#include "npc/almina_expidonsa/wave_15/npc_inqusitor_iidutas.sp"
 
 
-#include "npc/iberia_expidonsa/wave_45/npc_ranka_s.sp"
-#include "npc/iberia_expidonsa/wave_45/npc_murdarato.sp"
-#include "npc/iberia_expidonsa/wave_45/npc_elite_kinat.sp"
-#include "npc/iberia_expidonsa/wave_45/npc_seaborn_eradicator.sp"
-#include "npc/iberia_expidonsa/wave_45/npc_speedus_itus.sp"
-#include "npc/iberia_expidonsa/wave_45/npc_sentinel.sp"
-#include "npc/iberia_expidonsa/wave_45/npc_destructius.sp"
-#include "npc/iberia_expidonsa/wave_45/npc_ironborus.sp"
+#include "npc/almina_expidonsa/wave_30/npc_vivintu.sp"
+#include "npc/almina_expidonsa/wave_30/npc_cenula.sp"
+#include "npc/almina_expidonsa/wave_30/npc_kumbai.sp"
+#include "npc/almina_expidonsa/wave_30/npc_speedus_instantus.sp"
+#include "npc/almina_expidonsa/wave_30/npc_combastia.sp"
+#include "npc/almina_expidonsa/wave_30/npc_almina_morato.sp"
+#include "npc/almina_expidonsa/wave_30/npc_sea_xploder.sp"
+#include "npc/almina_expidonsa/wave_30/npc_anti_sea_robot.sp"
 
 
-#include "npc/iberia_expidonsa/wave_60/npc_death_marker.sp"
-#include "npc/iberia_expidonsa/wave_60/npc_runaka.sp"
-#include "npc/iberia_expidonsa/wave_60/npc_speedus_elitus.sp"
-#include "npc/iberia_expidonsa/wave_60/npc_sea_dryer.sp"
-#include "npc/iberia_expidonsa/wave_60/npc_inqusitor_amphi.sp"
+#include "npc/almina_expidonsa/wave_45/npc_ranka_s.sp"
+#include "npc/almina_expidonsa/wave_45/npc_murdarato.sp"
+#include "npc/almina_expidonsa/wave_45/npc_elite_kinat.sp"
+#include "npc/almina_expidonsa/wave_45/npc_seaborn_eradicator.sp"
+#include "npc/almina_expidonsa/wave_45/npc_speedus_itus.sp"
+#include "npc/almina_expidonsa/wave_45/npc_sentinel.sp"
+#include "npc/almina_expidonsa/wave_45/npc_destructius.sp"
+#include "npc/almina_expidonsa/wave_45/npc_ironborus.sp"
 
 
-#include "npc/raidmode_bosses/iberia/npc_nemal.sp"
-#include "npc/raidmode_bosses/iberia/npc_raid_silvester.sp"
+#include "npc/almina_expidonsa/wave_60/npc_death_marker.sp"
+#include "npc/almina_expidonsa/wave_60/npc_runaka.sp"
+#include "npc/almina_expidonsa/wave_60/npc_speedus_elitus.sp"
+#include "npc/almina_expidonsa/wave_60/npc_sea_dryer.sp"
+#include "npc/almina_expidonsa/wave_60/npc_inqusitor_amphi.sp"
+
+
+#include "npc/raidmode_bosses/almina/npc_nemal.sp"
+#include "npc/raidmode_bosses/almina/npc_raid_silvester.sp"
 
 //Victoria
 //special

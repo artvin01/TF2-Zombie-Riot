@@ -145,7 +145,7 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 						case 1:
 							NpcSpeechBubble(this.index, "Why do these birds still try?", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 						case 2:
-							NpcSpeechBubble(this.index, "Hey, i was told iberians are too scared.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Hey, i was told alminans are too scared.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 					}
 					return;
 				}

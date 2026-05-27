@@ -663,7 +663,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_health_hose.sp"
 #include "custom/weapon_superubersaw.sp"
 #include "../shared/custom/joke_medigun_mod_drain_health.sp"
-#include "../shared/custom/weapon_judgement_of_iberia.sp"
+#include "../shared/custom/weapon_judgement_of_almina.sp"
 #include "../shared/custom/weapon_phlog_replacement.sp"
 #include "custom/weapon_cosmic_terror.sp"
 #include "custom/wand/weapon_wand_potions.sp"

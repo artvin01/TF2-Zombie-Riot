@@ -115,7 +115,7 @@ methodmap VictorianShotgunner < CClotBody
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_trenchgun/c_trenchgun.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/cc_summer2015_el_duderino/cc_summer2015_el_duderino.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_siberian_tigerstripe/fall17_siberian_tigerstripe.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_salminan_tigerstripe/fall17_salminan_tigerstripe.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 		
 		return npc;

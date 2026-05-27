@@ -2303,13 +2303,13 @@
 		"it"	"Aumenta i danni di +25％ e la resistenza di +15％ quando si è nel raggio della Bolla Plasmata."
 		"ko"	"플라즈마화된 버블의 반경 내에 있는 동안 공격 피해량이 25％ 증가하고 피해 저항력이 15％ 증가합니다."
 	}
-	"Ziberian Flagship Weaponry"
+	"Zalminan Flagship Weaponry"
 	{
-		"en"	"Ziberian Flagship Weaponry"
-		"it"	"Armamento della nave ammiraglia ziberiana"
+		"en"	"Zalminan Flagship Weaponry"
+		"it"	"Armamento della nave ammiraglia zalminana"
 		"ko"	"지베리아 기함 무장"
 	}
-	"Ziberian Flagship Weaponry Desc"
+	"Zalminan Flagship Weaponry Desc"
 	{
 		"en" 	"Take 25％ Less damage\nDeal 10％ More damage\nAttack 10％ Faster.\nReduces cooldowns by 15％"
 		"it"	"Subisce 25％ meno danni\nSubisce 10％ più danni\n Attacca 10％ più velocemente.\nRiduce i cooldown di 15％"

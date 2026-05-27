@@ -27,7 +27,7 @@ void Iberia_Beacon_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_GiveArmor));		i++) { PrecacheSound(g_GiveArmor[i]);		}
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Iberia Beacon");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_iberia_beacon");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_almina_beacon");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.Flags = -1;
 	data.Category = Type_IberiaExpiAlliance;

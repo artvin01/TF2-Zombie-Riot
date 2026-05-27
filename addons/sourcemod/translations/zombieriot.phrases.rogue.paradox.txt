@@ -88,8 +88,8 @@
 	}
 	"Dense Frost Desc"
 	{
-		"en"	"{yellow}EVERYONE takes continous non-fatal damage {red}except for Ziberia units"
-		"it"	"{yellow}TUTTI subiscono danni continui e non mortali {red}ad eccezione delle unità di Ziberia"
+		"en"	"{yellow}EVERYONE takes continous non-fatal damage {red}except for Zalmina units"
+		"it"	"{yellow}TUTTI subiscono danni continui e non mortali {red}ad eccezione delle unità di Zalmina"
 		"ko"	"{yellow}모든 유닛의 체력이 시간에 걸쳐 계속해서 감소합니다. (1 이하로는 감소하지 않음) {red}지베리아 유닛들은 이 효과에서 제외됩니다."
 	}
 	"Dense Frost Lore"
@@ -244,13 +244,13 @@
 		"it"	"Vuoi fare un po' di pasta?{green} Gli alleati guadagnano +125 salute massima e 1000 contanti"
 		"ko"	"라면 한 번 끓여먹어볼까?\n{green}추가 자금을 +1000 얻습니다. 모든 아군의 최대 체력 +125."
 	}
-	"Ziberian Chocolate"
+	"Zalminan Chocolate"
 	{
-		"en"	"Ziberian Chocolate"
-		"it"	"Cioccolato Ziberiano"
+		"en"	"Zalminan Chocolate"
+		"it"	"Cioccolato Zalminano"
 		"ko"	"지베리아제 초콜릿"
 	}
-	"Ziberian Chocolate Desc"
+	"Zalminan Chocolate Desc"
 	{
 		"en"	"It's cold, amazing!\n{green}Allies gain +50 max health and 1250 Cash"
 		"it"	"È freddo, fantastico! Gli alleati guadagnano +50 salute massima e 1250 contanti"

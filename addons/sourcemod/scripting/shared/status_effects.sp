@@ -5529,7 +5529,7 @@ void StatusEffects_Construction()
 	data.AttackspeedBuff			= (1.0 / 1.3);
 	StatusEffect_AddGlobal(data);
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Ziberian Flagship Weaponry");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Zalminan Flagship Weaponry");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "վ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	//-1.0 means unused

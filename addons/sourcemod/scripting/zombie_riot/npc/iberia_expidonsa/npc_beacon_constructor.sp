@@ -281,7 +281,7 @@ void IberiaBeaconConstructorBuildObject(IberiaBeaconConstructor npc, float dista
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_spikewrench/c_spikewrench.mdl");
-			int spawn_index = NPC_CreateByName("npc_iberia_beacon", -1, pos, ang, GetTeam(npc.index));
+			int spawn_index = NPC_CreateByName("npc_almina_beacon", -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
 				NpcStats_CopyStats(npc.index, spawn_index);

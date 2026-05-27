@@ -1142,7 +1142,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 			if(!CheckInHud())
 				return SniperMonkey_CrippleMoab(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		}
-		case WEAPON_IRENE:
+		case WEAPON_AMPHI:
 		{
 			if(!CheckInHud())
 				Npc_OnTakeDamage_Iberia(attacker, damagetype);
@@ -1814,7 +1814,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 	if(i_ExplosiveProjectileHexArray[weapon] & EP_GIBS_REGARDLESS) //Block explosives ?
 		return false;
 
-	if(f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Irene weapon cannot backstab.
+	if(f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Amphi weapon cannot backstab.
 	{
 		if(damagetype & DMG_CLUB && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)) //Use dmg slash for any npc that shouldnt be scaled.
 		{

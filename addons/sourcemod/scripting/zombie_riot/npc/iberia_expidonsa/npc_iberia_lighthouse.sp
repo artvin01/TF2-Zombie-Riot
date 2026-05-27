@@ -39,7 +39,7 @@ void Iberia_Lighthouse_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackShortSounds)); i++) { PrecacheSound(g_MeleeAttackShortSounds[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Iberia Lighthouse");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_iberia_lighthouse");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_almina_lighthouse");
 	strcopy(data.Icon, sizeof(data.Icon), "lighthouse_1");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;

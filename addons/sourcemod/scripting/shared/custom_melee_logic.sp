@@ -1041,7 +1041,7 @@ void AOEHammerExtraLogic(int entity, int victim, float damage, int weapon)
 
 bool CanBackstabEnemyPreCheck(int attacker, int weapon, int victim)
 {
-	if(f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Irene weapon cannot backstab.
+	if(f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Amphi weapon cannot backstab.
 	{
 #if defined ZR
 		return (IsBehindAndFacingTarget(attacker, victim, weapon) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim]);

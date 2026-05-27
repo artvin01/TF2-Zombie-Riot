@@ -5059,7 +5059,7 @@ stock void MakePlayerGiveResponseVoice(int client, int status)
 
 	switch(status)
 	{	
-		case 1: //Irene cocky talk
+		case 1: //Amphi cocky talk
 		{
 			switch(ClassShown)
 			{

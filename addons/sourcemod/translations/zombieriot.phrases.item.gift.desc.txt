@@ -2136,7 +2136,7 @@
 		"en"	"-Infinite range sniper\n-Spawns randomly around the map\nDeals immensive damage to barricades.\n-Deals high Chaos damage"
 		"ko"	"-무제한 사거리를 보유한 저격수입니다.\n-맵의 무작위 위치에서 생성됩니다.\n-바리케이드를 대상으로 매우 높은 피해를 줍니다.\n-적중 시 높은 혼돈 원소 피해를 부여합니다."
 	}
-	"Ziberian Miner Desc" 
+	"Zalminan Miner Desc" 
 	{
 		"en"	"A engineer back from the mines to destroy your buildings\n-Attacks deal bonus damage to buildings\n-First attack deals 2x damage."
 		"ko"	"광산에서 돌아온 이 광부 엔지니어가 당신의 구조물을 파괴하러 왔습니다.\n-구조물에 추가 피해를 가합니다.\n-처음으로 적중한 공격이 2배의 피해를 줍니다."
@@ -3484,7 +3484,7 @@
 	}
 	"Copycat Truthful Evidence Desc"
 	{
-		"en"	"This is a Copy of the evidence received from Sensal.\nSee some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Victoria invaded Ziberia.\nYou became the primary target of Victorians due to this…"
+		"en"	"This is a Copy of the evidence received from Sensal.\nSee some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Victoria invaded Zalmina.\nYou became the primary target of Victorians due to this…"
 		"ko"	"센살에게 받은 진실된 증거자료[사본] 입니다.\n이해못할 단어들이 보이지만 숨겨진 뜻이 있는거 같습니다. 이것이 빅토리아가 지베리아를 침공한 이유 같습니다.\n하지만 이것이 빅토리아인들과의 트러블을 만들었습니다."
 	}
 	"Dropped Secret Letter"

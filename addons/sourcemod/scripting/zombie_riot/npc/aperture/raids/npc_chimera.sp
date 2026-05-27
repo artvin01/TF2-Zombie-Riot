@@ -418,7 +418,7 @@ methodmap CHIMERA < CClotBody
 		music.Volume = 0.7;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "Citadel's End");
-		strcopy(music.Artist, sizeof(music.Artist), "Serious Sam : Siberian Mayhem");
+		strcopy(music.Artist, sizeof(music.Artist), "Serious Sam : Salminan Mayhem");
 		Music_SetRaidMusic(music);
 		
 		npc.m_flNextMeleeAttack = 0.0;

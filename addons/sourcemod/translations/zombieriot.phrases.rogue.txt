@@ -2152,9 +2152,9 @@
 	}
 	"Scrapped Wallet Desc"
 	{
-		"en"	"Old ziberian wallet, has some pictures inside and some leftover cash.\n- {green}Gain 500 Cash and deal +1％ damage."
+		"en"	"Old zalminan wallet, has some pictures inside and some leftover cash.\n- {green}Gain 500 Cash and deal +1％ damage."
 		"ru"	"Старый русский бумажник, внутри несколько фотографий и немного оставшихся денег.\n- +500 кредитов и на 1％ больше урона."
-		"it"	"Vecchio portafoglio ziberiano, ha alcune foto all'interno e qualche avanzo di denaro.\n- {green} Guadagna 500 contanti e infligge +1％ danni."
+		"it"	"Vecchio portafoglio zalminano, ha alcune foto all'interno e qualche avanzo di denaro.\n- {green} Guadagna 500 contanti e infligge +1％ danni."
 		"ko"	"오래된 지베리아제 지갑. 안에는 사진 몇 장과 약간의 돈이 들어있다.\n- {green}추가 자금 +500, 공격 피해량 +1％."
 	}
 	"Golden Coin"

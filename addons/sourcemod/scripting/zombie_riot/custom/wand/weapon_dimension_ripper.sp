@@ -663,7 +663,7 @@ public void Weapon_Dimension_Summon_Iberia(int client, int weapon, bool &result,
 		case 1:
 			Dimension_Summon_Npc(client, "npc_speedus_instantus" ,weapon, 1.2, 1.3, "teleported_blue");
 		case 2:
-			Dimension_Summon_Npc(client, "npc_iberia_morato" ,weapon, 1.0, 1.4, "teleported_blue");
+			Dimension_Summon_Npc(client, "npc_almina_morato" ,weapon, 1.0, 1.4, "teleported_blue");
 		case 3:
 			Dimension_Summon_Npc(client, "npc_sea_xploder" ,weapon, 1.2, 1.3, "teleported_blue");
 		case 4:

@@ -3437,10 +3437,10 @@
 		"it"	"Cecchino d'inverno"
 		"ko"	"겨울 저격수"
 	}
-	"Ziberian Miner"
+	"Zalminan Miner"
 	{
-		"en"	"Ziberian Miner"
-		"it"	"Minatore Ziberiano"
+		"en"	"Zalminan Miner"
+		"it"	"Minatore Zalminano"
 		"ko"	"지베리아인 광부"
 	}
 	"Snowey Gunner"
@@ -5326,8 +5326,8 @@
 	}
 	"Inquisitor Amphi Desc"
 	{
-		"en"		"-If its knife is burning, next melee hit launches you up and marks you.\n-If enemy is marked, gains more ammo aswell.\n-If enemy is marked, shoots 3x faster.\n-Can activate judgement of iberia if close to enemies with a cooldown."
-		"it"		"-Se il suo coltello è in fiamme, il prossimo colpo in mischia ti lancia in alto e ti marchia.\n-Se il nemico è marcato, guadagna anche più munizioni.\n-Se il nemico è marcato, spara 3 volte più velocemente.\n-Può attivare il giudizio di iberia se vicino a nemici con un cooldown."
+		"en"		"-If its knife is burning, next melee hit launches you up and marks you.\n-If enemy is marked, gains more ammo aswell.\n-If enemy is marked, shoots 3x faster.\n-Can activate judgement of almina if close to enemies with a cooldown."
+		"it"		"-Se il suo coltello è in fiamme, il prossimo colpo in mischia ti lancia in alto e ti marchia.\n-Se il nemico è marcato, guadagna anche più munizioni.\n-Se il nemico è marcato, spara 3 volte più velocemente.\n-Può attivare il giudizio di almina se vicino a nemici con un cooldown."
 		"ko"		"-칼이 불타고 있을시, 다음 근접 공격이 적중한 대상을 위로 날려보내고 표적을 부여합니다.\n-대상이 표적 상태라면, 탄약을 더 많이 얻습니다.\n-또한 표적 상태인 대상을 상대로 사격 공격의 속도가 3배 더 빨라집니다.\n-적과 근접하면 이베리아의 심판 능력을 발동합니다. (쿨타임 있음)"
 	}
 	"Death Marker"
@@ -7409,8 +7409,8 @@
 	}
 	"C.H.I.M.E.R.A. Desc"
 	{
-		"en"	"Built by someone in Ziberia. Does not belong in the labs, maybe it's looking for something?\nIs very fast paced, seems to be trying to replicate Sensal's Portal Gates"
-		"it"	"Costruito da qualcuno in Ziberia. Non appartiene ai laboratori, forse sta cercando qualcosa?\nÈ molto veloce, sembra che stia cercando di replicare le Porte del Portale di Sensal"
+		"en"	"Built by someone in Zalmina. Does not belong in the labs, maybe it's looking for something?\nIs very fast paced, seems to be trying to replicate Sensal's Portal Gates"
+		"it"	"Costruito da qualcuno in Zalmina. Non appartiene ai laboratori, forse sta cercando qualcosa?\nÈ molto veloce, sembra che stia cercando di replicare le Porte del Portale di Sensal"
 		"ko"	"지베리아의 누군가가 만든 기계입니다. 이 연구소와 관련이 없는 존재입니다. 대체 뭘 찾고 있는 걸까요?\n속도가 매우 빠르며, 센살의 차원문을 복제하려고 시도하는 것 같습니다."
 	}
 	"Refragmented Winter Sniper"

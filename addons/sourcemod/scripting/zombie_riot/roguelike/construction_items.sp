@@ -131,7 +131,7 @@ public void Construction_S_Ally(int entity, StringMap map)
 public void FlagShipCalling(int entity, StringMap map)
 {
 	RogueHelp_BodySpeed(entity, map, 1.1);
-	ApplyStatusEffect(entity, entity, "Ziberian Flagship Weaponry", 9999999.9);
+	ApplyStatusEffect(entity, entity, "Zalminan Flagship Weaponry", 9999999.9);
 }
 
 // Speed++ Health-

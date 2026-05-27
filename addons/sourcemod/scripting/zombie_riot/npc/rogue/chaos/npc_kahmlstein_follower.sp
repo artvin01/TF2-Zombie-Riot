@@ -141,7 +141,7 @@ methodmap KahmlsteinFollower < CClotBody
 			}
 			case 6:
 			{
-				this.Speech("After my fuck ups Ziberia ain't the same anymore...");
+				this.Speech("After my fuck ups Zalmina ain't the same anymore...");
 				this.SpeechDelay(5.0, "I wish I could go back in time... To the old days", "...");
 			}
 			case 7:
@@ -865,7 +865,7 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 			}
 			case 16:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Ahh... is that a light? It's getting closer.. Ahh Ziberia is calling out to me.");
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: Ahh... is that a light? It's getting closer.. Ahh Zalmina is calling out to me.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}

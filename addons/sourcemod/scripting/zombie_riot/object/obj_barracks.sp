@@ -900,7 +900,7 @@ public void Building_Summoner(int client, int entity)
 		CivType[client] = Store_HasNamedItem(client, "Iberia and Expidonsan's Help") ? Iberia_Thornless : Default;
 		if(CivType[client] != Default)
 		{
-			//looks like they have last hope equipped! Do they also possess iberia?
+			//looks like they have last hope equipped! Do they also possess almina?
 			if(Items_HasNamedItem(client, "Iberia's Last Hope"))
 			{
 				CivType[client] = Iberia_Thorns;

@@ -39,7 +39,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cleaver_hit_07.wav",
 };
 
-void WinterZiberianMiner_OnMapStart_NPC()
+void WinterZalminanMiner_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -48,8 +48,8 @@ void WinterZiberianMiner_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Ziberian Miner");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ziberian_miner");
+	strcopy(data.Name, sizeof(data.Name), "Zalminan Miner");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zalminan_miner");
 	strcopy(data.Icon, sizeof(data.Icon), "engineer");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -61,10 +61,10 @@ void WinterZiberianMiner_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return WinterZiberianMiner(vecPos, vecAng, team);
+	return WinterZalminanMiner(vecPos, vecAng, team);
 }
 
-methodmap WinterZiberianMiner < CClotBody
+methodmap WinterZalminanMiner < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -103,9 +103,9 @@ methodmap WinterZiberianMiner < CClotBody
 	}
 	
 	
-	public WinterZiberianMiner(float vecPos[3], float vecAng[3], int ally)
+	public WinterZalminanMiner(float vecPos[3], float vecAng[3], int ally)
 	{
-		WinterZiberianMiner npc = view_as<WinterZiberianMiner>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "2000", ally));
+		WinterZalminanMiner npc = view_as<WinterZalminanMiner>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "2000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -119,9 +119,9 @@ methodmap WinterZiberianMiner < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(WinterZiberianMiner_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(WinterZiberianMiner_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(WinterZiberianMiner_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(WinterZalminanMiner_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(WinterZalminanMiner_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(WinterZalminanMiner_ClotThink);
 		
 		
 		
@@ -152,9 +152,9 @@ methodmap WinterZiberianMiner < CClotBody
 	}
 }
 
-public void WinterZiberianMiner_ClotThink(int iNPC)
+public void WinterZalminanMiner_ClotThink(int iNPC)
 {
-	WinterZiberianMiner npc = view_as<WinterZiberianMiner>(iNPC);
+	WinterZalminanMiner npc = view_as<WinterZalminanMiner>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -197,7 +197,7 @@ public void WinterZiberianMiner_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		WinterZiberianMinerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		WinterZalminanMinerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -207,9 +207,9 @@ public void WinterZiberianMiner_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action WinterZiberianMiner_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action WinterZalminanMiner_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	WinterZiberianMiner npc = view_as<WinterZiberianMiner>(victim);
+	WinterZalminanMiner npc = view_as<WinterZalminanMiner>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -223,9 +223,9 @@ public Action WinterZiberianMiner_OnTakeDamage(int victim, int &attacker, int &i
 	return Plugin_Changed;
 }
 
-public void WinterZiberianMiner_NPCDeath(int entity)
+public void WinterZalminanMiner_NPCDeath(int entity)
 {
-	WinterZiberianMiner npc = view_as<WinterZiberianMiner>(entity);
+	WinterZalminanMiner npc = view_as<WinterZalminanMiner>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -247,7 +247,7 @@ public void WinterZiberianMiner_NPCDeath(int entity)
 
 }
 
-void WinterZiberianMinerSelfDefense(WinterZiberianMiner npc, float gameTime, int target, float distance)
+void WinterZalminanMinerSelfDefense(WinterZalminanMiner npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
