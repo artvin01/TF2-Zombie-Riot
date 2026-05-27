@@ -391,7 +391,7 @@ void NPC_ConfigSetup()
 	DwellerCaster_Precache();
 	DwellerSpecialist_Precache();
 	DwellerSupporter_Precache();
-	SaintCarmen_Precache();
+	SaintAdrian_Precache();
 	DwellerArchon_Precache();
 	DwellerNest_Precache();
 	Pathshaper_Precache();
@@ -2078,7 +2078,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/dweller/npc_dweller_spy.sp"
 #include "npc/dweller/npc_corruptedknight.sp"
 #include "npc/ally/npc_barrack_corruptedknight.sp"
-#include "npc/dweller/npc_saintcarmen.sp"
+#include "npc/dweller/npc_saintadrian.sp"
 #include "npc/dweller/npc_pathshaper.sp"
 #include "npc/dweller/npc_pathshaper_fractal.sp"
 #include "npc/dweller/npc_dwellernest.sp"

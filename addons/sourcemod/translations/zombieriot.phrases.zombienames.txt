@@ -2695,9 +2695,9 @@
 		"it"		"Cavaliere a caccia di maree"
 		"ko"		"파도 사냥의 기사"
 	}
-	"Saint Adrian "
+	"Saint Adrian"
 	{
-		"en"		"Saint Adrian "
+		"en"		"Saint Adrian"
 		"ru"		"Святая Кармен"
 		"chi"		"圣徒卡门"
 		"it"		"Santa Carmen"

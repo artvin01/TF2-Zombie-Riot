@@ -5084,7 +5084,7 @@ static bool RunFromNPC(int entity)
 	if(StrContains(npc_classname, "npc_sawrunner") != -1 ||
 		StrContains(npc_classname, "npc_3650") != -1 ||
 		StrContains(npc_classname, "npc_corruptedknight") != -1 ||
-		StrContains(npc_classname, "npc_saintcarmen") != -1)
+		StrContains(npc_classname, "npc_saintadrian") != -1)
 	{
 		return true;
 	}

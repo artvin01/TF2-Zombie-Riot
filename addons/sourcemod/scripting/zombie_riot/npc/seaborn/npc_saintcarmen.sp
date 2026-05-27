@@ -35,11 +35,11 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/demo_sword_swing3.wav"
 };
 
-void SaintCarmen_Precache()
+void SaintAdrian_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Saint Adrian ");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_saintcarmen");
+	strcopy(data.Name, sizeof(data.Name), "Saint Adrian");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_saintadrian");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_saint");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
@@ -50,10 +50,10 @@ void SaintCarmen_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SaintCarmen(vecPos, vecAng, team, data);
+	return SaintAdrian(vecPos, vecAng, team, data);
 }
 
-methodmap SaintCarmen < CClotBody
+methodmap SaintAdrian < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -80,9 +80,9 @@ methodmap SaintCarmen < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public SaintCarmen(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SaintAdrian(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		SaintCarmen npc = view_as<SaintCarmen>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, false));
+		SaintAdrian npc = view_as<SaintAdrian>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, false));
 		// 50000 x 1.0
 
 		SetVariantInt(9);
@@ -96,9 +96,9 @@ methodmap SaintCarmen < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		b_NpcIsTeamkiller[npc.index] = ally != TFTeam_Red;
 		
-		func_NPCDeath[npc.index] = SaintCarmen_NPCDeath;
+		func_NPCDeath[npc.index] = SaintAdrian_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = SaintCarmen_ClotThink;
+		func_NPCThink[npc.index] = SaintAdrian_ClotThink;
 		
 		npc.m_flSpeed = 250.0;	// 0.5 x 250
 		npc.m_flMeleeArmor = 0.5;
@@ -129,9 +129,9 @@ methodmap SaintCarmen < CClotBody
 	}
 }
 
-public void SaintCarmen_ClotThink(int iNPC)
+public void SaintAdrian_ClotThink(int iNPC)
 {
-	SaintCarmen npc = view_as<SaintCarmen>(iNPC);
+	SaintAdrian npc = view_as<SaintAdrian>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -281,9 +281,9 @@ public void SaintCarmen_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SaintCarmen_NPCDeath(int entity)
+void SaintAdrian_NPCDeath(int entity)
 {
-	SaintCarmen npc = view_as<SaintCarmen>(entity);
+	SaintAdrian npc = view_as<SaintAdrian>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
