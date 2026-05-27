@@ -2715,25 +2715,25 @@
 		"it"		"Mezzo Vuoto Erirasus"
 		"ko"		"공허 반침식 에리라수스"
 	}
-	"Pathshaper"
+	"Mirroring"
 	{
-		"en"		"Pathshaper"
+		"en"		"Mirroring"
 		"ru" 		"Создатель пути"
 		"chi"		"塑路者"
 		"it"		"Modellatore di sentieri"
 		"ko"		"패스셰이퍼"
 	}
-	"Pathshaper"
+	"Mirroring"
 	{
-		"en"		"Pathshaper"
+		"en"		"Mirroring"
 		"ru" 		"Создатель Пути"
 		"chi"		"塑路者"
 		"it"		"Modellatore di sentieri"
 		"ko"		"패스셰이퍼"
 	}
-	"Pathshaper Fractal"
+	"Mirroring Fractal"
 	{
-		"en"		"Pathshaper Fractal"
+		"en"		"Mirroring Fractal"
 		"ru" 		"Фрактал Создателя Пути"
 		"chi"		"塑路者分形"
 		"it"		"Frattale sagomatore di percorsi"

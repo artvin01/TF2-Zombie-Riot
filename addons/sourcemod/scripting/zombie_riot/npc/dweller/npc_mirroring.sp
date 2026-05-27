@@ -33,12 +33,12 @@ static const char g_MeleeAttackSounds[][] =
 	"npc/zombie_poison/pz_warn2.wav"
 };
 
-void Pathshaper_Precache()
+void Mirroring_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Pathshaper");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_pathshaper");
-	strcopy(data.Icon, sizeof(data.Icon), "ds_pathshaper");
+	strcopy(data.Name, sizeof(data.Name), "Mirroring");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mirroring");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_mirroring");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Dweller;
@@ -48,10 +48,10 @@ void Pathshaper_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Pathshaper(vecPos, vecAng, team);
+	return Mirroring(vecPos, vecAng, team);
 }
 
-methodmap Pathshaper < CClotBody
+methodmap Mirroring < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -78,9 +78,9 @@ methodmap Pathshaper < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Pathshaper(float vecPos[3], float vecAng[3], int ally)
+	public Mirroring(float vecPos[3], float vecAng[3], int ally)
 	{
-		Pathshaper npc = view_as<Pathshaper>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.75", "35000", ally, false, true));
+		Mirroring npc = view_as<Mirroring>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.75", "35000", ally, false, true));
 		// 35000 x 1.0
 		
 		SetVariantInt(31);
@@ -94,9 +94,9 @@ methodmap Pathshaper < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 
-		func_NPCDeath[npc.index] = Pathshaper_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = Pathshaper_OnTakeDamage;
-		func_NPCThink[npc.index] = Pathshaper_ClotThink;
+		func_NPCDeath[npc.index] = Mirroring_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Mirroring_OnTakeDamage;
+		func_NPCThink[npc.index] = Mirroring_ClotThink;
 		
 		npc.m_flSpeed = 250.0;	// 0.5 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -111,9 +111,9 @@ methodmap Pathshaper < CClotBody
 	}
 }
 
-public void Pathshaper_ClotThink(int iNPC)
+public void Mirroring_ClotThink(int iNPC)
 {
-	Pathshaper npc = view_as<Pathshaper>(iNPC);
+	Mirroring npc = view_as<Mirroring>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -187,7 +187,7 @@ public void Pathshaper_ClotThink(int iNPC)
 				if(++npc.m_iAttacksTillMegahit > 2)
 				{
 					int health = ReturnEntityMaxHealth(npc.index) * 4 / 7;
-					Pathshaper_SpawnFractal(npc, health, 8);
+					Mirroring_SpawnFractal(npc, health, 8);
 					npc.m_iAttacksTillMegahit = 0;
 				}
 			}
@@ -217,11 +217,11 @@ public void Pathshaper_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void Pathshaper_OnTakeDamage(int victim, int attacker)
+void Mirroring_OnTakeDamage(int victim, int attacker)
 {
 	if(attacker > 0)
 	{
-		Pathshaper npc = view_as<Pathshaper>(victim);
+		Mirroring npc = view_as<Mirroring>(victim);
 		if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 		{
 			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -230,16 +230,16 @@ void Pathshaper_OnTakeDamage(int victim, int attacker)
 			if(++npc.m_iAttacksTillReload > 9)
 			{
 				int health = ReturnEntityMaxHealth(npc.index) * 4 / 7;
-				Pathshaper_SpawnFractal(npc, health, 8);
+				Mirroring_SpawnFractal(npc, health, 8);
 				npc.m_iAttacksTillReload = 0;
 			}
 		}
 	}
 }
 
-void Pathshaper_NPCDeath(int entityy)
+void Mirroring_NPCDeath(int entityy)
 {
-	Pathshaper npc = view_as<Pathshaper>(entityy);
+	Mirroring npc = view_as<Mirroring>(entityy);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 
@@ -247,21 +247,21 @@ void Pathshaper_NPCDeath(int entityy)
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PathshaperFractal_ID() && IsEntityAlive(entity) && GetTeam(entity) == team)
+		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == MirroringFractal_ID() && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
 			RequestFrame(KillNpc, i_ObjectsNpcsTotal[i]);
 		}
 	}
 }
 
-void Pathshaper_SpawnFractal(CClotBody npc, int health, int limit)
+void Mirroring_SpawnFractal(CClotBody npc, int health, int limit)
 {
 	int team = GetTeam(npc.index);
 	int count;
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PathshaperFractal_ID() && IsEntityAlive(entity) && GetTeam(entity) == team)
+		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == MirroringFractal_ID() && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
 			if(++count == limit)
 				return;
@@ -271,7 +271,7 @@ void Pathshaper_SpawnFractal(CClotBody npc, int health, int limit)
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	
-	int entity = NPC_CreateById(PathshaperFractal_ID(), -1, pos, ang, GetTeam(npc.index));
+	int entity = NPC_CreateById(MirroringFractal_ID(), -1, pos, ang, GetTeam(npc.index));
 	if(entity > MaxClients)
 	{
 		if(GetTeam(npc.index) != TFTeam_Red)

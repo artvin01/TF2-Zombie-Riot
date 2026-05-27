@@ -394,8 +394,8 @@ void NPC_ConfigSetup()
 	SaintAdrian_Precache();
 	DwellerArchon_Precache();
 	DwellerBishop_Precache();
-	Pathshaper_Precache();
-	PathshaperFractal_Precache();
+	Mirroring_Precache();
+	MirroringFractal_Precache();
 	AbyssLeviathan_Precache();
 	AbyssLeviathanTrans_MapStart();
 	
@@ -2079,8 +2079,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/dweller/npc_corruptedknight.sp"
 #include "npc/ally/npc_barrack_corruptedknight.sp"
 #include "npc/dweller/npc_saintadrian.sp"
-#include "npc/dweller/npc_pathshaper.sp"
-#include "npc/dweller/npc_pathshaper_fractal.sp"
+#include "npc/dweller/npc_mirroring.sp"
+#include "npc/dweller/npc_mirroring_fractal.sp"
 #include "npc/dweller/npc_dwellernest.sp"
 #include "npc/dweller/npc_dwellerarchon.sp"
 #include "npc/dweller/npc_dweller_guard.sp"

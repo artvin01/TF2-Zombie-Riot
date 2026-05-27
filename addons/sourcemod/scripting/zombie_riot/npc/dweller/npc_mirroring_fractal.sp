@@ -33,16 +33,16 @@ static const char g_MeleeHitSounds[][] =
 
 static int NPCId;
 
-int PathshaperFractal_ID()
+int MirroringFractal_ID()
 {
 	return NPCId;
 }
 
-void PathshaperFractal_Precache()
+void MirroringFractal_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Pathshaper Fractal");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_pathshaper_fractal");
+	strcopy(data.Name, sizeof(data.Name), "Mirroring Fractal");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mirroring_fractal");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_fractal");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
@@ -53,10 +53,10 @@ void PathshaperFractal_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return PathshaperFractal(vecPos, vecAng, team);
+	return MirroringFractal(vecPos, vecAng, team);
 }
 
-methodmap PathshaperFractal < CClotBody
+methodmap MirroringFractal < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -83,9 +83,9 @@ methodmap PathshaperFractal < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
 	}
 	
-	public PathshaperFractal(float vecPos[3], float vecAng[3], int ally)
+	public MirroringFractal(float vecPos[3], float vecAng[3], int ally)
 	{
-		PathshaperFractal npc = view_as<PathshaperFractal>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "1.3", "20000", ally));
+		MirroringFractal npc = view_as<MirroringFractal>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "1.3", "20000", ally));
 		// 20000 x 1.0
 
 		i_NpcWeight[npc.index] = 0;
@@ -96,9 +96,9 @@ methodmap PathshaperFractal < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
-		func_NPCDeath[npc.index] = PathshaperFractal_NPCDeath;
+		func_NPCDeath[npc.index] = MirroringFractal_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = PathshaperFractal_ClotThink;
+		func_NPCThink[npc.index] = MirroringFractal_ClotThink;
 		
 		npc.m_flSpeed = 300.0;	// 0.4 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -111,9 +111,9 @@ methodmap PathshaperFractal < CClotBody
 	}
 }
 
-public void PathshaperFractal_ClotThink(int iNPC)
+public void MirroringFractal_ClotThink(int iNPC)
 {
-	PathshaperFractal npc = view_as<PathshaperFractal>(iNPC);
+	MirroringFractal npc = view_as<MirroringFractal>(iNPC);
 
 	SDKHooks_TakeDamage(npc.index, 0, 0, ReturnEntityMaxHealth(npc.index) / 2970.0, DMG_TRUEDAMAGE, _, _, _, _, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
@@ -193,7 +193,7 @@ public void PathshaperFractal_ClotThink(int iNPC)
 				if(++npc.m_iAttacksTillMegahit > 5)
 				{
 					int health = ReturnEntityMaxHealth(npc.index);
-					Pathshaper_SpawnFractal(npc, health, 12);
+					Mirroring_SpawnFractal(npc, health, 12);
 					npc.m_iAttacksTillMegahit = 0;
 				}
 			}
@@ -224,9 +224,9 @@ public void PathshaperFractal_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void PathshaperFractal_NPCDeath(int entity)
+void MirroringFractal_NPCDeath(int entity)
 {
-	PathshaperFractal npc = view_as<PathshaperFractal>(entity);
+	MirroringFractal npc = view_as<MirroringFractal>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
