@@ -37,7 +37,7 @@ static void ClotPrecache()
 	NPC_GetByPlugin("npc_last_survivor");
 	NPC_GetByPlugin("npc_medival_construct");
 	NPC_GetByPlugin("npc_vaus_magica");
-	NPC_GetByPlugin("npc_firsttotalk");
+	NPC_GetByPlugin("npc_dwellerhybrid");
 	NPC_GetByPlugin("npc_speedus_initus");
 	NPC_GetByPlugin("npc_refragmented_combine_police_pistol");
 	NPC_GetByPlugin("npc_refragmented_combine_soldier_ar2");
@@ -204,7 +204,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 6,7:
 				{
-					PortalGateSpawn(npc.index, "npc_firsttotalk", pos, ang, team, 2500);
+					PortalGateSpawn(npc.index, "npc_dwellerhybrid", pos, ang, team, 2500);
 				}
 				case 8,9:
 				{
@@ -416,7 +416,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 6,7:
 				{
-					PortalGateSpawn(npc.index, "npc_firsttotalk", pos, ang, team, 2500);
+					PortalGateSpawn(npc.index, "npc_dwellerhybrid", pos, ang, team, 2500);
 				}
 				case 8,9:
 				{

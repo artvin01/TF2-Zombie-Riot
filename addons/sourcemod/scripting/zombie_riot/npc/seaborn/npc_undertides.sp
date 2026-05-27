@@ -34,7 +34,7 @@ void UnderTides_MapStart()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Sea Dweller's Nest");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_undertides");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_dweller_nest");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_quintus");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;

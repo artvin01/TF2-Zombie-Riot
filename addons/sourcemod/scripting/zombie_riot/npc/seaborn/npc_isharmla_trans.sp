@@ -32,7 +32,7 @@ static const char g_MeleeAttackSounds[][] =
 static char gExplosive1;
 static char gLaser1;
 
-void IsharmlaTrans_MapStart()
+void AbyssLeviathanTrans_MapStart()
 {
 	PrecacheModel("models/bots/headless_hatman.mdl");
 	PrecacheModel("models/weapons/c_models/c_bigaxe/c_bigaxe.mdl");
@@ -44,8 +44,8 @@ void IsharmlaTrans_MapStart()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ishar'mla, Heart of Corruption");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_isharmla_trans");
-	strcopy(data.Icon, sizeof(data.Icon), "ds_isharmla");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_abyss_leviathan_trans");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_abyss_leviathan");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MISSION|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Hidden;
@@ -55,10 +55,10 @@ void IsharmlaTrans_MapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IsharmlaTrans(vecPos, vecAng, team);
+	return AbyssLeviathanTrans(vecPos, vecAng, team);
 }
 
-methodmap IsharmlaTrans < CClotBody
+methodmap AbyssLeviathanTrans < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -85,9 +85,9 @@ methodmap IsharmlaTrans < CClotBody
 		EmitSoundToAll("ui/halloween_boss_summoned_fx.wav");
 	}
 	
-	public IsharmlaTrans(float vecPos[3], float vecAng[3], int ally)
+	public AbyssLeviathanTrans(float vecPos[3], float vecAng[3], int ally)
 	{
-		IsharmlaTrans npc = view_as<IsharmlaTrans>(CClotBody(vecPos, vecAng, "models/bots/headless_hatman.mdl", "1.35", "45000", ally, false, true));
+		AbyssLeviathanTrans npc = view_as<AbyssLeviathanTrans>(CClotBody(vecPos, vecAng, "models/bots/headless_hatman.mdl", "1.35", "45000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 6;
 		npc.SetActivity("ACT_MP_STAND_ITEM1");
@@ -97,8 +97,8 @@ methodmap IsharmlaTrans < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
-		func_NPCDeath[npc.index] = IsharmlaTrans_NPCDeath;
-		func_NPCThink[npc.index] = IsharmlaTrans_ClotThink;
+		func_NPCDeath[npc.index] = AbyssLeviathanTrans_NPCDeath;
+		func_NPCThink[npc.index] = AbyssLeviathanTrans_ClotThink;
 		
 		npc.m_flSpeed = 250.0;//100.0;	// 0.6 - 0.2 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -125,9 +125,9 @@ methodmap IsharmlaTrans < CClotBody
 	}
 }
 
-public void IsharmlaTrans_ClotThink(int iNPC)
+public void AbyssLeviathanTrans_ClotThink(int iNPC)
 {
-	IsharmlaTrans npc = view_as<IsharmlaTrans>(iNPC);
+	AbyssLeviathanTrans npc = view_as<AbyssLeviathanTrans>(iNPC);
 
 	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 5.0);
 
@@ -170,7 +170,7 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 					float pos[3];
 					GetEntPropVector(npc.m_iTarget, Prop_Send, "m_vecOrigin", pos);
 					pos[2] += 25.0;
-					IsharmlaEffect(npc.index, pos);
+					AbyssLeviathanEffect(npc.index, pos);
 					int enemy[6];
 					UnderTides npc1 = view_as<UnderTides>(iNPC);
 					GetHighDefTargets(npc1, enemy, sizeof(enemy));
@@ -178,7 +178,7 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 					{
 						if(enemy[i])
 						{
-							IsharMlarWaterAttack_Invoke(npc.index, enemy[i]);
+							AbyssLeviathanWaterAttack_Invoke(npc.index, enemy[i]);
 						}
 					}
 				}
@@ -191,7 +191,7 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 					{
 						if(enemy[i])
 						{
-							IsharMlarWaterAttack_Invoke(npc.index, enemy[i]);
+							AbyssLeviathanWaterAttack_Invoke(npc.index, enemy[i]);
 						}
 					}
 					PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1000.0,_,vecTarget);
@@ -255,9 +255,9 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void IsharmlaTrans_NPCDeath(int entity)
+void AbyssLeviathanTrans_NPCDeath(int entity)
 {
-	IsharmlaTrans npc = view_as<IsharmlaTrans>(entity);
+	AbyssLeviathanTrans npc = view_as<AbyssLeviathanTrans>(entity);
 	npc.PlayDeathSound();
 	
 	if(IsValidEntity(npc.m_iWearable1))
@@ -269,7 +269,7 @@ void IsharmlaTrans_NPCDeath(int entity)
 }
 
 
-static void IsharmlaEffect(int entity = -1, float VecPos_target[3] = {0.0,0.0,0.0})
+static void AbyssLeviathanEffect(int entity = -1, float VecPos_target[3] = {0.0,0.0,0.0})
 {	
 	int r = 65; //Blue.
 	int g = 65;
@@ -283,12 +283,12 @@ static void IsharmlaEffect(int entity = -1, float VecPos_target[3] = {0.0,0.0,0.
 
 
 
-public void IsharMlarWaterAttack_Invoke(int ref, int enemy)
+public void AbyssLeviathanWaterAttack_Invoke(int ref, int enemy)
 {
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
-	//	IsharmlaTrans npc = view_as<IsharmlaTrans>(entity);
+	//	AbyssLeviathanTrans npc = view_as<AbyssLeviathanTrans>(entity);
 		float Time=2.5;	//how long before kaboom
 			
 					
@@ -322,7 +322,7 @@ public void IsharMlarWaterAttack_Invoke(int ref, int enemy)
 		EmitSoundToAll("misc/halloween/gotohell.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vecTarget);
 		
 		Handle data;
-		CreateDataTimer(Time, Smite_Timer_IsharMlar, data, TIMER_FLAG_NO_MAPCHANGE);
+		CreateDataTimer(Time, Smite_Timer_AbyssLeviathan, data, TIMER_FLAG_NO_MAPCHANGE);
 		WritePackFloat(data, vecTarget[0]);
 		WritePackFloat(data, vecTarget[1]);
 		WritePackFloat(data, vecTarget[2]);
@@ -334,7 +334,7 @@ public void IsharMlarWaterAttack_Invoke(int ref, int enemy)
 	}
 }
 
-public Action Smite_Timer_IsharMlar(Handle Smite_Logic, DataPack data)
+public Action Smite_Timer_AbyssLeviathan(Handle Smite_Logic, DataPack data)
 {
 	ResetPack(data);
 		

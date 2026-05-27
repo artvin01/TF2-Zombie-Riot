@@ -38,7 +38,7 @@ void FirstToTalk_MapStart()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "The First To Talk");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_firsttotalk");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dwellerhybrid");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_firsttotalk");
 	data.IconCustom = true;
 	data.Flags = 0;

@@ -396,8 +396,8 @@ void NPC_ConfigSetup()
 	DwellerNest_Precache();
 	Pathshaper_Precache();
 	PathshaperFractal_Precache();
-	Isharmla_Precache();
-	IsharmlaTrans_MapStart();
+	AbyssLeviathan_Precache();
+	AbyssLeviathanTrans_MapStart();
 	
 #if defined RUINA_BASE
 	//Ruina waves	//warp
@@ -2041,14 +2041,14 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/raidmode_bosses/xeno/npc_nemesis.sp"
 #include "npc/raidmode_bosses/xeno/npc_mrx.sp"
 
-#include "npc/dweller/npc_firsttotalk.sp"
+#include "npc/dweller/npc_dwellerhybrid.sp"
 #include "npc/dweller/npc_seacrawler.sp"
 #include "npc/dweller/npc_seapiercer.sp"
 #include "npc/dweller/npc_seareaper.sp"
 #include "npc/dweller/npc_searunner.sp"
 #include "npc/dweller/npc_seaslider.sp"
 #include "npc/dweller/npc_seaspitter.sp"
-#include "npc/dweller/npc_undertides.sp"
+#include "npc/dweller/npc_sea_dweller_nest.sp"
 #include "npc/dweller/npc_dweller_grunwald_knight.sp"
 #include "npc/dweller/npc_dweller_grunwald_archer.sp"
 #include "npc/dweller/npc_dweller_grunwald_beserker.sp"
@@ -2089,8 +2089,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/dweller/npc_dweller_caster.sp"
 #include "npc/dweller/npc_dweller_specialist.sp"
 #include "npc/dweller/npc_dweller_supporter.sp"
-#include "npc/dweller/npc_isharmla.sp"
-#include "npc/dweller/npc_isharmla_trans.sp"
+#include "npc/dweller/npc_abyss_leviathan.sp"
+#include "npc/dweller/npc_abyss_leviathan_trans.sp"
 
 #include "npc/raidmode_bosses/dweller/npc_stella.sp"
 #include "npc/raidmode_bosses/dweller/npc_karlas.sp"

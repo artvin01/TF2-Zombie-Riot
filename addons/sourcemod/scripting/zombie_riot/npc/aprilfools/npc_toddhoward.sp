@@ -443,7 +443,7 @@ public void ToddHoward_ClotThink(int iNPC)
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 		}
-		int spawn_index = NPC_CreateByName("npc_isharmla", -1, pos, ang, TFTeam_Blue);
+		int spawn_index = NPC_CreateByName("npc_abyss_leviathan", -1, pos, ang, TFTeam_Blue);
 		if(spawn_index > MaxClients)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);

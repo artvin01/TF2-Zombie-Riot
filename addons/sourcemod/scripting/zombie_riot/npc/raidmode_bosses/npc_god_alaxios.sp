@@ -758,7 +758,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 			}
-			int spawn_index = NPC_CreateByName("npc_isharmla", -1, pos, ang, TFTeam_Blue);
+			int spawn_index = NPC_CreateByName("npc_abyss_leviathan", -1, pos, ang, TFTeam_Blue);
 			if(spawn_index > MaxClients)
 			{
 				NpcStats_CopyStats(npc.index, spawn_index);
@@ -1372,7 +1372,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_grunwald_longrange",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_abysspredator",70000, RoundToCeil(20.0 * MultiGlobalEnemy));	
 				GodAlaxiosSpawnEnemy(npc.index,"npc_abyssspewer",50000, RoundToCeil(20.0 * MultiGlobalEnemy));	
-				GodAlaxiosSpawnEnemy(npc.index,"npc_isharmla", RoundToCeil(1000000.0 * MultiGlobalHighHealthBoss), 1, true);	
+				GodAlaxiosSpawnEnemy(npc.index,"npc_abyss_leviathan", RoundToCeil(1000000.0 * MultiGlobalHighHealthBoss), 1, true);	
 				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_specialist",7000, RoundToCeil(20.0 * MultiGlobalEnemy));	
 			}	
 		}

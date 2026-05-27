@@ -481,7 +481,7 @@ public void Weapon_Dimension_Summon_Dweller_PAP(int client, int weapon, bool &re
 		case 4:
 			Dimension_Summon_Npc(client, "npc_dweller_specialist" ,weapon, 1.3, 1.4, "utaunt_spirit_winter_rings");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_firsttotalk" ,weapon, 1.8, 1.75, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_dwellerhybrid" ,weapon, 1.8, 1.75, "utaunt_spirit_winter_rings");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none

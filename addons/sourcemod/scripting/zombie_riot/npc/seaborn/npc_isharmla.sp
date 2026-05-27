@@ -14,12 +14,12 @@ static const char g_MeleeAttackSounds[][] =
 	"player/invuln_off_vaccinator.wav"
 };
 
-void Isharmla_Precache()
+void AbyssLeviathan_Precache()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ishar'mla, Heart of Corruption");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_isharmla");
-	strcopy(data.Icon, sizeof(data.Icon), "ds_isharmla");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_abyss_leviathan");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_abyss_leviathan");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Dweller;
@@ -29,10 +29,10 @@ void Isharmla_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Isharmla(vecPos, vecAng, team);
+	return AbyssLeviathan(vecPos, vecAng, team);
 }
 
-methodmap Isharmla < CClotBody
+methodmap AbyssLeviathan < CClotBody
 {
 	public void PlayDeathSound() 
 	{
@@ -43,9 +43,9 @@ methodmap Isharmla < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public Isharmla(float vecPos[3], float vecAng[3], int ally)
+	public AbyssLeviathan(float vecPos[3], float vecAng[3], int ally)
 	{
-		Isharmla npc = view_as<Isharmla>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000", ally, false));
+		AbyssLeviathan npc = view_as<AbyssLeviathan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000", ally, false));
 		// 90000 x 1.0
 
 		SetVariantInt(1);
@@ -59,9 +59,9 @@ methodmap Isharmla < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		func_NPCDeath[npc.index] = Isharmla_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = Isharmla_OnTakeDamage;
-		func_NPCThink[npc.index] = Isharmla_ClotThink;
+		func_NPCDeath[npc.index] = AbyssLeviathan_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = AbyssLeviathan_OnTakeDamage;
+		func_NPCThink[npc.index] = AbyssLeviathan_ClotThink;
 		
 		npc.m_flSpeed = 150.0;	// 0.6 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -126,9 +126,9 @@ methodmap Isharmla < CClotBody
 	}
 }
 
-public void Isharmla_ClotThink(int iNPC)
+public void AbyssLeviathan_ClotThink(int iNPC)
 {
-	Isharmla npc = view_as<Isharmla>(iNPC);
+	AbyssLeviathan npc = view_as<AbyssLeviathan>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -202,7 +202,7 @@ public void Isharmla_ClotThink(int iNPC)
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		int maxhealth = ReturnEntityMaxHealth(npc.index) / 3;
 		
-		int entity = NPC_CreateByName("npc_isharmla_trans", -1, pos, ang, GetTeam(npc.index));
+		int entity = NPC_CreateByName("npc_abyss_leviathan_trans", -1, pos, ang, GetTeam(npc.index));
 		if(entity > MaxClients)
 		{
 			b_IsEntityNeverTranmitted[npc.index] = true;
@@ -380,9 +380,9 @@ public void Isharmla_ClotThink(int iNPC)
 	}
 }
 
-void Isharmla_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+void AbyssLeviathan_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Isharmla npc = view_as<Isharmla>(victim);
+	AbyssLeviathan npc = view_as<AbyssLeviathan>(victim);
 
 	if(attacker < 1)
 		return;
@@ -404,9 +404,9 @@ void Isharmla_OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	}
 }
 
-void Isharmla_NPCDeath(int entity)
+void AbyssLeviathan_NPCDeath(int entity)
 {
-	Isharmla npc = view_as<Isharmla>(entity);
+	AbyssLeviathan npc = view_as<AbyssLeviathan>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
