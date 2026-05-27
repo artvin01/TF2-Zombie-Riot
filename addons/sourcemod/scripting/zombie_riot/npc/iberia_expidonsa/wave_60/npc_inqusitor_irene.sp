@@ -1,10 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define IRENE_BOSS_RANGE 400.0
-#define IRENE_EXPLOSIVES 150.0
-bool Amphi_CurrentEnemyVictimised[MAXENTITIES];
-bool Amphi_TargetsFound;
+#define AMPHI_BOSS_RANGE 400.0
+#define AMPHI_EXPLOSIVES 150.0
+bool Irene_CurrentEnemyVictimised[MAXENTITIES];
+bool Irene_TargetsFound;
 
 
 
@@ -52,7 +52,7 @@ void Iberia_inqusitor_irene_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Inquisitor Amphi");
+	strcopy(data.Name, sizeof(data.Name), "Inquisitor Irene");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_inqusitor_irene");
 	strcopy(data.Icon, sizeof(data.Icon), "judgement_1");
 	data.IconCustom = true;
@@ -196,7 +196,7 @@ methodmap Iberiainqusitor_irene < CClotBody
 
 static void NPCTalkMessage(int iNPC, const char[] message)
 {
-	PrintNPCMessageWithPrefixes(iNPC, "snow", message, .customName = "Amphi");
+	PrintNPCMessageWithPrefixes(iNPC, "snow", message, .customName = "Irene");
 }
 
 public void Iberiainqusitor_irene_ClotThink(int iNPC)
@@ -221,7 +221,7 @@ public void Iberiainqusitor_irene_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-	if(Amphi_AbilityAir(npc))
+	if(Irene_AbilityAir(npc))
 	{
 		return;
 	}
@@ -285,7 +285,7 @@ public Action Iberiainqusitor_irene_OnTakeDamage(int victim, int &attacker, int 
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	Amphi_Weapon_Lines(npc, attacker);
+	Irene_Weapon_Lines(npc, attacker);
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -342,12 +342,12 @@ int Iberiainqusitor_ireneSelfDefense(Iberiainqusitor_irene npc, float gameTime, 
 			npc.m_flAirTimeAbilityCD = gameTime + 20.0;
 			float DurationOfBlink = 1.5;
 			npc.m_flAirTimeAbilityHappening = gameTime + DurationOfBlink;
-			Amphi_TargetsFound = false;
+			Irene_TargetsFound = false;
 			float NewPos[3]; 
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", NewPos);
 			NewPos[2] += 10.0;
-			spawnRing_Vectors(NewPos, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, DurationOfBlink, 2.0, 2.0, 2, IRENE_BOSS_RANGE * 2.0);
-			spawnRing_Vectors(NewPos, IRENE_BOSS_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, DurationOfBlink, 2.0, 2.0, 2);
+			spawnRing_Vectors(NewPos, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, DurationOfBlink, 2.0, 2.0, 2, AMPHI_BOSS_RANGE * 2.0);
+			spawnRing_Vectors(NewPos, AMPHI_BOSS_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, DurationOfBlink, 2.0, 2.0, 2);
 			
 			return 2;
 		}
@@ -574,11 +574,11 @@ int Iberiainqusitor_ireneSelfDefense(Iberiainqusitor_irene npc, float gameTime, 
 	return 0;
 }
 
-bool Amphi_AbilityAir(Iberiainqusitor_irene npc)
+bool Irene_AbilityAir(Iberiainqusitor_irene npc)
 {
 	if(npc.m_flAirTimeAbilityHappening)
 	{
-		if(Amphi_TargetsFound)
+		if(Irene_TargetsFound)
 		{
 			if(npc.m_flAirTimeAbilityHappeningDelay < GetGameTime(npc.index))
 			{
@@ -595,7 +595,7 @@ bool Amphi_AbilityAir(Iberiainqusitor_irene npc)
 				float damageDealBoom = 350.0;	
 				for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 				{
-					if(Amphi_CurrentEnemyVictimised[EnemyLoop] && IsValidEnemy(npc.index, EnemyLoop))
+					if(Irene_CurrentEnemyVictimised[EnemyLoop] && IsValidEnemy(npc.index, EnemyLoop))
 					{
 						float vecHit[3];
 						WorldSpaceCenter(EnemyLoop, vecHit);
@@ -612,11 +612,11 @@ bool Amphi_AbilityAir(Iberiainqusitor_irene npc)
 								EmitSoundToAll("mvm/giant_common/giant_common_explodes_02.wav", EnemyLoop, _, 85, _, 0.2);
 							}
 						}
-						TE_SetupBeamPoints(origin, vecHit, AmphiReturnLaserSprite(), 0, 0, 0, life, 1.0, 1.2, 1, amp, color, 0);
+						TE_SetupBeamPoints(origin, vecHit, IreneReturnLaserSprite(), 0, 0, 0, life, 1.0, 1.2, 1, amp, color, 0);
 						TE_SendToAll();
 
-						spawnRing_Vectors(vecHit, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, IRENE_EXPLOSIVES);	
-						Explode_Logic_Custom(damageDealBoom, 0, npc.index, -1, vecHit, IRENE_EXPLOSIVES,_,_,false);	
+						spawnRing_Vectors(vecHit, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AMPHI_EXPLOSIVES);	
+						Explode_Logic_Custom(damageDealBoom, 0, npc.index, -1, vecHit, AMPHI_EXPLOSIVES,_,_,false);	
 					}					
 				}
 				npc.m_flAirTimeAbilityHappeningDelay = GetGameTime(npc.index) + 0.15;
@@ -630,17 +630,17 @@ bool Amphi_AbilityAir(Iberiainqusitor_irene npc)
 		}
 		if(npc.m_flAirTimeAbilityHappening < GetGameTime(npc.index))
 		{
-			Amphi_TargetsFound = false;
+			Irene_TargetsFound = false;
 			
 			EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", npc.index, _, 90, _, 0.85);
-			Zero(Amphi_CurrentEnemyVictimised);
+			Zero(Irene_CurrentEnemyVictimised);
 			float DamageDeal = 400.0;
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-			spawnRing_Vectors(pos, IRENE_BOSS_RANGE * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 12.0, 10.0, 2);
-			spawnRing_Vectors(pos, IRENE_BOSS_RANGE * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 12.0, 10.0, 2);
-			spawnRing_Vectors(pos, IRENE_BOSS_RANGE * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 12.0, 10.0, 2);
-			Explode_Logic_Custom(DamageDeal, 0, npc.index, -1, _, IRENE_BOSS_RANGE, 1.0, _, true, 20,_,_,_,Amphi_AirExploder);
-			if(!Amphi_TargetsFound)
+			spawnRing_Vectors(pos, AMPHI_BOSS_RANGE * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 12.0, 10.0, 2);
+			spawnRing_Vectors(pos, AMPHI_BOSS_RANGE * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 12.0, 10.0, 2);
+			spawnRing_Vectors(pos, AMPHI_BOSS_RANGE * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 12.0, 10.0, 2);
+			Explode_Logic_Custom(DamageDeal, 0, npc.index, -1, _, AMPHI_BOSS_RANGE, 1.0, _, true, 20,_,_,_,Irene_AirExploder);
+			if(!Irene_TargetsFound)
 			{
 				npc.m_flAirTimeAbilityHappening = 0.0;
 				NPCTalkMessage(npc.index, "...");
@@ -688,9 +688,9 @@ bool Amphi_AbilityAir(Iberiainqusitor_irene npc)
 	return false;
 }
 
-float Amphi_AirExploder(int entity, int victim, float damage, int weapon)
+float Irene_AirExploder(int entity, int victim, float damage, int weapon)
 {
-	Amphi_TargetsFound = true;
+	Irene_TargetsFound = true;
 	//Knock target up
 	if(NpcStats_IberiaIsEnemyMarked(victim))
 	{
@@ -702,13 +702,13 @@ float Amphi_AirExploder(int entity, int victim, float damage, int weapon)
 		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,1000.0});
 
 	ApplyStatusEffect(entity, victim, "Marked", 20.0);
-	Amphi_CurrentEnemyVictimised[victim] = true;
+	Irene_CurrentEnemyVictimised[victim] = true;
 	return damage;
 }
 
 
 
-static void Amphi_Weapon_Lines(Iberiainqusitor_irene npc, int client)
+static void Irene_Weapon_Lines(Iberiainqusitor_irene npc, int client)
 {
 	if(client > MaxClients)
 		return;
@@ -733,7 +733,7 @@ static void Amphi_Weapon_Lines(Iberiainqusitor_irene npc, int client)
 
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_IRENE:
+		case WEAPON_AMPHI:
 		{
 			switch(GetRandomInt(0,3))
 			{

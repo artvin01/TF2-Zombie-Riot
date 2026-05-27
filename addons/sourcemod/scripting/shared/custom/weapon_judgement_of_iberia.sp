@@ -20,22 +20,22 @@
 
 #define AMPHI_KICKUP_1 "mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
 
-Handle h_TimerAmphiManagement[MAXPLAYERS+1] = {null, ...};
-static float f_Amphihuddelay[MAXPLAYERS];
-static int i_AmphiHitsDone[MAXPLAYERS];
+Handle h_TimerIreneManagement[MAXPLAYERS+1] = {null, ...};
+static float f_Irenehuddelay[MAXPLAYERS];
+static int i_IreneHitsDone[MAXPLAYERS];
 static bool b_WeaponAttackSpeedModifiedSeaborn[MAXENTITIES];
-static int i_AmphiTargetsAirborn[MAXPLAYERS][AMPHI_MAX_HITUP];
+static int i_IreneTargetsAirborn[MAXPLAYERS][AMPHI_MAX_HITUP];
 static float f_TargetAirtime[MAXENTITIES];
 static float f_TargetAirtimeDelayHit[MAXENTITIES];
 static float f_TimeSinceLastStunHit[MAXENTITIES];
-static bool b_AmphiNpcWasShotUp[MAXENTITIES];
+static bool b_IreneNpcWasShotUp[MAXENTITIES];
 static int i_RefWeaponDelete[MAXPLAYERS];
 static float f_WeaponDamageCalculated[MAXPLAYERS];
 static bool b_SeabornDetected;
 
 static int LaserSprite;
 
-int AmphiReturnLaserSprite()
+int IreneReturnLaserSprite()
 {
 	return LaserSprite;	
 }
@@ -44,10 +44,10 @@ void Npc_OnTakeDamage_Iberia(int attacker, int damagetype)
 {
 	if(damagetype & DMG_CLUB) //We only count normal melee hits.
 	{
-		i_AmphiHitsDone[attacker] += 1;
-		if(i_AmphiHitsDone[attacker] > AMPHI_JUDGEMENT_MAX_HITS_NEEDED) //We do not go above this, no double charge.
+		i_IreneHitsDone[attacker] += 1;
+		if(i_IreneHitsDone[attacker] > AMPHI_JUDGEMENT_MAX_HITS_NEEDED) //We do not go above this, no double charge.
 		{
-			i_AmphiHitsDone[attacker] = AMPHI_JUDGEMENT_MAX_HITS_NEEDED;
+			i_IreneHitsDone[attacker] = AMPHI_JUDGEMENT_MAX_HITS_NEEDED;
 		}
 	}
 }
@@ -65,7 +65,7 @@ bool Npc_Is_Targeted_In_Air(int entity) //Anything that needs to be precaced lik
 	return false;
 }
 
-void Amphi_Map_Precache() //Anything that needs to be precaced like sounds or something.
+void Irene_Map_Precache() //Anything that needs to be precaced like sounds or something.
 {
 	PrecacheSound(AMPHI_KICKUP_1);
 	PrecacheSound(AMPHI_EXPLOSION_1);
@@ -74,33 +74,33 @@ void Amphi_Map_Precache() //Anything that needs to be precaced like sounds or so
 	LaserSprite = PrecacheModel(SPRITE_SPRITE, false);
 }
 
-void Reset_stats_Amphi_Global()
+void Reset_stats_Irene_Global()
 {
 	Zero(f_TimeSinceLastStunHit);
-	Zero(h_TimerAmphiManagement);
-	Zero(f_Amphihuddelay); //Only needs to get reset on map change, not disconnect.
-	Zero(i_AmphiHitsDone); //This only ever gets reset on map change or player reset
+	Zero(h_TimerIreneManagement);
+	Zero(f_Irenehuddelay); //Only needs to get reset on map change, not disconnect.
+	Zero(i_IreneHitsDone); //This only ever gets reset on map change or player reset
 	Zero(f_TargetAirtime); //what.
 }
 
-void Reset_stats_Amphi_Singular(int client) //This is on disconnect/connect
+void Reset_stats_Irene_Singular(int client) //This is on disconnect/connect
 {
-	if (h_TimerAmphiManagement[client] != null)
+	if (h_TimerIreneManagement[client] != null)
 	{
-		delete h_TimerAmphiManagement[client];
+		delete h_TimerIreneManagement[client];
 	}	
-	h_TimerAmphiManagement[client] = null;
-	i_AmphiHitsDone[client] = 0;
+	h_TimerIreneManagement[client] = null;
+	i_IreneHitsDone[client] = 0;
 }
 
-void Reset_stats_Amphi_Singular_Weapon(int weapon) //This is on weapon remake. cannot set to 0 outright.
+void Reset_stats_Irene_Singular_Weapon(int weapon) //This is on weapon remake. cannot set to 0 outright.
 {
 	b_WeaponAttackSpeedModified[weapon] = false;
 	b_WeaponAttackSpeedModifiedSeaborn[weapon] = false;
 	i_NextAttackDoubleHit[weapon] = 0;
 }
 
-public void Weapon_Amphi_DoubleStrike(int client, int weapon, bool crit, int slot)
+public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slot)
 {
 	float attackspeed = Attributes_Get(weapon, 6, 1.0);
 	if(!b_WeaponAttackSpeedModified[weapon]) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
@@ -172,19 +172,19 @@ public void Weapon_Amphi_DoubleStrike(int client, int weapon, bool crit, int slo
 	}
 }
 
-public void Enable_Amphi(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
+public void Enable_Irene(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (h_TimerAmphiManagement[client] != INVALID_HANDLE)
+	if (h_TimerIreneManagement[client] != INVALID_HANDLE)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == 6) //6 Is for Passanger
 		{
 			//Is the weapon it again?
 			//Yes?
-			delete h_TimerAmphiManagement[client];
-			h_TimerAmphiManagement[client] = null;
+			delete h_TimerIreneManagement[client];
+			h_TimerIreneManagement[client] = null;
 			DataPack pack;
-			h_TimerAmphiManagement[client] = CreateDataTimer(0.1, Timer_Management_Amphi, pack, TIMER_REPEAT);
+			h_TimerIreneManagement[client] = CreateDataTimer(0.1, Timer_Management_Irene, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -194,7 +194,7 @@ public void Enable_Amphi(int client, int weapon) // Enable management, handle we
 	if(i_CustomWeaponEquipLogic[weapon] == 6) //6 is for irene.
 	{
 		DataPack pack;
-		h_TimerAmphiManagement[client] = CreateDataTimer(0.1, Timer_Management_Amphi, pack, TIMER_REPEAT);
+		h_TimerIreneManagement[client] = CreateDataTimer(0.1, Timer_Management_Irene, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -202,34 +202,34 @@ public void Enable_Amphi(int client, int weapon) // Enable management, handle we
 
 
 
-public Action Timer_Management_Amphi(Handle timer, DataPack pack)
+public Action Timer_Management_Irene(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		h_TimerAmphiManagement[client] = null;
+		h_TimerIreneManagement[client] = null;
 		return Plugin_Stop;
 	}	
-	Amphi_Cooldown_Logic(client, weapon);
+	Irene_Cooldown_Logic(client, weapon);
 		
 	return Plugin_Continue;
 }
 
 
-public void Amphi_Cooldown_Logic(int client, int weapon)
+public void Irene_Cooldown_Logic(int client, int weapon)
 {
-	if(f_Amphihuddelay[client] < GetGameTime())
+	if(f_Irenehuddelay[client] < GetGameTime())
 	{
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
 			if(b_SeabornDetected)
 			{
-				if(i_AmphiHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
+				if(i_IreneHitsDone[client] < AMPHI_JUDGEMENT_MAX_HITS_NEEDED)
 				{
-					PrintHintText(client,"Seaborn Detected.\nJudgement Of Iberia [%i%/%i]", i_AmphiHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
+					PrintHintText(client,"Seaborn Detected.\nJudgement Of Iberia [%i%/%i]", i_IreneHitsDone[client], AMPHI_JUDGEMENT_MAX_HITS_NEEDED);
 				}
 				else
 				{
@@ -238,9 +238,9 @@ public void Amphi_Cooldown_Logic(int client, int weapon)
 			}
 			else
 			{	
-				if(i_AmphiHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
+				if(i_IreneHitsDone[client] < AMPHI_JUDGEMENT_MAX_HITS_NEEDED)
 				{
-					PrintHintText(client,"Judgement Of Iberia [%i%/%i]", i_AmphiHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
+					PrintHintText(client,"Judgement Of Iberia [%i%/%i]", i_IreneHitsDone[client], AMPHI_JUDGEMENT_MAX_HITS_NEEDED);
 				}
 				else
 				{
@@ -249,18 +249,18 @@ public void Amphi_Cooldown_Logic(int client, int weapon)
 			}
 			
 			
-			f_Amphihuddelay[client] = GetGameTime() + 0.5;
+			f_Irenehuddelay[client] = GetGameTime() + 0.5;
 		}
 	}
 }
 
-public void Weapon_Amphi_Judgement(int client, int weapon, bool crit, int slot)
+public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 {
 	//This ability has no cooldown in itself, it just relies on hits you do.
-	if(i_AmphiHitsDone[client] >= IRENE_JUDGEMENT_MAX_HITS_NEEDED || CvarInfiniteCash.BoolValue)
+	if(i_IreneHitsDone[client] >= AMPHI_JUDGEMENT_MAX_HITS_NEEDED || CvarInfiniteCash.BoolValue)
 	{
 		Rogue_OnAbilityUse(client, weapon);
-		i_AmphiHitsDone[client] = 0;
+		i_IreneHitsDone[client] = 0;
 		//Sucess! You have enough charges.
 		//Heavy logic incomming.
 		float UserLoc[3], VicLoc[3];
@@ -280,12 +280,12 @@ public void Weapon_Amphi_Judgement(int client, int weapon, bool crit, int slot)
 			raidboss_active = true;
 		}
 		//Reset all airborn targets.
-		for (int enemy = 1; enemy < IRENE_MAX_HITUP; enemy++)
+		for (int enemy = 1; enemy < AMPHI_MAX_HITUP; enemy++)
 		{
-			i_AmphiTargetsAirborn[client][enemy] = false;
+			i_IreneTargetsAirborn[client][enemy] = false;
 		}
 
-		int weapon_new = Store_GiveSpecificItem(client, "Amphi's Handcannon");
+		int weapon_new = Store_GiveSpecificItem(client, "Irene's Handcannon");
 		if(IsValidEntity(weapon_new))
 		{
 			float f_AttributeSet = Attributes_Get(weapon, 180, 0.0);
@@ -317,14 +317,14 @@ public void Weapon_Amphi_Judgement(int client, int weapon, bool crit, int slot)
 			{
 				WorldSpaceCenter(target, VicLoc);
 				
-				if (GetVectorDistance(UserLoc, VicLoc,true) <= IRENE_JUDGEMENT_MAXRANGE_SQUARED)
+				if (GetVectorDistance(UserLoc, VicLoc,true) <= AMPHI_JUDGEMENT_MAXRANGE_SQUARED)
 				{
 					bool Hitlimit = true;
 					for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 					{
-						if(!i_AmphiTargetsAirborn[client][i])
+						if(!i_IreneTargetsAirborn[client][i])
 						{
-							i_AmphiTargetsAirborn[client][i] = target;
+							i_IreneTargetsAirborn[client][i] = target;
 							Hitlimit = false;
 							break;
 						}
@@ -335,40 +335,40 @@ public void Weapon_Amphi_Judgement(int client, int weapon, bool crit, int slot)
 					}
 					if(GetGameTime() > f_TargetAirtime[target]) //Do not shoot up again once already dome.
 					{
-						b_AmphiNpcWasShotUp[target] = true;
+						b_IreneNpcWasShotUp[target] = true;
 					}
 
 					if (b_thisNpcIsABoss[target] || raidboss_active)
 					{
-						f_TankGrabbedStandStill[target] = GetGameTime() + IRENE_BOSS_AIRTIME;
-						f_TargetAirtime[target] = GetGameTime() + IRENE_BOSS_AIRTIME; //Kick up for way less time.
-						FreezeNpcInTime(target,IRENE_BOSS_AIRTIME);
+						f_TankGrabbedStandStill[target] = GetGameTime() + AMPHI_BOSS_AIRTIME;
+						f_TargetAirtime[target] = GetGameTime() + AMPHI_BOSS_AIRTIME; //Kick up for way less time.
+						FreezeNpcInTime(target,AMPHI_BOSS_AIRTIME);
 					}
 					else
 					{
-						f_TankGrabbedStandStill[target] = GetGameTime() + IRENE_AIRTIME;
-						f_TargetAirtime[target] = GetGameTime() + IRENE_AIRTIME; //Kick up for the full skill duration.
-						FreezeNpcInTime(target,IRENE_AIRTIME);
+						f_TankGrabbedStandStill[target] = GetGameTime() + AMPHI_AIRTIME;
+						f_TargetAirtime[target] = GetGameTime() + AMPHI_AIRTIME; //Kick up for the full skill duration.
+						FreezeNpcInTime(target,AMPHI_AIRTIME);
 					}
-					spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 6.0, 2.1, 1, IRENE_JUDGEMENT_EXPLOSION_RANGE * 0.5);	
-					SDKUnhook(target, SDKHook_Think, Npc_Amphi_Launch);
+					spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 6.0, 2.1, 1, AMPHI_JUDGEMENT_EXPLOSION_RANGE * 0.5);	
+					SDKUnhook(target, SDKHook_Think, Npc_Irene_Launch);
 					if(!HasSpecificBuff(target, "Solid Stance"))
-						SDKHook(target, SDKHook_Think, Npc_Amphi_Launch);
+						SDKHook(target, SDKHook_Think, Npc_Irene_Launch);
 					//For now, there is no limit.
 				}
 			}
 		}
 		FinishLagCompensation_Base_boss();
-		EmitSoundToAll(IRENE_KICKUP_1, client, _, 75, _, 0.60);
+		EmitSoundToAll(AMPHI_KICKUP_1, client, _, 75, _, 0.60);
 
-		spawnRing(client, IRENE_JUDGEMENT_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 255, 1, 0.25, 6.0, 6.1, 1);
-		spawnRing(client, IRENE_JUDGEMENT_MAXRANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 255, 1, 0.17, 6.0, 6.1, 1);
-		spawnRing(client, IRENE_JUDGEMENT_MAXRANGE * 2.0, 0.0, 0.0, 35.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 255, 1, 0.11, 6.0, 6.1, 1);
-		spawnRing_Vectors(UserLoc, 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, IRENE_JUDGEMENT_MAXRANGE * 2.0);	
+		spawnRing(client, AMPHI_JUDGEMENT_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 255, 1, 0.25, 6.0, 6.1, 1);
+		spawnRing(client, AMPHI_JUDGEMENT_MAXRANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 255, 1, 0.17, 6.0, 6.1, 1);
+		spawnRing(client, AMPHI_JUDGEMENT_MAXRANGE * 2.0, 0.0, 0.0, 35.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 255, 1, 0.11, 6.0, 6.1, 1);
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AMPHI_JUDGEMENT_MAXRANGE * 2.0);	
 		MakePlayerGiveResponseVoice(client, 1); //haha!
 		f_TargetAirtime[client] = GetGameTime() + 2.0;
 		f_TargetAirtimeDelayHit[client] = GetGameTime() + 0.25;
-		SDKHook(client, SDKHook_PreThink, Npc_Amphi_Launch_client);
+		SDKHook(client, SDKHook_PreThink, Npc_Irene_Launch_client);
 		//End of logic, everything done regarding getting all enemies effected by this effect.
 	}
 	else
@@ -376,14 +376,14 @@ public void Weapon_Amphi_Judgement(int client, int weapon, bool crit, int slot)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Your Weapon is not charged enough", (i_AmphiHitsDone[client]), (IRENE_JUDGEMENT_MAX_HITS_NEEDED));
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Your Weapon is not charged enough", (i_IreneHitsDone[client]), (AMPHI_JUDGEMENT_MAX_HITS_NEEDED));
 	}
 }
-public void Npc_Amphi_Launch_client(int client)
+public void Npc_Irene_Launch_client(int client)
 {
 	if(GetGameTime() > f_TargetAirtime[client])
 	{
-		Store_RemoveSpecificItem(client, "Amphi's Handcannon");
+		Store_RemoveSpecificItem(client, "Irene's Handcannon");
 		//We are Done, kill think.
 		int TemomaryGun = EntRefToEntIndex(i_RefWeaponDelete[client]);
 		if(IsValidEntity(TemomaryGun))
@@ -391,7 +391,7 @@ public void Npc_Amphi_Launch_client(int client)
 			TF2_RemoveItem(client, TemomaryGun);
 			FakeClientCommand(client, "use tf_weapon_knife");
 		}
-		SDKUnhook(client, SDKHook_PreThink, Npc_Amphi_Launch_client);
+		SDKUnhook(client, SDKHook_PreThink, Npc_Irene_Launch_client);
 		return;
 	}	
 	else if(GetGameTime() > f_TargetAirtimeDelayHit[client])
@@ -399,8 +399,8 @@ public void Npc_Amphi_Launch_client(int client)
 		int TemomaryGun = EntRefToEntIndex(i_RefWeaponDelete[client]);
 		if(!IsValidEntity(TemomaryGun))
 		{
-			Store_RemoveSpecificItem(client, "Amphi's Handcannon");
-			SDKUnhook(client, SDKHook_PreThink, Npc_Amphi_Launch_client);
+			Store_RemoveSpecificItem(client, "Irene's Handcannon");
+			SDKUnhook(client, SDKHook_PreThink, Npc_Irene_Launch_client);
 			return;
 		}
 		i_ExplosiveProjectileHexArray[TemomaryGun] = EP_DEALS_CLUB_DAMAGE;
@@ -413,10 +413,10 @@ public void Npc_Amphi_Launch_client(int client)
 		for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 		{
 			// Check if it's a valid target
-			if(i_AmphiTargetsAirborn[client][i] && IsValidEntity(i_AmphiTargetsAirborn[client][i]) && !b_NpcHasDied[i_AmphiTargetsAirborn[client][i]])
+			if(i_IreneTargetsAirborn[client][i] && IsValidEntity(i_IreneTargetsAirborn[client][i]) && !b_NpcHasDied[i_IreneTargetsAirborn[client][i]])
 			{
 				// Add it to our list, increase count by 1
-				targets[count++] = i_AmphiTargetsAirborn[client][i];
+				targets[count++] = i_IreneTargetsAirborn[client][i];
 			}
 		}
 		
@@ -436,7 +436,7 @@ public void Npc_Amphi_Launch_client(int client)
 				{
 					WorldSpaceCenter(enemy, VicLoc);
 					
-					if (GetVectorDistance(UserLoc, VicLoc,true) <= IRENE_JUDGEMENT_MAXRANGE_SQUARED) //respect max range.
+					if (GetVectorDistance(UserLoc, VicLoc,true) <= AMPHI_JUDGEMENT_MAXRANGE_SQUARED) //respect max range.
 					{
 						if(count < MAX_TARGETS_HIT)
 						{
@@ -483,11 +483,11 @@ public void Npc_Amphi_Launch_client(int client)
 			{
 				case 1:
 				{
-					EmitSoundToAll(IRENE_EXPLOSION_1, target, _, 85, _, 0.5);
+					EmitSoundToAll(AMPHI_EXPLOSION_1, target, _, 85, _, 0.5);
 				}
 				case 2:
 				{
-					EmitSoundToAll(IRENE_EXPLOSION_2, target, _, 85, _, 0.5);
+					EmitSoundToAll(AMPHI_EXPLOSION_2, target, _, 85, _, 0.5);
 				}
 			}
 
@@ -507,8 +507,8 @@ public void Npc_Amphi_Launch_client(int client)
 			TE_SetupBeamPoints(GunPos, VicLoc, LaserSprite, 0, 0, 0, life, 1.0, 1.2, 1, amp, color, 0);
 			TE_SendToAll();
 
-			spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, IRENE_JUDGEMENT_EXPLOSION_RANGE);	
-			Explode_Logic_Custom(damage, client, TemomaryGun, TemomaryGun, VicLoc, IRENE_JUDGEMENT_EXPLOSION_RANGE,_,_,false);
+			spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AMPHI_JUDGEMENT_EXPLOSION_RANGE);	
+			Explode_Logic_Custom(damage, client, TemomaryGun, TemomaryGun, VicLoc, AMPHI_JUDGEMENT_EXPLOSION_RANGE,_,_,false);
 		}
 		else
 		{
@@ -517,19 +517,19 @@ public void Npc_Amphi_Launch_client(int client)
 	}
 }
 
-public void Npc_Amphi_Launch(int iNPC)
+public void Npc_Irene_Launch(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	//Do their fly logic.
 
-	if(b_AmphiNpcWasShotUp[iNPC])
+	if(b_IreneNpcWasShotUp[iNPC])
 	{
 		float VicLoc[3];
 		WorldSpaceCenter(iNPC, VicLoc);
 		VicLoc[2] += 250.0; //Jump up.
 		PluginBot_Jump(iNPC, VicLoc);
 	}
-	b_AmphiNpcWasShotUp[iNPC] = false;
+	b_IreneNpcWasShotUp[iNPC] = false;
 	
 	bool raidboss_active = false;
 	float time_stay_In_sky;
@@ -549,7 +549,7 @@ public void Npc_Amphi_Launch(int iNPC)
 	if(GetGameTime() > f_TargetAirtime[iNPC])
 	{
 		//We are Done, kill think.
-		SDKUnhook(iNPC, SDKHook_Think, Npc_Amphi_Launch);
+		SDKUnhook(iNPC, SDKHook_Think, Npc_Irene_Launch);
 	}	
 	else if(GetGameTime() + time_stay_In_sky > f_TargetAirtime[iNPC])
 	{

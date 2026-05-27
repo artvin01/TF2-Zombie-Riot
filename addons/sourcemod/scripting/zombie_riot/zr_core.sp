@@ -175,7 +175,7 @@ enum
 	WEAPON_BOUNCING = 3,
 	WEAPON_MAIMMOAB = 4,
 	WEAPON_CRIPPLEMOAB = 5,
-	WEAPON_IRENE = 6,
+	WEAPON_AMPHI = 6,
 	WEAPON_7 = 7,
 	WEAPON_COSMIC_TERROR = 8,
 	WEAPON_9 = 9,
@@ -957,9 +957,9 @@ void ZR_MapStart()
 	Zero(f_TimeAfterSpawn);
 	Zero2(f_ArmorCurrosionImmunity);
 	Zero(fl_MatrixReflect);
-	Reset_stats_Amphi_Global();
+	Reset_stats_Irene_Global();
 	Reset_stats_PHLOG_Global();
-	Amphi_Map_Precache();
+	Irene_Map_Precache();
 	PHLOG_Map_Precache();
 	Cosmic_Map_Precache();
 	Weapon_lantean_Wand_Map_Precache();
@@ -1263,7 +1263,7 @@ void ZR_ClientDisconnect(int client)
 	Building_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
 	Vehicle_Exit(client, true, false);
-	Reset_stats_Amphi_Singular(client);
+	Reset_stats_Irene_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);
 	Reset_stats_Survival_Singular(client);
