@@ -31,10 +31,10 @@ static const char g_MeleeHitSounds[][] =
 	"npc/headcrab/headbite.wav"
 };
 
-void TidelinkedArchon_Precache()
+void DwellerArchon_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Tidelinked Archon");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Archon");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dwellerarchon");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_archon");
 	data.IconCustom = true;
@@ -46,10 +46,10 @@ void TidelinkedArchon_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return TidelinkedArchon(vecPos, vecAng, team);
+	return DwellerArchon(vecPos, vecAng, team);
 }
 
-methodmap TidelinkedArchon < CClotBody
+methodmap DwellerArchon < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -76,9 +76,9 @@ methodmap TidelinkedArchon < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
 	}
 	
-	public TidelinkedArchon(float vecPos[3], float vecAng[3], int ally)
+	public DwellerArchon(float vecPos[3], float vecAng[3], int ally)
 	{
-		TidelinkedArchon npc = view_as<TidelinkedArchon>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "2.3", "20000", ally, false, true));
+		DwellerArchon npc = view_as<DwellerArchon>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "2.3", "20000", ally, false, true));
 		// 20000 x 1.0
 
 		i_NpcWeight[npc.index] = 1;
@@ -89,9 +89,9 @@ methodmap TidelinkedArchon < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
-		func_NPCDeath[npc.index] = TidelinkedArchon_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = TidelinkedArchon_OnTakeDamage;
-		func_NPCThink[npc.index] = TidelinkedArchon_ClotThink;
+		func_NPCDeath[npc.index] = DwellerArchon_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = DwellerArchon_OnTakeDamage;
+		func_NPCThink[npc.index] = DwellerArchon_ClotThink;
 		
 		npc.m_flSpeed = 300.0;//150.0;	// 0.6 x 250
 		npc.m_flMeleeArmor = 0.5;
@@ -106,9 +106,9 @@ methodmap TidelinkedArchon < CClotBody
 	}
 }
 
-public void TidelinkedArchon_ClotThink(int iNPC)
+public void DwellerArchon_ClotThink(int iNPC)
 {
-	TidelinkedArchon npc = view_as<TidelinkedArchon>(iNPC);
+	DwellerArchon npc = view_as<DwellerArchon>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -267,19 +267,19 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public void TidelinkedArchon_DownedThink(int entity)
+public void DwellerArchon_DownedThink(int entity)
 {
-	TidelinkedArchon npc = view_as<TidelinkedArchon>(entity);
+	DwellerArchon npc = view_as<DwellerArchon>(entity);
 	npc.SetActivity("ACT_DIESIMPLE");
 	npc.SetPlaybackRate(0.5);
-	SDKUnhook(entity, SDKHook_Think, TidelinkedArchon_DownedThink);
+	SDKUnhook(entity, SDKHook_Think, DwellerArchon_DownedThink);
 }
 
-void TidelinkedArchon_OnTakeDamage(int victim, int attacker, float damage)
+void DwellerArchon_OnTakeDamage(int victim, int attacker, float damage)
 {
 	if(attacker > 0)
 	{
-		TidelinkedArchon npc = view_as<TidelinkedArchon>(victim);
+		DwellerArchon npc = view_as<DwellerArchon>(victim);
 
 		if(!b_NpcIsInvulnerable[npc.index] && (damage * 2.0) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
@@ -288,7 +288,7 @@ void TidelinkedArchon_OnTakeDamage(int victim, int attacker, float damage)
 			b_NpcIsInvulnerable[npc.index] = true;
 			npc.StopPathing();
 
-			SDKHook(victim, SDKHook_Think, TidelinkedArchon_DownedThink);
+			SDKHook(victim, SDKHook_Think, DwellerArchon_DownedThink);
 		}
 		
 		if(!b_NpcIsInvulnerable[npc.index] && npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -299,9 +299,9 @@ void TidelinkedArchon_OnTakeDamage(int victim, int attacker, float damage)
 	}
 }
 
-void TidelinkedArchon_NPCDeath(int entity)
+void DwellerArchon_NPCDeath(int entity)
 {
-	TidelinkedArchon npc = view_as<TidelinkedArchon>(entity);
+	DwellerArchon npc = view_as<DwellerArchon>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 }

@@ -392,8 +392,8 @@ void NPC_ConfigSetup()
 	DwellerSpecialist_Precache();
 	DwellerSupporter_Precache();
 	SaintCarmen_Precache();
-	TidelinkedArchon_Precache();
-	TidelinkedBishop_Precache();
+	DwellerArchon_Precache();
+	DwellerNest_Precache();
 	Pathshaper_Precache();
 	PathshaperFractal_Precache();
 	Isharmla_Precache();

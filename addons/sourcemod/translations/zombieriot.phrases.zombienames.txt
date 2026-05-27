@@ -2760,16 +2760,16 @@
 		"it"		"Torre"
 		"ko"		"배럭 망루"
 	}
-	"Tidelinked Bishop"
+	"Dweller Nest"
 	{
-		"en"		"Tidelinked Bishop"
+		"en"		"Dweller Nest"
 		"chi"		"接潮主教"
 		"it"		"Vescovo collegato a Tidelink"
 		"ko"		"파도의 주교"
 	}
-	"Tidelinked Archon"
+	"Dweller Archon"
 	{
-		"en"		"Tidelinked Archon"
+		"en"		"Dweller Archon"
 		"chi"		"接潮蔑死体"
 		"it"		"Arconte collegato a Tidelink"
 		"ko"		"파도의 멸사체"
