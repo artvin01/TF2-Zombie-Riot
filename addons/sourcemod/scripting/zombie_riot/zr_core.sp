@@ -3403,7 +3403,7 @@ void ZR_FastDownloadForce()
 	PrecacheHeartbrokenMusic();
 	PrecacheSharedDarkestMusic();
 	PrecacheTwirlMusic();
-	SeaBornMusicDo();
+	DwellerMusicDo();
 	PurnellMusicOst();
 	PrecacheBlitzMusic();
 	SoldineKitDownload();
