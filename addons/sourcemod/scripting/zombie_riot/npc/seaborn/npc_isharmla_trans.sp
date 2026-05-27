@@ -265,7 +265,7 @@ void IsharmlaTrans_NPCDeath(int entity)
 	
 	float pos[3];
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
-	SeaFounder_SpawnNethersea(pos);
+	SeaFounder_SpawnAbyss(pos);
 }
 
 

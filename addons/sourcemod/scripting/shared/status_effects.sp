@@ -3225,7 +3225,7 @@ void StatusEffects_Medieval()
 	
 	data.AttackspeedBuff			= -1.0;
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Pikeman's Slashes");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Pikeman's Stabs");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "PI");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -4985,7 +4985,7 @@ void StatusEffects_StatusEffectListOnly()
 	data.SlotPriority				= 2;
 	StatusEffect_AddGlobal(data);
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Nethersea Antidote");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Abyss Antidote");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ξ");
 	data.Positive 					= true;
 	data.Slot						= 0;

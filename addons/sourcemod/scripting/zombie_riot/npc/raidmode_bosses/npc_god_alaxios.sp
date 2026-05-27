@@ -1370,8 +1370,8 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_vanguard",50000, RoundToCeil(1.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_kazimersch_longrange",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_netherseapredator",70000, RoundToCeil(20.0 * MultiGlobalEnemy));	
-				GodAlaxiosSpawnEnemy(npc.index,"npc_netherseaspewer",50000, RoundToCeil(20.0 * MultiGlobalEnemy));	
+				GodAlaxiosSpawnEnemy(npc.index,"npc_abysspredator",70000, RoundToCeil(20.0 * MultiGlobalEnemy));	
+				GodAlaxiosSpawnEnemy(npc.index,"npc_abyssspewer",50000, RoundToCeil(20.0 * MultiGlobalEnemy));	
 				GodAlaxiosSpawnEnemy(npc.index,"npc_isharmla", RoundToCeil(1000000.0 * MultiGlobalHighHealthBoss), 1, true);	
 				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_specialist",7000, RoundToCeil(20.0 * MultiGlobalEnemy));	
 			}	
@@ -1795,7 +1795,7 @@ void GodAlaxiosJumpSpecial(GodAlaxios npc, float gameTime)
 			Explode_Logic_Custom(damage, 0, npc.index, -1, ThrowPos,Range, 1.0, _, true, 20);
 			TE_Particle("asplode_hoodoo", ThrowPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 			if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
-				SeaFounder_SpawnNethersea(ThrowPos);
+				SeaFounder_SpawnAbyss(ThrowPos);
 			
 			npc.SetVelocity({0.0,0.0,-1000.0});
 

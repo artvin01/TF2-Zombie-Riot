@@ -41,8 +41,8 @@ static const char g_MeleeAttackSounds[][] =
 void SeaReefbreaker_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Nethersea Reefbreaker");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseareefbreaker");
+	strcopy(data.Name, sizeof(data.Name), "Abyss Reefbreaker");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_abyssreefbreaker");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_reefbreaker");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -223,7 +223,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 
-	bool camo = SeaFounder_TouchingNethersea(npc.index);
+	bool camo = SeaFounder_TouchingAbyss(npc.index);
 	if(HasSpecificBuff(npc.index, "Revealed"))
 		camo = false;
 

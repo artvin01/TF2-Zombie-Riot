@@ -364,7 +364,7 @@ void NPC_ConfigSetup()
 	Remain_MapStart();
 	SeaFounder_Precache();
 	SeaPredator_Precache();
-	SeaBrandguider_Precache();
+	AbyssBrandguider_Precache();
 	SeaSpewer_Precache();
 	SeaSwarmcaller_Precache();
 	SeaReefbreaker_Precache();
@@ -1573,7 +1573,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 //BASES FOR ENEMIES
 #include "npc/expidonsa/npc_expidonsa_base.sp" //ALSO IN RPG!
-#include "npc/dweller/npc_nethersea_shared.sp"
+#include "npc/dweller/npc_abyss_shared.sp"
 #include "npc/ruina/ruina_npc_enchanced_ai_core.sp"	//this controls almost every ruina npc's behaviors.
 
 //BUILDINGS
@@ -2059,13 +2059,13 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/dweller/npc_herald_2.sp"
 #include "npc/dweller/npc_herald_3.sp"
 #include "npc/dweller/npc_herald_4.sp"
-#include "npc/dweller/npc_netherseafounder.sp"
-#include "npc/dweller/npc_netherseapredator.sp"
-#include "npc/dweller/npc_netherseabrandguider.sp"
+#include "npc/dweller/npc_abyssfounder.sp"
+#include "npc/dweller/npc_abysspredator.sp"
+#include "npc/dweller/npc_abyssbrandguider.sp"
 #include "npc/dweller/npc_dweller_kazimersch_melee_assasin.sp"
-#include "npc/dweller/npc_netherseaspewer.sp"
-#include "npc/dweller/npc_netherseaswarmcaller.sp"
-#include "npc/dweller/npc_netherseareefbreaker.sp"
+#include "npc/dweller/npc_abyssspewer.sp"
+#include "npc/dweller/npc_abyssswarmcaller.sp"
+#include "npc/dweller/npc_abyssreefbreaker.sp"
 #include "npc/dweller/npc_dweller_scout.sp"
 #include "npc/dweller/npc_dweller_soldier.sp"
 #include "npc/dweller/npc_citizen_runner.sp"

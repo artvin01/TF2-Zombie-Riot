@@ -648,7 +648,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 					float ProjectileLoc[3];
 					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 					ProjectileLoc[2] += 5.0;
-					VoidArea_SpawnNethersea(ProjectileLoc, VoidWeaponDo);
+					VoidArea_SpawnAbyss(ProjectileLoc, VoidWeaponDo);
 					FramingInfestorSpread(victim);
 					EmitSoundToAll("npc/scanner/cbot_discharge1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 					f_ArmorCurrosionImmunity[victim][Element_Void] = GetGameTime() + 5.0;
@@ -716,7 +716,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 				ProjectileLoc[2] += 5.0;
 				EmitSoundToAll("npc/scanner/cbot_discharge1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-				VoidArea_SpawnNethersea(ProjectileLoc, VoidWeaponDo);
+				VoidArea_SpawnAbyss(ProjectileLoc, VoidWeaponDo);
 				//do not spread.
 				FramingInfestorSpread(victim);
 			}

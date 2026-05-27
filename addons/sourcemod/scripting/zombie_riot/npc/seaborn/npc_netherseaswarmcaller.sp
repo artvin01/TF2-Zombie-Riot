@@ -29,8 +29,8 @@ static const char g_IdleAlertedSounds[][] =
 void SeaSwarmcaller_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Nethersea Swarmcaller");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseaswarmcaller");
+	strcopy(data.Name, sizeof(data.Name), "Abyss Swarmcaller");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_abyssswarmcaller");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_swarmcaller");
 	data.IconCustom = true;
 	data.Flags = 0;

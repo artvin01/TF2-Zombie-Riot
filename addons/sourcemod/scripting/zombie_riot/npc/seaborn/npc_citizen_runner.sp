@@ -149,9 +149,9 @@ void CitizenRunner_NPCDeath(int entit)
 		GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 
-		SeaFounder_SpawnNethersea(pos);
+		SeaFounder_SpawnAbyss(pos);
 
-		int entity = NPC_CreateByName("npc_netherseafounder", -1, pos, angles, TFTeam_Blue);
+		int entity = NPC_CreateByName("npc_abyssfounder", -1, pos, angles, TFTeam_Blue);
 		if(entity > MaxClients)
 		{
 			Zombies_Currently_Still_Ongoing++;

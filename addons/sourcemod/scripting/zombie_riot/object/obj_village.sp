@@ -249,7 +249,7 @@ void VillageDetectEnemyInSight(int entity, int victim, float damage, int weapon)
 			ApplyStatusEffect(entity, victim, "Homeland Defense", 1.5);
 
 		if(effectsDoNow & VILLAGE_003)
-			ApplyStatusEffect(entity, victim, "Nethersea Antidote", 1.5);
+			ApplyStatusEffect(entity, victim, "Abyss Antidote", 1.5);
 
 		if(effectsDoNow & VILLAGE_005)
 			ApplyStatusEffect(entity, victim, "Almina Light", 1.5);
@@ -685,7 +685,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		{
 			FormatEx(buffer, sizeof(buffer), "Little Handy [6 Upgrade Tokens]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : "");
 			menu.AddItem(VilN(VILLAGE_003), buffer, (!owner || points < 6) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "Reduces the damage caused by nethersea brands", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Reduces the damage caused by abyssal weeds", ITEMDRAW_DISABLED);
 			menu.AddItem("", "by 80% to all allies with in range.\n ", ITEMDRAW_DISABLED);
 		}
 	}

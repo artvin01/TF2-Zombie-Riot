@@ -53,7 +53,7 @@ static void ClotPrecache()
 	NPC_GetByPlugin("npc_combine_soldier_deutsch_ritter");
 	NPC_GetByPlugin("npc_medival_samurai");
 	NPC_GetByPlugin("npc_ignitus");
-	NPC_GetByPlugin("npc_netherseaspewer");
+	NPC_GetByPlugin("npc_abyssspewer");
 	NPC_GetByPlugin("npc_pulverizer");
 	NPC_GetByPlugin("npc_refragmented_parasihtta");
 	NPC_GetByPlugin("npc_refragmented_defectio");
@@ -282,7 +282,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 6,7:
 				{
-					PortalGateSpawn(npc.index, "npc_netherseaspewer", pos, ang, team, 12500);
+					PortalGateSpawn(npc.index, "npc_abyssspewer", pos, ang, team, 12500);
 				}
 				case 8,9:
 				{
@@ -492,7 +492,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 6,7:
 				{
-					PortalGateSpawn(npc.index, "npc_netherseaspewer", pos, ang, team, 12500);
+					PortalGateSpawn(npc.index, "npc_abyssspewer", pos, ang, team, 12500);
 				}
 				case 8,9:
 				{

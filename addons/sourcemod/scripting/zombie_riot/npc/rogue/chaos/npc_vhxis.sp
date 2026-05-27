@@ -877,7 +877,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 			
 			//remove particle, spawn creep, deal aoe damage
 			ProjectileLoc[2] += 5.0;
-			VoidArea_SpawnNethersea(ProjectileLoc);
+			VoidArea_SpawnAbyss(ProjectileLoc);
 			ProjectileLoc[2] += 60.0;
 			Explode_Logic_Custom(VOID_SUMMON_DAMAGE, 0, npc.index, -1, ProjectileLoc, VOID_SUMMON_RANGE_BOOM * 0.95, 1.0, _, true, 20);
 			ProjectileLoc[2] -= 60.0;

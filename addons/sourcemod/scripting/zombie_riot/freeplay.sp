@@ -721,7 +721,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
-		enemy.Index = NPC_GetByPlugin("npc_netherseaspewer");
+		enemy.Index = NPC_GetByPlugin("npc_abyssspewer");
 		enemy.Health = RoundToFloor(((1100000.0 + HealthBonus) / 65.0 * float(Waves_GetRound())) * HealthMulti);
 		enemy.ExtraMeleeRes = 0.75;
 		enemy.ExtraRangedRes = 0.75;

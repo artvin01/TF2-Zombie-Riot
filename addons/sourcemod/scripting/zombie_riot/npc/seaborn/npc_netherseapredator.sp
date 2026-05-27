@@ -36,8 +36,8 @@ static const char g_MeleeHitSounds[][] =
 void SeaPredator_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Nethersea Predator");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseapredator");
+	strcopy(data.Name, sizeof(data.Name), "Abyss Predator");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_abysspredator");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_predator");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -157,12 +157,12 @@ public void SeaPredator_ClotThink(int iNPC)
 	{
 		if(npc.Anger)
 		{
-			if(!SeaFounder_TouchingNethersea(npc.index))
+			if(!SeaFounder_TouchingAbyss(npc.index))
 			{
 				npc.Anger = false;
 			}
 		}
-		else if(SeaFounder_TouchingNethersea(npc.index))
+		else if(SeaFounder_TouchingAbyss(npc.index))
 		{
 			npc.Anger = true;
 		}
@@ -258,7 +258,7 @@ public Action SeaPredator_OnTakeDamage(int victim, int &attacker, int &inflictor
 	float gameTime = GetGameTime(npc.index);
 
 	static int Pity;
-	if(Pity < 99 && SeaFounder_TouchingNethersea(npc.index) && npc.m_flNextDelayTime <= (gameTime + DEFAULT_UPDATE_DELAY_FLOAT) && !NpcStats_IsEnemySilenced(npc.index) && (GetURandomInt() % (npc.m_bElite ? 19 : 9)))
+	if(Pity < 99 && SeaFounder_TouchingAbyss(npc.index) && npc.m_flNextDelayTime <= (gameTime + DEFAULT_UPDATE_DELAY_FLOAT) && !NpcStats_IsEnemySilenced(npc.index) && (GetURandomInt() % (npc.m_bElite ? 19 : 9)))
 	{
 		if(attacker <= MaxClients && attacker > 0)
 		{

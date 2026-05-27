@@ -453,15 +453,15 @@ public void Weapon_Dimension_Summon_Dweller(int client, int weapon, bool &result
 	switch(GetRandomInt(1, 5))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_netherseapredator" ,weapon, 1.0, 1.3, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_abysspredator" ,weapon, 1.0, 1.3, "utaunt_spirit_winter_rings");
 		case 2:
-			Dimension_Summon_Npc(client, "npc_netherseareefbreaker" ,weapon, 1.3, 1.2, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_abyssreefbreaker" ,weapon, 1.3, 1.2, "utaunt_spirit_winter_rings");
 		case 3:
-			Dimension_Summon_Npc(client, "npc_netherseaspewer" ,weapon, 1.0, 1.5, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_abyssspewer" ,weapon, 1.0, 1.5, "utaunt_spirit_winter_rings");
 		case 4:
 			Dimension_Summon_Npc(client, "npc_dweller_kazimersch_beserker" ,weapon, 1.6, 1.3, "utaunt_spirit_winter_rings");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_netherseaswarmcaller" ,weapon, 1.0, 1.3, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_abyssswarmcaller" ,weapon, 1.0, 1.3, "utaunt_spirit_winter_rings");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none

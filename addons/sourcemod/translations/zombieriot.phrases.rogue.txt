@@ -2809,8 +2809,8 @@
 	}
 	"Brandguider Brunch Desc"
 	{
-		"en"	"{green}Nethersea Brand deals -50％ damage"
-		"it"	"{green}Il marchio di Nethersea infligge -50％ danni"
+		"en"	"{green}Abyss Brand deals -50％ damage"
+		"it"	"{green}Il marchio di Abyss infligge -50％ danni"
 		"ko"	"{green}명흔으로 받는 피해량이 50％ 감소합니다."
 	}
 	"Spewer Spewers"

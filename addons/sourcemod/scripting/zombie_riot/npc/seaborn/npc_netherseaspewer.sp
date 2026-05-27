@@ -34,8 +34,8 @@ static const char g_MeleeAttackSounds[][] =
 void SeaSpewer_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Nethersea Spewer");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseaspewer");
+	strcopy(data.Name, sizeof(data.Name), "Abyss Spewer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_abyssspewer");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_spewer");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -251,7 +251,7 @@ static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int c
 	{
 		if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetClientTeam(client) != team && IsEntityAlive(client) && Can_I_See_Enemy_Only(npc.index, client))
 		{
-			if(silenced || !SeaFounder_TouchingNethersea(client))
+			if(silenced || !SeaFounder_TouchingAbyss(client))
 			{
 				WorldSpaceCenter(client, vecTarget );
 				if(GetVectorDistance(vecTarget, vecMe, true) > 48400.0)	// 1.1 * 200
@@ -269,7 +269,7 @@ static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int c
 		{
 			if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && GetTeam(entity) != team && Can_I_See_Enemy_Only(npc.index, entity))
 			{
-				if(silenced || !SeaFounder_TouchingNethersea(entity))
+				if(silenced || !SeaFounder_TouchingAbyss(entity))
 				{
 					WorldSpaceCenter(entity, vecTarget);
 					if(GetVectorDistance(vecTarget, vecMe, true) > 48400.0)	// 1.1 * 200
@@ -290,7 +290,7 @@ static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int c
 			{
 				if(IsValidEnemy(npc.index, entity) && Can_I_See_Enemy_Only(npc.index, entity))
 				{
-					if(silenced || !SeaFounder_TouchingNethersea(entity))
+					if(silenced || !SeaFounder_TouchingAbyss(entity))
 					{
 						WorldSpaceCenter(entity, vecTarget);
 						if(GetVectorDistance(vecTarget, vecMe, true) > 48400.0)	// 1.1 * 200

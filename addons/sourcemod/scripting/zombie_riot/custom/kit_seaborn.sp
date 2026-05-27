@@ -110,7 +110,7 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 						{
 							float enemypos[3]; 
 							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", enemypos);
-							SeaFounder_SpawnNethersea(enemypos);
+							SeaFounder_SpawnAbyss(enemypos);
 						}
 						b_IsCannibal[client] = true;
 

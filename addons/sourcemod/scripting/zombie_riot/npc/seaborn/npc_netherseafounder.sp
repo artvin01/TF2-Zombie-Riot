@@ -36,8 +36,8 @@ static const char g_MeleeHitSounds[][] =
 void SeaFounder_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Nethersea Founder");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseafounder");
+	strcopy(data.Name, sizeof(data.Name), "Abyss Founder");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_abyssfounder");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_founder");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -265,7 +265,7 @@ void SeaFounder_NPCDeath(int entity)
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 
 	if(!NpcStats_IsEnemySilenced(npc.index))
-		SeaFounder_SpawnNethersea(pos);
+		SeaFounder_SpawnAbyss(pos);
 
 	if(npc.m_bCarrier)
 		Remains_SpawnDrop(pos, Buff_Founder);
@@ -287,17 +287,17 @@ static float NervousTouching[MAXENTITIES + 1];
 static CNavArea NervousLastTouch[MAXENTITIES + 1];
 static int SpreadTicks;
 
-bool SeaFounder_TouchingNethersea(int entity)
+bool SeaFounder_TouchingAbyss(int entity)
 {
 	return NervousTouching[entity] > GetGameTime();
 }
 
-void SeaFounder_ClearnNethersea()
+void SeaFounder_ClearnAbyss()
 {
 	delete NavList;
 }
 
-void SeaFounder_SpawnNethersea(const float pos[3])
+void SeaFounder_SpawnAbyss(const float pos[3])
 {
 	if(!NavList)
 		NavList = new ArrayList();
@@ -625,7 +625,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 			if(NervousLastTouch[client] != NULL_AREA && NavList.FindValue(NervousLastTouch[client]) != -1)
 			{
 				bool resist = false;
-				if(HasSpecificBuff(client, "Nethersea Antidote"))
+				if(HasSpecificBuff(client, "Abyss Antidote"))
 					resist = true;
 					
 				bool ignore = false;

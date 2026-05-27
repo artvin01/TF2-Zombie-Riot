@@ -38,11 +38,11 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/demo_sword_swing3.wav"
 };
 
-void SeaBrandguider_Precache()
+void AbyssBrandguider_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Nethersea Brandguider");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseabrandguider");
+	strcopy(data.Name, sizeof(data.Name), "Abyss Brandguider");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_abyssbrandguider");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_brandguide");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -53,10 +53,10 @@ void SeaBrandguider_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeaBrandguider(vecPos, vecAng, team, data);
+	return AbyssBrandguider(vecPos, vecAng, team, data);
 }
 
-methodmap SeaBrandguider < CSeaBody
+methodmap AbyssBrandguider < CSeaBody
 {
 	public void PlayIdleSound()
 	{
@@ -83,12 +83,12 @@ methodmap SeaBrandguider < CSeaBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeaBrandguider(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public AbyssBrandguider(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];
 
-		SeaBrandguider npc = view_as<SeaBrandguider>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", elite ? "7200" : "5700", ally, false));
+		AbyssBrandguider npc = view_as<AbyssBrandguider>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", elite ? "7200" : "5700", ally, false));
 		// 19000 x 0.3
 		// 24000 x 0.3
 
@@ -104,9 +104,9 @@ methodmap SeaBrandguider < CSeaBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
-		func_NPCDeath[npc.index] = SeaBrandguider_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = SeaBrandguider_OnTakeDamage;
-		func_NPCThink[npc.index] = SeaBrandguider_ClotThink;
+		func_NPCDeath[npc.index] = AbyssBrandguider_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = AbyssBrandguider_OnTakeDamage;
+		func_NPCThink[npc.index] = AbyssBrandguider_ClotThink;
 		
 		npc.m_flSpeed = 200.0;	// 0.8 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -137,9 +137,9 @@ methodmap SeaBrandguider < CSeaBody
 	}
 }
 
-public void SeaBrandguider_ClotThink(int iNPC)
+public void AbyssBrandguider_ClotThink(int iNPC)
 {
-	SeaBrandguider npc = view_as<SeaBrandguider>(iNPC);
+	AbyssBrandguider npc = view_as<AbyssBrandguider>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -255,7 +255,7 @@ public void SeaBrandguider_ClotThink(int iNPC)
 				if(!NpcStats_IsEnemySilenced(npc.index))
 				{
 					GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", vecTarget);
-					SeaFounder_SpawnNethersea(vecTarget);
+					SeaFounder_SpawnAbyss(vecTarget);
 				}
 
 				npc.m_flNextMeleeAttack = gameTime + 1.0;
@@ -270,12 +270,12 @@ public void SeaBrandguider_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action SeaBrandguider_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AbyssBrandguider_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
 	
-	SeaBrandguider npc = view_as<SeaBrandguider>(victim);
+	AbyssBrandguider npc = view_as<AbyssBrandguider>(victim);
 	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -284,9 +284,9 @@ public Action SeaBrandguider_OnTakeDamage(int victim, int &attacker, int &inflic
 	return Plugin_Changed;
 }
 
-void SeaBrandguider_NPCDeath(int entity)
+void AbyssBrandguider_NPCDeath(int entity)
 {
-	SeaBrandguider npc = view_as<SeaBrandguider>(entity);
+	AbyssBrandguider npc = view_as<AbyssBrandguider>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	

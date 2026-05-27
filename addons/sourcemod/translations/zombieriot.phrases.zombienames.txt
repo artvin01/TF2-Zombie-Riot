@@ -2344,13 +2344,13 @@
 		"it"		"L'Herald, Volontà di Noi Molti"
 		"ko"		"신탁 도살자, 위매니의 의지"
 	}
-	"Nethersea Founder"
+	"Abyss Founder"
 	{
-		"en"		"Nethersea Founder"
-		"pt"		"Fundador do Nethersea"
+		"en"		"Abyss Founder"
+		"pt"		"Fundador do Abyss"
 		"ru"		"Основатель низинного моря"
 		"chi"		"深溟奠基者"
-		"it"		"Fondatore di Nethersea"
+		"it"		"Fondatore di Abyss"
 		"ko"		"심해의 정초자"
 	}
 	"Nourished Founder"
@@ -2371,12 +2371,12 @@
 		"it"		"Fondatore regredito"
 		"ko"		"퇴행의 정초자"
 	}
-	"Nethersea Predator"
+	"Abyss Predator"
 	{
-		"en"		"Nethersea Predator"
+		"en"		"Abyss Predator"
 		"ru"		"Хищник низинного моря"
 		"chi"		"深溟猎食者"
-		"it"		"Predatore di Nethersea"
+		"it"		"Predatore di Abyss"
 		"ko"		"심해의 포식자"
 	}
 	"Nourished Predator"
@@ -2395,12 +2395,12 @@
 		"it"		"Predatore regredito"
 		"ko"		"퇴행의 포식자"
 	}
-	"Nethersea Brandguider"
+	"Abyss Brandguider"
 	{
-		"en"		"Nethersea Brandguider"
+		"en"		"Abyss Brandguider"
 		"ru"		"Наводчик головёшек низинного моря"
 		"chi"		"深溟引痕者"
-		"it"		"Nethersea Brandguider"
+		"it"		"Abyss Brandguider"
 		"ko"		"심해의 인도자"
 	}
 	"Nourished Brandguider"
@@ -2427,12 +2427,12 @@
 		"it"		"Assassino dell'Unione senza armatura"
 		"ko"		"아머레스 유니온 암살자"
 	}
-	"Nethersea Spewer"
+	"Abyss Spewer"
 	{
-		"en"		"Nethersea Spewer"
+		"en"		"Abyss Spewer"
 		"ru"		"Изрыгатель низинного моря"
 		"chi"		"深溟喷溅者"
-		"it"		"Vomito di Nethersea"
+		"it"		"Vomito di Abyss"
 		"ko"		"심해의 분출자"
 	}
 	"Nourished Spewer"
@@ -2451,12 +2451,12 @@
 		"it"		"Vomito regresso"
 		"ko"		"퇴행의 분출자"
 	}
-	"Nethersea Swarmcaller"
+	"Abyss Swarmcaller"
 	{
-		"en"		"Nethersea Swarmcaller"
+		"en"		"Abyss Swarmcaller"
 		"ru"		"Вызыватель роя низинного моря"
 		"chi"		"深溟巢涌者"
-		"it"		"Sciamano di Nethersea"
+		"it"		"Sciamano di Abyss"
 		"ko"		"심해의 소용자"
 	}
 	"Nourished Swarmcaller"
@@ -2475,12 +2475,12 @@
 		"it"		"Chiamatore di sciami regredito"
 		"ko"		"퇴행의 소용자"
 	}
-	"Nethersea Reefbreaker"
+	"Abyss Reefbreaker"
 	{
-		"en"		"Nethersea Reefbreaker"
+		"en"		"Abyss Reefbreaker"
 		"ru"		"Рифоразрушитель низинного моря"
 		"chi"		"深溟裂礁者"
-		"it"		"Rompiscatole Nethersea"
+		"it"		"Rompiscatole Abyss"
 		"ko"		"심해의 열초자"
 	}
 	"Nourished Reefbreaker"
