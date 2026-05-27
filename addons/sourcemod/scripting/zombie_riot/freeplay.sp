@@ -589,7 +589,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor((750000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_40";
 				enemy.ExtraThinkSpeed = 1.15;
-				enemy.ExtraDamage = 0.8;
+				enemy.ExtraDamage = 0.6;
 				enemy.ExtraSpeed = 0.9;
 			}
 			case 38:
@@ -598,7 +598,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor((4000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_40";
 				enemy.ExtraThinkSpeed = 1.15;
-				enemy.ExtraDamage = 0.8;
+				enemy.ExtraDamage = 0.7;
 				enemy.ExtraSpeed = 0.9;
 			}
 			case 39:
