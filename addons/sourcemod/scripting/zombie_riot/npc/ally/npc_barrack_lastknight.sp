@@ -443,7 +443,7 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 													Custom_Knockback(npc.index, target, 1200.0, true);  // Dweller Yeeter 9000
 													FreezeNpcInTime(target, 3.0);
 												}
-												else // Much less knockback and very brief stun on human enemies (raids and Saint CARmen)
+												else // Much less knockback and very brief stun on human enemies (raids and Saint Adrian )
 												{
 													Custom_Knockback(npc.index, target, 750.0, true);
 													FreezeNpcInTime(target, 1.0);

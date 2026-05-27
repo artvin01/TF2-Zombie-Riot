@@ -38,7 +38,7 @@ static const char g_MeleeAttackSounds[][] =
 void SaintCarmen_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Saint Carmen");
+	strcopy(data.Name, sizeof(data.Name), "Saint Adrian ");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_saintcarmen");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_saint");
 	data.IconCustom = true;

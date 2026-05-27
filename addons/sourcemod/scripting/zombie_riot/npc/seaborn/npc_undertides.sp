@@ -33,7 +33,7 @@ void UnderTides_MapStart()
 	PrecacheModel("models/synth.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Sal Viento Bishop Quintus");
+	strcopy(data.Name, sizeof(data.Name), "Sea Dweller's Nest");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_undertides");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_quintus");
 	data.IconCustom = true;

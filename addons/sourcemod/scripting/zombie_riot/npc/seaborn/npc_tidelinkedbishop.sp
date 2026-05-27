@@ -23,7 +23,7 @@ void TidelinkedBishop_Precache()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Tidelinked Bishop");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_tidelinkedbishop");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dwellernest");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_bishop");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
@@ -123,7 +123,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		int maxhealth = ReturnEntityMaxHealth(npc.index) / 5;
 		
-		int entity = NPC_CreateByName("npc_tidelinkedarchon", -1, pos, ang, GetTeam(npc.index));
+		int entity = NPC_CreateByName("npc_dwellerarchon", -1, pos, ang, GetTeam(npc.index));
 		if(entity > MaxClients)
 		{
 			i_TargetAlly[npc.index] = EntIndexToEntRef(entity);

@@ -2282,9 +2282,9 @@
 		"it"		"Il primo a parlare"
 		"ko"		"첫 발언자"
 	}
-	"Sal Viento Bishop Quintus"
+	"Sea Dweller's Nest"
 	{
-		"en"		"Sal Viento Bishop Quintus"
+		"en"		"Sea Dweller's Nest"
 		"pt"		"Sal Viento Quinto Bispo"
 		"ru"		"Сал Вьенто Епископ Квинт"
 		"chi"		"盐风主教昆图斯"
@@ -2695,9 +2695,9 @@
 		"it"		"Cavaliere a caccia di maree"
 		"ko"		"파도 사냥의 기사"
 	}
-	"Saint Carmen"
+	"Saint Adrian "
 	{
-		"en"		"Saint Carmen"
+		"en"		"Saint Adrian "
 		"ru"		"Святая Кармен"
 		"chi"		"圣徒卡门"
 		"it"		"Santa Carmen"

@@ -1279,7 +1279,7 @@
 		"it"		"Spara proiettili con erosione dell'armatura, può sparare rapidamente in un'area AOE.\nIl primo bell'essere vivente a parlare il linguaggio umano prima dell'uomo civilizzato.\nDweller.\n- Utilizza un attacco a distanza.\n- Gli attacchi infliggono menomazioni nervose.\n- Si blocca periodicamente sulla posizione del bersaglio, dopo un ritardo colpisce più volte un nemico a caso nel raggio d'azione"
 		"ko"		"처음으로 문명의 앞에서 인간의 말을 쓴 아름다운 생물.\n시본.\n-원거리 공격을 사용하며, 신경 손상 원소 피해를 부여함\n-표적의 위치에 지점을 표시한뒤, 짧은 지연 후 범위 내에 있는 무작위 적에게 다중 타격을 함."
 	}
-	"Sal Viento Bishop Quintus Desc"
+	"Sea Dweller's Nest Desc"
 	{
 		"en"		"A member of the Church of the Deep who snuck into disaster-ravaged Almina.\nHe changed the law of the land through his sincere beliefs, in pursuit of the perfect form, yet he was unable to fathom the will of the ocean.\nThen again, who could?\n- Spawns at a random position, does not move, and becomes a spawn point\n- Uses a ranged attack, up to 2 targets with the highest ranged resistance in range\n- Attacks inflict Nervous Impairment\n- Periodically attacks up to 8 targets\n- Periodically deals damage to all targets in line-of-sight"
 		"it"		"Un membro della Chiesa degli Abissi che si è intrufolato nell'Almina devastata dal disastro.\nHa cambiato la legge della terra grazie alle sue sincere convinzioni, alla ricerca della forma perfetta, ma non è riuscito a comprendere la volontà dell'oceano.\nD'altronde, chi potrebbe farlo?\n- Si riproduce in una posizione casuale, non si muove e diventa un punto di spawn \n- Utilizza un attacco a distanza, fino a 2 bersagli con la resistenza a distanza più alta nel raggio d'azione \n- Gli attacchi infliggono menomazioni nervose \n- Attacca periodicamente fino a 8 bersagli \n- Infligge periodicamente danni a tutti i bersagli in linea visiva"
@@ -1500,7 +1500,7 @@
 		"it"		"Il passato è morto sulla terra, e né il presente né il futuro hanno alcun significato.\nSolo l'oceano, uccidi l'oceano.\n- Prende di mira il nemico e gli alleati.\n- Subire danni infligge un debuff all'attaccante, riducendo la velocità d'attacco.\n- Infligge danni maggiori ai bersagli con un numero sufficiente di stack di debuff.\n- Cambia forma quando è al di sotto di 1/5 della salute, aumenta la velocità, gli attacchi ora infliggono danni da contatto, ignora gli edifici"
 		"ko"		"카시미어에서 회자되는 동화의 원형.\n그 과거는 육지에서 사라졌고, 현재와 미래 또한 아무런 의미도 없다.\n오직 바다만 남았고, 오직 바다만 죽인다.\n-피아구분 없이 모든 것을 공격\n-피격 시 대상의 공격 속도를 감소시키는 디버프 부여\n-충분한 디버프가 누적된 대상에 대해 피해량 증가\n-체력이 1/5 이하일 시 형태 전환: 구조물을 완전히 무시하며 속도 대폭 증가, 접촉 시 피해를 줌."
 	}
-	"Saint Carmen Desc"
+	"Saint Adrian  Desc"
 	{
 		"en"		"The last surviving Saint of Almina, living well past mortal life expectancy.\nHis longevity came at a price, but he remembers his duty and his enemies, despite having lost his reason.\n- Targets enemy and allies\n- Attacks levitate the target and deals extra hit of True damage"
 		"it"		"La sua longevità ha avuto un prezzo, ma ricorda il suo dovere e i suoi nemici, nonostante abbia perso la ragione.\n- Bersaglia il nemico e gli alleati\n- Gli attacchi fanno levitare il bersaglio e infliggono un colpo extra di danno Vero"
