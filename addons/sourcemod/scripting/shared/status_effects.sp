@@ -4601,7 +4601,7 @@ float Ruinas_DamageFunc(int attacker, int victim, StatusEffect Apply_MasterStatu
 #endif	// ZR
 
 
-int KazimierzDodgeIndex;
+int GrunwaldDodgeIndex;
 int OsmosisDebuffIndex;
 void StatusEffects_WeaponSpecific_VisualiseOnly()
 {
@@ -4776,7 +4776,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= INVALID_FUNCTION;
-	KazimierzDodgeIndex = StatusEffect_AddGlobal(data);
+	GrunwaldDodgeIndex = StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Tonic Affliction Hide");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
@@ -4924,9 +4924,9 @@ void HandOfSparkHud_Func(int attacker, int victim, StatusEffect Apply_MasterStat
 #endif
 }
 
-stock bool NpcStats_KazimierzDodge(int victim)
+stock bool NpcStats_GrunwaldDodge(int victim)
 {
-	return CheckBuffIndex(victim, KazimierzDodgeIndex);
+	return CheckBuffIndex(victim, GrunwaldDodgeIndex);
 }
 stock bool NpcStats_InOsmosis(int victim)
 {

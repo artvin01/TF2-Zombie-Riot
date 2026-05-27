@@ -6013,16 +6013,16 @@
 		"it"	"Aggiunge la fazione Dweller"
 		"ko"	"무기에 시본 진영을 추가"
 	}
-	"Flask of Kazimierz"
+	"Flask of Grunwald"
 	{
-		"en"	"Flask of Kazimierz"
-		"it"	"Fiaschetta di Kazimierz"
+		"en"	"Flask of Grunwald"
+		"it"	"Fiaschetta di Grunwald"
 		"ko"	"카시미어의 플라스크"
 	}
-	"Flask of Kazimierz Desc"
+	"Flask of Grunwald Desc"
 	{
-		"en"	"Adds the Kazimierz faction"
-		"it"	"Aggiunge la fazione Kazimierz"
+		"en"	"Adds the Grunwald faction"
+		"it"	"Aggiunge la fazione Grunwald"
 		"ko"	"무기에 카시미어 진영을 추가"
 	}
 	"Crystal Shard"

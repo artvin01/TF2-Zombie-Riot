@@ -1287,8 +1287,8 @@
 	}
 	"Armorless Union Knight Desc"
 	{
-		"en"		"An infected from Kazimierz.\n- Periodically resists melee damage"
-		"it"		"Un infetto di Kazimierz.\n- Resiste periodicamente ai danni in mischia"
+		"en"		"An infected from Grunwald.\n- Periodically resists melee damage"
+		"it"		"Un infetto di Grunwald.\n- Resiste periodicamente ai danni in mischia"
 		"ko"		"감염된 카시미어인, \n-주기적으로 근접 피해 저항력 증가"
 	}
 	"Roar Knightclub Trainee Desc"
@@ -1496,7 +1496,7 @@
 	}
 	"The Corrupted Knight Desc"
 	{
-		"en"		"The basis of a well-known folk tale in Kazimierz.\nThe past died on the land, and neither the present nor the future have any meaning.\nOnly the ocean, kill the ocean.\n- Targets enemy and allies\n- Taking damage inflicts a debuff to the attacker, reducing attack speed\n- Deals increased damage to targets with enough debuff stacks\n- Changes form when below 1/5 of health, increased speed, attacks now deal contact damage, ignores buildings"
+		"en"		"The basis of a well-known folk tale in Grunwald.\nThe past died on the land, and neither the present nor the future have any meaning.\nOnly the ocean, kill the ocean.\n- Targets enemy and allies\n- Taking damage inflicts a debuff to the attacker, reducing attack speed\n- Deals increased damage to targets with enough debuff stacks\n- Changes form when below 1/5 of health, increased speed, attacks now deal contact damage, ignores buildings"
 		"it"		"Il passato è morto sulla terra, e né il presente né il futuro hanno alcun significato.\nSolo l'oceano, uccidi l'oceano.\n- Prende di mira il nemico e gli alleati.\n- Subire danni infligge un debuff all'attaccante, riducendo la velocità d'attacco.\n- Infligge danni maggiori ai bersagli con un numero sufficiente di stack di debuff.\n- Cambia forma quando è al di sotto di 1/5 della salute, aumenta la velocità, gli attacchi ora infliggono danni da contatto, ignora gli edifici"
 		"ko"		"카시미어에서 회자되는 동화의 원형.\n그 과거는 육지에서 사라졌고, 현재와 미래 또한 아무런 의미도 없다.\n오직 바다만 남았고, 오직 바다만 죽인다.\n-피아구분 없이 모든 것을 공격\n-피격 시 대상의 공격 속도를 감소시키는 디버프 부여\n-충분한 디버프가 누적된 대상에 대해 피해량 증가\n-체력이 1/5 이하일 시 형태 전환: 구조물을 완전히 무시하며 속도 대폭 증가, 접촉 시 피해를 줌."
 	}

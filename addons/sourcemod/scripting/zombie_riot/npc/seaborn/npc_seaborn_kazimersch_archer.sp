@@ -26,7 +26,7 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/bow_shoot.wav",
 };
 
-void KazimierzKnightArcher_OnMapStart_NPC()
+void GrunwaldKnightArcher_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -37,7 +37,7 @@ void KazimierzKnightArcher_OnMapStart_NPC()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Roar Knightclub Trainee");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_kazimersch_archer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_grunwald_archer");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_archer");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -48,10 +48,10 @@ void KazimierzKnightArcher_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return KazimierzKnightArcher(vecPos, vecAng, team, data);
+	return GrunwaldKnightArcher(vecPos, vecAng, team, data);
 }
 
-methodmap KazimierzKnightArcher < CClotBody
+methodmap GrunwaldKnightArcher < CClotBody
 {
 	
 	public void PlayIdleAlertSound() 
@@ -84,9 +84,9 @@ methodmap KazimierzKnightArcher < CClotBody
 	}
 	
 	
-	public KazimierzKnightArcher(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public GrunwaldKnightArcher(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		KazimierzKnightArcher npc = view_as<KazimierzKnightArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "8000", ally));
+		GrunwaldKnightArcher npc = view_as<GrunwaldKnightArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "8000", ally));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -116,10 +116,10 @@ methodmap KazimierzKnightArcher < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
-		func_NPCDeath[npc.index] = KazimierzKnightArcher_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = KazimierzKnightArcher_OnTakeDamage;
-		func_NPCThink[npc.index] = KazimierzKnightArcher_ClotThink;
-		func_NPCAnimEvent[npc.index] = HandleAnimEventMedival_KazimierzArcher;
+		func_NPCDeath[npc.index] = GrunwaldKnightArcher_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = GrunwaldKnightArcher_OnTakeDamage;
+		func_NPCThink[npc.index] = GrunwaldKnightArcher_ClotThink;
+		func_NPCAnimEvent[npc.index] = HandleAnimEventMedival_GrunwaldArcher;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 210.0;
@@ -154,9 +154,9 @@ methodmap KazimierzKnightArcher < CClotBody
 }
 
 
-public void KazimierzKnightArcher_ClotThink(int iNPC)
+public void GrunwaldKnightArcher_ClotThink(int iNPC)
 {
-	KazimierzKnightArcher npc = view_as<KazimierzKnightArcher>(iNPC);
+	GrunwaldKnightArcher npc = view_as<GrunwaldKnightArcher>(iNPC);
 	if(npc.m_flNextRangedSpecialAttack)
 	{
 		if(npc.m_flNextRangedSpecialAttack < GetGameTime())
@@ -303,13 +303,13 @@ public void KazimierzKnightArcher_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action KazimierzKnightArcher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action GrunwaldKnightArcher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	KazimierzKnightArcher npc = view_as<KazimierzKnightArcher>(victim);
+	GrunwaldKnightArcher npc = view_as<GrunwaldKnightArcher>(victim);
 	
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
@@ -335,9 +335,9 @@ public Action KazimierzKnightArcher_OnTakeDamage(int victim, int &attacker, int 
 	return Plugin_Changed;
 }
 
-public void KazimierzKnightArcher_NPCDeath(int entity)
+public void GrunwaldKnightArcher_NPCDeath(int entity)
 {
-	KazimierzKnightArcher npc = view_as<KazimierzKnightArcher>(entity);
+	GrunwaldKnightArcher npc = view_as<GrunwaldKnightArcher>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -352,11 +352,11 @@ public void KazimierzKnightArcher_NPCDeath(int entity)
 }
 
 
-public void HandleAnimEventMedival_KazimierzArcher(int entity, int event)
+public void HandleAnimEventMedival_GrunwaldArcher(int entity, int event)
 {
 	if(event == 1001)
 	{
-		KazimierzKnightArcher npc = view_as<KazimierzKnightArcher>(entity);
+		GrunwaldKnightArcher npc = view_as<GrunwaldKnightArcher>(entity);
 		
 		int PrimaryThreatIndex = npc.m_iTarget;
 	

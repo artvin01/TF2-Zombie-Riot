@@ -93,7 +93,7 @@ enum
 enum
 {
 	Faction_Expidonsa = 1,
-	Faction_Kazimierz,
+	Faction_Grunwald,
 	Faction_Vesta,
 	Faction_PsychicWarlord,
 	Faction_Dweller
@@ -103,7 +103,7 @@ public const char ItemFaction[][] =
 	"",
 
 	"Expidonsa",
-	"Kazimierz",
+	"Grunwald",
 	"Vesta",
 	"Psychic Warlord",
 	"Dweller"

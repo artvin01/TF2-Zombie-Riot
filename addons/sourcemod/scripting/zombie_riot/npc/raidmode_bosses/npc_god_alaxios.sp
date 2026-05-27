@@ -114,7 +114,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_DefaultMeleeMissSounds));        i++) { PrecacheSound(g_DefaultMeleeMissSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_SlamSounds));        i++) { PrecacheSound(g_SlamSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_SummonSounds));        i++) { PrecacheSound(g_SummonSounds[i]);        }
-	PrecacheSoundCustom("#zombiesurvival/medieval_raid/kazimierz_boss.mp3");
+	PrecacheSoundCustom("#zombiesurvival/medieval_raid/grunwald_boss.mp3");
 	PrecacheSoundCustom("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3");
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
@@ -130,7 +130,7 @@ static void ClotPrecache_SeaAlaxios()
 	for (int i = 0; i < (sizeof(g_DefaultMeleeMissSounds));        i++) { PrecacheSound(g_DefaultMeleeMissSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_SlamSounds));        i++) { PrecacheSound(g_SlamSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_SummonSounds));        i++) { PrecacheSound(g_SummonSounds[i]);        }
-	PrecacheSoundCustom("#zombiesurvival/medieval_raid/special_mutation/kazimierz_boss.mp3");
+	PrecacheSoundCustom("#zombiesurvival/medieval_raid/special_mutation/grunwald_boss.mp3");
 	PrecacheSoundCustom("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3");
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RandomGroupScreamSea));   i++) { PrecacheSoundCustom(g_RandomGroupScreamSea[i]);   }
@@ -474,7 +474,7 @@ methodmap GodAlaxios < CClotBody
 			SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 255);
 			SetEntityRenderColor(npc.m_iWearable2, 100, 100, 255, 255);
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/special_mutation/kazimierz_boss.mp3");
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/special_mutation/grunwald_boss.mp3");
 			music.Time = 189;
 			music.Volume = 2.0;
 			music.Custom = true;
@@ -486,7 +486,7 @@ methodmap GodAlaxios < CClotBody
 		{
 			
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/kazimierz_boss.mp3");
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/grunwald_boss.mp3");
 			music.Time = 189;
 			music.Volume = 2.0;
 			music.Custom = true;
@@ -1338,9 +1338,9 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				npc.PlaySummonSound();
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
-				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_kazimersch_knight",100000, RoundToCeil(6.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_kazimersch_archer",50000, RoundToCeil(12.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_kazimersch_melee_assasin",75000, RoundToCeil(4.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_grunwald_knight",100000, RoundToCeil(6.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_grunwald_archer",50000, RoundToCeil(12.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_grunwald_melee_assasin",75000, RoundToCeil(4.0 * MultiGlobalEnemy));
 			}
 			else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 			{
@@ -1358,7 +1358,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_medic",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_guard",100000, RoundToCeil(10.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_kazimersch_beserker",200000, RoundToCeil(2.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_grunwald_beserker",200000, RoundToCeil(2.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_pathshaper", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
 			}
 			else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
@@ -1369,7 +1369,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				npc.PlaySummonSound();
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_vanguard",50000, RoundToCeil(1.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_kazimersch_longrange",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_dweller_grunwald_longrange",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_abysspredator",70000, RoundToCeil(20.0 * MultiGlobalEnemy));	
 				GodAlaxiosSpawnEnemy(npc.index,"npc_abyssspewer",50000, RoundToCeil(20.0 * MultiGlobalEnemy));	
 				GodAlaxiosSpawnEnemy(npc.index,"npc_isharmla", RoundToCeil(1000000.0 * MultiGlobalHighHealthBoss), 1, true);	

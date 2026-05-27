@@ -26,7 +26,7 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 
-void KazimierzLongArcher_OnMapStart_NPC()
+void GrunwaldLongArcher_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -36,7 +36,7 @@ void KazimierzLongArcher_OnMapStart_NPC()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Armorless Union Cleanup Squad");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_kazimersch_longrange");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_grunwald_longrange");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_cleanup");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -47,10 +47,10 @@ void KazimierzLongArcher_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return KazimierzLongArcher(vecPos, vecAng, team);
+	return GrunwaldLongArcher(vecPos, vecAng, team);
 }
 
-methodmap KazimierzLongArcher < CClotBody
+methodmap GrunwaldLongArcher < CClotBody
 {
 	
 	public void PlayIdleAlertSound() {
@@ -89,9 +89,9 @@ methodmap KazimierzLongArcher < CClotBody
 	}
 
 	
-	public KazimierzLongArcher(float vecPos[3], float vecAng[3], int ally)
+	public GrunwaldLongArcher(float vecPos[3], float vecAng[3], int ally)
 	{
-		KazimierzLongArcher npc = view_as<KazimierzLongArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "20000", ally));
+		GrunwaldLongArcher npc = view_as<GrunwaldLongArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "20000", ally));
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		i_NpcWeight[npc.index] = 1;
@@ -116,10 +116,10 @@ methodmap KazimierzLongArcher < CClotBody
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		func_NPCDeath[npc.index] = KazimierzLongArcher_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = KazimierzLongArcher_OnTakeDamage;
-		func_NPCThink[npc.index] = KazimierzLongArcher_ClotThink;
-		func_NPCAnimEvent[npc.index] = HandleAnimEventKazimierzLongArcher;
+		func_NPCDeath[npc.index] = GrunwaldLongArcher_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = GrunwaldLongArcher_OnTakeDamage;
+		func_NPCThink[npc.index] = GrunwaldLongArcher_ClotThink;
+		func_NPCAnimEvent[npc.index] = HandleAnimEventGrunwaldLongArcher;
 
 		npc.m_flSpeed = 170.0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -155,9 +155,9 @@ methodmap KazimierzLongArcher < CClotBody
 }
 
 
-public void KazimierzLongArcher_ClotThink(int iNPC)
+public void GrunwaldLongArcher_ClotThink(int iNPC)
 {
-	KazimierzLongArcher npc = view_as<KazimierzLongArcher>(iNPC);
+	GrunwaldLongArcher npc = view_as<GrunwaldLongArcher>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -302,11 +302,11 @@ public void KazimierzLongArcher_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public void HandleAnimEventKazimierzLongArcher(int entity, int event)
+public void HandleAnimEventGrunwaldLongArcher(int entity, int event)
 {
 	if(event == 1001)
 	{
-		KazimierzLongArcher npc = view_as<KazimierzLongArcher>(entity);
+		GrunwaldLongArcher npc = view_as<GrunwaldLongArcher>(entity);
 		
 		int PrimaryThreatIndex = npc.m_iTarget;
 	
@@ -374,13 +374,13 @@ public void HandleAnimEventKazimierzLongArcher(int entity, int event)
 	
 }
 
-public Action KazimierzLongArcher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action GrunwaldLongArcher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	KazimierzLongArcher npc = view_as<KazimierzLongArcher>(victim);
+	GrunwaldLongArcher npc = view_as<GrunwaldLongArcher>(victim);
 	
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -393,9 +393,9 @@ public Action KazimierzLongArcher_OnTakeDamage(int victim, int &attacker, int &i
 	return Plugin_Changed;
 }
 
-public void KazimierzLongArcher_NPCDeath(int entity)
+public void GrunwaldLongArcher_NPCDeath(int entity)
 {
-	KazimierzLongArcher npc = view_as<KazimierzLongArcher>(entity);
+	GrunwaldLongArcher npc = view_as<GrunwaldLongArcher>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	

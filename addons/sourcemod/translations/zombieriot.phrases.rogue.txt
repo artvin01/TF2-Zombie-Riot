@@ -2013,9 +2013,9 @@
 	}
 	"Bracelets of Agility Desc"
 	{
-		"en"	"Light and agile, from the far reaches of Kazimierz.\n- {green}Gain a 10％ dodge chance."
+		"en"	"Light and agile, from the far reaches of Grunwald.\n- {green}Gain a 10％ dodge chance."
 		"ru"	"Лёгкие и проворные, из далекого Казимира.\n- Получите 10％ шанс уклонения."
-		"it"	"Leggero e agile, proveniente dalle lontane regioni di Kazimierz.\n- {green} Guadagna un 10％ di possibilità di schivare."
+		"it"	"Leggero e agile, proveniente dalle lontane regioni di Grunwald.\n- {green} Guadagna un 10％ di possibilità di schivare."
 		"ko"	"저 멀리 카시미어에서 온 가볍고 민첩한 허리띠. \n- {green}공격 회피 확률 +10％."
 	}
 	"Elastic Flying Cape"

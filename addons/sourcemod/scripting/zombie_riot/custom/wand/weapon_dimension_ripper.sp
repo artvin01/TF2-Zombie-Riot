@@ -459,7 +459,7 @@ public void Weapon_Dimension_Summon_Dweller(int client, int weapon, bool &result
 		case 3:
 			Dimension_Summon_Npc(client, "npc_abyssspewer" ,weapon, 1.0, 1.5, "utaunt_spirit_winter_rings");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_dweller_kazimersch_beserker" ,weapon, 1.6, 1.3, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_dweller_grunwald_beserker" ,weapon, 1.6, 1.3, "utaunt_spirit_winter_rings");
 		case 5:
 			Dimension_Summon_Npc(client, "npc_abyssswarmcaller" ,weapon, 1.0, 1.3, "utaunt_spirit_winter_rings");
 		default: //This should not happen
@@ -477,7 +477,7 @@ public void Weapon_Dimension_Summon_Dweller_PAP(int client, int weapon, bool &re
 		case 2:
 			Dimension_Summon_Npc(client, "npc_dweller_caster" ,weapon, 1.0, 1.2, "utaunt_spirit_winter_rings");
 		case 3:
-			Dimension_Summon_Npc(client, "npc_dweller_kazimersch_knight" ,weapon, 1.2, 1.3, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_dweller_grunwald_knight" ,weapon, 1.2, 1.3, "utaunt_spirit_winter_rings");
 		case 4:
 			Dimension_Summon_Npc(client, "npc_dweller_specialist" ,weapon, 1.3, 1.4, "utaunt_spirit_winter_rings");
 		case 5:

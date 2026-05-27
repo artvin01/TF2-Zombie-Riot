@@ -37,7 +37,7 @@ static const char g_MeleeDeflectAttack[][] = {
 };
 
 
-void KazimierzBeserker_OnMapStart_NPC()
+void GrunwaldBeserker_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -50,7 +50,7 @@ void KazimierzBeserker_OnMapStart_NPC()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bloodboil Knightclub Trainee");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_kazimersch_beserker");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_grunwald_beserker");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_berserker");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
@@ -61,10 +61,10 @@ void KazimierzBeserker_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return KazimierzBeserker(vecPos, vecAng, team);
+	return GrunwaldBeserker(vecPos, vecAng, team);
 }
 
-methodmap KazimierzBeserker < CClotBody
+methodmap GrunwaldBeserker < CClotBody
 {
 	property int m_iAlliesDied
 	{
@@ -127,9 +127,9 @@ methodmap KazimierzBeserker < CClotBody
 	}
 	
 	
-	public KazimierzBeserker(float vecPos[3], float vecAng[3], int ally)
+	public GrunwaldBeserker(float vecPos[3], float vecAng[3], int ally)
 	{
-		KazimierzBeserker npc = view_as<KazimierzBeserker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "70000", ally,_, true));
+		GrunwaldBeserker npc = view_as<GrunwaldBeserker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "70000", ally,_, true));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -148,10 +148,10 @@ methodmap KazimierzBeserker < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
-		func_NPCDeath[npc.index] = KazimierzBeserker_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = KazimierzBeserker_OnTakeDamage;
-		func_NPCThink[npc.index] = KazimierzBeserker_ClotThink;
-		func_NPCDeathForward[npc.index] = KazimierzBeserker_AllyDeath;
+		func_NPCDeath[npc.index] = GrunwaldBeserker_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = GrunwaldBeserker_OnTakeDamage;
+		func_NPCThink[npc.index] = GrunwaldBeserker_ClotThink;
+		func_NPCDeathForward[npc.index] = GrunwaldBeserker_AllyDeath;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 220.0;
@@ -191,9 +191,9 @@ methodmap KazimierzBeserker < CClotBody
 }
 
 
-public void KazimierzBeserker_ClotThink(int iNPC)
+public void GrunwaldBeserker_ClotThink(int iNPC)
 {
-	KazimierzBeserker npc = view_as<KazimierzBeserker>(iNPC);
+	GrunwaldBeserker npc = view_as<GrunwaldBeserker>(iNPC);
 	
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -393,13 +393,13 @@ public void KazimierzBeserker_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action KazimierzBeserker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action GrunwaldBeserker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	KazimierzBeserker npc = view_as<KazimierzBeserker>(victim);
+	GrunwaldBeserker npc = view_as<GrunwaldBeserker>(victim);
 	
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
@@ -416,9 +416,9 @@ public Action KazimierzBeserker_OnTakeDamage(int victim, int &attacker, int &inf
 	return Plugin_Changed;
 }
 
-public void KazimierzBeserker_NPCDeath(int entity)
+public void GrunwaldBeserker_NPCDeath(int entity)
 {
-	KazimierzBeserker npc = view_as<KazimierzBeserker>(entity);
+	GrunwaldBeserker npc = view_as<GrunwaldBeserker>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -434,9 +434,9 @@ public void KazimierzBeserker_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 }
 
-public void KazimierzBeserker_AllyDeath(int self, int ally)
+public void GrunwaldBeserker_AllyDeath(int self, int ally)
 {
-	KazimierzBeserker npc = view_as<KazimierzBeserker>(self);
+	GrunwaldBeserker npc = view_as<GrunwaldBeserker>(self);
 
 	if(GetTeam(ally) != GetTeam(self))
 	{

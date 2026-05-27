@@ -2279,7 +2279,7 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 				case 0:
 					Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default} went there too?!.");
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default}... invite me next time to Kazimierz...");
+					Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default}... invite me next time to Grunwald...");
 			}
 		} 
 		case WEAPON_KAHMLFIST:

@@ -37,7 +37,7 @@ static const char g_MeleeDeflectAttack[][] = {
 };
 
 
-void KazimierzKnightAssasin_OnMapStart_NPC()
+void GrunwaldKnightAssasin_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -50,7 +50,7 @@ void KazimierzKnightAssasin_OnMapStart_NPC()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Armorless Union Assassin");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_kazimersch_melee_assasin");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_grunwald_melee_assasin");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_assasin");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -61,10 +61,10 @@ void KazimierzKnightAssasin_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return KazimierzKnightAssasin(vecPos, vecAng, team);
+	return GrunwaldKnightAssasin(vecPos, vecAng, team);
 }
 
-methodmap KazimierzKnightAssasin < CClotBody
+methodmap GrunwaldKnightAssasin < CClotBody
 {
 	property float m_flExtraDamage
 	{
@@ -118,9 +118,9 @@ methodmap KazimierzKnightAssasin < CClotBody
 	}
 	
 	
-	public KazimierzKnightAssasin(float vecPos[3], float vecAng[3], int ally)
+	public GrunwaldKnightAssasin(float vecPos[3], float vecAng[3], int ally)
 	{
-		KazimierzKnightAssasin npc = view_as<KazimierzKnightAssasin>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "11000", ally));
+		GrunwaldKnightAssasin npc = view_as<GrunwaldKnightAssasin>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "11000", ally));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -138,9 +138,9 @@ methodmap KazimierzKnightAssasin < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
-		func_NPCDeath[npc.index] = KazimierzKnightAssasin_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = KazimierzKnightAssasin_OnTakeDamage;
-		func_NPCThink[npc.index] = KazimierzKnightAssasin_ClotThink;
+		func_NPCDeath[npc.index] = GrunwaldKnightAssasin_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = GrunwaldKnightAssasin_OnTakeDamage;
+		func_NPCThink[npc.index] = GrunwaldKnightAssasin_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;
@@ -182,9 +182,9 @@ methodmap KazimierzKnightAssasin < CClotBody
 }
 
 
-public void KazimierzKnightAssasin_ClotThink(int iNPC)
+public void GrunwaldKnightAssasin_ClotThink(int iNPC)
 {
-	KazimierzKnightAssasin npc = view_as<KazimierzKnightAssasin>(iNPC);
+	GrunwaldKnightAssasin npc = view_as<GrunwaldKnightAssasin>(iNPC);
 	
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -222,7 +222,7 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 		if(HasSpecificBuff(npc.index, "Revealed"))
 			camo = false;
 
-		if(camo && !KazimierzMeleeAssasinRange(npc, 500.0))
+		if(camo && !GrunwaldMeleeAssasinRange(npc, 500.0))
 		{
 			if(i_InHurtZone[npc.index])
 			{
@@ -391,13 +391,13 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action KazimierzKnightAssasin_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action GrunwaldKnightAssasin_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	KazimierzKnightAssasin npc = view_as<KazimierzKnightAssasin>(victim);
+	GrunwaldKnightAssasin npc = view_as<GrunwaldKnightAssasin>(victim);
 	
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
@@ -414,9 +414,9 @@ public Action KazimierzKnightAssasin_OnTakeDamage(int victim, int &attacker, int
 	return Plugin_Changed;
 }
 
-public void KazimierzKnightAssasin_NPCDeath(int entity)
+public void GrunwaldKnightAssasin_NPCDeath(int entity)
 {
-	KazimierzKnightAssasin npc = view_as<KazimierzKnightAssasin>(entity);
+	GrunwaldKnightAssasin npc = view_as<GrunwaldKnightAssasin>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -429,7 +429,7 @@ public void KazimierzKnightAssasin_NPCDeath(int entity)
 }
 
 
-public bool KazimierzMeleeAssasinRange(KazimierzKnightAssasin npc, float range)
+public bool GrunwaldMeleeAssasinRange(GrunwaldKnightAssasin npc, float range)
 {
 	float SelfPos[3];
 	float AllyPos[3];

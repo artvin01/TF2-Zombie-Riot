@@ -379,11 +379,11 @@ void NPC_ConfigSetup()
 	DwellerMedic_Precache();
 	DwellerSniper_Precache();
 	DwellerSpy_Precache();
-	KazimierzKnight_OnMapStart_NPC();
-	KazimierzKnightArcher_OnMapStart_NPC();
-	KazimierzBeserker_OnMapStart_NPC();
-	KazimierzLongArcher_OnMapStart_NPC();
-	KazimierzKnightAssasin_OnMapStart_NPC();
+	GrunwaldKnight_OnMapStart_NPC();
+	GrunwaldKnightArcher_OnMapStart_NPC();
+	GrunwaldBeserker_OnMapStart_NPC();
+	GrunwaldLongArcher_OnMapStart_NPC();
+	GrunwaldKnightAssasin_OnMapStart_NPC();
 	CorruptedKnight_Precache();
 	DwellerGuard_Precache();
 	DwellerVanguard_Precache();
@@ -2049,10 +2049,10 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/dweller/npc_seaslider.sp"
 #include "npc/dweller/npc_seaspitter.sp"
 #include "npc/dweller/npc_undertides.sp"
-#include "npc/dweller/npc_dweller_kazimersch_knight.sp"
-#include "npc/dweller/npc_dweller_kazimersch_archer.sp"
-#include "npc/dweller/npc_dweller_kazimersch_beserker.sp"
-#include "npc/dweller/npc_dweller_kazimersch_longrange.sp"
+#include "npc/dweller/npc_dweller_grunwald_knight.sp"
+#include "npc/dweller/npc_dweller_grunwald_archer.sp"
+#include "npc/dweller/npc_dweller_grunwald_beserker.sp"
+#include "npc/dweller/npc_dweller_grunwald_longrange.sp"
 #include "npc/dweller/npc_remains.sp"
 #include "npc/dweller/npc_herald_shared.sp"
 #include "npc/dweller/npc_herald_1.sp"
@@ -2062,7 +2062,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/dweller/npc_abyssfounder.sp"
 #include "npc/dweller/npc_abysspredator.sp"
 #include "npc/dweller/npc_abyssbrandguider.sp"
-#include "npc/dweller/npc_dweller_kazimersch_melee_assasin.sp"
+#include "npc/dweller/npc_dweller_grunwald_melee_assasin.sp"
 #include "npc/dweller/npc_abyssspewer.sp"
 #include "npc/dweller/npc_abyssswarmcaller.sp"
 #include "npc/dweller/npc_abyssreefbreaker.sp"

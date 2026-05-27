@@ -1087,7 +1087,7 @@ static float Brew_524(char name[64], int attrib[TINKER_LIMIT], float value[TINKE
 // Wat Str* Agi^
 static float Brew_502(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
-	strcopy(name, sizeof(name), "Flask of Kazimierz");
+	strcopy(name, sizeof(name), "Flask of Grunwald");
 	attrib[0] = Attrib_SetArchetype;
 	value[0] = 23.0;
 	add[0] = 1;
