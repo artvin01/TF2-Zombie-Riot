@@ -1,18 +1,18 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int LastKnightSpecialCommand[MAXENTITIES];
+static int CorruptedKnightSpecialCommand[MAXENTITIES];
 int Revive[MAXENTITIES];
 
 enum
 {
-	LastKnight_Command_Default = 0,
-	LastKnight_Command_Heal = 1,
-	LastKnight_Command_Charge = 2,
-	LastKnight_Command_TideLance = 3,
-	LastKnight_Command_TideHunt = 4,
-	LastKnight_Command_KO = 5,
-	LastKnight_Command_Rampage = 6,
+	CorruptedKnight_Command_Default = 0,
+	CorruptedKnight_Command_Heal = 1,
+	CorruptedKnight_Command_Charge = 2,
+	CorruptedKnight_Command_TideLance = 3,
+	CorruptedKnight_Command_TideHunt = 4,
+	CorruptedKnight_Command_KO = 5,
+	CorruptedKnight_Command_Rampage = 6,
 }
 
 static const char g_FreezeSounds[][] =
@@ -38,7 +38,7 @@ static const char PullRandomEnemyAttack[][] =
 {
 	"weapons/physcannon/energy_sing_explosion2.wav"
 };
-public void BarrackLastKnightOnMapStart()
+public void BarrackCorruptedKnightOnMapStart()
 {
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_FreezeSounds);
@@ -48,7 +48,7 @@ public void BarrackLastKnightOnMapStart()
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Tide-Hunt Knight");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_lastknight");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_corruptedknight");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -60,20 +60,20 @@ public void BarrackLastKnightOnMapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackLastKnight(client, vecPos, vecAng);
+	return BarrackCorruptedKnight(client, vecPos, vecAng);
 }
 
-methodmap BarrackLastKnight < BarrackBody
+methodmap BarrackCorruptedKnight < BarrackBody
 {
-	property int i_LastKnightSpecialCommand	// To give an extra menu for Last Knight skills
+	property int i_CorruptedKnightSpecialCommand	// To give an extra menu for Corrupted Knight skills
 	{
 		public get()
 		{
-			return LastKnightSpecialCommand[view_as<int>(this)];
+			return CorruptedKnightSpecialCommand[view_as<int>(this)];
 		}
 		public set(int value)
 		{
-			LastKnightSpecialCommand[view_as<int>(this)] = value;
+			CorruptedKnightSpecialCommand[view_as<int>(this)] = value;
 		}
 	}
 	property int m_iPhase
@@ -139,9 +139,9 @@ methodmap BarrackLastKnight < BarrackBody
 		EmitSoundToAll(g_TideHunt[GetRandomInt(0, sizeof(g_TideHunt) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public BarrackLastKnight(int client, float vecPos[3], float vecAng[3])
+	public BarrackCorruptedKnight(int client, float vecPos[3], float vecAng[3])
 	{	
-		BarrackLastKnight npc = view_as<BarrackLastKnight>(BarrackBody(client, vecPos, vecAng, "3000", _, _, "0.75",_,"models/pickups/pickup_powerup_regen.mdl"));
+		BarrackCorruptedKnight npc = view_as<BarrackCorruptedKnight>(BarrackBody(client, vecPos, vecAng, "3000", _, _, "0.75",_,"models/pickups/pickup_powerup_regen.mdl"));
 		
 		i_NpcWeight[npc.index] = 2;
 		KillFeed_SetKillIcon(npc.index, "spy_cicle");
@@ -152,18 +152,18 @@ methodmap BarrackLastKnight < BarrackBody
 		npc.m_flSpeed = 150.0;
 		npc.m_bisWalking = true;
 		
-		npc.i_LastKnightSpecialCommand = LastKnight_Command_Default;
+		npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Default;
 		npc.b_NpcSpecialCommand = true;
 		
-		npc.m_fbRangedSpecialOn = false; // Used to check whether the Last Knight has his charge active or not
-		npc.Anger = false; // Variable to control whether the Last Knight is allowed to revive himself instantly once on last man standing
-		npc.m_iPhase = 0; // Variable to control whether the Last Knight is about to use "SLAY THE OCEAN"
-		npc.m_flDowned = 0.0; // Variable to control whether the Last Knight is downed or not (used for revive) - 0 -> Alive, 1 -> Downed
+		npc.m_fbRangedSpecialOn = false; // Used to check whether the Corrupted Knight has his charge active or not
+		npc.Anger = false; // Variable to control whether the Corrupted Knight is allowed to revive himself instantly once on last man standing
+		npc.m_iPhase = 0; // Variable to control whether the Corrupted Knight is about to use "SLAY THE OCEAN"
+		npc.m_flDowned = 0.0; // Variable to control whether the Corrupted Knight is downed or not (used for revive) - 0 -> Alive, 1 -> Downed
 		npc.m_iState = 0; // Hehehe (It's a kill-switch for Dorian, 1 time use only, i'm not THAT sadist)
 		
-		func_NPCOnTakeDamage[npc.index] = BarrackLastKnight_OnTakeDamage;
-		func_NPCDeath[npc.index] = BarrackLastKnight_NPCDeath;
-		func_NPCThink[npc.index] = BarrackLastKnight_ClotThink;
+		func_NPCOnTakeDamage[npc.index] = BarrackCorruptedKnight_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackCorruptedKnight_NPCDeath;
+		func_NPCThink[npc.index] = BarrackCorruptedKnight_ClotThink;
 		
 		npc.m_flDoingAnimation = 0.0; // Used to handle when to give him the horse during the first transformation in a round
 		
@@ -178,7 +178,7 @@ methodmap BarrackLastKnight < BarrackBody
 		npc.m_flNextRangedSpecialAttack = 0.0; // SLAY THE OCEAN
 		npc.m_flNextRangedAttack = 0.0; // To decide when he should move
 		
-		Revive[npc.index] = Waves_GetRoundScale(); // Variable used to allow the Last Knight to instantly revive after a wave is over
+		Revive[npc.index] = Waves_GetRoundScale(); // Variable used to allow the Corrupted Knight to instantly revive after a wave is over
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
 		SetVariantString("2.5");
@@ -200,9 +200,9 @@ methodmap BarrackLastKnight < BarrackBody
 	}
 }
 
-public void BarrackLastKnight_ClotThink(int iNPC)
+public void BarrackCorruptedKnight_ClotThink(int iNPC)
 {
-	BarrackLastKnight npc = view_as<BarrackLastKnight>(iNPC);
+	BarrackCorruptedKnight npc = view_as<BarrackCorruptedKnight>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
@@ -211,38 +211,38 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		int PrimaryThreatIndex = npc.m_iTarget;
 		
-		if(npc.i_LastKnightSpecialCommand == 5) // KO state AND revive state
+		if(npc.i_CorruptedKnightSpecialCommand == 5) // KO state AND revive state
 		{	
 			if(Revive[npc.index] < Waves_GetRoundScale()) // If the waves changed revive him
 			{
 				Revive[npc.index] = Waves_GetRoundScale();
-				SetDownedState_LastKnight(iNPC, false);
+				SetDownedState_CorruptedKnight(iNPC, false);
 				DesertYadeamDoHealEffect(iNPC, 200.0);
 				
-				CPrintToChatAll("{green}The Last Knight returns to battle, his mission isn't done yet");
+				CPrintToChatAll("{green}The Corrupted Knight returns to battle, his mission isn't done yet");
 				
-				npc.i_LastKnightSpecialCommand = LastKnight_Command_Default;
+				npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Default;
 			}
 			if(npc.m_flSelfRevive && npc.m_flSelfRevive < GetGameTime())
 			{
 				DesertYadeamDoHealEffect(iNPC, 200.0);
 				
-				SetDownedState_LastKnight(iNPC, false);
+				SetDownedState_CorruptedKnight(iNPC, false);
 				
 				if(!LastMann)
 				{
-					CPrintToChatAll("{green}Enough time has passed and the Last Knight's dweller blood closed his wounds, he returns to the fight");
-					npc.i_LastKnightSpecialCommand = LastKnight_Command_Default;
+					CPrintToChatAll("{green}Enough time has passed and the Corrupted Knight's dweller blood closed his wounds, he returns to the fight");
+					npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Default;
 				}
 				else
 				{
-					CPrintToChatAll("{green}His rage won't fade in this moment of desperation...the Last Knight returns yet again");
-					npc.i_LastKnightSpecialCommand = LastKnight_Command_Rampage;
+					CPrintToChatAll("{green}His rage won't fade in this moment of desperation...the Corrupted Knight returns yet again");
+					npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Rampage;
 				}
 			}
 		}
 		// --------------
-		if(Revive[npc.index] < Waves_GetRoundScale() && npc.i_LastKnightSpecialCommand != 5) // If the wave changes update the variable so he doesn't randomly revive, if he's enraged make him chill out and steal the horse
+		if(Revive[npc.index] < Waves_GetRoundScale() && npc.i_CorruptedKnightSpecialCommand != 5) // If the wave changes update the variable so he doesn't randomly revive, if he's enraged make him chill out and steal the horse
 		{
 			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 1.5, _, 5.0, HEAL_ABSOLUTE);
 			Revive[npc.index] = Waves_GetRoundScale();
@@ -250,25 +250,25 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 			
 			if(Waves_GetRoundScale() == 39)
 			{
-				CPrintToChatAll("{green}The Last Knight channels his rage preparing for the decisive battle(the Last Knight got stronger)");
+				CPrintToChatAll("{green}The Corrupted Knight channels his rage preparing for the decisive battle(the Corrupted Knight got stronger)");
 				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", 5000);
 			}
-			if(npc.i_LastKnightSpecialCommand == 6)
+			if(npc.i_CorruptedKnightSpecialCommand == 6)
 			{
 				HorseMode(npc, 0);
 				// if (IsValidEntity(npc.m_iWearable6))
 				// RemoveEntity(npc.m_iWearable6);
 				
 				npc.SetActivity("ACT_IDLE");
-				npc.i_LastKnightSpecialCommand = LastKnight_Command_Default;
+				npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Default;
 			}
 		}
 		// --------------
 		if(LastMann && !npc.Anger)	// Condition for his Rampage to activate, he gets a stronger buff on wave 40 specifically (A bit for lore reason since he hates Ishar'mla so it kinda makes sense he's kinda pissed off when he sees her)
 		{
 			npc.Anger = true;
-			SetDownedState_LastKnight(iNPC, false);
-			npc.CmdOverride = Command_Aggressive; // Force Last Knight to go aggressive because well, he has to help the LMS
+			SetDownedState_CorruptedKnight(iNPC, false);
+			npc.CmdOverride = Command_Aggressive; // Force Corrupted Knight to go aggressive because well, he has to help the LMS
 			
 			if(Waves_GetRoundScale() == 39) // Wave 40
 			{
@@ -286,11 +286,11 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 				npc.m_flNextMeleeAttack = GameTime + 8.6;
 				npc.m_flDoingAnimation = GameTime + 5.75; // Darn you Door and your weird timers
 				
-				npc.i_LastKnightSpecialCommand = LastKnight_Command_Rampage;
+				npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Rampage;
 			}
 			else
 			{
-				CPrintToChatAll("{red}The Last Knight mounts his steed and refusing to acknowledge defeat against the sea he charges into the fray");
+				CPrintToChatAll("{red}The Corrupted Knight mounts his steed and refusing to acknowledge defeat against the sea he charges into the fray");
 				b_NpcIsInvulnerable[npc.index] = true;
 				b_ThisEntityIgnored[npc.index] = true;
 				
@@ -304,11 +304,11 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 				npc.m_flNextRangedSpecialAttack = GameTime + 8.6;
 				npc.m_flDoingAnimation = GameTime + 5.75; // Darn you Door and your weird timers
 				
-				npc.i_LastKnightSpecialCommand = LastKnight_Command_Rampage;
+				npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Rampage;
 			}
 		}
 		// --------------
-		if(npc.i_LastKnightSpecialCommand == 6 && !IsValidEntity(npc.m_iWearable5)) // Remove invincibility during the transformation and equip le horse if the timer has passed
+		if(npc.i_CorruptedKnightSpecialCommand == 6 && !IsValidEntity(npc.m_iWearable5)) // Remove invincibility during the transformation and equip le horse if the timer has passed
 		{
 			if(npc.m_flDoingAnimation < GameTime)
 			{
@@ -321,7 +321,7 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 		{
 			if(npc.m_iState == 0)
 			{
-				if(client != 0) // This is a failsafe, cause otherwise it throws exceptions in some cases if the lsat player crashes/leaves and last knight is there
+				if(client != 0) // This is a failsafe, cause otherwise it throws exceptions in some cases if the lsat player crashes/leaves and Cirrupted Knight is there
 				{
 					if(!LastMann)	// Yeah uh, don't want to ruin a game either let's be honest
 					{
@@ -339,8 +339,8 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 							npc.PlayRandomEnemyPullSound();
 							
 							ForcePlayerSuicide(client);
-							CPrintToChatAll("{red}The Last Knight brutalizes Dorian");
-							CPrintToChatAll("{green}Last Knight:{pink}She{default}... asked me.... to.");
+							CPrintToChatAll("{red}The Corrupted Knight brutalizes Dorian");
+							CPrintToChatAll("{green}Corrupted Knight:{pink}She{default}... asked me.... to.");
 							npc.m_iState = 1;
 						}
 					}
@@ -352,7 +352,7 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 			}
 		}
 		// --------------
-		if(npc.i_LastKnightSpecialCommand == 1)
+		if(npc.i_CorruptedKnightSpecialCommand == 1)
 		{
 			if(npc.m_flSelfHeal < GameTime)
 			{
@@ -370,7 +370,7 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 			}
 			else
 			{
-				npc.i_LastKnightSpecialCommand = LastKnight_Command_Default;
+				npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Default;
 			}
 		}
 		if(PrimaryThreatIndex > 0)
@@ -379,9 +379,9 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
-			switch(npc.i_LastKnightSpecialCommand)
+			switch(npc.i_CorruptedKnightSpecialCommand)
 			{
-				case LastKnight_Command_Default:	// Default state for Last Knight, an attack with high delay that hits somewhat hard, deals more dmg to Dweller
+				case CorruptedKnight_Command_Default:	// Default state for Corrupted Knight, an attack with high delay that hits somewhat hard, deals more dmg to Dweller
 				{
 					if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 					{
@@ -475,15 +475,15 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 						}
 					}
 				}
-				case LastKnight_Command_Charge:
+				case CorruptedKnight_Command_Charge:
 				{
 					if(npc.m_flCharge < GameTime)
 					{
 						npc.m_fbRangedSpecialOn = true;
 					}
-					npc.i_LastKnightSpecialCommand = LastKnight_Command_Default;
+					npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Default;
 				}
-				case LastKnight_Command_TideLance:	// Gives increased attack range and faster attack speed for 5 attacks, the last one Freezes the target
+				case CorruptedKnight_Command_TideLance:	// Gives increased attack range and faster attack speed for 5 attacks, the last one Freezes the target
 				{
 					if(npc.m_flTideLance < GameTime)
 					{
@@ -531,7 +531,7 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 											ApplyStatusEffect(npc.index, target, "Teslar Mule", 6.0);
 											FreezeNpcInTime(target, 2.0);
 											
-											npc.i_LastKnightSpecialCommand = LastKnight_Command_Default;
+											npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Default;
 										}
 										else
 										{
@@ -550,7 +550,7 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 						}
 					}
 				}
-				case LastKnight_Command_TideHunt:	// Makes the Last Knight Channel for 5 seconds, slowly creating a shockwave similar to Waldch, gains 50% DR during it, once it fully charges deals hefty dmg to everyone in the area
+				case CorruptedKnight_Command_TideHunt:	// Makes the Corrupted Knight Channel for 5 seconds, slowly creating a shockwave similar to Waldch, gains 50% DR during it, once it fully charges deals hefty dmg to everyone in the area
 				{
 					if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 					{
@@ -580,11 +580,11 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 							ParticleEffectAt(VecSelfNpc, "xms_snowburst_child02", 3.0);
 							npc.PlayTideHuntSound();
 							
-							npc.i_LastKnightSpecialCommand = LastKnight_Command_Default;
+							npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Default;
 						}
 					}
 				}
-				case LastKnight_Command_Rampage:	// Happens ONLY when it's last man standing, he gets significant buffs but becomes uncontrollable and has a special attack that uses off cooldown, he won't get out of this state unless either he dies or round ends
+				case CorruptedKnight_Command_Rampage:	// Happens ONLY when it's last man standing, he gets significant buffs but becomes uncontrollable and has a special attack that uses off cooldown, he won't get out of this state unless either he dies or round ends
 				{	
 					if(b_NpcIsInvulnerable[npc.index])	// Make him move + remove invincibility AFTER he transformed fully
 					{
@@ -744,7 +744,7 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 				}
 			}
 		}
-		if(npc.i_LastKnightSpecialCommand < 5) // In short, if he's not K.O/Enraged or if he's not using Heal/Tidehunt he's free to move
+		if(npc.i_CorruptedKnightSpecialCommand < 5) // In short, if he's not K.O/Enraged or if he's not using Heal/Tidehunt he's free to move
 		{
 			if(npc.m_flNextRangedAttack < GameTime)
 			{
@@ -763,26 +763,26 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 	}
 }
 
-void LastKnight_MenuSpecial(int client, int entity)
+void CorruptedKnight_MenuSpecial(int client, int entity)
 {
 	SetGlobalTransTarget(client);
-	BarrackLastKnight npc = view_as<BarrackLastKnight>(entity);
+	BarrackCorruptedKnight npc = view_as<BarrackCorruptedKnight>(entity);
 
-	Menu menu = new Menu(BarrackLastKnight_MenuH);
+	Menu menu = new Menu(BarrackCorruptedKnight_MenuH);
 	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", c_NpcName[entity]);
 	char num[16];
 	IntToString(EntIndexToEntRef(entity), num, sizeof(num));
-	menu.AddItem(num, "Default Engagement", npc.i_LastKnightSpecialCommand == LastKnight_Command_Default ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	menu.AddItem(num, "Dweller Regeneration", npc.i_LastKnightSpecialCommand == LastKnight_Command_Heal ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	menu.AddItem(num, "Charge", npc.i_LastKnightSpecialCommand == LastKnight_Command_Charge ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	menu.AddItem(num, "Tide Lance", npc.i_LastKnightSpecialCommand == LastKnight_Command_TideLance ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	menu.AddItem(num, "Tide Hunt", npc.i_LastKnightSpecialCommand == LastKnight_Command_TideHunt ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem(num, "Default Engagement", npc.i_CorruptedKnightSpecialCommand == CorruptedKnight_Command_Default ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem(num, "Dweller Regeneration", npc.i_CorruptedKnightSpecialCommand == CorruptedKnight_Command_Heal ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem(num, "Charge", npc.i_CorruptedKnightSpecialCommand == CorruptedKnight_Command_Charge ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem(num, "Tide Lance", npc.i_CorruptedKnightSpecialCommand == CorruptedKnight_Command_TideLance ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem(num, "Tide Hunt", npc.i_CorruptedKnightSpecialCommand == CorruptedKnight_Command_TideHunt ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 	menu.Pagination = 0;
 	menu.ExitButton = true;
 	menu.Display(client, MENU_TIME_FOREVER);	
 }
-public int BarrackLastKnight_MenuH(Menu menu, MenuAction action, int client, int choice)
+public int BarrackCorruptedKnight_MenuH(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
@@ -798,22 +798,22 @@ public int BarrackLastKnight_MenuH(Menu menu, MenuAction action, int client, int
 			int entity = EntRefToEntIndex(StringToInt(num));
 			if(entity != INVALID_ENT_REFERENCE)
 			{
-				BarrackLastKnight npc = view_as<BarrackLastKnight>(entity);
+				BarrackCorruptedKnight npc = view_as<BarrackCorruptedKnight>(entity);
 				float GameTime = GetGameTime(entity);
 
-				if(npc.i_LastKnightSpecialCommand <= 4)
+				if(npc.i_CorruptedKnightSpecialCommand <= 4)
 				{
 					switch(choice)
 					{
 						case 0:
 						{
-							npc.i_LastKnightSpecialCommand = LastKnight_Command_Default;
+							npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Default;
 						}
 						case 1:
 						{
 							if(npc.m_flSelfHeal < GameTime)
 							{
-								npc.i_LastKnightSpecialCommand = LastKnight_Command_Heal;
+								npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Heal;
 							}
 							else
 							{
@@ -821,11 +821,11 @@ public int BarrackLastKnight_MenuH(Menu menu, MenuAction action, int client, int
 								{
 									case 1:
 									{
-										CPrintToChat(client, "{green}Last Knight{default}: Not....yet. [%.1f]",npc.m_flSelfHeal - GameTime);
+										CPrintToChat(client, "{green}Corrupted Knight{default}: Not....yet. [%.1f]",npc.m_flSelfHeal - GameTime);
 									}
 									case 2:
 									{
-										CPrintToChat(client, "{green}Last Knight{default}: Can....not. [%.1f]",npc.m_flSelfHeal - GameTime);
+										CPrintToChat(client, "{green}Corrupted Knight{default}: Can....not. [%.1f]",npc.m_flSelfHeal - GameTime);
 									}
 								}
 							}
@@ -836,7 +836,7 @@ public int BarrackLastKnight_MenuH(Menu menu, MenuAction action, int client, int
 							{
 								if(npc.m_flCharge < GameTime)
 								{
-									npc.i_LastKnightSpecialCommand = LastKnight_Command_Charge;
+									npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Charge;
 								}
 								else
 								{
@@ -844,25 +844,25 @@ public int BarrackLastKnight_MenuH(Menu menu, MenuAction action, int client, int
 									{
 										case 1:
 										{
-											CPrintToChat(client, "{green}Last Knight{default}: Reco....vering. [%.1f]",npc.m_flCharge - GameTime);
+											CPrintToChat(client, "{green}Corrupted Knight{default}: Reco....vering. [%.1f]",npc.m_flCharge - GameTime);
 										}
 										case 2:
 										{
-											CPrintToChat(client, "{green}Last Knight{default}: Need....time [%.1f]",npc.m_flCharge - GameTime);
+											CPrintToChat(client, "{green}Corrupted Knight{default}: Need....time [%.1f]",npc.m_flCharge - GameTime);
 										}
 									}
 								}
 							}
 							else
 							{
-								CPrintToChat(client, "{green}The Last Knight is unable to properly prepare a charge while retreating/holding position");
+								CPrintToChat(client, "{green}The Corrupted Knight is unable to properly prepare a charge while retreating/holding position");
 							}
 						}
 						case 3:
 						{
 							if(npc.m_flTideLance < GameTime)
 							{
-								npc.i_LastKnightSpecialCommand = LastKnight_Command_TideLance;
+								npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_TideLance;
 							}
 							else
 							{
@@ -870,11 +870,11 @@ public int BarrackLastKnight_MenuH(Menu menu, MenuAction action, int client, int
 								{
 									case 1:
 									{
-										CPrintToChat(client, "{green}Last Knight{default}: Not....ready. [%.1f]",npc.m_flTideLance - GameTime);
+										CPrintToChat(client, "{green}Corrupted Knight{default}: Not....ready. [%.1f]",npc.m_flTideLance - GameTime);
 									}
 									case 2:
 									{
-										CPrintToChat(client, "{green}Last Knight{default}: Need....time [%.1f]",npc.m_flTideLance - GameTime);
+										CPrintToChat(client, "{green}Corrupted Knight{default}: Need....time [%.1f]",npc.m_flTideLance - GameTime);
 									}
 								}
 							}
@@ -883,7 +883,7 @@ public int BarrackLastKnight_MenuH(Menu menu, MenuAction action, int client, int
 						{
 							if(npc.m_flTideHunt < GameTime)
 							{
-								npc.i_LastKnightSpecialCommand = LastKnight_Command_TideHunt;
+								npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_TideHunt;
 							}
 							else
 							{
@@ -891,21 +891,21 @@ public int BarrackLastKnight_MenuH(Menu menu, MenuAction action, int client, int
 								{
 									case 1:
 									{
-										CPrintToChat(client, "{green}Last Knight{default}: Ugh.... [%.1f]",npc.m_flTideHunt - GameTime);
+										CPrintToChat(client, "{green}Corrupted Knight{default}: Ugh.... [%.1f]",npc.m_flTideHunt - GameTime);
 									}
 									case 2:
 									{
-										CPrintToChat(client, "{green}Last Knight{default}: Need....time [%.1f]",npc.m_flTideHunt - GameTime);
+										CPrintToChat(client, "{green}Corrupted Knight{default}: Need....time [%.1f]",npc.m_flTideHunt - GameTime);
 									}
 								}
 							}
 						}
 					}
-					LastKnight_MenuSpecial(client, npc.index);
+					CorruptedKnight_MenuSpecial(client, npc.index);
 				}
 				else
 				{
-					CPrintToChat(client, "{green}Last Knight is not listening to your orders.{default}");
+					CPrintToChat(client, "{green}Corrupted Knight is not listening to your orders.{default}");
 				}
 			}
 		}
@@ -913,19 +913,19 @@ public int BarrackLastKnight_MenuH(Menu menu, MenuAction action, int client, int
 	return 0;
 }
 
-void BarrackLastKnight_NPCDeath(int entity)
+void BarrackCorruptedKnight_NPCDeath(int entity)
 {
-	BarrackLastKnight npc = view_as<BarrackLastKnight>(entity);
+	BarrackCorruptedKnight npc = view_as<BarrackCorruptedKnight>(entity);
 	BarrackBody_NPCDeath(npc.index);
 }
 
-public Action BarrackLastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action BarrackCorruptedKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	BarrackLastKnight npc = view_as<BarrackLastKnight>(victim);
+	BarrackCorruptedKnight npc = view_as<BarrackCorruptedKnight>(victim);
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	f_ArmorCurrosionImmunity[npc.index][Element_Nervous] = GetGameTime() + 5.0;	// Immunity to nervous impairment (Sea debuff)
 	
@@ -935,22 +935,22 @@ public Action BarrackLastKnight_OnTakeDamage(int victim, int &attacker, int &inf
 	}
 	if(damage >= health)
 	{
-		if(npc.i_LastKnightSpecialCommand == 6) // If he's enraged remove le horse
+		if(npc.i_CorruptedKnightSpecialCommand == 6) // If he's enraged remove le horse
 		{
 			HorseMode(npc, 0);
 		}
 		
-		CPrintToChatAll("{red}The Last Knight falls but refuses to give up until the dwellers are no more.");
+		CPrintToChatAll("{red}The Corrupted Knight falls but refuses to give up until the dwellers are no more.");
 		damage = 0.0;
-		SetDownedState_LastKnight(victim, true);
+		SetDownedState_CorruptedKnight(victim, true);
 		
 		b_NpcIsInvulnerable[npc.index] = true;
 		b_ThisEntityIgnored[npc.index] = true;
-		npc.i_LastKnightSpecialCommand = LastKnight_Command_KO;
+		npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_KO;
 	}
 	return Plugin_Changed;
 }
-void HorseMode(BarrackLastKnight npc, int Type)
+void HorseMode(BarrackCorruptedKnight npc, int Type)
 {
 	switch(Type)
 	{
@@ -980,9 +980,9 @@ void Slay_Effect1(int attacker, int victim)
 	ApplyStatusEffect(attacker, victim, "Near Zero", 2.0);
 	FreezeNpcInTime(victim, 2.0);
 }
-void SetDownedState_LastKnight(int iNpc, bool StateDo) // Cleeeearly didn't borrow part of your code Artvin either (danke)
+void SetDownedState_CorruptedKnight(int iNpc, bool StateDo) // Cleeeearly didn't borrow part of your code Artvin either (danke)
 {
-	BarrackLastKnight npc = view_as<BarrackLastKnight>(iNpc);
+	BarrackCorruptedKnight npc = view_as<BarrackCorruptedKnight>(iNpc);
 	if(StateDo) //downed
 	{
 		npc.m_flSelfRevive = GetGameTime() + 120.0;

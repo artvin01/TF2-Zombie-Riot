@@ -384,7 +384,7 @@ void NPC_ConfigSetup()
 	KazimierzBeserker_OnMapStart_NPC();
 	KazimierzLongArcher_OnMapStart_NPC();
 	KazimierzKnightAssasin_OnMapStart_NPC();
-	LastKnight_Precache();
+	CorruptedKnight_Precache();
 	DwellerGuard_Precache();
 	DwellerVanguard_Precache();
 	DwellerDefender_Precache();
@@ -757,7 +757,7 @@ void NPC_ConfigSetup()
 	BarrackManAtArmsOnMapStart();
 	BarrackLongbowOnMapStart();
 	BarrackHussarOnMapStart();
-	BarrackLastKnightOnMapStart();
+	BarrackCorruptedKnightOnMapStart();
 	BarrackCrossbowOnMapStart();
 	BarrackChampionOnMapStart();
 	BarrackHandCannoneerOnMapStart();
@@ -2076,8 +2076,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/dweller/npc_dweller_medic.sp"
 #include "npc/dweller/npc_dweller_sniper.sp"
 #include "npc/dweller/npc_dweller_spy.sp"
-#include "npc/dweller/npc_lastknight.sp"
-#include "npc/ally/npc_barrack_lastknight.sp"
+#include "npc/dweller/npc_corruptedknight.sp"
+#include "npc/ally/npc_barrack_corruptedknight.sp"
 #include "npc/dweller/npc_saintcarmen.sp"
 #include "npc/dweller/npc_pathshaper.sp"
 #include "npc/dweller/npc_pathshaper_fractal.sp"

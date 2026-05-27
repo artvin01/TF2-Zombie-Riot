@@ -2679,9 +2679,9 @@
 		"it"		"Medico Balestriere"
 		"ko"		"배럭 석궁병 메딕"
 	}
-	"The Last Knight"
+	"The Corrupted Knight"
 	{
-		"en"		"The Last Knight"
+		"en"		"The Corrupted Knight"
 		"ru"		"Последний рыцарь"
 		"chi"		"最后的骑士"
 		"it"		"L'ultimo cavaliere"

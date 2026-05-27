@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
-	"$basetexture" "hud/leaderboard_class_ds_lastknight"
+	"$basetexture" "hud/leaderboard_class_ds_corruptedknight"
 	"$vertexcolor" 1
 	"$no_fullbright" 1
 	"$ignorez" 1

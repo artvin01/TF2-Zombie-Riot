@@ -37,12 +37,12 @@ static const char g_MeleeAttackSounds[][] =
 
 static int PeaceKnight;
 
-void LastKnight_Precache()
+void CorruptedKnight_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "The Last Knight");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_lastknight");
-	strcopy(data.Icon, sizeof(data.Icon), "ds_lastknight");
+	strcopy(data.Name, sizeof(data.Name), "The Corrupted Knight");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_corruptedknight");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_corruptedknight");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Dweller;
@@ -52,10 +52,10 @@ void LastKnight_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return LastKnight(vecPos, vecAng, team, data);
+	return CorruptedKnight(vecPos, vecAng, team, data);
 }
 
-methodmap LastKnight < CClotBody
+methodmap CorruptedKnight < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -82,7 +82,7 @@ methodmap LastKnight < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public LastKnight(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public CorruptedKnight(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		if(data[0] == 'N')
 		{
@@ -96,10 +96,10 @@ methodmap LastKnight < CClotBody
 		}
 		else if(PeaceKnight > 0)
 		{
-			return view_as<LastKnight>(-1);
+			return view_as<CorruptedKnight>(-1);
 		}
 		
-		LastKnight npc = view_as<LastKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.35", "125000", ally, false));
+		CorruptedKnight npc = view_as<CorruptedKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.35", "125000", ally, false));
 		// 125000 x 1.0
 
 		SetVariantInt(3);
@@ -113,9 +113,9 @@ methodmap LastKnight < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		func_NPCDeath[npc.index] = LastKnight_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = LastKnight_OnTakeDamage;
-		func_NPCThink[npc.index] = LastKnight_ClotThink;
+		func_NPCDeath[npc.index] = CorruptedKnight_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = CorruptedKnight_OnTakeDamage;
+		func_NPCThink[npc.index] = CorruptedKnight_ClotThink;
 		
 		npc.m_flSpeed = 150.0;	// 0.6 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -179,9 +179,9 @@ static void NPCTalkMessage(int iNPC, const char[] message)
 	PrintNPCMessageWithPrefixes(iNPC, "gray", message);
 }
 
-public void LastKnight_ClotThink(int iNPC)
+public void CorruptedKnight_ClotThink(int iNPC)
 {
-	LastKnight npc = view_as<LastKnight>(iNPC);
+	CorruptedKnight npc = view_as<CorruptedKnight>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -266,7 +266,7 @@ public void LastKnight_ClotThink(int iNPC)
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
-				int ally = NPC_CreateByName("npc_barrack_lastknight", owner, pos, ang, TFTeam_Red);
+				int ally = NPC_CreateByName("npc_barrack_corruptedknight", owner, pos, ang, TFTeam_Red);
 				view_as<BarrackBody>(ally).BonusDamageBonus = 1.0;
 				view_as<BarrackBody>(ally).BonusFireRate = 1.0;
 				view_as<BarrackBody>(ally).m_iSupplyCount = 0;
@@ -425,9 +425,9 @@ public void LastKnight_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+void CorruptedKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	LastKnight npc = view_as<LastKnight>(victim);
+	CorruptedKnight npc = view_as<CorruptedKnight>(victim);
 
 	if(attacker < 1)
 		return;
@@ -528,9 +528,9 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 	}
 }
 
-void LastKnight_NPCDeath(int entity)
+void CorruptedKnight_NPCDeath(int entity)
 {
-	LastKnight npc = view_as<LastKnight>(entity);
+	CorruptedKnight npc = view_as<CorruptedKnight>(entity);
 	if(!npc.m_bGib && !npc.m_bDissapearOnDeath)
 		npc.PlayDeathSound();
 	
