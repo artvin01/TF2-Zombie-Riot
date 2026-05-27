@@ -4665,7 +4665,7 @@
 	}
 	"Explosault Rifle Desc"
 	{
-		"en"	"Heavily modified AR that some victorian civilians managed to come up with.\nFire fast projectiles that plant bomb on its target and detonate on reload\nFiring this weapon constantly will build up overheat which will result in damage loss"
+		"en"	"Heavily modified AR that some vestian civilians managed to come up with.\nFire fast projectiles that plant bomb on its target and detonate on reload\nFiring this weapon constantly will build up overheat which will result in damage loss"
 		"ko"	"빅토리아 시민들이 손수 제작한 마개조된 돌격소총입니다.\n적중 시 폭탄 설치, 재장전으로 기폭\n계속 사용할수록 과열이 쌓여 피해량 감소"
 	}
 	"Explosault Rifle HSD 1 Desc"

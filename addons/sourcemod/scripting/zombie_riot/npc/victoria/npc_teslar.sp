@@ -21,7 +21,7 @@ void Victorian_Teslar_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Teslar");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_teslar");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_teslars"); 
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_teslars"); 
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;

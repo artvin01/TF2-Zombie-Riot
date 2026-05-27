@@ -45,7 +45,7 @@ void VictorianSquadleader_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victorian ScoutSquad Leader");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_squadleader");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_squadleaders");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_squadleaders");
 	data.IconCustom = true;
 	data.Flags = 0;
 	f_GlobalSoundCD = 0.0;

@@ -14,8 +14,8 @@ void VictoriaTank_MapStart()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Tank");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victorian_tank");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_tank");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestian_tank");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_tank");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;

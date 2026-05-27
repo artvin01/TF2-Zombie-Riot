@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
-	"$basetexture" "hud/leaderboard_class_victoria_antiarmor_infantry"
+	"$basetexture" "hud/leaderboard_class_vestia_antiarmor_infantry"
 	"$vertexcolor" 1
 	"$no_fullbright" 1
 	"$ignorez" 1

@@ -520,7 +520,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_victorian_villainy_style3/hwn2022_victorian_villainy_style3.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_vestian_villainy_style3/hwn2022_vestian_villainy_style3.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);

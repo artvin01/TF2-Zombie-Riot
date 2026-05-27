@@ -32,7 +32,7 @@ void Almina_Victorian_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victorian");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victorian");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestian");
 	strcopy(data.Icon, sizeof(data.Icon), "soldier_crit");
 	data.IconCustom = false;
 	data.Flags = 0;

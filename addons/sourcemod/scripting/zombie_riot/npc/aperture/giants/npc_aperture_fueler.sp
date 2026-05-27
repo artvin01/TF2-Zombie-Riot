@@ -41,7 +41,7 @@ void ApertureFueler_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aperture Fueler");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_fueler");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_igniter");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_igniter");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Aperture;

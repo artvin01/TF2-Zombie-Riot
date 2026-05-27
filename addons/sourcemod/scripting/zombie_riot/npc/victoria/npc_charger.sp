@@ -51,7 +51,7 @@ void Victorian_Charger_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Charger");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_charger");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_charger");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_charger");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;

@@ -12,8 +12,8 @@ void VictorianDroneFragments_MapStart()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Fragments");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victoria_fragments");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_fragments");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestia_fragments");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_fragments");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;

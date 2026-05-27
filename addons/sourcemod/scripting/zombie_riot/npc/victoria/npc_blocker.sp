@@ -87,7 +87,7 @@ void Blocker_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Blocker");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_blocker");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_blocker");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_blocker");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;

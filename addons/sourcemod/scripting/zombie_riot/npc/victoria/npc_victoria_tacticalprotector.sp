@@ -25,8 +25,8 @@ void Victorian_TacticalProtector_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Tactical Protector");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victoria_protector");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_tacticalprotectors"); 
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestia_protector");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_tacticalprotectors"); 
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
@@ -295,9 +295,9 @@ static void VictoriaProtector_ClotThink(int iNPC)
 								VecSelfNpc[2]+=45.0;
 								int spawn_index;
 								if(i_ammo_count[npc.index])
-									spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+									spawn_index = NPC_CreateByName("npc_vestia_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 								else
-									spawn_index = NPC_CreateByName("npc_victoria_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+									spawn_index = NPC_CreateByName("npc_vestia_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 								if(spawn_index > MaxClients)
 								{
 									int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*npc.m_flDroneHealth);
@@ -319,9 +319,9 @@ static void VictoriaProtector_ClotThink(int iNPC)
 						VecSelfNpc[2]+=45.0;
 						int spawn_index;
 						if(i_ammo_count[npc.index])
-							spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+							spawn_index = NPC_CreateByName("npc_vestia_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 						else
-							spawn_index = NPC_CreateByName("npc_victoria_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+							spawn_index = NPC_CreateByName("npc_vestia_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 						if(spawn_index > MaxClients)
 						{
 							int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*npc.m_flDroneHealth);

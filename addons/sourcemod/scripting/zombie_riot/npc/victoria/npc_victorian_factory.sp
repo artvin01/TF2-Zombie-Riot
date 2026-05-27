@@ -13,8 +13,8 @@ void VictorianFactory_MapStart()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Factory");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victoria_factory");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_factory");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestia_factory");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_factory");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
@@ -607,7 +607,7 @@ static void FactoryCPU(int iNPC)
 						if(gameTime > npc.m_flAttackHappens)
 						{
 							GetAbsOrigin(npc.m_iWearable3, Vec);
-							int spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), "mk2;isvoli");
+							int spawn_index = NPC_CreateByName("npc_vestia_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), "mk2;isvoli");
 							if(spawn_index > MaxClients)
 							{
 								NpcStats_CopyStats(npc.index, spawn_index);
@@ -703,9 +703,9 @@ static void FactoryCPU(int iNPC)
 						Vec[2]+=45.0;
 						int spawn_index;
 						if(npc.m_iState==1)
-							spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+							spawn_index = NPC_CreateByName("npc_vestia_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 						else
-							spawn_index = NPC_CreateByName("npc_victoria_anvil", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+							spawn_index = NPC_CreateByName("npc_vestia_anvil", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 						if(spawn_index > MaxClients)
 						{
 							int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.7);
@@ -750,9 +750,9 @@ static void FactoryCPU(int iNPC)
 						Vec[2]+=45.0;
 						int spawn_index;
 						if(npc.m_iState==1)
-							spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+							spawn_index = NPC_CreateByName("npc_vestia_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 						else
-							spawn_index = NPC_CreateByName("npc_victoria_anvil", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+							spawn_index = NPC_CreateByName("npc_vestia_anvil", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 						if(spawn_index > MaxClients)
 						{
 							int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.7);
@@ -944,7 +944,7 @@ static void Factory_Got_Explod(int entity)
 		RemoveEntity(npc.m_iWearable8);
 }
 
-stock int GetRandomVictoriaFactory(int entity, const char[] InputNPCId="npc_victoria_factory")
+stock int GetRandomVictoriaFactory(int entity, const char[] InputNPCId="npc_vestia_factory")
 {
 	int GetFactory = StringToInt(InputNPCId);
 	if(!GetFactory)

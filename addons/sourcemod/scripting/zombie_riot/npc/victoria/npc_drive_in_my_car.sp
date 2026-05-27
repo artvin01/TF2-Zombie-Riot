@@ -18,8 +18,8 @@ void VictorianAssaultVehicle_OnMapStart()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victorian Assault Vehicle");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victorian_assault_vehicle");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_assault_vehicle");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestian_assault_vehicle");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_assault_vehicle");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;

@@ -105,7 +105,7 @@ void Castellan_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Castellan");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_castellan");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_castellan_raid");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_castellan_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -134,7 +134,7 @@ static void ClotPrecache()
 	PrecacheSound("weapons/airstrike_fire_crit.wav", true);
 	PrecacheSound("weapons/cow_mangler_explode.wav", true);
 	
-	PrecacheSoundCustom("#zombiesurvival/victoria_1/raid_castellan.mp3");
+	PrecacheSoundCustom("#zombiesurvival/vestia_1/raid_castellan.mp3");
 	
 	PrecacheModel("models/player/soldier.mdl");
 	g_BluePoint = PrecacheModel("sprites/blueglow1.vmt");
@@ -479,7 +479,7 @@ methodmap Castellan < CClotBody
 		if(StrContains(data, "nomusic") == -1)
 		{
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria_1/raid_castellan.mp3");
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/vestia_1/raid_castellan.mp3");
 			music.Time = 154;
 			music.Volume = 2.0;
 			music.Custom = true;
@@ -582,7 +582,7 @@ static void Castellan_FORVICTORIA(int iNPC)
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		for(int i; i<10; i++)
 		{
-			int spawn_index = NPC_CreateByName("npc_victorian_tank", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "alway_mount_lmg;turnrate20000.0");
+			int spawn_index = NPC_CreateByName("npc_vestian_tank", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "alway_mount_lmg;turnrate20000.0");
 			if(spawn_index > MaxClients)
 			{
 				NpcStats_CopyStats(npc.index, spawn_index);
@@ -744,7 +744,7 @@ static void Castellan_FORVICTORIA(int iNPC)
 				}
 				npc.m_iTarget = Victoria_GetTargetDistance(npc.index, true, false);
 				GetAbsOrigin(npc.m_iTarget, VecSelfNpc);
-				NPC_CreateByName("npc_victoria_factory", -1, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), "type-d;donusetele");
+				NPC_CreateByName("npc_vestia_factory", -1, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), "type-d;donusetele");
 				npc.m_flGetClosestTargetTime=0.0;
 				RaidModeTime += 35.0;
 				func_NPCThink[npc.index] = Castellan_ClotThink;
@@ -913,7 +913,7 @@ static void Castellan_ClotThink(int iNPC)
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		for(int i; i<10; i++)
 		{
-			int spawn_index = NPC_CreateByName("npc_victorian_tank", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "alway_mount_lmg;turnrate20000.0");
+			int spawn_index = NPC_CreateByName("npc_vestian_tank", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "alway_mount_lmg;turnrate20000.0");
 			if(spawn_index > MaxClients)
 			{
 				NpcStats_CopyStats(npc.index, spawn_index);
@@ -1287,7 +1287,7 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", SelfPos);
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", AllyAng);
 			}
-			int SensalSpawn = NPC_CreateByName("npc_sensal", -1, SelfPos, AllyAng, GetTeam(npc.index), "victoria_cutscene");
+			int SensalSpawn = NPC_CreateByName("npc_sensal", -1, SelfPos, AllyAng, GetTeam(npc.index), "vestia_cutscene");
 			if(IsValidEntity(SensalSpawn))
 			{
 				if(GetTeam(SensalSpawn) != TFTeam_Red)
@@ -1703,14 +1703,14 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 				if(NextDrone)
 				{
 					FormatEx(Adddeta, sizeof(Adddeta), "%soverridetarget%i", Adddeta, EntIndexToEntRef(npc.index));
-					DroneIndex = NPC_CreateByName("npc_victoria_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+					DroneIndex = NPC_CreateByName("npc_vestia_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 					maxhealth = RoundToCeil(RaidModeScaling * 21239.0);
 					red=45, green=237, blue=164;
 				}
 				else
 				{
 					FormatEx(Adddeta, sizeof(Adddeta), "%soverridetarget%i", Adddeta, EntIndexToEntRef(whattarget));
-					DroneIndex = NPC_CreateByName("npc_victoria_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
+					DroneIndex = NPC_CreateByName("npc_vestia_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
 					maxhealth = RoundToCeil(RaidModeScaling * 11278.0);
 					red=229, green=235, blue=52;
 				}
@@ -2026,8 +2026,8 @@ static void ResetCastellanWeapon(Castellan npc, int weapon_Type)
 static void WhyNoFactory(int ref)
 {
 	int entity = EntRefToEntIndex(ref);
-	NPC_CreateByName("npc_victoria_factory", -1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, GetTeam(entity), "type-d");
-	NPC_CreateByName("npc_victoria_factory", -1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, GetTeam(entity), "type-d");
+	NPC_CreateByName("npc_vestia_factory", -1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, GetTeam(entity), "type-d");
+	NPC_CreateByName("npc_vestia_factory", -1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, GetTeam(entity), "type-d");
 }
 
 static int CreateSupport_Castellan(int entity, int enemySelect, float SelfPos[3], int WhatBoss, int SetAbility=0)

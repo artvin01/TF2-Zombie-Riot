@@ -331,7 +331,7 @@ methodmap Sensal < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = 50;
 		}
-		bool cutscene2 = StrContains(data, "victoria_cutscene") != -1;
+		bool cutscene2 = StrContains(data, "vestia_cutscene") != -1;
 		if(cutscene2)
 		{
 			i_RaidGrantExtra[npc.index] = 51;

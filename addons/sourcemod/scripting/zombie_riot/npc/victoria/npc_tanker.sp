@@ -27,7 +27,7 @@ void VIctorianTanker_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Tanker");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_tanker");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_tanker");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_tanker");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;

@@ -52,7 +52,7 @@ void VictorianBooster_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Booster");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_booster");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_booster");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_booster");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
@@ -173,7 +173,7 @@ methodmap VictorianBooster < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		npc.m_iWearable2	= npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_victorian_villainy/hwn2022_victorian_villainy.mdl");
+		npc.m_iWearable2	= npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_vestian_villainy/hwn2022_vestian_villainy.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 

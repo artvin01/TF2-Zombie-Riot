@@ -10,8 +10,8 @@ void VictorianDroneAnvil_MapStart()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Anvil");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victoria_anvil");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_anvil");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestia_anvil");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_anvil");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;

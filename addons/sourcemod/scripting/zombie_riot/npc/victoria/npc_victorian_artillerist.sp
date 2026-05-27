@@ -21,8 +21,8 @@ void VictoriaArtillerist_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victorian Artillerist");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victorian_artillerist");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_mortar");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestian_artillerist");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_mortar");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;

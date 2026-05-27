@@ -46,7 +46,7 @@ void VictorianMechanist_as_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Mechanist");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mechanist");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_mechanist");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_mechanist");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;

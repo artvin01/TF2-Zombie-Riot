@@ -57,7 +57,7 @@ void BarbaricTeardownOnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barbaric Teardown");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barbaric_teardown");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_basebreaker");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_basebreaker");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Outlaws;

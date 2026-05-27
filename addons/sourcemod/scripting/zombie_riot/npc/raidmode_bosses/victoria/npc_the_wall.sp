@@ -91,7 +91,7 @@ void Huscarls_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Huscarls");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_the_wall");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_huscarls_raid");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_huscarls_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -125,7 +125,7 @@ static void ClotPrecache()
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("items/powerup_pickup_knockout.wav", true);
 	PrecacheSound("items/powerup_pickup_resistance.wav", true);
-	PrecacheSoundCustom("#zombiesurvival/victoria_1/huscarl_ost_new.mp3");
+	PrecacheSoundCustom("#zombiesurvival/vestia_1/huscarl_ost_new.mp3");
 
 	PrecacheModel("models/props_mvm/mvm_player_shield.mdl", true);
 	PrecacheModel("models/props_mvm/mvm_player_shield2.mdl", true);
@@ -486,7 +486,7 @@ methodmap Huscarls < CClotBody
 			if(StrContains(data, "nomusic") == -1)
 			{
 				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria_1/huscarl_ost_new.mp3");
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/vestia_1/huscarl_ost_new.mp3");
 				music.Time = 232;
 				music.Volume = 1.7;
 				music.Custom = true;

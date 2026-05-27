@@ -22,7 +22,7 @@ void VictoriaMortar_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victorian Mortar");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mortar");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_artillerist");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_artillerist");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
@@ -116,7 +116,7 @@ methodmap VictoriaMortar < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_directhit/c_directhit.mdl");
 		
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/cloud_crasher/cloud_crasher.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_victorian_villainy/hwn2022_victorian_villainy.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_vestian_villainy/hwn2022_vestian_villainy.mdl");
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/cc_summer2015_the_vascular_vestment/cc_summer2015_the_vascular_vestment.mdl");
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/dec22_wooly_pulli_style1/dec22_wooly_pulli_style1.mdl");
 

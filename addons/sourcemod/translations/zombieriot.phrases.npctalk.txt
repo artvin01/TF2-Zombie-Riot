@@ -413,7 +413,7 @@
 	}
 	"Huscarls_Talk_Support-4"
 	{
-		"en"	"Who said all victorians use explosive in battle Ha!"
+		"en"	"Who said all vestians use explosive in battle Ha!"
 		"ko"	"누가 빅토리안들이 전투에 폭발물만 쓴다고 했지? 하!"
 	}
 	"Huscarls_Talk_Support-5"

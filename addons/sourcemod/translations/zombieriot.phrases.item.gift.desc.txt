@@ -3238,7 +3238,7 @@
 	}
 	"Signaller Desc"
 	{
-		"en"	"Elite unit of Victorian army. \nHe receives a direct opertion order from radiotower and deliver it to all enemies \n-While alive, all the enemies get Signal buff which increases their damage and speed. \n-Also, all victorian enemies will unlock special traits"
+		"en"	"Elite unit of Victorian army. \nHe receives a direct opertion order from radiotower and deliver it to all enemies \n-While alive, all the enemies get Signal buff which increases their damage and speed. \n-Also, all vestian enemies will unlock special traits"
 	}
 	"Humbee Desc"
 	{
@@ -3332,15 +3332,15 @@
 	}
 	"Birdeye Desc"
 	{
-		"en"	"One of the elite mercenaries hired by Castellan. Always support Harbringer and Bigpipe. \n-Birdeye enjoys watching its victim suffer in pain by sniping targets with special vulnerability bullet. \n-Equipped with teleportation device that he will use it to reposition himself from incoming threats \n-He also got transmitter from victorian army to get specific orders and locks into target much faster\n-(When signalled) Always hit target within sight"
+		"en"	"One of the elite mercenaries hired by Castellan. Always support Harbringer and Bigpipe. \n-Birdeye enjoys watching its victim suffer in pain by sniping targets with special vulnerability bullet. \n-Equipped with teleportation device that he will use it to reposition himself from incoming threats \n-He also got transmitter from vestian army to get specific orders and locks into target much faster\n-(When signalled) Always hit target within sight"
 	}
 	"Harbringer Desc"
 	{
-		"en"	"One of the elite mercenaries hired by Castellan. Always get along with Bigpipe and Birdeye. \n-Holds LMG and rushes in fast speed. \n-He also got painkiller and transmitter from victorian army which he would use it on command \n-(When signalled) sets max cap of damage that he could take per hit"
+		"en"	"One of the elite mercenaries hired by Castellan. Always get along with Bigpipe and Birdeye. \n-Holds LMG and rushes in fast speed. \n-He also got painkiller and transmitter from vestian army which he would use it on command \n-(When signalled) sets max cap of damage that he could take per hit"
 	}
 	"Bigpipe Desc"
 	{
-		"en"	"One of the elite mercenaries hired by Castellan. Always get along with Bigpipe and Birdeye. \n-Equipped with special grenade launcher, Bigpipe fires arching pipes that will explode on contact. \n-He perfroms good crowd-control against enemies and building destruction\n-He is also equipped with HE ammunition and victorian transmitter which he will use on given orders \n-(When signalled) Ignite targets hit by pipes"
+		"en"	"One of the elite mercenaries hired by Castellan. Always get along with Bigpipe and Birdeye. \n-Equipped with special grenade launcher, Bigpipe fires arching pipes that will explode on contact. \n-He perfroms good crowd-control against enemies and building destruction\n-He is also equipped with HE ammunition and vestian transmitter which he will use on given orders \n-(When signalled) Ignite targets hit by pipes"
 	}
 	"Caffeinator Desc"
 	{
@@ -3417,11 +3417,11 @@
 	}
 	"Victoria Atomizer Desc"
 	{
-		"en"	" `You can't outrun me!` \nCaptain of Victoria's Leatherboots Scoutsquad. Priorities speed over everything \nFires barrage of homing energy balls which will slow targets down and often drags all people to him to swing a homerun \n Harrison will help Atomizer by controlling victorian artillery and target the furtherest target from atomizer dealing devastating damage"
+		"en"	" `You can't outrun me!` \nCaptain of Victoria's Leatherboots Scoutsquad. Priorities speed over everything \nFires barrage of homing energy balls which will slow targets down and often drags all people to him to swing a homerun \n Harrison will help Atomizer by controlling vestian artillery and target the furtherest target from atomizer dealing devastating damage"
 	}
 	"Victoria Huscarls Desc"
 	{
-		"en"	" `You're up against the wall and I am the fucking wall!` \nLieutenant of Victoria's Irongate Defense Units. Aquires adaptive armor on each amount of health loss \nPeform various abilities focused on defense and blocking attacks\nHe will summon Brassbunker Avangards when he is in danger. However, they are not ready yet so easy to kill \n Harrison will help Atomizer by controlling victorian artillery and target the furtherest target from atomizer dealing devastating damage"
+		"en"	" `You're up against the wall and I am the fucking wall!` \nLieutenant of Victoria's Irongate Defense Units. Aquires adaptive armor on each amount of health loss \nPeform various abilities focused on defense and blocking attacks\nHe will summon Brassbunker Avangards when he is in danger. However, they are not ready yet so easy to kill \n Harrison will help Atomizer by controlling vestian artillery and target the furtherest target from atomizer dealing devastating damage"
 	}
 	"Victoria Harrison Desc"
 	{
@@ -3433,7 +3433,7 @@
 	}
 	"Zapmarker Desc"
 	{
-		"en"	"An elite melee unit of victoria \n-Throws Zapper's axe to apply teslar debuff to its victim\n-Then rush in with melee that applies heavy bleed"
+		"en"	"An elite melee unit of vestia \n-Throws Zapper's axe to apply teslar debuff to its victim\n-Then rush in with melee that applies heavy bleed"
 	}
 	"Resource Collector Desc"
 	{

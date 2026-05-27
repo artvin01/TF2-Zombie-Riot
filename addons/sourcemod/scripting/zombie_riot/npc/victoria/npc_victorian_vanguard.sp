@@ -30,7 +30,7 @@ void VictorianVanguard_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victorian Vanguard");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victorian_vanguard");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestian_vanguard");
 	strcopy(data.Icon, sizeof(data.Icon), "spearmen");
 	data.IconCustom = true;
 	data.Flags = 0;

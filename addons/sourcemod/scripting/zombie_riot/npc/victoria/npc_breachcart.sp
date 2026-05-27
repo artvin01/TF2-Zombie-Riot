@@ -47,7 +47,7 @@ void VictoriaBreachcart_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Breachcart");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_breachcart");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_breachcart");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_breachcart");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;

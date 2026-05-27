@@ -21,8 +21,8 @@ void VictoriaRadiomast_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Radiomast");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victoria_radiomast");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_radiomast");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestia_radiomast");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_radiomast");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
@@ -227,7 +227,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 							}	
 							case 4:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_victorian_vanguard",35000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_vestian_vanguard",35000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 5:
 							{

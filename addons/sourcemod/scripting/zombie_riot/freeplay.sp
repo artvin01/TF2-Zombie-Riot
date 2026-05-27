@@ -1124,7 +1124,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 25:	
 		{
-			CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {red}In the name of victoria, he won't allow you further in!");
+			CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {red}In the name of vestia, he won't allow you further in!");
 		}
 		case 26:
 		{

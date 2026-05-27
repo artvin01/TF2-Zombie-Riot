@@ -39,7 +39,7 @@ void Victorian_Resource_Collector_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Resource Collector");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_resource_collector");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_ironshield");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_ironshield");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Victoria;

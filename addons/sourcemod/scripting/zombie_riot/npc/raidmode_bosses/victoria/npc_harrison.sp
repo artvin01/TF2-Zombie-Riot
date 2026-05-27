@@ -104,7 +104,7 @@ void Harrison_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Harrison");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_harrison");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_harrison_raid");
+	strcopy(data.Icon, sizeof(data.Icon), "vestia_harrison_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -133,7 +133,7 @@ static void ClotPrecache()
 	PrecacheSound(g_LaserBeamSoundsStart);
 	PrecacheSound("mvm/ambient_mp3/mvm_siren.mp3");
 	PrecacheSound("weapons/ar2/npc_ar2_reload.wav");
-	PrecacheSoundCustom("#zombiesurvival/victoria_1/raid_harrison.mp3");
+	PrecacheSoundCustom("#zombiesurvival/vestia_1/raid_harrison.mp3");
 	
 	PrecacheModel("models/player/sniper.mdl");
 	PrecacheModel("models/weapons/w_models/w_drg_ball.mdl");
@@ -473,7 +473,7 @@ methodmap Harrison < CClotBody
 			if(StrContains(data, "nomusic") == -1)
 			{
 				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria_1/raid_harrison.mp3");
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/vestia_1/raid_harrison.mp3");
 				music.Time = 92;
 				music.Volume = 1.0;
 				music.Custom = true;

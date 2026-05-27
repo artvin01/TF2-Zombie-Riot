@@ -715,7 +715,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_messenger.sp"
 #include "custom/kit_blacksmith.sp"
 #include "custom/weapon_deagle_west.sp"
-#include "custom/weapon_victorian.sp"
+#include "custom/weapon_vestian.sp"
 #include "custom/weapon_obuch.sp"
 #include "custom/kit_merchant.sp"
 #include "custom/weapon_mg42.sp"
