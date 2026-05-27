@@ -693,10 +693,10 @@ void NPC_ConfigSetup()
 	VestanMechanist_as_OnMapStart_NPC();
 	VestanOfflineAvangard_MapStart();
 	VestanWelder_OnMapStart_NPC();
-	VIctorianTanker_OnMapStart_NPC();
+	VestanTanker_OnMapStart_NPC();
 	VestanAssaultVehicle_OnMapStart();
 	VestanPulverizer_OnMapStart_NPC();
-	VIctorianAmbusher_OnMapStart_NPC();
+	VestanAmbusher_OnMapStart_NPC();
 	VestaTank_MapStart();
 	VestaTaser_OnMapStart_NPC();
 	VestaRadiomast_OnMapStart_NPC();
