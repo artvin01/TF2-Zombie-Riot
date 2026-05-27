@@ -679,7 +679,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	else if(moremen)
 	{
 		enemy.Is_Immune_To_Nuke = true;
-		enemy.Index = NPC_GetByPlugin("npc_seaborn_heavy");
+		enemy.Index = NPC_GetByPlugin("npc_dweller_heavy");
 		enemy.Health = RoundToCeil(((80000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
 		enemy.ExtraSpeed = 1.5;
 		enemy.ExtraSize = 1.25;

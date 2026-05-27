@@ -25,8 +25,8 @@
 	}
 	"Heavy Rain Desc"
 	{
-		"en"	"{yellow}All units gain -20％ movement speed, Seaborn units instead gain +10％ movement speed"
-		"it"	"{yellow}Tutte le unità guadagnano -20％ di velocità di movimento, le unità Seaborn invece guadagnano +10％ di velocità di movimento"
+		"en"	"{yellow}All units gain -20％ movement speed, Dweller units instead gain +10％ movement speed"
+		"it"	"{yellow}Tutte le unità guadagnano -20％ di velocità di movimento, le unità Dweller invece guadagnano +10％ di velocità di movimento"
 		"ru"	"{yellow}Все юниты двигають медленее на 20％,Морерождённые двигаются на 10％ быстрее"
 		"ko"	"{yellow}모든 유닛의 이동 속도가 20％ 감소합니다. 시본은 대신 이동 속도가 10％ 증가합니다."
 	}

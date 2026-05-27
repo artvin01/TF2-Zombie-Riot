@@ -18,7 +18,7 @@ static const char Categories[][] =
 	"Bloons",
 	"Medieval Empire",
 	"Cry of Fear",
-	"Seaborn Infection",
+	"Dweller Infection",
 	"Expidonsa",
 	"Interitus Alliances",
 	"Chaos Allience",

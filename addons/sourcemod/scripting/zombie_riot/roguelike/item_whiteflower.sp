@@ -114,7 +114,7 @@ public void Rogue_SoulArknights_Weapon(int entity, int client)
 	
 	char buffer[64];
 	Store_GetItemName(StoreWeapon[entity], client, buffer, sizeof(buffer), false);
-	if(Store_IsWeaponFaction(client, entity, Faction_Seaborn) ||
+	if(Store_IsWeaponFaction(client, entity, Faction_Dweller) ||
 		Store_IsWeaponFaction(client, entity, Faction_Kazimierz) ||
 		Store_IsWeaponFaction(client, entity, Faction_Vesta) ||
 		StrContains(buffer, "The Enforcer", false) != -1 ||
@@ -134,7 +134,7 @@ public void Rogue_SoulArknights_Weapon(int entity, int client)
 		StrContains(buffer, "Passanger's Device", false) != -1 ||
 		StrContains(buffer, "The Standchen", false) != -1 ||
 		StrContains(buffer, "Merchant's Wrench", false) != -1 ||
-		StrContains(buffer, "Seaborn Claws", false) != -1 ||
+		StrContains(buffer, "Dweller Claws", false) != -1 ||
 		StrContains(buffer, "Explosive Dawn", false) != -1 ||
 		StrContains(buffer, "Ancestor Launcher", false) != -1 ||
 		StrContains(buffer, "Whistle Stop", false) != -1)
@@ -289,7 +289,7 @@ public void Rogue_AntiXeno_Enemy(int entity)
 	}
 }
 
-public void Rogue_AntiSeaborn_Enemy(int entity)
+public void Rogue_AntiDweller_Enemy(int entity)
 {
 	if(i_BleedType[entity] == BLEEDTYPE_DWELLER)
 	{

@@ -45,25 +45,25 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/samurai/tf_katana_06.wav",
 };
 
-void SeabornSoldier_Precache()
+void DwellerSoldier_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seaborn Soldier");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_soldier");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Soldier");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_soldier");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_soldier");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SeabornSoldier(vecPos, vecAng, team);
+	return DwellerSoldier(vecPos, vecAng, team);
 }
 
-methodmap SeabornSoldier < CClotBody
+methodmap DwellerSoldier < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -90,9 +90,9 @@ methodmap SeabornSoldier < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornSoldier(float vecPos[3], float vecAng[3], int ally)
+	public DwellerSoldier(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornSoldier npc = view_as<SeabornSoldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "8000", ally));
+		DwellerSoldier npc = view_as<DwellerSoldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "8000", ally));
 		
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -104,9 +104,9 @@ methodmap SeabornSoldier < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = SeabornSoldier_NPCDeath;
+		func_NPCDeath[npc.index] = DwellerSoldier_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = SeabornSoldier_ClotThink;
+		func_NPCThink[npc.index] = DwellerSoldier_ClotThink;
 		
 		npc.m_flSpeed = 240.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -121,9 +121,9 @@ methodmap SeabornSoldier < CClotBody
 	}
 }
 
-public void SeabornSoldier_ClotThink(int iNPC)
+public void DwellerSoldier_ClotThink(int iNPC)
 {
-	SeabornSoldier npc = view_as<SeabornSoldier>(iNPC);
+	DwellerSoldier npc = view_as<DwellerSoldier>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -260,9 +260,9 @@ public void SeabornSoldier_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornSoldier_NPCDeath(int entity)
+void DwellerSoldier_NPCDeath(int entity)
 {
-	SeabornSoldier npc = view_as<SeabornSoldier>(entity);
+	DwellerSoldier npc = view_as<DwellerSoldier>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	

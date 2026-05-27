@@ -158,7 +158,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "custom/transform_alminan.sp"
 #include "custom/transform_merc_human.sp"
 #include "custom/transform_ruianian.sp"
-#include "custom/transform_seaborn.sp"
+#include "custom/transform_dweller.sp"
 
 void RPG_PluginStart()
 {
@@ -252,7 +252,7 @@ void RPG_MapStart()
 	Transform_Alminan_MapStart();
 	Transform_MercHuman_MapStart();
 	Transform_Ruianian_MapStart();
-	Transform_Seaborn_MapStart();
+	Transform_Dweller_MapStart();
 
 	SamuraiSword_Map_Precache();
 	GroundSlam_Map_Precache();

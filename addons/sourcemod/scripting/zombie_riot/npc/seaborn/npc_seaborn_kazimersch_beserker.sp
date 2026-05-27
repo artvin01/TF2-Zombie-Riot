@@ -50,11 +50,11 @@ void KazimierzBeserker_OnMapStart_NPC()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bloodboil Knightclub Trainee");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_kazimersch_beserker");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_kazimersch_beserker");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_berserker");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

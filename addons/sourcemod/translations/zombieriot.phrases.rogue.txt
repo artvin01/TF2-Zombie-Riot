@@ -907,7 +907,7 @@
 	}
 	"Mediveal Ally Title"
 	{
-		"en"	"A group of Medievalists seem to be fighting a group of seaborn and they're losing."
+		"en"	"A group of Medievalists seem to be fighting a group of dweller and they're losing."
 		"it"	"Un gruppo di medievali sembra combattere contro un gruppo di marinai e sta perdendo."
 		"ko"	"중세인들 무리가 시본 무리들과 싸우고 있는 것처럼 보인다. 그들은 전투에서 밀려나고 있다."
 	}
@@ -2615,16 +2615,16 @@
 		"it"	"Sopprime gli effetti di Xeno, per un momento.\n{green}I nemici di Xeno subiscono +75％ danni"
 		"ko"	"제노 감염의 효과를 억제한다... 잠깐 동안은.\n{green}제노 계열 적들에게 가하는 공격 피해량이 +75％ 증가합니다."
 	}
-	"Seaborn Anti-Vial"
+	"Dweller Anti-Vial"
 	{
-		"en"	"Seaborn Anti-Vial"
-		"it"	"Seaborn Anti-Vial"
+		"en"	"Dweller Anti-Vial"
+		"it"	"Dweller Anti-Vial"
 		"ko"	"항-시본 바이알"
 	}
-	"Seaborn Anti-Vial Desc"
+	"Dweller Anti-Vial Desc"
 	{
-		"en"	"A lantern that even Seaborn fear.\n{green}Seaborn enemies take +75％ damage"
-		"it"	"Una lanterna che persino i Seaborn temono.\n{green}I nemici dei Seaborn subiscono +75％ danni"
+		"en"	"A lantern that even Dweller fear.\n{green}Dweller enemies take +75％ damage"
+		"it"	"Una lanterna che persino i Dweller temono.\n{green}I nemici dei Dweller subiscono +75％ danni"
 		"ko"	"시본이 두려워하는 랜턴.\n{green}시본 계열 적들에게 기하는 공격 피해량이 +75％ 증가합니다."
 	}
 	"Revenge Squad"

@@ -1208,7 +1208,7 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 			maxhealth *= 0.02;
 			for (int DoSpawns = 0; DoSpawns < 2; DoSpawns++)
 			{
-				int spawn_index = NPC_CreateByName("npc_seaborn_vanguard", -1, ProjectileLoc, ang, GetTeam(npc.index));
+				int spawn_index = NPC_CreateByName("npc_dweller_vanguard", -1, ProjectileLoc, ang, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
 					NpcStats_CopyStats(npc.index, spawn_index);

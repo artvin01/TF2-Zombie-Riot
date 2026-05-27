@@ -48,25 +48,25 @@ static const char g_RangedAttackSoundsSecondary[][] =
 	"ambient/levels/labs/electric_explosion5.wav",
 };
 
-void SeabornSpecialist_Precache()
+void DwellerSpecialist_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seaborn Specialist");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_specialist");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Specialist");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_specialist");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_specialist");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeabornSpecialist(vecPos, vecAng, team, data);
+	return DwellerSpecialist(vecPos, vecAng, team, data);
 }
 
-methodmap SeabornSpecialist < CClotBody
+methodmap DwellerSpecialist < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -97,7 +97,7 @@ methodmap SeabornSpecialist < CClotBody
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornSpecialist(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public DwellerSpecialist(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool teleported;
 
@@ -123,7 +123,7 @@ methodmap SeabornSpecialist < CClotBody
 			}
 		}
 
-		SeabornSpecialist npc = view_as<SeabornSpecialist>(CClotBody(teleported ? vecPos2 : vecPos, teleported ? vecAng2 : vecAng, COMBINE_CUSTOM_MODEL, "1.15", "35000", ally, false));
+		DwellerSpecialist npc = view_as<DwellerSpecialist>(CClotBody(teleported ? vecPos2 : vecPos, teleported ? vecAng2 : vecAng, COMBINE_CUSTOM_MODEL, "1.15", "35000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -148,9 +148,9 @@ methodmap SeabornSpecialist < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
-		func_NPCDeath[npc.index] = SeabornSpecialist_NPCDeath;
+		func_NPCDeath[npc.index] = DwellerSpecialist_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = SeabornSpecialist_ClotThink;
+		func_NPCThink[npc.index] = DwellerSpecialist_ClotThink;
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -188,9 +188,9 @@ methodmap SeabornSpecialist < CClotBody
 	}
 }
 
-public void SeabornSpecialist_ClotThink(int iNPC)
+public void DwellerSpecialist_ClotThink(int iNPC)
 {
-	SeabornSpecialist npc = view_as<SeabornSpecialist>(iNPC);
+	DwellerSpecialist npc = view_as<DwellerSpecialist>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -297,9 +297,9 @@ public void SeabornSpecialist_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornSpecialist_NPCDeath(int entity)
+void DwellerSpecialist_NPCDeath(int entity)
 {
-	SeabornSpecialist npc = view_as<SeabornSpecialist>(entity);
+	DwellerSpecialist npc = view_as<DwellerSpecialist>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	

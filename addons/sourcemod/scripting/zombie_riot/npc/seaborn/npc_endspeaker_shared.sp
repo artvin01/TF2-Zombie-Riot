@@ -76,7 +76,7 @@ void Herald_MapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "ds_herald");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon1;
 	HeraldLowId = NPC_Add(data);
 

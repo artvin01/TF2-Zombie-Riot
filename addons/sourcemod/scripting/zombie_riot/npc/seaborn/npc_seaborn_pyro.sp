@@ -36,25 +36,25 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/machete_swing.wav"
 };
 
-void SeabornPyro_Precache()
+void DwellerPyro_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seaborn Pyro");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_pyro");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Pyro");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_pyro");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_pyro");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SeabornPyro(vecPos, vecAng, team);
+	return DwellerPyro(vecPos, vecAng, team);
 }
 
-methodmap SeabornPyro < CClotBody
+methodmap DwellerPyro < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -81,9 +81,9 @@ methodmap SeabornPyro < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornPyro(float vecPos[3], float vecAng[3], int ally)
+	public DwellerPyro(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornPyro npc = view_as<SeabornPyro>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "6000", ally));
+		DwellerPyro npc = view_as<DwellerPyro>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "6000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -95,9 +95,9 @@ methodmap SeabornPyro < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = SeabornPyro_NPCDeath;
+		func_NPCDeath[npc.index] = DwellerPyro_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = SeabornPyro_ClotThink;
+		func_NPCThink[npc.index] = DwellerPyro_ClotThink;
 		
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flSpeed = 300.0;
@@ -114,9 +114,9 @@ methodmap SeabornPyro < CClotBody
 	}
 }
 
-public void SeabornPyro_ClotThink(int iNPC)
+public void DwellerPyro_ClotThink(int iNPC)
 {
-	SeabornPyro npc = view_as<SeabornPyro>(iNPC);
+	DwellerPyro npc = view_as<DwellerPyro>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -215,9 +215,9 @@ public void SeabornPyro_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornPyro_NPCDeath(int entity)
+void DwellerPyro_NPCDeath(int entity)
 {
-	SeabornPyro npc = view_as<SeabornPyro>(entity);
+	DwellerPyro npc = view_as<DwellerPyro>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	

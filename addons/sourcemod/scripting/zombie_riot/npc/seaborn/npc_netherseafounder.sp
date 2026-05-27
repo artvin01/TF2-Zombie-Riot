@@ -41,7 +41,7 @@ void SeaFounder_Precache()
 	strcopy(data.Icon, sizeof(data.Icon), "ds_founder");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -629,7 +629,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 					resist = true;
 					
 				bool ignore = false;
-				bool Benifit = (SeaMelee_IsSeaborn(client));
+				bool Benifit = (SeaMelee_IsDweller(client));
 				int Active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 				if(Active_weapon > 1)
 				{

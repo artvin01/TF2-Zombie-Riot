@@ -1974,7 +1974,7 @@ methodmap CClotBody < CBaseCombatCharacter
 #endif
 
 #if defined ZR
-		SeabornVanguard_SpeedBuff(this, speed_for_return);	
+		DwellerVanguard_SpeedBuff(this, speed_for_return);	
 #endif
 
 #if defined RPG

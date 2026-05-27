@@ -70,12 +70,12 @@
 		"it"		"Impero medievale"
 		"ko" 		"중세 제국"
 	}
-	"Seaborn Infection"
+	"Dweller Infection"
 	{
-		"en" 		"Seaborn Infection"
-		"fr" 		"Infectés par Seaborn"
+		"en" 		"Dweller Infection"
+		"fr" 		"Infectés par Dweller"
 		"pt"		"Infecção do Mar"
-		"it"		"Infezione di Seaborn"
+		"it"		"Infezione di Dweller"
 		"ko" 		"시본 감염체들"
 	}
 	"Bloons"
@@ -1275,8 +1275,8 @@
 	}
 	"The First To Talk Desc"
 	{
-		"en"		"Fires projectiles with armor erosion, can fire rapid amounts in AOE area.\nThe first beautiful living being to speak human language before civilized man.\nSeaborn.\n- Uses a ranged attack\n- Attacks inflict Nervous Impairment\n- Periodically locks onto target location, after a delay hits serveral times to a random enemy within range"
-		"it"		"Spara proiettili con erosione dell'armatura, può sparare rapidamente in un'area AOE.\nIl primo bell'essere vivente a parlare il linguaggio umano prima dell'uomo civilizzato.\nSeaborn.\n- Utilizza un attacco a distanza.\n- Gli attacchi infliggono menomazioni nervose.\n- Si blocca periodicamente sulla posizione del bersaglio, dopo un ritardo colpisce più volte un nemico a caso nel raggio d'azione"
+		"en"		"Fires projectiles with armor erosion, can fire rapid amounts in AOE area.\nThe first beautiful living being to speak human language before civilized man.\nDweller.\n- Uses a ranged attack\n- Attacks inflict Nervous Impairment\n- Periodically locks onto target location, after a delay hits serveral times to a random enemy within range"
+		"it"		"Spara proiettili con erosione dell'armatura, può sparare rapidamente in un'area AOE.\nIl primo bell'essere vivente a parlare il linguaggio umano prima dell'uomo civilizzato.\nDweller.\n- Utilizza un attacco a distanza.\n- Gli attacchi infliggono menomazioni nervose.\n- Si blocca periodicamente sulla posizione del bersaglio, dopo un ritardo colpisce più volte un nemico a caso nel raggio d'azione"
 		"ko"		"처음으로 문명의 앞에서 인간의 말을 쓴 아름다운 생물.\n시본.\n-원거리 공격을 사용하며, 신경 손상 원소 피해를 부여함\n-표적의 위치에 지점을 표시한뒤, 짧은 지연 후 범위 내에 있는 무작위 적에게 다중 타격을 함."
 	}
 	"Sal Viento Bishop Quintus Desc"
@@ -1317,8 +1317,8 @@
 	}
 	"Herald of the Abyss Desc"
 	{
-		"en"		"The tiny Seaborn that haunted the mighty Stultifera, the blood of its parents once strewn across the ocean's waters.\nThe revelation reaches not the ears of the children, their kind's destiny quietly continuing to flow.\n- Uses attacks based on current form\n- When changing form, consumes the closest remain, killing targets and consumes nearby remains\n- Elite variant gains increased health, damage, and consumes an addtional remain"
-		"it"		"Il piccolo Seaborn che perseguitava la potente Stultifera, il sangue dei suoi genitori un tempo sparso sulle acque dell'oceano.\nLa rivelazione non giunge alle orecchie dei bambini, il destino della loro specie continua silenziosamente a scorrere.\n- Utilizza attacchi basati sulla forma attuale.\n- Quando cambia forma, consuma il resto più vicino, uccidendo i bersagli e consumando i resti vicini.\n- La variante Elite guadagna salute e danni maggiori e consuma un resto aggiuntivo"
+		"en"		"The tiny Dweller that haunted the mighty Stultifera, the blood of its parents once strewn across the ocean's waters.\nThe revelation reaches not the ears of the children, their kind's destiny quietly continuing to flow.\n- Uses attacks based on current form\n- When changing form, consumes the closest remain, killing targets and consumes nearby remains\n- Elite variant gains increased health, damage, and consumes an addtional remain"
+		"it"		"Il piccolo Dweller che perseguitava la potente Stultifera, il sangue dei suoi genitori un tempo sparso sulle acque dell'oceano.\nLa rivelazione non giunge alle orecchie dei bambini, il destino della loro specie continua silenziosamente a scorrere.\n- Utilizza attacchi basati sulla forma attuale.\n- Quando cambia forma, consuma il resto più vicino, uccidendo i bersagli e consumando i resti vicini.\n- La variante Elite guadagna salute e danni maggiori e consuma un resto aggiuntivo"
 		"ko"		"스툴티페라 나비스 근처에 출몰하는 소형 시본으로, 부모 세대의 피가 이 바다를 가득 채운 적이 있다.\n귓가에 신탁이 전달되지 않아도, 종족의 운명은 여전히 소리 없이 흘러간다.\n-현재 형태에 따라 다른 공격을 가함.\n형태 변경시, 남겨진 유해를 포식, 해당 위치의 모든 적을 즉사시키고 근처의 유해 역시 포식\n-정예 개체는 체력, 피해량이 증가하며 유해를 추가로 포식"
 	}
 	"Nethersea Founder Desc"
@@ -1368,55 +1368,55 @@
 		"en"		"Summons his army, when reaching hp threshholds.\n-Buffs allies around himself and tries to reach them (but not if alone) (silence reduces how long this is)\n-Melee attacks rapidly and causes you to slide\n-Jumps up and throws a spear at an enemy, exploding\n-Charges a whirlwind, targeted enemy gets pulled in, the rest get pushed back and take damage\n-Once on final army, is immortal\n-Once army dies, he enrages and gains stats"
 		"ko"		"체력이 일정 수치가 될 때마다 그의 군대를 소환합니다.\n-주변의 아군에게 버프를 부여하며, 아군에게 접근하려고 시도(혼자일 경우 X) (침묵 상태 시 버프 지속 시간 감소)\n-빠른 근접 공격을 사용하며 대상을 미끄러지게 만듭니다.\n-뛰어올라 폭발하는 창을 투척합니다.\n-휠윈드를 충전하며, 표적으로 삼은 대상은 끌어당겨지며, 그 외의 대상들은 밀려나며 피해를 받습니다.\n-마지막 군대 소환 시 무적 상태가 됩니다.\n-모든 군대가 처치될 경우, 격분 상태가 되어 능력치가 증가합니다."
 	}
-	"Seaborn Scout Desc"
+	"Dweller Scout Desc"
 	{
-		"en"		"Seaborn infects those, they may still appear human.\n- Attacks inflict Nervous Impairment"
-		"it"		"Seaborn infetta queste persone, che possono ancora apparire umane.\nGli attacchi di Seaborn infliggono danni nervosi"
+		"en"		"Dweller infects those, they may still appear human.\n- Attacks inflict Nervous Impairment"
+		"it"		"Dweller infetta queste persone, che possono ancora apparire umane.\nGli attacchi di Dweller infliggono danni nervosi"
 		"ko"		"''시본이 이들을 감염시켰어도, 여전히 그들은 인간처럼 보인다.''\n-매우 빠른 이동 속도를 보유\n-적중 시 신경 손상 원소 피해를 부여"
 	}
-	"Seaborn Soldier Desc"
+	"Dweller Soldier Desc"
 	{
 		"en"		"To those, they spread onto others, continuing the chain.\n- Attacks inflict Nervous Impairment\n- On a kill, gains increased damage, speed, restores health, and spawns additional clones"
 		"it"		"Gli attacchi infliggono una menomazione nervosa"
 		"ko"		"''그리고 또 다른 자들에게 감염이 퍼져나가며 이 순환이 반복된다.''\n-적중 시 신경 손상 원소 피해를 부여\n-이 적이 대상을 처치 시 추가적인 시본 솔저로 분열, 피해량과 속도가 증가하며 체력을 전부 회복"
 	}
-	"Seaborn Pyro Desc"
+	"Dweller Pyro Desc"
 	{
 		"en"		"Even if it means death upon those infected.\n- Attacks inflict afterburn\n- On death, deals AOE damage and inflict afterburn"
 		"it"		"Anche se ciò significa la morte di coloro che sono stati infettati.\n- Gli attacchi infliggono postumi.\n- Alla morte, infligge danni AOE e infligge postumi"
 		"ko"		"''감염된 자들에겐 죽음이나 다름 없음에도 불구하고 말이다.''\n-적중 시, 대상을 불태웁니다.\n-사망 시, 자폭하며 광역 피해를 주고 불태웁니다."
 	}
-	"Seaborn Demoman Desc"
+	"Dweller Demoman Desc"
 	{
 		"en"		"But through death shall it live on, through the sea.\n- Attacks kill self\n- On death, deals AOE damage and inflict Nervous Impairment"
 		"it"		"Ma attraverso la morte continuerà a vivere, attraverso il mare.\n- Gli attacchi uccidono l'auto- Alla morte, infligge danni AOE e infligge menomazioni nervose"
 		"ko"		"''하지만 죽음을 통해서도, 바다 저 너머에서도 살아남을 것이다.''\n-이 적이 공격 시 즉사\n-사망 시, 자폭하여 광역 피해를 주고 신경 손상 원소 피해를 부여"
 	}
-	"Seaborn Heavy Desc"
+	"Dweller Heavy Desc"
 	{
 		"en"		"We adapt to what comes, sharing the knowledge.\n- Attacks inflict Nervous Impairment\n- Gains resistance to the damage type taken, but loses resistance to other the damage type"
 		"it"		"Ci adattiamo a ciò che viene, condividendo la conoscenza.\n- Gli attacchi infliggono menomazioni nervose \n- Si guadagna resistenza al tipo di danno subito, ma si perde resistenza ad altri tipi di danno"
 		"ko"		"''우리는 무엇이든 적응하고, 지식을 공유한다.''\n-적중 시 신경 손상 원소 피해를 부여\n-피격 시, 해당 피해 유형에 대한 피해 저항력을 얻으나, 다른 피해 유형에 대한 저항력은 감소합니다."
 	}
-	"Seaborn Engineer Desc"
+	"Dweller Engineer Desc"
 	{
 		"en"		"Not even man kind's technology can surpass We Many.\n- Attacks inflict Nervous Impairment\n- On spawn after a delay, targets a random building and disables it, constantly reduces repairable health, otherwise deals Nervous Impairment"
 		"it"		"Nemmeno la tecnologia della specie umana può superare Noi Molti.\n- Gli attacchi infliggono menomazioni nervose.\n- Allo spawn dopo un ritardo, prende di mira un edificio a caso e lo disabilita, riduce costantemente la salute riparabile, altrimenti infligge menomazioni nervose"
 		"ko"		"''인간의 기술력조차도 위매니를 뛰어넘지 못 하리라.''\n-적중 시 신경 손상 원소 피해를 부여\n-스폰 후 일정 시간이 지나면 무작위 구조물 하나를 표적으로 삼습니다.\n-해당 구조물을 비활성화시키고 수리 내구도를 지속적으로 감소시키며, 그렇지 않다면 신경 손상 원소 피해를 부여합니다."
 	}
-	"Seaborn Medic Desc"
+	"Dweller Medic Desc"
 	{
 		"en"		"We Many makes us strong, together as one.\n- Does not attack and follows it's allies\n- Increases damage and resistance of it's current target\n- Increases damage of all it's allies"
 		"it"		"We Many makes us strong, together as one.\n- Non attacca e segue i suoi alleati\n- Aumenta i danni e la resistenza del suo bersaglio attuale\n- Aumenta i danni di tutti i suoi alleati"
 		"ko"		"''위매니 덕분에 우리는 하나가 되어 더욱 강해질 것이다.''\n-공격하지 않고 아군을 따라다닙니다.\n-대상의 피해량과 저항력을 증가시킵니다.\n-모든 아군의 피해량을 증가시킵니다."
 	}
-	"Seaborn Sniper Desc"
+	"Dweller Sniper Desc"
 	{
 		"en"		"Through weaking dread on man, We Many will stand.\n- Attacks inflict a debuff, increasing damage taken"
 		"it"		"Attraverso il terrore che logora l'uomo, Noi Molti resisteremo.\nGli attacchi infliggono un debuff, aumentando i danni subiti"
 		"ko"		"''인간에 대한 두려움이 약해질 수록, 위매니가 서게 되리라.''\n-적중 시, 대상이 받는 피해를 증가시키는 디버프를 부여."
 	}
-	"Seaborn Spy Desc"
+	"Dweller Spy Desc"
 	{
 		"en"		"From the deep sea, We Many will rise.\n- Gains camouflage after several seconds without attacking\n- Deals increased damage when camouflaged"
 		"it"		"Dagli abissi marini, Noi Molti risorgeremo.\n- Acquisisce la mimetizzazione dopo diversi secondi senza attaccare\n- Infligge danni maggiori quando è mimetizzato"
@@ -1508,14 +1508,14 @@
 	}
 	"Pathshaper Desc"
 	{
-		"en"		"Seaborn tasked with exploring evolutionary pathways, its fractals mapping out dead ends so that we many can stay on the right path.\n- Spawns a Pathshaper Fractal after several attacks and damage taken\n- On death, kills all Pathshaper Fractals."
-		"it"		"Seaborn ha il compito di esplorare i percorsi evolutivi, i suoi frattali mappano i vicoli ciechi in modo che noi tutti possiamo rimanere sulla strada giusta.\n- Genera un Frattale Pathshaper dopo diversi attacchi e danni subiti\n- Alla morte, uccide tutti i Frattali Pathshaper."
+		"en"		"Dweller tasked with exploring evolutionary pathways, its fractals mapping out dead ends so that we many can stay on the right path.\n- Spawns a Pathshaper Fractal after several attacks and damage taken\n- On death, kills all Pathshaper Fractals."
+		"it"		"Dweller ha il compito di esplorare i percorsi evolutivi, i suoi frattali mappano i vicoli ciechi in modo che noi tutti possiamo rimanere sulla strada giusta.\n- Genera un Frattale Pathshaper dopo diversi attacchi e danni subiti\n- Alla morte, uccide tutti i Frattali Pathshaper."
 		"ko"		"위매니를 위해 살길을 찾는 시본. 수많은 분신으로 잘못된 진화의 경로를 거쳐, 위매니가 정확한 길을 가도록 확보한다.\n-여러 번 공격하거나 피해를 받을 때마다, 패스셰이퍼 분신을 하나 생성합니다.\n-사망 시, 패스셰이퍼 분신을 전부 처치합니다."
 	}
 	"Pathshaper Fractal Desc"
 	{
-		"en"		"Fractals left behind by the Seaborn Pathshaper.\nIllusions must eventually vanish.\nThe path is not clear.\nSearch on, search on.\n- Spawns a Pathshaper Fractal after several attacks\n- Loses health over time"
-		"it"		"I frattali lasciati dal Pathshaper Seaborn.\nLe illusioni alla fine devono svanire.\nIl percorso non è chiaro.\nCercare, cercare.\n- Genera un frattale Pathshaper dopo diversi attacchi.\n- Perde salute con il tempo"
+		"en"		"Fractals left behind by the Dweller Pathshaper.\nIllusions must eventually vanish.\nThe path is not clear.\nSearch on, search on.\n- Spawns a Pathshaper Fractal after several attacks\n- Loses health over time"
+		"it"		"I frattali lasciati dal Pathshaper Dweller.\nLe illusioni alla fine devono svanire.\nIl percorso non è chiaro.\nCercare, cercare.\n- Genera un frattale Pathshaper dopo diversi attacchi.\n- Perde salute con il tempo"
 		"ko"		"패스셰이퍼 시본이 남긴 분신. 환영은 필시 사라질 것이고,\n길에는 온통 오류투성이다. 탐색, 계속 탐색해야 한다.\n-여러 번 공격할 때마다, 패스셰이퍼 분신을 하나 생성합니다.\n-체력이 지속적으로 감소합니다."
 	}
 	"Barracks Teutonic Knight Desc"
@@ -1560,37 +1560,37 @@
 		"it"		"Parla a nome di tutti noi.\n- Inizia in forma di Guaritore \n- Quando è in forma di Guaritore, segue gli alleati e i suoi attacchi curano fino a 2 bersagli \n- Guadagna energia nel tempo ed entra in forma di Leviatano quando è pieno, aumentata quando si trova nelle Marche di Nethersea \n- Guadagna energia rapidamente quando scende sotto la metà della salute per la prima volta \n- Quando è in forma di Leviatano, attacca 6 bersagli, infliggendo danni veri AOE e distruggendo gli edifici che bloccano \n- Ritorna in forma di Leviatano, genera le Marche di Nethesea e si cura da solo \n- Si trasforma in forma di Leviatano, genera le Marche di Nethesea e si cura da solo"
 		"ko"		"더 이상 노래 부르지 않고, 위매니를 위해 목소리를 낸다.\n-스폰 시, 치유자 형태로 시작\n-이 상태에서는 아군을 따라다니며 주변의 최대 2명의 아군에게 버프를 부여하고 체력을 회복\n-시간이 지날수록 점차 힘을 충전, 명흔 위에 있다면 충전 속도가 가속됩니다.\n-체력이 처음으로 절반 이하가 될 경우 힘을 급격히 충전합니다.\n-힘이 최대치가 되면, 변신 형태가 됩니다.\n-변신 형태일때는 최대 6개의 위치에 트루 대미지 광역 공격을 사용하며 가로막는 구조물을 파괴합니다.\n-변신 형태에서 사망 시 치유자 형태로 복귀, 명흔을 생성하고 스스로를 치유합니다."
 	}
-	"Seaborn Guard Desc"
+	"Dweller Guard Desc"
 	{
 		"en"		"They infect, swarming us like hell. What can we do now?\n- Deals increased damage every 3rd attack"
 		"it"		"Ci infettano e ci bombardano come un inferno. Che cosa possiamo fare ora?"
 		"ko"		"''저것들이 엄청난 속도로 불어나면서 우릴 향해 오고 있어. 이제 어쩌면 좋지?''\n-매 3번째 공격이 매우 높은 피해를 줍니다."
 	}
-	"Seaborn Defender Desc"
+	"Dweller Defender Desc"
 	{
 		"en"		"I feel... so weak...\n- Resists a specific damage type"
 		"it"		"Mi sento... così debole... \n- Resiste a un tipo di danno specifico"
 		"ko"		"''힘이 점점... 빠져나간다...''\n-특정 피해 유형에 대해 매우 높은 피해 저항력을 보유합니다.\n-현재 웨이브에 따라 얻는 피해 저항 종류는 달라집니다."
 	}
-	"Seaborn Vanguard Desc"
+	"Dweller Vanguard Desc"
 	{
 		"en"		"We must stick together, or is it that what he wants.\n- Provides increased movement speed to all enemies while alive, stacks with others"
 		"it"		"Dobbiamo restare uniti, o è questo che vuole.\n- Fornisce un aumento della velocità di movimento a tutti i nemici mentre è in vita, cumulabile con gli altri"
 		"ko"		"''우린 반드시 함께 해야한다. 그렇지 않으면 놈들이 원하는 대로 흘러갈 거야.''\n-생존해 있는 동안 모든 적에게 이동 속도 증가 버프를 부여합니다. 이 효과는 다른 효과와 중첩됩니다."
 	}
-	"Seaborn Caster Desc"
+	"Dweller Caster Desc"
 	{
 		"en"		"No, no. I can't be them, I can't!\n- Uses a ranged attack\n- Deals AOE True damage"
 		"it"		"No, no. Non posso essere loro, non posso! \n- Utilizza un attacco a distanza \n- Infligge danni veri AOE"
 		"ko"		"''안 돼, 안 돼! 저 놈들과 똑같이 되고 싶지 않아! 안 돼!''\n-이 적은 광역 트루 대미지 공격을 사용합니다."
 	}
-	"Seaborn Specialist Desc"
+	"Dweller Specialist Desc"
 	{
-		"en"		"I'm not infected, I'm not seaborn! Please god!\n- Spawns at it's ally with the lowest health ratio, if successful, grants self buff"
-		"it"		"Non sono infetto, non sono un Seaborn! Per favore, Dio!\n- Spawna sull'alleato con il rapporto di salute più basso, se ha successo, concede un auto-buffo"
+		"en"		"I'm not infected, I'm not dweller! Please god!\n- Spawns at it's ally with the lowest health ratio, if successful, grants self buff"
+		"it"		"Non sono infetto, non sono un Dweller! Per favore, Dio!\n- Spawna sull'alleato con il rapporto di salute più basso, se ha successo, concede un auto-buffo"
 		"ko"		"''난 감염되지 않았어! 난 시본이 아니라고! 제발!!''\n-이 적은 현재 가장 체력 비율이 낮은 시본 적군의 위치에서 생성됩니다.\n-성공적으로 생성되면, 자가 버프를 얻습니다."
 	}
-	"Seaborn Supporter Desc"
+	"Dweller Supporter Desc"
 	{
 		"en"		"I'm not We Many, I'm not We Many, We Many, We Many...\n...\n...\nSea... the sea of we many...\n- Uses a ranged attack\n- Deals True damage\n- Periodically spawns Nourished Runner drones"
 		"it"		"Non sono We Many, non sono We Many, We Many, We Many...\n...\n...\nSea...the sea of we many...\n- Utilizza un attacco a distanza\n- Infligge danni veri\n- Genera periodicamente droni Runner nutriti"
@@ -2994,31 +2994,31 @@
 		"it"		"Molto più potenti di qualsiasi normale Agente, gli umani sono più forti dell'IA, dopotutto..."
 		"ko"		"이 강탈당한 빨간 약은 다른 일반적인 요원들보다 훨씬 강력합니다. 애초부터, 인간은 AI보다 강하니까요..."
 	}
-	"Seaborn Metro Cop Desc"
+	"Dweller Metro Cop Desc"
 	{
-		"en"		"Their combat has been enhanced by the Seaborn infection.\nFires bullets extremely fast."
-		"it"		"Il loro combattimento è stato potenziato dall'infezione dei Seaborn."
+		"en"		"Their combat has been enhanced by the Dweller infection.\nFires bullets extremely fast."
+		"it"		"Il loro combattimento è stato potenziato dall'infezione dei Dweller."
 		"ko"		"시본 감염으로 인하여 전투 능력이 더욱 증가했습니다.\n-매우 높은 공격 속도를 보유"
 	}
-	"Seaborn Metro Raider Desc"
+	"Dweller Metro Raider Desc"
 	{
 		"en"		"Looks like these guys did not forget their SMG grenades."
 		"it"		"Sembra che questi ragazzi non abbiano dimenticato le loro granate SMG."
 		"ko"		"아무래도 이 특공대들이 기관단총의 유탄을 확실히 챙겨온 것 같습니다."
 	}
-	"Seaborn W.F. Rifler Desc"
+	"Dweller W.F. Rifler Desc"
 	{
 		"en"		"Throws a grenade, has increased firing speed."
 		"it"		"Lancia una granata, con velocità di fuoco aumentata."
 		"ko"		"사격 공격의 속도가 증가했으며, 수류탄을 투척합니다."
 	}
-	"Seaborn W.F. Elite Desc"
+	"Dweller W.F. Elite Desc"
 	{
 		"en"		"Increased Energy Ball Fire Rate."
 		"it"		"Aumento della velocità di fuoco delle sfere di energia."
 		"ko"		"코어 에너지볼 사격 속도가 빨라졌습니다."
 	}
-	"Seaborn W.F. Shotgunner Desc"
+	"Dweller W.F. Shotgunner Desc"
 	{
 		"en"		"Will shove you if you get too close."
 		"it"		"Ti spinge se ti avvicini troppo."
@@ -3054,22 +3054,22 @@
 		"en"		"A Metro Cop corrupted by the sea. \n-Has a ranged attack and reloads."
 		"ko"		"공허에 침식된 시민 보호 기동대입니다.\n-원거리 공격을 사용하며 재장전함"
 	}
-	"Seaborn Metro Raider Desc"
+	"Dweller Metro Raider Desc"
 	{
 		"en"		"A Metro Raider corrupted by the sea. \nMelee resistances will not help against this enemy.\n-Has a ranged attack. \n-Throws a gernade when close enough."
 		"ko"		"시본에 감염된 시민 보호 특공대입니다. \n근접 저항은 이 적을 상대로 도움이 되지 않습니다.\n-원거리 공격을 보유\n-근접시 수류탄 투척"
 	}
-	"Seaborn W.F. Rifler Desc"
+	"Dweller W.F. Rifler Desc"
 	{
 		"en"		"A W.F. Rifler corrupted by the sea. \n-Has a ranged attack and reloads. \n-Throws a gernade when close enough."
 		"ko"		"시본에 감염된 W.F. 소총수입니다. \n-원거리 공격을 사용하며 재장전함\n-근접시 수류탄 투척."
 	}
-	"Seaborn W.F. Elite Desc"
+	"Dweller W.F. Elite Desc"
 	{
 		"en"		"A W.F. Elite corrupted by the sea. \n-Has a ranged attack and reloads.\n-Shoots explosive projectiles."
 		"ko"		"시본에 감염된 W.F. 엘리트입니다. \n-원거리 공격을 사용하며 재장전함\n-폭발성 투사체를 발사."
 	}
-	"Seaborn W.F. Shotgunner Desc"
+	"Dweller W.F. Shotgunner Desc"
 	{
 		"en"		"A W.F. Shotgunner corrupted by the sea. Deals Ranged damage \n-Shoves you away if your to close. \n-Very Fast"
 		"ko"		"시본에 감염된 W.F. 산탄총병입니다. 원거리 피해 공격을 가합니다.\n-너무 근접할 경우 대상을 밀쳐서 날려버림\n-매우 빠름"
@@ -3107,8 +3107,8 @@
 	}
 	"Merlton Desc"
 	{
-		"en"		"A robot that gained powers from the Seaborn infection. Seemingly hasn't been corrupted by it though.\nApplies 'MERLT0N-BUFF' on enemies.\nSummons copies of itself, although in a smaller form.\nWill become enraged if it has no one left to look after."
-		"it"		"Un robot che ha acquisito i poteri dell'infezione Seaborn. Sembra che non ne sia stato corrotto.\nApplica il ''MERLT0N-BUFF'' ai nemici.\n Evoca copie di se stesso, anche se in forma più piccola.\n Diventa furioso se non ha più nessuno da accudire."
+		"en"		"A robot that gained powers from the Dweller infection. Seemingly hasn't been corrupted by it though.\nApplies 'MERLT0N-BUFF' on enemies.\nSummons copies of itself, although in a smaller form.\nWill become enraged if it has no one left to look after."
+		"it"		"Un robot che ha acquisito i poteri dell'infezione Dweller. Sembra che non ne sia stato corrotto.\nApplica il ''MERLT0N-BUFF'' ai nemici.\n Evoca copie di se stesso, anche se in forma più piccola.\n Diventa furioso se non ha più nessuno da accudire."
 		"ko"		"시본 감염으로 인하여 더욱 강력해진 로봇입니다. 그런데 겉보기에는 딱히 감염된 것처럼 보이지는 않는군요.\n-주변의 적들에게 '멀톤-버프' 를 부여합니다.\n-자가 복제로 자신을 하나 더 생성합니다. 복제된 개체는 크기가 작습니다.\n-이 적이 혼자 남았을 경우, 격분하여 능력치가 증가합니다."
 	}
 	"Lost Knight Desc"

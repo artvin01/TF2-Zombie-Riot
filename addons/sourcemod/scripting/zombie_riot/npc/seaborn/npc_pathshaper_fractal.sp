@@ -46,7 +46,7 @@ void PathshaperFractal_Precache()
 	strcopy(data.Icon, sizeof(data.Icon), "ds_fractal");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
 }

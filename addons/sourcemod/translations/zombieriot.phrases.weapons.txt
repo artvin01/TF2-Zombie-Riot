@@ -4906,40 +4906,40 @@
 		"it"	"Kit combinati"
 		"ko"	"콤보 키트"
 	}
-	"Seaborn Infection"
+	"Dweller Infection"
 	{
-		"en"	"Seaborn Infection"
+		"en"	"Dweller Infection"
 		"ru"	"Морерождённая Инфекция"
-		"fr"	"Infection Seaborn"
+		"fr"	"Infection Dweller"
 		"chi"	"海嗣感染"
-		"it"	"Infezione di Seaborn"
+		"it"	"Infezione di Dweller"
 		"ko"	"시본 감염원"
 	}
-	"Seaborn Claws"
+	"Dweller Claws"
 	{
-		"en"	"Seaborn Claws"
+		"en"	"Dweller Claws"
 		"ru"	"Когти Морерождённого"
-		"fr"	"Griffes Seaborn"
+		"fr"	"Griffes Dweller"
 		"chi"	"海嗣利爪"
-		"it"	"Artigli di Seaborn"
+		"it"	"Artigli di Dweller"
 		"ko"	"시본 발톱"
 	}
-	"Seaborn Spines"
+	"Dweller Spines"
 	{
-		"en"	"Seaborn Spines"
+		"en"	"Dweller Spines"
 		"ru"	"Шипы Морерождённого"
-		"fr"	"Épines Seaborn"
+		"fr"	"Épines Dweller"
 		"chi"	"海嗣颈骨"
-		"it"	"Spine di Seaborn"
+		"it"	"Spine di Dweller"
 		"ko"	"시본 가시뼈"
 	}
-	"Seaborn Salve"
+	"Dweller Salve"
 	{
-		"en"	"Seaborn Salve"
+		"en"	"Dweller Salve"
 		"ru"	"Фласка Морерождённого"
-		"fr"	"Baume Seaborn"
+		"fr"	"Baume Dweller"
 		"chi"	"海嗣药膏"
-		"it"	"Salvezza Seaborn"
+		"it"	"Salvezza Dweller"
 		"ko"	"시본 연고"
 	}
 	"The Flagellant"
@@ -5961,8 +5961,8 @@
 	}
 	"Flask of Assimilation Desc"
 	{
-		"en"	"Take less damage from Seaborn floor creep"
-		"it"	"Subisce meno danni da Seaborn floor creep"
+		"en"	"Take less damage from Dweller floor creep"
+		"it"	"Subisce meno danni da Dweller floor creep"
 		"ko"	"명흔으로 받는 피해 감소"
 	}
 	"Flask of Freedom"
@@ -6009,8 +6009,8 @@
 	}
 	"Flask of Abyssal Hunter Desc"
 	{
-		"en"	"Adds the Seaborn faction"
-		"it"	"Aggiunge la fazione Seaborn"
+		"en"	"Adds the Dweller faction"
+		"it"	"Aggiunge la fazione Dweller"
 		"ko"	"무기에 시본 진영을 추가"
 	}
 	"Flask of Kazimierz"

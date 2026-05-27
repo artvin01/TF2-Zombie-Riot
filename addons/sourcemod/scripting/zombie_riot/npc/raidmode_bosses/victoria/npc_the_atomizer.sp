@@ -1953,10 +1953,10 @@ static void Atomizer_Weapon_Lines(Atomizer npc, int client)
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		/*case WEAPON_DWELLERMELEE: switch(GetRandomInt(0,3)){
-			case 0: Format(Text_Lines, sizeof(Text_Lines), "Damn it! {darkblue}Seaborn{default} is here Again!");
-			case 1: Format(Text_Lines, sizeof(Text_Lines), "ha. {darkblue}Seaborn{default}!?");
+			case 0: Format(Text_Lines, sizeof(Text_Lines), "Damn it! {darkblue}Dweller{default} is here Again!");
+			case 1: Format(Text_Lines, sizeof(Text_Lines), "ha. {darkblue}Dweller{default}!?");
 			case 2: Format(Text_Lines, sizeof(Text_Lines), "I found an {darkblue}Infected{default} person, I need a Backup!");
-			case 3: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{default}? I knew it, you {darkblue}Seaborn{default} Bastard!", client);}
+			case 3: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{default}? I knew it, you {darkblue}Dweller{default} Bastard!", client);}
 		case WEAPON_EXPLORER: switch(GetRandomInt(0,2)){
 			case 0: Format(Text_Lines, sizeof(Text_Lines), "{purple}Void{default}...");
 			case 1: Format(Text_Lines, sizeof(Text_Lines), "HQ? There's a serious problem. He's using the {purple}Void{default}.");

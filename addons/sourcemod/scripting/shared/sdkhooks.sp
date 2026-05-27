@@ -1451,7 +1451,7 @@ public void OnPostThink(int client)
 					green = 55 + abs(200 - (RoundFloat(GetGameTime()) % 400));
 					blue = 55 + abs(200 - (RoundFloat(GetEngineTime()) % 400));
 				}
-				//seaborn
+				//dweller
 				default:
 				{
 					red = 150;

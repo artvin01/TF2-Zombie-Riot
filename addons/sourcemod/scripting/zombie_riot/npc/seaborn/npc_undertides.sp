@@ -38,7 +38,7 @@ void UnderTides_MapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "ds_quintus");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

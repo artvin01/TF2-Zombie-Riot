@@ -2382,16 +2382,16 @@
 		"it" "⚠ Taskforce sconosciuta"
 		"ko" "⚠ 정체불명의 특무대"
 	}
-	"Seaborn Enslaved"
+	"Dweller Enslaved"
 	{
-		"en" "⚔ Seaborn Enslaved"
-		"it" "⚔ Seaborn Enslaved"
+		"en" "⚔ Dweller Enslaved"
+		"it" "⚔ Dweller Enslaved"
 		"ko" "⚔ 억압당한 시본"
 	}
-	"Seaborn Enslaved!"
+	"Dweller Enslaved!"
 	{
-		"en" "⚠ Seaborn Enslaved"
-		"it" "⚠ Seaborn Enslaved"
+		"en" "⚠ Dweller Enslaved"
+		"it" "⚠ Dweller Enslaved"
 		"ko" "⚠ 억압당한 시본"
 	}
 	"Voided Superior's"

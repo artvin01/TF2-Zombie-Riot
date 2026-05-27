@@ -23,7 +23,7 @@
 Handle h_TimerAmphiManagement[MAXPLAYERS+1] = {null, ...};
 static float f_Amphihuddelay[MAXPLAYERS];
 static int i_AmphiHitsDone[MAXPLAYERS];
-static bool b_WeaponAttackSpeedModifiedSeaborn[MAXENTITIES];
+static bool b_WeaponAttackSpeedModifiedDweller[MAXENTITIES];
 static int i_AmphiTargetsAirborn[MAXPLAYERS][AMPHI_MAX_HITUP];
 static float f_TargetAirtime[MAXENTITIES];
 static float f_TargetAirtimeDelayHit[MAXENTITIES];
@@ -31,7 +31,7 @@ static float f_TimeSinceLastStunHit[MAXENTITIES];
 static bool b_AmphiNpcWasShotUp[MAXENTITIES];
 static int i_RefWeaponDelete[MAXPLAYERS];
 static float f_WeaponDamageCalculated[MAXPLAYERS];
-static bool b_SeabornDetected;
+static bool b_DwellerDetected;
 
 static int LaserSprite;
 
@@ -96,7 +96,7 @@ void Reset_stats_Amphi_Singular(int client) //This is on disconnect/connect
 void Reset_stats_Amphi_Singular_Weapon(int weapon) //This is on weapon remake. cannot set to 0 outright.
 {
 	b_WeaponAttackSpeedModified[weapon] = false;
-	b_WeaponAttackSpeedModifiedSeaborn[weapon] = false;
+	b_WeaponAttackSpeedModifiedDweller[weapon] = false;
 	i_NextAttackDoubleHit[weapon] = 0;
 }
 
@@ -117,24 +117,24 @@ public void Weapon_Amphi_DoubleStrike(int client, int weapon, bool crit, int slo
 	}
 
 	//todo: If needed, add a delay so it doesnt happen on every swing
-	bool ThereWasSeaborn = false;
+	bool ThereWasDweller = false;
 	if(!StrContains(WhatDifficultySetting_Internal, "Stella & Karlas") || !StrContains(WhatDifficultySetting, "You."))
 	{
-		ThereWasSeaborn = true;
+		ThereWasDweller = true;
 	}
-	if(!ThereWasSeaborn)
+	if(!ThereWasDweller)
 	{
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
 			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity) && i_BleedType[entity] == BLEEDTYPE_DWELLER)
 			{
-				ThereWasSeaborn = true;
+				ThereWasDweller = true;
 				break;
 			}
 		}
 	}
-	if(!ThereWasSeaborn)
+	if(!ThereWasDweller)
 	{
 		for(int clientloop=1; clientloop<=MaxClients; clientloop++)
 		{
@@ -147,7 +147,7 @@ public void Weapon_Amphi_DoubleStrike(int client, int weapon, bool crit, int slo
 					{
 						case WEAPON_DWELLERMELEE, WEAPON_DWELLER_MISC, WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS, WEAPON_SKADI:
 						{
-							ThereWasSeaborn = true;
+							ThereWasDweller = true;
 							break;
 						}
 					}
@@ -156,19 +156,19 @@ public void Weapon_Amphi_DoubleStrike(int client, int weapon, bool crit, int slo
 		}
 	}
 
-	b_SeabornDetected = ThereWasSeaborn;
+	b_DwellerDetected = ThereWasDweller;
 
-	if(b_WeaponAttackSpeedModifiedSeaborn[weapon] && !ThereWasSeaborn)
+	if(b_WeaponAttackSpeedModifiedDweller[weapon] && !ThereWasDweller)
 	{
 		attackspeed = (attackspeed / 0.85);
 		Attributes_Set(weapon, 6, attackspeed);
-		b_WeaponAttackSpeedModifiedSeaborn[weapon] = false;
+		b_WeaponAttackSpeedModifiedDweller[weapon] = false;
 	}
-	else if(!b_WeaponAttackSpeedModifiedSeaborn[weapon] && ThereWasSeaborn)
+	else if(!b_WeaponAttackSpeedModifiedDweller[weapon] && ThereWasDweller)
 	{
 		attackspeed = (attackspeed * 0.85);
 		Attributes_Set(weapon, 6, attackspeed);
-		b_WeaponAttackSpeedModifiedSeaborn[weapon] = true;
+		b_WeaponAttackSpeedModifiedDweller[weapon] = true;
 	}
 }
 
@@ -225,15 +225,15 @@ public void Amphi_Cooldown_Logic(int client, int weapon)
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			if(b_SeabornDetected)
+			if(b_DwellerDetected)
 			{
 				if(i_AmphiHitsDone[client] < AMPHI_JUDGEMENT_MAX_HITS_NEEDED)
 				{
-					PrintHintText(client,"Seaborn Detected.\nJudgement Of Almina [%i%/%i]", i_AmphiHitsDone[client], AMPHI_JUDGEMENT_MAX_HITS_NEEDED);
+					PrintHintText(client,"Dweller Detected.\nJudgement Of Almina [%i%/%i]", i_AmphiHitsDone[client], AMPHI_JUDGEMENT_MAX_HITS_NEEDED);
 				}
 				else
 				{
-					PrintHintText(client,"Seaborn Detected.\nJudgement Of Almina [READY!]");
+					PrintHintText(client,"Dweller Detected.\nJudgement Of Almina [READY!]");
 				}
 			}
 			else

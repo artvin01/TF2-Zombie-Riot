@@ -53,7 +53,7 @@ static char g_MeleeMissSounds[][] = {
 };
 
 
-public void Seaborn_Combine_Police_Pistol_OnMapStart_NPC()
+public void Dweller_Combine_Police_Pistol_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -78,8 +78,8 @@ public void Seaborn_Combine_Police_Pistol_OnMapStart_NPC()
 	PrecacheModel("models/police.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seaborn Metro Cop");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_combine_police_pistol");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Metro Cop");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_combine_police_pistol");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_pistol");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -90,9 +90,9 @@ public void Seaborn_Combine_Police_Pistol_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Seaborn_Combine_Police_Pistol(vecPos, vecAng, ally);
+	return Dweller_Combine_Police_Pistol(vecPos, vecAng, ally);
 }
-methodmap Seaborn_Combine_Police_Pistol < CClotBody
+methodmap Dweller_Combine_Police_Pistol < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -149,9 +149,9 @@ methodmap Seaborn_Combine_Police_Pistol < CClotBody
 	
 	
 	
-	public Seaborn_Combine_Police_Pistol(float vecPos[3], float vecAng[3], int ally)
+	public Dweller_Combine_Police_Pistol(float vecPos[3], float vecAng[3], int ally)
 	{
-		Seaborn_Combine_Police_Pistol npc = view_as<Seaborn_Combine_Police_Pistol>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "550", ally, false));
+		Dweller_Combine_Police_Pistol npc = view_as<Dweller_Combine_Police_Pistol>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "550", ally, false));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -174,7 +174,7 @@ methodmap Seaborn_Combine_Police_Pistol < CClotBody
 		npc.m_flSpeed = 200.0;
 
 		func_NPCDeath[npc.index] = VoidCombinePolicePistol_NPCDeath;
-		func_NPCThink[npc.index] = Seaborn_Combine_Police_Pistol_ClotThink;
+		func_NPCThink[npc.index] = Dweller_Combine_Police_Pistol_ClotThink;
 
 		
 		npc.m_flNextRangedAttack = 0.0;
@@ -200,9 +200,9 @@ methodmap Seaborn_Combine_Police_Pistol < CClotBody
 
 //TODO 
 //Rewrite
-public void Seaborn_Combine_Police_Pistol_ClotThink(int iNPC)
+public void Dweller_Combine_Police_Pistol_ClotThink(int iNPC)
 {
-	Seaborn_Combine_Police_Pistol npc = view_as<Seaborn_Combine_Police_Pistol>(iNPC);
+	Dweller_Combine_Police_Pistol npc = view_as<Dweller_Combine_Police_Pistol>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -434,7 +434,7 @@ public Action VoidCombinePolicePistol_OnTakeDamage(int victim, int &attacker, in
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	Seaborn_Combine_Police_Pistol npc = view_as<Seaborn_Combine_Police_Pistol>(victim);
+	Dweller_Combine_Police_Pistol npc = view_as<Dweller_Combine_Police_Pistol>(victim);
 	
 	
 	/*
@@ -453,7 +453,7 @@ public Action VoidCombinePolicePistol_OnTakeDamage(int victim, int &attacker, in
 
 public void VoidCombinePolicePistol_NPCDeath(int entity)
 {
-	Seaborn_Combine_Police_Pistol npc = view_as<Seaborn_Combine_Police_Pistol>(entity);
+	Dweller_Combine_Police_Pistol npc = view_as<Dweller_Combine_Police_Pistol>(entity);
 	
 	if(!npc.m_bGib)
 	{

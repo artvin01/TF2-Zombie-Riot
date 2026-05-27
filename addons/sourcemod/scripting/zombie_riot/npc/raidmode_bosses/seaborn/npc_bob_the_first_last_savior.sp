@@ -762,7 +762,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				}
 				case 5:
 				{
-					NPCTalkMessage(npc.index, "Took out every single Seaborn and took the infection in yourselves...");
+					NPCTalkMessage(npc.index, "Took out every single Dweller and took the infection in yourselves...");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 6:
@@ -906,7 +906,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					NPCTalkMessage(npc.index, "You are no god.");
 				
 				case 3:
-					NPCTalkMessage(npc.index, "Xeno. Seaborn. Then there's you.");
+					NPCTalkMessage(npc.index, "Xeno. Dweller. Then there's you.");
 			}
 		}
 

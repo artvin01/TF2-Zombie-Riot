@@ -1506,7 +1506,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 					case 0:
 						Format(Text_Lines, sizeof(Text_Lines), "How the hell are you able to harness its power?");
 					case 1:
-						Format(Text_Lines, sizeof(Text_Lines), "Well after everything you've went through, it shouldn't surprise me that the Seaborn infection doesn't affect you, {gold}%N{default}.",client);
+						Format(Text_Lines, sizeof(Text_Lines), "Well after everything you've went through, it shouldn't surprise me that the Dweller infection doesn't affect you, {gold}%N{default}.",client);
 				}
 			}
 			else

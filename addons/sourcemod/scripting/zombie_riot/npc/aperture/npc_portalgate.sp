@@ -45,7 +45,7 @@ static void ClotPrecache()
 	NPC_GetByPlugin("npc_combine_soldier_giant_swordsman");
 	NPC_GetByPlugin("npc_medival_crossbow_giant");
 	NPC_GetByPlugin("npc_siccerino");
-	NPC_GetByPlugin("npc_seaborn_heavy");
+	NPC_GetByPlugin("npc_dweller_heavy");
 	NPC_GetByPlugin("npc_sea_xploder");
 	NPC_GetByPlugin("npc_refragmented_heavy");
 	NPC_GetByPlugin("npc_refragmented_medic");
@@ -243,7 +243,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 6,7:
 				{
-					PortalGateSpawn(npc.index, "npc_seaborn_heavy", pos, ang, team, 5000);
+					PortalGateSpawn(npc.index, "npc_dweller_heavy", pos, ang, team, 5000);
 				}
 				case 8,9:
 				{
@@ -454,7 +454,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 6,7:
 				{
-					PortalGateSpawn(npc.index, "npc_seaborn_heavy", pos, ang, team, 5000);
+					PortalGateSpawn(npc.index, "npc_dweller_heavy", pos, ang, team, 5000);
 				}
 				case 8,9:
 				{

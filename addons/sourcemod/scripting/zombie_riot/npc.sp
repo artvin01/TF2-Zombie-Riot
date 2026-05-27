@@ -369,28 +369,28 @@ void NPC_ConfigSetup()
 	SeaSwarmcaller_Precache();
 	SeaReefbreaker_Precache();
 	Herald_MapStart();
-	SeabornScout_Precache();
-	SeabornSoldier_Precache();
+	DwellerScout_Precache();
+	DwellerSoldier_Precache();
 	CitizenRunner_Precache();
-	SeabornPyro_Precache();
-	SeabornDemo_Precache();
-	SeabornHeavy_Precache();
-	SeabornEngineer_Precache();
-	SeabornMedic_Precache();
-	SeabornSniper_Precache();
-	SeabornSpy_Precache();
+	DwellerPyro_Precache();
+	DwellerDemo_Precache();
+	DwellerHeavy_Precache();
+	DwellerEngineer_Precache();
+	DwellerMedic_Precache();
+	DwellerSniper_Precache();
+	DwellerSpy_Precache();
 	KazimierzKnight_OnMapStart_NPC();
 	KazimierzKnightArcher_OnMapStart_NPC();
 	KazimierzBeserker_OnMapStart_NPC();
 	KazimierzLongArcher_OnMapStart_NPC();
 	KazimierzKnightAssasin_OnMapStart_NPC();
 	LastKnight_Precache();
-	SeabornGuard_Precache();
-	SeabornVanguard_Precache();
-	SeabornDefender_Precache();
-	SeabornCaster_Precache();
-	SeabornSpecialist_Precache();
-	SeabornSupporter_Precache();
+	DwellerGuard_Precache();
+	DwellerVanguard_Precache();
+	DwellerDefender_Precache();
+	DwellerCaster_Precache();
+	DwellerSpecialist_Precache();
+	DwellerSupporter_Precache();
 	SaintCarmen_Precache();
 	TidelinkedArchon_Precache();
 	TidelinkedBishop_Precache();
@@ -632,7 +632,7 @@ void NPC_ConfigSetup()
 	AlminaRanka_S_OnMapStart_NPC();
 	AlminaMurdarato_OnMapStart_NPC();
 	AlminaEliteKinat_OnMapStart_NPC();
-	Almina_SeabornAnnihilator_OnMapStart_NPC();
+	Almina_DwellerAnnihilator_OnMapStart_NPC();
 	AlminanSentinel_OnMapStart_NPC();
 	AlminanIronborus_OnMapStart_NPC();
 	AlminanDestructius_OnMapStart_NPC();
@@ -985,11 +985,11 @@ void NPC_ConfigSetup()
 	VoidCombineElite_OnMapStart_NPC();
 	VoidCombineSoldierAr2_OnMapStart_NPC();
 	VoidCombineSoldierShotgun_OnMapStart_NPC();
-	Seaborn_Combine_Police_Pistol_OnMapStart_NPC();
-	SeabornCombinePoliceSmg_OnMapStart_NPC();
-	SeabornCombineElite_OnMapStart_NPC();
-	SeabornCombineSoldierAr2_OnMapStart_NPC();
-	SeabornCombineSoldierShotgun_OnMapStart_NPC();
+	Dweller_Combine_Police_Pistol_OnMapStart_NPC();
+	DwellerCombinePoliceSmg_OnMapStart_NPC();
+	DwellerCombineElite_OnMapStart_NPC();
+	DwellerCombineSoldierAr2_OnMapStart_NPC();
+	DwellerCombineSoldierShotgun_OnMapStart_NPC();
 
 	// Freeplay
 	DimensionalFragment_OnMapStart_NPC();
@@ -1573,7 +1573,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 //BASES FOR ENEMIES
 #include "npc/expidonsa/npc_expidonsa_base.sp" //ALSO IN RPG!
-#include "npc/seaborn/npc_nethersea_shared.sp"
+#include "npc/dweller/npc_nethersea_shared.sp"
 #include "npc/ruina/ruina_npc_enchanced_ai_core.sp"	//this controls almost every ruina npc's behaviors.
 
 //BUILDINGS
@@ -2041,60 +2041,60 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/raidmode_bosses/xeno/npc_nemesis.sp"
 #include "npc/raidmode_bosses/xeno/npc_mrx.sp"
 
-#include "npc/seaborn/npc_firsttotalk.sp"
-#include "npc/seaborn/npc_seacrawler.sp"
-#include "npc/seaborn/npc_seapiercer.sp"
-#include "npc/seaborn/npc_seareaper.sp"
-#include "npc/seaborn/npc_searunner.sp"
-#include "npc/seaborn/npc_seaslider.sp"
-#include "npc/seaborn/npc_seaspitter.sp"
-#include "npc/seaborn/npc_undertides.sp"
-#include "npc/seaborn/npc_seaborn_kazimersch_knight.sp"
-#include "npc/seaborn/npc_seaborn_kazimersch_archer.sp"
-#include "npc/seaborn/npc_seaborn_kazimersch_beserker.sp"
-#include "npc/seaborn/npc_seaborn_kazimersch_longrange.sp"
-#include "npc/seaborn/npc_remains.sp"
-#include "npc/seaborn/npc_herald_shared.sp"
-#include "npc/seaborn/npc_herald_1.sp"
-#include "npc/seaborn/npc_herald_2.sp"
-#include "npc/seaborn/npc_herald_3.sp"
-#include "npc/seaborn/npc_herald_4.sp"
-#include "npc/seaborn/npc_netherseafounder.sp"
-#include "npc/seaborn/npc_netherseapredator.sp"
-#include "npc/seaborn/npc_netherseabrandguider.sp"
-#include "npc/seaborn/npc_seaborn_kazimersch_melee_assasin.sp"
-#include "npc/seaborn/npc_netherseaspewer.sp"
-#include "npc/seaborn/npc_netherseaswarmcaller.sp"
-#include "npc/seaborn/npc_netherseareefbreaker.sp"
-#include "npc/seaborn/npc_seaborn_scout.sp"
-#include "npc/seaborn/npc_seaborn_soldier.sp"
-#include "npc/seaborn/npc_citizen_runner.sp"
-#include "npc/seaborn/npc_seaborn_pyro.sp"
-#include "npc/seaborn/npc_seaborn_demo.sp"
-#include "npc/seaborn/npc_seaborn_heavy.sp"
-#include "npc/seaborn/npc_seaborn_engineer.sp"
-#include "npc/seaborn/npc_seaborn_medic.sp"
-#include "npc/seaborn/npc_seaborn_sniper.sp"
-#include "npc/seaborn/npc_seaborn_spy.sp"
-#include "npc/seaborn/npc_lastknight.sp"
+#include "npc/dweller/npc_firsttotalk.sp"
+#include "npc/dweller/npc_seacrawler.sp"
+#include "npc/dweller/npc_seapiercer.sp"
+#include "npc/dweller/npc_seareaper.sp"
+#include "npc/dweller/npc_searunner.sp"
+#include "npc/dweller/npc_seaslider.sp"
+#include "npc/dweller/npc_seaspitter.sp"
+#include "npc/dweller/npc_undertides.sp"
+#include "npc/dweller/npc_dweller_kazimersch_knight.sp"
+#include "npc/dweller/npc_dweller_kazimersch_archer.sp"
+#include "npc/dweller/npc_dweller_kazimersch_beserker.sp"
+#include "npc/dweller/npc_dweller_kazimersch_longrange.sp"
+#include "npc/dweller/npc_remains.sp"
+#include "npc/dweller/npc_herald_shared.sp"
+#include "npc/dweller/npc_herald_1.sp"
+#include "npc/dweller/npc_herald_2.sp"
+#include "npc/dweller/npc_herald_3.sp"
+#include "npc/dweller/npc_herald_4.sp"
+#include "npc/dweller/npc_netherseafounder.sp"
+#include "npc/dweller/npc_netherseapredator.sp"
+#include "npc/dweller/npc_netherseabrandguider.sp"
+#include "npc/dweller/npc_dweller_kazimersch_melee_assasin.sp"
+#include "npc/dweller/npc_netherseaspewer.sp"
+#include "npc/dweller/npc_netherseaswarmcaller.sp"
+#include "npc/dweller/npc_netherseareefbreaker.sp"
+#include "npc/dweller/npc_dweller_scout.sp"
+#include "npc/dweller/npc_dweller_soldier.sp"
+#include "npc/dweller/npc_citizen_runner.sp"
+#include "npc/dweller/npc_dweller_pyro.sp"
+#include "npc/dweller/npc_dweller_demo.sp"
+#include "npc/dweller/npc_dweller_heavy.sp"
+#include "npc/dweller/npc_dweller_engineer.sp"
+#include "npc/dweller/npc_dweller_medic.sp"
+#include "npc/dweller/npc_dweller_sniper.sp"
+#include "npc/dweller/npc_dweller_spy.sp"
+#include "npc/dweller/npc_lastknight.sp"
 #include "npc/ally/npc_barrack_lastknight.sp"
-#include "npc/seaborn/npc_saintcarmen.sp"
-#include "npc/seaborn/npc_pathshaper.sp"
-#include "npc/seaborn/npc_pathshaper_fractal.sp"
-#include "npc/seaborn/npc_tidelinkedbishop.sp"
-#include "npc/seaborn/npc_tidelinkedarchon.sp"
-#include "npc/seaborn/npc_seaborn_guard.sp"
-#include "npc/seaborn/npc_seaborn_defender.sp"
-#include "npc/seaborn/npc_seaborn_vanguard.sp"
-#include "npc/seaborn/npc_seaborn_caster.sp"
-#include "npc/seaborn/npc_seaborn_specialist.sp"
-#include "npc/seaborn/npc_seaborn_supporter.sp"
-#include "npc/seaborn/npc_isharmla.sp"
-#include "npc/seaborn/npc_isharmla_trans.sp"
+#include "npc/dweller/npc_saintcarmen.sp"
+#include "npc/dweller/npc_pathshaper.sp"
+#include "npc/dweller/npc_pathshaper_fractal.sp"
+#include "npc/dweller/npc_tidelinkedbishop.sp"
+#include "npc/dweller/npc_tidelinkedarchon.sp"
+#include "npc/dweller/npc_dweller_guard.sp"
+#include "npc/dweller/npc_dweller_defender.sp"
+#include "npc/dweller/npc_dweller_vanguard.sp"
+#include "npc/dweller/npc_dweller_caster.sp"
+#include "npc/dweller/npc_dweller_specialist.sp"
+#include "npc/dweller/npc_dweller_supporter.sp"
+#include "npc/dweller/npc_isharmla.sp"
+#include "npc/dweller/npc_isharmla_trans.sp"
 
-#include "npc/raidmode_bosses/seaborn/npc_stella.sp"
-#include "npc/raidmode_bosses/seaborn/npc_karlas.sp"
-#include "npc/raidmode_bosses/seaborn/npc_bob_the_first_last_savior.sp"
+#include "npc/raidmode_bosses/dweller/npc_stella.sp"
+#include "npc/raidmode_bosses/dweller/npc_karlas.sp"
+#include "npc/raidmode_bosses/dweller/npc_bob_the_first_last_savior.sp"
 
 #include "npc/expidonsa/npc_benera.sp"
 #include "npc/expidonsa/npc_pental.sp"
@@ -2325,7 +2325,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/almina_expidonsa/wave_45/npc_ranka_s.sp"
 #include "npc/almina_expidonsa/wave_45/npc_murdarato.sp"
 #include "npc/almina_expidonsa/wave_45/npc_elite_kinat.sp"
-#include "npc/almina_expidonsa/wave_45/npc_seaborn_eradicator.sp"
+#include "npc/almina_expidonsa/wave_45/npc_dweller_eradicator.sp"
 #include "npc/almina_expidonsa/wave_45/npc_speedus_itus.sp"
 #include "npc/almina_expidonsa/wave_45/npc_sentinel.sp"
 #include "npc/almina_expidonsa/wave_45/npc_destructius.sp"
@@ -2491,11 +2491,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/mutations/combinehell/other/npc_omega_raid.sp"
 #include "npc/mutations/combinehell/other/npc_rollermine.sp"
 #include "npc/mutations/combinehell/other/npc_bob_follower.sp"
-#include "npc/mutations/combinehell/seaborn/npc_seaborn_combine_police_pistol.sp"
-#include "npc/mutations/combinehell/seaborn/npc_seaborn_combine_police_smg.sp"
-#include "npc/mutations/combinehell/seaborn/npc_seaborn_combine_soldier_elite.sp"
-#include "npc/mutations/combinehell/seaborn/npc_seaborn_combine_soldier_ar2.sp"
-#include "npc/mutations/combinehell/seaborn/npc_seaborn_combine_soldier_shotgun.sp"
+#include "npc/mutations/combinehell/dweller/npc_dweller_combine_police_pistol.sp"
+#include "npc/mutations/combinehell/dweller/npc_dweller_combine_police_smg.sp"
+#include "npc/mutations/combinehell/dweller/npc_dweller_combine_soldier_elite.sp"
+#include "npc/mutations/combinehell/dweller/npc_dweller_combine_soldier_ar2.sp"
+#include "npc/mutations/combinehell/dweller/npc_dweller_combine_soldier_shotgun.sp"
 #include "npc/mutations/combinehell/void/npc_voided_combine_police_pistol.sp"
 #include "npc/mutations/combinehell/void/npc_voided_combine_police_smg.sp"
 #include "npc/mutations/combinehell/void/npc_voided_combine_soldier_elite.sp"

@@ -96,7 +96,7 @@ enum
 	Faction_Kazimierz,
 	Faction_Vesta,
 	Faction_PsychicWarlord,
-	Faction_Seaborn
+	Faction_Dweller
 }
 public const char ItemFaction[][] =
 {
@@ -106,7 +106,7 @@ public const char ItemFaction[][] =
 	"Kazimierz",
 	"Vesta",
 	"Psychic Warlord",
-	"Seaborn"
+	"Dweller"
 }
 
 enum

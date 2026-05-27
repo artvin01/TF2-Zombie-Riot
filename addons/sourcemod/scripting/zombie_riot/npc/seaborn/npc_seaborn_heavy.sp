@@ -39,25 +39,25 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/boxing_gloves_swing4.wav"
 };
 
-void SeabornHeavy_Precache()
+void DwellerHeavy_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seaborn Heavy");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_heavy");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Heavy");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_heavy");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_heavy");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SeabornHeavy(vecPos, vecAng, team);
+	return DwellerHeavy(vecPos, vecAng, team);
 }
 
-methodmap SeabornHeavy < CClotBody
+methodmap DwellerHeavy < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -84,9 +84,9 @@ methodmap SeabornHeavy < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornHeavy(float vecPos[3], float vecAng[3], int ally)
+	public DwellerHeavy(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornHeavy npc = view_as<SeabornHeavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "15000", ally));
+		DwellerHeavy npc = view_as<DwellerHeavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "15000", ally));
 		
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -100,9 +100,9 @@ methodmap SeabornHeavy < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = SeabornHeavy_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = SeabornHeavy_OnTakeDamage;
-		func_NPCThink[npc.index] = SeabornHeavy_ClotThink;
+		func_NPCDeath[npc.index] = DwellerHeavy_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = DwellerHeavy_OnTakeDamage;
+		func_NPCThink[npc.index] = DwellerHeavy_ClotThink;
 		
 		npc.m_flSpeed = 230.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -117,9 +117,9 @@ methodmap SeabornHeavy < CClotBody
 	}
 }
 
-public void SeabornHeavy_ClotThink(int iNPC)
+public void DwellerHeavy_ClotThink(int iNPC)
 {
-	SeabornHeavy npc = view_as<SeabornHeavy>(iNPC);
+	DwellerHeavy npc = view_as<DwellerHeavy>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -214,11 +214,11 @@ public void SeabornHeavy_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+void DwellerHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker > 0)
 	{
-		SeabornHeavy npc = view_as<SeabornHeavy>(victim);
+		DwellerHeavy npc = view_as<DwellerHeavy>(victim);
 		if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 		{
 			if (attacker <= MaxClients && attacker > 0 && TeutonType[attacker] != TEUTON_NONE)
@@ -258,9 +258,9 @@ void SeabornHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 }
 
-void SeabornHeavy_NPCDeath(int entity)
+void DwellerHeavy_NPCDeath(int entity)
 {
-	SeabornHeavy npc = view_as<SeabornHeavy>(entity);
+	DwellerHeavy npc = view_as<DwellerHeavy>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 }

@@ -232,14 +232,14 @@ public void Weapon_MerchantSecondary_R(int client, int weapon, bool crit, int sl
 		}
 		case 1:
 		{
-			menu.AddItem("0", "Fish Market (Anti-Seaborn)");
+			menu.AddItem("0", "Fish Market (Anti-Dweller)");
 			menu.AddItem("1", "Martial Artist (Retreats)");
 			menu.AddItem("-1", "The Investigator (Upgrade Needed)", ITEMDRAW_DISABLED);
 			menu.AddItem("-1", "Wine Market (Upgrade Needed)", ITEMDRAW_DISABLED);
 		}
 		case 2:
 		{
-			menu.AddItem("0", "Fish Market (Anti-Seaborn)");
+			menu.AddItem("0", "Fish Market (Anti-Dweller)");
 			menu.AddItem("1", "Martial Artist (Retreats, Stuns)");
 			menu.AddItem("2", "The Investigator (Steal Attack Speed)");
 			menu.AddItem("-1", "Wine Market (Upgrade Needed)", ITEMDRAW_DISABLED);
@@ -250,7 +250,7 @@ public void Weapon_MerchantSecondary_R(int client, int weapon, bool crit, int sl
 		}
 		default:
 		{
-			menu.AddItem("0", "Fish Market (Anti-Seaborn)");
+			menu.AddItem("0", "Fish Market (Anti-Dweller)");
 			menu.AddItem("1", "Martial Artist (Retreats, Stuns)");
 			menu.AddItem("2", "The Investigator (Steal Attack Speed, Anti-Stun)");
 			menu.AddItem("3", "Wine Market (Ranged Guns, Self Revive)");
@@ -328,7 +328,7 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 	{
 		case Merchant_Jaye:
 		{
-			// Jaye: Bonus Damage vs Seaborn
+			// Jaye: Bonus Damage vs Dweller
 			if(i_BleedType[victim] == BLEEDTYPE_DWELLER)
 			{
 				switch(MerchantLevel[attacker])

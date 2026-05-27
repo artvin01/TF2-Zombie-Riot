@@ -4831,10 +4831,10 @@
 	}
 	"Deep Sea Desc"
 	{
-		"en"	"You head to W.F.'s Outpost, after seeing his elite soldiers infected by Xeno, to see if there are any remaining soldiers there. Turns out there was, but they're infected by the Seaborn. And the sea has an army ready to attack the mainland."
-		"fr"	"L'infection Seaborn attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
+		"en"	"You head to W.F.'s Outpost, after seeing his elite soldiers infected by Xeno, to see if there are any remaining soldiers there. Turns out there was, but they're infected by the Dweller. And the sea has an army ready to attack the mainland."
+		"fr"	"L'infection Dweller attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
 		"chi"	"海嗣感染将会侵蚀你的盾。"
-		"it"	"L'infezione Seaborn è arrivata, gli attacchi di Corrosione dell'Armatura infetteranno la tua armatura, curala con le tabelle dell'armatura!"
+		"it"	"L'infezione Dweller è arrivata, gli attacchi di Corrosione dell'Armatura infetteranno la tua armatura, curala con le tabelle dell'armatura!"
 		"ko"	"제노에 감염된 배풍등의 정예병들을 본 후, 그의 전초기지에 남은 병사가 있는지 확인을 하러 갑니다. 그곳엔 시본이 된 병사들이 있었고... 본토를 공격할 준비를 마친 상태였습니다."
 	}
 	"Interitus Desc"
@@ -4847,8 +4847,8 @@
 	}
 	"Schwert Donner Desc"
 	{
-		"en"	"Lore order: (6) Invade the seaborn and kill them off while Alaxios distracts them... however, it seems another party missunderstands this temporary alliance."
-		"it"	"Ordine Lore: (6) Invadi i seaborn e ucciderli mentre alaxios li distrae... tuttavia, sembra che un'altra parte non capisca questa alleanza temporanea."
+		"en"	"Lore order: (6) Invade the dweller and kill them off while Alaxios distracts them... however, it seems another party missunderstands this temporary alliance."
+		"it"	"Ordine Lore: (6) Invadi i dweller e ucciderli mentre alaxios li distrae... tuttavia, sembra che un'altra parte non capisca questa alleanza temporanea."
 		"ko"	"설정 순서: (6) 알락시오스가 그들을 유인하는 동안 시본을 침공해 처치하세요…\n그러나 다른 세력이 이 일시적인 동맹을 오해한 것 같습니다."
 	}
 	"Schwert Donner Alt Desc"
@@ -5900,9 +5900,9 @@
 		"en"	"Rising Tides"
 		"ko"	"라이징 타이즈"
 	}
-	"Seaborn Escape Desc"
+	"Dweller Escape Desc"
 	{
-		"en"	"Escape from the seaborn's spreading mass!"
+		"en"	"Escape from the dweller's spreading mass!"
 		"ko"	"퍼져나가는 시본의 물결에서 탈출하세요!"
 	}
 	"Medieval Empires"

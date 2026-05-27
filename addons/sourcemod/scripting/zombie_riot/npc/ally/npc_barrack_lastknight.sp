@@ -231,7 +231,7 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 				
 				if(!LastMann)
 				{
-					CPrintToChatAll("{green}Enough time has passed and the Last Knight's seaborn blood closed his wounds, he returns to the fight");
+					CPrintToChatAll("{green}Enough time has passed and the Last Knight's dweller blood closed his wounds, he returns to the fight");
 					npc.i_LastKnightSpecialCommand = LastKnight_Command_Default;
 				}
 				else
@@ -381,7 +381,7 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 			
 			switch(npc.i_LastKnightSpecialCommand)
 			{
-				case LastKnight_Command_Default:	// Default state for Last Knight, an attack with high delay that hits somewhat hard, deals more dmg to Seaborn
+				case LastKnight_Command_Default:	// Default state for Last Knight, an attack with high delay that hits somewhat hard, deals more dmg to Dweller
 				{
 					if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 					{
@@ -440,7 +440,7 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 												
 												if(i_BleedType[target] == BLEEDTYPE_DWELLER)
 												{
-													Custom_Knockback(npc.index, target, 1200.0, true);  // Seaborn Yeeter 9000
+													Custom_Knockback(npc.index, target, 1200.0, true);  // Dweller Yeeter 9000
 													FreezeNpcInTime(target, 3.0);
 												}
 												else // Much less knockback and very brief stun on human enemies (raids and Saint CARmen)
@@ -697,7 +697,7 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 							}
 						}
 					}
-					else // Meanwhile if he's not pissed he debuffs briefly each attack, he still hates seaborns and deals more damage against them, he's racist yes.
+					else // Meanwhile if he's not pissed he debuffs briefly each attack, he still hates dwellers and deals more damage against them, he's racist yes.
 					{
 						if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 						{
@@ -773,7 +773,7 @@ void LastKnight_MenuSpecial(int client, int entity)
 	char num[16];
 	IntToString(EntIndexToEntRef(entity), num, sizeof(num));
 	menu.AddItem(num, "Default Engagement", npc.i_LastKnightSpecialCommand == LastKnight_Command_Default ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	menu.AddItem(num, "Seaborn Regeneration", npc.i_LastKnightSpecialCommand == LastKnight_Command_Heal ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem(num, "Dweller Regeneration", npc.i_LastKnightSpecialCommand == LastKnight_Command_Heal ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	menu.AddItem(num, "Charge", npc.i_LastKnightSpecialCommand == LastKnight_Command_Charge ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	menu.AddItem(num, "Tide Lance", npc.i_LastKnightSpecialCommand == LastKnight_Command_TideLance ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	menu.AddItem(num, "Tide Hunt", npc.i_LastKnightSpecialCommand == LastKnight_Command_TideHunt ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
@@ -940,7 +940,7 @@ public Action BarrackLastKnight_OnTakeDamage(int victim, int &attacker, int &inf
 			HorseMode(npc, 0);
 		}
 		
-		CPrintToChatAll("{red}The Last Knight falls but refuses to give up until the seaborns are no more.");
+		CPrintToChatAll("{red}The Last Knight falls but refuses to give up until the dwellers are no more.");
 		damage = 0.0;
 		SetDownedState_LastKnight(victim, true);
 		

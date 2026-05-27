@@ -1795,7 +1795,7 @@ bool ToddHowardForceTalk()
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: You have to understand, WE have a {blue}common enemy{default}, and that is {blue}Seaborn{default}.");
+				CPrintToChatAll("{lightblue}Todd Howard{default}: You have to understand, WE have a {blue}common enemy{default}, and that is {blue}Dweller{default}.");
 				i_TalkDelayCheck += 1;
 			}
 			case 2:
@@ -1815,7 +1815,7 @@ bool ToddHowardForceTalk()
 			}
 			case 5:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: You can wield {blue}Seaborn's{default} weapons without succumbing to their corruption, from what i can see atleast...");
+				CPrintToChatAll("{lightblue}Todd Howard{default}: You can wield {blue}Dweller's{default} weapons without succumbing to their corruption, from what i can see atleast...");
 				i_TalkDelayCheck += 1;
 			}
 			case 6:

@@ -8,25 +8,25 @@ static const char g_IdleAlertedSounds[][] =
 	"weapons/demo_charge_windup3.wav"
 };
 
-void SeabornDemo_Precache()
+void DwellerDemo_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seaborn Demoman");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_demo");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Demoman");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_demo");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_demo");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SeabornDemo(vecPos, vecAng, team);
+	return DwellerDemo(vecPos, vecAng, team);
 }
 
-methodmap SeabornDemo < CClotBody
+methodmap DwellerDemo < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -37,9 +37,9 @@ methodmap SeabornDemo < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(2.0, 3.0);
 	}
 	
-	public SeabornDemo(float vecPos[3], float vecAng[3], int ally)
+	public DwellerDemo(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornDemo npc = view_as<SeabornDemo>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1500", ally));
+		DwellerDemo npc = view_as<DwellerDemo>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -50,9 +50,9 @@ methodmap SeabornDemo < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = SeabornDemo_NPCDeath;
+		func_NPCDeath[npc.index] = DwellerDemo_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = SeabornDemo_ClotThink;
+		func_NPCThink[npc.index] = DwellerDemo_ClotThink;
 		
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flSpeed = 406.56;
@@ -68,9 +68,9 @@ methodmap SeabornDemo < CClotBody
 	}
 }
 
-public void SeabornDemo_ClotThink(int iNPC)
+public void DwellerDemo_ClotThink(int iNPC)
 {
-	SeabornDemo npc = view_as<SeabornDemo>(iNPC);
+	DwellerDemo npc = view_as<DwellerDemo>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -166,9 +166,9 @@ public void SeabornDemo_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornDemo_NPCDeath(int entity)
+void DwellerDemo_NPCDeath(int entity)
 {
-	SeabornDemo npc = view_as<SeabornDemo>(entity);
+	DwellerDemo npc = view_as<DwellerDemo>(entity);
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -180,7 +180,7 @@ void SeabornDemo_NPCDeath(int entity)
 		startPosition[2] += 45;
 
 		KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
-		Explode_Logic_Custom(75.0, -1, npc.index, -1, startPosition, 150.0, _, _, true, _, false, 1.0, SeabornDemo_ExplodePost);
+		Explode_Logic_Custom(75.0, -1, npc.index, -1, startPosition, 150.0, _, _, true, _, false, 1.0, DwellerDemo_ExplodePost);
 
 		DataPack pack_boom = new DataPack();
 		pack_boom.WriteFloat(startPosition[0]);
@@ -191,7 +191,7 @@ void SeabornDemo_NPCDeath(int entity)
 	}
 }
 
-public void SeabornDemo_ExplodePost(int attacker, int victim, float damage, int weapon)
+public void DwellerDemo_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
 	float EnemyVecPos[3]; WorldSpaceCenter(victim, EnemyVecPos);
 	ParticleEffectAt(EnemyVecPos, "water_bulletsplash01", 3.0);

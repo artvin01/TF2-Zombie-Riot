@@ -24,25 +24,25 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/medic_battlecry04.mp3"
 };
 
-void SeabornMedic_Precache()
+void DwellerMedic_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seaborn Medic");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_medic");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Medic");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_medic");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_medic");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MISSION;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SeabornMedic(vecPos, vecAng, team);
+	return DwellerMedic(vecPos, vecAng, team);
 }
 
-methodmap SeabornMedic < CClotBody
+methodmap DwellerMedic < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -61,9 +61,9 @@ methodmap SeabornMedic < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 	
-	public SeabornMedic(float vecPos[3], float vecAng[3], int ally)
+	public DwellerMedic(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornMedic npc = view_as<SeabornMedic>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "6000", ally));
+		DwellerMedic npc = view_as<DwellerMedic>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "6000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_SWIM_LOSERSTATE");
@@ -74,9 +74,9 @@ methodmap SeabornMedic < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = SeabornMedic_NPCDeath;
+		func_NPCDeath[npc.index] = DwellerMedic_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = SeabornMedic_ClotThink;
+		func_NPCThink[npc.index] = DwellerMedic_ClotThink;
 		
 		Is_a_Medic[npc.index] = true;
 		npc.m_flSpeed = 256.0;
@@ -93,9 +93,9 @@ methodmap SeabornMedic < CClotBody
 	}
 }
 
-public void SeabornMedic_ClotThink(int iNPC)
+public void DwellerMedic_ClotThink(int iNPC)
 {
-	SeabornMedic npc = view_as<SeabornMedic>(iNPC);
+	DwellerMedic npc = view_as<DwellerMedic>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -167,9 +167,9 @@ public void SeabornMedic_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornMedic_NPCDeath(int entity)
+void DwellerMedic_NPCDeath(int entity)
 {
-	SeabornMedic npc = view_as<SeabornMedic>(entity);
+	DwellerMedic npc = view_as<DwellerMedic>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	

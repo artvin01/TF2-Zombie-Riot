@@ -31,25 +31,25 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/capper_shoot.wav"
 };
 
-void SeabornCaster_Precache()
+void DwellerCaster_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seaborn Caster");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_caster");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Caster");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_caster");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_caster");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeabornCaster(vecPos, vecAng, team, data);
+	return DwellerCaster(vecPos, vecAng, team, data);
 }
 
-methodmap SeabornCaster < CClotBody
+methodmap DwellerCaster < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -72,9 +72,9 @@ methodmap SeabornCaster < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornCaster(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public DwellerCaster(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		SeabornCaster npc = view_as<SeabornCaster>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "25000", ally, false));
+		DwellerCaster npc = view_as<DwellerCaster>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "25000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -87,9 +87,9 @@ methodmap SeabornCaster < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
-		func_NPCDeath[npc.index] = SeabornCaster_NPCDeath;
+		func_NPCDeath[npc.index] = DwellerCaster_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = SeabornCaster_ClotThink;
+		func_NPCThink[npc.index] = DwellerCaster_ClotThink;
 		
 		npc.m_flSpeed = 230.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -121,9 +121,9 @@ methodmap SeabornCaster < CClotBody
 	}
 }
 
-public void SeabornCaster_ClotThink(int iNPC)
+public void DwellerCaster_ClotThink(int iNPC)
 {
-	SeabornCaster npc = view_as<SeabornCaster>(iNPC);
+	DwellerCaster npc = view_as<DwellerCaster>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -214,9 +214,9 @@ public void SeabornCaster_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornCaster_NPCDeath(int entity)
+void DwellerCaster_NPCDeath(int entity)
 {
-	SeabornCaster npc = view_as<SeabornCaster>(entity);
+	DwellerCaster npc = view_as<DwellerCaster>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	

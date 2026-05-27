@@ -2101,10 +2101,10 @@ static void Huscarls_Weapon_Lines(Huscarls npc, int client)
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		/*ase WEAPON_DWELLERMELEE: switch(GetRandomInt(0,3)){
-			case 0: Format(Text_Lines, sizeof(Text_Lines), "Okay, now there's {darkblue}Seaborn{default} too.");
-			case 1: Format(Text_Lines, sizeof(Text_Lines), "I need some {red}Napalm{default} to fry the {darkblue}Seaborn{default}.");
+			case 0: Format(Text_Lines, sizeof(Text_Lines), "Okay, now there's {darkblue}Dweller{default} too.");
+			case 1: Format(Text_Lines, sizeof(Text_Lines), "I need some {red}Napalm{default} to fry the {darkblue}Dweller{default}.");
 			case 2: Format(Text_Lines, sizeof(Text_Lines), "I found an {darkblue}Infected{default} person, I need a Backup!");
-			case 3: Format(Text_Lines, sizeof(Text_Lines), "I didn't know there was a {darkblue}Seaborn{default}.");}
+			case 3: Format(Text_Lines, sizeof(Text_Lines), "I didn't know there was a {darkblue}Dweller{default}.");}
 		case WEAPON_EXPLORER: switch(GetRandomInt(0,2)){
 			case 0: Format(Text_Lines, sizeof(Text_Lines), "{purple}Void{default}...!");
 			case 1: Format(Text_Lines, sizeof(Text_Lines), "{purple}Purple guy{default} is here.");

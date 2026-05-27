@@ -56,7 +56,7 @@ static char g_MeleeMissSounds[][] = {
 	"weapons/stunstick/spark3.wav",
 };
 
-public void SeabornCombinePoliceSmg_OnMapStart_NPC()
+public void DwellerCombinePoliceSmg_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -80,8 +80,8 @@ public void SeabornCombinePoliceSmg_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seaborn Metro Raider");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_combine_police_smg");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Metro Raider");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_combine_police_smg");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_smg");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -93,9 +93,9 @@ public void SeabornCombinePoliceSmg_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return SeabornCombinePoliceSmg(vecPos, vecAng, ally);
+	return DwellerCombinePoliceSmg(vecPos, vecAng, ally);
 }
-methodmap SeabornCombinePoliceSmg < CClotBody
+methodmap DwellerCombinePoliceSmg < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -164,9 +164,9 @@ methodmap SeabornCombinePoliceSmg < CClotBody
 	}
 	
 	
-	public SeabornCombinePoliceSmg(float vecPos[3], float vecAng[3], int ally)
+	public DwellerCombinePoliceSmg(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornCombinePoliceSmg npc = view_as<SeabornCombinePoliceSmg>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "700", ally));
+		DwellerCombinePoliceSmg npc = view_as<DwellerCombinePoliceSmg>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "700", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -193,9 +193,9 @@ methodmap SeabornCombinePoliceSmg < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		
 
-		func_NPCDeath[npc.index] = SeabornCombinePoliceSmg_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = SeabornCombinePoliceSmg_OnTakeDamage;
-		func_NPCThink[npc.index] = SeabornCombinePoliceSmg_ClotThink;
+		func_NPCDeath[npc.index] = DwellerCombinePoliceSmg_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = DwellerCombinePoliceSmg_OnTakeDamage;
+		func_NPCThink[npc.index] = DwellerCombinePoliceSmg_ClotThink;
 
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_smg1.mdl");
@@ -212,9 +212,9 @@ methodmap SeabornCombinePoliceSmg < CClotBody
 
 //TODO 
 //Rewrite
-public void SeabornCombinePoliceSmg_ClotThink(int iNPC)
+public void DwellerCombinePoliceSmg_ClotThink(int iNPC)
 {
-	SeabornCombinePoliceSmg npc = view_as<SeabornCombinePoliceSmg>(iNPC);
+	DwellerCombinePoliceSmg npc = view_as<DwellerCombinePoliceSmg>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -404,13 +404,13 @@ public void SeabornCombinePoliceSmg_ClotThink(int iNPC)
 	
 
 
-public Action SeabornCombinePoliceSmg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action DwellerCombinePoliceSmg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	SeabornCombinePoliceSmg npc = view_as<SeabornCombinePoliceSmg>(victim);
+	DwellerCombinePoliceSmg npc = view_as<DwellerCombinePoliceSmg>(victim);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -420,9 +420,9 @@ public Action SeabornCombinePoliceSmg_OnTakeDamage(int victim, int &attacker, in
 	return Plugin_Changed;
 }
 
-public void SeabornCombinePoliceSmg_NPCDeath(int entity)
+public void DwellerCombinePoliceSmg_NPCDeath(int entity)
 {
-	SeabornCombinePoliceSmg npc = view_as<SeabornCombinePoliceSmg>(entity);
+	DwellerCombinePoliceSmg npc = view_as<DwellerCombinePoliceSmg>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	

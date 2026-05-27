@@ -33,25 +33,25 @@ static const char g_MeleeHitSounds[][] =
 	"mvm/melee_impacts/bottle_hit_robo03.wav"
 };
 
-void SeabornDefender_Precache()
+void DwellerDefender_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seaborn Defender");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_defender");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Defender");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_defender");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_defender");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeabornDefender(vecPos, vecAng, team, data);
+	return DwellerDefender(vecPos, vecAng, team, data);
 }
 
-methodmap SeabornDefender < CClotBody
+methodmap DwellerDefender < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -74,9 +74,9 @@ methodmap SeabornDefender < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornDefender(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public DwellerDefender(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		SeabornDefender npc = view_as<SeabornDefender>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "100000", ally, false));
+		DwellerDefender npc = view_as<DwellerDefender>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "100000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -89,9 +89,9 @@ methodmap SeabornDefender < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
-		func_NPCDeath[npc.index] = SeabornDefender_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = SeabornDefender_OnTakeDamage;
-		func_NPCThink[npc.index] = SeabornDefender_ClotThink;
+		func_NPCDeath[npc.index] = DwellerDefender_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = DwellerDefender_OnTakeDamage;
+		func_NPCThink[npc.index] = DwellerDefender_ClotThink;
 		
 		npc.m_flSpeed = 200.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -140,9 +140,9 @@ methodmap SeabornDefender < CClotBody
 	}
 }
 
-public void SeabornDefender_ClotThink(int iNPC)
+public void DwellerDefender_ClotThink(int iNPC)
 {
-	SeabornDefender npc = view_as<SeabornDefender>(iNPC);
+	DwellerDefender npc = view_as<DwellerDefender>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -225,11 +225,11 @@ public void SeabornDefender_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+void DwellerDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker > 0)
 	{
-		SeabornDefender npc = view_as<SeabornDefender>(victim);
+		DwellerDefender npc = view_as<DwellerDefender>(victim);
 
 		bool hot;
 		bool magic;
@@ -297,9 +297,9 @@ void SeabornDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 }
 
-void SeabornDefender_NPCDeath(int entity)
+void DwellerDefender_NPCDeath(int entity)
 {
-	SeabornDefender npc = view_as<SeabornDefender>(entity);
+	DwellerDefender npc = view_as<DwellerDefender>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	

@@ -45,25 +45,25 @@ static const char g_MeleeAttackSounds[][] =
 static float SpeedCache = 1.0;
 static int NPCId;
 
-void SeabornVanguard_Precache()
+void DwellerVanguard_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seaborn Vanguard");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_vanguard");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Vanguard");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_vanguard");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_vanguard");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MISSION;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeabornVanguard(vecPos, vecAng, team, data);
+	return DwellerVanguard(vecPos, vecAng, team, data);
 }
 
-methodmap SeabornVanguard < CClotBody
+methodmap DwellerVanguard < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -90,9 +90,9 @@ methodmap SeabornVanguard < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornVanguard(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public DwellerVanguard(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		SeabornVanguard npc = view_as<SeabornVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "35000", ally, false));
+		DwellerVanguard npc = view_as<DwellerVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "35000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -105,9 +105,9 @@ methodmap SeabornVanguard < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 		
-		func_NPCDeath[npc.index] = SeabornVanguard_NPCDeath;
+		func_NPCDeath[npc.index] = DwellerVanguard_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = SeabornVanguard_ClotThink;
+		func_NPCThink[npc.index] = DwellerVanguard_ClotThink;
 		
 		npc.m_flSpeed = 285.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -147,7 +147,7 @@ methodmap SeabornVanguard < CClotBody
 	}
 }
 
-void SeabornVanguard_SpeedBuff(CClotBody npc, float &speed)
+void DwellerVanguard_SpeedBuff(CClotBody npc, float &speed)
 {
 	if(GetTeam(npc.index) != TFTeam_Red)
 	{
@@ -169,9 +169,9 @@ void SeabornVanguard_SpeedBuff(CClotBody npc, float &speed)
 	}
 }
 
-public void SeabornVanguard_ClotThink(int iNPC)
+public void DwellerVanguard_ClotThink(int iNPC)
 {
-	SeabornVanguard npc = view_as<SeabornVanguard>(iNPC);
+	DwellerVanguard npc = view_as<DwellerVanguard>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -269,9 +269,9 @@ public void SeabornVanguard_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornVanguard_NPCDeath(int entity)
+void DwellerVanguard_NPCDeath(int entity)
 {
-	SeabornVanguard npc = view_as<SeabornVanguard>(entity);
+	DwellerVanguard npc = view_as<DwellerVanguard>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	

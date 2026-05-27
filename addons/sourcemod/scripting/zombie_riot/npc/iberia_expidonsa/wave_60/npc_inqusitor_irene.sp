@@ -744,7 +744,7 @@ static void Amphi_Weapon_Lines(Alminainqusitor_amphi npc, int client)
 				case 2:
 					Format(Text_Lines, sizeof(Text_Lines), "{crimson}Liran's{default} legacy will move on with us {gold}%N{default}!",client);
 				case 3:
-					Format(Text_Lines, sizeof(Text_Lines), "We both can finish what {crimson}Liran{default} failed, eradicade the seaborn {gold}%N{default}!",client);
+					Format(Text_Lines, sizeof(Text_Lines), "We both can finish what {crimson}Liran{default} failed, eradicade the dweller {gold}%N{default}!",client);
 			}
 		}
 

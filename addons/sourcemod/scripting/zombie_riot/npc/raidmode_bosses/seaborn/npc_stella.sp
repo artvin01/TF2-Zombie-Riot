@@ -90,7 +90,7 @@ static bool b_tripple_raid[MAXENTITIES];
 #define STELLA_NC_DURATION 13.0
 #define STELLA_NC_TURNRATE 500.0	//max turnrate.
 #define STELLA_NC_TURNRATE_ANGER 700.0
-#define STELLA_KARLAS_THEME "#zombiesurvival/seaborn/echos_of_the_wrong_war.mp3"
+#define STELLA_KARLAS_THEME "#zombiesurvival/dweller/echos_of_the_wrong_war.mp3"
 
 #define STELLA_NORMAL_LASER_DURATION 0.7
 

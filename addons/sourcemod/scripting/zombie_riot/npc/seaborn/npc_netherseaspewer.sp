@@ -39,7 +39,7 @@ void SeaSpewer_Precache()
 	strcopy(data.Icon, sizeof(data.Icon), "ds_spewer");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

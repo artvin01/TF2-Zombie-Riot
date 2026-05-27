@@ -351,7 +351,7 @@ enum
 	Type_BTD,
 	Type_Medieval,
 	Type_COF,
-	Type_Seaborn,
+	Type_Dweller,
 	Type_Expidonsa,
 	Type_Interitus,
 	Type_BlueParadox,
@@ -687,7 +687,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_hazard.sp"
 #include "custom/weapon_casino.sp"
 #include "custom/wand/weapon_ion_beam_wand.sp"
-#include "custom/kit_seaborn.sp"
+#include "custom/kit_dweller.sp"
 #include "custom/weapon_class_leper.sp"
 #include "custom/kit_flagellant.sp"
 #include "custom/kit_zealot.sp"
@@ -895,7 +895,7 @@ void ZR_MapStart()
 	Zero(i_NormalBarracks_HexBarracksUpgrades_2);
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
-	Seaborn_OnMapStart();
+	Dweller_OnMapStart();
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	WavesUpdateDifficultyName();
@@ -2356,7 +2356,7 @@ void TriggerLastmanLogic(int killed, int Hurtviasdkhook)
 					}
 					Yakuza_Lastman(8);
 				}
-				if(SeaMelee_IsSeaborn(client))
+				if(SeaMelee_IsDweller(client))
 				{
 					CPrintToChatAll("{crimson}The sea entirely corrupts %N.",client);
 					Yakuza_Lastman(9);

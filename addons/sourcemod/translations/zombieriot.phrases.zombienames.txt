@@ -2521,67 +2521,67 @@
 		"it"		"Dio infetto dal mare Alaxios"
 		"ko"		"시테러 감염체 갓 알락시오스"
 	}
-	"Seaborn Scout"
+	"Dweller Scout"
 	{
-		"en"		"Seaborn Scout"
-		"ru"		"Разведчик Seaborn"
-		"it"		"Scout Seaborn"
+		"en"		"Dweller Scout"
+		"ru"		"Разведчик Dweller"
+		"it"		"Scout Dweller"
 		"ko"		"시본 스카웃"
 	}
-	"Seaborn Soldier"
+	"Dweller Soldier"
 	{
-		"en"		"Seaborn Soldier"
-		"ru"		"Солдат Seaborn"
-		"it"		"Soldato Seaborn"
+		"en"		"Dweller Soldier"
+		"ru"		"Солдат Dweller"
+		"it"		"Soldato Dweller"
 		"ko"		"시본 솔저"
 	}
-	"Seaborn Pyro"
+	"Dweller Pyro"
 	{
-		"en"		"Seaborn Pyro"
-		"ru"		"Поджигатель Seaborn"
-		"it"		"Seaborn Pyro"
+		"en"		"Dweller Pyro"
+		"ru"		"Поджигатель Dweller"
+		"it"		"Dweller Pyro"
 		"ko"		"시본 파이로"
 	}
-	"Seaborn Demoman"
+	"Dweller Demoman"
 	{
-		"en"		"Seaborn Demoman"
-		"ru"		"Подрывник Seaborn"
-		"it"		"Seaborn Demoman"
+		"en"		"Dweller Demoman"
+		"ru"		"Подрывник Dweller"
+		"it"		"Dweller Demoman"
 		"ko"		"시본 데모맨"
 	}
-	"Seaborn Heavy"
+	"Dweller Heavy"
 	{
-		"en"		"Seaborn Heavy"
-		"ru"		"Пулемётчик Seaborn"
-		"it"		"Seaborn Heavy"
+		"en"		"Dweller Heavy"
+		"ru"		"Пулемётчик Dweller"
+		"it"		"Dweller Heavy"
 		"ko"		"시본 헤비"
 	}
-	"Seaborn Engineer"
+	"Dweller Engineer"
 	{
-		"en"		"Seaborn Engineer"
-		"ru"		"Инженер Seaborn"
-		"it"		"Ingegnere Seaborn"
+		"en"		"Dweller Engineer"
+		"ru"		"Инженер Dweller"
+		"it"		"Ingegnere Dweller"
 		"ko"		"시본 엔지니어"
 	}
-	"Seaborn Medic"
+	"Dweller Medic"
 	{
-		"en"		"Seaborn Medic"
-		"ru"		"Медик Seaborn"
-		"it"		"Medico Seaborn"
+		"en"		"Dweller Medic"
+		"ru"		"Медик Dweller"
+		"it"		"Medico Dweller"
 		"ko"		"시본 메딕"
 	}
-	"Seaborn Sniper"
+	"Dweller Sniper"
 	{
-		"en"		"Seaborn Sniper"
-		"ru"		"Снайпер Seaborn"
-		"it"		"Cecchino Seaborn"
+		"en"		"Dweller Sniper"
+		"ru"		"Снайпер Dweller"
+		"it"		"Cecchino Dweller"
 		"ko"		"시본 스나이퍼"
 	}
-	"Seaborn Spy"
+	"Dweller Spy"
 	{
-		"en"		"Seaborn Spy"
-		"ru"		"Шпион Seaborn"
-		"it"		"Spia Seaborn"
+		"en"		"Dweller Spy"
+		"ru"		"Шпион Dweller"
+		"it"		"Spia Dweller"
 		"ko"		"시본 스파이"
 	}
 	"Citizen"
@@ -2789,11 +2789,11 @@
 		"it"		"Ishar'mla, Cuore della Corruzione"
 		"ko"		"이샤믈라, 부식의 마음"
 	}
-	"Seaborn Guard"
+	"Dweller Guard"
 	{
-		"en"		"Seaborn Guard"
+		"en"		"Dweller Guard"
 		"ru" 		"Морерождённый страж"
-		"it"		"Guardia Seaborn"
+		"it"		"Guardia Dweller"
 		"ko"		"시본 가드"
 	}
 	"Guard"
@@ -2803,11 +2803,11 @@
 		"it"		"Guardia"
 		"ko"		"가드"
 	}
-	"Seaborn Defender"
+	"Dweller Defender"
 	{
-		"en"		"Seaborn Defender"
+		"en"		"Dweller Defender"
 		"ru" 		"Морерождённый Защитник"
-		"it"		"Difensore Seaborn"
+		"it"		"Difensore Dweller"
 		"ko"		"시본 디펜더"
 	}
 	"Defender"
@@ -2817,11 +2817,11 @@
 		"it"		"Difensore"
 		"ko"		"디펜더"
 	}
-	"Seaborn Vanguard"
+	"Dweller Vanguard"
 	{
-		"en"		"Seaborn Vanguard"
+		"en"		"Dweller Vanguard"
 		"ru" 		"Морерождённый Авангард"
-		"it"		"Avanguardia Seaborn"
+		"it"		"Avanguardia Dweller"
 		"ko"		"시본 뱅가드"
 	}
 	"Vanguard"
@@ -2831,11 +2831,11 @@
 		"it"		"Avanguardia"
 		"ko"		"뱅가드"
 	}
-	"Seaborn Caster"
+	"Dweller Caster"
 	{
-		"en"		"Seaborn Caster"
+		"en"		"Dweller Caster"
 		"ru" 		"Морерождённый Маг"
-		"it"		"Castigatore Seaborn"
+		"it"		"Castigatore Dweller"
 		"ko"		"시본 캐스터"
 	}
 	"Caster"
@@ -2845,11 +2845,11 @@
 		"it"		"Caster"
 		"ko"		"캐스터"
 	}
-	"Seaborn Specialist"
+	"Dweller Specialist"
 	{
-		"en"		"Seaborn Specialist"
+		"en"		"Dweller Specialist"
 		"ru" 		"Морерождённый Специалист"
-		"it"		"Specialista Seaborn"
+		"it"		"Specialista Dweller"
 		"ko"		"시본 스페셜리스트"
 	}
 	"Specialist"
@@ -2859,11 +2859,11 @@
 		"it"		"Specialista"
 		"ko"		"스페셜리스트"
 	}
-	"Seaborn Supporter"
+	"Dweller Supporter"
 	{
-		"en"		"Seaborn Supporter"
+		"en"		"Dweller Supporter"
 		"ru" 		"Морерождённый Поддерживающий"
-		"it"		"Sostenitore di Seaborn"
+		"it"		"Sostenitore di Dweller"
 		"ko"		"시본 서포터"
 	}
 	"Supporter"
@@ -4586,13 +4586,13 @@
 		"en"	"Whiteflower’s most prestigious swordman, now afflicted by chaos. \n-Performs a barrage of pulse attacks, gaining resistance during usage, and teleporting behind any player hit."
 		"ko"	"배풍등이 가장 자랑스러워하는 검객이었지만, 이제 혼돈에 침식되고 말았습니다. \n-펄스 공격을 연속으로 사용하며, 사용 중에는 저항력이 증가하고 펄스 공격에 피격당한 플레이어 뒤쪽으로 순간이동."
 	}
-	"Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
+	"Xeno Dweller W.F. Chaos Voided Acclaimed Swordsman The First"
 	{
-		"en" "Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
-		"it" "Xeno Seaborn W.F. Chaos Voided Acclamato Spadaccino Il Primo"
+		"en" "Xeno Dweller W.F. Chaos Voided Acclaimed Swordsman The First"
+		"it" "Xeno Dweller W.F. Chaos Voided Acclamato Spadaccino Il Primo"
 		"ko" "제노 시본 W.F. 혼돈 공허화된 갈채의 검객 1세"
 	}
-	"Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First esc"
+	"Xeno Dweller W.F. Chaos Voided Acclaimed Swordsman The First esc"
 	{
 		"en" "The merc's worst n1ghtmare. \n-Very fast. \n-Pulse attack one shots. \n-Melee attacks one shot. \n-The nightmare won't last forever."
 		"ko" "용병들의 최악의 악몽. \n-매우 빠름. \n-펄스 공격이 대상을 즉사시킵니다. \n-근접 공격이 대상을 즉사시킵니다. \n-악몽은 그리 오래 가지 않을것입니다..."
@@ -5235,13 +5235,13 @@
 		"it"		"-Elimina 1 proiettile dall'aria con il suo proiettile, se un giocatore è troppo vicino, gli spara invece, ha 2 proiettili al suo posto.\n-Se il nemico è marcato, guadagna proiettile su colpo in mischia."
 		"ko"		"-공중의 투사체 1개를 탄환으로 적중시켜 파괴합니다. 대상 플레이어가 너무 근접했다면, 대신 대상을 사격합니다. 초기에 탄환을 2발 보유합니다.\n-대상이 표적 상태라면, 근접 공격 적중시 탄약을 1 얻습니다."
 	}
-	"Almina-Expidonsan Seaborn Eradicator"
+	"Almina-Expidonsan Dweller Eradicator"
 	{
-		"en"		"Almina-Expidonsan Seaborn Eradicator"
+		"en"		"Almina-Expidonsan Dweller Eradicator"
 		"it"		"Sradicatore di corna marittime Almina-Expidonsan"
 		"ko"		"이베리아-엑스피돈사 연합 시본 섬멸자"
 	}
-	"Almina-Expidonsan Seaborn Eradicator Desc"
+	"Almina-Expidonsan Dweller Eradicator Desc"
 	{
 		"en"		"-Acts as a spawnpoint, unkillable and oneshots anything.\n-Once most allies died, it enrages, loses all its resistance and 99％ hp and gets very fast, loses alot of damage too."
 		"it"		"-Agisce come punto di spawn, non è uccidibile e spara a qualsiasi cosa.\n-Una volta morti la maggior parte degli alleati, si infuria, perde tutte le resistenze e il 99％ di hp e diventa molto veloce, perdendo anche molti danni."
@@ -6148,34 +6148,34 @@
 		"it"		"Pillola rossa dirottata"
 		"ko"		"탈취당한 빨간 약"
 	}
-	"Seaborn Metro Cop"
+	"Dweller Metro Cop"
 	{
-		"en"		"Seaborn Metro Cop"
-		"it"		"Poliziotto della metropolitana di Seaborn"
+		"en"		"Dweller Metro Cop"
+		"it"		"Poliziotto della metropolitana di Dweller"
 		"ko"		"시본 시민 보호 기동대"
 	}
-	"Seaborn Metro Raider"
+	"Dweller Metro Raider"
 	{
-		"en"		"Seaborn Metro Raider"
-		"it"		"Seaborn Metro Raider"
+		"en"		"Dweller Metro Raider"
+		"it"		"Dweller Metro Raider"
 		"ko"		"시본 시민 보호 특공대"
 	}
-	"Seaborn W.F. Rifler"
+	"Dweller W.F. Rifler"
 	{
-		"en"		"Seaborn W.F. Rifler"
-		"it"		"Seaborn W.F. Rifler"
+		"en"		"Dweller W.F. Rifler"
+		"it"		"Dweller W.F. Rifler"
 		"ko"		"시본 W.F. 소총수"
 	}
-	"Seaborn W.F. Elite"
+	"Dweller W.F. Elite"
 	{
-		"en"		"Seaborn W.F. Elite"
-		"it"		"Seaborn W.F. Elite"
+		"en"		"Dweller W.F. Elite"
+		"it"		"Dweller W.F. Elite"
 		"ko"		"시본 W.F. 콤바인 엘리트"
 	}
-	"Seaborn W.F. Shotgunner"
+	"Dweller W.F. Shotgunner"
 	{
-		"en"		"Seaborn W.F. Shotgunner"
-		"it"		"Seaborn W.F. Tiratore"
+		"en"		"Dweller W.F. Shotgunner"
+		"it"		"Dweller W.F. Tiratore"
 		"ko"		"시본 W.F. 산탄총병"
 	}
 	"Voided Metro Cop"

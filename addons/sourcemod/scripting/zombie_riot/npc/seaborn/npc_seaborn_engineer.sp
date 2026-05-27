@@ -40,25 +40,25 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/machete_swing.wav"
 };
 
-void SeabornEngineer_Precache()
+void DwellerEngineer_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seaborn Engineer");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_engineer");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Engineer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_engineer");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_engi");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MISSION;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SeabornEngineer(vecPos, vecAng, team);
+	return DwellerEngineer(vecPos, vecAng, team);
 }
 
-methodmap SeabornEngineer < CClotBody
+methodmap DwellerEngineer < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -85,9 +85,9 @@ methodmap SeabornEngineer < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornEngineer(float vecPos[3], float vecAng[3], int ally)
+	public DwellerEngineer(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornEngineer npc = view_as<SeabornEngineer>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "15000", ally));
+		DwellerEngineer npc = view_as<DwellerEngineer>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "15000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -98,9 +98,9 @@ methodmap SeabornEngineer < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = SeabornEngineer_NPCDeath;
+		func_NPCDeath[npc.index] = DwellerEngineer_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = SeabornEngineer_ClotThink;
+		func_NPCThink[npc.index] = DwellerEngineer_ClotThink;
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -119,9 +119,9 @@ methodmap SeabornEngineer < CClotBody
 	}
 }
 
-public void SeabornEngineer_ClotThink(int iNPC)
+public void DwellerEngineer_ClotThink(int iNPC)
 {
-	SeabornEngineer npc = view_as<SeabornEngineer>(iNPC);
+	DwellerEngineer npc = view_as<DwellerEngineer>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -292,9 +292,9 @@ public void SeabornEngineer_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornEngineer_NPCDeath(int entity)
+void DwellerEngineer_NPCDeath(int entity)
 {
-	SeabornEngineer npc = view_as<SeabornEngineer>(entity);
+	DwellerEngineer npc = view_as<DwellerEngineer>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	

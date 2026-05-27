@@ -36,25 +36,25 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/machete_swing.wav"
 };
 
-void SeabornSniper_Precache()
+void DwellerSniper_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seaborn Sniper");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_sniper");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Sniper");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_sniper");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_sniper");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SeabornSniper(vecPos, vecAng, team);
+	return DwellerSniper(vecPos, vecAng, team);
 }
 
-methodmap SeabornSniper < CClotBody
+methodmap DwellerSniper < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -81,9 +81,9 @@ methodmap SeabornSniper < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornSniper(float vecPos[3], float vecAng[3], int ally)
+	public DwellerSniper(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornSniper npc = view_as<SeabornSniper>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "9000", ally));
+		DwellerSniper npc = view_as<DwellerSniper>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "9000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -95,9 +95,9 @@ methodmap SeabornSniper < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = SeabornSniper_NPCDeath;
+		func_NPCDeath[npc.index] = DwellerSniper_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = SeabornSniper_ClotThink;
+		func_NPCThink[npc.index] = DwellerSniper_ClotThink;
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -112,9 +112,9 @@ methodmap SeabornSniper < CClotBody
 	}
 }
 
-public void SeabornSniper_ClotThink(int iNPC)
+public void DwellerSniper_ClotThink(int iNPC)
 {
-	SeabornSniper npc = view_as<SeabornSniper>(iNPC);
+	DwellerSniper npc = view_as<DwellerSniper>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -222,9 +222,9 @@ public void SeabornSniper_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornSniper_NPCDeath(int entity)
+void DwellerSniper_NPCDeath(int entity)
 {
-	SeabornSniper npc = view_as<SeabornSniper>(entity);
+	DwellerSniper npc = view_as<DwellerSniper>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	

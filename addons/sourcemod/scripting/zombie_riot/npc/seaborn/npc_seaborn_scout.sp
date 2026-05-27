@@ -39,25 +39,25 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/machete_swing.wav"
 };
 
-void SeabornScout_Precache()
+void DwellerScout_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seaborn Scout");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_scout");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Scout");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_scout");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_scout");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SeabornScout(vecPos, vecAng, team);
+	return DwellerScout(vecPos, vecAng, team);
 }
 
-methodmap SeabornScout < CClotBody
+methodmap DwellerScout < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -84,9 +84,9 @@ methodmap SeabornScout < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornScout(float vecPos[3], float vecAng[3], int ally)
+	public DwellerScout(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornScout npc = view_as<SeabornScout>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "3500", ally));
+		DwellerScout npc = view_as<DwellerScout>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "3500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -98,9 +98,9 @@ methodmap SeabornScout < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = SeabornScout_NPCDeath;
+		func_NPCDeath[npc.index] = DwellerScout_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = SeabornScout_ClotThink;
+		func_NPCThink[npc.index] = DwellerScout_ClotThink;
 		
 		npc.m_flSpeed = 400.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -115,9 +115,9 @@ methodmap SeabornScout < CClotBody
 	}
 }
 
-public void SeabornScout_ClotThink(int iNPC)
+public void DwellerScout_ClotThink(int iNPC)
 {
-	SeabornScout npc = view_as<SeabornScout>(iNPC);
+	DwellerScout npc = view_as<DwellerScout>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -212,9 +212,9 @@ public void SeabornScout_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornScout_NPCDeath(int entity)
+void DwellerScout_NPCDeath(int entity)
 {
-	SeabornScout npc = view_as<SeabornScout>(entity);
+	DwellerScout npc = view_as<DwellerScout>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	

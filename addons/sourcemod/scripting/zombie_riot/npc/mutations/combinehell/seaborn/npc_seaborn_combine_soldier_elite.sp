@@ -54,7 +54,7 @@ static const char g_RangedReloadSound[][] = {
 };
 
 
-void SeabornCombineElite_OnMapStart_NPC()
+void DwellerCombineElite_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -69,8 +69,8 @@ void SeabornCombineElite_OnMapStart_NPC()
 	PrecacheModel("models/combine_super_soldier.mdl");
 	PrecacheModel("models/effects/combineball.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seaborn W.F. Elite");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_combine_soldier_elite");
+	strcopy(data.Name, sizeof(data.Name), "Dweller W.F. Elite");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_combine_soldier_elite");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_elite");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -81,9 +81,9 @@ void SeabornCombineElite_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return SeabornCombineElite(vecPos, vecAng, ally);
+	return DwellerCombineElite(vecPos, vecAng, ally);
 }
-methodmap SeabornCombineElite < CClotBody
+methodmap DwellerCombineElite < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -154,9 +154,9 @@ methodmap SeabornCombineElite < CClotBody
 	}
 	
 	
-	public SeabornCombineElite(float vecPos[3], float vecAng[3], int ally)
+	public DwellerCombineElite(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornCombineElite npc = view_as<SeabornCombineElite>(CClotBody(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", "1500", ally));
+		DwellerCombineElite npc = view_as<DwellerCombineElite>(CClotBody(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", "1500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -172,9 +172,9 @@ methodmap SeabornCombineElite < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		func_NPCDeath[npc.index] = SeabornCombineElite_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = SeabornCombineElite_OnTakeDamage;
-		func_NPCThink[npc.index] = SeabornCombineElite_ClotThink;
+		func_NPCDeath[npc.index] = DwellerCombineElite_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = DwellerCombineElite_OnTakeDamage;
+		func_NPCThink[npc.index] = DwellerCombineElite_ClotThink;
 		
 	
 		npc.m_fbGunout = false;
@@ -207,7 +207,7 @@ methodmap SeabornCombineElite < CClotBody
 	
 }
 
-static void EnergyBall_AttackAbility(SeabornCombineElite npc, int target, float gameTime)
+static void EnergyBall_AttackAbility(DwellerCombineElite npc, int target, float gameTime)
 {
 	if(npc.m_bFUCKYOU && npc.m_flAbilityOrAttack0 <= gameTime)
 	{
@@ -231,9 +231,9 @@ static void EnergyBall_AttackAbility(SeabornCombineElite npc, int target, float 
 
 //TODO 
 //Rewrite
-public void SeabornCombineElite_ClotThink(int iNPC)
+public void DwellerCombineElite_ClotThink(int iNPC)
 {
-	SeabornCombineElite npc = view_as<SeabornCombineElite>(iNPC);
+	DwellerCombineElite npc = view_as<DwellerCombineElite>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -478,13 +478,13 @@ public void SeabornCombineElite_ClotThink(int iNPC)
 }
 
 
-public Action SeabornCombineElite_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action DwellerCombineElite_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	SeabornCombineElite npc = view_as<SeabornCombineElite>(victim);
+	DwellerCombineElite npc = view_as<DwellerCombineElite>(victim);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -495,9 +495,9 @@ public Action SeabornCombineElite_OnTakeDamage(int victim, int &attacker, int &i
 	return Plugin_Changed;
 }
 
-public void SeabornCombineElite_NPCDeath(int entity)
+public void DwellerCombineElite_NPCDeath(int entity)
 {
-	SeabornCombineElite npc = view_as<SeabornCombineElite>(entity);
+	DwellerCombineElite npc = view_as<DwellerCombineElite>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	

@@ -446,7 +446,7 @@ methodmap Nemal < CClotBody
 				}
 				case 3:
 				{
-					NPCTalkMessage(npc.index, "There sadly ain't many Alminans left after what happend to their home country, damn traitorous {blue}seaborn{default}... we took in the surviving alminans and helped them!");
+					NPCTalkMessage(npc.index, "There sadly ain't many Alminans left after what happend to their home country, damn traitorous {blue}dweller{default}... we took in the surviving alminans and helped them!");
 				}
 			}
 		}
@@ -469,7 +469,7 @@ methodmap Nemal < CClotBody
 				}
 				case 3:
 				{
-					NPCTalkMessage(npc.index, "{blue}Seaborns{default} and us had some treaty yknow... before they attacked everyone... Thats how we have the idea of what {green}Defenda's{default} are using.");
+					NPCTalkMessage(npc.index, "{blue}Dwellers{default} and us had some treaty yknow... before they attacked everyone... Thats how we have the idea of what {green}Defenda's{default} are using.");
 				}
 			}
 		}

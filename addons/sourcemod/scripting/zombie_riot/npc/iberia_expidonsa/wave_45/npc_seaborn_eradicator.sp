@@ -28,7 +28,7 @@ static const char g_AngerSound[][] =
 	"vo/halloween_boss/knight_laugh03.mp3",
 	"vo/halloween_boss/knight_laugh04.mp3"
 };
-void Almina_SeabornAnnihilator_OnMapStart_NPC()
+void Almina_DwellerAnnihilator_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
@@ -37,9 +37,9 @@ void Almina_SeabornAnnihilator_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_AngerSound)); i++) { PrecacheSound(g_AngerSound[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Almina-Expidonsan Seaborn Eradicator");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_eradicator");
-	strcopy(data.Icon, sizeof(data.Icon), "seaborn_annihilator");
+	strcopy(data.Name, sizeof(data.Name), "Almina-Expidonsan Dweller Eradicator");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_eradicator");
+	strcopy(data.Icon, sizeof(data.Icon), "dweller_annihilator");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_AlminaExpiAlliance;
@@ -49,10 +49,10 @@ void Almina_SeabornAnnihilator_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Almina_SeabornAnnihilator(vecPos, vecAng, team);
+	return Almina_DwellerAnnihilator(vecPos, vecAng, team);
 }
 
-methodmap Almina_SeabornAnnihilator < CClotBody
+methodmap Almina_DwellerAnnihilator < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -92,9 +92,9 @@ methodmap Almina_SeabornAnnihilator < CClotBody
 	}
 	
 	
-	public Almina_SeabornAnnihilator(float vecPos[3], float vecAng[3], int ally)
+	public Almina_DwellerAnnihilator(float vecPos[3], float vecAng[3], int ally)
 	{
-		Almina_SeabornAnnihilator npc = view_as<Almina_SeabornAnnihilator>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "50000000", ally, false, true));
+		Almina_DwellerAnnihilator npc = view_as<Almina_DwellerAnnihilator>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "50000000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 5;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -116,9 +116,9 @@ methodmap Almina_SeabornAnnihilator < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(Almina_SeabornAnnihilator_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Almina_SeabornAnnihilator_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Almina_SeabornAnnihilator_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Almina_DwellerAnnihilator_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Almina_DwellerAnnihilator_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Almina_DwellerAnnihilator_ClotThink);
 		
 		
 		npc.StartPathing();
@@ -170,9 +170,9 @@ methodmap Almina_SeabornAnnihilator < CClotBody
 	}
 }
 
-public void Almina_SeabornAnnihilator_ClotThink(int iNPC)
+public void Almina_DwellerAnnihilator_ClotThink(int iNPC)
 {
-	Almina_SeabornAnnihilator npc = view_as<Almina_SeabornAnnihilator>(iNPC);
+	Almina_DwellerAnnihilator npc = view_as<Almina_DwellerAnnihilator>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -282,7 +282,7 @@ public void Almina_SeabornAnnihilator_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		Almina_SeabornAnnihilatorSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		Almina_DwellerAnnihilatorSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -292,9 +292,9 @@ public void Almina_SeabornAnnihilator_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Almina_SeabornAnnihilator_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Almina_DwellerAnnihilator_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Almina_SeabornAnnihilator npc = view_as<Almina_SeabornAnnihilator>(victim);
+	Almina_DwellerAnnihilator npc = view_as<Almina_DwellerAnnihilator>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -309,9 +309,9 @@ public Action Almina_SeabornAnnihilator_OnTakeDamage(int victim, int &attacker, 
 }
 
 
-public void Almina_SeabornAnnihilator_NPCDeath(int entity)
+public void Almina_DwellerAnnihilator_NPCDeath(int entity)
 {
-	Almina_SeabornAnnihilator npc = view_as<Almina_SeabornAnnihilator>(entity);
+	Almina_DwellerAnnihilator npc = view_as<Almina_DwellerAnnihilator>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -344,7 +344,7 @@ public void Almina_SeabornAnnihilator_NPCDeath(int entity)
 
 }
 
-void Almina_SeabornAnnihilatorSelfDefense(Almina_SeabornAnnihilator npc, float gameTime, int target, float distance)
+void Almina_DwellerAnnihilatorSelfDefense(Almina_DwellerAnnihilator npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{

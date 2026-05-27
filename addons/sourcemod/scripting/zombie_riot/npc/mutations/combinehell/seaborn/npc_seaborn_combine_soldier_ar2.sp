@@ -57,7 +57,7 @@ static char g_GrenadeSound[][] = {
 	"weapons/grenade/tick1.wav",
 };
 
-public void SeabornCombineSoldierAr2_OnMapStart_NPC()
+public void DwellerCombineSoldierAr2_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -84,8 +84,8 @@ public void SeabornCombineSoldierAr2_OnMapStart_NPC()
 	PrecacheModel("models/combine_soldier.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seaborn W.F. Rifler");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_combine_soldier_ar2");
+	strcopy(data.Name, sizeof(data.Name), "Dweller W.F. Rifler");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_combine_soldier_ar2");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_rifle");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -96,9 +96,9 @@ public void SeabornCombineSoldierAr2_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return SeabornCombineSoldierAr2(vecPos, vecAng, ally);
+	return DwellerCombineSoldierAr2(vecPos, vecAng, ally);
 }
-methodmap SeabornCombineSoldierAr2 < CClotBody
+methodmap DwellerCombineSoldierAr2 < CClotBody
 {
 	property int m_iAttacksTillReload
 	{
@@ -177,9 +177,9 @@ methodmap SeabornCombineSoldierAr2 < CClotBody
 		
 	}
 	
-	public SeabornCombineSoldierAr2(float vecPos[3], float vecAng[3], int ally)
+	public DwellerCombineSoldierAr2(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornCombineSoldierAr2 npc = view_as<SeabornCombineSoldierAr2>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "1250", ally));
+		DwellerCombineSoldierAr2 npc = view_as<DwellerCombineSoldierAr2>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "1250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -205,9 +205,9 @@ methodmap SeabornCombineSoldierAr2 < CClotBody
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		
-		func_NPCDeath[npc.index] = SeabornCombineSoldierAr2_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = SeabornCombineSoldierAr2_OnTakeDamage;
-		func_NPCThink[npc.index] = SeabornCombineSoldierAr2_ClotThink;
+		func_NPCDeath[npc.index] = DwellerCombineSoldierAr2_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = DwellerCombineSoldierAr2_OnTakeDamage;
+		func_NPCThink[npc.index] = DwellerCombineSoldierAr2_ClotThink;
 		
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
@@ -265,9 +265,9 @@ methodmap SeabornCombineSoldierAr2 < CClotBody
 
 //TODO 
 //Rewrite
-public void SeabornCombineSoldierAr2_ClotThink(int iNPC)
+public void DwellerCombineSoldierAr2_ClotThink(int iNPC)
 {
-	SeabornCombineSoldierAr2 npc = view_as<SeabornCombineSoldierAr2>(iNPC);
+	DwellerCombineSoldierAr2 npc = view_as<DwellerCombineSoldierAr2>(iNPC);
 	float gameTime = GetGameTime(npc.index);
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -529,13 +529,13 @@ public void SeabornCombineSoldierAr2_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action SeabornCombineSoldierAr2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action DwellerCombineSoldierAr2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	SeabornCombineSoldierAr2 npc = view_as<SeabornCombineSoldierAr2>(victim);
+	DwellerCombineSoldierAr2 npc = view_as<DwellerCombineSoldierAr2>(victim);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -546,9 +546,9 @@ public Action SeabornCombineSoldierAr2_OnTakeDamage(int victim, int &attacker, i
 	return Plugin_Changed;
 }
 
-public void SeabornCombineSoldierAr2_NPCDeath(int entity)
+public void DwellerCombineSoldierAr2_NPCDeath(int entity)
 {
-	SeabornCombineSoldierAr2 npc = view_as<SeabornCombineSoldierAr2>(entity);
+	DwellerCombineSoldierAr2 npc = view_as<DwellerCombineSoldierAr2>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	

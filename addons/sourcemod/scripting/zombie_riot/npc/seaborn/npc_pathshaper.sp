@@ -41,7 +41,7 @@ void Pathshaper_Precache()
 	strcopy(data.Icon, sizeof(data.Icon), "ds_pathshaper");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Seaborn;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

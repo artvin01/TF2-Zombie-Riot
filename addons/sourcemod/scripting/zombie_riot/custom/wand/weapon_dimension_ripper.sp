@@ -448,7 +448,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 		}
 	}
 }
-public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result, int slot, int pap_logic)
+public void Weapon_Dimension_Summon_Dweller(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	switch(GetRandomInt(1, 5))
 	{
@@ -459,7 +459,7 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 		case 3:
 			Dimension_Summon_Npc(client, "npc_netherseaspewer" ,weapon, 1.0, 1.5, "utaunt_spirit_winter_rings");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_seaborn_kazimersch_beserker" ,weapon, 1.6, 1.3, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_dweller_kazimersch_beserker" ,weapon, 1.6, 1.3, "utaunt_spirit_winter_rings");
 		case 5:
 			Dimension_Summon_Npc(client, "npc_netherseaswarmcaller" ,weapon, 1.0, 1.3, "utaunt_spirit_winter_rings");
 		default: //This should not happen
@@ -468,18 +468,18 @@ public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result
 		}
 	}
 }
-public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
+public void Weapon_Dimension_Summon_Dweller_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	switch(GetRandomInt(1, 5))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_seaborn_guard" ,weapon, 1.3, 1.0, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_dweller_guard" ,weapon, 1.3, 1.0, "utaunt_spirit_winter_rings");
 		case 2:
-			Dimension_Summon_Npc(client, "npc_seaborn_caster" ,weapon, 1.0, 1.2, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_dweller_caster" ,weapon, 1.0, 1.2, "utaunt_spirit_winter_rings");
 		case 3:
-			Dimension_Summon_Npc(client, "npc_seaborn_kazimersch_knight" ,weapon, 1.2, 1.3, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_dweller_kazimersch_knight" ,weapon, 1.2, 1.3, "utaunt_spirit_winter_rings");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_seaborn_specialist" ,weapon, 1.3, 1.4, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_dweller_specialist" ,weapon, 1.3, 1.4, "utaunt_spirit_winter_rings");
 		case 5:
 			Dimension_Summon_Npc(client, "npc_firsttotalk" ,weapon, 1.8, 1.75, "utaunt_spirit_winter_rings");
 		default: //This should not happen
