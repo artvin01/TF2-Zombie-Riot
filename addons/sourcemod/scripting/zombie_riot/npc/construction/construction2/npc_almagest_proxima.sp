@@ -248,7 +248,7 @@ static void ClotThink(int iNPC)
 		npc.m_flHealCooldownDo = GetGameTime(npc.index) + 0.5;
 		Almagest_DidHealDo = false;
 		int maxhealth = ReturnEntityMaxHealth(npc.index);
-		ExpidonsaGroupHeal(npc.index, 150.0, 99, float(maxhealth) / 20.0, 1.0, false,Expidonsa_OnlyHealSameIndex, AlmagestProximaBuff);
+		ExpidonsaGroupHeal(npc.index, 150.0, 99, float(maxhealth) / 40.0, 1.0, false,Expidonsa_OnlyHealSameIndex, AlmagestProximaBuff);
 		if(Almagest_DidHealDo)
 			DesertYadeamDoHealEffect(npc.index, 150.0);
 	}

@@ -282,7 +282,7 @@ static void HandleSummoning(Starship_Beacon npc)
 
 	int health = ReturnEntityMaxHealth(npc.index);
 	int SpwanIndex = NPC_CreateByName("npc_almagest_proxima", npc.index, Loc, {0.0, 0.0, 0.0}, GetTeam(npc.index));
-	health /= 4;
+	health /= 5;
 	
 	if(SpwanIndex > MaxClients)
 	{
