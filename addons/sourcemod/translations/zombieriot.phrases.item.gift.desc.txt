@@ -1285,30 +1285,30 @@
 		"it"		"Un membro della Chiesa degli Abissi che si è intrufolato nell'Almina devastata dal disastro.\nHa cambiato la legge della terra grazie alle sue sincere convinzioni, alla ricerca della forma perfetta, ma non è riuscito a comprendere la volontà dell'oceano.\nD'altronde, chi potrebbe farlo?\n- Si riproduce in una posizione casuale, non si muove e diventa un punto di spawn \n- Utilizza un attacco a distanza, fino a 2 bersagli con la resistenza a distanza più alta nel raggio d'azione \n- Gli attacchi infliggono menomazioni nervose \n- Attacca periodicamente fino a 8 bersagli \n- Infligge periodicamente danni a tutti i bersagli in linea visiva"
 		"ko"		"참사가 벌어진 후 알미나에 잠입한 심해 교회의 일원 중 하나.\n자신의 이념으로 율법을 왜곡하고, 개인의 완벽함을 추구했으나 바다의 뜻에는 전혀 침투할 수 없었다.\n그런 게 가능한 사람이 있기는 할까?\n-무작위 위치에 생성, 움직이지 않지만 다른 적들을 생성하는 임시 스폰 지점이 됨.\n-원거리 공격을 사용하며, 피해 저항력이 가장 높은 대상 2명만을 노림\n-주기적으로 최대 8명까지 공격하며, 시야 내 모든 목표물에게 피해를 가하는 공격 보유"
 	}
-	"Armorless Union Knight Desc"
+	"Abyss Grunwald Warrior Desc"
 	{
 		"en"		"An infected from Grunwald.\n- Periodically resists melee damage"
 		"it"		"Un infetto di Grunwald.\n- Resiste periodicamente ai danni in mischia"
 		"ko"		"감염된 그룬발트인, \n-주기적으로 근접 피해 저항력 증가"
 	}
-	"Roar Knightclub Trainee Desc"
+	"Abyss Grunwald Archer Desc"
 	{
 		"en"		"Wearing the high-performance, lightweight armor provided by Roar Guards.\n- Uses a ranged attack\n- Spawns with a shield provides flat damage reduction, lasting for a duration"
 		"it"		"Indossa l'armatura leggera e ad alte prestazioni fornita dalle Roar Guards.\n- Utilizza un attacco a distanza\n- Nasce con uno scudo che fornisce una riduzione piatta dei danni, che dura per un certo periodo di tempo"
 		"ko"		"로어에서 제공한 고성능 경량 갑옷을 입고 있다.\n-원거리 공격 사용\n-스폰된 직후, 일정 시간 동안 지속되는 매우 높은 고정 피해량 감소 쉴드를 보유."
 	}
-	"Grunwald Revenger"
+	"Abyss Grunwald Revenger Desc"
 	{
 		"en"		"The Grunwald Revenger have long been known for their ferocity and aggression.\n- Gains stacking increased damage and attack speed when their ally has died within range"
 		"ko"		"그룬발트 복수자는 와일드한 공격성으로 줄곧 유명했다.\n-이 적 주변의 적이 죽을 때마다, 피해량, 피해 저항력, 이동 속도가 증가. 이 효과는 중첩됨."
 	}
-	"Armorless Union Cleanup Squad Desc"
+	"Abyss Grunwald Sniper Assasin Desc"
 	{
 		"en"		"Invis from afar and deal immensive damage."
 		"it"		"Invis da lontano e infligge danni immensi."
 		"ko"		"멀리있을 때 투명화 상태가 되며, 매우 높은 피해를 주는 공격을 합니다."
 	}
-	"Armorless Union Assassin Desc"
+	"Abyss Grunwald Assasin Desc"
 	{
 		"en"		"They have adopted some kind of bounty system and are often very thorough in their tasks.\n- Uses a ranged attack\n- Has camouflage\n- Deals increased damage when no targets in close range"
 		"it"		"Hanno adottato una sorta di sistema di taglie e sono spesso molto scrupolosi nei loro compiti.\n- Utilizza un attacco a distanza\n- Ha una mimetizzazione\n- Infligge danni maggiori quando non ci sono bersagli a distanza ravvicinata"
