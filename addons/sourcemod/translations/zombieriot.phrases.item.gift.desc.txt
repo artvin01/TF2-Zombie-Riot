@@ -1312,7 +1312,7 @@
 	{
 		"en"		"They have adopted some kind of bounty system and are often very thorough in their tasks.\n- Uses a ranged attack\n- Has camouflage\n- Deals increased damage when no targets in close range"
 		"it"		"Hanno adottato una sorta di sistema di taglie e sono spesso molto scrupolosi nei loro compiti.\n- Utilizza un attacco a distanza\n- Ha una mimetizzazione\n- Infligge danni maggiori quando non ci sono bersagli a distanza ravvicinata"
-		"ko"		"아머레스 유니온이 고용한 암살자로, 실력은 평범하지만 매우 교활하다.\n-원거리 공격 사용\n-위장 버프를 보유\n-자신의 주변에 적이 없으면 피해량이 크게 증가"
+		"ko"		"실력은 평범하지만 매우 교활하다.\n-원거리 공격 사용\n-위장 버프를 보유\n-자신의 주변에 적이 없으면 피해량이 크게 증가"
 	}
 	"Herald of the Abyss Desc"
 	{
