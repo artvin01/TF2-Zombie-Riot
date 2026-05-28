@@ -625,7 +625,7 @@ static void VestaFragmentsAssaultMode(VestanDroneFragments npc, float gameTime, 
 								damageDealt=DMGTemp;
 						}
 						else
-							damageDealt*=float(npc.m_iWaveScale)*0.1;
+							damageDealt*=float(npc.m_iWaveScale)*0.085;
 						Explode_Logic_Custom(damageDealt/(b_we_are_reloading[npc.index] ? 3.0: 5.0), npc.index, npc.index, -1, vecHit, (b_we_are_reloading[npc.index] ? 125.0 : 85.0),_,_,_,4, _, 1.0);
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 					}

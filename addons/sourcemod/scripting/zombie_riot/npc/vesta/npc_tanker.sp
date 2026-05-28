@@ -136,7 +136,7 @@ methodmap VestanTanker < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/Robo_Heavy_Chief/Robo_Heavy_Chief.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_salminan_tigerstripe/fall17_salminan_tigerstripe.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_siberian_tigerstripe/fall17_siberian_tigerstripe.mdl");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 		
 		npc.m_iWearable6 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,1,1.1);

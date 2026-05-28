@@ -872,6 +872,8 @@ int VestaBirdeyeSniperMode(VestaBirdeye npc, float gameTime)
 					damageDealt *= 99.0;
 				if(b_TheGoons)
 					damageDealt *= 0.33;
+				if(npc.m_iBurst)
+					damageDealt *= 0.75;
 				
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
 				if(!IsValidEnemy(npc.index, target))
@@ -895,11 +897,11 @@ int VestaBirdeyeSniperMode(VestaBirdeye npc, float gameTime)
 	{
 		if(NpcStats_VestanCallToArms(npc.index))
 		{
-			npc.m_flAttackHappens = gameTime + (npc.m_iBurst>0 ? 0.2 : 0.65);
+			npc.m_flAttackHappens = gameTime + (npc.m_iBurst>0 ? 0.45 : 0.75);
 		}
 		else if(!NpcStats_VestanCallToArms(npc.index))
 		{
-			npc.m_flAttackHappens = gameTime + (npc.m_iBurst>0 ? 0.2 : 1.25);
+			npc.m_flAttackHappens = gameTime + (npc.m_iBurst>0 ? 0.5 : 1.25);
 		}
 		npc.m_flDoingAnimation = gameTime + 0.95;
 		if(b_TheGoons)
@@ -917,7 +919,7 @@ int VestaBirdeyeSniperMode(VestaBirdeye npc, float gameTime)
 				}
 			}
 			else
-				npc.m_flNextMeleeAttack = gameTime + 0.5;
+				npc.m_flNextMeleeAttack = gameTime + 0.65;
 		}
 		else
 			npc.m_flNextMeleeAttack = gameTime + 2.5;

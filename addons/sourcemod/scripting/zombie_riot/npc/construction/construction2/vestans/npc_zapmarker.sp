@@ -148,7 +148,7 @@ methodmap Zapmaker < CClotBody
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/dec15_patriot_peak/dec15_patriot_peak_heavy.mdl");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_salminan_tigerstripe/fall17_salminan_tigerstripe.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_siberian_tigerstripe/fall17_siberian_tigerstripe.mdl");
 		
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/dec24_battle_balaclava_style1/dec24_battle_balaclava_style1.mdl");
 		

@@ -81,7 +81,7 @@ methodmap VestanHumbee < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/dec2014_copilot_2014/dec2014_copilot_2014_heavy.mdl");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/cc_summer2015_el_duderino/cc_summer2015_el_duderino.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_salminan_tigerstripe/fall17_salminan_tigerstripe.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_siberian_tigerstripe/fall17_siberian_tigerstripe.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 
 		npc.m_iWearable2 = npc.EquipItemSeperate("models/workshop/player/items/heavy/road_rager/road_rager.mdl");

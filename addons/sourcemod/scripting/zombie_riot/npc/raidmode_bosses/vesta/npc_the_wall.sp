@@ -1247,7 +1247,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 		if(fl_ruina_battery[npc.index])
 		{
 			NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Ability1-2", false, false);
-			GrantEntityArmor(npc.index, false, 0.1, 0.5, 0, (float(ReturnEntityMaxHealth(npc.index))*0.1)*(fl_ruina_battery[npc.index]/fl_ruina_battery_max[npc.index]));
+			GrantEntityArmor(npc.index, false, 0.1, 0.5, 0, (float(ReturnEntityMaxHealth(npc.index))*0.07)*(fl_ruina_battery[npc.index]/fl_ruina_battery_max[npc.index]));
 		}
 		else
 			RemoveSpecificBuff(npc.index, "Battery_TM Charge");
@@ -1769,7 +1769,7 @@ static Action Huscarls_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 				BulletArmor[npc.index]=true;
 			}
 		}
-		GrantEntityArmor(npc.index, false, 0.08, 0.5, 0);
+		GrantEntityArmor(npc.index, false, 0.065, 0.5, 0);
 		npc.PlayDMGTypeArmorSound();
 		npc.m_flDMGTypeArmorDuration = gameTime + 30.0;
 		GetArmor[npc.index] = 0.0;
@@ -2402,11 +2402,13 @@ static bool TinCan_Raid(Huscarls npc, float gameTime)
 						if(GetTeam(npc.index) != TFTeam_Red)
 							Zombies_Currently_Still_Ongoing++;
 						NpcStats_CopyStats(npc.index, spawn_index);
-						int health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 0.15);
+						int health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 0.20);
 						fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
 						fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
 						fl_Extra_Speed[spawn_index] = fl_Extra_Speed[npc.index];
 						fl_Extra_Damage[spawn_index] = fl_Extra_Damage[npc.index];
+						fl_Extra_Damage[spawn_index] *= 1.25;
+						b_thisNpcIsABoss[spawn_index] = true;
 						if(GetTeam(npc.index) != TFTeam_Red)
 							NpcAddedToZombiesLeftCurrently(spawn_index, true);
 						i_AttacksTillMegahit[spawn_index] = 600;

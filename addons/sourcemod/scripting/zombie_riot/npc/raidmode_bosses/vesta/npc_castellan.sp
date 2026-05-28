@@ -454,6 +454,7 @@ methodmap Castellan < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.75;
 		}
+		RaidModeScaling *= 0.95;
 		npc.m_flScalingRaidBuffTmpe = RaidModeScaling*0.11325;
 		
 		if(StrContains(data, "final_item") != -1)
