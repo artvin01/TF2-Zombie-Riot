@@ -446,7 +446,7 @@ def parse():
                 wave_cfg = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{waveset_file}.cfg")
                 
                 # Waveset-specific typo fixes (or just removing lines that break the parser)
-                if waveset_file == "classic_iber&expi": wave_cfg=wave_cfg.replace('			"plugin"	"110000000"',"") # overrides actual plugin name before it, which is why it has to be removed
+                if waveset_file == "classic_alim&expi": wave_cfg=wave_cfg.replace('			"plugin"	"110000000"',"") # overrides actual plugin name before it, which is why it has to be removed
                 wave_cfg = unique_enemy_delays(wave_cfg)
 
                 WAVESET_DATA = vdf.loads(wave_cfg)["Waves"]
