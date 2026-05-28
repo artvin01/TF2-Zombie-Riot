@@ -349,7 +349,7 @@
 	{
 		"en" 		"Almina's Last Hope Sparkle"
 		"it"		"L'ultima speranza di Almina scintilla"
-		"ko" 		"이베리아의 마지막 희망"
+		"ko" 		"알미나의 마지막 희망"
 	}
 	"Almina's Last Hope Up Desc"
 	{
