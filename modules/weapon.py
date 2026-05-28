@@ -71,6 +71,61 @@ def generate_weapon_icon(weapon_data, weapon_name, pure_filename, prefix="", bod
     eng.window.render_to_image(no_background=True).save(f"./gh-pages/{prefix}icons/{pure_filename}_{mdl_bodygroup}.png")
     return f"{prefix}icons/{pure_filename}_{mdl_bodygroup}.png"
 
+def shared_parse_weapon_attrs(weapon_data, pap_key=""):
+    attributes = defaultdict(list)
+    if f"{pap_key}attributes" in weapon_data:
+        _attrs=weapon_data[f"{pap_key}attributes"].split(";")
+        for index, value in zip(_attrs[0::2],_attrs[1::2],strict=True):
+            if index.strip() in items_game["attributes"]: # TODO there are some custom attributes, gotta make manual entries for those to be included
+                attribute_data = items_game["attributes"][index.strip()]
+                if "hidden" in attribute_data: 
+                    if attribute_data["hidden"]=="1": continue
+                if "description_string" in attribute_data:
+                    desc_str = attribute_data["description_string"].strip("#")
+                    attr_type = attribute_data["effect_type"]
+                    # some of these calculations may be incorrect
+                    if attribute_data["description_format"] == "value_is_percentage":
+                        val_str = str(int((float(value)*100)-100))
+                    elif attribute_data["description_format"] == "value_is_inverted_percentage":
+                        val_str = str(-int((float(value)*100)-100))
+                    elif attribute_data["description_format"] == "value_is_additive_percentage":
+                        val_str = str(int(float(value)*100))
+                    elif attribute_data["description_format"] == "value_is_additive":
+                        val_str = value
+                    val_str=val_str.strip()
+
+                    if val_str != "0":
+                        if desc_str in strings_english:
+                            desc_pre = strings_english[desc_str]
+                            if val_str.startswith("-"):
+                                if desc_pre.startswith("+") or desc_pre.startswith("-"): desc_pre=desc_pre[1:] # Prevent attributes showing up as "+-200% [attribute desc]"
+                            desc = desc_pre.replace("%s1", val_str)
+                        else:
+                            desc = f"{val_str} {desc_str}"
+                        attributes[attr_type].append(desc)
+    return attributes
+
+def shared_parse_weapon_icon(weapon_data,weapon_name,pap_key=""):
+    icon = ""
+    if weapon_name == "Wrench":
+        path = "models/weapons/c_models/c_wrench/c_wrench.mdl"
+        pure_filename = path.split("/")[-1].split(".")[0]
+        icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename,prefix="tf_")
+    elif f"{pap_key}model_weapon_override" in weapon_data:
+        if weapon_data[f"{pap_key}model_weapon_override"]!="models/empty.mdl":
+            pure_filename = weapon_data[f"{pap_key}model_weapon_override"].split("/")[-1].split(".")[0]
+            if os.path.isfile(f"decompiled/{pure_filename}.json"): # only generate icon if decompiled data exists
+                icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename,bodygroup_prefix=pap_key)
+            elif os.path.isfile(f"tf_decompiled/{pure_filename}.json"): # only generate icon if decompiled data exists
+                icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename, prefix="tf_",bodygroup_prefix=pap_key)
+            else:
+                util.log(f"[Weapon] Skipping thumbnail generation: bodygroup mappings missing for {pure_filename}","WARNING")
+    elif f"{pap_key}classname" in weapon_data:
+        path = modelmapping[weapon_data[f"{pap_key}classname"]]
+        pure_filename = path.split("/")[-1].split(".")[0]
+        icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename,prefix="tf_",bodygroup_prefix=pap_key)
+    return icon
+
 # CONFIG ========================================================================
 CFG_WEAPONS = vdf.loads(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/weapons.cfg"))["Weapons"]
 # Item blacklist for hidden items that aren't indicated as hidden
@@ -111,57 +166,9 @@ class Weapon:
         else:
             self.lvl = ""
         
-        self.attributes = defaultdict(list)
-        if "attributes" in weapon_data:
-            _attrs=weapon_data["attributes"].split(";")
-            for index, value in zip(_attrs[0::2],_attrs[1::2],strict=True):
-                if index.strip() in items_game["attributes"]: # TODO there are some custom attributes, gotta make manual entries for those to be included
-                    attribute_data = items_game["attributes"][index.strip()]
-                    if "hidden" in attribute_data: 
-                        if attribute_data["hidden"]=="1": continue
-                    if "description_string" in attribute_data:
-                        desc_str = attribute_data["description_string"].strip("#")
-                        attr_type = attribute_data["effect_type"]
-                        # some of these calculations may be incorrect, it seems like it's impossible to keep the positive/negative types correct without hardcoding
-                        if attribute_data["description_format"] == "value_is_percentage":
-                            val_str = str(int((float(value)*100)-100))
-                        elif attribute_data["description_format"] == "value_is_inverted_percentage":
-                            val_str = str(-int((float(value)*100)-100))
-                        elif attribute_data["description_format"] == "value_is_additive_percentage":
-                            val_str = str(int(float(value)*100))
-                        elif attribute_data["description_format"] == "value_is_additive":
-                            val_str = value
-                        val_str=val_str.strip()
+        self.attributes = shared_parse_weapon_attrs(weapon_data)
 
-                        if val_str != "0":
-                            if desc_str in strings_english:
-                                desc_pre = strings_english[desc_str]
-                                if val_str.startswith("-"):
-                                    if desc_pre.startswith("+") or desc_pre.startswith("-"): desc_pre=desc_pre[1:] # Prevent attributes showing up as "+-200% [attribute desc]"
-                                desc = desc_pre.replace("%s1", val_str)
-                            else:
-                                desc = f"{val_str} {desc_str}"
-                            self.attributes[attr_type].append(desc)
-
-        # If weapon uses custom model, fetch source SMD file from bodygroup
-        self.icon = ""
-        if weapon_name == "Wrench":
-            path = "models/weapons/c_models/c_wrench/c_wrench.mdl"
-            pure_filename = path.split("/")[-1].split(".")[0]
-            self.icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename,prefix="tf_")
-        elif "model_weapon_override" in weapon_data:
-            if weapon_data["model_weapon_override"]!="models/empty.mdl":
-                pure_filename = weapon_data["model_weapon_override"].split("/")[-1].split(".")[0]
-                if os.path.isfile(f"decompiled/{pure_filename}.json"): # only generate icon if decompiled data exists
-                    self.icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename)
-                elif os.path.isfile(f"tf_decompiled/{pure_filename}.json"): # only generate icon if decompiled data exists
-                    self.icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename, prefix="tf_")
-                else:
-                    util.log(f"[Weapon] Skipping thumbnail generation: bodygroup mappings missing for {pure_filename}","WARNING")
-        elif "classname" in weapon_data:
-            path = modelmapping[weapon_data["classname"]]
-            pure_filename = path.split("/")[-1].split(".")[0]
-            self.icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename,prefix="tf_")
+        self.icon = shared_parse_weapon_icon(weapon_data, weapon_name)
         
         self.parse_enhancements()
 
@@ -238,58 +245,13 @@ class WeaponPap:
             
             self.description = util.get_key(weapon_data[key_desc]).replace("\\n","\n")
 
-            # TODO unified function
-            self.attributes = defaultdict(list)
-            if f"{pap_key}attributes" in weapon_data:
-                _attrs=weapon_data[f"{pap_key}attributes"].split(";")
-                for index, value in zip(_attrs[0::2],_attrs[1::2],strict=True):
-                    if index.strip() in items_game["attributes"]: # TODO there are some custom attributes, gotta make manual entries for those to be included
-                        attribute_data = items_game["attributes"][index.strip()]
-                        if "hidden" in attribute_data: 
-                            if attribute_data["hidden"]=="1": continue
-                        if "description_string" in attribute_data:
-                            desc_str = attribute_data["description_string"].strip("#")
-                            attr_type = attribute_data["effect_type"]
-                            # some of these calculations may be incorrect
-                            if attribute_data["description_format"] == "value_is_percentage":
-                                val_str = str(int((float(value)*100)-100))
-                            elif attribute_data["description_format"] == "value_is_inverted_percentage":
-                                val_str = str(-int((float(value)*100)-100))
-                            elif attribute_data["description_format"] == "value_is_additive_percentage":
-                                val_str = str(int(float(value)*100))
-                            elif attribute_data["description_format"] == "value_is_additive":
-                                val_str = value
-                            val_str=val_str.strip()
+            self.attributes = shared_parse_weapon_attrs(weapon_data, pap_key)
 
-                            if val_str != "0":
-                                if desc_str in strings_english:
-                                    desc_pre = strings_english[desc_str]
-                                    if val_str.startswith("-"):
-                                        if desc_pre.startswith("+") or desc_pre.startswith("-"): desc_pre=desc_pre[1:] # Prevent attributes showing up as "+-200% [attribute desc]"
-                                    desc = desc_pre.replace("%s1", val_str)
-                                else:
-                                    desc = f"{val_str} {desc_str}"
-                                self.attributes[attr_type].append(desc)
+            self.icon = shared_parse_weapon_icon(weapon_data, weapon_name, pap_key)
 
             self.papskip = self._weapon_data_df[f"{pap_key}papskip"] or "0"
             self.pappaths = self._weapon_data_df[f"{pap_key}pappaths"] or "1"
             self.extra_desc = self._weapon_data_df[f"{pap_key}extra_desc"].replace("\\n","\n")
-
-            # If weapon uses custom model, fetch source SMD file from bodygroup
-            self.icon = ""
-            if f"{pap_key}model_weapon_override" in weapon_data:
-                if weapon_data[f"{pap_key}model_weapon_override"]!="models/empty.mdl":
-                    pure_filename = weapon_data[f"{pap_key}model_weapon_override"].split("/")[-1].split(".")[0]
-                    if os.path.isfile(f"decompiled/{pure_filename}.json"): # only generate icon if decompiled data exists
-                        self.icon = generate_weapon_icon(weapon_data,self.name,pure_filename, bodygroup_prefix=pap_key)
-                    elif os.path.isfile(f"tf_decompiled/{pure_filename}.json"): # only generate icon if decompiled data exists
-                        self.icon = generate_weapon_icon(weapon_data,self.name,pure_filename, prefix="tf_", bodygroup_prefix=pap_key)
-                    else:
-                        util.log(f"[WeaponPap] Skipping thumbnail generation: bodygroup mappings missing for {pure_filename}","WARNING")
-            elif f"{pap_key}classname" in weapon_data:
-                path = modelmapping[weapon_data[f"{pap_key}classname"]]
-                pure_filename = path.split("/")[-1].split(".")[0]
-                self.icon = generate_weapon_icon(weapon_data,weapon_name,pure_filename,prefix="tf_",bodygroup_prefix=pap_key)
 
         self.valid = key_desc in weapon_data
 
@@ -299,7 +261,6 @@ class WeaponPap:
             "tags": self.tags.split(),
             "name": self.name,
             "description": self.description,
-            #"author": self.author, # TODO apply morecolors on js side
             #"lvl": self.lvl,
             "cost": self.cost,
             "rawcost": self.rawcost,

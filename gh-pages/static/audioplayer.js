@@ -1,5 +1,5 @@
 /* Audio player */
-let last_vol = 1.0;
+let last_vol = 1/4;
 let last_muted = false;
 let last_song_id = -1;
 
@@ -9,6 +9,10 @@ let shuffle=false;
 let max_songs = 0;
 
 function set_audio_resource(obj) {
+    if (max_songs>0) {
+        if (last_song_id!==-1) { document.getElementById(last_song_id).classList.remove("music_playing") };
+        obj.classList.add("music_playing");
+    }
     last_song_id=obj.id;
     document.getElementById("music_title").innerHTML = apply_morecolors(obj.getAttribute("title")) + " - " + apply_morecolors(obj.getAttribute("artist"));
     
